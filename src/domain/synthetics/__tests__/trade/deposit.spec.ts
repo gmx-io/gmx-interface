@@ -22,7 +22,7 @@ const marketToken = {
 const findSwapPath: FindSwapPath = (usdIn) =>
   ({
     swapPath: ["0xpool"],
-    swapSteps: [],
+    swapSteps: [{ amountIn: usdIn / expandDecimals(1, 30 - initialShortToken.decimals) }],
     usdOut: usdIn,
     amountOut: usdIn / expandDecimals(1, 30 - collateralToken.decimals),
     totalFeesDeltaUsd: 0n,
@@ -55,23 +55,25 @@ describe("getDepositAmounts with an initial short token", () => {
     const amounts = getAmounts({ strategy: "byCollaterals", findSwapPath });
 
     expect(amounts.shortTokenSwapPathStats?.usdOut).toBe(10n * USD);
+    expect(amounts.initialShortTokenAmount).toBe(expandDecimals(10, initialShortToken.decimals));
     expect(amounts.shortTokenAmount).toBe(expandDecimals(10, collateralToken.decimals));
     expect(amounts.longTokenAmount).toBe(0n);
     expect(amounts.marketTokenAmount > 0n).toBe(true);
   });
 
-  it("estimates the short token by price without a route", () => {
-    const amounts = getAmounts({ strategy: "byCollaterals" });
+  it("does not swap without a route", () => {
+    const amounts = getAmounts({ strategy: "byCollaterals", findSwapPath: () => undefined });
 
     expect(amounts.shortTokenSwapPathStats).toBeUndefined();
-    expect(amounts.shortTokenUsd > 0n).toBe(true);
-    expect(amounts.longTokenAmount).toBe(0n);
+    expect(amounts.initialShortTokenAmount).toBeUndefined();
+    expect(amounts.shortTokenAmount).toBe(0n);
   });
 
   it("routes the needed short token by market token", () => {
     const amounts = getAmounts({ strategy: "byMarketToken", findSwapPath });
 
     expect(amounts.shortTokenSwapPathStats?.usdOut).toBe(amounts.shortTokenUsd);
+    expect(amounts.initialShortTokenAmount).toBe(amounts.shortTokenSwapPathStats?.swapSteps[0].amountIn);
     expect(amounts.longTokenUsd).toBe(0n);
   });
 });
