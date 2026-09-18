@@ -941,6 +941,7 @@ export function getGmSwapError(p: {
   glvTokenUsd: bigint | undefined;
   longTokenAmount: bigint | undefined;
   shortTokenAmount: bigint | undefined;
+  initialShortTokenAmount: bigint | undefined;
   longTokenUsd: bigint | undefined;
   shortTokenUsd: bigint | undefined;
   marketTokenAmount: bigint | undefined;
@@ -967,6 +968,7 @@ export function getGmSwapError(p: {
     glvTokenAmount,
     longTokenAmount,
     shortTokenAmount,
+    initialShortTokenAmount,
     longTokenUsd,
     shortTokenUsd,
     marketTokenAmount,
@@ -1093,8 +1095,9 @@ export function getGmSwapError(p: {
   if (isDeposit) {
     const payLongTokenBalance = getTokenBalanceByPaySource(payLongToken, paySource, chainId, srcChainId);
     const payShortTokenBalance = getTokenBalanceByPaySource(payShortToken, paySource, chainId, srcChainId);
+    const payShortTokenAmount = initialShortTokenAmount ?? shortTokenAmount ?? 0n;
 
-    if (marketInfo.isSameCollaterals) {
+    if (marketInfo.isSameCollaterals && payLongToken?.address === payShortToken?.address) {
       if ((longTokenAmount ?? 0n) + (shortTokenAmount ?? 0n) > payLongTokenBalance) {
         return { buttonErrorMessage: t`Insufficient ${payLongToken?.symbol} balance` };
       }
@@ -1103,7 +1106,7 @@ export function getGmSwapError(p: {
         return { buttonErrorMessage: t`Insufficient ${payLongToken?.symbol} balance` };
       }
 
-      if ((shortTokenAmount ?? 0n) > payShortTokenBalance) {
+      if (payShortTokenAmount > payShortTokenBalance) {
         return { buttonErrorMessage: t`Insufficient ${payShortToken?.symbol} balance` };
       }
     }
