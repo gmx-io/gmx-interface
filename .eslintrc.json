@@ -161,9 +161,14 @@
       }
     },
     {
-      "files": ["scripts/**"],
+      "files": ["scripts/**", "solana-interface/scripts/**"],
+      "env": {
+        "node": true,
+        "browser": false
+      },
       "rules": {
-        "no-restricted-globals": "off"
+        "no-restricted-globals": "off",
+        "no-console": "off"
       }
     },
     {
