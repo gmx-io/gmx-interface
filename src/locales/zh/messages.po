@@ -444,6 +444,10 @@ msgstr "发现"
 msgid "GM airdrop"
 msgstr "GM 空投"
 
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "The current epoch is ongoing. Rewards and fees can still change."
+msgstr "当前周期尚未结束。奖励和费用仍可能变化。"
+
 #: src/components/PositionEditor/types.ts
 msgid "At price"
 msgstr "按价格"
@@ -1226,6 +1230,7 @@ msgstr "将 {marketName} 添加至钱包"
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 #: src/pages/RewardsPage/components/RewardsHistoryTab.tsx
 msgid "Epoch"
@@ -1548,6 +1553,10 @@ msgstr "平仓时保证金"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient gas balance. Deposit more ETH."
 msgstr "Gas 余额不足。请存入更多 ETH。"
+
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Staking (GMX, average)"
+msgstr "质押（GMX，平均值）"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execution fee is too low for current network costs"
@@ -2224,6 +2233,7 @@ msgstr "1inch"
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionValues.tsx
 msgid "Copied"
 msgstr "已复制"
 
@@ -2315,6 +2325,7 @@ msgid "Markets"
 msgstr "市场"
 
 #: src/pages/AccountEvents/AccountEvents.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
 #: src/pages/RewardsPage/RewardsPage.tsx
 #: src/pages/RewardsPage/RewardsPage.tsx
 msgid "Retry"
@@ -2621,6 +2632,7 @@ msgid "What is esGMX token?"
 msgstr "什么是 esGMX 代币？"
 
 #: src/pages/IncentivesDebug/IncentivesAuditPage.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
 msgid "current"
 msgstr "当前"
 
@@ -3153,6 +3165,10 @@ msgstr "累计交易量"
 msgid "No leaderboard entries yet."
 msgstr "排行榜暂无记录。"
 
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Total eligible fees (USD)"
+msgstr "符合条件的费用总额 (USD)"
+
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "APRs update weekly on Wednesday based on fees collected"
 msgstr "APR 于每周三根据收取的费用更新"
@@ -3389,6 +3405,10 @@ msgstr ""
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Allow {0} spending"
 msgstr "授权 {0} 支出"
+
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Hover over amounts for exact values. CSV exports all wallets at full precision."
+msgstr "将鼠标悬停在金额上可查看精确值。CSV以完整精度导出所有钱包数据。"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "GMX pools can't fill this swap size. It needs an external route, which isn't available with One-Click Trading. Disable One-Click Trading to proceed."
@@ -3710,6 +3730,10 @@ msgstr "GMX 授权已提交"
 msgid "Update available"
 msgstr "有可用更新"
 
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Average GMX staking is not available for every wallet yet. Missing values are blank in CSV."
+msgstr "部分钱包的GMX平均质押数据尚不可用。缺失值在CSV中留空。"
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX on {chainName}"
 msgstr "在 {chainName} 上购买 GMX"
@@ -4028,6 +4052,7 @@ msgstr "从 {sourceChainName} 存入失败"
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionValues.tsx
 msgid "Copy address"
 msgstr "复制地址"
 
@@ -4657,6 +4682,8 @@ msgid "Buy from decentralized or centralized exchanges"
 msgstr "从去中心化或中心化交易所买入"
 
 #: src/pages/IncentivesDebug/IncentivesAuditPage.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
 msgid "No V2 incentives configuration is available for this chain."
 msgstr "当前链没有可用的 V2 激励配置。"
 
@@ -4928,6 +4955,10 @@ msgstr "上架"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Signing approval..."
 msgstr "签署批准中..."
+
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Volume multiplier"
+msgstr "交易量倍数"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "What's the difference between GLV and GM?"
@@ -6022,6 +6053,10 @@ msgstr "<0>购买 {0}{1}<1>{poolName}</1></0> <2>使用 {tokensText}</2>"
 msgid "Pairs trading"
 msgstr "配对交易"
 
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "{firstRow}–{lastRow} of {totalRows} wallets"
+msgstr "第{firstRow}–{lastRow}个，共{totalRows}个钱包"
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Loading markets data..."
 msgstr "正在加载市场数据..."
@@ -6750,6 +6785,10 @@ msgstr "按周期诊断审计"
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 msgid "Margin before pending borrow and funding fees"
 msgstr ""
+
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Total multiplier (average)"
+msgstr "总倍数（平均）"
 
 #: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
 msgid "esGMX available to begin vesting."
@@ -7876,6 +7915,10 @@ msgstr "s："
 msgid "RPC error.<0/><1/>Enable <2>Express Trading</2> in settings for better reliability"
 msgstr "RPC 错误。<0/><1/>在设置中启用 <2>Express Trading</2> 以提高可靠性"
 
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Unable to load the complete epoch. Refresh to try again."
+msgstr "无法加载完整周期。请刷新后重试。"
+
 #: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
 msgid "Each staked esGMX token provides the same staking power as one staked GMX token. It earns staking rewards and contributes toward your staking tier."
 msgstr "每个已质押的 esGMX 代币提供与一个已质押 GMX 代币相同的质押权重。它可赚取质押奖励，并计入您的质押等级。"
@@ -7963,6 +8006,11 @@ msgstr "GMX 提案"
 msgid "Activate someone's referral code to receive a permanent discount on all opening and closing <0/> fees. Your savings apply automatically on every trade. <1>Read more</1>."
 msgstr ""
 
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Wallet allocations"
+msgstr "钱包分配"
+
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "See more"
 msgstr "查看更多"
@@ -7971,6 +8019,10 @@ msgstr "查看更多"
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Featured Markets"
 msgstr "Featured Markets"
+
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Review epoch rewards and export wallet allocations."
+msgstr "查看周期奖励并导出各钱包的分配数据。"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price impact rebates from closing are claimable in the Claims tab. <0>Read more</0>."
@@ -8332,6 +8384,10 @@ msgstr "{fromSymbol} 余额不足。Gas 代币已切换为 {toSymbol}"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may still liquidate from fees alone (funding + borrowing), reducing margin over time."
 msgstr ""
+
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Volume (USD)"
+msgstr "交易量 (USD)"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Firebird Finance"
@@ -8698,6 +8754,10 @@ msgstr "托管型 GMX（esGMX）是作为奖励发放的不可转让代币。"
 msgid "{0} claimed"
 msgstr "{0} 已领取"
 
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Loading all accounts for this epoch…"
+msgstr "正在加载本周期的所有账户…"
+
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Receive at least {toAmountText} if executed. Price updates based on fees and price impact."
 msgstr "执行后至少收到 {toAmountText}。价格根据费用和价格影响更新。"
@@ -8775,6 +8835,7 @@ msgstr "止盈价格"
 msgid "ParaSwap"
 msgstr ""
 
+#: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
@@ -8943,6 +9004,10 @@ msgstr "即将达到下一等级"
 #: landing/src/pages/Rewards/RewardsFaq.tsx
 msgid "Every trader who applies your referral code during Season 1 earns you 50% of the rewards they generate, in esGMX and GT, settled weekly, for as long as your referral relationship with that trader is active. Codes registered before Season 1 opened do not generate the share, though the trader can apply a new one once the season is open. They have to do it themselves, so ask them directly. A link won't do it. They can change their code at <0>app.gmx.io/referrals/traders</0>. Your pre-season referrals still earn you the fee-side share of 5%, 10% or 15% by tier, separate from Season 1’s 50%. The 50% is paid on top: your referred traders' own rewards are unchanged. The referral relationship is bounded by <1>GMX's referral program terms</1>."
 msgstr "每位在第1季期间应用您推荐码的交易者，只要您与该交易者的推荐关系仍然有效，就会为您带来其所获奖励的50%，以esGMX和GT支付，并每周结算。第1季开始前登记的代码不会产生这部分分成，但交易者可以在赛季开始后应用新代码。交易者必须自行操作，因此请直接联系他们。仅发送链接无法完成操作。他们可以在<0>app.gmx.io/referrals/traders</0>更改代码。赛季开始前的推荐仍会根据您的等级，为您带来5%、10%或15%的费用分成，与第1季的50%奖励分成分开计算。这50%为额外支付：您推荐的交易者自身的奖励保持不变。推荐关系受<1>GMX推荐计划条款</1>约束。"
+
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Staking multiplier"
+msgstr "质押倍数"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position would be liquidatable"
@@ -9323,6 +9388,7 @@ msgid "Price impact exceeds order size"
 msgstr "价格影响超过订单规模"
 
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
 msgid "Accounts"
 msgstr "账户"
 
@@ -9783,6 +9849,10 @@ msgstr "从 GMX 账户提取"
 msgid "Purpose"
 msgstr "用途"
 
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Total esGMX"
+msgstr "esGMX总量"
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 msgid "For me"
 msgstr "给我自己"
@@ -10202,6 +10272,12 @@ msgstr "规模"
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Book a 30-min call"
 msgstr "预约 30 分钟通话"
+
+#: src/pages/IncentivesDebug/IncentivesAuditPage.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Incentives Distribution Audit"
+msgstr "激励分配审计"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
@@ -11054,6 +11130,10 @@ msgstr "交易模式"
 msgid "<0>Cross-margin</0><1>Cross-collateral</1>"
 msgstr "<0>全仓保证金</0><1>混合抵押品</1>"
 
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Dev only"
+msgstr "仅限开发者"
+
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Fetching swap route ({0}/{1})..."
 msgstr ""
@@ -11641,6 +11721,10 @@ msgstr "未找到提款。它可能已被执行或取消"
 msgid "Open fee"
 msgstr "开仓费用"
 
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Download CSV"
+msgstr "下载 CSV"
+
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "Account page"
 msgstr "账户页面"
@@ -11654,6 +11738,7 @@ msgid "Sell request sent"
 msgstr "卖出请求已发送"
 
 #: src/pages/IncentivesDebug/IncentivesAuditPage.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
 msgid "Unable to load the incentives configuration."
 msgstr "无法加载激励配置。"
 
@@ -11715,6 +11800,7 @@ msgid "Increase size (TWAP)"
 msgstr "增加规模 (TWAP)"
 
 #: src/pages/AccountEvents/AccountEvents.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
 msgid "Refresh"
 msgstr "刷新"
 
@@ -13046,6 +13132,10 @@ msgstr ""
 msgid "Staked"
 msgstr "已质押"
 
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Eligible referral volume (USD)"
+msgstr "符合条件的推荐交易量 (USD)"
+
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Expires next epoch"
 msgstr "下一周期到期"
@@ -13372,6 +13462,7 @@ msgid "Position would be liquidatable. Current: {remainingCollateralUsdText}, re
 msgstr "仓位将面临清算。当前：{remainingCollateralUsdText}，所需：{minCollateralUsdText}"
 
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
 msgid "No audit entries found for this epoch."
 msgstr "未找到此周期的审计记录。"
 
@@ -13601,6 +13692,7 @@ msgstr "做多最优使用率"
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Wallet"
 msgstr "钱包"
@@ -14218,6 +14310,10 @@ msgstr "{0, plural, one {平仓时也会取消您待处理的保证金存入并�
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"
 msgstr "指数"
+
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Show detailed data"
+msgstr "显示详细数据"
 
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Boost Name"
@@ -15256,3 +15352,7 @@ msgstr "{orderText} 更新失败"
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Success"
 msgstr "成功"
+
+#: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+msgid "Eligible fees (USD)"
+msgstr "符合条件的费用 (USD)"

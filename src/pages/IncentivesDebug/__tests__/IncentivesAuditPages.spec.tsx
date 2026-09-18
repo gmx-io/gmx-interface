@@ -25,6 +25,7 @@ const entry: IncentiveAccountEpochAuditEntry = {
   id: `${ACCOUNT}:1784073600`,
   account: ACCOUNT,
   epochTimestamp: 1_784_073_600,
+  avgStakedGmx: null,
   fees: 250n * PRECISION,
   tradingVolume: 50_000n * PRECISION,
   tierVolume: 40_000n * PRECISION,
