@@ -62,6 +62,7 @@ const selectPoolsDetailsWithdrawalTokenOptions = createSelector((q): DisplayToke
   const longTokenAddress = q(selectPoolsDetailsLongTokenAddress);
   const shortTokenAddress = q(selectPoolsDetailsShortTokenAddress);
   const tradeTokensData = q(selectPoolsDetailsTradeTokensDataWithSourceChainBalances);
+  const availableCollateralSwapToken = q(selectPoolsDetailsAvailableCollateralSwapToken);
 
   if (!longTokenAddress || !shortTokenAddress) return EMPTY_ARRAY;
 
@@ -85,6 +86,13 @@ const selectPoolsDetailsWithdrawalTokenOptions = createSelector((q): DisplayToke
     for (const token of tokens) {
       withdrawalResult.push(createDisplayToken(token, chainId, token.balance ?? 0n));
     }
+
+    if (availableCollateralSwapToken) {
+      withdrawalResult.push(
+        createDisplayToken(availableCollateralSwapToken, chainId, availableCollateralSwapToken.balance ?? 0n)
+      );
+    }
+
     return withdrawalResult;
   } else if (paySource === "gmxAccount") {
     const longToken = tradeTokensData?.[longTokenAddress];
