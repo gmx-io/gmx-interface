@@ -23,12 +23,15 @@ import {
   selectPoolsDetailsWithdrawalReceiveTokenAddress,
 } from "context/PoolsDetailsContext/selectors";
 import { selectChainId, selectUiFeeFactor } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { makeSelectFindSwapPath } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
+import { convertToUsd } from "domain/synthetics/tokens";
 import { getDepositAmounts } from "domain/synthetics/trade/utils/deposit";
 import { getWithdrawalAmounts } from "domain/synthetics/trade/utils/withdrawal";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
-import { DepositAmounts, WithdrawalAmounts } from "sdk/utils/trade/types";
+import { SwapPricingType } from "sdk/utils/orders/types";
+import { DepositAmounts, FindSwapPath, WithdrawalAmounts } from "sdk/utils/trade/types";
 
 export const selectDepositWithdrawalAmounts = createSelector((q): DepositAmounts | WithdrawalAmounts | undefined => {
   const chainId = q(selectChainId);
@@ -159,4 +162,39 @@ export const selectDepositWithdrawalAmounts = createSelector((q): DepositAmounts
   }
 
   return undefined;
+});
+
+export const selectPoolsDetailsTransitSwapFeesUsd = createSelector((q): bigint | undefined => {
+  const { isDeposit } = q(selectPoolsDetailsFlags);
+  const collateralSwapTokens = q(selectPoolsDetailsCollateralSwapTokens);
+  const amounts = q(selectDepositWithdrawalAmounts);
+  const firstTokenAmount = q(selectPoolsDetailsFirstTokenAmount);
+
+  if (!collateralSwapTokens || !amounts) {
+    return undefined;
+  }
+
+  const { token, collateralToken } = collateralSwapTokens;
+  let usdIn: bigint;
+  let findSwapPath: FindSwapPath;
+
+  if (isDeposit) {
+    usdIn = convertToUsd(firstTokenAmount, token.decimals, token.prices.minPrice)!;
+    findSwapPath = q(makeSelectFindSwapPath(token.address, collateralToken.address, SwapPricingType.Swap));
+  } else {
+    usdIn = amounts.longTokenUsd + amounts.shortTokenUsd;
+    findSwapPath = q(makeSelectFindSwapPath(collateralToken.address, token.address, SwapPricingType.Withdrawal));
+  }
+
+  if (usdIn <= 0n) {
+    return undefined;
+  }
+
+  const swapPathStats = findSwapPath(usdIn);
+
+  if (!swapPathStats) {
+    return undefined;
+  }
+
+  return 0n - swapPathStats.totalFeesDeltaUsd;
 });
