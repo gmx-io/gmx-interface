@@ -6,11 +6,14 @@ import { AVALANCHE, SettlementChainId } from "config/chains";
 import { getMappedTokenId } from "config/multichain";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import {
+  selectPoolsDetailsCollateralSwapTokens,
+  selectPoolsDetailsFirstTokenAmount,
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvInfo,
   selectPoolsDetailsIsMarketTokenDeposit,
   selectPoolsDetailsLongTokenAddress,
   selectPoolsDetailsMarketInfo,
+  selectPoolsDetailsMarketOrGlvTokenAmount,
   selectPoolsDetailsMarketTokenData,
   selectPoolsDetailsMarketTokensData,
   selectPoolsDetailsOperation,
@@ -58,7 +61,7 @@ import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
-import { DepositAmounts, GmSwapFees } from "sdk/utils/trade/types";
+import { DepositAmounts, GmSwapFees, WithdrawalAmounts } from "sdk/utils/trade/types";
 
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 
@@ -114,6 +117,9 @@ export const useGmSwapSubmitState = ({
 
   const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
   const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
+  const collateralSwapTokens = useSelector(selectPoolsDetailsCollateralSwapTokens);
+  const firstTokenAmount = useSelector(selectPoolsDetailsFirstTokenAmount);
+  const marketOrGlvTokenAmount = useSelector(selectPoolsDetailsMarketOrGlvTokenAmount);
   const payLongToken = useSelector(selectPoolsDetailsPayLongToken);
   const payShortToken = useSelector(selectPoolsDetailsPayShortToken);
 
@@ -198,6 +204,25 @@ export const useGmSwapSubmitState = ({
     srcChainId,
     marketToken,
   });
+
+  const collateralSwapError = useMemo((): ValidationResult | undefined => {
+    const hasInput = firstTokenAmount > 0n || marketOrGlvTokenAmount > 0n;
+
+    if (!collateralSwapTokens || !hasInput) {
+      return undefined;
+    }
+
+    const withdrawalAmounts = amounts as WithdrawalAmounts | undefined;
+    const hasSwapPath = isDeposit
+      ? Boolean(amounts?.shortTokenSwapPathStats)
+      : Boolean(withdrawalAmounts?.longTokenSwapPathStats && withdrawalAmounts?.shortTokenSwapPathStats);
+
+    if (hasSwapPath) {
+      return undefined;
+    }
+
+    return { buttonErrorMessage: t`Insufficient GMX pool liquidity` };
+  }, [amounts, collateralSwapTokens, firstTokenAmount, isDeposit, marketOrGlvTokenAmount]);
 
   const expressError = useExpressError({
     paySource,
@@ -384,6 +409,7 @@ export const useGmSwapSubmitState = ({
   const error = takeValidationResult(
     commonError,
     multipleWalletExtensionsChainError,
+    collateralSwapError,
     swapError,
     expressError,
     nativeGasError,
