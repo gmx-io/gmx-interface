@@ -218,7 +218,9 @@ export const selectPoolsDetailsWithdrawalReceiveTokenAddress = createSelector((q
   const marketAddress = q(selectPoolsDetailsMarketTokenAddress);
 
   if (marketAddress && getMarketIsSameCollaterals(chainId, marketAddress)) {
-    return undefined;
+    const collateralSwapTokens = q(selectPoolsDetailsCollateralSwapTokens);
+
+    return collateralSwapTokens?.token.address as ERC20Address | undefined;
   }
 
   const firstTokenAddress = q(selectPoolsDetailsFirstTokenAddress);
@@ -696,6 +698,7 @@ export const selectPoolsDetailsDepositFindSwapPath = createSelector((q) => {
  * Either undefined meaning no swap needed or a swap from either:
  * - long token to short token
  * - short token to long token
+ * - the single collateral of a same-collateral pool to the receive token
  * Allowing user to sell to single token
  */
 export const selectPoolsDetailsWithdrawalFindSwapPath = createSelector((q) => {
@@ -724,6 +727,10 @@ export const selectPoolsDetailsWithdrawalFindSwapPath = createSelector((q) => {
 
   // if we want short token in the end, we need to swap long to short
   if (shortTokenAddress === receiveTokenAddress) {
+    return q(makeSelectFindSwapPath(longTokenAddress, receiveTokenAddress, SwapPricingType.Withdrawal));
+  }
+
+  if (longTokenAddress === shortTokenAddress) {
     return q(makeSelectFindSwapPath(longTokenAddress, receiveTokenAddress, SwapPricingType.Withdrawal));
   }
 
