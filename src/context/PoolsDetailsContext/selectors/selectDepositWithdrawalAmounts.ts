@@ -1,4 +1,6 @@
 import {
+  selectPoolsDetailsCollateralSwapTokens,
+  selectPoolsDetailsDepositFindSwapPath,
   selectPoolsDetailsFirstTokenAddress,
   selectPoolsDetailsFirstTokenAmount,
   selectPoolsDetailsFlags,
@@ -50,6 +52,8 @@ export const selectDepositWithdrawalAmounts = createSelector((q): DepositAmounts
   const firstTokenAmount = q(selectPoolsDetailsFirstTokenAmount);
   const secondTokenAmount = q(selectPoolsDetailsSecondTokenAmount);
   const isMarketTokenDeposit = q(selectPoolsDetailsIsMarketTokenDeposit);
+  const collateralSwapTokens = q(selectPoolsDetailsCollateralSwapTokens);
+  const depositFindSwapPath = q(selectPoolsDetailsDepositFindSwapPath);
 
   const receiveTokenAddress = q(selectPoolsDetailsWithdrawalReceiveTokenAddress);
   const withdrawalFindSwapPath = q(selectPoolsDetailsWithdrawalFindSwapPath);
@@ -80,10 +84,11 @@ export const selectDepositWithdrawalAmounts = createSelector((q): DepositAmounts
       ? true
       : firstTokenAddress !== undefined &&
         convertTokenAddress(chainId, firstTokenAddress, "wrapped") === longTokenAddress;
-    const includeShortToken = isPair
-      ? true
-      : firstTokenAddress !== undefined &&
-        convertTokenAddress(chainId, firstTokenAddress, "wrapped") === shortTokenAddress;
+    const includeShortToken =
+      isPair ||
+      collateralSwapTokens !== undefined ||
+      (firstTokenAddress !== undefined &&
+        convertTokenAddress(chainId, firstTokenAddress, "wrapped") === shortTokenAddress);
 
     let adjustedLongTokenAmount = longTokenAmount;
     let adjustedShortTokenAmount = shortTokenAmount;
@@ -112,6 +117,9 @@ export const selectDepositWithdrawalAmounts = createSelector((q): DepositAmounts
       isMarketTokenDeposit,
       glvInfo,
       glvToken: glvToken!,
+      initialShortToken: collateralSwapTokens?.token,
+      initialShortTokenAmount: firstTokenAmount,
+      findSwapPath: depositFindSwapPath,
     });
   } else if (isWithdrawal) {
     let strategy: "byMarketToken" | "byLongCollateral" | "byShortCollateral" | "byCollaterals" = "byMarketToken";
