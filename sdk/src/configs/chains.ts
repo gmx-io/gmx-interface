@@ -25,6 +25,7 @@ import {
   SOURCE_BSC_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
+  SOLANA,
 } from "./chainIds";
 
 export {
@@ -38,6 +39,7 @@ export {
   SOURCE_BSC_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
+  SOLANA,
 };
 
 export const CONTRACTS_CHAIN_IDS = [ARBITRUM, AVALANCHE, MEGAETH] as const;

@@ -18,6 +18,8 @@ import {
 
 import { isDevelopment } from "./env";
 
+export type { AppNetworkId, SolanaNetworkId } from "sdk/configs/appNetworks";
+export { getAppNetworkName, isSolanaNetwork } from "sdk/configs/appNetworks";
 export * from "sdk/configs/chains";
 
 export const CONTRACTS_CHAIN_IDS: readonly ContractsChainId[] = isDevelopment()

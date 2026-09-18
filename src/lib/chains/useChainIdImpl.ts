@@ -3,11 +3,14 @@ import { useEffect, useReducer, useRef } from "react";
 import { useAccount } from "wagmi";
 
 import {
+  type AppNetworkId,
   type ContractsChainId,
   type SettlementChainId,
   type SourceChainId,
   DEFAULT_SETTLEMENT_CHAIN_ID,
   isContractsChain,
+  isSolanaNetwork,
+  SOLANA,
 } from "config/chains";
 import { isDevelopment } from "config/env";
 import {
@@ -32,6 +35,46 @@ function isUsableSourceChain(
     !isSettlementChain(maybeSourceChainId) &&
     areChainsRelated(settlementChainId, maybeSourceChainId)
   );
+}
+
+export function isAppSelectedSolana({
+  chainIdFromLocalStorage,
+  selectedNetworkWasAppSelected,
+}: {
+  chainIdFromLocalStorage: number | undefined;
+  selectedNetworkWasAppSelected: boolean;
+}): boolean {
+  return selectedNetworkWasAppSelected && isSolanaNetwork(chainIdFromLocalStorage);
+}
+
+export function shouldClearSelectedNetwork({
+  mustChangeChainId,
+  isLocalStorageChainSupported,
+  isLocalStorageChainSource,
+  isAppSelectedSolanaNetwork,
+}: {
+  mustChangeChainId: boolean;
+  isLocalStorageChainSupported: boolean | number | undefined;
+  isLocalStorageChainSource: boolean | number | undefined;
+  isAppSelectedSolanaNetwork: boolean;
+}): boolean {
+  if (isAppSelectedSolanaNetwork) {
+    return false;
+  }
+
+  if (!mustChangeChainId) {
+    return false;
+  }
+
+  if (isLocalStorageChainSupported) {
+    return false;
+  }
+
+  if (isLocalStorageChainSource) {
+    return false;
+  }
+
+  return true;
 }
 
 export function getSelectedSourceChainId({
@@ -113,6 +156,23 @@ function applyWalletNetworkSelection(
   document.dispatchEvent(new CustomEvent("networkChange", { detail: { chainId: selection.chainId } }));
 }
 
+type EvmChainState = {
+  chainId: ContractsChainId;
+  isConnectedToChainId?: boolean;
+  srcChainId?: SourceChainId;
+};
+
+function withAppNetwork(
+  evm: EvmChainState,
+  isSolana: boolean
+): EvmChainState & { selectedNetworkId: AppNetworkId; isSolana: boolean } {
+  return {
+    ...evm,
+    isSolana,
+    selectedNetworkId: isSolana ? SOLANA : evm.srcChainId ?? evm.chainId,
+  };
+}
+
 /**
  * This returns default chainId if chainId is not supported or not found
  */
@@ -123,6 +183,8 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
    * Guaranteed to be related to the settlement chain in `chainId`
    */
   srcChainId?: SourceChainId;
+  selectedNetworkId: AppNetworkId;
+  isSolana: boolean;
 } {
   const { chainId: connectedChainId, isConnected } = useAccount();
   const [, rerenderOnNetworkChange] = useReducer((value: number) => value + 1, 0);
@@ -131,6 +193,10 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
   const chainIdFromLocalStorage = rawChainIdFromLocalStorage ? parseInt(rawChainIdFromLocalStorage) : undefined;
   const selectedNetworkWasAppSelected =
     localStorage.getItem(SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY) === "true";
+  const isAppSelectedSolanaNetwork = isAppSelectedSolana({
+    chainIdFromLocalStorage,
+    selectedNetworkWasAppSelected,
+  });
 
   const srcChainId = getSelectedSourceChainId({
     chainIdFromLocalStorage,
@@ -181,14 +247,14 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
   }, [chainIdFromLocalStorage, settlementChainId]);
 
   useEffect(() => {
-    if (!mustChangeChainId) {
-      return;
-    }
-    if (isLocalStorageChainSupported) {
-      return;
-    }
-
-    if (isLocalStorageChainSource) {
+    if (
+      !shouldClearSelectedNetwork({
+        mustChangeChainId,
+        isLocalStorageChainSupported,
+        isLocalStorageChainSource,
+        isAppSelectedSolanaNetwork,
+      })
+    ) {
       return;
     }
 
@@ -200,6 +266,7 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
     isLocalStorageChainSource,
     isLocalStorageChainSupported,
     mustChangeChainId,
+    isAppSelectedSolanaNetwork,
   ]);
 
   const settlementChainIdRef = useLatestValueRef(settlementChainId);
@@ -215,31 +282,43 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
 
   if (mustChangeChainId) {
     if (isLocalStorageChainSupported) {
-      return { chainId: chainIdFromLocalStorage as SettlementChainId, srcChainId };
+      return withAppNetwork(
+        { chainId: chainIdFromLocalStorage as SettlementChainId, srcChainId },
+        isAppSelectedSolanaNetwork
+      );
     }
 
     if (isLocalStorageChainSource) {
-      return { chainId: settlementChainId, srcChainId };
+      return withAppNetwork({ chainId: settlementChainId, srcChainId }, isAppSelectedSolanaNetwork);
     }
 
-    return { chainId: INITIAL_CHAIN_ID, srcChainId };
+    return withAppNetwork({ chainId: INITIAL_CHAIN_ID, srcChainId }, isAppSelectedSolanaNetwork);
   }
 
   if (isCurrentChainSupported) {
-    return {
-      chainId: connectedChainId as ContractsChainId,
-      isConnectedToChainId: isConnected,
-      srcChainId,
-    };
+    return withAppNetwork(
+      {
+        chainId: connectedChainId as ContractsChainId,
+        isConnectedToChainId: isConnected,
+        srcChainId,
+      },
+      isAppSelectedSolanaNetwork
+    );
   }
 
   if (isCurrentChainSource) {
-    return {
-      chainId: settlementChainId as SettlementChainId,
-      isConnectedToChainId: true,
-      srcChainId,
-    };
+    return withAppNetwork(
+      {
+        chainId: settlementChainId as SettlementChainId,
+        isConnectedToChainId: true,
+        srcChainId,
+      },
+      isAppSelectedSolanaNetwork
+    );
   }
 
-  return { chainId: INITIAL_CHAIN_ID, isConnectedToChainId: false, srcChainId };
+  return withAppNetwork(
+    { chainId: INITIAL_CHAIN_ID, isConnectedToChainId: false, srcChainId },
+    isAppSelectedSolanaNetwork
+  );
 }

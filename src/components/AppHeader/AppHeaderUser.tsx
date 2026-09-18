@@ -20,12 +20,10 @@ type Props = {
 };
 
 export function AppHeaderUser({ openSettings, menuToggle }: Props) {
-  const { chainId: settlementChainId, srcChainId } = useChainId();
+  const { selectedNetworkId } = useChainId();
   const { active, account } = useWallet();
   const isWalletInitializing = useIsWalletInitializing();
   const { openConnectModal } = useConnectModal();
-
-  const visualChainId = srcChainId ?? settlementChainId;
 
   if (!active || !account) {
     return (
@@ -43,7 +41,7 @@ export function AppHeaderUser({ openSettings, menuToggle }: Props) {
           </ConnectWalletButton>
         )}
         <SettingsButton openSettings={openSettings} />
-        <NetworkDropdown chainId={visualChainId} networkOptions={NETWORK_OPTIONS} />
+        <NetworkDropdown chainId={selectedNetworkId} networkOptions={NETWORK_OPTIONS} />
         {menuToggle ? menuToggle : null}
       </div>
     );
@@ -55,7 +53,7 @@ export function AppHeaderUser({ openSettings, menuToggle }: Props) {
         <AddressDropdown account={account} />
       </div>
       <SettingsButton openSettings={openSettings} />
-      <NetworkDropdown chainId={visualChainId} networkOptions={NETWORK_OPTIONS} />
+      <NetworkDropdown chainId={selectedNetworkId} networkOptions={NETWORK_OPTIONS} />
       {menuToggle ? menuToggle : null}
     </div>
   );

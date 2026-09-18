@@ -1,13 +1,17 @@
-import { getAccount, switchChain } from "@wagmi/core";
+import { disconnect, getAccount, switchChain } from "@wagmi/core";
 
+import { isSolanaNetwork } from "config/chains";
 import {
+  CURRENT_PROVIDER_LOCALSTORAGE_KEY,
   SELECTED_NETWORK_LOCAL_STORAGE_KEY,
   SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY,
+  SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
 } from "config/localStorage";
 import { extendError } from "lib/errors";
 import { SMART_WALLET_CHAIN_UNAVAILABLE_ERROR } from "lib/errors/customErrors";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 
+import { disconnectPrivyWalletsFromWagmi } from "./privyWagmi";
 import { getWillChainSwitchChangeAccount } from "./useWalletSessionChains";
 import { getWagmiConfig } from "./walletConfig";
 
@@ -26,6 +30,18 @@ export async function switchNetwork(
   active: boolean,
   options: { fallbackToAppSelectionOnError?: boolean } = {}
 ): Promise<void> {
+  if (isSolanaNetwork(chainId)) {
+    localStorage.removeItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY);
+    localStorage.removeItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY);
+    await disconnectPrivyWalletsFromWagmi([]);
+    await disconnect(getWagmiConfig()).catch(() => undefined);
+
+    // TODO(solana-wallet): connect a Solana wallet after disconnecting the EVM wallet.
+    selectNetworkInApp(chainId);
+    document.location.reload();
+    return;
+  }
+
   if (active) {
     const config = getWagmiConfig();
     const address = getAccount(config).address;
