@@ -2,6 +2,7 @@ import { useCallback, useEffect } from "react";
 
 import {
   PLATFORM_TOKEN_DECIMALS,
+  selectPoolsDetailsCollateralSwapTokens,
   selectPoolsDetailsFirstToken,
   selectPoolsDetailsFlags,
   selectPoolsDetailsFocusedInput,
@@ -70,6 +71,7 @@ export function useUpdateInputAmounts() {
   const secondToken = useSelector(selectPoolsDetailsSecondToken);
   const secondTokenWrappedAddress = secondToken?.wrappedAddress ?? secondToken?.address;
   const focusedInput = useSelector(selectPoolsDetailsFocusedInput);
+  const collateralSwapTokens = useSelector(selectPoolsDetailsCollateralSwapTokens);
 
   const setFirstTokenInputValue = useSelector(selectPoolsDetailsSetFirstTokenInputValue);
   const setSecondTokenInputValue = useSelector(selectPoolsDetailsSetSecondTokenInputValue);
@@ -115,6 +117,14 @@ export function useUpdateInputAmounts() {
         return;
       }
 
+      // Special case: collateral swap token deposit
+      if (collateralSwapTokens && firstToken) {
+        const { initialShortTokenAmount } = amounts as DepositAmounts;
+
+        setFirstTokenInputValue(formatTokenAmount(initialShortTokenAmount, firstToken.decimals));
+        return;
+      }
+
       if (isSameCollaterals) {
         if (firstToken) {
           const combinedAmount = amounts.longTokenAmount + amounts.shortTokenAmount;
@@ -151,6 +161,7 @@ export function useUpdateInputAmounts() {
     glvTokenAmount,
     marketTokenAmount,
     firstToken,
+    collateralSwapTokens,
     isSameCollaterals,
     firstTokenWrappedAddress,
     longTokenAddress,

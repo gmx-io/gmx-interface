@@ -58,7 +58,7 @@ import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
-import { GmSwapFees } from "sdk/utils/trade/types";
+import { DepositAmounts, GmSwapFees } from "sdk/utils/trade/types";
 
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 
@@ -147,6 +147,8 @@ export const useGmSwapSubmitState = ({
     shortTokenUsd = 0n,
   } = amounts ?? {};
 
+  const initialShortTokenAmount = (amounts as DepositAmounts | undefined)?.initialShortTokenAmount;
+
   const {
     isSubmitting,
     onSubmit,
@@ -181,6 +183,7 @@ export const useGmSwapSubmitState = ({
     marketTokenUsd,
     longTokenAmount,
     shortTokenAmount,
+    payShortTokenAmount: initialShortTokenAmount,
     longTokenUsd,
     shortTokenUsd,
     longTokenLiquidityUsd: longTokenLiquidityUsd,

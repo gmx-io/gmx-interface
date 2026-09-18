@@ -397,9 +397,15 @@ export const selectPoolsDetailsPayShortToken = createSelector((q) => {
   const firstTokenAddress = q(selectPoolsDetailsFirstTokenAddress);
   const secondTokenAddress = q(selectPoolsDetailsSecondTokenAddress);
   const shortTokenAddress = q(selectPoolsDetailsShortTokenAddress);
+  const { isDeposit } = q(selectPoolsDetailsFlags);
+  const collateralSwapTokens = q(selectPoolsDetailsCollateralSwapTokens);
 
   if (!tradeTokensData || !shortTokenAddress) {
     return undefined;
+  }
+
+  if (isDeposit && collateralSwapTokens) {
+    return collateralSwapTokens.token;
   }
 
   if (
