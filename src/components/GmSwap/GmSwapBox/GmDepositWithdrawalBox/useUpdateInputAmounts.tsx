@@ -184,6 +184,18 @@ export function useUpdateInputAmounts() {
         return;
       }
 
+      // Special case: collateral swap token withdrawal
+      if (collateralSwapTokens && firstToken) {
+        const { longTokenSwapPathStats, shortTokenSwapPathStats } = amounts as WithdrawalAmounts;
+        const tokenAmount =
+          longTokenSwapPathStats && shortTokenSwapPathStats
+            ? longTokenSwapPathStats.amountOut + shortTokenSwapPathStats.amountOut
+            : undefined;
+
+        setFirstTokenInputValue(formatTokenAmount(tokenAmount, firstToken.decimals));
+        return;
+      }
+
       if (isSameCollaterals) {
         // Both tokens are the same, combine amounts
         if (firstToken) {
@@ -253,6 +265,7 @@ export function useUpdateInputAmounts() {
     amounts,
     hasMarketInfo,
     focusedInput,
+    collateralSwapTokens,
     isSameCollaterals,
     setFirstTokenInputValue,
     setSecondTokenInputValue,
