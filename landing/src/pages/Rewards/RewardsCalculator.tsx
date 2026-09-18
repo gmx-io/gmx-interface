@@ -41,7 +41,7 @@ export function RewardsCalculator({
   const rewardRate = (
     <RewardsValue loading={loading}>
       {estimate && config
-        ? formatFactorPercentage(getMaxRewardRateFactor({ ...config, maxMultiplier: estimate.multiplier }), 2)
+        ? formatFactorPercentage(getMaxRewardRateFactor({ ...config, maxMultiplier: estimate.multiplier }), 0)
         : undefined}
     </RewardsValue>
   );
@@ -112,7 +112,7 @@ export function RewardsCalculator({
               <dd>
                 <RewardsValue loading={loading}>
                   {estimate && config
-                    ? formatMultiplierAdjustment(estimate.volumeMultiplier, config.multiplierDecimals)
+                    ? formatMultiplierAdjustment(estimate.volumeMultiplier, config.multiplierDecimals, 0)
                     : undefined}
                 </RewardsValue>
               </dd>
@@ -124,7 +124,7 @@ export function RewardsCalculator({
               <dd>
                 <RewardsValue loading={loading}>
                   {estimate && config
-                    ? formatMultiplierAdjustment(estimate.stakingMultiplier, config.multiplierDecimals)
+                    ? formatMultiplierAdjustment(estimate.stakingMultiplier, config.multiplierDecimals, 0)
                     : undefined}
                 </RewardsValue>
               </dd>
@@ -145,7 +145,7 @@ export function RewardsCalculator({
                   <dd>
                     <RewardsValue loading={loading}>
                       {config && multiplier !== undefined
-                        ? formatMultiplierAdjustment(multiplier, config.multiplierDecimals)
+                        ? formatMultiplierAdjustment(multiplier, config.multiplierDecimals, 0)
                         : undefined}
                     </RewardsValue>
                   </dd>
@@ -159,7 +159,7 @@ export function RewardsCalculator({
             </span>
             <strong>
               <RewardsValue loading={loading} width="2ch">
-                {estimate && config ? formatMultiplier(estimate.multiplier, config.multiplierDecimals) : undefined}
+                {estimate && config ? formatMultiplier(estimate.multiplier, config.multiplierDecimals, 0) : undefined}
               </RewardsValue>
             </strong>
           </div>
@@ -186,22 +186,14 @@ export function RewardsCalculator({
           <p className="rewards-receipt-split">
             <span>
               <RewardsValue loading={loading} width="5ch">
-                {estimate
-                  ? formatUsd(estimate.esGmxRewardsUsd, {
-                      displayDecimals: estimate.esGmxRewardsUsd % expandDecimals(1, USD_DECIMALS) === 0n ? 0 : 2,
-                    })
-                  : undefined}
+                {estimate ? formatUsd(estimate.esGmxRewardsUsd, { displayDecimals: 0 }) : undefined}
               </RewardsValue>{" "}
               esGMX
             </span>
             <span>
               +{" "}
               <RewardsValue loading={loading} width="5ch">
-                {estimate
-                  ? formatUsd(estimate.gtRewardsUsd, {
-                      displayDecimals: estimate.gtRewardsUsd % expandDecimals(1, USD_DECIMALS) === 0n ? 0 : 2,
-                    })
-                  : undefined}
+                {estimate ? formatUsd(estimate.gtRewardsUsd, { displayDecimals: 0 }) : undefined}
               </RewardsValue>{" "}
               GT
             </span>
