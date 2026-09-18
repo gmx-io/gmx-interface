@@ -1713,7 +1713,7 @@ async function simulateWithdraw({
     throw new Error("Provider is required");
   }
 
-  const { callData, feeAmount, feeToken, to } = await buildAndSignBridgeOutTxn({
+  const { callData, to } = await buildAndSignBridgeOutTxn({
     signer,
     account: signer.address,
     chainId,
@@ -1727,11 +1727,8 @@ async function simulateWithdraw({
 
   await fallbackCustomError(async () => {
     await callRelayTransaction({
-      chainId: chainId as ContractsChainId,
       calldata: callData,
       provider,
-      gelatoRelayFeeAmount: feeAmount,
-      gelatoRelayFeeToken: feeToken,
       relayRouterAddress: to as Address,
     });
   }, "simulation");

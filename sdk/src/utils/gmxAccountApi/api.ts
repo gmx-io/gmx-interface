@@ -86,7 +86,6 @@ export type CrossChainWithdrawStatusResponse = {
   status: string;
   txHash?: string;
   taskId?: string;
-  gelatoStatusCode?: number;
   error?: { code: string; message: string };
   createdAt: string;
   updatedAt: string;
