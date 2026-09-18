@@ -1,14 +1,5 @@
 import { useMemo } from "react";
-import {
-  encodeAbiParameters,
-  encodePacked,
-  EstimateGasParameters,
-  Hex,
-  keccak256,
-  PublicClient,
-  toHex,
-  zeroHash,
-} from "viem";
+import { encodeAbiParameters, EstimateGasParameters, Hex, keccak256, PublicClient, toHex, zeroHash } from "viem";
 
 import type { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
@@ -168,11 +159,6 @@ async function estimateArbitraryGasLimit({
     subaccount,
   });
 
-  const baseData = encodePacked(
-    ["bytes", "address", "address", "uint256"],
-    [baseTxnData.callData, getContract(chainId, "GelatoRelayAddress"), baseTxnData.feeToken, baseTxnData.feeAmount]
-  );
-
   const tokensToOverride = new Set([gasPaymentParams.gasPaymentTokenAddress]);
   if (overrideWnt) {
     tokensToOverride.add(gasPaymentParams.relayerFeeTokenAddress);
@@ -193,7 +179,7 @@ async function estimateArbitraryGasLimit({
   const params: EstimateGasParameters = {
     account: GMX_SIMULATION_ORIGIN,
     to: baseTxnData.to,
-    data: baseData,
+    data: baseTxnData.callData,
     value: 0n,
     stateOverride: [
       {

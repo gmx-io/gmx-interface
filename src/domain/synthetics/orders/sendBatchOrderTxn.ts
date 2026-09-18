@@ -143,7 +143,6 @@ export async function sendBatchOrderTxn({
             eventBuilder.Sent({
               type: "relay",
               relayTaskId: res.taskId,
-              relayProvider: res.relayProvider,
             })
           );
 
@@ -279,7 +278,7 @@ const makeBatchOrderSimulation = async ({
         throw new Error("Multichain orders are only supported with express params");
       }
 
-      const { callData, feeAmount, feeToken, to } = await buildAndSignExpressBatchOrderTxn({
+      const { callData, to } = await buildAndSignExpressBatchOrderTxn({
         signer,
         chainId,
         relayParamsPayload: expressParams.relayParamsPayload,
@@ -292,10 +291,7 @@ const makeBatchOrderSimulation = async ({
       });
 
       await callRelayTransaction({
-        chainId,
         relayRouterAddress: to,
-        gelatoRelayFeeToken: feeToken,
-        gelatoRelayFeeAmount: feeAmount,
         provider,
         calldata: callData,
       });
