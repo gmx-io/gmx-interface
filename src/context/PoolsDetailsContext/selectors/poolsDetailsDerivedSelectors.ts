@@ -1,6 +1,7 @@
 import mapValues from "lodash/mapValues";
 
 import { isSettlementChain, MULTI_CHAIN_PLATFORM_TOKENS_MAP } from "config/multichain";
+import { getPaxosTransitConfig } from "config/paxosTransit";
 import {
   selectChainId,
   selectDepositMarketTokensData,
@@ -508,6 +509,42 @@ export const selectPoolsDetailsGlvTokenAmount = createSelector((q) => {
   return marketOrGlvTokenAmount;
 });
 
+export const selectPoolsDetailsAvailableCollateralSwapToken = createSelector((q) => {
+  const chainId = q(selectChainId);
+  const longTokenAddress = q(selectPoolsDetailsLongTokenAddress);
+  const shortTokenAddress = q(selectPoolsDetailsShortTokenAddress);
+  const tokensData = q(selectPoolsDetailsTradeTokensDataWithSourceChainBalances);
+  const config = getPaxosTransitConfig(chainId);
+
+  if (!config || longTokenAddress !== config.usdgAddress || shortTokenAddress !== config.usdgAddress) {
+    return undefined;
+  }
+
+  return getByKey(tokensData, config.usdcAddress);
+});
+
+export const selectPoolsDetailsCollateralSwapTokens = createSelector((q) => {
+  const availableCollateralSwapToken = q(selectPoolsDetailsAvailableCollateralSwapToken);
+  const { isDeposit, isWithdrawal } = q(selectPoolsDetailsFlags);
+  const paySource = q(selectPoolsDetailsPaySource);
+  const firstTokenAddress = q(selectPoolsDetailsFirstTokenAddress);
+  const longTokenAddress = q(selectPoolsDetailsLongTokenAddress);
+  const tokensData = q(selectPoolsDetailsTradeTokensDataWithSourceChainBalances);
+
+  if (
+    !availableCollateralSwapToken ||
+    !(isDeposit || isWithdrawal) ||
+    paySource !== "settlementChain" ||
+    firstTokenAddress !== availableCollateralSwapToken.address
+  ) {
+    return undefined;
+  }
+
+  const collateralToken = getByKey(tokensData, longTokenAddress);
+
+  return collateralToken ? { token: availableCollateralSwapToken, collateralToken } : undefined;
+});
+
 export const selectPoolsDetailsLongTokenAmount = createSelector((q) => {
   const chainId = q(selectChainId);
   const firstTokenAddress = q(selectPoolsDetailsFirstTokenAddress);
@@ -633,6 +670,19 @@ export const selectPoolsDetailsCanBridgeOutMarket = createSelector((q) => {
   }
 
   return true;
+});
+
+export const selectPoolsDetailsDepositFindSwapPath = createSelector((q) => {
+  const { isDeposit } = q(selectPoolsDetailsFlags);
+  const collateralSwapTokens = q(selectPoolsDetailsCollateralSwapTokens);
+
+  if (!isDeposit || !collateralSwapTokens) {
+    return undefined;
+  }
+
+  const { token, collateralToken } = collateralSwapTokens;
+
+  return q(makeSelectFindSwapPath(token.address, collateralToken.address, SwapPricingType.Swap));
 });
 
 /**
