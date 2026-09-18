@@ -11,6 +11,7 @@ import {
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvInfo,
   selectPoolsDetailsIsMarketTokenDeposit,
+  selectPoolsDetailsIsTransitRoute,
   selectPoolsDetailsLongTokenAddress,
   selectPoolsDetailsMarketInfo,
   selectPoolsDetailsMarketOrGlvTokenAmount,
@@ -120,6 +121,7 @@ export const useGmSwapSubmitState = ({
   const collateralSwapTokens = useSelector(selectPoolsDetailsCollateralSwapTokens);
   const firstTokenAmount = useSelector(selectPoolsDetailsFirstTokenAmount);
   const marketOrGlvTokenAmount = useSelector(selectPoolsDetailsMarketOrGlvTokenAmount);
+  const isTransitRoute = useSelector(selectPoolsDetailsIsTransitRoute);
   const payLongToken = useSelector(selectPoolsDetailsPayLongToken);
   const payShortToken = useSelector(selectPoolsDetailsPayShortToken);
 
@@ -208,7 +210,7 @@ export const useGmSwapSubmitState = ({
   const collateralSwapError = useMemo((): ValidationResult | undefined => {
     const hasInput = firstTokenAmount > 0n || marketOrGlvTokenAmount > 0n;
 
-    if (!collateralSwapTokens || !hasInput) {
+    if (!collateralSwapTokens || isTransitRoute || !hasInput) {
       return undefined;
     }
 
@@ -222,7 +224,7 @@ export const useGmSwapSubmitState = ({
     }
 
     return { buttonErrorMessage: t`Insufficient GMX pool liquidity` };
-  }, [amounts, collateralSwapTokens, firstTokenAmount, isDeposit, marketOrGlvTokenAmount]);
+  }, [amounts, collateralSwapTokens, firstTokenAmount, isDeposit, isTransitRoute, marketOrGlvTokenAmount]);
 
   const expressError = useExpressError({
     paySource,

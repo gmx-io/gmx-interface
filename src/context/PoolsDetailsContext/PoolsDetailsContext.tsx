@@ -71,6 +71,8 @@ export type PoolsDetailsState = {
   secondTokenInputValue: string;
   marketOrGlvTokenInputValue: string;
   isMarketForGlvSelectedManually: boolean;
+  isTransitRoute: boolean;
+  transitAmountOut: bigint | undefined;
   multichainTokensResult: ReturnType<typeof useMultichainTokens>;
 
   setOperation: (operation: Operation) => void;
@@ -85,6 +87,8 @@ export type PoolsDetailsState = {
   setSecondTokenInputValue: (value: string) => void;
   setMarketOrGlvTokenInputValue: (value: string) => void;
   setIsMarketForGlvSelectedManually: (value: boolean) => void;
+  setIsTransitRoute: (value: boolean) => void;
+  setTransitAmountOut: (value: bigint | undefined) => void;
 };
 
 export function usePoolsDetailsState({
@@ -213,6 +217,8 @@ export function usePoolsDetailsState({
   const [secondTokenInputValue, setSecondTokenInputValue] = useSafeState<string>("");
   const [marketOrGlvTokenInputValue, setMarketOrGlvTokenInputValue] = useSafeState<string>("");
   const [isMarketForGlvSelectedManually, setIsMarketForGlvSelectedManually] = useState(false);
+  const [isTransitRoute, setIsTransitRoute] = useState(false);
+  const [transitAmountOut, setTransitAmountOut] = useState<bigint | undefined>(undefined);
 
   useEffect(
     function syncOperationAndModeFromQueryParams() {
@@ -284,6 +290,8 @@ export function usePoolsDetailsState({
       secondTokenInputValue,
       marketOrGlvTokenInputValue,
       isMarketForGlvSelectedManually,
+      isTransitRoute,
+      transitAmountOut,
       multichainTokensResult,
       // Setters
       setOperation,
@@ -298,6 +306,8 @@ export function usePoolsDetailsState({
       setSecondTokenInputValue,
       setMarketOrGlvTokenInputValue,
       setIsMarketForGlvSelectedManually,
+      setIsTransitRoute,
+      setTransitAmountOut,
     };
   }, [
     enabled,
@@ -314,6 +324,8 @@ export function usePoolsDetailsState({
     secondTokenInputValue,
     marketOrGlvTokenInputValue,
     isMarketForGlvSelectedManually,
+    isTransitRoute,
+    transitAmountOut,
     multichainTokensResult,
     setGlvOrMarketAddress,
     setPaySource,
