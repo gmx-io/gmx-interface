@@ -272,7 +272,7 @@ describe("rewards referral card", () => {
     });
     expect(mocks.pushEvent).toHaveBeenCalledWith(
       {
-        event: "RewardsPageAction",
+        event: "RewardsLandingPageAction",
         data: { action: "ComebackShareClick", type, rewards_exist: true, ref_code_exist: true, rewards: 2000 },
       },
       { instantSend: true }
@@ -341,7 +341,7 @@ describe("rewards referral card", () => {
     fireEvent.click(view.getByRole("button", { name: "Create code and invite traders" }));
     expect(mocks.pushEvent).toHaveBeenCalledWith(
       {
-        event: "RewardsPageAction",
+        event: "RewardsLandingPageAction",
         data: { action: "ComebackCreateCodeClick", rewards_exist: true, ref_code_exist: false, rewards: 2000 },
       },
       { instantSend: true }
@@ -356,7 +356,7 @@ describe("rewards referral card", () => {
     act(() => mocks.onCreated!("NewCode"));
     expect(mocks.pushEvent).toHaveBeenCalledWith(
       {
-        event: "RewardsPageAction",
+        event: "RewardsLandingPageAction",
         data: { action: "ComebackCreateCodeSuccesfull", rewards_exist: true, ref_code_exist: true, rewards: 2000 },
       },
       { instantSend: true }

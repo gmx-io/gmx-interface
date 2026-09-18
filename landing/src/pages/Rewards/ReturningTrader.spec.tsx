@@ -145,7 +145,7 @@ describe("returning trader checker", () => {
       const resultEvents = mocks.pushEvent.mock.calls.filter(([event]) => event.data.type === "ResultRevealed");
       expect(resultEvents).toHaveLength(1);
       expect(resultEvents[0][0]).toEqual({
-        event: "RewardsPageAction",
+        event: "RewardsLandingPageAction",
         data: {
           action: "ComebackBlockAction",
           type: "ResultRevealed",

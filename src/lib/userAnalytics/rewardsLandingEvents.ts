@@ -11,7 +11,7 @@ type ComebackParams = {
 };
 
 type RewardsLandingEvent = {
-  event: "RewardsPageAction";
+  event: "RewardsLandingPageAction";
   data:
     | { action: "RewardsPageView" }
     | { action: "StartTradingClick"; placement: RewardsLandingPlacement }
@@ -30,5 +30,8 @@ export function getComebackAnalyticsParams(rewardsUsd: bigint, hasReferralCode: 
 }
 
 export function sendRewardsLandingEvent(data: RewardsLandingEvent["data"]) {
-  return userAnalytics.pushEvent<RewardsLandingEvent>({ event: "RewardsPageAction", data }, { instantSend: true });
+  return userAnalytics.pushEvent<RewardsLandingEvent>(
+    { event: "RewardsLandingPageAction", data },
+    { instantSend: true }
+  );
 }

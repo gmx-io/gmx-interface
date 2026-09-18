@@ -68,7 +68,7 @@ describe("landing analytics delivery", () => {
       {
         type: "userAnalyticsEvent",
         payload: {
-          event: "RewardsPageAction",
+          event: "RewardsLandingPageAction",
           distinctId: "visitor",
           customFields: expect.objectContaining({ action: "RewardsPageView", isTest: true, isInited: true }),
         },

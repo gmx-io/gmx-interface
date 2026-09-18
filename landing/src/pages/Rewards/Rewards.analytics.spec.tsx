@@ -79,7 +79,7 @@ describe("rewards landing analytics", () => {
     const view = render(<Page />);
     fireEvent.click(view.getAllByRole("button", { name: "Start Trading" })[index]);
     expect(userAnalytics.pushEvent).toHaveBeenLastCalledWith(
-      { event: "RewardsPageAction", data: { action: "StartTradingClick", placement } },
+      { event: "RewardsLandingPageAction", data: { action: "StartTradingClick", placement } },
       { instantSend: true }
     );
     const url = new URL(destination.href);
@@ -95,7 +95,7 @@ describe("rewards landing analytics", () => {
     fireEvent.click(view.getAllByRole("button", { name: "Open app" }).at(-1)!);
     expect(userAnalytics.pushEvent).toHaveBeenLastCalledWith(
       {
-        event: "RewardsPageAction",
+        event: "RewardsLandingPageAction",
         data: { action: "StartTradingClick", placement: mobile ? "MobileMenu" : "Header" },
       },
       { instantSend: true }
