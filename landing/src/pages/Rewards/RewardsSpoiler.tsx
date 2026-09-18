@@ -21,7 +21,7 @@ export function RewardsSpoiler({ children, onFocusAddress }: { children: ReactNo
         >
           <span className="rewards-reveal-prompt">
             <IcEye aria-hidden="true" />
-            <Trans>Enter any wallet address to reveal</Trans>
+            <Trans>Enter any wallet to see Comeback Bonus</Trans>
           </span>
         </button>
       )}

@@ -660,19 +660,6 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
 .rewards-spoiler-source > * {
   height: 100%;
 }
-.rewards-bonus-preview {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: url("../../../../src/img/rewards-landing/bonus-background.svg") center / cover no-repeat;
-}
-.rewards-bonus-preview strong {
-  color: #fff;
-  font-size: clamp(160px, 52vw, 240px);
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: -0.06em;
-}
 .rewards-spoiler > canvas {
   position: absolute;
   inset: 0;

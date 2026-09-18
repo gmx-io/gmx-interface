@@ -176,7 +176,7 @@ describe("returning trader checker", () => {
 
   it("focuses the address field without revealing either initial card", () => {
     const view = render(<Page />);
-    fireEvent.click(view.getByRole("button", { name: "Enter any wallet address to reveal" }));
+    fireEvent.click(view.getByRole("button", { name: "Enter any wallet to see Comeback Bonus" }));
     expect(document.activeElement).toBe(view.getByRole("textbox", { name: "Wallet address" }));
     expect(view.container.querySelectorAll(".rewards-spoiler")).toHaveLength(2);
     expect(mocks.resolve).not.toHaveBeenCalled();
@@ -190,7 +190,7 @@ describe("returning trader checker", () => {
 
     expect(view.getByRole("button", { name: "Checking..." })).toBeTruthy();
     expect(view.queryByRole("heading", { name: "On every trade" })).toBeNull();
-    expect(view.queryByRole("button", { name: "Enter any wallet address to reveal" })).toBeNull();
+    expect(view.queryByRole("button", { name: "Enter any wallet to see Comeback Bonus" })).toBeNull();
     expect(view.container.querySelectorAll(".rewards-spoiler")).toHaveLength(2);
     expect(view.queryByTestId("referral-account")).toBeNull();
 

@@ -2123,6 +2123,10 @@ msgstr "{longOrShort} 포지션은 시간당 {fundingRate}의 펀딩 수수료�
 msgid "TIME"
 msgstr "시간"
 
+#: landing/src/pages/Rewards/RewardsSpoiler.tsx
+msgid "Enter any wallet to see Comeback Bonus"
+msgstr "아무 지갑이나 입력하여 컴백 보너스를 확인하세요"
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "Oracle endpoints"
 msgstr "Oracle 엔드포인트"
@@ -10691,10 +10695,6 @@ msgstr "숏 미결제약정 준비금 비율"
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Referral volume on page"
 msgstr "이 페이지의 추천 거래량"
-
-#: landing/src/pages/Rewards/RewardsSpoiler.tsx
-msgid "Enter any wallet address to reveal"
-msgstr "지갑 주소를 입력하여 결과를 확인하세요"
 
 #: src/components/Errors/getContractErrorMessage.ts
 #: src/components/Errors/getContractErrorMessage.ts

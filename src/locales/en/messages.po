@@ -2123,6 +2123,10 @@ msgstr "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} p
 msgid "TIME"
 msgstr "TIME"
 
+#: landing/src/pages/Rewards/RewardsSpoiler.tsx
+msgid "Enter any wallet to see Comeback Bonus"
+msgstr "Enter any wallet to see Comeback Bonus"
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "Oracle endpoints"
 msgstr "Oracle endpoints"
@@ -10691,10 +10695,6 @@ msgstr "Open interest reserve factor shorts"
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Referral volume on page"
 msgstr "Referral volume on page"
-
-#: landing/src/pages/Rewards/RewardsSpoiler.tsx
-msgid "Enter any wallet address to reveal"
-msgstr "Enter any wallet address to reveal"
 
 #: src/components/Errors/getContractErrorMessage.ts
 #: src/components/Errors/getContractErrorMessage.ts

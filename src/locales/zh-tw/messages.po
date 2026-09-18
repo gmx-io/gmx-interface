@@ -2123,6 +2123,10 @@ msgstr "{longOrShort} 倉位每小時{fundingAction}資金費用 {fundingRate}�
 msgid "TIME"
 msgstr "時間"
 
+#: landing/src/pages/Rewards/RewardsSpoiler.tsx
+msgid "Enter any wallet to see Comeback Bonus"
+msgstr "輸入任意錢包以查看回歸獎勵"
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "Oracle endpoints"
 msgstr "Oracle 端點"
@@ -10691,10 +10695,6 @@ msgstr "做空未平倉量儲備因子"
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Referral volume on page"
 msgstr "本頁推薦交易量"
-
-#: landing/src/pages/Rewards/RewardsSpoiler.tsx
-msgid "Enter any wallet address to reveal"
-msgstr "輸入任意錢包地址以查看結果"
 
 #: src/components/Errors/getContractErrorMessage.ts
 #: src/components/Errors/getContractErrorMessage.ts

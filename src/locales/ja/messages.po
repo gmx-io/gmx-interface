@@ -2123,6 +2123,10 @@ msgstr "{longOrShort} ポジションはファンディング手数料として1
 msgid "TIME"
 msgstr "TIME"
 
+#: landing/src/pages/Rewards/RewardsSpoiler.tsx
+msgid "Enter any wallet to see Comeback Bonus"
+msgstr "任意のウォレットを入力してカムバックボーナスを確認"
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "Oracle endpoints"
 msgstr "Oracle エンドポイント"
@@ -10691,10 +10695,6 @@ msgstr "建玉リザーブファクター（ショート）"
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Referral volume on page"
 msgstr "このページの紹介取引量"
-
-#: landing/src/pages/Rewards/RewardsSpoiler.tsx
-msgid "Enter any wallet address to reveal"
-msgstr "任意のウォレットアドレスを入力して結果を表示"
 
 #: src/components/Errors/getContractErrorMessage.ts
 #: src/components/Errors/getContractErrorMessage.ts

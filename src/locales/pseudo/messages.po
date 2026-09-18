@@ -2123,6 +2123,10 @@ msgstr ""
 msgid "TIME"
 msgstr ""
 
+#: landing/src/pages/Rewards/RewardsSpoiler.tsx
+msgid "Enter any wallet to see Comeback Bonus"
+msgstr ""
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "Oracle endpoints"
 msgstr ""
@@ -10690,10 +10694,6 @@ msgstr ""
 
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Referral volume on page"
-msgstr ""
-
-#: landing/src/pages/Rewards/RewardsSpoiler.tsx
-msgid "Enter any wallet address to reveal"
 msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts

@@ -2123,6 +2123,10 @@ msgstr "Позиции {longOrShort} {fundingAction} комиссию за фа�
 msgid "TIME"
 msgstr "ВРЕМЯ"
 
+#: landing/src/pages/Rewards/RewardsSpoiler.tsx
+msgid "Enter any wallet to see Comeback Bonus"
+msgstr "Введите любой кошелёк, чтобы увидеть бонус за возвращение"
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "Oracle endpoints"
 msgstr "Конечные точки Oracle"
@@ -10691,10 +10695,6 @@ msgstr "Резервный фактор открытого интереса дл
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Referral volume on page"
 msgstr "Реферальный объём на странице"
-
-#: landing/src/pages/Rewards/RewardsSpoiler.tsx
-msgid "Enter any wallet address to reveal"
-msgstr "Введите любой адрес кошелька, чтобы увидеть результат"
 
 #: src/components/Errors/getContractErrorMessage.ts
 #: src/components/Errors/getContractErrorMessage.ts
