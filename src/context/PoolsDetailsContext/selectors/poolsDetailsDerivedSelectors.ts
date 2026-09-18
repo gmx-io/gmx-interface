@@ -533,13 +533,18 @@ export const selectPoolsDetailsAvailableCollateralSwapToken = createSelector((q)
   const longTokenAddress = q(selectPoolsDetailsLongTokenAddress);
   const shortTokenAddress = q(selectPoolsDetailsShortTokenAddress);
   const tokensData = q(selectPoolsDetailsTradeTokensDataWithSourceChainBalances);
-  const config = getPaxosTransitConfig(chainId);
+  const paxosTransitConfig = getPaxosTransitConfig(chainId);
 
-  if (!config || isPair || longTokenAddress !== config.usdgAddress || shortTokenAddress !== config.usdgAddress) {
+  if (
+    !paxosTransitConfig ||
+    isPair ||
+    longTokenAddress !== paxosTransitConfig.usdgAddress ||
+    shortTokenAddress !== paxosTransitConfig.usdgAddress
+  ) {
     return undefined;
   }
 
-  return getByKey(tokensData, config.usdcAddress);
+  return getByKey(tokensData, paxosTransitConfig.usdcAddress);
 });
 
 export const selectPoolsDetailsCollateralSwapTokens = createSelector((q) => {
