@@ -69,6 +69,7 @@ import { makeUserAnalyticsOrderFailResultHandler, sendUserAnalyticsOrderConfirmC
 import useWallet from "lib/wallets/useWallet";
 import { convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
 import { getGlvToken, getGmToken } from "sdk/utils/tokens";
+import type { DepositAmounts } from "sdk/utils/trade/types";
 
 import type { UseLpTransactionProps } from "./useLpTransactions";
 import { useMultichainDepositExpressTxnParams } from "./useMultichainDepositExpressTxnParams";
@@ -111,6 +112,8 @@ export const useDepositTransactions = ({
     marketTokenAmount = 0n,
     marketTokenUsd = 0n,
   } = amounts ?? {};
+
+  const initialShortTokenAmount = (amounts as DepositAmounts | undefined)?.initialShortTokenAmount ?? shortTokenAmount;
 
   const selectedMarketInfoForGlv = useSelector(selectPoolsDetailsSelectedMarketInfoForGlv);
 
@@ -392,7 +395,7 @@ export const useDepositTransactions = ({
           signer,
           blockTimestampData,
           longTokenAmount: longTokenAmount ?? 0n,
-          shortTokenAmount: shortTokenAmount ?? 0n,
+          shortTokenAmount: initialShortTokenAmount,
           executionFee: fees.feeTokenAmount,
           executionGasLimit: fees.gasLimit,
           skipSimulation: shouldDisableValidation,
@@ -420,6 +423,7 @@ export const useDepositTransactions = ({
       transferRequests,
       chainId,
       paySource,
+      initialShortTokenAmount,
       longTokenAmount,
       shortTokenAmount,
       technicalFees,
@@ -629,7 +633,7 @@ export const useDepositTransactions = ({
           longTokenAddress: maybeNativeLongTokenAddress!,
           shortTokenAddress: maybeNativeShortTokenAddress!,
           longTokenAmount: longTokenAmount ?? 0n,
-          shortTokenAmount: shortTokenAmount ?? 0n,
+          shortTokenAmount: initialShortTokenAmount,
           marketTokenAmount: marketTokenAmount ?? 0n,
           executionFee: fees.feeTokenAmount,
           executionGasLimit: fees.gasLimit,
@@ -659,6 +663,7 @@ export const useDepositTransactions = ({
       transferRequests,
       chainId,
       paySource,
+      initialShortTokenAmount,
       longTokenAmount,
       shortTokenAmount,
       technicalFees,
