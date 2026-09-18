@@ -19,6 +19,7 @@ import {
 } from "context/PoolsDetailsContext/selectors";
 import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { convertToTokenAmount } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import { formatAmountFree } from "lib/numbers";
 import { DepositAmounts, WithdrawalAmounts } from "sdk/utils/trade/types";
@@ -119,9 +120,13 @@ export function useUpdateInputAmounts() {
 
       // Special case: collateral swap token deposit
       if (collateralSwapTokens && firstToken) {
+        const { token } = collateralSwapTokens;
         const { initialShortTokenAmount } = amounts as DepositAmounts;
+        const tokenAmount =
+          initialShortTokenAmount ??
+          convertToTokenAmount(amounts.longTokenUsd + amounts.shortTokenUsd, token.decimals, token.prices.minPrice);
 
-        setFirstTokenInputValue(formatTokenAmount(initialShortTokenAmount, firstToken.decimals));
+        setFirstTokenInputValue(formatTokenAmount(tokenAmount, firstToken.decimals));
         return;
       }
 
@@ -186,11 +191,12 @@ export function useUpdateInputAmounts() {
 
       // Special case: collateral swap token withdrawal
       if (collateralSwapTokens && firstToken) {
+        const { token } = collateralSwapTokens;
         const { longTokenSwapPathStats, shortTokenSwapPathStats } = amounts as WithdrawalAmounts;
         const tokenAmount =
           longTokenSwapPathStats && shortTokenSwapPathStats
             ? longTokenSwapPathStats.amountOut + shortTokenSwapPathStats.amountOut
-            : undefined;
+            : convertToTokenAmount(amounts.longTokenUsd + amounts.shortTokenUsd, token.decimals, token.prices.maxPrice);
 
         setFirstTokenInputValue(formatTokenAmount(tokenAmount, firstToken.decimals));
         return;

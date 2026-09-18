@@ -40,6 +40,7 @@ import {
   selectPoolsDetailsFirstTokenAddress,
   selectPoolsDetailsFirstTokenInputValue,
   selectPoolsDetailsGlvOrMarketAddress,
+  selectPoolsDetailsIsTransitRoute,
   selectPoolsDetailsMarketOrGlvTokenInputValue,
   selectPoolsDetailsMode,
   selectPoolsDetailsMultichainTokensArray,
@@ -218,6 +219,12 @@ export const selectPoolsDetailsWithdrawalReceiveTokenAddress = createSelector((q
   const marketAddress = q(selectPoolsDetailsMarketTokenAddress);
 
   if (marketAddress && getMarketIsSameCollaterals(chainId, marketAddress)) {
+    const isTransitRoute = q(selectPoolsDetailsIsTransitRoute);
+
+    if (isTransitRoute) {
+      return undefined;
+    }
+
     const collateralSwapTokens = q(selectPoolsDetailsCollateralSwapTokens);
 
     return collateralSwapTokens?.token.address as ERC20Address | undefined;
@@ -401,12 +408,15 @@ export const selectPoolsDetailsPayShortToken = createSelector((q) => {
   const shortTokenAddress = q(selectPoolsDetailsShortTokenAddress);
   const { isDeposit } = q(selectPoolsDetailsFlags);
   const collateralSwapTokens = q(selectPoolsDetailsCollateralSwapTokens);
+  const isTransitRoute = q(selectPoolsDetailsIsTransitRoute);
 
   if (!tradeTokensData || !shortTokenAddress) {
     return undefined;
   }
 
-  if (isDeposit && collateralSwapTokens) {
+  const isCollateralSwappedInDeposit = isDeposit && collateralSwapTokens !== undefined && !isTransitRoute;
+
+  if (isCollateralSwappedInDeposit) {
     return collateralSwapTokens.token;
   }
 
@@ -684,8 +694,9 @@ export const selectPoolsDetailsCanBridgeOutMarket = createSelector((q) => {
 export const selectPoolsDetailsDepositFindSwapPath = createSelector((q) => {
   const { isDeposit } = q(selectPoolsDetailsFlags);
   const collateralSwapTokens = q(selectPoolsDetailsCollateralSwapTokens);
+  const isTransitRoute = q(selectPoolsDetailsIsTransitRoute);
 
-  if (!isDeposit || !collateralSwapTokens) {
+  if (!isDeposit || !collateralSwapTokens || isTransitRoute) {
     return undefined;
   }
 

@@ -7,6 +7,7 @@ import {
   selectPoolsDetailsFocusedInput,
   selectPoolsDetailsGlvInfo,
   selectPoolsDetailsIsMarketTokenDeposit,
+  selectPoolsDetailsIsTransitRoute,
   selectPoolsDetailsLongTokenAddress,
   selectPoolsDetailsLongTokenAmount,
   selectPoolsDetailsMarketInfo,
@@ -17,6 +18,7 @@ import {
   selectPoolsDetailsSecondTokenAmount,
   selectPoolsDetailsShortTokenAddress,
   selectPoolsDetailsShortTokenAmount,
+  selectPoolsDetailsTransitAmountOut,
   selectPoolsDetailsWithdrawalFindSwapPath,
   selectPoolsDetailsWithdrawalReceiveTokenAddress,
 } from "context/PoolsDetailsContext/selectors";
@@ -54,6 +56,8 @@ export const selectDepositWithdrawalAmounts = createSelector((q): DepositAmounts
   const isMarketTokenDeposit = q(selectPoolsDetailsIsMarketTokenDeposit);
   const collateralSwapTokens = q(selectPoolsDetailsCollateralSwapTokens);
   const depositFindSwapPath = q(selectPoolsDetailsDepositFindSwapPath);
+  const isTransitRoute = q(selectPoolsDetailsIsTransitRoute);
+  const transitAmountOut = q(selectPoolsDetailsTransitAmountOut);
 
   const receiveTokenAddress = q(selectPoolsDetailsWithdrawalReceiveTokenAddress);
   const withdrawalFindSwapPath = q(selectPoolsDetailsWithdrawalFindSwapPath);
@@ -80,6 +84,10 @@ export const selectDepositWithdrawalAmounts = createSelector((q): DepositAmounts
   }
 
   if (isDeposit) {
+    const isPaidWithTransitAmountOut =
+      collateralSwapTokens !== undefined && isTransitRoute && transitAmountOut !== undefined;
+    const payShortTokenAmount = isPaidWithTransitAmountOut ? transitAmountOut : shortTokenAmount;
+
     const includeLongToken = isPair
       ? true
       : firstTokenAddress !== undefined &&
@@ -91,11 +99,11 @@ export const selectDepositWithdrawalAmounts = createSelector((q): DepositAmounts
         convertTokenAddress(chainId, firstTokenAddress, "wrapped") === shortTokenAddress);
 
     let adjustedLongTokenAmount = longTokenAmount;
-    let adjustedShortTokenAmount = shortTokenAmount;
+    let adjustedShortTokenAmount = payShortTokenAmount;
 
     // adjust for same collateral
     if (marketInfo.isSameCollaterals) {
-      const positiveAmount = bigMath.max(longTokenAmount, shortTokenAmount);
+      const positiveAmount = bigMath.max(longTokenAmount, payShortTokenAmount);
 
       adjustedLongTokenAmount = positiveAmount / 2n;
       adjustedShortTokenAmount = positiveAmount - adjustedLongTokenAmount;
