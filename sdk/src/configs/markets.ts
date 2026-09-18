@@ -912,6 +912,34 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
       longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // BTC/USD [USDG-USDG]
+    "0xe57B97F2f83F39E74Ec83f3e039FD370884784fF": {
+      marketTokenAddress: "0xe57B97F2f83F39E74Ec83f3e039FD370884784fF",
+      indexTokenAddress: "0x47904963fc8b2340414262125aF798B9655E58Cd",
+      longTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+      shortTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+    },
+    // ETH/USD [USDG-USDG]
+    "0x6f095F58e9Eb2c583A1828202712c03962491d7e": {
+      marketTokenAddress: "0x6f095F58e9Eb2c583A1828202712c03962491d7e",
+      indexTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      longTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+      shortTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+    },
+    // SOL/USD [USDG-USDG]
+    "0xfF63B0f938772e2b4fFD1A1b340Afe49616c95f2": {
+      marketTokenAddress: "0xfF63B0f938772e2b4fFD1A1b340Afe49616c95f2",
+      indexTokenAddress: "0x2bcC6D6CdBbDC0a4071e48bb3B969b06B3330c07",
+      longTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+      shortTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+    },
+    // SWAP-ONLY [USDC-USDG]
+    "0x408E8e83d4b8Ac4BDefFDF896B49268A5FE5Ef44": {
+      marketTokenAddress: "0x408E8e83d4b8Ac4BDefFDF896B49268A5FE5Ef44",
+      indexTokenAddress: zeroAddress,
+      longTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      shortTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
