@@ -9,7 +9,7 @@ import { getOrderCreatedDataFromPendingOrder } from "domain/synthetics/tradeHist
 import { createMockPositionInfo } from "domain/testUtils/mockPositionInfo";
 import type { PendingTpSlOrderBatch } from "domain/tpsl/types";
 import { expandDecimals } from "lib/numbers";
-import { StatusCode } from "sdk/utils/gelatoRelay";
+import { StatusCode } from "sdk/utils/express";
 import { DecreasePositionSwapType, OrderType, type PositionOrderInfo } from "sdk/utils/orders/types";
 import { convertToContractPrice, parseContractPrice } from "sdk/utils/tokens";
 

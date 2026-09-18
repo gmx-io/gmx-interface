@@ -26,7 +26,6 @@ const WEB3_PACKAGES = new Set([
   "isows",
   "ox",
   "viem",
-  "@gelatocloud/gasless",
   "@layerzerolabs/lz-v2-utilities",
   "@stargatefinance/stg-evm-sdk-v2",
   "@uniswap/sdk-core",
@@ -175,8 +174,8 @@ function manualChunks(id: string) {
   return undefined;
 }
 
-// sdk/node_modules has its own copies of these; bundling both breaks instanceof checks (e.g. SimulationFailedRpcError)
-const SDK_DEDUPED_PACKAGES = ["viem", "@gelatocloud/gasless"];
+// sdk/node_modules has its own copies of these; bundling both breaks instanceof checks (e.g. ContractFunctionRevertedError)
+const SDK_DEDUPED_PACKAGES = ["viem"];
 
 function isSdkDedupedSource(source: string) {
   return SDK_DEDUPED_PACKAGES.some((packageName) => source === packageName || source.startsWith(`${packageName}/`));
