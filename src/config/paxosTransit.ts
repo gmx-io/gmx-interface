@@ -34,9 +34,9 @@ export function getShouldShowPaxosTransit(p: {
   transitFeesUsd: bigint | undefined;
   swapFeesUsd: bigint | undefined;
 }): boolean {
-  const config = getPaxosTransitConfig(p.chainId);
+  const paxosTransitConfig = getPaxosTransitConfig(p.chainId);
 
-  if (!config) {
+  if (!paxosTransitConfig) {
     return false;
   }
 
@@ -52,5 +52,5 @@ export function getShouldShowPaxosTransit(p: {
     return true;
   }
 
-  return p.amountUsd >= config.minAmountUsd && p.transitFeesUsd < p.swapFeesUsd;
+  return p.amountUsd >= paxosTransitConfig.minAmountUsd && p.transitFeesUsd < p.swapFeesUsd;
 }
