@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "VITE_APP_VERSION=$(git rev-parse HEAD) vite --port 3010 --host",
+    "start": "VITE_APP_VERSION=$(git rev-parse HEAD) tsx solana-interface/scripts/startWithRpcProxy.ts vite --port 3010 --host",
     "start-home": "yarn lingui:prepare && VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e development-home vite --port 3010 --config vite.landing.config.ts",
-    "start-app": "yarn lingui:prepare && VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e development-app vite --port 3011",
+    "start-app": "yarn lingui:prepare && VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e development-app tsx solana-interface/scripts/startWithRpcProxy.ts vite --port 3011",
     "build": "VITE_APP_VERSION=$(git rev-parse HEAD) vite build",
     "build:analyze": "VITE_APP_VERSION=$(git rev-parse HEAD) vite build --mode analyze",
     "build-home": "VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e production-home vite build --config vite.landing.config.ts",
@@ -15,8 +15,8 @@
     "build-sdk": "cd ./sdk && yarn build",
     "test": "vitest",
     "test:ci": "vitest run",
-    "lint": "node node_modules/.bin/eslint src landing --fix --cache --cache-location .eslintcache",
-    "lint:ci": "node node_modules/.bin/eslint src landing --max-warnings=0",
+    "lint": "node node_modules/.bin/eslint src landing solana-interface --fix --cache --cache-location .eslintcache",
+    "lint:ci": "node node_modules/.bin/eslint src landing solana-interface --max-warnings=0",
     "pre-commit": "yarn run lint",
     "pre-push": "vitest run",
     "prepare": "husky install || true && yarn lingui:prepare",
@@ -31,7 +31,7 @@
     "clean:cache": "yarn clean:lint && yarn clean:ts",
     "clean:lint": "rm -rf .eslintcache",
     "clean:ts": "rm -rf tsconfig.tsbuildinfo landing/tsconfig.tsbuildinfo",
-    "prettier": "prettier --write src/**/*.{js,ts,jsx,tsx,css,scss} landing/**/*.{js,ts,jsx,tsx,css,scss}",
+    "prettier": "prettier --write src/**/*.{js,ts,jsx,tsx,css,scss} landing/**/*.{js,ts,jsx,tsx,css,scss} solana-interface/**/*.{js,ts,jsx,tsx,css,scss}",
     "postinstall": "cd ./sdk && echo \"Building SDK\" && yarn && yarn build",
     "prebuild": "cd ./sdk && yarn tsx scripts/prebuild",
     "test:ct": "NODE_OPTIONS='--max-old-space-size=8192' playwright test -c playwright-ct.config.ts"
@@ -51,6 +51,7 @@
     "@lingui/react": "4.10.0",
     "@privy-io/react-auth": "3.35.0",
     "@privy-io/wagmi": "4.0.8",
+    "@solana/web3.js": "1.98.4",
     "@stargatefinance/stg-evm-sdk-v2": "1.1.12",
     "@stripe/crypto": "1.1.2",
     "@stripe/stripe-js": "1.54.2",
@@ -182,6 +183,7 @@
     "eslint-plugin-react-hooks": "4.6.0",
     "eslint-plugin-react-perf": "3.3.2",
     "happy-dom": "20.8.9",
+    "http-proxy-middleware": "4.2.0",
     "husky": "7.0.4",
     "lint-staged": "12.3.4",
     "postcss": "8.5.23",
@@ -214,6 +216,10 @@
       "prettier --write"
     ],
     "landing/**/*.{css,scss}": [
+      "prettier --write"
+    ],
+    "solana-interface/**/*.{js,ts,jsx,tsx}": [
+      "eslint --fix --max-warnings=0",
       "prettier --write"
     ]
   },

@@ -300,6 +300,7 @@ export function createViteConfig(
         styles: path.resolve(__dirname, "src/styles"),
         prebuilt: path.resolve(__dirname, "src/prebuilt"),
         sdk: path.resolve(__dirname, "sdk/src"),
+        "solana-interface": path.resolve(__dirname, "solana-interface/src"),
       },
     },
     build: {

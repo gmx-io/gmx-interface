@@ -20,9 +20,11 @@
     "baseUrl": "./src",
     "paths": {
       "sdk": ["../sdk/src/index.ts"],
-      "sdk/*": ["../sdk/src/*"]
+      "sdk/*": ["../sdk/src/*"],
+      "solana-interface": ["../solana-interface/src"],
+      "solana-interface/*": ["../solana-interface/src/*"]
     }
   },
   "references": [{ "path": "./sdk" }],
-  "include": ["src", "scripts", "viem-override.d.ts"]
+  "include": ["src", "scripts", "solana-interface", "viem-override.d.ts"]
 }
