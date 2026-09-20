@@ -36,6 +36,8 @@ export function createGmxSolanaWebSocket(
   let active = false;
   let destroyed = false;
   let state: GmxSolanaWebSocketState = Object.freeze({ status: "idle", error: null });
+  /// reconnection strategy: reconnect after 3 seconds, 5 seconds, and 10 seconds; 
+  //  thereafter, continue attempting to reconnect every 10 seconds.
   const retryDelays = [3000, 5000, 10000];
 
   function setState(status: GmxSolanaWebSocketStatus, error = state.error) {
