@@ -86,23 +86,23 @@
     <link rel="dns-prefetch" href="//arbitrum.gmxapi.io" />
     <link rel="preconnect" href="https://avalanche.gmxapi.io" crossorigin />
     <link rel="dns-prefetch" href="//avalanche.gmxapi.io" />
-    <link rel="preconnect" href="https://arbitrum-keeper.gmxapi.io" crossorigin />
-    <link rel="dns-prefetch" href="//arbitrum-keeper.gmxapi.io" />
-    <link rel="preconnect" href="https://avalanche-keeper.gmxapi.io" crossorigin />
-    <link rel="dns-prefetch" href="//avalanche-keeper.gmxapi.io" />
+    <link rel="preconnect" href="https://arbitrum-api.gmxinfra.io" crossorigin />
+    <link rel="dns-prefetch" href="//arbitrum-api.gmxinfra.io" />
+    <link rel="preconnect" href="https://avalanche-api.gmxinfra.io" crossorigin />
+    <link rel="dns-prefetch" href="//avalanche-api.gmxinfra.io" />
     <script>
       // Warms ui-flags during HTML parse; consumed once by src/lib/oracleKeeperFetcher/uiFlagsPrefetch.ts.
       window.__uiFlagsPrefetch = {};
       [
         [
-          "https://arbitrum-keeper.gmxapi.io/ui-flags/v2",
-          "https://arbitrum-api-fallback.gmxinfra2.io/ui-flags/v2",
+          "https://arbitrum-api.gmxinfra.io/ui-flags/v2",
           "https://arbitrum-api-fallback.gmxinfra.io/ui-flags/v2",
+          "https://arbitrum-api-fallback.gmxinfra2.io/ui-flags/v2",
         ],
         [
-          "https://avalanche-keeper.gmxapi.io/ui-flags/v2",
-          "https://avalanche-api-fallback.gmxinfra2.io/ui-flags/v2",
+          "https://avalanche-api.gmxinfra.io/ui-flags/v2",
           "https://avalanche-api-fallback.gmxinfra.io/ui-flags/v2",
+          "https://avalanche-api-fallback.gmxinfra2.io/ui-flags/v2",
         ],
       ].forEach(function (urls) {
         try {
