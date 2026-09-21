@@ -118,8 +118,10 @@ export function usePaxosTransitState(isWhitelistIgnored: boolean) {
 
   let amountIn = 0n;
 
-  if (withdrawalStatus?.data) {
-    amountIn = receivedUsdg ?? withdrawalStatus.data.minLongTokenAmount + withdrawalStatus.data.minShortTokenAmount;
+  if (withdrawalStatusWithUsdg?.data) {
+    amountIn =
+      receivedUsdg ??
+      withdrawalStatusWithUsdg.data.minLongTokenAmount + withdrawalStatusWithUsdg.data.minShortTokenAmount;
   } else if (isConversionNeeded) {
     amountIn = isDeposit ? firstTokenAmount : withdrawalUsdgAmount;
   }
@@ -312,6 +314,7 @@ export function usePaxosTransitState(isWhitelistIgnored: boolean) {
     amountIn,
     feeTierError,
     isDeposit,
+    isWithdrawalSent,
     isWithdrawalSettled,
     isTransitLoading,
     isTransitRoute,

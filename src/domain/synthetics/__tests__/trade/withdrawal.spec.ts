@@ -5,6 +5,7 @@ import type { TokenData } from "domain/synthetics/tokens";
 import type { ERC20Address } from "domain/tokens";
 import { expandDecimals } from "lib/numbers";
 import { mockTokensData } from "sdk/test/mock";
+import { bigMath } from "sdk/utils/bigmath";
 import type { FindSwapPath, SwapPathStats } from "sdk/utils/trade/types";
 
 import { getWithdrawalAmounts } from "../../trade/utils/withdrawal";
@@ -29,14 +30,22 @@ const marketToken = {
   prices: { minPrice: USD, maxPrice: USD },
 } as TokenData;
 
-const findSwapPath: FindSwapPath = (usdIn) =>
-  ({
+const SWAP_FEE_BPS = 10n;
+const HALF_USD = 5n * USD;
+const SWAPPED_HALF_USD = HALF_USD - (HALF_USD * SWAP_FEE_BPS) / 10_000n;
+
+const findSwapPath: FindSwapPath = (usdIn) => {
+  const feeUsd = (usdIn * SWAP_FEE_BPS) / 10_000n;
+  const usdOut = usdIn - feeUsd;
+
+  return {
     swapPath: ["0xpool"],
     swapSteps: [],
-    usdOut: usdIn,
-    amountOut: usdIn / expandDecimals(1, 30 - receiveToken.decimals),
-    totalFeesDeltaUsd: 0n,
-  }) as unknown as SwapPathStats;
+    usdOut,
+    amountOut: usdOut / expandDecimals(1, 30 - receiveToken.decimals),
+    totalFeesDeltaUsd: -feeUsd,
+  } as unknown as SwapPathStats;
+};
 
 function getAmounts(p: { findSwapPath: FindSwapPath; strategy: "byMarketToken" | "byLongCollateral" }) {
   return getWithdrawalAmounts({
@@ -57,20 +66,20 @@ describe("getWithdrawalAmounts with a receive token outside a same-collateral po
   it("swaps both halves by market token", () => {
     const amounts = getAmounts({ findSwapPath, strategy: "byMarketToken" });
 
-    expect(amounts.longTokenSwapPathStats?.usdOut).toBe(5n * USD);
-    expect(amounts.shortTokenSwapPathStats?.usdOut).toBe(5n * USD);
+    expect(amounts.longTokenSwapPathStats?.usdOut).toBe(SWAPPED_HALF_USD);
+    expect(amounts.shortTokenSwapPathStats?.usdOut).toBe(SWAPPED_HALF_USD);
     expect(amounts.longTokenBeforeSwapAmount).toBe(expandDecimals(5, collateralToken.decimals));
   });
 
   it("swaps both halves by collateral", () => {
     const amounts = getAmounts({ findSwapPath, strategy: "byLongCollateral" });
 
-    expect(amounts.longTokenSwapPathStats?.usdOut).toBe(5n * USD);
-    expect(amounts.shortTokenSwapPathStats?.usdOut).toBe(5n * USD);
+    expect(amounts.longTokenSwapPathStats?.usdOut).toBe(SWAPPED_HALF_USD);
+    expect(amounts.shortTokenSwapPathStats?.usdOut).toBe(SWAPPED_HALF_USD);
     expect(amounts.marketTokenAmount).toBe(expandDecimals(10, 18));
   });
 
-  it("works out the payout from the typed receive token amount", () => {
+  it("sells enough to receive the typed amount after the swap fee", () => {
     const amounts = getWithdrawalAmounts({
       marketInfo,
       marketToken,
@@ -86,8 +95,31 @@ describe("getWithdrawalAmounts with a receive token outside a same-collateral po
       isSameCollaterals: true,
     });
 
+    const receivedUsd = amounts.longTokenSwapPathStats!.usdOut + amounts.shortTokenSwapPathStats!.usdOut;
+    const collateralUnitUsd = expandDecimals(1, 30 - collateralToken.decimals);
+
+    expect(amounts.longTokenUsd + amounts.shortTokenUsd).toBeGreaterThan(10n * USD);
+    expect(bigMath.abs(receivedUsd - 10n * USD)).toBeLessThanOrEqual(2n * collateralUnitUsd);
+  });
+
+  it("works out the payout from the typed receive token amount when the pool does not swap", () => {
+    const amounts = getWithdrawalAmounts({
+      marketInfo,
+      marketToken,
+      marketTokenAmount: 0n,
+      longTokenAmount: 0n,
+      shortTokenAmount: 0n,
+      strategy: "byLongCollateral",
+      uiFeeFactor: 0n,
+      findSwapPath,
+      wrappedReceiveTokenAddress: undefined,
+      receiveToken,
+      receiveTokenAmount: expandDecimals(10, receiveToken.decimals),
+      isSameCollaterals: true,
+    });
+
     expect(amounts.longTokenUsd + amounts.shortTokenUsd).toBe(10n * USD);
-    expect(amounts.longTokenSwapPathStats?.usdOut).toBe(5n * USD);
+    expect(amounts.longTokenSwapPathStats).toBeUndefined();
     expect(amounts.marketTokenAmount).toBe(expandDecimals(10, 18));
   });
 

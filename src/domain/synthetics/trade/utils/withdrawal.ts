@@ -208,17 +208,32 @@ export function getWithdrawalAmounts(p: {
       if (isSameCollaterals) {
         const isReceiveTokenSwapped =
           wrappedReceiveTokenAddress !== undefined && wrappedReceiveTokenAddress !== longToken.address;
-        const receiveTokenUsd =
-          isReceiveTokenSwapped && receiveToken && receiveTokenAmount !== undefined
-            ? convertToUsd(receiveTokenAmount, receiveToken.decimals, receiveToken.prices.minPrice)
-            : undefined;
-        const positiveAmount =
-          receiveTokenUsd !== undefined
-            ? convertToTokenAmount(receiveTokenUsd, longToken.decimals, longToken.prices.maxPrice)!
-            : bigMath.max(longTokenAmount, shortTokenAmount);
-        values.longTokenAmount = positiveAmount / 2n;
+
+        let collateralBeforeSwapAmount = bigMath.max(longTokenAmount, shortTokenAmount);
+
+        if (receiveToken && receiveTokenAmount !== undefined) {
+          const preferredUsdOut = convertToUsd(
+            receiveTokenAmount,
+            receiveToken.decimals,
+            receiveToken.prices.minPrice
+          )!;
+          const approximateUsdIn = preferredUsdOut;
+          const approximateSwapPathStats = isReceiveTokenSwapped ? findSwapPath!(approximateUsdIn) : undefined;
+          const adjustedUsdIn =
+            approximateSwapPathStats && approximateSwapPathStats.usdOut > 0n
+              ? bigMath.mulDiv(approximateUsdIn, preferredUsdOut, approximateSwapPathStats.usdOut)
+              : approximateUsdIn;
+
+          collateralBeforeSwapAmount = convertToTokenAmount(
+            adjustedUsdIn,
+            longToken.decimals,
+            longToken.prices.maxPrice
+          )!;
+        }
+
+        values.longTokenAmount = collateralBeforeSwapAmount / 2n;
         values.longTokenBeforeSwapAmount = values.longTokenAmount;
-        values.shortTokenAmount = positiveAmount - values.longTokenAmount;
+        values.shortTokenAmount = collateralBeforeSwapAmount - values.longTokenAmount;
         values.shortTokenBeforeSwapAmount = values.shortTokenAmount;
         values.longTokenUsd = convertToUsd(values.longTokenAmount, longToken.decimals, longToken.prices.maxPrice)!;
         values.shortTokenUsd = convertToUsd(values.shortTokenAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
