@@ -183,6 +183,7 @@ msgstr "建立 TWAP 兌換"
 msgid "Rewards paused"
 msgstr "獎勵已暫停"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -672,6 +673,10 @@ msgstr "下架"
 msgid "Unrealized fees"
 msgstr "未實現費用"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Convert {tokenInSymbol} to {tokenOutSymbol}"
+msgstr "將 {tokenInSymbol} 轉換為 {tokenOutSymbol}"
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max slippage precision is 0.01%"
 msgstr "最大滑點精度為 0.01%"
@@ -704,6 +709,7 @@ msgstr "沒有可從 {networkName} 存入的資金"
 msgid "sell"
 msgstr "賣出"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GMX pool liquidity"
 msgstr "GMX 池流動性不足"
@@ -1020,6 +1026,10 @@ msgstr ""
 #: src/components/HistoryExport/HistoryExportModal.tsx
 msgid "GMX Detailed CSV"
 msgstr "GMX Detailed CSV"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Sending conversion..."
+msgstr "正在傳送轉換..."
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {seconds} seconds"
@@ -1369,6 +1379,10 @@ msgstr "錯誤："
 msgid "Cross-chain one-click deposits into GM"
 msgstr "跨鏈一鍵存入 GM"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Approving {tokenInSymbol}..."
+msgstr "正在授權 {tokenInSymbol}..."
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "<0>Switch to TBTC-TBTC pool</0> for potentially lower price impact"
 msgstr "<0>切換至 TBTC-TBTC 池</0>以獲得可能更低的價格影響"
@@ -1526,6 +1540,10 @@ msgstr "流動性僅在 {chainNames} 上可用。請切換網路以繼續。"
 msgid "Stop-Loss"
 msgstr "止損"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "Transactions"
+msgstr "交易筆數"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "External swap {0} to {1}"
 msgstr "外部兌換 {0} 至 {1}"
@@ -1604,6 +1622,10 @@ msgstr "初始保證金"
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Competition airdrop"
 msgstr "競賽空投"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "2, convert then buy"
+msgstr "2 筆，先轉換後買入"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Settings update failed"
@@ -1799,6 +1821,7 @@ msgstr "Oracle 端點"
 msgid "Maintenance"
 msgstr "維護"
 
+#: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Swap fee"
@@ -3555,6 +3578,10 @@ msgstr "訂單類型"
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr ""
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "2, sell then convert"
+msgstr "2 筆，先賣出後轉換"
+
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "GMX Account uses a separate trading balance linked to your wallet. To trade, deposit funds from your wallet to your GMX Account."
 msgstr "GMX Account 使用與您的錢包連結的獨立交易餘額。若要交易，請將資金從您的錢包存入您的 GMX Account。"
@@ -3835,6 +3862,10 @@ msgstr "所選篩選條件無匹配結果"
 msgid "Outstanding claimable amounts are not included"
 msgstr "未領取的可申領金額未包含在內"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "USDC received."
+msgstr "已收到 USDC。"
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "Insufficient {wrappedNativeTokenSymbol} for gas in your GMX Account."
 msgstr "您的 GMX Account 中 {wrappedNativeTokenSymbol} 不足以支付 Gas 費用。"
@@ -3887,6 +3918,10 @@ msgstr "TypeScript SDK"
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing limit order in {0} pool<0>Switch to {1} pool</0>"
 msgstr ""
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "Zero-fee capacity is used up for this amount. Convert now at the standard fee, convert a smaller amount, or wait for the next zero-fee window."
+msgstr "此金額的零費用額度已用盡。可依標準費用立即轉換、轉換較小的金額，或等待下一個零費用時段。"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy from decentralized or centralized exchanges"
@@ -4123,6 +4158,10 @@ msgstr "僅限錢包"
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Listing"
 msgstr "上架"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Conversion failed: {0}"
+msgstr "轉換失敗：{0}"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Signing approval..."
@@ -4562,6 +4601,11 @@ msgstr "{0} 餘額"
 msgid "numerous assets"
 msgstr "眾多資產"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+msgid "Step 2: Receive"
+msgstr "步驟 2：收到"
+
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Error name:"
 msgstr "錯誤名稱："
@@ -4706,6 +4750,10 @@ msgstr "簽署授權"
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "{daysConsidered}d earned fees"
 msgstr "{daysConsidered} 天已賺取費用"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Waiting for {tokenInSymbol}..."
+msgstr "正在等待 {tokenInSymbol}..."
 
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
 msgid "Wallet icon"
@@ -5038,6 +5086,10 @@ msgstr "觸發部分報價"
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "{collateralSymbol} is required for collateral.<0/><1/>No swap path found for {0} to {collateralSymbol} within GMX.<2/><3/><4>Swap {collateralSymbol}</4> or <5>bridge {collateralSymbol}</5>."
 msgstr ""
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "First the pool pays out USDG to your wallet, then you confirm the conversion to USDC. If it fails, the USDG stays in your wallet."
+msgstr "池會先將 USDG 支付到您的錢包，然後由您確認轉換為 USDC。若失敗，USDG 將留在您的錢包中。"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {tokensText}</2>"
@@ -5744,6 +5796,10 @@ msgstr "未知的買入 GM 訂單"
 msgid "Build on GMX.<0/>Get paid on every trade."
 msgstr "在 GMX 上構建。<0/>每筆交易都有收益。"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Insufficient {tokenInSymbol} balance"
+msgstr "{tokenInSymbol} 餘額不足"
+
 #: src/lib/useHasOutdatedUi.ts
 msgid "Page outdated. Refresh"
 msgstr "頁面已過期，請重新整理"
@@ -6237,6 +6293,10 @@ msgstr "Shifting 僅適用於 {chainNames} 或 {lastChainName}。請切換網路
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 msgid "Monthly bought"
 msgstr "月度回購量"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "Zero-fee capacity left"
+msgstr "剩餘零費用額度"
 
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
@@ -7409,6 +7469,7 @@ msgstr ""
 #: src/components/Claims/Claims.tsx
 #: src/components/EmptyTableContent/EmptyTableContent.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
@@ -7518,6 +7579,10 @@ msgstr ""
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Comfortable with Builder / Referral Code attribution"
 msgstr "接受 Builder / Referral Code 歸因"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "{0}m"
+msgstr "{0} 分鐘"
 
 #: src/components/EarningValue/EarningValue.tsx
 msgid "Earned fees are only tracked for GM and GLV held in your wallet on {chainName}. GM and GLV in a GMX Account or on another chain still earn fees, but they can't be attributed per account yet."
@@ -7721,6 +7786,10 @@ msgstr "支付"
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your previous referral code has been replaced with a GMX protocol code after your trades reached the referral program's graduation threshold. You keep your {currentTierDiscount}% discount on opening and closing fees. <0>Read more</0>"
 msgstr "在您的交易達到推薦計畫的畢業門檻後，您先前的推薦碼已被替換為 GMX 協議碼。您將保留開倉和平倉費用 {currentTierDiscount}% 的折扣。<0>瞭解更多</0>"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "First you convert USDC to USDG in your wallet, then you confirm the buy. If the buy fails, the USDG stays in your wallet."
+msgstr "您先在錢包中將 USDC 轉換為 USDG，然後確認買入。若買入失敗，USDG 將留在您的錢包中。"
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match your holdings"
@@ -8846,6 +8915,7 @@ msgstr "{formattedNetRate} / 1h"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
@@ -9278,6 +9348,11 @@ msgstr "預估 PNL"
 msgid "No announcements found"
 msgstr "未找到公告"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "{tokenInSymbol} conversion is unavailable"
+msgstr "{tokenInSymbol} 轉換無法使用"
+
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your {currentTierDiscount}% discount is now active!"
 msgstr ""
@@ -9597,6 +9672,8 @@ msgstr "GMX 獎勵"
 msgid "Max pool capacity reached"
 msgstr "已達池最大容量"
 
+#: src/components/GmSwap/GmFees/GmFees.tsx
+#: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/GmSwap/GmFees/GmFees.tsx
@@ -10699,6 +10776,10 @@ msgstr "Venus"
 msgid "No swap route available"
 msgstr ""
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+msgid "Step 1: Receive"
+msgstr "步驟 1：收到"
+
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "How much could I earn?"
 msgstr "我能賺多少？"
@@ -11446,6 +11527,10 @@ msgstr ""
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "<0>Positive funding fees accrued from your positions</0>"
 msgstr "<0>從您的倉位中累積的正向資金費用</0>"
+
+#: src/components/GmSwap/GmFees/GmFees.tsx
+msgid "Conversion fee"
+msgstr "轉換費用"
 
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Message us on Telegram"
@@ -12229,6 +12314,10 @@ msgstr "切換至 WBTC-USDC 池"
 msgid "Traders referred"
 msgstr "推薦交易者"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Converting {tokenInSymbol} to {tokenOutSymbol}..."
+msgstr "正在將 {tokenInSymbol} 轉換為 {tokenOutSymbol}..."
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max deposit limit reached: {maxPoolUsdText}"
 msgstr "已達最大存入上限：{maxPoolUsdText}"
@@ -12372,6 +12461,10 @@ msgstr "正在發送轉移請求..."
 msgid "Order expired before it could be executed"
 msgstr "訂單在執行前已過期"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Confirming conversion..."
+msgstr "正在確認轉換..."
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "PNG"
 msgstr "PNG"
@@ -12400,6 +12493,10 @@ msgstr "以此規模加倉做空無可用流動性。<0/>最大做空規模：{0
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Total value of assets"
 msgstr ""
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "USDG received. You can now buy with it."
+msgstr "已收到 USDG。您現在可以用它購買。"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "<0>Switch to {0} pool</0> for potentially lower price impact"

@@ -183,6 +183,7 @@ msgstr "TWAPスワップを作成"
 msgid "Rewards paused"
 msgstr "報酬は一時停止中"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -672,6 +673,10 @@ msgstr "上場廃止"
 msgid "Unrealized fees"
 msgstr "未実現手数料"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Convert {tokenInSymbol} to {tokenOutSymbol}"
+msgstr "{tokenInSymbol}を{tokenOutSymbol}に変換"
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max slippage precision is 0.01%"
 msgstr "スリッページの最大精度は0.01%です"
@@ -704,6 +709,7 @@ msgstr "{networkName}から入金できる資金がありません"
 msgid "sell"
 msgstr "売却"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GMX pool liquidity"
 msgstr "GMXプールの流動性不足"
@@ -1020,6 +1026,10 @@ msgstr ""
 #: src/components/HistoryExport/HistoryExportModal.tsx
 msgid "GMX Detailed CSV"
 msgstr "GMX Detailed CSV"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Sending conversion..."
+msgstr "変換を送信中..."
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {seconds} seconds"
@@ -1369,6 +1379,10 @@ msgstr "エラー："
 msgid "Cross-chain one-click deposits into GM"
 msgstr "GMへのクロスチェーン1クリック入金"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Approving {tokenInSymbol}..."
+msgstr "{tokenInSymbol}を承認中..."
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "<0>Switch to TBTC-TBTC pool</0> for potentially lower price impact"
 msgstr "<0>TBTC-TBTCプールに切り替える</0>ことで価格への影響を軽減できる可能性があります"
@@ -1526,6 +1540,10 @@ msgstr "流動性は {chainNames} でのみ利用可能です。続行するに�
 msgid "Stop-Loss"
 msgstr "ストップロス"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "Transactions"
+msgstr "トランザクション数"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "External swap {0} to {1}"
 msgstr "外部スワップ {0} → {1}"
@@ -1604,6 +1622,10 @@ msgstr "当初証拠金"
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Competition airdrop"
 msgstr "コンペティションエアドロップ"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "2, convert then buy"
+msgstr "2回、変換してから購入"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Settings update failed"
@@ -1799,6 +1821,7 @@ msgstr "Oracle エンドポイント"
 msgid "Maintenance"
 msgstr "メンテナンス"
 
+#: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Swap fee"
@@ -3555,6 +3578,10 @@ msgstr "注文タイプ"
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr ""
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "2, sell then convert"
+msgstr "2回、売却してから変換"
+
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "GMX Account uses a separate trading balance linked to your wallet. To trade, deposit funds from your wallet to your GMX Account."
 msgstr "GMX Accountは、ウォレットに紐づいた別の取引残高を使用します。取引するには、ウォレットからGMX Accountへ資金を入金してください。"
@@ -3835,6 +3862,10 @@ msgstr "選択したフィルターに一致するものがありません"
 msgid "Outstanding claimable amounts are not included"
 msgstr "請求可能な未処理金額は含まれません"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "USDC received."
+msgstr "USDCを受け取りました。"
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "Insufficient {wrappedNativeTokenSymbol} for gas in your GMX Account."
 msgstr "GMXアカウント内のガス用の{wrappedNativeTokenSymbol}が不足しています。"
@@ -3887,6 +3918,10 @@ msgstr "TypeScript SDK"
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing limit order in {0} pool<0>Switch to {1} pool</0>"
 msgstr ""
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "Zero-fee capacity is used up for this amount. Convert now at the standard fee, convert a smaller amount, or wait for the next zero-fee window."
+msgstr "この金額では手数料無料枠を使い切っています。標準手数料で今すぐ変換するか、より少ない金額を変換するか、次の手数料無料枠をお待ちください。"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy from decentralized or centralized exchanges"
@@ -4123,6 +4158,10 @@ msgstr "ウォレットのみ"
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Listing"
 msgstr "上場"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Conversion failed: {0}"
+msgstr "変換に失敗しました: {0}"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Signing approval..."
@@ -4562,6 +4601,11 @@ msgstr "{0} 残高"
 msgid "numerous assets"
 msgstr "多数の資産"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+msgid "Step 2: Receive"
+msgstr "ステップ2: 受取"
+
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Error name:"
 msgstr "エラー名:"
@@ -4706,6 +4750,10 @@ msgstr "パーミットに署名"
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "{daysConsidered}d earned fees"
 msgstr "{daysConsidered}日間の獲得手数料"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Waiting for {tokenInSymbol}..."
+msgstr "{tokenInSymbol}を待機中..."
 
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
 msgid "Wallet icon"
@@ -5038,6 +5086,10 @@ msgstr "部分ティッカーをトリガー"
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "{collateralSymbol} is required for collateral.<0/><1/>No swap path found for {0} to {collateralSymbol} within GMX.<2/><3/><4>Swap {collateralSymbol}</4> or <5>bridge {collateralSymbol}</5>."
 msgstr ""
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "First the pool pays out USDG to your wallet, then you confirm the conversion to USDC. If it fails, the USDG stays in your wallet."
+msgstr "まずプールからウォレットにUSDGが支払われ、その後USDCへの変換を確認します。失敗した場合、USDGはウォレットに残ります。"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {tokensText}</2>"
@@ -5744,6 +5796,10 @@ msgstr "不明なGM購入注文"
 msgid "Build on GMX.<0/>Get paid on every trade."
 msgstr "GMXで開発。<0/>すべての取引で報酬を。"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Insufficient {tokenInSymbol} balance"
+msgstr "{tokenInSymbol} 残高の不足"
+
 #: src/lib/useHasOutdatedUi.ts
 msgid "Page outdated. Refresh"
 msgstr "ページが古くなっています。更新してください"
@@ -6237,6 +6293,10 @@ msgstr "シフトは {chainNames} または {lastChainName} でのみ利用可�
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 msgid "Monthly bought"
 msgstr "月間購入量"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "Zero-fee capacity left"
+msgstr "残りの手数料無料枠"
 
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
@@ -7409,6 +7469,7 @@ msgstr ""
 #: src/components/Claims/Claims.tsx
 #: src/components/EmptyTableContent/EmptyTableContent.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
@@ -7518,6 +7579,10 @@ msgstr ""
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Comfortable with Builder / Referral Code attribution"
 msgstr "Builder／Referral Codeのアトリビューションに抵抗がない"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "{0}m"
+msgstr "{0}分"
 
 #: src/components/EarningValue/EarningValue.tsx
 msgid "Earned fees are only tracked for GM and GLV held in your wallet on {chainName}. GM and GLV in a GMX Account or on another chain still earn fees, but they can't be attributed per account yet."
@@ -7721,6 +7786,10 @@ msgstr "支払い"
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your previous referral code has been replaced with a GMX protocol code after your trades reached the referral program's graduation threshold. You keep your {currentTierDiscount}% discount on opening and closing fees. <0>Read more</0>"
 msgstr "お取引が紹介プログラムの卒業しきい値に達したため、以前の紹介コードはGMXプロトコルコードに置き換えられました。オープンおよびクローズ手数料の{currentTierDiscount}%割引は維持されます。<0>詳細</0>"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "First you convert USDC to USDG in your wallet, then you confirm the buy. If the buy fails, the USDG stays in your wallet."
+msgstr "まずウォレット内でUSDCをUSDGに変換し、その後購入を確認します。購入が失敗した場合、USDGはウォレットに残ります。"
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match your holdings"
@@ -8846,6 +8915,7 @@ msgstr "{formattedNetRate} / 1 時間"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
@@ -9278,6 +9348,11 @@ msgstr "予想PNL"
 msgid "No announcements found"
 msgstr "お知らせは見つかりませんでした"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "{tokenInSymbol} conversion is unavailable"
+msgstr "{tokenInSymbol}の変換は利用できません"
+
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your {currentTierDiscount}% discount is now active!"
 msgstr ""
@@ -9597,6 +9672,8 @@ msgstr "GMX報酬"
 msgid "Max pool capacity reached"
 msgstr "プールの最大容量に達しました"
 
+#: src/components/GmSwap/GmFees/GmFees.tsx
+#: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/GmSwap/GmFees/GmFees.tsx
@@ -10699,6 +10776,10 @@ msgstr "Venus"
 msgid "No swap route available"
 msgstr ""
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+msgid "Step 1: Receive"
+msgstr "ステップ1: 受取"
+
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "How much could I earn?"
 msgstr "どれくらい稼げますか？"
@@ -11446,6 +11527,10 @@ msgstr ""
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "<0>Positive funding fees accrued from your positions</0>"
 msgstr "<0>ポジションから発生したプラスのファンディング手数料</0>"
+
+#: src/components/GmSwap/GmFees/GmFees.tsx
+msgid "Conversion fee"
+msgstr "変換手数料"
 
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Message us on Telegram"
@@ -12229,6 +12314,10 @@ msgstr "WBTC-USDCプールに切り替える"
 msgid "Traders referred"
 msgstr "紹介されたトレーダー"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Converting {tokenInSymbol} to {tokenOutSymbol}..."
+msgstr "{tokenInSymbol}を{tokenOutSymbol}に変換中..."
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max deposit limit reached: {maxPoolUsdText}"
 msgstr "最大入金上限に達しました: {maxPoolUsdText}"
@@ -12372,6 +12461,10 @@ msgstr "シフトリクエストを送信中…"
 msgid "Order expired before it could be executed"
 msgstr "注文は実行前に期限切れになりました"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Confirming conversion..."
+msgstr "変換を確認中..."
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "PNG"
 msgstr "PNG"
@@ -12400,6 +12493,10 @@ msgstr "このサイズではショートの増加に利用可能な流動性が
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Total value of assets"
 msgstr ""
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "USDG received. You can now buy with it."
+msgstr "USDGを受け取りました。これで購入できます。"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "<0>Switch to {0} pool</0> for potentially lower price impact"
