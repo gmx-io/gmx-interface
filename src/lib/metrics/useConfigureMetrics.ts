@@ -7,6 +7,8 @@ import { API_UI_FLAGS, useIsApiSdkEnabled } from "domain/synthetics/uiFlags/useI
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
+import { getDisplayMode } from "lib/pwa/getDisplayMode";
+import { getLaunchSource } from "lib/pwa/getLaunchSource";
 import { useBowser } from "lib/useBowser";
 import useIsWindowVisible from "lib/useIsWindowVisible";
 import useIsMetamaskMobile, { getIsMobileUserAgent } from "lib/wallets/useIsMetamaskMobile";
@@ -14,6 +16,7 @@ import useWallet from "lib/wallets/useWallet";
 
 import { isHomeSite } from "../legacy";
 import { metrics } from "./Metrics";
+import { setStartupErrorReporter } from "./startupErrors";
 
 export function useConfigureMetrics() {
   const { chainId, srcChainId } = useChainId();
@@ -27,6 +30,8 @@ export function useConfigureMetrics() {
   const apiSdkMarkets = useIsApiSdkEnabled(API_UI_FLAGS.markets);
   const apiSdkPositions = useIsApiSdkEnabled(API_UI_FLAGS.positions);
   const apiSdkOrders = useIsApiSdkEnabled(API_UI_FLAGS.orders);
+  const displayMode = getDisplayMode();
+  const launchSource = getLaunchSource();
 
   useEffect(() => {
     metrics.subscribeToEvents();
@@ -36,6 +41,7 @@ export function useConfigureMetrics() {
   }, []);
 
   useEffect(() => {
+    setStartupErrorReporter(metrics.pushError);
     metrics.setFetcher(fetcher);
   }, [fetcher]);
 
@@ -53,6 +59,8 @@ export function useConfigureMetrics() {
       apiSdkPositions,
       apiSdkOrders,
       isMobile: getIsMobileUserAgent(),
+      displayMode,
+      launchSource,
       isHomeSite: isHomeSite(),
       isLargeAccount,
       browserName: bowser?.browser.name,
@@ -71,6 +79,8 @@ export function useConfigureMetrics() {
     apiSdkMarkets,
     apiSdkPositions,
     apiSdkOrders,
+    displayMode,
+    launchSource,
   ]);
 
   useEffect(() => {

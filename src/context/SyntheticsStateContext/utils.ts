@@ -13,10 +13,13 @@ import type { SyntheticsState } from "./SyntheticsStateContextProvider";
 const context = createSelectionContext<SyntheticsState>();
 export const createSelector = context.makeSelector;
 
+export const PER_ORDER_SELECTOR_CACHE_SIZE = 100;
+
 export function createSelectorFactory<SelectionResult, Args extends SupportedArg[]>(
-  factory: (...args: Args) => CachedSelector<SelectionResult>
+  factory: (...args: Args) => CachedSelector<SelectionResult>,
+  cacheSize = 20
 ): (...args: Args) => CachedSelector<SelectionResult> {
-  const cache = new LRUCache<CachedSelector<SelectionResult>>(20);
+  const cache = new LRUCache<CachedSelector<SelectionResult>>(cacheSize);
 
   return (...args: Args) => {
     const key = getKeyForArgs(...args);

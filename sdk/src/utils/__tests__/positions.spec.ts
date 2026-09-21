@@ -113,7 +113,7 @@ describe("getPositionPnlUsd", () => {
       isLong: true,
     });
 
-    expect(getPositiveMarketPnl).toHaveBeenCalledWith(marketInfo, true, true);
+    expect(getPositiveMarketPnl).toHaveBeenCalledWith(marketInfo, true, false);
     expect(result).toBe(expandDecimals(800, USD_DECIMALS));
   });
 });

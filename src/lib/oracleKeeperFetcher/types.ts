@@ -140,7 +140,7 @@ export interface OracleFetcher {
   fetchPerformanceSnapshots(period: PerformancePeriod, address?: string): Promise<PerformanceSnapshotsResponse>;
   fetchUiFlags(): Promise<Record<string, UiFlag>>;
   fetchMarkets(): Promise<ApiMarket[]>;
-  handleFailure(method: string): void;
+  handleFailure(method: string, endpoint?: string): void;
 }
 
 export type TickersResponse = {

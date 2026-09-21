@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { summarizeChainsStats } from "./summarizeChainsStats";
+import { getStaleEntries, summarizeChainsStats } from "./summarizeChainsStats";
 
 describe("summarizeChainsStats", () => {
   it("sums every known network and orders them highest first", () => {
@@ -31,5 +31,20 @@ describe("summarizeChainsStats", () => {
 
   it("reports no total until at least one network has answered", () => {
     expect(summarizeChainsStats({ Arbitrum: undefined, Solana: undefined }).total).toBeUndefined();
+  });
+});
+
+describe("getStaleEntries", () => {
+  it("lists every network a stale source covers with the time its value dates from", () => {
+    expect(
+      getStaleEntries([{ isStale: true, asOf: 42 }, "Arbitrum", "Avalanche"], [{ isStale: false, asOf: 7 }, "Solana"])
+    ).toEqual([
+      { title: "Arbitrum", asOf: 42 },
+      { title: "Avalanche", asOf: 42 },
+    ]);
+  });
+
+  it("lists nothing for a fresh or unknown source", () => {
+    expect(getStaleEntries([{ isStale: false, asOf: 42 }, "Solana"], [undefined, "Arbitrum"])).toEqual([]);
   });
 });

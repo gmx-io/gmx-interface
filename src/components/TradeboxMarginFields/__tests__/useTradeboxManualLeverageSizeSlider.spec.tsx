@@ -1,62 +1,72 @@
 import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+import { selectTradeboxIncreaseResultingPositionMarginState } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
 import type { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { StateCtx } from "context/SyntheticsStateContext/utils";
+import { mockPositionInfo } from "domain/synthetics/testUtils/mocks";
+import { MOCK_POSITIONS_CONSTANTS } from "domain/testUtils/mockChainData";
 import { createMockMarketInfo } from "domain/testUtils/mockMarketInfo";
 import { createMockSyntheticsState, type MockSyntheticsStateOverrides } from "domain/testUtils/mockSyntheticsState";
+import { ETH_ADDRESS, USDC_ADDRESS } from "domain/testUtils/mockTokens";
+import { expandDecimals } from "lib/numbers";
+import { convertToTokenAmount } from "sdk/utils/tokens";
+import { TradeMode } from "sdk/utils/trade/types";
 
 import { useTradeboxManualLeverageSizeSlider } from "../useTradeboxManualLeverageSizeSlider";
 
 type HookResult = ReturnType<typeof useTradeboxManualLeverageSizeSlider>;
 
+const tokensToUsd = (v: string) => v;
+
 type Opts = Pick<
   MockSyntheticsStateOverrides,
-  "isLeverageSliderEnabled" | "fromTokenInputValue" | "toTokenInputValue"
+  | "isLeverageSliderEnabled"
+  | "fromTokenInputValue"
+  | "toTokenInputValue"
+  | "fromTokenAddress"
+  | "collateralAddress"
+  | "tradeMode"
+  | "triggerPriceInputValue"
+  | "uiFeeFactor"
+  | "positionsConstants"
+  | "account"
+  | "positionsInfoData"
 > & {
   hasMarketInfo?: boolean;
+  maxAvailableAmount?: bigint;
 };
 
 function buildState(opts: Opts = {}): SyntheticsState {
-  const { hasMarketInfo = false, ...stateOverrides } = opts;
+  const { hasMarketInfo = false, maxAvailableAmount: _maxAvailableAmount, ...stateOverrides } = opts;
   return createMockSyntheticsState({
     ...stateOverrides,
     marketInfo: hasMarketInfo ? createMockMarketInfo() : undefined,
   });
 }
 
-function Harness({
-  state,
-  setTo,
-  setSize,
-  actionsRef,
-}: {
+type HarnessProps = {
   state: SyntheticsState;
+  maxAvailableAmount: bigint;
   setTo: (v: string, r: boolean) => void;
   setSize: (v: string) => void;
   actionsRef: { current: HookResult | null };
-}) {
+};
+
+function Harness({ state, ...innerProps }: HarnessProps) {
   return (
     <StateCtx.Provider value={state}>
-      <Inner setTo={setTo} setSize={setSize} actionsRef={actionsRef} />
+      <Inner {...innerProps} />
     </StateCtx.Provider>
   );
 }
 
-function Inner({
-  setTo,
-  setSize,
-  actionsRef,
-}: {
-  setTo: (v: string, r: boolean) => void;
-  setSize: (v: string) => void;
-  actionsRef: { current: HookResult | null };
-}) {
+function Inner({ maxAvailableAmount, setTo, setSize, actionsRef }: Omit<HarnessProps, "state">) {
   actionsRef.current = useTradeboxManualLeverageSizeSlider({
     sizeDisplayMode: "usd",
     canConvert: true,
-    maxAvailableAmount: 1n,
-    tokensToUsd: (v) => v,
+    maxAvailableAmount,
+    tokensToUsd,
     setSizeInputValue: setSize,
     setToTokenInputValue: setTo,
   });
@@ -64,21 +74,34 @@ function Inner({
   return (
     <div>
       <span data-testid="enabled">{String(actionsRef.current.isLeverageSliderEnabled)}</span>
+      <span data-testid="disabled">{String(actionsRef.current.isSizeSliderDisabled)}</span>
       <span data-testid="pct">{actionsRef.current.sizePercentage}</span>
     </div>
   );
 }
 
 function setup(opts: Opts = {}) {
-  const state = buildState(opts);
   const setTo = vi.fn();
   const setSize = vi.fn();
   // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
   const actionsRef: { current: HookResult | null } = { current: null };
 
-  const utils = render(<Harness state={state} setTo={setTo} setSize={setSize} actionsRef={actionsRef} />);
+  const ui = (nextOpts: Opts) => (
+    <Harness
+      state={buildState(nextOpts)}
+      maxAvailableAmount={nextOpts.maxAvailableAmount ?? 1n}
+      setTo={setTo}
+      setSize={setSize}
+      actionsRef={actionsRef}
+    />
+  );
 
-  return { setTo, setSize, actionsRef, ...utils };
+  const utils = render(ui(opts));
+
+  // the same tree is re-rendered in place, so the hook keeps its refs across state changes
+  const rerender = (nextOpts: Opts) => utils.rerender(ui(nextOpts));
+
+  return { setTo, setSize, actionsRef, ...utils, rerender };
 }
 
 describe("useTradeboxManualLeverageSizeSlider", () => {
@@ -114,6 +137,71 @@ describe("useTradeboxManualLeverageSizeSlider", () => {
         fromTokenInputValue: "",
       });
       expect(getByTestId("pct").textContent).toBe("0");
+    });
+  });
+
+  describe("isSizeSliderDisabled", () => {
+    const sizeMode: Opts = { isLeverageSliderEnabled: false, hasMarketInfo: true, fromTokenInputValue: "1000" };
+
+    it("is disabled in size mode with an empty margin even with balance", () => {
+      const { getByTestId } = setup({ ...sizeMode, fromTokenInputValue: "" });
+      expect(getByTestId("disabled").textContent).toBe("true");
+    });
+
+    it("is disabled without market info", () => {
+      const { getByTestId } = setup({ ...sizeMode, hasMarketInfo: false });
+      expect(getByTestId("disabled").textContent).toBe("true");
+    });
+
+    it("is disabled when no size passes the resulting-position check", () => {
+      const account = "0x1111111111111111111111111111111111111111";
+      const marketInfo = createMockMarketInfo();
+      // 10 000 of size worth 2 000 at the 2 000 mark → 8 000 of unrealized loss on 4 000 of collateral
+      const position = mockPositionInfo(
+        {
+          marketInfo,
+          collateralTokenAddress: USDC_ADDRESS,
+          account,
+          isLong: true,
+          sizeInUsd: expandDecimals(10_000, 30),
+          collateralUsd: expandDecimals(4_000, 30),
+        },
+        { sizeInTokens: convertToTokenAmount(expandDecimals(2_000, 30), 18, expandDecimals(2000, 30))! }
+      );
+
+      const { getByTestId } = setup({
+        ...sizeMode,
+        positionsConstants: MOCK_POSITIONS_CONSTANTS,
+        account,
+        positionsInfoData: { [position.key]: position },
+      });
+
+      expect(getByTestId("disabled").textContent).toBe("true");
+      expect(getByTestId("pct").textContent).toBe("0");
+    });
+
+    it("is enabled once a max size exists", () => {
+      const { getByTestId } = setup(sizeMode);
+      expect(getByTestId("disabled").textContent).toBe("false");
+    });
+
+    it("stays enabled in margin mode with an empty margin", () => {
+      const { getByTestId } = setup({ ...sizeMode, isLeverageSliderEnabled: true, fromTokenInputValue: "" });
+      expect(getByTestId("disabled").textContent).toBe("false");
+    });
+
+    it("is disabled in both modes without an available amount", () => {
+      const { getByTestId: sizeModeQuery } = setup({ ...sizeMode, maxAvailableAmount: 0n });
+      expect(sizeModeQuery("disabled").textContent).toBe("true");
+
+      cleanup();
+
+      const { getByTestId: marginModeQuery } = setup({
+        ...sizeMode,
+        isLeverageSliderEnabled: true,
+        maxAvailableAmount: 0n,
+      });
+      expect(marginModeQuery("disabled").textContent).toBe("true");
     });
   });
 
@@ -158,6 +246,40 @@ describe("useTradeboxManualLeverageSizeSlider", () => {
 
       expect(size100).toBeGreaterThan(size50);
     });
+
+    it("does not record a slider interaction that cannot be applied", () => {
+      const { setTo, actionsRef, rerender } = setup({
+        isLeverageSliderEnabled: false,
+        hasMarketInfo: true,
+        fromTokenInputValue: "",
+      });
+
+      act(() => actionsRef.current!.handleSizePercentageChange(50));
+      rerender({ isLeverageSliderEnabled: false, hasMarketInfo: true, fromTokenInputValue: "1000" });
+
+      expect(setTo).not.toHaveBeenCalled();
+    });
+
+    it("re-applies the fixed percentage when the max size returns", () => {
+      const opts: Opts = { isLeverageSliderEnabled: false, hasMarketInfo: true, toTokenInputValue: "0" };
+      const { setTo, actionsRef, rerender } = setup({ ...opts, fromTokenInputValue: "1000" });
+
+      act(() => actionsRef.current!.handleSizePercentageChange(50));
+      expect(setTo).toHaveBeenCalledTimes(1);
+      const sizeFor1000 = setTo.mock.calls[0][0];
+
+      rerender({ ...opts, fromTokenInputValue: "" });
+      expect(setTo).toHaveBeenCalledTimes(1);
+
+      rerender({ ...opts, fromTokenInputValue: "2000" });
+      expect(setTo.mock.calls.length).toBeGreaterThan(1);
+      const sizeFor2000 = setTo.mock.calls.at(-1)![0];
+      expect(sizeFor2000).not.toBe(sizeFor1000);
+
+      const fresh = setup({ ...opts, fromTokenInputValue: "2000" });
+      act(() => fresh.actionsRef.current!.handleSizePercentageChange(50));
+      expect(sizeFor2000).toBe(fresh.setTo.mock.calls[0][0]);
+    });
   });
 
   describe("markFieldInteraction", () => {
@@ -175,6 +297,126 @@ describe("useTradeboxManualLeverageSizeSlider", () => {
       act(() => actionsRef.current!.markFieldInteraction());
 
       expect(setTo.mock.calls.length).toBe(callsAfterSlider);
+    });
+  });
+});
+
+describe("useTradeboxManualLeverageSizeSlider — the slider cap stays inside the validation", () => {
+  afterEach(cleanup);
+
+  /** The size the slider hands to the size field at 100%, in index token units. */
+  function sizeAt100(opts: Opts): string {
+    const { setTo, actionsRef } = setup(opts);
+
+    act(() => actionsRef.current!.handleSizePercentageChange(100));
+
+    expect(setTo).toHaveBeenCalled();
+
+    return String(setTo.mock.calls.at(-1)![0]);
+  }
+
+  /** The blocking check the tradebox runs on the resulting position for that same size. */
+  function isAcceptedByValidation(opts: Opts, toTokenInputValue: string): boolean {
+    const state = buildState({ ...opts, toTokenInputValue });
+
+    return selectTradeboxIncreaseResultingPositionMarginState(state)?.isLiquidatable !== true;
+  }
+
+  const marginOpts: Opts = {
+    isLeverageSliderEnabled: false,
+    hasMarketInfo: true,
+    fromTokenInputValue: "1000",
+    toTokenInputValue: "0",
+    positionsConstants: MOCK_POSITIONS_CONSTANTS,
+  };
+
+  it("a market increase paid in the collateral token", () => {
+    const size = sizeAt100(marginOpts);
+
+    expect(Number(size)).toBeGreaterThan(0);
+    expect(isAcceptedByValidation(marginOpts, size)).toBe(true);
+  });
+
+  it("a market increase with a non-zero ui fee factor", () => {
+    // 0.1%, the factor a third-party frontend would charge
+    const opts: Opts = { ...marginOpts, uiFeeFactor: expandDecimals(1, 27) };
+
+    const size = sizeAt100(opts);
+
+    expect(Number(size)).toBeGreaterThan(0);
+    expect(isAcceptedByValidation(opts, size)).toBe(true);
+  });
+
+  it("a market increase paid in a token that has to be swapped into the collateral", () => {
+    const opts: Opts = {
+      ...marginOpts,
+      fromTokenAddress: ETH_ADDRESS,
+      collateralAddress: USDC_ADDRESS,
+      fromTokenInputValue: "1",
+    };
+
+    const size = sizeAt100(opts);
+
+    expect(Number(size)).toBeGreaterThan(0);
+    expect(isAcceptedByValidation(opts, size)).toBe(true);
+  });
+
+  it("a limit increase resting below the market", () => {
+    // ETH is mocked at 2 000
+    const opts: Opts = { ...marginOpts, tradeMode: TradeMode.Limit, triggerPriceInputValue: "1800" };
+
+    const size = sizeAt100(opts);
+    const marketSize = sizeAt100(marginOpts);
+
+    // the trigger-priced size buys more tokens for the same margin, and nothing collapses it
+    expect(Number(size)).toBeGreaterThan(Number(marketSize));
+    expect(isAcceptedByValidation(opts, size)).toBe(true);
+  });
+
+  describe("caps against the position the amounts are built from", () => {
+    const ACCOUNT = "0x1111111111111111111111111111111111111111";
+    const marketInfo = createMockMarketInfo();
+
+    function withPosition(liquidationPrice: bigint | undefined): Opts {
+      const position =
+        liquidationPrice === undefined
+          ? undefined
+          : mockPositionInfo(
+              {
+                marketInfo,
+                collateralTokenAddress: USDC_ADDRESS,
+                account: ACCOUNT,
+                isLong: true,
+                sizeInUsd: expandDecimals(10_000, 30),
+                collateralUsd: expandDecimals(2_000, 30),
+              },
+              { isLong: true, liquidationPrice }
+            );
+
+      return {
+        ...marginOpts,
+        tradeMode: TradeMode.Limit,
+        triggerPriceInputValue: "1800",
+        account: ACCOUNT,
+        positionsInfoData: position ? { [position.key]: position } : {},
+      };
+    }
+
+    it("drops a position that cannot survive to the trigger price", () => {
+      // liquidated at 1 900, on the way from the 2 000 mark down to the 1 800 trigger
+      const doomed = sizeAt100(withPosition(expandDecimals(1900, 30)));
+      const fresh = sizeAt100(withPosition(undefined));
+
+      expect(Number(fresh)).toBeGreaterThan(0);
+      expect(doomed).toBe(fresh);
+    });
+
+    it("keeps a position that does survive to the trigger price", () => {
+      const alive = sizeAt100(withPosition(expandDecimals(1500, 30)));
+      const fresh = sizeAt100(withPosition(undefined));
+
+      expect(Number(alive)).toBeGreaterThan(0);
+      expect(alive).not.toBe(fresh);
     });
   });
 });

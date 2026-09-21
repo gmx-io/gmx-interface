@@ -1,3 +1,5 @@
+import type { Freshness } from "lib/useSWRWithFreshness";
+
 export type ChainsStatsValue = bigint | number | string | undefined;
 
 export type ChainsStatsEntries = { [title: string]: ChainsStatsValue };
@@ -33,4 +35,21 @@ export function summarizeChainsStats(entries: ChainsStatsEntries): ChainsStatsSu
     knownEntries.length === 0 ? undefined : knownEntries.reduce((acc, [, value]) => acc + amountOf(value), 0n);
 
   return { knownEntries, missingTitles, total };
+}
+
+export type ChainsStatsStaleEntry = { title: string; asOf: number | undefined };
+
+type ChainsStatsStaleSource = [freshness: Freshness | undefined, ...titles: string[]];
+
+// a source that could not be refreshed keeps its last value on screen, so every network it covers is listed with that age
+export function getStaleEntries(...sources: ChainsStatsStaleSource[]): ChainsStatsStaleEntry[] {
+  const entries: ChainsStatsStaleEntry[] = [];
+
+  for (const [freshness, ...titles] of sources) {
+    if (freshness?.isStale) {
+      entries.push(...titles.map((title) => ({ title, asOf: freshness.asOf })));
+    }
+  }
+
+  return entries;
 }
