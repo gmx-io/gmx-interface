@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { mockMarketsInfoData, mockTokensData } from "test/mock";
 import { USD_DECIMALS, expandDecimals } from "utils/numbers";
+import { DecreasePositionSwapType } from "utils/orders/types";
 import { convertToTokenAmount } from "utils/tokens";
 import {
   type DecreaseResultingPositionMarginStateParams,
@@ -84,6 +85,10 @@ function params({ position, closeShare = 0, realizedLossUsd = 0, ...overrides }:
     sizeDeltaInTokens: (fullPosition.sizeInTokens * closeBps) / 10_000n,
     collateralDeltaAmount: 0n,
     payedRemainingCollateralAmount: usdcAmount(realizedLossUsd),
+    payedOutputUsd: 0n,
+    swapProfitFeeUsd: 0n,
+    swapUiFeeUsd: 0n,
+    decreaseSwapType: DecreasePositionSwapType.SwapPnlTokenToCollateralToken,
     minCollateralUsd: usd(1),
     minPositionSizeUsd: usd(1),
     userReferralInfo: undefined,
@@ -197,6 +202,73 @@ describe("getDecreaseResultingPositionMarginState — partial close", () => {
         params({ closeShare: 0.5, realizedLossUsd: 1_000, minPositionSizeUsd: usd(5_001) })
       )
     ).toBeUndefined();
+  });
+});
+
+describe("getDecreaseResultingPositionMarginState — closing costs of a profitable close", () => {
+  // 40 of profit, 35 of collateral; closing 50% leaves 20 of pnl against a 50 minimum, so 30 of collateral
+  // has to survive. `getDecreasePositionAmounts` reports the 10 of costs as paid from the realized profit
+  const position = { sizeInTokens: sizeInTokensWorth(10_040), collateralAmount: usdcAmount(35) };
+  const close = { closeShare: 0.5, position, payedOutputUsd: usd(10) };
+
+  it("leaves the collateral alone when the profit is swapped to the collateral token", () => {
+    const state = getDecreaseResultingPositionMarginState(params(close));
+
+    expect(state?.remainingCollateralUsd).toBe(usd(55));
+    expect(state?.isLiquidatable).toBe(false);
+  });
+
+  it("charges the costs to the collateral when the profit stays in the pnl token", () => {
+    for (const decreaseSwapType of [
+      DecreasePositionSwapType.SwapCollateralTokenToPnlToken,
+      DecreasePositionSwapType.NoSwap,
+    ]) {
+      const state = getDecreaseResultingPositionMarginState(params({ ...close, decreaseSwapType }));
+
+      expect(state?.remainingCollateralUsd).toBe(usd(45));
+      expect(state?.reason).toBe(PositionMarginFailureReason.MinCollateralForLeverage);
+    }
+  });
+
+  it("does not charge the fees of a profit swap the contract never runs", () => {
+    const state = getDecreaseResultingPositionMarginState(
+      params({
+        ...close,
+        decreaseSwapType: DecreasePositionSwapType.SwapCollateralTokenToPnlToken,
+        swapProfitFeeUsd: usd(2),
+        swapUiFeeUsd: usd(1),
+      })
+    );
+
+    expect(state?.remainingCollateralUsd).toBe(usd(48));
+  });
+
+  it("adds them to the costs the collateral already covers", () => {
+    const state = getDecreaseResultingPositionMarginState(
+      params({
+        ...close,
+        decreaseSwapType: DecreasePositionSwapType.NoSwap,
+        payedOutputUsd: usd(4),
+        payedRemainingCollateralAmount: usdcAmount(6),
+      })
+    );
+
+    expect(state?.remainingCollateralUsd).toBe(usd(45));
+  });
+
+  it("keeps paying from the profit first when the pnl token is the collateral token", () => {
+    // a short in a USDC-backed market realizes its profit in USDC, the collateral token
+    const state = getDecreaseResultingPositionMarginState(
+      params({
+        ...close,
+        isLong: false,
+        position: { ...position, sizeInTokens: sizeInTokensWorth(9_960) },
+        decreaseSwapType: DecreasePositionSwapType.NoSwap,
+      })
+    );
+
+    expect(state?.remainingCollateralUsd).toBe(usd(55));
+    expect(state?.isLiquidatable).toBe(false);
   });
 });
 

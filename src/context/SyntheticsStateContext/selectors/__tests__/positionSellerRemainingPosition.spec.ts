@@ -4,7 +4,7 @@ import { mockPositionInfo } from "domain/synthetics/testUtils/mocks";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { createMockMarketInfo } from "domain/testUtils/mockMarketInfo";
 import { createMockSyntheticsState, MOCK_ACCOUNT } from "domain/testUtils/mockSyntheticsState";
-import { ETH_TOKEN, USDC_ADDRESS } from "domain/testUtils/mockTokens";
+import { ETH_ADDRESS, ETH_TOKEN, USDC_ADDRESS } from "domain/testUtils/mockTokens";
 import { expandDecimals } from "lib/numbers";
 import { PositionMarginFailureReason } from "sdk/utils/trade/increaseMarginCheck";
 
@@ -30,11 +30,11 @@ const usd = (value: number) => expandDecimals(value, 30);
 const SIZE_USD = usd(10_000);
 const LOSS_USD = usd(2_000);
 
-/** a 10 000 USD long losing 2 000; ETH is mocked at 2 000 */
-function makePosition(collateralUsd: bigint) {
+/** a 10 000 USD long, losing 2 000 unless told otherwise; ETH is mocked at 2 000 */
+function makePosition(collateralUsd: bigint, pnlUsd: bigint, positionMarketInfo: typeof marketInfo) {
   return mockPositionInfo(
     {
-      marketInfo,
+      marketInfo: positionMarketInfo,
       collateralTokenAddress: USDC_ADDRESS,
       account: MOCK_ACCOUNT,
       isLong: true,
@@ -42,8 +42,8 @@ function makePosition(collateralUsd: bigint) {
       collateralUsd,
     },
     {
-      sizeInTokens: ((SIZE_USD - LOSS_USD) * expandDecimals(1, 18)) / usd(2_000),
-      pnl: -LOSS_USD,
+      sizeInTokens: ((SIZE_USD + pnlUsd) * expandDecimals(1, 18)) / usd(2_000),
+      pnl: pnlUsd,
       markPrice: usd(2_000),
       remainingCollateralUsd: collateralUsd,
     }
@@ -56,10 +56,15 @@ function createState(p: {
   keepLeverage: boolean;
   orderOption?: OrderOption;
   isPnlInLeverage?: boolean;
+  pnlUsd?: bigint;
+  marketInfo?: typeof marketInfo;
+  receiveTokenAddress?: string;
+  isReceiveSeparated?: boolean;
 }): SyntheticsState {
-  const position = makePosition(p.collateralUsd);
+  const positionMarketInfo = p.marketInfo ?? marketInfo;
+  const position = makePosition(p.collateralUsd, p.pnlUsd ?? -LOSS_USD, positionMarketInfo);
   const state = createMockSyntheticsState({
-    marketInfo,
+    marketInfo: positionMarketInfo,
     account: MOCK_ACCOUNT,
     positionsInfoData: { [position.key]: position },
     isPnlInLeverage: p.isPnlInLeverage,
@@ -72,10 +77,10 @@ function createState(p: {
       orderOption: p.orderOption ?? OrderOption.Market,
       closeUsdInputValue: p.closeUsd,
       keepLeverage: p.keepLeverage,
-      receiveTokenAddress: USDC_ADDRESS,
-      isReceiveTokenChanged: false,
+      receiveTokenAddress: p.receiveTokenAddress ?? USDC_ADDRESS,
+      isReceiveTokenChanged: p.receiveTokenAddress !== undefined,
       defaultReceiveToken: undefined,
-      isReceiveSeparated: false,
+      isReceiveSeparated: p.isReceiveSeparated ?? false,
       numberOfParts: 0,
       triggerPriceInputValue: "",
       selectedTriggerAcceptablePriceImpactBps: undefined,
@@ -165,5 +170,59 @@ describe("position seller — remaining position after a market partial close", 
     expect(selectPositionSellerNextLeverageWithoutPnl(withPnl)).toBe(
       selectPositionSellerNextPositionValuesForDecrease(withoutPnl)?.nextLeverage
     );
+  });
+});
+
+describe("position seller — closing costs of a profitable market partial close", () => {
+  // 0.2 % position fee: closing half of the 10 000 costs 10, and so will closing the remaining half.
+  // 45 of collateral and 40 of profit: the remaining 5 000 needs 50 and gets 20 of pnl minus that 10
+  const marketInfoWithFee = createMockMarketInfo(ETH_TOKEN, {
+    positionFeeFactorForBalanceWasImproved: expandDecimals(2, 27),
+    positionFeeFactorForBalanceWasNotImproved: expandDecimals(2, 27),
+    positionImpactFactorPositive: 0n,
+    positionImpactFactorNegative: 0n,
+  });
+  const params = {
+    collateralUsd: usd(45),
+    pnlUsd: usd(40),
+    closeUsd: "5000",
+    keepLeverage: false,
+    marketInfo: marketInfoWithFee,
+  };
+
+  it("pays them from the profit when it is swapped to the collateral token", () => {
+    const marginState = selectPositionSellerRemainingPositionMarginState(createState(params));
+
+    expect(marginState?.isLiquidatable).toBe(false);
+  });
+
+  it("charges them to the collateral when the pnl token is received", () => {
+    const marginState = selectPositionSellerRemainingPositionMarginState(
+      createState({ ...params, receiveTokenAddress: ETH_ADDRESS })
+    );
+
+    expect(marginState?.reason).toBe(PositionMarginFailureReason.MinCollateralForLeverage);
+    expect(marginState?.remainingCollateralUsd).toBe(usd(45));
+    expect(marginState?.minCollateralUsdForLeverage).toBe(usd(50));
+  });
+
+  it("charges them to the collateral when the receive is split", () => {
+    const marginState = selectPositionSellerRemainingPositionMarginState(
+      createState({ ...params, isReceiveSeparated: true })
+    );
+
+    expect(marginState?.reason).toBe(PositionMarginFailureReason.MinCollateralForLeverage);
+    expect(marginState?.remainingCollateralUsd).toBe(usd(45));
+  });
+
+  it("probes keep leverage with the swap type of the order that will be sent", () => {
+    // keeping the leverage leaves 50.25 of collateral and 15 of pnl: enough with the costs on the profit
+    // (55.25 against 50), not with them on the collateral of a split receive (45.25)
+    const keepLeverageParams = { ...params, collateralUsd: usd(201) / 2n, pnlUsd: usd(30), keepLeverage: true };
+    const split = createState({ ...keepLeverageParams, isReceiveSeparated: true });
+
+    expect(selectPositionSellerLeverageDisabledByCollateral(createState(keepLeverageParams))).toBe(false);
+    expect(selectPositionSellerLeverageDisabledByCollateral(split)).toBe(true);
+    expect(selectPositionSellerRemainingPositionMarginState(split)?.isLiquidatable).toBe(false);
   });
 });

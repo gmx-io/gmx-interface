@@ -154,6 +154,10 @@ function getRemainingPositionMarginState(
     sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
     collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,
     payedRemainingCollateralAmount: decreaseAmounts.payedRemainingCollateralAmount,
+    payedOutputUsd: decreaseAmounts.payedOutputUsd,
+    swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,
+    swapUiFeeUsd: decreaseAmounts.swapUiFeeUsd,
+    decreaseSwapType: decreaseAmounts.decreaseSwapType,
     minCollateralUsd,
     minPositionSizeUsd,
     userReferralInfo: q(selectUserReferralInfo),
@@ -202,7 +206,11 @@ const selectPositionSellerDecreaseAmountsWithKeepLeverage = createSelector((q) =
 
   if (!decreaseAmountArgs) return undefined;
 
-  const selector = makeSelectDecreasePositionAmounts({ ...decreaseAmountArgs, keepLeverage: true });
+  const selector = makeSelectDecreasePositionAmounts({
+    ...decreaseAmountArgs,
+    keepLeverage: true,
+    forceDecreaseSwapType: q(selectPositionSellerIsReceiveSeparated) ? DecreasePositionSwapType.NoSwap : undefined,
+  });
 
   return q(selector);
 });

@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { mockMarketsInfoData, mockTokensData, usdToToken } from "test/mock";
 import { getMaxAllowedLeverage } from "utils/markets";
 import { applyFactor, BASIS_POINTS_DIVISOR_BIGINT, expandDecimals, USD_DECIMALS } from "utils/numbers";
+import { DecreasePositionSwapType } from "utils/orders/types";
 import { getLiquidationPrice } from "utils/positions";
 import type { PositionInfoLoaded } from "utils/positions/types";
 
@@ -254,6 +255,10 @@ describe("getMaxWithdrawAmount", () => {
         sizeDeltaInTokens: 0n,
         collateralDeltaAmount,
         payedRemainingCollateralAmount: 0n,
+        payedOutputUsd: 0n,
+        swapProfitFeeUsd: 0n,
+        swapUiFeeUsd: 0n,
+        decreaseSwapType: DecreasePositionSwapType.NoSwap,
         minCollateralUsd,
         minPositionSizeUsd: expandDecimals(1, USD_DECIMALS),
         userReferralInfo: undefined,
@@ -284,6 +289,10 @@ describe("getMaxWithdrawAmount", () => {
       sizeDeltaInTokens: 0n,
       collateralDeltaAmount: maxWithdraw + 1n,
       payedRemainingCollateralAmount: 0n,
+      payedOutputUsd: 0n,
+      swapProfitFeeUsd: 0n,
+      swapUiFeeUsd: 0n,
+      decreaseSwapType: DecreasePositionSwapType.NoSwap,
       minCollateralUsd,
       minPositionSizeUsd: expandDecimals(1, USD_DECIMALS),
       userReferralInfo: undefined,

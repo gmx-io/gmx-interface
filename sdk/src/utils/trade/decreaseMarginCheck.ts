@@ -3,9 +3,10 @@ import { getProportionalPendingImpactValues } from "utils/fees";
 import { getMarketInfoWithOpenInterestDelta, getOpenInterestUsd, getPriceForPnl } from "utils/markets";
 import { MarketInfo } from "utils/markets/types";
 import { applyFactor } from "utils/numbers";
+import { DecreasePositionSwapType } from "utils/orders/types";
 import { getPositionPnlUsd } from "utils/positions";
 import { UserReferralInfo } from "utils/referrals/types";
-import { convertToUsd } from "utils/tokens";
+import { convertToTokenAmount, convertToUsd, getIsEquivalentTokens } from "utils/tokens";
 import { TokenData } from "utils/tokens/types";
 
 import {
@@ -28,6 +29,10 @@ export type DecreaseResultingPositionMarginStateParams = {
   sizeDeltaInTokens: bigint;
   collateralDeltaAmount: bigint;
   payedRemainingCollateralAmount: bigint;
+  payedOutputUsd: bigint;
+  swapProfitFeeUsd: bigint;
+  swapUiFeeUsd: bigint;
+  decreaseSwapType: DecreasePositionSwapType;
   minCollateralUsd: bigint;
   minPositionSizeUsd: bigint;
   userReferralInfo: UserReferralInfo | undefined;
@@ -41,6 +46,10 @@ export type DecreaseResultingPositionMarginStateParams = {
  * withdrawal and cancels the collateral withdrawal of a partial close, then `validatePosition` on the
  * remaining position. Returns undefined when the contract validates nothing: a full close, or a partial
  * close it turns into one.
+ *
+ * `getDecreasePositionAmounts` pays the closing costs from the realized profit first. The contract does so
+ * only when the profit ends up in the collateral token; a profit that stays in the pnl token (receiving the
+ * pnl token, split receive) is touched last, so the costs taken from it are charged to the collateral here.
  */
 export function getDecreaseResultingPositionMarginState(
   p: DecreaseResultingPositionMarginStateParams
@@ -53,6 +62,10 @@ export function getDecreaseResultingPositionMarginState(
     sizeDeltaUsd,
     sizeDeltaInTokens,
     payedRemainingCollateralAmount,
+    payedOutputUsd,
+    swapProfitFeeUsd,
+    swapUiFeeUsd,
+    decreaseSwapType,
     minCollateralUsd,
     minPositionSizeUsd,
     userReferralInfo,
@@ -154,7 +167,21 @@ export function getDecreaseResultingPositionMarginState(
     indexToken,
   });
 
-  const nextCollateralAmount = position.collateralAmount - payedRemainingCollateralAmount - collateralDeltaAmount;
+  const pnlToken = isLong ? marketInfo.longToken : marketInfo.shortToken;
+  const isProfitPaidInCollateralToken =
+    decreaseSwapType === DecreasePositionSwapType.SwapPnlTokenToCollateralToken ||
+    getIsEquivalentTokens(pnlToken, collateralToken);
+
+  const payedCollateralAmount = isProfitPaidInCollateralToken
+    ? payedRemainingCollateralAmount
+    : payedRemainingCollateralAmount +
+      convertToTokenAmount(
+        payedOutputUsd - swapProfitFeeUsd - swapUiFeeUsd,
+        collateralToken.decimals,
+        collateralToken.prices.minPrice
+      )!;
+
+  const nextCollateralAmount = position.collateralAmount - payedCollateralAmount - collateralDeltaAmount;
 
   return getResultingPositionMarginState({
     marketInfo: getMarketInfoWithOpenInterestDelta({
