@@ -31,9 +31,11 @@ import {
   selectPositionSellerFees,
   selectPositionSellerMarkPrice,
   selectPositionSellerMaxLiquidityPath,
+  selectPositionSellerNextLeverageWithoutPnl,
   selectPositionSellerNextPositionValuesForDecrease,
   selectPositionSellerPosition,
   selectPositionSellerReceiveToken,
+  selectPositionSellerRemainingPositionMarginState,
   selectPositionSellerSetDefaultReceiveToken,
   selectPositionSellerShouldSwap,
   selectPositionSellerSplitReceiveDecreaseAmounts,
@@ -327,6 +329,8 @@ export function PositionSeller() {
   }, [swapAmounts, decreaseAmounts]);
 
   const nextPositionValues = useSelector(selectPositionSellerNextPositionValuesForDecrease);
+  const nextLeverageWithoutPnl = useSelector(selectPositionSellerNextLeverageWithoutPnl);
+  const remainingPositionMarginState = useSelector(selectPositionSellerRemainingPositionMarginState);
 
   const { fees, executionFee } = useSelector(selectPositionSellerFees);
 
@@ -534,6 +538,7 @@ export function PositionSeller() {
       existingPosition: position,
       markPrice,
       nextPositionValues,
+      nextLeverage: nextLeverageWithoutPnl,
       isLong: position.isLong,
       isContractAccount: false,
       minCollateralUsd,
@@ -541,6 +546,7 @@ export function PositionSeller() {
       minPositionSizeUsd,
       isTwap,
       numberOfParts,
+      remainingPositionMarginState,
     });
 
     const validationResult = takeValidationResult(
@@ -575,6 +581,8 @@ export function PositionSeller() {
     markPrice,
     minCollateralUsd,
     nextPositionValues,
+    nextLeverageWithoutPnl,
+    remainingPositionMarginState,
     position,
     receiveToken,
     tokensData,

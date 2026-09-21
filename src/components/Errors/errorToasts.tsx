@@ -32,6 +32,7 @@ export type AdditionalErrorParams = {
   additionalContent?: ReactNode;
   slippageInputId?: string;
   isSizeIncrease?: boolean;
+  isDecrease?: boolean;
   defaultMessage?: ReactNode;
   isInternalSwapFallback?: boolean;
   isExternalSwapFallback?: boolean;
@@ -46,6 +47,7 @@ export function getTxnErrorToast(
     additionalContent,
     slippageInputId,
     isSizeIncrease,
+    isDecrease,
     defaultMessage = getDefaultErrorMessage(errorData),
     isInternalSwapFallback,
     isExternalSwapFallback,
@@ -142,7 +144,13 @@ export function getTxnErrorToast(
     return toastParams;
   }
 
-  const contractErrorMessage = getContractErrorToastContent({ chainId, errorData, slippageInputId, isSizeIncrease });
+  const contractErrorMessage = getContractErrorToastContent({
+    chainId,
+    errorData,
+    slippageInputId,
+    isSizeIncrease,
+    isDecrease,
+  });
   if (contractErrorMessage) {
     toastParams.errorContent = contractErrorMessage;
     return toastParams;

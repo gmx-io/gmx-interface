@@ -1,18 +1,22 @@
 import type { Address } from "viem";
 
 import { USD_DECIMALS } from "config/factors";
-import {
-  getIsPositionInfoLoaded,
-  getMinCollateralFactorForPosition,
-  parsePositionKey,
-} from "domain/synthetics/positions";
+import { getIsPositionInfoLoaded, parsePositionKey } from "domain/synthetics/positions";
 import { convertToUsd } from "domain/synthetics/tokens";
-import { parseValue } from "lib/numbers";
+import { getMaxWithdrawAmount } from "domain/synthetics/trade";
+import { parseValue, truncateToBalanceDisplayDecimals } from "lib/numbers";
 import { TokenBalanceType } from "sdk/utils/tokens/types";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector } from "../utils";
-import { selectOrdersInfoData, selectPositionsInfoData, selectTokensData } from "./globalSelectors";
+import {
+  selectOrdersInfoData,
+  selectPositionConstants,
+  selectPositionsInfoData,
+  selectProDiscountFactor,
+  selectTokensData,
+  selectUserReferralInfo,
+} from "./globalSelectors";
 
 export const selectPositionEditorEditingPositionKey = (state: SyntheticsState) =>
   state.positionEditor.editingPositionKey;
@@ -23,14 +27,6 @@ export const selectPositionEditorPosition = createSelector((q) => {
   const positionKey = q(selectPositionEditorEditingPositionKey);
   if (!positionKey) return undefined;
   return q((s) => selectPositionsInfoData(s)?.[positionKey]);
-});
-
-export const selectPositionEditorMinCollateralFactor = createSelector((q) => {
-  const position = q(selectPositionEditorPosition);
-
-  if (!getIsPositionInfoLoaded(position)) return undefined;
-
-  return getMinCollateralFactorForPosition(position, 0n);
 });
 
 export const selectPositionEditorCollateralInputValue = (state: SyntheticsState) =>
@@ -146,4 +142,26 @@ export const selectPositionEditorCollateralInputAmountAndUsd = createSelector((q
     collateralDeltaAmount,
     collateralDeltaUsd,
   };
+});
+
+export const selectPositionEditorMaxWithdrawAmount = createSelector((q) => {
+  const position = q(selectPositionEditorPosition);
+
+  if (!getIsPositionInfoLoaded(position)) return 0n;
+
+  const collateralToken = q(selectPositionEditorSelectedCollateralToken);
+  const { minCollateralUsd } = q(selectPositionConstants);
+
+  const maxWithdrawAmount = getMaxWithdrawAmount({
+    position,
+    minCollateralUsd,
+    collateralPrice: collateralToken?.prices.minPrice,
+    collateralDecimals: collateralToken?.decimals,
+    userReferralInfo: q(selectUserReferralInfo),
+    proDiscountFactor: q(selectProDiscountFactor),
+  });
+
+  if (!collateralToken) return maxWithdrawAmount;
+
+  return truncateToBalanceDisplayDecimals(maxWithdrawAmount, collateralToken.decimals, collateralToken.isStable);
 });

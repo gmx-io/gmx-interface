@@ -1,6 +1,7 @@
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER } from "configs/factors";
 import { bigMath } from "utils/bigmath";
 import { getPositionFee } from "utils/fees";
+import { getMaxAllowedLeverage } from "utils/markets";
 import { MarketInfo, MarketsInfoData } from "utils/markets/types";
 import {
   applyFactor,
@@ -32,6 +33,7 @@ import { getSwapAmountsByFromValue, getSwapStats } from "utils/swap";
 import { convertToTokenAmount, convertToUsd, getIsEquivalentTokens } from "utils/tokens";
 import { TokenData } from "utils/tokens/types";
 
+import { getResultingPositionMarginState } from "./increaseMarginCheck";
 import { DecreasePositionAmounts, FindSwapPath, NextPositionValues, SwapAmounts } from "./types";
 
 export function getDecreasePositionSizeDeltaInTokens(p: {
@@ -561,8 +563,9 @@ export function getMaxWithdrawAmount(p: {
   collateralPrice: bigint | undefined;
   collateralDecimals: number | undefined;
   userReferralInfo: UserReferralInfo | undefined;
+  proDiscountFactor?: bigint;
 }): bigint {
-  const { position, minCollateralUsd, collateralPrice, collateralDecimals, userReferralInfo } = p;
+  const { position, minCollateralUsd, collateralPrice, collateralDecimals, userReferralInfo, proDiscountFactor } = p;
 
   const minRequiredCollateralUsd = getMinRequiredCollateralUsdForPosition({
     position,
@@ -570,11 +573,41 @@ export function getMaxWithdrawAmount(p: {
     userReferralInfo,
   });
 
-  if (position.collateralUsd < minRequiredCollateralUsd) {
+  const remainingPositionMarginState = getResultingPositionMarginState({
+    marketInfo: position.marketInfo,
+    collateralToken: position.collateralToken,
+    sizeInUsd: position.sizeInUsd,
+    sizeInTokens: position.sizeInTokens,
+    collateralAmount: position.remainingCollateralAmount,
+    pendingImpactAmount: position.pendingImpactAmount,
+    minCollateralUsd: minCollateralUsd ?? 0n,
+    isLong: position.isLong,
+    userReferralInfo,
+    proDiscountFactor,
+    shouldValidateMinCollateralUsd: false,
+  });
+
+  const maxAllowedLeverage = getMaxAllowedLeverage({
+    marketAddress: position.marketInfo.marketTokenAddress,
+    minCollateralFactor: position.marketInfo.minCollateralFactor,
+    minCollateralFactorForLiquidation: position.marketInfo.minCollateralFactorForLiquidation,
+    positionFeeFactorForBalanceWasNotImproved: position.marketInfo.positionFeeFactorForBalanceWasNotImproved,
+  });
+
+  const minCollateralUsdForMaxAllowedLeverage = roundUpDivision(
+    position.sizeInUsd * BASIS_POINTS_DIVISOR_BIGINT,
+    BigInt(maxAllowedLeverage)
+  );
+
+  const maxWithdrawUsd = bigMath.min(
+    position.collateralUsd - minRequiredCollateralUsd,
+    remainingPositionMarginState.remainingCollateralUsd - remainingPositionMarginState.minCollateralUsdForLeverage,
+    position.remainingCollateralUsd - minCollateralUsdForMaxAllowedLeverage
+  );
+
+  if (maxWithdrawUsd <= 0n) {
     return 0n;
   }
-
-  const maxWithdrawUsd = position.collateralUsd - minRequiredCollateralUsd;
 
   return convertToTokenAmount(maxWithdrawUsd, collateralDecimals, collateralPrice) ?? 0n;
 }

@@ -30,6 +30,7 @@ import {
   parseValue,
   removeTrailingZeros,
   trimZeroDecimals,
+  truncateToBalanceDisplayDecimals,
   roundWithDecimals,
   roundUpMagnitudeDivision,
   roundsToZero,
@@ -447,6 +448,39 @@ describe("formatAmountHuman", () => {
     expect(formatAmountHuman(ONE_USD * 1000n, USD_DECIMALS, false, 0)).toBe("1k");
     expect(formatAmountHuman(ONE_USD * 1500000n, USD_DECIMALS, false, 0)).toBe("2m");
   });
+});
+
+describe("truncateToBalanceDisplayDecimals", () => {
+  it("rounds a stable amount down to the two decimals its balance is shown with", () => {
+    // 135.938928 USDC is shown as 135.94; the largest amount that can be typed back as shown is 135.93
+    expect(truncateToBalanceDisplayDecimals(135_938_928n, 6, true)).toBe(135_930_000n);
+    expect(formatBalanceAmount(135_930_000n, 6, undefined, { isStable: true })).toBe("135.93");
+  });
+
+  it("keeps an amount that is already at display precision", () => {
+    expect(truncateToBalanceDisplayDecimals(135_930_000n, 6, true)).toBe(135_930_000n);
+    expect(truncateToBalanceDisplayDecimals(0n, 6, true)).toBe(0n);
+  });
+
+  it("uses the finer precision small and non-stable amounts are shown with", () => {
+    // 0.0494382912 ETH is shown with 6 decimals
+    const amount = 49_438_291_200_000_000n;
+    const truncated = truncateToBalanceDisplayDecimals(amount, 18);
+
+    expect(truncated).toBe(49_438_000_000_000_000n);
+    expect(formatBalanceAmount(truncated, 18)).toBe("0.049438");
+  });
+
+  it.each([135_938_928n, 99_999_999n, 1_005_000n, 104_999n, 9_999n])(
+    "never exceeds the amount and always reads back as displayed (%s)",
+    (amount) => {
+      const truncated = truncateToBalanceDisplayDecimals(amount, 6, true);
+      const displayed = formatBalanceAmount(truncated, 6, undefined, { isStable: true, showZero: true });
+
+      expect(truncated).toBeLessThanOrEqual(amount);
+      expect(parseValue(displayed.replace(/,/g, ""), 6)).toBe(truncated);
+    }
+  );
 });
 
 describe("formatBalanceAmount", () => {

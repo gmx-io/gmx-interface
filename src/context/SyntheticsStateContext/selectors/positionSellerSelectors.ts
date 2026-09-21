@@ -1,8 +1,11 @@
+import { QueryFunction } from "@taskworld.com/rereselect";
+
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { estimateExecuteDecreaseOrderGasLimit, estimateOrderOraclePriceCount } from "domain/synthetics/fees";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import {
   getIsPositionInfoLoaded,
+  getLeverage,
   getMinCollateralFactorForPosition,
   willPositionCollateralBeSufficientForPosition,
 } from "domain/synthetics/positions";
@@ -22,7 +25,8 @@ import { bigMath } from "sdk/utils/bigmath";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { getIsEquivalentTokens } from "sdk/utils/tokens";
 import { createTradeFlags } from "sdk/utils/trade";
-import { TradeMode, TradeType } from "sdk/utils/trade/types";
+import { getDecreaseResultingPositionMarginState } from "sdk/utils/trade/decreaseMarginCheck";
+import { DecreasePositionAmounts, TradeMode, TradeType } from "sdk/utils/trade/types";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector } from "../utils";
@@ -34,6 +38,7 @@ import {
   selectMarketsInfoData,
   selectPositionConstants,
   selectPositionsInfoData,
+  selectProDiscountFactor,
   selectTokensData,
   selectUiFeeFactor,
   selectUserReferralInfo,
@@ -104,6 +109,61 @@ export const selectPositionSellerNextPositionValuesForDecrease = createSelector(
     userReferralInfo,
   });
 });
+
+export const selectPositionSellerNextLeverageWithoutPnl = createSelector((q) => {
+  const nextPositionValues = q(selectPositionSellerNextPositionValuesForDecrease);
+
+  if (nextPositionValues?.nextSizeUsd === undefined || nextPositionValues.nextCollateralUsd === undefined) {
+    return undefined;
+  }
+
+  return getLeverage({
+    sizeInUsd: nextPositionValues.nextSizeUsd,
+    collateralUsd: nextPositionValues.nextCollateralUsd,
+    pnl: undefined,
+    pendingBorrowingFeesUsd: 0n,
+    pendingFundingFeesUsd: 0n,
+  });
+});
+
+function getRemainingPositionMarginState(
+  q: QueryFunction<SyntheticsState>,
+  decreaseAmounts: DecreasePositionAmounts | undefined
+) {
+  if (q(selectPositionSellerOrderOption) !== OrderOption.Market) return undefined;
+
+  const position = q(selectPositionSellerPosition);
+  const { minCollateralUsd, minPositionSizeUsd } = q(selectPositionConstants);
+
+  if (
+    !getIsPositionInfoLoaded(position) ||
+    !decreaseAmounts ||
+    decreaseAmounts.sizeDeltaUsd <= 0n ||
+    minCollateralUsd === undefined ||
+    minPositionSizeUsd === undefined
+  ) {
+    return undefined;
+  }
+
+  return getDecreaseResultingPositionMarginState({
+    marketInfo: position.marketInfo,
+    collateralToken: position.collateralToken,
+    isLong: position.isLong,
+    position,
+    sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
+    sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
+    collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,
+    payedRemainingCollateralAmount: decreaseAmounts.payedRemainingCollateralAmount,
+    minCollateralUsd,
+    minPositionSizeUsd,
+    userReferralInfo: q(selectUserReferralInfo),
+    proDiscountFactor: q(selectProDiscountFactor),
+  });
+}
+
+export const selectPositionSellerRemainingPositionMarginState = createSelector((q) =>
+  getRemainingPositionMarginState(q, q(selectPositionSellerDecreaseAmounts))
+);
 
 const selectPositionSellerDecreaseAmountArgs = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
@@ -197,13 +257,17 @@ export const selectPositionSellerLeverageDisabledByCollateral = createSelector((
 
   if (minCollateralFactor === undefined) return false;
 
-  return !willPositionCollateralBeSufficientForPosition(
+  const willCollateralBeSufficient = willPositionCollateralBeSufficientForPosition(
     position,
     decreaseAmountsWithKeepLeverage.collateralDeltaAmount,
     decreaseAmountsWithKeepLeverage.realizedPnl,
     minCollateralFactor,
     -decreaseAmountsWithKeepLeverage.sizeDeltaUsd
   );
+
+  if (!willCollateralBeSufficient) return true;
+
+  return Boolean(getRemainingPositionMarginState(q, decreaseAmountsWithKeepLeverage)?.isLiquidatable);
 });
 
 export const selectPositionSellerMarkPrice = createSelector((q) => {
