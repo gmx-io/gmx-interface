@@ -1517,6 +1517,7 @@ msgstr "Ликвидность доступна только в сети {chainN
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop-Loss"
@@ -2075,6 +2076,7 @@ msgstr "Отмена {ordersText}..."
 msgid "Received at close (GMX balance)"
 msgstr "Получено при закрытии (баланс GMX)"
 
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "Size (% of position)"
 msgstr "Размер (% позиции)"
@@ -3607,6 +3609,9 @@ msgid "Theme"
 msgstr "Тема"
 
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
@@ -3736,6 +3741,7 @@ msgstr "Не удалось загрузить историю сделок"
 msgid "<0>Set recommended impact: {0}</0>."
 msgstr "<0>Установить рекомендуемое влияние: {0}</0>."
 
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Position would be liquidated immediately upon execution. Reduce the size."
 msgstr "Позиция будет немедленно ликвидирована при исполнении. Уменьшите размер."
@@ -3770,6 +3776,7 @@ msgstr "Активность трейдеров"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -4017,6 +4024,7 @@ msgid "This trigger price is beyond the current liquidation price. Your position
 msgstr "Эта цена активации находится за пределами текущей цены ликвидации. Ваша позиция может быть ликвидирована до того, как этот TP/SL ордер будет исполнен."
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
@@ -4158,7 +4166,7 @@ msgstr "Минимальный фактор финансирования (лон
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
 msgstr "Что делает GMX более экономичным, чем другие перпетуальные платформы?"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Margin is below the minimum required for the position size"
 msgstr "Маржа ниже минимума, необходимого для размера позиции"
 
@@ -4986,6 +4994,7 @@ msgid "{gmOrGlvLabel} bought successfully, but bridge to {0} failed. Your funds 
 msgstr "{gmOrGlvLabel} успешно куплен, но бридж в {0} не удался. Ваши средства в безопасности на вашем Счете GMX. Повторите бридж или перейдите в пул {indexName}, чтобы вывести ваши токены {gmOrGlvLabel}."
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionItem/PositionItemOrders.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -5475,10 +5484,6 @@ msgstr "Ваш объём торгов"
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Fail external swaps"
 msgstr "Принудительный сбой внешних свопов"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute: the resulting position would exceed the maximum allowed leverage. <0>Deposit margin</0> or reduce the order size before it triggers."
-msgstr "Ордер может не исполниться: итоговая позиция превысит максимально допустимое кредитное плечо. <0>Внесите маржу</0> или уменьшите размер ордера до его срабатывания."
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
@@ -6339,10 +6344,6 @@ msgstr "Разница"
 msgid "Stop-Loss price"
 msgstr ""
 
-#: src/components/OrderEditor/OrderEditor.tsx
-msgid "No valid leverage available"
-msgstr "Нет доступного допустимого кредитного плеча"
-
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "swap amount"
 msgstr "сумма свопа"
@@ -6354,10 +6355,6 @@ msgstr "Оптимальный"
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{updateOrdersCount} TP/SL orders updated"
 msgstr "{updateOrdersCount} TP/SL ордеров обновлено"
-
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Insufficient margin. Add more margin"
-msgstr ""
 
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "What's the minimum volume to qualify?"
@@ -6491,6 +6488,10 @@ msgstr ""
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "ACTIONS"
 msgstr ""
+
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Order exceeds max leverage. Reduce the size."
+msgstr "Ордер превышает максимальное кредитное плечо. Уменьшите размер."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6701,6 +6702,10 @@ msgstr "Предложения GMX"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesPromoCard.tsx
 msgid "Activate someone's referral code to receive a permanent discount on all opening and closing <0/> fees. Your savings apply automatically on every trade. <1>Read more</1>."
 msgstr ""
+
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "This order may fail to execute because the resulting position would exceed the maximum allowed leverage. Increase the position's margin or reduce the order size before it triggers."
+msgstr "Этот ордер может не исполниться, так как итоговая позиция превысит максимально допустимое плечо. Увеличьте маржу позиции или уменьшите размер ордера до его срабатывания."
 
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "See more"
@@ -7983,6 +7988,10 @@ msgstr ""
 msgid "No open positions"
 msgstr "Нет открытых позиций"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The position cannot be increased at the current leverage. Increase margin or reduce size. Current margin: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
+msgstr "Позицию нельзя увеличить при текущем плече. Увеличьте маржу или уменьшите размер. Текущая маржа: {remainingCollateralUsdText}, требуется: {minCollateralUsdForLeverageText}"
+
 #: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
 msgid "See the perks"
 msgstr "Посмотреть преимущества"
@@ -8455,10 +8464,6 @@ msgstr "Проект"
 msgid "24h low"
 msgstr "Мин. за 24ч"
 
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Insufficient margin. Add {missingCollateralUsdText} more margin"
-msgstr ""
-
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claim <0>{0}</0> of <1>{1}</1>"
 msgstr ""
@@ -8549,10 +8554,6 @@ msgstr ""
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Edit"
 msgstr "Редактировать"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "No available leverage found"
-msgstr "Доступное кредитное плечо не найдено"
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total supply"
@@ -8718,6 +8719,10 @@ msgstr "Возмещение GLP (тест)"
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Built for those<0/>who do more."
 msgstr "Создано для тех,<0/>кто делает больше."
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Max leverage exceeded. Increase margin or reduce size"
+msgstr "Превышено максимальное кредитное плечо. Увеличьте маржу или уменьшите размер"
 
 #: src/components/BridgingInfo/BridgingInfo.tsx
 msgid "Bridge {tokenSymbol} to {chainName} with"
@@ -8906,6 +8911,10 @@ msgstr ""
 msgid "Trade errors"
 msgstr "Ошибки торговли"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This order may fail to execute because the resulting position would exceed the maximum allowed leverage. <0>Increase the position's margin</0> or reduce the order size before it triggers."
+msgstr "Этот ордер может не исполниться, так как итоговая позиция превысит максимально допустимое плечо. <0>Увеличьте маржу позиции</0> или уменьшите размер ордера до его срабатывания."
+
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to and withdrawing from GMX Account..."
 msgstr "Пополнение и вывод средств из GMX Account..."
@@ -8917,6 +8926,10 @@ msgstr ""
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "SHORT LIQ."
 msgstr "ЛИКВ. ШОРТОВ"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Max leverage exceeded. Remaining margin {remainingCollateralUsdText} is below the minimum for the position size. Increase margin or reduce size"
+msgstr "Превышено максимальное кредитное плечо. Оставшаяся маржа {remainingCollateralUsdText} ниже минимума для размера позиции. Увеличьте маржу или уменьшите размер"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Account type"
@@ -9384,6 +9397,10 @@ msgstr "Покупка GM не удалась"
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 msgid "This position's margin is below the minimum required for its size, so settlement will fail. Add margin, or close the position. Closing settles the funding automatically."
 msgstr "Маржа этой позиции ниже минимума, необходимого для её размера, поэтому расчёт не удастся. Добавьте маржу или закройте позицию. При закрытии фондирование рассчитывается автоматически."
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The position cannot be increased at the current leverage. Increase margin or reduce size."
+msgstr "Позицию нельзя увеличить при текущем плече. Увеличьте маржу или уменьшите размер."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max funding factor (long)"
@@ -9857,6 +9874,10 @@ msgstr "Размер позиции превышает доступный отк
 msgid "Yes"
 msgstr "Да"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Margin is below the minimum required for the position size. Current: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
+msgstr "Маржа ниже минимума, необходимого для размера позиции. Текущая: {remainingCollateralUsdText}, требуется: {minCollateralUsdForLeverageText}"
+
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (TWAP)"
 msgstr "Увеличить размер (TWAP)"
@@ -10141,6 +10162,12 @@ msgstr "Запрос отправлен, но подтвердить его ре
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short funding rate"
 msgstr ""
+
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "The resulting position would exceed the maximum allowed leverage. Increase margin or reduce size."
+msgstr "Итоговая позиция превысит максимально допустимое плечо. Увеличьте маржу или уменьшите размер."
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "No funds available for GMX Account deposit"
@@ -11630,6 +11657,7 @@ msgid "Cancellable in ..."
 msgstr "Отмена через ..."
 
 #: src/components/Seo/SEO.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "GMX | decentralized perpetual exchange"
 msgstr ""
 
@@ -11673,6 +11701,8 @@ msgstr "Получить комиссии финансирования"
 msgid "Token permit testing"
 msgstr "Тестирование разрешений токенов"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -12680,6 +12710,7 @@ msgstr "Истёкший депозит"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take-Profit"

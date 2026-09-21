@@ -1,6 +1,11 @@
-import { metrics } from "lib/metrics";
+import { reportStartupError } from "lib/metrics/startupErrors";
 import { getDocumentBuildId, UNKNOWN_BUILD_ID } from "lib/pwa/buildId";
-import { clearRecoveryQueryParam, getIsReloadingFromNetwork, getRecoveryUrl } from "lib/pwa/recoveryNavigation";
+import {
+  clearRecoveryQueryParam,
+  getIsReloadingFromNetwork,
+  getRecoveryUrl,
+  reloadFromNetwork,
+} from "lib/pwa/recoveryNavigation";
 import { getSessionStorage } from "lib/pwa/sessionStorage";
 
 const RECOVERED_BUILD_KEY = "gmx-pwa-preload-error-recovered-build";
@@ -64,8 +69,8 @@ function getRecoveryFailure(error: StoredPreloadError, reason: string) {
 export function registerPreloadErrorRecovery(options: PreloadErrorRecoveryOptions = {}) {
   const {
     isOnline = () => navigator.onLine,
-    reloadPage = (url) => window.location.replace(url),
-    reportError = (error) => metrics.pushError(error, "pwa.preloadError"),
+    reloadPage,
+    reportError = (error) => reportStartupError(error, "pwa.preloadError"),
   } = options;
   const storage = options.storage === undefined ? getSessionStorage() : options.storage;
 
@@ -105,7 +110,11 @@ export function registerPreloadErrorRecovery(options: PreloadErrorRecoveryOption
     }
 
     event.preventDefault();
-    reloadPage(getRecoveryUrl(error.buildId));
+    if (reloadPage) {
+      reloadPage(getRecoveryUrl(error.buildId));
+    } else {
+      reloadFromNetwork(error.buildId);
+    }
   };
 
   window.addEventListener("vite:preloadError", handlePreloadError);

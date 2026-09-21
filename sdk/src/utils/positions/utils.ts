@@ -63,7 +63,7 @@ export function getPositionPnlUsd(p: {
     return totalPnl;
   }
 
-  const poolPnl = getPositiveMarketPnl(marketInfo, isLong, true);
+  const poolPnl = getPositiveMarketPnl(marketInfo, isLong, false);
   const poolUsd = getPoolUsdWithoutPnl(marketInfo, isLong, "minPrice");
 
   const cappedPnl = getCappedPoolPnl({
@@ -73,10 +73,8 @@ export function getPositionPnlUsd(p: {
     isLong,
   });
 
-  const WEI_PRECISION = expandDecimals(1, 18);
-
   if (cappedPnl !== poolPnl && cappedPnl > 0 && poolPnl > 0) {
-    totalPnl = bigMath.mulDiv(totalPnl, cappedPnl / WEI_PRECISION, poolPnl / WEI_PRECISION);
+    totalPnl = bigMath.mulDiv(totalPnl, cappedPnl, poolPnl);
   }
 
   return totalPnl;

@@ -11,7 +11,7 @@ import { NumberPart, NumberPartInput, numberParts } from "lib/numbers";
 import { TradeActionType } from "sdk/utils/tradeHistory/types";
 
 import { LOCALE_DATE_LOCALE_MAP } from "components/DateRangeSelect/DateRangeSelect";
-import { getContractErrorMessage } from "components/Errors/getContractErrorMessage";
+import { getContractErrorMessage, getMarginBelowMinimumErrorMessage } from "components/Errors/getContractErrorMessage";
 
 import { CustomErrorName } from "./CustomErrorName";
 
@@ -214,10 +214,6 @@ export function getErrorTooltipTitle(errorName: string, isMarketOrder: boolean, 
 }
 
 const MIN_COLLATERAL_FOR_LEVERAGE_REASON = "min collateral for leverage";
-
-export function getMarginBelowMinimumErrorMessage() {
-  return t`Margin is below the minimum required for the position size`;
-}
 
 function getTradeHistoryErrorMessage(errorName: string, errorArgs?: unknown) {
   switch (errorName) {

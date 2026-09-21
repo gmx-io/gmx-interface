@@ -122,6 +122,7 @@ import { TPSLInputRow } from "./TPSLInputRow";
 
 type Props = {
   isVisible: boolean;
+  isCreationPending?: boolean;
   setIsVisible: (visible: boolean) => void;
   position: PositionInfo;
   onSuccess?: () => void;
@@ -132,6 +133,7 @@ type Props = {
 
 export function AddTPSLModal({
   isVisible,
+  isCreationPending = false,
   setIsVisible,
   position,
   onSuccess,
@@ -819,7 +821,8 @@ export function AddTPSLModal({
   ]);
 
   const handleSubmit = useCallback(async () => {
-    if (!signer || !provider || !batchParams || !tokensData || !marketsInfoData) return;
+    if (isSubmitting || isCreationPending || !signer || !provider || !batchParams || !tokensData || !marketsInfoData)
+      return;
 
     setIsSubmitting(true);
 
@@ -865,6 +868,8 @@ export function AddTPSLModal({
       setIsSubmitting(false);
     }
   }, [
+    isSubmitting,
+    isCreationPending,
     signer,
     provider,
     batchParams,
@@ -925,7 +930,7 @@ export function AddTPSLModal({
       };
     }
 
-    if (isSubmitting) {
+    if (isSubmitting || isCreationPending) {
       return {
         text: t`Creating...`,
         disabled: true,
@@ -943,7 +948,16 @@ export function AddTPSLModal({
       text: `${modePrefix}: ${actionLabel} ${marketPairLabel} ${directionLabel}`,
       disabled: false,
     };
-  }, [actionLabel, directionLabel, isMultichainSubmitDisabled, isSubmitting, marketPairLabel, modePrefix, submitError]);
+  }, [
+    actionLabel,
+    directionLabel,
+    isMultichainSubmitDisabled,
+    isSubmitting,
+    isCreationPending,
+    marketPairLabel,
+    modePrefix,
+    submitError,
+  ]);
 
   const currentLeverage = formatLeverage(position.leverage);
   const currentLeverageParts = useMemo(() => formatLeverageParts(position.leverage), [position.leverage]);

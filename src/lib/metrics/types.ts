@@ -2,6 +2,8 @@ import type { SourceChainId } from "config/chains";
 import type { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import type { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import type { ErrorData } from "lib/errors";
+import type { DisplayMode } from "lib/pwa/getDisplayMode";
+import type { LaunchSource } from "lib/pwa/getLaunchSource";
 import type { TradeMode } from "sdk/utils/trade/types";
 import type { TwapDuration } from "sdk/utils/twap/types";
 
@@ -15,6 +17,8 @@ export type GlobalMetricData = {
   apiSdkPositions?: boolean;
   apiSdkOrders?: boolean;
   isMobile: boolean;
+  displayMode: DisplayMode;
+  launchSource?: LaunchSource;
   isHomeSite: boolean;
   browserName?: string;
   browserVersion?: string;
@@ -368,9 +372,7 @@ export type ErrorEvent = {
 };
 
 export type ExpressOrderMetricData = {
-  // where the operation is routed; re-recorded at Sent with the relay that actually took it, so a
-  // thrown kill switch shows in the data instead of silently poisoning the A/B comparison
-  relayProvider: "gelato" | "gmx" | undefined;
+  relayProvider: "gmx";
   isExpressValid: boolean;
   isOutGasTokenBalance: boolean;
   needGasTokenApproval: boolean;
@@ -583,14 +585,6 @@ export type MulticallRequestTiming = {
   };
 };
 
-export type GelatoPollingTiming = {
-  event: "express.pollGelatoTask.finalStatus";
-  data: {
-    status: string;
-  };
-};
-
-// kept separate from GelatoPollingTiming so the Gelato-era latency baseline stays comparable
 export type GmxRelayPollingTiming = {
   event: "express.pollRelayTask.finalStatus";
   data: {

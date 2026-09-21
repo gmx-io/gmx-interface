@@ -1,5 +1,5 @@
 import { HttpClient, HttpError } from "./http";
-import { IHttp } from "./types";
+import { IHttp, ServedResult } from "./types";
 
 const FAILURE_WINDOW_MS = 60_000;
 const FAILURES_BEFORE_ROTATION = 3;
@@ -41,7 +41,20 @@ export class HttpClientWithFallback implements IHttp {
     body: unknown,
     opts?: { transform?: (result: any) => TResult }
   ): Promise<TResult> {
-    return this.withFallback((client) => client.postJson<TResult>(path, body, opts));
+    return (await this.postJsonWith<TResult>(path, body, opts)).result;
+  }
+
+  // transform runs after the fallback loop: a deterministic parse error must not re-post to the next origin
+  async postJsonWith<TResult>(
+    path: string,
+    body: unknown,
+    opts?: { transform?: (result: any) => TResult }
+  ): Promise<ServedResult<TResult>> {
+    const served = await this.withFallback(async (client) => ({
+      result: await client.postJson<any>(path, body),
+      client,
+    }));
+    return { result: opts?.transform ? opts.transform(served.result) : served.result, client: served.client };
   }
 
   private async withFallback<T>(fn: (client: HttpClient) => Promise<T>): Promise<T> {

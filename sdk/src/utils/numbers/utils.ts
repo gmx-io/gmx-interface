@@ -498,15 +498,16 @@ export function formatNumberHumanParts(n: number, showDollar = false, displayDec
   const sign = isNegative ? "-" : "";
   const currency = showDollar ? USD_PART : undefined;
 
-  if (absN >= 1_000_000_000) {
+  // Promote the suffix when the displayed value rounds to 1000 in the smaller unit.
+  if (Number((absN / 1_000_000).toFixed(displayDecimals)) >= 1000) {
     return numberParts(sign, currency, `${(absN / 1_000_000_000).toFixed(displayDecimals)}b`);
   }
 
-  if (absN >= 1_000_000) {
+  if (Number((absN / 1_000).toFixed(displayDecimals)) >= 1000) {
     return numberParts(sign, currency, `${(absN / 1_000_000).toFixed(displayDecimals)}m`);
   }
 
-  if (absN >= 1000) {
+  if (Number(absN.toFixed(displayDecimals)) >= 1000) {
     return numberParts(sign, currency, `${(absN / 1_000).toFixed(displayDecimals)}k`);
   }
 
