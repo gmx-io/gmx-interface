@@ -246,6 +246,7 @@ export function usePaxosTransit({
     feeTier,
     quote,
     quoteError,
+    transitFeesUsd,
     amountOut,
     step,
     submitTransit,

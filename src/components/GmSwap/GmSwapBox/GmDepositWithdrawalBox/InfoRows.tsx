@@ -2,13 +2,14 @@ import { t, Trans } from "@lingui/macro";
 import { ReactNode, useState } from "react";
 
 import { Operation } from "domain/synthetics/markets/types";
-import { GmSwapFees } from "domain/synthetics/trade";
 import { formatDeltaUsd } from "lib/numbers";
 
 import { ExpandableRow } from "components/ExpandableRow";
 import { GmFees } from "components/GmSwap/GmFees/GmFees";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import { UsdValueWithSkeleton } from "components/UsdValueWithSkeleton/UsdValueWithSkeleton";
+
+import type { GmLogicalFees } from "./useDepositWithdrawalFees";
 
 export function InfoRows({
   isDeposit,
@@ -17,7 +18,7 @@ export function InfoRows({
   executionDetails,
 }: {
   isDeposit: boolean;
-  fees: GmSwapFees | undefined;
+  fees: GmLogicalFees | undefined;
   isLoading?: boolean;
   executionDetails?: ReactNode;
 }) {
@@ -33,6 +34,8 @@ export function InfoRows({
         operation={isDeposit ? Operation.Deposit : Operation.Withdrawal}
         totalFees={fees?.totalFees}
         swapFee={fees?.swapFee}
+        collateralSwapFee={fees?.collateralSwapFee}
+        transitFee={fees?.transitFee}
         swapPriceImpact={fees?.swapPriceImpact}
         uiFee={fees?.uiFee}
         isLoading={isLoading}
