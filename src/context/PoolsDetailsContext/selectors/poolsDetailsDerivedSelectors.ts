@@ -13,7 +13,10 @@ import {
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
-import { makeSelectFindSwapPath } from "context/SyntheticsStateContext/selectors/tradeSelectors";
+import {
+  makeSelectFindSwapPath,
+  makeSelectMaxLiquidityPath,
+} from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getAreBothCollateralsCrossChain } from "domain/multichain/areBothCollateralsCrossChain";
 import { getMintableMarketTokens, isMarketInfo } from "domain/synthetics/markets";
@@ -567,6 +570,20 @@ export const selectPoolsDetailsCollateralSwapTokens = createSelector((q) => {
   const collateralToken = getByKey(tokensData, longTokenAddress);
 
   return collateralToken ? { token: availableCollateralSwapToken, collateralToken } : undefined;
+});
+
+export const selectPoolsDetailsUsdcUsdgSwapLiquidity = createSelector((q) => {
+  const paxosTransitConfig = getPaxosTransitConfig(q(selectChainId));
+
+  if (!paxosTransitConfig) {
+    return undefined;
+  }
+
+  const { usdcAddress, usdgAddress } = paxosTransitConfig;
+  const usdcToUsdg = q(makeSelectMaxLiquidityPath(usdcAddress, usdgAddress));
+  const usdgToUsdc = q(makeSelectMaxLiquidityPath(usdgAddress, usdcAddress));
+
+  return { usdcToUsdgUsd: usdcToUsdg.maxLiquidity, usdgToUsdcUsd: usdgToUsdc.maxLiquidity };
 });
 
 export const selectPoolsDetailsLongTokenAmount = createSelector((q) => {
