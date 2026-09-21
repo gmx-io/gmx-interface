@@ -4,7 +4,7 @@ import { isAddressEqual } from "viem";
 import type { WithdrawalStatus, WithdrawalStatuses } from "context/SyntheticsEvents/types";
 import type { TransitFeeTier, TransitFeeTierResponse } from "sdk/utils/paxos/types";
 
-export function findTransitWithdrawal(
+export function findTransitWithdrawalStatus(
   withdrawalStatuses: WithdrawalStatuses,
   p: { account: string | undefined; poolAddress: string | undefined; convertedWithdrawalKeys: string[] }
 ): WithdrawalStatus | undefined {
