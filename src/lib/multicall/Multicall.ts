@@ -16,6 +16,7 @@ import type { MulticallError, MulticallRequestConfig, MulticallResult } from "li
 import { CurrentRpcEndpoints } from "lib/rpc/RpcTracker";
 import { sleepWithSignal } from "lib/sleep";
 import { AbiId, abis as allAbis } from "sdk/abis";
+import { getAbi } from "sdk/abis/getAbi";
 import { BATCH_CONFIGS } from "sdk/configs/batch";
 
 import { _debugMulticall, type MulticallDebugEventType, type MulticallDebugState } from "./_debug";
@@ -98,7 +99,7 @@ export class Multicall {
         // Add Errors ABI to each contract ABI to correctly parse errors
         if (!abiWithErrorsMap[contractCallConfig.abiId]) {
           abiWithErrorsMap[contractCallConfig.abiId] = [
-            ...(allAbis[contractCallConfig.abiId] as any),
+            ...getAbi(this.chainId, contractCallConfig.abiId),
             ...(allAbis.CustomErrors as any),
           ];
         }
