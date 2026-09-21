@@ -2,6 +2,7 @@ import { Trans } from "@lingui/macro";
 
 import { selectPoolsDetailsFlags } from "context/PoolsDetailsContext/selectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { formatBalanceAmount } from "lib/numbers";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
@@ -10,7 +11,9 @@ import type { PaxosTransitState } from "./usePaxosTransitState";
 
 export function PaxosTransitExecutionRows({ transitState }: { transitState: PaxosTransitState }) {
   const { isDeposit } = useSelector(selectPoolsDetailsFlags);
-  const { quote, isZeroFeeCapacityShort } = transitState;
+  const { quote, isZeroFeeCapacityShort, isWhitelisted, zeroFeeCapacity, tokenIn } = transitState;
+  const shouldShowZeroFeeCapacity =
+    isWhitelisted && isDeposit && zeroFeeCapacity !== undefined && tokenIn !== undefined;
 
   return (
     <>
@@ -18,6 +21,14 @@ export function PaxosTransitExecutionRows({ transitState }: { transitState: Paxo
         label={<Trans>Transactions</Trans>}
         value={isDeposit ? <Trans>2, convert then buy</Trans> : <Trans>2, sell then convert</Trans>}
       />
+
+      {shouldShowZeroFeeCapacity && (
+        <SyntheticsInfoRow
+          label={<Trans>Zero-fee capacity left</Trans>}
+          value={formatBalanceAmount(zeroFeeCapacity, tokenIn.decimals, tokenIn.symbol, { isStable: true })}
+          valueClassName="numbers"
+        />
+      )}
 
       {quote?.estimatedLatencyMs !== undefined && (
         <SyntheticsInfoRow
