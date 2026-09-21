@@ -66,6 +66,7 @@ import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { getOrderKeys, isOrderForPosition } from "sdk/utils/orders";
+import { SolanaFetchCard } from "solana-interface/pages/SolanaFetchCard";
 import { SolanaRpcPage } from "solana-interface/pages/SolanaRpcPage";
 
 import { AppHeader } from "components/AppHeader/AppHeader";
@@ -144,6 +145,7 @@ export function SyntheticsPage(p: Props) {
         {isTablet ? <ChartHeader /> : null}
         <div className="grid grid-cols-1 items-start gap-12 md:grid-cols-2 lg:grid-cols-4">
           <SolanaRpcPage />
+          <SolanaFetchCard />
         </div>
       </AppPageLayout>
     );
