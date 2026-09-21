@@ -2,7 +2,7 @@ import { render } from "@testing-library/react";
 import { createElement } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { ARBITRUM, AVALANCHE } from "config/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE } from "config/chains";
 import { useIncentivesConfig } from "domain/synthetics/incentives/v2/useIncentivesConfig";
 import { useChainId } from "lib/chains";
 
@@ -41,16 +41,16 @@ describe("IncentivesV2ContextProvider", () => {
     } as ReturnType<typeof useIncentivesConfig>);
   });
 
-  it("loads V2 by default on Arbitrum", () => {
-    mockUseChainId.mockReturnValue({ chainId: ARBITRUM } as ReturnType<typeof useChainId>);
+  it.each([ARBITRUM, ARBITRUM_SEPOLIA])("loads V2 by default on chain %s", (chainId) => {
+    mockUseChainId.mockReturnValue({ chainId } as ReturnType<typeof useChainId>);
 
     const value = readContext();
 
     expect(value.availability.status).toBe("loading");
-    expect(mockUseIncentivesConfig).toHaveBeenCalledWith(ARBITRUM, { enabled: true });
+    expect(mockUseIncentivesConfig).toHaveBeenCalledWith(chainId, { enabled: true });
   });
 
-  it("does not load V2 outside Arbitrum", () => {
+  it("does not load V2 on unsupported chains", () => {
     mockUseChainId.mockReturnValue({ chainId: AVALANCHE } as ReturnType<typeof useChainId>);
 
     const value = readContext();

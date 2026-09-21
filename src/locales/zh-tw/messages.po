@@ -598,6 +598,10 @@ msgstr "計入費用後，超過最大允許槓桿，已被清算。"
 msgid "Sell {gmOrGlvLabel} failed"
 msgstr "出售 {gmOrGlvLabel} 失敗"
 
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Fund the issuer with {shortfall} more esGMX before distributing."
+msgstr "分發前，請向發行合約再存入 {shortfall} esGMX。"
+
 #: src/pages/Referrals/Referrals.tsx
 msgid "Affiliate Dashboard"
 msgstr "推廣夥伴儀表板"
@@ -1034,6 +1038,13 @@ msgstr "外部兌換影響過高"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Keep more of what you earn"
 msgstr "保留更多收益"
+
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+msgid "Balances will refresh shortly."
+msgstr "餘額將很快更新。"
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Accrued funding fees available for settlement"
@@ -1830,6 +1841,10 @@ msgstr "繼續歸屬"
 msgid "Settings update failed"
 msgstr "設定更新失敗"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Mint"
+msgstr "鑄造"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buy {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to settlement chain and go to the {indexName} pool to buy your {gmOrGlvLabel} tokens."
 msgstr "購買 {gmOrGlvLabel} 失敗。您的資金安全存放於 GMX Account 中。請切換至結算鏈並前往 {indexName} 池購買您的 {gmOrGlvLabel} 代幣。"
@@ -2356,6 +2371,10 @@ msgstr "無手續費"
 msgid "Switch to market order"
 msgstr "切換到市價單"
 
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Rewards distributed"
+msgstr "獎勵已分發"
+
 #: landing/src/pages/Builders/RevenueSection/RevenueCalculator.tsx
 msgid "Combined monthly revenue"
 msgstr "每月總收入"
@@ -2388,6 +2407,10 @@ msgstr "100+ 種加密代幣"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Optimal usage factor short"
 msgstr "做空最佳使用因子"
+
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+msgid "Approval submitted"
+msgstr "授權已提交"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Trade {0} more to keep {1} status <0>+{2}</0>"
@@ -2467,6 +2490,10 @@ msgstr "Telegram 群組"
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Complete account transfer"
 msgstr "完成帳戶轉移"
+
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+msgid "Approved"
+msgstr "已授權"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Discounts"
@@ -2707,6 +2734,9 @@ msgid "Swapped {0} for {1}"
 msgstr "已將 {0} 兌換為 {1}"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Deposits are closed."
 msgstr "存入功能已關閉。"
 
@@ -2818,6 +2848,7 @@ msgid "Shift error"
 msgstr "轉移錯誤"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Claim failed"
@@ -3322,6 +3353,7 @@ msgid "No liquidity available for increasing longs at<0/>this size. Max long siz
 msgstr "此規模下無可用流動性來加倉做多。<0/>最大做多規模：{0}<1/><2/>減倉做空的成交價格。"
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 msgid "Transfer completed"
 msgstr "轉帳完成"
 
@@ -3478,6 +3510,7 @@ msgstr "{txnTypeText} {0} 訂單於"
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Max"
 msgstr "最大"
@@ -3513,6 +3546,10 @@ msgstr "幫助我們改善 GMX。為了安全，我們不會主動聯絡您。�
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel margin deposit"
 msgstr "取消保證金存入"
+
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Issuer funding changed. Review the amount and try again."
+msgstr "發行合約的資金狀況已變更。請核對金額後重試。"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Swap tokens"
@@ -3553,6 +3590,10 @@ msgstr "顯示 PnL 金額"
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 msgid "Transaction hash"
 msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Issue esGMX rewards to a recipient, increasing their claimable rewards and vesting limit."
+msgstr "向接收者發放 esGMX 獎勵，增加其可領取獎勵和歸屬上限。"
 
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
@@ -3673,6 +3714,10 @@ msgstr "倉位規模超過可用未平倉量"
 msgid "Snapshot epoch"
 msgstr "快照週期"
 
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Batch index"
+msgstr "批次索引"
+
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "STIP.b trading incentives"
 msgstr "STIP.b 交易激勵"
@@ -3721,6 +3766,7 @@ msgstr "上架"
 msgid "Sell {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to settlement chain and go to the {indexName} pool to sell your {gmOrGlvLabel} tokens."
 msgstr "賣出 {gmOrGlvLabel} 失敗。您的資金安全地保存在 GMX Account 中。請切換至結算鏈，前往 {indexName} 池賣出您的 {gmOrGlvLabel} 代幣。"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Vesting submitted"
 msgstr "歸屬已提交"
@@ -3851,6 +3897,11 @@ msgstr "搜尋地址"
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "Data freshness"
 msgstr "資料新鮮度"
+
+#: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Stopping vesting returns your collateral and unvested esGMX. Vested GMX remains available to claim separately."
+msgstr "停止歸屬將退還您的抵押品和尚未歸屬的 esGMX。已歸屬的 GMX 仍可單獨領取。"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Done!"
@@ -4118,6 +4169,10 @@ msgstr "您的 GMX Account 中沒有資產"
 msgid "Order type"
 msgstr "訂單類型"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Vesting paused"
+msgstr "歸屬已暫停"
+
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr ""
@@ -4368,6 +4423,10 @@ msgstr "交易者活動"
 msgid "Trigger price"
 msgstr "觸發價格"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Your collateral stays locked until vesting is complete."
+msgstr "您的抵押品將保持鎖定，直到歸屬完成。"
+
 #: src/components/AbFlagsSettings/AbFlagsSettings.tsx
 msgid "No AB flags"
 msgstr "無 AB 標記"
@@ -4478,6 +4537,7 @@ msgstr "存入 USD 容量"
 msgid "Arbitrum wallet"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Collateral required for vest"
 msgstr "歸屬所需的抵押品"
@@ -4497,6 +4557,7 @@ msgstr "從去中心化或中心化交易所買入"
 #: src/pages/IncentivesDebug/IncentivesAuditPage.tsx
 #: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
 #: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+#: src/pages/RewardsPage/RewardsPage.tsx
 msgid "No V2 incentives configuration is available for this chain."
 msgstr "此鏈沒有可用的 V2 激勵設定。"
 
@@ -4792,6 +4853,8 @@ msgstr "USD 數值是根據每個所示月份的 GMX 平均價格估算的。由
 msgid "Set min deposit"
 msgstr "設定最低存入金額"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
@@ -4982,6 +5045,7 @@ msgid "Request to be contacted"
 msgstr "申請聯繫"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Sending..."
 msgstr "傳送中..."
@@ -5198,6 +5262,7 @@ msgid "Stop-Loss Decrease"
 msgstr "止損減倉"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
 msgid "Wallet balance"
 msgstr "錢包餘額"
 
@@ -5731,6 +5796,11 @@ msgstr "{chainName} 資料"
 msgid "Rank among accounts for this metric and period."
 msgstr "此指標和週期內帳戶之間的排名。"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
+msgid "Sepolia vesting uses test GMX, esGMX, and sbfGMX collateral tokens."
+msgstr "Sepolia 歸屬使用測試用 GMX、esGMX 以及 sbfGMX 抵押代幣。"
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "No net rate history for this market"
 msgstr ""
@@ -5802,6 +5872,7 @@ msgid "Base borrowing factor long"
 msgstr "做多基礎借貸因子"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 msgid "Recipient address"
 msgstr "接收地址"
 
@@ -5901,6 +5972,7 @@ msgstr ""
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
@@ -6043,6 +6115,7 @@ msgstr "尚無交易記錄"
 msgid "Price change to liquidation"
 msgstr "距清算價格變動"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "esGMX claim failed"
 msgstr "領取 esGMX 失敗"
@@ -6237,6 +6310,10 @@ msgstr "倉位規模過小。最低：{minPositionSizeUsdText}，目前：{posit
 msgid "Stored price impact"
 msgstr "儲存的價格影響"
 
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "esGMX mint submitted"
+msgstr "esGMX 鑄造已提交"
+
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Arguments"
 msgstr "參數"
@@ -6423,6 +6500,10 @@ msgstr "解除質押超過歷史最高質押GMX或esGMX的20%將重置您累積�
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "無價格影響。以此規模<0/>加倉做空或減倉做多時<1/>採用單一成交價格。"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+msgid "<0>Note:</0> If you withdraw esGMX that is currently vesting, it will stop vesting and cannot be returned for vesting."
+msgstr "<0>注意：</0>如果您提取目前正在歸屬的 esGMX，其歸屬將停止，且無法重新存入進行歸屬。"
+
 #: src/pages/ReferralsTier/ReferralsTier.tsx
 msgid "Current tier:"
 msgstr "目前等級："
@@ -6505,6 +6586,7 @@ msgstr "未平倉量 {directionLabel}"
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/domain/tokens/approveTokens.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 msgid "Approval failed"
 msgstr "授權失敗"
 
@@ -6726,6 +6808,10 @@ msgstr ""
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "<0>No. GMX is self-custodial and permissionless — you connect a wallet and trade. No identity verification required.</0>"
 msgstr "<0>不需要。GMX 是自託管且無許可的平台——您只需連接錢包即可交易。不需要任何身份驗證。</0>"
+
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "esGMX minted"
+msgstr "esGMX 已鑄造"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -7087,6 +7173,10 @@ msgstr "掌控風險與收益的投資方式"
 msgid "GMX on Solana (known as GMTrade) is currently served from a separate domain."
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "This batch index has already been used."
+msgstr "此批次索引已被使用。"
+
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Wallet or network changed. Review your rewards before claiming."
 msgstr "錢包或網路已變更。請在領取前檢查您的獎勵。"
@@ -7255,6 +7345,8 @@ msgstr "管理者"
 msgid "Users"
 msgstr "用戶"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Vest esGMX"
 msgstr "歸屬 esGMX"
@@ -7580,6 +7672,7 @@ msgstr "輸入代碼"
 msgid "Details"
 msgstr "詳情"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Vesting failed"
 msgstr "歸屬失敗"
@@ -7591,6 +7684,10 @@ msgstr "泰坦"
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Trading volume on page"
 msgstr "本頁交易量"
+
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Rewards distribution submitted"
+msgstr "獎勵分發已提交"
 
 #: src/components/UserIncentiveDistribution/utils.tsx
 msgid "GLV bonus incentive"
@@ -7777,6 +7874,8 @@ msgstr "選擇倉位"
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
 #: src/pages/RewardsPage/components/RewardsTiersTab.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Connect wallet"
@@ -7922,6 +8021,8 @@ msgstr "永久"
 msgid "High price impact"
 msgstr "價格影響過高"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Collateral available"
 msgstr "可用抵押品"
@@ -8056,6 +8157,7 @@ msgstr "保證金存入"
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 msgid "Approve {tokenSymbol}"
 msgstr "授權 {tokenSymbol}"
 
@@ -8385,6 +8487,10 @@ msgstr "{0, plural, one {剩餘 # 天} other {剩餘 # 天}}"
 msgid "Can't withdraw collateral. Remaining collateral would be below minimum"
 msgstr "無法提取抵押品。剩餘抵押品將低於最低要求"
 
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "esGMX mint failed"
+msgstr "esGMX 鑄造失敗"
+
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -8548,6 +8654,7 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Loading..."
 msgstr "載入中..."
@@ -9115,6 +9222,10 @@ msgstr ""
 msgid "Win rate"
 msgstr "勝率"
 
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Epoch ID"
+msgstr "週期 ID"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading stats"
 msgstr "GMX 交易統計"
@@ -9264,6 +9375,7 @@ msgstr "出場價格"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 msgid "Transfer failed"
 msgstr "轉帳失敗"
 
@@ -9349,6 +9461,7 @@ msgstr ""
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 msgid "Transfer submitted"
 msgstr "轉帳已提交"
 
@@ -9416,6 +9529,10 @@ msgstr "使用 TWAP 訂單"
 msgid "Referrals V1 WETH"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "Mint test esGMX to your connected wallet. Your rewards vesting limit stays the same."
+msgstr "將測試用 esGMX 鑄造到您已連接的錢包。您的獎勵歸屬上限保持不變。"
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Enable external swaps"
 msgstr "啟用外部兌換"
@@ -9449,6 +9566,7 @@ msgid "Solv Finance"
 msgstr "Solv Finance"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Claim submitted"
 msgstr "領取已提交"
@@ -9522,6 +9640,10 @@ msgstr "不支援將 {0} 提取至 {1}"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Wallet esGMX"
 msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "This epoch is finalized."
+msgstr "本週期已結束。"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing position is in {0} pool. Using the selected pool will create a separate position. <0>Switch to {1} pool</0>"
@@ -9793,6 +9915,7 @@ msgstr "有效的 Balancer 計劃代碼"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Max amount exceeded"
 msgstr "超過最大數量"
@@ -10042,6 +10165,7 @@ msgstr "為做得更多的人<0/>而建。"
 msgid "Bridge {tokenSymbol} to {chainName} with"
 msgstr "使用以下方式將 {tokenSymbol} 橋接至 {chainName}"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Claim esGMX rewards"
 msgstr "領取 esGMX 獎勵"
@@ -10154,6 +10278,10 @@ msgstr "超過 {0} 最大做多量"
 msgid "N/A"
 msgstr "N/A"
 
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "These rewards have already been distributed in this epoch."
+msgstr "這些獎勵已在本週期內分發。"
+
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Operates on open, permissionless networks to ensure transparency, decentralization, and unrestricted access"
 msgstr "在開放、無需許可的網路上運行，確保透明度、去中心化和無限制的存取"
@@ -10186,6 +10314,7 @@ msgstr "{formattedNetRate} / 1h"
 msgid "Balance"
 msgstr "餘額"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Vesting details changed. Review the updated collateral and continue vesting."
@@ -10291,6 +10420,10 @@ msgstr "事件名稱"
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Stake {0} GMX more to reach the {1} tier and earn more rewards."
 msgstr "再質押 {0} GMX 以達到 {1} 等級並獲得更多獎勵。"
+
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Rewards distribution failed"
+msgstr "獎勵分發失敗"
 
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Collateral was unlocked. Balances will refresh shortly."
@@ -10520,6 +10653,10 @@ msgstr "交易者檔案"
 msgid "Connect your wallet to view your rebates distribution history"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+msgid "Claimed"
+msgstr "已領取"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Deposit amount"
 msgstr "存入金額"
@@ -10599,6 +10736,8 @@ msgstr ""
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/OrderItem/OrderItem.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
 msgid "Amount"
 msgstr "金額"
 
@@ -10760,6 +10899,9 @@ msgstr "24 小時交易量"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Enter an amount"
 msgstr "請輸入數量"
@@ -11359,6 +11501,10 @@ msgstr "倉位規模超過可用未平倉量。差額：{usdDeltaText}，最大 
 msgid "Yes"
 msgstr "是"
 
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Enter valid epoch and batch IDs"
+msgstr "請輸入有效的週期和批次 ID"
+
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 msgid "Maximum multiplier"
 msgstr "最高倍率"
@@ -11401,6 +11547,7 @@ msgstr "符合資格的歷史用戶可使用，直到增量獎勵上限用完。
 msgid "Receive"
 msgstr "收到"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "esGMX claimed"
@@ -11947,6 +12094,12 @@ msgstr "降低資金費率門檻"
 msgid "The 20% unstaking limit was exceeded, and your rewards have been reset"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Unable to check distribution details. Please try again."
+msgstr "無法檢查分發詳情。請重試。"
+
 #: src/domain/synthetics/fees/utils/index.ts
 msgid "Network fees are very high due to increased {chainName} network activity"
 msgstr "由於 {chainName} 網路活動增加，網路費用非常高"
@@ -12098,10 +12251,6 @@ msgstr "鏈上名稱："
 msgid "Total circulating supply of GMX tokens"
 msgstr "GMX 代幣的總流通供應量"
 
-#: src/pages/RewardsPage/RewardsPage.tsx
-msgid "There is no active incentives configuration for Arbitrum."
-msgstr "Arbitrum 目前沒有有效的激勵設定。"
-
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Trade history"
 msgstr "交易歷史記錄"
@@ -12113,6 +12262,12 @@ msgstr "支撐代幣的曝險"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 msgid "Search type"
 msgstr "搜尋類型"
+
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Distribute esGMX"
+msgstr "分發 esGMX"
 
 #: src/components/TradeHistory/filters/ActionFilter.tsx
 msgid "Market orders"
@@ -12431,6 +12586,7 @@ msgstr "正在顯示全部 {totalCount} 個週期中最新的 {DETAIL_LIMIT} 個
 msgid "Distribution history for claimed rebates and airdrops"
 msgstr "已領取回饋和空投的分發歷史記錄"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "esGMX claim submitted"
 msgstr "esGMX 領取交易已提交"
@@ -12558,6 +12714,7 @@ msgstr "GM 從單一市場賺取手續費。GLV 持有多種 GM 代幣，並在�
 msgid "Featured markets:"
 msgstr "精選市場："
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Available to Vest"
 msgstr "可歸屬"
@@ -12584,6 +12741,9 @@ msgid "Dark"
 msgstr "深色"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 msgid "Confirming..."
 msgstr "確認中..."
 
@@ -12613,6 +12773,7 @@ msgstr "領取價格影響回饋"
 msgid "Two revenue streams."
 msgstr "兩種收入來源。"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Vesting started"
@@ -12936,6 +13097,7 @@ msgid "Bridge in failed"
 msgstr "橋接轉入失敗"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 msgid "Invalid recipient address"
 msgstr "接收地址無效"
 
@@ -13213,6 +13375,10 @@ msgstr "已歸屬的 GLP 未提取"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient pool liquidity. Available: {availableAmountText}"
 msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Send {fundingAmount} esGMX to issuer"
+msgstr "向發行合約發送 {fundingAmount} esGMX"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Become a market maker"
@@ -13703,6 +13869,10 @@ msgstr "兌換"
 msgid "Where do GMX staking rewards come from?"
 msgstr "GMX 質押獎勵從何而來？"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Distribute"
+msgstr "分發"
+
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Current position only"
 msgstr "僅目前持倉"
@@ -13780,6 +13950,7 @@ msgstr "顯示詳細資料"
 msgid "Boost Name"
 msgstr "加成名稱"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claim GMX"
 msgstr "領取 GMX"
@@ -13942,6 +14113,10 @@ msgstr "EIP-4844, 20-27 Mar"
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Lifetime rewards"
 msgstr "累計獎勵"
+
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "This wallet cannot distribute rewards."
+msgstr "此錢包無法分發獎勵。"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "This trigger is at or beyond the estimated liquidation price. The margin deposit will be attempted before liquidation when eligible, but execution is not guaranteed."
@@ -14167,6 +14342,10 @@ msgstr "儲存等級"
 msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr "{count, plural, one {訂單} other {# 筆訂單}}"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+msgid "This vault is being retired, so you can no longer add esGMX. Existing vests will remain active, and you can claim vested GMX at any time."
+msgstr "此金庫正在停止營運，因此您無法再新增 esGMX。現有歸屬將保持有效，您可以隨時領取已歸屬的 GMX。"
+
 #: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
 msgid "Yes. You can stop vesting at any time. Any GMX that has already vested will remain available to claim, and the GMX used as collateral will be unlocked."
 msgstr "是的。您可以隨時停止歸屬。任何已經歸屬的 GMX 仍可領取，用作抵押品的 GMX 將會解鎖。"
@@ -14340,10 +14519,6 @@ msgstr "已停用"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact amount {0}"
 msgstr "兌換影響金額 {0}"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-msgid "This vault is being retired—you can no longer add esGMX. Withdraw to claim any vested GMX and return your remaining esGMX to your wallet, then re-deposit into the Legacy vault or Rewards vault."
-msgstr "此金庫即將停用，無法再存入 esGMX。提領即可領取已歸屬的 GMX，並將剩餘 esGMX 退回錢包；之後可重新存入 Legacy 金庫或 Rewards 金庫。"
 
 #: src/components/InterviewToast/InterviewToast.tsx
 msgid "Join an anonymous one-on-one chat to share your experience"
@@ -14721,12 +14896,20 @@ msgstr "GLV 獎勵激勵（測試）"
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 msgid "Insufficient balance"
 msgstr "餘額不足"
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "From: block {0} ({1})"
 msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Mint esGMX"
+msgstr "鑄造 esGMX"
 
 #: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
 msgid "Referral revenue, built in"
@@ -14782,3 +14965,23 @@ msgstr "成功"
 #: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
 msgid "Eligible fees (USD)"
 msgstr "符合資格的費用 (USD)"
+
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "Mint {tokenSymbol}"
+msgstr "鑄造 {tokenSymbol}"
+
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "{tokenSymbol} mint submitted"
+msgstr "{tokenSymbol} 鑄造已提交"
+
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "{tokenSymbol} mint failed"
+msgstr "{tokenSymbol} 鑄造失敗"
+
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "{tokenSymbol} minted"
+msgstr "{tokenSymbol} 已鑄造"
+
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "Mint test sbfGMX to your connected wallet to use as vesting collateral."
+msgstr "將測試用 sbfGMX 鑄造到您已連接的錢包，用作歸屬抵押品。"

@@ -127,25 +127,29 @@ function ActiveVaultPanel({ vault }: { vault: ActiveVestVault }) {
   );
 }
 
-function RetiredVaultPanel({
-  data,
-  primaryButton,
-}: {
-  data: RetiredVaultData | undefined;
-  primaryButton: React.ReactNode;
-}) {
+function RetiredVaultPanel({ data, actions }: { data: RetiredVaultData | undefined; actions: React.ReactNode }) {
   const remainingEsGmx = getRemainingEsGmx(data);
 
   return (
     <div className="flex flex-col gap-20 px-20 pb-20" data-qa="vesting-retired-vault">
       <AlertInfoCard type="warning" hideClose>
-        <span className="font-medium">
-          <Trans>Deposits are closed.</Trans>
-        </span>{" "}
-        <Trans>
-          This vault is being retired—you can no longer add esGMX. Withdraw to claim any vested GMX and return your
-          remaining esGMX to your wallet, then re-deposit into the Legacy vault or Rewards vault.
-        </Trans>
+        <div className="flex flex-col gap-12">
+          <p>
+            <span className="font-medium">
+              <Trans>Deposits are closed.</Trans>
+            </span>{" "}
+            <Trans>
+              This vault is being retired, so you can no longer add esGMX. Existing vests will remain active, and you
+              can claim vested GMX at any time.
+            </Trans>
+          </p>
+          <p>
+            <Trans>
+              <span className="font-medium">Note:</span> If you withdraw esGMX that is currently vesting, it will stop
+              vesting and cannot be returned for vesting.
+            </Trans>
+          </p>
+        </div>
       </AlertInfoCard>
 
       <div className="flex flex-col gap-16 rounded-8 border-1/2 border-slate-600 bg-slate-950/50 p-16">
@@ -169,7 +173,7 @@ function RetiredVaultPanel({
         </p>
 
         <SwitchToSettlementChainWarning topic="vesting" />
-        <SwitchToSettlementChainButtons>{primaryButton}</SwitchToSettlementChainButtons>
+        <SwitchToSettlementChainButtons>{actions}</SwitchToSettlementChainButtons>
       </div>
     </div>
   );
@@ -177,14 +181,14 @@ function RetiredVaultPanel({
 
 export function VestModal({ isVisible, setIsVisible }: VestModalProps) {
   const { chainId } = useChainId();
-  const { signer, account, active } = useWallet();
+  const { signer, account, active, chainId: walletChainId } = useWallet();
   const { setPendingTxns } = usePendingTxns();
   const { openConnectModal } = useConnectModal();
   const vestingData = useVestingData(account);
   const hasOutdatedUi = useHasOutdatedUi();
 
   const [selectedVault, setSelectedVault] = useState<VestVault>("rewards");
-  const [isWithdrawing, setIsWithdrawing] = useState(false);
+  const [pendingAction, setPendingAction] = useState<"claim" | "withdraw">();
 
   useEffect(() => {
     if (isVisible) {
@@ -208,27 +212,35 @@ export function VestModal({ isVisible, setIsVisible }: VestModalProps) {
         : undefined;
 
   const canWithdraw = retiredVaultData?.vestedAmount !== undefined && retiredVaultData.vestedAmount > 0n;
+  const canClaim = (retiredVaultData?.claimableAmount ?? 0n) > 0n;
+  const isActionDisabled = hasOutdatedUi || !active || !signer || walletChainId !== chainId || !!pendingAction;
 
-  const handleWithdraw = () => {
-    if (!chainId || !signer || !isRetiredVestVault(selectedVault)) {
+  const handleAction = (action: "claim" | "withdraw") => {
+    if (
+      isActionDisabled ||
+      !signer ||
+      !isRetiredVestVault(selectedVault) ||
+      (action === "claim" ? !canClaim : !canWithdraw)
+    ) {
       return;
     }
 
     const vesterAddress = getContract(chainId, RETIRED_VAULT_CONTRACTS[selectedVault]);
     const contract = new ethers.Contract(vesterAddress, abis.Vester, signer);
 
-    setIsWithdrawing(true);
-    callContract(chainId, contract, "withdraw", [], {
-      sentMsg: t`Withdraw submitted`,
-      failMsg: t`Withdraw failed`,
-      successMsg: t`Withdrawn`,
+    setPendingAction(action);
+    callContract(chainId, contract, action, [], {
+      sentMsg: action === "claim" ? t`Claim submitted` : t`Withdraw submitted`,
+      failMsg: action === "claim" ? t`Claim failed` : t`Withdraw failed`,
+      successMsg: action === "claim" ? t`Claimed` : t`Withdrawn`,
       setPendingTxns,
     })
       .then(() => {
         setIsVisible(false);
       })
+      .catch(() => undefined)
       .finally(() => {
-        setIsWithdrawing(false);
+        setPendingAction(undefined);
       });
   };
 
@@ -253,18 +265,33 @@ export function VestModal({ isVisible, setIsVisible }: VestModalProps) {
     getPageOutdatedError()
   ) : !canWithdraw ? (
     <Trans>No funds to withdraw</Trans>
-  ) : isWithdrawing ? (
+  ) : pendingAction === "withdraw" ? (
     <Trans>Confirming...</Trans>
   ) : (
     <Trans>Stop vesting & withdraw</Trans>
   );
 
-  const isWithdrawDisabled = hasOutdatedUi || chainId === undefined || !signer || !canWithdraw || isWithdrawing;
-
-  const withdrawButton = active ? (
-    <Button variant="secondary" size="medium" className="w-full" onClick={handleWithdraw} disabled={isWithdrawDisabled}>
-      {withdrawPrimaryText}
-    </Button>
+  const vaultActions = active ? (
+    <div className="flex flex-col gap-12">
+      <Button
+        variant="primary"
+        size="medium"
+        className="w-full"
+        onClick={() => handleAction("claim")}
+        disabled={isActionDisabled || !canClaim}
+      >
+        {pendingAction === "claim" ? <Trans>Claiming...</Trans> : <Trans>Claim GMX</Trans>}
+      </Button>
+      <Button
+        variant="secondary"
+        size="medium"
+        className="w-full"
+        onClick={() => handleAction("withdraw")}
+        disabled={isActionDisabled || !canWithdraw}
+      >
+        {withdrawPrimaryText}
+      </Button>
+    </div>
   ) : (
     <Button
       variant="primary-action"
@@ -299,7 +326,7 @@ export function VestModal({ isVisible, setIsVisible }: VestModalProps) {
         {isActiveVestVault(selectedVault) ? (
           <ActiveVaultPanel vault={selectedVault} />
         ) : (
-          <RetiredVaultPanel data={retiredVaultData} primaryButton={withdrawButton} />
+          <RetiredVaultPanel data={retiredVaultData} actions={vaultActions} />
         )}
       </div>
     </Modal>

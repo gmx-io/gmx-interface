@@ -230,6 +230,7 @@ describe("VestModal", () => {
     mockUseWallet.mockReturnValue({
       account: ACCOUNT,
       active: true,
+      chainId: ARBITRUM,
       signer,
     } as unknown as ReturnType<typeof useWallet>);
     mockUsePendingTxns.mockReturnValue({ pendingTxns: [], setPendingTxns });
@@ -305,7 +306,9 @@ describe("VestModal", () => {
 
       const alert = screen.getByRole("alert");
       expect(normalizedText(alert)).toContain("Deposits are closed.");
-      expect(normalizedText(alert)).toContain("This vault is being retired");
+      expect(normalizedText(alert)).toContain("Existing vests will remain active");
+      expect(normalizedText(alert)).toContain("you can claim vested GMX at any time");
+      expect(normalizedText(alert)).toContain("cannot be returned for vesting");
       expect(screen.queryByRole("textbox", { name: "Deposit" })).toBeNull();
       expect(screen.queryByRole("button", { name: "Coming soon" })).toBeNull();
 
@@ -338,6 +341,27 @@ describe("VestModal", () => {
     }
   );
 
+  it.each([
+    { tab: "GMX Vault", contractAddress: GMX_VESTER },
+    { tab: "Affiliate Vault", contractAddress: AFFILIATE_VESTER },
+  ])("claims vested GMX from $tab without withdrawing the position", async ({ tab, contractAddress }) => {
+    renderModal();
+    selectVault(tab);
+    fireEvent.click(screen.getByRole("button", { name: "Claim GMX" }));
+
+    await waitFor(() => {
+      expect(contractMocks.Constructor).toHaveBeenCalledWith(contractAddress, abis.Vester, signer);
+      expect(mockCallContract).toHaveBeenCalledWith(
+        ARBITRUM,
+        contractMocks.instance,
+        "claim",
+        [],
+        expect.objectContaining({ sentMsg: "Claim submitted", successMsg: "Claimed", setPendingTxns })
+      );
+    });
+    expect(mockCallContract).toHaveBeenCalledTimes(1);
+  });
+
   it("disables retirement withdrawal for a zero position", () => {
     renderModal({
       ...baseVestingData,
@@ -352,6 +376,7 @@ describe("VestModal", () => {
     expect(screen.getByText("0.0000 GMX")).toBeDefined();
     expect(screen.getByText("0.0000 esGMX")).toBeDefined();
     expect((screen.getByRole("button", { name: "No funds to withdraw" }) as HTMLButtonElement).disabled).toBe(true);
+    expect((screen.getByRole("button", { name: "Claim GMX" }) as HTMLButtonElement).disabled).toBe(true);
     expect(mockCallContract).not.toHaveBeenCalled();
   });
 });

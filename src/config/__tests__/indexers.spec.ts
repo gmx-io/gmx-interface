@@ -4,7 +4,7 @@ vi.mock("../env", () => ({
   isDevelopment: vi.fn(),
 }));
 
-import { ARBITRUM } from "../chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA } from "../chains";
 import { isDevelopment } from "../env";
 import { getIndexerUrl } from "../indexers";
 import { getIndexerUrlKey } from "../localStorage";
@@ -30,6 +30,29 @@ describe("incentives indexer URL", () => {
 
     expect(getIndexerUrl(ARBITRUM, "incentives", { incentivesTestSquid: "ivtest" })).toBe(
       "https://gmx-test.squids.live/gmx-synthetics-arbitrum@ivtest/api/graphql"
+    );
+  });
+
+  it.each([true, false])("uses the deployed Sepolia squid with development=%s", (isDevelopment) => {
+    mockIsDevelopment.mockReturnValue(isDevelopment);
+
+    for (const incentivesTestSquid of ["ivprod", "ivtest"] as const) {
+      expect(getIndexerUrl(ARBITRUM_SEPOLIA, "incentives", { incentivesTestSquid })).toBe(
+        "https://gmx-test.squids.live/gmx-synthetics-arb-sepolia@ivtest/api/graphql"
+      );
+      expect(getIndexerUrl(ARBITRUM_SEPOLIA, "subsquid", { incentivesTestSquid })).toBe(
+        "https://gmx.squids.live/gmx-synthetics-arb-sepolia:prod/api/graphql"
+      );
+    }
+  });
+
+  it("keeps Sepolia incentives overrides separate from Arbitrum", () => {
+    mockIsDevelopment.mockReturnValue(true);
+    localStorage.setItem(getIndexerUrlKey(ARBITRUM_SEPOLIA, "incentives"), "https://example.com/sepolia/graphql");
+
+    expect(getIndexerUrl(ARBITRUM_SEPOLIA, "incentives")).toBe("https://example.com/sepolia/graphql");
+    expect(getIndexerUrl(ARBITRUM, "incentives")).toBe(
+      "https://gmx-test.squids.live/gmx-synthetics-arbitrum@ivprod/api/graphql"
     );
   });
 

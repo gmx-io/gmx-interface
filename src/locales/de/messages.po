@@ -598,6 +598,10 @@ msgstr "Liquidiert, da der maximal zulässige Hebel unter Berücksichtigung der 
 msgid "Sell {gmOrGlvLabel} failed"
 msgstr "Verkauf von {gmOrGlvLabel} fehlgeschlagen"
 
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Fund the issuer with {shortfall} more esGMX before distributing."
+msgstr "Stellen Sie dem Emittenten vor der Verteilung weitere {shortfall} esGMX bereit."
+
 #: src/pages/Referrals/Referrals.tsx
 msgid "Affiliate Dashboard"
 msgstr "Affiliate-Dashboard"
@@ -1034,6 +1038,13 @@ msgstr "Hohe externe Swap-Auswirkung"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Keep more of what you earn"
 msgstr "Behalten Sie mehr von dem, was Sie verdienen"
+
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+msgid "Balances will refresh shortly."
+msgstr "Die Guthaben werden in Kürze aktualisiert."
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Accrued funding fees available for settlement"
@@ -1830,6 +1841,10 @@ msgstr "Vesting fortsetzen"
 msgid "Settings update failed"
 msgstr "Aktualisierung der Einstellungen fehlgeschlagen"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Mint"
+msgstr "Minten"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buy {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to settlement chain and go to the {indexName} pool to buy your {gmOrGlvLabel} tokens."
 msgstr "Kauf von {gmOrGlvLabel} fehlgeschlagen. Ihre Mittel sind sicher in Ihrem GMX Account. Wechseln Sie zur Abwicklungskette und gehen Sie zum {indexName}-Pool, um Ihre {gmOrGlvLabel}-Token zu kaufen."
@@ -2356,6 +2371,10 @@ msgstr "Keine Gebühr"
 msgid "Switch to market order"
 msgstr "Zu Market-Order wechseln"
 
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Rewards distributed"
+msgstr "Belohnungen verteilt"
+
 #: landing/src/pages/Builders/RevenueSection/RevenueCalculator.tsx
 msgid "Combined monthly revenue"
 msgstr "Kombinierter Monatsumsatz"
@@ -2388,6 +2407,10 @@ msgstr "Über 100 Krypto-Token"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Optimal usage factor short"
 msgstr "Optimaler Nutzungsfaktor Short"
+
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+msgid "Approval submitted"
+msgstr "Genehmigung eingereicht"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Trade {0} more to keep {1} status <0>+{2}</0>"
@@ -2467,6 +2490,10 @@ msgstr "Telegram-Gruppen"
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Complete account transfer"
 msgstr "Kontoübertragung abschließen"
+
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+msgid "Approved"
+msgstr "Genehmigt"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Discounts"
@@ -2707,6 +2734,9 @@ msgid "Swapped {0} for {1}"
 msgstr "{0} gegen {1} getauscht"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Deposits are closed."
 msgstr "Einzahlungen sind geschlossen."
 
@@ -2818,6 +2848,7 @@ msgid "Shift error"
 msgstr "Shift-Fehler"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Claim failed"
@@ -3322,6 +3353,7 @@ msgid "No liquidity available for increasing longs at<0/>this size. Max long siz
 msgstr "Keine Liquidität verfügbar, um Longs bei<0/>dieser Größe zu erhöhen. Maximale Long-Größe: {0}<1/><2/>Ausführungspreise für das Verringern von Shorts."
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 msgid "Transfer completed"
 msgstr "Übertragung abgeschlossen"
 
@@ -3478,6 +3510,7 @@ msgstr "{txnTypeText} {0}-Order für"
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Max"
 msgstr "Max"
@@ -3513,6 +3546,10 @@ msgstr "Helfen Sie uns, GMX zu verbessern. Aus Sicherheitsgründen werden wir Si
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel margin deposit"
 msgstr "Margin-Einzahlung stornieren"
+
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Issuer funding changed. Review the amount and try again."
+msgstr "Die Finanzierung des Emittenten hat sich geändert. Prüfen Sie den Betrag und versuchen Sie es erneut."
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Swap tokens"
@@ -3553,6 +3590,10 @@ msgstr "PnL-Beträge anzeigen"
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 msgid "Transaction hash"
 msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Issue esGMX rewards to a recipient, increasing their claimable rewards and vesting limit."
+msgstr "Vergeben Sie esGMX-Belohnungen an einen Empfänger und erhöhen Sie damit dessen abrufbare Belohnungen und Vesting-Limit."
 
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
@@ -3673,6 +3714,10 @@ msgstr "Positionsgröße überschreitet verfügbares Open Interest"
 msgid "Snapshot epoch"
 msgstr "Snapshot-Epoche"
 
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Batch index"
+msgstr "Batch-Index"
+
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "STIP.b trading incentives"
 msgstr "STIP.b Handelsanreize"
@@ -3721,6 +3766,7 @@ msgstr "Listings"
 msgid "Sell {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to settlement chain and go to the {indexName} pool to sell your {gmOrGlvLabel} tokens."
 msgstr "Verkauf von {gmOrGlvLabel} fehlgeschlagen. Ihre Mittel sind sicher in Ihrem GMX Account. Wechseln Sie zur Abwicklungskette und gehen Sie zum {indexName}-Pool, um Ihre {gmOrGlvLabel}-Token zu verkaufen."
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Vesting submitted"
 msgstr "Vesting eingereicht"
@@ -3851,6 +3897,11 @@ msgstr "Adresse suchen"
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "Data freshness"
 msgstr "Datenaktualität"
+
+#: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Stopping vesting returns your collateral and unvested esGMX. Vested GMX remains available to claim separately."
+msgstr "Wenn Sie das Vesting beenden, erhalten Sie Ihre Sicherheiten und noch nicht freigegebenen esGMX zurück. Freigegebene GMX können weiterhin separat eingefordert werden."
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Done!"
@@ -4118,6 +4169,10 @@ msgstr "Keine Vermögenswerte in Ihrem GMX Account"
 msgid "Order type"
 msgstr "Ordertyp"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Vesting paused"
+msgstr "Vesting pausiert"
+
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr ""
@@ -4368,6 +4423,10 @@ msgstr "Trader-Aktivität"
 msgid "Trigger price"
 msgstr "Auslösepreis"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Your collateral stays locked until vesting is complete."
+msgstr "Ihre Sicherheiten bleiben bis zum Abschluss des Vestings gesperrt."
+
 #: src/components/AbFlagsSettings/AbFlagsSettings.tsx
 msgid "No AB flags"
 msgstr "Keine AB-Flags"
@@ -4478,6 +4537,7 @@ msgstr "Einzahlungskapazität in USD"
 msgid "Arbitrum wallet"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Collateral required for vest"
 msgstr "Für das Vesting erforderliches Kollateral"
@@ -4497,6 +4557,7 @@ msgstr "Kaufen Sie über dezentrale oder zentralisierte Börsen"
 #: src/pages/IncentivesDebug/IncentivesAuditPage.tsx
 #: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
 #: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+#: src/pages/RewardsPage/RewardsPage.tsx
 msgid "No V2 incentives configuration is available for this chain."
 msgstr "Für diese Chain ist keine V2-Anreizkonfiguration verfügbar."
 
@@ -4792,6 +4853,8 @@ msgstr "USD-Werte werden anhand des durchschnittlichen GMX-Preises für jeden an
 msgid "Set min deposit"
 msgstr "Mindesteinzahlung festlegen"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
@@ -4982,6 +5045,7 @@ msgid "Request to be contacted"
 msgstr "Kontaktaufnahme anfordern"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Sending..."
 msgstr "Wird gesendet..."
@@ -5198,6 +5262,7 @@ msgid "Stop-Loss Decrease"
 msgstr "Stop-Loss Decrease"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
 msgid "Wallet balance"
 msgstr "Wallet-Guthaben"
 
@@ -5731,6 +5796,11 @@ msgstr "{chainName}-Daten"
 msgid "Rank among accounts for this metric and period."
 msgstr "Rang unter Konten für diese Kennzahl und diesen Zeitraum."
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
+msgid "Sepolia vesting uses test GMX, esGMX, and sbfGMX collateral tokens."
+msgstr "Beim Vesting auf Sepolia werden Test-GMX, Test-esGMX und sbfGMX als Sicherheit verwendet."
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "No net rate history for this market"
 msgstr ""
@@ -5802,6 +5872,7 @@ msgid "Base borrowing factor long"
 msgstr "Basisleihfaktor Long"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 msgid "Recipient address"
 msgstr "Empfängeradresse"
 
@@ -5901,6 +5972,7 @@ msgstr ""
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
@@ -6043,6 +6115,7 @@ msgstr "Noch keine Trades"
 msgid "Price change to liquidation"
 msgstr "Preisänderung bis zur Liquidation"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "esGMX claim failed"
 msgstr "Beanspruchen von esGMX fehlgeschlagen"
@@ -6237,6 +6310,10 @@ msgstr "Positionsgröße zu klein. Min: {minPositionSizeUsdText}, aktuell: {posi
 msgid "Stored price impact"
 msgstr "Gespeicherter Preiseinfluss"
 
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "esGMX mint submitted"
+msgstr "esGMX-Minting eingereicht"
+
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Arguments"
 msgstr "Argumente"
@@ -6423,6 +6500,10 @@ msgstr "Wenn du mehr als 20% deines historischen Maximums an gestaktem GMX oder 
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "Kein Preiseinfluss. Einheitlicher Ausführungspreis für<0/>das Erhöhen von Shorts oder Reduzieren von Longs bei<1/>dieser Größe."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+msgid "<0>Note:</0> If you withdraw esGMX that is currently vesting, it will stop vesting and cannot be returned for vesting."
+msgstr "<0>Hinweis:</0> Wenn Sie esGMX abheben, das sich derzeit im Vesting befindet, endet dessen Vesting und es kann nicht erneut zum Vesting eingezahlt werden."
+
 #: src/pages/ReferralsTier/ReferralsTier.tsx
 msgid "Current tier:"
 msgstr "Aktuelle Stufe:"
@@ -6505,6 +6586,7 @@ msgstr "Open Interest {directionLabel}"
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/domain/tokens/approveTokens.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 msgid "Approval failed"
 msgstr "Genehmigung fehlgeschlagen"
 
@@ -6726,6 +6808,10 @@ msgstr ""
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "<0>No. GMX is self-custodial and permissionless — you connect a wallet and trade. No identity verification required.</0>"
 msgstr "<0>Nein. GMX ist selbstverwahrend und genehmigungsfrei — Sie verbinden ein Wallet und handeln. Keine Identitätsprüfung erforderlich.</0>"
+
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "esGMX minted"
+msgstr "esGMX gemintet"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -7087,6 +7173,10 @@ msgstr "Investieren mit Kontrolle über Risiko und Rendite"
 msgid "GMX on Solana (known as GMTrade) is currently served from a separate domain."
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "This batch index has already been used."
+msgstr "Dieser Batch-Index wurde bereits verwendet."
+
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Wallet or network changed. Review your rewards before claiming."
 msgstr "Wallet oder Netzwerk wurde geändert. Prüfen Sie Ihre Belohnungen, bevor Sie sie beanspruchen."
@@ -7255,6 +7345,8 @@ msgstr "Steward"
 msgid "Users"
 msgstr "Benutzer"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Vest esGMX"
 msgstr "esGMX vesten"
@@ -7580,6 +7672,7 @@ msgstr "Code eingeben"
 msgid "Details"
 msgstr "Details"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Vesting failed"
 msgstr "Vesting fehlgeschlagen"
@@ -7591,6 +7684,10 @@ msgstr "Titan"
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Trading volume on page"
 msgstr "Handelsvolumen auf dieser Seite"
+
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Rewards distribution submitted"
+msgstr "Verteilung der Belohnungen eingereicht"
 
 #: src/components/UserIncentiveDistribution/utils.tsx
 msgid "GLV bonus incentive"
@@ -7777,6 +7874,8 @@ msgstr "Positionen auswählen"
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
 #: src/pages/RewardsPage/components/RewardsTiersTab.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Connect wallet"
@@ -7922,6 +8021,8 @@ msgstr "Dauerhaft"
 msgid "High price impact"
 msgstr "Hoher Preis-Impact"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Collateral available"
 msgstr "Verfügbares Kollateral"
@@ -8056,6 +8157,7 @@ msgstr "Margin-Einzahlung"
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 msgid "Approve {tokenSymbol}"
 msgstr "{tokenSymbol} genehmigen"
 
@@ -8385,6 +8487,10 @@ msgstr "{0, plural, one {# Tag verbleibend} other {# Tage verbleibend}}"
 msgid "Can't withdraw collateral. Remaining collateral would be below minimum"
 msgstr "Sicherheit kann nicht abgehoben werden. Verbleibende Sicherheit wäre unter dem Minimum"
 
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "esGMX mint failed"
+msgstr "esGMX-Minting fehlgeschlagen"
+
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -8548,6 +8654,7 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Loading..."
 msgstr "Lädt..."
@@ -9115,6 +9222,10 @@ msgstr ""
 msgid "Win rate"
 msgstr "Gewinnrate"
 
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Epoch ID"
+msgstr "Epochen-ID"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading stats"
 msgstr "GMX trading stats"
@@ -9264,6 +9375,7 @@ msgstr "Ausstiegspreis"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 msgid "Transfer failed"
 msgstr "Übertragung fehlgeschlagen"
 
@@ -9349,6 +9461,7 @@ msgstr ""
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 msgid "Transfer submitted"
 msgstr "Übertragung eingereicht"
 
@@ -9416,6 +9529,10 @@ msgstr "TWAP-Order verwenden"
 msgid "Referrals V1 WETH"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "Mint test esGMX to your connected wallet. Your rewards vesting limit stays the same."
+msgstr "Minten Sie Test-esGMX in Ihre verbundene Wallet. Ihr Vesting-Limit für Belohnungen bleibt unverändert."
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Enable external swaps"
 msgstr "Externe Swaps aktivieren"
@@ -9449,6 +9566,7 @@ msgid "Solv Finance"
 msgstr "Solv Finance"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Claim submitted"
 msgstr "Beanspruchung eingereicht"
@@ -9522,6 +9640,10 @@ msgstr "Das Abheben von {0} nach {1} wird nicht unterstützt"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Wallet esGMX"
 msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "This epoch is finalized."
+msgstr "Diese Epoche ist abgeschlossen."
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing position is in {0} pool. Using the selected pool will create a separate position. <0>Switch to {1} pool</0>"
@@ -9793,6 +9915,7 @@ msgstr "Aktiver Balancer-Programm-Code"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Max amount exceeded"
 msgstr "Maximalbetrag überschritten"
@@ -10042,6 +10165,7 @@ msgstr "Gemacht für die,<0/>die mehr erreichen."
 msgid "Bridge {tokenSymbol} to {chainName} with"
 msgstr "Brücke {tokenSymbol} zu {chainName} mit"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Claim esGMX rewards"
 msgstr "esGMX-Belohnungen beanspruchen"
@@ -10154,6 +10278,10 @@ msgstr "Max {0} Long überschritten"
 msgid "N/A"
 msgstr "N/A"
 
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "These rewards have already been distributed in this epoch."
+msgstr "Diese Belohnungen wurden in dieser Epoche bereits verteilt."
+
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Operates on open, permissionless networks to ensure transparency, decentralization, and unrestricted access"
 msgstr "Arbeitet auf offenen, genehmigungsfreien Netzwerken, um Transparenz, Dezentralisierung und uneingeschränkten Zugang zu gewährleisten"
@@ -10186,6 +10314,7 @@ msgstr "{formattedNetRate} / 1h"
 msgid "Balance"
 msgstr "Balance"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Vesting details changed. Review the updated collateral and continue vesting."
@@ -10291,6 +10420,10 @@ msgstr "EREIGNISNAME"
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Stake {0} GMX more to reach the {1} tier and earn more rewards."
 msgstr "Stake weitere {0} GMX, um die Stufe {1} zu erreichen und mehr Belohnungen zu verdienen."
+
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Rewards distribution failed"
+msgstr "Verteilung der Belohnungen fehlgeschlagen"
 
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Collateral was unlocked. Balances will refresh shortly."
@@ -10520,6 +10653,10 @@ msgstr "Trader-Profil"
 msgid "Connect your wallet to view your rebates distribution history"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+msgid "Claimed"
+msgstr "Eingefordert"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Deposit amount"
 msgstr "Einzahlungsbetrag"
@@ -10599,6 +10736,8 @@ msgstr ""
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/OrderItem/OrderItem.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
 msgid "Amount"
 msgstr "Betrag"
 
@@ -10760,6 +10899,9 @@ msgstr "24h Volumen"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Enter an amount"
 msgstr "Betrag eingeben"
@@ -11359,6 +11501,10 @@ msgstr "Positionsgröße übersteigt das verfügbare Open Interest. Delta: {usdD
 msgid "Yes"
 msgstr "Ja"
 
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Enter valid epoch and batch IDs"
+msgstr "Gültige Epochen- und Batch-IDs eingeben"
+
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 msgid "Maximum multiplier"
 msgstr "Maximaler Multiplikator"
@@ -11401,6 +11547,7 @@ msgstr "Für berechtigte historische Nutzer verfügbar, bis die Obergrenze für 
 msgid "Receive"
 msgstr "Erhalten"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "esGMX claimed"
@@ -11947,6 +12094,12 @@ msgstr "Schwellenwert für Finanzierungssenkung"
 msgid "The 20% unstaking limit was exceeded, and your rewards have been reset"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Unable to check distribution details. Please try again."
+msgstr "Die Verteilungsdetails konnten nicht geprüft werden. Bitte versuchen Sie es erneut."
+
 #: src/domain/synthetics/fees/utils/index.ts
 msgid "Network fees are very high due to increased {chainName} network activity"
 msgstr "Die Netzwerkgebühren sind aufgrund erhöhter {chainName}-Netzwerkaktivität sehr hoch"
@@ -12098,10 +12251,6 @@ msgstr "Onchain-Name:"
 msgid "Total circulating supply of GMX tokens"
 msgstr "Gesamte im Umlauf befindliche Menge an GMX Token"
 
-#: src/pages/RewardsPage/RewardsPage.tsx
-msgid "There is no active incentives configuration for Arbitrum."
-msgstr "Für Arbitrum gibt es keine aktive Anreizkonfiguration."
-
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Trade history"
 msgstr "Handelsverlauf"
@@ -12113,6 +12262,12 @@ msgstr "Engagement in Sicherungstoken"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 msgid "Search type"
 msgstr "Typ suchen"
+
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Distribute esGMX"
+msgstr "esGMX verteilen"
 
 #: src/components/TradeHistory/filters/ActionFilter.tsx
 msgid "Market orders"
@@ -12431,6 +12586,7 @@ msgstr "Die neuesten {DETAIL_LIMIT} von {totalCount} Epochen werden angezeigt."
 msgid "Distribution history for claimed rebates and airdrops"
 msgstr "Verteilungsverlauf für beanspruchte Rückerstattungen und Airdrops"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "esGMX claim submitted"
 msgstr "Beanspruchung von esGMX übermittelt"
@@ -12558,6 +12714,7 @@ msgstr "GM verdient Gebühren aus einem Markt. GLV hält mehrere GM Token und gl
 msgid "Featured markets:"
 msgstr "Ausgewählte Märkte:"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Available to Vest"
 msgstr "Für Vesting verfügbar"
@@ -12584,6 +12741,9 @@ msgid "Dark"
 msgstr "Dunkel"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 msgid "Confirming..."
 msgstr "Bestätigen..."
 
@@ -12613,6 +12773,7 @@ msgstr "Preiseinfluss-Rabatte beanspruchen"
 msgid "Two revenue streams."
 msgstr "Zwei Einnahmequellen."
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Vesting started"
@@ -12936,6 +13097,7 @@ msgid "Bridge in failed"
 msgstr "Bridge-Eingang fehlgeschlagen"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 msgid "Invalid recipient address"
 msgstr "Ungültige Empfängeradresse"
 
@@ -13213,6 +13375,10 @@ msgstr "Vestetes GLP nicht abgezogen"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient pool liquidity. Available: {availableAmountText}"
 msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Send {fundingAmount} esGMX to issuer"
+msgstr "{fundingAmount} esGMX an den Emittenten senden"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Become a market maker"
@@ -13703,6 +13869,10 @@ msgstr "Tauschen"
 msgid "Where do GMX staking rewards come from?"
 msgstr "Woher kommen die GMX-Staking-Belohnungen?"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Distribute"
+msgstr "Verteilen"
+
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Current position only"
 msgstr "Nur aktuelle Position"
@@ -13780,6 +13950,7 @@ msgstr "Detaillierte Daten anzeigen"
 msgid "Boost Name"
 msgstr "Name des Boosts"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claim GMX"
 msgstr "GMX beanspruchen"
@@ -13942,6 +14113,10 @@ msgstr "EIP-4844, 20-27 Mär"
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Lifetime rewards"
 msgstr "Gesamte Rewards"
+
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "This wallet cannot distribute rewards."
+msgstr "Diese Wallet kann keine Belohnungen verteilen."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "This trigger is at or beyond the estimated liquidation price. The margin deposit will be attempted before liquidation when eligible, but execution is not guaranteed."
@@ -14167,6 +14342,10 @@ msgstr "Stufe speichern"
 msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr "{count, plural, one {Order} other {# Orders}}"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+msgid "This vault is being retired, so you can no longer add esGMX. Existing vests will remain active, and you can claim vested GMX at any time."
+msgstr "Dieser Vault wird stillgelegt, daher können Sie kein esGMX mehr einzahlen. Bestehende Vesting-Positionen bleiben aktiv, und Sie können freigegebenes GMX jederzeit einfordern."
+
 #: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
 msgid "Yes. You can stop vesting at any time. Any GMX that has already vested will remain available to claim, and the GMX used as collateral will be unlocked."
 msgstr "Ja. Du kannst das Vesting jederzeit stoppen. Bereits umgewandelte GMX können weiterhin beansprucht werden, und die als Kollateral verwendeten GMX werden entsperrt."
@@ -14340,10 +14519,6 @@ msgstr "Deaktiviert"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact amount {0}"
 msgstr "Tausch-Preiseinfluss-Betrag {0}"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-msgid "This vault is being retired—you can no longer add esGMX. Withdraw to claim any vested GMX and return your remaining esGMX to your wallet, then re-deposit into the Legacy vault or Rewards vault."
-msgstr "Dieser Vault wird eingestellt — Sie können kein esGMX mehr einzahlen. Heben Sie ab, um bereits freigeschaltete GMX zu beanspruchen und Ihre verbleibenden esGMX an Ihr Wallet zurückzuerhalten. Zahlen Sie sie anschließend erneut in den Legacy Vault oder Rewards Vault ein."
 
 #: src/components/InterviewToast/InterviewToast.tsx
 msgid "Join an anonymous one-on-one chat to share your experience"
@@ -14721,12 +14896,20 @@ msgstr "GLV Bonusanreiz (Test)"
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 msgid "Insufficient balance"
 msgstr "Unzureichender Saldo"
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "From: block {0} ({1})"
 msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Mint esGMX"
+msgstr "esGMX minten"
 
 #: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
 msgid "Referral revenue, built in"
@@ -14782,3 +14965,23 @@ msgstr "Erfolg"
 #: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
 msgid "Eligible fees (USD)"
 msgstr "Berechtigte Gebühren (USD)"
+
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "Mint {tokenSymbol}"
+msgstr "{tokenSymbol} minten"
+
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "{tokenSymbol} mint submitted"
+msgstr "{tokenSymbol}-Minting eingereicht"
+
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "{tokenSymbol} mint failed"
+msgstr "{tokenSymbol}-Minting fehlgeschlagen"
+
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "{tokenSymbol} minted"
+msgstr "{tokenSymbol} gemintet"
+
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "Mint test sbfGMX to your connected wallet to use as vesting collateral."
+msgstr "Minten Sie Test-sbfGMX in Ihre verbundene Wallet, um sie als Vesting-Sicherheit zu verwenden."

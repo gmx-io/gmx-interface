@@ -1,13 +1,16 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { ethers } from "ethers";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { ARBITRUM, AVALANCHE } from "config/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE } from "config/chains";
+import { getContract } from "config/contracts";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import type { RewardsVestingData } from "domain/vesting/useRewardsVestingData";
 import { useRewardsVestingData } from "domain/vesting/useRewardsVestingData";
+import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
@@ -15,7 +18,7 @@ import { expandDecimals } from "lib/numbers";
 import { sendRewardsTransactionResultEvent, sendRewardsVestingModalOpenEvent } from "lib/userAnalytics/rewardsEvents";
 import useWallet from "lib/wallets/useWallet";
 
-import { getRewardsOnboardingPath } from "../../rewardsRoutes";
+import { RewardsOnboardingModal } from "../RewardsOnboardingModal";
 import { RewardsVestingFlow } from "../RewardsVestingFlow";
 
 vi.mock("domain/vesting/useRewardsVestingData", () => ({
@@ -69,6 +72,7 @@ vi.mock("context/SettingsContext/SettingsContextProvider", () => ({
 
 vi.mock("lib/useHasOutdatedUi", () => ({
   useHasOutdatedUi: () => false,
+  getPageOutdatedError: () => "Outdated",
 }));
 
 vi.mock("lib/useCurrentUnixTimestamp", () => ({
@@ -83,7 +87,7 @@ vi.mock("lib/userAnalytics/rewardsEvents", () => ({
 }));
 
 vi.mock("lib/chains", () => ({
-  useChainId: () => ({ chainId: 42161 }),
+  useChainId: vi.fn(),
 }));
 
 vi.mock("../RewardsVestingModals", () => ({
@@ -223,9 +227,13 @@ function getFlow() {
 }
 
 function LocationSearchProbe() {
-  const { search } = useLocation();
+  const { pathname, search } = useLocation();
 
-  return <div data-testid="location-search">{search}</div>;
+  return (
+    <div data-testid="location-search" data-pathname={pathname}>
+      {search}
+    </div>
+  );
 }
 
 function renderFlow() {
@@ -258,12 +266,90 @@ describe("RewardsVestingFlow", () => {
       chainId: ARBITRUM,
       signer: {},
     } as ReturnType<typeof useWallet>);
+    vi.mocked(useChainId).mockReturnValue({ chainId: ARBITRUM } as ReturnType<typeof useChainId>);
     setVestingData(idleData);
   });
 
   afterEach(() => {
     cleanup();
     window.history.replaceState({}, "", "/");
+  });
+
+  it("opens the mint modal on Sepolia even when no rewards are available", () => {
+    vi.mocked(useChainId).mockReturnValue({ chainId: ARBITRUM_SEPOLIA } as ReturnType<typeof useChainId>);
+    renderFlow();
+    fireEvent.click(screen.getByRole("button", { name: "Mint" }));
+    expect(screen.getByRole("dialog", { name: "Mint esGMX" })).toBeDefined();
+    fireEvent.click(screen.getByRole("button", { name: "sbfGMX" }));
+    expect(screen.getByRole("dialog", { name: "Mint sbfGMX" })).toBeDefined();
+    expect(screen.getByRole("textbox", { name: "Amount" })).toBeDefined();
+  });
+
+  it("does not expose test token minting on mainnet", () => {
+    renderFlow();
+    expect(screen.queryByRole("button", { name: "Mint" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Distribute esGMX" })).toBeNull();
+  });
+
+  it("opens the Sepolia distribution modal beside mint", () => {
+    vi.mocked(useChainId).mockReturnValue({ chainId: ARBITRUM_SEPOLIA } as ReturnType<typeof useChainId>);
+    renderFlow();
+    const mint = screen.getByRole("button", { name: "Mint" });
+    const distribute = screen.getByRole("button", { name: "Distribute esGMX" });
+    expect(distribute.parentElement).toBe(mint.parentElement);
+    fireEvent.click(distribute);
+    expect(screen.getByRole("dialog", { name: "Distribute esGMX" })).toBeDefined();
+    expect(screen.getByRole("textbox", { name: "Epoch ID" })).toBeDefined();
+  });
+
+  it("reads vesting on Arbitrum Sepolia and requires its network before claiming", () => {
+    vi.mocked(useChainId).mockReturnValue({ chainId: ARBITRUM_SEPOLIA } as ReturnType<typeof useChainId>);
+    setVestingData({ ...idleData, vestingInfo: { ...idleData.vestingInfo, claimable: 10n * 10n ** 18n } });
+    renderFlow();
+
+    expect(mockUseRewardsVestingData).toHaveBeenCalledWith("0x123", ARBITRUM_SEPOLIA);
+    expect(screen.getByRole("button", { name: /Switch to Arbitrum Sepolia/ })).toBeDefined();
+    expect(screen.queryByRole("button", { name: /Claim 10 GMX/ })).toBeNull();
+    expect(mockCallContract).not.toHaveBeenCalled();
+  });
+
+  it("claims unpaid GMX from the Sepolia rewards vault after a withdrawal", async () => {
+    vi.mocked(useChainId).mockReturnValue({ chainId: ARBITRUM_SEPOLIA } as ReturnType<typeof useChainId>);
+    mockUseWallet.mockReturnValue({
+      account: "0x123",
+      active: true,
+      chainId: ARBITRUM_SEPOLIA,
+      signer: {},
+    } as ReturnType<typeof useWallet>);
+    const data: RewardsVestingData = {
+      ...idleData,
+      vestingInfo: { ...idleData.vestingInfo, claimable: 10n * 10n ** 18n },
+      ratioVesting: {
+        pairRatioFactor: 5n * 10n ** 30n,
+        capUsedAmount: 10n * 10n ** 18n,
+        unpaidClaimAmount: 10n * 10n ** 18n,
+        deactivatedAt: 0n,
+        isFrozen: false,
+        isIssuerBindingConfirmed: true,
+        esTokenAllowance: 0n,
+        pairTokenAllowance: 0n,
+        tranches: [],
+      },
+    };
+    setVestingData(data);
+    mutate.mockResolvedValue(data);
+    renderFlow();
+    fireEvent.click(screen.getByRole("button", { name: "Claim 10 GMX" }));
+
+    await waitFor(() =>
+      expect(mockCallContract).toHaveBeenCalledWith(ARBITRUM_SEPOLIA, expect.anything(), "claim", [], expect.anything())
+    );
+    expect(ethers.Contract).toHaveBeenCalledWith(
+      getContract(ARBITRUM_SEPOLIA, "SeasonRatioVester"),
+      expect.anything(),
+      expect.anything()
+    );
+    expect(screen.getByText(/No esGMX is currently vesting/)).toBeDefined();
   });
 
   it("renders the idle state from an empty on-chain snapshot", () => {
@@ -280,10 +366,29 @@ describe("RewardsVestingFlow", () => {
     expect(screen.getByRole("button", { name: "Nothing to claim" }).hasAttribute("disabled")).toBe(true);
   });
 
-  it("sends the idle guidance link to the tiers tab with the onboarding action", () => {
-    renderFlow();
+  it("opens the idle guidance modal without leaving the current tab", async () => {
+    window.history.replaceState({}, "", "/rewards/history?ref=vesting");
+    render(
+      <I18nProvider i18n={i18n}>
+        <MemoryRouter initialEntries={getRouterEntries()}>
+          <RewardsOnboardingModal shouldAutoOpen={false} />
+          <RewardsVestingFlow />
+          <LocationSearchProbe />
+        </MemoryRouter>
+      </I18nProvider>
+    );
 
-    expect(screen.getByRole("link", { name: "Learn how" }).getAttribute("href")).toBe(getRewardsOnboardingPath());
+    fireEvent.click(screen.getByRole("button", { name: "Learn how" }));
+
+    expect(await screen.findByRole("dialog", { name: "How it works" })).toBeDefined();
+    expect(screen.getByTestId("location-search").getAttribute("data-pathname")).toBe("/rewards/history");
+    expect(screen.getByTestId("location-search").textContent).toBe("?ref=vesting");
+
+    fireEvent.click(screen.getByRole("button", { name: "Skip" }));
+
+    await waitFor(() => expect(screen.queryByRole("dialog", { name: "How it works" })).toBeNull());
+    expect(screen.getByTestId("location-search").getAttribute("data-pathname")).toBe("/rewards/history");
+    expect(screen.getByTestId("location-search").textContent).toBe("?ref=vesting");
   });
 
   it("renders the designed start-vesting guidance when esGMX is available", () => {
@@ -942,7 +1047,7 @@ describe("RewardsVestingFlow", () => {
       vestingInfo: {
         ...completedData.vestingInfo,
         vestedAmount: 130n * TOKEN_UNIT,
-        escrowedBalance: 10n * TOKEN_UNIT,
+        escrowedBalance: 10n * 10n ** 18n,
       },
     });
     renderFlow();
