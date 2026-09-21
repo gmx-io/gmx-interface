@@ -18,9 +18,9 @@ import { getIsTransitQuoteNeeded, getTransitFeeTier } from "./utils";
 
 export type PaxosTransitStep = "idle" | "approving" | "submitting" | "locating" | "converting";
 
-type ConversionState = { step: PaxosTransitStep; orderId: string | undefined; order: TransitOrder | undefined };
+type TransitProgress = { step: PaxosTransitStep; orderId: string | undefined; order: TransitOrder | undefined };
 
-const IDLE_STATE: ConversionState = { step: "idle", orderId: undefined, order: undefined };
+const IDLE_PROGRESS: TransitProgress = { step: "idle", orderId: undefined, order: undefined };
 
 const FEE_TIER_REFRESH_INTERVAL = 60_000;
 const QUOTE_REFRESH_INTERVAL = 30_000;
@@ -28,7 +28,7 @@ const ORDER_REFRESH_INTERVAL = 5_000;
 const RECENT_ORDERS_PAGE_SIZE = 10;
 const PREVIEW_AMOUNT_SIGNIFICANT_DIGITS = 3;
 
-export function usePaxosTransitConversion({
+export function usePaxosTransit({
   chainId,
   tokenIn,
   tokenOut,
@@ -57,10 +57,10 @@ export function usePaxosTransitConversion({
   const tokenInAddress = tokenIn?.address;
   const tokenOutAddress = tokenOut?.address;
 
-  const [conversion, setConversion] = useState<ConversionState>(IDLE_STATE);
-  const { step, orderId, order } = conversion;
+  const [progress, setProgress] = useState<TransitProgress>(IDLE_PROGRESS);
+  const { step, orderId, order } = progress;
   const setStep = useCallback(
-    (nextStep: PaxosTransitStep) => setConversion({ step: nextStep, orderId: undefined, order: undefined }),
+    (nextStep: PaxosTransitStep) => setProgress({ step: nextStep, orderId: undefined, order: undefined }),
     []
   );
   const [isStandardFeeForced, setIsStandardFeeForced] = useState(false);
@@ -123,7 +123,7 @@ export function usePaxosTransitConversion({
   const estimatedAmountOut = convertToTokenAmount(estimatedUsdIn, tokenOut?.decimals, tokenOut?.prices.maxPrice);
   const amountOut = quote?.amountOut ?? estimatedAmountOut;
 
-  const isVisible =
+  const shouldUseTransit =
     isActive &&
     ((isTransitRequired && quote !== undefined) ||
       getShouldShowPaxosTransit({
@@ -144,7 +144,7 @@ export function usePaxosTransitConversion({
       });
 
       if (pendingOrder) {
-        setConversion((current) =>
+        setProgress((current) =>
           current.step === "idle" ? { step: "converting", orderId: pendingOrder.id, order: pendingOrder } : current
         );
       }
@@ -160,9 +160,9 @@ export function usePaxosTransitConversion({
       const polledOrder = await api!.fetchTransitOrder({ orderId: orderId! });
 
       if (polledOrder.status === "PROCESSED" || polledOrder.status === "REMOVED") {
-        setConversion(IDLE_STATE);
+        setProgress(IDLE_PROGRESS);
       } else {
-        setConversion((current) =>
+        setProgress((current) =>
           current.orderId === polledOrder.id ? { ...current, step: "converting", order: polledOrder } : current
         );
       }
@@ -176,7 +176,7 @@ export function usePaxosTransitConversion({
     { refreshInterval: ORDER_REFRESH_INTERVAL }
   );
 
-  const convert = useCallback(async () => {
+  const submitTransit = useCallback(async () => {
     if (!isActive || !signer || amount <= 0n) return;
 
     const params = getQuoteParams(amount);
@@ -246,7 +246,7 @@ export function usePaxosTransitConversion({
         throw new Error("Paxos Transit order transaction has no OrderSubmitted event");
       }
 
-      setConversion({ step: "locating", orderId: submittedOrderId, order: undefined });
+      setProgress({ step: "locating", orderId: submittedOrderId, order: undefined });
     } catch (error) {
       setStep("idle");
 
@@ -259,7 +259,7 @@ export function usePaxosTransitConversion({
   }, [account, amount, api, chainId, getQuoteParams, isActive, setStep, signer]);
 
   return {
-    isVisible,
+    shouldUseTransit,
     isQuoteNeeded,
     isAmountSettling: previewAmount !== debouncedAmount,
     isFeeTierLoaded: feeTierData !== undefined,
@@ -272,6 +272,6 @@ export function usePaxosTransitConversion({
     amountOut,
     step,
     order,
-    convert,
+    submitTransit,
   };
 }
