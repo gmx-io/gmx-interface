@@ -4,6 +4,7 @@ import mapValues from "lodash/mapValues";
 import { useCallback, useEffect, useMemo } from "react";
 
 import { AVALANCHE } from "config/chains";
+import { DEBUG_PAXOS_TRANSIT_IGNORE_WHITELIST_KEY } from "config/localStorage";
 import { isSourceChain } from "config/multichain";
 import { isDepositDisabledMarket } from "config/static/markets";
 import {
@@ -51,6 +52,7 @@ import {
   selectGlvAndMarketsInfoData,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectShowDebugValues } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { paySourceToTokenBalanceType } from "domain/multichain/paySourceToTokenBalanceType";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
@@ -66,6 +68,7 @@ import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPools
 import { ERC20Address, NativeTokenSupportedAddress } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmountFree, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { switchNetwork } from "lib/wallets";
@@ -90,6 +93,7 @@ import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
 import { SelectedPoolLabel } from "../SelectedPool";
 import { useGmWarningState } from "../useGmWarningState";
 import { InfoRows } from "./InfoRows";
+import { PaxosTransitDebugCard } from "./PaxosTransitDebugCard";
 import { PaxosTransitExecutionRows } from "./PaxosTransitExecutionRows";
 import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
 import { useGmSwapSubmitState } from "./useGmSwapSubmitState";
@@ -194,7 +198,12 @@ export function GmSwapBoxDepositWithdrawal() {
 
   const { data: technicalFees, error: technicalFeesError } = useTechnicalFees();
 
-  const transitState = usePaxosTransitState(false);
+  const showDebugValues = useSelector(selectShowDebugValues);
+  const [isTransitWhitelistIgnored, setIsTransitWhitelistIgnored] = useLocalStorageSerializeKey(
+    DEBUG_PAXOS_TRANSIT_IGNORE_WHITELIST_KEY,
+    false
+  );
+  const transitState = usePaxosTransitState(showDebugValues && Boolean(isTransitWhitelistIgnored));
 
   const logicalFees = useDepositWithdrawalFees({
     amounts,
@@ -748,6 +757,15 @@ export function GmSwapBoxDepositWithdrawal() {
           isDeposit={isDeposit}
           executionDetails={transitState.isTransitRoute && <PaxosTransitExecutionRows transitState={transitState} />}
         />
+
+        {showDebugValues && transitState.hasUsdgCollateral && (
+          <PaxosTransitDebugCard
+            zeroFeeCapacity={transitState.zeroFeeCapacity}
+            usdgToken={transitState.usdgToken}
+            isWhitelistIgnored={Boolean(isTransitWhitelistIgnored)}
+            setIsWhitelistIgnored={setIsTransitWhitelistIgnored}
+          />
+        )}
       </form>
     </>
   );
