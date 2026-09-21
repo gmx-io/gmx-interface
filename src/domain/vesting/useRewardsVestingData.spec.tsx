@@ -1,13 +1,14 @@
 import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { ARBITRUM, AVALANCHE, ContractsChainId } from "config/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { useGmxPrice } from "domain/legacy";
 import { useChainId } from "lib/chains";
 import { useMulticall } from "lib/multicall";
 import useWallet from "lib/wallets/useWallet";
 
+import { parseRatioVestingResponse } from "./ratioVestingData";
 import { RewardsVestingData, useRewardsVestingData } from "./useRewardsVestingData";
 
 vi.mock("domain/legacy", () => ({
@@ -253,6 +254,31 @@ describe("useRewardsVestingData", () => {
     expect(mockUseGmxPrice).toHaveBeenCalledWith(AVALANCHE, { arbitrum: undefined }, true, {
       enabled: true,
       fetchAllChains: false,
+    });
+  });
+
+  it("uses Arbitrum GMX pricing without the testnet signer on Sepolia", () => {
+    mockUseWallet.mockReturnValue({
+      active: true,
+      chainId: ARBITRUM_SEPOLIA,
+      signer: SIGNER,
+    } as unknown as ReturnType<typeof useWallet>);
+
+    render(<Harness targetChainId={ARBITRUM_SEPOLIA} />);
+
+    expect(mockUseGmxPrice).toHaveBeenCalledWith(ARBITRUM, { arbitrum: undefined }, true, {
+      enabled: true,
+      fetchAllChains: false,
+    });
+    expect(mockUseMulticall).toHaveBeenCalledWith(
+      ARBITRUM_SEPOLIA,
+      "Rewards:useRewardsVestingData",
+      expect.objectContaining({ key: [ACCOUNT], parseResponse: parseRatioVestingResponse })
+    );
+    expect(getCapturedMulticallParams().request()).toMatchObject({
+      reader: { contractAddress: getContract(ARBITRUM_SEPOLIA, "RatioVesterReader"), abiId: "RatioVesterReader" },
+      vester: { contractAddress: getContract(ARBITRUM_SEPOLIA, "SeasonRatioVester"), abiId: "RatioVester" },
+      pairToken: { contractAddress: getContract(ARBITRUM_SEPOLIA, "IncentivePairToken") },
     });
   });
 

@@ -2,6 +2,7 @@ import { Trans } from "@lingui/macro";
 import { useCallback, useEffect, useMemo } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 
+import { ARBITRUM_SEPOLIA } from "config/chains";
 import { useChainId } from "lib/chains";
 import { sendRewardsPageViewEvent } from "lib/userAnalytics/rewardsEvents";
 import useWallet from "lib/wallets/useWallet";
@@ -147,7 +148,7 @@ export function RewardsPage() {
             <Trans>The Rewards program is not currently active</Trans>
           </div>
           <div className="text-body-medium max-w-[520px] text-typography-secondary">
-            <Trans>There is no active incentives configuration for Arbitrum.</Trans>
+            <Trans>No V2 incentives configuration is available for this chain.</Trans>
           </div>
           <Button variant="primary" onClick={() => void pageData.retry()}>
             <Trans>Check again</Trans>
@@ -222,7 +223,7 @@ export function RewardsPage() {
             <RewardsHistoryTab chainId={chainId} account={account} config={config} />
           </div>
           <div className="sticky top-8 min-w-0 max-xl:static">
-            <RewardsVestingFaq />
+            <RewardsVestingFaq isTestnet={chainId === ARBITRUM_SEPOLIA} />
           </div>
         </div>
       ) : (
