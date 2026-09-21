@@ -16,6 +16,7 @@ import useWallet from "lib/wallets/useWallet";
 
 import { isHomeSite } from "../legacy";
 import { metrics } from "./Metrics";
+import { setStartupErrorReporter } from "./startupErrors";
 
 export function useConfigureMetrics() {
   const { chainId, srcChainId } = useChainId();
@@ -40,6 +41,7 @@ export function useConfigureMetrics() {
   }, []);
 
   useEffect(() => {
+    setStartupErrorReporter(metrics.pushError);
     metrics.setFetcher(fetcher);
   }, [fetcher]);
 

@@ -2,3 +2,4 @@ public/charting_library
 src/charting_library.d.ts
 src/domain/multichain/progress/__tests__/__fixtures__
 src/domain/multichain/__tests__/__fixtures__
+src/domain/synthetics/__tests__/trade/fixtures

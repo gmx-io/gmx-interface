@@ -4,9 +4,8 @@ import { useLocation } from "react-router-dom";
 import { ContractsChainId } from "config/chains";
 import { GLV_MARKETS } from "config/markets";
 import { parseContractPrice, TokenPricesData } from "domain/synthetics/tokens";
-import { FreshnessMetricId, metrics, TickersErrorsCounter, TickersPartialDataCounter } from "lib/metrics";
+import { FreshnessMetricId, metrics, TickersErrorsCounter } from "lib/metrics";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
-import { _debugOracleKeeper } from "lib/oracleKeeperFetcher/_debug";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
 import { LEADERBOARD_PRICES_UPDATE_INTERVAL, PRICES_CACHE_TTL, PRICES_UPDATE_INTERVAL } from "lib/timeConstants";
 import { getToken, getTokenBySymbol, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
@@ -74,35 +73,14 @@ export function useTokenRecentPricesRequest(
         PRICES_CACHE_UPDATED[chainId][tokenConfig.address] = Date.now();
       });
 
-      const hasPartialData = Object.keys(result).length < Object.keys(PRICES_CACHE[chainId]).length;
+      Object.keys(PRICES_CACHE_UPDATED[chainId]).forEach((address) => {
+        const cacheUpdatedAt = PRICES_CACHE_UPDATED[chainId][address];
+        const canUseCache = cacheUpdatedAt && Date.now() - cacheUpdatedAt < PRICES_CACHE_TTL;
 
-      if (hasPartialData) {
-        // eslint-disable-next-line no-console
-        console.warn("tickersPartialData", {
-          result,
-          priceItems,
-          pricesCacheRef: PRICES_CACHE[chainId],
-          pricesCacheUpdatedRef: PRICES_CACHE_UPDATED[chainId],
-        });
-
-        _debugOracleKeeper?.dispatchEvent({
-          type: "tickers-partial",
-          chainId: chainId,
-          endpoint: oracleKeeperFetcher.url,
-        });
-
-        metrics.pushCounter<TickersPartialDataCounter>("tickersPartialData");
-        oracleKeeperFetcher.handleFailure("tickers");
-
-        Object.keys(PRICES_CACHE_UPDATED[chainId]).forEach((address) => {
-          const cacheUpdatedAt = PRICES_CACHE_UPDATED[chainId][address];
-          const canUseCache = cacheUpdatedAt && Date.now() - cacheUpdatedAt < PRICES_CACHE_TTL;
-
-          if (!result[address] && canUseCache) {
-            result[address] = PRICES_CACHE[chainId][address];
-          }
-        });
-      }
+        if (!result[address] && canUseCache) {
+          result[address] = PRICES_CACHE[chainId][address];
+        }
+      });
 
       const wrappedToken = getWrappedToken(chainId);
 

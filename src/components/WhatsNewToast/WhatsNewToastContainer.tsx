@@ -9,9 +9,12 @@ import { useUiFlagEvents } from "domain/synthetics/uiFlags/useUiFlagEvents";
 import { AnnouncementBanner } from "components/AnnouncementBanner/AnnouncementBanner";
 import { useAppUpdateBanner } from "components/AppUpdateBanner/useAppUpdateBanner";
 import { BalancerProgramAnnouncement } from "components/BalancerProgramAnnouncement/BalancerProgramAnnouncement";
-import { useBalancerProgramAnnouncement } from "components/BalancerProgramAnnouncement/useBalancerProgramAnnouncement";
+import { BALANCER_PROGRAM_ANNOUNCEMENT_CAMPAIGN } from "components/BalancerProgramAnnouncement/balancerProgramAnnouncementCampaign";
 import { DelistingBanner } from "components/DelistingExitAnnouncements/DelistingBanner";
 import { useDelistingExitAnnouncements } from "components/DelistingExitAnnouncements/useDelistingExitAnnouncements";
+import { useTargetedAnnouncement } from "components/TargetedAnnouncement/useTargetedAnnouncement";
+import { UsdgPoolsAnnouncement } from "components/UsdgPoolsAnnouncement/UsdgPoolsAnnouncement";
+import { USDG_POOLS_ANNOUNCEMENT_CAMPAIGN } from "components/UsdgPoolsAnnouncement/usdgPoolsAnnouncementCampaign";
 import { useWalletExtensionConnectionBanner } from "components/WalletExtensionConnectionBanner/useWalletExtensionConnectionBanner";
 
 import { useWhatsNewAnnouncements } from "./useWhatsNewAnnouncements";
@@ -39,8 +42,10 @@ export function WhatsNewToastContainer() {
   const activeUiFlagEvents = useUiFlagEvents();
   const { cards, dismiss } = useWhatsNewAnnouncements();
   const { announcements: delistingAnnouncements, dismiss: dismissDelisting } = useDelistingExitAnnouncements();
+  const { isVisible: isUsdgPoolsAnnouncementVisible, dismiss: dismissUsdgPoolsAnnouncement } =
+    useTargetedAnnouncement(USDG_POOLS_ANNOUNCEMENT_CAMPAIGN);
   const { isVisible: isBalancerProgramAnnouncementVisible, dismiss: dismissBalancerProgramAnnouncement } =
-    useBalancerProgramAnnouncement();
+    useTargetedAnnouncement(BALANCER_PROGRAM_ANNOUNCEMENT_CAMPAIGN);
   const [isScrolled, setIsScrolled] = useState(false);
   const { pathname } = useLocation();
   const isAnnouncementsPage = pathname === "/announcements";
@@ -125,6 +130,13 @@ export function WhatsNewToastContainer() {
                 >
                   <Trans>A new version of GMX is ready. Reload when you are done to switch to it.</Trans>
                 </AnnouncementBanner>
+              </div>
+            </motion.div>
+          )}
+          {isUsdgPoolsAnnouncementVisible && !isAnnouncementsPage && (
+            <motion.div key="usdg-pools" initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
+              <div className="pb-12">
+                <UsdgPoolsAnnouncement onDismiss={dismissUsdgPoolsAnnouncement} />
               </div>
             </motion.div>
           )}
