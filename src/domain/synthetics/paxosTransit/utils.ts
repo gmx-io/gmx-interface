@@ -1,4 +1,30 @@
+import maxBy from "lodash/maxBy";
+import { isAddressEqual } from "viem";
+
+import type { WithdrawalStatus, WithdrawalStatuses } from "context/SyntheticsEvents/types";
 import type { TransitFeeTier, TransitFeeTierResponse } from "sdk/utils/paxos/types";
+
+export function findTransitWithdrawal(
+  withdrawalStatuses: WithdrawalStatuses,
+  p: { account: string | undefined; poolAddress: string | undefined; convertedWithdrawalKeys: string[] }
+): WithdrawalStatus | undefined {
+  const { account, poolAddress } = p;
+
+  if (!account || !poolAddress) {
+    return undefined;
+  }
+
+  const withdrawalStatusesOfPool = Object.values(withdrawalStatuses).filter(
+    (status) =>
+      status.data !== undefined &&
+      status.cancelledTxnHash === undefined &&
+      !p.convertedWithdrawalKeys.includes(status.key) &&
+      isAddressEqual(status.data.receiver, account) &&
+      isAddressEqual(status.data.marketAddress, poolAddress)
+  );
+
+  return maxBy(withdrawalStatusesOfPool, (status) => status.createdAt);
+}
 
 export function getTransitFeeTier(p: {
   feeTierData: TransitFeeTierResponse | undefined;
