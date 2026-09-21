@@ -13,6 +13,22 @@
   }
 }
 
+@layer components {
+  html.telegram-browser {
+    @apply h-full overflow-hidden;
+  }
+
+  .telegram-browser body {
+    @apply fixed inset-0 overflow-hidden;
+  }
+
+  .telegram-browser #root {
+    /* Telegram lets document content paint outside its web view. */
+    @apply h-full overflow-y-auto overscroll-y-none;
+    height: 100dvh;
+  }
+}
+
 @font-face {
   font-family: "TTHoves";
   font-style: normal;
