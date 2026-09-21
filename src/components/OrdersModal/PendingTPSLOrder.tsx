@@ -5,8 +5,8 @@ import type { PositionInfo } from "domain/synthetics/positions";
 import { parseContractPrice, type TokenData } from "domain/synthetics/tokens";
 import type { PendingTpSlOrder } from "domain/tpsl/types";
 import { isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
-import { formatUsd } from "lib/numbers";
 
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { TableTd, TableTr } from "components/Table/Table";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
@@ -28,14 +28,19 @@ export function PendingTPSLOrder({
   const size = isFullPositionCloseSizeDeltaUsd(order.sizeDeltaUsd, position?.sizeInUsd) ? (
     <Trans>Full position close</Trans>
   ) : (
-    `-${formatUsd(order.sizeDeltaUsd)}`
+    <span className="whitespace-nowrap">
+      -<UsdValue usd={order.sizeDeltaUsd} />
+    </span>
   );
-  const triggerPrice = indexToken
-    ? formatUsd(parseContractPrice(order.triggerPrice, indexToken.decimals), {
-        displayDecimals: marketDecimals,
-        visualMultiplier: indexToken.visualMultiplier,
-      })
-    : "—";
+  const triggerPrice = indexToken ? (
+    <UsdValue
+      usd={parseContractPrice(order.triggerPrice, indexToken.decimals)}
+      displayDecimals={marketDecimals}
+      visualMultiplier={indexToken.visualMultiplier}
+    />
+  ) : (
+    "—"
+  );
   const status = (
     <span role="status" className="inline-flex items-center gap-4 text-typography-secondary">
       <SpinnerIcon className="size-16 animate-spin" />
