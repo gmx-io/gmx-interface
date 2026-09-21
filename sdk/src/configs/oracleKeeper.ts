@@ -13,16 +13,16 @@ export const ORACLE_FALLBACK_TRACKER_CONFIG = {
   setEndpointsThrottle: 5 * 1000, // 5 secs
   delay: 5000, // 5 secs
 };
-// Temporary: gmxinfra.io is unreachable, so mainnet chains run on gmxinfra2.io until it is back.
-// megaeth has no <chain>-api host in that zone, hence the -fallback one as main.
+// Temporary: gmxinfra.io is unreachable, so mainnet chains run on gmxapi.io until it is back.
+// Those hosts are single-provider, hence the gmxinfra2.io fallbacks ahead of the gmxinfra.io ones.
 const ORACLE_KEEPER_URLS: Record<ContractsChainId, string> = {
-  [ARBITRUM]: "https://arbitrum-api.gmxinfra2.io",
+  [ARBITRUM]: "https://arbitrum-keeper.gmxapi.io",
 
-  [AVALANCHE]: "https://avalanche-api.gmxinfra2.io",
+  [AVALANCHE]: "https://avalanche-keeper.gmxapi.io",
 
   [AVALANCHE_FUJI]: "https://synthetics-api-avax-fuji-upovm.ondigitalocean.app",
 
-  [MEGAETH]: "https://megaeth-api-fallback.gmxinfra2.io",
+  [MEGAETH]: "https://megaeth-keeper.gmxapi.io",
 
   [ARBITRUM_SEPOLIA]: "https://dolphin-app-a2dup.ondigitalocean.app",
 };
@@ -34,7 +34,7 @@ const ORACLE_KEEPER_FALLBACK_URLS: Record<ContractsChainId, string[]> = {
 
   [AVALANCHE_FUJI]: ["https://synthetics-api-avax-fuji.gmxinfra.io"],
 
-  [MEGAETH]: ["https://megaeth-api-fallback.gmxinfra.io"],
+  [MEGAETH]: ["https://megaeth-api-fallback.gmxinfra2.io", "https://megaeth-api-fallback.gmxinfra.io"],
 
   [ARBITRUM_SEPOLIA]: ["https://dolphin-app-a2dup.ondigitalocean.app"],
 };
