@@ -91,6 +91,27 @@ describe("getWithdrawalAmounts with a receive token outside a same-collateral po
     expect(amounts.marketTokenAmount).toBe(expandDecimals(10, 18));
   });
 
+  it("works out the payout from the typed receive token amount when the pool does not swap", () => {
+    const amounts = getWithdrawalAmounts({
+      marketInfo,
+      marketToken,
+      marketTokenAmount: 0n,
+      longTokenAmount: 0n,
+      shortTokenAmount: 0n,
+      strategy: "byLongCollateral",
+      uiFeeFactor: 0n,
+      findSwapPath,
+      wrappedReceiveTokenAddress: undefined,
+      receiveToken,
+      receiveTokenAmount: expandDecimals(10, receiveToken.decimals),
+      isSameCollaterals: true,
+    });
+
+    expect(amounts.longTokenUsd + amounts.shortTokenUsd).toBe(10n * USD);
+    expect(amounts.longTokenSwapPathStats).toBeUndefined();
+    expect(amounts.marketTokenAmount).toBe(expandDecimals(10, 18));
+  });
+
   it("leaves the outputs unswapped without a route", () => {
     for (const strategy of ["byMarketToken", "byLongCollateral"] as const) {
       const amounts = getAmounts({ findSwapPath: () => undefined, strategy });
