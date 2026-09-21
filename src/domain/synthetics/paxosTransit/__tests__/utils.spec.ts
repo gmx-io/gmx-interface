@@ -5,7 +5,7 @@ import type { WithdrawalStatuses } from "context/SyntheticsEvents/types";
 import { expandDecimals } from "lib/numbers";
 import type { TransitFeeTierResponse } from "sdk/utils/paxos/types";
 
-import { findTransitWithdrawal, getIsTransitQuoteNeeded, getTransitFeeTier } from "../utils";
+import { findTransitWithdrawalStatus, getIsTransitQuoteNeeded, getTransitFeeTier } from "../utils";
 
 const usd = (value: number) => expandDecimals(value, USD_DECIMALS);
 const ZERO_FEE: TransitFeeTierResponse = { feeTier: "zeroFee", zeroFeeCapacity: 1_000_000n };
@@ -69,7 +69,7 @@ describe("getIsTransitQuoteNeeded", () => {
   });
 });
 
-describe("findTransitWithdrawal", () => {
+describe("findTransitWithdrawalStatus", () => {
   const ACCOUNT = "0x1111111111111111111111111111111111111111";
   const POOL = "0x2222222222222222222222222222222222222222";
   const OTHER = "0x3333333333333333333333333333333333333333";
@@ -104,24 +104,30 @@ describe("findTransitWithdrawal", () => {
   const params = { account: ACCOUNT, poolAddress: POOL, convertedWithdrawalKeys: [] };
 
   it("takes the newest withdrawal of this pool", () => {
-    expect(findTransitWithdrawal(statuses(status("old", 1), status("new", 2)), params)?.key).toBe("new");
+    expect(findTransitWithdrawalStatus(statuses(status("old", 1), status("new", 2)), params)?.key).toBe("new");
   });
 
   it("skips cancelled, already converted and foreign withdrawals", () => {
     expect(
-      findTransitWithdrawal(statuses(status("cancelled", 3, { cancelledTxnHash: "0xabc" })), params)
+      findTransitWithdrawalStatus(statuses(status("cancelled", 3, { cancelledTxnHash: "0xabc" })), params)
     ).toBeUndefined();
     expect(
-      findTransitWithdrawal(statuses(status("done", 3)), { ...params, convertedWithdrawalKeys: ["done"] })
+      findTransitWithdrawalStatus(statuses(status("done", 3)), { ...params, convertedWithdrawalKeys: ["done"] })
     ).toBeUndefined();
-    expect(findTransitWithdrawal(statuses(status("other pool", 3, { marketAddress: OTHER })), params)).toBeUndefined();
-    expect(findTransitWithdrawal(statuses(status("other receiver", 3, { receiver: OTHER })), params)).toBeUndefined();
+    expect(
+      findTransitWithdrawalStatus(statuses(status("other pool", 3, { marketAddress: OTHER })), params)
+    ).toBeUndefined();
+    expect(
+      findTransitWithdrawalStatus(statuses(status("other receiver", 3, { receiver: OTHER })), params)
+    ).toBeUndefined();
   });
 
   it("needs an account and a pool", () => {
-    expect(findTransitWithdrawal(statuses(status("withdrawal", 1)), { ...params, account: undefined })).toBeUndefined();
     expect(
-      findTransitWithdrawal(statuses(status("withdrawal", 1)), { ...params, poolAddress: undefined })
+      findTransitWithdrawalStatus(statuses(status("withdrawal", 1)), { ...params, account: undefined })
+    ).toBeUndefined();
+    expect(
+      findTransitWithdrawalStatus(statuses(status("withdrawal", 1)), { ...params, poolAddress: undefined })
     ).toBeUndefined();
   });
 });
