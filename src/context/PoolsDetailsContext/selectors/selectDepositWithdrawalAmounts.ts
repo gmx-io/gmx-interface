@@ -164,7 +164,7 @@ export const selectDepositWithdrawalAmounts = createSelector((q): DepositAmounts
   return undefined;
 });
 
-export const selectPoolsDetailsTransitSwapFeesUsd = createSelector((q): bigint | undefined => {
+export const selectPoolsDetailsCollateralSwapTotalFeesDeltaUsd = createSelector((q): bigint | undefined => {
   const { isDeposit } = q(selectPoolsDetailsFlags);
   const collateralSwapTokens = q(selectPoolsDetailsCollateralSwapTokens);
   const amounts = q(selectDepositWithdrawalAmounts);
@@ -196,5 +196,5 @@ export const selectPoolsDetailsTransitSwapFeesUsd = createSelector((q): bigint |
     return undefined;
   }
 
-  return 0n - swapPathStats.totalFeesDeltaUsd;
+  return swapPathStats.totalFeesDeltaUsd;
 });
