@@ -1122,10 +1122,6 @@ msgstr ""
 msgid "TVL in vaults and pools"
 msgstr ""
 
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-msgid "GMX on Solana"
-msgstr ""
-
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
 msgstr ""
@@ -6175,10 +6171,6 @@ msgstr ""
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCards.tsx
 msgid "Invest with control over risk and reward"
-msgstr ""
-
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-msgid "GMX on Solana (known as GMTrade) is currently served from a separate domain."
 msgstr ""
 
 #: landing/src/pages/Home/SponsorsSection/SponsorsSection.tsx
@@ -11373,10 +11365,6 @@ msgstr ""
 
 #: src/components/HistoryExport/useHistoryExport.ts
 msgid "The export could not be completed. No file was downloaded."
-msgstr ""
-
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-msgid "Open GMTrade in a new tab"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
