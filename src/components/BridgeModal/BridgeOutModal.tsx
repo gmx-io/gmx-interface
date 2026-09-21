@@ -36,6 +36,7 @@ import { convertToUsd, getMidPrice, getTokenData } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
+import { parseError } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { getToken, getWrappedToken } from "sdk/configs/tokens";
@@ -265,7 +266,7 @@ export function BridgeOutModal({
         });
       });
     } catch (error) {
-      const toastParams = getTxnErrorToast(chainId, error, {
+      const toastParams = getTxnErrorToast(chainId, parseError(error), {
         defaultMessage: t`Withdrawal failed`,
         expressFee: { gasPaymentTokenAddress, isGmxAccount: true },
       });

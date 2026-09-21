@@ -232,6 +232,7 @@ msgstr "포지션 종료 시 가격 영향입니다. 양수 값은 유리합니�
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
+#: src/domain/tokens/useMaxAvailableAmount.ts
 msgid "Network fee unavailable"
 msgstr "네트워크 수수료를 불러올 수 없습니다"
 
@@ -1898,10 +1899,6 @@ msgstr "토큰"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Action(s)"
 msgstr "작업"
-
-#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
-msgid "Insufficient gas balance. Deposit more {gasPaymentTokensText}."
-msgstr "Gas 잔액이 부족합니다. {gasPaymentTokensText}을(를) 추가로 입금하십시오."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "1inch"
@@ -8435,6 +8432,10 @@ msgstr ""
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "TVL (supply)"
 msgstr "TVL (공급량)"
+
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
+msgid "Insufficient {gasPaymentTokensText} in your GMX Account. Express and One-Click Trading are unavailable."
+msgstr "GMX 계정의 {gasPaymentTokensText}이(가) 부족합니다. Express 및 One-Click Trading을 이용할 수 없습니다."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"

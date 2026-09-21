@@ -153,21 +153,6 @@ export function useTradeboxTransactions({ setPendingTxns, canSwitchGasPaymentTok
       : undefined;
   }, [batchParams, chainId, isWrapOrUnwrap, tokensData, wrapOrUnwrapExecutionFee]);
 
-  const primaryExecutionFee = useMemo(() => {
-    if (isWrapOrUnwrap) {
-      return wrapOrUnwrapExecutionFee;
-    }
-    if (!tokensData || !primaryCreateOrderParams) {
-      return undefined;
-    }
-    return getBatchTotalExecutionFee({
-      batchParams: { createOrderParams: primaryCreateOrderParams, updateOrderParams: [], cancelOrderParams: [] },
-      chainId,
-      tokensData,
-      allowEmptyBatch: true,
-    });
-  }, [chainId, isWrapOrUnwrap, primaryCreateOrderParams, tokensData, wrapOrUnwrapExecutionFee]);
-
   const {
     expressParams,
     fastExpressParams,
@@ -444,6 +429,5 @@ export function useTradeboxTransactions({ setPendingTxns, canSwitchGasPaymentTok
     isExpressLoading,
     isMultichainSubmitDisabled,
     totalExecutionFee,
-    primaryExecutionFee,
   };
 }

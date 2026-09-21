@@ -1123,6 +1123,7 @@ export const WithdrawalView = () => {
     feeToken: gasPaymentTokenForMax,
     feeTokenAmount: gasPaymentTokenAmountForMax,
     reserveToken: gasPaymentToken,
+    isFeeEstimationFailed: !isSameChain && expressTxnParamsAsyncResult.error !== undefined,
     isGmxAccount: true,
   });
 

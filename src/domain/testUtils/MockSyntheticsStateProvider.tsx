@@ -57,14 +57,11 @@ export type MockSyntheticsStateProviderProps = {
   subaccount?: SyntheticsState["subaccountState"]["subaccount"];
   srcChainId?: SourceChainId;
   l1ExpressOrderGasReference?: L1ExpressOrderGasReference;
-  /** Position key the PositionSeller modal opens for (prod sets it from the positions list). */
   closingPositionKey?: string;
-  /** Claimable price impact rebates (prod loads them from the rebates API). */
   claims?: SyntheticsState["claims"];
-  /** GM/GLV box state (prod builds it from the route and market-token requests). */
   poolsDetails?: PoolsDetailsState;
-  /** GM token data for deposits (prod loads it with the market-token request). */
   depositMarketTokensData?: TokensData;
+  gasPaymentTokenAllowance?: SyntheticsState["gasPaymentTokenAllowance"];
 };
 
 /**
@@ -89,6 +86,7 @@ export function MockSyntheticsStateProvider({
   claims = EMPTY_CLAIMS,
   poolsDetails,
   depositMarketTokensData,
+  gasPaymentTokenAllowance,
 }: MockSyntheticsStateProviderProps) {
   const chainId = ARBITRUM;
   const { account, signer } = useWallet();
@@ -188,7 +186,7 @@ export function MockSyntheticsStateProvider({
       features,
       uiFlags: undefined,
       sponsoredCallBalanceData,
-      gasPaymentTokenAllowance: undefined,
+      gasPaymentTokenAllowance,
       l1ExpressOrderGasReference,
     };
 
@@ -212,6 +210,7 @@ export function MockSyntheticsStateProvider({
     claims,
     poolsDetails,
     depositMarketTokensData,
+    gasPaymentTokenAllowance,
     settings,
     subaccountState,
     tokenPermitsState,

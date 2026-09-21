@@ -232,6 +232,7 @@ msgstr "Влияние на цену при закрытии. Положител
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
+#: src/domain/tokens/useMaxAvailableAmount.ts
 msgid "Network fee unavailable"
 msgstr "Комиссия сети недоступна"
 
@@ -1899,10 +1900,6 @@ msgstr "Токены"
 msgid "Action(s)"
 msgstr "Действие(я)"
 
-#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
-msgid "Insufficient gas balance. Deposit more {gasPaymentTokensText}."
-msgstr "Недостаточный баланс Gas. Внесите больше {gasPaymentTokensText}."
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "1inch"
 msgstr "1inch"
@@ -2225,7 +2222,7 @@ msgstr "В пулах GMX недостаточно ликвидности для
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Used for Express and One-Click fees only, paid from the balance the action uses. Classic transactions, same-chain GMX Account transfers, and bridges pay gas in {nativeTokenSymbol} from your Wallet."
-msgstr "Используется только для комиссий Express и One-Click и оплачивается из баланса, который использует действие. Транзакции Classic, переводы на Счет GMX в той же сети и мосты оплачивают gas в {nativeTokenSymbol} из вашего Кошелька."
+msgstr "Используется только для комиссий Express и One-Click и оплачивается из баланса, который использует действие. Транзакции Classic, депозиты и выводы Счета GMX в той же сети и мосты оплачивают газ в {nativeTokenSymbol} из вашего Кошелька."
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate vault. Withdraw them to transfer to the new account."
@@ -5747,7 +5744,7 @@ msgstr "Проскальзывание — это разница между ож
 
 #: src/domain/synthetics/fees/networkFeeSource.ts
 msgid "Wallet transactions pay gas in {nativeTokenSymbol} from your Wallet."
-msgstr "Транзакции кошелька оплачивают gas в {nativeTokenSymbol} из вашего кошелька."
+msgstr "Транзакции кошелька оплачивают газ в {nativeTokenSymbol} из вашего кошелька."
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
@@ -8436,6 +8433,10 @@ msgstr ""
 msgid "TVL (supply)"
 msgstr "TVL (предложение)"
 
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
+msgid "Insufficient {gasPaymentTokensText} in your GMX Account. Express and One-Click Trading are unavailable."
+msgstr "Недостаточно {gasPaymentTokensText} на вашем Счете GMX. Express и One-Click Trading недоступны."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"
 msgstr "TokenTerminal"
@@ -9654,7 +9655,7 @@ msgstr "Купить GM за {0} в пределах лимитов ниже"
 
 #: src/domain/synthetics/fees/networkFeeSource.ts
 msgid "Bridge transactions pay gas in {nativeTokenSymbol} from your {chainName} wallet."
-msgstr "Транзакции моста оплачивают gas в {nativeTokenSymbol} из вашего кошелька {chainName}."
+msgstr "Транзакции моста оплачивают газ в {nativeTokenSymbol} из вашего кошелька {chainName}."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
@@ -12597,7 +12598,7 @@ msgstr "Комиссия сети"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Used for Express and One-Click fees only, paid from the balance the action uses. Bridges pay gas in {srcChainNativeTokenSymbol} from your {srcChainName} wallet."
-msgstr "Используется только для комиссий Express и One-Click и оплачивается из баланса, который использует действие. Мосты оплачивают gas в {srcChainNativeTokenSymbol} из вашего кошелька {srcChainName}."
+msgstr "Используется только для комиссий Express и One-Click и оплачивается из баланса, который использует действие. Мосты оплачивают газ в {srcChainNativeTokenSymbol} из вашего кошелька {srcChainName}."
 
 #: src/components/MaxActions/MaxActions.tsx
 msgid "Keep gas"

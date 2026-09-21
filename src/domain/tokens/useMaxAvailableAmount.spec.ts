@@ -67,6 +67,7 @@ describe("getMaxAvailableTokenAmount", () => {
         feeHoldbackAmount: usdc(1.4),
         reserveAmount: usdc(20),
         isFeeLoading: false,
+        isFeeUnavailable: false,
         isInsufficientForFee: false,
       });
     });
@@ -130,8 +131,10 @@ describe("getMaxAvailableTokenAmount", () => {
 
       expect(max).toBe(details.maxAvailableAmount);
       expect(keepGas).toBe(details.keepGasAmount);
-      expect(getMaxActionSelection({ fromTokenAmount: max, ...details })).toBe("max");
-      expect(getMaxActionSelection({ fromTokenAmount: keepGas, ...details })).toBe("keepGas");
+      expect(getMaxActionSelection({ fromTokenAmount: max, fromTokenBalance: usdc(62.03), ...details })).toBe("max");
+      expect(getMaxActionSelection({ fromTokenAmount: keepGas, fromTokenBalance: usdc(62.03), ...details })).toBe(
+        "keepGas"
+      );
     });
 
     it("an 18-decimal ETH fill with an odd fee round-trips through the input", () => {
@@ -147,7 +150,7 @@ describe("getMaxAvailableTokenAmount", () => {
       const max = roundTrip(details.maxAvailableAmount, 18);
 
       expect(max).toBe(details.maxAvailableAmount);
-      expect(getMaxActionSelection({ fromTokenAmount: max, ...details })).toBe("max");
+      expect(getMaxActionSelection({ fromTokenAmount: max, fromTokenBalance: eth(10), ...details })).toBe("max");
     });
   });
 
@@ -283,6 +286,24 @@ describe("getMaxAvailableTokenAmount", () => {
       expect(details.isInsufficientForFee).toBe(false);
     });
 
+    it("a failed estimate without any fee to fall back on is unavailable, not loading forever", () => {
+      const details = getMaxAvailableTokenAmount({
+        chainId: ARBITRUM,
+        fromTokenAddress: USDC.address,
+        fromTokenBalance: usdc(100),
+        feeToken: USDC_DATA,
+        feeTokenAmount: undefined,
+        fallbackFeeTokenAmount: undefined,
+        reserveToken: USDC_DATA,
+        isFeeEstimationFailed: true,
+      });
+
+      expect(details.isFeeLoading).toBe(false);
+      expect(details.isFeeUnavailable).toBe(true);
+      expect(details.maxAvailableAmount).toBe(0n);
+      expect(details.keepGasAmount).toBeUndefined();
+    });
+
     it("a zero estimate falls back to the lower-bound fee", () => {
       expect(sameSourceFee(0n, usdc(1)).feeHoldbackAmount).toBe(usdc(1.4));
     });
@@ -348,35 +369,117 @@ describe("getMaxAvailableTokenAmount", () => {
       feeHoldbackAmount: 0n,
       reserveAmount: undefined,
       isFeeLoading: false,
+      isFeeUnavailable: false,
       isInsufficientForFee: false,
     });
   });
 });
 
 describe("getMaxActionSelection", () => {
+  const fromTokenBalance = usdc(62.03);
   const maxAvailableAmount = usdc(60.63);
   const keepGasAmount = usdc(40.63);
 
   it("selects Max on an exact match", () => {
-    expect(getMaxActionSelection({ fromTokenAmount: maxAvailableAmount, maxAvailableAmount, keepGasAmount })).toBe(
-      "max"
-    );
+    expect(
+      getMaxActionSelection({
+        fromTokenAmount: maxAvailableAmount,
+        fromTokenBalance,
+        maxAvailableAmount,
+        keepGasAmount,
+      })
+    ).toBe("max");
   });
 
   it("selects Keep gas on an exact match", () => {
-    expect(getMaxActionSelection({ fromTokenAmount: keepGasAmount, maxAvailableAmount, keepGasAmount })).toBe(
-      "keepGas"
-    );
+    expect(
+      getMaxActionSelection({ fromTokenAmount: keepGasAmount, fromTokenBalance, maxAvailableAmount, keepGasAmount })
+    ).toBe("keepGas");
   });
 
   it("selects nothing between the two fills", () => {
-    expect(getMaxActionSelection({ fromTokenAmount: usdc(50), maxAvailableAmount, keepGasAmount })).toBeUndefined();
+    expect(
+      getMaxActionSelection({ fromTokenAmount: usdc(50), fromTokenBalance, maxAvailableAmount, keepGasAmount })
+    ).toBeUndefined();
   });
 
   it("selects nothing when Max is zero and the input is empty", () => {
     expect(
-      getMaxActionSelection({ fromTokenAmount: 0n, maxAvailableAmount: 0n, keepGasAmount: undefined })
+      getMaxActionSelection({
+        fromTokenAmount: 0n,
+        fromTokenBalance: 0n,
+        maxAvailableAmount: 0n,
+        keepGasAmount: undefined,
+      })
     ).toBeUndefined();
+  });
+
+  it("selects nothing for an empty input even when a fill is within the re-estimation slack of zero", () => {
+    // balance 21.2, fee 0.1: Keep gas fills 1.06, below the 1.43 slack of the 20.14 held back
+    const smallKeepGas = usdcFeeCase(usdc(21.2), usdc(0.1));
+    // balance 1.45, fee 1: Max fills 0.05, below the 0.1 slack of the 1.4 held back
+    const smallMax = usdcFeeCase(usdc(1.45), usdc(1));
+
+    expect(smallKeepGas.keepGasAmount).toBe(usdc(1.06));
+    expect(smallMax.maxAvailableAmount).toBe(usdc(0.05));
+    expect(
+      getMaxActionSelection({ ...smallKeepGas, fromTokenBalance: usdc(21.2), fromTokenAmount: 0n })
+    ).toBeUndefined();
+    expect(getMaxActionSelection({ ...smallMax, fromTokenBalance: usdc(1.45), fromTokenAmount: 0n })).toBeUndefined();
+  });
+
+  it("a Max fill of a fee paid elsewhere is the full balance and needs an exact match", () => {
+    const balance = usdc(10);
+
+    expect(
+      getMaxActionSelection({
+        fromTokenAmount: balance,
+        fromTokenBalance: balance,
+        maxAvailableAmount: balance,
+        keepGasAmount: undefined,
+      })
+    ).toBe("max");
+    expect(
+      getMaxActionSelection({
+        fromTokenAmount: balance - 1n,
+        fromTokenBalance: balance,
+        maxAvailableAmount: balance,
+        keepGasAmount: undefined,
+      })
+    ).toBeUndefined();
+  });
+
+  describe("a fee re-estimation after the fill keeps the selection while the fill still passes the 1.3x fee check", () => {
+    const balance = usdc(62.03);
+    const filled = usdcFeeCase(balance, usdc(1));
+
+    it("Max and Keep gas stay selected after the fee moves by 5%, the reserve scaling with it", () => {
+      for (const fee of [usdc(0.95), usdc(1.05)]) {
+        const next = usdcFeeCase(balance, fee);
+        const selectionInputs = { ...next, fromTokenBalance: balance };
+
+        expect(getMaxActionSelection({ ...selectionInputs, fromTokenAmount: filled.maxAvailableAmount })).toBe("max");
+        expect(getMaxActionSelection({ ...selectionInputs, fromTokenAmount: filled.keepGasAmount! })).toBe("keepGas");
+      }
+    });
+
+    it("a fill still selected after the fee grew leaves the 1.3x-buffered fee payable", () => {
+      const fee = usdc(1.07);
+      const next = usdcFeeCase(balance, fee);
+
+      expect(
+        getMaxActionSelection({ ...next, fromTokenBalance: balance, fromTokenAmount: filled.maxAvailableAmount })
+      ).toBe("max");
+      expect(filled.maxAvailableAmount + (fee * 13n) / 10n).toBeLessThanOrEqual(balance);
+    });
+
+    it("the selection clears once the fill would no longer pass the check", () => {
+      const next = usdcFeeCase(balance, usdc(1.2));
+
+      expect(
+        getMaxActionSelection({ ...next, fromTokenBalance: balance, fromTokenAmount: filled.maxAvailableAmount })
+      ).toBeUndefined();
+    });
   });
 });
 
@@ -396,6 +499,7 @@ describe("shouldShowGasPaymentTokenWarning", () => {
       reserveAmount: details.reserveAmount,
       selected: getMaxActionSelection({
         fromTokenAmount,
+        fromTokenBalance: balance,
         maxAvailableAmount: details.maxAvailableAmount,
         keepGasAmount: details.keepGasAmount,
       }),
@@ -412,7 +516,7 @@ describe("shouldShowGasPaymentTokenWarning", () => {
   });
 
   it("warns for a manual amount between Keep gas and Max", () => {
-    expect(warns(27_796n * USDC_UNIT)).toBe(true);
+    expect(warns(27_790n * USDC_UNIT)).toBe(true);
   });
 
   it("does not warn for a small amount with a large balance (FEDEV-4033)", () => {
@@ -436,7 +540,7 @@ describe("shouldShowGasPaymentTokenWarning", () => {
   });
 
   it("never warns without a reserve context (Classic ETH)", () => {
-    expect(warns(27_796n * USDC_UNIT, { reserveAmount: undefined })).toBe(false);
+    expect(warns(27_790n * USDC_UNIT, { reserveAmount: undefined })).toBe(false);
   });
 });
 

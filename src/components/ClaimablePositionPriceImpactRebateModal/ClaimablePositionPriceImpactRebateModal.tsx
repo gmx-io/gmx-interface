@@ -11,8 +11,13 @@ import {
   selectClaimsPriceImpactClaimableTotal,
 } from "context/SyntheticsStateContext/selectors/claimsSelectors";
 import { selectGmxAccountGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import { selectGmxAccountGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
+import {
+  ArbitraryExpressError,
+  useArbitraryError,
+  useArbitraryRelayParamsAndPayload,
+} from "domain/multichain/arbitraryRelayParams";
 import {
   buildAndSignClaimPositionPriceImpactFeesTxn,
   createClaimCollateralTxn,
@@ -29,6 +34,7 @@ import {
 import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { convertToUsd, getMidPrice, getTokenData } from "domain/synthetics/tokens";
+import { getInsufficientFeeButtonMessage } from "domain/synthetics/trade/utils/validation";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
@@ -41,10 +47,13 @@ import { useThrottledAsync } from "lib/useThrottledAsync";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
+import { getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { nowInSeconds } from "sdk/utils/time";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
+import { InsufficientGmxAccountGasTokenBalanceMessage } from "components/Errors/gasErrors";
 import { calculateNetworkFeeDetails } from "components/GmxAccountModal/calculateNetworkFeeDetails";
 import Modal from "components/Modal/Modal";
 import { SimpleNetworkFeeRow } from "components/NetworkFeeRow/SimpleNetworkFeeRow";
@@ -232,12 +241,17 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
     isGmxAccount: srcChainId !== undefined,
   });
 
+  const errors = useArbitraryError(expressTxnParamsAsyncResult.error, { isGmxAccount: srcChainId !== undefined });
   const gmxAccountGasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
+  const gmxAccountGasPaymentTokenAddress = useSelector(selectGmxAccountGasPaymentTokenAddress);
 
   const networkFee = useMemo((): ClaimNetworkFee => {
     const gasPaymentParams = expressTxnParamsAsyncResult.data?.gasPaymentParams;
     const token = gasPaymentParams?.gasPaymentToken ?? gmxAccountGasPaymentToken;
-    const amount = gasPaymentParams?.gasPaymentTokenAmount;
+    const amount =
+      errors?.isOutOfTokenError?.isGasPaymentToken && errors.isOutOfTokenError.requiredAmount !== undefined
+        ? errors.isOutOfTokenError.requiredAmount
+        : gasPaymentParams?.gasPaymentTokenAmount;
 
     const details: NetworkFeeDetails | undefined =
       token && amount !== undefined
@@ -261,6 +275,7 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
     };
   }, [
     claimablePositionPriceImpactFees.length,
+    errors?.isOutOfTokenError,
     expressTxnParamsAsyncResult.data,
     expressTxnParamsAsyncResult.error,
     gmxAccountGasPaymentToken,
@@ -358,6 +373,15 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
     if (isSubmitting) {
       return { text: t`Claiming...`, disabled: true };
     }
+    if (errors?.isOutOfTokenError?.isGasPaymentToken) {
+      return {
+        text: getInsufficientFeeButtonMessage({
+          tokenSymbol: getToken(chainId, gmxAccountGasPaymentTokenAddress).symbol,
+          feeSource: GMX_ACCOUNT_NETWORK_FEE_SOURCE,
+        }),
+        disabled: true,
+      };
+    }
     if (expressTxnParamsAsyncResult.error) {
       return { text: t`Network fee unavailable`, disabled: true };
     }
@@ -365,7 +389,16 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
       return { text: t`Loading fees...`, disabled: true };
     }
     return { text: t`Claim`, disabled: false, onSubmit: handleSubmit };
-  }, [expressTxnParamsAsyncResult.error, handleSubmit, hasOutdatedUi, isSubmitting, networkFee.isLoading]);
+  }, [
+    chainId,
+    errors?.isOutOfTokenError?.isGasPaymentToken,
+    expressTxnParamsAsyncResult.error,
+    gmxAccountGasPaymentTokenAddress,
+    handleSubmit,
+    hasOutdatedUi,
+    isSubmitting,
+    networkFee.isLoading,
+  ]);
 
   return (
     <ClaimablePositionPriceImpactRebateModalComponent
@@ -373,6 +406,7 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
       onClose={onClose}
       buttonState={buttonState}
       networkFee={networkFee}
+      errors={errors}
     />
   );
 }
@@ -382,6 +416,7 @@ function ClaimablePositionPriceImpactRebateModalComponent({
   onClose,
   buttonState,
   networkFee,
+  errors,
 }: {
   isVisible: boolean;
   onClose: () => void;
@@ -391,7 +426,9 @@ function ClaimablePositionPriceImpactRebateModalComponent({
     onSubmit?: () => void;
   };
   networkFee: ClaimNetworkFee;
+  errors?: ArbitraryExpressError;
 }) {
+  const { chainId } = useChainId();
   const total = useSelector(selectClaimsPriceImpactClaimableTotal);
   const totalUsd = useMemo(() => formatDeltaUsd(total), [total]);
   const groups = useSelector(selectClaimsGroupedPositionPriceImpactClaimableFees);
@@ -424,6 +461,15 @@ function ClaimablePositionPriceImpactRebateModalComponent({
           ))}
         </div>
       </div>
+      {errors?.isOutOfTokenError?.isGasPaymentToken && (
+        <AlertInfoCard type="error" hideClose className="mb-15">
+          <InsufficientGmxAccountGasTokenBalanceMessage
+            chainId={chainId}
+            gasPaymentTokenAddress={errors.isOutOfTokenError.tokenAddress}
+            onBeforeNavigation={onClose}
+          />
+        </AlertInfoCard>
+      )}
       <SimpleNetworkFeeRow
         className="mb-15"
         details={networkFee.details}

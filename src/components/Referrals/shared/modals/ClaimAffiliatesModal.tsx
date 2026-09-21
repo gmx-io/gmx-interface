@@ -10,6 +10,7 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
+import { InsufficientGmxAccountGasTokenBalanceMessage } from "components/Errors/gasErrors";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
 import PercentageInput from "components/PercentageInput/PercentageInput";
@@ -32,7 +33,7 @@ type Props = {
 
 export function ClaimAffiliatesModal({ onClose }: Props) {
   const state = useClaimAffiliatesModalState({ onClose });
-  const { srcChainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
 
   return (
     <ModalWithPortal
@@ -249,7 +250,17 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
           </AlertInfoCard>
         )}
 
-        <OutOfTokenErrorAlert errors={state.errors} token={state.isOutOfTokenErrorToken} onClose={onClose} />
+        {state.errors?.isOutOfTokenError?.isGasPaymentToken ? (
+          <AlertInfoCard type="error" hideClose>
+            <InsufficientGmxAccountGasTokenBalanceMessage
+              chainId={chainId}
+              gasPaymentTokenAddress={state.errors.isOutOfTokenError.tokenAddress}
+              onBeforeNavigation={onClose}
+            />
+          </AlertInfoCard>
+        ) : (
+          <OutOfTokenErrorAlert errors={state.errors} token={state.isOutOfTokenErrorToken} onClose={onClose} />
+        )}
 
         <Button
           className="w-full"

@@ -578,6 +578,7 @@ export const DepositView = () => {
     feeToken: ignoreGasPaymentToken ? undefined : gasPaymentToken,
     feeTokenAmount: gasPaymentTokenAmountForDepositView,
     reserveToken: reserveTokenForDeposit,
+    isFeeEstimationFailed: depositViewChain === settlementChainId && sameChainNetworkFeeAsyncResult.error !== undefined,
   });
 
   const handleMaxButtonClick = useCallback(() => {

@@ -36,6 +36,7 @@ import {
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
+import { getNetworkFeeGasPaymentParams } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { formatLiquidationPrice, getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import { convertToTokenAmount, getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
@@ -716,7 +717,10 @@ export function PositionEditor() {
 
               <PositionEditorAdvancedRows
                 operation={operation}
-                gasPaymentParams={submitButtonState.expressParams?.gasPaymentParams}
+                gasPaymentParams={getNetworkFeeGasPaymentParams({
+                  expressParams: submitButtonState.expressParams,
+                  tokensData,
+                })}
                 feeSource={getNetworkFeeSource({ isGmxAccount: isCollateralTokenFromGmxAccount })}
               />
             </div>

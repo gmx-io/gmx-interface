@@ -141,7 +141,6 @@ export function isIgnoredEstimateGasError(error: ErrorLike): boolean {
   return false;
 }
 
-const INSUFFICIENT_FEE_CONTRACT_ERRORS = ["InsufficientMultichainBalance", "InsufficientRelayFee", "InsufficientFunds"];
 const INSUFFICIENT_FEE_MESSAGE_PATTERN = "ERC20: transfer amount exceeds balance";
 
 export function getInsufficientFeeError(
@@ -151,13 +150,8 @@ export function getInsufficientFeeError(
     return { isErrorMatched: false };
   }
 
-  if (errorData.contractError && INSUFFICIENT_FEE_CONTRACT_ERRORS.includes(errorData.contractError)) {
-    const tokenArg =
-      errorData.contractError === "InsufficientMultichainBalance"
-        ? errorData.contractErrorArgs?.[1]
-        : errorData.contractError === "InsufficientFunds"
-          ? errorData.contractErrorArgs?.[0]
-          : undefined;
+  if (errorData.contractError === "InsufficientMultichainBalance") {
+    const tokenArg = errorData.contractErrorArgs?.[1];
 
     return { isErrorMatched: true, tokenAddress: typeof tokenArg === "string" ? tokenArg : undefined };
   }

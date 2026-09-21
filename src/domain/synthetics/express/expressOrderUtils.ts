@@ -32,7 +32,6 @@ import { abis } from "sdk/abis";
 import { AnyChainId, ContractsChainId, SettlementChainId, SourceChainId } from "sdk/configs/chains";
 import { ContractName } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
-import { bigMath } from "sdk/utils/bigmath";
 import { type ExpressTxnData, estimateExpressParams as sdkEstimateExpressParams } from "sdk/utils/express";
 import { getBatchTypedData, buildBatchOrderCalldata } from "sdk/utils/express";
 import {
@@ -49,29 +48,6 @@ import { hashSubaccountApproval } from "sdk/utils/subaccount";
 import { nowInSeconds } from "sdk/utils/time";
 
 import { estimateBatchGasLimit, GasLimitsConfig } from "../fees";
-
-export function getPrimaryOrderGasPaymentTokenAmount({
-  expressParams,
-  primaryExecutionFeeAmount,
-}: {
-  expressParams: Pick<ExpressTxnParams, "gasPaymentParams" | "executionFeeAmount">;
-  primaryExecutionFeeAmount: bigint | undefined;
-}): bigint {
-  const { gasPaymentTokenAmount, relayerFeeAmount } = expressParams.gasPaymentParams;
-
-  if (primaryExecutionFeeAmount === undefined) {
-    return gasPaymentTokenAmount;
-  }
-
-  const batchFeeAmount = relayerFeeAmount + expressParams.executionFeeAmount;
-  const primaryFeeAmount = relayerFeeAmount + primaryExecutionFeeAmount;
-
-  if (batchFeeAmount <= 0n || primaryFeeAmount >= batchFeeAmount) {
-    return gasPaymentTokenAmount;
-  }
-
-  return bigMath.mulDiv(gasPaymentTokenAmount, primaryFeeAmount, batchFeeAmount);
-}
 
 export async function estimateBatchExpressParams({
   signer,

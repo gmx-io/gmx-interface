@@ -1,11 +1,13 @@
+import { zeroAddress } from "viem";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ARBITRUM } from "config/chains";
 import { ExpressTxnParams } from "domain/synthetics/express";
+import { TokensData } from "domain/tokens";
 
 import { InsufficientGmxAccountGasTokenBalanceMessage } from "components/Errors/gasErrors";
 
-import { reportMultichainExpressSubmitError } from "../validateMultichainExpressSubmit";
+import { getNetworkFeeGasPaymentParams, reportMultichainExpressSubmitError } from "../validateMultichainExpressSubmit";
 
 const mocks = vi.hoisted(() => ({
   toastError: vi.fn(),
@@ -22,15 +24,19 @@ vi.mock("lib/metrics/utils", () => ({
 
 const USDC = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831";
 
-function makeExpressParams(overrides: { isGmxAccount: boolean; isOutGasTokenBalance: boolean }): ExpressTxnParams {
+function makeExpressParams(overrides: {
+  isGmxAccount: boolean;
+  isOutGasTokenBalance: boolean;
+  needGasPaymentTokenApproval?: boolean;
+}): ExpressTxnParams {
   return {
     chainId: ARBITRUM,
     isGmxAccount: overrides.isGmxAccount,
     gasPaymentValidations: {
       isGasPaymentTokenBalanceLoaded: true,
       isOutGasTokenBalance: overrides.isOutGasTokenBalance,
-      needGasPaymentTokenApproval: false,
-      isValid: !overrides.isOutGasTokenBalance,
+      needGasPaymentTokenApproval: overrides.needGasPaymentTokenApproval ?? false,
+      isValid: !overrides.isOutGasTokenBalance && !overrides.needGasPaymentTokenApproval,
     },
     gasPaymentParams: {
       gasPaymentTokenAddress: USDC,
@@ -39,6 +45,73 @@ function makeExpressParams(overrides: { isGmxAccount: boolean; isOutGasTokenBala
     },
   } as unknown as ExpressTxnParams;
 }
+
+describe("getNetworkFeeGasPaymentParams", () => {
+  const walletWithEth = { [zeroAddress]: { walletBalance: 100n } } as unknown as TokensData;
+  const walletWithoutEth = { [zeroAddress]: { walletBalance: 0n } } as unknown as TokensData;
+
+  it("quotes the gas payment token while the wallet can pay the Express fee", () => {
+    const expressParams = makeExpressParams({ isGmxAccount: false, isOutGasTokenBalance: false });
+
+    expect(getNetworkFeeGasPaymentParams({ expressParams, tokensData: walletWithEth })).toBe(
+      expressParams.gasPaymentParams
+    );
+  });
+
+  it("drops the gas payment token when a wallet short of it falls back to a Classic transaction in ETH", () => {
+    const expressParams = makeExpressParams({ isGmxAccount: false, isOutGasTokenBalance: true });
+
+    expect(getNetworkFeeGasPaymentParams({ expressParams, tokensData: walletWithEth })).toBeUndefined();
+  });
+
+  it("keeps the gas payment token when the wallet has no ETH either, matching the insufficient state that names it", () => {
+    const expressParams = makeExpressParams({ isGmxAccount: false, isOutGasTokenBalance: true });
+
+    expect(getNetworkFeeGasPaymentParams({ expressParams, tokensData: walletWithoutEth })).toBe(
+      expressParams.gasPaymentParams
+    );
+  });
+
+  it("keeps the gas payment token awaiting an approval on a surface that has the approve step", () => {
+    const expressParams = makeExpressParams({
+      isGmxAccount: false,
+      isOutGasTokenBalance: false,
+      needGasPaymentTokenApproval: true,
+    });
+
+    expect(getNetworkFeeGasPaymentParams({ expressParams, tokensData: walletWithEth })).toBe(
+      expressParams.gasPaymentParams
+    );
+  });
+
+  it("drops the gas payment token awaiting an approval on a surface without the approve step, which sends a Classic transaction", () => {
+    const expressParams = makeExpressParams({
+      isGmxAccount: false,
+      isOutGasTokenBalance: false,
+      needGasPaymentTokenApproval: true,
+    });
+
+    expect(
+      getNetworkFeeGasPaymentParams({ expressParams, tokensData: walletWithEth, canApproveGasPaymentToken: false })
+    ).toBeUndefined();
+  });
+
+  it("quotes an approved and funded gas payment token on a surface without the approve step", () => {
+    const expressParams = makeExpressParams({ isGmxAccount: false, isOutGasTokenBalance: false });
+
+    expect(
+      getNetworkFeeGasPaymentParams({ expressParams, tokensData: walletWithEth, canApproveGasPaymentToken: false })
+    ).toBe(expressParams.gasPaymentParams);
+  });
+
+  it("keeps the gas payment token for the GMX Account, which has no Classic fallback", () => {
+    const expressParams = makeExpressParams({ isGmxAccount: true, isOutGasTokenBalance: true });
+
+    expect(getNetworkFeeGasPaymentParams({ expressParams, tokensData: walletWithEth })).toBe(
+      expressParams.gasPaymentParams
+    );
+  });
+});
 
 describe("reportMultichainExpressSubmitError", () => {
   beforeEach(() => {

@@ -232,6 +232,7 @@ msgstr "Impacto en el precio al cerrar. Los valores positivos le benefician. <0>
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
+#: src/domain/tokens/useMaxAvailableAmount.ts
 msgid "Network fee unavailable"
 msgstr "Comisión de red no disponible"
 
@@ -1899,10 +1900,6 @@ msgstr "Tokens"
 msgid "Action(s)"
 msgstr "Acción(es)"
 
-#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
-msgid "Insufficient gas balance. Deposit more {gasPaymentTokensText}."
-msgstr "Saldo de Gas insuficiente. Deposite más {gasPaymentTokensText}."
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "1inch"
 msgstr "1inch"
@@ -2225,7 +2222,7 @@ msgstr "Los pools de GMX no tienen suficiente liquidez para este tamaño de swap
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Used for Express and One-Click fees only, paid from the balance the action uses. Classic transactions, same-chain GMX Account transfers, and bridges pay gas in {nativeTokenSymbol} from your Wallet."
-msgstr "Se usa solo para las comisiones Express y One-Click, pagadas desde el saldo que utiliza la acción. Las transacciones Clásicas, las transferencias a la Cuenta GMX en la misma cadena y los puentes pagan el gas en {nativeTokenSymbol} desde tu Monedero."
+msgstr "Se usa solo para las comisiones Express y One-Click, pagadas desde el saldo que utiliza la acción. Las transacciones Clásicas, los depósitos y retiros de la Cuenta GMX en la misma cadena y los puentes pagan el gas en {nativeTokenSymbol} desde tu Monedero."
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate vault. Withdraw them to transfer to the new account."
@@ -8435,6 +8432,10 @@ msgstr ""
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "TVL (supply)"
 msgstr "TVL (oferta)"
+
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
+msgid "Insufficient {gasPaymentTokensText} in your GMX Account. Express and One-Click Trading are unavailable."
+msgstr "{gasPaymentTokensText} insuficiente en tu Cuenta GMX. Express y One-Click Trading no están disponibles."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"

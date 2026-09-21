@@ -10,7 +10,7 @@ import {
 } from "domain/synthetics/fees/networkFeeSource";
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { formatAmountFree, formatBalanceAmount } from "lib/numbers";
+import { adjustForDecimals, formatAmountFree, formatBalanceAmount } from "lib/numbers";
 import { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getResidualGasUsd, RESIDUAL_GAS_AMOUNT_MULTIPLIER } from "sdk/configs/fees";
 import { bigMath } from "sdk/utils/bigmath";
@@ -22,6 +22,7 @@ export type MaxActionSelection = "max" | "keepGas";
 export type MaxActionsState = {
   selected: MaxActionSelection | undefined;
   isLoading: boolean;
+  isFeeUnavailable: boolean;
   isInsufficientForFee: boolean;
   showKeepGas: boolean;
   maxTooltip: string | undefined;
@@ -32,6 +33,7 @@ export type MaxActionsState = {
 export const DEFAULT_MAX_ACTIONS_STATE: MaxActionsState = {
   selected: undefined,
   isLoading: false,
+  isFeeUnavailable: false,
   isInsufficientForFee: false,
   showKeepGas: false,
   maxTooltip: undefined,
@@ -53,6 +55,7 @@ export type MaxAvailableTokenAmountDetails = {
   feeHoldbackAmount: bigint;
   reserveAmount: bigint | undefined;
   isFeeLoading: boolean;
+  isFeeUnavailable: boolean;
   isInsufficientForFee: boolean;
 };
 
@@ -62,6 +65,7 @@ const EMPTY_DETAILS: MaxAvailableTokenAmountDetails = {
   feeHoldbackAmount: 0n,
   reserveAmount: undefined,
   isFeeLoading: false,
+  isFeeUnavailable: false,
   isInsufficientForFee: false,
 };
 
@@ -73,6 +77,7 @@ export function getMaxAvailableTokenAmount({
   feeTokenAmount,
   fallbackFeeTokenAmount,
   reserveToken,
+  isFeeEstimationFailed = false,
 }: {
   chainId: ContractsChainId;
   fromTokenAddress: string | undefined;
@@ -81,6 +86,7 @@ export function getMaxAvailableTokenAmount({
   feeTokenAmount: bigint | undefined;
   fallbackFeeTokenAmount: bigint | undefined;
   reserveToken: TokenData | undefined;
+  isFeeEstimationFailed?: boolean;
 }): MaxAvailableTokenAmountDetails {
   if (fromTokenBalance === undefined) {
     return EMPTY_DETAILS;
@@ -91,7 +97,9 @@ export function getMaxAvailableTokenAmount({
     feeTokenAmount !== undefined && feeTokenAmount > 0n ? feeTokenAmount : fallbackFeeTokenAmount ?? feeTokenAmount;
 
   if (sameSourceFee && effectiveFee === undefined) {
-    return { ...EMPTY_DETAILS, isFeeLoading: true };
+    return isFeeEstimationFailed
+      ? { ...EMPTY_DETAILS, isFeeUnavailable: true }
+      : { ...EMPTY_DETAILS, isFeeLoading: true };
   }
 
   const feeHoldbackAmount = sameSourceFee ? applyValidMinimalBuffer(effectiveFee!) : 0n;
@@ -121,24 +129,52 @@ export function getMaxAvailableTokenAmount({
     feeHoldbackAmount,
     reserveAmount,
     isFeeLoading: false,
+    isFeeUnavailable: false,
     isInsufficientForFee,
   };
 }
 
+function getIsFilledWith({
+  fromTokenAmount,
+  fromTokenBalance,
+  fillAmount,
+}: {
+  fromTokenAmount: bigint;
+  fromTokenBalance: bigint;
+  fillAmount: bigint;
+}): boolean {
+  const heldBackAmount = fromTokenBalance - fillAmount;
+  const heldBackSlackAmount = heldBackAmount - bigMath.mulDiv(heldBackAmount, 13n, 14n);
+
+  return bigMath.abs(fromTokenAmount - fillAmount) <= heldBackSlackAmount;
+}
+
 export function getMaxActionSelection({
   fromTokenAmount,
+  fromTokenBalance,
   maxAvailableAmount,
   keepGasAmount,
 }: {
   fromTokenAmount: bigint;
+  fromTokenBalance: bigint;
   maxAvailableAmount: bigint;
   keepGasAmount: bigint | undefined;
 }): MaxActionSelection | undefined {
-  if (maxAvailableAmount > 0n && fromTokenAmount === maxAvailableAmount) {
+  if (fromTokenAmount <= 0n) {
+    return undefined;
+  }
+
+  if (
+    maxAvailableAmount > 0n &&
+    getIsFilledWith({ fromTokenAmount, fromTokenBalance, fillAmount: maxAvailableAmount })
+  ) {
     return "max";
   }
 
-  if (keepGasAmount !== undefined && fromTokenAmount === keepGasAmount) {
+  if (
+    keepGasAmount !== undefined &&
+    getIsFilledWith({ fromTokenAmount, fromTokenBalance, fillAmount: keepGasAmount })
+  ) {
     return "keepGas";
   }
 
@@ -264,6 +300,7 @@ export function useMaxAvailableAmount({
   feeTokenAmount,
   fallbackFeeTokenAmount,
   reserveToken,
+  isFeeEstimationFailed = false,
   isGmxAccount = false,
 }: {
   fromToken: TokenData | undefined;
@@ -275,6 +312,7 @@ export function useMaxAvailableAmount({
   feeTokenAmount?: bigint;
   fallbackFeeTokenAmount?: bigint;
   reserveToken?: TokenData;
+  isFeeEstimationFailed?: boolean;
   isGmxAccount?: boolean;
 }): {
   formattedBalance: string;
@@ -294,6 +332,7 @@ export function useMaxAvailableAmount({
     feeTokenAmount,
     fallbackFeeTokenAmount,
     reserveToken,
+    isFeeEstimationFailed,
   });
 
   if (fromToken === undefined || fromTokenBalance === undefined) {
@@ -315,7 +354,14 @@ export function useMaxAvailableAmount({
     isStable: fromToken.isStable,
   });
 
-  const { maxAvailableAmount, keepGasAmount, feeHoldbackAmount, reserveAmount, isInsufficientForFee } = details;
+  const {
+    maxAvailableAmount,
+    keepGasAmount,
+    feeHoldbackAmount,
+    reserveAmount,
+    isFeeUnavailable,
+    isInsufficientForFee,
+  } = details;
 
   const sameSourceFee = feeToken !== undefined && feeToken.address === fromToken.address;
   const isSourceChain = srcChainId !== undefined && srcChainId !== chainId;
@@ -324,11 +370,19 @@ export function useMaxAvailableAmount({
 
   const isActionsLoading = details.isFeeLoading || (isLoading && sameSourceFee);
   const showKeepGas = keepGasAmount !== undefined;
-  const selected = getMaxActionSelection({ fromTokenAmount, maxAvailableAmount, keepGasAmount });
+  const toInputDecimals = (amount: bigint) => adjustForDecimals(amount, decimals, fromToken.decimals);
+  const selected = getMaxActionSelection({
+    fromTokenAmount,
+    fromTokenBalance: toInputDecimals(fromTokenBalance),
+    maxAvailableAmount: toInputDecimals(maxAvailableAmount),
+    keepGasAmount: keepGasAmount !== undefined ? toInputDecimals(keepGasAmount) : undefined,
+  });
 
   let maxTooltip: string | undefined;
   if (isActionsLoading) {
     maxTooltip = t`Loading fees...`;
+  } else if (isFeeUnavailable) {
+    maxTooltip = t`Network fee unavailable`;
   } else if (isInsufficientForFee) {
     maxTooltip = getInsufficientFeeTooltip({
       symbol: fromToken.symbol,
@@ -355,6 +409,7 @@ export function useMaxAvailableAmount({
   const maxActions: MaxActionsState = {
     selected,
     isLoading: isActionsLoading,
+    isFeeUnavailable,
     isInsufficientForFee,
     showKeepGas,
     maxTooltip,

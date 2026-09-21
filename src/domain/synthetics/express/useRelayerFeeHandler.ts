@@ -43,6 +43,25 @@ export type ExpressOrdersParamsResult = {
   isMultichainSubmitDisabled: boolean;
 };
 
+export function getMatchingExpressParamsPromise({
+  fastExpressPromise,
+  asyncExpressPromise,
+  isAsyncEnabled,
+  isGmxAccount,
+}: {
+  fastExpressPromise: Promise<ExpressTxnParams | undefined> | undefined;
+  asyncExpressPromise: Promise<ExpressTxnParams | undefined> | undefined;
+  isAsyncEnabled: boolean;
+  isGmxAccount: boolean;
+}): Promise<ExpressTxnParams | undefined> {
+  const sourcePromises = isAsyncEnabled ? [fastExpressPromise, asyncExpressPromise] : [fastExpressPromise];
+  const matchingSourcePromises = sourcePromises.flatMap((promise) =>
+    promise ? [promise.then((result) => (result?.isGmxAccount === isGmxAccount ? result : Promise.reject(result)))] : []
+  );
+
+  return Promise.any(matchingSourcePromises).catch(() => undefined);
+}
+
 export function useExpressOrdersParams({
   orderParams,
   label,
@@ -201,9 +220,12 @@ export function useExpressOrdersParams({
     const isLoading = hasOrderParams && !matchingFastExpressParams && !fastExpressError;
     const isMultichainSubmitDisabled = isGmxAccount && hasOrderParams && !expressParams;
 
-    const expressParamsPromise = Promise.race([fastExpressPromise, asyncExpressPromise])
-      .then((result) => (result?.isGmxAccount === isGmxAccount ? result : undefined))
-      .catch(() => undefined);
+    const expressParamsPromise = getMatchingExpressParamsPromise({
+      fastExpressPromise,
+      asyncExpressPromise,
+      isAsyncEnabled: Boolean(isAsyncEnabled),
+      isGmxAccount,
+    });
 
     return {
       expressParams,

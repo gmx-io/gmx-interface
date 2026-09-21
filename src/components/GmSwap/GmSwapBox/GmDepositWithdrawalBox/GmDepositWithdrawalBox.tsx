@@ -49,6 +49,7 @@ import {
 import {
   selectAccount,
   selectGlvAndMarketsInfoData,
+  selectL1ExpressOrderGasReference,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -70,10 +71,15 @@ import { formatAmountFree, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { switchNetwork } from "lib/wallets";
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID, type AnyChainId, type GmxAccountPseudoChainId } from "sdk/configs/chains";
+import { getRelayerFeeToken } from "sdk/configs/express";
 import { MARKETS } from "sdk/configs/markets";
 import { convertTokenAddress, getToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { estimateDepositOraclePriceCount } from "sdk/utils/fees/estimateOraclePriceCount";
-import { estimateExecuteDepositGasLimit, getExecutionFee } from "sdk/utils/fees/executionFee";
+import {
+  estimateBatchMinGasPaymentTokenAmount,
+  estimateExecuteDepositGasLimit,
+  getExecutionFee,
+} from "sdk/utils/fees/executionFee";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -248,6 +254,9 @@ export function GmSwapBoxDepositWithdrawal() {
       )
     : undefined;
 
+  const l1ExpressOrderGasReference = useSelector(selectL1ExpressOrderGasReference);
+  const relayerFeeToken = getByKey(tradeTokensData, getRelayerFeeToken(chainId).address);
+
   const fallbackGasPaymentTokenAmountForMax = useMemo(() => {
     if (!gasLimits || gasPrice === undefined || !tradeTokensData) return undefined;
     const executionFee = getExecutionFee(
@@ -260,10 +269,32 @@ export function GmSwapBoxDepositWithdrawal() {
     );
     if (!executionFee) return undefined;
     if (paySource !== "gmxAccount") return executionFee.feeTokenAmount;
-    return gasPaymentToken
-      ? convertToTokenAmount(executionFee.feeUsd, gasPaymentToken.decimals, gasPaymentToken.prices.minPrice)
+    return gasPaymentToken && relayerFeeToken
+      ? estimateBatchMinGasPaymentTokenAmount({
+          chainId,
+          gasPaymentToken,
+          relayFeeToken: relayerFeeToken,
+          isGmxAccount: true,
+          gasPrice,
+          gasLimits,
+          l1Reference: l1ExpressOrderGasReference,
+          tokensData: tradeTokensData,
+          createOrdersCount: 1,
+          updateOrdersCount: 0,
+          cancelOrdersCount: 0,
+          executionFeeAmount: executionFee.feeTokenAmount,
+        })
       : undefined;
-  }, [chainId, gasLimits, gasPrice, tradeTokensData, paySource, gasPaymentToken]);
+  }, [
+    chainId,
+    gasLimits,
+    gasPrice,
+    tradeTokensData,
+    paySource,
+    gasPaymentToken,
+    relayerFeeToken,
+    l1ExpressOrderGasReference,
+  ]);
 
   const reserveTokenForMax =
     paySource === "gmxAccount"

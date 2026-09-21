@@ -16,6 +16,10 @@ type Props = {
   className?: string;
 };
 
+export function getIsMaxActionDisabled(state: MaxActionsState): boolean {
+  return state.isLoading || state.isFeeUnavailable || state.isInsufficientForFee;
+}
+
 export function MaxActions({ state, onMax, onKeepGas, qa = "input", className }: Props) {
   const handleMax = useCallback(() => {
     userAnalytics.pushEvent<MaxActionClickEvent>({ event: "MaxAction", data: { action: "MaxClick" } });
@@ -44,7 +48,7 @@ export function MaxActions({ state, onMax, onKeepGas, qa = "input", className }:
       <MaxActionPill
         qa={qa + "-max"}
         isSelected={state.selected === "max"}
-        isDisabled={state.isLoading || state.isInsufficientForFee}
+        isDisabled={getIsMaxActionDisabled(state)}
         isLoading={state.isLoading}
         tooltip={state.maxTooltip}
         onClick={handleMax}

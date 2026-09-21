@@ -29,6 +29,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
   getExpressParamsForSubmit,
+  getNetworkFeeGasPaymentParams,
   reportMultichainExpressSubmitError,
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { estimateExecuteDecreaseOrderGasLimit, estimateOrderOraclePriceCount } from "domain/synthetics/fees";
@@ -1243,7 +1244,11 @@ export function AddTPSLModal({
           <TradeFeesRow {...(activeFees || {})} feesType="decrease" />
           <NetworkFeeRow
             executionFee={totalExecutionFee}
-            gasPaymentParams={expressParams?.gasPaymentParams}
+            gasPaymentParams={getNetworkFeeGasPaymentParams({
+              expressParams,
+              tokensData,
+              canApproveGasPaymentToken: false,
+            })}
             feeSource={feeSource}
           />
           {breakdownNetPriceImpactEnabled && (

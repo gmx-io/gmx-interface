@@ -19,6 +19,7 @@ import {
   selectChainId,
   selectGasLimits,
   selectGasPrice,
+  selectL1ExpressOrderGasReference,
   selectMarketsInfoData,
   selectSrcChainId,
   selectSubaccountState,
@@ -66,16 +67,11 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
-import { getPrimaryOrderGasPaymentTokenAmount } from "domain/synthetics/express/expressOrderUtils";
+import { getNetworkFeeGasPaymentParams } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { getMarketIndexName, MarketInfo, OFF_HOURS_DOCS_URL } from "domain/synthetics/markets";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
-import {
-  convertToTokenAmount,
-  convertToUsd,
-  getBalanceByBalanceType,
-  TokenBalanceType,
-} from "domain/synthetics/tokens";
+import { convertToUsd, getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
 import { getTwapRecommendation } from "domain/synthetics/trade/twapRecommendation";
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
@@ -104,9 +100,11 @@ import { useCursorInside } from "lib/useCursorInside";
 import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
 import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
 import useWallet from "lib/wallets/useWallet";
+import { getRelayerFeeToken } from "sdk/configs/express";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { estimateOrderOraclePriceCount } from "sdk/utils/fees/estimateOraclePriceCount";
 import {
+  estimateBatchMinGasPaymentTokenAmount,
   estimateExecuteIncreaseOrderGasLimit,
   estimateExecuteSwapOrderGasLimit,
   getExecutionFee,
@@ -383,36 +381,21 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
 
   const expressOrdersEnabledForMax = expressOrdersEnabled && fromTokenAddress !== zeroAddress && !isWrapOrUnwrap;
 
-  const expressGasPaymentTokenAmount = useMemo((): bigint | undefined => {
-    if (!expressOrdersEnabledForMax) {
-      return undefined;
-    }
-
-    const storedExpressParams = submitButtonState.expressParams;
-    if (
-      storedExpressParams === undefined ||
-      storedExpressParams.gasPaymentParams.gasPaymentTokenAddress !== gasPaymentTokenAddress
-    ) {
-      return undefined;
-    }
-
-    return getPrimaryOrderGasPaymentTokenAmount({
-      expressParams: storedExpressParams,
-      primaryExecutionFeeAmount: submitButtonState.primaryExecutionFee?.feeTokenAmount,
-    });
-  }, [
-    expressOrdersEnabledForMax,
-    submitButtonState.expressParams,
-    submitButtonState.primaryExecutionFee?.feeTokenAmount,
-    gasPaymentTokenAddress,
-  ]);
+  const expressGasPaymentParams = submitButtonState.expressParams?.gasPaymentParams;
+  const expressGasPaymentTokenAmount =
+    expressOrdersEnabledForMax && expressGasPaymentParams?.gasPaymentTokenAddress === gasPaymentTokenAddress
+      ? expressGasPaymentParams.gasPaymentTokenAmount
+      : undefined;
 
   const gasPaymentTokenForMax = expressOrdersEnabledForMax ? gasPaymentTokenData : nativeToken;
   const gasPaymentTokenAmountForMax = expressOrdersEnabledForMax
     ? expressGasPaymentTokenAmount
-    : submitButtonState.primaryExecutionFee?.feeTokenAmount;
+    : submitButtonState.totalExecutionFee?.feeTokenAmount;
 
-  const fallbackExecutionFeeAmount = useMemo(() => {
+  const l1ExpressOrderGasReference = useSelector(selectL1ExpressOrderGasReference);
+  const relayerFeeToken = getByKey(tokensData, getRelayerFeeToken(chainId).address);
+
+  const fallbackFeeTokenAmountForMax = useMemo(() => {
     if ((!isSwap && !isIncrease) || !gasLimits || gasPrice === undefined || !tokensData) return undefined;
     const estimatedGasLimit = isSwap
       ? estimateExecuteSwapOrderGasLimit(gasLimits, { swapsCount: 0, callbackGasLimit: 0n })
@@ -424,10 +407,35 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
       return executionFee?.feeTokenAmount;
     }
 
-    return executionFee && gasPaymentTokenData
-      ? convertToTokenAmount(executionFee.feeUsd, gasPaymentTokenData.decimals, gasPaymentTokenData.prices.minPrice)
+    return executionFee && gasPaymentTokenData && relayerFeeToken
+      ? estimateBatchMinGasPaymentTokenAmount({
+          chainId,
+          gasPaymentToken: gasPaymentTokenData,
+          relayFeeToken: relayerFeeToken,
+          isGmxAccount: isFromTokenGmxAccount,
+          gasPrice,
+          gasLimits,
+          l1Reference: l1ExpressOrderGasReference,
+          tokensData,
+          createOrdersCount: 1,
+          updateOrdersCount: 0,
+          cancelOrdersCount: 0,
+          executionFeeAmount: executionFee.feeTokenAmount,
+        })
       : undefined;
-  }, [isSwap, isIncrease, gasLimits, gasPrice, tokensData, chainId, expressOrdersEnabledForMax, gasPaymentTokenData]);
+  }, [
+    isSwap,
+    isIncrease,
+    gasLimits,
+    gasPrice,
+    tokensData,
+    chainId,
+    expressOrdersEnabledForMax,
+    gasPaymentTokenData,
+    relayerFeeToken,
+    isFromTokenGmxAccount,
+    l1ExpressOrderGasReference,
+  ]);
 
   const isMaxAmountLoading = expressOrdersEnabledForMax && submitButtonState.isExpressLoading;
 
@@ -454,7 +462,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
     isLoading: isMaxAmountLoading,
     feeToken: gasPaymentTokenForMax,
     feeTokenAmount: gasPaymentTokenAmountForMax,
-    fallbackFeeTokenAmount: fallbackExecutionFeeAmount,
+    fallbackFeeTokenAmount: fallbackFeeTokenAmountForMax,
     reserveToken: reserveTokenForMax,
     isGmxAccount: isFromTokenGmxAccount,
   });
@@ -1377,7 +1385,10 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
         {!isTwap && <PriceImpactFeesRow />}
         <TradeBoxAdvancedGroups
           slippageInputId={submitButtonState.slippageInputId}
-          gasPaymentParams={submitButtonState.expressParams?.gasPaymentParams}
+          gasPaymentParams={getNetworkFeeGasPaymentParams({
+            expressParams: submitButtonState.expressParams,
+            tokensData,
+          })}
           totalExecutionFee={submitButtonState.totalExecutionFee}
           feeSource={getNetworkFeeSource({ isGmxAccount: isFromTokenGmxAccount })}
         />

@@ -54,6 +54,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
   getExpressParamsForSubmit,
+  getNetworkFeeGasPaymentParams,
   reportMultichainExpressSubmitError,
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
@@ -539,27 +540,26 @@ export function OrderEditor(p: Props) {
   const expressError = useMemo(() => getExpressError({ expressParams, tokensData }), [expressParams, tokensData]);
 
   const networkFee = useMemo(() => {
-    if (!additionalExecutionFee) {
-      return undefined;
+    const gasPaymentParams = getNetworkFeeGasPaymentParams({
+      expressParams,
+      tokensData,
+      canApproveGasPaymentToken: false,
+    });
+    const gasPaymentToken = getByKey(tokensData, gasPaymentParams?.gasPaymentTokenAddress);
+
+    if (gasPaymentToken && gasPaymentParams?.gasPaymentTokenAmount !== undefined) {
+      return {
+        feeToken: gasPaymentToken,
+        feeTokenAmount: gasPaymentParams.gasPaymentTokenAmount,
+        feeUsd: convertToUsd(
+          gasPaymentParams.gasPaymentTokenAmount,
+          gasPaymentToken.decimals,
+          gasPaymentToken.prices.minPrice
+        ),
+      };
     }
 
-    let feeToken = additionalExecutionFee?.feeToken;
-    let feeTokenAmount = additionalExecutionFee?.feeTokenAmount;
-    let feeUsd = additionalExecutionFee?.feeUsd;
-
-    const gasPaymentToken = getByKey(tokensData, expressParams?.gasPaymentParams.gasPaymentTokenAddress);
-
-    if (gasPaymentToken && expressParams?.gasPaymentParams.gasPaymentTokenAmount !== undefined) {
-      feeToken = gasPaymentToken;
-      feeTokenAmount = expressParams?.gasPaymentParams.gasPaymentTokenAmount;
-      feeUsd = convertToUsd(feeTokenAmount, feeToken.decimals, gasPaymentToken.prices.minPrice);
-    }
-
-    return {
-      feeToken,
-      feeTokenAmount,
-      feeUsd,
-    };
+    return additionalExecutionFee;
   }, [additionalExecutionFee, expressParams, tokensData]);
 
   const error = useMemo(() => {
@@ -1149,10 +1149,14 @@ export function OrderEditor(p: Props) {
                         }
                         showDollar={false}
                       />
-                      <br />
-                      <div className="text-typography-primary">
-                        <Trans>Network fees increased. Additional fee required.</Trans>
-                      </div>
+                      {additionalExecutionFee && (
+                        <>
+                          <br />
+                          <div className="text-typography-primary">
+                            <Trans>Network fees increased. Additional fee required.</Trans>
+                          </div>
+                        </>
+                      )}
                     </>
                   )}
                 />

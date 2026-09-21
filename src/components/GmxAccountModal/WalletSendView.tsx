@@ -395,6 +395,7 @@ export function WalletSendView() {
         : undefined,
       fallbackFeeTokenAmount: isSameChain && selectedToken?.isNative ? fallbackSameChainNetworkFee : undefined,
       reserveToken: expressOrdersEnabled ? getByKey(tokensData, gasPaymentTokenAddress) : undefined,
+      isFeeEstimationFailed: !isSameChain && hasCrossChainQuoteError,
     }
   );
 

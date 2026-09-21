@@ -242,6 +242,20 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
       await expect(page.getByText(/Insufficient USDC in your Wallet for Express fees/)).toHaveCount(0);
     });
 
+    test("Express with a gas payment token that is not approved: the Classic fallback is quoted in ETH", async ({
+      mount,
+      page,
+    }) => {
+      await mount(<NetworkFeeSurfaceStory surface="addTpsl" express isGasPaymentTokenApproved={false} />);
+
+      await openExecutionDetails(page);
+      const row = feeRow(page);
+      await expectFeeValue(row, "ETH", "Wallet");
+
+      await feeValueHandle(row).hover();
+      await expect(page.getByText(WALLET_CLASSIC_EXPLANATION)).toBeVisible();
+    });
+
     test("Express without any gas token: submission is blocked with the trade box's insufficient-fee state (FEDEV-4283)", async ({
       mount,
       page,
@@ -275,6 +289,20 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
 
       await openExecutionDetails(page);
       await expectFeeValue(feeRow(page), "USDC", "GMX Account");
+    });
+
+    test("Express, wallet without a gas token but with ETH: the Classic fallback is quoted in ETH", async ({
+      mount,
+      page,
+    }) => {
+      await mount(<NetworkFeeSurfaceStory surface="close" express balances={WALLET_ETH_ONLY_BALANCES} />);
+
+      await openExecutionDetails(page);
+      const row = feeRow(page);
+      await expectFeeValue(row, "ETH", "Wallet");
+
+      await feeValueHandle(row).hover();
+      await expect(page.getByText(WALLET_CLASSIC_EXPLANATION)).toBeVisible();
     });
   });
 

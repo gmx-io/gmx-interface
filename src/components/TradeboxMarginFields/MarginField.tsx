@@ -20,7 +20,7 @@ import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
 import useWallet from "lib/wallets/useWallet";
 
 import { useMultichainTradeTokensRequest } from "components/GmxAccountModal/hooks";
-import { MaxActions } from "components/MaxActions/MaxActions";
+import { getIsMaxActionDisabled, MaxActions } from "components/MaxActions/MaxActions";
 import NumberInput from "components/NumberInput/NumberInput";
 import { MultichainTokenSelector } from "components/TokenSelector/MultichainTokenSelector";
 import TokenSelector from "components/TokenSelector/TokenSelector";
@@ -79,9 +79,11 @@ export function MarginField({
   const handleBalanceClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      onMaxClick?.();
+      if (!getIsMaxActionDisabled(maxActions)) {
+        onMaxClick?.();
+      }
     },
-    [onMaxClick]
+    [maxActions, onMaxClick]
   );
 
   const handleMaxClick = useCallback(() => {

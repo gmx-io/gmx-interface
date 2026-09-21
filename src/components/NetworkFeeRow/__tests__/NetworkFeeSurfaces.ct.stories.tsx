@@ -31,6 +31,7 @@ import { DEFAULT_MOCK_TOKENS_DATA, MockSyntheticsStateProvider } from "domain/te
 import { ETH_ADDRESS, NATIVE_ETH_ADDRESS, USDC_ADDRESS } from "domain/testUtils/mockTokens";
 import { useChainId } from "lib/chains";
 import { expandDecimals } from "lib/numbers";
+import { getGasPaymentTokens } from "sdk/configs/express";
 import { getToken, getWrappedToken } from "sdk/configs/tokens";
 import { DecreasePositionSwapType, OrderType, type Order } from "sdk/utils/orders/types";
 import { getOrderInfo } from "sdk/utils/orders/utils";
@@ -48,6 +49,15 @@ import { TradeBox } from "components/TradeBox/TradeBox";
 
 const EXPRESS_FEATURES = { relayRouterEnabled: true, subaccountRelayRouterEnabled: true };
 const SPONSORED_CALL_ALLOWED = { isSponsoredCallAllowed: true };
+const SURFACES_WITHOUT_APPROVE_STEP: NetworkFeeSurface[] = ["addTpsl", "orderEditor"];
+
+function getGasPaymentTokenAllowance(amount: bigint) {
+  return {
+    tokensAllowanceData: Object.fromEntries(getGasPaymentTokens(ARBITRUM).map((address) => [address, amount])),
+    isLoaded: true,
+    isLoading: false,
+  };
+}
 
 /**
  * Mock token prices use a 30-dec-per-whole-token convention, which skews Express fee estimates in
@@ -82,6 +92,8 @@ export type NetworkFeeSurfaceStoryProps = {
   marginOnlyBalances?: boolean;
   /** Settle: fund the wallet and the GMX Account separately (`nativeOnly` = the wallet holds ETH but no gas token) */
   balances?: BalanceShape;
+  /** Add TP/SL and the order editor have no approve step: an unapproved gas payment token sends a Classic transaction */
+  isGasPaymentTokenApproved?: boolean;
   /** GM buy: which balance funds the deposit (`settlementChain` = wallet, `gmxAccount` = GMX Account) */
   gmPaySource?: GmPaySource;
 };
@@ -118,6 +130,8 @@ function getMockBalance(address: string, balances: Balances): bigint {
 /**
  * Express fee swaps (gas token -> WETH) only route through markets whose tokens have a price feed
  * provider, which prod learns from the tokens api; the default fixtures carry no such flag.
+ * The default fixtures also label WETH "ETH" for market names; fee rows must not confuse the wrapped
+ * token with the native one, so WETH keeps its real symbol here.
  */
 function buildTokensData(balances: BalanceShape): TokensData {
   return Object.fromEntries(
@@ -129,6 +143,7 @@ function buildTokensData(balances: BalanceShape): TokensData {
         address,
         {
           ...token,
+          ...(address === ETH_ADDRESS ? { symbol: "WETH", name: "Wrapped Ethereum" } : {}),
           balance: walletAmount,
           walletBalance: walletAmount,
           gmxAccountBalance: gmxAccountAmount,
@@ -409,6 +424,7 @@ function SurfaceState({
   express,
   multichain,
   gmPaySource,
+  isGasPaymentTokenApproved,
   fixtures,
   children,
 }: {
@@ -416,11 +432,19 @@ function SurfaceState({
   express: boolean;
   multichain: boolean;
   gmPaySource: GmPaySource;
+  isGasPaymentTokenApproved: boolean;
   fixtures: Fixtures;
   children: ReactNode;
 }) {
   const { srcChainId } = useChainId();
   const isExpressAvailable = express || multichain;
+  const gasPaymentTokenAllowance = useMemo(
+    () =>
+      SURFACES_WITHOUT_APPROVE_STEP.includes(surface)
+        ? getGasPaymentTokenAllowance(isGasPaymentTokenApproved ? HUGE_BALANCE : 0n)
+        : undefined,
+    [isGasPaymentTokenApproved, surface]
+  );
   const poolsDetails = useMockPoolsDetailsState({
     glvOrMarketAddress: MOCK_MARKET_ADDRESS,
     paySource: gmPaySource,
@@ -441,6 +465,7 @@ function SurfaceState({
       claims={fixtures.claims}
       poolsDetails={poolsDetails}
       depositMarketTokensData={fixtures.marketTokensData}
+      gasPaymentTokenAllowance={gasPaymentTokenAllowance}
     >
       {children}
     </MockSyntheticsStateProvider>
@@ -500,6 +525,7 @@ export function NetworkFeeSurfaceStory({
   marginOnlyBalances = false,
   balances: balancesProp,
   gmPaySource = "settlementChain",
+  isGasPaymentTokenApproved = true,
 }: NetworkFeeSurfaceStoryProps) {
   // eslint-disable-next-line react/hook-use-state
   useState(() => {
@@ -536,6 +562,7 @@ export function NetworkFeeSurfaceStory({
         express={express}
         multichain={multichain}
         gmPaySource={gmPaySource}
+        isGasPaymentTokenApproved={isGasPaymentTokenApproved}
         fixtures={fixtures}
       >
         <Surface surface={surface} fixtures={fixtures} collateralFromGmxAccount={collateralFromGmxAccount} />

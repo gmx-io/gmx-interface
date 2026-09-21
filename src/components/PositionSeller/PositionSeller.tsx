@@ -47,6 +47,7 @@ import { useInitCollateralCloseDestination } from "domain/synthetics/express/use
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
   getExpressParamsForSubmit,
+  getNetworkFeeGasPaymentParams,
   reportMultichainExpressSubmitError,
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
@@ -1266,7 +1267,7 @@ export function PositionSeller() {
                 <PositionSellerAdvancedRows
                   triggerPriceInputValue={triggerPriceInputValue}
                   slippageInputId={slippageInputId}
-                  gasPaymentParams={expressParams?.gasPaymentParams}
+                  gasPaymentParams={getNetworkFeeGasPaymentParams({ expressParams, tokensData })}
                   feeSource={getNetworkFeeSource({
                     isGmxAccount: srcChainId !== undefined || effectiveIsReceiveToGmxAccount,
                   })}

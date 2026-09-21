@@ -13,6 +13,7 @@ import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { TokenData } from "domain/tokens";
 import { formatTokenAmountWithUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { convertTokenAddress } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 import ExchangeInfoRow from "components/ExchangeInfoRow/ExchangeInfoRow";
@@ -50,7 +51,9 @@ export function NetworkFeeRow({
   const tokensData = useTokensData();
   const chainId = useSelector(selectChainId);
   const gasPaymentToken = getByKey(tokensData, gasPaymentParams?.gasPaymentTokenAddress);
-  const executionFeeToken = getByKey(tokensData, executionFee?.feeToken.address);
+  const executionFeeToken = executionFee
+    ? getByKey(tokensData, convertTokenAddress(chainId, executionFee.feeToken.address, "native"))
+    : undefined;
 
   const additionalOrdersMsg = useMemo(
     () =>

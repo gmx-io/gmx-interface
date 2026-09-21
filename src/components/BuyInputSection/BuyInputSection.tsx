@@ -5,7 +5,7 @@ import React, { useRef, ReactNode, ChangeEvent, useState, useCallback } from "re
 import { PERCENTAGE_SUGGESTIONS } from "config/ui";
 import { DEFAULT_MAX_ACTIONS_STATE, MaxActionsState } from "domain/tokens/useMaxAvailableAmount";
 
-import { MaxActions } from "components/MaxActions/MaxActions";
+import { getIsMaxActionDisabled, MaxActions } from "components/MaxActions/MaxActions";
 import NumberInput from "components/NumberInput/NumberInput";
 
 type MaxActionsProps = {
@@ -108,7 +108,8 @@ export default function BuyInputSection(props: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const maxActionsProps = getMaxActionsProps(props);
   const hasMaxActions = maxActionsProps !== undefined;
-  const onClickMax = maxActionsProps?.onMax;
+  const onClickMax =
+    maxActionsProps && !getIsMaxActionDisabled(maxActionsProps.state) ? maxActionsProps.onMax : undefined;
   const maxButtonPosition = getMaxButtonPosition({ ...props, hasMaxActions });
 
   const handleOnFocus = useCallback(() => {

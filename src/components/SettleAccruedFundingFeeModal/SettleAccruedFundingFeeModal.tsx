@@ -236,6 +236,10 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     if (isSwitchPending) setSwitchedFromPreference(preferGmxAccount);
   }, [isSwitchPending, preferGmxAccount]);
 
+  useEffect(() => {
+    setSwitchedFromPreference(undefined);
+  }, [account]);
+
   const expressError = useMemo(() => getExpressError({ expressParams, tokensData }), [expressParams, tokensData]);
   const isWalletOutOfGasPaymentToken =
     !isGmxAccountFeeSource && getIsConfirmedOutOfGasPaymentTokenBalance(expressParams?.gasPaymentValidations);

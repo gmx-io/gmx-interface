@@ -25,18 +25,9 @@ describe("getInsufficientFeeError", () => {
     ).toEqual({ isErrorMatched: true, tokenAddress: USDC });
   });
 
-  it("matches InsufficientFunds and reads the token from its only argument", () => {
-    expect(getInsufficientFeeError(parseRevert("InsufficientFunds", [USDC]))).toEqual({
-      isErrorMatched: true,
-      tokenAddress: USDC,
-    });
-  });
-
-  it("matches InsufficientRelayFee without a token", () => {
-    expect(getInsufficientFeeError(parseRevert("InsufficientRelayFee", [10n, 1n]))).toEqual({
-      isErrorMatched: true,
-      tokenAddress: undefined,
-    });
+  it("does not treat a relay fee below the actual relay cost or a claim vault shortfall as the user's balance", () => {
+    expect(getInsufficientFeeError(parseRevert("InsufficientRelayFee", [10n, 1n]))).toEqual({ isErrorMatched: false });
+    expect(getInsufficientFeeError(parseRevert("InsufficientFunds", [USDC]))).toEqual({ isErrorMatched: false });
   });
 
   it("matches the ERC20 balance revert in the error message", () => {
