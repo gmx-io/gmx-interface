@@ -389,6 +389,10 @@ type ExtractContractNames<T extends object> = {
 
 export type ContractName = ExtractContractNames<typeof CONTRACTS>;
 
+export function isContractsV2_2_1(chainId: number): boolean {
+  return chainId === ARBITRUM_SEPOLIA;
+}
+
 export function getContract(chainId: ContractsChainId, name: ContractName): Address {
   if (!CONTRACTS[chainId]) {
     throw new Error(`Unknown chainId ${chainId}`);
