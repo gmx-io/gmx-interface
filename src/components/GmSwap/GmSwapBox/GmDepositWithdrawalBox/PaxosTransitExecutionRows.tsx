@@ -10,33 +10,24 @@ import type { PaxosTransitState } from "./usePaxosTransitState";
 
 export function PaxosTransitExecutionRows({ transitState }: { transitState: PaxosTransitState }) {
   const { isDeposit } = useSelector(selectPoolsDetailsFlags);
-  const { quote, isZeroFeeCapacityShort, step, order } = transitState;
-  const isConverting = step === "converting" && order !== undefined;
+  const { quote, isZeroFeeCapacityShort } = transitState;
 
   return (
     <>
-      {isConverting ? (
+      <SyntheticsInfoRow
+        label={<Trans>Transactions</Trans>}
+        value={isDeposit ? <Trans>2, convert then buy</Trans> : <Trans>2, sell then convert</Trans>}
+      />
+
+      {quote?.estimatedLatencyMs !== undefined && (
         <SyntheticsInfoRow
-          label={<Trans>Conversion status</Trans>}
-          value={order.status === "PROCESSING" ? <Trans>Processing</Trans> : <Trans>Waiting for settlement</Trans>}
+          label={<Trans>Estimated time</Trans>}
+          valueClassName="numbers"
+          value={<Trans>{Math.ceil(quote.estimatedLatencyMs / 60_000)}m</Trans>}
         />
-      ) : (
-        <>
-          <SyntheticsInfoRow
-            label={<Trans>Transactions</Trans>}
-            value={isDeposit ? <Trans>2, convert then buy</Trans> : <Trans>2, sell then convert</Trans>}
-          />
-          {quote?.estimatedLatencyMs !== undefined && (
-            <SyntheticsInfoRow
-              label={<Trans>Estimated time</Trans>}
-              valueClassName="numbers"
-              value={<Trans>{Math.ceil(quote.estimatedLatencyMs / 60_000)}m</Trans>}
-            />
-          )}
-        </>
       )}
 
-      {isZeroFeeCapacityShort && !isConverting && (
+      {isZeroFeeCapacityShort && (
         <AlertInfoCard type="warning" hideClose>
           <Trans>
             Zero-fee capacity is used up for this amount. Convert now at the standard fee, or wait for the next zero-fee
