@@ -1,10 +1,18 @@
 <!doctype html>
-<html lang="en" class="notranslate" translate="no">
+<html lang="en" class="notranslate dark" translate="no">
   <head>
     <meta name="google" content="notranslate" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <script>
+      // Apply the saved theme before the app styles load.
+      try {
+        const themeMode = JSON.parse(localStorage.getItem(JSON.stringify("app-theme-mode")) || "null") || "dark";
+        const isDark =
+          themeMode === "dark" || (themeMode === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.classList.toggle("dark", isDark);
+      } catch {}
+
       // Configure the installed viewport before WebKit performs its first layout.
       if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true) {
         document.documentElement.setAttribute("data-installed-app", "");
@@ -13,13 +21,55 @@
     </script>
     <meta name="theme-color" content="#090A14" />
     <style>
+      :root {
+        --color-slate-950: #090a14;
+      }
+      :root:not(.dark) {
+        --color-slate-950: #eeeef4;
+      }
       html,
       body {
         min-height: 100%;
         margin: 0;
+        background: var(--color-slate-950);
+      }
+      #app-splash {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: grid;
+        place-items: center;
+        background: var(--color-slate-950);
+      }
+      #app-loading:not([hidden]) {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
         background: #090a14;
+        color: #fff;
+        font:
+          16px/1.5 system-ui,
+          sans-serif;
+      }
+      #app-loading button {
+        padding: 12px 24px;
+        border: 0;
+        border-radius: 4px;
+        background: #2d42fc;
+        color: #fff;
+        font: inherit;
+        cursor: pointer;
       }
     </style>
+    <noscript>
+      <style>
+        #app-splash {
+          display: none;
+        }
+      </style>
+    </noscript>
     <!-- gmx-pwa-metadata -->
     <meta property="og:title" content="GMX | Decentralized Perpetual Exchange" />
     <meta property="og:site_name" content="GMX" />
@@ -121,6 +171,26 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    <!-- Available before JavaScript and translations load. -->
+    <div id="app-splash" role="status">
+      <img src="/src/img/logo-icon.svg?inline" width="84" height="69" alt="GMX" />
+    </div>
+    <main id="app-loading" role="status" hidden>
+      <p id="app-loading-message">Something went wrong</p>
+      <button type="button" onclick="window.location.reload()">Reload page</button>
+    </main>
+    <script>
+      window.addEventListener(
+        "error",
+        function (event) {
+          if (event.target instanceof HTMLScriptElement && event.target.type === "module") {
+            document.getElementById("app-splash")?.remove();
+            document.getElementById("app-loading").hidden = false;
+          }
+        },
+        true
+      );
+    </script>
     <div id="root"></div>
     <!--
       This HTML file is a template.

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  formatTimeAgo,
   formatTimeLeft,
   normalizeDateRange,
   normalizeDateRangeToUtcBucketDays,
@@ -71,5 +72,16 @@ describe("formatTimeLeft", () => {
   it("returns an empty value for elapsed durations", () => {
     expect(formatTimeLeft(0)).toBe("");
     expect(formatTimeLeft(-1)).toBe("");
+  });
+});
+
+describe("formatTimeAgo", () => {
+  it("picks the largest whole unit of the age", () => {
+    const now = 1_789_126_326_000;
+
+    expect(formatTimeAgo(now - 45_000, now)).toBe("45 seconds ago");
+    expect(formatTimeAgo(now - 12 * 60_000, now)).toBe("12 minutes ago");
+    expect(formatTimeAgo(now - 3 * 3_600_000, now)).toBe("3 hours ago");
+    expect(formatTimeAgo(now - 2 * 86_400_000, now)).toBe("2 days ago");
   });
 });

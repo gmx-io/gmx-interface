@@ -15,12 +15,13 @@ import {
 import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectIndexTokenStatsMap } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import {
+  TokenOption,
   selectTradeboxChooseSuitableMarket,
+  selectTradeboxGetMaxLongShortLiquidityPool,
   selectTradeboxMarketInfo,
   selectTradeboxTradeFlags,
   selectTradeboxTradeType,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { selectTradeboxGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxGetMaxLongShortLiquidityPool";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   SubCategoryTab,
@@ -130,7 +131,7 @@ export default function ChartTokenSelector(props: Props) {
       })}
       desktopPanelClassName={cx("max-w-[100vw] shadow-md", {
         "w-[520px]": !shouldUsePerpPanelWidth,
-        "w-[680px]": shouldUsePerpPanelWidth,
+        "w-[880px]": shouldUsePerpPanelWidth,
       })}
       chevronClassName="hidden"
       label={
@@ -201,9 +202,15 @@ export default function ChartTokenSelector(props: Props) {
   );
 }
 
-const SORT_FIELDS = ["lastPrice", "24hChange", "24hVolume", "combinedOpenInterest", "unspecified"] as const;
-
-type SortField = (typeof SORT_FIELDS)[number];
+type SortField =
+  | "lastPrice"
+  | "24hChange"
+  | "24hVolume"
+  | "longLiquidity"
+  | "shortLiquidity"
+  | "combinedAvailableLiquidity"
+  | "combinedOpenInterest"
+  | "unspecified";
 
 function MarketsList() {
   const chainId = useSelector(selectChainId);
@@ -344,12 +351,9 @@ function MarketsList() {
 
   const close = useSelectorClose();
 
-  const {
-    orderBy: storedOrderBy,
-    direction,
-    getSorterProps,
-  } = useSorterHandlers<SortField>(`chart-token-selector-${isSwap ? "spot" : "perp"}`);
-  const orderBy = SORT_FIELDS.includes(storedOrderBy) ? storedOrderBy : "unspecified";
+  const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>(
+    `chart-token-selector-${isSwap ? "spot" : "perp"}`
+  );
 
   const [searchKeyword, setSearchKeyword] = useState("");
   const query = searchKeyword.trim();
@@ -471,6 +475,7 @@ function MarketsList() {
     return t`Search market`;
   }, [isSwap]);
 
+  const availableLiquidityLabel = isMobile ? (isSmallMobile ? t`LIQ.` : t`AVAIL. LIQ.`) : t`AVAILABLE LIQUIDITY`;
   const marketTypeLabel = isSwap ? t`Swap tokens` : t`perpetual markets`;
   const { shouldOfferSearchAll, shouldOfferOtherMode } = getMarketSearchEmptyStateActions({
     hasActiveFilter: topLevelTab !== "all",
@@ -537,28 +542,7 @@ function MarketsList() {
           "max-h-[444px] overflow-x-auto": !isMobile,
         })}
       >
-        <table
-          className={cx("text-body-small w-full border-separate border-spacing-0", {
-            "table-fixed": !isMobile,
-          })}
-        >
-          {!isMobile && (
-            <colgroup>
-              <col className="w-44" />
-              <col className={isSwap ? "w-[240px]" : "w-[190px]"} />
-              <col className={isSwap ? "w-[130px]" : "w-96"} />
-              {isSwap ? (
-                <col />
-              ) : (
-                <>
-                  <col className="w-64" />
-                  <col className="w-[86px]" />
-                  <col className="w-[100px]" />
-                  <col />
-                </>
-              )}
-            </colgroup>
-          )}
+        <table className="text-body-small w-full border-separate border-spacing-0">
           <thead>
             <tr>
               <th className={favoriteThClassName} colSpan={1}></th>
@@ -600,11 +584,16 @@ function MarketsList() {
                     </Sorter>
                   </th>
                   {!isMobile && (
-                    <th className={thClassName} colSpan={2}>
-                      <Sorter {...getSorterProps("combinedOpenInterest")}>
-                        <Trans>OPEN INTEREST</Trans>
-                      </Sorter>
-                    </th>
+                    <>
+                      <th className={thClassName} colSpan={2}>
+                        <Sorter {...getSorterProps("combinedOpenInterest")}>
+                          <Trans>OPEN INTEREST</Trans>
+                        </Sorter>
+                      </th>
+                      <th className={thClassName} colSpan={2}>
+                        <Sorter {...getSorterProps("combinedAvailableLiquidity")}>{availableLiquidityLabel}</Sorter>
+                      </th>
+                    </>
                   )}
                 </>
               )}
@@ -749,6 +738,8 @@ function useFilterSortTokens({
     featuredMarketIndexTokenAddresses,
   ]);
 
+  const getMaxLongShortLiquidityPool = useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
+
   const sortedTokens = useMemo(() => {
     const [favorites, nonFavorites] = partition(filteredTokens, (token) => favoriteTokens.includes(token.address));
 
@@ -760,6 +751,7 @@ function useFilterSortTokens({
       dayPriceDeltaMap,
       dayVolumes,
       indexTokenStatsMap,
+      getMaxLongShortLiquidityPool,
     });
 
     const sortedFavorites = favorites.slice().sort(sorter);
@@ -776,6 +768,7 @@ function useFilterSortTokens({
     dayPriceDeltaMap,
     dayVolumes,
     indexTokenStatsMap,
+    getMaxLongShortLiquidityPool,
     favoriteTokens,
   ]);
 
@@ -828,6 +821,10 @@ function MarketListItem({
   onMarketSelect: (address: string, preferredTradeType?: PreferredTradeTypePickStrategy | undefined) => void;
   listingDate?: number;
 }) {
+  const getMaxLongShortLiquidityPool = useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
+
+  const { maxLongLiquidityPool, maxShortLiquidityPool } = getMaxLongShortLiquidityPool(token);
+
   const handleFavoriteClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
@@ -840,6 +837,22 @@ function MarketListItem({
     (e: React.MouseEvent<HTMLTableCellElement | HTMLTableRowElement>) => {
       e.stopPropagation();
       onMarketSelect(token.address, "largestPosition");
+    },
+    [onMarketSelect, token.address]
+  );
+
+  const handleSelectLong = useCallback(
+    (e: React.MouseEvent<HTMLTableCellElement>) => {
+      e.stopPropagation();
+      onMarketSelect(token.address, TradeType.Long);
+    },
+    [onMarketSelect, token.address]
+  );
+
+  const handleSelectShort = useCallback(
+    (e: React.MouseEvent<HTMLTableCellElement>) => {
+      e.stopPropagation();
+      onMarketSelect(token.address, TradeType.Short);
     },
     [onMarketSelect, token.address]
   );
@@ -951,6 +964,23 @@ function MarketListItem({
           </td>
         </>
       )}
+
+      {!isMobile ? (
+        <>
+          <td className={cx(tdClassName, "group pr-4 numbers hover:bg-slate-800")} onClick={handleSelectLong}>
+            <div className="inline-flex items-center justify-end gap-6">
+              <LongIcon width={12} className="relative top-1 mb-2 opacity-70" />
+              {formatAmountHuman(maxLongLiquidityPool?.maxLongLiquidity, USD_DECIMALS, true)}
+            </div>
+          </td>
+          <td className={cx(tdClassName, "group pl-4 numbers hover:bg-slate-800")} onClick={handleSelectShort}>
+            <div className="inline-flex items-center justify-end gap-6">
+              <ShortIcon width={12} className="relative top-1 mb-2 opacity-70" />
+              {formatAmountHuman(maxShortLiquidityPool?.maxShortLiquidity, USD_DECIMALS, true)}
+            </div>
+          </td>
+        </>
+      ) : null}
     </tr>
   );
 }
@@ -963,6 +993,7 @@ function tokenSortingComparatorBuilder({
   dayPriceDeltaMap,
   dayVolumes,
   indexTokenStatsMap,
+  getMaxLongShortLiquidityPool,
 }: {
   chainId: number;
   orderBy: SortField;
@@ -971,6 +1002,10 @@ function tokenSortingComparatorBuilder({
   dayPriceDeltaMap: PriceDeltaMap | undefined;
   dayVolumes: Record<Address, bigint> | undefined;
   indexTokenStatsMap: Partial<IndexTokensStats> | undefined;
+  getMaxLongShortLiquidityPool: (token: Token) => {
+    maxLongLiquidityPool: TokenOption;
+    maxShortLiquidityPool: TokenOption;
+  };
 }) {
   const directionMultiplier = direction === "asc" ? 1 : -1;
 
@@ -1013,6 +1048,15 @@ function tokenSortingComparatorBuilder({
       const aChange = dayPriceDeltaMap?.[a.address]?.deltaPercentage || 0;
       const bChange = dayPriceDeltaMap?.[b.address]?.deltaPercentage || 0;
       return aChange > bChange ? directionMultiplier : -directionMultiplier;
+    }
+
+    if (orderBy === "combinedAvailableLiquidity") {
+      const { maxLongLiquidityPool: aLongLiq, maxShortLiquidityPool: aShortLiq } = getMaxLongShortLiquidityPool(a);
+      const { maxLongLiquidityPool: bLongLiq, maxShortLiquidityPool: bShortLiq } = getMaxLongShortLiquidityPool(b);
+
+      const aTotalLiq = aLongLiq.maxLongLiquidity + aShortLiq.maxShortLiquidity;
+      const bTotalLiq = bLongLiq.maxLongLiquidity + bShortLiq.maxShortLiquidity;
+      return aTotalLiq > bTotalLiq ? directionMultiplier : -directionMultiplier;
     }
 
     if (orderBy === "combinedOpenInterest") {

@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { KeyboardEvent, ReactNode, useEffect, useMemo, useState } from "react";
 import { useLatest } from "react-use";
 
 import { BASIS_POINTS_DIVISOR } from "config/factors";
@@ -12,6 +12,8 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 export const NUMBER_WITH_TWO_DECIMALS = /^\d+(\.\d{0,2})?$/; // 0.00 ~ 99.99
 
 export const MAX_PERCENTAGE_INPUT_VALUE = 99 * 100; // basis points
+
+export const PERCENTAGE_INPUT_STEP = 1; // basis points
 
 function getValueText(value: number) {
   return roundToTwoDecimals((value / BASIS_POINTS_DIVISOR) * 100).toString();
@@ -77,6 +79,22 @@ export default function PercentageInput({
     }
   }
 
+  function handleKeyDown(e: KeyboardEvent) {
+    const direction = e.key === "ArrowUp" ? 1 : e.key === "ArrowDown" ? -1 : 0;
+
+    if (direction === 0) {
+      return;
+    }
+
+    e.preventDefault();
+
+    const parsedValue = Math.round(Number.parseFloat(inputValue) * 100);
+    const currentValue = Number.isNaN(parsedValue) ? defaultValue : parsedValue;
+    const nextValue = Math.min(Math.max(currentValue + direction * PERCENTAGE_INPUT_STEP, 0), maxValue);
+
+    handleChange(getValueText(nextValue));
+  }
+
   const latestInputValue = useLatest(inputValue);
 
   useEffect(() => {
@@ -129,6 +147,7 @@ export default function PercentageInput({
         label={negativeSign ? "-" : undefined}
         value={inputValue}
         setValue={handleChange}
+        onKeyDown={handleKeyDown}
         placeholder={getValueText(defaultValue)}
         suggestionList={suggestions}
         suffix="%"

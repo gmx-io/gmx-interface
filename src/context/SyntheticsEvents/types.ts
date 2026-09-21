@@ -1,10 +1,11 @@
-import type { ReactNode } from "react";
+import type { Dispatch, ReactNode, SetStateAction } from "react";
 
 import type { RelayProvider } from "config/relay";
 import type { MultichainTransferProgress } from "domain/multichain/progress/MultichainTransferProgress";
 import type { MultichainFundingHistoryItem } from "domain/multichain/types";
 import type { DecreasePositionSwapType, OrderTxnType, OrderType } from "domain/synthetics/orders";
 import type { SignedSubaccountApproval } from "domain/synthetics/subaccount";
+import type { PendingTpSlOrderBatch } from "domain/tpsl/types";
 import type { OrderMetricId } from "lib/metrics/types";
 import type { StatusCode } from "sdk/utils/gelatoRelay";
 import type { SignedTokenPermit } from "sdk/utils/tokens/types";
@@ -176,6 +177,8 @@ export type SyntheticsEventsContextType = MultichainEventsState & {
   shiftStatuses: ShiftStatuses;
   approvalStatuses: ApprovalStatuses;
   pendingOrdersUpdates: PendingOrdersUpdates;
+  pendingTpSlOrderBatches: PendingTpSlOrderBatch[];
+  setPendingTpSlOrderBatches: Dispatch<SetStateAction<PendingTpSlOrderBatch[]>>;
   pendingPositionsUpdates: PendingPositionsUpdates;
   positionIncreaseEvents: PositionIncreaseEvent[] | undefined;
   positionDecreaseEvents: PositionDecreaseEvent[] | undefined;

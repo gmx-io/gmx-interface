@@ -1,4 +1,5 @@
 import { Provider } from "ethers";
+import uniqueId from "lodash/uniqueId";
 import { withRetry } from "viem";
 
 import { ContractsChainId } from "config/chains";
@@ -37,6 +38,7 @@ export type BatchSimulationParams = {
 };
 
 export type BatchOrderTxnCtx = {
+  batchId: string;
   expressParams: ExpressTxnParams | undefined;
   batchParams: BatchOrderTxnParams;
   signer: WalletSigner;
@@ -65,6 +67,7 @@ export async function sendBatchOrderTxn({
 }) {
   const encodedBatchParams = encodeJitBatchOrderMetadata(batchParams, simulationParams);
   const eventBuilder = new TxnEventBuilder<BatchOrderTxnCtx>({
+    batchId: uniqueId("order-batch-"),
     expressParams,
     batchParams: encodedBatchParams,
     signer,

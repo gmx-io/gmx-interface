@@ -10,7 +10,6 @@ import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
-import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
 import { BuybackDashboard } from "components/Earn/BuybackTracker/BuybackDashboard";
 import { MarketsList } from "components/MarketsList/MarketsList";
 import PageTitle from "components/PageTitle/PageTitle";
@@ -48,7 +47,7 @@ export default function DashboardV2() {
   let { total: totalGmxInLiquidity } = useTotalGmxInLiquidity();
 
   return (
-    <AppPageLayout title={t`Stats`} header={<ChainContentHeader />}>
+    <AppPageLayout title={t`Stats`}>
       <div className="default-container DashboardV2 page-layout flex flex-col gap-20">
         <PageTitle title={t`Total stats`} qa="dashboard-page" />
         <div className="flex flex-col gap-20">

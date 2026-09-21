@@ -1,8 +1,7 @@
-import useSWR from "swr";
-
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { getIndexerUrl } from "config/indexers";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
+import { useSWRWithFreshness } from "lib/useSWRWithFreshness";
 import graphqlFetcher from "sdk/utils/graphqlFetcher";
 
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
@@ -13,6 +12,8 @@ type UserStatsData = {
   }[];
 };
 
+type UniqueUsersByChain = Record<number | "total", number>;
+
 const UNIQUE_USERS_QUERY = `
   query UniqueUsers {
     userStats(where: {period: total}) {
@@ -22,9 +23,9 @@ const UNIQUE_USERS_QUERY = `
 `;
 
 export default function useUniqueUsers() {
-  const { data } = useSWR(
+  return useSWRWithFreshness(
     "uniqueUsers",
-    async () => {
+    async (): Promise<UniqueUsersByChain> => {
       const results = await Promise.all(
         ACTIVE_CHAIN_IDS.map(async (chainId) => {
           const endpoint = getIndexerUrl(chainId, "stats");
@@ -32,22 +33,17 @@ export default function useUniqueUsers() {
           return await graphqlFetcher<UserStatsData>(endpoint, UNIQUE_USERS_QUERY);
         })
       );
-      return results;
-    },
-    {
-      refreshInterval: CONFIG_UPDATE_INTERVAL,
-    }
-  );
 
-  return data?.reduce(
-    (acc: Record<number | "total", number>, userInfo, index) => {
-      const currentChainUsers = userInfo?.userStats?.[0]?.uniqueCountCumulative ?? 0;
-      acc[ACTIVE_CHAIN_IDS[index]] = currentChainUsers;
-      acc.total += currentChainUsers;
-      return acc;
+      return results.reduce(
+        (acc, userInfo, index) => {
+          const currentChainUsers = userInfo?.userStats?.[0]?.uniqueCountCumulative ?? 0;
+          acc[ACTIVE_CHAIN_IDS[index]] = currentChainUsers;
+          acc.total += currentChainUsers;
+          return acc;
+        },
+        { total: 0 } as UniqueUsersByChain
+      );
     },
-    {
-      total: 0,
-    } as Record<number | "total", number>
+    { refreshInterval: CONFIG_UPDATE_INTERVAL }
   );
 }

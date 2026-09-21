@@ -3,7 +3,10 @@ import { useMemo } from "react";
 
 import { ARBITRUM, AVALANCHE, MEGAETH, ContractsChainIdProduction } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
-import { isProtocolStatsNetworkStale, useProtocolStatsSummary } from "domain/protocolStats/useProtocolStatsSummary";
+import {
+  getProtocolStatsNetworkFreshness,
+  useProtocolStatsSummary,
+} from "domain/protocolStats/useProtocolStatsSummary";
 import { parseProtocolStatsUsd } from "domain/protocolStats/utils";
 import { useTotalVolume, useV1FeesInfo } from "domain/stats";
 import { useTreasuryAllChains } from "domain/stats/treasury/useTreasuryAllChains";
@@ -17,6 +20,7 @@ import { getTokenBySymbol } from "sdk/configs/tokens";
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
 import ChainsStatsTooltip from "components/StatsTooltip/ChainsStatsTooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { getStaleEntries } from "components/StatsTooltip/summarizeChainsStats";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 const chains: ContractsChainIdProduction[] = [ARBITRUM, AVALANCHE, MEGAETH];
@@ -41,13 +45,22 @@ export function StatsCard() {
   const v2MegaethOverview = useV2Stats(MEGAETH);
   const gmtradeSummary = useProtocolStatsSummary({ networks: ["solana"] });
   const gmtradeStats = gmtradeSummary.data?.byNetwork.solana;
-  const staleTitles = isProtocolStatsNetworkStale(gmtradeSummary.data, "solana") ? [SOLANA_ENTRY] : [];
+  const gmtradeFreshness = getProtocolStatsNetworkFreshness(gmtradeSummary, "solana");
+  const gmtradeStaleEntries = getStaleEntries([gmtradeFreshness, SOLANA_ENTRY]);
   const gmtradeTotalFees = parseProtocolStatsUsd(gmtradeStats?.fees.total);
   const gmtradeTotalVolume = parseProtocolStatsUsd(gmtradeStats?.volume.total);
   // users.all counts a wallet on its first action of any kind, the same basis as the V2 totalUsers entries
   const gmtradeUsers = gmtradeStats?.users.all ?? undefined;
 
   const uniqueUsers = useUniqueUsers();
+  const totalVolumeStaleEntries = getStaleEntries(
+    [v1TotalVolume.freshness, "Arbitrum", "Avalanche"],
+    [gmtradeFreshness, SOLANA_ENTRY]
+  );
+  const uniqueUsersStaleEntries = getStaleEntries(
+    [uniqueUsers.freshness, "Arbitrum", "Avalanche"],
+    [gmtradeFreshness, SOLANA_ENTRY]
+  );
 
   const v1ArbitrumTotalFees = useV1FeesInfo(ARBITRUM);
   const v1AvalancheTotalFees = useV1FeesInfo(AVALANCHE);
@@ -90,13 +103,13 @@ export function StatsCard() {
 
   const totalVolumeEntries = useMemo(
     () => ({
-      Arbitrum: sumKnownBigInts(v2ArbitrumOverview?.totalVolume, v1TotalVolume?.[ARBITRUM]),
-      Avalanche: sumKnownBigInts(v2AvalancheOverview?.totalVolume, v1TotalVolume?.[AVALANCHE]),
+      Arbitrum: sumKnownBigInts(v2ArbitrumOverview?.totalVolume, v1TotalVolume.data?.[ARBITRUM]),
+      Avalanche: sumKnownBigInts(v2AvalancheOverview?.totalVolume, v1TotalVolume.data?.[AVALANCHE]),
       MegaETH: v2MegaethOverview?.totalVolume,
       [SOLANA_ENTRY]: gmtradeTotalVolume,
     }),
     [
-      v1TotalVolume,
+      v1TotalVolume.data,
       v2ArbitrumOverview?.totalVolume,
       v2AvalancheOverview?.totalVolume,
       v2MegaethOverview?.totalVolume,
@@ -106,14 +119,14 @@ export function StatsCard() {
 
   const uniqueUsersEntries = useMemo(
     () => ({
-      Arbitrum: sumKnownBigInts(v2ArbitrumOverview?.totalUsers, uniqueUsers?.[ARBITRUM]),
-      Avalanche: sumKnownBigInts(v2AvalancheOverview?.totalUsers, uniqueUsers?.[AVALANCHE]),
+      Arbitrum: sumKnownBigInts(v2ArbitrumOverview?.totalUsers, uniqueUsers.data?.[ARBITRUM]),
+      Avalanche: sumKnownBigInts(v2AvalancheOverview?.totalUsers, uniqueUsers.data?.[AVALANCHE]),
       MegaETH: v2MegaethOverview?.totalUsers,
       [SOLANA_ENTRY]: gmtradeUsers,
     }),
     [
       gmtradeUsers,
-      uniqueUsers,
+      uniqueUsers.data,
       v2ArbitrumOverview?.totalUsers,
       v2AvalancheOverview?.totalUsers,
       v2MegaethOverview?.totalUsers,
@@ -131,7 +144,7 @@ export function StatsCard() {
             <Trans>Fees</Trans>
           </div>
           <div>
-            <ChainsStatsTooltip entries={totalFeesEntries} staleTitles={staleTitles} />
+            <ChainsStatsTooltip entries={totalFeesEntries} staleEntries={gmtradeStaleEntries} />
           </div>
         </div>
         <div className="App-card-row">
@@ -139,7 +152,7 @@ export function StatsCard() {
             <Trans>Volume</Trans>
           </div>
           <div>
-            <ChainsStatsTooltip entries={totalVolumeEntries} staleTitles={staleTitles} />
+            <ChainsStatsTooltip entries={totalVolumeEntries} staleEntries={totalVolumeStaleEntries} />
           </div>
         </div>
         <div className="App-card-row">
@@ -149,7 +162,7 @@ export function StatsCard() {
           <div>
             <ChainsStatsTooltip
               entries={uniqueUsersEntries}
-              staleTitles={staleTitles}
+              staleEntries={uniqueUsersStaleEntries}
               showDollar={false}
               decimalsForConversion={0}
             />

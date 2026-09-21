@@ -34,7 +34,7 @@ function HeroStat({
 
 export function HeroSection() {
   const { data: totalVolume } = useTotalVolume();
-  const totalVolumeText = totalVolume ? shortFormatUsd(totalVolume) : "-";
+  const totalVolumeText = totalVolume ? shortFormatUsd(totalVolume.total) : "-";
 
   return (
     <section className="relative w-full overflow-hidden bg-slate-900 px-16 text-white sm:px-40">

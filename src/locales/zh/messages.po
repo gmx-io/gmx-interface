@@ -363,7 +363,7 @@ msgstr "总规模"
 msgid "Open app"
 msgstr "打开应用"
 
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingStep.tsx
 msgid "In progress"
 msgstr "进行中"
 
@@ -976,6 +976,10 @@ msgstr "以降低净价格影响"
 msgid "NET RATE"
 msgstr "净费率"
 
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "{tokenSymbol} mint submitted"
+msgstr "{tokenSymbol} 铸造已提交"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/pages/RewardsPage/RewardsPage.tsx
 msgid "No rewards"
@@ -1128,6 +1132,13 @@ msgstr "在中心化交易所买入 GMX"
 msgid "How long does a volume tier remain active?"
 msgstr "交易量等级会保持生效多久？"
 
+#: src/components/SwapCard/SwapCard.tsx
+#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+#: src/components/TVChart/ChartHeader.tsx
+#: src/components/TVChart/ChartHeader.tsx
+msgid "Available liquidity"
+msgstr "可用流动性"
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "GMX pools can't fill this swap, and no external route is currently available. Try reducing the amount."
 msgstr "GMX 池无法完成此交换，且当前没有可用的外部路由。请尝试减少金额。"
@@ -1212,10 +1223,6 @@ msgstr ""
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Swap fees"
 msgstr "兑换费用"
-
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "Max {positionSide} size"
-msgstr "最大{positionSide}规模"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX alerts"
@@ -1367,10 +1374,6 @@ msgstr "仓位费用因子（正价格影响）"
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap price impact"
 msgstr "高交换价格影响"
-
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "The maximum swap size based on current liquidity. Updates live."
-msgstr "基于当前流动性的最大兑换规模。实时更新。"
 
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
@@ -1735,6 +1738,7 @@ msgstr "流动性仅在 {chainNames} 上可用。请切换网络以继续。"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop-Loss"
@@ -2392,6 +2396,7 @@ msgstr "正在取消 {ordersText}..."
 msgid "Received at close (GMX balance)"
 msgstr "平仓时收到（GMX 余额）"
 
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "Size (% of position)"
 msgstr "规模（仓位百分比）"
@@ -2666,6 +2671,10 @@ msgstr "EIP-4844"
 msgid "Keep leverage at {0}"
 msgstr "保持杠杆为 {0}"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "AVAIL. LIQ."
+msgstr "可用流动性"
+
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Tier Name"
@@ -2777,6 +2786,10 @@ msgstr "正在领取价格影响返还…"
 #: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
 msgid "The full vesting period is one year. GMX becomes available to claim gradually throughout this period."
 msgstr "完整的归属期为一年。在此期间，GMX 会逐步变为可领取状态。"
+
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "{tokenSymbol} mint failed"
+msgstr "{tokenSymbol} 铸造失败"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 #: src/components/Earn/AdditionalOpportunities/OpportunityCard.tsx
@@ -3096,10 +3109,6 @@ msgstr "GMX 池无法完成此规模的交换，且当前没有可用的外部�
 msgid "GM: {indexName}"
 msgstr "GM：{indexName}"
 
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "Order won't execute: size exceeds the max swap size of {maxSwapSize}. Reduce the swap size."
-msgstr "订单将不会执行：规模超过最大兑换规模 {maxSwapSize}。请减小兑换规模。"
-
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "GMX staked: <0>{0}</0>"
 msgstr "已质押 GMX：<0>{0}</0>"
@@ -3223,6 +3232,7 @@ msgstr ""
 msgid "Pair"
 msgstr "对"
 
+#: src/components/SwapCard/SwapCard.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max {0} out"
 msgstr "最大 {0} 输出"
@@ -3631,10 +3641,6 @@ msgstr "在 {chainName} 上购买 GMX"
 msgid "Size"
 msgstr "规模"
 
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "Order may not execute: size exceeds the max {positionSide} size of {maxSize} at the trigger price. Reduce the order size."
-msgstr "订单可能无法执行：规模超过触发价格下的最大{positionSide}规模 {maxSize}。请减小订单规模。"
-
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Trade from your own wallet — no deposits."
 msgstr "直接用您自己的钱包交易——无需存款。"
@@ -3871,10 +3877,6 @@ msgstr "GM 代币自动再平衡金库，通过杠杆交易和兑换累积费用
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify for the base tier; reach out and we'll confirm your rate.</0>"
 msgstr "<0>没有固定门槛 — 团队会根据您近期及预期的月交易量设定您的等级。大多数交易者符合基础等级；联系我们,我们将确认您的费率。</0>"
-
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "The most this market can add to {positionSide} positions right now. Updates live and can change before a resting order triggers."
-msgstr "这是该市场当前可增加到{positionSide}仓位的最大规模。该数值实时更新，并可能在挂单触发前发生变化。"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing {indexTokenText} Short: -{sizeDeltaUsdText}"
@@ -4242,6 +4244,9 @@ msgid "Theme"
 msgstr "主题"
 
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
@@ -4341,6 +4346,7 @@ msgstr "GLV 金库"
 msgid "Buy GMX from centralized services"
 msgstr "从中心化服务购买 GMX"
 
+#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute: insufficient liquidity at the trigger price. Reduce the order size."
 msgstr "订单可能无法执行：触发价格下的流动性不足。请减小订单规模。"
@@ -4383,6 +4389,7 @@ msgstr "加载交易历史记录失败"
 msgid "<0>Set recommended impact: {0}</0>."
 msgstr "<0>设置推荐影响值：{0}</0>。"
 
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Position would be liquidated immediately upon execution. Reduce the size."
 msgstr "执行后仓位将立即被清算。请减小规模。"
@@ -4417,6 +4424,7 @@ msgstr "交易者活动"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -4507,6 +4515,10 @@ msgstr "TRANSACTION"
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 msgid "Copy image"
 msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "{tokenSymbol} minted"
+msgstr "{tokenSymbol} 已铸造"
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show error boundary debug trigger"
@@ -4712,6 +4724,7 @@ msgid "This trigger price is beyond the current liquidation price. Your position
 msgstr "此触发价格超过当前清算价格。在此 TP/SL 订单执行之前，您的仓位可能会被清算。"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
@@ -4877,7 +4890,7 @@ msgstr "最小资金费率因子（多头）"
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
 msgstr "是什么让 GMX 比其他永续平台更具成本效益？"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Margin is below the minimum required for the position size"
 msgstr "保证金低于该仓位规模所需的最低要求"
 
@@ -5465,7 +5478,7 @@ msgstr "虚拟市场 ID"
 msgid "Your wallet is not connected to this network"
 msgstr "您的钱包未连接到此网络"
 
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute: insufficient liquidity to fill the swap at the min. receive amount. Edit the min. receive amount or reduce the swap size."
 msgstr "订单可能无法执行：按最小接收金额完成兑换的流动性不足。请编辑最小接收金额或减小兑换规模。"
@@ -5836,6 +5849,7 @@ msgid "{gmOrGlvLabel} bought successfully, but bridge to {0} failed. Your funds 
 msgstr "{gmOrGlvLabel} 购买成功，但跨链至 {0} 失败。您的资金安全地保存在您的 GMX 账户中。请重试跨链，或前往 {indexName} 资金池提取您的 {gmOrGlvLabel} 代币。"
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionItem/PositionItemOrders.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -5954,7 +5968,7 @@ msgstr "等待 GMX 授权中..."
 msgid "AMOUNT"
 msgstr "AMOUNT"
 
-#: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
+#: src/components/StatsTooltip/ChainsStatsNotices.tsx
 msgid "Partial total: no data yet from {0}."
 msgstr ""
 
@@ -6310,10 +6324,6 @@ msgstr "仓位规模过小。最小值：{minPositionSizeUsdText}，当前：{po
 msgid "Stored price impact"
 msgstr "存储的价格影响"
 
-#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
-msgid "esGMX mint submitted"
-msgstr "esGMX 铸造已提交"
-
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Arguments"
 msgstr "参数"
@@ -6395,10 +6405,6 @@ msgstr "您的交易量"
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Fail external swaps"
 msgstr "强制外部兑换失败"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute: the resulting position would exceed the maximum allowed leverage. <0>Deposit margin</0> or reduce the order size before it triggers."
-msgstr "订单可能无法执行：生成的仓位将超过允许的最大杠杆。请在订单触发前<0>存入保证金</0>或减小订单规模。"
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
@@ -6701,10 +6707,6 @@ msgstr "在 GMX 上构建。<0/>每笔交易都有收益。"
 msgid "Page outdated. Refresh"
 msgstr "页面已过期，请刷新"
 
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "Max swap size"
-msgstr "最大兑换规模"
-
 #: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 msgid "Using Your Rewards"
 msgstr "使用您的奖励"
@@ -6808,10 +6810,6 @@ msgstr ""
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "<0>No. GMX is self-custodial and permissionless — you connect a wallet and trade. No identity verification required.</0>"
 msgstr "<0>不需要。GMX 是自托管且无需许可的——您只需连接钱包即可交易。无需身份验证。</0>"
-
-#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
-msgid "esGMX minted"
-msgstr "esGMX 已铸造"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -7381,10 +7379,6 @@ msgstr "差额"
 msgid "Stop-Loss price"
 msgstr ""
 
-#: src/components/OrderEditor/OrderEditor.tsx
-msgid "No valid leverage available"
-msgstr "无可用的有效杠杆"
-
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "swap amount"
 msgstr "兑换金额"
@@ -7396,10 +7390,6 @@ msgstr "最佳"
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{updateOrdersCount} TP/SL orders updated"
 msgstr "{updateOrdersCount} 个 TP/SL 订单已更新"
-
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Insufficient margin. Add more margin"
-msgstr ""
 
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "What's the minimum volume to qualify?"
@@ -7561,6 +7551,10 @@ msgstr ""
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "ACTIONS"
 msgstr ""
+
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Order exceeds max leverage. Reduce the size."
+msgstr "订单超过最大杠杆。请减小规模。"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7820,6 +7814,10 @@ msgstr ""
 #: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
 msgid "Wallet allocations"
 msgstr "钱包分配"
+
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "This order may fail to execute because the resulting position would exceed the maximum allowed leverage. Increase the position's margin or reduce the order size before it triggers."
+msgstr "由于最终仓位将超过允许的最大杠杆，此订单可能无法执行。请在触发前增加仓位保证金或减小订单规模。"
 
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "See more"
@@ -8336,6 +8334,10 @@ msgstr ""
 msgid "Less info"
 msgstr "收起信息"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "LIQ."
+msgstr "清算"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP and GMX autocompounding vaults"
 msgstr "GLP 和 GMX 自动复合金库"
@@ -8397,6 +8399,10 @@ msgstr "{0} 池流动性不足。选择其他池将创建新的仓位。"
 msgid "Max leverage"
 msgstr "最大杠杆"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "AVAILABLE LIQUIDITY"
+msgstr "可用流动性"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Elfa AI"
 msgstr "Elfa AI"
@@ -8420,10 +8426,6 @@ msgstr "访问密钥"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position value after PnL and all fees"
 msgstr "扣除盈亏和所有费用后的仓位价值"
-
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "Parts of this order may not execute: size exceeds the max {positionSide} size of {maxSize}. Reduce the order size."
-msgstr "该订单可能有部分无法执行：规模超过最大{positionSide}规模 {maxSize}。请减小订单规模。"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Number of trades done by your referred traders"
@@ -8486,10 +8488,6 @@ msgstr "{0, plural, one {剩余 # 天} other {剩余 # 天}}"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Can't withdraw collateral. Remaining collateral would be below minimum"
 msgstr "无法提取抵押品。剩余抵押品将低于最低要求"
-
-#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
-msgid "esGMX mint failed"
-msgstr "esGMX 铸造失败"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -9304,6 +9302,10 @@ msgstr ""
 msgid "No open positions"
 msgstr "无开放头寸"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The position cannot be increased at the current leverage. Increase margin or reduce size. Current margin: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
+msgstr "当前杠杆下无法增加仓位。请增加保证金或减小规模。当前保证金：{remainingCollateralUsdText}，所需：{minCollateralUsdForLeverageText}"
+
 #: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
 msgid "See the perks"
 msgstr "查看权益"
@@ -9870,10 +9872,6 @@ msgstr "项目"
 msgid "24h low"
 msgstr "24h 最低"
 
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Insufficient margin. Add {missingCollateralUsdText} more margin"
-msgstr ""
-
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claim <0>{0}</0> of <1>{1}</1>"
 msgstr ""
@@ -9965,10 +9963,6 @@ msgstr ""
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Edit"
 msgstr "编辑"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "No available leverage found"
-msgstr "未找到可用杠杆"
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total supply"
@@ -10161,6 +10155,10 @@ msgstr "GLP 补偿（测试）"
 msgid "Built for those<0/>who do more."
 msgstr "为做得更多的人<0/>而建。"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Max leverage exceeded. Increase margin or reduce size"
+msgstr "已超过最大杠杆。请增加保证金或减小规模"
+
 #: src/components/BridgingInfo/BridgingInfo.tsx
 msgid "Bridge {tokenSymbol} to {chainName} with"
 msgstr "将 {tokenSymbol} 桥接到 {chainName} 使用"
@@ -10230,10 +10228,6 @@ msgstr "<0>🔷 24 小时交易量：10.1 亿美元。</0><1>感谢数十万 GMX
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Enter deposit amount"
 msgstr "输入存入金额"
-
-#: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
-msgid "Included but not up to date: {0}."
-msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
@@ -10388,6 +10382,10 @@ msgstr ""
 msgid "Trade errors"
 msgstr "交易错误"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This order may fail to execute because the resulting position would exceed the maximum allowed leverage. <0>Increase the position's margin</0> or reduce the order size before it triggers."
+msgstr "由于最终仓位将超过允许的最大杠杆，此订单可能无法执行。请在触发前<0>增加仓位保证金</0>或减小订单规模。"
+
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to and withdrawing from GMX Account..."
 msgstr "正在存入和从 GMX Account 提取..."
@@ -10399,6 +10397,10 @@ msgstr ""
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "SHORT LIQ."
 msgstr "做空清算"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Max leverage exceeded. Remaining margin {remainingCollateralUsdText} is below the minimum for the position size. Increase margin or reduce size"
+msgstr "已超过最大杠杆。剩余保证金 {remainingCollateralUsdText} 低于该仓位规模所需的最低要求。请增加保证金或减小规模"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Account type"
@@ -10956,6 +10958,10 @@ msgstr "买入 GM 失败"
 msgid "This position's margin is below the minimum required for its size, so settlement will fail. Add margin, or close the position. Closing settles the funding automatically."
 msgstr "该仓位的保证金低于其规模所需的最低要求，因此结算将失败。请增加保证金或平仓。平仓时资金费用会自动结算。"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The position cannot be increased at the current leverage. Increase margin or reduce size."
+msgstr "当前杠杆下无法增加仓位。请增加保证金或减小规模。"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max funding factor (long)"
 msgstr "最大资金费率因子（多头）"
@@ -11509,6 +11515,10 @@ msgstr "请输入有效的周期和批次 ID"
 msgid "Maximum multiplier"
 msgstr "最高倍数"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Margin is below the minimum required for the position size. Current: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
+msgstr "保证金低于该仓位规模所需的最低要求。当前：{remainingCollateralUsdText}，所需：{minCollateralUsdForLeverageText}"
+
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (TWAP)"
 msgstr "增加规模 (TWAP)"
@@ -11547,6 +11557,11 @@ msgstr "符合资格的历史用户可使用，直到增量奖励上限用完。
 msgid "Receive"
 msgstr "接收"
 
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "Mint {tokenSymbol}"
+msgstr "铸造 {tokenSymbol}"
+
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
@@ -11768,6 +11783,10 @@ msgstr "中继费用超过允许上限"
 msgid "Estimated rebate up to {0}% of open fee. Airdropped as {incentivesTokenTitle} tokens pro-rata. <0><1>Read more</1>.</0>"
 msgstr "预计返佣最高可达开仓费用的 {0}%。以 {incentivesTokenTitle} 代币按比例空投。<0><1>了解更多</1>。</0>"
 
+#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+msgid "Executes when price and liquidity conditions are met"
+msgstr "当价格和流动性条件满足时执行"
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Regular account"
 msgstr "普通账户"
@@ -11826,6 +11845,12 @@ msgstr "请求已发送，但无法确认其结果。它可能已经完成 — �
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short funding rate"
 msgstr ""
+
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "The resulting position would exceed the maximum allowed leverage. Increase margin or reduce size."
+msgstr "最终仓位将超过允许的最大杠杆。请增加保证金或减小规模。"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "No funds available for GMX Account deposit"
@@ -11890,7 +11915,7 @@ msgstr "领取"
 msgid "Date"
 msgstr "日期"
 
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "Executes when liquidity and price conditions are met"
 msgstr "当流动性和价格条件满足时执行"
 
@@ -12170,6 +12195,7 @@ msgstr "Swap TWAP：在指定时间内将代币均匀分批兑换"
 msgid "Pending transfer from {sender}"
 msgstr "来自 {sender} 的待处理转账"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
@@ -12774,6 +12800,7 @@ msgid "Two revenue streams."
 msgstr "两种收入来源。"
 
 #: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Vesting started"
@@ -12963,7 +12990,7 @@ msgid "V1 unsupported on {chainName}. Switch to Arbitrum to use V1."
 msgstr "{chainName} 不支持 V1。请切换至 Arbitrum 以使用 V1。"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingStep.tsx
 msgid "Completed"
 msgstr "已完成"
 
@@ -13372,6 +13399,10 @@ msgstr "您本周期的交易量已超过下一等级门槛。"
 msgid "Vested GLP not withdrawn"
 msgstr "已归属 GLP 未提取"
 
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "Mint test sbfGMX to your connected wallet to use as vesting collateral."
+msgstr "将测试用 sbfGMX 铸造到您已连接的钱包，用作归属抵押品。"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient pool liquidity. Available: {availableAmountText}"
 msgstr ""
@@ -13509,6 +13540,10 @@ msgstr "交易 {0} 以达到 {1} 等级并赚取奖励。"
 msgid "Leaderboard"
 msgstr "排行榜"
 
+#: src/components/StatsTooltip/ChainsStatsNotices.tsx
+msgid "Included but not up to date: {staleList}."
+msgstr ""
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "TRADERS REFERRED"
 msgstr "TRADERS REFERRED"
@@ -13522,6 +13557,7 @@ msgid "Cancellable in ..."
 msgstr "可取消时间 ..."
 
 #: src/components/Seo/SEO.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "GMX | decentralized perpetual exchange"
 msgstr ""
 
@@ -13565,6 +13601,8 @@ msgstr "领取资金费用"
 msgid "Token permit testing"
 msgstr "代币许可测试"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -13881,9 +13919,7 @@ msgstr "仅当前持仓"
 msgid "GMX token icon"
 msgstr "GMX 代币图标"
 
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
-#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
 msgid "long"
 msgstr "多头"
 
@@ -14191,10 +14227,6 @@ msgstr "分享盈亏"
 msgid "Frequency"
 msgstr "频率"
 
-#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
-msgid "Order won't execute: size exceeds the max {positionSide} size of {maxSize}. Reduce the order size."
-msgstr "订单将无法执行：规模超过最大{positionSide}规模 {maxSize}。请减小订单规模。"
-
 #: src/pages/UiPage/BannerTest.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Switch to WBTC-USDC pool"
@@ -14257,6 +14289,7 @@ msgstr "借贷费用"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Continue"
 msgstr "继续"
@@ -14307,9 +14340,7 @@ msgstr "esGMX 可在一年内逐步解锁并转换为可转让的 GMX 代币。�
 msgid "Your Multiplier is calculated as the sum of your Volume Multiplier, Staking Multiplier, and any applicable Activity Boosts."
 msgstr "您的乘数由交易量乘数、质押乘数和任何适用的活动加成相加计算得出。"
 
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
-#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
 msgid "short"
 msgstr "空头"
 
@@ -14764,6 +14795,7 @@ msgstr "已过期的存入"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take-Profit"
@@ -14905,12 +14937,6 @@ msgstr "余额不足"
 msgid "From: block {0} ({1})"
 msgstr ""
 
-#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
-#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-msgid "Mint esGMX"
-msgstr "铸造 esGMX"
-
 #: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
 msgid "Referral revenue, built in"
 msgstr "内置推荐收益"
@@ -14965,23 +14991,3 @@ msgstr "成功"
 #: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
 msgid "Eligible fees (USD)"
 msgstr "符合条件的费用 (USD)"
-
-#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
-msgid "Mint {tokenSymbol}"
-msgstr "铸造 {tokenSymbol}"
-
-#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
-msgid "{tokenSymbol} mint submitted"
-msgstr "{tokenSymbol} 铸造已提交"
-
-#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
-msgid "{tokenSymbol} mint failed"
-msgstr "{tokenSymbol} 铸造失败"
-
-#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
-msgid "{tokenSymbol} minted"
-msgstr "{tokenSymbol} 已铸造"
-
-#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
-msgid "Mint test sbfGMX to your connected wallet to use as vesting collateral."
-msgstr "将测试用 sbfGMX 铸造到您已连接的钱包，用作归属抵押品。"

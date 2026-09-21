@@ -14,11 +14,9 @@ import { isMarketOrderType } from "domain/synthetics/orders";
 import { tryDecodeCustomError } from "lib/errors";
 import { getByKey } from "lib/objects";
 
+import { getMarginBelowMinimumErrorMessage } from "components/Errors/getContractErrorMessage";
 import { CustomErrorName } from "components/TradeHistory/TradeHistoryRow/utils/CustomErrorName";
-import {
-  getErrorTooltipTitle,
-  getMarginBelowMinimumErrorMessage,
-} from "components/TradeHistory/TradeHistoryRow/utils/shared";
+import { getErrorTooltipTitle } from "components/TradeHistory/TradeHistoryRow/utils/shared";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 
 import "./StatusNotification.scss";

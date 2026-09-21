@@ -23,6 +23,7 @@ import { ExternalSwapState } from "domain/synthetics/externalSwaps/types";
 import { useInitExternalSwapState } from "domain/synthetics/externalSwaps/useInitExternalSwapState";
 import { FeaturesSettings, useEnabledFeaturesRequest } from "domain/synthetics/features/useDisabledFeatures";
 import { L1ExpressOrderGasReference, useGasLimits, useGasPrice } from "domain/synthetics/fees";
+import { useProDiscountFactorRequest } from "domain/synthetics/fees/useProDiscountFactor";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { useJitLiquidityRequest } from "domain/synthetics/jit/useJitLiquidityRequest";
@@ -107,6 +108,7 @@ export type SyntheticsState = {
     positionsConstants: PositionsConstantsResult["positionsConstants"];
     uiFeeFactor: bigint;
     userReferralInfo: UserReferralInfo | undefined;
+    proDiscountFactor: bigint | undefined;
     depositMarketTokensData: TokensData | undefined;
     progressiveDepositMarketTokensData: ProgressiveTokensData | undefined;
     multichainMarketTokensBalancesResult: ReturnType<typeof useMultichainMarketTokensBalancesRequest>;
@@ -234,6 +236,7 @@ export function SyntheticsStateContextProvider({
   const { positionsConstants } = usePositionsConstantsRequest(chainId);
   const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
   const userReferralInfo = useUserReferralInfoRequest(chainId, account, skipLocalReferralCode);
+  const proDiscountFactor = useProDiscountFactorRequest(chainId, account);
   const [closingPositionKeyRaw, setClosingPositionKeyRaw] = useState<string>();
   const [closingPositionOrderOption, setClosingPositionOrderOption] = useState<OrderOption>();
 
@@ -392,6 +395,7 @@ export function SyntheticsStateContextProvider({
         tokensDataResult,
         uiFeeFactor,
         userReferralInfo,
+        proDiscountFactor,
         depositMarketTokensData,
         progressiveDepositMarketTokensData,
         multichainMarketTokensBalancesResult,
@@ -484,6 +488,7 @@ export function SyntheticsStateContextProvider({
     tokensDataResult,
     uiFeeFactor,
     userReferralInfo,
+    proDiscountFactor,
     multichainMarketTokensBalancesResult,
     missedCoinsModalPlace,
     accountStats,

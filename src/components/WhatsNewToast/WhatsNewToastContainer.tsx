@@ -9,9 +9,12 @@ import { useUiFlagEvents } from "domain/synthetics/uiFlags/useUiFlagEvents";
 import { AnnouncementBanner } from "components/AnnouncementBanner/AnnouncementBanner";
 import { useAppUpdateBanner } from "components/AppUpdateBanner/useAppUpdateBanner";
 import { BalancerProgramAnnouncement } from "components/BalancerProgramAnnouncement/BalancerProgramAnnouncement";
-import { useBalancerProgramAnnouncement } from "components/BalancerProgramAnnouncement/useBalancerProgramAnnouncement";
+import { BALANCER_PROGRAM_ANNOUNCEMENT_CAMPAIGN } from "components/BalancerProgramAnnouncement/balancerProgramAnnouncementCampaign";
 import { DelistingBanner } from "components/DelistingExitAnnouncements/DelistingBanner";
 import { useDelistingExitAnnouncements } from "components/DelistingExitAnnouncements/useDelistingExitAnnouncements";
+import { useTargetedAnnouncement } from "components/TargetedAnnouncement/useTargetedAnnouncement";
+import { UsdgPoolsAnnouncement } from "components/UsdgPoolsAnnouncement/UsdgPoolsAnnouncement";
+import { USDG_POOLS_ANNOUNCEMENT_CAMPAIGN } from "components/UsdgPoolsAnnouncement/usdgPoolsAnnouncementCampaign";
 import { useWalletExtensionConnectionBanner } from "components/WalletExtensionConnectionBanner/useWalletExtensionConnectionBanner";
 
 import { useWhatsNewAnnouncements } from "./useWhatsNewAnnouncements";
@@ -39,10 +42,14 @@ export function WhatsNewToastContainer() {
   const activeUiFlagEvents = useUiFlagEvents();
   const { cards, dismiss } = useWhatsNewAnnouncements();
   const { announcements: delistingAnnouncements, dismiss: dismissDelisting } = useDelistingExitAnnouncements();
+  const { isVisible: isUsdgPoolsAnnouncementVisible, dismiss: dismissUsdgPoolsAnnouncement } = useTargetedAnnouncement(
+    USDG_POOLS_ANNOUNCEMENT_CAMPAIGN
+  );
   const { isVisible: isBalancerProgramAnnouncementVisible, dismiss: dismissBalancerProgramAnnouncement } =
-    useBalancerProgramAnnouncement();
+    useTargetedAnnouncement(BALANCER_PROGRAM_ANNOUNCEMENT_CAMPAIGN);
   const [isScrolled, setIsScrolled] = useState(false);
   const { pathname } = useLocation();
+  const isAnnouncementsPage = pathname === "/announcements";
   const { isVisible: isWalletExtensionBannerVisible, dismiss: dismissWalletExtensionBanner } =
     useWalletExtensionConnectionBanner(pathname);
   const { isVisible: isAppUpdateVisible, dismiss: dismissAppUpdate, applyUpdate } = useAppUpdateBanner();
@@ -58,6 +65,10 @@ export function WhatsNewToastContainer() {
   useEffect(() => {
     setIsScrolled(false);
   }, [pathname]);
+
+  useEffect(() => {
+    if (isAnnouncementsPage) dismiss();
+  }, [isAnnouncementsPage, dismiss]);
 
   useEffect(() => {
     const onScroll = (e: Event) => {
@@ -123,6 +134,13 @@ export function WhatsNewToastContainer() {
               </div>
             </motion.div>
           )}
+          {isUsdgPoolsAnnouncementVisible && !isAnnouncementsPage && (
+            <motion.div key="usdg-pools" initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
+              <div className="pb-12">
+                <UsdgPoolsAnnouncement onDismiss={dismissUsdgPoolsAnnouncement} />
+              </div>
+            </motion.div>
+          )}
           {isBalancerProgramAnnouncementVisible && (
             <motion.div key="balancer-program" initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
               <div className="pb-12">
@@ -165,7 +183,7 @@ export function WhatsNewToastContainer() {
               </div>
             </motion.div>
           )}
-          {cards.length > 0 && (
+          {cards.length > 0 && !isAnnouncementsPage && (
             <motion.div key="whats-new" initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
               <WhatsNewToast cards={cards} dismiss={dismiss} />
             </motion.div>

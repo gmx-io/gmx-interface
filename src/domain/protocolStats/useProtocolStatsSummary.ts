@@ -1,7 +1,11 @@
-import useSWR from "swr";
-
 import { getUiStatsApiUrl } from "config/api";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
+import {
+  mergeFreshness,
+  useSWRWithFreshness,
+  type Freshness,
+  type SWRWithFreshnessResult,
+} from "lib/useSWRWithFreshness";
 import { HttpClient } from "sdk/utils/http/http";
 import { fetchApiProtocolStatsSummary } from "sdk/utils/stats/api";
 import type {
@@ -10,26 +14,28 @@ import type {
   ProtocolStatsSummaryResponse,
 } from "sdk/utils/stats/types";
 
-export function useProtocolStatsSummary(params?: ProtocolStatsFilterParams) {
+export type ProtocolStatsSummaryResult = SWRWithFreshnessResult<ProtocolStatsSummaryResponse>;
+
+export function useProtocolStatsSummary(params?: ProtocolStatsFilterParams): ProtocolStatsSummaryResult {
   const apiUrl = getUiStatsApiUrl();
 
-  const { data, error, isLoading } = useSWR<ProtocolStatsSummaryResponse>(
+  return useSWRWithFreshness(
     apiUrl ? ["protocolStatsSummary", apiUrl, params?.networks, params?.versions] : null,
     async () => fetchApiProtocolStatsSummary({ api: new HttpClient(apiUrl!) }, params),
-    {
-      refreshInterval: CONFIG_UPDATE_INTERVAL,
-    }
+    { refreshInterval: CONFIG_UPDATE_INTERVAL }
   );
-
-  return { data, error, isLoading };
 }
 
-// the api keeps summing a lagging source and only flags it, so the interface has to read the flag to show it
-export function isProtocolStatsNetworkStale(
-  data: ProtocolStatsSummaryResponse | undefined,
+// the api keeps summing a lagging source and only flags it, and a failed refresh leaves the whole response behind
+export function getProtocolStatsNetworkFreshness(
+  summary: ProtocolStatsSummaryResult,
   network: ProtocolStatsNetwork
-) {
-  const source = data?.meta.sources.find((item) => item.network === network);
+): Freshness {
+  const source = summary.data?.meta.sources.find((item) => item.network === network);
+  const isSourceLagging = source !== undefined && source.health !== "fresh";
 
-  return source !== undefined && source.health !== "fresh";
+  return mergeFreshness(
+    { isStale: isSourceLagging, asOf: isSourceLagging && source.asOf !== null ? source.asOf * 1000 : undefined },
+    summary.freshness
+  );
 }

@@ -41,6 +41,8 @@ function ChartHeaderMobile() {
     dailyVolume,
     dayPriceDelta,
     high24,
+    liquidityLong,
+    liquidityShort,
     longOIPercentage,
     longOIValue,
     low24,
@@ -101,6 +103,17 @@ function ChartHeaderMobile() {
         />
 
         <ChartHeaderMobileItem
+          label={<Trans>Available liquidity</Trans>}
+          value={
+            <div className="flex items-center gap-8">
+              <span className="numbers">{liquidityLong}</span>
+              <span className="text-typography-inactive">/</span>
+              <span className="numbers">{liquidityShort}</span>
+            </div>
+          }
+        />
+
+        <ChartHeaderMobileItem
           label={
             <TooltipWithPortal variant="none" renderContent={renderNetFeeHeaderTooltipContent}>
               <Trans>Net rate / 1h</Trans>
@@ -125,6 +138,8 @@ function ChartHeaderMobile() {
   }, [
     dailyVolume,
     isSwap,
+    liquidityLong,
+    liquidityShort,
     longOIPercentage,
     longOIValue,
     netRateLong,
@@ -224,6 +239,8 @@ function ChartHeaderDesktop() {
     dailyVolume,
     dayPriceDelta,
     high24,
+    liquidityLong,
+    liquidityShort,
     longOIPercentage,
     longOIValue,
     low24,
@@ -273,6 +290,17 @@ function ChartHeaderDesktop() {
         />
 
         <ChartHeaderItem
+          label={<Trans>Available liquidity</Trans>}
+          value={
+            <div className="flex items-center gap-4">
+              <span className="numbers">{liquidityLong}</span>
+              <span className="text-typography-inactive">/</span>
+              <span className="numbers">{liquidityShort}</span>
+            </div>
+          }
+        />
+
+        <ChartHeaderItem
           label={
             <TooltipWithPortal variant="none" renderContent={renderNetFeeHeaderTooltipContent}>
               <Trans>Net rate / 1h</Trans>
@@ -299,6 +327,8 @@ function ChartHeaderDesktop() {
   }, [
     dailyVolume,
     isSwap,
+    liquidityLong,
+    liquidityShort,
     longOIPercentage,
     longOIValue,
     netRateLong,

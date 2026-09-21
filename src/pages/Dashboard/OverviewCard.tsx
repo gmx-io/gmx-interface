@@ -1,13 +1,15 @@
 import { Trans } from "@lingui/macro";
 import { useEffect, useMemo, useState } from "react";
-import useSWR from "swr";
 
 import { getServerUrl } from "config/backend";
 import { ARBITRUM, AVALANCHE, MEGAETH } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { useGmxPrice, useTotalGmxStaked } from "domain/legacy";
 import { useProtocolStatsFeesInfo } from "domain/protocolStats/useProtocolStatsFeesInfo";
-import { isProtocolStatsNetworkStale, useProtocolStatsSummary } from "domain/protocolStats/useProtocolStatsSummary";
+import {
+  getProtocolStatsNetworkFreshness,
+  useProtocolStatsSummary,
+} from "domain/protocolStats/useProtocolStatsSummary";
 import { parseProtocolStatsUsd } from "domain/protocolStats/utils";
 import { useV1FeesInfo, useVolumeInfo } from "domain/stats";
 import { usePositionsTotalMargin } from "domain/synthetics/positions/usePositionsTotalMargin";
@@ -17,11 +19,13 @@ import { arrayURLFetcher } from "lib/fetcher";
 import { GLP_DECIMALS, GMX_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatAmountHuman } from "lib/numbers";
 import { sumBigInts, sumKnownBigInts } from "lib/sumBigInts";
+import { mergeFreshness, useSWRWithFreshness } from "lib/useSWRWithFreshness";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { AppCard, AppCardSection, AppCardSplit } from "components/AppCard/AppCard";
 import ChainsStatsTooltip from "components/StatsTooltip/ChainsStatsTooltip";
+import { getStaleEntries } from "components/StatsTooltip/summarizeChainsStats";
 
 import { ACTIVE_CHAIN_IDS } from "./DashboardV2";
 import { getFormattedFeesDuration } from "./getFormattedFeesDuration";
@@ -45,26 +49,20 @@ export function OverviewCard({
   const v2MegaethOverview = useV2Stats(MEGAETH);
   const gmtradeSummary = useProtocolStatsSummary({ networks: ["solana"] });
   const gmtradeOverview = gmtradeSummary.data?.byNetwork.solana;
-  const staleTitles = isProtocolStatsNetworkStale(gmtradeSummary.data, "solana") ? [SOLANA_ENTRY] : [];
+  const gmtradeFreshness = getProtocolStatsNetworkFreshness(gmtradeSummary, "solana");
+  const gmtradeStaleEntries = getStaleEntries([gmtradeFreshness, SOLANA_ENTRY]);
   const gmtradeFees = useProtocolStatsFeesInfo({ networks: ["solana"] });
+  const feesStaleEntries = getStaleEntries([mergeFreshness(gmtradeFreshness, gmtradeFees.freshness), SOLANA_ENTRY]);
 
-  const { data: positionStats } = useSWR<
-    {
-      totalActivePositions: number;
-      totalLongPositionSizes: string;
-      totalLongPositionCollaterals: string;
-      totalShortPositionCollaterals: string;
-      totalShortPositionSizes: string;
-      openInterest: bigint;
-    }[]
-  >(
+  const positionStats = useSWRWithFreshness(
     ACTIVE_CHAIN_IDS.map((chainId) => getServerUrl(chainId, "/position_stats")),
-    {
-      fetcher: arrayURLFetcher,
-    }
+    arrayURLFetcher
   );
-
-  const positionStatsInfo = getPositionStats(positionStats);
+  const positionStatsInfo = getPositionStats(positionStats.data);
+  const positionsStaleEntries = getStaleEntries(
+    [positionStats.freshness, "Arbitrum", "Avalanche"],
+    [gmtradeFreshness, SOLANA_ENTRY]
+  );
 
   const v1ArbitrumFees = useV1FeesInfo(ARBITRUM);
   const v1AvalancheFees = useV1FeesInfo(AVALANCHE);
@@ -181,7 +179,7 @@ export function OverviewCard({
   const v2ArbitrumEpochFees = v2ArbitrumOverview?.epochFees;
   const v2AvalancheEpochFees = v2AvalancheOverview?.epochFees;
   const v2MegaethEpochFees = v2MegaethOverview?.epochFees;
-  const gmtradeEpochFees = gmtradeFees?.epochFees;
+  const gmtradeEpochFees = gmtradeFees.data?.epochFees;
 
   const v1ArbitrumWeeklyFees = v1ArbitrumFees?.weeklyFees;
   const v1AvalancheWeeklyFees = v1AvalancheFees?.weeklyFees;
@@ -189,7 +187,7 @@ export function OverviewCard({
   const v2ArbitrumWeeklyFees = v2ArbitrumOverview?.weeklyFees;
   const v2AvalancheWeeklyFees = v2AvalancheOverview?.weeklyFees;
   const v2MegaethWeeklyFees = v2MegaethOverview?.weeklyFees;
-  const gmtradeWeeklyFees = gmtradeFees?.weeklyFees;
+  const gmtradeWeeklyFees = gmtradeFees.data?.weeklyFees;
 
   const totalWeeklyFeesUsd = sumBigInts(
     v1ArbitrumWeeklyFees,
@@ -367,7 +365,11 @@ export function OverviewCard({
                 <Trans>Fees for the past</Trans> {formattedDuration}
               </div>
               <div>
-                <ChainsStatsTooltip entries={epochFeesEntries} subtotal={feesSubtotal} staleTitles={staleTitles} />
+                <ChainsStatsTooltip
+                  entries={epochFeesEntries}
+                  subtotal={feesSubtotal}
+                  staleEntries={feesStaleEntries}
+                />
               </div>
             </div>
             <div className="App-card-row">
@@ -377,7 +379,7 @@ export function OverviewCard({
               <div>
                 <ChainsStatsTooltip
                   entries={tvlEntries}
-                  staleTitles={staleTitles}
+                  staleEntries={gmtradeStaleEntries}
                   caption={<Trans>TVL includes GMX staked, GM pools, and position collateral</Trans>}
                 />
               </div>
@@ -389,7 +391,7 @@ export function OverviewCard({
               <div>
                 <ChainsStatsTooltip
                   entries={gmPoolEntries}
-                  staleTitles={staleTitles}
+                  staleEntries={gmtradeStaleEntries}
                   caption={<Trans>Total value of tokens in GM pools</Trans>}
                 />
               </div>
@@ -403,7 +405,7 @@ export function OverviewCard({
                 <Trans>24h volume</Trans>
               </div>
               <div>
-                <ChainsStatsTooltip entries={dailyVolumeEntries} staleTitles={staleTitles} />
+                <ChainsStatsTooltip entries={dailyVolumeEntries} staleEntries={gmtradeStaleEntries} />
               </div>
             </div>
             <div className="App-card-row">
@@ -411,7 +413,7 @@ export function OverviewCard({
                 <Trans>Open interest</Trans>
               </div>
               <div>
-                <ChainsStatsTooltip entries={openInterestEntries} staleTitles={staleTitles} />
+                <ChainsStatsTooltip entries={openInterestEntries} staleEntries={positionsStaleEntries} />
               </div>
             </div>
             <div className="App-card-row">
@@ -419,7 +421,7 @@ export function OverviewCard({
                 <Trans>Long positions</Trans>
               </div>
               <div>
-                <ChainsStatsTooltip entries={totalLongPositionSizesEntries} staleTitles={staleTitles} />
+                <ChainsStatsTooltip entries={totalLongPositionSizesEntries} staleEntries={positionsStaleEntries} />
               </div>
             </div>
             <div className="App-card-row">
@@ -427,7 +429,7 @@ export function OverviewCard({
                 <Trans>Short positions</Trans>
               </div>
               <div>
-                <ChainsStatsTooltip entries={totalShortPositionSizesEntries} staleTitles={staleTitles} />
+                <ChainsStatsTooltip entries={totalShortPositionSizesEntries} staleEntries={positionsStaleEntries} />
               </div>
             </div>
           </AppCardSection>
