@@ -13,28 +13,26 @@ export const ORACLE_FALLBACK_TRACKER_CONFIG = {
   setEndpointsThrottle: 5 * 1000, // 5 secs
   delay: 5000, // 5 secs
 };
-// Temporary: gmxinfra.io is unreachable, so mainnet chains run on gmxapi.io until it is back.
-// Those hosts are single-provider, hence the gmxinfra2.io fallbacks ahead of the gmxinfra.io ones.
 const ORACLE_KEEPER_URLS: Record<ContractsChainId, string> = {
-  [ARBITRUM]: "https://arbitrum-keeper.gmxapi.io",
+  [ARBITRUM]: "https://arbitrum-api.gmxinfra.io",
 
-  [AVALANCHE]: "https://avalanche-keeper.gmxapi.io",
+  [AVALANCHE]: "https://avalanche-api.gmxinfra.io",
 
   [AVALANCHE_FUJI]: "https://synthetics-api-avax-fuji-upovm.ondigitalocean.app",
 
-  [MEGAETH]: "https://megaeth-keeper.gmxapi.io",
+  [MEGAETH]: "https://megaeth-api.gmxinfra.io",
 
   [ARBITRUM_SEPOLIA]: "https://dolphin-app-a2dup.ondigitalocean.app",
 };
 
 const ORACLE_KEEPER_FALLBACK_URLS: Record<ContractsChainId, string[]> = {
-  [ARBITRUM]: ["https://arbitrum-api-fallback.gmxinfra2.io", "https://arbitrum-api-fallback.gmxinfra.io"],
+  [ARBITRUM]: ["https://arbitrum-api-fallback.gmxinfra.io", "https://arbitrum-api-fallback.gmxinfra2.io"],
 
-  [AVALANCHE]: ["https://avalanche-api-fallback.gmxinfra2.io", "https://avalanche-api-fallback.gmxinfra.io"],
+  [AVALANCHE]: ["https://avalanche-api-fallback.gmxinfra.io", "https://avalanche-api-fallback.gmxinfra2.io"],
 
   [AVALANCHE_FUJI]: ["https://synthetics-api-avax-fuji.gmxinfra.io"],
 
-  [MEGAETH]: ["https://megaeth-api-fallback.gmxinfra2.io", "https://megaeth-api-fallback.gmxinfra.io"],
+  [MEGAETH]: ["https://megaeth-api-fallback.gmxinfra.io"],
 
   [ARBITRUM_SEPOLIA]: ["https://dolphin-app-a2dup.ondigitalocean.app"],
 };
