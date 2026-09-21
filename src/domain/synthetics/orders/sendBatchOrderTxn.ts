@@ -1,4 +1,5 @@
 import { Provider } from "ethers";
+import uniqueId from "lodash/uniqueId";
 import { withRetry } from "viem";
 
 import { ContractsChainId } from "config/chains";
@@ -37,6 +38,7 @@ export type BatchSimulationParams = {
 };
 
 export type BatchOrderTxnCtx = {
+  batchId: string;
   expressParams: ExpressTxnParams | undefined;
   batchParams: BatchOrderTxnParams;
   signer: WalletSigner;
@@ -65,6 +67,7 @@ export async function sendBatchOrderTxn({
 }) {
   const encodedBatchParams = encodeJitBatchOrderMetadata(batchParams, simulationParams);
   const eventBuilder = new TxnEventBuilder<BatchOrderTxnCtx>({
+    batchId: uniqueId("order-batch-"),
     expressParams,
     batchParams: encodedBatchParams,
     signer,
@@ -140,7 +143,6 @@ export async function sendBatchOrderTxn({
             eventBuilder.Sent({
               type: "relay",
               relayTaskId: res.taskId,
-              relayProvider: res.relayProvider,
             })
           );
 
@@ -276,7 +278,7 @@ const makeBatchOrderSimulation = async ({
         throw new Error("Multichain orders are only supported with express params");
       }
 
-      const { callData, feeAmount, feeToken, to } = await buildAndSignExpressBatchOrderTxn({
+      const { callData, to } = await buildAndSignExpressBatchOrderTxn({
         signer,
         chainId,
         relayParamsPayload: expressParams.relayParamsPayload,
@@ -289,10 +291,7 @@ const makeBatchOrderSimulation = async ({
       });
 
       await callRelayTransaction({
-        chainId,
         relayRouterAddress: to,
-        gelatoRelayFeeToken: feeToken,
-        gelatoRelayFeeAmount: feeAmount,
         provider,
         calldata: callData,
       });

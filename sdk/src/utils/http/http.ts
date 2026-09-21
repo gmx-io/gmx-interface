@@ -2,7 +2,7 @@ import fetch from "cross-fetch";
 
 import { buildUrl } from "utils/buildUrl";
 
-import { IHttp } from "./types";
+import { IHttp, ServedResult } from "./types";
 
 const DEFAULT_TIMEOUT_MS = 30_000;
 
@@ -131,5 +131,13 @@ export class HttpClient implements IHttp {
     } finally {
       clearTimeout(timeoutId);
     }
+  }
+
+  async postJsonWith<TResult>(
+    path: string,
+    body: unknown,
+    opts?: { transform?: (result: any) => TResult }
+  ): Promise<ServedResult<TResult>> {
+    return { result: await this.postJson<TResult>(path, body, opts), client: this };
   }
 }

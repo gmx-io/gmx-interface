@@ -5,8 +5,7 @@ import { toast } from "react-toastify";
 
 import { getExplorerUrl } from "config/chains";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { PendingOrderData, getPendingOrderKey, getRelayTaskUrl, useSyntheticsEvents } from "context/SyntheticsEvents";
+import { PendingOrderData, getPendingOrderKey, useSyntheticsEvents } from "context/SyntheticsEvents";
 import { findOrderStatusForAllocation } from "context/SyntheticsEvents/utils";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import {
@@ -39,7 +38,7 @@ import { TransactionStatus, TransactionStatusType } from "components/Transaction
 import { useToastAutoClose } from "./useToastAutoClose";
 
 // eslint-disable-next-line import/order
-import { StatusCode } from "sdk/utils/gelatoRelay";
+import { StatusCode } from "sdk/utils/express";
 import "./StatusNotification.scss";
 
 type Props = {
@@ -61,7 +60,6 @@ function OrderStatusNotification({
   const wrappedNativeToken = getWrappedToken(chainId);
   const { orderStatuses, setOrderStatusViewed, pendingExpressTxns, relayTaskStatuses, updatePendingExpressTxn } =
     useSyntheticsEvents();
-  const { tenderlyAccountSlug, tenderlyProjectSlug } = useSettings();
 
   const [orderStatusKey, setOrderStatusKey] = useState<string>();
   const [pendingExpressTxnKey, setPendingExpressTxnKey] = useState<string>();
@@ -292,7 +290,6 @@ function OrderStatusNotification({
     let text: ReactNode = t`Sending order request...`;
     let status: TransactionStatusType = "loading";
     let txnHash: string | undefined;
-    let txnLink: string | undefined;
     let isCompleted = false;
 
     if (orderData?.txnType === "create") {
@@ -321,20 +318,13 @@ function OrderStatusNotification({
         </div>
       );
       txnHash = relayTaskStatus?.transactionHash;
-      txnLink = getRelayTaskUrl({
-        relayProvider: pendingExpressTxn?.relayProvider,
-        taskId: pendingExpressTxn?.taskId,
-        isDebug: true,
-        tenderlyAccountSlug,
-        tenderlyProjectSlug,
-      });
     } else if (isCompleted) {
       status = "success";
       text = t`Order request sent`;
       txnHash = hideTxLink !== "creation" && orderData?.txnType === "create" ? orderStatus?.createdTxnHash : undefined;
     }
 
-    return <TransactionStatus status={status} txnHash={txnHash} txnLink={txnLink} text={text} />;
+    return <TransactionStatus status={status} txnHash={txnHash} text={text} />;
   }, [
     orderData?.txnType,
     isRelayTaskFailed,
@@ -344,10 +334,7 @@ function OrderStatusNotification({
     orderStatus?.executedTxnHash,
     orderStatus?.updatedTxnHash,
     orderStatus?.cancelledTxnHash,
-    tenderlyAccountSlug,
-    tenderlyProjectSlug,
     pendingExpressTxn?.taskId,
-    pendingExpressTxn?.relayProvider,
     hideTxLink,
   ]);
 

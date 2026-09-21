@@ -16,7 +16,7 @@ import {
   selectTradeboxExistingPositionForPreview,
   selectTradeboxSelectedTriggerAcceptablePriceImpactBps,
   selectTradeboxSetAdvancedOptions,
-  selectTradeboxSetSelectedAcceptablePriceImpactBps,
+  selectTradeboxSetUserSelectedAcceptablePriceImpactBps,
   selectTradeboxTradeFeesType,
   selectTradeboxTradeFlags,
   selectTradeboxTriggerPrice,
@@ -31,6 +31,7 @@ import { formatLeverage } from "domain/synthetics/positions";
 import { formatUsd } from "lib/numbers";
 import { ExecutionFee } from "sdk/utils/fees/types";
 import { isStopIncreaseOrderType } from "sdk/utils/orders";
+import { convertToUsd } from "sdk/utils/tokens";
 
 import { AcceptablePriceImpactInputRow } from "components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { ExitPriceRow } from "components/ExitPriceRow/ExitPriceRow";
@@ -102,11 +103,21 @@ function LeverageInfoRows() {
 function ExistingPositionInfoRows() {
   const existingPosition = useSelector(selectTradeboxExistingPositionForPreview);
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
+  const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
 
   if (!existingPosition || isSwap) {
     return null;
   }
+
+  const existingCollateralUsd =
+    increaseAmounts && increaseAmounts.collateralPrice > 0n
+      ? convertToUsd(
+          existingPosition.collateralAmount,
+          existingPosition.collateralToken.decimals,
+          increaseAmounts.collateralPrice
+        )
+      : existingPosition.collateralUsd;
 
   return (
     <>
@@ -125,7 +136,7 @@ function ExistingPositionInfoRows() {
         label={t`Margin (${existingPosition?.collateralToken?.symbol})`}
         value={
           <ValueTransition
-            from={formatUsd(existingPosition?.collateralUsd)}
+            from={formatUsd(existingCollateralUsd)}
             to={formatUsd(nextPositionValues?.nextCollateralUsd)}
           />
         }
@@ -158,7 +169,7 @@ export function TradeBoxAdvancedGroups({
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const limitPrice = useSelector(selectTradeboxTriggerPrice);
 
-  const setSelectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSetSelectedAcceptablePriceImpactBps);
+  const setUserSelectedAcceptablePriceImpactBps = useSelector(selectTradeboxSetUserSelectedAcceptablePriceImpactBps);
   const selectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
   const defaultTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxDefaultTriggerAcceptablePriceImpactBps);
   const isSetAcceptablePriceImpactEnabled = useSelector(selectIsSetAcceptablePriceImpactEnabled);
@@ -224,7 +235,7 @@ export function TradeBoxAdvancedGroups({
             priceImpactFeeBps={
               isTrigger ? fees?.decreasePositionPriceImpact?.bps : fees?.increasePositionPriceImpact?.bps
             }
-            setAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
+            setAcceptablePriceImpactBps={setUserSelectedAcceptablePriceImpactBps}
           />
         </>
       )}

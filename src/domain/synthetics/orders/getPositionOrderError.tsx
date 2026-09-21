@@ -12,6 +12,7 @@ import { getMarginDepositRiskLevel, isMarginDepositOrder } from "domain/syntheti
 import { PositionInfoLoaded } from "domain/synthetics/positions";
 import { NextPositionValues } from "domain/synthetics/trade";
 import { getPositionCloseSizeDeltaUsdForDisplay } from "domain/tpsl/utils";
+import { getIsMaxLeverageMarginReason, PositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
 
 export function getPositionOrderError({
   positionOrder,
@@ -23,6 +24,8 @@ export function getPositionOrderError({
   nextPositionValuesForIncrease,
   maxAllowedLeverage,
   marginDepositNextLiqPrice,
+  resultingPositionMarginState,
+  isResultingPositionCheckBlocking,
 }: {
   positionOrder: PositionOrderInfo;
   markPrice: bigint | undefined;
@@ -33,6 +36,8 @@ export function getPositionOrderError({
   nextPositionValuesForIncrease: NextPositionValues | undefined;
   maxAllowedLeverage: number | undefined;
   marginDepositNextLiqPrice?: bigint;
+  resultingPositionMarginState?: PositionMarginState;
+  isResultingPositionCheckBlocking?: boolean;
 }): string | undefined {
   const isMarginDeposit = isMarginDepositOrder(positionOrder);
 
@@ -141,5 +146,15 @@ export function getPositionOrderError({
     ) {
       return t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x`;
     }
+  }
+
+  if (
+    (isLimitIncreaseOrderType(positionOrder.orderType) || isStopIncreaseOrderType(positionOrder.orderType)) &&
+    resultingPositionMarginState?.isLiquidatable &&
+    isResultingPositionCheckBlocking
+  ) {
+    return getIsMaxLeverageMarginReason(resultingPositionMarginState.reason)
+      ? t`Max leverage exceeded`
+      : t`Invalid liquidation price`;
   }
 }

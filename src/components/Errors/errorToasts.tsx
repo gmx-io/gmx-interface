@@ -38,6 +38,7 @@ export type PermitIssueType = "invalidSignature" | "expiredDeadline";
 export type AdditionalErrorParams = {
   additionalContent?: ReactNode;
   slippageInputId?: string;
+  isSizeIncrease?: boolean;
   defaultMessage?: ReactNode;
   isInternalSwapFallback?: boolean;
   isExternalSwapFallback?: boolean;
@@ -120,6 +121,7 @@ export function getTxnErrorToast(
   {
     additionalContent,
     slippageInputId,
+    isSizeIncrease,
     defaultMessage = getDefaultErrorMessage(errorData),
     isInternalSwapFallback,
     isExternalSwapFallback,
@@ -221,7 +223,7 @@ export function getTxnErrorToast(
     return toastParams;
   }
 
-  const contractErrorMessage = getContractErrorToastContent({ chainId, errorData, slippageInputId });
+  const contractErrorMessage = getContractErrorToastContent({ chainId, errorData, slippageInputId, isSizeIncrease });
   if (contractErrorMessage) {
     toastParams.errorContent = contractErrorMessage;
     return toastParams;

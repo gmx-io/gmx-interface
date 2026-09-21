@@ -48,7 +48,6 @@ import { SettleAccruedFundingFeeModal } from "components/SettleAccruedFundingFee
 import { TradeBox } from "components/TradeBox/TradeBox";
 
 const EXPRESS_FEATURES = { relayRouterEnabled: true, subaccountRelayRouterEnabled: true };
-const SPONSORED_CALL_ALLOWED = { isSponsoredCallAllowed: true };
 const SURFACES_WITHOUT_APPROVE_STEP: NetworkFeeSurface[] = ["addTpsl", "orderEditor"];
 
 function getGasPaymentTokenAllowance(amount: bigint) {
@@ -458,7 +457,6 @@ function SurfaceState({
       positionsInfoData={fixtures.positionsInfoData}
       ordersInfoData={fixtures.ordersInfoData}
       features={isExpressAvailable ? EXPRESS_FEATURES : undefined}
-      sponsoredCallBalanceData={isExpressAvailable ? SPONSORED_CALL_ALLOWED : undefined}
       srcChainId={multichain ? srcChainId : undefined}
       l1ExpressOrderGasReference={MOCK_L1_EXPRESS_ORDER_GAS_REFERENCE}
       closingPositionKey={surface === "close" ? fixtures.position.key : undefined}

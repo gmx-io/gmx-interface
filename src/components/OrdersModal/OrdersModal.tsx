@@ -1,6 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useLatest } from "react-use";
 
 import { usePositionsConstants } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
@@ -38,6 +39,7 @@ import {
   getPositionOffHoursLiqRisk,
 } from "domain/synthetics/positions";
 import type { TokenData } from "domain/synthetics/tokens";
+import { usePendingTpSlOrders } from "domain/tpsl/usePendingTpSlOrders";
 import { formatUsd } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useBreakpoints } from "lib/useBreakpoints";
@@ -107,6 +109,20 @@ export function OrdersModal({
   const effectiveIsLong = position?.isLong ?? isLongProp;
   const effectiveIndexToken = position?.indexToken ?? indexTokenProp;
 
+  const pendingOrders = usePendingTpSlOrders(effectivePositionKey);
+  const hasPendingTpSlOrders = pendingOrders.length > 0;
+  const hasPendingTpSlOrdersRef = useLatest(hasPendingTpSlOrders);
+  const pendingTpOrders = useMemo(
+    () => pendingOrders.filter((order) => isLimitDecreaseOrderType(order.orderType)),
+    [pendingOrders]
+  );
+  const pendingSlOrders = useMemo(
+    () => pendingOrders.filter((order) => isStopLossOrderType(order.orderType)),
+    [pendingOrders]
+  );
+  const displayedPendingOrders =
+    activeTab === "takeProfit" ? pendingTpOrders : activeTab === "stopLoss" ? pendingSlOrders : pendingOrders;
+
   const ordersWithErrors = usePositionOrdersWithErrors(effectivePositionKey);
   const marketDecimals = useSelector(
     makeSelectMarketPriceDecimals(position?.market.indexTokenAddress ?? indexTokenProp?.address)
@@ -159,6 +175,9 @@ export function OrdersModal({
     }
   }, [activeTab, tpOrders, slOrders, allOrders]);
 
+  const tpCount = tpOrders.length + pendingTpOrders.length;
+  const slCount = slOrders.length + pendingSlOrders.length;
+
   const tabOptions = useMemo(
     () => [
       { value: "all" as TpSlTabType, label: t`All` },
@@ -166,7 +185,7 @@ export function OrdersModal({
         value: "takeProfit" as TpSlTabType,
         label: (
           <>
-            <Trans>Take-Profit</Trans> {tpOrders.length > 0 ? <Badge>{tpOrders.length}</Badge> : null}
+            <Trans>Take-Profit</Trans> {tpCount > 0 ? <Badge>{tpCount}</Badge> : null}
           </>
         ),
       },
@@ -174,12 +193,12 @@ export function OrdersModal({
         value: "stopLoss" as TpSlTabType,
         label: (
           <>
-            <Trans>Stop-Loss</Trans> {slOrders.length > 0 ? <Badge>{slOrders.length}</Badge> : null}
+            <Trans>Stop-Loss</Trans> {slCount > 0 ? <Badge>{slCount}</Badge> : null}
           </>
         ),
       },
     ],
-    [tpOrders.length, slOrders.length]
+    [tpCount, slCount]
   );
 
   const handleCancelAll = useCallback(async () => {
@@ -255,16 +274,16 @@ export function OrdersModal({
 
   useEffect(() => {
     if (isVisible) {
-      setIsAddFormVisible(initialView === "add");
+      setIsAddFormVisible(initialView === "add" && !hasPendingTpSlOrdersRef.current);
       setActiveTab(initialTab);
     } else {
       setIsAddFormVisible(false);
     }
-  }, [isVisible, initialView, initialTab]);
+  }, [isVisible, initialView, initialTab, hasPendingTpSlOrdersRef]);
 
   const handleAddTPSLOpen = useCallback(() => {
-    setIsAddFormVisible(true);
-  }, []);
+    if (!hasPendingTpSlOrders) setIsAddFormVisible(true);
+  }, [hasPendingTpSlOrders]);
 
   const handleAddFormVisibilityChange = useCallback(
     (visible: boolean) => {
@@ -367,7 +386,7 @@ export function OrdersModal({
             rightContent={
               <div className="flex shrink-0 items-center gap-8 max-md:order-2 max-md:ml-auto max-md:pr-0">
                 {!isMobile && position && (
-                  <Button variant="ghost" onClick={handleAddTPSLOpen}>
+                  <Button variant="ghost" onClick={handleAddTPSLOpen} disabled={hasPendingTpSlOrders}>
                     <Trans>Add TP/SL</Trans>
                     <PlusIcon className="size-16" />
                   </Button>
@@ -384,6 +403,9 @@ export function OrdersModal({
 
         <TPSLOrdersList
           orders={displayedOrders}
+          pendingOrders={displayedPendingOrders}
+          indexToken={effectiveIndexToken}
+          isCreationPending={hasPendingTpSlOrders}
           position={position}
           marketDecimals={marketDecimals}
           isMobile={isMobile}
@@ -394,7 +416,7 @@ export function OrdersModal({
 
         {isMobile && position && (
           <div className="fixed bottom-[var(--safe-area-inset-bottom)] left-[var(--safe-area-inset-left)] right-[var(--safe-area-inset-right)] border-t-1/2 border-slate-600 bg-slate-900 px-16 py-12">
-            <Button variant="primary" className="w-full" onClick={handleAddTPSLOpen}>
+            <Button variant="primary" className="w-full" onClick={handleAddTPSLOpen} disabled={hasPendingTpSlOrders}>
               <Trans>Add TP/SL</Trans>
             </Button>
           </div>
@@ -403,7 +425,8 @@ export function OrdersModal({
 
       {position && (
         <AddTPSLModal
-          isVisible={isAddFormVisible}
+          isVisible={isVisible && isAddFormVisible}
+          isCreationPending={hasPendingTpSlOrders}
           setIsVisible={handleAddFormVisibilityChange}
           position={position}
           onBack={handleAddTPSLBack}

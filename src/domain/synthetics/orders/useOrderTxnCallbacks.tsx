@@ -35,7 +35,6 @@ import {
 } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import {
-  ExpressOrderMetricData,
   metrics,
   OrderMetricId,
   sendOrderSimulatedMetric,
@@ -47,7 +46,7 @@ import { getByKey } from "lib/objects";
 import { TradingActionName } from "lib/tradingErrorTracker";
 import { TxnEvent, TxnEventName } from "lib/transactions";
 import { useBlockNumber } from "lib/useBlockNumber";
-import { isIncreaseOrderType, isMarketOrderType, isSwapOrderType } from "sdk/utils/orders";
+import { isIncreaseOrderType, isMarketOrderType, isSwapOrderType, isTriggerDecreaseOrderType } from "sdk/utils/orders";
 import { OrderInfo, OrdersInfoData } from "sdk/utils/orders/types";
 import {
   BatchOrderTxnParams,
@@ -65,6 +64,7 @@ import {
 
 import { getTxnErrorToast, PermitIssueType } from "components/Errors/errorToasts";
 
+import { getIsSizeIncreaseBatch } from "./getIsSizeIncreaseBatch";
 import { BatchOrderTxnCtx } from "./sendBatchOrderTxn";
 import { ExpressTxnParams } from "../express/types";
 
@@ -84,11 +84,13 @@ export function useOrderTxnCallbacks() {
   const { setPendingTxns } = usePendingTxns();
   const {
     setPendingOrder,
+    setPendingTpSlOrderBatches,
     setPendingPosition,
     setPendingOrderUpdate,
     updatePendingExpressTxn,
     setPendingExpressTxn,
     setPendingFundingFeeSettlement,
+    orderStatuses,
   } = useSyntheticsEvents();
   const { chainId, srcChainId } = useChainId();
   const { showDebugValues, setIsSettingsVisible } = useSettings();
@@ -105,7 +107,7 @@ export function useOrderTxnCallbacks() {
         console.log("TXN EVENT", e, ctx);
       }
 
-      const { expressParams, batchParams } = e.data;
+      const { expressParams, batchParams, batchId } = e.data;
       const isSubaccount = Boolean(expressParams?.subaccount);
 
       const actionsCount = getBatchRequiredActions(batchParams);
@@ -232,6 +234,24 @@ export function useOrderTxnCallbacks() {
 
       switch (e.event) {
         case TxnEventName.Submitted: {
+          const orders = batchParams.createOrderParams
+            .filter(
+              (cp) => isTriggerDecreaseOrderType(cp.orderPayload.orderType) && !getIsTwapOrderPayload(cp.orderPayload)
+            )
+            .map((cp) => getPendingCreateOrder(cp));
+
+          if (orders.length > 0) {
+            setPendingTpSlOrderBatches((batches) => [
+              ...batches,
+              {
+                id: batchId,
+                chainId,
+                orders,
+                existingOrderKeys: [...Object.keys(ordersInfoData ?? {}), ...Object.keys(orderStatuses)],
+              },
+            ]);
+          }
+
           if (isSubaccount) {
             handleTxnSubmitted();
           }
@@ -258,23 +278,21 @@ export function useOrderTxnCallbacks() {
         }
 
         case TxnEventName.Sent: {
+          const sentData = e.data;
+          setPendingTpSlOrderBatches((batches) =>
+            batches.map((batch) =>
+              batch.id === batchId
+                ? {
+                    ...batch,
+                    ...(sentData.type === "wallet"
+                      ? { transactionHash: sentData.transactionHash }
+                      : { relayTaskId: sentData.relayTaskId }),
+                  }
+                : batch
+            )
+          );
+
           if (ctx.metricId) {
-            // re-record the relay that actually took the operation before the sent event flies:
-            // assignment (the ab flag) and treatment diverge whenever the kill switch is thrown
-            if (e.data.type === "relay") {
-              const cached = metrics.getCachedMetricData<{
-                metricId: OrderMetricId;
-                expressData?: ExpressOrderMetricData;
-              }>(ctx.metricId);
-
-              if (cached?.expressData) {
-                metrics.setCachedMetricData({
-                  ...cached,
-                  expressData: { ...cached.expressData, relayProvider: e.data.relayProvider },
-                });
-              }
-            }
-
             sendTxnSentMetric(ctx.metricId);
 
             if (mainActionType === "create" && batchParams.createOrderParams.length > 0) {
@@ -297,7 +315,6 @@ export function useOrderTxnCallbacks() {
             updatePendingExpressTxn({
               key: expressParams ? getExpressParamsKey(expressParams) : undefined,
               taskId: e.data.relayTaskId,
-              relayProvider: e.data.relayProvider,
             });
           } else if (e.data.type === "wallet") {
             const totalExecutionFee = tokensData
@@ -310,6 +327,16 @@ export function useOrderTxnCallbacks() {
 
             const pendingTxn: PendingTransaction = {
               hash: e.data.transactionHash,
+              chainId,
+              onError: () => setPendingTpSlOrderBatches((batches) => batches.filter((batch) => batch.id !== batchId)),
+              onReplaced: batchParams.createOrderParams.some((cp) =>
+                isTriggerDecreaseOrderType(cp.orderPayload.orderType)
+              )
+                ? (transactionHash) =>
+                    setPendingTpSlOrderBatches((batches) =>
+                      batches.map((batch) => (batch.id === batchId ? { ...batch, transactionHash } : batch))
+                    )
+                : undefined,
               message: getOperationMessage(mainActionType, "success", actionsCount, undefined, setIsSettingsVisible),
               metricId: ctx.metricId,
               actionName: ctx.actionName,
@@ -328,6 +355,7 @@ export function useOrderTxnCallbacks() {
         }
 
         case TxnEventName.Error: {
+          setPendingTpSlOrderBatches((batches) => batches.filter((batch) => batch.id !== batchId));
           const { error } = e.data;
           const errorData = parseError(error);
 
@@ -366,6 +394,7 @@ export function useOrderTxnCallbacks() {
           const toastParams = getTxnErrorToast(chainId, errorData, {
             defaultMessage: operationMessage,
             slippageInputId: ctx.slippageInputId,
+            isSizeIncrease: getIsSizeIncreaseBatch(batchParams),
             additionalContent: ctx.additionalErrorContent,
             isInternalSwapFallback: Boolean(fallbackToInternalSwap),
             isExternalSwapFallback: Boolean(fallbackToExternalSwap),
@@ -444,6 +473,8 @@ export function useOrderTxnCallbacks() {
       chainId,
       srcChainId,
       ordersInfoData,
+      orderStatuses,
+      setPendingTpSlOrderBatches,
       resetTokenPermits,
       setIsPermitsDisabled,
       setIsSettingsVisible,

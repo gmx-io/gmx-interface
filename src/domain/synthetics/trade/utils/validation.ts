@@ -43,6 +43,7 @@ import { getPageOutdatedError } from "lib/useHasOutdatedUi";
 import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 import { bigMath } from "sdk/utils/bigmath";
+import { getIsMaxLeverageMarginReason, PositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
 import {
   ExternalSwapQuote,
   GmSwapFees,
@@ -57,6 +58,7 @@ import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlvInMarket, isGlv
 
 export enum ValidationButtonTooltipName {
   maxLeverage = "maxLeverage",
+  resultingPositionMaxLeverage = "resultingPositionMaxLeverage",
   liqPriceGtMarkPrice = "liqPrice > markPrice",
   noSwapPath = "noSwapPath",
   minDeposit = "minDeposit",
@@ -326,6 +328,8 @@ export function getIncreaseError(p: {
   numberOfParts: number;
   minPositionSizeUsd: bigint | undefined;
   chainId: number;
+  resultingPositionMarginState: PositionMarginState | undefined;
+  isResultingPositionCheckBlocking: boolean;
 }): ValidationResult {
   const {
     marketInfo,
@@ -354,6 +358,8 @@ export function getIncreaseError(p: {
     isTwap,
     numberOfParts,
     minPositionSizeUsd,
+    resultingPositionMarginState,
+    isResultingPositionCheckBlocking,
   } = p;
 
   if (!marketInfo || !indexToken) {
@@ -516,9 +522,17 @@ export function getIncreaseError(p: {
     return { buttonErrorMessage: t`Min position size: ${formatUsd(minPositionSizeUsd)}` };
   }
 
+  if (isResultingPositionCheckBlocking && getIsMaxLeverageMarginReason(resultingPositionMarginState?.reason)) {
+    return {
+      buttonErrorMessage: t`Max leverage exceeded`,
+      buttonTooltipName: ValidationButtonTooltipName.resultingPositionMaxLeverage,
+    };
+  }
+
   if (
-    !isLimit &&
-    getIsPositionLiquidatableAtPrice({ liqPrice: nextPositionValues?.nextLiqPrice, price: markPrice, isLong })
+    (isResultingPositionCheckBlocking && resultingPositionMarginState?.isLiquidatable) ||
+    (!isLimit &&
+      getIsPositionLiquidatableAtPrice({ liqPrice: nextPositionValues?.nextLiqPrice, price: markPrice, isLong }))
   ) {
     return {
       buttonErrorMessage: t`Invalid liquidation price`,

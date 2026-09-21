@@ -5,7 +5,7 @@ import { extractRelayTaskError } from "context/SyntheticsEvents/utils";
 import { parseError } from "lib/errors";
 import { getInsufficientFeeError } from "lib/errors/customErrors";
 import { abis } from "sdk/abis";
-import { StatusCode } from "sdk/utils/gelatoRelay";
+import { StatusCode } from "sdk/utils/express";
 
 const ACCOUNT = "0x1111111111111111111111111111111111111111";
 const USDC = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831";

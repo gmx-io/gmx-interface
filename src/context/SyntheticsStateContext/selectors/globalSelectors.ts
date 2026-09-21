@@ -20,6 +20,7 @@ export const selectIsGmxAccountBalancesLoaded = (s: SyntheticsState) =>
 export const selectGmMarkets = (s: SyntheticsState) => s.globals.markets.marketsData;
 export const selectUiFeeFactor = (s: SyntheticsState) => s.globals.uiFeeFactor;
 export const selectUserReferralInfo = (s: SyntheticsState) => s.globals.userReferralInfo;
+export const selectProDiscountFactor = (s: SyntheticsState) => s.globals.proDiscountFactor;
 export const selectChainId = (s: SyntheticsState) => s.globals.chainId;
 export const selectSrcChainId = (s: SyntheticsState) => s.globals.srcChainId;
 export const selectDepositMarketTokensData = (s: SyntheticsState) => s.globals.depositMarketTokensData;
@@ -43,8 +44,6 @@ export const selectProgressiveDepositMarketTokensDataWithoutGlv = createSelector
 
 export const selectIsFirstOrder = (s: SyntheticsState) => s.globals.isFirstOrder;
 const selectFeatures = (s: SyntheticsState) => s.features;
-export const selectIsSponsoredCallAvailable = (s: SyntheticsState) =>
-  s.sponsoredCallBalanceData?.isSponsoredCallAllowed ?? false;
 export const selectSubaccountState = (s: SyntheticsState) => s.subaccountState;
 export const selectGasPaymentTokenAllowance = (s: SyntheticsState) => s.gasPaymentTokenAllowance;
 

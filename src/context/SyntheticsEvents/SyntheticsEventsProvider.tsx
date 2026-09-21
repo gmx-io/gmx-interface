@@ -4,7 +4,6 @@ import { toast } from "react-toastify";
 import { useLatest } from "react-use";
 
 import { ContractsChainId } from "config/chains";
-import { getRelayProvider } from "config/relay";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
@@ -34,11 +33,13 @@ import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import {
   applyOrderBackfillMatches,
   getIsPendingOrderBackfillable,
+  getPendingTpSlOrdersForBackfill,
   ORDER_BACKFILL_MAX_AGE_MS,
   OrderBackfillMatch,
 } from "domain/synthetics/tradeHistory/orderStatusesBackfill";
 import { useOrderStatusesBackfill } from "domain/synthetics/tradeHistory/useOrderStatusesBackfill";
 import { TokenBalanceType } from "domain/tokens";
+import type { PendingTpSlOrderBatch } from "domain/tpsl/types";
 import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 import { ErrorLike, parseError } from "lib/errors";
@@ -67,7 +68,7 @@ import { sendUserAnalyticsOrderResultEvent, userAnalytics } from "lib/userAnalyt
 import { TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
-import { StatusCode } from "sdk/utils/gelatoRelay";
+import { StatusCode } from "sdk/utils/express";
 import { decodeOrderTwapParams } from "sdk/utils/twap/uiFeeReceiver";
 
 import {
@@ -109,7 +110,7 @@ import {
   WithdrawalStatuses,
 } from "./types";
 import { useMultichainEvents } from "./useMultichainEvents";
-import { extractRelayTaskError, getRelayTaskUrl, getPendingOrderKey } from "./utils";
+import { extractRelayTaskError, getPendingOrderKey } from "./utils";
 
 const SyntheticsEventsContext = createContext({});
 
@@ -159,6 +160,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { setWebsocketTokenBalancesUpdates, setOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
   const [approvalStatuses, setApprovalStatuses] = useState<ApprovalStatuses>({});
 
+  const [pendingTpSlOrderBatches, setPendingTpSlOrderBatches] = useState<PendingTpSlOrderBatch[]>([]);
   const [pendingOrdersUpdates, setPendingOrdersUpdates] = useState<PendingOrdersUpdates>({});
   const [pendingPositionsUpdates, setPendingPositionsUpdates] = useState<PendingPositionsUpdates>({});
   const [awaitingBackfillOrders, setAwaitingBackfillOrders] = useState<PendingOrderData[]>([]);
@@ -1055,7 +1057,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
     if (pendingTasks.length === 0) return;
 
-    for (const { taskId, relayProvider } of pendingTasks) {
+    for (const { taskId } of pendingTasks) {
       if (!taskChainIdRef.current.has(taskId)) {
         taskChainIdRef.current.set(taskId, chainId);
       }
@@ -1070,12 +1072,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         try {
           // the callee owns the wait window and its transient retries; a second window here would
           // double the pending time and re-fire the failure metric for the same operation
-          outcome = await waitForRelayTaskOutcome({
-            chainId: taskChainId,
-            taskId,
-            // a task id is only meaningful to the relay that issued it; mirror the submit-side choice
-            relayProvider: relayProvider ?? getRelayProvider(taskChainId),
-          });
+          outcome = await waitForRelayTaskOutcome({ chainId: taskChainId, taskId });
         } catch (error) {
           metrics.pushError(error as ErrorLike, "pollRelayTaskOutcome");
         }
@@ -1138,11 +1135,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
                   chainId,
                   executionFeeBufferBps,
                   estimatedExecutionGasLimit: pendingExpressTxn.estimatedExecutionGasLimit ?? 0n,
-                  txUrl: getRelayTaskUrl({
-                    relayProvider: pendingExpressTxn.relayProvider,
-                    taskId: pendingExpressTxn.taskId,
-                    isDebug: false,
-                  }),
+                  txUrl: undefined,
                   errorMessage: executionFeeErrorParams.errorData.errorMessage,
                   shouldOfferExpress: false,
                   setIsSettingsVisible,
@@ -1279,6 +1272,35 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     onMatches: handleOrderBackfillMatches,
   });
 
+  const { pendingTpSlCreationOrders, pendingTpSlTerminalOrders } = useMemo(() => {
+    const orders = getPendingTpSlOrdersForBackfill({
+      batches: pendingTpSlOrderBatches,
+      chainId,
+      account: currentAccount,
+      orderStatuses,
+      relayTaskStatuses,
+    });
+
+    return {
+      pendingTpSlCreationOrders: orders.filter((order) => !order.orderKey),
+      pendingTpSlTerminalOrders: orders.filter((order) => order.orderKey),
+    };
+  }, [chainId, currentAccount, pendingTpSlOrderBatches, orderStatuses, relayTaskStatuses]);
+
+  useOrderStatusesBackfill({
+    chainId,
+    pendingOrders: pendingTpSlCreationOrders,
+    orderStatuses,
+    onMatches: handleOrderBackfillMatches,
+  });
+
+  useOrderStatusesBackfill({
+    chainId,
+    pendingOrders: pendingTpSlTerminalOrders,
+    orderStatuses,
+    onMatches: handleOrderBackfillMatches,
+  });
+
   const contextState: SyntheticsEventsContextType = useMemo(() => {
     return {
       orderStatuses,
@@ -1287,6 +1309,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       shiftStatuses,
       approvalStatuses,
       pendingOrdersUpdates,
+      pendingTpSlOrderBatches,
+      setPendingTpSlOrderBatches,
       pendingPositionsUpdates,
       positionIncreaseEvents,
       positionDecreaseEvents,
@@ -1442,6 +1466,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     shiftStatuses,
     approvalStatuses,
     pendingOrdersUpdates,
+    pendingTpSlOrderBatches,
     pendingPositionsUpdates,
     positionIncreaseEvents,
     positionDecreaseEvents,

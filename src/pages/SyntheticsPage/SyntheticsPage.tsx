@@ -65,6 +65,7 @@ import { useJsonRpcProvider } from "lib/rpc";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
+import { getIsMobileUserAgent } from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
@@ -223,6 +224,12 @@ export function SyntheticsPage(p: Props) {
   const { isSwap, isTwap } = useSelector(selectTradeboxTradeFlags);
 
   useEffect(() => {
+    // Trust Wallet's mobile browser uses the page title as the dApp name when connecting.
+    if (getIsMobileUserAgent() && (window.ethereum?.isTrust || window.ethereum?.isTrustWallet)) {
+      document.title = t`GMX | decentralized perpetual exchange`;
+      return;
+    }
+
     if (!chartToken) return;
 
     const averagePrice = getMidPrice(chartToken.prices);
