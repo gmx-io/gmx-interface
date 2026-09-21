@@ -41,14 +41,36 @@ export function getTransitFeeTier(p: {
   return { isWhitelisted, isZeroFeeCapacityShort, feeTier: isZeroFee ? "zeroFee" : "standardFee" };
 }
 
+export function getShouldUseTransit(p: {
+  amountUsd: bigint;
+  isWhitelisted: boolean;
+  transitFeesUsd: bigint | undefined;
+  collateralSwapTotalFeesDeltaUsd: bigint | undefined;
+  minAmountUsd: bigint;
+}): boolean {
+  if (p.isWhitelisted) {
+    return true;
+  }
+
+  if (p.transitFeesUsd === undefined) {
+    return false;
+  }
+
+  if (p.collateralSwapTotalFeesDeltaUsd === undefined) {
+    return true;
+  }
+
+  return p.amountUsd >= p.minAmountUsd && -p.transitFeesUsd > p.collateralSwapTotalFeesDeltaUsd;
+}
+
 export function getIsTransitQuoteNeeded(p: {
   isTransitRequired: boolean;
   isWhitelisted: boolean;
-  swapFeesUsd: bigint | undefined;
+  collateralSwapTotalFeesDeltaUsd: bigint | undefined;
   amountUsd: bigint | undefined;
   minAmountUsd: bigint;
 }): boolean {
-  if (p.isTransitRequired || p.isWhitelisted || p.swapFeesUsd === undefined) {
+  if (p.isTransitRequired || p.isWhitelisted || p.collateralSwapTotalFeesDeltaUsd === undefined) {
     return true;
   }
 

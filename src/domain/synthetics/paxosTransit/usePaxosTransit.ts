@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import useSWR from "swr";
 
-import { getPaxosTransitConfig, getShouldShowPaxosTransit } from "config/paxosTransit";
+import { getPaxosTransitConfig } from "config/paxosTransit";
 import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { convertToTokenAmount, convertToUsd, getMidPrice, type TokenData } from "domain/synthetics/tokens";
 import { useDebounce } from "lib/debounce/useDebounce";
@@ -14,7 +14,7 @@ import type { TransitOrder, TransitQuoteParams } from "sdk/utils/paxos/types";
 
 import { IS_PAXOS_TRANSIT_MOCKED, mockTransitApi, type TransitApi } from "./mockTransitApi";
 import { findPendingTransitOrder, getSubmittedTransitOrderId } from "./transitOrders";
-import { getIsTransitQuoteNeeded, getTransitFeeTier } from "./utils";
+import { getIsTransitQuoteNeeded, getShouldUseTransit, getTransitFeeTier } from "./utils";
 
 export type PaxosTransitStep = "idle" | "approving" | "submitting" | "locating" | "converting";
 
@@ -33,7 +33,7 @@ export function usePaxosTransit({
   tokenIn,
   tokenOut,
   amount,
-  swapFeesUsd,
+  collateralSwapTotalFeesDeltaUsd,
   isTransitRequired = false,
   isWhitelistIgnored = false,
   enabled,
@@ -43,7 +43,7 @@ export function usePaxosTransit({
   tokenIn: TokenData | undefined;
   tokenOut: TokenData | undefined;
   amount: bigint;
-  swapFeesUsd: bigint | undefined;
+  collateralSwapTotalFeesDeltaUsd: bigint | undefined;
   isTransitRequired?: boolean;
   isWhitelistIgnored?: boolean;
   enabled: boolean;
@@ -90,7 +90,7 @@ export function usePaxosTransit({
     getIsTransitQuoteNeeded({
       isTransitRequired,
       isWhitelisted,
-      swapFeesUsd,
+      collateralSwapTotalFeesDeltaUsd,
       amountUsd,
       minAmountUsd: paxosTransitConfig!.minAmountUsd,
     });
@@ -126,12 +126,12 @@ export function usePaxosTransit({
   const shouldUseTransit =
     isActive &&
     ((isTransitRequired && quote !== undefined) ||
-      getShouldShowPaxosTransit({
-        chainId,
+      getShouldUseTransit({
         amountUsd: amountUsd ?? 0n,
         isWhitelisted,
         transitFeesUsd,
-        swapFeesUsd,
+        collateralSwapTotalFeesDeltaUsd,
+        minAmountUsd: paxosTransitConfig!.minAmountUsd,
       }));
 
   useSWR(
