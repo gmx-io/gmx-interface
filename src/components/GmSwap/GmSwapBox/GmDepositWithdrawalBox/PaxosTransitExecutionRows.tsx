@@ -1,15 +1,16 @@
 import { Trans } from "@lingui/macro";
 
-import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
+import { selectPoolsDetailsFlags } from "context/PoolsDetailsContext/selectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
-import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 
 import type { PaxosTransitState } from "./usePaxosTransitState";
 
 export function PaxosTransitExecutionRows({ transitState }: { transitState: PaxosTransitState }) {
-  const { quote, tokenIn, isZeroFeeCapacityShort, step, order } = transitState;
+  const { isDeposit } = useSelector(selectPoolsDetailsFlags);
+  const { quote, isZeroFeeCapacityShort, step, order } = transitState;
   const isConverting = step === "converting" && order !== undefined;
 
   return (
@@ -22,20 +23,8 @@ export function PaxosTransitExecutionRows({ transitState }: { transitState: Paxo
       ) : (
         <>
           <SyntheticsInfoRow
-            label={<Trans>Conversion fee</Trans>}
-            value={
-              tokenIn ? (
-                <AmountWithUsdBalance
-                  amount={quote?.totalFees}
-                  decimals={tokenIn.decimals}
-                  symbol={tokenIn.symbol}
-                  usd={convertToUsd(quote?.totalFees, tokenIn.decimals, getMidPrice(tokenIn.prices))}
-                  isStable={tokenIn.isStable}
-                />
-              ) : (
-                "..."
-              )
-            }
+            label={<Trans>Transactions</Trans>}
+            value={isDeposit ? <Trans>2, convert then buy</Trans> : <Trans>2, sell then convert</Trans>}
           />
           {quote?.estimatedLatencyMs !== undefined && (
             <SyntheticsInfoRow
