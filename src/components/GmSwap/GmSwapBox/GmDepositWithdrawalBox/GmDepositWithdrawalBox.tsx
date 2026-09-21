@@ -209,6 +209,7 @@ export function GmSwapBoxDepositWithdrawal() {
     isMarketTokenDeposit,
     technicalFees,
     srcChainId,
+    transitFeesUsd: transitState.isTransitRoute ? transitState.transitFeesUsd : undefined,
   });
 
   const { shouldShowWarning, shouldShowWarningForExecutionFee, shouldShowWarningForPosition } = useGmWarningState({
