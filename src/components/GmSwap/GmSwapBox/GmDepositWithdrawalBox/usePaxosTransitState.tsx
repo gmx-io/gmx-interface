@@ -43,7 +43,13 @@ import type { SubmitButtonState } from "./useGmSwapSubmitState";
 
 export type PaxosTransitState = ReturnType<typeof usePaxosTransitState>;
 
-export function usePaxosTransitState(isWhitelistIgnored: boolean) {
+export function usePaxosTransitState({
+  isWhitelistIgnored,
+  isMocked,
+}: {
+  isWhitelistIgnored: boolean;
+  isMocked: boolean;
+}) {
   const chainId = useSelector(selectChainId);
   const { account } = useWallet();
   const { isDeposit, isWithdrawal } = useSelector(selectPoolsDetailsFlags);
@@ -152,6 +158,7 @@ export function usePaxosTransitState(isWhitelistIgnored: boolean) {
     collateralSwapTotalFeesDeltaUsd,
     isTransitRequired: isWithdrawalSettled,
     isWhitelistIgnored,
+    isMocked,
     enabled: isUsdgPool,
     onFulfilled,
   });
@@ -160,6 +167,7 @@ export function usePaxosTransitState(isWhitelistIgnored: boolean) {
     step,
     quote,
     quoteError,
+    isOrderStatusUnknown,
     shouldUseTransit,
     isQuoteNeeded,
     isFeeTierLoaded,
@@ -212,7 +220,11 @@ export function usePaxosTransitState(isWhitelistIgnored: boolean) {
     if (step === "approving") return { text: t`Approving ${tokenInSymbol}...`, disabled: true };
     if (step === "submitting") return { text: t`Sending conversion...`, disabled: true };
     if (step === "locating") return { text: t`Confirming conversion...`, disabled: true };
-    if (step === "converting") return { text: t`Converting ${tokenInSymbol} to ${tokenOutSymbol}...`, disabled: true };
+    if (step === "converting") {
+      return isOrderStatusUnknown
+        ? { text: t`Conversion status unavailable`, disabled: true }
+        : { text: t`Converting ${tokenInSymbol} to ${tokenOutSymbol}...`, disabled: true };
+    }
 
     if (isWithdrawal && !withdrawalStatus) {
       return undefined;
@@ -252,6 +264,7 @@ export function usePaxosTransitState(isWhitelistIgnored: boolean) {
     shouldUseTransit,
     isWithdrawal,
     onConvert,
+    isOrderStatusUnknown,
     quoteError,
     withdrawalStatus,
     step,

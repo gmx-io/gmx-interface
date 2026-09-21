@@ -17,11 +17,15 @@ export function PaxosTransitDebugCard({
   usdgToken,
   isWhitelistIgnored,
   setIsWhitelistIgnored,
+  isMocked,
+  setIsMocked,
 }: {
   zeroFeeCapacity: bigint | undefined;
   usdgToken: TokenData | undefined;
   isWhitelistIgnored: boolean;
   setIsWhitelistIgnored: (value: boolean) => void;
+  isMocked: boolean;
+  setIsMocked: (value: boolean) => void;
 }) {
   const poolLiquidity = useSelector(selectPoolsDetailsUsdcUsdgSwapLiquidity);
   const paxosTransitConfig = getPaxosTransitConfig(useSelector(selectChainId));
@@ -44,6 +48,9 @@ export function PaxosTransitDebugCard({
 
   return (
     <div className="flex w-full flex-col gap-14 rounded-8 bg-slate-900 p-12">
+      <ToggleSwitch isChecked={isMocked} setIsChecked={setIsMocked}>
+        Mock Transit gateway, no real conversion
+      </ToggleSwitch>
       <ToggleSwitch isChecked={isWhitelistIgnored} setIsChecked={setIsWhitelistIgnored}>
         Act as non-whitelisted for Transit
       </ToggleSwitch>

@@ -4,7 +4,7 @@ import mapValues from "lodash/mapValues";
 import { useCallback, useEffect, useMemo } from "react";
 
 import { AVALANCHE } from "config/chains";
-import { DEBUG_PAXOS_TRANSIT_IGNORE_WHITELIST_KEY } from "config/localStorage";
+import { DEBUG_PAXOS_TRANSIT_IGNORE_WHITELIST_KEY, DEBUG_PAXOS_TRANSIT_MOCK_KEY } from "config/localStorage";
 import { isSourceChain } from "config/multichain";
 import { isDepositDisabledMarket } from "config/static/markets";
 import {
@@ -205,7 +205,14 @@ export function GmSwapBoxDepositWithdrawal() {
     DEBUG_PAXOS_TRANSIT_IGNORE_WHITELIST_KEY,
     false
   );
-  const transitState = usePaxosTransitState(showDebugValues && Boolean(isTransitWhitelistIgnored));
+  const [isTransitMocked, setIsTransitMocked] = useLocalStorageSerializeKey(
+    DEBUG_PAXOS_TRANSIT_MOCK_KEY,
+    import.meta.env.DEV
+  );
+  const transitState = usePaxosTransitState({
+    isWhitelistIgnored: showDebugValues && Boolean(isTransitWhitelistIgnored),
+    isMocked: Boolean(isTransitMocked),
+  });
 
   const logicalFees = useDepositWithdrawalFees({
     amounts,
@@ -766,6 +773,8 @@ export function GmSwapBoxDepositWithdrawal() {
             usdgToken={transitState.usdgToken}
             isWhitelistIgnored={Boolean(isTransitWhitelistIgnored)}
             setIsWhitelistIgnored={setIsTransitWhitelistIgnored}
+            isMocked={Boolean(isTransitMocked)}
+            setIsMocked={setIsTransitMocked}
           />
         )}
       </form>

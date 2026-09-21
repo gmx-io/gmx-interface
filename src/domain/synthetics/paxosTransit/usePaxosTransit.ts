@@ -5,6 +5,7 @@ import { getPaxosTransitConfig } from "config/paxosTransit";
 import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { convertToTokenAmount, convertToUsd, getMidPrice, type TokenData } from "domain/synthetics/tokens";
 import { useDebounce } from "lib/debounce/useDebounce";
+import { helperToast } from "lib/helperToast";
 import { roundToOrder } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
 import useWallet from "lib/wallets/useWallet";
@@ -12,7 +13,7 @@ import type { ContractsChainId } from "sdk/configs/chains";
 import { HttpError } from "sdk/utils/http/http";
 import type { TransitOrder, TransitQuoteParams } from "sdk/utils/paxos/types";
 
-import { IS_PAXOS_TRANSIT_MOCKED, mockTransitApi, type TransitApi } from "./mockTransitApi";
+import { MOCK_CONVERSION_MS, mockTransitApi, type TransitApi } from "./mockTransitApi";
 import { findPendingTransitOrder, getSubmittedTransitOrderId } from "./transitOrders";
 import { getIsTransitQuoteNeeded, getShouldUseTransit, getTransitFeeTier } from "./utils";
 
@@ -36,6 +37,7 @@ export function usePaxosTransit({
   collateralSwapTotalFeesDeltaUsd,
   isTransitRequired = false,
   isWhitelistIgnored = false,
+  isMocked,
   enabled,
   onFulfilled,
 }: {
@@ -46,11 +48,12 @@ export function usePaxosTransit({
   collateralSwapTotalFeesDeltaUsd: bigint | undefined;
   isTransitRequired?: boolean;
   isWhitelistIgnored?: boolean;
+  isMocked: boolean;
   enabled: boolean;
   onFulfilled: (order: TransitOrder) => void;
 }) {
   const sdk = useGmxSdk(chainId);
-  const api: TransitApi | undefined = IS_PAXOS_TRANSIT_MOCKED ? mockTransitApi : sdk;
+  const api: TransitApi | undefined = isMocked ? mockTransitApi : sdk;
   const { account, signer } = useWallet();
   const paxosTransitConfig = getPaxosTransitConfig(chainId);
   const isActive = Boolean(enabled && paxosTransitConfig && api && account && tokenIn && tokenOut);
@@ -154,7 +157,7 @@ export function usePaxosTransit({
     { refreshInterval: 0, revalidateOnFocus: false, revalidateOnReconnect: false, revalidateIfStale: false }
   );
 
-  useSWR(
+  const { error: orderStatusError } = useSWR(
     orderId && api ? ["paxosTransitOrder", chainId, orderId] : null,
     async function pollTransitOrder() {
       const polledOrder = await api!.fetchTransitOrder({ orderId: orderId! });
@@ -218,8 +221,9 @@ export function usePaxosTransit({
 
       let submittedOrderId: string | undefined;
 
-      if (IS_PAXOS_TRANSIT_MOCKED) {
+      if (isMocked) {
         submittedOrderId = mockTransitApi.submitOrder(params);
+        helperToast.info(`Mock conversion, no real transaction. Ready in ~${MOCK_CONVERSION_MS / 1000}s.`);
       } else {
         const submitTxn = await sendWalletTransaction({
           chainId,
@@ -256,7 +260,7 @@ export function usePaxosTransit({
 
       throw error;
     }
-  }, [account, amount, api, chainId, getQuoteParams, isActive, setStep, signer]);
+  }, [account, amount, api, chainId, getQuoteParams, isActive, isMocked, setStep, signer]);
 
   return {
     shouldUseTransit,
@@ -270,6 +274,7 @@ export function usePaxosTransit({
     feeTier,
     quote,
     quoteError,
+    isOrderStatusUnknown: orderStatusError !== undefined,
     transitFeesUsd,
     amountOut,
     step,
