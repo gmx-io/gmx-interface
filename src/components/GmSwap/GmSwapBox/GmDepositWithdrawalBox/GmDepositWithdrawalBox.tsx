@@ -66,7 +66,7 @@ import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPools
 import { ERC20Address, NativeTokenSupportedAddress } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
-import { formatAmountFree, formatUsd } from "lib/numbers";
+import { formatAmountFree, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { switchNetwork } from "lib/wallets";
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID, type AnyChainId, type GmxAccountPseudoChainId } from "sdk/configs/chains";
@@ -92,6 +92,7 @@ import { useGmWarningState } from "../useGmWarningState";
 import { InfoRows } from "./InfoRows";
 import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
 import { useGmSwapSubmitState } from "./useGmSwapSubmitState";
+import { usePaxosTransitState } from "./usePaxosTransitState";
 import { useTechnicalFees } from "./useTechnicalFeesAsyncResult";
 import { useUpdateInputAmounts } from "./useUpdateInputAmounts";
 import { useUpdateTokens } from "./useUpdateTokens";
@@ -213,7 +214,9 @@ export function GmSwapBoxDepositWithdrawal() {
 
   const shouldShowAvalancheGmxAccountWarning = paySource === "gmxAccount" && chainId === AVALANCHE && isDeposit;
 
-  const submitState = useGmSwapSubmitState({
+  const transitState = usePaxosTransitState(false);
+
+  const gmSwapSubmitState = useGmSwapSubmitState({
     logicalFees,
     technicalFees,
     technicalFeesError,
@@ -223,6 +226,19 @@ export function GmSwapBoxDepositWithdrawal() {
     marketsInfoData,
     glvAndMarketsInfoData,
   });
+
+  const submitState = transitState.submitState ?? gmSwapSubmitState;
+
+  const transitUsdgStepUsd =
+    transitState.usdgStepAmount !== undefined && transitState.usdgToken
+      ? convertToUsd(
+          transitState.usdgStepAmount,
+          transitState.usdgToken.decimals,
+          getMidPrice(transitState.usdgToken.prices)
+        )
+      : undefined;
+  const isTransitSellStep2 = isWithdrawal && transitState.isTransitRoute;
+  const isTransitBuyStep2 = isDeposit && transitState.isTransitRoute;
 
   const settlementChainGasPaymentToken = useSelector(selectSettlementChainGasPaymentToken);
   const gmxAccountGasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
@@ -489,8 +505,10 @@ export function GmSwapBoxDepositWithdrawal() {
             <div className={cx("flex gap-4", isWithdrawal ? "flex-col-reverse" : "flex-col")}>
               <div>
                 <BuyInputSection
-                  topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
+                  topLeftLabel={isDeposit ? t`Pay` : isTransitSellStep2 ? t`Step 2: Receive` : t`Receive`}
                   bottomLeftValue={formatUsd(firstTokenUsd ?? 0n)}
+                  isBottomLeftValueMuted={isTransitSellStep2}
+                  isDisabled={isTransitSellStep2}
                   bottomRightLabel={t`Balance`}
                   bottomRightValue={firstTokenMaxDetails.formattedBalance}
                   onClickTopRightLabel={isDeposit ? onMaxClickFirstToken : undefined}
@@ -586,10 +604,42 @@ export function GmSwapBoxDepositWithdrawal() {
                 )}
               </div>
 
+              {transitState.isTransitRoute && (
+                <BuyInputSection
+                  topLeftLabel={t`Step 1: Receive`}
+                  bottomLeftValue={formatUsd(transitUsdgStepUsd ?? 0n)}
+                  bottomRightLabel={t`Balance`}
+                  bottomRightValue={
+                    transitState.usdgToken?.walletBalance !== undefined
+                      ? formatBalanceAmount(
+                          transitState.usdgToken.walletBalance,
+                          transitState.usdgToken.decimals,
+                          undefined,
+                          {
+                            isStable: transitState.usdgToken.isStable,
+                          }
+                        )
+                      : undefined
+                  }
+                  inputValue={
+                    transitState.usdgStepAmount !== undefined && transitState.usdgToken
+                      ? formatAmountFree(transitState.usdgStepAmount, transitState.usdgToken.decimals)
+                      : ""
+                  }
+                  isDisabled
+                >
+                  <div className="selected-token">
+                    <TokenWithIcon symbol={transitState.usdgToken?.symbol} displaySize={20} />
+                  </div>
+                </BuyInputSection>
+              )}
+
               <div className={cx("flex", isWithdrawal ? "flex-col-reverse" : "flex-col")}>
                 <BuyInputSection
-                  topLeftLabel={isWithdrawal ? t`Pay` : t`Receive`}
+                  topLeftLabel={isWithdrawal ? t`Pay` : isTransitBuyStep2 ? t`Step 2: Receive` : t`Receive`}
                   bottomLeftValue={formatUsd(receiveTokenUsd ?? 0n)}
+                  isBottomLeftValueMuted={isTransitBuyStep2}
+                  isDisabled={isTransitBuyStep2}
                   bottomRightLabel={t`Balance`}
                   bottomRightValue={marketTokenMaxDetails.formattedBalance}
                   inputValue={marketOrGlvTokenInputValue}

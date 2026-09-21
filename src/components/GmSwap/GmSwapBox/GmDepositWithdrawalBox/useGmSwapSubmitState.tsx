@@ -88,7 +88,7 @@ const processingTextMap = {
   [Operation.Shift]: (symbol: string) => t`Shifting ${symbol}...`,
 };
 
-type SubmitButtonState = {
+export type SubmitButtonState = {
   text: React.ReactNode;
   disabled?: boolean;
   onSubmit?: () => void;
