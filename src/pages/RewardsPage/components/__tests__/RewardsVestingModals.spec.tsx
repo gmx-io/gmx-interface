@@ -1,9 +1,10 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { ethers } from "ethers";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { ARBITRUM, AVALANCHE } from "config/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, type ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
@@ -16,6 +17,7 @@ import { expandDecimals } from "lib/numbers";
 import { sendRewardsTransactionResultEvent } from "lib/userAnalytics/rewardsEvents";
 import useWallet from "lib/wallets/useWallet";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
+import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import { RewardsStopVestingModal, RewardsVestingModal } from "../RewardsVestingModals";
@@ -136,11 +138,13 @@ function getVestModal(
     onSimulatedClaim?: () => Promise<void>;
     onSimulatedStake?: (stakeAmount: bigint) => Promise<void>;
     onVestingStarted?: () => void;
+    chainId?: ContractsChainId;
   }
 ) {
   return (
     <I18nProvider i18n={i18n}>
       <RewardsVestingModal
+        chainId={options?.chainId ?? ARBITRUM}
         isVisible={isVisible}
         setIsVisible={setIsVisible}
         data={data}
@@ -160,10 +164,15 @@ function renderVestModal(data: RewardsVestingData) {
   return render(getVestModal(data));
 }
 
-function getStopModal(data: RewardsVestingData, onSimulatedStop?: () => Promise<void>) {
+function getStopModal(
+  data: RewardsVestingData,
+  onSimulatedStop?: () => Promise<void>,
+  chainId: ContractsChainId = ARBITRUM
+) {
   return (
     <I18nProvider i18n={i18n}>
       <RewardsStopVestingModal
+        chainId={chainId}
         isVisible
         setIsVisible={setIsVisible}
         data={data}
@@ -226,6 +235,41 @@ describe("RewardsVestingModal", () => {
   });
 
   afterEach(cleanup);
+
+  it("uses Sepolia for collateral approvals and does not wait for undeployed governance contracts", () => {
+    mockUseGovTokenAmount.mockReturnValue(undefined);
+    mockUseGovTokenDelegates.mockReturnValue(undefined);
+    mockUseWallet.mockReturnValue({
+      account: "0x123",
+      active: true,
+      chainId: ARBITRUM_SEPOLIA,
+      signer: {},
+    } as ReturnType<typeof useWallet>);
+    mockUseTokensAllowanceData.mockReturnValue({
+      tokensAllowanceData: { [getContract(ARBITRUM_SEPOLIA, "GMX")]: 100n * TOKEN_UNIT },
+      isLoading: false,
+      isLoaded: true,
+    });
+    render(
+      getVestModal({ ...baseData, walletGmxBalance: 100n * TOKEN_UNIT, freePairAmount: 0n }, true, undefined, {
+        chainId: ARBITRUM_SEPOLIA,
+      })
+    );
+
+    expect(mockUseGovTokenDelegates).toHaveBeenCalledWith(
+      ARBITRUM_SEPOLIA,
+      expect.objectContaining({ enabled: false })
+    );
+    expect(mockUseTokensAllowanceData).toHaveBeenCalledWith(
+      ARBITRUM_SEPOLIA,
+      expect.objectContaining({
+        tokenAddresses: [getContract(ARBITRUM_SEPOLIA, "GMX")],
+        spenderAddress: getContract(ARBITRUM_SEPOLIA, "StakedGmxTracker"),
+      })
+    );
+    expect(screen.queryByRole("button", { name: /Switch to/ })).toBeNull();
+    expect(screen.queryByRole("button", { name: /Loading governance/ })).toBeNull();
+  });
 
   it("disables governance reads while hidden", () => {
     render(getVestModal(baseData, false));
@@ -1782,6 +1826,63 @@ describe("RewardsStopVestingModal", () => {
     expect(mockCallContract.mock.calls[0][2]).toBe("withdraw");
     expect(wait).toHaveBeenCalledTimes(1);
     expect(mutate).toHaveBeenCalledTimes(2);
+  });
+
+  it("withdraws Sepolia collateral from the ratio vester and leaves GMX for a separate claim", async () => {
+    mockUseWallet.mockReturnValue({
+      account: "0x123",
+      active: true,
+      chainId: ARBITRUM_SEPOLIA,
+      signer: {},
+    } as ReturnType<typeof useWallet>);
+    const activeData: RewardsVestingData = {
+      ...baseData,
+      vestingInfo: {
+        ...baseData.vestingInfo,
+        pairAmount: 500n * TOKEN_UNIT,
+        vestedAmount: 100n * TOKEN_UNIT,
+        escrowedBalance: 50n * TOKEN_UNIT,
+        claimable: 70n * TOKEN_UNIT,
+      },
+      ratioVesting: {
+        pairRatioFactor: 5n * 10n ** 30n,
+        capUsedAmount: 120n * TOKEN_UNIT,
+        unpaidClaimAmount: 20n * TOKEN_UNIT,
+        deactivatedAt: 0n,
+        isFrozen: false,
+        isIssuerBindingConfirmed: true,
+        esTokenAllowance: 0n,
+        pairTokenAllowance: 0n,
+        tranches: [],
+      },
+    };
+    mutate.mockResolvedValue(activeData);
+    mockCallContract.mockResolvedValue({ wait: vi.fn(async () => undefined) } as any);
+    render(getStopModal(activeData, undefined, ARBITRUM_SEPOLIA));
+
+    expect(screen.getByText(/remaining 50 esGMX/)).toBeDefined();
+    expect(screen.getByText(/Vested GMX remains available to claim separately/)).toBeDefined();
+    fireEvent.click(screen.getByRole("button", { name: "Yes, stop vesting" }));
+
+    await waitFor(() => expect(setIsVisible).toHaveBeenCalledWith(false));
+    expect(ethers.Contract).toHaveBeenCalledWith(
+      getContract(ARBITRUM_SEPOLIA, "SeasonRatioVester"),
+      abis.RatioVester,
+      expect.anything()
+    );
+    expect(mockCallContract).toHaveBeenCalledTimes(1);
+    expect(mockCallContract).toHaveBeenCalledWith(
+      ARBITRUM_SEPOLIA,
+      expect.anything(),
+      "withdraw",
+      [],
+      expect.anything()
+    );
+    expect(mockSendRewardsTransactionResultEvent).toHaveBeenCalledWith({
+      transaction: "StopVesting",
+      result: "Success",
+      amount: 50n * TOKEN_UNIT,
+    });
   });
 
   it("allows stopping when ordinary accrual advances during the preflight refresh", async () => {
