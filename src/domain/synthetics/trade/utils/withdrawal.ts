@@ -209,7 +209,7 @@ export function getWithdrawalAmounts(p: {
         const isReceiveTokenSwapped =
           wrappedReceiveTokenAddress !== undefined && wrappedReceiveTokenAddress !== longToken.address;
         const receiveTokenUsd =
-          isReceiveTokenSwapped && receiveToken && receiveTokenAmount !== undefined
+          receiveToken && receiveTokenAmount !== undefined
             ? convertToUsd(receiveTokenAmount, receiveToken.decimals, receiveToken.prices.minPrice)
             : undefined;
         const positiveAmount =
