@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { ChangeEvent, CSSProperties, ReactNode, useCallback, useMemo, useState } from "react";
+import { ReactNode, useState } from "react";
 
 import { USD_DECIMALS } from "config/factors";
 import { expandDecimals, formatTokenAmountWithUsdParts } from "lib/numbers";
@@ -10,53 +10,14 @@ import { LeverageValue } from "components/NumericValue/LeverageValue";
 import { NumericValue } from "components/NumericValue/NumericValue";
 import { UsdValue } from "components/NumericValue/UsdValue";
 
-import "./NumericAffixes.css";
-
-type Variant = {
-  id: string;
-  title: string;
-  rule: string;
-  affixClassName: string;
-  defaultStrength?: number;
-};
-
 type Context = {
   id: string;
   title: string;
   className?: string;
-  rows: { label: string; render: (affixClassName: string | undefined) => ReactNode }[];
+  rows: { label: string; value: ReactNode }[];
 };
 
 type Surface = "tooltip" | "card" | "page";
-
-const VARIANTS: Variant[] = [
-  {
-    id: "tokens",
-    title: "Per-colour tokens",
-    rule: "each text colour carries its own affix colour",
-    affixClassName: "",
-  },
-  {
-    id: "token",
-    title: "One secondary token",
-    rule: "color: typography.secondary",
-    affixClassName: "text-typography-secondary",
-  },
-  {
-    id: "mix-background",
-    title: "Mix with page background",
-    rule: "color-mix(in oklab, currentColor S%, page background)",
-    affixClassName: "NumericAffixes-mix-background",
-    defaultStrength: 70,
-  },
-  {
-    id: "relative-oklch",
-    title: "Relative OKLCH",
-    rule: "oklch(from currentColor S% min(c, 0.08) h)",
-    affixClassName: "NumericAffixes-relative-oklch",
-    defaultStrength: 72,
-  },
-];
 
 const usd = (cents: number) => expandDecimals(cents, USD_DECIMALS - 2);
 
@@ -76,15 +37,10 @@ const CONTEXTS: Context[] = [
     id: "primary",
     title: "Primary text",
     rows: [
-      { label: "Network fee", render: (a) => <NumericValue parts={NETWORK_FEE_PARTS} affixClassName={a} /> },
-      { label: "Liq. price", render: (a) => <UsdValue usd={usd(199_900)} affixClassName={a} /> },
-      { label: "Leverage", render: (a) => <LeverageValue leverage={LEVERAGE} affixClassName={a} /> },
-      {
-        label: "Volume",
-        render: (a) => (
-          <AmountHumanValue amount={usd(120_000_000_000)} decimals={USD_DECIMALS} showDollar affixClassName={a} />
-        ),
-      },
+      { label: "Network fee", value: <NumericValue parts={NETWORK_FEE_PARTS} /> },
+      { label: "Liq. price", value: <UsdValue usd={usd(199_900)} /> },
+      { label: "Leverage", value: <LeverageValue leverage={LEVERAGE} /> },
+      { label: "Volume", value: <AmountHumanValue amount={usd(120_000_000_000)} decimals={USD_DECIMALS} showDollar /> },
     ],
   },
   {
@@ -92,11 +48,8 @@ const CONTEXTS: Context[] = [
     title: "Positive (green-500)",
     className: "text-green-500",
     rows: [
-      { label: "Refund", render: (a) => <NumericValue parts={FEE_REFUND_PARTS} affixClassName={a} /> },
-      {
-        label: "PnL",
-        render: (a) => <DeltaUsdValue deltaUsd={usd(123_456)} percentage={PNL_PERCENTAGE} affixClassName={a} />,
-      },
+      { label: "Refund", value: <NumericValue parts={FEE_REFUND_PARTS} /> },
+      { label: "PnL", value: <DeltaUsdValue deltaUsd={usd(123_456)} percentage={PNL_PERCENTAGE} /> },
     ],
   },
   {
@@ -104,11 +57,8 @@ const CONTEXTS: Context[] = [
     title: "Negative (red-500)",
     className: "text-red-500",
     rows: [
-      {
-        label: "PnL",
-        render: (a) => <DeltaUsdValue deltaUsd={-usd(123_456)} percentage={-PNL_PERCENTAGE} affixClassName={a} />,
-      },
-      { label: "Fees", render: (a) => <UsdValue usd={-usd(49)} affixClassName={a} /> },
+      { label: "PnL", value: <DeltaUsdValue deltaUsd={-usd(123_456)} percentage={-PNL_PERCENTAGE} /> },
+      { label: "Fees", value: <UsdValue usd={-usd(49)} /> },
     ],
   },
   {
@@ -118,9 +68,7 @@ const CONTEXTS: Context[] = [
     rows: [
       {
         label: "Open interest",
-        render: (a) => (
-          <AmountHumanValue amount={usd(120_000_000_000)} decimals={USD_DECIMALS} showDollar affixClassName={a} />
-        ),
+        value: <AmountHumanValue amount={usd(120_000_000_000)} decimals={USD_DECIMALS} showDollar />,
       },
     ],
   },
@@ -128,19 +76,19 @@ const CONTEXTS: Context[] = [
     id: "accent",
     title: "Hover / active (blue-300)",
     className: "text-blue-300",
-    rows: [{ label: "Leverage", render: (a) => <LeverageValue leverage={LEVERAGE} affixClassName={a} /> }],
+    rows: [{ label: "Leverage", value: <LeverageValue leverage={LEVERAGE} /> }],
   },
   {
     id: "muted",
     title: "Muted (typography-secondary)",
     className: "text-typography-secondary",
     rows: [
-      { label: "Rewards", render: (a) => <UsdValue usd={0n} affixClassName={a} /> },
+      { label: "Rewards", value: <UsdValue usd={0n} /> },
       {
         label: "Balance",
-        render: (a) => (
+        value: (
           <>
-            <AmountHumanValue amount={expandDecimals(12_500, 18)} decimals={18} affixClassName={a} /> GM
+            <AmountHumanValue amount={expandDecimals(12_500, 18)} decimals={18} /> GM
           </>
         ),
       },
@@ -156,19 +104,6 @@ const SURFACES: { id: Surface; title: string; className: string }[] = [
 
 export function NumericAffixes() {
   const [surface, setSurface] = useState<Surface>("tooltip");
-  const [strengths, setStrengths] = useState(() => VARIANTS.map((variant) => variant.defaultStrength ?? 0));
-
-  const columnStyles = useMemo(
-    () => strengths.map((strength) => ({ "--affix-strength": strength }) as CSSProperties),
-    [strengths]
-  );
-
-  const handleStrengthChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    const index = Number(event.target.dataset.index);
-    const value = Number(event.target.value);
-
-    setStrengths((previous) => previous.map((strength, i) => (i === index ? value : strength)));
-  }, []);
 
   const surfaceClassName = SURFACES.find((item) => item.id === surface)!.className;
 
@@ -176,13 +111,9 @@ export function NumericAffixes() {
     <div className="px-20">
       <h2 className="mb-16 mt-24 text-24 font-medium">Numeric affixes</h2>
       <p className="max-w-prose">
-        The $ prefix, the leverage x and the k / m / b suffixes are drawn in a secondary colour. The app ships the first
-        column: every text colour carries its own affix colour as a theme token, so an affix inside a green, red or
-        yellow value keeps that hue, and a value with no colour of its own falls back to the secondary token. The other
-        columns are the alternatives that were considered — one fixed token for every case, and two rules that derive
-        the colour at paint time. All of them read from theme tokens rather than from what is drawn behind the value, so
-        the surface does not change the result: switch the surface and the theme to check, and drag the sliders to tune
-        the derived rules.
+        The $ prefix and the leverage x are separated from the number by a hair space. Inside primary text they are
+        drawn in the secondary colour; inside a coloured value they keep the colour of the number. The k / m / b
+        suffixes are plain text. Switch the surface and the theme to check every context.
       </p>
 
       <div className="mb-16 mt-12 flex gap-8">
@@ -197,50 +128,16 @@ export function NumericAffixes() {
         ))}
       </div>
 
-      <div className="overflow-auto">
-        <div className="flex gap-8">
-          {VARIANTS.map((variant, index) => (
-            <div key={variant.id} className="w-[260px] shrink-0">
-              <div className="font-medium">{variant.title}</div>
-              <div className="text-12 text-typography-secondary">{variant.rule}</div>
-              {variant.defaultStrength !== undefined && (
-                <label className="flex items-center gap-8 text-12 text-typography-secondary">
-                  S = {strengths[index]}
-                  <input
-                    type="range"
-                    min={0}
-                    max={100}
-                    value={strengths[index]}
-                    data-index={index}
-                    onChange={handleStrengthChange}
-                  />
-                </label>
-              )}
-            </div>
-          ))}
-        </div>
-
+      <div className="flex flex-wrap gap-8">
         {CONTEXTS.map((context) => (
-          <div key={context.id}>
-            <div className="mb-4 mt-12 text-12 text-typography-secondary">{context.title}</div>
-            <div className="flex items-stretch gap-8">
-              {VARIANTS.map((variant, index) => (
-                <div
-                  key={variant.id}
-                  className={cx("!w-[260px] shrink-0", surfaceClassName)}
-                  style={columnStyles[index]}
-                >
-                  {context.rows.map((row) => (
-                    <div key={row.label} className="flex justify-between gap-12">
-                      <span className="whitespace-nowrap text-typography-secondary">{row.label}</span>
-                      <span className={cx("numbers", context.className)}>
-                        {row.render(variant.affixClassName || undefined)}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
+          <div key={context.id} className={cx("!w-[260px] shrink-0", surfaceClassName)}>
+            <div className="mb-4 text-12 text-typography-secondary">{context.title}</div>
+            {context.rows.map((row) => (
+              <div key={row.label} className="flex justify-between gap-12">
+                <span className="whitespace-nowrap text-typography-secondary">{row.label}</span>
+                <span className={cx("numbers", context.className)}>{row.value}</span>
+              </div>
+            ))}
           </div>
         ))}
       </div>

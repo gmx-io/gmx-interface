@@ -1,6 +1,5 @@
 import fromPairs from "lodash/fromPairs";
 import merge from "lodash/merge";
-import omit from "lodash/omit";
 import range from "lodash/range";
 import type { Config } from "tailwindcss";
 import defaultConfig from "tailwindcss/defaultConfig";
@@ -34,19 +33,20 @@ function textColorNames(tree: object, prefix = ""): string[] {
   });
 }
 
-function injectAffixColorsPlugin({ addUtilities }: PluginAPI) {
-  const baseColors = omit(colors, "affix");
+const COLORED_TEXT_GROUPS = ["blue", "yellow", "red", "green"];
 
+function affixColor(textColorName: string) {
+  return COLORED_TEXT_GROUPS.includes(textColorName.split("-")[0])
+    ? "currentColor"
+    : "var(--color-typography-secondary)";
+}
+
+function injectAffixColorsPlugin({ addUtilities }: PluginAPI) {
   addUtilities({
     ".numeric-affix": {
       color: "var(--affix-color, var(--color-typography-secondary))",
     },
-    ...fromPairs(
-      textColorNames(baseColors).map((name) => [
-        `.text-${name}`,
-        { "--affix-color": `var(--color-affix-${name}, var(--color-typography-secondary))` },
-      ])
-    ),
+    ...fromPairs(textColorNames(colors).map((name) => [`.text-${name}`, { "--affix-color": affixColor(name) }])),
   });
 }
 

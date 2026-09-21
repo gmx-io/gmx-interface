@@ -1,7 +1,0 @@
-.NumericAffixes-mix-background {
-  color: color-mix(in oklab, currentColor calc(var(--affix-strength) * 1%), var(--main-bg-color));
-}
-
-.NumericAffixes-relative-oklch {
-  color: oklch(from currentColor calc(var(--affix-strength) / 100) min(c, 0.08) h);
-}
