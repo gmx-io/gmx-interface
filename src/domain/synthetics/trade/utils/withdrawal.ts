@@ -12,6 +12,8 @@ export function getWithdrawalAmounts(p: {
   longTokenAmount: bigint;
   shortTokenAmount: bigint;
   wrappedReceiveTokenAddress?: ERC20Address;
+  receiveToken?: TokenData;
+  receiveTokenAmount?: bigint;
   uiFeeFactor: bigint;
   strategy: "byMarketToken" | "byLongCollateral" | "byShortCollateral" | "byCollaterals";
   forShift?: boolean;
@@ -34,6 +36,8 @@ export function getWithdrawalAmounts(p: {
     glvTokenAmount,
     findSwapPath,
     wrappedReceiveTokenAddress,
+    receiveToken,
+    receiveTokenAmount,
     isSameCollaterals,
   } = p;
 
@@ -66,6 +70,11 @@ export function getWithdrawalAmounts(p: {
   };
 
   if (totalPoolUsd == 0n) {
+    if (strategy === "byMarketToken") {
+      values.marketTokenAmount = marketTokenAmount;
+      values.glvTokenAmount = glvTokenAmount ?? 0n;
+    }
+
     return values;
   }
 
@@ -141,9 +150,17 @@ export function getWithdrawalAmounts(p: {
         shortToken.decimals,
         shortToken.prices.maxPrice
       )!;
+    } else if (isSameCollaterals && wrappedReceiveTokenAddress) {
+      const longToReceiveSwapPathStats = findSwapPath!(values.longTokenUsd);
+      const shortToReceiveSwapPathStats = findSwapPath!(values.shortTokenUsd);
+      if (!longToReceiveSwapPathStats || !shortToReceiveSwapPathStats) {
+        return values;
+      }
+      values.longTokenSwapPathStats = longToReceiveSwapPathStats;
+      values.shortTokenSwapPathStats = shortToReceiveSwapPathStats;
     }
   } else {
-    if (wrappedReceiveTokenAddress) {
+    if (wrappedReceiveTokenAddress && !isSameCollaterals) {
       if (strategy === "byLongCollateral" && longPoolUsd > 0 && wrappedReceiveTokenAddress === longToken.address) {
         values.longTokenAmount = longTokenAmount;
         values.longTokenUsd = convertToUsd(longTokenAmount, longToken.decimals, longToken.prices.maxPrice)!;
@@ -189,13 +206,31 @@ export function getWithdrawalAmounts(p: {
       }
     } else {
       if (isSameCollaterals) {
-        const positiveAmount = bigMath.max(longTokenAmount, shortTokenAmount);
+        const isReceiveTokenSwapped =
+          wrappedReceiveTokenAddress !== undefined && wrappedReceiveTokenAddress !== longToken.address;
+        const receiveTokenUsd =
+          isReceiveTokenSwapped && receiveToken && receiveTokenAmount !== undefined
+            ? convertToUsd(receiveTokenAmount, receiveToken.decimals, receiveToken.prices.minPrice)
+            : undefined;
+        const positiveAmount =
+          receiveTokenUsd !== undefined
+            ? convertToTokenAmount(receiveTokenUsd, longToken.decimals, longToken.prices.maxPrice)!
+            : bigMath.max(longTokenAmount, shortTokenAmount);
         values.longTokenAmount = positiveAmount / 2n;
         values.longTokenBeforeSwapAmount = values.longTokenAmount;
         values.shortTokenAmount = positiveAmount - values.longTokenAmount;
         values.shortTokenBeforeSwapAmount = values.shortTokenAmount;
         values.longTokenUsd = convertToUsd(values.longTokenAmount, longToken.decimals, longToken.prices.maxPrice)!;
         values.shortTokenUsd = convertToUsd(values.shortTokenAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
+
+        if (isReceiveTokenSwapped) {
+          const longToReceiveSwapPathStats = findSwapPath!(values.longTokenUsd);
+          const shortToReceiveSwapPathStats = findSwapPath!(values.shortTokenUsd);
+          if (longToReceiveSwapPathStats && shortToReceiveSwapPathStats) {
+            values.longTokenSwapPathStats = longToReceiveSwapPathStats;
+            values.shortTokenSwapPathStats = shortToReceiveSwapPathStats;
+          }
+        }
       } else if (strategy === "byLongCollateral" && longPoolUsd > 0) {
         values.longTokenAmount = longTokenAmount;
         values.longTokenBeforeSwapAmount = values.longTokenAmount;

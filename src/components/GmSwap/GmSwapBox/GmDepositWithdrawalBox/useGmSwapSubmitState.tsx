@@ -6,11 +6,15 @@ import { AVALANCHE, SettlementChainId } from "config/chains";
 import { getMappedTokenId } from "config/multichain";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import {
+  selectPoolsDetailsCollateralSwapTokens,
+  selectPoolsDetailsFirstTokenAmount,
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvInfo,
   selectPoolsDetailsIsMarketTokenDeposit,
+  selectPoolsDetailsIsTransitRoute,
   selectPoolsDetailsLongTokenAddress,
   selectPoolsDetailsMarketInfo,
+  selectPoolsDetailsMarketOrGlvTokenAmount,
   selectPoolsDetailsMarketTokenData,
   selectPoolsDetailsMarketTokensData,
   selectPoolsDetailsOperation,
@@ -58,7 +62,7 @@ import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
-import { GmSwapFees } from "sdk/utils/trade/types";
+import { DepositAmounts, GmSwapFees, WithdrawalAmounts } from "sdk/utils/trade/types";
 
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 
@@ -84,7 +88,7 @@ const processingTextMap = {
   [Operation.Shift]: (symbol: string) => t`Shifting ${symbol}...`,
 };
 
-type SubmitButtonState = {
+export type SubmitButtonState = {
   text: React.ReactNode;
   disabled?: boolean;
   onSubmit?: () => void;
@@ -114,6 +118,10 @@ export const useGmSwapSubmitState = ({
 
   const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
   const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
+  const collateralSwapTokens = useSelector(selectPoolsDetailsCollateralSwapTokens);
+  const firstTokenAmount = useSelector(selectPoolsDetailsFirstTokenAmount);
+  const marketOrGlvTokenAmount = useSelector(selectPoolsDetailsMarketOrGlvTokenAmount);
+  const isTransitRoute = useSelector(selectPoolsDetailsIsTransitRoute);
   const payLongToken = useSelector(selectPoolsDetailsPayLongToken);
   const payShortToken = useSelector(selectPoolsDetailsPayShortToken);
 
@@ -147,6 +155,8 @@ export const useGmSwapSubmitState = ({
     shortTokenUsd = 0n,
   } = amounts ?? {};
 
+  const initialShortTokenAmount = (amounts as DepositAmounts | undefined)?.initialShortTokenAmount;
+
   const {
     isSubmitting,
     onSubmit,
@@ -172,8 +182,8 @@ export const useGmSwapSubmitState = ({
     isDeposit,
     marketInfo,
     glvInfo,
-    longToken: payLongToken,
-    shortToken: payShortToken,
+    payLongToken,
+    payShortToken,
     glvToken,
     glvTokenAmount,
     glvTokenUsd,
@@ -181,6 +191,7 @@ export const useGmSwapSubmitState = ({
     marketTokenUsd,
     longTokenAmount,
     shortTokenAmount,
+    payShortTokenAmount: initialShortTokenAmount,
     longTokenUsd,
     shortTokenUsd,
     longTokenLiquidityUsd: longTokenLiquidityUsd,
@@ -195,6 +206,25 @@ export const useGmSwapSubmitState = ({
     srcChainId,
     marketToken,
   });
+
+  const collateralSwapError = useMemo((): ValidationResult | undefined => {
+    const hasInput = firstTokenAmount > 0n || marketOrGlvTokenAmount > 0n;
+
+    if (!collateralSwapTokens || isTransitRoute || !hasInput) {
+      return undefined;
+    }
+
+    const withdrawalAmounts = amounts as WithdrawalAmounts | undefined;
+    const hasSwapPath = isDeposit
+      ? Boolean(amounts?.shortTokenSwapPathStats)
+      : Boolean(withdrawalAmounts?.longTokenSwapPathStats && withdrawalAmounts?.shortTokenSwapPathStats);
+
+    if (hasSwapPath) {
+      return undefined;
+    }
+
+    return { buttonErrorMessage: t`Insufficient GMX pool liquidity` };
+  }, [amounts, collateralSwapTokens, firstTokenAmount, isDeposit, isTransitRoute, marketOrGlvTokenAmount]);
 
   const expressError = useExpressError({
     paySource,
@@ -381,6 +411,7 @@ export const useGmSwapSubmitState = ({
   const error = takeValidationResult(
     commonError,
     multipleWalletExtensionsChainError,
+    collateralSwapError,
     swapError,
     expressError,
     nativeGasError,

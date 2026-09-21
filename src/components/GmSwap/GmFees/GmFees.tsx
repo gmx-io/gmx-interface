@@ -18,6 +18,8 @@ import "./GmFees.scss";
 type Props = {
   totalFees?: FeeItem;
   swapFee?: FeeItem;
+  collateralSwapFee?: FeeItem;
+  transitFee?: FeeItem;
   swapPriceImpact?: FeeItem;
   uiFee?: FeeItem;
   shiftFee?: FeeItem;
@@ -48,6 +50,8 @@ export function GmFees(p: Props) {
     } else if (
       bigMath.abs(p.swapPriceImpact?.deltaUsd ?? 0n) > 0 ||
       p.swapFee ||
+      bigMath.abs(p.collateralSwapFee?.deltaUsd ?? 0n) > 0 ||
+      bigMath.abs(p.transitFee?.deltaUsd ?? 0n) > 0 ||
       bigMath.abs(p.uiFee?.deltaUsd ?? 0n) > 0
     ) {
       return (
@@ -141,6 +145,58 @@ export function GmFees(p: Props) {
                 </>
               )}
 
+              {bigMath.abs(p.collateralSwapFee?.deltaUsd ?? 0n) > 0 && (
+                <StatsTooltipRow
+                  label={
+                    <div>
+                      <div className="text-typography-primary">{t`Swap fee`}:</div>
+                      <div>
+                        <Trans>
+                          (
+                          <span className="numbers">
+                            {formatPercentage(p.collateralSwapFee?.precisePercentage, {
+                              bps: false,
+                              displayDecimals: 3,
+                            })}
+                          </span>{" "}
+                          of {operationText} amount)
+                        </Trans>
+                      </div>
+                    </div>
+                  }
+                  value={formatDeltaUsd(p.collateralSwapFee?.deltaUsd)!}
+                  valueClassName="numbers"
+                  showDollar={false}
+                  textClassName={getPositiveOrNegativeClass(p.collateralSwapFee?.deltaUsd)}
+                />
+              )}
+
+              {bigMath.abs(p.transitFee?.deltaUsd ?? 0n) > 0 && (
+                <StatsTooltipRow
+                  label={
+                    <div>
+                      <div className="text-typography-primary">{t`Conversion fee`}:</div>
+                      <div>
+                        <Trans>
+                          (
+                          <span className="numbers">
+                            {formatPercentage(p.transitFee?.precisePercentage, {
+                              bps: false,
+                              displayDecimals: 3,
+                            })}
+                          </span>{" "}
+                          of {operationText} amount)
+                        </Trans>
+                      </div>
+                    </div>
+                  }
+                  value={formatDeltaUsd(p.transitFee?.deltaUsd)!}
+                  valueClassName="numbers"
+                  showDollar={false}
+                  textClassName={getPositiveOrNegativeClass(p.transitFee?.deltaUsd)}
+                />
+              )}
+
               {bigMath.abs(p.uiFee?.deltaUsd ?? 0n) > 0 && (
                 <StatsTooltipRow
                   label={
@@ -219,6 +275,10 @@ export function GmFees(p: Props) {
     p.totalFees?.precisePercentage,
     p.uiFee?.precisePercentage,
     p.uiFee?.deltaUsd,
+    p.collateralSwapFee?.precisePercentage,
+    p.collateralSwapFee?.deltaUsd,
+    p.transitFee?.precisePercentage,
+    p.transitFee?.deltaUsd,
     totalFeesUsd,
   ]);
 

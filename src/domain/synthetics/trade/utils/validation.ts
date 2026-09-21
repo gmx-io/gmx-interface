@@ -934,13 +934,14 @@ export function getGmSwapError(p: {
   isDeposit: boolean;
   marketInfo: MarketInfo | undefined;
   marketToken: TokenData | undefined;
-  longToken: TokenData | undefined;
-  shortToken: TokenData | undefined;
+  payLongToken: TokenData | undefined;
+  payShortToken: TokenData | undefined;
   glvToken: TokenData | undefined;
   glvTokenAmount: bigint | undefined;
   glvTokenUsd: bigint | undefined;
   longTokenAmount: bigint | undefined;
   shortTokenAmount: bigint | undefined;
+  payShortTokenAmount?: bigint;
   longTokenUsd: bigint | undefined;
   shortTokenUsd: bigint | undefined;
   marketTokenAmount: bigint | undefined;
@@ -961,12 +962,13 @@ export function getGmSwapError(p: {
     isDeposit,
     marketInfo,
     marketToken,
-    longToken,
-    shortToken,
+    payLongToken,
+    payShortToken,
     glvToken,
     glvTokenAmount,
     longTokenAmount,
     shortTokenAmount,
+    payShortTokenAmount,
     longTokenUsd,
     shortTokenUsd,
     marketTokenAmount,
@@ -1048,25 +1050,25 @@ export function getGmSwapError(p: {
 
       if (maxLongExceeded) {
         return {
-          buttonErrorMessage: t`Max ${longToken?.symbol} amount exceeded`,
+          buttonErrorMessage: t`Max ${marketInfo.longToken.symbol} amount exceeded`,
           buttonTooltipMessage: glvTooltipMessage,
         };
       }
 
       if (maxShortExceeded) {
         return {
-          buttonErrorMessage: t`Max ${shortToken?.symbol} amount exceeded`,
+          buttonErrorMessage: t`Max ${marketInfo.shortToken.symbol} amount exceeded`,
           buttonTooltipMessage: glvTooltipMessage,
         };
       }
     } else {
       const mintableInfo = getMintableMarketTokens(marketInfo, marketToken);
       if (longTokenAmount !== undefined && longTokenAmount > mintableInfo.longDepositCapacityAmount) {
-        return { buttonErrorMessage: t`Max ${longToken?.symbol} amount exceeded` };
+        return { buttonErrorMessage: t`Max ${marketInfo.longToken.symbol} amount exceeded` };
       }
 
       if (shortTokenAmount !== undefined && shortTokenAmount > mintableInfo.shortDepositCapacityAmount) {
-        return { buttonErrorMessage: t`Max ${shortToken?.symbol} amount exceeded` };
+        return { buttonErrorMessage: t`Max ${marketInfo.shortToken.symbol} amount exceeded` };
       }
     }
   } else if (
@@ -1091,20 +1093,21 @@ export function getGmSwapError(p: {
   const marketTokenBalance = getTokenBalanceByPaySource(marketToken, paySource, chainId, srcChainId);
 
   if (isDeposit) {
-    const longTokenBalance = getTokenBalanceByPaySource(longToken, paySource, chainId, srcChainId);
-    const shortTokenBalance = getTokenBalanceByPaySource(shortToken, paySource, chainId, srcChainId);
+    const payLongTokenBalance = getTokenBalanceByPaySource(payLongToken, paySource, chainId, srcChainId);
+    const payShortTokenBalance = getTokenBalanceByPaySource(payShortToken, paySource, chainId, srcChainId);
+    const paidShortTokenAmount = payShortTokenAmount ?? shortTokenAmount ?? 0n;
 
-    if (marketInfo.isSameCollaterals) {
-      if ((longTokenAmount ?? 0n) + (shortTokenAmount ?? 0n) > longTokenBalance) {
-        return { buttonErrorMessage: t`Insufficient ${longToken?.symbol} balance` };
+    if (marketInfo.isSameCollaterals && payLongToken?.address === payShortToken?.address) {
+      if ((longTokenAmount ?? 0n) + (shortTokenAmount ?? 0n) > payLongTokenBalance) {
+        return { buttonErrorMessage: t`Insufficient ${payLongToken?.symbol} balance` };
       }
     } else {
-      if ((longTokenAmount ?? 0n) > longTokenBalance) {
-        return { buttonErrorMessage: t`Insufficient ${longToken?.symbol} balance` };
+      if ((longTokenAmount ?? 0n) > payLongTokenBalance) {
+        return { buttonErrorMessage: t`Insufficient ${payLongToken?.symbol} balance` };
       }
 
-      if ((shortTokenAmount ?? 0n) > shortTokenBalance) {
-        return { buttonErrorMessage: t`Insufficient ${shortToken?.symbol} balance` };
+      if (paidShortTokenAmount > payShortTokenBalance) {
+        return { buttonErrorMessage: t`Insufficient ${payShortToken?.symbol} balance` };
       }
     }
 
@@ -1165,11 +1168,11 @@ export function getGmSwapError(p: {
     }
 
     if ((longTokenUsd ?? 0n) > (longTokenLiquidityUsd ?? 0n)) {
-      return { buttonErrorMessage: t`Insufficient ${longToken?.symbol} liquidity` };
+      return { buttonErrorMessage: t`Insufficient ${marketInfo.longToken.symbol} liquidity` };
     }
 
     if ((shortTokenUsd ?? 0n) > (shortTokenLiquidityUsd ?? 0n)) {
-      return { buttonErrorMessage: t`Insufficient ${shortToken?.symbol} liquidity` };
+      return { buttonErrorMessage: t`Insufficient ${marketInfo.shortToken.symbol} liquidity` };
     }
   }
 

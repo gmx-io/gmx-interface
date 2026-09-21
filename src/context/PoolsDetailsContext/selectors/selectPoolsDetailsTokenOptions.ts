@@ -26,6 +26,7 @@ import type { DisplayToken } from "components/TokenSelector/types";
 
 import { selectPoolsDetailsMultichainTokensArray, selectPoolsDetailsPaySource } from "./baseSelectors";
 import {
+  selectPoolsDetailsAvailableCollateralSwapToken,
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvInfo,
   selectPoolsDetailsIsCrossChainMarket,
@@ -61,6 +62,7 @@ const selectPoolsDetailsWithdrawalTokenOptions = createSelector((q): DisplayToke
   const longTokenAddress = q(selectPoolsDetailsLongTokenAddress);
   const shortTokenAddress = q(selectPoolsDetailsShortTokenAddress);
   const tradeTokensData = q(selectPoolsDetailsTradeTokensDataWithSourceChainBalances);
+  const availableCollateralSwapToken = q(selectPoolsDetailsAvailableCollateralSwapToken);
 
   if (!longTokenAddress || !shortTokenAddress) return EMPTY_ARRAY;
 
@@ -84,6 +86,13 @@ const selectPoolsDetailsWithdrawalTokenOptions = createSelector((q): DisplayToke
     for (const token of tokens) {
       withdrawalResult.push(createDisplayToken(token, chainId, token.balance ?? 0n));
     }
+
+    if (availableCollateralSwapToken) {
+      withdrawalResult.push(
+        createDisplayToken(availableCollateralSwapToken, chainId, availableCollateralSwapToken.balance ?? 0n)
+      );
+    }
+
     return withdrawalResult;
   } else if (paySource === "gmxAccount") {
     const longToken = tradeTokensData?.[longTokenAddress];
@@ -130,6 +139,7 @@ const selectPoolsDetailsDepositTokenOptions = createSelector((q): DisplayToken[]
   const marketAndTradeTokensData = q(selectPoolsDetailsMarketAndTradeTokensData);
   const multichainTradeTokensArray = q(selectPoolsDetailsMultichainTokensArray);
   const isMarketTransferrableToSourceChain = q(selectPoolsDetailsIsCrossChainMarket);
+  const availableCollateralSwapToken = q(selectPoolsDetailsAvailableCollateralSwapToken);
 
   if (!longTokenAddress || !shortTokenAddress) return EMPTY_ARRAY;
 
@@ -219,6 +229,10 @@ const selectPoolsDetailsDepositTokenOptions = createSelector((q): DisplayToken[]
         });
       }
     }
+  }
+
+  if (availableCollateralSwapToken) {
+    result.push(createDisplayToken(availableCollateralSwapToken, chainId, availableCollateralSwapToken.walletBalance));
   }
 
   const deduplicated = uniqBy(result, (token) => `${token.address}-${token.chainId}`);

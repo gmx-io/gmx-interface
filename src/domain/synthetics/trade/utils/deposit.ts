@@ -4,7 +4,7 @@ import { TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "doma
 import { applyFactor } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 import { SwapPricingType } from "sdk/utils/orders/types";
-import { DepositAmounts } from "sdk/utils/trade/types";
+import { DepositAmounts, FindSwapPath } from "sdk/utils/trade/types";
 
 export function getDepositAmounts(p: {
   marketInfo: MarketInfo;
@@ -23,6 +23,9 @@ export function getDepositAmounts(p: {
   forShift?: boolean;
   isMarketTokenDeposit: boolean;
   glvInfo?: GlvInfo;
+  initialShortToken?: TokenData;
+  initialShortTokenAmount?: bigint;
+  findSwapPath?: FindSwapPath;
 }): DepositAmounts {
   const {
     marketInfo,
@@ -40,6 +43,9 @@ export function getDepositAmounts(p: {
     isMarketTokenDeposit,
     glvInfo,
     glvToken,
+    initialShortToken,
+    initialShortTokenAmount,
+    findSwapPath,
   } = p;
 
   const longTokenPrice = longToken && getMidPrice(longToken.prices);
@@ -60,15 +66,31 @@ export function getDepositAmounts(p: {
   };
 
   if (strategy === "byCollaterals") {
-    if (longTokenAmount == 0n && shortTokenAmount == 0n && marketTokenAmount == 0n) {
+    if (initialShortToken && findSwapPath && initialShortTokenAmount !== undefined && initialShortTokenAmount > 0n) {
+      const initialShortTokenUsd = convertToUsd(
+        initialShortTokenAmount,
+        initialShortToken.decimals,
+        initialShortToken.prices.minPrice
+      )!;
+
+      values.shortTokenSwapPathStats = findSwapPath(initialShortTokenUsd);
+
+      if (values.shortTokenSwapPathStats) {
+        values.initialShortTokenAmount = initialShortTokenAmount;
+      }
+    }
+
+    const depositShortTokenAmount = values.shortTokenSwapPathStats?.amountOut ?? shortTokenAmount;
+
+    if (longTokenAmount == 0n && depositShortTokenAmount == 0n && marketTokenAmount == 0n) {
       return values;
     }
 
     values.longTokenAmount = longTokenAmount;
     values.longTokenUsd = convertToUsd(longTokenAmount, longToken.decimals, longTokenPrice)!;
 
-    values.shortTokenAmount = shortTokenAmount;
-    values.shortTokenUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortTokenPrice)!;
+    values.shortTokenAmount = depositShortTokenAmount;
+    values.shortTokenUsd = convertToUsd(depositShortTokenAmount, shortToken.decimals, shortTokenPrice)!;
 
     /**
      * If it's GM -> GLV deposit, then don't apply any fees or price impact, just convert GM to GLV
@@ -242,6 +264,11 @@ export function getDepositAmounts(p: {
 
     values.longTokenAmount = convertToTokenAmount(values.longTokenUsd, longToken.decimals, longTokenPrice)!;
     values.shortTokenAmount = convertToTokenAmount(values.shortTokenUsd, shortToken.decimals, shortTokenPrice)!;
+
+    if (initialShortToken && findSwapPath && values.shortTokenUsd > 0n) {
+      values.shortTokenSwapPathStats = findSwapPath(values.shortTokenUsd);
+      values.initialShortTokenAmount = values.shortTokenSwapPathStats?.swapSteps[0]?.amountIn;
+    }
   }
 
   return values;
