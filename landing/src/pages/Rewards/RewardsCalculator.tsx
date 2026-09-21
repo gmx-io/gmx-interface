@@ -69,6 +69,7 @@ export function RewardsCalculator({
           <TierSlider
             label={t`Weekly volume`}
             value={volumeUsd}
+            decimals={USD_DECIMALS}
             tiers={config?.volumeTiers ?? EMPTY_ARRAY}
             disabled={!config}
             onChange={setVolumeUsd}
@@ -77,6 +78,7 @@ export function RewardsCalculator({
           <TierSlider
             label={t`GMX staked`}
             value={stakedAmount}
+            decimals={ES_GMX_DECIMALS}
             tiers={config?.stakingTiers ?? EMPTY_ARRAY}
             disabled={!config}
             onChange={setStakedAmount}
@@ -217,6 +219,7 @@ export function RewardsCalculator({
 function TierSlider({
   label,
   value,
+  decimals,
   tiers,
   onChange,
   displayValue,
@@ -224,14 +227,21 @@ function TierSlider({
 }: {
   label: string;
   value: bigint;
+  decimals: number;
   tiers: { threshold: bigint }[];
   onChange: (value: bigint) => void;
   displayValue: string;
   disabled: boolean;
 }) {
   const stops = getRewardsSliderStops(tiers);
-  const position = getRewardsSliderPosition(stops, value);
   const maximum = (stops.length - 1) * 100;
+  const [selectedPosition, setSelectedPosition] = useState<number>();
+  const position =
+    selectedPosition !== undefined &&
+    selectedPosition <= maximum &&
+    getRewardsSliderAmount(stops, selectedPosition, decimals) === value
+      ? selectedPosition
+      : getRewardsSliderPosition(stops, value);
   const style = useMemo(
     () => ({ backgroundSize: `${maximum > 0 ? (position / maximum) * 100 : 0}% 100%, 12px 100%` }),
     [maximum, position]
@@ -253,7 +263,11 @@ function TierSlider({
         aria-label={label}
         aria-valuetext={displayValue}
         disabled={disabled}
-        onChange={(event) => onChange(getRewardsSliderAmount(stops, Number(event.target.value)))}
+        onChange={(event) => {
+          const nextPosition = Number(event.target.value);
+          setSelectedPosition(nextPosition);
+          onChange(getRewardsSliderAmount(stops, nextPosition, decimals));
+        }}
       />
     </label>
   );
