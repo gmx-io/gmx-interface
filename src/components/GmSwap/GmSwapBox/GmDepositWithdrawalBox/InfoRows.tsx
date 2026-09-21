@@ -1,5 +1,5 @@
 import { t, Trans } from "@lingui/macro";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 
 import { Operation } from "domain/synthetics/markets/types";
 import { GmSwapFees } from "domain/synthetics/trade";
@@ -14,10 +14,12 @@ export function InfoRows({
   isDeposit,
   fees,
   isLoading,
+  executionDetails,
 }: {
   isDeposit: boolean;
   fees: GmSwapFees | undefined;
   isLoading?: boolean;
+  executionDetails?: ReactNode;
 }) {
   const [isExecutionDetailsOpen, setIsExecutionDetailsOpen] = useState(false);
 
@@ -55,6 +57,7 @@ export function InfoRows({
             )
           }
         />
+        {executionDetails}
       </ExpandableRow>
     </div>
   );
