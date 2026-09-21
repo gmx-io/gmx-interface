@@ -1122,10 +1122,6 @@ msgstr ""
 msgid "TVL in vaults and pools"
 msgstr "TVL dans les coffres et les pools"
 
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-msgid "GMX on Solana"
-msgstr ""
-
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
 msgstr ""
@@ -6176,10 +6172,6 @@ msgstr "Unique"
 #: landing/src/pages/Home/LiqiuditySection/PoolCards.tsx
 msgid "Invest with control over risk and reward"
 msgstr "Investir avec contrôle sur le risque et la récompense"
-
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-msgid "GMX on Solana (known as GMTrade) is currently served from a separate domain."
-msgstr ""
 
 #: landing/src/pages/Home/SponsorsSection/SponsorsSection.tsx
 msgid "Over 100 protocols"
@@ -11374,10 +11366,6 @@ msgstr "Taux de rachat annuel estimé. Au rythme moyen récent, les rachats de G
 #: src/components/HistoryExport/useHistoryExport.ts
 msgid "The export could not be completed. No file was downloaded."
 msgstr "L’exportation n’a pas pu être terminée. Aucun fichier n’a été téléchargé."
-
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-msgid "Open GMTrade in a new tab"
-msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol} directly on <0>{chainName}</0>"

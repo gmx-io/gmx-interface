@@ -66,6 +66,7 @@ import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { getOrderKeys, isOrderForPosition } from "sdk/utils/orders";
+import { SolanaRpcPage } from "solana-interface/pages/SolanaRpcPage";
 
 import { AppHeader } from "components/AppHeader/AppHeader";
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
@@ -115,6 +116,43 @@ type OrdersModalState = {
 };
 
 export function SyntheticsPage(p: Props) {
+  const { isSolana } = useChainId();
+  const { isTablet } = useBreakpoints();
+
+  if (isSolana) {
+    return (
+      <AppPageLayout
+        title={t`Trade`}
+        header={
+          <AppHeader
+            leftContent={
+              isTablet ? (
+                <Link to="/" className="flex items-center gap-5 p-8 max-md:p-[4.5px]">
+                  <img src={logoIcon} alt={t`GMX logo`} />
+                  <LogoText className="max-md:hidden" />
+                </Link>
+              ) : (
+                <ChartHeader />
+              )
+            }
+          />
+        }
+        className="max-lg:pb-40"
+        contentClassName="max-w-[none] md:pb-0 md:pt-0"
+        pageWrapperClassName="!pl-0 max-lg:!pl-8 max-md:!pl-0"
+      >
+        {isTablet ? <ChartHeader /> : null}
+        <div className="grid grid-cols-1 items-start gap-12 md:grid-cols-2 lg:grid-cols-4">
+          <SolanaRpcPage />
+        </div>
+      </AppPageLayout>
+    );
+  }
+
+  return <EvmSyntheticsPage {...p} />;
+}
+
+function EvmSyntheticsPage(p: Props) {
   const { openSettings } = p;
   const { chainId } = useChainId();
   const { account } = useWallet();

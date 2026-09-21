@@ -164,7 +164,7 @@ function fontComponentsPlugin({ addComponents, addBase }: any) {
 }
 
 const config: Config = {
-  content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
+  content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}", "./solana-interface/src/**/*.{js,jsx,ts,tsx}"],
   darkMode: "class",
   theme: {
     spacing: fromPairs(range(0, 96 + 1).map((spacing) => [spacing, `${spacing}px`])),
