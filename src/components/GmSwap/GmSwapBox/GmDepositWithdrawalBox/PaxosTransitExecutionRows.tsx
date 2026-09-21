@@ -63,8 +63,8 @@ export function PaxosTransitExecutionRows({ transitState }: { transitState: Paxo
       {isZeroFeeCapacityShort && (
         <AlertInfoCard type="warning" hideClose>
           <Trans>
-            Zero-fee capacity is used up for this amount. Convert now at the standard fee, or wait for the next zero-fee
-            window.
+            Zero-fee capacity is used up for this amount. Convert now at the standard fee, convert a smaller amount, or
+            wait for the next zero-fee window.
           </Trans>
         </AlertInfoCard>
       )}
