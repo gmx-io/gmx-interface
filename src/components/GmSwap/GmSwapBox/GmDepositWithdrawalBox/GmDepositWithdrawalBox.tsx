@@ -90,6 +90,7 @@ import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
 import { SelectedPoolLabel } from "../SelectedPool";
 import { useGmWarningState } from "../useGmWarningState";
 import { InfoRows } from "./InfoRows";
+import { PaxosTransitExecutionRows } from "./PaxosTransitExecutionRows";
 import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
 import { useGmSwapSubmitState } from "./useGmSwapSubmitState";
 import { usePaxosTransitState } from "./usePaxosTransitState";
@@ -193,6 +194,8 @@ export function GmSwapBoxDepositWithdrawal() {
 
   const { data: technicalFees, error: technicalFeesError } = useTechnicalFees();
 
+  const transitState = usePaxosTransitState(false);
+
   const logicalFees = useDepositWithdrawalFees({
     amounts,
     chainId,
@@ -213,8 +216,6 @@ export function GmSwapBoxDepositWithdrawal() {
   });
 
   const shouldShowAvalancheGmxAccountWarning = paySource === "gmxAccount" && chainId === AVALANCHE && isDeposit;
-
-  const transitState = usePaxosTransitState(false);
 
   const gmSwapSubmitState = useGmSwapSubmitState({
     logicalFees,
@@ -744,6 +745,7 @@ export function GmSwapBoxDepositWithdrawal() {
           fees={logicalFees}
           isLoading={(firstTokenAmount ?? 0n) === 0n || technicalFeesError ? false : !technicalFees}
           isDeposit={isDeposit}
+          executionDetails={transitState.isTransitRoute && <PaxosTransitExecutionRows transitState={transitState} />}
         />
       </form>
     </>

@@ -41,6 +41,8 @@ import type { TransitOrder } from "sdk/utils/paxos/types";
 
 import type { SubmitButtonState } from "./useGmSwapSubmitState";
 
+export type PaxosTransitState = ReturnType<typeof usePaxosTransitState>;
+
 export function usePaxosTransitState(isWhitelistIgnored: boolean) {
   const chainId = useSelector(selectChainId);
   const { account } = useWallet();
