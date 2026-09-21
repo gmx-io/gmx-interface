@@ -240,6 +240,7 @@ export function usePaxosTransit({
     isQuoteNeeded,
     isAmountSettling: previewAmount !== debouncedAmount,
     isFeeTierLoaded: feeTierData !== undefined,
+    isWhitelisted,
     zeroFeeCapacity: feeTierData?.zeroFeeCapacity,
     feeTierError,
     isZeroFeeCapacityShort,
