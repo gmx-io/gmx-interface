@@ -1,9 +1,12 @@
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { GlvOrMarketInfo } from "domain/synthetics/markets/types";
-import { getMarketIndexName } from "domain/synthetics/markets/utils";
-import { getGlvDisplayName } from "domain/synthetics/markets/utils";
+import {
+  getGlvDisplayName,
+  getGlvOrMarketIconSymbol,
+  getMarketFullName,
+  getMarketIndexName,
+} from "domain/synthetics/markets/utils";
 import { getByKey } from "lib/objects";
-import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
@@ -18,18 +21,7 @@ export function SelectedPool({
   return (
     <div className="flex items-center gap-2">
       {glvOrMarketInfo ? (
-        <TokenIcon
-          className="mr-5"
-          symbol={
-            glvOrMarketInfo.isSpotOnly
-              ? getNormalizedTokenSymbol(glvOrMarketInfo.longToken.symbol) +
-                getNormalizedTokenSymbol(glvOrMarketInfo.shortToken.symbol)
-              : isGlvInfo(glvOrMarketInfo)
-                ? glvOrMarketInfo.glvToken.symbol
-                : glvOrMarketInfo?.indexToken.symbol
-          }
-          displaySize={20}
-        />
+        <TokenIcon className="mr-5" symbol={getGlvOrMarketIconSymbol(glvOrMarketInfo)} displaySize={20} />
       ) : null}
       <SelectedPoolLabel glvOrMarketInfo={glvOrMarketInfo} />
     </div>
@@ -43,7 +35,7 @@ export function SelectedPoolLabel({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrM
   if (isGlvInfo(glvOrMarketInfo)) {
     name = getGlvDisplayName(glvOrMarketInfo);
   } else {
-    name = `GM: ${getMarketIndexName(glvOrMarketInfo)}`;
+    name = `GM: ${glvOrMarketInfo.isSpotOnly ? getMarketFullName(glvOrMarketInfo) : getMarketIndexName(glvOrMarketInfo)}`;
   }
 
   return <div>{name ? name : "..."}</div>;
