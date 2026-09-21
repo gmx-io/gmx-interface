@@ -230,6 +230,8 @@ export async function fetchRawTradeActions({
   toTxTimestamp,
   orderEventCombinations,
   positionLifecycleId,
+  orderKeys,
+  transactionHashes,
   showDebugValues,
   abortSignal,
 }: {
@@ -251,6 +253,8 @@ export async function fetchRawTradeActions({
       }[]
     | undefined;
   positionLifecycleId?: string;
+  orderKeys?: string[];
+  transactionHashes?: string[];
   showDebugValues?: boolean;
   abortSignal?: AbortSignal;
 }): Promise<RawTradeActionsResult | undefined> {
@@ -295,6 +299,8 @@ export async function fetchRawTradeActions({
         timestamp_gte: fromTxTimestamp,
         timestamp_lte: toTxTimestamp,
         positionLifecycleId_eq: positionLifecycleId,
+        orderKey_in: orderKeys,
+        transactionHash_in: transactionHashes,
       },
       {
         // Older actions have a null flag and remain regular trade-history entries.
