@@ -2,7 +2,7 @@ import { formatUnits, parseUnits } from "viem";
 
 import { bigMath } from "utils/bigmath";
 
-import { joinNumberParts, magnitudePart, NumberPart, numberParts, USD_PART } from "./parts";
+import { joinNumberParts, NumberPart, numberParts, USD_PART } from "./parts";
 
 export type Numeric = number | bigint;
 export type BigNumberish = string | Numeric;
@@ -499,15 +499,15 @@ export function formatNumberHumanParts(n: number, showDollar = false, displayDec
   const currency = showDollar ? USD_PART : undefined;
 
   if (absN >= 1_000_000_000) {
-    return numberParts(sign, currency, (absN / 1_000_000_000).toFixed(displayDecimals), magnitudePart("b"));
+    return numberParts(sign, currency, `${(absN / 1_000_000_000).toFixed(displayDecimals)}b`);
   }
 
   if (absN >= 1_000_000) {
-    return numberParts(sign, currency, (absN / 1_000_000).toFixed(displayDecimals), magnitudePart("m"));
+    return numberParts(sign, currency, `${(absN / 1_000_000).toFixed(displayDecimals)}m`);
   }
 
   if (absN >= 1000) {
-    return numberParts(sign, currency, (absN / 1_000).toFixed(displayDecimals), magnitudePart("k"));
+    return numberParts(sign, currency, `${(absN / 1_000).toFixed(displayDecimals)}k`);
   }
 
   return numberParts(sign, currency, absN.toFixed(displayDecimals));

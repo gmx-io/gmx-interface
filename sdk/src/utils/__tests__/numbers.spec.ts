@@ -722,7 +722,7 @@ describe("number parts", () => {
     }
   });
 
-  it("marks the currency and magnitude affixes", () => {
+  it("marks the currency affix and keeps magnitude suffixes as text", () => {
     expect(formatUsdParts(-usd(1234))).toEqual([
       { kind: "text", text: "-" },
       { kind: "currency", text: "$ " },
@@ -740,13 +740,9 @@ describe("number parts", () => {
     ]);
     expect(formatAmountHumanParts(usd(1_150_000_000), USD_DECIMALS, true)).toEqual([
       { kind: "currency", text: "$ " },
-      { kind: "text", text: "1.1" },
-      { kind: "magnitude", text: "b" },
+      { kind: "text", text: "1.1b" },
     ]);
-    expect(formatAmountHumanParts(expandDecimals(12_500, 18), 18)).toEqual([
-      { kind: "text", text: "12.5" },
-      { kind: "magnitude", text: "k" },
-    ]);
+    expect(formatAmountHumanParts(expandDecimals(12_500, 18), 18)).toEqual([{ kind: "text", text: "12.5k" }]);
     expect(formatAmountHumanParts(usd(999), USD_DECIMALS, true)).toEqual([
       { kind: "currency", text: "$ " },
       { kind: "text", text: "999.0" },
@@ -756,11 +752,11 @@ describe("number parts", () => {
   });
 
   it("numberParts merges adjacent text and skips empty inputs", () => {
-    expect(numberParts("> ", undefined, "", "-", USD_PART, "1.00", [{ kind: "magnitude", text: "k" }])).toEqual([
+    expect(numberParts("> ", undefined, "", "-", USD_PART, "1.00", [{ kind: "multiplier", text: "x" }])).toEqual([
       { kind: "text", text: "> -" },
       { kind: "currency", text: "$ " },
       { kind: "text", text: "1.00" },
-      { kind: "magnitude", text: "k" },
+      { kind: "multiplier", text: "x" },
     ]);
     expect(isNumberParts(formatUsdParts(usd(1)))).toBe(true);
     expect(isNumberParts(["$ 1.00"])).toBe(false);

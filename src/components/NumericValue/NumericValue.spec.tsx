@@ -86,18 +86,19 @@ describe("typed values", () => {
     expect(affixes(root)).toEqual([`${HAIR_SPACE}x`]);
   });
 
-  it("AmountHumanValue marks the magnitude suffix without adding spacing", () => {
+  it("AmountHumanValue keeps the magnitude suffix as plain text", () => {
     const { container } = render(<AmountHumanValue amount={usd(1_150_000_000)} decimals={USD_DECIMALS} showDollar />);
 
     const root = container.firstElementChild!;
     expect(root.textContent).toBe(formatAmountHuman(usd(1_150_000_000), USD_DECIMALS, true));
     expect(root.textContent).toBe(`$${HAIR_SPACE}1.1b`);
-    expect(affixes(root)).toEqual([`$${HAIR_SPACE}`, "b"]);
+    expect(affixes(root)).toEqual([`$${HAIR_SPACE}`]);
 
     const plain = render(<AmountHumanValue amount={expandDecimals(12_500, 18)} decimals={18} />).container
       .firstElementChild!;
     expect(plain.textContent).toBe("12.5k");
-    expect(affixes(plain)).toEqual(["k"]);
+    expect(affixes(plain)).toEqual([]);
+    expect(plain.childNodes).toHaveLength(1);
   });
 
   it("UsdPriceValue and LiquidationPriceValue keep the formatter placeholders", () => {

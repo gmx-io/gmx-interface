@@ -1,4 +1,4 @@
-export type NumberPartKind = "text" | "currency" | "multiplier" | "magnitude";
+export type NumberPartKind = "text" | "currency" | "multiplier";
 
 export type NumberPart = {
   kind: NumberPartKind;
@@ -13,10 +13,6 @@ export const USD_PART: NumberPart = { kind: "currency", text: USD_SYMBOL };
 
 export function multiplierPart(text: string): NumberPart {
   return { kind: "multiplier", text };
-}
-
-export function magnitudePart(text: string): NumberPart {
-  return { kind: "magnitude", text };
 }
 
 export function numberParts(...inputs: NumberPartInput[]): NumberPart[] {
