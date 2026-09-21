@@ -37,6 +37,7 @@ import { getPageOutdatedError } from "lib/useHasOutdatedUi";
 import { getWrappedToken } from "sdk/configs/tokens";
 import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 import { bigMath } from "sdk/utils/bigmath";
+import { getIsMaxLeverageMarginReason, PositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
 import {
   ExternalSwapQuote,
   GmSwapFees,
@@ -46,12 +47,12 @@ import {
   TriggerThresholdType,
 } from "sdk/utils/trade/types";
 
-import { getMaxPositionSizeExceededMessage } from "./getMaxPositionSizeExceededMessage";
 import { getIsPositionLiquidatableAtPrice } from "./warnings";
 import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlvInMarket, isGlvInfo } from "../../markets/glv";
 
 export enum ValidationButtonTooltipName {
   maxLeverage = "maxLeverage",
+  resultingPositionMaxLeverage = "resultingPositionMaxLeverage",
   liqPriceGtMarkPrice = "liqPrice > markPrice",
   noSwapPath = "noSwapPath",
   minDeposit = "minDeposit",
@@ -304,6 +305,8 @@ export function getIncreaseError(p: {
   numberOfParts: number;
   minPositionSizeUsd: bigint | undefined;
   chainId: number;
+  resultingPositionMarginState: PositionMarginState | undefined;
+  isResultingPositionCheckBlocking: boolean;
 }): ValidationResult {
   const {
     marketInfo,
@@ -332,6 +335,8 @@ export function getIncreaseError(p: {
     isTwap,
     numberOfParts,
     minPositionSizeUsd,
+    resultingPositionMarginState,
+    isResultingPositionCheckBlocking,
   } = p;
 
   if (!marketInfo || !indexToken) {
@@ -428,21 +433,13 @@ export function getIncreaseError(p: {
     return { buttonErrorMessage: t`Enter an amount` };
   }
 
-  if (!isLimit && !isTwap) {
+  if (!isLimit) {
     if (isLong && (longLiquidity === undefined || longLiquidity < sizeDeltaUsd)) {
-      return {
-        buttonErrorMessage: t`Max ${indexToken.symbol} long exceeded`,
-        buttonTooltipMessage:
-          longLiquidity === undefined ? undefined : getMaxPositionSizeExceededMessage(isLong, longLiquidity),
-      };
+      return { buttonErrorMessage: t`Max ${indexToken.symbol} long exceeded` };
     }
 
     if (!isLong && (shortLiquidity === undefined || shortLiquidity < sizeDeltaUsd)) {
-      return {
-        buttonErrorMessage: t`Max ${indexToken.symbol} short exceeded`,
-        buttonTooltipMessage:
-          shortLiquidity === undefined ? undefined : getMaxPositionSizeExceededMessage(isLong, shortLiquidity),
-      };
+      return { buttonErrorMessage: t`Max ${indexToken.symbol} short exceeded` };
     }
   }
 
@@ -502,9 +499,17 @@ export function getIncreaseError(p: {
     return { buttonErrorMessage: t`Min position size: ${formatUsd(minPositionSizeUsd)}` };
   }
 
+  if (isResultingPositionCheckBlocking && getIsMaxLeverageMarginReason(resultingPositionMarginState?.reason)) {
+    return {
+      buttonErrorMessage: t`Max leverage exceeded`,
+      buttonTooltipName: ValidationButtonTooltipName.resultingPositionMaxLeverage,
+    };
+  }
+
   if (
-    !isLimit &&
-    getIsPositionLiquidatableAtPrice({ liqPrice: nextPositionValues?.nextLiqPrice, price: markPrice, isLong })
+    (isResultingPositionCheckBlocking && resultingPositionMarginState?.isLiquidatable) ||
+    (!isLimit &&
+      getIsPositionLiquidatableAtPrice({ liqPrice: nextPositionValues?.nextLiqPrice, price: markPrice, isLong }))
   ) {
     return {
       buttonErrorMessage: t`Invalid liquidation price`,

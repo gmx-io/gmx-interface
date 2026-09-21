@@ -78,7 +78,7 @@ describe("fetchRawTradeActions", () => {
     queryMock.mockReset();
   });
 
-  it("excludes funding settlements while retaining legacy actions with a null flag", async () => {
+  it("filters orders and transactions while retaining legacy actions and excluding funding settlements", async () => {
     queryMock.mockResolvedValue({ data: { tradeActions: [] } });
 
     await fetchRawTradeActions({
@@ -93,6 +93,8 @@ describe("fetchRawTradeActions", () => {
       toTxTimestamp: undefined,
       orderEventCombinations: undefined,
       positionLifecycleId: undefined,
+      orderKeys: ["order-1"],
+      transactionHashes: ["0xTransaction"],
       showDebugValues: false,
     });
 
@@ -100,5 +102,7 @@ describe("fetchRawTradeActions", () => {
     expect(body).toContain("isFundingFeeSettle");
     expect(body).toContain("isFundingFeeSettle_eq:false");
     expect(body).toContain("isFundingFeeSettle_isNull:true");
+    expect(body).toContain('orderKey_in:["order-1"]');
+    expect(body).toContain('transactionHash_in:["0xTransaction"]');
   });
 });

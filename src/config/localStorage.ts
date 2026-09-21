@@ -86,6 +86,7 @@ export const HISTORICAL_REWARDS_ALLOCATION_MODAL_DISMISSED_KEY = "historical-rew
 export const UI_FLAG_EVENTS_DISMISSED_KEY_PREFIX = "ui-flag-event-dismissed";
 export const DELISTING_ANNOUNCEMENT_DISMISSED_KEY_PREFIX = "delisting-announcement-dismissed";
 export const BALANCER_PROGRAM_ANNOUNCEMENT_DISMISSED_KEY = "balancer-program-announcement-dismissed";
+export const USDG_POOLS_ANNOUNCEMENT_DISMISSED_KEY = "usdg-pools-announcement-dismissed";
 
 export const GMX_ACCOUNT_CONNECTED_BANNER_DISMISSED_KEY = "gmx-account-connected-banner-dismissed";
 

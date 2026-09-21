@@ -5,6 +5,7 @@ import { mockPositionInfo } from "domain/synthetics/testUtils/mocks";
 import { expandDecimals } from "lib/numbers";
 import { DeepPartial } from "lib/types";
 import { mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
+import type { PositionsInfoData } from "sdk/utils/positions/types";
 import { TradeMode, TradeType } from "sdk/utils/trade/types";
 
 import { SyntheticsState } from "../../SyntheticsStateContextProvider";
@@ -13,6 +14,7 @@ import {
   selectTradeboxIsPositionLiquidatedBeforeTrigger,
   selectTradeboxNextPositionValues,
 } from "../tradeboxSelectors";
+import { selectTradeboxIncreaseResultingPositionMarginState } from "../tradeboxSelectors/selectTradeboxTradeErrors";
 
 const ACCOUNT = "0x1111111111111111111111111111111111111111";
 const marketKey = "ETH-ETH-USDC";
@@ -28,10 +30,14 @@ function createState({
   isLong,
   liquidationPrice,
   triggerPriceInputValue,
+  hasPosition = true,
+  positionsInfo,
 }: {
   isLong: boolean;
   liquidationPrice: bigint;
   triggerPriceInputValue: string;
+  hasPosition?: boolean;
+  positionsInfo?: { positionsInfoData: PositionsInfoData | undefined; isLoading: boolean };
 }): SyntheticsState {
   const position = mockPositionInfo(
     {
@@ -52,7 +58,7 @@ function createState({
       account: ACCOUNT,
       marketsInfo: { marketsInfoData },
       tokensDataResult: { tokensData },
-      positionsInfo: { positionsInfoData: { [position.key]: position } },
+      positionsInfo: positionsInfo ?? { positionsInfoData: hasPosition ? { [position.key]: position } : {} },
       positionsConstants: {
         minCollateralUsd: expandDecimals(1, 30),
         minPositionSizeUsd: expandDecimals(1, 30),
@@ -149,6 +155,74 @@ describe("Limit Increase beyond the current liquidation price", () => {
         expect(nextPositionValues!.nextCollateralUsd).toBeLessThan(POSITION_COLLATERAL_USD);
         expect(nextPositionValues!.nextEntryPrice).toBeGreaterThan((triggerPrice * 95n) / 100n);
         expect(nextPositionValues!.nextEntryPrice).toBeLessThan((triggerPrice * 105n) / 100n);
+      });
+
+      it("runs the resulting-margin check on the same fresh projection the amounts use", () => {
+        const doomed = createState({
+          isLong,
+          liquidationPrice: liquidationPriceWhenLiquidated,
+          triggerPriceInputValue,
+        });
+        const withoutPosition = createState({
+          isLong,
+          liquidationPrice: liquidationPriceWhenLiquidated,
+          triggerPriceInputValue,
+          hasPosition: false,
+        });
+
+        const marginState = selectTradeboxIncreaseResultingPositionMarginState(doomed);
+
+        expect(marginState).toBeDefined();
+        expect(marginState).toEqual(selectTradeboxIncreaseResultingPositionMarginState(withoutPosition));
+      });
+
+      it("skips the resulting-margin check while the positions are unknown", () => {
+        const loading = createState({
+          isLong,
+          liquidationPrice: liquidationPriceWhenAlive,
+          triggerPriceInputValue,
+          positionsInfo: { positionsInfoData: undefined, isLoading: true },
+        });
+
+        expect(selectTradeboxIncreaseResultingPositionMarginState(loading)).toBeUndefined();
+      });
+
+      it("checks a fresh position once the positions are known to be empty", () => {
+        const empty = createState({
+          isLong,
+          liquidationPrice: liquidationPriceWhenAlive,
+          triggerPriceInputValue,
+          positionsInfo: { positionsInfoData: {}, isLoading: false },
+        });
+        const withoutPosition = createState({
+          isLong,
+          liquidationPrice: liquidationPriceWhenAlive,
+          triggerPriceInputValue,
+          hasPosition: false,
+        });
+
+        const marginState = selectTradeboxIncreaseResultingPositionMarginState(empty);
+
+        expect(marginState).toBeDefined();
+        expect(marginState).toEqual(selectTradeboxIncreaseResultingPositionMarginState(withoutPosition));
+      });
+
+      it("keeps the surviving position in the resulting-margin check", () => {
+        const alive = createState({
+          isLong,
+          liquidationPrice: liquidationPriceWhenAlive,
+          triggerPriceInputValue,
+        });
+        const withoutPosition = createState({
+          isLong,
+          liquidationPrice: liquidationPriceWhenAlive,
+          triggerPriceInputValue,
+          hasPosition: false,
+        });
+
+        expect(selectTradeboxIncreaseResultingPositionMarginState(alive)).not.toEqual(
+          selectTradeboxIncreaseResultingPositionMarginState(withoutPosition)
+        );
       });
     }
   );

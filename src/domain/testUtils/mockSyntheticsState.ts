@@ -4,12 +4,18 @@ import { arbitrum, base } from "wagmi/chains";
 import { mock } from "wagmi/connectors";
 
 import { ARBITRUM } from "config/chains";
+import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import type { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import type { EditingOrderState } from "domain/synthetics/orders/types";
+import type { PositionsConstants } from "domain/synthetics/positions/usePositionsConstants";
 import type { DeepPartial } from "lib/types";
 import type { MarketInfo } from "sdk/utils/markets/types";
+import type { OrdersInfoData } from "sdk/utils/orders/types";
+import type { PositionsInfoData } from "sdk/utils/positions/types";
 import type { TokenData } from "sdk/utils/tokens/types";
 import { TradeMode, TradeType } from "sdk/utils/trade/types";
 
+import { MOCK_POSITIONS_CONSTANTS } from "./mockChainData";
 import { ETH_ADDRESS, ETH_TOKEN, USDC_ADDRESS, USDC_TOKEN } from "./mockTokens";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -23,11 +29,27 @@ export type MockSyntheticsStateOverrides = {
   focusedInput?: "from" | "to";
   triggerPriceInputValue?: string;
   isLeverageSliderEnabled?: boolean;
+  leverageOption?: number;
   fromTokenAddress?: string;
   toTokenAddress?: string;
   marketAddress?: string;
   tokensData?: Record<string, TokenData>;
   marketInfo?: MarketInfo;
+  collateralAddress?: string;
+  uiFeeFactor?: bigint;
+  positionsConstants?: PositionsConstants;
+  proDiscountFactor?: bigint;
+  account?: string;
+  positionsInfoData?: PositionsInfoData;
+  isPositionsLoading?: boolean;
+  ordersInfoData?: OrdersInfoData;
+  orderEditor?: {
+    editingOrderState?: EditingOrderState;
+    sizeInputValue?: string;
+    triggerPriceInputValue?: string;
+  };
+  isPnlInLeverage?: boolean;
+  isSetAcceptablePriceImpactEnabled?: boolean;
 };
 
 /**
@@ -43,11 +65,23 @@ export function createMockSyntheticsState(overrides: MockSyntheticsStateOverride
     focusedInput = "from",
     triggerPriceInputValue = "",
     isLeverageSliderEnabled = true,
+    leverageOption = 20000,
     fromTokenAddress = USDC_ADDRESS,
     toTokenAddress = ETH_ADDRESS,
     marketAddress,
     tokensData = { [USDC_ADDRESS]: USDC_TOKEN, [ETH_ADDRESS]: ETH_TOKEN },
     marketInfo,
+    collateralAddress = fromTokenAddress,
+    uiFeeFactor = 0n,
+    positionsConstants = "positionsConstants" in overrides ? overrides.positionsConstants : MOCK_POSITIONS_CONSTANTS,
+    proDiscountFactor = "proDiscountFactor" in overrides ? overrides.proDiscountFactor : 0n,
+    account,
+    positionsInfoData = "positionsInfoData" in overrides ? overrides.positionsInfoData : {},
+    isPositionsLoading = false,
+    ordersInfoData = {},
+    orderEditor,
+    isPnlInLeverage = false,
+    isSetAcceptablePriceImpactEnabled = false,
   } = overrides;
 
   const state: DeepPartial<SyntheticsState> = {
@@ -59,12 +93,14 @@ export function createMockSyntheticsState(overrides: MockSyntheticsStateOverride
       marketsInfo: {
         marketsInfoData: marketInfo ? { [marketInfo.marketTokenAddress]: marketInfo } : {},
       },
-      positionsInfo: { positionsInfoData: {} },
-      ordersInfo: { ordersInfoData: {} },
-      uiFeeFactor: 0n,
+      positionsInfo: { positionsInfoData, isLoading: isPositionsLoading },
+      ordersInfo: { ordersInfoData },
+      uiFeeFactor,
+      proDiscountFactor,
       jitLiquidityData: {},
       isFirstOrder: false,
-      account: undefined,
+      account,
+      positionsConstants,
     },
     externalSwap: {
       requestResult: undefined,
@@ -85,14 +121,15 @@ export function createMockSyntheticsState(overrides: MockSyntheticsStateOverride
       toTokenAddress,
       marketAddress: marketInfo ? marketInfo.marketTokenAddress : marketAddress,
       marketInfo: marketInfo ?? undefined,
-      collateralAddress: fromTokenAddress,
-      collateralToken: tokensData[fromTokenAddress] ?? USDC_TOKEN,
+      collateralAddress,
+      collateralToken: tokensData[collateralAddress] ?? USDC_TOKEN,
       focusedInput,
       fromTokenInputValue,
       toTokenInputValue,
       triggerPriceInputValue,
       isFromTokenGmxAccount: false,
-      leverageOption: 20000,
+      leverageOption,
+      allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
       availableTokensOptions: {
         swapTokens: Object.values(tokensData),
         infoTokens: tokensData,
@@ -101,6 +138,15 @@ export function createMockSyntheticsState(overrides: MockSyntheticsStateOverride
     },
     settings: {
       isLeverageSliderEnabled,
+      isPnlInLeverage,
+      isSetAcceptablePriceImpactEnabled,
+      savedAllowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
+    },
+    orderEditor: {
+      editingOrderState: undefined,
+      sizeInputValue: "",
+      triggerPriceInputValue: "",
+      ...orderEditor,
     },
   };
 

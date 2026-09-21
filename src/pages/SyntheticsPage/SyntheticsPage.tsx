@@ -22,6 +22,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import {
+  selectTradeboxMaxLiquidityPath,
   selectTradeboxSetActiveOrder,
   selectTradeboxSetActivePosition,
   selectTradeboxState,
@@ -60,6 +61,7 @@ import { useJsonRpcProvider } from "lib/rpc";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
+import { getIsMobileUserAgent } from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
@@ -178,6 +180,7 @@ export function SyntheticsPage(p: Props) {
     setOrderTypesFilter,
   } = useOrdersControl();
 
+  const { maxLiquidity: swapOutLiquidity } = useSelector(selectTradeboxMaxLiquidityPath);
   const tokensData = useTokensData();
   const { fromTokenAddress, toTokenAddress } = useSelector(selectTradeboxState);
   const fromToken = getByKey(tokensData, fromTokenAddress);
@@ -221,6 +224,12 @@ export function SyntheticsPage(p: Props) {
   const { isSwap, isTwap } = useSelector(selectTradeboxTradeFlags);
 
   useEffect(() => {
+    // Trust Wallet's mobile browser uses the page title as the dApp name when connecting.
+    if (getIsMobileUserAgent() && (window.ethereum?.isTrust || window.ethereum?.isTrustWallet)) {
+      document.title = t`GMX | decentralized perpetual exchange`;
+      return;
+    }
+
     if (!chartToken) return;
 
     const averagePrice = getMidPrice(chartToken.prices);
@@ -538,13 +547,17 @@ export function SyntheticsPage(p: Props) {
             <div className="absolute">
               <TradeBoxResponsiveContainer />
             </div>
-            {isSwap && !isTwap && <SwapCard fromToken={fromToken} toToken={toToken} />}
+            {isSwap && !isTwap && (
+              <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />
+            )}
           </>
         ) : (
           <div className="flex w-[40rem] shrink-0 flex-col gap-8">
             <TradeBoxResponsiveContainer />
 
-            {isSwap && !isTwap && <SwapCard fromToken={fromToken} toToken={toToken} />}
+            {isSwap && !isTwap && (
+              <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />
+            )}
 
             <TradeRewardsPromoBanner />
           </div>

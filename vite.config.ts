@@ -132,6 +132,11 @@ function isUiPackage(packageName: string) {
 
 function manualChunks(id: string) {
   const normalizedId = normalizePath(id);
+  // Keep startup recovery independent of vendor chunks that can fail to load.
+  if (normalizedId === "\0vite/preload-helper.js") {
+    return "preload-helper";
+  }
+
   const packageNames = getPackageNames(normalizedId);
   const packageName = packageNames.at(-1);
 
@@ -301,6 +306,8 @@ export function createViteConfig(
       assetsInlineLimit: 0,
       outDir: "build",
       sourcemap: true,
+      // WebKit can retain failed modulepreloads across reloads: https://bugs.webkit.org/show_bug.cgi?id=270357
+      modulePreload: false,
       rollupOptions: {
         output: {
           manualChunks,

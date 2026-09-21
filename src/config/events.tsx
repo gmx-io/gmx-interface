@@ -49,6 +49,77 @@ export type EventData = {
 
 export const appEventsData: EventData[] = [
   {
+    id: "release-124-125-126-highlights",
+    type: "update",
+    isActive: true,
+    startDate: "14 Sep 2026, 08:00",
+    endDate: "21 Sep 2026, 08:00",
+    variant: "info",
+    title: "App Update: Installed App, Earn Portfolio, Referrals Refresh",
+    summary: (
+      <>
+        The installed app gets shortcuts and an update prompt, Earn Portfolio is fixed and faster, and Referrals is
+        refreshed.
+      </>
+    ),
+    description: (
+      <span className="flex flex-col gap-12">
+        <span>
+          <span className="font-medium text-typography-primary">Earn:</span> the Portfolio overview figures are
+          corrected and now sit in a single band with Staking and LP aligned, Expected 365d fees is back, and GM earned
+          fees read N/A instead of $0.00 for balances held outside your wallet. LP earnings load in a fraction of the
+          time. The undelegated DAO voting power notice no longer blocks the Stake and Claim buttons.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Referrals:</span> your codes now sit above the overview,
+          so you see them without scrolling. The tabs are Trader Benefits and Affiliate Dashboard, the page advertises
+          up to 25% commission, and the Rebates chart no longer rounds sub-cent amounts away.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Positions and orders:</span> closing 100% of a position
+          at market now cancels that position's pending margin deposits in the same transaction and refunds the reserved
+          collateral and execution fee, and a deposit orphaned by a liquidation gets its own message on the Orders tab
+          telling you to cancel and reclaim. Settling funding fees on a position below its minimum collateral is blocked
+          with a reason instead of failing silently, and editing margin no longer switches your Express gas payment
+          token. A warning that your order may not execute now carries the fix inside the message, with Deposit margin
+          and Increase the deposit amount as links you can act on, and Gain/Loss and Est. PnL are hidden for invalid
+          TP/SL prices instead of showing a misleading number.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Links:</span> app URLs no longer contain "#", so links
+          preview properly and can be shared anywhere, and your old links still work. A link like /trade?to=BTC now
+          arrives with the market and pool already selected, without overriding the direction you were on.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Installed app and mobile:</span> the install dialog now
+          describes the app and adds Trade, Pools and Earn shortcuts, the installed app loads network-first so a new
+          release is picked up instead of the cached one, and an Update available banner offers a reload instead of
+          switching versions mid-session. Modals, toasts and the trade curtain respect the notch and home indicator.
+          Mobile Safari no longer stalls on a blank page, the Max button in mobile wallet browsers fills the full token
+          precision instead of stopping at five decimals and leaving a balance behind, and picking Solana in the network
+          dropdown opens GMTrade instead of leaving the dropdown open.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Market and token search:</span> searching inside the
+          Crypto, TradFi or Recently Listed filters now finds markets outside the active filter and offers to widen the
+          search, and empty states name what you searched for and point at the tab that has results. The Swap receive
+          list is sorted by liquidity, so the order is stable and the deepest options come first.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Stats:</span> the buyback chart plots monthly bars
+          across the full history, with total bought GMX valued at today's price, and the stats page draws each headline
+          figure and its per-chain breakdown from one source, naming a chain with missing data instead of blanking the
+          totals.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Fixes:</span> the Trade History margin delta is correct
+          when your pay token is not the position collateral, and returning users see a loading state instead of a
+          Connect wallet flash while the session restores.
+        </span>
+      </span>
+    ),
+  },
+  {
     id: "qqq-spy-arbitrum-listing",
     type: "listing",
     flagId: "showQqqSpyArbitrumListing",

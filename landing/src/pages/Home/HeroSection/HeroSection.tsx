@@ -1,11 +1,10 @@
 import { Trans } from "@lingui/macro";
-import { useHomePageContext } from "landing/pages/Home/contexts/HomePageContext";
-import { useTotalVolume } from "landing/pages/Home/hooks/useTotalVolume";
-import { useTraders } from "landing/pages/Home/hooks/useTraders";
+import cx from "classnames";
+import { useHeroStats, type HeroStat } from "landing/pages/Home/hooks/useHeroStats";
 import { shortFormat, shortFormatUsd } from "landing/pages/Home/utils/formatters";
 
-import { useProtocolStatsSummary } from "domain/protocolStats/useProtocolStatsSummary";
-import { parseProtocolStatsUsd } from "domain/protocolStats/utils";
+import { ChainsStatsNotices } from "components/StatsTooltip/ChainsStatsNotices";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import IcLinkArrow from "img/ic_link_arrow.svg?react";
 import IcMidChevron from "img/ic_mid_chevron.svg?react";
@@ -15,20 +14,47 @@ import { Features } from "./Features";
 import { HeroBackground } from "./HeroBackground";
 import { RedirectChainIds, useGoToTrade } from "../hooks/useGoToTrade";
 
+function StatValue({
+  stat: { summary, staleEntries },
+  format,
+  className,
+}: {
+  stat: HeroStat;
+  format: (total: bigint) => string;
+  className: string;
+}) {
+  const text = summary.total === undefined ? "-" : format(summary.total);
+
+  if (summary.missingTitles.length === 0 && staleEntries.length === 0) {
+    return <div className={className}>{text}</div>;
+  }
+
+  return (
+    <TooltipWithPortal
+      variant="none"
+      tooltipClassName="!rounded-16 !p-20 !text-14 !font-medium !leading-[1.36] !text-white ![background:#3C4067] [&>svg]:!fill-[#3C4067]"
+      handle={
+        <div
+          className={cx(className, "text-yellow-300 underline decoration-dotted decoration-[4%] underline-offset-8")}
+        >
+          {text}
+        </div>
+      }
+      content={
+        <div className="flex max-w-[260px] flex-col gap-8">
+          <ChainsStatsNotices missingTitles={summary.missingTitles} staleEntries={staleEntries} />
+        </div>
+      }
+    />
+  );
+}
+
 export function HeroSection() {
   const goToTradeArbitrum = useGoToTrade({
     buttonPosition: "HeroSection",
     chainId: RedirectChainIds.Arbitum,
   });
-  const tradersRaw = useTraders();
-  const { poolsData } = useHomePageContext();
-  const gmtradeStats = useProtocolStatsSummary({ networks: ["solana"] }).data?.byNetwork.solana;
-  const gmtradeOpenInterest = parseProtocolStatsUsd(gmtradeStats?.openInterest?.total) ?? 0n;
-  const gmtradeTotalVolume = parseProtocolStatsUsd(gmtradeStats?.volume.total) ?? 0n;
-  const traders = tradersRaw ? shortFormat(tradersRaw) : "-";
-  const openInterest = poolsData?.openInterest ? shortFormatUsd(poolsData.openInterest + gmtradeOpenInterest) : "-";
-  const { data: totalVolume } = useTotalVolume();
-  const totalVolumeText = totalVolume ? shortFormatUsd(totalVolume + gmtradeTotalVolume) : "-";
+  const { traders, openInterest, totalVolume } = useHeroStats();
   const onTotalVolumeClick = () => {
     window.open("https://dune.com/gmx-io/gmx-analytics", "_blank");
   };
@@ -69,22 +95,32 @@ export function HeroSection() {
                   <span className="text-nowrap text-12 text-slate-400 sm:text-14">
                     <Trans>Traders</Trans>
                   </span>
-                  <div className="text-[30px] font-medium tracking-tight sm:text-[40px]">{traders}</div>
+                  <StatValue
+                    stat={traders}
+                    format={(total) => shortFormat(Number(total))}
+                    className="text-[30px] font-medium tracking-tight sm:text-[40px]"
+                  />
                 </div>
                 <div className="flex flex-col gap-4">
                   <span className="text-nowrap text-12 text-slate-400 sm:text-14">
                     <Trans>Open interest</Trans>
                   </span>
-                  <div className="text-[30px] font-medium tracking-tight sm:text-[40px]">{openInterest}</div>
+                  <StatValue
+                    stat={openInterest}
+                    format={shortFormatUsd}
+                    className="text-[30px] font-medium tracking-tight sm:text-[40px]"
+                  />
                 </div>
                 <div className="group flex cursor-pointer flex-col gap-4" onClick={onTotalVolumeClick}>
                   <span className="duration-180 inline-flex items-center text-nowrap text-12 text-slate-400 transition-colors group-hover:text-blue-300 sm:text-14">
                     <Trans>Total volume</Trans>{" "}
                     <IcMidChevron className="duration-180 size-16 transition-transform group-hover:translate-x-4" />
                   </span>
-                  <div className="duration-180 text-[30px] font-medium tracking-tight transition-colors group-active:text-white/80 sm:text-[40px]">
-                    {totalVolumeText}
-                  </div>
+                  <StatValue
+                    stat={totalVolume}
+                    format={shortFormatUsd}
+                    className="duration-180 text-[30px] font-medium tracking-tight transition-colors group-active:text-white/80 sm:text-[40px]"
+                  />
                 </div>
               </div>
             </div>
