@@ -23,7 +23,7 @@ import {
 } from "context/PoolsDetailsContext/selectors/poolsDetailsDerivedSelectors";
 import {
   selectDepositWithdrawalAmounts,
-  selectPoolsDetailsTransitSwapFeesUsd,
+  selectPoolsDetailsCollateralSwapTotalFeesDeltaUsd,
 } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -64,7 +64,7 @@ export function usePaxosTransitState(isWhitelistIgnored: boolean) {
   const glvInfo = useSelector(selectPoolsDetailsGlvInfo);
   const marketInfo = useSelector(selectPoolsDetailsMarketInfo);
   const tokensData = useSelector(selectTokensData);
-  const swapFeesUsd = useSelector(selectPoolsDetailsTransitSwapFeesUsd);
+  const collateralSwapTotalFeesDeltaUsd = useSelector(selectPoolsDetailsCollateralSwapTotalFeesDeltaUsd);
   const { withdrawalStatuses, transitRouteProgress, paxosTransitOrder, startTransitRouteProgress } =
     useSyntheticsEvents();
 
@@ -143,7 +143,7 @@ export function usePaxosTransitState(isWhitelistIgnored: boolean) {
     tokenIn,
     tokenOut,
     amount: amountIn,
-    swapFeesUsd,
+    collateralSwapTotalFeesDeltaUsd,
     isTransitRequired: isWithdrawalSettled,
     isWhitelistIgnored,
     enabled: isUsdcConversionOffered,
@@ -166,7 +166,9 @@ export function usePaxosTransitState(isWhitelistIgnored: boolean) {
 
   const isTransitRoute =
     isTransitInProgress ||
-    (isConversionNeeded && amountIn > 0n && (shouldUseTransit || isTransitLoading || swapFeesUsd === undefined));
+    (isConversionNeeded &&
+      amountIn > 0n &&
+      (shouldUseTransit || isTransitLoading || collateralSwapTotalFeesDeltaUsd === undefined));
 
   const transitAmountOut = isDeposit && isTransitRoute ? amountOut : undefined;
 
