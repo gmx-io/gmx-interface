@@ -3,8 +3,8 @@ import { GlvOrMarketInfo } from "domain/synthetics/markets/types";
 import {
   getGlvDisplayName,
   getGlvOrMarketIconSymbol,
-  getMarketFullName,
   getMarketIndexName,
+  getMarketPoolName,
 } from "domain/synthetics/markets/utils";
 import { getByKey } from "lib/objects";
 
@@ -35,7 +35,7 @@ export function SelectedPoolLabel({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrM
   if (isGlvInfo(glvOrMarketInfo)) {
     name = getGlvDisplayName(glvOrMarketInfo);
   } else {
-    name = `GM: ${glvOrMarketInfo.isSpotOnly ? getMarketFullName(glvOrMarketInfo) : getMarketIndexName(glvOrMarketInfo)}`;
+    name = `GM: ${glvOrMarketInfo.isSpotOnly ? getMarketPoolName(glvOrMarketInfo) : getMarketIndexName(glvOrMarketInfo)}`;
   }
 
   return <div>{name ? name : "..."}</div>;
