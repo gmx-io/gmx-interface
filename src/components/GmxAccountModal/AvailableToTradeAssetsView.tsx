@@ -12,7 +12,7 @@ import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
 import { formatUsd } from "lib/numbers";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
-import { SolanaAssetsList } from "solana-interface/wallet/SolanaWalletPanel";
+import { SolanaAssetsList } from "solana-interface/wallet/SolanaAssetsList";
 
 import { Amount } from "components/Amount/Amount";
 import Button from "components/Button/Button";

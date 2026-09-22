@@ -5,13 +5,15 @@ import { ConnectModalProvider, useConnectModal } from "./ConnectModalContext";
 
 const mocks = vi.hoisted(() => ({
   authenticated: false,
-  connectOrCreateWalletCallbacks: undefined as undefined | { onError: (error: string) => void; onSuccess: () => void },
   isPrivyModalOpen: false,
-  connectOrCreateWallet: vi.fn(),
   connectWalletCallbacks: undefined as undefined | { onError: (error: string) => void; onSuccess: () => void },
   connectWallet: vi.fn(),
+  loginCallbacks: undefined as
+    | undefined
+    | { onComplete: (params: { wasAlreadyAuthenticated?: boolean }) => void; onError: (error: string) => void },
+  login: vi.fn(),
   pushError: vi.fn(),
-  switchNetwork: vi.fn(),
+  switchNetwork: vi.fn(() => Promise.resolve()),
 }));
 
 vi.mock("@privy-io/react-auth", () => ({
@@ -21,17 +23,17 @@ vi.mock("@privy-io/react-auth", () => ({
   useModalStatus: () => ({
     isOpen: mocks.isPrivyModalOpen,
   }),
-  useConnectOrCreateWallet: (callbacks: { onError: (error: string) => void; onSuccess: () => void }) => {
-    mocks.connectOrCreateWalletCallbacks = callbacks;
-    return { connectOrCreateWallet: mocks.connectOrCreateWallet };
-  },
   useConnectWallet: (callbacks: { onError: (error: string) => void; onSuccess: () => void }) => {
     mocks.connectWalletCallbacks = callbacks;
     return { connectWallet: mocks.connectWallet };
   },
-  useLogin: () => ({
-    login: vi.fn(),
-  }),
+  useLogin: (callbacks: {
+    onComplete: (params: { wasAlreadyAuthenticated?: boolean }) => void;
+    onError: (error: string) => void;
+  }) => {
+    mocks.loginCallbacks = callbacks;
+    return { login: mocks.login };
+  },
 }));
 
 vi.mock("context/GmxAccountContext/hooks", () => ({
@@ -72,9 +74,10 @@ function setup() {
 describe("ConnectModalProvider", () => {
   beforeEach(() => {
     mocks.authenticated = false;
-    mocks.connectOrCreateWalletCallbacks = undefined;
     mocks.isPrivyModalOpen = false;
     mocks.connectWalletCallbacks = undefined;
+    mocks.loginCallbacks = undefined;
+    localStorage.clear();
   });
 
   afterEach(() => {
@@ -82,16 +85,29 @@ describe("ConnectModalProvider", () => {
     vi.clearAllMocks();
   });
 
-  it("uses connectOrCreateWallet for unauthenticated users", () => {
+  it("shows only EVM wallets for an unauthenticated EVM connect", () => {
     const getContext = setup();
 
     act(() => {
       getContext().openConnectModal?.();
     });
 
-    expect(mocks.connectOrCreateWallet).toHaveBeenCalledTimes(1);
+    expect(mocks.login).toHaveBeenCalledWith({ walletChainType: "ethereum-only" });
     expect(mocks.connectWallet).not.toHaveBeenCalled();
     expect(getContext().connectModalOpen).toBe(true);
+  });
+
+  it("shows only Solana wallets for an unauthenticated Solana connect", () => {
+    localStorage.setItem("SELECTED_NETWORK", "-1");
+    localStorage.setItem("SELECTED_NETWORK_WAS_APP_SELECTED", "true");
+    const getContext = setup();
+
+    act(() => {
+      getContext().openConnectModal?.();
+    });
+
+    expect(mocks.login).toHaveBeenCalledWith({ walletChainType: "solana-only" });
+    expect(mocks.connectWallet).not.toHaveBeenCalled();
   });
 
   it("uses connectWallet for authenticated users after extension-side disconnects", () => {
@@ -102,8 +118,8 @@ describe("ConnectModalProvider", () => {
       getContext().openConnectModal?.();
     });
 
-    expect(mocks.connectWallet).toHaveBeenCalledTimes(1);
-    expect(mocks.connectOrCreateWallet).not.toHaveBeenCalled();
+    expect(mocks.connectWallet).toHaveBeenCalledWith({ walletChainType: "ethereum-only" });
+    expect(mocks.login).not.toHaveBeenCalled();
     expect(getContext().connectModalOpen).toBe(true);
   });
 
@@ -119,17 +135,41 @@ describe("ConnectModalProvider", () => {
     expect(mocks.connectWallet).toHaveBeenCalledTimes(1);
   });
 
-  it("reports connect-or-create errors and allows another attempt", () => {
+  it("reports login errors and allows another attempt", () => {
     const getContext = setup();
 
     act(() => {
       getContext().openConnectModal?.();
-      mocks.connectOrCreateWalletCallbacks?.onError("connect_or_create_failed");
+      mocks.loginCallbacks?.onError("login_failed");
       getContext().openConnectModal?.();
     });
 
-    expect(mocks.pushError).toHaveBeenCalledWith("connect_or_create_failed", "connectModal.connectOrCreateWallet");
-    expect(mocks.connectOrCreateWallet).toHaveBeenCalledTimes(2);
+    expect(mocks.pushError).toHaveBeenCalledWith("login_failed", "connectModal.login");
+    expect(mocks.login).toHaveBeenCalledTimes(2);
+  });
+
+  it("switches to the settlement chain after an EVM login", () => {
+    const getContext = setup();
+
+    act(() => {
+      getContext().openConnectModal?.();
+      mocks.loginCallbacks?.onComplete({ wasAlreadyAuthenticated: false });
+    });
+
+    expect(mocks.switchNetwork).toHaveBeenCalledWith(42161, true);
+  });
+
+  it("does not switch chains after a Solana login", () => {
+    localStorage.setItem("SELECTED_NETWORK", "-1");
+    localStorage.setItem("SELECTED_NETWORK_WAS_APP_SELECTED", "true");
+    const getContext = setup();
+
+    act(() => {
+      getContext().openConnectModal?.();
+      mocks.loginCallbacks?.onComplete({ wasAlreadyAuthenticated: false });
+    });
+
+    expect(mocks.switchNetwork).not.toHaveBeenCalled();
   });
 
   it("reports connect errors and allows another attempt", () => {

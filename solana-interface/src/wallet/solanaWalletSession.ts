@@ -175,48 +175,76 @@ export function decideSolanaSession({
   return openConnect(dualChain?.preSelectedWalletId);
 }
 
-const PRICE_KEYS = ["price", "indexPrice", "usdPrice", "markPrice"] as const;
+// Backend `price` is a 20-decimal USD integer. GMX USD amounts are 30 decimals.
+const INDEX_PRICE_TO_USD = 10n ** 10n;
 
 export function indexTokenPrices(message: unknown) {
-  const prices: Record<string, number> = {};
-  const seen = new WeakSet<object>();
+  const prices: Record<string, bigint> = {};
+  if (!message || typeof message !== "object") return prices;
 
-  const visit = (value: unknown) => {
-    if (!value || typeof value !== "object") return;
-    if (seen.has(value)) return;
-    seen.add(value);
+  const payload = (message as { payload?: unknown }).payload;
+  if (!Array.isArray(payload)) return prices;
 
-    if (Array.isArray(value)) {
-      value.forEach(visit);
-      return;
-    }
+  for (const item of payload) {
+    if (!item || typeof item !== "object") continue;
+    const record = item as { symbol?: unknown; indexToken?: unknown; price?: unknown };
+    if (typeof record.price !== "string" || !/^\d+$/.test(record.price)) continue;
 
-    const record = value as Record<string, unknown>;
-    const symbol = record.symbol ?? record.tokenSymbol;
-    const priceValue = PRICE_KEYS.map((key) => record[key]).find(
-      (item) => typeof item === "number" || (typeof item === "string" && item !== "")
-    );
-    const price = typeof priceValue === "number" ? priceValue : typeof priceValue === "string" ? Number(priceValue) : undefined;
+    const price = BigInt(record.price) * INDEX_PRICE_TO_USD;
+    if (price <= 0n) continue;
+    if (typeof record.symbol === "string") prices[record.symbol.toUpperCase()] = price;
+    if (typeof record.indexToken === "string") prices[record.indexToken] = price;
+  }
 
-    if (typeof symbol === "string" && price !== undefined && Number.isFinite(price) && price > 0) {
-      prices[symbol.toUpperCase()] = price;
-    }
-
-    const mint = record.mint ?? record.mintAddress;
-    if (typeof mint === "string" && price !== undefined && Number.isFinite(price) && price > 0) {
-      prices[mint] = price;
-    }
-
-    Object.values(record).forEach(visit);
-  };
-
-  visit(message);
   return prices;
 }
 
-export function solanaTokenUsd(amount: bigint, decimals: number, price: number | undefined) {
-  if (price === undefined || !Number.isFinite(price) || price <= 0) return undefined;
+export function solanaTokenUsd(amount: bigint, decimals: number, price: bigint | undefined) {
+  if (price === undefined || price <= 0n) return undefined;
+  return (amount * price) / 10n ** BigInt(decimals);
+}
 
-  const priceScaled = BigInt(Math.round(price * 1e8));
-  return (amount * priceScaled * 10n ** 22n) / 10n ** BigInt(decimals);
+// Production mints from GMTrade swapList ∩ GMX_SOLANA_TOKENS_RAW.
+// ponytail: static whitelist, add a mint when swapList grows past these.
+export const SOLANA_TRADE_TOKENS: Record<string, { symbol: string; decimals: number; native?: boolean }> = {
+  "11111111111111111111111111111111": { symbol: "SOL", decimals: 9, native: true },
+  So1Zu7vPQQxrguzUehKAyVLpjcc769zxgBuDAsxTUMH: { symbol: "SOL", decimals: 9, native: true },
+  So11111111111111111111111111111111111111112: { symbol: "WSOL", decimals: 9 },
+  EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v: { symbol: "USDC", decimals: 6 },
+  "3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh": { symbol: "WBTC", decimals: 8 },
+  "7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs": { symbol: "WETH", decimals: 8 },
+  "9wX6Qz1Y5YQe71dfnFYFfZYXZhKqjYKQwdqfrRkmYUSX": { symbol: "WGMX", decimals: 9 },
+  C1MHyoTJpRTeS9AQCyspNVu2EWAYCZwmJ1jNkEArFP1f: { symbol: "APE", decimals: 9 },
+};
+
+export function swapTokenMints(message: unknown) {
+  const mints: string[] = [];
+  if (!message || typeof message !== "object") return mints;
+  const payload = (message as { payload?: unknown }).payload;
+  if (!Array.isArray(payload)) return mints;
+
+  for (const item of payload) {
+    if (!item || typeof item !== "object") continue;
+    const tokenAddress = (item as { tokenAddress?: unknown }).tokenAddress;
+    if (typeof tokenAddress === "string" && tokenAddress) mints.push(tokenAddress);
+  }
+
+  return mints;
+}
+
+export function solanaPriceSymbol(symbol: string) {
+  if (symbol === "WSOL" || symbol === "WETH" || symbol === "WBTC" || symbol === "WPUMP" || symbol === "WGMX") {
+    return symbol.slice(1);
+  }
+  const dot = symbol.indexOf(".");
+  return dot === -1 ? symbol : symbol.slice(0, dot);
+}
+
+export function solanaDisplaySymbol(symbol: string) {
+  return symbol === "WGMX" ? "GMX" : symbol;
+}
+
+export function readSplAmount(data: Uint8Array) {
+  if (data.byteLength < 72) return undefined;
+  return new DataView(data.buffer, data.byteOffset, data.byteLength).getBigUint64(64, true);
 }

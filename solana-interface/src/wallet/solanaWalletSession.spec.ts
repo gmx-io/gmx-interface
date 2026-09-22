@@ -1,6 +1,15 @@
 import { describe, expect, it } from "vitest";
 
-import { decideSolanaSession, indexTokenPrices, solanaTokenUsd, type SolanaWalletCandidate } from "./solanaWalletSession";
+import {
+  decideSolanaSession,
+  indexTokenPrices,
+  readSplAmount,
+  solanaDisplaySymbol,
+  solanaPriceSymbol,
+  solanaTokenUsd,
+  swapTokenMints,
+  type SolanaWalletCandidate,
+} from "./solanaWalletSession";
 
 const base = {
   connected: [] as SolanaWalletCandidate[],
@@ -93,25 +102,59 @@ describe("decideSolanaSession", () => {
 });
 
 describe("indexTokenPrices", () => {
-  it("reads positive symbol prices and ignores zeroes", () => {
+  it("reads 20-decimal payload prices as 30-decimal USD", () => {
     expect(
       indexTokenPrices({
         type: "indexTokens",
-        data: [
-          { symbol: "SOL", price: 150 },
-          { symbol: "BTC", price: 0 },
+        payload: [
+          { symbol: "SOL", indexToken: "So111", price: (116n * 10n ** 20n).toString() },
+          { symbol: "BTC", price: "0" },
         ],
       })
-    ).toEqual({ SOL: 150 });
+    ).toEqual({ SOL: 116n * 10n ** 30n, So111: 116n * 10n ** 30n });
   });
 });
 
 describe("solanaTokenUsd", () => {
-  it("converts a token amount with a price into 30-decimal USD", () => {
-    expect(solanaTokenUsd(1_000_000_000n, 9, 100)).toBe(100n * 10n ** 30n);
+  it("converts a token amount with a 30-decimal price into USD", () => {
+    expect(solanaTokenUsd(1_000_000_000n, 9, 116n * 10n ** 30n)).toBe(116n * 10n ** 30n);
   });
 
   it("returns undefined when no price is available", () => {
     expect(solanaTokenUsd(1_000_000_000n, 9, undefined)).toBeUndefined();
+  });
+
+  it("matches Available to Trade unitPrice valuation", () => {
+    const decimals = 8;
+    const unitPrice = 85429841615448807n;
+    const amount = 10n ** BigInt(decimals);
+    const prices = indexTokenPrices({
+      payload: [{ symbol: "BTC", price: (unitPrice * 10n ** BigInt(decimals)).toString() }],
+    });
+    expect(solanaTokenUsd(amount, decimals, prices.BTC)).toBe(amount * unitPrice * 10n ** 10n);
+  });
+});
+
+describe("swapTokenMints", () => {
+  it("reads trade token mints and ignores everything else", () => {
+    expect(
+      swapTokenMints({
+        type: "swapList",
+        payload: [{ tokenAddress: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v" }, { lpAmount: "1" }, null],
+      })
+    ).toEqual(["EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"]);
+    expect(solanaPriceSymbol("WSOL")).toBe("SOL");
+    expect(solanaPriceSymbol("WGMX")).toBe("GMX");
+    expect(solanaDisplaySymbol("WGMX")).toBe("GMX");
+    expect(solanaDisplaySymbol("WSOL")).toBe("WSOL");
+  });
+});
+
+describe("readSplAmount", () => {
+  it("reads the token-account amount at byte 64", () => {
+    const data = new Uint8Array(72);
+    data[64] = 1;
+    expect(readSplAmount(data)).toBe(1n);
+    expect(readSplAmount(new Uint8Array(8))).toBeUndefined();
   });
 });

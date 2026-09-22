@@ -1,4 +1,4 @@
-import { useConnectOrCreateWallet, useConnectWallet, useLogin, useModalStatus, usePrivy } from "@privy-io/react-auth";
+import { useConnectWallet, useLogin, useModalStatus, usePrivy } from "@privy-io/react-auth";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 import type { SettlementChainId } from "config/chains";
@@ -86,19 +86,10 @@ export function ConnectModalProvider({ children }: { children: ReactNode }) {
     [settlementChainId]
   );
 
-  const { connectOrCreateWallet } = useConnectOrCreateWallet({
-    onSuccess: handleSuccess,
-    onError: (error) => {
-      connectRequestInFlightRef.current = false;
-      setConnectModalOpen(false);
-      metrics.pushError(error, "connectModal.connectOrCreateWallet");
-    },
-  });
   const { login } = useLogin({
     onComplete: ({ wasAlreadyAuthenticated }) => {
       if (wasAlreadyAuthenticated) return;
-      connectRequestInFlightRef.current = false;
-      setConnectModalOpen(false);
+      handleSuccess();
     },
     onError: (error) => {
       connectRequestInFlightRef.current = false;
@@ -134,16 +125,13 @@ export function ConnectModalProvider({ children }: { children: ReactNode }) {
       const solanaSelected = readSolanaSelected();
       const walletChainType = solanaSelected ? "solana-only" : "ethereum-only";
       try {
-        // Privy rejects connectOrCreateWallet for already-authenticated sessions.
         if (authenticated) {
           connectWallet({
             walletChainType,
             ...(options?.preSelectedWalletId ? { preSelectedWalletId: options.preSelectedWalletId } : {}),
           });
-        } else if (solanaSelected) {
-          login({ walletChainType: "solana-only" });
         } else {
-          connectOrCreateWallet();
+          login({ walletChainType });
         }
       } catch (error) {
         connectRequestInFlightRef.current = false;
@@ -151,7 +139,7 @@ export function ConnectModalProvider({ children }: { children: ReactNode }) {
         metrics.pushError(error, "connectModal.open");
       }
     },
-    [authenticated, connectOrCreateWallet, connectWallet, login]
+    [authenticated, connectWallet, login]
   );
 
   const value = useMemo(() => ({ openConnectModal, connectModalOpen }), [openConnectModal, connectModalOpen]);

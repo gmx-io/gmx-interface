@@ -40,7 +40,8 @@ export function useDisconnectAndClose() {
         if (solanaWallet.address) suppressSolanaWallet(solanaWallet.address);
         clearRememberedSolanaWallet();
         await Promise.resolve(solanaWallet.wallet?.disconnect()).catch(() => undefined);
-        if (!evmAddress && wallets.length === 0) {
+        // Privy keeps embedded EVM wallets in useWallets() until logout, so an empty list never happens.
+        if (!evmAddress) {
           await Promise.allSettled([logout()]);
         }
         return;

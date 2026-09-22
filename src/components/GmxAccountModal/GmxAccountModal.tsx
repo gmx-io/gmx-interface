@@ -4,6 +4,7 @@ import { useAccount } from "wagmi";
 import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { useChainId } from "lib/chains";
 import { useBreakpoints } from "lib/useBreakpoints";
+import { useSolanaAssetsConnection } from "solana-interface/wallet/useSolanaAssets";
 import { useSolanaWallet } from "solana-interface/wallet/useSolanaWallet";
 
 import { GmxAccountModalDesktop } from "./GmxAccountModalDesktop";
@@ -14,6 +15,7 @@ export const GmxAccountModal = memo(function GmxAccountModal() {
   const { isSolana } = useChainId();
   const solanaWallet = useSolanaWallet();
   const account = isSolana ? solanaWallet.address : evmAccount;
+  useSolanaAssetsConnection(isSolana ? solanaWallet.address : undefined);
   const { isMobile } = useBreakpoints();
   const [modalState, setModalState] = useGmxAccountModalOpen();
 
