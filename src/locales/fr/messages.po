@@ -1373,6 +1373,10 @@ msgstr "Unstaker {tokenSymbol}"
 msgid "Staking rewards are paused. 27% of protocol fees are accumulating in the Treasury instead, to be distributed when GMX reaches $90, subject to DAO governance. Your share is based on staking power (duration × amount staked)."
 msgstr "Les récompenses de staking sont en pause. À la place, 27 % des frais du protocole s'accumulent dans la Trésorerie et seront distribués lorsque GMX atteindra 90 $, sous réserve de la gouvernance de la DAO. Votre part dépend de la puissance de staking (durée × montant staké)."
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Receive amount below minimum"
+msgstr "Montant à recevoir inférieur au minimum"
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid slippage value"
 msgstr "Valeur de slippage invalide"
@@ -4579,6 +4583,7 @@ msgstr ""
 #: src/components/GmxAccountModal/keys.ts
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdrawal failed"
 msgstr "Retrait échoué"
 
@@ -4755,6 +4760,10 @@ msgstr "Entrez le code de parrainage"
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Referral link copied to clipboard"
 msgstr ""
+
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Insufficient bridge liquidity to {networkName}"
+msgstr "Liquidité du pont insuffisante vers {networkName}"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
@@ -5445,6 +5454,7 @@ msgstr "Forcer l'échec des swaps externes"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
@@ -7402,6 +7412,10 @@ msgstr "Position introuvable. Elle a peut-être été clôturée"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execute"
 msgstr "Exécuter"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Bridge fee increased. Funds remain in your GMX Account. Try again"
+msgstr "Les frais du pont ont augmenté. Les fonds restent sur votre GMX Account. Réessayez"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Launch"

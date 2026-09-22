@@ -7,6 +7,7 @@ export type TransactionWaiterResult = {
         taskId: string;
         statusCode: StatusCode;
         message?: string;
+        revertData?: string;
       }
     | undefined;
   transactionHash: string | undefined;

@@ -1373,6 +1373,10 @@ msgstr "{tokenSymbol}をアンステーク"
 msgid "Staking rewards are paused. 27% of protocol fees are accumulating in the Treasury instead, to be distributed when GMX reaches $90, subject to DAO governance. Your share is based on staking power (duration × amount staked)."
 msgstr "ステーキング報酬は一時停止中です。代わりにプロトコル手数料の27%がトレジャリーに蓄積され、GMXが$90に到達した時点でDAOガバナンスの決定に従って分配されます。あなたの取り分はステーキングパワー（期間 × ステーク量）に基づきます。"
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Receive amount below minimum"
+msgstr "受取額が最小額を下回っています"
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid slippage value"
 msgstr "無効なスリッページ値"
@@ -4579,6 +4583,7 @@ msgstr ""
 #: src/components/GmxAccountModal/keys.ts
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdrawal failed"
 msgstr "引き出し失敗"
 
@@ -4755,6 +4760,10 @@ msgstr "リファラルコードを入力"
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Referral link copied to clipboard"
 msgstr ""
+
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Insufficient bridge liquidity to {networkName}"
+msgstr "{networkName}へのブリッジ流動性が不足しています"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
@@ -5445,6 +5454,7 @@ msgstr "外部スワップを失敗させる"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
@@ -7402,6 +7412,10 @@ msgstr "ポジションが見つかりません。すでに決済された可能
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execute"
 msgstr "執行"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Bridge fee increased. Funds remain in your GMX Account. Try again"
+msgstr "ブリッジ手数料が上昇しました。資金はGMX Accountに残っています。もう一度お試しください"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Launch"

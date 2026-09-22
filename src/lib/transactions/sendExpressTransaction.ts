@@ -58,6 +58,7 @@ function makeExpressResultWaiter(chainId: ContractsChainId, taskId: string, apiU
         taskId,
         statusCode,
         message: result.message,
+        revertData: result.revertData,
       },
     };
   };

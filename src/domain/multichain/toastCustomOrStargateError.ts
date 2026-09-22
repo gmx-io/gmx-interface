@@ -3,7 +3,7 @@ import { Abi, decodeErrorResult } from "viem";
 
 import type { AnyChainId } from "config/chains";
 import { StargateErrorsAbi } from "config/multichain";
-import { extractErrorDataFromViemError } from "lib/errors";
+import { extractErrorDataFromViemError, isCustomError } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { TradingActionName } from "lib/tradingErrorTracker";
 import { abis } from "sdk/abis";
@@ -17,6 +17,13 @@ export function toastCustomOrStargateError(
 ) {
   let prettyErrorName = error.name;
   let prettyErrorMessage = error.message;
+  let contractError: string | undefined;
+  let contractErrorArgs: unknown;
+
+  if (isCustomError(error)) {
+    contractError = error.name;
+    contractErrorArgs = error.args;
+  }
 
   const data =
     extractErrorDataFromViemError(error) ??
@@ -31,6 +38,8 @@ export function toastCustomOrStargateError(
 
       prettyErrorName = parsedError.errorName;
       prettyErrorMessage = JSON.stringify(parsedError, null, 2);
+      contractError = parsedError.errorName;
+      contractErrorArgs = parsedError.args;
     } catch (decodeError) {
       // pass
     }
@@ -40,6 +49,8 @@ export function toastCustomOrStargateError(
     chainId,
     {
       errorMessage: prettyErrorMessage,
+      contractError,
+      contractErrorArgs,
     },
     {
       defaultMessage: prettyErrorName,

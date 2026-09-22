@@ -1373,6 +1373,10 @@ msgstr "{tokenSymbol} 언스테이킹"
 msgid "Staking rewards are paused. 27% of protocol fees are accumulating in the Treasury instead, to be distributed when GMX reaches $90, subject to DAO governance. Your share is based on staking power (duration × amount staked)."
 msgstr "스테이킹 보상이 일시 중지되었습니다. 대신 프로토콜 수수료의 27%가 트레저리에 누적되며, GMX가 $90에 도달하면 DAO 거버넌스에 따라 분배됩니다. 귀하의 몫은 스테이킹 파워(기간 × 스테이킹 수량)를 기준으로 합니다."
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Receive amount below minimum"
+msgstr "수령 금액이 최소 금액 미만입니다"
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid slippage value"
 msgstr "유효하지 않은 슬리피지 값"
@@ -4579,6 +4583,7 @@ msgstr ""
 #: src/components/GmxAccountModal/keys.ts
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdrawal failed"
 msgstr "출금 실패"
 
@@ -4755,6 +4760,10 @@ msgstr "추천 코드 입력"
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Referral link copied to clipboard"
 msgstr ""
+
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Insufficient bridge liquidity to {networkName}"
+msgstr "{networkName}(으)로의 브리지 유동성이 부족합니다"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
@@ -5445,6 +5454,7 @@ msgstr "외부 스왑 실패 처리"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
@@ -7402,6 +7412,10 @@ msgstr "포지션을 찾을 수 없습니다. 이미 종료되었을 수 있습�
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execute"
 msgstr "실행"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Bridge fee increased. Funds remain in your GMX Account. Try again"
+msgstr "브리지 수수료가 증가했습니다. 자금은 GMX Account에 남아 있습니다. 다시 시도하십시오"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Launch"
