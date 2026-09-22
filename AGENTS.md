@@ -1,5 +1,3 @@
-# AGENTS.md
-
 1. Do not run side-effecting git commands unless explicitly requested. Inspection-only git commands are always allowed.
 2. If the user explicitly says `push`, automatically run `git add .`, create a commit with an appropriate commit message, and push the commit to the configured remote.
 3. Keep user-facing replies concise and accurate. Describe the essence of the issue clearly, in a way that is easy for humans to read and understand.
