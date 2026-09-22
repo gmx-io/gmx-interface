@@ -224,5 +224,10 @@ describe("position seller — closing costs of a profitable market partial close
     expect(selectPositionSellerLeverageDisabledByCollateral(createState(keepLeverageParams))).toBe(false);
     expect(selectPositionSellerLeverageDisabledByCollateral(split)).toBe(true);
     expect(selectPositionSellerRemainingPositionMarginState(split)?.isLiquidatable).toBe(false);
+    expect(
+      selectPositionSellerLeverageDisabledByCollateral(
+        createState({ ...keepLeverageParams, isReceiveSeparated: true, orderOption: OrderOption.Twap })
+      )
+    ).toBe(false);
   });
 });

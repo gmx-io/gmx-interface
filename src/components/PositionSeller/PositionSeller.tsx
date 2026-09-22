@@ -538,7 +538,7 @@ export function PositionSeller() {
       existingPosition: position,
       markPrice,
       nextPositionValues,
-      nextLeverage: nextLeverageWithoutPnl,
+      nextLeverage: isTwap ? nextPositionValues?.nextLeverage : nextLeverageWithoutPnl,
       isLong: position.isLong,
       isContractAccount: false,
       minCollateralUsd,

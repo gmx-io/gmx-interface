@@ -209,7 +209,10 @@ const selectPositionSellerDecreaseAmountsWithKeepLeverage = createSelector((q) =
   const selector = makeSelectDecreasePositionAmounts({
     ...decreaseAmountArgs,
     keepLeverage: true,
-    forceDecreaseSwapType: q(selectPositionSellerIsReceiveSeparated) ? DecreasePositionSwapType.NoSwap : undefined,
+    forceDecreaseSwapType:
+      q(selectPositionSellerOrderOption) === OrderOption.Market && q(selectPositionSellerIsReceiveSeparated)
+        ? DecreasePositionSwapType.NoSwap
+        : undefined,
   });
 
   return q(selector);
