@@ -63,8 +63,15 @@ describe("rewards calculator", () => {
     fireEvent.click(view.getByRole("checkbox", { name: "Featured markets" }));
 
     expect(view.getByText("+0.5x")).toBeDefined();
-    expect(view.getByText("Your multiplier").nextElementSibling?.textContent).toBe("5.5x");
+    expect(view.getByText("Total multiplier").nextElementSibling?.textContent).toBe("5.5x");
     expect(view.getByText("66%")).toBeDefined();
+    expect(view.container.querySelector(".rewards-receipt-amount")?.textContent).toBe("$\u200a66");
+    expect(view.container.querySelector(".rewards-receipt-split")?.textContent).toBe("$\u200a55 esGMX+ $\u200a11 GT");
+
+    fireEvent.click(view.getByRole("checkbox", { name: "Featured markets" }));
+
+    expect(view.container.querySelector(".rewards-receipt-amount")?.textContent).toBe("$\u200a60");
+    expect(view.getByText("60%")).toBeDefined();
   });
 
   it.each([95, 99, 100])("applies the first tier when position %s displays 10 GMX", (position) => {

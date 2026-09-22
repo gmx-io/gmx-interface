@@ -678,6 +678,10 @@ msgstr ""
 msgid "Min collateral factor for liquidation"
 msgstr ""
 
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+msgid "Fees back"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} short exceeded"
 msgstr ""
@@ -2703,7 +2707,6 @@ msgstr ""
 msgid "Every 1x returns {perMultiplierRate} of your fees. At {exampleMultiplier}, that's {exampleRate} back."
 msgstr ""
 
-#: landing/src/pages/Rewards/RewardsFlywheel.tsx
 #: landing/src/pages/Rewards/RewardsTokens.tsx
 msgid "Stake it"
 msgstr ""
@@ -3740,10 +3743,6 @@ msgstr ""
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr ""
 
-#: landing/src/pages/Rewards/RewardsCalculator.tsx
-msgid "Your multiplier"
-msgstr ""
-
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "GMX Account uses a separate trading balance linked to your wallet. To trade, deposit funds from your wallet to your GMX Account."
 msgstr ""
@@ -4625,6 +4624,7 @@ msgstr ""
 msgid "SL"
 msgstr ""
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
@@ -5222,6 +5222,10 @@ msgstr ""
 
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "What people are building."
+msgstr ""
+
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "The Season 1<0/>Flywheel"
 msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
@@ -6052,6 +6056,7 @@ msgstr ""
 msgid "Net value"
 msgstr ""
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
@@ -6496,6 +6501,10 @@ msgstr ""
 msgid "Your projected share of the Treasury at today's staking power. A best-effort estimate only; actual distribution is subject to DAO governance."
 msgstr ""
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "Stake the esGMX"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop-Loss"
 msgstr ""
@@ -6696,6 +6705,7 @@ msgstr ""
 msgid "Withdraw fee"
 msgstr ""
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "esGMX rewards"
@@ -6730,6 +6740,10 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Claimable"
+msgstr ""
+
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "Pay fees on any trade"
 msgstr ""
 
 #: src/components/TVChartContainer/TVChartContainer.tsx
@@ -8056,10 +8070,6 @@ msgstr ""
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "How do I share my code?"
-msgstr ""
-
-#: landing/src/pages/Rewards/RewardsFlywheel.tsx
-msgid "The Rewards Flywheel"
 msgstr ""
 
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -9833,10 +9843,6 @@ msgstr ""
 msgid "for {comment}"
 msgstr ""
 
-#: landing/src/pages/Rewards/RewardsFlywheel.tsx
-msgid "Earn more on the next trade"
-msgstr ""
-
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL)."
 msgstr "[!! Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL). !!]"
@@ -10171,10 +10177,6 @@ msgstr ""
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "FEES"
-msgstr ""
-
-#: landing/src/pages/Rewards/RewardsCalculator.tsx
-msgid "<0>{rewardRate}</0> <1>of your fees back</1>"
 msgstr ""
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -11064,6 +11066,10 @@ msgstr ""
 msgid "Search type"
 msgstr ""
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "Your next trade earns more"
+msgstr ""
+
 #: src/components/TradeHistory/filters/ActionFilter.tsx
 msgid "Market orders"
 msgstr ""
@@ -11473,6 +11479,10 @@ msgstr ""
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
+msgstr ""
+
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "Multiply"
 msgstr ""
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
@@ -13166,6 +13176,10 @@ msgstr ""
 msgid "Limit"
 msgstr ""
 
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+msgid "Total multiplier"
+msgstr ""
+
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "TIMEKEY"
 msgstr ""
@@ -13387,10 +13401,6 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price above mark price"
-msgstr ""
-
-#: landing/src/pages/Rewards/RewardsFlywheel.tsx
-msgid "Earn esGMX"
 msgstr ""
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx

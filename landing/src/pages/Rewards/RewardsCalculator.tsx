@@ -157,7 +157,7 @@ export function RewardsCalculator({
           </dl>
           <div className="rewards-receipt-multiplier">
             <span>
-              <Trans>Your multiplier</Trans>
+              <Trans>Total multiplier</Trans>
             </span>
             <strong>
               <RewardsValue loading={loading} width="2ch">
@@ -181,25 +181,33 @@ export function RewardsCalculator({
             )}
           </AnimatePresence>
           <div className="rewards-receipt-total">
-            <Trans>
-              <strong>{rewardRate}</strong> <span>of your fees back</span>
-            </Trans>
+            <span>
+              <Trans>Fees back</Trans>
+            </span>
+            <strong>{rewardRate}</strong>
           </div>
-          <p className="rewards-receipt-split">
-            <span>
+          <div className="rewards-receipt-payout">
+            <strong className="rewards-receipt-amount">
               <RewardsValue loading={loading} width="5ch">
-                {estimate ? formatUsd(estimate.esGmxRewardsUsd, { displayDecimals: 0 }) : undefined}
-              </RewardsValue>{" "}
-              esGMX
-            </span>
-            <span>
-              +{" "}
-              <RewardsValue loading={loading} width="5ch">
-                {estimate ? formatUsd(estimate.gtRewardsUsd, { displayDecimals: 0 }) : undefined}
-              </RewardsValue>{" "}
-              GT
-            </span>
-          </p>
+                {estimate ? formatUsd(estimate.rewardsUsd, { displayDecimals: 0 }) : undefined}
+              </RewardsValue>
+            </strong>
+            <p className="rewards-receipt-split">
+              <span>
+                <RewardsValue loading={loading} width="5ch">
+                  {estimate ? formatUsd(estimate.esGmxRewardsUsd, { displayDecimals: 0 }) : undefined}
+                </RewardsValue>{" "}
+                esGMX
+              </span>
+              <span>
+                +{" "}
+                <RewardsValue loading={loading} width="5ch">
+                  {estimate ? formatUsd(estimate.gtRewardsUsd, { displayDecimals: 0 }) : undefined}
+                </RewardsValue>{" "}
+                GT
+              </span>
+            </p>
+          </div>
           <RewardsTradeButton className="rewards-button-white" placement="Calculator" />
         </div>
         <RewardsTradeButton className="rewards-button-white rewards-mobile-trade-button" placement="MobileCalculator" />

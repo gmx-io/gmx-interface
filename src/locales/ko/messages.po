@@ -678,6 +678,10 @@ msgstr "One-Click Trading 승인이 유효하지 않습니다. 체인 전환 또
 msgid "Min collateral factor for liquidation"
 msgstr "청산 최소 담보 계수"
 
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+msgid "Fees back"
+msgstr "수수료 환급"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} short exceeded"
 msgstr "{0} 숏 최대치를 초과했습니다."
@@ -2703,7 +2707,6 @@ msgstr "표시되기까지 몇 분이 소요될 수 있습니다. 잠시 후 다
 msgid "Every 1x returns {perMultiplierRate} of your fees. At {exampleMultiplier}, that's {exampleRate} back."
 msgstr "1x마다 수수료의 {perMultiplierRate}가 환급됩니다. {exampleMultiplier}에서는 {exampleRate}를 돌려받습니다."
 
-#: landing/src/pages/Rewards/RewardsFlywheel.tsx
 #: landing/src/pages/Rewards/RewardsTokens.tsx
 msgid "Stake it"
 msgstr "스테이킹하기"
@@ -3740,10 +3743,6 @@ msgstr "주문 유형"
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr ""
 
-#: landing/src/pages/Rewards/RewardsCalculator.tsx
-msgid "Your multiplier"
-msgstr "내 배수"
-
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "GMX Account uses a separate trading balance linked to your wallet. To trade, deposit funds from your wallet to your GMX Account."
 msgstr "GMX Account는 지갑에 연결된 별도의 거래 잔액을 사용합니다. 거래하려면 지갑 자금을 GMX Account에 입금하십시오."
@@ -4625,6 +4624,7 @@ msgstr "수수료 APR"
 msgid "SL"
 msgstr "SL"
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
@@ -5223,6 +5223,10 @@ msgstr "{0, plural, other {트레이더 #명}}"
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "What people are building."
 msgstr "사람들이 만들고 있는 것."
+
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "The Season 1<0/>Flywheel"
+msgstr "시즌 1<0/>보상 순환"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval cancelled"
@@ -6052,6 +6056,7 @@ msgstr "풀 최대 롱 USD 입금 한도"
 msgid "Net value"
 msgstr "순가치"
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
@@ -6496,6 +6501,10 @@ msgstr "보호 기능이 있는 레버리지 토큰"
 msgid "Your projected share of the Treasury at today's staking power. A best-effort estimate only; actual distribution is subject to DAO governance."
 msgstr "현재 스테이킹 파워 기준 트레저리에서의 예상 몫입니다. 최선의 추정치일 뿐이며, 실제 분배는 DAO 거버넌스에 따릅니다."
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "Stake the esGMX"
+msgstr "esGMX 스테이킹"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop-Loss"
 msgstr "손절매 실패"
@@ -6696,6 +6705,7 @@ msgstr "추천 코드 생성에 실패했습니다"
 msgid "Withdraw fee"
 msgstr "출금 수수료"
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "esGMX rewards"
@@ -6731,6 +6741,10 @@ msgstr "지난 에포크에 {traders}에게 {payout}가 돌아갔습니다"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Claimable"
 msgstr "수령가능"
+
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "Pay fees on any trade"
+msgstr "거래마다 수수료 지불"
 
 #: src/components/TVChartContainer/TVChartContainer.tsx
 msgid "Open long"
@@ -8057,10 +8071,6 @@ msgstr "경쟁 무기한 DEX를 만들고 있다면요?"
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "How do I share my code?"
 msgstr ""
-
-#: landing/src/pages/Rewards/RewardsFlywheel.tsx
-msgid "The Rewards Flywheel"
-msgstr "보상 선순환"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -9833,10 +9843,6 @@ msgstr "개발"
 msgid "for {comment}"
 msgstr "{comment}에 대해"
 
-#: landing/src/pages/Rewards/RewardsFlywheel.tsx
-msgid "Earn more on the next trade"
-msgstr "다음 거래에서 더 많이 받기"
-
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL)."
 msgstr "사용 자본 = max(열린 포지션 담보 합계 - 실현 PnL + 시작 보류 PnL)."
@@ -10172,10 +10178,6 @@ msgstr "지정가로 증거금 예치"
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "FEES"
 msgstr "수수료"
-
-#: landing/src/pages/Rewards/RewardsCalculator.tsx
-msgid "<0>{rewardRate}</0> <1>of your fees back</1>"
-msgstr "<0>{rewardRate}</0> <1>수수료 환급</1>"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
@@ -11064,6 +11066,10 @@ msgstr "기초 담보 토큰에 대한 익스포저"
 msgid "Search type"
 msgstr "유형 검색"
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "Your next trade earns more"
+msgstr "다음 거래에서 더 많은 보상"
+
 #: src/components/TradeHistory/filters/ActionFilter.tsx
 msgid "Market orders"
 msgstr "시장가 주문"
@@ -11474,6 +11480,10 @@ msgstr ""
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GM은 단일 시장에서 수수료를 획득합니다. GLV는 여러 GM 토큰을 보유하며 관련 시장 간 자동 리밸런싱을 수행합니다. 두 토큰 모두 수익을 자동으로 재투자합니다. 단일 시장 익스포저를 원하면 GM을, 여러 풀에 분산 투자하려면 GLV를 선택하십시오."
+
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "Multiply"
+msgstr "배수 증가"
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -13166,6 +13176,10 @@ msgstr "{ordersText} 취소됨"
 msgid "Limit"
 msgstr "지정가"
 
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+msgid "Total multiplier"
+msgstr "총 배수"
+
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "TIMEKEY"
 msgstr "TIMEKEY"
@@ -13388,10 +13402,6 @@ msgstr "Express Trading이 활성화되었습니다. <0>설정</0>에서 비활�
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price above mark price"
 msgstr ""
-
-#: landing/src/pages/Rewards/RewardsFlywheel.tsx
-msgid "Earn esGMX"
-msgstr "esGMX 받기"
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"

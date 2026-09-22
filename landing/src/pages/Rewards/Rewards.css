@@ -380,10 +380,10 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
 .rewards-receipt-breakdown {
   display: flex;
   flex-direction: column;
-  min-height: 92px;
-  font-size: 14px;
+  min-height: 80px;
+  font-size: 16px;
   color: #ffffff99;
-  line-height: 20px;
+  line-height: 24px;
 }
 .rewards-receipt-breakdown > div + div {
   margin-top: 4px;
@@ -399,9 +399,9 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   margin-top: 8px;
 }
 .rewards-receipt-multiplier strong {
-  font-size: 40px;
+  font-size: 28px;
   font-weight: 500;
-  line-height: 1.02;
+  line-height: 32px;
   letter-spacing: -0.03em;
 }
 .rewards-cap-note {
@@ -417,10 +417,23 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   border-top: 1px dashed #7885ff66;
 }
 .rewards-receipt-total strong {
-  font-size: 50px;
+  font-size: 40px;
   font-weight: 500;
-  letter-spacing: -0.04em;
-  line-height: 1.08;
+  letter-spacing: -0.03em;
+  line-height: 48px;
+}
+.rewards-receipt-payout {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  margin-top: 8px;
+}
+.rewards-receipt-amount {
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 28px;
+  letter-spacing: -0.032em;
 }
 .rewards-receipt-split {
   display: flex;
@@ -431,8 +444,7 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   text-align: right;
   font-size: 14px;
   line-height: 20px;
-  color: #ffffff99;
-  margin: 8px 0 16px;
+  color: #a4c3f9;
 }
 .rewards-receipt strong,
 .rewards-receipt dd,
@@ -441,6 +453,7 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   font-variant-numeric: tabular-nums;
 }
 .rewards-receipt .rewards-button {
+  margin-top: 16px;
   width: 100%;
   border-radius: 12px;
 }
@@ -654,7 +667,7 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
 }
 .rewards-spoiler-source {
   height: 100%;
-  filter: blur(20px) brightness(0.6);
+  filter: blur(var(--rewards-spoiler-blur, 20px)) brightness(0.6);
   pointer-events: none;
 }
 .rewards-spoiler-source > * {
@@ -1119,7 +1132,7 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
 }
 .rewards-formula-equation > span {
   font-size: 40px;
-  line-height: 1.02;
+  line-height: 48px;
   color: #a0a3c4;
   font-weight: 500;
 }
@@ -1223,6 +1236,9 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   flex-direction: column;
   gap: 24px;
 }
+.rewards-referral > h3 {
+  line-height: 1.2;
+}
 .rewards-invite-button {
   align-self: center;
   padding-inline: 24px;
@@ -1325,13 +1341,13 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
 .rewards-tokens::before {
   content: "";
   position: absolute;
-  width: 1652px;
-  height: 836px;
-  left: calc(50% - 1453px);
-  top: 140px;
+  width: 1502px;
+  height: 760px;
+  left: calc(50% - 1606px);
+  top: 188px;
   background:
     linear-gradient(214deg, #090a1400 1%, #090a14 83%) 0 0 / 100% 100%,
-    url("../../../../src/img/rewards-landing/tokens-glow.png") -2748px -1245.64px / 7000.5px 3861.4px no-repeat;
+    url("../../../../src/img/rewards-landing/tokens-glow.png") -2498.58px -1132.4px / 6364.88px 3510px no-repeat;
   filter: blur(46px);
   opacity: 0.3;
   pointer-events: none;
@@ -1480,7 +1496,8 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   height: auto;
 }
 .rewards-cycle {
-  height: 345px;
+  --rewards-cycle-size: 468px;
+  height: 560px;
   max-width: 1152px;
   margin: 80px auto 0;
   position: relative;
@@ -1490,82 +1507,121 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
 }
 .rewards-cycle-track {
   position: absolute;
-  top: 73px;
-  left: 9.375%;
-  width: 81.25%;
-  height: 202px;
-  overflow: visible;
+  top: 50%;
+  left: 50%;
+  width: var(--rewards-cycle-size);
+  height: var(--rewards-cycle-size);
+  transform: translate(-50%, -50%);
   pointer-events: none;
 }
-.rewards-cycle-path {
-  x: 1px;
-  y: 1px;
-  width: calc(100% - 2px);
-  height: calc(100% - 2px);
-  rx: 100px;
-  fill: none;
-  stroke-width: 2px;
+.rewards-cycle-track > img,
+.rewards-cycle-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
-.rewards-cycle-light {
-  stroke-width: 3px;
-  filter: drop-shadow(0 0 5px #2d42fc);
+.rewards-cycle-outer-ring {
+  width: 100%;
+}
+.rewards-cycle-ring,
+.rewards-cycle-ring-background {
+  width: 94.444%;
+}
+.rewards-cycle-ring-background {
+  clip-path: circle(49.1%);
+}
+.rewards-cycle-inner-ring {
+  width: 82.051%;
+  opacity: 0.2;
+}
+.rewards-cycle-center-ring {
+  width: 51.709%;
+  opacity: 0.2;
+}
+.rewards-cycle-track > .rewards-cycle-logo {
+  width: 59.829%;
+  transform: translate(-50%, -55%);
+  filter: blur(40px);
+  opacity: 0.3;
 }
 .rewards-cycle-steps {
   position: absolute;
-  left: 50%;
-  top: 47px;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 80px;
-  white-space: nowrap;
+  inset: 0;
 }
-.rewards-cycle-steps > span,
-.rewards-cycle-next {
-  position: relative;
+.rewards-cycle-steps > div {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 193px;
+  min-height: 71px;
+  padding: 16px 12px;
   overflow: hidden;
-  display: block;
-  padding: 16px 22px;
-  border: 1px solid #2b2e47;
-  border-radius: 10px;
+  border: 1px solid #3c406780;
+  border-radius: 16px;
   background: #171827;
   font-size: 16px;
   line-height: 24px;
   font-weight: 500;
 }
-.rewards-cycle-steps > span::before,
-.rewards-cycle-next::before {
+.rewards-cycle-steps > .rewards-cycle-trade {
+  top: 65.5px;
+}
+.rewards-cycle-steps > .rewards-cycle-earn {
+  left: calc(50% + var(--rewards-cycle-size) / 2 + 4px);
+}
+.rewards-cycle-steps > .rewards-cycle-stake {
+  top: calc(100% - 65.5px);
+}
+.rewards-cycle-steps > .rewards-cycle-multiply {
+  left: calc(50% - var(--rewards-cycle-size) / 2 - 4px);
+}
+.rewards-cycle-steps > div::before {
   content: "";
   position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    ellipse 48px 16px at calc(var(--rewards-light-x, -1000px) - var(--rewards-node-x, 0px))
-      calc(var(--rewards-light-y, -1000px) - var(--rewards-node-y, 0px)),
-    var(--rewards-node-glow, #2d42fc),
-    transparent
-  );
-  filter: blur(10px);
+  width: 200px;
+  height: 148px;
+  left: calc(var(--rewards-light-x, -1000px) - var(--rewards-node-x, 0px));
+  top: calc(var(--rewards-light-y, -1000px) - var(--rewards-node-y, 0px));
+  transform: translate(-50%, -50%);
+  background: url("../../../../src/img/rewards-landing/flywheel-step-glow.svg") center / contain no-repeat;
   pointer-events: none;
 }
+.rewards-cycle-step-title,
 .rewards-cycle-label {
   position: relative;
   overflow-wrap: anywhere;
 }
-.rewards-cycle-steps .rewards-cycle-higher {
-  --rewards-node-glow: #a4c3f9;
-  background: #2d42fc;
-  border-color: #2d42fc;
+.rewards-cycle-step-title {
+  font-size: 12px;
+  line-height: 15px;
+  letter-spacing: 0.002em;
+  text-transform: uppercase;
+  color: #7885ff;
+}
+.rewards-cycle-copy {
+  position: relative;
+  width: 210px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 .rewards-cycle-copy h3 {
   font-size: 24px;
-  text-transform: uppercase;
-  color: #a4c3f9;
-  line-height: 32px;
+  color: transparent;
+  background: linear-gradient(150deg, #a4c3f9 15%, #2d42fc 205%);
+  background-clip: text;
+  line-height: 28px;
   letter-spacing: -0.032em;
 }
-.rewards-cycle-next {
-  position: absolute;
-  top: 247px;
+.rewards-cycle-copy p {
+  font-size: 14px;
+  line-height: 20px;
+  color: #7885ff;
 }
 .rewards-faq {
   padding: 120px 0;
@@ -1823,21 +1879,11 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   }
   .rewards-receipt {
     order: -2;
-    padding: 16px;
-    font-size: 18px;
-  }
-  .rewards-receipt-multiplier strong {
-    font-size: 28px;
-  }
-  .rewards-receipt-total strong {
-    font-size: 28px;
+    padding: 24px;
   }
   .rewards-receipt-total {
     margin-top: 8px;
-    padding-top: 8px;
-  }
-  .rewards-receipt-split {
-    margin-bottom: 0;
+    padding-top: 7px;
   }
   .rewards-estimate-note {
     position: static;
@@ -2039,44 +2085,45 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
     font-size: 14px;
   }
   .rewards-cycle {
-    margin-top: 80px;
-    height: 250px;
+    --rewards-cycle-size: min(66vw, 360px);
+    height: calc(var(--rewards-cycle-size) + 92px);
+    margin-top: 64px;
   }
-  .rewards-cycle-track {
-    inset: 0;
-    width: 100%;
-    height: 100%;
-  }
-  .rewards-cycle-path {
-    rx: 60px;
-  }
-  .rewards-cycle-steps {
-    left: 8px;
-    right: 8px;
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 6px;
-    white-space: normal;
-    top: -28px;
-    transform: none;
-  }
-  .rewards-cycle-steps > span {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 6px;
-    min-height: 56px;
+  .rewards-cycle-steps > div {
+    width: clamp(90px, 25vw, 150px);
+    padding: 12px 6px;
     font-size: 12px;
     line-height: 16px;
   }
+  .rewards-cycle-steps > .rewards-cycle-trade {
+    top: 46px;
+    width: 160px;
+  }
+  .rewards-cycle-steps > .rewards-cycle-stake {
+    top: calc(100% - 46px);
+    width: 160px;
+  }
+  .rewards-cycle-steps > .rewards-cycle-earn {
+    left: calc(50% + var(--rewards-cycle-size) / 2);
+  }
+  .rewards-cycle-steps > .rewards-cycle-multiply {
+    left: calc(50% - var(--rewards-cycle-size) / 2);
+  }
+  .rewards-cycle-step-title {
+    font-size: 10px;
+    line-height: 15px;
+  }
+  .rewards-cycle-copy {
+    width: clamp(110px, 36vw, 190px);
+    gap: 8px;
+  }
   .rewards-cycle-copy h3 {
     font-size: 18px;
+    line-height: 22px;
   }
-  .rewards-cycle-next {
-    padding: 12px 16px;
-    font-size: 14px;
-    bottom: -24px;
-    top: auto;
+  .rewards-cycle-copy p {
+    font-size: 12px;
+    line-height: 16px;
   }
   .rewards-faq {
     padding: 32px 0 64px;
@@ -2161,10 +2208,7 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .rewards-address-highlight,
-  .rewards-cycle-light,
-  .rewards-cycle-steps > span::before,
-  .rewards-cycle-next::before {
+  .rewards-address-highlight {
     display: none;
   }
   .rewards-page * {

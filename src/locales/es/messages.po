@@ -678,6 +678,10 @@ msgstr "La aprobación de One-Click Trading no es válida. Esto puede ocurrir al
 msgid "Min collateral factor for liquidation"
 msgstr "Factor mínimo de garantía para liquidación"
 
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+msgid "Fees back"
+msgstr "Comisiones devueltas"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} short exceeded"
 msgstr "Superados cortos Máx. de {0}"
@@ -2703,7 +2707,6 @@ msgstr "Puede tardar unos minutos en aparecer. Vuelva a comprobarlo más tarde"
 msgid "Every 1x returns {perMultiplierRate} of your fees. At {exampleMultiplier}, that's {exampleRate} back."
 msgstr "Cada 1x te devuelve el {perMultiplierRate} de tus comisiones. Con {exampleMultiplier}, recibes el {exampleRate} de vuelta."
 
-#: landing/src/pages/Rewards/RewardsFlywheel.tsx
 #: landing/src/pages/Rewards/RewardsTokens.tsx
 msgid "Stake it"
 msgstr "Hacer staking"
@@ -3740,10 +3743,6 @@ msgstr "Tipo de orden"
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr ""
 
-#: landing/src/pages/Rewards/RewardsCalculator.tsx
-msgid "Your multiplier"
-msgstr "Tu multiplicador"
-
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "GMX Account uses a separate trading balance linked to your wallet. To trade, deposit funds from your wallet to your GMX Account."
 msgstr "GMX Account utiliza un saldo de trading independiente vinculado a su monedero. Para operar, deposite fondos desde su monedero a su GMX Account."
@@ -4625,6 +4624,7 @@ msgstr "APR de Comisión"
 msgid "SL"
 msgstr "SL"
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
@@ -5223,6 +5223,10 @@ msgstr "{0, plural, one {# trader} other {# traders}}"
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "What people are building."
 msgstr "Lo que la gente está construyendo."
+
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "The Season 1<0/>Flywheel"
+msgstr "El ciclo de la<0/>Temporada 1"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval cancelled"
@@ -6052,6 +6056,7 @@ msgstr "Máximo USD largo del pool para depósito"
 msgid "Net value"
 msgstr "Valor neto"
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
@@ -6496,6 +6501,10 @@ msgstr "Tokens apalancados con protección"
 msgid "Your projected share of the Treasury at today's staking power. A best-effort estimate only; actual distribution is subject to DAO governance."
 msgstr "Tu parte proyectada de la Tesorería con tu poder de staking actual. Es solo una estimación aproximada; la distribución real está sujeta a la gobernanza de la DAO."
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "Stake the esGMX"
+msgstr "Haz stake de esGMX"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop-Loss"
 msgstr "Stop-Loss fallido"
@@ -6696,6 +6705,7 @@ msgstr "Error al crear el código de referido"
 msgid "Withdraw fee"
 msgstr "Comisión de retirada"
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "esGMX rewards"
@@ -6731,6 +6741,10 @@ msgstr "En la época anterior, {payout} volvieron a {traders}"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Claimable"
 msgstr "Reclamable"
+
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "Pay fees on any trade"
+msgstr "Paga comisiones al operar"
 
 #: src/components/TVChartContainer/TVChartContainer.tsx
 msgid "Open long"
@@ -8057,10 +8071,6 @@ msgstr "¿Y si estoy construyendo un perp DEX competidor?"
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "How do I share my code?"
 msgstr ""
-
-#: landing/src/pages/Rewards/RewardsFlywheel.tsx
-msgid "The Rewards Flywheel"
-msgstr "El ciclo de recompensas"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -9833,10 +9843,6 @@ msgstr "Construcción"
 msgid "for {comment}"
 msgstr "para {comment}"
 
-#: landing/src/pages/Rewards/RewardsFlywheel.tsx
-msgid "Earn more on the next trade"
-msgstr "Gana más en la próxima operación"
-
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL)."
 msgstr "Capital usado = max(suma de colateral de posiciones abiertas - PnL realizado + PnL pendiente inicial)."
@@ -10172,10 +10178,6 @@ msgstr "Depositar margen a precio"
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "FEES"
 msgstr "COMISIONES"
-
-#: landing/src/pages/Rewards/RewardsCalculator.tsx
-msgid "<0>{rewardRate}</0> <1>of your fees back</1>"
-msgstr "<0>{rewardRate}</0> <1>de tus comisiones de vuelta</1>"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
@@ -11064,6 +11066,10 @@ msgstr "Exposición a los tokens de respaldo"
 msgid "Search type"
 msgstr "Buscar tipo"
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "Your next trade earns more"
+msgstr "Tu próxima operación genera más"
+
 #: src/components/TradeHistory/filters/ActionFilter.tsx
 msgid "Market orders"
 msgstr "Órdenes de mercado"
@@ -11474,6 +11480,10 @@ msgstr ""
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GM genera comisiones de un solo mercado. GLV contiene múltiples tokens GM y se reequilibra automáticamente entre mercados relacionados. Ambos reinvierten los rendimientos automáticamente. Elija GM para exposición a un solo mercado o GLV para diversificar entre múltiples pools."
+
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "Multiply"
+msgstr "Multiplicar"
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -13166,6 +13176,10 @@ msgstr "{ordersText} canceladas"
 msgid "Limit"
 msgstr "Límite"
 
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+msgid "Total multiplier"
+msgstr "Multiplicador total"
+
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "TIMEKEY"
 msgstr "TIMEKEY"
@@ -13388,10 +13402,6 @@ msgstr "Express Trading activado. Desactivar en <0>configuración</0>"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price above mark price"
 msgstr ""
-
-#: landing/src/pages/Rewards/RewardsFlywheel.tsx
-msgid "Earn esGMX"
-msgstr "Gana esGMX"
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
