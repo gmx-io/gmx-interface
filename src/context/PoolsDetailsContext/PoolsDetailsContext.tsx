@@ -73,6 +73,7 @@ export type PoolsDetailsState = {
   isMarketForGlvSelectedManually: boolean;
   isTransitRoute: boolean;
   transitAmountOut: bigint | undefined;
+  transitWithdrawalTxnHash: string | undefined;
   multichainTokensResult: ReturnType<typeof useMultichainTokens>;
 
   setOperation: (operation: Operation) => void;
@@ -89,6 +90,7 @@ export type PoolsDetailsState = {
   setIsMarketForGlvSelectedManually: (value: boolean) => void;
   setIsTransitRoute: (value: boolean) => void;
   setTransitAmountOut: (value: bigint | undefined) => void;
+  setTransitWithdrawalTxnHash: (value: string | undefined) => void;
 };
 
 export function usePoolsDetailsState({
@@ -219,6 +221,7 @@ export function usePoolsDetailsState({
   const [isMarketForGlvSelectedManually, setIsMarketForGlvSelectedManually] = useState(false);
   const [isTransitRoute, setIsTransitRoute] = useState(false);
   const [transitAmountOut, setTransitAmountOut] = useState<bigint | undefined>(undefined);
+  const [transitWithdrawalTxnHash, setTransitWithdrawalTxnHash] = useState<string | undefined>(undefined);
 
   useEffect(
     function syncOperationAndModeFromQueryParams() {
@@ -292,6 +295,7 @@ export function usePoolsDetailsState({
       isMarketForGlvSelectedManually,
       isTransitRoute,
       transitAmountOut,
+      transitWithdrawalTxnHash,
       multichainTokensResult,
       // Setters
       setOperation,
@@ -308,6 +312,7 @@ export function usePoolsDetailsState({
       setIsMarketForGlvSelectedManually,
       setIsTransitRoute,
       setTransitAmountOut,
+      setTransitWithdrawalTxnHash,
     };
   }, [
     enabled,
@@ -326,6 +331,7 @@ export function usePoolsDetailsState({
     isMarketForGlvSelectedManually,
     isTransitRoute,
     transitAmountOut,
+    transitWithdrawalTxnHash,
     multichainTokensResult,
     setGlvOrMarketAddress,
     setPaySource,
