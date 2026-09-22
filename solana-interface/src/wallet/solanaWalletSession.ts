@@ -22,7 +22,6 @@ const SOCIAL_LOGIN_TYPES = new Set(["email", "google_oauth", "twitter_oauth", "d
 const DUAL_CHAIN_WALLETS = [
   { evmClientTypes: ["phantom"], names: ["phantom"], preSelectedWalletId: "phantom" },
   { evmClientTypes: ["okx_wallet", "okx"], names: ["okx"], preSelectedWalletId: "okx_wallet" },
-  { evmClientTypes: ["coinbase_wallet"], names: ["coinbase"], preSelectedWalletId: "coinbase_wallet" },
 ];
 
 const listeners = new Set<() => void>();

@@ -49,7 +49,7 @@
     "@lingui/core": "4.10.0",
     "@lingui/macro": "4.11.3",
     "@lingui/react": "4.10.0",
-    "@privy-io/react-auth": "3.35.0",
+    "@privy-io/react-auth": "3.45.0",
     "@privy-io/wagmi": "4.0.8",
     "@solana-program/memo": "^0.15.0",
     "@solana-program/system": "^0.15.0",

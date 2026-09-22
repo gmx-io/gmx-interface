@@ -68,6 +68,8 @@ import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { getOrderKeys, isOrderForPosition } from "sdk/utils/orders";
 import { SolanaFetchCard } from "solana-interface/pages/SolanaFetchCard";
 import { SolanaRpcPage } from "solana-interface/pages/SolanaRpcPage";
+import { SolanaSignMessageCard } from "solana-interface/pages/SolanaSignMessageCard";
+import { SolanaTransferCard } from "solana-interface/pages/SolanaTransferCard";
 import { SolanaWebSocketCard } from "solana-interface/pages/SolanaWebSocketCard";
 
 import { AppHeader } from "components/AppHeader/AppHeader";
@@ -149,6 +151,8 @@ export function SyntheticsPage(p: Props) {
           <SolanaRpcPage />
           <SolanaFetchCard />
           <SolanaWebSocketCard />
+          <SolanaSignMessageCard />
+          <SolanaTransferCard />
         </div>
       </AppPageLayout>
     );

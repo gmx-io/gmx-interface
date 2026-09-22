@@ -12,6 +12,7 @@ import { isAppSelectedSolana } from "lib/chains/useChainIdImpl";
 import { metrics } from "lib/metrics";
 import { useBlockAutoReload } from "lib/pwa/blockAutoReload";
 import { switchNetwork } from "lib/wallets";
+import { PRIVY_SOLANA_WALLET_LIST } from "lib/wallets/walletConfig";
 import {
   clearSuppressedSolanaWallet,
   rememberSolanaWallet,
@@ -130,6 +131,7 @@ export function ConnectModalProvider({ children }: { children: ReactNode }) {
         if (solanaSelected || authenticated) {
           connectWallet({
             walletChainType,
+            ...(solanaSelected ? { walletList: [...PRIVY_SOLANA_WALLET_LIST] } : {}),
             ...(options?.preSelectedWalletId ? { preSelectedWalletId: options.preSelectedWalletId } : {}),
           });
         } else {

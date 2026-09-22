@@ -106,7 +106,10 @@ describe("ConnectModalProvider", () => {
       getContext().openConnectModal?.();
     });
 
-    expect(mocks.connectWallet).toHaveBeenCalledWith({ walletChainType: "solana-only" });
+    expect(mocks.connectWallet).toHaveBeenCalledWith({
+      walletChainType: "solana-only",
+      walletList: ["phantom", "solflare", "okx_wallet", "tokenpocket"],
+    });
     expect(mocks.login).not.toHaveBeenCalled();
   });
 
