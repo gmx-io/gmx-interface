@@ -29,6 +29,9 @@ vi.mock("@privy-io/react-auth", () => ({
     mocks.connectWalletCallbacks = callbacks;
     return { connectWallet: mocks.connectWallet };
   },
+  useLogin: () => ({
+    login: vi.fn(),
+  }),
 }));
 
 vi.mock("context/GmxAccountContext/hooks", () => ({

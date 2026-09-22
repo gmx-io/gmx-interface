@@ -1,4 +1,5 @@
 import { PrivyProvider } from "@privy-io/react-auth";
+import { toSolanaWalletConnectors } from "@privy-io/react-auth/solana";
 import { WagmiProvider } from "@privy-io/wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect, useMemo } from "react";
@@ -22,6 +23,7 @@ import {
 } from "./walletConfig";
 
 const queryClient = new QueryClient();
+const solanaConnectors = toSolanaWalletConnectors();
 
 const supportedChains = getSupportedChains();
 const defaultChain = supportedChains[0];
@@ -38,7 +40,7 @@ export default function WalletProvider({ children }: { children: React.ReactNode
         theme,
         accentColor: colors.blue[600][theme] as `#${string}`,
         logo: gmxLogoElement,
-        walletChainType: "ethereum-only" as const,
+        walletChainType: "ethereum-and-solana" as const,
         walletList: [...PRIVY_WALLET_LIST],
         showWalletLoginFirst: true,
       },
@@ -47,9 +49,15 @@ export default function WalletProvider({ children }: { children: React.ReactNode
       supportedChains: [...supportedChains],
       externalWallets: {
         signatureRequestTimeouts: PRIVY_SIGNATURE_REQUEST_TIMEOUTS,
+        solana: {
+          connectors: solanaConnectors,
+        },
       },
       embeddedWallets: {
         ethereum: {
+          createOnLogin: "users-without-wallets" as const,
+        },
+        solana: {
           createOnLogin: "users-without-wallets" as const,
         },
       },

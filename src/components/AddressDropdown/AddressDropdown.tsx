@@ -5,6 +5,7 @@ import { useEmptyAvalancheGmxAccount } from "domain/multichain/useEmptyGmxAccoun
 import { useChainId } from "lib/chains";
 import { EMPTY_OBJECT } from "lib/objects";
 import type { SettlementChainId } from "sdk/configs/chains";
+import { SolanaAddressButton } from "solana-interface/wallet/SolanaWalletPanel";
 
 import { AddressDropdownWithMultichain } from "./AddressDropdownWithMultichain";
 import { AddressDropdownWithoutMultichain } from "./AddressDropdownWithoutMultichain";
@@ -14,8 +15,7 @@ type Props = {
 };
 
 export function AddressDropdown({ account }: Props) {
-  const { chainId } = useChainId();
-
+  const { chainId, isSolana } = useChainId();
   const { isEmptyAvalancheGmxAccountOrNotConnected } = useEmptyAvalancheGmxAccount();
 
   const hasRelatedSourceChains = useMemo(
@@ -29,6 +29,10 @@ export function AddressDropdown({ account }: Props) {
   const showAccountModal =
     !isValidVisualSettlementChain(chainId) ||
     (isSettlementChain(chainId) && hasRelatedSourceChains && !isEmptyAvalancheGmxAccountOrNotConnected);
+
+  if (isSolana) {
+    return <SolanaAddressButton account={account} />;
+  }
 
   if (!showAccountModal) {
     return <AddressDropdownWithoutMultichain account={account} />;

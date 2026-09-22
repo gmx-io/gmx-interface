@@ -28,6 +28,22 @@ vi.mock("wagmi", () => ({
   useDisconnect: () => ({
     disconnectAsync: mocks.disconnectAsync,
   }),
+  useAccount: () => ({
+    address: "0xabc",
+  }),
+}));
+
+vi.mock("lib/chains", () => ({
+  useChainId: () => ({
+    isSolana: false,
+  }),
+}));
+
+vi.mock("solana-interface/wallet/useSolanaWallet", () => ({
+  useSolanaWallet: () => ({
+    address: undefined,
+    wallet: undefined,
+  }),
 }));
 
 vi.mock("context/GmxAccountContext/hooks", () => ({

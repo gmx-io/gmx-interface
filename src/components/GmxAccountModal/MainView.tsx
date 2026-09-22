@@ -36,6 +36,7 @@ import useWallet from "lib/wallets/useWallet";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 import { getToken } from "sdk/configs/tokens";
 import { Token } from "sdk/utils/tokens/types";
+import { SolanaWalletSummary } from "solana-interface/wallet/SolanaWalletPanel";
 
 import { Amount } from "components/Amount/Amount";
 import Button from "components/Button/Button";
@@ -384,7 +385,7 @@ function MenuRow({ icon, label, onClick }: { icon: ReactNode; label: ReactNode; 
 
 function MenuList({ account }: { account: string }) {
   const [, setIsVisible] = useGmxAccountModalOpen();
-  const { chainId: settlementChainId, srcChainId } = useChainId();
+  const { chainId: settlementChainId, srcChainId, isSolana } = useChainId();
   const chainId = srcChainId ?? settlementChainId;
   const history = useHistory();
   const { openNotifyModal } = useNotifyModalState();
@@ -412,11 +413,13 @@ function MenuList({ account }: { account: string }) {
 
   return (
     <div className="flex flex-col">
-      <MenuRow
-        icon={<PnlAnalysisIcon className="size-16" />}
-        label={<Trans>PnL Analysis</Trans>}
-        onClick={handlePnlAnalysisClick}
-      />
+      {!isSolana && (
+        <MenuRow
+          icon={<PnlAnalysisIcon className="size-16" />}
+          label={<Trans>PnL Analysis</Trans>}
+          onClick={handlePnlAnalysisClick}
+        />
+      )}
       <MenuRow
         icon={<BellIcon className="size-16" />}
         label={<Trans>Notifications</Trans>}
@@ -432,8 +435,19 @@ function MenuList({ account }: { account: string }) {
 }
 
 export const MainView = ({ account }: { account: string }) => {
-  const { chainId, srcChainId } = useChainId();
+  const { chainId, srcChainId, isSolana } = useChainId();
   const mode = getAccountModalMode(chainId, srcChainId);
+
+  if (isSolana) {
+    return (
+      <div className="text-body-medium flex grow flex-col gap-[--padding-adaptive] overflow-y-hidden">
+        <div className="flex flex-col gap-12 px-adaptive pb-12 pt-4">
+          <SolanaWalletSummary account={account} />
+          <MenuList account={account} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="text-body-medium flex grow flex-col gap-[--padding-adaptive] overflow-y-hidden">
