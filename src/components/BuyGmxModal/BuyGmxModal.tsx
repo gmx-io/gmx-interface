@@ -3,17 +3,10 @@ import { MouseEvent, ReactNode, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import { ARBITRUM } from "config/chains";
-import { getSyntheticsTradeOptionsKey } from "config/localStorage";
-import { selectTradeboxSetTradeConfig } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-import { StoredTradeOptions } from "domain/synthetics/trade/useTradeboxState";
 import { useChainId } from "lib/chains";
-import { tryGetLocalStorageItem } from "lib/localStorage";
 import { metrics } from "lib/metrics";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
-import { getContract } from "sdk/configs/contracts";
-import { TradeMode, TradeType } from "sdk/utils/trade";
 
 import Button from "components/Button/Button";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
@@ -24,53 +17,15 @@ import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { BUY_GMX_MODAL_LINKS } from "./buyGmxModalConfig";
 
-const DIRECT_BUY_PATH = "/trade/swap";
+const DIRECT_BUY_PATH = "/trade/swap?mode=market&from=USDC&to=GMX";
 
-const ARB_USDC_ADDRESS = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831";
-const ARB_GMX_ADDRESS = getContract(ARBITRUM, "GMX");
-
-type BuyGmxModalProps = {
-  isVisible: boolean;
-  setIsVisible: (isVisible: boolean) => void;
-};
-
-type SetTradeConfig = ReturnType<typeof selectTradeboxSetTradeConfig>;
-
-function setArbitrumSwapToGmxOptionsInLocalStorage() {
-  const key = JSON.stringify(getSyntheticsTradeOptionsKey(ARBITRUM));
-  const existing = tryGetLocalStorageItem<Partial<StoredTradeOptions>>(key) ?? {};
-
-  const updated: StoredTradeOptions = {
-    markets: {},
-    isFromTokenGmxAccount: false,
-    ...existing,
-    tradeType: TradeType.Swap,
-    tradeMode: TradeMode.Market,
-    tokens: {
-      ...existing.tokens,
-      fromTokenAddress: ARB_USDC_ADDRESS,
-      swapToTokenAddress: ARB_GMX_ADDRESS,
-    },
-  };
-
-  localStorage.setItem(key, JSON.stringify(updated));
-}
-
-export function BuyGmxModal(props: BuyGmxModalProps) {
-  const setTradeConfig = useSelector(selectTradeboxSetTradeConfig);
-
-  return <BuyGmxModalContent {...props} setTradeConfig={setTradeConfig} />;
-}
-
-export function StandaloneBuyGmxModal(props: BuyGmxModalProps) {
-  return <BuyGmxModalContent {...props} />;
-}
-
-function BuyGmxModalContent({
+export function BuyGmxModal({
   isVisible,
   setIsVisible,
-  setTradeConfig,
-}: BuyGmxModalProps & { setTradeConfig?: SetTradeConfig }) {
+}: {
+  isVisible: boolean;
+  setIsVisible: (isVisible: boolean) => void;
+}) {
   const { chainId } = useChainId();
   const { active } = useWallet();
   const history = useHistory();
@@ -84,23 +39,9 @@ function BuyGmxModalContent({
     }
 
     if (chainId === ARBITRUM) {
-      if (setTradeConfig) {
-        setTradeConfig({
-          tradeType: TradeType.Swap,
-          tradeMode: TradeMode.Market,
-          fromTokenAddress: ARB_USDC_ADDRESS,
-          toTokenAddress: ARB_GMX_ADDRESS,
-        });
-      } else {
-        setArbitrumSwapToGmxOptionsInLocalStorage();
-      }
       history.push(DIRECT_BUY_PATH);
       return;
     }
-
-    // When on a different chain, the tradebox state is scoped to that chain,
-    // so we write directly to Arbitrum's localStorage key before switching.
-    setArbitrumSwapToGmxOptionsInLocalStorage();
 
     setIsSwitching(true);
 

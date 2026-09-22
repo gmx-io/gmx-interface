@@ -1070,10 +1070,6 @@ msgstr "No {marketTypeLabel} match \"{query}\"."
 msgid "Negative value: traders pay funding"
 msgstr "Negative value: traders pay funding"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Transfer {nativeTokenSymbol} from other networks to {chainName}"
-msgstr "Transfer {nativeTokenSymbol} from other networks to {chainName}"
-
 #: landing/src/pages/Builders/Footer/BuildersFooter.tsx
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 #: src/components/SideNav/SideNav.tsx
@@ -1123,10 +1119,6 @@ msgstr "{actionsCount, plural, one {Order} other {# Orders}}"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid collateral token. {tokenSymbol} isn't supported as collateral"
 msgstr "Invalid collateral token. {tokenSymbol} isn't supported as collateral"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX on centralized exchanges"
-msgstr "Buy GMX on centralized exchanges"
 
 #: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
 msgid "How long does a volume tier remain active?"
@@ -1271,10 +1263,6 @@ msgstr "Order won't execute: the trigger price is beyond the liquidation price. 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "Don't ask again"
 msgstr "Don't ask again"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "No options to buy {nativeTokenSymbol} on {chainName}"
-msgstr "No options to buy {nativeTokenSymbol} on {chainName}"
 
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values calculated when earned. Excludes incentives."
@@ -1761,10 +1749,6 @@ msgstr "Use {0} for gas"
 msgid "Total margin funded"
 msgstr "Total margin funded"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "To buy GMX on {0}, <0>change your network</0>"
-msgstr "To buy GMX on {0}, <0>change your network</0>"
-
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Eligible fees on page"
 msgstr "Eligible fees on page"
@@ -2233,10 +2217,6 @@ msgstr "Select a pay token"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Market cap"
 msgstr "Market cap"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX using any token from any network"
-msgstr "Buy GMX using any token from any network"
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
@@ -3164,16 +3144,10 @@ msgstr "Account"
 msgid "Position exceeds max allowed leverage. <0>Read more</0>."
 msgstr "Position exceeds max allowed leverage. <0>Read more</0>."
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy or transfer {nativeTokenSymbol} to {chainName}"
-msgstr "Buy or transfer {nativeTokenSymbol} to {chainName}"
-
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short borrowing rate"
 msgstr "Short borrowing rate"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX"
@@ -3447,10 +3421,6 @@ msgstr "Vesting stopped"
 msgid "Driven by our community"
 msgstr "Driven by our community"
 
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Buy {0}"
-msgstr "Buy {0}"
-
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting only available on {chainNames}. Switch networks to continue."
 msgstr "Shifting only available on {chainNames}. Switch networks to continue."
@@ -3625,10 +3595,6 @@ msgstr "Update available"
 #: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
 msgid "Average GMX staking is not available for every wallet yet. Missing values are blank in CSV."
 msgstr "Average GMX staking is not available for every wallet yet. Missing values are blank in CSV."
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX on {chainName}"
-msgstr "Buy GMX on {chainName}"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -4279,10 +4245,6 @@ msgstr "AI trading assistant"
 msgid "Allowed slippage"
 msgstr "Allowed slippage"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "No centralized exchanges available"
-msgstr "No centralized exchanges available"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Loyalty"
 msgstr "Loyalty"
@@ -4340,11 +4302,6 @@ msgstr "Wallet received at close"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "GLV vaults"
 msgstr "GLV vaults"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from centralized services"
-msgstr "Buy GMX from centralized services"
 
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
@@ -4562,10 +4519,6 @@ msgstr "TypeScript SDK"
 msgid "Existing limit order in {0} pool<0>Switch to {1} pool</0>"
 msgstr "Existing limit order in {0} pool<0>Switch to {1} pool</0>"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy from decentralized or centralized exchanges"
-msgstr "Buy from decentralized or centralized exchanges"
-
 #: src/pages/IncentivesDebug/IncentivesAuditPage.tsx
 #: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
 #: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
@@ -4752,10 +4705,6 @@ msgstr "Job openings"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "PNL (%)"
 msgstr "PNL (%)"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX using decentralized exchange aggregators"
-msgstr "Buy GMX using decentralized exchange aggregators"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing, which isn't available with One-Click Trading. Disable One-Click to use Express Trading."
@@ -6439,10 +6388,6 @@ msgstr "Order lifecycle"
 msgid "Permit supported:"
 msgstr "Permit supported:"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy {nativeTokenSymbol}"
-msgstr "Buy {nativeTokenSymbol}"
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size too small"
 msgstr "Position size too small"
@@ -6770,10 +6715,6 @@ msgstr "Referral code added"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Your {symbol} margin exceeds the {indexName} short position size. Margin value rises with the index, covering any losses—no liquidation price."
 msgstr "Your {symbol} margin exceeds the {indexName} short position size. Margin value rises with the index, covering any losses—no liquidation price."
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX bonds on Bond Protocol at a discount with a short vesting period"
-msgstr "Buy GMX bonds on Bond Protocol at a discount with a short vesting period"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No results with the selected filters."
@@ -7306,10 +7247,6 @@ msgstr "GM: {0} buyable cap reached in {1} [{2}]. Choose a different pool, reduc
 msgid "<0>Permit approval failed. A standard approval transaction is required. Approve the token and try again</0>"
 msgstr "<0>Permit approval failed. A standard approval transaction is required. Approve the token and try again</0>"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "No options to transfer {nativeTokenSymbol} to {chainName}"
-msgstr "No options to transfer {nativeTokenSymbol} to {chainName}"
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
 msgstr "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
@@ -7456,7 +7393,7 @@ msgstr "Available to eligible historical users while their comeback bonus cap re
 msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none."
 msgstr "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none."
 
-#: src/pages/BuyGMX/BuyGmxModal.tsx
+#: src/components/BuyGmxModal/BuyGmxModal.tsx
 msgid "Buy GMX on GMX swap"
 msgstr "Buy GMX on GMX swap"
 
@@ -8248,10 +8185,6 @@ msgstr "GMX governance page"
 msgid "A new version of GMX is ready. Reload when you are done to switch to it."
 msgstr "A new version of GMX is ready. Reload when you are done to switch to it."
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there"
-msgstr "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded."
 msgstr "Max network fee includes a buffer for gas spikes. Unused fees refunded."
@@ -8810,11 +8743,6 @@ msgstr "wstETH APR"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "GMX Account withdrawals are limited by Stargate bridge liquidity. Try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "GMX Account withdrawals are limited by Stargate bridge liquidity. Try an amount smaller than <0>{upperLimitFormatted}</0>."
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "TraderJoe"
-msgstr "TraderJoe"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated time to liquidation"
@@ -9626,11 +9554,6 @@ msgstr "Total esGMX"
 msgid "For me"
 msgstr "For me"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Bond Protocol"
-msgstr "Bond Protocol"
-
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Fees and impacts"
 msgstr "Fees and impacts"
@@ -9875,10 +9798,6 @@ msgstr "24h low"
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claim <0>{0}</0> of <1>{1}</1>"
 msgstr "Claim <0>{0}</0> of <1>{1}</1>"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from TraderJoe"
-msgstr "Buy GMX from TraderJoe"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average leverage used"
@@ -10340,11 +10259,6 @@ msgstr "No swap path available"
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Stop-Loss"
 msgstr "Execute Stop-Loss"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from decentralized exchanges"
-msgstr "Buy GMX from decentralized exchanges"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Powered by"
@@ -11619,10 +11533,6 @@ msgstr "Max reserved {directionLabel}"
 msgid "Technical guidance plus architecture and UX feedback."
 msgstr "Technical guidance plus architecture and UX feedback."
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Transfer {nativeTokenSymbol}"
-msgstr "Transfer {nativeTokenSymbol}"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "LIQUIDITY SHORT"
 msgstr "LIQUIDITY SHORT"
@@ -11707,9 +11617,9 @@ msgstr "Select asset to deposit"
 msgid "Session generated"
 msgstr "Session generated"
 
+#: src/components/BuyGmxModal/BuyGmxModal.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
-#: src/pages/BuyGMX/BuyGmxModal.tsx
+#: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
@@ -12031,10 +11941,6 @@ msgstr "Staking..."
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Buy request sent"
 msgstr "Buy request sent"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX using fiat gateways"
-msgstr "Buy GMX using fiat gateways"
 
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max network fee"
@@ -13228,10 +13134,6 @@ msgstr "Reward shares"
 msgid "Open GMTrade in a new tab"
 msgstr "Open GMTrade in a new tab"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy {nativeTokenSymbol} directly on <0>{chainName}</0>"
-msgstr "Buy {nativeTokenSymbol} directly on <0>{chainName}</0>"
-
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap Limit: Swap tokens when the trigger price is reached"
 msgstr "Swap Limit: Swap tokens when the trigger price is reached"
@@ -13503,10 +13405,6 @@ msgstr "External routing is temporarily paused after a failed attempt. Retry to 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Working prototype or live product"
 msgstr "Working prototype or live product"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from Uniswap or directly on GMX (select Arbitrum)"
-msgstr "Buy GMX from Uniswap or directly on GMX (select Arbitrum)"
 
 #: src/components/DepthChart/DepthChart.tsx
 msgid "Oracle price"
@@ -14467,7 +14365,7 @@ msgstr "Total value of assets"
 msgid "<0>Switch to {0} pool</0> for potentially lower price impact"
 msgstr "<0>Switch to {0} pool</0> for potentially lower price impact"
 
-#: src/pages/BuyGMX/BuyGmxModal.tsx
+#: src/components/BuyGmxModal/BuyGmxModal.tsx
 msgid "Buy on other platforms"
 msgstr "Buy on other platforms"
 
@@ -14687,11 +14585,6 @@ msgstr "NET RATE / 1H"
 msgid "30d performance APY"
 msgstr "30d performance APY"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Uniswap"
-msgstr "Uniswap"
-
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 msgid "Share on"
@@ -14860,10 +14753,6 @@ msgstr "No opportunities on this chain yet"
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
 msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "No decentralized exchanges available"
-msgstr "No decentralized exchanges available"
 
 #: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
 msgid "Code already taken on: {takenNetworkNamesJoined}. No rebates received from this network."

@@ -1,6 +1,6 @@
 {
   "name": "@gmx-io/sdk",
-  "version": "1.9.1",
+  "version": "2.1.0",
   "type": "module",
   "repository": {
     "type": "git",
@@ -146,9 +146,6 @@
       ],
       "utils/common": [
         "./build/types/src/utils/common/index.d.ts"
-      ],
-      "utils/gelatoRelay": [
-        "./build/types/src/utils/gelatoRelay/index.d.ts"
       ],
       "utils/types": [
         "./build/types/src/utils/types/index.d.ts"
@@ -438,12 +435,6 @@
       "require": "./build/cjs/src/utils/common/index.js",
       "default": "./build/cjs/src/utils/common/index.js"
     },
-    "./utils/gelatoRelay": {
-      "types": "./build/types/src/utils/gelatoRelay/index.d.ts",
-      "import": "./build/esm/src/utils/gelatoRelay/index.js",
-      "require": "./build/cjs/src/utils/gelatoRelay/index.js",
-      "default": "./build/cjs/src/utils/gelatoRelay/index.js"
-    },
     "./utils/types": {
       "types": "./build/types/src/utils/types/index.d.ts",
       "import": "./build/esm/src/utils/types/index.js",
@@ -530,7 +521,6 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "@gelatocloud/gasless": "0.0.10",
     "@layerzerolabs/lz-v2-utilities": "3.0.85",
     "cross-fetch": "4.0.0",
     "crypto-js": "4.2.0",
