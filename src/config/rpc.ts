@@ -274,7 +274,7 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
 
   // ADDITIONAL CHAINS
   [SOURCE_ETHEREUM_MAINNET]: [
-    ...["https://rpc.ankr.com/eth", "https://eth.drpc.org", "https://ethereum.publicnode.com"].map((url) => ({
+    ...["https://eth.drpc.org", "https://ethereum.publicnode.com"].map((url) => ({
       url,
       isPublic: true,
       purpose: "default",

@@ -13,6 +13,7 @@ import { initializeI18n } from "lib/i18n";
 import { configureInstalledApp } from "lib/pwa/getIsInstalledApp";
 import { initializeLaunchSource } from "lib/pwa/getLaunchSource";
 import { registerServiceWorker } from "lib/pwa/registerServiceWorker";
+import { initializeUserAnalytics } from "lib/userAnalytics/initializeUserAnalytics";
 import WalletProvider from "lib/wallets/WalletProvider";
 
 import StartupErrorBoundary from "components/Errors/StartupErrorBoundary";
@@ -21,6 +22,7 @@ import reportWebVitals from "../reportWebVitals";
 import App from "./App";
 
 export async function bootstrap() {
+  initializeUserAnalytics();
   initializeLaunchSource();
   configureInstalledApp();
   await initializeI18n();
