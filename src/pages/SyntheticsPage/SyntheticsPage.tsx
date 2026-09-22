@@ -145,6 +145,7 @@ export function SyntheticsPage(p: Props) {
       >
         {isTablet ? <ChartHeader /> : null}
         <div className="grid grid-cols-1 items-start gap-12 md:grid-cols-2 lg:grid-cols-4">
+          <section className="min-w-0 rounded-8 bg-slate-900 p-12">hello world</section>
           <SolanaRpcPage />
           <SolanaFetchCard />
           <SolanaWebSocketCard />
