@@ -9,6 +9,7 @@ export function getRewardsVestingConfig(chainId: ContractsChainId) {
       abiId: "RatioVester" as const,
       reader: getContract(chainId, "RatioVesterReader"),
       issuer: getContract(chainId, "EsGmxIssuer"),
+      issuerDeploymentBlock: 309737792n,
       esToken: getContract(chainId, "IncentiveEsGmx"),
       pairToken: getContract(chainId, "IncentivePairToken"),
       claimableToken: getContract(chainId, "IncentiveClaimableToken"),

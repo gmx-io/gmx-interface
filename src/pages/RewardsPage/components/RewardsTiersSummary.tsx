@@ -11,9 +11,10 @@ import { sendRewardsNavigationEvent } from "lib/userAnalytics/rewardsEvents";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ArrowRightIcon from "img/ic_arrow_right.svg?react";
+import VestIcon from "img/ic_increaselimit_16.svg?react";
 import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
 
-import { getStartRewardsVestingPath } from "../rewardsRoutes";
+import { getRewardsPath } from "../rewardsRoutes";
 import { AccountValue, type AccountDataState } from "./rewardsTiersShared";
 
 function AllTimeRewardsTooltip({
@@ -217,11 +218,12 @@ export function RewardsTiersSummary({
               </div>
               {(vestableEsGmx ?? 0n) > 0n ? (
                 <Link
-                  to={getStartRewardsVestingPath()}
-                  className="pb-1 text-12 font-medium leading-[1.25] text-blue-300"
+                  to={getRewardsPath("history")}
+                  className="inline-flex items-center gap-4 whitespace-nowrap pb-1 text-12 font-medium leading-[1.25] text-blue-300"
                   onClick={() => sendRewardsNavigationEvent({ source: "TiersSummary" })}
                 >
                   {hasVestingPosition ? <Trans>Vest more</Trans> : <Trans>Start vesting</Trans>}
+                  <VestIcon className="size-12 shrink-0" />
                 </Link>
               ) : null}
             </>

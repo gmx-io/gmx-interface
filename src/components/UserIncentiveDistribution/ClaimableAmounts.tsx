@@ -31,7 +31,7 @@ import EarnIcon from "img/ic_earn.svg?react";
 
 import { ClaimableDistribution } from "./ClaimableDistribution";
 
-export default function ClaimableAmounts() {
+export default function ClaimableAmounts({ hideEmpty = false }: { hideEmpty?: boolean }) {
   const { account, signer } = useWallet();
   const chainId = useSelector(selectChainId);
   const { claimsConfigByDistributionId, claimableAmountsDataByDistributionId, isLoading, onClaimed } =
@@ -251,6 +251,7 @@ export default function ClaimableAmounts() {
   }
 
   if (claimableEntries.length === 0) {
+    if (hideEmpty) return null;
     return (
       <div className="flex flex-col gap-16">
         <span className="text-body-medium font-medium text-typography-secondary">
