@@ -1,6 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { Eyebrow } from "landing/pages/Builders/Eyebrow";
 import { CodeSnippet } from "landing/pages/Builders/HeroSection/CodeSnippet";
+import { Link } from "react-router-dom";
 
 import programGlow from "img/home_program_glow.png";
 import vipCoins from "img/home_program_vip_coins.png";
@@ -8,17 +9,15 @@ import IcLinkArrow from "img/ic_link_arrow.svg?react";
 
 function CardButton({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <a
-      href={href}
-      target={href.startsWith("http") ? "_blank" : undefined}
-      rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
+    <Link
+      to={href}
       className="btn-landing mt-[18px] inline-flex h-44 w-fit items-center gap-8 rounded-8 px-16 text-16 -tracking-[0.512px]"
     >
       {children}
       <span className="flex size-16 flex-shrink-0 items-center justify-center rounded-full bg-white">
         <IcLinkArrow className="size-8 text-black" />
       </span>
-    </a>
+    </Link>
   );
 }
 
