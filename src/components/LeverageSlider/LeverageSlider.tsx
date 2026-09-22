@@ -1,7 +1,7 @@
 import cx from "classnames";
 import range from "lodash/range";
 import { Handle, SliderTooltip } from "rc-slider";
-import { forwardRef, useCallback, useMemo } from "react";
+import { forwardRef, ReactNode, useCallback, useMemo } from "react";
 
 import { multiplierPart, numberParts } from "lib/numbers";
 
@@ -27,10 +27,10 @@ type HandleProps = {
 function getMarksWithLabel(marks: number[]) {
   return marks.reduce(
     (marks, value, index) => {
-      marks[index * 10] = `${value}x`;
+      marks[index * 10] = <NumericValue parts={numberParts(String(value), multiplierPart("x"))} />;
       return marks;
     },
-    {} as { [key: number]: string }
+    {} as { [key: number]: ReactNode }
   );
 }
 
@@ -60,14 +60,7 @@ export function LeverageSlider(p: Props) {
 
   const leverageSliderMarks = useMemo(() => {
     return Object.fromEntries(
-      Object.entries(getMarksWithLabel(finalMarks))
-        .sort((a, b) => Number(a[0]) - Number(b[0]))
-        .map(([key, value]) => [
-          key,
-          {
-            label: value,
-          },
-        ])
+      Object.entries(getMarksWithLabel(finalMarks)).sort((a, b) => Number(a[0]) - Number(b[0]))
     );
   }, [finalMarks]);
 

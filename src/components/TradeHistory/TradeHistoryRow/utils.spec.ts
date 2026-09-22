@@ -32,7 +32,6 @@ import {
   updateMarginDeposit,
   withdraw1Usd,
 } from "./mocks";
-import { withPlainText } from "./utils/plainText";
 import {
   formatPositionMessage as formatPositionMessageParts,
   getSettlementTooltipLines as getSettlementTooltipLinesParts,
@@ -40,6 +39,7 @@ import {
 import { anchorCloseRow, anchorOpenRow } from "./utils/settlementMocks";
 import { INEQUALITY_GT, INEQUALITY_LT, getErrorTooltipTitle } from "./utils/shared";
 import { formatSwapMessage as formatSwapMessageParts } from "./utils/swap";
+import { withPlainText } from "./utils/testUtils";
 
 const formatPositionMessage = (...args: Parameters<typeof formatPositionMessageParts>) =>
   withPlainText(formatPositionMessageParts(...args));

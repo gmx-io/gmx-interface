@@ -1,5 +1,5 @@
 import type { LeaderboardAccount } from "domain/synthetics/leaderboard";
-import { formatAmount, joinNumberParts, NumberPart, numberParts, USD_DECIMALS, USD_PART } from "lib/numbers";
+import { formatAmount, NumberPart, numberParts, USD_DECIMALS, USD_PART } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 
 export function formatDelta(
@@ -31,10 +31,6 @@ export function formatDeltaUsdSignedParts(
   const sign = delta === 0n ? "" : delta > 0 ? "+" : "-";
 
   return numberParts(sign, USD_PART, formatAmount(bigMath.abs(delta), USD_DECIMALS, displayDecimals, true));
-}
-
-export function formatDeltaUsdSigned(delta: bigint, opts: { displayDecimals?: number } = {}) {
-  return joinNumberParts(formatDeltaUsdSignedParts(delta, opts));
 }
 
 export function getSignedValueClassName(num: bigint) {

@@ -276,13 +276,12 @@ export const formatPositionMessage = (
     const customAction = sizeDeltaUsd > 0 ? action : i18n._(actionTextMap["Deposit-OrderCreated"]!);
     const customSize = sizeDeltaUsd > 0 ? sizeDeltaText : formattedCollateralDelta;
     const customPrice = acceptablePriceInequality + formattedAcceptablePrice;
-    const customPriceDisplay = acceptablePriceDisplay;
     const priceComment = lines(t`Acceptable price for the order`);
 
     result = {
       action: customAction,
       size: customSize,
-      price: customPriceDisplay,
+      price: acceptablePriceDisplay,
       priceComment,
       acceptablePrice: customPrice,
     };
@@ -343,13 +342,12 @@ export const formatPositionMessage = (
       ev === TradeActionType.OrderCancelled)
   ) {
     const customPrice = triggerPriceInequality + formattedTriggerPrice;
-    const customPriceDisplay = triggerPriceDisplay;
     const isAcceptablePriceUseful = !isBoundaryAcceptablePrice(tradeAction.acceptablePrice);
 
     result = {
       action: i18n._(actionTextMap[`MarginDeposit-${ev}`]!),
       size: formattedCollateralDelta,
-      price: customPriceDisplay,
+      price: triggerPriceDisplay,
       priceComment: lines(t`Trigger price for the order`),
       triggerPrice: customPrice,
       acceptablePrice: isAcceptablePriceUseful ? acceptablePriceInequality + formattedAcceptablePrice : undefined,
@@ -373,7 +371,6 @@ export const formatPositionMessage = (
     const error = tradeAction.reasonBytes ? tryDecodeCustomError(tradeAction.reasonBytes) ?? undefined : undefined;
     const isAcceptablePriceUseful = !isBoundaryAcceptablePrice(tradeAction.acceptablePrice);
     const customPrice = triggerPriceInequality + formattedTriggerPrice;
-    const customPriceDisplay = triggerPriceDisplay;
 
     result = {
       action: i18n._(actionTextMap["MarginDeposit-OrderFrozen"]!),
@@ -384,7 +381,7 @@ export const formatPositionMessage = (
           text: getErrorTooltipTitle(error.name, false, error.args),
           state: "error",
         }),
-      price: customPriceDisplay,
+      price: triggerPriceDisplay,
       priceComment: lines(
         t`Trigger price for the order`,
         error?.args?.price !== undefined ? "" : undefined,
@@ -412,12 +409,11 @@ export const formatPositionMessage = (
     ((ot === OrderType.LimitIncrease || ot === OrderType.StopIncrease) && ev === TradeActionType.OrderCancelled)
   ) {
     const customPrice = triggerPriceInequality + formattedTriggerPrice;
-    const customPriceDisplay = triggerPriceDisplay;
 
     const isAcceptablePriceUseful = !isBoundaryAcceptablePrice(tradeAction.acceptablePrice);
 
     result = {
-      price: customPriceDisplay,
+      price: triggerPriceDisplay,
       priceComment: lines(t`Trigger price for the order`),
       triggerPrice: customPrice,
       acceptablePrice: isAcceptablePriceUseful ? acceptablePriceInequality + formattedAcceptablePrice : undefined,
@@ -508,10 +504,9 @@ export const formatPositionMessage = (
     (ot === OrderType.LimitDecrease && ev === TradeActionType.OrderCancelled)
   ) {
     const customPrice = triggerPriceInequality + formattedTriggerPrice;
-    const customPriceDisplay = triggerPriceDisplay;
 
     result = {
-      price: customPriceDisplay,
+      price: triggerPriceDisplay,
       priceComment: lines(t`Trigger price for the order`),
       triggerPrice: customPrice,
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
@@ -564,10 +559,9 @@ export const formatPositionMessage = (
     (ot === OrderType.StopLossDecrease && ev === TradeActionType.OrderCancelled)
   ) {
     const customPrice = triggerPriceInequality + formattedTriggerPrice;
-    const customPriceDisplay = triggerPriceDisplay;
 
     result = {
-      price: customPriceDisplay,
+      price: triggerPriceDisplay,
       priceComment: lines(t`Trigger price for the order`),
       triggerPrice: customPrice,
     };

@@ -33,12 +33,10 @@ function textColorNames(tree: object, prefix = ""): string[] {
   });
 }
 
-const COLORED_TEXT_GROUPS = ["blue", "yellow", "red", "green"];
+const PRIMARY_TEXT_COLOR_NAMES = ["white", "black", "typography-primary"];
 
 function affixColor(textColorName: string) {
-  return COLORED_TEXT_GROUPS.includes(textColorName.split("-")[0])
-    ? "currentColor"
-    : "var(--color-typography-secondary)";
+  return PRIMARY_TEXT_COLOR_NAMES.includes(textColorName) ? "var(--color-typography-secondary)" : "currentColor";
 }
 
 function injectAffixColorsPlugin({ addUtilities }: PluginAPI) {

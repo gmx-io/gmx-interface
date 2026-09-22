@@ -21,7 +21,7 @@ import { TokenData, convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
-import { formatDeltaUsd, formatTokenAmount } from "lib/numbers";
+import { formatTokenAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { sendExpressTransaction } from "lib/transactions";
@@ -460,12 +460,11 @@ function ClaimModalComponent(p: {
   const claimAmountText =
     selectedFundingUsd < totalClaimableFundingUsd ? (
       <Trans>
-        Claim <span>{formatDeltaUsd(selectedFundingUsd)}</span> of{" "}
-        <span>{formatDeltaUsd(totalClaimableFundingUsd)}</span>
+        Claim <DeltaUsdValue deltaUsd={selectedFundingUsd} /> of <DeltaUsdValue deltaUsd={totalClaimableFundingUsd} />
       </Trans>
     ) : (
       <Trans>
-        Claim <span>{formatDeltaUsd(totalClaimableFundingUsd)}</span>
+        Claim <DeltaUsdValue deltaUsd={totalClaimableFundingUsd} />
       </Trans>
     );
 

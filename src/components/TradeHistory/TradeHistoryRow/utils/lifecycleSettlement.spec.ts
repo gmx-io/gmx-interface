@@ -8,7 +8,6 @@ import {
   getLifecycleSettlementLines as getLifecycleSettlementLinesParts,
   getLifecycleSettlementView,
 } from "./lifecycleSettlement";
-import { withPlainText } from "./plainText";
 import {
   CLOSE_ORDER_KEY,
   OPEN_ORDER_KEY,
@@ -23,6 +22,7 @@ import {
   buildIncreaseRow,
   buildLifecycleData,
 } from "./settlementMocks";
+import { withPlainText } from "./testUtils";
 
 const getLifecycleSettlementLines = (...args: Parameters<typeof getLifecycleSettlementLinesParts>) =>
   withPlainText(getLifecycleSettlementLinesParts(...args));

@@ -23,7 +23,7 @@ import { getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
-import { expandDecimals, formatDeltaUsd, formatTokenAmount } from "lib/numbers";
+import { expandDecimals, formatTokenAmount } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { sendExpressTransaction } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -284,7 +284,6 @@ function ClaimablePositionPriceImpactRebateModalComponent({
   };
 }) {
   const total = useSelector(selectClaimsPriceImpactClaimableTotal);
-  const totalUsd = useMemo(() => formatDeltaUsd(total), [total]);
   const groups = useSelector(selectClaimsGroupedPositionPriceImpactClaimableFees);
 
   return (
@@ -296,7 +295,9 @@ function ClaimablePositionPriceImpactRebateModalComponent({
     >
       <div className="ConfirmationBox-main">
         <div className="text-center">
-          <Trans>Claim {totalUsd}</Trans>
+          <Trans>
+            Claim <DeltaUsdValue deltaUsd={total} />
+          </Trans>
         </div>
       </div>
       <div className="mb-20 mt-15 h-1 bg-slate-700" />

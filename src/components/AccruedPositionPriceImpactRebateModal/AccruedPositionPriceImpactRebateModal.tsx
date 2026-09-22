@@ -32,7 +32,9 @@ export const AccruedPositionPriceImpactRebateModal = memo(
       >
         <div className="ConfirmationBox-main">
           <div className="text-center">
-            <Trans>Total</Trans> <DeltaUsdValue deltaUsd={totalUsd} />
+            <Trans>
+              Total <DeltaUsdValue deltaUsd={totalUsd} />
+            </Trans>
           </div>
         </div>
         <div className="mb-20 mt-15 h-1 bg-slate-700" />

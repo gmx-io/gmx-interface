@@ -2,7 +2,6 @@ import { t, Trans } from "@lingui/macro";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { CLAIM_AFFILIATE_FIXED_SLIPPAGE_BPS } from "domain/synthetics/referrals/useClaimAffiliateSwapRoutes";
-import { formatUsd } from "lib/numbers";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
@@ -41,7 +40,9 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
     >
       <div className="flex flex-col gap-12">
         <div className="text-center text-20 font-medium">
-          <Trans>Claim {formatUsd(state.totalClaimableFundingUsd)}</Trans>
+          <Trans>
+            Claim <UsdValue usd={state.totalClaimableFundingUsd} />
+          </Trans>
         </div>
 
         <Table>

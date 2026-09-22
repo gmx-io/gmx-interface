@@ -248,7 +248,10 @@ test.describe("TradeBox", () => {
 
       await page.locator(getDataQALocator("leverage-slider")).first().click();
       await expect(page.getByText("Adjust leverage")).toBeVisible();
-      await page.getByText("5x", { exact: true }).click();
+      await page
+        .locator(".rc-slider-mark-text")
+        .filter({ hasText: /^5\s?x$/ })
+        .click();
 
       await expectInputInRange(sizeInput, 4900, 5000);
     });
