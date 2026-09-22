@@ -10,4 +10,3 @@
 8. Treat questions as requests for explanation or analysis by default. Only modify code, edit files, or run commands when the user clearly asks for action.
 9. Do not add speculative fallback logic to compensate for uncertainty. Prefer exposing errors clearly over silently masking them.
 10. Unless the user explicitly asks for a complete one-shot implementation, prefer incremental, test-friendly changes that are small, focused, and easy for humans to review and test.
-
