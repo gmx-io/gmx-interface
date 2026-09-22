@@ -4,15 +4,14 @@ const CYCLE_DURATION = 8_000;
 
 export function useFlywheelAnimation() {
   const flywheelRef = useRef<HTMLDivElement>(null);
-  const pathRef = useRef<SVGRectElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const gradientRef = useRef<SVGRadialGradientElement>(null);
 
   useEffect(() => {
     const flywheel = flywheelRef.current;
-    const path = pathRef.current;
+    const track = trackRef.current;
     const gradient = gradientRef.current;
-    const track = path?.ownerSVGElement;
-    if (!flywheel || !path || !gradient || !track) return;
+    if (!flywheel || !track || !gradient) return;
 
     const nodes = Array.from(flywheel.querySelectorAll<HTMLElement>("[data-flywheel-node]"));
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -20,17 +19,16 @@ export function useFlywheelAnimation() {
     let lastTime: number | undefined;
     let elapsed = 0;
     let isVisible = false;
-    let length = 0;
-    let trackX = 0;
-    let trackY = 0;
+    let radius = 0;
+    let centerX = 0;
+    let centerY = 0;
 
     function paint() {
-      if (!length) return;
-      const point = path!.getPointAtLength(((elapsed % CYCLE_DURATION) / CYCLE_DURATION) * length);
-      gradient!.setAttribute("cx", String(point.x));
-      gradient!.setAttribute("cy", String(point.y));
-      flywheel!.style.setProperty("--rewards-light-x", `${trackX + point.x}px`);
-      flywheel!.style.setProperty("--rewards-light-y", `${trackY + point.y}px`);
+      const progress = (elapsed % CYCLE_DURATION) / CYCLE_DURATION;
+      const angle = progress * Math.PI * 2;
+      gradient!.setAttribute("gradientTransform", `rotate(${progress * 360} 0.5 0.5)`);
+      flywheel!.style.setProperty("--rewards-light-x", `${centerX + Math.cos(angle) * radius}px`);
+      flywheel!.style.setProperty("--rewards-light-y", `${centerY + Math.sin(angle) * radius}px`);
     }
 
     function animate(time: number) {
@@ -44,16 +42,20 @@ export function useFlywheelAnimation() {
       if (frameId !== undefined) cancelAnimationFrame(frameId);
       frameId = undefined;
       lastTime = undefined;
-      if (isVisible && !reducedMotion.matches) frameId = requestAnimationFrame(animate);
+      if (reducedMotion.matches) {
+        elapsed = 0;
+        paint();
+      } else if (isVisible && !document.hidden) {
+        frameId = requestAnimationFrame(animate);
+      }
     }
 
     function measure() {
       const bounds = flywheel!.getBoundingClientRect();
       const trackBounds = track!.getBoundingClientRect();
-      length = path!.getTotalLength();
-      trackX = trackBounds.left - bounds.left;
-      trackY = trackBounds.top - bounds.top;
-      gradient!.setAttribute("r", String(Math.min(200, length * 0.085)));
+      radius = trackBounds.width / 2;
+      centerX = trackBounds.left - bounds.left + radius;
+      centerY = trackBounds.top - bounds.top + radius;
       for (const node of nodes) {
         const nodeBounds = node.getBoundingClientRect();
         node.style.setProperty("--rewards-node-x", `${nodeBounds.left - bounds.left}px`);
@@ -73,6 +75,7 @@ export function useFlywheelAnimation() {
     });
     intersectionObserver.observe(flywheel);
     reducedMotion.addEventListener("change", updateAnimation);
+    document.addEventListener("visibilitychange", updateAnimation);
     measure();
 
     return () => {
@@ -80,8 +83,9 @@ export function useFlywheelAnimation() {
       resizeObserver.disconnect();
       intersectionObserver.disconnect();
       reducedMotion.removeEventListener("change", updateAnimation);
+      document.removeEventListener("visibilitychange", updateAnimation);
     };
   }, []);
 
-  return { flywheelRef, pathRef, gradientRef };
+  return { flywheelRef, trackRef, gradientRef };
 }

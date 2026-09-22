@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { renderElementToBlob } from "lib/copyElementAsImage";
 import { usePrefersReducedMotion } from "lib/usePrefersReducedMotion";
 
-export function useSpoilerBlur() {
+export function useSpoilerBlur(blurRadius = 30) {
   const sourceRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const reducedMotion = usePrefersReducedMotion();
@@ -16,7 +16,7 @@ export function useSpoilerBlur() {
     const canvas = canvasRef.current;
     if (!source || !canvas) return;
     setReady(false);
-    const renderer = createSpoilerRenderer(canvas);
+    const renderer = createSpoilerRenderer(canvas, blurRadius);
     if (!renderer) return;
 
     let disposed = false;
@@ -118,7 +118,7 @@ export function useSpoilerBlur() {
       canvas.removeEventListener("webglcontextrestored", contextRestored);
       renderer.destroy();
     };
-  }, [reducedMotion, revision]);
+  }, [blurRadius, reducedMotion, revision]);
 
   return { sourceRef, canvasRef, ready };
 }

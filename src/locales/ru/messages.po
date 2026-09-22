@@ -678,6 +678,10 @@ msgstr "Подтверждение One-Click Trading недействитель�
 msgid "Min collateral factor for liquidation"
 msgstr "Мин. фактор обеспечения для ликвидации"
 
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+msgid "Fees back"
+msgstr "Возврат комиссий"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} short exceeded"
 msgstr "Максимальное {0} превышение шорта"
@@ -2703,7 +2707,6 @@ msgstr "Может потребоваться несколько минут. П�
 msgid "Every 1x returns {perMultiplierRate} of your fees. At {exampleMultiplier}, that's {exampleRate} back."
 msgstr "Каждый 1x возвращает {perMultiplierRate} ваших комиссий. При {exampleMultiplier} возвращается {exampleRate}."
 
-#: landing/src/pages/Rewards/RewardsFlywheel.tsx
 #: landing/src/pages/Rewards/RewardsTokens.tsx
 msgid "Stake it"
 msgstr "Застейкать"
@@ -3740,10 +3743,6 @@ msgstr "Тип ордера"
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr ""
 
-#: landing/src/pages/Rewards/RewardsCalculator.tsx
-msgid "Your multiplier"
-msgstr "Ваш множитель"
-
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "GMX Account uses a separate trading balance linked to your wallet. To trade, deposit funds from your wallet to your GMX Account."
 msgstr "GMX Account использует отдельный торговый баланс, привязанный к вашему кошельку. Чтобы торговать, внесите средства из кошелька на свой GMX Account."
@@ -4625,6 +4624,7 @@ msgstr "Годовая Процентная Ставка Комиссии"
 msgid "SL"
 msgstr "SL"
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
@@ -5223,6 +5223,10 @@ msgstr "{0, plural, one {# трейдеру} few {# трейдерам} many {# 
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "What people are building."
 msgstr "Что строят на GMX."
+
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "The Season 1<0/>Flywheel"
+msgstr "Цикл наград<0/>Сезона 1"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval cancelled"
@@ -6052,6 +6056,7 @@ msgstr "Макс. лонг USD пула для депозита"
 msgid "Net value"
 msgstr "Чистая стоимость"
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
@@ -6496,6 +6501,10 @@ msgstr "Токены с плечом и защитой"
 msgid "Your projected share of the Treasury at today's staking power. A best-effort estimate only; actual distribution is subject to DAO governance."
 msgstr "Ваша прогнозируемая доля Казначейства при текущей силе стейкинга. Это лишь ориентировочная оценка; фактическое распределение зависит от решения DAO."
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "Stake the esGMX"
+msgstr "Стейкайте esGMX"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop-Loss"
 msgstr "Неудачный стоп-лосс"
@@ -6696,6 +6705,7 @@ msgstr "Не удалось создать реферальный код"
 msgid "Withdraw fee"
 msgstr "Комиссия за вывод"
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "esGMX rewards"
@@ -6731,6 +6741,10 @@ msgstr "В прошлой эпохе {payout} вернулись к {traders}"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Claimable"
 msgstr "Требуемый"
+
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "Pay fees on any trade"
+msgstr "Платите комиссии за сделки"
 
 #: src/components/TVChartContainer/TVChartContainer.tsx
 msgid "Open long"
@@ -8057,10 +8071,6 @@ msgstr "А если я делаю конкурирующую perp-биржу?"
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "How do I share my code?"
 msgstr ""
-
-#: landing/src/pages/Rewards/RewardsFlywheel.tsx
-msgid "The Rewards Flywheel"
-msgstr "Круговорот наград"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -9833,10 +9843,6 @@ msgstr "Разработка"
 msgid "for {comment}"
 msgstr "для {comment}"
 
-#: landing/src/pages/Rewards/RewardsFlywheel.tsx
-msgid "Earn more on the next trade"
-msgstr "Зарабатывайте больше на следующей сделке"
-
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL)."
 msgstr "Использованный капитал = max(сумма залога открытых позиций - реализованный PnL + начальный ожидающий PnL)."
@@ -10172,10 +10178,6 @@ msgstr "Внести маржу по цене"
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "FEES"
 msgstr "КОМИССИИ"
-
-#: landing/src/pages/Rewards/RewardsCalculator.tsx
-msgid "<0>{rewardRate}</0> <1>of your fees back</1>"
-msgstr "<0>{rewardRate}</0> <1>ваших комиссий обратно</1>"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
@@ -11064,6 +11066,10 @@ msgstr "Экспозиция к обеспечивающим токенам"
 msgid "Search type"
 msgstr "Поиск типа"
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "Your next trade earns more"
+msgstr "Следующая сделка принесёт больше"
+
 #: src/components/TradeHistory/filters/ActionFilter.tsx
 msgid "Market orders"
 msgstr "Рыночные ордера"
@@ -11474,6 +11480,10 @@ msgstr ""
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GM получает комиссии с одного рынка. GLV содержит несколько токенов GM и автоматически ребалансирует их между связанными рынками. Оба варианта автоматически реинвестируют доход. Выбирайте GM для экспозиции к одному рынку или GLV для диверсификации по нескольким пулам."
+
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "Multiply"
+msgstr "Умножение"
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -13166,6 +13176,10 @@ msgstr "{ordersText} отменён"
 msgid "Limit"
 msgstr "Лимит"
 
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+msgid "Total multiplier"
+msgstr "Общий множитель"
+
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "TIMEKEY"
 msgstr "TIMEKEY"
@@ -13388,10 +13402,6 @@ msgstr "Express Trading включён. Отключите в <0>настрой�
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price above mark price"
 msgstr ""
-
-#: landing/src/pages/Rewards/RewardsFlywheel.tsx
-msgid "Earn esGMX"
-msgstr "Получайте esGMX"
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"

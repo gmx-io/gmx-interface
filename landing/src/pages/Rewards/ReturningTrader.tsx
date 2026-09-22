@@ -201,7 +201,7 @@ export function ReturningTrader({ config, loading, endpoint }: Props) {
               </div>
             </div>
           ) : !checked ? (
-            <RewardsSpoiler onFocusAddress={checking ? undefined : focusAddress}>
+            <RewardsSpoiler onFocusAddress={checking ? undefined : focusAddress} blurRadius={12}>
               <BonusCard loading />
             </RewardsSpoiler>
           ) : hasBonus ? (

@@ -12,6 +12,7 @@ precision highp float;
 uniform sampler2D source;
 uniform vec2 dimensions;
 uniform vec2 inputDimensions;
+uniform float blurRadius;
 in vec2 uv;
 out vec4 color;
 void main() {
@@ -25,7 +26,7 @@ void main() {
     for (int y = 0; y < 15; y++) {
       vec2 offset = (vec2(float(x), float(y)) - 7.0) / 7.0;
       float w = exp(-dot(offset, offset) * 2.0);
-      sum += texture(source, clamp(center + offset * 30.0 / inputDimensions, 0.0, 1.0)) * w;
+      sum += texture(source, clamp(center + offset * blurRadius / inputDimensions, 0.0, 1.0)) * w;
       weight += w;
     }
   }
@@ -61,7 +62,7 @@ void main() {
   color += vec4(dotAlpha * (1.0 - reveal));
 }`;
 
-export function createSpoilerRenderer(canvas: HTMLCanvasElement) {
+export function createSpoilerRenderer(canvas: HTMLCanvasElement, blurRadius = 30) {
   const gl = canvas.getContext("webgl2", {
     alpha: false,
     antialias: false,
@@ -141,6 +142,7 @@ export function createSpoilerRenderer(canvas: HTMLCanvasElement) {
     gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
     gl.useProgram(blurProgram);
     gl.uniform1i(gl.getUniformLocation(blurProgram, "source"), 0);
+    gl.uniform1f(gl.getUniformLocation(blurProgram, "blurRadius"), blurRadius);
     gl.useProgram(dotProgram);
     gl.uniform1i(gl.getUniformLocation(dotProgram, "obscured"), 0);
     gl.uniform1i(gl.getUniformLocation(dotProgram, "source"), 1);
