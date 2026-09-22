@@ -391,13 +391,21 @@ export function useOrderTxnCallbacks() {
             setIsSettingsVisible
           );
 
+          const sentSubaccountApproval = expressParams?.subaccount?.signedApproval;
+          const isOutdatedSubaccountApproval =
+            sentSubaccountApproval !== undefined && getIsInvalidSubaccountApprovalNonceError(error);
+
           const fallbackToInternalSwap =
-            hasExternalSwap(expressParams, batchParams) && getIsPossibleExternalSwapError(error)
+            !isOutdatedSubaccountApproval &&
+            hasExternalSwap(expressParams, batchParams) &&
+            getIsPossibleExternalSwapError(error)
               ? ctx.onInternalSwapFallback
               : undefined;
 
           const fallbackToExternalSwap =
-            !hasExternalSwap(expressParams, batchParams) && getIsPriceImpactTooLargeError(error)
+            !isOutdatedSubaccountApproval &&
+            !hasExternalSwap(expressParams, batchParams) &&
+            getIsPriceImpactTooLargeError(error)
               ? ctx.onExternalSwapFallback
               : undefined;
 
@@ -410,10 +418,6 @@ export function useOrderTxnCallbacks() {
               permitIssueType = "invalidSignature";
             }
           }
-
-          const sentSubaccountApproval = expressParams?.subaccount?.signedApproval;
-          const isOutdatedSubaccountApproval =
-            sentSubaccountApproval !== undefined && getIsInvalidSubaccountApprovalNonceError(error);
 
           const toastParams = getTxnErrorToast(chainId, errorData, {
             defaultMessage: operationMessage,

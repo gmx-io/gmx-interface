@@ -104,6 +104,11 @@ export function getTxnErrorToast(
     return toastParams;
   }
 
+  if (isOutdatedSubaccountApproval) {
+    toastParams.errorContent = getOutdatedSubaccountApprovalToastContent();
+    return toastParams;
+  }
+
   if (isInternalSwapFallback) {
     toastParams.errorContent = (
       <div>
@@ -141,11 +146,6 @@ export function getTxnErrorToast(
     return toastParams;
   } else if (permitIssueType === "expiredDeadline") {
     toastParams.errorContent = getExpiredPermitDeadlineToastContent();
-    return toastParams;
-  }
-
-  if (isOutdatedSubaccountApproval) {
-    toastParams.errorContent = getOutdatedSubaccountApprovalToastContent();
     return toastParams;
   }
 

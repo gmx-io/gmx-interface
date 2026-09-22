@@ -6977,7 +6977,7 @@ msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>One-Click Trading approval was outdated and has been refreshed. Try again</0>"
-msgstr ""
+msgstr "<0>La aprobación de One-Click Trading estaba desactualizada y se ha actualizado. Inténtelo de nuevo</0>"
 
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Points are allocated based on your cumulative trading volume on GMX MegaETH"

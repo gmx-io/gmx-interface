@@ -1128,10 +1128,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           if (status === StatusCode.Reverted || status === StatusCode.Rejected) {
             let isRelayerMetricSent = false;
             let isViewed = false;
+            const relayError = extractRelayTaskError(relayTaskStatuses[pendingExpressTxn.taskId]);
 
             if (pendingExpressTxn.metricId && !pendingExpressTxn.isRelayerMetricSent) {
-              const relayError = extractRelayTaskError(relayTaskStatuses[pendingExpressTxn.taskId]);
-
               sendTxnErrorMetric(pendingExpressTxn.metricId, relayError, "relayer");
 
               const executionFeeErrorParams = getIsInsufficientExecutionFeeError(relayError);
@@ -1194,9 +1193,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
               );
 
               if (
-                getIsInvalidSubaccountApprovalNonceError(
-                  extractRelayTaskError(relayTaskStatuses[pendingExpressTxn.taskId])
-                ) &&
+                getIsInvalidSubaccountApprovalNonceError(relayError) &&
                 invalidateSubaccountApproval(pendingExpressTxn.subaccountApproval)
               ) {
                 // Wait to ensure there is no race condition with the pending order toast
@@ -1204,6 +1201,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
                   toast.dismiss(pendingOrderToastIdRef.current);
                   helperToast.error(getOutdatedSubaccountApprovalToastContent());
                 });
+                isViewed = true;
               }
             }
 
