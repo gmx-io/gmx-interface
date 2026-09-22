@@ -7,6 +7,7 @@ import Home from "./pages/Home/Home";
 import Rewards from "./pages/Rewards/Rewards";
 import { RewardsHeaderBadge } from "./pages/Rewards/RewardsHeaderBadge";
 import { getLandingScrollContainer } from "./utils/getLandingScrollContainer";
+import { scrollToLandingSection } from "./utils/scrollToLandingSection";
 
 const Builders = lazy(() => import("./pages/Builders/Builders"));
 const ReferralTerms = lazy(() => import("./pages/ReferralTerms/ReferralTerms"));
@@ -33,12 +34,16 @@ function RedirectToHomeWithSearch({ location }: RouteComponentProps) {
   return <Redirect to={`/${location.search}`} />;
 }
 
-function ScrollToTopOnNavigate() {
-  const { pathname } = useLocation();
+function ScrollOnNavigate() {
+  const { pathname, hash } = useLocation();
 
   useEffect(() => {
+    if (hash && document.getElementById(hash.slice(1))) {
+      scrollToLandingSection(hash.slice(1), 24);
+      return;
+    }
     getLandingScrollContainer().scrollTo(0, 0);
-  }, [pathname]);
+  }, [pathname, hash]);
 
   return null;
 }
@@ -49,7 +54,7 @@ export function LandingRoutes() {
 
   return (
     <>
-      <ScrollToTopOnNavigate />
+      <ScrollOnNavigate />
       <Switch>
         <Route exact path="/referral-terms">
           <Suspense fallback={<PageLoader />}>
@@ -84,7 +89,9 @@ export function LandingRoutes() {
         <Route
           exact
           path="/comeback"
-          render={({ location }) => <Redirect to={`/rewards${location.search}${location.hash}`} />}
+          render={({ location }) => (
+            <Redirect to={`/rewards${location.search}${location.hash || "#rewards-address"}`} />
+          )}
         />
         <Route path="*" render={RedirectToHomeWithSearch} />
       </Switch>
