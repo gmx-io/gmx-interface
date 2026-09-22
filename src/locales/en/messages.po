@@ -13,6 +13,10 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+msgid "Some distribution history could not be loaded. Please try again."
+msgstr "Some distribution history could not be loaded. Please try again."
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Slippage exceeded"
 msgstr "Slippage exceeded"
@@ -805,6 +809,7 @@ msgstr "Insufficient GMX pool liquidity"
 
 #: src/components/ChartTokenSelector/ArbitrumRecommendation.tsx
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainButtons.tsx
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
 #: src/pages/RewardsPage/components/RewardsVestingChainGuard.tsx
 msgid "Switch to {0}"
 msgstr "Switch to {0}"
@@ -1043,6 +1048,7 @@ msgstr "High external swap impact"
 msgid "Keep more of what you earn"
 msgstr "Keep more of what you earn"
 
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
 #: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 #: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 #: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
@@ -3955,6 +3961,11 @@ msgstr "Vest {0} esGMX with your {1} GMX"
 msgid "Decentralized finance dashboard"
 msgstr "Decentralized finance dashboard"
 
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+msgid "esGMX incentives"
+msgstr "esGMX incentives"
+
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Yes, stop vesting"
 msgstr "Yes, stop vesting"
@@ -4387,10 +4398,6 @@ msgstr "Trader activity"
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Trigger price"
 msgstr "Trigger price"
-
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-msgid "Your collateral stays locked until vesting is complete."
-msgstr "Your collateral stays locked until vesting is complete."
 
 #: src/components/AbFlagsSettings/AbFlagsSettings.tsx
 msgid "No AB flags"
@@ -5744,6 +5751,10 @@ msgstr "Safe unstake limit: {0} GMX / esGMX"
 msgid "Swap submitted"
 msgstr "Swap submitted"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Your collateral stays locked during vesting."
+msgstr "Your collateral stays locked during vesting."
+
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Slippage differs from price impact, which is based on open interest imbalances. <4>Read more</4>."
@@ -5938,6 +5949,7 @@ msgstr "Partial SL"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Claiming..."
 msgstr "Claiming..."
@@ -6061,6 +6073,9 @@ msgstr "Select a market"
 msgid "No tokens matched"
 msgstr "No tokens matched"
 
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Unable to refresh claimable rewards. Please try again."
@@ -6078,6 +6093,7 @@ msgstr "No trades yet"
 msgid "Price change to liquidation"
 msgstr "Price change to liquidation"
 
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
 #: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "esGMX claim failed"
@@ -9359,6 +9375,7 @@ msgstr "No distribution history"
 msgid "Mark price"
 msgstr "Mark price"
 
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "No rewards are currently available to claim."
 msgstr "No rewards are currently available to claim."
@@ -10438,6 +10455,10 @@ msgstr "You'll get a shareable link like: {PRODUCTION_HOST}/trade/?ref=YOURCODE.
 msgid "TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling."
 msgstr "TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling."
 
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
+msgid "Claim esGMX"
+msgstr "Claim esGMX"
+
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "fees"
@@ -11475,6 +11496,7 @@ msgstr "Receive"
 msgid "Mint {tokenSymbol}"
 msgstr "Mint {tokenSymbol}"
 
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
 #: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
@@ -12518,6 +12540,7 @@ msgstr "Showing the newest {DETAIL_LIMIT} of {totalCount} epochs."
 msgid "Distribution history for claimed rebates and airdrops"
 msgstr "Distribution history for claimed rebates and airdrops"
 
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
 #: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "esGMX claim submitted"

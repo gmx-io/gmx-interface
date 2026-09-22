@@ -601,15 +601,13 @@ describe("RewardsTiersTab", () => {
     expect(screen.getByText("Unlock bonuses and boosts and increase your rewards")).toBeDefined();
   });
 
-  it("shows vestable esGMX with its unit and opens the rewards vesting flow", () => {
+  it("shows vestable esGMX with its unit and links to Rewards without opening the vesting modal", () => {
     renderTab();
 
     const summary = screen.getByTestId("rewards-vestable-summary");
     expect(summary.textContent).toContain("5.00 esGMX");
     expect(summary.textContent?.replace(/\s/g, "")).toContain("$10.00");
-    expect(within(summary).getByRole("link", { name: "Start vesting" }).getAttribute("href")).toBe(
-      "/rewards/history?vesting=start"
-    );
+    expect(within(summary).getByRole("link", { name: "Start vesting" }).getAttribute("href")).toBe("/rewards/history");
   });
 
   it("shows a dash when vestable esGMX is known but its USD price is unavailable", () => {

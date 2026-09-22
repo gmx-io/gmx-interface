@@ -49,9 +49,9 @@ export default function useUserIncentiveData(chainId: number, account?: string) 
     return response.data?.distributions as UserIncentiveDistribution[] | undefined;
   }
 
-  const { data, error } = useSWR<UserIncentiveDistribution[] | undefined>(userIncentiveDataCacheKey, {
+  const { data, error, isLoading } = useSWR<UserIncentiveDistribution[] | undefined>(userIncentiveDataCacheKey, {
     fetcher: fetchUserIncentiveData,
   });
 
-  return { data, error };
+  return { data, error, isLoading };
 }

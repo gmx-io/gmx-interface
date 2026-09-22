@@ -13,6 +13,10 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+msgid "Some distribution history could not be loaded. Please try again."
+msgstr "部分分配记录无法加载。请重试。"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Slippage exceeded"
 msgstr "滑点超限"
@@ -805,6 +809,7 @@ msgstr "GMX 池流动性不足"
 
 #: src/components/ChartTokenSelector/ArbitrumRecommendation.tsx
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainButtons.tsx
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
 #: src/pages/RewardsPage/components/RewardsVestingChainGuard.tsx
 msgid "Switch to {0}"
 msgstr "切换到 {0}"
@@ -1043,6 +1048,7 @@ msgstr "高外部交换影响"
 msgid "Keep more of what you earn"
 msgstr "留住更多收益"
 
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
 #: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 #: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 #: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
@@ -3955,6 +3961,11 @@ msgstr "使用您的 {1} GMX 归属 {0} esGMX"
 msgid "Decentralized finance dashboard"
 msgstr "去中心化金融仪表盘"
 
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+msgid "esGMX incentives"
+msgstr "esGMX 激励"
+
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Yes, stop vesting"
 msgstr "是，停止归属"
@@ -4387,10 +4398,6 @@ msgstr "交易者活动"
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Trigger price"
 msgstr "触发价格"
-
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-msgid "Your collateral stays locked until vesting is complete."
-msgstr "您的抵押品将保持锁定，直到归属完成。"
 
 #: src/components/AbFlagsSettings/AbFlagsSettings.tsx
 msgid "No AB flags"
@@ -5744,6 +5751,10 @@ msgstr ""
 msgid "Swap submitted"
 msgstr "兑换已提交"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Your collateral stays locked during vesting."
+msgstr "您的抵押品在归属期间保持锁定。"
+
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Slippage differs from price impact, which is based on open interest imbalances. <4>Read more</4>."
@@ -5938,6 +5949,7 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Claiming..."
 msgstr "领取中..."
@@ -6061,6 +6073,9 @@ msgstr "选择市场"
 msgid "No tokens matched"
 msgstr "没有匹配的代币"
 
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Unable to refresh claimable rewards. Please try again."
@@ -6078,6 +6093,7 @@ msgstr "暂无交易"
 msgid "Price change to liquidation"
 msgstr "距清算价格变动"
 
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
 #: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "esGMX claim failed"
@@ -9359,6 +9375,7 @@ msgstr "暂无分配历史记录"
 msgid "Mark price"
 msgstr "标记价格"
 
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "No rewards are currently available to claim."
 msgstr "目前没有可领取的奖励。"
@@ -10438,6 +10455,10 @@ msgstr ""
 msgid "TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling."
 msgstr "仓位关闭时 TP/SL 订单将自动取消。仅适用于启用后创建的订单。"
 
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
+msgid "Claim esGMX"
+msgstr "领取 esGMX"
+
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "fees"
@@ -11475,6 +11496,7 @@ msgstr "接收"
 msgid "Mint {tokenSymbol}"
 msgstr "铸造 {tokenSymbol}"
 
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
 #: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
@@ -12518,6 +12540,7 @@ msgstr "显示最近 {DETAIL_LIMIT} 个周期（共 {totalCount} 个）。"
 msgid "Distribution history for claimed rebates and airdrops"
 msgstr "已领取返还和空投的分发历史记录"
 
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
 #: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "esGMX claim submitted"

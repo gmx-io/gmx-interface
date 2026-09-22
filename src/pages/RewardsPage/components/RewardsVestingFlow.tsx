@@ -25,7 +25,7 @@ import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { GMX_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKeySafe } from "lib/localStorage";
-import { formatAmount, formatUsd } from "lib/numbers";
+import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { useCurrentUnixTimestamp } from "lib/useCurrentUnixTimestamp";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendRewardsTransactionResultEvent, sendRewardsVestingModalOpenEvent } from "lib/userAnalytics/rewardsEvents";
@@ -71,6 +71,8 @@ import { RewardsVestingSimulatorApprovalModal } from "./RewardsVestingSimulatorA
 import { RewardsVestingStartedModal } from "./RewardsVestingStartedModal";
 
 const SIMULATED_TRANSACTION_DELAY = 1_000;
+const CLAIMABLE_GMX_DISPLAY_DECIMALS = 4;
+const MIN_VESTING_CLAIM_AMOUNT = expandDecimals(1, GMX_DECIMALS - CLAIMABLE_GMX_DISPLAY_DECIMALS);
 
 function waitForSimulatedTransaction() {
   return new Promise<void>((resolve) => {
@@ -116,6 +118,7 @@ function AmountHeader({
   unit,
   amount,
   usd,
+  displayDecimals = 2,
   active = false,
   loading = false,
   unavailable = false,
@@ -126,6 +129,7 @@ function AmountHeader({
   unit: React.ReactNode;
   amount: bigint;
   usd: bigint | undefined;
+  displayDecimals?: number;
   active?: boolean;
   loading?: boolean;
   unavailable?: boolean;
@@ -160,19 +164,19 @@ function AmountHeader({
         <div className="flex min-w-0 items-end gap-4">
           <span
             className={cx(
-              "min-w-0 truncate whitespace-nowrap text-[40px] font-medium leading-[50px] tracking-[-0.016em]",
+              "min-w-0 truncate whitespace-nowrap text-[40px] font-medium leading-[50px] numbers",
               active && !unavailable && amount > 0n ? "text-typography-primary" : "text-typography-secondary"
             )}
           >
-            {unavailable ? "-" : formatTokenAmount(amount)}
+            {unavailable ? "-" : formatTokenAmount(amount, displayDecimals)}
           </span>
           <span className="flex h-32 shrink-0 items-center whitespace-nowrap text-16 font-medium text-typography-secondary">
             {unit}
           </span>
         </div>
       )}
-      <span className="shrink-0 whitespace-nowrap text-12 font-medium leading-[1.25] text-typography-disabled">
-        {loading ? <Skeleton width={72} /> : `= ${unavailable ? "-" : formatUsd(usd) ?? "-"}`}
+      <span className="shrink-0 whitespace-nowrap text-12 font-medium leading-[1.25] text-typography-disabled numbers">
+        {loading ? <Skeleton width={72} /> : unavailable ? "-" : formatUsd(usd) ?? "-"}
       </span>
     </div>
   );
@@ -421,6 +425,8 @@ export function RewardsVestingFlow() {
       (ratioVesting.deactivatedAt !== 0n && BigInt(now) >= ratioVesting.deactivatedAt) ||
       ratioVesting.capUsedAmount - effectiveRemainingAmount >= (vestingInfo?.maxVestableAmount ?? 0n));
   const claimableAmount = vestingInfo?.claimable ?? 0n;
+  const hasClaimableRewards = claimableAmount >= MIN_VESTING_CLAIM_AMOUNT;
+  const displayedClaimableAmount = hasClaimableRewards ? claimableAmount : 0n;
   const vestableAmount = data
     ? getRewardsVestingAvailableAmount({
         walletEsGmxAmount: data.walletEsGmxBalance + data.claimableEsGmxRewards,
@@ -459,14 +465,17 @@ export function RewardsVestingFlow() {
 
   const handleClaim = async () => {
     if (isInteractiveDebug) {
-      if (claimableAmount === 0n || isClaiming || isUnlocking || isVestingActionPendingRef.current) {
+      if (!hasClaimableRewards || isClaiming || isUnlocking || isVestingActionPendingRef.current) {
         return;
       }
 
       isVestingActionPendingRef.current = true;
       setIsClaiming(true);
       try {
-        await runSimulatedTransaction(`Claim ${formatTokenAmount(claimableAmount)} GMX`, simulateRewardsVestingClaim);
+        await runSimulatedTransaction(
+          `Claim ${formatTokenAmount(claimableAmount, CLAIMABLE_GMX_DISPLAY_DECIMALS)} GMX`,
+          simulateRewardsVestingClaim
+        );
       } catch {
         return;
       } finally {
@@ -480,7 +489,7 @@ export function RewardsVestingFlow() {
       !account ||
       !signer ||
       walletChainId !== chainId ||
-      claimableAmount === 0n ||
+      !hasClaimableRewards ||
       data?.ratioVesting?.isFrozen ||
       isClaiming ||
       isUnlocking ||
@@ -524,7 +533,7 @@ export function RewardsVestingFlow() {
         helperToast.error(t`Unable to refresh claimable rewards. Please try again.`);
         return;
       }
-      if (submittedAmount === 0n || refreshedData?.ratioVesting?.isFrozen) {
+      if (submittedAmount < MIN_VESTING_CLAIM_AMOUNT || refreshedData?.ratioVesting?.isFrozen) {
         helperToast.info(t`No rewards are currently available to claim.`);
         return;
       }
@@ -811,7 +820,7 @@ export function RewardsVestingFlow() {
                     <br />
                     <span className="text-typography-secondary">
                       {ratioVesting ? (
-                        <Trans>Your collateral stays locked until vesting is complete.</Trans>
+                        <Trans>Your collateral stays locked during vesting.</Trans>
                       ) : (
                         <Trans>Your GMX collateral stays locked until it’s done.</Trans>
                       )}
@@ -976,9 +985,10 @@ export function RewardsVestingFlow() {
             step={3}
             label={<Trans>Rewards</Trans>}
             unit={<Trans>GMX Claimable</Trans>}
-            amount={claimableAmount}
-            usd={getUsdValue(claimableAmount, data?.gmxPrice)}
-            active={claimableAmount > 0n}
+            amount={displayedClaimableAmount}
+            usd={getUsdValue(displayedClaimableAmount, data?.gmxPrice)}
+            displayDecimals={CLAIMABLE_GMX_DISPLAY_DECIMALS}
+            active={hasClaimableRewards}
             loading={isInitialLoading}
             unavailable={isDisconnected || isUnavailable}
           />
@@ -998,7 +1008,7 @@ export function RewardsVestingFlow() {
                   symbol={pairTokenSymbol}
                 />
               </div>
-              {claimableAmount > 0n ? (
+              {hasClaimableRewards ? (
                 <RewardsVestingChainGuard chainId={chainId} skip={isInteractiveDebug}>
                   <ButtonTooltipWrapper
                     content={isInteractiveDebug ? undefined : multipleWalletExtensionsChainError.buttonTooltipMessage}
@@ -1019,7 +1029,7 @@ export function RewardsVestingFlow() {
                         (isClaiming ? (
                           <Trans>Claiming...</Trans>
                         ) : (
-                          <Trans>Claim {formatTokenAmount(claimableAmount)} GMX</Trans>
+                          <Trans>Claim {formatTokenAmount(claimableAmount, CLAIMABLE_GMX_DISPLAY_DECIMALS)} GMX</Trans>
                         ))}
                       <ClaimIcon className="size-16" />
                     </Button>

@@ -13,6 +13,10 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+msgid "Some distribution history could not be loaded. Please try again."
+msgstr "配布履歴の一部を読み込めませんでした。もう一度お試しください。"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Slippage exceeded"
 msgstr "スリッページ超過"
@@ -805,6 +809,7 @@ msgstr "GMXプールの流動性不足"
 
 #: src/components/ChartTokenSelector/ArbitrumRecommendation.tsx
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainButtons.tsx
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
 #: src/pages/RewardsPage/components/RewardsVestingChainGuard.tsx
 msgid "Switch to {0}"
 msgstr "{0} に切り替え"
@@ -1043,6 +1048,7 @@ msgstr "高い外部スワップ影響"
 msgid "Keep more of what you earn"
 msgstr "収益をより多く確保"
 
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
 #: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 #: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 #: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
@@ -3955,6 +3961,11 @@ msgstr "保有する{1} GMXで{0} esGMXをベスティング"
 msgid "Decentralized finance dashboard"
 msgstr "分散型金融ダッシュボード"
 
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+msgid "esGMX incentives"
+msgstr "esGMXインセンティブ"
+
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Yes, stop vesting"
 msgstr "はい、ベスティングを停止"
@@ -4387,10 +4398,6 @@ msgstr "トレーダーアクティビティ"
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Trigger price"
 msgstr "トリガー価格"
-
-#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
-msgid "Your collateral stays locked until vesting is complete."
-msgstr "ベスティングが完了するまで担保はロックされます。"
 
 #: src/components/AbFlagsSettings/AbFlagsSettings.tsx
 msgid "No AB flags"
@@ -5744,6 +5751,10 @@ msgstr ""
 msgid "Swap submitted"
 msgstr "スワップを送信しました"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Your collateral stays locked during vesting."
+msgstr "ベスティング中は担保がロックされたままになります。"
+
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Slippage differs from price impact, which is based on open interest imbalances. <4>Read more</4>."
@@ -5938,6 +5949,7 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Claiming..."
 msgstr "請求中..."
@@ -6061,6 +6073,9 @@ msgstr "マーケットを選択"
 msgid "No tokens matched"
 msgstr "一致するトークンなし"
 
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Unable to refresh claimable rewards. Please try again."
@@ -6078,6 +6093,7 @@ msgstr "トレード履歴はありません"
 msgid "Price change to liquidation"
 msgstr "清算までの価格変動"
 
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
 #: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "esGMX claim failed"
@@ -9359,6 +9375,7 @@ msgstr "配分履歴なし"
 msgid "Mark price"
 msgstr "マーク価格"
 
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "No rewards are currently available to claim."
 msgstr "現在受け取り可能な報酬はありません。"
@@ -10438,6 +10455,10 @@ msgstr ""
 msgid "TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling."
 msgstr "TP/SL注文はポジションの決済時に自動キャンセルされます。有効化後に作成された注文にのみ適用されます。"
 
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
+msgid "Claim esGMX"
+msgstr "esGMXを請求"
+
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "fees"
@@ -11475,6 +11496,7 @@ msgstr "受取"
 msgid "Mint {tokenSymbol}"
 msgstr "{tokenSymbol}をミント"
 
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
 #: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
@@ -12518,6 +12540,7 @@ msgstr "全{totalCount}エポックのうち最新{DETAIL_LIMIT}件を表示し�
 msgid "Distribution history for claimed rebates and airdrops"
 msgstr "受け取り済みリベートおよびエアドロップの配布履歴"
 
+#: src/components/UserIncentiveDistribution/EsGmxIssuerClaimableAmounts.tsx
 #: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "esGMX claim submitted"
