@@ -3602,6 +3602,10 @@ msgstr "您的 GMX Account 中没有资产"
 msgid "Order type"
 msgstr "订单类型"
 
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {symbol} in your GMX Account for this transaction. <0>Deposit {symbol}</0>"
+msgstr "您的 GMX 账户中的 {symbol} 不足以完成此交易。<0>存入 {symbol}</0>"
+
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr ""
@@ -3841,6 +3845,10 @@ msgstr "触发价格"
 #: src/components/AbFlagsSettings/AbFlagsSettings.tsx
 msgid "No AB flags"
 msgstr "无 AB 标志"
+
+#: src/components/Errors/gasErrors.tsx
+msgid "Not enough {payTokens} or {gasTokenSymbol} in your {sourceLabel}: this transaction spends {payTokens} and pays its network fee in {gasTokenSymbol}. Check both balances."
+msgstr "您的{sourceLabel}中的 {payTokens} 或 {gasTokenSymbol} 不足：此交易花费 {payTokens}，并以 {gasTokenSymbol} 支付网络费用。请检查这两个余额。"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "27% of protocol revenue is used to buy back GMX on the open market. Bought-back GMX accumulates in the Treasury and will be distributed to stakers when GMX reaches $90, proportional to staking power. No new GMX tokens are minted."
@@ -5274,6 +5282,10 @@ msgstr "输入提取金额"
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active orders"
 msgstr "活跃订单"
+
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {symbol} in your Wallet for this transaction. <0>Swap</0> or <1>bridge</1> {symbol}."
+msgstr "您钱包中的 {symbol} 不足以完成此交易。请<0>交换</0>或<1>跨链桥</1>转入 {symbol}。"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Buying GM unavailable"

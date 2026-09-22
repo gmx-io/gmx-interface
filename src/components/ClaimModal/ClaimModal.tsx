@@ -394,7 +394,7 @@ function ClaimModalMultichain(p: Props) {
 
         const toastParams = getTxnErrorToast(chainId, errorData, {
           defaultMessage: getClaimFundingFailureToastContent(),
-          expressFee: { gasPaymentTokenAddress: gmxAccountGasPaymentTokenAddress, isGmxAccount: true },
+          expressTxn: { gasPaymentTokenAddress: gmxAccountGasPaymentTokenAddress, isGmxAccount: true },
         });
         helperToast.error(toastParams.errorContent, { autoClose: toastParams.autoCloseToast });
       })

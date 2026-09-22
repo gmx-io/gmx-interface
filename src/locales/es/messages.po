@@ -3602,6 +3602,10 @@ msgstr "No hay activos en tu GMX Account"
 msgid "Order type"
 msgstr "Tipo de orden"
 
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {symbol} in your GMX Account for this transaction. <0>Deposit {symbol}</0>"
+msgstr "{symbol} insuficiente en tu Cuenta GMX para esta transacción. <0>Depositar {symbol}</0>"
+
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr ""
@@ -3841,6 +3845,10 @@ msgstr "Precio de activación"
 #: src/components/AbFlagsSettings/AbFlagsSettings.tsx
 msgid "No AB flags"
 msgstr "Sin AB flags"
+
+#: src/components/Errors/gasErrors.tsx
+msgid "Not enough {payTokens} or {gasTokenSymbol} in your {sourceLabel}: this transaction spends {payTokens} and pays its network fee in {gasTokenSymbol}. Check both balances."
+msgstr "No hay suficiente {payTokens} o {gasTokenSymbol} en tu {sourceLabel}: esta transacción gasta {payTokens} y paga su comisión de red en {gasTokenSymbol}. Comprueba ambos saldos."
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "27% of protocol revenue is used to buy back GMX on the open market. Bought-back GMX accumulates in the Treasury and will be distributed to stakers when GMX reaches $90, proportional to staking power. No new GMX tokens are minted."
@@ -5274,6 +5282,10 @@ msgstr "Ingresa cantidad de retiro"
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active orders"
 msgstr "Órdenes activas"
+
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {symbol} in your Wallet for this transaction. <0>Swap</0> or <1>bridge</1> {symbol}."
+msgstr "{symbol} insuficiente en tu Monedero para esta transacción. <0>Intercambia</0> o <1>transfiere por puente</1> {symbol}."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Buying GM unavailable"

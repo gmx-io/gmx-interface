@@ -8,12 +8,17 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GasPaymentParams } from "domain/synthetics/express";
 import { getExecutionFeeWarning, type ExecutionFee } from "domain/synthetics/fees";
-import { getNetworkFeeSourceExplanation, type NetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
+import {
+  getNetworkFeeSourceExplanation,
+  getNetworkFeeSourceLabel,
+  WALLET_NETWORK_FEE_SOURCE,
+  type NetworkFeeSource,
+} from "domain/synthetics/fees/networkFeeSource";
 import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
-import { TokenData } from "domain/tokens";
+import { TokenBalanceType, TokenData } from "domain/tokens";
 import { formatTokenAmountWithUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { convertTokenAddress } from "sdk/configs/tokens";
+import { convertTokenAddress, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 import ExchangeInfoRow from "components/ExchangeInfoRow/ExchangeInfoRow";
@@ -100,6 +105,24 @@ export function NetworkFeeRow({
 
   const networkFeeDisplayDecimals = networkFee?.feeToken.isStable ? 2 : 5;
 
+  const refundSource = feeSource ?? WALLET_NETWORK_FEE_SOURCE;
+  const refundToken = useMemo(() => {
+    if (!networkFee) {
+      return undefined;
+    }
+
+    if (!networkFee.isExpress) {
+      return networkFee.feeToken;
+    }
+
+    const refundTokenAddress =
+      refundSource.balanceType === TokenBalanceType.GmxAccount
+        ? getWrappedToken(chainId).address
+        : NATIVE_TOKEN_ADDRESS;
+
+    return getByKey(tokensData, refundTokenAddress);
+  }, [chainId, networkFee, refundSource, tokensData]);
+
   const { estimatedRefundText, estimatedRefundUsd, estimatedRefundTokenAmount } = useMemo(() => {
     let estimatedRefundUsd: bigint | undefined;
 
@@ -119,28 +142,33 @@ export function NetworkFeeRow({
 
     const estimatedRefundTokenAmount = convertToTokenAmount(
       estimatedRefundUsd,
-      networkFee?.feeToken.decimals,
-      networkFee?.feeToken.prices.minPrice
+      refundToken?.decimals,
+      refundToken?.prices.minPrice
     );
 
-    const estimatedRefundText = formatTokenAmountWithUsd(
+    const estimatedRefundAmountText = formatTokenAmountWithUsd(
       estimatedRefundTokenAmount,
       estimatedRefundUsd,
-      networkFee?.feeToken.symbol,
-      networkFee?.feeToken.decimals,
+      refundToken?.symbol,
+      refundToken?.decimals,
       {
         displayPlus: true,
-        displayDecimals: networkFeeDisplayDecimals,
-        isStable: networkFee?.feeToken.isStable,
+        displayDecimals: refundToken?.isStable ? 2 : 5,
+        isStable: refundToken?.isStable,
       }
     );
+
+    const estimatedRefundText =
+      estimatedRefundAmountText !== undefined
+        ? `${estimatedRefundAmountText} · ${getNetworkFeeSourceLabel(refundSource)}`
+        : undefined;
 
     return {
       estimatedRefundText,
       estimatedRefundUsd,
       estimatedRefundTokenAmount,
     };
-  }, [executionFeeBufferBps, networkFee, networkFeeDisplayDecimals]);
+  }, [executionFeeBufferBps, networkFee, refundSource, refundToken]);
 
   const value: ReactNode = useMemo(() => {
     if (networkFee === undefined) {
@@ -158,8 +186,10 @@ export function NetworkFeeRow({
       }
     );
 
-    const feeUsdAfterRefund = networkFee.feeUsd - (estimatedRefundUsd ?? 0n);
-    const feeAmountAfterRefund = networkFee.feeAmount - (estimatedRefundTokenAmount ?? 0n);
+    const feeUsdAfterRefund = networkFee.isExpress ? networkFee.feeUsd : networkFee.feeUsd - (estimatedRefundUsd ?? 0n);
+    const feeAmountAfterRefund = networkFee.isExpress
+      ? networkFee.feeAmount
+      : networkFee.feeAmount - (estimatedRefundTokenAmount ?? 0n);
 
     const warning = executionFee ? getExecutionFeeWarning(chainId, executionFee) : undefined;
 

@@ -134,7 +134,10 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
       await expect(page.getByText("Max network fee:", { exact: true })).toBeVisible();
     });
 
-    test("Express: gas payment token from the wallet, refund lines in the same token", async ({ mount, page }) => {
+    test("Express: gas payment token from the wallet, refund in the native token to the wallet", async ({
+      mount,
+      page,
+    }) => {
       await mount(<NetworkFeeSurfaceStory surface="tradeBox" express />);
 
       await page.locator(getDataQALocator("margin-input")).fill("1000");
@@ -146,7 +149,10 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
       await feeValueHandle(row).hover();
       await expect(page.getByText(WALLET_EXPRESS_EXPLANATION)).toBeVisible();
       await expect(page.getByText("Max network fee:", { exact: true }).locator("..")).toContainText("USDC");
-      await expect(page.getByText("Estimated fee refund").locator("..")).toContainText("USDC");
+      const refundLine = page.getByText("Estimated fee refund").locator("..");
+      await expect(refundLine).toContainText(" ETH (");
+      await expect(refundLine).toContainText("· Wallet");
+      await expect(refundLine).not.toContainText("USDC");
     });
 
     test("GMX Account: gas payment token from the GMX Account", async ({ mount, page }) => {

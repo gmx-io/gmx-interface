@@ -27,8 +27,11 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
 import {
+  InsufficientGmxAccountTokenBalanceMessage,
   InsufficientNativeTokenBalanceMessage,
   InsufficientSourceChainNativeTokenBalanceMessage,
+  InsufficientUnknownTokenBalanceMessage,
+  InsufficientWalletTokenBalanceMessage,
   ValidationBannerErrorContent,
 } from "./gasErrors";
 import { getContractErrorToastContent } from "./getContractErrorToastContent";
@@ -44,19 +47,32 @@ export type AdditionalErrorParams = {
   isExternalSwapFallback?: boolean;
   permitIssueType?: PermitIssueType;
   setIsSettingsVisible?: (isVisible: boolean) => void;
-  expressFee?: { gasPaymentTokenAddress: string; isGmxAccount: boolean };
+  expressTxn?: ExpressTxnErrorContext;
 };
 
-export function getInsufficientFeeToastBanner({
+export type ExpressTxnErrorContext = {
+  gasPaymentTokenAddress: string;
+  isGmxAccount: boolean;
+  /** Every token the transaction pulls from the paying balance, the gas payment token included */
+  payTokenAddresses?: string[];
+  possiblyInsufficientTokenAddresses?: string[];
+};
+
+export type InsufficientBalanceToastBanner =
+  | { kind: "fee"; validationBannerErrorName: ValidationBannerErrorName; gasPaymentTokenAddress: string }
+  | { kind: "payToken"; isGmxAccount: boolean; tokenAddress: string }
+  | { kind: "unknown"; isGmxAccount: boolean; gasPaymentTokenAddress: string; payTokenAddresses: string[] };
+
+export function getInsufficientBalanceToastBanner({
   chainId,
   errorData,
-  expressFee,
+  expressTxn,
 }: {
   chainId: number;
   errorData: ErrorData | undefined;
-  expressFee: AdditionalErrorParams["expressFee"];
-}): { validationBannerErrorName: ValidationBannerErrorName; gasPaymentTokenAddress: string } | undefined {
-  if (!errorData || !expressFee) {
+  expressTxn: ExpressTxnErrorContext | undefined;
+}): InsufficientBalanceToastBanner | undefined {
+  if (!errorData || !expressTxn) {
     return undefined;
   }
 
@@ -67,35 +83,92 @@ export function getInsufficientFeeToastBanner({
     return undefined;
   }
 
+  const { gasPaymentTokenAddress, isGmxAccount } = expressTxn;
+
+  const feeBanner: InsufficientBalanceToastBanner = {
+    kind: "fee",
+    validationBannerErrorName: isGmxAccount
+      ? ValidationBannerErrorName.insufficientGmxAccountCurrentGasTokenBalance
+      : ValidationBannerErrorName.insufficientWalletGasTokenBalance,
+    gasPaymentTokenAddress,
+  };
+
   const revertTokenAddress =
     feeError.isErrorMatched && feeError.tokenAddress && isValidTokenSafe(chainId, feeError.tokenAddress)
       ? feeError.tokenAddress
       : undefined;
 
-  return {
-    validationBannerErrorName: expressFee.isGmxAccount
-      ? ValidationBannerErrorName.insufficientGmxAccountCurrentGasTokenBalance
-      : ValidationBannerErrorName.insufficientWalletGasTokenBalance,
-    gasPaymentTokenAddress: revertTokenAddress ?? expressFee.gasPaymentTokenAddress,
-  };
+  const possiblyInsufficientTokenAddresses = expressTxn.possiblyInsufficientTokenAddresses ?? [];
+  const namedTokenAddress =
+    revertTokenAddress ??
+    (possiblyInsufficientTokenAddresses.length === 1 ? possiblyInsufficientTokenAddresses[0] : undefined);
+
+  if (namedTokenAddress !== undefined) {
+    return namedTokenAddress === gasPaymentTokenAddress
+      ? feeBanner
+      : { kind: "payToken", isGmxAccount, tokenAddress: namedTokenAddress };
+  }
+
+  const otherPayTokenAddresses = (expressTxn.payTokenAddresses ?? []).filter(
+    (tokenAddress) => tokenAddress !== gasPaymentTokenAddress
+  );
+
+  if (otherPayTokenAddresses.length === 0) {
+    return feeBanner;
+  }
+
+  return { kind: "unknown", isGmxAccount, gasPaymentTokenAddress, payTokenAddresses: otherPayTokenAddresses };
 }
 
-export function getInsufficientFeeToastContent({
+export function getInsufficientBalanceToastContent({
   chainId,
   banner,
   debugErrorMessage,
 }: {
   chainId: number;
-  banner: NonNullable<ReturnType<typeof getInsufficientFeeToastBanner>>;
+  banner: InsufficientBalanceToastBanner;
   debugErrorMessage: string | undefined;
 }) {
+  let message: ReactNode;
+
+  switch (banner.kind) {
+    case "fee":
+      message = (
+        <ValidationBannerErrorContent
+          validationBannerErrorName={banner.validationBannerErrorName}
+          chainId={chainId as ContractsChainId}
+          gasPaymentTokenAddress={banner.gasPaymentTokenAddress}
+        />
+      );
+      break;
+    case "payToken":
+      message = banner.isGmxAccount ? (
+        <InsufficientGmxAccountTokenBalanceMessage
+          chainId={chainId as ContractsChainId}
+          tokenAddress={banner.tokenAddress}
+        />
+      ) : (
+        <InsufficientWalletTokenBalanceMessage
+          chainId={chainId as ContractsChainId}
+          tokenAddress={banner.tokenAddress}
+        />
+      );
+      break;
+    case "unknown":
+      message = (
+        <InsufficientUnknownTokenBalanceMessage
+          chainId={chainId as ContractsChainId}
+          isGmxAccount={banner.isGmxAccount}
+          gasPaymentTokenAddress={banner.gasPaymentTokenAddress}
+          payTokenAddresses={banner.payTokenAddresses}
+        />
+      );
+      break;
+  }
+
   return (
     <div>
-      <ValidationBannerErrorContent
-        validationBannerErrorName={banner.validationBannerErrorName}
-        chainId={chainId as ContractsChainId}
-        gasPaymentTokenAddress={banner.gasPaymentTokenAddress}
-      />
+      {message}
       <br />
       <br />
       {debugErrorMessage && <ToastifyDebug error={debugErrorMessage} />}
@@ -127,7 +200,7 @@ export function getTxnErrorToast(
     isExternalSwapFallback,
     permitIssueType,
     setIsSettingsVisible,
-    expressFee,
+    expressTxn,
   }: AdditionalErrorParams
 ) {
   const debugErrorMessage = getDebugErrorMessage(errorData);
@@ -217,9 +290,13 @@ export function getTxnErrorToast(
     return toastParams;
   }
 
-  const feeBanner = getInsufficientFeeToastBanner({ chainId, errorData, expressFee });
-  if (feeBanner) {
-    toastParams.errorContent = getInsufficientFeeToastContent({ chainId, banner: feeBanner, debugErrorMessage });
+  const balanceBanner = getInsufficientBalanceToastBanner({ chainId, errorData, expressTxn });
+  if (balanceBanner) {
+    toastParams.errorContent = getInsufficientBalanceToastContent({
+      chainId,
+      banner: balanceBanner,
+      debugErrorMessage,
+    });
     return toastParams;
   }
 

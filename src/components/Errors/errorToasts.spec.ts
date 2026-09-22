@@ -5,7 +5,7 @@ import { ARBITRUM, SOURCE_BASE_MAINNET } from "config/chains";
 import { ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
 import { TxErrorType } from "sdk/utils/errors/transactionsErrors";
 
-import { getDebugErrorMessage, getInsufficientFeeToastBanner, getTxnErrorToast } from "./errorToasts";
+import { getDebugErrorMessage, getInsufficientBalanceToastBanner, getTxnErrorToast } from "./errorToasts";
 import { InsufficientNativeTokenBalanceMessage, InsufficientSourceChainNativeTokenBalanceMessage } from "./gasErrors";
 
 const ACCOUNT = "0x1111111111111111111111111111111111111111";
@@ -56,75 +56,139 @@ describe("getDebugErrorMessage", () => {
   });
 });
 
-describe("getInsufficientFeeToastBanner", () => {
-  it("names the token from the revert over the configured gas token and picks the GMX Account banner", () => {
+const ERC20_BALANCE_REVERT = { errorMessage: "execution reverted: ERC20: transfer amount exceeds balance" };
+
+const WALLET_FEE_BANNER = {
+  kind: "fee",
+  validationBannerErrorName: ValidationBannerErrorName.insufficientWalletGasTokenBalance,
+  gasPaymentTokenAddress: USDC,
+};
+
+describe("getInsufficientBalanceToastBanner", () => {
+  it("names the collateral token from the revert instead of the configured gas token", () => {
     expect(
-      getInsufficientFeeToastBanner({
+      getInsufficientBalanceToastBanner({
         chainId: ARBITRUM,
         errorData: { contractError: "InsufficientMultichainBalance", contractErrorArgs: [ACCOUNT, WETH, 0n, 1n] },
-        expressFee: { gasPaymentTokenAddress: USDC, isGmxAccount: true },
+        expressTxn: { gasPaymentTokenAddress: USDC, isGmxAccount: true },
+      })
+    ).toEqual({ kind: "payToken", isGmxAccount: true, tokenAddress: WETH });
+  });
+
+  it("keeps the fee banner when the revert names the gas token itself", () => {
+    expect(
+      getInsufficientBalanceToastBanner({
+        chainId: ARBITRUM,
+        errorData: { contractError: "InsufficientMultichainBalance", contractErrorArgs: [ACCOUNT, USDC, 0n, 1n] },
+        expressTxn: { gasPaymentTokenAddress: USDC, isGmxAccount: true },
       })
     ).toEqual({
+      kind: "fee",
       validationBannerErrorName: ValidationBannerErrorName.insufficientGmxAccountCurrentGasTokenBalance,
-      gasPaymentTokenAddress: WETH,
+      gasPaymentTokenAddress: USDC,
     });
   });
 
   it("falls back to the configured gas token when the revert names a token outside the token config", () => {
     expect(
-      getInsufficientFeeToastBanner({
+      getInsufficientBalanceToastBanner({
         chainId: ARBITRUM,
         errorData: { contractError: "InsufficientMultichainBalance", contractErrorArgs: [ACCOUNT, GM_TOKEN, 0n, 1n] },
-        expressFee: { gasPaymentTokenAddress: USDC, isGmxAccount: true },
+        expressTxn: { gasPaymentTokenAddress: USDC, isGmxAccount: true },
       })
     ).toEqual({
+      kind: "fee",
       validationBannerErrorName: ValidationBannerErrorName.insufficientGmxAccountCurrentGasTokenBalance,
       gasPaymentTokenAddress: USDC,
     });
   });
 
-  it("falls back to the configured gas token for a bare ERC20 balance revert paid from the wallet", () => {
+  it("blames the gas token for a bare ERC20 revert when the transaction pulls nothing else", () => {
     expect(
-      getInsufficientFeeToastBanner({
+      getInsufficientBalanceToastBanner({
         chainId: ARBITRUM,
-        errorData: { errorMessage: "execution reverted: ERC20: transfer amount exceeds balance" },
-        expressFee: { gasPaymentTokenAddress: USDC, isGmxAccount: false },
+        errorData: ERC20_BALANCE_REVERT,
+        expressTxn: { gasPaymentTokenAddress: USDC, isGmxAccount: false, payTokenAddresses: [USDC] },
       })
-    ).toEqual({
-      validationBannerErrorName: ValidationBannerErrorName.insufficientWalletGasTokenBalance,
-      gasPaymentTokenAddress: USDC,
-    });
+    ).toEqual(WALLET_FEE_BANNER);
+  });
+
+  it("names the collateral token when its balance is the only one that cannot cover the transaction", () => {
+    expect(
+      getInsufficientBalanceToastBanner({
+        chainId: ARBITRUM,
+        errorData: ERC20_BALANCE_REVERT,
+        expressTxn: {
+          gasPaymentTokenAddress: WETH,
+          isGmxAccount: false,
+          payTokenAddresses: [USDC, WETH],
+          possiblyInsufficientTokenAddresses: [USDC],
+        },
+      })
+    ).toEqual({ kind: "payToken", isGmxAccount: false, tokenAddress: USDC });
+  });
+
+  it("names the gas token when its balance is the only one that cannot cover the transaction", () => {
+    expect(
+      getInsufficientBalanceToastBanner({
+        chainId: ARBITRUM,
+        errorData: ERC20_BALANCE_REVERT,
+        expressTxn: {
+          gasPaymentTokenAddress: USDC,
+          isGmxAccount: false,
+          payTokenAddresses: [WETH, USDC],
+          possiblyInsufficientTokenAddresses: [USDC],
+        },
+      })
+    ).toEqual(WALLET_FEE_BANNER);
+  });
+
+  it("does not guess between the collateral and the gas token when the balances do not settle it", () => {
+    const expressTxn = { gasPaymentTokenAddress: WETH, isGmxAccount: false, payTokenAddresses: [USDC, WETH] };
+
+    expect(
+      getInsufficientBalanceToastBanner({
+        chainId: ARBITRUM,
+        errorData: ERC20_BALANCE_REVERT,
+        expressTxn: { ...expressTxn, possiblyInsufficientTokenAddresses: [] },
+      })
+    ).toEqual({ kind: "unknown", isGmxAccount: false, gasPaymentTokenAddress: WETH, payTokenAddresses: [USDC] });
+
+    expect(
+      getInsufficientBalanceToastBanner({
+        chainId: ARBITRUM,
+        errorData: ERC20_BALANCE_REVERT,
+        expressTxn: { ...expressTxn, possiblyInsufficientTokenAddresses: [USDC, WETH] },
+      })
+    ).toEqual({ kind: "unknown", isGmxAccount: false, gasPaymentTokenAddress: WETH, payTokenAddresses: [USDC] });
   });
 
   it("treats NotEnoughFunds on the Express path as a gas token shortfall, not a native one", () => {
     expect(
-      getInsufficientFeeToastBanner({
+      getInsufficientBalanceToastBanner({
         chainId: ARBITRUM,
         errorData: { txErrorType: TxErrorType.NotEnoughFunds },
-        expressFee: { gasPaymentTokenAddress: USDC, isGmxAccount: false },
+        expressTxn: { gasPaymentTokenAddress: USDC, isGmxAccount: false },
       })
-    ).toEqual({
-      validationBannerErrorName: ValidationBannerErrorName.insufficientWalletGasTokenBalance,
-      gasPaymentTokenAddress: USDC,
-    });
+    ).toEqual(WALLET_FEE_BANNER);
   });
 
   it("leaves NotEnoughFunds to the native banner when the transaction was not Express", () => {
     expect(
-      getInsufficientFeeToastBanner({
+      getInsufficientBalanceToastBanner({
         chainId: ARBITRUM,
         errorData: { txErrorType: TxErrorType.NotEnoughFunds },
-        expressFee: undefined,
+        expressTxn: undefined,
       })
     ).toBeUndefined();
   });
 
   it("ignores unrelated contract errors", () => {
     expect(
-      getInsufficientFeeToastBanner({
+      getInsufficientBalanceToastBanner({
         chainId: ARBITRUM,
         errorData: { contractError: "OrderNotFound", contractErrorArgs: ["0xkey"] },
-        expressFee: { gasPaymentTokenAddress: USDC, isGmxAccount: true },
+        expressTxn: { gasPaymentTokenAddress: USDC, isGmxAccount: true },
       })
     ).toBeUndefined();
   });

@@ -268,7 +268,7 @@ export function BridgeOutModal({
     } catch (error) {
       const toastParams = getTxnErrorToast(chainId, parseError(error), {
         defaultMessage: t`Withdrawal failed`,
-        expressFee: { gasPaymentTokenAddress, isGmxAccount: true },
+        expressTxn: { gasPaymentTokenAddress, isGmxAccount: true },
       });
       helperToast.error(toastParams.errorContent, {
         autoClose: toastParams.autoCloseToast,

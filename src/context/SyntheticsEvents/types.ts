@@ -88,7 +88,7 @@ export type PendingExpressTxnParams = {
   gasPaymentTokenAddress?: string;
   subaccountApproval?: SignedSubaccountApproval;
   tokenPermits?: SignedTokenPermit[];
-  payTokenAddresses?: string[];
+  payAmounts?: { [tokenAddress: string]: bigint };
   pendingOrdersKeys?: string[];
   pendingPositionsKeys?: string[];
   estimatedExecutionFee?: bigint;

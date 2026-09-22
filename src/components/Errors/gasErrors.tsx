@@ -6,6 +6,7 @@ import { zeroAddress } from "viem";
 import { ContractsChainId, getChainName, getViemChain, SourceChainId } from "config/chains";
 import { JUMPER_BRIDGE_URL } from "config/links";
 import { useGmxAccountDepositViewTokenAddress, useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
+import { getNetworkFeeSource, getNetworkFeeSourceLabel } from "domain/synthetics/fees/networkFeeSource";
 import { ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
 import { useGasPaymentTokensText } from "lib/gas/useGasPaymentTokensText";
 import { useLocalizedList } from "lib/i18n";
@@ -150,6 +151,86 @@ export function InsufficientGmxAccountGasTokenBalanceMessage({
         <ColorfulButtonLink color="blue" onClick={handleDeposit}>
           Deposit {tokensText}
         </ColorfulButtonLink>
+      </Trans>
+    </div>
+  );
+}
+
+export function InsufficientWalletTokenBalanceMessage({
+  chainId,
+  tokenAddress,
+  onBeforeNavigation,
+}: {
+  chainId: ContractsChainId;
+  tokenAddress: string;
+  onBeforeNavigation?: () => void;
+}) {
+  const symbol = getToken(chainId, tokenAddress).symbol;
+
+  return (
+    <div>
+      <Trans>
+        Insufficient {symbol} in your Wallet for this transaction.{" "}
+        <Link className="underline underline-offset-2" to={`/trade/swap?to=${symbol}`} onClick={onBeforeNavigation}>
+          Swap
+        </Link>{" "}
+        or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge</ExternalLink> {symbol}.
+      </Trans>
+    </div>
+  );
+}
+
+export function InsufficientGmxAccountTokenBalanceMessage({
+  chainId,
+  tokenAddress,
+  onBeforeNavigation,
+}: {
+  chainId: ContractsChainId;
+  tokenAddress: string;
+  onBeforeNavigation?: () => void;
+}) {
+  const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
+  const [, setGmxAccountDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
+  const symbol = getToken(chainId, tokenAddress).symbol;
+
+  const handleDeposit = useCallback(() => {
+    onBeforeNavigation?.();
+    setGmxAccountDepositViewTokenAddress(convertTokenAddress(chainId, tokenAddress, "native"));
+    setGmxAccountModalOpen("deposit");
+  }, [chainId, onBeforeNavigation, setGmxAccountDepositViewTokenAddress, setGmxAccountModalOpen, tokenAddress]);
+
+  return (
+    <div>
+      <Trans>
+        Insufficient {symbol} in your GMX Account for this transaction.{" "}
+        <ColorfulButtonLink color="blue" onClick={handleDeposit}>
+          Deposit {symbol}
+        </ColorfulButtonLink>
+      </Trans>
+    </div>
+  );
+}
+
+export function InsufficientUnknownTokenBalanceMessage({
+  chainId,
+  isGmxAccount,
+  gasPaymentTokenAddress,
+  payTokenAddresses,
+}: {
+  chainId: ContractsChainId;
+  isGmxAccount: boolean;
+  gasPaymentTokenAddress: string;
+  payTokenAddresses: string[];
+}) {
+  const gasTokenSymbol = getToken(chainId, gasPaymentTokenAddress).symbol;
+  const payTokens = useLocalizedList(payTokenAddresses.map((tokenAddress) => getToken(chainId, tokenAddress).symbol));
+  const sourceLabel = getNetworkFeeSourceLabel(getNetworkFeeSource({ isGmxAccount }));
+
+  return (
+    <div>
+      <Trans>
+        Not enough {payTokens} or {gasTokenSymbol} in your {sourceLabel}: this transaction spends {payTokens} and pays
+        its network fee in {gasTokenSymbol}. Check both balances.
       </Trans>
     </div>
   );
