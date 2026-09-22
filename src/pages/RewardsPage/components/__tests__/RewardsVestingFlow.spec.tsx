@@ -1,6 +1,6 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
-import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { ethers } from "ethers";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -359,7 +359,7 @@ describe("RewardsVestingFlow", () => {
     expect(screen.getByText("Vesting")).toBeDefined();
     expect(screen.getByText("Rewards")).toBeDefined();
     expect(screen.getAllByText("0").length).toBeGreaterThanOrEqual(3);
-    expect(screen.getAllByText((text) => text.replace(/\s/g, "") === "=$0.00")).toHaveLength(3);
+    expect(screen.getAllByText((text) => text.replace(/\s/g, "") === "$0.00")).toHaveLength(3);
     expect(screen.getByText("Earn esGMX rewards from eligible trading activity.")).toBeDefined();
     expect(screen.getByText(/No esGMX is currently vesting/)).toBeDefined();
     expect(screen.getByRole("button", { name: "Nothing to vest" }).hasAttribute("disabled")).toBe(true);
@@ -750,7 +750,30 @@ describe("RewardsVestingFlow", () => {
     expect(screen.getByText("250")).toBeDefined();
   });
 
-  it("claims GMX through the Vester and refreshes the account snapshot", async () => {
+  it.each([1n, 99_999_999_999_999n])("hides claimable vesting dust of %s wei", (claimable) => {
+    setVestingData({
+      ...idleData,
+      vestingInfo: {
+        ...idleData.vestingInfo,
+        vestedAmount: TOKEN_UNIT,
+        escrowedBalance: TOKEN_UNIT,
+        claimable,
+      },
+    });
+    renderFlow();
+
+    const rewardsHeader = screen.getByText("GMX Claimable").parentElement!.parentElement!;
+    expect(within(rewardsHeader).getByText("0")).toBeDefined();
+    expect(within(rewardsHeader).getByText((text) => text.replace(/\s/g, "") === "$0.00")).toBeDefined();
+    expect(screen.getByRole("button", { name: "Nothing to claim" }).hasAttribute("disabled")).toBe(true);
+    expect(screen.queryByRole("button", { name: /^Claim / })).toBeNull();
+  });
+
+  it.each([
+    [100_000_000_000_000n, "0.0001"],
+    [100_000_000_000_001n, "0.0001"],
+    [25n * TOKEN_UNIT, "25"],
+  ])("claims %s wei through the Vester and refreshes the account snapshot", async (claimable, displayAmount) => {
     const wait = vi.fn(async () => undefined);
     mockCallContract.mockResolvedValueOnce({ wait } as any);
     const claimData = {
@@ -760,14 +783,15 @@ describe("RewardsVestingFlow", () => {
         vestedAmount: 120n * TOKEN_UNIT,
         escrowedBalance: 100n * TOKEN_UNIT,
         claimedAmounts: 20n * TOKEN_UNIT,
-        claimable: 25n * TOKEN_UNIT,
+        claimable,
       },
     };
     setVestingData(claimData);
     mutate.mockResolvedValue(claimData);
     renderFlow();
 
-    fireEvent.click(screen.getByRole("button", { name: "Claim 25 GMX" }));
+    expect(screen.getByText(displayAmount)).toBeDefined();
+    fireEvent.click(screen.getByRole("button", { name: `Claim ${displayAmount} GMX` }));
 
     await waitFor(() => expect(mockCallContract).toHaveBeenCalledTimes(1));
     expect(mockCallContract.mock.calls[0][2]).toBe("claim");
@@ -817,33 +841,36 @@ describe("RewardsVestingFlow", () => {
     expect(mockCallContract.mock.calls.map((call) => call[2])).toEqual(["claim"]);
   });
 
-  it("does not submit a stale claim when the refreshed amount is zero", async () => {
-    const claimData = {
-      ...idleData,
-      vestingInfo: {
-        ...idleData.vestingInfo,
-        vestedAmount: 120n * TOKEN_UNIT,
-        escrowedBalance: 100n * TOKEN_UNIT,
-        claimedAmounts: 20n * TOKEN_UNIT,
-        claimable: 25n * TOKEN_UNIT,
-      },
-    };
-    setVestingData(claimData);
-    mutate.mockResolvedValue({
-      ...claimData,
-      vestingInfo: {
-        ...claimData.vestingInfo,
-        claimable: 0n,
-      },
-    });
-    renderFlow();
+  it.each([0n, 99_999_999_999_999n])(
+    "does not submit a stale claim when the refreshed amount is %s wei",
+    async (claimable) => {
+      const claimData = {
+        ...idleData,
+        vestingInfo: {
+          ...idleData.vestingInfo,
+          vestedAmount: 120n * TOKEN_UNIT,
+          escrowedBalance: 100n * TOKEN_UNIT,
+          claimedAmounts: 20n * TOKEN_UNIT,
+          claimable: 25n * TOKEN_UNIT,
+        },
+      };
+      setVestingData(claimData);
+      mutate.mockResolvedValue({
+        ...claimData,
+        vestingInfo: {
+          ...claimData.vestingInfo,
+          claimable,
+        },
+      });
+      renderFlow();
 
-    fireEvent.click(screen.getByRole("button", { name: "Claim 25 GMX" }));
+      fireEvent.click(screen.getByRole("button", { name: "Claim 25 GMX" }));
 
-    await waitFor(() => expect(mutate).toHaveBeenCalledTimes(1));
-    expect(mockCallContract).not.toHaveBeenCalled();
-    expect(mockHelperToastInfo).toHaveBeenCalledWith("No rewards are currently available to claim.");
-  });
+      await waitFor(() => expect(mutate).toHaveBeenCalledTimes(1));
+      expect(mockCallContract).not.toHaveBeenCalled();
+      expect(mockHelperToastInfo).toHaveBeenCalledWith("No rewards are currently available to claim.");
+    }
+  );
 
   it("does not submit a claim when the account or chain changes during refresh", async () => {
     const claimData = {
@@ -931,7 +958,7 @@ describe("RewardsVestingFlow", () => {
       vestingInfo: {
         ...idleData.vestingInfo,
         vestedAmount: 120n * TOKEN_UNIT,
-        claimable: 1n,
+        claimable: TOKEN_UNIT,
       },
     };
     setVestingData(claimData);
@@ -1176,8 +1203,7 @@ describe("RewardsVestingFlow", () => {
     renderFlow();
 
     expect(screen.getAllByText("Vesting data is temporarily unavailable.")).toHaveLength(3);
-    expect(screen.getAllByText("-")).toHaveLength(3);
-    expect(screen.getAllByText("= -")).toHaveLength(3);
+    expect(screen.getAllByText("-")).toHaveLength(6);
   });
 
   it("treats a missing parsed snapshot as unavailable even without an RPC error", () => {
@@ -1185,7 +1211,7 @@ describe("RewardsVestingFlow", () => {
     renderFlow();
 
     expect(screen.getAllByText("Vesting data is temporarily unavailable.")).toHaveLength(3);
-    expect(screen.getAllByText("-")).toHaveLength(3);
+    expect(screen.getAllByText("-")).toHaveLength(6);
   });
 
   it("does not present disconnected account balances as zero", () => {
@@ -1195,7 +1221,7 @@ describe("RewardsVestingFlow", () => {
 
     expect(screen.getAllByText("Connect wallet to view vesting rewards.")).toHaveLength(3);
     expect(screen.getByRole("button", { name: "Connect wallet" })).toBeDefined();
-    expect(screen.getAllByText("-")).toHaveLength(3);
+    expect(screen.getAllByText("-")).toHaveLength(6);
     expect(screen.queryByRole("button", { name: "Nothing to vest" })).toBeNull();
   });
 });
