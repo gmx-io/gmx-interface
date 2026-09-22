@@ -221,7 +221,7 @@ export function RewardsOnboardingModal({ shouldAutoOpen }: { shouldAutoOpen: boo
         withMobileBottomPosition
       >
         <div
-          className="flex h-[480px] flex-col px-20 pb-20 pt-20 outline-none"
+          className="flex flex-col px-20 pb-20 pt-20 outline-none"
           role="region"
           aria-label={t`How GMX Rewards works`}
           tabIndex={0}
