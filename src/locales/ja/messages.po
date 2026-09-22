@@ -2976,10 +2976,6 @@ msgstr "GM:"
 msgid "Confirm settle"
 msgstr "決済を確認"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Protocol risk explorer and stats"
-msgstr "プロトコルリスクエクスプローラーと統計"
-
 #: src/components/ShareModal/ShareCardFrame.tsx
 msgid "Generating shareable image..."
 msgstr "シェア可能な画像を作成中..."
@@ -5266,10 +5262,6 @@ msgstr "GMXプールではこのスワップサイズを約定できません。
 msgid "Per 1h"
 msgstr "1時間あたり"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Perpetuals aggregator"
-msgstr "パーペチュアルアグリゲーター"
-
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Swap"
 msgstr "マーケットスワップリクエスト"
@@ -6975,10 +6967,6 @@ msgstr "{fromSymbol}の残高が不足しています。ガストークンを{to
 msgid "Position may still liquidate from fees alone (funding + borrowing), reducing margin over time."
 msgstr ""
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Firebird Finance"
-msgstr "Firebird Finance"
-
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "{balanceFormatted} remaining in old 1CT subaccount"
 msgstr "旧1CTサブアカウントに{balanceFormatted}が残っています"
@@ -8620,7 +8608,6 @@ msgstr "{gmOrGlvLabel}の売却に失敗しました。"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
-#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DEX aggregator"
 msgstr "DEXアグリゲーター"
 
@@ -8691,10 +8678,6 @@ msgstr "5分以内に取引を開始"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum actions before reauthorization required"
 msgstr "再認証が必要になるまでの最大アクション数"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX risk monitoring"
-msgstr "GMXリスクモニタリング"
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Minimum capital used of {0} required to qualify for rankings"
@@ -10354,10 +10337,6 @@ msgstr ""
 msgid "Transaction sent"
 msgstr "トランザクションが送信されました"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Perfectswap"
-msgstr "Perfectswap"
-
 #: src/components/ShareModal/ShareCardReferralCodeStat.tsx
 msgid "Referral code"
 msgstr "リファラルコード"
@@ -10660,7 +10639,6 @@ msgstr "GMXとは？"
 msgid "Deposit submitted"
 msgstr "入金が送信されました"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -12080,10 +12058,6 @@ msgstr "{0} 件の注文が更新されませんでした。上限に達しま�
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Proportional stored impact"
 msgstr "比例配分された蓄積インパクト"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Rage Trade"
-msgstr "Rage Trade"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "1h"

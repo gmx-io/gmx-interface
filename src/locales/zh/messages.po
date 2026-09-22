@@ -2976,10 +2976,6 @@ msgstr "GM:"
 msgid "Confirm settle"
 msgstr "确认结算"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Protocol risk explorer and stats"
-msgstr "协议风险浏览器和统计"
-
 #: src/components/ShareModal/ShareCardFrame.tsx
 msgid "Generating shareable image..."
 msgstr "生成可分享图像中..."
@@ -5266,10 +5262,6 @@ msgstr "GMX 池无法完成此规模的交换。需要外部路由，但当 Gas 
 msgid "Per 1h"
 msgstr "每 1 小时"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Perpetuals aggregator"
-msgstr "永续合约聚合器"
-
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Swap"
 msgstr "请求市场交换"
@@ -6975,10 +6967,6 @@ msgstr "{fromSymbol} 余额不足。Gas 代币已切换为 {toSymbol}"
 msgid "Position may still liquidate from fees alone (funding + borrowing), reducing margin over time."
 msgstr ""
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Firebird Finance"
-msgstr "Firebird Finance"
-
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "{balanceFormatted} remaining in old 1CT subaccount"
 msgstr "旧 One-Click Trading 子账户中剩余 {balanceFormatted}"
@@ -8620,7 +8608,6 @@ msgstr "卖出 {gmOrGlvLabel} 失败。"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
-#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DEX aggregator"
 msgstr "DEX 聚合器"
 
@@ -8691,10 +8678,6 @@ msgstr "5 分钟内开始交易"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum actions before reauthorization required"
 msgstr "需要重新授权前的最大操作次数"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX risk monitoring"
-msgstr "GMX 风险监控"
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Minimum capital used of {0} required to qualify for rankings"
@@ -10354,10 +10337,6 @@ msgstr ""
 msgid "Transaction sent"
 msgstr "交易已发送"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Perfectswap"
-msgstr "Perfectswap"
-
 #: src/components/ShareModal/ShareCardReferralCodeStat.tsx
 msgid "Referral code"
 msgstr "推荐码"
@@ -10660,7 +10639,6 @@ msgstr "什么是 GMX？"
 msgid "Deposit submitted"
 msgstr "存入已提交"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -12080,10 +12058,6 @@ msgstr "{0} 个订单未更新，已达上限"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Proportional stored impact"
 msgstr "比例储存影响"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Rage Trade"
-msgstr "Rage Trade"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "1h"

@@ -2976,10 +2976,6 @@ msgstr "GM :"
 msgid "Confirm settle"
 msgstr "Confirmer le règlement"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Protocol risk explorer and stats"
-msgstr "Explorateur de risques de protocole et stats"
-
 #: src/components/ShareModal/ShareCardFrame.tsx
 msgid "Generating shareable image..."
 msgstr "Génération d'image partageable..."
@@ -5266,10 +5262,6 @@ msgstr "Les pools GMX ne peuvent pas exécuter cette taille de swap. Une route e
 msgid "Per 1h"
 msgstr "Par heure"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Perpetuals aggregator"
-msgstr "Agrégateur de perpétuels"
-
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Swap"
 msgstr "Demander un échange de marché"
@@ -6975,10 +6967,6 @@ msgstr "Solde {fromSymbol} insuffisant. Jeton Gas remplacé par {toSymbol}"
 msgid "Position may still liquidate from fees alone (funding + borrowing), reducing margin over time."
 msgstr ""
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Firebird Finance"
-msgstr "Firebird Finance"
-
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "{balanceFormatted} remaining in old 1CT subaccount"
 msgstr "{balanceFormatted} restant dans l'ancien sous-compte 1CT"
@@ -8620,7 +8608,6 @@ msgstr "La vente de {gmOrGlvLabel} a échoué."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
-#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DEX aggregator"
 msgstr "Agrégateur DEX"
 
@@ -8691,10 +8678,6 @@ msgstr "Commencez à trader en moins de 5 minutes"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum actions before reauthorization required"
 msgstr "Nombre maximum d'actions avant qu'une nouvelle autorisation soit requise"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX risk monitoring"
-msgstr "Surveillance des risques GMX"
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Minimum capital used of {0} required to qualify for rankings"
@@ -10354,10 +10337,6 @@ msgstr ""
 msgid "Transaction sent"
 msgstr "Transaction envoyée"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Perfectswap"
-msgstr "Perfectswap"
-
 #: src/components/ShareModal/ShareCardReferralCodeStat.tsx
 msgid "Referral code"
 msgstr "Code de parrainage"
@@ -10660,7 +10639,6 @@ msgstr "Qu’est-ce que GMX ?"
 msgid "Deposit submitted"
 msgstr "Dépôt soumis"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -12080,10 +12058,6 @@ msgstr "{0} ordres non mis à jour, limite atteinte"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Proportional stored impact"
 msgstr "Impact stocké proportionnel"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Rage Trade"
-msgstr "Rage Trade"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "1h"

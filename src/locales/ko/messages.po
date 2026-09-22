@@ -2976,10 +2976,6 @@ msgstr "GM:"
 msgid "Confirm settle"
 msgstr "정산 확인"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Protocol risk explorer and stats"
-msgstr "프로토콜 위험 탐색기 및 통계"
-
 #: src/components/ShareModal/ShareCardFrame.tsx
 msgid "Generating shareable image..."
 msgstr "공유가능한 이미지 생성중..."
@@ -5266,10 +5262,6 @@ msgstr "GMX 풀에서 이 스왑 규모를 체결할 수 없습니다. 외부 �
 msgid "Per 1h"
 msgstr "1시간당"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Perpetuals aggregator"
-msgstr "무기한 선물 애그리게이터"
-
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Swap"
 msgstr "마켓 스왑 요청"
@@ -6975,10 +6967,6 @@ msgstr "{fromSymbol} 잔액 부족. Gas 토큰이 {toSymbol}(으)로 변경되�
 msgid "Position may still liquidate from fees alone (funding + borrowing), reducing margin over time."
 msgstr ""
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Firebird Finance"
-msgstr "Firebird Finance"
-
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "{balanceFormatted} remaining in old 1CT subaccount"
 msgstr "기존 1CT 서브계정에 {balanceFormatted} 잔여"
@@ -8620,7 +8608,6 @@ msgstr "{gmOrGlvLabel} 판매에 실패했습니다."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
-#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DEX aggregator"
 msgstr "DEX 애그리게이터"
 
@@ -8691,10 +8678,6 @@ msgstr "5분 안에 거래를 시작하세요"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum actions before reauthorization required"
 msgstr "재승인이 필요하기 전 최대 실행 횟수"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX risk monitoring"
-msgstr "GMX 리스크 모니터링"
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Minimum capital used of {0} required to qualify for rankings"
@@ -10354,10 +10337,6 @@ msgstr ""
 msgid "Transaction sent"
 msgstr "거래 전송됨"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Perfectswap"
-msgstr "퍼펙트스왑"
-
 #: src/components/ShareModal/ShareCardReferralCodeStat.tsx
 msgid "Referral code"
 msgstr "추천 코드"
@@ -10660,7 +10639,6 @@ msgstr "GMX란 무엇인가요?"
 msgid "Deposit submitted"
 msgstr "입금이 제출되었습니다"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -12080,10 +12058,6 @@ msgstr "{0}개 주문이 업데이트되지 않았습니다. 한도에 도달했
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Proportional stored impact"
 msgstr "비례 저장 영향"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Rage Trade"
-msgstr "레이지 트레이드"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "1h"

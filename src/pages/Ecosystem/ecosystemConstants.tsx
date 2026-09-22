@@ -144,15 +144,6 @@ export const dashboardProjects: EcosystemDashboardProject[] = [
     chainIds: [ARBITRUM, AVALANCHE],
   },
   {
-    title: msg`GMX risk monitoring`,
-    link: "https://community.chaoslabs.xyz/gmx-arbitrum/ccar-perps/overview",
-    linkLabel: "chaoslabs.xyz",
-    about: msg`Protocol risk explorer and stats`,
-    creatorLabel: "@chaos_labs",
-    creatorLink: "https://x.com/chaos_labs",
-    chainIds: [ARBITRUM, AVALANCHE],
-  },
-  {
     title: msg`Saulius GMX analytics`,
     link: "https://dune.com/saulius/gmx-analytics",
     linkLabel: "dune.com",
@@ -263,14 +254,6 @@ export const integrations: EcosystemGmxPage[] = [
     chainIds: [ARBITRUM, AVALANCHE],
   },
   {
-    title: msg`Firebird Finance`,
-    link: "https://app.firebird.finance/swap",
-    linkLabel: "firebird.finance",
-    about: msg`DEX aggregator`,
-
-    chainIds: [AVALANCHE],
-  },
-  {
     title: msg`Yield Yak Swap`,
     link: "https://yieldyak.com/swap",
     linkLabel: "yieldyak.com",
@@ -326,8 +309,8 @@ export const integrations: EcosystemGmxPage[] = [
   },
   {
     title: msg`0x`,
-    link: "https://explorer.0xprotocol.org/liquiditySources",
-    linkLabel: "0xprotocol.org",
+    link: "https://0x.org/",
+    linkLabel: "0x.org",
     about: msg`DEX aggregator`,
     chainIds: [ARBITRUM, AVALANCHE],
   },
@@ -395,13 +378,6 @@ export const integrations: EcosystemGmxPage[] = [
     chainIds: [ARBITRUM],
   },
   {
-    title: msg`Rage Trade`,
-    link: "https://www.rage.trade/",
-    linkLabel: "rage.trade",
-    about: msg`Perpetuals aggregator`,
-    chainIds: [ARBITRUM],
-  },
-  {
     title: msg`Pear Protocol`,
     link: "https://www.pear.garden/",
     linkLabel: "pear.garden",
@@ -420,13 +396,6 @@ export const integrations: EcosystemGmxPage[] = [
     link: "https://solv.finance/",
     linkLabel: "solv.finance",
     about: msg`Asset management`,
-    chainIds: [ARBITRUM],
-  },
-  {
-    title: msg`Perfectswap`,
-    link: "https://vaults.perfectswap.io/#/",
-    linkLabel: "perfectswap.io",
-    about: msg`Yield vaults`,
     chainIds: [ARBITRUM],
   },
   {
