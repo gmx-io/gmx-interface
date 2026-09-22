@@ -111,8 +111,7 @@ function ConnectedReferral({
   connecting: boolean;
   connectionError?: string;
 }) {
-  const [refreshKey, setRefreshKey] = useState(0);
-  const codes = useAffiliateCodes(ARBITRUM, account, true, refreshKey);
+  const codes = useAffiliateCodes(ARBITRUM, account);
   const [createdCode, setCreatedCode] = useState<string>();
   const [isCreating, setIsCreating] = useState(false);
   const [input, setInput] = useState("");
@@ -288,7 +287,7 @@ function ConnectedReferral({
           <p role="alert">
             <Trans>Unable to load your referral codes.</Trans>
           </p>
-          <button className="rewards-button" onClick={() => setRefreshKey((key) => key + 1)}>
+          <button className="rewards-button" onClick={() => void codes.mutate()}>
             <Trans>Try again</Trans>
           </button>
         </div>

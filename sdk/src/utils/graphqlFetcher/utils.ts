@@ -2,6 +2,7 @@ import fetch from "cross-fetch";
 
 export type GraphqlFetcherOptions = {
   strict?: boolean;
+  signal?: AbortSignal | null;
 };
 
 type GraphqlResponse<T> = {
@@ -20,6 +21,7 @@ export default async function graphqlFetcher<T>(
       body: JSON.stringify({ query, variables }),
       headers: { "Content-type": "application/json" },
       method: "POST",
+      ...(options?.signal ? { signal: options.signal } : {}),
     });
 
     if (!response.ok) {

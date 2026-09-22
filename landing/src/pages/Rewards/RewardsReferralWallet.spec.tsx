@@ -14,6 +14,7 @@ const mocks = vi.hoisted(() => ({
   account: undefined as string | undefined,
   codes: { code: null, success: true } as { code: string | null; success: boolean; error?: boolean },
   connect: vi.fn(),
+  retryCodes: vi.fn(),
   create: vi.fn(),
   onCreated: undefined as ((code: string) => void) | undefined,
   pushEvent: vi.fn(),
@@ -39,7 +40,9 @@ vi.mock("wagmi", () => ({
   useSwitchChain: () => ({ switchChainAsync: vi.fn(), isPending: false }),
 }));
 vi.mock("lib/wallets/useWallet", () => ({ default: () => ({ chainId: ARBITRUM, signer: {} }) }));
-vi.mock("domain/referrals/hooks", () => ({ useAffiliateCodes: () => mocks.codes }));
+vi.mock("domain/referrals/hooks", () => ({
+  useAffiliateCodes: () => ({ ...mocks.codes, mutate: mocks.retryCodes }),
+}));
 vi.mock("domain/referrals/hooks/useCreateReferralCode", () => ({
   useCreateReferralCode: ({ onSuccess }: { onSuccess: (code: string) => void }) => {
     mocks.onCreated = onSuccess;
@@ -331,6 +334,8 @@ describe("rewards referral card", () => {
 
     expect(view.getByRole("alert").textContent).toBe("Unable to load your referral codes.");
     expect(view.getByRole("button", { name: "Try again" })).toBeTruthy();
+    fireEvent.click(view.getByRole("button", { name: "Try again" }));
+    expect(mocks.retryCodes).toHaveBeenCalledOnce();
     expect(view.queryByRole("button", { name: "Create code and invite traders" })).toBeNull();
     expect(view.queryByRole("button", { name: "Share on X" })).toBeNull();
   });

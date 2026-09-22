@@ -42,6 +42,23 @@ describe("graphqlFetcher", () => {
     await expect(graphqlFetcher("https://example.com/graphql", "query Test")).resolves.toEqual({ value: "partial" });
   });
 
+  it("passes cancellation to the underlying request", async () => {
+    const controller = new AbortController();
+    mockedFetch.mockImplementationOnce(
+      (_url, options) =>
+        new Promise((_resolve, reject) => {
+          options?.signal?.addEventListener("abort", () => reject(new Error("Request aborted")));
+        })
+    );
+
+    const request = graphqlFetcher("https://example.com/graphql", "query Test", undefined, {
+      signal: controller.signal,
+    });
+    controller.abort();
+
+    await expect(request).rejects.toThrow("Request aborted");
+  });
+
   it("rejects GraphQL errors in strict mode", async () => {
     mockResponse({ data: { value: "partial" }, errors: [{ message: "Invalid account" }] });
 
