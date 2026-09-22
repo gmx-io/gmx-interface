@@ -82,7 +82,7 @@ vi.mock("react-use", () => ({
   useMedia: vi.fn(),
 }));
 
-vi.mock("pages/BuyGMX/BuyGmxModal", () => ({
+vi.mock("components/BuyGmxModal/BuyGmxModal", () => ({
   BuyGmxModal: () => null,
 }));
 

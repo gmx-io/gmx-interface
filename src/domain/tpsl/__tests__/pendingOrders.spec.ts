@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { OrderStatus, PendingOrderData } from "context/SyntheticsEvents/types";
 import { getPositionKey } from "domain/synthetics/positions";
 import { getOrderCreatedDataFromPendingOrder } from "domain/synthetics/tradeHistory/orderStatusesBackfill";
-import { StatusCode } from "sdk/utils/gelatoRelay";
+import { StatusCode } from "sdk/utils/express";
 import { DecreasePositionSwapType, OrderType, type OrderInfo } from "sdk/utils/orders/types";
 
 import { getPendingTpSlOrders } from "../pendingOrders";

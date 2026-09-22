@@ -6,14 +6,11 @@ import { Router } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ARBITRUM } from "config/chains";
-import { getContract } from "config/contracts";
 import { getSyntheticsTradeOptionsKey } from "config/localStorage";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
-import { getTokenBySymbol } from "sdk/configs/tokens";
-import { TradeMode, TradeType } from "sdk/utils/trade";
 
-import { StandaloneBuyGmxModal } from "../BuyGmxModal";
+import { BuyGmxModal } from "../BuyGmxModal";
 
 vi.mock("lib/chains", () => ({
   useChainId: vi.fn(),
@@ -29,7 +26,7 @@ const mockUseWallet = vi.mocked(useWallet);
 i18n.load({ en: {} });
 i18n.activate("en");
 
-describe("StandaloneBuyGmxModal", () => {
+describe("BuyGmxModal", () => {
   beforeEach(() => {
     localStorage.clear();
     mockUseChainId.mockReturnValue({ chainId: ARBITRUM } as ReturnType<typeof useChainId>);
@@ -44,7 +41,7 @@ describe("StandaloneBuyGmxModal", () => {
     render(
       <I18nProvider i18n={i18n}>
         <Router history={history}>
-          <StandaloneBuyGmxModal isVisible setIsVisible={vi.fn()} />
+          <BuyGmxModal isVisible setIsVisible={vi.fn()} />
         </Router>
       </I18nProvider>
     );
@@ -56,20 +53,10 @@ describe("StandaloneBuyGmxModal", () => {
     fireEvent.click(screen.getByRole("button", { name: "Buy GMX on GMX swap" }));
 
     expect(history.location.pathname).toBe("/trade/swap");
-    const storedOptions = JSON.parse(
-      localStorage.getItem(JSON.stringify(getSyntheticsTradeOptionsKey(ARBITRUM))) ?? "{}"
-    );
-    expect(storedOptions).toMatchObject({
-      tradeType: TradeType.Swap,
-      tradeMode: TradeMode.Market,
-      tokens: {
-        fromTokenAddress: getTokenBySymbol(ARBITRUM, "USDC").address,
-        swapToTokenAddress: getContract(ARBITRUM, "GMX"),
-      },
-    });
+    expect(history.location.search).toBe("?mode=market&from=USDC&to=GMX");
   });
 
-  it("replaces malformed stored trade options and opens the Arbitrum GMX swap", () => {
+  it("opens the Arbitrum GMX swap even with malformed stored trade options", () => {
     const history = createMemoryHistory({ initialEntries: ["/rewards/history"] });
     const storageKey = JSON.stringify(getSyntheticsTradeOptionsKey(ARBITRUM));
     localStorage.setItem(storageKey, "malformed");
@@ -77,7 +64,7 @@ describe("StandaloneBuyGmxModal", () => {
     render(
       <I18nProvider i18n={i18n}>
         <Router history={history}>
-          <StandaloneBuyGmxModal isVisible setIsVisible={vi.fn()} />
+          <BuyGmxModal isVisible setIsVisible={vi.fn()} />
         </Router>
       </I18nProvider>
     );
@@ -85,13 +72,6 @@ describe("StandaloneBuyGmxModal", () => {
     fireEvent.click(screen.getByRole("button", { name: "Buy GMX on GMX swap" }));
 
     expect(history.location.pathname).toBe("/trade/swap");
-    expect(JSON.parse(localStorage.getItem(storageKey) ?? "{}")).toMatchObject({
-      tradeType: TradeType.Swap,
-      tradeMode: TradeMode.Market,
-      tokens: {
-        fromTokenAddress: getTokenBySymbol(ARBITRUM, "USDC").address,
-        swapToTokenAddress: getContract(ARBITRUM, "GMX"),
-      },
-    });
+    expect(history.location.search).toBe("?mode=market&from=USDC&to=GMX");
   });
 });

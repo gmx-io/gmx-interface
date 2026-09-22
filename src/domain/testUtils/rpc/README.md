@@ -33,9 +33,8 @@ A hole in a mock reads as "the field never rendered", not as a failure. So:
 - the Playwright adapter aborts unclaimed requests (kept in `handle.unhandledRequests` for
   debugging — mostly REST calls the app tolerates losing), and answers JSON-RPC hosts missing from
   `RPC_HOSTS_BY_CHAIN_ID` with an error naming the host (`handle.unknownRpcHosts`);
-- `MockChain` collects `unknownMethods` and `unknownCallSelectors`, `MockGelatoRelay` collects its
-  `unknownMethods`, and relay calls made with no `MockGelatoRelay` installed are tracked too — all
-  for the same reason. Every spec drains the JSON-RPC holes with
+- `MockChain` collects `unknownMethods` and `unknownCallSelectors` for the same reason. Every spec
+  drains the JSON-RPC holes with
   `test.afterEach(assertNoRpcHoles)` (`holes.ts`, re-exported from the Playwright adapter), so a
   hole fails the test by name instead of by timeout;
 - `RecordedResponder` throws on fixture misses in replay mode and lists them in `missingFixtures` —

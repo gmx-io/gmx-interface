@@ -79,7 +79,6 @@ export const CONTRACTS = {
     ArbitrumNodeInterface: "0x00000000000000000000000000000000000000C8",
     ArbSys: "0x0000000000000000000000000000000000000064",
     LayerZeroEndpoint: "0x1a44076050125825900e736c501f859c50fE728c",
-    GelatoRelayAddress: "0xaBcC9b596420A9E9172FD5938620E265a0f9Df92",
   },
   [AVALANCHE]: {
     // V1
@@ -157,7 +156,6 @@ export const CONTRACTS = {
     Multicall: "0x50474CAe810B316c294111807F94F9f48527e7F8",
     ArbitrumNodeInterface: zeroAddress,
     LayerZeroEndpoint: "0x1a44076050125825900e736c501f859c50fE728c",
-    GelatoRelayAddress: "0xaBcC9b596420A9E9172FD5938620E265a0f9Df92",
   },
   [MEGAETH]: {
     // Synthetics
@@ -200,7 +198,6 @@ export const CONTRACTS = {
     Multicall: "0xF516BC01c50eebdBad4d7E506c8f690ae8EAFc52",
     LayerZeroEndpoint: "0x6F475642a6e85809B1c36Fa62763669b1b48DD5B",
     ArbitrumNodeInterface: zeroAddress,
-    GelatoRelayAddress: "0xcd565435e0d2109feFde337a66491541Df0D1420",
 
     Vault: zeroAddress,
     Reader: zeroAddress,
@@ -362,7 +359,6 @@ export const CONTRACTS = {
     LayerZeroEndpoint: "0x6EDCE65403992e310A62460808c4b910D972f10f",
     ArbitrumNodeInterface: "0x00000000000000000000000000000000000000C8",
     ArbSys: "0x0000000000000000000000000000000000000064",
-    GelatoRelayAddress: "0xaBcC9b596420A9E9172FD5938620E265a0f9Df92",
     ExternalHandler: "0x2303b33c2895871ae45AD8fEBCB52275657c9F9d",
 
     GLP: zeroAddress,

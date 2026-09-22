@@ -57,7 +57,7 @@ async function ensureLongPosition(): Promise<any> {
   const pos = positions.find((p: any) => p.isLong && p.indexName?.includes("ETH/USD"));
   if (pos) return pos;
 
-  // Retry once — first Gelato call in a test run can be flaky
+  // Retry once — first relay call in a test run can be flaky
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
       await openLongPosition();

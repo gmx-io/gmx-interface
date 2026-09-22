@@ -3,6 +3,7 @@ import { createContext, PropsWithChildren, useContext, useEffect, useMemo } from
 import { DEFAULT_SETTLEMENT_CHAIN_ID, DEFAULT_SETTLEMENT_CHAIN_ID_MAP } from "config/chains";
 import { isSourceChain } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
+import { useChainIdSearchParam } from "domain/multichain/useChainIdSearchParam";
 import { useEmptyGmxAccounts } from "domain/multichain/useEmptyGmxAccounts";
 import { useChainIdImpl } from "lib/chains/useChainIdImpl";
 import { AVALANCHE, ContractsChainId, SourceChainId } from "sdk/configs/chains";
@@ -29,6 +30,11 @@ export function ChainContextProvider({ children }: PropsWithChildren) {
   const [gmxAccountSettlementChainId, setGmxAccountSettlementChainId] = useGmxAccountSettlementChainId();
 
   const { chainId, srcChainId, isConnectedToChainId } = useChainIdImpl(gmxAccountSettlementChainId);
+
+  useChainIdSearchParam({
+    settlementChainId: gmxAccountSettlementChainId,
+    setSettlementChainId: setGmxAccountSettlementChainId,
+  });
 
   const { emptyGmxAccounts } = useEmptyGmxAccounts([AVALANCHE]);
   const isAvalancheEmpty = emptyGmxAccounts?.[AVALANCHE] === true;

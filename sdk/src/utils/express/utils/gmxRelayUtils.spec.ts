@@ -46,7 +46,7 @@ describe("sendToGmxRelay", () => {
     expect(error.data).toEqual({ traceId: "tr-1" });
   });
 
-  it("posts bare calldata without the Gelato fee suffix", async () => {
+  it("posts bare relay-router calldata", async () => {
     const fetchMock = vi.fn(async () => jsonResponse({ taskId: TASK_ID, status: "pending" }));
     vi.stubGlobal("fetch", fetchMock);
 

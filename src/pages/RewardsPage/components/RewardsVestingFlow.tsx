@@ -30,11 +30,11 @@ import { useCurrentUnixTimestamp } from "lib/useCurrentUnixTimestamp";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendRewardsTransactionResultEvent, sendRewardsVestingModalOpenEvent } from "lib/userAnalytics/rewardsEvents";
 import useWallet from "lib/wallets/useWallet";
-import { StandaloneBuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
 import { abis } from "sdk/abis";
 import { convertToUsd } from "sdk/utils/tokens";
 
 import Button from "components/Button/Button";
+import { BuyGmxModal } from "components/BuyGmxModal/BuyGmxModal";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
 
@@ -1090,7 +1090,7 @@ export function RewardsVestingFlow() {
         </>
       ) : null}
       <RewardsVestingStartedModal isVisible={hasJustStartedVesting} onClose={closeVestingStartedModal} />
-      <StandaloneBuyGmxModal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} />
+      <BuyGmxModal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} />
       <RewardsVestingSimulatorApprovalModal
         action={simulatedTransactionAction}
         onApprove={approveSimulatedTransaction}

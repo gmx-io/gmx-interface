@@ -15,8 +15,8 @@ import type {
 } from "domain/synthetics/incentives/v2/types";
 import { formatMultiplier } from "domain/synthetics/incentives/v2/utils";
 import { expandDecimals, formatAmount, formatAmountHuman, formatUsd, USD_DECIMALS } from "lib/numbers";
-import { StandaloneBuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
 
+import { BuyGmxModal } from "components/BuyGmxModal/BuyGmxModal";
 import { EARN_PORTFOLIO_STAKE_GMX_LINK } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/constants";
 import { getRewardsPromoCopy } from "components/RewardsPromoBanner/rewardsPromoCopy";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -86,7 +86,7 @@ export function RewardsTierCards({
 
   return (
     <>
-      <StandaloneBuyGmxModal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} />
+      <BuyGmxModal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} />
       <div className="grid grid-cols-3 gap-12 max-lg:grid-cols-1">
         <VolumeCard config={config} status={status} active={volumeActive} />
         <StakingCard

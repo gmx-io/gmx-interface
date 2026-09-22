@@ -309,9 +309,6 @@ describe("externalSwapSelectors", () => {
           relayRouterEnabled: true,
           subaccountRelayRouterEnabled: true,
         },
-        sponsoredCallBalanceData: {
-          isSponsoredCallAllowed: true,
-        },
       });
 
       expect(selectExternalSwapDesirability(state)).toBe("required");
@@ -398,7 +395,7 @@ describe("externalSwapSelectors", () => {
     });
 
     // NOTE: subaccount and express-schema gates require deeper state plumbing (subaccountState
-    // structure, features flags, sponsoredCallBalanceData) and createSelector-based selectors
+    // structure, features flags) and createSelector-based selectors
     // can't be cleanly mocked with vi.spyOn — they're exercised in higher-level integration tests.
   });
 
@@ -669,9 +666,6 @@ describe("externalSwapSelectors", () => {
           relayRouterEnabled: true,
           subaccountRelayRouterEnabled: true,
         },
-        sponsoredCallBalanceData: {
-          isSponsoredCallAllowed: true,
-        },
       });
 
       expect(selectExternalSwapBlockReason(state)).toBe("gasTokenConflict");
@@ -689,9 +683,6 @@ describe("externalSwapSelectors", () => {
         features: {
           relayRouterEnabled: true,
           subaccountRelayRouterEnabled: true,
-        },
-        sponsoredCallBalanceData: {
-          isSponsoredCallAllowed: true,
         },
         externalSwap: { ...defaultState.externalSwap, shouldFallbackToInternalSwap: true },
       });

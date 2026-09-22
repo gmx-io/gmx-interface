@@ -17,7 +17,6 @@ import {
   usePeriodAccountStats,
 } from "domain/synthetics/accountStats";
 import { OracleSettingsData, useOracleSettingsData } from "domain/synthetics/common/useOracleSettingsData";
-import { SponsoredCallBalanceData, useIsSponsoredCallBalanceAvailable } from "domain/synthetics/express";
 import { useL1ExpressOrderGasReference } from "domain/synthetics/express/useL1ExpressGasReference";
 import { ExternalSwapState } from "domain/synthetics/externalSwaps/types";
 import { useInitExternalSwapState } from "domain/synthetics/externalSwaps/useInitExternalSwapState";
@@ -159,7 +158,6 @@ export type SyntheticsState = {
   features: FeaturesSettings | undefined;
   uiFlags: UiFlags | undefined;
   gasPaymentTokenAllowance: TokenAllowanceResult | undefined;
-  sponsoredCallBalanceData: SponsoredCallBalanceData | undefined;
   l1ExpressOrderGasReference: L1ExpressOrderGasReference | undefined;
 };
 
@@ -357,7 +355,6 @@ export function SyntheticsStateContextProvider({
 
   const externalSwapState = useInitExternalSwapState();
   const tokenPermitsState = useTokenPermitsContext();
-  const sponsoredCallBalanceData = useIsSponsoredCallBalanceAvailable(chainId);
 
   const gasPaymentTokenAllowanceAddresses = useMemo(
     () =>
@@ -440,7 +437,6 @@ export function SyntheticsStateContextProvider({
       poolsDetails: poolsDetailsState,
       features,
       uiFlags,
-      sponsoredCallBalanceData,
       gasPaymentTokenAllowance,
       l1ExpressOrderGasReference,
     };
@@ -482,7 +478,6 @@ export function SyntheticsStateContextProvider({
     setClosingPositionKey,
     setKeepLeverage,
     settings,
-    sponsoredCallBalanceData,
     subaccountState,
     tokenPermitsState,
     tokensDataResult,

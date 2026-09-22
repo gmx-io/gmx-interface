@@ -26,7 +26,6 @@ import { TradeBox } from "../TradeBox";
 import { TradeBoxHeaderTabs } from "../TradeBoxHeaderTabs";
 
 const EXPRESS_ON_FEATURES = { relayRouterEnabled: true, subaccountRelayRouterEnabled: true };
-const EXPRESS_ON_SPONSORED_CALL = { isSponsoredCallAllowed: true };
 
 /** Mounts the external swap quote machinery, which lives in SyntheticsPage rather than TradeBox. */
 function ExternalSwapHandlerHost() {
@@ -148,7 +147,7 @@ export type TradeBoxStoryProps = {
   withExternalSwapLatchControl?: boolean;
   /** Turn the "External swaps" setting off (on by default) */
   externalSwapsSettingOff?: boolean;
-  /** Make express trading available: enables the relay-router features and Gelato sponsored calls */
+  /** Make express trading available: enables the relay-router features */
   expressOn?: boolean;
   /** Activate One-Click Trading via a mock subaccount (implies nothing else — combine with expressOn) */
   withOneClickSubaccount?: boolean;
@@ -438,7 +437,6 @@ export function TradeBoxStory({
       marketsInfoData={marketsInfoData}
       tokensData={tokensData}
       features={expressOn ? EXPRESS_ON_FEATURES : undefined}
-      sponsoredCallBalanceData={expressOn ? EXPRESS_ON_SPONSORED_CALL : undefined}
       subaccount={mockSubaccount}
     >
       {withExternalSwapHandler && <ExternalSwapHandlerHost />}
