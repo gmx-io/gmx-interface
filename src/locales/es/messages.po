@@ -9453,6 +9453,10 @@ msgstr ""
 msgid "Liquidation price"
 msgstr "Precio de liquidación"
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
+msgid "Reset zoom"
+msgstr "Restablecer zoom"
+
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "So far, my referrals have saved {totalDiscountsFormatted} total in discounts with my code: {referralCode}"
 msgstr ""

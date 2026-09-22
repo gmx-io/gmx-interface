@@ -18,13 +18,15 @@ import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/setting
 import { clamp, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
+import Button from "components/Button/Button";
 import Loader from "components/Loader/Loader";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+
+import RepeatIcon from "img/ic_repeat.svg?react";
 
 import {
   formatPnlChartYAxisTick,
   getPnlChartDragPanSpeed,
-  getPnlChartWheelZoomSlowdown,
   getPnlChartXAxisDomain,
   getPnlChartYAxisTicks,
   getPnlChartYAxisTicksFromValues,
@@ -77,6 +79,7 @@ const ACTIVE_DOT_PROPS = {
 };
 
 const CHART_MARGIN = { top: 16, right: 16, bottom: 16, left: 0 };
+const Y_AXIS_WIDTH = 60;
 const BAR_CATEGORY_GAP = "25%";
 const DEBUG_BAR_CATEGORY_GAP = "10%";
 const BAR_GAP = 4;
@@ -91,6 +94,7 @@ const TOUCH_PINCH_STEP_RATIO = 1.08;
 // Browsers synthesize mouse events (including dblclick) shortly after taps when
 // touch-action disables native double-tap zoom; ignore those so a double-tap doesn't zoom twice.
 const TOUCH_SYNTHETIC_DOUBLE_CLICK_TIMEOUT = 700;
+const ZOOM_RESET_DOUBLE_CLICK_TIMEOUT = 500;
 
 type ChartPnlHistoryPoint = AccountPnlHistoryPoint & {
   chartIndex: number;
@@ -114,9 +118,11 @@ export function DailyAndCumulativePnLChart({
   const [zoomWindow, setZoomWindow] = useState<PnlZoomWindow | undefined>();
   const [isBarAnimationActive, setIsBarAnimationActive] = useState(true);
   const showDebugValues = useShowDebugValues();
+  const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartInteractionRef = useRef<HTMLDivElement>(null);
   const lastTouchTapRef = useRef(0);
   const lastTouchEndRef = useRef(0);
+  const lastZoomResetRef = useRef(0);
   const wheelZoomAccumulatorRef = useRef<{ direction?: "in" | "out"; value: number }>({ value: 0 });
   const zoomInteractionResetTimeoutRef = useRef<number | undefined>();
   const mobileTapTooltipTimeoutRef = useRef<number | undefined>();
@@ -187,6 +193,10 @@ export function DailyAndCumulativePnLChart({
       ),
     };
   }, [chartPnlData, showDebugValues]);
+  const resetZoomButtonStyle = useMemo<React.CSSProperties>(
+    () => ({ top: CHART_MARGIN.top + 8, right: chartMargin.right + Y_AXIS_WIDTH + 8 }),
+    [chartMargin.right]
+  );
 
   const isZoomed = Boolean(normalizedZoomWindow);
   const canZoom = groupedPnlData.length > 2;
@@ -268,7 +278,7 @@ export function DailyAndCumulativePnLChart({
   }, []);
 
   useEffect(() => {
-    const element = chartInteractionRef.current;
+    const element = chartContainerRef.current;
 
     if (!element || !canZoom) {
       return undefined;
@@ -293,13 +303,6 @@ export function DailyAndCumulativePnLChart({
       const direction = deltaPixels < 0 ? "in" : "out";
       const anchorRatio = getChartInteractionRatio(event.clientX);
       const wheelUnits = clamp(Math.abs(deltaPixels) / 100, 0.05, 1);
-
-      const currentWindow = normalizeZoomWindow(zoomWindowRef.current, dataLength) ?? {
-        startIndex: 0,
-        endIndex: dataLength - 1,
-      };
-      const visibleLength = currentWindow.endIndex - currentWindow.startIndex + 1;
-      const slowdown = getPnlChartWheelZoomSlowdown(visibleLength, dataLength);
       const accumulator = wheelZoomAccumulatorRef.current;
 
       if (accumulator.direction !== direction) {
@@ -307,7 +310,7 @@ export function DailyAndCumulativePnLChart({
         accumulator.value = 0;
       }
 
-      accumulator.value += wheelUnits / slowdown;
+      accumulator.value += wheelUnits;
 
       if (accumulator.value < 1) {
         return;
@@ -340,7 +343,13 @@ export function DailyAndCumulativePnLChart({
 
   const handleChartDoubleClick = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
-      if (!canZoom || Date.now() - lastTouchEndRef.current < TOUCH_SYNTHETIC_DOUBLE_CLICK_TIMEOUT) {
+      const now = Date.now();
+
+      if (
+        !canZoom ||
+        now - lastTouchEndRef.current < TOUCH_SYNTHETIC_DOUBLE_CLICK_TIMEOUT ||
+        now - lastZoomResetRef.current < ZOOM_RESET_DOUBLE_CLICK_TIMEOUT
+      ) {
         return;
       }
 
@@ -358,6 +367,12 @@ export function DailyAndCumulativePnLChart({
       stopZoomInteraction,
     ]
   );
+
+  const handleResetZoom = useCallback(() => {
+    lastZoomResetRef.current = Date.now();
+    wheelZoomAccumulatorRef.current = { value: 0 };
+    applyZoomWindow(undefined);
+  }, [applyZoomWindow]);
 
   const handleChartMouseDown = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
@@ -597,7 +612,7 @@ export function DailyAndCumulativePnLChart({
   );
 
   return (
-    <div className="relative min-h-[250px] grow">
+    <div ref={chartContainerRef} className="relative min-h-[250px] grow">
       <div
         ref={chartInteractionRef}
         className={cx("DailyAndCumulativePnL-chartInteraction absolute size-full", {
@@ -696,6 +711,7 @@ export function DailyAndCumulativePnLChart({
             <YAxis
               yAxisId="cumulativePnl"
               orientation="right"
+              width={Y_AXIS_WIDTH}
               type="number"
               allowDecimals={false}
               allowDataOverflow
@@ -712,6 +728,18 @@ export function DailyAndCumulativePnLChart({
           </ComposedChart>
         </ResponsiveContainer>
       </div>
+      {isZoomed && (
+        <Button
+          variant="secondary"
+          className="!absolute z-10"
+          style={resetZoomButtonStyle}
+          data-exclude
+          onClick={handleResetZoom}
+        >
+          <RepeatIcon className="size-16 shrink-0" />
+          <Trans>Reset zoom</Trans>
+        </Button>
+      )}
       {error && (
         <div className="absolute grid size-full max-h-full place-items-center overflow-auto">
           <div className="whitespace-pre-wrap font-mono text-red-500">{JSON.stringify(error, null, 2)}</div>

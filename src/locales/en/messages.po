@@ -9453,6 +9453,10 @@ msgstr "Set short Stop Market @ {0}"
 msgid "Liquidation price"
 msgstr "Liquidation price"
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
+msgid "Reset zoom"
+msgstr "Reset zoom"
+
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "So far, my referrals have saved {totalDiscountsFormatted} total in discounts with my code: {referralCode}"
 msgstr "So far, my referrals have saved {totalDiscountsFormatted} total in discounts with my code: {referralCode}"
