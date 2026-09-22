@@ -4372,6 +4372,7 @@ msgstr "Express Trading 不支持网络原生代币 {0}。请考虑使用 {1} �
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trade"
 msgstr "交易"
 
@@ -7734,6 +7735,7 @@ msgstr "借出您的代币或以其为抵押进行借贷"
 
 #: src/components/AppHeader/AppHeaderLogo.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "GMX logo"
 msgstr "GMX 标志"

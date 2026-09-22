@@ -4372,6 +4372,7 @@ msgstr "네트워크 기본 토큰 {0}에서는 Express Trading을 사용할 수
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trade"
 msgstr "트레이드"
 
@@ -7734,6 +7735,7 @@ msgstr "토큰을 대출하거나 담보로 차입하십시오"
 
 #: src/components/AppHeader/AppHeaderLogo.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "GMX logo"
 msgstr "GMX 로고"
