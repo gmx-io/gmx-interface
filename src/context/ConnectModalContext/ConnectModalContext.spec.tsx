@@ -106,8 +106,8 @@ describe("ConnectModalProvider", () => {
       getContext().openConnectModal?.();
     });
 
-    expect(mocks.login).toHaveBeenCalledWith({ walletChainType: "solana-only" });
-    expect(mocks.connectWallet).not.toHaveBeenCalled();
+    expect(mocks.connectWallet).toHaveBeenCalledWith({ walletChainType: "solana-only" });
+    expect(mocks.login).not.toHaveBeenCalled();
   });
 
   it("uses connectWallet for authenticated users after extension-side disconnects", () => {
@@ -159,14 +159,14 @@ describe("ConnectModalProvider", () => {
     expect(mocks.switchNetwork).toHaveBeenCalledWith(42161, true);
   });
 
-  it("does not switch chains after a Solana login", () => {
+  it("does not switch chains after a Solana connect", () => {
     localStorage.setItem("SELECTED_NETWORK", "-1");
     localStorage.setItem("SELECTED_NETWORK_WAS_APP_SELECTED", "true");
     const getContext = setup();
 
     act(() => {
       getContext().openConnectModal?.();
-      mocks.loginCallbacks?.onComplete({ wasAlreadyAuthenticated: false });
+      mocks.connectWalletCallbacks?.onSuccess();
     });
 
     expect(mocks.switchNetwork).not.toHaveBeenCalled();

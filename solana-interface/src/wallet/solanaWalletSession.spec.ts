@@ -53,6 +53,17 @@ describe("decideSolanaSession", () => {
     ).toEqual({ type: "select", wallet: { address: "E", name: "Privy" } });
   });
 
+  it("stays disconnected after Phantom is disconnected while a social embedded wallet is connected", () => {
+    expect(
+      decideSolanaSession({
+        ...base,
+        isSocial: true,
+        suppressedAddress: "P",
+        connected: [{ address: "E", name: "Privy", embedded: true }],
+      })
+    ).toEqual({ type: "none" });
+  });
+
   it("creates an embedded wallet when a social user switches onto Solana", () => {
     expect(decideSolanaSession({ ...base, isSocial: true, networkChanged: true })).toEqual({ type: "createEmbedded" });
   });

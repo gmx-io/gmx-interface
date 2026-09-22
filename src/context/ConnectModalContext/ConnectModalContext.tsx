@@ -125,7 +125,9 @@ export function ConnectModalProvider({ children }: { children: ReactNode }) {
       const solanaSelected = readSolanaSelected();
       const walletChainType = solanaSelected ? "solana-only" : "ethereum-only";
       try {
-        if (authenticated) {
+        // login() signs SIWS after connect. Phantom connects, then that signature fails and Privy
+        // still shows "Could not log in with wallet". Solana only needs the connected wallet.
+        if (solanaSelected || authenticated) {
           connectWallet({
             walletChainType,
             ...(options?.preSelectedWalletId ? { preSelectedWalletId: options.preSelectedWalletId } : {}),

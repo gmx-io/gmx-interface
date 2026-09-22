@@ -154,7 +154,7 @@ export function decideSolanaSession({
   }
 
   const embeddedWallet = connected.find((wallet) => wallet.embedded && wallet.address !== suppressedAddress);
-  if (isSocial && embeddedWallet) {
+  if (isSocial && embeddedWallet && !suppressedAddress) {
     return { type: "select", wallet: { address: embeddedWallet.address, name: embeddedWallet.name } };
   }
 
