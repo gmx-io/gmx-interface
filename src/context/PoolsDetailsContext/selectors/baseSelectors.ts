@@ -72,6 +72,11 @@ export const selectPoolsDetailsTransitAmountOut = (s: SyntheticsState) => s.pool
 export const selectPoolsDetailsSetTransitAmountOut = (s: SyntheticsState) =>
   s.poolsDetails?.setTransitAmountOut ?? FALLBACK_BIGINT_OR_UNDEFINED_SETTER;
 
+export const selectPoolsDetailsTransitWithdrawalTxnHash = (s: SyntheticsState) =>
+  s.poolsDetails?.transitWithdrawalTxnHash;
+export const selectPoolsDetailsSetTransitWithdrawalTxnHash = (s: SyntheticsState) =>
+  s.poolsDetails?.setTransitWithdrawalTxnHash ?? FALLBACK_STRING_OR_UNDEFINED_SETTER;
+
 export const selectPoolsDetailsWithdrawalMarketTokensData = (s: SyntheticsState) =>
   s.poolsDetails?.withdrawalMarketTokensData;
 export const selectPoolsDetailsMultichainTokensArray = (s: SyntheticsState) =>

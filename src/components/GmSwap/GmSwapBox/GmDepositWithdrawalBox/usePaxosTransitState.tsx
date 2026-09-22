@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import useSWR from "swr";
 
 import { getPaxosTransitConfig } from "config/paxosTransit";
@@ -13,13 +13,13 @@ import {
   selectPoolsDetailsSetIsTransitRoute,
   selectPoolsDetailsSetMarketOrGlvTokenInputValue,
   selectPoolsDetailsSetTransitAmountOut,
+  selectPoolsDetailsSetTransitWithdrawalTxnHash,
+  selectPoolsDetailsTransitWithdrawalTxnHash,
   selectPoolsDetailsShortTokenAddress,
 } from "context/PoolsDetailsContext/selectors";
 import {
   selectPoolsDetailsAvailableCollateralSwapToken,
   selectPoolsDetailsCollateralSwapTokens,
-  selectPoolsDetailsGlvInfo,
-  selectPoolsDetailsMarketInfo,
 } from "context/PoolsDetailsContext/selectors/poolsDetailsDerivedSelectors";
 import {
   selectDepositWithdrawalAmounts,
@@ -30,7 +30,6 @@ import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getReceivedTokenAmount } from "domain/synthetics/paxosTransit/getReceivedTokenAmount";
 import { usePaxosTransit } from "domain/synthetics/paxosTransit/usePaxosTransit";
-import { findTransitWithdrawalStatus } from "domain/synthetics/paxosTransit/utils";
 import type { ERC20Address } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import { formatAmountFree } from "lib/numbers";
@@ -65,31 +64,24 @@ export function usePaxosTransitState({
   const setTransitAmountOut = useSelector(selectPoolsDetailsSetTransitAmountOut);
   const usdcToken = useSelector(selectPoolsDetailsAvailableCollateralSwapToken);
   const collateralSwapTokens = useSelector(selectPoolsDetailsCollateralSwapTokens);
-  const glvInfo = useSelector(selectPoolsDetailsGlvInfo);
-  const marketInfo = useSelector(selectPoolsDetailsMarketInfo);
   const tokensData = useSelector(selectTokensData);
+  const transitWithdrawalTxnHash = useSelector(selectPoolsDetailsTransitWithdrawalTxnHash);
+  const setTransitWithdrawalTxnHash = useSelector(selectPoolsDetailsSetTransitWithdrawalTxnHash);
   const collateralSwapTotalFeesDeltaUsd = useSelector(selectPoolsDetailsCollateralSwapTotalFeesDeltaUsd);
   const { withdrawalStatuses } = useSyntheticsEvents();
-
-  const [convertedWithdrawalKeys, setConvertedWithdrawalKeys] = useState<string[]>([]);
 
   const paxosTransitConfig = getPaxosTransitConfig(chainId);
   const usdgToken = getByKey(tokensData, paxosTransitConfig?.usdgAddress);
   const isUsdgPool = usdcToken !== undefined;
   const isConversionNeeded = collateralSwapTokens !== undefined;
   const [tokenIn, tokenOut] = isDeposit ? [usdcToken, usdgToken] : [usdgToken, usdcToken];
-  const poolAddress = glvInfo ? glvInfo.glvToken.address : marketInfo?.marketTokenAddress;
 
   const withdrawalUsdgAmount = isWithdrawal && amounts ? amounts.longTokenAmount + amounts.shortTokenAmount : 0n;
 
-  const withdrawalStatus = useMemo(
-    () =>
-      isWithdrawal
-        ? findTransitWithdrawalStatus(withdrawalStatuses, { account, poolAddress, convertedWithdrawalKeys })
-        : undefined,
-    [account, convertedWithdrawalKeys, isWithdrawal, poolAddress, withdrawalStatuses]
-  );
-  const withdrawalKey = withdrawalStatus?.key;
+  const withdrawalStatus =
+    transitWithdrawalTxnHash === undefined
+      ? undefined
+      : Object.values(withdrawalStatuses).find((status) => status.createdTxnHash === transitWithdrawalTxnHash);
   const executedTxnHash = withdrawalStatus?.executedTxnHash;
 
   const { data: receivedUsdg } = useSWR(
@@ -106,7 +98,8 @@ export function usePaxosTransitState({
     { refreshInterval: 0, revalidateOnFocus: false, revalidateOnReconnect: false, revalidateIfStale: false }
   );
   const isWithdrawalSettled = receivedUsdg !== undefined && receivedUsdg > 0n;
-  const isWithdrawalEmpty = executedTxnHash !== undefined && (receivedUsdg === 0n || tokenIn?.walletBalance === 0n);
+  const isWithdrawalWithoutPayout =
+    transitWithdrawalTxnHash !== undefined && (receivedUsdg === 0n || withdrawalStatus?.cancelledTxnHash !== undefined);
 
   let amountIn = 0n;
 
@@ -121,10 +114,7 @@ export function usePaxosTransitState({
       if (!paxosTransitConfig) return;
 
       if (isWithdrawal) {
-        if (withdrawalKey) {
-          setConvertedWithdrawalKeys((keys) => [...keys, withdrawalKey]);
-        }
-
+        setTransitWithdrawalTxnHash(undefined);
         setMarketOrGlvTokenInputValue("");
         setFirstTokenInputValue("");
         helperToast.success(t`USDC received.`);
@@ -146,7 +136,7 @@ export function usePaxosTransitState({
       setFirstTokenInputValue,
       setFocusedInput,
       setMarketOrGlvTokenInputValue,
-      withdrawalKey,
+      setTransitWithdrawalTxnHash,
     ]
   );
 
@@ -175,24 +165,22 @@ export function usePaxosTransitState({
     submitTransit,
     amountOut,
   } = transit;
-  const isTransitInProgress = step !== "idle" || withdrawalStatus !== undefined;
   const isTransitLoading = !feeTierError && (!isFeeTierLoaded || (isQuoteNeeded && !quote && !quoteError));
+  const isTransitOffered =
+    isConversionNeeded && (shouldUseTransit || isTransitLoading || collateralSwapTotalFeesDeltaUsd === undefined);
 
   const isTransitRoute =
-    isTransitInProgress ||
-    (isConversionNeeded &&
-      amountIn > 0n &&
-      (shouldUseTransit || isTransitLoading || collateralSwapTotalFeesDeltaUsd === undefined));
+    step !== "idle" || transitWithdrawalTxnHash !== undefined || (isTransitOffered && amountIn > 0n);
 
   const transitAmountOut = isDeposit && isTransitRoute ? amountOut : undefined;
 
   useEffect(
-    function dropEmptyWithdrawal() {
-      if (isWithdrawalEmpty && withdrawalKey) {
-        setConvertedWithdrawalKeys((keys) => [...keys, withdrawalKey]);
+    function dropWithdrawalWithoutPayout() {
+      if (isWithdrawalWithoutPayout) {
+        setTransitWithdrawalTxnHash(undefined);
       }
     },
-    [isWithdrawalEmpty, withdrawalKey]
+    [isWithdrawalWithoutPayout, setTransitWithdrawalTxnHash]
   );
 
   useEffect(
@@ -258,7 +246,6 @@ export function usePaxosTransitState({
     amountIn,
     feeTierError,
     isDeposit,
-    isWithdrawalSettled,
     isTransitLoading,
     isTransitRoute,
     shouldUseTransit,
@@ -266,6 +253,7 @@ export function usePaxosTransitState({
     onConvert,
     isOrderStatusUnknown,
     quoteError,
+    isWithdrawalSettled,
     withdrawalStatus,
     step,
     tokenIn,

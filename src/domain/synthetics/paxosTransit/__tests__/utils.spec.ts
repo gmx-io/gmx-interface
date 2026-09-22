@@ -1,11 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import { USD_DECIMALS } from "config/factors";
-import type { WithdrawalStatuses } from "context/SyntheticsEvents/types";
 import { expandDecimals } from "lib/numbers";
 import type { TransitFeeTierResponse } from "sdk/utils/paxos/types";
 
-import { findTransitWithdrawalStatus, getIsTransitQuoteNeeded, getShouldUseTransit, getTransitFeeTier } from "../utils";
+import { getIsTransitQuoteNeeded, getShouldUseTransit, getTransitFeeTier } from "../utils";
 
 const usd = (value: number) => expandDecimals(value, USD_DECIMALS);
 const ZERO_FEE: TransitFeeTierResponse = { feeTier: "zeroFee", zeroFeeCapacity: 1_000_000n };
@@ -100,68 +99,5 @@ describe("getIsTransitQuoteNeeded", () => {
     expect(getIsTransitQuoteNeeded({ ...params, isWhitelisted: true })).toBe(true);
     expect(getIsTransitQuoteNeeded({ ...params, amountUsd: usd(300) })).toBe(true);
     expect(getIsTransitQuoteNeeded({ ...params, collateralSwapTotalFeesDeltaUsd: undefined })).toBe(true);
-  });
-});
-
-describe("findTransitWithdrawalStatus", () => {
-  const ACCOUNT = "0x1111111111111111111111111111111111111111";
-  const POOL = "0x2222222222222222222222222222222222222222";
-  const OTHER = "0x3333333333333333333333333333333333333333";
-
-  const status = (
-    key: string,
-    createdAt: number,
-    overrides: { receiver?: string; marketAddress?: string; cancelledTxnHash?: string } = {}
-  ) => ({
-    key,
-    createdAt,
-    cancelledTxnHash: overrides.cancelledTxnHash,
-    data: {
-      key,
-      account: ACCOUNT,
-      receiver: overrides.receiver ?? ACCOUNT,
-      callbackContract: OTHER,
-      marketAddress: overrides.marketAddress ?? POOL,
-      marketTokenAmount: 10n,
-      minLongTokenAmount: 4n,
-      minShortTokenAmount: 6n,
-      updatedAtBlock: 1n,
-      executionFee: 0n,
-      callbackGasLimit: 0n,
-      shouldUnwrapNativeToken: false,
-    },
-  });
-
-  const statuses = (...list: ReturnType<typeof status>[]): WithdrawalStatuses =>
-    Object.fromEntries(list.map((item) => [item.key, item]));
-
-  const params = { account: ACCOUNT, poolAddress: POOL, convertedWithdrawalKeys: [] };
-
-  it("takes the newest withdrawal of this pool", () => {
-    expect(findTransitWithdrawalStatus(statuses(status("old", 1), status("new", 2)), params)?.key).toBe("new");
-  });
-
-  it("skips cancelled, already converted and foreign withdrawals", () => {
-    expect(
-      findTransitWithdrawalStatus(statuses(status("cancelled", 3, { cancelledTxnHash: "0xabc" })), params)
-    ).toBeUndefined();
-    expect(
-      findTransitWithdrawalStatus(statuses(status("done", 3)), { ...params, convertedWithdrawalKeys: ["done"] })
-    ).toBeUndefined();
-    expect(
-      findTransitWithdrawalStatus(statuses(status("other pool", 3, { marketAddress: OTHER })), params)
-    ).toBeUndefined();
-    expect(
-      findTransitWithdrawalStatus(statuses(status("other receiver", 3, { receiver: OTHER })), params)
-    ).toBeUndefined();
-  });
-
-  it("needs an account and a pool", () => {
-    expect(
-      findTransitWithdrawalStatus(statuses(status("withdrawal", 1)), { ...params, account: undefined })
-    ).toBeUndefined();
-    expect(
-      findTransitWithdrawalStatus(statuses(status("withdrawal", 1)), { ...params, poolAddress: undefined })
-    ).toBeUndefined();
   });
 });
