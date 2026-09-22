@@ -139,9 +139,7 @@ describe.each(["wallet", "express", "one-click", "gmx-account"] as const)("%s TP
     expect(state.setPendingOrder).toHaveBeenCalledTimes(mode === "wallet" ? 0 : 1);
     callback(
       builder.Sent(
-        mode === "wallet"
-          ? { type: "wallet", transactionHash: "tx" }
-          : { type: "relay", relayTaskId: "task", relayProvider: "gelato" }
+        mode === "wallet" ? { type: "wallet", transactionHash: "tx" } : { type: "relay", relayTaskId: "task" }
       )
     );
     expect(state.batches[0]).toMatchObject(mode === "wallet" ? { transactionHash: "tx" } : { relayTaskId: "task" });
@@ -155,9 +153,7 @@ describe.each(["wallet", "express", "one-click", "gmx-account"] as const)("%s TP
       expect(state.setPendingExpressTxn).toHaveBeenCalledWith(
         expect.objectContaining({ isGmxAccount: mode === "gmx-account" })
       );
-      expect(state.updatePendingExpressTxn).toHaveBeenCalledWith(
-        expect.objectContaining({ taskId: "task", relayProvider: "gelato" })
-      );
+      expect(state.updatePendingExpressTxn).toHaveBeenCalledWith(expect.objectContaining({ taskId: "task" }));
     }
   });
 });

@@ -17,13 +17,6 @@ export function getIsV2JitLiquidityInfoEnabled(uiFlags: UiFlags | undefined): bo
   return uiFlags?.[IS_V2_JIT_LIQUIDITY_INFO_ENABLED_UI_FLAG]?.enabled !== false;
 }
 
-export const FORCE_GELATO_FALLBACK_UI_FLAG = "forceGelatoFallback";
-
-/** Only an explicit `true` forces the fallback: an unreachable keeper must not undo a rollout. */
-export function getIsGelatoFallbackForced(uiFlags: UiFlags | undefined): boolean {
-  return uiFlags?.[FORCE_GELATO_FALLBACK_UI_FLAG]?.enabled === true;
-}
-
 export const IS_EXPRESS_AVAILABLE_UI_FLAG = "isExpressAvailable";
 
 /** Fail-open: only an explicit `false` disables express — an unreachable keeper or an unpublished flag must not. */
@@ -41,7 +34,6 @@ const PERSISTED_API_FLAG_KEYS = [
   IS_V2_JIT_LIQUIDITY_INFO_ENABLED_UI_FLAG,
   // a reload mid-incident must restore the last known value rather than blank-default on first paint
   IS_EXPRESS_AVAILABLE_UI_FLAG,
-  FORCE_GELATO_FALLBACK_UI_FLAG,
 ];
 
 function getCacheKey(chainId: number): string {
@@ -75,8 +67,7 @@ export function persistApiFlags(chainId: number, flags: UiFlags) {
 
 /** A keeper replica is elected on price health alone and can serve a stale flag; acting values are confirmed with the configured keeper. */
 export async function confirmRelayControlFlags(chainId: number, flags: UiFlags): Promise<UiFlags> {
-  const isActing =
-    flags[IS_EXPRESS_AVAILABLE_UI_FLAG]?.enabled === false || flags[FORCE_GELATO_FALLBACK_UI_FLAG]?.enabled === true;
+  const isActing = flags[IS_EXPRESS_AVAILABLE_UI_FLAG]?.enabled === false;
 
   if (!isActing) {
     return flags;
@@ -97,7 +88,7 @@ export async function confirmRelayControlFlags(chainId: number, flags: UiFlags):
 
     return {
       ...flags,
-      ...pick(canonical, [IS_EXPRESS_AVAILABLE_UI_FLAG, FORCE_GELATO_FALLBACK_UI_FLAG]),
+      ...pick(canonical, [IS_EXPRESS_AVAILABLE_UI_FLAG]),
     };
   } catch {
     return flags;

@@ -23,13 +23,13 @@ import { formatAmount, formatUsd } from "lib/numbers";
 import { sendEarnPortfolioItemClickEvent } from "lib/userAnalytics/earnEvents";
 import useSearchParams from "lib/useSearchParams";
 import useWallet from "lib/wallets/useWallet";
-import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
 import { bigMath } from "sdk/utils/bigmath";
 import type { StakingPowerResponse } from "sdk/utils/staking/types";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
+import { BuyGmxModal } from "components/BuyGmxModal/BuyGmxModal";
 import { VestModal } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal";
 import FloatingPortal from "components/Portal/FloatingPortal";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";

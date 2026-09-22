@@ -1,4 +1,4 @@
-import { encodeFunctionData, encodePacked } from "viem";
+import { encodeFunctionData } from "viem";
 
 import { ContractsChainId, SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
@@ -116,16 +116,11 @@ export async function simulateAndCreateMultichainClaimAffiliateRewardsTxn({
   });
 
   const client = getPublicClientWithRpc(chainId);
-  const relayPayload = encodePacked(
-    ["bytes", "address", "address", "uint256"],
-    [txnData.callData, getContract(chainId, "GelatoRelayAddress"), txnData.feeToken, txnData.feeAmount]
-  );
-
   try {
     await client.call({
       account: GMX_SIMULATION_ORIGIN,
       to: txnData.to,
-      data: relayPayload,
+      data: txnData.callData,
     });
   } catch (error) {
     throw new Error(`Multichain claim simulation failed: ${error instanceof Error ? error.message : "Unknown error"}`);

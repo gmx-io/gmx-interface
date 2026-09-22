@@ -79,7 +79,6 @@ export async function sendToGmxRelay({
   txnData: ExpressTxnData;
   apiUrl?: string;
 }): Promise<GmxRelayResult> {
-  // bare relay-router calldata: the fee is computed on-chain, so no Gelato fee suffix is appended
   const result = await post<GmxRelayResult>(
     resolveApiUrl(chainId, apiUrl),
     "/v1/relay/submit",

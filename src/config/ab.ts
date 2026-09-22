@@ -15,17 +15,10 @@ type AbStorage = {
 const abFlagsConfig = {
   abSdk3: 0,
   useTestApi: 0,
-  // a flag rolls once per browser, so this ships at its target share — raising it later moves nobody
-  gmxRelay: 0.3,
 };
-
-// rolled on first use instead of at load, so the split is over the population the experiment is
-// about (browsers that actually send through a relay), not over every visitor
-const LAZY_AB_FLAGS: ReadonlySet<AbFlag> = new Set(["gmxRelay"] as const);
 
 export type AbFlag = keyof typeof abFlagsConfig;
 
-// the configured flags, not the assigned ones: a lazy flag exists here before any browser holds it
 export const AB_FLAG_NAMES = Object.keys(abFlagsConfig) as readonly AbFlag[];
 
 let abStorage: AbStorage;
@@ -38,10 +31,6 @@ function initAbStorage() {
   abStorage = {} as AbStorage;
 
   for (const flag of AB_FLAG_NAMES) {
-    if (LAZY_AB_FLAGS.has(flag)) {
-      continue;
-    }
-
     abStorage[flag] = rollAbFlag(flag);
   }
 
@@ -61,10 +50,6 @@ function loadAbStorage(): void {
 
       for (const flag of AB_FLAG_NAMES) {
         if (!abStorage[flag]) {
-          if (LAZY_AB_FLAGS.has(flag)) {
-            continue;
-          }
-
           abStorage[flag] = rollAbFlag(flag);
           changed = true;
         } else if (abFlagsConfig[flag] === 1 && !abStorage[flag].enabled) {
@@ -111,16 +96,6 @@ export function setAbFlagEnabled(flag: AbFlag, enabled: boolean) {
 
 export function getIsFlagEnabled(flag: AbFlag): boolean {
   return Boolean(abStorage[flag]?.enabled);
-}
-
-/** Rolls a lazy flag at its moment of first use; a passive read elsewhere never assigns. */
-export function ensureAbFlagRolled(flag: AbFlag): boolean {
-  if (!abStorage[flag]) {
-    abStorage[flag] = rollAbFlag(flag);
-    localStorage.setItem(AB_FLAG_STORAGE_KEY, JSON.stringify(abStorage));
-  }
-
-  return abStorage[flag].enabled;
 }
 
 export function getAbFlags(): Record<AbFlag, boolean> {
