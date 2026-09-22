@@ -15,6 +15,8 @@ import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmountForMetrics } from "lib/metrics";
+import { getDisplayMode } from "lib/pwa/getDisplayMode";
+import { getLaunchSource } from "lib/pwa/getLaunchSource";
 import { useBowser } from "lib/useBowser";
 import useWallet from "lib/wallets/useWallet";
 
@@ -32,6 +34,8 @@ export function useConfigureUserAnalyticsProfile() {
   const { wallets } = useWallets();
   const { data: bowser } = useBowser();
   const { subaccount } = useSubaccountContext();
+  const displayMode = getDisplayMode();
+  const launchSource = getLaunchSource();
   const {
     shouldShowPositionLines,
     expressOrdersEnabled,
@@ -70,12 +74,14 @@ export function useConfigureUserAnalyticsProfile() {
       browserName: bowser?.browser.name,
       ordersCount,
       isWalletConnected: active,
+      displayMode,
+      launchSource,
       isTest: isDevelopment(),
       isInited: Boolean(bowser),
       ...walletAnalyticsProvenance,
       ...getAbFlags(),
     });
-  }, [active, ordersCount, bowser, walletAnalyticsProvenance]);
+  }, [active, ordersCount, bowser, displayMode, launchSource, walletAnalyticsProvenance]);
 
   useEffect(() => {
     userAnalytics.pushProfileProps({

@@ -9,6 +9,7 @@ import {
   selectPositiveFeePositionsSortedByUsd,
   selectTokensData,
   selectUiFeeFactor,
+  selectProDiscountFactor,
   selectUserReferralInfo,
 } from "../selectors/globalSelectors";
 import { useSelector } from "../utils";
@@ -17,6 +18,7 @@ export const useMarketsInfoData = () => useSelector(selectMarketsInfoData);
 export const useTokensData = () => useSelector(selectTokensData);
 export const useIsOrdersLoading = () => useSelector(selectIsOrdersLoading);
 export const useUserReferralInfo = () => useSelector(selectUserReferralInfo);
+export const useProDiscountFactor = () => useSelector(selectProDiscountFactor);
 export const usePositionsInfoData = () => useSelector(selectPositionsInfoData);
 export const usePositiveFeePositionsSortedByUsd = () => useSelector(selectPositiveFeePositionsSortedByUsd);
 export const useIsPositionsLoading = () => useSelector(selectIsPositionsLoading);

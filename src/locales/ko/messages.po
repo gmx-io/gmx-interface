@@ -383,7 +383,7 @@ msgstr "총 크기"
 msgid "Open app"
 msgstr "앱 열기"
 
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingStep.tsx
 msgid "In progress"
 msgstr "진행 중"
 
@@ -627,6 +627,10 @@ msgstr "수수료를 고려했을 때 최대 허용 레버리지를 초과하여
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed"
 msgstr "{gmOrGlvLabel} 판매 실패"
+
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Fund the issuer with {shortfall} more esGMX before distributing."
+msgstr "분배하기 전에 발행자 컨트랙트에 esGMX {shortfall}개를 추가로 입금하세요."
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Affiliate Dashboard"
@@ -1014,6 +1018,10 @@ msgstr "더 낮은 순 가격 영향을 위해"
 msgid "NET RATE"
 msgstr "NET RATE"
 
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "{tokenSymbol} mint submitted"
+msgstr "{tokenSymbol} 민팅 요청 제출됨"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/pages/RewardsPage/RewardsPage.tsx
 msgid "No rewards"
@@ -1080,6 +1088,13 @@ msgstr "높은 외부 스왑 영향"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Keep more of what you earn"
 msgstr "수익을 더 많이 보존하십시오"
+
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+msgid "Balances will refresh shortly."
+msgstr "잔액이 곧 새로고침됩니다."
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Accrued funding fees available for settlement"
@@ -1166,6 +1181,13 @@ msgstr "중앙화 거래소에서 GMX 구매"
 #: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
 msgid "How long does a volume tier remain active?"
 msgstr "거래량 등급은 얼마나 오래 활성 상태로 유지되나요?"
+
+#: src/components/SwapCard/SwapCard.tsx
+#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+#: src/components/TVChart/ChartHeader.tsx
+#: src/components/TVChart/ChartHeader.tsx
+msgid "Available liquidity"
+msgstr "가용 유동성"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "GMX pools can't fill this swap, and no external route is currently available. Try reducing the amount."
@@ -1256,10 +1278,6 @@ msgstr ""
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Swap fees"
 msgstr "스왑 수수료"
-
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "Max {positionSide} size"
-msgstr "최대 {positionSide} 규모"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX alerts"
@@ -1419,10 +1437,6 @@ msgstr "포지션 수수료 계수 (양의 PI)"
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap price impact"
 msgstr "높은 스왑 가격 영향"
-
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "The maximum swap size based on current liquidity. Updates live."
-msgstr "현재 유동성을 기준으로 한 최대 스왑 규모입니다. 실시간으로 업데이트됩니다."
 
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
@@ -1807,6 +1821,7 @@ msgstr "유동성은 {chainNames}에서만 이용 가능합니다. 계속하려�
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop-Loss"
@@ -1916,6 +1931,10 @@ msgstr "베스팅 계속"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Settings update failed"
 msgstr "설정 업데이트 실패"
+
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Mint"
+msgstr "민팅"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buy {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to settlement chain and go to the {indexName} pool to buy your {gmOrGlvLabel} tokens."
@@ -2460,6 +2479,10 @@ msgstr "수수료 없음"
 msgid "Switch to market order"
 msgstr "시장가 주문으로 전환"
 
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Rewards distributed"
+msgstr "보상 분배 완료"
+
 #: landing/src/pages/Builders/RevenueSection/RevenueCalculator.tsx
 msgid "Combined monthly revenue"
 msgstr "월간 합산 수익"
@@ -2477,6 +2500,7 @@ msgstr "{ordersText} 취소 중..."
 msgid "Received at close (GMX balance)"
 msgstr "청산 시 수령액 (GMX 잔액)"
 
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "Size (% of position)"
 msgstr "크기 (포지션의 %)"
@@ -2492,6 +2516,10 @@ msgstr "100개 이상의 암호화폐 토큰"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Optimal usage factor short"
 msgstr "최적 사용 비율 숏"
+
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+msgid "Approval submitted"
+msgstr "승인 요청 제출됨"
 
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Trade {0} more to keep {1} status <0>+{2}</0>"
@@ -2571,6 +2599,10 @@ msgstr "Telegram 그룹"
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Complete account transfer"
 msgstr "계정 전송 완료"
+
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+msgid "Approved"
+msgstr "승인됨"
 
 #: landing/src/pages/Rewards/RewardsFaq.tsx
 msgid "For more information read docs ↗"
@@ -2759,6 +2791,10 @@ msgstr "EIP-4844"
 msgid "Keep leverage at {0}"
 msgstr "{0}으로 레버리지 유지"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "AVAIL. LIQ."
+msgstr "사용 가능 유동성"
+
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 #: src/pages/RewardsPage/components/RewardsTierTables.tsx
 msgid "Tier Name"
@@ -2827,6 +2863,9 @@ msgid "Swapped {0} for {1}"
 msgstr "{0}을(를) {1}(으)로 스왑했습니다"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Deposits are closed."
 msgstr "예치가 종료되었습니다."
 
@@ -2867,6 +2906,10 @@ msgstr "가격 영향 리베이트를 청구하는 중…"
 #: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
 msgid "The full vesting period is one year. GMX becomes available to claim gradually throughout this period."
 msgstr "전체 베스팅 기간은 1년입니다. 이 기간 동안 GMX는 점진적으로 수령할 수 있게 됩니다."
+
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "{tokenSymbol} mint failed"
+msgstr "{tokenSymbol} 민팅 실패"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 #: src/components/Earn/AdditionalOpportunities/OpportunityCard.tsx
@@ -2938,6 +2981,7 @@ msgid "Shift error"
 msgstr "시프트 오류"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Claim failed"
@@ -3203,10 +3247,6 @@ msgstr "GMX 풀에서 이 스왑 규모를 체결할 수 없으며, 현재 사�
 msgid "GM: {indexName}"
 msgstr "GM: {indexName}"
 
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "Order won't execute: size exceeds the max swap size of {maxSwapSize}. Reduce the swap size."
-msgstr "주문이 실행되지 않습니다: 규모가 최대 스왑 규모인 {maxSwapSize}을(를) 초과합니다. 스왑 규모를 줄이세요."
-
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "GMX staked: <0>{0}</0>"
 msgstr "스테이킹된 GMX: <0>{0}</0>"
@@ -3334,6 +3374,7 @@ msgstr ""
 msgid "Pair"
 msgstr "페어"
 
+#: src/components/SwapCard/SwapCard.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max {0} out"
 msgstr "최대 {0} 아웃"
@@ -3464,6 +3505,7 @@ msgid "No liquidity available for increasing longs at<0/>this size. Max long siz
 msgstr "이 크기에서 롱 증가를 위한 유동성이 없습니다.<0/>최대 롱 크기: {0}<1/><2/>숏 감소를 위한 체결 가격입니다."
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 msgid "Transfer completed"
 msgstr "전송 완료"
 
@@ -3633,6 +3675,7 @@ msgstr "{txnTypeText} {0} 주문"
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Max"
 msgstr "최대"
@@ -3668,6 +3711,10 @@ msgstr "GMX 개선에 도움을 주십시오. 보안을 위해 먼저 연락드�
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel margin deposit"
 msgstr "증거금 예치 취소"
+
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Issuer funding changed. Review the amount and try again."
+msgstr "발행자의 자금 상태가 변경되었습니다. 금액을 확인하고 다시 시도하세요."
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Swap tokens"
@@ -3713,6 +3760,10 @@ msgstr "PnL 금액 표시"
 msgid "Transaction hash"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Issue esGMX rewards to a recipient, increasing their claimable rewards and vesting limit."
+msgstr "수령인에게 esGMX 보상을 할당하여 청구 가능한 보상과 베스팅 한도를 늘립니다."
+
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap failed"
@@ -3748,10 +3799,6 @@ msgstr "{chainName}에서 GMX 구매"
 #: src/components/TradeboxMarginFields/SizeField.tsx
 msgid "Size"
 msgstr "크기"
-
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "Order may not execute: size exceeds the max {positionSide} size of {maxSize} at the trigger price. Reduce the order size."
-msgstr "주문 규모가 트리거 가격에서의 최대 {positionSide} 규모인 {maxSize}를 초과하여 주문이 체결되지 않을 수 있습니다. 주문 규모를 줄이세요."
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Trade from your own wallet — no deposits."
@@ -3832,6 +3879,10 @@ msgstr "포지션 크기가 이용 가능한 미결제약정을 초과합니다"
 msgid "Snapshot epoch"
 msgstr "스냅샷 에포크"
 
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Batch index"
+msgstr "배치 인덱스"
+
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "STIP.b trading incentives"
 msgstr "STIP.b 거래 인센티브"
@@ -3880,6 +3931,7 @@ msgstr "상장"
 msgid "Sell {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to settlement chain and go to the {indexName} pool to sell your {gmOrGlvLabel} tokens."
 msgstr "{gmOrGlvLabel} 판매에 실패했습니다. 자금은 GMX Account에 안전하게 보관되어 있습니다. 정산 체인으로 전환하고 {indexName} 풀로 이동하여 {gmOrGlvLabel} 토큰을 판매하십시오."
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Vesting submitted"
 msgstr "베스팅 요청이 제출되었습니다"
@@ -3989,10 +4041,6 @@ msgstr "<0>고정된 기준은 없습니다 — 데스크가 최근 및 예상 �
 msgid "Staking tier + Volume tier + Boosts"
 msgstr "스테이킹 등급 + 거래량 등급 + 부스트"
 
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "The most this market can add to {positionSide} positions right now. Updates live and can change before a resting order triggers."
-msgstr "현재 이 시장에서 {positionSide} 포지션에 추가할 수 있는 최대 규모입니다. 실시간으로 업데이트되며 대기 주문이 트리거되기 전에 변경될 수 있습니다."
-
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing {indexTokenText} Short: -{sizeDeltaUsdText}"
 msgstr ""
@@ -4020,6 +4068,11 @@ msgstr "주소 검색"
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "Data freshness"
 msgstr "데이터 최신성"
+
+#: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "Stopping vesting returns your collateral and unvested esGMX. Vested GMX remains available to claim separately."
+msgstr "베스팅을 중단하면 담보와 아직 베스팅되지 않은 esGMX가 반환됩니다. 베스팅이 완료된 GMX는 계속 별도로 청구할 수 있습니다."
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Done!"
@@ -4295,6 +4348,10 @@ msgstr "GMX Account에 자산이 없습니다"
 msgid "Order type"
 msgstr "주문 유형"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Vesting paused"
+msgstr "베스팅 일시 중지됨"
+
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr ""
@@ -4365,6 +4422,9 @@ msgid "Theme"
 msgstr "테마"
 
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
@@ -4468,6 +4528,7 @@ msgstr "GLV 볼트"
 msgid "Buy GMX from centralized services"
 msgstr "중앙화 서비스에서 GMX 구매"
 
+#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute: insufficient liquidity at the trigger price. Reduce the order size."
 msgstr "주문이 체결되지 않을 수 있습니다: 트리거 가격의 유동성이 부족합니다. 주문 크기를 줄이세요."
@@ -4510,6 +4571,7 @@ msgstr "거래 내역을 불러오지 못했습니다"
 msgid "<0>Set recommended impact: {0}</0>."
 msgstr "<0>권장 영향값 설정: {0}</0>."
 
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Position would be liquidated immediately upon execution. Reduce the size."
 msgstr "실행 즉시 포지션이 청산됩니다. 크기를 줄이세요."
@@ -4544,11 +4606,16 @@ msgstr "트레이더 활동"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Trigger price"
 msgstr "조건가"
+
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Your collateral stays locked until vesting is complete."
+msgstr "베스팅이 완료될 때까지 담보는 잠긴 상태로 유지됩니다."
 
 #: src/components/AbFlagsSettings/AbFlagsSettings.tsx
 msgid "No AB flags"
@@ -4636,6 +4703,10 @@ msgstr "TRANSACTION"
 msgid "Copy image"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "{tokenSymbol} minted"
+msgstr "{tokenSymbol} 민팅 완료"
+
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show error boundary debug trigger"
 msgstr "에러 바운더리 디버그 트리거 표시"
@@ -4665,6 +4736,7 @@ msgstr "입금 USD 한도"
 msgid "Arbitrum wallet"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Collateral required for vest"
 msgstr "베스팅에 필요한 담보"
@@ -4684,6 +4756,7 @@ msgstr "탈중앙화 또는 중앙화 거래소에서 구매"
 #: src/pages/IncentivesDebug/IncentivesAuditPage.tsx
 #: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
 #: src/pages/IncentivesDebug/IncentivesDistributionPage.tsx
+#: src/pages/RewardsPage/RewardsPage.tsx
 msgid "No V2 incentives configuration is available for this chain."
 msgstr "이 체인에서는 V2 인센티브 구성을 사용할 수 없습니다."
 
@@ -4839,6 +4912,7 @@ msgid "This trigger price is beyond the current liquidation price. Your position
 msgstr "이 조건가는 현재 청산가를 초과합니다. 이 TP/SL 주문이 실행되기 전에 포지션이 청산될 수 있습니다."
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
@@ -4980,6 +5054,8 @@ msgstr "USD 금액은 표시된 각 월의 평균 GMX 가격을 사용하여 추
 msgid "Set min deposit"
 msgstr "최소 예치 금액 설정"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
@@ -5002,7 +5078,7 @@ msgstr "최소 펀딩 계수(롱)"
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
 msgstr "GMX가 다른 영구 플랫폼보다 비용 효율적인 이유는 무엇인가요?"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Margin is below the minimum required for the position size"
 msgstr "마진이 포지션 규모에 필요한 최소 금액보다 적습니다"
 
@@ -5174,6 +5250,7 @@ msgid "Request to be contacted"
 msgstr "연락 요청하기"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Sending..."
 msgstr "전송 중..."
@@ -5392,6 +5469,7 @@ msgid "Stop-Loss Decrease"
 msgstr "손절매 감소"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
 msgid "Wallet balance"
 msgstr "지갑 잔액"
 
@@ -5601,7 +5679,7 @@ msgstr "가상 마켓 ID"
 msgid "Your wallet is not connected to this network"
 msgstr "지갑이 이 네트워크에 연결되어 있지 않습니다"
 
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute: insufficient liquidity to fill the swap at the min. receive amount. Edit the min. receive amount or reduce the swap size."
 msgstr "주문이 체결되지 않을 수 있습니다: 최소 수령액으로 스왑을 체결하기 위한 유동성이 부족합니다. 최소 수령액을 수정하거나 스왑 크기를 줄이세요."
@@ -5947,6 +6025,11 @@ msgstr "{chainName} 데이터"
 msgid "Rank among accounts for this metric and period."
 msgstr "이 지표와 기간에 대한 계정 간 순위입니다."
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
+msgid "Sepolia vesting uses test GMX, esGMX, and sbfGMX collateral tokens."
+msgstr "Sepolia 베스팅은 테스트용 GMX, esGMX 및 sbfGMX 담보 토큰을 사용합니다."
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "No net rate history for this market"
 msgstr ""
@@ -5986,6 +6069,7 @@ msgid "{gmOrGlvLabel} bought successfully, but bridge to {0} failed. Your funds 
 msgstr "{gmOrGlvLabel} 구매에 성공했지만 {0}(으)로의 브리지에 실패했습니다. 자금은 GMX 계정에 안전하게 보관되어 있습니다. 브리지를 다시 시도하거나 {indexName} 풀로 이동하여 {gmOrGlvLabel} 토큰을 출금하세요."
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionItem/PositionItemOrders.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -6026,6 +6110,7 @@ msgid "+{0} on top"
 msgstr "+{0} 추가"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 msgid "Recipient address"
 msgstr "수신자 주소"
 
@@ -6111,7 +6196,7 @@ msgstr "GMX 승인 대기 중..."
 msgid "AMOUNT"
 msgstr "금액"
 
-#: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
+#: src/components/StatsTooltip/ChainsStatsNotices.tsx
 msgid "Partial total: no data yet from {0}."
 msgstr ""
 
@@ -6129,6 +6214,7 @@ msgstr ""
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
@@ -6276,6 +6362,7 @@ msgstr "거래가 아직 없습니다"
 msgid "Price change to liquidation"
 msgstr "청산까지 가격 변동"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "esGMX claim failed"
 msgstr "esGMX 청구 실패"
@@ -6556,10 +6643,6 @@ msgstr "내 거래량"
 msgid "Fail external swaps"
 msgstr "외부 스왑 실패 처리"
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute: the resulting position would exceed the maximum allowed leverage. <0>Deposit margin</0> or reduce the order size before it triggers."
-msgstr "주문이 체결되지 않을 수 있습니다: 결과 포지션이 최대 허용 레버리지를 초과합니다. 트리거되기 전에 <0>증거금을 예치</0>하거나 주문 크기를 줄이세요."
-
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/MainView.tsx
@@ -6664,6 +6747,10 @@ msgstr "과거 최대 스테이킹 GMX 또는 esGMX의 20%를 초과하여 언�
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "가격 영향 없음. 이 규모에서<0/>숏 증가 또는 롱 감소 시<1/>단일 체결가가 적용됩니다."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+msgid "<0>Note:</0> If you withdraw esGMX that is currently vesting, it will stop vesting and cannot be returned for vesting."
+msgstr "<0>참고:</0> 현재 베스팅 중인 esGMX를 출금하면 해당 베스팅이 중단되며, 베스팅을 위해 다시 입금할 수 없습니다."
+
 #: src/pages/ReferralsTier/ReferralsTier.tsx
 msgid "Current tier:"
 msgstr "현재 등급:"
@@ -6746,6 +6833,7 @@ msgstr "미결제약정 {directionLabel}"
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/domain/tokens/approveTokens.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 msgid "Approval failed"
 msgstr "승인 실패"
 
@@ -6863,10 +6951,6 @@ msgstr "{multiplier} 보상을 받고 있어요. GMX에서 거래한 적이 있�
 #: src/lib/useHasOutdatedUi.ts
 msgid "Page outdated. Refresh"
 msgstr "페이지가 만료되었습니다. 새로고침"
-
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "Max swap size"
-msgstr "최대 스왑 규모"
 
 #: landing/src/pages/Rewards/ReturningTrader.tsx
 msgid "You're starting fresh"
@@ -7353,6 +7437,10 @@ msgstr "위험과 보상을 제어하며 투자"
 msgid "GMX on Solana (known as GMTrade) is currently served from a separate domain."
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "This batch index has already been used."
+msgstr "이 배치 인덱스는 이미 사용되었습니다."
+
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Wallet or network changed. Review your rewards before claiming."
 msgstr "지갑 또는 네트워크가 변경되었습니다. 수령하기 전에 리워드를 확인하세요."
@@ -7530,6 +7618,8 @@ msgstr "관리인"
 msgid "Users"
 msgstr "사용자"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Vest esGMX"
 msgstr "esGMX 베스팅"
@@ -7564,10 +7654,6 @@ msgstr "차이"
 msgid "Stop-Loss price"
 msgstr ""
 
-#: src/components/OrderEditor/OrderEditor.tsx
-msgid "No valid leverage available"
-msgstr "유효한 레버리지가 없습니다"
-
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "swap amount"
 msgstr "스왑 금액"
@@ -7579,10 +7665,6 @@ msgstr "최적"
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{updateOrdersCount} TP/SL orders updated"
 msgstr "{updateOrdersCount}개의 TP/SL 주문이 업데이트되었습니다"
-
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Insufficient margin. Add more margin"
-msgstr ""
 
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "What's the minimum volume to qualify?"
@@ -7755,6 +7837,10 @@ msgstr ""
 msgid "ACTIONS"
 msgstr ""
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Order exceeds max leverage. Reduce the size."
+msgstr "주문이 최대 레버리지를 초과합니다. 크기를 줄이세요."
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} liquidity"
@@ -7866,6 +7952,7 @@ msgstr "코드 입력"
 msgid "Details"
 msgstr "상세"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Vesting failed"
 msgstr "베스팅 실패"
@@ -7878,6 +7965,10 @@ msgstr "타이탄"
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Trading volume on page"
 msgstr "이 페이지의 거래량"
+
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Rewards distribution submitted"
+msgstr "보상 분배 요청 제출됨"
 
 #: src/components/UserIncentiveDistribution/utils.tsx
 msgid "GLV bonus incentive"
@@ -8011,6 +8102,10 @@ msgstr ""
 msgid "Wallet allocations"
 msgstr "지갑별 배분"
 
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "This order may fail to execute because the resulting position would exceed the maximum allowed leverage. Increase the position's margin or reduce the order size before it triggers."
+msgstr "결과 포지션이 최대 허용 레버리지를 초과하여 이 주문이 체결되지 않을 수 있습니다. 주문이 트리거되기 전에 포지션의 증거금을 늘리거나 주문 크기를 줄이세요."
+
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "See more"
 msgstr "더 보기"
@@ -8065,6 +8160,8 @@ msgstr "포지션 선택"
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
 #: src/pages/RewardsPage/components/RewardsTiersTab.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Connect wallet"
@@ -8210,6 +8307,8 @@ msgstr "지속형"
 msgid "High price impact"
 msgstr "높은 가격 영향"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Collateral available"
 msgstr "사용 가능한 담보"
@@ -8360,6 +8459,7 @@ msgstr "증거금 예치"
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 msgid "Approve {tokenSymbol}"
 msgstr "{tokenSymbol} 승인"
 
@@ -8546,6 +8646,10 @@ msgstr ""
 msgid "Less info"
 msgstr "간략 정보"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "LIQ."
+msgstr "청산"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP and GMX autocompounding vaults"
 msgstr "GLP 및 GMX 자동 복리 볼트"
@@ -8607,6 +8711,10 @@ msgstr "{0} 풀에 유동성 부족. 다른 풀을 선택하면 새로운 포지
 msgid "Max leverage"
 msgstr "최대 레버리지"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "AVAILABLE LIQUIDITY"
+msgstr "가용 유동성"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Elfa AI"
 msgstr "Elfa AI"
@@ -8630,10 +8738,6 @@ msgstr "액세스 키"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position value after PnL and all fees"
 msgstr "PnL 및 모든 수수료 차감 후 포지션 가치"
-
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
-msgid "Parts of this order may not execute: size exceeds the max {positionSide} size of {maxSize}. Reduce the order size."
-msgstr "주문 규모가 최대 {positionSide} 규모인 {maxSize}를 초과하여 이 주문의 일부가 체결되지 않을 수 있습니다. 주문 규모를 줄이세요."
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Number of trades done by your referred traders"
@@ -8868,6 +8972,7 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Loading..."
 msgstr "로딩 중..."
@@ -9457,6 +9562,10 @@ msgstr ""
 msgid "Win rate"
 msgstr "승률"
 
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Epoch ID"
+msgstr "에포크 ID"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading stats"
 msgstr "GMX trading stats"
@@ -9544,6 +9653,10 @@ msgstr ""
 msgid "No open positions"
 msgstr "열려 있는 포지션 없음"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The position cannot be increased at the current leverage. Increase margin or reduce size. Current margin: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
+msgstr "현재 레버리지로는 포지션을 늘릴 수 없습니다. 증거금을 늘리거나 크기를 줄이세요. 현재 증거금: {remainingCollateralUsdText}, 필요: {minCollateralUsdForLeverageText}"
+
 #: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
 msgid "See the perks"
 msgstr "혜택 보기"
@@ -9615,6 +9728,7 @@ msgstr "종료가"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 msgid "Transfer failed"
 msgstr "전송 실패"
 
@@ -9700,6 +9814,7 @@ msgstr ""
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 msgid "Transfer submitted"
 msgstr "전송 제출됨"
 
@@ -9767,6 +9882,10 @@ msgstr "TWAP 주문 사용"
 msgid "Referrals V1 WETH"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "Mint test esGMX to your connected wallet. Your rewards vesting limit stays the same."
+msgstr "연결된 지갑에 테스트용 esGMX를 민팅합니다. 보상 베스팅 한도는 변경되지 않습니다."
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Enable external swaps"
 msgstr "외부 스왑 활성화"
@@ -9800,6 +9919,7 @@ msgid "Solv Finance"
 msgstr "Solv Finance"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Claim submitted"
 msgstr "수령 제출됨"
@@ -9873,6 +9993,10 @@ msgstr "{0}을(를) {1}(으)로 출금하는 것은 지원되지 않습니다"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Wallet esGMX"
 msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "This epoch is finalized."
+msgstr "이 에포크는 확정되었습니다."
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing position is in {0} pool. Using the selected pool will create a separate position. <0>Switch to {1} pool</0>"
@@ -10113,10 +10237,6 @@ msgstr "다음 단계"
 msgid "24h low"
 msgstr "24시간 최저"
 
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Insufficient margin. Add {missingCollateralUsdText} more margin"
-msgstr ""
-
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claim <0>{0}</0> of <1>{1}</1>"
 msgstr ""
@@ -10158,6 +10278,7 @@ msgstr "활성 Balancer 프로그램 코드"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Max amount exceeded"
 msgstr "최대 수량 초과"
@@ -10211,10 +10332,6 @@ msgstr ""
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Edit"
 msgstr "수정"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "No available leverage found"
-msgstr "사용 가능한 레버리지 없음"
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total supply"
@@ -10416,10 +10533,15 @@ msgstr "GLP 보상금 (테스트)"
 msgid "Built for those<0/>who do more."
 msgstr "더 많이 하는 이들을<0/>위해."
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Max leverage exceeded. Increase margin or reduce size"
+msgstr "최대 레버리지 초과. 증거금을 늘리거나 크기를 줄이세요"
+
 #: src/components/BridgingInfo/BridgingInfo.tsx
 msgid "Bridge {tokenSymbol} to {chainName} with"
 msgstr "{tokenSymbol}을 {chainName}으로 브릿지"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Claim esGMX rewards"
 msgstr "esGMX 보상 청구"
@@ -10491,10 +10613,6 @@ msgstr "<0>🔷 24시간 거래량: $1.01 Billion.</0><1>퍼미션리스 온체�
 msgid "Enter deposit amount"
 msgstr "입금 금액 입력"
 
-#: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
-msgid "Included but not up to date: {0}."
-msgstr ""
-
 #: landing/src/pages/Rewards/ReturningTrader.tsx
 msgid "Unable to resolve this ENS name. Please try again."
 msgstr "이 ENS 이름을 확인할 수 없습니다. 다시 시도하세요."
@@ -10546,6 +10664,10 @@ msgstr "N/A"
 msgid "Your trading history can raise your multiplier in two ways. With more than $10,000 in lifetime volume on GMX, your comeback starts at +2x, capped by your lifetime-volume band. This bonus multiplier does not expire during Season 1; it ends only when you reach your cap. Past $200M lifetime volume, you also get +1x permanently. <0>Check your wallet above</0> to see your cap."
 msgstr "과거 거래 내역은 두 가지 방식으로 배수를 높일 수 있습니다. GMX의 누적 거래량이 $10,000을 초과하면 컴백 보너스는 +2x에서 시작하며, 누적 거래량 구간에 따른 상한이 적용됩니다. 이 보너스 배수는 시즌 1 중에는 만료되지 않으며 상한에 도달해야만 종료됩니다. 누적 거래량이 $200M을 넘으면 영구적으로 +1x도 추가됩니다. 상한을 보려면 <0>위에서 지갑을 확인하세요</0>."
 
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "These rewards have already been distributed in this epoch."
+msgstr "이 보상은 해당 에포크에서 이미 분배되었습니다."
+
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Operates on open, permissionless networks to ensure transparency, decentralization, and unrestricted access"
 msgstr "투명성, 탈중앙화, 무제한 접근을 보장하기 위해 개방형 무허가 네트워크에서 운영됩니다"
@@ -10578,6 +10700,7 @@ msgstr "{formattedNetRate} / 1시간"
 msgid "Balance"
 msgstr "잔고"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Vesting details changed. Review the updated collateral and continue vesting."
@@ -10659,6 +10782,10 @@ msgstr ""
 msgid "Trade errors"
 msgstr "거래 오류"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This order may fail to execute because the resulting position would exceed the maximum allowed leverage. <0>Increase the position's margin</0> or reduce the order size before it triggers."
+msgstr "결과 포지션이 최대 허용 레버리지를 초과하여 이 주문이 체결되지 않을 수 있습니다. 주문이 트리거되기 전에 <0>포지션의 증거금을 늘리</0>거나 주문 크기를 줄이세요."
+
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to and withdrawing from GMX Account..."
 msgstr "GMX Account 입금 및 출금 중..."
@@ -10670,6 +10797,10 @@ msgstr ""
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "SHORT LIQ."
 msgstr "숏 청산"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Max leverage exceeded. Remaining margin {remainingCollateralUsdText} is below the minimum for the position size. Increase margin or reduce size"
+msgstr "최대 레버리지 초과. 잔여 증거금 {remainingCollateralUsdText}이(가) 포지션 규모에 필요한 최소 금액보다 적습니다. 증거금을 늘리거나 크기를 줄이세요"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Account type"
@@ -10691,6 +10822,10 @@ msgstr "이벤트명"
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Stake {0} GMX more to reach the {1} tier and earn more rewards."
 msgstr "{1} 티어에 도달하고 더 많은 리워드를 받으려면 GMX {0}개를 더 스테이킹하세요."
+
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Rewards distribution failed"
+msgstr "보상 분배 실패"
 
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Collateral was unlocked. Balances will refresh shortly."
@@ -10920,6 +11055,10 @@ msgstr "트레이더 프로필"
 msgid "Connect your wallet to view your rebates distribution history"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+msgid "Claimed"
+msgstr "청구됨"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Deposit amount"
 msgstr "예치 금액"
@@ -11003,6 +11142,8 @@ msgstr ""
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/OrderItem/OrderItem.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
 msgid "Amount"
 msgstr "수량"
 
@@ -11165,6 +11306,9 @@ msgstr "24시간 거래량"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Enter an amount"
 msgstr "금액 입력"
@@ -11222,6 +11366,10 @@ msgstr "GM 구매 실패"
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 msgid "This position's margin is below the minimum required for its size, so settlement will fail. Add margin, or close the position. Closing settles the funding automatically."
 msgstr "이 포지션의 마진이 규모에 필요한 최소 금액보다 적으므로 정산이 실패합니다. 마진을 추가하거나 포지션을 종료하세요. 종료하면 펀딩이 자동으로 정산됩니다."
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The position cannot be increased at the current leverage. Increase margin or reduce size."
+msgstr "현재 레버리지로는 포지션을 늘릴 수 없습니다. 증거금을 늘리거나 크기를 줄이세요."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max funding factor (long)"
@@ -11791,9 +11939,17 @@ msgstr "포지션 규모가 가용 미결제약정을 초과합니다. 델타: {
 msgid "Yes"
 msgstr "예"
 
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Enter valid epoch and batch IDs"
+msgstr "유효한 에포크 및 배치 ID를 입력하세요"
+
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 msgid "Maximum multiplier"
 msgstr "최대 배수"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Margin is below the minimum required for the position size. Current: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
+msgstr "마진이 포지션 규모에 필요한 최소 금액보다 적습니다. 현재: {remainingCollateralUsdText}, 필요: {minCollateralUsdForLeverageText}"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (TWAP)"
@@ -11833,6 +11989,12 @@ msgstr "추가 보상 한도가 소진될 때까지 자격을 갖춘 기존 사�
 msgid "Receive"
 msgstr "수령"
 
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "Mint {tokenSymbol}"
+msgstr "{tokenSymbol} 민팅"
+
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "esGMX claimed"
@@ -12073,6 +12235,10 @@ msgstr "릴레이 수수료가 허용된 최대값을 초과합니다"
 msgid "Estimated rebate up to {0}% of open fee. Airdropped as {incentivesTokenTitle} tokens pro-rata. <0><1>Read more</1>.</0>"
 msgstr "오픈 수수료의 최대 {0}%까지 예상 리베이트. {incentivesTokenTitle} 토큰으로 비례 배분 에어드롭됩니다. <0><1>자세히 보기</1>.</0>"
 
+#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+msgid "Executes when price and liquidity conditions are met"
+msgstr "가격 및 유동성 조건이 충족되면 체결됩니다"
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Regular account"
 msgstr "일반 계정"
@@ -12131,6 +12297,12 @@ msgstr "요청은 전송되었지만 결과를 확인할 수 없습니다. 이�
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short funding rate"
 msgstr ""
+
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "The resulting position would exceed the maximum allowed leverage. Increase margin or reduce size."
+msgstr "결과 포지션이 최대 허용 레버리지를 초과하게 됩니다. 증거금을 늘리거나 크기를 줄이세요."
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "No funds available for GMX Account deposit"
@@ -12195,7 +12367,7 @@ msgstr "청구"
 msgid "Date"
 msgstr "일자"
 
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
+#: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "Executes when liquidity and price conditions are met"
 msgstr "유동성 및 가격 조건이 충족되면 체결됩니다"
 
@@ -12407,6 +12579,12 @@ msgstr "펀딩 감소 임계값"
 msgid "The 20% unstaking limit was exceeded, and your rewards have been reset"
 msgstr ""
 
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Unable to check distribution details. Please try again."
+msgstr "분배 세부 정보를 확인할 수 없습니다. 다시 시도해 주세요."
+
 #: src/domain/synthetics/fees/utils/index.ts
 msgid "Network fees are very high due to increased {chainName} network activity"
 msgstr "{chainName} 네트워크 활동 증가로 인해 네트워크 수수료가 매우 높습니다"
@@ -12481,6 +12659,7 @@ msgstr "Swap TWAP: 지정된 시간에 걸쳐 균등 분할로 토큰을 스왑�
 msgid "Pending transfer from {sender}"
 msgstr "{sender}로부터의 대기 중인 전송"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
@@ -12562,10 +12741,6 @@ msgstr "온체인 이름:"
 msgid "Total circulating supply of GMX tokens"
 msgstr "GMX 토큰의 총 유통 공급량"
 
-#: src/pages/RewardsPage/RewardsPage.tsx
-msgid "There is no active incentives configuration for Arbitrum."
-msgstr "Arbitrum에 활성 인센티브 구성이 없습니다."
-
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Trade history"
 msgstr "거래 내역"
@@ -12577,6 +12752,12 @@ msgstr "기초 담보 토큰에 대한 익스포저"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 msgid "Search type"
 msgstr "유형 검색"
+
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Distribute esGMX"
+msgstr "esGMX 분배"
 
 #: src/components/TradeHistory/filters/ActionFilter.tsx
 msgid "Market orders"
@@ -12903,6 +13084,7 @@ msgstr "전체 {totalCount}개 에포크 중 최신 {DETAIL_LIMIT}개를 표시�
 msgid "Distribution history for claimed rebates and airdrops"
 msgstr "수령된 리베이트 및 에어드롭 배분 내역"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "esGMX claim submitted"
 msgstr "esGMX 청구 제출됨"
@@ -13039,6 +13221,7 @@ msgstr "GM은 단일 시장에서 수수료를 획득합니다. GLV는 여러 GM
 msgid "Featured markets:"
 msgstr "주요 시장:"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Available to Vest"
 msgstr "베스팅 가능"
@@ -13065,6 +13248,9 @@ msgid "Dark"
 msgstr "다크"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 msgid "Confirming..."
 msgstr "확인 중..."
 
@@ -13094,6 +13280,8 @@ msgstr "가격 영향 리베이트 수령"
 msgid "Two revenue streams."
 msgstr "두 가지 수익원."
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Vesting started"
@@ -13287,7 +13475,7 @@ msgid "V1 unsupported on {chainName}. Switch to Arbitrum to use V1."
 msgstr "{chainName}에서 V1은 지원되지 않습니다. V1을 사용하려면 Arbitrum으로 전환하십시오."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+#: src/pages/RewardsPage/components/RewardsVestingStep.tsx
 msgid "Completed"
 msgstr "완료됨"
 
@@ -13429,6 +13617,7 @@ msgid "Bridge in failed"
 msgstr "브릿지 수신 실패"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 msgid "Invalid recipient address"
 msgstr "유효하지 않은 수신자 주소"
 
@@ -13717,9 +13906,17 @@ msgstr "이번 에포크의 거래량이 다음 등급 기준값을 초과했습
 msgid "Vested GLP not withdrawn"
 msgstr "베스팅된 GLP가 출금되지 않음"
 
+#: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
+msgid "Mint test sbfGMX to your connected wallet to use as vesting collateral."
+msgstr "연결된 지갑에 테스트용 sbfGMX를 민팅하여 베스팅 담보로 사용합니다."
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient pool liquidity. Available: {availableAmountText}"
 msgstr ""
+
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "Send {fundingAmount} esGMX to issuer"
+msgstr "발행자에게 esGMX {fundingAmount}개 전송"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Become a market maker"
@@ -13854,6 +14051,10 @@ msgstr "{0} 거래하여 {1} 티어에 도달하고 보상을 받으세요."
 msgid "Leaderboard"
 msgstr "리더보드"
 
+#: src/components/StatsTooltip/ChainsStatsNotices.tsx
+msgid "Included but not up to date: {staleList}."
+msgstr "포함되어 있지만 최신 상태가 아님: {staleList}."
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "TRADERS REFERRED"
 msgstr "TRADERS REFERRED"
@@ -13867,6 +14068,7 @@ msgid "Cancellable in ..."
 msgstr "취소 가능 시간 ..."
 
 #: src/components/Seo/SEO.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "GMX | decentralized perpetual exchange"
 msgstr ""
 
@@ -13922,6 +14124,8 @@ msgstr "토큰 허용 테스트"
 msgid "Start earning<0/>on your next trade"
 msgstr "다음 거래부터<0/>보상을 받으세요"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -14238,6 +14442,10 @@ msgstr "스왑"
 msgid "Where do GMX staking rewards come from?"
 msgstr "GMX 스테이킹 보상은 어디서 나오나요?"
 
+#: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
+msgid "Distribute"
+msgstr "분배"
+
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Current position only"
 msgstr "현재 포지션만"
@@ -14246,9 +14454,7 @@ msgstr "현재 포지션만"
 msgid "GMX token icon"
 msgstr "GMX 토큰 아이콘"
 
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
-#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
 msgid "long"
 msgstr "롱"
 
@@ -14319,6 +14525,7 @@ msgstr "상세 데이터 표시"
 msgid "Boost Name"
 msgstr "부스트 이름"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claim GMX"
 msgstr "GMX 수령"
@@ -14486,6 +14693,10 @@ msgstr "EIP-4844, 3월 20-27일"
 msgid "Lifetime rewards"
 msgstr "누적 보상"
 
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+msgid "This wallet cannot distribute rewards."
+msgstr "이 지갑은 보상을 분배할 수 없습니다."
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "This trigger is at or beyond the estimated liquidation price. The margin deposit will be attempted before liquidation when eligible, but execution is not guaranteed."
 msgstr "이 조건가는 예상 청산가 또는 그 너머에 있습니다. 증거금 예치는 대상이 되는 경우 청산 전에 시도되지만 실행이 보장되지는 않습니다."
@@ -14559,10 +14770,6 @@ msgstr "PnL 공유"
 msgid "Frequency"
 msgstr "빈도"
 
-#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
-msgid "Order won't execute: size exceeds the max {positionSide} size of {maxSize}. Reduce the order size."
-msgstr "주문 규모가 최대 {positionSide} 규모인 {maxSize}를 초과하여 주문이 체결되지 않습니다. 주문 규모를 줄이세요."
-
 #: src/pages/UiPage/BannerTest.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Switch to WBTC-USDC pool"
@@ -14625,6 +14832,7 @@ msgstr "차입 수수료"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Continue"
 msgstr "계속"
@@ -14675,9 +14883,7 @@ msgstr "esGMX는 1년에 걸쳐 베스팅하여 양도 가능한 GMX 토큰으�
 msgid "Your Multiplier is calculated as the sum of your Volume Multiplier, Staking Multiplier, and any applicable Activity Boosts."
 msgstr "멀티플라이어는 볼륨 멀티플라이어, 스테이킹 멀티플라이어 및 적용 가능한 액티비티 부스트의 합으로 계산됩니다."
 
-#: src/components/TradeBox/TradeBoxRows/MaxSizeRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
-#: src/domain/synthetics/trade/utils/getMaxPositionSizeExceededMessage.ts
 msgid "short"
 msgstr "숏"
 
@@ -14713,6 +14919,10 @@ msgstr "이 ENS 이름에 해당하는 지갑 주소를 찾을 수 없습니다"
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr "{count, plural, one {주문} other {# 주문}}"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+msgid "This vault is being retired, so you can no longer add esGMX. Existing vests will remain active, and you can claim vested GMX at any time."
+msgstr "이 볼트는 운영이 종료될 예정이므로 더 이상 esGMX를 추가할 수 없습니다. 기존 베스팅은 계속 유지되며, 베스팅이 완료된 GMX는 언제든지 청구할 수 있습니다."
 
 #: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
 msgid "Yes. You can stop vesting at any time. Any GMX that has already vested will remain available to claim, and the GMX used as collateral will be unlocked."
@@ -14889,10 +15099,6 @@ msgstr "비활성화됨"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact amount {0}"
 msgstr "스왑 영향 금액 {0}"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-msgid "This vault is being retired—you can no longer add esGMX. Withdraw to claim any vested GMX and return your remaining esGMX to your wallet, then re-deposit into the Legacy vault or Rewards vault."
-msgstr "이 볼트는 운영 종료 예정이므로 더 이상 esGMX를 추가할 수 없습니다. 출금하면 베스팅된 GMX를 수령하고 남은 esGMX를 지갑으로 돌려받을 수 있습니다. 그런 다음 Legacy 볼트 또는 Rewards 볼트에 다시 예치하세요."
 
 #: src/components/InterviewToast/InterviewToast.tsx
 msgid "Join an anonymous one-on-one chat to share your experience"
@@ -15151,6 +15357,7 @@ msgstr "만료된 예치"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take-Profit"
@@ -15291,6 +15498,8 @@ msgstr "GLV 보너스 인센티브 (테스트)"
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
+#: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 msgid "Insufficient balance"
 msgstr "잔액 부족"
 

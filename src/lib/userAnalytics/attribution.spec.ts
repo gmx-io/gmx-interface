@@ -32,7 +32,7 @@ beforeEach(() => {
   vi.stubGlobal("document", browserWindow.document);
   vi.stubGlobal("localStorage", browserWindow.localStorage);
   vi.clearAllMocks();
-  userAnalytics.commonEventParams = { ...getAbFlags(), isTest: true, isInited: true };
+  userAnalytics.commonEventParams = { ...getAbFlags(), displayMode: "browser", isTest: true, isInited: true };
   userAnalytics.earlyEventsQueue = [];
   userAnalytics.initCommonParamsRetries = 3;
   userAnalytics.isProcessingQueue = false;

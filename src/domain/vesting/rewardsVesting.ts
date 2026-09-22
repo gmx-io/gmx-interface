@@ -7,6 +7,7 @@ export type RewardsVestingSnapshot = {
   escrowedBalance: bigint;
   claimedAmount: bigint;
   claimableAmount: bigint;
+  unpaidClaimAmount?: bigint;
 };
 
 export type RewardsVestingPairAmountsParams = {
@@ -45,6 +46,7 @@ export type RewardsVestingAvailableAmountParams = {
   walletEsGmxAmount: bigint;
   totalVestedAmount: bigint;
   maxVestableAmount: bigint;
+  capUsedAmount?: bigint;
 };
 
 export type RewardsVestingProgress = {
@@ -69,12 +71,13 @@ export function getRewardsVestingEffectiveRemainingAmount({
   escrowedBalance,
   claimedAmount,
   claimableAmount,
+  unpaidClaimAmount = 0n,
 }: RewardsVestingSnapshot): bigint {
   const balance = getNonNegativeAmount(escrowedBalance);
   const cumulativeClaimAmount = bigMath.max(getNonNegativeAmount(totalVestedAmount) - balance, 0n);
   const storedUnclaimedAmount = bigMath.max(cumulativeClaimAmount - getNonNegativeAmount(claimedAmount), 0n);
   const pendingVestingAmount = bigMath.clamp(
-    getNonNegativeAmount(claimableAmount) - storedUnclaimedAmount,
+    getNonNegativeAmount(claimableAmount) - storedUnclaimedAmount - unpaidClaimAmount,
     0n,
     balance
   );
@@ -164,9 +167,10 @@ export function getRewardsVestingAvailableAmount({
   walletEsGmxAmount,
   totalVestedAmount,
   maxVestableAmount,
+  capUsedAmount = totalVestedAmount,
 }: RewardsVestingAvailableAmountParams): bigint {
   const remainingVestableAmount = bigMath.max(
-    getNonNegativeAmount(maxVestableAmount) - getNonNegativeAmount(totalVestedAmount),
+    getNonNegativeAmount(maxVestableAmount) - getNonNegativeAmount(capUsedAmount),
     0n
   );
 

@@ -6,6 +6,7 @@ import { useConfigureLandingAnalytics } from "./hooks/useConfigureLandingAnalyti
 import Home from "./pages/Home/Home";
 import Rewards from "./pages/Rewards/Rewards";
 import { RewardsHeaderBadge } from "./pages/Rewards/RewardsHeaderBadge";
+import { getLandingScrollContainer } from "./utils/getLandingScrollContainer";
 
 const Builders = lazy(() => import("./pages/Builders/Builders"));
 const ReferralTerms = lazy(() => import("./pages/ReferralTerms/ReferralTerms"));
@@ -36,7 +37,7 @@ function ScrollToTopOnNavigate() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    getLandingScrollContainer().scrollTo(0, 0);
   }, [pathname]);
 
   return null;

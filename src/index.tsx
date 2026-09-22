@@ -1,42 +1,13 @@
-import "lib/polyfills";
-// Must stay above every other import so the url is normalized before anything reads the location.
-import "lib/legacyHashUrlRedirect";
-import "styles/tailwind.css";
-import "lib/monkeyPatching";
-
-import React from "react";
-import { createRoot } from "react-dom/client";
-import { BrowserRouter as Router } from "react-router-dom";
-
-import { ThemeProvider } from "context/ThemeContext/ThemeContext";
-import { configureInstalledApp } from "lib/pwa/getIsInstalledApp";
+import { showAppLoadError } from "lib/appStartup";
+import { getIsReloadingFromNetwork } from "lib/pwa/recoveryNavigation";
 import { registerPreloadErrorRecovery } from "lib/pwa/registerPreloadErrorRecovery";
-import { registerServiceWorker } from "lib/pwa/registerServiceWorker";
-import { initializeUserAnalytics } from "lib/userAnalytics/initializeUserAnalytics";
-import WalletProvider from "lib/wallets/WalletProvider";
 
-import App from "./App/App";
-import reportWebVitals from "./reportWebVitals";
-
-initializeUserAnalytics();
-configureInstalledApp();
 registerPreloadErrorRecovery();
 
-createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <Router>
-      <ThemeProvider>
-        <WalletProvider>
-          <App />
-        </WalletProvider>
-      </ThemeProvider>
-    </Router>
-  </React.StrictMode>
-);
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.info))
-// or send to an analytics endpoint. Read more: https://bit.ly/CRA-vitals
-reportWebVitals();
-
-registerServiceWorker();
+void import("./App/bootstrap")
+  .then(({ bootstrap }) => bootstrap())
+  .catch((error: unknown) => {
+    if (!getIsReloadingFromNetwork()) {
+      showAppLoadError(error);
+    }
+  });

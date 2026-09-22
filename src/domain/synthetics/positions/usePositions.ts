@@ -97,11 +97,7 @@ export function usePositions(
     [account, enabled, keysAndPrices.marketsKeys]
   );
 
-  const {
-    data: positionsData,
-    error: positionsError,
-    isLoading,
-  } = useMulticall(chainId, "usePositionsData", {
+  const { data, error: positionsError } = useMulticall(chainId, "usePositionsData", {
     key: positionsKey,
 
     refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
@@ -204,12 +200,12 @@ export function usePositions(
         },
       };
     },
-    parseResponse: (res, chainId) => {
+    parseResponse: (res, chainId): { account: string; chainId: number; positionsData: PositionsData } => {
       const positions = Object.values(res.data.reader).flatMap((call) => call.returnValues as PositionInfoResult[]);
 
       freshnessMetrics.reportThrottled(chainId, FreshnessMetricId.Positions);
 
-      return positions.reduce((positionsMap: PositionsData, positionInfo: PositionInfoResult) => {
+      const positionsData = positions.reduce((positionsMap: PositionsData, positionInfo: PositionInfoResult) => {
         const { position, fees, basePnlUsd, positionValueInUsd } = positionInfo;
         const { addresses, numbers, flags } = position;
         const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;
@@ -249,14 +245,20 @@ export function usePositions(
 
         return positionsMap;
       }, {} as PositionsData);
+
+      return { account: account!, chainId, positionsData };
     },
   });
 
+  const loadedPositionsData =
+    data && data.account === account && data.chainId === chainId ? data.positionsData : undefined;
+  const isLoading = Boolean(positionsKey) && loadedPositionsData === undefined;
+
   useEffect(() => {
-    if (positionsData && disableBatching) {
+    if (loadedPositionsData && disableBatching) {
       setDisableBatching(false);
     }
-  }, [disableBatching, positionsData]);
+  }, [disableBatching, loadedPositionsData]);
 
   useEffect(() => {
     if (!positionsKey) {
@@ -265,7 +267,7 @@ export function usePositions(
   }, [positionsKey, chainId]);
 
   const optimisticPositionsData = useOptimisticPositions({
-    positionsData: positionsData,
+    positionsData: loadedPositionsData,
     allPositionsKeys: keysAndPrices?.allPositionsKeys,
     isLoading,
   });

@@ -1,8 +1,9 @@
 import { useCallback, useMemo } from "react";
 import { zeroAddress } from "viem";
 
-import { ARBITRUM, ContractsChainId } from "config/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
+import { getRewardsVestingConfig } from "config/vesting";
 import { useGmxPrice } from "domain/legacy";
 import { getRewardsVestingAvailableAmount } from "domain/vesting/rewardsVesting";
 import { useChainId } from "lib/chains";
@@ -10,6 +11,9 @@ import { GMX_DECIMALS } from "lib/legacy";
 import { MulticallRequestConfig, MulticallResult, useMulticall } from "lib/multicall";
 import useWallet from "lib/wallets/useWallet";
 import { convertToUsd } from "sdk/utils/tokens";
+
+import type { RatioVestingData } from "./ratioVesting";
+import { buildRatioVestingRequest, parseRatioVestingResponse } from "./ratioVestingData";
 
 export type VestingInfo = {
   pairAmount: bigint;
@@ -30,6 +34,7 @@ export type RewardsVestingData = {
   vestingInfo: VestingInfo;
   vestingDuration: bigint;
   gmxPrice?: bigint;
+  ratioVesting?: RatioVestingData;
 };
 
 export type RewardsVestingDataResult = {
@@ -59,7 +64,8 @@ export function useRewardsVestingData(account?: string, targetChainId?: Contract
   const { active, chainId: walletChainId, signer } = useWallet();
   const chainId = targetChainId ?? currentChainId;
   const addresses = getRewardsVestingAddresses(chainId);
-  const isSupported = Object.values(addresses).every((address) => address !== zeroAddress);
+  const config = getRewardsVestingConfig(chainId);
+  const isSupported = config.type === "ratio" || Object.values(addresses).every((address) => address !== zeroAddress);
 
   const {
     data: contractsData,
@@ -68,12 +74,15 @@ export function useRewardsVestingData(account?: string, targetChainId?: Contract
     mutate: mutateContractsData,
   } = useMulticall<MulticallRequestConfig<any>, RewardsVestingContractsData>(chainId, "Rewards:useRewardsVestingData", {
     key: account && isSupported ? [account] : null,
-    request: () => buildRewardsVestingRequest(account!, addresses),
-    parseResponse: parseRewardsVestingResponse,
+    request: () =>
+      config.type === "ratio"
+        ? buildRatioVestingRequest(account!, config)
+        : buildRewardsVestingRequest(account!, addresses),
+    parseResponse: config.type === "ratio" ? parseRatioVestingResponse : parseRewardsVestingResponse,
   });
 
   const { gmxPrice, mutate: mutateGmxPrice } = useGmxPrice(
-    chainId,
+    chainId === ARBITRUM_SEPOLIA ? ARBITRUM : chainId,
     { arbitrum: chainId === ARBITRUM && walletChainId === ARBITRUM ? signer : undefined },
     active,
     { enabled: contractsData !== undefined, fetchAllChains: false }
@@ -111,6 +120,7 @@ export function useRewardsVestingData(account?: string, targetChainId?: Contract
             walletEsGmxAmount: data.walletEsGmxBalance + data.claimableEsGmxRewards,
             totalVestedAmount: data.vestingInfo.vestedAmount,
             maxVestableAmount: data.vestingInfo.maxVestableAmount,
+            capUsedAmount: data.ratioVesting?.capUsedAmount,
           })
         : undefined,
     [data]

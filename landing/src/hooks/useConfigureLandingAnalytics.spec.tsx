@@ -70,7 +70,12 @@ describe("landing analytics delivery", () => {
         payload: {
           event: "RewardsLandingPageAction",
           distinctId: "visitor",
-          customFields: expect.objectContaining({ action: "RewardsPageView", isTest: true, isInited: true }),
+          customFields: expect.objectContaining({
+            action: "RewardsPageView",
+            displayMode: "browser",
+            isTest: true,
+            isInited: true,
+          }),
         },
       },
       {

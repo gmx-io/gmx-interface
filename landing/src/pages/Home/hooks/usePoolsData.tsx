@@ -6,14 +6,18 @@ import { getServerUrl } from "config/backend";
 import type { ContractsChainId } from "config/chains";
 import { getSubsquidGraphClient } from "lib/indexers";
 import { PerformanceInfo, useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
+import { mergeFreshness, useSWRWithFreshness, type Freshness } from "lib/useSWRWithFreshness";
 import { MarketInfo } from "sdk/codegen/subsquid";
 import { ARBITRUM, AVALANCHE } from "sdk/configs/chainIds";
+
+type UsdByChain = Record<number, bigint>;
 
 export type PoolsData = {
   glvApy: number;
   gmApy: number;
   totalLiquidity: bigint;
-  openInterest: bigint;
+  openInterestByChain: UsdByChain;
+  openInterestFreshness: Freshness;
   totalDepositedUsers: number;
 };
 
@@ -24,10 +28,10 @@ export function usePoolsData(): Partial<PoolsData> {
   const { data: arbitrumApys } = useApysByChainId(ARBITRUM);
   const { data: avalancheApys } = useApysByChainId(AVALANCHE);
 
-  const { data: positionStats } = usePositionStats();
-  const { data: marketInfos } = useMarketInfos();
+  const positionStats = usePositionStats();
+  const marketInfos = useMarketInfos();
 
-  const { sortedAggregatedMarketInfos, totalLiquidity, openInterest } = marketInfos ?? {};
+  const { sortedAggregatedMarketInfos, totalLiquidity, openInterestByChain } = marketInfos.data ?? {};
 
   const glvApy = useMemo(() => {
     if (arbitrumPerformance && avalanchePerformance && arbitrumApys && avalancheApys) {
@@ -118,8 +122,15 @@ export function usePoolsData(): Partial<PoolsData> {
     ...gmApy,
     ...glvApy,
     totalLiquidity: totalLiquidity,
-    openInterest: positionStats && openInterest ? positionStats.openInterest + openInterest : undefined,
-    totalDepositedUsers: marketInfos?.totalDepositedUsers,
+    openInterestByChain:
+      positionStats.data && openInterestByChain
+        ? {
+            [ARBITRUM]: positionStats.data[ARBITRUM] + openInterestByChain[ARBITRUM],
+            [AVALANCHE]: positionStats.data[AVALANCHE] + openInterestByChain[AVALANCHE],
+          }
+        : undefined,
+    openInterestFreshness: mergeFreshness(positionStats.freshness, marketInfos.freshness),
+    totalDepositedUsers: marketInfos.data?.totalDepositedUsers,
   };
   return result;
 }
@@ -151,7 +162,7 @@ const marketInfoQuery = {
 function useMarketInfos() {
   const arbitrumClient = getSubsquidGraphClient(ARBITRUM)!;
   const avalancheClient = getSubsquidGraphClient(AVALANCHE)!;
-  return useSWR(["marketInfos"], async () => {
+  return useSWRWithFreshness(["marketInfos"], async () => {
     const arbitrumReq = arbitrumClient?.query(marketInfoQuery);
     const avalancheReq = avalancheClient?.query(marketInfoQuery);
     const [arbitrumRes, avalancheRes] = await Promise.all([arbitrumReq, avalancheReq]);
@@ -160,7 +171,7 @@ function useMarketInfos() {
     const arbitrumPlatformStats = arbitrumRes.data?.platformStats[0];
     const avalanchePlatformStats = avalancheRes.data?.platformStats[0];
     let totalLiquidity = 0n;
-    let openInterest = 0n;
+    const openInterestByChain: UsdByChain = { [ARBITRUM]: 0n, [AVALANCHE]: 0n };
     const sortedAggregatedMarketInfos: (MarketInfo & { chainId: number })[] = [];
     let arbIndex = 0;
     let avaxIndex = 0;
@@ -171,13 +182,13 @@ function useMarketInfos() {
       const avaxPoolValue = avaxMarketInfo ? BigInt(avaxMarketInfo.poolValue) : null;
       if (avaxPoolValue === null || (arbPoolValue !== null && arbPoolValue > avaxPoolValue)) {
         sortedAggregatedMarketInfos.push({ ...arbMarketInfo, chainId: ARBITRUM });
-        openInterest +=
+        openInterestByChain[ARBITRUM] +=
           BigInt(arbMarketInfo.longOpenInterestUsd ?? 0n) + BigInt(arbMarketInfo.shortOpenInterestUsd ?? 0n);
         totalLiquidity += BigInt(arbMarketInfo.poolValue);
         arbIndex++;
       } else {
         sortedAggregatedMarketInfos.push({ ...avaxMarketInfo, chainId: AVALANCHE });
-        openInterest +=
+        openInterestByChain[AVALANCHE] +=
           BigInt(avaxMarketInfo.longOpenInterestUsd ?? 0n) + BigInt(avaxMarketInfo.shortOpenInterestUsd ?? 0n);
         totalLiquidity += BigInt(avaxMarketInfo.poolValue);
         avaxIndex++;
@@ -186,7 +197,7 @@ function useMarketInfos() {
     return {
       sortedAggregatedMarketInfos,
       totalLiquidity,
-      openInterest,
+      openInterestByChain,
       totalDepositedUsers: arbitrumPlatformStats.depositedUsers + avalanchePlatformStats.depositedUsers,
     };
   });
@@ -201,22 +212,15 @@ function usePerformanceByChainId(chainId: number) {
 }
 
 function usePositionStats() {
-  return useSWR(
-    ["positionStats"],
-    async () => {
-      const arbitrumReq = fetchPositionStatsByChainId(ARBITRUM);
-      const avalancheReq = fetchPositionStatsByChainId(AVALANCHE);
-      const [arbitrumRes, avalancheRes] = await Promise.all([arbitrumReq, avalancheReq]);
-      return {
-        openInterest:
-          BigInt(arbitrumRes.totalLongPositionSizes) +
-          BigInt(arbitrumRes.totalShortPositionSizes) +
-          BigInt(avalancheRes.totalLongPositionSizes) +
-          BigInt(avalancheRes.totalShortPositionSizes),
-      };
-    },
-    {}
-  );
+  return useSWRWithFreshness(["positionStats"], async (): Promise<UsdByChain> => {
+    const arbitrumReq = fetchPositionStatsByChainId(ARBITRUM);
+    const avalancheReq = fetchPositionStatsByChainId(AVALANCHE);
+    const [arbitrumRes, avalancheRes] = await Promise.all([arbitrumReq, avalancheReq]);
+    return {
+      [ARBITRUM]: BigInt(arbitrumRes.totalLongPositionSizes) + BigInt(arbitrumRes.totalShortPositionSizes),
+      [AVALANCHE]: BigInt(avalancheRes.totalLongPositionSizes) + BigInt(avalancheRes.totalShortPositionSizes),
+    };
+  });
 }
 
 function fetchPositionStatsByChainId(chainId: number) {
