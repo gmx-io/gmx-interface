@@ -1716,6 +1716,10 @@ msgstr "{operationTokenSymbol}を購入"
 msgid "Buy GM: {0}"
 msgstr "GMを購入: {0}"
 
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "GT's minting difficulty increase"
+msgstr "GTのミント難易度の上昇"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Trigger price condition has not been met"
 msgstr "トリガー価格の条件が満たされていません"

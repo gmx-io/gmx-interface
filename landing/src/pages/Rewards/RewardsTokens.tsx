@@ -141,12 +141,15 @@ export function RewardsTokens({ config, loading }: { config: IncentivesConfig | 
                 <Trans>Unable to update minting data. Try again.</Trans>
               </button>
             )}
-            <div className="rewards-step-chart" aria-hidden="true">
-              <span>
+            <figure className="rewards-step-chart">
+              <span aria-hidden="true">
                 <Trans>You are here</Trans>
               </span>
               <img src={mintingCurve} alt="" loading="lazy" />
-            </div>
+              <figcaption className="rewards-step-chart-caption">
+                <Trans>GT's minting difficulty increase</Trans>
+              </figcaption>
+            </figure>
           </article>
         </div>
         <RewardsFlywheel />

@@ -34,7 +34,7 @@ export function RewardsCalculator({
   loading: boolean;
 }) {
   const reducedMotion = useReducedMotion();
-  const [volumeUsd, setVolumeUsd] = useState(expandDecimals(200_000, USD_DECIMALS));
+  const [volumeUsd, setVolumeUsd] = useState(expandDecimals(1_000_000, USD_DECIMALS));
   const [stakedAmount, setStakedAmount] = useState(expandDecimals(1_000, ES_GMX_DECIMALS));
   const [boosts, setBoosts] = useState<BoostId[]>(["ManualAllocation"]);
   const estimate = config ? getLandingRewardEstimate({ config, volumeUsd, stakedAmount, boosts }) : undefined;

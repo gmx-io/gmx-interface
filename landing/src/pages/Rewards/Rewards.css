@@ -1495,6 +1495,20 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   width: 100%;
   height: auto;
 }
+.rewards-step-chart-caption {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  max-width: calc(42% - 8px);
+  padding: 6px 4px 1px;
+  background: #171827;
+  color: #3c4067;
+  font-size: 12px;
+  line-height: 15px;
+  font-weight: 500;
+  letter-spacing: 0.002em;
+  text-align: right;
+}
 .rewards-cycle {
   --rewards-cycle-size: 468px;
   height: 560px;
@@ -1769,6 +1783,10 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     row-gap: 18px;
+  }
+  .rewards-step-chart-caption {
+    position: static;
+    max-width: none;
   }
   .rewards-formula-equation {
     gap: 12px;
