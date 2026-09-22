@@ -6,7 +6,7 @@ import type {
 } from "context/SyntheticsEvents/types";
 import { getPendingOrderKey } from "context/SyntheticsEvents/utils";
 import { getPositionKey } from "domain/synthetics/positions";
-import { StatusCode } from "sdk/utils/gelatoRelay";
+import { StatusCode } from "sdk/utils/express";
 import type { OrderInfo, OrdersInfoData } from "sdk/utils/orders/types";
 
 import type { PendingTpSlOrder, PendingTpSlOrderBatch } from "./types";

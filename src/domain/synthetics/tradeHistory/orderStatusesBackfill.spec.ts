@@ -5,7 +5,7 @@ import { PendingOrderData, OrderStatuses } from "context/SyntheticsEvents/types"
 import { getPendingOrderKey } from "context/SyntheticsEvents/utils";
 import type { PendingTpSlOrderBatch } from "domain/tpsl/types";
 import { TradeAction as RawTradeAction } from "sdk/codegen/subsquid";
-import { StatusCode } from "sdk/utils/gelatoRelay";
+import { StatusCode } from "sdk/utils/express";
 import { DecreasePositionSwapType, OrderType } from "sdk/utils/orders/types";
 import { ExternalSwapQuote } from "sdk/utils/trade/types";
 import { TradeActionType } from "sdk/utils/tradeHistory/types";

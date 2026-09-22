@@ -119,7 +119,7 @@ export function buildSameChainWithdrawTxn(request: SameChainWithdrawRequest): Bu
 /**
  * `BridgeOutParams.data` for cross-chain delivery is a single `uint32 dstEid`
  * pointing at the destination LayerZero endpoint; the on-chain provider takes
- * care of building the actual Stargate `sendParams`. Wrap into a Gelato-relayed
+ * care of building the actual Stargate `sendParams`. Wrap into a relayed
  * express transaction via `buildAndSignBridgeOutTxn` from
  * `utils/express/utils/bridgeOutUtils`.
  */
