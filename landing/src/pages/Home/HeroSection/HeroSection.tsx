@@ -2,9 +2,9 @@ import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useHeroStats, type HeroStat } from "landing/pages/Home/hooks/useHeroStats";
 import { shortFormat, shortFormatUsd } from "landing/pages/Home/utils/formatters";
-import { useEffect, useState } from "react";
 
 import { ChainsStatsNotices } from "components/StatsTooltip/ChainsStatsNotices";
+import { useSettled } from "components/StatsTooltip/useSettled";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import IcLinkArrow from "img/ic_link_arrow.svg?react";
@@ -14,24 +14,6 @@ import { AnimatedTitle } from "./AnimatedTitle";
 import { Features } from "./Features";
 import { HeroBackground } from "./HeroBackground";
 import { RedirectChainIds, useGoToTrade } from "../hooks/useGoToTrade";
-
-// sources answer at different moments on first load, so a missing one is a loading gap until the figure has settled
-const SETTLE_TIMEOUT_MS = 5_000;
-
-function useSettled(complete: boolean) {
-  const [settled, setSettled] = useState(complete);
-
-  useEffect(() => {
-    if (complete) {
-      setSettled(true);
-      return;
-    }
-    const timer = setTimeout(() => setSettled(true), SETTLE_TIMEOUT_MS);
-    return () => clearTimeout(timer);
-  }, [complete]);
-
-  return settled || complete;
-}
 
 function StatValue({
   stat: { summary, staleEntries },
