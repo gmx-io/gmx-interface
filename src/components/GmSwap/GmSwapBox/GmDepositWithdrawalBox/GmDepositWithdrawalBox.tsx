@@ -503,6 +503,7 @@ export function GmSwapBoxDepositWithdrawal() {
                   {firstTokenAddress && isSingle && isDeposit ? (
                     <MultichainTokenSelectorForLp
                       chainId={chainId}
+                      label={t`Pay`}
                       tokenAddress={firstTokenAddress}
                       payChainId={
                         paySource === "gmxAccount"
@@ -534,6 +535,7 @@ export function GmSwapBoxDepositWithdrawal() {
                   ) : isWithdrawal && firstTokenAddress && isSingle && tokenOptions.length > 1 ? (
                     <TokenSelector
                       chainId={chainId}
+                      label={t`Receive`}
                       tokenAddress={firstTokenAddress}
                       onSelectToken={(token) => {
                         handleFirstTokenSelect(token.address as ERC20Address | NativeTokenSupportedAddress);
