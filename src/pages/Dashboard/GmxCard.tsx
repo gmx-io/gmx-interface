@@ -1,5 +1,5 @@
 import { t, Trans } from "@lingui/macro";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
@@ -14,6 +14,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import { AppCard, AppCardSection, AppCardSplit } from "components/AppCard/AppCard";
 import Button from "components/Button/Button";
+import { BuyGmxModal } from "components/BuyGmxModal/BuyGmxModal";
 import InteractivePieChart from "components/InteractivePieChart/InteractivePieChart";
 import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
 import { UsdValue } from "components/NumericValue/UsdValue";
@@ -38,6 +39,7 @@ export function GmxCard({
   totalGmxInLiquidity: bigint;
 }) {
   const currentIcons = getIcons(chainId)!;
+  const [isBuyGmxModalVisible, setIsBuyGmxModalVisible] = useState(false);
 
   let { [AVALANCHE]: stakedGmxAvalanche, [ARBITRUM]: stakedGmxArbitrum, total: totalStakedGmx } = useTotalGmxStaked();
 
@@ -107,10 +109,11 @@ export function GmxCard({
                   </div>
                 </div>
                 <div className="h-32">
-                  <Button size="small" variant="secondary" to="/buy_gmx">
+                  <Button size="small" variant="secondary" onClick={() => setIsBuyGmxModalVisible(true)}>
                     <img src={currentIcons.gmx} width="16" alt={t`GMX icon`} />
                     <Trans>Buy GMX</Trans>
                   </Button>
+                  <BuyGmxModal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} />
                 </div>
               </div>
               <div className="text-13 text-typography-secondary">

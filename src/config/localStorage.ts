@@ -35,7 +35,7 @@ const SORTED_MARKETS_KEY = "sorted-markets-key";
 export const TWAP_NUMBER_OF_PARTS_KEY = "twap-number-of-parts";
 export const TWAP_INFO_CARD_CLOSED_KEY = "twap-info-card-closed";
 // key updated with chart overrides, to update tv chart with new release
-export const WAS_TV_CHART_OVERRIDDEN_KEY = "was-tv-chart-overridden-1";
+export const WAS_TV_CHART_OVERRIDDEN_KEY = "was-tv-chart-overridden-2";
 export const UTM_PARAMS_KEY = "utm_params";
 
 export const BREAKDOWN_NET_PRICE_IMPACT_ENABLED_KEY = "breakdown-net-price-impact-enabled";

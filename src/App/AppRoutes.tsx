@@ -1,9 +1,8 @@
 import { useCallback, useEffect } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { cssTransition, ToastContainer } from "react-toastify";
 import { zeroHash } from "viem";
 
-import { CONTRACTS_CHAIN_IDS, ContractsChainId } from "config/chains";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -21,7 +20,6 @@ import { useConfigureUserAnalyticsProfile } from "lib/userAnalytics/useConfigure
 import { useWalletConnectedUserAnalyticsEvent } from "lib/userAnalytics/useWalletConnectedEvent";
 import useRouteQuery from "lib/useRouteQuery";
 import useSearchParams from "lib/useSearchParams";
-import { switchNetwork } from "lib/wallets";
 import { encodeReferralCode } from "sdk/utils/referrals";
 
 import { CloseToastButton } from "components/CloseToastButton/CloseToastButton";
@@ -42,7 +40,6 @@ const Zoom = cssTransition({
 
 export function AppRoutes() {
   const { theme } = useTheme();
-  const location = useLocation();
   const history = useHistory();
 
   useConfigureMetrics();
@@ -64,7 +61,7 @@ export function AppRoutes() {
       const encodedReferralCode = encodeReferralCode(referralCode);
       if (encodedReferralCode !== zeroHash) {
         localStorage.setItem(REFERRAL_CODE_KEY, encodedReferralCode);
-        const queryParams = new URLSearchParams(location.search);
+        const queryParams = new URLSearchParams(history.location.search);
         if (queryParams.has(REFERRAL_CODE_QUERY_PARAM)) {
           queryParams.delete(REFERRAL_CODE_QUERY_PARAM);
           history.replace({
@@ -73,7 +70,7 @@ export function AppRoutes() {
         }
       }
     }
-  }, [query, history, location]);
+  }, [query, history]);
 
   const { isSettingsVisible, setIsSettingsVisible } = useSettings();
 
@@ -81,7 +78,7 @@ export function AppRoutes() {
     setIsSettingsVisible(true);
   }, [setIsSettingsVisible]);
 
-  const { chainId, lang, openChat } = useSearchParams<{ chainId?: string; lang?: string; openChat?: string }>();
+  const { lang, openChat } = useSearchParams<{ lang?: string; openChat?: string }>();
 
   const deleteSearchParam = useCallback(
     (param: string) => {
@@ -94,14 +91,6 @@ export function AppRoutes() {
     },
     [history]
   );
-
-  useEffect(() => {
-    if (chainId && CONTRACTS_CHAIN_IDS.includes(Number(chainId) as ContractsChainId)) {
-      switchNetwork(Number(chainId), true, { fallbackToAppSelectionOnError: true }).then(() => {
-        deleteSearchParam("chainId");
-      });
-    }
-  }, [chainId, deleteSearchParam]);
 
   useEffect(() => {
     if (lang && Object.keys(locales).includes(lang)) {
