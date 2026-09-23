@@ -104,9 +104,9 @@ export function getSharePercentage(
 }
 
 export function getCodeError(value: string): string {
-  const trimmedValue = value.trim();
-  if (!trimmedValue) return "";
+  if (!value) return "";
 
+  const trimmedValue = value.trim();
   if (trimmedValue.length > MAX_REFERRAL_CODE_LENGTH) {
     return t`Max ${MAX_REFERRAL_CODE_LENGTH} characters`;
   }
