@@ -2,11 +2,13 @@
 import "lib/legacyHashUrlRedirect";
 import "./main.css";
 
+import { i18n } from "@lingui/core";
 import React from "react";
 import { createRoot } from "react-dom/client";
 
 import { isIOS } from "lib/headlessUiIsMobile";
-import { initializeI18n } from "lib/i18n";
+import { defaultLocale } from "lib/i18n";
+import { messages as englishMessages } from "locales/en/messages.po";
 
 import App from "./App";
 import { captureLandingReferralCode } from "./utils/referralCode";
@@ -21,10 +23,11 @@ if ("TelegramWebviewProxy" in window && isIOS()) {
   document.documentElement.classList.add("telegram-browser");
 }
 
-void initializeI18n().then(() => {
-  createRoot(document.getElementById("root")!).render(
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
-  );
-});
+i18n.load(defaultLocale, englishMessages);
+i18n.activate(defaultLocale);
+
+createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
