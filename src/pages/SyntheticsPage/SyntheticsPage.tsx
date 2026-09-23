@@ -5,6 +5,7 @@ import { startTransition, useCallback, useEffect, useMemo, useRef, useState } fr
 import { Link } from "react-router-dom";
 
 import { getSyntheticsListSectionKey } from "config/localStorage";
+import type { TradingViewResolution } from "config/tradingview";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useClosingPositionKeyState, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -66,11 +67,14 @@ import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { getOrderKeys, isOrderForPosition } from "sdk/utils/orders";
+import type { SolanaChartCandles } from "solana-interface/lib/chartCandles";
+import { SolanaChart } from "solana-interface/pages/SolanaChart";
 import { SolanaFetchCard } from "solana-interface/pages/SolanaFetchCard";
 import { SolanaRpcPage } from "solana-interface/pages/SolanaRpcPage";
 import { SolanaUnwrapCard } from "solana-interface/pages/SolanaUnwrapCard";
 import { SolanaSendCard } from "solana-interface/pages/SolanaSendCard";
 import { SolanaSignMessageCard } from "solana-interface/pages/SolanaSignMessageCard";
+import { SolanaTradeList } from "solana-interface/pages/SolanaTradeList";
 import { SolanaWebSocketCard } from "solana-interface/pages/SolanaWebSocketCard";
 
 import { AppHeader } from "components/AppHeader/AppHeader";
@@ -123,6 +127,8 @@ type OrdersModalState = {
 export function SyntheticsPage(p: Props) {
   const { isSolana } = useChainId();
   const { isTablet } = useBreakpoints();
+  const [solanaChartResolution, setSolanaChartResolution] = useState<TradingViewResolution>(5);
+  const [solanaChartCandles, setSolanaChartCandles] = useState<SolanaChartCandles>();
 
   if (isSolana) {
     return (
@@ -148,9 +154,15 @@ export function SyntheticsPage(p: Props) {
       >
         {isTablet ? <ChartHeader /> : null}
         <div className="grid grid-cols-1 items-start gap-12 md:grid-cols-2 lg:grid-cols-4">
+          <SolanaChart
+            resolution={solanaChartResolution}
+            onResolutionChange={setSolanaChartResolution}
+            candles={solanaChartCandles}
+          />
+          <SolanaTradeList />
           <SolanaSignMessageCard />
           <SolanaRpcPage />
-          <SolanaFetchCard />
+          <SolanaFetchCard resolution={solanaChartResolution} onCandlesLoaded={setSolanaChartCandles} />
           <SolanaWebSocketCard />
           <SolanaUnwrapCard />
           <SolanaSendCard />
