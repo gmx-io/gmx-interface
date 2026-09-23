@@ -74,6 +74,7 @@ import { SolanaRpcPage } from "solana-interface/pages/SolanaRpcPage";
 import { SolanaUnwrapCard } from "solana-interface/pages/SolanaUnwrapCard";
 import { SolanaSendCard } from "solana-interface/pages/SolanaSendCard";
 import { SolanaSignMessageCard } from "solana-interface/pages/SolanaSignMessageCard";
+import { SolanaTradeList } from "solana-interface/pages/SolanaTradeList";
 import { SolanaWebSocketCard } from "solana-interface/pages/SolanaWebSocketCard";
 
 import { AppHeader } from "components/AppHeader/AppHeader";
@@ -158,6 +159,7 @@ export function SyntheticsPage(p: Props) {
             onResolutionChange={setSolanaChartResolution}
             candles={solanaChartCandles}
           />
+          <SolanaTradeList />
           <SolanaSignMessageCard />
           <SolanaRpcPage />
           <SolanaFetchCard resolution={solanaChartResolution} onCandlesLoaded={setSolanaChartCandles} />
