@@ -261,21 +261,26 @@ export function DailyAndCumulativePnLChart({
     }, TOUCH_DOUBLE_TAP_TIMEOUT);
   }, [cancelMobileTapTooltip, stopZoomInteraction]);
 
-  const getChartInteractionRatio = useCallback((clientX: number) => {
-    const element = chartInteractionRef.current;
+  const getChartInteractionRatio = useCallback(
+    (clientX: number) => {
+      const element = chartInteractionRef.current;
 
-    if (!element) {
-      return 0.5;
-    }
+      if (!element) {
+        return 0.5;
+      }
 
-    const rect = element.getBoundingClientRect();
+      const rect = element.getBoundingClientRect();
+      const plotLeft = rect.left + chartMargin.left + Y_AXIS_WIDTH;
+      const plotWidth = rect.width - chartMargin.left - chartMargin.right - 2 * Y_AXIS_WIDTH;
 
-    if (rect.width <= 0) {
-      return 0.5;
-    }
+      if (plotWidth <= 0) {
+        return 0.5;
+      }
 
-    return clamp((clientX - rect.left) / rect.width, 0, 1);
-  }, []);
+      return clamp((clientX - plotLeft) / plotWidth, 0, 1);
+    },
+    [chartMargin.left, chartMargin.right]
+  );
 
   useEffect(() => {
     const element = chartContainerRef.current;
@@ -302,7 +307,7 @@ export function DailyAndCumulativePnLChart({
       const dataLength = groupedPnlData.length;
       const direction = deltaPixels < 0 ? "in" : "out";
       const anchorRatio = getChartInteractionRatio(event.clientX);
-      const wheelUnits = clamp(Math.abs(deltaPixels) / 100, 0.05, 1);
+      const wheelUnits = Math.abs(deltaPixels) / 100;
       const accumulator = wheelZoomAccumulatorRef.current;
 
       if (accumulator.direction !== direction) {
@@ -696,6 +701,7 @@ export function DailyAndCumulativePnLChart({
             />
             <YAxis
               yAxisId="periodPnl"
+              width={Y_AXIS_WIDTH}
               type="number"
               allowDecimals={false}
               allowDataOverflow
