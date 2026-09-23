@@ -1292,6 +1292,10 @@ msgstr "順暢交易，Express 可靠保障"
 msgid "{0} <0/><1> to </1>{1} <2/>"
 msgstr "{0} <0/><1> 至 </1>{1} <2/>"
 
+#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
+msgid "{esGmx} esGMX + {gt} GT"
+msgstr "{esGmx} esGMX + {gt} GT"
+
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
@@ -1886,6 +1890,7 @@ msgstr "我可以同時是交易者和推廣夥伴嗎？"
 msgid "Base APY"
 msgstr "基礎 APY"
 
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
 #: landing/src/pages/Rewards/RewardsEpochSummary.tsx
 msgid "Previous epoch totals are temporarily unavailable."
 msgstr "暫時無法取得上一週期的總額。"
@@ -3518,6 +3523,10 @@ msgstr "更新止盈"
 msgid "Get fee discounts and earn up to 25% commission through the GMX <0/> referral program"
 msgstr "透過GMX<0/>推薦計劃獲得手續費折扣並賺取高達25%的佣金"
 
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
+msgid "of your fees, in esGMX + GT"
+msgstr "手續費，以 esGMX + GT 返還"
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Deposit from {sourceChainName} failed"
 msgstr "從 {sourceChainName} 存入失敗"
@@ -3594,6 +3603,7 @@ msgstr "從其他鏈轉帳"
 msgid "Take-Profit / Stop-Loss"
 msgstr "止盈 / 止損"
 
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
 #: landing/src/pages/Rewards/RewardsEpochSummary.tsx
 msgid "The first epoch is under way"
 msgstr "首個週期正在進行中"
@@ -3818,6 +3828,10 @@ msgstr "領取資金費用失敗"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "TVL"
 msgstr "TVL"
+
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
+msgid "{payout} returned to {wallets} last week"
+msgstr "上週向{wallets}返還了 {payout}"
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "For large traders"
@@ -7809,6 +7823,10 @@ msgstr "載入中..."
 msgid "Trade now"
 msgstr "立即交易"
 
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
+msgid "Every Wednesday,<0/>your fees come back."
+msgstr "每週三，<0/>您的手續費如期返還。"
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from the GMX vesting vault"
 msgstr ""
@@ -9492,6 +9510,10 @@ msgstr ""
 msgid "TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling."
 msgstr "倉位平倉時，止盈/止損訂單會自動取消。僅適用於啟用後建立的訂單。"
 
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
+msgid "Check my multiplier"
+msgstr "查看我的倍數"
+
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "fees"
@@ -9663,6 +9685,10 @@ msgstr "近 7 天"
 #: src/components/TVChart/Chart.tsx
 msgid "Net rate"
 msgstr "淨費率"
+
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
+msgid "next payout {nextPayout}"
+msgstr "下次發放：{nextPayout}"
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Invalid transfer addresses. Check the URL."
@@ -11845,6 +11871,10 @@ msgstr "接收地址無效"
 msgid "Express transaction data is still loading. Please retry in a few seconds."
 msgstr "Express 交易資料仍在載入中。請於數秒後重試。"
 
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
+msgid "{0, plural, one {# wallet} other {# wallets}}"
+msgstr "{0, plural, other {# 個錢包}}"
+
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Nonce:"
@@ -13183,6 +13213,10 @@ msgstr "限價"
 #: landing/src/pages/Rewards/RewardsCalculator.tsx
 msgid "Total multiplier"
 msgstr "總倍數"
+
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
+msgid "Returned to you up to"
+msgstr "最高返還"
 
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "TIMEKEY"

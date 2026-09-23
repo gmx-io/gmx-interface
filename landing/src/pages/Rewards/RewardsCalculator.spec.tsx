@@ -84,6 +84,33 @@ describe("rewards calculator", () => {
     expect(view.getByText("Staking").nextElementSibling?.textContent).toBe("+1x");
   });
 
+  it.each([
+    [699n, "9.99x", false],
+    [700n, "10x", true],
+    [701n, "10x", true],
+  ])("shows the maximum note consistently with a %s comeback boost", (multiplier, displayedMultiplier, isMaximum) => {
+    const view = renderCalculator({
+      ...config,
+      boosts: [{ boost: "ManualAllocation", multiplier }],
+    });
+
+    expect(view.getByText("Total multiplier").nextElementSibling?.textContent).toBe(displayedMultiplier);
+    expect(view.queryByText("Maximum multiplier reached") !== null).toBe(isMaximum);
+  });
+
+  it("keeps a below-maximum rounded multiplier distinct from reaching the maximum", () => {
+    const view = renderCalculator({
+      ...config,
+      multiplierDecimals: 1000n,
+      maxMultiplier: 10_000n,
+      stakingTiers: [],
+      boosts: [{ boost: "ManualAllocation", multiplier: 9995n }],
+    });
+
+    expect(view.getByText("Total multiplier").nextElementSibling?.textContent).toBe("<10x");
+    expect(view.queryByText("Maximum multiplier reached")).toBeNull();
+  });
+
   it("keeps single slider steps responsive in both directions while rounding amounts", () => {
     const view = renderCalculator();
     const slider = view.getByRole("slider", { name: "GMX staked" }) as HTMLInputElement;

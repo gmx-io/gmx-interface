@@ -72,7 +72,29 @@ describe("landing rewards calculator", () => {
     });
     expect(result.multiplier).toBe(1000n);
     expect(result.isCapped).toBe(true);
+    expect(result.isMaxMultiplierReached).toBe(true);
     expect(result.rewardsUsd).toBe((result.feesUsd * 12n) / 10n);
+  });
+
+  it.each([
+    [999n, false, false],
+    [1000n, false, true],
+    [1001n, true, true],
+  ])("distinguishes reaching the maximum from clamping a %s multiplier", (tierMultiplier, isCapped, isMaxReached) => {
+    const result = getLandingRewardEstimate({
+      config: {
+        ...config,
+        volumeTiers: [{ tier: "Tier1", threshold: 1_000_000n * PRECISION, multiplier: tierMultiplier }],
+        stakingTiers: [],
+      },
+      volumeUsd: 1_000_000n * PRECISION,
+      stakedAmount: 0n,
+      boosts: [],
+    });
+
+    expect(result.multiplier).toBe(tierMultiplier > config.maxMultiplier ? config.maxMultiplier : tierMultiplier);
+    expect(result.isCapped).toBe(isCapped);
+    expect(result.isMaxMultiplierReached).toBe(isMaxReached);
   });
 
   it("uses changed configuration shares and supports fractional boosts", () => {

@@ -1,4 +1,5 @@
 import { Trans } from "@lingui/macro";
+import { useId, useState, type ReactNode } from "react";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
@@ -141,13 +142,9 @@ export function RewardsFaq() {
         </h2>
         <div className="rewards-faq-accordion">
           {items.map((item, index) => (
-            <details key={index} open={index < 2}>
-              <summary>
-                {item.question}
-                <span aria-hidden="true" />
-              </summary>
-              <p>{item.answer}</p>
-            </details>
+            <RewardsFaqItem key={index} question={item.question} defaultOpen={index < 2}>
+              {item.answer}
+            </RewardsFaqItem>
           ))}
           <a href="https://docs.gmx.io/" target="_blank" rel="noopener noreferrer">
             <Trans>For more information read docs ↗</Trans>
@@ -155,5 +152,38 @@ export function RewardsFaq() {
         </div>
       </div>
     </section>
+  );
+}
+
+function RewardsFaqItem({
+  question,
+  defaultOpen,
+  children,
+}: {
+  question: ReactNode;
+  defaultOpen: boolean;
+  children: ReactNode;
+}) {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+  const answerId = useId();
+
+  return (
+    <div className="rewards-faq-item" data-open={isOpen}>
+      <button
+        type="button"
+        className="rewards-faq-question"
+        aria-expanded={isOpen}
+        aria-controls={answerId}
+        onClick={() => setIsOpen((open) => !open)}
+      >
+        {question}
+        <span aria-hidden="true">+</span>
+      </button>
+      <div id={answerId} className="rewards-faq-answer" aria-hidden={!isOpen} {...(!isOpen ? { inert: "" } : {})}>
+        <div>
+          <p>{children}</p>
+        </div>
+      </div>
+    </div>
   );
 }

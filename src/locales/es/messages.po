@@ -1292,6 +1292,10 @@ msgstr "Operativa fluida con la fiabilidad de Express"
 msgid "{0} <0/><1> to </1>{1} <2/>"
 msgstr "{0} <0/><1> a </1>{1} <2/>"
 
+#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
+msgid "{esGmx} esGMX + {gt} GT"
+msgstr "{esGmx} esGMX + {gt} GT"
+
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
@@ -1886,6 +1890,7 @@ msgstr "¿Puedo ser trader y afiliado a la vez?"
 msgid "Base APY"
 msgstr "APY Base"
 
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
 #: landing/src/pages/Rewards/RewardsEpochSummary.tsx
 msgid "Previous epoch totals are temporarily unavailable."
 msgstr "Los totales de la época anterior no están disponibles temporalmente."
@@ -3518,6 +3523,10 @@ msgstr "Actualizar Take-Profit"
 msgid "Get fee discounts and earn up to 25% commission through the GMX <0/> referral program"
 msgstr "Obtén descuentos en las comisiones y gana hasta un 25% de comisión con el programa de <0/> referidos de GMX"
 
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
+msgid "of your fees, in esGMX + GT"
+msgstr "de tus comisiones, en esGMX + GT"
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Deposit from {sourceChainName} failed"
 msgstr "Depósito desde {sourceChainName} fallido"
@@ -3594,6 +3603,7 @@ msgstr "Transferir desde otra cadena"
 msgid "Take-Profit / Stop-Loss"
 msgstr "Take-Profit / Stop-Loss"
 
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
 #: landing/src/pages/Rewards/RewardsEpochSummary.tsx
 msgid "The first epoch is under way"
 msgstr "La primera época está en curso"
@@ -3818,6 +3828,10 @@ msgstr "Falló la reclamación de tarifas de funding"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "TVL"
 msgstr "TVL"
+
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
+msgid "{payout} returned to {wallets} last week"
+msgstr "{payout} devueltos a {wallets} la semana pasada"
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "For large traders"
@@ -7809,6 +7823,10 @@ msgstr "Cargando..."
 msgid "Trade now"
 msgstr "Operar ahora"
 
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
+msgid "Every Wednesday,<0/>your fees come back."
+msgstr "Cada miércoles,<0/>tus comisiones vuelven a ti."
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from the GMX vesting vault"
 msgstr ""
@@ -9492,6 +9510,10 @@ msgstr ""
 msgid "TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling."
 msgstr "Las órdenes TP/SL se cancelan automáticamente al cerrar la posición. Solo se aplica a las órdenes creadas después de activar esta opción."
 
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
+msgid "Check my multiplier"
+msgstr "Ver mi multiplicador"
+
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "fees"
@@ -9663,6 +9685,10 @@ msgstr "Últimos 7d"
 #: src/components/TVChart/Chart.tsx
 msgid "Net rate"
 msgstr "Tasa neta"
+
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
+msgid "next payout {nextPayout}"
+msgstr "próximo pago: {nextPayout}"
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Invalid transfer addresses. Check the URL."
@@ -11845,6 +11871,10 @@ msgstr "Dirección del destinatario no válida"
 msgid "Express transaction data is still loading. Please retry in a few seconds."
 msgstr "Los datos de la transacción Express aún se están cargando. Inténtelo de nuevo en unos segundos."
 
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
+msgid "{0, plural, one {# wallet} other {# wallets}}"
+msgstr "{0, plural, one {# cartera} other {# carteras}}"
+
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Nonce:"
@@ -13183,6 +13213,10 @@ msgstr "Límite"
 #: landing/src/pages/Rewards/RewardsCalculator.tsx
 msgid "Total multiplier"
 msgstr "Multiplicador total"
+
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
+msgid "Returned to you up to"
+msgstr "Recibe de vuelta hasta"
 
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "TIMEKEY"

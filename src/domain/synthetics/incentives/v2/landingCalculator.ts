@@ -35,6 +35,7 @@ export function getLandingRewardEstimate({
     boostMultipliers,
     multiplier,
     isCapped: uncappedMultiplier > multiplier,
+    isMaxMultiplierReached: config.maxMultiplier > 0n && multiplier === config.maxMultiplier,
     esGmxRewardsUsd,
     gtRewardsUsd,
     rewardsUsd: esGmxRewardsUsd + gtRewardsUsd,

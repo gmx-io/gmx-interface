@@ -1,4 +1,5 @@
 import { t, Trans } from "@lingui/macro";
+import { scrollToLandingSection } from "landing/utils/scrollToLandingSection";
 import { useMemo } from "react";
 
 import { ARBITRUM } from "config/chains";
@@ -320,7 +321,16 @@ export function RewardsMultipliers({
             </p>
           </div>
         </div>
-        <a className="rewards-button rewards-invite-button" href="#invite">
+        <a
+          className="rewards-button rewards-invite-button"
+          href="#invite"
+          onClick={(event) => {
+            if (!document.getElementById("invite")?.closest('[data-checked="true"]')) {
+              event.preventDefault();
+              scrollToLandingSection("rewards-address", 24);
+            }
+          }}
+        >
           <Trans>Invite Traders</Trans>
         </a>
       </div>

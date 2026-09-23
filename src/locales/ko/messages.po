@@ -1292,6 +1292,10 @@ msgstr "Express의 안정성을 갖춘 매끄러운 트레이딩"
 msgid "{0} <0/><1> to </1>{1} <2/>"
 msgstr "{0} <0/><1> to </1>{1} <2/>"
 
+#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
+msgid "{esGmx} esGMX + {gt} GT"
+msgstr "{esGmx} esGMX + {gt} GT"
+
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
@@ -1886,6 +1890,7 @@ msgstr "트레이더와 제휴사를 동시에 겸할 수 있나요?"
 msgid "Base APY"
 msgstr "기본 APY"
 
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
 #: landing/src/pages/Rewards/RewardsEpochSummary.tsx
 msgid "Previous epoch totals are temporarily unavailable."
 msgstr "이전 에포크 합계를 일시적으로 불러올 수 없습니다."
@@ -3518,6 +3523,10 @@ msgstr "익절매 업데이트"
 msgid "Get fee discounts and earn up to 25% commission through the GMX <0/> referral program"
 msgstr "GMX <0/> 추천 프로그램을 통해 수수료 할인을 받고 최대 25%의 커미션을 획득하세요"
 
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
+msgid "of your fees, in esGMX + GT"
+msgstr "수수료를 esGMX + GT로 돌려받으세요"
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Deposit from {sourceChainName} failed"
 msgstr "{sourceChainName}에서의 입금 실패"
@@ -3594,6 +3603,7 @@ msgstr "다른 체인에서 전송"
 msgid "Take-Profit / Stop-Loss"
 msgstr "익절매 / 손절매"
 
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
 #: landing/src/pages/Rewards/RewardsEpochSummary.tsx
 msgid "The first epoch is under way"
 msgstr "첫 번째 에포크가 진행 중입니다"
@@ -3818,6 +3828,10 @@ msgstr "펀딩 수수료 청구 실패"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "TVL"
 msgstr "TVL"
+
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
+msgid "{payout} returned to {wallets} last week"
+msgstr "지난주 {wallets}에 {payout} 지급"
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "For large traders"
@@ -7809,6 +7823,10 @@ msgstr "로딩 중..."
 msgid "Trade now"
 msgstr "지금 거래하기"
 
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
+msgid "Every Wednesday,<0/>your fees come back."
+msgstr "매주 수요일,<0/>수수료를 돌려받으세요."
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from the GMX vesting vault"
 msgstr ""
@@ -9492,6 +9510,10 @@ msgstr ""
 msgid "TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling."
 msgstr "포지션 종료 시 TP/SL 주문이 자동 취소됩니다. 활성화 이후 생성된 주문에만 적용됩니다."
 
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
+msgid "Check my multiplier"
+msgstr "내 배수 확인"
+
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "fees"
@@ -9663,6 +9685,10 @@ msgstr "최근 7일"
 #: src/components/TVChart/Chart.tsx
 msgid "Net rate"
 msgstr "순 비율"
+
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
+msgid "next payout {nextPayout}"
+msgstr "다음 지급: {nextPayout}"
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Invalid transfer addresses. Check the URL."
@@ -11845,6 +11871,10 @@ msgstr "유효하지 않은 수신자 주소"
 msgid "Express transaction data is still loading. Please retry in a few seconds."
 msgstr "Express 거래 데이터를 아직 불러오는 중입니다. 몇 초 후에 다시 시도해 주세요."
 
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
+msgid "{0, plural, one {# wallet} other {# wallets}}"
+msgstr "{0, plural, other {지갑 #개}}"
+
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Nonce:"
@@ -13183,6 +13213,10 @@ msgstr "지정가"
 #: landing/src/pages/Rewards/RewardsCalculator.tsx
 msgid "Total multiplier"
 msgstr "총 배수"
+
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
+msgid "Returned to you up to"
+msgstr "최대 환급률"
 
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "TIMEKEY"

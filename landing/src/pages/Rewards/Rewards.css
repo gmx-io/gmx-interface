@@ -3,6 +3,10 @@ html:has(.rewards-page) {
   --rewards-footer-background: #090a14;
 }
 html:has(.rewards-page),
+.telegram-browser #root:has(.rewards-page) {
+  scroll-behavior: smooth;
+}
+html:has(.rewards-page),
 body:has(.rewards-page) {
   background-color: var(--rewards-footer-background);
   background-image: linear-gradient(to bottom, var(--rewards-header-background), var(--rewards-footer-background));
@@ -166,10 +170,35 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   white-space: nowrap;
 }
 .rewards-live i {
+  position: relative;
+  flex-shrink: 0;
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: #a4c3f9;
+}
+.rewards-live i::before,
+.rewards-live i::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid currentColor;
+  border-radius: inherit;
+  pointer-events: none;
+  animation: rewards-live-pulse 2.4s ease-out infinite;
+}
+.rewards-live i::after {
+  animation-delay: -1.2s;
+}
+@keyframes rewards-live-pulse {
+  from {
+    opacity: 0.65;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(2.6);
+  }
 }
 .rewards-live-compact {
   display: none;
@@ -203,8 +232,21 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   text-decoration: underline dotted;
   text-underline-offset: 3px;
 }
-.rewards-epoch-summary button {
+.rewards-epoch-retry {
   text-decoration: underline;
+}
+.Tooltip-popup.rewards-epoch-tooltip {
+  padding: 6px 10px;
+  border: 1px solid #3c4067;
+  border-radius: 6px;
+  background: #1e2033;
+  color: #bec0da;
+  font-size: 14px;
+  line-height: 18px;
+  letter-spacing: normal;
+}
+.rewards-epoch-tooltip > svg {
+  display: none;
 }
 .rewards-calculator-wrapper {
   position: relative;
@@ -212,6 +254,35 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
 .rewards-wallet-link-mobile,
 .rewards-mobile-trade-button {
   display: none;
+}
+.rewards-wallet-link-desktop {
+  display: inline-block;
+}
+.rewards-page .rewards-wallet-link-desktop,
+.rewards-page .rewards-wallet-link-mobile {
+  width: fit-content;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 4px;
+  transition:
+    color 0.18s,
+    text-decoration-color 0.18s,
+    transform 0.18s ease-out;
+}
+.rewards-wallet-link-desktop:focus-visible,
+.rewards-wallet-link-mobile:focus-visible {
+  text-decoration-color: currentColor;
+}
+@media (hover: hover) {
+  .rewards-wallet-link-desktop:hover,
+  .rewards-wallet-link-mobile:hover {
+    text-decoration-color: currentColor;
+    transform: translateX(3px);
+  }
+}
+.rewards-wallet-link-desktop:active,
+.rewards-wallet-link-mobile:active {
+  transform: translateX(1px);
 }
 .rewards-calculator {
   position: relative;
@@ -463,7 +534,7 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   left: 32px;
   right: 32px;
   margin-top: 16px;
-  color: #a0a3c4;
+  color: #a0a3c4cc;
   font-size: 12px;
 }
 .rewards-config-status {
@@ -567,6 +638,19 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 24px;
+}
+.rewards-comeback .rewards-card-grid[data-checked="true"] > * {
+  animation: rewards-card-reveal 0.4s ease-out;
+}
+@keyframes rewards-card-reveal {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
 }
 .rewards-bonus-card,
 .rewards-referral-card {
@@ -717,11 +801,26 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   line-height: 24px;
   transition:
     background-color 0.18s,
-    border-color 0.18s;
+    border-color 0.18s,
+    box-shadow 0.18s,
+    transform 0.18s ease-out;
 }
-.rewards-spoiler-button:hover .rewards-reveal-prompt {
+.rewards-spoiler-button:focus-visible .rewards-reveal-prompt {
   border-color: #ffffff40;
   background: #0101014d;
+  box-shadow: 0 0 20px #7885ff26;
+}
+@media (hover: hover) {
+  .rewards-spoiler-button:hover .rewards-reveal-prompt {
+    border-color: #ffffff40;
+    background: #0101014d;
+    box-shadow: 0 0 20px #7885ff26;
+    transform: translate(-50%, calc(-50% - 2px));
+  }
+}
+.rewards-spoiler-button:active .rewards-reveal-prompt {
+  transform: translate(-50%, -50%) scale(0.98);
+  box-shadow: none;
 }
 .rewards-reveal-prompt svg {
   width: 16px;
@@ -1244,6 +1343,26 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   padding-inline: 24px;
   min-height: 60px;
 }
+.rewards-page .rewards-invite-button {
+  transition:
+    background-color 0.18s,
+    color 0.18s,
+    box-shadow 0.18s,
+    transform 0.18s ease-out;
+}
+.rewards-invite-button:focus-visible {
+  box-shadow: 0 4px 20px #2d42fc40;
+}
+@media (hover: hover) {
+  .rewards-invite-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px #2d42fc40;
+  }
+}
+.rewards-invite-button:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: none;
+}
 .rewards-referral-example {
   padding: 32px;
   border-radius: 20px;
@@ -1648,18 +1767,18 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
 .rewards-faq h2 {
   margin: 0;
 }
-.rewards-faq details {
+.rewards-faq-item {
   padding: 24px 0;
 }
-.rewards-faq details::after {
+.rewards-faq-item::after {
   content: "";
   display: block;
   height: 1px;
   background: #1e2033;
   margin-top: 16px;
 }
-.rewards-faq summary {
-  list-style: none;
+.rewards-faq-question {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1668,21 +1787,42 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   line-height: 1.36;
   letter-spacing: -0.032em;
   font-weight: 500;
+  text-align: left;
   cursor: pointer;
 }
-.rewards-faq summary::-webkit-details-marker {
-  display: none;
+@media (hover: hover) {
+  .rewards-faq-question:hover {
+    color: #7885ff;
+  }
 }
-.rewards-faq summary > span::after {
-  content: "+";
+.rewards-faq-question > span {
+  display: inline-block;
+  flex-shrink: 0;
   font-size: 18px;
   color: #a0a3c4;
   font-weight: 400;
+  transition: transform 0.24s ease-in-out;
 }
-.rewards-faq details[open] summary > span::after {
-  content: "×";
+.rewards-faq-item[data-open="true"] .rewards-faq-question > span {
+  transform: rotate(45deg);
 }
-.rewards-faq details > p {
+.rewards-faq-answer {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 0.24s ease-in-out,
+    opacity 0.24s ease-in-out;
+}
+.rewards-faq-item[data-open="true"] .rewards-faq-answer {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+.rewards-faq-answer > div {
+  min-height: 0;
+  overflow: hidden;
+}
+.rewards-faq-answer p {
   margin-top: 16px;
   color: #bec0da;
   font-size: 16px;
@@ -1817,13 +1957,24 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
     font-size: 30px;
   }
   .rewards-hero {
-    padding: 48px 0 64px;
+    padding: 40px 0;
+    background: #090a14;
+  }
+  .rewards-hero h1,
+  .rewards-comeback h2,
+  .rewards-multipliers h2 {
+    font-size: 40px;
+    line-height: 48px;
+    letter-spacing: -0.03em;
   }
   .rewards-hero h1 {
-    margin-bottom: 24px;
+    margin-bottom: 16px;
   }
   .rewards-epoch-summary {
-    font-size: 14px;
+    font-size: 16px;
+    line-height: 24px;
+    min-height: 24px;
+    margin-bottom: 16px;
   }
   .rewards-calculator {
     grid-template-columns: 1fr;
@@ -1835,7 +1986,7 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
     display: contents;
   }
   .rewards-slider + .rewards-slider {
-    margin-top: 32px;
+    margin-top: 20px;
   }
   .rewards-slider > span {
     font-size: 18px;
@@ -1845,11 +1996,11 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
     font-size: 18px;
   }
   .rewards-slider input {
-    margin: 8px 0 0;
+    margin: 14px 0 6px;
   }
   .rewards-boost-controls {
     order: -1;
-    margin: 16px 0 24px;
+    margin: 16px 0 20px;
     padding: 0 0 20px;
     border-top: 0;
     border-bottom: 1px solid #7885ff33;
@@ -1862,11 +2013,14 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   }
   .rewards-boost-toggle {
     position: relative;
-    font-size: clamp(11px, 3.1vw, 13px);
-    line-height: 17px;
-    padding: 8px 4px;
+    justify-content: center;
+    text-align: center;
+    font-size: 12px;
+    line-height: 15px;
+    letter-spacing: 0.002em;
+    padding: 7px 4px;
     white-space: normal;
-    min-height: 48px;
+    min-height: 46px;
     overflow-wrap: anywhere;
   }
   .rewards-boost-toggle input {
@@ -1885,7 +2039,7 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   }
   .rewards-wallet-link-mobile {
     display: inline-block;
-    margin-top: 32px;
+    margin-top: 16px;
     color: #8c96ff;
     font-size: 14px;
   }
@@ -1897,26 +2051,39 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   }
   .rewards-receipt {
     order: -2;
-    padding: 24px;
+    padding: 16px;
+  }
+  .rewards-receipt-breakdown {
+    min-height: 68px;
+    font-size: 14px;
+    line-height: 20px;
   }
   .rewards-receipt-total {
     margin-top: 8px;
     padding-top: 7px;
   }
+  .rewards-receipt-total strong {
+    font-size: 28px;
+    line-height: 32px;
+  }
+  .rewards-receipt-amount {
+    font-size: 18px;
+    line-height: 24px;
+  }
   .rewards-estimate-note {
     position: static;
     margin-top: 16px;
-    font-size: 11px;
+    font-size: 12px;
+    line-height: 15px;
+    letter-spacing: 0.002em;
+    color: #3c4067;
   }
   .rewards-comeback,
   .rewards-multipliers {
-    padding: 64px 0;
-  }
-  .rewards-multipliers {
-    padding-bottom: 140px;
+    padding: 40px 0;
   }
   .rewards-multipliers > .rewards-container {
-    gap: 32px;
+    gap: 24px;
   }
   .rewards-referral-coins {
     width: 560px;
@@ -1925,28 +2092,30 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
     bottom: -412.24px;
   }
   .rewards-comeback h2 {
-    margin-bottom: 32px;
+    margin-bottom: 16px;
   }
   .rewards-checker {
-    margin-bottom: 32px;
+    flex-direction: column;
+    margin-bottom: 16px;
     gap: 8px;
   }
   .rewards-checker input {
-    padding: 16px 12px 16px 40px;
-    font-size: 14px;
+    padding: 0 20px 0 60px;
+    font-size: 18px;
+    box-shadow: 0 6px 8px -6px #bec0da;
   }
   .rewards-address-field > svg {
-    top: 20px;
-    left: 12px;
-    width: 20px;
-    height: 20px;
+    top: 18px;
+    left: 20px;
+    width: 24px;
+    height: 24px;
   }
   .rewards-checker .rewards-button {
-    font-size: 13px;
-    padding: 12px;
+    font-size: 16px;
+    padding: 10px 20px;
   }
   .rewards-form-error {
-    margin-top: -20px;
+    margin-top: 0;
     font-size: 13px;
   }
   .rewards-card-grid {
@@ -2024,60 +2193,149 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
     height: 12px;
   }
   .rewards-formula {
-    padding: 24px 20px;
+    padding: 16px;
   }
   .rewards-formula-equation {
-    gap: 10px;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 8px;
   }
   .rewards-formula-equation > div {
-    padding: 12px;
+    max-width: 100%;
+    padding: 16px 20px;
+    text-align: center;
   }
   .rewards-formula-equation strong {
     font-size: 18px;
+    line-height: 1.36;
   }
   .rewards-formula-equation > span {
-    font-size: 24px;
+    font-size: 40px;
+    line-height: 48px;
   }
   .rewards-formula > p {
-    font-size: 10px;
+    font-size: 12px;
+    line-height: 15px;
+    letter-spacing: 0.002em;
+    text-transform: none;
+  }
+  .rewards-tiers {
+    gap: 24px;
   }
   .rewards-tiers table {
-    padding: 20px;
+    padding: 24px;
   }
+  .rewards-tiers thead th {
+    padding-top: 0;
+    font-size: inherit;
+    letter-spacing: inherit;
+    overflow-wrap: anywhere;
+  }
+  .rewards-tiers th,
+  .rewards-tiers td {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .rewards-tiers th:not(:last-child),
+  .rewards-tiers td:not(:last-child) {
+    padding-right: 16px;
+  }
+  .rewards-tiers thead th:nth-child(2) {
+    width: 96px;
+  }
+  .rewards-tiers table:last-child thead th:nth-child(2) {
+    width: 120px;
+  }
+  .rewards-tiers thead th:last-child,
   .rewards-tiers td:last-child {
-    width: 54px;
+    width: 40px;
+  }
+  .rewards-tiers thead th:last-child {
+    white-space: nowrap;
   }
   .rewards-tiers tbody th {
-    font-size: 16px;
+    font-size: 18px;
+    line-height: 1.36;
+    letter-spacing: -0.032em;
   }
   .rewards-tiers thead {
-    font-size: 9px;
+    font-size: 12px;
+    line-height: 15px;
   }
   .rewards-boost-cards {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
+    gap: 8px;
   }
   .rewards-boost-cards article {
     padding: 16px;
+    min-height: 212px;
+    overflow-wrap: anywhere;
   }
   .rewards-boost-cards h4 {
-    font-size: 21px;
+    font-size: 16px;
+    line-height: 24px;
   }
   .rewards-boost-cards article > p:last-child {
     font-size: 13px;
+    line-height: 16px;
+    letter-spacing: 0.002em;
+  }
+  .rewards-referral {
+    gap: 16px;
+  }
+  .rewards-referral > h3 {
+    font-size: 28px;
+    line-height: 32px;
+    letter-spacing: -0.032em;
   }
   .rewards-referral-example {
-    padding: 20px;
+    padding: 16px;
   }
   .rewards-referral-comparison {
     display: flex;
     flex-direction: column;
+    gap: 16px;
+    padding: 0;
+    background: none;
   }
   .rewards-referral-comparison > div {
-    padding: 12px 16px;
+    align-items: flex-start;
+    gap: 2px;
+    padding: 0;
+    background: none;
+    color: #090a14;
   }
   .rewards-referral-comparison > div > span {
-    font-size: 14px;
+    max-width: 100%;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 16px;
+    line-height: 24px;
+  }
+  .rewards-referral-earned > span {
+    width: 100%;
+    background: repeating-linear-gradient(105deg, transparent 0 7px, #bec0da1a 7px 8px),
+      linear-gradient(90deg, #bec0da00, #bec0da99);
+  }
+  .rewards-referral-bonus > span {
+    background: linear-gradient(110deg, #2d42fc, #2632df);
+  }
+  .rewards-referral-bonus svg {
+    display: none;
+  }
+  .rewards-referral-comparison strong {
+    padding-inline: 8px;
+    font-size: 16px;
+    line-height: 24px;
+  }
+  .rewards-referral-comparison strong > span {
+    font-size: inherit;
+    line-height: inherit;
+  }
+  .rewards-referral-example > p {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #f4f5f9;
   }
   .rewards-tokens {
     padding: 64px 0 80px;
@@ -2153,10 +2411,10 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   .rewards-faq h2 {
     margin-bottom: 24px;
   }
-  .rewards-faq summary {
+  .rewards-faq-question {
     font-size: 18px;
   }
-  .rewards-faq details > p {
+  .rewards-faq-answer p {
     font-size: 16px;
   }
   .rewards-faq-accordion > a {
@@ -2199,13 +2457,6 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   .rewards-slider output {
     white-space: nowrap;
   }
-  .rewards-formula-equation {
-    flex-direction: column;
-  }
-  .rewards-formula-equation > div {
-    width: 100%;
-    text-align: center;
-  }
   .rewards-live {
     padding: 0;
     border: 0;
@@ -2226,10 +2477,28 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html:has(.rewards-page),
+  .telegram-browser #root:has(.rewards-page) {
+    scroll-behavior: auto;
+  }
+  .rewards-live i::before,
+  .rewards-live i::after {
+    animation: none;
+    opacity: 0;
+  }
   .rewards-address-highlight {
     display: none;
   }
-  .rewards-page * {
+  .rewards-comeback .rewards-card-grid[data-checked="true"] > * {
+    animation: none;
+  }
+  .rewards-page .rewards-wallet-link-desktop,
+  .rewards-page .rewards-wallet-link-mobile,
+  .rewards-page .rewards-invite-button,
+  .rewards-faq-question > span,
+  .rewards-page *,
+  .rewards-page *::before,
+  .rewards-page *::after {
     transition: none;
     scroll-behavior: auto;
   }

@@ -161,12 +161,14 @@ export function RewardsCalculator({
             </span>
             <strong>
               <RewardsValue loading={loading} width="2ch">
-                {estimate && config ? formatMultiplier(estimate.multiplier, config.multiplierDecimals) : undefined}
+                {estimate && config
+                  ? formatMultiplier(estimate.multiplier, config.multiplierDecimals, 2, config.maxMultiplier)
+                  : undefined}
               </RewardsValue>
             </strong>
           </div>
           <AnimatePresence initial={false}>
-            {estimate?.isCapped && (
+            {estimate?.isMaxMultiplierReached && (
               <motion.p
                 className="rewards-cap-note"
                 variants={ROW_VARIANTS}

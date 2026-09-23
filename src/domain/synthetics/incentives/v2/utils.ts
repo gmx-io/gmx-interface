@@ -1,7 +1,32 @@
 import { formatAmount, PRECISION, USD_DECIMALS } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 
-export function formatMultiplier(multiplier: bigint, multiplierDecimals: bigint, displayDecimals = 2) {
+import type { IncentivesConfig } from "./types";
+
+export function getPreviousEpochRewardBreakdown(
+  rewardsUsd: bigint,
+  config: Pick<
+    IncentivesConfig,
+    "epochTimestamp" | "epochStartTimestamp" | "epochDuration" | "esGmxShareFactor" | "gtShareFactor"
+  >
+) {
+  // The current shares are only valid for epochs covered by this config version.
+  if (config.epochTimestamp - config.epochDuration < config.epochStartTimestamp) return undefined;
+
+  const combinedShare = config.esGmxShareFactor + config.gtShareFactor;
+  if (combinedShare <= 0n) return undefined;
+
+  const esGmxUsd = bigMath.mulDiv(rewardsUsd, config.esGmxShareFactor, combinedShare);
+
+  return { esGmxUsd, gtUsd: rewardsUsd - esGmxUsd };
+}
+
+export function formatMultiplier(
+  multiplier: bigint,
+  multiplierDecimals: bigint,
+  displayDecimals = 2,
+  maxMultiplier?: bigint
+) {
   if (multiplierDecimals <= 0n) return "-";
 
   const displayPrecision = 10n ** BigInt(displayDecimals);
@@ -10,7 +35,12 @@ export function formatMultiplier(multiplier: bigint, multiplierDecimals: bigint,
     trimTrailingZeros: true,
   });
 
-  return `${formatted}x`;
+  const roundsToMaximum =
+    maxMultiplier !== undefined &&
+    multiplier < maxMultiplier &&
+    scaledMultiplier * multiplierDecimals >= maxMultiplier * displayPrecision;
+
+  return `${roundsToMaximum ? "<" : ""}${formatted}x`;
 }
 
 export function formatMultiplierAdjustment(multiplier: bigint, multiplierDecimals: bigint, displayDecimals = 2) {

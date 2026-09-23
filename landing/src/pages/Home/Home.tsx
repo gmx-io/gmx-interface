@@ -8,6 +8,7 @@ import { FaqSection } from "./FaqSection/FaqSection";
 import { HeroSection } from "./HeroSection/HeroSection";
 import { LaunchSection } from "./LaunchSection/LaunchSection";
 import { LiqiuditySection } from "./LiqiuditySection/LiqiuditySection";
+import { RewardsSection } from "./RewardsSection/RewardsSection";
 import { RoadmapSection } from "./RoadmapSection/RoadmapSection";
 import { ProgramCards } from "./SocialSection/ProgramCards";
 import { SocialSection } from "./SocialSection/SocialSection";
@@ -29,6 +30,7 @@ export default function Home() {
   return (
     <HomePageContextProvider>
       <HeroSection />
+      <RewardsSection />
       <LaunchSection />
       <LiqiuditySection />
       <SponsorsSection />

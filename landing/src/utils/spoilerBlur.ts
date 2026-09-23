@@ -6,27 +6,22 @@ void main() {
   gl_Position = vec4(position, 0.0, 1.0);
 }`;
 
-// Ported from the supplied Figma "Spoiler blur" shader. Cache its static blur pass.
+// Cache the static blur pass separately from the animated dots.
 const BLUR = `#version 300 es
 precision highp float;
 uniform sampler2D source;
-uniform vec2 dimensions;
 uniform vec2 inputDimensions;
 uniform float blurRadius;
 in vec2 uv;
 out vec4 color;
 void main() {
-  vec2 blockSize = vec2(4.0) / dimensions;
-  vec2 inputUv = vec2(uv.x, 1.0 - uv.y);
-  vec2 center = floor(inputUv / blockSize) * blockSize + blockSize * 0.5;
-  center.y = 1.0 - center.y;
   vec4 sum = vec4(0.0);
   float weight = 0.0;
   for (int x = 0; x < 15; x++) {
     for (int y = 0; y < 15; y++) {
       vec2 offset = (vec2(float(x), float(y)) - 7.0) / 7.0;
       float w = exp(-dot(offset, offset) * 2.0);
-      sum += texture(source, clamp(center + offset * blurRadius / inputDimensions, 0.0, 1.0)) * w;
+      sum += texture(source, clamp(uv + offset * blurRadius / inputDimensions, 0.0, 1.0)) * w;
       weight += w;
     }
   }
@@ -130,7 +125,6 @@ export function createSpoilerRenderer(canvas: HTMLCanvasElement, blurRadius = 30
     const dotProgram = program(DOTS);
     const input = texture();
     const blurred = texture();
-    const blurDimensions = gl.getUniformLocation(blurProgram, "dimensions");
     const inputDimensions = gl.getUniformLocation(blurProgram, "inputDimensions");
     const dotDimensions = gl.getUniformLocation(dotProgram, "dimensions");
     const dotTime = gl.getUniformLocation(dotProgram, "time");
@@ -167,7 +161,6 @@ export function createSpoilerRenderer(canvas: HTMLCanvasElement, blurRadius = 30
           throw new Error("Unable to render spoiler texture");
         }
         gl.useProgram(blurProgram);
-        gl.uniform2f(blurDimensions, width, height);
         gl.uniform2f(inputDimensions, image.naturalWidth, image.naturalHeight);
         gl.bindTexture(gl.TEXTURE_2D, input);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
