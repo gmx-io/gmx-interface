@@ -16,7 +16,7 @@ import { multiplierPart, numberParts } from "lib/numbers";
 
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
-import { NumericValue } from "components/NumericValue/NumericValue";
+import { HAIR_SPACE, NumericValue } from "components/NumericValue/NumericValue";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -209,8 +209,8 @@ export function LeverageField({ value, onChange, marks, disabled, tooltipContent
                   value={inputValue}
                   setValue={handleInputChange}
                   onBlur={() => commitValue()}
-                  suffix="x"
-                  inputClassName="w-32 text-13"
+                  suffix={`${HAIR_SPACE}x`}
+                  inputClassName="w-32 !pr-0 text-13"
                   className="!rounded-4 border border-slate-600 bg-slate-800 !py-6"
                 />
               </div>
