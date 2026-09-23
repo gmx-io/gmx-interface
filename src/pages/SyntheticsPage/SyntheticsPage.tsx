@@ -68,6 +68,8 @@ import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { getOrderKeys, isOrderForPosition } from "sdk/utils/orders";
 import { SolanaFetchCard } from "solana-interface/pages/SolanaFetchCard";
 import { SolanaRpcPage } from "solana-interface/pages/SolanaRpcPage";
+import { SolanaSendCard } from "solana-interface/pages/SolanaSendCard";
+import { SolanaSignMessageCard } from "solana-interface/pages/SolanaSignMessageCard";
 import { SolanaWebSocketCard } from "solana-interface/pages/SolanaWebSocketCard";
 
 import { AppHeader } from "components/AppHeader/AppHeader";
@@ -145,10 +147,11 @@ export function SyntheticsPage(p: Props) {
       >
         {isTablet ? <ChartHeader /> : null}
         <div className="grid grid-cols-1 items-start gap-12 md:grid-cols-2 lg:grid-cols-4">
-          <section className="min-w-0 rounded-8 bg-slate-900 p-12">hello world</section>
+          <SolanaSignMessageCard />
           <SolanaRpcPage />
           <SolanaFetchCard />
           <SolanaWebSocketCard />
+          <SolanaSendCard />
         </div>
       </AppPageLayout>
     );
