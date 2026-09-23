@@ -27,7 +27,7 @@ const toastGetSnapshot = () => toast.isActive(INVALID_NETWORK_TOAST_ID);
 
 export function useRealChainIdWarning() {
   const { active: isConnected } = useWallet();
-  const { chainId: settlementChainId, isConnectedToChainId, srcChainId } = useDisplayedChainId();
+  const { chainId: settlementChainId, isConnectedToChainId, srcChainId, isSolana } = useDisplayedChainId();
   const { chainId: walletChainId } = useAccount();
 
   const isActive = useSyncExternalStore(toastSubscribe, toastGetSnapshot);
@@ -42,7 +42,7 @@ export function useRealChainIdWarning() {
   const showToastTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (!isConnectedToChainId && !isActive && isConnected && !isVerdictPending) {
+    if (!isSolana && !isConnectedToChainId && !isActive && isConnected && !isVerdictPending) {
       const timeout = setTimeout(
         () =>
           toast.error(
@@ -58,7 +58,7 @@ export function useRealChainIdWarning() {
         2000
       );
       showToastTimeout.current = timeout;
-    } else if (isConnectedToChainId || !isConnected) {
+    } else if (isSolana || isConnectedToChainId || !isConnected) {
       if (showToastTimeout.current) {
         clearTimeout(showToastTimeout.current);
       }
@@ -72,6 +72,7 @@ export function useRealChainIdWarning() {
     srcChainId,
     isSettlementChainUnreachable,
     isVerdictPending,
+    isSolana,
   ]);
 
   useEffect(() => {
