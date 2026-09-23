@@ -4,6 +4,7 @@ import { useHeroStats, type HeroStat } from "landing/pages/Home/hooks/useHeroSta
 import { shortFormat, shortFormatUsd } from "landing/pages/Home/utils/formatters";
 
 import { ChainsStatsNotices } from "components/StatsTooltip/ChainsStatsNotices";
+import { useSettled } from "components/StatsTooltip/useSettled";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import IcLinkArrow from "img/ic_link_arrow.svg?react";
@@ -23,9 +24,16 @@ function StatValue({
   format: (total: bigint) => string;
   className: string;
 }) {
+  const partial = summary.missingTitles.length > 0;
+  const settled = useSettled(!partial);
+
+  if (partial && !settled) {
+    return <div className={className}>-</div>;
+  }
+
   const text = summary.total === undefined ? "-" : format(summary.total);
 
-  if (summary.missingTitles.length === 0 && staleEntries.length === 0) {
+  if (!partial && staleEntries.length === 0) {
     return <div className={className}>{text}</div>;
   }
 
@@ -34,11 +42,7 @@ function StatValue({
       variant="none"
       tooltipClassName="!rounded-16 !p-20 !text-14 !font-medium !leading-[1.36] !text-white ![background:#3C4067] [&>svg]:!fill-[#3C4067]"
       handle={
-        <div
-          className={cx(className, "text-yellow-300 underline decoration-dotted decoration-[4%] underline-offset-8")}
-        >
-          {text}
-        </div>
+        <div className={cx(className, "underline decoration-dotted decoration-[4%] underline-offset-8")}>{text}</div>
       }
       content={
         <div className="flex max-w-[260px] flex-col gap-8">
