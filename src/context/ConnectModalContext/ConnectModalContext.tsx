@@ -12,6 +12,7 @@ import { isAppSelectedSolana } from "lib/chains/useChainIdImpl";
 import { metrics } from "lib/metrics";
 import { useBlockAutoReload } from "lib/pwa/blockAutoReload";
 import { switchNetwork } from "lib/wallets";
+import { captureEvmConnectorId, scheduleKeepEvmConnector } from "lib/wallets/privyWagmi";
 import {
   isSupportedSolanaWalletName,
   rememberSolanaWallet,
@@ -53,6 +54,7 @@ export function ConnectModalProvider({ children }: { children: ReactNode }) {
   const [settlementChainId] = useGmxAccountSettlementChainId();
   const [connectModalOpen, setConnectModalOpen] = useState(false);
   const connectRequestInFlightRef = useRef(false);
+  const evmConnectorIdRef = useRef<string | null>(null);
   const { isOpen: privyModalOpen } = useModalStatus();
   const { authenticated } = usePrivy();
 
@@ -63,14 +65,15 @@ export function ConnectModalProvider({ children }: { children: ReactNode }) {
       connectRequestInFlightRef.current = false;
       setConnectModalOpen(false);
 
-      if (params?.wallet?.type === "solana" && params.wallet.address) {
+      if (params?.wallet?.type === "solana") {
+        scheduleKeepEvmConnector(evmConnectorIdRef.current);
         const name = params.wallet.meta?.name ?? "";
-        if (!isSupportedSolanaWalletName(name)) return;
-
-        rememberSolanaWallet({
-          address: params.wallet.address,
-          name,
-        });
+        if (params.wallet.address && isSupportedSolanaWalletName(name)) {
+          rememberSolanaWallet({
+            address: params.wallet.address,
+            name,
+          });
+        }
         return;
       }
 
@@ -126,6 +129,9 @@ export function ConnectModalProvider({ children }: { children: ReactNode }) {
       connectRequestInFlightRef.current = true;
       setConnectModalOpen(true);
       const solanaSelected = readSolanaSelected();
+      if (solanaSelected) {
+        evmConnectorIdRef.current = captureEvmConnectorId();
+      }
       const walletChainType = solanaSelected ? "solana-only" : "ethereum-only";
       try {
         // login() signs SIWS after connect. Phantom connects, then that signature fails and Privy

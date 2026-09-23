@@ -6,7 +6,12 @@ import { ConnectModalProvider, useConnectModal } from "./ConnectModalContext";
 const mocks = vi.hoisted(() => ({
   authenticated: false,
   isPrivyModalOpen: false,
-  connectWalletCallbacks: undefined as undefined | { onError: (error: string) => void; onSuccess: () => void },
+  connectWalletCallbacks: undefined as
+    | undefined
+    | {
+        onError: (error: string) => void;
+        onSuccess: (params?: { wallet?: { type?: string; address?: string; meta?: { name?: string } } }) => void;
+      },
   connectWallet: vi.fn(),
   loginCallbacks: undefined as
     | undefined
@@ -14,6 +19,8 @@ const mocks = vi.hoisted(() => ({
   login: vi.fn(),
   pushError: vi.fn(),
   switchNetwork: vi.fn(() => Promise.resolve()),
+  captureEvmConnectorId: vi.fn(() => "io.metamask"),
+  scheduleKeepEvmConnector: vi.fn(),
 }));
 
 vi.mock("@privy-io/react-auth", () => ({
@@ -23,7 +30,10 @@ vi.mock("@privy-io/react-auth", () => ({
   useModalStatus: () => ({
     isOpen: mocks.isPrivyModalOpen,
   }),
-  useConnectWallet: (callbacks: { onError: (error: string) => void; onSuccess: () => void }) => {
+  useConnectWallet: (callbacks: {
+    onError: (error: string) => void;
+    onSuccess: (params?: { wallet?: { type?: string; address?: string; meta?: { name?: string } } }) => void;
+  }) => {
     mocks.connectWalletCallbacks = callbacks;
     return { connectWallet: mocks.connectWallet };
   },
@@ -52,6 +62,11 @@ vi.mock("lib/metrics", () => ({
 
 vi.mock("lib/wallets", () => ({
   switchNetwork: mocks.switchNetwork,
+}));
+
+vi.mock("lib/wallets/privyWagmi", () => ({
+  captureEvmConnectorId: mocks.captureEvmConnectorId,
+  scheduleKeepEvmConnector: mocks.scheduleKeepEvmConnector,
 }));
 
 function setup() {
@@ -172,6 +187,23 @@ describe("ConnectModalProvider", () => {
       mocks.connectWalletCallbacks?.onSuccess();
     });
 
+    expect(mocks.switchNetwork).not.toHaveBeenCalled();
+  });
+
+  it("keeps the current EVM connector when a Solana wallet connects", () => {
+    localStorage.setItem("SELECTED_NETWORK", "-1");
+    localStorage.setItem("SELECTED_NETWORK_WAS_APP_SELECTED", "true");
+    const getContext = setup();
+
+    act(() => {
+      getContext().openConnectModal?.();
+      mocks.connectWalletCallbacks?.onSuccess({
+        wallet: { type: "solana", address: "sol-address", meta: { name: "Phantom" } },
+      });
+    });
+
+    expect(mocks.captureEvmConnectorId).toHaveBeenCalled();
+    expect(mocks.scheduleKeepEvmConnector).toHaveBeenCalledWith("io.metamask");
     expect(mocks.switchNetwork).not.toHaveBeenCalled();
   });
 

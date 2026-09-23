@@ -75,7 +75,7 @@ export function getAccountModalMode(
   srcChainId: SourceChainId | undefined,
   selectedNetworkId: number = srcChainId ?? chainId
 ): AccountModalMode {
-  if (isValidVisualSourceChain(selectedNetworkId)) {
+  if (isValidVisualSourceChain(selectedNetworkId) && !isValidVisualSettlementChain(selectedNetworkId)) {
     return "gmxAccount";
   }
 
