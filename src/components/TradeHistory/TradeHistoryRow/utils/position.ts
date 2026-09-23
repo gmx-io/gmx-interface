@@ -172,8 +172,8 @@ export const formatPositionMessage = (
   const triggerPriceParts = formatUsdParts(tradeAction.triggerPrice, {
     displayDecimals: marketPriceDecimals,
     visualMultiplier: tradeAction.indexToken.visualMultiplier,
-  })!;
-  const formattedTriggerPrice = joinNumberParts(triggerPriceParts);
+  });
+  const formattedTriggerPrice = triggerPriceParts && joinNumberParts(triggerPriceParts);
   const triggerPriceDisplay = numberParts(triggerPriceInequality, triggerPriceParts);
 
   const action = getActionTitle(

@@ -687,6 +687,20 @@ describe("TradeHistoryRow helpers", () => {
     `);
   });
 
+  it("formatPositionMessage tolerates actions without a trigger price", () => {
+    const withoutTriggerPrice = (action: PositionTradeAction): PositionTradeAction => ({
+      ...action,
+      triggerPrice: undefined,
+    });
+
+    expect(formatPositionMessage(withoutTriggerPrice(requestIncreasePosition), minCollateralUsd).price).toEqual(
+      formatPositionMessage(requestIncreasePosition, minCollateralUsd).price
+    );
+    expect(formatPositionMessage(withoutTriggerPrice(liquidated), minCollateralUsd).action).toBe(
+      formatPositionMessage(liquidated, minCollateralUsd).action
+    );
+  });
+
   it("formatSwapMessage", () => {
     // MARKET SWAPS
     expect(formatSwapMessage(requestSwap)).toMatchInlineSnapshot(`
