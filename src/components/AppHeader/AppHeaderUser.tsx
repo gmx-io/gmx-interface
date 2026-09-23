@@ -6,6 +6,7 @@ import { useChainId } from "lib/chains";
 import { sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
 import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import useWallet from "lib/wallets/useWallet";
+import { useSolanaWallet } from "solana-interface/wallet/useSolanaWallet";
 
 import { SettingsButton } from "components/SettingsButton/SettingsButton";
 
@@ -20,9 +21,13 @@ type Props = {
 };
 
 export function AppHeaderUser({ openSettings, menuToggle }: Props) {
-  const { selectedNetworkId } = useChainId();
-  const { active, account } = useWallet();
-  const isWalletInitializing = useIsWalletInitializing();
+  const { selectedNetworkId, isSolana } = useChainId();
+  const evmWallet = useWallet();
+  const solanaWallet = useSolanaWallet();
+  const account = isSolana ? solanaWallet.address : evmWallet.account;
+  const active = isSolana ? Boolean(solanaWallet.address) : evmWallet.active;
+  const evmWalletInitializing = useIsWalletInitializing();
+  const isWalletInitializing = isSolana ? !solanaWallet.ready && solanaWallet.hasRemembered : evmWalletInitializing;
   const { openConnectModal } = useConnectModal();
 
   if (!active || !account) {

@@ -38,6 +38,7 @@ export const PRIVY_WALLET_LIST = [
   "okx_wallet",
   "phantom",
   "wallet_connect",
+  "detected_solana_wallets",
 ] as const;
 
 export const PRIVY_LOGIN_METHODS = ["wallet", "email", "google", "twitter", "discord", "passkey"] as const;

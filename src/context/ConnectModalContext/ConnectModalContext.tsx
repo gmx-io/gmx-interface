@@ -1,4 +1,4 @@
-import { useConnectOrCreateWallet, useConnectWallet, useModalStatus, usePrivy } from "@privy-io/react-auth";
+import { useConnectWallet, useLogin, useModalStatus, usePrivy, type WalletListEntry } from "@privy-io/react-auth";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 import type { SettlementChainId } from "config/chains";
@@ -8,12 +8,22 @@ import {
 } from "config/localStorage";
 import { isSourceChain } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
+import { isAppSelectedSolana } from "lib/chains/useChainIdImpl";
 import { metrics } from "lib/metrics";
 import { useBlockAutoReload } from "lib/pwa/blockAutoReload";
 import { switchNetwork } from "lib/wallets";
+import {
+  isSupportedSolanaWalletName,
+  rememberSolanaWallet,
+  SOLANA_CONNECT_WALLET_LIST,
+} from "solana-interface/wallet/solanaWalletSession";
+
+export type ConnectModalOptions = {
+  preSelectedWalletId?: string;
+};
 
 export type ConnectModalContextValue = {
-  openConnectModal: (() => void) | undefined;
+  openConnectModal: ((options?: ConnectModalOptions) => void) | undefined;
   connectModalOpen: boolean;
 };
 
@@ -21,6 +31,14 @@ export const ConnectModalContext = createContext<ConnectModalContextValue>({
   openConnectModal: undefined,
   connectModalOpen: false,
 });
+
+function readSolanaSelected() {
+  const rawChainId = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
+  return isAppSelectedSolana({
+    chainIdFromLocalStorage: rawChainId ? Number(rawChainId) : undefined,
+    selectedNetworkWasAppSelected: localStorage.getItem(SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY) === "true",
+  });
+}
 
 function shouldKeepAppSelectedSourceChain(settlementChainId: SettlementChainId) {
   const rawChainIdFromLocalStorage = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
@@ -40,27 +58,46 @@ export function ConnectModalProvider({ children }: { children: ReactNode }) {
 
   useBlockAutoReload(connectModalOpen || privyModalOpen);
 
-  const handleSuccess = useCallback(() => {
-    connectRequestInFlightRef.current = false;
-    setConnectModalOpen(false);
+  const handleSuccess = useCallback(
+    (params?: { wallet?: { type?: string; address?: string; meta?: { name?: string } } }) => {
+      connectRequestInFlightRef.current = false;
+      setConnectModalOpen(false);
 
-    // @privy-io/wagmi already handles this callback by setting recentConnectorId
-    // and reconnecting wagmi. Calling setActiveWallet here can re-enter wagmi connect.
-    if (shouldKeepAppSelectedSourceChain(settlementChainId)) {
-      return;
-    }
+      if (params?.wallet?.type === "solana" && params.wallet.address) {
+        const name = params.wallet.meta?.name ?? "";
+        if (!isSupportedSolanaWalletName(name)) return;
 
-    void switchNetwork(settlementChainId, true).catch((error) => {
-      metrics.pushError(error, "connectModal.switchNetwork");
-    });
-  }, [settlementChainId]);
+        rememberSolanaWallet({
+          address: params.wallet.address,
+          name,
+        });
+        return;
+      }
 
-  const { connectOrCreateWallet } = useConnectOrCreateWallet({
-    onSuccess: handleSuccess,
+      if (readSolanaSelected()) return;
+
+      // @privy-io/wagmi already handles this callback by setting recentConnectorId
+      // and reconnecting wagmi. Calling setActiveWallet here can re-enter wagmi connect.
+      if (shouldKeepAppSelectedSourceChain(settlementChainId)) {
+        return;
+      }
+
+      void switchNetwork(settlementChainId, true).catch((error) => {
+        metrics.pushError(error, "connectModal.switchNetwork");
+      });
+    },
+    [settlementChainId]
+  );
+
+  const { login } = useLogin({
+    onComplete: ({ wasAlreadyAuthenticated }) => {
+      if (wasAlreadyAuthenticated) return;
+      handleSuccess();
+    },
     onError: (error) => {
       connectRequestInFlightRef.current = false;
       setConnectModalOpen(false);
-      metrics.pushError(error, "connectModal.connectOrCreateWallet");
+      metrics.pushError(error, "connectModal.login");
     },
   });
   const { connectWallet } = useConnectWallet({
@@ -79,27 +116,37 @@ export function ConnectModalProvider({ children }: { children: ReactNode }) {
     }
   }, [privyModalOpen]);
 
-  const openConnectModal = useCallback(() => {
-    // MetaMask rejects duplicate connection requests while the first one is pending.
-    if (connectRequestInFlightRef.current) {
-      return;
-    }
-
-    connectRequestInFlightRef.current = true;
-    setConnectModalOpen(true);
-    try {
-      // Privy rejects connectOrCreateWallet for already-authenticated sessions.
-      if (authenticated) {
-        connectWallet();
-      } else {
-        connectOrCreateWallet();
+  const openConnectModal = useCallback(
+    (options?: ConnectModalOptions) => {
+      // MetaMask rejects duplicate connection requests while the first one is pending.
+      if (connectRequestInFlightRef.current) {
+        return;
       }
-    } catch (error) {
-      connectRequestInFlightRef.current = false;
-      setConnectModalOpen(false);
-      metrics.pushError(error, "connectModal.open");
-    }
-  }, [authenticated, connectOrCreateWallet, connectWallet]);
+
+      connectRequestInFlightRef.current = true;
+      setConnectModalOpen(true);
+      const solanaSelected = readSolanaSelected();
+      const walletChainType = solanaSelected ? "solana-only" : "ethereum-only";
+      try {
+        // login() signs SIWS after connect. Phantom connects, then that signature fails and Privy
+        // still shows "Could not log in with wallet". Solana only needs the connected wallet.
+        if (solanaSelected || authenticated) {
+          connectWallet({
+            walletChainType,
+            ...(solanaSelected ? { walletList: [...SOLANA_CONNECT_WALLET_LIST] as WalletListEntry[] } : {}),
+            ...(options?.preSelectedWalletId ? { preSelectedWalletId: options.preSelectedWalletId } : {}),
+          });
+        } else {
+          login({ walletChainType });
+        }
+      } catch (error) {
+        connectRequestInFlightRef.current = false;
+        setConnectModalOpen(false);
+        metrics.pushError(error, "connectModal.open");
+      }
+    },
+    [authenticated, connectWallet, login]
+  );
 
   const value = useMemo(() => ({ openConnectModal, connectModalOpen }), [openConnectModal, connectModalOpen]);
 
