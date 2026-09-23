@@ -6,6 +6,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 
 import { isIOS } from "lib/headlessUiIsMobile";
+import { initializeI18n } from "lib/i18n";
 
 import App from "./App";
 import { captureLandingReferralCode } from "./utils/referralCode";
@@ -20,8 +21,10 @@ if ("TelegramWebviewProxy" in window && isIOS()) {
   document.documentElement.classList.add("telegram-browser");
 }
 
-createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+void initializeI18n().then(() => {
+  createRoot(document.getElementById("root")!).render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
+});
