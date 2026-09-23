@@ -1,6 +1,6 @@
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
 import { bigMath } from "utils/bigmath";
-import { DecreasePositionSwapType } from "utils/orders/types";
+import { DecreasePositionSwapType, OrderType } from "utils/orders/types";
 import { getShouldUseMaxPrice } from "utils/prices";
 import {
   DecreasePositionAmounts,
@@ -77,3 +77,15 @@ export const createTradeFlags = (tradeType: TradeType, tradeMode: TradeMode): Tr
 
   return tradeFlags;
 };
+
+export function getLimitOrderTypeByTradeMode(tradeMode: TradeMode) {
+  if (tradeMode === TradeMode.Limit) {
+    return OrderType.LimitIncrease;
+  }
+
+  if (tradeMode === TradeMode.StopMarket) {
+    return OrderType.StopIncrease;
+  }
+
+  return undefined;
+}

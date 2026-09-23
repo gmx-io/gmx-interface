@@ -5,6 +5,7 @@ import { USD_DECIMALS } from "configs/factors";
 import { mockMarketsInfoData, mockTokensData, usdToToken } from "test/mock";
 import {
   getFundingFactorPerPeriod,
+  getPositionFee,
   getPriceImpactForPosition,
   getPriceImpactForSwap,
   getPriceImpactUsd,
@@ -427,5 +428,53 @@ describe("position price impact", () => {
         -100n * dollar
       )
     ).toEqual(expected);
+  });
+});
+
+describe("getPositionFee", () => {
+  // 0.1% of 100 000 → 100 of opening fee
+  const marketInfo = {
+    positionFeeFactorForBalanceWasImproved: toFactor("0.05%"),
+    positionFeeFactorForBalanceWasNotImproved: toFactor("0.1%"),
+  } as MarketInfo;
+
+  const sizeDeltaUsd = 100_000n * dollar;
+  // 10% of the fee is rebated, half of it goes back to the trader → 5 of discount
+  const referralInfo = { totalRebateFactor: toFactor("10%"), discountFactor: toFactor("50%") };
+
+  it("keeps the referral discount when no pro tier is set", () => {
+    const noPro = getPositionFee(marketInfo, sizeDeltaUsd, false, referralInfo);
+    const zeroPro = getPositionFee(marketInfo, sizeDeltaUsd, false, referralInfo, undefined, 0n);
+
+    expect(noPro.discountUsd).toBe(5n * dollar);
+    expect(noPro.positionFeeUsd).toBe(95n * dollar);
+    expect(zeroPro).toEqual(noPro);
+  });
+
+  it("takes the bigger of the pro and referral discounts, never their sum", () => {
+    const bigPro = getPositionFee(marketInfo, sizeDeltaUsd, false, referralInfo, undefined, toFactor("10%"));
+
+    expect(bigPro.discountUsd).toBe(10n * dollar);
+    expect(bigPro.positionFeeUsd).toBe(90n * dollar);
+
+    const smallPro = getPositionFee(marketInfo, sizeDeltaUsd, false, referralInfo, undefined, toFactor("3%"));
+
+    expect(smallPro.discountUsd).toBe(5n * dollar);
+    expect(smallPro.positionFeeUsd).toBe(95n * dollar);
+  });
+
+  it("is indifferent when the pro discount equals the referral one", () => {
+    const equalPro = getPositionFee(marketInfo, sizeDeltaUsd, false, referralInfo, undefined, toFactor("5%"));
+
+    expect(equalPro.discountUsd).toBe(5n * dollar);
+    expect(equalPro.positionFeeUsd).toBe(95n * dollar);
+  });
+
+  it("applies the pro discount without a referral code", () => {
+    const proOnly = getPositionFee(marketInfo, sizeDeltaUsd, false, undefined, undefined, toFactor("10%"));
+
+    expect(proOnly.totalRebateUsd).toBe(0n);
+    expect(proOnly.discountUsd).toBe(10n * dollar);
+    expect(proOnly.positionFeeUsd).toBe(90n * dollar);
   });
 });

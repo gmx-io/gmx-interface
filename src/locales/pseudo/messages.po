@@ -1521,6 +1521,7 @@ msgstr ""
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop-Loss"
@@ -2078,6 +2079,7 @@ msgstr ""
 msgid "Received at close (GMX balance)"
 msgstr ""
 
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "Size (% of position)"
 msgstr ""
@@ -3609,6 +3611,9 @@ msgid "Theme"
 msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
@@ -3738,6 +3743,7 @@ msgstr "Failed to load trade history"
 msgid "<0>Set recommended impact: {0}</0>."
 msgstr ""
 
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Position would be liquidated immediately upon execution. Reduce the size."
 msgstr ""
@@ -3772,6 +3778,7 @@ msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -4019,6 +4026,7 @@ msgid "This trigger price is beyond the current liquidation price. Your position
 msgstr ""
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
@@ -4160,7 +4168,7 @@ msgstr ""
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
 msgstr ""
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Margin is below the minimum required for the position size"
 msgstr ""
 
@@ -4992,6 +5000,7 @@ msgid "{gmOrGlvLabel} bought successfully, but bridge to {0} failed. Your funds 
 msgstr ""
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionItem/PositionItemOrders.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -5480,10 +5489,6 @@ msgstr ""
 
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Fail external swaps"
-msgstr ""
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute: the resulting position would exceed the maximum allowed leverage. <0>Deposit margin</0> or reduce the order size before it triggers."
 msgstr ""
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
@@ -6345,10 +6350,6 @@ msgstr ""
 msgid "Stop-Loss price"
 msgstr ""
 
-#: src/components/OrderEditor/OrderEditor.tsx
-msgid "No valid leverage available"
-msgstr ""
-
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "swap amount"
 msgstr ""
@@ -6359,10 +6360,6 @@ msgstr ""
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{updateOrdersCount} TP/SL orders updated"
-msgstr ""
-
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Insufficient margin. Add more margin"
 msgstr ""
 
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
@@ -6496,6 +6493,10 @@ msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "ACTIONS"
+msgstr ""
+
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Order exceeds max leverage. Reduce the size."
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6706,6 +6707,10 @@ msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesPromoCard.tsx
 msgid "Activate someone's referral code to receive a permanent discount on all opening and closing <0/> fees. Your savings apply automatically on every trade. <1>Read more</1>."
+msgstr ""
+
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "This order may fail to execute because the resulting position would exceed the maximum allowed leverage. Increase the position's margin or reduce the order size before it triggers."
 msgstr ""
 
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
@@ -7993,6 +7998,10 @@ msgstr ""
 msgid "No open positions"
 msgstr ""
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The position cannot be increased at the current leverage. Increase margin or reduce size. Current margin: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
+msgstr ""
+
 #: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
 msgid "See the perks"
 msgstr ""
@@ -8465,10 +8474,6 @@ msgstr ""
 msgid "24h low"
 msgstr ""
 
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Insufficient margin. Add {missingCollateralUsdText} more margin"
-msgstr ""
-
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claim <0>{0}</0> of <1>{1}</1>"
 msgstr ""
@@ -8558,10 +8563,6 @@ msgstr ""
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Edit"
-msgstr ""
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "No available leverage found"
 msgstr ""
 
 #: src/pages/Dashboard/GmxCard.tsx
@@ -8727,6 +8728,10 @@ msgstr ""
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Built for those<0/>who do more."
+msgstr ""
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Max leverage exceeded. Increase margin or reduce size"
 msgstr ""
 
 #: src/components/BridgingInfo/BridgingInfo.tsx
@@ -8916,6 +8921,10 @@ msgstr ""
 msgid "Trade errors"
 msgstr ""
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This order may fail to execute because the resulting position would exceed the maximum allowed leverage. <0>Increase the position's margin</0> or reduce the order size before it triggers."
+msgstr ""
+
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to and withdrawing from GMX Account..."
 msgstr ""
@@ -8926,6 +8935,10 @@ msgstr ""
 
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "SHORT LIQ."
+msgstr ""
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Max leverage exceeded. Remaining margin {remainingCollateralUsdText} is below the minimum for the position size. Increase margin or reduce size"
 msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
@@ -9400,6 +9413,10 @@ msgstr ""
 msgid "This position's margin is below the minimum required for its size, so settlement will fail. Add margin, or close the position. Closing settles the funding automatically."
 msgstr ""
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The position cannot be increased at the current leverage. Increase margin or reduce size."
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max funding factor (long)"
 msgstr ""
@@ -9872,6 +9889,10 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Margin is below the minimum required for the position size. Current: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
+msgstr ""
+
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (TWAP)"
 msgstr ""
@@ -10155,6 +10176,12 @@ msgstr ""
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short funding rate"
+msgstr ""
+
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "The resulting position would exceed the maximum allowed leverage. Increase margin or reduce size."
 msgstr ""
 
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -11645,6 +11672,7 @@ msgid "Cancellable in ..."
 msgstr ""
 
 #: src/components/Seo/SEO.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "GMX | decentralized perpetual exchange"
 msgstr ""
 
@@ -11688,6 +11716,8 @@ msgstr ""
 msgid "Token permit testing"
 msgstr ""
 
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -12695,6 +12725,7 @@ msgstr ""
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take-Profit"

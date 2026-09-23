@@ -82,9 +82,6 @@ function createState(subaccount: Subaccount | undefined, srcChainId?: SourceChai
       relayRouterEnabled: true,
       subaccountRelayRouterEnabled: true,
     },
-    sponsoredCallBalanceData: {
-      isSponsoredCallAllowed: true,
-    },
     subaccountState: {
       subaccount,
     },
