@@ -1890,7 +1890,6 @@ msgstr "トレーダーとアフィリエイトを両方兼ねることはでき
 msgid "Base APY"
 msgstr "ベースAPY"
 
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
 #: landing/src/pages/Rewards/RewardsEpochSummary.tsx
 msgid "Previous epoch totals are temporarily unavailable."
 msgstr "前のエポックの合計は一時的に利用できません。"
@@ -3603,7 +3602,6 @@ msgstr "別のチェーンから転送"
 msgid "Take-Profit / Stop-Loss"
 msgstr "テイクプロフィット / ストップロス"
 
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
 #: landing/src/pages/Rewards/RewardsEpochSummary.tsx
 msgid "The first epoch is under way"
 msgstr "最初のエポックが進行中です"
@@ -3828,10 +3826,6 @@ msgstr "資金手数料の請求に失敗しました"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "TVL"
 msgstr "TVL"
-
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
-msgid "{payout} returned to {wallets} last week"
-msgstr "先週、{wallets}に{payout}を還元"
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "For large traders"
@@ -9686,10 +9680,6 @@ msgstr "過去7日"
 msgid "Net rate"
 msgstr "ネットレート"
 
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
-msgid "next payout {nextPayout}"
-msgstr "次回の支払い：{nextPayout}"
-
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Invalid transfer addresses. Check the URL."
 msgstr "送金アドレスが無効です。URLをご確認ください。"
@@ -11870,10 +11860,6 @@ msgstr "無効な受取人アドレス"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Express transaction data is still loading. Please retry in a few seconds."
 msgstr "Express トランザクションのデータを読み込み中です。数秒後に再度お試しください。"
-
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
-msgid "{0, plural, one {# wallet} other {# wallets}}"
-msgstr "{0, plural, other {#個のウォレット}}"
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx

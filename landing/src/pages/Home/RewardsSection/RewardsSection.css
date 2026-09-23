@@ -38,17 +38,6 @@
   line-height: 20px;
   letter-spacing: -0.032em;
 }
-.home-rewards-status {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px 10px;
-  max-width: 570px;
-  margin-top: 24px;
-  color: #a0a3c4;
-  font-size: 14px;
-  line-height: 19px;
-}
 .home-rewards-art {
   position: absolute;
   top: calc(50% - 55px);
@@ -248,11 +237,6 @@
     height: 56px;
     font-size: 18px;
     line-height: 24px;
-  }
-}
-@media (max-width: 900px) {
-  .home-rewards-status {
-    display: none;
   }
 }
 @media (max-width: 640px) {

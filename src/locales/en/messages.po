@@ -1890,7 +1890,6 @@ msgstr "Can I be both a trader and an affiliate?"
 msgid "Base APY"
 msgstr "Base APY"
 
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
 #: landing/src/pages/Rewards/RewardsEpochSummary.tsx
 msgid "Previous epoch totals are temporarily unavailable."
 msgstr "Previous epoch totals are temporarily unavailable."
@@ -3603,7 +3602,6 @@ msgstr "Transfer from another chain"
 msgid "Take-Profit / Stop-Loss"
 msgstr "Take-Profit / Stop-Loss"
 
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
 #: landing/src/pages/Rewards/RewardsEpochSummary.tsx
 msgid "The first epoch is under way"
 msgstr "The first epoch is under way"
@@ -3828,10 +3826,6 @@ msgstr "Claiming funding fees failed"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "TVL"
 msgstr "TVL"
-
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
-msgid "{payout} returned to {wallets} last week"
-msgstr "{payout} returned to {wallets} last week"
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "For large traders"
@@ -9686,10 +9680,6 @@ msgstr "Last 7d"
 msgid "Net rate"
 msgstr "Net rate"
 
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
-msgid "next payout {nextPayout}"
-msgstr "next payout {nextPayout}"
-
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Invalid transfer addresses. Check the URL."
 msgstr "Invalid transfer addresses. Check the URL."
@@ -11870,10 +11860,6 @@ msgstr "Invalid recipient address"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Express transaction data is still loading. Please retry in a few seconds."
 msgstr "Express transaction data is still loading. Please retry in a few seconds."
-
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
-msgid "{0, plural, one {# wallet} other {# wallets}}"
-msgstr "{0, plural, one {# wallet} other {# wallets}}"
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx

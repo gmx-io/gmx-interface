@@ -1890,7 +1890,6 @@ msgstr "트레이더와 제휴사를 동시에 겸할 수 있나요?"
 msgid "Base APY"
 msgstr "기본 APY"
 
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
 #: landing/src/pages/Rewards/RewardsEpochSummary.tsx
 msgid "Previous epoch totals are temporarily unavailable."
 msgstr "이전 에포크 합계를 일시적으로 불러올 수 없습니다."
@@ -3603,7 +3602,6 @@ msgstr "다른 체인에서 전송"
 msgid "Take-Profit / Stop-Loss"
 msgstr "익절매 / 손절매"
 
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
 #: landing/src/pages/Rewards/RewardsEpochSummary.tsx
 msgid "The first epoch is under way"
 msgstr "첫 번째 에포크가 진행 중입니다"
@@ -3828,10 +3826,6 @@ msgstr "펀딩 수수료 청구 실패"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "TVL"
 msgstr "TVL"
-
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
-msgid "{payout} returned to {wallets} last week"
-msgstr "지난주 {wallets}에 {payout} 지급"
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "For large traders"
@@ -9686,10 +9680,6 @@ msgstr "최근 7일"
 msgid "Net rate"
 msgstr "순 비율"
 
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
-msgid "next payout {nextPayout}"
-msgstr "다음 지급: {nextPayout}"
-
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Invalid transfer addresses. Check the URL."
 msgstr "전송 주소가 유효하지 않습니다. URL을 확인하십시오."
@@ -11870,10 +11860,6 @@ msgstr "유효하지 않은 수신자 주소"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Express transaction data is still loading. Please retry in a few seconds."
 msgstr "Express 거래 데이터를 아직 불러오는 중입니다. 몇 초 후에 다시 시도해 주세요."
-
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
-msgid "{0, plural, one {# wallet} other {# wallets}}"
-msgstr "{0, plural, other {지갑 #개}}"
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx

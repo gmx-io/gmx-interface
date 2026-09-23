@@ -1890,7 +1890,6 @@ msgstr "¿Puedo ser trader y afiliado a la vez?"
 msgid "Base APY"
 msgstr "APY Base"
 
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
 #: landing/src/pages/Rewards/RewardsEpochSummary.tsx
 msgid "Previous epoch totals are temporarily unavailable."
 msgstr "Los totales de la época anterior no están disponibles temporalmente."
@@ -3603,7 +3602,6 @@ msgstr "Transferir desde otra cadena"
 msgid "Take-Profit / Stop-Loss"
 msgstr "Take-Profit / Stop-Loss"
 
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
 #: landing/src/pages/Rewards/RewardsEpochSummary.tsx
 msgid "The first epoch is under way"
 msgstr "La primera época está en curso"
@@ -3828,10 +3826,6 @@ msgstr "Falló la reclamación de tarifas de funding"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "TVL"
 msgstr "TVL"
-
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
-msgid "{payout} returned to {wallets} last week"
-msgstr "{payout} devueltos a {wallets} la semana pasada"
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "For large traders"
@@ -9686,10 +9680,6 @@ msgstr "Últimos 7d"
 msgid "Net rate"
 msgstr "Tasa neta"
 
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
-msgid "next payout {nextPayout}"
-msgstr "próximo pago: {nextPayout}"
-
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Invalid transfer addresses. Check the URL."
 msgstr "Direcciones de transferencia no válidas. Verifique la URL."
@@ -11870,10 +11860,6 @@ msgstr "Dirección del destinatario no válida"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Express transaction data is still loading. Please retry in a few seconds."
 msgstr "Los datos de la transacción Express aún se están cargando. Inténtelo de nuevo en unos segundos."
-
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
-msgid "{0, plural, one {# wallet} other {# wallets}}"
-msgstr "{0, plural, one {# cartera} other {# carteras}}"
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx

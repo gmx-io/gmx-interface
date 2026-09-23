@@ -1890,7 +1890,6 @@ msgstr "Puis-je être à la fois trader et affilié ?"
 msgid "Base APY"
 msgstr "APY de base"
 
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
 #: landing/src/pages/Rewards/RewardsEpochSummary.tsx
 msgid "Previous epoch totals are temporarily unavailable."
 msgstr "Les totaux de la dernière époque sont temporairement indisponibles."
@@ -3603,7 +3602,6 @@ msgstr "Transférer depuis une autre chaîne"
 msgid "Take-Profit / Stop-Loss"
 msgstr "Take-Profit / Stop-Loss"
 
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
 #: landing/src/pages/Rewards/RewardsEpochSummary.tsx
 msgid "The first epoch is under way"
 msgstr "La première époque est en cours"
@@ -3828,10 +3826,6 @@ msgstr "Échec de la réclamation des frais de financement"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "TVL"
 msgstr "TVL"
-
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
-msgid "{payout} returned to {wallets} last week"
-msgstr "{payout} reversés à {wallets} la semaine dernière"
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "For large traders"
@@ -9686,10 +9680,6 @@ msgstr "Derniers 7j"
 msgid "Net rate"
 msgstr "Taux net"
 
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
-msgid "next payout {nextPayout}"
-msgstr "prochain versement : {nextPayout}"
-
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Invalid transfer addresses. Check the URL."
 msgstr "Adresses de transfert invalides. Vérifiez l'URL."
@@ -11870,10 +11860,6 @@ msgstr "Adresse du destinataire invalide"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Express transaction data is still loading. Please retry in a few seconds."
 msgstr "Les données de la transaction Express sont encore en cours de chargement. Veuillez réessayer dans quelques secondes."
-
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
-msgid "{0, plural, one {# wallet} other {# wallets}}"
-msgstr "{0, plural, one {# portefeuille} other {# portefeuilles}}"
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx

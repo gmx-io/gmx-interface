@@ -1,12 +1,9 @@
-import { Plural, Trans } from "@lingui/macro";
-import { useLingui } from "@lingui/react";
+import { Trans } from "@lingui/macro";
 import { Link } from "react-router-dom";
 
 import { ARBITRUM } from "config/chains";
 import { useIncentivesConfig } from "domain/synthetics/incentives/v2/useIncentivesConfig";
-import { useIncentivesEpochStats } from "domain/synthetics/incentives/v2/useIncentivesEpochStats";
 import { formatFactorPercentage, getMaxRewardRateFactor } from "domain/synthetics/incentives/v2/utils";
-import { formatUsd } from "lib/numbers";
 import type { LandingPageRewardsClickEvent } from "lib/userAnalytics/types";
 import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
 
@@ -17,26 +14,8 @@ import { RewardsValue } from "../../Rewards/RewardsValue";
 import "./RewardsSection.css";
 
 export function RewardsSection() {
-  const { i18n } = useLingui();
   const config = useIncentivesConfig(ARBITRUM);
-  const stats = useIncentivesEpochStats(config.endpoint, config.data);
   const loading = config.loading || config.isValidating;
-  const nextPayout = config.data
-    ? new Date((config.data.epochTimestamp + config.data.epochDuration) * 1000).toLocaleDateString(i18n.locale, {
-        weekday: "long",
-        timeZone: "UTC",
-      })
-    : undefined;
-  const payout = (
-    <RewardsValue loading={loading || stats.isLoading}>
-      {stats.data ? formatUsd(stats.data.rewardsUsd, { displayDecimals: 0 }) : undefined}
-    </RewardsValue>
-  );
-  const wallets = stats.data ? (
-    <Plural value={stats.data.traderCount} one="# wallet" other="# wallets" />
-  ) : (
-    <RewardsValue loading={loading || stats.isLoading} width="8ch" />
-  );
 
   function openRewards() {
     userAnalytics.pushEvent<LandingPageRewardsClickEvent>(
@@ -60,28 +39,6 @@ export function RewardsSection() {
           <Link className="btn-landing home-rewards-button" to="/rewards" onClick={openRewards}>
             <Trans>Check my multiplier</Trans>
           </Link>
-          <div className="home-rewards-status">
-            {nextPayout && (
-              <>
-                <span>
-                  <Trans>next payout {nextPayout}</Trans>
-                </span>
-                <span aria-hidden="true">·</span>
-              </>
-            )}
-            <span>
-              {config.data &&
-              config.data.epochTimestamp - config.data.epochDuration < config.data.programStartTimestamp ? (
-                <Trans>The first epoch is under way</Trans>
-              ) : stats.error && !stats.data ? (
-                <Trans>Previous epoch totals are temporarily unavailable.</Trans>
-              ) : (
-                <Trans>
-                  {payout} returned to {wallets} last week
-                </Trans>
-              )}
-            </span>
-          </div>
         </div>
         <div className="home-rewards-art">
           <RewardsOrbit />

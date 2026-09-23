@@ -1890,7 +1890,6 @@ msgstr "我可以同时是交易者和联盟伙伴吗？"
 msgid "Base APY"
 msgstr "基础 APY"
 
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
 #: landing/src/pages/Rewards/RewardsEpochSummary.tsx
 msgid "Previous epoch totals are temporarily unavailable."
 msgstr "暂时无法获取上一周期的总额。"
@@ -3603,7 +3602,6 @@ msgstr "从其他链转账"
 msgid "Take-Profit / Stop-Loss"
 msgstr "止盈 / 止损"
 
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
 #: landing/src/pages/Rewards/RewardsEpochSummary.tsx
 msgid "The first epoch is under way"
 msgstr "首个周期正在进行中"
@@ -3828,10 +3826,6 @@ msgstr "申领资金费用失败"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "TVL"
 msgstr "TVL"
-
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
-msgid "{payout} returned to {wallets} last week"
-msgstr "上周向{wallets}返还了 {payout}"
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "For large traders"
@@ -9686,10 +9680,6 @@ msgstr "过去 7 天"
 msgid "Net rate"
 msgstr "净费率"
 
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
-msgid "next payout {nextPayout}"
-msgstr "下次发放：{nextPayout}"
-
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Invalid transfer addresses. Check the URL."
 msgstr "转账地址无效。请检查 URL。"
@@ -11870,10 +11860,6 @@ msgstr "接收地址无效"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Express transaction data is still loading. Please retry in a few seconds."
 msgstr "Express 交易数据仍在加载中。请几秒后重试。"
-
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
-msgid "{0, plural, one {# wallet} other {# wallets}}"
-msgstr "{0, plural, other {# 个钱包}}"
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx

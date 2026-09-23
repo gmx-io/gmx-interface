@@ -1890,7 +1890,6 @@ msgstr ""
 msgid "Base APY"
 msgstr ""
 
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
 #: landing/src/pages/Rewards/RewardsEpochSummary.tsx
 msgid "Previous epoch totals are temporarily unavailable."
 msgstr ""
@@ -3603,7 +3602,6 @@ msgstr ""
 msgid "Take-Profit / Stop-Loss"
 msgstr ""
 
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
 #: landing/src/pages/Rewards/RewardsEpochSummary.tsx
 msgid "The first epoch is under way"
 msgstr ""
@@ -3827,10 +3825,6 @@ msgstr ""
 #: src/components/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "TVL"
-msgstr ""
-
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
-msgid "{payout} returned to {wallets} last week"
 msgstr ""
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
@@ -9686,10 +9680,6 @@ msgstr ""
 msgid "Net rate"
 msgstr ""
 
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
-msgid "next payout {nextPayout}"
-msgstr ""
-
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Invalid transfer addresses. Check the URL."
 msgstr ""
@@ -11869,10 +11859,6 @@ msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Express transaction data is still loading. Please retry in a few seconds."
-msgstr ""
-
-#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
-msgid "{0, plural, one {# wallet} other {# wallets}}"
 msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
