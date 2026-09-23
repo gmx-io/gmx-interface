@@ -3,27 +3,22 @@ export type RememberedSolanaWallet = {
   name: string;
 };
 
-export type SolanaWalletCandidate = RememberedSolanaWallet & {
-  embedded: boolean;
-};
-
 export type SolanaSessionAction =
   | { type: "select"; wallet: RememberedSolanaWallet }
-  | { type: "disconnect"; wallet: RememberedSolanaWallet }
-  | { type: "createEmbedded" }
   | { type: "openConnect"; preSelectedWalletId?: string }
   | { type: "none" };
 
 const REMEMBERED_SOLANA_WALLET_KEY = "remembered-solana-wallet";
-const SUPPRESSED_SOLANA_WALLET_KEY = "suppressed-solana-wallet";
 
-const SOCIAL_LOGIN_TYPES = new Set(["email", "google_oauth", "twitter_oauth", "discord_oauth", "passkey"]);
+// Privy matches these ids by normalized wallet name. TokenPocket is not in Privy's typed wallet list.
+const SOLANA_WALLETS = [
+  { id: "phantom", evmClientTypes: ["phantom"], match: "phantom" },
+  { id: "solflare", evmClientTypes: ["solflare"], match: "solflare" },
+  { id: "okx_wallet", evmClientTypes: ["okx_wallet", "okx"], match: "okx" },
+  { id: "tokenpocket", evmClientTypes: ["tokenpocket", "token_pocket"], match: "tokenpocket" },
+] as const;
 
-const DUAL_CHAIN_WALLETS = [
-  { evmClientTypes: ["phantom"], names: ["phantom"], preSelectedWalletId: "phantom" },
-  { evmClientTypes: ["okx_wallet", "okx"], names: ["okx"], preSelectedWalletId: "okx_wallet" },
-  { evmClientTypes: ["coinbase_wallet"], names: ["coinbase"], preSelectedWalletId: "coinbase_wallet" },
-];
+export const SOLANA_CONNECT_WALLET_LIST = SOLANA_WALLETS.map((wallet) => wallet.id);
 
 const listeners = new Set<() => void>();
 let rememberedRaw: string | null | undefined;
@@ -38,8 +33,13 @@ export function subscribeSolanaWalletStore(listener: () => void) {
   return () => listeners.delete(listener);
 }
 
-export function isSocialLogin(accountTypes: readonly string[]) {
-  return accountTypes.some((accountType) => SOCIAL_LOGIN_TYPES.has(accountType));
+function walletIdForName(name: string) {
+  const normalized = name.toLowerCase().replace(/[\s_-]/g, "");
+  return SOLANA_WALLETS.find((wallet) => normalized.includes(wallet.match))?.id;
+}
+
+export function isSupportedSolanaWalletName(name: string) {
+  return walletIdForName(name) !== undefined;
 }
 
 export function readRememberedSolanaWallet(): RememberedSolanaWallet | null {
@@ -91,32 +91,10 @@ export function clearRememberedSolanaWallet() {
   emitSolanaWalletStore();
 }
 
-export function readSuppressedSolanaWallet() {
-  return localStorage.getItem(SUPPRESSED_SOLANA_WALLET_KEY);
-}
-
-export function suppressSolanaWallet(address: string) {
-  if (readSuppressedSolanaWallet() === address) return;
-  localStorage.setItem(SUPPRESSED_SOLANA_WALLET_KEY, address);
-  emitSolanaWalletStore();
-}
-
-export function clearSuppressedSolanaWallet() {
-  if (localStorage.getItem(SUPPRESSED_SOLANA_WALLET_KEY) === null) return;
-  localStorage.removeItem(SUPPRESSED_SOLANA_WALLET_KEY);
-  emitSolanaWalletStore();
-}
-
-function dualChainWallet(evmWalletClientType: string | undefined) {
+function walletForEvm(evmWalletClientType: string | undefined) {
   if (!evmWalletClientType) return undefined;
   const normalized = evmWalletClientType.toLowerCase();
-  return DUAL_CHAIN_WALLETS.find((entry) => entry.evmClientTypes.includes(normalized));
-}
-
-function preSelectedWalletIdForName(name: string) {
-  const normalized = name.toLowerCase();
-  return DUAL_CHAIN_WALLETS.find((entry) => entry.names.some((walletName) => normalized.includes(walletName)))
-    ?.preSelectedWalletId;
+  return SOLANA_WALLETS.find((wallet) => (wallet.evmClientTypes as readonly string[]).includes(normalized));
 }
 
 function openConnect(preSelectedWalletId?: string): SolanaSessionAction {
@@ -126,53 +104,29 @@ function openConnect(preSelectedWalletId?: string): SolanaSessionAction {
 export function decideSolanaSession({
   connected,
   remembered,
-  suppressedAddress,
-  isSocial,
   evmWalletClientType,
   networkChanged,
 }: {
-  connected: SolanaWalletCandidate[];
+  connected: RememberedSolanaWallet[];
   remembered: RememberedSolanaWallet | null;
-  suppressedAddress: string | null;
-  isSocial: boolean;
   evmWalletClientType?: string;
   networkChanged: boolean;
 }): SolanaSessionAction {
-  if (suppressedAddress) {
-    const suppressedWallet = connected.find((wallet) => wallet.address === suppressedAddress);
-    if (suppressedWallet) {
-      return { type: "disconnect", wallet: { address: suppressedWallet.address, name: suppressedWallet.name } };
-    }
-  }
-
-  if (remembered && remembered.address !== suppressedAddress) {
+  if (remembered && isSupportedSolanaWalletName(remembered.name)) {
     const rememberedWallet = connected.find((wallet) => wallet.address === remembered.address);
     if (rememberedWallet) return { type: "select", wallet: remembered };
     if (!networkChanged) return { type: "none" };
-    if (isSocial && remembered.name.toLowerCase().includes("privy")) return { type: "createEmbedded" };
-    return openConnect(preSelectedWalletIdForName(remembered.name));
-  }
-
-  const embeddedWallet = connected.find((wallet) => wallet.embedded && wallet.address !== suppressedAddress);
-  if (isSocial && embeddedWallet && !suppressedAddress) {
-    return { type: "select", wallet: { address: embeddedWallet.address, name: embeddedWallet.name } };
-  }
-
-  const dualChain = dualChainWallet(evmWalletClientType);
-  const dualChainMatch = dualChain
-    ? connected.find(
-        (wallet) =>
-          wallet.address !== suppressedAddress &&
-          dualChain.names.some((walletName) => wallet.name.toLowerCase().includes(walletName))
-      )
-    : undefined;
-  if (dualChainMatch) {
-    return { type: "select", wallet: { address: dualChainMatch.address, name: dualChainMatch.name } };
+    return openConnect(walletIdForName(remembered.name));
   }
 
   if (!networkChanged) return { type: "none" };
-  if (isSocial && !suppressedAddress) return { type: "createEmbedded" };
-  return openConnect(dualChain?.preSelectedWalletId);
+
+  const evmWallet = walletForEvm(evmWalletClientType);
+  const connectedMatch = evmWallet
+    ? connected.find((wallet) => walletIdForName(wallet.name) === evmWallet.id)
+    : undefined;
+  if (connectedMatch) return { type: "select", wallet: connectedMatch };
+  return openConnect(evmWallet?.id);
 }
 
 // Backend `price` is a 20-decimal USD integer. GMX USD amounts are 30 decimals.

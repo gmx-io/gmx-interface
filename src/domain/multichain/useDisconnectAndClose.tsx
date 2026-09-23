@@ -9,12 +9,7 @@ import { useChainId } from "lib/chains";
 import { userAnalytics } from "lib/userAnalytics";
 import { DisconnectWalletEvent } from "lib/userAnalytics/types";
 import { disconnectPrivyWalletsFromWagmi } from "lib/wallets/privyWagmi";
-import {
-  clearRememberedSolanaWallet,
-  readRememberedSolanaWallet,
-  readSuppressedSolanaWallet,
-  suppressSolanaWallet,
-} from "solana-interface/wallet/solanaWalletSession";
+import { clearRememberedSolanaWallet } from "solana-interface/wallet/solanaWalletSession";
 import { useSolanaWallet } from "solana-interface/wallet/useSolanaWallet";
 
 export function useDisconnectAndClose() {
@@ -37,7 +32,6 @@ export function useDisconnectAndClose() {
 
     try {
       if (isSolana) {
-        if (solanaWallet.address) suppressSolanaWallet(solanaWallet.address);
         clearRememberedSolanaWallet();
         await Promise.resolve(solanaWallet.wallet?.disconnect()).catch(() => undefined);
         // Privy keeps embedded EVM wallets in useWallets() until logout, so an empty list never happens.
@@ -50,9 +44,6 @@ export function useDisconnectAndClose() {
       localStorage.removeItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY);
       localStorage.removeItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY);
 
-      const rememberedSolana = readRememberedSolanaWallet();
-      const solanaStillActive = Boolean(rememberedSolana) && rememberedSolana?.address !== readSuppressedSolanaWallet();
-
       // Mark Privy-backed wagmi connectors disconnected before and after provider disconnects:
       // injected wallets can mutate wagmi storage while their disconnect handlers run.
       await disconnectPrivyWalletsFromWagmi(wallets);
@@ -62,9 +53,7 @@ export function useDisconnectAndClose() {
         ...wallets.map((wallet) => Promise.resolve().then(() => wallet.disconnect())),
       ]);
       await disconnectPrivyWalletsFromWagmi(wallets);
-      if (!solanaStillActive) {
-        await Promise.allSettled([logout()]);
-      }
+      await Promise.allSettled([logout()]);
     } finally {
       setIsVisible(false);
       setIsSettingsVisible(false);
@@ -76,7 +65,6 @@ export function useDisconnectAndClose() {
     logout,
     setIsVisible,
     setIsSettingsVisible,
-    solanaWallet.address,
     solanaWallet.wallet,
     wallets,
   ]);

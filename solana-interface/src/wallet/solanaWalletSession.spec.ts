@@ -8,14 +8,12 @@ import {
   solanaPriceSymbol,
   solanaTokenUsd,
   swapTokenMints,
-  type SolanaWalletCandidate,
+  type RememberedSolanaWallet,
 } from "./solanaWalletSession";
 
 const base = {
-  connected: [] as SolanaWalletCandidate[],
+  connected: [] as RememberedSolanaWallet[],
   remembered: null,
-  suppressedAddress: null,
-  isSocial: false,
   evmWalletClientType: undefined,
   networkChanged: false,
 };
@@ -26,69 +24,60 @@ describe("decideSolanaSession", () => {
       decideSolanaSession({
         ...base,
         remembered: { address: "A", name: "Phantom" },
-        connected: [{ address: "A", name: "Phantom", embedded: false }],
+        connected: [{ address: "A", name: "Phantom" }],
       })
     ).toEqual({ type: "select", wallet: { address: "A", name: "Phantom" } });
   });
 
-  it("disconnects a wallet the user explicitly disconnected", () => {
+  it("ignores a connected wallet after the remembered one is cleared", () => {
     expect(
       decideSolanaSession({
         ...base,
-        suppressedAddress: "A",
-        remembered: { address: "A", name: "Phantom" },
-        connected: [{ address: "A", name: "Phantom", embedded: false }],
-        networkChanged: true,
-      })
-    ).toEqual({ type: "disconnect", wallet: { address: "A", name: "Phantom" } });
-  });
-
-  it("selects a social embedded wallet that Privy already has", () => {
-    expect(
-      decideSolanaSession({
-        ...base,
-        isSocial: true,
-        connected: [{ address: "E", name: "Privy", embedded: true }],
-      })
-    ).toEqual({ type: "select", wallet: { address: "E", name: "Privy" } });
-  });
-
-  it("stays disconnected after Phantom is disconnected while a social embedded wallet is connected", () => {
-    expect(
-      decideSolanaSession({
-        ...base,
-        isSocial: true,
-        suppressedAddress: "P",
-        connected: [{ address: "E", name: "Privy", embedded: true }],
+        connected: [{ address: "A", name: "Phantom" }],
       })
     ).toEqual({ type: "none" });
   });
 
-  it("creates an embedded wallet when a social user switches onto Solana", () => {
-    expect(decideSolanaSession({ ...base, isSocial: true, networkChanged: true })).toEqual({ type: "createEmbedded" });
+  it("selects Solflare, OKX, and TokenPocket", () => {
+    for (const name of ["Solflare", "OKX Wallet", "TokenPocket"]) {
+      expect(
+        decideSolanaSession({
+          ...base,
+          remembered: { address: "A", name },
+          connected: [{ address: "A", name }],
+        })
+      ).toEqual({ type: "select", wallet: { address: "A", name } });
+    }
   });
 
-  it("does not create an embedded wallet on refresh", () => {
-    expect(decideSolanaSession({ ...base, isSocial: true })).toEqual({ type: "none" });
-  });
-
-  it("does not recreate an embedded wallet after an explicit disconnect", () => {
+  it("does not select an unsupported wallet", () => {
     expect(
       decideSolanaSession({
         ...base,
-        isSocial: true,
-        suppressedAddress: "E",
+        remembered: { address: "B", name: "Backpack" },
+        connected: [{ address: "B", name: "Backpack" }],
+      })
+    ).toEqual({ type: "none" });
+  });
+
+  it("opens the supported wallet list when switching away from an unsupported wallet", () => {
+    expect(
+      decideSolanaSession({
+        ...base,
+        remembered: { address: "B", name: "Backpack" },
+        connected: [{ address: "B", name: "Backpack" }],
         networkChanged: true,
       })
     ).toEqual({ type: "openConnect" });
   });
 
-  it("selects the Solana account of a dual-chain wallet Privy already connected", () => {
+  it("selects the Solana account of a dual-chain wallet when switching onto Solana", () => {
     expect(
       decideSolanaSession({
         ...base,
         evmWalletClientType: "phantom",
-        connected: [{ address: "P", name: "Phantom", embedded: false }],
+        connected: [{ address: "P", name: "Phantom" }],
+        networkChanged: true,
       })
     ).toEqual({ type: "select", wallet: { address: "P", name: "Phantom" } });
   });

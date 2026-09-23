@@ -126,6 +126,20 @@ describe("useDisconnectAndClose", () => {
     expect(mocks.setIsSettingsVisible).toHaveBeenCalledWith(false);
   });
 
+  it("clears Privy auth on EVM disconnect even when a Solana wallet is still connected", async () => {
+    localStorage.setItem("remembered-solana-wallet", JSON.stringify({ address: "SoLana", name: "Phantom" }));
+    const handleDisconnect = setup();
+
+    await act(async () => {
+      await handleDisconnect();
+    });
+
+    expect(mocks.logout).toHaveBeenCalledTimes(1);
+    expect(localStorage.getItem("remembered-solana-wallet")).toBe(
+      JSON.stringify({ address: "SoLana", name: "Phantom" })
+    );
+  });
+
   it("logs out after Solana disconnect when the EVM account is already gone", async () => {
     mocks.isSolana = true;
     mocks.evmAddress = undefined;

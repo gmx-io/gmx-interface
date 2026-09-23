@@ -58,7 +58,7 @@ export default function WalletProvider({ children }: { children: React.ReactNode
           createOnLogin: "users-without-wallets" as const,
         },
         solana: {
-          createOnLogin: "users-without-wallets" as const,
+          createOnLogin: "off" as const,
         },
       },
     }),

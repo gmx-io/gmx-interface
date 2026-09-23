@@ -1,4 +1,4 @@
-import { useConnectWallet, useLogin, useModalStatus, usePrivy } from "@privy-io/react-auth";
+import { useConnectWallet, useLogin, useModalStatus, usePrivy, type WalletListEntry } from "@privy-io/react-auth";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 import type { SettlementChainId } from "config/chains";
@@ -13,8 +13,9 @@ import { metrics } from "lib/metrics";
 import { useBlockAutoReload } from "lib/pwa/blockAutoReload";
 import { switchNetwork } from "lib/wallets";
 import {
-  clearSuppressedSolanaWallet,
+  isSupportedSolanaWalletName,
   rememberSolanaWallet,
+  SOLANA_CONNECT_WALLET_LIST,
 } from "solana-interface/wallet/solanaWalletSession";
 
 export type ConnectModalOptions = {
@@ -63,10 +64,12 @@ export function ConnectModalProvider({ children }: { children: ReactNode }) {
       setConnectModalOpen(false);
 
       if (params?.wallet?.type === "solana" && params.wallet.address) {
-        clearSuppressedSolanaWallet();
+        const name = params.wallet.meta?.name ?? "";
+        if (!isSupportedSolanaWalletName(name)) return;
+
         rememberSolanaWallet({
           address: params.wallet.address,
-          name: params.wallet.meta?.name ?? "Solana",
+          name,
         });
         return;
       }
@@ -130,6 +133,7 @@ export function ConnectModalProvider({ children }: { children: ReactNode }) {
         if (solanaSelected || authenticated) {
           connectWallet({
             walletChainType,
+            ...(solanaSelected ? { walletList: [...SOLANA_CONNECT_WALLET_LIST] as WalletListEntry[] } : {}),
             ...(options?.preSelectedWalletId ? { preSelectedWalletId: options.preSelectedWalletId } : {}),
           });
         } else {
