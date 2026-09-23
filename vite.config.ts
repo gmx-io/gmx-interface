@@ -228,6 +228,10 @@ function optionalSolanaSystemStub(): PluginOption {
         export function getTransferSolInstruction() {
           throw new Error("${SOLANA_SYSTEM_MODULE_ID} is not bundled in the GMX ethereum-only build.");
         }
+
+        export function getCreateAccountInstruction() {
+          throw new Error("${SOLANA_SYSTEM_MODULE_ID} is not bundled in the GMX ethereum-only build.");
+        }
       `;
     },
   };
