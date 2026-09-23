@@ -88,6 +88,11 @@ function refresh(address: string, mints: string[]) {
     .catch((cause: unknown) => fail(current, cause));
 }
 
+export function refreshSolanaAssets(address: string) {
+  if (socketAddress !== address || lastMints.length === 0) return;
+  refresh(address, lastMints);
+}
+
 function onSocketMessage(address: string, data: unknown) {
   let message: unknown;
   try {
