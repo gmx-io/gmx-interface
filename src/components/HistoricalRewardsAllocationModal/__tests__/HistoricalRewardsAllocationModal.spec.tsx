@@ -51,7 +51,11 @@ vi.mock("components/Modal/ModalWithPortal", () => ({
 
 const ACCOUNT = "0x52908400098527886E0F7030069857D2E4169EE7";
 const USD_UNIT = 10n ** BigInt(USD_DECIMALS);
-const config = { epochTimestamp: 100 } as IncentivesConfig;
+const config = {
+  epochTimestamp: 100,
+  multiplierDecimals: 100n,
+  boosts: [{ boost: "ManualAllocation", multiplier: 200n }],
+} as IncentivesConfig;
 const activeStatus = {
   epochTimestamp: 100,
   manualRewardCapUsd: 1_000n * USD_UNIT,
