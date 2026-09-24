@@ -39,7 +39,14 @@ import Loader from "components/Loader/Loader";
 import type { MarketFilterLongShortItemData } from "components/TableMarketFilter/MarketFilterLongShort";
 
 import { ChartContextMenu } from "./ChartContextMenu";
-import { chartOverridesDark, chartOverridesLight, defaultChartProps, disabledFeaturesOnMobile } from "./constants";
+import {
+  PRICE_LINE_COLOR_KEY,
+  getChartThemeOverrides,
+  getThemeOverridesToApply,
+  isAppChartValue,
+  readSavedChartValues,
+} from "./chartThemeOverrides";
+import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
 import { CrosshairPercentageLabel } from "./CrosshairPercentageLabel";
 import { DynamicLines } from "./DynamicLines";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
@@ -225,12 +232,34 @@ export default function TVChartContainer({
   }>({});
 
   useEffect(() => {
-    if (chartReady && tvWidgetRef.current && true) {
-      const overrides = theme === "light" ? chartOverridesLight : chartOverridesDark;
-      tvWidgetRef.current.applyOverrides(overrides);
-      tvWidgetRef.current.saveChartToServer();
-      setWasChartOverridden(true);
+    const widget = tvWidgetRef.current;
+
+    if (!chartReady || !widget) {
+      return;
     }
+
+    const themeOverrides = getChartThemeOverrides(theme);
+
+    if (!wasChartOverridden || !widget.layoutName()) {
+      widget.applyOverrides(themeOverrides);
+      widget.saveChartToServer();
+      setWasChartOverridden(true);
+      return;
+    }
+
+    widget.save((state) => {
+      const overrides = getThemeOverridesToApply({
+        theme,
+        savedValues: readSavedChartValues(state, Object.keys(themeOverrides)),
+      });
+
+      if (Object.keys(overrides).length === 0 || tvWidgetRef.current !== widget) {
+        return;
+      }
+
+      widget.applyOverrides(overrides);
+      widget.saveChartToServer();
+    });
   }, [chartReady, wasChartOverridden, setWasChartOverridden, theme]);
 
   useEffect(() => {
@@ -737,7 +766,8 @@ export default function TVChartContainer({
     if (!datafeed) return;
 
     const onCurrentCandleUpdate = (event: Event) => {
-      if (!chartReady || !tvWidgetRef.current) return;
+      const widget = tvWidgetRef.current;
+      if (!chartReady || !widget) return;
 
       const detail = (event as CustomEvent).detail as {
         symbol: string;
@@ -745,24 +775,25 @@ export default function TVChartContainer({
         bar: { open: number; close: number };
       };
 
-      if (tvWidgetRef.current.activeChart().resolution() !== detail.resolution) return;
-      if (tvWidgetRef.current.activeChart().symbolExt()?.name !== detail.symbol) return;
+      if (widget.activeChart().resolution() !== detail.resolution) return;
+      if (widget.activeChart().symbolExt()?.name !== detail.symbol) return;
 
       const direction =
         detail.bar.close > detail.bar.open ? "up" : detail.bar.close < detail.bar.open ? "down" : "flat";
       if (markPriceDirectionRef.current === direction) return;
       markPriceDirectionRef.current = direction;
 
-      const neutralColor = (
-        theme === "light"
-          ? chartOverridesLight["mainSeriesProperties.priceLineColor"]
-          : chartOverridesDark["mainSeriesProperties.priceLineColor"]
-      ) as string;
-      const priceLineColor =
-        direction === "up" ? colors.green[500][theme] : direction === "down" ? colors.red[500][theme] : neutralColor;
+      widget.save((state) => {
+        const savedPriceLineColor = readSavedChartValues(state, [PRICE_LINE_COLOR_KEY])[PRICE_LINE_COLOR_KEY];
+        if (!isAppChartValue(PRICE_LINE_COLOR_KEY, savedPriceLineColor) || tvWidgetRef.current !== widget) return;
 
-      tvWidgetRef.current.applyOverrides({
-        "mainSeriesProperties.priceLineColor": priceLineColor,
+        const neutralColor = getChartThemeOverrides(theme)[PRICE_LINE_COLOR_KEY] as string;
+        const priceLineColor =
+          direction === "up" ? colors.green[500][theme] : direction === "down" ? colors.red[500][theme] : neutralColor;
+
+        widget.applyOverrides({
+          [PRICE_LINE_COLOR_KEY]: priceLineColor,
+        });
       });
     };
 
@@ -815,7 +846,7 @@ export default function TVChartContainer({
       fullscreen: defaultChartProps.fullscreen,
       autosize: defaultChartProps.autosize,
       custom_css_url: defaultChartProps.custom_css_url,
-      overrides: theme === "light" ? chartOverridesLight : chartOverridesDark,
+      overrides: getChartThemeOverrides(theme),
       interval: getObjectKeyFromValue(period, supportedResolutions) as ResolutionString,
       favorites: { ...defaultChartProps.favorites, intervals: Object.keys(supportedResolutions) as ResolutionString[] },
       custom_formatters: defaultChartProps.custom_formatters,

@@ -37,9 +37,6 @@ const colors = {
     whiteHover: appColors.button.secondaryHover.light,
     whiteActive: appColors.button.secondary.light,
   },
-  yellow: {
-    300: "#ffe166",
-  },
   white: "#ffffff",
   black: "#000000",
   transparent: "transparent",

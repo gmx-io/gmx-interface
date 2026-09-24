@@ -50,7 +50,7 @@ msgstr "РЕФЕРАЛЬНЫЙ КОД"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient funds for order costs. Remaining: {remainingCostUsdText}"
-msgstr ""
+msgstr "Недостаточно средств для покрытия расходов по ордеру. Осталось: {remainingCostUsdText}"
 
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing limit order uses {symbol} collateral. <0>Switch to {symbol} collateral</0>"
@@ -236,7 +236,7 @@ msgstr "Отладочные значения недоступны"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Insufficient {0} for gas on {networkName}<0/><1/><2>Swap</2> or <3>bridge</3> {1} to {networkName}"
-msgstr ""
+msgstr "Недостаточно {0} для оплаты Gas в сети {networkName}<0/><1/><2>Обменяйте</2> или переведите {1} в сеть {networkName} через <3>мост</3>"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing limit order in {0} pool but lacks liquidity for this order"
@@ -283,7 +283,7 @@ msgstr "(с возвратом)"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Accumulated rewards"
-msgstr ""
+msgstr "Накопленные вознаграждения"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Show other assets ({0})"
@@ -993,10 +993,6 @@ msgstr "В категории «{marketTypeLabel}» нет результато�
 msgid "Negative value: traders pay funding"
 msgstr "Отрицательное значение: трейдеры выплачивают фондирование"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Transfer {nativeTokenSymbol} from other networks to {chainName}"
-msgstr "Перевести {nativeTokenSymbol} из других сетей в {chainName}"
-
 #: landing/src/pages/Builders/Footer/BuildersFooter.tsx
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 #: src/components/SideNav/SideNav.tsx
@@ -1042,10 +1038,6 @@ msgstr "{actionsCount, plural, one {Ордер} other {# Ордеров}}"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid collateral token. {tokenSymbol} isn't supported as collateral"
 msgstr "Некорректный токен обеспечения. {tokenSymbol} не поддерживается в качестве обеспечения"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX on centralized exchanges"
-msgstr "Купить GMX на централизованных биржах"
 
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
@@ -1168,10 +1160,6 @@ msgstr "Ордер не исполнится: цена срабатывания 
 msgid "Don't ask again"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "No options to buy {nativeTokenSymbol} on {chainName}"
-msgstr "Нет вариантов покупки {nativeTokenSymbol} на {chainName}"
-
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values calculated when earned. Excludes incentives."
 msgstr "Значения комиссий рассчитываются на момент получения. Без учёта поощрений."
@@ -1186,7 +1174,7 @@ msgstr "TVL в хранилищах и пулах"
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX on Solana"
-msgstr ""
+msgstr "GMX в сети Solana"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
@@ -1637,10 +1625,6 @@ msgstr "Использовать {0} для газа"
 msgid "Total margin funded"
 msgstr "Всего внесено маржи"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "To buy GMX on {0}, <0>change your network</0>"
-msgstr "Чтобы купить GMX в сети {0}, <0>смените сеть</0>"
-
 #: landing/src/pages/Rewards/RewardsMultipliers.tsx
 msgid "Open trades of at least {0} on the under-utilised side and get paid for balancing the market."
 msgstr "Открывайте сделки от {0} на менее загруженной стороне и получайте награды за балансировку рынка."
@@ -2055,10 +2039,6 @@ msgstr "Выберите токен для оплаты"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Market cap"
 msgstr "Рыночная капитализация"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX using any token from any network"
-msgstr "Купить GMX с помощью любого токена из любой сети"
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
@@ -2881,17 +2861,11 @@ msgstr "Аккаунт"
 msgid "Position exceeds max allowed leverage. <0>Read more</0>."
 msgstr "Позиция превышает максимально допустимое кредитное плечо. <0>Подробнее</0>."
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy or transfer {nativeTokenSymbol} to {chainName}"
-msgstr "Купить или перевести {nativeTokenSymbol} на {chainName}"
-
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short borrowing rate"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX"
@@ -3115,10 +3089,6 @@ msgstr "Движимая нашим сообществом"
 msgid "Maximum multiplier reached"
 msgstr "Достигнут максимальный множитель"
 
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Buy {0}"
-msgstr "Купить {0}"
-
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting only available on {chainNames}. Switch networks to continue."
 msgstr "Перемещение доступно только в {chainNames}. Переключите сеть для продолжения."
@@ -3275,10 +3245,6 @@ msgstr "<0>Нужно следить за <1>@GMX_IO</1> здесь. Пока в
 #: src/components/WhatsNewToast/WhatsNewToastContainer.tsx
 msgid "Update available"
 msgstr "Доступно обновление"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX on {chainName}"
-msgstr "Купить GMX на {chainName}"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -3843,10 +3809,6 @@ msgstr "ИИ-ассистент для трейдинга"
 msgid "Allowed slippage"
 msgstr "Допустимое проскальзывание"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "No centralized exchanges available"
-msgstr "Нет доступных централизованных бирж"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Loyalty"
 msgstr ""
@@ -3899,11 +3861,6 @@ msgstr "Получено на кошелёк при закрытии"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "GLV vaults"
 msgstr "Хранилища GLV"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from centralized services"
-msgstr "Купить GMX на централизованных сервисах"
 
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
@@ -4101,10 +4058,6 @@ msgstr "TypeScript SDK"
 msgid "Existing limit order in {0} pool<0>Switch to {1} pool</0>"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy from decentralized or centralized exchanges"
-msgstr "Покупка на децентрализованных или централизованных биржах"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "of limit"
 msgstr ""
@@ -4264,10 +4217,6 @@ msgstr "Вакансии"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "PNL (%)"
 msgstr "PNL (%)"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX using decentralized exchange aggregators"
-msgstr "Купить GMX через агрегаторы децентрализованных бирж"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing, which isn't available with One-Click Trading. Disable One-Click to use Express Trading."
@@ -5799,10 +5748,6 @@ msgstr "Жизненный цикл ордера"
 msgid "Permit supported:"
 msgstr "Permit поддерживается:"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy {nativeTokenSymbol}"
-msgstr "Купить {nativeTokenSymbol}"
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size too small"
 msgstr "Размер позиции слишком мал"
@@ -6098,10 +6043,6 @@ msgstr "Реферальный код добавлен"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Your {symbol} margin exceeds the {indexName} short position size. Margin value rises with the index, covering any losses—no liquidation price."
 msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX bonds on Bond Protocol at a discount with a short vesting period"
-msgstr "Покупайте облигации GMX на Bond Protocol со скидкой и коротким периодом вестинга"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No results with the selected filters."
@@ -6607,10 +6548,6 @@ msgstr "GM: достигнут лимит покупки {0} в {1} [{2}]. Вы�
 msgid "<0>Permit approval failed. A standard approval transaction is required. Approve the token and try again</0>"
 msgstr "<0>Не удалось выполнить одобрение через permit. Требуется стандартная транзакция одобрения. Одобрите токен и попробуйте снова</0>"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "No options to transfer {nativeTokenSymbol} to {chainName}"
-msgstr "Нет вариантов для перевода {nativeTokenSymbol} в {chainName}"
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
 msgstr "<0>Уведомления предоставляются Notifi и не связаны с GMX. Подписываясь, вы соглашаетесь, что информация, предоставленная Notifi, регулируется её </0><1>Политикой Конфиденциальности</1><2> и </2><3>Условиями Использования</3>."
@@ -6739,7 +6676,7 @@ msgstr "Rest API"
 msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none."
 msgstr "Выберите, какие отметки покупки/продажи отображаются на графике: все ваши прошлые сделки, только текущую открытую позицию или ни одной."
 
-#: src/pages/BuyGMX/BuyGmxModal.tsx
+#: src/components/BuyGmxModal/BuyGmxModal.tsx
 msgid "Buy GMX on GMX swap"
 msgstr ""
 
@@ -7431,10 +7368,6 @@ msgstr "Страница управления GMX"
 msgid "A new version of GMX is ready. Reload when you are done to switch to it."
 msgstr "Доступна новая версия GMX. Перезагрузите страницу, когда закончите, чтобы перейти на неё."
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there"
-msgstr "Купите {nativeTokenSymbol} напрямую на {chainName} или переведите его туда"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded."
 msgstr "Макс. комиссия сети включает запас на случай скачков Gas. Неиспользованные комиссии возвращаются."
@@ -7950,11 +7883,6 @@ msgstr "APR wstETH"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "GMX Account withdrawals are limited by Stargate bridge liquidity. Try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "Выводы GMX Account ограничены ликвидностью моста Stargate. Попробуйте сумму меньше <0>{upperLimitFormatted}</0>."
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "TraderJoe"
-msgstr "TraderJoe"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated time to liquidation"
@@ -8678,11 +8606,6 @@ msgstr "Назначение"
 msgid "For me"
 msgstr "Для меня"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Bond Protocol"
-msgstr "Bond Protocol"
-
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Fees and impacts"
 msgstr "Комиссии и влияние"
@@ -8903,10 +8826,6 @@ msgstr "Мин. за 24ч"
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claim <0>{0}</0> of <1>{1}</1>"
 msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from TraderJoe"
-msgstr "Купить GMX на TraderJoe"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average leverage used"
@@ -9344,11 +9263,6 @@ msgstr "Нет доступного маршрута обмена"
 msgid "Execute Stop-Loss"
 msgstr "Исполнение стоп-лосса"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from decentralized exchanges"
-msgstr "Купить GMX на децентрализованных биржах"
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Powered by"
 msgstr "Работает на"
@@ -9647,6 +9561,7 @@ msgstr "Ваш уровень объёма растёт с первой эпох
 msgid "More info"
 msgstr "Больше информации"
 
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -10475,10 +10390,6 @@ msgstr "Макс. зарезервировано {directionLabel}"
 msgid "Technical guidance plus architecture and UX feedback."
 msgstr "Техническое сопровождение и фидбэк по архитектуре и UX."
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Transfer {nativeTokenSymbol}"
-msgstr "Перевести {nativeTokenSymbol}"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "LIQUIDITY SHORT"
 msgstr "ЛИКВИДНОСТЬ ШОРТ"
@@ -10575,9 +10486,9 @@ msgstr "Выберите актив для пополнения"
 msgid "Session generated"
 msgstr "Сессия сгенерирована"
 
+#: src/components/BuyGmxModal/BuyGmxModal.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
-#: src/pages/BuyGMX/BuyGmxModal.tsx
+#: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Buy GMX"
 msgstr "Купить GMX"
@@ -10858,10 +10769,6 @@ msgstr "Запрос на покупку отправлен"
 #: landing/src/pages/Rewards/RewardsFaq.tsx
 msgid "Only codes applied after Season 1 opens earn your affiliate the 50%, so apply theirs again once the season is live at <0>app.gmx.io/referrals/traders</0>. You have to change it yourself: clicking a referral link won't replace a code you already have. Your own rewards are unchanged either way."
 msgstr "Только коды, применённые после начала сезона 1, приносят вашему партнёру 50%, поэтому после запуска сезона снова примените его код на <0>app.gmx.io/referrals/traders</0>. Вы должны изменить его сами: переход по реферальной ссылке не заменяет уже установленный код. Ваши собственные награды в любом случае остаются прежними."
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX using fiat gateways"
-msgstr "Купить GMX через фиатные шлюзы"
 
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max network fee"
@@ -11951,10 +11858,6 @@ msgstr "Не удалось завершить экспорт. Файл не б�
 msgid "Open GMTrade in a new tab"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy {nativeTokenSymbol} directly on <0>{chainName}</0>"
-msgstr "Купить {nativeTokenSymbol} напрямую на <0>{chainName}</0>"
-
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap Limit: Swap tokens when the trigger price is reached"
 msgstr "Swap Limit: обмен токенов при достижении цены активации"
@@ -12217,10 +12120,6 @@ msgstr "Ваш реферал получает"
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Working prototype or live product"
 msgstr "Рабочий прототип или живой продукт"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from Uniswap or directly on GMX (select Arbitrum)"
-msgstr "Купить GMX на Uniswap или напрямую на GMX (выберите Arbitrum)"
 
 #: src/components/DepthChart/DepthChart.tsx
 msgid "Oracle price"
@@ -13068,7 +12967,7 @@ msgstr ""
 msgid "<0>Switch to {0} pool</0> for potentially lower price impact"
 msgstr "<0>Переключитесь на пул {0}</0> для потенциально меньшего влияния на цену"
 
-#: src/pages/BuyGMX/BuyGmxModal.tsx
+#: src/components/BuyGmxModal/BuyGmxModal.tsx
 msgid "Buy on other platforms"
 msgstr "Купить на других платформах"
 
@@ -13281,11 +13180,6 @@ msgstr "APY доходности за 30д"
 msgid "Unable to update minting data. Try again."
 msgstr "Не удалось обновить данные о выпуске. Попробуйте ещё раз."
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Uniswap"
-msgstr "Uniswap"
-
 #: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/ShareModal/ShareCardActionButtons.tsx
@@ -13441,10 +13335,6 @@ msgstr "На этой сети пока нет возможностей"
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
 msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> на </1>{0}{toTokenIcon}{1}"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "No decentralized exchanges available"
-msgstr "Нет доступных децентрализованных бирж"
 
 #: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
 msgid "Code already taken on: {takenNetworkNamesJoined}. No rebates received from this network."
