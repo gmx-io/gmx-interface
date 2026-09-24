@@ -498,6 +498,11 @@ function AffiliateCodeForm({
       text: t`Enter a code`,
       disabled: true,
     };
+  } else if (error) {
+    buttonState = {
+      text: t`Create`,
+      disabled: true,
+    };
   } else if (referralCodeCheckStatus === "taken") {
     buttonState = {
       text: t`Code already taken`,

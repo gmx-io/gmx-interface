@@ -50,7 +50,7 @@ msgstr "推荐码"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient funds for order costs. Remaining: {remainingCostUsdText}"
-msgstr ""
+msgstr "用于支付订单费用的资金不足。尚需：{remainingCostUsdText}"
 
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing limit order uses {symbol} collateral. <0>Switch to {symbol} collateral</0>"
@@ -216,7 +216,7 @@ msgstr "调试值不可用"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Insufficient {0} for gas on {networkName}<0/><1/><2>Swap</2> or <3>bridge</3> {1} to {networkName}"
-msgstr ""
+msgstr "{networkName} 上用于支付 Gas 的 {0} 余额不足<0/><1/><2>兑换</2>或通过<3>跨链桥</3>将 {1} 转入 {networkName}"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing limit order in {0} pool but lacks liquidity for this order"
@@ -263,7 +263,7 @@ msgstr "（已返还）"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Accumulated rewards"
-msgstr ""
+msgstr "累计奖励"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Show other assets ({0})"
@@ -940,10 +940,6 @@ msgstr "{marketTypeLabel}中没有与“{query}”匹配的结果。"
 msgid "Negative value: traders pay funding"
 msgstr "负值：交易者支付资金费用"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Transfer {nativeTokenSymbol} from other networks to {chainName}"
-msgstr "从其他网络转账 {nativeTokenSymbol} 至 {chainName}"
-
 #: landing/src/pages/Builders/Footer/BuildersFooter.tsx
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 #: src/components/SideNav/SideNav.tsx
@@ -985,10 +981,6 @@ msgstr "{actionsCount, plural, one {订单} other {# 个订单}}"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid collateral token. {tokenSymbol} isn't supported as collateral"
 msgstr "抵押品代币无效。{tokenSymbol} 不支持作为抵押品"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX on centralized exchanges"
-msgstr "在中心化交易所买入 GMX"
 
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
@@ -1106,10 +1098,6 @@ msgstr "订单将无法执行：触发价格已越过清算价格。请编辑触
 msgid "Don't ask again"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "No options to buy {nativeTokenSymbol} on {chainName}"
-msgstr "在 {chainName} 上没有购买 {nativeTokenSymbol} 的选项"
-
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values calculated when earned. Excludes incentives."
 msgstr "费用值在获得时计算。不包含激励。"
@@ -1124,7 +1112,7 @@ msgstr "金库和池中的 TVL"
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX on Solana"
-msgstr ""
+msgstr "Solana 上的 GMX"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
@@ -1544,10 +1532,6 @@ msgstr "使用 {0} 支付 Gas"
 msgid "Total margin funded"
 msgstr "累计投入保证金"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "To buy GMX on {0}, <0>change your network</0>"
-msgstr "要在 {0} 上买入 GMX，请<0>切换您的网络</0>"
-
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Results are available in Perpetuals."
 msgstr "永续合约中有可用结果。"
@@ -1941,10 +1925,6 @@ msgstr "选择支付代币"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Market cap"
 msgstr "市值"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX using any token from any network"
-msgstr "使用任意网络上的任意代币买入 GMX"
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
@@ -2727,17 +2707,11 @@ msgstr "账户"
 msgid "Position exceeds max allowed leverage. <0>Read more</0>."
 msgstr "仓位超过最大允许杠杆。<0>了解更多</0>。"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy or transfer {nativeTokenSymbol} to {chainName}"
-msgstr "买入或转账 {nativeTokenSymbol} 到 {chainName}"
-
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short borrowing rate"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX"
@@ -2953,10 +2927,6 @@ msgstr "调试 RPC 端点 ({0})"
 msgid "Driven by our community"
 msgstr "由我们的社区驱动"
 
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Buy {0}"
-msgstr "购买 {0}"
-
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting only available on {chainNames}. Switch networks to continue."
 msgstr "转换仅在 {chainNames} 上可用。请切换网络以继续。"
@@ -3100,10 +3070,6 @@ msgstr "<0>必须关注 <1>@GMX_IO</1>。虽然整个 DeFi 处于混乱中，但
 #: src/components/WhatsNewToast/WhatsNewToastContainer.tsx
 msgid "Update available"
 msgstr "有可用更新"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX on {chainName}"
-msgstr "在 {chainName} 上购买 GMX"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -3646,10 +3612,6 @@ msgstr "AI 交易助手"
 msgid "Allowed slippage"
 msgstr "允许滑点"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "No centralized exchanges available"
-msgstr "无可用的中心化交易所"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Loyalty"
 msgstr ""
@@ -3698,11 +3660,6 @@ msgstr "平仓时钱包收到"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "GLV vaults"
 msgstr "GLV 金库"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from centralized services"
-msgstr "从中心化服务购买 GMX"
 
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
@@ -3895,10 +3852,6 @@ msgstr "TypeScript SDK"
 msgid "Existing limit order in {0} pool<0>Switch to {1} pool</0>"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy from decentralized or centralized exchanges"
-msgstr "从去中心化或中心化交易所买入"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "of limit"
 msgstr ""
@@ -4054,10 +4007,6 @@ msgstr "职位招聘"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "PNL (%)"
 msgstr "PnL (%)"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX using decentralized exchange aggregators"
-msgstr "通过去中心化交易所聚合器买入 GMX"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing, which isn't available with One-Click Trading. Disable One-Click to use Express Trading."
@@ -5526,10 +5475,6 @@ msgstr "订单生命周期"
 msgid "Permit supported:"
 msgstr "Permit 支持："
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy {nativeTokenSymbol}"
-msgstr "购买 {nativeTokenSymbol}"
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size too small"
 msgstr "仓位规模过小"
@@ -5808,10 +5753,6 @@ msgstr "推荐码已添加"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Your {symbol} margin exceeds the {indexName} short position size. Margin value rises with the index, covering any losses—no liquidation price."
 msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX bonds on Bond Protocol at a discount with a short vesting period"
-msgstr "在 Bond Protocol 上以折扣价购买 GMX 债券，归属期较短"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No results with the selected filters."
@@ -6292,10 +6233,6 @@ msgstr "GM：{0} 在 {1} [{2}] 中已达到可买入上限。请选择其他池�
 msgid "<0>Permit approval failed. A standard approval transaction is required. Approve the token and try again</0>"
 msgstr "<0>Permit 授权失败。需要标准授权交易。请授权该代币后重试</0>"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "No options to transfer {nativeTokenSymbol} to {chainName}"
-msgstr "没有将 {nativeTokenSymbol} 转账至 {chainName} 的选项"
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
 msgstr "<0>通知由 Notifi 提供，与 GMX 无关。通过订阅，您同意您提供给 Notifi 的信息受其 </0><1>隐私政策</1><2> 和 </2><3>使用条款</3> 约束。"
@@ -6418,7 +6355,7 @@ msgstr "Rest API"
 msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none."
 msgstr "选择图表上显示哪些买入/卖出标记：您的所有历史交易、仅您当前的持仓，或不显示。"
 
-#: src/pages/BuyGMX/BuyGmxModal.tsx
+#: src/components/BuyGmxModal/BuyGmxModal.tsx
 msgid "Buy GMX on GMX swap"
 msgstr ""
 
@@ -7069,10 +7006,6 @@ msgstr "GMX 治理页面"
 msgid "A new version of GMX is ready. Reload when you are done to switch to it."
 msgstr "GMX 新版本已就绪。完成当前操作后刷新即可切换。"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there"
-msgstr "在 {chainName} 上直接买入 {nativeTokenSymbol} 或将其转账至该网络"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded."
 msgstr "最大网络费用包含 Gas 波动的缓冲。未使用的费用将退还。"
@@ -7560,11 +7493,6 @@ msgstr "wstETH APR"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "GMX Account withdrawals are limited by Stargate bridge liquidity. Try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "GMX Account 提款受 Stargate 跨链桥流动性限制。请尝试小于 <0>{upperLimitFormatted}</0> 的金额。"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "TraderJoe"
-msgstr "TraderJoe"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated time to liquidation"
@@ -8266,11 +8194,6 @@ msgstr "用途"
 msgid "For me"
 msgstr "给我自己"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Bond Protocol"
-msgstr "Bond Protocol"
-
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Fees and impacts"
 msgstr "费用和影响"
@@ -8477,10 +8400,6 @@ msgstr "24h 最低"
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claim <0>{0}</0> of <1>{1}</1>"
 msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from TraderJoe"
-msgstr "从 TraderJoe 买入 GMX"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average leverage used"
@@ -8884,11 +8803,6 @@ msgstr "无可用兑换路径"
 msgid "Execute Stop-Loss"
 msgstr "执行止损"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from decentralized exchanges"
-msgstr "从去中心化交易所购买 GMX"
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Powered by"
 msgstr "由...提供支持"
@@ -9175,6 +9089,7 @@ msgstr "下一个"
 msgid "More info"
 msgstr "更多信息"
 
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -9973,10 +9888,6 @@ msgstr "最大预留 {directionLabel}"
 msgid "Technical guidance plus architecture and UX feedback."
 msgstr "技术指导以及架构和用户体验反馈。"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Transfer {nativeTokenSymbol}"
-msgstr "转移 {nativeTokenSymbol}"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "LIQUIDITY SHORT"
 msgstr "流动性做空"
@@ -10057,9 +9968,9 @@ msgstr "选择要存入的资产"
 msgid "Session generated"
 msgstr "会话已生成"
 
+#: src/components/BuyGmxModal/BuyGmxModal.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
-#: src/pages/BuyGMX/BuyGmxModal.tsx
+#: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Buy GMX"
 msgstr "购买 GMX"
@@ -10327,10 +10238,6 @@ msgstr "质押中..."
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Buy request sent"
 msgstr "买入请求已发送"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX using fiat gateways"
-msgstr "通过法币通道购买 GMX"
 
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max network fee"
@@ -11379,10 +11286,6 @@ msgstr "无法完成导出。未下载任何文件。"
 msgid "Open GMTrade in a new tab"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy {nativeTokenSymbol} directly on <0>{chainName}</0>"
-msgstr "直接在 <0>{chainName}</0> 上买入 {nativeTokenSymbol}"
-
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap Limit: Swap tokens when the trigger price is reached"
 msgstr "Limit Swap：当达到触发价格时兑换代币"
@@ -11624,10 +11527,6 @@ msgstr "外部路由在一次失败的尝试后暂时暂停。请重试以检查
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Working prototype or live product"
 msgstr "可运行的原型或已上线的产品"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from Uniswap or directly on GMX (select Arbitrum)"
-msgstr "从 Uniswap 或直接在 GMX 上买入 GMX（选择 Arbitrum）"
 
 #: src/components/DepthChart/DepthChart.tsx
 msgid "Oracle price"
@@ -12435,7 +12334,7 @@ msgstr ""
 msgid "<0>Switch to {0} pool</0> for potentially lower price impact"
 msgstr "<0>切换到 {0} 池</0>以获得可能更低的价格影响"
 
-#: src/pages/BuyGMX/BuyGmxModal.tsx
+#: src/components/BuyGmxModal/BuyGmxModal.tsx
 msgid "Buy on other platforms"
 msgstr "在其他平台购买"
 
@@ -12635,11 +12534,6 @@ msgstr "NET RATE / 1H"
 msgid "30d performance APY"
 msgstr "30天绩效 APY"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Uniswap"
-msgstr "Uniswap"
-
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 msgid "Share on"
@@ -12786,10 +12680,6 @@ msgstr "此链上暂无机会"
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
 msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> 到 </1>{0}{toTokenIcon}{1}"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "No decentralized exchanges available"
-msgstr "无可用的去中心化交易所"
 
 #: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
 msgid "Code already taken on: {takenNetworkNamesJoined}. No rebates received from this network."
