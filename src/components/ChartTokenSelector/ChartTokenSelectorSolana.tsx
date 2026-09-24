@@ -1,0 +1,798 @@
+import { Trans, t } from "@lingui/macro";
+import cx from "classnames";
+import React, { useCallback, useMemo, useState } from "react";
+
+import { USD_DECIMALS } from "config/factors";
+import {
+  SubCategoryTab,
+  TopLevelTab,
+  cryptoSubCategoryOptions,
+  subCategoryTabLabels,
+  tradfiSubCategoryOptions,
+  useTokensFavorites,
+} from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
+import { PreferredTradeTypePickStrategy } from "domain/synthetics/markets/chooseSuitableMarket";
+import { getMarketBaseName } from "domain/synthetics/markets/utils";
+import type { PriceDelta, TokenData } from "domain/synthetics/tokens";
+import { TradeType } from "domain/synthetics/trade";
+import { stripBlacklistedWords, type Token } from "domain/tokens";
+import { getMidPrice } from "domain/tokens/utils";
+import { useLocalizedMap } from "lib/i18n";
+import { formatAmountHuman, formatUsdPrice } from "lib/numbers";
+import { searchBy } from "lib/searchBy";
+import { useBreakpoints } from "lib/useBreakpoints";
+import { getTokenVisualMultiplier } from "sdk/configs/tokens";
+
+import Button from "components/Button/Button";
+import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
+import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
+import { RecentlyListedFavoriteSlot } from "components/FavoriteTabs/RecentlyListedFavoriteSlot";
+import SearchInput from "components/SearchInput/SearchInput";
+import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
+import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
+import Tabs from "components/Tabs/Tabs";
+import type { Option as TabOption } from "components/Tabs/types";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
+import LongIcon from "img/long.svg?react";
+import SearchIconComponent from "img/search.svg?react";
+import ShortIcon from "img/short.svg?react";
+
+import {
+  applySubCategoryFilter,
+  applyTopLevelFilter,
+  getMarketSearchEmptyStateActions,
+  isMarketRecentlyListed,
+} from "./marketFilters";
+import { ModeTabs } from "./ModeTabs";
+import { SelectorBase, useSelectorClose } from "../SelectorBase/SelectorBase";
+
+type Props = {
+  selectedToken: Token | undefined;
+  oneRowLabels?: boolean;
+  items?: SolanaMarketItem[];
+  onSelect?: (address: string, preferredTradeType?: PreferredTradeTypePickStrategy) => void;
+};
+
+export type SolanaMarketItem = {
+  token: Token;
+  tokenData?: TokenData;
+  dayPriceDelta?: PriceDelta;
+  dayVolume?: bigint;
+  openInterestLong?: bigint;
+  openInterestShort?: bigint;
+  maxLeverage?: number;
+  longLiquidity?: bigint;
+  shortLiquidity?: bigint;
+  listingDate?: number;
+};
+
+const EMPTY_ITEMS: SolanaMarketItem[] = [];
+
+const SWAP_EXCLUDED_TOP_LEVEL_TABS: TopLevelTab[] = ["tradfi", "recently-listed"];
+const MAX_MARKET_SEARCH_QUERY_LENGTH = 100;
+
+function getSearchMatchedTokens(options: Token[] | undefined, searchKeyword: string, isSwap: boolean) {
+  if (!options) return undefined;
+  const query = searchKeyword.trim();
+  if (!query) return options;
+
+  return searchBy(
+    options,
+    [
+      (item) => stripBlacklistedWords(item.name),
+      (item) => (isSwap ? item.symbol : `${getTokenVisualMultiplier(item)}${item.symbol}`),
+      (item) => (item.searchAliases ?? []).join(" "),
+    ],
+    query
+  );
+}
+
+export default function ChartTokenSelector(props: Props) {
+  const { selectedToken, oneRowLabels, items = EMPTY_ITEMS, onSelect } = props;
+
+  const { mode } = useTokensFavorites("chart-token-selector");
+  const isSwap = mode === "swap";
+
+  const { isMobile } = useBreakpoints();
+  const shouldUsePerpPanelWidth = !isSwap;
+
+  return (
+    <SelectorBase
+      popoverPlacement="bottom-start"
+      handleClassName={cx({
+        "mr-24": oneRowLabels === false,
+        "py-0 md:h-40": isSwap,
+      })}
+      desktopPanelClassName={cx("max-w-[100vw] shadow-md", {
+        "w-[520px]": !shouldUsePerpPanelWidth,
+        "w-[880px]": shouldUsePerpPanelWidth,
+      })}
+      chevronClassName="hidden"
+      label={
+        <Button variant="secondary">
+          {selectedToken ? (
+            <span
+              className={cx("inline-flex gap-12 whitespace-nowrap pl-0 text-[13px]", {
+                "items-start": !oneRowLabels,
+                "items-center": oneRowLabels,
+              })}
+            >
+              {isSwap && oneRowLabels ? (
+                <div className="rounded-4 bg-blue-300 bg-opacity-[20%] px-7 py-4 text-blue-300">
+                  <Trans>Swap</Trans>
+                </div>
+              ) : null}
+
+              <div className="flex items-center gap-8">
+                <TokenIcon symbol={selectedToken.symbol} displaySize={isMobile ? 32 : 20} />
+                <div className="flex gap-2 md:items-center md:gap-8">
+                  <span
+                    className={cx("flex justify-start leading-base", {
+                      "flex-col items-baseline gap-2": !oneRowLabels,
+                      "flex-row items-center": oneRowLabels,
+                    })}
+                  >
+                    <span className="text-start text-[13px] font-medium text-typography-primary">
+                      {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
+                      {selectedToken.symbol}
+                      {t`/USD`}
+                    </span>
+
+                    {isSwap && !oneRowLabels ? (
+                      <div className="text-blue-300">
+                        <Trans>Swap</Trans>
+                      </div>
+                    ) : null}
+                  </span>
+
+                  <ChevronDownIcon className="inline-block size-16" />
+                </div>
+              </div>
+            </span>
+          ) : (
+            "..."
+          )}
+        </Button>
+      }
+      modalLabel={t`Market`}
+      mobileModalContentPadding={false}
+    >
+      <MarketsList items={items} onSelect={onSelect} />
+    </SelectorBase>
+  );
+}
+
+type SortField =
+  | "lastPrice"
+  | "24hChange"
+  | "24hVolume"
+  | "longLiquidity"
+  | "shortLiquidity"
+  | "combinedAvailableLiquidity"
+  | "combinedOpenInterest"
+  | "unspecified";
+
+function MarketsList({ items, onSelect }: Pick<Props, "onSelect"> & { items: SolanaMarketItem[] }) {
+  const {
+    topLevelTab: storedTopLevelTab,
+    subCategoryTab: storedSubCategoryTab,
+    mode,
+    setMode,
+    setModeAndResetFilters,
+    setSubCategoryTab,
+    favoriteTokens,
+    toggleFavoriteToken,
+  } = useTokensFavorites("chart-token-selector");
+
+  const localizedSubCategoryLabels = useLocalizedMap(subCategoryTabLabels);
+
+  const recentlyListedAddressesSet = useMemo(
+    () =>
+      new Set(
+        items.filter((item) => isMarketRecentlyListed(item.listingDate, Date.now())).map((item) => item.token.address)
+      ),
+    [items]
+  );
+  const isSwap = mode === "swap";
+  const options = useMemo(() => items.map((item) => item.token), [items]);
+  const otherModeOptions: Token[] = [];
+
+  const recentlyListedCount = useMemo(() => {
+    if (!options || recentlyListedAddressesSet.size === 0) return 0;
+    return options.filter((t) => recentlyListedAddressesSet.has(t.address)).length;
+  }, [options, recentlyListedAddressesSet]);
+
+  const hasAvailableFavorites = useMemo(() => {
+    if (!options || favoriteTokens.length === 0) return false;
+    return options.some((t) => favoriteTokens.includes(t.address));
+  }, [options, favoriteTokens]);
+
+  const shouldFallbackToAll =
+    (isSwap && SWAP_EXCLUDED_TOP_LEVEL_TABS.includes(storedTopLevelTab)) ||
+    (storedTopLevelTab === "favorites" && !hasAvailableFavorites) ||
+    (storedTopLevelTab === "recently-listed" && recentlyListedCount === 0);
+  const topLevelTab = shouldFallbackToAll ? "all" : storedTopLevelTab;
+  const subCategoryTab = shouldFallbackToAll ? "all" : storedSubCategoryTab;
+
+  const populatedCryptoSubCats = useMemo(() => {
+    const set = new Set<SubCategoryTab>();
+    if (!options) return set;
+    for (const cat of ["ai", "layer1", "layer2", "defi", "meme"] as const) {
+      if (options.some((o) => o.categories?.includes(cat))) set.add(cat);
+    }
+    return set;
+  }, [options]);
+
+  const populatedTradfiSubCats = useMemo(() => {
+    const set = new Set<SubCategoryTab>();
+    if (!options) return set;
+    for (const cat of ["stocks", "pre-ipo", "commodities", "indices", "fx"] as const) {
+      if (options.some((o) => o.categories?.includes(cat))) set.add(cat);
+    }
+    return set;
+  }, [options]);
+
+  const cryptoSubCatTabs = useMemo<TabOption<SubCategoryTab>[]>(
+    () =>
+      cryptoSubCategoryOptions
+        .filter((opt) => opt === "all" || populatedCryptoSubCats.has(opt))
+        .map((opt) => ({
+          value: opt,
+          label: opt === "all" ? <Trans>All</Trans> : localizedSubCategoryLabels[opt],
+        })),
+    [populatedCryptoSubCats, localizedSubCategoryLabels]
+  );
+
+  const tradfiSubCatTabs = useMemo<TabOption<SubCategoryTab>[]>(
+    () =>
+      tradfiSubCategoryOptions
+        .filter((opt) => opt === "all" || populatedTradfiSubCats.has(opt))
+        .map((opt) => ({
+          value: opt,
+          label: opt === "all" ? <Trans>All</Trans> : localizedSubCategoryLabels[opt],
+        })),
+    [populatedTradfiSubCats, localizedSubCategoryLabels]
+  );
+
+  const { isMobile, isSmallMobile } = useBreakpoints();
+
+  const close = useSelectorClose();
+
+  const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>(
+    `chart-token-selector-${isSwap ? "spot" : "perp"}`
+  );
+
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const query = searchKeyword.trim();
+
+  const currentModeSearchResults = useMemo(
+    () => getSearchMatchedTokens(options, searchKeyword, isSwap),
+    [isSwap, options, searchKeyword]
+  );
+
+  const otherModeSearchResults = useMemo(() => {
+    if (!query || currentModeSearchResults === undefined || currentModeSearchResults.length > 0) return undefined;
+    return getSearchMatchedTokens(otherModeOptions, query, !isSwap);
+  }, [currentModeSearchResults, isSwap, otherModeOptions, query]);
+
+  const sortedDetails = useMemo(() => {
+    const filtered = applySubCategoryFilter(
+      applyTopLevelFilter(currentModeSearchResults ?? [], {
+        topLevelTab,
+        favoriteAddresses: favoriteTokens,
+        recentlyListedAddresses: recentlyListedAddressesSet,
+      }),
+      { topLevelTab, subCategoryTab }
+    );
+    const addresses = new Set(filtered.map((token) => token.address));
+    const value = (item: SolanaMarketItem): bigint | number => {
+      switch (orderBy) {
+        case "lastPrice":
+          return item.tokenData ? getMidPrice(item.tokenData.prices) * BigInt(item.token.visualMultiplier ?? 1) : 0n;
+        case "24hChange":
+          return item.dayPriceDelta?.deltaPercentage ?? 0;
+        case "24hVolume":
+          return item.dayVolume ?? 0n;
+        case "longLiquidity":
+          return item.longLiquidity ?? 0n;
+        case "shortLiquidity":
+          return item.shortLiquidity ?? 0n;
+        case "combinedAvailableLiquidity":
+          return (item.longLiquidity ?? 0n) + (item.shortLiquidity ?? 0n);
+        case "combinedOpenInterest":
+          return (item.openInterestLong ?? 0n) + (item.openInterestShort ?? 0n);
+        default:
+          return 0n;
+      }
+    };
+    return items
+      .filter((item) => addresses.has(item.token.address))
+      .sort((left, right) => {
+        const favoriteOrder =
+          Number(favoriteTokens.includes(right.token.address)) - Number(favoriteTokens.includes(left.token.address));
+        if (favoriteOrder) return favoriteOrder;
+        if (direction === "unspecified" || orderBy === "unspecified") return 0;
+        const leftValue = value(left);
+        const rightValue = value(right);
+        return (leftValue === rightValue ? 0 : leftValue > rightValue ? 1 : -1) * (direction === "asc" ? 1 : -1);
+      });
+  }, [
+    items,
+    currentModeSearchResults,
+    topLevelTab,
+    subCategoryTab,
+    favoriteTokens,
+    recentlyListedAddressesSet,
+    orderBy,
+    direction,
+  ]);
+  const sortedTokens = sortedDetails.map((item) => item.token);
+
+  const handleMarketSelect = useCallback(
+    (tokenAddress: string, preferredTradeType?: PreferredTradeTypePickStrategy | undefined) => {
+      setSearchKeyword("");
+      close();
+
+      onSelect?.(tokenAddress, preferredTradeType);
+    },
+    [onSelect, close]
+  );
+
+  const rowVerticalPadding = cx("px-12 py-4", {
+    "group-last-of-type/row:pb-8": !isMobile,
+  });
+  const rowHorizontalPadding = cx("pr-8");
+  const thClassName = cx(
+    "sticky top-0 z-10 whitespace-nowrap bg-slate-900 text-left text-[11px] font-medium uppercase text-typography-secondary",
+    "first-of-type:text-left",
+    rowVerticalPadding,
+    rowHorizontalPadding,
+    "!py-10"
+  );
+  const favoriteThClassName = cx(thClassName, "w-0 !pr-0 text-center");
+  const marketThClassName = cx(thClassName, "pl-12");
+
+  const tdClassName = cx(
+    "text-body-small",
+    isMobile ? "align-top" : "align-middle",
+    rowVerticalPadding,
+    rowHorizontalPadding
+  );
+
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === "Enter" && sortedTokens && sortedTokens.length > 0) {
+        const token = sortedTokens[0];
+        handleMarketSelect(token.address);
+      }
+    },
+    [sortedTokens, handleMarketSelect]
+  );
+
+  const placeholder = useMemo(() => {
+    if (isSwap) {
+      return t`Search token`;
+    }
+
+    return t`Search market`;
+  }, [isSwap]);
+
+  const availableLiquidityLabel = isMobile ? (isSmallMobile ? t`LIQ.` : t`AVAIL. LIQ.`) : t`AVAILABLE LIQUIDITY`;
+  const marketTypeLabel = isSwap ? t`Swap tokens` : t`perpetual markets`;
+  const { shouldOfferSearchAll, shouldOfferOtherMode } = getMarketSearchEmptyStateActions({
+    hasActiveFilter: topLevelTab !== "all",
+    hasCurrentModeMatches: Boolean(currentModeSearchResults?.length),
+    hasOtherModeMatches: Boolean(otherModeSearchResults?.length),
+  });
+
+  return (
+    <>
+      <div className="flex flex-col">
+        <div className="mb-4 flex items-center gap-12 px-12 pt-12 max-md:flex-col max-md:gap-8">
+          <ModeTabs mode={mode} setMode={setMode} />
+          <SearchInput
+            className="w-full *:!text-body-medium"
+            value={searchKeyword}
+            setValue={setSearchKeyword}
+            onKeyDown={handleKeyDown}
+            placeholder={placeholder}
+            maxLength={MAX_MARKET_SEARCH_QUERY_LENGTH}
+          />
+        </div>
+
+        <ButtonRowScrollFadeContainer>
+          <FavoriteTabs
+            favoritesKey="chart-token-selector"
+            recentlyListedCount={recentlyListedCount}
+            hasAvailableFavorites={hasAvailableFavorites}
+            className="px-16"
+            excludedTabs={isSwap ? SWAP_EXCLUDED_TOP_LEVEL_TABS : undefined}
+            selectedValue={topLevelTab}
+          />
+        </ButtonRowScrollFadeContainer>
+        {topLevelTab === "crypto" && populatedCryptoSubCats.size > 0 && (
+          <ButtonRowScrollFadeContainer>
+            <Tabs
+              options={cryptoSubCatTabs}
+              selectedValue={subCategoryTab}
+              onChange={setSubCategoryTab}
+              type="block"
+              className="bg-slate-800/50 px-16"
+              tabsWrapperClassName="!w-fit"
+              regularOptionClassname="!px-8 !pb-9 !pt-11 text-13"
+            />
+          </ButtonRowScrollFadeContainer>
+        )}
+        {topLevelTab === "tradfi" && populatedTradfiSubCats.size > 0 && (
+          <ButtonRowScrollFadeContainer>
+            <Tabs
+              options={tradfiSubCatTabs}
+              selectedValue={subCategoryTab}
+              onChange={setSubCategoryTab}
+              type="block"
+              className="bg-slate-800/50 px-16"
+              tabsWrapperClassName="!w-fit"
+              regularOptionClassname="!px-8 !pb-9 !pt-11 text-13"
+            />
+          </ButtonRowScrollFadeContainer>
+        )}
+      </div>
+      <div
+        className={cx({
+          "max-h-[444px] overflow-x-auto": !isMobile,
+        })}
+      >
+        <table className="text-body-small w-full border-separate border-spacing-0">
+          <thead>
+            <tr>
+              <th className={favoriteThClassName} colSpan={1}></th>
+              <th className={cx(marketThClassName, isMobile ? "min-w-[18ch]" : "min-w-[28ch]")} colSpan={1}>
+                <Trans>MARKET</Trans>
+              </th>
+              {isSwap ? (
+                <>
+                  <th className={thClassName}>
+                    <Sorter {...getSorterProps("lastPrice")}>
+                      {isSmallMobile ? <Trans>PRICE</Trans> : <Trans>LAST PRICE</Trans>}
+                    </Sorter>
+                  </th>
+                  {!isMobile && (
+                    <th className={thClassName}>
+                      <Sorter {...getSorterProps("24hChange")}>
+                        <Trans>24H%</Trans>
+                      </Sorter>
+                    </th>
+                  )}
+                </>
+              ) : (
+                <>
+                  <th className={thClassName}>
+                    <Sorter {...getSorterProps("lastPrice")}>
+                      {isSmallMobile ? <Trans>PRICE</Trans> : <Trans>LAST PRICE</Trans>}
+                    </Sorter>
+                  </th>
+                  {!isMobile && (
+                    <th className={thClassName}>
+                      <Sorter {...getSorterProps("24hChange")}>
+                        <Trans>24H%</Trans>
+                      </Sorter>
+                    </th>
+                  )}
+                  <th className={thClassName}>
+                    <Sorter {...getSorterProps("24hVolume")}>
+                      {isSmallMobile ? <Trans>VOL.</Trans> : <Trans>24H VOL.</Trans>}
+                    </Sorter>
+                  </th>
+                  {!isMobile && (
+                    <>
+                      <th className={thClassName} colSpan={2}>
+                        <Sorter {...getSorterProps("combinedOpenInterest")}>
+                          <Trans>OPEN INTEREST</Trans>
+                        </Sorter>
+                      </th>
+                      <th className={thClassName} colSpan={2}>
+                        <Sorter {...getSorterProps("combinedAvailableLiquidity")}>{availableLiquidityLabel}</Sorter>
+                      </th>
+                    </>
+                  )}
+                </>
+              )}
+            </tr>
+          </thead>
+
+          <tbody>
+            {sortedDetails?.map(
+              ({
+                token,
+                tokenData,
+                dayPriceDelta,
+                dayVolume,
+                openInterestLong,
+                openInterestShort,
+                maxLeverage,
+                longLiquidity,
+                shortLiquidity,
+                listingDate,
+              }) => (
+                <MarketListItem
+                  key={token.address}
+                  token={token}
+                  tokenData={tokenData}
+                  dayPriceDelta={dayPriceDelta}
+                  dayVolume={dayVolume}
+                  openInterestLong={openInterestLong}
+                  openInterestShort={openInterestShort}
+                  maxLeverage={maxLeverage}
+                  isSwap={isSwap}
+                  isMobile={isMobile}
+                  isFavorite={favoriteTokens?.includes(token.address)}
+                  onFavorite={toggleFavoriteToken}
+                  rowVerticalPadding={rowVerticalPadding}
+                  rowHorizontalPadding={rowHorizontalPadding}
+                  tdClassName={tdClassName}
+                  onMarketSelect={handleMarketSelect}
+                  listingDate={listingDate}
+                  longLiquidity={longLiquidity}
+                  shortLiquidity={shortLiquidity}
+                />
+              )
+            )}
+          </tbody>
+        </table>
+        {!sortedTokens.length && (
+          <EmptyTableContent
+            isLoading={false}
+            isEmpty={true}
+            emptyText={
+              query ? (
+                <div className="flex w-full flex-col items-center gap-12 px-16">
+                  <span className="w-full min-w-0 text-center text-12 text-typography-secondary [overflow-wrap:anywhere]">
+                    {shouldOfferSearchAll ? (
+                      <Trans>No results with the selected filters.</Trans>
+                    ) : (
+                      <Trans>
+                        No {marketTypeLabel} match "{query}".
+                      </Trans>
+                    )}
+                  </span>
+                  {shouldOfferSearchAll && (
+                    <Button type="button" variant="secondary" onClick={() => setModeAndResetFilters(mode)}>
+                      <Trans>Search in all {marketTypeLabel}</Trans>
+                      <SearchIconComponent className="size-16" />
+                    </Button>
+                  )}
+                  {shouldOfferOtherMode && (
+                    <>
+                      <span className="text-12 text-typography-secondary">
+                        {isSwap ? (
+                          <Trans>Results are available in Perpetuals.</Trans>
+                        ) : (
+                          <Trans>Results are available in Swap.</Trans>
+                        )}
+                      </span>
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        onClick={() => setModeAndResetFilters(isSwap ? "perp" : "swap")}
+                      >
+                        {isSwap ? <Trans>View results in Perpetuals</Trans> : <Trans>View results in Swap</Trans>}
+                        <SearchIconComponent className="size-16" />
+                      </Button>
+                    </>
+                  )}
+                </div>
+              ) : (
+                <Trans>No markets matched.</Trans>
+              )
+            }
+          />
+        )}
+      </div>
+    </>
+  );
+}
+
+const MarketLabel = ({ token }: { token: Token }) => {
+  return (
+    <span className="text-typography-secondary">
+      <span className="text-typography-primary">{getMarketBaseName({ indexToken: token, isSpotOnly: false })}</span>
+      {t`/USD`}
+    </span>
+  );
+};
+
+function MarketListItem({
+  token,
+  tokenData,
+  dayPriceDelta,
+  dayVolume,
+  openInterestLong,
+  openInterestShort,
+  maxLeverage,
+  isSwap,
+  isMobile,
+  isFavorite,
+  onFavorite,
+  rowVerticalPadding,
+  rowHorizontalPadding,
+  tdClassName,
+  onMarketSelect,
+  listingDate,
+  longLiquidity,
+  shortLiquidity,
+}: {
+  token: Token;
+  tokenData: TokenData | undefined;
+  dayPriceDelta: PriceDelta | undefined;
+  dayVolume: bigint | undefined;
+  openInterestLong: bigint | undefined;
+  openInterestShort: bigint | undefined;
+  maxLeverage: number | undefined;
+  isSwap: boolean;
+  isMobile: boolean;
+  isFavorite?: boolean;
+  onFavorite: (address: string) => void;
+  rowVerticalPadding: string;
+  rowHorizontalPadding: string;
+  tdClassName: string;
+  onMarketSelect: (address: string, preferredTradeType?: PreferredTradeTypePickStrategy | undefined) => void;
+  listingDate?: number;
+  longLiquidity?: bigint;
+  shortLiquidity?: bigint;
+}) {
+  const handleFavoriteClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      onFavorite(token.address);
+    },
+    [onFavorite, token.address]
+  );
+
+  const handleSelectLargePosition = useCallback(
+    (e: React.MouseEvent<HTMLTableCellElement | HTMLTableRowElement>) => {
+      e.stopPropagation();
+      onMarketSelect(token.address, "largestPosition");
+    },
+    [onMarketSelect, token.address]
+  );
+
+  const handleSelectLong = useCallback(
+    (e: React.MouseEvent<HTMLTableCellElement>) => {
+      e.stopPropagation();
+      onMarketSelect(token.address, TradeType.Long);
+    },
+    [onMarketSelect, token.address]
+  );
+
+  const handleSelectShort = useCallback(
+    (e: React.MouseEvent<HTMLTableCellElement>) => {
+      e.stopPropagation();
+      onMarketSelect(token.address, TradeType.Short);
+    },
+    [onMarketSelect, token.address]
+  );
+
+  const dayPriceDeltaComponent = useMemo(() => {
+    return (
+      <div
+        className={cx("numbers", {
+          positive: dayPriceDelta?.deltaPercentage && dayPriceDelta?.deltaPercentage > 0,
+          negative: dayPriceDelta?.deltaPercentage && dayPriceDelta?.deltaPercentage < 0,
+        })}
+      >
+        {dayPriceDelta?.deltaPercentageStr || "-"}
+      </div>
+    );
+  }, [dayPriceDelta]);
+  const isRecentlyListed = isMarketRecentlyListed(listingDate, Date.now());
+
+  if (isSwap) {
+    return (
+      <tr key={token.symbol} className="group/row cursor-pointer hover:bg-fill-surfaceHover">
+        <td className={cx("pl-12 pr-0 text-center text-typography-secondary", rowVerticalPadding)}>
+          <Button variant="ghost" className="!h-20 !min-h-32 !w-32 !p-0" onClick={handleFavoriteClick}>
+            <RecentlyListedFavoriteSlot isRecentlyListed={isRecentlyListed} isFavorite={isFavorite} />
+          </Button>
+        </td>
+        <td
+          className={cx("text-body-medium w-full", rowVerticalPadding, rowHorizontalPadding)}
+          onClick={handleSelectLargePosition}
+        >
+          <span className="flex items-center gap-4">
+            <TokenIcon className="ChartToken-list-icon -my-5 mr-6" symbol={token.symbol} displaySize={16} />
+            <span>{token.name}</span>
+            <span className="font-medium text-typography-secondary">{token.symbol}</span>
+          </span>
+        </td>
+        <td className={tdClassName}>
+          <div className="flex flex-col gap-4">
+            <span className="numbers">
+              {tokenData
+                ? formatUsdPrice(getMidPrice(tokenData.prices), { visualMultiplier: tokenData.visualMultiplier })
+                : "-"}
+            </span>
+            {isMobile && <span>{dayPriceDeltaComponent}</span>}
+          </div>
+        </td>
+        {!isMobile && <td className={tdClassName}>{dayPriceDeltaComponent}</td>}
+      </tr>
+    );
+  }
+
+  return (
+    <tr
+      key={token.symbol}
+      className="group/row cursor-pointer hover:bg-fill-surfaceHover"
+      onClick={handleSelectLargePosition}
+    >
+      <td className={cx("w-0 px-12 pr-0 text-center text-typography-secondary", rowVerticalPadding)}>
+        <Button variant="ghost" className="!h-32 !min-h-32 !w-32 !p-0" onClick={handleFavoriteClick}>
+          <RecentlyListedFavoriteSlot isRecentlyListed={isRecentlyListed} isFavorite={isFavorite} />
+        </Button>
+      </td>
+      <td className={cx("pl-12 text-[13px]", rowVerticalPadding, isMobile ? "pr-2" : rowHorizontalPadding)}>
+        <div className={cx("flex", isMobile ? "items-start" : "items-center")}>
+          <TokenIcon className="ChartToken-list-icon mr-6" symbol={token.symbol} displaySize={16} />
+          <span className={cx("flex flex-wrap items-center gap-6")}>
+            <span className="font-medium leading-1">
+              <MarketLabel token={token} />
+            </span>
+            <span className="rounded-full bg-slate-700 px-6 py-[1.5px] text-12 font-medium leading-[1.25] text-typography-secondary numbers">
+              {maxLeverage ? `${maxLeverage}x` : "-"}
+            </span>
+          </span>
+        </div>
+      </td>
+
+      <td className={tdClassName}>
+        <div className="flex flex-col gap-4">
+          <span className="numbers">
+            {tokenData
+              ? formatUsdPrice(getMidPrice(tokenData.prices), { visualMultiplier: tokenData.visualMultiplier })
+              : "-"}
+          </span>
+          {isMobile && <span>{dayPriceDeltaComponent}</span>}
+        </div>
+      </td>
+      {!isMobile && <td className={tdClassName}>{dayPriceDeltaComponent}</td>}
+      <td className={cx(tdClassName, "numbers")}>
+        {dayVolume ? formatAmountHuman(dayVolume, USD_DECIMALS, true) : "-"}
+      </td>
+      {!isMobile && (
+        <>
+          <td className={cx(tdClassName, "pr-4 numbers")}>
+            <span className="inline-flex items-center gap-6">
+              <LongIcon width={12} className="relative top-1 mb-2 opacity-70" />
+              {formatAmountHuman(openInterestLong ?? 0n, USD_DECIMALS, true)}
+            </span>
+          </td>
+          <td className={cx(tdClassName, "pl-4 numbers")}>
+            <span className="inline-flex items-center gap-6">
+              <ShortIcon width={12} className="relative top-1 mb-2 opacity-70" />
+              {formatAmountHuman(openInterestShort ?? 0n, USD_DECIMALS, true)}
+            </span>
+          </td>
+        </>
+      )}
+
+      {!isMobile ? (
+        <>
+          <td className={cx(tdClassName, "group pr-4 numbers hover:bg-slate-800")} onClick={handleSelectLong}>
+            <div className="inline-flex items-center justify-end gap-6">
+              <LongIcon width={12} className="relative top-1 mb-2 opacity-70" />
+              {formatAmountHuman(longLiquidity, USD_DECIMALS, true)}
+            </div>
+          </td>
+          <td className={cx(tdClassName, "group pl-4 numbers hover:bg-slate-800")} onClick={handleSelectShort}>
+            <div className="inline-flex items-center justify-end gap-6">
+              <ShortIcon width={12} className="relative top-1 mb-2 opacity-70" />
+              {formatAmountHuman(shortLiquidity, USD_DECIMALS, true)}
+            </div>
+          </td>
+        </>
+      ) : null}
+    </tr>
+  );
+}

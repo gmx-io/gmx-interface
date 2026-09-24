@@ -16,11 +16,12 @@ import DocsIcon from "img/docs.svg?react";
 import ChevronLeftIcon from "img/ic_chevron_left.svg?react";
 import ChevronRightIcon from "img/ic_chevron_right.svg?react";
 
+import { useChartHeaderFormattedValues } from "./useChartHeaderFormattedValues";
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
+import ChartTokenSelectorSolana from "../ChartTokenSelector/ChartTokenSelectorSolana";
 import { renderNetFeeHeaderTooltipContent } from "../MarketsList/NetFeeHeaderTooltipContent";
 import { NetRate1hTooltip } from "./components/NetRate1hTooltip";
 import { OpenInterestTooltip } from "./components/OpenInterestTooltip";
-import { useChartHeaderFormattedValues } from "./useChartHeaderFormattedValues";
 
 const MIN_FADE_AREA = 24; //px
 const MAX_SCROLL_LEFT_TO_END_AREA = 50; //px
@@ -188,7 +189,7 @@ function ChartHeaderDesktop() {
   const [scrollRight, setScrollRight] = useState(0);
   const [maxFadeArea, setMaxFadeArea] = useState(75);
 
-  const { chainId } = useChainId();
+  const { chainId, isSolana } = useChainId();
   const chartTokenAddress = chartToken?.address;
 
   const selectedTokenOption = chartTokenAddress ? getToken(chainId, chartTokenAddress) : undefined;
@@ -397,7 +398,14 @@ function ChartHeaderDesktop() {
   return (
     <div className="flex gap-16 overflow-hidden">
       <div className="flex shrink-0 items-center justify-start">
-        <ChartTokenSelector selectedToken={selectedTokenOption} oneRowLabels={true} />
+        {
+          isSolana ? <ChartTokenSelectorSolana selectedToken={{
+            name: 'Solana',
+            symbol: 'SOL',
+            decimals: 9,
+            address: '0x111231312'
+          }}></ChartTokenSelectorSolana> : <ChartTokenSelector selectedToken={selectedTokenOption} oneRowLabels={true} />
+        }
       </div>
       <div className="relative flex overflow-hidden">
         <div className="pointer-events-none absolute z-40 flex h-full w-full flex-row justify-between">
