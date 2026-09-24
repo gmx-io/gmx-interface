@@ -1,16 +1,24 @@
+import { zeroAddress } from "viem";
 import { describe, expect, it } from "vitest";
 
-import { ARBITRUM } from "config/chains";
+import { ARBITRUM, SOURCE_BASE_MAINNET } from "config/chains";
+import { ExpressTxnParams } from "domain/synthetics/express";
+import { getSourceChainNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { mockExternalSwapQuote } from "domain/synthetics/testUtils/mocks";
+import type { TokenData } from "domain/synthetics/tokens";
 import { expandDecimals, formatUsd } from "lib/numbers";
 import { mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
 import { PositionMarginFailureReason, PositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
 import { TriggerThresholdType } from "sdk/utils/trade/types";
 
 import {
+  ERC20_APPROVE_GAS_LIMIT,
+  getApprovalGasError,
   getConditionalDepositError,
   getConditionalDepositWarning,
   getEditCollateralError,
+  getExpressError,
+  getInsufficientFeeButtonMessage,
   getIncreaseError,
   getMarginDepositAutoCancelLimitMessage,
   getMarginDepositBeyondLiqPriceMessage,
@@ -460,19 +468,160 @@ describe("getEditCollateralError — invalid liquidation price tooltip", () => {
 
 describe("getNativeGasError", () => {
   it("skips validation while the fee or balance is loading", () => {
-    expect(getNativeGasError({ networkFee: undefined, nativeBalance: 0n })).toEqual({});
-    expect(getNativeGasError({ networkFee: 1n, nativeBalance: undefined })).toEqual({});
+    expect(getNativeGasError({ chainId: ARBITRUM, networkFee: undefined, nativeBalance: 0n })).toEqual({});
+    expect(getNativeGasError({ chainId: ARBITRUM, networkFee: 1n, nativeBalance: undefined })).toEqual({});
   });
 
   it("allows a balance equal to the network fee", () => {
-    expect(getNativeGasError({ networkFee: 1n, nativeBalance: 1n })).toEqual({});
+    expect(getNativeGasError({ chainId: ARBITRUM, networkFee: 1n, nativeBalance: 1n })).toEqual({});
   });
 
-  it("returns the native-token balance error when the fee exceeds the balance", () => {
-    expect(getNativeGasError({ networkFee: 2n, nativeBalance: 1n })).toEqual({
-      buttonErrorMessage: "Insufficient gas balance",
+  it("names the native token and the wallet when the fee exceeds the balance", () => {
+    expect(getNativeGasError({ chainId: ARBITRUM, networkFee: 2n, nativeBalance: 1n })).toEqual({
+      buttonErrorMessage: "Insufficient ETH in Wallet",
       bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
     });
+  });
+});
+
+describe("getApprovalGasError", () => {
+  const nativeToken = (overrides: { symbol?: string; walletBalance?: bigint }) =>
+    ({ symbol: overrides.symbol ?? "ETH", walletBalance: overrides.walletBalance }) as TokenData;
+
+  it("names the native token and the wallet when the balance can't pay for the approval", () => {
+    expect(
+      getApprovalGasError({
+        tokenToApprove: tokensData.USDC.address,
+        nativeToken: nativeToken({ walletBalance: 0n }),
+        gasPrice: 10n,
+      })
+    ).toEqual({
+      buttonErrorMessage: "Insufficient ETH in Wallet",
+      bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenForApproval,
+    });
+  });
+
+  it("takes the symbol from the native token", () => {
+    expect(
+      getApprovalGasError({
+        tokenToApprove: tokensData.USDC.address,
+        nativeToken: nativeToken({ symbol: "AVAX", walletBalance: 0n }),
+        gasPrice: 10n,
+      }).buttonErrorMessage
+    ).toBe("Insufficient AVAX in Wallet");
+  });
+
+  it("allows a balance equal to the approval cost", () => {
+    expect(
+      getApprovalGasError({
+        tokenToApprove: tokensData.USDC.address,
+        nativeToken: nativeToken({ walletBalance: ERC20_APPROVE_GAS_LIMIT * 10n }),
+        gasPrice: 10n,
+      })
+    ).toEqual({});
+  });
+
+  it("skips validation while there is nothing to approve or data is loading", () => {
+    expect(
+      getApprovalGasError({ tokenToApprove: undefined, nativeToken: nativeToken({ walletBalance: 0n }), gasPrice: 10n })
+    ).toEqual({});
+    expect(
+      getApprovalGasError({
+        tokenToApprove: tokensData.USDC.address,
+        nativeToken: nativeToken({ walletBalance: undefined }),
+        gasPrice: 10n,
+      })
+    ).toEqual({});
+    expect(
+      getApprovalGasError({
+        tokenToApprove: tokensData.USDC.address,
+        nativeToken: undefined,
+        gasPrice: 10n,
+      })
+    ).toEqual({});
+    expect(
+      getApprovalGasError({
+        tokenToApprove: tokensData.USDC.address,
+        nativeToken: nativeToken({ walletBalance: 0n }),
+        gasPrice: undefined,
+      })
+    ).toEqual({});
+  });
+});
+
+describe("getInsufficientFeeButtonMessage", () => {
+  it("names the source chain for a source-chain fee", () => {
+    expect(
+      getInsufficientFeeButtonMessage({
+        tokenSymbol: "ETH",
+        feeSource: getSourceChainNetworkFeeSource(SOURCE_BASE_MAINNET),
+      })
+    ).toBe("Insufficient ETH on Base");
+  });
+});
+
+describe("getExpressError", () => {
+  const makeExpressParams = (overrides: { isGmxAccount: boolean; isOutGasTokenBalance: boolean }) =>
+    ({
+      chainId: ARBITRUM,
+      isGmxAccount: overrides.isGmxAccount,
+      gasPaymentValidations: {
+        isGasPaymentTokenBalanceLoaded: true,
+        isOutGasTokenBalance: overrides.isOutGasTokenBalance,
+        needGasPaymentTokenApproval: false,
+        isValid: !overrides.isOutGasTokenBalance,
+      },
+      gasPaymentParams: {
+        gasPaymentTokenAddress: tokensData.USDC.address,
+        gasPaymentToken: tokensData.USDC,
+        totalRelayerFeeTokenAmount: expandDecimals(1, 18),
+      },
+    }) as unknown as ExpressTxnParams;
+
+  const withNativeWalletBalance = (walletBalance: bigint) => ({
+    ...tokensData,
+    [zeroAddress]: { ...tokensData.ETH, address: zeroAddress, isNative: true, walletBalance },
+  });
+
+  it("returns no error without express params", () => {
+    expect(getExpressError({ expressParams: undefined, tokensData })).toEqual({});
+  });
+
+  it("names the gas token and the GMX Account when its balance is insufficient", () => {
+    expect(
+      getExpressError({
+        expressParams: makeExpressParams({ isGmxAccount: true, isOutGasTokenBalance: true }),
+        tokensData,
+      })
+    ).toEqual({
+      buttonErrorMessage: "Insufficient USDC in GMX Account",
+      bannerErrorName: ValidationBannerErrorName.insufficientGmxAccountCurrentGasTokenBalance,
+    });
+  });
+
+  it("names the gas token and the wallet when the wallet lacks both the gas token and native token", () => {
+    const walletTokensData = withNativeWalletBalance(expandDecimals(1, 17));
+
+    expect(
+      getExpressError({
+        expressParams: makeExpressParams({ isGmxAccount: false, isOutGasTokenBalance: true }),
+        tokensData: walletTokensData,
+      })
+    ).toEqual({
+      buttonErrorMessage: "Insufficient USDC in Wallet",
+      bannerErrorName: ValidationBannerErrorName.insufficientWalletGasTokenBalance,
+    });
+  });
+
+  it("returns no error for the wallet when the native token covers the fee", () => {
+    const walletTokensData = withNativeWalletBalance(expandDecimals(10, 18));
+
+    expect(
+      getExpressError({
+        expressParams: makeExpressParams({ isGmxAccount: false, isOutGasTokenBalance: true }),
+        tokensData: walletTokensData,
+      })
+    ).toEqual({});
   });
 });
 

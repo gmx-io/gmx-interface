@@ -25,12 +25,12 @@ import { registerReferralCode } from "domain/referrals";
 import { REFERRAL_CODE_REGEX } from "domain/referrals/utils/referralCode";
 import { getCodeError, getReferralCodeTakenStatus } from "domain/referrals/utils/referralsHelper";
 import { signRegisterCode } from "domain/synthetics/express/expressOrderUtils";
+import { getSourceChainNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
 import { useChainId } from "lib/chains";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
-import { formatUsd } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
@@ -43,6 +43,7 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ReferralsIcon from "img/ic_referrals.svg?react";
@@ -503,6 +504,7 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
       buttonState={buttonState}
       inputRef={inputRef}
       networkFeeUsd={quoteResult.networkFeeUsd}
+      networkFee={quoteResult.networkFee}
     />
   );
 }
@@ -521,6 +523,7 @@ function CreateReferralCodeLayout({
   buttonState,
   inputRef,
   networkFeeUsd,
+  networkFee,
 }: {
   chainId: ContractsChainId;
   srcChainId?: SourceChainId;
@@ -540,6 +543,7 @@ function CreateReferralCodeLayout({
   };
   inputRef: React.RefObject<HTMLInputElement>;
   networkFeeUsd?: bigint;
+  networkFee?: bigint;
 }) {
   return (
     <div className="flex flex-col gap-16 rounded-12 border border-slate-600/60 bg-slate-900/60 p-16">
@@ -583,12 +587,19 @@ function CreateReferralCodeLayout({
             }}
           />
         </label>
-        {networkFeeUsd !== undefined && (
+        {srcChainId !== undefined && networkFee !== undefined && (
           <div className="flex justify-between text-12 text-typography-secondary">
             <span>
               <Trans>Network fee</Trans>
             </span>
-            <span>{formatUsd(networkFeeUsd)}</span>
+            <NetworkFeeValue
+              amount={networkFee}
+              usd={networkFeeUsd}
+              decimals={getViemChain(srcChainId).nativeCurrency.decimals}
+              symbol={getViemChain(srcChainId).nativeCurrency.symbol}
+              source={getSourceChainNetworkFeeSource(srcChainId)}
+              isExpress={false}
+            />
           </div>
         )}
         {rpcFailedChains && rpcFailedChains.length > 0 && referralCodeCheckStatus !== "taken" && (

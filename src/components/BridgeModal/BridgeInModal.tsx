@@ -8,6 +8,7 @@ import {
   type GmxAccountPseudoChainId,
   type SettlementChainId,
   type SourceChainId,
+  getViemChain,
 } from "config/chains";
 import { getSourceChainDecimalsMapped, isSourceChain } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
@@ -18,6 +19,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useNativeTokenMultichainUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
 import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNetworkFeeError";
 import { useWithdrawBlockedError } from "domain/multichain/useWithdrawBlockedError";
+import { getSourceChainNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
 import { createBridgeInTxn, getBridgeInTxnParams } from "domain/synthetics/markets/createBridgeInTxn";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
@@ -39,6 +41,7 @@ import { getTxnErrorToast } from "components/Errors/errorToasts";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 import { SlideModal } from "components/Modal/SlideModal";
+import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import { MultichainMarketTokenSelector } from "components/TokenSelector/MultichainMarketTokenSelector";
 import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
@@ -123,13 +126,11 @@ export function BridgeInModal({
       ? gmxAccountMarketTokenBalance + bridgeInAmount
       : undefined;
 
-  const { formattedBalance, formattedMaxAvailableAmount, showClickMax } = useMaxAvailableAmount({
+  const { formattedBalance, formattedMaxAvailableAmount, maxAvailableAmount, maxActions } = useMaxAvailableAmount({
     fromToken: marketToken,
     fromTokenBalance: bridgeInChainMarketTokenBalance,
     fromTokenAmount: bridgeInAmount,
-    fromTokenInputValue: bridgeInInputValue,
     srcChainId: bridgeInChain,
-    ignoreGasPaymentToken: true,
   });
 
   const nativeFeeAsyncResult = useThrottledAsync(
@@ -339,12 +340,13 @@ export function BridgeInModal({
           bottomRightValue={formattedBalance}
           bottomRightLabel={t`Available`}
           onClickMax={
-            showClickMax
+            maxAvailableAmount > 0n
               ? () => {
                   setBridgeInInputValue(formattedMaxAvailableAmount);
                 }
               : undefined
           }
+          isMaxSelected={maxActions.selected === "max"}
           maxDecimals={sourceChainDecimals}
         >
           <MultichainMarketTokenSelector
@@ -378,7 +380,23 @@ export function BridgeInModal({
             {buttonState.text}
           </Button>
         </ButtonTooltipWrapper>
-        <SyntheticsInfoRow label={t`Network fee`} value={formatUsd(nativeFeeUsd)} />
+        <SyntheticsInfoRow
+          label={t`Network fee`}
+          value={
+            nativeFee !== undefined && bridgeInChain !== undefined ? (
+              <NetworkFeeValue
+                amount={nativeFee}
+                usd={nativeFeeUsd}
+                decimals={getViemChain(bridgeInChain).nativeCurrency.decimals}
+                symbol={getViemChain(bridgeInChain).nativeCurrency.symbol}
+                source={getSourceChainNetworkFeeSource(bridgeInChain)}
+                isExpress={false}
+              />
+            ) : (
+              "..."
+            )
+          }
+        />
         <SyntheticsInfoRow
           label={t`GMX Account balance`}
           value={

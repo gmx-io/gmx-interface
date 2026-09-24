@@ -8,10 +8,17 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GasPaymentParams } from "domain/synthetics/express";
 import { getExecutionFeeWarning, type ExecutionFee } from "domain/synthetics/fees";
+import {
+  getNetworkFeeSourceExplanation,
+  getNetworkFeeSourceLabel,
+  WALLET_NETWORK_FEE_SOURCE,
+  type NetworkFeeSource,
+} from "domain/synthetics/fees/networkFeeSource";
 import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
-import { TokenData } from "domain/tokens";
-import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { TokenBalanceType, TokenData } from "domain/tokens";
+import { formatTokenAmountWithUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { convertTokenAddress, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 import ExchangeInfoRow from "components/ExchangeInfoRow/ExchangeInfoRow";
@@ -20,10 +27,13 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import { NetworkFeeValue } from "./NetworkFeeValue";
 
 type Props = {
   executionFee?: ExecutionFee;
   gasPaymentParams?: GasPaymentParams;
+  feeSource: NetworkFeeSource | undefined;
+  feeSourceExplanation?: string;
   isAdditionOrdersMsg?: boolean;
   rowPadding?: boolean;
 };
@@ -34,12 +44,21 @@ type Props = {
  */
 const ESTIMATED_REFUND_BPS = 10 * 100;
 
-export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrdersMsg, rowPadding = false }: Props) {
+export function NetworkFeeRow({
+  executionFee,
+  gasPaymentParams,
+  feeSource,
+  feeSourceExplanation,
+  isAdditionOrdersMsg,
+  rowPadding = false,
+}: Props) {
   const executionFeeBufferBps = useExecutionFeeBufferBps();
   const tokensData = useTokensData();
   const chainId = useSelector(selectChainId);
   const gasPaymentToken = getByKey(tokensData, gasPaymentParams?.gasPaymentTokenAddress);
-  const executionFeeToken = getByKey(tokensData, executionFee?.feeToken.address);
+  const executionFeeToken = executionFee
+    ? getByKey(tokensData, convertTokenAddress(chainId, executionFee.feeToken.address, "native"))
+    : undefined;
 
   const additionalOrdersMsg = useMemo(
     () =>
@@ -56,6 +75,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
     let feeUsd: bigint;
     let feeAmount: bigint;
     let feeToken: TokenData;
+    let isExpress: boolean;
 
     if (gasPaymentToken && gasPaymentParams?.gasPaymentTokenAmount !== undefined) {
       feeToken = gasPaymentToken;
@@ -65,10 +85,12 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
         gasPaymentToken.decimals,
         gasPaymentToken.prices.minPrice
       )!;
+      isExpress = true;
     } else if (executionFee && executionFeeToken) {
       feeUsd = executionFee.feeUsd;
       feeAmount = executionFee.feeTokenAmount;
       feeToken = executionFeeToken;
+      isExpress = false;
     } else {
       return undefined;
     }
@@ -77,13 +99,31 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
       feeUsd,
       feeAmount,
       feeToken,
+      isExpress,
     };
   }, [executionFee, executionFeeToken, gasPaymentToken, gasPaymentParams]);
 
-  const executionDisplayDecimals = executionFeeToken?.isStable ? 2 : 5;
   const networkFeeDisplayDecimals = networkFee?.feeToken.isStable ? 2 : 5;
 
-  const { estimatedRefundText, estimatedRefundUsd } = useMemo(() => {
+  const refundSource = feeSource ?? WALLET_NETWORK_FEE_SOURCE;
+  const refundToken = useMemo(() => {
+    if (!networkFee) {
+      return undefined;
+    }
+
+    if (!networkFee.isExpress) {
+      return networkFee.feeToken;
+    }
+
+    const refundTokenAddress =
+      refundSource.balanceType === TokenBalanceType.GmxAccount
+        ? getWrappedToken(chainId).address
+        : NATIVE_TOKEN_ADDRESS;
+
+    return getByKey(tokensData, refundTokenAddress);
+  }, [chainId, networkFee, refundSource, tokensData]);
+
+  const { estimatedRefundText, estimatedRefundUsd, estimatedRefundTokenAmount } = useMemo(() => {
     let estimatedRefundUsd: bigint | undefined;
 
     if (!networkFee || executionFeeBufferBps === undefined) {
@@ -102,35 +142,33 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
 
     const estimatedRefundTokenAmount = convertToTokenAmount(
       estimatedRefundUsd,
-      executionFeeToken?.decimals,
-      executionFeeToken?.prices.minPrice
+      refundToken?.decimals,
+      refundToken?.prices.minPrice
     );
 
-    const estimatedRefundText = formatTokenAmountWithUsd(
+    const estimatedRefundAmountText = formatTokenAmountWithUsd(
       estimatedRefundTokenAmount,
       estimatedRefundUsd,
-      executionFeeToken?.symbol,
-      executionFeeToken?.decimals,
+      refundToken?.symbol,
+      refundToken?.decimals,
       {
         displayPlus: true,
-        displayDecimals: executionDisplayDecimals,
-        isStable: executionFeeToken?.isStable,
+        displayDecimals: refundToken?.isStable ? 2 : 5,
+        isStable: refundToken?.isStable,
       }
     );
+
+    const estimatedRefundText =
+      estimatedRefundAmountText !== undefined
+        ? `${estimatedRefundAmountText} · ${getNetworkFeeSourceLabel(refundSource)}`
+        : undefined;
 
     return {
       estimatedRefundText,
       estimatedRefundUsd,
+      estimatedRefundTokenAmount,
     };
-  }, [
-    executionDisplayDecimals,
-    executionFeeBufferBps,
-    executionFeeToken?.decimals,
-    executionFeeToken?.isStable,
-    executionFeeToken?.prices.minPrice,
-    executionFeeToken?.symbol,
-    networkFee,
-  ]);
+  }, [executionFeeBufferBps, networkFee, refundSource, refundToken]);
 
   const value: ReactNode = useMemo(() => {
     if (networkFee === undefined) {
@@ -138,7 +176,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
     }
 
     const maxNetworkFeeText = formatTokenAmountWithUsd(
-      -networkFee.feeAmount,
+      networkFee.feeAmount,
       networkFee.feeUsd,
       networkFee.feeToken.symbol,
       networkFee.feeToken.decimals,
@@ -148,9 +186,18 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
       }
     );
 
-    const feeUsdAfterRefund = networkFee.feeUsd - (estimatedRefundUsd ?? 0n);
+    const feeUsdAfterRefund = networkFee.isExpress ? networkFee.feeUsd : networkFee.feeUsd - (estimatedRefundUsd ?? 0n);
+    const feeAmountAfterRefund = networkFee.isExpress
+      ? networkFee.feeAmount
+      : networkFee.feeAmount - (estimatedRefundTokenAmount ?? 0n);
 
     const warning = executionFee ? getExecutionFeeWarning(chainId, executionFee) : undefined;
+
+    const sourceExplanation =
+      feeSourceExplanation ??
+      (feeSource
+        ? getNetworkFeeSourceExplanation({ source: feeSource, isExpress: networkFee.isExpress, chainId })
+        : undefined);
 
     return (
       <TooltipWithPortal
@@ -183,20 +230,36 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
               valueClassName="numbers"
               textClassName="text-green-500"
             />
+            {sourceExplanation && (
+              <>
+                <br />
+                <p>{sourceExplanation}</p>
+              </>
+            )}
             {warning && <p className="text-yellow-300">{warning}</p>}
             {additionalOrdersMsg && <p>{additionalOrdersMsg}</p>}
           </>
         }
       >
-        {formatUsd(-feeUsdAfterRefund)}
+        <NetworkFeeValue
+          amount={feeAmountAfterRefund}
+          usd={feeUsdAfterRefund}
+          decimals={networkFee.feeToken.decimals}
+          symbol={networkFee.feeToken.symbol}
+          isStable={networkFee.feeToken.isStable}
+          source={feeSource}
+        />
       </TooltipWithPortal>
     );
   }, [
     networkFee,
     networkFeeDisplayDecimals,
     estimatedRefundUsd,
+    estimatedRefundTokenAmount,
     executionFee,
     chainId,
+    feeSource,
+    feeSourceExplanation,
     estimatedRefundText,
     additionalOrdersMsg,
   ]);
@@ -204,6 +267,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
   if (rowPadding) {
     return (
       <ExchangeInfoRow
+        qa="network-fee"
         label={
           <TooltipWithPortal
             position="left-start"
@@ -220,6 +284,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
 
   return (
     <SyntheticsInfoRow
+      qa="network-fee"
       label={
         <TooltipWithPortal
           position="left-start"

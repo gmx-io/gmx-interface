@@ -30,7 +30,9 @@ export function ExpressTradingOutOfGasBanner({ onClose }: { onClose: () => void 
       <div>
         {srcChainId !== undefined ? (
           <>
-            <Trans>Insufficient gas balance. Deposit more {gasPaymentTokensText}.</Trans>
+            <Trans>
+              Insufficient {gasPaymentTokensText} in your GMX Account. Express and One-Click Trading are unavailable.
+            </Trans>
             <br />
             <ColorfulButtonLink color="blue" onClick={onDepositClick}>
               <Trans>Deposit {gasPaymentTokensText}</Trans>
@@ -38,7 +40,9 @@ export function ExpressTradingOutOfGasBanner({ onClose }: { onClose: () => void 
           </>
         ) : (
           <>
-            <Trans>Insufficient gas balance. Express Trading and One-Click Trading unavailable.</Trans>
+            <Trans>
+              Insufficient {gasPaymentTokensText} in your Wallet. Express and One-Click Trading are unavailable.
+            </Trans>
             <br />
             <ColorfulButtonLink color="blue" onClick={onBuyClick}>
               <Trans>Buy {gasPaymentTokensText}</Trans>

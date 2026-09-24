@@ -70,6 +70,7 @@ import { BlockTimestampData, useBlockTimestampRequest } from "lib/useBlockTimest
 import { WalletSigner } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
+import { getGasPaymentTokens } from "sdk/configs/express";
 import { convertTokenAddress } from "sdk/configs/tokens";
 
 import { useMultichainMarketTokensBalancesRequest } from "components/GmxAccountModal/hooks";
@@ -360,6 +361,7 @@ export function SyntheticsStateContextProvider({
     () =>
       Array.from(
         new Set([
+          ...getGasPaymentTokens(chainId),
           convertTokenAddress(chainId, settings.gasPaymentTokenAddress, "wrapped"),
           convertTokenAddress(chainId, settings.gmxAccountGasPaymentTokenAddress, "wrapped"),
         ])

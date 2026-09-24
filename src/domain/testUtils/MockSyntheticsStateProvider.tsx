@@ -1,6 +1,7 @@
 import { ReactNode, useMemo } from "react";
 
 import { ARBITRUM, type SourceChainId } from "config/chains";
+import type { PoolsDetailsState } from "context/PoolsDetailsContext/PoolsDetailsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import type { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
@@ -37,6 +38,10 @@ export const DEFAULT_MOCK_MARKETS_INFO_DATA: MarketsInfoData = {
 
 const EMPTY_POSITIONS_INFO_DATA: PositionsInfoData = {};
 const EMPTY_ORDERS_INFO_DATA: OrdersInfoData = {};
+const EMPTY_CLAIMS: SyntheticsState["claims"] = {
+  accruedPositionPriceImpactFees: [],
+  claimablePositionPriceImpactFees: [],
+};
 
 export type MockSyntheticsStateProviderProps = {
   children: ReactNode;
@@ -50,6 +55,11 @@ export type MockSyntheticsStateProviderProps = {
   subaccount?: SyntheticsState["subaccountState"]["subaccount"];
   srcChainId?: SourceChainId;
   l1ExpressOrderGasReference?: L1ExpressOrderGasReference;
+  closingPositionKey?: string;
+  claims?: SyntheticsState["claims"];
+  poolsDetails?: PoolsDetailsState;
+  depositMarketTokensData?: TokensData;
+  gasPaymentTokenAllowance?: SyntheticsState["gasPaymentTokenAllowance"];
 };
 
 /**
@@ -69,6 +79,11 @@ export function MockSyntheticsStateProvider({
   subaccount,
   srcChainId,
   l1ExpressOrderGasReference,
+  closingPositionKey,
+  claims = EMPTY_CLAIMS,
+  poolsDetails,
+  depositMarketTokensData,
+  gasPaymentTokenAllowance,
 }: MockSyntheticsStateProviderProps) {
   const chainId = ARBITRUM;
   const { account, signer } = useWallet();
@@ -121,12 +136,12 @@ export function MockSyntheticsStateProvider({
         uiFeeFactor,
         userReferralInfo: undefined,
         proDiscountFactor: undefined,
-        depositMarketTokensData: undefined,
+        depositMarketTokensData,
         progressiveDepositMarketTokensData: undefined,
         multichainMarketTokensBalancesResult: { tokenBalances: {}, isLoading: false },
         glvInfo: { glvs: undefined, glvData: undefined, isLoading: false },
 
-        closingPositionKey: undefined,
+        closingPositionKey,
         setClosingPositionKey: noop,
         closingPositionOrderOption: undefined,
 
@@ -152,7 +167,7 @@ export function MockSyntheticsStateProvider({
 
         jitLiquidityData: { jitLiquidityMap: undefined },
       },
-      claims: { accruedPositionPriceImpactFees: [], claimablePositionPriceImpactFees: [] },
+      claims,
       // page-scoped, unrelated to trading widgets
       leaderboard: {} as SyntheticsState["leaderboard"],
       settings,
@@ -164,11 +179,11 @@ export function MockSyntheticsStateProvider({
       positionSeller: positionSellerState,
       positionEditor: positionEditorState,
       confirmationBox: confirmationBoxState,
-      poolsDetails: undefined,
+      poolsDetails,
       // populate if the component under test grows feature-gated or oracle-based behavior
       features,
       uiFlags: undefined,
-      gasPaymentTokenAllowance: undefined,
+      gasPaymentTokenAllowance,
       l1ExpressOrderGasReference,
     };
 
@@ -187,6 +202,11 @@ export function MockSyntheticsStateProvider({
     isFirstOrder,
     features,
     l1ExpressOrderGasReference,
+    closingPositionKey,
+    claims,
+    poolsDetails,
+    depositMarketTokensData,
+    gasPaymentTokenAllowance,
     settings,
     subaccountState,
     tokenPermitsState,

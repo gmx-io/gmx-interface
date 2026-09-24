@@ -466,6 +466,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                 onClickMax={
                   depositConfig.maxAmount !== undefined && depositConfig.maxAmount > 0n ? onClickMax : undefined
                 }
+                isMaxSelected={depositAmount === depositConfig.maxAmount}
                 inputValue={depositValues[selectedVault]}
                 onInputValueChange={(e) => handleSetDepositValue(e.target.value)}
                 maxDecimals={18}

@@ -648,14 +648,14 @@ test.describe("TradeBox", () => {
   });
 
   test.describe("Seeded scenarios", () => {
-    test("native ETH pay reserves a gas buffer on max", async ({ mount, page }) => {
+    test("native ETH pay holds back the execution fee plus 40 % on max", async ({ mount, page }) => {
       await mount(<TradeBoxStory seedPayNativeEth />);
 
       await page.locator(getDataQALocator("margin-max")).click();
 
-      // max leaves a residual gas buffer, strictly below the 10 ETH balance
+      // max holds back only the current fee + 40 %: a fraction of a cent at the mock gas price, no future reserve
       const marginInput = page.locator(getDataQALocator("margin-input"));
-      await expectInputInRange(marginInput, 9.5, 9.9999);
+      await expectInputInRange(marginInput, 9.99, 9.9999);
     });
 
     test("stored leverage above market cap is clamped on mount", async ({ mount, page }) => {
@@ -692,13 +692,14 @@ test.describe("TradeBox", () => {
   });
 
   test.describe("Fixture scenarios", () => {
-    test("zero balances disable the slider and max fill", async ({ mount, page }) => {
+    test("zero balances disable the slider, hide Max and make the balance click a no-op", async ({ mount, page }) => {
       await mount(<TradeBoxStory connected zeroBalances />);
 
       await expect(page.locator(".rc-slider-disabled")).toBeVisible();
 
       const marginInput = page.locator(getDataQALocator("margin-input"));
-      await page.locator(getDataQALocator("margin-max")).click();
+      await expect(page.locator(getDataQALocator("margin-max"))).toHaveCount(0);
+      await page.locator(getDataQALocator("margin-balance")).click();
       await expect(marginInput).toHaveValue("");
 
       await marginInput.fill("100");

@@ -10,16 +10,31 @@ import {
   selectClaimsGroupedPositionPriceImpactClaimableFees,
   selectClaimsPriceImpactClaimableTotal,
 } from "context/SyntheticsStateContext/selectors/claimsSelectors";
+import { selectGmxAccountGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import { selectGmxAccountGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
+import {
+  ArbitraryExpressError,
+  useArbitraryError,
+  useArbitraryRelayParamsAndPayload,
+} from "domain/multichain/arbitraryRelayParams";
 import {
   buildAndSignClaimPositionPriceImpactFeesTxn,
   createClaimCollateralTxn,
+  estimateClaimCollateralGas,
 } from "domain/synthetics/claimHistory/claimPriceImpactRebate";
 import { ExpressTransactionBuilder, RawRelayParamsPayload } from "domain/synthetics/express";
+import { useGasPrice } from "domain/synthetics/fees";
+import {
+  GMX_ACCOUNT_NETWORK_FEE_SOURCE,
+  WALLET_NETWORK_FEE_SOURCE,
+  type NetworkFeeDetails,
+  type NetworkFeeSource,
+} from "domain/synthetics/fees/networkFeeSource";
 import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import { getTokenData } from "domain/synthetics/tokens";
+import { convertToUsd, getMidPrice, getTokenData } from "domain/synthetics/tokens";
+import { getInsufficientFeeButtonMessage } from "domain/synthetics/trade/utils/validation";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
@@ -27,15 +42,29 @@ import { expandDecimals, formatDeltaUsd, formatTokenAmount } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { sendExpressTransaction } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { usePrevious } from "lib/usePrevious";
+import { useThrottledAsync } from "lib/useThrottledAsync";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
+import { getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { nowInSeconds } from "sdk/utils/time";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
+import { InsufficientGmxAccountGasTokenBalanceMessage } from "components/Errors/gasErrors";
+import { calculateNetworkFeeDetails } from "components/GmxAccountModal/calculateNetworkFeeDetails";
 import Modal from "components/Modal/Modal";
+import { SimpleNetworkFeeRow } from "components/NetworkFeeRow/SimpleNetworkFeeRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+type ClaimNetworkFee = {
+  details: NetworkFeeDetails | undefined;
+  isLoading: boolean;
+  source: NetworkFeeSource;
+  isExpress: boolean;
+};
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
@@ -67,6 +96,49 @@ function ClaimablePositionPriceImpactRebateModalSettlementChain({
   const { signer, account, active } = useWallet();
   const claimablePositionPriceImpactFees = useSelector(selectClaimablePositionPriceImpactFees);
   const hasOutdatedUi = useHasOutdatedUi();
+  const tokensData = useTokensData();
+  const gasPrice = useGasPrice(chainId);
+
+  const gasEstimationParams = useMemo(() => {
+    if (!isVisible || !account || srcChainId !== undefined || claimablePositionPriceImpactFees.length === 0) {
+      return undefined;
+    }
+
+    return { chainId, account, claimablePositionPriceImpactFees };
+  }, [account, chainId, claimablePositionPriceImpactFees, isVisible, srcChainId]);
+
+  const gasEstimationKey = gasEstimationParams
+    ? gasEstimationParams.claimablePositionPriceImpactFees.map((item) => item.id).join("|")
+    : undefined;
+  const prevGasEstimationKey = usePrevious(gasEstimationKey);
+
+  const gasLimitAsyncResult = useThrottledAsync(
+    async ({ params }) =>
+      estimateClaimCollateralGas(params.chainId, {
+        account: params.account,
+        claimablePositionPriceImpactFees: params.claimablePositionPriceImpactFees,
+      }),
+    {
+      params: gasEstimationParams,
+      forceRecalculate: gasEstimationKey !== undefined && gasEstimationKey !== prevGasEstimationKey,
+      resetOnForceRecalculate: true,
+      leading: true,
+      trailing: true,
+    }
+  );
+
+  const networkFee = useMemo(
+    (): ClaimNetworkFee => ({
+      details: calculateNetworkFeeDetails({ gasLimit: gasLimitAsyncResult.data, gasPrice, tokensData }),
+      isLoading:
+        gasEstimationParams !== undefined &&
+        gasLimitAsyncResult.data === undefined &&
+        gasLimitAsyncResult.error === undefined,
+      source: WALLET_NETWORK_FEE_SOURCE,
+      isExpress: false,
+    }),
+    [gasEstimationParams, gasLimitAsyncResult.data, gasLimitAsyncResult.error, gasPrice, tokensData]
+  );
 
   const handleSubmit = useCallback(async () => {
     if (!signer) throw new Error("No signer");
@@ -101,14 +173,18 @@ function ClaimablePositionPriceImpactRebateModalSettlementChain({
     if (isSubmitting) {
       return { text: t`Claiming...`, disabled: true };
     }
+    if (networkFee.isLoading) {
+      return { text: t`Loading fees...`, disabled: true };
+    }
     return { text: t`Claim`, disabled: false, onSubmit: handleSubmit };
-  }, [handleSubmit, hasOutdatedUi, isSubmitting]);
+  }, [handleSubmit, hasOutdatedUi, isSubmitting, networkFee.isLoading]);
 
   return (
     <ClaimablePositionPriceImpactRebateModalComponent
       isVisible={isVisible}
       onClose={onClose}
       buttonState={buttonState}
+      networkFee={networkFee}
     />
   );
 }
@@ -164,6 +240,46 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
     expressTransactionBuilder,
     isGmxAccount: srcChainId !== undefined,
   });
+
+  const errors = useArbitraryError(expressTxnParamsAsyncResult.error, { isGmxAccount: srcChainId !== undefined });
+  const gmxAccountGasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
+  const gmxAccountGasPaymentTokenAddress = useSelector(selectGmxAccountGasPaymentTokenAddress);
+
+  const networkFee = useMemo((): ClaimNetworkFee => {
+    const gasPaymentParams = expressTxnParamsAsyncResult.data?.gasPaymentParams;
+    const token = gasPaymentParams?.gasPaymentToken ?? gmxAccountGasPaymentToken;
+    const amount =
+      errors?.isOutOfTokenError?.isGasPaymentToken && errors.isOutOfTokenError.requiredAmount !== undefined
+        ? errors.isOutOfTokenError.requiredAmount
+        : gasPaymentParams?.gasPaymentTokenAmount;
+
+    const details: NetworkFeeDetails | undefined =
+      token && amount !== undefined
+        ? {
+            amount,
+            usd: convertToUsd(amount, token.decimals, getMidPrice(token.prices))!,
+            decimals: token.decimals,
+            symbol: token.symbol,
+            isStable: token.isStable,
+          }
+        : undefined;
+
+    return {
+      details,
+      isLoading:
+        details === undefined &&
+        claimablePositionPriceImpactFees.length > 0 &&
+        expressTxnParamsAsyncResult.error === undefined,
+      source: GMX_ACCOUNT_NETWORK_FEE_SOURCE,
+      isExpress: true,
+    };
+  }, [
+    claimablePositionPriceImpactFees.length,
+    errors?.isOutOfTokenError,
+    expressTxnParamsAsyncResult.data,
+    expressTxnParamsAsyncResult.error,
+    gmxAccountGasPaymentToken,
+  ]);
 
   const handleSubmit = useCallback(async () => {
     const onMissingParams = () => {
@@ -257,14 +373,40 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
     if (isSubmitting) {
       return { text: t`Claiming...`, disabled: true };
     }
+    if (errors?.isOutOfTokenError?.isGasPaymentToken) {
+      return {
+        text: getInsufficientFeeButtonMessage({
+          tokenSymbol: getToken(chainId, gmxAccountGasPaymentTokenAddress).symbol,
+          feeSource: GMX_ACCOUNT_NETWORK_FEE_SOURCE,
+        }),
+        disabled: true,
+      };
+    }
+    if (expressTxnParamsAsyncResult.error) {
+      return { text: t`Network fee unavailable`, disabled: true };
+    }
+    if (networkFee.isLoading) {
+      return { text: t`Loading fees...`, disabled: true };
+    }
     return { text: t`Claim`, disabled: false, onSubmit: handleSubmit };
-  }, [handleSubmit, hasOutdatedUi, isSubmitting]);
+  }, [
+    chainId,
+    errors?.isOutOfTokenError?.isGasPaymentToken,
+    expressTxnParamsAsyncResult.error,
+    gmxAccountGasPaymentTokenAddress,
+    handleSubmit,
+    hasOutdatedUi,
+    isSubmitting,
+    networkFee.isLoading,
+  ]);
 
   return (
     <ClaimablePositionPriceImpactRebateModalComponent
       isVisible={isVisible}
       onClose={onClose}
       buttonState={buttonState}
+      networkFee={networkFee}
+      errors={errors}
     />
   );
 }
@@ -273,6 +415,8 @@ function ClaimablePositionPriceImpactRebateModalComponent({
   isVisible,
   onClose,
   buttonState,
+  networkFee,
+  errors,
 }: {
   isVisible: boolean;
   onClose: () => void;
@@ -281,7 +425,10 @@ function ClaimablePositionPriceImpactRebateModalComponent({
     disabled?: boolean;
     onSubmit?: () => void;
   };
+  networkFee: ClaimNetworkFee;
+  errors?: ArbitraryExpressError;
 }) {
+  const { chainId } = useChainId();
   const total = useSelector(selectClaimsPriceImpactClaimableTotal);
   const totalUsd = useMemo(() => formatDeltaUsd(total), [total]);
   const groups = useSelector(selectClaimsGroupedPositionPriceImpactClaimableFees);
@@ -314,6 +461,22 @@ function ClaimablePositionPriceImpactRebateModalComponent({
           ))}
         </div>
       </div>
+      {errors?.isOutOfTokenError?.isGasPaymentToken && (
+        <AlertInfoCard type="error" hideClose className="mb-15">
+          <InsufficientGmxAccountGasTokenBalanceMessage
+            chainId={chainId}
+            gasPaymentTokenAddress={errors.isOutOfTokenError.tokenAddress}
+            onBeforeNavigation={onClose}
+          />
+        </AlertInfoCard>
+      )}
+      <SimpleNetworkFeeRow
+        className="mb-15"
+        details={networkFee.details}
+        isLoading={networkFee.isLoading}
+        source={networkFee.source}
+        isExpress={networkFee.isExpress}
+      />
       <Button
         className="w-full"
         variant="primary-action"

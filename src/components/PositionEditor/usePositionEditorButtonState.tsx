@@ -62,6 +62,11 @@ import {
   ValidationButtonTooltipName,
   ValidationResult,
 } from "domain/synthetics/trade/utils/validation";
+import {
+  getApproveButtonText,
+  getGasPaymentTokenApprovalTooltip,
+  getIsGasPaymentTokenApproval,
+} from "domain/tokens/gasPaymentTokenApproval";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { bigNumberBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
@@ -309,7 +314,7 @@ export function usePositionEditorButtonState(
   const approvalTokens = useMemo(() => {
     const list: { tokenAddress: string; amount: bigint | undefined }[] = [];
 
-    if (selectedCollateralAddress && collateralDeltaAmount !== undefined) {
+    if (isDeposit && selectedCollateralAddress && collateralDeltaAmount !== undefined) {
       list.push({ tokenAddress: selectedCollateralAddress, amount: collateralDeltaAmount });
     }
 
@@ -321,7 +326,7 @@ export function usePositionEditorButtonState(
     }
 
     return list;
-  }, [selectedCollateralAddress, collateralDeltaAmount, expressParams?.gasPaymentParams]);
+  }, [isDeposit, selectedCollateralAddress, collateralDeltaAmount, expressParams?.gasPaymentParams]);
 
   const {
     tokensToApprove,
@@ -675,16 +680,34 @@ export function usePositionEditorButtonState(
     };
   }
 
-  if (isApproving && tokensToApprove.length) {
+  const getApproveButtonState = (): Pick<PositionEditorButtonState, "text" | "tooltipContent"> => {
     const tokenToApprove = tokensToApprove[0];
+    const tokenSymbol = getToken(chainId, tokenToApprove).symbol;
+    const isGasPaymentTokenApproval = getIsGasPaymentTokenApproval({
+      tokenAddress: tokenToApprove,
+      gasPaymentTokenAddress: expressParams?.gasPaymentParams.gasPaymentTokenAddress,
+      payTokenAddress: isDeposit ? selectedCollateralAddress : undefined,
+    });
+
+    return {
+      text: getApproveButtonText({ tokenSymbol, isGasPaymentToken: isGasPaymentTokenApproval }),
+      tooltipContent: isGasPaymentTokenApproval
+        ? getGasPaymentTokenApprovalTooltip(tokenSymbol)
+        : commonParams.tooltipContent,
+    };
+  };
+
+  if (isApproving && tokensToApprove.length) {
+    const { text, tooltipContent } = getApproveButtonState();
     return {
       text: (
         <>
-          {t`Approve ${getToken(chainId, tokenToApprove).symbol}`} <SpinnerIcon className="ml-4 animate-spin" />
+          {text} <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
       disabled: true,
       ...commonParams,
+      tooltipContent,
     };
   }
 
@@ -728,11 +751,12 @@ export function usePositionEditorButtonState(
   }
 
   if (isAllowanceLoaded && tokensToApprove.length && selectedCollateralToken) {
-    const tokenToApprove = tokensToApprove[0];
+    const { text, tooltipContent } = getApproveButtonState();
     return {
-      text: t`Approve ${getToken(chainId, tokenToApprove).symbol}`,
+      text,
       disabled: false,
       ...commonParams,
+      tooltipContent,
     };
   }
 

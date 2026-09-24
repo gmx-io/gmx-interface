@@ -20,6 +20,10 @@ import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/se
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import {
+  getExpressParamsForSubmit,
+  reportMultichainExpressSubmitError,
+} from "domain/synthetics/express/validateMultichainExpressSubmit";
+import {
   isIncreaseOrderType,
   isLimitDecreaseOrderType,
   isStopLossOrderType,
@@ -218,7 +222,7 @@ export function OrdersModal({
             chainId,
             batchParams,
             globalExpressParams,
-            requireValidations: true,
+            requireValidations: false,
             estimationMethod: "approximate",
             provider,
             isGmxAccount: srcChainId !== undefined,
@@ -226,11 +230,23 @@ export function OrdersModal({
           })
         : undefined;
 
+      if (
+        reportMultichainExpressSubmitError({
+          isGmxAccount: srcChainId !== undefined,
+          expressParams,
+          tokensData: undefined,
+          actionName: "Cancel Order",
+          collateral: position?.collateralToken.symbol,
+        })
+      ) {
+        return;
+      }
+
       await sendBatchOrderTxn({
         chainId,
         signer,
         batchParams,
-        expressParams,
+        expressParams: getExpressParamsForSubmit(expressParams),
         simulationParams: undefined,
         callback: makeOrderTxnCallback({
           actionName: "Cancel Order",

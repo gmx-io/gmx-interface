@@ -43,6 +43,25 @@ export type ExpressOrdersParamsResult = {
   isMultichainSubmitDisabled: boolean;
 };
 
+export function getMatchingExpressParamsPromise({
+  fastExpressPromise,
+  asyncExpressPromise,
+  isAsyncEnabled,
+  isGmxAccount,
+}: {
+  fastExpressPromise: Promise<ExpressTxnParams | undefined> | undefined;
+  asyncExpressPromise: Promise<ExpressTxnParams | undefined> | undefined;
+  isAsyncEnabled: boolean;
+  isGmxAccount: boolean;
+}): Promise<ExpressTxnParams | undefined> {
+  const sourcePromises = isAsyncEnabled ? [fastExpressPromise, asyncExpressPromise] : [fastExpressPromise];
+  const matchingSourcePromises = sourcePromises.flatMap((promise) =>
+    promise ? [promise.then((result) => (result?.isGmxAccount === isGmxAccount ? result : Promise.reject(result)))] : []
+  );
+
+  return Promise.any(matchingSourcePromises).catch(() => undefined);
+}
+
 export function useExpressOrdersParams({
   orderParams,
   label,
@@ -81,7 +100,7 @@ export function useExpressOrdersParams({
     : undefined;
   const externalSwapGasLimit = orderParams ? getBatchExternalSwapGasLimit(orderParams) : undefined;
 
-  const estimationKey = `${executionFeeKey}:${requiredActions}:${externalSwapGasLimit}:${globalExpressParams?.gasPaymentTokenAddress}`;
+  const estimationKey = `${executionFeeKey}:${requiredActions}:${externalSwapGasLimit}:${globalExpressParams?.gasPaymentTokenAddress}:${isGmxAccount}`;
   const prevEstimationKey = usePrevious(estimationKey);
 
   const forceRecalculate = estimationKey !== prevEstimationKey;
@@ -191,22 +210,28 @@ export function useExpressOrdersParams({
       };
     }
 
-    const expressParams = isAsyncEnabled ? asyncExpressParams ?? fastExpressParams : fastExpressParams;
+    const matchingFastExpressParams = fastExpressParams?.isGmxAccount === isGmxAccount ? fastExpressParams : undefined;
+    const matchingAsyncExpressParams =
+      asyncExpressParams?.isGmxAccount === isGmxAccount ? asyncExpressParams : undefined;
+    const expressParams = isAsyncEnabled
+      ? matchingAsyncExpressParams ?? matchingFastExpressParams
+      : matchingFastExpressParams;
     const hasOrderParams = !getIsEmptyBatch(orderParams);
-    const isLoading = hasOrderParams && !fastExpressParams && !fastExpressError;
+    const isLoading = hasOrderParams && !matchingFastExpressParams && !fastExpressError;
     const isMultichainSubmitDisabled = isGmxAccount && hasOrderParams && !expressParams;
 
-    const expressParamsPromise = Promise.race([fastExpressPromise, asyncExpressPromise])
-      .then((result) => {
-        return result;
-      })
-      .catch(() => undefined);
+    const expressParamsPromise = getMatchingExpressParamsPromise({
+      fastExpressPromise,
+      asyncExpressPromise,
+      isAsyncEnabled: Boolean(isAsyncEnabled),
+      isGmxAccount,
+    });
 
     return {
       expressParams,
       expressEstimateMethod: expressParams?.estimationMethod,
-      fastExpressParams,
-      asyncExpressParams,
+      fastExpressParams: matchingFastExpressParams,
+      asyncExpressParams: matchingAsyncExpressParams,
       isLoading,
       isMultichainSubmitDisabled,
       expressParamsPromise,

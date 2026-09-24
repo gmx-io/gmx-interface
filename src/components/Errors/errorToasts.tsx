@@ -1,15 +1,16 @@
 import { t, Trans } from "@lingui/macro";
 import { Signer } from "ethers";
 import { ReactNode } from "react";
-import { Link } from "react-router-dom";
 
 import { ContractsChainId, getChainName, getGasPricePremium } from "config/chains";
-import { JUMPER_BRIDGE_URL, SAFE_MULTICHAIN_DOCS_URL } from "config/links";
+import { SAFE_MULTICHAIN_DOCS_URL } from "config/links";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getExecutionFeeBufferBps, getMinimumExecutionFeeBufferBps } from "domain/synthetics/fees/utils/executionFee";
+import { ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
 import { ErrorData } from "lib/errors";
 import {
+  getInsufficientFeeError,
   SMART_WALLET_ACCOUNT_CHANGED_ERROR,
   SMART_WALLET_CHAIN_UNAVAILABLE_ERROR,
   SMART_WALLET_WRONG_CHAIN_ERROR,
@@ -17,13 +18,22 @@ import {
 import { helperToast } from "lib/helperToast";
 import { formatPercentage } from "lib/numbers";
 import { switchNetwork } from "lib/wallets";
-import { getNativeToken } from "sdk/configs/tokens";
+import { isSourceChainForAnySettlementChain } from "sdk/configs/multichain";
+import { getNativeToken, isValidTokenSafe } from "sdk/configs/tokens";
 import { extractTxnError, TxError, TxErrorType } from "sdk/utils/errors/transactionsErrors";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
+import {
+  InsufficientGmxAccountTokenBalanceMessage,
+  InsufficientNativeTokenBalanceMessage,
+  InsufficientSourceChainNativeTokenBalanceMessage,
+  InsufficientUnknownTokenBalanceMessage,
+  InsufficientWalletTokenBalanceMessage,
+  ValidationBannerErrorContent,
+} from "./gasErrors";
 import { getContractErrorToastContent } from "./getContractErrorToastContent";
 
 export type PermitIssueType = "invalidSignature" | "expiredDeadline";
@@ -37,7 +47,146 @@ export type AdditionalErrorParams = {
   isExternalSwapFallback?: boolean;
   permitIssueType?: PermitIssueType;
   setIsSettingsVisible?: (isVisible: boolean) => void;
+  expressTxn?: ExpressTxnErrorContext;
 };
+
+export type ExpressTxnErrorContext = {
+  gasPaymentTokenAddress: string;
+  isGmxAccount: boolean;
+  /** Every token the transaction pulls from the paying balance, the gas payment token included */
+  payTokenAddresses?: string[];
+  possiblyInsufficientTokenAddresses?: string[];
+};
+
+export type InsufficientBalanceToastBanner =
+  | { kind: "fee"; validationBannerErrorName: ValidationBannerErrorName; gasPaymentTokenAddress: string }
+  | { kind: "payToken"; isGmxAccount: boolean; tokenAddress: string }
+  | { kind: "unknown"; isGmxAccount: boolean; gasPaymentTokenAddress: string; payTokenAddresses: string[] };
+
+export function getInsufficientBalanceToastBanner({
+  chainId,
+  errorData,
+  expressTxn,
+}: {
+  chainId: number;
+  errorData: ErrorData | undefined;
+  expressTxn: ExpressTxnErrorContext | undefined;
+}): InsufficientBalanceToastBanner | undefined {
+  if (!errorData || !expressTxn) {
+    return undefined;
+  }
+
+  const feeError = getInsufficientFeeError(errorData);
+  const isNotEnoughFunds = errorData.txErrorType === TxErrorType.NotEnoughFunds;
+
+  if (!feeError.isErrorMatched && !isNotEnoughFunds) {
+    return undefined;
+  }
+
+  const { gasPaymentTokenAddress, isGmxAccount } = expressTxn;
+
+  const feeBanner: InsufficientBalanceToastBanner = {
+    kind: "fee",
+    validationBannerErrorName: isGmxAccount
+      ? ValidationBannerErrorName.insufficientGmxAccountCurrentGasTokenBalance
+      : ValidationBannerErrorName.insufficientWalletGasTokenBalance,
+    gasPaymentTokenAddress,
+  };
+
+  const revertTokenAddress =
+    feeError.isErrorMatched && feeError.tokenAddress && isValidTokenSafe(chainId, feeError.tokenAddress)
+      ? feeError.tokenAddress
+      : undefined;
+
+  const possiblyInsufficientTokenAddresses = expressTxn.possiblyInsufficientTokenAddresses ?? [];
+  const namedTokenAddress =
+    revertTokenAddress ??
+    (possiblyInsufficientTokenAddresses.length === 1 ? possiblyInsufficientTokenAddresses[0] : undefined);
+
+  if (namedTokenAddress !== undefined) {
+    return namedTokenAddress === gasPaymentTokenAddress
+      ? feeBanner
+      : { kind: "payToken", isGmxAccount, tokenAddress: namedTokenAddress };
+  }
+
+  const otherPayTokenAddresses = (expressTxn.payTokenAddresses ?? []).filter(
+    (tokenAddress) => tokenAddress !== gasPaymentTokenAddress
+  );
+
+  if (otherPayTokenAddresses.length === 0) {
+    return feeBanner;
+  }
+
+  return { kind: "unknown", isGmxAccount, gasPaymentTokenAddress, payTokenAddresses: otherPayTokenAddresses };
+}
+
+export function getInsufficientBalanceToastContent({
+  chainId,
+  banner,
+  debugErrorMessage,
+}: {
+  chainId: number;
+  banner: InsufficientBalanceToastBanner;
+  debugErrorMessage: string | undefined;
+}) {
+  let message: ReactNode;
+
+  switch (banner.kind) {
+    case "fee":
+      message = (
+        <ValidationBannerErrorContent
+          validationBannerErrorName={banner.validationBannerErrorName}
+          chainId={chainId as ContractsChainId}
+          gasPaymentTokenAddress={banner.gasPaymentTokenAddress}
+        />
+      );
+      break;
+    case "payToken":
+      message = banner.isGmxAccount ? (
+        <InsufficientGmxAccountTokenBalanceMessage
+          chainId={chainId as ContractsChainId}
+          tokenAddress={banner.tokenAddress}
+        />
+      ) : (
+        <InsufficientWalletTokenBalanceMessage
+          chainId={chainId as ContractsChainId}
+          tokenAddress={banner.tokenAddress}
+        />
+      );
+      break;
+    case "unknown":
+      message = (
+        <InsufficientUnknownTokenBalanceMessage
+          chainId={chainId as ContractsChainId}
+          isGmxAccount={banner.isGmxAccount}
+          gasPaymentTokenAddress={banner.gasPaymentTokenAddress}
+          payTokenAddresses={banner.payTokenAddresses}
+        />
+      );
+      break;
+  }
+
+  return (
+    <div>
+      {message}
+      <br />
+      <br />
+      {debugErrorMessage && <ToastifyDebug error={debugErrorMessage} />}
+    </div>
+  );
+}
+
+function getInsufficientNativeTokenToastContent(chainId: number): ReactNode | undefined {
+  if (getNativeToken(chainId)) {
+    return <InsufficientNativeTokenBalanceMessage chainId={chainId as ContractsChainId} />;
+  }
+
+  if (isSourceChainForAnySettlementChain(chainId)) {
+    return <InsufficientSourceChainNativeTokenBalanceMessage srcChainId={chainId} />;
+  }
+
+  return undefined;
+}
 
 export function getTxnErrorToast(
   chainId: number,
@@ -51,10 +200,9 @@ export function getTxnErrorToast(
     isExternalSwapFallback,
     permitIssueType,
     setIsSettingsVisible,
+    expressTxn,
   }: AdditionalErrorParams
 ) {
-  const nativeToken = getNativeToken(chainId);
-
   const debugErrorMessage = getDebugErrorMessage(errorData);
 
   const toastParams: {
@@ -142,6 +290,16 @@ export function getTxnErrorToast(
     return toastParams;
   }
 
+  const balanceBanner = getInsufficientBalanceToastBanner({ chainId, errorData, expressTxn });
+  if (balanceBanner) {
+    toastParams.errorContent = getInsufficientBalanceToastContent({
+      chainId,
+      banner: balanceBanner,
+      debugErrorMessage,
+    });
+    return toastParams;
+  }
+
   const contractErrorMessage = getContractErrorToastContent({ chainId, errorData, slippageInputId, isSizeIncrease });
   if (contractErrorMessage) {
     toastParams.errorContent = contractErrorMessage;
@@ -150,18 +308,7 @@ export function getTxnErrorToast(
 
   switch (errorData.txErrorType) {
     case TxErrorType.NotEnoughFunds:
-      toastParams.errorContent = (
-        <Trans>
-          Insufficient {nativeToken.symbol} for gas on {getChainName(chainId)}
-          <br />
-          <br />
-          <Link className="underline" to={`/trade/swap?to=${nativeToken.symbol}`}>
-            Swap
-          </Link>{" "}
-          or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge</ExternalLink> {nativeToken.symbol} to{" "}
-          {getChainName(chainId)}
-        </Trans>
-      );
+      toastParams.errorContent = getInsufficientNativeTokenToastContent(chainId) ?? toastParams.errorContent;
       break;
     case TxErrorType.NetworkChanged:
       toastParams.errorContent = getInvalidNetworkToastContent(chainId);
@@ -237,25 +384,13 @@ export function getErrorMessage(
   additionalContent?: React.ReactNode
 ) {
   const [message, type, errorData] = extractTxnError(ex);
-  const nativeToken = getNativeToken(chainId);
 
   let failMsg;
   let autoCloseToast: any = 5000;
 
   switch (type) {
     case TxErrorType.NotEnoughFunds:
-      failMsg = (
-        <Trans>
-          Insufficient {nativeToken.symbol} for gas on {getChainName(chainId)}
-          <br />
-          <br />
-          <Link className="underline" to={`/trade/swap?to=${nativeToken.symbol}`}>
-            Swap
-          </Link>{" "}
-          or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge</ExternalLink> {nativeToken.symbol} to{" "}
-          {getChainName(chainId)}
-        </Trans>
-      );
+      failMsg = <InsufficientNativeTokenBalanceMessage chainId={chainId as ContractsChainId} />;
       break;
     case TxErrorType.NetworkChanged:
       failMsg = getInvalidNetworkToastContent(chainId);

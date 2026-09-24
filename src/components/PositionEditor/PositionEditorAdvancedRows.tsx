@@ -18,7 +18,7 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { usePositionEditorData } from "./hooks/usePositionEditorData";
 import { Options, usePositionEditorFees } from "./hooks/usePositionEditorFees";
 
-export function PositionEditorAdvancedRows({ operation, gasPaymentParams }: Options) {
+export function PositionEditorAdvancedRows({ operation, gasPaymentParams, feeSource }: Options) {
   const position = usePositionEditorPosition();
 
   const { collateralDeltaUsd } = useSelector(selectPositionEditorCollateralInputAmountAndUsd);
@@ -47,7 +47,7 @@ export function PositionEditorAdvancedRows({ operation, gasPaymentParams }: Opti
       contentClassName="flex flex-col gap-14"
     >
       <TradeFeesRow {...fees} feesType="edit" shouldShowRebate={false} />
-      <NetworkFeeRow executionFee={executionFee} gasPaymentParams={gasPaymentParams} />
+      <NetworkFeeRow executionFee={executionFee} gasPaymentParams={gasPaymentParams} feeSource={feeSource} />
 
       <SyntheticsInfoRow
         label={

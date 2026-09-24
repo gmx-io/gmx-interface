@@ -230,6 +230,12 @@ msgstr "등급 및 온보딩 절차를 실시간으로 안내"
 msgid "Price impact from closing. Positive values benefit you. <0>Read more</0>."
 msgstr "포지션 종료 시 가격 영향입니다. 양수 값은 유리합니다. <0>자세히 보기</0>."
 
+#: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
+#: src/components/ClaimModal/ClaimModal.tsx
+#: src/domain/tokens/useMaxAvailableAmount.ts
+msgid "Network fee unavailable"
+msgstr "네트워크 수수료를 불러올 수 없습니다"
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Before confirming a transaction, make sure the wallet prompt is using {desiredChainName}. To avoid this warning, disable other wallet extensions in your browser settings."
 msgstr "트랜잭션을 확인하기 전에 지갑 프롬프트가 {desiredChainName}을(를) 사용하고 있는지 확인하세요. 이 경고를 피하려면 브라우저 설정에서 다른 지갑 확장 프로그램을 비활성화하세요."
@@ -344,7 +350,6 @@ msgid "Margin per part: {0} (min {1})"
 msgstr "파트당 증거금: {0} (최소 {1})"
 
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Buy {gasPaymentTokensText}"
 msgstr "{gasPaymentTokensText} 구매"
 
@@ -411,6 +416,10 @@ msgstr "로드맵"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "This margin deposit may not execute before liquidation: its trigger is at or beyond the estimated liquidation price."
 msgstr "이 증거금 예치는 청산 전에 실행되지 않을 수 있습니다: 조건가가 예상 청산가 또는 그 너머에 있습니다."
+
+#: src/domain/tokens/useMaxAvailableAmount.ts
+msgid "Leaves no {symbol} in your {source} for future Express fees."
+msgstr "향후 Express 수수료를 위한 {symbol}은(는) {source}에 남지 않습니다."
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "To"
@@ -579,6 +588,10 @@ msgstr "이 주문의 일부가 체결되지 않을 수 있습니다: 트리거�
 msgid "GM"
 msgstr "GM"
 
+#: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
+msgid "Not enough {fromSymbol} in your GMX Account for fees. Gas payment token switched to {toSymbol}."
+msgstr "수수료에 필요한 {fromSymbol}이(가) GMX 계정에 부족합니다. Gas 결제 토큰이 {toSymbol}(으)로 전환되었습니다."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Funding exponent"
 msgstr "펀딩 지수"
@@ -648,6 +661,10 @@ msgstr "{0} 숏 최대치를 초과했습니다."
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GM balance"
 msgstr "GM 잔고 부족"
+
+#: src/domain/synthetics/fees/networkFeeSource.ts
+msgid "Express fees are paid in your Wallet gas payment token. Change it in Settings."
+msgstr "Express 수수료는 지갑의 Gas 결제 토큰으로 지불됩니다. 설정에서 변경할 수 있습니다."
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Slippage exceeded. Expected min: {minOutputAmountText}, actual: {outputAmountText}"
@@ -769,6 +786,10 @@ msgstr ""
 #: src/pages/Actions/SyntheticsActions.tsx
 msgid "GMX {VERSION_NAME} actions across all traders on {networkName}"
 msgstr "{networkName}의 모든 트레이더에 대한 GMX {VERSION_NAME} 액션"
+
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+msgid "Paid from your GMX Account because your Wallet does not have enough {walletGasTokenSymbol} for the fee."
+msgstr "지갑에 수수료에 필요한 {walletGasTokenSymbol}이(가) 부족하여 GMX 계정에서 지불됩니다."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -905,6 +926,10 @@ msgstr "실현 PnL"
 msgid "Receive supported assets into your wallet on {networksList}, then deposit them to GMX Account."
 msgstr "{networksList}의 지갑으로 지원되는 자산을 받은 후 GMX 계정에 입금하세요."
 
+#: src/domain/synthetics/fees/networkFeeSource.ts
+msgid "{chainName} wallet"
+msgstr "{chainName} 지갑"
+
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "All positions belong to the same connected wallet and are shown together, whether they were opened with wallet funds or GMX Account funds."
 msgstr "모든 포지션은 동일한 연결된 지갑에 속하며, 지갑 자금으로 개설되었든 GMX Account 자금으로 개설되었든 함께 표시됩니다."
@@ -969,6 +994,10 @@ msgstr "상세 보기"
 #: src/components/TradeBox/TradeBox.tsx
 msgid "More"
 msgstr "더 보기"
+
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {nativeTokenSymbol} in your Wallet to approve {approvalTokenSymbol}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
+msgstr "{approvalTokenSymbol} 승인에 필요한 {nativeTokenSymbol}이(가) 지갑에 부족합니다. {nativeTokenSymbol}을(를) <0>스왑</0>하거나 <1>브리지</1>하세요."
 
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "Global"
@@ -1315,6 +1344,10 @@ msgstr "Gas 잔액이 부족합니다. ETH를 추가로 입금하십시오."
 msgid "Execution fee is too low for current network costs"
 msgstr "실행 수수료가 현재 네트워크 비용에 비해 너무 낮습니다"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Insufficient {tokenSymbol} in your Wallet for gas."
+msgstr "가스용 {tokenSymbol}이(가) 지갑에 부족합니다."
+
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Tiers"
 msgstr ""
@@ -1343,6 +1376,11 @@ msgstr "VOLUME"
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "{0} amount"
 msgstr "{0} 수량"
+
+#: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "The bridge fee is paid in {bridgeFeeTokenSymbol} from your GMX Account."
+msgstr "브리지 수수료는 GMX 계정의 {bridgeFeeTokenSymbol}(으)로 지불됩니다."
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "SHORTS NET RATE / 1H"
@@ -1704,6 +1742,10 @@ msgstr "비활성화 중..."
 msgid "Total pending claimable"
 msgstr "청구 가능 대기 총액"
 
+#: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
+msgid "Not enough {fromSymbol} in your Wallet for fees. Gas payment token switched to {toSymbol}."
+msgstr "수수료에 필요한 {fromSymbol}이(가) 지갑에 부족합니다. Gas 결제 토큰이 {toSymbol}(으)로 전환되었습니다."
+
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Not yet"
 msgstr "아직은"
@@ -1843,10 +1885,6 @@ msgstr "토큰"
 msgid "Action(s)"
 msgstr "작업"
 
-#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
-msgid "Insufficient gas balance. Deposit more {gasPaymentTokensText}."
-msgstr "Gas 잔액이 부족합니다. {gasPaymentTokensText}을(를) 추가로 입금하십시오."
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "1inch"
 msgstr "1inch"
@@ -1934,6 +1972,10 @@ msgstr "마켓"
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
 msgstr "재시도"
+
+#: src/domain/tokens/useMaxAvailableAmount.ts
+msgid "Keeps {reserve} {symbol} in your {source} for future Express fees."
+msgstr "향후 Express 수수료를 위해 {reserve} {symbol}을(를) {source}에 남깁니다."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Available liquidity {directionLabel}"
@@ -2160,6 +2202,10 @@ msgstr "차입 수수료 / 일"
 msgid "GMX pools don't have enough liquidity for this swap size. Try reducing the amount."
 msgstr "GMX 풀에 이 스왑 규모를 위한 유동성이 부족합니다. 금액을 줄여보세요."
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Used for Express and One-Click fees only, paid from the balance the action uses. Classic transactions, same-chain GMX Account transfers, and bridges pay gas in {nativeTokenSymbol} from your Wallet."
+msgstr "Express 및 One-Click 수수료에만 사용되며, 작업이 사용하는 잔액에서 지불됩니다. 클래식 트랜잭션, 동일 체인 GMX 계정 이체 및 브리지의 Gas는 지갑의 {nativeTokenSymbol}(으)로 지불됩니다."
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate vault. Withdraw them to transfer to the new account."
 msgstr "Affiliate 볼트에 esGMX 토큰이 있습니다. 새 계정으로 전송하려면 출금하십시오."
@@ -2233,6 +2279,10 @@ msgstr "이 스왑에는 외부 라우팅이 필요하지만 가스 결제 토�
 msgid "Search in all {marketTypeLabel}"
 msgstr "모든 {marketTypeLabel} 검색"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient {tokenSymbol} in GMX Account"
+msgstr "GMX 계정의 {tokenSymbol}이(가) 부족합니다"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized trading protocol"
 msgstr "탈중앙화 거래 프로토콜"
@@ -2292,6 +2342,10 @@ msgstr "EIP-4844"
 msgid "Keep leverage at {0}"
 msgstr "{0}으로 레버리지 유지"
 
+#: src/domain/tokens/useMaxAvailableAmount.ts
+msgid "Fills Max minus {reserve} {symbol}, kept in your {source} for future Express fees."
+msgstr "최대에서 {reserve} {symbol}을(를) 뺀 금액을 입력합니다. 뺀 금액은 향후 Express 수수료를 위해 {source}에 남겨 둡니다."
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAIL. LIQ."
 msgstr "사용 가능 유동성"
@@ -2348,6 +2402,10 @@ msgstr ""
 msgid "Gain"
 msgstr "이익"
 
+#: src/domain/tokens/gasPaymentTokenApproval.ts
+msgid "{tokenSymbol} is your Wallet gas payment token. One-time approval so Express fees can be paid in {tokenSymbol}. Change it in Settings."
+msgstr "{tokenSymbol}은(는) 지갑의 Gas 결제 토큰입니다. Express 수수료를 {tokenSymbol}(으)로 지불할 수 있도록 하는 일회성 승인입니다. 설정에서 변경할 수 있습니다."
+
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swapped {0} for {1}"
@@ -2365,6 +2423,10 @@ msgstr "GMX 잔액"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Price on Avalanche"
 msgstr "Avalanche에서 가격"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
+msgstr "오프체인으로 거래에 서명합니다. 프리미엄 RPC가 네트워크 혼잡 시 안정성을 보장합니다.<0/><1/>수수료는 작업이 사용하는 잔액에서 Gas 결제 토큰으로 지불됩니다."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Lifecycle RPNL"
@@ -2826,10 +2888,6 @@ msgstr "레이어 2"
 msgid "All valid codes give you at least a 5% discount. Premium affiliates (Tier 2/3) offer 10% discount. You'll see the exact discount percentage after the code has been applied."
 msgstr ""
 
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "Allow {0} spending"
-msgstr "{0} 지출 허용"
-
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "GMX pools can't fill this swap size. It needs an external route, which isn't available with One-Click Trading. Disable One-Click Trading to proceed."
 msgstr "GMX 풀에서 이 스왑 규모를 체결할 수 없습니다. 외부 경로가 필요하지만 One-Click Trading에서는 사용할 수 없습니다. 계속하려면 One-Click Trading을 비활성화하세요."
@@ -2909,7 +2967,6 @@ msgid "Refer traders to GMX with your unique link and earn a share of the fees t
 msgstr "고유 링크로 트레이더를 GMX에 추천하고, 그들이 발생시키는 수수료의 일부를 수익으로 받으십시오."
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
-#: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Max:"
@@ -2981,11 +3038,8 @@ msgstr "RANK"
 msgid "{txnTypeText} {0} order for"
 msgstr "{txnTypeText} {0} 주문"
 
-#: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/WalletSendView.tsx
-#: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/MaxActions/MaxActions.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Max"
 msgstr "최대"
@@ -3066,6 +3120,10 @@ msgstr "스왑 실패"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>Have to keep an eye on <1>@GMX_IO</1> here. While all of DeFi is in shambles, GMX continues to show impressive sustained performance in users, AUM, volume/fees, open interest, and utilization of capital. Best place to swap between major assets on Arbitrum and exposure to the Arb airdrop</0>"
 msgstr "<0>여기서 <1>@GMX_IO</1>를 주시해야 합니다. DeFi 전체가 혼란스러운 가운데 GMX는 사용자, AUM, 거래량/수수료, 오픈 인터레스트 및 자본 활용에서 인상적인 지속 성과를 보여줍니다. Arbitrum에서 주요 자산 간 스왑 및 Arb 에어드랍 노출에 최적의 장소</0>"
+
+#: src/domain/tokens/useMaxAvailableAmount.ts
+msgid "Not enough {symbol} in your {source} to cover this transaction's fee (~{holdback} {symbol})."
+msgstr "{source}의 {symbol}이(가) 이 거래의 수수료(약 {holdback} {symbol})를 충당하기에 부족합니다."
 
 #: src/components/WhatsNewToast/WhatsNewToastContainer.tsx
 msgid "Update available"
@@ -3172,6 +3230,10 @@ msgstr "Coin"
 msgid "Previous"
 msgstr ""
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient {tokenSymbol} on {chainName}"
+msgstr "{chainName}의 {tokenSymbol}이(가) 부족합니다"
+
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "Expected 365d fees"
 msgstr "365일 예상 수수료"
@@ -3260,10 +3322,6 @@ msgstr "<0>고정된 기준은 없습니다 — 데스크가 최근 및 예상 �
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing {indexTokenText} Short: -{sizeDeltaUsdText}"
 msgstr ""
-
-#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
-msgid "Insufficient gas balance. Express Trading and One-Click Trading unavailable."
-msgstr "가스 잔액이 부족합니다. Express Trading 및 One-Click Trading을 이용할 수 없습니다."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Invalid signature. Try signing the request again"
@@ -3443,11 +3501,6 @@ msgstr "스왑"
 msgid "Creating order..."
 msgstr "주문 생성 중…"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Allow {0} to be spent"
-msgstr "{0} 지출 허용"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Stake submitted"
 msgstr "스테이킹이 제출되었습니다"
@@ -3459,10 +3512,6 @@ msgstr "순변동"
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 msgid "Transaction failed.<0/><1/><2>View</2>"
 msgstr "거래에 실패했습니다.<0/><1/><2>보기</2>"
-
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
-msgstr "{symbol} 잔액 부족: {availableFormatted} 사용 가능, {requiredFormatted} 필요"
 
 #: src/components/PositionList/SymbolSortDropdown.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
@@ -3518,6 +3567,10 @@ msgstr "GMX Account에 자산이 없습니다"
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Order type"
 msgstr "주문 유형"
+
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {symbol} in your GMX Account for this transaction. <0>Deposit {symbol}</0>"
+msgstr "이 거래에 필요한 {symbol}이(가) GMX 계정에 부족합니다. <0>{symbol} 예치</0>"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
@@ -3683,13 +3736,17 @@ msgstr "{0}에서 {1}(으)로의 GMX 스왑 경로를 찾을 수 없습니다."
 msgid "Commodities"
 msgstr "원자재"
 
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+msgid "Paid in {nativeTokenSymbol} from your Wallet because your Wallet does not have enough {walletGasTokenSymbol} for Express."
+msgstr "지갑에 Express에 필요한 {walletGasTokenSymbol}이(가) 부족하여 지갑의 {nativeTokenSymbol}(으)로 지불됩니다."
+
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
 msgid "How to start earning?"
 msgstr ""
 
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {tokensText} for gas in your GMX Account <0>Deposit {tokensText}</0>"
-msgstr ""
+msgstr "GMX 계정의 가스용 {tokensText}이(가) 부족합니다 <0>{tokensText} 예치</0>"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Failed to load trade history"
@@ -3746,6 +3803,10 @@ msgstr "조건가"
 msgid "No AB flags"
 msgstr "AB 플래그 없음"
 
+#: src/components/Errors/gasErrors.tsx
+msgid "Not enough {payTokens} or {gasTokenSymbol} in your {sourceLabel}: this transaction spends {payTokens} and pays its network fee in {gasTokenSymbol}. Check both balances."
+msgstr "{sourceLabel}에 {payTokens} 또는 {gasTokenSymbol}이(가) 부족합니다. 이 거래는 {payTokens}을(를) 사용하고 네트워크 수수료를 {gasTokenSymbol}(으)로 지불합니다. 두 잔액을 모두 확인하세요."
+
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "27% of protocol revenue is used to buy back GMX on the open market. Bought-back GMX accumulates in the Treasury and will be distributed to stakers when GMX reaches $90, proportional to staking power. No new GMX tokens are minted."
 msgstr ""
@@ -3765,6 +3826,10 @@ msgstr "GMX 생태계 페이지"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dune Analytics for GMX"
 msgstr "GMX를 위한 Dune 분석"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them."
+msgstr "Express를 사용하려면 GMX 계정에 {gasPaymentTokensText}이(가) 필요합니다. 그중 하나를 입금하십시오."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
@@ -4125,10 +4190,6 @@ msgstr "마진이 포지션 규모에 필요한 최소 금액보다 적습니다
 msgid "How much can I earn as an affiliate?"
 msgstr ""
 
-#: src/components/Errors/gasErrors.tsx
-msgid "Insufficient {localizedList} for gas on {chainName}. <0>Swap</0> or <1>bridge</1> {localizedList}."
-msgstr ""
-
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -4214,6 +4275,10 @@ msgstr "탈중앙화 옵션 프로토콜"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Trade at scale without worrying about thin order books or slippage"
 msgstr "얇은 호가창이나 슬리피지 걱정 없이 대규모로 거래하십시오"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Express needs {gasPaymentTokensText} in your Wallet. Swap or bridge one of them."
+msgstr "Express를 사용하려면 지갑에 {gasPaymentTokensText}이(가) 필요합니다. 그중 하나를 스왑하거나 브리지하십시오."
 
 #: src/components/Claims/SettleAccruedCard.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
@@ -4760,6 +4825,10 @@ msgstr ""
 msgid "Executed"
 msgstr "실행됨"
 
+#: src/domain/synthetics/express/validateMultichainExpressSubmit.tsx
+msgid "Express is unavailable right now, so this GMX Account action can't be sent."
+msgstr "현재 Express를 사용할 수 없어 이 GMX 계정 작업을 전송할 수 없습니다."
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Amount exceeds the transfer limit. Try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "전송 한도를 초과했습니다. <0>{upperLimitFormatted}</0>보다 작은 금액을 입력하십시오."
@@ -5162,6 +5231,10 @@ msgstr "출금 금액 입력"
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active orders"
 msgstr "활성 주문"
+
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {symbol} in your Wallet for this transaction. <0>Swap</0> or <1>bridge</1> {symbol}."
+msgstr "이 거래에 필요한 {symbol}이(가) 지갑에 부족합니다. {symbol}을(를) <0>스왑</0>하거나 <1>브리지</1>하세요."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Buying GM unavailable"
@@ -5590,6 +5663,10 @@ msgstr "월간 거래량"
 msgid "Min TWAP parts: {MIN_TWAP_NUMBER_OF_PARTS}"
 msgstr ""
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Insufficient {gasPaymentTokenSymbol} in your Wallet for Express fees. Express and One-Click Trading are unavailable."
+msgstr "Express 수수료에 필요한 {gasPaymentTokenSymbol}이(가) 지갑에 부족합니다. Express 및 One-Click Trading을 이용할 수 없습니다."
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Received before close (GMX balance)"
 msgstr "청산 전 수령액 (GMX 잔액)"
@@ -5611,10 +5688,6 @@ msgstr "승인 실패"
 msgid "Updating settings..."
 msgstr "설정 업데이트 중..."
 
-#: src/components/SettingsModal/TradingSettings.tsx
-msgid "GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
-msgstr "GMX는 개별 서명 없이 거래를 실행합니다. 네트워크 혼잡 시에도 안정성을 위해 GMX가 후원하는 프리미엄 RPC를 사용합니다.<0/><1/>Gas 결제 수단: {gasPaymentTokensText}."
-
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Last rebalance"
 msgstr "최종 리밸런싱"
@@ -5630,6 +5703,10 @@ msgstr "TWAP 생성"
 #: src/components/TradeBox/SwapSlippageField.tsx
 msgid "Slippage is the difference between your expected and actual execution price due to price volatility. Orders won't execute if slippage exceeds your allowed maximum. The default can be adjusted in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Note: slippage is different from price impact, which is based on open interest imbalances. <4>Read more</4>."
 msgstr "슬리피지는 가격 변동성으로 인해 예상 체결 가격과 실제 체결 가격의 차이입니다. 슬리피지가 허용 최대값을 초과하면 주문이 체결되지 않습니다. 기본값은 설정에서 조정할 수 있습니다.<0/><1/>낮은 값(예: -{0} 미만)은 변동성이 높을 때 주문 실패를 유발할 수 있습니다.<2/><3/>참고: 슬리피지는 미결제약정 불균형에 기반한 가격 영향과 다릅니다. <4>자세히 보기</4>."
+
+#: src/domain/synthetics/fees/networkFeeSource.ts
+msgid "Wallet transactions pay gas in {nativeTokenSymbol} from your Wallet."
+msgstr "지갑 트랜잭션의 Gas는 지갑의 {nativeTokenSymbol}(으)로 지불됩니다."
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
@@ -5681,6 +5758,10 @@ msgstr "자금이 곧 GMX Account에 입금됩니다"
 #: src/components/InterviewToast/InterviewToast.tsx
 msgid "Join an anonymous one-on-one chat to share your GMX liquidity provider experience"
 msgstr "GMX 유동성 공급자 경험을 공유할 익명 일대일 채팅에 참여하십시오"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Insufficient {tokenSymbol} in your GMX Account for gas."
+msgstr "GMX 계정의 가스용 {tokenSymbol}이(가) 부족합니다."
 
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawn from subaccount"
@@ -5870,14 +5951,13 @@ msgstr "더 알아보기"
 msgid "GM and GLV include markets you no longer hold."
 msgstr "GM과 GLV에는 더 이상 보유하지 않는 마켓도 포함됩니다."
 
+#: src/domain/tokens/gasPaymentTokenApproval.ts
+msgid "Approve {tokenSymbol} for Express fees"
+msgstr "Express 수수료를 위해 {tokenSymbol} 승인"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Earn {0}% more rewards with this action"
 msgstr "이 작업으로 {0}% 더 많은 보상을 받으십시오"
-
-#: src/components/Errors/gasErrors.tsx
-#: src/components/Errors/gasErrors.tsx
-msgid "Insufficient {nativeTokenSymbol} for gas on {0}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
-msgstr ""
 
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "Staked esGMX:"
@@ -6150,6 +6230,10 @@ msgstr "보호 기능이 있는 레버리지 토큰"
 msgid "Your projected share of the Treasury at today's staking power. A best-effort estimate only; actual distribution is subject to DAO governance."
 msgstr "현재 스테이킹 파워 기준 트레저리에서의 예상 몫입니다. 최선의 추정치일 뿐이며, 실제 분배는 DAO 거버넌스에 따릅니다."
 
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
+msgid "Insufficient {gasPaymentTokensText} in your Wallet. Express and One-Click Trading are unavailable."
+msgstr "지갑의 {gasPaymentTokensText}이(가) 부족합니다. Express 및 One-Click Trading을 이용할 수 없습니다."
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop-Loss"
 msgstr "손절매 실패"
@@ -6197,6 +6281,10 @@ msgstr "PnL 분석"
 msgid "Longs"
 msgstr "롱"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Swap for {gasPaymentTokenSymbol}"
+msgstr "{gasPaymentTokenSymbol}(으)로 스왑"
+
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Affiliate rewards claimed"
 msgstr "제휴 보상이 수령되었습니다"
@@ -6237,6 +6325,10 @@ msgstr "<0>퍼밋 승인에 실패했습니다. 표준 승인 트랜잭션이 �
 msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
 msgstr "<0>알림은 Notifi에서 제공되며 GMX와 무관합니다. 구독 시 Notifi에 제공한 정보가 </0><1>개인정보 정책</1><2> 및 </2><3>이용 약관</3>에 따라 관리됨에 동의합니다."
 
+#: src/domain/synthetics/fees/networkFeeSource.ts
+msgid "Deposit {tokenSymbol}."
+msgstr "{tokenSymbol}을(를) 예치하세요."
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Lifecycle settlement"
 msgstr "라이프사이클 정산"
@@ -6244,6 +6336,10 @@ msgstr "라이프사이클 정산"
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
 msgstr ""
+
+#: src/domain/tokens/useMaxAvailableAmount.ts
+msgid "Reserves ~{holdback} {symbol} for this transaction's fee. Leaves no {symbol} in your {source} for future Express fees."
+msgstr "이 거래의 수수료로 약 {holdback} {symbol}을(를) 확보합니다. 향후 Express 수수료를 위한 {symbol}은(는) {source}에 남지 않습니다."
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims unavailable on Avalanche Fuji"
@@ -6935,7 +7031,7 @@ msgstr "증거금 예치"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
-#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+#: src/domain/tokens/gasPaymentTokenApproval.ts
 msgid "Approve {tokenSymbol}"
 msgstr "{tokenSymbol} 승인"
 
@@ -6943,10 +7039,6 @@ msgstr "{tokenSymbol} 승인"
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "REBATE"
 msgstr "리베이트"
-
-#: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
-msgid "Insufficient {fromSymbol} balance. Gas token switched to {toSymbol}"
-msgstr "{fromSymbol} 잔액 부족. Gas 토큰이 {toSymbol}(으)로 변경되었습니다"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may still liquidate from fees alone (funding + borrowing), reducing margin over time."
@@ -7226,7 +7318,6 @@ msgstr "지갑에서 보내기"
 msgid "Can't withdraw collateral. Remaining collateral would be below minimum"
 msgstr "담보를 출금할 수 없습니다. 잔여 담보가 최소 기준 미만이 됩니다"
 
-#: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
@@ -7295,6 +7386,10 @@ msgstr "자체 수수료를 부과하세요"
 msgid "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>"
 msgstr "{receiveTokenSymbol}(으)로 받으면 수익이 스왑되고 {swapProfitFeePercentage}(<0>{swapProfitFeeUsd}</0>)의 비용이 발생합니다. 스왑을 건너뛰려면 {profitTokenSymbol} 및 {collateralTokenSymbol}을 별도로 받으세요. <1>자세히 보기</1>"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
+msgstr "GMX는 개별 서명 없이 거래를 실행합니다. 네트워크 혼잡 시에도 안정성을 위해 GMX가 후원하는 프리미엄 RPC를 사용합니다.<0/><1/>수수료는 작업이 사용하는 잔액에서 Gas 결제 토큰으로 지불됩니다."
+
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Failed to claim price impact rebates"
@@ -7343,7 +7438,6 @@ msgstr ""
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
-#: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Claims/Claims.tsx
 #: src/components/EmptyTableContent/EmptyTableContent.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
@@ -7464,6 +7558,10 @@ msgstr "획득한 수수료는 {chainName}의 지갑에 보유한 GM과 GLV에 �
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set long Limit @ {0}"
 msgstr ""
+
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {nativeTokenSymbol} on {chainName} for this transaction. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
+msgstr "이 트랜잭션에 필요한 {nativeTokenSymbol}이(가) {chainName}에 부족합니다. {nativeTokenSymbol}을(를) <0>스왑</0>하거나 <1>브리지</1>하세요."
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position would be liquidatable"
@@ -7954,10 +8052,6 @@ msgstr "스왑 결과 보기"
 msgid "Guaranteed liquidity"
 msgstr "보장된 유동성"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Insufficient gas balance"
-msgstr "가스 잔액 부족"
-
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V1 rebates"
 msgstr "V1 리베이트"
@@ -8073,7 +8167,6 @@ msgstr "전송 제출됨"
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftTransactions.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/hooks/useTradeboxTransactions.tsx
-#: src/domain/synthetics/express/validateMultichainExpressSubmit.ts
 msgid "Order submission failed"
 msgstr "주문 제출 실패"
 
@@ -8271,6 +8364,7 @@ msgid "Do I need to pass KYC?"
 msgstr "KYC를 통과해야 하나요?"
 
 #: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Your wallet cannot sign messages. Connect a different wallet to trade."
 msgstr "지갑이 메시지에 서명할 수 없습니다. 거래하려면 다른 지갑을 연결하세요."
 
@@ -8282,6 +8376,10 @@ msgstr ""
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "TVL (supply)"
 msgstr "TVL (공급량)"
+
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
+msgid "Insufficient {gasPaymentTokensText} in your GMX Account. Express and One-Click Trading are unavailable."
+msgstr "GMX 계정의 {gasPaymentTokensText}이(가) 부족합니다. Express 및 One-Click Trading을 이용할 수 없습니다."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"
@@ -8438,6 +8536,10 @@ msgstr "활성 Balancer 프로그램 코드"
 msgid "Max amount exceeded"
 msgstr "최대 수량 초과"
 
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {nativeTokenSymbol} in your Wallet for gas on {chainName}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
+msgstr "{chainName}의 가스용 {nativeTokenSymbol}이(가) 지갑에 부족합니다. {nativeTokenSymbol}을(를) <0>스왑</0>하거나 <1>브리지</1>하세요."
+
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -8527,6 +8629,10 @@ msgstr "링크 복사됨"
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Total wallet received"
 msgstr "지갑 총 수령액"
+
+#: src/domain/synthetics/fees/networkFeeSource.ts
+msgid "This action is paid from your GMX Account, so its fee is paid in your GMX Account gas payment token. Change it in Settings."
+msgstr "이 작업은 GMX 계정에서 지불되므로 수수료도 GMX 계정의 Gas 결제 토큰으로 지불됩니다. 설정에서 변경할 수 있습니다."
 
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/OrderList/OrderList.tsx
@@ -8704,11 +8810,9 @@ msgstr "입금 금액 입력"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
-#: src/components/PositionEditor/usePositionEditorButtonState.tsx
-#: src/components/PositionEditor/usePositionEditorButtonState.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Approve {0}"
@@ -8921,6 +9025,10 @@ msgstr "총 수령액 (GMX 잔액)"
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Hide other assets"
 msgstr ""
+
+#: src/domain/synthetics/fees/networkFeeSource.ts
+msgid "Swap or bridge {tokenSymbol}."
+msgstr "{tokenSymbol}을(를) 스왑하거나 브리지하세요."
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
@@ -9348,6 +9456,10 @@ msgstr "알 수 없는 GM 이전 주문"
 msgid "365d estimated fees"
 msgstr ""
 
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {tokensText} in your Wallet for Express fees. <0>Swap</0> or <1>bridge</1> {tokensText}."
+msgstr "Express 수수료에 필요한 {tokensText}이(가) 지갑에 부족합니다. {tokensText}을(를) <0>스왑</0>하거나 <1>브리지</1>하세요."
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Shifting {symbol}..."
 msgstr "{symbol} 이전 중..."
@@ -9423,9 +9535,15 @@ msgstr "온체인 트레이더 탐색, 분석 및 복사"
 msgid "{addressLabel} on {networkLabel}"
 msgstr "{networkLabel}의 {addressLabel}"
 
+#: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
+#: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
+#: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
+#: src/domain/tokens/useMaxAvailableAmount.ts
+#: src/domain/tokens/useMaxAvailableAmount.ts
 msgid "Loading fees..."
-msgstr ""
+msgstr "수수료 불러오는 중..."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "{0} GMX"
@@ -9442,6 +9560,10 @@ msgstr "Jones DAO"
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set short Stop Market @ {0}"
 msgstr ""
+
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+msgid "Paid from your Wallet because your GMX Account does not have enough {gmxAccountGasTokenSymbol} for the fee."
+msgstr "GMX 계정에 수수료에 필요한 {gmxAccountGasTokenSymbol}이(가) 부족하여 지갑에서 지불됩니다."
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -9465,10 +9587,6 @@ msgstr "One-Click Trading 및 Express Trading으로 원활한 거래 경험을 �
 msgid "Top positions"
 msgstr "상위 포지션"
 
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Insufficient {nativeTokenSymbol} balance to cover network fees. Add funds and retry."
-msgstr "네트워크 수수료를 지불할 {nativeTokenSymbol} 잔액이 부족합니다. 자금을 추가한 후 다시 시도하세요."
-
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Send remaining margin to"
@@ -9477,6 +9595,10 @@ msgstr ""
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Buy GM with {0} up to the caps below"
 msgstr "아래 한도까지 {0}(으)로 GM을 구매할 수 있습니다"
+
+#: src/domain/synthetics/fees/networkFeeSource.ts
+msgid "Bridge transactions pay gas in {nativeTokenSymbol} from your {chainName} wallet."
+msgstr "브리지 트랜잭션의 Gas는 {chainName} 지갑의 {nativeTokenSymbol}(으)로 지불됩니다."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
@@ -9623,6 +9745,7 @@ msgid "Short positions"
 msgstr "숏 포지션"
 
 #: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Your wallet cannot sign messages. Use Classic mode to trade."
 msgstr "지갑이 메시지에 서명할 수 없습니다. 거래하려면 클래식 모드를 사용하세요."
 
@@ -9982,10 +10105,6 @@ msgstr "복사 오류"
 msgid "Saulius GMX analytics"
 msgstr "Saulius GMX analytics"
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Express Trading and One-Click Trading are unavailable due to insufficient gas balance"
-msgstr "Gas 잔액 부족으로 Express Trading 및 One-Click Trading을 사용할 수 없습니다"
-
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Add RPC"
 msgstr "RPC 추가"
@@ -10010,7 +10129,6 @@ msgstr "엔드포인트 추가"
 msgid "This pool is at maximum capacity and not accepting deposits right now. Try a different pool."
 msgstr "이 풀은 최대 용량에 도달했으며 현재 입금을 받지 않고 있습니다. 다른 풀을 선택하십시오."
 
-#: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -10106,6 +10224,10 @@ msgstr "평균 규모"
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Long net rate"
 msgstr ""
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+msgid "{availableFormatted} {symbol} available, {requiredFormatted} {symbol} required"
+msgstr "사용 가능 {availableFormatted} {symbol}, 필요 {requiredFormatted} {symbol}"
 
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Decode error"
@@ -10467,11 +10589,6 @@ msgstr "유형 검색"
 #: src/components/TradeHistory/filters/ActionFilter.tsx
 msgid "Market orders"
 msgstr "시장가 주문"
-
-#: src/components/Errors/errorToasts.tsx
-#: src/components/Errors/errorToasts.tsx
-msgid "Insufficient {0} for gas on {1}<0/><1/><2>Swap</2> or <3>bridge</3> {2} to {3}"
-msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buying"
@@ -11018,6 +11135,7 @@ msgstr "수수료와 가격 영향을 반영한 총 PnL 비율입니다. 값을 
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
+#: src/domain/synthetics/fees/networkFeeSource.ts
 msgid "GMX Account"
 msgstr "GMX 계정"
 
@@ -11145,6 +11263,10 @@ msgstr "GMX 거래를 X에 공유하기"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pool short amount"
 msgstr "풀 숏 수량"
+
+#: src/domain/tokens/useMaxAvailableAmount.ts
+msgid "Reserves ~{holdback} {symbol} for this transaction's fee."
+msgstr "이 거래의 수수료로 약 {holdback} {symbol}을(를) 확보합니다."
 
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
@@ -11419,6 +11541,7 @@ msgstr "최적 사용률 롱"
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
+#: src/domain/synthetics/fees/networkFeeSource.ts
 msgid "Wallet"
 msgstr "지갑"
 
@@ -11515,9 +11638,9 @@ msgstr "레버리지 거래, 스왑, 스프레드에서 수수료 수익"
 msgid "Time elapsed"
 msgstr "경과 시간"
 
-#: src/components/SettingsModal/TradingSettings.tsx
-msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
-msgstr "오프체인으로 거래에 서명합니다. 프리미엄 RPC가 네트워크 혼잡 시 안정성을 보장합니다.<0/><1/>Gas 결제는 {gasPaymentTokensText}로 이루어집니다."
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient {tokenSymbol} in Wallet"
+msgstr "지갑의 {tokenSymbol}이(가) 부족합니다"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "External routing is temporarily paused after a failed attempt. Retry to check for a better rate."
@@ -11743,6 +11866,10 @@ msgstr "주소가 복사되었습니다"
 msgid "Unstaking this amount will bring you close to the 20% reset threshold"
 msgstr ""
 
+#: src/components/Errors/gasErrors.tsx
+msgid "Use {alternativeGasTokenSymbol} for fees instead"
+msgstr "대신 {alternativeGasTokenSymbol}(으)로 수수료 지불"
+
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Claim funds"
 msgstr "자금 청구"
@@ -11920,6 +12047,11 @@ msgstr "롱 순 비율 / 1시간"
 #: src/pages/RpcDebug/parts.tsx
 msgid "EVENT"
 msgstr "EVENT"
+
+#: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Bridge fee"
+msgstr "브리지 수수료"
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Distribution"
@@ -12229,6 +12361,10 @@ msgstr "판매"
 msgid "Lent position impact pool amount"
 msgstr "포지션 영향 풀 대출 금액"
 
+#: src/domain/tokens/useMaxAvailableAmount.ts
+msgid "Keeps {reserve} {symbol} in your {source} for future Express fees and ~{holdback} {symbol} for this transaction's fee."
+msgstr "향후 Express 수수료를 위해 {reserve} {symbol}을(를) {source}에 남기고, 이 거래의 수수료로 약 {holdback} {symbol}을(를) 확보합니다."
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "short"
 msgstr "숏"
@@ -12385,13 +12521,13 @@ msgid "Funds bridging to..."
 msgstr "자금 브릿징 중..."
 
 #: src/components/BridgeModal/BridgeInModal.tsx
-#: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/InfoRows.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
+#: src/components/NetworkFeeRow/SimpleNetworkFeeRow.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
@@ -12399,6 +12535,14 @@ msgstr "자금 브릿징 중..."
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Network fee"
 msgstr "네트워크 수수료"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Used for Express and One-Click fees only, paid from the balance the action uses. Bridges pay gas in {srcChainNativeTokenSymbol} from your {srcChainName} wallet."
+msgstr "Express 및 One-Click 수수료에만 사용되며, 작업이 사용하는 잔액에서 지불됩니다. 브리지의 Gas는 {srcChainName} 지갑의 {srcChainNativeTokenSymbol}(으)로 지불됩니다."
+
+#: src/components/MaxActions/MaxActions.tsx
+msgid "Keep gas"
+msgstr "Gas 남기기"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price above liquidation price"

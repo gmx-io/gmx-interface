@@ -8,7 +8,7 @@ import { RpcRequest, RpcResponder } from "./types";
 
 const abiCoder = ethers.AbiCoder.defaultAbiCoder();
 
-function hashString(value: string): string {
+export function hashString(value: string): string {
   return ethers.keccak256(abiCoder.encode(["string"], [value]));
 }
 
@@ -69,6 +69,7 @@ const IFACE = new ethers.Interface([
   "function gasEstimateL1Component(address to, bool contractCreation, bytes data) payable returns (uint64 gasEstimateForL1, uint256 baseFee, uint256 l1BaseFeeEstimate)",
   "function removeSubaccount(address subaccount)",
   "function balanceOf(address account) view returns (uint256)",
+  "function totalSupply() view returns (uint256)",
   "function allowance(address owner, address spender) view returns (uint256)",
   "function getEthBalance(address account) view returns (uint256)",
   "function getBlockNumber() view returns (uint256)",
@@ -89,6 +90,7 @@ const SELECTORS = {
   gasEstimateL1Component: IFACE.getFunction("gasEstimateL1Component")!.selector,
   removeSubaccount: IFACE.getFunction("removeSubaccount")!.selector,
   balanceOf: IFACE.getFunction("balanceOf")!.selector,
+  totalSupply: IFACE.getFunction("totalSupply")!.selector,
   allowance: IFACE.getFunction("allowance")!.selector,
   getEthBalance: IFACE.getFunction("getEthBalance")!.selector,
   getBlockNumber: IFACE.getFunction("getBlockNumber")!.selector,
@@ -172,6 +174,7 @@ export class MockChain implements RpcResponder {
 
   /** ERC20 balances: token address -> holder -> amount. Unset pairs read as 0. */
   tokenBalances: Record<string, Record<string, bigint>> = {};
+  tokenTotalSupplies: Record<string, bigint> = {};
   /** DataStore uint slots by key, for everything outside the subaccount keys resolved below. */
   dataStoreUints: Record<string, bigint> = {};
   /** DataStore address slots by key. Unset keys read as the zero address. */
@@ -182,6 +185,7 @@ export class MockChain implements RpcResponder {
   rejectSendTransaction = false;
   estimateGasError: string | undefined = undefined;
   sendTransactionError: string | undefined = undefined;
+  allowance: bigint = ethers.MaxUint256;
 
   sentTransactions: SentTransaction[] = [];
   signedTypedData: SignedTypedDataRecord[] = [];
@@ -208,6 +212,10 @@ export class MockChain implements RpcResponder {
     const byHolder = this.tokenBalances[ethers.getAddress(token)] ?? {};
     byHolder[ethers.getAddress(holder)] = value;
     this.tokenBalances[ethers.getAddress(token)] = byHolder;
+  }
+
+  setTokenTotalSupply({ token, value }: { token: string; value: bigint }) {
+    this.tokenTotalSupplies[ethers.getAddress(token)] = value;
   }
 
   setDataStoreUint(key: string, value: bigint) {
@@ -485,6 +493,11 @@ export class MockChain implements RpcResponder {
         const balance = token === undefined ? 0n : this.tokenBalances[token]?.[ethers.getAddress(holder)] ?? 0n;
         return IFACE.encodeFunctionResult("balanceOf", [balance]);
       }
+      case SELECTORS.totalSupply: {
+        const token = to === undefined ? undefined : normalizeAddress(to);
+        const supply = token === undefined ? 0n : this.tokenTotalSupplies[token] ?? 0n;
+        return IFACE.encodeFunctionResult("totalSupply", [supply]);
+      }
       case SELECTORS.getBlockNumber: {
         return IFACE.encodeFunctionResult("getBlockNumber", [BigInt(this.blockNumber)]);
       }
@@ -502,7 +515,7 @@ export class MockChain implements RpcResponder {
         return IFACE.encodeFunctionResult("getEthBalance", [balance]);
       }
       case SELECTORS.allowance: {
-        return IFACE.encodeFunctionResult("allowance", [ethers.MaxUint256]);
+        return IFACE.encodeFunctionResult("allowance", [this.allowance]);
       }
       case SELECTORS.getBytes32: {
         const [key] = IFACE.decodeFunctionData("getBytes32", data) as unknown as [string];

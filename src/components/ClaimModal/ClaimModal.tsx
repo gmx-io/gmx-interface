@@ -4,38 +4,59 @@ import { toast } from "react-toastify";
 
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectGmxAccountGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import { selectGmxAccountGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   ArbitraryExpressError,
   useArbitraryError,
   useArbitraryRelayParamsAndPayload,
 } from "domain/multichain/arbitraryRelayParams";
 import { ExpressTransactionBuilder, RawRelayParamsPayload } from "domain/synthetics/express";
+import { useGasPrice } from "domain/synthetics/fees";
+import {
+  GMX_ACCOUNT_NETWORK_FEE_SOURCE,
+  WALLET_NETWORK_FEE_SOURCE,
+  type NetworkFeeDetails,
+  type NetworkFeeSource,
+} from "domain/synthetics/fees/networkFeeSource";
 import {
   MarketInfo,
   getIsFundingClaimInsufficientBalance,
   getMarketIndexName,
   getMarketPoolName,
 } from "domain/synthetics/markets";
-import { buildAndSignClaimFundingFeesTxn, claimFundingFeesTxn } from "domain/synthetics/markets/claimFundingFeesTxn";
-import { TokenData, convertToUsd } from "domain/synthetics/tokens";
+import {
+  buildAndSignClaimFundingFeesTxn,
+  claimFundingFeesTxn,
+  estimateClaimFundingFeesGas,
+} from "domain/synthetics/markets/claimFundingFeesTxn";
+import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
+import { getInsufficientFeeButtonMessage } from "domain/synthetics/trade/utils/validation";
 import { useChainId } from "lib/chains";
+import { parseError } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import { formatDeltaUsd, formatTokenAmount } from "lib/numbers";
-import { getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { sendExpressTransaction } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { usePrevious } from "lib/usePrevious";
+import { useThrottledAsync } from "lib/useThrottledAsync";
 import useWallet from "lib/wallets/useWallet";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
+import { getToken } from "sdk/configs/tokens";
 import { nowInSeconds } from "sdk/utils/time";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
+import { getTxnErrorToast } from "components/Errors/errorToasts";
+import { InsufficientGmxAccountGasTokenBalanceMessage } from "components/Errors/gasErrors";
+import { calculateNetworkFeeDetails } from "components/GmxAccountModal/calculateNetworkFeeDetails";
 import Modal from "components/Modal/Modal";
-import { OutOfTokenErrorAlert } from "components/Referrals/shared/modals/OutOfTokenErrorAlert";
+import { SimpleNetworkFeeRow } from "components/NetworkFeeRow/SimpleNetworkFeeRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -51,6 +72,13 @@ type Props = {
   isVisible: boolean;
   onClose: () => void;
   setPendingTxns: (txns: any) => void;
+};
+
+type ClaimNetworkFee = {
+  details: NetworkFeeDetails | undefined;
+  isLoading: boolean;
+  source: NetworkFeeSource;
+  isExpress: boolean;
 };
 
 export function getClaimingFundingToastContent() {
@@ -98,9 +126,60 @@ function ClaimModalSettlementChain(p: Props) {
   const { account, signer } = useWallet();
   const { chainId } = useChainId();
   const hasOutdatedUi = useHasOutdatedUi();
+  const tokensData = useTokensData();
+  const gasPrice = useGasPrice(chainId);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const selection = useClaimableFundingSelection(isVisible);
+
+  const gasEstimationParams = useMemo(() => {
+    if (!isVisible || !account || selection.selectedEntries.length === 0) {
+      return undefined;
+    }
+
+    return {
+      chainId,
+      account,
+      marketAddresses: selection.selectedEntries.map((entry) => entry.marketAddress),
+      tokenAddresses: selection.selectedEntries.map((entry) => entry.tokenAddress),
+    };
+  }, [account, chainId, isVisible, selection.selectedEntries]);
+
+  const gasEstimationKey = gasEstimationParams
+    ? gasEstimationParams.marketAddresses
+        .map((market, i) => `${market}:${gasEstimationParams.tokenAddresses[i]}`)
+        .join("|")
+    : undefined;
+  const prevGasEstimationKey = usePrevious(gasEstimationKey);
+
+  const gasLimitAsyncResult = useThrottledAsync(
+    async ({ params }) =>
+      estimateClaimFundingFeesGas(params.chainId, {
+        account: params.account,
+        marketAddresses: params.marketAddresses,
+        tokenAddresses: params.tokenAddresses,
+      }),
+    {
+      params: gasEstimationParams,
+      forceRecalculate: gasEstimationKey !== undefined && gasEstimationKey !== prevGasEstimationKey,
+      resetOnForceRecalculate: true,
+      leading: true,
+      trailing: true,
+    }
+  );
+
+  const networkFee = useMemo(
+    (): ClaimNetworkFee => ({
+      details: calculateNetworkFeeDetails({ gasLimit: gasLimitAsyncResult.data, gasPrice, tokensData }),
+      isLoading:
+        gasEstimationParams !== undefined &&
+        gasLimitAsyncResult.data === undefined &&
+        gasLimitAsyncResult.error === undefined,
+      source: WALLET_NETWORK_FEE_SOURCE,
+      isExpress: false,
+    }),
+    [gasEstimationParams, gasLimitAsyncResult.data, gasLimitAsyncResult.error, gasPrice, tokensData]
+  );
 
   const onSubmit = useCallback(() => {
     if (!account || !signer) return;
@@ -133,16 +212,29 @@ function ClaimModalSettlementChain(p: Props) {
         text: t`Claiming...`,
         disabled: true,
       };
-    } else {
+    }
+
+    if (networkFee.isLoading) {
       return {
-        text: t`Claim`,
-        onClick: onSubmit,
+        text: t`Loading fees...`,
+        disabled: true,
       };
     }
-  }, [isSubmitting, onSubmit, hasOutdatedUi]);
+
+    return {
+      text: t`Claim`,
+      onClick: onSubmit,
+    };
+  }, [isSubmitting, onSubmit, hasOutdatedUi, networkFee.isLoading]);
 
   return (
-    <ClaimModalComponent isVisible={isVisible} onClose={onClose} buttonState={buttonState} selection={selection} />
+    <ClaimModalComponent
+      isVisible={isVisible}
+      onClose={onClose}
+      buttonState={buttonState}
+      selection={selection}
+      networkFee={networkFee}
+    />
   );
 }
 
@@ -151,7 +243,6 @@ function ClaimModalMultichain(p: Props) {
   const { account, signer } = useWallet();
   const { chainId, srcChainId } = useChainId();
   const { provider } = useJsonRpcProvider(chainId);
-  const tokensData = useTokensData();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const hasOutdatedUi = useHasOutdatedUi();
   const selection = useClaimableFundingSelection(isVisible);
@@ -191,12 +282,44 @@ function ClaimModalMultichain(p: Props) {
   });
 
   const errors = useArbitraryError(expressTxnParamsAsyncResult.error, { isGmxAccount: isGmxAccountClaim });
-  const outOfTokenErrorToken = useMemo(() => {
-    if (errors?.isOutOfTokenError?.tokenAddress) {
-      return getByKey(tokensData, errors.isOutOfTokenError.tokenAddress);
-    }
-    return undefined;
-  }, [errors, tokensData]);
+  const gmxAccountGasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
+  const gmxAccountGasPaymentTokenAddress = useSelector(selectGmxAccountGasPaymentTokenAddress);
+
+  const networkFee = useMemo((): ClaimNetworkFee => {
+    const gasPaymentParams = expressTxnParamsAsyncResult.data?.gasPaymentParams;
+    const token = gasPaymentParams?.gasPaymentToken ?? gmxAccountGasPaymentToken;
+    const amount =
+      errors?.isOutOfTokenError?.isGasPaymentToken && errors.isOutOfTokenError.requiredAmount !== undefined
+        ? errors.isOutOfTokenError.requiredAmount
+        : gasPaymentParams?.gasPaymentTokenAmount;
+
+    const details: NetworkFeeDetails | undefined =
+      token && amount !== undefined
+        ? {
+            amount,
+            usd: convertToUsd(amount, token.decimals, getMidPrice(token.prices))!,
+            decimals: token.decimals,
+            symbol: token.symbol,
+            isStable: token.isStable,
+          }
+        : undefined;
+
+    return {
+      details,
+      isLoading:
+        details === undefined &&
+        selection.selectedEntries.length > 0 &&
+        expressTxnParamsAsyncResult.error === undefined,
+      source: GMX_ACCOUNT_NETWORK_FEE_SOURCE,
+      isExpress: true,
+    };
+  }, [
+    errors?.isOutOfTokenError,
+    expressTxnParamsAsyncResult.data,
+    expressTxnParamsAsyncResult.error,
+    gmxAccountGasPaymentToken,
+    selection.selectedEntries.length,
+  ]);
 
   const onSubmit = useCallback(() => {
     const onMissingParams = () => {
@@ -260,10 +383,34 @@ function ClaimModalMultichain(p: Props) {
 
         onClose();
       })
+      .catch((error) => {
+        const errorData = parseError(error);
+
+        if (errorData?.isUserRejectedError) {
+          return;
+        }
+
+        metrics.pushError(error, "expressClaimFundingFees");
+
+        const toastParams = getTxnErrorToast(chainId, errorData, {
+          defaultMessage: getClaimFundingFailureToastContent(),
+          expressTxn: { gasPaymentTokenAddress: gmxAccountGasPaymentTokenAddress, isGmxAccount: true },
+        });
+        helperToast.error(toastParams.errorContent, { autoClose: toastParams.autoCloseToast });
+      })
       .finally(() => {
         setIsSubmitting(false);
       });
-  }, [account, chainId, expressTxnParamsAsyncResult.promise, onClose, provider, selection.selectedEntries, signer]);
+  }, [
+    account,
+    chainId,
+    expressTxnParamsAsyncResult.promise,
+    gmxAccountGasPaymentTokenAddress,
+    onClose,
+    provider,
+    selection.selectedEntries,
+    signer,
+  ]);
 
   const buttonState = useMemo(() => {
     if (hasOutdatedUi) {
@@ -280,21 +427,26 @@ function ClaimModalMultichain(p: Props) {
       };
     }
 
-    if (errors?.isOutOfTokenError) {
+    if (errors?.isOutOfTokenError?.isGasPaymentToken) {
       return {
-        text: t`Insufficient ${outOfTokenErrorToken?.symbol ?? ""} balance`,
+        text: getInsufficientFeeButtonMessage({
+          tokenSymbol: getToken(chainId, gmxAccountGasPaymentTokenAddress).symbol,
+          feeSource: GMX_ACCOUNT_NETWORK_FEE_SOURCE,
+        }),
+        disabled: true,
+      };
+    }
+
+    if (expressTxnParamsAsyncResult.error) {
+      return {
+        text: t`Network fee unavailable`,
         disabled: true,
       };
     }
 
     if (!expressTxnParamsAsyncResult.data) {
       return {
-        text: (
-          <>
-            <Trans>Loading...</Trans>
-            <SpinnerIcon className="ml-4 animate-spin" />
-          </>
-        ),
+        text: t`Loading fees...`,
         disabled: true,
       };
     }
@@ -303,7 +455,16 @@ function ClaimModalMultichain(p: Props) {
       text: t`Claim`,
       onClick: onSubmit,
     };
-  }, [hasOutdatedUi, isSubmitting, errors, outOfTokenErrorToken, expressTxnParamsAsyncResult.data, onSubmit]);
+  }, [
+    hasOutdatedUi,
+    isSubmitting,
+    errors,
+    chainId,
+    gmxAccountGasPaymentTokenAddress,
+    expressTxnParamsAsyncResult.data,
+    expressTxnParamsAsyncResult.error,
+    onSubmit,
+  ]);
 
   return (
     <ClaimModalComponent
@@ -312,7 +473,7 @@ function ClaimModalMultichain(p: Props) {
       buttonState={buttonState}
       selection={selection}
       errors={errors}
-      outOfTokenErrorToken={outOfTokenErrorToken}
+      networkFee={networkFee}
     />
   );
 }
@@ -323,10 +484,11 @@ function ClaimModalComponent(p: {
   buttonState: { text: React.ReactNode; onClick?: () => void; disabled?: boolean };
   selection: ClaimFundingSelection;
   errors?: ArbitraryExpressError;
-  outOfTokenErrorToken?: TokenData;
+  networkFee: ClaimNetworkFee;
 }) {
-  const { isVisible, onClose, buttonState, selection, errors, outOfTokenErrorToken } = p;
+  const { isVisible, onClose, buttonState, selection, errors, networkFee } = p;
 
+  const { chainId } = useChainId();
   const marketsInfoData = useMarketsInfoData();
 
   const markets = useMemo(() => (isVisible ? Object.values(marketsInfoData || {}) : []), [isVisible, marketsInfoData]);
@@ -516,11 +678,22 @@ function ClaimModalComponent(p: {
           </Trans>
         </AlertInfo>
       )}
-      {errors?.isOutOfTokenError && outOfTokenErrorToken && (
-        <div className="mb-15">
-          <OutOfTokenErrorAlert errors={errors} token={outOfTokenErrorToken} onClose={onClose} />
-        </div>
+      {errors?.isOutOfTokenError?.isGasPaymentToken && (
+        <AlertInfoCard type="error" hideClose className="mb-15">
+          <InsufficientGmxAccountGasTokenBalanceMessage
+            chainId={chainId}
+            gasPaymentTokenAddress={errors.isOutOfTokenError.tokenAddress}
+            onBeforeNavigation={onClose}
+          />
+        </AlertInfoCard>
       )}
+      <SimpleNetworkFeeRow
+        className="mb-15"
+        details={selection.selectedEntries.length > 0 ? networkFee.details : undefined}
+        isLoading={networkFee.isLoading}
+        source={networkFee.source}
+        isExpress={networkFee.isExpress}
+      />
       <Button
         className="w-full"
         variant="primary-action"
