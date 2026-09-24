@@ -6,6 +6,7 @@ export type Numeric = number | bigint;
 export type BigNumberish = string | Numeric;
 
 export const USD_DECIMALS = 30;
+export const SOLANA_USD_DECIMALS = 20;
 
 export const BASIS_POINTS_DIVISOR = 10000;
 export const BASIS_POINTS_DIVISOR_BIGINT = 10000n;
@@ -217,9 +218,10 @@ export function formatUsd(
     displayPlus?: boolean;
     visualMultiplier?: number;
     roundMode?: "round" | "floor";
+    isSolana?: boolean
   } = {}
 ) {
-  const { fallbackToZero = false, displayDecimals = 2 } = opts;
+  const { fallbackToZero = false, displayDecimals = 2, isSolana } = opts;
 
   if (typeof usd !== "bigint") {
     if (fallbackToZero) {
@@ -233,14 +235,16 @@ export function formatUsd(
     usd *= BigInt(opts.visualMultiplier);
   }
 
-  if (opts.roundMode === "floor" && displayDecimals < USD_DECIMALS) {
-    const factor = expandDecimals(1, USD_DECIMALS - displayDecimals);
+  const decimals = isSolana ? SOLANA_USD_DECIMALS:USD_DECIMALS
+
+  if (opts.roundMode === "floor" && displayDecimals < decimals) {
+    const factor = expandDecimals(1, decimals - displayDecimals);
     usd = usd >= 0n ? (usd / factor) * factor : ((usd - factor + 1n) / factor) * factor;
   }
 
   const defaultMinThreshold = displayDecimals > 1 ? "0." + "0".repeat(displayDecimals - 1) + "1" : undefined;
 
-  const exceedingInfo = getLimitedDisplay(usd, USD_DECIMALS, {
+  const exceedingInfo = getLimitedDisplay(usd, decimals, {
     maxThreshold: opts.maxThreshold,
     minThreshold: opts.minThreshold ?? defaultMinThreshold,
   });
@@ -248,7 +252,7 @@ export function formatUsd(
   const maybePlus = opts.displayPlus ? "+" : "";
   const sign = usd < 0n ? "-" : maybePlus;
   const symbol = exceedingInfo.symbol ? `${exceedingInfo.symbol}\u00a0` : "";
-  const displayUsd = formatAmount(exceedingInfo.value, USD_DECIMALS, displayDecimals, true);
+  const displayUsd = formatAmount(exceedingInfo.value, decimals, displayDecimals, true);
   return `${symbol}${sign}$\u200a${displayUsd}`;
 }
 
@@ -430,7 +434,7 @@ export function formatUsdPrice(price?: bigint, opts: Parameters<typeof formatUsd
     return "NA";
   }
 
-  const decimals = calculateDisplayDecimals(price, undefined, opts.visualMultiplier);
+  const decimals = calculateDisplayDecimals(price, undefined, opts.visualMultiplier, undefined,opts.isSolana);
 
   return formatUsd(price, {
     ...opts,
@@ -923,10 +927,12 @@ export function calculateDisplayDecimals(
   price?: bigint,
   decimals = USD_DECIMALS,
   visualMultiplier = 1,
-  isStable = false
+  isStable = false,
+  isSolana?: boolean
 ) {
+
   if (price === undefined || price === 0n) return 2;
-  const priceNumber = bigintToNumber(bigMath.abs(price) * BigInt(visualMultiplier), decimals);
+  const priceNumber = bigintToNumber(bigMath.abs(price) * BigInt(visualMultiplier), isSolana ? SOLANA_USD_DECIMALS: decimals);
 
   if (isNaN(priceNumber)) return 2;
   if (isStable) {
