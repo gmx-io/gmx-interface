@@ -77,7 +77,7 @@ class Metrics {
     this.debug = val;
   };
 
-  setGlobalMetricData = (meta: GlobalMetricData) => {
+  setGlobalMetricData = (meta: Partial<GlobalMetricData>) => {
     this.globalMetricData = { ...this.globalMetricData, ...meta };
   };
 
@@ -398,7 +398,7 @@ class Metrics {
   };
 
   getIsGlobalPropsInited = () => {
-    return this.globalMetricData.isInited && this.wallets;
+    return this.globalMetricData.isInited && (this.globalMetricData.isHomeSite || this.wallets);
   };
 
   startTimer = (label: string, fromLocalStorage = false) => {

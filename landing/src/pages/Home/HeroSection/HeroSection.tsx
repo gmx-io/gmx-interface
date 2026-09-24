@@ -11,7 +11,6 @@ import IcLinkArrow from "img/ic_link_arrow.svg?react";
 import IcMidChevron from "img/ic_mid_chevron.svg?react";
 
 import { AnimatedTitle } from "./AnimatedTitle";
-import { Features } from "./Features";
 import { HeroBackground } from "./HeroBackground";
 import { RedirectChainIds, useGoToTrade } from "../hooks/useGoToTrade";
 
@@ -130,9 +129,6 @@ export function HeroSection() {
             </div>
           </div>
         </div>
-
-        {/* Features */}
-        <Features goToTradeArbitrum={goToTradeArbitrum} />
       </div>
     </section>
   );

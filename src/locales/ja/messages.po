@@ -81,6 +81,10 @@ msgstr "ウォレットが提供するRPCを使用して、各トランザクシ
 msgid "Automatically compounds your GMX rewards without manual claiming"
 msgstr "GMXの報酬を手動で受け取ることなく自動的に複利運用します"
 
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+msgid "Estimated rewards. Actual rewards depend on eligible fees, active tiers, and remaining boost budget."
+msgstr "報酬の推定値です。実際の報酬は、対象となる手数料、有効なティア、ブースト予算の残額によって変わります。"
+
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/MainView.tsx
@@ -167,6 +171,10 @@ msgstr "承認署名完了"
 msgid "You can open isolated positions on GMX using your GMX Account."
 msgstr "GMX Accountを使用して、GMXで個別ポジションを開くことができます。"
 
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Unable to check this wallet. Please try again."
+msgstr "このウォレットを確認できませんでした。もう一度お試しください。"
+
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Do I need to create codes on each network?"
 msgstr ""
@@ -179,9 +187,17 @@ msgstr "<0>Multichain</0><1>MegaETH対応</1><2>ジャストインタイム流�
 msgid "Create TWAP Swap"
 msgstr "TWAPスワップを作成"
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Earn {referralShare} of all rewards your referrals earn"
+msgstr "紹介したトレーダーが獲得するすべての報酬の{referralShare}を獲得"
+
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Rewards paused"
 msgstr "報酬は一時停止中"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Volume tiers are based on weekly volume. A volume tier earned in one epoch stays active for four epochs during Season 1."
+msgstr "取引量ティアは週間取引量に基づきます。あるエポックで獲得した取引量ティアは、シーズン1中の4エポックにわたって有効です。"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -209,6 +225,10 @@ msgstr "GMXスワップ監視用Telegramボット"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "No trades during the selected period"
 msgstr ""
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "this epoch."
+msgstr "今エポックの対象です。"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Debug values unavailable"
@@ -329,8 +349,8 @@ msgstr "EIP-4844, 3月13-20日"
 msgid "Total size"
 msgstr "合計サイズ"
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Open app"
 msgstr "アプリを開く"
@@ -388,6 +408,7 @@ msgstr "GMエアドロップ"
 msgid "At price"
 msgstr "指定価格"
 
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Volume"
 msgstr "出来高"
@@ -418,6 +439,7 @@ msgstr "宛先"
 
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
+#: landing/src/pages/Rewards/RewardsFaq.tsx
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 #: src/components/Earn/Discovery/EarnFaq.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
@@ -453,6 +475,10 @@ msgstr "手数料"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Buyable"
 msgstr "購入可能"
+
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "Counts towards your Staking Tier just like staking GMX, raising your multiplier on every future trade. Staked esGMX earns the same GMX rewards as staked GMX."
+msgstr "GMXのステーキングと同様にステーキングティアに加算され、今後のすべての取引の倍率が上がります。ステーキング中のesGMXは、ステーキング中のGMXと同じGMX報酬を獲得します。"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -514,6 +540,10 @@ msgstr ""
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Idea stage, nothing shipped yet"
 msgstr "アイデア段階で、まだ何もリリースしていない"
+
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "You are here"
+msgstr "現在の位置"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double {indexSymbol} exposure from position and collateral. Higher liquidation price than stablecoin collateral."
@@ -605,6 +635,8 @@ msgstr "トークンを選択"
 msgid "Crypto"
 msgstr "暗号資産"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/ShareModal/useShareCardActions.ts
 msgid "Image generation failed. Refresh and try again."
 msgstr "画像の生成に失敗しました。更新して再度お試しください。"
@@ -612,6 +644,11 @@ msgstr "画像の生成に失敗しました。更新して再度お試しくだ
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Unrealized fee contribution"
 msgstr "未実現手数料の寄与"
+
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Featured markets"
+msgstr "対象マーケット"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
@@ -641,6 +678,10 @@ msgstr "One-Click Trading の承認が無効です。チェーンの切り替え
 msgid "Min collateral factor for liquidation"
 msgstr "清算の最小担保ファクター"
 
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+msgid "Fees back"
+msgstr "手数料還元"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} short exceeded"
 msgstr "{0}の最大ショート値を超過しています"
@@ -656,6 +697,10 @@ msgstr "スリッページ超過。最小予想額: {minOutputAmountText}、実�
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Projected yearly return from trading fees only.<0/><1/>Includes: trading fees, borrow fees, liquidations, swaps.<2/>Excludes: backing token price changes, PnL, funding fees.<3/><4/><5>View detailed stats on Dune</5>."
 msgstr "取引手数料のみに基づく年間予想リターンです。<0/><1/>含む：取引手数料、借入手数料、清算、スワップ。<2/>含まない：裏付けトークンの価格変動、PnL、ファンディング手数料。<3/><4/><5>Duneで詳細な統計を見る</5>。"
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Advocate"
+msgstr "アドボケート"
 
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Acceptable swap impact"
@@ -827,6 +872,10 @@ msgstr "いいえ"
 msgid "/ mo"
 msgstr "/月"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Unable to copy. Copy the link below."
+msgstr "コピーできませんでした。以下のリンクをコピーしてください。"
+
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -886,6 +935,10 @@ msgstr "プラスのファンディング手数料"
 #: src/components/SettingsModal/ThemeSelector.tsx
 msgid "Light"
 msgstr "ライト"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Does my volume tier reset every week?"
+msgstr "取引量ティアは毎週リセットされますか？"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Longs / shorts"
@@ -960,6 +1013,10 @@ msgstr "不明なエラー"
 msgid "Market Swap"
 msgstr "市場スワップ"
 
+#: landing/src/pages/Rewards/RewardsReferralCard.tsx
+msgid "Traded on GMX before? Check your wallet"
+msgstr "GMXで取引したことがありますか？ウォレットを確認しましょう"
+
 #: src/components/GmList/GmListItem.tsx
 msgid "View details"
 msgstr "詳細を表示"
@@ -992,6 +1049,10 @@ msgstr "利用可能な流動性"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "GMX pools can't fill this swap, and no external route is currently available. Try reducing the amount."
 msgstr "GMXプールではこのスワップを約定できず、現在利用可能な外部ルートもありません。金額を減らしてみてください。"
+
+#: landing/src/pages/Rewards/RewardsReferralCard.tsx
+msgid "I'm getting {multiplier} rewards"
+msgstr "{multiplier}の報酬を獲得しています"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Funding decrease factor"
@@ -1046,6 +1107,7 @@ msgstr "ポジションへの影響"
 msgid "Insufficient staked tokens"
 msgstr "ステークされたトークン不足"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Creating code..."
 msgstr "コードを作成中..."
@@ -1130,6 +1192,10 @@ msgstr ""
 msgid "Worker"
 msgstr "Worker"
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "See the current markets in the app."
+msgstr "現在のマーケットはアプリで確認できます。"
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max network fee buffer precision is 0.01%"
 msgstr "最大ネットワーク手数料バッファ精度は0.01%"
@@ -1146,6 +1212,10 @@ msgstr "収入シミュレーション"
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Replace margin deposit"
 msgstr "証拠金入金を差し替え"
+
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Unable to switch networks. Please try again."
+msgstr "ネットワークを切り替えられませんでした。もう一度お試しください。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GlvList.tsx
@@ -1210,6 +1280,10 @@ msgstr "Express の信頼性によるシームレスな取引"
 msgid "{0} <0/><1> to </1>{1} <2/>"
 msgstr "{0} <0/><1> から </1>{1} <2/>"
 
+#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
+msgid "{esGmx} esGMX + {gt} GT"
+msgstr "{esGmx} esGMX + {gt} GT"
+
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
@@ -1219,6 +1293,10 @@ msgstr "{0}でコードの利用可能性を確認できません。コードは
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Assumes a ~0.05% effective round-trip fee on GMX perps.<0/>Illustrative only — your exact rate is confirmed by the desk on signup."
 msgstr "GMXパープの実効往復手数料を約0.05%と仮定。<0/>あくまで参考値です。正確なレートは登録時にデスクが確認します。"
+
+#: landing/src/pages/Rewards/Rewards.tsx
+msgid "Trade before <0>{0}</0> and you're in this epoch."
+msgstr "<0>{0}</0>までに取引すると、今エポックに参加できます。"
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Market: {0} a short position at the current price."
@@ -1410,6 +1488,10 @@ msgstr "カードでの購入は、お住まいの地域または設定では現
 msgid "Max {0} buyable amount exceeded"
 msgstr "最大{0}購入可能額超過"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Switch to Arbitrum to create a code"
+msgstr "コードを作成するにはArbitrumに切り替えてください"
+
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing position uses {0} collateral. If executed, this order will create a separate position. <0>Switch to {1} collateral</0>"
 msgstr ""
@@ -1418,6 +1500,7 @@ msgstr ""
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
+#: src/domain/referrals/hooks/useCreateReferralCode.ts
 msgid "Code already taken"
 msgstr "そのコードは既に使用されています"
 
@@ -1440,7 +1523,9 @@ msgstr "利用規約"
 msgid "Unrealized PnL"
 msgstr "未実現PnL"
 
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
+#: landing/src/pages/Rewards/Rewards.tsx
 msgid "Rewards"
 msgstr ""
 
@@ -1475,6 +1560,14 @@ msgstr "リファラルコードを作成中..."
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "DATE"
 msgstr "DATE"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "The Season 1 program is sustainable. Rewards = (your open/close fees − affiliate rebate) × 10% × your Multiplier, and the multiplier is capped at 10x. And 10% × 10x is 100%, so the esGMX paid on your trades can never exceed the fees those trades generated. GT is credited on top, at 20% of the esGMX amount."
+msgstr "シーズン1のプログラムは持続可能です。報酬 =（新規建て・決済手数料 − アフィリエイト還元額）× 10% × あなたの倍率で、倍率の上限は10xです。10% × 10xは100%なので、取引に対して支払われるesGMXが、その取引で発生した手数料を超えることはありません。GTはesGMXの金額の20%相当が追加で付与されます。"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Does volume through an integrator count?"
+msgstr "インテグレーター経由の取引量も対象になりますか？"
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
@@ -1531,6 +1624,10 @@ msgstr "ガスに {0} を使用"
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Total margin funded"
 msgstr "拠出証拠金の合計"
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Open trades of at least {0} on the under-utilised side and get paid for balancing the market."
+msgstr "利用の少ない側で{0}以上の取引を開始し、市場の均衡に貢献して報酬を獲得しましょう。"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Results are available in Perpetuals."
@@ -1605,6 +1702,10 @@ msgstr "{operationTokenSymbol}を購入"
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Buy GM: {0}"
 msgstr "GMを購入: {0}"
+
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "GT's minting difficulty increase"
+msgstr "GTのミント難易度の上昇"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Trigger price condition has not been met"
@@ -1716,7 +1817,7 @@ msgstr "期間損失"
 msgid "Vesting only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "ベスティングは {chainNames} または {lastChainName} でのみ利用可能です。続行するにはネットワークを切り替えてください。"
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 msgid "Protocol"
 msgstr "プロトコル"
 
@@ -1751,6 +1852,11 @@ msgstr "アフィリエイトです"
 msgid "Estimated daily fees"
 msgstr ""
 
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Balancing trades"
+msgstr "バランス調整取引"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop Market"
 msgstr "ストップ市場をキャンセル"
@@ -1767,6 +1873,10 @@ msgstr "トレーダーとアフィリエイトを両方兼ねることはでき
 msgid "Base APY"
 msgstr "ベースAPY"
 
+#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
+msgid "Previous epoch totals are temporarily unavailable."
+msgstr "前のエポックの合計は一時的に利用できません。"
+
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour"
 msgstr "{longOrShort} ポジションはファンディング手数料として1時間あたり {fundingRate} を{fundingAction}し、借入手数料として1時間あたり {borrowRate} を{borrowAction}します"
@@ -1775,6 +1885,10 @@ msgstr "{longOrShort} ポジションはファンディング手数料として1
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "TIME"
 msgstr "TIME"
+
+#: landing/src/pages/Rewards/RewardsSpoiler.tsx
+msgid "Enter any wallet to see Comeback Bonus"
+msgstr "任意のウォレットを入力してカムバックボーナスを確認"
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "Oracle endpoints"
@@ -2002,6 +2116,10 @@ msgstr "総計"
 msgid "Decrease size to match the max allowed leverage."
 msgstr "最大許容レバレッジに合わせてサイズを縮小してください。"
 
+#: landing/src/pages/Rewards/RewardsReferralCard.tsx
+msgid "Up to {maximumRate}"
+msgstr "最大{maximumRate}"
+
 #: src/components/Claims/ClaimsHistory.tsx
 msgid "Claims history"
 msgstr "クレーム履歴"
@@ -2143,6 +2261,10 @@ msgstr "Telegramグループ"
 msgid "Complete account transfer"
 msgstr "アカウント送金の完了"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "For more information read docs ↗"
+msgstr "詳細はドキュメントをご覧ください ↗"
+
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Discounts"
 msgstr ""
@@ -2163,6 +2285,10 @@ msgstr "GMXプールにはこのスワップサイズに十分な流動性があ
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate vault. Withdraw them to transfer to the new account."
 msgstr "アフィリエイトボールトにesGMXトークンがあります。新しいアカウントに送金するには、先に出金してください。"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Stake just <0>{0}</0> GMX to start at <1>{1}</1>"
+msgstr "わずか<0>{0}</0> GMXをステーキングして<1>{1}</1>からスタート"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sending buy request..."
@@ -2214,11 +2340,19 @@ msgstr "RECEIVE"
 msgid "VI POSITIONS"
 msgstr "VI POSITIONS"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Rewards are paid as 100% esGMX, plus 20% GT on top. GT are the points from GMTrade, GMX's deployment on Solana. GT are credited weekly at the current minting price. GT started at $0.01 and gets 2.1% harder every 210,000 minted, inspired by the Bitcoin difficulty curve. The minting price shown above is what GT is credited at, not what it sells for. GT buybacks are active on Solana, with 50% of GMTrade's protocol fees."
+msgstr "報酬は100%がesGMXで支払われ、さらに20%のGTが追加されます。GTは、GMXのSolana展開であるGMTradeのポイントです。GTは毎週、その時点の発行価格で付与されます。GTは$0.01から始まり、Bitcoinの難易度曲線に着想を得て、210,000 GTが発行されるごとに発行難易度が2.1%上がります。上に表示されている発行価格はGTが付与される際の価格であり、売却価格ではありません。SolanaではGTの買い戻しが行われており、GMTradeのプロトコル手数料の50%が充てられています。"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeboxMarginFields/PriceField.tsx
 msgid "Stop price"
 msgstr "ストップ価格"
+
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "How vesting works ↗"
+msgstr "ベスティングの仕組み ↗"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
@@ -2520,6 +2654,10 @@ msgstr "警告アイコン"
 msgid "Leftover margin below {0} USD"
 msgstr ""
 
+#: src/domain/referrals/hooks/useCreateReferralCode.ts
+msgid "Referral code creation failed. Please try again."
+msgstr "紹介コードを作成できませんでした。もう一度お試しください。"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Decrease"
 msgstr "マーケット減少失敗"
@@ -2552,6 +2690,14 @@ msgstr "ファンディング増加ファクター"
 msgid "May take a few minutes to appear. Check back later"
 msgstr "表示されるまで数分かかる場合があります。後ほどご確認ください"
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Every 1x returns {perMultiplierRate} of your fees. At {exampleMultiplier}, that's {exampleRate} back."
+msgstr "倍率1xごとに手数料の{perMultiplierRate}が還元されます。{exampleMultiplier}では{exampleRate}の還元です。"
+
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "Stake it"
+msgstr "ステークする"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed deposit"
 msgstr "入金失敗"
@@ -2568,6 +2714,10 @@ msgstr "2位"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Auto-cancel order limit reached"
 msgstr "自動キャンセル注文の上限に達しました"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Enter a valid wallet address or ENS name"
+msgstr "有効なウォレットアドレスまたはENS名を入力してください"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Number of parts must be between {MIN_TWAP_NUMBER_OF_PARTS} and {MAX_TWAP_NUMBER_OF_PARTS}"
@@ -2631,6 +2781,10 @@ msgstr "マーケット"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Max {0}"
 msgstr "最大 {0}"
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Lifetime volume"
+msgstr "累計取引量"
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "APRs update weekly on Wednesday based on fees collected"
@@ -2734,6 +2888,10 @@ msgstr "請求する資金なし"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Sparkle"
 msgstr "スパークル"
+
+#: src/domain/referrals/hooks/useCreateReferralCode.ts
+msgid "Unable to verify code availability. Please try again."
+msgstr "コードが利用可能か確認できませんでした。もう一度お試しください。"
 
 #: src/pages/Announcements/Announcements.tsx
 msgid "Maintenances"
@@ -2900,7 +3058,7 @@ msgstr "<0>KYCは不要、長い手続きも不要、入金も必要ありませ
 msgid "Deactivate 1CT"
 msgstr "1CTを無効化"
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 msgid "VIP"
 msgstr "VIP"
 
@@ -2923,9 +3081,13 @@ msgstr "詳細を表示"
 msgid "Debug RPC endpoints ({0})"
 msgstr "RPCエンドポイントのデバッグ ({0})"
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 msgid "Driven by our community"
 msgstr "私たちのコミュニティによって駆動"
+
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+msgid "Maximum multiplier reached"
+msgstr "最大倍率に達しました"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting only available on {chainNames}. Switch networks to continue."
@@ -2976,6 +3138,15 @@ msgstr "シェア可能な画像を作成中..."
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "RANK"
 msgstr "RANK"
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Open and close on the current set:"
+msgstr "現在の対象マーケットで取引を開始・終了："
+
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+msgid "Season 1 · Live"
+msgstr "シーズン1 · 開催中"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "{txnTypeText} {0} order for"
@@ -3045,6 +3216,10 @@ msgstr "取引高と報酬をリアルタイムで確認。"
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Excludes incentives"
 msgstr "インセンティブを除く"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Can the rules change?"
+msgstr "ルールは変更されることがありますか？"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buying {symbol}..."
@@ -3257,6 +3432,10 @@ msgstr "レバレッジ取引とスワップから手数料を蓄積するGMト�
 msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify for the base tier; reach out and we'll confirm your rate.</0>"
 msgstr "<0>固定の基準はありません — デスクが直近および見込みの月間取引量からティアを設定します。ほとんどのトレーダーはベースティアの対象です。お問い合わせいただければ、レートをご確認します。</0>"
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Staking tier + Volume tier + Boosts"
+msgstr "ステーキングティア + 取引量ティア + ブースト"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing {indexTokenText} Short: -{sizeDeltaUsdText}"
 msgstr ""
@@ -3268,6 +3447,12 @@ msgstr "Gasの残高が不足しています。Express TradingとOne-Click Tradi
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Invalid signature. Try signing the request again"
 msgstr "署名が無効です。リクエストに再度署名してください"
+
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Preparing..."
+msgstr "準備中..."
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search address"
@@ -3301,6 +3486,10 @@ msgstr "テイクプロフィットを更新"
 #: src/pages/Referrals/Referrals.tsx
 msgid "Get fee discounts and earn up to 25% commission through the GMX <0/> referral program"
 msgstr "GMXの<0/>リファラルプログラムで手数料割引を受け、最大25%のコミッションを獲得しましょう"
+
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
+msgid "of your fees, in esGMX + GT"
+msgstr "手数料をesGMX + GTで還元"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Deposit from {sourceChainName} failed"
@@ -3378,6 +3567,10 @@ msgstr "別のチェーンから転送"
 msgid "Take-Profit / Stop-Loss"
 msgstr "テイクプロフィット / ストップロス"
 
+#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
+msgid "The first epoch is under way"
+msgstr "最初のエポックが進行中です"
+
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Yield trading"
 msgstr "利回りトレーディング"
@@ -3417,6 +3610,10 @@ msgstr "ベスティング状況"
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Intro call plus integration feedback."
 msgstr "紹介コールと統合フィードバック。"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Yes, at the 10x cap. Reaching 10x takes Titan staking with Apex volume, or any other combination of tiers and boosts that sums to 10. Most traders land between 3x and 7x, which returns 36–84% of what they paid."
+msgstr "はい、上限の10xに達した場合です。10xに達するには、TitanのステーキングとApexの取引量、または合計が10になる他のティアとブーストの組み合わせが必要です。多くのトレーダーは3xから7xの範囲となり、支払った手数料の36–84%が還元されます。"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GMX tokens before"
@@ -3649,6 +3846,10 @@ msgstr "サイズを増加（Market）"
 msgid "Bridge transfer sent"
 msgstr "ブリッジ送金が送信されました"
 
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "applied up to <0><1>{0}</1> in rewards</0>"
+msgstr "最大<0><1>{0}</1>の報酬</0>に適用"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Wallet received at close"
 msgstr "クローズ時のウォレット受取額"
@@ -3803,6 +4004,10 @@ msgstr "請求可能な未処理金額は含まれません"
 msgid "Insufficient {wrappedNativeTokenSymbol} for gas in your GMX Account."
 msgstr "GMXアカウント内のガス用の{wrappedNativeTokenSymbol}が不足しています。"
 
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
+msgid "Open menu"
+msgstr "メニューを開く"
+
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -3810,6 +4015,7 @@ msgstr "GMXアカウント内のガス用の{wrappedNativeTokenSymbol}が不足�
 msgid "TRANSACTION"
 msgstr "TRANSACTION"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 msgid "Copy image"
@@ -3883,6 +4089,10 @@ msgstr "入金が送信されました"
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Onchain revenue in stablecoins — your own builder<0/>fee plus a cut of GMX's fees, every time someone trades<1/>through you."
 msgstr "ステーブルコインでのオンチェーン収益 — 独自のビルダー<0/>手数料に加え、誰かがあなた経由で取引するたびに<1/>GMX手数料の一部も獲得。"
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Ranked"
+msgstr "ランク"
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading juggernaut, and the reasons behind this recognition are manifold.</0><2><3>@GMX_IO</3> stands out as a project that's navigated its path without relying on VC backing. Remarkably, it has risen to the top, securing the No. #1 spot by TVL on Arbitrum Chain at $488.34M and an impressive overall Rank #23 on DeFiLlama... <4>see more</4></2>"
@@ -4224,6 +4434,10 @@ msgstr "決済"
 msgid "{typeString} Short TWAP: {0} a short position in evenly distributed parts over a specified time."
 msgstr ""
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Staked GMX + esGMX"
+msgstr "ステーキング中のGMX + esGMX"
+
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Insufficient gas for network fees"
 msgstr "ネットワーク手数料に必要な Gas が不足しています"
@@ -4310,6 +4524,10 @@ msgstr ""
 msgid "Enter amount"
 msgstr "額を入力"
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Certified"
+msgstr "認定"
+
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 msgid "Add {0} to your wallet"
 msgstr "{0}をウォレットに追加"
@@ -4323,6 +4541,7 @@ msgid "Express Trading is unavailable with the network's native token {0}. Consi
 msgstr "Express Trading はネットワークのネイティブトークン {0} ではご利用いただけません。代わりに {1} の使用をご検討ください。"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trade"
@@ -4365,6 +4584,7 @@ msgstr "手数料APR"
 msgid "SL"
 msgstr "SL"
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
@@ -4518,6 +4738,13 @@ msgstr "{0} 残高"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "numerous assets"
 msgstr "多数の資産"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+#: landing/src/pages/Rewards/Rewards.tsx
+#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Try again"
+msgstr "再試行"
 
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Error name:"
@@ -4687,6 +4914,7 @@ msgstr "引き出し中..."
 msgid "No claims match the selected filters"
 msgstr "選択したフィルターに一致する請求がありません"
 
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Staking"
 msgstr "ステーキング"
@@ -4714,6 +4942,10 @@ msgstr "自動キャンセルTP/SL注文は最大5件まで許可されていま
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Withdrawing {amountText} from {indexTokenText} Short..."
 msgstr ""
+
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Unable to load your referral codes."
+msgstr "紹介コードを読み込めませんでした。"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -4743,6 +4975,7 @@ msgstr "オラクル価格が {0} {1} のとき約定します"
 msgid "Withdrawal from subaccount"
 msgstr "サブアカウントからの出金"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/Referrals/traders/HowToStartSaving.tsx
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
@@ -4784,6 +5017,10 @@ msgstr "ソースチェーンは単一トークンのみ対応しています"
 msgid "Referral discounts apply to opening and closing fees for leverage trading. Swap fees are not included."
 msgstr ""
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "$1,000 <0>in</0> esGMX + GT"
+msgstr "esGMX + GT<0>で</0>$1,000"
+
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Show rPnL after fees"
 msgstr "手数料控除後のrPnLを表示"
@@ -4808,6 +5045,10 @@ msgstr "担保上限に達しました"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for swaps (long / short)"
 msgstr "スワップの仮想インベントリ（ロング / ショート）"
+
+#: src/domain/referrals/hooks/useCreateReferralCode.ts
+msgid "Your wallet changed. Please try again."
+msgstr "ウォレットが変更されました。もう一度お試しください。"
 
 #: src/components/GmxAccountModal/keys.ts
 msgid "Withdrawal"
@@ -4875,6 +5116,10 @@ msgstr "受取人アドレスを入力"
 msgid "Trade size.<0/>Or refer those who do."
 msgstr "大きく取引する。<0/>または、そうする人を紹介する。"
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Veteran"
+msgstr "ベテラン"
+
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Break down net price impact"
 msgstr "価格への影響の内訳を表示"
@@ -4931,9 +5176,17 @@ msgstr "清算済"
 msgid "Update margin deposit"
 msgstr "証拠金入金を更新"
 
+#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
+msgid "{0, plural, one {# trader} other {# traders}}"
+msgstr "{0, plural, other {#人のトレーダー}}"
+
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "What people are building."
 msgstr "みんなが作っているもの。"
+
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "The Season 1<0/>Flywheel"
+msgstr "シーズン1の<0/>報酬サイクル"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval cancelled"
@@ -4976,6 +5229,10 @@ msgstr "このポジションは現在清算リスクを上回っていますが
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Base borrowing factor long"
 msgstr "ロング基本借入ファクター"
+
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "+{0} on top"
+msgstr "+{0}を追加獲得"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Recipient address"
@@ -5044,6 +5301,10 @@ msgstr "ポートフォリオ"
 #: src/domain/synthetics/positions/utils.ts
 msgid "stop market"
 msgstr "ストップマーケット"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Resolving..."
+msgstr "名前を解決中..."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Pending GMX approval..."
@@ -5122,6 +5383,14 @@ msgstr "外部ルーティングは失敗した試行の後、一時的に停止
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
 msgstr "<0>{wrappedNativeTokenSymbol}を購入</0>。"
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Supporter"
+msgstr "サポーター"
+
+#: landing/src/pages/Rewards/RewardsReferralCard.tsx
+msgid "and earn {0} of the rewards they generate in esGMX and GT."
+msgstr "紹介したトレーダーが生み出すesGMXとGTの報酬の{0}を獲得できます。"
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
@@ -5260,6 +5529,10 @@ msgstr "マーケットスワップリクエスト"
 #: src/components/TradeBox/MarginDepositSuggestionCard.tsx
 msgid "Want to add margin without increasing your position size?"
 msgstr "ポジションサイズを増やさずに証拠金を追加しませんか？"
+
+#: landing/src/pages/Rewards/Rewards.tsx
+msgid "Rewards data is temporarily unavailable."
+msgstr "報酬データは一時的に利用できません。"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
@@ -5502,6 +5775,10 @@ msgstr "シフトリクエストが送信されました"
 msgid "Current impact: {0}. Add 0.30% buffer for better order execution."
 msgstr "現在の影響: {0}。注文の約定精度を高めるために0.30%のバッファを追加してください。"
 
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "Converts to GMX over one year. Vesting reserves staked GMX or esGMX against the amount you vest."
+msgstr "1年かけてGMXに変換されます。ベスティング額に対してステーキング中のGMXまたはesGMXが担保として確保されます。"
+
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Settle {totalStr}"
 msgstr "{totalStr}を決済する"
@@ -5694,9 +5971,21 @@ msgstr "不明なGM購入注文"
 msgid "Build on GMX.<0/>Get paid on every trade."
 msgstr "GMXで開発。<0/>すべての取引で報酬を。"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "I'm getting {multiplier} rewards. Traded on GMX before? Check your wallet."
+msgstr "{multiplier}の報酬を獲得しています。GMXで取引したことがありますか？ウォレットを確認しましょう。"
+
 #: src/lib/useHasOutdatedUi.ts
 msgid "Page outdated. Refresh"
 msgstr "ページが古くなっています。更新してください"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "You're starting fresh"
+msgstr "ここから新たなスタートです"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Keep earning with staking, volume tiers and other boosts."
+msgstr "ステーキング、取引量ティア、その他のブーストで報酬を獲得し続けましょう。"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
@@ -5723,6 +6012,7 @@ msgstr "プールの入金用最大ロングUSD"
 msgid "Net value"
 msgstr "純価値"
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
@@ -5837,6 +6127,10 @@ msgstr "{positionName} 手数料の精算中..."
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "OR"
 msgstr "または"
+
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "GMTrade Points, added on top of every esGMX payout. GT is credited at the mint price and bought back at it with a share of GMTrade's trading fees. Minting gets 2.1% harder every 210,000 GT, so the same trade earns fewer GT over time."
+msgstr "GMTradeポイントは、esGMXの各報酬支払いに上乗せされます。GTはミント価格で付与され、GMTradeの取引手数料の一部を使ってその価格で買い戻されます。210,000 GTごとにミントの難易度が2.1%上昇するため、時間の経過とともに同じ取引で獲得できるGTは少なくなります。"
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "<0>GMX executes trades against a dynamically balanced liquidity pool, unlike traditional order books. This model supports deep liquidity, allowing for opening positions of over $50m with reduced price impact, even when compared to the biggest order books in the space. In some cases, you may even get paid when executing an order due to a positive price impact.</0><1>GMX prevents unfair liquidations by using decentralized oracles from Chainlink and Chaos Labs, which aggregate prices from multiple trusted sources to avoid manipulation.</1>"
@@ -6046,6 +6340,10 @@ msgstr "ステーキングは {chainNames} でのみ利用可能です。続行�
 msgid "Links"
 msgstr "リンク"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Loading your referral codes..."
+msgstr "紹介コードを読み込み中..."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact factor for withdrawals"
 msgstr "出金の最大貸出可能インパクトファクター"
@@ -6073,6 +6371,11 @@ msgstr "Permit テスト"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Invalid transaction"
 msgstr "無効なトランザクション"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Keep building your rewards"
+msgstr "引き続き報酬を増やしましょう"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in {0} pool. Select a different pool."
@@ -6150,6 +6453,10 @@ msgstr "保護付きレバレッジトークン"
 msgid "Your projected share of the Treasury at today's staking power. A best-effort estimate only; actual distribution is subject to DAO governance."
 msgstr "現在のステーキングパワーに基づく、トレジャリーからのあなたの予想取り分です。あくまで概算であり、実際の分配はDAOガバナンスに従います。"
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "Stake the esGMX"
+msgstr "esGMXをステーク"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop-Loss"
 msgstr "ストップロス失敗"
@@ -6184,6 +6491,10 @@ msgstr "シフトは {chainNames} または {lastChainName} でのみ利用可�
 msgid "Monthly bought"
 msgstr "月間購入量"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Share on X"
+msgstr "Xでシェア"
+
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
 msgstr ""
@@ -6191,6 +6502,10 @@ msgstr ""
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "PnL Analysis"
 msgstr "PnL 分析"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Season 1 runs on Arbitrum. Trades placed from Ethereum, Base, or BNB Chain through your GMX Account execute on Arbitrum, so they count. Not active on Avalanche, Solana (GMTrade), or MegaETH."
+msgstr "シーズン1はArbitrumで実施されます。GMX Accountを通じてEthereum、Base、BNB Chainから行う取引はArbitrumで執行されるため、対象になります。Avalanche、Solana（GMTrade）、MegaETHでは実施されません。"
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
@@ -6252,6 +6567,10 @@ msgstr "Avalanche Fuji では受け取りをご利用いただけません"
 #: src/components/TradeHistory/PositionLifecycleFilterHeader.tsx
 msgid "Clear position history filter"
 msgstr "ポジション履歴フィルターをクリア"
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Steward"
+msgstr "スチュワード"
 
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Users"
@@ -6326,6 +6645,7 @@ msgstr "マーケットを選択"
 #: src/components/Referrals/affiliates/ReferralsAffiliatesTab.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
+#: src/domain/referrals/hooks/useCreateReferralCode.ts
 msgid "Referral code creation failed"
 msgstr "リファラルコードの作成に失敗しました"
 
@@ -6333,6 +6653,7 @@ msgstr "リファラルコードの作成に失敗しました"
 msgid "Withdraw fee"
 msgstr "出金手数料"
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "esGMX rewards"
@@ -6359,11 +6680,19 @@ msgstr "チャートに表示する売買マークを選択します：過去の
 msgid "Buy GMX on GMX swap"
 msgstr ""
 
+#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
+msgid "Last epoch, {payout} came back to {traders}"
+msgstr "前のエポックでは、{payout}が{traders}に還元されました"
+
 #: src/components/Claims/ClaimableCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Claimable"
 msgstr "請求可能"
+
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "Pay fees on any trade"
+msgstr "取引で手数料を支払う"
 
 #: src/components/TVChartContainer/TVChartContainer.tsx
 msgid "Open long"
@@ -6373,8 +6702,8 @@ msgstr ""
 msgid "Executes {numberOfParts} {0} {type} orders of {1} each over the next {2} for {3}"
 msgstr "{3} で {2} にわたり、{1} ずつの {0} {type} 注文を {numberOfParts} 回実行します"
 
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Builders/Footer/BuildersFooter.tsx
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 #: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/BottomMenuSection.tsx
@@ -6389,6 +6718,10 @@ msgstr "マーケティングキット + 共同マーケティング"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} cannot be sent to smart contract addresses. Select another token"
 msgstr "{0} はスマートコントラクトアドレスに送信できません。別のトークンを選択してください"
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Past {0} lifetime volume the boost is yours for good — it never resets."
+msgstr "累計取引量が{0}を超えると、ブーストは永続的に適用され、リセットされません。"
 
 #: src/pages/Jobs/Jobs.tsx
 msgid "Jobs"
@@ -6537,12 +6870,17 @@ msgstr "決済ネットワークがArbitrumに変更されましたが、$12.50�
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
+#: src/domain/referrals/hooks/useCreateReferralCode.ts
 msgid "Enter a code"
 msgstr "コードを入力"
 
 #: src/components/GmList/GmListItem.tsx
 msgid "Details"
 msgstr "詳細"
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Titan"
+msgstr "タイタン"
 
 #: src/components/UserIncentiveDistribution/utils.tsx
 msgid "GLV bonus incentive"
@@ -6678,6 +7016,7 @@ msgstr "すべてのネットワーク"
 msgid "Select positions"
 msgstr "ポジションを選択"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/AppHeader/AppHeaderUser.tsx
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -6817,13 +7156,18 @@ msgstr "24時間"
 msgid "High price impact"
 msgstr "高い価格影響"
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Staking tiers"
+msgstr "ステーキングティア"
+
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/NetFeeTooltip.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "POOL"
 msgstr "プール"
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 msgid "Voting"
 msgstr "投票"
 
@@ -6856,9 +7200,18 @@ msgstr ""
 msgid "Start trading"
 msgstr ""
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Invite Traders"
+msgstr "トレーダーを招待"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Oracle price is stale"
 msgstr ""
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Retry historical volume"
+msgstr "過去の取引量を再取得"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
@@ -6906,6 +7259,11 @@ msgstr "出金完了"
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Graduated"
 msgstr "卒業"
+
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+msgid "Traded here before? Check your wallet →"
+msgstr "以前ここで取引しましたか？ウォレットを確認 →"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6972,6 +7330,10 @@ msgstr "<0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> から <3><4>GM: 
 msgid "Share your PnL"
 msgstr "あなたのPnLをシェア"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "These are Season 1 values. Featured markets and coefficients may change mid-season."
+msgstr "これらはシーズン1の設定値です。対象の注目市場や係数はシーズン途中で変更される場合があります。"
+
 #: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
 msgid "Active affiliates"
 msgstr "アクティブなアフィリエイト"
@@ -7013,6 +7375,10 @@ msgstr "最大ネットワーク手数料にはガス急騰時のバッファー
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Order execution failed"
 msgstr "注文の執行に失敗しました"
+
+#: landing/src/pages/Rewards/RewardsReferralCard.tsx
+msgid "Invite other traders"
+msgstr "他のトレーダーを招待"
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} and {1} up to the caps below. Remaining tokens are reserved for open positions."
@@ -7239,6 +7605,10 @@ msgstr "承認中..."
 msgid "This position has a negative margin after pending borrow and funding fees, so settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or close enough of the position for the realized profit to cover the shortfall."
 msgstr "このポジションは未払いの借入手数料とファンディング手数料を差し引くと証拠金がマイナスのため、決済は失敗する可能性が高いです。プラスのファンディングは決済が成功した後にのみ請求可能になります。証拠金を追加するか、実現利益が不足分を補えるようにポジションを十分にクローズしてください。"
 
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Enter any wallet address or ENS"
+msgstr "任意のウォレットアドレスまたはENS名を入力"
+
 #: src/config/uiFlagEvents.tsx
 msgid "Service Disruption"
 msgstr "サービス障害"
@@ -7294,6 +7664,10 @@ msgstr "独自の手数料を設定"
 #: src/components/PositionSeller/SplitReceiveSwapProfitFeeWarning.tsx
 msgid "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>"
 msgstr "{receiveTokenSymbol} で受け取ると利益がスワップされ、{swapProfitFeePercentage}（<0>{swapProfitFeeUsd}</0>）のコストがかかります。スワップを避けるには {profitTokenSymbol} と {collateralTokenSymbol} を別々に受け取ってください。<1>詳細はこちら</1>"
+
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "Higher multiplier"
+msgstr "倍率アップ"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
@@ -7374,6 +7748,10 @@ msgstr "ロード中..."
 msgid "Trade now"
 msgstr "今すぐ取引"
 
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
+msgid "Every Wednesday,<0/>your fees come back."
+msgstr "毎週水曜日、<0/>手数料が戻ってきます。"
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from the GMX vesting vault"
 msgstr ""
@@ -7445,6 +7823,10 @@ msgstr "注文の許容価格"
 msgid "Updating {updateOrdersCount} TP/SL orders..."
 msgstr "{updateOrdersCount}件のTP/SL注文を更新中..."
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Early user? GMX rewards you with a boost on all your perp trades."
+msgstr "以前からご利用ですか？GMXでは、すべての無期限先物取引にブーストを付与します。"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execution price didn't meet acceptable price"
 msgstr "約定価格が許容価格を満たしませんでした"
@@ -7461,9 +7843,17 @@ msgstr "Builder／Referral Codeのアトリビューションに抵抗がない"
 msgid "Earned fees are only tracked for GM and GLV held in your wallet on {chainName}. GM and GLV in a GMX Account or on another chain still earn fees, but they can't be attributed per account yet."
 msgstr "獲得手数料は、{chainName}のウォレットに保有するGMとGLVについてのみ集計されます。GMX Accountや他のチェーンにあるGMとGLVも引き続き手数料を獲得しますが、まだアカウントごとに帰属させることはできません。"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "When do I get paid?"
+msgstr "報酬はいつ受け取れますか？"
+
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set long Limit @ {0}"
 msgstr ""
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Every trader who applies your referral code during Season 1 earns you 50% of the rewards they generate, in esGMX and GT, settled weekly, for as long as your referral relationship with that trader is active. Codes registered before Season 1 opened do not generate the share, though the trader can apply a new one once the season is open. They have to do it themselves, so ask them directly. A link won't do it. They can change their code at <0>app.gmx.io/referrals/traders</0>. Your pre-season referrals still earn you the fee-side share of 5%, 10% or 15% by tier, separate from Season 1’s 50%. The 50% is paid on top: your referred traders' own rewards are unchanged. The referral relationship is bounded by <1>GMX's referral program terms</1>."
+msgstr "シーズン1中にあなたの紹介コードを適用した各トレーダーについて、紹介関係が有効である限り、そのトレーダーが獲得する報酬の50%をesGMXとGTで受け取り、毎週精算されます。シーズン1の開始前に登録されたコードではこの報酬分配は発生しませんが、トレーダーはシーズン開始後に新しいコードを適用できます。本人による操作が必要なので、直接依頼してください。リンクを送るだけでは適用されません。コードは<0>app.gmx.io/referrals/traders</0>で変更できます。シーズン開始前の紹介についても、ティアに応じた5%、10%、15%の手数料分配は引き続き受け取れます。これはシーズン1の50%とは別です。この50%は追加で支払われるため、紹介されたトレーダー自身の報酬は変わりません。紹介関係には<1>GMXの紹介プログラム規約</1>が適用されます。"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position would be liquidatable"
@@ -7731,6 +8121,11 @@ msgstr "オフ"
 msgid "per"
 msgstr "あたり"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Create code and invite traders"
+msgstr "コードを作成してトレーダーを招待"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Reserve factor longs"
 msgstr "リザーブファクター（ロング）"
@@ -7846,6 +8241,10 @@ msgstr "自信を持って取引"
 msgid "Receiver has staked GMX/GLP"
 msgstr "受取人はGMX/GLPをステーク済みです"
 
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+msgid "GMX staked"
+msgstr "GMXをステークしました"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Order type unavailable for creation"
 msgstr ""
@@ -7864,6 +8263,10 @@ msgstr "GMX trading stats"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "High leverage increases liquidation risk"
 msgstr "高レバレッジは清算リスクを高めます"
+
+#: landing/src/pages/Rewards/Rewards.tsx
+msgid "Documentations"
+msgstr "ドキュメント"
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} cancelled"
@@ -7885,6 +8288,15 @@ msgstr "GMXの紹介統計ダッシュボード"
 #: landing/src/pages/Home/LiqiuditySection/LiqiuditySection.tsx
 msgid "Join {0} users earning real yield"
 msgstr "{0}人のユーザーとともに実質利回りを獲得しましょう"
+
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Weekly volume"
+msgstr "週間取引量"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Is 120% of my fees real?"
+msgstr "手数料の120%が本当に還元されますか？"
 
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/TradeHistory/filters/ActionFilter.tsx
@@ -8210,7 +8622,8 @@ msgstr ""
 msgid "Existing position is in {0} pool. Using the selected pool will create a separate position. <0>Switch to {1} pool</0>"
 msgstr ""
 
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
+#: landing/src/pages/Rewards/Rewards.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Governance"
 msgstr "ガバナンス"
@@ -8224,6 +8637,7 @@ msgstr "ガバナンス"
 msgid "Cancel"
 msgstr "キャンセル"
 
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Live"
 msgstr "ライブ"
@@ -8269,6 +8683,10 @@ msgstr ""
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "Do I need to pass KYC?"
 msgstr "KYCは必要ですか？"
+
+#: landing/src/pages/Rewards/Rewards.tsx
+msgid "Season 1 values are season-scoped"
+msgstr "シーズン1の数値はこのシーズン内でのみ集計されます"
 
 #: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
 msgid "Your wallet cannot sign messages. Connect a different wallet to trade."
@@ -8322,6 +8740,10 @@ msgstr "注文は約定しない可能性があります：トリガー価格で
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Max deposit capacity reached for this pool"
 msgstr "このプールの最大入金容量に達しました"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "No history here yet, so no comeback boost."
+msgstr "まだ取引履歴がないため、カムバックブーストはありません。"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing position is in {0} pool, but that pool lacks liquidity for this order"
@@ -8392,6 +8814,10 @@ msgstr "トランザクションを表示"
 msgid "Project"
 msgstr "プロジェクト"
 
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "Next step"
+msgstr "次の段階"
+
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "24h low"
@@ -8437,6 +8863,10 @@ msgstr "有効なBalancerプログラムコード"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Max amount exceeded"
 msgstr "最大値超過"
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "You earn on top — {referralShare}"
+msgstr "追加で{referralShare}を獲得"
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -8514,6 +8944,7 @@ msgstr "有効な金額を入力してください"
 msgid "Keep leverage at {currentLeverage}"
 msgstr "レバレッジを{currentLeverage}に維持"
 
+#: landing/src/pages/Rewards/RewardsTokens.tsx
 #: src/lib/dates.ts
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/AccountDashboard/pnlSummaryBuckets.ts
@@ -8590,9 +9021,17 @@ msgstr "送金中..."
 msgid "Staked GMX:"
 msgstr "ステーク済みGMX:"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Do my old trades count?"
+msgstr "過去の取引は対象になりますか？"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed."
 msgstr "{gmOrGlvLabel}の売却に失敗しました。"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "I already have a referral code set. Does my affiliate earn the 50%?"
+msgstr "すでに紹介コードを設定しています。紹介者は50%を受け取れますか？"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -8665,9 +9104,18 @@ msgstr "さらに表示"
 msgid "Net rate = funding + borrowing fees.<0/><1/>Funding: Balances longs vs shorts, paid between traders. <2>Read more</2>.<3/><4/>Borrowing: Ensures available liquidity. <5>Read more</5>."
 msgstr "ネットレート = ファンディング＋借入手数料。<0/><1/>ファンディング: ロングとショートのバランスを調整し、トレーダー間で支払われます。<2>詳細を見る</2>。<3/><4/>借入: 利用可能な流動性を確保します。<5>詳細を見る</5>。"
 
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "{0} of every payout"
+msgstr "各支払額の{0}"
+
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Start trading in under 5 minutes"
 msgstr "5分以内に取引を開始"
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Volume tiers"
+msgstr "取引量ティア"
 
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum actions before reauthorization required"
@@ -8701,6 +9149,10 @@ msgstr "<0>🔷 24時間ボリューム: 10.1億ドル。</0><1>パーミッシ�
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Enter deposit amount"
 msgstr "入金額を入力"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Unable to resolve this ENS name. Please try again."
+msgstr "このENS名を解決できませんでした。もう一度お試しください。"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
@@ -8744,6 +9196,10 @@ msgstr "{0}の最大ロング値を超過しています"
 msgid "N/A"
 msgstr "該当なし"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Your trading history can raise your multiplier in two ways. With more than $10,000 in lifetime volume on GMX, your comeback starts at +2x, capped by your lifetime-volume band. This bonus multiplier does not expire during Season 1; it ends only when you reach your cap. Past $200M lifetime volume, you also get +1x permanently. <0>Check your wallet above</0> to see your cap."
+msgstr "過去の取引履歴は、2つの方法で倍率を引き上げられます。GMXでの累計取引量が$10,000を超えている場合、カムバックボーナスは+2xから始まり、累計取引量の区分に応じた上限が設定されます。このボーナス倍率はシーズン1中に期限切れにならず、上限に達した時点でのみ終了します。累計取引量が$200Mを超えると、さらに恒久的に+1xが加算されます。上限を確認するには、<0>上の欄でウォレットを確認してください</0>。"
+
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Operates on open, permissionless networks to ensure transparency, decentralization, and unrestricted access"
 msgstr "透明性、分散性、および自由なアクセスを確保するため、オープンでパーミッションレスなネットワーク上で運用されています"
@@ -8780,6 +9236,10 @@ msgstr "残高"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Force failures"
 msgstr "強制エラー"
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "How your rewards<0/>are calculated"
+msgstr "報酬の<0/>計算方法"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
@@ -8826,6 +9286,10 @@ msgstr "合計リベート"
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Single-sided liquidity vaults with active hedging and rebalancing to minimize impermanent loss"
 msgstr "インパーマネントロスを最小化するため、アクティブなヘッジとリバランスを行うシングルサイド流動性ボールト"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Check wallet"
+msgstr "ウォレットを確認"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price below liquidation price"
@@ -8956,6 +9420,10 @@ msgstr ""
 msgid "TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling."
 msgstr "TP/SL注文はポジションの決済時に自動キャンセルされます。有効化後に作成された注文にのみ適用されます。"
 
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
+msgid "Check my multiplier"
+msgstr "自分の倍率を確認"
+
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "fees"
@@ -9085,6 +9553,10 @@ msgstr "エコシステム"
 msgid "Next"
 msgstr "次へ"
 
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Your volume tier builds from the first epoch"
+msgstr "取引量ティアは最初のエポックから積み上がります"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "More info"
 msgstr "詳細情報"
@@ -9197,6 +9669,10 @@ msgstr "{0}ms"
 #: src/components/GmxAccountModal/keys.ts
 msgid "Deposit failed"
 msgstr "入金に失敗しました"
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Guardian"
+msgstr "ガーディアン"
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "EST. PNL"
@@ -9487,6 +9963,10 @@ msgstr "プロトコルの分析"
 msgid "Show positions on chart"
 msgstr "チャートにポジションを表示"
 
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "On every trade"
+msgstr "すべての取引で"
+
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 msgid "Metrics debug"
 msgstr "メトリクスデバッグ"
@@ -9561,6 +10041,7 @@ msgstr "AI"
 
 #: src/components/Referrals/affiliates/ReferralsAffiliatesTab.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
+#: src/domain/referrals/hooks/useCreateReferralCode.ts
 msgid "Referral code submitted"
 msgstr "リファラルコードが送信されました"
 
@@ -9646,6 +10127,10 @@ msgstr ""
 msgid "Claim {0}"
 msgstr "{0}を受け取る"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Stake it to raise your multiplier and earn GMX staking rewards. Staked esGMX counts toward your staking tier just like staked GMX. Vest it to convert it to GMX over one year. Only unstaked esGMX can be vested, so vesting lowers your staking-tier balance by exactly the amount you vest: vest 100 esGMX and your balance drops by 100, which can move you down a tier. Vesting also reserves staked GMX or staked esGMX against the amount you vest; those reserved tokens stay staked and keep counting toward your tier. Vesting is capped at what you earned in the program, and trading and affiliate esGMX count toward the same cap."
+msgstr "倍率を上げてGMXのステーキング報酬を得るには、esGMXをステーキングしてください。ステーキングしたesGMXは、ステーキングしたGMXと同様にステーキングティアの判定に算入されます。1年かけてGMXに換えるには、ベスティングしてください。ベスティングできるのはステーキングされていないesGMXのみなので、ベスティングすると、その数量と同じだけステーキングティア判定用の残高が減少します。100 esGMXをベスティングすると残高が100減り、ティアが下がる場合があります。ベスティングでは、その金額に対してステーキング済みのGMXまたはesGMXも確保されます。確保されたトークンは引き続きステーキングされ、ティアの判定にも算入されます。ベスティングの上限はプログラムで獲得した額であり、取引とアフィリエイトで獲得したesGMXには共通の上限が適用されます。"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Borrowing exponent short"
@@ -9673,6 +10158,10 @@ msgstr "<0>アフィリエイト</0>タブでいつでも請求できます。"
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "It accrues to the code owner ({0})."
 msgstr "コード所有者（{0}）に蓄積されます。"
+
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+msgid "{0}+ lifetime"
+msgstr "累計{0}以上"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Retry external route"
@@ -9709,6 +10198,10 @@ msgstr "価格への影響はありません。このサイズでの<0/>ロン�
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "Close positions"
 msgstr "ポジションをクローズ"
+
+#: landing/src/pages/Rewards/Rewards.tsx
+msgid "Your trading fees<0/>come back to you."
+msgstr "取引手数料が<0/>あなたに還元されます。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group (Chinese)"
@@ -9768,6 +10261,11 @@ msgstr "リファラルコードを編集"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell request sent"
 msgstr "売却リクエストが送信されました"
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Boost"
+msgstr "ブースト"
 
 #: src/domain/synthetics/markets/createGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
@@ -9857,6 +10355,10 @@ msgstr ""
 msgid "Order filled"
 msgstr "注文が約定しました"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Do my existing referrals earn me the 50%?"
+msgstr "既存の紹介でも50%を受け取れますか？"
+
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Pools/Pools.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
@@ -9915,6 +10417,10 @@ msgstr "コードを作成"
 msgid "Error submitting order"
 msgstr "注文提出エラー"
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "+{referralExample} <0>in</0> esGMX + GT"
+msgstr "esGMX + GT<0>で</0>+{referralExample}"
+
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeboxMarginFields/MarginField.tsx
@@ -9938,9 +10444,21 @@ msgstr "トークンのブリッジとスワップ"
 msgid "Backing composition"
 msgstr "裏付け構成"
 
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "Rewards are paid<0/>in two tokens"
+msgstr "報酬は<0/>2つのトークンで支払われます"
+
 #: src/components/Referrals/shared/cards/ClaimableRebatesCard.tsx
 msgid "Claimable rebates"
 msgstr "請求可能なリベート"
+
+#: landing/src/pages/Rewards/RewardsReferralCard.tsx
+msgid "Your trading fees come back to you"
+msgstr "取引手数料があなたに還元されます"
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Every epoch · paid in both tokens"
+msgstr "各エポック · 両方のトークンで支払い"
 
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Lock in<0/><1>a better rate.</1>"
@@ -10175,6 +10693,10 @@ msgstr "これらのネットワークではウォレット取引のみ利用可
 msgid "Stake GMX and buy GLV or GM to earn rewards"
 msgstr "GMXをステークし、GLVまたはGMを購入して報酬を獲得"
 
+#: landing/src/pages/Rewards/RewardsTradeButton.tsx
+msgid "Start Trading"
+msgstr "取引を開始"
+
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sellable"
 msgstr "売却可能"
@@ -10190,6 +10712,11 @@ msgstr "発生したファンディング手数料が決済のGasコスト{0}を
 #: src/pages/RpcDebug/parts.tsx
 msgid "Large account"
 msgstr "大口アカウント"
+
+#: landing/src/pages/Rewards/Rewards.tsx
+#: landing/src/pages/RewardsTermsAndConditions/RewardsTermsAndConditions.tsx
+msgid "Terms and Conditions"
+msgstr "利用規約"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Shift fee"
@@ -10238,6 +10765,10 @@ msgstr "ステーク中..."
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Buy request sent"
 msgstr "購入リクエストが送信されました"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Only codes applied after Season 1 opens earn your affiliate the 50%, so apply theirs again once the season is live at <0>app.gmx.io/referrals/traders</0>. You have to change it yourself: clicking a referral link won't replace a code you already have. Your own rewards are unchanged either way."
+msgstr "紹介者が50%を受け取れるのは、シーズン1の開始後に適用されたコードのみです。シーズン開始後に<0>app.gmx.io/referrals/traders</0>で紹介者のコードを再度適用してください。変更は自分で行う必要があります。紹介リンクをクリックしても、すでに設定されているコードは置き換わりません。どちらの場合も、あなた自身の報酬は変わりません。"
 
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max network fee"
@@ -10374,6 +10905,10 @@ msgstr "正味の決済手数料 / 影響"
 msgid "Order trigger price"
 msgstr "注文トリガー価格"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Which chains count for Season 1?"
+msgstr "シーズン1ではどのチェーンが対象ですか？"
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap TWAP: Swap tokens in evenly distributed parts over a specified time"
 msgstr "スワップ TWAP：トークンを指定期間にわたり均等に分割してスワップ"
@@ -10465,6 +11000,10 @@ msgstr "裏付けトークンへのエクスポージャー"
 msgid "Search type"
 msgstr "タイプを検索"
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "Your next trade earns more"
+msgstr "次の取引でさらに獲得"
+
 #: src/components/TradeHistory/filters/ActionFilter.tsx
 msgid "Market orders"
 msgstr "成行注文"
@@ -10489,6 +11028,10 @@ msgstr "シフト"
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "The Program"
 msgstr "プログラム"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Yes. Volume routed through an integrator counts toward your own Season 1 tiers, unrelated to the integrator's referral tier."
+msgstr "はい。インテグレーター経由の取引量は、インテグレーターの紹介ティアとは関係なく、あなた自身のシーズン1のティアに算入されます。"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation risk alerts"
@@ -10637,6 +11180,10 @@ msgstr ""
 msgid "How much could I earn?"
 msgstr "どれくらい稼げますか？"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Should I stake or vest my esGMX?"
+msgstr "esGMXはステーキングとベスティングのどちらにすべきですか？"
+
 #: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
 msgid "Low {symbol} balance. This amount leaves little for future fees on {0}."
 msgstr ""
@@ -10756,9 +11303,14 @@ msgstr "新しい金額または価格を入力してください"
 msgid "Stake {tokenSymbol}"
 msgstr "{tokenSymbol}をステーク"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/ShareModal/useShareCardActions.ts
 msgid "Link copied to clipboard"
 msgstr "リンクがクリップボードにコピーされました"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Wallet address"
+msgstr "ウォレットアドレス"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max pool capacity reached. Current: {poolAmountText}, max: {maxPoolAmountText}"
@@ -10779,6 +11331,10 @@ msgstr "オプションベースのボールト"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Time limit"
 msgstr "期間制限"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Checking..."
+msgstr "確認中..."
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Live unrealized PnL before fees"
@@ -10859,6 +11415,10 @@ msgstr ""
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GMは1つのマーケットから手数料を獲得します。GLVは複数のGMトークンを保有し、関連マーケット間で自動的にリバランスします。どちらも収益を自動的に複利運用します。単一マーケットへのエクスポージャーにはGMを、複数プールへの分散にはGLVをお選びください。"
 
+#: landing/src/pages/Rewards/RewardsFlywheel.tsx
+msgid "Multiply"
+msgstr "倍率アップ"
+
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Because positions on Arbitrum can be funded from both your wallet and your GMX Account, we can't always determine where to return the margin automatically.<0/><1/>Choose:<2/>• <3>Wallet</3> if you mostly trade from your personal wallet on Arbitrum<4/>• <5>GMX Account</5> if you plan to keep trading or reusing margin on GMX<6/><7/>You can change this preference anytime in settings or when closing a position."
@@ -10914,6 +11474,10 @@ msgstr "2つの収益源。"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling shift request..."
 msgstr "シフトリクエストを実行中…"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "What is GT?"
+msgstr "GTとは何ですか？"
 
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "No price impact on increases — orders execute at mark price. <0>Read more</0>."
@@ -11105,6 +11669,10 @@ msgstr "決済ネットワークが{0}に変更されましたが、{1}が{2}の
 msgid "Set short Limit @ {0}"
 msgstr ""
 
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "Genesis"
+msgstr "ジェネシス"
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Deposit ETH"
 msgstr "ETHを入金"
@@ -11125,6 +11693,10 @@ msgstr "GMXと統合されたプロジェクト"
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Testnet LayerZero scan"
 msgstr "テストネットLayerZeroスキャン"
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "{feeShare} of your fees"
+msgstr "手数料の{feeShare}"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Take-Profit"
@@ -11294,6 +11866,14 @@ msgstr "Limit Swap: トリガー価格に達した時にトークンをスワッ
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "GMXからのアラートとお知らせを受け取り、取引や清算リスクなどを常に把握しましょう"
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Legendary"
+msgstr "レジェンダリー"
+
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "Rewards settle every Wednesday, 00:00 UTC, for the trades placed in the epoch that just closed. At settlement, esGMX becomes claimable and GT is credited."
+msgstr "報酬は毎週水曜日の00:00 UTCに、直前に終了したエポック中の取引を対象として精算されます。精算時にesGMXが請求可能になり、GTが付与されます。"
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated off-hours liquidation price"
 msgstr "時間外の推定清算価格"
@@ -11317,6 +11897,10 @@ msgstr "実効手数料約0.05%に基づく参考値です。<0/>実際の収益
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "Receive to this wallet"
 msgstr "このウォレットで受け取る"
+
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Unable to connect your wallet. Please try again."
+msgstr "ウォレットを接続できませんでした。もう一度お試しください。"
 
 #: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
 msgid "Stack them."
@@ -11354,6 +11938,11 @@ msgstr "ショート最大レート"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Staking Power Share"
 msgstr ""
+
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Comeback boost"
+msgstr "リターンブースト"
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 msgid "Alerts"
@@ -11524,6 +12113,10 @@ msgstr "オフチェーンでトランザクションに署名します。プレ
 msgid "External routing is temporarily paused after a failed attempt. Retry to check for a better rate."
 msgstr "外部ルーティングは失敗した試行の後、一時的に停止されています。再試行してより良いレートを確認してください。"
 
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Your referral earns"
+msgstr "紹介したトレーダーの獲得額"
+
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Working prototype or live product"
 msgstr "動くプロトタイプまたは公開中のプロダクト"
@@ -11594,6 +12187,10 @@ msgstr "流動性は{chainNames}または{lastChainName}でのみ利用可能で
 msgid "Transfer history"
 msgstr "送金履歴"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Your referral code"
+msgstr "あなたの紹介コード"
+
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Cancel order"
 msgstr "注文をキャンセル"
@@ -11606,6 +12203,10 @@ msgstr "現在のインパクト: {0}。より良い注文執行のため、-0.3
 msgid "This market is disabled. Contact support to claim your remaining funding fees."
 msgstr ""
 
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "This wallet has no comeback allocation."
+msgstr "このウォレットにはカムバック割り当てがありません。"
+
 #: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Claim funding fees"
@@ -11614,6 +12215,10 @@ msgstr "ファンディング手数料を受け取る"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Token permit testing"
 msgstr "トークンパーミットテスト"
+
+#: landing/src/pages/Rewards/Rewards.tsx
+msgid "Start earning<0/>on your next trade"
+msgstr "次の取引から<0/>報酬を獲得しましょう"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -11630,6 +12235,10 @@ msgstr ""
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Specify network: arbitrum, avalanche, fuji, megaeth, arbitrum-sepolia"
 msgstr "ネットワークを指定してください: arbitrum, avalanche, fuji, megaeth, arbitrum-sepolia"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Traded on GMX before?<0/>You come back at {multiplier}."
+msgstr "以前GMXで取引しましたか？<0/>{multiplier}で再スタート。"
 
 #: src/components/TradeHistory/PositionLifecycleFilterHeader.tsx
 msgid "{count, plural, one {# action in this lifecycle} other {# actions in this lifecycle}}"
@@ -11668,6 +12277,10 @@ msgstr "取引失敗"
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "COLLATERAL"
 msgstr "担保"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Your historical volume is <0>{0}</0>"
+msgstr "過去の取引量は<0>{0}</0>です"
 
 #: src/config/bridging.tsx
 msgid "Buy APE on Arbitrum with <0>Camelot</0>"
@@ -11803,6 +12416,10 @@ msgstr "もっと取引して、もっと安く。<0/>紹介して、稼ぐ。"
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 msgid "No pools matched"
 msgstr "一致するプールなし"
+
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Your trading fees come back to you. Check your GMX rewards."
+msgstr "取引手数料があなたに還元されます。GMXの報酬を確認しましょう。"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Going live or already live"
@@ -11944,6 +12561,10 @@ msgstr "言語"
 msgid "{idleSeconds}s"
 msgstr "{idleSeconds}秒"
 
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
+msgid "Close menu"
+msgstr "メニューを閉じる"
+
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "{0, plural, one {Closing will also cancel your pending margin deposit and return its funds.} other {Closing will also cancel your # pending margin deposits and return their funds.}}"
 msgstr "{0, plural, one {決済すると、保留中の証拠金入金もキャンセルされ、資金が返却されます。} other {決済すると、保留中の#件の証拠金入金もキャンセルされ、資金が返却されます。}}"
@@ -11975,6 +12596,10 @@ msgstr "Oracle keeper モニタリング"
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Enter a new size or price"
 msgstr "新しいサイズまたは価格を入力"
+
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "Vest it"
+msgstr "ベスティングする"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TVChartContainer/constants.ts
@@ -12259,6 +12884,10 @@ msgstr "{glvOrGm}を出金: {0}"
 msgid "Save tier"
 msgstr "ティアを保存"
 
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "No wallet address was found for this ENS name"
+msgstr "このENS名に対応するウォレットアドレスが見つかりません"
+
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr "{count, plural, one {注文} other {# 注文}}"
@@ -12300,6 +12929,10 @@ msgstr "シフトリクエストを送信中…"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Order expired before it could be executed"
 msgstr "注文は実行前に期限切れになりました"
+
+#: landing/src/pages/Rewards/RewardsMultipliers.tsx
+msgid "Apex"
+msgstr "Apex"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "PNG"
@@ -12368,6 +13001,7 @@ msgstr "受け取り可能な分配はありません"
 msgid "Receive {tokensList} into your wallet on {networkName}, or choose another network."
 msgstr "{networkName}のウォレットに{tokensList}を受け取るか、別のネットワークを選択してください。"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 msgid "Copy link"
@@ -12468,6 +13102,14 @@ msgstr "{ordersText}がキャンセルされました"
 msgid "Limit"
 msgstr "リミット"
 
+#: landing/src/pages/Rewards/RewardsCalculator.tsx
+msgid "Total multiplier"
+msgstr "合計倍率"
+
+#: landing/src/pages/Home/RewardsSection/RewardsSection.tsx
+msgid "Returned to you up to"
+msgstr "最大還元率"
+
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "TIMEKEY"
 msgstr "TIMEKEY"
@@ -12534,10 +13176,19 @@ msgstr "NET RATE / 1H"
 msgid "30d performance APY"
 msgstr "30日パフォーマンスAPY"
 
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "Unable to update minting data. Try again."
+msgstr "ミントデータを更新できませんでした。もう一度お試しください。"
+
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 msgid "Share on"
 msgstr "シェアする"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Your comeback boost is fully used"
+msgstr "カムバックブーストはすべて使用済みです"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Derivatives portfolio tracker"
@@ -12584,6 +13235,10 @@ msgstr "リンク"
 msgid "Expired Market Swap"
 msgstr "期限切れの市場スワップ"
 
+#: landing/src/pages/Rewards/RewardsFaq.tsx
+msgid "How can GMX afford this?"
+msgstr "GMXはどのようにこの報酬を賄っていますか？"
+
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation threshold."
 msgstr "卒業したトレーダーは、紹介プログラムの卒業しきい値に達したため、GMXプロトコルコードに移行されました。"
@@ -12625,8 +13280,8 @@ msgstr "期限切れの入金"
 msgid "Take-Profit"
 msgstr "テイクプロフィット"
 
+#: landing/src/components/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Builders/Builders.tsx
-#: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 msgid "Builders"
 msgstr "ビルダー"
 
@@ -12698,6 +13353,10 @@ msgstr ""
 msgid "Enable <0>Express Trading</0> in settings for better reliability.<1/><2/>Or increase the max network fee buffer {bufferText} in {settingsLink}"
 msgstr "信頼性を向上させるには設定で<0>Express Trading</0>を有効にしてください。<1/><2/>または{settingsLink}で最大ネットワーク手数料バッファ{bufferText}を引き上げてください"
 
+#: landing/src/pages/Rewards/RewardsTokens.tsx
+msgid "Minted"
+msgstr "ミント済み"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Enter a ratio"
 msgstr "比率を入力"
@@ -12754,6 +13413,10 @@ msgstr ""
 #: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
 msgid "Referral revenue, built in"
 msgstr "組み込みの紹介収益"
+
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Connect this wallet to create a code"
+msgstr "このウォレットを接続してコードを作成"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Stop Market)"

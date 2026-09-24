@@ -5,10 +5,11 @@ import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
 
 import { HomePageContextProvider } from "./contexts/HomePageContext";
 import { FaqSection } from "./FaqSection/FaqSection";
-import { HeaderMenu } from "./HeaderMenu/HeaderMenu";
+import { Features } from "./HeroSection/Features";
 import { HeroSection } from "./HeroSection/HeroSection";
 import { LaunchSection } from "./LaunchSection/LaunchSection";
 import { LiqiuditySection } from "./LiqiuditySection/LiqiuditySection";
+import { RewardsSection } from "./RewardsSection/RewardsSection";
 import { RoadmapSection } from "./RoadmapSection/RoadmapSection";
 import { ProgramCards } from "./SocialSection/ProgramCards";
 import { SocialSection } from "./SocialSection/SocialSection";
@@ -23,14 +24,19 @@ export default function Home() {
           action: "PageView",
         },
       },
-      { onlyOncePerSession: true }
+      { onlyOncePerSession: true, instantSend: true }
     );
   }, []);
 
   return (
     <HomePageContextProvider>
-      <HeaderMenu />
       <HeroSection />
+      <RewardsSection />
+      <section className="overflow-hidden bg-slate-900 px-16 sm:px-40">
+        <div className="mx-auto sm:max-w-[1200px]">
+          <Features />
+        </div>
+      </section>
       <LaunchSection />
       <LiqiuditySection />
       <SponsorsSection />
