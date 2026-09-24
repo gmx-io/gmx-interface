@@ -10803,6 +10803,7 @@ msgid "Large account"
 msgstr "대형 계정"
 
 #: landing/src/pages/Rewards/Rewards.tsx
+#: landing/src/pages/RewardsTermsAndConditions/RewardsTermsAndConditions.tsx
 msgid "Terms and Conditions"
 msgstr "이용약관"
 

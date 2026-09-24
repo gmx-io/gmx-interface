@@ -12,6 +12,7 @@ import { scrollToLandingSection } from "./utils/scrollToLandingSection";
 const Builders = lazy(() => import("./pages/Builders/Builders"));
 const ReferralTerms = lazy(() => import("./pages/ReferralTerms/ReferralTerms"));
 const TermsAndConditions = lazy(() => import("./pages/TermsAndConditions/TermsAndConditions"));
+const RewardsTermsAndConditions = lazy(() => import("./pages/RewardsTermsAndConditions/RewardsTermsAndConditions"));
 const TraderAffiliateProgram = lazy(() => import("./pages/TraderAffiliateProgram/TraderAffiliateProgram"));
 
 const LANDING_PAGE_PATHS = ["/", "/rewards", "/builders", "/trader-affiliate-program"];
@@ -64,6 +65,11 @@ export function LandingRoutes() {
         <Route exact path="/terms-and-conditions">
           <Suspense fallback={<PageLoader />}>
             <TermsAndConditions />
+          </Suspense>
+        </Route>
+        <Route exact path="/rewards-terms-and-conditions">
+          <Suspense fallback={<PageLoader />}>
+            <RewardsTermsAndConditions />
           </Suspense>
         </Route>
         <Route exact path={LANDING_PAGE_PATHS}>

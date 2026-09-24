@@ -16,7 +16,7 @@ vi.mock("./pages/Rewards/Rewards", () => ({
   default: () => (
     <>
       <h1>Rewards page</h1>
-      <Link to="/terms-and-conditions">Terms</Link>
+      <Link to="/rewards-terms-and-conditions">Terms and Conditions</Link>
     </>
   ),
 }));
@@ -24,6 +24,9 @@ vi.mock("./pages/Builders/Builders", () => ({ default: () => <h1>Builders page</
 vi.mock("./pages/TraderAffiliateProgram/TraderAffiliateProgram", () => ({ default: () => <h1>VIP page</h1> }));
 vi.mock("./pages/TermsAndConditions/TermsAndConditions", () => ({ default: () => <h1>Terms page</h1> }));
 vi.mock("./pages/ReferralTerms/ReferralTerms", () => ({ default: () => <h1>Referral terms page</h1> }));
+vi.mock("./pages/RewardsTermsAndConditions/RewardsTermsAndConditions", () => ({
+  default: () => <h1>Rewards terms page</h1>,
+}));
 vi.mock("landing/pages/Home/hooks/useGoToTrade", () => ({
   RedirectChainIds: { Arbitum: 42161 },
   useGoToTrade: () => vi.fn(),
@@ -150,10 +153,11 @@ describe("landing navigation", () => {
 
     fireEvent.click(view.getByRole("link", { name: "Rewards" }));
     await act(async () => {
-      fireEvent.click(view.getByRole("link", { name: "Terms" }));
+      fireEvent.click(view.getByRole("link", { name: "Terms and Conditions" }));
       await vi.dynamicImportSettled();
     });
-    expect(await view.findByRole("heading", { name: "Terms page" })).toBeTruthy();
+    expect(await view.findByRole("heading", { name: "Rewards terms page" })).toBeTruthy();
+    expect(view.router.location.pathname).toBe("/rewards-terms-and-conditions");
     expect(view.container.querySelector("[data-landing-header]")).toBeNull();
 
     act(() => view.router.history.goBack());
@@ -170,6 +174,16 @@ describe("landing navigation", () => {
       expect(view.getByTitle("Season 1 · Live")).toBeTruthy();
       expect(view.router.location.search).toBe("?ref=TraderCode");
       expect(view.router.location.hash).toBe("#season");
+    }
+  );
+
+  it.each(["/rewards-terms-and-conditions", "/rewards-terms-and-conditions/"])(
+    "opens the rewards terms directly at %s",
+    async (path) => {
+      const view = renderAt(path);
+      expect(await view.findByRole("heading", { name: "Rewards terms page" })).toBeTruthy();
+      expect(view.router.location.pathname).toBe(path);
+      expect(view.container.querySelector("[data-landing-header]")).toBeNull();
     }
   );
 });

@@ -1,6 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 
 import { ARBITRUM } from "config/chains";
 import { DOCS_LINKS } from "config/links";
@@ -104,9 +105,9 @@ export default function Rewards() {
           </section>
         </main>
         <footer className="rewards-footer rewards-container">
-          <a href={DOCS_LINKS.rewardsTermsAndConditions} target="_blank" rel="noopener noreferrer">
+          <Link to="/rewards-terms-and-conditions">
             <Trans>Terms and Conditions</Trans>
-          </a>
+          </Link>
           <p>
             <Trans>Season 1 values are season-scoped</Trans>
           </p>

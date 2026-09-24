@@ -10803,6 +10803,7 @@ msgid "Large account"
 msgstr "Cuenta grande"
 
 #: landing/src/pages/Rewards/Rewards.tsx
+#: landing/src/pages/RewardsTermsAndConditions/RewardsTermsAndConditions.tsx
 msgid "Terms and Conditions"
 msgstr "Términos y condiciones"
 
