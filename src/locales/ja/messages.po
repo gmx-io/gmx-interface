@@ -4332,6 +4332,11 @@ msgstr "プライマリ失敗"
 msgid "No GMX swap route found for {0} to {1}."
 msgstr "{0} から {1} への GMX スワップルートが見つかりません。"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "By claiming or vesting esGMX, you agree to the Rewards Program <0>Terms and Conditions</0>."
+msgstr "esGMXを請求またはベスティングすることで、報酬プログラムの<0>利用規約</0>に同意したものとみなされます。"
+
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Commodities"
 msgstr "コモディティ"
