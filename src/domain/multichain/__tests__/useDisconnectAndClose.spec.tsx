@@ -7,6 +7,8 @@ import { useDisconnectAndClose } from "../useDisconnectAndClose";
 
 const mocks = vi.hoisted(() => ({
   disconnectAsync: vi.fn(),
+  evmAddress: "0xabc" as string | undefined,
+  isSolana: false,
   logout: vi.fn(),
   pushEvent: vi.fn(),
   setIsSettingsVisible: vi.fn(),
@@ -27,6 +29,22 @@ vi.mock("@privy-io/react-auth", () => ({
 vi.mock("wagmi", () => ({
   useDisconnect: () => ({
     disconnectAsync: mocks.disconnectAsync,
+  }),
+  useAccount: () => ({
+    address: mocks.evmAddress,
+  }),
+}));
+
+vi.mock("lib/chains", () => ({
+  useChainId: () => ({
+    isSolana: mocks.isSolana,
+  }),
+}));
+
+vi.mock("solana-interface/wallet/useSolanaWallet", () => ({
+  useSolanaWallet: () => ({
+    address: undefined,
+    wallet: undefined,
   }),
 }));
 
@@ -66,6 +84,8 @@ function setup() {
 describe("useDisconnectAndClose", () => {
   beforeEach(() => {
     mocks.disconnectAsync.mockResolvedValue(undefined);
+    mocks.evmAddress = "0xabc";
+    mocks.isSolana = false;
     mocks.logout.mockResolvedValue(undefined);
     mocks.disconnectPrivyWalletsFromWagmi.mockResolvedValue(undefined);
     mocks.wallets = [{ disconnect: vi.fn() }, { disconnect: vi.fn() }];
@@ -104,6 +124,44 @@ describe("useDisconnectAndClose", () => {
     expect(localStorage.getItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY)).toBeNull();
     expect(mocks.setIsVisible).toHaveBeenCalledWith(false);
     expect(mocks.setIsSettingsVisible).toHaveBeenCalledWith(false);
+  });
+
+  it("clears Privy auth on EVM disconnect even when a Solana wallet is still connected", async () => {
+    localStorage.setItem("remembered-solana-wallet", JSON.stringify({ address: "SoLana", name: "Phantom" }));
+    const handleDisconnect = setup();
+
+    await act(async () => {
+      await handleDisconnect();
+    });
+
+    expect(mocks.logout).toHaveBeenCalledTimes(1);
+    expect(localStorage.getItem("remembered-solana-wallet")).toBe(
+      JSON.stringify({ address: "SoLana", name: "Phantom" })
+    );
+  });
+
+  it("logs out after Solana disconnect when the EVM account is already gone", async () => {
+    mocks.isSolana = true;
+    mocks.evmAddress = undefined;
+    const handleDisconnect = setup();
+
+    await act(async () => {
+      await handleDisconnect();
+    });
+
+    expect(mocks.logout).toHaveBeenCalledTimes(1);
+    expect(mocks.disconnectAsync).not.toHaveBeenCalled();
+  });
+
+  it("keeps the Privy session when Solana disconnects and an EVM account is still connected", async () => {
+    mocks.isSolana = true;
+    const handleDisconnect = setup();
+
+    await act(async () => {
+      await handleDisconnect();
+    });
+
+    expect(mocks.logout).not.toHaveBeenCalled();
   });
 
   it("still closes account UI when provider disconnects fail", async () => {

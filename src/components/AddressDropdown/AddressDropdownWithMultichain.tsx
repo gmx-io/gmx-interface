@@ -22,8 +22,8 @@ type Props = {
 };
 
 export function AddressDropdownWithMultichain({ account }: Props) {
-  const { srcChainId } = useChainId();
-  const { ensName } = useENS(account);
+  const { srcChainId, isSolana } = useChainId();
+  const { ensName } = useENS(isSolana ? undefined : (account as `0x${string}`));
   const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
   const { totalUsd, gmxAccountUsd, isGmxAccountLoading } = useAvailableToTradeAssetSettlementChain();
   const { shouldShowDepositButton } = useGmxAccountShowDepositButton();
@@ -57,7 +57,8 @@ export function AddressDropdownWithMultichain({ account }: Props) {
     [setGmxAccountModalOpen]
   );
 
-  const showSideButton = srcChainId !== undefined || (gmxAccountUsd !== undefined && gmxAccountUsd > 0n);
+  const showSideButton =
+    !isSolana && (srcChainId !== undefined || (gmxAccountUsd !== undefined && gmxAccountUsd > 0n));
 
   return (
     <div
@@ -100,7 +101,7 @@ export function AddressDropdownWithMultichain({ account }: Props) {
             </>
           )}
 
-          {shouldShowDepositButton && (
+          {!isSolana && shouldShowDepositButton && (
             <Button variant="primary" onClick={handleOpenDeposit}>
               <Trans>Deposit</Trans>
             </Button>

@@ -50,7 +50,7 @@ msgstr "推薦代碼"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient funds for order costs. Remaining: {remainingCostUsdText}"
-msgstr ""
+msgstr "訂單費用資金不足。剩餘：{remainingCostUsdText}"
 
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing limit order uses {symbol} collateral. <0>Switch to {symbol} collateral</0>"
@@ -106,8 +106,11 @@ msgstr "立即重新載入"
 msgid "<0>Solana support</0><1>GMX Express</1>"
 msgstr "<0>Solana 支援</0><1>GMX Express</1>"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/MarketsList/MarketsList.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -141,11 +144,11 @@ msgstr "顯示除錯數值"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Execution price is negative"
-msgstr ""
+msgstr "執行價格為負"
 
 #: src/components/GmList/PerformanceLabel.tsx
 msgid "Projected yearly return vs. a Uniswap V2-style benchmark.<0/><1/>Short timeframes may not reflect long-term performance.<2/><3/><4>View detailed stats on Dune</4>."
-msgstr ""
+msgstr "相對 Uniswap V2 風格基準的預計年化回報。<0/><1/>短時間段可能無法反映長期表現。<2/><3/><4>在 Dune 上查看詳細統計</4>。"
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Wallet funds on this network can be deposited to GMX Account for {settlementChainName} trading. To trade directly with {settlementChainName} wallet balance, <0>switch to {settlementChainName}</0>."
@@ -153,7 +156,7 @@ msgstr "此網路上的錢包資金可存入 GMX Account 以進行 {settlementCh
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Rebates earned as an affiliate"
-msgstr ""
+msgstr "作為推廣夥伴賺取的返利"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "BonsaiDAO"
@@ -169,7 +172,7 @@ msgstr "您可以使用 GMX Account 在 GMX 上開立逐倉倉位。"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Do I need to create codes on each network?"
-msgstr ""
+msgstr "我需要在每個網路上建立代碼嗎？"
 
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Multichain</0><1>MegaETH support</1><2>Just-in-time liquidity</2>"
@@ -183,6 +186,7 @@ msgstr "建立 TWAP 兌換"
 msgid "Rewards paused"
 msgstr "獎勵已暫停"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -208,7 +212,7 @@ msgstr "用於監控 GMX 兌換的 Telegram 機器人"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "No trades during the selected period"
-msgstr ""
+msgstr "所選期間內沒有交易"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Debug values unavailable"
@@ -216,7 +220,7 @@ msgstr "除錯數值不可用"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Insufficient {0} for gas on {networkName}<0/><1/><2>Swap</2> or <3>bridge</3> {1} to {networkName}"
-msgstr ""
+msgstr "{networkName} 上 Gas 所需的 {0} 不足<0/><1/><2>兌換</2> 或 <3>跨鏈</3> {1} 到 {networkName}"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing limit order in {0} pool but lacks liquidity for this order"
@@ -242,7 +246,7 @@ msgstr "類型"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap routed through multiple GM pools for lowest fees and price impact"
-msgstr ""
+msgstr "透過多個 GM 池路由兌換，以獲得最低費用和價格影響"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "External swap temporarily disabled. Try again"
@@ -263,11 +267,11 @@ msgstr "（已返還）"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Accumulated rewards"
-msgstr ""
+msgstr "累計獎勵"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Show other assets ({0})"
-msgstr ""
+msgstr "顯示其他資產（{0}）"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max factor for liquidations"
@@ -279,7 +283,7 @@ msgstr "您的錢包無法簽署訊息，而從此網路交易需要此功能。
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Paying gas in {0} may give a better rate on this swap"
-msgstr ""
+msgstr "用 {0} 支付 Gas 可能在此次兌換中獲得更好的匯率"
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "Oracle keeper events"
@@ -308,6 +312,10 @@ msgstr "限價單失敗"
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Performance"
 msgstr "績效"
+
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
+msgid "Solana address"
+msgstr "Solana 地址"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Open fees"
@@ -430,7 +438,7 @@ msgstr "常見問題"
 
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Approve {depositTokenSymbol}"
-msgstr ""
+msgstr "授權 {depositTokenSymbol}"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit details"
@@ -442,7 +450,7 @@ msgstr "網路費用已上漲。需要額外費用。"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Insufficient pool balance to claim this funding fee"
-msgstr ""
+msgstr "池餘額不足，無法領取此資金費用"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
@@ -466,7 +474,7 @@ msgstr "什麼是 GLV？"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Limit Swap: {fromSymbol} to {toSymbol}"
-msgstr ""
+msgstr "編輯限價兌換：{fromSymbol} 到 {toSymbol}"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Expired Market Increase"
@@ -509,7 +517,7 @@ msgstr "已結算資金費用"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Rebates are paid in the collateral tokens used by your referrals. For example, if a referral trades with USDC collateral, your rebate portion will be in USDC."
-msgstr ""
+msgstr "返利以您推薦用戶使用的抵押品代幣支付。例如，若推薦用戶以 USDC 作為抵押品交易，您的返利部分將為 USDC。"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Idea stage, nothing shipped yet"
@@ -547,7 +555,7 @@ msgstr "推廣夥伴儀表板"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max TWAP parts: {MAX_TWAP_NUMBER_OF_PARTS}"
-msgstr ""
+msgstr "TWAP 最大份數：{MAX_TWAP_NUMBER_OF_PARTS}"
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Failed to claim affiliate rewards"
@@ -555,7 +563,7 @@ msgstr "領取聯盟獎勵失敗"
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "decrease"
-msgstr ""
+msgstr "減倉"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in any BTC/USD pool"
@@ -589,12 +597,14 @@ msgstr "已支付給交易者與推廣夥伴"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Mixed exposure: short {indexSymbol} + long {collateralSymbol} collateral. Useful for delta-neutral strategies to earn funding."
-msgstr ""
+msgstr "混合敞口：做空 {indexSymbol} + 做多 {collateralSymbol} 抵押品。適用於賺取資金費的 delta 中性策略。"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid oracle price for {tokenSymbol}"
 msgstr "{tokenSymbol} 的 Oracle 價格無效"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -690,7 +700,7 @@ msgstr "結算鏈"
 
 #: src/pages/PageNotFound/PageNotFound.tsx
 msgid "<0>Return to </0><1>homepage</1> <2>or </2> <3>trade</3>"
-msgstr ""
+msgstr "<0>返回</0><1>首頁</1> <2>或 </2> <3>交易</3>"
 
 #: src/components/TVChart/components/OpenInterestTooltip.tsx
 msgid "Long OI"
@@ -731,6 +741,7 @@ msgstr "地址"
 msgid "Additional opportunities"
 msgstr "更多機會"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Positions"
@@ -740,7 +751,7 @@ msgstr "倉位"
 #: src/components/Referrals/shared/TimeRangeFilter.tsx
 #: src/components/Referrals/shared/TimeRangeFilter.tsx
 msgid "{0}d"
-msgstr ""
+msgstr "{0} 天"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Incentives, airdrops, and prizes will appear here"
@@ -764,7 +775,7 @@ msgstr "展開"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Stop Market: {suffix}"
-msgstr ""
+msgstr "編輯停損市價：{suffix}"
 
 #: src/pages/Actions/SyntheticsActions.tsx
 msgid "GMX {VERSION_NAME} actions across all traders on {networkName}"
@@ -780,7 +791,7 @@ msgstr "訂單成交價格"
 
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 msgid "Current swap impact: {0}. Add a 1% buffer for better execution."
-msgstr ""
+msgstr "目前兌換影響：{0}。建議加 1% 緩衝以獲得更好的執行。"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Switch to Classic Trading"
@@ -796,7 +807,7 @@ msgstr "推薦碼尚未在以下網路註冊：{nonTakenNetworkNamesJoined}。�
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes. If you trade on both Arbitrum and Avalanche, apply a referral code on each network separately."
-msgstr ""
+msgstr "是的。如果您同時在 Arbitrum 和 Avalanche 上交易，請在每個網路上分別套用推薦碼。"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed margin deposit"
@@ -808,7 +819,7 @@ msgstr "所有 {0}/USD 池的流動性不足"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Open"
-msgstr ""
+msgstr "開倉"
 
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 #: src/pages/Dashboard/StatsCard.tsx
@@ -817,7 +828,7 @@ msgstr "國庫"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Your share of the total network staking power. Treasury rewards will be distributed proportionally to staking power when GMX reaches $90. All projected rewards are best-effort estimations. Actual distribution is subject to DAO governance."
-msgstr ""
+msgstr "您在全網質押權重中的份額。當 GMX 達到 $90 時，國庫獎勵將按質押權重比例分配。所有預計獎勵均為盡力估算。實際分配取決於 DAO 治理。"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "No"
@@ -841,6 +852,7 @@ msgstr "在外部聚合器上交換"
 msgid "Classic"
 msgstr "Classic"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -930,15 +942,20 @@ msgstr "將 esGMX 轉換為 GMX 代幣。使用金庫前請先閱讀歸屬詳情
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from the Affiliate vesting vault"
-msgstr ""
+msgstr "發送方已從推廣夥伴歸屬金庫中提取全部代幣"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "No {marketTypeLabel} match \"{query}\"."
 msgstr "{marketTypeLabel}中沒有與「{query}」相符的結果。"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Negative value: traders pay funding"
 msgstr "負值：交易者支付資金費用"
+
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
+msgid "Insufficient SOL for network fee"
+msgstr "SOL 不足以支付網路費用"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Transfer {nativeTokenSymbol} from other networks to {chainName}"
@@ -954,7 +971,7 @@ msgstr "統計"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Can I create multiple referral codes?"
-msgstr ""
+msgstr "我可以建立多個推薦碼嗎？"
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Unknown error"
@@ -994,6 +1011,7 @@ msgstr "在中心化交易所購買 GMX"
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
+#: src/components/TVChart/ChartHeader.tsx
 msgid "Available liquidity"
 msgstr "可用流動性"
 
@@ -1015,7 +1033,7 @@ msgstr "流動性"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Minimum required margin"
-msgstr ""
+msgstr "最低所需保證金"
 
 #: src/components/HistoryExport/HistoryExportModal.tsx
 msgid "GMX Detailed CSV"
@@ -1023,7 +1041,7 @@ msgstr "GMX Detailed CSV"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {seconds} seconds"
-msgstr ""
+msgstr "<0>每</0> {seconds} 秒"
 
 #: src/components/EarningValue/EarningValue.tsx
 msgid "Earned fees are only tracked for GM held in your wallet on {chainName}. GM in a GMX Account or on another chain still earns fees, but they can't be attributed per account yet."
@@ -1064,7 +1082,7 @@ msgstr "轉換建立失敗"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "27% of protocol fees fund Treasury buybacks — rewards distributed at $90"
-msgstr ""
+msgstr "協議費用的 27% 用於國庫回購 — 獎勵在 $90 時分配"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Swap fees"
@@ -1096,7 +1114,7 @@ msgstr "Plutus"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {hours} hours{0}"
-msgstr ""
+msgstr "<0>每</0> {hours} 小時{0}"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order won't execute: the trigger price is beyond the liquidation price. Edit the trigger price."
@@ -1104,7 +1122,7 @@ msgstr "訂單將無法執行：觸發價格已越過清算價格。請編輯觸
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "Don't ask again"
-msgstr ""
+msgstr "不再詢問"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No options to buy {nativeTokenSymbol} on {chainName}"
@@ -1116,7 +1134,7 @@ msgstr "費用數值在賺取時計算。不包含獎勵。"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesPromoCard.tsx
 msgid "Enter the referral code and save up to 10% on fees"
-msgstr ""
+msgstr "輸入推薦碼，最高可節省 10% 手續費"
 
 #: src/pages/Pools/Pools.tsx
 msgid "TVL in vaults and pools"
@@ -1124,7 +1142,7 @@ msgstr "金庫與池中的 TVL"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
-msgstr ""
+msgstr "您推薦的交易者產生的交易量"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Trading simulations on GMX using DOJO"
@@ -1132,7 +1150,7 @@ msgstr "使用 DOJO 在 GMX 上進行交易模擬"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Can I unstake or withdraw anytime?"
-msgstr ""
+msgstr "我可以隨時取消質押或提取嗎？"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker"
@@ -1160,7 +1178,7 @@ msgstr "替換保證金存入"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Earns MegaETH points"
-msgstr ""
+msgstr "賺取 MegaETH 積分"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
@@ -1230,7 +1248,7 @@ msgstr "按 GMX 永續合約約 0.05% 的實際往返費率估算。<0/>僅供�
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Market: {0} a short position at the current price."
-msgstr ""
+msgstr "{typeString} 做空市價：以目前價格 {0} 空頭倉位。"
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Deposit completed"
@@ -1242,7 +1260,7 @@ msgstr "領取 {totalUsd}"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Take-Profit: {suffix}"
-msgstr ""
+msgstr "編輯止盈：{suffix}"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -1252,8 +1270,12 @@ msgstr "Yield Yak Swap"
 msgid "Vaultka"
 msgstr "Vaultka"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
@@ -1266,7 +1288,7 @@ msgstr "市場"
 
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing position uses {0} collateral. Using the selected collateral will create a separate position. <0>Switch to {1} collateral</0>"
-msgstr ""
+msgstr "現有倉位使用 {0} 抵押品。使用所選抵押品將建立單獨倉位。<0>切換到 {1} 抵押品</0>"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Active referral code"
@@ -1283,7 +1305,7 @@ msgstr "做空借貸因子"
 
 #: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "Referrals esGMX"
-msgstr ""
+msgstr "推薦 esGMX"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (positive PI)"
@@ -1291,7 +1313,7 @@ msgstr "兌換手續費因子（正價格影響）"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Insufficient pool balance"
-msgstr ""
+msgstr "池餘額不足"
 
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 #: src/components/MarketSelector/PoolSelector.tsx
@@ -1325,7 +1347,7 @@ msgstr "執行費用低於目前網路成本"
 
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Tiers"
-msgstr ""
+msgstr "等級"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (negative PI)"
@@ -1337,7 +1359,7 @@ msgstr "可領取餘額"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Yes! You can create as many codes as you want. This is useful for tracking different campaigns, communities, or platforms separately."
-msgstr ""
+msgstr "可以！您可以建立任意數量的代碼。這有助於分別追蹤不同的活動、社群或平台。"
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "xxxx-xxxx-xxxx"
@@ -1418,9 +1440,14 @@ msgstr "銀行卡購買目前不適用於您的地區或設定。請改用<0>接
 msgid "Max {0} buyable amount exceeded"
 msgstr "已超過 {0} 可購買上限"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
+msgid "Awaiting signature"
+msgstr "等待簽名"
+
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing position uses {0} collateral. If executed, this order will create a separate position. <0>Switch to {1} collateral</0>"
-msgstr ""
+msgstr "現有倉位使用 {0} 抵押品。若執行，此訂單將建立單獨倉位。<0>切換到 {1} 抵押品</0>"
 
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -1450,7 +1477,7 @@ msgstr "未實現盈虧"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 msgid "Rewards"
-msgstr ""
+msgstr "獎勵"
 
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "<0>Yes — the two programs stack. You can trade on your discounted tier while also earning affiliate rebates from anyone you refer.</0>"
@@ -1458,7 +1485,7 @@ msgstr "<0>可以——兩項計畫可同時適用。您可以按您的折扣等
 
 #: src/components/TradeBox/TradeBoxHeaderTabs.tsx
 msgid "Leverage for the current order. Resulting position leverage: {formattedLeverage}."
-msgstr ""
+msgstr "目前訂單的槓桿。結果倉位槓桿：{formattedLeverage}。"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
@@ -1545,6 +1572,7 @@ msgid "To buy GMX on {0}, <0>change your network</0>"
 msgstr "若要在 {0} 上購買 GMX，<0>請切換網路</0>"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Results are available in Perpetuals."
 msgstr "永續合約中有可用結果。"
 
@@ -1558,7 +1586,7 @@ msgstr "簽署中..."
 
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Permit has expired. Try again</0>"
-msgstr ""
+msgstr "<0>Permit 已過期。請重試</0>"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Deposit fee"
@@ -1632,7 +1660,7 @@ msgstr "可能需要幾分鐘才會顯示。請稍後再查看"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Go to affiliate dashboard"
-msgstr ""
+msgstr "前往推廣夥伴面板"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Estimated wallet-specific annualized rate based on the recent GMX buyback pace, your staking power share, and your current staked GMX + esGMX. Actual distribution is subject to DAO governance."
@@ -1698,7 +1726,7 @@ msgstr "Beefy"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Staking power accrues over time based on your staked GMX balance and determines your share of buyback rewards"
-msgstr ""
+msgstr "質押權重會根據您質押的 GMX 餘額隨時間累積，並決定您在回購獎勵中的份額"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Select at least one market"
@@ -1745,7 +1773,7 @@ msgstr "概覽"
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Fetching swap route..."
-msgstr ""
+msgstr "正在取得兌換路由…"
 
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Collateral"
@@ -1761,7 +1789,7 @@ msgstr "我是推廣夥伴"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated daily fees"
-msgstr ""
+msgstr "預計每日費用"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop Market"
@@ -1808,7 +1836,7 @@ msgstr "Express"
 #: src/components/CollateralSelector/CollateralSelector.tsx
 #: src/components/CollateralSelector/CollateralSelector.tsx
 msgid "Select a pool that supports {0} as collateral"
-msgstr ""
+msgstr "選擇支援以 {0} 作為抵押品的池"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Send permit"
@@ -1820,11 +1848,11 @@ msgstr "V1 介面"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "How do I know if a code is good?"
-msgstr ""
+msgstr "如何判斷一個代碼是否合適？"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Your discount is applied automatically when you execute a trade. You'll see the referral discount in your fee tooltip before opening a trade."
-msgstr ""
+msgstr "執行交易時，您的折扣會自動套用。在開倉前，您可在手續費提示中看到推薦折扣。"
 
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
@@ -1833,7 +1861,7 @@ msgstr "CSV"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "How is my fee discount applied?"
-msgstr ""
+msgstr "手續費折扣如何套用？"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Session generation failed"
@@ -1883,7 +1911,7 @@ msgstr "存入至 GMX Account"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Your referral code {createdReferralCode} is now active. Share it with friends or your community."
-msgstr ""
+msgstr "您的推薦碼 {createdReferralCode} 現已生效。請與朋友或社群分享。"
 
 #: src/domain/synthetics/markets/createDepositTxn.ts
 #: src/domain/synthetics/markets/createGlvDepositTxn.ts
@@ -1892,7 +1920,7 @@ msgstr "存入錯誤"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Set SL price below mark price"
-msgstr ""
+msgstr "將止損價格設為低於標記價格"
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -1915,6 +1943,7 @@ msgstr "無效的網路費用緩衝值"
 msgid "0x"
 msgstr "0x"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "RPNL"
@@ -1965,7 +1994,7 @@ msgstr "歸屬"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Set TP price below limit price"
-msgstr ""
+msgstr "將止盈價格設為低於限價"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Bridge transaction hash"
@@ -1981,7 +2010,7 @@ msgstr "選擇池子"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "This market has been disabled. Contact support to claim your remaining funding fees."
-msgstr ""
+msgstr "此市場已被停用。請聯絡支援以領取剩餘的資金費用。"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Log index:"
@@ -1989,7 +2018,7 @@ msgstr "Log index："
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Set TP price above limit price"
-msgstr ""
+msgstr "將止盈價格設為高於限價"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pool max short amount"
@@ -2028,7 +2057,7 @@ msgstr "無 SL 訂單"
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Manual leverage"
-msgstr ""
+msgstr "手動槓桿"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX alerts"
@@ -2046,8 +2075,9 @@ msgstr "失敗"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "CODE"
-msgstr ""
+msgstr "推薦碼"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -2161,7 +2191,7 @@ msgstr "完成帳戶轉移"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Discounts"
-msgstr ""
+msgstr "折扣"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2204,7 +2234,7 @@ msgstr "提取不可用"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Your code is immediately active! Share it with traders and you'll earn rebates when they execute trades."
-msgstr ""
+msgstr "您的代碼立即生效！與交易者分享後，他們執行交易時您將賺取返利。"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max profit limit reached. Current: {pnlToPoolFactorText}, max: {maxPnlFactorText}"
@@ -2239,13 +2269,14 @@ msgstr "止損價格"
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short net rate"
-msgstr ""
+msgstr "做空淨費率"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing, which isn't available while the gas payment token matches the token you're receiving, and no other gas token has sufficient balance."
 msgstr "此交換需要外部路由，但當 Gas 支付代幣與您接收的代幣相同時不可用，且沒有其他 Gas 代幣有足夠餘額。"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Search in all {marketTypeLabel}"
 msgstr "搜尋所有{marketTypeLabel}"
 
@@ -2260,7 +2291,7 @@ msgstr "Symbiosis"
 
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "How it works"
-msgstr ""
+msgstr "運作方式"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Order is already frozen"
@@ -2309,6 +2340,7 @@ msgid "Keep leverage at {0}"
 msgstr "保持槓桿在 {0}"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "AVAIL. LIQ."
 msgstr "可用流動性"
 
@@ -2337,7 +2369,7 @@ msgstr "時間戳"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "KyberSwap"
-msgstr ""
+msgstr "KyberSwap"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient gas for execution"
@@ -2358,7 +2390,7 @@ msgstr "滑點必須小於 5%"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory tracks the imbalance of tokens across similar markets, e.g. ETH/USDC, ETH/USDT."
-msgstr ""
+msgstr "虛擬庫存追蹤相似市場之間的代幣失衡，例如 ETH/USDC、ETH/USDT。"
 
 #: src/components/OrdersModal/TPSLInputRow.tsx
 msgid "Gain"
@@ -2390,13 +2422,14 @@ msgstr "生命週期已實現盈虧"
 msgid "on GMX."
 msgstr "在 GMX。"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Chart positions"
 msgstr "圖表倉位"
 
 #: src/components/TVChartContainer/TVChartContainer.tsx
 msgid "Close long"
-msgstr ""
+msgstr "平倉做多"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
@@ -2505,7 +2538,7 @@ msgstr "安全且無需許可"
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Register an affiliate code to access distributions"
-msgstr ""
+msgstr "註冊推廣夥伴代碼以取得分配"
 
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "Funds arrive in your connected wallet on {chainName}, not in your GMX Account. To trade with your GMX Account, deposit the funds to it as a separate step once they arrive."
@@ -2522,7 +2555,7 @@ msgstr "缺少參數。請重新整理後再試"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order"
-msgstr ""
+msgstr "現有倉位在 WETH-USDC 池中，但該池對此訂單缺乏流動性"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed withdraw"
@@ -2534,7 +2567,7 @@ msgstr "警告圖示"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Leftover margin below {0} USD"
-msgstr ""
+msgstr "剩餘保證金低於 {0} USD"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Decrease"
@@ -2617,7 +2650,7 @@ msgstr "等級 {0}：{currentRebatePercentage}% 回饋"
 
 #: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
 msgid "Annualized rate"
-msgstr ""
+msgstr "年化費率"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2626,7 +2659,7 @@ msgstr "未找到兌換路徑"
 
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set long Stop Market @ {0}"
-msgstr ""
+msgstr "設定做多停損市價 @ {0}"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your discounts"
@@ -2634,7 +2667,7 @@ msgstr "您的折扣"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Can I change my referral code?"
-msgstr ""
+msgstr "我可以變更推薦碼嗎？"
 
 #: src/components/MarketsList/MarketsList.tsx
 msgid "MARKETS"
@@ -2692,7 +2725,7 @@ msgstr "TWAP 交換僅使用 GMX 池流動性，無法完成此訂單規模。<0
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "How do I choose?"
-msgstr ""
+msgstr "如何選擇？"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Grouping"
@@ -2708,11 +2741,11 @@ msgstr "加入你自己的費用並保留 100%。"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Switching to external swap route. Try again"
-msgstr ""
+msgstr "正在切換到外部兌換路由。請重試"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Unable to load rate history"
-msgstr ""
+msgstr "無法載入費率歷史"
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/components/TenderlySettings/TenderlySettings.tsx
@@ -2729,7 +2762,7 @@ msgstr "購買或轉帳 {nativeTokenSymbol} 至 {chainName}"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short borrowing rate"
-msgstr ""
+msgstr "做空借貸費率"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -2785,7 +2818,7 @@ msgstr "出借 GM 代幣並以其作為抵押進行借款"
 
 #: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "Rebate claim"
-msgstr ""
+msgstr "領取返利"
 
 #: src/components/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Pair"
@@ -2806,7 +2839,7 @@ msgstr "訂單可能無法以{priceText}價格執行：可接受價格影響（{
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Only positions with over {0} in capital used are ranked.<0/><1/>The capital used is calculated as the highest value of [<2>sum of margin of open positions - realized PnL + period start pending PnL</2>]."
-msgstr ""
+msgstr "僅對使用資金超過 {0} 的倉位進行排名。<0/><1/>使用資金按以下最高值計算：[<2>未平倉倉位保證金之和 - 已實現 PnL + 期初待定 PnL</2>]。"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "{gmOrGlvLabel} sold successfully, but bridge to {0} failed. Your funds are safe in your GMX Account. Retry the bridge or open GMX Account to withdraw your tokens."
@@ -2830,7 +2863,7 @@ msgstr "維持槓桿於 {keepLeverageAtValue}"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Loading network fees..."
-msgstr ""
+msgstr "正在載入網路費用…"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "VI SWAPS"
@@ -2846,7 +2879,7 @@ msgstr "Layer 2"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "All valid codes give you at least a 5% discount. Premium affiliates (Tier 2/3) offer 10% discount. You'll see the exact discount percentage after the code has been applied."
-msgstr ""
+msgstr "所有有效代碼至少提供 5% 折扣。高級推廣夥伴（等級 2/3）提供 10% 折扣。套用代碼後，您將看到確切的折扣百分比。"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Allow {0} spending"
@@ -2858,7 +2891,7 @@ msgstr "GMX 池無法完成此規模的交換。需要外部路由，但 One-Cli
 
 #: src/components/TradeBox/TradeBoxRows/SwapDebugRow.tsx
 msgid "Swap debug"
-msgstr ""
+msgstr "兌換偵錯"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
@@ -2881,7 +2914,7 @@ msgstr "搜尋操作"
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "GMX is the utility and governance token. 27% of protocol fees accumulate in the Treasury for GMX buybacks and will be distributed to stakers when GMX reaches $90."
-msgstr ""
+msgstr "GMX 是實用與治理代幣。協議費用的 27% 累積在國庫中用於回購 GMX，並在 GMX 達到 $90 時分配給質押者。"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have a <0>pending transfer</0> to {pendingReceiver}"
@@ -2889,7 +2922,7 @@ msgstr "您有一筆<0>待處理的轉帳</0>至 {pendingReceiver}"
 
 #: src/lib/copyElementAsImage.ts
 msgid "Image downloaded"
-msgstr ""
+msgstr "圖片已下載"
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity available for increasing longs at<0/>this size. Max long size: {0}<1/><2/>Execution prices for decreasing shorts."
@@ -2912,7 +2945,7 @@ msgstr "聯絡我們"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set limit price below mark price"
-msgstr ""
+msgstr "將限價設為低於標記價格"
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "<0>No KYC, no lengthy onboarding, and no deposit required. All you need is a self-custody wallet:</0><1><2>Connect any EVM wallet (such as MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger, etc.)</2><3>Select a supported blockchain network where you have funds available</3><4>Start trading</4></1><5>You can trade directly using funds on Arbitrum, MegaETH, Avalanche, or Solana, or deposit to your GMX Account to trade from any supported Multichain network including Ethereum, Base, and BSC.</5>"
@@ -2935,7 +2968,7 @@ msgstr "透過您的專屬連結將交易者推薦給 GMX，並從他們產生�
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Max:"
-msgstr ""
+msgstr "最大："
 
 #: src/components/Claims/SettleAccruedCard.tsx
 msgid "Show details"
@@ -3007,6 +3040,7 @@ msgstr "排名"
 msgid "{txnTypeText} {0} order for"
 msgstr "{txnTypeText} {0} 訂單於"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -3049,6 +3083,7 @@ msgid "Cancel margin deposit"
 msgstr "取消保證金存入"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Swap tokens"
 msgstr "兌換代幣"
 
@@ -3058,7 +3093,7 @@ msgstr "全域網路"
 
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "net rate"
-msgstr ""
+msgstr "淨費率"
 
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormMultichain.tsx
 msgid "Changes may take a few minutes to appear"
@@ -3082,7 +3117,7 @@ msgstr "顯示 PnL 金額"
 
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 msgid "Transaction hash"
-msgstr ""
+msgstr "交易雜湊"
 
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
@@ -3134,7 +3169,7 @@ msgstr "TWAP 訂單的預設分段數"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Set TP price below mark price"
-msgstr ""
+msgstr "將止盈價格設為低於標記價格"
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
@@ -3151,6 +3186,7 @@ msgid "Earn rewards by sharing your referral code"
 msgstr "分享您的推薦碼即可賺取獎勵"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Results are available in Swap."
 msgstr "兌換中有可用結果。"
 
@@ -3192,7 +3228,7 @@ msgstr "未平倉位"
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Blockchain gas fee (not GMX-specific). Doesn't impact your margin."
-msgstr ""
+msgstr "區塊鏈 Gas 費用（非 GMX 特有）。不影響您的保證金。"
 
 #: src/components/PositionShare/PositionShareCard.tsx
 msgid "Coin"
@@ -3200,7 +3236,7 @@ msgstr "硬幣"
 
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "Previous"
-msgstr ""
+msgstr "上一步"
 
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "Expected 365d fees"
@@ -3220,7 +3256,7 @@ msgstr "One-Click Trading 設定"
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "You can find a referral code in <0>X</0> or on other social media platforms"
-msgstr ""
+msgstr "您可以在 <0>X</0> 或其他社群媒體平台上找到推薦碼"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Strictest deposit USD capacity"
@@ -3261,9 +3297,10 @@ msgstr "做多倉位"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Share your code"
-msgstr ""
+msgstr "分享您的代碼"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "View results in Perpetuals"
 msgstr "查看永續合約中的結果"
 
@@ -3277,7 +3314,7 @@ msgstr "可領取抵押品削減因子"
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Slippage too low"
-msgstr ""
+msgstr "滑點過低"
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
@@ -3289,7 +3326,7 @@ msgstr "<0>沒有固定門檻 — 團隊會根據您近期及預期的月交易�
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing {indexTokenText} Short: -{sizeDeltaUsdText}"
-msgstr ""
+msgstr "減倉 {indexTokenText} 做空：-{sizeDeltaUsdText}"
 
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Insufficient gas balance. Express Trading and One-Click Trading unavailable."
@@ -3310,7 +3347,7 @@ msgstr "資料新鮮度"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Done!"
-msgstr ""
+msgstr "完成！"
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High potential net price impact (capped at {formattedCap} for this market) may significantly affect your collateral. Consider reducing leverage. <0>Read more</0>."
@@ -3360,7 +3397,7 @@ msgstr "餘額"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Net rate projection:"
-msgstr ""
+msgstr "淨費率預測："
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX market token price chart"
@@ -3388,7 +3425,7 @@ msgstr "所有未平倉倉位的待結算 PnL"
 
 #: src/components/Earn/BuybackTracker/BuybackDashboard.tsx
 msgid "Buyback dashboard"
-msgstr ""
+msgstr "回購儀表板"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -3454,7 +3491,7 @@ msgstr "接收者此前未質押過 GMX 代幣"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Referral codes are shared by content creators and community members. You can find codes on Twitter, or from any GMX-related content on social media."
-msgstr ""
+msgstr "推薦碼由內容創作者和社群成員分享。你可以在 Twitter 上，或在社群媒體上任何與 GMX 相關的內容中找到推薦碼。"
 
 #: src/components/MarketsList/MarketsList.tsx
 msgid "LIQUIDITY"
@@ -3494,6 +3531,7 @@ msgstr "交易失敗。<0/><1/><2>查看</2>"
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr "{symbol} 餘額不足：可用 {availableFormatted}，需要 {requiredFormatted}"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/PositionList/SymbolSortDropdown.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -3522,7 +3560,7 @@ msgstr "影響池數量"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "The GMX token serves as the governance token of the GMX protocol. 27% of platform revenue accumulates in the Treasury for GMX buybacks. Stakers earn rewards based on staking power (duration × amount), distributed when GMX reaches $90."
-msgstr ""
+msgstr "GMX 代幣是 GMX 協議的治理代幣。平台收入的 27% 會累積到國庫用於 GMX 回購。質押者根據質押權重（時長 × 數量）獲得獎勵，在 GMX 達到 $90 時發放。"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact USD"
@@ -3551,7 +3589,7 @@ msgstr "訂單類型"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
-msgstr ""
+msgstr "雙重曝險：來自倉位的做多 {indexSymbol} + 來自抵押品的做多 {collateralSymbol}。清算價格隨 {collateralSymbol} 價格變化。"
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "GMX Account uses a separate trading balance linked to your wallet. To trade, deposit funds from your wallet to your GMX Account."
@@ -3595,7 +3633,7 @@ msgstr "扣除費用、折扣與價格影響之前的已實現盈虧。"
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."
-msgstr ""
+msgstr "{typeString} 做空停損市價：當價格低於觸發價時 {0} 空頭倉位。"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average position size"
@@ -3648,7 +3686,7 @@ msgstr "沒有可用的中心化交易所"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Loyalty"
-msgstr ""
+msgstr "忠誠度"
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Up to 25% earnings"
@@ -3673,7 +3711,7 @@ msgstr "Tenderly 設定"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Swap all rewards into one asset"
-msgstr ""
+msgstr "將所有獎勵兌換為同一種資產"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Market)"
@@ -3724,11 +3762,11 @@ msgstr "大宗商品"
 
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
 msgid "How to start earning?"
-msgstr ""
+msgstr "如何開始賺取收益？"
 
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {tokensText} for gas in your GMX Account <0>Deposit {tokensText}</0>"
-msgstr ""
+msgstr "你的 GMX Account 中用於支付 gas 的 {tokensText} 不足 <0>存入 {tokensText}</0>"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Failed to load trade history"
@@ -3787,7 +3825,7 @@ msgstr "無 AB 標記"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "27% of protocol revenue is used to buy back GMX on the open market. Bought-back GMX accumulates in the Treasury and will be distributed to stakers when GMX reaches $90, proportional to staking power. No new GMX tokens are minted."
-msgstr ""
+msgstr "協議收入的 27% 用於在公開市場上回購 GMX。回購的 GMX 會累積到國庫，並在 GMX 達到 $90 時依質押權重比例發放給質押者。不會增發新的 GMX 代幣。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX V2 Telegram & Discord analytics"
@@ -3795,7 +3833,7 @@ msgstr "GMX V2 Telegram & Discord 分析"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Share your referral code with friends or your community —<0/> every trade made with your code earns you $-rewards"
-msgstr ""
+msgstr "與朋友或社群分享你的推薦碼 —<0/> 使用你的推薦碼完成的每筆交易都能為你賺取返利獎勵"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX ecosystem pages"
@@ -3852,7 +3890,7 @@ msgstr "交易紀錄"
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 msgid "Copy image"
-msgstr ""
+msgstr "複製圖片"
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show error boundary debug trigger"
@@ -3862,6 +3900,7 @@ msgstr "顯示錯誤邊界除錯觸發器"
 msgid "Autocompound"
 msgstr "自動複投"
 
+#: solana-interface/src/pages/SolanaChart.tsx
 #: src/components/TVChart/Chart.tsx
 msgid "Market graph"
 msgstr "市場圖表"
@@ -3881,7 +3920,7 @@ msgstr "存入 USD 容量"
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
 msgid "Arbitrum wallet"
-msgstr ""
+msgstr "Arbitrum 錢包"
 
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "TypeScript SDK"
@@ -3889,7 +3928,7 @@ msgstr "TypeScript SDK"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing limit order in {0} pool<0>Switch to {1} pool</0>"
-msgstr ""
+msgstr "{0} 池中已有限價單<0>切換到 {1} 池</0>"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy from decentralized or centralized exchanges"
@@ -3897,7 +3936,7 @@ msgstr "從去中心化或中心化交易所買入"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "of limit"
-msgstr ""
+msgstr "額度"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact pool after reserved positive impact"
@@ -3956,11 +3995,11 @@ msgstr "UI 費用"
 
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set long Take-Profit @ {0}"
-msgstr ""
+msgstr "設定做多止盈 @ {0}"
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "Uploading..."
-msgstr ""
+msgstr "上傳中..."
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Can't withdraw collateral. Remaining would be {estimatedRemainingCollateralUsdText}, below minimum"
@@ -4031,7 +4070,7 @@ msgstr "建立中..."
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized fees:"
-msgstr ""
+msgstr "年化費用："
 
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
@@ -4076,7 +4115,7 @@ msgstr "資金已存入您的 GMX Account"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Why should I enter a referral code?"
-msgstr ""
+msgstr "為什麼要輸入推薦碼？"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient liquidity. Order will fill when liquidity is available."
@@ -4088,11 +4127,11 @@ msgstr "您的轉帳已完成"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "27% of protocol fees are accumulating in the Treasury and will be distributed proportionally to staking power when GMX reaches $90."
-msgstr ""
+msgstr "協議費用的 27% 正在國庫中累積，並會在 GMX 達到 $90 時依質押權重比例發放。"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Depositing {amountText} to {indexTokenText} Long..."
-msgstr ""
+msgstr "正在向 {indexTokenText} 做多存入 {amountText}..."
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade confirmations"
@@ -4170,11 +4209,11 @@ msgstr "保證金低於該倉位規模所需的最低要求"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "How much can I earn as an affiliate?"
-msgstr ""
+msgstr "作為推廣夥伴我能賺多少？"
 
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {localizedList} for gas on {chainName}. <0>Swap</0> or <1>bridge</1> {localizedList}."
-msgstr ""
+msgstr "{chainName} 上用於支付 gas 的 {localizedList} 不足。<0>兌換</0>或<1>跨鏈</1> {localizedList}。"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -4193,7 +4232,7 @@ msgstr "使用 BTC 透過 <0>Threshold</0> 鑄造 tBTC"
 
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "In other tokens:"
-msgstr ""
+msgstr "其他代幣："
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed TWAP part"
@@ -4209,7 +4248,7 @@ msgstr "TWAP 兌換部分失敗"
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "No events in the past {DAYS_BACK} days"
-msgstr ""
+msgstr "過去 {DAYS_BACK} 天內無事件"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker thread"
@@ -4222,11 +4261,11 @@ msgstr "更新訂單失敗"
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Margin delta"
-msgstr ""
+msgstr "保證金變動"
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Stop Market: {0} a long position when the price is above the trigger price."
-msgstr ""
+msgstr "{typeString} 做多停損市價：當價格高於觸發價時 {0} 多頭倉位。"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
@@ -4239,7 +4278,7 @@ msgstr "訂單已取消"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GM pool liquidity"
-msgstr ""
+msgstr "GM 池流動性不足"
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "<0>Yes, we encourage you to build on top of GMX or integrate it into your DeFi app. GMX is fully composable and already integrated with hundreds of protocols across the ecosystem, including notable names like Pendle, Dolomite, Radiant, Silo Finance, Venus Protocol, Abracadabra, Compound, and Beefy. You can interact directly with GMX smart contracts or use available APIs and SDKs to plug into trading, liquidity, or data flows. Check out the <1>GMX Developer Docs</1> to get started.</0>"
@@ -4269,7 +4308,7 @@ msgstr "結算"
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short TWAP: {0} a short position in evenly distributed parts over a specified time."
-msgstr ""
+msgstr "{typeString} 做空 TWAP：在指定時間內以均勻分配的部分 {0} 空頭倉位。"
 
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Insufficient gas for network fees"
@@ -4293,7 +4332,7 @@ msgstr "累計 PnL <0>{0}</0>"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Points are based on the total notional trading volume on GMX MegaETH generated by wallets using your onchain referral code"
-msgstr ""
+msgstr "積分基於使用你的鏈上推薦碼的錢包在 GMX MegaETH 上產生的總名義交易量"
 
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum days before reauthorization required"
@@ -4332,7 +4371,7 @@ msgstr "資金費用"
 
 #: src/components/TVChartContainer/constants.ts
 msgid "Partial TP"
-msgstr ""
+msgstr "部分止盈"
 
 #: landing/src/pages/Builders/HeroSection/HeroSection.tsx
 msgid "Builder Program"
@@ -4351,8 +4390,9 @@ msgstr "正在傳送 {0} 至 {1}"
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 msgid "Cumulative"
-msgstr ""
+msgstr "累計"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter amount"
 msgstr "請輸入金額"
@@ -4371,6 +4411,7 @@ msgstr "Express Trading 不支援網路原生代幣 {0}。請考慮改用 {1}。
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trade"
 msgstr "交易"
@@ -4433,7 +4474,7 @@ msgstr "Multicall 閒置中"
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "<0>Save up to {traderDiscountPercentageLabel}</0> on every<1/> trade on GMX"
-msgstr ""
+msgstr "在 GMX 的每筆<1/>交易上<0>最高節省 {traderDiscountPercentageLabel}</0>"
 
 #: src/components/Referrals/shared/modals/OutOfTokenErrorAlert.tsx
 msgid "Claiming requires <0/> while you have <1/>. <2>Swap</2> or <3>deposit</3> more {0} to your GMX Account."
@@ -4456,6 +4497,8 @@ msgstr "設定可接受的價格影響"
 msgid "This margin deposit's position was closed, but the deposit is still active. Cancel it to reclaim its funds."
 msgstr "該保證金存入的倉位已平倉，但存入仍處於活躍狀態。請取消該訂單以取回資金。"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -4468,7 +4511,7 @@ msgstr "V1 交易量"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Returned margin"
-msgstr ""
+msgstr "返還保證金"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Sending order request..."
@@ -4486,6 +4529,7 @@ msgstr "資金將到達您在 {chainName} 上連接的錢包。"
 msgid "Stop-Loss Decrease"
 msgstr "止損減倉"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Wallet balance"
 msgstr "錢包餘額"
@@ -4534,7 +4578,7 @@ msgstr "做空基礎借貸因子"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Staked esGMX"
-msgstr ""
+msgstr "已質押的 esGMX"
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Staked on Arbitrum"
@@ -4542,7 +4586,7 @@ msgstr "在 Arbitrum 上質押"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "I acknowledge that I will lose <0>{0} in rewards</0> if I proceed"
-msgstr ""
+msgstr "我確認，如果繼續操作，我將失去 <0>{0} 的獎勵</0>"
 
 #: src/components/InterviewToast/InterviewToast.tsx
 #: src/components/InterviewToast/InterviewToast.tsx
@@ -4555,7 +4599,7 @@ msgstr "提取失敗"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Minimum {0} capital required for rankings.<0/><1/>Capital = max(sum of margin of open positions - realized PnL + starting pending PnL)."
-msgstr ""
+msgstr "排行榜需最低 {0} 資金。<0/><1/>資金 = max(未平倉保證金之和 - 已實現 PnL + 起始待結算 PnL)。"
 
 #. chainname balance
 #: src/components/MultichainBalanceTooltip/MultichainBalanceTooltip.tsx
@@ -4603,6 +4647,10 @@ msgstr "即時掌握最新的上架、更新與維護通知。"
 msgid "How do I get started on GMX?"
 msgstr "如何在 GMX 上開始使用？"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
+msgid "Confirmed"
+msgstr "已確認"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -4620,7 +4668,7 @@ msgstr "正在從子帳戶提取..."
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Current margin"
-msgstr ""
+msgstr "目前保證金"
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/keys.ts
@@ -4636,11 +4684,11 @@ msgstr "esGMX"
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "<0>Liquidity providers receive 63% of all trading and liquidation fees. By depositing WBTC, ETH, USDC, or other supported assets, you can earn up to ~35% annualized yield on the largest pools.</0><1><2> GM pools – choose single-market exposure for targeted returns</2><3> GLV vaults – auto-diversify across markets for a hands-off strategy</3></1><4>Historically, both options have outperformed standard LP benchmarks. See live stats on the pools page.</4>"
-msgstr ""
+msgstr "<0>流動性提供者可獲得全部交易與清算費用的 63%。透過存入 WBTC、ETH、USDC 或其他支援的資產，你可在最大的池上賺取最高約 35% 的年化收益。</0><1><2> GM 池 – 選擇單一市場曝險以獲取定向收益</2><3> GLV 金庫 – 自動跨市場分散，適合輕鬆策略</3></1><4>歷史上，這兩種方案都優於標準 LP 基準。可在池頁面查看即時數據。</4>"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position value after PnL and accrued fees"
-msgstr ""
+msgstr "扣除 PnL 與應計費用後的倉位價值"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Total margin funded (GMX balance)"
@@ -4698,9 +4746,10 @@ msgstr "總交易量"
 msgid "One-Click Trading action limit reached. You're now using Express Trading."
 msgstr "已達到 One-Click Trading 操作限制。您現在正在使用 Express Trading。"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/PositionList/PositionList.tsx
 msgid "MARGIN"
-msgstr ""
+msgstr "保證金"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Sign permit"
@@ -4743,6 +4792,7 @@ msgid "Decentralized perpetual exchange | GMX"
 msgstr "去中心化永續合約交易所 | GMX"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "perpetual markets"
 msgstr "永續合約市場"
 
@@ -4760,9 +4810,10 @@ msgstr "最多允許 5 個自動取消 TP/SL 訂單。額外的訂單需要手�
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Withdrawing {amountText} from {indexTokenText} Short..."
-msgstr ""
+msgstr "正在從 {indexTokenText} 做空提取 {amountText}..."
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/TableMarketFilter/MarketFilterBase.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
@@ -4801,7 +4852,7 @@ msgstr "輸入推薦碼"
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Referral link copied to clipboard"
-msgstr ""
+msgstr "推薦連結已複製到剪貼簿"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
@@ -4817,7 +4868,7 @@ msgstr "V2 交易量"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Liquidation price changes with fees and margin value."
-msgstr ""
+msgstr "清算價格會隨費用和保證金價值變化。"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Read the rules"
@@ -4829,13 +4880,14 @@ msgstr "來源鏈僅支援單一代幣"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Referral discounts apply to opening and closing fees for leverage trading. Swap fees are not included."
-msgstr ""
+msgstr "推薦折扣適用於槓桿交易的開倉和平倉費用。兌換費用不包含在內。"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Show rPnL after fees"
 msgstr "顯示扣除費用後的已實現盈虧"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
+#: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Open interest"
 msgstr "未平倉量"
@@ -4870,7 +4922,7 @@ msgstr "提交中..."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Estimated time: ~5 min"
-msgstr ""
+msgstr "預計時間：約 5 分鐘"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -4889,7 +4941,7 @@ msgstr "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1>"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Long funding rate"
-msgstr ""
+msgstr "做多資金費率"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap {0} to {1}"
@@ -4914,6 +4966,7 @@ msgstr "我到底怎麼賺錢？"
 msgid "Realized swap impact"
 msgstr "已實現兌換影響"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter recipient address"
 msgstr "請輸入接收地址"
@@ -4944,7 +4997,7 @@ msgstr "請輸入新比例或允許的滑點"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Safe unstake limit: {0} GMX / esGMX"
-msgstr ""
+msgstr "安全取消質押額度：{0} GMX / esGMX"
 
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
@@ -4967,7 +5020,7 @@ msgstr "此指標和週期內帳戶之間的排名。"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "No net rate history for this market"
-msgstr ""
+msgstr "此市場暫無淨費率歷史"
 
 #: src/components/TradeHistory/keys.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -5006,7 +5059,7 @@ msgstr "完全平倉"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "All projected rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO governance."
-msgstr ""
+msgstr "所有預計獎勵和估算發放僅為盡力估算。實際發放以 DAO 治理為準。"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Create Stop-Loss"
@@ -5024,6 +5077,7 @@ msgstr "此倉位目前高於清算風險，但當市場切換至非交易時段
 msgid "Base borrowing factor long"
 msgstr "做多基礎借貸因子"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Recipient address"
 msgstr "接收地址"
@@ -5033,6 +5087,7 @@ msgid "Monthly volume routed"
 msgstr "每月路由交易量"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "VOL."
 msgstr "成交量"
 
@@ -5042,7 +5097,7 @@ msgstr "觸發部分報價"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "{collateralSymbol} is required for collateral.<0/><1/>No swap path found for {0} to {collateralSymbol} within GMX.<2/><3/><4>Swap {collateralSymbol}</4> or <5>bridge {collateralSymbol}</5>."
-msgstr ""
+msgstr "抵押品需要 {collateralSymbol}。<0/><1/>在 GMX 內未找到從 {0} 到 {collateralSymbol} 的兌換路徑。<2/><3/><4>兌換 {collateralSymbol}</4>或<5>跨鏈 {collateralSymbol}</5>。"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {tokensText}</2>"
@@ -5104,15 +5159,15 @@ msgstr "金額"
 
 #: src/components/StatsTooltip/ChainsStatsNotices.tsx
 msgid "Partial total: no data yet from {0}."
-msgstr ""
+msgstr "部分合計：尚未有來自 {0} 的資料。"
 
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 msgid "Current margin excludes pending borrow and funding fees. Post-close margin reflects realized PnL and settled fees."
-msgstr ""
+msgstr "目前保證金不含待結算的借貸和資金費。平倉後保證金反映已實現 PnL 與已結算費用。"
 
 #: src/components/TVChartContainer/constants.ts
 msgid "Partial SL"
-msgstr ""
+msgstr "部分止損"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -5136,6 +5191,8 @@ msgstr "在 {networkName} 網路上接收支援的資產到您的錢包，或選
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/GmList/GmList.tsx
@@ -5160,7 +5217,7 @@ msgstr "編輯 {0}"
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 #: src/components/Referrals/shared/modals/ClaimSwapTargetTokenSelector.tsx
 msgid "Swap to"
-msgstr ""
+msgstr "兌換為"
 
 #: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
 msgid "External routing is temporarily paused after a failed attempt.<0/><1/><2>Retry external route</2>"
@@ -5188,7 +5245,7 @@ msgstr "最小影響池數量"
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "Generating..."
-msgstr ""
+msgstr "產生中..."
 
 #: src/components/AnnouncementBanner/AnnouncementBanner.tsx
 msgid "Go to slide {0}"
@@ -5200,7 +5257,7 @@ msgstr "價格影響過高"
 
 #: src/components/Referrals/shared/TimeRangeFilter.tsx
 msgid "{0}h"
-msgstr ""
+msgstr "{0} 小時"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Enter withdrawal amount"
@@ -5212,7 +5269,7 @@ msgstr "進行中的訂單"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Buying GM unavailable"
-msgstr ""
+msgstr "無法購買 GM"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Limit"
@@ -5235,6 +5292,7 @@ msgstr "沒有符合的代幣"
 msgid "Error sending permit for {0}: {1}"
 msgstr "傳送 {0} 授權時發生錯誤：{1}"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "No trades yet"
 msgstr "尚無交易記錄"
@@ -5314,7 +5372,7 @@ msgstr "純 {indexSymbol} 做空。風險敞口僅來自倉位。"
 
 #: src/components/Referrals/traders/dashboard/TradersPromoCard.tsx
 msgid "Generate your own referral code and earn rebates whenever users trade with it. Rewards scale <0/> with your tier and the activity of your referred traders. <1>Read more</1>."
-msgstr ""
+msgstr "產生你自己的推薦碼，用戶使用它交易時你即可賺取返利。獎勵會隨<0/>你的等級以及被推薦交易者的活躍度提升。<1>了解更多</1>。"
 
 #: src/components/OrdersModal/TPSLInputRow.tsx
 msgid "Loss"
@@ -5368,15 +5426,15 @@ msgstr "{secondLabel}"
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 msgid "GMX on Solana (GMTrade) is currently served from a separate domain"
-msgstr ""
+msgstr "Solana 上的 GMX（GMTrade）目前由獨立網域提供服務"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Pre-IPO"
-msgstr ""
+msgstr "上市前"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Borrowing rate"
-msgstr ""
+msgstr "借貸費率"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Looking for a check before committing"
@@ -5447,7 +5505,7 @@ msgstr "始終自託管"
 
 #: src/lib/copyElementAsImage.ts
 msgid "Image copied to clipboard"
-msgstr ""
+msgstr "圖片已複製到剪貼簿"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact"
@@ -5475,6 +5533,7 @@ msgstr "此代幣不支援 Permit 授權。"
 msgid "Include PnL in leverage display"
 msgstr "在槓桿顯示中包含 PnL"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/Claims/ClaimsHistory.tsx
 msgid "No claims yet"
 msgstr "目前尚無領取記錄"
@@ -5539,11 +5598,11 @@ msgstr "額外 APR"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Accumulating..."
-msgstr ""
+msgstr "累積中..."
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Help us improve GMX for liquidity providers. For security, we won't contact you first. Send \"I'm a Liquidity Provider\" to our official Telegram account:"
-msgstr ""
+msgstr "幫助我們改進面向流動性提供者的 GMX。基於安全考量，我們不會主動聯絡你。請向我們的官方 Telegram 帳號傳送 \"I'm a Liquidity Provider\"："
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Shift request sent"
@@ -5559,7 +5618,7 @@ msgstr "結算 {totalStr}"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Sellable cap for pool GM: {0} [{1}] reached, as tokens are reserved by traders. Choose a different pool, reduce the sell size, or split the withdrawal across pools."
-msgstr ""
+msgstr "池 GM 的可售上限：已達到 {0} [{1}]，因為代幣已被交易者預留。請選擇其他池、減少賣出數量，或將提取拆分到多個池。"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive impact factor"
@@ -5571,7 +5630,7 @@ msgstr "所有交易"
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized data based on the past 7 days. Solana fees do not contribute to GMX buybacks."
-msgstr ""
+msgstr "年化資料基於過去 7 天。Solana 費用不參與 GMX 回購。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking more than 20% of your max historical staked GMX or esGMX will reset your accrued rewards."
@@ -5592,7 +5651,7 @@ msgstr "出借 GLV 或 GM 代幣並以其作為抵押借款"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Number of trades from referrals"
-msgstr ""
+msgstr "來自推薦的交易筆數"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Request cannot be canceled yet. Try again after the cancellation delay"
@@ -5617,7 +5676,7 @@ msgstr "DeFi 保證金協議"
 
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set short Stop-Loss @ {0}"
-msgstr ""
+msgstr "設定做空止損 @ {0}"
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Banners, links and a partner manager."
@@ -5639,7 +5698,7 @@ msgstr "每月交易量"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min TWAP parts: {MIN_TWAP_NUMBER_OF_PARTS}"
-msgstr ""
+msgstr "最少 TWAP 份數：{MIN_TWAP_NUMBER_OF_PARTS}"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Received before close (GMX balance)"
@@ -5685,7 +5744,7 @@ msgstr "滑點是由於價格波動導致您的預期成交價格與實際成交
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 msgid "Margin before pending borrow and funding fees"
-msgstr ""
+msgstr "扣除待結算借貸和資金費前的保證金"
 
 #: src/lib/wallets/signing.ts
 msgid "This wallet creates network-specific signatures. Approve the switch to {0} and sign once more."
@@ -5803,19 +5862,20 @@ msgstr "推薦碼已新增"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Your {symbol} margin exceeds the {indexName} short position size. Margin value rises with the index, covering any losses—no liquidation price."
-msgstr ""
+msgstr "你的 {symbol} 保證金超過了 {indexName} 空頭倉位規模。保證金價值隨指數上漲，足以覆蓋任何虧損——無清算價格。"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX bonds on Bond Protocol at a discount with a short vesting period"
 msgstr "在 Bond Protocol 上以折扣價購買 GMX 債券，享有短期歸屬期"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "No results with the selected filters."
 msgstr "所選篩選條件下沒有結果。"
 
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "{positionTitle} orders"
-msgstr ""
+msgstr "{positionTitle} 訂單"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Your {walletName} is not available on {0}</0><1/><2>Add {1} to your {walletName}, then reconnect and try again</2>"
@@ -5835,7 +5895,7 @@ msgstr "與 VIP 團隊洽談"
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
-msgstr ""
+msgstr "暫無掛單"
 
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "<0>No. GMX is self-custodial and permissionless — you connect a wallet and trade. No identity verification required.</0>"
@@ -5932,7 +5992,7 @@ msgstr "透過此操作可多賺取 {0}% 的獎勵"
 #: src/components/Errors/gasErrors.tsx
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {nativeTokenSymbol} for gas on {0}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
-msgstr ""
+msgstr "{0} 上用於支付 gas 的 {nativeTokenSymbol} 不足。<0>兌換</0>或<1>跨鏈</1> {nativeTokenSymbol}。"
 
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "Staked esGMX:"
@@ -5983,7 +6043,7 @@ msgstr "為每個市場提供逐倉流動性"
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Show detailed price impact breakdown: stored impact (increase orders) and close impact (decrease orders) in execution details. <0>Read more</0>."
-msgstr ""
+msgstr "顯示詳細的價格影響拆分：執行詳情中的儲存影響（增加訂單）與平倉影響（減少訂單）。<0>了解更多</0>。"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Use open interest in tokens for balance"
@@ -5999,7 +6059,7 @@ msgstr "從其他錢包、交易所或鏈存入。"
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "close"
-msgstr ""
+msgstr "平倉"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "from your wallet"
@@ -6007,7 +6067,7 @@ msgstr "從您的錢包"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position uses USDC collateral. Using the selected collateral will create a separate position. <0>Switch to USDC collateral</0>"
-msgstr ""
+msgstr "現有倉位使用 USDC 作為抵押品。使用所選抵押品將建立單獨倉位。<0>切換到 USDC 抵押品</0>"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Settings updated"
@@ -6015,7 +6075,7 @@ msgstr "設定已更新"
 
 #: src/components/Referrals/distributions/ReferralsDistributionsTab.tsx
 msgid "Connect wallet to view distributions"
-msgstr ""
+msgstr "連接錢包以查看發放"
 
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
@@ -6115,11 +6175,11 @@ msgstr "在瀏覽器中查看"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "{0} tokens converted to GMX from the {1} esGMX deposited for vesting"
-msgstr ""
+msgstr "已從用於歸屬的 {1} esGMX 中轉換出 {0} 枚 GMX 代幣"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Margin at liquidation"
-msgstr ""
+msgstr "清算時保證金"
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Permits testing"
@@ -6133,6 +6193,7 @@ msgstr "無效交易"
 msgid "Insufficient liquidity in {0} pool. Select a different pool."
 msgstr "{0} 池流動性不足。請選擇其他池。"
 
+#: solana-interface/src/wallet/SolanaAssetsList.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets in your wallet"
 msgstr "您的錢包中沒有資產"
@@ -6163,7 +6224,7 @@ msgstr "在 GMX 上構建。每筆交易都有收益。"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Increasing {indexTokenText} Long: +{sizeDeltaUsdText}"
-msgstr ""
+msgstr "增加 {indexTokenText} 做多：+{sizeDeltaUsdText}"
 
 #: src/components/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Single"
@@ -6224,7 +6285,7 @@ msgstr "所選時間段的統計數據不可用。改為顯示最接近的可用
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Which fees get discounted?"
-msgstr ""
+msgstr "哪些費用可享折扣？"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting only available on {chainNames} or {lastChainName}. Switch networks to continue."
@@ -6237,7 +6298,7 @@ msgstr "月度回購量"
 
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
-msgstr ""
+msgstr "轉移推薦碼"
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "PnL Analysis"
@@ -6251,6 +6312,10 @@ msgstr "做多"
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Affiliate rewards claimed"
 msgstr "聯盟獎勵已領取"
+
+#: solana-interface/src/pages/SolanaTradeList.tsx
+msgid "ORDER TYPE"
+msgstr "訂單類型"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "transaction:"
@@ -6270,7 +6335,7 @@ msgstr "Permit 授權目前無法使用。"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes! You can switch to a different code at any time from the Traders tab. Your new discount will apply to all future trades."
-msgstr ""
+msgstr "可以！你隨時可以在交易者分頁切換到其他推薦碼。新的折扣將適用於之後的所有交易。"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown sell GM order"
@@ -6290,7 +6355,7 @@ msgstr "無法將 {nativeTokenSymbol} 轉帳至 {chainName}"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
-msgstr ""
+msgstr "<0>通知由 Notifi 提供，與 GMX 無關。訂閱即表示您同意您提供給 Notifi 的資訊受其 </0><1>隱私權政策</1><2> 與 </2><3>使用條款</3> 約束。"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Lifecycle settlement"
@@ -6298,7 +6363,7 @@ msgstr "生命週期結算"
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
-msgstr ""
+msgstr "{typeString} 做多限價：當價格低於觸發價時 {0} 多頭倉位。"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims unavailable on Avalanche Fuji"
@@ -6332,7 +6397,7 @@ msgstr "主執行緒"
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Trade smarter with up<0/> to 10% fee savings"
-msgstr ""
+msgstr "更聰明地交易，最高可節省<0/> 10% 費用"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Difference"
@@ -6340,7 +6405,7 @@ msgstr "差額"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Stop-Loss price"
-msgstr ""
+msgstr "止損價格"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "swap amount"
@@ -6368,7 +6433,7 @@ msgstr "支援"
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No liquidation price. Margin covers any losses."
-msgstr ""
+msgstr "無清算價格。保證金足以覆蓋任何虧損。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Toros"
@@ -6412,7 +6477,7 @@ msgstr "選擇圖表上顯示哪些買入/賣出標記：您的所有歷史交�
 
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 msgid "Buy GMX on GMX swap"
-msgstr ""
+msgstr "在 GMX 兌換上購買 GMX"
 
 #: src/components/Claims/ClaimableCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -6422,7 +6487,7 @@ msgstr "可領取"
 
 #: src/components/TVChartContainer/TVChartContainer.tsx
 msgid "Open long"
-msgstr ""
+msgstr "開多"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Executes {numberOfParts} {0} {type} orders of {1} each over the next {2} for {3}"
@@ -6477,15 +6542,15 @@ msgstr "（{0}，佔兌換金額）"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "How do I upgrade to a higher tier?"
-msgstr ""
+msgstr "如何升級到更高等級？"
 
 #: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
 msgid "Total bought GMX"
-msgstr ""
+msgstr "已回購 GMX 總量"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "ACTIONS"
-msgstr ""
+msgstr "操作"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Order exceeds max leverage. Reduce the size."
@@ -6528,11 +6593,11 @@ msgstr "創建者"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "<0>You're now receiving a {currentTierDiscount}% discount on your trades!</0><1>The reduced rate applies to every open and close fee.</1>"
-msgstr ""
+msgstr "<0>你現在的交易可享有 {currentTierDiscount}% 折扣！</0><1>折扣費率適用於每筆開倉和平倉費用。</1>"
 
 #: src/components/Errors/ErrorToastWithSupport.tsx
 msgid "If you're having trouble completing this action, our team can help"
-msgstr ""
+msgstr "如果您在完成此操作時遇到問題，我們的團隊可以提供協助"
 
 #: src/components/InterviewToast/InterviewToast.tsx
 #: src/components/InterviewToast/InterviewToast.tsx
@@ -6575,6 +6640,7 @@ msgid "Transfer already initiated"
 msgstr "轉帳已發起"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Search token"
 msgstr "搜尋代幣"
 
@@ -6649,7 +6715,7 @@ msgstr "正在領取資金費用..."
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "R:"
-msgstr ""
+msgstr "R:"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Number of parts"
@@ -6657,8 +6723,9 @@ msgstr "分割數量"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Limit Increase: {suffix}"
-msgstr ""
+msgstr "編輯限價加倉：{suffix}"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/OrderList/OrderList.tsx
 msgid "No open orders"
@@ -6674,12 +6741,13 @@ msgstr "解除質押已提交"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Stop-Loss: {suffix}"
-msgstr ""
+msgstr "編輯止損：{suffix}"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Order failed due to a protocol validation error: {errorName}"
 msgstr "訂單因協議驗證錯誤而失敗：{errorName}"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Send fee"
 msgstr "傳送手續費"
@@ -6699,7 +6767,7 @@ msgstr "GMX 提案"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesPromoCard.tsx
 msgid "Activate someone's referral code to receive a permanent discount on all opening and closing <0/> fees. Your savings apply automatically on every trade. <1>Read more</1>."
-msgstr ""
+msgstr "啟用他人的推薦碼，即可獲得開倉與平倉 <0/> 手續費的永久折扣。每次交易都會自動套用您的節省。<1>了解更多</1>。"
 
 #: src/components/TradeBox/ResultingMarginWarningCard.tsx
 msgid "This order may fail to execute because the resulting position would exceed the maximum allowed leverage. Increase the position's margin or reduce the order size before it triggers."
@@ -6770,11 +6838,11 @@ msgstr "費用資料暫時無法使用。"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."
-msgstr ""
+msgstr "您的返利取決於您的等級，可在 <0>此處</0> 查看。等級越高，您獲得的獎勵越多，您的交易者也能享有更大折扣。"
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Swap token unavailable"
-msgstr ""
+msgstr "兌換代幣不可用"
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
@@ -6832,11 +6900,11 @@ msgstr "收起詳情"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Mixed exposure: short {indexSymbol} + long {collateralSymbol} collateral. Liquidation price varies with {collateralSymbol} price."
-msgstr ""
+msgstr "混合曝險：做空 {indexSymbol} + 做多 {collateralSymbol} 抵押品。清算價格會隨 {collateralSymbol} 價格變化。"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "This is an external swap routed through KyberSwap. Allowed slippage includes price impact and fees, unlike GMX native swaps where these are separate."
-msgstr ""
+msgstr "這是透過 KyberSwap 路由的外部兌換。允許的滑點包含價格影響與費用，與 GMX 原生兌換將這些分開不同。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Stryke"
@@ -6856,7 +6924,7 @@ msgstr "允許的操作"
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your discount is now active!"
-msgstr ""
+msgstr "您的折扣現已生效！"
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Create Referral Code"
@@ -6892,7 +6960,7 @@ msgstr "適合"
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Limit: {0} a short position when the price is above the trigger price."
-msgstr ""
+msgstr "{typeString} 做空限價：當價格高於觸發價格時 {0} 空頭倉位。"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "No trades match the selected filters"
@@ -6904,16 +6972,16 @@ msgstr "已減倉"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Selling"
-msgstr ""
+msgstr "賣出中"
 
 #: src/components/Referrals/traders/HowToStartSaving.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Start trading"
-msgstr ""
+msgstr "開始交易"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Oracle price is stale"
-msgstr ""
+msgstr "預言機價格已過期"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
@@ -6937,7 +7005,7 @@ msgstr "這是贈款計劃嗎？我會獲得代幣嗎？"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Set SL price above mark price"
-msgstr ""
+msgstr "將止損價格設為高於標記價格"
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
@@ -6965,11 +7033,11 @@ msgstr "畢業"
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set stop price below mark price"
-msgstr ""
+msgstr "將停損價格設為低於標記價格"
 
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Points are allocated based on your cumulative trading volume on GMX MegaETH"
-msgstr ""
+msgstr "積分根據您在 GMX MegaETH 上的累計交易量分配"
 
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
@@ -7005,7 +7073,7 @@ msgstr "{fromSymbol} 餘額不足。Gas 代幣已切換為 {toSymbol}"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may still liquidate from fees alone (funding + borrowing), reducing margin over time."
-msgstr ""
+msgstr "倉位仍可能僅因費用（資金費 + 借貸）被清算，保證金會隨時間減少。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Firebird Finance"
@@ -7017,7 +7085,7 @@ msgstr "舊版 One-Click Trading 子帳戶中剩餘 {balanceFormatted}"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Stake GMX"
-msgstr ""
+msgstr "質押 GMX"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
@@ -7033,11 +7101,11 @@ msgstr "活躍推廣夥伴"
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long TWAP: {0} a long position in evenly distributed parts over a specified time."
-msgstr ""
+msgstr "{typeString} 做多 TWAP：在指定時間內以均勻分配的部分 {0} 多頭倉位。"
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claim & swap"
-msgstr ""
+msgstr "領取並兌換"
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
@@ -7095,11 +7163,11 @@ msgstr "淨價格影響過高"
 
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Claiming rewards"
-msgstr ""
+msgstr "正在領取獎勵"
 
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Same as active code"
-msgstr ""
+msgstr "與目前有效代碼相同"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Order not found. May have been canceled or already executed"
@@ -7140,13 +7208,14 @@ msgstr "Harmonix"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Tier upgrades are reviewed manually by the GMX team based on your weekly performance. If you meet the requirements consistently, you can apply for an upgrade via the <0>GMX Partner Account: Telegram</0>."
-msgstr ""
+msgstr "等級升級由 GMX 團隊根據您的每週表現人工審核。若您持續符合要求，可透過 <0>GMX Partner Account: Telegram</0> 申請升級。"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Less info"
 msgstr "收起資訊"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "LIQ."
 msgstr "流動性"
 
@@ -7208,6 +7277,7 @@ msgid "Max leverage"
 msgstr "最大槓桿"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "AVAILABLE LIQUIDITY"
 msgstr "可用流動性"
 
@@ -7225,7 +7295,7 @@ msgstr "提供的原生代幣不足以支付執行費用"
 
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Not enough data yet"
-msgstr ""
+msgstr "資料尚不足"
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Access key"
@@ -7237,11 +7307,11 @@ msgstr "計入 PnL 及所有費用後的倉位價值"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Number of trades done by your referred traders"
-msgstr ""
+msgstr "您推薦的交易者完成的交易筆數"
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "Share your referral card"
-msgstr ""
+msgstr "分享您的推薦卡片"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Wallet not connected to {0}</0><1/><2>Switch to {1}</2>"
@@ -7261,7 +7331,7 @@ msgstr "倉位規模超過池價值"
 
 #: src/components/Referrals/traders/joinCode/ApplyReferralCodeButtonContent.tsx
 msgid "Apply referral code"
-msgstr ""
+msgstr "套用推薦碼"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (positive)"
@@ -7269,11 +7339,11 @@ msgstr "影響指數（正向）"
 
 #: src/components/GmList/GmList.tsx
 msgid "Liquidity pools for specific GMX markets with single-asset and native asset options"
-msgstr ""
+msgstr "特定 GMX 市場的流動性池，支援單一資產與原生資產選項"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "If you continue, you will lose {0} in rewards"
-msgstr ""
+msgstr "如果繼續，您將損失 {0} 獎勵"
 
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
@@ -7323,7 +7393,7 @@ msgstr "正在處理賣出請求..."
 
 #: src/components/TVChartContainer/TVChartContainer.tsx
 msgid "Close short"
-msgstr ""
+msgstr "平空"
 
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/TradeHistory/keys.ts
@@ -7340,7 +7410,7 @@ msgstr "執行後至少收到 {toAmountText}。價格根據費用和價格影響
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Increasing {indexTokenText} Short: +{sizeDeltaUsdText}"
-msgstr ""
+msgstr "正在加倉 {indexTokenText} 做空：+{sizeDeltaUsdText}"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed"
@@ -7365,7 +7435,7 @@ msgstr "貼上十六進位錯誤資料以進行解碼"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "0.0045 WETH remaining in the old 1CT subaccount"
-msgstr ""
+msgstr "舊 1CT 子帳戶中剩餘 0.0045 WETH"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral"
@@ -7393,8 +7463,9 @@ msgstr "TP 價格"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "ParaSwap"
-msgstr ""
+msgstr "ParaSwap"
 
+#: solana-interface/src/wallet/SolanaAssetsList.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
@@ -7435,7 +7506,7 @@ msgstr "立即交易"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from the GMX vesting vault"
-msgstr ""
+msgstr "發送方已從 GMX 歸屬金庫提取所有代幣"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
@@ -7474,6 +7545,7 @@ msgstr "沒有符合搜尋的資金費用記錄"
 msgid "DeFi portfolio tracker"
 msgstr "DeFi 投資組合追蹤器"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/PerformanceShareCard.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -7510,7 +7582,7 @@ msgstr "成交價格未達到可接受價格"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "In which tokens will I receive my rebates?"
-msgstr ""
+msgstr "我將以哪些代幣收到返利？"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Comfortable with Builder / Referral Code attribution"
@@ -7520,9 +7592,14 @@ msgstr "接受 Builder / Referral Code 歸因"
 msgid "Earned fees are only tracked for GM and GLV held in your wallet on {chainName}. GM and GLV in a GMX Account or on another chain still earn fees, but they can't be attributed per account yet."
 msgstr "已賺取的費用僅針對您在 {chainName} 錢包中持有的 GM 與 GLV 進行統計。GMX Account 或其他鏈上的 GM 與 GLV 仍會賺取費用，但目前還無法按帳戶歸屬。"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
+msgid "Submitted"
+msgstr "已提交"
+
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set long Limit @ {0}"
-msgstr ""
+msgstr "設定做多限價 @ {0}"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position would be liquidatable"
@@ -7535,11 +7612,11 @@ msgstr "媒體素材包"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "$ 0.00"
-msgstr ""
+msgstr "$ 0.00"
 
 #: src/components/Referrals/traders/dashboard/TradersPromoCard.tsx
 msgid "Create your referral code and earn rebates from your referrals"
-msgstr ""
+msgstr "建立您的推薦碼，並透過推薦賺取返利"
 
 #: src/components/GmList/GlvList.tsx
 msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets"
@@ -7601,7 +7678,7 @@ msgstr "治理通知"
 
 #: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
 msgid "Low {symbol} balance. This amount leaves little for future fees on your GMX Account."
-msgstr ""
+msgstr "{symbol} 餘額偏低。該金額幾乎不夠支付 GMX Account 未來的費用。"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -7611,6 +7688,7 @@ msgstr ""
 msgid "Trigger price for the order"
 msgstr "訂單的觸發價格"
 
+#: solana-interface/src/pages/SolanaChart.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/MarketStats/MarketGraphs.tsx
 #: src/components/SwapCard/SwapCard.tsx
@@ -7619,6 +7697,7 @@ msgstr "訂單的觸發價格"
 msgid "Price"
 msgstr "價格"
 
+#: solana-interface/src/wallet/SolanaAssetsList.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets found"
 msgstr "未找到資產"
@@ -7629,11 +7708,11 @@ msgstr "錢包已斷開連接。請重新連接並重試"
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Connect wallet or add an address to the URL"
-msgstr ""
+msgstr "連接錢包或在 URL 中新增地址"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Withdrawing {amountText} from {indexTokenText} Long..."
-msgstr ""
+msgstr "正在從 {indexTokenText} 做多提取 {amountText}..."
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Reliable GMX-powered transactions"
@@ -7665,7 +7744,7 @@ msgstr "正在提取 {balanceFormatted} 至主帳戶..."
 
 #: src/components/PositionList/SymbolSortDropdown.tsx
 msgid "Symbol (A to Z)"
-msgstr ""
+msgstr "交易對（A 到 Z）"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Full lifecycle reconciliation is unavailable because part of this position's history could not be matched reliably."
@@ -7686,7 +7765,7 @@ msgstr "如果我在構建一個與之競爭的永續 DEX 呢？"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "How do I share my code?"
-msgstr ""
+msgstr "如何分享我的代碼？"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -7700,11 +7779,11 @@ msgstr "GLP 自動複利金庫"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Yes. To earn rebates on both Arbitrum and Avalanche, create your code on both networks. You can use the same code name on each."
-msgstr ""
+msgstr "可以。要在 Arbitrum 和 Avalanche 上同時賺取返利，請在兩個網路上都建立代碼。每個網路可以使用相同的代碼名稱。"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Edit margin"
-msgstr ""
+msgstr "編輯保證金"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "TP/SL orders exceed the position"
@@ -7725,7 +7804,7 @@ msgstr "沒有符合您持有資產的機會"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Yes, GMX can be unstaked and GLV/GM tokens can be sold at any time — the protocol never locks your tokens. However, if your staked GMX balance drops below 80% of your peak staked amount, all accumulated staking power resets to zero and you lose your share of the GMX-at-$90 Treasury distribution. For GLV/GM, in rare cases where your liquidity is being used for active trades, you can withdraw as soon as those positions close."
-msgstr ""
+msgstr "可以，GMX 可隨時取消質押，GLV/GM 代幣也可隨時出售——協議不會鎖定您的代幣。但是，如果您質押的 GMX 餘額降至峰值質押量的 80% 以下，所有累計的質押權重將重置為零，您將失去 GMX 達 $90 時國庫分配的份額。對於 GLV/GM，在少數情況下若您的流動性正被用於活躍交易，可在這些倉位平倉後立即提取。"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
@@ -7734,6 +7813,7 @@ msgstr "借出您的代幣或以其為抵押借入"
 
 #: src/components/AppHeader/AppHeaderLogo.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "GMX logo"
 msgstr "GMX 標誌"
@@ -7822,7 +7902,7 @@ msgstr "尚無返佣分配記錄"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "You can skip this step and trade without a code, but you'll pay full fees. You can always add a code later from the Traders tab if you've found a code."
-msgstr ""
+msgstr "您可以跳過此步驟，不使用代碼進行交易，但需支付全額手續費。之後若找到代碼，仍可隨時在「交易者」分頁中新增。"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "THREAD"
@@ -7834,7 +7914,7 @@ msgstr "此倉位由您的 GMX 多鏈餘額提供資金；金額為餘額變動�
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Negative funding fees reduce margin and affect liquidation price."
-msgstr ""
+msgstr "負資金費會減少保證金並影響清算價格。"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit signed for {0}"
@@ -7865,6 +7945,7 @@ msgstr "價格影響超過訂單規模"
 msgid "Want to trade faster with One-Click Trading?"
 msgstr "想透過 One-Click Trading 更快速交易嗎？"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
@@ -7883,6 +7964,7 @@ msgstr "訂單錯誤。此市場價格波動劇烈，請嘗試<0>提高允許的
 msgid "Real onchain revenue, paid in stablecoins, every time someone trades through you."
 msgstr "每當有人透過你交易，都能獲得以穩定幣支付的真實鏈上收入。"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -7891,7 +7973,7 @@ msgstr "資產"
 
 #: src/components/PositionList/SymbolSortDropdown.tsx
 msgid "Symbol (Z to A)"
-msgstr ""
+msgstr "交易對（Z 到 A）"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
@@ -7912,7 +7994,7 @@ msgstr "接收者已質押 GMX/GLP"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Order type unavailable for creation"
-msgstr ""
+msgstr "此訂單類型不可建立"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/AccountDashboard/PerformanceShareCard.tsx
@@ -7978,12 +8060,13 @@ msgstr "選擇要存入的資產"
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "True"
-msgstr ""
+msgstr "真"
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
-msgstr ""
+msgstr "輸入推薦碼以獲得交易手續費折扣。<0/> 根據推薦等級，您可在所有<1/> 開倉與平倉手續費上節省最高 10%。"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/Jobs/Jobs.tsx
@@ -8011,6 +8094,7 @@ msgid "Wallet received before close"
 msgstr "平倉前錢包收到"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "View results in Swap"
 msgstr "查看兌換中的結果"
 
@@ -8104,7 +8188,7 @@ msgstr "標記價格"
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "You chose to send the remaining margin to your <0>{chosenLabel}</0>. Make this the default destination when closing positions?"
-msgstr ""
+msgstr "您選擇將剩餘保證金發送到您的 <0>{chosenLabel}</0>。平倉時將其設為預設目標嗎？"
 
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Market groups</0><1>Net open interest</1>"
@@ -8112,11 +8196,11 @@ msgstr "<0>市場群組</0><1>淨未平倉量</1>"
 
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set long Stop-Loss @ {0}"
-msgstr ""
+msgstr "設定做多止損 @ {0}"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "For newer markets, the history may not yet be indexed. Refer to Net rate / 1h above the chart."
-msgstr ""
+msgstr "對於較新的市場，歷史資料可能尚未索引。請參閱圖表上方的淨費率 / 1h。"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -8147,6 +8231,8 @@ msgstr "扣除費用前的已實現 PnL"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "24H%"
 msgstr "24H%"
 
@@ -8178,7 +8264,7 @@ msgstr "使用 TWAP 訂單"
 
 #: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "Referrals V1 WETH"
-msgstr ""
+msgstr "推薦 V1 WETH"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Enable external swaps"
@@ -8231,7 +8317,7 @@ msgstr "流動性不足，無法兌換抵押品"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Funding rate"
-msgstr ""
+msgstr "資金費率"
 
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Swap price impact for external swap threshold"
@@ -8273,11 +8359,11 @@ msgstr "不支援將 {0} 提取至 {1}"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Wallet esGMX"
-msgstr ""
+msgstr "錢包 esGMX"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing position is in {0} pool. Using the selected pool will create a separate position. <0>Switch to {1} pool</0>"
-msgstr ""
+msgstr "現有倉位在 {0} 池中。使用所選池將建立單獨倉位。<0>切換到 {1} 池</0>"
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
@@ -8304,7 +8390,7 @@ msgstr "高交易量交易者最高可享 25% 手續費折扣。<0/>推廣者最
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GlvList.tsx
 msgid "Points are based on the time-weighted average value of your share of the GLV [USDM-USDM] vault over the epoch"
-msgstr ""
+msgstr "積分基於您在該週期內所持 GLV [USDM-USDM] 金庫份額的時間加權平均值"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group"
@@ -8323,7 +8409,7 @@ msgstr "流動性不足"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No executed or cancelled transaction yet"
-msgstr ""
+msgstr "尚無已執行或已取消的交易"
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -8333,7 +8419,7 @@ msgstr "狀態"
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "You have activated the referral code {userReferralCodeString}. Every position you open or close will automatically apply your reduced rate — no extra steps needed."
-msgstr ""
+msgstr "您已啟用推薦碼 {userReferralCodeString}。您開倉或平倉的每個倉位都會自動套用減免費率——無需額外步驟。"
 
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "Do I need to pass KYC?"
@@ -8345,7 +8431,7 @@ msgstr "您的錢包無法簽署訊息。請連接其他錢包進行交易。"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Hide assets with small value"
-msgstr ""
+msgstr "隱藏小額資產"
 
 #: src/components/GmList/GmListItem.tsx
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
@@ -8361,6 +8447,7 @@ msgstr "TokenTerminal"
 msgid "Summary"
 msgstr "摘要"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "ENTRY PRICE"
@@ -8369,12 +8456,12 @@ msgstr "入場價格"
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set stop price above mark price"
-msgstr ""
+msgstr "將停損價格設為高於標記價格"
 
 #. to network
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "<0>To </0><1>{0}</1>"
-msgstr ""
+msgstr "<0>至 </0><1>{0}</1>"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "FX"
@@ -8394,7 +8481,7 @@ msgstr "此池已達到最大存款容量"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing position is in {0} pool, but that pool lacks liquidity for this order"
-msgstr ""
+msgstr "現有倉位在 {0} 池中，但該池對此訂單流動性不足"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral factor"
@@ -8445,12 +8532,13 @@ msgstr "已上線"
 
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "In GMX:"
-msgstr ""
+msgstr "以 GMX 計："
 
 #: src/components/Referrals/shared/cards/ClaimableRebatesCard.tsx
 msgid "Claim rebates"
-msgstr ""
+msgstr "領取返利"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/lib/tenderly.tsx
 #: src/lib/tenderly.tsx
 msgid "View transaction"
@@ -8468,7 +8556,7 @@ msgstr "24小時最低價"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claim <0>{0}</0> of <1>{1}</1>"
-msgstr ""
+msgstr "領取 <0>{0}</0> / <1>{1}</1>"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from TraderJoe"
@@ -8495,7 +8583,7 @@ msgstr "我們會在市場交易時段內的 ~2 小時內回覆。沒有任何�
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set limit price above mark price"
-msgstr ""
+msgstr "將限價設為高於標記價格"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Stake {tokenSymbol} rewards"
@@ -8520,7 +8608,7 @@ msgstr "-"
 
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "liquidation"
-msgstr ""
+msgstr "清算"
 
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
@@ -8533,7 +8621,7 @@ msgstr "RPC 端點"
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "No, keep {currentLabel} as default"
-msgstr ""
+msgstr "否，保持 {currentLabel} 為預設"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Staking only available on {chainNames} or {lastChainName}. Switch networks to continue."
@@ -8549,7 +8637,7 @@ msgstr "領取獎勵僅在 {settlementChainName} 上可用。請切換網路以�
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Invalid signature.<0/><1/>Try a different wallet provider or switch to Classic Trading or One-Click Trading in <2>settings</2>"
-msgstr ""
+msgstr "無效簽名。<0/><1/>請嘗試其他錢包供應商，或在 <2>設定</2> 中切換到 Classic Trading 或 One-Click Trading"
 
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -8601,6 +8689,10 @@ msgstr "連結已複製"
 msgid "Total wallet received"
 msgstr "錢包累計收到"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx
@@ -8649,7 +8741,7 @@ msgstr "GM 購買成功，但跨鏈橋至 Base 失敗。您的資金安全存放
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Disable One-Click Trading"
-msgstr ""
+msgstr "停用 One-Click Trading"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
@@ -8684,7 +8776,7 @@ msgstr "透過 GMX Account 使用 Arbitrum 流動性進行交易。也可在 Arb
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Set SL price below limit price"
-msgstr ""
+msgstr "將止損價格設為低於限價"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "({0} of {1})"
@@ -8761,7 +8853,7 @@ msgstr "儲備金證明"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "When will I start earning?"
-msgstr ""
+msgstr "我何時開始賺取？"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No topics"
@@ -8823,7 +8915,7 @@ msgstr "在開放、無需許可的網路上運行，確保透明度、去中心
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Low margin after fees. Deposit more to reduce liquidation risk."
-msgstr ""
+msgstr "扣除費用後保證金偏低。請存入更多以降低清算風險。"
 
 #: src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
@@ -8907,7 +8999,7 @@ msgstr "單邊流動性金庫，透過主動對沖與再平衡來最小化無常
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price below liquidation price"
-msgstr ""
+msgstr "將觸發價格設為低於清算價格"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade errors"
@@ -8923,7 +9015,7 @@ msgstr "正在存入和提取 GMX Account..."
 
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "Long liquidity"
-msgstr ""
+msgstr "做多流動性"
 
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "SHORT LIQ."
@@ -8955,6 +9047,7 @@ msgid "Compass Labs GM token dashboard"
 msgstr "Compass Labs GM 代幣儀表板"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "OPEN INTEREST"
 msgstr "未平倉量"
@@ -8982,7 +9075,7 @@ msgstr "最小倉位大小：{0}"
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your share is based on staking power (duration × amount staked)."
-msgstr ""
+msgstr "協議費用的 27% 正在國庫中累積，將在 GMX 達到 $90 時分配。您的份額基於質押權重（時長 × 質押數量）。"
 
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "{markets} {verb} being delisted. Close your existing {positionNoun} as remaining positions may be auto-closed."
@@ -8998,7 +9091,7 @@ msgstr "累計收到（GMX 餘額）"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Hide other assets"
-msgstr ""
+msgstr "隱藏其他資產"
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
@@ -9028,7 +9121,7 @@ msgstr "<0><1>#GMX V2</1> 的 OI 看起來很棒</0><2>GMX V2 > GMX V1 + Kwenta 
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "You'll get a shareable link like: {PRODUCTION_HOST}/trade/?ref=YOURCODE. Share on social media, in your content, or directly with friends."
-msgstr ""
+msgstr "您將獲得可分享的連結，例如：{PRODUCTION_HOST}/trade/?ref=YOURCODE。可在社群媒體、內容中或直接與朋友分享。"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling."
@@ -9049,7 +9142,7 @@ msgstr "推薦碼更新失敗"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Set SL price above limit price"
-msgstr ""
+msgstr "將止損價格設為高於限價"
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "Execution prices for increasing shorts<0/>and decreasing longs"
@@ -9084,7 +9177,7 @@ msgstr "淨價格影響"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Long borrowing rate"
-msgstr ""
+msgstr "做多借貸費率"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -9101,7 +9194,7 @@ msgstr "{fromText} 至 {toExecutionText}"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Total rebates"
-msgstr ""
+msgstr "總返利"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Total PnL after fees and price impact. Hover the value to see the breakdown."
@@ -9125,7 +9218,7 @@ msgstr "含訂單的持倉"
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>⬡ Chainlink Data Story ⬡ <1/><2>#Chainlink</2> Data Streams have secured over $56B in volume for the <3>@GMX_IO</3> V2 protocol.</0><4>Data Streams’ low-latency delivery of high-quality market data has supercharged GMX's perpetual markets across <5>@arbitrum</5> and <6>@avax</6>. <7>https://dune.com/gmx-io/gmx-analytics#v2-volume</7></4>"
-msgstr ""
+msgstr "<0>⬡ Chainlink 數據故事 ⬡ <1/><2>#Chainlink</2> 數據流已為 <3>@GMX_IO</3> V2 協議保障超過 560 億美元的交易量。</0><4>數據流以低延遲提供高品質市場數據，為 GMX 在 <5>@arbitrum</5> 與 <6>@avax</6> 的永續市場提供動力。<7>https://dune.com/gmx-io/gmx-analytics#v2-volume</7></4>"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral factor OI long"
@@ -9140,7 +9233,7 @@ msgstr "交易者檔案"
 
 #: src/components/Referrals/distributions/ReferralsDistributionsTab.tsx
 msgid "Connect your wallet to view your rebates distribution history"
-msgstr ""
+msgstr "連接錢包以查看您的返利分配歷史"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claimed"
@@ -9179,7 +9272,7 @@ msgstr "建立"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Your code is ready. Share it!"
-msgstr ""
+msgstr "您的代碼已就緒。去分享吧！"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
@@ -9196,6 +9289,7 @@ msgstr "儲存設定"
 msgid "Last 7d"
 msgstr "近 7 天"
 
+#: solana-interface/src/pages/SolanaChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #: src/components/TVChart/Chart.tsx
@@ -9209,8 +9303,9 @@ msgstr "轉帳地址無效，請檢查網址。"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Copy"
-msgstr ""
+msgstr "複製"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -9257,7 +9352,7 @@ msgstr "未質押"
 
 #: src/components/TradeBox/TradeBoxRows/MinReceiveRow.tsx
 msgid "Minimum receive"
-msgstr ""
+msgstr "最低收到"
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -9285,11 +9380,11 @@ msgstr "未找到公告"
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your {currentTierDiscount}% discount is now active!"
-msgstr ""
+msgstr "您的 {currentTierDiscount}% 折扣現已生效！"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Your {symbol} margin exceeds the {indexName} long position size. Stable margin covers any losses—no liquidation price."
-msgstr ""
+msgstr "您的 {symbol} 保證金超過 {indexName} 多頭倉位規模。穩定幣保證金可覆蓋任何虧損——無清算價格。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Total performance APY"
@@ -9309,7 +9404,7 @@ msgstr "執行 Gas 不足。預估：{estimatedGasLimitText}，起始：{startin
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Min receive"
-msgstr ""
+msgstr "最低收到"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -9330,16 +9425,17 @@ msgstr "<0>全倉保證金</0><1>交叉抵押品</1>"
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Fetching swap route ({0}/{1})..."
-msgstr ""
+msgstr "正在取得兌換路徑（{0}/{1}）..."
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Depositing {amountText} to {indexTokenText} Short..."
-msgstr ""
+msgstr "正在向 {indexTokenText} 做空存入 {amountText}..."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Excludes claimed funding, price impact rebates and execution fees."
 msgstr "不包括已領取的資金費、價格影響返還與執行費。"
 
+#: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -9370,7 +9466,7 @@ msgstr "非交易時段：每日 20:45–22:15 UTC（週末 週五 20:45 → 週
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "You must be on this page to accept the transfer. <0>Copy link</0>."
-msgstr ""
+msgstr "您必須在此頁面上才能接受轉帳。<0>複製連結</0>。"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Build"
@@ -9424,7 +9520,7 @@ msgstr "未知的 GM 轉換訂單"
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "365d estimated fees"
-msgstr ""
+msgstr "365 天預估費用"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Shifting {symbol}..."
@@ -9432,7 +9528,7 @@ msgstr "正在轉換 {symbol}..."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max reserved + JIT {directionLabel}"
-msgstr ""
+msgstr "最大預留 + JIT {directionLabel}"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close price impact"
@@ -9503,7 +9599,7 @@ msgstr "{addressLabel} 於 {networkLabel}"
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Loading fees..."
-msgstr ""
+msgstr "正在載入費用..."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "{0} GMX"
@@ -9519,7 +9615,7 @@ msgstr "Jones DAO"
 
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set short Stop Market @ {0}"
-msgstr ""
+msgstr "設定空單停損市價 @ {0}"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -9533,7 +9629,7 @@ msgstr "清算價格"
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "So far, my referrals have saved {totalDiscountsFormatted} total in discounts with my code: {referralCode}"
-msgstr ""
+msgstr "目前，我的推薦用戶已透過我的推薦碼累計節省折扣 {totalDiscountsFormatted}：{referralCode}"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Enjoy a frictionless trading experience and sidestep blockchain congestion with One-Click Trading and Express Trading"
@@ -9550,7 +9646,7 @@ msgstr "{nativeTokenSymbol} 餘額不足，無法支付網路費用。請新增�
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Send remaining margin to"
-msgstr ""
+msgstr "將剩餘保證金發送至"
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Buy GM with {0} up to the caps below"
@@ -9595,7 +9691,7 @@ msgstr "市場下架"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Last updated:"
-msgstr ""
+msgstr "上次更新："
 
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
@@ -9630,7 +9726,7 @@ msgstr "執行停損市價單"
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Go to trader dashboard"
-msgstr ""
+msgstr "前往交易者儀表板"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "AI"
@@ -9708,6 +9804,7 @@ msgstr "您的錢包無法簽署訊息。請使用 Classic 模式進行交易。
 msgid "Deposit margin at price"
 msgstr "按價格存入保證金"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "FEES"
 msgstr "費用"
@@ -9717,7 +9814,7 @@ msgstr "費用"
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Margin ({0})"
-msgstr ""
+msgstr "保證金（{0}）"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Claim {0}"
@@ -9757,15 +9854,15 @@ msgstr "重試外部路由"
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Total realized and unrealized PnL for the period. Includes price impact and fees."
-msgstr ""
+msgstr "該期間已實現與未實現 PnL 合計。包含價格影響和費用。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Rewards reset"
-msgstr ""
+msgstr "獎勵已重設"
 
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "Edit margin: {0} {1}{2}/USD"
-msgstr ""
+msgstr "編輯保證金：{0} {1}{2}/USD"
 
 #: src/components/AddressView/AddressView.tsx
 msgid "You"
@@ -9928,7 +10025,7 @@ msgstr "顯示設定"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GM: {0} [{1}] liquidity in GLV. Choose a different pool, reduce the sell size, or split the withdrawal across pools."
-msgstr ""
+msgstr "GLV 中 GM：{0} [{1}] 流動性不足。請選擇其他池、減少賣出規模，或將提取拆分到多個池。"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order filled"
@@ -9979,7 +10076,7 @@ msgstr "Meme"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Accumulate GMX rewards by staking"
-msgstr ""
+msgstr "透過質押累積 GMX 獎勵"
 
 #: src/components/ShareModal/CreateReferralCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
@@ -10074,7 +10171,7 @@ msgstr "新增 RPC"
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Market: {0} a long position at the current price."
-msgstr ""
+msgstr "{typeString} 做多市價：以目前價格{0}多頭倉位。"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a collateral"
@@ -10168,7 +10265,7 @@ msgstr "請求已送出，但無法確認其結果。它可能已經完成 — �
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short funding rate"
-msgstr ""
+msgstr "空頭資金費率"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
@@ -10187,7 +10284,7 @@ msgstr "平均規模"
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Long net rate"
-msgstr ""
+msgstr "多頭淨費率"
 
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Decode error"
@@ -10203,7 +10300,7 @@ msgstr "更新限價單"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Visit the <0>Referrals Documentation</0> or ask in the <1>GMX Telegram</1>"
-msgstr ""
+msgstr "造訪 <0>推薦文件</0> 或在 <1>GMX Telegram</1> 中提問"
 
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/TVChartContainer/DynamicLine.tsx
@@ -10216,6 +10313,7 @@ msgstr "編輯訂單"
 msgid "Error simulating withdrawal"
 msgstr "模擬提取時發生錯誤"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -10238,7 +10336,7 @@ msgstr "資金費用結算失敗"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Set TP price above mark price"
-msgstr ""
+msgstr "將止盈價格設為高於標記價格"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Reserved {directionLabel}"
@@ -10262,7 +10360,7 @@ msgstr "可賣出"
 
 #: src/components/Errors/ErrorToastWithSupport.tsx
 msgid "Contact support"
-msgstr ""
+msgstr "聯絡支援"
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Select positions where accrued funding fee exceeds the {0} gas cost to settle"
@@ -10284,6 +10382,7 @@ msgstr "正常"
 msgid "Swap {0} for {1}"
 msgstr "將 {0} 兌換為 {1}"
 
+#: solana-interface/src/pages/SolanaChart.tsx
 #: src/components/TVChart/Chart.tsx
 msgid "Depth"
 msgstr "深度"
@@ -10306,7 +10405,7 @@ msgstr "<0>以 75.5% 的多數票，GMX 選擇了 LayerZero 作為其多鏈擴�
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Loading position..."
-msgstr ""
+msgstr "正在載入倉位..."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Current safe limit: <0>{0}</0> combined."
@@ -10358,7 +10457,7 @@ msgstr "鏈上資料錯誤"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Show assets with small value ({0})"
-msgstr ""
+msgstr "顯示小額資產（{0}）"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Fulfilling order request..."
@@ -10382,7 +10481,7 @@ msgstr "已平倉倉位的盈虧"
 
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "Short liquidity"
-msgstr ""
+msgstr "空頭流動性"
 
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "Quick hits"
@@ -10399,7 +10498,7 @@ msgstr "降低資金費率門檻"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "The 20% unstaking limit was exceeded, and your rewards have been reset"
-msgstr ""
+msgstr "已超過 20% 解除質押限額，您的獎勵已被重設"
 
 #: src/domain/synthetics/fees/utils/index.ts
 msgid "Network fees are very high due to increased {chainName} network activity"
@@ -10407,11 +10506,11 @@ msgstr "由於 {chainName} 網路活動增加，網路費用非常高"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Some markets have insufficient pool balance to claim funding fees. These markets are excluded from this claim."
-msgstr ""
+msgstr "部分市場的池餘額不足以領取資金費。這些市場已從此次領取中排除。"
 
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
 msgid "Share and receive rebates"
-msgstr ""
+msgstr "分享並獲得返利"
 
 #: src/components/InterviewModal/InterviewModal.tsx
 #: src/components/InterviewModal/InterviewModal.tsx
@@ -10428,7 +10527,7 @@ msgstr "賣出 {operationTokenSymbol}"
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
-msgstr ""
+msgstr "開啟時，槓桿手動設定並決定保證金與倉位規模。關閉時，可自由設定保證金與規模，槓桿由此推導。"
 
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx
@@ -10473,7 +10572,7 @@ msgstr "{0} 代幣已保留用於歸屬"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "1y"
-msgstr ""
+msgstr "1 年"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "An unexpected error occurred. Please retry."
@@ -10496,6 +10595,7 @@ msgid "CONFIG"
 msgstr "CONFIG"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/MarketsList/MarketsList.tsx
 #: src/components/TableMarketFilter/MarketFilterBase.tsx
@@ -10557,11 +10657,11 @@ msgstr "市價單"
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
 msgid "Insufficient {0} for gas on {1}<0/><1/><2>Swap</2> or <3>bridge</3> {2} to {3}"
-msgstr ""
+msgstr "{1} 上用於 gas 的 {0} 不足<0/><1/><2>兌換</2>或<3>跨鏈</3> {2} 至 {3}"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buying"
-msgstr ""
+msgstr "買入"
 
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "API Surfaces"
@@ -10591,7 +10691,7 @@ msgstr "以 USD 顯示規模"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Positive funding fees are claimable in Claims."
-msgstr ""
+msgstr "正資金費可在領取頁面領取。"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -10600,10 +10700,12 @@ msgstr ""
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "False"
-msgstr ""
+msgstr "假"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "/USD"
 msgstr "/USD"
@@ -10656,7 +10758,7 @@ msgstr "無法更新訂單，此類型不支援修改"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Unable to fetch swap route. Please try again."
-msgstr ""
+msgstr "無法取得兌換路徑。請重試。"
 
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
@@ -10701,6 +10803,7 @@ msgstr "做多"
 msgid "Pool"
 msgstr "池"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "LIQUIDATION PRICE"
@@ -10708,7 +10811,7 @@ msgstr "清算價格"
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "TVL includes GMX staked, GM pools, and position collateral"
-msgstr ""
+msgstr "TVL 包括已質押的 GMX、GM 池以及倉位抵押品"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Venus"
@@ -10716,7 +10819,7 @@ msgstr "Venus"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap route available"
-msgstr ""
+msgstr "無可用兌換路徑"
 
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "How much could I earn?"
@@ -10724,7 +10827,7 @@ msgstr "我能賺多少？"
 
 #: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
 msgid "Low {symbol} balance. This amount leaves little for future fees on {0}."
-msgstr ""
+msgstr "{symbol} 餘額較低。此金額在 {0} 上幾乎不夠支付未來費用。"
 
 #: src/components/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Open {marketName} in explorer"
@@ -10751,7 +10854,7 @@ msgstr "7天收益"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Using a referral code gives you a 5-10% discount on trading fees for every trade you make. It costs you nothing and the savings add up quickly."
-msgstr ""
+msgstr "使用推薦碼可在每筆交易上獲得 5-10% 的交易費折扣。完全免費，節省很快累積。"
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"
@@ -10759,7 +10862,7 @@ msgstr "{title}"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "What if I don't have a code right now?"
-msgstr ""
+msgstr "如果我現在沒有推薦碼怎麼辦？"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit transaction sent for {0}!"
@@ -10786,7 +10889,7 @@ msgstr "池數量容量"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Referral link copied to your clipboard"
-msgstr ""
+msgstr "推薦連結已複製到剪貼簿"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Fastest"
@@ -10855,7 +10958,7 @@ msgstr "{nativeTokenSymbol} APR"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "What happens after I create my code?"
-msgstr ""
+msgstr "建立推薦碼後會發生什麼？"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Option-based vaults"
@@ -10926,11 +11029,11 @@ msgstr "已在 {0} 接收"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Allow all tokens to transfer to the new account"
-msgstr ""
+msgstr "允許將所有代幣轉入新帳戶"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sizeText}"
-msgstr ""
+msgstr "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}：{sizeText}"
 
 #: src/components/Claims/SettleAccruedCard.tsx
 msgid "Positive funding fees accrued in positions, not yet claimable.<0/><1/>Available after changing position size, adjusting collateral, or clicking \"Settle\"."
@@ -10938,7 +11041,7 @@ msgstr "倉位中已累積的正資金費用，尚無法領取。<0/><1/>在更�
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from the GLP vesting vault"
-msgstr ""
+msgstr "發送方已從 GLP 歸屬金庫提取全部代幣"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
@@ -10947,7 +11050,7 @@ msgstr "GM 從單一市場賺取手續費。GLV 持有多種 GM 代幣，並在�
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Because positions on Arbitrum can be funded from both your wallet and your GMX Account, we can't always determine where to return the margin automatically.<0/><1/>Choose:<2/>• <3>Wallet</3> if you mostly trade from your personal wallet on Arbitrum<4/>• <5>GMX Account</5> if you plan to keep trading or reusing margin on GMX<6/><7/>You can change this preference anytime in settings or when closing a position."
-msgstr ""
+msgstr "由於 Arbitrum 上的倉位既可以用錢包資金，也可以用 GMX Account 資金開倉，我們無法總是自動判斷保證金應退回何處。<0/><1/>請選擇：<2/>• <3>錢包</3> — 若您主要在 Arbitrum 上用個人錢包交易<4/>• <5>GMX Account</5> — 若您打算繼續在 GMX 上交易或重用保證金<6/><7/>您可隨時在設定中或平倉時更改此偏好。"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position impact amount"
@@ -10969,6 +11072,11 @@ msgstr "確認中..."
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposited:"
 msgstr "已存入："
+
+#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/pages/SolanaTradeList.tsx
+msgid "ACTION"
+msgstr "操作"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
@@ -11018,7 +11126,7 @@ msgstr "（{0}，佔倉位規模）"
 
 #: src/lib/copyElementAsImage.ts
 msgid "Failed to export image"
-msgstr ""
+msgstr "匯出圖片失敗"
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Staked"
@@ -11082,7 +11190,7 @@ msgstr "投資組合總價值"
 
 #: src/components/ShareModal/ShareCardReferralCodeStat.tsx
 msgid "Used referral code"
-msgstr ""
+msgstr "已使用的推薦碼"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Integrating or shipping"
@@ -11117,7 +11225,7 @@ msgstr "限價"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Staking power"
-msgstr ""
+msgstr "質押權重"
 
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Select at least one distribution to claim"
@@ -11146,7 +11254,7 @@ msgstr "提取需要在 {0} 上簽名。請將該網路加入您的錢包並重�
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution</2><3> Low size caps, but fun to do some degen gambling with</3>"
-msgstr ""
+msgstr "<0>第一次試用了 <1>@GMX_IO</1>。</0><2> 體驗相當不錯——無滑點，執行很快</2><3> 倉位上限偏低，但拿來梭哈挺有意思</3>"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
@@ -11159,7 +11267,7 @@ msgstr "選擇網路"
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Error simulating claim"
-msgstr ""
+msgstr "模擬領取時出錯"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "No loss of fund ownership"
@@ -11188,7 +11296,7 @@ msgstr "結算網路已變更為 {0}，但 {1} 仍保留在您的 {2} GMX Accoun
 
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set short Limit @ {0}"
-msgstr ""
+msgstr "設定空單限價 @ {0}"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Deposit ETH"
@@ -11249,12 +11357,13 @@ msgid "Avoid price wicks with transparent, sub-second Chainlink price feeds tail
 msgstr "透過 Chainlink 為 GMX 量身打造的透明、亞秒級價格饋送，避免價格插針"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "No markets matched."
 msgstr "沒有相符的市場。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Stake esGMX"
-msgstr ""
+msgstr "質押 esGMX"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe and remain in your wallet."
@@ -11280,6 +11389,7 @@ msgstr "HoudiniSwap"
 msgid "Bridge in failed"
 msgstr "橋接轉入失敗"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Invalid recipient address"
 msgstr "接收地址無效"
@@ -11299,7 +11409,7 @@ msgstr "{txnTypeText}保證金存入：{amountText} 至 {indexTokenText} {longSh
 
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Price you'll receive when closing, adjusted for capped price impact. <0>Read more</0>."
-msgstr ""
+msgstr "平倉時你將收到的價格，已按上限調整價格影響。<0>了解更多</0>。"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "RESPONSE"
@@ -11346,6 +11456,7 @@ msgstr "下架"
 msgid "{0} (external)"
 msgstr "{0}（外部）"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "TRIGGER PRICE"
@@ -11438,7 +11549,7 @@ msgstr "最大做空費率"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Staking Power Share"
-msgstr ""
+msgstr "質押權重份額"
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 msgid "Alerts"
@@ -11446,17 +11557,17 @@ msgstr "提醒"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Loading swap path…"
-msgstr ""
+msgstr "正在載入兌換路徑…"
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Swap route unavailable"
-msgstr ""
+msgstr "兌換路徑不可用"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "I understand that staking power does not transfer. The receiving wallet will start with zero staking power and a fresh historical max."
-msgstr ""
+msgstr "我理解質押權重不會轉移。接收錢包將從零質押權重開始，並重設歷史最高值。"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "<0>Positive funding fees accrued from your positions</0>"
@@ -11522,7 +11633,7 @@ msgstr "已歸屬的 GLP 未提取"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient pool liquidity. Available: {availableAmountText}"
-msgstr ""
+msgstr "池流動性不足。可用：{availableAmountText}"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Become a market maker"
@@ -11547,7 +11658,7 @@ msgstr "已質押的 GMX 與 esGMX 僅在 {chainName} 上計入。GM 與 GLV 會
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "Yes, set {chosenLabel} as default"
-msgstr ""
+msgstr "是，將 {chosenLabel} 設為預設"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Stabilize Protocol"
@@ -11555,7 +11666,7 @@ msgstr "Stabilize Protocol"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Execution fee validation failed.<0/><1/>{suggestText}"
-msgstr ""
+msgstr "執行費用驗證失敗。<0/><1/>{suggestText}"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Auto-cancel TP/SL"
@@ -11645,7 +11756,7 @@ msgstr "排行榜"
 
 #: src/components/StatsTooltip/ChainsStatsNotices.tsx
 msgid "Included but not up to date: {staleList}."
-msgstr ""
+msgstr "已包含但未更新：{staleList}。"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "TRADERS REFERRED"
@@ -11662,7 +11773,7 @@ msgstr "可取消倒數 ..."
 #: src/components/Seo/SEO.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "GMX | decentralized perpetual exchange"
-msgstr ""
+msgstr "GMX | 去中心化永續交易所"
 
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
@@ -11693,7 +11804,7 @@ msgstr "目前影響：{0}。使用 -0.30% 或更高以獲得更好的訂單執�
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 msgid "This market is disabled. Contact support to claim your remaining funding fees."
-msgstr ""
+msgstr "該市場已停用。請聯絡支援以領取剩餘資金費。"
 
 #: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
@@ -11714,7 +11825,7 @@ msgstr "無效的清算價格"
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "The relay did not report an outcome for this operation."
-msgstr ""
+msgstr "中繼未回報此操作的結果。"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Specify network: arbitrum, avalanche, fuji, megaeth, arbitrum-sepolia"
@@ -11772,6 +11883,8 @@ msgstr "存入中..."
 msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
 msgstr "{pools} {verb}下架。存入已不可用，請提取您的流動性，或將其轉入 GLV 以繼續賺取收益。"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
@@ -11796,6 +11909,8 @@ msgstr "此代幣已停用 Permit 授權。"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "LAST PRICE"
 msgstr "最新價格"
 
@@ -11831,7 +11946,7 @@ msgstr "地址已複製"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking this amount will bring you close to the 20% reset threshold"
-msgstr ""
+msgstr "解除質押此數量將使您接近 20% 重設閾值"
 
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Claim funds"
@@ -11841,10 +11956,13 @@ msgstr "領取資金"
 msgid "Your funds are safe. Contact support for help."
 msgstr "您的資金是安全的。如需協助請聯繫客服。"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/PositionList/PositionList.tsx
 msgid "NET VALUE"
 msgstr "淨值"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx
 msgid "MARK PRICE"
@@ -11873,7 +11991,7 @@ msgstr "可接受價格影響"
 
 #: src/components/PositionList/SymbolSortDropdown.tsx
 msgid "Default sorting"
-msgstr ""
+msgstr "預設排序"
 
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Reduce withdrawal to match the max. <0>Read more</0>.<1/><2/><3>Set max withdrawal</3>"
@@ -11881,7 +11999,7 @@ msgstr "減少提取金額以符合上限。<0>了解更多</0>。<1/><2/><3>設
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing {indexTokenText} Long: -{sizeDeltaUsdText}"
-msgstr ""
+msgstr "減少 {indexTokenText} 做多：-{sizeDeltaUsdText}"
 
 #: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
 msgid "Trade more, pay less.<0/>Refer, and earn."
@@ -11930,7 +12048,7 @@ msgstr "領取參數不可用。請幾秒後重試"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards"
-msgstr ""
+msgstr "解除質押超過歷史最高質押 GMX 的 20% 將重設您已累積的獎勵"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -11961,7 +12079,7 @@ msgstr "模擬交易"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Where can I read more?"
-msgstr ""
+msgstr "我可以在哪裡了解更多？"
 
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "High acceptable price impact set. Current impact: {0}."
@@ -11969,6 +12087,8 @@ msgstr "設定了較高的可接受價格影響。目前影響：{0}。"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/ChartTokenSelector/ModeTabs.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/SwapCard/SwapCard.tsx
@@ -12017,7 +12137,7 @@ msgstr "分配"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {minutes} minutes{0}"
-msgstr ""
+msgstr "<0>每</0> {minutes} 分鐘{0}"
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Your own contact on Telegram."
@@ -12055,7 +12175,7 @@ msgstr "享受最高 100 倍槓桿以及不依賴訂單簿深度的鏈上保證�
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Your current staked balance relative to your historical max. Dropping below 80% resets your accumulated staking power to zero."
-msgstr ""
+msgstr "您目前質押餘額相對於歷史最高值。降至 80% 以下會將累積的質押權重重設為零。"
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Oracle keeper monitoring"
@@ -12091,7 +12211,7 @@ msgstr "{column}"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Swap route unavailable for: {0}"
-msgstr ""
+msgstr "兌換路徑不可用於：{0}"
 
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} failed to settle: {cancellationReason}"
@@ -12103,7 +12223,7 @@ msgstr "無已註冊的追蹤器"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "You earn rebates the moment a referred trader executes their first trade. Rebates appear in your \"Claimable Rebates\" balance immediately."
-msgstr ""
+msgstr "推薦的交易者完成首筆交易時，您即可獲得返利。返利會立即出現在您的「可領取返利」餘額中。"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Request withdraw"
@@ -12122,7 +12242,7 @@ msgstr "儀表板"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "{label}"
-msgstr ""
+msgstr "{label}"
 
 #: src/domain/synthetics/orders/utils.tsx
 #: src/domain/synthetics/positions/utils.ts
@@ -12131,7 +12251,7 @@ msgstr "觸發"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in the WETH-USDC pool. Select a different pool."
-msgstr ""
+msgstr "WETH-USDC 池流動性不足。請選擇其他池。"
 
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Failed to decode error. Make sure the hex data is valid and starts with \"0x\"."
@@ -12173,7 +12293,7 @@ msgstr "您可以使用錢包或 GMX Account 中的資金，在 GMX 上開立逐
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient funds for order costs"
-msgstr ""
+msgstr "訂單費用資金不足"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "EIP-4844, 20-27 Mar"
@@ -12194,7 +12314,7 @@ msgstr "節省費用"
 
 #: src/components/TVChartContainer/TVChartContainer.tsx
 msgid "Open short"
-msgstr ""
+msgstr "開空倉"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Get optimized exposure to the highest-utilized pools"
@@ -12207,11 +12327,11 @@ msgstr "未找到市場"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Do I need to enter a code on each network?"
-msgstr ""
+msgstr "我需要在每個網路上輸入推薦碼嗎？"
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "Update default destination"
-msgstr ""
+msgstr "更新預設目的地"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max open interest exceeded"
@@ -12223,11 +12343,11 @@ msgstr "由於 {chainName} 網路活動增加，網路費用偏高"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position is in WETH-USDC pool. Using the selected pool will create a separate position. <0>Switch to WETH-USDC pool</0>"
-msgstr ""
+msgstr "現有倉位在 WETH-USDC 池中。使用所選池將建立單獨倉位。<0>切換到 WETH-USDC 池</0>"
 
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set short Take-Profit @ {0}"
-msgstr ""
+msgstr "設定空單止盈 @ {0}"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Share PnL"
@@ -12279,9 +12399,10 @@ msgstr "領取 {tokenSymbol} 獎勵"
 
 #: src/components/Referrals/traders/HowToStartSaving.tsx
 msgid "How to start saving?"
-msgstr ""
+msgstr "如何開始省錢？"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "24H VOL."
 msgstr "24H 交易量"
 
@@ -12325,15 +12446,15 @@ msgstr "做空"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Shifting into this market unavailable"
-msgstr ""
+msgstr "無法轉入此市場"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Refer to Net rate / 1h above the chart"
-msgstr ""
+msgstr "請參閱圖表上方的淨費率 / 1 小時"
 
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 msgid "Transaction hash copied to clipboard"
-msgstr ""
+msgstr "交易雜湊已複製到剪貼簿"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/AccountDashboard/pnlSummaryBuckets.ts
@@ -12417,7 +12538,7 @@ msgstr "以此規模加倉做空無可用流動性。<0/>最大做空規模：{0
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Total value of assets"
-msgstr ""
+msgstr "資產總價值"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "<0>Switch to {0} pool</0> for potentially lower price impact"
@@ -12474,6 +12595,7 @@ msgstr "推薦碼已建立"
 msgid "Funds bridging to..."
 msgstr "資金正在跨鏈至..."
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/InfoRows.tsx
@@ -12492,7 +12614,7 @@ msgstr "網路費用"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price above liquidation price"
-msgstr ""
+msgstr "將觸發價格設為高於清算價格"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivated"
@@ -12525,7 +12647,7 @@ msgstr "存入 {glvOrGm}"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Wallet GMX"
-msgstr ""
+msgstr "錢包 GMX"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Period profit"
@@ -12577,6 +12699,7 @@ msgstr "接收地址無效"
 msgid "Withdraw submitted"
 msgstr "提取已提交"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Available:"
@@ -12688,11 +12811,11 @@ msgstr "請輸入新價格"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may liquidate from fees alone (funding + borrowing), reducing margin over time."
-msgstr ""
+msgstr "倉位可能僅因費用（資金費 + 借貸）而被清算，保證金會隨時間減少。"
 
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "Include reviewed"
-msgstr ""
+msgstr "包含已審核"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "General performance details"
@@ -12704,7 +12827,7 @@ msgstr "預計未來 7 天"
 
 #: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "USD value may not be accurate because prices are missing for {0}"
-msgstr ""
+msgstr "由於缺少 {0} 的價格，USD 價值可能不準確"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Expired deposit"
@@ -12734,11 +12857,11 @@ msgstr "Arbitrum、Avalanche、MegaETH。（GMX Account 也支援從 Ethereum、
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Your staking power was reset {0} due to dropping below the 80% loyalty threshold. Power is now accruing again from your current balance."
-msgstr ""
+msgstr "由於跌破 80% 忠誠度閾值，您的質押權重已於 {0} 重設。權重現正從目前餘額重新累積。"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Take-Profit price"
-msgstr ""
+msgstr "止盈價格"
 
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Loading Express Trading params..."
@@ -12765,7 +12888,7 @@ msgstr "Express Trading 已啟用。可在<0>設定</0>中停用"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price above mark price"
-msgstr ""
+msgstr "將觸發價格設為高於標記價格"
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
@@ -12790,7 +12913,7 @@ msgstr "扣除借貸/資金費用前的保證金"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Where do I find a referral code?"
-msgstr ""
+msgstr "我在哪裡可以找到推薦碼？"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Enable <0>Express Trading</0> in settings for better reliability.<1/><2/>Or increase the max network fee buffer {bufferText} in {settingsLink}"
@@ -12813,7 +12936,7 @@ msgstr "操作層級的費用與價格影響的淨總和。將滑鼠懸停在數
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price below mark price"
-msgstr ""
+msgstr "將觸發價格設為低於標記價格"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Active management"
@@ -12835,6 +12958,7 @@ msgstr "Builder Code"
 msgid "GLV bonus incentive (test)"
 msgstr "GLV 獎勵激勵（測試）"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
@@ -12847,7 +12971,7 @@ msgstr "餘額不足"
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "From: block {0} ({1})"
-msgstr ""
+msgstr "來自：區塊 {0}（{1}）"
 
 #: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
 msgid "Referral revenue, built in"
@@ -12871,7 +12995,7 @@ msgstr "私有"
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized GMX buy pressure:"
-msgstr ""
+msgstr "年化 GMX 買壓："
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} update failed"

@@ -14,6 +14,13 @@ type SolanaRpcResponse<T> = {
   result?: T;
 };
 
+// An explicit port makes web3.js open WebSocket on port + 1. This proxy serves both on the HTTP port.
+export function solanaWebsocketEndpoint(endpoint: string) {
+  const url = new URL(endpoint);
+  url.protocol = url.protocol === "https:" ? "wss:" : "ws:";
+  return url.toString();
+}
+
 export function getSolanaRpcClient(endpoint = getSolanaRpcEndpoint()): Connection {
   const existing = clients.get(endpoint);
 
@@ -21,7 +28,10 @@ export function getSolanaRpcClient(endpoint = getSolanaRpcEndpoint()): Connectio
     return existing;
   }
 
-  const client = new Connection(endpoint, "confirmed");
+  const client = new Connection(endpoint, {
+    commitment: "confirmed",
+    wsEndpoint: solanaWebsocketEndpoint(endpoint),
+  });
   clients.set(endpoint, client);
 
   return client;

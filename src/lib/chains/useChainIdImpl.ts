@@ -274,8 +274,20 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
   useEffect(
     () =>
       watchAccount(getWagmiConfig(), {
-        onChange: (account, prevAccount) =>
-          applyWalletNetworkSelection(account, prevAccount, settlementChainIdRef.current),
+        onChange: (account, prevAccount) => {
+          const rawChainId = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
+          if (
+            isAppSelectedSolana({
+              chainIdFromLocalStorage: rawChainId ? Number(rawChainId) : undefined,
+              selectedNetworkWasAppSelected:
+                localStorage.getItem(SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY) === "true",
+            })
+          ) {
+            return;
+          }
+
+          applyWalletNetworkSelection(account, prevAccount, settlementChainIdRef.current);
+        },
       }),
     [settlementChainIdRef]
   );
