@@ -8,6 +8,8 @@ import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig, loadEnv, type ConfigEnv, type PluginOption, type UserConfig } from "vite";
 import { analyzer } from "vite-bundle-analyzer";
 import svgr from "vite-plugin-svgr";
+import topLevelAwait from "vite-plugin-top-level-await";
+import wasm from "vite-plugin-wasm";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { BREAKPOINTS } from "./src/lib/breakpoints";
 
@@ -254,6 +256,8 @@ export function createViteConfig(
       format: "es",
     },
     optimizeDeps: {
+      // wasm-bindgen bundler output; let vite-plugin-wasm handle it instead of esbuild prebundling.
+      exclude: ["@gmsol-labs/gmsol-sdk"],
       esbuildOptions: {
         target: "es2020",
       },
@@ -277,6 +281,9 @@ export function createViteConfig(
         include: "**/*.svg?react",
       }),
       optionalSolanaSystemStub(),
+      // @gmsol-labs/gmsol-sdk ships a wasm-bindgen module that imports its .wasm at top level.
+      wasm(),
+      topLevelAwait(),
       sdkDedupe(),
       tsconfigPaths(),
       react({

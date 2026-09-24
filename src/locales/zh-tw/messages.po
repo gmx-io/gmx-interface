@@ -81,6 +81,10 @@ msgstr "透過您的 RPC 在鏈上簽署每筆交易，通常由您的錢包提�
 msgid "Automatically compounds your GMX rewards without manual claiming"
 msgstr "自動複投您的 GMX 獎勵，無需手動領取"
 
+#: solana-interface/src/components/SolanaPositionList.tsx
+msgid "Failed to load positions."
+msgstr "載入倉位失敗。"
+
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/MainView.tsx
@@ -109,6 +113,8 @@ msgstr "<0>Solana 支援</0><1>GMX Express</1>"
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/MarketsList/MarketsList.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -943,6 +949,7 @@ msgid "Sender has withdrawn all tokens from the Affiliate vesting vault"
 msgstr "發送方已從推廣夥伴歸屬金庫中提取全部代幣"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "No {marketTypeLabel} match \"{query}\"."
 msgstr "{marketTypeLabel}中沒有與「{query}」相符的結果。"
 
@@ -1006,6 +1013,7 @@ msgstr "在中心化交易所購買 GMX"
 
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+#: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Available liquidity"
@@ -1271,6 +1279,7 @@ msgstr "Vaultka"
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
@@ -1567,6 +1576,7 @@ msgid "To buy GMX on {0}, <0>change your network</0>"
 msgstr "若要在 {0} 上購買 GMX，<0>請切換網路</0>"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Results are available in Perpetuals."
 msgstr "永續合約中有可用結果。"
 
@@ -1970,6 +1980,7 @@ msgstr "使用任何網路的任何代幣買入 GMX"
 msgid "Markets"
 msgstr "市場"
 
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
 msgstr "重試"
@@ -2270,6 +2281,7 @@ msgid "This swap requires external routing, which isn't available while the gas 
 msgstr "此交換需要外部路由，但當 Gas 支付代幣與您接收的代幣相同時不可用，且沒有其他 Gas 代幣有足夠餘額。"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Search in all {marketTypeLabel}"
 msgstr "搜尋所有{marketTypeLabel}"
 
@@ -2333,6 +2345,7 @@ msgid "Keep leverage at {0}"
 msgstr "保持槓桿在 {0}"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "AVAIL. LIQ."
 msgstr "可用流動性"
 
@@ -3075,6 +3088,7 @@ msgid "Cancel margin deposit"
 msgstr "取消保證金存入"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Swap tokens"
 msgstr "兌換代幣"
 
@@ -3127,6 +3141,7 @@ msgstr "有可用更新"
 msgid "Buy GMX on {chainName}"
 msgstr "在 {chainName} 上買入 GMX"
 
+#: solana-interface/src/components/SolanaPositionCard.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -3177,6 +3192,7 @@ msgid "Earn rewards by sharing your referral code"
 msgstr "分享您的推薦碼即可賺取獎勵"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Results are available in Swap."
 msgstr "兌換中有可用結果。"
 
@@ -3290,6 +3306,7 @@ msgid "Share your code"
 msgstr "分享您的代碼"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "View results in Perpetuals"
 msgstr "查看永續合約中的結果"
 
@@ -3520,7 +3537,7 @@ msgstr "交易失敗。<0/><1/><2>查看</2>"
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr "{symbol} 餘額不足：可用 {availableFormatted}，需要 {requiredFormatted}"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: src/components/PositionList/SymbolSortDropdown.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -3787,6 +3804,10 @@ msgstr "兌換價格影響偏高"
 #: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Cancellable in {minutesText}{seconds}s"
 msgstr "可在 {minutesText}{seconds} 秒後取消"
+
+#: solana-interface/src/components/SolanaPositionList.tsx
+msgid "Connect a Solana wallet to view positions"
+msgstr "連接 Solana 錢包後查看倉位"
 
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Four ways in."
@@ -4735,7 +4756,7 @@ msgstr "總交易量"
 msgid "One-Click Trading action limit reached. You're now using Express Trading."
 msgstr "已達到 One-Click Trading 操作限制。您現在正在使用 Express Trading。"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 msgid "MARGIN"
 msgstr "保證金"
@@ -4781,6 +4802,7 @@ msgid "Decentralized perpetual exchange | GMX"
 msgstr "去中心化永續合約交易所 | GMX"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "perpetual markets"
 msgstr "永續合約市場"
 
@@ -4801,6 +4823,7 @@ msgid "Withdrawing {amountText} from {indexTokenText} Short..."
 msgstr "正在從 {indexTokenText} 做空提取 {amountText}..."
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/TableMarketFilter/MarketFilterBase.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
@@ -4874,6 +4897,7 @@ msgid "Show rPnL after fees"
 msgstr "顯示扣除費用後的已實現盈虧"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
+#: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Open interest"
 msgstr "未平倉量"
@@ -5073,6 +5097,7 @@ msgid "Monthly volume routed"
 msgstr "每月路由交易量"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "VOL."
 msgstr "成交量"
 
@@ -5176,6 +5201,8 @@ msgstr "在 {networkName} 網路上接收支援的資產到您的錢包，或選
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/GmList/GmList.tsx
@@ -5436,6 +5463,7 @@ msgstr "兌換利潤費用偏高"
 msgid "GM pools"
 msgstr "GM 池"
 
+#: solana-interface/src/components/SolanaPositionItem.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -5520,6 +5548,10 @@ msgstr "在槓桿顯示中包含 PnL"
 #: src/components/Claims/ClaimsHistory.tsx
 msgid "No claims yet"
 msgstr "目前尚無領取記錄"
+
+#: solana-interface/src/components/SolanaPositionItem.tsx
+msgid "Net value: margin + PnL - fees"
+msgstr "淨值：保證金 + 盈虧 - 費用"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your trading volume"
@@ -5812,6 +5844,7 @@ msgstr "GM: {0}"
 msgid "Pool max long USD for deposit"
 msgstr "池做多 USD 存入上限"
 
+#: solana-interface/src/components/SolanaPositionCard.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Net value"
 msgstr "淨值"
@@ -5852,6 +5885,7 @@ msgid "Buy GMX bonds on Bond Protocol at a discount with a short vesting period"
 msgstr "在 Bond Protocol 上以折扣價購買 GMX 債券，享有短期歸屬期"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "No results with the selected filters."
 msgstr "所選篩選條件下沒有結果。"
 
@@ -6059,6 +6093,7 @@ msgstr "設定已更新"
 msgid "Connect wallet to view distributions"
 msgstr "連接錢包以查看發放"
 
+#: solana-interface/src/components/SolanaPositionItem.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/MarketNetFee/MarketNetFee.tsx
@@ -6192,6 +6227,7 @@ msgstr "凍結訂單只能由授權 keeper 執行"
 msgid "GLV"
 msgstr "GLV"
 
+#: solana-interface/src/components/SolanaPositionCard.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "PnL after all fees"
 msgstr "扣除所有費用後的盈虧"
@@ -6622,6 +6658,7 @@ msgid "Transfer already initiated"
 msgstr "轉帳已發起"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Search token"
 msgstr "搜尋代幣"
 
@@ -7196,6 +7233,7 @@ msgid "Less info"
 msgstr "收起資訊"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "LIQ."
 msgstr "流動性"
 
@@ -7257,6 +7295,7 @@ msgid "Max leverage"
 msgstr "最大槓桿"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "AVAILABLE LIQUIDITY"
 msgstr "可用流動性"
 
@@ -7924,7 +7963,8 @@ msgstr "價格影響超過訂單規模"
 msgid "Want to trade faster with One-Click Trading?"
 msgstr "想透過 One-Click Trading 更快速交易嗎？"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaPositionCard.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
@@ -8045,7 +8085,7 @@ msgstr "真"
 msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
 msgstr "輸入推薦碼以獲得交易手續費折扣。<0/> 根據推薦等級，您可在所有<1/> 開倉與平倉手續費上節省最高 10%。"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/Jobs/Jobs.tsx
@@ -8073,6 +8113,7 @@ msgid "Wallet received before close"
 msgstr "平倉前錢包收到"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "View results in Swap"
 msgstr "查看兌換中的結果"
 
@@ -8156,6 +8197,7 @@ msgstr "Dune Analytics 儀表板"
 msgid "No distribution history"
 msgstr "無分配記錄"
 
+#: solana-interface/src/components/SolanaPositionCard.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -8209,6 +8251,8 @@ msgstr "扣除費用前的已實現 PnL"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "24H%"
 msgstr "24H%"
 
@@ -8423,7 +8467,7 @@ msgstr "TokenTerminal"
 msgid "Summary"
 msgstr "摘要"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "ENTRY PRICE"
@@ -8665,7 +8709,7 @@ msgstr "連結已複製"
 msgid "Total wallet received"
 msgstr "錢包累計收到"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: solana-interface/src/pages/SolanaTradeList.tsx
@@ -9023,6 +9067,7 @@ msgid "Compass Labs GM token dashboard"
 msgstr "Compass Labs GM 代幣儀表板"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "OPEN INTEREST"
 msgstr "未平倉量"
@@ -9412,6 +9457,7 @@ msgstr "不包括已領取的資金費、價格影響返還與執行費。"
 
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
+#: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "24h volume"
 msgstr "24 小時交易量"
@@ -9543,6 +9589,7 @@ msgstr "已結束"
 msgid "GMX announcements"
 msgstr "GMX 公告"
 
+#: solana-interface/src/components/SolanaPositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -9591,6 +9638,7 @@ msgstr "Jones DAO"
 msgid "Set short Stop Market @ {0}"
 msgstr "設定空單停損市價 @ {0}"
 
+#: solana-interface/src/components/SolanaPositionCard.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
@@ -10067,6 +10115,9 @@ msgstr "建立代碼"
 msgid "Error submitting order"
 msgstr "提交訂單時發生錯誤"
 
+#: solana-interface/src/components/SolanaPositionCard.tsx
+#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeboxMarginFields/MarginField.tsx
@@ -10569,6 +10620,7 @@ msgid "CONFIG"
 msgstr "CONFIG"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/MarketsList/MarketsList.tsx
 #: src/components/TableMarketFilter/MarketFilterBase.tsx
@@ -10677,6 +10729,8 @@ msgstr "假"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "/USD"
 msgstr "/USD"
@@ -10731,6 +10785,7 @@ msgstr "無法更新訂單，此類型不支援修改"
 msgid "Unable to fetch swap route. Please try again."
 msgstr "無法取得兌換路徑。請重試。"
 
+#: solana-interface/src/components/SolanaPositionItem.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/MarketNetFee/MarketNetFee.tsx
@@ -10774,7 +10829,7 @@ msgstr "做多"
 msgid "Pool"
 msgstr "池"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "LIQUIDATION PRICE"
@@ -11055,6 +11110,10 @@ msgstr "操作"
 msgid "Increase"
 msgstr "加倉"
 
+#: solana-interface/src/components/SolanaPositionItem.tsx
+msgid "Accrued borrow fee"
+msgstr "累計借貸費用"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -11328,6 +11387,7 @@ msgid "Avoid price wicks with transparent, sub-second Chainlink price feeds tail
 msgstr "透過 Chainlink 為 GMX 量身打造的透明、亞秒級價格饋送，避免價格插針"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "No markets matched."
 msgstr "沒有相符的市場。"
 
@@ -11830,6 +11890,10 @@ msgstr "推薦碼已更新"
 msgid "Account events"
 msgstr "帳戶事件"
 
+#: solana-interface/src/components/SolanaPositionItem.tsx
+msgid "Accrued funding fee"
+msgstr "累計資金費用"
+
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed"
@@ -11879,6 +11943,8 @@ msgstr "此代幣已停用 Permit 授權。"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "LAST PRICE"
 msgstr "最新價格"
 
@@ -11899,6 +11965,10 @@ msgstr "試算您的節省金額"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
 msgstr "重新簽署"
+
+#: solana-interface/src/components/SolanaPositionItem.tsx
+msgid "Price data is not available yet. Values depending on it are hidden."
+msgstr "價格資料暫不可用，依賴價格的數值已隱藏。"
 
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to GMX Account..."
@@ -11924,12 +11994,12 @@ msgstr "領取資金"
 msgid "Your funds are safe. Contact support for help."
 msgstr "您的資金是安全的。如需協助請聯繫客服。"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 msgid "NET VALUE"
 msgstr "淨值"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx
@@ -12055,6 +12125,8 @@ msgstr "設定了較高的可接受價格影響。目前影響：{0}。"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/ChartTokenSelector/ModeTabs.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/SwapCard/SwapCard.tsx
@@ -12156,6 +12228,7 @@ msgstr "輸入新的數量或價格"
 msgid "Unknown order"
 msgstr "未知訂單"
 
+#: solana-interface/src/components/SolanaPositionCard.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionShare/PositionShareCard.tsx
@@ -12368,6 +12441,7 @@ msgid "How to start saving?"
 msgstr "如何開始省錢？"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "24H VOL."
 msgstr "24H 交易量"
 

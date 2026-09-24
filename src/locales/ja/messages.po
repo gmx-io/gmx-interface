@@ -81,6 +81,10 @@ msgstr "ウォレットが提供するRPCを使用して、各トランザクシ
 msgid "Automatically compounds your GMX rewards without manual claiming"
 msgstr "GMXの報酬を手動で受け取ることなく自動的に複利運用します"
 
+#: solana-interface/src/components/SolanaPositionList.tsx
+msgid "Failed to load positions."
+msgstr "ポジションの読み込みに失敗しました。"
+
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/MainView.tsx
@@ -109,6 +113,8 @@ msgstr "<0>Solana サポート</0><1>GMX Express</1>"
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/MarketsList/MarketsList.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -943,6 +949,7 @@ msgid "Sender has withdrawn all tokens from the Affiliate vesting vault"
 msgstr "送信者はアフィリエイトベスティングボルトからすべてのトークンを引き出しました"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "No {marketTypeLabel} match \"{query}\"."
 msgstr "{marketTypeLabel}に「{query}」と一致するものはありません。"
 
@@ -1006,6 +1013,7 @@ msgstr "中央集権型取引所でGMXを購入"
 
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+#: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Available liquidity"
@@ -1271,6 +1279,7 @@ msgstr "Vaultka"
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
@@ -1567,6 +1576,7 @@ msgid "To buy GMX on {0}, <0>change your network</0>"
 msgstr "{0} で GMX を購入するには、<0>ネットワークを切り替えてください</0>"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Results are available in Perpetuals."
 msgstr "無期限に検索結果があります。"
 
@@ -1970,6 +1980,7 @@ msgstr "任意のネットワークの任意のトークンで GMX を購入"
 msgid "Markets"
 msgstr "市場"
 
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
 msgstr "再試行"
@@ -2270,6 +2281,7 @@ msgid "This swap requires external routing, which isn't available while the gas 
 msgstr "このスワップには外部ルーティングが必要ですが、ガス支払いトークンが受け取るトークンと同じ間は利用できず、他のガストークンにも十分な残高がありません。"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Search in all {marketTypeLabel}"
 msgstr "すべての{marketTypeLabel}を検索"
 
@@ -2333,6 +2345,7 @@ msgid "Keep leverage at {0}"
 msgstr "{0}でレバレッジを維持"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "AVAIL. LIQ."
 msgstr "利用可能流動性"
 
@@ -3075,6 +3088,7 @@ msgid "Cancel margin deposit"
 msgstr "証拠金入金をキャンセル"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Swap tokens"
 msgstr "スワップトークン"
 
@@ -3127,6 +3141,7 @@ msgstr "アップデートがあります"
 msgid "Buy GMX on {chainName}"
 msgstr "{chainName}でGMXを購入"
 
+#: solana-interface/src/components/SolanaPositionCard.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -3177,6 +3192,7 @@ msgid "Earn rewards by sharing your referral code"
 msgstr "紹介コードを共有して報酬を獲得しましょう"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Results are available in Swap."
 msgstr "スワップに検索結果があります。"
 
@@ -3290,6 +3306,7 @@ msgid "Share your code"
 msgstr "コードを共有"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "View results in Perpetuals"
 msgstr "無期限の結果を表示"
 
@@ -3520,7 +3537,7 @@ msgstr "取引に失敗しました。<0/><1/><2>見る</2>"
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr "{symbol}の残高が不足しています：利用可能 {availableFormatted}、必要額 {requiredFormatted}"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: src/components/PositionList/SymbolSortDropdown.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -3787,6 +3804,10 @@ msgstr "スワップの価格への影響が大きいです"
 #: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Cancellable in {minutesText}{seconds}s"
 msgstr "{minutesText}{seconds}秒後にキャンセル可能"
+
+#: solana-interface/src/components/SolanaPositionList.tsx
+msgid "Connect a Solana wallet to view positions"
+msgstr "ポジションを表示するには Solana ウォレットを接続してください"
 
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Four ways in."
@@ -4735,7 +4756,7 @@ msgstr "合計取引高"
 msgid "One-Click Trading action limit reached. You're now using Express Trading."
 msgstr "One-Click Trading のアクション制限に達しました。現在は Express Trading を使用しています。"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 msgid "MARGIN"
 msgstr "証拠金"
@@ -4781,6 +4802,7 @@ msgid "Decentralized perpetual exchange | GMX"
 msgstr "分散型パーペチュアル取引所 | GMX"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "perpetual markets"
 msgstr "無期限市場"
 
@@ -4801,6 +4823,7 @@ msgid "Withdrawing {amountText} from {indexTokenText} Short..."
 msgstr "{indexTokenText}ショートから{amountText}を出金中..."
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/TableMarketFilter/MarketFilterBase.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
@@ -4874,6 +4897,7 @@ msgid "Show rPnL after fees"
 msgstr "手数料控除後のrPnLを表示"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
+#: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Open interest"
 msgstr "建玉"
@@ -5073,6 +5097,7 @@ msgid "Monthly volume routed"
 msgstr "月間ルーティング量"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "VOL."
 msgstr "ボリューム"
 
@@ -5176,6 +5201,8 @@ msgstr "{networkName}のウォレットで対応資産を受け取るか、別�
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/GmList/GmList.tsx
@@ -5436,6 +5463,7 @@ msgstr "高いスワップ利益手数料"
 msgid "GM pools"
 msgstr "GM プール"
 
+#: solana-interface/src/components/SolanaPositionItem.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -5520,6 +5548,10 @@ msgstr "レバレッジ表示にPnLを含める"
 #: src/components/Claims/ClaimsHistory.tsx
 msgid "No claims yet"
 msgstr "請求なし"
+
+#: solana-interface/src/components/SolanaPositionItem.tsx
+msgid "Net value: margin + PnL - fees"
+msgstr "純資産価値：証拠金 + 損益 - 手数料"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your trading volume"
@@ -5812,6 +5844,7 @@ msgstr "GM: {0}"
 msgid "Pool max long USD for deposit"
 msgstr "プールの入金用最大ロングUSD"
 
+#: solana-interface/src/components/SolanaPositionCard.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Net value"
 msgstr "純価値"
@@ -5852,6 +5885,7 @@ msgid "Buy GMX bonds on Bond Protocol at a discount with a short vesting period"
 msgstr "Bond ProtocolでGMXボンドを短いベスティング期間で割引購入します"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "No results with the selected filters."
 msgstr "選択したフィルターに一致する結果はありません。"
 
@@ -6059,6 +6093,7 @@ msgstr "設定が更新されました"
 msgid "Connect wallet to view distributions"
 msgstr "分配を表示するにはウォレットを接続してください"
 
+#: solana-interface/src/components/SolanaPositionItem.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/MarketNetFee/MarketNetFee.tsx
@@ -6192,6 +6227,7 @@ msgstr "凍結された注文は承認済みのkeeperのみが実行できます
 msgid "GLV"
 msgstr "GLV"
 
+#: solana-interface/src/components/SolanaPositionCard.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "PnL after all fees"
 msgstr "すべての手数料控除後のPnL"
@@ -6622,6 +6658,7 @@ msgid "Transfer already initiated"
 msgstr "転送は既に開始されています"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Search token"
 msgstr "トークンを検索"
 
@@ -7196,6 +7233,7 @@ msgid "Less info"
 msgstr "詳細を非表示"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "LIQ."
 msgstr "清算"
 
@@ -7257,6 +7295,7 @@ msgid "Max leverage"
 msgstr "最大レバレッジ"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "AVAILABLE LIQUIDITY"
 msgstr "利用可能な流動性"
 
@@ -7924,7 +7963,8 @@ msgstr "価格への影響が注文サイズを超えています"
 msgid "Want to trade faster with One-Click Trading?"
 msgstr "One-Click Tradingでより速く取引しませんか？"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaPositionCard.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
@@ -8045,7 +8085,7 @@ msgstr "真"
 msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
 msgstr "リファラルコードを入力して取引手数料の割引を受け取ります。<0/> リファラルティアに応じて、すべての<1/> 開閉手数料を最大 10% 節約できます。"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/Jobs/Jobs.tsx
@@ -8073,6 +8113,7 @@ msgid "Wallet received before close"
 msgstr "クローズ前のウォレット受取額"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "View results in Swap"
 msgstr "スワップの結果を表示"
 
@@ -8156,6 +8197,7 @@ msgstr "Dune Analyticsダッシュボード"
 msgid "No distribution history"
 msgstr "配分履歴なし"
 
+#: solana-interface/src/components/SolanaPositionCard.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -8209,6 +8251,8 @@ msgstr "手数料前の実現PnL"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "24H%"
 msgstr "24時間%"
 
@@ -8423,7 +8467,7 @@ msgstr "TokenTerminal"
 msgid "Summary"
 msgstr "サマリー"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "ENTRY PRICE"
@@ -8665,7 +8709,7 @@ msgstr "リンクをコピーしました"
 msgid "Total wallet received"
 msgstr "ウォレット受取額の合計"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: solana-interface/src/pages/SolanaTradeList.tsx
@@ -9023,6 +9067,7 @@ msgid "Compass Labs GM token dashboard"
 msgstr "Compass Labs GMトークンダッシュボード"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "OPEN INTEREST"
 msgstr "建玉"
@@ -9412,6 +9457,7 @@ msgstr "請求済みのファンディング、価格影響リベート、執行
 
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
+#: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "24h volume"
 msgstr "24時間取引高"
@@ -9543,6 +9589,7 @@ msgstr "終了"
 msgid "GMX announcements"
 msgstr "GMX announcements"
 
+#: solana-interface/src/components/SolanaPositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -9591,6 +9638,7 @@ msgstr "Jones DAO"
 msgid "Set short Stop Market @ {0}"
 msgstr "ショートのストップマーケットを設定 @ {0}"
 
+#: solana-interface/src/components/SolanaPositionCard.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
@@ -10067,6 +10115,9 @@ msgstr "コードを作成"
 msgid "Error submitting order"
 msgstr "注文提出エラー"
 
+#: solana-interface/src/components/SolanaPositionCard.tsx
+#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeboxMarginFields/MarginField.tsx
@@ -10569,6 +10620,7 @@ msgid "CONFIG"
 msgstr "CONFIG"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/MarketsList/MarketsList.tsx
 #: src/components/TableMarketFilter/MarketFilterBase.tsx
@@ -10677,6 +10729,8 @@ msgstr "偽"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "/USD"
 msgstr "/USD"
@@ -10731,6 +10785,7 @@ msgstr "注文を更新できません。この注文タイプは変更に対応
 msgid "Unable to fetch swap route. Please try again."
 msgstr "スワップルートを取得できません。もう一度お試しください。"
 
+#: solana-interface/src/components/SolanaPositionItem.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/MarketNetFee/MarketNetFee.tsx
@@ -10774,7 +10829,7 @@ msgstr "ロング"
 msgid "Pool"
 msgstr "プール"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "LIQUIDATION PRICE"
@@ -11055,6 +11110,10 @@ msgstr "アクション"
 msgid "Increase"
 msgstr "増加"
 
+#: solana-interface/src/components/SolanaPositionItem.tsx
+msgid "Accrued borrow fee"
+msgstr "累積借入手数料"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -11328,6 +11387,7 @@ msgid "Avoid price wicks with transparent, sub-second Chainlink price feeds tail
 msgstr "GMX向けに設計された透明性の高いサブセカンドChainlink価格フィードで、プライスウィックを回避できます"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "No markets matched."
 msgstr "一致する市場がありません。"
 
@@ -11830,6 +11890,10 @@ msgstr "リファラルコードが更新されました"
 msgid "Account events"
 msgstr "アカウントイベント"
 
+#: solana-interface/src/components/SolanaPositionItem.tsx
+msgid "Accrued funding fee"
+msgstr "累積ファンディング手数料"
+
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed"
@@ -11879,6 +11943,8 @@ msgstr "このトークンではパーミット承認が無効になっていま
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "LAST PRICE"
 msgstr "最終価格"
 
@@ -11899,6 +11965,10 @@ msgstr "節約額シミュレーション"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
 msgstr "再署名"
+
+#: solana-interface/src/components/SolanaPositionItem.tsx
+msgid "Price data is not available yet. Values depending on it are hidden."
+msgstr "価格データがまだ利用できません。価格に依存する値は非表示です。"
 
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to GMX Account..."
@@ -11924,12 +11994,12 @@ msgstr "資金を請求"
 msgid "Your funds are safe. Contact support for help."
 msgstr "お客様の資金は安全です。サポートにお問い合わせください。"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 msgid "NET VALUE"
 msgstr "純価値"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx
@@ -12055,6 +12125,8 @@ msgstr "許容価格への影響が高く設定されています。現在の影
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/ChartTokenSelector/ModeTabs.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/SwapCard/SwapCard.tsx
@@ -12156,6 +12228,7 @@ msgstr "新しいサイズまたは価格を入力"
 msgid "Unknown order"
 msgstr "不明な注文"
 
+#: solana-interface/src/components/SolanaPositionCard.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionShare/PositionShareCard.tsx
@@ -12368,6 +12441,7 @@ msgid "How to start saving?"
 msgstr "節約を始めるには？"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "24H VOL."
 msgstr "24時間取引量"
 

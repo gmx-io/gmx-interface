@@ -81,6 +81,10 @@ msgstr "Подписывайте каждую транзакцию в сети, 
 msgid "Automatically compounds your GMX rewards without manual claiming"
 msgstr "Автоматически реинвестирует ваши вознаграждения GMX без ручного получения"
 
+#: solana-interface/src/components/SolanaPositionList.tsx
+msgid "Failed to load positions."
+msgstr "Не удалось загрузить позиции."
+
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/MainView.tsx
@@ -109,6 +113,8 @@ msgstr "<0>Поддержка Solana</0><1>GMX Express</1>"
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/MarketsList/MarketsList.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -943,6 +949,7 @@ msgid "Sender has withdrawn all tokens from the Affiliate vesting vault"
 msgstr "Отправитель вывел все токены из вестинг-хранилища аффилиата"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "No {marketTypeLabel} match \"{query}\"."
 msgstr "В категории «{marketTypeLabel}» нет результатов по запросу «{query}»."
 
@@ -1006,6 +1013,7 @@ msgstr "Купить GMX на централизованных биржах"
 
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+#: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Available liquidity"
@@ -1271,6 +1279,7 @@ msgstr "Vaultka"
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
@@ -1567,6 +1576,7 @@ msgid "To buy GMX on {0}, <0>change your network</0>"
 msgstr "Чтобы купить GMX в сети {0}, <0>смените сеть</0>"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Results are available in Perpetuals."
 msgstr "Результаты доступны в разделе «Бессрочные контракты»."
 
@@ -1970,6 +1980,7 @@ msgstr "Купить GMX с помощью любого токена из люб
 msgid "Markets"
 msgstr "Рынки"
 
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
 msgstr "Повторить"
@@ -2270,6 +2281,7 @@ msgid "This swap requires external routing, which isn't available while the gas 
 msgstr "Для этого свопа нужен внешний маршрут, который недоступен, пока токен оплаты газа совпадает с получаемым токеном, а у других газовых токенов недостаточно баланса."
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Search in all {marketTypeLabel}"
 msgstr "Искать во всей категории «{marketTypeLabel}»"
 
@@ -2333,6 +2345,7 @@ msgid "Keep leverage at {0}"
 msgstr "Сохранить левередж на {0}"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "AVAIL. LIQ."
 msgstr "ДОСТ. ЛИКВ."
 
@@ -3075,6 +3088,7 @@ msgid "Cancel margin deposit"
 msgstr "Отменить депозит маржи"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Swap tokens"
 msgstr "Токены для свопа"
 
@@ -3127,6 +3141,7 @@ msgstr "Доступно обновление"
 msgid "Buy GMX on {chainName}"
 msgstr "Купить GMX на {chainName}"
 
+#: solana-interface/src/components/SolanaPositionCard.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -3177,6 +3192,7 @@ msgid "Earn rewards by sharing your referral code"
 msgstr "Получайте вознаграждения, делясь своим реферальным кодом"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Results are available in Swap."
 msgstr "Результаты доступны в разделе «Своп»."
 
@@ -3290,6 +3306,7 @@ msgid "Share your code"
 msgstr "Поделиться кодом"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "View results in Perpetuals"
 msgstr "Посмотреть результаты в разделе «Бессрочные контракты»"
 
@@ -3520,7 +3537,7 @@ msgstr "Транзакция не удалась.<0/><1/><2>Просмотр</2>
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr "Недостаточный баланс {symbol}: доступно {availableFormatted}, требуется {requiredFormatted}"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: src/components/PositionList/SymbolSortDropdown.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -3787,6 +3804,10 @@ msgstr "Высокое влияние на цену при обмене"
 #: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Cancellable in {minutesText}{seconds}s"
 msgstr "Отмена доступна через {minutesText}{seconds}с"
+
+#: solana-interface/src/components/SolanaPositionList.tsx
+msgid "Connect a Solana wallet to view positions"
+msgstr "Подключите кошелёк Solana, чтобы просмотреть позиции"
 
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Four ways in."
@@ -4735,7 +4756,7 @@ msgstr "Общий объём"
 msgid "One-Click Trading action limit reached. You're now using Express Trading."
 msgstr "Достигнут лимит действий One-Click Trading. Теперь используется Express Trading."
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 msgid "MARGIN"
 msgstr "МАРЖА"
@@ -4781,6 +4802,7 @@ msgid "Decentralized perpetual exchange | GMX"
 msgstr "Децентрализованная бессрочная биржа | GMX"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "perpetual markets"
 msgstr "Бессрочные рынки"
 
@@ -4801,6 +4823,7 @@ msgid "Withdrawing {amountText} from {indexTokenText} Short..."
 msgstr "Вывод {amountText} из шорта {indexTokenText}..."
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/TableMarketFilter/MarketFilterBase.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
@@ -4874,6 +4897,7 @@ msgid "Show rPnL after fees"
 msgstr "Показывать rPnL за вычетом комиссий"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
+#: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Open interest"
 msgstr "Открытый интерес"
@@ -5073,6 +5097,7 @@ msgid "Monthly volume routed"
 msgstr "Месячный объём через вас"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "VOL."
 msgstr "ОБЪЁМ"
 
@@ -5176,6 +5201,8 @@ msgstr "Получите поддерживаемые активы на ваш �
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/GmList/GmList.tsx
@@ -5436,6 +5463,7 @@ msgstr "Высокая комиссия прибыли свопа"
 msgid "GM pools"
 msgstr "GM пулы"
 
+#: solana-interface/src/components/SolanaPositionItem.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -5520,6 +5548,10 @@ msgstr "Включить PnL в отображение кредитного пл
 #: src/components/Claims/ClaimsHistory.tsx
 msgid "No claims yet"
 msgstr "Пока нет требований"
+
+#: solana-interface/src/components/SolanaPositionItem.tsx
+msgid "Net value: margin + PnL - fees"
+msgstr "Чистая стоимость: маржа + PnL - комиссии"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your trading volume"
@@ -5812,6 +5844,7 @@ msgstr "GM: {0}"
 msgid "Pool max long USD for deposit"
 msgstr "Макс. лонг USD пула для депозита"
 
+#: solana-interface/src/components/SolanaPositionCard.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Net value"
 msgstr "Чистая стоимость"
@@ -5852,6 +5885,7 @@ msgid "Buy GMX bonds on Bond Protocol at a discount with a short vesting period"
 msgstr "Покупайте облигации GMX на Bond Protocol со скидкой и коротким периодом вестинга"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "No results with the selected filters."
 msgstr "Нет результатов с выбранными фильтрами."
 
@@ -6059,6 +6093,7 @@ msgstr "Настройки обновлены"
 msgid "Connect wallet to view distributions"
 msgstr "Подключите кошелек, чтобы просмотреть распределения"
 
+#: solana-interface/src/components/SolanaPositionItem.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/MarketNetFee/MarketNetFee.tsx
@@ -6192,6 +6227,7 @@ msgstr "Замороженный ордер может быть исполнен
 msgid "GLV"
 msgstr "GLV"
 
+#: solana-interface/src/components/SolanaPositionCard.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "PnL after all fees"
 msgstr "PnL после всех комиссий"
@@ -6622,6 +6658,7 @@ msgid "Transfer already initiated"
 msgstr "Перевод уже запущен"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Search token"
 msgstr "Поиск токена"
 
@@ -7196,6 +7233,7 @@ msgid "Less info"
 msgstr "Меньше информации"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "LIQ."
 msgstr "ЛИКВ."
 
@@ -7257,6 +7295,7 @@ msgid "Max leverage"
 msgstr "Макс. кредитное плечо"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "AVAILABLE LIQUIDITY"
 msgstr "ДОСТУПНАЯ ЛИКВИДНОСТЬ"
 
@@ -7924,7 +7963,8 @@ msgstr "Влияние на цену превышает размер ордер�
 msgid "Want to trade faster with One-Click Trading?"
 msgstr "Хотите торговать быстрее с One-Click Trading?"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaPositionCard.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
@@ -8045,7 +8085,7 @@ msgstr "Истина"
 msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
 msgstr "Введите реферальный код, чтобы получить скидку на торговые комиссии.<0/> В зависимости от реферального тира вы можете сэкономить до 10% на всех комиссиях за<1/> открытие и закрытие."
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/Jobs/Jobs.tsx
@@ -8073,6 +8113,7 @@ msgid "Wallet received before close"
 msgstr "Получено на кошелёк до закрытия"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "View results in Swap"
 msgstr "Посмотреть результаты в разделе «Своп»"
 
@@ -8156,6 +8197,7 @@ msgstr "Панель управления Dune Analytics"
 msgid "No distribution history"
 msgstr "Нет истории распределений"
 
+#: solana-interface/src/components/SolanaPositionCard.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -8209,6 +8251,8 @@ msgstr "Реализованный PnL до комиссий"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "24H%"
 msgstr "24Ч%"
 
@@ -8423,7 +8467,7 @@ msgstr "TokenTerminal"
 msgid "Summary"
 msgstr "Сводка"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "ENTRY PRICE"
@@ -8665,7 +8709,7 @@ msgstr "Ссылка скопирована"
 msgid "Total wallet received"
 msgstr "Всего получено на кошелёк"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: solana-interface/src/pages/SolanaTradeList.tsx
@@ -9023,6 +9067,7 @@ msgid "Compass Labs GM token dashboard"
 msgstr "Панель управления GM-токенов от Compass Labs"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "OPEN INTEREST"
 msgstr "ОТКРЫТЫЙ ИНТЕРЕС"
@@ -9412,6 +9457,7 @@ msgstr "Не включает полученное финансирование,
 
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
+#: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "24h volume"
 msgstr "Объём за 24ч"
@@ -9543,6 +9589,7 @@ msgstr "Завершено"
 msgid "GMX announcements"
 msgstr "GMX announcements"
 
+#: solana-interface/src/components/SolanaPositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -9591,6 +9638,7 @@ msgstr "Jones DAO"
 msgid "Set short Stop Market @ {0}"
 msgstr "Установить Stop Market шорт @ {0}"
 
+#: solana-interface/src/components/SolanaPositionCard.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
@@ -10067,6 +10115,9 @@ msgstr "Создать код"
 msgid "Error submitting order"
 msgstr "Ошибка при отправке ордера"
 
+#: solana-interface/src/components/SolanaPositionCard.tsx
+#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeboxMarginFields/MarginField.tsx
@@ -10569,6 +10620,7 @@ msgid "CONFIG"
 msgstr "CONFIG"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/MarketsList/MarketsList.tsx
 #: src/components/TableMarketFilter/MarketFilterBase.tsx
@@ -10677,6 +10729,8 @@ msgstr "Ложь"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "/USD"
 msgstr "/USD"
@@ -10731,6 +10785,7 @@ msgstr "Ордер не может быть обновлён. Данный ти�
 msgid "Unable to fetch swap route. Please try again."
 msgstr "Не удалось получить маршрут свопа. Попробуйте ещё раз."
 
+#: solana-interface/src/components/SolanaPositionItem.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/MarketNetFee/MarketNetFee.tsx
@@ -10774,7 +10829,7 @@ msgstr "Лонг"
 msgid "Pool"
 msgstr "Пул"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "LIQUIDATION PRICE"
@@ -11055,6 +11110,10 @@ msgstr "ДЕЙСТВИЕ"
 msgid "Increase"
 msgstr "Увеличить"
 
+#: solana-interface/src/components/SolanaPositionItem.tsx
+msgid "Accrued borrow fee"
+msgstr "Начисленная комиссия за заём"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -11328,6 +11387,7 @@ msgid "Avoid price wicks with transparent, sub-second Chainlink price feeds tail
 msgstr "Избегайте ценовых фитилей благодаря прозрачным ценовым потокам Chainlink с задержкой менее секунды, разработанным специально для GMX"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "No markets matched."
 msgstr "Подходящие рынки не найдены."
 
@@ -11830,6 +11890,10 @@ msgstr "Реферальный код обновлён"
 msgid "Account events"
 msgstr "События аккаунта"
 
+#: solana-interface/src/components/SolanaPositionItem.tsx
+msgid "Accrued funding fee"
+msgstr "Начисленная комиссия за фандинг"
+
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed"
@@ -11879,6 +11943,8 @@ msgstr "Одобрения через permit отключены для этог�
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "LAST PRICE"
 msgstr "ПОСЛЕДНЯЯ ЦЕНА"
 
@@ -11899,6 +11965,10 @@ msgstr "Оценить свою экономию"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
 msgstr "Переподписать"
+
+#: solana-interface/src/components/SolanaPositionItem.tsx
+msgid "Price data is not available yet. Values depending on it are hidden."
+msgstr "Данные о цене пока недоступны. Зависящие от них значения скрыты."
 
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to GMX Account..."
@@ -11924,12 +11994,12 @@ msgstr "Клейм средств"
 msgid "Your funds are safe. Contact support for help."
 msgstr "Ваши средства в безопасности. Обратитесь в поддержку за помощью."
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 msgid "NET VALUE"
 msgstr "НЕТТО-СТОИМОСТЬ"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx
@@ -12055,6 +12125,8 @@ msgstr "Установлено высокое допустимое влияни�
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/ChartTokenSelector/ModeTabs.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/SwapCard/SwapCard.tsx
@@ -12156,6 +12228,7 @@ msgstr "Введите новый размер или цену"
 msgid "Unknown order"
 msgstr "Неизвестный ордер"
 
+#: solana-interface/src/components/SolanaPositionCard.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionShare/PositionShareCard.tsx
@@ -12368,6 +12441,7 @@ msgid "How to start saving?"
 msgstr "Как начать экономить?"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "24H VOL."
 msgstr "ОБЪЕМ ЗА 24Ч."
 
