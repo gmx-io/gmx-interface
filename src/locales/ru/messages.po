@@ -6912,6 +6912,10 @@ msgstr "Завершившие"
 msgid "Set stop price below mark price"
 msgstr ""
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>One-Click Trading approval was outdated and has been refreshed. Try again</0>"
+msgstr "<0>Подтверждение One-Click Trading устарело и было обновлено. Попробуйте снова</0>"
+
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Points are allocated based on your cumulative trading volume on GMX MegaETH"
 msgstr ""
