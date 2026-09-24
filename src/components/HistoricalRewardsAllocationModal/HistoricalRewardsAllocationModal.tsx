@@ -3,7 +3,8 @@ import cx from "classnames";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
-import { formatRewardUsd } from "domain/synthetics/incentives/v2/utils";
+import { useIncentivesV2State } from "context/IncentivesV2Context/IncentivesV2Context";
+import { formatMultiplierAdjustment, formatRewardUsd } from "domain/synthetics/incentives/v2/utils";
 import {
   sendRewardsManualAllocationDialogActionEvent,
   sendRewardsManualAllocationDialogShownEvent,
@@ -14,6 +15,7 @@ import ModalWithPortal from "components/Modal/ModalWithPortal";
 import { rewardsBannerArt } from "components/RewardsPromoBanner/rewardsBannerArt";
 import { rewardsBannerAccentStyles } from "components/RewardsPromoBanner/rewardsBannerStyles";
 
+import MultiplierSolidIcon from "img/ic_multiplier_solid.svg?react";
 import RewardsIcon from "img/ic_rewards.svg?react";
 import ShareIcon from "img/ic_share_arrow_filled.svg?react";
 
@@ -32,6 +34,9 @@ export function HistoricalRewardsAllocationModal({
   rewardConsumedUsd,
   rewardRemainingUsd,
 }: Props) {
+  const { availability } = useIncentivesV2State();
+  const config = availability.status === "active" ? availability.config : undefined;
+  const bonusMultiplier = config?.boosts.find((boost) => boost.boost === "ManualAllocation")?.multiplier;
   const cap = rewardCapUsd === undefined ? "-" : formatRewardUsd(rewardCapUsd);
   const consumed = rewardConsumedUsd === undefined ? "-" : formatRewardUsd(rewardConsumedUsd);
   const remaining = rewardRemainingUsd === undefined ? "-" : formatRewardUsd(rewardRemainingUsd);
@@ -60,23 +65,31 @@ export function HistoricalRewardsAllocationModal({
     >
       <div className="flex flex-col gap-20 pt-12">
         <div className="flex flex-col gap-12 px-adaptive">
-          <div className="flex flex-col gap-4">
-            <p className="text-12 font-medium text-typography-secondary">
-              <Trans>Bonus remaining</Trans>
-            </p>
-            <div className="flex items-center gap-8">
-              <div className="flex items-center justify-center rounded-full bg-cold-blue-900 p-6 text-blue-100">
-                <RewardsIcon className="size-24" />
+          <div className="flex flex-wrap items-start justify-between gap-12">
+            <div className="flex min-w-0 flex-col gap-4">
+              <p className="text-12 font-medium text-typography-secondary">
+                <Trans>Bonus remaining</Trans>
+              </p>
+              <div className="flex items-center gap-8">
+                <div className="flex items-center justify-center rounded-full bg-cold-blue-900 p-6 text-blue-100">
+                  <RewardsIcon className="size-24" />
+                </div>
+                <span className="whitespace-nowrap text-[40px] font-medium leading-[1.1] tracking-[-0.016em] text-typography-primary">
+                  {remaining}
+                </span>
               </div>
-              <span className="text-[40px] font-medium leading-[1.1] tracking-[-0.016em] text-typography-primary">
-                {remaining}
-              </span>
+              <p className="text-12 text-typography-secondary">
+                <Trans>
+                  {consumed} used out of a {cap} reward cap
+                </Trans>
+              </p>
             </div>
-            <p className="text-12 text-typography-secondary">
-              <Trans>
-                {consumed} used out of a {cap} reward cap
-              </Trans>
-            </p>
+            {config && bonusMultiplier !== undefined && bonusMultiplier > 0n ? (
+              <span className="mt-4 inline-flex shrink-0 items-center gap-8 rounded-8 border-1/2 border-green-500/20 bg-green-900 px-12 py-8 text-20 font-medium text-green-500">
+                <MultiplierSolidIcon aria-hidden="true" className="size-24" />
+                {formatMultiplierAdjustment(bonusMultiplier, config.multiplierDecimals)}
+              </span>
+            ) : null}
           </div>
 
           <div className="flex flex-col gap-2">
