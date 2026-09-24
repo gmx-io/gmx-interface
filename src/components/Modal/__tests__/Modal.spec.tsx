@@ -1,7 +1,9 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
-import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { useBreakpoints } from "lib/useBreakpoints";
 
 import FloatingPortal from "components/Portal/FloatingPortal";
 
@@ -9,7 +11,7 @@ import Modal from "../Modal";
 import { SlideModal } from "../SlideModal";
 
 vi.mock("lib/useBreakpoints", () => ({
-  useBreakpoints: () => ({ isMobile: true }),
+  useBreakpoints: vi.fn(() => ({ isMobile: true })),
 }));
 
 i18n.load({ en: {} });
@@ -19,6 +21,7 @@ const INVISIBLE_STYLE = { visibility: "hidden" } as const;
 
 describe("Modal", () => {
   beforeEach(() => {
+    vi.mocked(useBreakpoints).mockReturnValue({ isMobile: true } as ReturnType<typeof useBreakpoints>);
     Object.defineProperty(HTMLElement.prototype, "animate", {
       configurable: true,
       value: vi.fn(() => ({
@@ -207,4 +210,54 @@ describe("Modal", () => {
     expect(closeNewer).toHaveBeenCalledWith(false);
     expect(closeNested).not.toHaveBeenCalled();
   });
+
+  it.each(["dialog", "desktop slide", "mobile slide"] as const)(
+    "keeps focus and keyboard events in the higher %s when a lower dialog opens later",
+    async (kind) => {
+      vi.mocked(useBreakpoints).mockReturnValue({ isMobile: kind === "mobile slide" } as ReturnType<
+        typeof useBreakpoints
+      >);
+      const closeHigher = vi.fn();
+      const closeLower = vi.fn();
+      const higherContent = <button>Settings action</button>;
+      const higherModal =
+        kind === "dialog" ? (
+          <Modal isVisible label="Settings" zIndex={1002} setIsVisible={closeHigher}>
+            {higherContent}
+          </Modal>
+        ) : (
+          <SlideModal isVisible label="Settings" desktopZIndex={1002} setIsVisible={closeHigher}>
+            {higherContent}
+          </SlideModal>
+        );
+      const modals = (bonusVisible: boolean) => (
+        <I18nProvider i18n={i18n}>
+          {higherModal}
+          <Modal isVisible={bonusVisible} label="Rewards bonus" setIsVisible={closeLower}>
+            <button>Bonus action</button>
+          </Modal>
+        </I18nProvider>
+      );
+      const view = render(modals(false));
+      await act(async () => {
+        await new Promise(window.requestAnimationFrame);
+      });
+      const settingsAction = screen.getByRole("button", { name: "Settings action" });
+      settingsAction.focus();
+
+      view.rerender(modals(true));
+      await act(async () => {
+        await new Promise(window.requestAnimationFrame);
+      });
+
+      expect(document.activeElement).toBe(settingsAction);
+      fireEvent.keyDown(window, { key: "Tab" });
+      expect(document.activeElement).toBe(
+        within(screen.getByRole("dialog", { name: "Settings" })).getByRole("button", { name: "Close" })
+      );
+      fireEvent.keyDown(window, { key: "Escape" });
+      expect(closeHigher).toHaveBeenCalledWith(false);
+      expect(closeLower).not.toHaveBeenCalled();
+    }
+  );
 });
