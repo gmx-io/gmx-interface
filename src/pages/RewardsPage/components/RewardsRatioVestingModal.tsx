@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { useEffect, useRef, useState } from "react";
 
 import type { ContractsChainId } from "config/chains";
+import { REWARDS_TERMS_URL } from "config/links";
 import type { RatioVestingConfig } from "config/vesting";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import {
@@ -23,6 +24,7 @@ import { abis } from "sdk/abis";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 import NumberInput from "components/NumberInput/NumberInput";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
@@ -322,6 +324,12 @@ export function RewardsRatioVestingModal({
             <Trans>Deposits are closed.</Trans>
           </AlertInfoCard>
         ) : null}
+        <p className="text-13 text-typography-secondary">
+          <Trans>
+            By claiming or vesting esGMX, you agree to the Rewards Program{" "}
+            <ExternalLink href={REWARDS_TERMS_URL}>Terms and Conditions</ExternalLink>.
+          </Trans>
+        </p>
         <RewardsVestingChainGuard chainId={chainId}>
           <ButtonTooltipWrapper content={chainError.buttonTooltipMessage}>
             <Button

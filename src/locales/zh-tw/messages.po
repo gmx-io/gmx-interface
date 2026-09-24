@@ -4332,6 +4332,11 @@ msgstr "主要失敗"
 msgid "No GMX swap route found for {0} to {1}."
 msgstr "未找到從 {0} 到 {1} 的 GMX 交換路由。"
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "By claiming or vesting esGMX, you agree to the Rewards Program <0>Terms and Conditions</0>."
+msgstr "領取或歸屬 esGMX，即表示您同意獎勵計畫的<0>條款與條件</0>。"
+
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Commodities"
 msgstr "大宗商品"

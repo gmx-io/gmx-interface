@@ -4332,6 +4332,11 @@ msgstr "기본 실패"
 msgid "No GMX swap route found for {0} to {1}."
 msgstr "{0}에서 {1}(으)로의 GMX 스왑 경로를 찾을 수 없습니다."
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "By claiming or vesting esGMX, you agree to the Rewards Program <0>Terms and Conditions</0>."
+msgstr "esGMX를 청구하거나 베스팅하면 보상 프로그램의 <0>이용약관</0>에 동의하게 됩니다."
+
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Commodities"
 msgstr "원자재"
