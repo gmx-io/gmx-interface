@@ -12,14 +12,19 @@ export function getSolanaMarketLongConfig() {
       "VITE_GMX_SOLANA_STORE_ADDRESS",
       import.meta.env.VITE_GMX_SOLANA_STORE_ADDRESS ?? "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN"
     ),
-    marketToken: required("VITE_GMX_SOLANA_SOLUSD_MARKET_TOKEN", import.meta.env.VITE_GMX_SOLANA_SOLUSD_MARKET_TOKEN),
+    marketToken: required(
+      "VITE_GMX_SOLANA_SOLUSD_MARKET_TOKEN",
+      import.meta.env.VITE_GMX_SOLANA_SOLUSD_MARKET_TOKEN ??
+        "6UU9sF5fryafHDYPcmVcV7ucfnYs6iMVcvb8p7SBQgTc"
+    ),
     collateralToken: required(
       "VITE_GMX_SOLANA_USDC_MINT",
       import.meta.env.VITE_GMX_SOLANA_USDC_MINT ?? "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
     ),
     longToken: required(
       "VITE_GMX_SOLANA_SOL_MINT",
-      import.meta.env.VITE_GMX_SOLANA_SOL_MINT ?? "So1Zu7vPQQxrguzUehKAyVLpjcc769zxgBuDAsxTUMH"
+      import.meta.env.VITE_GMX_SOLANA_SOL_MINT ??
+        "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
     ),
     shortToken: required(
       "VITE_GMX_SOLANA_SOLUSD_SHORT_TOKEN",

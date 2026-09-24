@@ -70,6 +70,7 @@ import { getOrderKeys, isOrderForPosition } from "sdk/utils/orders";
 import type { SolanaChartCandles } from "solana-interface/lib/chartCandles";
 import { SolanaChart } from "solana-interface/pages/SolanaChart";
 import { SolanaFetchCard } from "solana-interface/pages/SolanaFetchCard";
+import { SolanaMarketLongTradeBox } from "solana-interface/pages/SolanaMarketLongTradeBox";
 import { SolanaRpcPage } from "solana-interface/pages/SolanaRpcPage";
 import { SolanaUnwrapCard } from "solana-interface/pages/SolanaUnwrapCard";
 import { SolanaSendCard } from "solana-interface/pages/SolanaSendCard";
@@ -159,6 +160,7 @@ export function SyntheticsPage(p: Props) {
             onResolutionChange={setSolanaChartResolution}
             candles={solanaChartCandles}
           />
+          <SolanaMarketLongTradeBox />
           <SolanaTradeList />
           <SolanaSignMessageCard />
           <SolanaRpcPage />
