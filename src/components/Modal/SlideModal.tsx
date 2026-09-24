@@ -109,6 +109,7 @@ function MobileSlideModal({
     contentRef: curtainRef,
     isVisible: isOpen,
     onClose: handleClose,
+    zIndex: 10000,
   });
 
   const handlePointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {

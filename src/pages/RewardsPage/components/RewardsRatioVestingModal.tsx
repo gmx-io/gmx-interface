@@ -280,7 +280,8 @@ export function RewardsRatioVestingModal({
     <ModalWithPortal
       isVisible={isVisible}
       setIsVisible={(visible) => {
-        if (!isPending) setIsVisible(visible);
+        if (!visible) sessionRef.current += 1;
+        setIsVisible(visible);
       }}
       label={t`Vest esGMX`}
       contentClassName="w-[420px]"

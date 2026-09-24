@@ -380,7 +380,8 @@ export function RewardsVestingModal({
       : undefined;
 
   const setModalVisible = (nextVisible: boolean) => {
-    if (!isBusy) setIsVisible(nextVisible);
+    if (!nextVisible) transactionSessionRef.current += 1;
+    setIsVisible(nextVisible);
   };
 
   const setDepositValue = (nextValue: string) => {
@@ -518,6 +519,7 @@ export function RewardsVestingModal({
             setPendingTxns,
           }
         );
+        if (transactionSessionRef.current !== transactionSession) return;
         await claimTransaction?.wait();
         sendRewardsTransactionResultEvent({
           transaction: "ClaimEsGmx",
@@ -601,6 +603,7 @@ export function RewardsVestingModal({
           successMsg: t`GMX approved`,
           setPendingTxns,
         });
+        if (transactionSessionRef.current !== transactionSession) return;
         await approvalTransaction?.wait();
         sendRewardsTransactionResultEvent({
           transaction: "ApproveGmx",
@@ -663,6 +666,7 @@ export function RewardsVestingModal({
           successMsg: t`GMX staked`,
           setPendingTxns,
         });
+        if (transactionSessionRef.current !== transactionSession) return;
         await stakeTransaction?.wait();
         completedStakeThisFlow = true;
         sendRewardsTransactionResultEvent({
@@ -724,6 +728,7 @@ export function RewardsVestingModal({
         successMsg: t`Vesting started`,
         setPendingTxns,
       });
+      if (transactionSessionRef.current !== transactionSession) return;
       await vestTransaction?.wait();
       sendRewardsTransactionResultEvent({
         transaction: "StartVesting",
@@ -1160,7 +1165,11 @@ export function RewardsStopVestingModal({
   const convertedAmount = data.vestingInfo.vestedAmount - effectiveRemainingAmount;
 
   const setModalVisible = (nextVisible: boolean) => {
-    if (!isStopping) setIsVisible(nextVisible);
+    if (!nextVisible) {
+      transactionSessionRef.current += 1;
+      setIsStopping(false);
+    }
+    setIsVisible(nextVisible);
   };
 
   const handleStop = async () => {
@@ -1169,14 +1178,15 @@ export function RewardsStopVestingModal({
         return;
       }
 
+      const transactionSession = ++transactionSessionRef.current;
       setIsStopping(true);
       try {
         await onSimulatedStop();
-        setIsVisible(false);
+        if (transactionSessionRef.current === transactionSession) setIsVisible(false);
       } catch {
         return;
       } finally {
-        setIsStopping(false);
+        if (transactionSessionRef.current === transactionSession) setIsStopping(false);
       }
       return;
     }
@@ -1341,13 +1351,7 @@ export function RewardsStopVestingModal({
                     (isStopping ? <Trans>Stopping...</Trans> : <Trans>Yes, stop vesting</Trans>)}
               </Button>
             </ButtonTooltipWrapper>
-            <Button
-              variant="secondary"
-              size="medium"
-              className="w-full"
-              onClick={() => setModalVisible(false)}
-              disabled={isStopping}
-            >
+            <Button variant="secondary" size="medium" className="w-full" onClick={() => setModalVisible(false)}>
               <Trans>Keep vesting</Trans>
             </Button>
           </div>

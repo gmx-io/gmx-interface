@@ -90,6 +90,7 @@ export default function Modal({
     contentRef,
     isVisible: Boolean(isVisible),
     onClose: () => setIsVisible(false),
+    zIndex,
   });
 
   useBlockAutoReload(Boolean(isVisible));
