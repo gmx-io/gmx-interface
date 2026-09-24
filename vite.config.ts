@@ -3,6 +3,7 @@
 import { lingui } from "@lingui/vite-plugin";
 import react from "@vitejs/plugin-react";
 import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import path from "path";
 import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig, loadEnv, type ConfigEnv, type PluginOption, type UserConfig } from "vite";
@@ -10,6 +11,12 @@ import { analyzer } from "vite-bundle-analyzer";
 import svgr from "vite-plugin-svgr";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { BREAKPOINTS } from "./src/lib/breakpoints";
+import { vitePluginGitCommit } from "./utils/vite-plugin-git-commit";
+import { vitePluginUiBuildInfo } from "./utils/vite-plugin-ui-build-info";
+
+const appPackageJson = JSON.parse(
+  readFileSync(path.resolve(__dirname, "package.json"), "utf-8"),
+) as { version: string };
 
 const REACT_VENDOR_PACKAGES = new Set([
   "react",
@@ -285,6 +292,8 @@ export function createViteConfig(
         },
       }),
       lingui(),
+      vitePluginGitCommit({ shortHash: true, includeTimestamp: true }),
+      vitePluginUiBuildInfo({ appVersion: appPackageJson.version }),
       visualizer() as PluginOption,
       mode === "analyze" && analyzer(),
     ],
