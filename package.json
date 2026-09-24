@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "@apollo/client": "3.5.6",
+    "@coral-xyz/anchor": "^0.31.1",
     "@date-fns/tz": "1.4.1",
     "@davatar/react": "1.8.1",
     "@floating-ui/dom": "1.6.7",
@@ -55,7 +56,8 @@
     "@solana-program/system": "^0.15.0",
     "@solana-program/token": "^0.17.0",
     "@solana/kit": "^8.3.0",
-    "@solana/web3.js": "1.98.4",
+    "@solana/spl-token": "^0.4.3",
+    "@solana/web3.js": "1.99.0",
     "@stargatefinance/stg-evm-sdk-v2": "1.1.12",
     "@stripe/crypto": "1.1.2",
     "@stripe/stripe-js": "1.54.2",

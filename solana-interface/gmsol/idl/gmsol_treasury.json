@@ -1,0 +1,4540 @@
+{
+  "address": "GTuvYD5SxkTq4FLG6JV1FQ5dkczr1AfgDcBHaFsBdtBg",
+  "metadata": {
+    "name": "gmsol_treasury",
+    "version": "0.8.0",
+    "spec": "0.1.0",
+    "description": "GMX-Solana is an extension of GMX on the Solana blockchain.",
+    "repository": "https://github.com/gmsol-labs/gmx-solana"
+  },
+  "instructions": [
+    {
+      "name": "cancel_swap",
+      "docs": [
+        "Cancel a swap."
+      ],
+      "discriminator": [
+        88,
+        174,
+        98,
+        148,
+        24,
+        252,
+        93,
+        89
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "Authority."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ],
+          "writable": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "store_wallet",
+          "docs": [
+            "Store Wallet."
+          ],
+          "writable": true
+        },
+        {
+          "name": "config"
+        },
+        {
+          "name": "receiver",
+          "docs": [
+            "Swap order owner (the receiver)."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  99,
+                  101,
+                  105,
+                  118,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "config"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "docs": [
+            "The user account for `owner`."
+          ],
+          "writable": true
+        },
+        {
+          "name": "swap_in_token",
+          "docs": [
+            "Swap in token."
+          ]
+        },
+        {
+          "name": "swap_out_token",
+          "docs": [
+            "Swap out token."
+          ]
+        },
+        {
+          "name": "swap_in_token_receiver_vault",
+          "docs": [
+            "Swap in token receiver vault."
+          ],
+          "writable": true
+        },
+        {
+          "name": "swap_out_token_receiver_vault",
+          "docs": [
+            "Swap out token receiver vault."
+          ],
+          "writable": true
+        },
+        {
+          "name": "swap_in_token_escrow",
+          "docs": [
+            "The escrow account for swap in token."
+          ],
+          "writable": true
+        },
+        {
+          "name": "swap_out_token_escrow",
+          "docs": [
+            "The escrow account for swap out token."
+          ],
+          "writable": true
+        },
+        {
+          "name": "order",
+          "docs": [
+            "The order account."
+          ],
+          "writable": true
+        },
+        {
+          "name": "event_authority",
+          "docs": [
+            "Event authority."
+          ]
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "Store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        },
+        {
+          "name": "token_program",
+          "docs": [
+            "The token program."
+          ],
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associated_token_program",
+          "docs": [
+            "Associated token program."
+          ],
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "The system program."
+          ],
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "claim_fees",
+      "docs": [
+        "Claim fees."
+      ],
+      "discriminator": [
+        82,
+        251,
+        233,
+        156,
+        12,
+        52,
+        184,
+        202
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "Authority."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ],
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "docs": [
+            "Config to initialize with."
+          ]
+        },
+        {
+          "name": "receiver",
+          "docs": [
+            "Receiver."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  99,
+                  101,
+                  105,
+                  118,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "config"
+              }
+            ]
+          }
+        },
+        {
+          "name": "market",
+          "docs": [
+            "Market to claim fees from."
+          ],
+          "writable": true
+        },
+        {
+          "name": "token",
+          "docs": [
+            "Token."
+          ]
+        },
+        {
+          "name": "vault",
+          "docs": [
+            "Vault."
+          ],
+          "writable": true
+        },
+        {
+          "name": "receiver_vault",
+          "docs": [
+            "Reciever vault."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "receiver"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "token"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "event_authority",
+          "docs": [
+            "Event authority."
+          ]
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "Store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        },
+        {
+          "name": "token_program",
+          "docs": [
+            "The token program."
+          ]
+        },
+        {
+          "name": "associated_token_program",
+          "docs": [
+            "Associated token program."
+          ],
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "The system program."
+          ],
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "min_amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "complete_gt_exchange",
+      "docs": [
+        "Complete GT Exchange."
+      ],
+      "discriminator": [
+        15,
+        159,
+        24,
+        137,
+        211,
+        116,
+        174,
+        60
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "docs": [
+            "Owner."
+          ],
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ],
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "docs": [
+            "Config."
+          ],
+          "relations": [
+            "treasury_vault_config"
+          ]
+        },
+        {
+          "name": "treasury_vault_config",
+          "docs": [
+            "Treasury Config."
+          ],
+          "relations": [
+            "gt_bank"
+          ]
+        },
+        {
+          "name": "gt_exchange_vault",
+          "docs": [
+            "GT exchange vault."
+          ],
+          "writable": true,
+          "relations": [
+            "gt_bank"
+          ]
+        },
+        {
+          "name": "gt_bank",
+          "docs": [
+            "GT bank."
+          ],
+          "writable": true
+        },
+        {
+          "name": "exchange",
+          "docs": [
+            "Exchange to complete.",
+            "The ownership should be checked by the CPI."
+          ],
+          "writable": true
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "Store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        },
+        {
+          "name": "token_program",
+          "docs": [
+            "The token program."
+          ],
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "token_2022_program",
+          "docs": [
+            "The token-2022 program."
+          ],
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "confirm_gt_buyback",
+      "docs": [
+        "Confirm GT buyback."
+      ],
+      "discriminator": [
+        215,
+        130,
+        25,
+        182,
+        202,
+        240,
+        77,
+        149
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "Authority."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ],
+          "writable": true,
+          "relations": [
+            "config",
+            "gt_exchange_vault"
+          ]
+        },
+        {
+          "name": "config",
+          "docs": [
+            "Config."
+          ],
+          "relations": [
+            "treasury_vault_config"
+          ]
+        },
+        {
+          "name": "treasury_vault_config",
+          "docs": [
+            "Treasury Vault Config."
+          ],
+          "relations": [
+            "gt_bank"
+          ]
+        },
+        {
+          "name": "gt_exchange_vault",
+          "docs": [
+            "GT exchange vault."
+          ],
+          "writable": true,
+          "relations": [
+            "gt_bank"
+          ]
+        },
+        {
+          "name": "gt_bank",
+          "docs": [
+            "GT Bank."
+          ],
+          "writable": true
+        },
+        {
+          "name": "token_map",
+          "docs": [
+            "Token map."
+          ]
+        },
+        {
+          "name": "oracle",
+          "docs": [
+            "Oracle."
+          ],
+          "writable": true
+        },
+        {
+          "name": "event_authority",
+          "docs": [
+            "Event authority."
+          ]
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "Store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        },
+        {
+          "name": "chainlink_program",
+          "docs": [
+            "Chainlink program."
+          ],
+          "optional": true,
+          "address": "HEvSKofvBgfaexv23kMabbYqxasxU3mQ4ibBMEmJWHny"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_swap_v2",
+      "docs": [
+        "Create a swap."
+      ],
+      "discriminator": [
+        83,
+        172,
+        205,
+        183,
+        106,
+        214,
+        68,
+        144
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "Authority."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ],
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "docs": [
+            "Config."
+          ],
+          "relations": [
+            "treasury_vault_config"
+          ]
+        },
+        {
+          "name": "treasury_vault_config",
+          "docs": [
+            "Treasury Config."
+          ]
+        },
+        {
+          "name": "swap_in_token",
+          "docs": [
+            "Swap in token."
+          ]
+        },
+        {
+          "name": "swap_out_token",
+          "docs": [
+            "Swap out token."
+          ]
+        },
+        {
+          "name": "swap_in_token_receiver_vault",
+          "docs": [
+            "Swap in token receiver vault."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "receiver"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "swap_in_token"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "market",
+          "docs": [
+            "Market."
+          ],
+          "writable": true
+        },
+        {
+          "name": "receiver",
+          "docs": [
+            "Swap order owner (the receiver)."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  99,
+                  101,
+                  105,
+                  118,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "config"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "docs": [
+            "The user account for `receiver`."
+          ],
+          "writable": true
+        },
+        {
+          "name": "swap_in_token_escrow",
+          "docs": [
+            "The escrow account for swap in token."
+          ],
+          "writable": true
+        },
+        {
+          "name": "swap_out_token_escrow",
+          "docs": [
+            "The escrow account for swap out token."
+          ],
+          "writable": true
+        },
+        {
+          "name": "order",
+          "docs": [
+            "The order account."
+          ],
+          "writable": true
+        },
+        {
+          "name": "event_authority",
+          "docs": [
+            "Event authority."
+          ]
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "Store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        },
+        {
+          "name": "token_program",
+          "docs": [
+            "The token program."
+          ],
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associated_token_program",
+          "docs": [
+            "Associated token program."
+          ],
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "The system program."
+          ],
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "callback_authority",
+          "docs": [
+            "Callback authority."
+          ],
+          "optional": true
+        },
+        {
+          "name": "callback_program",
+          "docs": [
+            "Callback authority."
+          ],
+          "optional": true
+        },
+        {
+          "name": "callback_shared_data_account",
+          "docs": [
+            "Callback config account."
+          ],
+          "optional": true
+        },
+        {
+          "name": "callback_partitioned_data_account",
+          "docs": [
+            "Callback action stats account."
+          ],
+          "optional": true
+        }
+      ],
+      "args": [
+        {
+          "name": "nonce",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "swap_path_length",
+          "type": "u8"
+        },
+        {
+          "name": "swap_in_amount",
+          "type": "u64"
+        },
+        {
+          "name": "min_swap_out_amount",
+          "type": {
+            "option": "u64"
+          }
+        },
+        {
+          "name": "callback_version",
+          "type": {
+            "option": "u8"
+          }
+        }
+      ]
+    },
+    {
+      "name": "deposit_to_treasury_vault",
+      "docs": [
+        "Deposit to treasury vault."
+      ],
+      "discriminator": [
+        60,
+        157,
+        62,
+        63,
+        219,
+        46,
+        207,
+        84
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "Authority."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ],
+          "relations": [
+            "config",
+            "gt_exchange_vault"
+          ]
+        },
+        {
+          "name": "config",
+          "docs": [
+            "Config."
+          ],
+          "relations": [
+            "treasury_vault_config"
+          ]
+        },
+        {
+          "name": "treasury_vault_config",
+          "docs": [
+            "Treasury Config."
+          ],
+          "relations": [
+            "gt_bank"
+          ]
+        },
+        {
+          "name": "receiver",
+          "docs": [
+            "Receiver."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  99,
+                  101,
+                  105,
+                  118,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "config"
+              }
+            ]
+          }
+        },
+        {
+          "name": "gt_exchange_vault",
+          "docs": [
+            "GT exchange vault."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  116,
+                  95,
+                  101,
+                  120,
+                  99,
+                  104,
+                  97,
+                  110,
+                  103,
+                  101,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "store"
+              },
+              {
+                "kind": "account",
+                "path": "gt_exchange_vault"
+              },
+              {
+                "kind": "account",
+                "path": "gt_exchange_vault"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                234,
+                94,
+                74,
+                175,
+                228,
+                208,
+                167,
+                114,
+                85,
+                24,
+                18,
+                149,
+                120,
+                219,
+                76,
+                130,
+                12,
+                54,
+                252,
+                80,
+                147,
+                170,
+                106,
+                18,
+                19,
+                192,
+                130,
+                125,
+                110,
+                213,
+                68,
+                8
+              ]
+            }
+          },
+          "relations": [
+            "gt_bank"
+          ]
+        },
+        {
+          "name": "gt_bank",
+          "docs": [
+            "GT bank."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  116,
+                  95,
+                  98,
+                  97,
+                  110,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "treasury_vault_config"
+              },
+              {
+                "kind": "account",
+                "path": "gt_exchange_vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token",
+          "docs": [
+            "Token."
+          ]
+        },
+        {
+          "name": "receiver_vault",
+          "docs": [
+            "Receiver vault."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "receiver"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "token"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "treasury_vault",
+          "docs": [
+            "Treasury vault."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "treasury_vault_config"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "token"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "gt_bank_vault",
+          "docs": [
+            "GT bank vault."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "gt_bank"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "token"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "Store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        },
+        {
+          "name": "token_program",
+          "docs": [
+            "The token program."
+          ]
+        },
+        {
+          "name": "associated_token_program",
+          "docs": [
+            "Associated token program."
+          ],
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_config",
+      "docs": [
+        "Initialize a treasury [`Config`](crate::states::Config) account."
+      ],
+      "discriminator": [
+        208,
+        127,
+        21,
+        1,
+        194,
+        190,
+        196,
+        70
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "docs": [
+            "Payer."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "The store that controls this config."
+          ],
+          "writable": true
+        },
+        {
+          "name": "config",
+          "docs": [
+            "The config account."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "store"
+              }
+            ]
+          }
+        },
+        {
+          "name": "receiver",
+          "docs": [
+            "Receiver."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  99,
+                  101,
+                  105,
+                  118,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "config"
+              }
+            ]
+          }
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "The store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "The system program."
+          ],
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_treasury_vault_config",
+      "docs": [
+        "Initialize a [`TreasuryVaultConfig`](crate::states::TreasuryVaultConfig) account."
+      ],
+      "discriminator": [
+        34,
+        70,
+        200,
+        37,
+        152,
+        237,
+        255,
+        216
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "Authority."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ],
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "docs": [
+            "Config to initialize with."
+          ]
+        },
+        {
+          "name": "treasury_vault_config",
+          "docs": [
+            "Treasury vault config account to initialize."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "config"
+              },
+              {
+                "kind": "arg",
+                "path": "index"
+              }
+            ]
+          }
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "Store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "The system program."
+          ],
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "index",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "insert_token_to_treasury_vault",
+      "docs": [
+        "Insert a token to the given [`TreasuryVaultConfig`](crate::states::TreasuryVaultConfig) account.",
+        "",
+        "# Errors",
+        "- The [`token`](InsertTokenToTreasuryVault::token) must not have been inserted."
+      ],
+      "discriminator": [
+        63,
+        143,
+        140,
+        147,
+        26,
+        69,
+        75,
+        10
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "Authority."
+          ],
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ],
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "docs": [
+            "Config."
+          ],
+          "relations": [
+            "treasury_vault_config"
+          ]
+        },
+        {
+          "name": "treasury_vault_config",
+          "docs": [
+            "Treasury vault config."
+          ],
+          "writable": true
+        },
+        {
+          "name": "token",
+          "docs": [
+            "Token to insert."
+          ]
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "Store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "prepare_gt_bank",
+      "docs": [
+        "Prepare GT Bank."
+      ],
+      "discriminator": [
+        201,
+        61,
+        232,
+        124,
+        134,
+        42,
+        82,
+        158
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "Authority."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ],
+          "relations": [
+            "config",
+            "gt_exchange_vault"
+          ]
+        },
+        {
+          "name": "config",
+          "docs": [
+            "Config."
+          ],
+          "relations": [
+            "treasury_vault_config"
+          ]
+        },
+        {
+          "name": "treasury_vault_config",
+          "docs": [
+            "Treasury Config."
+          ]
+        },
+        {
+          "name": "gt_exchange_vault",
+          "docs": [
+            "GT exchange vault."
+          ]
+        },
+        {
+          "name": "gt_bank",
+          "docs": [
+            "GT Bank."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  116,
+                  95,
+                  98,
+                  97,
+                  110,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "treasury_vault_config"
+              },
+              {
+                "kind": "account",
+                "path": "gt_exchange_vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "Store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "The system program."
+          ],
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "remove_token_from_treasury_vault",
+      "docs": [
+        "Remove a token from the given [`TreasuryVaultConfig`](crate::states::TreasuryVaultConfig) account.",
+        "",
+        "# Errors",
+        "- The [`token`](RemoveTokenFromTreasuryVault::token) must have been inserted."
+      ],
+      "discriminator": [
+        77,
+        30,
+        206,
+        14,
+        174,
+        42,
+        208,
+        212
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "Authority."
+          ],
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ],
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "docs": [
+            "Config."
+          ],
+          "relations": [
+            "treasury_vault_config"
+          ]
+        },
+        {
+          "name": "treasury_vault_config",
+          "docs": [
+            "Treasury Vault Config."
+          ],
+          "writable": true
+        },
+        {
+          "name": "token",
+          "docs": [
+            "Token to remove."
+          ]
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "Store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "set_buyback_factor",
+      "docs": [
+        "Set buyback factor."
+      ],
+      "discriminator": [
+        199,
+        203,
+        251,
+        181,
+        132,
+        180,
+        103,
+        130
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "Authority."
+          ],
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ],
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "docs": [
+            "Config to update."
+          ],
+          "writable": true
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "Store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        }
+      ],
+      "args": [
+        {
+          "name": "factor",
+          "type": "u128"
+        }
+      ]
+    },
+    {
+      "name": "set_gt_factor",
+      "docs": [
+        "Set GT factor."
+      ],
+      "discriminator": [
+        82,
+        130,
+        30,
+        189,
+        79,
+        73,
+        29,
+        109
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "Authority."
+          ],
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ],
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "docs": [
+            "Config to update."
+          ],
+          "writable": true
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "Store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        }
+      ],
+      "args": [
+        {
+          "name": "factor",
+          "type": "u128"
+        }
+      ]
+    },
+    {
+      "name": "set_referral_reward",
+      "docs": [
+        "Set referral reward factors."
+      ],
+      "discriminator": [
+        31,
+        230,
+        34,
+        144,
+        43,
+        222,
+        71,
+        88
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "Authority."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ],
+          "writable": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "docs": [
+            "Config."
+          ]
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "Store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        }
+      ],
+      "args": [
+        {
+          "name": "factors",
+          "type": {
+            "vec": "u128"
+          }
+        }
+      ]
+    },
+    {
+      "name": "set_treasury_vault_config",
+      "docs": [
+        "Set treasury vault config."
+      ],
+      "discriminator": [
+        243,
+        119,
+        94,
+        154,
+        126,
+        51,
+        26,
+        65
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "Authority."
+          ],
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ],
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "docs": [
+            "Config to update."
+          ],
+          "writable": true,
+          "relations": [
+            "treasury_vault_config"
+          ]
+        },
+        {
+          "name": "treasury_vault_config",
+          "docs": [
+            "Treasury vault config."
+          ]
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "Store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "sync_gt_bank_v2",
+      "docs": [
+        "Sync GT Bank."
+      ],
+      "discriminator": [
+        161,
+        150,
+        114,
+        49,
+        152,
+        89,
+        94,
+        45
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "Authority."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ],
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "docs": [
+            "Config."
+          ],
+          "relations": [
+            "treasury_vault_config"
+          ]
+        },
+        {
+          "name": "treasury_vault_config",
+          "docs": [
+            "Treasury Vault Config."
+          ],
+          "relations": [
+            "gt_bank"
+          ]
+        },
+        {
+          "name": "gt_bank",
+          "docs": [
+            "GT bank."
+          ],
+          "writable": true
+        },
+        {
+          "name": "token",
+          "docs": [
+            "Token."
+          ]
+        },
+        {
+          "name": "treasury_vault",
+          "docs": [
+            "Treasury vault."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "treasury_vault_config"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "token"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "gt_bank_vault",
+          "docs": [
+            "GT bank vault."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "gt_bank"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "token"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "Store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        },
+        {
+          "name": "token_program",
+          "docs": [
+            "The token program."
+          ]
+        },
+        {
+          "name": "associated_token_program",
+          "docs": [
+            "Associated token program."
+          ],
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        }
+      ],
+      "args": [],
+      "returns": "u64"
+    },
+    {
+      "name": "toggle_token_flag",
+      "docs": [
+        "Toggle a flag of the given token.",
+        "",
+        "# Arguments",
+        "- `flag`: the flag to toggle.",
+        "- `value`: the value to be changed to.",
+        "",
+        "# Errors.",
+        "- The [`token`](ToggleTokenFlag::token) must be in the token list.",
+        "- `flag` must be defined in [`TokenFlag`](crate::states::treasury::TokenFlag)."
+      ],
+      "discriminator": [
+        75,
+        32,
+        1,
+        58,
+        29,
+        123,
+        20,
+        11
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "Authority."
+          ],
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ],
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "docs": [
+            "Config."
+          ],
+          "relations": [
+            "treasury_vault_config"
+          ]
+        },
+        {
+          "name": "treasury_vault_config",
+          "docs": [
+            "Treasury Vault Config."
+          ],
+          "writable": true
+        },
+        {
+          "name": "token",
+          "docs": [
+            "Token."
+          ]
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "Store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        }
+      ],
+      "args": [
+        {
+          "name": "flag",
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "transfer_receiver",
+      "docs": [
+        "Transfer the receiver permission to a new address."
+      ],
+      "discriminator": [
+        198,
+        147,
+        229,
+        126,
+        135,
+        119,
+        134,
+        77
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "Authority."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ],
+          "writable": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "docs": [
+            "Config."
+          ]
+        },
+        {
+          "name": "receiver",
+          "docs": [
+            "Receiver."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  99,
+                  101,
+                  105,
+                  118,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "config"
+              }
+            ]
+          }
+        },
+        {
+          "name": "next_receiver",
+          "docs": [
+            "The new receiver."
+          ]
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "Store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "The system program."
+          ],
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "withdraw_from_treasury_vault",
+      "docs": [
+        "Withdraw from treasury vault."
+      ],
+      "discriminator": [
+        249,
+        29,
+        124,
+        28,
+        213,
+        68,
+        237,
+        110
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "Authority."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ],
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "docs": [
+            "Config."
+          ],
+          "relations": [
+            "treasury_vault_config"
+          ]
+        },
+        {
+          "name": "treasury_vault_config",
+          "docs": [
+            "Treasury Vault Config."
+          ]
+        },
+        {
+          "name": "token",
+          "docs": [
+            "Token."
+          ]
+        },
+        {
+          "name": "treasury_vault",
+          "docs": [
+            "Treasury vault."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "treasury_vault_config"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "token"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "target",
+          "docs": [
+            "Target."
+          ],
+          "writable": true
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "Store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        },
+        {
+          "name": "token_program",
+          "docs": [
+            "The token program."
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "decimals",
+          "type": "u8"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Config",
+      "discriminator": [
+        155,
+        12,
+        170,
+        224,
+        30,
+        250,
+        204,
+        130
+      ]
+    },
+    {
+      "name": "GtBank",
+      "discriminator": [
+        22,
+        238,
+        251,
+        171,
+        93,
+        246,
+        199,
+        113
+      ]
+    },
+    {
+      "name": "GtExchange",
+      "discriminator": [
+        59,
+        99,
+        208,
+        22,
+        219,
+        145,
+        65,
+        199
+      ]
+    },
+    {
+      "name": "GtExchangeVault",
+      "discriminator": [
+        123,
+        227,
+        174,
+        214,
+        16,
+        219,
+        214,
+        148
+      ]
+    },
+    {
+      "name": "Oracle",
+      "discriminator": [
+        139,
+        194,
+        131,
+        179,
+        140,
+        179,
+        229,
+        244
+      ]
+    },
+    {
+      "name": "Store",
+      "discriminator": [
+        130,
+        48,
+        247,
+        244,
+        182,
+        191,
+        30,
+        26
+      ]
+    },
+    {
+      "name": "TreasuryVaultConfig",
+      "discriminator": [
+        239,
+        10,
+        243,
+        108,
+        249,
+        129,
+        212,
+        29
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "Addresses",
+      "docs": [
+        "Addresses."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "holding",
+            "type": "pubkey"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "pubkey",
+                30
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Amounts",
+      "docs": [
+        "Amounts."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "claimable_time_window",
+            "type": "u64"
+          },
+          {
+            "name": "recent_time_window",
+            "type": "u64"
+          },
+          {
+            "name": "request_expiration",
+            "type": "u64"
+          },
+          {
+            "name": "oracle_max_age",
+            "type": "u64"
+          },
+          {
+            "name": "oracle_max_timestamp_range",
+            "type": "u64"
+          },
+          {
+            "name": "oracle_max_future_timestamp_excess",
+            "type": "u64"
+          },
+          {
+            "name": "adl_prices_max_staleness",
+            "type": "u64"
+          },
+          {
+            "name": "min_position_age_for_manual_close",
+            "type": "u64"
+          },
+          {
+            "name": "market_closed_prices_max_staleness",
+            "type": "u64"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u64",
+                124
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Config",
+      "docs": [
+        "Treasury config account."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "receiver_bump",
+            "type": "u8"
+          },
+          {
+            "name": "padding_0",
+            "type": {
+              "array": [
+                "u8",
+                13
+              ]
+            }
+          },
+          {
+            "name": "store",
+            "type": "pubkey"
+          },
+          {
+            "name": "treasury_vault_config",
+            "type": "pubkey"
+          },
+          {
+            "name": "gt_factor",
+            "type": "u128"
+          },
+          {
+            "name": "buyback_factor",
+            "type": "u128"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                256
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "DisabledFeatures",
+      "docs": [
+        "Disabled Features State."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "map",
+            "type": {
+              "defined": {
+                "name": "DisabledMap"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "DisabledMap",
+      "docs": [
+        "Fixed size map generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "data",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "DisabledMapEntry"
+                  }
+                },
+                64
+              ]
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                0
+              ]
+            }
+          },
+          {
+            "name": "count",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DisabledMapEntry",
+      "docs": [
+        "Entry."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "key",
+            "type": {
+              "array": [
+                "u8",
+                2
+              ]
+            }
+          },
+          {
+            "name": "value",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Factors",
+      "docs": [
+        "Factors."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "oracle_ref_price_deviation",
+            "type": "u128"
+          },
+          {
+            "name": "order_fee_discount_for_referred_user",
+            "type": "u128"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u128",
+                64
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "GtBank",
+      "docs": [
+        "GT Bank."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "flags",
+            "type": {
+              "defined": {
+                "name": "GtBankFlagsContainer"
+              }
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                13
+              ]
+            }
+          },
+          {
+            "name": "treasury_vault_config",
+            "type": "pubkey"
+          },
+          {
+            "name": "gt_exchange_vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "remaining_confirmed_gt_amount",
+            "type": "u64"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                256
+              ]
+            }
+          },
+          {
+            "name": "balances",
+            "type": {
+              "defined": {
+                "name": "TokenBalances"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "GtBankFlagsContainer",
+      "docs": [
+        "Flags container generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "value",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GtExchange",
+      "docs": [
+        "GT Exchange Account."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "docs": [
+              "Bump."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "flags",
+            "type": {
+              "defined": {
+                "name": "GtExchangeFlagContainer"
+              }
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                6
+              ]
+            }
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "owner",
+            "docs": [
+              "Owner address."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "store",
+            "docs": [
+              "Store address."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "vault",
+            "docs": [
+              "Vault address."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "GtExchangeFlagContainer",
+      "docs": [
+        "Flags container generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "value",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GtExchangeVault",
+      "docs": [
+        "GT Exchange Vault."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "flags",
+            "type": {
+              "defined": {
+                "name": "GtExchangeVaultFlagContainer"
+              }
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                6
+              ]
+            }
+          },
+          {
+            "name": "ts",
+            "type": "i64"
+          },
+          {
+            "name": "time_window",
+            "type": "i64"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "store",
+            "docs": [
+              "Store."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "GtExchangeVaultFlagContainer",
+      "docs": [
+        "Flags container generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "value",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GtState",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "decimals",
+            "type": "u8"
+          },
+          {
+            "name": "padding_0",
+            "type": {
+              "array": [
+                "u8",
+                7
+              ]
+            }
+          },
+          {
+            "name": "last_minted_at",
+            "type": "i64"
+          },
+          {
+            "name": "total_minted",
+            "type": "u64"
+          },
+          {
+            "name": "grow_step_amount",
+            "docs": [
+              "Grow step amount. It must be immutable."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "grow_steps",
+            "type": "u64"
+          },
+          {
+            "name": "supply",
+            "docs": [
+              "Supply of buybackable GT."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "last_cumulative_inv_cost_factor_ts",
+            "docs": [
+              "Timestamp of the last update to `cumulative_inv_cost_factor`."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "gt_vault",
+            "docs": [
+              "Vault for non-buybackable GT."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "cumulative_inv_cost_factor",
+            "docs": [
+              "Cumulative `1 / minting_cost` factor."
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "minting_cost_grow_factor",
+            "type": "u128"
+          },
+          {
+            "name": "minting_cost",
+            "type": "u128"
+          },
+          {
+            "name": "padding_3",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "exchange_time_window",
+            "type": "u32"
+          },
+          {
+            "name": "padding_4",
+            "type": {
+              "array": [
+                "u8",
+                12
+              ]
+            }
+          },
+          {
+            "name": "max_rank",
+            "type": "u64"
+          },
+          {
+            "name": "ranks",
+            "type": {
+              "array": [
+                "u64",
+                15
+              ]
+            }
+          },
+          {
+            "name": "order_fee_discount_factors",
+            "type": {
+              "array": [
+                "u128",
+                16
+              ]
+            }
+          },
+          {
+            "name": "referral_reward_factors",
+            "type": {
+              "array": [
+                "u128",
+                16
+              ]
+            }
+          },
+          {
+            "name": "padding_5",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                256
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "MarketConfigFactorContainer",
+      "docs": [
+        "Flags container generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "value",
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MarketConfigFlagContainer",
+      "docs": [
+        "Flags container generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "value",
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MarketConfigPermissions",
+      "docs": [
+        "Permission store related to market config."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "updatable_market_config_flags",
+            "docs": [
+              "Market config flags updatable by a [`MARKET_CONFIG_KEEPER`](`gmsol_utils::role::RoleKey::MARKET_CONFIG_KEEPER`)."
+            ],
+            "type": {
+              "defined": {
+                "name": "MarketConfigFlagContainer"
+              }
+            }
+          },
+          {
+            "name": "updatable_market_config_factors",
+            "docs": [
+              "Market config factors updatable by a [`MARKET_CONFIG_KEEPER`](`gmsol_utils::role::RoleKey::MARKET_CONFIG_KEEPER`)."
+            ],
+            "type": {
+              "defined": {
+                "name": "MarketConfigFactorContainer"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Members",
+      "docs": [
+        "Fixed size map generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "data",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "MembersEntry"
+                  }
+                },
+                64
+              ]
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                0
+              ]
+            }
+          },
+          {
+            "name": "count",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MembersEntry",
+      "docs": [
+        "Entry."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "key",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "value",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Oracle",
+      "docs": [
+        "Oracle Account."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u8"
+          },
+          {
+            "name": "padding_0",
+            "type": {
+              "array": [
+                "u8",
+                7
+              ]
+            }
+          },
+          {
+            "name": "store",
+            "docs": [
+              "Store."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "authority",
+            "docs": [
+              "This address is authorized to **directly** modify",
+              "the oracle through instructions."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "min_oracle_ts",
+            "type": "i64"
+          },
+          {
+            "name": "max_oracle_ts",
+            "type": "i64"
+          },
+          {
+            "name": "min_oracle_slot",
+            "type": "u64"
+          },
+          {
+            "name": "primary",
+            "type": {
+              "defined": {
+                "name": "PriceMap"
+              }
+            }
+          },
+          {
+            "name": "flags",
+            "type": {
+              "defined": {
+                "name": "OracleFlagContainer"
+              }
+            }
+          },
+          {
+            "name": "padding_1",
+            "type": {
+              "array": [
+                "u8",
+                3
+              ]
+            }
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                256
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "OracleFlagContainer",
+      "docs": [
+        "Flags container generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "value",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "OraclePriceFlagContainer",
+      "docs": [
+        "Flags container generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "value",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PriceMap",
+      "docs": [
+        "Fixed size map generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "data",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "PriceMapEntry"
+                  }
+                },
+                512
+              ]
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                0
+              ]
+            }
+          },
+          {
+            "name": "count",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PriceMapEntry",
+      "docs": [
+        "Entry."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "key",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "value",
+            "type": {
+              "defined": {
+                "name": "SmallPrices"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "RoleMap",
+      "docs": [
+        "Fixed size map generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "data",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "RoleMapEntry"
+                  }
+                },
+                32
+              ]
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                0
+              ]
+            }
+          },
+          {
+            "name": "count",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RoleMapEntry",
+      "docs": [
+        "Entry."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "key",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "value",
+            "type": {
+              "defined": {
+                "name": "RoleMetadata"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "RoleMetadata",
+      "docs": [
+        "Role Metadata."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "enabled",
+            "type": "u8"
+          },
+          {
+            "name": "index",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RoleStore",
+      "docs": [
+        "Roles Store."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "roles",
+            "type": {
+              "defined": {
+                "name": "RoleMap"
+              }
+            }
+          },
+          {
+            "name": "members",
+            "type": {
+              "defined": {
+                "name": "Members"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "SmallPrices",
+      "docs": [
+        "Zero-copy price structure for storing min max prices."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "decimal_multiplier",
+            "type": "u8"
+          },
+          {
+            "name": "flags",
+            "type": {
+              "defined": {
+                "name": "OraclePriceFlagContainer"
+              }
+            }
+          },
+          {
+            "name": "padding_0",
+            "type": {
+              "array": [
+                "u8",
+                2
+              ]
+            }
+          },
+          {
+            "name": "min",
+            "type": "u32"
+          },
+          {
+            "name": "max",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Store",
+      "docs": [
+        "Data Store."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": {
+              "array": [
+                "u8",
+                1
+              ]
+            }
+          },
+          {
+            "name": "key_seed",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "key",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "padding_0",
+            "type": {
+              "array": [
+                "u8",
+                6
+              ]
+            }
+          },
+          {
+            "name": "role",
+            "type": {
+              "defined": {
+                "name": "RoleStore"
+              }
+            }
+          },
+          {
+            "name": "authority",
+            "docs": [
+              "Store authority."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "next_authority",
+            "docs": [
+              "Next authority."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "token_map",
+            "docs": [
+              "The token map to used."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "disabled_features",
+            "docs": [
+              "Disabled features."
+            ],
+            "type": {
+              "defined": {
+                "name": "DisabledFeatures"
+              }
+            }
+          },
+          {
+            "name": "padding_1",
+            "type": {
+              "array": [
+                "u8",
+                4
+              ]
+            }
+          },
+          {
+            "name": "last_restarted_slot",
+            "docs": [
+              "Cached last cluster restart slot."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "treasury",
+            "docs": [
+              "Treasury Config."
+            ],
+            "type": {
+              "defined": {
+                "name": "Treasury"
+              }
+            }
+          },
+          {
+            "name": "amount",
+            "docs": [
+              "Amounts."
+            ],
+            "type": {
+              "defined": {
+                "name": "Amounts"
+              }
+            }
+          },
+          {
+            "name": "padding_2",
+            "type": {
+              "array": [
+                "u8",
+                8
+              ]
+            }
+          },
+          {
+            "name": "factor",
+            "docs": [
+              "Factors."
+            ],
+            "type": {
+              "defined": {
+                "name": "Factors"
+              }
+            }
+          },
+          {
+            "name": "address",
+            "docs": [
+              "Addresses."
+            ],
+            "type": {
+              "defined": {
+                "name": "Addresses"
+              }
+            }
+          },
+          {
+            "name": "gt",
+            "docs": [
+              "GT State."
+            ],
+            "type": {
+              "defined": {
+                "name": "GtState"
+              }
+            }
+          },
+          {
+            "name": "market_config_permissions",
+            "type": {
+              "defined": {
+                "name": "MarketConfigPermissions"
+              }
+            }
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                992
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenBalance",
+      "docs": [
+        "Token Balance."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "receiver_vault_out",
+            "type": "u64"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                56
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenBalances",
+      "docs": [
+        "Fixed size map generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "data",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "TokenBalancesEntry"
+                  }
+                },
+                16
+              ]
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                4
+              ]
+            }
+          },
+          {
+            "name": "count",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenBalancesEntry",
+      "docs": [
+        "Entry."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "key",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "value",
+            "type": {
+              "defined": {
+                "name": "TokenBalance"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenConfig",
+      "docs": [
+        "Token config for treasury."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "flags",
+            "type": {
+              "defined": {
+                "name": "TokenFlagContainer"
+              }
+            }
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenFlagContainer",
+      "docs": [
+        "Flags container generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "value",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenMap",
+      "docs": [
+        "Fixed size map generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "data",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "TokenMapEntry"
+                  }
+                },
+                16
+              ]
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                0
+              ]
+            }
+          },
+          {
+            "name": "count",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenMapEntry",
+      "docs": [
+        "Entry."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "key",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "value",
+            "type": {
+              "defined": {
+                "name": "TokenConfig"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Treasury",
+      "docs": [
+        "Treasury."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "receiver",
+            "docs": [
+              "Receiver."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "next_receiver",
+            "docs": [
+              "Next receiver."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                128
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "TreasuryVaultConfig",
+      "docs": [
+        "Treasury vault config account."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "index",
+            "type": "u16"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                12
+              ]
+            }
+          },
+          {
+            "name": "config",
+            "type": "pubkey"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                256
+              ]
+            }
+          },
+          {
+            "name": "tokens",
+            "type": {
+              "defined": {
+                "name": "TokenMap"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "constants": [
+    {
+      "name": "RECEIVER_SEED",
+      "docs": [
+        "Receiver Seed."
+      ],
+      "type": "bytes",
+      "value": "[114, 101, 99, 101, 105, 118, 101, 114]"
+    }
+  ]
+}
