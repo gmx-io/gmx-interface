@@ -1,0 +1,226 @@
+.status-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: calc(100vh - 4.8rem);
+  padding: 2rem 1.6rem;
+}
+
+.status-page__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 63.2rem;
+  
+}
+
+.status-page__illustration {
+  flex-shrink: 0;
+  object-fit: contain;
+  mix-blend-mode: lighten;
+  pointer-events: none;
+
+  &--404 {
+    width: 29.2rem;
+    height: 14.7rem;
+
+  }
+
+  &--oops {
+    width: 18rem;
+    height: 16.7rem;
+  }
+  
+}
+.status-page--404{
+  .status-page__text-block{
+    gap: 2rem;
+  }
+}
+
+.status-page__text-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+  width: 100%;
+  text-align: center;
+}
+
+.status-page__title {
+  margin: 0;
+  font-size: 3.2rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.0512rem;
+  color: var(--color-gray-600);
+}
+
+.status-page__subtitle {
+  margin: 0;
+  font-size: 3.2rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.0512rem;
+  color: var(--color-gray-600);
+}
+
+.status-page__error-reference {
+  margin: 0;
+  font-size: var(--font-size-body-large);
+  font-weight: 400;
+  line-height: var(--line-height-body-large);
+  letter-spacing: 0.0032rem;
+  color: var(--color-gray-600);
+}
+
+.status-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.status-page__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 15.9rem;
+  height: 4.4rem;
+  padding: 0.8rem 1.6rem;
+  border: none;
+  border-radius: 1.2rem;
+  background: var(--primary-btn-bg);
+  font-size: var(--font-size-body-large);
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--color-white);
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+}
+
+@media (max-width: 1024px) {
+  .status-page--embedded {
+    min-height: auto;
+    padding: 2rem 1.6rem;
+  }
+
+  .status-page--with-mobile-header {
+    justify-content: flex-start;
+    padding: 0;
+
+    .status-page__header {
+      display: flex;
+      flex-shrink: 0;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      height: 4.8rem;
+      padding: 0.8rem;
+      border-bottom: 0.05rem solid var(--color-stroke-primary);
+      .setting{
+        height: 3.2rem;
+        width: 3.2rem;
+      }
+    }
+
+    .status-page__logo-link {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      height: 100%;
+    }
+
+    .status-page__logo {
+      width: 2.8rem;
+      height: 3.2rem;
+    }
+
+    .status-page__content {
+      flex: 1;
+      justify-content: center;
+      padding: 2rem 1.6rem;
+      max-width: unset;
+
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .status-page__content {
+    gap: 1rem;
+  }
+
+  .status-page__title,
+  .status-page__subtitle {
+    font-size: 1.6rem;
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.0192rem;
+    color: #676767;
+  }
+
+  .status-page__error-reference {
+    font-size: 1.2rem;
+    font-weight: 400;
+    line-height: 1.25;
+    letter-spacing: 0.0024rem;
+    color: #676767;
+  }
+
+  .status-page__actions {
+    gap: 2rem;
+  }
+
+  .status-page__button {
+    min-width: unset;
+    height: 4rem;
+    padding: 0.8rem 1.2rem;
+    border-radius: 0.8rem;
+    font-size: 1.3rem;
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.0156rem;
+    min-width: 12.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .status-page--oops {
+    .status-page__illustration--oops {
+      width: 11.4rem;
+      height: 10.6rem;
+    }
+
+    .status-page__text-block {
+      gap: 3rem;
+    }
+
+    .status-page__actions {
+      max-width: 26.2rem;
+    }
+  }
+
+  .status-page--404 {
+    .status-page__illustration--404 {
+      width: 17.7rem;
+      height: 8.9rem;
+    }
+
+    .status-page__text-block {
+      gap: 2rem;
+    }
+  }
+}

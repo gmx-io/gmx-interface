@@ -1,0 +1,92 @@
+.trade-type-selector {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 3.2rem;
+
+  .trade-type-tabs {
+    display: flex;
+    align-items: center;
+
+    .trade-type-tab {
+      font-size: 1.3rem;
+      width: 6.6rem;
+      height: 3.2rem;
+      line-height: 3.5rem;
+      cursor: pointer;
+      text-align: center;
+      color: #A3A3A3;
+      transition: all 0.2s ease;
+      font-weight: 500;
+
+      &:hover {
+        color: #fff;
+        background: #323232;
+        border-radius: 0.8rem;
+      }
+
+      &.trade-type-tab-selected {
+        color: #fff;
+        font-weight: 500;
+        background-color: #1F1F1F;
+        border-radius: 0.8rem;
+      }
+    }
+  }
+
+  .trade-type-settings {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .trade-type-info {
+      width: 1.6rem;
+      height: 1.6rem;
+      opacity: 0.7;
+      transition: opacity 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+
+    .trade-type-settings-icon {
+      width: 1.6rem;
+      height: 1.6rem;
+      opacity: 0.7;
+      transition: opacity 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+.trade-type-selector.compact {
+  height: auto;
+
+  .trade-type-tabs {
+    .trade-type-tab {
+      width: 5rem;
+      height: 2.8rem;
+      line-height: 2.8rem;
+      font-size: 0.9rem;
+    }
+  }
+
+  .trade-type-settings {
+    gap: 0.8rem;
+
+    .trade-type-info,
+    .trade-type-settings-icon {
+      width: 1.4rem;
+      height: 1.4rem;
+    }
+  }
+}

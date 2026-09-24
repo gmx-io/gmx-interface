@@ -1,0 +1,130 @@
+.Pool-header-left {
+  // height: 3.2rem;
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1.2rem;
+  padding-left: 0.8rem;
+  @media (max-width: 768px) {
+    padding-left: 0;
+  }
+}
+
+
+.nav-button {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  height: 3.2rem;
+  padding: 0 1.2rem;
+  background: transparent;
+  border-radius: 2rem;
+  border: 1px solid #535353;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  span {
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: 400;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  img {
+    flex-shrink: 0;
+  }
+
+  // &:hover {
+  //   background: #22244a;
+  //   border-color: rgba(255, 255, 255, 0.2);
+  // }
+}
+
+.pools-button {
+  gap: 0.6rem;
+  padding-left: 1.2rem;
+  span{
+    color: #A3A3A3;
+    font-size: 1.3rem;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+  }
+}
+
+.vaults-button {
+  gap: 0.6rem;
+  padding-left: 1.2rem;
+  span{
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+  }
+}
+.return-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 3.2rem;
+  width: 3.2rem;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid #535353;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.return-button--pool-detail {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  transform: rotate(90deg);
+  padding: 8px 12px;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  border-radius: 8px;
+  background: var(--Fill-SurfaceElevated, #1F1F1F);
+  border: none;
+
+  img {
+    transform: rotate(-90deg);
+		max-width: unset;
+  }
+}
+
+.separator {
+  color: #535353;
+  font-size: 1.6rem;
+  font-weight: 300;
+  margin: 0 -0.4rem;
+}
+
+.sonala-data {
+  border-left: 0.15rem solid #FA7B4E;
+  background:#1F2343;
+  gap: 0.8rem;
+  border-left-width: 0.15rem;
+  border-radius: 2rem;
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 1.6rem 0.6rem 0.8rem;
+  width: fit-content;
+
+  span {
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  img {
+    flex-shrink: 0;
+  }
+}

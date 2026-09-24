@@ -1,0 +1,52 @@
+.compose-input-item {
+    border-radius: 0.8rem;
+    padding-top: 1.2rem;
+    padding-right: 1.2rem;
+    padding-bottom: 0.8rem;
+    padding-left: 1.2rem;
+    background: #1F1F1F;
+
+    .label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #A3A3A3;
+        font-size: 1.2rem;
+
+        .title {
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: #A3A3A3;
+        }
+
+        .mark {
+            color: #fff;
+            >span:nth-child(2) {
+                margin-left: 0.4rem;
+            }
+        }
+    }
+
+    .value {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+
+        input {
+            font-size: 1.6rem;
+            color: #fff;
+            flex: 1;
+
+            &::placeholder {
+                color: #A3A3A3;
+            }
+
+        }
+
+        .unit {
+            font-size: 1.4rem;
+            font-weight: 400;
+            color: #ffffff;
+        }
+    }
+}

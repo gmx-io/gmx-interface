@@ -1,0 +1,84 @@
+.Transaction {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 1001;
+  transform: translate(-50%, -50%);
+
+  &-scrollable .Transaction-content .Transaction-body {
+    max-height: calc(80vh - 5.5rem);
+    padding-right: 0.5rem;
+    overscroll-behavior: smooth;
+    overflow-y: auto;
+  }
+
+  &-backdrop {
+    position: fixed;
+    z-index: 10;
+    inset: 0;
+  }
+
+  &-content {
+    position: relative;
+    z-index: 20;
+    max-width: 90vw;
+    max-height: 90vh;
+    border: 1px solid rgb(255 255 255 / 8%);
+    border-radius: 16px;
+    background: var(--color-slate-800);
+    background: rgb(29 30 46 / 100%);
+    overflow-x: hidden;
+    box-shadow:
+      0 9px 28px 6px rgb(0 0 0 / 10%),
+      0 6px 16px 0 rgb(0 0 0 / 20%),
+      0 3px 6px -6px rgb(0 0 0 / 45%);
+  }
+
+  &.non-scrollable .Transaction-content {
+    overflow: visible;
+  }
+
+  &-header-wrapper {
+    margin: 1rem;
+  }
+
+  &-title-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+  }
+
+  &-body {
+    max-height: calc(80vh - 8.525rem);
+    margin: 1rem;
+    overflow: hidden auto;
+    overscroll-behavior: smooth;
+
+    &.no-content-padding {
+      margin: 0;
+      padding-right: 0;
+    }
+  }
+
+  &-title {
+    font-size: var(--font-size-body-large);
+    line-height: 1;
+    text-align: left;
+  }
+
+  &-close-button {
+    text-align: right;
+  }
+
+  &-close-icon {
+    text-align: right;
+    opacity: 0.6;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+}

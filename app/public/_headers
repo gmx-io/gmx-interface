@@ -1,0 +1,12 @@
+/*
+  X-Frame-Options: SAMEORIGIN
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://s3.tradingview.com https://widget.intercom.io https://js.intercomcdn.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; connect-src 'self' https: wss:; font-src 'self' data: https://js.intercomcdn.com; media-src 'self' https://js.intercomcdn.com; worker-src 'self' blob:; frame-src 'self' https://www.google.com https://www.gstatic.com https://intercom-sheets.com https://www.intercom-reporting.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+
+/charting_library/bundles/library*.js
+  Cache-Control: no-store, max-age=0, must-revalidate
+  Pragma: no-cache
+  Expires: 0

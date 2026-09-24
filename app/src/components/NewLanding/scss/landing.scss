@@ -1,0 +1,66 @@
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('@/fonts/inter/Inter-VariableFont_opsz,wght.ttf')
+    format('truetype-variations');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('@/fonts/inter/Inter-Italic-VariableFont_opsz,wght.ttf')
+    format('truetype-variations');
+}
+
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 200 1000;
+  font-display: swap;
+  src: url('@/fonts/nunito/Nunito-VariableFont_wght.ttf')
+    format('truetype-variations');
+}
+
+@font-face {
+  font-family: 'Nunito';
+  font-style: italic;
+  font-weight: 200 1000;
+  font-display: swap;
+  src: url('@/fonts/nunito/Nunito-Italic-VariableFont_wght.ttf')
+    format('truetype-variations');
+}
+.landing-container,
+.landing-container * {
+  font-family: Inter, sans-serif;
+}
+.font-nunito {
+  font-family: Nunito, sans-serif;
+}
+.font-inter,
+.font-inter * {
+  font-family: Inter, sans-serif;
+}
+.ExternalLink {
+  text-decoration: none;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  color: #fff;
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.landing-page-shader {
+  isolation: isolate;
+}
+
+.landing-page-shader canvas {
+  display: block;
+  background-color: #131313 !important;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}

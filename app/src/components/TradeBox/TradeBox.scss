@@ -1,0 +1,137 @@
+.SwapBox {
+  // padding: 1rem;
+
+  &-option-tabs.Tab.Tab__block {
+    .Tab-option {
+      padding: 1rem;
+    }
+
+    .Tab-option-icon {
+      margin-top: -0.155rem;
+      margin-right: 0.8rem;
+      transform: scale(0.75);
+      vertical-align: middle;
+    }
+  }
+
+  &-asset-options-tabs {
+    margin: 1rem 0;
+    padding-left: 1rem;
+  }
+
+  &-info-section {
+    margin-bottom: 1rem;
+    margin-top: 1.2rem;
+  }
+
+  &-form-layout {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &-warnings {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  &-slider-settings {
+    margin-bottom: 0.8rem;
+    font-size: var(--font-size-body-medium);
+
+    .Checkbox {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      direction: rtl;
+    }
+  }
+
+  &-info-row {
+    margin-bottom: 0.5rem;
+    opacity: 1;
+
+    .Exchange-info-label {
+      color: var(--color-gray-400);
+      opacity: 1;
+    }
+  }
+
+  &-section {
+    margin-top: 1rem;
+  }
+
+  &-market-selector {
+    margin-bottom: 0.8rem;
+  }
+
+  &-market-selector-dropdown {
+    .Dropdown-options {
+      top: 2.8rem;
+      text-align: right;
+    }
+
+    .Dropdown-current-arrow {
+      margin-left: 0.8rem;
+    }
+  }
+
+  &-info-section .App-card-divider:last-child {
+    display: none;
+  }
+
+  &-info-dropdown {
+    margin-right: -0.4rem;
+  }
+
+  &-option-tabs {
+    margin-bottom: 1rem;
+  }
+
+  @media (width <= 900px) {
+    &-content {
+      flex-wrap: wrap;
+
+      .GmSwap-stats-card {
+        max-width: 100%;
+        margin: 0;
+        margin-bottom: 3.1rem;
+      }
+
+      .GmSwap-box {
+        max-width: 100%;
+        margin: 0;
+      }
+    }
+  }
+}
+
+.Tradebox {
+  &-acceptable-price-impact {
+    display: flex;
+    cursor: pointer;
+
+    .edit-icon {
+      margin-bottom: -0.3rem;
+      margin-left: 0.4rem;
+      opacity: 0.7;
+    }
+  }
+
+  &-handle {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    color: var(--color-gray-400);
+    cursor: pointer;
+    user-select: none;
+    text-decoration: underline;
+    text-decoration-style: solid;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+    text-decoration-color: var(--color-gray-400);
+
+    &:hover {
+      color: var(--color-white);
+      text-decoration-color: var(--color-white);
+    }
+  }
+}

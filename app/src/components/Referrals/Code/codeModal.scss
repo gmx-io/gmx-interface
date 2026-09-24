@@ -1,0 +1,48 @@
+.referral-code-modal {
+  border-radius: 0.8rem !important;
+  .Transaction-content {
+    background: #181818 !important;
+  }
+
+  .Transaction-header-wrapper {
+    padding: 2rem;
+    margin: 0 !important;
+  }
+
+  .Transaction-body {
+    padding: 0 2rem 2rem 2rem;
+    margin: 0 !important;
+  }
+  .Transaction-title-bar {
+    margin: 0 !important;
+    padding: 0 !important;
+    .Transaction-title {
+      font-weight: 500;
+      font-size: 1.6rem;
+      line-height: 2rem;
+    }
+  }
+  .Modal-body {
+    min-width: 42rem !important;
+    justify-content: center;
+  }
+  .code-input {
+    border: 0.1rem solid #FA7B4E !important;
+    border-radius: 0.8rem;
+    &:placeholder {
+      color: #fff !important;
+    }
+    &.error {
+      border-color: #FF4D4D !important;
+    }
+  }
+  button {
+    &:disabled {
+      cursor: not-allowed;
+      background: #1F1F1F;
+      &:hover {
+        background: #1F1F1F !important;
+      }
+    }
+  }
+}

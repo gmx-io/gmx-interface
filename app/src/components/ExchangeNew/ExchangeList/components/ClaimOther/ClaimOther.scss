@@ -1,0 +1,51 @@
+.claim-other-view {
+    display: flex;
+    align-items: center;
+    border-bottom: 0.1rem solid #535353;
+    background-color: #181818;
+    .comm {
+        width: 50%;
+        padding: 1.2rem 2rem;
+        .label {
+            font-weight: 500;
+            font-size: 1.1rem;
+            line-height: 100%;
+            letter-spacing: 8%;
+            color: #A3A3A3;
+        }
+        .info {
+            margin-top: 1.2rem;
+            display: flex;
+            align-items: center;
+            .item {
+                flex: 1;
+                font-size: 1.2rem;
+                color: #A3A3A3;
+                display: flex;
+                align-items: center;
+                .amount {
+                    color: #fff;
+                    font-size: 1.3rem;
+                    font-weight: 600;
+                    padding-bottom: 0.2rem;
+                    margin-right: 1rem;
+                }
+
+                @media (max-width: 768px) {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+            }
+        }
+    }
+    .left {
+        border-right: 0.1rem solid #535353;
+    }
+}
+
+.claim-subtitle {
+    margin-top: 1rem;
+    a {
+        text-decoration: underline;
+    }
+}

@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply leading-base;
+  }
+
+  input,
+  textarea {
+    @apply placeholder:text-gray-500;
+  }
+}

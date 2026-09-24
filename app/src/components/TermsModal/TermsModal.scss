@@ -1,0 +1,129 @@
+.terms-modal__overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 100;
+}
+
+.terms-modal__center {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  z-index: 101;
+}
+
+.terms-modal {
+  width: 44rem;
+  max-width: 90vw;
+  border-radius: 1.2rem;
+  border: 1px solid #535353;
+  background: rgba(24, 24, 24, 0.88);
+}
+
+.terms-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem;
+  border-bottom: 1px solid #535353;
+}
+
+.terms-modal__title {
+  font-size: 1.6rem;
+  font-weight: 500;
+  text-align: left;
+}
+
+.terms-modal__close {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #A3A3A3;
+}
+
+.terms-modal__close:hover {
+  color: #ffffff;
+}
+
+.terms-modal__close img {
+  width: 2.0rem;
+  height: 2.0rem;
+}
+
+.terms-modal__body {
+  padding: 2rem;
+  text-align: left;
+}
+
+.terms-modal__text {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 400;
+}
+
+.terms-modal__checkbox-row {
+  display: flex;
+  align-items: center;
+  margin-top: 2rem;
+  border-top: 1px solid #535353;
+  padding-top: 1.2rem;
+}
+
+.terms-modal__checkbox-label {
+  font-size: 1.4rem;
+  font-weight: 400;
+}
+
+/* Checkbox visuals inside this modal - matching Settings radio style */
+.terms-modal__checkbox-row .Checkbox-icon-wrapper {
+  width: 1.4rem;
+  height: 1.4rem;
+  background-color: #181a29;
+  border: 0.15rem solid #A3A3A3;
+  border-radius: 0.4rem;
+  margin-right: 1rem;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:after {
+    content: '';
+    position: absolute;
+    display: none;
+    width: 0.6rem;
+    height: 0.3rem;
+    border-left: 0.15rem solid #fff;
+    border-bottom: 0.15rem solid #fff;
+    transform: rotate(-45deg);
+    top: 0.3rem;
+  }
+}
+
+.terms-modal__checkbox-row .Checkbox-icon {
+  display: none;
+  /* Hide react-icons, use CSS checkmark instead */
+}
+
+.terms-modal__checkbox-row .Checkbox.selected .Checkbox-icon-wrapper {
+  background-color: #FA7B4E;
+  border-color: #FA7B4E;
+
+  &:after {
+    display: block;
+  }
+}
+
+.terms-modal__footer {
+  padding: 0 2rem 2rem 2rem;
+}
+
+.terms-modal__button {
+  width: 100%;
+  font-size: 1.6rem;
+  font-weight: 400;
+}

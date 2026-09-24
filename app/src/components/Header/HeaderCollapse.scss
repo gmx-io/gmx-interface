@@ -1,0 +1,32 @@
+.App-header.large {
+  // transition-property: all;
+  // transition-timing-function: cubic-bezier(.4,0,.2,1);
+  // transition-duration: .3s;
+}
+
+.App-header-container.collapsed {
+  .App-header-link-container,
+  .common {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 0.8rem 0;
+  }
+  
+  .App-header-link {
+    justify-content: center;
+  }
+  
+  .App-header-link svg {
+    margin-right: 0;
+  }
+  .common svg {
+    margin-right: 0;
+  }
+}
+
+.collapsed .App-header-links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

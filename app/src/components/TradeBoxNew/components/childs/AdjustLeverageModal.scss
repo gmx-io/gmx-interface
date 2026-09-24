@@ -1,0 +1,154 @@
+.adjust-leverage-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.adjust-leverage-modal {
+  background-color: #181818;
+  border-radius: 0.8rem;
+  width: 42rem;
+  max-width: 95vw;
+  box-shadow: 0 0.4rem 2rem rgba(0, 0, 0, 0.25);
+
+  .tradeBox-exchangeForm-button {
+    margin: 1.5rem 0;
+    height: 4rem;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.6rem 2rem;
+
+    .title {
+      font-size: 1.6rem;
+      font-weight: 500;
+      color: #fff;
+      margin: 0;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.4rem;
+
+      img {
+        width: 1.6rem;
+        height: 1.6rem;
+      }
+    }
+  }
+
+  .modal-content {
+    padding: 0 2rem 2rem;
+
+    .description {
+      color: #A3A3A3;
+      font-size: 1.4rem;
+      margin-bottom: 2rem;
+    }
+
+    .slider-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 2.5rem;
+      padding: 0 1rem;
+
+    }
+    .no-copy {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    .rc-slider {
+      margin-right: 1.7rem;
+
+      .rc-slider-mark-text,
+      .rc-slider-mark-text-active {
+        color: #A3A3A3;
+        font-size: 1.1rem;
+        margin-top: -0.5rem;
+        font-weight: 500;
+      }
+    }
+
+    .input-container {
+      display: flex;
+      align-items: center;
+      background-color: #1F1F1F;
+      border-radius: 0.4rem;
+      padding-left: 1rem;
+      width: 6rem;
+      height: 3.2rem;
+
+      .leverage-input {
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 1.3rem;
+        padding: 1.2rem 0;
+        outline: none;
+        width: 3.4rem;
+        margin-right: 0.5rem;
+      }
+
+      .input-suffix {
+        color: #A3A3A3;
+        font-size: 1.3rem;
+        margin-right: 0.5rem;
+      }
+    }
+
+    .confirm-button {
+      width: 100%;
+      background-color: #FA7B4E;
+      color: #fff;
+      border: none;
+      border-radius: 0.4rem;
+      padding: 1rem;
+      font-size: 1.6rem;
+      font-weight: 500;
+      cursor: pointer;
+      margin-bottom: 1.5rem;
+
+      &:hover {
+        background-color: #FA7B4E;
+      }
+    }
+
+    .info-message {
+      display: flex;
+      align-items: flex-start;
+      background-color: #1F1F1F;
+      border-radius: 0.4rem;
+      padding: 1.2rem 1.6rem;
+
+      .info-icon {
+        width: 2.0rem;
+        height: 2.0rem;
+        margin-right: 1.2rem;
+        margin-top: 0.2rem;
+      }
+
+      p {
+        color: #fff;
+        font-size: 1.4rem;
+        margin: 0;
+      }
+    }
+  }
+}

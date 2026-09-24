@@ -1,0 +1,87 @@
+.pnl-chart {
+  .title-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  .time-frame-toggle {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: auto;
+    gap: 0.5rem;
+
+    .nowrap {
+      display: inline-flex;
+      align-items: center;
+      // margin-bottom: 0.25rem;
+      // padding: 0.15rem 1rem;
+      padding: 0rem 1rem 0.3rem !important;
+      font-size: var(--font-size-body-small);
+      white-space: nowrap;
+    }
+  }
+
+  // Ensure chart container has enough space
+  .recharts-wrapper {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 400px;
+  }
+
+  // Ensure X-axis labels are fully visible
+  .recharts-xAxis .recharts-cartesian-axis-tick text {
+    font-size: 14px;
+    text-anchor: end;
+  }
+
+  // Ensure Y-axis has enough space
+  .recharts-yAxis .recharts-cartesian-axis-tick text {
+    font-size: 14px;
+  }
+}
+
+@media (width <= 1100px) {
+  .pnl-chart {
+    .title-section {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .time-frame-toggle {
+      width: 100%;
+      margin-left: 0;
+      padding-bottom: 0.5rem;
+
+      // Remove scrollbar
+      overflow-x: visible;
+    }
+
+    // Increase chart container minimum height on small screens
+    .recharts-wrapper {
+      min-height: 350px;
+    }
+  }
+}
+
+// Adjust chart size on very small screens
+@media (width <= 600px) {
+  .pnl-chart {
+    .recharts-wrapper {
+      min-height: 300px;
+      margin-bottom: 20px;
+    }
+
+    // Adjust X-axis label font size but keep it readable
+    .recharts-xAxis .recharts-cartesian-axis-tick text {
+      font-size: 12px;
+    }
+
+    // Adjust Y-axis label font size to match X-axis on mobile
+    .recharts-yAxis .recharts-cartesian-axis-tick text {
+      font-size: 12px;
+    }
+  }
+}

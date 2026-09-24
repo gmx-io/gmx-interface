@@ -1,0 +1,937 @@
+.competition {
+  padding-top: 0;
+
+  .top {
+    position: relative;
+    width: 100%;
+    height: auto;
+    background-image: url('@/img/competition/background.png');
+    background-size: cover;
+
+    .tabs-list {
+      display: flex;
+      flex-wrap: nowrap;
+      margin-top: 2rem;
+      border-radius: 0.2rem;
+      overflow-x: auto;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      .item {
+        min-width: 23rem;
+        margin-right: 0.8rem;
+        padding: 1rem 1.4rem;
+        border-radius: 0.5rem;
+        background: rgb(255 255 255 / 10%);
+        cursor: pointer;
+        backdrop-filter: blur(10px);
+
+        img {
+          width: 13px;
+          height: 13px;
+          margin-right: 0.9rem;
+        }
+
+        .name {
+          font-size: 2rem;
+          color: rgb(255 255 255 / 45%);
+        }
+
+        .line {
+          width: 100%;
+          height: 1px;
+          margin: 0.8rem 0 0.9rem;
+          background: rgb(255 255 255 / 20%);
+        }
+
+        .time-text {
+          font-size: 1.2rem;
+          color: rgb(255 255 255 / 45%);
+        }
+
+        &:hover {
+          backdrop-filter: blur(100px);
+
+          .name {
+            color: #fff;
+          }
+
+          .time-text {
+            color: #fff;
+          }
+        }
+      }
+
+      .item-active {
+        background: #FA7B4E;
+
+        .name {
+          color: #fff;
+        }
+
+        .time-text {
+          color: #fff;
+        }
+      }
+    }
+
+    .logo {
+      width: 100%;
+      padding: 3rem 4.6rem 0 0;
+    }
+
+    .icon-logo {
+      margin: 11rem auto 0;
+    }
+
+    .title {
+      margin-top: 2rem;
+      font-size: 8rem;
+      font-weight: bold;
+      line-height: 8rem;
+      letter-spacing: 1px;
+      color: #fff;
+    }
+
+    .caption {
+      padding: 2.4rem 0 6rem;
+      font-size: 4.8rem;
+      line-height: 4.8rem;
+      color: #fff;
+    }
+
+    a {
+      padding: 1.9rem 5rem;
+    }
+  }
+
+  .info {
+    margin-right: 3.2rem;
+    margin-left: 3.2rem;
+
+    .common {
+      width: 50rem;
+
+      img {
+        width: 9rem;
+        height: 9rem;
+      }
+
+      .coming-soon {
+        padding: 3rem 0;
+        font-size: 2.8rem;
+        line-height: 2.4rem;
+        color: #fff;
+      }
+
+      .time {
+        padding-bottom: 3rem;
+        font-size: 6rem;
+        font-weight: bold;
+        line-height: 6.1rem;
+        color: #fff;
+      }
+
+      .line {
+        width: 100%;
+        height: 1px;
+        background: rgb(255 255 255 / 20%);
+      }
+
+      .introduce {
+        padding-top: 3rem;
+        font-size: 2rem;
+        line-height: 3.2rem;
+        text-align: center;
+        color: rgb(255 255 255 / 85%);
+      }
+    }
+
+    .left {
+      margin-right: 20rem;
+    }
+  }
+
+  .prizes-info {
+    margin-top: 18rem;
+    margin-right: 3.2rem;
+    margin-left: 3.2rem;
+
+    .title {
+      font-size: 4.8rem;
+      font-weight: 600;
+      line-height: 4.8rem;
+      color: #fff;
+    }
+
+    .introduce {
+      margin-top: 2.4rem;
+      font-size: 3.2rem;
+      line-height: 5.8rem;
+      color: #fff;
+    }
+
+    .lists {
+      margin-top: 3rem;
+
+      .item {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 3rem;
+        padding: 3.4rem 2.4rem;
+        border-radius: 18px;
+        background: #181818;
+
+        &:last-child {
+          margin-right: 0;
+        }
+
+        p {
+          width: 9rem;
+          border-radius: 6px;
+          background: #FA7B4E;
+          line-height: 3.6rem;
+          text-align: center;
+        }
+
+        em {
+          width: 65px;
+          margin-left: 3.1rem;
+          font-size: 32px;
+          line-height: 32px;
+          text-align: center;
+          color: #fff;
+          font-style: normal;
+        }
+      }
+    }
+  }
+
+  .leaderboard {
+    margin-top: 18rem;
+    margin-right: 3.2rem;
+    margin-left: 3.2rem;
+
+    .label {
+      font-size: 4.8rem;
+      font-weight: 600;
+      line-height: 4.8rem;
+      text-align: center;
+      color: #fff;
+    }
+
+    .ranklist {
+      display: flex;
+      justify-content: center;
+      margin-top: 14rem;
+
+      .item {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 22.4rem;
+        padding: 3rem 0 3.4rem;
+        border-radius: 24px 28px 28px;
+        background: linear-gradient(
+          180deg,
+          #181818 0%,
+          rgb(22 23 46 / 40%) 100%
+        );
+
+        .rank {
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+
+          .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50px;
+          }
+
+          .icon {
+            z-index: 2;
+            width: 3.6rem;
+            height: 3.6rem;
+            margin-top: -2rem;
+          }
+        }
+
+        .name {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-top: 1.6rem;
+          font-size: 2rem;
+          font-weight: 500;
+          line-height: 2.4rem;
+          color: #fff;
+        }
+
+        .referral-code {
+          margin-top: 0.3rem;
+
+          .flex {
+            justify-content: center;
+          }
+
+          span {
+            font-size: 1.8rem;
+          }
+        }
+
+        .volume {
+          margin-top: 2.8rem;
+          font-size: 2.8rem;
+          font-weight: 500;
+          line-height: 2.8rem;
+          color: #fff;
+        }
+
+        .prize {
+          margin-top: 1.2rem;
+          font-size: 1.2rem;
+          line-height: 1.6rem;
+          color: rgb(255 255 255 / 65%);
+          font-style: normal;
+        }
+      }
+    }
+
+    .pagination {
+      margin-top: 1.6rem;
+    }
+  }
+
+  .eligible-trades {
+    margin-right: 3.2rem;
+    margin-left: 3.2rem;
+
+    // display: flex;
+    // flex-direction: column;
+    // align-items: center;
+    text-align: center;
+
+    .label {
+      font-size: 4.8rem;
+      font-weight: 600;
+      line-height: 4.8rem;
+      color: #fff;
+    }
+
+    .subtitle {
+      margin-top: 1.4rem;
+      font-size: 2rem;
+      color: rgb(255 255 255 / 85%);
+    }
+
+    .last-trade {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: fit-content;
+      margin: 4rem auto 0;
+      padding: 1.5rem 3.2rem;
+
+      // background: rgba(250, 123, 78, 0.45);
+      border-radius: 8px;
+      background: #181818;
+
+      .left {
+        display: flex;
+        align-items: center;
+
+        img {
+          width: 2.8rem;
+          height: 2.8rem;
+          border-radius: 50px;
+        }
+
+        span {
+          margin-left: 0.8rem;
+          font-size: 1.6rem;
+          line-height: 2.4rem;
+          color: #fff;
+        }
+      }
+
+      .com {
+        span {
+          font-size: 1.6rem;
+          line-height: 2.4rem;
+          color: rgb(255 255 255 / 85%);
+        }
+
+        em {
+          font-size: 1.6rem;
+          font-weight: 500;
+          line-height: 2.4rem;
+          color: #fff;
+
+          // margin-left: 1.4rem;
+        }
+      }
+
+      .center {
+        margin: 0 0 0 5rem;
+      }
+
+      .copy {
+        span {
+          font-size: 1.4rem;
+        }
+      }
+    }
+  }
+
+  .rules {
+    margin: 18rem auto 5rem;
+    padding: 3rem 6rem;
+    border-radius: 2rem;
+    background-color: #181818;
+
+    .label {
+      margin-bottom: 7.6rem;
+      font-size: 4.8rem;
+      font-weight: 600;
+      line-height: 4.8rem;
+      text-align: center;
+      color: #fff;
+    }
+
+    .group {
+      margin-top: 1.7rem;
+      padding-bottom: 1.7rem;
+      border-bottom: 1px solid rgb(255 255 255 / 12%);
+
+      p {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 5.8rem;
+        font-size: 2rem;
+        font-weight: 500;
+        line-height: 2.4rem;
+        color: #fff;
+        cursor: pointer;
+      }
+
+      span {
+        display: flex;
+        flex-direction: column;
+        font-size: 1.7rem;
+        line-height: 2.8rem;
+        color: rgb(255 255 255 / 75%);
+      }
+
+      ul {
+        margin: 1rem 0;
+        padding: 0 0 0 2rem;
+        font-size: 1.8rem;
+        line-height: 2.5rem;
+        color: rgb(255 255 255 / 70%);
+
+        li {
+          list-style: circle;
+        }
+      }
+
+      .open {
+        height: 100%;
+      }
+
+      .hidden {
+        height: 0%;
+      }
+    }
+  }
+
+  .layout-width {
+    width: 120rem;
+    margin: 0 auto;
+  }
+
+  em {
+    font-style: normal;
+  }
+
+  .no-data-img {
+    image-rendering: pixelated;
+    filter: blur(3px) contrast(20%);
+  }
+
+  .animate-pulse-customize {
+    animation: pulse-customize 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse-customize {
+    0%,
+    100% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  .transition-colors-customize {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+}
+
+@media only screen and (width <= 1200px) {
+  .competition {
+    .top {
+      .logo {
+        .icon-use {
+          width: 6rem;
+        }
+      }
+
+      .tabs-list {
+        margin-top: 1rem;
+
+        .item {
+          padding: 0.6rem 1rem;
+
+          img {
+            width: 1rem;
+            height: 1rem;
+            margin-right: 0.5rem;
+          }
+
+          .name {
+            font-size: 1.5rem;
+          }
+
+          .line {
+            margin: 0.6rem 0;
+          }
+
+          .time-text {
+            font-size: 1.2rem;
+          }
+        }
+      }
+
+      .icon-logo {
+        width: 10rem;
+      }
+
+      .title {
+        font-size: 6rem;
+      }
+
+      .caption {
+        font-size: 4rem;
+      }
+    }
+
+    .info {
+      .common {
+        width: 38rem;
+
+        .time {
+          padding-bottom: 3rem;
+          font-size: 5rem;
+          font-weight: bold;
+          line-height: 6.1rem;
+          color: #fff;
+        }
+
+        .line {
+          width: 100%;
+          height: 1px;
+          background: rgb(255 255 255 / 20%);
+        }
+
+        .introduce {
+          padding-top: 3rem;
+          font-size: 2rem;
+          line-height: 3.2rem;
+          text-align: center;
+          color: rgb(255 255 255 / 85%);
+        }
+      }
+
+      .left {
+        margin-right: 10rem;
+      }
+    }
+
+    .prizes-info {
+      .lists {
+        .item {
+          margin-bottom: 3rem;
+        }
+      }
+    }
+
+    .leaderboard {
+      .ranklist {
+        .item {
+          width: 17rem;
+          padding: 2rem 0;
+
+          .rank {
+            .avatar {
+              width: 50px;
+              height: 50px;
+            }
+
+            .icon {
+              z-index: 2;
+              width: 2.6rem;
+              height: 2.6rem;
+              margin-top: -1.5rem;
+            }
+          }
+
+          .name {
+            margin-top: 1rem;
+            font-size: 1.6rem;
+          }
+
+          .volume {
+            margin-top: 1rem;
+            font-size: 1.8rem;
+          }
+        }
+      }
+
+      .table-fixed {
+        width: 100%;
+        min-width: 100rem;
+      }
+    }
+
+    .eligible-trades {
+      .table-fixed {
+        width: 100%;
+        min-width: 100rem;
+      }
+    }
+
+    .rules {
+      width: calc(100% - 6.4rem);
+      margin-right: 3.2rem;
+      margin-left: 3.2rem;
+      padding: 3rem 4rem;
+
+      .label {
+        margin-bottom: 4.6rem;
+        font-size: 2.6rem;
+        font-weight: 400;
+        line-height: 2.8rem;
+      }
+
+      .group {
+        margin-bottom: 2rem;
+
+        p {
+          font-size: 2rem;
+        }
+
+        span {
+          font-size: 1.4rem;
+
+          // color: #fff;
+        }
+
+        ul {
+          font-size: 1.8rem;
+          line-height: 2.2rem;
+        }
+      }
+    }
+
+    .layout-width {
+      width: 90%;
+    }
+  }
+}
+
+@media only screen and (width <= 900px) {
+  .competition {
+    .top {
+      .tabs-list {
+        .item {
+          .line {
+            margin: 0.4rem 0;
+          }
+        }
+      }
+
+      .title {
+        font-size: 3rem;
+        line-height: 4rem;
+      }
+
+      .caption {
+        padding: 2rem 0 4rem;
+        font-size: 2rem;
+        line-height: normal;
+      }
+
+      .logo {
+        padding-right: 0;
+
+        img {
+          &:first-child {
+            width: 10rem;
+          }
+
+          &:last-child {
+            width: 6rem;
+          }
+        }
+      }
+    }
+
+    .info {
+      // flex-direction: column;
+      margin-top: 4rem;
+
+      .common {
+        width: 80%;
+
+        img {
+          width: 5rem;
+          height: 5rem;
+        }
+
+        .coming-soon {
+          padding: 1.5rem 0;
+          font-size: 1.3rem;
+          line-height: 1.5rem;
+          text-align: center;
+          color: #fff;
+        }
+
+        .time {
+          padding-bottom: 1rem;
+          font-size: 2.2rem;
+          line-height: 4rem;
+        }
+
+        .line {
+          width: 90%;
+        }
+
+        .introduce {
+          padding-top: 1rem;
+          font-size: 1.4rem;
+          line-height: 2.4rem;
+        }
+      }
+
+      .left {
+        margin-right: 0;
+        margin-bottom: 4rem;
+      }
+    }
+
+    .prizes-info {
+      margin-top: 13rem;
+
+      .title {
+        font-size: 2.8rem;
+        line-height: 2.8rem;
+      }
+
+      .introduce {
+        padding: 0 1rem;
+        font-size: 1.8rem;
+        line-height: 3.2rem;
+        text-align: center;
+      }
+
+      .lists {
+        .item {
+          margin-right: 1rem;
+          margin-bottom: 1.5rem;
+          padding: 2rem 1.4rem;
+
+          p {
+            width: 5rem;
+            line-height: 2.6rem;
+          }
+
+          em {
+            margin-left: 1rem;
+            font-size: 1.7rem;
+            line-height: 2rem;
+          }
+        }
+      }
+    }
+
+    .leaderboard {
+      margin-top: 8rem;
+      margin-right: 1.2rem;
+      margin-left: 1.2rem;
+
+      .label {
+        font-size: 3.5rem;
+        line-height: 4rem;
+      }
+
+      .ranklist {
+        width: 100%;
+        margin-top: 12rem;
+
+        .item {
+          width: 17rem;
+          margin: 0 0.5rem !important;
+          padding: 2rem 0;
+          border-radius: 2rem;
+
+          .rank {
+            .avatar {
+              width: 50px;
+              height: 50px;
+            }
+
+            .icon {
+              width: 2.6rem;
+              height: 2.6rem;
+              margin-top: -1.5rem;
+            }
+          }
+
+          .name {
+            margin-top: 0.5rem;
+            font-size: 1rem;
+            
+          }
+
+          .referral-code {
+            margin: 0.4rem 0;
+
+            span {
+              font-size: 1rem;
+            }
+          }
+
+          .volume {
+            margin-top: 0;
+            font-size: 1.2rem;
+            line-height: 1.2rem;
+          }
+
+          .prize {
+            margin-top: 0.5rem;
+          }
+        }
+      }
+
+      .rounded-4 {
+        margin-bottom: 8rem;
+      }
+    }
+
+    .eligible-trades {
+      margin-right: 1.2rem;
+      margin-left: 1.2rem;
+
+      .label {
+        font-size: 3.5rem;
+        line-height: 4rem;
+      }
+
+      .last-trade {
+        margin-top: 2rem;
+        padding: 1rem 1.2rem;
+
+        // .left {
+        //   span {
+        //     margin: 0.2rem 0 0 0;
+        //   }
+        // }
+        .center {
+          margin: 0 0 0 5rem;
+        }
+
+        .com {
+          em {
+            margin: 0.5rem;
+          }
+        }
+      }
+
+      // .table-fixed {
+      //   width: 70rem;
+      // }
+      .subtitle {
+        margin-top: .5rem;
+        margin-bottom: .5rem;
+        font-size: 1.5rem;
+      }
+    }
+
+    .rules {
+      width: 100%;
+      margin-top: 10rem;
+      margin-right: 0;
+      margin-left: 0;
+      padding: 2rem 1.2rem;
+      background-color: transparent;
+
+      .label {
+        font-size: 2rem;
+        font-weight: 400;
+        line-height: 2rem;
+      }
+
+      .desc.show {
+        color: rgb(255 255 255 / 75%)!important;
+      }
+
+      .group {
+        margin-bottom: 1rem;
+
+        p {
+          height: 3.5rem;
+          font-size: 1.6rem;
+        }
+
+        span {
+          font-size: 1.6rem;
+        }
+
+        ul {
+          font-size: 1.6rem;
+          line-height: 2rem;
+        }
+      }
+    }
+
+    .layout-width {
+      width: 94%;
+    }
+  }
+}
+
+@media only screen and (width <= 800px) {
+  .competition {
+    .leaderboard {
+      .table-fixed {
+        min-width: 50rem;
+      }
+    }
+
+    .eligible-trades {
+      .table-fixed {
+        min-width: 62rem;
+      }
+    }
+  }
+}

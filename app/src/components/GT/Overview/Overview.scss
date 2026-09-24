@@ -1,0 +1,286 @@
+.overview {
+  background-color: #131313;
+  // padding: 1.5rem;
+  // padding-right: 0.8rem;
+  color: white;
+
+  .overview-container {
+    margin: 0 auto;
+  }
+
+  // GT Wallet Section
+  .gt-wallet-section {
+    margin-bottom: 0.8rem;
+    border-radius: 0.5rem;
+    background-color: #181818;
+    // padding: 2rem;
+
+    .wallet-header {
+      // margin-bottom: 1.5rem;
+
+      h2 {
+        padding: 2rem 2rem 1.6rem 2rem;
+        font-size: 2rem;
+        font-weight: 500;
+        border-bottom: 1px solid #535353;
+
+        @media (max-width: 768px) {
+          font-size: 1.4rem;
+        }
+      }
+    }
+
+    .wallet-stats {
+      display: grid;
+      padding: 1.1rem 2rem 2rem 2rem;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 2rem 4rem;
+      position: relative;
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0rem;
+        width: 1px;
+        height: 100%;
+        background-color: #535353;
+        transform: translateX(-50%);
+      }
+
+      @media (max-width: 768px) {
+        grid-template-columns: repeat(1, 1fr);
+        grid-template-rows: auto;
+        gap: 1rem;
+        // padding-bottom: 2rem;
+
+        &::before {
+          display: none;
+        }
+
+        .stat-item:nth-child(odd) {
+          order: 1;
+        }
+
+        .stat-item:nth-child(even) {
+          order: 2;
+        }
+
+        .stat-item:nth-child(2) {
+          position: relative;
+          margin-top: 1rem;
+          padding-top: 2.2rem;
+
+          &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -2rem;
+            right: -2rem;
+            height: 1px;
+            background-color: #53535380;
+          }
+        }
+      }
+
+      .stat-item {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+
+        .stat-label {
+          font-size: 1.4rem;
+          font-weight: 500;
+          color: #A3A3A3;
+          white-space: nowrap;
+
+          @media (max-width: 768px) {
+            letter-spacing: 0.01em;
+          }
+        }
+
+        .stat-value {
+          font-size: 1.4rem;
+          font-weight: 500;
+          color: white;
+          letter-spacing: 0.01em;
+          font-variant-numeric: tabular-nums;
+
+          span {
+            letter-spacing: 0.01em;
+            font-variant-numeric: tabular-nums;
+          }
+
+          @media (max-width: 768px) {
+            font-weight: 400;
+          }
+        }
+      }
+    }
+  }
+
+  // Action Cards Section
+  .action-cards {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 0.8rem;
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .action-card {
+      border-radius: 0.8rem;
+      background: radial-gradient(128.85% 201.43% at 89.83% 226.28%, rgba(250, 123, 78, 0.70) 0%, rgba(250, 123, 78, 0.00) 100%), var(--Fill-SurfaceBase, #181818);
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      min-height: 14.4rem;
+
+      @media (max-width: 1920px) {
+        height: 25.3rem;
+      }
+
+      @media (max-width: 1024px) {
+        height: 27rem;
+      }
+
+      @media (max-width: 768px) {
+        height: 25.3rem;
+      }
+
+      // Trading card
+      &.trading {}
+
+      // Staking card
+      &.staking {}
+
+      // Referral card
+      &.referral {
+        @media (max-width: 768px) {
+          margin-bottom: 0.8rem;
+        }
+      }
+
+      .card-header {
+        // margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+
+        @media (max-width: 1920px) {
+          // margin-bottom: 4rem;
+        }
+
+        @media (max-width: 1100px) {
+          // height: 2rem;
+        }
+
+        .card-icon {
+          display: flex;
+          height: 3rem;
+          width: 3rem;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+
+          &.blue {
+            background-color: rgba(250, 123, 78, 0.2);
+
+            .icon-dot {
+              height: 1.5rem;
+              width: 1.5rem;
+              border-radius: 50%;
+              background-color: #FA7B4E;
+            }
+          }
+
+          &.purple {
+            background-color: rgba(250, 123, 78, 0.2);
+
+            .icon-dot {
+              height: 1.5rem;
+              width: 1.5rem;
+              border-radius: 50%;
+              background-color: #FA7B4E;
+            }
+          }
+
+          &.green {
+            background-color: rgba(16, 185, 129, 0.2);
+
+            .icon-dot {
+              height: 1.5rem;
+              width: 1.5rem;
+              border-radius: 50%;
+              background-color: #31C366;
+            }
+          }
+        }
+
+        h3 {
+          font-size: 2rem;
+          font-weight: 500;
+          margin: 0;
+        }
+
+        img {
+          object-fit: contain;
+        }
+      }
+
+      .card-description {
+        max-width: 22rem;
+        min-height: 7.2rem;
+        font-size: 1.4rem;
+        color: #A3A3A3;
+        font-weight: 400;
+        line-height: 130%;
+        letter-spacing: 0.2px;
+      }
+
+      .card-button {
+        // width: 20.1rem;
+        position: relative;
+        display: flex;
+        overflow: hidden;
+        gap: 0.4rem;
+        background-color: #FA7B4E;
+        border-radius: 0.8rem;
+        padding: 1.2rem;
+        font-weight: 500;
+        font-size: 1.3rem;
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: inherit;
+          background: rgba(19, 19, 19, 0.1);
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 160ms ease;
+        }
+
+        &:not(:disabled):hover::before {
+          opacity: 1;
+        }
+
+        &:hover {
+          background-color: #FA7B4E;
+        }
+
+        &:active {
+          background-color: #FA7B4E;
+        }
+      }
+    }
+  }
+}

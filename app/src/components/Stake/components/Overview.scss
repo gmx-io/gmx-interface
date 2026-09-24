@@ -1,0 +1,154 @@
+.overview-view {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+
+  .public {
+    width: 100%;
+    background: #181818;
+    border-radius: 0.8rem;
+
+    &:last-child {
+      margin-right: 0.8rem;
+    }
+
+    .title {
+      font-size: 2rem;
+      font-weight: 500;
+      padding: 2rem 2rem 1.6rem 2rem;
+      height: 6rem;
+      box-sizing: border-box;
+      border-bottom: 1px solid #535353;
+
+      @media (min-width: 1280px) {
+        font-size: 1.6rem;
+      }
+    }
+
+    .title-with-tooltip {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+
+      .tooltip-handle {
+        display: flex;
+        align-items: center;
+      }
+
+      .title-tooltip-icon {
+        width: 2rem;
+        height: 2rem;
+        cursor: pointer;
+      }
+    }
+
+    .content {
+      padding: 0 2rem 0 2rem;
+
+      .wallet-info {
+        padding: 1.2rem 0;
+      }
+
+      .list {
+        height: 2.8rem;
+        line-height: 2.8rem;
+        display: flex;
+        justify-content: space-between;
+
+        // padding: 1.1rem 0;
+        p {
+          font-size: 1.4rem;
+          font-weight: 500;
+          color: #A3A3A3;
+          font-variant-numeric: tabular-nums;
+          font-feature-settings: 'tnum';
+
+          &:last-child {
+            color: #fff;
+          }
+        }
+      }
+
+      .button-box {
+        display: flex;
+        flex-direction: row;
+        margin-top: 4rem;
+        font-size: 1.3rem;
+
+        button {
+          position: relative;
+          overflow: hidden;
+          border-radius: 0.8rem;
+          padding: 0.8rem 1.2rem;
+
+          &::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: rgba(19, 19, 19, 0.1);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 160ms ease;
+          }
+
+          &:not(:disabled):not(.disabled-button):hover::before {
+            opacity: 1;
+          }
+
+          // background: #FA7B4E;
+          &:last-child {
+            margin-left: 1rem;
+          }
+        }
+      }
+    }
+  }
+
+  .right {
+    .content {
+      .list {
+        &:first-child {
+          text-transform: uppercase;
+
+          p {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #A3A3A3;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .overview-view {
+    grid-template-columns: 1fr;
+
+    .public {
+      .title {
+        font-size: 1.4rem;
+      }
+
+      .content {
+        .button-box {
+          margin-bottom: 1.6rem;
+          margin-top: 1.2rem;
+        }
+
+        .wallet-info {
+
+          // padding: 1.2rem 0;
+          .list {
+            p {
+              &:last-child {
+                font-weight: 400;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

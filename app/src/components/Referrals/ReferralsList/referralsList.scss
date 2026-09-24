@@ -1,0 +1,370 @@
+.referrals-wrap {
+  background: #0f1020;
+}
+
+.referral-code-modal {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+
+  .Transaction-content {
+    background: #181818 !important;
+  }
+
+  .Transaction-header-wrapper {
+    padding: 2rem; // 20px
+    margin: 0 !important;
+  }
+
+  .Transaction-body {
+    padding: 0 2rem 2rem 2rem; // 0 20px 20px 20px
+    margin: 0 !important;
+
+    .code-input {
+      border: 0.1rem solid #FA7B4E; // 1px
+      border-radius: 0.8rem; // 8px
+
+      &:placeholder {
+        color: #fff !important;
+      }
+    }
+  }
+
+  .Transaction-title-bar {
+    margin: 0 !important;
+    padding: 0 !important;
+
+    .Transaction-title {
+      font-weight: 500;
+      font-size: 1.6rem; // 16px
+      line-height: 2rem; // 20px
+    }
+  }
+
+  .referral-list {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+
+    .referral-list-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.2rem; // 12px
+      margin-top: 1.6rem;
+
+      .referral-summary {
+        .summary-line {
+          display: flex;
+          align-items: center;
+          font-size: 1.4rem; // 14px
+          line-height: 2rem; // 20px
+          font-weight: 400;
+          color: #A3A3A3;
+          margin: 0;
+
+          .summary-number {
+            margin: 0 0.4rem; // 0 4px
+            font-size: 1.6rem; // 16px
+            line-height: 2rem; // 20px
+            font-weight: 500;
+            color: #ffffff;
+          }
+        }
+      }
+
+      .sort-trigger {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        background: #1F1F1F;
+        height: 3.2rem; // 32px
+        line-height: 3.2rem; // 32px
+        border-radius: 0.8rem; // 8px
+        padding: 0 1.2rem; // 0 12px
+
+        img {
+          display: block;
+          width: 1.6rem; // 16px
+          height: 1.6rem; // 16px
+        }
+
+        .sort-trigger-text {
+          margin-left: 0.4rem; // 4px
+          font-size: 1.3rem; // 13px
+          line-height: 1.6rem; // 16px
+          font-weight: 500;
+          color: #A3A3A3;
+        }
+      }
+    }
+
+    .referral-list-content {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem; // 8px
+
+      .referral-card {
+        padding: 1.2rem; // 12px
+        border-radius: 0.8rem; // 8px
+        background: #1F1F1F;
+        font-variant-numeric: tabular-nums;
+        font-feature-settings: 'tnum';
+
+        .t-time {
+          font-variant-numeric: tabular-nums;
+          font-feature-settings: 'tnum';
+        }
+
+        .card-left {
+          .address {
+            font-size: 1.6rem; // 13px
+            line-height: 2.1rem; // 16px
+          }
+
+          .joined {
+            font-size: 1rem; // 12px
+            line-height: 1.3rem; // 16px
+            font-weight: 400;
+            color: #A3A3A3;
+            margin-top: 0.8rem;
+
+            .joined-time {
+              color: #A3A3A3;
+              font-weight: 500;
+            }
+          }
+        }
+
+        .card-right {
+          text-align: right;
+
+          .total-earned {
+            font-size: 1.6rem; // 13px
+            line-height: 2.1rem; // 16px
+            color: #31C366;
+          }
+
+          .total-earned-label {
+            font-size: 1.2rem; // 12px
+            color: #A3A3A3;
+            margin-top: 0.8rem;
+            line-height: 1.3rem;
+          }
+        }
+      }
+
+      .empty-hint {
+        font-size: 1.3rem; // 13px
+        line-height: 1.6rem; // 16px
+        color: #A3A3A3;
+        text-align: center;
+        padding: 1.2rem 0; // 12px 0
+      }
+    }
+  }
+}
+
+.referral-sort-modal {
+  .sort-panel {
+    padding: 1.2rem; // 12px
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem; // 12px
+
+    .sort-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 4rem; // 36px
+      padding: 0 1.2rem; // 0 12px
+      border-radius: 0.8rem; // 8px
+      background: #1F1F1F;
+      cursor: pointer;
+      transition: background 0.15s ease;
+
+      &:hover {
+        background: #323232;
+      }
+
+      .sort-row-label {
+        font-size: 1.3rem; // 13px
+        font-weight: 500;
+        line-height: 1.6rem; // 16px
+        color: #A3A3A3;
+      }
+    }
+
+    .sort-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.8rem; // 8px
+      margin-top: 0.4rem; // 4px
+
+      .btn-reset {
+        height: 3.2rem; // 32px
+        padding: 0 1.2rem; // 0 12px
+        border-radius: 0.6rem; // 6px
+        background: #323232;
+        color: #A3A3A3;
+        font-size: 1.3rem; // 13px
+        line-height: 3.2rem; // 32px
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+      }
+
+      .btn-apply {
+        height: 3.2rem; // 32px
+        padding: 0 1.2rem; // 0 12px
+        border-radius: 0.6rem; // 6px
+        background: #6c5dd3;
+        color: #ffffff;
+        font-size: 1.3rem; // 13px
+        line-height: 3.2rem; // 32px
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 0 0 0.1rem rgba(108, 93, 211, 0.2) inset; // 1px
+      }
+    }
+  }
+}
+
+.referral-sort-modal {
+  .Modal-content {
+    width: 46rem !important;
+  }
+
+  .Modal-backdrop {
+    background: var(--overlay-50, #13131380);
+  }
+
+  .Modal-header-wrapper {
+    width: 100% !important;
+  }
+
+  .Modal-body {
+    padding: 1.6rem !important;
+    margin: 0 !important;
+
+    .hight-svg {
+      svg {
+        height: 1.6rem;
+        color: #FA7B4E;
+      }
+    }
+
+    .sort-panel {
+      padding: 0 !important;
+
+      .sort-row {
+        background: #323232 !important;
+        color: #A3A3A3;
+        font-weight: 500;
+        font-size: 1.4rem;
+      }
+
+      .primary-btn-style {
+        background: #FA7B4E;
+        line-height: 4rem;
+        border-radius: 0.8rem;
+        font-weight: 500;
+        font-size: 1.4rem;
+
+        &:hover {
+          transition: all 0.15s ease;
+          background-color: #FA7B4E !important;
+        }
+      }
+
+      .default-btn-style {
+        background: #1F1F1F;
+        line-height: 4rem;
+        border-radius: 0.8rem;
+        font-weight: 500;
+        font-size: 1.4rem;
+
+        &:hover {
+          transition: all 0.15s ease;
+          background-color: #323232 !important;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 870px) {
+  .referral-sort-modal {
+    margin: 0 !important;
+    width: 100% !important;
+    padding: 0 !important;
+    align-items: flex-end !important;
+
+    .Modal-content {
+      width: 100vw !important;
+      max-width: 100vw !important;
+
+      .Modal-body {
+        min-width: 30rem !important;
+        padding: 0 1.6rem 2.1rem 1.6rem !important;
+        margin: 0 !important;
+      }
+
+      .Modal-header-wrapper {
+        margin-bottom: 1.6rem !important;
+        padding: 0.6rem 1.6rem 0.6rem 1.6rem !important;
+      }
+    }
+  }
+
+  .referral-list-modal {
+    margin: 0 !important;
+    width: 100% !important;
+    padding: 0 !important;
+    // align-items: flex-end !important;
+
+    .Modal-content {
+      // width: 100vw !important;
+      max-width: 100vw !important;
+      width: calc(100% - 1.6rem) !important;
+
+      .Modal-body {
+        min-width: 30rem !important;
+        padding: 0 1.6rem 2.1rem 1.6rem !important;
+        margin: 0 !important;
+      }
+
+      .Modal-header-wrapper {
+        padding-top: 2rem !important;
+        // margin-bottom: 1.6rem !important;
+        // padding: 0.6rem 1.6rem 0.6rem 1.6rem !important;
+      }
+    }
+  }
+
+
+
+  .referral-gt-list-modal {
+    margin: 0 !important;
+    width: 100% !important;
+    padding: 0 !important;
+    align-items: flex-end !important;
+
+    .Modal-content {
+      width: 100vw !important;
+      max-width: 100vw !important;
+
+      .Modal-body {
+        min-width: 30rem !important;
+        padding: 0 1.6rem 2.1rem 1.6rem !important;
+        margin: 0 !important;
+      }
+
+      .Modal-header-wrapper {
+        padding-top: 2rem !important;
+        // margin-bottom: 1.6rem !important;
+        // padding: 0.6rem 1.6rem 0.6rem 1.6rem !important;
+      }
+    }
+  }
+}

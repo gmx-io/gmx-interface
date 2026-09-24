@@ -1,0 +1,209 @@
+.profitLossGtCom {
+    .profit-loss-inputs {
+        margin-top: 1.6rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .input-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .input-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .input-label {
+        min-width: 6rem;
+        font-size: 1.2rem;
+        color: #999;
+        font-weight: 500;
+    }
+
+    .input-container {
+        display: flex;
+        gap: 0.6rem;
+        flex: 1;
+    }
+
+    .price-input,
+    .gain-input {
+        display: flex;
+        align-items: center;
+        background: #1F1F1F;
+        border-radius: 0.4rem;
+        padding: 0 0.6rem;
+        flex: 1;
+        height: 3.2rem;
+        justify-content: space-between;
+        min-width: 0;
+        width: 50%;
+        position: relative;
+        border: 0.1rem solid transparent;
+        
+        &.focused {
+            border: 0.1rem solid #FA7B4E;
+        }
+
+        &-currency {
+            font-size: 1.2rem;
+            color: #A3A3A3;
+        }
+
+        .count-panel-wrapper {
+            top: -4.2rem;
+            left: 2rem;
+            width: 22.7rem;
+        }
+    }
+
+    .price-input input,
+    .gain-input input {
+        text-align: right;
+    }
+
+    .input-prefix {
+        font-size: 1.3rem;
+        color: #A3A3A3;
+        // padding: 0 0.6rem;
+        white-space: nowrap;
+        margin-left: 0.6rem;
+    }
+
+    .price-input-field,
+    .gain-input-field {
+        border: none;
+        background: transparent;
+        outline: none;
+        flex: 1;
+        font-size: 1.3rem;
+        color: #fff;
+        min-width: 0;
+        padding: 0;
+        padding-right: 0.6rem;
+    }
+
+    .price-input-field::placeholder {
+        color: #A3A3A3;
+    }
+
+    .gain-input-wrapper {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        justify-content: center;
+        min-width: 0;
+    }
+
+    .gain-input {
+        position: relative;
+    }
+
+    .gain-input-wrapper.compact-display {
+        justify-content: flex-end;
+    }
+
+    .gain-input-wrapper.compact-display .gain-display-text {
+        display: block;
+        width: 100%;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        text-align: right;
+    }
+
+    .redStyle {
+        color: #FF5454;
+    }
+
+    .greenStyle {
+        color: #31C366;
+    }
+
+    .unit-toggle {
+        background: none;
+        border: none;
+        color: #999;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.2rem;
+        font-size: 1.2rem;
+        padding: 0.2rem;
+        border-radius: 0.2rem;
+        transition: background-color 0.2s;
+        min-width: 2.4rem;
+    }
+
+    .unit-toggle:hover {
+        background-color: #323232;
+        color: #fff;
+    }
+
+    .dropdown-icon {
+        transition: transform 0.2s;
+        width: 1rem;
+        height: 1rem;
+    }
+
+    .unit-toggle:hover .dropdown-icon {
+        transform: rotate(180deg);
+    }
+
+
+    .unit-selector-wrapper {
+        position: relative;
+    }
+
+    .unit-popover {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: #323232;
+        border: 0.1rem solid #535353;
+        // border-radius: 0.4rem;
+        box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        min-width: 8rem;
+        margin-top: 0.2rem;
+    }
+
+    .unit-option {
+        padding: 0.8rem 1rem;
+        color: #999;
+        cursor: pointer;
+        font-size: 1.2rem;
+        transition: all 0.2s;
+        border-bottom: 1px solid #535353;
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        &:hover {
+            background-color: #535353;
+            color: #fff;
+        }
+
+        &.active {
+            background-color: #4a5568;
+            color: #fff;
+            font-weight: 500;
+        }
+    }
+
+    .dropdown-icon {
+        transition: transform 0.2s;
+        width: 1rem;
+        height: 1rem;
+    }
+
+    .unit-toggle[aria-expanded="true"] .dropdown-icon {
+        transform: rotate(180deg);
+    }
+}

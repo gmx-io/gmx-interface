@@ -1,0 +1,21 @@
+.liquidation-chart {
+  .chart-container {
+    position: relative;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .recharts-cartesian-grid-horizontal line,
+  .recharts-cartesian-grid-vertical line {
+    stroke: rgb(255 255 255 / 10%);
+  }
+
+  .recharts-tooltip-wrapper {
+    .custom-tooltip {
+      padding: 8px;
+      border: 1px solid #ffffff29;
+      border-radius: 4px;
+      background: #1c1c28;
+    }
+  }
+}

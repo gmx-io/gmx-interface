@@ -1,0 +1,24 @@
+@keyframes progress-bar-tip-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 8px 6px rgba(255, 222, 210, 0.28);
+    filter: brightness(0.9);
+  }
+
+  50% {
+    box-shadow: 0 0 12px 8px rgba(255, 255, 255, 0.58);
+    filter: brightness(1.25);
+  }
+}
+
+.progress-bar-tip {
+  animation: progress-bar-tip-glow 3s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress-bar-tip {
+    animation: none;
+    box-shadow: 0 0 18px 6px rgba(255, 255, 255, 0.4);
+  }
+}

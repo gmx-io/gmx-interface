@@ -1,0 +1,346 @@
+.landing-mobile-experience {
+  position: relative;
+  width: 100%;
+  min-height: 61.5rem;
+  overflow: hidden;
+  background: #131313;
+
+  &__inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    width: 100%;
+    max-width: 144rem;
+    min-height: 61.5rem;
+    margin: 0 auto;
+    padding: 6.6rem 18.8rem 0;
+  }
+
+  &__copy {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3rem;
+    width: 37rem;
+    margin-top: 10rem;
+  }
+
+  &__title {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    color: #f1f1f1;
+    font-size: 4.8rem;
+    font-weight: 600;
+    line-height: 4.7rem;
+    letter-spacing: 0;
+
+    span:last-child {
+      color: #fa7b4e;
+    }
+  }
+
+  &__description {
+    margin: 0;
+    color: #807f7e;
+    font-size: 1.6rem;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 0;
+  }
+
+  &__testflight {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    width: 210px;
+    height: 58px;
+    min-height: 58px;
+    padding: 6px 10px;
+    border: 0;
+    border-radius: 8px;
+    background: #1f1f1f;
+    color: #535353;
+    cursor: default;
+    overflow: hidden;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.5;
+    transition: width 0.2s ease;
+
+    img {
+      width: 28px;
+      height: 28px;
+      flex: 0 0 auto;
+    }
+
+    span {
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    span:first-of-type {
+      flex: 0 0 auto;
+      padding: 8px 12px;
+    }
+
+    .landing-mobile-experience__soon {
+      flex: 0 0 auto;
+      padding: 6px 8px !important;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateX(-8px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    &:hover,
+    &:focus-visible {
+      width: 326px;
+
+      .landing-mobile-experience__soon {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    &--soon-open {
+      width: 326px;
+
+      .landing-mobile-experience__soon {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+  }
+
+  &__soon {
+    border-radius: 8px;
+    background: #323232;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: #535353;
+  }
+
+  &__phone-wrap {
+    position: absolute;
+    top: -0.6rem;
+    left: 70.2rem;
+    width: 53.7rem;
+    height: 61.5rem;
+  }
+
+  &__phone {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  &__glow {
+    position: absolute;
+    top: 27.7rem;
+    left: calc(50% + 25.3rem);
+    width: 73.3rem;
+    height: 83.6rem;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: rgba(250, 123, 78, 0.2);
+    filter: blur(15rem);
+    pointer-events: none;
+  }
+
+  &__fade {
+    position: absolute;
+    left: 0;
+    bottom: -0.3rem;
+    z-index: 3;
+    width: 100%;
+    height: 16.6rem;
+    background: linear-gradient(180deg, rgba(19, 19, 19, 0) 0%, #131313 100%);
+    pointer-events: none;
+  }
+}
+
+@media (max-width: 1279px) {
+  .landing-mobile-experience {
+    min-height: 56rem;
+
+    &__inner {
+      min-height: 56rem;
+      padding: 9.6rem 7.2rem 0;
+      justify-content: space-between;
+    }
+    &__copy {
+      margin-top: 2rem;
+    }
+
+    &__testflight {
+      width: 105px;
+      height: 29px;
+      min-height: 29px;
+      padding: 3px 5px;
+      gap: 2px;
+      border-radius: 4px;
+      font-size: 10px;
+
+      img {
+        width: 14px;
+        height: 14px;
+      }
+
+      span:first-of-type {
+        padding: 4px 6px;
+      }
+
+      .landing-mobile-experience__soon {
+        padding: 3px 4px !important;
+        transform: translateX(-4px);
+      }
+
+      &:hover,
+      &:focus-visible {
+        width: max-content;
+
+        .landing-mobile-experience__soon {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      &--soon-open {
+        width: max-content;
+
+        .landing-mobile-experience__soon {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+    }
+
+    &__soon {
+      border-radius: 4px;
+      font-size: 7px;
+    }
+
+    &__phone-wrap {
+      left: auto;
+      position: relative;
+      width: 26.4rem;
+      height: 32.8rem;
+      top: -5.6rem;
+    }
+    &__fade {
+      bottom: 8.7rem;
+      background: linear-gradient(180deg, rgba(19, 19, 19, 0) 0%, #131313 100%);
+    }
+    &__fade-mobile {
+      position: absolute;
+      left: 0;
+      bottom: -0.3rem;
+      z-index: 3;
+      width: 100%;
+      height: 9.6rem;
+      background: #131313;
+      pointer-events: none;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .landing-mobile-experience {
+    min-height: 76.4rem;
+
+    &__inner {
+      gap: 2.4rem;
+      padding: 7.2rem 3.2rem 0;
+      align-items: center;
+      flex-direction: column-reverse;
+    }
+
+    &__copy {
+      width: 100%;
+      gap: 3rem;
+    }
+
+    &__title {
+      font-size: 3.2rem;
+      line-height: 3.4rem;
+    }
+
+    &__description {
+      max-width: 32rem;
+      font-size: 1.4rem;
+    }
+
+    &__testflight:hover,
+    &__testflight:focus-visible {
+      width: 105px;
+
+      .landing-mobile-experience__soon {
+        opacity: 0;
+        transform: translateX(-4px);
+      }
+    }
+
+    &__testflight--soon-open,
+    &__testflight--soon-open:hover,
+    &__testflight--soon-open:focus-visible {
+      width: max-content;
+
+      .landing-mobile-experience__soon {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    &__phone-wrap {
+      position: relative;
+      right: auto;
+      width: min(100%, 26.4rem);
+      height: auto;
+      margin: 0 auto;
+    }
+
+    &__phone {
+      height: auto;
+    }
+
+    &__glow {
+      top: 16.5rem;
+      left: 50%;
+      width: 44rem;
+      height: 42rem;
+      opacity: 0.4;
+    }
+
+    &__fade {
+      height: 0rem;
+    }
+    &__fade-mobile {
+      height: 0rem;
+    }
+  }
+}
+
+@media (min-width: 1280px) {
+  .landing-mobile-experience__phone-wrap {
+    transition: top 1s ease;
+  }
+
+  .landing-mobile-experience__copy {
+    transition: opacity 1s ease;
+  }
+
+  .landing-mobile-experience__phone-wrap--pre-reveal {
+    top: 27rem;
+  }
+
+  .landing-mobile-experience__copy--pre-reveal {
+    opacity: 0;
+  }
+}

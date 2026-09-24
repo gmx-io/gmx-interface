@@ -1,0 +1,119 @@
+.ExchangeFunding {
+  min-height: 57.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  &-content-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    em {
+      font-style: normal;
+    }
+    .chart-container {
+      height: 100%;
+      background-color: #181818;
+      position: relative;
+      .chart-top-box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        // padding: 0 1.1rem 0 1.4rem;
+        .common {
+          display: flex;
+          align-items: center;
+          height: 3.6rem;
+          color: #A3A3A3;
+          font-size: 1.3rem;
+          p,
+          em {
+            padding: 0 1.25rem;
+            font-style: normal;
+          }
+          p {
+            cursor: pointer;
+            &:hover {
+              color: #fff;
+            }
+          }
+          .select {
+            color: #fff;
+          }
+        }
+        .right {
+          em {
+            &::before {
+              content: '';
+              width: 0.9rem;
+              height: 0.9rem;
+              display: inline-block;
+              border-radius: 50%;
+              background-color: #FA7B4E;
+              margin-right: 0.75rem;
+            }
+            &:first-child {
+              &::before {
+                background-color: #FFE4D6;
+              }
+            }
+          }
+        }
+      }
+      .chart-suspend-box {
+        position: absolute;
+        left: 40%;
+        top: 4rem;
+        z-index: 2;
+        transform: skewX(-50%);
+        font-weight: 500;
+        text-align: center;
+        .title {
+          font-size: 1.4rem;
+          margin-bottom: 0.5rem;
+        }
+        .label {
+          font-size: 1.8rem;
+          margin-bottom: 0.2rem;
+          em {
+            color: #FFE4D6;
+          }
+          &:last-child {
+            em {
+              color: #FA7B4E;
+            }
+          }
+          span {
+            margin-left: 3rem;
+          }
+        }
+      }
+      .chart-content-box {
+        height: 57.2rem;
+      }
+      .custom-tooltip {
+        background: #2b2c42;
+        border: 1px solid #1F1F1F;
+        border-radius: 6px;
+        padding: 1rem 1rem 1.6rem;
+        font-size: 14px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        backdrop-filter: blur(14px);
+        box-shadow: 0px 4px 14px 0px #00000040;
+        .title {
+          padding-bottom: 0.4rem;
+        }
+        .item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0.25rem 0;
+          font-weight: 500;
+          font-size: 1.2rem;
+        }
+      }
+    }
+  }
+}

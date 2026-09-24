@@ -1,0 +1,262 @@
+.vip-tiers-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 2rem;
+
+  &.mobile {
+    align-items: flex-end;
+    padding: 0;
+  }
+}
+
+.vip-tiers-modal {
+  background-color: #1F1F1F;
+  border-radius: 1.2rem;
+
+  width: 90vw;
+  max-width: 800px;
+  // max-height: 80vh;
+  overflow-y: auto;
+  color: white;
+  overflow: hidden;
+
+  .vip-tiers-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem;
+    border-bottom: 1px solid #535353;
+    margin-bottom: 0;
+    background-color: #181818;
+
+    h2 {
+      font-size: 1.6rem;
+      font-weight: 500;
+      margin: 0;
+      color: white;
+    }
+
+    .close-button {
+      background: none;
+      border: none;
+      color: #A3A3A3;
+      font-size: 2rem;
+      cursor: pointer;
+      padding: 0;
+      width: 2rem;
+      height: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.5rem;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background-color: rgba(163, 163, 163, 0.10);
+        color: white;
+      }
+    }
+  }
+
+  .vip-tiers-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #181818;
+    table-layout: auto;
+
+    thead tr {
+      background-color: #181818;
+      border-bottom: 1px solid #333a5a;
+    }
+
+    .header-cell {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #A3A3A3;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 1.5rem 2rem;
+      text-align: left;
+      vertical-align: middle;
+      white-space: nowrap;
+
+      &:last-child {
+        text-align: right;
+      }
+
+      .header-content {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      &:last-child .header-content {
+        justify-content: flex-end;
+      }
+
+      .tooltip-container {
+        height: 16px;
+        display: inline-flex;
+        align-items: center;
+        margin-left: 4px;
+      }
+
+      img {
+        width: 16px;
+        height: 16px;
+        display: block;
+        flex-shrink: 0;
+      }
+    }
+
+    .table-row {
+      // border-bottom: 1px solid #1a1f2e;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: rgba(163, 163, 163, 0.10);
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .cell {
+        padding: 1.5rem 2rem;
+        font-size: 1.4rem;
+        vertical-align: middle;
+
+        &:last-child {
+          text-align: right;
+        }
+
+        &.tier {
+          .tier-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+
+            .tier-icon {
+              width: 3rem;
+              height: 3rem;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border-radius: 0.5rem;
+
+              img {
+                width: 3rem;
+                height: 3rem;
+              }
+            }
+
+            .tier-name {
+              font-weight: 500;
+              color: #fff;
+            }
+          }
+        }
+
+        &.holdings {
+          color: #fff;
+          font-weight: 500;
+        }
+
+        &.discount,
+        &.rewards {
+          color: #fff;
+          font-weight: 500;
+          font-size: 1.3rem;
+        }
+      }
+    }
+  }
+
+  .vip-tiers-body {
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .vip-tiers-modal {
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+    border-top: 0.5px solid #535353;
+    border-radius: 1.2rem 1.2rem 0 0;
+
+    &.mobile {
+      animation: slideUp 0.2s ease-out;
+    }
+
+    .vip-tiers-header {
+      padding: 2rem;
+      height: 6.4rem;
+
+      h2 {
+        font-size: 1.6rem;
+      }
+    }
+
+    .vip-tiers-table {
+      .header-cell {
+        padding: 1rem 1.5rem;
+        font-size: 1.1rem;
+
+        img {
+          max-width: none;
+        }
+      }
+
+      .table-row .cell {
+        padding: 1rem 1.5rem;
+        font-size: 1.3rem;
+        white-space: nowrap;
+
+        &.tier .tier-info {
+          gap: 0.5rem;
+
+          .tier-icon {
+            width: 3rem;
+            height: 3rem;
+
+            img {
+              width: 3rem;
+              height: 3rem;
+              object-fit: contain;
+            }
+          }
+
+          .tier-name {
+            font-size: 1.3rem;
+          }
+        }
+      }
+    }
+
+    .vip-tiers-body {
+      // max-height: calc(85vh - 6.4rem);
+    }
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

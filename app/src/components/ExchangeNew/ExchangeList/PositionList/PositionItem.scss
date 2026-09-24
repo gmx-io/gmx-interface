@@ -1,0 +1,62 @@
+.Position-buttons-container {
+  margin-top: 1.2rem;
+}
+
+.Position-collateral-amount {
+  margin-left: 0;
+  color: #A3A3A3;
+}
+
+.Position-item-action {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+
+  .Position-item-buttons {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-gap: 1rem;
+  }
+}
+
+.PositionItem-collateral-tooltip {
+  .Tooltip-popup {
+    min-width: 32rem;
+  }
+}
+
+.position-card-title{
+  .tooltip-handle{
+    cursor: pointer;
+  }
+}
+
+.position-list-collateral {
+  display: flex;
+  align-items: flex-end;
+}
+
+.position-list-collateral.isSmall {
+  justify-content: flex-end;
+}
+
+.Exchange-list-info-label {
+  // margin-top: 0.31rem;
+  font-size: 1.2rem;
+}
+.tg-box {
+  display: flex;
+  align-items: center;
+  svg {
+    cursor: pointer;
+  }
+}
+
+@media (width <= 800px) {
+  .PositionItem-collateral-tooltip {
+    .Tooltip-popup {
+      min-width: 22rem;
+    }
+  }
+}

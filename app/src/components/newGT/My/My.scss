@@ -1,0 +1,914 @@
+.gt-my {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  color: #fff;
+  padding-bottom: 2rem;
+
+  // —— VIP Level ——
+  .vip-level-selector {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    gap: 1rem;
+    width: 100%;
+    padding: 1.2rem 2rem;
+    background: transparent;
+  }
+
+  .vip-level-item {
+    flex: 1 0 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    min-width: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+
+  .vip-level-divider {
+    flex-shrink: 0;
+    width: 1px;
+    height: 1.2rem;
+    background: linear-gradient(
+      to bottom,
+      rgba(83, 83, 83, 1) 0%,
+      rgba(83, 83, 83, 0) 100%
+    );
+  }
+
+  .vip-level-label {
+    font-size: 1.6rem;
+    font-weight: 400;
+    line-height: 1.25;
+    letter-spacing: 0.032px;
+    text-align: center;
+    color: #535353;
+    white-space: nowrap;
+    transition: color 0.15s ease;
+  }
+
+  .vip-level-tick {
+    width: 1px;
+    height: 1.8rem;
+    background: linear-gradient(
+      to bottom,
+      rgba(83, 83, 83, 1) 0%,
+      rgba(83, 83, 83, 0) 100%
+    );
+    transition: background 0.15s ease;
+  }
+
+  .vip-level-item.is-selected {
+    .vip-level-label {
+      color: #fa7b4e;
+    }
+
+    .vip-level-tick {
+      background: linear-gradient(
+        to bottom,
+        rgba(250, 123, 78, 1) 0%,
+        rgba(250, 123, 78, 0) 100%
+      );
+    }
+  }
+
+  // —— VIP Card Carousel ——
+  .vip-card-carousel {
+    width: 100%;
+    overflow: hidden;
+    padding: 0.4rem 0 2.4rem;
+
+    .swiper {
+      overflow: hidden;
+    }
+
+    .swiper-slide {
+      height: auto;
+      overflow: visible;
+    }
+  }
+
+  .vip-card-unit {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.2rem;
+    width: 100%;
+    padding: 4rem;
+    background: #181818;
+    border: 1px solid #535353;
+    border-radius: 1.2rem;
+    overflow: hidden;
+    transform-origin: center center;
+    will-change: transform, opacity, filter;
+    backface-visibility: hidden;
+    box-shadow:
+      0 3px 7px rgba(0, 0, 0, 0.24),
+      0 13px 13px rgba(0, 0, 0, 0.18),
+      0 29px 17px rgba(0, 0, 0, 0.05);
+
+    .vip-card-status-bg-icon {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 1062px;
+      height: 60px;
+      background: url('@/img/gt/isActived.svg') no-repeat center center;
+      pointer-events: none;
+    }
+
+   
+
+    &.is-current {
+      border-color: #fa7b4e;
+
+      .vip-card-title {
+        color: #fa7b4e;
+      }
+    }
+
+    &.is-achieved {
+      .vip-card-title {
+        color: #fa7b4e;
+      }
+    }
+
+    &.is-locked {
+      .vip-card-title {
+        color: #a3a3a3;
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        top: unset;
+        left: unset;
+        right: 0;
+        transform: translate(33%, 23%);
+        width: 204px;
+        height: 204px;
+        background: url('@/img/gt/isLocked.svg') no-repeat center center;
+      }
+    }
+  }
+
+  .vip-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.2rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .vip-card-left {
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+
+  .vip-card-title {
+    font-size: 5rem;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: -0.08rem;
+    white-space: nowrap;
+  }
+
+  .vip-card-points {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    min-width: 0;
+    max-width: 28rem;
+  }
+
+  .vip-card-points-label {
+    font-size: 1.4rem;
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: 0.056rem;
+    color: #a3a3a3;
+  }
+
+  .vip-card-points-value {
+    font-size: 2.4rem;
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.038rem;
+    color: #fff;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .vip-card-points-hint {
+    font-size: 1.4rem;
+    font-weight: 400;
+    line-height: 1.3;
+    letter-spacing: 0.028px;
+    color: #a3a3a3;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .vip-card-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    padding: 0.1rem 0.6rem;
+    border-radius: 999px;
+    backdrop-filter: blur(1rem);
+    font-size: 1.2rem;
+    font-weight: 400;
+    line-height: 1.25;
+    white-space: nowrap;
+    width: max-content;
+
+    &.is-achieved {
+      background: rgba(49, 195, 102, 0.15);
+      color: #31c366;
+
+      .vip-card-status-dot {
+        background: #31c36618;
+
+        &:before {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 0.48rem;
+          height: 0.48rem;
+          border-radius: 50%;
+          background: #31c366;
+        }
+      }
+    }
+
+    &.is-locked {
+      background: rgba(255, 84, 84, 0.1);
+      color: #ff5454;
+
+      .vip-card-status-dot {
+        background: #ff545418;
+
+        &:before {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 0.48rem;
+          height: 0.48rem;
+          border-radius: 50%;
+          background: #ff5454;
+        }
+      }
+    }
+  }
+
+  .vip-card-status-dot {
+    position: relative;
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .vip-card-stats {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    flex: 1;
+    min-width: 0;
+    max-width: 47rem;
+  }
+
+  .vip-card-stat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.4rem;
+    height: 7.7rem;
+    padding: 2rem;
+    background: #1f1f1f;
+    border-radius: 1.2rem;
+    min-width: 0;
+
+    > .tooltip-container {
+      display: block;
+      width: fit-content;
+      max-width: 100%;
+      align-self: flex-start;
+    }
+  }
+
+  .vip-card-stat-value {
+    font-size: 1.6rem;
+    font-weight: 500;
+    line-height: 1.25;
+    color: #fff;
+    white-space: nowrap;
+  }
+
+  .vip-card-stat-value.is-underlined {
+    border-bottom: 0.5px dashed #a3a3a3;
+    width: fit-content;
+    cursor: help;
+  }
+
+  .vip-card-stat-label {
+    font-size: 1.4rem;
+    font-weight: 500;
+    line-height: 1.25;
+    color: #a3a3a3;
+  }
+
+  .vip-card-actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.8rem;
+    width: 11.1rem;
+    flex-shrink: 0;
+    z-index: 1;
+  }
+
+  .vip-card-actions--fixed {
+    display: none;
+  }
+
+  .vip-card-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    height: 3.2rem;
+    width: 100%;
+    padding: 0 1.2rem;
+    border: none;
+    border-radius: 0.8rem;
+    background: #fa7b4e;
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: 500;
+    line-height: 1.25;
+    cursor: pointer;
+
+    img {
+      width: 1.6rem;
+      height: 1.6rem;
+    }
+  }
+
+
+  // —— GT History ——
+  .gt-my-history {
+    background: #181818;
+    border-radius: 0.8rem;
+    overflow: hidden;
+  }
+
+  .gt-my-history-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    padding: 2rem 2rem 1.6rem;
+  }
+
+  .gt-my-history-title {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 500;
+    line-height: 1.25;
+    color: #fff;
+  }
+
+  .gt-my-history-summary-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    height: 3.2rem;
+    padding: 0.8rem 0;
+    border: none;
+    background: none;
+    color: #a3a3a3;
+    font-size: 1.3rem;
+    font-weight: 500;
+    line-height: 1.25;
+    cursor: pointer;
+
+    img,
+    svg {
+      width: 1.6rem;
+      height: 1.6rem;
+      flex-shrink: 0;
+
+      path {
+        stroke: currentColor;
+      }
+    }
+
+    &.is-active {
+      color: #fa7b4e;
+    }
+  }
+
+  .gt-my-history-divider {
+    height: 1px;
+    width: 100%;
+    background: #2e2e2e;
+  }
+
+  .gt-my-summary-modal-wrap {
+    .gt-my-summary-modal {
+      .Modal-content {
+        width: 50.2rem;
+        max-width: calc(100vw - 3.2rem);
+        background: #181818;
+        border: 0.5px solid #535353;
+        border-radius: 0.8rem;
+        overflow: hidden;
+      }
+
+      .Modal-header-wrapper {
+        margin: 0;
+        padding: 2rem 2rem 0;
+      }
+
+      .Modal-title-bar {
+        padding: 0.4rem 0.4rem 0.4rem 0;
+        min-height: 2.8rem;
+      }
+
+      .Modal-title {
+        font-size: 1.6rem;
+        font-weight: 500;
+        line-height: 1.25;
+        letter-spacing: -0.0192rem;
+        color: #fff;
+      }
+
+      .Modal-close-icon {
+        font-size: 2rem;
+        color: #a3a3a3;
+      }
+
+      .divider {
+        margin: 1.6rem 0 0;
+        border-bottom: 0.5px solid #535353;
+      }
+
+      .Modal-body {
+        margin: 0;
+        padding: 2rem;
+        max-height: none;
+        overflow: visible;
+      }
+    }
+  }
+
+  .gt-my-summary-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .gt-my-summary-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 16rem;
+  }
+
+  .gt-my-summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.2rem;
+    height: 4rem;
+    padding: 0.8rem 1.6rem;
+    background: #323232;
+    border-radius: 0.8rem;
+    font-size: 1.3rem;
+    font-weight: 500;
+    line-height: 1.25;
+    color: #fff;
+  }
+
+  .gt-my-summary-label {
+    letter-spacing: -0.0156rem;
+    white-space: nowrap;
+    line-height: 2.4rem;
+  }
+
+  .gt-my-summary-value {
+    letter-spacing: 0.052rem;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    line-height: 2.4rem;
+  }
+
+  .gt-my-history-table-wrap {
+    position: relative;
+    min-height: 23.6rem;
+  }
+
+  .gt-my-history-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .gt-my-history-list-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.2rem;
+    height: 6rem;
+    min-height: 6rem;
+    padding: 0 1.6rem;
+
+    &.row-dim {
+      background: rgba(31, 31, 31, 0.5);
+    }
+
+    &.row-dark {
+      background: transparent;
+    }
+  }
+
+  .gt-my-history-list-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0;
+  }
+
+  .gt-my-history-list-action {
+    font-size: 1.4rem;
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.0168rem;
+    color: #fff;
+    white-space: nowrap;
+  }
+
+  .gt-my-history-list-time {
+    font-size: 1.2rem;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: -0.0029rem;
+    color: #676767;
+    white-space: nowrap;
+  }
+
+  .gt-my-history-list-amount {
+    flex-shrink: 0;
+    font-size: 1.4rem;
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: 0.056rem;
+    color: #fff;
+    text-align: right;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1, 'lnum' 1;
+  }
+
+  .gt-my-history-table {
+    width: 100%;
+
+    thead th {
+      padding: 1.2rem 0 0.8rem;
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.088rem;
+      text-transform: uppercase;
+      color: #a3a3a3;
+      border: none;
+    }
+
+    tbody tr.row-dim,
+    tbody tr.row-dark {
+      height: 60px;
+      min-height: 60px;
+      border: none;
+
+      td {
+        height: 60px;
+        min-height: 60px;
+        padding-top: 0;
+        padding-bottom: 0;
+        font-size: 1.4rem;
+        font-weight: 500;
+        line-height: 1.25;
+        color: #fff;
+        border: none;
+        vertical-align: middle;
+        white-space: nowrap;
+      }
+    }
+
+    .row-dim {
+      background: rgba(31, 31, 31, 0.5);
+    }
+
+    .row-dark {
+      background: transparent;
+    }
+
+    .header-cell,
+    .cell {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+
+    .header-cell.time,
+    .cell.time,
+    .text-right {
+      text-align: right;
+      padding-right: 2rem;
+    }
+
+    .header-content {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+    }
+
+    .icon-active {
+      * {
+        fill: #fa7b4e !important;
+      }
+    }
+
+    .icon-inactive {
+      * {
+        fill: #a3a3a3 !important;
+      }
+    }
+  }
+
+  .gt-my-history-pagination {
+    background: #181818;
+
+    // Cursor pagination: last-page control only advances one page — hide it
+    .pagination-buttons > button:last-child {
+      display: none;
+    }
+  }
+
+  // Mobile / tablet — match Figma VIP card (node 17192:93522)
+  @media (max-width: 1023px) {
+    .vip-level-selector-container{
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+    .vip-level-selector {
+      justify-content: flex-start;
+      padding: 1.2rem 2rem;
+      min-width: 48rem;
+     
+    }
+
+    .vip-level-item {
+      min-width: 3rem;
+    }
+
+    .vip-level-label {
+      font-size: 1.2rem;
+    }
+
+    .vip-card-carousel {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      overflow: visible;
+      padding-bottom: 0;
+      .swiper {
+        width: 100%;
+        overflow: hidden;
+      }
+    }
+
+    .vip-card-unit {
+      flex-direction: column;
+      align-items: stretch;
+      flex-wrap: nowrap;
+      gap: 0;
+      padding: 0;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+      overflow: visible;
+
+      &::after {
+        display: none;
+      }
+
+      &.is-locked::after {
+        display: none;
+      }
+    } 
+    .gt-my-history-header{
+      padding: 1.2rem 1.6rem;
+    }
+    .vip-card {
+      position: relative;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: stretch;
+      justify-content: space-between;
+      gap: 1.2rem;
+      width: 100%;
+      flex: none;
+      padding: 2rem;
+      background: #131313;
+      border: 1px solid #535353;
+      border-radius: 1.2rem;
+      overflow: hidden;
+      box-shadow:
+        0 3px 7px rgba(0, 0, 0, 0.24),
+        0 13px 13px rgba(0, 0, 0, 0.18),
+        0 29px 17px rgba(0, 0, 0, 0.05);
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        height: 15.5rem;
+        background: url('@/img/gt/GT_current_vip.png') no-repeat center bottom;
+        background-size: contain;
+        pointer-events: none;
+        z-index: 1;
+      }
+    }
+
+    .vip-card-unit.is-current .vip-card {
+      border-color: #fa7b4e;
+    }
+
+    .vip-card-unit.is-locked .vip-card::after {
+      left: auto;
+      right: 0;
+      transform: translate(33%, 23%);
+      width: 20.4rem;
+      height: 20.4rem;
+      background: url('@/img/gt/isLocked.svg') no-repeat center center;
+      background-size: contain;
+    }
+
+    .vip-card-left {
+      display: flex;
+      flex: 1 1 0;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-shrink: 1;
+      gap: 0;
+      width: auto;
+      min-width: 0;
+      min-height: 13.9rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .vip-card-title {
+      font-size: 5rem;
+      letter-spacing: -0.08rem;
+      width: 100%;
+    }
+
+    .vip-card-points {
+      gap: 0.4rem;
+      min-width: 0;
+      width: 100%;
+    }
+
+    .vip-card-stats {
+      display: flex;
+      flex-direction: column;
+      flex: 0 0 14.4rem;
+      width: 14.4rem;
+      max-width: 14.4rem;
+      gap: 1.2rem;
+      align-items: stretch;
+      position: relative;
+      z-index: 1;
+    }
+
+    .vip-card-stat {
+      flex: 1 1 0;
+      height: auto;
+      min-height: 0;
+      padding: 1.2rem;
+    }
+
+    .vip-card-stat-label {
+      font-size: 1.2rem;
+      font-weight: 400;
+      line-height: 1.5;
+      letter-spacing: -0.029px;
+      white-space: normal;
+    }
+
+    .vip-card-actions--in-slide {
+      display: none;
+    }
+
+    .vip-card-actions--fixed {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      gap: 1rem;
+    }
+
+    .vip-card-action-btn {
+      flex: 1 1 0;
+      height: auto;
+      min-height: 3.2rem;
+      padding: 1.2rem;
+    }
+  }
+}
+
+/* Portal tooltip — rendered outside .gt-my */
+.vip-card-fee-tooltip-handle {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.vip-fee-discount-tooltip {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.vip-fee-discount-tooltip-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.6rem;
+  min-height: 2rem;
+  font-size: 1.2rem;
+  line-height: 1.25;
+  white-space: nowrap;
+
+  .is-secondary {
+    color: #a3a3a3;
+    font-weight: 500;
+    letter-spacing: -0.0144rem;
+  }
+
+  .is-inactive {
+    color: #676767;
+    font-weight: 500;
+    letter-spacing: -0.0144rem;
+  }
+
+  .is-value {
+    color: #fff;
+    font-weight: 400;
+    letter-spacing: 0.036rem;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1, 'lnum' 1;
+  }
+  
+}
+

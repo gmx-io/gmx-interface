@@ -1,0 +1,97 @@
+// Scrollbar styles (pseudo-elements not expressible in Tailwind)
+.vob-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-slate-600) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background-color: var(--color-slate-600);
+  }
+}
+
+// Mobile: background bar as pseudo-element so border-radius applies to the bar edge
+.vob-mob-ask-bg {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: min(var(--ask-bg-width, 0%), 100%);
+    background: #FF545433;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+}
+
+.vob-mob-bid-bg {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: min(var(--bid-bg-width, 0%), 100%);
+    background: #31C36633;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+}
+
+// Background bar fills: use pseudo-elements so row border-radius clips the bar edge
+.vob-row--ask,
+.vob-row--bid {
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: min(var(--bg-width, 0%), 100%);
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+.vob-row--ask::before {
+  background: #FF545433;
+}
+
+.vob-row--bid::before {
+  background: #31C36633;
+}
+
+// Flash animation
+.vob-row--flash {
+  animation: vob-flash 0.6s ease-out;
+}
+
+@keyframes vob-flash {
+  0% {
+    background-color: rgb(255 255 255 / 20%);
+  }
+
+  100% {
+    background-color: transparent;
+  }
+}

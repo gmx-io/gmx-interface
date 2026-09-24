@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://gmtrade.xyz/sitemap.xml

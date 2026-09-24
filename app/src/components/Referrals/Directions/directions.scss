@@ -1,0 +1,35 @@
+.directions {
+  height: fit-content;
+  .description-content {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition:
+      max-height 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: TT Hoves Pro Trial;
+
+    &.expanded {
+      max-height: 1000px;
+      opacity: 1;
+      padding-bottom: 1.2rem;
+    }
+
+    &.collapsed {
+      max-height: 0;
+      opacity: 0;
+      padding-bottom: 0;
+    }
+  }
+
+  .down-menu:last-child {
+    border: none !important;
+  }
+  &-title {
+    letter-spacing: -0.012rem;
+  }
+  .directions-card-title {
+    letter-spacing: -0.012rem;
+  }
+}
+

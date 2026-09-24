@@ -1,0 +1,176 @@
+.racharts-tooltip-style {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(7px);
+
+  .tool-value {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+}
+
+.gt-chart-section {
+  margin-bottom: 0.8rem;
+  border-radius: 0.5rem;
+  background-color: #181818;
+  padding: 2rem;
+
+  @media (max-width: 768px) {
+    padding: 1.6rem 0;
+  }
+
+  .chart-header {
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.6rem;
+
+    h2 {
+      font-size: 1.6rem;
+      font-weight: 500;
+      margin: 0;
+
+      @media (max-width: 768px) {
+        font-size: 1.4rem;
+        // font-weight: 400;
+      }
+    }
+
+    .time-filters {
+      display: flex;
+      gap: 0.5rem;
+      font-size: 1.3rem;
+      font-weight: 500;
+
+      span {
+        padding: 0.8rem 1.2rem;
+        border-radius: 0.8rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .filter-active {
+        background: #1F1F1F;
+        color: #ffffff;
+      }
+
+      .filter-inactive {
+        background: transparent;
+        color: #A3A3A3;
+
+        &:hover {
+          background: #1f1f1f;
+          color: #FFFFFF;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
+  .chart-container {
+    height: 20rem;
+    width: 100%;
+  }
+
+  .chart-legend {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 5rem;
+    font-size: 1.3rem;
+
+    @media (max-width: 768px) {
+      gap: 1.2rem;
+      margin-top: 2.35rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      white-space: nowrap;
+
+      @media (max-width: 768px) {
+        flex: 1;
+        justify-content: center;
+      }
+
+      .legend-dot {
+        height: 0.9rem;
+        width: 0.9rem;
+        border-radius: 50%;
+
+        &.purple {
+          background-color: #FA7B4E;
+        }
+
+        &.yellow {
+          background-color: #ffa726;
+        }
+
+        &.white {
+          background-color: #ffffff;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .time-filters-mobile {
+      position: relative;
+      width: 100%;
+      // margin-top: 2rem;
+      padding: 0 1.6rem;
+      padding-top: 1rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 0.4rem;
+      font-size: 1.3rem;
+      font-weight: 500;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0rem;
+        right: 0rem;
+        height: 1px;
+        background-color: #53535380;
+      }
+
+      span {
+        flex: 1;
+        padding: 0.8rem 1.2rem;
+        border-radius: 0.8rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        text-align: center;
+      }
+
+      .filter-active {
+        background: #1F1F1F;
+        color: #ffffff;
+      }
+
+      .filter-inactive {
+        background: transparent;
+        color: #A3A3A3;
+
+        &:hover {
+          background: #1f1f1f;
+          color: #FFFFFF;
+          cursor: pointer;
+        }
+
+
+      }
+    }
+
+    .chart-legend {
+      padding: 0 1.6rem;
+    }
+  }
+}

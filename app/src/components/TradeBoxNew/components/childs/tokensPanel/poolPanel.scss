@@ -1,0 +1,43 @@
+.poolPanel {
+  min-width: 32.6rem;
+  position: relative;
+  max-height: 30rem;
+  overflow-y: auto;
+  border-radius: 0.8rem;
+  z-index: 999;
+
+  .header {
+    font-size: 1.1rem;
+    padding: 1.2rem;
+  }
+
+  .body {
+    padding-top: 0;
+    padding-bottom: 0;
+    color: #fff;
+    font-size: 1.2rem;
+
+    .row {
+      padding: 1.2rem;
+    }
+
+    .greyStyle>div {
+      color: #323232 !important;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    position: relative;
+    right: 0;
+    top: 0;
+    min-width: 38rem;
+  }
+
+  @media (max-width: 768px) {
+    // position: fixed;
+    // left: 0rem;
+    // top: 13.6rem;
+    // min-width: 37.5rem;
+    width: 100%;
+  }
+}

@@ -1,0 +1,39 @@
+.block-us-ip-modal-container {
+    padding: 0 0.8rem;
+}
+
+.block-us-ip-modal-content {
+    position: relative;
+    min-height: 4.1rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1.2rem;
+    border-radius: 0.8rem;
+    background-color: #2d192c;
+    border-left: 1px solid #FF5454;
+    color: white;
+    font-size: 1.3rem;
+    letter-spacing: 0.2%;
+    font-weight: 400;
+}
+
+@media (max-width: 1024px) {
+    .block-us-ip-modal-container {
+        padding: 0 0.8rem;
+        padding-top: 0.2rem;
+    }
+}
+
+.block-us-ip-modal-title {
+    color: white;
+    font-size: 13px;
+    word-break: break-word;
+
+    a {
+        color: white;
+        text-decoration: underline;
+        display: inline;
+    }
+}

@@ -1,0 +1,23 @@
+  .card-value {
+    line-height: 2rem;
+    height: fit-content;
+    font-style: Regular !important;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";  
+  }
+
+  .card-key {
+    font-weight: 500 !important;
+    font-style: Medium !important;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";  
+  }
+
+  .font-tnum {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  .tooltip-container {
+    display: inline-flex;
+  }

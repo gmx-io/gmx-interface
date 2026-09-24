@@ -1,0 +1,1 @@
+export { ResponsiveLogo } from './ResponsiveLogo';

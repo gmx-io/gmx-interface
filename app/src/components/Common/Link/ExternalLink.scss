@@ -1,0 +1,10 @@
+.link-underline {
+  display: inline-flex;
+  color: rgb(255 255 255 / 70%);
+  cursor: pointer;
+  text-decoration: underline;
+
+  &:hover {
+    color: rgb(255 255 255);
+  }
+}

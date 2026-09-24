@@ -1,0 +1,90 @@
+$fee-card-design-width: 24.8rem;
+$fee-card-design-height: 14rem;
+
+.fee-card {
+  border-radius: 10.633px;
+  position: absolute;
+  border: 0.665px solid #323232;
+  background: #1a1a1a;
+  box-shadow:
+    0 214.655px 59.811px 0 rgba(0, 0, 0, 0),
+    0 137.565px 55.159px 0 rgba(0, 0, 0, 0.04),
+    0 77.09px 46.52px 0 rgba(0, 0, 0, 0.13),
+    0 34.557px 34.557px 0 rgba(0, 0, 0, 0.21),
+    0 8.639px 18.608px 0 rgba(0, 0, 0, 0.25);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+.fee-card-title {
+  color: var(--Main-Colors-Primary, #fa7b4e);
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 150%;
+  letter-spacing: -0.019px;
+}
+.fee-card-value {
+  color: var(--Main-Colors-Secondary, #fff);
+  font-size: 2.1rem;
+  font-weight: 500;
+  line-height: 150%;
+  letter-spacing: -0.425px;
+}
+
+.fee-card-scene {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.fee-card-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  .fee-card-network {
+    background: #1a1a1a;
+    top: 6rem;
+    left: -0.8rem;
+    transition: left 0.5s;
+  }
+
+  .fee-card-open-close {
+    background: #1a1a1a;
+    top: 1.6rem;
+    right: -4rem;
+    transition: right 0.5s;
+  }
+
+  &.is-hovered .fee-card-network {
+    left: 3.8rem;
+  }
+
+  &.is-hovered .fee-card-open-close {
+    right: 2.7rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .fee-card-container {
+    container-type: size;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+
+    .fee-card-scene {
+      width: $fee-card-design-width;
+      height: $fee-card-design-height;
+      flex-shrink: 0;
+      transform: scale(
+        min(
+          calc(100cqw / #{$fee-card-design-width}),
+          calc(100cqh / #{$fee-card-design-height}),
+          1
+        )
+      );
+      transform-origin: center center;
+    }
+  }
+}

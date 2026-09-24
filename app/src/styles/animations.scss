@@ -1,0 +1,126 @@
+// Animations
+
+// @keyframes ripple {
+//   to {
+//     opacity: 0.4;
+//     transform: scale(2);
+//   }
+// }
+
+@keyframes ripple {
+  0% {
+    opacity: 1;
+    transform: scale(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(4);
+  }
+}
+
+.ripple-effect {
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(circle, #fff 10%, transparent 10.01%);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    opacity: 0;
+    transition:
+      transform 0.5s,
+      opacity 1s;
+    content: '';
+    pointer-events: none;
+    transform: scale(10, 10);
+  }
+
+  &:active::after {
+    opacity: 0.3;
+    transition: 0s;
+    transform: scale(0, 0);
+  }
+}
+
+@keyframes spin-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  animation: spin-animation infinite 1.2s linear;
+}
+
+@keyframes zoom-in {
+  0% {
+    opacity: 0;
+    transform: scale3d(0.3, 0.3, 0.3);
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.zoom-in {
+  animation: zoom-in 0.2s ease-in-out;
+  animation-fill-mode: forwards;
+}
+
+@keyframes zoom-out {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+    transform: scale3d(0.3, 0.3, 0.3);
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+.zoom-out {
+  animation: zoom-out 0.2s ease-in-out;
+  animation-fill-mode: forwards;
+}
+
+// Fade in animation
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fade-in 0.3s ease-in;
+}
+
+// Skeleton loading shimmer
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 0% 0;
+  }
+
+  100% {
+    background-position: 100% 0;
+  }
+}

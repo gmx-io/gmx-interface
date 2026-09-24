@@ -1,0 +1,124 @@
+.trade-header {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  color: #ffffff;
+  gap: 0.8rem;
+}
+
+.market-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  cursor: pointer;
+  padding: 0.8rem 1.2rem;
+  border-radius: 0.8rem;
+  transition: background-color 0.2s ease;
+  background-color: #1F1F1F;
+  white-space: nowrap;
+  height: 4rem;
+
+  &:hover {
+    background: #323232;
+  }
+
+  .token-info {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+
+    .token-details {
+      display: flex;
+      flex-direction: column;
+
+      .token-symbol {
+        font-weight: 500;
+        font-size: 1.3rem;
+        color: #ffffff;
+        line-height: 1.2;
+
+        span {
+          font-weight: 400;
+          font-size: 1.2rem;
+          margin-left: 0.4rem;
+          color: #A3A3A3;
+        }
+      }
+
+    }
+
+  }
+
+  .dropdown-arrow {
+    width: 1.6rem;
+    height: 1.6rem;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+
+    &.open {
+      transform: rotate(180deg);
+    }
+
+  }
+}
+
+.market-stats {
+  padding-left: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex: 1;
+  justify-content: flex-start;
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: fit-content;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+
+    .stat-label {
+      font-size: 1.1rem;
+      color: #A3A3A3;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .stat-value {
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: #ffffff;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 0.4rem;
+
+      &.price {
+        font-weight: 400;
+        font-size: 1.3rem;
+      }
+
+    }
+
+    .stat-change {
+      font-size: 1.2rem;
+
+      &.positive {
+        color: #31C366;
+      }
+
+      &.negative {
+        color: #FF5454;
+      }
+    }
+  }
+}
+
+.positive {
+  color: #31C366 !important;
+}
+
+.negative {
+  color: #FF5454 !important;
+}

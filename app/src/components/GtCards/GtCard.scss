@@ -1,0 +1,105 @@
+.cycle-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  .progress-bar-container {
+    width: 60px;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--color-slate-700);
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: var(--color-cold-blue-500);
+    transition: width 0.3s ease;
+  }
+
+  .percentage-text {
+    min-width: 3.5rem;
+    text-align: right;
+  }
+}
+
+.rank-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.batch-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.batch-logo {
+  width: 16px;
+  height: 16px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.chart-container {
+  padding: 0;
+  border-radius: 0.5rem;
+  background: var(--background-secondary);
+
+  .recharts-cartesian-grid-horizontal line,
+  .recharts-cartesian-grid-vertical line {
+    stroke: rgb(255 255 255 / 10%);
+  }
+
+  .recharts-tooltip-cursor {
+    stroke: var(--text-secondary);
+  }
+
+  .recharts-surface {
+    border-radius: 0.5rem;
+    background: var(--background-secondary);
+  }
+}
+
+.batch-0 {
+  background-image: url('@/img/batch_0_novice.svg');
+}
+
+.batch-1 {
+  background-image: url('@/img/batch_1_herald.svg');
+}
+
+.batch-2 {
+  background-image: url('@/img/batch_2_guardian.svg');
+}
+
+.batch-3 {
+  background-image: url('@/img/batch_3_crusader.svg');
+}
+
+.batch-4 {
+  background-image: url('@/img/batch_4_archon.svg');
+}
+
+.batch-5 {
+  background-image: url('@/img/batch_5_legend.svg');
+}
+
+.batch-6 {
+  background-image: url('@/img/batch_6_ancient.svg');
+}
+
+.batch-7 {
+  background-image: url('@/img/batch_7_divine.svg');
+}
+
+.batch-8 {
+  background-image: url('@/img/batch_8_immortal.svg');
+}
+
+.batch-9 {
+  background-image: url('@/img/batch_9_celestial.svg');
+}

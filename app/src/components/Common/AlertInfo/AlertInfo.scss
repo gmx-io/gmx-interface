@@ -1,0 +1,33 @@
+.AlertInfo {
+  display: flex;
+  margin-bottom: 1.6rem;
+
+  .compact & {
+    margin-bottom: 0.8rem;
+  }
+
+  &-icon {
+    padding-top: 0.3rem;
+    padding-right: 0.6rem;
+
+    img {
+      display: block;
+      width: var(--font-size-body-small);
+      height: var(--font-size-body-small);
+    }
+
+    svg {
+      display: block;
+      width: var(--font-size-body-small);
+      height: var(--font-size-body-small);
+
+      path {
+        fill: currentcolor;
+      }
+    }
+  }
+
+  &-text {
+    font-size: var(--font-size-body-small);
+  }
+}

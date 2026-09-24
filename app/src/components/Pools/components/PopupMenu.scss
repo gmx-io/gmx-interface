@@ -1,0 +1,27 @@
+.popup-menu {
+    top: 1.6rem ;
+    left: 8.5rem;
+    background-color: #181818;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    min-width: 27rem;
+    border: 0.5px solid var(--Stroke-Primary, #535353);
+
+    .text-gray-400 {
+        font-size: 1.2rem;
+        font-weight: 500;
+    }
+    img {
+        max-width:none ;
+    }
+    .rounded-md {
+        margin: 1.25rem 1.2rem;
+    }
+    .action-button {
+        span{
+            font-size: 1.2rem ;
+            font-weight: 500;
+        }
+        
+    }
+}

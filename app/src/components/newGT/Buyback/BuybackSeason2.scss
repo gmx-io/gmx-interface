@@ -1,0 +1,367 @@
+.gt-buyback-s2 {
+  color: var(--TextIcon-Primary, #fff);
+  display: flex;
+  flex-direction: column;
+  @media (max-width: 1023px) {
+  }
+
+  .buyback-s2-title {
+    padding: 2rem 0;
+    @media (max-width: 1023px) {
+      padding-top: 0;
+    }
+    h2 {
+      margin: 0;
+      font-size: 2rem;
+      font-weight: 500;
+      line-height: 1.2;
+      letter-spacing: 0.024rem;
+      color: var(--TextIcon-Primary, #fff);
+    }
+
+    p {
+      margin: 0.8rem 0 0;
+      font-size: 1.4rem;
+      font-weight: 500;
+      line-height: 1.25;
+      color: var(--TextIcon-Secondary, #a3a3a3);
+    }
+  }
+
+  .buyback-s2-quota {
+    background: var(--Fill-SurfaceBase, #181818);
+    border-radius: 0.8rem;
+    overflow: hidden;
+    margin-bottom: 0.8rem;
+  }
+
+  .buyback-s2-quota-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2rem 2rem 1.4rem;
+    gap: 1.2rem;
+  }
+
+  .buyback-s2-section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: var(--TextIcon-Primary, #fff);
+
+    img {
+      width: 1.6rem;
+      height: 1.6rem;
+      opacity: 0.7;
+      cursor: pointer;
+    }
+  }
+
+  .sell-gt-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-width: 10rem;
+    height: 3.2rem;
+    padding: 0 1.2rem;
+    border-radius: 0.8rem;
+    font-size: 1.3rem;
+    font-weight: 500;
+    background: var(--Button-Primary, #fa7b4e);
+    color: var(--TextIcon-On-Button, #fff);
+
+    &:disabled {
+      cursor: not-allowed;
+    }
+
+    .sell-gt-arrow {
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+  }
+
+  .buyback-s2-quota-cards {
+    display: flex;
+    gap: 1rem;
+    padding: 1.2rem 2rem 2rem;
+
+   
+  }
+
+  .quota-card {
+    flex: 1;
+    min-width: 0;
+    background: var(--Fill-SurfaceElevated, #1f1f1f);
+    border-radius: 1.2rem;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    justify-content: center;
+    min-height: 7.7rem;
+    @media (max-width: 1023px) {
+      padding: 1.2rem;
+      &.quota-card-available {
+        min-width: 11.3rem;
+      }
+      &.quota-card-total-earned{
+        min-width: 10.1rem;
+      }
+    }
+    .quota-card-label {
+      font-size: 1.4rem;
+      font-weight: 500;
+      color: var(--TextIcon-Secondary, #a3a3a3);
+
+      @media (max-width: 1023px) {
+        font-size: 1.3rem;
+        letter-spacing: -0.156px;
+
+      }
+    }
+
+    .quota-card-value {
+      font-size: 1.6rem;
+      font-weight: 500;
+      color: var(--TextIcon-Primary, #fff);
+      @media (max-width: 1023px) {
+        font-size: 1.4rem;
+        letter-spacing: -0.156px;
+        
+      }
+    }
+  }
+
+  .buyback-s2-mid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+
+    @media (max-width: 1023px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .buyback-s2-pool,
+  .buyback-s2-participation {
+    background: var(--Fill-SurfaceBase, #181818);
+    border-radius: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 22.8rem;
+    @media (max-width: 1023px) {
+      min-height: 19.0rem;
+      .buyback-s2-stat-list{
+        padding: 1.2rem 2rem;
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .buyback-s2-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2rem 2rem 1.6rem;
+    border-bottom: 0.5px solid var(--Stroke-Primary, #535353);
+    gap: 1.2rem;
+    @media (max-width: 1023px) {
+      padding: 1.6rem 1.6rem 2rem 1.6rem;
+    }
+  }
+
+  .pool-status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 2rem;
+    padding: 0.2rem 0.8rem;
+    border-radius: 0.4rem;
+    font-size: 1.2rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    text-decoration: none;
+    border-bottom: none;
+
+    &.status-strong {
+      background: color-mix(in srgb, var(--Green-Strong, #31c366) 20%, transparent);
+      border: 0.4px solid var(--Green-Strong, #31c366);
+      color: var(--Green-Strong, #31c366);
+    }
+
+    &.status-moderate {
+      background: color-mix(in srgb, var(--Yellow-Strong, #fab74e) 20%, transparent);
+      border: 0.4px solid var(--Yellow-Strong, #fab74e);
+      color: var(--Yellow-Strong, #fab74e);
+    }
+
+    &.status-pressure {
+      background: color-mix(in srgb, var(--Red-Strong, #ff5454) 20%, transparent);
+      border: 0.4px solid var(--Red-Strong, #ff5454);
+      color: var(--Red-Strong, #ff5454);
+    }
+  }
+
+  .buyback-s2-stat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    padding: 1.6rem 2rem 2rem;
+    margin-bottom: 0.4rem;
+    border-bottom: 0.5px solid var(--Stroke-Primary, #535353);
+    @media (max-width: 1023px) {
+      border-bottom: none;
+    }
+  }
+
+  .stat-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.2rem;
+    height: 1.8rem;
+    .stat-label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 1.4rem;
+      font-weight: 500;
+      color: var(--TextIcon-Secondary, #a3a3a3);
+
+      img {
+        width: 1.6rem;
+        height: 1.6rem;
+        opacity: 0.7;
+        cursor: pointer;
+      }
+    }
+
+    .stat-value {
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: var(--TextIcon-Primary, #fff);
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+    @media (max-width: 1023px) {
+     &.empty-stat-row {
+        display: none !important;
+     }
+    }
+  }
+
+  .buyback-s2-countdown {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    margin: 0.4rem 0;
+
+    .countdown-label {
+      
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 1.4rem;
+      font-weight: 500;
+      line-height: 2.2rem;
+      color: var(--TextIcon-Secondary, #a3a3a3);
+      @media (max-width: 1023px) {
+        display: none;
+      }
+      img {
+        width: 1.6rem;
+        height: 1.6rem;
+      }
+    }
+
+    .countdown-value {
+      font-size: 1.4rem;
+      font-weight: 500;
+      color: var(--TextIcon-Primary, #fff);
+      font-variant-numeric: tabular-nums;
+      gap: 0.6rem;
+      @media (max-width: 1023px) {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color:  #676767;
+        font-size: 1.2rem;
+        font-weight: 400;
+        line-height: 1.25;
+        letter-spacing: 0.024px;
+      }
+      .mobile-only {
+        display: none;
+        @media (max-width: 1023px) {
+          display: block;
+        }
+      }
+    }
+  }
+
+  .buyback-s2-claim {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 1rem 2rem;
+    margin: 0.4rem 0;
+      @media (max-width: 1023px) {
+        justify-content: center;
+      }
+
+    .buyback-s2-claim-icon {
+      width: 1.6rem;
+      height: 1.6rem;
+      flex-shrink: 0;
+      margin-top: 0.2rem;
+      @media (max-width: 1023px) {
+       display: none;
+      }
+    }
+
+    .buyback-s2-claim-text {
+      font-size: 1.4rem;
+      line-height: 2.2rem;
+      font-style: normal;
+      font-weight: 500;
+      color: var(--TextIcon-Secondary, #a3a3a3);
+      @media (max-width: 1023px) {
+        text-align: center;
+        color:  #676767;
+        font-size: 1.2rem;
+        font-weight: 400;
+        line-height: 1.25;
+        letter-spacing: 0.024px;
+      }
+      @media (max-width: 767px) {
+        width: 18.7rem;
+      }
+    }
+  }
+}
+
+.buyback-s2-tooltip {
+  max-width: 28rem;
+  font-size: 1.2rem;
+  line-height: 1.4;
+  font-weight: 500;
+
+  p {
+    margin: 0;
+    color: var(--TextIcon-Secondary, #a3a3a3);
+    &.buyback-s2-tooltip-title {
+      font-size: 1.3rem;
+      color: var(--TextIcon-Primary, #fff);
+    }
+  }
+
+  strong {
+    font-weight: 600;
+  }
+}

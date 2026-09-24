@@ -1,0 +1,18 @@
+.landing-in-view-reveal {
+  opacity: 0;
+  transform: translateY(-6rem) scale(0.96);
+  transform-origin: center top;
+  transition:
+    opacity 0.35s ease-out,
+    transform 0.35s ease-out;
+
+  &.is-in-view {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    @media (max-width: 767px) {
+      background: linear-gradient(360deg, #131313 0%, rgba(19, 19, 19, 0) 100%);
+      padding-top: 10rem;
+      margin-top: 0;
+    }
+  }
+}

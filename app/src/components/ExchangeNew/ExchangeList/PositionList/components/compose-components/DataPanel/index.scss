@@ -1,0 +1,29 @@
+.data-panel {
+    border-top: 0.1rem solid #53535380;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    padding-top: 1rem;
+
+    .data-panel-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.6rem 2rem;
+
+        &-title {
+            color: #A3A3A3;
+            font-size: 1.4rem;
+        }
+
+        &-content {
+
+            .commonBoxBg,
+            &>span>div {
+                display: flex;
+                align-items: center;
+            }
+
+        }
+    }
+
+}

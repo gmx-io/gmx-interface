@@ -1,0 +1,126 @@
+.compose-slider {
+    display: flex;
+    align-items: center;
+    margin: 1rem 0;
+
+    .compose-slider-input {
+        min-width: 9rem;
+
+        .maxLev {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            padding: 0 0.8rem;
+            border-radius: 2rem;
+            height: 2.5rem;
+            // margin-left: 0.5rem;
+            min-width: 4rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            background: #535353;
+        }
+        .maxLev:hover {
+            background: #323232
+        }
+
+        .selected {
+            background: #535353;
+
+        }
+
+    }
+
+    .rc-slider {
+        flex: 1;
+        margin-right: 1rem;
+        margin-bottom: 2rem;
+        margin-left: 0.8rem;
+
+
+
+        .rc-slider-rail {
+            background: #1F1F1F;
+            height: 0.4rem;
+        }
+
+        .rc-slider-track {
+            background: #FA7B4E;
+            height: 0.4rem;
+        }
+
+        .rc-slider-handle {
+            border: 0.2rem solid #FA7B4E;
+            background: #181818;
+            width: 1.1rem;
+            height: 1.1rem;
+            margin-top: -0.4rem;
+            box-shadow: none;
+
+            &:hover,
+            &:active,
+            &:focus {
+                border-color: #FA7B4E;
+                box-shadow: none;
+            }
+        }
+
+        .rc-slider-dot {
+            background: #181818;
+            border-color: #1F1F1F;
+            width: 0.8rem;
+            height: 0.8rem;
+        }
+
+        .rc-slider-dot-active {
+            border-color: #FA7B4E;
+        }
+
+        .rc-slider-mark-text {
+            color: #A3A3A3;
+            font-size: 1.1rem;
+            margin-top: -0.5rem;
+            font-weight: 500;
+        }
+
+        .rc-slider-mark-text[style*="left: 0%"] {
+            padding-left: 0.8rem;
+        }
+
+        .rc-slider-mark-text[style*="left: 100%"] {
+            padding-right: 1.2rem;
+        }
+    }
+
+    &-input {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #1F1F1F;
+        border-radius: 0.6rem;
+        font-size: 1.3rem;
+        margin-left: 0.8rem;
+        height: 3.2rem;
+        padding: 0 0;
+        // width: 5.6rem;
+
+        input {
+            width: 3rem;
+            text-align: right;
+            font-size: 1.3rem;
+            padding: 0;
+            // margin-right: 0.5rem;
+            font-weight: 400;
+            background: transparent;
+            border: none;
+            outline: none;
+        }
+
+        span {
+            color: #A3A3A3;
+            font-size: 1.3rem;
+        }
+    }
+}

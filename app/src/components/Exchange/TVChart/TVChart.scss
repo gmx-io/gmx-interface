@@ -1,0 +1,342 @@
+.chart-token-selector {
+  margin-right: 0.5rem;
+  padding-left: 0.4rem;
+
+  .Dropdown-current {
+    font-size: 2.1rem;
+    font-weight: 700;
+    color: var(--color-white);
+  }
+
+  .Dropdown-current-arrow {
+    margin-top: -2px;
+    margin-left: 1rem;
+    font-size: var(--font-size-body-sm);
+    color: hsl(0deg 0% 100% / 70%);
+  }
+
+  .Dropdown-options {
+    top: 4.6rem;
+    left: -0.6rem;
+    width: 15.8rem;
+  }
+
+  .Dropdown-option {
+    height: 3.4rem;
+    font-size: var(--font-size-body-sm);
+    font-weight: 700;
+  }
+}
+
+.TVChart-top-card {
+  display: flex;
+  align-items: center;
+  height: 58px;
+}
+
+.Chart-header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  // padding: 1rem;
+  // background-color: var(--color-slate-800);
+  gap: 2rem;
+}
+
+.Chart-top-scrollable {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+  gap: 20px;
+  overflow: hidden;
+  overflow-x: auto;
+  white-space: nowrap;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  & > div {
+    min-width: min-content;
+    flex-shrink: 0;
+  }
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.Chart-top-scrollable-fade-right,
+.Chart-top-scrollable-fade-left {
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  max-width: 50px;
+  height: 100%;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  pointer-events: all;
+}
+
+.Chart-top-scrollable-fade-left {
+  justify-content: flex-start;
+  background: linear-gradient(
+    to left,
+    transparent,
+    var(--color-slate-800) 50%,
+    var(--color-slate-800)
+  );
+}
+
+.Chart-top-scrollable-fade-right {
+  justify-content: flex-end;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--color-slate-800) 50%,
+    var(--color-slate-800)
+  );
+}
+
+.Chart-header-value {
+  min-width: max-content;
+  font-size: var(--font-size-body-medium);
+}
+
+.ExchangeChart-right-header {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--color-slate-700);
+  font-size: 1.4rem;
+  font-weight: 500;
+
+  &-icon {
+    margin-right: 0.5rem;
+    font-size: 1.6rem;
+  }
+}
+
+@media (width <= 1100px) {
+  .Chart-24h-low {
+    display: block;
+  }
+
+  .Chart-header {
+    grid-template-columns: auto 1fr;
+  }
+}
+
+.ExchangeChart {
+  position: relative;
+  // height: 73.85rem;
+
+  // @media (width <= 700px) {
+  //   height: auto;
+  //   min-height: 39.85rem;
+  // }
+
+  &-container {
+    position: absolute;
+    background-color: var(--color-slate-800);
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    inset: 0;
+
+    // @media (width <= 700px) {
+    //   position: relative;
+    //   height: 39.85rem;
+    // }
+
+    &.loading {
+      opacity: 0;
+    }
+  }
+
+  &-loading-overlay {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color-slate-800);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    inset: 0;
+    pointer-events: none;
+
+    &.visible {
+      opacity: 1;
+    }
+  }
+
+  &-bottom {
+    position: relative;
+    height: 38.6rem;
+
+    // @media (width <= 700px) {
+    //   height: 39.85rem;
+    // }
+  }
+
+  &-mobile-tabs {
+    display: flex;
+    width: 100%;
+    border-bottom: 1px solid var(--color-slate-700);
+    background-color: var(--color-slate-800);
+    border-top-left-radius: 0.4rem;
+    border-top-right-radius: 0.4rem;
+  }
+
+  &-mobile-tab {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 0;
+    font-size: 1.4rem;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: rgb(255 255 255 / 5%);
+    }
+
+    &.active {
+      margin-bottom: -1px;
+      border-bottom: 1px solid var(--color-gray-500);
+      background-color: transparent;
+    }
+
+    &-icon {
+      margin-right: 0.5rem;
+      font-size: 1.6rem;
+    }
+  }
+
+  &-mobile-content {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-slate-800);
+    overflow: auto;
+
+    &.hidden {
+      display: none;
+    }
+  }
+
+  &-left-area.hidden {
+    display: none;
+  }
+
+  @media (width <= 900px) {
+    &-mobile-content {
+      z-index: 1;
+    }
+  }
+
+  &.tv {
+    .ExchangeChart-bottom {
+      position: relative;
+      // height: 66.85rem;
+      height: 58rem;
+      border-radius: 0.4rem;
+      overflow: hidden;
+
+      @media (width <= 1024px) {
+        height: 57.2rem;
+      }
+      @media (width <= 768px) {
+        height: 36rem;
+      }
+    }
+
+    .ExchangeChart-container {
+      position: absolute;
+      border-radius: 0.4rem;
+      inset: 0;
+      overflow: hidden;
+
+      // @media (width <= 700px) {
+      //   position: relative;
+      //   height: 39.85rem;
+      // }
+    }
+
+    .ExchangeChart-split-container {
+      display: flex;
+      width: 100%;
+      height: 100%;
+    }
+
+    .ExchangeChart-left-area {
+      position: relative;
+      flex: 1;
+      height: 100%;
+    }
+
+    .ExchangeChart-right-area {
+      width: 32.6rem;
+      height: 100%;
+      border-left: 1px solid var(--color-slate-700);
+      // background-color: var(--color-slate-800);
+      background-color: #181818;
+
+      @media (width <= 900px) {
+        display: none;
+      }
+    }
+
+    .ExchangeChart-tabs {
+      display: flex;
+      width: 100%;
+      height: 4.8rem;
+      border-bottom: 1px solid #535353;
+    }
+
+    .ExchangeChart-tab {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      padding: 1.1rem 0 1.1rem 2rem;
+      font-size: 1.4rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      // border-bottom: 1px solid #535353;
+      border-radius: 0;
+      color: #A3A3A3;
+      
+
+      &:hover {
+        background-color: rgb(255 255 255 / 5%);
+      }
+
+      &.active {
+        background-color: transparent;
+      }
+
+      &-icon {
+        margin-right: 0.5rem;
+        font-size: 1.6rem;
+      }
+    }
+
+    .ExchangeChart-tab-content {
+      height: calc(100% - 4.2rem);
+      overflow: hidden;
+    }
+  }
+}
+
+.Chart-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-top: 1px;
+  padding-bottom: 1px;
+
+  .text-body-medium {
+    margin-bottom: 4px;
+  }
+}

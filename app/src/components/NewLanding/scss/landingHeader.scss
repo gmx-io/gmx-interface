@@ -1,0 +1,39 @@
+.landing-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  width: 100%;
+  transition:
+    transform 0.3s ease,
+    background 0.3s ease,
+    backdrop-filter 0.3s ease,
+    -webkit-backdrop-filter 0.3s ease;
+
+  &--hidden {
+    transform: translateY(-100%);
+    pointer-events: none;
+  }
+
+  &--glass {
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.1) 0%,
+      rgba(102, 102, 102, 0) 100%
+    );
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+  }
+}
+
+.ExternalLink {
+  text-decoration: none;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  color: #fff;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}

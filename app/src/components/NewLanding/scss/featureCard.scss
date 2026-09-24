@@ -1,0 +1,9 @@
+.rwa-card-bg {
+  background-image: url('@/img/new-landing/rwa-card-bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  @media (max-width: 767px) {
+    background-image: url('@/img/new-landing/rwa-card-bg-mobile.png');
+  }
+}

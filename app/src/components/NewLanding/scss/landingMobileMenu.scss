@@ -1,0 +1,131 @@
+.landing-mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+}
+
+.landing-mobile-menu__backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgb(0 0 0 / 30%);
+}
+
+.landing-mobile-menu__panel {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #090d12;
+  padding: 2.4rem;
+}
+
+.landing-mobile-menu__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0.5rem 0 3rem 0;
+}
+
+.landing-mobile-menu__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.landing-mobile-menu__brand-logo {
+  width: 2.6rem;
+  height: 2.6rem;
+  flex-shrink: 0;
+}
+
+.landing-mobile-menu__brand-text {
+  color: #f1f1f1;
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.02rem;
+  font-family: Nunito, sans-serif !important;
+}
+
+.landing-mobile-menu__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.landing-mobile-menu__close img {
+  height: 2.4rem;
+  width: 2.4rem;
+}
+
+.landing-mobile-menu__nav {
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.landing-mobile-menu__link {
+  color: #fff;
+  font-size: 1.6rem;
+  line-height: 2;
+  text-decoration: none;
+  border-top: 1px solid #323232;
+  padding: 0.8rem 0;
+  &:last-child {
+    border-bottom: 1px solid #323232;
+  }
+}
+
+.landing-mobile-menu__launch {
+  margin-top: 3rem;
+  border: 0;
+  border-radius: 1rem;
+  background: #fa7b4e;
+  color: #fff;
+  font-size: 1.8rem;
+  font-weight: 500;
+  line-height: 1.4;
+  padding: 1.4rem 2rem;
+  width: 100%;
+}
+
+.landing-mobile-menu__social {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3.2rem;
+}
+
+.landing-mobile-menu__social-link {
+  width: 4rem;
+  height: 3.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  path {
+    fill: #fff;
+  }
+}
+
+.landing-mobile-menu__version {
+  margin-top: 5rem;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2.75rem;
+}
+
+.landing-mobile-menu__version-handle {
+  color: #fff;
+  transition: color 0.2s ease;
+  font-size: 14px;
+  font-weight: 300;
+  color: #f1f1f1;
+  letter-spacing: -0.14px;
+}

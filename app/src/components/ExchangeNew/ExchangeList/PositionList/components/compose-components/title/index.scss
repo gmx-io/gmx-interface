@@ -1,0 +1,41 @@
+.compose-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem;
+  border-bottom: 0.1rem solid #53535380;
+
+  .close-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    width: 2.4rem;
+    height: 2.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.4rem;
+    transition: all 0.2s ease;
+
+    img {
+      width: 2rem;
+      height: 2rem;
+      opacity: 0.6;
+      transition: all 0.2s ease;
+    }
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+
+      img {
+        opacity: 1;
+      }
+    }
+  }
+
+  h3 {
+    font-size: 1.6rem;
+    font-weight: 500;
+  }
+}

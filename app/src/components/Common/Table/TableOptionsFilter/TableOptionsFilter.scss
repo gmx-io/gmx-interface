@@ -1,0 +1,60 @@
+.TableOptionsFilter {
+  &-options {
+    max-height: 20rem;
+    border-top: 1px solid var(--color-gray-800);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  &-group {
+    &:last-of-type {
+      .TableOptionsFilter-option:last-of-type {
+        padding-bottom: 1rem;
+      }
+    }
+  }
+
+  &-group-name {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    font-size: var(--font-size-body-medium);
+    cursor: pointer;
+  }
+
+  &-option {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    font-size: var(--font-size-body-medium);
+    cursor: pointer;
+
+    &-in-group {
+      padding-left: 2.5rem;
+    }
+
+    &:last-of-type {
+      padding-bottom: 1rem;
+    }
+  }
+
+  &-search {
+    margin: 1rem;
+  }
+
+  &-clear {
+    padding: 0.5rem 1rem;
+    padding-top: 1rem;
+    font-size: var(--font-size-body-medium);
+    color: var(--color-gray-300);
+    cursor: pointer;
+
+    &:hover {
+      color: var(--color-white);
+    }
+
+    &:last-child {
+      padding-bottom: 1rem;
+    }
+  }
+}
