@@ -109,6 +109,8 @@ msgstr "<0>Support Solana</0><1>GMX Express</1>"
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/MarketsList/MarketsList.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -943,6 +945,7 @@ msgid "Sender has withdrawn all tokens from the Affiliate vesting vault"
 msgstr "L'expéditeur a retiré tous les tokens du coffre de vesting affilié"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "No {marketTypeLabel} match \"{query}\"."
 msgstr "Aucun résultat pour « {query} » dans {marketTypeLabel}."
 
@@ -1006,6 +1009,7 @@ msgstr "Acheter des GMX sur des plateformes centralisées"
 
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+#: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Available liquidity"
@@ -1271,6 +1275,7 @@ msgstr "Vaultka"
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
@@ -1567,6 +1572,7 @@ msgid "To buy GMX on {0}, <0>change your network</0>"
 msgstr "Pour acheter GMX sur {0}, <0>changez de réseau</0>"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Results are available in Perpetuals."
 msgstr "Des résultats sont disponibles dans Perpétuels."
 
@@ -2270,6 +2276,7 @@ msgid "This swap requires external routing, which isn't available while the gas 
 msgstr "Ce swap nécessite un routage externe, qui n'est pas disponible tant que le jeton de paiement du gaz correspond au jeton que vous recevez, et aucun autre jeton de gaz ne dispose d'un solde suffisant."
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Search in all {marketTypeLabel}"
 msgstr "Rechercher dans tous les {marketTypeLabel}"
 
@@ -2333,6 +2340,7 @@ msgid "Keep leverage at {0}"
 msgstr "Garder l'effet de levier à {0}"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "AVAIL. LIQ."
 msgstr "LIQ. DISPO."
 
@@ -3075,6 +3083,7 @@ msgid "Cancel margin deposit"
 msgstr "Annuler le dépôt de marge"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Swap tokens"
 msgstr "jetons Swap"
 
@@ -3177,6 +3186,7 @@ msgid "Earn rewards by sharing your referral code"
 msgstr "Gagnez des récompenses en partageant votre code de parrainage"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Results are available in Swap."
 msgstr "Des résultats sont disponibles dans Swap."
 
@@ -3290,6 +3300,7 @@ msgid "Share your code"
 msgstr "Partagez votre code"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "View results in Perpetuals"
 msgstr "Afficher les résultats dans Perpétuels"
 
@@ -4781,6 +4792,7 @@ msgid "Decentralized perpetual exchange | GMX"
 msgstr "Plateforme d'échange perpétuel décentralisée | GMX"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "perpetual markets"
 msgstr "marchés perpétuels"
 
@@ -4801,6 +4813,7 @@ msgid "Withdrawing {amountText} from {indexTokenText} Short..."
 msgstr "Retrait de {amountText} du short {indexTokenText}..."
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/TableMarketFilter/MarketFilterBase.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
@@ -4874,6 +4887,7 @@ msgid "Show rPnL after fees"
 msgstr "Afficher le rPnL après frais"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
+#: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Open interest"
 msgstr "Positions ouvertes"
@@ -5073,6 +5087,7 @@ msgid "Monthly volume routed"
 msgstr "Volume mensuel routé"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "VOL."
 msgstr "VOL."
 
@@ -5176,6 +5191,8 @@ msgstr "Recevez des actifs pris en charge dans votre portefeuille sur {networkNa
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/GmList/GmList.tsx
@@ -5852,6 +5869,7 @@ msgid "Buy GMX bonds on Bond Protocol at a discount with a short vesting period"
 msgstr "Achetez des obligations GMX sur Bond Protocol avec une décote et une courte période d'acquisition progressive"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "No results with the selected filters."
 msgstr "Aucun résultat avec les filtres sélectionnés."
 
@@ -6622,6 +6640,7 @@ msgid "Transfer already initiated"
 msgstr "Transfert déjà initié"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Search token"
 msgstr "Rechercher un jeton"
 
@@ -7196,6 +7215,7 @@ msgid "Less info"
 msgstr "Moins d’infos"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "LIQ."
 msgstr "LIQ."
 
@@ -7257,6 +7277,7 @@ msgid "Max leverage"
 msgstr "Effet de levier maximum"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "AVAILABLE LIQUIDITY"
 msgstr "LIQUIDITÉ DISPONIBLE"
 
@@ -8073,6 +8094,7 @@ msgid "Wallet received before close"
 msgstr "Reçu sur le portefeuille avant la clôture"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "View results in Swap"
 msgstr "Afficher les résultats dans Swap"
 
@@ -8209,6 +8231,8 @@ msgstr "PnL réalisé avant frais"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "24H%"
 msgstr "24H%"
 
@@ -9023,6 +9047,7 @@ msgid "Compass Labs GM token dashboard"
 msgstr "Tableau de bord Compass Labs GM token"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "OPEN INTEREST"
 msgstr "INTÉRÊT OUVERT"
@@ -9410,6 +9435,7 @@ msgstr "Dépôt de {amountText} sur le short {indexTokenText}..."
 msgid "Excludes claimed funding, price impact rebates and execution fees."
 msgstr "Hors financement réclamé, remises d'impact sur le prix et frais d'exécution."
 
+#: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -10569,6 +10595,7 @@ msgid "CONFIG"
 msgstr "CONFIG"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/MarketsList/MarketsList.tsx
 #: src/components/TableMarketFilter/MarketFilterBase.tsx
@@ -10677,6 +10704,8 @@ msgstr "Faux"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "/USD"
 msgstr "/USD"
@@ -11328,6 +11357,7 @@ msgid "Avoid price wicks with transparent, sub-second Chainlink price feeds tail
 msgstr "Évitez les mèches de prix grâce à des flux de prix Chainlink transparents et inférieurs à la seconde, conçus sur mesure pour GMX"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "No markets matched."
 msgstr "Aucun marché correspondant."
 
@@ -11879,6 +11909,8 @@ msgstr "Les approbations par permis sont désactivées pour ce token."
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "LAST PRICE"
 msgstr "DERNIER PRIX"
 
@@ -12055,6 +12087,8 @@ msgstr "Impact sur le prix acceptable élevé défini. Impact actuel : {0}."
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/ChartTokenSelector/ModeTabs.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/SwapCard/SwapCard.tsx
@@ -12368,6 +12402,7 @@ msgid "How to start saving?"
 msgstr "Comment commencer à économiser ?"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "24H VOL."
 msgstr "VOL. 24H"
 

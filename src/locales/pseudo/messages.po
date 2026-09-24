@@ -109,6 +109,8 @@ msgstr ""
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/MarketsList/MarketsList.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -943,6 +945,7 @@ msgid "Sender has withdrawn all tokens from the Affiliate vesting vault"
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "No {marketTypeLabel} match \"{query}\"."
 msgstr "[!! No {marketTypeLabel} match \"{query}\". !!]"
 
@@ -1006,6 +1009,7 @@ msgstr ""
 
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+#: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Available liquidity"
@@ -1271,6 +1275,7 @@ msgstr ""
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
@@ -1567,6 +1572,7 @@ msgid "To buy GMX on {0}, <0>change your network</0>"
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Results are available in Perpetuals."
 msgstr "[!! Results are available in Perpetuals. !!]"
 
@@ -2270,6 +2276,7 @@ msgid "This swap requires external routing, which isn't available while the gas 
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Search in all {marketTypeLabel}"
 msgstr "[!! Search in all {marketTypeLabel} !!]"
 
@@ -2333,6 +2340,7 @@ msgid "Keep leverage at {0}"
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "AVAIL. LIQ."
 msgstr ""
 
@@ -3075,6 +3083,7 @@ msgid "Cancel margin deposit"
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Swap tokens"
 msgstr "[!! Swap tokens !!]"
 
@@ -3177,6 +3186,7 @@ msgid "Earn rewards by sharing your referral code"
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Results are available in Swap."
 msgstr "[!! Results are available in Swap. !!]"
 
@@ -3290,6 +3300,7 @@ msgid "Share your code"
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "View results in Perpetuals"
 msgstr "[!! View results in Perpetuals !!]"
 
@@ -4781,6 +4792,7 @@ msgid "Decentralized perpetual exchange | GMX"
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "perpetual markets"
 msgstr "[!! perpetual markets !!]"
 
@@ -4801,6 +4813,7 @@ msgid "Withdrawing {amountText} from {indexTokenText} Short..."
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/TableMarketFilter/MarketFilterBase.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
@@ -4874,6 +4887,7 @@ msgid "Show rPnL after fees"
 msgstr ""
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
+#: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Open interest"
 msgstr ""
@@ -5073,6 +5087,7 @@ msgid "Monthly volume routed"
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "VOL."
 msgstr ""
 
@@ -5176,6 +5191,8 @@ msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/GmList/GmList.tsx
@@ -5852,6 +5869,7 @@ msgid "Buy GMX bonds on Bond Protocol at a discount with a short vesting period"
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "No results with the selected filters."
 msgstr "[!! No results with the selected filters. !!]"
 
@@ -6622,6 +6640,7 @@ msgid "Transfer already initiated"
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Search token"
 msgstr ""
 
@@ -7196,6 +7215,7 @@ msgid "Less info"
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "LIQ."
 msgstr ""
 
@@ -7257,6 +7277,7 @@ msgid "Max leverage"
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "AVAILABLE LIQUIDITY"
 msgstr ""
 
@@ -8073,6 +8094,7 @@ msgid "Wallet received before close"
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "View results in Swap"
 msgstr "[!! View results in Swap !!]"
 
@@ -8209,6 +8231,8 @@ msgstr "[!! Realized PnL before fees !!]"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "24H%"
 msgstr ""
 
@@ -9023,6 +9047,7 @@ msgid "Compass Labs GM token dashboard"
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "OPEN INTEREST"
 msgstr ""
@@ -9410,6 +9435,7 @@ msgstr ""
 msgid "Excludes claimed funding, price impact rebates and execution fees."
 msgstr ""
 
+#: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -10569,6 +10595,7 @@ msgid "CONFIG"
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/MarketsList/MarketsList.tsx
 #: src/components/TableMarketFilter/MarketFilterBase.tsx
@@ -10677,6 +10704,8 @@ msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "/USD"
 msgstr ""
@@ -11328,6 +11357,7 @@ msgid "Avoid price wicks with transparent, sub-second Chainlink price feeds tail
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "No markets matched."
 msgstr "[!! No markets matched. !!]"
 
@@ -11879,6 +11909,8 @@ msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "LAST PRICE"
 msgstr ""
 
@@ -12055,6 +12087,8 @@ msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/ChartTokenSelector/ModeTabs.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/SwapCard/SwapCard.tsx
@@ -12368,6 +12402,7 @@ msgid "How to start saving?"
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "24H VOL."
 msgstr ""
 

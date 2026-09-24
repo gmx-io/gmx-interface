@@ -109,6 +109,8 @@ msgstr "<0>Solana 支持</0><1>GMX Express</1>"
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/MarketsList/MarketsList.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -943,6 +945,7 @@ msgid "Sender has withdrawn all tokens from the Affiliate vesting vault"
 msgstr "发送方已从联盟伙伴归属金库中提取全部代币"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "No {marketTypeLabel} match \"{query}\"."
 msgstr "{marketTypeLabel}中没有与“{query}”匹配的结果。"
 
@@ -1006,6 +1009,7 @@ msgstr "在中心化交易所买入 GMX"
 
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
+#: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Available liquidity"
@@ -1271,6 +1275,7 @@ msgstr "Vaultka"
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
@@ -1567,6 +1572,7 @@ msgid "To buy GMX on {0}, <0>change your network</0>"
 msgstr "要在 {0} 上买入 GMX，请<0>切换您的网络</0>"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Results are available in Perpetuals."
 msgstr "永续合约中有可用结果。"
 
@@ -2270,6 +2276,7 @@ msgid "This swap requires external routing, which isn't available while the gas 
 msgstr "此交换需要外部路由，但当 Gas 支付代币与您接收的代币相同时不可用，且没有其他 Gas 代币有足够余额。"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Search in all {marketTypeLabel}"
 msgstr "搜索所有{marketTypeLabel}"
 
@@ -2333,6 +2340,7 @@ msgid "Keep leverage at {0}"
 msgstr "保持杠杆为 {0}"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "AVAIL. LIQ."
 msgstr "可用流动性"
 
@@ -3075,6 +3083,7 @@ msgid "Cancel margin deposit"
 msgstr "取消保证金存入"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Swap tokens"
 msgstr "交换代币"
 
@@ -3177,6 +3186,7 @@ msgid "Earn rewards by sharing your referral code"
 msgstr "分享推荐码赚取奖励"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Results are available in Swap."
 msgstr "交换中有可用结果。"
 
@@ -3290,6 +3300,7 @@ msgid "Share your code"
 msgstr "分享您的代码"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "View results in Perpetuals"
 msgstr "查看永续合约中的结果"
 
@@ -4781,6 +4792,7 @@ msgid "Decentralized perpetual exchange | GMX"
 msgstr "去中心化永续合约交易所 | GMX"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "perpetual markets"
 msgstr "永续合约市场"
 
@@ -4801,6 +4813,7 @@ msgid "Withdrawing {amountText} from {indexTokenText} Short..."
 msgstr "正在从 {indexTokenText} 做空提取 {amountText}..."
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/TableMarketFilter/MarketFilterBase.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
@@ -4874,6 +4887,7 @@ msgid "Show rPnL after fees"
 msgstr "显示扣除费用后的已实现 PnL"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
+#: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Open interest"
 msgstr "未平仓量"
@@ -5073,6 +5087,7 @@ msgid "Monthly volume routed"
 msgstr "每月路由交易量"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "VOL."
 msgstr "交易量"
 
@@ -5176,6 +5191,8 @@ msgstr "在 {networkName} 网络上接收支持的资产到您的钱包，或选
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/GmList/GmList.tsx
@@ -5852,6 +5869,7 @@ msgid "Buy GMX bonds on Bond Protocol at a discount with a short vesting period"
 msgstr "在 Bond Protocol 上以折扣价购买 GMX 债券，归属期较短"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "No results with the selected filters."
 msgstr "所选筛选条件下没有结果。"
 
@@ -6622,6 +6640,7 @@ msgid "Transfer already initiated"
 msgstr "转账已启动"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "Search token"
 msgstr "搜索代币"
 
@@ -7196,6 +7215,7 @@ msgid "Less info"
 msgstr "收起信息"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "LIQ."
 msgstr "清算"
 
@@ -7257,6 +7277,7 @@ msgid "Max leverage"
 msgstr "最大杠杆"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "AVAILABLE LIQUIDITY"
 msgstr "可用流动性"
 
@@ -8073,6 +8094,7 @@ msgid "Wallet received before close"
 msgstr "平仓前钱包收到"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "View results in Swap"
 msgstr "查看交换中的结果"
 
@@ -8209,6 +8231,8 @@ msgstr "扣除费用前的已实现盈亏"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "24H%"
 msgstr "24 小时 %"
 
@@ -9023,6 +9047,7 @@ msgid "Compass Labs GM token dashboard"
 msgstr "Compass Labs GM 代币仪表盘"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "OPEN INTEREST"
 msgstr "未平仓合约"
@@ -9410,6 +9435,7 @@ msgstr "正在向 {indexTokenText} 做空存入 {amountText}..."
 msgid "Excludes claimed funding, price impact rebates and execution fees."
 msgstr "不包括已领取的资金费、价格影响返还和执行费。"
 
+#: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -10569,6 +10595,7 @@ msgid "CONFIG"
 msgstr "配置"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/MarketsList/MarketsList.tsx
 #: src/components/TableMarketFilter/MarketFilterBase.tsx
@@ -10677,6 +10704,8 @@ msgstr "假"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "/USD"
 msgstr "/USD"
@@ -11328,6 +11357,7 @@ msgid "Avoid price wicks with transparent, sub-second Chainlink price feeds tail
 msgstr "利用 Chainlink 为 GMX 量身定制的透明、亚秒级价格馈送，避免价格插针"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "No markets matched."
 msgstr "没有匹配的市场。"
 
@@ -11879,6 +11909,8 @@ msgstr "此代币已禁用 Permit 授权。"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "LAST PRICE"
 msgstr "最新价格"
 
@@ -12055,6 +12087,8 @@ msgstr "已设置较高的可接受价格影响。当前影响：{0}。"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/ChartTokenSelector/ModeTabs.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/SwapCard/SwapCard.tsx
@@ -12368,6 +12402,7 @@ msgid "How to start saving?"
 msgstr "如何开始省钱？"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "24H VOL."
 msgstr "24 小时交易量"
 
