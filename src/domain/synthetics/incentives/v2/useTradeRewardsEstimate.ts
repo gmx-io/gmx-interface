@@ -5,8 +5,10 @@ import { useIncentivesV2State } from "context/IncentivesV2Context/IncentivesV2Co
 import { useAccount, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useMinAffiliateRewardFactor } from "domain/synthetics/referrals/useMinAffiliateRewardFactor";
 import type { TradeFees, TradeFeesType } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
+import { applyFactor } from "lib/numbers";
 import { getTokenBySymbolSafe } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { getPriceImpactForPosition } from "sdk/utils/fees/priceImpact";
@@ -56,6 +58,20 @@ export function useTradeRewardsEstimate({
     sizeDeltaUsd > 0n &&
     fees?.positionFee?.deltaUsd !== undefined;
   const canEstimate = enabled && shouldEstimate && hasEstimateInputs && Boolean(account);
+  const referralDiscountUsd =
+    fees?.positionFee && userReferralInfo
+      ? applyFactor(
+          applyFactor(bigMath.abs(fees.positionFee.deltaUsd), userReferralInfo.totalRebateFactor),
+          userReferralInfo.discountFactor
+        )
+      : 0n;
+  const needsMinAffiliateRewardFactor = Boolean(
+    canEstimate && userReferralInfo && (fees?.feeDiscountUsd ?? 0n) > referralDiscountUsd
+  );
+  const { data: minAffiliateRewardFactor, error: minAffiliateRewardFactorError } = useMinAffiliateRewardFactor(
+    chainId,
+    needsMinAffiliateRewardFactor ? userReferralInfo?.tierId : undefined
+  );
 
   const { data: status } = useAccountIncentiveStatus(chainId, {
     account,
@@ -99,7 +115,8 @@ export function useTradeRewardsEstimate({
       !marketInfo ||
       isLong === undefined ||
       sizeDeltaUsd === undefined ||
-      fees?.positionFee?.deltaUsd === undefined
+      fees?.positionFee?.deltaUsd === undefined ||
+      (needsMinAffiliateRewardFactor && (minAffiliateRewardFactor === undefined || minAffiliateRewardFactorError))
     ) {
       return undefined;
     }
@@ -109,6 +126,9 @@ export function useTradeRewardsEstimate({
       status: currentStatus,
       positionFeeUsd: bigMath.abs(fees.positionFee.deltaUsd),
       totalRebateFactor: userReferralInfo?.totalRebateFactor ?? 0n,
+      referralDiscountFactor: userReferralInfo?.discountFactor ?? 0n,
+      minAffiliateRewardFactor: needsMinAffiliateRewardFactor ? minAffiliateRewardFactor : 0n,
+      feeDiscountUsd: fees.feeDiscountUsd,
       sizeDeltaUsd,
       marketTokenAddress: marketInfo.marketTokenAddress,
       balanceWasImproved,
@@ -122,11 +142,15 @@ export function useTradeRewardsEstimate({
     config,
     currentStatus,
     fees?.positionFee?.deltaUsd,
+    fees?.feeDiscountUsd,
     feesType,
     gmxPrice,
     gtPrice?.priceUsd,
     isLong,
     marketInfo,
+    minAffiliateRewardFactor,
+    minAffiliateRewardFactorError,
+    needsMinAffiliateRewardFactor,
     sizeDeltaUsd,
     userReferralInfo,
   ]);

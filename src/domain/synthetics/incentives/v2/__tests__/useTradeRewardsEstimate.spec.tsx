@@ -6,6 +6,7 @@ import { useIncentivesV2State } from "context/IncentivesV2Context/IncentivesV2Co
 import { useAccount, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import type { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useMinAffiliateRewardFactor } from "domain/synthetics/referrals/useMinAffiliateRewardFactor";
 import type { TradeFees } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
 import { PRECISION } from "lib/numbers";
@@ -37,6 +38,9 @@ vi.mock("domain/synthetics/incentives/v2/useAccountIncentiveStatus", () => ({
 }));
 vi.mock("domain/synthetics/incentives/v2/useLatestGtPrice", () => ({
   useLatestGtPrice: vi.fn(),
+}));
+vi.mock("domain/synthetics/referrals/useMinAffiliateRewardFactor", () => ({
+  useMinAffiliateRewardFactor: vi.fn(),
 }));
 vi.mock("lib/chains", () => ({
   useChainId: vi.fn(),
@@ -126,6 +130,9 @@ const fees = {
   },
 } satisfies TradeFees;
 
+const discountedFees = { ...fees, feeDiscountUsd: usd(5n) };
+const higherDiscountFees = { ...fees, feeDiscountUsd: usd(8n) };
+
 const defaultParams: Parameters<typeof useTradeRewardsEstimate>[0] = {
   fees,
   feesType: "increase",
@@ -143,6 +150,7 @@ const mockGetTokenBySymbolSafe = vi.mocked(getTokenBySymbolSafe);
 const mockGetPriceImpactForPosition = vi.mocked(getPriceImpactForPosition);
 const mockUseAccountIncentiveStatus = vi.mocked(useAccountIncentiveStatus);
 const mockUseLatestGtPrice = vi.mocked(useLatestGtPrice);
+const mockUseMinAffiliateRewardFactor = vi.mocked(useMinAffiliateRewardFactor);
 
 let latestResult: ReturnType<typeof useTradeRewardsEstimate>;
 
@@ -173,6 +181,9 @@ describe("useTradeRewardsEstimate", () => {
     setStatus(makeStatus());
     mockUseAccount.mockReturnValue(ACCOUNT);
     mockUseUserReferralInfo.mockReturnValue(undefined);
+    mockUseMinAffiliateRewardFactor.mockReturnValue({ data: undefined } as ReturnType<
+      typeof useMinAffiliateRewardFactor
+    >);
     mockUseChainId.mockReturnValue({
       chainId: ARBITRUM,
       srcChainId: undefined,
@@ -213,6 +224,45 @@ describe("useTradeRewardsEstimate", () => {
     expect(latestResult.estimatedRewards?.eligibleFeeUsd).toBe(usd(10n));
     expect(latestResult.estimatedRewards?.effectiveMultiplier).toBe(50n);
     expect(latestResult.estimatedRewards?.rewardsUsd).toBe(usd(5n));
+  });
+
+  it.each(["increase", "decrease"] as const)("updates %s rewards when the pro-tier discount changes", (feesType) => {
+    const view = render(<Harness {...defaultParams} feesType={feesType} fees={discountedFees} />);
+
+    expect(latestResult.estimatedRewards?.eligibleFeeUsd).toBe(usd(5n));
+    expect(latestResult.estimatedRewards?.rewardsUsd).toBe(usd(5n) / 2n);
+
+    view.rerender(<Harness {...defaultParams} feesType={feesType} fees={higherDiscountFees} />);
+
+    expect(latestResult.estimatedRewards?.eligibleFeeUsd).toBe(usd(2n));
+    expect(latestResult.estimatedRewards?.rewardsUsd).toBe(usd(1n));
+  });
+
+  it("waits for the affiliate minimum when a pro discount overrides the referral discount", () => {
+    mockUseUserReferralInfo.mockReturnValue({
+      tierId: 0,
+      totalRebateFactor: PRECISION / 5n,
+      discountFactor: PRECISION / 2n,
+    } as ReturnType<typeof useUserReferralInfo>);
+    const view = render(<Harness {...defaultParams} fees={discountedFees} />);
+
+    expect(mockUseMinAffiliateRewardFactor).toHaveBeenCalledWith(ARBITRUM, 0);
+    expect(latestResult.estimatedRewards).toBeUndefined();
+
+    mockUseMinAffiliateRewardFactor.mockReturnValue({ data: PRECISION / 20n } as ReturnType<
+      typeof useMinAffiliateRewardFactor
+    >);
+    view.rerender(<Harness {...defaultParams} fees={discountedFees} />);
+
+    expect(latestResult.estimatedRewards?.eligibleFeeUsd).toBe(usd(45n) / 10n);
+    expect(latestResult.estimatedRewards?.rewardsUsd).toBe(usd(45n) / 20n);
+
+    mockUseMinAffiliateRewardFactor.mockReturnValue({
+      data: PRECISION / 20n,
+      error: new Error("RPC unavailable"),
+    } as ReturnType<typeof useMinAffiliateRewardFactor>);
+    view.rerender(<Harness {...defaultParams} fees={discountedFees} />);
+    expect(latestResult.estimatedRewards).toBeUndefined();
   });
 
   it("uses the position price-impact result to apply a qualifying balancing-trade boost", () => {

@@ -97,6 +97,42 @@ function makeParams(
 }
 
 describe("V2 trade reward estimate", () => {
+  it.each([
+    { feeDiscountUsd: usd(50n), totalRebateFactor: 0n, referralDiscountFactor: 0n, eligibleFeeUsd: usd(50n) },
+    {
+      feeDiscountUsd: usd(10n),
+      totalRebateFactor: PRECISION / 5n,
+      referralDiscountFactor: PRECISION / 2n,
+      eligibleFeeUsd: usd(80n),
+    },
+    {
+      feeDiscountUsd: usd(50n),
+      totalRebateFactor: PRECISION / 5n,
+      referralDiscountFactor: PRECISION / 2n,
+      minAffiliateRewardFactor: PRECISION / 20n,
+      eligibleFeeUsd: usd(45n),
+    },
+    {
+      feeDiscountUsd: usd(13n),
+      totalRebateFactor: PRECISION / 5n,
+      referralDiscountFactor: PRECISION / 2n,
+      minAffiliateRewardFactor: PRECISION / 20n,
+      eligibleFeeUsd: usd(80n),
+    },
+    {
+      feeDiscountUsd: usd(18n),
+      totalRebateFactor: PRECISION / 5n,
+      referralDiscountFactor: PRECISION / 2n,
+      minAffiliateRewardFactor: PRECISION / 20n,
+      eligibleFeeUsd: usd(77n),
+    },
+  ])("uses net fees after trader discounts and affiliate rewards (case %#)", ({ eligibleFeeUsd, ...fees }) => {
+    const result = getEstimatedTradeRewards(makeParams({ ...fees, status: makeStatus({ volumeTier: "Tier1" }) }));
+
+    expect(result.eligibleFeeUsd).toBe(eligibleFeeUsd);
+    expect(result.rewardsUsd).toBe((eligibleFeeUsd * 12n) / 100n);
+  });
+
   it("deducts the full referral rebate and converts each configured reward share to tokens", () => {
     const result = getEstimatedTradeRewards(
       makeParams({

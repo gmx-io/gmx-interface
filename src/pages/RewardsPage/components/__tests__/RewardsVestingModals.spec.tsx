@@ -1200,6 +1200,46 @@ describe("RewardsVestingModal", () => {
     expect((screen.getByPlaceholderText("0") as HTMLInputElement).value).toBe("");
   });
 
+  it.each(["close button", "Escape", "backdrop"])(
+    "allows closing with %s while awaiting wallet approval without starting staking or vesting",
+    async (closeAction) => {
+      const initialData = { ...baseData, freePairAmount: 0n, walletGmxBalance: 100n * TOKEN_UNIT };
+      const receipt = { wait: vi.fn(async () => undefined) };
+      let resolveApproval!: (transaction: typeof receipt) => void;
+      mockCallContract.mockReturnValueOnce(
+        new Promise<typeof receipt>((resolve) => {
+          resolveApproval = resolve;
+        })
+      );
+      const view = renderVestModal(initialData);
+      fireEvent.click(screen.getByRole("button", { name: "Vest esGMX" }));
+      await waitFor(() => expect(mockCallContract).toHaveBeenCalledTimes(1));
+
+      if (closeAction === "close button") {
+        fireEvent.click(screen.getByRole("button", { name: "Close" }));
+      } else if (closeAction === "Escape") {
+        fireEvent.keyDown(window, { key: "Escape" });
+      } else {
+        fireEvent.click(document.querySelector(".Modal-backdrop")!);
+      }
+      expect(setIsVisible).toHaveBeenCalledWith(false);
+      view.rerender(getVestModal(initialData, false));
+      view.rerender(getVestModal(initialData));
+      fireEvent.change(screen.getByRole("textbox"), { target: { value: "50" } });
+
+      await act(async () => resolveApproval(receipt));
+
+      expect(mockCallContract.mock.calls.map((call) => call[2])).toEqual(["approve"]);
+      expect(mutate).not.toHaveBeenCalled();
+      expect(receipt.wait).not.toHaveBeenCalled();
+      expect(mockHelperToastInfo).not.toHaveBeenCalled();
+      expect((screen.getByRole("textbox") as HTMLInputElement).value).toBe("50");
+      expect((screen.getByRole("button", { name: "Vest esGMX" }) as HTMLButtonElement).disabled).toBe(false);
+      expect(screen.queryByText("GMX approved")).toBeNull();
+      expect(setIsVisible).toHaveBeenCalledTimes(1);
+    }
+  );
+
   it("does not auto-stake undelegated GMX voting power", () => {
     const initialData = {
       ...baseData,
@@ -1705,6 +1745,36 @@ describe("RewardsStopVestingModal", () => {
   });
 
   afterEach(cleanup);
+
+  it("allows dismissing a stop request while waiting for wallet approval", async () => {
+    const activeData = {
+      ...baseData,
+      vestingInfo: {
+        ...baseData.vestingInfo,
+        vestedAmount: 100n * TOKEN_UNIT,
+        escrowedBalance: 100n * TOKEN_UNIT,
+      },
+    };
+    const receipt = { wait: vi.fn(async () => undefined) };
+    let resolveStop!: (transaction: typeof receipt) => void;
+    mockCallContract.mockReturnValueOnce(
+      new Promise<typeof receipt>((resolve) => {
+        resolveStop = resolve;
+      })
+    );
+    mutate.mockResolvedValue(activeData);
+    renderStopModal(activeData);
+    fireEvent.click(screen.getByRole("button", { name: "Yes, stop vesting" }));
+    await waitFor(() => expect(mockCallContract).toHaveBeenCalledTimes(1));
+
+    fireEvent.click(screen.getByRole("button", { name: "Keep vesting" }));
+    expect(setIsVisible).toHaveBeenCalledWith(false);
+    await act(async () => resolveStop(receipt));
+
+    expect(receipt.wait).not.toHaveBeenCalled();
+    expect(setIsVisible).toHaveBeenCalledTimes(1);
+    expect(mockSendRewardsTransactionResultEvent).not.toHaveBeenCalled();
+  });
 
   it("uses the active vesting amounts in the confirmation copy", () => {
     renderStopModal({

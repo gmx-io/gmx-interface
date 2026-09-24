@@ -7,6 +7,7 @@ const FOCUSABLE_SELECTOR =
 
 type ModalFocusScope = {
   activationOrder: number;
+  zIndex: number;
   parent?: ModalFocusScope;
   portalElements: Set<HTMLElement>;
 };
@@ -32,6 +33,7 @@ function getActiveModalScope() {
 
     if (isAncestorScope(topScope, scope)) return scope;
     if (isAncestorScope(scope, topScope)) return topScope;
+    if (scope.zIndex !== topScope.zIndex) return scope.zIndex > topScope.zIndex ? scope : topScope;
     return scope.activationOrder > topScope.activationOrder ? scope : topScope;
   }, undefined);
 }
@@ -104,19 +106,22 @@ export function useModalFocusScope({
   contentRef,
   isVisible,
   onClose,
+  zIndex = 1001,
 }: {
   contentRef: RefObject<HTMLElement | null>;
   isVisible: boolean;
   onClose: () => void;
+  zIndex?: number;
 }) {
   const parentScope = useContext(ModalFocusScopeContext);
   const scope = useMemo<ModalFocusScope>(
     () => ({
       activationOrder: 0,
+      zIndex,
       parent: parentScope,
       portalElements: new Set(),
     }),
-    [parentScope]
+    [parentScope, zIndex]
   );
   const onCloseRef = useRef(onClose);
 
