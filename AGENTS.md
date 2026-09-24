@@ -4,12 +4,12 @@ This project is migrating functionality from the `source-solana-project` subproj
 
 ## Solana migration
 
-11. The migration goal is to integrate the functionality of the `source-solana-project` subproject into the main project.
-12. For each Solana module, if the main project already provides an equivalent frontend component or module, it must be reused together with the main project's applicable page structure, state management, and interaction patterns. If the main project has no equivalent, ask the user for confirmation before introducing a new frontend component or module.
-13. Treat `source-solana-project` as a reference for Solana data access, business logic, interfaces, and behavior when those details are unclear; do not copy its pages or UI components into the main project by default.
-14. Adapt the subproject's data and logic to the main project's existing components rather than introducing a separate frontend implementation; any new frontend component or module requires the user's confirmation under rule 12.
-15. Keep migration changes focused on the Solana integration and avoid unrelated refactors or component changes.
-16. When the required behavior, data contract, or integration approach remains unclear after reviewing the relevant source code, ask the user for clarification before implementing.
+1. The migration goal is to integrate the functionality of the `source-solana-project` subproject into the main project.
+2. For each Solana module, if the main project already provides an equivalent frontend component or module, it must be reused together with the main project's applicable page structure, state management, and interaction patterns. If the main project has no equivalent, ask the user for confirmation before introducing a new frontend component or module.
+3. Treat `source-solana-project` as a reference for Solana data access, business logic, interfaces, and behavior when those details are unclear; do not copy its pages or UI components into the main project by default.
+4. Adapt the subproject's data and logic to the main project's existing components rather than introducing a separate frontend implementation; any new frontend component or module requires the user's confirmation under rule 2.
+5. Keep migration changes focused on the Solana integration and avoid unrelated refactors or component changes.
+6. When the required behavior, data contract, or integration approach remains unclear after reviewing the relevant source code, ask the user for clarification before implementing.
 
 ## General instructions
 
