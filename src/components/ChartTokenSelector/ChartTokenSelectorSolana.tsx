@@ -94,6 +94,7 @@ export function convertSolanaIndexTokensToMarketItems(response: SolanaIndexToken
   const mockTradFiStocks = ["MSFT", "MSTR", "NVDA", "META", "SPCX", "AAPL", "AMZN", "GOOGL"];
   const mockTradFiIndices = ["QQQ", "SPY"];
   const mockTradFiCommodities = ["WTI"];
+  const tradFiFx = ["AUD", "EUR", "GBP", "NZD", "USDCAD", "USDCHF", "USDJPY", "USDMXN"];
   const memeTokens = ["PEPE", "SHIB", "PUMP", "BOME", "FARTCOIN", "BONK", "WIF", "TRUMP", "MELANIA", "DOGE"];
   const layer1Tokens = [
     "BTC",
@@ -138,7 +139,9 @@ export function convertSolanaIndexTokensToMarketItems(response: SolanaIndexToken
                   ? ["defi"]
                   : layer1Tokens.includes(item.symbol ?? "")
                     ? ["layer1"]
-                    : [],
+                    : tradFiFx.includes(item.symbol ?? "")
+                      ? ["tradfi", "fx"]
+                      : [],
       imageUrl: '',
       isPermitSupported: false,
       isPermitDisabled: false,
