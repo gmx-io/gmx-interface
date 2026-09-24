@@ -65,7 +65,7 @@ export function HistoricalRewardsAllocationModal({
     >
       <div className="flex flex-col gap-20 pt-12">
         <div className="flex flex-col gap-12 px-adaptive">
-          <div className="flex flex-wrap items-start justify-between gap-12">
+          <div className="flex flex-wrap items-center justify-between gap-12">
             <div className="flex min-w-0 flex-col gap-4">
               <p className="text-12 font-medium text-typography-secondary">
                 <Trans>Bonus remaining</Trans>
@@ -85,7 +85,7 @@ export function HistoricalRewardsAllocationModal({
               </p>
             </div>
             {config && bonusMultiplier !== undefined && bonusMultiplier > 0n ? (
-              <span className="mt-4 inline-flex shrink-0 items-center gap-8 rounded-8 border-1/2 border-green-500/20 bg-green-900 px-12 py-8 text-20 font-medium text-green-500">
+              <span className="inline-flex shrink-0 items-center gap-8 rounded-8 border-1/2 border-green-500/20 bg-green-900 px-12 py-8 text-20 font-medium text-green-500">
                 <MultiplierSolidIcon aria-hidden="true" className="size-24" />
                 {formatMultiplierAdjustment(bonusMultiplier, config.multiplierDecimals)}
               </span>
