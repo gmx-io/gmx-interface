@@ -3,8 +3,10 @@ import { type ReactNode } from "react";
 
 import { GmxAccountModalView } from "context/GmxAccountContext/GmxAccountContext";
 import { useGmxAccountModalOpen, useGmxAccountWalletReceiveViewBackTo } from "context/GmxAccountContext/hooks";
+import { useChainId } from "lib/chains";
 import { userAnalytics } from "lib/userAnalytics";
 import { OneClickPromotionEvent } from "lib/userAnalytics/types";
+import { SolanaWalletSendView } from "solana-interface/wallet/SolanaWalletSendView";
 
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 import { SlideModal } from "components/Modal/SlideModal";
@@ -66,6 +68,8 @@ const OVERLAY_MODAL_LABELS: Record<OverlayView, ReactNode> = {
 };
 
 function OverlayContent({ view }: { view: OverlayView }) {
+  const { isSolana } = useChainId();
+
   switch (view) {
     case "deposit":
       return <DepositView />;
@@ -80,11 +84,12 @@ function OverlayContent({ view }: { view: OverlayView }) {
     case "walletReceive":
       return <WalletReceiveView />;
     case "walletSend":
-      return <WalletSendView />;
+      return isSolana ? <SolanaWalletSendView /> : <WalletSendView />;
   }
 }
 
 export function GmxAccountModalDesktop({ account }: { account: string }) {
+  const { isSolana } = useChainId();
   const [modalState, setModalState] = useGmxAccountModalOpen();
   const [walletReceiveViewBackTo] = useGmxAccountWalletReceiveViewBackTo();
 
@@ -95,7 +100,8 @@ export function GmxAccountModalDesktop({ account }: { account: string }) {
   const showMainViewInBackground = isOverlayView(view);
   const isMainViewContent = view === "main" || showMainViewInBackground;
 
-  const handleOverlayBack = view === "walletReceive" ? () => setModalState("walletReceiveOptions") : undefined;
+  const handleOverlayBack =
+    view === "walletReceive" ? () => setModalState(isSolana ? "main" : "walletReceiveOptions") : undefined;
 
   const handleOverlayClose = (nextVisible: boolean) => {
     if (nextVisible) return;

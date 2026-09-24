@@ -28,7 +28,16 @@ export const GmxAccountModal = memo(function GmxAccountModal() {
   }, [account, isOpen, setModalState]);
 
   useEffect(() => {
-    if (!isSolana || modalState === false || modalState === "main" || modalState === "availableToTradeAssets") return;
+    if (
+      !isSolana ||
+      modalState === false ||
+      modalState === "main" ||
+      modalState === "availableToTradeAssets" ||
+      modalState === "walletReceive" ||
+      modalState === "walletSend"
+    ) {
+      return;
+    }
     setModalState("main");
   }, [isSolana, modalState, setModalState]);
 
