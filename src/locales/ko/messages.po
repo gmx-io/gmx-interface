@@ -106,6 +106,7 @@ msgstr "지금 새로고침"
 msgid "<0>Solana support</0><1>GMX Express</1>"
 msgstr "<0>Solana 지원</0><1>GMX Express</1>"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/MarketsList/MarketsList.tsx
@@ -183,6 +184,7 @@ msgstr "TWAP 스왑 생성"
 msgid "Rewards paused"
 msgstr "보상 일시 중지됨"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -308,6 +310,10 @@ msgstr "지정가 실패"
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Performance"
 msgstr "성과"
+
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
+msgid "Solana address"
+msgstr "솔라나 주소"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Open fees"
@@ -595,6 +601,8 @@ msgstr "혼합 익스포저: 숏 {indexSymbol} + 롱 {collateralSymbol} 담보. 
 msgid "Invalid oracle price for {tokenSymbol}"
 msgstr "{tokenSymbol}의 Oracle 가격이 유효하지 않습니다"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -731,6 +739,7 @@ msgstr "ADDRESS"
 msgid "Additional opportunities"
 msgstr "추가 기회"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Positions"
@@ -841,6 +850,7 @@ msgstr "외부 애그리게이터에서 스왑"
 msgid "Classic"
 msgstr "클래식"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -939,6 +949,10 @@ msgstr "{marketTypeLabel}에서 \"{query}\"와 일치하는 항목이 없습니�
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Negative value: traders pay funding"
 msgstr "음수 값: 트레이더가 펀딩을 지불합니다"
+
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
+msgid "Insufficient SOL for network fee"
+msgstr "네트워크 수수료용 SOL이 부족합니다"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Transfer {nativeTokenSymbol} from other networks to {chainName}"
@@ -1252,6 +1266,9 @@ msgstr "Yield Yak 스왑"
 msgid "Vaultka"
 msgstr "Vaultka"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -1417,6 +1434,11 @@ msgstr "카드 구매는 현재 회원님의 지역 또는 설정에서 이용�
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} buyable amount exceeded"
 msgstr "최대 {0} 구매 가능 금액 초과"
+
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
+msgid "Awaiting signature"
+msgstr "서명 대기 중"
 
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing position uses {0} collateral. If executed, this order will create a separate position. <0>Switch to {1} collateral</0>"
@@ -1915,6 +1937,7 @@ msgstr "유효하지 않은 네트워크 수수료 버퍼 값"
 msgid "0x"
 msgstr "0x"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "RPNL"
@@ -2048,6 +2071,7 @@ msgstr "실패"
 msgid "CODE"
 msgstr "코드"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -2390,6 +2414,7 @@ msgstr "라이프사이클 RPNL"
 msgid "on GMX."
 msgstr "GMX에서."
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Chart positions"
 msgstr "차트 포지션"
@@ -3007,6 +3032,7 @@ msgstr "RANK"
 msgid "{txnTypeText} {0} order for"
 msgstr "{txnTypeText} {0} 주문"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -3494,6 +3520,7 @@ msgstr "거래에 실패했습니다.<0/><1/><2>보기</2>"
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr "{symbol} 잔액 부족: {availableFormatted} 사용 가능, {requiredFormatted} 필요"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/PositionList/SymbolSortDropdown.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -3862,6 +3889,7 @@ msgstr "에러 바운더리 디버그 트리거 표시"
 msgid "Autocompound"
 msgstr "자동 복리"
 
+#: solana-interface/src/pages/SolanaChart.tsx
 #: src/components/TVChart/Chart.tsx
 msgid "Market graph"
 msgstr "마켓 그래프"
@@ -4353,6 +4381,7 @@ msgstr "{0}을(를) {1}(으)로 보내는 중"
 msgid "Cumulative"
 msgstr "누적"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter amount"
 msgstr "금액 입력"
@@ -4457,6 +4486,8 @@ msgstr "허용 가격 영향 설정"
 msgid "This margin deposit's position was closed, but the deposit is still active. Cancel it to reclaim its funds."
 msgstr "이 증거금 예치의 포지션이 종료되었지만 예치는 여전히 활성 상태입니다. 예치를 취소하여 자금을 회수하세요."
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -4487,6 +4518,7 @@ msgstr "자금은 {chainName}의 연결된 지갑으로 입금됩니다."
 msgid "Stop-Loss Decrease"
 msgstr "손절매 감소"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Wallet balance"
 msgstr "지갑 잔액"
@@ -4604,6 +4636,10 @@ msgstr "최신 상장, 업데이트 및 점검 안내를 확인하세요."
 msgid "How do I get started on GMX?"
 msgstr "GMX를 어떻게 시작하나요?"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
+msgid "Confirmed"
+msgstr "확인됨"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -4699,6 +4735,7 @@ msgstr "총 거래량"
 msgid "One-Click Trading action limit reached. You're now using Express Trading."
 msgstr "One-Click Trading 작업 한도에 도달했습니다. 이제 Express Trading을 사용합니다."
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/PositionList/PositionList.tsx
 msgid "MARGIN"
 msgstr "증거금"
@@ -4915,6 +4952,7 @@ msgstr "실제로 어떻게 수익을 얻나요?"
 msgid "Realized swap impact"
 msgstr "실현된 스왑 영향"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter recipient address"
 msgstr "수신자 주소 입력"
@@ -5025,6 +5063,7 @@ msgstr "이 포지션은 현재 청산 리스크를 넘어선 상태이지만, �
 msgid "Base borrowing factor long"
 msgstr "롱 기본 차입 팩터"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Recipient address"
 msgstr "수신자 주소"
@@ -5236,6 +5275,7 @@ msgstr "일치하는 토큰 없음"
 msgid "Error sending permit for {0}: {1}"
 msgstr "{0}에 대한 허가 전송 오류: {1}"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "No trades yet"
 msgstr "거래가 아직 없습니다"
@@ -5476,6 +5516,7 @@ msgstr "이 토큰은 퍼밋 승인을 지원하지 않습니다."
 msgid "Include PnL in leverage display"
 msgstr "레버리지 표시에 PnL 포함"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/Claims/ClaimsHistory.tsx
 msgid "No claims yet"
 msgstr "수령 없음"
@@ -6134,6 +6175,7 @@ msgstr "유효하지 않은 트랜잭션"
 msgid "Insufficient liquidity in {0} pool. Select a different pool."
 msgstr "{0} 풀의 유동성이 부족합니다. 다른 풀을 선택하십시오."
 
+#: solana-interface/src/wallet/SolanaAssetsList.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets in your wallet"
 msgstr "지갑에 자산이 없습니다"
@@ -6252,6 +6294,10 @@ msgstr "롱"
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Affiliate rewards claimed"
 msgstr "제휴 보상이 수령되었습니다"
+
+#: solana-interface/src/pages/SolanaTradeList.tsx
+msgid "ORDER TYPE"
+msgstr "주문 유형"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "transaction:"
@@ -6660,6 +6706,7 @@ msgstr "분할 수"
 msgid "Edit Limit Increase: {suffix}"
 msgstr "지정가 증가 편집: {suffix}"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/OrderList/OrderList.tsx
 msgid "No open orders"
@@ -6681,6 +6728,7 @@ msgstr "스탑로스 편집: {suffix}"
 msgid "Order failed due to a protocol validation error: {errorName}"
 msgstr "프로토콜 검증 오류로 주문이 실패했습니다: {errorName}"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Send fee"
 msgstr "전송 수수료"
@@ -7396,6 +7444,7 @@ msgstr "TP 가격"
 msgid "ParaSwap"
 msgstr "ParaSwap"
 
+#: solana-interface/src/wallet/SolanaAssetsList.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
@@ -7475,6 +7524,7 @@ msgstr "검색과 일치하는 펀딩 내역이 없습니다"
 msgid "DeFi portfolio tracker"
 msgstr "DeFi 포트폴리오 트래커"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/PerformanceShareCard.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -7520,6 +7570,11 @@ msgstr "Builder / Referral Code 어트리뷰션에 익숙함"
 #: src/components/EarningValue/EarningValue.tsx
 msgid "Earned fees are only tracked for GM and GLV held in your wallet on {chainName}. GM and GLV in a GMX Account or on another chain still earn fees, but they can't be attributed per account yet."
 msgstr "획득한 수수료는 {chainName}의 지갑에 보유한 GM과 GLV에 대해서만 집계됩니다. GMX Account나 다른 체인에 있는 GM과 GLV도 계속 수수료를 획득하지만, 아직 계정별로 귀속시킬 수 없습니다."
+
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
+msgid "Submitted"
+msgstr "제출됨"
 
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set long Limit @ {0}"
@@ -7612,6 +7667,7 @@ msgstr "{symbol} 잔액이 낮습니다. 이 금액은 GMX 계정의 향후 수�
 msgid "Trigger price for the order"
 msgstr "주문 조건가"
 
+#: solana-interface/src/pages/SolanaChart.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/MarketStats/MarketGraphs.tsx
 #: src/components/SwapCard/SwapCard.tsx
@@ -7620,6 +7676,7 @@ msgstr "주문 조건가"
 msgid "Price"
 msgstr "가격"
 
+#: solana-interface/src/wallet/SolanaAssetsList.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets found"
 msgstr "자산을 찾을 수 없습니다"
@@ -7867,6 +7924,7 @@ msgstr "가격 영향이 주문 크기를 초과합니다"
 msgid "Want to trade faster with One-Click Trading?"
 msgstr "One-Click Trading으로 더 빠르게 거래하시겠습니까?"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
@@ -7885,6 +7943,7 @@ msgstr "주문 오류. 이 마켓의 가격 변동성이 높습니다. <0>허용
 msgid "Real onchain revenue, paid in stablecoins, every time someone trades through you."
 msgstr "누군가 당신을 통해 거래할 때마다 스테이블코인으로 실제 온체인 수익이 지급됩니다."
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -7986,6 +8045,7 @@ msgstr "참"
 msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
 msgstr "추천 코드를 입력하면 거래 수수 할인을 받을 수 있습니다.<0/> 추천 티어에 따라 모든<1/> 개설 및 청산 수수료에서 최대 10%를 절약할 수 있습니다."
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/Jobs/Jobs.tsx
@@ -8363,6 +8423,7 @@ msgstr "TokenTerminal"
 msgid "Summary"
 msgstr "요약"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "ENTRY PRICE"
@@ -8453,6 +8514,7 @@ msgstr "GMX 기준:"
 msgid "Claim rebates"
 msgstr "리베이트 수령"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/lib/tenderly.tsx
 #: src/lib/tenderly.tsx
 msgid "View transaction"
@@ -8603,6 +8665,10 @@ msgstr "링크 복사됨"
 msgid "Total wallet received"
 msgstr "지갑 총 수령액"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx
@@ -9198,6 +9264,7 @@ msgstr "설정 저장"
 msgid "Last 7d"
 msgstr "최근 7일"
 
+#: solana-interface/src/pages/SolanaChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #: src/components/TVChart/Chart.tsx
@@ -9213,6 +9280,7 @@ msgstr "전송 주소가 유효하지 않습니다. URL을 확인하십시오."
 msgid "Copy"
 msgstr "복사"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -9710,6 +9778,7 @@ msgstr "지갑이 메시지에 서명할 수 없습니다. 거래하려면 클�
 msgid "Deposit margin at price"
 msgstr "지정가로 증거금 예치"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "FEES"
 msgstr "수수료"
@@ -10218,6 +10287,7 @@ msgstr "주문 수정"
 msgid "Error simulating withdrawal"
 msgstr "출금 시뮬레이션 오류"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -10286,6 +10356,7 @@ msgstr "정상"
 msgid "Swap {0} for {1}"
 msgstr "{0}을 {1}로 스왑"
 
+#: solana-interface/src/pages/SolanaChart.tsx
 #: src/components/TVChart/Chart.tsx
 msgid "Depth"
 msgstr "깊이"
@@ -10703,6 +10774,7 @@ msgstr "롱"
 msgid "Pool"
 msgstr "풀"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "LIQUIDATION PRICE"
@@ -10971,6 +11043,11 @@ msgstr "확인 중..."
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposited:"
 msgstr "입금됨:"
+
+#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/pages/SolanaTradeList.tsx
+msgid "ACTION"
+msgstr "작업"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
@@ -11282,6 +11359,7 @@ msgstr "후디니스왑"
 msgid "Bridge in failed"
 msgstr "브릿지 수신 실패"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Invalid recipient address"
 msgstr "유효하지 않은 수신자 주소"
@@ -11348,6 +11426,7 @@ msgstr "상장 폐지"
 msgid "{0} (external)"
 msgstr "{0} (외부)"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "TRIGGER PRICE"
@@ -11774,6 +11853,8 @@ msgstr "입금 중…"
 msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
 msgstr "{pools} {verb} 상장 폐지됩니다. 더 이상 예치할 수 없으므로 유동성을 인출하거나 GLV로 옮겨 계속 수익을 얻으세요."
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
@@ -11843,10 +11924,13 @@ msgstr "자금 청구"
 msgid "Your funds are safe. Contact support for help."
 msgstr "자금은 안전합니다. 지원팀에 문의하십시오."
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/PositionList/PositionList.tsx
 msgid "NET VALUE"
 msgstr "순가치"
 
+#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx
 msgid "MARK PRICE"
@@ -12476,6 +12560,7 @@ msgstr "추천 코드가 생성되었습니다"
 msgid "Funds bridging to..."
 msgstr "자금 브릿징 중..."
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/InfoRows.tsx
@@ -12579,6 +12664,7 @@ msgstr "유효하지 않은 수신자 주소"
 msgid "Withdraw submitted"
 msgstr "출금이 제출되었습니다"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Available:"
@@ -12837,6 +12923,7 @@ msgstr "Builder Code"
 msgid "GLV bonus incentive (test)"
 msgstr "GLV 보너스 인센티브 (테스트)"
 
+#: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
