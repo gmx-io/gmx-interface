@@ -15,6 +15,10 @@ import { Avatar } from "components/Avatar/Avatar";
 import Button from "components/Button/Button";
 import { useAvailableToTradeAssetSettlementChain } from "components/GmxAccountModal/hooks";
 
+import MultiplierSolidIcon from "img/ic_multiplier_solid.svg?react";
+
+import { useHeaderIncentivesMultiplier } from "./useHeaderIncentivesMultiplier";
+
 const BACKDROP_ANIMATION_DURATION = 300;
 
 type Props = {
@@ -22,11 +26,12 @@ type Props = {
 };
 
 export function AddressDropdownWithMultichain({ account }: Props) {
-  const { srcChainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { ensName } = useENS(account);
   const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
   const { totalUsd, gmxAccountUsd, isGmxAccountLoading } = useAvailableToTradeAssetSettlementChain();
   const { shouldShowDepositButton } = useGmxAccountShowDepositButton();
+  const formattedMultiplier = useHeaderIncentivesMultiplier({ account, chainId });
 
   const { isMobile, isSmallMobile } = useBreakpoints();
   const displayAddressLength = isMobile ? 9 : 13;
@@ -78,7 +83,7 @@ export function AddressDropdownWithMultichain({ account }: Props) {
         <div
           className={cx(
             "text-body-medium flex items-center font-medium text-typography-primary",
-            !isMobile && (!shouldShowDepositButton ? "gap-16" : "gap-20"),
+            !isMobile && (!shouldShowDepositButton ? "gap-12" : "gap-20"),
             isMobile && "gap-8"
           )}
         >
@@ -86,6 +91,13 @@ export function AddressDropdownWithMultichain({ account }: Props) {
             <Avatar size={isMobile ? 16 : 24} ensName={ensName} address={account} />
 
             {!isSmallMobile && <>{shortenAddressOrEns(ensName || account, displayAddressLength)}</>}
+
+            {formattedMultiplier ? (
+              <span className="inline-flex items-center gap-3 rounded-full bg-green-900 py-2 pl-4 pr-6 text-12 font-medium text-green-500">
+                <MultiplierSolidIcon className="size-12" />
+                {formattedMultiplier}
+              </span>
+            ) : null}
           </div>
 
           {showSideButton && !shouldShowDepositButton && (

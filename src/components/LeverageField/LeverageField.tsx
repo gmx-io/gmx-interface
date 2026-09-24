@@ -1,19 +1,11 @@
-import {
-  FloatingPortal,
-  autoUpdate,
-  flip,
-  offset,
-  shift,
-  useFloating,
-  useDismiss,
-  useInteractions,
-} from "@floating-ui/react";
+import { autoUpdate, flip, offset, shift, useDismiss, useFloating, useInteractions } from "@floating-ui/react";
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
+import FloatingPortal from "components/Portal/FloatingPortal";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 

@@ -82,6 +82,7 @@ export const TRADE_ACTION_FIELDS = `
     orderType
     orderKey
     isLong
+    isFundingFeeSettle
     shouldUnwrapNativeToken
     twapGroupId
     numberOfParts
@@ -300,8 +301,10 @@ export async function fetchRawTradeActions({
         positionLifecycleId_eq: positionLifecycleId,
         orderKey_in: orderKeys,
         transactionHash_in: transactionHashes,
-        // Settle executions are indexed as zero-size decreases; they belong to the Claims tab, not here.
-        isFundingFeeSettle_eq: false,
+      },
+      {
+        // Older actions have a null flag and remain regular trade-history entries.
+        OR: [{ isFundingFeeSettle_eq: false }, { isFundingFeeSettle_isNull: true }],
       },
       {
         OR: !hasPureDirectionFilters

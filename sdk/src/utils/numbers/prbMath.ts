@@ -163,7 +163,8 @@ export function applyExponentFactor(floatValue: bigint, exponentFactor: bigint):
     return cached;
   }
 
-  const result = prbPow(floatValue / FLOAT_TO_WEI_DIVISOR, exponentFactor / FLOAT_TO_WEI_DIVISOR) * FLOAT_TO_WEI_DIVISOR;
+  const result =
+    prbPow(floatValue / FLOAT_TO_WEI_DIVISOR, exponentFactor / FLOAT_TO_WEI_DIVISOR) * FLOAT_TO_WEI_DIVISOR;
 
   if (applyExponentCache.size >= APPLY_EXPONENT_CACHE_LIMIT) {
     applyExponentCache.delete(applyExponentCache.keys().next().value!);

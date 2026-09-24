@@ -1,0 +1,234 @@
+.IncentivesDistribution {
+  min-width: 0;
+  padding: 16px 8px 24px;
+
+  .Page-title-group {
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .Page-title-group .Page-title__text {
+    font-size: 28px;
+    line-height: 1.25;
+  }
+
+  &-epoch {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    > svg {
+      position: absolute;
+      pointer-events: none;
+      color: var(--color-typography-secondary);
+    }
+
+    select {
+      min-width: 220px;
+      height: 40px;
+      appearance: none;
+      padding: 0 40px;
+      border: 1px solid var(--color-slate-600);
+      border-radius: 8px;
+      background: var(--color-slate-900);
+      color: var(--color-typography-primary);
+      font-size: 14px;
+      cursor: pointer;
+
+      &:hover {
+        border-color: var(--color-slate-500);
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--color-blue-400);
+        outline-offset: 2px;
+      }
+    }
+  }
+
+  &-stats > div {
+    padding: 20px;
+    border: 1px solid var(--color-slate-600);
+    border-radius: 12px;
+
+    > .text-caption {
+      margin-bottom: 12px;
+      letter-spacing: normal;
+      text-transform: none;
+    }
+  }
+
+  &-table-card {
+    overflow: hidden;
+    border: 1px solid var(--color-slate-600);
+    border-radius: 12px;
+    background: var(--color-slate-900);
+  }
+
+  &-scroll [role="region"] {
+    scrollbar-width: thin;
+
+    &::-webkit-scrollbar {
+      display: block;
+      width: 6px;
+      height: 6px;
+    }
+  }
+
+  &-scroll > .pointer-events-none {
+    left: 232px;
+    width: calc(100% - 232px);
+
+    button:disabled {
+      visibility: hidden;
+    }
+  }
+
+  &-table {
+    border-collapse: separate;
+    border-spacing: 0;
+
+    th,
+    td {
+      padding: 14px 20px !important;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+
+      &:first-child {
+        position: sticky;
+        left: 0;
+        z-index: 2;
+        min-width: 232px;
+        text-align: left;
+        background: var(--color-slate-900);
+      }
+    }
+
+    th {
+      border-bottom: 1px solid var(--color-slate-600);
+      background: var(--color-slate-900);
+      font-size: 12px;
+      letter-spacing: normal;
+      line-height: 1.5;
+      text-transform: none;
+      white-space: normal;
+
+      &:first-child {
+        z-index: 4;
+      }
+    }
+
+    tbody tr {
+      &:hover td {
+        background: var(--color-slate-800);
+      }
+
+      &:last-child td {
+        border-bottom: none;
+      }
+    }
+
+    td {
+      height: 52px;
+      border-bottom: 1px solid var(--color-slate-600);
+      background: var(--color-slate-900);
+      font-size: 14px;
+      white-space: nowrap;
+      transition: background-color 120ms;
+    }
+
+    &--detailed {
+      min-width: 1580px;
+
+      th {
+        min-width: 140px;
+        max-width: 180px;
+      }
+
+      th:first-child,
+      td:first-child {
+        box-shadow: 1px 0 0 var(--color-slate-600);
+      }
+    }
+  }
+
+  &-wallet {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-radius: 4px;
+
+    > svg {
+      flex-shrink: 0;
+      opacity: 0.65;
+    }
+
+    &:hover > svg {
+      opacity: 1;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-blue-400);
+      outline-offset: 4px;
+    }
+  }
+
+  &-amount {
+    cursor: help;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+
+    &:focus-visible {
+      border-radius: 2px;
+      outline: 2px solid var(--color-blue-400);
+      outline-offset: 4px;
+    }
+  }
+
+  &-multiplier {
+    display: inline-flex;
+    justify-content: center;
+    min-width: 52px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--color-blue-400) 12%, transparent);
+    color: var(--color-blue-300);
+    font-weight: 500;
+  }
+
+  @media (max-width: 767px) {
+    padding: 16px 12px 24px;
+
+    .Page-title-group .Page-title__text {
+      font-size: 24px;
+    }
+
+    &-stats > div {
+      padding: 16px;
+    }
+
+    &-scroll > .pointer-events-none {
+      left: 0;
+      width: 100%;
+    }
+
+    &-table {
+      th,
+      td {
+        padding: 12px !important;
+      }
+
+      th:first-child,
+      td:first-child {
+        min-width: 200px;
+        left: auto;
+      }
+
+      td:first-child {
+        position: static;
+      }
+    }
+  }
+}

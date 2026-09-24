@@ -42,8 +42,9 @@ export function WhatsNewToastContainer() {
   const activeUiFlagEvents = useUiFlagEvents();
   const { cards, dismiss } = useWhatsNewAnnouncements();
   const { announcements: delistingAnnouncements, dismiss: dismissDelisting } = useDelistingExitAnnouncements();
-  const { isVisible: isUsdgPoolsAnnouncementVisible, dismiss: dismissUsdgPoolsAnnouncement } =
-    useTargetedAnnouncement(USDG_POOLS_ANNOUNCEMENT_CAMPAIGN);
+  const { isVisible: isUsdgPoolsAnnouncementVisible, dismiss: dismissUsdgPoolsAnnouncement } = useTargetedAnnouncement(
+    USDG_POOLS_ANNOUNCEMENT_CAMPAIGN
+  );
   const { isVisible: isBalancerProgramAnnouncementVisible, dismiss: dismissBalancerProgramAnnouncement } =
     useTargetedAnnouncement(BALANCER_PROGRAM_ANNOUNCEMENT_CAMPAIGN);
   const [isScrolled, setIsScrolled] = useState(false);

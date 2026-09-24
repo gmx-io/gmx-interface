@@ -1,0 +1,30 @@
+.RewardsLeaderboardRank-1,
+.RewardsLeaderboardRank-2,
+.RewardsLeaderboardRank-3 {
+  display: inline-flex;
+  align-items: center;
+}
+
+.RewardsLeaderboardRank-1::after,
+.RewardsLeaderboardRank-2::after,
+.RewardsLeaderboardRank-3::after {
+  content: "";
+  width: 2rem;
+  height: 2rem;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  margin-left: 0.5rem;
+}
+
+.RewardsLeaderboardRank-1::after {
+  background-image: url(../../../img/rank1.svg);
+}
+
+.RewardsLeaderboardRank-2::after {
+  background-image: url(../../../img/rank2.svg);
+}
+
+.RewardsLeaderboardRank-3::after {
+  background-image: url(../../../img/rank3.svg);
+}
