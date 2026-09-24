@@ -1,9 +1,9 @@
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
 
 import { ARBITRUM } from "config/chains";
+import { DOCS_LINKS } from "config/links";
 import { useIncentivesConfig } from "domain/synthetics/incentives/v2/useIncentivesConfig";
 import { getPageTitle } from "lib/legacy";
 import { sendRewardsLandingEvent } from "lib/userAnalytics/rewardsLandingEvents";
@@ -104,15 +104,15 @@ export default function Rewards() {
           </section>
         </main>
         <footer className="rewards-footer rewards-container">
-          <Link to="/terms-and-conditions">
-            <Trans>Terms</Trans>
-          </Link>
+          <a href={DOCS_LINKS.rewardsTermsAndConditions} target="_blank" rel="noopener noreferrer">
+            <Trans>Terms and Conditions</Trans>
+          </a>
           <p>
             <Trans>Season 1 values are season-scoped</Trans>
           </p>
           <div>
-            <a href="https://docs.gmx.io/" target="_blank" rel="noopener noreferrer">
-              <Trans>Docs</Trans>
+            <a href={DOCS_LINKS.rewardsProgram} target="_blank" rel="noopener noreferrer">
+              <Trans>Documentations</Trans>
             </a>
             <span aria-hidden="true">·</span>
             <a href="https://gov.gmx.io/" target="_blank" rel="noopener noreferrer">

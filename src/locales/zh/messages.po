@@ -1525,7 +1525,6 @@ msgid "Weekly"
 msgstr "每周"
 
 #: landing/src/pages/Builders/Footer/BuildersFooter.tsx
-#: landing/src/pages/Rewards/Rewards.tsx
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Terms"
 msgstr "条款"
@@ -6768,7 +6767,6 @@ msgstr "在接下来的 {2} 内，为 {3} 执行 {numberOfParts} 个 {0} {type} 
 
 #: landing/src/components/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Builders/Footer/BuildersFooter.tsx
-#: landing/src/pages/Rewards/Rewards.tsx
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 #: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/BottomMenuSection.tsx
@@ -8337,6 +8335,10 @@ msgstr "GMX trading stats"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "High leverage increases liquidation risk"
 msgstr "高杠杆会增加清算风险"
+
+#: landing/src/pages/Rewards/Rewards.tsx
+msgid "Documentations"
+msgstr "文档"
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} cancelled"
@@ -10799,6 +10801,10 @@ msgstr "选择累计资金费用超过 {0} Gas 结算成本的仓位"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Large account"
 msgstr "大额账户"
+
+#: landing/src/pages/Rewards/Rewards.tsx
+msgid "Terms and Conditions"
+msgstr "条款与条件"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Shift fee"

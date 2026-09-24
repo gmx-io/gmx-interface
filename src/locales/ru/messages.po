@@ -1525,7 +1525,6 @@ msgid "Weekly"
 msgstr "Еженедельно"
 
 #: landing/src/pages/Builders/Footer/BuildersFooter.tsx
-#: landing/src/pages/Rewards/Rewards.tsx
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Terms"
 msgstr "Условия"
@@ -6768,7 +6767,6 @@ msgstr "Выполняет {numberOfParts} {0} {type} ордеров по {1} к
 
 #: landing/src/components/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Builders/Footer/BuildersFooter.tsx
-#: landing/src/pages/Rewards/Rewards.tsx
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 #: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/BottomMenuSection.tsx
@@ -8337,6 +8335,10 @@ msgstr "GMX trading stats"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "High leverage increases liquidation risk"
 msgstr "Высокое кредитное плечо увеличивает риск ликвидации"
+
+#: landing/src/pages/Rewards/Rewards.tsx
+msgid "Documentations"
+msgstr "Документация"
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} cancelled"
@@ -10799,6 +10801,10 @@ msgstr "Выберите позиции, в которых накопленна�
 #: src/pages/RpcDebug/parts.tsx
 msgid "Large account"
 msgstr "Крупный аккаунт"
+
+#: landing/src/pages/Rewards/Rewards.tsx
+msgid "Terms and Conditions"
+msgstr "Условия использования"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Shift fee"

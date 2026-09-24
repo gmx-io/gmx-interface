@@ -1525,7 +1525,6 @@ msgid "Weekly"
 msgstr "Semanal"
 
 #: landing/src/pages/Builders/Footer/BuildersFooter.tsx
-#: landing/src/pages/Rewards/Rewards.tsx
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Terms"
 msgstr "Términos"
@@ -6768,7 +6767,6 @@ msgstr "Ejecuta {numberOfParts} órdenes {type} {0} de {1} cada una durante las 
 
 #: landing/src/components/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Builders/Footer/BuildersFooter.tsx
-#: landing/src/pages/Rewards/Rewards.tsx
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 #: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/BottomMenuSection.tsx
@@ -8337,6 +8335,10 @@ msgstr "GMX trading stats"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "High leverage increases liquidation risk"
 msgstr "Un apalancamiento elevado aumenta el riesgo de liquidación"
+
+#: landing/src/pages/Rewards/Rewards.tsx
+msgid "Documentations"
+msgstr "Documentación"
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} cancelled"
@@ -10799,6 +10801,10 @@ msgstr "Seleccione las posiciones en las que la comisión de financiación acumu
 #: src/pages/RpcDebug/parts.tsx
 msgid "Large account"
 msgstr "Cuenta grande"
+
+#: landing/src/pages/Rewards/Rewards.tsx
+msgid "Terms and Conditions"
+msgstr "Términos y condiciones"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Shift fee"

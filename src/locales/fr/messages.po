@@ -1525,7 +1525,6 @@ msgid "Weekly"
 msgstr "Hebdomadaire"
 
 #: landing/src/pages/Builders/Footer/BuildersFooter.tsx
-#: landing/src/pages/Rewards/Rewards.tsx
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Terms"
 msgstr "Conditions"
@@ -6768,7 +6767,6 @@ msgstr "Exécute {numberOfParts} ordres {type} {0} de {1} chacun sur les prochai
 
 #: landing/src/components/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Builders/Footer/BuildersFooter.tsx
-#: landing/src/pages/Rewards/Rewards.tsx
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 #: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/BottomMenuSection.tsx
@@ -8337,6 +8335,10 @@ msgstr "GMX trading stats"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "High leverage increases liquidation risk"
 msgstr "Un effet de levier élevé augmente le risque de liquidation"
+
+#: landing/src/pages/Rewards/Rewards.tsx
+msgid "Documentations"
+msgstr "Documentation"
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} cancelled"
@@ -10799,6 +10801,10 @@ msgstr "Sélectionnez les positions dont les frais de financement accumulés dé
 #: src/pages/RpcDebug/parts.tsx
 msgid "Large account"
 msgstr "Compte important"
+
+#: landing/src/pages/Rewards/Rewards.tsx
+msgid "Terms and Conditions"
+msgstr "Conditions générales d'utilisation"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Shift fee"

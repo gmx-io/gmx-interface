@@ -1525,7 +1525,6 @@ msgid "Weekly"
 msgstr ""
 
 #: landing/src/pages/Builders/Footer/BuildersFooter.tsx
-#: landing/src/pages/Rewards/Rewards.tsx
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Terms"
 msgstr ""
@@ -6768,7 +6767,6 @@ msgstr ""
 
 #: landing/src/components/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Builders/Footer/BuildersFooter.tsx
-#: landing/src/pages/Rewards/Rewards.tsx
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 #: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/BottomMenuSection.tsx
@@ -8336,6 +8334,10 @@ msgstr ""
 #: src/components/LeverageField/LeverageField.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "High leverage increases liquidation risk"
+msgstr ""
+
+#: landing/src/pages/Rewards/Rewards.tsx
+msgid "Documentations"
 msgstr ""
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
@@ -10798,6 +10800,10 @@ msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Large account"
+msgstr ""
+
+#: landing/src/pages/Rewards/Rewards.tsx
+msgid "Terms and Conditions"
 msgstr ""
 
 #: src/components/GmSwap/GmFees/GmFees.tsx

@@ -1525,7 +1525,6 @@ msgid "Weekly"
 msgstr "Weekly"
 
 #: landing/src/pages/Builders/Footer/BuildersFooter.tsx
-#: landing/src/pages/Rewards/Rewards.tsx
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Terms"
 msgstr "Terms"
@@ -6768,7 +6767,6 @@ msgstr "Executes {numberOfParts} {0} {type} orders of {1} each over the next {2}
 
 #: landing/src/components/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Builders/Footer/BuildersFooter.tsx
-#: landing/src/pages/Rewards/Rewards.tsx
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 #: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/BottomMenuSection.tsx
@@ -8337,6 +8335,10 @@ msgstr "GMX trading stats"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "High leverage increases liquidation risk"
 msgstr "High leverage increases liquidation risk"
+
+#: landing/src/pages/Rewards/Rewards.tsx
+msgid "Documentations"
+msgstr "Documentations"
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} cancelled"
@@ -10799,6 +10801,10 @@ msgstr "Select positions where accrued funding fee exceeds the {0} gas cost to s
 #: src/pages/RpcDebug/parts.tsx
 msgid "Large account"
 msgstr "Large account"
+
+#: landing/src/pages/Rewards/Rewards.tsx
+msgid "Terms and Conditions"
+msgstr "Terms and Conditions"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Shift fee"
