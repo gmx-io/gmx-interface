@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 599 599">
-  <circle cx="299.5" cy="299.5" r="299.5" fill="#FF5A0A"/>
-  <path fill="#000" fill-rule="evenodd" d="M236 107h43v32h22v-32h43v35c38 8 60 39 60 83 0 29-11 51-32 64 36 9 57 36 57 77 0 52-31 84-77 84h-8v43h-43v-43h-22v43h-43v-43h-32V139h32v-32Zm43 96v65h18c28 0 44-12 44-33 0-20-15-32-43-32h-19Zm0 118v65h20c35 0 53-11 53-32 0-22-18-33-53-33h-20Z"/>
-</svg>

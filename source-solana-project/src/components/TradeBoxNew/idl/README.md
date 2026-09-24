@@ -1,1 +1,0 @@
-## Generate TypeScript IDL

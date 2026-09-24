@@ -1,1 +1,0 @@
-export const FAVORITES_KEY = 'pools_gm_favorites';

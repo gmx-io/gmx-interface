@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<svg fill="#FF5454" width="800px" height="800px" viewBox="0 0 24 24" id="down-trend-round" data-name="Flat Line" xmlns="http://www.w3.org/2000/svg" class="icon flat-line">
-  <path id="primary" d="M3,7l5.79,5.79a1,1,0,0,0,1.42,0l2.58-2.58a1,1,0,0,1,1.42,0L21,17" style="fill: none; stroke: rgb(255, 84, 84); stroke-linecap: round; stroke-linejoin: round; stroke-width: 3;"></path>
-  <polyline id="primary-2" data-name="primary" points="17 17 21 17 21 13" style="fill: none; stroke: rgb(255, 84, 84); stroke-linecap: round; stroke-linejoin: round; stroke-width: 3;"></polyline>
-</svg>
