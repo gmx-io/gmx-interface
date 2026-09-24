@@ -354,6 +354,21 @@ function MarketsList() {
     if (!sortedTokens) {
       return EMPTY_ARRAY;
     }
+    const data = sortedTokens.map((token) => {
+      const wrappedAddress = convertTokenAddress(chainId, token.address, "wrapped") as Address;
+      return {
+        token,
+        tokenData: tokensData?.[wrappedAddress],
+        dayPriceDelta: dayPriceDeltaMap?.[token.address],
+        dayVolume: dayVolumes?.[wrappedAddress],
+        openInterestLong: indexTokenStatsMap?.[wrappedAddress]?.totalOpenInterestLong,
+        openInterestShort: indexTokenStatsMap?.[wrappedAddress]?.totalOpenInterestShort,
+        maxLeverage: indexTokenStatsMap?.[wrappedAddress]?.maxUiAllowedLeverage,
+      };
+    });
+    console.log(data);
+    console.log(sortedTokens);
+    debugger;
 
     return sortedTokens.map((token) => {
       const wrappedAddress = convertTokenAddress(chainId, token.address, "wrapped") as Address;
