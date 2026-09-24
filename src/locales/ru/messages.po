@@ -4332,6 +4332,11 @@ msgstr "Основной не удался"
 msgid "No GMX swap route found for {0} to {1}."
 msgstr "Не найден маршрут свопа GMX из {0} в {1}."
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "By claiming or vesting esGMX, you agree to the Rewards Program <0>Terms and Conditions</0>."
+msgstr "Получая esGMX или отправляя их на вестинг, вы соглашаетесь с <0>Условиями и положениями</0> программы вознаграждений."
+
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Commodities"
 msgstr "Сырьевые товары"

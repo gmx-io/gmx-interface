@@ -6,6 +6,7 @@ import { maxUint256, zeroAddress } from "viem";
 
 import type { ContractsChainId } from "config/chains";
 import { getContract, tryGetContract } from "config/contracts";
+import { REWARDS_TERMS_URL } from "config/links";
 import { isSettlementChain } from "config/multichain";
 import { getRewardsVestingConfig } from "config/vesting";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
@@ -1043,6 +1044,12 @@ export function RewardsVestingModal({
         {!isSimulation && isSettlementChain(chainId) ? (
           <SwitchToSettlementChainWarning topic="vesting" settlementChainId={chainId} />
         ) : null}
+        <p className="text-13 text-typography-secondary">
+          <Trans>
+            By claiming or vesting esGMX, you agree to the Rewards Program{" "}
+            <ExternalLink href={REWARDS_TERMS_URL}>Terms and Conditions</ExternalLink>.
+          </Trans>
+        </p>
         <RewardsVestingChainGuard chainId={chainId} skip={isSimulation}>
           <div className={cx("grid gap-12", isTransactionComplete ? "grid-cols-1" : "grid-cols-2")}>
             <ButtonTooltipWrapper

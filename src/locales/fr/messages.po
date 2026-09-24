@@ -4332,6 +4332,11 @@ msgstr "Primaire échoué"
 msgid "No GMX swap route found for {0} to {1}."
 msgstr "Aucune route de swap GMX trouvée de {0} vers {1}."
 
+#: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
+#: src/pages/RewardsPage/components/RewardsVestingModals.tsx
+msgid "By claiming or vesting esGMX, you agree to the Rewards Program <0>Terms and Conditions</0>."
+msgstr "En réclamant des esGMX ou en les plaçant en vesting, vous acceptez les <0>Conditions générales</0> du Programme de Récompenses."
+
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Commodities"
 msgstr "Matières premières"
