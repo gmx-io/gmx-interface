@@ -94,14 +94,14 @@ function transactions() {
   return mockCallContract.mock.calls.map(([, contract, method, params]) => ({ contract, method, params }));
 }
 
-function view(data = base) {
+function view(data = base, isVisible = true) {
   return (
     <I18nProvider i18n={i18n}>
       <RewardsRatioVestingModal
         chainId={ARBITRUM_SEPOLIA}
         config={ratioConfig}
         data={data}
-        isVisible
+        isVisible={isVisible}
         setIsVisible={setIsVisible}
         mutate={mutate}
         onVestingStarted={onVestingStarted}
@@ -185,6 +185,70 @@ describe("Sepolia rewards vesting transactions", () => {
     expect(onVestingStarted).not.toHaveBeenCalled();
     await act(async () => vestReceipt.confirm());
     expect(onVestingStarted).toHaveBeenCalledTimes(1);
+  });
+
+  it.each(["close button", "Escape", "backdrop"])(
+    "allows closing with %s while awaiting wallet approval without continuing the old flow",
+    async (closeAction) => {
+      const receipt = { wait: vi.fn(async () => ({ status: 1 })) };
+      let resolveApproval!: (transaction: typeof receipt) => void;
+      mockCallContract.mockReturnValueOnce(
+        new Promise<typeof receipt>((resolve) => {
+          resolveApproval = resolve;
+        })
+      );
+      const component = render(view());
+      enter();
+      fireEvent.click(screen.getByRole("button", { name: "Vest esGMX" }));
+      await waitFor(() => expect(mockCallContract).toHaveBeenCalledTimes(1));
+
+      if (closeAction === "close button") {
+        fireEvent.click(screen.getByRole("button", { name: "Close" }));
+      } else if (closeAction === "Escape") {
+        fireEvent.keyDown(window, { key: "Escape" });
+      } else {
+        fireEvent.click(document.querySelector(".Modal-backdrop")!);
+      }
+      expect(setIsVisible).toHaveBeenCalledWith(false);
+      component.rerender(view(base, false));
+      component.rerender(view());
+
+      const nextReceipt = deferredReceipt();
+      mockCallContract.mockResolvedValueOnce(nextReceipt);
+      enter("50");
+      fireEvent.click(screen.getByRole("button", { name: "Vest esGMX" }));
+      await waitFor(() => expect(nextReceipt.wait).toHaveBeenCalled());
+
+      await act(async () => resolveApproval(receipt));
+
+      expect(mockCallContract).toHaveBeenCalledTimes(2);
+      expect(receipt.wait).not.toHaveBeenCalled();
+      expect((screen.getByRole("textbox") as HTMLInputElement).value).toBe("50");
+      expect((screen.getByRole("button", { name: "Confirming..." }) as HTMLButtonElement).disabled).toBe(true);
+      expect(onVestingStarted).not.toHaveBeenCalled();
+      expect(setIsVisible).toHaveBeenCalledTimes(1);
+
+      await act(async () => nextReceipt.confirm());
+    }
+  );
+
+  it("does not continue after closing while an approval is confirming", async () => {
+    const receipt = deferredReceipt();
+    mockCallContract.mockResolvedValueOnce(receipt);
+    mutate.mockResolvedValueOnce(base).mockResolvedValue(approved);
+    const component = render(view());
+    enter();
+    fireEvent.click(screen.getByRole("button", { name: "Vest esGMX" }));
+    await waitFor(() => expect(receipt.wait).toHaveBeenCalled());
+
+    fireEvent.click(screen.getByRole("button", { name: "Close" }));
+    expect(setIsVisible).toHaveBeenCalledWith(false);
+    component.rerender(view(base, false));
+    await act(async () => receipt.confirm());
+
+    expect(mockCallContract).toHaveBeenCalledTimes(1);
+    expect(mutate).toHaveBeenCalledTimes(1);
+    expect(onVestingStarted).not.toHaveBeenCalled();
   });
 
   it("skips esGMX approval when already approved", async () => {

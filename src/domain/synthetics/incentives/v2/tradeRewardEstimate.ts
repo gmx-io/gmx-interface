@@ -24,6 +24,9 @@ export type TradeMultiplierEstimate = {
 export type TradeRewardEstimateParams = TradeMultiplierParams & {
   positionFeeUsd: bigint;
   totalRebateFactor?: bigint;
+  referralDiscountFactor?: bigint;
+  minAffiliateRewardFactor?: bigint;
+  feeDiscountUsd?: bigint;
   gmxPrice?: bigint;
   gtPrice?: bigint;
 };
@@ -41,10 +44,25 @@ export type EstimatedTradeRewards = TradeMultiplierEstimate & {
 
 export function getEstimatedTradeRewards(params: TradeRewardEstimateParams): EstimatedTradeRewards {
   const multiplierEstimate = getTradeMultiplierEstimate(params);
-  const { config, positionFeeUsd, totalRebateFactor = 0n, gmxPrice, gtPrice } = params;
+  const {
+    config,
+    positionFeeUsd,
+    totalRebateFactor = 0n,
+    referralDiscountFactor = 0n,
+    minAffiliateRewardFactor = 0n,
+    feeDiscountUsd = 0n,
+    gmxPrice,
+    gtPrice,
+  } = params;
   const positivePositionFeeUsd = positionFeeUsd > 0n ? positionFeeUsd : 0n;
   const rebateUsd = applyFactor(positivePositionFeeUsd, totalRebateFactor);
-  const eligibleFeeUsd = positivePositionFeeUsd > rebateUsd ? positivePositionFeeUsd - rebateUsd : 0n;
+  const referralDiscountUsd = applyFactor(rebateUsd, referralDiscountFactor);
+  const traderDiscountUsd = bigMath.max(feeDiscountUsd, referralDiscountUsd);
+  const affiliateRewardUsd =
+    traderDiscountUsd > referralDiscountUsd
+      ? bigMath.max(rebateUsd - traderDiscountUsd, applyFactor(positivePositionFeeUsd, minAffiliateRewardFactor))
+      : rebateUsd - referralDiscountUsd;
+  const eligibleFeeUsd = bigMath.max(positivePositionFeeUsd - traderDiscountUsd - affiliateRewardUsd, 0n);
   const normalBaseRewardUsd = getBaseRewardUsd(eligibleFeeUsd, multiplierEstimate.normalMultiplier, config);
   const fullBaseRewardUsd = getBaseRewardUsd(eligibleFeeUsd, multiplierEstimate.fullMultiplier, config);
   const availableManualBaseRewardUsd = fullBaseRewardUsd - normalBaseRewardUsd;
