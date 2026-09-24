@@ -3,8 +3,10 @@ import { type ReactNode } from "react";
 
 import { GmxAccountModalView } from "context/GmxAccountContext/GmxAccountContext";
 import { useGmxAccountModalOpen, useGmxAccountWalletReceiveViewBackTo } from "context/GmxAccountContext/hooks";
+import { useChainId } from "lib/chains";
 import { userAnalytics } from "lib/userAnalytics";
 import { OneClickPromotionEvent } from "lib/userAnalytics/types";
+import { SolanaWalletSendView } from "solana-interface/wallet/SolanaWalletSendView";
 
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 import { SlideModal } from "components/Modal/SlideModal";
@@ -71,8 +73,10 @@ function ReceiveFundsTitle() {
 }
 
 function ReceiveToWalletTitle() {
+  const { isSolana } = useChainId();
+
   return (
-    <TitleWithBack backTo="walletReceiveOptions">
+    <TitleWithBack backTo={isSolana ? "main" : "walletReceiveOptions"}>
       <Trans>Receive to Wallet</Trans>
     </TitleWithBack>
   );
@@ -100,6 +104,7 @@ const SLIDE_MODAL_LABELS: Record<Exclude<GmxAccountModalView, "depositStatus">, 
 };
 
 export function GmxAccountModalMobile({ account }: { account: string }) {
+  const { isSolana } = useChainId();
   const [modalState, setModalState] = useGmxAccountModalOpen();
 
   const isOpen = modalState !== false;
@@ -140,7 +145,7 @@ export function GmxAccountModalMobile({ account }: { account: string }) {
         {view === "withdraw" && <WithdrawalScreen />}
         {view === "walletReceiveOptions" && <WalletReceiveOptionsView />}
         {view === "walletReceive" && <WalletReceiveView />}
-        {view === "walletSend" && <WalletSendView />}
+        {view === "walletSend" && (isSolana ? <SolanaWalletSendView /> : <WalletSendView />)}
       </SlideModal>
 
       {isDepositStatus && (

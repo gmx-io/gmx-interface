@@ -3,7 +3,6 @@ import { useEffect, useSyncExternalStore } from "react";
 
 import { createGmxSolanaWebSocketClient } from "lib/gmxSolanaRequest";
 
-import { getSolanaRpcClient } from "../lib/rpc";
 import {
   indexTokenPrices,
   readSplAmount,
@@ -13,6 +12,7 @@ import {
   solanaTokenUsd,
   swapTokenMints,
 } from "./solanaWalletSession";
+import { getSolanaRpcClient } from "../lib/rpc";
 
 const TOKEN_PROGRAM_ID = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
 const TOKEN_2022_PROGRAM_ID = new PublicKey("TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb");
@@ -88,9 +88,10 @@ function refresh(address: string, mints: string[]) {
     .catch((cause: unknown) => fail(current, cause));
 }
 
-export function refreshSolanaAssets(address: string) {
-  if (socketAddress !== address || lastMints.length === 0) return;
-  refresh(address, lastMints);
+export function refreshSolanaAssets(address?: string) {
+  const target = address ?? socketAddress;
+  if (!target || socketAddress !== target || lastMints.length === 0) return;
+  refresh(target, lastMints);
 }
 
 function onSocketMessage(address: string, data: unknown) {

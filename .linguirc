@@ -17,7 +17,8 @@
       "path": "src/locales/{locale}/messages",
       "include": [
         "src",
-        "landing"
+        "landing",
+        "solana-interface"
       ]
     }
   ],
