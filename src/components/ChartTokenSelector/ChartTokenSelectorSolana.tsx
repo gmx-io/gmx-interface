@@ -53,6 +53,7 @@ type Props = {
   selectedToken: Token | undefined;
   oneRowLabels?: boolean;
   onSelect?: (address: string, preferredTradeType?: PreferredTradeTypePickStrategy) => void;
+  onItemsChange?: (items: SolanaMarketItem[]) => void;
 };
 
 export type SolanaMarketItem = {
@@ -499,8 +500,13 @@ function getSearchMatchedTokens(options: Token[] | undefined, searchKeyword: str
 }
 
 export default function ChartTokenSelector(props: Props) {
-  const { selectedToken, oneRowLabels, onSelect } = props;
+  const { selectedToken, oneRowLabels, onSelect, onItemsChange } = props;
   const [response, setResponse] = useState<SolanaIndexTokensResponse>();
+  const items = useMemo(() => response ? convertSolanaIndexTokensToMarketItems(response) : EMPTY_ITEMS, [response]);
+
+  useEffect(() => {
+    onItemsChange?.(items);
+  }, [items, onItemsChange]);
 
   useEffect(() => {
     const client = createGmxSolanaWebSocketClient({
@@ -605,7 +611,7 @@ export default function ChartTokenSelector(props: Props) {
       modalLabel={t`Market`}
       mobileModalContentPadding={false}
     >
-      <MarketsList items={response ? convertSolanaIndexTokensToMarketItems(response) : EMPTY_ITEMS} onSelect={onSelect} />
+      <MarketsList items={items} onSelect={onSelect} />
     </SelectorBase>
   );
 }

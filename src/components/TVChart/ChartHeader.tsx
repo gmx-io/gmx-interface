@@ -3,10 +3,12 @@ import cx from "classnames";
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useEffectOnce } from "react-use";
 
+import { SOLANA_USD_DECIMALS } from "config/factors";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
+import { formatAmountHuman, formatUsdPrice } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { getToken } from "sdk/configs/tokens";
 
@@ -18,7 +20,7 @@ import ChevronRightIcon from "img/ic_chevron_right.svg?react";
 
 import { useChartHeaderFormattedValues } from "./useChartHeaderFormattedValues";
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
-import ChartTokenSelectorSolana from "../ChartTokenSelector/ChartTokenSelectorSolana";
+import ChartTokenSelectorSolana, { type SolanaMarketItem } from "../ChartTokenSelector/ChartTokenSelectorSolana";
 import { renderNetFeeHeaderTooltipContent } from "../MarketsList/NetFeeHeaderTooltipContent";
 import { NetRate1hTooltip } from "./components/NetRate1hTooltip";
 import { OpenInterestTooltip } from "./components/OpenInterestTooltip";
@@ -189,7 +191,7 @@ function ChartHeaderDesktop() {
   const [scrollRight, setScrollRight] = useState(0);
   const [maxFadeArea, setMaxFadeArea] = useState(75);
 
-  const { chainId, isSolana } = useChainId();
+  const { chainId } = useChainId();
   const chartTokenAddress = chartToken?.address;
 
   const selectedTokenOption = chartTokenAddress ? getToken(chainId, chartTokenAddress) : undefined;
@@ -398,14 +400,7 @@ function ChartHeaderDesktop() {
   return (
     <div className="flex gap-16 overflow-hidden">
       <div className="flex shrink-0 items-center justify-start">
-        {
-          isSolana ? <ChartTokenSelectorSolana selectedToken={{
-            name: 'Solana',
-            symbol: 'SOL',
-            decimals: 9,
-            address: '0x111231312'
-          }}></ChartTokenSelectorSolana> : <ChartTokenSelector selectedToken={selectedTokenOption} oneRowLabels={true} />
-        }
+        <ChartTokenSelector selectedToken={selectedTokenOption} oneRowLabels={true} />
       </div>
       <div className="relative flex overflow-hidden">
         <div className="pointer-events-none absolute z-40 flex h-full w-full flex-row justify-between">
@@ -462,8 +457,61 @@ const ChartHeaderMobileItem = ({ label, value }: { label: ReactNode; value: Reac
   );
 };
 
+function ChartHeaderSolana() {
+  const [items, setItems] = useState<SolanaMarketItem[]>([]);
+  const [selectedAddress, setSelectedAddress] = useState<string>();
+  const selectedItem = selectedAddress
+    ? items.find((item) => item.token.address === selectedAddress)
+    : items.find((item) => item.token.symbol === "SOL");
+  const formatValue = (value: bigint | undefined) =>
+    value === undefined ? "-" : formatAmountHuman(value, SOLANA_USD_DECIMALS, true);
+  const delta = selectedItem?.dayPriceDelta;
+
+  return (
+    <div className="flex flex-wrap items-center gap-16">
+      <ChartTokenSelectorSolana
+        selectedToken={selectedItem?.token}
+        oneRowLabels={true}
+        onSelect={setSelectedAddress}
+        onItemsChange={setItems}
+      />
+      <div className="flex flex-col justify-center gap-2 numbers">
+        <div className="text-body-medium">
+          {selectedItem?.tokenData
+            ? formatUsdPrice(selectedItem.tokenData.prices.minPrice, { isSolana: true })
+            : "-"}
+        </div>
+        <div className={cx("text-body-small", {
+          "text-green-500": delta && delta.deltaPercentage > 0,
+          "text-red-500": delta && delta.deltaPercentage < 0,
+        })}>
+          {delta?.deltaPercentageStr ?? "-"}
+        </div>
+      </div>
+      <ChartHeaderItem label={<Trans>24h volume</Trans>} value={formatValue(selectedItem?.dayVolume)} />
+      <ChartHeaderItem
+        label={<Trans>Open interest</Trans>}
+        value={
+          <>
+            <span className="text-green-500">{formatValue(selectedItem?.openInterestLong)}</span>
+            {" / "}
+            <span className="text-red-500">{formatValue(selectedItem?.openInterestShort)}</span>
+          </>
+        }
+      />
+      <ChartHeaderItem
+        label={<Trans>Available liquidity</Trans>}
+        value={`${formatValue(selectedItem?.longLiquidity)} / ${formatValue(selectedItem?.shortLiquidity)}`}
+      />
+    </div>
+  );
+}
+
 export default function ChartHeader() {
   const { isMobile } = useBreakpoints();
+  const { isSolana } = useChainId();
+
+  if (isSolana) return <ChartHeaderSolana />;
 
   return isMobile ? <ChartHeaderMobile /> : <ChartHeaderDesktop />;
 }
