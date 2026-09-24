@@ -88,9 +88,10 @@ function refresh(address: string, mints: string[]) {
     .catch((cause: unknown) => fail(current, cause));
 }
 
-export function refreshSolanaAssets(address: string) {
-  if (socketAddress !== address || lastMints.length === 0) return;
-  refresh(address, lastMints);
+export function refreshSolanaAssets(address?: string) {
+  const target = address ?? socketAddress;
+  if (!target || socketAddress !== target || lastMints.length === 0) return;
+  refresh(target, lastMints);
 }
 
 function onSocketMessage(address: string, data: unknown) {
@@ -220,11 +221,6 @@ export async function loadSolanaTradeBalances(address: string, mints: string[]):
       { mint, symbol, name: symbol, amount, decimals: meta.decimals, priceSymbol: solanaPriceSymbol(meta.symbol) },
     ];
   });
-}
-
-export function refreshSolanaAssets() {
-  if (!socketAddress || lastMints.length === 0) return;
-  refresh(socketAddress, lastMints);
 }
 
 export function useSolanaAssetsConnection(address: string | undefined) {
