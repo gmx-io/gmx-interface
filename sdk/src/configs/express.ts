@@ -16,18 +16,6 @@ export const DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION = periodToSeconds(1, "1h");
 
 export const EXPRESS_EXTRA_EXECUTION_FEE_BUFFER_BPS = 1000;
 
-// since 2026-09-23 Arbitrum charges the gasPrice above the base fee as a priority fee, and the relayer bids 1.5x base fee
-const EXPRESS_EXTRA_EXECUTION_FEE_BUFFER_BPS_BY_CHAIN: Partial<Record<ContractsChainId, number>> = {
-  [ARBITRUM]: 3000,
-};
-
-export function getExpressExtraExecutionFeeBufferBps(chainId: number) {
-  return (
-    EXPRESS_EXTRA_EXECUTION_FEE_BUFFER_BPS_BY_CHAIN[chainId as ContractsChainId] ??
-    EXPRESS_EXTRA_EXECUTION_FEE_BUFFER_BPS
-  );
-}
-
 const GAS_PAYMENT_TOKENS: Record<ContractsChainId, string[]> = {
   [ARBITRUM]: [
     getTokenBySymbol(ARBITRUM, "USDC").address,
