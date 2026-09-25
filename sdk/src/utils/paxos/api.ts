@@ -18,7 +18,7 @@ export async function fetchApiTransitRoutes(
   params?: TransitRoutesParams
 ): Promise<TransitRoute[]> {
   const raw: any = await ctx.api.fetchJson("/v1/paxos/transit/routes", {
-    query: { filter: params?.filter },
+    query: { filter: params?.filter, feeTier: params?.feeTier },
   });
   return (raw.routes ?? []).map(parseRoute);
 }

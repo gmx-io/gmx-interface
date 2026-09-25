@@ -31,6 +31,7 @@ export type TransitRoute = {
 
 export type TransitRoutesParams = {
   filter?: string;
+  feeTier?: TransitFeeTier;
 };
 
 export type TransitPermitData = {
