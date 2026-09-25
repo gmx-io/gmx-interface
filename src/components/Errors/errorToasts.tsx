@@ -223,8 +223,14 @@ function getDefaultErrorMessage(errorData: ErrorData | undefined) {
 }
 
 export function getDebugErrorMessage(errorData: ErrorData | undefined) {
+  const contractErrorArgs = errorData?.contractErrorArgs;
+  const contractErrorArgValues =
+    contractErrorArgs && typeof contractErrorArgs === "object" && !Array.isArray(contractErrorArgs)
+      ? Object.values(contractErrorArgs)
+      : contractErrorArgs;
+
   const message = errorData?.contractError
-    ? `${errorData.contractError} [${errorData.contractErrorArgs}] ${errorData.errorMessage}`
+    ? `${errorData.contractError} [${contractErrorArgValues}] ${errorData.errorMessage}`
     : errorData?.errorMessage;
 
   const handles = [
