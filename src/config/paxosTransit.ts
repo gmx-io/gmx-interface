@@ -17,8 +17,8 @@ const PAXOS_TRANSIT_CONFIGS: Partial<Record<ContractsChainId, PaxosTransitConfig
     usdgAddress: getTokenBySymbol(ARBITRUM, "USDG").address,
     // SWAP-ONLY [USDC-USDG]
     swapMarketAddress: "0x408E8e83d4b8Ac4BDefFDF896B49268A5FE5Ef44",
-    // TODO: back to 250_000 before launch, lowered for testing with small amounts
-    minAmountUsd: expandDecimals(25, USD_DECIMALS - 1),
+    // TODO: back to 250_000 before launch, lowered to the Transit floor for testing with small amounts
+    minAmountUsd: expandDecimals(35, USD_DECIMALS),
   },
 };
 
