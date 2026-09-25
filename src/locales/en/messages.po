@@ -1717,7 +1717,7 @@ msgstr "Total pending claimable"
 msgid "Not yet"
 msgstr "Not yet"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Period loss"
 msgstr "Period loss"
 
@@ -4249,7 +4249,7 @@ msgstr "Frontends"
 msgid "Claim successful"
 msgstr "Claim successful"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Cumulative PnL <0>{0}</0>"
 msgstr "Cumulative PnL <0>{0}</0>"
 
@@ -9482,6 +9482,11 @@ msgstr "Set short Stop Market @ {0}"
 msgid "Liquidation price"
 msgstr "Liquidation price"
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
+msgid "Reset zoom"
+msgstr "Reset zoom"
+
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "So far, my referrals have saved {totalDiscountsFormatted} total in discounts with my code: {referralCode}"
 msgstr "So far, my referrals have saved {totalDiscountsFormatted} total in discounts with my code: {referralCode}"
@@ -12467,7 +12472,7 @@ msgstr "Deposit {glvOrGm}"
 msgid "Wallet GMX"
 msgstr "Wallet GMX"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Period profit"
 msgstr "Period profit"
 

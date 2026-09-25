@@ -1717,7 +1717,7 @@ msgstr "Total en attente réclamable"
 msgid "Not yet"
 msgstr "Pas encore"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Period loss"
 msgstr "Perte de la période"
 
@@ -4249,7 +4249,7 @@ msgstr "Frontends"
 msgid "Claim successful"
 msgstr "Récupération réussie"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Cumulative PnL <0>{0}</0>"
 msgstr "PnL Cumulé <0>{0}</0>"
 
@@ -9482,6 +9482,11 @@ msgstr ""
 msgid "Liquidation price"
 msgstr "Prix de liquidation"
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
+msgid "Reset zoom"
+msgstr "Réinitialiser le zoom"
+
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "So far, my referrals have saved {totalDiscountsFormatted} total in discounts with my code: {referralCode}"
 msgstr ""
@@ -12467,7 +12472,7 @@ msgstr "Déposer {glvOrGm}"
 msgid "Wallet GMX"
 msgstr ""
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Period profit"
 msgstr "Profit de la période"
 

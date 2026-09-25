@@ -1717,7 +1717,7 @@ msgstr "Insgesamt ausstehend abholbar"
 msgid "Not yet"
 msgstr "Noch nicht"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Period loss"
 msgstr "Verlust im Zeitraum"
 
@@ -4249,7 +4249,7 @@ msgstr "Frontends"
 msgid "Claim successful"
 msgstr "Beanspruchung erfolgreich"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Cumulative PnL <0>{0}</0>"
 msgstr "Kumulativer PnL <0>{0}</0>"
 
@@ -9482,6 +9482,11 @@ msgstr ""
 msgid "Liquidation price"
 msgstr "Liquidationspreis"
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
+msgid "Reset zoom"
+msgstr "Zoom zurücksetzen"
+
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "So far, my referrals have saved {totalDiscountsFormatted} total in discounts with my code: {referralCode}"
 msgstr ""
@@ -12467,7 +12472,7 @@ msgstr "{glvOrGm} einzahlen"
 msgid "Wallet GMX"
 msgstr ""
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Period profit"
 msgstr "Gewinn im Zeitraum"
 

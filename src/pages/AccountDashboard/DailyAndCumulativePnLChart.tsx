@@ -18,13 +18,15 @@ import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/setting
 import { clamp, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
+import Button from "components/Button/Button";
 import Loader from "components/Loader/Loader";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+
+import RepeatIcon from "img/ic_repeat.svg?react";
 
 import {
   formatPnlChartYAxisTick,
   getPnlChartDragPanSpeed,
-  getPnlChartWheelZoomSlowdown,
   getPnlChartXAxisDomain,
   getPnlChartYAxisTicks,
   getPnlChartYAxisTicksFromValues,
@@ -38,6 +40,7 @@ import {
   zoomPnlWindowAtRatio,
 } from "./DailyAndCumulativePnL.utils";
 import {
+  DebugLegend,
   DebugTooltip,
   getDebugCumulativePnlYAxisValues,
   getDebugPeriodPnlYAxisValues,
@@ -77,6 +80,7 @@ const ACTIVE_DOT_PROPS = {
 };
 
 const CHART_MARGIN = { top: 16, right: 16, bottom: 16, left: 0 };
+const Y_AXIS_WIDTH = 60;
 const BAR_CATEGORY_GAP = "25%";
 const DEBUG_BAR_CATEGORY_GAP = "10%";
 const BAR_GAP = 4;
@@ -251,21 +255,26 @@ export function DailyAndCumulativePnLChart({
     }, TOUCH_DOUBLE_TAP_TIMEOUT);
   }, [cancelMobileTapTooltip, stopZoomInteraction]);
 
-  const getChartInteractionRatio = useCallback((clientX: number) => {
-    const element = chartInteractionRef.current;
+  const getChartInteractionRatio = useCallback(
+    (clientX: number) => {
+      const element = chartInteractionRef.current;
 
-    if (!element) {
-      return 0.5;
-    }
+      if (!element) {
+        return 0.5;
+      }
 
-    const rect = element.getBoundingClientRect();
+      const rect = element.getBoundingClientRect();
+      const plotLeft = rect.left + chartMargin.left + Y_AXIS_WIDTH;
+      const plotWidth = rect.width - chartMargin.left - chartMargin.right - 2 * Y_AXIS_WIDTH;
 
-    if (rect.width <= 0) {
-      return 0.5;
-    }
+      if (plotWidth <= 0) {
+        return 0.5;
+      }
 
-    return clamp((clientX - rect.left) / rect.width, 0, 1);
-  }, []);
+      return clamp((clientX - plotLeft) / plotWidth, 0, 1);
+    },
+    [chartMargin.left, chartMargin.right]
+  );
 
   useEffect(() => {
     const element = chartInteractionRef.current;
@@ -292,14 +301,7 @@ export function DailyAndCumulativePnLChart({
       const dataLength = groupedPnlData.length;
       const direction = deltaPixels < 0 ? "in" : "out";
       const anchorRatio = getChartInteractionRatio(event.clientX);
-      const wheelUnits = clamp(Math.abs(deltaPixels) / 100, 0.05, 1);
-
-      const currentWindow = normalizeZoomWindow(zoomWindowRef.current, dataLength) ?? {
-        startIndex: 0,
-        endIndex: dataLength - 1,
-      };
-      const visibleLength = currentWindow.endIndex - currentWindow.startIndex + 1;
-      const slowdown = getPnlChartWheelZoomSlowdown(visibleLength, dataLength);
+      const wheelUnits = Math.abs(deltaPixels) / 100;
       const accumulator = wheelZoomAccumulatorRef.current;
 
       if (accumulator.direction !== direction) {
@@ -307,7 +309,7 @@ export function DailyAndCumulativePnLChart({
         accumulator.value = 0;
       }
 
-      accumulator.value += wheelUnits / slowdown;
+      accumulator.value += wheelUnits;
 
       if (accumulator.value < 1) {
         return;
@@ -358,6 +360,11 @@ export function DailyAndCumulativePnLChart({
       stopZoomInteraction,
     ]
   );
+
+  const handleResetZoom = useCallback(() => {
+    wheelZoomAccumulatorRef.current = { value: 0 };
+    applyZoomWindow(undefined);
+  }, [applyZoomWindow]);
 
   const handleChartMouseDown = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
@@ -596,7 +603,7 @@ export function DailyAndCumulativePnLChart({
     ]
   );
 
-  return (
+  const chart = (
     <div className="relative min-h-[250px] grow">
       <div
         ref={chartInteractionRef}
@@ -681,6 +688,7 @@ export function DailyAndCumulativePnLChart({
             />
             <YAxis
               yAxisId="periodPnl"
+              width={Y_AXIS_WIDTH}
               type="number"
               allowDecimals={false}
               allowDataOverflow
@@ -696,6 +704,7 @@ export function DailyAndCumulativePnLChart({
             <YAxis
               yAxisId="cumulativePnl"
               orientation="right"
+              width={Y_AXIS_WIDTH}
               type="number"
               allowDecimals={false}
               allowDataOverflow
@@ -728,6 +737,41 @@ export function DailyAndCumulativePnLChart({
         </div>
       )}
     </div>
+  );
+
+  return (
+    <>
+      <div className="flex flex-wrap gap-24 px-16 pt-16 text-typography-secondary">
+        <div className="flex items-center gap-8 text-13 font-medium">
+          <div className="inline-block size-4 rounded-full bg-green-500" /> <Trans>Period profit</Trans>
+        </div>
+        <div className="flex items-center gap-8 text-13 font-medium">
+          <div className="inline-block size-4 rounded-full bg-red-500" /> <Trans>Period loss</Trans>
+        </div>
+        <div className="flex items-center gap-8 text-13 font-medium">
+          <div className="inline-block size-4 rounded-full bg-blue-300" />{" "}
+          <Trans>
+            Cumulative PnL{" "}
+            <span className={getPositiveOrNegativeClass(groupedPnlData.at(-1)?.cumulativePnl)}>
+              {formatUsd(groupedPnlData.at(-1)?.cumulativePnl)}
+            </span>
+          </Trans>
+        </div>
+        <DebugLegend lastPoint={groupedPnlData.at(-1)} />
+        <Button
+          variant="secondary"
+          size="controlled"
+          className={cx("-my-3 ml-auto gap-4 !px-8 !py-4", { invisible: !isZoomed })}
+          aria-label={t`Reset zoom`}
+          data-exclude
+          onClick={handleResetZoom}
+        >
+          <RepeatIcon className="size-14 shrink-0" />
+          {isMobile ? null : <Trans>Reset zoom</Trans>}
+        </Button>
+      </div>
+      {chart}
+    </>
   );
 }
 

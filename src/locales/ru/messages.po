@@ -1717,7 +1717,7 @@ msgstr "Всего доступно к клейму"
 msgid "Not yet"
 msgstr "Пока рано"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Period loss"
 msgstr "Убыток за период"
 
@@ -4249,7 +4249,7 @@ msgstr "Фронтенды"
 msgid "Claim successful"
 msgstr "Получение выполнено успешно"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Cumulative PnL <0>{0}</0>"
 msgstr "Кумулятивный PnL <0>{0}</0>"
 
@@ -9482,6 +9482,11 @@ msgstr ""
 msgid "Liquidation price"
 msgstr "Цена ликвидации"
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
+msgid "Reset zoom"
+msgstr "Сбросить масштаб"
+
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "So far, my referrals have saved {totalDiscountsFormatted} total in discounts with my code: {referralCode}"
 msgstr ""
@@ -12467,7 +12472,7 @@ msgstr "Депозит {glvOrGm}"
 msgid "Wallet GMX"
 msgstr ""
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Period profit"
 msgstr "Прибыль за период"
 
