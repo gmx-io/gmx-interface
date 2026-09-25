@@ -44,6 +44,10 @@ msgstr "或通过 <0>chainlist.org</0> 更新您钱包的 RPC"
 msgid "Monthly"
 msgstr "每月"
 
+#: solana-interface/src/components/SolanaOrderList.tsx
+msgid "Connect a Solana wallet to view orders"
+msgstr ""
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "REFERRAL CODE"
 msgstr "推荐码"
@@ -573,6 +577,10 @@ msgstr "减仓"
 msgid "Insufficient liquidity in any BTC/USD pool"
 msgstr "所有 BTC/USD 池流动性不足"
 
+#: solana-interface/src/components/SolanaOrderItem.tsx
+msgid "The order will be executed at the next available oracle price."
+msgstr ""
+
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 msgid "Unrealized base PnL"
 msgstr "未实现基础 PnL"
@@ -933,6 +941,10 @@ msgstr "高外部交换影响"
 msgid "Keep more of what you earn"
 msgstr "留住更多收益"
 
+#: solana-interface/src/components/SolanaOrderItem.tsx
+msgid "The order will be executed when the oracle price is {0} {1}."
+msgstr ""
+
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Accrued funding fees available for settlement"
 msgstr "可供结算的累计资金费用"
@@ -981,6 +993,7 @@ msgstr "我可以创建多个推荐码吗？"
 msgid "Unknown error"
 msgstr "未知错误"
 
+#: solana-interface/src/orders/orderRules.ts
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Swap"
 msgstr "市场交换"
@@ -1274,7 +1287,7 @@ msgstr "Yield Yak 交换"
 msgid "Vaultka"
 msgstr "Vaultka"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaOrderList.tsx
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
@@ -1545,6 +1558,7 @@ msgstr "价格、市场、仓位、订单——一次调用即可获取。"
 msgid "Liquidity only available on {chainNames}. Switch networks to continue."
 msgstr "流动性仅在 {chainNames} 上可用。请切换网络以继续。"
 
+#: solana-interface/src/orders/orderRules.ts
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
@@ -1779,6 +1793,7 @@ msgstr "概述"
 msgid "Fetching swap route..."
 msgstr "正在获取交换路由…"
 
+#: solana-interface/src/orders/solanaOrderFormatters.ts
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Collateral"
 msgstr "抵押品"
@@ -1980,6 +1995,9 @@ msgstr "使用任意网络上的任意代币买入 GMX"
 msgid "Markets"
 msgstr "市场"
 
+#: solana-interface/src/components/SolanaOrderList.tsx
+#: solana-interface/src/components/SolanaOrderList.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: solana-interface/src/components/SolanaPositionList.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
@@ -2781,6 +2799,10 @@ msgstr "GMX"
 msgid "Transfer initiated"
 msgstr "转账已发起"
 
+#: solana-interface/src/orders/orderRules.ts
+msgid "Auto Deleveraging"
+msgstr ""
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Amount is below the withdrawal limit. Try an amount larger than <0>{lowerLimitFormatted}</0>."
 msgstr "金额低于提款限额。请尝试大于 <0>{lowerLimitFormatted}</0> 的金额。"
@@ -3141,6 +3163,7 @@ msgstr "有可用更新"
 msgid "Buy GMX on {chainName}"
 msgstr "在 {chainName} 上购买 GMX"
 
+#: solana-interface/src/components/SolanaOrderItem.tsx
 #: solana-interface/src/components/SolanaPositionCard.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -3516,6 +3539,10 @@ msgstr "交换"
 msgid "Creating order..."
 msgstr "正在创建订单…"
 
+#: solana-interface/src/components/SolanaOrderList.tsx
+msgid "Failed to load orders."
+msgstr ""
+
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Allow {0} to be spent"
@@ -3589,6 +3616,7 @@ msgstr "使用 GMX 高级 RPC 实现更快执行"
 msgid "No assets in your GMX Account"
 msgstr "您的 GMX Account 中没有资产"
 
+#: solana-interface/src/components/SolanaOrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Order type"
 msgstr "订单类型"
@@ -3820,6 +3848,7 @@ msgstr "四种接入方式。"
 msgid "Trader activity"
 msgstr "交易者活动"
 
+#: solana-interface/src/components/SolanaOrderItem.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/PendingTPSLOrder.tsx
@@ -4259,6 +4288,10 @@ msgstr "TWAP 兑换子单失败"
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "No events in the past {DAYS_BACK} days"
 msgstr "过去 {DAYS_BACK} 天内无事件"
+
+#: solana-interface/src/orders/orderRules.ts
+msgid "Withdraw Collateral"
+msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker thread"
@@ -5422,6 +5455,10 @@ msgstr "最近上线"
 msgid "Failed to load order data:"
 msgstr "加载订单数据失败："
 
+#: solana-interface/src/orders/orderRules.ts
+msgid "Unknown Order Type"
+msgstr ""
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Network"
 msgstr "网络"
@@ -5475,6 +5512,10 @@ msgstr "GM 池"
 msgid "PnL"
 msgstr "PnL"
 
+#: solana-interface/src/components/SolanaOrderItem.tsx
+msgid "You will receive at least {0} if this order is executed."
+msgstr ""
+
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Favourites"
 msgstr "收藏"
@@ -5526,6 +5567,7 @@ msgstr "兑换影响"
 msgid "Execute Take-Profit"
 msgstr "执行止盈"
 
+#: solana-interface/src/orders/orderRules.ts
 #: src/components/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Increase"
@@ -6332,8 +6374,8 @@ msgid "Affiliate rewards claimed"
 msgstr "联盟奖励已领取"
 
 #: solana-interface/src/pages/SolanaTradeList.tsx
-msgid "ORDER TYPE"
-msgstr "订单类型"
+#~ msgid "ORDER TYPE"
+#~ msgstr "订单类型"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "transaction:"
@@ -6743,7 +6785,7 @@ msgstr "分割份数"
 msgid "Edit Limit Increase: {suffix}"
 msgstr "编辑限价加仓：{suffix}"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaOrderList.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/OrderList/OrderList.tsx
 msgid "No open orders"
@@ -7025,6 +7067,7 @@ msgstr "这是赠款计划吗？我会获得代币吗？"
 msgid "Set SL price above mark price"
 msgstr "将止损价格设为高于标记价格"
 
+#: solana-interface/src/components/SolanaOrderList.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -7632,6 +7675,10 @@ msgstr "媒体资料包"
 msgid "$ 0.00"
 msgstr "$ 0.00"
 
+#: solana-interface/src/orders/solanaOrderFormatters.ts
+msgid "Collateral Delta"
+msgstr ""
+
 #: src/components/Referrals/traders/dashboard/TradersPromoCard.tsx
 msgid "Create your referral code and earn rebates from your referrals"
 msgstr "创建您的推荐码，并通过推荐赚取返佣"
@@ -8197,6 +8244,7 @@ msgstr "Dune Analytics 仪表盘"
 msgid "No distribution history"
 msgstr "暂无分配历史记录"
 
+#: solana-interface/src/components/SolanaOrderItem.tsx
 #: solana-interface/src/components/SolanaPositionCard.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
@@ -8343,6 +8391,7 @@ msgstr "资金费率"
 msgid "Swap price impact for external swap threshold"
 msgstr "外部兑换阈值的兑换价格影响"
 
+#: solana-interface/src/orders/orderRules.ts
 #: src/components/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Decrease"
@@ -8431,6 +8480,10 @@ msgstr "流动性不足"
 msgid "No executed or cancelled transaction yet"
 msgstr "尚无已执行或已取消的交易"
 
+#: solana-interface/src/components/SolanaOrderItem.tsx
+msgid "to"
+msgstr ""
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -8491,6 +8544,10 @@ msgstr "外汇"
 msgid "Share position"
 msgstr "分享仓位"
 
+#: solana-interface/src/orders/orderRules.ts
+msgid "Deposit Collateral"
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute: insufficient liquidity to swap the pay token into the collateral token at the trigger price. Reduce the order size."
 msgstr "订单可能无法执行：触发价格下将支付代币兑换为抵押代币的流动性不足。请减小订单规模。"
@@ -8527,6 +8584,7 @@ msgstr "可用资产"
 msgid "({0} days ago)"
 msgstr "（{0} 天前）"
 
+#: solana-interface/src/orders/orderRules.ts
 #: src/components/TradeHistory/filters/ActionFilter.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Liquidation"
@@ -8709,8 +8767,8 @@ msgstr "链接已复制"
 msgid "Total wallet received"
 msgstr "钱包累计收到"
 
+#: solana-interface/src/components/SolanaOrderList.tsx
 #: solana-interface/src/components/SolanaPositionList.tsx
-#: solana-interface/src/pages/SolanaTradeList.tsx
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/Claims/ClaimsHistory.tsx
@@ -8763,6 +8821,7 @@ msgstr "GM 买入成功，但跨链桥至 Base 失败。您的资金在 GMX Acco
 msgid "Disable One-Click Trading"
 msgstr "禁用 One-Click Trading"
 
+#: solana-interface/src/orders/orderRules.ts
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
 msgstr "限价增加"
@@ -9960,6 +10019,10 @@ msgstr "开仓费用"
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Edit referral code"
 msgstr "编辑推荐码"
+
+#: solana-interface/src/components/SolanaOrderItem.tsx
+msgid "Acceptable Price"
+msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell request sent"
@@ -11349,6 +11412,10 @@ msgstr "与 GMX 集成的项目"
 msgid "Testnet LayerZero scan"
 msgstr "Testnet LayerZero 扫描"
 
+#: solana-interface/src/orders/solanaOrderFormatters.ts
+msgid "No limit"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Take-Profit"
 msgstr "取消止盈"
@@ -11486,7 +11553,7 @@ msgstr "下架"
 msgid "{0} (external)"
 msgstr "{0}（外部）"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaOrderList.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "TRIGGER PRICE"
@@ -11999,8 +12066,8 @@ msgstr "您的资金是安全的。请联系客服获取帮助。"
 msgid "NET VALUE"
 msgstr "净值"
 
+#: solana-interface/src/components/SolanaOrderList.tsx
 #: solana-interface/src/components/SolanaPositionList.tsx
-#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx
 msgid "MARK PRICE"
@@ -12427,6 +12494,7 @@ msgstr "交易者与联盟伙伴计划"
 msgid "Explore the VIP Desk"
 msgstr "了解 VIP Desk"
 
+#: solana-interface/src/orders/orderRules.ts
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Swap"
@@ -12444,6 +12512,10 @@ msgstr "如何开始省钱？"
 #: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "24H VOL."
 msgstr "24 小时交易量"
+
+#: solana-interface/src/orders/solanaOrderFormatters.ts
+msgid "(Market)"
+msgstr ""
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX team"
@@ -12872,6 +12944,7 @@ msgstr "由于缺少 {0} 的价格，USD 价值可能不准确"
 msgid "Expired deposit"
 msgstr "已过期的存入"
 
+#: solana-interface/src/orders/orderRules.ts
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx

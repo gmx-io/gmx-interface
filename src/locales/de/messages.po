@@ -44,6 +44,10 @@ msgstr "Oder aktualisieren Sie den RPC Ihres Wallets über <0>chainlist.org</0>"
 msgid "Monthly"
 msgstr "Monatlich"
 
+#: solana-interface/src/components/SolanaOrderList.tsx
+msgid "Connect a Solana wallet to view orders"
+msgstr ""
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "REFERRAL CODE"
 msgstr "EMPFEHLUNGSCODE"
@@ -573,6 +577,10 @@ msgstr "Verringern"
 msgid "Insufficient liquidity in any BTC/USD pool"
 msgstr "Unzureichende Liquidität in allen BTC/USD Pools"
 
+#: solana-interface/src/components/SolanaOrderItem.tsx
+msgid "The order will be executed at the next available oracle price."
+msgstr ""
+
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 msgid "Unrealized base PnL"
 msgstr "Nicht realisiertes Basis-PnL"
@@ -933,6 +941,10 @@ msgstr "Hohe externe Swap-Auswirkung"
 msgid "Keep more of what you earn"
 msgstr "Behalten Sie mehr von dem, was Sie verdienen"
 
+#: solana-interface/src/components/SolanaOrderItem.tsx
+msgid "The order will be executed when the oracle price is {0} {1}."
+msgstr ""
+
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Accrued funding fees available for settlement"
 msgstr "Aufgelaufene Finanzierungsgebühren zur Abwicklung verfügbar"
@@ -981,6 +993,7 @@ msgstr "Kann ich mehrere Empfehlungscodes erstellen?"
 msgid "Unknown error"
 msgstr "Unbekannter Fehler"
 
+#: solana-interface/src/orders/orderRules.ts
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Swap"
 msgstr "Markt-Tausch"
@@ -1274,7 +1287,7 @@ msgstr "Yield Yak Swap"
 msgid "Vaultka"
 msgstr "Vaultka"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaOrderList.tsx
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
@@ -1545,6 +1558,7 @@ msgstr "Preise, Märkte, Positionen, Orders — nur einen Call entfernt."
 msgid "Liquidity only available on {chainNames}. Switch networks to continue."
 msgstr "Liquidität nur auf {chainNames} verfügbar. Wechseln Sie das Netzwerk, um fortzufahren."
 
+#: solana-interface/src/orders/orderRules.ts
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
@@ -1779,6 +1793,7 @@ msgstr "Übersicht"
 msgid "Fetching swap route..."
 msgstr "Swap-Route wird geladen..."
 
+#: solana-interface/src/orders/solanaOrderFormatters.ts
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Collateral"
 msgstr "Kollateral"
@@ -1980,6 +1995,9 @@ msgstr "Kaufen Sie GMX mit jedem Token von jedem Netzwerk"
 msgid "Markets"
 msgstr "Märkte"
 
+#: solana-interface/src/components/SolanaOrderList.tsx
+#: solana-interface/src/components/SolanaOrderList.tsx
+#: solana-interface/src/components/SolanaPositionList.tsx
 #: solana-interface/src/components/SolanaPositionList.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
@@ -2781,6 +2799,10 @@ msgstr "GMX"
 msgid "Transfer initiated"
 msgstr "Übertragung eingeleitet"
 
+#: solana-interface/src/orders/orderRules.ts
+msgid "Auto Deleveraging"
+msgstr ""
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Amount is below the withdrawal limit. Try an amount larger than <0>{lowerLimitFormatted}</0>."
 msgstr "Der Betrag liegt unter dem Auszahlungslimit. Versuchen Sie einen Betrag größer als <0>{lowerLimitFormatted}</0>."
@@ -3141,6 +3163,7 @@ msgstr "Update verfügbar"
 msgid "Buy GMX on {chainName}"
 msgstr "Kaufe GMX auf {chainName}"
 
+#: solana-interface/src/components/SolanaOrderItem.tsx
 #: solana-interface/src/components/SolanaPositionCard.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -3516,6 +3539,10 @@ msgstr "Tausch"
 msgid "Creating order..."
 msgstr "Order wird erstellt…"
 
+#: solana-interface/src/components/SolanaOrderList.tsx
+msgid "Failed to load orders."
+msgstr ""
+
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Allow {0} to be spent"
@@ -3589,6 +3616,7 @@ msgstr "Schnellere Ausführung mit GMX Premium-RPCs"
 msgid "No assets in your GMX Account"
 msgstr "Keine Vermögenswerte in Ihrem GMX Account"
 
+#: solana-interface/src/components/SolanaOrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Order type"
 msgstr "Ordertyp"
@@ -3820,6 +3848,7 @@ msgstr "Vier Wege hinein."
 msgid "Trader activity"
 msgstr "Trader-Aktivität"
 
+#: solana-interface/src/components/SolanaOrderItem.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/PendingTPSLOrder.tsx
@@ -4259,6 +4288,10 @@ msgstr "Fehlgeschlagener TWAP-Tauschteil"
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "No events in the past {DAYS_BACK} days"
 msgstr "Keine Ereignisse in den letzten {DAYS_BACK} Tagen"
+
+#: solana-interface/src/orders/orderRules.ts
+msgid "Withdraw Collateral"
+msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker thread"
@@ -5422,6 +5455,10 @@ msgstr "Kürzlich gelistet"
 msgid "Failed to load order data:"
 msgstr "Orderdaten konnten nicht geladen werden:"
 
+#: solana-interface/src/orders/orderRules.ts
+msgid "Unknown Order Type"
+msgstr ""
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Network"
 msgstr "Netzwerk"
@@ -5475,6 +5512,10 @@ msgstr "GM Pools"
 msgid "PnL"
 msgstr "PnL"
 
+#: solana-interface/src/components/SolanaOrderItem.tsx
+msgid "You will receive at least {0} if this order is executed."
+msgstr ""
+
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Favourites"
 msgstr "Favoriten"
@@ -5526,6 +5567,7 @@ msgstr "Tauscheinfluss"
 msgid "Execute Take-Profit"
 msgstr "Take-Profit ausführen"
 
+#: solana-interface/src/orders/orderRules.ts
 #: src/components/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Increase"
@@ -6332,8 +6374,8 @@ msgid "Affiliate rewards claimed"
 msgstr "Partnerbelohnungen beansprucht"
 
 #: solana-interface/src/pages/SolanaTradeList.tsx
-msgid "ORDER TYPE"
-msgstr "ORDERTYP"
+#~ msgid "ORDER TYPE"
+#~ msgstr "ORDERTYP"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "transaction:"
@@ -6743,7 +6785,7 @@ msgstr "Anzahl der Teile"
 msgid "Edit Limit Increase: {suffix}"
 msgstr "Limit-Erhöhung bearbeiten: {suffix}"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaOrderList.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/OrderList/OrderList.tsx
 msgid "No open orders"
@@ -7025,6 +7067,7 @@ msgstr "Ist das ein Grant-Programm? Bekomme ich Token?"
 msgid "Set SL price above mark price"
 msgstr "SL-Preis über dem Markpreis festlegen"
 
+#: solana-interface/src/components/SolanaOrderList.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -7632,6 +7675,10 @@ msgstr "Medienpaket"
 msgid "$ 0.00"
 msgstr "$ 0.00"
 
+#: solana-interface/src/orders/solanaOrderFormatters.ts
+msgid "Collateral Delta"
+msgstr ""
+
 #: src/components/Referrals/traders/dashboard/TradersPromoCard.tsx
 msgid "Create your referral code and earn rebates from your referrals"
 msgstr "Erstellen Sie Ihren Empfehlungscode und verdienen Sie Rückvergütungen von Ihren Empfehlungen"
@@ -8197,6 +8244,7 @@ msgstr "Dune Analytics Dashboard"
 msgid "No distribution history"
 msgstr "Kein Verteilungsverlauf"
 
+#: solana-interface/src/components/SolanaOrderItem.tsx
 #: solana-interface/src/components/SolanaPositionCard.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
@@ -8343,6 +8391,7 @@ msgstr "Funding-Rate"
 msgid "Swap price impact for external swap threshold"
 msgstr "Tausch-Preiseinfluss-Schwellenwert für externe Swaps"
 
+#: solana-interface/src/orders/orderRules.ts
 #: src/components/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Decrease"
@@ -8431,6 +8480,10 @@ msgstr "Unzureichende Liquidität"
 msgid "No executed or cancelled transaction yet"
 msgstr "Noch keine ausgeführte oder stornierte Transaktion"
 
+#: solana-interface/src/components/SolanaOrderItem.tsx
+msgid "to"
+msgstr ""
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -8491,6 +8544,10 @@ msgstr "Devisen"
 msgid "Share position"
 msgstr "Position teilen"
 
+#: solana-interface/src/orders/orderRules.ts
+msgid "Deposit Collateral"
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute: insufficient liquidity to swap the pay token into the collateral token at the trigger price. Reduce the order size."
 msgstr "Die Order wird möglicherweise nicht ausgeführt: Unzureichende Liquidität, um den Zahlungstoken zum Auslösepreis in den Collateral-Token zu tauschen. Reduzieren Sie die Ordergröße."
@@ -8527,6 +8584,7 @@ msgstr "Verfügbare Vermögenswerte"
 msgid "({0} days ago)"
 msgstr "(vor {0} Tagen)"
 
+#: solana-interface/src/orders/orderRules.ts
 #: src/components/TradeHistory/filters/ActionFilter.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Liquidation"
@@ -8709,8 +8767,8 @@ msgstr "Link kopiert"
 msgid "Total wallet received"
 msgstr "Wallet-Eingang insgesamt"
 
+#: solana-interface/src/components/SolanaOrderList.tsx
 #: solana-interface/src/components/SolanaPositionList.tsx
-#: solana-interface/src/pages/SolanaTradeList.tsx
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/Claims/ClaimsHistory.tsx
@@ -8763,6 +8821,7 @@ msgstr "GM erfolgreich gekauft, aber die Bridge zu Base ist fehlgeschlagen. Ihre
 msgid "Disable One-Click Trading"
 msgstr "One-Click Trading deaktivieren"
 
+#: solana-interface/src/orders/orderRules.ts
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
 msgstr "Limit-Erhöhung"
@@ -9960,6 +10019,10 @@ msgstr "Eröffnungsgebühr"
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Edit referral code"
 msgstr "Empfehlungscode bearbeiten"
+
+#: solana-interface/src/components/SolanaOrderItem.tsx
+msgid "Acceptable Price"
+msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell request sent"
@@ -11349,6 +11412,10 @@ msgstr "Mit GMX integrierte Projekte"
 msgid "Testnet LayerZero scan"
 msgstr "Testnet LayerZero Scan"
 
+#: solana-interface/src/orders/solanaOrderFormatters.ts
+msgid "No limit"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Take-Profit"
 msgstr "Take-Profit abbrechen"
@@ -11486,7 +11553,7 @@ msgstr "Delisting"
 msgid "{0} (external)"
 msgstr "{0} (extern)"
 
-#: solana-interface/src/pages/SolanaTradeList.tsx
+#: solana-interface/src/components/SolanaOrderList.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "TRIGGER PRICE"
@@ -11999,8 +12066,8 @@ msgstr "Ihre Mittel sind sicher. Kontaktieren Sie den Support für Hilfe."
 msgid "NET VALUE"
 msgstr "NETTOWERT"
 
+#: solana-interface/src/components/SolanaOrderList.tsx
 #: solana-interface/src/components/SolanaPositionList.tsx
-#: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx
 msgid "MARK PRICE"
@@ -12427,6 +12494,7 @@ msgstr "Trader- & Affiliate-Programm"
 msgid "Explore the VIP Desk"
 msgstr "VIP Desk entdecken"
 
+#: solana-interface/src/orders/orderRules.ts
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Swap"
@@ -12444,6 +12512,10 @@ msgstr "Wie beginne ich zu sparen?"
 #: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 msgid "24H VOL."
 msgstr "24H VOL."
+
+#: solana-interface/src/orders/solanaOrderFormatters.ts
+msgid "(Market)"
+msgstr ""
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX team"
@@ -12872,6 +12944,7 @@ msgstr "USD-Wert möglicherweise ungenau, da Preise für {0} fehlen"
 msgid "Expired deposit"
 msgstr "Abgelaufene Einzahlung"
 
+#: solana-interface/src/orders/orderRules.ts
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx

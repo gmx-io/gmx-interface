@@ -9,18 +9,16 @@ import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableConten
 import { Table, TableTh, TableTheadTr } from "components/Table/Table";
 import Tabs from "components/Tabs/Tabs";
 
+import { SolanaOrderList } from "../components/SolanaOrderList";
 import { SolanaPositionList } from "../components/SolanaPositionList";
+import { useSolanaOrders } from "../orders/useSolanaOrders";
 import { useSolanaPositions } from "../positions/useSolanaPositions";
 
 type ListTab = "positions" | "orders" | "trades" | "claims";
 
-type PlaceholderTab = Exclude<ListTab, "positions">;
+type PlaceholderTab = Exclude<ListTab, "positions" | "orders">;
 
 const TAB_CONTENT: Record<PlaceholderTab, { headers: MessageDescriptor[]; emptyText: MessageDescriptor }> = {
-  orders: {
-    headers: [msg`MARKET`, msg`ORDER TYPE`, msg`SIZE`, msg`TRIGGER PRICE`, msg`MARK PRICE`],
-    emptyText: msg`No open orders`,
-  },
   trades: {
     headers: [msg`ACTION`, msg`MARKET`, msg`SIZE`, msg`PRICE`, msg`RPNL`, msg`FEES`],
     emptyText: msg`No trades yet`,
@@ -36,6 +34,8 @@ export function SolanaTradeList() {
   const [showChartPositions, setShowChartPositions] = useState(true);
   const positions = useSolanaPositions();
   const positionsCount = positions.isLoading ? 0 : positions.positions.length;
+  const orders = useSolanaOrders({ pollingEnabled: tab === "orders" });
+  const ordersCount = orders.isLoading ? 0 : orders.count;
 
   const tabOptions = useMemo(
     () => [
@@ -48,11 +48,19 @@ export function SolanaTradeList() {
           </div>
         ),
       },
-      { value: "orders" as const, label: <Trans>Orders</Trans> },
+      {
+        value: "orders" as const,
+        label: (
+          <div className="flex gap-4">
+            <Trans>Orders</Trans>
+            <Badge>{ordersCount}</Badge>
+          </div>
+        ),
+      },
       { value: "trades" as const, label: <Trans>Trades</Trans> },
       { value: "claims" as const, label: <Trans>Claims</Trans> },
     ],
-    [positionsCount]
+    [positionsCount, ordersCount]
   );
 
   return (
@@ -85,6 +93,15 @@ export function SolanaTradeList() {
           isLoading={positions.isLoading}
           error={positions.error}
           onRetry={positions.refresh}
+        />
+      ) : tab === "orders" ? (
+        <SolanaOrderList
+          orders={orders.orders}
+          isWalletConnected={orders.isWalletConnected}
+          isLoading={orders.isLoading}
+          isMarketDataPending={orders.isMarketDataPending}
+          error={orders.error}
+          onRetry={orders.refresh}
         />
       ) : (
         <PlaceholderTabContent tab={tab} />

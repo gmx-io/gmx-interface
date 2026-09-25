@@ -3,9 +3,9 @@ import cx from "classnames";
 
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTr } from "components/Table/Table";
-import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import { SolanaTokenIcon } from "./SolanaTokenIcon";
 import {
   formatSolanaLeverage,
   formatSolanaLiquidationPrice,
@@ -20,7 +20,7 @@ import type { SolanaPositionViewModel } from "../positions/types";
 export function SolanaPositionTitle({ position, iconSize }: { position: SolanaPositionViewModel; iconSize: number }) {
   return (
     <span className="inline-flex items-center gap-4 font-medium">
-      <TokenIcon className="PositionList-token-icon" symbol={position.symbol} displaySize={iconSize} />
+      <SolanaTokenIcon className="PositionList-token-icon" symbol={position.symbol} displaySize={iconSize} />
       {position.displayMarketName}
     </span>
   );
