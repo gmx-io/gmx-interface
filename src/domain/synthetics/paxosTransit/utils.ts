@@ -1,18 +1,54 @@
-import type { TransitFeeTier, TransitFeeTierResponse } from "sdk/utils/paxos/types";
+import { isAddressEqual } from "viem";
+
+import type { TransitFeeTier, TransitFeeTierResponse, TransitRoute } from "sdk/utils/paxos/types";
+
+export function getTransitMinOrderSize(
+  routes: TransitRoute[] | undefined,
+  p: { chainId: number; offerAsset: string | undefined; wantAsset: string | undefined }
+): bigint | undefined {
+  const { offerAsset, wantAsset } = p;
+
+  if (!offerAsset || !wantAsset) {
+    return undefined;
+  }
+
+  const route = routes?.find(
+    (route) =>
+      route.sourceChainId === p.chainId &&
+      route.destinationChainId === p.chainId &&
+      isAddressEqual(route.offerAsset, offerAsset) &&
+      isAddressEqual(route.wantAsset, wantAsset)
+  );
+
+  return route?.minOrderSize;
+}
 
 export function getTransitFeeTier(p: {
   feeTierData: TransitFeeTierResponse | undefined;
   isWhitelistIgnored: boolean;
   isUsdcOffered: boolean;
   amount: bigint;
+  zeroFeeMinOrderSize: bigint | undefined;
   isStandardFeeForced: boolean;
-}): { isWhitelisted: boolean; isZeroFeeCapacityShort: boolean; feeTier: TransitFeeTier } {
+}): {
+  isWhitelisted: boolean;
+  isZeroFeeCapacityShort: boolean;
+  isBelowZeroFeeMinimum: boolean;
+  feeTier: TransitFeeTier;
+} {
   const isWhitelisted = p.feeTierData?.feeTier === "zeroFee" && !p.isWhitelistIgnored;
   const zeroFeeCapacity = p.feeTierData?.zeroFeeCapacity ?? 0n;
   const isZeroFeeCapacityShort = isWhitelisted && p.isUsdcOffered && zeroFeeCapacity < p.amount;
-  const isZeroFee = isWhitelisted && !isZeroFeeCapacityShort && !p.isStandardFeeForced;
+  const isBelowZeroFeeMinimum =
+    isWhitelisted && p.zeroFeeMinOrderSize !== undefined && p.amount < p.zeroFeeMinOrderSize;
+  const isZeroFee = isWhitelisted && !isZeroFeeCapacityShort && !isBelowZeroFeeMinimum && !p.isStandardFeeForced;
 
-  return { isWhitelisted, isZeroFeeCapacityShort, feeTier: isZeroFee ? "zeroFee" : "standardFee" };
+  return {
+    isWhitelisted,
+    isZeroFeeCapacityShort,
+    isBelowZeroFeeMinimum,
+    feeTier: isZeroFee ? "zeroFee" : "standardFee",
+  };
 }
 
 export function getShouldUseTransit(p: {
