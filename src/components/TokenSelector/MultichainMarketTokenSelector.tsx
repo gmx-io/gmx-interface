@@ -170,7 +170,7 @@ export function MultichainMarketTokenSelector({
     >
       <SlideModal
         qa={"market-token-selector-modal"}
-        className="TokenSelector-modal text-body-medium text-white"
+        className="TokenSelector-modal text-body-medium text-typography-primary"
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={label}
@@ -249,7 +249,7 @@ function AvailableToTradeTokenList({
         return (
           <div
             key={token.chainId ?? "settlement-chain"}
-            className="gmx-hover-gradient flex cursor-pointer items-center justify-between px-adaptive py-8"
+            className="flex cursor-pointer items-center justify-between px-adaptive py-8 gmx-hover:bg-fill-surfaceElevated50"
             onClick={() => onSelectTokenAddress(token.chainId)}
           >
             <div className="text-body-large flex items-center gap-8">
