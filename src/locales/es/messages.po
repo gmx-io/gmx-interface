@@ -1708,7 +1708,7 @@ msgstr "Total pendiente reclamable"
 msgid "Not yet"
 msgstr "Aún no"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Period loss"
 msgstr "Pérdida del período"
 
@@ -4240,7 +4240,7 @@ msgstr "Frontends"
 msgid "Claim successful"
 msgstr "Reclamación exitosa"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Cumulative PnL <0>{0}</0>"
 msgstr "PnL Acumulativo <0>{0}</0>"
 
@@ -9454,6 +9454,7 @@ msgid "Liquidation price"
 msgstr "Precio de liquidación"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Reset zoom"
 msgstr "Restablecer zoom"
 
@@ -12441,7 +12442,7 @@ msgstr "Depositar {glvOrGm}"
 msgid "Wallet GMX"
 msgstr ""
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Period profit"
 msgstr "Beneficio del período"
 

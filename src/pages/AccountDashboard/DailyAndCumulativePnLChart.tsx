@@ -40,6 +40,7 @@ import {
   zoomPnlWindowAtRatio,
 } from "./DailyAndCumulativePnL.utils";
 import {
+  DebugLegend,
   DebugTooltip,
   getDebugCumulativePnlYAxisValues,
   getDebugPeriodPnlYAxisValues,
@@ -94,7 +95,6 @@ const TOUCH_PINCH_STEP_RATIO = 1.08;
 // Browsers synthesize mouse events (including dblclick) shortly after taps when
 // touch-action disables native double-tap zoom; ignore those so a double-tap doesn't zoom twice.
 const TOUCH_SYNTHETIC_DOUBLE_CLICK_TIMEOUT = 700;
-const ZOOM_RESET_DOUBLE_CLICK_TIMEOUT = 500;
 
 type ChartPnlHistoryPoint = AccountPnlHistoryPoint & {
   chartIndex: number;
@@ -118,11 +118,9 @@ export function DailyAndCumulativePnLChart({
   const [zoomWindow, setZoomWindow] = useState<PnlZoomWindow | undefined>();
   const [isBarAnimationActive, setIsBarAnimationActive] = useState(true);
   const showDebugValues = useShowDebugValues();
-  const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartInteractionRef = useRef<HTMLDivElement>(null);
   const lastTouchTapRef = useRef(0);
   const lastTouchEndRef = useRef(0);
-  const lastZoomResetRef = useRef(0);
   const wheelZoomAccumulatorRef = useRef<{ direction?: "in" | "out"; value: number }>({ value: 0 });
   const zoomInteractionResetTimeoutRef = useRef<number | undefined>();
   const mobileTapTooltipTimeoutRef = useRef<number | undefined>();
@@ -193,10 +191,6 @@ export function DailyAndCumulativePnLChart({
       ),
     };
   }, [chartPnlData, showDebugValues]);
-  const resetZoomButtonStyle = useMemo<React.CSSProperties>(
-    () => ({ top: CHART_MARGIN.top + 8, right: chartMargin.right + Y_AXIS_WIDTH + 8 }),
-    [chartMargin.right]
-  );
 
   const isZoomed = Boolean(normalizedZoomWindow);
   const canZoom = groupedPnlData.length > 2;
@@ -283,7 +277,7 @@ export function DailyAndCumulativePnLChart({
   );
 
   useEffect(() => {
-    const element = chartContainerRef.current;
+    const element = chartInteractionRef.current;
 
     if (!element || !canZoom) {
       return undefined;
@@ -348,13 +342,7 @@ export function DailyAndCumulativePnLChart({
 
   const handleChartDoubleClick = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
-      const now = Date.now();
-
-      if (
-        !canZoom ||
-        now - lastTouchEndRef.current < TOUCH_SYNTHETIC_DOUBLE_CLICK_TIMEOUT ||
-        now - lastZoomResetRef.current < ZOOM_RESET_DOUBLE_CLICK_TIMEOUT
-      ) {
+      if (!canZoom || Date.now() - lastTouchEndRef.current < TOUCH_SYNTHETIC_DOUBLE_CLICK_TIMEOUT) {
         return;
       }
 
@@ -374,7 +362,6 @@ export function DailyAndCumulativePnLChart({
   );
 
   const handleResetZoom = useCallback(() => {
-    lastZoomResetRef.current = Date.now();
     wheelZoomAccumulatorRef.current = { value: 0 };
     applyZoomWindow(undefined);
   }, [applyZoomWindow]);
@@ -616,8 +603,8 @@ export function DailyAndCumulativePnLChart({
     ]
   );
 
-  return (
-    <div ref={chartContainerRef} className="relative min-h-[250px] grow">
+  const chart = (
+    <div className="relative min-h-[250px] grow">
       <div
         ref={chartInteractionRef}
         className={cx("DailyAndCumulativePnL-chartInteraction absolute size-full", {
@@ -734,18 +721,6 @@ export function DailyAndCumulativePnLChart({
           </ComposedChart>
         </ResponsiveContainer>
       </div>
-      {isZoomed && (
-        <Button
-          variant="secondary"
-          className="!absolute z-10"
-          style={resetZoomButtonStyle}
-          data-exclude
-          onClick={handleResetZoom}
-        >
-          <RepeatIcon className="size-16 shrink-0" />
-          <Trans>Reset zoom</Trans>
-        </Button>
-      )}
       {error && (
         <div className="absolute grid size-full max-h-full place-items-center overflow-auto">
           <div className="whitespace-pre-wrap font-mono text-red-500">{JSON.stringify(error, null, 2)}</div>
@@ -762,6 +737,41 @@ export function DailyAndCumulativePnLChart({
         </div>
       )}
     </div>
+  );
+
+  return (
+    <>
+      <div className="flex flex-wrap gap-24 px-16 pt-16 text-typography-secondary">
+        <div className="flex items-center gap-8 text-13 font-medium">
+          <div className="inline-block size-4 rounded-full bg-green-500" /> <Trans>Period profit</Trans>
+        </div>
+        <div className="flex items-center gap-8 text-13 font-medium">
+          <div className="inline-block size-4 rounded-full bg-red-500" /> <Trans>Period loss</Trans>
+        </div>
+        <div className="flex items-center gap-8 text-13 font-medium">
+          <div className="inline-block size-4 rounded-full bg-blue-300" />{" "}
+          <Trans>
+            Cumulative PnL{" "}
+            <span className={getPositiveOrNegativeClass(groupedPnlData.at(-1)?.cumulativePnl)}>
+              {formatUsd(groupedPnlData.at(-1)?.cumulativePnl)}
+            </span>
+          </Trans>
+        </div>
+        <DebugLegend lastPoint={groupedPnlData.at(-1)} />
+        <Button
+          variant="secondary"
+          size="controlled"
+          className={cx("-my-3 ml-auto gap-4 !px-8 !py-4", { invisible: !isZoomed })}
+          aria-label={t`Reset zoom`}
+          data-exclude
+          onClick={handleResetZoom}
+        >
+          <RepeatIcon className="size-14 shrink-0" />
+          {isMobile ? null : <Trans>Reset zoom</Trans>}
+        </Button>
+      </div>
+      {chart}
+    </>
   );
 }
 

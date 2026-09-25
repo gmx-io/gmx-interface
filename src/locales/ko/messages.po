@@ -1708,7 +1708,7 @@ msgstr "청구 가능 대기 총액"
 msgid "Not yet"
 msgstr "아직은"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Period loss"
 msgstr "기간 손실"
 
@@ -4240,7 +4240,7 @@ msgstr "프론트엔드"
 msgid "Claim successful"
 msgstr "수령 완료"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Cumulative PnL <0>{0}</0>"
 msgstr "누적 손익 <0>{0}</0>"
 
@@ -9454,6 +9454,7 @@ msgid "Liquidation price"
 msgstr "청산가"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Reset zoom"
 msgstr "확대/축소 초기화"
 
@@ -12441,7 +12442,7 @@ msgstr "{glvOrGm} 입금"
 msgid "Wallet GMX"
 msgstr ""
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Period profit"
 msgstr "기간 수익"
 

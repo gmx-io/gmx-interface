@@ -1708,7 +1708,7 @@ msgstr "Insgesamt ausstehend abholbar"
 msgid "Not yet"
 msgstr "Noch nicht"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Period loss"
 msgstr "Verlust im Zeitraum"
 
@@ -4240,7 +4240,7 @@ msgstr "Frontends"
 msgid "Claim successful"
 msgstr "Beanspruchung erfolgreich"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Cumulative PnL <0>{0}</0>"
 msgstr "Kumulativer PnL <0>{0}</0>"
 
@@ -9454,6 +9454,7 @@ msgid "Liquidation price"
 msgstr "Liquidationspreis"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Reset zoom"
 msgstr "Zoom zurücksetzen"
 
@@ -12441,7 +12442,7 @@ msgstr "{glvOrGm} einzahlen"
 msgid "Wallet GMX"
 msgstr ""
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Period profit"
 msgstr "Gewinn im Zeitraum"
 

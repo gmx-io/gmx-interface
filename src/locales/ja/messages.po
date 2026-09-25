@@ -1708,7 +1708,7 @@ msgstr "請求可能な保留中合計"
 msgid "Not yet"
 msgstr "まだ早い"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Period loss"
 msgstr "期間損失"
 
@@ -4240,7 +4240,7 @@ msgstr "フロントエンド"
 msgid "Claim successful"
 msgstr "受け取りが完了しました"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Cumulative PnL <0>{0}</0>"
 msgstr "累積PnL <0>{0}</0>"
 
@@ -9454,6 +9454,7 @@ msgid "Liquidation price"
 msgstr "清算価格"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Reset zoom"
 msgstr "ズームをリセット"
 
@@ -12441,7 +12442,7 @@ msgstr "{glvOrGm}を入金"
 msgid "Wallet GMX"
 msgstr ""
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Period profit"
 msgstr "期間利益"
 

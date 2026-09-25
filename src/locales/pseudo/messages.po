@@ -1708,7 +1708,7 @@ msgstr ""
 msgid "Not yet"
 msgstr ""
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Period loss"
 msgstr ""
 
@@ -4240,7 +4240,7 @@ msgstr ""
 msgid "Claim successful"
 msgstr ""
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Cumulative PnL <0>{0}</0>"
 msgstr ""
 
@@ -9454,6 +9454,7 @@ msgid "Liquidation price"
 msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Reset zoom"
 msgstr ""
 
@@ -12441,7 +12442,7 @@ msgstr ""
 msgid "Wallet GMX"
 msgstr ""
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Period profit"
 msgstr ""
 
