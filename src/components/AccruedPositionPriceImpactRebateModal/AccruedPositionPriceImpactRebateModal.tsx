@@ -10,11 +10,12 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getTokenData } from "domain/synthetics/tokens";
-import { expandDecimals, formatDeltaUsd, formatTokenAmount } from "lib/numbers";
+import { expandDecimals, formatTokenAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { bigMath } from "sdk/utils/bigmath";
 
 import Modal from "components/Modal/Modal";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 export const AccruedPositionPriceImpactRebateModal = memo(
@@ -31,7 +32,9 @@ export const AccruedPositionPriceImpactRebateModal = memo(
       >
         <div className="ConfirmationBox-main">
           <div className="text-center">
-            <Trans>Total {formatDeltaUsd(totalUsd)}</Trans>
+            <Trans>
+              Total <DeltaUsdValue deltaUsd={totalUsd} />
+            </Trans>
           </div>
         </div>
         <div className="mb-20 mt-15 h-1 bg-slate-700" />
@@ -117,7 +120,7 @@ const Row = memo(({ rebateItems }: { rebateItems: RebateInfoItem[] }) => {
       total = total + usd;
     });
 
-    return formatDeltaUsd(total);
+    return total;
   }, [rebateItems, tokensData]);
 
   const renderContent = useCallback(
@@ -143,7 +146,7 @@ const Row = memo(({ rebateItems }: { rebateItems: RebateInfoItem[] }) => {
         <TooltipWithPortal
           position="top-end"
           tooltipClassName="ClaimModal-row-tooltip"
-          handle={usd}
+          handle={<DeltaUsdValue deltaUsd={usd} />}
           renderContent={renderContent}
         />
       </div>

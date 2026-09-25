@@ -7,12 +7,13 @@ import { useChainId } from "lib/chains";
 import { toUtcDayEndByCalendarDate, toUtcDayStartByCalendarDate, type DateRange, type SetDateRange } from "lib/dates";
 import downloadImage from "lib/downloadImage";
 import { helperToast } from "lib/helperToast";
-import { formatUsd } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { userAnalytics } from "lib/userAnalytics";
 import type { SharePositionClickEvent } from "lib/userAnalytics/types";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import useWallet from "lib/wallets/useWallet";
+
+import { UsdValue } from "components/NumericValue/UsdValue";
 
 import { getDefaultPnlChartGrouping, groupPnlHistoryData, type PnlChartGrouping } from "./DailyAndCumulativePnL.utils";
 import { DailyAndCumulativePnLChart } from "./DailyAndCumulativePnLChart";
@@ -127,13 +128,11 @@ export function DailyAndCumulativePnL({
           <div className="inline-block size-4 rounded-full bg-red-500" /> <Trans>Period loss</Trans>
         </div>
         <div className="flex items-center gap-8 text-13 font-medium">
-          <div className="inline-block size-4 rounded-full bg-blue-300" />{" "}
-          <Trans>
-            Cumulative PnL{" "}
-            <span className={getPositiveOrNegativeClass(groupedPnlData.at(-1)?.cumulativePnl)}>
-              {formatUsd(groupedPnlData.at(-1)?.cumulativePnl)}
-            </span>
-          </Trans>
+          <div className="inline-block size-4 rounded-full bg-blue-300" /> <Trans>Cumulative PnL</Trans>{" "}
+          <UsdValue
+            usd={groupedPnlData.at(-1)?.cumulativePnl}
+            className={getPositiveOrNegativeClass(groupedPnlData.at(-1)?.cumulativePnl)}
+          />
         </div>
         <DebugLegend lastPoint={groupedPnlData.at(-1)} />
       </div>

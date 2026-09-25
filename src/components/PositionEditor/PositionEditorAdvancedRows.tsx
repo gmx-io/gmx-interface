@@ -5,9 +5,10 @@ import { usePositionEditorPosition } from "context/SyntheticsStateContext/hooks/
 import { selectPositionEditorCollateralInputAmountAndUsd } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { selectTradeboxAdvancedOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { formatLeverage } from "domain/synthetics/positions";
-import { formatUsd } from "lib/numbers";
+import { formatLeverageParts } from "domain/synthetics/positions";
+import { formatUsdParts } from "lib/numbers";
 
+import { UsdValue } from "components/NumericValue/UsdValue";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
@@ -60,16 +61,20 @@ export function PositionEditorAdvancedRows({ operation, gasPaymentParams }: Opti
         }
         value={
           <ValueTransition
-            from={formatUsd(position?.collateralUsd)!}
-            to={collateralDeltaUsd !== undefined && collateralDeltaUsd > 0 ? formatUsd(nextCollateralUsd) : undefined}
+            from={formatUsdParts(position?.collateralUsd)}
+            to={
+              collateralDeltaUsd !== undefined && collateralDeltaUsd > 0 ? formatUsdParts(nextCollateralUsd) : undefined
+            }
           />
         }
       />
       <SyntheticsInfoRow
         label={t`Leverage`}
-        value={<ValueTransition from={formatLeverage(position?.leverage)} to={formatLeverage(nextLeverage)} />}
+        value={
+          <ValueTransition from={formatLeverageParts(position?.leverage)} to={formatLeverageParts(nextLeverage)} />
+        }
       />
-      <SyntheticsInfoRow label={t`Size`} value={formatUsd(position.sizeInUsd)} />
+      <SyntheticsInfoRow label={t`Size`} value={<UsdValue usd={position.sizeInUsd} />} />
     </ExpandableRow>
   );
 }

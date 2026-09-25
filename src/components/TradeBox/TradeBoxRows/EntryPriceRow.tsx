@@ -7,8 +7,9 @@ import {
   selectTradeboxToToken,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { formatUsdPrice } from "lib/numbers";
+import { formatUsdPriceParts } from "lib/numbers";
 
+import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
@@ -28,17 +29,15 @@ export function EntryPriceRow() {
       value={
         nextPositionValues?.nextEntryPrice || existingPosition?.entryPrice ? (
           <ValueTransition
-            from={formatUsdPrice(existingPosition?.entryPrice, {
+            from={formatUsdPriceParts(existingPosition?.entryPrice, {
               visualMultiplier: toToken?.visualMultiplier,
             })}
-            to={formatUsdPrice(nextPositionValues?.nextEntryPrice, {
+            to={formatUsdPriceParts(nextPositionValues?.nextEntryPrice, {
               visualMultiplier: toToken?.visualMultiplier,
             })}
           />
         ) : (
-          formatUsdPrice(markPrice, {
-            visualMultiplier: toToken?.visualMultiplier,
-          })
+          <UsdPriceValue price={markPrice} visualMultiplier={toToken?.visualMultiplier} />
         )
       }
       valueClassName="numbers"

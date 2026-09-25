@@ -3,8 +3,9 @@ import cx from "classnames";
 import { ChangeEvent, useMemo } from "react";
 
 import { TokenData } from "domain/synthetics/tokens";
-import { formatUsdPrice } from "lib/numbers";
 import { TradeMode } from "sdk/utils/trade/types";
+
+import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
 
 import { TradeInputField } from "./TradeInputField";
 
@@ -32,16 +33,17 @@ export function PriceField({
   const priceLabel = tradeMode === TradeMode.Limit ? t`Limit price` : t`Stop price`;
 
   const alternateValue = useMemo(() => {
-    const formattedMarkPrice = formatUsdPrice(markPrice, {
-      visualMultiplier: indexToken?.visualMultiplier,
-    });
-
     return (
       <span
         className={cx("whitespace-nowrap", onMarkPriceClick ? "cursor-pointer" : undefined)}
         onClick={onMarkPriceClick}
       >
-        {t`Mark:`} <span className="text-typography-primary">{formattedMarkPrice}</span>
+        {t`Mark:`}{" "}
+        <UsdPriceValue
+          price={markPrice}
+          visualMultiplier={indexToken?.visualMultiplier}
+          className="text-typography-primary"
+        />
       </span>
     );
   }, [indexToken?.visualMultiplier, markPrice, onMarkPriceClick]);

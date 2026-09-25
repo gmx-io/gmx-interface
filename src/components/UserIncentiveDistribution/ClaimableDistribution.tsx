@@ -3,9 +3,10 @@ import cx from "classnames";
 import { useCallback, useState } from "react";
 
 import { ClaimableAmountsData, DistributionConfiguration } from "domain/synthetics/claims/useUserClaimableAmounts";
-import { formatBalanceAmount, formatUsd } from "lib/numbers";
+import { formatBalanceAmount } from "lib/numbers";
 
 import Checkbox from "components/Checkbox/Checkbox";
+import { UsdValue } from "components/NumericValue/UsdValue";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
@@ -54,7 +55,7 @@ export function ClaimableDistribution({
             <ChevronDownIcon className={cx("size-14 text-typography-secondary", { "rotate-180": isExpanded })} />
           </div>
 
-          <span className="text-body-small text-typography-secondary">{formatUsd(claimableAmountsData.totalUsd)}</span>
+          <UsdValue usd={claimableAmountsData.totalUsd} className="text-body-small text-typography-secondary" />
         </div>
 
         {isExpanded
@@ -67,7 +68,7 @@ export function ClaimableDistribution({
                     <div className="flex gap-2 text-12">
                       <span>{formatBalanceAmount(data.amount, data.token.decimals)}</span>
                       <span className="text-body-small whitespace-nowrap text-typography-secondary">
-                        ({formatUsd(data?.usd ?? 0n)})
+                        (<UsdValue usd={data?.usd ?? 0n} />)
                       </span>
                     </div>
                   </div>

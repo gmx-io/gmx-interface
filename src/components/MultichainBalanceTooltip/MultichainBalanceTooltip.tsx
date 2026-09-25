@@ -4,8 +4,9 @@ import { useMemo } from "react";
 import { getChainName, GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
 import { MultichainMarketTokenBalances } from "domain/multichain/types";
 import { useSortedTokenBalances } from "domain/multichain/useSortedTokenBalances";
-import { formatBalanceAmount, formatUsd } from "lib/numbers";
+import { formatBalanceAmount } from "lib/numbers";
 
+import { UsdValue } from "components/NumericValue/UsdValue";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
 type Props = {
@@ -54,7 +55,7 @@ export function MultichainBalanceTooltip({ multichainBalances, symbol, decimals 
               label={label}
               value={
                 <span>
-                  <span className="text-typography-primary numbers">{formatUsd(tokenBalancesData.balanceUsd)}</span>{" "}
+                  <UsdValue usd={tokenBalancesData.balanceUsd} className="text-typography-primary numbers" />{" "}
                   <span className="text-typography-secondary numbers">({formattedToken})</span>
                 </span>
               }

@@ -20,10 +20,11 @@ import { isMarginDepositOrder } from "domain/synthetics/orders/marginDeposit";
 import { useDisabledCancelMarketOrderMessage } from "domain/synthetics/orders/useDisabledCancelMarketOrderMessage";
 import { getNameByOrderType, getPositionKey } from "domain/synthetics/positions";
 import { isFullClosePositionOrder } from "domain/tpsl/utils";
-import { calculateDisplayDecimals, formatBalanceAmount, formatUsd } from "lib/numbers";
+import { calculateDisplayDecimals, formatBalanceAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
 import Button from "components/Button/Button";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ChevronRightIcon from "img/ic_chevron_right.svg?react";
@@ -211,16 +212,12 @@ function PositionItemOrderText({ order }: { order: PositionOrderInfo }) {
       {isMarginDeposit ? t`Deposit margin` : getNameByOrderType(order.orderType, order.isTwap, { abbr: true })}
       {!isTwap && !isMarketOrderType(order.orderType) ? `: ${triggerThresholdType} ` : null}
       {!isTwap && !isMarketOrderType(order.orderType) && (
-        <span className="numbers">
-          {formatUsd(order.triggerPrice, {
-            displayDecimals: calculateDisplayDecimals(
-              order.triggerPrice,
-              undefined,
-              order.indexToken?.visualMultiplier
-            ),
-            visualMultiplier: order.indexToken?.visualMultiplier,
-          })}
-        </span>
+        <UsdValue
+          usd={order.triggerPrice}
+          displayDecimals={calculateDisplayDecimals(order.triggerPrice, undefined, order.indexToken?.visualMultiplier)}
+          visualMultiplier={order.indexToken?.visualMultiplier}
+          className="numbers"
+        />
       )}
       :{" "}
       <span className="numbers">
@@ -236,7 +233,7 @@ function PositionItemOrderText({ order }: { order: PositionOrderInfo }) {
         ) : (
           <>
             {isIncrease ? "+" : "-"}
-            {formatUsd(order.sizeDeltaUsd)} {isTwap && <TwapOrderProgress order={order} />}
+            <UsdValue usd={order.sizeDeltaUsd} /> {isTwap && <TwapOrderProgress order={order} />}
           </>
         )}
       </span>

@@ -10,12 +10,14 @@ import { GasPaymentParams } from "domain/synthetics/express";
 import { getExecutionFeeWarning, type ExecutionFee } from "domain/synthetics/fees";
 import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { TokenData } from "domain/tokens";
-import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { formatTokenAmountWithUsdParts } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { bigMath } from "sdk/utils/bigmath";
 
 import ExchangeInfoRow from "components/ExchangeInfoRow/ExchangeInfoRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { NumericValue } from "components/NumericValue/NumericValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -83,7 +85,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
   const executionDisplayDecimals = executionFeeToken?.isStable ? 2 : 5;
   const networkFeeDisplayDecimals = networkFee?.feeToken.isStable ? 2 : 5;
 
-  const { estimatedRefundText, estimatedRefundUsd } = useMemo(() => {
+  const { estimatedRefundParts, estimatedRefundUsd } = useMemo(() => {
     let estimatedRefundUsd: bigint | undefined;
 
     if (!networkFee || executionFeeBufferBps === undefined) {
@@ -106,7 +108,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
       executionFeeToken?.prices.minPrice
     );
 
-    const estimatedRefundText = formatTokenAmountWithUsd(
+    const estimatedRefundParts = formatTokenAmountWithUsdParts(
       estimatedRefundTokenAmount,
       estimatedRefundUsd,
       executionFeeToken?.symbol,
@@ -119,7 +121,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
     );
 
     return {
-      estimatedRefundText,
+      estimatedRefundParts,
       estimatedRefundUsd,
     };
   }, [
@@ -137,7 +139,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
       return "-";
     }
 
-    const maxNetworkFeeText = formatTokenAmountWithUsd(
+    const maxNetworkFeeParts = formatTokenAmountWithUsdParts(
       -networkFee.feeAmount,
       networkFee.feeUsd,
       networkFee.feeToken.symbol,
@@ -162,7 +164,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
             <StatsTooltipRow
               label={t`Max network fee`}
               showDollar={false}
-              value={maxNetworkFeeText}
+              value={<NumericValue parts={maxNetworkFeeParts} />}
               valueClassName="numbers"
             />
             <div className="h-8" />
@@ -179,7 +181,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
             <StatsTooltipRow
               label={t`Estimated fee refund`}
               showDollar={false}
-              value={estimatedRefundText}
+              value={<NumericValue parts={estimatedRefundParts} />}
               valueClassName="numbers"
               textClassName="text-green-500"
             />
@@ -188,7 +190,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
           </>
         }
       >
-        {formatUsd(-feeUsdAfterRefund)}
+        <UsdValue usd={-feeUsdAfterRefund} />
       </TooltipWithPortal>
     );
   }, [
@@ -197,7 +199,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
     estimatedRefundUsd,
     executionFee,
     chainId,
-    estimatedRefundText,
+    estimatedRefundParts,
     additionalOrdersMsg,
   ]);
 

@@ -8,7 +8,7 @@ import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
 import { MarketInfo } from "domain/synthetics/markets";
 import { useChainId } from "lib/chains";
 import { formatDateTime } from "lib/dates";
-import { expandDecimals, formatAmount, formatTokenAmountWithUsd } from "lib/numbers";
+import { expandDecimals, formatAmount, formatTokenAmountWithUsdParts } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 import { bigMath } from "sdk/utils/bigmath";
@@ -16,6 +16,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Checkbox from "components/Checkbox/Checkbox";
 import SpinningLoader from "components/Loader/SpinningLoader";
+import { NumericValue } from "components/NumericValue/NumericValue";
 
 import { RebateGroup, usePriceImpactRebateGroups } from "./hooks/usePriceImpactRebatesStats";
 
@@ -159,9 +160,15 @@ const RebateGroupRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) => {
           {rebateGroup.factor > 0 ? `${formatAmount(rebateGroup.factor, 28, 2)}%` : "-"}{" "}
         </div>
         <div className="PriceImpactRebatesStatsPage-cell-usd">
-          {formatTokenAmountWithUsd(total, usd, rebateGroup.tokenData?.symbol, rebateGroup.tokenData?.decimals, {
-            isStable: rebateGroup.tokenData?.isStable,
-          })}
+          <NumericValue
+            parts={formatTokenAmountWithUsdParts(
+              total,
+              usd,
+              rebateGroup.tokenData?.symbol,
+              rebateGroup.tokenData?.decimals,
+              { isStable: rebateGroup.tokenData?.isStable }
+            )}
+          />
         </div>
         <div className="PriceImpactRebatesStatsPage-cell-actions">
           <button className="SubaccountModal-mini-button" onClick={handleCopyCommandClick}>
@@ -214,13 +221,15 @@ const RebateAccountsRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) =
               {rebateItem.factor > 0 ? `${formatAmount(rebateItem.factor, 28, 2)}%` : "-"}{" "}
             </div>
             <div className="PriceImpactRebatesStatsPage-cell-usd">
-              {formatTokenAmountWithUsd(
-                rebateItem.value,
-                usd,
-                rebateItem.tokenData?.symbol,
-                rebateItem.tokenData?.decimals,
-                { isStable: rebateItem.tokenData?.isStable }
-              )}
+              <NumericValue
+                parts={formatTokenAmountWithUsdParts(
+                  rebateItem.value,
+                  usd,
+                  rebateItem.tokenData?.symbol,
+                  rebateItem.tokenData?.decimals,
+                  { isStable: rebateItem.tokenData?.isStable }
+                )}
+              />
             </div>
             <div className="PriceImpactRebatesStatsPage-cell-actions"></div>
           </div>

@@ -68,7 +68,7 @@ import {
   sendTxnErrorMetric,
   sendTxnSentMetric,
 } from "lib/metrics";
-import { USD_DECIMALS, adjustForDecimals, bigintToNumber, expandDecimals, formatUsd } from "lib/numbers";
+import { USD_DECIMALS, adjustForDecimals, bigintToNumber, expandDecimals, formatUsdParts } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -87,6 +87,7 @@ import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import NumberInput from "components/NumberInput/NumberInput";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
@@ -1384,7 +1385,7 @@ export const DepositView = () => {
             </div>
             {!selectedToken?.isStable && (
               <div className="text-body-medium text-typography-secondary numbers">
-                {formatUsd(inputAmountUsd ?? 0n)}
+                <UsdValue usd={inputAmountUsd ?? 0n} />
               </div>
             )}
             {isAboveLimit && (
@@ -1426,9 +1427,7 @@ export const DepositView = () => {
                 Receive supported assets into your wallet on {networksList}, then deposit them to GMX Account.
               </Trans>
             ) : depositViewChain === (settlementChainId as number) ? (
-              <Trans>
-                Receive supported assets into your wallet on {networkName}, or choose another network.
-              </Trans>
+              <Trans>Receive supported assets into your wallet on {networkName}, or choose another network.</Trans>
             ) : (
               <Trans>
                 Receive {tokensList} into your wallet on {networkName}, or choose another network.
@@ -1457,7 +1456,7 @@ export const DepositView = () => {
               isGmxBalanceLoading ? (
                 valueSkeleton
               ) : (
-                <ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />
+                <ValueTransition from={formatUsdParts(gmxAccountUsd)} to={formatUsdParts(nextGmxAccountBalanceUsd)} />
               )
             }
           />

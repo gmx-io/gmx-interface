@@ -7,13 +7,13 @@ import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { useChainId } from "lib/chains";
 import { useENS } from "lib/legacy";
-import { formatUsd } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { shortenAddressOrEns } from "lib/wallets";
 
 import { Avatar } from "components/Avatar/Avatar";
 import Button from "components/Button/Button";
 import { useAvailableToTradeAssetSettlementChain } from "components/GmxAccountModal/hooks";
+import { UsdValue } from "components/NumericValue/UsdValue";
 
 const BACKDROP_ANIMATION_DURATION = 300;
 
@@ -95,7 +95,7 @@ export function AddressDropdownWithMultichain({ account }: Props) {
               {isGmxAccountLoading ? (
                 <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={55} height={18} />
               ) : (
-                formatUsd(srcChainId ? gmxAccountUsd : totalUsd, { displayDecimals: 0 })
+                <UsdValue usd={srcChainId ? gmxAccountUsd : totalUsd} displayDecimals={0} />
               )}
             </>
           )}

@@ -16,7 +16,7 @@ import {
 } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { Mode, Operation } from "domain/synthetics/markets/types";
-import { formatDeltaUsd, formatPercentage, formatUsd } from "lib/numbers";
+import { formatPercentage } from "lib/numbers";
 import { EarnPagePortfolioItemType, sendEarnPortfolioItemClickEvent } from "lib/userAnalytics/earnEvents";
 import { ContractsChainId } from "sdk/configs/chains";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
@@ -28,6 +28,8 @@ import {
   MultichainBalanceTooltip,
   useHasMultichainBreakdown,
 } from "components/MultichainBalanceTooltip/MultichainBalanceTooltip";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -105,16 +107,22 @@ function EarningsStrip({
           unavailableTooltip={attributionNote}
           skeletonWidth={40}
         >
-          {(value) => (
-            <span className={cx({ "text-green-500": value > 0n })}>
-              {value > 0n ? formatDeltaUsd(value, undefined, { hidePercentage: true }) : formatUsd(value)}
-            </span>
-          )}
+          {(value) =>
+            value > 0n ? (
+              <DeltaUsdValue deltaUsd={value} hidePercentage className="text-green-500" />
+            ) : (
+              <UsdValue usd={value} />
+            )
+          }
         </EarningValue>
       </EarningsStripCell>
       <EarningsStripCell label={<Trans>Expected 365d</Trans>} align="center">
         <EarningValue value={earnings?.expected365d} isLoading={isLoading} isAvailable={isAvailable} skeletonWidth={40}>
-          {(value) => <span className="text-blue-100">~{formatUsd(value)}</span>}
+          {(value) => (
+            <span className="whitespace-nowrap text-blue-100">
+              ~<UsdValue usd={value} />
+            </span>
+          )}
         </EarningValue>
       </EarningsStripCell>
       <EarningsStripCell label={<Trans>Lifetime</Trans>} align="right">
@@ -125,7 +133,7 @@ function EarningsStrip({
           unavailableTooltip={attributionNote}
           skeletonWidth={40}
         >
-          {(value) => <>{formatUsd(value)}</>}
+          {(value) => <UsdValue usd={value} />}
         </EarningValue>
       </EarningsStripCell>
     </div>

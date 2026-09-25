@@ -19,7 +19,7 @@ import { useTreasuryProjection } from "domain/stake/useTreasuryProjection";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { PLACEHOLDER_ACCOUNT, StakingProcessedData } from "lib/legacy";
-import { formatAmount, formatUsd } from "lib/numbers";
+import { formatAmount } from "lib/numbers";
 import { sendEarnPortfolioItemClickEvent } from "lib/userAnalytics/earnEvents";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
@@ -30,6 +30,7 @@ import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import { BuyGmxModal } from "components/BuyGmxModal/BuyGmxModal";
 import { VestModal } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tooltip from "components/Tooltip/Tooltip";
 
@@ -109,7 +110,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
     return bigMath.min(stakedAmount, sbfGmxBalance);
   }, [sbfGmxBalance, processedData?.esGmxInStakedGmx]);
 
-  const priceRowValue = gmxPrice === undefined ? "..." : formatUsd(gmxPrice);
+  const priceRowValue = gmxPrice === undefined ? "..." : <UsdValue usd={gmxPrice} />;
 
   const avgWeeklyBuybackGmx = useMemo(
     () => getRecentAvgWeeklyBuybackGmx(buybackWeeklyStatsData),
@@ -229,8 +230,8 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
               <span className="text-h3 block font-bold numbers">
                 {formatAmount(displayProjectedRewardGmx, 18, 2, true)} GMX{" "}
                 {accumulatedGmxUsd !== undefined && (
-                  <span className="text-body-medium relative -top-2 font-normal text-typography-secondary">
-                    ({formatUsd(accumulatedGmxUsd)})
+                  <span className="text-body-medium relative -top-2 whitespace-nowrap font-normal text-typography-secondary">
+                    (<UsdValue usd={accumulatedGmxUsd} />)
                   </span>
                 )}
               </span>

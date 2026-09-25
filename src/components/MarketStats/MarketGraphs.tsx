@@ -18,12 +18,20 @@ import { usePriceSnapshots } from "domain/synthetics/markets/usePriceSnapshots";
 import { TokensData, getMidPrice } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
-import { bigintToNumber, formatPercentage, formatUsdPrice, parseValue, PRECISION_DECIMALS } from "lib/numbers";
+import {
+  bigintToNumber,
+  formatPercentage,
+  formatUsdPriceParts,
+  NumberPart,
+  parseValue,
+  PRECISION_DECIMALS,
+} from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 import { AprSnapshot, Price as PriceSnapshot } from "sdk/codegen/subsquid";
 
+import { NumericText } from "components/NumericValue/NumericValue";
 import Tabs from "components/Tabs/Tabs";
 
 import { formatPriceGraphYAxisTick, getPriceGraphYAxisDomain } from "./marketGraphUtils";
@@ -64,11 +72,11 @@ const getGraphValue = ({
     : getByKey(marketsTokensApyData, glvOrMarketInfo.marketTokenAddress);
   const tokenPrice = marketTokensData?.[address]?.prices.minPrice;
   const marketPerformance = performance[address];
-  const valuesMap: Record<MarketGraphType, string | undefined> = {
+  const valuesMap: Record<MarketGraphType, string | NumberPart[] | undefined> = {
     performance: marketPerformance
       ? formatPercentage(marketPerformance, { bps: false, signed: true, showPlus: false })
       : undefined,
-    price: tokenPrice ? formatUsdPrice(tokenPrice) : undefined,
+    price: tokenPrice ? formatUsdPriceParts(tokenPrice) : undefined,
     feeApr: apy ? formatPercentage(apy, { bps: false }) : undefined,
   };
 
@@ -215,8 +223,8 @@ const formatPerformanceBps = (performance: number): string => {
   return Number((performance * 100).toFixed(2)) + "%";
 };
 
-const formatPriceTooltipValue = (value: number): string => {
-  return formatUsdPrice(parseValue(value.toFixed(USD_DECIMALS), USD_DECIMALS) ?? 0n) || "";
+const formatPriceTooltipValue = (value: number): NumberPart[] | undefined => {
+  return formatUsdPriceParts(parseValue(value.toFixed(USD_DECIMALS), USD_DECIMALS) ?? 0n);
 };
 
 const valueFormatter = (marketGraphType: MarketGraphType) => (value: number) => {
@@ -224,7 +232,7 @@ const valueFormatter = (marketGraphType: MarketGraphType) => (value: number) => 
     return "0";
   }
 
-  const valueMap: Record<MarketGraphType, string> = {
+  const valueMap: Record<MarketGraphType, string | NumberPart[] | undefined> = {
     performance: formatPerformanceBps(value),
     price: formatPriceTooltipValue(value),
     feeApr: `${Number(value.toFixed(2))}%`,
@@ -408,7 +416,7 @@ const GraphTooltip = ({ active, payload, formatValue }: any) => {
       px-12 py-8 mix-blend-overlay shadow-lg`}
       >
         <span className=" text-typography-secondary">{format(item.snapshotTimestamp.getTime(), "MMMM dd, yyyy")}</span>
-        <span className="numbers">{formatValue(item.value)}</span>
+        <NumericText text={formatValue(item.value)} className="numbers" />
       </div>
     );
   }
@@ -421,13 +429,13 @@ const GraphValue = ({
   label,
   valueClassName,
 }: {
-  value: string | undefined;
+  value: string | NumberPart[] | undefined;
   label: ReactNode;
   valueClassName?: string;
 }) => {
   return (
     <div className="flex items-center gap-8">
-      <span className={cx("text-h2", valueClassName)}>{value ?? "N/A"}</span>
+      <NumericText text={value ?? "N/A"} className={cx("text-h2", valueClassName)} />
       <span className="text-body-small text-typography-secondary">{label}</span>
     </div>
   );

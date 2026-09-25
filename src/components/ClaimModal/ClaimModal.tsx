@@ -21,7 +21,7 @@ import { TokenData, convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
-import { formatDeltaUsd, formatTokenAmount } from "lib/numbers";
+import { formatTokenAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { sendExpressTransaction } from "lib/transactions";
@@ -35,6 +35,7 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import Modal from "components/Modal/Modal";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
 import { OutOfTokenErrorAlert } from "components/Referrals/shared/modals/OutOfTokenErrorAlert";
 import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -433,9 +434,10 @@ function ClaimModalComponent(p: {
             className="ClaimSettleModal-tooltip"
             position="top-end"
             handle={
-              <span className={isMarketInsufficient ? "text-yellow-500" : undefined}>
-                {formatDeltaUsd(totalFundingUsd)}
-              </span>
+              <DeltaUsdValue
+                deltaUsd={totalFundingUsd}
+                className={isMarketInsufficient ? "text-yellow-500" : undefined}
+              />
             }
             renderContent={() => (
               <>
@@ -458,12 +460,11 @@ function ClaimModalComponent(p: {
   const claimAmountText =
     selectedFundingUsd < totalClaimableFundingUsd ? (
       <Trans>
-        Claim <span>{formatDeltaUsd(selectedFundingUsd)}</span> of{" "}
-        <span>{formatDeltaUsd(totalClaimableFundingUsd)}</span>
+        Claim <DeltaUsdValue deltaUsd={selectedFundingUsd} /> of <DeltaUsdValue deltaUsd={totalClaimableFundingUsd} />
       </Trans>
     ) : (
       <Trans>
-        Claim <span>{formatDeltaUsd(totalClaimableFundingUsd)}</span>
+        Claim <DeltaUsdValue deltaUsd={totalClaimableFundingUsd} />
       </Trans>
     );
 

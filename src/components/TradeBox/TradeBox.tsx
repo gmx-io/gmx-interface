@@ -69,7 +69,7 @@ import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { getPrimaryOrderGasPaymentTokenAmount } from "domain/synthetics/express/expressOrderUtils";
 import { getMarketIndexName, MarketInfo, OFF_HOURS_DOCS_URL } from "domain/synthetics/markets";
-import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
+import { formatLeverage, formatLiquidationPriceParts } from "domain/synthetics/positions";
 import { convertToUsd, getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
 import { getTwapRecommendation } from "domain/synthetics/trade/twapRecommendation";
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
@@ -86,11 +86,12 @@ import {
   formatAmountFree,
   formatBalanceAmount,
   formatDeltaUsd,
+  formatDeltaUsdParts,
   formatPercentage,
   formatTokenAmount,
-  formatTokenAmountWithUsd,
+  formatTokenAmountWithUsdParts,
   formatUsd,
-  formatUsdPrice,
+  numberParts,
   parseValue,
 } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
@@ -112,6 +113,10 @@ import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketSelector } from "components/MarketSelector/MarketSelector";
+import { LeverageValue } from "components/NumericValue/LeverageValue";
+import { NumericValue } from "components/NumericValue/NumericValue";
+import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
@@ -758,7 +763,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
       <>
         <BuyInputSection
           topLeftLabel={t`Pay`}
-          bottomLeftValue={payUsd !== undefined ? formatUsd(payUsd, { roundMode: "floor" }) : ""}
+          bottomLeftValue={payUsd !== undefined ? <UsdValue usd={payUsd} roundMode="floor" /> : ""}
           bottomRightValue={
             fromToken && fromToken.balance !== undefined && fromToken.balance > 0n ? (
               <>
@@ -836,9 +841,9 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
               <BuyInputSection
                 topLeftLabel={isTwap ? t`Receive (approximate)` : t`Receive`}
                 bottomLeftValue={
-                  !isTwap && swapAmounts?.usdOut !== undefined
-                    ? formatUsd(focusedInput === "from" ? swapAmounts.usdOut : toUsd)
-                    : undefined
+                  !isTwap && swapAmounts?.usdOut !== undefined ? (
+                    <UsdValue usd={focusedInput === "from" ? swapAmounts.usdOut : toUsd} />
+                  ) : undefined
                 }
                 bottomRightValue={
                   !isTwap && toToken && toTokenBalance !== undefined && toTokenBalance > 0n ? (
@@ -889,13 +894,18 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
           <BuyInputSection
             topLeftLabel={localizedTradeTypeLabels[tradeType!]}
             bottomLeftValue={
-              increaseAmounts?.sizeDeltaUsd !== undefined
-                ? formatUsd(increaseAmounts?.sizeDeltaUsd, { fallbackToZero: true })
-                : ""
+              increaseAmounts?.sizeDeltaUsd !== undefined ? (
+                <UsdValue usd={increaseAmounts?.sizeDeltaUsd} fallbackToZero />
+              ) : (
+                ""
+              )
             }
             bottomRightLabel={t`Leverage`}
             bottomRightValue={
-              formatLeverage(isLeverageSliderEnabled ? leverage : increaseAmounts?.estimatedLeverage) || "-"
+              <LeverageValue
+                leverage={isLeverageSliderEnabled ? leverage : increaseAmounts?.estimatedLeverage}
+                fallback="-"
+              />
             }
             inputValue={toTokenInputValue}
             onInputValueChange={handleToInputTokenChange}
@@ -938,7 +948,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
 
     const closeAlternateValue = (() => {
       if (closeDisplayMode === "token") {
-        return formatUsd(closeSizeHook.closeSizeUsd);
+        return <UsdValue usd={closeSizeHook.closeSizeUsd} />;
       }
       if (!selectedPosition || !toToken || selectedPosition.sizeInUsd === 0n) {
         return "0";
@@ -990,9 +1000,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
       <BuyInputSection
         topLeftLabel={priceLabel}
         topRightLabel={t`Mark`}
-        topRightValue={formatUsdPrice(markPrice, {
-          visualMultiplier: toToken?.visualMultiplier,
-        })}
+        topRightValue={<UsdPriceValue price={markPrice} visualMultiplier={toToken?.visualMultiplier} />}
         onClickTopRightLabel={setMarkPriceAsTriggerPrice}
         inputValue={triggerPriceInputValue}
         onInputValueChange={handleTriggerPriceInputChange}
@@ -1078,7 +1086,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
       }
     }
 
-    return formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
+    return formatLiquidationPriceParts(nextPositionValues?.nextLiqPrice, {
       visualMultiplier: toToken?.visualMultiplier,
     });
   }, [
@@ -1294,12 +1302,16 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
         {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (
           <SyntheticsInfoRow
             label={t`Receive`}
-            value={formatTokenAmountWithUsd(
-              decreaseAmounts.receiveTokenAmount,
-              decreaseAmounts.receiveUsd,
-              collateralToken?.symbol,
-              collateralToken?.decimals
-            )}
+            value={
+              <NumericValue
+                parts={formatTokenAmountWithUsdParts(
+                  decreaseAmounts.receiveTokenAmount,
+                  decreaseAmounts.receiveUsd,
+                  collateralToken?.symbol,
+                  collateralToken?.decimals
+                )}
+              />
+            }
             valueClassName="numbers"
           />
         )}
@@ -1309,19 +1321,21 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
             label={t`PnL`}
             value={
               <ValueTransition
-                from={
-                  <>
-                    {formatDeltaUsd(decreaseAmounts?.estimatedPnl)} (
-                    {formatPercentage(decreaseAmounts?.estimatedPnlPercentage, { signed: true })})
-                  </>
-                }
+                from={numberParts(
+                  formatDeltaUsdParts(decreaseAmounts?.estimatedPnl),
+                  " (",
+                  formatPercentage(decreaseAmounts?.estimatedPnlPercentage, { signed: true }),
+                  ")"
+                )}
                 to={
-                  decreaseAmounts?.sizeDeltaUsd && decreaseAmounts.sizeDeltaUsd > 0 ? (
-                    <>
-                      {formatDeltaUsd(nextPositionValues?.nextPnl)} (
-                      {formatPercentage(nextPositionValues?.nextPnlPercentage, { signed: true })})
-                    </>
-                  ) : undefined
+                  decreaseAmounts?.sizeDeltaUsd && decreaseAmounts.sizeDeltaUsd > 0
+                    ? numberParts(
+                        formatDeltaUsdParts(nextPositionValues?.nextPnl),
+                        " (",
+                        formatPercentage(nextPositionValues?.nextPnlPercentage, { signed: true }),
+                        ")"
+                      )
+                    : undefined
                 }
               />
             }
@@ -1334,7 +1348,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
               <ValueTransition
                 from={
                   existingPositionForPreview
-                    ? formatLiquidationPrice(existingPositionForPreview.liquidationPrice, {
+                    ? formatLiquidationPriceParts(existingPositionForPreview.liquidationPrice, {
                         visualMultiplier: toToken?.visualMultiplier,
                       })
                     : undefined

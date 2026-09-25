@@ -12,12 +12,12 @@ import { useTotalVolume, useV1FeesInfo } from "domain/stats";
 import { useTreasuryAllChains } from "domain/stats/treasury/useTreasuryAllChains";
 import useUniqueUsers from "domain/stats/useUniqueUsers";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
-import { formatAmountHuman } from "lib/numbers";
 import { sumKnownBigInts } from "lib/sumBigInts";
 import { MARKETS } from "sdk/configs/markets";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
+import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
 import ChainsStatsTooltip from "components/StatsTooltip/ChainsStatsTooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { getStaleEntries } from "components/StatsTooltip/summarizeChainsStats";
@@ -174,18 +174,27 @@ export function StatsCard() {
           </div>
           <div>
             <TooltipWithPortal
-              handle={formatAmountHuman(treasuryData?.totalUsd, USD_DECIMALS, true, 2)}
+              handle={
+                <AmountHumanValue
+                  amount={treasuryData?.totalUsd}
+                  decimals={USD_DECIMALS}
+                  showDollar
+                  displayDecimals={2}
+                />
+              }
               handleClassName="numbers"
               position="bottom-end"
               content={
                 <div>
                   <StatsTooltipRow
                     label={<Trans>In other tokens:</Trans>}
-                    value={formatAmountHuman(treasuryWithoutGmxUsd, USD_DECIMALS, false, 2)}
+                    value={
+                      <AmountHumanValue amount={treasuryWithoutGmxUsd} decimals={USD_DECIMALS} displayDecimals={2} />
+                    }
                   />
                   <StatsTooltipRow
                     label={<Trans>In GMX:</Trans>}
-                    value={formatAmountHuman(gmxInTreasuryUsd, USD_DECIMALS, false, 2)}
+                    value={<AmountHumanValue amount={gmxInTreasuryUsd} decimals={USD_DECIMALS} displayDecimals={2} />}
                   />
                 </div>
               }
