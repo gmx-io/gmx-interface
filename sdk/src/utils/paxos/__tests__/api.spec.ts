@@ -83,6 +83,15 @@ describe("paxos transit api", () => {
     ]);
   });
 
+  it("asks for the routes of a fee tier", async () => {
+    const calls: Call[] = [];
+    const api = createApi(calls, { routes: [] });
+
+    await fetchApiTransitRoutes({ api }, { feeTier: "zeroFee" });
+
+    expect(calls).toEqual([{ path: "/v1/paxos/transit/routes", query: { filter: undefined, feeTier: "zeroFee" } }]);
+  });
+
   it("parses fee tier capacity as bigint", async () => {
     const calls: Call[] = [];
     const api = createApi(calls, { feeTier: "zeroFee", zeroFeeCapacity: "250000000000" });

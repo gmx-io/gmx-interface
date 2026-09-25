@@ -13,17 +13,11 @@ import type { ContractsChainId } from "sdk/configs/chains";
 import { HttpError } from "sdk/utils/http/http";
 import type { TransitOrder, TransitQuoteParams } from "sdk/utils/paxos/types";
 
-import { MOCK_CONVERSION_MS, mockTransitApi, type TransitApi } from "./mockTransitApi";
+import { MOCK_CONVERSION_MS, mockTransitApi } from "./mockTransitApi";
 import { findPendingTransitOrder, getSubmittedTransitOrderId } from "./transitOrders";
 import { getIsTransitQuoteNeeded, getShouldUseTransit, getTransitFeeTier } from "./utils";
 
-export type PaxosTransitSubmitStep = "idle" | "approving" | "submitting";
-
-export type TransitSubmission = {
-  orderId: string;
-  txnHash: string | undefined;
-  offerAmount: bigint;
-};
+type PaxosTransitSubmitStep = "idle" | "approving" | "submitting";
 
 const FEE_TIER_REFRESH_INTERVAL = 60_000;
 const QUOTE_REFRESH_INTERVAL = 30_000;
@@ -150,10 +144,16 @@ export function usePaxosTransit({
 
       return pendingOrder ?? null;
     },
-    { refreshInterval: 0, revalidateOnFocus: false, revalidateOnReconnect: false, revalidateIfStale: false }
+    {
+      refreshInterval: 0,
+      revalidateOnMount: true,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      revalidateIfStale: false,
+    }
   );
 
-  const submitTransit = useCallback(async (): Promise<TransitSubmission | undefined> => {
+  const submitTransit = useCallback(async (): Promise<PaxosTransitConversion | undefined> => {
     if (!isActive || !signer || amount <= 0n) return undefined;
 
     const params = getQuoteParams(amount);
@@ -229,7 +229,7 @@ export function usePaxosTransit({
 
       setStep("idle");
 
-      return { orderId: submittedOrderId, txnHash: submitTxnHash, offerAmount: amount };
+      return { orderId: submittedOrderId, txnHash: submitTxnHash, offerAmount: amount, isMocked };
     } catch (error) {
       setStep("idle");
 
@@ -244,7 +244,6 @@ export function usePaxosTransit({
   return {
     shouldUseTransit,
     isQuoteNeeded,
-    isAmountSettling: requestAmount !== debouncedAmount,
     isFeeTierLoaded: feeTierData !== undefined,
     isWhitelisted,
     zeroFeeCapacity: feeTierData?.zeroFeeCapacity,

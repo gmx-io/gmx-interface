@@ -1,6 +1,5 @@
 import { isAddressEqual } from "viem";
 
-import type { GmxApiSdk } from "sdk/clients/v2";
 import type { TransitOrder, TransitOrderStatus, TransitQuoteParams } from "sdk/utils/paxos/types";
 
 export type TransitApi = Pick<
