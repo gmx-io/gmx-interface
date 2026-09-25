@@ -203,13 +203,10 @@ export function GmSwapBoxDepositWithdrawal() {
     DEBUG_PAXOS_TRANSIT_IGNORE_WHITELIST_KEY,
     false
   );
-  const [isTransitMocked, setIsTransitMocked] = useLocalStorageSerializeKey(
-    DEBUG_PAXOS_TRANSIT_MOCK_KEY,
-    import.meta.env.DEV
-  );
+  const [isTransitMocked, setIsTransitMocked] = useLocalStorageSerializeKey(DEBUG_PAXOS_TRANSIT_MOCK_KEY, false);
   const transitState = usePaxosTransitState({
     isWhitelistIgnored: showDebugValues && Boolean(isTransitWhitelistIgnored),
-    isMocked: Boolean(isTransitMocked),
+    isMocked: showDebugValues && Boolean(isTransitMocked),
   });
 
   const logicalFees = useDepositWithdrawalFees({
