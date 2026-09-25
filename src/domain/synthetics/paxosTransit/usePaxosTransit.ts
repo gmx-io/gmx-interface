@@ -97,9 +97,12 @@ export function usePaxosTransit({
   });
 
   const amountUsd = tokenIn ? convertToUsd(debouncedAmount, tokenIn.decimals, getMidPrice(tokenIn.prices)) : 0n;
+  const minOrderSize = feeTier === "zeroFee" ? minOrderSizes.zeroFee : minOrderSizes.standardFee;
+  const isBelowMinOrderSize = minOrderSize !== undefined && debouncedAmount > 0n && debouncedAmount < minOrderSize;
   const isQuoteNeeded =
     isActive &&
     debouncedAmount > 0n &&
+    !isBelowMinOrderSize &&
     feeTierData !== undefined &&
     getIsTransitQuoteNeeded({
       isTransitRequired,
@@ -127,7 +130,7 @@ export function usePaxosTransit({
       ? ["paxosTransitQuote", chainId, account, tokenInAddress, debouncedAmount.toString(), feeTier]
       : null,
     () => api!.fetchTransitQuote(getQuoteParams(debouncedAmount)),
-    { refreshInterval: QUOTE_REFRESH_INTERVAL, shouldRetryOnError: false, keepPreviousData: true }
+    { refreshInterval: QUOTE_REFRESH_INTERVAL, shouldRetryOnError: false, keepPreviousData: !isBelowMinOrderSize }
   );
 
   const transitFeesUsd =
@@ -283,6 +286,8 @@ export function usePaxosTransit({
     feeTierError,
     isZeroFeeCapacityShort,
     isBelowZeroFeeMinimum,
+    isBelowMinOrderSize,
+    minOrderSize,
     feeTier,
     quote,
     quoteError,

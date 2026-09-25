@@ -160,6 +160,8 @@ export function usePaxosTransitState({
     step,
     quote,
     quoteError,
+    isBelowMinOrderSize,
+    minOrderSize,
     isOrderStatusUnknown,
     shouldUseTransit,
     isQuoteNeeded,
@@ -230,6 +232,8 @@ export function usePaxosTransitState({
       tokenIn,
       amountIn,
       feeTierError,
+      isBelowMinOrderSize,
+      minOrderSize,
       quoteError,
       shouldUseTransit,
       isTransitLoading,
@@ -255,6 +259,8 @@ export function usePaxosTransitState({
     isWithdrawal,
     onConvert,
     isOrderStatusUnknown,
+    isBelowMinOrderSize,
+    minOrderSize,
     quoteError,
     isWithdrawalSettled,
     shouldDisableValidation,
@@ -285,6 +291,8 @@ function getTransitConversionError(p: {
   tokenIn: TokenData | undefined;
   amountIn: bigint;
   feeTierError: Error | undefined;
+  isBelowMinOrderSize: boolean;
+  minOrderSize: bigint | undefined;
   quoteError: Error | undefined;
   shouldUseTransit: boolean;
   isTransitLoading: boolean;
@@ -297,6 +305,10 @@ function getTransitConversionError(p: {
 
   if (p.feeTierError) {
     return t`${tokenInSymbol} conversion is unavailable`;
+  }
+
+  if (p.isBelowMinOrderSize && p.minOrderSize !== undefined && p.tokenIn) {
+    return t`Minimum conversion is ${formatAmountFree(p.minOrderSize, p.tokenIn.decimals)} ${tokenInSymbol}`;
   }
 
   if (p.quoteError) {
