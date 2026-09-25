@@ -2,10 +2,7 @@ import { isAddressEqual } from "viem";
 
 import type { TransitOrder, TransitOrderStatus, TransitQuoteParams } from "sdk/utils/paxos/types";
 
-export type TransitApi = Pick<
-  GmxApiSdk,
-  "fetchTransitFeeTier" | "fetchTransitQuote" | "fetchTransitAuthorization" | "fetchTransitOrder" | "fetchTransitOrders"
->;
+import type { TransitApi } from "./types";
 
 const MOCK_STATION_ADDRESS = "0x000000000000000000000000000000000000dEaD";
 const PENDING_MS = 3_000;
@@ -79,6 +76,7 @@ function toTransitOrder({ params, id, submittedAt }: MockOrder): TransitOrder {
 
 // TODO: remove once the gateway has Paxos keys; mocks every Transit call and never sends a wallet transaction
 export const mockTransitApi: TransitApi & { submitOrder: (params: TransitQuoteParams) => string } = {
+  fetchTransitRoutes: async () => [],
   fetchTransitFeeTier: async () => ({ feeTier: "zeroFee", zeroFeeCapacity: MOCK_ZERO_FEE_CAPACITY }),
 
   fetchTransitQuote: async (params) => ({
