@@ -464,6 +464,14 @@ export const integrations: EcosystemGmxPage[] = [
     about: msg`AI trading assistant`,
     chainIds: [ARBITRUM],
   },
+  {
+    title: msg`Hypertradeworx`,
+    link: "https://www.hypertradeworx.com",
+    linkLabel: "hypertradeworx.com",
+    about: msg`Multi-venue perps terminal routing orders to GMX`,
+
+    chainIds: [ARBITRUM],
+  },
 ];
 
 type EcosystemTelegramGroup = {
