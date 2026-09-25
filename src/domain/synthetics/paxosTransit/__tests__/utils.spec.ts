@@ -4,7 +4,7 @@ import { USD_DECIMALS } from "config/factors";
 import { expandDecimals } from "lib/numbers";
 import type { TransitFeeTierResponse } from "sdk/utils/paxos/types";
 
-import { getIsTransitQuoteNeeded, getShouldUseTransit, getTransitFeeTier } from "../utils";
+import { getIsTransitQuoteNeeded, getShouldUseTransit, getTransitFeeTier, getTransitMinOrderSize } from "../utils";
 
 const usd = (value: number) => expandDecimals(value, USD_DECIMALS);
 const ZERO_FEE: TransitFeeTierResponse = { feeTier: "zeroFee", zeroFeeCapacity: 1_000_000n };
@@ -16,6 +16,7 @@ describe("getTransitFeeTier", () => {
     isWhitelistIgnored: false,
     isUsdcOffered: true,
     amount: 500_000n,
+    zeroFeeMinOrderSize: 100_000n,
     isStandardFeeForced: false,
   };
 
@@ -23,6 +24,7 @@ describe("getTransitFeeTier", () => {
     expect(getTransitFeeTier(params)).toEqual({
       isWhitelisted: true,
       isZeroFeeCapacityShort: false,
+      isBelowZeroFeeMinimum: false,
       feeTier: "zeroFee",
     });
   });
@@ -31,8 +33,22 @@ describe("getTransitFeeTier", () => {
     expect(getTransitFeeTier({ ...params, amount: 2_000_000n })).toEqual({
       isWhitelisted: true,
       isZeroFeeCapacityShort: true,
+      isBelowZeroFeeMinimum: false,
       feeTier: "standardFee",
     });
+  });
+
+  it("falls back to standard fee below the zero fee minimum order size", () => {
+    expect(getTransitFeeTier({ ...params, zeroFeeMinOrderSize: 600_000n })).toEqual({
+      isWhitelisted: true,
+      isZeroFeeCapacityShort: false,
+      isBelowZeroFeeMinimum: true,
+      feeTier: "standardFee",
+    });
+  });
+
+  it("uses zero fee while the zero fee minimum order size is unknown", () => {
+    expect(getTransitFeeTier({ ...params, zeroFeeMinOrderSize: undefined }).feeTier).toBe("zeroFee");
   });
 
   it("ignores capacity when USDG is offered", () => {
@@ -44,6 +60,32 @@ describe("getTransitFeeTier", () => {
     expect(getTransitFeeTier({ ...params, isWhitelistIgnored: true }).isWhitelisted).toBe(false);
     expect(getTransitFeeTier({ ...params, feeTierData: STANDARD_FEE }).feeTier).toBe("standardFee");
     expect(getTransitFeeTier({ ...params, feeTierData: undefined }).feeTier).toBe("standardFee");
+  });
+});
+
+describe("getTransitMinOrderSize", () => {
+  const USDC = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831";
+  const USDG = "0x004B506865409877C9fA29bfb1ebA929984B9bbC";
+  const route = (offerAsset: string, wantAsset: string, minOrderSize: bigint, chainId = 42161) => ({
+    sourceChainId: chainId,
+    destinationChainId: chainId,
+    destinationChainEID: 30110,
+    offerAsset: offerAsset.toLowerCase(),
+    wantAsset: wantAsset.toLowerCase(),
+    minOrderSize,
+    tokenMetadataMap: {},
+  });
+  const routes = [route(USDC, USDG, 178_670_000n), route(USDG, USDC, 171_070_000n), route(USDC, USDG, 1n, 1)];
+
+  it("returns the minimum of the same-chain route in the conversion direction", () => {
+    expect(getTransitMinOrderSize(routes, { chainId: 42161, offerAsset: USDC, wantAsset: USDG })).toBe(178_670_000n);
+    expect(getTransitMinOrderSize(routes, { chainId: 42161, offerAsset: USDG, wantAsset: USDC })).toBe(171_070_000n);
+  });
+
+  it("returns undefined without routes, tokens or a matching route", () => {
+    expect(getTransitMinOrderSize(undefined, { chainId: 42161, offerAsset: USDC, wantAsset: USDG })).toBeUndefined();
+    expect(getTransitMinOrderSize(routes, { chainId: 42161, offerAsset: undefined, wantAsset: USDG })).toBeUndefined();
+    expect(getTransitMinOrderSize(routes, { chainId: 43114, offerAsset: USDC, wantAsset: USDG })).toBeUndefined();
   });
 });
 
