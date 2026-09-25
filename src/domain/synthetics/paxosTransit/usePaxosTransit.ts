@@ -15,12 +15,14 @@ import type { TransitOrder, TransitQuoteParams } from "sdk/utils/paxos/types";
 
 import { MOCK_CONVERSION_MS, mockTransitApi } from "./mockTransitApi";
 import { findPendingTransitOrder, getSubmittedTransitOrderId } from "./transitOrders";
-import { getIsTransitQuoteNeeded, getShouldUseTransit, getTransitFeeTier, getTransitMinOrderSize } from "./utils";
+import type { PaxosTransitConversion } from "./transitRouteProgress";
+import type { TransitApi } from "./types";
+import { useTransitMinOrderSizes } from "./useTransitMinOrderSizes";
+import { getIsTransitQuoteNeeded, getShouldUseTransit, getTransitFeeTier } from "./utils";
 
 type PaxosTransitSubmitStep = "idle" | "approving" | "submitting";
 
 const FEE_TIER_REFRESH_INTERVAL = 60_000;
-const ROUTES_REFRESH_INTERVAL = 60_000;
 const QUOTE_REFRESH_INTERVAL = 30_000;
 const RECENT_ORDERS_PAGE_SIZE = 10;
 
@@ -70,21 +72,21 @@ export function usePaxosTransit({
     { refreshInterval: FEE_TIER_REFRESH_INTERVAL }
   );
 
-  const { data: zeroFeeRoutes } = useSWR(
-    isActive && feeTierData?.feeTier === "zeroFee" ? ["paxosTransitRoutes", chainId, "zeroFee"] : null,
-    () => api!.fetchTransitRoutes({ feeTier: "zeroFee" }),
-    { refreshInterval: ROUTES_REFRESH_INTERVAL }
-  );
-
-  const routeParams = { chainId, offerAsset: tokenInAddress, wantAsset: tokenOutAddress };
-  const zeroFeeMinOrderSize = getTransitMinOrderSize(zeroFeeRoutes, routeParams);
+  const minOrderSizes = useTransitMinOrderSizes({
+    api,
+    chainId,
+    offerAsset: tokenInAddress,
+    wantAsset: tokenOutAddress,
+    isActive,
+    isZeroFeeEligible: feeTierData?.feeTier === "zeroFee",
+  });
 
   const { isWhitelisted, isZeroFeeCapacityShort, feeTier } = getTransitFeeTier({
     feeTierData,
     isWhitelistIgnored,
     isUsdcOffered: tokenInAddress === paxosTransitConfig?.usdcAddress,
     amount,
-    zeroFeeMinOrderSize,
+    zeroFeeMinOrderSize: minOrderSizes.zeroFee,
     isStandardFeeForced,
   });
 
