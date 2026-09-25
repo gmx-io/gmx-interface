@@ -5373,6 +5373,7 @@ msgid "Position size too small. Min: {minPositionSizeUsdText}, current: {positio
 msgstr "倉位規模過小。最低：{minPositionSizeUsdText}，目前：{positionSizeInUsdText}"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 #: src/components/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
 msgid "Stored price impact"
@@ -5648,6 +5649,10 @@ msgstr "此錢包產生的簽名僅適用於特定網路。請批准切換至 {0
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel new orders"
 msgstr "取消新訂單"
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Net price impact (open + close)"
+msgstr "淨價格影響（開倉 + 平倉）"
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "Existing executable trigger orders"
@@ -9003,7 +9008,6 @@ msgstr "僅用於完整帳戶轉移。<0/>這將把您所有的 GMX、esGMX、GL
 msgid "/ month"
 msgstr "/ 月"
 
-#: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -9366,6 +9370,7 @@ msgstr "正在轉換 {symbol}..."
 msgid "Max reserved + JIT {directionLabel}"
 msgstr ""
 
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close price impact"
 msgstr "平倉價格影響"

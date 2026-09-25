@@ -5373,6 +5373,7 @@ msgid "Position size too small. Min: {minPositionSizeUsdText}, current: {positio
 msgstr "포지션 크기가 너무 작습니다. 최소: {minPositionSizeUsdText}, 현재: {positionSizeInUsdText}"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 #: src/components/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
 msgid "Stored price impact"
@@ -5648,6 +5649,10 @@ msgstr "이 지갑은 네트워크별 서명을 생성합니다. {0}(으)로의 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel new orders"
 msgstr "신규 주문 취소"
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Net price impact (open + close)"
+msgstr "순 가격 영향 (개시 + 청산)"
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "Existing executable trigger orders"
@@ -9003,7 +9008,6 @@ msgstr "전체 계정 전송에만 사용하십시오.<0/>이 작업은 모든 G
 msgid "/ month"
 msgstr "/ 월"
 
-#: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -9366,6 +9370,7 @@ msgstr "{symbol} 이전 중..."
 msgid "Max reserved + JIT {directionLabel}"
 msgstr ""
 
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close price impact"
 msgstr "청산 가격 영향"

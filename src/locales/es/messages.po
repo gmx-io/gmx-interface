@@ -5373,6 +5373,7 @@ msgid "Position size too small. Min: {minPositionSizeUsdText}, current: {positio
 msgstr "Tamaño de posición demasiado pequeño. Mín.: {minPositionSizeUsdText}, actual: {positionSizeInUsdText}"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 #: src/components/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
 msgid "Stored price impact"
@@ -5648,6 +5649,10 @@ msgstr "Esta wallet crea firmas específicas de cada red. Apruebe el cambio a {0
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel new orders"
 msgstr "Cancelar nuevas órdenes"
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Net price impact (open + close)"
+msgstr "Impacto neto en el precio (apertura + cierre)"
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "Existing executable trigger orders"
@@ -9003,7 +9008,6 @@ msgstr "Utilice esta opción únicamente para transferencias completas de cuenta
 msgid "/ month"
 msgstr "/ mes"
 
-#: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -9366,6 +9370,7 @@ msgstr "Cambiando {symbol}..."
 msgid "Max reserved + JIT {directionLabel}"
 msgstr ""
 
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close price impact"
 msgstr "Impacto en el precio de cierre"

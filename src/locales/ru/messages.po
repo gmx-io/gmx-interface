@@ -5373,6 +5373,7 @@ msgid "Position size too small. Min: {minPositionSizeUsdText}, current: {positio
 msgstr "Размер позиции слишком мал. Мин.: {minPositionSizeUsdText}, текущий: {positionSizeInUsdText}"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 #: src/components/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
 msgid "Stored price impact"
@@ -5648,6 +5649,10 @@ msgstr "Этот кошелёк создаёт подписи для конкр�
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel new orders"
 msgstr "Отменить новые ордера"
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Net price impact (open + close)"
+msgstr "Чистое влияние на цену (открытие + закрытие)"
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "Existing executable trigger orders"
@@ -9003,7 +9008,6 @@ msgstr "Используйте это только для полного пер�
 msgid "/ month"
 msgstr "/ месяц"
 
-#: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -9366,6 +9370,7 @@ msgstr "Сдвиг {symbol}..."
 msgid "Max reserved + JIT {directionLabel}"
 msgstr ""
 
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close price impact"
 msgstr "Влияние на цену при закрытии"
