@@ -11,9 +11,9 @@ import {
   ORDER_STORE_OFFSET,
 } from "./solanaOrderConstants";
 import type { RawSolanaOrder } from "./types";
-import { GMX_SOLANA_STORE_ADDRESS, GMX_SOLANA_STORE_PROGRAM_ID } from "../config/solanaProgram";
-import { loadGmsolRuntime } from "../lib/gmsolRuntime";
-import { getSolanaRpcClient } from "../lib/rpc";
+import { GMX_SOLANA_STORE_ADDRESS, GMX_SOLANA_STORE_PROGRAM_ID } from "../../config/solanaProgram";
+import { loadGmsolRuntime } from "../../lib/gmsolRuntime";
+import { getSolanaRpcClient } from "../../lib/rpc";
 
 export type SolanaOrderAccountsResult = {
   /** Every decoded order account of the owner (any kind / action state), unordered. */

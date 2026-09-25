@@ -5,9 +5,9 @@ import { isOrdersListShowKind, sortSolanaOrdersForList } from "./orderRules";
 import { toSolanaOrderViewModel } from "./solanaOrderAdapter";
 import type { SolanaOrderViewModel } from "./types";
 import { useSolanaOrderAccounts } from "./useSolanaOrderAccounts";
-import { useSolanaMarkets } from "../markets/useSolanaMarkets";
-import { useSolanaTokenPrices } from "../prices/useSolanaTokenPrices";
-import { useSolanaWallet } from "../wallet/useSolanaWallet";
+import { useSolanaMarkets } from "../../markets/useSolanaMarkets";
+import { useSolanaTokenPrices } from "../../prices/useSolanaTokenPrices";
+import { useSolanaWallet } from "../../wallet/useSolanaWallet";
 
 export type SolanaOrdersResult = {
   /** Orders the GMTrade Orders tab shows, in GMTrade list order. */

@@ -4,11 +4,11 @@ import { deriveSolanaPosition } from "./deriveSolanaPosition";
 import { toSolanaPositionViewModel } from "./solanaPositionAdapter";
 import type { SolanaPositionCalculation, SolanaPositionViewModel } from "./types";
 import { useSolanaPositionAccounts } from "./useSolanaPositionAccounts";
-import { loadGmsolRuntime, type GmsolSdk } from "../lib/gmsolRuntime";
-import { useSolanaMarkets } from "../markets/useSolanaMarkets";
-import { useSolanaMarketState } from "../markets/useSolanaMarketState";
-import { useSolanaTokenPrices } from "../prices/useSolanaTokenPrices";
-import { useSolanaWallet } from "../wallet/useSolanaWallet";
+import { loadGmsolRuntime, type GmsolSdk } from "../../lib/gmsolRuntime";
+import { useSolanaMarkets } from "../../markets/useSolanaMarkets";
+import { useSolanaMarketState } from "../../markets/useSolanaMarketState";
+import { useSolanaTokenPrices } from "../../prices/useSolanaTokenPrices";
+import { useSolanaWallet } from "../../wallet/useSolanaWallet";
 
 export type SolanaPositionsResult = {
   /** Open positions, newest first. */

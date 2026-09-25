@@ -2,8 +2,8 @@ import { describe, expect, it, vi } from "vitest";
 
 import { deriveSolanaPosition, isPendingMarketStateError } from "./deriveSolanaPosition";
 import type { RawSolanaPosition } from "./types";
-import type { GmsolSdk } from "../lib/gmsolRuntime";
-import type { SolanaMarketAccount } from "../markets/decodeSolanaMarket";
+import type { GmsolSdk } from "../../lib/gmsolRuntime";
+import type { SolanaMarketAccount } from "../../markets/decodeSolanaMarket";
 
 const ONE_USD = 10n ** 20n;
 

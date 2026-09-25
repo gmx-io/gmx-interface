@@ -12,9 +12,9 @@ import {
   SolanaPositionSide,
   SolanaPositionTitle,
 } from "./SolanaPositionItem";
-import type { SolanaPositionOrders } from "../../positions/positionOrders";
-import { formatSolanaLeverage, formatSolanaPrice, formatSolanaUsd } from "../../positions/solanaPositionFormatters";
-import type { SolanaPositionViewModel } from "../../positions/types";
+import type { SolanaPositionOrders } from "../../hooks/positions/positionOrders";
+import { formatSolanaLeverage, formatSolanaPrice, formatSolanaUsd } from "../../hooks/positions/solanaPositionFormatters";
+import type { SolanaPositionViewModel } from "../../hooks/positions/types";
 
 function Row({ label, children }: { label: React.ReactNode; children: React.ReactNode }) {
   return (

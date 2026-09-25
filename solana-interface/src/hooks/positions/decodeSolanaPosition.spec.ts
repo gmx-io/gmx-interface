@@ -1,13 +1,13 @@
 import { BorshCoder, type Idl } from "@coral-xyz/anchor";
 import { describe, expect, it } from "vitest";
 
-import { decodeSolanaPosition } from "./decodeSolanaPosition";
-import { findSolanaPositionPda } from "./solanaPositionPda";
-import rawIdl from "../idl/gmsol_store.json";
-import { camelCaseGmsolIdl, toAnchorCamelCase } from "../lib/gmsolIdl";
-import { decodeSolanaMarket, findSolanaMarketPda } from "../markets/decodeSolanaMarket";
 import marketFixture from "./__fixtures__/marketAccount.json";
 import positionFixture from "./__fixtures__/positionAccount.json";
+import { decodeSolanaPosition } from "./decodeSolanaPosition";
+import { findSolanaPositionPda } from "./solanaPositionPda";
+import rawIdl from "../../idl/gmsol_store.json";
+import { camelCaseGmsolIdl, toAnchorCamelCase } from "../../lib/gmsolIdl";
+import { decodeSolanaMarket, findSolanaMarketPda } from "../../markets/decodeSolanaMarket";
 
 const coder = new BorshCoder(camelCaseGmsolIdl(rawIdl as unknown as Idl));
 

@@ -1,9 +1,9 @@
 import { getBasisPoints } from "lib/numbers";
 
 import type { RawSolanaPosition, SolanaPositionCalculation, SolanaPositionViewModel } from "./types";
-import { getSolanaTokenConfig, GMTRADE_USD_DECIMALS, ONE_GMTRADE_USD } from "../config/solanaProgram";
-import type { SolanaMarketInfo, SolanaTicker } from "../markets/solanaMarketSocketStore";
-import { solanaDisplaySymbol } from "../wallet/solanaWalletSession";
+import { getSolanaTokenConfig, GMTRADE_USD_DECIMALS, ONE_GMTRADE_USD } from "../../config/solanaProgram";
+import type { SolanaMarketInfo, SolanaTicker } from "../../markets/solanaMarketSocketStore";
+import { solanaDisplaySymbol } from "../../wallet/solanaWalletSession";
 
 /** GMX EVM USD decimals, which `lib/numbers` formatters assume. */
 const GMX_USD_DECIMALS = 30;

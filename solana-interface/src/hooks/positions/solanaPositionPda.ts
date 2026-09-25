@@ -1,6 +1,6 @@
 import { PublicKey } from "@solana/web3.js";
 
-import { GMX_SOLANA_STORE_ADDRESS, GMX_SOLANA_STORE_PROGRAM_ID } from "../config/solanaProgram";
+import { GMX_SOLANA_STORE_ADDRESS, GMX_SOLANA_STORE_PROGRAM_ID } from "../../config/solanaProgram";
 
 /** Position PDA: seeds `["position", store, owner, marketToken, collateralToken, [kind]]`. */
 export function findSolanaPositionPda(

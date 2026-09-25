@@ -5,9 +5,9 @@ import { describe, expect, it } from "vitest";
 import { buildOrderAccountFixture, ORDER_DISCRIMINATOR_BYTES } from "./buildOrderAccountFixture";
 import { decodeSolanaOrder } from "./decodeSolanaOrder";
 import { ORDER_ACCOUNT_SIZE, ORDER_OWNER_OFFSET, ORDER_STORE_OFFSET, SOLANA_ORDER_KIND } from "./solanaOrderConstants";
-import { GMX_SOLANA_STORE_ADDRESS } from "../config/solanaProgram";
-import rawIdl from "../idl/gmsol_store.json";
-import { camelCaseGmsolIdl } from "../lib/gmsolIdl";
+import { GMX_SOLANA_STORE_ADDRESS } from "../../config/solanaProgram";
+import rawIdl from "../../idl/gmsol_store.json";
+import { camelCaseGmsolIdl } from "../../lib/gmsolIdl";
 
 const coder = new BorshCoder(camelCaseGmsolIdl(rawIdl as unknown as Idl));
 const address = () => Keypair.generate().publicKey.toBase58();

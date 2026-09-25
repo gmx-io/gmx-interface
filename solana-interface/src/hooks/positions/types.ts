@@ -1,5 +1,5 @@
-import type { SolanaMarketAccount } from "../markets/decodeSolanaMarket";
-import type { SolanaMarketInfo, SolanaTicker } from "../markets/solanaMarketSocketStore";
+import type { SolanaMarketAccount } from "../../markets/decodeSolanaMarket";
+import type { SolanaMarketInfo, SolanaTicker } from "../../markets/solanaMarketSocketStore";
 
 /** Decoded `position` account. Amounts are raw on-chain integers (USD values carry 20 decimals). */
 export type RawSolanaPosition = {

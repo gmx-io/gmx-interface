@@ -1003,7 +1003,7 @@ msgstr "Kann ich mehrere Empfehlungscodes erstellen?"
 msgid "Unknown error"
 msgstr "Unbekannter Fehler"
 
-#: solana-interface/src/orders/orderRules.ts
+#: solana-interface/src/hooks/orders/orderRules.ts
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Swap"
 msgstr "Markt-Tausch"
@@ -1572,7 +1572,7 @@ msgstr "Preise, Märkte, Positionen, Orders — nur einen Call entfernt."
 msgid "Liquidity only available on {chainNames}. Switch networks to continue."
 msgstr "Liquidität nur auf {chainNames} verfügbar. Wechseln Sie das Netzwerk, um fortzufahren."
 
-#: solana-interface/src/orders/orderRules.ts
+#: solana-interface/src/hooks/orders/orderRules.ts
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
@@ -1807,7 +1807,7 @@ msgstr "Übersicht"
 msgid "Fetching swap route..."
 msgstr "Swap-Route wird geladen..."
 
-#: solana-interface/src/orders/solanaOrderFormatters.ts
+#: solana-interface/src/hooks/orders/solanaOrderFormatters.ts
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Collateral"
 msgstr "Kollateral"
@@ -2681,7 +2681,7 @@ msgstr "Gebühren für die Vergangenheit"
 msgid "Max open interest {directionLabel}"
 msgstr "Maximales Open Interest {directionLabel}"
 
-#: solana-interface/src/orders/orderErrors.ts
+#: solana-interface/src/hooks/orders/orderErrors.ts
 msgid "This order using {collateralSymbol} as collateral will not be valid for the existing long position using {symbol} as collateral."
 msgstr ""
 
@@ -2825,7 +2825,7 @@ msgstr "GMX"
 msgid "Transfer initiated"
 msgstr "Übertragung eingeleitet"
 
-#: solana-interface/src/orders/orderRules.ts
+#: solana-interface/src/hooks/orders/orderRules.ts
 msgid "Auto Deleveraging"
 msgstr ""
 
@@ -3690,7 +3690,7 @@ msgstr "{gmOrGlvSymbol} verkaufen"
 msgid "Clear selection"
 msgstr "Auswahl löschen"
 
-#: solana-interface/src/orders/orderErrors.ts
+#: solana-interface/src/hooks/orders/orderErrors.ts
 msgid "The order will not be executed as its trigger price is beyond the position's liquidation price."
 msgstr ""
 
@@ -4330,7 +4330,7 @@ msgstr "Fehlgeschlagener TWAP-Tauschteil"
 msgid "No events in the past {DAYS_BACK} days"
 msgstr "Keine Ereignisse in den letzten {DAYS_BACK} Tagen"
 
-#: solana-interface/src/orders/orderRules.ts
+#: solana-interface/src/hooks/orders/orderRules.ts
 msgid "Withdraw Collateral"
 msgstr ""
 
@@ -5506,7 +5506,7 @@ msgstr "Kürzlich gelistet"
 msgid "Failed to load order data:"
 msgstr "Orderdaten konnten nicht geladen werden:"
 
-#: solana-interface/src/orders/orderRules.ts
+#: solana-interface/src/hooks/orders/orderRules.ts
 msgid "Unknown Order Type"
 msgstr ""
 
@@ -5615,7 +5615,7 @@ msgstr "Tauscheinfluss"
 msgid "Execute Take-Profit"
 msgstr "Take-Profit ausführen"
 
-#: solana-interface/src/orders/orderRules.ts
+#: solana-interface/src/hooks/orders/orderRules.ts
 #: src/components/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Increase"
@@ -7325,7 +7325,7 @@ msgstr "Harmonix"
 msgid "Tier upgrades are reviewed manually by the GMX team based on your weekly performance. If you meet the requirements consistently, you can apply for an upgrade via the <0>GMX Partner Account: Telegram</0>."
 msgstr "Tier-Upgrades werden vom GMX-Team manuell anhand Ihrer wöchentlichen Leistung geprüft. Wenn Sie die Anforderungen dauerhaft erfüllen, können Sie ein Upgrade über das <0>GMX Partner Account: Telegram</0> beantragen."
 
-#: solana-interface/src/orders/orderErrors.ts
+#: solana-interface/src/hooks/orders/orderErrors.ts
 msgid "This order using {collateralSymbol} as collateral will not be valid for the existing short position using {symbol} as collateral."
 msgstr ""
 
@@ -7737,7 +7737,7 @@ msgstr "Medienpaket"
 msgid "$ 0.00"
 msgstr "$ 0.00"
 
-#: solana-interface/src/orders/solanaOrderFormatters.ts
+#: solana-interface/src/hooks/orders/solanaOrderFormatters.ts
 msgid "Collateral Delta"
 msgstr ""
 
@@ -8452,7 +8452,7 @@ msgstr "Funding-Rate"
 msgid "Swap price impact for external swap threshold"
 msgstr "Tausch-Preiseinfluss-Schwellenwert für externe Swaps"
 
-#: solana-interface/src/orders/orderRules.ts
+#: solana-interface/src/hooks/orders/orderRules.ts
 #: src/components/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Decrease"
@@ -8605,7 +8605,7 @@ msgstr "Devisen"
 msgid "Share position"
 msgstr "Position teilen"
 
-#: solana-interface/src/orders/orderRules.ts
+#: solana-interface/src/hooks/orders/orderRules.ts
 msgid "Deposit Collateral"
 msgstr ""
 
@@ -8645,7 +8645,7 @@ msgstr "Verfügbare Vermögenswerte"
 msgid "({0} days ago)"
 msgstr "(vor {0} Tagen)"
 
-#: solana-interface/src/orders/orderRules.ts
+#: solana-interface/src/hooks/orders/orderRules.ts
 #: src/components/TradeHistory/filters/ActionFilter.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Liquidation"
@@ -8882,7 +8882,7 @@ msgstr "GM erfolgreich gekauft, aber die Bridge zu Base ist fehlgeschlagen. Ihre
 msgid "Disable One-Click Trading"
 msgstr "One-Click Trading deaktivieren"
 
-#: solana-interface/src/orders/orderRules.ts
+#: solana-interface/src/hooks/orders/orderRules.ts
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
 msgstr "Limit-Erhöhung"
@@ -11489,7 +11489,7 @@ msgstr "Mit GMX integrierte Projekte"
 msgid "Testnet LayerZero scan"
 msgstr "Testnet LayerZero Scan"
 
-#: solana-interface/src/orders/solanaOrderFormatters.ts
+#: solana-interface/src/hooks/orders/solanaOrderFormatters.ts
 msgid "No limit"
 msgstr ""
 
@@ -12587,7 +12587,7 @@ msgstr "Trader- & Affiliate-Programm"
 msgid "Explore the VIP Desk"
 msgstr "VIP Desk entdecken"
 
-#: solana-interface/src/orders/orderRules.ts
+#: solana-interface/src/hooks/orders/orderRules.ts
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Swap"
@@ -12606,7 +12606,7 @@ msgstr "Wie beginne ich zu sparen?"
 msgid "24H VOL."
 msgstr "24H VOL."
 
-#: solana-interface/src/orders/solanaOrderFormatters.ts
+#: solana-interface/src/hooks/orders/solanaOrderFormatters.ts
 msgid "(Market)"
 msgstr ""
 
@@ -13042,7 +13042,7 @@ msgstr "USD-Wert möglicherweise ungenau, da Preise für {0} fehlen"
 msgid "Expired deposit"
 msgstr "Abgelaufene Einzahlung"
 
-#: solana-interface/src/orders/orderRules.ts
+#: solana-interface/src/hooks/orders/orderRules.ts
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx

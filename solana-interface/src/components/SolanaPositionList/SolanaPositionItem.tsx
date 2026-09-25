@@ -10,9 +10,9 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import NewLinkIcon from "img/ic_new_link.svg?react";
 
-import { formatSolanaOrderSize, formatSolanaTriggerPrice } from "../../orders/solanaOrderFormatters";
-import type { SolanaPositionOrderViewModel } from "../../orders/types";
-import type { SolanaPositionOrders } from "../../positions/positionOrders";
+import { formatSolanaOrderSize, formatSolanaTriggerPrice } from "../../hooks/orders/solanaOrderFormatters";
+import type { SolanaPositionOrderViewModel } from "../../hooks/orders/types";
+import type { SolanaPositionOrders } from "../../hooks/positions/positionOrders";
 import {
   formatSolanaLeverage,
   formatSolanaLiquidationPrice,
@@ -25,8 +25,8 @@ import {
   formatSolanaTpSlSummary,
   formatSolanaUsd,
   SOLANA_POSITION_DASH,
-} from "../../positions/solanaPositionFormatters";
-import type { SolanaPositionViewModel } from "../../positions/types";
+} from "../../hooks/positions/solanaPositionFormatters";
+import type { SolanaPositionViewModel } from "../../hooks/positions/types";
 import { SolanaTokenIcon } from "../SolanaTokenIcon";
 
 export function SolanaPositionTitle({ position, iconSize }: { position: SolanaPositionViewModel; iconSize: number }) {

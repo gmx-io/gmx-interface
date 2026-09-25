@@ -3,7 +3,7 @@ import { msg } from "@lingui/macro";
 import { isIncreaseKind, isMarketKind } from "./orderRules";
 import { SOLANA_ORDER_KIND } from "./solanaOrderConstants";
 import type { SolanaOrderError, SolanaOrderViewModel } from "./types";
-import { getSolanaTokenConfig } from "../config/solanaProgram";
+import { getSolanaTokenConfig } from "../../config/solanaProgram";
 import type { SolanaPositionViewModel } from "../positions/types";
 
 export type SolanaOrderErrorPosition = Pick<

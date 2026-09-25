@@ -1,6 +1,6 @@
 import { correctLiquidationPrice } from "./correctLiquidationPrice";
 import type { SolanaPositionCalculation, SolanaPositionDeriveInput, SolanaPositionStatus } from "./types";
-import type { GmsolSdk } from "../lib/gmsolRuntime";
+import type { GmsolSdk } from "../../lib/gmsolRuntime";
 
 const PENDING_MARKET_STATE_MESSAGES = ["calculating funding fee amount", "invalid latest borrowing factor"];
 

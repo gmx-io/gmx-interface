@@ -19,8 +19,8 @@ import {
   formatSolanaSwapMinOutput,
   formatSolanaTriggerPrice,
   getSolanaCollateralDeltaLabel,
-} from "../../orders/solanaOrderFormatters";
-import type { SolanaOrderViewModel } from "../../orders/types";
+} from "../../hooks/orders/solanaOrderFormatters";
+import type { SolanaOrderViewModel } from "../../hooks/orders/types";
 import { SolanaTokenIcon } from "../SolanaTokenIcon";
 
 type Props = { order: SolanaOrderViewModel };

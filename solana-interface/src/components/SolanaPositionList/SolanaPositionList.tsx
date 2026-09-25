@@ -11,10 +11,10 @@ import { TableScrollFadeContainer } from "components/TableScrollFade/TableScroll
 
 import { SolanaPositionCard } from "./SolanaPositionCard";
 import { SolanaPositionItem } from "./SolanaPositionItem";
-import type { SolanaOrderViewModel } from "../../orders/types";
-import { groupSolanaOrdersByPosition } from "../../positions/positionOrders";
-import { sortSolanaPositions, type SolanaPositionSortField } from "../../positions/sortSolanaPositions";
-import type { SolanaPositionViewModel } from "../../positions/types";
+import type { SolanaOrderViewModel } from "../../hooks/orders/types";
+import { groupSolanaOrdersByPosition } from "../../hooks/positions/positionOrders";
+import { sortSolanaPositions, type SolanaPositionSortField } from "../../hooks/positions/sortSolanaPositions";
+import type { SolanaPositionViewModel } from "../../hooks/positions/types";
 
 export type SolanaPositionListProps = {
   positions: SolanaPositionViewModel[];

@@ -1003,7 +1003,7 @@ msgstr "추천 코드를 여러 개 만들 수 있나요?"
 msgid "Unknown error"
 msgstr "알 수 없는 오류"
 
-#: solana-interface/src/orders/orderRules.ts
+#: solana-interface/src/hooks/orders/orderRules.ts
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Swap"
 msgstr "마켓 스왑"
@@ -1572,7 +1572,7 @@ msgstr "가격, 마켓, 포지션, 주문 — 호출 한 번이면 됩니다."
 msgid "Liquidity only available on {chainNames}. Switch networks to continue."
 msgstr "유동성은 {chainNames}에서만 이용 가능합니다. 계속하려면 네트워크를 전환하십시오."
 
-#: solana-interface/src/orders/orderRules.ts
+#: solana-interface/src/hooks/orders/orderRules.ts
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
@@ -1807,7 +1807,7 @@ msgstr "개요"
 msgid "Fetching swap route..."
 msgstr "스왑 경로 가져오는 중..."
 
-#: solana-interface/src/orders/solanaOrderFormatters.ts
+#: solana-interface/src/hooks/orders/solanaOrderFormatters.ts
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Collateral"
 msgstr "담보"
@@ -2681,7 +2681,7 @@ msgstr "과거 수수료"
 msgid "Max open interest {directionLabel}"
 msgstr "최대 미결제약정 {directionLabel}"
 
-#: solana-interface/src/orders/orderErrors.ts
+#: solana-interface/src/hooks/orders/orderErrors.ts
 msgid "This order using {collateralSymbol} as collateral will not be valid for the existing long position using {symbol} as collateral."
 msgstr ""
 
@@ -2825,7 +2825,7 @@ msgstr "GMX"
 msgid "Transfer initiated"
 msgstr "전송이 시작되었습니다"
 
-#: solana-interface/src/orders/orderRules.ts
+#: solana-interface/src/hooks/orders/orderRules.ts
 msgid "Auto Deleveraging"
 msgstr ""
 
@@ -3690,7 +3690,7 @@ msgstr "{gmOrGlvSymbol} 판매"
 msgid "Clear selection"
 msgstr "선택 해제"
 
-#: solana-interface/src/orders/orderErrors.ts
+#: solana-interface/src/hooks/orders/orderErrors.ts
 msgid "The order will not be executed as its trigger price is beyond the position's liquidation price."
 msgstr ""
 
@@ -4330,7 +4330,7 @@ msgstr "TWAP 스왑 부분 실패"
 msgid "No events in the past {DAYS_BACK} days"
 msgstr "지난 {DAYS_BACK}일 동안 이벤트 없음"
 
-#: solana-interface/src/orders/orderRules.ts
+#: solana-interface/src/hooks/orders/orderRules.ts
 msgid "Withdraw Collateral"
 msgstr ""
 
@@ -5506,7 +5506,7 @@ msgstr "최근 상장"
 msgid "Failed to load order data:"
 msgstr "주문 데이터 로드 실패:"
 
-#: solana-interface/src/orders/orderRules.ts
+#: solana-interface/src/hooks/orders/orderRules.ts
 msgid "Unknown Order Type"
 msgstr ""
 
@@ -5615,7 +5615,7 @@ msgstr "스왑 영향"
 msgid "Execute Take-Profit"
 msgstr "익절매 체결"
 
-#: solana-interface/src/orders/orderRules.ts
+#: solana-interface/src/hooks/orders/orderRules.ts
 #: src/components/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Increase"
@@ -7325,7 +7325,7 @@ msgstr "Harmonix"
 msgid "Tier upgrades are reviewed manually by the GMX team based on your weekly performance. If you meet the requirements consistently, you can apply for an upgrade via the <0>GMX Partner Account: Telegram</0>."
 msgstr "티어 업그레이드는 주간 실적을 바탕으로 GMX 팀이 수동으로 검토합니다. 요건을 지속적으로 충족하면 <0>GMX Partner Account: Telegram</0>을 통해 업그레이드를 신청할 수 있습니다."
 
-#: solana-interface/src/orders/orderErrors.ts
+#: solana-interface/src/hooks/orders/orderErrors.ts
 msgid "This order using {collateralSymbol} as collateral will not be valid for the existing short position using {symbol} as collateral."
 msgstr ""
 
@@ -7737,7 +7737,7 @@ msgstr "미디어 키트"
 msgid "$ 0.00"
 msgstr "$ 0.00"
 
-#: solana-interface/src/orders/solanaOrderFormatters.ts
+#: solana-interface/src/hooks/orders/solanaOrderFormatters.ts
 msgid "Collateral Delta"
 msgstr ""
 
@@ -8452,7 +8452,7 @@ msgstr "펀딩 비율"
 msgid "Swap price impact for external swap threshold"
 msgstr "외부 스왑 임계값에 대한 스왑 가격 영향"
 
-#: solana-interface/src/orders/orderRules.ts
+#: solana-interface/src/hooks/orders/orderRules.ts
 #: src/components/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Decrease"
@@ -8605,7 +8605,7 @@ msgstr "FX"
 msgid "Share position"
 msgstr "포지션 공유"
 
-#: solana-interface/src/orders/orderRules.ts
+#: solana-interface/src/hooks/orders/orderRules.ts
 msgid "Deposit Collateral"
 msgstr ""
 
@@ -8645,7 +8645,7 @@ msgstr "사용 가능한 자산"
 msgid "({0} days ago)"
 msgstr "({0}일 전)"
 
-#: solana-interface/src/orders/orderRules.ts
+#: solana-interface/src/hooks/orders/orderRules.ts
 #: src/components/TradeHistory/filters/ActionFilter.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Liquidation"
@@ -8882,7 +8882,7 @@ msgstr "GM 구매에 성공하였으나 Base로의 브릿지가 실패하였습�
 msgid "Disable One-Click Trading"
 msgstr "One-Click Trading 비활성화"
 
-#: solana-interface/src/orders/orderRules.ts
+#: solana-interface/src/hooks/orders/orderRules.ts
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
 msgstr "지정가 증가"
@@ -11489,7 +11489,7 @@ msgstr "GMX와 통합된 프로젝트"
 msgid "Testnet LayerZero scan"
 msgstr "테스트넷 LayerZero 스캔"
 
-#: solana-interface/src/orders/solanaOrderFormatters.ts
+#: solana-interface/src/hooks/orders/solanaOrderFormatters.ts
 msgid "No limit"
 msgstr ""
 
@@ -12587,7 +12587,7 @@ msgstr "트레이더 및 제휴 프로그램"
 msgid "Explore the VIP Desk"
 msgstr "VIP Desk 살펴보기"
 
-#: solana-interface/src/orders/orderRules.ts
+#: solana-interface/src/hooks/orders/orderRules.ts
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Swap"
@@ -12606,7 +12606,7 @@ msgstr "절약을 시작하려면?"
 msgid "24H VOL."
 msgstr "24시간 거래량"
 
-#: solana-interface/src/orders/solanaOrderFormatters.ts
+#: solana-interface/src/hooks/orders/solanaOrderFormatters.ts
 msgid "(Market)"
 msgstr ""
 
@@ -13042,7 +13042,7 @@ msgstr "{0}의 가격이 없어 USD 가치가 정확하지 않을 수 있습니�
 msgid "Expired deposit"
 msgstr "만료된 예치"
 
-#: solana-interface/src/orders/orderRules.ts
+#: solana-interface/src/hooks/orders/orderRules.ts
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx

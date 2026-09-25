@@ -11,8 +11,8 @@ import Tabs from "components/Tabs/Tabs";
 
 import { SolanaOrderList } from "../components/SolanaOrderList/SolanaOrderList";
 import { SolanaPositionList } from "../components/SolanaPositionList/SolanaPositionList";
-import { useSolanaOrders } from "../orders/useSolanaOrders";
-import { useSolanaPositions } from "../positions/useSolanaPositions";
+import { useSolanaOrders } from "../hooks/orders/useSolanaOrders";
+import { useSolanaPositions } from "../hooks/positions/useSolanaPositions";
 
 type ListTab = "positions" | "orders" | "trades" | "claims";
 

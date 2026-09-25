@@ -13,7 +13,7 @@ import {
   SOLANA_ORDER_DASH,
 } from "./solanaOrderFormatters";
 import type { RawSolanaOrder } from "./types";
-import type { SolanaMarketInfo, SolanaTicker } from "../markets/solanaMarketSocketStore";
+import type { SolanaMarketInfo, SolanaTicker } from "../../markets/solanaMarketSocketStore";
 
 const USDC = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 const WSOL = "So11111111111111111111111111111111111111112";

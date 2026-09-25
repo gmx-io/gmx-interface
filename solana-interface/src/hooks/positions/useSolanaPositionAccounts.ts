@@ -10,9 +10,9 @@ import {
   POSITION_STORE_OFFSET,
 } from "./solanaPositionConstants";
 import type { RawSolanaPosition } from "./types";
-import { GMX_SOLANA_STORE_ADDRESS, GMX_SOLANA_STORE_PROGRAM_ID } from "../config/solanaProgram";
-import { loadGmsolRuntime } from "../lib/gmsolRuntime";
-import { getSolanaRpcClient } from "../lib/rpc";
+import { GMX_SOLANA_STORE_ADDRESS, GMX_SOLANA_STORE_PROGRAM_ID } from "../../config/solanaProgram";
+import { loadGmsolRuntime } from "../../lib/gmsolRuntime";
+import { getSolanaRpcClient } from "../../lib/rpc";
 
 export type SolanaPositionAccountsResult = {
   /** Open positions (sizeInUsd > 0) of the owner, unordered. */

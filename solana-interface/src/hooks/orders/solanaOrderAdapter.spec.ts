@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { deriveSwapRatio, toSolanaOrderViewModel } from "./solanaOrderAdapter";
 import { SOLANA_ORDER_KIND as K } from "./solanaOrderConstants";
 import type { RawSolanaOrder } from "./types";
-import type { SolanaMarketInfo, SolanaTicker } from "../markets/solanaMarketSocketStore";
+import type { SolanaMarketInfo, SolanaTicker } from "../../markets/solanaMarketSocketStore";
 
 const USDC = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 const WSOL = "So11111111111111111111111111111111111111112";

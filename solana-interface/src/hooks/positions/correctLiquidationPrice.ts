@@ -1,4 +1,4 @@
-import { ONE_GMTRADE_USD } from "../config/solanaProgram";
+import { ONE_GMTRADE_USD } from "../../config/solanaProgram";
 
 export type CorrectLiquidationPriceInput = {
   /** SDK liquidation price (20 decimals, per smallest index token unit). */

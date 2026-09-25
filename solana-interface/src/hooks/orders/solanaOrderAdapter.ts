@@ -15,8 +15,8 @@ import type {
   SolanaPositionOrderViewModel,
   SolanaSwapOrderViewModel,
 } from "./types";
-import { getSolanaTokenConfig, type SolanaTokenConfig } from "../config/solanaProgram";
-import type { SolanaMarketInfo, SolanaTicker } from "../markets/solanaMarketSocketStore";
+import { getSolanaTokenConfig, type SolanaTokenConfig } from "../../config/solanaProgram";
+import type { SolanaMarketInfo, SolanaTicker } from "../../markets/solanaMarketSocketStore";
 import { shortenAddress, toGmxUsd, unitPriceToTokenPrice } from "../positions/solanaPositionAdapter";
 
 export type SolanaOrderAdapterContext = {
