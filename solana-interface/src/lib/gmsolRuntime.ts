@@ -27,9 +27,26 @@ export function loadGmsolRuntime(): Promise<GmsolRuntime> {
   return runtimePromise;
 }
 
+/**
+ * The SDK entry (`index.js`) imports its `.wasm` at top level, which needs `vite-plugin-wasm` plus
+ * `vite-plugin-top-level-await` under the app's es2020 build target. Instead, instantiate the wasm
+ * through Vite's built-in `?init` helper and wire the wasm-bindgen glue by hand, as `index.js` does.
+ */
+async function loadSdk(): Promise<GmsolSdk> {
+  const [bindings, initWasm] = await Promise.all([
+    import("@gmsol-labs/gmsol-sdk/index_bg.js"),
+    import("@gmsol-labs/gmsol-sdk/index_bg.wasm?init"),
+  ]);
+  const instance = await initWasm.default({ "./index_bg.js": bindings as unknown as WebAssembly.ModuleImports });
+  const exports = instance.exports as WebAssembly.Exports & { __wbindgen_start: () => void };
+  bindings.__wbg_set_wasm(exports);
+  exports.__wbindgen_start();
+  return bindings;
+}
+
 async function load(): Promise<GmsolRuntime> {
   const [sdk, anchor, idlModule] = await Promise.all([
-    import("@gmsol-labs/gmsol-sdk"),
+    loadSdk(),
     import("@coral-xyz/anchor"),
     import("../idl/gmsol_store.json"),
   ]);
