@@ -2,7 +2,7 @@ import { t, Trans } from "@lingui/macro";
 import { useMemo, useState } from "react";
 
 import { USD_DECIMALS } from "config/factors";
-import { getMarketIndexName } from "domain/synthetics/markets/utils";
+import { getGlvOrMarketIconSymbol, getMarketIndexName } from "domain/synthetics/markets/utils";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 import { TOKEN_COLOR_MAP } from "sdk/configs/tokens";
 
@@ -106,7 +106,7 @@ const CompositionTableRow = ({ item, sum }: { item: CompositionItem; sum: bigint
         <div className="flex flex-row items-center gap-4">
           <span className="mr-8 inline-block h-10 w-10 shrink-0 rounded-10" style={tokenCircleStyles} />
           <TokenIcon
-            symbol={item.type === "market" ? item.market.indexToken.symbol : item.token.symbol}
+            symbol={item.type === "market" ? getGlvOrMarketIconSymbol(item.market) : item.token.symbol}
             displaySize={24}
           />
           {item.type === "backing" ? <span className="capitalize text-typography-secondary">{item.side}:</span> : null}

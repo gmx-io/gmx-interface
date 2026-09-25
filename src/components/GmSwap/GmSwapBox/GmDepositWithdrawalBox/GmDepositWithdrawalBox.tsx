@@ -58,6 +58,7 @@ import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import {
   getAvailableUsdLiquidityForCollateral,
   getGlvOrMarketAddress,
+  getGlvOrMarketIconSymbol,
   getMarketIndexName,
   getTokenPoolType,
 } from "domain/synthetics/markets/utils";
@@ -128,6 +129,7 @@ export function GmSwapBoxDepositWithdrawal() {
   const marketTokensData = useSelector(selectPoolsDetailsMarketTokensData);
   const marketInfo = useSelector(selectPoolsDetailsMarketInfo);
   const glvInfo = useSelector(selectPoolsDetailsGlvInfo);
+  const glvOrMarketInfo = glvInfo ?? marketInfo;
 
   const tradeTokensData = useSelector(selectPoolsDetailsTradeTokensDataWithSourceChainBalances);
   const isMarketTransferrableToSourceChain = useSelector(selectPoolsDetailsIsCrossChainMarket);
@@ -504,6 +506,7 @@ export function GmSwapBoxDepositWithdrawal() {
                   {firstTokenAddress && isSingle && isDeposit ? (
                     <MultichainTokenSelectorForLp
                       chainId={chainId}
+                      label={t`Pay`}
                       tokenAddress={firstTokenAddress}
                       payChainId={
                         paySource === "gmxAccount"
@@ -535,6 +538,7 @@ export function GmSwapBoxDepositWithdrawal() {
                   ) : isWithdrawal && firstTokenAddress && isSingle && tokenOptions.length > 1 ? (
                     <TokenSelector
                       chainId={chainId}
+                      label={t`Receive`}
                       tokenAddress={firstTokenAddress}
                       onSelectToken={(token) => {
                         handleFirstTokenSelect(token.address as ERC20Address | NativeTokenSupportedAddress);
@@ -620,7 +624,7 @@ export function GmSwapBoxDepositWithdrawal() {
                           setPaySource("sourceChain");
                         }
                       }}
-                      marketInfo={glvInfo ?? marketInfo}
+                      marketInfo={glvOrMarketInfo}
                       tokenBalancesData={marketTokenBalancesData}
                       marketTokenPrice={
                         glvToken
@@ -631,11 +635,11 @@ export function GmSwapBoxDepositWithdrawal() {
                       }
                     />
                   ) : (
-                    (glvInfo || marketInfo) && (
+                    glvOrMarketInfo && (
                       <span className="inline-flex items-center">
                         <TokenIcon
                           className="mr-5"
-                          symbol={glvInfo?.glvToken.symbol ?? marketInfo?.indexToken.symbol ?? ""}
+                          symbol={getGlvOrMarketIconSymbol(glvOrMarketInfo)}
                           displaySize={20}
                           chainIdBadge={
                             paySource === "sourceChain"
@@ -645,7 +649,7 @@ export function GmSwapBoxDepositWithdrawal() {
                                 : undefined
                           }
                         />
-                        <SelectedPoolLabel glvOrMarketInfo={glvInfo ?? marketInfo} />
+                        <SelectedPoolLabel glvOrMarketInfo={glvOrMarketInfo} />
                       </span>
                     )
                   )}

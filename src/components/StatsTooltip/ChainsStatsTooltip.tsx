@@ -1,4 +1,3 @@
-import cx from "classnames";
 import { ReactNode } from "react";
 
 import { USD_DECIMALS } from "config/factors";
@@ -8,6 +7,7 @@ import TooltipComponent from "components/Tooltip/Tooltip";
 
 import ChainsStatsTooltipRow from "./ChainsStatsTooltipRow";
 import { summarizeChainsStats, type ChainsStatsEntries, type ChainsStatsStaleEntry } from "./summarizeChainsStats";
+import { useSettled } from "./useSettled";
 
 type Props = {
   entries: ChainsStatsEntries;
@@ -30,7 +30,11 @@ export default function ChainsStatsTooltip({
   decimalsForConversion = USD_DECIMALS,
 }: Props) {
   const summary = summarizeChainsStats(entries);
-  const isIncomplete = summary.missingTitles.length > 0 || staleEntries.length > 0;
+  const isSettled = useSettled(summary.missingTitles.length === 0);
+
+  if (!isSettled || summary.total === undefined) {
+    return <span className="numbers">-</span>;
+  }
 
   return (
     <TooltipComponent
@@ -44,7 +48,7 @@ export default function ChainsStatsTooltip({
           displayDecimals={2}
         />
       }
-      handleClassName={cx("numbers", { "text-yellow-300": isIncomplete })}
+      handleClassName="numbers"
       content={
         <>
           {caption && (

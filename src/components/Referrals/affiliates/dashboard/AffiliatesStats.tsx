@@ -1,6 +1,5 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { lightFormat } from "date-fns";
 import type { TransactionResponse } from "ethers";
 import { AnimatePresence, motion } from "framer-motion";
 import { Fragment, useCallback, useState } from "react";
@@ -132,9 +131,6 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
     from: periodStart,
     to: periodEnd,
   });
-  const lastUpdated = referralStats?.to
-    ? `${lightFormat(referralStats.to * 1000, "yyyy-MM-dd HH:mm:ss")} UTC`
-    : undefined;
 
   return (
     <div className="flex gap-8 max-md:flex-col max-md:pb-[100px]">
@@ -338,12 +334,6 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
                   timeRangeInfo={timeRangeInfo}
                 />
               </div>
-            </div>
-            <div className="text-body-small font-medium text-typography-secondary">
-              <span className="text-slate-500">
-                <Trans>Last updated:</Trans>
-              </span>{" "}
-              {lastUpdated ?? "—"}
             </div>
           </div>
 
