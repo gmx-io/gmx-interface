@@ -207,6 +207,7 @@ export function GmSwapBoxDepositWithdrawal() {
   const transitState = usePaxosTransitState({
     isWhitelistIgnored: showDebugValues && Boolean(isTransitWhitelistIgnored),
     isMocked: showDebugValues && Boolean(isTransitMocked),
+    shouldDisableValidation: shouldDisableValidationForTesting,
   });
 
   const logicalFees = useDepositWithdrawalFees({

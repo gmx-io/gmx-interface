@@ -30,6 +30,7 @@ import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getReceivedTokenAmount } from "domain/synthetics/paxosTransit/getReceivedTokenAmount";
 import { usePaxosTransit } from "domain/synthetics/paxosTransit/usePaxosTransit";
+import type { TokenData } from "domain/synthetics/tokens";
 import type { ERC20Address } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import { formatAmountFree } from "lib/numbers";
@@ -45,9 +46,11 @@ export type PaxosTransitState = ReturnType<typeof usePaxosTransitState>;
 export function usePaxosTransitState({
   isWhitelistIgnored,
   isMocked,
+  shouldDisableValidation,
 }: {
   isWhitelistIgnored: boolean;
   isMocked: boolean;
+  shouldDisableValidation: boolean;
 }) {
   const chainId = useSelector(selectChainId);
   const { account } = useWallet();
@@ -222,22 +225,22 @@ export function usePaxosTransitState({
       return { text: t`Waiting for ${tokenInSymbol}...`, disabled: true };
     }
 
-    if (isDeposit && tokenIn?.walletBalance !== undefined && tokenIn.walletBalance < amountIn) {
-      return { text: t`Insufficient ${tokenInSymbol} balance`, disabled: true };
+    const conversionError = getTransitConversionError({
+      isDeposit,
+      tokenIn,
+      amountIn,
+      feeTierError,
+      quoteError,
+      shouldUseTransit,
+      isTransitLoading,
+    });
+
+    if (conversionError) {
+      return { text: conversionError, disabled: !shouldDisableValidation, onSubmit: onConvert };
     }
 
-    if (feeTierError) {
-      return { text: t`${tokenInSymbol} conversion is unavailable`, disabled: true };
-    }
-
-    if (quoteError) {
-      return { text: quoteError.message, disabled: true };
-    }
-
-    if (!shouldUseTransit) {
-      return isTransitLoading
-        ? { text: t`Loading...`, disabled: true }
-        : { text: t`${tokenInSymbol} conversion is unavailable`, disabled: true };
+    if (isTransitLoading) {
+      return { text: t`Loading...`, disabled: true };
     }
 
     return { text: t`Convert ${tokenInSymbol} to ${tokenOutSymbol}`, onSubmit: onConvert };
@@ -254,6 +257,7 @@ export function usePaxosTransitState({
     isOrderStatusUnknown,
     quoteError,
     isWithdrawalSettled,
+    shouldDisableValidation,
     withdrawalStatus,
     step,
     tokenIn,
@@ -274,4 +278,34 @@ export function usePaxosTransitState({
     usdgStepAmount,
     ...transit,
   };
+}
+
+function getTransitConversionError(p: {
+  isDeposit: boolean;
+  tokenIn: TokenData | undefined;
+  amountIn: bigint;
+  feeTierError: Error | undefined;
+  quoteError: Error | undefined;
+  shouldUseTransit: boolean;
+  isTransitLoading: boolean;
+}): string | undefined {
+  const tokenInSymbol = p.tokenIn?.symbol;
+
+  if (p.isDeposit && p.tokenIn?.walletBalance !== undefined && p.tokenIn.walletBalance < p.amountIn) {
+    return t`Insufficient ${tokenInSymbol} balance`;
+  }
+
+  if (p.feeTierError) {
+    return t`${tokenInSymbol} conversion is unavailable`;
+  }
+
+  if (p.quoteError) {
+    return p.quoteError.message;
+  }
+
+  if (!p.shouldUseTransit && !p.isTransitLoading) {
+    return t`${tokenInSymbol} conversion is unavailable`;
+  }
+
+  return undefined;
 }
