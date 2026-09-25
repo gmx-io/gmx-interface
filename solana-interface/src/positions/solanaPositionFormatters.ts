@@ -2,6 +2,8 @@ import { formatLeverage } from "domain/synthetics/positions";
 import { formatDeltaUsd, formatTokenAmount, formatUsd, formatUsdPrice } from "lib/numbers";
 
 import type { SolanaPositionViewModel } from "./types";
+import { formatSolanaOrderPrice } from "../orders/solanaOrderFormatters";
+import type { SolanaPositionOrderViewModel } from "../orders/types";
 
 export const SOLANA_POSITION_DASH = "—";
 
@@ -22,9 +24,44 @@ export function formatSolanaLeverage(value: bigint | undefined): string {
   return value === undefined ? SOLANA_POSITION_DASH : formatLeverage(value) ?? SOLANA_POSITION_DASH;
 }
 
-export function formatSolanaPnl(position: SolanaPositionViewModel): string {
+/** Signed USD without percentage ("+$1.00" / "-$1.00" / "$0.00"), as GMTrade formats fee rows. */
+export function formatSolanaSignedUsd(value: bigint | undefined): string {
+  return value === undefined ? SOLANA_POSITION_DASH : formatDeltaUsd(value) ?? SOLANA_POSITION_DASH;
+}
+
+/** Tooltip "PnL After Fees" row. */
+export function formatSolanaPnlAfterFees(position: SolanaPositionViewModel): string {
   if (position.pnlAfterFees === undefined) return SOLANA_POSITION_DASH;
   return formatDeltaUsd(position.pnlAfterFees, position.pnlAfterFeesBps) ?? SOLANA_POSITION_DASH;
+}
+
+/**
+ * PnL shown under Net Value. GMTrade shows the PnL before fees here (its `showPnlAfterFees`
+ * setting defaults to off and this list has no such setting), with a plus sign for zero.
+ */
+export function formatSolanaDisplayedPnl(position: SolanaPositionViewModel): string {
+  if (position.pendingPnl === undefined) return SOLANA_POSITION_DASH;
+  return formatDeltaUsd(position.pendingPnl, position.pendingPnlBps, { showPlusForZero: true }) ?? SOLANA_POSITION_DASH;
+}
+
+/**
+ * GMTrade TP/SL cell: "price（count）" with the dollar sign hidden (`showDollarSign: false`), using the
+ * first order of the already sorted list (lowest TP / highest SL). "-" when there are none.
+ */
+export function formatSolanaTpSlSummary(orders: readonly SolanaPositionOrderViewModel[]): string {
+  const first = orders[0];
+  if (!first) return "-";
+  const price = formatSolanaOrderPrice(first.triggerPrice, first.isForexPrecision).replace("$\u200a", "");
+  return `${price}（${orders.length}）`;
+}
+
+/** Port of GMTrade `formatPositionEstimatedLiquidationTime` for bigint hours. */
+export function formatSolanaEstimatedLiquidationTime(hours: bigint | undefined): string {
+  if (hours === undefined || hours <= 0n) return SOLANA_POSITION_DASH;
+  const days = hours / 24n;
+  if (days > 1000n) return "> 1000 days";
+  if (hours < 24n) return `${hours} ${hours === 1n ? "hour" : "hours"}`;
+  return `${days} days`;
 }
 
 export function formatSolanaTokenAmount(amount: bigint, decimals: number | undefined, symbol: string): string {

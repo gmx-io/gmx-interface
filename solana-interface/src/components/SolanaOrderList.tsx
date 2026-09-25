@@ -88,24 +88,27 @@ export function SolanaOrderList({
   return (
     <TableScrollFadeContainer disableScrollFade={isEmpty} hideControls className="flex grow flex-col bg-slate-900">
       {showBanner && error && <SolanaOrdersErrorBanner error={error} onRetry={onRetry} />}
-      <Table className="!w-[max(100%,800px)] table-fixed">
+      <Table className="!w-[max(100%,900px)] table-fixed">
         <thead className="text-body-medium">
           <TableTheadTr>
-            <TableTh className="w-[28%]">
+            <TableTh className="w-[26%]">
               <Trans>MARKET</Trans>
             </TableTh>
-            <TableTh className="w-[16%]">
+            <TableTh className="w-[14%]">
               <Trans>TYPE</Trans>
             </TableTh>
-            <TableTh className="w-[20%]">
+            <TableTh className="w-[18%]">
               <Trans>SIZE</Trans>
             </TableTh>
-            <TableTh className="w-[18%]">
+            <TableTh className="w-[16%]">
               <Trans>TRIGGER PRICE</Trans>
             </TableTh>
-            <TableTh className="w-[18%] text-left">
+            <TableTh className="w-[16%]">
               <Trans>MARK PRICE</Trans>
             </TableTh>
+            {/* GMTrade layout: Edit and Close columns. Reserved, read-only in this build. */}
+            <TableTh className="w-[5%]" aria-label="Edit" />
+            <TableTh className="w-[5%]" aria-label="Close" />
           </TableTheadTr>
         </thead>
         <tbody>{!showLoading && orders.map((order) => <SolanaOrderRow key={order.key} order={order} />)}</tbody>

@@ -6,6 +6,7 @@ import {
   parseIndexTokensPayload,
   parseTickersPayload,
   toBigIntOrUndefined,
+  toSignedBigIntOrUndefined,
 } from "./solanaMarketSocketStore";
 
 describe("parseIndexTokensPayload", () => {
@@ -29,6 +30,40 @@ describe("parseIndexTokensPayload", () => {
   it("returns an empty list for non-array payloads", () => {
     expect(parseIndexTokensPayload({})).toEqual([]);
   });
+
+  it("keeps signed hourly fee rates when present", () => {
+    const payload = [
+      {
+        marketInfos: [
+          {
+            marketToken: "m1",
+            indexToken: "idx",
+            longToken: "l",
+            shortToken: "s",
+            supply: "1",
+            longFundingFeeRateHour: "-7518201474384000",
+            longBorrowingFeeRateHour: "0",
+            shortFundingFeeRateHour: "5726242699815600",
+            shortBorrowingFeeRateHour: "x",
+            minCollateralFactorForLong: "400000000000000000",
+          },
+        ],
+      },
+    ];
+    expect(parseIndexTokensPayload(payload)).toEqual([
+      {
+        marketToken: "m1",
+        indexToken: "idx",
+        longToken: "l",
+        shortToken: "s",
+        supply: "1",
+        longFundingFeeRateHour: -7518201474384000n,
+        longBorrowingFeeRateHour: 0n,
+        shortFundingFeeRateHour: 5726242699815600n,
+        minCollateralFactorForLong: 400000000000000000n,
+      },
+    ]);
+  });
 });
 
 describe("parseTickersPayload", () => {
@@ -40,8 +75,8 @@ describe("parseTickersPayload", () => {
       { symbol: "NUM", minUnitPrice: 5, maxUnitPrice: 6 },
     ];
     expect(parseTickersPayload(payload)).toEqual([
-      { symbol: "SOL", price: 200n, minUnitPrice: 1n, maxUnitPrice: 2n },
-      { symbol: "NUM", price: undefined, minUnitPrice: 5n, maxUnitPrice: 6n },
+      { symbol: "SOL", price: 200n, unitPrice: 1n, minUnitPrice: 1n, maxUnitPrice: 2n },
+      { symbol: "NUM", price: undefined, unitPrice: undefined, minUnitPrice: 5n, maxUnitPrice: 6n },
     ]);
   });
 });
@@ -59,6 +94,15 @@ describe("mergeTickers / mapTickersToMints", () => {
     });
     expect([...mints.keys()].sort()).toEqual(["native", "wrapped"]);
     expect(mints.has("usdc")).toBe(false);
+  });
+});
+
+describe("toSignedBigIntOrUndefined", () => {
+  it("accepts negative integer strings on top of toBigIntOrUndefined", () => {
+    expect(toSignedBigIntOrUndefined("-42")).toBe(-42n);
+    expect(toSignedBigIntOrUndefined("42")).toBe(42n);
+    expect(toSignedBigIntOrUndefined(-7)).toBe(-7n);
+    expect(toSignedBigIntOrUndefined("-4.2")).toBeUndefined();
   });
 });
 

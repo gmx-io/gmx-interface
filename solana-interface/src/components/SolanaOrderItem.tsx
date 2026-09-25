@@ -3,9 +3,12 @@ import { useLingui } from "@lingui/react";
 import cx from "classnames";
 
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTr } from "components/Table/Table";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import NewLinkIcon from "img/ic_new_link.svg?react";
 
 import { SolanaTokenIcon } from "./SolanaTokenIcon";
 import {
@@ -22,6 +25,18 @@ import type { SolanaOrderViewModel } from "../orders/types";
 
 type Props = { order: SolanaOrderViewModel };
 
+/** Order account on Solscan, same affordance as the Position column (GMTrade `getAddressUrl`). */
+function SolanaOrderExplorerLink({ order }: Props) {
+  return (
+    <ExternalLink
+      href={`https://solscan.io/account/${order.orderAddress}`}
+      className="ml-2 inline-flex items-center !no-underline hover:opacity-80"
+    >
+      <NewLinkIcon className="size-12" aria-label={t`View in explorer`} />
+    </ExternalLink>
+  );
+}
+
 /**
  * Same layout as `MarketWithDirectionLabel` / `SwapMarketLabel`, but with `SolanaTokenIcon` so GMTrade
  * symbols without a GMX icon (or unknown mints shown as addresses) do not crash the row.
@@ -35,6 +50,7 @@ export function SolanaOrderMarketCell({ order }: Props) {
         <span className="font-medium text-typography-primary">
           {order.fromSymbol ?? "..."}/{order.toSymbol ?? "..."}
         </span>
+        <SolanaOrderExplorerLink order={order} />
       </span>
     );
   }
@@ -43,21 +59,43 @@ export function SolanaOrderMarketCell({ order }: Props) {
       <SolanaTokenIcon symbol={order.symbol} displaySize={20} className="size-20 !align-[-3px]" />
       <span className="font-medium text-typography-primary">{order.displayMarketName}</span>
       <span className={cx(order.isLong ? "text-green-500" : "text-red-500")}>{order.isLong ? t`Long` : t`Short`}</span>
+      <SolanaOrderExplorerLink order={order} />
     </span>
   );
 }
 
+/** Order type; when GMTrade's read-only validation finds issues, a dashed underline with the messages. */
 export function SolanaOrderTypeCell({ order }: Props) {
   const { i18n } = useLingui();
-  return <span>{i18n._(order.typeLabel)}</span>;
+  const label = i18n._(order.typeLabel);
+  if (order.errors.length === 0) return <span>{label}</span>;
+  return (
+    <TooltipWithPortal
+      handle={label}
+      handleClassName="cursor-help underline decoration-dashed decoration-1 underline-offset-2"
+      variant="none"
+      position="bottom-start"
+      content={
+        <>
+          {order.errors.map((error) => (
+            <div key={error.key}>{i18n._(error.message)}</div>
+          ))}
+        </>
+      }
+    />
+  );
 }
 
 export function SolanaOrderSizeCell({ order }: Props) {
   const size = formatSolanaOrderSize(order);
   if (order.category === "swap") {
     return (
-      <span className="numbers">
-        {size} <Trans>to</Trans> {formatSolanaSwapMinOutput(order)}
+      <span className="inline-flex flex-wrap items-center gap-4 numbers">
+        <span>{size}</span>
+        <SolanaTokenIcon symbol={order.fromSymbol} displaySize={18} />
+        <Trans>to</Trans>
+        <span>{formatSolanaSwapMinOutput(order)}</span>
+        <SolanaTokenIcon symbol={order.toSymbol} displaySize={18} />
       </span>
     );
   }
@@ -86,7 +124,10 @@ export function SolanaOrderTriggerPriceCell({ order }: Props) {
         handleClassName="numbers"
         position="bottom-end"
         content={
-          <Trans>You will receive at least {formatSolanaSwapMinOutput(order)} if this order is executed.</Trans>
+          <Trans>
+            You will receive at least {formatSolanaSwapMinOutput(order)} if this order is executed. This price is being
+            updated in real time based on swap fees and price impact.
+          </Trans>
         }
       />
     );
@@ -102,16 +143,35 @@ export function SolanaOrderTriggerPriceCell({ order }: Props) {
   );
 }
 
+function SolanaOrderExecutionNote() {
+  return (
+    <Trans>
+      Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and no
+      oracle reports are produced or if the price impact exceeds your acceptable price.
+    </Trans>
+  );
+}
+
 export function SolanaOrderMarkPriceCell({ order }: Props) {
   const text = formatSolanaMarkPrice(order);
-  if (order.category !== "position" || order.markPrice === undefined) return <span className="numbers">{text}</span>;
-  const content = order.isMarketOrder ? (
-    <Trans>The order will be executed at the next available oracle price.</Trans>
-  ) : (
-    <Trans>
-      The order will be executed when the oracle price is {order.triggerThreshold}{" "}
-      {formatSolanaOrderPrice(order.triggerPrice, order.isForexPrecision)}.
-    </Trans>
+  if (order.category !== "position") return <span className="numbers">{text}</span>;
+  const content = (
+    <>
+      <p>
+        {order.isMarketOrder ? (
+          <Trans>The order will be executed at the next available oracle price.</Trans>
+        ) : (
+          <Trans>
+            The order will be executed when the oracle price is {order.triggerThreshold}{" "}
+            {formatSolanaOrderPrice(order.triggerPrice, order.isForexPrecision)}.
+          </Trans>
+        )}
+      </p>
+      <br />
+      <p>
+        <SolanaOrderExecutionNote />
+      </p>
+    </>
   );
   return <TooltipWithPortal handle={text} handleClassName="numbers" position="bottom-end" content={content} />;
 }
@@ -132,9 +192,12 @@ export function SolanaOrderRow({ order }: Props) {
       <TableTd>
         <SolanaOrderTriggerPriceCell order={order} />
       </TableTd>
-      <TableTd className="text-left">
+      <TableTd>
         <SolanaOrderMarkPriceCell order={order} />
       </TableTd>
+      {/* Reserved Edit / Close slots (GMTrade layout). No actions in the read-only build. */}
+      <TableTd data-qa="solana-order-edit-slot" />
+      <TableTd data-qa="solana-order-close-slot" />
     </TableTr>
   );
 }

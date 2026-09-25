@@ -31,6 +31,7 @@ function tokenLabel(config: SolanaTokenConfig | undefined): string | undefined {
 function marketFields(raw: RawSolanaOrder, indexTokenAddress: string | undefined) {
   const indexToken = getSolanaTokenConfig(indexTokenAddress);
   const collateralToken = getSolanaTokenConfig(raw.initialCollateralToken);
+  const targetCollateralToken = getSolanaTokenConfig(raw.collateralToken);
   const symbol = tokenLabel(indexToken) ?? shortenAddress(raw.marketToken);
   return {
     indexToken,
@@ -38,6 +39,8 @@ function marketFields(raw: RawSolanaOrder, indexTokenAddress: string | undefined
     displayMarketName: indexToken?.displayMarketName ?? (indexToken ? `${symbol}/USD` : shortenAddress(raw.marketToken)),
     collateralSymbol: tokenLabel(collateralToken) ?? shortenAddress(raw.initialCollateralToken),
     collateralDecimals: collateralToken?.decimals,
+    targetCollateralTokenAddress: raw.collateralToken,
+    targetCollateralSymbol: tokenLabel(targetCollateralToken) ?? shortenAddress(raw.collateralToken),
   };
 }
 
@@ -51,6 +54,7 @@ function base(raw: RawSolanaOrder) {
     kind: raw.kind,
     typeLabel: getSolanaOrderTypeLabel(raw),
     updatedAt: raw.updatedAt,
+    errors: [],
   };
 }
 
@@ -143,6 +147,8 @@ export function toSolanaOrderViewModel(raw: RawSolanaOrder, ctx: SolanaOrderAdap
       collateralDeltaAmount: raw.initialCollateralDeltaAmount,
       collateralSymbol: fields.collateralSymbol,
       collateralDecimals: fields.collateralDecimals,
+      targetCollateralTokenAddress: fields.targetCollateralTokenAddress,
+      targetCollateralSymbol: fields.targetCollateralSymbol,
     };
     return model;
   }
@@ -170,6 +176,8 @@ export function toSolanaOrderViewModel(raw: RawSolanaOrder, ctx: SolanaOrderAdap
     collateralDeltaAmount: raw.initialCollateralDeltaAmount,
     collateralSymbol: fields.collateralSymbol,
     collateralDecimals: fields.collateralDecimals,
+    targetCollateralTokenAddress: fields.targetCollateralTokenAddress,
+    targetCollateralSymbol: fields.targetCollateralSymbol,
   };
   return model;
 }

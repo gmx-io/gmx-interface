@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 
+import { getSolanaOrderErrors, type SolanaOrderErrorPosition } from "./orderErrors";
 import { isOrdersListShowKind, sortSolanaOrdersForList } from "./orderRules";
 import { toSolanaOrderViewModel } from "./solanaOrderAdapter";
 import type { SolanaOrderViewModel } from "./types";
@@ -22,16 +23,23 @@ export type SolanaOrdersResult = {
   refresh: () => void;
 };
 
+const NO_POSITIONS: readonly SolanaOrderErrorPosition[] = [];
+
 export type SolanaOrdersOptions = {
   /** Enable the 15 s snapshot poll (Orders tab active). */
   pollingEnabled?: boolean;
+  /** Wallet positions (from `useSolanaPositions`), used for the order type validation tooltip. */
+  positions?: readonly SolanaOrderErrorPosition[];
 };
 
 /**
  * Read-only GMTrade orders of the connected Solana wallet:
  * order accounts (RPC) + market list and prices (backend socket) → GMTrade display rules → `SolanaOrderViewModel`.
  */
-export function useSolanaOrders({ pollingEnabled = false }: SolanaOrdersOptions = {}): SolanaOrdersResult {
+export function useSolanaOrders({
+  pollingEnabled = false,
+  positions = NO_POSITIONS,
+}: SolanaOrdersOptions = {}): SolanaOrdersResult {
   const { address: owner } = useSolanaWallet();
   const accounts = useSolanaOrderAccounts(owner, { pollingEnabled });
   const { marketInfoByToken, status: marketStatus, error: marketError } = useSolanaMarkets();
@@ -40,10 +48,11 @@ export function useSolanaOrders({ pollingEnabled = false }: SolanaOrdersOptions 
   const orders = useMemo(() => {
     if (!owner) return [];
     const visible = sortSolanaOrdersForList(accounts.raw.filter((order) => isOrdersListShowKind(order.kind)));
-    return visible.map((raw) =>
-      toSolanaOrderViewModel(raw, { marketInfo: marketInfoByToken.get(raw.marketToken), tokenPriceByMint })
-    );
-  }, [owner, accounts.raw, marketInfoByToken, tokenPriceByMint]);
+    return visible.map((raw) => {
+      const order = toSolanaOrderViewModel(raw, { marketInfo: marketInfoByToken.get(raw.marketToken), tokenPriceByMint });
+      return { ...order, errors: getSolanaOrderErrors(order, positions) };
+    });
+  }, [owner, accounts.raw, marketInfoByToken, tokenPriceByMint, positions]);
 
   const isMarketDataPending = orders.length > 0 && marketStatus !== "ready" && marketStatus !== "error";
 

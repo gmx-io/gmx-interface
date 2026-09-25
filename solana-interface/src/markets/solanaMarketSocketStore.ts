@@ -13,6 +13,17 @@ export type SolanaMarketInfo = {
   shortToken: string;
   /** Market token total supply as an integer string. Needed by the SDK market model. */
   supply: string;
+  /**
+   * Current fee rates as a fraction per hour × 1e20, signed from the position's point of view
+   * (negative = the position pays). Absent when the feed omits them.
+   */
+  longFundingFeeRateHour?: bigint;
+  longBorrowingFeeRateHour?: bigint;
+  shortFundingFeeRateHour?: bigint;
+  shortBorrowingFeeRateHour?: bigint;
+  /** Maintenance margin factor per side, fraction × 1e20. */
+  minCollateralFactorForLong?: bigint;
+  minCollateralFactorForShort?: bigint;
 };
 
 /** Ticker from the GMTrade backend `tickers` feed. All values are integers scaled by 1e20. */
@@ -20,6 +31,8 @@ export type SolanaTicker = {
   symbol: string;
   /** Whole-token USD price × 1e20. */
   price?: bigint;
+  /** Mid price per smallest token unit × 1e20. */
+  unitPrice?: bigint;
   /** Price per smallest token unit × 1e20. These feed the SDK `status()` call. */
   minUnitPrice: bigint;
   maxUnitPrice: bigint;
@@ -74,6 +87,21 @@ export function toBigIntOrUndefined(value: unknown): bigint | undefined {
   return undefined;
 }
 
+/** Like `toBigIntOrUndefined` but also accepts negative integers (fee rates are signed). */
+export function toSignedBigIntOrUndefined(value: unknown): bigint | undefined {
+  if (typeof value === "string" && /^-?\d+$/.test(value)) return BigInt(value);
+  return toBigIntOrUndefined(value);
+}
+
+const MARKET_OPTIONAL_BIGINT_KEYS = [
+  "longFundingFeeRateHour",
+  "longBorrowingFeeRateHour",
+  "shortFundingFeeRateHour",
+  "shortBorrowingFeeRateHour",
+  "minCollateralFactorForLong",
+  "minCollateralFactorForShort",
+] as const;
+
 function readString(record: Record<string, unknown>, key: string): string | undefined {
   const value = record[key];
   return typeof value === "string" && value ? value : undefined;
@@ -96,7 +124,18 @@ export function parseIndexTokensPayload(payload: unknown): SolanaMarketInfo[] {
       const shortToken = readString(record, "shortToken");
       const supply = toBigIntOrUndefined(record.supply);
       if (!marketToken || !indexToken || !longToken || !shortToken || supply === undefined) continue;
-      result.push({ marketToken, indexToken, longToken, shortToken, supply: supply.toString() });
+      const marketInfo: SolanaMarketInfo = {
+        marketToken,
+        indexToken,
+        longToken,
+        shortToken,
+        supply: supply.toString(),
+      };
+      for (const key of MARKET_OPTIONAL_BIGINT_KEYS) {
+        const value = toSignedBigIntOrUndefined(record[key]);
+        if (value !== undefined) marketInfo[key] = value;
+      }
+      result.push(marketInfo);
     }
   }
   return result;
@@ -115,7 +154,14 @@ export function parseTickersPayload(payload: unknown): SolanaTicker[] {
     if (!symbol || minUnitPrice === undefined || maxUnitPrice === undefined) continue;
     if (minUnitPrice <= 0n || maxUnitPrice <= 0n) continue;
     const price = toBigIntOrUndefined(record.price);
-    result.push({ symbol, price: price && price > 0n ? price : undefined, minUnitPrice, maxUnitPrice });
+    const unitPrice = toBigIntOrUndefined(record.unitPrice);
+    result.push({
+      symbol,
+      price: price && price > 0n ? price : undefined,
+      unitPrice: unitPrice && unitPrice > 0n ? unitPrice : undefined,
+      minUnitPrice,
+      maxUnitPrice,
+    });
   }
   return result;
 }

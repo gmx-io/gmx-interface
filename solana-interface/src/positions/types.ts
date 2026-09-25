@@ -86,6 +86,8 @@ export type SolanaPositionViewModel = {
   collateralTokenAddress: string;
   symbol: string;
   displayMarketName: string;
+  /** GMTrade pool label: "LONG-SHORT", or the single symbol when both sides use the same token. */
+  poolName?: string;
   isLong: boolean;
   sizeInUsd: bigint;
   sizeInTokens: bigint;
@@ -94,17 +96,35 @@ export type SolanaPositionViewModel = {
   collateralSymbol: string;
   collateralDecimals?: number;
   collateralValue?: bigint;
+  /** Initial collateral minus accrued borrowing and negative funding fees (GMTrade "margin"). */
+  netCollateralValue?: bigint;
+  /** `netCollateralValue` in collateral token units (raw integer). Needs the collateral token price. */
+  netCollateralAmount?: bigint;
   entryPrice?: bigint;
   markPrice?: bigint;
   liquidationPrice?: bigint;
   pendingPnl?: bigint;
+  /** `pendingPnl` over the initial collateral, basis points (0 when the collateral value is 0). */
+  pendingPnlBps?: bigint;
   pnlAfterFees?: bigint;
   pnlAfterFeesBps?: bigint;
   netValue?: bigint;
   leverage?: bigint;
   pendingBorrowingFee?: bigint;
   pendingFundingFee?: bigint;
+  /** Claimable positive funding fee (long + short token), USD. */
+  pendingClaimableFundingFee?: bigint;
   closeOrderFee?: bigint;
+  /** Estimated fees over the next 24h at current market rates, signed (negative = the position pays). */
+  borrowingFeePerDay?: bigint;
+  fundingFeePerDay?: bigint;
+  /**
+   * Hours until fees alone would push the net value below the maintenance margin
+   * (GMTrade estimate). `NO_LIQUIDATION_BY_FEES_HOURS` when fees do not reduce the collateral.
+   */
+  estimatedLiquidationHours?: bigint;
+  /** Why the SDK reports no liquidation price, when the collateral fully covers the position. */
+  noLiquidationPriceReason?: "short-collateral-covers-size" | "long-stable-collateral-covers-size";
   increasedAt: bigint;
   updatedAtSlot: bigint;
   priceUnavailable: boolean;

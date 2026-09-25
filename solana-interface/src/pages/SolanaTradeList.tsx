@@ -34,7 +34,7 @@ export function SolanaTradeList() {
   const [showChartPositions, setShowChartPositions] = useState(true);
   const positions = useSolanaPositions();
   const positionsCount = positions.isLoading ? 0 : positions.positions.length;
-  const orders = useSolanaOrders({ pollingEnabled: tab === "orders" });
+  const orders = useSolanaOrders({ pollingEnabled: tab === "orders", positions: positions.positions });
   const ordersCount = orders.isLoading ? 0 : orders.count;
 
   const tabOptions = useMemo(
@@ -89,6 +89,7 @@ export function SolanaTradeList() {
       {tab === "positions" ? (
         <SolanaPositionList
           positions={positions.positions}
+          orders={orders.orders}
           isWalletConnected={positions.isWalletConnected}
           isLoading={positions.isLoading}
           error={positions.error}

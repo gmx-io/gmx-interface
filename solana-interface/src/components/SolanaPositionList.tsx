@@ -11,11 +11,15 @@ import { TableScrollFadeContainer } from "components/TableScrollFade/TableScroll
 
 import { SolanaPositionCard } from "./SolanaPositionCard";
 import { SolanaPositionItem } from "./SolanaPositionItem";
+import type { SolanaOrderViewModel } from "../orders/types";
+import { groupSolanaOrdersByPosition } from "../positions/positionOrders";
 import { sortSolanaPositions, type SolanaPositionSortField } from "../positions/sortSolanaPositions";
 import type { SolanaPositionViewModel } from "../positions/types";
 
 export type SolanaPositionListProps = {
   positions: SolanaPositionViewModel[];
+  /** Wallet orders; the ones attached to a position feed its TP/SL and "Orders" cells. */
+  orders?: readonly SolanaOrderViewModel[];
   isWalletConnected: boolean;
   isLoading: boolean;
   error: Error | null;
@@ -48,8 +52,11 @@ function SolanaPositionsError({ error, onRetry }: { error: Error; onRetry: () =>
 }
 
 /** Read-only Solana positions: desktop table (>1024px) or mobile cards. */
+const NO_ORDERS: readonly SolanaOrderViewModel[] = [];
+
 export function SolanaPositionList({
   positions,
+  orders = NO_ORDERS,
   isWalletConnected,
   isLoading,
   error,
@@ -58,6 +65,7 @@ export function SolanaPositionList({
   const { isTablet } = useBreakpoints();
   const { orderBy, direction, getSorterProps } = useSorterHandlers<SolanaPositionSortField>("solana-position-list");
   const sorted = useMemo(() => sortSolanaPositions(positions, orderBy, direction), [positions, orderBy, direction]);
+  const ordersByPosition = useMemo(() => groupSolanaOrdersByPosition(orders), [orders]);
 
   const isEmpty = positions.length === 0;
   const showError = Boolean(error) && !isLoading && isEmpty;
@@ -80,7 +88,11 @@ export function SolanaPositionList({
         {!isLoading && sorted.length > 0 && (
           <div className="grid grid-cols-1 gap-8 min-[800px]:grid-cols-2">
             {sorted.map((position) => (
-              <SolanaPositionCard key={position.key} position={position} />
+              <SolanaPositionCard
+                key={position.key}
+                position={position}
+                orders={ordersByPosition.get(position.positionAddress)}
+              />
             ))}
           </div>
         )}
@@ -135,7 +147,14 @@ export function SolanaPositionList({
           </TableTheadTr>
         </thead>
         <tbody>
-          {!isLoading && sorted.map((position) => <SolanaPositionItem key={position.key} position={position} />)}
+          {!isLoading &&
+            sorted.map((position) => (
+              <SolanaPositionItem
+                key={position.key}
+                position={position}
+                orders={ordersByPosition.get(position.positionAddress)}
+              />
+            ))}
         </tbody>
       </Table>
       {showError && error ? (

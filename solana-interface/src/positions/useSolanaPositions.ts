@@ -77,13 +77,21 @@ export function useSolanaPositions(): SolanaPositionsResult {
           });
         } catch (cause) {
           // Keep the position visible with its on-chain fields; report the SDK failure once.
-          deriveError = deriveError ?? (new Error(
-            `Failed to calculate position ${raw.pubkey}: ${cause instanceof Error ? cause.message : String(cause)}`
-          ));
+          deriveError =
+            deriveError ??
+            new Error(
+              `Failed to calculate position ${raw.pubkey}: ${cause instanceof Error ? cause.message : String(cause)}`
+            );
           calculation = { priceUnavailable: true, unavailableReason: "calculation-error" };
         }
       }
-      return toSolanaPositionViewModel(raw, calculation, marketInfo, indexTicker);
+      return toSolanaPositionViewModel(
+        raw,
+        calculation,
+        marketInfo,
+        indexTicker,
+        tokenPriceByMint.get(raw.collateralToken)
+      );
     });
     list.sort((a, b) => (a.increasedAt === b.increasedAt ? 0 : a.increasedAt > b.increasedAt ? -1 : 1));
     return { positions: list, deriveError };

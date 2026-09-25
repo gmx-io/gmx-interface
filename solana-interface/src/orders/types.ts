@@ -42,6 +42,15 @@ export type SolanaOrderCategory = "position" | "swap" | "collateral";
 export type SolanaTriggerThreshold = "<" | ">";
 export type SolanaAcceptableComparator = "≤" | "≥";
 
+export type SolanaOrderErrorLevel = "error" | "warning";
+
+/** Read-only validation hint shown as a tooltip on the order type (GMTrade `getOrderErrors` subset). */
+export type SolanaOrderError = {
+  key: "triggerPrice" | "collateralToken";
+  level: SolanaOrderErrorLevel;
+  message: MessageDescriptor;
+};
+
 type SolanaOrderViewModelBase = {
   /** Order account address (base58). */
   key: string;
@@ -52,6 +61,8 @@ type SolanaOrderViewModelBase = {
   kind: number;
   typeLabel: MessageDescriptor;
   updatedAt: bigint;
+  /** Errors first, then warnings. Empty until `useSolanaOrders` joins the wallet positions. */
+  errors: SolanaOrderError[];
 };
 
 /**
@@ -78,8 +89,12 @@ export type SolanaPositionOrderViewModel = SolanaOrderViewModelBase & {
   noAcceptableLimit: boolean;
   markPrice?: bigint;
   collateralDeltaAmount: bigint;
+  /** Initial (pay) collateral token. */
   collateralSymbol: string;
   collateralDecimals?: number;
+  /** Position collateral token the order targets (`params.collateral_token`). */
+  targetCollateralTokenAddress: string;
+  targetCollateralSymbol: string;
 };
 
 /** MarketIncrease / MarketDecrease with `sizeDeltaUsd === 0`: deposit / withdraw collateral. */
@@ -92,6 +107,8 @@ export type SolanaCollateralOrderViewModel = SolanaOrderViewModelBase & {
   collateralDeltaAmount: bigint;
   collateralSymbol: string;
   collateralDecimals?: number;
+  targetCollateralTokenAddress: string;
+  targetCollateralSymbol: string;
 };
 
 export type SolanaSwapOrderViewModel = SolanaOrderViewModelBase & {
