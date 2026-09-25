@@ -1327,6 +1327,10 @@ msgstr "스왑 수수료 계수 (음의 PI)"
 msgid "Claimable balance"
 msgstr "청구 가능 잔액"
 
+#: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
+msgid "Current {symbol} pool value / max cap"
+msgstr "현재 {symbol} 풀 가치 / 최대 한도"
+
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Yes! You can create as many codes as you want. This is useful for tracking different campaigns, communities, or platforms separately."
 msgstr ""
@@ -11641,6 +11645,10 @@ msgstr "Multicall 시뮬레이션"
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "Events"
 msgstr "이벤트"
+
+#: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
+msgid "Current pool value / max pool cap"
+msgstr "현재 풀 가치 / 최대 풀 한도"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order won't add to the existing {longText} position: it uses {collateralSymbol} as collateral while the position uses {symbol}. Executing it opens a separate position."

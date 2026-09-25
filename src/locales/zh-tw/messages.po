@@ -1327,6 +1327,10 @@ msgstr "兌換手續費因子（負價格影響）"
 msgid "Claimable balance"
 msgstr "可領取餘額"
 
+#: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
+msgid "Current {symbol} pool value / max cap"
+msgstr "目前 {symbol} 池價值 / 最大上限"
+
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Yes! You can create as many codes as you want. This is useful for tracking different campaigns, communities, or platforms separately."
 msgstr ""
@@ -11641,6 +11645,10 @@ msgstr "Multicall 模擬"
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "Events"
 msgstr "事件"
+
+#: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
+msgid "Current pool value / max pool cap"
+msgstr "目前池價值 / 最大池上限"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order won't add to the existing {longText} position: it uses {collateralSymbol} as collateral while the position uses {symbol}. Executing it opens a separate position."
