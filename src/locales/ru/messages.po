@@ -44,7 +44,7 @@ msgstr "Или обновите RPC вашего кошелька через <0>
 msgid "Monthly"
 msgstr "Ежемесячно"
 
-#: solana-interface/src/components/SolanaOrderList.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaOrderList.tsx
 msgid "Connect a Solana wallet to view orders"
 msgstr ""
 
@@ -85,7 +85,7 @@ msgstr "Подписывайте каждую транзакцию в сети, 
 msgid "Automatically compounds your GMX rewards without manual claiming"
 msgstr "Автоматически реинвестирует ваши вознаграждения GMX без ручного получения"
 
-#: solana-interface/src/components/SolanaPositionList.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionList.tsx
 msgid "Failed to load positions."
 msgstr "Не удалось загрузить позиции."
 
@@ -325,7 +325,7 @@ msgstr "Производительность"
 msgid "Solana address"
 msgstr "Адрес Solana"
 
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 msgid "Negative funding fees and borrowing fees are settled against the collateral automatically and will influence the time to liquidation, as shown under the liquidation price tooltip."
 msgstr ""
 
@@ -527,7 +527,7 @@ msgstr "Подтвердить вывод"
 msgid "Settled funding fees"
 msgstr "Расчёт комиссий за фандинг"
 
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 msgid "Estimated Time to Liquidation"
 msgstr ""
 
@@ -585,7 +585,7 @@ msgstr "Уменьшить"
 msgid "Insufficient liquidity in any BTC/USD pool"
 msgstr "Недостаточная ликвидность во всех пулах BTC/USD"
 
-#: solana-interface/src/components/SolanaOrderItem.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaOrderItem.tsx
 msgid "The order will be executed at the next available oracle price."
 msgstr ""
 
@@ -872,8 +872,8 @@ msgstr "Своп на внешнем агрегаторе"
 msgid "Classic"
 msgstr "Классический"
 
-#: solana-interface/src/components/SolanaPositionCard.tsx
-#: solana-interface/src/components/SolanaPositionCard.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionCard.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionCard.tsx
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -951,7 +951,7 @@ msgstr "Высокое влияние внешнего свопа"
 msgid "Keep more of what you earn"
 msgstr "Сохраняйте больше заработанного"
 
-#: solana-interface/src/components/SolanaOrderItem.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaOrderItem.tsx
 msgid "The order will be executed when the oracle price is {0} {1}."
 msgstr ""
 
@@ -1018,7 +1018,7 @@ msgstr "Подробнее"
 msgid "More"
 msgstr "Больше"
 
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} short position size, the collateral value will increase to cover any negative PnL, so there is no liquidation price."
 msgstr ""
 
@@ -1301,7 +1301,7 @@ msgstr "Обмен Yield Yak"
 msgid "Vaultka"
 msgstr "Vaultka"
 
-#: solana-interface/src/components/SolanaOrderList.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaOrderList.tsx
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
@@ -1875,7 +1875,7 @@ msgstr "Выберите пул, поддерживающий {0} в качес�
 msgid "Send permit"
 msgstr "Отправить разрешение"
 
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price."
 msgstr ""
 
@@ -2013,10 +2013,10 @@ msgstr "Купить GMX с помощью любого токена из люб
 msgid "Markets"
 msgstr "Рынки"
 
-#: solana-interface/src/components/SolanaOrderList.tsx
-#: solana-interface/src/components/SolanaOrderList.tsx
-#: solana-interface/src/components/SolanaPositionList.tsx
-#: solana-interface/src/components/SolanaPositionList.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaOrderList.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaOrderList.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionList.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionList.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
 msgstr "Повторить"
@@ -2805,7 +2805,7 @@ msgstr "Позиция превышает максимально допусти�
 msgid "Buy or transfer {nativeTokenSymbol} to {chainName}"
 msgstr "Купить или перевести {nativeTokenSymbol} на {chainName}"
 
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 msgid "Close Fee"
 msgstr ""
 
@@ -2930,8 +2930,8 @@ msgstr "Резервный фактор открытого интереса дл
 msgid "Layer 2"
 msgstr "Layer 2"
 
-#: solana-interface/src/components/SolanaPositionItem.tsx
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 msgid "Accrued Negative Funding Fee"
 msgstr ""
 
@@ -3194,8 +3194,8 @@ msgstr "Доступно обновление"
 msgid "Buy GMX on {chainName}"
 msgstr "Купить GMX на {chainName}"
 
-#: solana-interface/src/components/SolanaOrderItem.tsx
-#: solana-interface/src/components/SolanaPositionCard.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaOrderItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionCard.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -3231,8 +3231,8 @@ msgstr "Количество частей по умолчанию для TWAP-о
 msgid "Set TP price below mark price"
 msgstr "Установите цену TP ниже расчётной цены"
 
-#: solana-interface/src/components/SolanaOrderItem.tsx
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaOrderItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "View in explorer"
@@ -3572,7 +3572,7 @@ msgstr "Обмены"
 msgid "Creating order..."
 msgstr "Создание ордера…"
 
-#: solana-interface/src/components/SolanaOrderList.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaOrderList.tsx
 msgid "Failed to load orders."
 msgstr ""
 
@@ -3597,7 +3597,7 @@ msgstr "Транзакция не удалась.<0/><1/><2>Просмотр</2>
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr "Недостаточный баланс {symbol}: доступно {availableFormatted}, требуется {requiredFormatted}"
 
-#: solana-interface/src/components/SolanaPositionList.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionList.tsx
 #: src/components/PositionList/SymbolSortDropdown.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -3649,7 +3649,7 @@ msgstr "Более быстрое исполнение с премиум-RPC GMX
 msgid "No assets in your GMX Account"
 msgstr "На вашем GMX Account нет активов"
 
-#: solana-interface/src/components/SolanaOrderItem.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaOrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Order type"
 msgstr "Тип ордера"
@@ -3870,7 +3870,7 @@ msgstr "Высокое влияние на цену при обмене"
 msgid "Cancellable in {minutesText}{seconds}s"
 msgstr "Отмена доступна через {minutesText}{seconds}с"
 
-#: solana-interface/src/components/SolanaPositionList.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionList.tsx
 msgid "Connect a Solana wallet to view positions"
 msgstr "Подключите кошелёк Solana, чтобы просмотреть позиции"
 
@@ -3885,7 +3885,7 @@ msgstr "Четыре пути внутрь."
 msgid "Trader activity"
 msgstr "Активность трейдеров"
 
-#: solana-interface/src/components/SolanaOrderItem.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaOrderItem.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/PendingTPSLOrder.tsx
@@ -4122,7 +4122,7 @@ msgstr "Баннеры"
 msgid "Fees (including swap)"
 msgstr "Комиссии (включая обмен)"
 
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 msgid "PnL After Fees"
 msgstr ""
 
@@ -4532,7 +4532,7 @@ msgstr "Подключено к {sourceChainName}"
 msgid "Fee APR"
 msgstr "Годовая Процентная Ставка Комиссии"
 
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "SL"
@@ -4831,7 +4831,7 @@ msgstr "Общий объём"
 msgid "One-Click Trading action limit reached. You're now using Express Trading."
 msgstr "Достигнут лимит действий One-Click Trading. Теперь используется Express Trading."
 
-#: solana-interface/src/components/SolanaPositionList.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 msgid "MARGIN"
 msgstr "МАРЖА"
@@ -5094,7 +5094,7 @@ msgstr "Своп отправлен"
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Slippage differs from price impact, which is based on open interest imbalances. <4>Read more</4>."
 msgstr "Разница между ожидаемой и фактической ценой исполнения из-за волатильности. Ордера не будут исполнены, если проскальзывание превысит ваш максимум. Настройте значение по умолчанию в настройках.<0/><1/>Низкое значение (например, менее -{0}) может привести к неисполнению ордеров при волатильности.<2/><3/>Проскальзывание отличается от влияния на цену, которое основано на дисбалансе открытого интереса. <4>Подробнее</4>."
 
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 msgid "Accrued Positive Funding Fee"
 msgstr ""
 
@@ -5196,8 +5196,8 @@ msgstr "<0>Покупка {0}{1}<1>{poolName}</1></0> <2>с {tokensText}</2>"
 msgid "Pairs trading"
 msgstr "Парный трейдинг"
 
-#: solana-interface/src/components/SolanaPositionItem.tsx
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 msgid "Initial Collateral"
 msgstr ""
 
@@ -5551,8 +5551,8 @@ msgstr "Высокая комиссия прибыли свопа"
 msgid "GM pools"
 msgstr "GM пулы"
 
-#: solana-interface/src/components/SolanaPositionCard.tsx
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionCard.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -5930,7 +5930,7 @@ msgstr "GM: {0}"
 msgid "Pool max long USD for deposit"
 msgstr "Макс. лонг USD пула для депозита"
 
-#: solana-interface/src/components/SolanaPositionCard.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionCard.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Net value"
 msgstr "Чистая стоимость"
@@ -6013,7 +6013,7 @@ msgstr "Перевести аккаунт"
 msgid "LONGS NET RATE / 1H"
 msgstr "СТАВКА ЛОНГОВ / 1Ч"
 
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 msgid "Net Value: Initial Collateral + PnL - Borrowing Fee - Negative Funding Fee - Close Fee"
 msgstr ""
 
@@ -6183,8 +6183,8 @@ msgstr "Настройки обновлены"
 msgid "Connect wallet to view distributions"
 msgstr "Подключите кошелек, чтобы просмотреть распределения"
 
-#: solana-interface/src/components/SolanaOrderItem.tsx
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaOrderItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/MarketNetFee/MarketNetFee.tsx
@@ -6421,8 +6421,8 @@ msgstr "Лонги"
 msgid "Affiliate rewards claimed"
 msgstr "Партнёрские вознаграждения получены"
 
-#: solana-interface/src/components/SolanaPositionItem.tsx
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 msgid "Accrued Borrowing Fee"
 msgstr ""
 
@@ -6567,7 +6567,7 @@ msgstr "Комиссия за вывод"
 msgid "esGMX rewards"
 msgstr "Награды esGMX"
 
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
@@ -6835,7 +6835,7 @@ msgstr "Количество частей"
 msgid "Edit Limit Increase: {suffix}"
 msgstr "Изменить лимитное увеличение: {suffix}"
 
-#: solana-interface/src/components/SolanaOrderList.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaOrderList.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/OrderList/OrderList.tsx
 msgid "No open orders"
@@ -7117,7 +7117,7 @@ msgstr "Это грантовая программа? Я получу токен
 msgid "Set SL price above mark price"
 msgstr "Установите цену SL выше расчётной цены"
 
-#: solana-interface/src/components/SolanaOrderList.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaOrderList.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -7256,7 +7256,7 @@ msgstr "Ошибка исполнения ордера"
 msgid "Sell GM for {0} and {1} up to the caps below. Remaining tokens are reserved for open positions."
 msgstr "Продайте GM за {0} и {1} в пределах лимитов ниже. Оставшиеся токены зарезервированы для открытых позиций."
 
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 msgid "Current Borrowing Fee / Day"
 msgstr ""
 
@@ -7695,7 +7695,7 @@ msgstr "Допустимая цена ордера"
 msgid "Updating {updateOrdersCount} TP/SL orders..."
 msgstr "Обновление {updateOrdersCount} TP/SL ордеров..."
 
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 msgid "Orders ({count})"
 msgstr ""
 
@@ -8072,7 +8072,7 @@ msgstr "Влияние на цену превышает размер ордер�
 msgid "Want to trade faster with One-Click Trading?"
 msgstr "Хотите торговать быстрее с One-Click Trading?"
 
-#: solana-interface/src/components/SolanaPositionList.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionList.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
@@ -8193,7 +8193,7 @@ msgstr "Истина"
 msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
 msgstr "Введите реферальный код, чтобы получить скидку на торговые комиссии.<0/> В зависимости от реферального тира вы можете сэкономить до 10% на всех комиссиях за<1/> открытие и закрытие."
 
-#: solana-interface/src/components/SolanaPositionList.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/Jobs/Jobs.tsx
@@ -8305,8 +8305,8 @@ msgstr "Панель управления Dune Analytics"
 msgid "No distribution history"
 msgstr "Нет истории распределений"
 
-#: solana-interface/src/components/SolanaOrderItem.tsx
-#: solana-interface/src/components/SolanaPositionCard.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaOrderItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionCard.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -8541,7 +8541,7 @@ msgstr "Недостаточная ликвидность"
 msgid "No executed or cancelled transaction yet"
 msgstr "Пока нет исполненных или отменённых транзакций"
 
-#: solana-interface/src/components/SolanaOrderItem.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaOrderItem.tsx
 msgid "to"
 msgstr ""
 
@@ -8581,7 +8581,7 @@ msgstr "TokenTerminal"
 msgid "Summary"
 msgstr "Сводка"
 
-#: solana-interface/src/components/SolanaPositionList.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "ENTRY PRICE"
@@ -8828,8 +8828,8 @@ msgstr "Ссылка скопирована"
 msgid "Total wallet received"
 msgstr "Всего получено на кошелёк"
 
-#: solana-interface/src/components/SolanaOrderList.tsx
-#: solana-interface/src/components/SolanaPositionList.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaOrderList.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionList.tsx
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/Claims/ClaimsHistory.tsx
@@ -8895,7 +8895,7 @@ msgstr "Перевод..."
 msgid "Staked GMX:"
 msgstr "GMX в стейкинге:"
 
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 msgid "Use the edit collateral icon to deposit or withdraw collateral."
 msgstr ""
 
@@ -9753,7 +9753,7 @@ msgstr "{0} GMX"
 msgid "Price impact exceeds order size. Impact: {priceImpactUsdText}, order: {sizeDeltaUsdText}"
 msgstr "Влияние на цену превышает размер ордера. Влияние: {priceImpactUsdText}, ордер: {sizeDeltaUsdText}"
 
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 msgid "Active Orders"
 msgstr ""
 
@@ -9765,7 +9765,7 @@ msgstr "Jones DAO"
 msgid "Set short Stop Market @ {0}"
 msgstr "Установить Stop Market шорт @ {0}"
 
-#: solana-interface/src/components/SolanaPositionCard.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionCard.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
@@ -9797,7 +9797,7 @@ msgstr "Недостаточный баланс {nativeTokenSymbol} для по�
 msgid "Send remaining margin to"
 msgstr "Отправить оставшуюся маржу на"
 
-#: solana-interface/src/components/SolanaOrderItem.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaOrderItem.tsx
 msgid "Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and no oracle reports are produced or if the price impact exceeds your acceptable price."
 msgstr ""
 
@@ -10071,7 +10071,7 @@ msgstr "Бонусная скидка"
 msgid "Decentralized options strategies"
 msgstr "Децентрализованные опционные стратегии"
 
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 msgid "Positive funding fees are automatically claimed when the position is adjusted through any operation."
 msgstr ""
 
@@ -10096,7 +10096,7 @@ msgstr "Комиссия за открытие"
 msgid "Edit referral code"
 msgstr "Редактирование реферального кода"
 
-#: solana-interface/src/components/SolanaOrderItem.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaOrderItem.tsx
 msgid "Acceptable Price"
 msgstr ""
 
@@ -10223,7 +10223,7 @@ msgstr "Макс. зарезервировано {directionLabel}"
 msgid "Technical guidance plus architecture and UX feedback."
 msgstr "Техническое сопровождение и фидбэк по архитектуре и UX."
 
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 msgid "This position could still be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr ""
 
@@ -10258,7 +10258,7 @@ msgstr "Создать код"
 msgid "Error submitting order"
 msgstr "Ошибка при отправке ордера"
 
-#: solana-interface/src/components/SolanaPositionCard.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionCard.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeboxMarginFields/MarginField.tsx
@@ -10926,8 +10926,8 @@ msgstr "Ордер не может быть обновлён. Данный ти�
 msgid "Unable to fetch swap route. Please try again."
 msgstr "Не удалось получить маршрут свопа. Попробуйте ещё раз."
 
-#: solana-interface/src/components/SolanaOrderItem.tsx
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaOrderItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/MarketNetFee/MarketNetFee.tsx
@@ -10962,8 +10962,8 @@ msgstr "Не удалось получить маршрут свопа. Попр
 msgid "Long"
 msgstr "Лонг"
 
-#: solana-interface/src/components/SolanaPositionCard.tsx
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionCard.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxPoolRow.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxPoolRow.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxPoolRow.tsx
@@ -10973,7 +10973,7 @@ msgstr "Лонг"
 msgid "Pool"
 msgstr "Пул"
 
-#: solana-interface/src/components/SolanaPositionList.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "LIQUIDATION PRICE"
@@ -11630,7 +11630,7 @@ msgstr "Делистинг"
 msgid "{0} (external)"
 msgstr "{0} (внешний)"
 
-#: solana-interface/src/components/SolanaOrderList.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaOrderList.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "TRIGGER PRICE"
@@ -11743,7 +11743,7 @@ msgstr "Маршрут свопа недоступен"
 msgid "I understand that staking power does not transfer. The receiving wallet will start with zero staking power and a fresh historical max."
 msgstr "Я понимаю, что сила стейкинга не переносится. Получающий кошелёк начнёт с нулевой силой стейкинга и новым историческим максимумом."
 
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 msgid "Current Funding Fee / Day"
 msgstr ""
 
@@ -11953,7 +11953,7 @@ msgstr "Отмена через ..."
 msgid "GMX | decentralized perpetual exchange"
 msgstr "GMX | децентрализованная бессрочная биржа"
 
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 msgid "Liquidation price is influenced by fees and collateral value."
 msgstr ""
 
@@ -12114,7 +12114,7 @@ msgstr "Оценить свою экономию"
 msgid "Re-sign"
 msgstr "Переподписать"
 
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 msgid "Price data is not available yet. Values depending on it are hidden."
 msgstr "Данные о цене пока недоступны. Зависящие от них значения скрыты."
 
@@ -12142,13 +12142,13 @@ msgstr "Клейм средств"
 msgid "Your funds are safe. Contact support for help."
 msgstr "Ваши средства в безопасности. Обратитесь в поддержку за помощью."
 
-#: solana-interface/src/components/SolanaPositionList.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 msgid "NET VALUE"
 msgstr "НЕТТО-СТОИМОСТЬ"
 
-#: solana-interface/src/components/SolanaOrderList.tsx
-#: solana-interface/src/components/SolanaPositionList.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaOrderList.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionList.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx
 msgid "MARK PRICE"
@@ -12175,7 +12175,7 @@ msgstr "Ордер на продажу отменён"
 msgid "Acceptable price impact"
 msgstr "Допустимое влияние на цену"
 
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 msgid "Use the \"Close\" button to reduce your position."
 msgstr ""
 
@@ -12367,7 +12367,7 @@ msgstr "Воспользуйтесь кредитным плечом до 100x �
 msgid "Your current staked balance relative to your historical max. Dropping below 80% resets your accumulated staking power to zero."
 msgstr "Ваш текущий баланс стейкинга относительно исторического максимума. Падение ниже 80% сбрасывает накопленную силу стейкинга до нуля."
 
-#: solana-interface/src/components/SolanaOrderItem.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaOrderItem.tsx
 msgid "You will receive at least {0} if this order is executed. This price is being updated in real time based on swap fees and price impact."
 msgstr ""
 
@@ -12384,7 +12384,7 @@ msgstr "Введите новый размер или цену"
 msgid "Unknown order"
 msgstr "Неизвестный ордер"
 
-#: solana-interface/src/components/SolanaPositionCard.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionCard.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionShare/PositionShareCard.tsx
@@ -12482,7 +12482,7 @@ msgstr "Rage Trade"
 msgid "1h"
 msgstr "1ч"
 
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 msgid "Click on the position to select it, then use the trade box to increase it."
 msgstr ""
 
@@ -12710,7 +12710,7 @@ msgstr "Дельта-нейтральные хранилища"
 msgid "Sending shift request..."
 msgstr "Отправка запроса на перемещение…"
 
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr ""
 
@@ -12877,7 +12877,7 @@ msgstr "За всё время"
 msgid "{ordersText} canceled"
 msgstr "{ordersText} отменён"
 
-#: solana-interface/src/components/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx

@@ -10,7 +10,6 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import NewLinkIcon from "img/ic_new_link.svg?react";
 
-import { SolanaTokenIcon } from "./SolanaTokenIcon";
 import {
   formatSolanaAcceptablePrice,
   formatSolanaCollateralDelta,
@@ -20,8 +19,9 @@ import {
   formatSolanaSwapMinOutput,
   formatSolanaTriggerPrice,
   getSolanaCollateralDeltaLabel,
-} from "../orders/solanaOrderFormatters";
-import type { SolanaOrderViewModel } from "../orders/types";
+} from "../../orders/solanaOrderFormatters";
+import type { SolanaOrderViewModel } from "../../orders/types";
+import { SolanaTokenIcon } from "../SolanaTokenIcon";
 
 type Props = { order: SolanaOrderViewModel };
 

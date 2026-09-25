@@ -9,8 +9,8 @@ import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableConten
 import { Table, TableTh, TableTheadTr } from "components/Table/Table";
 import Tabs from "components/Tabs/Tabs";
 
-import { SolanaOrderList } from "../components/SolanaOrderList";
-import { SolanaPositionList } from "../components/SolanaPositionList";
+import { SolanaOrderList } from "../components/SolanaOrderList/SolanaOrderList";
+import { SolanaPositionList } from "../components/SolanaPositionList/SolanaPositionList";
 import { useSolanaOrders } from "../orders/useSolanaOrders";
 import { useSolanaPositions } from "../positions/useSolanaPositions";
 

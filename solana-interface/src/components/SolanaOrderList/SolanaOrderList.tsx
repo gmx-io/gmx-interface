@@ -8,7 +8,7 @@ import { Table, TableTh, TableTheadTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 
 import { SolanaOrderCard, SolanaOrderRow } from "./SolanaOrderItem";
-import type { SolanaOrderViewModel } from "../orders/types";
+import type { SolanaOrderViewModel } from "../../orders/types";
 
 export type SolanaOrderListProps = {
   orders: SolanaOrderViewModel[];
