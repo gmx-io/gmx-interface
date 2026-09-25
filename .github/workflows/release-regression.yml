@@ -1,0 +1,160 @@
+name: Release regression
+run-name: "Regression for PR #${{ inputs.pr_number }} (${{ inputs.chain_id }})"
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number whose current commit has a successful Cloudflare preview"
+        type: string
+        required: true
+      chain_id:
+        description: "Settlement chain"
+        type: choice
+        options: ["42161", "43114"]
+        default: "42161"
+      funded_preflight:
+        description: "Also check live gas prerequisites (read-only; does not execute funded scenarios)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: regression-pr-${{ inputs.pr_number }}-${{ inputs.chain_id }}
+  cancel-in-progress: true
+
+jobs:
+  resolve-preview:
+    name: Resolve PR deployment preview
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+      checks: read
+    outputs:
+      preview_url: ${{ steps.preview.outputs.preview_url }}
+      head_sha: ${{ steps.preview.outputs.head_sha }}
+      check_url: ${{ steps.preview.outputs.check_url }}
+      pr_number: ${{ steps.preview.outputs.pr_number }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Resolve current PR commit and Cloudflare preview
+        id: preview
+        uses: actions/github-script@v7
+        env:
+          PR_NUMBER: ${{ inputs.pr_number }}
+        with:
+          script: |
+            const resolvePreview = require('./autotests/regression/ci/resolvePreview.cjs');
+            const preview = await resolvePreview({ github, repository: context.repo, prNumber: process.env.PR_NUMBER });
+            core.setOutput('preview_url', preview.url);
+            core.setOutput('head_sha', preview.headSha);
+            core.setOutput('check_url', preview.checkUrl);
+            core.setOutput('pr_number', preview.prNumber);
+            await core.summary
+              .addHeading(`Regression target: PR #${preview.prNumber}`)
+              .addLink('Deployment preview', preview.url)
+              .addEOL()
+              .addRaw(`PR commit: ${preview.headSha}`)
+              .addEOL()
+              .addLink('Successful Cloudflare check', preview.checkUrl)
+              .write();
+
+  regression:
+    name: Regression (${{ inputs.chain_id }})
+    needs: resolve-preview
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      REGRESSION_BASE_URL: ${{ needs.resolve-preview.outputs.preview_url }}
+      REGRESSION_CHAIN_ID: ${{ inputs.chain_id }}
+      REGRESSION_PR_NUMBER: ${{ needs.resolve-preview.outputs.pr_number }}
+      REGRESSION_DEPLOYMENT_SHA: ${{ needs.resolve-preview.outputs.head_sha }}
+      REGRESSION_DEPLOYMENT_CHECK_URL: ${{ needs.resolve-preview.outputs.check_url }}
+      REGRESSION_INDEXER_CONFIG: ${{ github.workspace }}/.context/regression-candidate/src/config/indexers.ts
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Read indexer configuration from the deployed PR commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.resolve-preview.outputs.head_sha }}
+          path: .context/regression-candidate
+          sparse-checkout: src/config/indexers.ts
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Record test suite revision and verify candidate checkout
+        run: |
+          test "$(git -C .context/regression-candidate rev-parse HEAD)" = "$REGRESSION_DEPLOYMENT_SHA"
+          echo "REGRESSION_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: yarn
+      - name: Test preview resolution
+        run: node --test --test-concurrency=3 autotests/regression/ci/resolvePreview.test.cjs
+      - name: Install dependencies
+        run: yarn install --immutable --mode=skip-build
+      - name: Typecheck regression tests
+        run: yarn test:regression:types
+      - name: Install Chromium
+        run: yarn exec playwright install --with-deps chromium
+      - name: Run regression
+        run: yarn test:regression
+      - name: Upload reports and failure evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: regression-pr-${{ needs.resolve-preview.outputs.pr_number }}-${{ inputs.chain_id }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            playwright-report/regression/
+            test-results/
+          retention-days: 14
+      - name: Summarize coverage
+        if: ${{ !cancelled() }}
+        run: node autotests/regression/report.cjs
+
+  funded-preflight:
+    name: Funded gas preflight (no transactions)
+    needs: resolve-preview
+    if: inputs.funded_preflight
+    runs-on: ubuntu-latest
+    environment: regression_e2e
+    timeout-minutes: 15
+    env:
+      REGRESSION_BASE_URL: ${{ needs.resolve-preview.outputs.preview_url }}
+      REGRESSION_CHAIN_ID: ${{ inputs.chain_id }}
+      REGRESSION_PR_NUMBER: ${{ needs.resolve-preview.outputs.pr_number }}
+      REGRESSION_DEPLOYMENT_SHA: ${{ needs.resolve-preview.outputs.head_sha }}
+      REGRESSION_DEPLOYMENT_CHECK_URL: ${{ needs.resolve-preview.outputs.check_url }}
+      REGRESSION_ARBITRUM_RPC_URL: ${{ secrets.REGRESSION_ARBITRUM_RPC_URL }}
+      REGRESSION_AVALANCHE_RPC_URL: ${{ secrets.REGRESSION_AVALANCHE_RPC_URL }}
+      REGRESSION_ARBITRUM_MAX_GAS_GWEI: ${{ vars.REGRESSION_ARBITRUM_MAX_GAS_GWEI }}
+      REGRESSION_AVALANCHE_MAX_GAS_GWEI: ${{ vars.REGRESSION_AVALANCHE_MAX_GAS_GWEI }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: yarn
+      - name: Install dependencies
+        run: yarn install --immutable --mode=skip-build
+      - name: Check funded prerequisites
+        run: yarn test:regression:funded-preflight
+      - name: Upload preflight evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: funded-preflight-pr-${{ needs.resolve-preview.outputs.pr_number }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            playwright-report/funded-preflight/
+            test-results/
+          retention-days: 14

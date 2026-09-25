@@ -196,7 +196,7 @@ function WalletBlock({ account }: { account: string }) {
             </a>
           </TooltipWithPortal>
           <TooltipWithPortal content={t`Disconnect`} position="bottom" tooltipClassName="!min-w-max" variant="none">
-            <button className={WALLET_ICON_BUTTON_GRAY} onClick={handleDisconnect}>
+            <button aria-label={t`Disconnect`} className={WALLET_ICON_BUTTON_GRAY} onClick={handleDisconnect}>
               <DisconnectIcon className="size-16" />
             </button>
           </TooltipWithPortal>
@@ -310,7 +310,7 @@ function GmxAccountBlock({ showDisconnectButton }: { showDisconnectButton: boole
         </div>
         {showDisconnectButton && (
           <TooltipWithPortal content={t`Disconnect`} position="bottom" tooltipClassName="!min-w-max" variant="none">
-            <button className={WALLET_ICON_BUTTON_GRAY} onClick={handleDisconnect}>
+            <button aria-label={t`Disconnect`} className={WALLET_ICON_BUTTON_GRAY} onClick={handleDisconnect}>
               <DisconnectIcon className="size-16" />
             </button>
           </TooltipWithPortal>
