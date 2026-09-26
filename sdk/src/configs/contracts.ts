@@ -311,47 +311,47 @@ export const CONTRACTS = {
   },
 
   [ARBITRUM_SEPOLIA]: {
-    SeasonRatioVester: "0xD0f1247a96EC3f2532595ABB78ab1BDFC963631e",
-    OrphanRatioVester: "0x1e877cf6A2662Ae643969CB720C57973989486ff",
-    RatioVesterReader: "0x59c370dd371e053012C6a024a802e597E6D7ec40",
-    EsGmxIssuer: "0xd2D6b51Ba20D459da1cBb4AD1b81b02793BD05d7",
-    IncentiveEsGmx: "0x29211690da8c7770D5189638272c837925BB83FB",
-    IncentivePairToken: "0xBbD071C89676BF338FF980A84596e0cd25d0A9BA",
-    IncentiveClaimableToken: "0x2b7174f44a445BD22e8f39E1AB3Bf934D69C3Da9",
+    SeasonRatioVester: "0xD0f1247a96EC3f2532595ABB78ab1BDFC963631e", // only 2.2.1
+    OrphanRatioVester: "0x1e877cf6A2662Ae643969CB720C57973989486ff", // only 2.2.1
+    RatioVesterReader: "0x59c370dd371e053012C6a024a802e597E6D7ec40", // only 2.2.1
+    EsGmxIssuer: "0xd2D6b51Ba20D459da1cBb4AD1b81b02793BD05d7", // only 2.2.1
+    IncentiveEsGmx: "0x29211690da8c7770D5189638272c837925BB83FB", // only 2.2.1
+    IncentivePairToken: "0xBbD071C89676BF338FF980A84596e0cd25d0A9BA", // only 2.2.1
+    IncentiveClaimableToken: "0x2b7174f44a445BD22e8f39E1AB3Bf934D69C3Da9", // only 2.2.1
 
     // Synthetics
     DataStore: "0xCF4c2C4c53157BcC01A596e3788fFF69cBBCD201",
     EventEmitter: "0xa973c2692C1556E1a3d478e745e9a75624AEDc73",
-    ExchangeRouter: "0x6B489dD5bB1AAE8df246359d59aA7316760a75d2",
-    SubaccountRouter: "0xAFdD3e0B6c162974594AcA157eA642B8847CC5b1",
+    ExchangeRouter: "0x6B489dD5bB1AAE8df246359d59aA7316760a75d2", // only 2.2c
+    SubaccountRouter: "0xAFdD3e0B6c162974594AcA157eA642B8847CC5b1", // only 2.2c
     DepositVault: "0x809Ea82C394beB993c2b6B0d73b8FD07ab92DE5A",
     WithdrawalVault: "0x7601c9dBbDCf1f5ED1E7Adba4EFd9f2cADa037A5",
     OrderVault: "0x1b8AC606de71686fd2a1AEDEcb6E0EFba28909a2",
     ShiftVault: "0x6b6F9B7B9a6b69942DAE74FB95E694ec277117af",
-    SyntheticsReader: "0xE4560Ef983a106b0c748E06BD2baE37d14D519D1",
+    SyntheticsReader: "0xE4560Ef983a106b0c748E06BD2baE37d14D519D1", // only 2.2.1
     SyntheticsRouter: "0x72F13a44C8ba16a678CAD549F17bc9e06d2B8bD2",
 
-    SimulationRouter: "0xAaAD90F06F23F5aE0a3F794699EB6d02eEd26702",
+    SimulationRouter: "0xAaAD90F06F23F5aE0a3F794699EB6d02eEd26702", // only 2.2.1
 
-    GlvReader: "0xcEb6Ebf7680b2B97BFc2b0889Bd3a81c560f21c9",
-    GlvRouter: "0x96b0Bc9Ab01369A4a5c28FBeAa643F17c7f7170B",
+    GlvReader: "0xcEb6Ebf7680b2B97BFc2b0889Bd3a81c560f21c9", // only 2.2.1
+    GlvRouter: "0x96b0Bc9Ab01369A4a5c28FBeAa643F17c7f7170B", // only 2.2.1
     GlvVault: "0x40bD50de0977c68ecB958ED4A065E14E1091ce64",
 
-    GelatoRelayRouter: "0x7FB9d059d2F2323115285dAc25a3C66A67AeFAA7",
-    SubaccountGelatoRelayRouter: "0xaa174e2fbE98C1EE42009B81ec8b8D9C0Ed075cf",
+    GelatoRelayRouter: "0x7FB9d059d2F2323115285dAc25a3C66A67AeFAA7", // only 2.2c
+    SubaccountGelatoRelayRouter: "0xaa174e2fbE98C1EE42009B81ec8b8D9C0Ed075cf", // only 2.2c
 
-    MultichainClaimsRouter: "0x2265c65b65ad8336C6Eb41dA1f2BeB5fF7a1CA3F",
-    MultichainGlvRouter: "0x666E55DABCDdd29C273B5C03886BcbFBd4FF654e",
-    MultichainGmRouter: "0x3224967e564f2e5E2551F0B87Cb759230E3C6908",
-    MultichainOrderRouter: "0xb813bf9a4968eb524C07aAf7Dd8c678840854f6C",
-    MultichainSubaccountRouter: "0x01ecA08518c90acf2779F5509de74B1C2c590b58",
-    MultichainTransferRouter: "0x26493a63B9e4Fd6E94bE8D3d9CfB5bAA90714697",
+    MultichainClaimsRouter: "0x2265c65b65ad8336C6Eb41dA1f2BeB5fF7a1CA3F", // only 2.2c
+    MultichainGlvRouter: "0x666E55DABCDdd29C273B5C03886BcbFBd4FF654e", // only 2.2c
+    MultichainGmRouter: "0x3224967e564f2e5E2551F0B87Cb759230E3C6908", // only 2.2c
+    MultichainOrderRouter: "0xb813bf9a4968eb524C07aAf7Dd8c678840854f6C", // only 2.2c
+    MultichainSubaccountRouter: "0x01ecA08518c90acf2779F5509de74B1C2c590b58", // only 2.2c
+    MultichainTransferRouter: "0x26493a63B9e4Fd6E94bE8D3d9CfB5bAA90714697", // only 2.2c
     MultichainVault: "0xCd46EF5ed7d08B345c47b5a193A719861Aa2CD91",
-    LayerZeroProvider: "0x1Bc31F4e57d3A0694049ac6fa829a1B33111e28A",
+    LayerZeroProvider: "0x1Bc31F4e57d3A0694049ac6fa829a1B33111e28A", // only 2.2c
 
-    ChainlinkPriceFeedProvider: "0x7780E11552D5d070f971C5683466F9eB110afF32",
+    ChainlinkPriceFeedProvider: "0x7780E11552D5d070f971C5683466F9eB110afF32", // only 2.2.1
     ReferralStorage: "0xBbCdA58c228Bb29B5769778181c81Ac8aC546c11",
-    ClaimHandler: "0xd66825628260f1bb5548f89939A3265FFF5B2253",
+    ClaimHandler: "0xd66825628260f1bb5548f89939A3265FFF5B2253", // only 2.2.1
 
     // External
     Multicall: "0xD84793ae65842fFac5C20Ab8eaBD699ea1FC79F3",
