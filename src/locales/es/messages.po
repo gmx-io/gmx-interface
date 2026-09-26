@@ -1977,6 +1977,10 @@ msgstr "Mercados"
 msgid "Retry"
 msgstr "Reintentar"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Minimum conversion is {0} {tokenInSymbol}"
+msgstr "La conversión mínima es {0} {tokenInSymbol}"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Available liquidity {directionLabel}"
 msgstr "Liquidez disponible {directionLabel}"
