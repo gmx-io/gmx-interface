@@ -15,11 +15,13 @@ export function InfoRows({
   isDeposit,
   fees,
   isLoading,
+  afterFeesContent,
   executionDetails,
 }: {
   isDeposit: boolean;
   fees: GmLogicalFees | undefined;
   isLoading?: boolean;
+  afterFeesContent?: ReactNode;
   executionDetails?: ReactNode;
 }) {
   const [isExecutionDetailsOpen, setIsExecutionDetailsOpen] = useState(false);
@@ -40,6 +42,8 @@ export function InfoRows({
         uiFee={fees?.uiFee}
         isLoading={isLoading}
       />
+
+      {afterFeesContent}
 
       <ExpandableRow
         title={t`Execution details`}
