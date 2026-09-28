@@ -184,12 +184,13 @@ export function BridgeOutModal({
     });
   }, [bridgeOutChain, account, bridgeOutAmount, chainId]);
 
-  const { data: transferNativeFee } = useQuoteSendNativeFee({
+  const { data: quotedTransferNativeFee, error: transferNativeFeeError } = useQuoteSendNativeFee({
     fromChainId: chainId,
     toChainId: bridgeOutChain,
     sendParams,
     fromStargateAddress: bridgeOutParams?.provider,
   });
+  const transferNativeFee = bridgeOutChain === chainId ? 0n : quotedTransferNativeFee;
 
   const networkFeeUsd = useMemo(() => {
     if (
@@ -235,6 +236,12 @@ export function BridgeOutModal({
     tokensData,
     expressTxnParamsAsyncResult.data,
   ]);
+
+  let networkFeeValue = formatUsd(networkFeeUsd);
+  if (networkFeeValue === undefined && expressTransactionBuilder !== undefined) {
+    networkFeeValue =
+      expressTxnParamsAsyncResult.error !== undefined || transferNativeFeeError !== undefined ? "-" : "...";
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -494,7 +501,7 @@ export function BridgeOutModal({
           </Button>
         </ButtonTooltipWrapper>
 
-        <SyntheticsInfoRow label={t`Network fee`} value={formatUsd(networkFeeUsd)} />
+        <SyntheticsInfoRow label={t`Network fee`} value={networkFeeValue} />
 
         <SyntheticsInfoRow
           label={t`GMX Account balance`}

@@ -1,6 +1,5 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { lightFormat } from "date-fns";
 import { useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { Link } from "react-router-dom";
@@ -76,7 +75,6 @@ export function ReferralsTradersContent({ account, hasAddressInUrl = false }: Re
   const isBalancerProgramCode = isBalancerProgramTier(traderTier);
   const isCodeOwnedByAccount = Boolean(account && codeOwner && account === codeOwner);
   const isOwnAccountView = !hasAddressInUrl || isAccountOwner;
-  const lastUpdated = traderStats?.to ? `${lightFormat(traderStats.to * 1000, "yyyy-MM-dd HH:mm:ss")} UTC` : "--";
 
   return (
     <>
@@ -134,12 +132,6 @@ export function ReferralsTradersContent({ account, hasAddressInUrl = false }: Re
                 timeRangeInfo={timeRangeInfo}
               />
             </OverviewChartCard>
-          </div>
-          <div className="text-body-small font-medium text-typography-secondary">
-            <span className="text-slate-500">
-              <Trans>Last updated:</Trans>
-            </span>{" "}
-            {lastUpdated}
           </div>
         </div>
       </div>

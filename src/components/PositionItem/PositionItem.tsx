@@ -7,7 +7,10 @@ import { useIntersection } from "react-use";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePositionsConstants } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId, selectUserReferralInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectShowPnlAfterFees } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import {
+  selectBreakdownNetPriceImpactEnabled,
+  selectShowPnlAfterFees,
+} from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { selectTradeboxSelectedPositionKey } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -66,6 +69,7 @@ export type Props = {
 export function PositionItem(p: Props) {
   const { showDebugValues } = useSettings();
   const savedShowPnlAfterFees = useSelector(selectShowPnlAfterFees);
+  const breakdownNetPriceImpactEnabled = useSelector(selectBreakdownNetPriceImpactEnabled);
   const displayedNetValue = savedShowPnlAfterFees ? p.position.netValueAfterAllFees : p.position.netValue;
   const displayedPnl = savedShowPnlAfterFees ? p.position.pnlAfterAllFees : p.position.pnl;
   const displayedPnlPercentage = savedShowPnlAfterFees
@@ -109,9 +113,27 @@ export function PositionItem(p: Props) {
     setIsTPSLModalVisible(true);
   }, []);
 
-  function renderNetValue() {
-    const netPriceImpactBps = formatPriceImpactBps(p.position.netPriceImapctDeltaUsd, p.position.sizeInUsd);
+  function renderPriceImpactRow(label: string, priceImpactUsd: bigint) {
+    const priceImpactBps = formatPriceImpactBps(priceImpactUsd, p.position.sizeInUsd);
 
+    return (
+      <StatsTooltipRow
+        label={label}
+        labelClassName="text-balance text-typography-secondary"
+        value={
+          <>
+            {formatDeltaUsd(priceImpactUsd) || "..."}
+            {priceImpactBps ? ` (${priceImpactBps})` : null}
+          </>
+        }
+        valueClassName="numbers"
+        showDollar={false}
+        textClassName={getPositiveOrNegativeClass(priceImpactUsd)}
+      />
+    );
+  }
+
+  function renderNetValue() {
     return (
       <TooltipWithPortal
         handle={formatUsd(displayedNetValue)}
@@ -159,18 +181,13 @@ export function PositionItem(p: Props) {
             />
             {savedShowPnlAfterFees && (
               <>
-                <StatsTooltipRow
-                  label={t`Net price impact`}
-                  value={
-                    <>
-                      {formatDeltaUsd(p.position.netPriceImapctDeltaUsd) || "..."}
-                      {netPriceImpactBps ? ` (${netPriceImpactBps})` : null}
-                    </>
-                  }
-                  valueClassName="numbers"
-                  showDollar={false}
-                  textClassName={getPositiveOrNegativeClass(p.position.netPriceImapctDeltaUsd)}
-                />
+                {breakdownNetPriceImpactEnabled && (
+                  <>
+                    {renderPriceImpactRow(t`Stored price impact`, p.position.pendingImpactUsd)}
+                    {renderPriceImpactRow(t`Close price impact`, p.position.closePriceImpactDeltaUsd)}
+                  </>
+                )}
+                {renderPriceImpactRow(t`Net price impact (open + close)`, p.position.netPriceImapctDeltaUsd)}
                 <StatsTooltipRow
                   label={t`Close fee`}
                   value={formatUsd(-p.position.closingFeeUsd) || "..."}
