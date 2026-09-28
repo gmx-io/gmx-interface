@@ -353,13 +353,12 @@ function useWithdrawViewTransactions({
                   });
               }
             } else if (txnEvent.event === TxnEventName.Error) {
-              helperToast.error(t`Withdrawal failed`, { toastId: "same-chain-gmx-account-withdrawal" });
               setIsSubmitting(false);
             }
           },
         });
       } catch (error) {
-        helperToast.error(t`Withdrawal failed`, { toastId: "same-chain-gmx-account-withdrawal" });
+        toastCustomOrStargateError(chainId, error, { defaultMessage: t`Withdrawal failed` });
       } finally {
         setIsSubmitting(false);
       }
