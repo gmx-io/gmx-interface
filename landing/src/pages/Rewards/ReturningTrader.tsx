@@ -6,14 +6,13 @@ import { ES_GMX_DECIMALS } from "domain/synthetics/incentives/v2/constants";
 import type { IncentivesConfig } from "domain/synthetics/incentives/v2/types";
 import { useReturnBonus, useReturnBonusHistory } from "domain/synthetics/incentives/v2/useReturnBonus";
 import { formatMultiplierAdjustment } from "domain/synthetics/incentives/v2/utils";
-import { formatAmount, formatAmountHuman, formatUsd, USD_DECIMALS } from "lib/numbers";
+import { formatAmount, formatUsd } from "lib/numbers";
 import { resolveEnsAddress } from "lib/resolveEnsAddress";
 import { getComebackAnalyticsParams, sendRewardsLandingEvent } from "lib/userAnalytics/rewardsLandingEvents";
 
 import IcWallet from "img/ic_wallet.svg?react";
 import freshCurve from "img/rewards-landing/fresh-curve.svg";
 import freshDot from "img/rewards-landing/fresh-dot.svg";
-import IcHistoricalVolume from "img/rewards-landing/historical-volume.svg?react";
 import shield from "img/rewards-landing/shield.png";
 
 import { ReferralCardFrame } from "./RewardsReferralCard";
@@ -205,15 +204,7 @@ export function ReturningTrader({ config, loading, endpoint }: Props) {
               <BonusCard loading />
             </RewardsSpoiler>
           ) : hasBonus ? (
-            <BonusCard
-              account={account}
-              loading={false}
-              remaining={result.data?.manualRewardRemainingUsd}
-              volume={history.data?.lifetimeVolume}
-              loadingVolume={history.isLoading}
-              volumeError={Boolean(history.error)}
-              onRetryVolume={() => void history.mutate()}
-            />
+            <BonusCard account={account} loading={false} remaining={result.data?.manualRewardRemainingUsd} />
           ) : (
             <FreshCard
               config={config}
@@ -254,23 +245,7 @@ export function ReturningTrader({ config, loading, endpoint }: Props) {
   );
 }
 
-function BonusCard({
-  account,
-  loading,
-  remaining,
-  volume,
-  loadingVolume = false,
-  volumeError,
-  onRetryVolume,
-}: {
-  account?: string;
-  loading: boolean;
-  remaining?: bigint;
-  volume?: bigint | null;
-  loadingVolume?: boolean;
-  volumeError?: boolean;
-  onRetryVolume?: () => void;
-}) {
+function BonusCard({ account, loading, remaining }: { account?: string; loading: boolean; remaining?: bigint }) {
   return (
     <div className="rewards-bonus-card rewards-eligible-card" aria-live="polite" aria-busy={loading}>
       <div className="rewards-bonus-wallet">
@@ -279,23 +254,6 @@ function BonusCard({
             {account}
           </RewardsValue>
         </p>
-        <div className="rewards-volume-pill">
-          <span aria-hidden="true">
-            <IcHistoricalVolume />
-          </span>
-          {volumeError ? (
-            <button type="button" onClick={onRetryVolume}>
-              <Trans>Retry historical volume</Trans>
-            </button>
-          ) : (
-            <Trans>
-              Your historical volume is{" "}
-              <RewardsValue loading={loading || loadingVolume} width="4ch">
-                {volume != null ? formatAmountHuman(volume, USD_DECIMALS, true, 0).toUpperCase() : undefined}
-              </RewardsValue>
-            </Trans>
-          )}
-        </div>
       </div>
       <div className="rewards-shield">
         <img src={shield} alt="" />

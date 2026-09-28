@@ -911,29 +911,6 @@ body:has(.rewards-page) [data-landing-header] .btn-landing:active {
   left: 40px;
   bottom: 24px;
 }
-.rewards-volume-pill {
-  display: inline-block;
-  border-radius: 20px;
-  background: #090a1480;
-  padding: 4px 8px 4px 4px;
-  font-size: 14px !important;
-  line-height: 20px !important;
-  color: #a4c3f9 !important;
-}
-.rewards-volume-pill > span[aria-hidden="true"] {
-  display: inline-grid;
-  place-items: center;
-  background: #2d42fc;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  margin-right: 4px;
-  color: white;
-}
-.rewards-volume-pill svg {
-  width: 14px;
-  height: 14px;
-}
 .rewards-card-status {
   margin: auto;
 }
