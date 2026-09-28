@@ -16,7 +16,7 @@ import { useSafeState } from "lib/useSafeState";
 import { isMarketTokenAddress } from "sdk/configs/markets";
 
 import { getGmSwapBoxAvailableModes } from "components/GmSwap/GmSwapBox/getGmSwapBoxAvailableModes";
-import { FocusedInput } from "components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/types";
+import { ConversionRoutePreference, FocusedInput } from "components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/types";
 import {
   useMultichainMarketTokensBalancesRequest,
   useMultichainTokens,
@@ -74,6 +74,7 @@ export type PoolsDetailsState = {
   isTransitRoute: boolean;
   transitAmountOut: bigint | undefined;
   transitWithdrawalTxnHash: string | undefined;
+  conversionRoutePreference: ConversionRoutePreference;
   multichainTokensResult: ReturnType<typeof useMultichainTokens>;
 
   setOperation: (operation: Operation) => void;
@@ -91,6 +92,7 @@ export type PoolsDetailsState = {
   setIsTransitRoute: (value: boolean) => void;
   setTransitAmountOut: (value: bigint | undefined) => void;
   setTransitWithdrawalTxnHash: (value: string | undefined) => void;
+  setConversionRoutePreference: (value: ConversionRoutePreference) => void;
 };
 
 export function usePoolsDetailsState({
@@ -222,6 +224,7 @@ export function usePoolsDetailsState({
   const [isTransitRoute, setIsTransitRoute] = useState(false);
   const [transitAmountOut, setTransitAmountOut] = useState<bigint | undefined>(undefined);
   const [transitWithdrawalTxnHash, setTransitWithdrawalTxnHash] = useState<string | undefined>(undefined);
+  const [conversionRoutePreference, setConversionRoutePreference] = useState<ConversionRoutePreference>("auto");
 
   useEffect(
     function syncOperationAndModeFromQueryParams() {
@@ -296,6 +299,7 @@ export function usePoolsDetailsState({
       isTransitRoute,
       transitAmountOut,
       transitWithdrawalTxnHash,
+      conversionRoutePreference,
       multichainTokensResult,
       // Setters
       setOperation,
@@ -313,6 +317,7 @@ export function usePoolsDetailsState({
       setIsTransitRoute,
       setTransitAmountOut,
       setTransitWithdrawalTxnHash,
+      setConversionRoutePreference,
     };
   }, [
     enabled,
@@ -332,6 +337,7 @@ export function usePoolsDetailsState({
     isTransitRoute,
     transitAmountOut,
     transitWithdrawalTxnHash,
+    conversionRoutePreference,
     multichainTokensResult,
     setGlvOrMarketAddress,
     setPaySource,
