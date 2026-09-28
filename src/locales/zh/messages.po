@@ -12077,6 +12077,10 @@ msgstr "池 USD 做空"
 msgid "{0} orders not updated, limit reached"
 msgstr "{0} 个订单未更新，已达上限"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Wallet request expired. Try again and confirm in your wallet"
+msgstr "钱包请求已过期。请重试并在钱包中确认"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Proportional stored impact"
 msgstr "比例储存影响"

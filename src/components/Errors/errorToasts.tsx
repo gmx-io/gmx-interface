@@ -3,7 +3,7 @@ import { Signer } from "ethers";
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
-import { ContractsChainId, getChainName, getGasPricePremium } from "config/chains";
+import { ContractsChainId, getChainName, getGasPricePremium, getViemChain } from "config/chains";
 import { JUMPER_BRIDGE_URL, SAFE_MULTICHAIN_DOCS_URL } from "config/links";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -55,8 +55,6 @@ export function getTxnErrorToast(
     setIsSettingsVisible,
   }: AdditionalErrorParams
 ) {
-  const nativeToken = getNativeToken(chainId);
-
   const debugErrorMessage = getDebugErrorMessage(errorData);
 
   const toastParams: {
@@ -156,7 +154,9 @@ export function getTxnErrorToast(
   }
 
   switch (errorData.txErrorType) {
-    case TxErrorType.NotEnoughFunds:
+    case TxErrorType.NotEnoughFunds: {
+      const nativeToken = getViemChain(chainId).nativeCurrency;
+
       toastParams.errorContent = (
         <Trans>
           Insufficient {nativeToken.symbol} for gas on {getChainName(chainId)}
@@ -170,11 +170,15 @@ export function getTxnErrorToast(
         </Trans>
       );
       break;
+    }
     case TxErrorType.NetworkChanged:
       toastParams.errorContent = getInvalidNetworkToastContent(chainId);
       break;
     case TxErrorType.UserDenied:
       toastParams.errorContent = t`Transaction canceled`;
+      break;
+    case TxErrorType.Expired:
+      toastParams.errorContent = t`Wallet request expired. Try again and confirm in your wallet`;
       break;
     case TxErrorType.Slippage:
       toastParams.errorContent = t`Mark price changed. Increase allowed slippage`;

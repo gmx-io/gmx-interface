@@ -12077,6 +12077,10 @@ msgstr "プール USD ショート"
 msgid "{0} orders not updated, limit reached"
 msgstr "{0} 件の注文が更新されませんでした。上限に達しました"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Wallet request expired. Try again and confirm in your wallet"
+msgstr "ウォレットのリクエストの有効期限が切れました。もう一度お試しいただき、ウォレットで承認してください"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Proportional stored impact"
 msgstr "比例配分された蓄積インパクト"

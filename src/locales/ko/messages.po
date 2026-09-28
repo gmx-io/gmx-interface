@@ -12077,6 +12077,10 @@ msgstr "풀 USD 숏"
 msgid "{0} orders not updated, limit reached"
 msgstr "{0}개 주문이 업데이트되지 않았습니다. 한도에 도달했습니다"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Wallet request expired. Try again and confirm in your wallet"
+msgstr "지갑 요청이 만료되었습니다. 다시 시도한 후 지갑에서 승인하세요"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Proportional stored impact"
 msgstr "비례 저장 영향"
