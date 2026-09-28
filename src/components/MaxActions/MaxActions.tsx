@@ -1,6 +1,6 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import { MouseEvent, ReactNode, useCallback } from "react";
+import { MouseEvent, ReactNode, useCallback, useId } from "react";
 
 import type { MaxActionsState } from "domain/tokens/useMaxAvailableAmount";
 import { userAnalytics } from "lib/userAnalytics";
@@ -92,6 +92,8 @@ function MaxActionPill({
     [isDisabled, onClick]
   );
 
+  const descriptionId = useId();
+
   return (
     <TooltipWithPortal
       content={tooltip}
@@ -109,6 +111,7 @@ function MaxActionPill({
         data-qa={qa}
         aria-pressed={isSelected}
         aria-busy={isLoading || undefined}
+        aria-describedby={tooltip !== undefined ? descriptionId : undefined}
         disabled={isDisabled}
         onClick={handleClick}
         className={cx("whitespace-nowrap rounded-full px-8 py-2 text-12 font-medium transition-colors", {
@@ -119,6 +122,11 @@ function MaxActionPill({
       >
         {children}
       </button>
+      {tooltip !== undefined && (
+        <span id={descriptionId} className="sr-only">
+          {tooltip}
+        </span>
+      )}
     </TooltipWithPortal>
   );
 }
