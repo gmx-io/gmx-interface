@@ -9,6 +9,7 @@ import type { TokenData } from "sdk/utils/tokens/types";
 import {
   getInsufficientFeeTooltip,
   getMaxActionSelection,
+  getMaxActionsTooltips,
   getMaxActionTooltip,
   getMaxAvailableTokenAmount,
   shouldShowGasPaymentTokenWarning,
@@ -609,5 +610,79 @@ describe("getMaxActionTooltip", () => {
     expect(
       getMaxActionTooltip({ ...base, action: "keepGas", feeHoldbackAmount: usdc(1.4), reserveAmount: undefined })
     ).toBeUndefined();
+  });
+});
+
+describe("getMaxActionsTooltips", () => {
+  const base = {
+    isLoading: false,
+    isFeeUnavailable: false,
+    isInsufficientForFee: false,
+    showKeepGas: true,
+    feeHoldbackAmount: usdc(1.4),
+    reserveAmount: usdc(20),
+    symbol: "USDC",
+    decimals: 6,
+    isStable: true,
+    feeSource: getNetworkFeeSource({ isGmxAccount: false }),
+  };
+
+  it("explains both fills against the displayed balance once the fee is known", () => {
+    expect(getMaxActionsTooltips(base)).toEqual({
+      maxTooltip:
+        "Reserves ~1.40 USDC for this transaction's fee. Leaves no USDC in your Wallet for future Express fees.",
+      keepGasTooltip:
+        "Keeps 20.00 USDC in your Wallet for future Express fees and ~1.40 USDC for this transaction's fee.",
+    });
+  });
+
+  it("shows the loading state on both pills while the fee loads", () => {
+    expect(getMaxActionsTooltips({ ...base, isLoading: true })).toEqual({
+      maxTooltip: "Loading fees...",
+      keepGasTooltip: "Loading fees...",
+    });
+  });
+
+  it("names the unavailable fee on Max", () => {
+    expect(getMaxActionsTooltips({ ...base, isFeeUnavailable: true, showKeepGas: false })).toEqual({
+      maxTooltip: "Network fee unavailable",
+      keepGasTooltip: undefined,
+    });
+  });
+
+  it("explains the missing fee on Max instead of the fill when the balance cannot cover it", () => {
+    expect(getMaxActionsTooltips({ ...base, isInsufficientForFee: true, showKeepGas: false })).toEqual({
+      maxTooltip: "Not enough USDC in your Wallet to cover this transaction's fee (~1.40 USDC). Swap or bridge USDC.",
+      keepGasTooltip: undefined,
+    });
+  });
+
+  it("names the GMX Account when the fill comes from it", () => {
+    expect(
+      getMaxActionsTooltips({ ...base, feeHoldbackAmount: 0n, feeSource: getNetworkFeeSource({ isGmxAccount: true }) })
+    ).toEqual({
+      maxTooltip: "Leaves no USDC in your GMX Account for future Express fees.",
+      keepGasTooltip: "Keeps 20.00 USDC in your GMX Account for future Express fees.",
+    });
+  });
+
+  it("has nothing to explain when Max fills the full balance", () => {
+    expect(
+      getMaxActionsTooltips({ ...base, feeHoldbackAmount: 0n, reserveAmount: undefined, showKeepGas: false })
+    ).toEqual({ maxTooltip: undefined, keepGasTooltip: undefined });
+  });
+
+  it("formats a non-stable token with its own decimals", () => {
+    expect(
+      getMaxActionsTooltips({
+        ...base,
+        feeHoldbackAmount: eth(0.00042),
+        reserveAmount: undefined,
+        showKeepGas: false,
+        symbol: "ETH",
+        decimals: 18,
+        isStable: false,
+      }).maxTooltip
+    ).toBe("Reserves ~0.0004200 ETH for this transaction's fee.");
   });
 });

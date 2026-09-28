@@ -270,6 +270,59 @@ export function getInsufficientFeeTooltip({
   return `${t`Not enough ${symbol} in your ${source} to cover this transaction's fee (~${holdback} ${symbol}).`} ${getInsufficientFeeAction({ tokenSymbol: symbol, feeSource })}`;
 }
 
+export function getMaxActionsTooltips({
+  isLoading,
+  isFeeUnavailable,
+  isInsufficientForFee,
+  showKeepGas,
+  feeHoldbackAmount,
+  reserveAmount,
+  symbol,
+  decimals,
+  isStable,
+  feeSource,
+}: {
+  isLoading: boolean;
+  isFeeUnavailable: boolean;
+  isInsufficientForFee: boolean;
+  showKeepGas: boolean;
+  feeHoldbackAmount: bigint;
+  reserveAmount: bigint | undefined;
+  symbol: string;
+  decimals: number;
+  isStable: boolean | undefined;
+  feeSource: NetworkFeeSource;
+}): Pick<MaxActionsState, "maxTooltip" | "keepGasTooltip"> {
+  const actionTooltipParams = {
+    feeHoldbackAmount,
+    reserveAmount,
+    symbol,
+    decimals,
+    isStable,
+    sourceLabel: getNetworkFeeSourceLabel(feeSource),
+  };
+
+  let maxTooltip: string | undefined;
+  if (isLoading) {
+    maxTooltip = t`Loading fees...`;
+  } else if (isFeeUnavailable) {
+    maxTooltip = t`Network fee unavailable`;
+  } else if (isInsufficientForFee) {
+    maxTooltip = getInsufficientFeeTooltip({ symbol, feeHoldbackAmount, decimals, isStable, feeSource });
+  } else {
+    maxTooltip = getMaxActionTooltip({ action: "max", ...actionTooltipParams });
+  }
+
+  let keepGasTooltip: string | undefined;
+  if (showKeepGas) {
+    keepGasTooltip = isLoading
+      ? t`Loading fees...`
+      : getMaxActionTooltip({ action: "keepGas", ...actionTooltipParams });
+  }
+
+  return { maxTooltip, keepGasTooltip };
+}
+
 export function useMaxAvailableAmount({
   fromToken,
   fromTokenBalance,
@@ -346,7 +399,6 @@ export function useMaxAvailableAmount({
   const sameSourceFee = feeToken !== undefined && feeToken.address === fromToken.address;
   const isSourceChain = srcChainId !== undefined && srcChainId !== chainId;
   const feeSource = isSourceChain ? getSourceChainNetworkFeeSource(srcChainId) : getNetworkFeeSource({ isGmxAccount });
-  const sourceLabel = getNetworkFeeSourceLabel(feeSource);
 
   const isActionsLoading = details.isFeeLoading || (isLoading && sameSourceFee);
   const showKeepGas = keepGasAmount !== undefined;
@@ -358,47 +410,24 @@ export function useMaxAvailableAmount({
     keepGasAmount: keepGasAmount !== undefined ? toInputDecimals(keepGasAmount) : undefined,
   });
 
-  const actionTooltipParams = {
-    feeHoldbackAmount,
-    reserveAmount,
-    symbol: fromToken.symbol,
-    decimals,
-    isStable: fromToken.isStable,
-    sourceLabel,
-  };
-
-  let maxTooltip: string | undefined;
-  if (isActionsLoading) {
-    maxTooltip = t`Loading fees...`;
-  } else if (isFeeUnavailable) {
-    maxTooltip = t`Network fee unavailable`;
-  } else if (isInsufficientForFee) {
-    maxTooltip = getInsufficientFeeTooltip({
-      symbol: fromToken.symbol,
-      feeHoldbackAmount,
-      decimals,
-      isStable: fromToken.isStable,
-      feeSource,
-    });
-  } else {
-    maxTooltip = getMaxActionTooltip({ action: "max", ...actionTooltipParams });
-  }
-
-  let keepGasTooltip: string | undefined;
-  if (showKeepGas) {
-    keepGasTooltip = isActionsLoading
-      ? t`Loading fees...`
-      : getMaxActionTooltip({ action: "keepGas", ...actionTooltipParams });
-  }
-
   const maxActions: MaxActionsState = {
     selected,
     isLoading: isActionsLoading,
     isFeeUnavailable,
     isInsufficientForFee,
     showKeepGas,
-    maxTooltip,
-    keepGasTooltip,
+    ...getMaxActionsTooltips({
+      isLoading: isActionsLoading,
+      isFeeUnavailable,
+      isInsufficientForFee,
+      showKeepGas,
+      feeHoldbackAmount,
+      reserveAmount,
+      symbol: fromToken.symbol,
+      decimals,
+      isStable: fromToken.isStable,
+      feeSource,
+    }),
   };
 
   const gasPaymentTokenWarningContent =
