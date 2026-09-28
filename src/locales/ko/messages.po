@@ -400,10 +400,6 @@ msgstr "Telegram 봇"
 msgid "Cancel Limit Swap"
 msgstr "지정가 스왑 취소"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Yield farming"
-msgstr "수익률 파밍"
-
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 msgid "Roadmap"
 msgstr "로드맵"
@@ -6737,10 +6733,6 @@ msgstr "GMX 스테이킹은 Arbitrum 및 Avalanche에서 이용 가능합니다.
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe in GMX contracts on the destination chain. Retry the compose transaction in LayerZero Scan or contact support."
 msgstr "자금은 목적지 체인의 GMX 컨트랙트에 안전하게 보관되어 있습니다. LayerZero Scan에서 컴포즈 트랜잭션을 재시도하거나 지원팀에 문의하십시오."
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Mozaic Finance"
-msgstr "Mozaic Finance"
 
 #: src/components/ChartTokenSelector/ModeTabs.tsx
 msgid "Perpetuals"

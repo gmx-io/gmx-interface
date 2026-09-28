@@ -400,10 +400,6 @@ msgstr "Bot Telegram"
 msgid "Cancel Limit Swap"
 msgstr "Annuler l'échange limité"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Yield farming"
-msgstr "Yield farming"
-
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 msgid "Roadmap"
 msgstr "Feuille de Route"
@@ -6737,10 +6733,6 @@ msgstr "Le staking GMX est disponible sur Arbitrum et Avalanche. Les vaults GLV 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe in GMX contracts on the destination chain. Retry the compose transaction in LayerZero Scan or contact support."
 msgstr "Vos fonds sont en sécurité dans les contrats GMX sur la chaîne de destination. Réessayez la transaction de composition dans LayerZero Scan ou contactez le support."
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Mozaic Finance"
-msgstr "Mozaic Finance"
 
 #: src/components/ChartTokenSelector/ModeTabs.tsx
 msgid "Perpetuals"

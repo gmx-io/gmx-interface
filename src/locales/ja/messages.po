@@ -400,10 +400,6 @@ msgstr "Telegramボット"
 msgid "Cancel Limit Swap"
 msgstr "指値スワップのキャンセル"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Yield farming"
-msgstr "イールドファーミング"
-
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 msgid "Roadmap"
 msgstr "ロードマップ"
@@ -6737,10 +6733,6 @@ msgstr "GMXのステーキングはArbitrumおよびAvalancheで利用可能で�
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe in GMX contracts on the destination chain. Retry the compose transaction in LayerZero Scan or contact support."
 msgstr "お客様の資金は送信先チェーンのGMXコントラクトに安全に保管されています。LayerZero Scanでcomposeトランザクションを再試行するか、サポートにお問い合わせください。"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Mozaic Finance"
-msgstr "Mozaic Finance"
 
 #: src/components/ChartTokenSelector/ModeTabs.tsx
 msgid "Perpetuals"

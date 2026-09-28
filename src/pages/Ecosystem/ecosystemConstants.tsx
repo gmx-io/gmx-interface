@@ -336,13 +336,6 @@ export const integrations: EcosystemGmxPage[] = [
     chainIds: [ARBITRUM],
   },
   {
-    title: msg`Mozaic Finance`,
-    link: "https://app.mozaic.finance/",
-    linkLabel: "mozaic.finance",
-    about: msg`Yield farming`,
-    chainIds: [ARBITRUM],
-  },
-  {
     title: msg`Solv Finance`,
     link: "https://solv.finance/",
     linkLabel: "solv.finance",

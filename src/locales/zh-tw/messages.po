@@ -400,10 +400,6 @@ msgstr "Telegram 機器人"
 msgid "Cancel Limit Swap"
 msgstr "取消 Limit Swap"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Yield farming"
-msgstr "收益耕作"
-
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 msgid "Roadmap"
 msgstr "路線圖"
@@ -6737,10 +6733,6 @@ msgstr "GMX 質押可在 Arbitrum 和 Avalanche 上使用。GLV 金庫和 GM 代
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe in GMX contracts on the destination chain. Retry the compose transaction in LayerZero Scan or contact support."
 msgstr "您的資金安全存放在目標鏈上的 GMX 合約中。請在 LayerZero Scan 中重試組合交易或聯繫客服。"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Mozaic Finance"
-msgstr "Mozaic Finance"
 
 #: src/components/ChartTokenSelector/ModeTabs.tsx
 msgid "Perpetuals"

@@ -400,10 +400,6 @@ msgstr "Telegram-бот"
 msgid "Cancel Limit Swap"
 msgstr "Отмена лимитного обмена"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Yield farming"
-msgstr "Фарминг доходности"
-
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 msgid "Roadmap"
 msgstr "Дорожная карта"
@@ -6737,10 +6733,6 @@ msgstr "Стейкинг GMX доступен на Arbitrum и Avalanche. Хра
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe in GMX contracts on the destination chain. Retry the compose transaction in LayerZero Scan or contact support."
 msgstr "Ваши средства в безопасности в контрактах GMX на целевой сети. Повторите транзакцию compose в LayerZero Scan или обратитесь в службу поддержки."
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Mozaic Finance"
-msgstr "Mozaic Finance"
 
 #: src/components/ChartTokenSelector/ModeTabs.tsx
 msgid "Perpetuals"
