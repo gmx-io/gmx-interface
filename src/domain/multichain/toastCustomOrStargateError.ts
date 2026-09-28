@@ -3,10 +3,12 @@ import { Abi, decodeErrorResult } from "viem";
 
 import type { AnyChainId } from "config/chains";
 import { StargateErrorsAbi } from "config/multichain";
+import { parseError } from "lib/errors";
 import { decodeInnermostCustomErrorFromError, extractErrorRevertData } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import { TradingActionName } from "lib/tradingErrorTracker";
 import { abis } from "sdk/abis";
+import { TxErrorType } from "sdk/utils/errors/transactionsErrors";
 
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 import { getContractErrorToastContent } from "components/Errors/getContractErrorToastContent";
@@ -42,11 +44,13 @@ export function toastCustomOrStargateError(
   }
 
   const customError = decodeInnermostCustomErrorFromError(error);
+  const errorData = parseError(error);
 
   const toastContext = getTxnErrorToast(
     chainId,
     {
       errorMessage: prettyErrorMessage,
+      txErrorType: errorData?.isUserRejectedError ? TxErrorType.UserDenied : undefined,
     },
     {
       defaultMessage:
@@ -63,7 +67,7 @@ export function toastCustomOrStargateError(
     tradingErrorInfo: errorInfo?.actionName
       ? {
           actionName: errorInfo.actionName,
-          errorData: error,
+          errorData,
           requestId: errorInfo.requestId,
           metricId: errorInfo.metricId,
           collateral: errorInfo.collateral,

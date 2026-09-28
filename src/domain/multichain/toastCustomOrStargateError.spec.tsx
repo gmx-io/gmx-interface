@@ -1,6 +1,7 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { cleanup, fireEvent, render } from "@testing-library/react";
+import { makeError } from "ethers";
 import type { ReactNode } from "react";
 import {
   ContractFunctionExecutionError,
@@ -89,5 +90,23 @@ describe("toastCustomOrStargateError", () => {
     fireEvent.click(getByText("Show error"));
 
     expect(container.textContent).toContain(rawErrorName);
+  });
+
+  it("shows the standard canceled message when the wallet request is rejected and does not count it as a failure", () => {
+    toastCustomOrStargateError(
+      ARBITRUM,
+      makeError("user rejected action", "ACTION_REJECTED", {
+        action: "signTypedData",
+        reason: "rejected",
+        info: { error: { code: 4001, message: "User rejected the request." } },
+      }),
+      { actionName: "GM Withdrawal" }
+    );
+
+    const [content, options] = helperToastError.mock.calls[0];
+    const { container } = render(<I18nProvider i18n={i18n}>{content as ReactNode}</I18nProvider>);
+
+    expect(container.textContent).toBe("Transaction canceled");
+    expect(options.tradingErrorInfo.errorData.isUserRejectedError).toBe(true);
   });
 });
