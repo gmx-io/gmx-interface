@@ -266,6 +266,13 @@ export type OrderCancelledEvent = {
 };
 
 // Fallback tracking
+// Switches folded into one endpoints update report
+export type EndpointsPairRepeats = {
+  repeatCount: number;
+  firstTs: number;
+  lastTs: number;
+};
+
 export type RpcTrackerEndpointBannedEvent = {
   event: "rpcTracker.endpoint.banned";
   isError: false;
@@ -288,7 +295,7 @@ export type RpcTrackerUpdateEndpointsEvent = {
     secondary: string;
     primaryBlockGap: number | "unknown";
     secondaryBlockGap: number | "unknown";
-  };
+  } & Partial<EndpointsPairRepeats>;
 };
 
 export type RpcTrackerEndpointTiming = {
@@ -315,7 +322,7 @@ export type OracleKeeperUpdateEndpointsEvent = {
     chainName: string;
     primary: string;
     secondary: string;
-  };
+  } & Partial<EndpointsPairRepeats>;
 };
 
 export type OracleKeeperEndpointBannedEvent = {
