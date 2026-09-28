@@ -152,24 +152,6 @@ export const dashboardProjects: EcosystemDashboardProject[] = [
     creatorLink: "https://x.com/sliux",
     chainIds: [ARBITRUM, AVALANCHE],
   },
-  {
-    title: msg`Compass Labs trading simulations`,
-    link: "https://www.compasslabs.ai/dashboard?example=gmxV2_swap_orders",
-    linkLabel: "compasslabs.ai",
-    about: msg`Trading simulations on GMX using DOJO`,
-    creatorLabel: "@labs_compass",
-    creatorLink: "https://x.com/labs_compass",
-    chainIds: [ARBITRUM, AVALANCHE],
-  },
-  {
-    title: msg`Compass Labs GM token dashboard`,
-    link: "https://www.compasslabs.ai/dashboard?example=gmxV2_market_orders",
-    linkLabel: "compasslabs.ai",
-    about: msg`GMX market token price chart`,
-    creatorLabel: "@labs_compass",
-    creatorLink: "https://x.com/labs_compass",
-    chainIds: [ARBITRUM, AVALANCHE],
-  },
 ];
 
 export const integrations: EcosystemGmxPage[] = [

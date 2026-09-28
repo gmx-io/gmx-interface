@@ -1118,10 +1118,6 @@ msgstr "Solana上のGMX"
 msgid "Volume traded by your referred traders"
 msgstr ""
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Trading simulations on GMX using DOJO"
-msgstr "DOJOを使用したGMXでのトレーディングシミュレーション"
-
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Can I unstake or withdraw anytime?"
 msgstr ""
@@ -3339,10 +3335,6 @@ msgstr "残高"
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Net rate projection:"
 msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX market token price chart"
-msgstr "GMXマーケットトークン価格チャート"
 
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 msgid "Lifetime LP rewards"
@@ -8874,10 +8866,6 @@ msgstr "GMXプールではこのスワップサイズを約定できず、現在
 msgid "EVENT NAME"
 msgstr "イベント名"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Compass Labs GM token dashboard"
-msgstr "Compass Labs GMトークンダッシュボード"
-
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "OPEN INTEREST"
@@ -11842,10 +11830,6 @@ msgstr "詳細を読む"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading chat"
 msgstr "GMX trading chat"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Compass Labs trading simulations"
-msgstr "Compass Labs trading simulations"
 
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "Manage liquidity"
