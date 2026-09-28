@@ -1548,6 +1548,10 @@ msgstr "交易筆數"
 msgid "External swap {0} to {1}"
 msgstr "外部兌換 {0} 至 {1}"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Instant swap"
+msgstr "即時兌換"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Net wallet result"
 msgstr "錢包淨結果"
@@ -2246,6 +2250,10 @@ msgstr "提取 {glvOrGm}"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Receive voting power and participate in governance"
 msgstr "獲得投票權並參與治理"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Auto · {routeLabel}"
+msgstr "自動 · {routeLabel}"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No GMX swap route found for {0} to {1}. Try <0>an external aggregator</0>."
@@ -3853,6 +3861,11 @@ msgstr "社群主導的 Telegram 群組"
 msgid "Change to {0}"
 msgstr "切換至 {0}"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Conversion"
+msgstr "轉換"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Relayer request failed"
 msgstr "中繼器請求失敗"
@@ -4253,6 +4266,10 @@ msgstr ""
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker thread"
 msgstr "工作執行緒"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Cheaper option for your amount"
+msgstr "此金額下更便宜的選項"
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Failed to update orders"
@@ -5568,6 +5585,10 @@ msgstr "更新止損市價單"
 msgid "USD"
 msgstr "USD"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "GMX USDC/USDG pool, same transaction"
+msgstr "GMX USDC/USDG 池，同一筆交易"
+
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Order lifecycle"
 msgstr "訂單生命週期"
@@ -6035,6 +6056,10 @@ msgstr "最多 {MAX_REFERRAL_CODE_LENGTH} 個字元"
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "Buy with card"
 msgstr "使用銀行卡購買"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Auto"
+msgstr "自動"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Provide isolated liquidity per market"
@@ -7376,6 +7401,10 @@ msgstr "使用率"
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity available for increasing longs at<0/>this size. Max long size: {0}<1/><2/>No price impact. Single execution price for<3/>decreasing shorts at this size."
 msgstr "此規模無可用流動性來加倉做多。<0/>最大做多規模：{0}<1/><2/>無價格影響。此規模減倉做空<3/>為單一成交價格。"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "USDG issuer, separate transaction, a few minutes. Zero fee for whitelisted addresses."
+msgstr "USDG 發行方，獨立交易，需數分鐘。白名單地址免手續費。"
 
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Referrals/Referrals.tsx
@@ -8817,6 +8846,10 @@ msgstr "顯示更多"
 #: src/components/MarketsList/NetFeeHeaderTooltipContent.tsx
 msgid "Net rate = funding + borrowing fees.<0/><1/>Funding: Balances longs vs shorts, paid between traders. <2>Read more</2>.<3/><4/>Borrowing: Ensures available liquidity. <5>Read more</5>."
 msgstr "淨費率 = 資金費率 + 借貸費用。<0/><1/>資金費率：平衡做多與做空，由交易者之間支付。<2>了解更多</2>。<3/><4/>借貸費用：確保可用流動性。<5>了解更多</5>。"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Whitelisted addresses convert USDC to USDG at 0 bps. To get whitelisted, message <0>@GMXPartners</0> on Telegram and mention \"USDG whitelist\"."
+msgstr "白名單地址以 0 bps 將 USDC 轉換為 USDG。如需加入白名單，請在 Telegram 上聯繫 <0>@GMXPartners</0> 並註明 \"USDG whitelist\"。"
 
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Start trading in under 5 minutes"
@@ -12259,6 +12292,10 @@ msgstr "EIP-4844, 20-27 Mar"
 msgid "Lifetime rewards"
 msgstr "累計獎勵"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "This pool holds USDG, so USDC is converted to USDG when you buy and back to USDC when you sell.<0/><1/>Instant swap goes through the GMX USDC/USDG pool within your buy or sell, in one transaction. You pay its swap fee and price impact.<2/><3/>Direct with Paxos converts with Paxos, the issuer of USDG, in a separate transaction that settles in a few minutes. The converted tokens land in your wallet first.<4/><5/>Auto picks the cheaper option. Whitelisted addresses can choose either option and convert USDC to USDG with no Paxos fee. Other addresses always use Auto, and Direct with Paxos is only offered from {minAmount}.<6/><7/>The choice is fixed when only one option can handle the amount or a conversion is in progress."
+msgstr "此池持有 USDG，因此買入時 USDC 會轉換為 USDG，賣出時再轉換回 USDC。<0/><1/>即時兌換在您的買入或賣出中透過 GMX USDC/USDG 池完成，僅需一筆交易。您需支付該池的兌換費用和價格影響。<2/><3/>透過 Paxos 直接轉換是與 USDG 發行方 Paxos 進行轉換，使用獨立交易，數分鐘內完成結算。轉換後的代幣會先進入您的錢包。<4/><5/>自動會選擇較便宜的選項。白名單地址可選擇任一選項，並以零 Paxos 手續費將 USDC 轉換為 USDG。其他地址一律使用自動，且透過 Paxos 直接轉換僅在 {minAmount} 起提供。<6/><7/>當只有一個選項能處理該金額或轉換正在進行時，選擇將被固定。"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "This trigger is at or beyond the estimated liquidation price. The margin deposit will be attempted before liquidation when eligible, but execution is not guaranteed."
 msgstr "該觸發價格已達到或超出預估清算價格。符合條件時將在清算前嘗試執行保證金存入，但不保證執行成功。"
@@ -12434,6 +12471,10 @@ msgstr "{count, plural, one {訂單} other {# 筆訂單}}"
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche trading incentives"
 msgstr "Avalanche 交易獎勵"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Direct with Paxos"
+msgstr "透過 Paxos 直接轉換"
 
 #: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
 msgid "External routes are only used for market swaps."

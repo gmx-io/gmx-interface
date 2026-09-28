@@ -1548,6 +1548,10 @@ msgstr "Транзакции"
 msgid "External swap {0} to {1}"
 msgstr "Внешний обмен {0} на {1}"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Instant swap"
+msgstr "Мгновенный своп"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Net wallet result"
 msgstr "Чистый результат по кошельку"
@@ -2246,6 +2250,10 @@ msgstr "Вывести {glvOrGm}"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Receive voting power and participate in governance"
 msgstr "Получить право голоса и участвовать в управлении"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Auto · {routeLabel}"
+msgstr "Авто · {routeLabel}"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No GMX swap route found for {0} to {1}. Try <0>an external aggregator</0>."
@@ -3853,6 +3861,11 @@ msgstr "Telegram-группы, управляемые сообществом"
 msgid "Change to {0}"
 msgstr "Изменить на {0}"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Conversion"
+msgstr "Конвертация"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Relayer request failed"
 msgstr "Запрос релеера не удался"
@@ -4253,6 +4266,10 @@ msgstr ""
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker thread"
 msgstr "Рабочий поток"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Cheaper option for your amount"
+msgstr "Выгоднее для вашей суммы"
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Failed to update orders"
@@ -5568,6 +5585,10 @@ msgstr "Обновить Стоп-Маркет"
 msgid "USD"
 msgstr "USD"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "GMX USDC/USDG pool, same transaction"
+msgstr "Пул GMX USDC/USDG, та же транзакция"
+
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Order lifecycle"
 msgstr "Жизненный цикл ордера"
@@ -6035,6 +6056,10 @@ msgstr "Максимум {MAX_REFERRAL_CODE_LENGTH} символов"
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "Buy with card"
 msgstr "Купить картой"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Auto"
+msgstr "Авто"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Provide isolated liquidity per market"
@@ -7376,6 +7401,10 @@ msgstr "УТИЛИЗАЦИЯ"
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity available for increasing longs at<0/>this size. Max long size: {0}<1/><2/>No price impact. Single execution price for<3/>decreasing shorts at this size."
 msgstr "Нет доступной ликвидности для увеличения лонгов при<0/>данном размере. Макс. размер лонга: {0}<1/><2/>Нет влияния на цену. Единая цена исполнения для<3/>уменьшения шортов при данном размере."
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "USDG issuer, separate transaction, a few minutes. Zero fee for whitelisted addresses."
+msgstr "Эмитент USDG, отдельная транзакция, несколько минут. Без комиссии для адресов из белого списка."
 
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Referrals/Referrals.tsx
@@ -8817,6 +8846,10 @@ msgstr "Показать больше"
 #: src/components/MarketsList/NetFeeHeaderTooltipContent.tsx
 msgid "Net rate = funding + borrowing fees.<0/><1/>Funding: Balances longs vs shorts, paid between traders. <2>Read more</2>.<3/><4/>Borrowing: Ensures available liquidity. <5>Read more</5>."
 msgstr "Чистая ставка = комиссии за финансирование + заимствование.<0/><1/>Финансирование: балансирует лонги и шорты, выплачивается между трейдерами. <2>Подробнее</2>.<3/><4/>Заимствование: обеспечивает доступную ликвидность. <5>Подробнее</5>."
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Whitelisted addresses convert USDC to USDG at 0 bps. To get whitelisted, message <0>@GMXPartners</0> on Telegram and mention \"USDG whitelist\"."
+msgstr "Адреса из белого списка конвертируют USDC в USDG за 0 bps. Чтобы попасть в белый список, напишите <0>@GMXPartners</0> в Telegram и укажите \"USDG whitelist\"."
 
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Start trading in under 5 minutes"
@@ -12259,6 +12292,10 @@ msgstr "EIP-4844, 20-27 марта"
 msgid "Lifetime rewards"
 msgstr "Награды за всё время"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "This pool holds USDG, so USDC is converted to USDG when you buy and back to USDC when you sell.<0/><1/>Instant swap goes through the GMX USDC/USDG pool within your buy or sell, in one transaction. You pay its swap fee and price impact.<2/><3/>Direct with Paxos converts with Paxos, the issuer of USDG, in a separate transaction that settles in a few minutes. The converted tokens land in your wallet first.<4/><5/>Auto picks the cheaper option. Whitelisted addresses can choose either option and convert USDC to USDG with no Paxos fee. Other addresses always use Auto, and Direct with Paxos is only offered from {minAmount}.<6/><7/>The choice is fixed when only one option can handle the amount or a conversion is in progress."
+msgstr "Этот пул хранит USDG, поэтому при покупке USDC конвертируется в USDG, а при продаже — обратно в USDC.<0/><1/>Мгновенный своп проходит через пул GMX USDC/USDG в рамках вашей покупки или продажи, одной транзакцией. Вы платите комиссию за своп этого пула и влияние на цену.<2/><3/>Напрямую с Paxos — конвертация через Paxos, эмитента USDG, отдельной транзакцией, которая проходит за несколько минут. Сконвертированные токены сначала поступают в ваш кошелек.<4/><5/>Авто выбирает более дешёвый вариант. Адреса из белого списка могут выбрать любой вариант и конвертировать USDC в USDG без комиссии Paxos. Другие адреса всегда используют Авто, а «Напрямую с Paxos» доступно только от {minAmount}.<6/><7/>Выбор фиксирован, если сумму может обработать только один вариант или конвертация уже выполняется."
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "This trigger is at or beyond the estimated liquidation price. The margin deposit will be attempted before liquidation when eligible, but execution is not guaranteed."
 msgstr "Этот триггер находится на уровне или за пределами расчетной цены ликвидации. Депозит маржи будет предпринят до ликвидации, если он подходит по условиям, но исполнение не гарантируется."
@@ -12434,6 +12471,10 @@ msgstr "{count, plural, one {Ордер} other {# Ордеров}}"
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche trading incentives"
 msgstr "Торговые поощрения Avalanche"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Direct with Paxos"
+msgstr "Напрямую с Paxos"
 
 #: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
 msgid "External routes are only used for market swaps."

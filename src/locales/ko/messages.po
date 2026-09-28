@@ -1548,6 +1548,10 @@ msgstr "거래 수"
 msgid "External swap {0} to {1}"
 msgstr "외부 스왑 {0} → {1}"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Instant swap"
+msgstr "즉시 스왑"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Net wallet result"
 msgstr "지갑 순손익"
@@ -2246,6 +2250,10 @@ msgstr "{glvOrGm} 출금"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Receive voting power and participate in governance"
 msgstr "투표권 획득 및 거버넌스 참여"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Auto · {routeLabel}"
+msgstr "자동 · {routeLabel}"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No GMX swap route found for {0} to {1}. Try <0>an external aggregator</0>."
@@ -3853,6 +3861,11 @@ msgstr "커뮤니티 운영 Telegram 그룹"
 msgid "Change to {0}"
 msgstr "{0}으로 변경"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Conversion"
+msgstr "전환"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Relayer request failed"
 msgstr "릴레이어 요청 실패"
@@ -4253,6 +4266,10 @@ msgstr ""
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker thread"
 msgstr "워커 스레드"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Cheaper option for your amount"
+msgstr "이 금액에 더 저렴한 옵션"
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Failed to update orders"
@@ -5568,6 +5585,10 @@ msgstr "스탑 마켓 업데이트"
 msgid "USD"
 msgstr "USD"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "GMX USDC/USDG pool, same transaction"
+msgstr "GMX USDC/USDG 풀, 동일 트랜잭션"
+
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Order lifecycle"
 msgstr "주문 수명 주기"
@@ -6035,6 +6056,10 @@ msgstr "최대 {MAX_REFERRAL_CODE_LENGTH}자"
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "Buy with card"
 msgstr "카드로 구매"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Auto"
+msgstr "자동"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Provide isolated liquidity per market"
@@ -7376,6 +7401,10 @@ msgstr "이용률"
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity available for increasing longs at<0/>this size. Max long size: {0}<1/><2/>No price impact. Single execution price for<3/>decreasing shorts at this size."
 msgstr "이 규모에서 롱 증가를 위한 유동성이 없습니다.<0/>최대 롱 규모: {0}<1/><2/>가격 영향 없음. 이 규모에서 숏 감소 시<3/>단일 체결가가 적용됩니다."
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "USDG issuer, separate transaction, a few minutes. Zero fee for whitelisted addresses."
+msgstr "USDG 발행사, 별도 트랜잭션, 몇 분 소요. 화이트리스트 주소는 수수료 없음."
 
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Referrals/Referrals.tsx
@@ -8817,6 +8846,10 @@ msgstr "더 보기"
 #: src/components/MarketsList/NetFeeHeaderTooltipContent.tsx
 msgid "Net rate = funding + borrowing fees.<0/><1/>Funding: Balances longs vs shorts, paid between traders. <2>Read more</2>.<3/><4/>Borrowing: Ensures available liquidity. <5>Read more</5>."
 msgstr "순 비율 = 펀딩 + 차입 수수료.<0/><1/>펀딩: 롱과 숏 간의 균형을 조정하며, 트레이더 간에 지급됩니다. <2>자세히 보기</2>.<3/><4/>차입: 유동성 확보를 보장합니다. <5>자세히 보기</5>."
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Whitelisted addresses convert USDC to USDG at 0 bps. To get whitelisted, message <0>@GMXPartners</0> on Telegram and mention \"USDG whitelist\"."
+msgstr "화이트리스트 주소는 USDC를 0 bps로 USDG로 전환합니다. 화이트리스트에 등록하려면 Telegram에서 <0>@GMXPartners</0>에 메시지를 보내 \"USDG whitelist\"를 언급하세요."
 
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Start trading in under 5 minutes"
@@ -12259,6 +12292,10 @@ msgstr "EIP-4844, 3월 20-27일"
 msgid "Lifetime rewards"
 msgstr "누적 보상"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "This pool holds USDG, so USDC is converted to USDG when you buy and back to USDC when you sell.<0/><1/>Instant swap goes through the GMX USDC/USDG pool within your buy or sell, in one transaction. You pay its swap fee and price impact.<2/><3/>Direct with Paxos converts with Paxos, the issuer of USDG, in a separate transaction that settles in a few minutes. The converted tokens land in your wallet first.<4/><5/>Auto picks the cheaper option. Whitelisted addresses can choose either option and convert USDC to USDG with no Paxos fee. Other addresses always use Auto, and Direct with Paxos is only offered from {minAmount}.<6/><7/>The choice is fixed when only one option can handle the amount or a conversion is in progress."
+msgstr "이 풀은 USDG를 보유하므로 구매 시 USDC가 USDG로 전환되고 판매 시 다시 USDC로 전환됩니다.<0/><1/>즉시 스왑은 구매 또는 판매 과정에서 GMX USDC/USDG 풀을 거쳐 하나의 트랜잭션으로 처리됩니다. 해당 풀의 스왑 수수료와 가격 영향을 부담합니다.<2/><3/>Paxos 직접 전환은 USDG 발행사인 Paxos를 통해 별도 트랜잭션으로 전환되며 몇 분 내에 정산됩니다. 전환된 토큰은 먼저 지갑으로 들어옵니다.<4/><5/>자동은 더 저렴한 옵션을 선택합니다. 화이트리스트 주소는 두 옵션 중 하나를 선택할 수 있으며 Paxos 수수료 없이 USDC를 USDG로 전환할 수 있습니다. 그 외 주소는 항상 자동을 사용하며, Paxos 직접 전환은 {minAmount}부터 제공됩니다.<6/><7/>하나의 옵션만 해당 금액을 처리할 수 있거나 전환이 진행 중인 경우 선택이 고정됩니다."
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "This trigger is at or beyond the estimated liquidation price. The margin deposit will be attempted before liquidation when eligible, but execution is not guaranteed."
 msgstr "이 조건가는 예상 청산가 또는 그 너머에 있습니다. 증거금 예치는 대상이 되는 경우 청산 전에 시도되지만 실행이 보장되지는 않습니다."
@@ -12434,6 +12471,10 @@ msgstr "{count, plural, one {주문} other {# 주문}}"
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche trading incentives"
 msgstr "Avalanche 트레이딩 인센티브"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Direct with Paxos"
+msgstr "Paxos 직접 전환"
 
 #: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
 msgid "External routes are only used for market swaps."
