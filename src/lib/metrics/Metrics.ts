@@ -68,7 +68,7 @@ class Metrics {
   setFetcher = (fetcher: OracleFetcher) => {
     this.fetcher = fetcher;
 
-    if (this.queue.length > 0 && !this.isProcessing) {
+    if (!this.isProcessing) {
       this._processQueue();
     }
   };
@@ -204,7 +204,7 @@ class Metrics {
 
     if (this.queue.length === 0) {
       _debugMetrics?.logQueueState("Empty");
-      return sleep(RETRY_DELAY).then(() => this._processQueue(retryNumber + 1));
+      return sleep(BATCH_INTERVAL_MS).then(() => this._processQueue());
     }
 
     if (!this.getIsGlobalPropsInited() && this.initGlobalPropsRetries > 0) {

@@ -35,7 +35,10 @@ beforeEach(() => {
   metrics.queue = [];
   metrics.fetcher = undefined;
   metrics.isProcessing = false;
-  metrics.globalMetricData.isInited = false;
+  metrics.globalMetricData = { ...metrics.globalMetricData, isInited: false, isHomeSite: false };
+  metrics.wallets = undefined;
+  metrics.isGlobalPropsFilled = false;
+  metrics.initGlobalPropsRetries = 3;
   userAnalytics.commonEventParams.isInited = false;
   userAnalytics.earlyEventsQueue = [];
   userAnalytics.initCommonParamsRetries = 3;
@@ -73,41 +76,66 @@ describe("landing analytics delivery", () => {
     ]);
   });
 
-  it("sends the first page view and UTM profile as soon as the fetcher is available", async () => {
-    const send = vi.fn().mockResolvedValue(new Response(null, { status: 200 }));
-    render(
-      <I18nProvider i18n={i18n}>
-        <MemoryRouter>
-          <LandingAnalytics />
-        </MemoryRouter>
-      </I18nProvider>
-    );
-    metrics.setFetcher({ fetchPostBatchReport: send } as unknown as OracleFetcher);
-    await vi.advanceTimersByTimeAsync(0);
+  it.each(["before", "after"])(
+    "delivers the page view and UTM profile with the fetcher ready %s mount",
+    async (order) => {
+      const send = vi.fn().mockResolvedValue(new Response(null, { status: 200 }));
+      const fetcher = { fetchPostBatchReport: send } as unknown as OracleFetcher;
+      if (order === "before") metrics.setFetcher(fetcher);
 
-    expect(send).toHaveBeenCalledOnce();
-    expect(send.mock.calls[0][0].items).toEqual([
-      {
-        type: "userAnalyticsEvent",
-        payload: {
-          event: "RewardsLandingPageAction",
-          distinctId: "visitor",
-          customFields: expect.objectContaining({
-            action: "RewardsPageView",
-            displayMode: "browser",
-            isTest: true,
-            isInited: true,
-          }),
+      render(
+        <I18nProvider i18n={i18n}>
+          <MemoryRouter>
+            <LandingAnalytics />
+          </MemoryRouter>
+        </I18nProvider>
+      );
+      if (order === "after") metrics.setFetcher(fetcher);
+      await vi.advanceTimersByTimeAsync(3000);
+
+      expect(send).toHaveBeenCalledOnce();
+      expect(send.mock.calls[0][0].items).toEqual([
+        {
+          type: "userAnalyticsEvent",
+          payload: {
+            event: "RewardsLandingPageAction",
+            distinctId: "visitor",
+            customFields: expect.objectContaining({
+              action: "RewardsPageView",
+              displayMode: "browser",
+              isTest: true,
+              isInited: true,
+            }),
+          },
         },
-      },
+        {
+          type: "userAnalyticsProfile",
+          payload: { distinctId: "visitor", customFields: { languageCode: "en", ref: undefined, utm_medium: "email" } },
+        },
+      ]);
+
+      await vi.advanceTimersByTimeAsync(2000);
+      expect(send).toHaveBeenCalledOnce();
+      expect(userAnalytics.earlyEventsQueue).toHaveLength(0);
+    }
+  );
+
+  it("delivers a new profile promptly after a long period without events", async () => {
+    const send = vi.fn().mockResolvedValue(new Response(null, { status: 200 }));
+    metrics.setGlobalMetricData({ isInited: true, isHomeSite: true });
+    userAnalytics.pushProfileProps({ languageCode: "en" });
+    metrics.setFetcher({ fetchPostBatchReport: send } as unknown as OracleFetcher);
+    await vi.advanceTimersByTimeAsync(60_000);
+    expect(send).toHaveBeenCalledOnce();
+
+    userAnalytics.pushProfileProps({ languageCode: "es" });
+    await vi.advanceTimersByTimeAsync(3000);
+    expect(send).toHaveBeenCalledTimes(2);
+    expect(send.mock.calls[1][0].items).toEqual([
       {
         type: "userAnalyticsProfile",
-        payload: { distinctId: "visitor", customFields: { languageCode: "en", ref: undefined, utm_medium: "email" } },
+        payload: { distinctId: "visitor", customFields: { languageCode: "es", utm_medium: "email" } },
       },
     ]);
-
-    await vi.advanceTimersByTimeAsync(2000);
-    expect(send).toHaveBeenCalledOnce();
-    expect(userAnalytics.earlyEventsQueue).toHaveLength(0);
   });
 });
