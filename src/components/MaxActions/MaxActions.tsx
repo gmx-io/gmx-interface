@@ -98,6 +98,7 @@ function MaxActionPill({
       disabled={tooltip === undefined}
       isHandlerDisabled={isDisabled}
       handleClassName={isDisabled ? "!cursor-not-allowed" : undefined}
+      tooltipClassName="pointer-events-none"
       shouldPreventDefault={false}
       variant="none"
       position={tooltipPosition}
