@@ -116,10 +116,12 @@ describe("getShouldUseTransit", () => {
     expect(getShouldUseTransit({ ...LARGE, amountUsd: usd(1), collateralSwapTotalFeesDeltaUsd: undefined })).toBe(true);
   });
 
-  it("always uses Transit for whitelisted addresses", () => {
-    expect(getShouldUseTransit({ ...LARGE, amountUsd: usd(1), transitFeesUsd: undefined, isWhitelisted: true })).toBe(
-      true
-    );
+  it("uses the cheaper route for whitelisted addresses at any size", () => {
+    const whitelisted = { ...LARGE, amountUsd: usd(1), isWhitelisted: true };
+
+    expect(getShouldUseTransit({ ...whitelisted, transitFeesUsd: 0n })).toBe(true);
+    expect(getShouldUseTransit({ ...whitelisted, collateralSwapTotalFeesDeltaUsd: -usd(5) })).toBe(false);
+    expect(getShouldUseTransit({ ...whitelisted, transitFeesUsd: undefined })).toBe(false);
   });
 });
 

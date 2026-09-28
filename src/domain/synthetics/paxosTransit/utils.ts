@@ -58,10 +58,6 @@ export function getShouldUseTransit(p: {
   collateralSwapTotalFeesDeltaUsd: bigint | undefined;
   minAmountUsd: bigint;
 }): boolean {
-  if (p.isWhitelisted) {
-    return true;
-  }
-
   if (p.transitFeesUsd === undefined) {
     return false;
   }
@@ -70,7 +66,9 @@ export function getShouldUseTransit(p: {
     return true;
   }
 
-  return p.amountUsd >= p.minAmountUsd && -p.transitFeesUsd > p.collateralSwapTotalFeesDeltaUsd;
+  const isLargeEnough = p.isWhitelisted || p.amountUsd >= p.minAmountUsd;
+
+  return isLargeEnough && -p.transitFeesUsd > p.collateralSwapTotalFeesDeltaUsd;
 }
 
 export function getIsTransitQuoteNeeded(p: {
