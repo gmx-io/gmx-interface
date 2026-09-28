@@ -1294,7 +1294,7 @@ msgstr "No se ha podido verificar la disponibilidad del código en {0}. Aún pue
 msgid "Assumes a ~0.05% effective round-trip fee on GMX perps.<0/>Illustrative only — your exact rate is confirmed by the desk on signup."
 msgstr "Asume una comisión efectiva de ida y vuelta de ~0,05% en perps de GMX.<0/>Solo ilustrativo: el desk confirmará su tarifa exacta al registrarse."
 
-#: landing/src/pages/Rewards/Rewards.tsx
+#: landing/src/pages/Rewards/RewardsClosingNote.tsx
 msgid "Trade before <0>{0}</0> and you're in this epoch."
 msgstr "Opera antes de <0>{0}</0> y entrarás en esta época."
 
@@ -10532,6 +10532,10 @@ msgstr "Tamaño por parte"
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Add endpoint"
 msgstr "Añadir endpoint"
+
+#: landing/src/pages/Rewards/RewardsClosingNote.tsx
+msgid "Season 1 rewards kick off on {startDate} at {startTime} UTC"
+msgstr "Las recompensas de la temporada 1 comienzan el {startDate} a las {startTime} UTC"
 
 #: src/components/Errors/gasErrors.tsx
 msgid "This pool is at maximum capacity and not accepting deposits right now. Try a different pool."

@@ -1,5 +1,4 @@
 import { t, Trans } from "@lingui/macro";
-import { useLingui } from "@lingui/react";
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
@@ -15,21 +14,19 @@ import dial from "img/rewards-landing/dial.svg";
 
 import { ReturningTrader } from "./ReturningTrader";
 import { RewardsCalculator } from "./RewardsCalculator";
+import { RewardsClosingNote } from "./RewardsClosingNote";
 import { RewardsEpochSummary } from "./RewardsEpochSummary";
 import { RewardsFaq } from "./RewardsFaq";
 import { RewardsMultipliers } from "./RewardsMultipliers";
 import { RewardsTokens } from "./RewardsTokens";
 import { RewardsTradeButton } from "./RewardsTradeButton";
-import { RewardsValue } from "./RewardsValue";
 
 import "./Rewards.css";
 
 export default function Rewards() {
   const viewSent = useRef(false);
-  const { i18n } = useLingui();
   const config = useIncentivesConfig(ARBITRUM);
   const loading = config.loading || config.isValidating;
-  const epochEnd = config.data ? new Date((config.data.epochTimestamp + config.data.epochDuration) * 1000) : undefined;
 
   useEffect(() => {
     if (viewSent.current) return;
@@ -80,26 +77,7 @@ export default function Rewards() {
               </h2>
               <div className="rewards-closing-cta">
                 <RewardsTradeButton placement="Closing" />
-                <p>
-                  <Trans>
-                    Trade before{" "}
-                    <RewardsValue loading={loading} width="18ch">
-                      {epochEnd && (
-                        <time dateTime={epochEnd.toISOString()}>
-                          {epochEnd.toLocaleString(i18n.locale, {
-                            weekday: "long",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            hourCycle: "h23",
-                            timeZone: "UTC",
-                          })}{" "}
-                          UTC
-                        </time>
-                      )}
-                    </RewardsValue>{" "}
-                    and you're in this epoch.
-                  </Trans>
-                </p>
+                <RewardsClosingNote config={config.data} loading={loading} />
               </div>
             </div>
           </section>

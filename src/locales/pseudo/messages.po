@@ -1294,7 +1294,7 @@ msgstr ""
 msgid "Assumes a ~0.05% effective round-trip fee on GMX perps.<0/>Illustrative only — your exact rate is confirmed by the desk on signup."
 msgstr ""
 
-#: landing/src/pages/Rewards/Rewards.tsx
+#: landing/src/pages/Rewards/RewardsClosingNote.tsx
 msgid "Trade before <0>{0}</0> and you're in this epoch."
 msgstr ""
 
@@ -10531,6 +10531,10 @@ msgstr ""
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Add endpoint"
+msgstr ""
+
+#: landing/src/pages/Rewards/RewardsClosingNote.tsx
+msgid "Season 1 rewards kick off on {startDate} at {startTime} UTC"
 msgstr ""
 
 #: src/components/Errors/gasErrors.tsx
