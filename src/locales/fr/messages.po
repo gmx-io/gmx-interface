@@ -3960,7 +3960,7 @@ msgstr "Déclencheur"
 msgid "Mark price changed. Increase allowed slippage"
 msgstr "Le prix de référence a changé. Augmentez le glissement autorisé"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationErrorText.ts
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationError.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6528,7 +6528,7 @@ msgstr "Ordres de déclenchement"
 msgid "GMX uses TradingView for real-time cryptocurrency charts. Track <0>BTCUSD</0> and other pairs with interactive charting tools."
 msgstr "GMX utilise TradingView pour les graphiques de cryptomonnaies en temps réel. Suivez <0>BTCUSD</0> et d'autres paires avec des outils graphiques interactifs."
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationErrorText.ts
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationError.ts
 msgid "Error simulating deposit"
 msgstr "Erreur lors de la simulation du dépôt"
 
@@ -10136,7 +10136,7 @@ msgid "Edit order"
 msgstr "Modifier l'ordre"
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationErrorText.ts
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationError.ts
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Error simulating withdrawal"
 msgstr "Erreur de simulation de retrait"
@@ -12758,7 +12758,7 @@ msgstr "Incitation bonus GLV (test)"
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationErrorText.ts
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationError.ts
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx

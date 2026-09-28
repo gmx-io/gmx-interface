@@ -1,5 +1,9 @@
+import { i18n } from "@lingui/core";
+import { I18nProvider } from "@lingui/react";
+import { cleanup, fireEvent, render } from "@testing-library/react";
+import { createElement } from "react";
 import { encodeErrorResult, zeroAddress } from "viem";
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import "lib/monkeyPatching";
 import { ARBITRUM } from "config/chains";
@@ -7,7 +11,7 @@ import { CustomError } from "lib/errors";
 import { abis } from "sdk/abis";
 import { CustomErrorName } from "sdk/utils/errors";
 
-import { getGmSwapSimulationErrorText } from "./getGmSwapSimulationErrorText";
+import { getGmSwapSimulationError } from "./getGmSwapSimulationError";
 
 // relay estimation errors reach the GM/GLV box as CustomError built by fallbackCustomError
 const relayError = (name: string, args?: Record<string, unknown>) =>
@@ -19,7 +23,14 @@ const pnlFactorExceededForShorts = encodeErrorResult({
   args: [480103447088416912169261436793n, 450000000000000000000000000000n],
 });
 
-describe("getGmSwapSimulationErrorText PRO-4168", () => {
+describe("getGmSwapSimulationError PRO-4168", () => {
+  beforeEach(() => {
+    i18n.load("en", {});
+    i18n.activate("en");
+  });
+
+  afterEach(cleanup);
+
   it.each([
     [
       "the nested PnL-factor cause of a withdrawal",
@@ -46,6 +57,11 @@ describe("getGmSwapSimulationErrorText PRO-4168", () => {
       true,
       "Maximum pool capacity reached",
     ],
+  ])("shows %s in the button", (_, error, isDeposit, expected) => {
+    expect(getGmSwapSimulationError({ chainId: ARBITRUM, error, isDeposit })).toEqual({ text: expected });
+  });
+
+  it.each([
     ["an unmapped withdrawal error", relayError("EmptyWithdrawalAmount"), false, "Error simulating withdrawal"],
     [
       "a wrapped unmapped withdrawal error",
@@ -56,7 +72,16 @@ describe("getGmSwapSimulationErrorText PRO-4168", () => {
       "Error simulating withdrawal",
     ],
     ["an unmapped deposit error", relayError("EmptyWithdrawalAmount"), true, "Error simulating deposit"],
-  ])("shows %s", (_, error, isDeposit, expected) => {
-    expect(getGmSwapSimulationErrorText({ chainId: ARBITRUM, error, isDeposit })).toBe(expected);
+  ])("keeps the diagnostics of %s under Show error in the tooltip", (_, error, isDeposit, expected) => {
+    const { text, description } = getGmSwapSimulationError({ chainId: ARBITRUM, error, isDeposit });
+
+    const { container, getByText } = render(createElement(I18nProvider, { i18n }, description));
+
+    expect(text).toBe(expected);
+    expect(container.textContent).not.toContain(error.name);
+
+    fireEvent.click(getByText("Show error"));
+
+    expect(container.textContent).toContain(error.name);
   });
 });

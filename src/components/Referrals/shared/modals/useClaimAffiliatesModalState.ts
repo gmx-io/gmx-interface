@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import partition from "lodash/partition";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSWRConfig } from "swr";
 import { zeroAddress } from "viem";
 import { useAccount } from "wagmi";
@@ -50,7 +50,7 @@ import useWallet from "lib/wallets/useWallet";
 import { getToken } from "sdk/configs/tokens";
 import type { TokenData } from "sdk/utils/tokens/types";
 
-import { getContractErrorMessageFromError } from "components/Errors/getContractErrorMessage";
+import { getSimulationErrorButtonContent } from "components/Errors/getSimulationErrorButtonContent";
 import { calculateNetworkFeeDetails } from "components/GmxAccountModal/calculateNetworkFeeDetails";
 
 const MAIN_REWARDS_PREVIEW_COUNT = 5;
@@ -84,6 +84,7 @@ export type SubmitButtonState = {
   text: string;
   disabled: boolean;
   showSpinner?: boolean;
+  errorDescription?: ReactNode;
 };
 
 export function getRewardUsd(reward: AffiliateReward, marketsInfoData: MarketsInfoData | undefined): bigint {
@@ -697,7 +698,11 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
       return { text: t`Loading...`, disabled: true, showSpinner: true };
     } else if (claimSimulationError) {
       return {
-        text: getContractErrorMessageFromError({ chainId, error: claimSimulationError }) ?? t`Error simulating claim`,
+        ...getSimulationErrorButtonContent({
+          chainId,
+          error: claimSimulationError,
+          fallbackText: t`Error simulating claim`,
+        }),
         disabled: true,
       };
     } else {

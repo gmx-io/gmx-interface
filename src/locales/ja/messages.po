@@ -3960,7 +3960,7 @@ msgstr "トリガー"
 msgid "Mark price changed. Increase allowed slippage"
 msgstr "マーク価格が変更されました。許容スリッページを引き上げてください"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationErrorText.ts
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationError.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6528,7 +6528,7 @@ msgstr "トリガー注文"
 msgid "GMX uses TradingView for real-time cryptocurrency charts. Track <0>BTCUSD</0> and other pairs with interactive charting tools."
 msgstr "GMXはTradingViewを使用してリアルタイムの暗号通貨チャートを提供しています。<0>BTCUSD</0>やその他のペアをインタラクティブなチャートツールで追跡できます。"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationErrorText.ts
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationError.ts
 msgid "Error simulating deposit"
 msgstr "入金シミュレーションエラー"
 
@@ -10136,7 +10136,7 @@ msgid "Edit order"
 msgstr "注文を編集"
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationErrorText.ts
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationError.ts
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Error simulating withdrawal"
 msgstr "引き出しシミュレーションエラー"
@@ -12758,7 +12758,7 @@ msgstr "GLVボーナスインセンティブ（テスト）"
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationErrorText.ts
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationError.ts
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx

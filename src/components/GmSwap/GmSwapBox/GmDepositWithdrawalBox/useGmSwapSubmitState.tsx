@@ -63,7 +63,7 @@ import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
-import { getGmSwapSimulationErrorText } from "./getGmSwapSimulationErrorText";
+import { getGmSwapSimulationError } from "./getGmSwapSimulationError";
 import { useLpTransactions } from "./lpTxn/useLpTransactions";
 import { useTokensToApprove } from "./useTokensToApprove";
 
@@ -366,8 +366,11 @@ export const useGmSwapSubmitState = ({
         };
       }
     } else if (estimationError) {
+      const simulationError = getGmSwapSimulationError({ chainId, error: estimationError, isDeposit });
+
       return {
-        buttonErrorMessage: getGmSwapSimulationErrorText({ chainId, error: estimationError, isDeposit }),
+        buttonErrorMessage: simulationError.text,
+        buttonTooltipMessage: simulationError.description,
       };
     }
 
@@ -503,8 +506,11 @@ export const useGmSwapSubmitState = ({
     }
 
     if (technicalFeesError) {
+      const simulationError = getGmSwapSimulationError({ chainId, error: technicalFeesError, isDeposit });
+
       return {
-        text: getGmSwapSimulationErrorText({ chainId, error: technicalFeesError, isDeposit }),
+        text: simulationError.text,
+        errorDescription: simulationError.description,
         disabled: true,
       };
     }

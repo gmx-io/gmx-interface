@@ -8,7 +8,7 @@ import { JUMPER_BRIDGE_URL, SAFE_MULTICHAIN_DOCS_URL } from "config/links";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getExecutionFeeBufferBps, getMinimumExecutionFeeBufferBps } from "domain/synthetics/fees/utils/executionFee";
-import { ErrorData } from "lib/errors";
+import { ErrorData, ErrorLike, parseError } from "lib/errors";
 import {
   SMART_WALLET_ACCOUNT_CHANGED_ERROR,
   SMART_WALLET_CHAIN_UNAVAILABLE_ERROR,
@@ -232,6 +232,12 @@ export function getDebugErrorMessage(errorData: ErrorData | undefined) {
   ].filter(Boolean);
 
   return [message, ...handles].filter(Boolean).join("\n") || undefined;
+}
+
+export function getErrorDebugContent(error: ErrorLike): ReactNode {
+  const debugErrorMessage = getDebugErrorMessage(parseError(error));
+
+  return debugErrorMessage ? <ToastifyDebug error={debugErrorMessage} /> : undefined;
 }
 
 /**

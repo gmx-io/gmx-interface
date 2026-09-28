@@ -47,7 +47,7 @@ import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
-import { getContractErrorMessageFromError } from "components/Errors/getContractErrorMessage";
+import { getSimulationErrorButtonContent } from "components/Errors/getSimulationErrorButtonContent";
 import { SelectedPoolLabel } from "components/GmSwap/GmSwapBox/SelectedPool";
 import { useGmxAccountWithdrawNetworks } from "components/GmxAccountModal/hooks";
 import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
@@ -383,9 +383,11 @@ export function BridgeOutModal({
 
     if (expressTxnParamsAsyncResult.error) {
       return {
-        text:
-          getContractErrorMessageFromError({ chainId, error: expressTxnParamsAsyncResult.error }) ??
-          t`Error simulating withdrawal`,
+        ...getSimulationErrorButtonContent({
+          chainId,
+          error: expressTxnParamsAsyncResult.error,
+          fallbackText: t`Error simulating withdrawal`,
+        }),
         disabled: true,
       };
     }
