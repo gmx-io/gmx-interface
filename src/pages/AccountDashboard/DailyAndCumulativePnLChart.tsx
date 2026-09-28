@@ -741,7 +741,7 @@ export function DailyAndCumulativePnLChart({
 
   return (
     <>
-      <div className="flex flex-wrap gap-24 px-16 pt-16 text-typography-secondary">
+      <div className="flex flex-wrap gap-24 px-16 pb-8 pt-16 text-typography-secondary">
         <div className="flex items-center gap-8 text-13 font-medium">
           <div className="inline-block size-4 rounded-full bg-green-500" /> <Trans>Period profit</Trans>
         </div>
@@ -760,13 +760,12 @@ export function DailyAndCumulativePnLChart({
         <DebugLegend lastPoint={groupedPnlData.at(-1)} />
         <Button
           variant="secondary"
-          size="controlled"
-          className={cx("-my-3 ml-auto gap-4 !px-8 !py-4", { invisible: !isZoomed })}
+          className={cx("ml-auto", { invisible: !isZoomed })}
           aria-label={t`Reset zoom`}
           data-exclude
           onClick={handleResetZoom}
         >
-          <RepeatIcon className="size-14 shrink-0" />
+          <RepeatIcon className="size-16 shrink-0" />
           {isMobile ? null : <Trans>Reset zoom</Trans>}
         </Button>
       </div>
