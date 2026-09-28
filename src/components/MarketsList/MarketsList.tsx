@@ -8,11 +8,13 @@ import { IndexTokenStat } from "domain/synthetics/stats/marketsInfoDataToIndexTo
 import { stripBlacklistedWords } from "domain/tokens/utils";
 import { useChainId } from "lib/chains";
 import { importImage } from "lib/legacy";
-import { formatAmount, formatAmountHuman, formatRatePercentage, formatUsdPrice } from "lib/numbers";
+import { formatAmount, formatRatePercentage } from "lib/numbers";
 import { searchBy } from "lib/searchBy";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 
+import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
+import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import usePagination, { DEFAULT_PAGE_SIZE } from "components/Pagination/usePagination";
 import SearchInput from "components/SearchInput/SearchInput";
@@ -222,14 +224,14 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
         </div>
       </TableTd>
       <TableTd className="numbers">
-        {formatUsdPrice(stats.token.prices?.minPrice, {
-          visualMultiplier: stats.token.visualMultiplier,
-        })}
+        <UsdPriceValue price={stats.token.prices?.minPrice} visualMultiplier={stats.token.visualMultiplier} />
       </TableTd>
       <TableTd>
         <TooltipWithPortal
           className="nowrap"
-          handle={formatAmountHuman(stats.totalPoolValue, USD_DECIMALS, true, 2)}
+          handle={
+            <AmountHumanValue amount={stats.totalPoolValue} decimals={USD_DECIMALS} showDollar displayDecimals={2} />
+          }
           handleClassName="numbers"
           content={
             <>
@@ -244,7 +246,9 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
                       <span className="subtext leading-1">[{getMarketPoolName(marketInfo)}]</span>:
                     </div>
                   }
-                  value={formatAmountHuman(poolValueUsd, USD_DECIMALS, true, 2)}
+                  value={
+                    <AmountHumanValue amount={poolValueUsd} decimals={USD_DECIMALS} showDollar displayDecimals={2} />
+                  }
                   valueClassName="numbers"
                 />
               ))}
@@ -255,7 +259,9 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
       <TableTd>
         <TooltipWithPortal
           className="nowrap"
-          handle={formatAmountHuman(stats.totalMaxLiquidity, USD_DECIMALS, true, 2)}
+          handle={
+            <AmountHumanValue amount={stats.totalMaxLiquidity} decimals={USD_DECIMALS} showDollar displayDecimals={2} />
+          }
           handleClassName="numbers"
           content={
             <>
@@ -270,7 +276,9 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
                       <span className="subtext leading-1">[{getMarketPoolName(marketInfo)}]</span>:
                     </div>
                   }
-                  value={formatAmountHuman(maxLiquidity, USD_DECIMALS, true, 2)}
+                  value={
+                    <AmountHumanValue amount={maxLiquidity} decimals={USD_DECIMALS} showDollar displayDecimals={2} />
+                  }
                   valueClassName="numbers"
                 />
               ))}

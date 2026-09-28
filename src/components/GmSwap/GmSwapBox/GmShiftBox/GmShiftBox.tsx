@@ -22,7 +22,7 @@ import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensDa
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { ERC20Address, NativeTokenSupportedAddress } from "domain/tokens";
 import { getIsEnteredAmount } from "lib/getIsEnteredAmount";
-import { formatAmountFree, formatBalanceAmount, formatUsd } from "lib/numbers";
+import { formatAmountFree, formatBalanceAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useBlockAutoReload } from "lib/pwa/blockAutoReload";
 
@@ -32,6 +32,7 @@ import { ExpandableRow } from "components/ExpandableRow";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { MarketState } from "components/MarketSelector/types";
 import { NetworkFeeRow } from "components/NetworkFeeRow/NetworkFeeRow";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
 import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
@@ -132,11 +133,11 @@ export function GmShiftBox({
   const hasBalance = selectedToken?.balance !== undefined && selectedToken.balance > 0n;
   const selectedTokenShowMaxButton = hasBalance && (noAmountSet || balanceNotEqualToAmount);
 
-  const selectedTokenDollarAmount = formatUsd(
-    amounts?.fromTokenUsd !== undefined && amounts.fromTokenUsd > 0n ? amounts.fromTokenUsd : 0n
+  const selectedTokenDollarAmount = (
+    <UsdValue usd={amounts?.fromTokenUsd !== undefined && amounts.fromTokenUsd > 0n ? amounts.fromTokenUsd : 0n} />
   );
-  const toTokenShowDollarAmount = formatUsd(
-    amounts?.toTokenUsd !== undefined && amounts.toTokenUsd > 0n ? amounts.toTokenUsd : 0n
+  const toTokenShowDollarAmount = (
+    <UsdValue usd={amounts?.toTokenUsd !== undefined && amounts.toTokenUsd > 0n ? amounts.toTokenUsd : 0n} />
   );
 
   const routerAddress = getContract(chainId, "SyntheticsRouter");

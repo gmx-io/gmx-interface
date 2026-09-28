@@ -4,11 +4,12 @@ import { StakingProcessedData } from "lib/legacy";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import type { EarningAttributionScope } from "components/EarningValue/EarningValue";
+import { NumericValue } from "components/NumericValue/NumericValue";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { ClaimRewardsButton } from "../ClaimRewardsButton";
-import { EarningsStat, formatUsdExpanded, UsdStatValue } from "./EarningsStat";
+import { EarningsStat, formatUsdExpandedParts, UsdStatValue } from "./EarningsStat";
 import { LifetimeEarningsBreakdown, LifetimeEarningsTooltipContent } from "./LifetimeEarningsTooltip";
 
 const MOBILE_ROW_CLASS_NAME = "max-md:flex-row max-md:items-center max-md:justify-between";
@@ -44,22 +45,22 @@ function TotalValue({
           <StatsTooltipRow
             label={<Trans>Staked GMX:</Trans>}
             showDollar={false}
-            value={<span className="numbers">{formatUsdExpanded(breakdown.stakedGmxUsd)}</span>}
+            value={<NumericValue parts={formatUsdExpandedParts(breakdown.stakedGmxUsd)} className="numbers" />}
           />
           <StatsTooltipRow
             label={<Trans>Staked esGMX:</Trans>}
             showDollar={false}
-            value={<span className="numbers">{formatUsdExpanded(breakdown.stakedEsGmxUsd)}</span>}
+            value={<NumericValue parts={formatUsdExpandedParts(breakdown.stakedEsGmxUsd)} className="numbers" />}
           />
           <StatsTooltipRow
             label={<Trans>GM:</Trans>}
             showDollar={false}
-            value={<span className="numbers">{formatUsdExpanded(breakdown.gmUsd)}</span>}
+            value={<NumericValue parts={formatUsdExpandedParts(breakdown.gmUsd)} className="numbers" />}
           />
           <StatsTooltipRow
             label={<Trans>GLV:</Trans>}
             showDollar={false}
-            value={<span className="numbers">{formatUsdExpanded(breakdown.glvUsd)}</span>}
+            value={<NumericValue parts={formatUsdExpandedParts(breakdown.glvUsd)} className="numbers" />}
           />
           <span className="text-typography-tertiary mt-8">
             <Trans>

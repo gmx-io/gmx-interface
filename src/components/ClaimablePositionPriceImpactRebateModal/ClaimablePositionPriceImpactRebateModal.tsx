@@ -23,7 +23,7 @@ import { getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
-import { expandDecimals, formatDeltaUsd, formatTokenAmount } from "lib/numbers";
+import { expandDecimals, formatTokenAmount } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { sendExpressTransaction } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -35,6 +35,7 @@ import { nowInSeconds } from "sdk/utils/time";
 
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
@@ -283,7 +284,6 @@ function ClaimablePositionPriceImpactRebateModalComponent({
   };
 }) {
   const total = useSelector(selectClaimsPriceImpactClaimableTotal);
-  const totalUsd = useMemo(() => formatDeltaUsd(total), [total]);
   const groups = useSelector(selectClaimsGroupedPositionPriceImpactClaimableFees);
 
   return (
@@ -295,7 +295,9 @@ function ClaimablePositionPriceImpactRebateModalComponent({
     >
       <div className="ConfirmationBox-main">
         <div className="text-center">
-          <Trans>Claim {totalUsd}</Trans>
+          <Trans>
+            Claim <DeltaUsdValue deltaUsd={total} />
+          </Trans>
         </div>
       </div>
       <div className="mb-20 mt-15 h-1 bg-slate-700" />
@@ -390,7 +392,7 @@ const Row = memo(({ rebateItems }: { rebateItems: RebateInfoItem[] }) => {
       total = total + usd;
     });
 
-    return formatDeltaUsd(total);
+    return total;
   }, [rebateItems, tokensData]);
 
   const renderContent = useCallback(
@@ -416,7 +418,7 @@ const Row = memo(({ rebateItems }: { rebateItems: RebateInfoItem[] }) => {
         <TooltipWithPortal
           position="top-end"
           tooltipClassName="ClaimModal-row-tooltip"
-          handle={usd}
+          handle={<DeltaUsdValue deltaUsd={usd} />}
           renderContent={renderContent}
         />
       </div>

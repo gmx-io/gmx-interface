@@ -23,27 +23,35 @@ import {
   applyFactor,
   calculateDisplayDecimals,
   formatDeltaUsd,
+  formatDeltaUsdParts,
   formatPriceImpactBps,
   formatTokenAmount,
-  formatTokenAmountWithUsd,
+  formatTokenAmountWithUsdParts,
   formatUsd,
+  formatUsdParts,
+  joinNumberParts,
+  NumberPart,
+  numberParts,
   roundsToZero,
 } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 import { PositionTradeAction, TradeActionType, USER_INITIATED_CANCEL } from "sdk/utils/tradeHistory/types";
 
 import {
+  FormattedText,
   INEQUALITY_GT,
   INEQUALITY_LT,
   Line,
   MakeOptional,
   RowDetails,
+  TooltipString,
   formatTradeActionTimestamp,
   formatTradeActionTimestampUTC,
   getErrorTooltipTitle,
   infoRow,
   lines,
   numberToState,
+  numericText,
 } from "./shared";
 import { actionTextMap, expiredActionTextMap, getActionTitle } from "../../keys";
 
@@ -126,9 +134,9 @@ export const formatPositionMessage = (
     isTwap: Boolean(tradeAction.twapParams),
   });
 
-  const sizeDeltaText = isFullClose
+  const sizeDeltaText: FormattedText = isFullClose
     ? t`Full position close`
-    : formatUsd(sizeDeltaUsd * (isIncrease ? BN_ONE : BN_NEGATIVE_ONE), {
+    : formatUsdParts(sizeDeltaUsd * (isIncrease ? BN_ONE : BN_NEGATIVE_ONE), {
         displayPlus: true,
       })!;
 
@@ -149,19 +157,24 @@ export const formatPositionMessage = (
   });
 
   const marketPrice = getTokenPriceByTradeAction(tradeAction);
-  const formattedMarketPrice = formatUsd(marketPrice, {
+  const marketPriceParts = formatUsdParts(marketPrice, {
     displayDecimals: marketPriceDecimals,
     visualMultiplier: tradeAction.indexToken.visualMultiplier,
   });
+  const formattedMarketPrice = marketPriceParts && joinNumberParts(marketPriceParts);
 
-  const formattedAcceptablePrice = formatUsd(tradeAction.acceptablePrice, {
+  const acceptablePriceParts = formatUsdParts(tradeAction.acceptablePrice, {
     displayDecimals: marketPriceDecimals,
     visualMultiplier: tradeAction.indexToken.visualMultiplier,
   })!;
-  const formattedTriggerPrice = formatUsd(tradeAction.triggerPrice, {
+  const formattedAcceptablePrice = joinNumberParts(acceptablePriceParts);
+  const acceptablePriceDisplay = numberParts(acceptablePriceInequality, acceptablePriceParts);
+  const triggerPriceParts = formatUsdParts(tradeAction.triggerPrice, {
     displayDecimals: marketPriceDecimals,
     visualMultiplier: tradeAction.indexToken.visualMultiplier,
-  })!;
+  });
+  const formattedTriggerPrice = triggerPriceParts && joinNumberParts(triggerPriceParts);
+  const triggerPriceDisplay = numberParts(triggerPriceInequality, triggerPriceParts);
 
   const action = getActionTitle(
     tradeAction.orderType,
@@ -218,23 +231,22 @@ export const formatPositionMessage = (
         ? action
         : i18n._(isExpired ? expiredActionTextMap[collateralActionKey]! : actionTextMap[collateralActionKey]!);
     const customSize = sizeDeltaUsd > 0 ? sizeDeltaText : formattedCollateralDelta;
-    const customPrice = acceptablePriceInequality + formattedAcceptablePrice;
     const error = tradeAction.reasonBytes ? tryDecodeCustomError(tradeAction.reasonBytes) ?? undefined : undefined;
     const hasMarkPrice = marketPrice !== undefined;
 
     const priceComment = lines(
       hasMarkPrice ? t`Mark price for the order` : t`Acceptable price for the order`,
       hasMarkPrice || error?.args?.price !== undefined ? "" : undefined,
-      hasMarkPrice
-        ? infoRow(t`Order acceptable price`, acceptablePriceInequality + formattedAcceptablePrice)
-        : undefined,
+      hasMarkPrice ? infoRow(t`Order acceptable price`, numericText(acceptablePriceDisplay)) : undefined,
       error?.args?.price !== undefined
         ? infoRow(
             t`Order execution price`,
-            formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
-              displayDecimals: marketPriceDecimals,
-              visualMultiplier: tradeAction.indexToken.visualMultiplier,
-            })
+            numericText(
+              formatUsdParts(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
+                displayDecimals: marketPriceDecimals,
+                visualMultiplier: tradeAction.indexToken.visualMultiplier,
+              })
+            )
           )
         : undefined
     );
@@ -255,7 +267,7 @@ export const formatPositionMessage = (
       priceComment,
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
       isActionError: !isExpired,
-      ...(hasMarkPrice ? {} : { price: customPrice }),
+      ...(hasMarkPrice ? {} : { price: acceptablePriceDisplay }),
     };
   };
 
@@ -269,7 +281,7 @@ export const formatPositionMessage = (
     result = {
       action: customAction,
       size: customSize,
-      price: customPrice,
+      price: acceptablePriceDisplay,
       priceComment,
       acceptablePrice: customPrice,
     };
@@ -335,7 +347,7 @@ export const formatPositionMessage = (
     result = {
       action: i18n._(actionTextMap[`MarginDeposit-${ev}`]!),
       size: formattedCollateralDelta,
-      price: customPrice,
+      price: triggerPriceDisplay,
       priceComment: lines(t`Trigger price for the order`),
       triggerPrice: customPrice,
       acceptablePrice: isAcceptablePriceUseful ? acceptablePriceInequality + formattedAcceptablePrice : undefined,
@@ -349,7 +361,7 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order`,
         "",
-        infoRow(t`Order trigger price`, triggerPriceInequality + formattedTriggerPrice),
+        infoRow(t`Order trigger price`, numericText(triggerPriceDisplay)),
         ...priceImpactLines
       ),
       triggerPrice: triggerPriceInequality + formattedTriggerPrice,
@@ -369,17 +381,19 @@ export const formatPositionMessage = (
           text: getErrorTooltipTitle(error.name, false, error.args),
           state: "error",
         }),
-      price: customPrice,
+      price: triggerPriceDisplay,
       priceComment: lines(
         t`Trigger price for the order`,
         error?.args?.price !== undefined ? "" : undefined,
         error?.args?.price !== undefined
           ? infoRow(
               t`Order execution price`,
-              formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
-                displayDecimals: marketPriceDecimals,
-                visualMultiplier: tradeAction.indexToken.visualMultiplier,
-              })
+              numericText(
+                formatUsdParts(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
+                  displayDecimals: marketPriceDecimals,
+                  visualMultiplier: tradeAction.indexToken.visualMultiplier,
+                })
+              )
             )
           : undefined
       ),
@@ -394,17 +408,12 @@ export const formatPositionMessage = (
     ((ot === OrderType.LimitIncrease || ot === OrderType.StopIncrease) && ev === TradeActionType.OrderUpdated) ||
     ((ot === OrderType.LimitIncrease || ot === OrderType.StopIncrease) && ev === TradeActionType.OrderCancelled)
   ) {
-    const customPrice =
-      triggerPriceInequality +
-      formatUsd(tradeAction.triggerPrice, {
-        displayDecimals: marketPriceDecimals,
-        visualMultiplier: tradeAction.indexToken.visualMultiplier,
-      })!;
+    const customPrice = triggerPriceInequality + formattedTriggerPrice;
 
     const isAcceptablePriceUseful = !isBoundaryAcceptablePrice(tradeAction.acceptablePrice);
 
     result = {
-      price: customPrice,
+      price: triggerPriceDisplay,
       priceComment: lines(t`Trigger price for the order`),
       triggerPrice: customPrice,
       acceptablePrice: isAcceptablePriceUseful ? acceptablePriceInequality + formattedAcceptablePrice : undefined,
@@ -419,7 +428,7 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order`,
         "",
-        infoRow(t`Order trigger price`, triggerPriceInequality + formattedTriggerPrice),
+        infoRow(t`Order trigger price`, numericText(triggerPriceDisplay)),
         ...priceImpactLines
       ),
       acceptablePrice: isAcceptablePriceUseful ? acceptablePriceInequality + formattedAcceptablePrice : undefined,
@@ -441,17 +450,17 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order`,
         "",
-        infoRow(t`Order trigger price`, triggerPriceInequality + formattedTriggerPrice),
-        isAcceptablePriceUseful
-          ? infoRow(t`Order acceptable price`, acceptablePriceInequality + formattedAcceptablePrice)
-          : undefined,
+        infoRow(t`Order trigger price`, numericText(triggerPriceDisplay)),
+        isAcceptablePriceUseful ? infoRow(t`Order acceptable price`, numericText(acceptablePriceDisplay)) : undefined,
         error?.args?.price !== undefined
           ? infoRow(
               t`Order execution price`,
-              formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
-                displayDecimals: marketPriceDecimals,
-                visualMultiplier: tradeAction.indexToken.visualMultiplier,
-              })
+              numericText(
+                formatUsdParts(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
+                  displayDecimals: marketPriceDecimals,
+                  visualMultiplier: tradeAction.indexToken.visualMultiplier,
+                })
+              )
             )
           : undefined
       ),
@@ -463,13 +472,12 @@ export const formatPositionMessage = (
   } else if (ot === OrderType.MarketDecrease && ev === TradeActionType.OrderCreated) {
     const customAction = sizeDeltaUsd > 0 ? action : i18n._(actionTextMap["Withdraw-OrderCreated"]!);
     const customSize = sizeDeltaUsd > 0 ? sizeDeltaText : formattedCollateralDelta;
-    const customPrice = acceptablePriceInequality + formattedAcceptablePrice;
     const priceComment = lines(t`Acceptable price for the order`);
 
     result = {
       action: customAction,
       size: customSize,
-      price: customPrice,
+      price: acceptablePriceDisplay,
       priceComment,
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
     };
@@ -495,15 +503,10 @@ export const formatPositionMessage = (
     (ot === OrderType.LimitDecrease && ev === TradeActionType.OrderUpdated) ||
     (ot === OrderType.LimitDecrease && ev === TradeActionType.OrderCancelled)
   ) {
-    const customPrice =
-      triggerPriceInequality +
-      formatUsd(tradeAction.triggerPrice, {
-        displayDecimals: marketPriceDecimals,
-        visualMultiplier: tradeAction.indexToken.visualMultiplier,
-      })!;
+    const customPrice = triggerPriceInequality + formattedTriggerPrice;
 
     result = {
-      price: customPrice,
+      price: triggerPriceDisplay,
       priceComment: lines(t`Trigger price for the order`),
       triggerPrice: customPrice,
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
@@ -513,7 +516,7 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order`,
         "",
-        infoRow(t`Order trigger price`, triggerPriceInequality + formattedTriggerPrice),
+        infoRow(t`Order trigger price`, numericText(triggerPriceDisplay)),
         ...priceImpactLines
       ),
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
@@ -531,15 +534,17 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order`,
         "",
-        infoRow(t`Order trigger price`, triggerPriceInequality + formattedTriggerPrice),
-        infoRow(t`Order acceptable price`, acceptablePriceInequality + formattedAcceptablePrice),
+        infoRow(t`Order trigger price`, numericText(triggerPriceDisplay)),
+        infoRow(t`Order acceptable price`, numericText(acceptablePriceDisplay)),
         error?.args?.price !== undefined
           ? infoRow(
               t`Order execution price`,
-              formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
-                displayDecimals: marketPriceDecimals,
-                visualMultiplier: tradeAction.indexToken.visualMultiplier,
-              })
+              numericText(
+                formatUsdParts(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
+                  displayDecimals: marketPriceDecimals,
+                  visualMultiplier: tradeAction.indexToken.visualMultiplier,
+                })
+              )
             )
           : undefined
       ),
@@ -553,15 +558,10 @@ export const formatPositionMessage = (
     (ot === OrderType.StopLossDecrease && ev === TradeActionType.OrderUpdated) ||
     (ot === OrderType.StopLossDecrease && ev === TradeActionType.OrderCancelled)
   ) {
-    const customPrice =
-      triggerPriceInequality +
-      formatUsd(tradeAction.triggerPrice, {
-        displayDecimals: marketPriceDecimals,
-        visualMultiplier: tradeAction.indexToken.visualMultiplier,
-      })!;
+    const customPrice = triggerPriceInequality + formattedTriggerPrice;
 
     result = {
-      price: customPrice,
+      price: triggerPriceDisplay,
       priceComment: lines(t`Trigger price for the order`),
       triggerPrice: customPrice,
     };
@@ -570,7 +570,7 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order`,
         "",
-        infoRow(t`Order trigger price`, triggerPriceInequality + formattedTriggerPrice),
+        infoRow(t`Order trigger price`, numericText(triggerPriceDisplay)),
         ...priceImpactLines
       ),
     };
@@ -588,17 +588,17 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order`,
         "",
-        infoRow(t`Order trigger price`, triggerPriceInequality + formattedTriggerPrice),
-        isAcceptablePriceUseful
-          ? infoRow(t`Order acceptable price`, acceptablePriceInequality + formattedAcceptablePrice)
-          : undefined,
+        infoRow(t`Order trigger price`, numericText(triggerPriceDisplay)),
+        isAcceptablePriceUseful ? infoRow(t`Order acceptable price`, numericText(acceptablePriceDisplay)) : undefined,
         error?.args?.price !== undefined
           ? infoRow(
               t`Order execution price`,
-              formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
-                displayDecimals: marketPriceDecimals,
-                visualMultiplier: tradeAction.indexToken.visualMultiplier,
-              })
+              numericText(
+                formatUsdParts(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
+                  displayDecimals: marketPriceDecimals,
+                  visualMultiplier: tradeAction.indexToken.visualMultiplier,
+                })
+              )
             )
           : undefined
       ),
@@ -624,7 +624,7 @@ export const formatPositionMessage = (
       tradeAction.collateralTokenPriceMin
     );
 
-    const formattedInitialCollateral = formatTokenAmountWithUsd(
+    const formattedInitialCollateral = formatTokenAmountWithUsdParts(
       tradeAction.initialCollateralDeltaAmount,
       initialCollateralUsd,
       tradeAction.initialCollateralToken?.symbol,
@@ -640,28 +640,28 @@ export const formatPositionMessage = (
       }
     );
 
-    const formattedBasePnl = formatUsd(tradeAction.basePnlUsd);
+    const formattedBasePnl = formatUsdParts(tradeAction.basePnlUsd);
 
     const borrowingFeeUsd = convertToUsd(
       tradeAction.borrowingFeeAmount,
       tradeAction.initialCollateralToken?.decimals,
       tradeAction.collateralTokenPriceMin
     );
-    const formattedBorrowFee = formatUsd(borrowingFeeUsd === undefined ? undefined : -borrowingFeeUsd);
+    const formattedBorrowFee = formatUsdParts(borrowingFeeUsd === undefined ? undefined : -borrowingFeeUsd);
 
     const fundingFeeUsd = convertToUsd(
       tradeAction.fundingFeeAmount,
       tradeAction.initialCollateralToken?.decimals,
       tradeAction.collateralTokenPriceMin
     );
-    const formattedFundingFee = formatUsd(fundingFeeUsd === undefined ? undefined : -fundingFeeUsd);
+    const formattedFundingFee = formatUsdParts(fundingFeeUsd === undefined ? undefined : -fundingFeeUsd);
 
     const positionFeeUsd = convertToUsd(
       tradeAction.positionFeeAmount,
       tradeAction.initialCollateralToken?.decimals,
       tradeAction.collateralTokenPriceMin
     );
-    const formattedPositionFee = formatUsd(positionFeeUsd === undefined ? undefined : -positionFeeUsd);
+    const formattedPositionFee = formatUsdParts(positionFeeUsd === undefined ? undefined : -positionFeeUsd);
 
     let liquidationCollateralUsd =
       minCollateralFactorForLiquidation === undefined
@@ -676,9 +676,9 @@ export const formatPositionMessage = (
         ? undefined
         : initialCollateralUsd + tradeAction.basePnlUsd! - borrowingFeeUsd! - fundingFeeUsd! - positionFeeUsd!;
 
-    const formattedLeftoverCollateral = formatUsd(leftoverCollateralUsd!);
+    const formattedLeftoverCollateral = formatUsdParts(leftoverCollateralUsd!);
     const formattedMinCollateral =
-      liquidationCollateralUsd === undefined ? undefined : formatUsd(liquidationCollateralUsd);
+      liquidationCollateralUsd === undefined ? undefined : formatUsdParts(liquidationCollateralUsd);
 
     const liquidationFeeUsd =
       convertToUsd(
@@ -687,7 +687,7 @@ export const formatPositionMessage = (
         tradeAction.collateralTokenPriceMin!
       ) ?? 0n;
 
-    const formattedLiquidationFee = formatDeltaUsd(liquidationFeeUsd ? liquidationFeeUsd * -1n : 0n);
+    const formattedLiquidationFee = formatDeltaUsdParts(liquidationFeeUsd ? liquidationFeeUsd * -1n : 0n);
 
     let returnedCollateralUsd = 0n;
 
@@ -715,7 +715,7 @@ export const formatPositionMessage = (
     }
 
     const formattedReturnedCollateral =
-      returnedCollateralUsd !== undefined ? formatUsd(returnedCollateralUsd) : undefined;
+      returnedCollateralUsd !== undefined ? formatUsdParts(returnedCollateralUsd) : undefined;
 
     result = {
       priceComment: lines(
@@ -725,7 +725,7 @@ export const formatPositionMessage = (
           ? t`Liquidated as the max allowed leverage was exceeded when accounting for fees.`
           : t`Liquidated as max leverage of ${formattedMaxLeverage} was exceeded when accounting for fees.`,
         "",
-        infoRow(t`Initial margin`, formattedInitialCollateral!),
+        infoRow(t`Initial margin`, numericText(formattedInitialCollateral!)),
         infoRow(t`PnL`, {
           text: formattedBasePnl,
           state: numberToState(tradeAction.basePnlUsd!),
@@ -743,8 +743,10 @@ export const formatPositionMessage = (
           state: "error",
         }),
         "",
-        formattedMinCollateral === undefined ? undefined : infoRow(t`Minimum required margin`, formattedMinCollateral),
-        infoRow(t`Margin at liquidation`, formattedLeftoverCollateral),
+        formattedMinCollateral === undefined
+          ? undefined
+          : infoRow(t`Minimum required margin`, numericText(formattedMinCollateral)),
+        infoRow(t`Margin at liquidation`, numericText(formattedLeftoverCollateral)),
         "",
         ...priceImpactLines,
         infoRow(t`Liquidation fee`, {
@@ -752,7 +754,7 @@ export const formatPositionMessage = (
           state: "error",
         }),
         "",
-        infoRow(t`Returned margin`, formattedReturnedCollateral)
+        infoRow(t`Returned margin`, numericText(formattedReturnedCollateral))
       ),
       isActionError: true,
     };
@@ -762,19 +764,19 @@ export const formatPositionMessage = (
   const isExecuted = ev === TradeActionType.OrderExecuted;
   const realizesPnl = isExecuted && (isDecreaseOrderType(ot) || isLiquidationOrderType(ot)) && sizeDeltaUsd > 0n;
 
-  let pnl: string | undefined;
+  let pnl: NumberPart[] | undefined;
   let pnlState: ReturnType<typeof numberToState> | undefined;
   if (realizesPnl && tradeAction.basePnlUsd !== undefined) {
-    pnl = formatUsd(tradeAction.basePnlUsd);
+    pnl = formatUsdParts(tradeAction.basePnlUsd);
     pnlState = numberToState(tradeAction.basePnlUsd);
   }
 
-  let fees: string | undefined;
+  let fees: NumberPart[] | undefined;
   let feesTooltip: ReturnType<typeof getFeesBreakdown>["lines"] | undefined;
   if (isExecuted) {
     const breakdown = getFeesBreakdown(tradeAction);
     if (breakdown.lines.length > 0) {
-      fees = formatDeltaUsd(breakdown.totalUsd);
+      fees = formatDeltaUsdParts(breakdown.totalUsd);
       feesTooltip = breakdown.lines;
     }
   }
@@ -787,7 +789,7 @@ export const formatPositionMessage = (
     fullMarket,
     timestamp,
     timestampUTC,
-    price: formattedMarketPrice || "",
+    price: marketPriceParts || "",
     size: sizeDeltaText,
     marketPrice: formattedMarketPrice,
     executionPrice: formattedExecutionPrice,
@@ -923,7 +925,9 @@ export function getFeesBreakdown(tradeAction: PositionTradeAction): { totalUsd: 
   }
 
   const totalUsd = items.reduce((acc, item) => acc + item.amountUsd, 0n);
-  const breakdownLines: Line[] = items.map((item) => infoRow(item.label, formatDeltaUsd(item.amountUsd)));
+  const breakdownLines: Line[] = items.map((item) =>
+    infoRow(item.label, numericText(formatDeltaUsdParts(item.amountUsd)))
+  );
 
   return { totalUsd, lines: breakdownLines };
 }
@@ -947,15 +951,15 @@ export function getSettlementTooltipLines(
   const marginAtCloseAmount = tradeAction.initialCollateralDeltaAmount;
   const receivedUsd = getDecreasePayoutUsd(tradeAction);
 
-  let walletReceived: string | undefined;
+  let walletReceived: TooltipString;
   if (receivedUsd !== undefined) {
     const isSingleCollateralPayout = tradeAction.swapPath.length === 0 && !hasSecondaryOutputRisk(tradeAction);
 
     const formatted = isSingleCollateralPayout
       ? formatCollateralAmount(convertToTokenAmount(receivedUsd, collateralToken.decimals, collateralPrice)!)
-      : formatUsd(receivedUsd);
+      : formatUsdParts(receivedUsd);
 
-    walletReceived = formatted === undefined ? undefined : `~${formatted}`;
+    walletReceived = formatted === undefined ? undefined : numericText("~", formatted);
   }
 
   return lines(
@@ -973,11 +977,11 @@ export function getSettlementTooltipLines(
       : infoRow(t`Open fee / discount`, formatCollateralAmount(-getRowFeesAmount(openRow))),
     infoRow(t`Margin at close`, formatCollateralAmount(marginAtCloseAmount)),
     infoRow(t`RPNL`, {
-      text: formatDeltaUsd(tradeAction.basePnlUsd),
+      text: formatDeltaUsdParts(tradeAction.basePnlUsd),
       state: numberToState(tradeAction.basePnlUsd),
     }),
     infoRow(t`Net close fees / impact`, {
-      text: formatDeltaUsd(breakdown.totalUsd),
+      text: formatDeltaUsdParts(breakdown.totalUsd),
       state: numberToState(breakdown.totalUsd),
     }),
     walletReceived === undefined
@@ -1021,7 +1025,7 @@ function getPriceImpactLines(tradeAction: PositionTradeAction) {
 
 function getPriceImpactLine(label: string, priceImpactUsd: bigint | undefined, sizeDeltaUsd: bigint): Line {
   const state = numberToState(priceImpactUsd);
-  const usdLine = { text: formatDeltaUsd(priceImpactUsd), state };
+  const usdLine = { text: formatDeltaUsdParts(priceImpactUsd), state };
   const bpsText = formatPriceImpactBps(priceImpactUsd, sizeDeltaUsd);
 
   return infoRow(label, bpsText ? [usdLine, " ", { text: `(${bpsText})`, state }] : usdLine);

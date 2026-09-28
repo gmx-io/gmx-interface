@@ -2,13 +2,13 @@ import { t, Trans } from "@lingui/macro";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { CLAIM_AFFILIATE_FIXED_SLIPPAGE_BPS } from "domain/synthetics/referrals/useClaimAffiliateSwapRoutes";
-import { formatUsd } from "lib/numbers";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import { Table, TableTh, TableTheadTr } from "components/Table/Table";
@@ -40,7 +40,9 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
     >
       <div className="flex flex-col gap-12">
         <div className="text-center text-20 font-medium">
-          <Trans>Claim {formatUsd(state.totalClaimableFundingUsd)}</Trans>
+          <Trans>
+            Claim <UsdValue usd={state.totalClaimableFundingUsd} />
+          </Trans>
         </div>
 
         <Table>
@@ -163,7 +165,7 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
                   />
                   <SyntheticsInfoRow
                     label={<Trans>Total value of assets</Trans>}
-                    value={formatUsd(state.selectedClaimTokensUsd)}
+                    value={<UsdValue usd={state.selectedClaimTokensUsd} />}
                   />
                   <SyntheticsInfoRow
                     label={

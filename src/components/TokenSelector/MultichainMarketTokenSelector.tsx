@@ -15,15 +15,15 @@ import { isGlvAddress, isGlvInfo } from "domain/synthetics/markets/glv";
 import { GlvOrMarketInfo, GmPaySource } from "domain/synthetics/markets/types";
 import { getGlvOrMarketIconSymbol, getMarketIndexName } from "domain/synthetics/markets/utils";
 import { convertToUsd } from "domain/tokens";
-import { formatAmount, formatBalanceAmount } from "lib/numbers";
+import { formatBalanceAmount } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
-import { USD_DECIMALS } from "sdk/configs/factors";
 import { getTokenSymbolByMarket } from "sdk/configs/markets";
 import { getToken } from "sdk/configs/tokens";
 import { getMarketPoolName } from "sdk/utils/markets";
 
 import { SelectedPoolLabel } from "components/GmSwap/GmSwapBox/SelectedPool";
 import { SlideModal } from "components/Modal/SlideModal";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import Tabs from "components/Tabs/Tabs";
 import type { RegularOption } from "components/Tabs/types";
@@ -296,7 +296,11 @@ function AvailableToTradeTokenList({
               </div>
 
               <span className="text-body-small text-slate-100">
-                {token.balanceUsd > 0n && <div>(${formatAmount(token.balanceUsd, USD_DECIMALS, 2, true)})</div>}
+                {token.balanceUsd > 0n && (
+                  <div>
+                    (<UsdValue usd={token.balanceUsd} displayDecimals={2} />)
+                  </div>
+                )}
               </span>
             </div>
           </div>

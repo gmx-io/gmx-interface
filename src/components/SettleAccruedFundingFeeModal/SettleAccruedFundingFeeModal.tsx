@@ -25,7 +25,7 @@ import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useChainId } from "lib/chains";
-import { formatDeltaUsd, formatUsd } from "lib/numbers";
+import { formatUsd } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
@@ -40,6 +40,7 @@ import { useActiveForm } from "components/ActiveFormScope/ActiveFormScope";
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
 import Tooltip from "components/Tooltip/Tooltip";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
@@ -113,7 +114,6 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   );
   const selectedPositionKeys = useMemo(() => selectedPositions.map((position) => position.key), [selectedPositions]);
   const total = useMemo(() => getTotalAccruedFundingUsd(selectedPositions), [selectedPositions]);
-  const totalStr = formatDeltaUsd(total);
 
   const batchParams = useMemo(() => {
     if (!account || !chainId || executionFee === undefined || gasLimit === undefined || !signer) {
@@ -342,7 +342,9 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     >
       <div className="ConfirmationBox-main">
         <div className="text-center">
-          <Trans>Settle {totalStr}</Trans>
+          <Trans>
+            Settle <DeltaUsdValue deltaUsd={total} />
+          </Trans>
         </div>
       </div>
       <div className="mb-20 mt-15 h-1 bg-slate-700" />

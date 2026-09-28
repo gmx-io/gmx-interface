@@ -8,8 +8,9 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxLiquidityInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxLiquidityInfo";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { formatTokenAmount, formatUsd } from "lib/numbers";
+import { formatTokenAmount } from "lib/numbers";
 
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tooltip from "components/Tooltip/Tooltip";
 
@@ -46,11 +47,13 @@ export function AvailableLiquidityRow() {
         position="bottom-end"
         handleClassName={isLiquidityRisk ? "negative numbers" : "numbers"}
         handle={
-          isSwap
-            ? formatTokenAmount(availableLiquidityAmount, toToken?.decimals, toToken?.symbol, {
-                isStable: toToken?.isStable,
-              })
-            : formatUsd(availableLiquidityUsd)
+          isSwap ? (
+            formatTokenAmount(availableLiquidityAmount, toToken?.decimals, toToken?.symbol, {
+              isStable: toToken?.isStable,
+            })
+          ) : (
+            <UsdValue usd={availableLiquidityUsd} />
+          )
         }
         renderContent={() => tooltipContent}
       />
