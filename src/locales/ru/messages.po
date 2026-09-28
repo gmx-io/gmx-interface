@@ -1337,10 +1337,6 @@ msgstr "ЧИСТАЯ СТАВКА ШОРТОВ / 1Ч"
 msgid "Error:"
 msgstr "Ошибка:"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Cross-chain one-click deposits into GM"
-msgstr "Кросс-чейн депозиты в один клик в GM"
-
 #: src/pages/UiPage/BannerTest.tsx
 msgid "<0>Switch to TBTC-TBTC pool</0> for potentially lower price impact"
 msgstr "<0>Переключитесь на пул TBTC-TBTC</0> для потенциально меньшего влияния на цену"
@@ -2230,7 +2226,6 @@ msgstr "Искать во всей категории «{marketTypeLabel}»"
 msgid "Decentralized trading protocol"
 msgstr "Децентрализованный торговый протокол"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Symbiosis"
 msgstr "Symbiosis"

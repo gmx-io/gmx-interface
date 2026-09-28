@@ -343,13 +343,6 @@ export const integrations: EcosystemGmxPage[] = [
     chainIds: [ARBITRUM],
   },
   {
-    title: msg`Symbiosis`,
-    link: "https://app.symbiosis.finance/zap",
-    linkLabel: "symbiosis.finance",
-    about: msg`Cross-chain one-click deposits into GM`,
-    chainIds: [ARBITRUM],
-  },
-  {
     title: msg`HoudiniSwap`,
     link: "https://houdiniswap.com/",
     linkLabel: "houdiniswap.com",

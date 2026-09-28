@@ -1337,10 +1337,6 @@ msgstr "TAUX NET SHORTS / 1H"
 msgid "Error:"
 msgstr "Erreur :"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Cross-chain one-click deposits into GM"
-msgstr "Dépôts en un clic cross-chain dans GM"
-
 #: src/pages/UiPage/BannerTest.tsx
 msgid "<0>Switch to TBTC-TBTC pool</0> for potentially lower price impact"
 msgstr "<0>Passer au pool TBTC-TBTC</0> pour un impact sur le prix potentiellement plus faible"
@@ -2230,7 +2226,6 @@ msgstr "Rechercher dans tous les {marketTypeLabel}"
 msgid "Decentralized trading protocol"
 msgstr "Protocole de trading décentralisé"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Symbiosis"
 msgstr "Symbiosis"
