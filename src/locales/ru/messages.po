@@ -755,6 +755,10 @@ msgstr "Позиции"
 msgid "{0}d"
 msgstr ""
 
+#: src/components/Seo/SEO.tsx
+msgid "GMX is a decentralized perpetual exchange with 100+ markets across crypto, gold, silver, oil, natural gas and stock indices, and up to 100x leverage."
+msgstr "GMX — децентрализованная биржа бессрочных контрактов: более 100 рынков криптовалют, золота, серебра, нефти, природного газа и фондовых индексов с кредитным плечом до 100x."
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Incentives, airdrops, and prizes will appear here"
 msgstr "Поощрения, аирдропы и призы будут отображаться здесь"
@@ -2912,6 +2916,10 @@ msgstr ""
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have a <0>pending transfer</0> to {pendingReceiver}"
 msgstr "У вас есть <0>ожидающий перевод</0> для {pendingReceiver}"
+
+#: src/components/Seo/SEO.tsx
+msgid "GMX is a decentralized perpetual exchange for onchain trading of 100+ markets across crypto, gold (XAU), silver (XAG), energy (WTI, Brent, natural gas) and US equities (SPCX, SPY, QQQ). It offers up to 100x leverage, 24/7 TradFi markets and low-price-impact execution from a self-custody wallet, on Arbitrum, Avalanche, MegaETH and Solana, with deposits from Ethereum, Base and BNB Chain."
+msgstr "GMX — децентрализованная биржа бессрочных контрактов для ончейн-торговли на более чем 100 рынках: криптовалюты, золото (XAU), серебро (XAG), энергоносители (WTI, Brent, природный газ) и акции США (SPCX, SPY, QQQ). Кредитное плечо до 100x, TradFi-рынки, работающие 24/7, и исполнение с низким влиянием на цену из некастодиального кошелька — в сетях Arbitrum, Avalanche, MegaETH и Solana, с пополнением из Ethereum, Base и BNB Chain."
 
 #: src/lib/copyElementAsImage.ts
 msgid "Image downloaded"
@@ -5505,6 +5513,10 @@ msgstr "Принудительный сбой внешних свопов"
 msgid "Withdraw"
 msgstr "Вывод"
 
+#: src/components/Seo/SEO.tsx
+msgid "GMX | Perpetual DEX for Crypto, Metals, Stocks & Energy"
+msgstr "GMX | DEX бессрочных контрактов на криптовалюты, металлы, акции и энергоносители"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop Market"
 msgstr "Обновить Стоп-Маркет"
@@ -5935,10 +5947,6 @@ msgstr "Получите на {0}% больше вознаграждений с 
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "Staked esGMX:"
 msgstr "esGMX в стейкинге:"
-
-#: src/components/Seo/SEO.tsx
-msgid "Trade perpetuals with up to 100x leverage, plus spot trading, directly from your wallet on Arbitrum, Ethereum, and other networks"
-msgstr "Торгуйте бессрочными контрактами с кредитным плечом до 100x, а также спотовыми активами напрямую из вашего кошелька на Arbitrum, Ethereum и других сетях"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Sell fee"
@@ -11620,7 +11628,6 @@ msgstr "Начислено"
 msgid "Cancellable in ..."
 msgstr "Отмена через ..."
 
-#: src/components/Seo/SEO.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "GMX | decentralized perpetual exchange"
 msgstr ""

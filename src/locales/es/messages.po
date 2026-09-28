@@ -755,6 +755,10 @@ msgstr "Posiciones"
 msgid "{0}d"
 msgstr ""
 
+#: src/components/Seo/SEO.tsx
+msgid "GMX is a decentralized perpetual exchange with 100+ markets across crypto, gold, silver, oil, natural gas and stock indices, and up to 100x leverage."
+msgstr "GMX es una plataforma de intercambio de perpetuos descentralizada con más de 100 mercados de cripto, oro, plata, petróleo, gas natural e índices bursátiles, y hasta 100x de apalancamiento."
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Incentives, airdrops, and prizes will appear here"
 msgstr "Los incentivos, airdrops y premios aparecerán aquí"
@@ -2912,6 +2916,10 @@ msgstr ""
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have a <0>pending transfer</0> to {pendingReceiver}"
 msgstr "Tiene una <0>transferencia pendiente</0> a {pendingReceiver}"
+
+#: src/components/Seo/SEO.tsx
+msgid "GMX is a decentralized perpetual exchange for onchain trading of 100+ markets across crypto, gold (XAU), silver (XAG), energy (WTI, Brent, natural gas) and US equities (SPCX, SPY, QQQ). It offers up to 100x leverage, 24/7 TradFi markets and low-price-impact execution from a self-custody wallet, on Arbitrum, Avalanche, MegaETH and Solana, with deposits from Ethereum, Base and BNB Chain."
+msgstr "GMX es una plataforma de intercambio de perpetuos descentralizada para operar onchain más de 100 mercados de cripto, oro (XAU), plata (XAG), energía (WTI, Brent, gas natural) y acciones estadounidenses (SPCX, SPY, QQQ). Ofrece hasta 100x de apalancamiento, mercados TradFi 24/7 y ejecución con bajo impacto en el precio desde un monedero de autocustodia, en Arbitrum, Avalanche, MegaETH y Solana, con depósitos desde Ethereum, Base y BNB Chain."
 
 #: src/lib/copyElementAsImage.ts
 msgid "Image downloaded"
@@ -5505,6 +5513,10 @@ msgstr "Forzar fallo de intercambios externos"
 msgid "Withdraw"
 msgstr "Retirar"
 
+#: src/components/Seo/SEO.tsx
+msgid "GMX | Perpetual DEX for Crypto, Metals, Stocks & Energy"
+msgstr "GMX | DEX de perpetuos para cripto, metales, acciones y energía"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop Market"
 msgstr "Actualizar Stop Mercado"
@@ -5935,10 +5947,6 @@ msgstr "Obtenga un {0}% más de recompensas con esta acción"
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "Staked esGMX:"
 msgstr "esGMX en staking:"
-
-#: src/components/Seo/SEO.tsx
-msgid "Trade perpetuals with up to 100x leverage, plus spot trading, directly from your wallet on Arbitrum, Ethereum, and other networks"
-msgstr "Opere perpetuos con hasta 100x de apalancamiento, además de trading al contado, directamente desde su monedero en Arbitrum, Ethereum y otras redes"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Sell fee"
@@ -11620,7 +11628,6 @@ msgstr "Acumulado"
 msgid "Cancellable in ..."
 msgstr "Cancelable en ..."
 
-#: src/components/Seo/SEO.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "GMX | decentralized perpetual exchange"
 msgstr ""

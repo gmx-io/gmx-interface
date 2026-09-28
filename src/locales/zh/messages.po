@@ -755,6 +755,10 @@ msgstr "仓位"
 msgid "{0}d"
 msgstr ""
 
+#: src/components/Seo/SEO.tsx
+msgid "GMX is a decentralized perpetual exchange with 100+ markets across crypto, gold, silver, oil, natural gas and stock indices, and up to 100x leverage."
+msgstr "GMX 是一个去中心化永续合约交易所，提供涵盖加密货币、黄金、白银、原油、天然气和股票指数的 100 多个市场，杠杆最高 100 倍。"
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Incentives, airdrops, and prizes will appear here"
 msgstr "激励、空投和奖励将在此处显示"
@@ -2912,6 +2916,10 @@ msgstr ""
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have a <0>pending transfer</0> to {pendingReceiver}"
 msgstr "您有一笔 <0>待处理的转账</0> 至 {pendingReceiver}"
+
+#: src/components/Seo/SEO.tsx
+msgid "GMX is a decentralized perpetual exchange for onchain trading of 100+ markets across crypto, gold (XAU), silver (XAG), energy (WTI, Brent, natural gas) and US equities (SPCX, SPY, QQQ). It offers up to 100x leverage, 24/7 TradFi markets and low-price-impact execution from a self-custody wallet, on Arbitrum, Avalanche, MegaETH and Solana, with deposits from Ethereum, Base and BNB Chain."
+msgstr "GMX 是一个去中心化永续合约交易所，支持在链上交易涵盖加密货币、黄金（XAU）、白银（XAG）、能源（WTI、布伦特原油、天然气）和美国股票（SPCX、SPY、QQQ）的 100 多个市场。它提供最高 100 倍杠杆、7×24 小时 TradFi 市场以及低价格影响的成交，直接通过自托管钱包进行，支持 Arbitrum、Avalanche、MegaETH 和 Solana，并可从 Ethereum、Base 和 BNB Chain 存入资金。"
 
 #: src/lib/copyElementAsImage.ts
 msgid "Image downloaded"
@@ -5505,6 +5513,10 @@ msgstr "强制外部兑换失败"
 msgid "Withdraw"
 msgstr "提取"
 
+#: src/components/Seo/SEO.tsx
+msgid "GMX | Perpetual DEX for Crypto, Metals, Stocks & Energy"
+msgstr "GMX | 加密货币、金属、股票与能源永续合约 DEX"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop Market"
 msgstr "更新止损市价"
@@ -5935,10 +5947,6 @@ msgstr "通过此操作可多赚取 {0}% 的奖励"
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "Staked esGMX:"
 msgstr "已质押 esGMX："
-
-#: src/components/Seo/SEO.tsx
-msgid "Trade perpetuals with up to 100x leverage, plus spot trading, directly from your wallet on Arbitrum, Ethereum, and other networks"
-msgstr "在 Arbitrum、Ethereum 及其他网络上，直接通过钱包进行高达 100 倍杠杆的永续合约交易及现货交易"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Sell fee"
@@ -11620,7 +11628,6 @@ msgstr "已累积"
 msgid "Cancellable in ..."
 msgstr "可取消时间 ..."
 
-#: src/components/Seo/SEO.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "GMX | decentralized perpetual exchange"
 msgstr ""

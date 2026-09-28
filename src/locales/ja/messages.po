@@ -755,6 +755,10 @@ msgstr "ポジション"
 msgid "{0}d"
 msgstr ""
 
+#: src/components/Seo/SEO.tsx
+msgid "GMX is a decentralized perpetual exchange with 100+ markets across crypto, gold, silver, oil, natural gas and stock indices, and up to 100x leverage."
+msgstr "GMXは、暗号資産、金、銀、原油、天然ガス、株価指数にわたる100以上の市場と最大100倍のレバレッジを備えた分散型パーペチュアル取引所です。"
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Incentives, airdrops, and prizes will appear here"
 msgstr "インセンティブ、エアドロップ、賞品はこちらに表示されます"
@@ -2912,6 +2916,10 @@ msgstr ""
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have a <0>pending transfer</0> to {pendingReceiver}"
 msgstr "{pendingReceiver}への<0>保留中の送金</0>があります"
+
+#: src/components/Seo/SEO.tsx
+msgid "GMX is a decentralized perpetual exchange for onchain trading of 100+ markets across crypto, gold (XAU), silver (XAG), energy (WTI, Brent, natural gas) and US equities (SPCX, SPY, QQQ). It offers up to 100x leverage, 24/7 TradFi markets and low-price-impact execution from a self-custody wallet, on Arbitrum, Avalanche, MegaETH and Solana, with deposits from Ethereum, Base and BNB Chain."
+msgstr "GMXは、暗号資産、金（XAU）、銀（XAG）、エネルギー（WTI、ブレント、天然ガス）、米国株式（SPCX、SPY、QQQ）にわたる100以上の市場をオンチェーンで取引できる分散型パーペチュアル取引所です。最大100倍のレバレッジ、24時間365日取引可能なTradFi市場、価格への影響を抑えた約定を、セルフカストディ型ウォレットから利用できます。対応チェーンはArbitrum、Avalanche、MegaETH、Solanaで、Ethereum、Base、BNB Chainから入金できます。"
 
 #: src/lib/copyElementAsImage.ts
 msgid "Image downloaded"
@@ -5505,6 +5513,10 @@ msgstr "外部スワップを失敗させる"
 msgid "Withdraw"
 msgstr "出金"
 
+#: src/components/Seo/SEO.tsx
+msgid "GMX | Perpetual DEX for Crypto, Metals, Stocks & Energy"
+msgstr "GMX | 暗号資産・貴金属・株式・エネルギーのパーペチュアルDEX"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop Market"
 msgstr "ストップマーケットを更新"
@@ -5935,10 +5947,6 @@ msgstr "このアクションで報酬が {0}% 増加します"
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "Staked esGMX:"
 msgstr "ステーク済みesGMX:"
-
-#: src/components/Seo/SEO.tsx
-msgid "Trade perpetuals with up to 100x leverage, plus spot trading, directly from your wallet on Arbitrum, Ethereum, and other networks"
-msgstr "Arbitrum、Ethereum、その他のネットワーク上で、ウォレットから直接、最大100倍レバレッジのパーペチュアル取引やスポット取引を行えます"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Sell fee"
@@ -11620,7 +11628,6 @@ msgstr "蓄積済"
 msgid "Cancellable in ..."
 msgstr "キャンセル可能まで ..."
 
-#: src/components/Seo/SEO.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "GMX | decentralized perpetual exchange"
 msgstr ""

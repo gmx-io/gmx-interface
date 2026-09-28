@@ -755,6 +755,10 @@ msgstr "倉位"
 msgid "{0}d"
 msgstr ""
 
+#: src/components/Seo/SEO.tsx
+msgid "GMX is a decentralized perpetual exchange with 100+ markets across crypto, gold, silver, oil, natural gas and stock indices, and up to 100x leverage."
+msgstr "GMX 是一個去中心化永續合約交易所，提供涵蓋加密貨幣、黃金、白銀、原油、天然氣和股票指數的 100 多個市場，槓桿最高 100 倍。"
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Incentives, airdrops, and prizes will appear here"
 msgstr "獎勵、空投和獎品將顯示在這裡"
@@ -2912,6 +2916,10 @@ msgstr ""
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have a <0>pending transfer</0> to {pendingReceiver}"
 msgstr "您有一筆<0>待處理的轉帳</0>至 {pendingReceiver}"
+
+#: src/components/Seo/SEO.tsx
+msgid "GMX is a decentralized perpetual exchange for onchain trading of 100+ markets across crypto, gold (XAU), silver (XAG), energy (WTI, Brent, natural gas) and US equities (SPCX, SPY, QQQ). It offers up to 100x leverage, 24/7 TradFi markets and low-price-impact execution from a self-custody wallet, on Arbitrum, Avalanche, MegaETH and Solana, with deposits from Ethereum, Base and BNB Chain."
+msgstr "GMX 是一個去中心化永續合約交易所，支援在鏈上交易涵蓋加密貨幣、黃金（XAU）、白銀（XAG）、能源（WTI、布蘭特原油、天然氣）和美國股票（SPCX、SPY、QQQ）的 100 多個市場。它提供最高 100 倍槓桿、全天候 24/7 TradFi 市場以及低價格影響的成交，直接透過自託管錢包進行，支援 Arbitrum、Avalanche、MegaETH 和 Solana，並可從 Ethereum、Base 和 BNB Chain 存入資金。"
 
 #: src/lib/copyElementAsImage.ts
 msgid "Image downloaded"
@@ -5505,6 +5513,10 @@ msgstr "強制外部兌換失敗"
 msgid "Withdraw"
 msgstr "提取"
 
+#: src/components/Seo/SEO.tsx
+msgid "GMX | Perpetual DEX for Crypto, Metals, Stocks & Energy"
+msgstr "GMX | 加密貨幣、金屬、股票與能源永續合約 DEX"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop Market"
 msgstr "更新止損市價單"
@@ -5935,10 +5947,6 @@ msgstr "透過此操作可多賺取 {0}% 的獎勵"
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "Staked esGMX:"
 msgstr "已質押 esGMX："
-
-#: src/components/Seo/SEO.tsx
-msgid "Trade perpetuals with up to 100x leverage, plus spot trading, directly from your wallet on Arbitrum, Ethereum, and other networks"
-msgstr "在 Arbitrum、Ethereum 及其他網路上，直接從您的錢包進行最高 100 倍槓桿的永續合約交易及現貨交易"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Sell fee"
@@ -11620,7 +11628,6 @@ msgstr "已累計"
 msgid "Cancellable in ..."
 msgstr "可取消倒數 ..."
 
-#: src/components/Seo/SEO.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "GMX | decentralized perpetual exchange"
 msgstr ""
