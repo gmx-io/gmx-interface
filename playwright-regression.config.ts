@@ -30,7 +30,7 @@ export default defineConfig({
     chainId,
     checkoutCommit: process.env.REGRESSION_COMMIT || process.env.GITHUB_SHA || "local",
     target: baseURL,
-    data: "live HTTP data; connected-state uses a mock wallet and empty event stream",
+    data: "live public HTTP; mock wallet and empty event stream for connected-state; simulated RPC for gas guard",
     prNumber: process.env.REGRESSION_PR_NUMBER,
     deploymentCommit: process.env.REGRESSION_DEPLOYMENT_SHA,
     deploymentCheckUrl: process.env.REGRESSION_DEPLOYMENT_CHECK_URL,

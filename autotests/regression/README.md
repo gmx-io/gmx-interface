@@ -2,22 +2,22 @@
 
 Initial Playwright coverage for the [release checklist](https://linear.app/gmx-io/document/release-regression-checklist-8b05a61482b0)
 and [PRO-4345](https://linear.app/gmx-io/issue/PRO-4345/chore-automate-weekly-release-regression-testing).
-This suite is a first slice, not a complete release sign-off.
+This suite is a first slice, not a complete release sign-off. **Real-wallet transactions with funds are not implemented or tested.** The default suite covers public UI, mock-wallet states, indexers and gas-guard logic with simulated RPC responses. The separate live gas preflight is read-only and does not need a funded wallet.
 
-## Reconnect finding from the initial local validation
+## Validation observations
 
-The initial local production-build run reported **27 passed, 1 failed** on both Arbitrum and Avalanche. The failing check was RR-03-13 (reconnect after refresh): the injected provider remained connected, but the header stayed in wallet initialization instead of displaying the account within 15 seconds. Arbitrum also failed both configured retries. Earlier development-server runs passed. This is an observed failure with a mock provider, not a confirmed real-extension bug or an established root cause. Suspected wallet-restoration and mock-compatibility issues require further investigation. The test remains a regular assertion.
+On 2026-09-25, local Playwright runs against PR #2944's [immutable preview](https://196bf606.gmx-interface.pages.dev) at commit `12f0f4491e3f0d1da412fef126787d503e0ba467` passed **28/28 on Arbitrum and 28/28 on Avalanche**, with no flakes or skips. These are 28 checks repeated on two chains, not 56 distinct checklist scenarios. No funds, signatures or transactions were used, and the optional live gas preflight was not enabled.
 
-Run the reconnect check against a deployment:
+Reconnect after refresh passed on both chains. An earlier local production build had failed that assertion with the mock provider; it was not reproduced on this deployed preview. No wallet-restoration code was changed, and real-extension compatibility is still unverified.
+
+Run the reconnect check against an existing deployment:
 
 ```sh
 REGRESSION_BASE_URL=https://test.gmx-interface.pages.dev \
 yarn test:regression --project=connected-state --grep=RR-03-13 --retries=0
 ```
 
-Use the HTML report to inspect the screenshot, trace and `mock-wallet-state` attachment. Results from the initial local build do not establish the behavior of another deployment. GitHub execution still requires pushing the workflow.
-
-The first URL-based attempt against `https://test.gmx-interface.pages.dev` timed out while opening `/trade`, before wallet interaction. A separate HTTPS connection check also timed out on port 443 from the local test environment. Reconnect behavior on this deployment is therefore not yet verified.
+Use the HTML report to inspect any failure screenshot, trace and `mock-wallet-state` attachment.
 
 ## Suites and current coverage
 
@@ -65,18 +65,28 @@ Every new project and the component suite allow **2 retries (3 attempts total)**
 
 ## GitHub Actions
 
-`release-regression.yml` is **manual only** (`workflow_dispatch`). PR updates, pushes, completed deployments and schedules do not start this regression workflow. Existing component/unit-test workflows are independent.
+`release-regression.yml` runs only on an explicit request: adding the **`run-regression`** PR label or using **Run workflow**. Ordinary pushes, PR creation, completed deployments and schedules do not start the regression tests. Other labels skip the jobs and do not cancel a requested regression run. Existing component/unit-test workflows are independent.
 
-1. Wait for the target PR's **Cloudflare Pages: gmx-interface** check to succeed.
-2. Open **Actions → Release regression → Run workflow**.
-3. Select a branch containing the regression test suite, enter the **PR number**, and select Arbitrum (`42161`) or Avalanche (`43114`). Optionally enable the read-only funded preflight.
-4. Run the workflow. Repeat with the other chain when both are required.
+### Run from a PR, including before this workflow is merged
 
-GitHub requires this workflow to exist on the repository's default branch before offering manual dispatch. This local change must be pushed and integrated there before that UI is available.
+1. Push the workflow and test suite to the PR branch.
+2. Add the **`run-regression`** label to the PR.
+3. The workflow waits for the Cloudflare application preview for the commit at the time the label was added, then tests Arbitrum and Avalanche sequentially.
+4. Read the results in the PR's Checks tab and the workflow's artifacts/summary.
 
-The resolver reads the open PR's current head SHA and its latest Cloudflare application check. It accepts only a successful check from the Cloudflare app for that exact commit and extracts the immutable preview URL (for example `https://6425cbf1.gmx-interface.pages.dev`). It ignores the home project and branch aliases. A missing/pending/failed deployment, unexpected URL format, or PR change during resolution fails the job before browsers start. There is no fallback to the shared test deployment or repository URL variable. Deploy the current commit and manually rerun if resolution fails.
+The label trigger uses `pull_request: types: [labeled]`, so it can execute the workflow from this PR before the file exists on the default branch. Leaving the label attached does not enable runs on later pushes. Remove and re-add it to request a run for a new commit. **Re-run jobs** can retry the same event/commit; an old label event is rejected if the PR head has changed. Label runs never enable the optional funded preflight or receive its RPC secrets.
 
-The test suite comes from the selected workflow revision, so it can also test PRs that do not contain the harness. The workflow reads the candidate's indexer configuration from a separate sparse checkout pinned to the resolved PR SHA. It does not execute candidate install/build scripts. The browser target is the already-built preview. A later push requires another manual run; an existing run remains pinned to the original resolved deployment.
+### Run from Actions after the workflow reaches the default branch
+
+1. Open **Actions → Release regression → Run workflow**.
+2. Select the test suite branch, enter the **PR number**, and select Arbitrum (`42161`) or Avalanche (`43114`). Optionally enable the read-only funded preflight.
+3. Run the workflow. Repeat with the other chain when both are required.
+
+GitHub requires this workflow to exist on the default branch (`release`) for `workflow_dispatch`. The label trigger provides the way to verify it before merge.
+
+The resolver checks the selected commit's latest Cloudflare application check every 15 seconds for approximately 15 minutes. It accepts only a successful check from the Cloudflare app for that exact commit and extracts the immutable preview URL (for example `https://6425cbf1.gmx-interface.pages.dev`). It ignores the home project and branch aliases. A failed deployment, timeout, unexpected URL format, closed PR or changed head fails the job before browsers start. There is no fallback to the shared test deployment or a repository URL variable.
+
+The test suite comes from the workflow revision (the PR merge revision for label events, or the selected ref for dispatch). The workflow reads the candidate's indexer configuration from a separate sparse checkout pinned to the resolved PR head SHA. It does not execute install/build scripts from that candidate checkout. The browser target is the already-built preview. A later push requires another explicit request; an existing browser run remains pinned to the originally resolved deployment.
 
 The resolver uses the automatic `GITHUB_TOKEN` with read-only contents, pull-request and check permissions. No Cloudflare API token or wallet secrets are needed for the default jobs. Preview access must be available to GitHub-hosted runners.
 

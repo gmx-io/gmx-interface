@@ -1,11 +1,13 @@
 name: Release regression
-run-name: "Regression for PR #${{ inputs.pr_number }} (${{ inputs.chain_id }})"
+run-name: "Regression for PR #${{ github.event.pull_request.number || inputs.pr_number }} (${{ inputs.chain_id || 'Arbitrum + Avalanche' }})"
 
 on:
+  pull_request:
+    types: [labeled]
   workflow_dispatch:
     inputs:
       pr_number:
-        description: "PR number whose current commit has a successful Cloudflare preview"
+        description: "Open PR number; waits up to 15 minutes for its Cloudflare preview"
         type: string
         required: true
       chain_id:
@@ -22,14 +24,15 @@ permissions:
   contents: read
 
 concurrency:
-  group: regression-pr-${{ inputs.pr_number }}-${{ inputs.chain_id }}
+  group: regression-${{ github.event_name }}-pr-${{ github.event.pull_request.number || inputs.pr_number }}-${{ inputs.chain_id || github.event.label.name }}
   cancel-in-progress: true
 
 jobs:
   resolve-preview:
     name: Resolve PR deployment preview
+    if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'run-regression'
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 20
     permissions:
       contents: read
       pull-requests: read
@@ -47,11 +50,19 @@ jobs:
         id: preview
         uses: actions/github-script@v7
         env:
-          PR_NUMBER: ${{ inputs.pr_number }}
+          PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr_number }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         with:
           script: |
             const resolvePreview = require('./autotests/regression/ci/resolvePreview.cjs');
-            const preview = await resolvePreview({ github, repository: context.repo, prNumber: process.env.PR_NUMBER });
+            const preview = await resolvePreview({
+              github,
+              repository: context.repo,
+              prNumber: process.env.PR_NUMBER,
+              expectedHeadSha: process.env.PR_HEAD_SHA || undefined,
+              maxAttempts: 61,
+              onWait: ({ attempt, headSha }) => core.info(`Waiting for Cloudflare preview of ${headSha} (${attempt}/60)...`),
+            });
             core.setOutput('preview_url', preview.url);
             core.setOutput('head_sha', preview.headSha);
             core.setOutput('check_url', preview.checkUrl);
@@ -66,13 +77,18 @@ jobs:
               .write();
 
   regression:
-    name: Regression (${{ inputs.chain_id }})
+    name: Regression (${{ matrix.chain_id }})
     needs: resolve-preview
     runs-on: ubuntu-latest
     timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        chain_id: ${{ fromJSON(github.event_name == 'workflow_dispatch' && format('[{0}]', inputs.chain_id) || '[42161,43114]') }}
     env:
       REGRESSION_BASE_URL: ${{ needs.resolve-preview.outputs.preview_url }}
-      REGRESSION_CHAIN_ID: ${{ inputs.chain_id }}
+      REGRESSION_CHAIN_ID: ${{ matrix.chain_id }}
       REGRESSION_PR_NUMBER: ${{ needs.resolve-preview.outputs.pr_number }}
       REGRESSION_DEPLOYMENT_SHA: ${{ needs.resolve-preview.outputs.head_sha }}
       REGRESSION_DEPLOYMENT_CHECK_URL: ${{ needs.resolve-preview.outputs.check_url }}
@@ -111,7 +127,7 @@ jobs:
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: regression-pr-${{ needs.resolve-preview.outputs.pr_number }}-${{ inputs.chain_id }}-${{ github.run_id }}-${{ github.run_attempt }}
+          name: regression-pr-${{ needs.resolve-preview.outputs.pr_number }}-${{ matrix.chain_id }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             playwright-report/regression/
             test-results/
@@ -123,7 +139,7 @@ jobs:
   funded-preflight:
     name: Funded gas preflight (no transactions)
     needs: resolve-preview
-    if: inputs.funded_preflight
+    if: github.event_name == 'workflow_dispatch' && inputs.funded_preflight
     runs-on: ubuntu-latest
     environment: regression_e2e
     timeout-minutes: 15

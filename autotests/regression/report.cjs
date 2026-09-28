@@ -51,7 +51,7 @@ if (!fs.existsSync(reportPath)) {
 }
 lines.push(
   "",
-  "Only the tests listed in this report ran. This is partial regression coverage. Funded transaction execution, settlement, and real device/wallet compatibility are not certified by this run.",
+  "Only the tests listed in this report ran. This is partial regression coverage. Real-wallet transactions with funds are not implemented or executed by this suite. Settlement and real device/wallet compatibility remain unverified.",
   ""
 );
 const summary = lines.join("\n");

@@ -32,14 +32,24 @@ function deployedCheck(overrides = {}) {
   };
 }
 
-function client({ checks = [deployedCheck()], state = "open", updatedHeadSha = headSha } = {}) {
+function client({
+  checks = [deployedCheck()],
+  checkSequence,
+  state = "open",
+  updatedState = state,
+  updatedHeadSha = headSha,
+} = {}) {
   let reads = 0;
+  let checkReads = 0;
   const github = {
     rest: {
       pulls: {
         get: async (params) => {
           assert.deepEqual(params, { ...repository, pull_number: 2932 });
-          return { data: { state, head: { sha: reads++ === 0 ? headSha : updatedHeadSha } } };
+          const firstRead = reads++ === 0;
+          return {
+            data: { state: firstRead ? state : updatedState, head: { sha: firstRead ? headSha : updatedHeadSha } },
+          };
         },
       },
       checks: { listForRef: Symbol("listForRef") },
@@ -53,7 +63,7 @@ function client({ checks = [deployedCheck()], state = "open", updatedHeadSha = h
         filter: "all",
         per_page: 100,
       });
-      return checks;
+      return checkSequence ? checkSequence[Math.min(checkReads++, checkSequence.length - 1)] : checks;
     },
   };
   return github;
@@ -172,4 +182,89 @@ test("propagates GitHub errors without falling back to a shared target", async (
     throw new Error("GitHub checks are unavailable");
   };
   await assert.rejects(resolvePreview({ github, repository, prNumber: "2932" }), /GitHub checks are unavailable/);
+});
+
+test("waits for a missing then pending preview to deploy the pinned commit", async () => {
+  const delays = [];
+  const waiting = [];
+  const result = await resolvePreview({
+    github: client({
+      checkSequence: [[], [deployedCheck({ status: "in_progress", conclusion: null })], [deployedCheck()]],
+    }),
+    repository,
+    prNumber: "2932",
+    expectedHeadSha: headSha,
+    maxAttempts: 3,
+    wait: async (ms) => delays.push(ms),
+    onWait: (entry) => waiting.push(entry),
+  });
+  assert.equal(result.url, previewUrl);
+  assert.deepEqual(delays, [15_000, 15_000]);
+  assert.deepEqual(waiting, [
+    { attempt: 1, headSha },
+    { attempt: 2, headSha },
+  ]);
+});
+
+test("stops waiting after the attempt limit", async () => {
+  const delays = [];
+  await assert.rejects(
+    resolvePreview({
+      github: client({ checks: [] }),
+      repository,
+      prNumber: "2932",
+      maxAttempts: 3,
+      wait: async (ms) => delays.push(ms),
+    }),
+    /no successful current/
+  );
+  assert.equal(delays.length, 2);
+});
+
+test("stops immediately when the awaited deployment fails", async () => {
+  const delays = [];
+  await assert.rejects(
+    resolvePreview({
+      github: client({ checkSequence: [[], [deployedCheck({ conclusion: "failure" })]] }),
+      repository,
+      prNumber: "2932",
+      maxAttempts: 61,
+      wait: async (ms) => delays.push(ms),
+    }),
+    /deployment \(failure\)/
+  );
+  assert.equal(delays.length, 1);
+});
+
+test("rejects a stale label event before looking up a newer commit's preview", async () => {
+  const github = client();
+  github.paginate = async () => assert.fail("Must not resolve a different commit");
+  await assert.rejects(
+    resolvePreview({
+      github,
+      repository,
+      prNumber: "2932",
+      expectedHeadSha: "b".repeat(40),
+    }),
+    /changed since this run/
+  );
+});
+
+test("stops if the PR changes or closes while waiting for deployment", async () => {
+  for (const update of [{ updatedHeadSha: "b".repeat(40) }, { updatedState: "closed" }]) {
+    let waits = 0;
+    await assert.rejects(
+      resolvePreview({
+        github: client({ checks: [], ...update }),
+        repository,
+        prNumber: "2932",
+        maxAttempts: 61,
+        wait: async () => {
+          waits++;
+        },
+      }),
+      /changed since this run|must be open/
+    );
+    assert.equal(waits, 1);
+  }
 });
