@@ -27,7 +27,7 @@ export type EarnPageRecommendationClickedEvent = {
   };
 };
 
-export type EarnPagePortfolioItem = "GMX" | "esGMX" | "GLV" | "GM";
+export type EarnPagePortfolioItem = "GMX" | "esGMX" | "GLV" | "GM" | "GT";
 export type EarnPagePortfolioItemType = "stake" | "vest" | "buy" | "sell" | "details";
 export type EarnPagePortfolioItemClickEvent = {
   event: "EarnPageAction";

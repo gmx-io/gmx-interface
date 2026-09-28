@@ -1,4 +1,4 @@
-import { FloatingPortal, autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
+import { autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
 import { Popover } from "@headlessui/react";
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
@@ -18,6 +18,7 @@ import {
 import { bigMath } from "sdk/utils/bigmath";
 
 import NumberInput from "components/NumberInput/NumberInput";
+import FloatingPortal from "components/Portal/FloatingPortal";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";

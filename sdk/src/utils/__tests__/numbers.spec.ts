@@ -367,6 +367,14 @@ describe("formatUsdPrice", () => {
   });
 });
 
+describe("formatAmount", () => {
+  it("can trim trailing zero decimals", () => {
+    expect(formatAmount(toBigNumberWithDecimals("75", 18), 18, 2, true, { trimTrailingZeros: true })).toBe("75");
+    expect(formatAmount(toBigNumberWithDecimals("1.5", 18), 18, 2, true, { trimTrailingZeros: true })).toBe("1.5");
+    expect(formatAmount(toBigNumberWithDecimals("1000", 18), 18, 2, true, { trimTrailingZeros: true })).toBe("1,000");
+  });
+});
+
 describe("formatNumberHuman", () => {
   it.each([
     [999.94, 1, "999.9"],
@@ -446,6 +454,11 @@ describe("formatAmountHuman", () => {
     expect(formatAmountHuman(ONE_USD * 1500000n, USD_DECIMALS, false, 2)).toBe("1.50m");
     expect(formatAmountHuman(ONE_USD * 1000n, USD_DECIMALS, false, 0)).toBe("1k");
     expect(formatAmountHuman(ONE_USD * 1500000n, USD_DECIMALS, false, 0)).toBe("2m");
+  });
+
+  it("promotes rounded values to the next suffix", () => {
+    expect(formatAmountHuman(ONE_USD * 999999n, USD_DECIMALS, true, 0)).toBe("$\u200a1m");
+    expect(formatAmountHuman(ONE_USD * 999999999n, USD_DECIMALS, true, 0)).toBe("$\u200a1b");
   });
 });
 

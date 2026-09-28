@@ -1426,9 +1426,7 @@ export const DepositView = () => {
                 Receive supported assets into your wallet on {networksList}, then deposit them to GMX Account.
               </Trans>
             ) : depositViewChain === (settlementChainId as number) ? (
-              <Trans>
-                Receive supported assets into your wallet on {networkName}, or choose another network.
-              </Trans>
+              <Trans>Receive supported assets into your wallet on {networkName}, or choose another network.</Trans>
             ) : (
               <Trans>
                 Receive {tokensList} into your wallet on {networkName}, or choose another network.

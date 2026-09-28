@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { SUBSQUID_PAGINATION_LIMIT } from "sdk/configs/batch";
 
-import { fetchTwapGroupExecutedActions } from "./useTradeHistory";
+import { fetchRawTradeActions, fetchTwapGroupExecutedActions } from "./useTradeHistory";
 
 const queryMock = vi.fn();
 
@@ -70,5 +70,39 @@ describe("fetchTwapGroupExecutedActions", () => {
     expect(getQueryBody(1)).toContain(`offset: ${SUBSQUID_PAGINATION_LIMIT},`);
     expect(actions).toHaveLength(SUBSQUID_PAGINATION_LIMIT + 1);
     expect(actions.at(-1)?.id).toBe("action-last");
+  });
+});
+
+describe("fetchRawTradeActions", () => {
+  beforeEach(() => {
+    queryMock.mockReset();
+  });
+
+  it("filters orders and transactions while retaining legacy actions and excluding funding settlements", async () => {
+    queryMock.mockResolvedValue({ data: { tradeActions: [] } });
+
+    await fetchRawTradeActions({
+      chainId: 42161,
+      pageIndex: 0,
+      pageSize: 20,
+      includeTotalCount: false,
+      marketsDirectionsFilter: undefined,
+      forAllAccounts: false,
+      account: "0xAccount",
+      fromTxTimestamp: undefined,
+      toTxTimestamp: undefined,
+      orderEventCombinations: undefined,
+      positionLifecycleId: undefined,
+      orderKeys: ["order-1"],
+      transactionHashes: ["0xTransaction"],
+      showDebugValues: false,
+    });
+
+    const body = getQueryBody(0);
+    expect(body).toContain("isFundingFeeSettle");
+    expect(body).toContain("isFundingFeeSettle_eq:false");
+    expect(body).toContain("isFundingFeeSettle_isNull:true");
+    expect(body).toContain('orderKey_in:["order-1"]');
+    expect(body).toContain('transactionHash_in:["0xTransaction"]');
   });
 });
