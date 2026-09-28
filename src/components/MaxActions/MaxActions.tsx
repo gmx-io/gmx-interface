@@ -6,6 +6,7 @@ import type { MaxActionsState } from "domain/tokens/useMaxAvailableAmount";
 import { userAnalytics } from "lib/userAnalytics";
 import type { MaxActionClickEvent } from "lib/userAnalytics/types";
 
+import type { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 type Props = {
@@ -14,13 +15,14 @@ type Props = {
   onKeepGas?: () => void;
   qa?: string;
   className?: string;
+  tooltipPosition?: TooltipPosition;
 };
 
 export function getIsMaxActionDisabled(state: MaxActionsState): boolean {
   return state.isLoading || state.isFeeUnavailable || state.isInsufficientForFee;
 }
 
-export function MaxActions({ state, onMax, onKeepGas, qa = "input", className }: Props) {
+export function MaxActions({ state, onMax, onKeepGas, qa = "input", className, tooltipPosition = "top-end" }: Props) {
   const handleMax = useCallback(() => {
     userAnalytics.pushEvent<MaxActionClickEvent>({ event: "MaxAction", data: { action: "MaxClick" } });
     onMax();
@@ -40,6 +42,7 @@ export function MaxActions({ state, onMax, onKeepGas, qa = "input", className }:
           isDisabled={state.isLoading}
           isLoading={state.isLoading}
           tooltip={state.keepGasTooltip}
+          tooltipPosition={tooltipPosition}
           onClick={handleKeepGas}
         >
           <Trans>Keep gas</Trans>
@@ -51,6 +54,7 @@ export function MaxActions({ state, onMax, onKeepGas, qa = "input", className }:
         isDisabled={getIsMaxActionDisabled(state)}
         isLoading={state.isLoading}
         tooltip={state.maxTooltip}
+        tooltipPosition={tooltipPosition}
         onClick={handleMax}
       >
         <Trans>Max</Trans>
@@ -65,6 +69,7 @@ function MaxActionPill({
   isDisabled,
   isLoading,
   tooltip,
+  tooltipPosition,
   onClick,
   children,
 }: {
@@ -73,6 +78,7 @@ function MaxActionPill({
   isDisabled: boolean;
   isLoading: boolean;
   tooltip: string | undefined;
+  tooltipPosition: TooltipPosition;
   onClick: () => void;
   children: ReactNode;
 }) {
@@ -94,7 +100,8 @@ function MaxActionPill({
       handleClassName={isDisabled ? "!cursor-not-allowed" : undefined}
       shouldPreventDefault={false}
       variant="none"
-      position="bottom"
+      position={tooltipPosition}
+      flipOnlyToOppositeSide
     >
       <button
         type="button"

@@ -257,7 +257,7 @@ export default function BuyInputSection(props: Props) {
               onClick={handleBottomRightClick}
             >
               {maxActionsProps && maxButtonPosition === "bottom-right" && (
-                <MaxActions className="-my-4" {...maxActionsProps} />
+                <MaxActions className="-my-4" tooltipPosition="bottom-end" {...maxActionsProps} />
               )}
               {bottomRightLabel && <span className="text-typography-secondary">{bottomRightLabel}:</span>}
               {bottomRightValue && <span className="numbers">{bottomRightValue}</span>}
