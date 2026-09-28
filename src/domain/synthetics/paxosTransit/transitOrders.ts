@@ -8,6 +8,10 @@ function getIsTransitOrderPending(order: TransitOrder) {
   return order.status === "PENDING_BRIDGE" || order.status === "PROCESSING";
 }
 
+export function getIsTransitOrderFinal(order: TransitOrder | undefined) {
+  return order?.status === "PROCESSED" || order?.status === "REMOVED";
+}
+
 export function findPendingTransitOrder(
   orders: TransitOrder[],
   p: { offerAsset: string; wantAsset: string }
