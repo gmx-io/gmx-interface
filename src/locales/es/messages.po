@@ -649,10 +649,6 @@ msgstr "Superados cortos Máx. de {0}"
 msgid "Insufficient GM balance"
 msgstr "Saldo GM insuficiente"
 
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Slippage exceeded. Expected min: {minOutputAmountText}, actual: {outputAmountText}"
-msgstr "Deslizamiento excedido. Mínimo esperado: {minOutputAmountText}, real: {outputAmountText}"
-
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Projected yearly return from trading fees only.<0/><1/>Includes: trading fees, borrow fees, liquidations, swaps.<2/>Excludes: backing token price changes, PnL, funding fees.<3/><4/><5>View detailed stats on Dune</5>."
 msgstr "Rendimiento anual proyectado solo a partir de comisiones de operaciones.<0/><1/>Incluye: comisiones de operaciones, comisiones de préstamo, liquidaciones, intercambios.<2/>Excluye: cambios de precio de tokens de respaldo, PnL, comisiones de financiación.<3/><4/><5>Ver estadísticas detalladas en Dune</5>."
@@ -10769,10 +10765,6 @@ msgstr "Hacer staking de {tokenSymbol}"
 msgid "Link copied to clipboard"
 msgstr "Enlace copiado al portapapeles"
 
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Max pool capacity reached. Current: {poolAmountText}, max: {maxPoolAmountText}"
-msgstr "Capacidad máxima del pool alcanzada. Actual: {poolAmountText}, máx.: {maxPoolAmountText}"
-
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} APR"
 msgstr "APR de {nativeTokenSymbol}"
@@ -11443,10 +11435,6 @@ msgstr "Estadísticas totales"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GLP not withdrawn"
 msgstr "GLP en vesting no retirado"
-
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Insufficient pool liquidity. Available: {availableAmountText}"
-msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Become a market maker"

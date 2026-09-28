@@ -649,10 +649,6 @@ msgstr "超過 {0} 做空上限"
 msgid "Insufficient GM balance"
 msgstr "GM 餘額不足"
 
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Slippage exceeded. Expected min: {minOutputAmountText}, actual: {outputAmountText}"
-msgstr "滑點超出限制。預期最小值：{minOutputAmountText}，實際值：{outputAmountText}"
-
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Projected yearly return from trading fees only.<0/><1/>Includes: trading fees, borrow fees, liquidations, swaps.<2/>Excludes: backing token price changes, PnL, funding fees.<3/><4/><5>View detailed stats on Dune</5>."
 msgstr "僅來自交易手續費的預估年化報酬。<0/><1/>包含：交易手續費、借貸費用、清算、兌換。<2/>不包含：支撐代幣價格變動、PnL、資金費率。<3/><4/><5>在 Dune 上查看詳細數據</5>。"
@@ -10769,10 +10765,6 @@ msgstr "質押 {tokenSymbol}"
 msgid "Link copied to clipboard"
 msgstr "連結已複製到剪貼簿"
 
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Max pool capacity reached. Current: {poolAmountText}, max: {maxPoolAmountText}"
-msgstr "已達池最大容量。目前：{poolAmountText}，上限：{maxPoolAmountText}"
-
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} APR"
 msgstr "{nativeTokenSymbol} APR"
@@ -11443,10 +11435,6 @@ msgstr "總計統計"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GLP not withdrawn"
 msgstr "已歸屬的 GLP 未提取"
-
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Insufficient pool liquidity. Available: {availableAmountText}"
-msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Become a market maker"

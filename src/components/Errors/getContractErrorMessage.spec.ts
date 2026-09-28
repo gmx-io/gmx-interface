@@ -138,6 +138,28 @@ describe("getContractErrorMessage — LiquidatablePosition", () => {
   });
 });
 
+describe("getContractErrorMessage — token amounts without token context PRO-4168", () => {
+  it.each([
+    [
+      CustomErrorName.MaxPoolAmountExceeded,
+      { poolAmount: 5_000_000_000_000n, maxPoolAmount: 4_000_000_000_000n },
+      "Max pool capacity reached",
+    ],
+    [
+      CustomErrorName.InsufficientPoolAmount,
+      { poolAmount: 1_000_000n, amount: 2_000_000n },
+      "Insufficient pool liquidity",
+    ],
+    [
+      CustomErrorName.InsufficientOutputAmount,
+      { outputAmount: 999_000n, minOutputAmount: 1_000_000n },
+      "Slippage exceeded",
+    ],
+  ])("does not show raw token units for %s", (contractError, contractErrorArgs, expected) => {
+    expect(getContractErrorMessage({ errorData: { contractError, contractErrorArgs } })).toBe(expected);
+  });
+});
+
 describe("getContractErrorMessage — GM/GLV and multichain flows PRO-4168", () => {
   // TON GM withdrawal revert: 48.01% short PnL-to-pool ratio against the 45% withdrawal cap
   const pnlFactorExceededForShorts = encodeErrorResult({

@@ -147,17 +147,8 @@ export function getContractErrorMessage({
     case CustomErrorName.InsufficientReserve:
       return t`Insufficient pool liquidity`;
 
-    case CustomErrorName.MaxPoolAmountExceeded: {
-      const poolAmount = getBigIntContractErrorArg(args, 0, "poolAmount");
-      const maxPoolAmount = getBigIntContractErrorArg(args, 1, "maxPoolAmount");
-
-      const poolAmountText = poolAmount !== undefined ? formatAmount(poolAmount, 0, 0, true) : undefined;
-      const maxPoolAmountText = maxPoolAmount !== undefined ? formatAmount(maxPoolAmount, 0, 0, true) : undefined;
-
-      return poolAmountText && maxPoolAmountText
-        ? t`Max pool capacity reached. Current: ${poolAmountText}, max: ${maxPoolAmountText}`
-        : t`Max pool capacity reached`;
-    }
+    case CustomErrorName.MaxPoolAmountExceeded:
+      return t`Max pool capacity reached`;
 
     case CustomErrorName.MaxPoolUsdForDepositExceeded: {
       const maxPoolUsd = getBigIntContractErrorArg(args, 1, "maxPoolUsdForDeposit");
@@ -166,14 +157,8 @@ export function getContractErrorMessage({
       return maxPoolUsdText ? t`Max deposit limit reached: ${maxPoolUsdText}` : t`Max deposit limit reached`;
     }
 
-    case CustomErrorName.InsufficientPoolAmount: {
-      const availableAmount = getBigIntContractErrorArg(args, 0, "poolAmount");
-      const availableAmountText = availableAmount !== undefined ? formatAmount(availableAmount, 0, 0, true) : undefined;
-
-      return availableAmountText
-        ? t`Insufficient pool liquidity. Available: ${availableAmountText}`
-        : t`Insufficient pool liquidity`;
-    }
+    case CustomErrorName.InsufficientPoolAmount:
+      return t`Insufficient pool liquidity`;
 
     case CustomErrorName.MinPositionSize: {
       const positionSizeInUsd = getBigIntContractErrorArg(args, 0, "positionSizeInUsd");
@@ -222,16 +207,8 @@ export function getContractErrorMessage({
         : t`Max profit limit reached`;
     }
 
-    case CustomErrorName.InsufficientOutputAmount: {
-      const outputAmount = getBigIntContractErrorArg(args, 0, "outputAmount");
-      const minOutputAmount = getBigIntContractErrorArg(args, 1, "minOutputAmount");
-      const minOutputAmountText = minOutputAmount !== undefined ? formatAmount(minOutputAmount, 0, 0, true) : undefined;
-      const outputAmountText = outputAmount !== undefined ? formatAmount(outputAmount, 0, 0, true) : undefined;
-
-      return minOutputAmountText && outputAmountText
-        ? t`Slippage exceeded. Expected min: ${minOutputAmountText}, actual: ${outputAmountText}`
-        : t`Slippage exceeded`;
-    }
+    case CustomErrorName.InsufficientOutputAmount:
+      return t`Slippage exceeded`;
 
     case CustomErrorName.InsufficientBridgeOutputAmount:
       return t`Bridge fee increased. Funds remain in your GMX Account. Try again`;

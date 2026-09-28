@@ -649,10 +649,6 @@ msgstr "{0} 숏 최대치를 초과했습니다."
 msgid "Insufficient GM balance"
 msgstr "GM 잔고 부족"
 
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Slippage exceeded. Expected min: {minOutputAmountText}, actual: {outputAmountText}"
-msgstr "슬리피지 초과. 예상 최소: {minOutputAmountText}, 실제: {outputAmountText}"
-
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Projected yearly return from trading fees only.<0/><1/>Includes: trading fees, borrow fees, liquidations, swaps.<2/>Excludes: backing token price changes, PnL, funding fees.<3/><4/><5>View detailed stats on Dune</5>."
 msgstr "거래 수수료만으로 산출한 연간 예상 수익률입니다.<0/><1/>포함: 거래 수수료, 차입 수수료, 청산, 스왑.<2/>제외: 기초 토큰 가격 변동, PnL, 펀딩 수수료.<3/><4/><5>Dune에서 상세 통계 보기</5>."
@@ -10769,10 +10765,6 @@ msgstr "{tokenSymbol} 스테이킹"
 msgid "Link copied to clipboard"
 msgstr "링크가 클립보드에 복사되었습니다"
 
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Max pool capacity reached. Current: {poolAmountText}, max: {maxPoolAmountText}"
-msgstr "최대 풀 용량에 도달했습니다. 현재: {poolAmountText}, 최대: {maxPoolAmountText}"
-
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} APR"
 msgstr "{nativeTokenSymbol} APR"
@@ -11443,10 +11435,6 @@ msgstr "종합 통계"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GLP not withdrawn"
 msgstr "베스팅된 GLP가 출금되지 않음"
-
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Insufficient pool liquidity. Available: {availableAmountText}"
-msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Become a market maker"
