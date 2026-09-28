@@ -561,6 +561,10 @@ msgstr "수동 보상 하위 집합(USD)"
 msgid "position size"
 msgstr "포지션 규모"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Confirm withdraw"
+msgstr "출금 확인"
+
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Settled funding fees"
@@ -1060,6 +1064,9 @@ msgstr "잔액이 곧 새로고침됩니다."
 msgid "Accrued funding fees available for settlement"
 msgstr "정산 가능한 미수 펀딩 수수료"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Convert esGMX to GMX tokens. Read the vesting details before using the vaults."
 msgstr "esGMX를 GMX 토큰으로 전환합니다. 금고를 사용하기 전에 베스팅 세부 정보를 확인하시기 바랍니다."
@@ -1205,6 +1212,10 @@ msgstr "에포크"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position impact"
 msgstr "포지션 영향"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Insufficient staked tokens"
+msgstr "스테이킹된 토큰 부족"
 
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Creating code..."
@@ -1767,6 +1778,10 @@ msgstr "무기한에 검색 결과가 있습니다."
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Qualified this epoch"
 msgstr "이번 에포크 자격 충족"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Deposited"
+msgstr "입금 완료"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Signing..."
@@ -2846,6 +2861,7 @@ msgstr "마켓이 일시적으로 비활성화되었습니다"
 msgid "Shift error"
 msgstr "시프트 오류"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
@@ -3154,6 +3170,7 @@ msgstr "포지션이 허용된 최대 레버리지를 초과합니다. <0>자세
 msgid "Short borrowing rate"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX"
@@ -3170,6 +3187,10 @@ msgstr "인덱싱된 감사 데이터 업데이트 중…"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Amount is below the withdrawal limit. Try an amount larger than <0>{lowerLimitFormatted}</0>."
 msgstr "금액이 출금 한도 미만입니다. <0>{lowerLimitFormatted}</0>보다 큰 금액을 입력하십시오."
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "No funds to claim"
+msgstr "청구할 자금 없음"
 
 #: src/components/AprInfo/AprInfo.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
@@ -3491,6 +3512,7 @@ msgid "{txnTypeText} {0} order for"
 msgstr "{txnTypeText} {0} 주문"
 
 #: src/components/BuyInputSection/BuyInputSection.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -4028,6 +4050,7 @@ msgstr "일"
 msgid "Withdrawing from GMX Account..."
 msgstr "GMX Account에서 출금 중..."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Vesting status"
@@ -5024,6 +5047,14 @@ msgstr "연락 요청하기"
 msgid "Sending..."
 msgstr "전송 중..."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Max capacity:"
+msgstr "최대 용량:"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Withdraw and unreserve GMX"
+msgstr "GMX 출금 및 예약 해제"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Copin"
 msgstr "Copin"
@@ -5299,6 +5330,7 @@ msgstr ""
 msgid "Share GMX feedback"
 msgstr "GMX 피드백 공유"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw failed"
 msgstr "출금에 실패했습니다"
@@ -5396,6 +5428,8 @@ msgstr ""
 msgid "Withdrawal failed"
 msgstr "출금 실패"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
@@ -5522,6 +5556,7 @@ msgstr "V1"
 msgid "Current epoch"
 msgstr "현재 에포크"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Staked tokens reserved for vesting"
 msgstr "베스팅을 위해 예약된 스테이킹 토큰"
@@ -5644,6 +5679,7 @@ msgstr "스왑용 가상 인벤토리 (롱 / 숏)"
 msgid "Withdrawal"
 msgstr "출금"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "No funds to withdraw"
 msgstr "출금할 자금 없음"
@@ -5950,6 +5986,7 @@ msgstr ""
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
@@ -6378,6 +6415,8 @@ msgstr "외부 스왑 실패 처리"
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -6530,6 +6569,7 @@ msgstr "이 페이지의 추천 보상 esGMX"
 msgid "Fee"
 msgstr "수수료"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Vault capacity"
 msgstr "볼트 용량"
@@ -7073,6 +7113,10 @@ msgstr "수령이 완료되었습니다"
 msgid "Open in explorer"
 msgstr "탐색기에서 열기"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "{0} tokens converted to GMX from the {1} esGMX deposited for vesting"
+msgstr "베스팅을 위해 예치된 {1} esGMX 중 {0} 토큰이 GMX로 전환되었습니다"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Margin at liquidation"
 msgstr ""
@@ -7112,6 +7156,10 @@ msgstr "전체 기간"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "PnL after all fees"
 msgstr "모든 수수료 차감 후 PnL"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Additional reserve required:"
+msgstr "추가 예약 필요:"
 
 #: landing/src/pages/Builders/StickyApplyBar.tsx
 msgid "Build on GMX. Get paid on every trade."
@@ -7353,6 +7401,10 @@ msgstr "{updateOrdersCount}개의 TP/SL 주문이 업데이트되었습니다"
 msgid "What's the minimum volume to qualify?"
 msgstr "자격 요건이 되는 최소 거래량은 얼마인가요?"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Current reserved:"
+msgstr "현재 예약분:"
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Support for"
 msgstr "지원"
@@ -7419,6 +7471,7 @@ msgid "Buy GMX on GMX swap"
 msgstr ""
 
 #: src/components/Claims/ClaimableCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Claimable"
 msgstr "수령가능"
@@ -7536,6 +7589,10 @@ msgstr "주문을 계산할 수 없습니다"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL CAP SHORT"
 msgstr "풀 한도 숏"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "GMX vault"
+msgstr "GMX 볼트"
 
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Sending settle request..."
@@ -7816,6 +7873,7 @@ msgstr "포지션 선택"
 
 #: src/components/AppHeader/AppHeaderUser.tsx
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
@@ -8075,6 +8133,7 @@ msgstr "유형"
 msgid "Request settlement of funding fees"
 msgstr "펀딩 수수료 정산 요청"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdrawn"
 msgstr "출금 완료"
@@ -8246,6 +8305,7 @@ msgstr ""
 msgid "Order not found. May have been canceled or already executed"
 msgstr "주문을 찾을 수 없습니다. 취소되었거나 이미 체결되었을 수 있습니다"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Vesting"
@@ -9517,6 +9577,7 @@ msgstr "스왑 수익 수수료"
 msgid "Solv Finance"
 msgstr "Solv Finance"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
@@ -9852,6 +9913,7 @@ msgstr "{tokenSymbol} 보상 스테이킹"
 msgid "Active Balancer Program code"
 msgstr "활성 Balancer 프로그램 코드"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
@@ -10595,6 +10657,7 @@ msgstr "트레이더 프로필"
 msgid "Connect your wallet to view your rebates distribution history"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claimed"
 msgstr "청구됨"
@@ -10713,6 +10776,9 @@ msgstr "{increaseOrDecreaseText}: {0} {longShortText}"
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Claims/ClaimableCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claim"
@@ -10737,6 +10803,7 @@ msgstr "{0}ms"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -10830,6 +10897,7 @@ msgstr "24시간 거래량"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -11011,6 +11079,10 @@ msgstr "{networkLabel}의 {addressLabel}"
 msgid "Loading fees..."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "{0} GMX"
+msgstr "{0} GMX"
+
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 msgid "Per qualifying trade"
 msgstr "적격 거래당"
@@ -11125,7 +11197,7 @@ msgstr "마켓 상장 폐지"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Last updated:"
-msgstr ""
+msgstr "마지막 업데이트:"
 
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
@@ -11338,6 +11410,9 @@ msgstr "아래 한도까지 {0} 및 {1}(으)로 GM을 구매할 수 있습니다
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -12433,6 +12508,10 @@ msgstr "{0} esGMX를 베스팅하려면 담보로 {1} GMX를 추가로 스테이
 msgid "What is GMX?"
 msgstr "GMX란 무엇인가요?"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Deposit submitted"
+msgstr "입금이 제출되었습니다"
+
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 msgid "Program start"
 msgstr "프로그램 시작"
@@ -12700,12 +12779,18 @@ msgstr "기회 검색"
 msgid "Dark"
 msgstr "다크"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 #: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
 #: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 msgid "Confirming..."
 msgstr "확인 중..."
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Deposited:"
+msgstr "입금됨:"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
@@ -13214,6 +13299,10 @@ msgstr "진행 중..."
 msgid "One-Click Trading time limit expired. You're now using Express Trading."
 msgstr "One-Click Trading 시간 제한이 만료되었습니다. 이제 Express Trading을 사용합니다."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Affiliate vault"
+msgstr "Affiliate 볼트"
+
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} up to the caps below. Remaining tokens are reserved for open positions."
 msgstr "{0}에 대해 아래 한도까지 GM을 판매할 수 있습니다. 나머지 토큰은 미결 포지션을 위해 예약되어 있습니다."
@@ -13594,6 +13683,7 @@ msgid "Buy APE on Arbitrum with <0>Camelot</0>"
 msgstr "<0>Camelot</0>을 통해 Arbitrum에서 APE를 구매하십시오"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Depositing..."
 msgstr "입금 중…"
@@ -13773,6 +13863,9 @@ msgstr "수령 매개변수를 사용할 수 없습니다. 몇 초 후 다시 �
 msgid "Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Read details"
 msgstr "상세 내용 보기"
@@ -14555,6 +14648,7 @@ msgstr "시간"
 msgid "Invalid receiver address"
 msgstr "유효하지 않은 수신자 주소"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw submitted"
 msgstr "출금이 제출되었습니다"

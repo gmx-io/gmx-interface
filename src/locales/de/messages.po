@@ -561,6 +561,10 @@ msgstr "USD-Teilmenge der manuellen Belohnungen"
 msgid "position size"
 msgstr "Positionsgröße"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Confirm withdraw"
+msgstr "Abhebung bestätigen"
+
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Settled funding fees"
@@ -1060,6 +1064,9 @@ msgstr "Die Guthaben werden in Kürze aktualisiert."
 msgid "Accrued funding fees available for settlement"
 msgstr "Aufgelaufene Finanzierungsgebühren zur Abwicklung verfügbar"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Convert esGMX to GMX tokens. Read the vesting details before using the vaults."
 msgstr "Konvertieren Sie esGMX in GMX-Token. Lesen Sie die Vesting-Details, bevor Sie die Vaults verwenden."
@@ -1205,6 +1212,10 @@ msgstr "Epoche"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position impact"
 msgstr "Positionseinfluss"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Insufficient staked tokens"
+msgstr "Unzureichend gestakete Token"
 
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Creating code..."
@@ -1767,6 +1778,10 @@ msgstr "Ergebnisse sind unter „Perpetuals“ verfügbar."
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Qualified this epoch"
 msgstr "In dieser Epoche qualifiziert"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Deposited"
+msgstr "Eingezahlt"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Signing..."
@@ -2846,6 +2861,7 @@ msgstr "Markt vorübergehend deaktiviert"
 msgid "Shift error"
 msgstr "Shift-Fehler"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
@@ -3154,6 +3170,7 @@ msgstr "Position überschreitet den maximal zulässigen Hebel. <0>Mehr erfahren<
 msgid "Short borrowing rate"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX"
@@ -3170,6 +3187,10 @@ msgstr "Indexierte Auditdaten werden aktualisiert…"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Amount is below the withdrawal limit. Try an amount larger than <0>{lowerLimitFormatted}</0>."
 msgstr "Der Betrag liegt unter dem Auszahlungslimit. Versuchen Sie einen Betrag größer als <0>{lowerLimitFormatted}</0>."
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "No funds to claim"
+msgstr "Keine Mittel zum Einlösen"
 
 #: src/components/AprInfo/AprInfo.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
@@ -3491,6 +3512,7 @@ msgid "{txnTypeText} {0} order for"
 msgstr "{txnTypeText} {0}-Order für"
 
 #: src/components/BuyInputSection/BuyInputSection.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -4028,6 +4050,7 @@ msgstr "Tag(e)"
 msgid "Withdrawing from GMX Account..."
 msgstr "Abheben von GMX Account..."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Vesting status"
@@ -5024,6 +5047,14 @@ msgstr "Kontaktaufnahme anfordern"
 msgid "Sending..."
 msgstr "Wird gesendet..."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Max capacity:"
+msgstr "Max. Kapazität:"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Withdraw and unreserve GMX"
+msgstr "GMX abheben und freigeben"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Copin"
 msgstr "Copin"
@@ -5299,6 +5330,7 @@ msgstr ""
 msgid "Share GMX feedback"
 msgstr "GMX-Feedback teilen"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw failed"
 msgstr "Abhebung fehlgeschlagen"
@@ -5396,6 +5428,8 @@ msgstr ""
 msgid "Withdrawal failed"
 msgstr "Abhebung fehlgeschlagen"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
@@ -5522,6 +5556,7 @@ msgstr "V1"
 msgid "Current epoch"
 msgstr "Aktuelle Epoche"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Staked tokens reserved for vesting"
 msgstr "Gestakte Token für Vesting reserviert"
@@ -5644,6 +5679,7 @@ msgstr "Virtuelles Inventar für Swaps (Long / Short)"
 msgid "Withdrawal"
 msgstr "Abhebung"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "No funds to withdraw"
 msgstr "Keine Mittel zum Abheben"
@@ -5950,6 +5986,7 @@ msgstr ""
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
@@ -6378,6 +6415,8 @@ msgstr "Externe Swaps fehlschlagen lassen"
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -6530,6 +6569,7 @@ msgstr "Empfehlungs-esGMX auf dieser Seite"
 msgid "Fee"
 msgstr "Gebühr"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Vault capacity"
 msgstr "Vaultkapazität"
@@ -7073,6 +7113,10 @@ msgstr "Beanspruchung abgeschlossen"
 msgid "Open in explorer"
 msgstr "Im Explorer öffnen"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "{0} tokens converted to GMX from the {1} esGMX deposited for vesting"
+msgstr "{0} Token der für das Vesting eingezahlten {1} esGMX wurden in GMX umgewandelt"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Margin at liquidation"
 msgstr ""
@@ -7112,6 +7156,10 @@ msgstr "Gesamtzeitraum"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "PnL after all fees"
 msgstr "PnL nach allen Gebühren"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Additional reserve required:"
+msgstr "Zusätzliche Reserve erforderlich:"
 
 #: landing/src/pages/Builders/StickyApplyBar.tsx
 msgid "Build on GMX. Get paid on every trade."
@@ -7353,6 +7401,10 @@ msgstr "{updateOrdersCount} TP/SL-Orders aktualisiert"
 msgid "What's the minimum volume to qualify?"
 msgstr "Wie hoch ist das Mindestvolumen, um sich zu qualifizieren?"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Current reserved:"
+msgstr "Aktuell reserviert:"
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Support for"
 msgstr "Unterstützung für"
@@ -7419,6 +7471,7 @@ msgid "Buy GMX on GMX swap"
 msgstr ""
 
 #: src/components/Claims/ClaimableCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Claimable"
 msgstr "Beanspruchbar"
@@ -7536,6 +7589,10 @@ msgstr "Order kann nicht berechnet werden"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL CAP SHORT"
 msgstr "POOL CAP SHORT"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "GMX vault"
+msgstr "GMX Vault"
 
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Sending settle request..."
@@ -7816,6 +7873,7 @@ msgstr "Positionen auswählen"
 
 #: src/components/AppHeader/AppHeaderUser.tsx
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
@@ -8075,6 +8133,7 @@ msgstr "TYP"
 msgid "Request settlement of funding fees"
 msgstr "Abwicklung der Finanzierungsgebühren anfordern"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdrawn"
 msgstr "Abgehoben"
@@ -8246,6 +8305,7 @@ msgstr ""
 msgid "Order not found. May have been canceled or already executed"
 msgstr "Order nicht gefunden. Möglicherweise storniert oder bereits ausgeführt"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Vesting"
@@ -9517,6 +9577,7 @@ msgstr "Tauschgewinngebühr"
 msgid "Solv Finance"
 msgstr "Solv Finance"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
@@ -9852,6 +9913,7 @@ msgstr "{tokenSymbol}-Belohnungen staken"
 msgid "Active Balancer Program code"
 msgstr "Aktiver Balancer-Programm-Code"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
@@ -10595,6 +10657,7 @@ msgstr "Trader-Profil"
 msgid "Connect your wallet to view your rebates distribution history"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claimed"
 msgstr "Eingefordert"
@@ -10713,6 +10776,9 @@ msgstr "{increaseOrDecreaseText}: {0} {longShortText}"
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Claims/ClaimableCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claim"
@@ -10737,6 +10803,7 @@ msgstr "{0}ms"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -10830,6 +10897,7 @@ msgstr "24h Volumen"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -11011,6 +11079,10 @@ msgstr "{addressLabel} auf {networkLabel}"
 msgid "Loading fees..."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "{0} GMX"
+msgstr "{0} GMX"
+
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 msgid "Per qualifying trade"
 msgstr "Pro qualifizierendem Trade"
@@ -11125,7 +11197,7 @@ msgstr "Markt-Delistings"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Last updated:"
-msgstr ""
+msgstr "Zuletzt aktualisiert:"
 
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
@@ -11338,6 +11410,9 @@ msgstr "GM mit {0} und {1} kaufen bis zu den unten angegebenen Limits"
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -12433,6 +12508,10 @@ msgstr "Für das Vesting von {0} esGMX müssen weitere {1} GMX als Kollateral ge
 msgid "What is GMX?"
 msgstr "Was ist GMX?"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Deposit submitted"
+msgstr "Einzahlung eingereicht"
+
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 msgid "Program start"
 msgstr "Programmstart"
@@ -12700,12 +12779,18 @@ msgstr "Möglichkeiten suchen"
 msgid "Dark"
 msgstr "Dunkel"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 #: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
 #: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 msgid "Confirming..."
 msgstr "Bestätigen..."
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Deposited:"
+msgstr "Eingezahlt:"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
@@ -13214,6 +13299,10 @@ msgstr "In Bearbeitung..."
 msgid "One-Click Trading time limit expired. You're now using Express Trading."
 msgstr "Zeitlimit für One-Click Trading abgelaufen. Sie verwenden jetzt Express Trading."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Affiliate vault"
+msgstr "Affiliate Vault"
+
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} up to the caps below. Remaining tokens are reserved for open positions."
 msgstr "Verkaufen Sie GM für {0} bis zu den unten angegebenen Obergrenzen. Verbleibende Token sind für offene Positionen reserviert."
@@ -13594,6 +13683,7 @@ msgid "Buy APE on Arbitrum with <0>Camelot</0>"
 msgstr "Kaufen Sie APE auf Arbitrum mit <0>Camelot</0>"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Depositing..."
 msgstr "Wird eingezahlt…"
@@ -13773,6 +13863,9 @@ msgstr "Parameter zum Beanspruchen nicht verfügbar. Versuchen Sie es in einigen
 msgid "Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Read details"
 msgstr "Details lesen"
@@ -14555,6 +14648,7 @@ msgstr "Stunden"
 msgid "Invalid receiver address"
 msgstr "Ungültige Empfängeradresse"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw submitted"
 msgstr "Abhebung eingereicht"
