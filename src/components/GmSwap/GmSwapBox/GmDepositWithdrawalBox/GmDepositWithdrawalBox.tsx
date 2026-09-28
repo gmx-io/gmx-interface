@@ -84,7 +84,6 @@ import {
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { useBestGmPoolAddressForGlv } from "components/MarketStats/hooks/useBestGmPoolForGlv";
-import { MaxActionsHint } from "components/MaxActions/MaxActions";
 import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
 import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -693,13 +692,6 @@ export function GmSwapBoxDepositWithdrawal() {
                     </BuyInputSection>
                   </div>
                 )}
-                <MaxActionsHint
-                  hint={
-                    firstTokenMaxDetails.maxActions.selected
-                      ? firstTokenMaxDetails.maxActions.hint
-                      : secondTokenMaxDetails.maxActions.hint
-                  }
-                />
               </div>
 
               <div className={cx("flex", isWithdrawal ? "flex-col-reverse" : "flex-col")}>

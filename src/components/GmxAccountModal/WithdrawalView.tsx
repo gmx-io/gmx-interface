@@ -112,7 +112,7 @@ import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import { calculateNetworkFeeDetails } from "components/GmxAccountModal/calculateNetworkFeeDetails";
 import { useAvailableToTradeAssetMultichain, useGmxAccountWithdrawNetworks } from "components/GmxAccountModal/hooks";
-import { MaxActions, MaxActionsHint } from "components/MaxActions/MaxActions";
+import { MaxActions } from "components/MaxActions/MaxActions";
 import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
 import NumberInput from "components/NumberInput/NumberInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -1618,7 +1618,6 @@ export const WithdrawalView = () => {
             </div>
           </div>
           <div className="text-body-medium text-typography-secondary numbers">{formatUsd(inputAmountUsd ?? 0n)}</div>
-          <MaxActionsHint hint={withdrawalMaxDetails.maxActions.hint} />
         </div>
       </div>
 

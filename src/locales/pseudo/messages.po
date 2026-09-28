@@ -2362,10 +2362,6 @@ msgstr ""
 msgid "Keep leverage at {0}"
 msgstr ""
 
-#: src/domain/tokens/useMaxAvailableAmount.ts
-msgid "Fills Max minus {reserve} {symbol}, kept in your {source} for future Express fees."
-msgstr ""
-
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAIL. LIQ."
 msgstr ""

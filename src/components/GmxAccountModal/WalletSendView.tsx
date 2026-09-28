@@ -48,7 +48,7 @@ import { Amount } from "components/Amount/Amount";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
-import { MaxActions, MaxActionsHint } from "components/MaxActions/MaxActions";
+import { MaxActions } from "components/MaxActions/MaxActions";
 import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
 import NumberInput from "components/NumberInput/NumberInput";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
@@ -798,7 +798,6 @@ export function WalletSendView() {
             </div>
           </div>
           <div className="text-body-medium text-typography-secondary numbers">{formatUsd(amountUsd ?? 0n)}</div>
-          <MaxActionsHint hint={maxActions.hint} />
         </div>
       </div>
 

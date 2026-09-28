@@ -27,7 +27,6 @@ export type MaxActionsState = {
   showKeepGas: boolean;
   maxTooltip: string | undefined;
   keepGasTooltip: string | undefined;
-  hint: string | undefined;
 };
 
 export const DEFAULT_MAX_ACTIONS_STATE: MaxActionsState = {
@@ -38,7 +37,6 @@ export const DEFAULT_MAX_ACTIONS_STATE: MaxActionsState = {
   showKeepGas: false,
   maxTooltip: undefined,
   keepGasTooltip: undefined,
-  hint: undefined,
 };
 
 export function applyMinimalBuffer(value: bigint): bigint {
@@ -206,8 +204,8 @@ export function shouldShowGasPaymentTokenWarning({
   );
 }
 
-export function getMaxActionsHint({
-  selected,
+export function getMaxActionTooltip({
+  action,
   feeHoldbackAmount,
   reserveAmount,
   symbol,
@@ -215,7 +213,7 @@ export function getMaxActionsHint({
   isStable,
   sourceLabel: source,
 }: {
-  selected: MaxActionSelection | undefined;
+  action: MaxActionSelection;
   feeHoldbackAmount: bigint;
   reserveAmount: bigint | undefined;
   symbol: string;
@@ -223,17 +221,11 @@ export function getMaxActionsHint({
   isStable: boolean | undefined;
   sourceLabel: string;
 }): string | undefined {
-  if (selected === undefined) {
-    return undefined;
-  }
-
   const holdback = formatBalanceAmount(feeHoldbackAmount, decimals, undefined, { isStable });
-  const reserve =
-    reserveAmount !== undefined ? formatBalanceAmount(reserveAmount, decimals, undefined, { isStable }) : "";
   const hasHoldback = feeHoldbackAmount > 0n;
   const hasReserve = reserveAmount !== undefined;
 
-  if (selected === "max") {
+  if (action === "max") {
     if (hasHoldback && hasReserve) {
       return t`Reserves ~${holdback} ${symbol} for this transaction's fee. Leaves no ${symbol} in your ${source} for future Express fees.`;
     }
@@ -246,29 +238,17 @@ export function getMaxActionsHint({
     return undefined;
   }
 
+  if (!hasReserve) {
+    return undefined;
+  }
+
+  const reserve = formatBalanceAmount(reserveAmount, decimals, undefined, { isStable });
+
   if (hasHoldback) {
     return t`Keeps ${reserve} ${symbol} in your ${source} for future Express fees and ~${holdback} ${symbol} for this transaction's fee.`;
   }
 
   return t`Keeps ${reserve} ${symbol} in your ${source} for future Express fees.`;
-}
-
-export function getKeepGasTooltip({
-  reserveAmount,
-  symbol,
-  decimals,
-  isStable,
-  sourceLabel: source,
-}: {
-  reserveAmount: bigint;
-  symbol: string;
-  decimals: number;
-  isStable: boolean | undefined;
-  sourceLabel: string;
-}): string {
-  const reserve = formatBalanceAmount(reserveAmount, decimals, undefined, { isStable });
-
-  return t`Fills Max minus ${reserve} ${symbol}, kept in your ${source} for future Express fees.`;
 }
 
 export function getInsufficientFeeTooltip({
@@ -378,6 +358,15 @@ export function useMaxAvailableAmount({
     keepGasAmount: keepGasAmount !== undefined ? toInputDecimals(keepGasAmount) : undefined,
   });
 
+  const actionTooltipParams = {
+    feeHoldbackAmount,
+    reserveAmount,
+    symbol: fromToken.symbol,
+    decimals,
+    isStable: fromToken.isStable,
+    sourceLabel,
+  };
+
   let maxTooltip: string | undefined;
   if (isActionsLoading) {
     maxTooltip = t`Loading fees...`;
@@ -391,19 +380,15 @@ export function useMaxAvailableAmount({
       isStable: fromToken.isStable,
       feeSource,
     });
+  } else {
+    maxTooltip = getMaxActionTooltip({ action: "max", ...actionTooltipParams });
   }
 
   let keepGasTooltip: string | undefined;
   if (showKeepGas) {
     keepGasTooltip = isActionsLoading
       ? t`Loading fees...`
-      : getKeepGasTooltip({
-          reserveAmount: reserveAmount!,
-          symbol: fromToken.symbol,
-          decimals,
-          isStable: fromToken.isStable,
-          sourceLabel,
-        });
+      : getMaxActionTooltip({ action: "keepGas", ...actionTooltipParams });
   }
 
   const maxActions: MaxActionsState = {
@@ -414,15 +399,6 @@ export function useMaxAvailableAmount({
     showKeepGas,
     maxTooltip,
     keepGasTooltip,
-    hint: getMaxActionsHint({
-      selected,
-      feeHoldbackAmount,
-      reserveAmount,
-      symbol: fromToken.symbol,
-      decimals,
-      isStable: fromToken.isStable,
-      sourceLabel,
-    }),
   };
 
   const gasPaymentTokenWarningContent =

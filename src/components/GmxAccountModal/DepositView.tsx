@@ -96,7 +96,7 @@ import Button from "components/Button/Button";
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
-import { MaxActions, MaxActionsHint } from "components/MaxActions/MaxActions";
+import { MaxActions } from "components/MaxActions/MaxActions";
 import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
 import NumberInput from "components/NumberInput/NumberInput";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
@@ -1416,7 +1416,6 @@ export const DepositView = () => {
                 {formatUsd(inputAmountUsd ?? 0n)}
               </div>
             )}
-            <MaxActionsHint hint={depositMaxDetails.maxActions.hint} />
             {isAboveLimit && (
               <AlertInfoCard type="warning" className="mt-8" hideClose>
                 <div>

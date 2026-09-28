@@ -2362,10 +2362,6 @@ msgstr "EIP-4844"
 msgid "Keep leverage at {0}"
 msgstr "Сохранить левередж на {0}"
 
-#: src/domain/tokens/useMaxAvailableAmount.ts
-msgid "Fills Max minus {reserve} {symbol}, kept in your {source} for future Express fees."
-msgstr "Заполняет «Макс» минус {reserve} {symbol}, которые остаются на балансе «{source}» для будущих комиссий Express."
-
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAIL. LIQ."
 msgstr "ДОСТ. ЛИКВ."

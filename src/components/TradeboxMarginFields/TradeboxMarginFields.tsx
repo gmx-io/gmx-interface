@@ -18,8 +18,6 @@ import { MaxActionsState } from "domain/tokens/useMaxAvailableAmount";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
 
-import { MaxActionsHint } from "components/MaxActions/MaxActions";
-
 import { MarginField } from "./MarginField";
 import { MarginPercentageSlider } from "./MarginPercentageSlider";
 import { PriceField } from "./PriceField";
@@ -303,7 +301,6 @@ export function TradeboxMarginFields({
           onFocus={() => setFocusedInput("from")}
           qa="margin"
         />
-        <MaxActionsHint hint={maxActions?.hint} />
 
         <SizeField
           sizeInTokens={increaseAmounts?.sizeDeltaInTokens}

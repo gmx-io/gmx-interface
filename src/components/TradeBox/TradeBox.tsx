@@ -119,7 +119,6 @@ import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketSelector } from "components/MarketSelector/MarketSelector";
-import { MaxActionsHint } from "components/MaxActions/MaxActions";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
@@ -915,7 +914,6 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
                 )}
               </BuyInputSection>
             </div>
-            <MaxActionsHint hint={maxActions.hint} />
           </>
         )}
 

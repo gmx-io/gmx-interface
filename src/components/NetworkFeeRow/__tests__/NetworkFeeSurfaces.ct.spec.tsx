@@ -180,8 +180,16 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
 
       const marginInput = page.locator(getDataQALocator("margin-input"));
       const maxButton = page.locator(getDataQALocator("margin-max"));
+      const sizeField = page.locator(getDataQALocator("position-size"));
       const lowBalanceCard = page.getByText(/^Low USDC balance/);
-      const maxHint = page.getByText(/^Reserves ~[\d.,]+ USDC for this transaction's fee\./);
+      const maxTooltip = page
+        .locator(".Tooltip-popup")
+        .getByText(/^Reserves ~[\d.,]+ USDC for this transaction's fee\./);
+      const getSizeFieldOffset = async () => {
+        const [marginBox, sizeBox] = await Promise.all([marginInput.boundingBox(), sizeField.boundingBox()]);
+        expect(marginBox && sizeBox).toBeTruthy();
+        return sizeBox!.y - marginBox!.y;
+      };
 
       // an empty Express form resolves the fallback fee instead of loading forever
       await expect(maxButton).toBeEnabled({ timeout: 20_000 });
@@ -190,6 +198,7 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
       await marginInput.fill("500");
       await openExecutionDetails(page);
       await expectFeeValue(feeRow(page), "USDC", "Wallet");
+      const sizeFieldOffset = await getSizeFieldOffset();
 
       await expect(maxButton).toBeEnabled({ timeout: 20_000 });
       await maxButton.click();
@@ -200,17 +209,19 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
       await expect(lowBalanceCard).toHaveCount(0);
 
       // the express estimate re-runs for the filled amount: the fee row settles, the pill is enabled and still
-      // selected, the hint is shown instead of the low-balance card
+      // selected, its tooltip explains the holdback instead of the low-balance card, the fields below stay in place
       await expectFeeValue(feeRow(page), "USDC", "Wallet");
       await expect(maxButton).toBeEnabled({ timeout: 40_000 });
       await expect(maxButton).toHaveAttribute("aria-pressed", "true");
-      await expect(maxHint).toBeVisible();
+      await maxButton.hover();
+      await expect(maxTooltip).toBeVisible();
       await expect(lowBalanceCard).toHaveCount(0);
+      expect(await getSizeFieldOffset()).toBe(sizeFieldOffset);
 
       await maxButton.click();
       await expect(marginInput).toHaveValue(firstFill);
       await expect(maxButton).toHaveAttribute("aria-pressed", "true");
-      await expect(maxHint).toBeVisible();
+      await expect(maxTooltip).toBeVisible();
       await expect(lowBalanceCard).toHaveCount(0);
     });
 

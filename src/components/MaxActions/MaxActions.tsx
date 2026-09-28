@@ -114,11 +114,3 @@ function MaxActionPill({
     </TooltipWithPortal>
   );
 }
-
-export function MaxActionsHint({ hint }: { hint: string | undefined }) {
-  if (hint === undefined) {
-    return null;
-  }
-
-  return <div className="text-12 text-typography-secondary">{hint}</div>;
-}

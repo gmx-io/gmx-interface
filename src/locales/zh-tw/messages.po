@@ -2362,10 +2362,6 @@ msgstr "EIP-4844"
 msgid "Keep leverage at {0}"
 msgstr "保持槓桿在 {0}"
 
-#: src/domain/tokens/useMaxAvailableAmount.ts
-msgid "Fills Max minus {reserve} {symbol}, kept in your {source} for future Express fees."
-msgstr "填入「最大」減去 {reserve} {symbol} 的金額，減去的部分保留在{source}中用於未來的 Express 費用。"
-
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAIL. LIQ."
 msgstr "可用流動性"

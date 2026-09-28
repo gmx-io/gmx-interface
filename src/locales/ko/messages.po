@@ -2362,10 +2362,6 @@ msgstr "EIP-4844"
 msgid "Keep leverage at {0}"
 msgstr "{0}으로 레버리지 유지"
 
-#: src/domain/tokens/useMaxAvailableAmount.ts
-msgid "Fills Max minus {reserve} {symbol}, kept in your {source} for future Express fees."
-msgstr "최대에서 {reserve} {symbol}을(를) 뺀 금액을 입력합니다. 뺀 금액은 향후 Express 수수료를 위해 {source}에 남겨 둡니다."
-
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAIL. LIQ."
 msgstr "사용 가능 유동성"

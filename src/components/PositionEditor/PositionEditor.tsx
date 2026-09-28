@@ -68,7 +68,7 @@ import { useActiveForm } from "components/ActiveFormScope/ActiveFormScope";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
-import { MaxActions, MaxActionsHint } from "components/MaxActions/MaxActions";
+import { MaxActions } from "components/MaxActions/MaxActions";
 import Modal from "components/Modal/Modal";
 import NumberInput from "components/NumberInput/NumberInput";
 import Tabs from "components/Tabs/Tabs";
@@ -623,7 +623,6 @@ export function PositionEditor() {
                 </div>
               }
             />
-            <MaxActionsHint hint={isDeposit ? depositMaxDetails.maxActions.hint : undefined} />
             {maxAvailableAmount !== undefined && maxAvailableAmount > 0n && (
               <MarginPercentageSlider value={collateralPercentage} onChange={handleCollateralPercentageChange} />
             )}

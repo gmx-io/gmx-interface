@@ -9,7 +9,7 @@ import type { TokenData } from "sdk/utils/tokens/types";
 import {
   getInsufficientFeeTooltip,
   getMaxActionSelection,
-  getMaxActionsHint,
+  getMaxActionTooltip,
   getMaxAvailableTokenAmount,
   shouldShowGasPaymentTokenWarning,
 } from "./useMaxAvailableAmount";
@@ -566,48 +566,48 @@ describe("getInsufficientFeeTooltip", () => {
   });
 });
 
-describe("getMaxActionsHint", () => {
+describe("getMaxActionTooltip", () => {
   const base = { symbol: "USDC", decimals: 6, isStable: true, sourceLabel: "GMX Account" };
 
-  it("returns nothing without a selection", () => {
-    expect(
-      getMaxActionsHint({ ...base, selected: undefined, feeHoldbackAmount: usdc(1.4), reserveAmount: usdc(20) })
-    ).toBeUndefined();
-  });
-
   it("Max with a holdback and a reserve context names the holdback and the empty reserve", () => {
-    expect(getMaxActionsHint({ ...base, selected: "max", feeHoldbackAmount: usdc(1.4), reserveAmount: usdc(20) })).toBe(
+    expect(getMaxActionTooltip({ ...base, action: "max", feeHoldbackAmount: usdc(1.4), reserveAmount: usdc(20) })).toBe(
       "Reserves ~1.40 USDC for this transaction's fee. Leaves no USDC in your GMX Account for future Express fees."
     );
   });
 
   it("Max with a holdback only names the holdback", () => {
     expect(
-      getMaxActionsHint({ ...base, selected: "max", feeHoldbackAmount: usdc(1.4), reserveAmount: undefined })
+      getMaxActionTooltip({ ...base, action: "max", feeHoldbackAmount: usdc(1.4), reserveAmount: undefined })
     ).toBe("Reserves ~1.40 USDC for this transaction's fee.");
   });
 
   it("Max with a reserve context only names the empty reserve", () => {
-    expect(getMaxActionsHint({ ...base, selected: "max", feeHoldbackAmount: 0n, reserveAmount: usdc(20) })).toBe(
+    expect(getMaxActionTooltip({ ...base, action: "max", feeHoldbackAmount: 0n, reserveAmount: usdc(20) })).toBe(
       "Leaves no USDC in your GMX Account for future Express fees."
     );
   });
 
   it("Max without a holdback or a reserve context has nothing to explain", () => {
     expect(
-      getMaxActionsHint({ ...base, selected: "max", feeHoldbackAmount: 0n, reserveAmount: undefined })
+      getMaxActionTooltip({ ...base, action: "max", feeHoldbackAmount: 0n, reserveAmount: undefined })
     ).toBeUndefined();
   });
 
   it("Keep gas with a holdback names both amounts", () => {
     expect(
-      getMaxActionsHint({ ...base, selected: "keepGas", feeHoldbackAmount: usdc(1.4), reserveAmount: usdc(20) })
+      getMaxActionTooltip({ ...base, action: "keepGas", feeHoldbackAmount: usdc(1.4), reserveAmount: usdc(20) })
     ).toBe("Keeps 20.00 USDC in your GMX Account for future Express fees and ~1.40 USDC for this transaction's fee.");
   });
 
   it("Keep gas without a holdback names the reserve only", () => {
-    expect(getMaxActionsHint({ ...base, selected: "keepGas", feeHoldbackAmount: 0n, reserveAmount: usdc(20) })).toBe(
+    expect(getMaxActionTooltip({ ...base, action: "keepGas", feeHoldbackAmount: 0n, reserveAmount: usdc(20) })).toBe(
       "Keeps 20.00 USDC in your GMX Account for future Express fees."
     );
+  });
+
+  it("Keep gas without a reserve has nothing to explain", () => {
+    expect(
+      getMaxActionTooltip({ ...base, action: "keepGas", feeHoldbackAmount: usdc(1.4), reserveAmount: undefined })
+    ).toBeUndefined();
   });
 });
