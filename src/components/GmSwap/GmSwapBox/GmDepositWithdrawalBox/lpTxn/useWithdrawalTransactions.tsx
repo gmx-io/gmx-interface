@@ -285,30 +285,41 @@ export const useWithdrawalTransactions = ({
           expressTxnParams,
           transferRequests,
           srcChainId,
-        }).then((result) => {
-          if (result?.taskId) {
-            const balanceUpdates: TokensBalancesUpdates = {};
-            transferRequests.tokens.forEach((token, i) => {
-              const amount = transferRequests.amounts[i];
-              balanceUpdates[token] = {
-                balanceType: TokenBalanceType.GmxAccount,
-                diff: -amount,
-                isPending: true,
-              };
-            });
-            addOptimisticTokensBalancesUpdates(balanceUpdates);
+        })
+          .then((result) => {
+            if (result?.taskId) {
+              const balanceUpdates: TokensBalancesUpdates = {};
+              transferRequests.tokens.forEach((token, i) => {
+                const amount = transferRequests.amounts[i];
+                balanceUpdates[token] = {
+                  balanceType: TokenBalanceType.GmxAccount,
+                  diff: -amount,
+                  isPending: true,
+                };
+              });
+              addOptimisticTokensBalancesUpdates(balanceUpdates);
 
-            const glvWithdrawalParams = params as CreateGlvWithdrawalParams;
-            setPendingWithdrawal({
-              account: glvWithdrawalParams.addresses.receiver,
-              marketAddress: glvWithdrawalParams.addresses.glv,
-              marketTokenAmount: glvTokenAmount!,
-              minLongTokenAmount: glvWithdrawalParams.minLongTokenAmount,
-              minShortTokenAmount: glvWithdrawalParams.minShortTokenAmount,
-              shouldUnwrapNativeToken: glvWithdrawalParams.shouldUnwrapNativeToken,
+              const glvWithdrawalParams = params as CreateGlvWithdrawalParams;
+              setPendingWithdrawal({
+                account: glvWithdrawalParams.addresses.receiver,
+                marketAddress: glvWithdrawalParams.addresses.glv,
+                marketTokenAmount: glvTokenAmount!,
+                minLongTokenAmount: glvWithdrawalParams.minLongTokenAmount,
+                minShortTokenAmount: glvWithdrawalParams.minShortTokenAmount,
+                shouldUnwrapNativeToken: glvWithdrawalParams.shouldUnwrapNativeToken,
+              });
+            }
+          })
+          .catch((error) => {
+            toastCustomOrStargateError(chainId, error, {
+              actionName: "GM Withdrawal",
+              requestId: metricData.requestId,
+              metricId: metricData.metricId,
+              isLpWithdrawal: true,
             });
-          }
-        });
+
+            throw error;
+          });
       } else if (paySource === "settlementChain") {
         const fees = technicalFees?.kind === "settlementChain" ? technicalFees.fees : undefined;
         const glvToken = glvInfo?.glvToken;
