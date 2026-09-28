@@ -244,14 +244,6 @@ export const integrations: EcosystemGmxPage[] = [
     chainIds: [ARBITRUM, AVALANCHE],
   },
   {
-    title: msg`ODOS`,
-    link: "https://app.odos.xyz/",
-    linkLabel: "odos.xyz",
-    about: msg`DEX aggregator`,
-
-    chainIds: [ARBITRUM, AVALANCHE],
-  },
-  {
     title: msg`Dolomite`,
     link: "https://app.dolomite.io/balances",
     linkLabel: "dolomite.io",

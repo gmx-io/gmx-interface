@@ -6759,10 +6759,6 @@ msgid "Use the \"Close\" button to reduce your position via market or TWAP order
 msgstr "Utilice el botón \"Close\" para reducir su posición mediante órdenes de mercado o TWAP."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "ODOS"
-msgstr "ODOS"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Substack"
 msgstr "Substack de GMX"
 
@@ -8577,7 +8573,6 @@ msgstr "GMX en staking:"
 msgid "Sell {gmOrGlvLabel} failed."
 msgstr "Error al vender {gmOrGlvLabel}."
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
