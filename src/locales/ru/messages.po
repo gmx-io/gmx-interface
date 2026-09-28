@@ -1873,10 +1873,6 @@ msgstr "Могу ли я быть одновременно трейдером и
 msgid "Base APY"
 msgstr "Базовая APY"
 
-#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
-msgid "Previous epoch totals are temporarily unavailable."
-msgstr "Итоги прошлой эпохи временно недоступны."
-
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour"
 msgstr "Позиции {longOrShort} {fundingAction} комиссию за фандинг в размере {fundingRate} в час и {borrowAction} комиссию за заимствование в размере {borrowRate} в час"
@@ -3567,10 +3563,6 @@ msgstr "Перевести из другой сети"
 msgid "Take-Profit / Stop-Loss"
 msgstr "Тейк-профит / Стоп-лосс"
 
-#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
-msgid "The first epoch is under way"
-msgstr "Первая эпоха уже идёт"
-
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Yield trading"
 msgstr "Торговля доходностью"
@@ -4741,7 +4733,6 @@ msgstr "множество активов"
 
 #: landing/src/pages/Rewards/ReturningTrader.tsx
 #: landing/src/pages/Rewards/Rewards.tsx
-#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
 #: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 msgid "Try again"
 msgstr "Попробовать ещё раз"
@@ -9723,6 +9714,11 @@ msgstr "Уведомления"
 msgid "Trading mode"
 msgstr "Режим торговли"
 
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+msgid "Season 1 · Soon"
+msgstr "Сезон 1 · Скоро"
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Cross-margin</0><1>Cross-collateral</1>"
 msgstr "<0>Кросс-маржа</0><1>Кросс-обеспечение</1>"
@@ -13059,6 +13055,10 @@ msgstr "Вознаграждения за стейкинг GMX:"
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee"
 msgstr "Позиции {longOrShort} {fundingAction} комиссию за финансирование в размере {fundingRate} в час и не платят комиссию за заимствование"
+
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+msgid "Soon"
+msgstr "Скоро"
 
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Failed to add referral code"

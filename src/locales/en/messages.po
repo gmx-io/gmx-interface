@@ -1873,10 +1873,6 @@ msgstr "Can I be both a trader and an affiliate?"
 msgid "Base APY"
 msgstr "Base APY"
 
-#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
-msgid "Previous epoch totals are temporarily unavailable."
-msgstr "Previous epoch totals are temporarily unavailable."
-
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour"
 msgstr "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour"
@@ -3567,10 +3563,6 @@ msgstr "Transfer from another chain"
 msgid "Take-Profit / Stop-Loss"
 msgstr "Take-Profit / Stop-Loss"
 
-#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
-msgid "The first epoch is under way"
-msgstr "The first epoch is under way"
-
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Yield trading"
 msgstr "Yield trading"
@@ -4741,7 +4733,6 @@ msgstr "numerous assets"
 
 #: landing/src/pages/Rewards/ReturningTrader.tsx
 #: landing/src/pages/Rewards/Rewards.tsx
-#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
 #: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 msgid "Try again"
 msgstr "Try again"
@@ -9723,6 +9714,11 @@ msgstr "Notifications"
 msgid "Trading mode"
 msgstr "Trading mode"
 
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+msgid "Season 1 · Soon"
+msgstr "Season 1 · Soon"
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Cross-margin</0><1>Cross-collateral</1>"
 msgstr "<0>Cross-margin</0><1>Cross-collateral</1>"
@@ -13059,6 +13055,10 @@ msgstr "GMX staked rewards:"
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee"
 msgstr "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee"
+
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+msgid "Soon"
+msgstr "Soon"
 
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Failed to add referral code"

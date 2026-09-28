@@ -10,27 +10,30 @@ import Tooltip from "components/Tooltip/Tooltip";
 
 import epochReturn from "img/rewards-landing/epoch-return.svg";
 
-import { RewardsValue } from "./RewardsValue";
-
 export function RewardsEpochSummary({
   endpoint,
   config,
-  loading,
 }: {
   endpoint?: string;
   config: IncentivesConfig | null | undefined;
-  loading: boolean;
 }) {
   const stats = useIncentivesEpochStats(endpoint, config);
   const tooltipId = useId();
-  const breakdown = stats.data && config ? getPreviousEpochRewardBreakdown(stats.data.rewardsUsd, config) : undefined;
+
+  if (
+    !config ||
+    config.epochTimestamp - config.epochDuration < config.programStartTimestamp ||
+    !stats.data ||
+    stats.data.rewardsUsd <= 0n ||
+    stats.data.traderCount <= 0
+  ) {
+    return null;
+  }
+
+  const breakdown = getPreviousEpochRewardBreakdown(stats.data.rewardsUsd, config);
   const esGmx = breakdown ? formatAmountHuman(breakdown.esGmxUsd, USD_DECIMALS, true, 2).toUpperCase() : undefined;
   const gt = breakdown ? formatAmountHuman(breakdown.gtUsd, USD_DECIMALS, true, 2).toUpperCase() : undefined;
-  const payoutValue = (
-    <RewardsValue loading={loading || stats.isLoading} width="5ch">
-      {stats.data ? formatAmountHuman(stats.data.rewardsUsd, USD_DECIMALS, true, 0).toUpperCase() : undefined}
-    </RewardsValue>
-  );
+  const payoutValue = formatAmountHuman(stats.data.rewardsUsd, USD_DECIMALS, true, 0).toUpperCase();
   const payout = breakdown ? (
     <Tooltip
       as="button"
@@ -52,40 +55,24 @@ export function RewardsEpochSummary({
       {payoutValue}
     </Tooltip>
   ) : (
-    <span className="rewards-epoch-payout" title={formatUsd(stats.data?.rewardsUsd)}>
+    <span className="rewards-epoch-payout" title={formatUsd(stats.data.rewardsUsd)}>
       {payoutValue}
     </span>
   );
   const traders = (
     <span className="rewards-epoch-traders">
-      {stats.data ? (
-        <Plural value={stats.data.traderCount} one="# trader" other="# traders" />
-      ) : (
-        <RewardsValue loading={loading || stats.isLoading} width="10ch" />
-      )}
+      <Plural value={stats.data.traderCount} one="# trader" other="# traders" />
     </span>
   );
+
   return (
-    <div className="rewards-epoch-summary" aria-live="polite" aria-busy={stats.isLoading}>
+    <div className="rewards-epoch-summary" aria-live="polite" aria-busy={stats.isValidating}>
       <img src={epochReturn} alt="" width={20} height={20} />
-      {config && config.epochTimestamp - config.epochDuration < config.programStartTimestamp ? (
-        <p>
-          <Trans>The first epoch is under way</Trans>
-        </p>
-      ) : stats.error && !stats.data ? (
-        <p>
-          <Trans>Previous epoch totals are temporarily unavailable.</Trans>{" "}
-          <button type="button" className="rewards-epoch-retry" onClick={() => void stats.mutate()}>
-            <Trans>Try again</Trans>
-          </button>
-        </p>
-      ) : (
-        <p>
-          <Trans>
-            Last epoch, {payout} came back to {traders}
-          </Trans>
-        </p>
-      )}
+      <p>
+        <Trans>
+          Last epoch, {payout} came back to {traders}
+        </Trans>
+      </p>
     </div>
   );
 }

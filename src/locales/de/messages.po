@@ -1873,10 +1873,6 @@ msgstr "Kann ich sowohl Trader als auch Affiliate sein?"
 msgid "Base APY"
 msgstr "Basis-APY"
 
-#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
-msgid "Previous epoch totals are temporarily unavailable."
-msgstr "Die Gesamtwerte der letzten Epoche sind vorübergehend nicht verfügbar."
-
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour"
 msgstr "{longOrShort}-Positionen {fundingAction} eine Finanzierungsgebühr von {fundingRate} pro Stunde und {borrowAction} eine Leihgebühr von {borrowRate} pro Stunde"
@@ -3567,10 +3563,6 @@ msgstr "Von einer anderen Chain übertragen"
 msgid "Take-Profit / Stop-Loss"
 msgstr "Take-Profit / Stop-Loss"
 
-#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
-msgid "The first epoch is under way"
-msgstr "Die erste Epoche läuft"
-
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Yield trading"
 msgstr "Renditehandel"
@@ -4741,7 +4733,6 @@ msgstr "zahlreiche Vermögenswerte"
 
 #: landing/src/pages/Rewards/ReturningTrader.tsx
 #: landing/src/pages/Rewards/Rewards.tsx
-#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
 #: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 msgid "Try again"
 msgstr "Erneut versuchen"
@@ -9723,6 +9714,11 @@ msgstr "Benachrichtigungen"
 msgid "Trading mode"
 msgstr "Handelsmodus"
 
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+msgid "Season 1 · Soon"
+msgstr "Saison 1 · Bald"
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Cross-margin</0><1>Cross-collateral</1>"
 msgstr "<0>Cross-Margin</0><1>Cross-Collateral</1>"
@@ -13059,6 +13055,10 @@ msgstr "GMX Staking-Belohnungen:"
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee"
 msgstr "{longOrShort}-Positionen {fundingAction} eine Finanzierungsgebühr von {fundingRate} pro Stunde und zahlen keine Leihgebühr"
+
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+msgid "Soon"
+msgstr "Bald"
 
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Failed to add referral code"

@@ -1873,10 +1873,6 @@ msgstr "トレーダーとアフィリエイトを両方兼ねることはでき
 msgid "Base APY"
 msgstr "ベースAPY"
 
-#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
-msgid "Previous epoch totals are temporarily unavailable."
-msgstr "前のエポックの合計は一時的に利用できません。"
-
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour"
 msgstr "{longOrShort} ポジションはファンディング手数料として1時間あたり {fundingRate} を{fundingAction}し、借入手数料として1時間あたり {borrowRate} を{borrowAction}します"
@@ -3567,10 +3563,6 @@ msgstr "別のチェーンから転送"
 msgid "Take-Profit / Stop-Loss"
 msgstr "テイクプロフィット / ストップロス"
 
-#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
-msgid "The first epoch is under way"
-msgstr "最初のエポックが進行中です"
-
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Yield trading"
 msgstr "利回りトレーディング"
@@ -4741,7 +4733,6 @@ msgstr "多数の資産"
 
 #: landing/src/pages/Rewards/ReturningTrader.tsx
 #: landing/src/pages/Rewards/Rewards.tsx
-#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
 #: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 msgid "Try again"
 msgstr "再試行"
@@ -9723,6 +9714,11 @@ msgstr "通知"
 msgid "Trading mode"
 msgstr "トレーディングモード"
 
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+msgid "Season 1 · Soon"
+msgstr "シーズン1 · 近日開始"
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Cross-margin</0><1>Cross-collateral</1>"
 msgstr "<0>クロスマージン</0><1>クロスコラテラル</1>"
@@ -13059,6 +13055,10 @@ msgstr "GMXステーキング報酬:"
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee"
 msgstr "{longOrShort}ポジションは1時間あたり{fundingRate}のファンディング手数料を{fundingAction}、借入手数料は発生しません"
+
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+msgid "Soon"
+msgstr "近日開始"
 
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Failed to add referral code"

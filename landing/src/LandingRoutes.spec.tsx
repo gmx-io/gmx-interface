@@ -31,6 +31,9 @@ vi.mock("landing/pages/Home/hooks/useGoToTrade", () => ({
   RedirectChainIds: { Arbitum: 42161 },
   useGoToTrade: () => vi.fn(),
 }));
+vi.mock("domain/synthetics/incentives/v2/useIncentivesConfig", () => ({
+  useIncentivesConfig: () => ({ data: { programStartTimestamp: 0 } }),
+}));
 
 function toInitialEntries(entry: string) {
   return [entry];

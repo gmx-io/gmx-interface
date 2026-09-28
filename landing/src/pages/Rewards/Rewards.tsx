@@ -50,7 +50,7 @@ export default function Rewards() {
                   come back to you.
                 </Trans>
               </h1>
-              <RewardsEpochSummary endpoint={config.endpoint} config={config.data} loading={loading} />
+              <RewardsEpochSummary endpoint={config.endpoint} config={config.data} />
               <RewardsCalculator config={config.data} loading={loading} />
               {!config.data && !loading && (
                 <div className="rewards-config-status" role="status">

@@ -1873,10 +1873,6 @@ msgstr "트레이더와 제휴사를 동시에 겸할 수 있나요?"
 msgid "Base APY"
 msgstr "기본 APY"
 
-#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
-msgid "Previous epoch totals are temporarily unavailable."
-msgstr "이전 에포크 합계를 일시적으로 불러올 수 없습니다."
-
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour"
 msgstr "{longOrShort} 포지션은 시간당 {fundingRate}의 펀딩 수수료를 {fundingAction}하고 시간당 {borrowRate}의 차입 수수료를 {borrowAction}합니다"
@@ -3567,10 +3563,6 @@ msgstr "다른 체인에서 전송"
 msgid "Take-Profit / Stop-Loss"
 msgstr "익절매 / 손절매"
 
-#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
-msgid "The first epoch is under way"
-msgstr "첫 번째 에포크가 진행 중입니다"
-
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Yield trading"
 msgstr "수익률 트레이딩"
@@ -4741,7 +4733,6 @@ msgstr "다양한 자산"
 
 #: landing/src/pages/Rewards/ReturningTrader.tsx
 #: landing/src/pages/Rewards/Rewards.tsx
-#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
 #: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 msgid "Try again"
 msgstr "다시 시도"
@@ -9723,6 +9714,11 @@ msgstr "알림"
 msgid "Trading mode"
 msgstr "거래 모드"
 
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+msgid "Season 1 · Soon"
+msgstr "시즌 1 · 곧 시작"
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Cross-margin</0><1>Cross-collateral</1>"
 msgstr "<0>교차 증거금</0><1>교차 담보</1>"
@@ -13059,6 +13055,10 @@ msgstr "GMX 스테이킹 보상:"
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee"
 msgstr "{longOrShort} 포지션은 시간당 {fundingRate}의 펀딩 수수료를 {fundingAction} 차입 수수료는 부과되지 않습니다"
+
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+msgid "Soon"
+msgstr "곧 시작"
 
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Failed to add referral code"

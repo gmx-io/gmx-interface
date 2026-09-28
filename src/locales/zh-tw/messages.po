@@ -1873,10 +1873,6 @@ msgstr "我可以同時是交易者和推廣夥伴嗎？"
 msgid "Base APY"
 msgstr "基礎 APY"
 
-#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
-msgid "Previous epoch totals are temporarily unavailable."
-msgstr "暫時無法取得上一週期的總額。"
-
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour"
 msgstr "{longOrShort} 倉位每小時{fundingAction}資金費用 {fundingRate}，並每小時{borrowAction}借貸費用 {borrowRate}"
@@ -3567,10 +3563,6 @@ msgstr "從其他鏈轉帳"
 msgid "Take-Profit / Stop-Loss"
 msgstr "止盈 / 止損"
 
-#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
-msgid "The first epoch is under way"
-msgstr "首個週期正在進行中"
-
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Yield trading"
 msgstr "收益交易"
@@ -4741,7 +4733,6 @@ msgstr "眾多資產"
 
 #: landing/src/pages/Rewards/ReturningTrader.tsx
 #: landing/src/pages/Rewards/Rewards.tsx
-#: landing/src/pages/Rewards/RewardsEpochSummary.tsx
 #: landing/src/pages/Rewards/RewardsReferralWallet.tsx
 msgid "Try again"
 msgstr "重試"
@@ -9723,6 +9714,11 @@ msgstr "通知"
 msgid "Trading mode"
 msgstr "交易模式"
 
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+msgid "Season 1 · Soon"
+msgstr "第1季 · 即將開始"
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Cross-margin</0><1>Cross-collateral</1>"
 msgstr "<0>全倉保證金</0><1>交叉抵押品</1>"
@@ -13059,6 +13055,10 @@ msgstr "GMX 質押獎勵："
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee"
 msgstr "{longOrShort}倉位{fundingAction}每小時 {fundingRate} 的資金費用，且不支付借貸費用"
+
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+msgid "Soon"
+msgstr "即將開始"
 
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Failed to add referral code"
