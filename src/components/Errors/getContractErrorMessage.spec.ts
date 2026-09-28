@@ -223,6 +223,24 @@ describe("getContractErrorMessage — GM/GLV and multichain flows PRO-4168", () 
       "Max profit limit reached. Current: 48.01%, max: 45.00%",
     ],
     [
+      "withdrawal ratio that rounds to its limit",
+      {
+        contractError: CustomErrorName.PnlFactorExceededForShorts,
+        contractErrorArgs: { pnlToPoolFactor: 450040000000000000000000000000n, maxPnlFactor: expandDecimals(45, 28) },
+      },
+      true,
+      "Withdrawal unavailable: selling this amount would raise short traders' PnL-to-pool ratio to 45.01%, above the 45% limit. Try a smaller amount or try again later.",
+    ],
+    [
+      "PnL factor that rounds to its limit outside a withdrawal",
+      {
+        contractError: CustomErrorName.PnlFactorExceededForLongs,
+        contractErrorArgs: { pnlToPoolFactor: 450040000000000000000000000000n, maxPnlFactor: expandDecimals(45, 28) },
+      },
+      false,
+      "Max profit limit reached. Current: 45.01%, max: 45.00%",
+    ],
+    [
       "top-level mapped error",
       { contractError: CustomErrorName.DisabledMarket, contractErrorArgs: { market: zeroAddress } },
       true,

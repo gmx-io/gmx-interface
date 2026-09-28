@@ -8,11 +8,21 @@ import {
   tryDecodeCustomError,
 } from "lib/errors";
 import { decodeInnermostCustomErrorFromError } from "lib/errors/customErrors";
-import { formatAmount, formatPercentage, formatUsd, PERCENT_PRECISION_DECIMALS, trimZeroDecimals } from "lib/numbers";
+import {
+  expandDecimals,
+  formatAmount,
+  formatPercentage,
+  formatUsd,
+  PERCENT_PRECISION_DECIMALS,
+  roundUpDivision,
+  trimZeroDecimals,
+} from "lib/numbers";
 import { TOKENS_MAP } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { CustomErrorName } from "sdk/utils/errors/transactionsErrors";
 import { PositionMarginFailureReason } from "sdk/utils/trade/increaseMarginCheck";
+
+const PNL_FACTOR_DISPLAY_STEP = expandDecimals(1, PERCENT_PRECISION_DECIMALS - 2);
 
 export function getMarginBelowMinimumErrorMessage() {
   return t`Margin is below the minimum required for the position size`;
@@ -190,8 +200,10 @@ export function getContractErrorMessage({
 
     case CustomErrorName.PnlFactorExceededForLongs:
     case CustomErrorName.PnlFactorExceededForShorts: {
-      const pnlToPoolFactor = getBigIntContractErrorArg(args, 0, "pnlToPoolFactor");
-      const maxPnlFactor = getBigIntContractErrorArg(args, 1, "maxPnlFactor");
+      const [pnlToPoolFactor, maxPnlFactor] = getDisplayedPnlFactors(
+        getBigIntContractErrorArg(args, 0, "pnlToPoolFactor"),
+        getBigIntContractErrorArg(args, 1, "maxPnlFactor")
+      );
 
       if (isLpWithdrawal && pnlToPoolFactor !== undefined && maxPnlFactor !== undefined) {
         const pnlToPoolRatioText = formatPnlFactorPercentage(pnlToPoolFactor);
@@ -371,6 +383,24 @@ export function getContractErrorMessage({
     default:
       return undefined;
   }
+}
+
+function getDisplayedPnlFactors(
+  pnlToPoolFactor: bigint | undefined,
+  maxPnlFactor: bigint | undefined
+): [bigint | undefined, bigint | undefined] {
+  if (
+    pnlToPoolFactor === undefined ||
+    maxPnlFactor === undefined ||
+    formatPercentage(pnlToPoolFactor, { bps: false }) !== formatPercentage(maxPnlFactor, { bps: false })
+  ) {
+    return [pnlToPoolFactor, maxPnlFactor];
+  }
+
+  return [
+    roundUpDivision(pnlToPoolFactor, PNL_FACTOR_DISPLAY_STEP) * PNL_FACTOR_DISPLAY_STEP,
+    (maxPnlFactor / PNL_FACTOR_DISPLAY_STEP) * PNL_FACTOR_DISPLAY_STEP,
+  ];
 }
 
 function formatPnlFactorPercentage(factor: bigint) {
