@@ -34,7 +34,7 @@ export function HeaderMenu({ badge }: Props = {}) {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
-  const headerLinks = useHeaderLinks();
+  const headerLinks = useHeaderLinks(isRewardsPage);
   const hasAdditionalContent = Boolean(badge);
 
   function handleLinkClick(href: string) {
@@ -154,7 +154,7 @@ function HeaderLink({ href, ...props }: ComponentProps<"a"> & { href: string }) 
   return href.startsWith("/") ? <Link to={href} {...props} /> : <a href={href} {...props} />;
 }
 
-function useHeaderLinks() {
+function useHeaderLinks(isRewardsPage: boolean) {
   return useMemo(() => {
     return [
       {
@@ -164,10 +164,12 @@ function useHeaderLinks() {
       {
         label: t`VIP`,
         href: "/trader-affiliate-program",
+        hidden: isRewardsPage,
       },
       {
         label: t`Builders`,
         href: "/builders",
+        hidden: isRewardsPage,
       },
       {
         label: t`Protocol`,
@@ -185,6 +187,6 @@ function useHeaderLinks() {
         label: t`Docs`,
         href: "https://docs.gmx.io/",
       },
-    ];
-  }, []);
+    ].filter((link) => !link.hidden);
+  }, [isRewardsPage]);
 }

@@ -136,7 +136,7 @@ describe("landing navigation", () => {
   });
 
   it("keeps the shared header on lazy landing pages and omits it on legal pages", async () => {
-    const view = renderAt("/rewards");
+    const view = renderAt();
     const header = view.container.querySelector("[data-landing-header]");
 
     await act(async () => {
