@@ -25,7 +25,6 @@ export type GmNetworkFeeParams = {
   logicalNetworkFeeUsd: bigint | undefined;
   srcChainId: SourceChainId | undefined;
   tokensData: TokensData | undefined;
-  gasPrice: bigint | undefined;
   gasPaymentToken: TokenData | undefined;
 };
 
@@ -34,7 +33,6 @@ export function getGmNetworkFeeInfo({
   logicalNetworkFeeUsd,
   srcChainId,
   tokensData,
-  gasPrice,
   gasPaymentToken,
   sourceChainGasNativeAmount,
 }: GmNetworkFeeParams & { sourceChainGasNativeAmount: bigint | undefined }): GmNetworkFeeInfo | undefined {
@@ -48,13 +46,13 @@ export function getGmNetworkFeeInfo({
     case "settlementChain": {
       const nativeToken = getByKey(tokensData, zeroAddress);
 
-      if (!nativeToken || gasPrice === undefined || usd === undefined) {
+      if (!nativeToken || usd === undefined) {
         return { details: undefined, source: WALLET_NETWORK_FEE_SOURCE, isExpress: false };
       }
 
       return {
         details: {
-          amount: technicalFees.fees.feeTokenAmount + technicalFees.fees.gasLimit * gasPrice,
+          amount: technicalFees.fees.feeTokenAmount,
           usd,
           decimals: nativeToken.decimals,
           symbol: nativeToken.symbol,
@@ -112,7 +110,6 @@ export function useGmNetworkFeeDetails({
   logicalNetworkFeeUsd,
   srcChainId,
   tokensData,
-  gasPrice,
   gasPaymentToken,
 }: GmNetworkFeeParams): GmNetworkFeeInfo | undefined {
   const sourceChainGasNativeAmount = useGasMultichainNativeAmount({
@@ -127,10 +124,9 @@ export function useGmNetworkFeeDetails({
         logicalNetworkFeeUsd,
         srcChainId,
         tokensData,
-        gasPrice,
         gasPaymentToken,
         sourceChainGasNativeAmount,
       }),
-    [gasPaymentToken, gasPrice, logicalNetworkFeeUsd, sourceChainGasNativeAmount, srcChainId, technicalFees, tokensData]
+    [gasPaymentToken, logicalNetworkFeeUsd, sourceChainGasNativeAmount, srcChainId, technicalFees, tokensData]
   );
 }

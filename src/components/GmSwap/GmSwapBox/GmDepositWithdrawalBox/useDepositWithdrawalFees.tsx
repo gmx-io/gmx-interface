@@ -10,31 +10,26 @@ import { getByKey } from "lib/objects";
 import { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getWrappedToken } from "sdk/configs/tokens";
 
-function calculateLogicalNetworkFeeUsd({
+export function calculateLogicalNetworkFeeUsd({
   technicalFees,
   wrappedTokenData,
-  gasPrice,
   sourceChainEstimatedNativeFeeUsd,
   sourceChainTxnEstimatedGasUsd,
 }: {
   technicalFees: TechnicalGmFees;
   wrappedTokenData: TokenData | undefined;
-  gasPrice: bigint | undefined;
   sourceChainEstimatedNativeFeeUsd: bigint | undefined;
   sourceChainTxnEstimatedGasUsd: bigint | undefined;
 }): bigint | undefined {
   if (technicalFees.kind === "settlementChain") {
-    if (!wrappedTokenData || gasPrice === undefined) {
+    if (!wrappedTokenData) {
       return undefined;
     }
 
     const wrappedTokenPrice = getMidPrice(wrappedTokenData.prices);
     const keeperUsd = convertToUsd(technicalFees.fees.feeTokenAmount, wrappedTokenData.decimals, wrappedTokenPrice)!;
-    // Keep displayed network fee aligned with submit validation by adding an estimated wallet tx gas component.
-    const walletTxGasAmount = technicalFees.fees.gasLimit * gasPrice;
-    const walletTxGasUsd = convertToUsd(walletTxGasAmount, wrappedTokenData.decimals, wrappedTokenPrice) ?? 0n;
 
-    return (keeperUsd + walletTxGasUsd) * -1n;
+    return keeperUsd * -1n;
   }
 
   if (technicalFees.kind === "gmxAccount") {
@@ -85,7 +80,6 @@ export const useDepositWithdrawalFees = ({
   amounts,
   chainId,
   gasLimits,
-  gasPrice,
   isDeposit,
   tokensData,
   technicalFees,
@@ -94,7 +88,6 @@ export const useDepositWithdrawalFees = ({
   amounts: DepositAmounts | WithdrawalAmounts | undefined;
   chainId: ContractsChainId;
   gasLimits: GasLimitsConfig | undefined;
-  gasPrice: bigint | undefined;
   isDeposit: boolean;
   tokensData: TokensData | undefined;
   glvInfo: GlvInfo | undefined;
@@ -126,7 +119,6 @@ export const useDepositWithdrawalFees = ({
     const logicalNetworkFeeUsd = calculateLogicalNetworkFeeUsd({
       technicalFees,
       wrappedTokenData,
-      gasPrice,
       sourceChainEstimatedNativeFeeUsd,
       sourceChainTxnEstimatedGasUsd,
     });
@@ -144,7 +136,6 @@ export const useDepositWithdrawalFees = ({
     amounts,
     chainId,
     gasLimits,
-    gasPrice,
     isDeposit,
     sourceChainEstimatedNativeFeeUsd,
     sourceChainTxnEstimatedGasUsd,

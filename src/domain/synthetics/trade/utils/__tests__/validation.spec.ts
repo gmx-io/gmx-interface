@@ -18,6 +18,7 @@ import {
   getConditionalDepositWarning,
   getEditCollateralError,
   getExpressError,
+  getGmNativeGasError,
   getInsufficientFeeButtonMessage,
   getIncreaseError,
   getMarginDepositAutoCancelLimitMessage,
@@ -482,6 +483,48 @@ describe("getNativeGasError", () => {
       bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
     });
   });
+});
+
+describe("getGmNativeGasError", () => {
+  const ETH = { address: zeroAddress, symbol: "ETH" } as TokenData;
+  const USDC = { address: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831", symbol: "USDC" } as TokenData;
+  const FEE = expandDecimals(1, 15);
+  const DEPOSIT = expandDecimals(1, 17);
+  const INSUFFICIENT = {
+    buttonErrorMessage: "Insufficient ETH in Wallet",
+    bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
+  };
+
+  it.each([
+    { name: "token buy, 1.5x the fee", isDeposit: true, payLongToken: USDC, balance: (FEE * 3n) / 2n, error: {} },
+    { name: "token buy, exactly the fee", isDeposit: true, payLongToken: USDC, balance: FEE, error: {} },
+    { name: "token buy, below the fee", isDeposit: true, payLongToken: USDC, balance: FEE - 1n, error: INSUFFICIENT },
+    { name: "ETH buy, deposit + the fee", isDeposit: true, payLongToken: ETH, balance: DEPOSIT + FEE, error: {} },
+    {
+      name: "ETH buy, below deposit + the fee",
+      isDeposit: true,
+      payLongToken: ETH,
+      balance: DEPOSIT + FEE - 1n,
+      error: INSUFFICIENT,
+    },
+    { name: "sell for ETH, 1.5x the fee", isDeposit: false, payLongToken: ETH, balance: (FEE * 3n) / 2n, error: {} },
+  ])(
+    "requires the execution fee once plus the ETH deposit PRO-4389: $name",
+    ({ isDeposit, payLongToken, balance, error }) => {
+      expect(
+        getGmNativeGasError({
+          chainId: ARBITRUM,
+          isDeposit,
+          executionFeeAmount: FEE,
+          payLongToken,
+          payShortToken: undefined,
+          longTokenAmount: DEPOSIT,
+          shortTokenAmount: 0n,
+          nativeBalance: balance,
+        })
+      ).toEqual(error);
+    }
+  );
 });
 
 describe("getApprovalGasError", () => {

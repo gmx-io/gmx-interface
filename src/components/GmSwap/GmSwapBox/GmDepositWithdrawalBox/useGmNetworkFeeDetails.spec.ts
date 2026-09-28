@@ -38,7 +38,6 @@ describe("getGmNetworkFeeInfo", () => {
         logicalNetworkFeeUsd: LOGICAL_FEE_USD,
         srcChainId: undefined,
         tokensData,
-        gasPrice: 1n,
         gasPaymentToken: USDC,
         sourceChainGasNativeAmount: undefined,
       })
@@ -46,25 +45,25 @@ describe("getGmNetworkFeeInfo", () => {
   });
 
   describe("settlement chain wallet", () => {
+    // the execution fee is priced from this keeper gas limit (10M gas at 0.1 gwei), so the limit is not a second fee
     const technicalFees = {
       kind: "settlementChain",
-      fees: { feeTokenAmount: expandDecimals(1, 15), gasLimit: 2_000_000n },
+      fees: { feeTokenAmount: expandDecimals(1, 15), gasLimit: 10_000_000n },
     } as TechnicalGmFees;
 
-    it("adds the transaction gas to the execution fee and charges the native token from the wallet", () => {
+    it("shows the execution fee the transaction sends once, in the native token from the wallet", () => {
       const info = getGmNetworkFeeInfo({
         technicalFees,
         logicalNetworkFeeUsd: LOGICAL_FEE_USD,
         srcChainId: undefined,
         tokensData,
-        gasPrice: 100_000_000n,
         gasPaymentToken: USDC,
         sourceChainGasNativeAmount: undefined,
       });
 
       expect(info).toEqual({
         details: {
-          amount: expandDecimals(1, 15) + 2_000_000n * 100_000_000n,
+          amount: expandDecimals(1, 15),
           usd: expandDecimals(3, 30),
           decimals: 18,
           symbol: "ETH",
@@ -72,17 +71,15 @@ describe("getGmNetworkFeeInfo", () => {
         source: { balanceType: TokenBalanceType.Wallet },
         isExpress: false,
       });
-      expect(info!.details!.amount).toBe(1_200_000_000_000_000n);
     });
 
-    it("keeps the wallet source while the gas price is unknown", () => {
+    it("keeps the wallet source while the fee is unknown", () => {
       expect(
         getGmNetworkFeeInfo({
           technicalFees,
-          logicalNetworkFeeUsd: LOGICAL_FEE_USD,
+          logicalNetworkFeeUsd: undefined,
           srcChainId: undefined,
           tokensData,
-          gasPrice: undefined,
           gasPaymentToken: USDC,
           sourceChainGasNativeAmount: undefined,
         })
@@ -102,7 +99,6 @@ describe("getGmNetworkFeeInfo", () => {
         logicalNetworkFeeUsd: -expandDecimals(25, 29),
         srcChainId: undefined,
         tokensData,
-        gasPrice: 100_000_000n,
         gasPaymentToken: USDC,
         sourceChainGasNativeAmount: undefined,
       });
@@ -133,7 +129,6 @@ describe("getGmNetworkFeeInfo", () => {
         logicalNetworkFeeUsd: -expandDecimals(4, 30),
         srcChainId: undefined,
         tokensData,
-        gasPrice: undefined,
         gasPaymentToken: weth,
         sourceChainGasNativeAmount: undefined,
       });
@@ -154,7 +149,6 @@ describe("getGmNetworkFeeInfo", () => {
           logicalNetworkFeeUsd: LOGICAL_FEE_USD,
           srcChainId: undefined,
           tokensData,
-          gasPrice: undefined,
           gasPaymentToken: undefined,
           sourceChainGasNativeAmount: undefined,
         })
@@ -174,7 +168,6 @@ describe("getGmNetworkFeeInfo", () => {
         logicalNetworkFeeUsd: LOGICAL_FEE_USD,
         srcChainId: SOURCE_BASE_MAINNET,
         tokensData,
-        gasPrice: 100_000_000n,
         gasPaymentToken: USDC,
         sourceChainGasNativeAmount: expandDecimals(1, 14),
       });
@@ -198,7 +191,6 @@ describe("getGmNetworkFeeInfo", () => {
           logicalNetworkFeeUsd: LOGICAL_FEE_USD,
           srcChainId: SOURCE_BASE_MAINNET,
           tokensData,
-          gasPrice: undefined,
           gasPaymentToken: undefined,
           sourceChainGasNativeAmount: undefined,
         })
@@ -216,7 +208,6 @@ describe("getGmNetworkFeeInfo", () => {
           logicalNetworkFeeUsd: LOGICAL_FEE_USD,
           srcChainId: undefined,
           tokensData,
-          gasPrice: undefined,
           gasPaymentToken: undefined,
           sourceChainGasNativeAmount: expandDecimals(1, 14),
         })

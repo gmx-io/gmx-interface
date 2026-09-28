@@ -1404,6 +1404,48 @@ export function getNativeGasError(p: {
   return {};
 }
 
+export function getGmNativeGasError(p: {
+  chainId: ContractsChainId;
+  isDeposit: boolean;
+  executionFeeAmount: bigint | undefined;
+  payLongToken: TokenData | undefined;
+  payShortToken: TokenData | undefined;
+  longTokenAmount: bigint;
+  shortTokenAmount: bigint;
+  nativeBalance: bigint | undefined;
+}): ValidationResult {
+  const {
+    chainId,
+    isDeposit,
+    executionFeeAmount,
+    payLongToken,
+    payShortToken,
+    longTokenAmount,
+    shortTokenAmount,
+    nativeBalance,
+  } = p;
+
+  if (executionFeeAmount === undefined) {
+    return {};
+  }
+
+  let nativeDepositAmount = 0n;
+
+  if (isDeposit && payLongToken?.address === zeroAddress) {
+    nativeDepositAmount += longTokenAmount;
+  }
+
+  if (isDeposit && payShortToken?.address === zeroAddress) {
+    nativeDepositAmount += shortTokenAmount;
+  }
+
+  return getNativeGasError({
+    chainId,
+    networkFee: executionFeeAmount + nativeDepositAmount,
+    nativeBalance,
+  });
+}
+
 export const ERC20_APPROVE_GAS_LIMIT = 100_000n;
 
 export function getApprovalGasError(p: {

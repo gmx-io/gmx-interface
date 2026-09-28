@@ -206,7 +206,6 @@ export function GmSwapBoxDepositWithdrawal() {
     amounts,
     chainId,
     gasLimits,
-    gasPrice,
     isDeposit,
     tokensData: tradeTokensData,
     glvInfo,
@@ -242,7 +241,6 @@ export function GmSwapBoxDepositWithdrawal() {
     logicalNetworkFeeUsd: logicalFees?.logicalNetworkFee?.deltaUsd,
     srcChainId,
     tokensData: tradeTokensData,
-    gasPrice,
     gasPaymentToken,
   });
   const gasPaymentTokenForMax = paySource === "gmxAccount" ? gasPaymentToken : nativeToken;
