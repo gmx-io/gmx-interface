@@ -186,6 +186,11 @@ export function getTxnErrorToast(
     case TxErrorType.RpcError: {
       toastParams.autoCloseToast = false;
 
+      if (!setIsSettingsVisible) {
+        toastParams.errorContent = getRpcErrorToastContent(debugErrorMessage);
+        break;
+      }
+
       toastParams.errorContent = (
         <div>
           <Trans>
@@ -282,18 +287,7 @@ export function getErrorMessage(
 
       const originalError = errorData?.error?.message || errorData?.message || message;
 
-      failMsg = (
-        <div>
-          <Trans>
-            RPC error. Update your wallet's RPC via{" "}
-            <ExternalLink href="https://chainlist.org">chainlist.org</ExternalLink>.{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/overview/#rpc-urls">Read more</ExternalLink>.
-          </Trans>
-          <br />
-          <br />
-          {originalError && <ToastifyDebug error={originalError} />}
-        </div>
-      );
+      failMsg = getRpcErrorToastContent(originalError);
       break;
     }
     default:
@@ -311,6 +305,20 @@ export function getErrorMessage(
   }
 
   return { failMsg, autoCloseToast };
+}
+
+function getRpcErrorToastContent(debugErrorMessage: string | undefined) {
+  return (
+    <div>
+      <Trans>
+        RPC error. Update your wallet's RPC via <ExternalLink href="https://chainlist.org">chainlist.org</ExternalLink>.{" "}
+        <ExternalLink href="https://docs.gmx.io/docs/trading/overview/#rpc-urls">Read more</ExternalLink>.
+      </Trans>
+      <br />
+      <br />
+      {debugErrorMessage && <ToastifyDebug error={debugErrorMessage} />}
+    </div>
+  );
 }
 
 export function getSmartWalletChainUnavailableToastContent(chainId: number, walletName = "wallet") {

@@ -4,7 +4,7 @@ import { cleanup, render } from "@testing-library/react";
 import { makeError } from "ethers";
 import { ReactNode, createElement } from "react";
 import { MemoryRouter } from "react-router-dom";
-import { afterEach, beforeAll, describe, expect, it } from "vitest";
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { SOURCE_BSC_MAINNET, SOURCE_ETHEREUM_MAINNET } from "config/chains";
 import { parseError } from "lib/errors";
@@ -51,6 +51,32 @@ describe("getTxnErrorToast", () => {
     });
 
     expect(renderText(errorContent)).toContain("Insufficient BNB for gas on BNB");
+  });
+
+  describe("RPC error", () => {
+    const rpcError = makeError("could not coalesce error", "UNKNOWN_ERROR", {
+      error: { code: -32603, message: "Internal JSON-RPC error." },
+      payload: SEND_TRANSACTION_PAYLOAD,
+    });
+
+    it("only points to the wallet's RPC when the flow cannot open settings PRO-3577", () => {
+      const { errorContent } = getTxnErrorToast(SOURCE_ETHEREUM_MAINNET, parseError(rpcError), {
+        defaultMessage: "Deposit failed",
+      });
+
+      const text = renderText(errorContent);
+
+      expect(text).toContain("Update your wallet's RPC via chainlist.org");
+      expect(text).not.toContain("Express Trading");
+    });
+
+    it("keeps the Express Trading hint when the flow can open settings", () => {
+      const { errorContent } = getTxnErrorToast(SOURCE_ETHEREUM_MAINNET, parseError(rpcError), {
+        setIsSettingsVisible: vi.fn(),
+      });
+
+      expect(renderText(errorContent)).toContain("Express Trading");
+    });
   });
 });
 
