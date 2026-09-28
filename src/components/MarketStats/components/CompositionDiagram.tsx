@@ -1,6 +1,6 @@
 import { ReactNode, useMemo } from "react";
 
-import { getMarketIndexName } from "domain/synthetics/markets";
+import { getGlvOrMarketIconSymbol, getMarketIndexName } from "domain/synthetics/markets/utils";
 import { bigintToNumber } from "lib/numbers";
 import { USD_DECIMALS } from "sdk/configs/factors";
 import { TOKEN_COLOR_MAP } from "sdk/configs/tokens";
@@ -45,7 +45,7 @@ export function CompositionDiagram({ data, label }: Props) {
             value={value}
             sum={sum}
             name={item.type === "market" ? getMarketIndexName(item.market) : item.token.symbol}
-            symbol={item.type === "market" ? item.market.indexToken.symbol : item.token.symbol}
+            symbol={item.type === "market" ? getGlvOrMarketIconSymbol(item.market) : item.token.symbol}
           />
         ),
       };

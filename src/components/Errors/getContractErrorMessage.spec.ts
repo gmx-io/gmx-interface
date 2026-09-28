@@ -33,6 +33,20 @@ describe("getContractErrorMessage", () => {
       })
     ).toBe("Relay fee exceeds the maximum allowed");
   });
+
+  it("explains a bridge output below the signed minimum as a bridge fee increase PRO-4110", () => {
+    expect(
+      getContractErrorMessage({
+        errorData: {
+          contractError: CustomErrorName.InsufficientBridgeOutputAmount,
+          contractErrorArgs: {
+            outputAmount: 499_748n,
+            minAmountOut: 500_000n,
+          },
+        },
+      })
+    ).toBe("Bridge fee increased. Funds remain in your GMX Account. Try again");
+  });
 });
 
 describe("getContractErrorMessage — InsufficientCollateralUsd", () => {

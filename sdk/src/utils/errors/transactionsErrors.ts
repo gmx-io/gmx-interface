@@ -64,6 +64,7 @@ export enum CustomErrorName {
   DisabledMarket = "DisabledMarket",
   EndOfOracleSimulation = "EndOfOracleSimulation",
   ExternalCallFailed = "ExternalCallFailed",
+  InsufficientBridgeOutputAmount = "InsufficientBridgeOutputAmount",
   InsufficientCollateralAmount = "InsufficientCollateralAmount",
   InsufficientCollateralUsd = "InsufficientCollateralUsd",
   InsufficientExecutionGas = "InsufficientExecutionGas",

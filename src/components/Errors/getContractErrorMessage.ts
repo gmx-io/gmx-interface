@@ -187,6 +187,9 @@ export function getContractErrorMessage({
         : t`Slippage exceeded`;
     }
 
+    case CustomErrorName.InsufficientBridgeOutputAmount:
+      return t`Bridge fee increased. Funds remain in your GMX Account. Try again`;
+
     case CustomErrorName.OrderNotFound:
       return t`Order not found. May have been canceled or already executed`;
     case CustomErrorName.OrderNotUpdatable:

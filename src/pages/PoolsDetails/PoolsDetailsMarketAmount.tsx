@@ -12,6 +12,7 @@ export function PoolsDetailsMarketAmount({
   afterValue,
   label,
   tooltipContent,
+  tooltipMaxAllowedWidth,
   valueClassName,
   secondaryValueClassName,
 }: {
@@ -20,6 +21,7 @@ export function PoolsDetailsMarketAmount({
   afterValue?: ReactNode;
   label?: ReactNode;
   tooltipContent?: ReactNode;
+  tooltipMaxAllowedWidth?: number;
   valueClassName?: string;
   secondaryValueClassName?: string;
 }) {
@@ -42,7 +44,7 @@ export function PoolsDetailsMarketAmount({
   );
 
   let valueContentWithTooltip = tooltipContent ? (
-    <TooltipWithPortal handle={valueContent} content={tooltipContent} />
+    <TooltipWithPortal handle={valueContent} content={tooltipContent} maxAllowedWidth={tooltipMaxAllowedWidth} />
   ) : (
     valueContent
   );

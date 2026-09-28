@@ -190,13 +190,11 @@ export function SettingButton({
   );
 }
 
-export function Chip({ children, color }: { children: ReactNode; color: "blue" | "gray" }) {
-  const colorClass = {
-    blue: "bg-blue-600",
-    gray: "bg-slate-500",
-  }[color];
+export function Chip({ children, variant }: { children: ReactNode; variant: "blue" | "outline" }) {
+  const variantClass = {
+    blue: "bg-blue-600 text-white",
+    outline: "text-typography-primary ring-1 ring-inset ring-typography-primary",
+  }[variant];
 
-  return (
-    <div className={cx(`rounded-full px-8 py-4 pb-3 text-[10px] font-medium text-white`, colorClass)}>{children}</div>
-  );
+  return <div className={cx(`rounded-full px-8 py-4 pb-3 text-[10px] font-medium`, variantClass)}>{children}</div>;
 }

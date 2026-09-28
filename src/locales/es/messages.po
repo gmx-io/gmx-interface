@@ -54,7 +54,7 @@ msgstr "CÓDIGO DE REFERIDO"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient funds for order costs. Remaining: {remainingCostUsdText}"
-msgstr ""
+msgstr "Fondos insuficientes para los costes de la orden. Restante: {remainingCostUsdText}"
 
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing limit order uses {symbol} collateral. <0>Switch to {symbol} collateral</0>"
@@ -228,7 +228,7 @@ msgstr "Valores de depuración no disponibles"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Insufficient {0} for gas on {networkName}<0/><1/><2>Swap</2> or <3>bridge</3> {1} to {networkName}"
-msgstr ""
+msgstr "No hay suficiente {0} para el gas en {networkName}<0/><1/><2>Intercambiar</2> o usar el <3>puente</3> para transferir {1} a {networkName}"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing limit order in {0} pool but lacks liquidity for this order"
@@ -279,7 +279,7 @@ msgstr "(reembolsado)"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Accumulated rewards"
-msgstr ""
+msgstr "Recompensas acumuladas"
 
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Vesting details changed. Review the updated amounts before unlocking collateral."
@@ -1295,7 +1295,7 @@ msgstr "TVL en bóvedas y pools"
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX on Solana"
-msgstr ""
+msgstr "GMX en Solana"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
@@ -1528,6 +1528,10 @@ msgstr "Factor de comisión de intercambio (PI negativo)"
 msgid "Claimable balance"
 msgstr "Saldo reclamable"
 
+#: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
+msgid "Current {symbol} pool value / max cap"
+msgstr "Valor actual del pool de {symbol} / límite máx."
+
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Yes! You can create as many codes as you want. This is useful for tracking different campaigns, communities, or platforms separately."
 msgstr ""
@@ -1580,6 +1584,10 @@ msgstr "Retirar staking de {tokenSymbol}"
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Staking rewards are paused. 27% of protocol fees are accumulating in the Treasury instead, to be distributed when GMX reaches $90, subject to DAO governance. Your share is based on staking power (duration × amount staked)."
 msgstr "Las recompensas de staking están pausadas. En su lugar, el 27 % de las comisiones del protocolo se acumula en la Tesorería para distribuirse cuando GMX alcance los $90, sujeto a la gobernanza de la DAO. Tu parte depende del poder de staking (duración × cantidad en staking)."
+
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Receive amount below minimum"
+msgstr "Importe a recibir por debajo del mínimo"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid slippage value"
@@ -1686,6 +1694,7 @@ msgstr "{0} épocas después de cumplir los requisitos"
 msgid "Leverage for the current order. Resulting position leverage: {formattedLeverage}."
 msgstr ""
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
@@ -5425,6 +5434,7 @@ msgstr ""
 #: src/components/GmxAccountModal/keys.ts
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdrawal failed"
 msgstr "Retiro fallido"
 
@@ -5613,6 +5623,10 @@ msgstr "Ingresa código de referencia"
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Referral link copied to clipboard"
 msgstr ""
+
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Insufficient bridge liquidity to {networkName}"
+msgstr "Liquidez del puente insuficiente hacia {networkName}"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
@@ -6326,6 +6340,7 @@ msgid "Position size too small. Min: {minPositionSizeUsdText}, current: {positio
 msgstr "Tamaño de posición demasiado pequeño. Mín.: {minPositionSizeUsdText}, actual: {positionSizeInUsdText}"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 #: src/components/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
 msgid "Stored price impact"
@@ -6418,6 +6433,7 @@ msgstr "Forzar fallo de intercambios externos"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
@@ -6654,6 +6670,10 @@ msgstr "Esta wallet crea firmas específicas de cada red. Apruebe el cambio a {0
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel new orders"
 msgstr "Cancelar nuevas órdenes"
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Net price impact (open + close)"
+msgstr "Impacto neto en el precio (apertura + cierre)"
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "Existing executable trigger orders"
@@ -8148,6 +8168,10 @@ msgstr "Graduados"
 msgid "Set stop price below mark price"
 msgstr ""
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>One-Click Trading approval was outdated and has been refreshed. Try again</0>"
+msgstr "<0>La aprobación de One-Click Trading estaba desactualizada y se ha actualizado. Inténtelo de nuevo</0>"
+
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Points are allocated based on your cumulative trading volume on GMX MegaETH"
 msgstr ""
@@ -8717,6 +8741,10 @@ msgstr "Se detuvo el vesting. Los saldos se actualizarán en breve."
 #: src/pages/RewardsPage/components/RewardsOnboardingModal.tsx
 msgid "Get started"
 msgstr "Empezar"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Bridge fee increased. Funds remain in your GMX Account. Try again"
+msgstr "La comisión del puente ha aumentado. Los fondos permanecen en su GMX Account. Inténtelo de nuevo"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Launch"
@@ -10582,7 +10610,6 @@ msgstr "Utilice esta opción únicamente para transferencias completas de cuenta
 msgid "/ month"
 msgstr "/ mes"
 
-#: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -10688,6 +10715,7 @@ msgstr "Siguiente"
 msgid "More info"
 msgstr "Más información"
 
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -10999,6 +11027,7 @@ msgstr "Cambiando {symbol}..."
 msgid "Max reserved + JIT {directionLabel}"
 msgstr ""
 
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close price impact"
 msgstr "Impacto en el precio de cierre"
@@ -11193,11 +11222,6 @@ msgstr "Nuevo nivel:"
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "Market delistings"
 msgstr "Baja de mercados"
-
-#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
-#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
-msgid "Last updated:"
-msgstr "Última actualización:"
 
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
@@ -11558,6 +11582,8 @@ msgstr "Disponible para usuarios históricos elegibles hasta que se alcance el l
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+#: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -13647,6 +13673,10 @@ msgstr "Eventos"
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Vesting started. Balances will refresh shortly."
 msgstr "Se inició el vesting. Los saldos se actualizarán en breve."
+
+#: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
+msgid "Current pool value / max pool cap"
+msgstr "Valor actual del pool / límite máx. del pool"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order won't add to the existing {longText} position: it uses {collateralSymbol} as collateral while the position uses {symbol}. Executing it opens a separate position."

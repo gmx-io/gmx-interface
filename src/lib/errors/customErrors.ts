@@ -53,6 +53,10 @@ export function getIsInvalidSignatureError(error: ErrorLike) {
   };
 }
 
+export function getIsInvalidSubaccountApprovalNonceError(error: ErrorLike) {
+  return parseError(error)?.contractError === "InvalidSubaccountApprovalNonce";
+}
+
 export function getIsPermitSignatureErrorOnSimulation(error: ErrorLike) {
   return isPermitExternalCallFailedOnSimulation(error, "invalid signature");
 }
