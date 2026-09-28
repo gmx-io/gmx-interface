@@ -36,7 +36,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNetworkFeeError";
 import { ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "domain/synthetics/express/expressOrderUtils";
-import { GMX_ACCOUNT_NETWORK_FEE_SOURCE, WALLET_NETWORK_FEE_SOURCE } from "domain/synthetics/fees/networkFeeSource";
+import { GMX_ACCOUNT_NETWORK_FEE_SOURCE } from "domain/synthetics/fees/networkFeeSource";
 import type { GlvAndGmMarketsInfoData, GmPaySource, MarketsInfoData } from "domain/synthetics/markets";
 import { TechnicalGmFees } from "domain/synthetics/markets/technicalFees/technical-fees-types";
 import { Operation } from "domain/synthetics/markets/types";
@@ -57,7 +57,6 @@ import { getByKey } from "lib/objects";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import useWallet from "lib/wallets/useWallet";
-import { getNativeToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { GmSwapFees } from "sdk/utils/trade/types";
 
@@ -263,60 +262,6 @@ export const useGmSwapSubmitState = ({
     paySourceChainNativeTokenAmount,
   });
 
-  const nativeToken = getByKey(tokensData, zeroAddress);
-  const nativeTokenWalletBalance = nativeToken?.walletBalance;
-  const settlementChainFeeTokenAmount =
-    technicalFees?.kind === "settlementChain" ? technicalFees.fees.feeTokenAmount : undefined;
-
-  const settlementChainNativeFeeError = useMemo((): ValidationResult | undefined => {
-    if (
-      paySource !== "settlementChain" ||
-      nativeTokenWalletBalance === undefined ||
-      settlementChainFeeTokenAmount === undefined
-    ) {
-      return undefined;
-    }
-
-    const insufficientWithLongCollateral =
-      isDeposit &&
-      payLongToken &&
-      nativeToken &&
-      payLongToken.address === nativeToken.address &&
-      nativeTokenWalletBalance < settlementChainFeeTokenAmount + longTokenAmount;
-
-    const insufficientWithShortCollateral =
-      isDeposit &&
-      payShortToken &&
-      nativeToken &&
-      payShortToken.address === nativeToken.address &&
-      nativeTokenWalletBalance < settlementChainFeeTokenAmount + shortTokenAmount;
-
-    if (
-      nativeTokenWalletBalance < settlementChainFeeTokenAmount ||
-      insufficientWithLongCollateral ||
-      insufficientWithShortCollateral
-    ) {
-      return {
-        buttonErrorMessage: getInsufficientFeeButtonMessage({
-          tokenSymbol: getNativeToken(chainId).symbol,
-          feeSource: WALLET_NETWORK_FEE_SOURCE,
-        }),
-        bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
-      };
-    }
-  }, [
-    chainId,
-    paySource,
-    nativeTokenWalletBalance,
-    settlementChainFeeTokenAmount,
-    isDeposit,
-    payLongToken,
-    nativeToken,
-    longTokenAmount,
-    payShortToken,
-    shortTokenAmount,
-  ]);
-
   const formattedEstimationError = useMemo((): ValidationResult | undefined => {
     if (estimationError instanceof ExpressEstimationInsufficientGasPaymentTokenBalanceError) {
       if (gasPaymentToken) {
@@ -373,7 +318,6 @@ export const useGmSwapSubmitState = ({
     expressError,
     nativeGasError,
     sourceChainNativeFeeError,
-    settlementChainNativeFeeError,
     formattedEstimationError
   );
 
