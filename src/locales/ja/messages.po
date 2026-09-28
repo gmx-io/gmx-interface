@@ -7656,6 +7656,10 @@ msgstr "独自の手数料を設定"
 msgid "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>"
 msgstr "{receiveTokenSymbol} で受け取ると利益がスワップされ、{swapProfitFeePercentage}（<0>{swapProfitFeeUsd}</0>）のコストがかかります。スワップを避けるには {profitTokenSymbol} と {collateralTokenSymbol} を別々に受け取ってください。<1>詳細はこちら</1>"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Connect wallet to create a code"
+msgstr "ウォレットを接続してコードを作成"
+
 #: landing/src/pages/Rewards/RewardsFlywheel.tsx
 msgid "Higher multiplier"
 msgstr "倍率アップ"
@@ -13413,10 +13417,6 @@ msgstr ""
 #: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
 msgid "Referral revenue, built in"
 msgstr "組み込みの紹介収益"
-
-#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
-msgid "Connect this wallet to create a code"
-msgstr "このウォレットを接続してコードを作成"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Stop Market)"

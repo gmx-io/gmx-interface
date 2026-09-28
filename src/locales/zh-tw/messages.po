@@ -7656,6 +7656,10 @@ msgstr "收取你自己的費用"
 msgid "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>"
 msgstr "以 {receiveTokenSymbol} 接收會交換您的利潤並產生 {swapProfitFeePercentage}（<0>{swapProfitFeeUsd}</0>）的成本。分開接收 {profitTokenSymbol} 和 {collateralTokenSymbol} 可跳過交換。<1>了解更多</1>"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Connect wallet to create a code"
+msgstr "連接錢包以建立推薦碼"
+
 #: landing/src/pages/Rewards/RewardsFlywheel.tsx
 msgid "Higher multiplier"
 msgstr "更高倍數"
@@ -13413,10 +13417,6 @@ msgstr ""
 #: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
 msgid "Referral revenue, built in"
 msgstr "內建推薦收益"
-
-#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
-msgid "Connect this wallet to create a code"
-msgstr "連接此錢包以建立推薦碼"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Stop Market)"

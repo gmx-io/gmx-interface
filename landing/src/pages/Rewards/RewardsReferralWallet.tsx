@@ -10,7 +10,9 @@ import { ARBITRUM } from "config/chains";
 import { useAffiliateCodes } from "domain/referrals/hooks";
 import { useCreateReferralCode } from "domain/referrals/hooks/useCreateReferralCode";
 import { getCodeError } from "domain/referrals/utils/referralsHelper";
+import { getIncentivesIndexerUrl } from "domain/synthetics/incentives/v2/client";
 import type { IncentivesConfig } from "domain/synthetics/incentives/v2/types";
+import { useReturnBonus } from "domain/synthetics/incentives/v2/useReturnBonus";
 import {
   formatFactorPercentage,
   formatMultiplierAdjustment,
@@ -52,6 +54,7 @@ export default function RewardsReferralWallet(props: Props) {
 
 function ReferralWallet({ config, loading, account: checkedAccount, hasBonus, rewardsUsd, onResultRevealed }: Props) {
   const [connectionError, setConnectionError] = useState<string>();
+  const [preferConnectedWallet, setPreferConnectedWallet] = useState(false);
   const { address, isConnected } = useAccount();
   const { ready, authenticated } = usePrivy();
   const { isOpen } = useModalStatus();
@@ -61,21 +64,36 @@ function ReferralWallet({ config, loading, account: checkedAccount, hasBonus, re
 
   function connect() {
     setConnectionError(undefined);
+    setPreferConnectedWallet(true);
     if (authenticated) connectWallet();
     else connectOrCreateWallet();
   }
 
-  const account = checkedAccount ?? (isConnected ? address : undefined);
+  const connectedAccount = isConnected ? address : undefined;
+  const account = preferConnectedWallet ? connectedAccount ?? checkedAccount : checkedAccount ?? connectedAccount;
+  const useConnectedWalletBonus = Boolean(
+    preferConnectedWallet &&
+      connectedAccount &&
+      checkedAccount &&
+      getAddress(connectedAccount) !== getAddress(checkedAccount)
+  );
+  const connectedBonus = useReturnBonus(
+    getIncentivesIndexerUrl(ARBITRUM),
+    useConnectedWalletBonus ? connectedAccount : undefined
+  );
+  const referralRewardsUsd = useConnectedWalletBonus ? connectedBonus.data?.manualRewardRemainingUsd : rewardsUsd;
+  const referralHasBonus = useConnectedWalletBonus ? (referralRewardsUsd ?? 0n) > 0n : hasBonus;
+
   if (account)
     return (
       <ConnectedReferral
         key={`${account}:${address ?? ""}`}
         account={account}
-        connectedAccount={isConnected ? address : undefined}
+        connectedAccount={connectedAccount}
         config={config}
-        loading={loading}
-        hasBonus={hasBonus}
-        rewardsUsd={rewardsUsd}
+        loading={loading || (useConnectedWalletBonus && connectedBonus.isLoading)}
+        hasBonus={referralHasBonus}
+        rewardsUsd={referralRewardsUsd}
         onResultRevealed={onResultRevealed}
         onConnect={connect}
         connecting={!ready || isOpen}
@@ -308,7 +326,7 @@ function ConnectedReferral({
               onConnect();
             }}
           >
-            <Trans>Connect this wallet to create a code</Trans>
+            <Trans>Connect wallet to create a code</Trans>
           </button>
           {connectionError && <p role="alert">{connectionError}</p>}
         </>

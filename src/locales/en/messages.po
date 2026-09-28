@@ -7656,6 +7656,10 @@ msgstr "Charge your own fee"
 msgid "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>"
 msgstr "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Connect wallet to create a code"
+msgstr "Connect wallet to create a code"
+
 #: landing/src/pages/Rewards/RewardsFlywheel.tsx
 msgid "Higher multiplier"
 msgstr "Higher multiplier"
@@ -13413,10 +13417,6 @@ msgstr "From: block {0} ({1})"
 #: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
 msgid "Referral revenue, built in"
 msgstr "Referral revenue, built in"
-
-#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
-msgid "Connect this wallet to create a code"
-msgstr "Connect this wallet to create a code"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Stop Market)"

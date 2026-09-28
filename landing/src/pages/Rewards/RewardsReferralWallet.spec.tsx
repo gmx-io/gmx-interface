@@ -10,9 +10,17 @@ import { PRECISION } from "lib/numbers";
 
 import RewardsReferralWallet from "./RewardsReferralWallet";
 
+type CodesResult = { code: string | null; success: boolean; error?: boolean };
+
 const mocks = vi.hoisted(() => ({
   account: undefined as string | undefined,
-  codes: { code: null, success: true } as { code: string | null; success: boolean; error?: boolean },
+  codes: { code: null, success: true } as CodesResult,
+  codesByAccount: {} as Record<string, CodesResult>,
+  lookupCodes: vi.fn(),
+  lookupBonus: vi.fn(),
+  connectedBonus: undefined as { manualRewardRemainingUsd: bigint } | null | undefined,
+  bonusLoading: false,
+  creationParams: vi.fn(),
   connect: vi.fn(),
   retryCodes: vi.fn(),
   create: vi.fn(),
@@ -41,11 +49,21 @@ vi.mock("wagmi", () => ({
 }));
 vi.mock("lib/wallets/useWallet", () => ({ default: () => ({ chainId: ARBITRUM, signer: {} }) }));
 vi.mock("domain/referrals/hooks", () => ({
-  useAffiliateCodes: () => ({ ...mocks.codes, mutate: mocks.retryCodes }),
+  useAffiliateCodes: (chainId: number, account: string) => {
+    mocks.lookupCodes(chainId, account);
+    return { ...(mocks.codesByAccount[account] ?? mocks.codes), mutate: mocks.retryCodes };
+  },
+}));
+vi.mock("domain/synthetics/incentives/v2/useReturnBonus", () => ({
+  useReturnBonus: (endpoint: string, account?: string) => {
+    mocks.lookupBonus(endpoint, account);
+    return { data: mocks.connectedBonus, isLoading: mocks.bonusLoading };
+  },
 }));
 vi.mock("domain/referrals/hooks/useCreateReferralCode", () => ({
-  useCreateReferralCode: ({ onSuccess }: { onSuccess: (code: string) => void }) => {
-    mocks.onCreated = onSuccess;
+  useCreateReferralCode: (params: { account: string; onSuccess: (code: string) => void }) => {
+    mocks.creationParams(params);
+    mocks.onCreated = params.onSuccess;
     return { createCode: mocks.create, isSubmitting: false };
   },
 }));
@@ -86,6 +104,7 @@ function Page({
   return (
     <I18nProvider i18n={i18n}>
       <RewardsReferralWallet
+        key={account}
         config={config}
         loading={loading}
         hasBonus={hasBonus}
@@ -101,6 +120,12 @@ beforeEach(() => {
   i18n.activate("en");
   mocks.account = undefined;
   mocks.codes = { code: null, success: true };
+  mocks.codesByAccount = {};
+  mocks.lookupCodes.mockReset();
+  mocks.lookupBonus.mockReset();
+  mocks.connectedBonus = undefined;
+  mocks.bonusLoading = false;
+  mocks.creationParams.mockReset();
   mocks.connect.mockReset();
   mocks.create.mockReset();
   mocks.pushEvent.mockReset();
@@ -299,10 +324,155 @@ describe("rewards referral card", () => {
     expect(view.queryByRole("button", { name: "Create code and invite traders" })).toBeNull();
   });
 
-  it("requires the checked wallet's owner before allowing code creation", () => {
+  it.each([false, true])(
+    "keeps the checked wallet's card without a connect click (already connected: %s)",
+    async (alreadyConnected) => {
+      const checkedAccount = "0x0000000000000000000000000000000000000002";
+      const connectedAccount = "0x0000000000000000000000000000000000000001";
+      mocks.account = alreadyConnected ? connectedAccount : undefined;
+      mocks.codesByAccount = {
+        [checkedAccount]: { code: "CheckedCode", success: true },
+        [connectedAccount]: { code: "ConnectedCode", success: true },
+      };
+      mocks.connectedBonus = { manualRewardRemainingUsd: 0n };
+      const view = render(<Page account={checkedAccount} hasBonus />);
+      expect(view.container.querySelector(".rewards-share-code")?.textContent).toBe("CheckedCode");
+
+      mocks.account = connectedAccount;
+      view.rerender(<Page account={checkedAccount} hasBonus />);
+      expect(mocks.lookupCodes).toHaveBeenLastCalledWith(ARBITRUM, checkedAccount);
+      expect(mocks.lookupBonus).not.toHaveBeenCalledWith(expect.any(String), connectedAccount);
+      expect(view.container.querySelector(".rewards-share-code")?.textContent).toBe("CheckedCode");
+      expect(view.container.querySelector(".is-comeback")).not.toBeNull();
+      expect(view.queryByRole("button", { name: "Connect wallet to create a code" })).toBeNull();
+      expect(view.queryByRole("button", { name: "Create code and invite traders" })).toBeNull();
+      await act(async () => fireEvent.click(view.getByRole("button", { name: "Copy link" })));
+      expect(new URL(mocks.copyLink.mock.calls[0][0]).searchParams.get("ref")).toBe("CheckedCode");
+      expect(mocks.upload.mock.calls[0][0].textContent).toContain("CheckedCode");
+      expect(mocks.pushEvent).toHaveBeenCalledWith(
+        {
+          event: "RewardsLandingPageAction",
+          data: {
+            action: "ComebackShareClick",
+            type: "CopyLink",
+            rewards_exist: true,
+            ref_code_exist: true,
+            rewards: 2000,
+          },
+        },
+        { instantSend: true }
+      );
+
+      mocks.account = undefined;
+      view.rerender(<Page account={checkedAccount} hasBonus />);
+      expect(view.container.querySelector(".rewards-share-code")?.textContent).toBe("CheckedCode");
+    }
+  );
+
+  it("shares the connected wallet after an explicit connect click and resets on a new address check", async () => {
+    const checkedAccount = "0x0000000000000000000000000000000000000002";
+    const nextCheckedAccount = "0x0000000000000000000000000000000000000003";
+    const connectedAccount = "0x0000000000000000000000000000000000000001";
+    mocks.codesByAccount = {
+      [checkedAccount]: { code: null, success: true },
+      [nextCheckedAccount]: { code: "NextCheckedCode", success: true },
+      [connectedAccount]: { code: "ConnectedCode", success: true },
+    };
+    const view = render(<Page account={checkedAccount} />);
+    fireEvent.click(view.getByRole("button", { name: "Connect wallet to create a code" }));
+    expect(mocks.connect).toHaveBeenCalledOnce();
+
+    mocks.account = connectedAccount;
+    view.rerender(<Page account={checkedAccount} />);
+    expect(mocks.lookupCodes).toHaveBeenLastCalledWith(ARBITRUM, connectedAccount);
+    expect(view.container.querySelector(".rewards-share-code")?.textContent).toBe("ConnectedCode");
+    await act(async () => fireEvent.click(view.getByRole("button", { name: "Copy link" })));
+    expect(new URL(mocks.copyLink.mock.calls[0][0]).searchParams.get("ref")).toBe("ConnectedCode");
+
+    mocks.account = undefined;
+    view.rerender(<Page account={checkedAccount} />);
+    expect(mocks.lookupCodes).toHaveBeenLastCalledWith(ARBITRUM, checkedAccount);
+    expect(view.getByRole("button", { name: "Connect wallet to create a code" })).toBeTruthy();
+
+    mocks.account = connectedAccount;
+    view.rerender(<Page account={nextCheckedAccount} />);
+    expect(mocks.lookupCodes).toHaveBeenLastCalledWith(ARBITRUM, nextCheckedAccount);
+    expect(mocks.lookupBonus).toHaveBeenLastCalledWith(expect.any(String), undefined);
+    expect(view.container.querySelector(".rewards-share-code")?.textContent).toBe("NextCheckedCode");
+    await act(async () => fireEvent.click(view.getByRole("button", { name: "Copy link" })));
+    expect(new URL(mocks.copyLink.mock.calls[1][0]).searchParams.get("ref")).toBe("NextCheckedCode");
+  });
+
+  it("creates a code for a different connected wallet and immediately shows its share card", async () => {
+    const checkedAccount = "0x0000000000000000000000000000000000000002";
+    const connectedAccount = "0x0000000000000000000000000000000000000001";
+    const view = render(<Page account={checkedAccount} hasBonus />);
+    fireEvent.click(view.getByRole("button", { name: "Connect wallet to create a code" }));
+    expect(mocks.connect).toHaveBeenCalledOnce();
+
+    mocks.account = connectedAccount;
+    mocks.connectedBonus = { manualRewardRemainingUsd: 0n };
+    view.rerender(<Page account={checkedAccount} hasBonus />);
+    fireEvent.click(view.getByRole("button", { name: "Create code and invite traders" }));
+    fireEvent.change(view.getByRole("textbox", { name: "Your referral code" }), { target: { value: "NewCode" } });
+    fireEvent.click(view.getByRole("button", { name: "Create code and invite traders" }));
+    expect(mocks.creationParams).toHaveBeenLastCalledWith(expect.objectContaining({ account: connectedAccount }));
+    expect(mocks.create).toHaveBeenCalledWith("NewCode");
+
+    act(() => mocks.onCreated!("NewCode"));
+    expect(view.getByRole("button", { name: "Share on X" })).toBeTruthy();
+    expect(view.queryByRole("button", { name: "Connect wallet to create a code" })).toBeNull();
+    expect(view.queryByRole("button", { name: "Create code and invite traders" })).toBeNull();
+    expect(view.container.querySelector(".is-comeback")).toBeNull();
+    await act(async () => fireEvent.click(view.getByRole("button", { name: "Copy link" })));
+    expect(new URL(mocks.copyLink.mock.calls[0][0]).searchParams.get("ref")).toBe("NewCode");
+
+    mocks.account = "0x0000000000000000000000000000000000000003";
+    view.rerender(<Page account={checkedAccount} hasBonus />);
+    expect(view.queryByRole("button", { name: "Share on X" })).toBeNull();
+    expect(view.getByRole("button", { name: "Create code and invite traders" })).toBeTruthy();
+    expect(view.container.querySelector(".rewards-share-code")?.textContent).toBe("GMX");
+  });
+
+  it("waits for the connected wallet's bonus and uses it instead of the checked wallet's rewards", async () => {
+    const checkedAccount = "0x0000000000000000000000000000000000000002";
     mocks.account = "0x0000000000000000000000000000000000000001";
+    mocks.codesByAccount = {
+      [checkedAccount]: { code: null, success: true },
+      [mocks.account]: { code: "ConnectedCode", success: true },
+    };
+    mocks.bonusLoading = true;
+    const view = render(<Page account={checkedAccount} hasBonus />);
+    expect(mocks.lookupBonus).toHaveBeenLastCalledWith(expect.any(String), undefined);
+    fireEvent.click(view.getByRole("button", { name: "Connect wallet to create a code" }));
+    expect(mocks.connect).toHaveBeenCalledOnce();
+    expect(mocks.lookupBonus).toHaveBeenLastCalledWith(expect.any(String), mocks.account);
+    expect((view.getByRole("button", { name: "Copy link" }) as HTMLButtonElement).disabled).toBe(true);
+    expect(view.container.querySelector(".is-comeback")).toBeNull();
+
+    mocks.connectedBonus = { manualRewardRemainingUsd: 500n * PRECISION };
+    mocks.bonusLoading = false;
+    view.rerender(<Page account={checkedAccount} />);
+    expect(view.container.querySelector(".is-comeback")).not.toBeNull();
+    await act(async () => fireEvent.click(view.getByRole("button", { name: "Copy link" })));
+    expect(mocks.pushEvent).toHaveBeenCalledWith(
+      {
+        event: "RewardsLandingPageAction",
+        data: {
+          action: "ComebackShareClick",
+          type: "CopyLink",
+          rewards_exist: true,
+          ref_code_exist: true,
+          rewards: 500,
+        },
+      },
+      { instantSend: true }
+    );
+  });
+
+  it("requests a connection when the checked wallet has no referral code", () => {
     const view = render(<Page account="0x0000000000000000000000000000000000000002" />);
-    fireEvent.click(view.getByRole("button", { name: "Connect this wallet to create a code" }));
+    fireEvent.click(view.getByRole("button", { name: "Connect wallet to create a code" }));
     expect(mocks.connect).toHaveBeenCalledOnce();
     expect(mocks.create).not.toHaveBeenCalled();
     expect(view.queryByRole("textbox", { name: "Your referral code" })).toBeNull();

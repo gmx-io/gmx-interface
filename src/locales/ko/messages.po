@@ -7656,6 +7656,10 @@ msgstr "자체 수수료를 부과하세요"
 msgid "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>"
 msgstr "{receiveTokenSymbol}(으)로 받으면 수익이 스왑되고 {swapProfitFeePercentage}(<0>{swapProfitFeeUsd}</0>)의 비용이 발생합니다. 스왑을 건너뛰려면 {profitTokenSymbol} 및 {collateralTokenSymbol}을 별도로 받으세요. <1>자세히 보기</1>"
 
+#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
+msgid "Connect wallet to create a code"
+msgstr "코드를 만들려면 지갑을 연결하세요"
+
 #: landing/src/pages/Rewards/RewardsFlywheel.tsx
 msgid "Higher multiplier"
 msgstr "더 높은 배율"
@@ -13413,10 +13417,6 @@ msgstr ""
 #: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
 msgid "Referral revenue, built in"
 msgstr "기본 제공되는 추천 수익"
-
-#: landing/src/pages/Rewards/RewardsReferralWallet.tsx
-msgid "Connect this wallet to create a code"
-msgstr "코드를 만들려면 이 지갑을 연결하세요"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Stop Market)"
