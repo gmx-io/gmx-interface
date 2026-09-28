@@ -766,6 +766,10 @@ msgstr "포지션"
 msgid "{0}d"
 msgstr ""
 
+#: src/components/Seo/SEO.tsx
+msgid "GMX is a decentralized perpetual exchange with 100+ markets across crypto, gold, silver, oil, natural gas and stock indices, and up to 100x leverage."
+msgstr "GMX는 암호화폐, 금, 은, 원유, 천연가스, 주가지수에 걸친 100개 이상의 마켓과 최대 100배 레버리지를 제공하는 탈중앙화 무기한 거래소입니다."
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Incentives, airdrops, and prizes will appear here"
 msgstr "인센티브, 에어드롭 및 상금이 여기에 표시됩니다"
@@ -2987,6 +2991,10 @@ msgstr ""
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have a <0>pending transfer</0> to {pendingReceiver}"
 msgstr "{pendingReceiver}에게 <0>대기 중인 전송</0>이 있습니다"
+
+#: src/components/Seo/SEO.tsx
+msgid "GMX is a decentralized perpetual exchange for onchain trading of 100+ markets across crypto, gold (XAU), silver (XAG), energy (WTI, Brent, natural gas) and US equities (SPCX, SPY, QQQ). It offers up to 100x leverage, 24/7 TradFi markets and low-price-impact execution from a self-custody wallet, on Arbitrum, Avalanche, MegaETH and Solana, with deposits from Ethereum, Base and BNB Chain."
+msgstr "GMX는 암호화폐, 금(XAU), 은(XAG), 에너지(WTI, 브렌트유, 천연가스), 미국 주식(SPCX, SPY, QQQ)에 걸친 100개 이상의 마켓을 온체인으로 거래할 수 있는 탈중앙화 무기한 거래소입니다. 최대 100배 레버리지, 24시간 연중무휴 TradFi 마켓, 낮은 가격 영향의 체결을 자기 수탁 지갑에서 이용할 수 있으며, Arbitrum, Avalanche, MegaETH, Solana에서 운영되고 Ethereum, Base, BNB Chain에서 입금할 수 있습니다."
 
 #: src/lib/copyElementAsImage.ts
 msgid "Image downloaded"
@@ -5644,6 +5652,10 @@ msgstr "외부 스왑 실패 처리"
 msgid "Withdraw"
 msgstr "인출"
 
+#: src/components/Seo/SEO.tsx
+msgid "GMX | Perpetual DEX for Crypto, Metals, Stocks & Energy"
+msgstr "GMX | 암호화폐, 금속, 주식, 에너지 무기한 DEX"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop Market"
 msgstr "스탑 마켓 업데이트"
@@ -6090,10 +6102,6 @@ msgstr "이 작업으로 {0}% 더 많은 보상을 받으십시오"
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "Staked esGMX:"
 msgstr "스테이킹된 esGMX:"
-
-#: src/components/Seo/SEO.tsx
-msgid "Trade perpetuals with up to 100x leverage, plus spot trading, directly from your wallet on Arbitrum, Ethereum, and other networks"
-msgstr "Arbitrum, Ethereum 및 기타 네트워크에서 지갑으로 직접 최대 100배 레버리지 무기한 선물 거래 및 현물 거래를 이용하십시오"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Sell fee"
@@ -11901,7 +11909,6 @@ msgstr "적립됨"
 msgid "Cancellable in ..."
 msgstr "취소 가능 시간 ..."
 
-#: src/components/Seo/SEO.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "GMX | decentralized perpetual exchange"
 msgstr ""
