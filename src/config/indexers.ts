@@ -13,7 +13,7 @@ import { getIndexerUrlKey } from "./localStorage";
 type IndexerKey = "stats" | "referrals" | "syntheticsStats" | "subsquid" | "incentives" | "chainLink";
 type IndexerUrlMap = Partial<Record<IndexerKey, string>>;
 
-export const GT_PRICES_INDEXER_URL = "https://gmx-test.squids.live/gmx-gt-prices/graphql";
+export const GT_PRICES_INDEXER_URL = "https://gmx.squids.live/gmx-solana/graphql";
 
 const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
   [ARBITRUM]: {
@@ -76,8 +76,7 @@ export function getIndexerUrl(chainId: number, indexer: IndexerKey): string | un
   }
 
   if (chainId === ARBITRUM && indexer === "incentives" && import.meta.env.VITE_APP_IS_HOME_SITE === "true") {
-    // Temporary home endpoint until the production squid exposes Incentives V2.
-    return "https://gmx-test.squids.live/gmx-synthetics-arbitrum@ivprod/api/graphql";
+    return "https://gmx.squids.live/gmx-synthetics-arbitrum@1cc226/api/graphql";
   }
 
   if (chainId === SOURCE_ETHEREUM_MAINNET) {

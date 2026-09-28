@@ -20,12 +20,12 @@ describe("rewards home incentives indexer", () => {
 
   afterEach(() => vi.unstubAllEnvs());
 
-  it.each([true, false])("uses ivprod for home with development=%s", (development) => {
+  it.each([true, false])("uses the rewards endpoint for home with development=%s", (development) => {
     mockIsDevelopment.mockReturnValue(development);
     vi.stubEnv("VITE_APP_IS_HOME_SITE", "true");
 
     expect(getIndexerUrl(ARBITRUM, "incentives")).toBe(
-      "https://gmx-test.squids.live/gmx-synthetics-arbitrum@ivprod/api/graphql"
+      "https://gmx.squids.live/gmx-synthetics-arbitrum@1cc226/api/graphql"
     );
   });
 

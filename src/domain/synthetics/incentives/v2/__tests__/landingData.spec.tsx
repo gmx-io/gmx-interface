@@ -131,7 +131,7 @@ describe("GT minting statistics", () => {
     await waitFor(() =>
       expect(hook.result().data).toEqual({ totalMinted: 563285724764921n, remainingToNextStep: 1614275235079n })
     );
-    expect(fetcher.mock.calls[0][0]).toBe("https://gmx-test.squids.live/gmx-gt-prices/graphql");
+    expect(fetcher.mock.calls[0][0]).toBe("https://gmx.squids.live/gmx-solana/graphql");
   });
 
   it("leaves unavailable statistics empty instead of reporting zero minted", async () => {
