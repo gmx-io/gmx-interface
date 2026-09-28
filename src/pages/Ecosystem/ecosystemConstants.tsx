@@ -236,14 +236,6 @@ export const integrations: EcosystemGmxPage[] = [
     chainIds: [AVALANCHE],
   },
   {
-    title: msg`Plutus`,
-    link: "https://plutusdao.io/vaults",
-    linkLabel: "plutusdao.io",
-    about: msg`GLP autocompounding vaults`,
-
-    chainIds: [ARBITRUM],
-  },
-  {
     title: msg`Beefy`,
     link: "https://app.beefy.com/",
     linkLabel: "beefy.com",

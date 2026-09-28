@@ -1082,10 +1082,6 @@ msgstr "价格波动剧烈。<0>增加允许的滑点</0>"
 msgid "Only send <0>{chainName}-compatible assets</0> to this address!"
 msgstr "请仅向此地址发送<0>与 {chainName} 兼容的资产</0>！"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Plutus"
-msgstr "Plutus"
-
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {hours} hours{0}"
 msgstr ""
@@ -7624,10 +7620,6 @@ msgstr ""
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "1m 40s"
 msgstr "1 分 40 秒"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GLP autocompounding vaults"
-msgstr "GLP 自动复合金库"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Yes. To earn rebates on both Arbitrum and Avalanche, create your code on both networks. You can use the same code name on each."

@@ -1082,10 +1082,6 @@ msgstr "Preise sind volatil. <0>Erlaubte Slippage erhöhen</0>"
 msgid "Only send <0>{chainName}-compatible assets</0> to this address!"
 msgstr "Senden Sie nur <0>{chainName}-kompatible Assets</0> an diese Adresse!"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Plutus"
-msgstr "Plutus"
-
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {hours} hours{0}"
 msgstr ""
@@ -7624,10 +7620,6 @@ msgstr ""
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "1m 40s"
 msgstr "1m 40s"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GLP autocompounding vaults"
-msgstr "GLP autocompounding Vaults"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Yes. To earn rebates on both Arbitrum and Avalanche, create your code on both networks. You can use the same code name on each."

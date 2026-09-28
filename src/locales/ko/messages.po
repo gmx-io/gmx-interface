@@ -1082,10 +1082,6 @@ msgstr "가격 변동이 심합니다. <0>허용 슬리피지를 높이십시오
 msgid "Only send <0>{chainName}-compatible assets</0> to this address!"
 msgstr "이 주소로는 <0>{chainName} 호환 자산</0>만 보내십시오!"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Plutus"
-msgstr "Plutus"
-
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {hours} hours{0}"
 msgstr ""
@@ -7624,10 +7620,6 @@ msgstr ""
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "1m 40s"
 msgstr "1분 40초"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GLP autocompounding vaults"
-msgstr "GLP 자동 복리 볼트"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Yes. To earn rebates on both Arbitrum and Avalanche, create your code on both networks. You can use the same code name on each."
