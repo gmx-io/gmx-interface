@@ -6571,10 +6571,6 @@ msgstr "s:"
 msgid "RPC error.<0/><1/>Enable <2>Express Trading</2> in settings for better reliability"
 msgstr "RPCエラー。<0/><1/>信頼性向上のため、設定で<2>Express Trading</2>を有効にしてください"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "UniDex Leverage"
-msgstr "UniDexレバレッジ"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "High execution reliability using premium RPCs"
 msgstr "プレミアムRPCによる高い約定信頼性"
@@ -10778,10 +10774,6 @@ msgstr "<0>トレーダー割引は、ティアが確定すると自動的にア
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "LP"
 msgstr "LP"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Leverage trading terminal"
-msgstr "レバレッジ取引ターミナル"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver address"

@@ -252,13 +252,6 @@ export const integrations: EcosystemGmxPage[] = [
     chainIds: [ARBITRUM],
   },
   {
-    title: msg`UniDex Leverage`,
-    link: "https://leverage.unidex.exchange/",
-    linkLabel: "unidex.exchange",
-    about: msg`Leverage trading terminal`,
-    chainIds: [ARBITRUM, AVALANCHE],
-  },
-  {
     title: msg`Symbiosis`,
     link: "https://app.symbiosis.finance/",
     linkLabel: "symbiosis.finance",

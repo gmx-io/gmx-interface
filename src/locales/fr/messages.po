@@ -6571,10 +6571,6 @@ msgstr "s :"
 msgid "RPC error.<0/><1/>Enable <2>Express Trading</2> in settings for better reliability"
 msgstr "Erreur RPC.<0/><1/>Activez <2>Express Trading</2> dans les paramètres pour une meilleure fiabilité"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "UniDex Leverage"
-msgstr "Levier UniDex"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "High execution reliability using premium RPCs"
 msgstr "Fiabilité d'exécution élevée grâce à des RPC premium"
@@ -10778,10 +10774,6 @@ msgstr "<0>Les remises accordées aux traders s'appliquent automatiquement à vo
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "LP"
 msgstr "LP"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Leverage trading terminal"
-msgstr "Terminal de trading avec effet de levier"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver address"

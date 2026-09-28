@@ -6571,10 +6571,6 @@ msgstr "s:"
 msgid "RPC error.<0/><1/>Enable <2>Express Trading</2> in settings for better reliability"
 msgstr "RPC 오류.<0/><1/>안정성 향상을 위해 설정에서 <2>Express Trading</2>을 활성화하십시오"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "UniDex Leverage"
-msgstr "UniDex 레버리지"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "High execution reliability using premium RPCs"
 msgstr "프리미엄 RPC를 통한 높은 체결 안정성"
@@ -10778,10 +10774,6 @@ msgstr "<0>트레이더 할인은 등급이 확정되면 계정에 자동으로 
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "LP"
 msgstr "LP"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Leverage trading terminal"
-msgstr "레버리지 거래 터미널"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver address"
