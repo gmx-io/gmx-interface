@@ -11,13 +11,13 @@ export function getContractErrorToastContent({
   errorData,
   slippageInputId,
   isSizeIncrease,
-  decodeDepth = 0,
+  isLpWithdrawal,
 }: {
   chainId: number;
   errorData: Pick<ErrorData, "contractError" | "contractErrorArgs">;
   slippageInputId?: string;
   isSizeIncrease?: boolean;
-  decodeDepth?: number;
+  isLpWithdrawal?: boolean;
 }): ReactNode | undefined {
   if (!errorData.contractError) {
     return undefined;
@@ -43,34 +43,32 @@ export function getContractErrorToastContent({
       );
 
     case CustomErrorName.ExternalCallFailed: {
-      if (decodeDepth < 1) {
-        const nestedErrorData = getStringContractErrorArg(errorData.contractErrorArgs, 0, "data");
-        if (nestedErrorData) {
-          const decodedExternalCallError = tryDecodeCustomError(nestedErrorData);
+      const nestedErrorData = getStringContractErrorArg(errorData.contractErrorArgs, 0, "data");
+      if (nestedErrorData) {
+        const decodedExternalCallError = tryDecodeCustomError(nestedErrorData);
 
-          if (decodedExternalCallError) {
-            const nestedContractErrorMessage = getContractErrorToastContent({
-              chainId,
-              errorData: {
-                contractError: decodedExternalCallError.name,
-                contractErrorArgs: decodedExternalCallError.args,
-              },
-              slippageInputId,
-              isSizeIncrease,
-              decodeDepth: decodeDepth + 1,
-            });
+        if (decodedExternalCallError) {
+          const nestedContractErrorMessage = getContractErrorToastContent({
+            chainId,
+            errorData: {
+              contractError: decodedExternalCallError.name,
+              contractErrorArgs: decodedExternalCallError.args,
+            },
+            slippageInputId,
+            isSizeIncrease,
+            isLpWithdrawal,
+          });
 
-            if (nestedContractErrorMessage) {
-              return nestedContractErrorMessage;
-            }
+          if (nestedContractErrorMessage) {
+            return nestedContractErrorMessage;
           }
         }
       }
 
-      return getContractErrorMessage({ chainId, errorData, isSizeIncrease, decodeDepth });
+      return getContractErrorMessage({ chainId, errorData, isSizeIncrease, isLpWithdrawal });
     }
 
     default:
-      return getContractErrorMessage({ chainId, errorData, isSizeIncrease, decodeDepth });
+      return getContractErrorMessage({ chainId, errorData, isSizeIncrease, isLpWithdrawal });
   }
 }

@@ -1154,6 +1154,10 @@ msgstr "Remplacer le dépôt de marge"
 msgid "Earns MegaETH points"
 msgstr ""
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Withdrawal unavailable: selling this amount would raise long traders' PnL-to-pool ratio to {pnlToPoolRatioText}, above the {maxPnlRatioText} limit. Try a smaller amount or try again later."
+msgstr "Retrait indisponible : vendre ce montant porterait le ratio PnL/pool des traders long à {pnlToPoolRatioText}, au-dessus de la limite de {maxPnlRatioText}. Essayez un montant plus faible ou réessayez plus tard."
+
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Borrowing"
@@ -3956,7 +3960,7 @@ msgstr "Déclencheur"
 msgid "Mark price changed. Increase allowed slippage"
 msgstr "Le prix de référence a changé. Augmentez le glissement autorisé"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationErrorText.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6524,8 +6528,7 @@ msgstr "Ordres de déclenchement"
 msgid "GMX uses TradingView for real-time cryptocurrency charts. Track <0>BTCUSD</0> and other pairs with interactive charting tools."
 msgstr "GMX utilise TradingView pour les graphiques de cryptomonnaies en temps réel. Suivez <0>BTCUSD</0> et d'autres paires avec des outils graphiques interactifs."
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationErrorText.ts
 msgid "Error simulating deposit"
 msgstr "Erreur lors de la simulation du dépôt"
 
@@ -10132,8 +10135,8 @@ msgstr ""
 msgid "Edit order"
 msgstr "Modifier l'ordre"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationErrorText.ts
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Error simulating withdrawal"
 msgstr "Erreur de simulation de retrait"
@@ -12278,6 +12281,10 @@ msgstr "{count, plural, one {Ordre} other {# Ordres}}"
 msgid "Avalanche trading incentives"
 msgstr "Incitations au trading sur Avalanche"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Withdrawal unavailable: selling this amount would raise short traders' PnL-to-pool ratio to {pnlToPoolRatioText}, above the {maxPnlRatioText} limit. Try a smaller amount or try again later."
+msgstr "Retrait indisponible : vendre ce montant porterait le ratio PnL/pool des traders short à {pnlToPoolRatioText}, au-dessus de la limite de {maxPnlRatioText}. Essayez un montant plus faible ou réessayez plus tard."
+
 #: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
 msgid "External routes are only used for market swaps."
 msgstr "Les routes externes ne sont utilisées que pour les swaps au marché."
@@ -12751,7 +12758,7 @@ msgstr "Incitation bonus GLV (test)"
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationErrorText.ts
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx

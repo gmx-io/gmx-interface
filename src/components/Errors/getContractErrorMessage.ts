@@ -1,7 +1,14 @@
 import { t } from "@lingui/macro";
 
-import { ErrorData, getBigIntContractErrorArg, getStringContractErrorArg, tryDecodeCustomError } from "lib/errors";
-import { formatAmount, formatPercentage, formatUsd } from "lib/numbers";
+import {
+  ErrorData,
+  ErrorLike,
+  getBigIntContractErrorArg,
+  getStringContractErrorArg,
+  tryDecodeCustomError,
+} from "lib/errors";
+import { decodeInnermostCustomErrorFromError } from "lib/errors/customErrors";
+import { formatAmount, formatPercentage, formatUsd, PERCENT_PRECISION_DECIMALS, trimZeroDecimals } from "lib/numbers";
 import { TOKENS_MAP } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { CustomErrorName } from "sdk/utils/errors/transactionsErrors";
@@ -11,16 +18,34 @@ export function getMarginBelowMinimumErrorMessage() {
   return t`Margin is below the minimum required for the position size`;
 }
 
+export function getContractErrorMessageFromError({
+  chainId,
+  error,
+  isLpWithdrawal,
+}: {
+  chainId: number;
+  error: ErrorLike | undefined;
+  isLpWithdrawal?: boolean;
+}): string | undefined {
+  const parsedError = decodeInnermostCustomErrorFromError(error);
+
+  return getContractErrorMessage({
+    chainId,
+    errorData: { contractError: parsedError?.name, contractErrorArgs: parsedError?.args },
+    isLpWithdrawal,
+  });
+}
+
 export function getContractErrorMessage({
   chainId,
   errorData,
   isSizeIncrease,
-  decodeDepth = 0,
+  isLpWithdrawal,
 }: {
   chainId?: number;
   errorData: Pick<ErrorData, "contractError" | "contractErrorArgs">;
   isSizeIncrease?: boolean;
-  decodeDepth?: number;
+  isLpWithdrawal?: boolean;
 }): string | undefined {
   if (!errorData.contractError) {
     return undefined;
@@ -168,6 +193,15 @@ export function getContractErrorMessage({
       const pnlToPoolFactor = getBigIntContractErrorArg(args, 0, "pnlToPoolFactor");
       const maxPnlFactor = getBigIntContractErrorArg(args, 1, "maxPnlFactor");
 
+      if (isLpWithdrawal && pnlToPoolFactor !== undefined && maxPnlFactor !== undefined) {
+        const pnlToPoolRatioText = formatPnlFactorPercentage(pnlToPoolFactor);
+        const maxPnlRatioText = formatPnlFactorPercentage(maxPnlFactor);
+
+        return errorData.contractError === CustomErrorName.PnlFactorExceededForLongs
+          ? t`Withdrawal unavailable: selling this amount would raise long traders' PnL-to-pool ratio to ${pnlToPoolRatioText}, above the ${maxPnlRatioText} limit. Try a smaller amount or try again later.`
+          : t`Withdrawal unavailable: selling this amount would raise short traders' PnL-to-pool ratio to ${pnlToPoolRatioText}, above the ${maxPnlRatioText} limit. Try a smaller amount or try again later.`;
+      }
+
       const pnlToPoolFactorText = formatPercentage(pnlToPoolFactor, { bps: false });
       const maxPnlFactorText = formatPercentage(maxPnlFactor, { bps: false });
 
@@ -265,25 +299,23 @@ export function getContractErrorMessage({
     }
 
     case CustomErrorName.ExternalCallFailed: {
-      if (decodeDepth < 1) {
-        const nestedErrorData = getStringContractErrorArg(args, 0, "data");
-        if (nestedErrorData) {
-          const decodedExternalCallError = tryDecodeCustomError(nestedErrorData);
+      const nestedErrorData = getStringContractErrorArg(args, 0, "data");
+      if (nestedErrorData) {
+        const decodedExternalCallError = tryDecodeCustomError(nestedErrorData);
 
-          if (decodedExternalCallError) {
-            const nestedContractErrorMessage = getContractErrorMessage({
-              chainId,
-              errorData: {
-                contractError: decodedExternalCallError.name,
-                contractErrorArgs: decodedExternalCallError.args,
-              },
-              isSizeIncrease,
-              decodeDepth: decodeDepth + 1,
-            });
+        if (decodedExternalCallError) {
+          const nestedContractErrorMessage = getContractErrorMessage({
+            chainId,
+            errorData: {
+              contractError: decodedExternalCallError.name,
+              contractErrorArgs: decodedExternalCallError.args,
+            },
+            isSizeIncrease,
+            isLpWithdrawal,
+          });
 
-            if (nestedContractErrorMessage) {
-              return nestedContractErrorMessage;
-            }
+          if (nestedContractErrorMessage) {
+            return nestedContractErrorMessage;
           }
         }
       }
@@ -339,4 +371,8 @@ export function getContractErrorMessage({
     default:
       return undefined;
   }
+}
+
+function formatPnlFactorPercentage(factor: bigint) {
+  return `${trimZeroDecimals(formatAmount(bigMath.abs(factor), PERCENT_PRECISION_DECIMALS, 2))}%`;
 }

@@ -265,6 +265,7 @@ export const useWithdrawalTransactions = ({
               actionName: "GM Withdrawal",
               requestId: metricData.requestId,
               metricId: metricData.metricId,
+              isLpWithdrawal: true,
             });
           });
       } else if (paySource === "gmxAccount") {
@@ -503,6 +504,7 @@ export const useWithdrawalTransactions = ({
             actionName: "GM Withdrawal",
             requestId: metricData.requestId,
             metricId: metricData.metricId,
+            isLpWithdrawal: true,
           });
         });
     },

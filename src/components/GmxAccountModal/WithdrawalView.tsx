@@ -108,6 +108,7 @@ import Button from "components/Button/Button";
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
+import { getContractErrorMessageFromError } from "components/Errors/getContractErrorMessage";
 import { calculateNetworkFeeDetails } from "components/GmxAccountModal/calculateNetworkFeeDetails";
 import { useAvailableToTradeAssetMultichain, useGmxAccountWithdrawNetworks } from "components/GmxAccountModal/hooks";
 import NumberInput from "components/NumberInput/NumberInput";
@@ -1295,7 +1296,9 @@ export const WithdrawalView = () => {
       };
     } else if (expressTxnParamsAsyncResult.error) {
       buttonState = {
-        text: expressTxnParamsAsyncResult.error.name.slice(0, 32) ?? t`Error simulating withdrawal`,
+        text:
+          getContractErrorMessageFromError({ chainId, error: expressTxnParamsAsyncResult.error }) ??
+          t`Error simulating withdrawal`,
         disabled: true,
       };
     }

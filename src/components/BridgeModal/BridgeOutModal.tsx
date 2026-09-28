@@ -23,6 +23,7 @@ import { selectGmxAccountGasPaymentTokenAddress } from "context/SyntheticsStateC
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useArbitraryError, useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
+import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
 import type { BridgeOutParams } from "domain/multichain/types";
 import { useQuoteSendNativeFee } from "domain/multichain/useQuoteSend";
 import { buildAndSignBridgeOutTxn } from "domain/synthetics/express/expressOrderUtils";
@@ -45,8 +46,8 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
-import { getTxnErrorToast } from "components/Errors/errorToasts";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
+import { getContractErrorMessageFromError } from "components/Errors/getContractErrorMessage";
 import { SelectedPoolLabel } from "components/GmSwap/GmSwapBox/SelectedPool";
 import { useGmxAccountWithdrawNetworks } from "components/GmxAccountModal/hooks";
 import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
@@ -278,14 +279,10 @@ export function BridgeOutModal({
         });
       });
     } catch (error) {
-      const toastParams = getTxnErrorToast(chainId, error, { defaultMessage: t`Withdrawal failed` });
-      helperToast.error(toastParams.errorContent, {
-        autoClose: toastParams.autoCloseToast,
-        tradingErrorInfo: {
-          actionName: "Bridge Withdrawal",
-          errorData: error,
-          collateral: marketToken?.address,
-        },
+      toastCustomOrStargateError(chainId, error, {
+        actionName: "Bridge Withdrawal",
+        collateral: marketToken?.address,
+        defaultMessage: t`Withdrawal failed`,
       });
     } finally {
       setIsCreatingTxn(false);
@@ -384,6 +381,15 @@ export function BridgeOutModal({
       };
     }
 
+    if (expressTxnParamsAsyncResult.error) {
+      return {
+        text:
+          getContractErrorMessageFromError({ chainId, error: expressTxnParamsAsyncResult.error }) ??
+          t`Error simulating withdrawal`,
+        disabled: true,
+      };
+    }
+
     if (expressTxnParamsAsyncResult.data === undefined) {
       return {
         text: (
@@ -410,6 +416,7 @@ export function BridgeOutModal({
     marketTokenDecimals,
     bridgeOutAmount,
     errors?.isOutOfTokenError,
+    expressTxnParamsAsyncResult.error,
     expressTxnParamsAsyncResult.data,
     chainId,
   ]);
