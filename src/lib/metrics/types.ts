@@ -578,7 +578,7 @@ export type MulticallBatchedTiming = {
   data: {
     chainId: number;
     priority: string;
-    callsCount: number;
+    callsCountBucket: string;
   };
 };
 
@@ -631,7 +631,7 @@ export type MulticallBatchedCallCounter = {
   data: {
     chainId: number;
     priority: string;
-    callsCount: number;
+    callsCountBucket: string;
   };
 };
 
@@ -640,7 +640,7 @@ export type MulticallBatchedErrorCounter = {
   data: {
     chainId: number;
     priority: string;
-    callsCount: number;
+    callsCountBucket: string;
   };
 };
 
