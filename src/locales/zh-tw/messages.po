@@ -561,6 +561,10 @@ msgstr "手動獎勵子集（USD）"
 msgid "position size"
 msgstr "倉位規模"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Confirm withdraw"
+msgstr "確認提取"
+
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Settled funding fees"
@@ -1060,6 +1064,9 @@ msgstr "餘額將很快更新。"
 msgid "Accrued funding fees available for settlement"
 msgstr "可結算的累計資金費率費用"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Convert esGMX to GMX tokens. Read the vesting details before using the vaults."
 msgstr "將 esGMX 轉換為 GMX 代幣。使用金庫前請先閱讀歸屬詳情。"
@@ -1205,6 +1212,10 @@ msgstr "週期"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position impact"
 msgstr "倉位影響"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Insufficient staked tokens"
+msgstr "質押代幣不足"
 
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Creating code..."
@@ -1767,6 +1778,10 @@ msgstr "永續合約中有可用結果。"
 #: src/pages/RewardsPage/components/rewardsTiersShared.tsx
 msgid "Qualified this epoch"
 msgstr "本週期符合資格"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Deposited"
+msgstr "已存入"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Signing..."
@@ -2846,6 +2861,7 @@ msgstr "市場暫時停用"
 msgid "Shift error"
 msgstr "轉移錯誤"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
@@ -3154,6 +3170,7 @@ msgstr "倉位超過最大允許槓桿。<0>閱讀更多</0>。"
 msgid "Short borrowing rate"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX"
@@ -3170,6 +3187,10 @@ msgstr "正在更新已索引的稽核資料…"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Amount is below the withdrawal limit. Try an amount larger than <0>{lowerLimitFormatted}</0>."
 msgstr "金額低於提取下限。請嘗試大於 <0>{lowerLimitFormatted}</0> 的金額。"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "No funds to claim"
+msgstr "無可領取的資金"
 
 #: src/components/AprInfo/AprInfo.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
@@ -3491,6 +3512,7 @@ msgid "{txnTypeText} {0} order for"
 msgstr "{txnTypeText} {0} 訂單於"
 
 #: src/components/BuyInputSection/BuyInputSection.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -4028,6 +4050,7 @@ msgstr "天"
 msgid "Withdrawing from GMX Account..."
 msgstr "正在從 GMX Account 提取..."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Vesting status"
@@ -5024,6 +5047,14 @@ msgstr "申請聯繫"
 msgid "Sending..."
 msgstr "傳送中..."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Max capacity:"
+msgstr "最大容量："
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Withdraw and unreserve GMX"
+msgstr "提取並解除 GMX 預留"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Copin"
 msgstr "Copin"
@@ -5299,6 +5330,7 @@ msgstr ""
 msgid "Share GMX feedback"
 msgstr "分享 GMX 意見回饋"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw failed"
 msgstr "提取失敗"
@@ -5396,6 +5428,8 @@ msgstr ""
 msgid "Withdrawal failed"
 msgstr "提取失敗"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
@@ -5522,6 +5556,7 @@ msgstr "V1"
 msgid "Current epoch"
 msgstr "目前週期"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Staked tokens reserved for vesting"
 msgstr "為歸屬鎖定保留的已質押代幣"
@@ -5644,6 +5679,7 @@ msgstr "兌換虛擬庫存（做多 / 做空）"
 msgid "Withdrawal"
 msgstr "提取"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "No funds to withdraw"
 msgstr "沒有可提取的資金"
@@ -5950,6 +5986,7 @@ msgstr ""
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
@@ -6378,6 +6415,8 @@ msgstr "強制外部兌換失敗"
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -6530,6 +6569,7 @@ msgstr "本頁推薦獎勵 esGMX"
 msgid "Fee"
 msgstr "費用"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Vault capacity"
 msgstr "金庫容量"
@@ -7073,6 +7113,10 @@ msgstr "領取完成"
 msgid "Open in explorer"
 msgstr "在瀏覽器中查看"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "{0} tokens converted to GMX from the {1} esGMX deposited for vesting"
+msgstr "存入用於歸屬的 {1} esGMX 中，已有 {0} 個代幣轉換為 GMX"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Margin at liquidation"
 msgstr ""
@@ -7112,6 +7156,10 @@ msgstr "全期間"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "PnL after all fees"
 msgstr "扣除所有費用後的盈虧"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Additional reserve required:"
+msgstr "額外所需預留："
 
 #: landing/src/pages/Builders/StickyApplyBar.tsx
 msgid "Build on GMX. Get paid on every trade."
@@ -7353,6 +7401,10 @@ msgstr "{updateOrdersCount} 筆止盈/止損訂單已更新"
 msgid "What's the minimum volume to qualify?"
 msgstr "符合資格的最低交易量是多少？"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Current reserved:"
+msgstr "目前已預留："
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Support for"
 msgstr "支援"
@@ -7419,6 +7471,7 @@ msgid "Buy GMX on GMX swap"
 msgstr ""
 
 #: src/components/Claims/ClaimableCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Claimable"
 msgstr "可領取"
@@ -7536,6 +7589,10 @@ msgstr "無法計算訂單"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL CAP SHORT"
 msgstr "POOL CAP SHORT"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "GMX vault"
+msgstr "GMX 金庫"
 
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Sending settle request..."
@@ -7816,6 +7873,7 @@ msgstr "選擇倉位"
 
 #: src/components/AppHeader/AppHeaderUser.tsx
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
@@ -8075,6 +8133,7 @@ msgstr "類型"
 msgid "Request settlement of funding fees"
 msgstr "請求結算資金費率"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdrawn"
 msgstr "已提取"
@@ -8246,6 +8305,7 @@ msgstr ""
 msgid "Order not found. May have been canceled or already executed"
 msgstr "找不到訂單。可能已被取消或已執行"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "Vesting"
@@ -9517,6 +9577,7 @@ msgstr "兌換利潤費用"
 msgid "Solv Finance"
 msgstr "Solv Finance"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
@@ -9852,6 +9913,7 @@ msgstr "質押 {tokenSymbol} 獎勵"
 msgid "Active Balancer Program code"
 msgstr "有效的 Balancer 計劃代碼"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
@@ -10595,6 +10657,7 @@ msgstr "交易者檔案"
 msgid "Connect your wallet to view your rebates distribution history"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claimed"
 msgstr "已領取"
@@ -10713,6 +10776,9 @@ msgstr "{increaseOrDecreaseText}：{0} {longShortText}"
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Claims/ClaimableCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claim"
@@ -10737,6 +10803,7 @@ msgstr "{0}ms"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -10830,6 +10897,7 @@ msgstr "24 小時交易量"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -11011,6 +11079,10 @@ msgstr "{addressLabel} 於 {networkLabel}"
 msgid "Loading fees..."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "{0} GMX"
+msgstr "{0} GMX"
+
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 msgid "Per qualifying trade"
 msgstr "每筆符合資格的交易"
@@ -11125,7 +11197,7 @@ msgstr "市場下架"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Last updated:"
-msgstr ""
+msgstr "最後更新："
 
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
@@ -11338,6 +11410,9 @@ msgstr "使用 {0} 和 {1} 購買 GM，上限如下"
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -12433,6 +12508,10 @@ msgstr "歸屬 {0} esGMX 還需要質押 {1} GMX 作為抵押品。您的錢包�
 msgid "What is GMX?"
 msgstr "什麼是 GMX？"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Deposit submitted"
+msgstr "存入已提交"
+
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 msgid "Program start"
 msgstr "計畫開始時間"
@@ -12700,12 +12779,18 @@ msgstr "搜尋機會"
 msgid "Dark"
 msgstr "深色"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/pages/RewardsPage/components/RewardsDistributeEsGmxModal.tsx
 #: src/pages/RewardsPage/components/RewardsMintEsGmxModal.tsx
 #: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 msgid "Confirming..."
 msgstr "確認中..."
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Deposited:"
+msgstr "已存入："
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
@@ -13214,6 +13299,10 @@ msgstr "進行中..."
 msgid "One-Click Trading time limit expired. You're now using Express Trading."
 msgstr "One-Click Trading 時間限制已到期。您現在正在使用 Express Trading。"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+msgid "Affiliate vault"
+msgstr "推廣者金庫"
+
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} up to the caps below. Remaining tokens are reserved for open positions."
 msgstr "賣出 GM 換取 {0}，上限如下。剩餘代幣保留給未平倉的倉位。"
@@ -13594,6 +13683,7 @@ msgid "Buy APE on Arbitrum with <0>Camelot</0>"
 msgstr "透過 <0>Camelot</0> 在 Arbitrum 上購買 APE"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Depositing..."
 msgstr "存入中..."
@@ -13773,6 +13863,9 @@ msgstr "領取參數不可用。請幾秒後重試"
 msgid "Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Read details"
 msgstr "閱讀詳情"
@@ -14555,6 +14648,7 @@ msgstr "小時"
 msgid "Invalid receiver address"
 msgstr "接收地址無效"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw submitted"
 msgstr "提取已提交"
