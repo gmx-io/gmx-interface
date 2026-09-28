@@ -1562,10 +1562,6 @@ msgid "DATE"
 msgstr "ДАТА"
 
 #: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "The Season 1 program is sustainable. Rewards = (your open/close fees − affiliate rebate) × 10% × your Multiplier, and the multiplier is capped at 10x. And 10% × 10x is 100%, so the esGMX paid on your trades can never exceed the fees those trades generated. GT is credited on top, at 20% of the esGMX amount."
-msgstr "Программа сезона 1 устойчива. Награды = (ваши комиссии за открытие/закрытие − партнёрское возмещение) × 10% × ваш множитель, при этом множитель ограничен 10x. А 10% × 10x — это 100%, поэтому выплаты esGMX за ваши сделки никогда не могут превышать комиссии, которые эти сделки принесли. GT начисляются дополнительно в размере 20% от суммы в esGMX."
-
-#: landing/src/pages/Rewards/RewardsFaq.tsx
 msgid "Does volume through an integrator count?"
 msgstr "Учитывается ли объём через интегратора?"
 
@@ -1847,6 +1843,10 @@ msgstr "Акции"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "I'm an affiliate"
 msgstr "Я аффилиат"
+
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+msgid "Season 1 - <0>{countdown}</0>"
+msgstr "Сезон 1 - <0>{countdown}</0>"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated daily fees"
@@ -2323,6 +2323,10 @@ msgstr "Вывести {glvOrGm}"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Receive voting power and participate in governance"
 msgstr "Получить право голоса и участвовать в управлении"
+
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+msgid "Season 1 - {countdown}"
+msgstr "Сезон 1 - {countdown}"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No GMX swap route found for {0} to {1}. Try <0>an external aggregator</0>."
@@ -9677,6 +9681,10 @@ msgstr "РАСЧ. PNL"
 msgid "No announcements found"
 msgstr "Объявления не найдены"
 
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+msgid "{hours}h {minutes}m"
+msgstr "{hours}ч {minutes}м"
+
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your {currentTierDiscount}% discount is now active!"
 msgstr ""
@@ -13238,10 +13246,6 @@ msgstr "Ссылка"
 #: src/components/TradeHistory/keys.ts
 msgid "Expired Market Swap"
 msgstr "Истёкший рыночный обмен"
-
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "How can GMX afford this?"
-msgstr "Как GMX может себе это позволить?"
 
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation threshold."

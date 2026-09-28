@@ -1562,10 +1562,6 @@ msgid "DATE"
 msgstr "날짜"
 
 #: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "The Season 1 program is sustainable. Rewards = (your open/close fees − affiliate rebate) × 10% × your Multiplier, and the multiplier is capped at 10x. And 10% × 10x is 100%, so the esGMX paid on your trades can never exceed the fees those trades generated. GT is credited on top, at 20% of the esGMX amount."
-msgstr "시즌 1 프로그램은 지속 가능합니다. 보상 = (포지션 진입/청산 수수료 − 제휴 리베이트) × 10% × 내 배수이며, 배수의 상한은 10x입니다. 10% × 10x는 100%이므로, 내 거래에 지급되는 esGMX는 해당 거래에서 발생한 수수료를 초과할 수 없습니다. GT는 esGMX 금액의 20%에 해당하는 금액이 추가로 적립됩니다."
-
-#: landing/src/pages/Rewards/RewardsFaq.tsx
 msgid "Does volume through an integrator count?"
 msgstr "통합 서비스를 통한 거래량도 인정되나요?"
 
@@ -1847,6 +1843,10 @@ msgstr "주식"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "I'm an affiliate"
 msgstr "저는 제휴사입니다"
+
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+msgid "Season 1 - <0>{countdown}</0>"
+msgstr "시즌 1 - <0>{countdown}</0>"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated daily fees"
@@ -2323,6 +2323,10 @@ msgstr "{glvOrGm} 출금"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Receive voting power and participate in governance"
 msgstr "투표권 획득 및 거버넌스 참여"
+
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+msgid "Season 1 - {countdown}"
+msgstr "시즌 1 - {countdown}"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No GMX swap route found for {0} to {1}. Try <0>an external aggregator</0>."
@@ -9677,6 +9681,10 @@ msgstr "예상 PNL"
 msgid "No announcements found"
 msgstr "공지사항이 없습니다"
 
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+msgid "{hours}h {minutes}m"
+msgstr "{hours}시간 {minutes}분"
+
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your {currentTierDiscount}% discount is now active!"
 msgstr ""
@@ -13238,10 +13246,6 @@ msgstr "링크"
 #: src/components/TradeHistory/keys.ts
 msgid "Expired Market Swap"
 msgstr "만료된 마켓 스왑"
-
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "How can GMX afford this?"
-msgstr "GMX는 이 보상을 어떻게 감당하나요?"
 
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation threshold."

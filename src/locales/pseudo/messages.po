@@ -1562,10 +1562,6 @@ msgid "DATE"
 msgstr ""
 
 #: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "The Season 1 program is sustainable. Rewards = (your open/close fees − affiliate rebate) × 10% × your Multiplier, and the multiplier is capped at 10x. And 10% × 10x is 100%, so the esGMX paid on your trades can never exceed the fees those trades generated. GT is credited on top, at 20% of the esGMX amount."
-msgstr ""
-
-#: landing/src/pages/Rewards/RewardsFaq.tsx
 msgid "Does volume through an integrator count?"
 msgstr ""
 
@@ -1846,6 +1842,10 @@ msgstr "[!! Stocks !!]"
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "I'm an affiliate"
+msgstr ""
+
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+msgid "Season 1 - <0>{countdown}</0>"
 msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
@@ -2322,6 +2322,10 @@ msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Receive voting power and participate in governance"
+msgstr ""
+
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+msgid "Season 1 - {countdown}"
 msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
@@ -9677,6 +9681,10 @@ msgstr ""
 msgid "No announcements found"
 msgstr ""
 
+#: landing/src/pages/Rewards/RewardsHeaderBadge.tsx
+msgid "{hours}h {minutes}m"
+msgstr ""
+
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your {currentTierDiscount}% discount is now active!"
 msgstr ""
@@ -13237,10 +13245,6 @@ msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Expired Market Swap"
-msgstr ""
-
-#: landing/src/pages/Rewards/RewardsFaq.tsx
-msgid "How can GMX afford this?"
 msgstr ""
 
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx

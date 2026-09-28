@@ -44,18 +44,44 @@ describe("RewardsHeaderBadge", () => {
     expect(view.queryByText("Live")).toBeNull();
   });
 
-  it("switches both badge labels from Soon to Live when the indexed start time arrives", async () => {
+  it("shows total hours and minutes and updates at the next countdown minute", async () => {
+    const untilStart = (48 * 60 + 22) * 60 + 30;
+    mockConfig.mockReturnValue({ data: { programStartTimestamp: now / 1000 + untilStart } } as never);
+    const view = render(<Page />);
+    expect(view.getByTitle("Season 1 - 48h 23m")).toBeTruthy();
+    expect(view.container.querySelector(".rewards-live-full")?.textContent).toBe("Season 1 - 48h 23m");
+    expect(view.container.querySelector(".rewards-live-compact")?.textContent).toBe("48h 23m");
+    expect(view.queryByText("Soon")).toBeNull();
+
+    await act(async () => vi.advanceTimersByTimeAsync(30_000));
+    expect(view.getByTitle("Season 1 - 48h 22m")).toBeTruthy();
+
+    await act(async () => vi.advanceTimersByTimeAsync(60_000));
+    expect(view.getByTitle("Season 1 - 48h 21m")).toBeTruthy();
+  });
+
+  it("rolls hours into minutes as the launch approaches", async () => {
+    mockConfig.mockReturnValue({ data: { programStartTimestamp: now / 1000 + 3600 } } as never);
+    const view = render(<Page />);
+    expect(view.getByTitle("Season 1 - 1h 0m")).toBeTruthy();
+
+    await act(async () => vi.advanceTimersByTimeAsync(60_000));
+    expect(view.getByTitle("Season 1 - 0h 59m")).toBeTruthy();
+  });
+
+  it("switches both countdown labels to Live exactly when the indexed start time arrives", async () => {
     mockConfig.mockReturnValue({ data: { programStartTimestamp: now / 1000 + 5 } } as never);
     const view = render(<Page />);
-    expect(view.getByTitle("Season 1 · Soon")).toBeTruthy();
+    expect(view.getByTitle("Season 1 - 0h 1m")).toBeTruthy();
 
     await act(async () => vi.advanceTimersByTimeAsync(4_999));
-    expect(view.getByText("Soon")).toBeTruthy();
+    expect(view.getByTitle("Season 1 - 0h 1m")).toBeTruthy();
 
-    await act(async () => vi.advanceTimersByTimeAsync(2));
+    await act(async () => vi.advanceTimersByTimeAsync(1));
     expect(view.getByTitle("Season 1 · Live")).toBeTruthy();
     expect(view.getByText("Live")).toBeTruthy();
     expect(view.queryByText("Soon")).toBeNull();
+    expect(vi.getTimerCount()).toBe(0);
   });
 
   it.each([0, -60])("shows Live when the start is %s seconds from now", (offset) => {
@@ -69,9 +95,29 @@ describe("RewardsHeaderBadge", () => {
 
     mockConfig.mockReturnValue({ data: { programStartTimestamp: now / 1000 + 60 } } as never);
     view.rerender(<Page />);
+    expect(view.getByTitle("Season 1 - 0h 1m")).toBeTruthy();
     expect(vi.getTimerCount()).toBe(1);
 
     view.unmount();
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it("reschedules the countdown when the indexed start time changes", async () => {
+    mockConfig.mockReturnValue({ data: { programStartTimestamp: now / 1000 + 5 } } as never);
+    const view = render(<Page />);
+
+    mockConfig.mockReturnValue({ data: { programStartTimestamp: now / 1000 + 125 } } as never);
+    view.rerender(<Page />);
+    expect(view.getByTitle("Season 1 - 0h 3m")).toBeTruthy();
+    expect(vi.getTimerCount()).toBe(1);
+
+    await act(async () => vi.advanceTimersByTimeAsync(5_000));
+    expect(view.getByTitle("Season 1 - 0h 2m")).toBeTruthy();
+    expect(view.queryByText("Live")).toBeNull();
+
+    mockConfig.mockReturnValue({ data: null } as never);
+    view.rerender(<Page />);
+    expect(view.getByTitle("Season 1 · Soon")).toBeTruthy();
     expect(vi.getTimerCount()).toBe(0);
   });
 });

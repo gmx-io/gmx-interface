@@ -15,16 +15,6 @@ export function RewardsFaq() {
       ),
     },
     {
-      question: <Trans>How can GMX afford this?</Trans>,
-      answer: (
-        <Trans>
-          The Season 1 program is sustainable. Rewards = (your open/close fees − affiliate rebate) × 10% × your
-          Multiplier, and the multiplier is capped at 10x. And 10% × 10x is 100%, so the esGMX paid on your trades can
-          never exceed the fees those trades generated. GT is credited on top, at 20% of the esGMX amount.
-        </Trans>
-      ),
-    },
-    {
       question: <Trans>Which chains count for Season 1?</Trans>,
       answer: (
         <Trans>
