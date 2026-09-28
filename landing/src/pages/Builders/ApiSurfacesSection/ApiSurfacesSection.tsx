@@ -79,7 +79,7 @@ export function ApiSurfacesSection() {
               </div>
               <div
                 className={cx(
-                  "relative mt-auto flex items-center justify-between gap-8 text-16 -tracking-[0.512px]",
+                  "relative mt-auto flex items-center justify-between gap-8 pt-16 text-16 -tracking-[0.512px]",
                   card.highlighted ? "text-blue-300" : "text-blue-400"
                 )}
               >
