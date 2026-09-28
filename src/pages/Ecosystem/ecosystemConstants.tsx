@@ -172,14 +172,6 @@ export const integrations: EcosystemGmxPage[] = [
     chainIds: [ARBITRUM, AVALANCHE],
   },
   {
-    title: msg`Stryke`,
-    link: "https://www.stryke.xyz",
-    linkLabel: "stryke.xyz",
-    about: msg`Decentralized options protocol`,
-
-    chainIds: [ARBITRUM, AVALANCHE],
-  },
-  {
     title: msg`Jones DAO`,
     link: "https://jonesdao.io",
     linkLabel: "jonesdao.io",

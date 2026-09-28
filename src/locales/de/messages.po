@@ -4211,10 +4211,6 @@ msgstr "Empfehlungsbedingungen"
 msgid "URL"
 msgstr "URL"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Decentralized options protocol"
-msgstr "Dezentralisiertes Optionsprotokoll"
-
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Trade at scale without worrying about thin order books or slippage"
 msgstr "Handeln Sie in großem Umfang, ohne sich über dünne Orderbücher oder Slippage Sorgen machen zu müssen"
@@ -6785,10 +6781,6 @@ msgstr ""
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "This is an external swap routed through KyberSwap. Allowed slippage includes price impact and fees, unlike GMX native swaps where these are separate."
 msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Stryke"
-msgstr "Stryke"
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "GMX APR"
