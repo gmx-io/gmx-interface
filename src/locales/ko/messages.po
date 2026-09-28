@@ -7204,7 +7204,6 @@ msgid "Oracle price is stale"
 msgstr ""
 
 #: landing/src/pages/Rewards/ReturningTrader.tsx
-#: landing/src/pages/Rewards/ReturningTrader.tsx
 msgid "Retry historical volume"
 msgstr "과거 거래량 다시 조회"
 
@@ -12289,10 +12288,6 @@ msgstr "트랜잭션 실패"
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "COLLATERAL"
 msgstr "담보"
-
-#: landing/src/pages/Rewards/ReturningTrader.tsx
-msgid "Your historical volume is <0>{0}</0>"
-msgstr "과거 거래량은 <0>{0}</0>입니다"
 
 #: src/config/bridging.tsx
 msgid "Buy APE on Arbitrum with <0>Camelot</0>"
