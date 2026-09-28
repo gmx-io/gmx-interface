@@ -1,0 +1,260 @@
+.home-rewards {
+  --rewards-skeleton-base: #1e2033;
+  --rewards-skeleton-highlight: #2c3050;
+  overflow: hidden;
+  background: #090a14;
+  color: #fff;
+}
+.home-rewards-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: min(1200px, calc(100% - 80px));
+  min-height: 900px;
+  margin: 0 auto;
+  padding-bottom: 30px;
+}
+.home-rewards-copy {
+  position: relative;
+  z-index: 1;
+  width: 720px;
+}
+.home-rewards-copy h2 {
+  margin-top: 24px;
+  font-size: 76px;
+  font-weight: 500;
+  line-height: 74px;
+  letter-spacing: -0.04em;
+}
+.home-rewards-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60px;
+  margin-top: 40px;
+  padding: 20px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  line-height: 20px;
+  letter-spacing: -0.032em;
+}
+.home-rewards-art {
+  position: absolute;
+  top: calc(50% - 55px);
+  left: 780px;
+  width: 326.5px;
+  transform: translateY(-50%);
+}
+.home-rewards-orbit {
+  --orbit-duration: 60s;
+  position: absolute;
+  top: calc(50% + 55px);
+  left: calc(50% + 55px);
+  width: 970.193px;
+  height: 263.422px;
+  container-type: size;
+  transform: translate(-50%, -50%) rotate(-31.39deg);
+  pointer-events: none;
+}
+.home-rewards-orbit > img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  max-width: none;
+  transform: translate(-50%, -50%);
+}
+.home-rewards-orbit-inner {
+  width: 100%;
+  height: 100%;
+}
+.home-rewards-orbit-middle {
+  width: 108.342%;
+  height: 108.342%;
+}
+.home-rewards-orbit-outer {
+  width: 116.451%;
+  height: 116.451%;
+}
+.home-rewards-card {
+  position: relative;
+  z-index: 1;
+  border: 1px solid #2e3b47;
+  border-radius: 20px;
+  background: #171827cc;
+  backdrop-filter: blur(6px);
+  padding: 32px;
+  box-shadow:
+    0 24px 64px -12px #03053380,
+    inset 0 -16px 40px 12px #2d42fc52;
+  transform: rotate(2.12deg);
+}
+.home-rewards-card-label {
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.072em;
+  text-transform: uppercase;
+}
+.home-rewards-card strong {
+  display: block;
+  margin-top: 8px;
+  background: linear-gradient(110deg, #a4c3f9, #7885ff);
+  background-clip: text;
+  color: transparent;
+  font-size: 96px;
+  font-weight: 500;
+  line-height: 94px;
+  letter-spacing: -0.052em;
+}
+.home-rewards-card-description {
+  margin-top: 12px;
+  font-size: 15px;
+  line-height: 20px;
+  letter-spacing: -0.032em;
+}
+.home-rewards-sphere {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  width: 88px;
+  height: 88px;
+  place-items: center;
+  border: 2px solid #ffffff26;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2d42fc, #1b2796);
+  box-shadow: 0 8px 28px #00000059;
+  font-size: 28px;
+  line-height: 32px;
+  letter-spacing: -0.032em;
+  /* Keep paused spheres on the path after resizing. */
+  offset-path: ellipse(50cqw 50cqh at 50cqw 50cqh);
+  offset-anchor: center;
+  offset-rotate: 31.39deg;
+  animation: home-rewards-orbit var(--orbit-duration) linear infinite;
+  animation-delay: calc(-1 * var(--sphere-phase) * var(--orbit-duration));
+  animation-play-state: paused;
+}
+.home-rewards-sphere > span {
+  display: grid;
+  width: 68.182%;
+  height: 68.182%;
+  place-items: center;
+  border-radius: 50%;
+  background: #ffffff0d;
+}
+.home-rewards-orbit[data-animate="true"] .home-rewards-sphere {
+  animation-play-state: running;
+}
+@keyframes home-rewards-orbit {
+  0% {
+    offset-distance: 0%;
+    transform: scale(0.825);
+  }
+  25% {
+    offset-distance: 25%;
+    transform: scale(1);
+  }
+  50% {
+    offset-distance: 50%;
+    transform: scale(0.825);
+  }
+  75% {
+    offset-distance: 75%;
+    transform: scale(0.65);
+  }
+  100% {
+    offset-distance: 100%;
+    transform: scale(0.825);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-rewards-orbit[data-animate] .home-rewards-sphere {
+    animation-play-state: paused;
+  }
+}
+@media (max-width: 1440px) {
+  .home-rewards-art {
+    left: auto;
+    right: 80px;
+    transform: translateY(-50%) scale(0.85);
+    transform-origin: right center;
+  }
+}
+@media (max-width: 1200px) {
+  .home-rewards-container {
+    min-height: 760px;
+  }
+  .home-rewards-copy {
+    width: 60%;
+  }
+  .home-rewards-copy h2 {
+    font-size: 56px;
+    line-height: 58px;
+  }
+  .home-rewards-orbit {
+    width: 830px;
+    height: 240px;
+  }
+}
+@media (max-width: 1100px) {
+  .home-rewards-container {
+    width: calc(100% - 32px);
+    min-height: 0;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 80px 0 100px;
+  }
+  .home-rewards-copy {
+    width: 100%;
+  }
+  .home-rewards-copy h2 {
+    font-size: clamp(32px, 8.5vw, 56px);
+    line-height: 1.03;
+  }
+  .home-rewards-art {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: min(326.5px, calc(100% - 48px));
+    margin: 100px auto 40px;
+    transform: none;
+  }
+  .home-rewards-card {
+    padding: 24px;
+  }
+  .home-rewards-card strong {
+    font-size: clamp(72px, 20vw, 100px);
+    line-height: 0.94;
+  }
+  .home-rewards-orbit {
+    top: 50%;
+    left: 50%;
+    width: 160%;
+    height: 110%;
+  }
+  .home-rewards-sphere {
+    width: 56px;
+    height: 56px;
+    font-size: 18px;
+    line-height: 24px;
+  }
+}
+@media (max-width: 640px) {
+  .home-rewards .rewards-live {
+    gap: 8px;
+    border: 1px solid #a4c3f9;
+    padding: 4px 12px 4px 8px;
+    font-size: 12px;
+    line-height: 16px;
+  }
+  .home-rewards .rewards-live i {
+    width: 8px;
+    height: 8px;
+  }
+  .home-rewards .rewards-live-full {
+    display: inline;
+  }
+  .home-rewards .rewards-live-compact {
+    display: none;
+  }
+}

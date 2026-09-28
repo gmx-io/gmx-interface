@@ -719,3 +719,11 @@ describe("formatPriceImpactBps", () => {
     expect(formatPriceImpactBps(-81n, -10000n)).toBeUndefined();
   });
 });
+
+describe("formatAmount", () => {
+  it("can trim trailing zero decimals", () => {
+    expect(formatAmount(toBigNumberWithDecimals("75", 18), 18, 2, true, { trimTrailingZeros: true })).toBe("75");
+    expect(formatAmount(toBigNumberWithDecimals("1.5", 18), 18, 2, true, { trimTrailingZeros: true })).toBe("1.5");
+    expect(formatAmount(toBigNumberWithDecimals("1000", 18), 18, 2, true, { trimTrailingZeros: true })).toBe("1,000");
+  });
+});

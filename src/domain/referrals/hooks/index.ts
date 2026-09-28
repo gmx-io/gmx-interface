@@ -1,14 +1,14 @@
-import { gql } from "@apollo/client";
 import { ethers, TransactionResponse } from "ethers";
-import { useEffect, useMemo, useState } from "react";
-import { isAddress, type Hash, zeroAddress, zeroHash } from "viem";
+import { useMemo } from "react";
+import useSWR from "swr";
+import { isAddress, type Hash, withRetry, withTimeout, zeroAddress, zeroHash } from "viem";
 
 import { getContract } from "config/contracts";
+import { getIndexerUrl } from "config/indexers";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
 import { isHash } from "domain/referrals/utils/referralCode";
 import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
-import { getReferralsGraphClient } from "lib/indexers";
 import { isAddressZero, isHashZero } from "lib/legacy";
 import { useMulticall } from "lib/multicall/useMulticall";
 import { basisPointsToFloat } from "lib/numbers";
@@ -17,6 +17,7 @@ import type { WalletSigner } from "lib/wallets";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { ContractsChainId } from "sdk/configs/chains";
+import graphqlFetcher from "sdk/utils/graphqlFetcher";
 import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
 
 import { UserReferralInfo } from "../types";
@@ -414,9 +415,10 @@ type AffiliateCodesQueryResponse = {
 export type AffiliateCodesState = {
   code: string | null;
   success: boolean;
+  error?: boolean;
 };
 
-const AFFILIATE_CODES_QUERY = gql`
+const AFFILIATE_CODES_QUERY = /* GraphQL */ `
   query userReferralCodes($account: String!) {
     affiliateStats: affiliateStats(
       first: 1000
@@ -433,46 +435,50 @@ const AFFILIATE_CODES_QUERY = gql`
 `;
 
 export function useAffiliateCodes(chainId: ContractsChainId, account: string | undefined, enabled = true) {
-  const [affiliateCodes, setAffiliateCodes] = useState<AffiliateCodesState>({ code: null, success: false });
+  const endpoint = getIndexerUrl(chainId, "referrals");
+  const active = Boolean(chainId && account && enabled);
+  const { data, error, isValidating, mutate } = useSWR(
+    active && endpoint ? ["affiliateCodes", chainId, endpoint, account] : null,
+    async ([, , url, address]) => {
+      const response = await withRetry(
+        async () => {
+          const controller = new AbortController();
+          try {
+            return await withTimeout(
+              () =>
+                graphqlFetcher<AffiliateCodesQueryResponse>(
+                  url,
+                  AFFILIATE_CODES_QUERY,
+                  { account: address },
+                  { strict: true, signal: controller.signal }
+                ),
+              { timeout: 10_000 }
+            );
+          } finally {
+            controller.abort();
+          }
+        },
+        { retryCount: 2, delay: ({ count }) => 1000 * (count + 1) }
+      );
 
-  useEffect(() => {
-    setAffiliateCodes({ code: null, success: false });
+      if (!response) throw new Error("Referral codes response is missing data");
 
-    if (!chainId || !account || !enabled) return;
+      const ownedCodes = response.referralCodes.map((item) => item.code);
+      const ownedCodesSet = new Set(ownedCodes);
+      const highestVolumeOwnedCode = response.affiliateStats.find((item) =>
+        ownedCodesSet.has(item.referralCode)
+      )?.referralCode;
+      const code = highestVolumeOwnedCode ?? ownedCodes[0];
 
-    const client = getReferralsGraphClient(chainId);
-    if (!client) return;
+      return code ? decodeReferralCode(code) : null;
+    },
+    { revalidateOnFocus: false, shouldRetryOnError: false, keepPreviousData: false }
+  );
 
-    let cancelled = false;
-
-    client
-      .query<AffiliateCodesQueryResponse>({
-        query: AFFILIATE_CODES_QUERY,
-        variables: { account },
-        fetchPolicy: "network-only",
-      })
-      .then((res) => {
-        if (cancelled) return;
-
-        const ownedCodes = res.data.referralCodes.map((item) => item.code);
-        const ownedCodesSet = new Set(ownedCodes);
-        const highestVolumeOwnedCode = res.data.affiliateStats.find((item) =>
-          ownedCodesSet.has(item.referralCode)
-        )?.referralCode;
-        const code = highestVolumeOwnedCode ?? ownedCodes[0];
-
-        setAffiliateCodes({ code: code ? decodeReferralCode(code) : null, success: true });
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setAffiliateCodes({ code: null, success: false });
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [chainId, account, enabled]);
-
-  return affiliateCodes;
+  return {
+    code: data ?? null,
+    success: data !== undefined,
+    error: active && data === undefined && (!endpoint || (Boolean(error) && !isValidating)),
+    mutate,
+  };
 }
