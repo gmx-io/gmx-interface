@@ -2,12 +2,14 @@ import { Trans, t } from "@lingui/macro";
 import { ethers } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 
+import { AVALANCHE } from "config/chains";
 import { getContract } from "config/contracts";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import useVestingData from "domain/vesting/useVestingData";
 import { useChainId } from "lib/chains";
 import { callContract } from "lib/contracts";
+import type { StakingProcessedData } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
@@ -25,6 +27,8 @@ import Tabs from "components/Tabs/Tabs";
 
 import EsGmxIcon from "img/tokens/ic_esgmx.svg?react";
 
+import { AvalancheVestModal } from "./AvalancheVestModal";
+
 type ActiveVestVault = "rewards" | "legacy";
 type RetiredVestVault = "gmx" | "affiliate";
 
@@ -33,6 +37,8 @@ export type VestVault = ActiveVestVault | RetiredVestVault;
 type VestModalProps = {
   isVisible: boolean;
   setIsVisible: (value: boolean) => void;
+  processedData: StakingProcessedData | undefined;
+  reservedAmount: bigint;
 };
 
 type RetiredVaultData = {
@@ -179,7 +185,17 @@ function RetiredVaultPanel({ data, actions }: { data: RetiredVaultData | undefin
   );
 }
 
-export function VestModal({ isVisible, setIsVisible }: VestModalProps) {
+export function VestModal(props: VestModalProps) {
+  const { chainId } = useChainId();
+
+  if (chainId === AVALANCHE) {
+    return <AvalancheVestModal {...props} />;
+  }
+
+  return <IncentivesVestModal isVisible={props.isVisible} setIsVisible={props.setIsVisible} />;
+}
+
+function IncentivesVestModal({ isVisible, setIsVisible }: Pick<VestModalProps, "isVisible" | "setIsVisible">) {
   const { chainId } = useChainId();
   const { signer, account, active, chainId: walletChainId } = useWallet();
   const { setPendingTxns } = usePendingTxns();

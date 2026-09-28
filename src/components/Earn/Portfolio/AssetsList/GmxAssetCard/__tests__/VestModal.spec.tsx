@@ -4,13 +4,14 @@ import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-li
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { ARBITRUM } from "config/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE } from "config/chains";
 import { getContract } from "config/contracts";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import useVestingData from "domain/vesting/useVestingData";
 import { useChainId } from "lib/chains";
 import { callContract } from "lib/contracts";
+import type { StakingProcessedData } from "lib/legacy";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
@@ -120,6 +121,8 @@ vi.mock("components/BuyInputSection/BuyInputSection", () => ({
     topRightLabel,
     topRightValue,
     inputValue,
+    onInputValueChange,
+    onClickMax,
     isDisabled,
     children,
   }: {
@@ -127,17 +130,27 @@ vi.mock("components/BuyInputSection/BuyInputSection", () => ({
     topRightLabel?: React.ReactNode;
     topRightValue?: React.ReactNode;
     inputValue: string;
+    onInputValueChange?: React.ChangeEventHandler<HTMLInputElement>;
+    onClickMax?: () => void;
     isDisabled?: boolean;
     children: React.ReactNode;
   }) => (
     <div>
       <span>{topLeftLabel}</span>
       {topRightLabel ? (
-        <span>
-          {topRightLabel}: {topRightValue}
-        </span>
+        <button type="button" aria-label={String(topRightLabel)} onClick={onClickMax} disabled={!onClickMax}>
+          <span>
+            {topRightLabel}: {topRightValue}
+          </span>
+        </button>
       ) : null}
-      <input aria-label={String(topLeftLabel)} value={inputValue} disabled={isDisabled} readOnly />
+      <input
+        aria-label={String(topLeftLabel)}
+        value={inputValue}
+        onChange={onInputValueChange}
+        disabled={isDisabled}
+        readOnly={!onInputValueChange}
+      />
       {children}
     </div>
   ),
@@ -194,21 +207,43 @@ const baseVestingData = {
   gmxVesterClaimable: units(3),
   gmxVesterClaimSum: units(95),
   gmxVesterVestedAmount: units(300),
+  gmxVesterMaxVestableAmount: units(1000),
+  gmxVesterAverageStakedAmount: units(2000),
   affiliateVesterClaimable: units(12),
   affiliateVesterClaimSum: units(180),
   affiliateVesterVestedAmount: units(900),
+  affiliateVesterMaxVestableAmount: units(1000),
 };
 
-function renderModal(vestingData = baseVestingData) {
-  mockUseVestingData.mockReturnValue(vestingData as ReturnType<typeof useVestingData>);
+const baseProcessedData = {
+  esGmxBalance: units(500),
+  bonusGmxInFeeGmx: units(4000),
+} as StakingProcessedData;
 
-  return render(
+function getModal(processedData = baseProcessedData) {
+  return (
     <I18nProvider i18n={i18n}>
       <MemoryRouter>
-        <VestModal isVisible setIsVisible={vi.fn()} />
+        <VestModal isVisible setIsVisible={vi.fn()} processedData={processedData} reservedAmount={units(600)} />
       </MemoryRouter>
     </I18nProvider>
   );
+}
+
+function renderModal(vestingData = baseVestingData, processedData = baseProcessedData) {
+  mockUseVestingData.mockReturnValue(vestingData as ReturnType<typeof useVestingData>);
+
+  return render(getModal(processedData));
+}
+
+function selectChain(chainId: number) {
+  mockUseChainId.mockReturnValue({ chainId, srcChainId: chainId } as ReturnType<typeof useChainId>);
+  mockUseWallet.mockReturnValue({
+    account: ACCOUNT,
+    active: true,
+    chainId,
+    signer,
+  } as unknown as ReturnType<typeof useWallet>);
 }
 
 function selectVault(name: string) {
@@ -226,13 +261,7 @@ describe("VestModal", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     setPendingTxns.mockReset();
-    mockUseChainId.mockReturnValue({ chainId: ARBITRUM, srcChainId: ARBITRUM } as ReturnType<typeof useChainId>);
-    mockUseWallet.mockReturnValue({
-      account: ACCOUNT,
-      active: true,
-      chainId: ARBITRUM,
-      signer,
-    } as unknown as ReturnType<typeof useWallet>);
+    selectChain(ARBITRUM);
     mockUsePendingTxns.mockReturnValue({ pendingTxns: [], setPendingTxns });
     mockUseConnectModal.mockReturnValue({ openConnectModal: vi.fn(), connectModalOpen: false });
     mockUseHasOutdatedUi.mockReturnValue(false);
@@ -378,5 +407,136 @@ describe("VestModal", () => {
     expect((screen.getByRole("button", { name: "No funds to withdraw" }) as HTMLButtonElement).disabled).toBe(true);
     expect((screen.getByRole("button", { name: "Claim GMX" }) as HTMLButtonElement).disabled).toBe(true);
     expect(mockCallContract).not.toHaveBeenCalled();
+  });
+
+  describe("Avalanche vesting", () => {
+    beforeEach(() => selectChain(AVALANCHE));
+
+    it("keeps the release vaults and deposit actions available", () => {
+      renderModal();
+
+      expect(screen.getAllByRole("tab").map((tab) => tab.textContent)).toEqual([
+        "GMX vault",
+        "Affiliate vault",
+        "Deposit",
+        "Withdraw",
+      ]);
+      expect(screen.getByRole("tab", { name: "GMX vault" }).getAttribute("aria-selected")).toBe("true");
+      expect((screen.getByRole("textbox", { name: "Deposit" }) as HTMLInputElement).disabled).toBe(false);
+      expect(screen.queryByText("Deposits are closed.")).toBeNull();
+      expect(screen.queryByText("Coming soon")).toBeNull();
+    });
+
+    it.each([
+      { tab: "GMX vault", contractName: "GmxVester", contractAddress: GMX_VESTER, max: "500" },
+      { tab: "Affiliate vault", contractName: "AffiliateVester", contractAddress: AFFILIATE_VESTER, max: "100" },
+    ])("preserves the deposit limit and contract for $tab", async ({ tab, contractName, contractAddress, max }) => {
+      renderModal();
+      selectVault(tab);
+      fireEvent.click(screen.getByRole("button", { name: "Max" }));
+      const input = screen.getByRole("textbox", { name: "Deposit" }) as HTMLInputElement;
+      expect(input.value).toBe(max);
+
+      fireEvent.change(input, { target: { value: "25" } });
+      if (tab === "GMX vault") {
+        const reserveRow = screen
+          .getAllByTestId("progress-row")
+          .find((row) => row.textContent?.includes("Staked tokens reserved for vesting"))!;
+        expect(normalizedText(reserveRow)).toContain("650.0000 / 4,000.0000");
+      }
+      fireEvent.click(screen.getByRole("button", { name: "Deposit" }));
+
+      await waitFor(() => {
+        expect(mockGetContract).toHaveBeenCalledWith(AVALANCHE, contractName);
+        expect(contractMocks.Constructor).toHaveBeenCalledWith(contractAddress, abis.Vester, signer);
+        expect(mockCallContract).toHaveBeenCalledWith(
+          AVALANCHE,
+          contractMocks.instance,
+          "deposit",
+          [units(25)],
+          expect.objectContaining({ sentMsg: "Deposit submitted", successMsg: "Deposited", setPendingTxns })
+        );
+      });
+    });
+
+    it.each([
+      { tab: "GMX vault", amount: "501" },
+      { tab: "Affiliate vault", amount: "101" },
+    ])("prevents deposits above the available balance or capacity in $tab", ({ tab, amount }) => {
+      renderModal();
+      selectVault(tab);
+      fireEvent.change(screen.getByRole("textbox", { name: "Deposit" }), { target: { value: amount } });
+
+      expect((screen.getByRole("button", { name: "Max amount exceeded" }) as HTMLButtonElement).disabled).toBe(true);
+      expect(mockCallContract).not.toHaveBeenCalled();
+    });
+
+    it("keeps the historical collateral requirement for GMX deposits", () => {
+      renderModal(baseVestingData, { ...baseProcessedData, bonusGmxInFeeGmx: units(700) });
+      fireEvent.change(screen.getByRole("textbox", { name: "Deposit" }), { target: { value: "60" } });
+
+      expect((screen.getByRole("button", { name: "Insufficient staked tokens" }) as HTMLButtonElement).disabled).toBe(
+        true
+      );
+      expect(mockCallContract).not.toHaveBeenCalled();
+    });
+
+    it.each([
+      { tab: "GMX vault", contractAddress: GMX_VESTER, amount: "205.0000", action: "Withdraw and unreserve GMX" },
+      { tab: "Affiliate vault", contractAddress: AFFILIATE_VESTER, amount: "720.0000", action: "Confirm withdraw" },
+    ])("preserves withdrawals from $tab", async ({ tab, contractAddress, amount, action }) => {
+      renderModal();
+      selectVault(tab);
+      fireEvent.click(screen.getByRole("tab", { name: "Withdraw" }));
+      expect((screen.getByRole("textbox", { name: "Withdraw" }) as HTMLInputElement).value).toBe(amount);
+      fireEvent.click(screen.getByRole("button", { name: action }));
+
+      await waitFor(() => {
+        expect(contractMocks.Constructor).toHaveBeenCalledWith(contractAddress, abis.Vester, signer);
+        expect(mockCallContract).toHaveBeenCalledWith(
+          AVALANCHE,
+          contractMocks.instance,
+          "withdraw",
+          [],
+          expect.objectContaining({ setPendingTxns })
+        );
+      });
+    });
+
+    it("preserves the affiliate claim action", async () => {
+      renderModal();
+      selectVault("Affiliate vault");
+      fireEvent.click(screen.getByRole("tab", { name: "Claim" }));
+      expect((screen.getByRole("textbox", { name: "Claim" }) as HTMLInputElement).value).toBe("12.0000");
+      fireEvent.click(screen.getByRole("button", { name: "Claim" }));
+
+      await waitFor(() => {
+        expect(contractMocks.Constructor).toHaveBeenCalledWith(AFFILIATE_VESTER, abis.Vester, signer);
+        expect(mockCallContract).toHaveBeenCalledWith(
+          AVALANCHE,
+          contractMocks.instance,
+          "claim",
+          [],
+          expect.objectContaining({ setPendingTxns })
+        );
+      });
+    });
+
+    it.each([ARBITRUM, ARBITRUM_SEPOLIA])("switches vault workflows when changing to chain %s and back", (chainId) => {
+      const view = renderModal();
+      selectVault("Affiliate vault");
+      fireEvent.change(screen.getByRole("textbox", { name: "Deposit" }), { target: { value: "25" } });
+
+      selectChain(chainId);
+      view.rerender(getModal());
+      expect(screen.getByRole("tab", { name: "Rewards Vault" }).getAttribute("aria-selected")).toBe("true");
+      expect(screen.queryByRole("tab", { name: "Deposit" })).toBeNull();
+
+      selectChain(AVALANCHE);
+      view.rerender(getModal());
+      expect(screen.getByRole("tab", { name: "GMX vault" }).getAttribute("aria-selected")).toBe("true");
+      expect((screen.getByRole("textbox", { name: "Deposit" }) as HTMLInputElement).value).toBe("");
+      expect(screen.queryByRole("tab", { name: "Rewards Vault" })).toBeNull();
+    });
   });
 });
