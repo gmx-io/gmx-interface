@@ -500,6 +500,10 @@ export const useWithdrawalTransactions = ({
         .then(makeTxnSentMetricsHandler(metricData.metricId))
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
         .catch((error) => {
+          if (paySource === "settlementChain") {
+            return;
+          }
+
           toastCustomOrStargateError(chainId, error, {
             actionName: "GM Withdrawal",
             requestId: metricData.requestId,
