@@ -16,7 +16,7 @@ function SEO(props: SEOProps) {
     title: t`GMX | Perpetual DEX for Crypto, Metals, Stocks & Energy`,
     description: t`GMX is a decentralized perpetual exchange with 100+ markets across crypto, gold, silver, oil, natural gas and stock indices, and up to 100x leverage.`,
     image: "https://gmx.io/og.png",
-    type: "exchange",
+    type: "website",
     ...customMeta,
   };
   const socialDescription =
