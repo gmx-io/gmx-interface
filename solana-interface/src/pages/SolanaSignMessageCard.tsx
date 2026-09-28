@@ -1,8 +1,9 @@
 import { useState } from "react";
 
-import Button from "components/Button/Button";
 import { useChainId } from "lib/chains";
 import { useSolanaWallet } from "solana-interface/wallet/useSolanaWallet";
+
+import Button from "components/Button/Button";
 
 function encodeBase64(bytes: Uint8Array) {
   let binary = "";

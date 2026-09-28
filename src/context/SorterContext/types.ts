@@ -6,7 +6,8 @@ export type SorterKey =
   | "gm-token-selector"
   | "leaderboard-accounts-table"
   | "leaderboard-positions-table"
-  | "position-list";
+  | "position-list"
+  | "solana-position-list";
 
 export type SorterConfig<SortField extends string | "unspecified" = "unspecified"> = {
   orderBy: SortField;
