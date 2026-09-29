@@ -2,7 +2,6 @@ import { Trans } from "@lingui/macro";
 
 import { GlvAndGmMarketsInfoData } from "domain/synthetics/markets";
 import { sendEarnOpportunityClickedEvent } from "lib/userAnalytics/earnEvents";
-import { TokensData } from "sdk/utils/tokens/types";
 
 import Badge from "components/Badge/Badge";
 import Button from "components/Button/Button";
@@ -15,10 +14,9 @@ import { Opportunity, useOpportunityTagLabels } from "./useOpportunities";
 type Props = {
   opportunity: Opportunity;
   marketsInfoData: GlvAndGmMarketsInfoData | undefined;
-  tokensData: TokensData | undefined;
 };
 
-function OpportunityCard({ opportunity, marketsInfoData, tokensData }: Props) {
+function OpportunityCard({ opportunity, marketsInfoData }: Props) {
   const { name, description, tags, assets: tokens, link } = opportunity;
 
   const opportunityTagLabels = useOpportunityTagLabels();
@@ -32,7 +30,7 @@ function OpportunityCard({ opportunity, marketsInfoData, tokensData }: Props) {
           alt={name}
         />
         <div className="flex min-w-0 items-center justify-end gap-12">
-          <OpportunityAssets assets={tokens} marketsInfoData={marketsInfoData} tokensData={tokensData} />
+          <OpportunityAssets assets={tokens} marketsInfoData={marketsInfoData} />
           {tags.length ? (
             <div className="flex min-w-0 flex-wrap justify-end gap-6">
               {tags.map((tag) => (
