@@ -9,11 +9,13 @@ import {
   selectPoolsDetailsGlvOrMarketAddress,
   selectPoolsDetailsGlvOrMarketInfo,
   selectPoolsDetailsLongTokenAddress,
+  selectPoolsDetailsConversionRoutePreference,
   selectPoolsDetailsSetFirstTokenAddress,
   selectPoolsDetailsSetFirstTokenInputValue,
   selectPoolsDetailsSetFocusedInput,
   selectPoolsDetailsSetIsTransitRoute,
   selectPoolsDetailsSetMarketOrGlvTokenInputValue,
+  selectPoolsDetailsSetConversionRoutePreference,
   selectPoolsDetailsSetTransitAmountOut,
   selectPoolsDetailsShortTokenAddress,
 } from "context/PoolsDetailsContext/selectors";
@@ -43,8 +45,9 @@ import { formatAmountFree } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import { getToken } from "sdk/configs/tokens";
-import type { TransitOrder } from "sdk/utils/paxos/types";
+import type { TransitOrder, TransitQuote } from "sdk/utils/paxos/types";
 
+import type { ConversionRoute } from "./types";
 import type { SubmitButtonState } from "./useGmSwapSubmitState";
 
 export type PaxosTransitState = ReturnType<typeof usePaxosTransitState>;
@@ -182,6 +185,8 @@ export function usePaxosTransitState({
     isBelowMinOrderSize,
     minOrderSize,
     shouldUseTransit,
+    isLargeConversion,
+    isWhitelisted,
     isQuoteNeeded,
     isFeeTierLoaded,
     feeTierError,
@@ -192,12 +197,23 @@ export function usePaxosTransitState({
     zeroFeeCapacity,
     transitFeesUsd,
   } = transit;
-  const isTransitLoading = !feeTierError && (!isFeeTierLoaded || (isQuoteNeeded && !quote && !quoteError));
-  const isTransitOffered =
-    isConversionNeeded && (shouldUseTransit || isTransitLoading || collateralSwapTotalFeesDeltaUsd === undefined);
 
-  const isTransitRoute =
-    step !== "idle" || isConverting || withdrawalStatus !== undefined || (isTransitOffered && amountIn > 0n);
+  const isTransitAvailable = !feeTierError;
+  const isFeeTierLoading = account !== undefined && !isFeeTierLoaded;
+  const isQuoteLoading = isQuoteNeeded && !quote && !quoteError;
+  const isTransitLoading = isTransitAvailable && (isFeeTierLoading || isQuoteLoading);
+
+  const isTransitInProgress = step !== "idle" || isConverting || withdrawalStatusWithUsdg !== undefined;
+  const hasAmountIn = amountIn > 0n;
+  const canPoolFill = collateralSwapTotalFeesDeltaUsd !== undefined;
+  const isRouteSelectable = isWhitelisted && !isTransitInProgress && hasAmountIn && quote !== undefined && canPoolFill;
+
+  const autoRoute: ConversionRoute = shouldUseTransit || isTransitLoading || !canPoolFill ? "transit" : "pool";
+  const conversionRoute =
+    isRouteSelectable && conversionRoutePreference !== "auto" ? conversionRoutePreference : autoRoute;
+
+  const shouldShowRouteSelector = isConversionNeeded && isFeeTierLoaded;
+  const shouldShowWhitelistNote = shouldShowRouteSelector && !isWhitelisted && isLargeConversion;
 
   const transitAmountOut = isTransitRoute ? amountOut : undefined;
 
@@ -321,8 +337,8 @@ export function usePaxosTransitState({
       feeTierError,
       isBelowMinOrderSize,
       minOrderSize,
+      quote,
       quoteError,
-      shouldUseTransit,
       isTransitLoading,
     });
 
@@ -355,7 +371,6 @@ export function usePaxosTransitState({
     isWithdrawalSettled,
     isTransitLoading,
     isTransitRoute,
-    shouldUseTransit,
     isWithdrawal,
     onConvert,
     isConverting,
@@ -363,6 +378,7 @@ export function usePaxosTransitState({
     conversionOrder,
     isBelowMinOrderSize,
     minOrderSize,
+    quote,
     quoteError,
     shouldDisableValidation,
     withdrawalStatusWithUsdg,
@@ -379,6 +395,11 @@ export function usePaxosTransitState({
   return {
     submitState,
     isTransitRoute,
+    shouldShowRouteSelector,
+    isRouteSelectable,
+    conversionRoutePreference,
+    setConversionRoutePreference,
+    shouldShowWhitelistNote,
     hasUsdgCollateral,
     tokenIn,
     usdgToken,
@@ -394,8 +415,8 @@ function getTransitConversionError(p: {
   feeTierError: Error | undefined;
   isBelowMinOrderSize: boolean;
   minOrderSize: bigint | undefined;
+  quote: TransitQuote | undefined;
   quoteError: Error | undefined;
-  shouldUseTransit: boolean;
   isTransitLoading: boolean;
 }): string | undefined {
   const tokenInSymbol = p.tokenIn?.symbol;
@@ -416,7 +437,7 @@ function getTransitConversionError(p: {
     return p.quoteError.message;
   }
 
-  if (!p.shouldUseTransit && !p.isTransitLoading) {
+  if (!p.quote && !p.isTransitLoading) {
     return t`${tokenInSymbol} conversion is unavailable`;
   }
 

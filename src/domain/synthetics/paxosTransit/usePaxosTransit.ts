@@ -91,6 +91,8 @@ export function usePaxosTransit({
   });
 
   const amountUsd = tokenIn ? convertToUsd(debouncedAmount, tokenIn.decimals, getMidPrice(tokenIn.prices)) : 0n;
+  const isLargeConversion =
+    paxosTransitConfig !== undefined && amountUsd !== undefined && amountUsd >= paxosTransitConfig.thresholdUsd;
   const minOrderSize = feeTier === "zeroFee" ? minOrderSizes.zeroFee : minOrderSizes.standardFee;
   const isBelowMinOrderSize = minOrderSize !== undefined && debouncedAmount > 0n && debouncedAmount < minOrderSize;
   const isQuoteNeeded =
@@ -259,6 +261,7 @@ export function usePaxosTransit({
 
   return {
     shouldUseTransit,
+    isLargeConversion,
     isQuoteNeeded,
     isFeeTierLoaded: feeTierData !== undefined,
     isWhitelisted,
