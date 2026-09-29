@@ -170,7 +170,7 @@ export function usePaxosTransitState(isWhitelistIgnored: boolean) {
       amountIn > 0n &&
       (shouldUseTransit || isTransitLoading || collateralSwapTotalFeesDeltaUsd === undefined));
 
-  const transitAmountOut = isDeposit && isTransitRoute ? amountOut : undefined;
+  const transitAmountOut = isTransitRoute ? amountOut : undefined;
 
   useEffect(
     function dropEmptyWithdrawal() {
