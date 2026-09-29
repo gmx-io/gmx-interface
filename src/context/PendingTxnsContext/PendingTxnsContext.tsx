@@ -106,7 +106,7 @@ export function getPendingTxnSuccessToastContent({
 export function PendingTxnsContextProvider({ children }: { children: ReactNode }) {
   const { chainId } = useChainId();
   const { provider } = useJsonRpcProvider(chainId);
-  const { setIsSettingsVisible, executionFeeBufferBps } = useSettings();
+  const { setIsSettingsVisible, executionFeeBufferBps, expressOrdersEnabled } = useSettings();
 
   const [pendingTxns, setPendingTxns] = useState<PendingTransaction[]>([]);
   const latestPendingTxns = useLatest(pendingTxns);
@@ -176,11 +176,13 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
                   executionFee,
                   chainId: txnChainId,
                   executionFeeBufferBps,
+                  expressOrdersEnabled,
+                  estimatedExecutionFee: pendingTxn.data?.estimatedExecutionFee,
+                  estimatedExecutionGasLimit: pendingTxn.data?.estimatedExecutionGasLimit,
                   txUrl,
                   errorMessage: errorData?.errorMessage,
                   shouldOfferExpress: true,
                   setIsSettingsVisible,
-                  estimatedExecutionGasLimit: pendingTxn.data?.estimatedExecutionGasLimit ?? 1n,
                 });
               } else {
                 toastMsg = getPendingTxnFailureToastContent({ txUrl });
@@ -229,7 +231,16 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
       checkPendingTxns();
     }, 2 * 1000);
     return () => clearInterval(interval);
-  }, [provider, pendingTxns, chainId, setIsSettingsVisible, executionFeeBufferBps, isMounted, latestPendingTxns]);
+  }, [
+    provider,
+    pendingTxns,
+    chainId,
+    setIsSettingsVisible,
+    executionFeeBufferBps,
+    expressOrdersEnabled,
+    isMounted,
+    latestPendingTxns,
+  ]);
 
   const state = useMemo(() => ({ pendingTxns, setPendingTxns }), [pendingTxns, setPendingTxns]);
 

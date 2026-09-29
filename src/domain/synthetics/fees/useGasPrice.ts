@@ -1,11 +1,15 @@
 import useSWR from "swr";
 
-import { ContractsChainId, getExecutionFeePriorityFeeAllowance, getGasPricePremium } from "config/chains";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getProvider } from "lib/rpc";
 import { EXPRESS_EXTRA_EXECUTION_FEE_BUFFER_BPS } from "sdk/configs/express";
 
-import { estimateExecutionGasPrice, getExecutionFeeBufferBps, getMaxPriorityFeePerGas } from "./utils/executionFee";
+import {
+  estimateExecutionGasPrice,
+  getExecutionFeeBufferBps,
+  getExecutionFeeGasPricePremium,
+  getMaxPriorityFeePerGas,
+} from "./utils/executionFee";
 
 export function useGasPrice(chainId: number | undefined) {
   const settings = useSettings();
@@ -39,9 +43,7 @@ export function useGasPrice(chainId: number | undefined) {
               rawGasPrice: feeData.gasPrice ?? 0n,
               maxPriorityFeePerGas: getMaxPriorityFeePerGas(chainId, feeData?.maxPriorityFeePerGas),
               bufferBps: getExecutionFeeBufferBps(chainId, bufferBps),
-              premium:
-                (getGasPricePremium(chainId as ContractsChainId) || 0n) +
-                getExecutionFeePriorityFeeAllowance(chainId as ContractsChainId),
+              premium: getExecutionFeeGasPricePremium(chainId, settings.expressOrdersEnabled),
             });
 
             resolve(gasPrice);

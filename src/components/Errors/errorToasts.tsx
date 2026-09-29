@@ -3,11 +3,15 @@ import { Signer } from "ethers";
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
-import { ContractsChainId, getChainName, getExecutionFeePriorityFeeAllowance, getGasPricePremium } from "config/chains";
+import { getChainName } from "config/chains";
 import { JUMPER_BRIDGE_URL, SAFE_MULTICHAIN_DOCS_URL } from "config/links";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { getExecutionFeeBufferBps, getMinimumExecutionFeeBufferBps } from "domain/synthetics/fees/utils/executionFee";
+import {
+  getExecutionFeeBufferBps,
+  getExecutionFeeGasPricePremium,
+  getMinimumExecutionFeeBufferBps,
+} from "domain/synthetics/fees/utils/executionFee";
 import { ErrorData } from "lib/errors";
 import {
   SMART_WALLET_ACCOUNT_CHANGED_ERROR,
@@ -434,6 +438,8 @@ export function getInsufficientExecutionFeeToastContent({
   executionFee,
   chainId,
   executionFeeBufferBps,
+  expressOrdersEnabled,
+  estimatedExecutionFee,
   estimatedExecutionGasLimit,
   txUrl,
   errorMessage,
@@ -444,20 +450,21 @@ export function getInsufficientExecutionFeeToastContent({
   executionFee: bigint;
   chainId: number;
   executionFeeBufferBps: number | undefined;
-  estimatedExecutionGasLimit: bigint;
+  expressOrdersEnabled: boolean;
+  estimatedExecutionFee: bigint | undefined;
+  estimatedExecutionGasLimit: bigint | undefined;
   txUrl: string | undefined;
   errorMessage: string | undefined;
   shouldOfferExpress: boolean;
   setIsSettingsVisible: (isVisible: boolean) => void;
 }) {
   const requiredBufferBps = getMinimumExecutionFeeBufferBps({
-    minExecutionFee: minExecutionFee,
-    estimatedExecutionFee: executionFee,
+    minExecutionFee,
+    executionFee,
+    estimatedExecutionFee,
+    estimatedExecutionGasLimit,
     currentBufferBps: getExecutionFeeBufferBps(chainId, executionFeeBufferBps),
-    premium:
-      (getGasPricePremium(chainId as ContractsChainId) || 0n) +
-      getExecutionFeePriorityFeeAllowance(chainId as ContractsChainId),
-    gasLimit: estimatedExecutionGasLimit,
+    premium: getExecutionFeeGasPricePremium(chainId, expressOrdersEnabled),
   });
 
   const bufferText =

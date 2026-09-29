@@ -335,8 +335,7 @@ export function getGasPricePremium(chainId: ContractsChainId): bigint | undefine
   return CONTRACTS_CHAIN_CONFIGS[chainId]?.gasPricePremium;
 }
 
-// Wallets may add a priority fee on top of the base fee. Since 2026-09-23 Arbitrum One charges it,
-// and the contracts validate the execution fee against tx.gasprice, so the estimate has to cover it.
+// Priority fee that wallets may add on top of the base fee; charged on Arbitrum One since 2026-09-23.
 const EXECUTION_FEE_PRIORITY_FEE_ALLOWANCE: Partial<Record<ContractsChainId, bigint>> = {
   [ARBITRUM]: 30000000n, // 0.03 gwei
 };
