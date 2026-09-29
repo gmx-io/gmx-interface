@@ -208,9 +208,13 @@ export function usePaxosTransitState({
   const canPoolFill = collateralSwapTotalFeesDeltaUsd !== undefined;
   const isRouteSelectable = isWhitelisted && !isTransitInProgress && hasAmountIn && quote !== undefined && canPoolFill;
 
-  const autoRoute: ConversionRoute = shouldUseTransit || isTransitLoading || !canPoolFill ? "transit" : "pool";
-  const conversionRoute =
-    isRouteSelectable && conversionRoutePreference !== "auto" ? conversionRoutePreference : autoRoute;
+  const isTransitAutoRoute = shouldUseTransit || isTransitLoading || !canPoolFill;
+  const autoRoute: ConversionRoute = isTransitAvailable && isTransitAutoRoute ? "transit" : "pool";
+  const isPreferenceApplied = isRouteSelectable && conversionRoutePreference !== "auto";
+  const conversionRoute = isPreferenceApplied ? conversionRoutePreference : autoRoute;
+
+  const isTransitRouteChosen = isConversionNeeded && hasAmountIn && conversionRoute === "transit";
+  const isTransitRoute = isTransitInProgress || isTransitRouteChosen;
 
   const shouldShowRouteSelector = isConversionNeeded && isFeeTierLoaded;
   const shouldShowWhitelistNote = shouldShowRouteSelector && !isWhitelisted && isLargeConversion;
