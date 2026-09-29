@@ -83,3 +83,6 @@ export const REFERRALS_DOCS_SECTION_LINKS = {
 export const BALANCER_PROGRAM_URL = "https://gmxio.substack.com/p/introducing-the-gmx-balancer-program";
 
 export const GMX_PARTNER_TELEGRAM_URL = "https://t.me/GMXPartners";
+
+export const PAXOS_SIGNUP_URL = "https://dashboard.paxos.com/signup";
+export const PAXOS_CONVERT_DOCS_URL = "https://docs.paxos.com/guides/dashboard/convert";

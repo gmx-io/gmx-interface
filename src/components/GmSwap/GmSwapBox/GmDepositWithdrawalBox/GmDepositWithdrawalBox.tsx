@@ -103,6 +103,7 @@ import { SelectedPoolLabel } from "../SelectedPool";
 import { useGmWarningState } from "../useGmWarningState";
 import { ConversionRouteSelector } from "./ConversionRouteSelector";
 import { InfoRows } from "./InfoRows";
+import { PaxosMintNote } from "./PaxosMintNote";
 import { PaxosTransitDebugCard } from "./PaxosTransitDebugCard";
 import { PaxosTransitExecutionRows } from "./PaxosTransitExecutionRows";
 import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
@@ -796,6 +797,8 @@ export function GmSwapBoxDepositWithdrawal() {
           }
           executionDetails={transitState.isTransitRoute && <PaxosTransitExecutionRows transitState={transitState} />}
         />
+
+        {isDeposit && transitState.hasUsdgCollateral && <PaxosMintNote />}
 
         {showDebugValues && transitState.hasUsdgCollateral && (
           <PaxosTransitDebugCard
