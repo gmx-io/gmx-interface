@@ -2134,6 +2134,10 @@ msgstr "Swap TWAP"
 msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees."
 msgstr "GM est le jeton de fournisseur de liquidité pour les marchés GMX V2. Il accumule 63 % des frais générés par les marchés V2."
 
+#: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+msgid "You need USDC or USDG to buy."
+msgstr "Vous avez besoin d'USDC ou d'USDG pour acheter."
+
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Public"
@@ -11012,6 +11016,10 @@ msgstr "Déposé :"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Increase"
 msgstr "Augmenter"
+
+#: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+msgid "Buy USDG"
+msgstr "Acheter USDG"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts

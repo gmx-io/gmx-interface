@@ -2134,6 +2134,10 @@ msgstr ""
 msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees."
 msgstr ""
 
+#: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+msgid "You need USDC or USDG to buy."
+msgstr ""
+
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Public"
@@ -11011,6 +11015,10 @@ msgstr ""
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Increase"
+msgstr ""
+
+#: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+msgid "Buy USDG"
 msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
