@@ -3,11 +3,13 @@ import { useCallback, useMemo } from "react";
 import { zeroAddress } from "viem";
 
 import type { SettlementChainId } from "config/chains";
+import { getPaxosTransitConfig } from "config/paxosTransit";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import {
   selectPoolsDetailsFirstTokenAddress,
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvInfo,
+  selectPoolsDetailsGlvOrMarketAddress,
   selectPoolsDetailsIsFirstBuy,
   selectPoolsDetailsIsMarketTokenDeposit,
   selectPoolsDetailsLongTokenAddress,
@@ -85,8 +87,9 @@ export const useDepositTransactions = ({
 } => {
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
-  const { signer } = useWallet();
-  const { setPendingDeposit } = useSyntheticsEvents();
+  const { account, signer } = useWallet();
+  const { setPendingDeposit, transitRouteProgress, paxosTransitOrder, attachTransitRouteDeposit } =
+    useSyntheticsEvents();
   const { addOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
   const { setPendingTxns } = usePendingTxns();
   const blockTimestampData = useSelector(selectBlockTimestampData);
@@ -96,6 +99,7 @@ export const useDepositTransactions = ({
   const marketInfo = useSelector(selectPoolsDetailsMarketInfo);
   const marketToken = useSelector(selectPoolsDetailsMarketTokenData);
   const firstTokenAddress = useSelector(selectPoolsDetailsFirstTokenAddress);
+  const glvOrMarketAddress = useSelector(selectPoolsDetailsGlvOrMarketAddress);
   const secondTokenAddress = useSelector(selectPoolsDetailsSecondTokenAddress);
   const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
   const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
@@ -172,6 +176,27 @@ export const useDepositTransactions = ({
     isDeposit,
     gasPaymentTokenAsCollateralAmount,
   });
+
+  const usdgAddress = getPaxosTransitConfig(chainId)?.usdgAddress;
+  const transitRouteProgressForMarket = getTransitRouteProgressForMarket(transitRouteProgress, {
+    account,
+    glvOrMarketAddress,
+  });
+  const isUsdcToUsdg = transitRouteProgressForMarket?.direction === "usdcToUsdg";
+  const isConverted = paxosTransitOrder?.status === "PROCESSED";
+  const isDepositSent = transitRouteProgressForMarket?.depositTxnHash !== undefined;
+  const isPayingUsdg = firstTokenAddress === usdgAddress;
+  const transitBuyProgress =
+    isUsdcToUsdg && isConverted && !isDepositSent && isPayingUsdg ? transitRouteProgressForMarket : undefined;
+
+  const recordTransitDeposit = useCallback(
+    (txnHash: string | undefined) => {
+      if (!transitBuyProgress || !txnHash) return;
+
+      attachTransitRouteDeposit(transitBuyProgress.id, txnHash);
+    },
+    [attachTransitRouteDeposit, transitBuyProgress]
+  );
 
   const getDepositMetricData = useCallback(() => {
     if (isGlv) {
@@ -404,8 +429,8 @@ export const useDepositTransactions = ({
           metricId: metricData.metricId,
           params: params as CreateDepositParams,
           setPendingTxns,
-          setPendingDeposit,
-        });
+          setPendingDeposit: transitBuyProgress ? undefined : setPendingDeposit,
+        }).then(({ transactionHash }) => recordTransitDeposit(transactionHash));
       } else {
         throw new Error(`Invalid pay source: ${paySource}`);
       }
@@ -437,6 +462,8 @@ export const useDepositTransactions = ({
       params,
       addOptimisticTokensBalancesUpdates,
       setPendingDeposit,
+      transitBuyProgress,
+      recordTransitDeposit,
       blockTimestampData,
       shouldDisableValidation,
       setPendingTxns,
@@ -643,8 +670,8 @@ export const useDepositTransactions = ({
           glvToken,
           blockTimestampData,
           setPendingTxns,
-          setPendingDeposit,
-        });
+          setPendingDeposit: transitBuyProgress ? undefined : setPendingDeposit,
+        }).then(({ transactionHash }) => recordTransitDeposit(transactionHash));
       } else {
         throw new Error(`Invalid pay source: ${paySource}`);
       }
@@ -678,6 +705,8 @@ export const useDepositTransactions = ({
       params,
       addOptimisticTokensBalancesUpdates,
       setPendingDeposit,
+      transitBuyProgress,
+      recordTransitDeposit,
       firstTokenAddress,
       secondTokenAddress,
       shouldDisableValidation,

@@ -19,6 +19,8 @@ export type TransitRouteProgress = {
   glvOrMarketInfo: GlvOrMarketInfo;
   withdrawalTxnHash: string | undefined;
   conversion: PaxosTransitConversion | undefined;
+  depositTxnHash: string | undefined;
+  isContinueRequested: boolean;
 };
 
 export type NewTransitRouteProgress = Pick<

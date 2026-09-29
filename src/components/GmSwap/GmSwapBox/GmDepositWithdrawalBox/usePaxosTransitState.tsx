@@ -9,12 +9,14 @@ import {
   selectPoolsDetailsGlvOrMarketAddress,
   selectPoolsDetailsGlvOrMarketInfo,
   selectPoolsDetailsLongTokenAddress,
+  selectPoolsDetailsOperation,
   selectPoolsDetailsConversionRoutePreference,
   selectPoolsDetailsSetFirstTokenAddress,
   selectPoolsDetailsSetFirstTokenInputValue,
   selectPoolsDetailsSetFocusedInput,
   selectPoolsDetailsSetIsTransitRoute,
   selectPoolsDetailsSetMarketOrGlvTokenInputValue,
+  selectPoolsDetailsSetOperation,
   selectPoolsDetailsSetConversionRoutePreference,
   selectPoolsDetailsSetTransitAmountOut,
   selectPoolsDetailsShortTokenAddress,
@@ -30,7 +32,7 @@ import {
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getGlvOrMarketAddress } from "domain/synthetics/markets";
+import { Operation } from "domain/synthetics/markets/types";
 import { getReceivedTokenAmount } from "domain/synthetics/paxosTransit/getReceivedTokenAmount";
 import { getIsTransitOrderFinal } from "domain/synthetics/paxosTransit/transitOrders";
 import {
@@ -79,6 +81,8 @@ export function usePaxosTransitState({
   const collateralSwapTokens = useSelector(selectPoolsDetailsCollateralSwapTokens);
   const glvOrMarketAddress = useSelector(selectPoolsDetailsGlvOrMarketAddress);
   const glvOrMarketInfo = useSelector(selectPoolsDetailsGlvOrMarketInfo);
+  const currentOperation = useSelector(selectPoolsDetailsOperation);
+  const setOperation = useSelector(selectPoolsDetailsSetOperation);
   const tokensData = useSelector(selectTokensData);
   const collateralSwapTotalFeesDeltaUsd = useSelector(selectPoolsDetailsCollateralSwapTotalFeesDeltaUsd);
   const conversionRoutePreference = useSelector(selectPoolsDetailsConversionRoutePreference);
@@ -91,6 +95,7 @@ export function usePaxosTransitState({
     isPaxosTransitOrderStatusUnknown,
     startTransitRouteProgress,
     attachTransitRouteConversion,
+    setTransitRouteContinueRequested,
   } = useSyntheticsEvents();
 
   const convertedOrderIdRef = useRef<string | undefined>(undefined);
@@ -111,6 +116,7 @@ export function usePaxosTransitState({
   const conversionOrder = transitRouteProgressForDirection?.conversion ? paxosTransitOrder : undefined;
   const isConversionFinal = getIsTransitOrderFinal(conversionOrder);
   const isConverting = transitRouteProgressForDirection?.conversion !== undefined && !isConversionFinal;
+  const isDepositSent = transitRouteProgressForDirection?.depositTxnHash !== undefined;
 
   const withdrawalUsdgAmount = isWithdrawal && amounts ? amounts.longTokenAmount + amounts.shortTokenAmount : 0n;
 
@@ -290,6 +296,7 @@ export function usePaxosTransitState({
       if (
         conversionOrder?.status !== "PROCESSED" ||
         convertedOrderIdRef.current === conversionOrder.id ||
+        isDepositSent ||
         !paxosTransitConfig
       ) {
         return;
@@ -300,23 +307,56 @@ export function usePaxosTransitState({
       if (isWithdrawal) {
         setMarketOrGlvTokenInputValue("");
         setFirstTokenInputValue("");
-        helperToast.success(t`USDC received.`);
         return;
       }
 
-      const usdg = getToken(chainId, paxosTransitConfig.usdgAddress);
-
-      setFirstTokenAddress(paxosTransitConfig.usdgAddress as ERC20Address);
-      setFirstTokenInputValue(formatAmountFree(conversionOrder.amountDue, usdg.decimals));
-      setFocusedInput("first");
-      helperToast.success(t`USDG received. You can now buy with it.`);
+      fillUsdgPayInput(conversionOrder.amountDue);
     },
     [
       conversionOrder,
+      fillUsdgPayInput,
+      isDepositSent,
       isWithdrawal,
       paxosTransitConfig,
       setFirstTokenInputValue,
       setMarketOrGlvTokenInputValue,
+    ]
+  );
+
+  useEffect(
+    function applyContinueRequest() {
+      if (!transitRouteProgressForMarket?.isContinueRequested || !paxosTransitConfig) {
+        return;
+      }
+
+      const operation =
+        transitRouteProgressForMarket.direction === "usdcToUsdg" ? Operation.Deposit : Operation.Withdrawal;
+
+      if (operation !== currentOperation) {
+        setOperation(operation);
+        return;
+      }
+
+      setTransitRouteContinueRequested(transitRouteProgress.id, false);
+
+      if (transitRouteProgressForMarket.direction === "usdgToUsdc") {
+        setFirstTokenAddress(paxosTransitConfig.usdcAddress as ERC20Address);
+        return;
+      }
+
+      const amountDue = conversionOrder?.status === "PROCESSED" ? conversionOrder.amountDue : undefined;
+
+      fillUsdgPayInput(amountDue);
+    },
+    [
+      conversionOrder,
+      currentOperation,
+      fillUsdgPayInput,
+      paxosTransitConfig,
+      setFirstTokenAddress,
+      setOperation,
+      setTransitRouteContinueRequested,
+      transitRouteProgressForMarket,
     ]
   );
 

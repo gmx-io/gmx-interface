@@ -41,7 +41,10 @@ export function PaxosTransitDebugCard({
   const paxosTransitConfig = getPaxosTransitConfig(useSelector(selectChainId));
   const debugSwapMarketsConfig = useSelector(selectDebugSwapMarketsConfig);
   const setDebugSwapMarketsConfig = useSelector(selectSetDebugSwapMarketsConfig);
+  const { account } = useWallet();
+  const { startTransitRouteProgress } = useSyntheticsEvents();
 
+  const paxosTransitConfig = getPaxosTransitConfig(chainId);
   const disabledSwapMarkets = debugSwapMarketsConfig?.disabledSwapMarkets ?? [];
   const isSwapMarketDisabled =
     paxosTransitConfig !== undefined && disabledSwapMarkets.includes(paxosTransitConfig.swapMarketAddress);
