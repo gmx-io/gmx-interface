@@ -160,7 +160,8 @@ export function SyntheticsPage(p: Props) {
             onResolutionChange={setSolanaChartResolution}
             candles={solanaChartCandles}
           />
-          <SolanaMarketLongTradeBox />
+          <SolanaMarketLongTradeBox isLong />
+          <SolanaMarketLongTradeBox isLong={false} />
           <SolanaTradeList />
           <SolanaSignMessageCard />
           <SolanaRpcPage />

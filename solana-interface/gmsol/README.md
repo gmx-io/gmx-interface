@@ -1,8 +1,9 @@
 # Solana order infrastructure
 
 This directory contains the tracked subset of the GMSOL client needed by the
-main project to build a Solana market-increase order. The public entry point is
-`buildSolanaMarketLongTransaction` in `marketLong.ts`.
+main project to build Solana market-increase orders. The public entry point is
+`buildSolanaMarketLongTransaction` in `marketLong.ts`; its `isLong` input selects
+the long or short direction.
 
 The first integration is intentionally constrained to SOL/USD market long
 orders collateralized by USDC. The default mainnet market token is

@@ -2,25 +2,25 @@ import { useMemo, useState } from "react";
 
 import Button from "components/Button/Button";
 import { TradeInputField } from "components/TradeboxMarginFields/TradeInputField";
-import { USD_DECIMALS } from "config/factors";
 import { parseValue } from "lib/numbers";
 
 import { getSolanaMarketLongConfig } from "../../gmsol/config";
-import { signAndSendSolanaMarketLong } from "../../gmsol/marketLong";
+import {
+  calculateSolanaMarketLongSizeDeltaUsd,
+  signAndSendSolanaMarketLong,
+} from "../../gmsol/marketLong";
 import { getSolanaRpcClient } from "../lib/rpc";
 import { useSolanaWallet } from "../wallet/useSolanaWallet";
 
 const USDC_DECIMALS = 6;
 const LEVERAGE_DECIMALS = 4;
-const LEVERAGE_SCALE = 10n ** BigInt(LEVERAGE_DECIMALS);
-const USD_SCALE = 10n ** BigInt(USD_DECIMALS);
+const SOLANA_USD_DECIMALS = 20;
 
-function calculateSizeDeltaUsd(collateralAmount: bigint, leverage: bigint) {
-  const collateralUsd = (collateralAmount * USD_SCALE) / 10n ** BigInt(USDC_DECIMALS);
-  return (collateralUsd * leverage) / LEVERAGE_SCALE;
-}
+type SolanaMarketTradeBoxProps = {
+  isLong: boolean;
+};
 
-export function SolanaMarketLongTradeBox() {
+export function SolanaMarketLongTradeBox({ isLong }: SolanaMarketTradeBoxProps) {
   const { address, wallet } = useSolanaWallet();
   const [collateralInput, setCollateralInput] = useState("");
   const [leverageInput, setLeverageInput] = useState("1");
@@ -37,7 +37,7 @@ export function SolanaMarketLongTradeBox() {
     [leverageInput]
   );
   const sizeDeltaUsd = useMemo(
-    () => calculateSizeDeltaUsd(collateralAmount, leverage),
+    () => calculateSolanaMarketLongSizeDeltaUsd(collateralAmount, leverage),
     [collateralAmount, leverage]
   );
 
@@ -52,6 +52,7 @@ export function SolanaMarketLongTradeBox() {
         owner: address,
         collateralAmount,
         sizeDeltaUsd,
+        isLong,
         config: getSolanaMarketLongConfig(),
       });
       setSignature(result.signature);
@@ -68,7 +69,9 @@ export function SolanaMarketLongTradeBox() {
     <section className="flex min-w-0 flex-col gap-12 rounded-8 bg-slate-900 p-16">
       <div>
         <h2 className="text-16 font-medium">SOL/USD</h2>
-        <p className="mt-4 text-12 text-typography-secondary">Market Long · USDC collateral</p>
+        <p className="mt-4 text-12 text-typography-secondary">
+          Market {isLong ? "Long" : "Short"} · USDC collateral
+        </p>
       </div>
 
       <TradeInputField
@@ -99,11 +102,13 @@ export function SolanaMarketLongTradeBox() {
 
       <div className="flex items-center justify-between text-13 text-typography-secondary">
         <span>Position size</span>
-        <span className="numbers text-typography-primary">${Number(sizeDeltaUsd) / 10 ** USD_DECIMALS}</span>
+        <span className="numbers text-typography-primary">
+          ${Number(sizeDeltaUsd) / 10 ** SOLANA_USD_DECIMALS}
+        </span>
       </div>
 
       <Button variant="primary-action" size="medium" disabled={!canSubmit} onClick={submit}>
-        {isSubmitting ? "Confirming..." : address ? "Open Long" : "Connect Solana Wallet"}
+        {isSubmitting ? "Confirming..." : address ? `Open ${isLong ? "Long" : "Short"}` : "Connect Solana Wallet"}
       </Button>
 
       {error ? <p className="text-12 text-red-300">{error}</p> : null}

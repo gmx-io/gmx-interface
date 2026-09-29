@@ -5,6 +5,16 @@ import { PublicKey, Transaction, VersionedTransaction, type Connection } from "@
 import { makeCreateIncreaseOrderInstruction } from "./exchange/instructions/order";
 import { makeStoreProgram } from "./program/store";
 
+const USDC_DECIMALS = 6;
+const LEVERAGE_DECIMALS = 4;
+const SOLANA_USD_DECIMALS = 20;
+
+export function calculateSolanaMarketLongSizeDeltaUsd(collateralAmount: bigint, leverage: bigint) {
+  const collateralUsd =
+    (collateralAmount * 10n ** BigInt(SOLANA_USD_DECIMALS)) / 10n ** BigInt(USDC_DECIMALS);
+  return (collateralUsd * leverage) / 10n ** BigInt(LEVERAGE_DECIMALS);
+}
+
 export type SolanaMarketLongConfig = {
   store: string;
   marketToken: string;
@@ -17,6 +27,7 @@ export type SolanaMarketLongOrder = {
   owner: string;
   collateralAmount: bigint;
   sizeDeltaUsd: bigint;
+  isLong: boolean;
   config: SolanaMarketLongConfig;
 };
 
@@ -62,7 +73,7 @@ export async function buildSolanaMarketLongTransaction(
     owner,
     marketToken,
     collateralToken,
-    isLong: true,
+    isLong: input.isLong,
     initialCollateralDeltaAmount: input.collateralAmount,
     sizeDeltaUsd: input.sizeDeltaUsd,
     options: {
@@ -86,9 +97,25 @@ export async function signAndSendSolanaMarketLong(
   const { transaction, order } = await buildSolanaMarketLongTransaction(connection, wallet, input);
   const signed = await wallet.signTransaction({ transaction: transaction.serialize({ requireAllSignatures: false }) });
   const signature = await connection.sendRawTransaction(signed.signedTransaction, { preflightCommitment: "confirmed" });
-  await connection.confirmTransaction(
+  const confirmation = await connection.confirmTransaction(
     { signature, blockhash: transaction.recentBlockhash!, lastValidBlockHeight: transaction.lastValidBlockHeight! },
     "confirmed"
   );
+
+  if (confirmation.value.err) {
+    throw new Error(`Solana transaction failed: ${JSON.stringify(confirmation.value.err)}`);
+  }
+
+  const confirmedTransaction = await connection.getTransaction(signature, {
+    commitment: "confirmed",
+    maxSupportedTransactionVersion: 0,
+  });
+  const executionError = confirmedTransaction?.meta?.logMessages?.find((message) =>
+    message.includes("A model error occurred") || message.includes("Execute order error")
+  );
+  if (executionError) {
+    throw new Error(`Solana order execution failed: ${executionError}`);
+  }
+
   return { signature, order };
 }
