@@ -1,5 +1,7 @@
 /* eslint-disable */
 
+import { colors as appColors } from "../src/config/colors";
+
 const range = require("lodash/range");
 const fromPairs = require("lodash/fromPairs");
 const merge = require("lodash/merge");
@@ -29,6 +31,11 @@ const colors = {
     100: "#A4C3F9",
     300: "#7885ff",
     400: "#2D42FC",
+  },
+  button: {
+    ...Object.fromEntries(Object.entries(appColors.button).map(([name, color]) => [name, color.dark])),
+    whiteHover: appColors.button.secondaryHover.light,
+    whiteActive: appColors.button.secondary.light,
   },
   white: "#ffffff",
   black: "#000000",
@@ -187,7 +194,15 @@ export default {
       "180": "180ms",
     },
     colors: colors,
-    screens: defaultConfig.theme.screens,
+    screens: {
+      ...defaultConfig.theme.screens,
+      "max-lg-desktop": { max: "1440px" },
+      "max-desktop": { max: "1200px" },
+      "max-tablet": { max: "1100px" },
+      "max-mobile": { max: "900px" },
+      "max-small": { max: "640px" },
+      "max-compact": { max: "639px" },
+    },
     extend: {
       fontFamily: {
         sans: ["TTHoves", "sans-serif"],
@@ -195,6 +210,56 @@ export default {
         code: ["Space Mono", "TTHovesMono", "monospace"],
       },
       keyframes: {
+        "rewards-live-pulse": {
+          from: {
+            opacity: "0.65",
+            transform: "scale(1)",
+          },
+          to: {
+            opacity: "0",
+            transform: "scale(2.6)",
+          },
+        },
+        "rewards-address-blink": {
+          "0%, 50%, 100%": {
+            opacity: "0",
+          },
+          "20%, 70%": {
+            opacity: "1",
+          },
+        },
+        "rewards-card-reveal": {
+          from: {
+            opacity: "0",
+            filter: "blur(8px)",
+          },
+          to: {
+            opacity: "1",
+            filter: "blur(0)",
+          },
+        },
+        "home-rewards-orbit": {
+          "0%": {
+            "offset-distance": "0%",
+            transform: "scale(0.825)",
+          },
+          "25%": {
+            "offset-distance": "25%",
+            transform: "scale(1)",
+          },
+          "50%": {
+            "offset-distance": "50%",
+            transform: "scale(0.825)",
+          },
+          "75%": {
+            "offset-distance": "75%",
+            transform: "scale(0.65)",
+          },
+          "100%": {
+            "offset-distance": "100%",
+            transform: "scale(0.825)",
+          },
+        },
         scroll: {
           "0%": { transform: "translateX(0%)" },
           "100%": { transform: "translateX(-50%)" },

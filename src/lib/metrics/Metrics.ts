@@ -68,7 +68,7 @@ class Metrics {
   setFetcher = (fetcher: OracleFetcher) => {
     this.fetcher = fetcher;
 
-    if (this.queue.length > 0 && !this.isProcessing) {
+    if (!this.isProcessing) {
       this._processQueue();
     }
   };
@@ -77,7 +77,7 @@ class Metrics {
     this.debug = val;
   };
 
-  setGlobalMetricData = (meta: GlobalMetricData) => {
+  setGlobalMetricData = (meta: Partial<GlobalMetricData>) => {
     this.globalMetricData = { ...this.globalMetricData, ...meta };
   };
 
@@ -204,7 +204,7 @@ class Metrics {
 
     if (this.queue.length === 0) {
       _debugMetrics?.logQueueState("Empty");
-      return sleep(RETRY_DELAY).then(() => this._processQueue(retryNumber + 1));
+      return sleep(BATCH_INTERVAL_MS).then(() => this._processQueue());
     }
 
     if (!this.getIsGlobalPropsInited() && this.initGlobalPropsRetries > 0) {
@@ -398,7 +398,7 @@ class Metrics {
   };
 
   getIsGlobalPropsInited = () => {
-    return this.globalMetricData.isInited && this.wallets;
+    return this.globalMetricData.isInited && (this.globalMetricData.isHomeSite || this.wallets);
   };
 
   startTimer = (label: string, fromLocalStorage = false) => {
