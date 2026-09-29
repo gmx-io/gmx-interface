@@ -33,6 +33,7 @@ export const DEBUG_ERROR_BOUNDARY_KEY = "debug-error-boundary";
 export const DEBUG_PAXOS_TRANSIT_IGNORE_WHITELIST_KEY = "debug-paxos-transit-ignore-whitelist";
 export const DEBUG_PAXOS_TRANSIT_MOCK_KEY = "debug-paxos-transit-mock";
 export const DEBUG_PAXOS_TRANSIT_FORCE_BUY_USDG_HINT_KEY = "debug-paxos-transit-force-buy-usdg-hint";
+export const DEBUG_PAXOS_TRANSIT_MIN_AMOUNT_USD_KEY = "debug-paxos-transit-min-amount-usd";
 export const STATS_API_URL_KEY = "stats-api-url";
 const SORTED_MARKETS_KEY = "sorted-markets-key";
 export const TWAP_NUMBER_OF_PARTS_KEY = "twap-number-of-parts";

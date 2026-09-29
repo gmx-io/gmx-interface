@@ -1,3 +1,4 @@
+import { USD_DECIMALS } from "config/factors";
 import { getPaxosTransitConfig } from "config/paxosTransit";
 import { selectPoolsDetailsUsdcUsdgSwapLiquidity } from "context/PoolsDetailsContext/selectors";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -7,8 +8,9 @@ import {
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import type { TokenData } from "domain/synthetics/tokens";
-import { formatBalanceAmount, formatUsd } from "lib/numbers";
+import { formatAmount, formatBalanceAmount, formatUsd } from "lib/numbers";
 
+import NumberInput from "components/NumberInput/NumberInput";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
@@ -21,6 +23,8 @@ export function PaxosTransitDebugCard({
   setIsMocked,
   isBuyUsdgHintForced,
   setIsBuyUsdgHintForced,
+  minAmountUsdInput,
+  setMinAmountUsdInput,
 }: {
   zeroFeeCapacity: bigint | undefined;
   usdgToken: TokenData | undefined;
@@ -30,6 +34,8 @@ export function PaxosTransitDebugCard({
   setIsMocked: (value: boolean) => void;
   isBuyUsdgHintForced: boolean;
   setIsBuyUsdgHintForced: (value: boolean) => void;
+  minAmountUsdInput: string;
+  setMinAmountUsdInput: (value: string) => void;
 }) {
   const poolLiquidity = useSelector(selectPoolsDetailsUsdcUsdgSwapLiquidity);
   const paxosTransitConfig = getPaxosTransitConfig(useSelector(selectChainId));
@@ -65,9 +71,18 @@ export function PaxosTransitDebugCard({
         Show the Buy USDG hint
       </ToggleSwitch>
       <SyntheticsInfoRow
-        label="Transit size threshold"
-        valueClassName="numbers"
-        value={paxosTransitConfig ? formatUsd(paxosTransitConfig.minAmountUsd) : "-"}
+        label="Transit size threshold, $"
+        value={
+          <NumberInput
+            className="w-120 rounded-4 border border-gray-700 px-8 py-4 text-right numbers"
+            value={minAmountUsdInput}
+            onValueChange={(e) => setMinAmountUsdInput(e.target.value)}
+            placeholder={
+              paxosTransitConfig ? formatAmount(paxosTransitConfig.minAmountUsd, USD_DECIMALS, 0) : undefined
+            }
+            maxDecimals={2}
+          />
+        }
       />
       <SyntheticsInfoRow
         label="Transit zero-fee capacity"

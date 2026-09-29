@@ -4,9 +4,11 @@ import mapValues from "lodash/mapValues";
 import { useCallback, useEffect, useMemo } from "react";
 
 import { AVALANCHE } from "config/chains";
+import { USD_DECIMALS } from "config/factors";
 import {
   DEBUG_PAXOS_TRANSIT_FORCE_BUY_USDG_HINT_KEY,
   DEBUG_PAXOS_TRANSIT_IGNORE_WHITELIST_KEY,
+  DEBUG_PAXOS_TRANSIT_MIN_AMOUNT_USD_KEY,
   DEBUG_PAXOS_TRANSIT_MOCK_KEY,
 } from "config/localStorage";
 import { isSourceChain } from "config/multichain";
@@ -76,7 +78,7 @@ import { ERC20Address, NativeTokenSupportedAddress } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatAmountFree, formatBalanceAmount, formatUsd } from "lib/numbers";
+import { formatAmountFree, formatBalanceAmount, formatUsd, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { switchNetwork } from "lib/wallets";
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID, type AnyChainId, type GmxAccountPseudoChainId } from "sdk/configs/chains";
@@ -217,8 +219,14 @@ export function GmSwapBoxDepositWithdrawal() {
     DEBUG_PAXOS_TRANSIT_FORCE_BUY_USDG_HINT_KEY,
     false
   );
+  const [transitMinAmountUsdInput, setTransitMinAmountUsdInput] = useLocalStorageSerializeKey(
+    DEBUG_PAXOS_TRANSIT_MIN_AMOUNT_USD_KEY,
+    ""
+  );
   const transitState = usePaxosTransitState({
     isWhitelistIgnored: showDebugValues && Boolean(isTransitWhitelistIgnored),
+    minAmountUsdOverride:
+      showDebugValues && transitMinAmountUsdInput ? parseValue(transitMinAmountUsdInput, USD_DECIMALS) : undefined,
     isMocked: showDebugValues && Boolean(isTransitMocked),
     shouldDisableValidation: shouldDisableValidationForTesting,
   });
@@ -799,6 +807,8 @@ export function GmSwapBoxDepositWithdrawal() {
             setIsMocked={setIsTransitMocked}
             isBuyUsdgHintForced={Boolean(isBuyUsdgHintForced)}
             setIsBuyUsdgHintForced={setIsBuyUsdgHintForced}
+            minAmountUsdInput={transitMinAmountUsdInput ?? ""}
+            setMinAmountUsdInput={setTransitMinAmountUsdInput}
           />
         )}
       </form>

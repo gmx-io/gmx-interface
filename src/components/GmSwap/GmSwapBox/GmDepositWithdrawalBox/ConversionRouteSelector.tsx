@@ -2,9 +2,6 @@ import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 
 import { GMX_PARTNER_TELEGRAM_URL } from "config/links";
-import { getPaxosTransitConfig } from "config/paxosTransit";
-import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import { formatUsd } from "lib/numbers";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
@@ -25,13 +22,12 @@ export function ConversionRouteSelector({ transitState }: { transitState: PaxosT
     conversionRoutePreference,
     setConversionRoutePreference,
     shouldShowWhitelistNote,
+    minAmountUsd,
   } = transitState;
   const route: ConversionRoute = isTransitRoute ? "transit" : "pool";
   const routeLabel = getRoutePreferenceLabel(route);
   const preference = isRouteSelectable ? conversionRoutePreference : "auto";
-  const chainId = useSelector(selectChainId);
-  const paxosTransitConfig = getPaxosTransitConfig(chainId);
-  const minAmount = formatUsd(paxosTransitConfig?.minAmountUsd, { displayDecimals: 0 });
+  const minAmount = formatUsd(minAmountUsd, { displayDecimals: 0 });
 
   return (
     <>
