@@ -54,10 +54,12 @@ export type PaxosTransitState = ReturnType<typeof usePaxosTransitState>;
 
 export function usePaxosTransitState({
   isWhitelistIgnored,
+  thresholdUsdOverride,
   isMocked,
   shouldDisableValidation,
 }: {
   isWhitelistIgnored: boolean;
+  thresholdUsdOverride: bigint | undefined;
   isMocked: boolean;
   shouldDisableValidation: boolean;
 }) {
@@ -173,6 +175,7 @@ export function usePaxosTransitState({
     isTransitRequired: isWithdrawalSettled,
     isAmountEstimated: isWithdrawal && !withdrawalStatusWithUsdg?.data,
     isWhitelistIgnored,
+    thresholdUsdOverride,
     isMocked,
     enabled: isUsdcConversionOffered,
     onPendingOrderFound,

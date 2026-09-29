@@ -4,7 +4,12 @@ import mapValues from "lodash/mapValues";
 import { useCallback, useEffect, useMemo } from "react";
 
 import { AVALANCHE } from "config/chains";
-import { DEBUG_PAXOS_TRANSIT_IGNORE_WHITELIST_KEY, DEBUG_PAXOS_TRANSIT_MOCK_KEY } from "config/localStorage";
+import { USD_DECIMALS } from "config/factors";
+import {
+  DEBUG_PAXOS_TRANSIT_IGNORE_WHITELIST_KEY,
+  DEBUG_PAXOS_TRANSIT_THRESHOLD_USD_KEY,
+  DEBUG_PAXOS_TRANSIT_MOCK_KEY,
+} from "config/localStorage";
 import { isSourceChain } from "config/multichain";
 import { isDepositDisabledMarket } from "config/static/markets";
 import {
@@ -71,7 +76,7 @@ import { ERC20Address, NativeTokenSupportedAddress } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatAmountFree, formatBalanceAmount, formatUsd } from "lib/numbers";
+import { formatAmountFree, formatBalanceAmount, formatUsd, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { switchNetwork } from "lib/wallets";
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID, type AnyChainId, type GmxAccountPseudoChainId } from "sdk/configs/chains";
@@ -208,8 +213,14 @@ export function GmSwapBoxDepositWithdrawal() {
     false
   );
   const [isTransitMocked, setIsTransitMocked] = useLocalStorageSerializeKey(DEBUG_PAXOS_TRANSIT_MOCK_KEY, false);
+  const [transitThresholdUsdInput, setTransitThresholdUsdInput] = useLocalStorageSerializeKey(
+    DEBUG_PAXOS_TRANSIT_THRESHOLD_USD_KEY,
+    ""
+  );
   const transitState = usePaxosTransitState({
     isWhitelistIgnored: showDebugValues && Boolean(isTransitWhitelistIgnored),
+    thresholdUsdOverride:
+      showDebugValues && transitThresholdUsdInput ? parseValue(transitThresholdUsdInput, USD_DECIMALS) : undefined,
     isMocked: showDebugValues && Boolean(isTransitMocked),
     shouldDisableValidation: shouldDisableValidationForTesting,
   });
@@ -782,6 +793,8 @@ export function GmSwapBoxDepositWithdrawal() {
             setIsWhitelistIgnored={setIsTransitWhitelistIgnored}
             isMocked={Boolean(isTransitMocked)}
             setIsMocked={setIsTransitMocked}
+            thresholdUsdInput={transitThresholdUsdInput ?? ""}
+            setThresholdUsdInput={setTransitThresholdUsdInput}
           />
         )}
       </form>
