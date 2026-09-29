@@ -4,6 +4,7 @@ import { lingui } from "@lingui/vite-plugin";
 import react from "@vitejs/plugin-react";
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
 import path from "path";
 import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig, loadEnv, type ConfigEnv, type PluginOption, type UserConfig } from "vite";
@@ -299,6 +300,7 @@ export function createViteConfig(
     ],
     resolve: {
       alias: {
+        buffer: createRequire(import.meta.url).resolve("buffer/"),
         App: path.resolve(__dirname, "src/App"),
         components: path.resolve(__dirname, "src/components"),
         config: path.resolve(__dirname, "src/config"),

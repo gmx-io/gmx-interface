@@ -4,6 +4,7 @@ import { Component, ErrorInfo, ReactNode, useCallback, useLayoutEffect, useMemo,
 import { createPortal } from "react-dom";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { logAppStartupError } from "lib/appStartup";
 import { metrics } from "lib/metrics";
 
 import Button from "components/Button/Button";
@@ -160,8 +161,7 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    // eslint-disable-next-line no-console
-    console.error("ErrorBoundary caught error", error, info);
+    logAppStartupError(`ErrorBoundary.${this.props.id}`, error, { componentStack: info.componentStack });
     metrics.pushError(error, `ErrorBoundary.${this.props.id}`);
   }
 
