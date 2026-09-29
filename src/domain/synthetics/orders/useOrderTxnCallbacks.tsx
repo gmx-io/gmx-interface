@@ -31,7 +31,7 @@ import {
   getIsPermitExpiredDeadlineOnSimulation,
   getIsPermitSignatureErrorOnSimulation,
   getIsPossibleExternalSwapError,
-  getIsPriceImpactTooLargeError,
+  getIsSwapPriceImpactTooLargeError,
 } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import {
@@ -377,7 +377,7 @@ export function useOrderTxnCallbacks() {
               : undefined;
 
           const fallbackToExternalSwap =
-            !hasExternalSwap(expressParams, batchParams) && getIsPriceImpactTooLargeError(error)
+            !hasExternalSwap(expressParams, batchParams) && getIsSwapPriceImpactTooLargeError(error)
               ? ctx.onExternalSwapFallback
               : undefined;
 
