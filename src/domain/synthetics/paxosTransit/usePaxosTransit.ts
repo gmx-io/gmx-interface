@@ -29,7 +29,7 @@ const QUOTE_REFRESH_INTERVAL = 30_000;
 const RECENT_ORDERS_PAGE_SIZE = 10;
 const PREVIEW_AMOUNT_SIGNIFICANT_DIGITS = 3;
 
-export function usePaxosTransitConversion({
+export function usePaxosTransit({
   chainId,
   tokenIn,
   tokenOut,
@@ -88,7 +88,7 @@ export function usePaxosTransitConversion({
       isWhitelisted,
       swapFeesUsd,
       amountUsd,
-      minAmountUsd: paxosTransitConfig!.minAmountUsd,
+      thresholdUsd: paxosTransitConfig!.thresholdUsd,
     });
 
   const getQuoteParams = useCallback(
@@ -119,7 +119,7 @@ export function usePaxosTransitConversion({
   const estimatedAmountOut = convertToTokenAmount(estimatedUsdIn, tokenOut?.decimals, tokenOut?.prices.maxPrice);
   const amountOut = quote?.amountOut ?? estimatedAmountOut;
 
-  const isVisible =
+  const shouldUseTransit =
     isActive &&
     ((isTransitRequired && quote !== undefined) ||
       getShouldShowPaxosTransit({
@@ -148,7 +148,7 @@ export function usePaxosTransitConversion({
     { refreshInterval: 0, revalidateOnFocus: false, revalidateOnReconnect: false, revalidateIfStale: false }
   );
 
-  const convert = useCallback(async (): Promise<TransitSubmission | undefined> => {
+  const submitTransit = useCallback(async (): Promise<TransitSubmission | undefined> => {
     if (!isActive || !signer || amount <= 0n) return undefined;
 
     const params = getQuoteParams(amount);
@@ -236,7 +236,7 @@ export function usePaxosTransitConversion({
   }, [account, amount, api, chainId, getQuoteParams, isActive, signer]);
 
   return {
-    isVisible,
+    shouldUseTransit,
     isQuoteNeeded,
     isAmountSettling: previewAmount !== debouncedAmount,
     isFeeTierLoaded: feeTierData !== undefined,
@@ -248,6 +248,6 @@ export function usePaxosTransitConversion({
     quoteError,
     amountOut,
     step,
-    convert,
+    submitTransit,
   };
 }
