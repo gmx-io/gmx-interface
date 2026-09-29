@@ -16,6 +16,7 @@ import {
   usePoolsDetailsSecondTokenInputValue,
 } from "context/PoolsDetailsContext/hooks";
 import {
+  PLATFORM_TOKEN_DECIMALS,
   selectPoolsDetailsFirstTokenAmount,
   selectPoolsDetailsFirstTokenData,
   selectPoolsDetailsFlags,
@@ -655,7 +656,11 @@ export function GmSwapBoxDepositWithdrawal() {
                   isDisabled={isTransitBuyStep2}
                   bottomRightLabel={t`Balance`}
                   bottomRightValue={marketTokenMaxDetails.formattedBalance}
-                  inputValue={marketOrGlvTokenInputValue}
+                  inputValue={
+                    isTransitBuyStep2 && marketOrGlvTokenAmount > 0n
+                      ? formatBalanceAmount(marketOrGlvTokenAmount, PLATFORM_TOKEN_DECIMALS)
+                      : marketOrGlvTokenInputValue
+                  }
                   onInputValueChange={marketOrGlvTokenInputValueChange}
                   onClickTopRightLabel={marketTokenInputClickTopRightLabel}
                   onClickMax={marketTokenInputShowMaxButton ? marketTokenInputClickMax : undefined}
