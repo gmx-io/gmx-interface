@@ -21,6 +21,8 @@ export function PaxosTransitDebugCard({
   setIsWhitelistIgnored,
   isMocked,
   setIsMocked,
+  isBuyUsdgHintForced,
+  setIsBuyUsdgHintForced,
   thresholdUsdInput,
   setThresholdUsdInput,
 }: {
@@ -30,6 +32,8 @@ export function PaxosTransitDebugCard({
   setIsWhitelistIgnored: (value: boolean) => void;
   isMocked: boolean;
   setIsMocked: (value: boolean) => void;
+  isBuyUsdgHintForced: boolean;
+  setIsBuyUsdgHintForced: (value: boolean) => void;
   thresholdUsdInput: string;
   setThresholdUsdInput: (value: string) => void;
 }) {
@@ -62,6 +66,9 @@ export function PaxosTransitDebugCard({
       </ToggleSwitch>
       <ToggleSwitch isChecked={isSwapMarketDisabled} setIsChecked={setIsSwapMarketDisabled}>
         Disable USDC-USDG swap pool
+      </ToggleSwitch>
+      <ToggleSwitch isChecked={isBuyUsdgHintForced} setIsChecked={setIsBuyUsdgHintForced}>
+        Show the Buy USDG hint
       </ToggleSwitch>
       <SyntheticsInfoRow
         label="Transit size threshold, $"

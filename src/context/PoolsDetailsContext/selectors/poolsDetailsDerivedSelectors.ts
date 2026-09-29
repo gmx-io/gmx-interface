@@ -22,6 +22,7 @@ import { getAreBothCollateralsCrossChain } from "domain/multichain/areBothCollat
 import { getMintableMarketTokens, isMarketInfo } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { Mode, Operation } from "domain/synthetics/markets/types";
+import { getHasNoOnChainBalance } from "domain/synthetics/tokens";
 import { ERC20Address, getGmToken, getTokenData, Token, TokenBalanceType } from "domain/tokens";
 import { getIsEnteredAmount } from "lib/getIsEnteredAmount";
 import { parseValue } from "lib/numbers";
@@ -548,6 +549,27 @@ export const selectPoolsDetailsAvailableCollateralSwapToken = createSelector((q)
   }
 
   return getByKey(tokensData, paxosTransitConfig.usdcAddress);
+});
+
+export const selectPoolsDetailsHasNeitherUsdcNorUsdg = createSelector((q) => {
+  const chainId = q(selectChainId);
+  const longTokenAddress = q(selectPoolsDetailsLongTokenAddress);
+  const shortTokenAddress = q(selectPoolsDetailsShortTokenAddress);
+  const paxosTransitConfig = getPaxosTransitConfig(chainId);
+
+  if (
+    !paxosTransitConfig ||
+    longTokenAddress !== paxosTransitConfig.usdgAddress ||
+    shortTokenAddress !== paxosTransitConfig.usdgAddress
+  ) {
+    return false;
+  }
+
+  const tokensData = q(selectPoolsDetailsTradeTokensDataWithSourceChainBalances);
+  const usdcToken = getByKey(tokensData, paxosTransitConfig.usdcAddress);
+  const usdgToken = getByKey(tokensData, paxosTransitConfig.usdgAddress);
+
+  return getHasNoOnChainBalance(usdcToken) && getHasNoOnChainBalance(usdgToken);
 });
 
 export const selectPoolsDetailsCollateralSwapTokens = createSelector((q) => {
