@@ -4,7 +4,11 @@ import mapValues from "lodash/mapValues";
 import { useCallback, useEffect, useMemo } from "react";
 
 import { AVALANCHE } from "config/chains";
-import { DEBUG_PAXOS_TRANSIT_IGNORE_WHITELIST_KEY, DEBUG_PAXOS_TRANSIT_MOCK_KEY } from "config/localStorage";
+import {
+  DEBUG_PAXOS_TRANSIT_FORCE_BUY_USDG_HINT_KEY,
+  DEBUG_PAXOS_TRANSIT_IGNORE_WHITELIST_KEY,
+  DEBUG_PAXOS_TRANSIT_MOCK_KEY,
+} from "config/localStorage";
 import { isSourceChain } from "config/multichain";
 import { isDepositDisabledMarket } from "config/static/markets";
 import {
@@ -23,6 +27,7 @@ import {
   selectPoolsDetailsGlvInfo,
   selectPoolsDetailsGlvOrMarketAddress,
   selectPoolsDetailsGlvTokenData,
+  selectPoolsDetailsHasNeitherUsdcNorUsdg,
   selectPoolsDetailsIsCrossChainMarket,
   selectPoolsDetailsIsMarketTokenDeposit,
   selectPoolsDetailsMarketInfo,
@@ -208,11 +213,20 @@ export function GmSwapBoxDepositWithdrawal() {
     false
   );
   const [isTransitMocked, setIsTransitMocked] = useLocalStorageSerializeKey(DEBUG_PAXOS_TRANSIT_MOCK_KEY, false);
+  const [isBuyUsdgHintForced, setIsBuyUsdgHintForced] = useLocalStorageSerializeKey(
+    DEBUG_PAXOS_TRANSIT_FORCE_BUY_USDG_HINT_KEY,
+    false
+  );
   const transitState = usePaxosTransitState({
     isWhitelistIgnored: showDebugValues && Boolean(isTransitWhitelistIgnored),
     isMocked: showDebugValues && Boolean(isTransitMocked),
     shouldDisableValidation: shouldDisableValidationForTesting,
   });
+
+  const hasNeitherUsdcNorUsdg = useSelector(selectPoolsDetailsHasNeitherUsdcNorUsdg);
+  const isBuyUsdgHintForcedForDebug = showDebugValues && transitState.hasUsdgCollateral && Boolean(isBuyUsdgHintForced);
+  const shouldShowBuyUsdgHint =
+    isDeposit && ((account !== undefined && hasNeitherUsdcNorUsdg) || isBuyUsdgHintForcedForDebug);
 
   const logicalFees = useDepositWithdrawalFees({
     amounts,
@@ -744,6 +758,7 @@ export function GmSwapBoxDepositWithdrawal() {
                 shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
                 bannerErrorContent={submitState.bannerErrorContent}
                 shouldShowAvalancheGmxAccountWarning={shouldShowAvalancheGmxAccountWarning}
+                shouldShowBuyUsdgHint={shouldShowBuyUsdgHint}
                 isSubmitDisabled={submitState.disabled}
                 gasPaymentTokenWarningContent={
                   firstTokenMaxDetails.gasPaymentTokenWarningContent ??
@@ -782,6 +797,8 @@ export function GmSwapBoxDepositWithdrawal() {
             setIsWhitelistIgnored={setIsTransitWhitelistIgnored}
             isMocked={Boolean(isTransitMocked)}
             setIsMocked={setIsTransitMocked}
+            isBuyUsdgHintForced={Boolean(isBuyUsdgHintForced)}
+            setIsBuyUsdgHintForced={setIsBuyUsdgHintForced}
           />
         )}
       </form>

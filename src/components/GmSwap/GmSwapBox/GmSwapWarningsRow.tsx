@@ -2,6 +2,9 @@ import { Trans } from "@lingui/macro";
 import { ReactNode } from "react";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import { ColorfulBanner, ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
+
+import InfoIcon from "img/ic_info.svg?react";
 
 export function GmSwapWarningsRow({
   shouldShowWarning,
@@ -9,6 +12,7 @@ export function GmSwapWarningsRow({
   shouldShowWarningForExecutionFee,
   bannerErrorContent,
   shouldShowAvalancheGmxAccountWarning,
+  shouldShowBuyUsdgHint,
   gasPaymentTokenWarningContent,
   isSubmitDisabled,
 }: {
@@ -17,6 +21,7 @@ export function GmSwapWarningsRow({
   shouldShowWarningForExecutionFee: boolean;
   bannerErrorContent?: ReactNode;
   shouldShowAvalancheGmxAccountWarning?: boolean;
+  shouldShowBuyUsdgHint?: boolean;
   gasPaymentTokenWarningContent?: string;
   isSubmitDisabled?: boolean;
 }) {
@@ -62,6 +67,17 @@ export function GmSwapWarningsRow({
       <AlertInfoCard type="warning" key="gasPaymentTokenWarningContent" hideClose>
         {gasPaymentTokenWarningContent}
       </AlertInfoCard>
+    );
+  }
+
+  if (shouldShowBuyUsdgHint) {
+    warnings.push(
+      <ColorfulBanner color="blue" icon={InfoIcon} key="buyUsdgHint">
+        <Trans>You need USDC or USDG to buy.</Trans>
+        <ColorfulButtonLink color="blue" to="/trade/swap?to=USDG">
+          <Trans>Buy USDG</Trans>
+        </ColorfulButtonLink>
+      </ColorfulBanner>
     );
   }
 
