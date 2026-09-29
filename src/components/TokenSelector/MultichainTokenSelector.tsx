@@ -203,7 +203,9 @@ export function MultichainTokenSelector({
     <div className={cx("TokenSelector", className)} onClick={(event) => event.stopPropagation()}>
       <SlideModal
         qa={qa + "-modal"}
-        className="TokenSelector-modal MultichainTokenSelector-modal text-body-medium"
+        className={cx("TokenSelector-modal MultichainTokenSelector-modal text-body-medium", {
+          "MultichainTokenSelector-modal-disconnected": isConnected === false,
+        })}
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={label}
