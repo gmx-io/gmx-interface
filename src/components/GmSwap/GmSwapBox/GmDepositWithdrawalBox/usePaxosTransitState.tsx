@@ -45,7 +45,13 @@ import type { SubmitButtonState } from "./useGmSwapSubmitState";
 
 export type PaxosTransitState = ReturnType<typeof usePaxosTransitState>;
 
-export function usePaxosTransitState(isWhitelistIgnored: boolean) {
+export function usePaxosTransitState({
+  isWhitelistIgnored,
+  isMocked,
+}: {
+  isWhitelistIgnored: boolean;
+  isMocked: boolean;
+}) {
   const chainId = useSelector(selectChainId);
   const { account } = useWallet();
   const { isDeposit, isWithdrawal } = useSelector(selectPoolsDetailsFlags);
@@ -65,8 +71,13 @@ export function usePaxosTransitState(isWhitelistIgnored: boolean) {
   const marketInfo = useSelector(selectPoolsDetailsMarketInfo);
   const tokensData = useSelector(selectTokensData);
   const collateralSwapTotalFeesDeltaUsd = useSelector(selectPoolsDetailsCollateralSwapTotalFeesDeltaUsd);
-  const { withdrawalStatuses, transitRouteProgress, paxosTransitOrder, startTransitRouteProgress } =
-    useSyntheticsEvents();
+  const {
+    withdrawalStatuses,
+    transitRouteProgress,
+    paxosTransitOrder,
+    isPaxosTransitOrderStatusUnknown,
+    startTransitRouteProgress,
+  } = useSyntheticsEvents();
 
   const [convertedWithdrawalKeys, setConvertedWithdrawalKeys] = useState<string[]>([]);
   const convertedOrderIdRef = useRef<string | undefined>(undefined);
@@ -134,10 +145,10 @@ export function usePaxosTransitState(isWhitelistIgnored: boolean) {
         chainId,
         direction: isDeposit ? "buy" : "sell",
         marketInfo: glvOrMarketInfo,
-        conversion: { orderId: order.id, txnHash: undefined, offerAmount: order.offerAmount },
+        conversion: { orderId: order.id, txnHash: undefined, offerAmount: order.offerAmount, isMocked },
       });
     },
-    [chainId, glvOrMarketInfo, isDeposit, transitRouteProgress, startTransitRouteProgress]
+    [chainId, glvOrMarketInfo, isDeposit, isMocked, transitRouteProgress, startTransitRouteProgress]
   );
 
   const transit = usePaxosTransit({
@@ -148,6 +159,7 @@ export function usePaxosTransitState(isWhitelistIgnored: boolean) {
     collateralSwapTotalFeesDeltaUsd,
     isTransitRequired: isWithdrawalSettled,
     isWhitelistIgnored,
+    isMocked,
     enabled: isUsdcConversionOffered,
     onPendingOrderFound,
   });
@@ -200,13 +212,13 @@ export function usePaxosTransitState(isWhitelistIgnored: boolean) {
           chainId,
           direction: isDeposit ? "buy" : "sell",
           marketInfo: glvOrMarketInfo,
-          conversion: submission,
+          conversion: { ...submission, isMocked },
         });
       })
       .catch((error: Error) => {
         helperToast.error(t`Conversion failed: ${error.message}`);
       });
-  }, [chainId, glvOrMarketInfo, isDeposit, startTransitRouteProgress, submitTransit]);
+  }, [chainId, glvOrMarketInfo, isDeposit, isMocked, startTransitRouteProgress, submitTransit]);
 
   const fillUsdgPayInput = useCallback(
     (amountDue: bigint | undefined) => {
@@ -277,9 +289,9 @@ export function usePaxosTransitState(isWhitelistIgnored: boolean) {
     if (step === "submitting") return { text: t`Sending conversion...`, disabled: true };
 
     if (isConverting) {
-      return conversionOrder
-        ? { text: t`Converting ${tokenInSymbol} to ${tokenOutSymbol}...`, disabled: true }
-        : { text: t`Confirming conversion...`, disabled: true };
+      if (isPaxosTransitOrderStatusUnknown) return { text: t`Conversion status unavailable`, disabled: true };
+      if (!conversionOrder) return { text: t`Confirming conversion...`, disabled: true };
+      return { text: t`Converting ${tokenInSymbol} to ${tokenOutSymbol}...`, disabled: true };
     }
 
     if (isWithdrawal && !withdrawalStatus) {
@@ -322,6 +334,7 @@ export function usePaxosTransitState(isWhitelistIgnored: boolean) {
     isWithdrawal,
     onConvert,
     isConverting,
+    isPaxosTransitOrderStatusUnknown,
     conversionOrder,
     quoteError,
     withdrawalStatus,

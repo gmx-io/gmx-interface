@@ -8,6 +8,7 @@ export type PaxosTransitConversion = {
   orderId: string;
   txnHash: string | undefined;
   offerAmount: bigint;
+  isMocked: boolean;
 };
 
 export type TransitRouteProgress = {

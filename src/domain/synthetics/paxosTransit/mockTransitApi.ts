@@ -3,17 +3,16 @@ import { isAddressEqual } from "viem";
 import type { GmxApiSdk } from "sdk/clients/v2";
 import type { TransitOrder, TransitOrderStatus, TransitQuoteParams } from "sdk/utils/paxos/types";
 
-// TODO: remove once the gateway has Paxos keys; mocks every Transit call and never sends a wallet transaction
-export const IS_PAXOS_TRANSIT_MOCKED = import.meta.env.DEV;
-
 export type TransitApi = Pick<
   GmxApiSdk,
   "fetchTransitFeeTier" | "fetchTransitQuote" | "fetchTransitAuthorization" | "fetchTransitOrder" | "fetchTransitOrders"
 >;
 
 const MOCK_STATION_ADDRESS = "0x000000000000000000000000000000000000dEaD";
-const PENDING_MS = 10_000;
-const PROCESSING_MS = 20_000;
+const PENDING_MS = 3_000;
+const PROCESSING_MS = 9_000;
+
+export const MOCK_CONVERSION_MS = PROCESSING_MS;
 const MOCK_FEE_BPS = 1n;
 const MOCK_ZERO_FEE_CAPACITY = 750_000n * 10n ** 6n;
 
@@ -23,7 +22,28 @@ function getMockFee({ offerAmount, feeTier }: TransitQuoteParams) {
 
 type MockOrder = { params: TransitQuoteParams; id: string; submittedAt: number };
 
-const mockOrders: MockOrder[] = [];
+const MOCK_ORDERS_KEY = "debug-paxos-transit-mock-orders";
+
+function readMockOrders(): MockOrder[] {
+  try {
+    return JSON.parse(sessionStorage.getItem(MOCK_ORDERS_KEY) ?? "[]", (key, value) =>
+      key === "offerAmount" ? BigInt(value) : value
+    );
+  } catch {
+    return [];
+  }
+}
+
+function writeMockOrders(orders: MockOrder[]) {
+  try {
+    sessionStorage.setItem(
+      MOCK_ORDERS_KEY,
+      JSON.stringify(orders, (key, value) => (typeof value === "bigint" ? value.toString() : value))
+    );
+  } catch {
+    // preview builds in private mode have no session storage
+  }
+}
 
 function getMockStatus(submittedAt: number): TransitOrderStatus {
   const elapsed = Date.now() - submittedAt;
@@ -58,6 +78,7 @@ function toTransitOrder({ params, id, submittedAt }: MockOrder): TransitOrder {
   };
 }
 
+// TODO: remove once the gateway has Paxos keys; mocks every Transit call and never sends a wallet transaction
 export const mockTransitApi: TransitApi & { submitOrder: (params: TransitQuoteParams) => string } = {
   fetchTransitFeeTier: async () => ({ feeTier: "zeroFee", zeroFeeCapacity: MOCK_ZERO_FEE_CAPACITY }),
 
@@ -80,7 +101,7 @@ export const mockTransitApi: TransitApi & { submitOrder: (params: TransitQuotePa
   }),
 
   fetchTransitOrder: async ({ orderId }) => {
-    const order = mockOrders.find((mockOrder) => mockOrder.id === orderId);
+    const order = readMockOrders().find((mockOrder) => mockOrder.id === orderId);
 
     if (!order) {
       throw new Error(`Mock Transit order ${orderId} not found`);
@@ -90,7 +111,7 @@ export const mockTransitApi: TransitApi & { submitOrder: (params: TransitQuotePa
   },
 
   fetchTransitOrders: async ({ userAddress }) => ({
-    orders: mockOrders
+    orders: readMockOrders()
       .filter((order) => isAddressEqual(order.params.userAddress, userAddress))
       .map(toTransitOrder)
       .reverse(),
@@ -98,8 +119,10 @@ export const mockTransitApi: TransitApi & { submitOrder: (params: TransitQuotePa
   }),
 
   submitOrder: (params) => {
-    const id = `0xmock${mockOrders.length}`;
-    mockOrders.push({ params, id, submittedAt: Date.now() });
+    const orders = readMockOrders();
+    const id = `0xmock${orders.length}`;
+
+    writeMockOrders([...orders, { params, id, submittedAt: Date.now() }]);
 
     return id;
   },

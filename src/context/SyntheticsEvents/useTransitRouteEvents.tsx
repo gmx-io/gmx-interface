@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
-import { IS_PAXOS_TRANSIT_MOCKED, mockTransitApi } from "domain/synthetics/paxosTransit/mockTransitApi";
+import { mockTransitApi } from "domain/synthetics/paxosTransit/mockTransitApi";
 import {
   getIsTransitOrderFinal,
   type NewTransitRouteProgress,
@@ -17,6 +17,7 @@ const ORDER_REFRESH_INTERVAL = 5_000;
 export type TransitRouteEventsState = {
   transitRouteProgress: TransitRouteProgress | undefined;
   paxosTransitOrder: TransitOrder | undefined;
+  isPaxosTransitOrderStatusUnknown: boolean;
   startTransitRouteProgress: (params: NewTransitRouteProgress) => void;
   attachTransitRouteConversion: (progressId: number, conversion: PaxosTransitConversion) => void;
 };
@@ -27,9 +28,9 @@ export function useTransitRouteEvents(chainId: ContractsChainId): TransitRouteEv
   const progressChainId = transitRouteProgress?.chainId ?? chainId;
   const conversion = transitRouteProgress?.conversion;
   const sdk = useGmxSdk(progressChainId);
-  const api = IS_PAXOS_TRANSIT_MOCKED ? mockTransitApi : sdk;
+  const api = conversion?.isMocked ? mockTransitApi : sdk;
 
-  const { data: paxosTransitOrder } = useSWR(
+  const { data: paxosTransitOrder, error: paxosTransitOrderError } = useSWR(
     conversion && api ? ["transitRouteProgressOrder", progressChainId, conversion.orderId] : null,
     () => api!.fetchTransitOrder({ orderId: conversion!.orderId }),
     { refreshInterval: (order) => (getIsTransitOrderFinal(order) ? 0 : ORDER_REFRESH_INTERVAL) }
@@ -53,9 +54,16 @@ export function useTransitRouteEvents(chainId: ContractsChainId): TransitRouteEv
     () => ({
       transitRouteProgress,
       paxosTransitOrder,
+      isPaxosTransitOrderStatusUnknown: paxosTransitOrderError !== undefined,
       startTransitRouteProgress,
       attachTransitRouteConversion,
     }),
-    [attachTransitRouteConversion, paxosTransitOrder, transitRouteProgress, startTransitRouteProgress]
+    [
+      attachTransitRouteConversion,
+      paxosTransitOrder,
+      paxosTransitOrderError,
+      transitRouteProgress,
+      startTransitRouteProgress,
+    ]
   );
 }
