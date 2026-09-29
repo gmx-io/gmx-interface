@@ -3,10 +3,10 @@ import useSWR from "swr";
 
 import { getPaxosTransitConfig } from "config/paxosTransit";
 import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
+import { useStableRequestAmountIn } from "domain/synthetics/externalSwaps/useExternalSwapOutputRequest";
 import { convertToTokenAmount, convertToUsd, getMidPrice, type TokenData } from "domain/synthetics/tokens";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
-import { roundToOrder } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
 import useWallet from "lib/wallets/useWallet";
 import type { ContractsChainId } from "sdk/configs/chains";
@@ -28,7 +28,6 @@ export type TransitSubmission = {
 const FEE_TIER_REFRESH_INTERVAL = 60_000;
 const QUOTE_REFRESH_INTERVAL = 30_000;
 const RECENT_ORDERS_PAGE_SIZE = 10;
-const PREVIEW_AMOUNT_SIGNIFICANT_DIGITS = 3;
 
 export function usePaxosTransit({
   chainId,
@@ -37,6 +36,7 @@ export function usePaxosTransit({
   amount,
   collateralSwapTotalFeesDeltaUsd,
   isTransitRequired = false,
+  isAmountEstimated = false,
   isWhitelistIgnored = false,
   isMocked,
   enabled,
@@ -48,6 +48,7 @@ export function usePaxosTransit({
   amount: bigint;
   collateralSwapTotalFeesDeltaUsd: bigint | undefined;
   isTransitRequired?: boolean;
+  isAmountEstimated?: boolean;
   isWhitelistIgnored?: boolean;
   isMocked: boolean;
   enabled: boolean;
@@ -64,8 +65,9 @@ export function usePaxosTransit({
   const [step, setStep] = useState<PaxosTransitSubmitStep>("idle");
   const [isStandardFeeForced, setIsStandardFeeForced] = useState(false);
 
-  const previewAmount = roundToOrder(amount, PREVIEW_AMOUNT_SIGNIFICANT_DIGITS);
-  const debouncedAmount: bigint = useDebounce(previewAmount, 500);
+  const requestAmount =
+    useStableRequestAmountIn(amount, `${tokenInAddress}:${tokenOutAddress}`, isAmountEstimated) ?? 0n;
+  const debouncedAmount: bigint = useDebounce(requestAmount, 500);
 
   const { data: feeTierData, error: feeTierError } = useSWR(
     isActive ? ["paxosTransitFeeTier", chainId, account] : null,
@@ -242,7 +244,7 @@ export function usePaxosTransit({
   return {
     shouldUseTransit,
     isQuoteNeeded,
-    isAmountSettling: previewAmount !== debouncedAmount,
+    isAmountSettling: requestAmount !== debouncedAmount,
     isFeeTierLoaded: feeTierData !== undefined,
     isWhitelisted,
     zeroFeeCapacity: feeTierData?.zeroFeeCapacity,

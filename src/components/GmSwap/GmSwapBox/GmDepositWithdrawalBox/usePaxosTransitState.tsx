@@ -160,6 +160,7 @@ export function usePaxosTransitState({
     amount: amountIn,
     collateralSwapTotalFeesDeltaUsd,
     isTransitRequired: isWithdrawalSettled,
+    isAmountEstimated: isWithdrawal && !withdrawalStatusWithUsdg?.data,
     isWhitelistIgnored,
     isMocked,
     enabled: isUsdcConversionOffered,
