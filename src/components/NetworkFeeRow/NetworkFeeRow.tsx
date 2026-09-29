@@ -24,6 +24,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import ExchangeInfoRow from "components/ExchangeInfoRow/ExchangeInfoRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { LabelWithTooltip } from "components/Tooltip/LabelWithTooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
@@ -264,37 +265,18 @@ export function NetworkFeeRow({
     additionalOrdersMsg,
   ]);
 
-  if (rowPadding) {
-    return (
-      <ExchangeInfoRow
-        qa="network-fee"
-        label={
-          <TooltipWithPortal
-            position="left-start"
-            variant="iconStroke"
-            content={<Trans>Blockchain gas fee (not GMX-specific). Doesn't impact your margin.</Trans>}
-          >
-            <Trans>Network fee</Trans>
-          </TooltipWithPortal>
-        }
-        value={value}
-      />
-    );
-  }
-
-  return (
-    <SyntheticsInfoRow
-      qa="network-fee"
-      label={
-        <TooltipWithPortal
-          position="left-start"
-          variant="iconStroke"
-          content={<Trans>Blockchain gas fee (not GMX-specific). Doesn't impact your margin.</Trans>}
-        >
-          <Trans>Network fee</Trans>
-        </TooltipWithPortal>
-      }
-      value={value}
+  const label = (
+    <LabelWithTooltip
+      label={t`Network fee`}
+      tooltip={<Trans>Blockchain gas fee (not GMX-specific). Doesn't impact your margin.</Trans>}
+      position="left-start"
+      variant="iconStroke"
     />
   );
+
+  if (rowPadding) {
+    return <ExchangeInfoRow qa="network-fee" label={label} value={value} />;
+  }
+
+  return <SyntheticsInfoRow qa="network-fee" label={label} value={value} />;
 }

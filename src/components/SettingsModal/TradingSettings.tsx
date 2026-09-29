@@ -34,12 +34,13 @@ import { MarginDestinationSelector } from "components/MarginDestinationSelector/
 import { OldSubaccountWithdraw } from "components/OldSubaccountWithdraw/OldSubaccountWithdraw";
 import { OneClickAdvancedSettings } from "components/OneClickAdvancedSettings/OneClickAdvancedSettings";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import { LabelWithTooltip } from "components/Tooltip/LabelWithTooltip";
 
 import ExpressIcon from "img/ic_express.svg?react";
 import HourGlassIcon from "img/ic_hourglass.svg?react";
 import OneClickIcon from "img/ic_one_click.svg?react";
 
-import { Chip, InputSetting, SettingButton, SettingLabelWithTooltip, SettingsSection, TradingMode } from "./shared";
+import { Chip, InputSetting, SettingButton, SettingsSection, TradingMode } from "./shared";
 
 interface TradingSettingsProps {
   tradingMode: TradingMode | undefined;
@@ -266,7 +267,7 @@ export function TradingSettings({
       {srcChainId && !isAvalancheEmpty && isConnected && (
         <SettingsSection className="mt-2">
           <div className="flex items-center justify-between">
-            <SettingLabelWithTooltip
+            <LabelWithTooltip
               className="font-medium"
               tooltip={
                 <Trans>
@@ -363,7 +364,7 @@ export function TradingSettings({
 
         {chainId === ARBITRUM && srcChainId === undefined && settings.expressOrdersEnabled && (
           <div className="flex w-full items-center justify-between">
-            <SettingLabelWithTooltip
+            <LabelWithTooltip
               className="font-medium"
               label={t`Send remaining margin to`}
               tooltip={
@@ -394,7 +395,7 @@ export function TradingSettings({
         )}
 
         <ToggleSwitch isChecked={settings.isAutoCancelTPSL} setIsChecked={settings.setIsAutoCancelTPSL}>
-          <SettingLabelWithTooltip
+          <LabelWithTooltip
             tooltip={
               <div>
                 <Trans>

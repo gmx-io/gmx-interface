@@ -3252,7 +3252,6 @@ msgid "Open positions"
 msgstr "오픈 포지션"
 
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
-#: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Blockchain gas fee (not GMX-specific). Doesn't impact your margin."
 msgstr ""
 
@@ -12627,7 +12626,6 @@ msgstr "자금 브릿징 중..."
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/NetworkFeeRow/SimpleNetworkFeeRow.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
