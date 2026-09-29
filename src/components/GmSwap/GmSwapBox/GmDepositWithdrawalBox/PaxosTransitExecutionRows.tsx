@@ -21,7 +21,7 @@ export function PaxosTransitExecutionRows({ transitState }: { transitState: Paxo
       <SyntheticsInfoRow
         label={
           <TooltipWithPortal
-            handle={t`Transactions`}
+            handle={t`Steps`}
             position="left-start"
             variant="iconStroke"
             content={
@@ -41,7 +41,7 @@ export function PaxosTransitExecutionRows({ transitState }: { transitState: Paxo
             }
           />
         }
-        value={isDeposit ? <Trans>2, convert then buy</Trans> : <Trans>2, sell then convert</Trans>}
+        value={isDeposit ? <Trans>Convert, then buy</Trans> : <Trans>Sell, then convert</Trans>}
       />
 
       {shouldShowZeroFeeCapacity && (
