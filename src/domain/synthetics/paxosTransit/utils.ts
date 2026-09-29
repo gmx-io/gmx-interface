@@ -26,7 +26,7 @@ export function getTransitMinOrderSize(
 export function getTransitFeeTier(p: {
   feeTierData: TransitFeeTierResponse | undefined;
   isWhitelistIgnored: boolean;
-  isUsdcOffered: boolean;
+  isUsdcToUsdg: boolean;
   amount: bigint;
   zeroFeeMinOrderSize: bigint | undefined;
   isStandardFeeForced: boolean;
@@ -37,7 +37,7 @@ export function getTransitFeeTier(p: {
 } {
   const isWhitelisted = p.feeTierData?.feeTier === "zeroFee" && !p.isWhitelistIgnored;
   const zeroFeeCapacity = p.feeTierData?.zeroFeeCapacity ?? 0n;
-  const isZeroFeeCapacityShort = isWhitelisted && p.isUsdcOffered && zeroFeeCapacity < p.amount;
+  const isZeroFeeCapacityShort = isWhitelisted && p.isUsdcToUsdg && zeroFeeCapacity < p.amount;
   const isBelowZeroFeeMinimum =
     isWhitelisted && p.zeroFeeMinOrderSize !== undefined && p.amount < p.zeroFeeMinOrderSize;
   const isZeroFee = isWhitelisted && !isZeroFeeCapacityShort && !isBelowZeroFeeMinimum && !p.isStandardFeeForced;

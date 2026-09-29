@@ -87,7 +87,7 @@ export function usePaxosTransit({
   const { isWhitelisted, isZeroFeeCapacityShort, feeTier } = getTransitFeeTier({
     feeTierData,
     isWhitelistIgnored,
-    isUsdcOffered: tokenInAddress === paxosTransitConfig?.usdcAddress,
+    isUsdcToUsdg: tokenInAddress === paxosTransitConfig?.usdcAddress,
     amount,
     zeroFeeMinOrderSize: minOrderSizes.zeroFee,
     isStandardFeeForced,
