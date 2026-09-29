@@ -8,8 +8,12 @@ import {
   calculateDisplayDecimals,
   expandDecimals,
   formatAmount,
-  formatUsd,
-  formatUsdPrice,
+  formatUsdParts,
+  formatUsdPriceParts,
+  joinNumberParts,
+  multiplierPart,
+  NumberPart,
+  numberParts,
 } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 import { getLiquidationPriceImpactDeltaUsd } from "sdk/utils/positions";
@@ -26,30 +30,45 @@ export function getPositionPendingFeesUsd(p: { pendingFundingFeesUsd: bigint; pe
   return pendingBorrowingFeesUsd + pendingFundingFeesUsd;
 }
 
-export function formatLiquidationPrice(
+export type FormatLiquidationPriceOptions = { displayDecimals?: number; visualMultiplier?: number };
+
+export function formatLiquidationPriceParts(
   liquidationPrice?: bigint,
-  opts: { displayDecimals?: number; visualMultiplier?: number } = {}
-) {
+  opts: FormatLiquidationPriceOptions = {}
+): NumberPart[] {
   if (liquidationPrice === undefined || liquidationPrice < 0) {
-    return "NA";
+    return numberParts("NA");
   }
   const priceDecimalPlaces = calculateDisplayDecimals(liquidationPrice, undefined, opts.visualMultiplier);
 
-  return formatUsd(liquidationPrice, {
+  return formatUsdParts(liquidationPrice, {
     ...opts,
     displayDecimals: opts.displayDecimals ?? priceDecimalPlaces,
     maxThreshold: "1000000",
+  })!;
+}
+
+export function formatLiquidationPrice(liquidationPrice?: bigint, opts: FormatLiquidationPriceOptions = {}) {
+  return joinNumberParts(formatLiquidationPriceParts(liquidationPrice, opts));
+}
+
+export function formatAcceptablePriceParts(
+  acceptablePrice?: bigint,
+  opts: { visualMultiplier?: number } = {}
+): NumberPart[] | undefined {
+  if (acceptablePrice !== undefined && isBoundaryAcceptablePrice(acceptablePrice)) {
+    return numberParts("NA");
+  }
+
+  return formatUsdPriceParts(acceptablePrice, {
+    ...opts,
   });
 }
 
 export function formatAcceptablePrice(acceptablePrice?: bigint, opts: { visualMultiplier?: number } = {}) {
-  if (acceptablePrice !== undefined && isBoundaryAcceptablePrice(acceptablePrice)) {
-    return "NA";
-  }
+  const parts = formatAcceptablePriceParts(acceptablePrice, opts);
 
-  return formatUsdPrice(acceptablePrice, {
-    ...opts,
-  });
+  return parts && joinNumberParts(parts);
 }
 
 export function getLeverage(p: {
@@ -72,10 +91,16 @@ export function getLeverage(p: {
   return bigMath.mulDiv(sizeInUsd, BASIS_POINTS_DIVISOR_BIGINT, remainingCollateralUsd);
 }
 
-export function formatLeverage(leverage?: bigint) {
+export function formatLeverageParts(leverage?: bigint): NumberPart[] | undefined {
   if (leverage === undefined) return undefined;
 
-  return `${formatAmount(leverage, 4, 2)}x`;
+  return numberParts(formatAmount(leverage, 4, 2), multiplierPart("x"));
+}
+
+export function formatLeverage(leverage?: bigint) {
+  const parts = formatLeverageParts(leverage);
+
+  return parts && joinNumberParts(parts);
 }
 
 export function getEstimatedLiquidationTimeInHours(

@@ -30,7 +30,7 @@ import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
-import { expandDecimals, formatUsd, parseValue, USD_DECIMALS } from "lib/numbers";
+import { expandDecimals, formatUsdParts, parseValue, USD_DECIMALS } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
 import { useThrottledAsync } from "lib/useThrottledAsync";
@@ -51,6 +51,7 @@ import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import { MaxActions } from "components/MaxActions/MaxActions";
 import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
 import NumberInput from "components/NumberInput/NumberInput";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
@@ -797,7 +798,9 @@ export function WalletSendView() {
               <span className="text-typography-secondary">{selectedToken?.symbol}</span>
             </div>
           </div>
-          <div className="text-body-medium text-typography-secondary numbers">{formatUsd(amountUsd ?? 0n)}</div>
+          <div className="text-body-medium text-typography-secondary numbers">
+            <UsdValue usd={amountUsd ?? 0n} />
+          </div>
         </div>
       </div>
 
@@ -842,7 +845,9 @@ export function WalletSendView() {
           <SyntheticsInfoRow label={<Trans>Send fee</Trans>} value={isSendFeeLoading ? valueSkeleton : sendFeeValue} />
           <SyntheticsInfoRow
             label={<Trans>Wallet balance</Trans>}
-            value={<ValueTransition from={formatUsd(walletBalanceUsd)} to={formatUsd(nextWalletBalanceUsd)} />}
+            value={
+              <ValueTransition from={formatUsdParts(walletBalanceUsd)} to={formatUsdParts(nextWalletBalanceUsd)} />
+            }
           />
         </div>
       )}

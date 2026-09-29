@@ -7,6 +7,7 @@ import { formatRelative } from "date-fns/formatRelative";
 import { enUS as dateEn } from "date-fns/locale/en-US";
 
 import { getStringContractErrorArg } from "lib/errors";
+import { NumberPart, NumberPartInput, numberParts } from "lib/numbers";
 import { TradeActionType } from "sdk/utils/tradeHistory/types";
 
 import { LOCALE_DATE_LOCALE_MAP } from "components/DateRangeSelect/DateRangeSelect";
@@ -40,14 +41,19 @@ export function getOrderActionText(eventName: TradeActionType) {
   return actionText;
 }
 export type TooltipState = "success" | "error" | "muted" | undefined;
+export type FormattedText = string | NumberPart[];
 export type TooltipString =
   | undefined
   | string
   | {
-      text: string | undefined;
+      text: FormattedText | undefined;
       state?: TooltipState;
     };
 export type TooltipValue = TooltipString | TooltipString[];
+
+export function numericText(...inputs: NumberPartInput[]): { text: NumberPart[] } {
+  return { text: numberParts(...inputs) };
+}
 
 export function numberToState(value: bigint | undefined): TooltipState {
   if (value === undefined) {
@@ -95,14 +101,14 @@ export type RowDetails = {
     indexName: string;
     poolName: string;
   }[];
-  size: string;
+  size: FormattedText;
   sizeComment?: TooltipContent;
-  price: string;
+  price: FormattedText;
   priceComment: TooltipContent | null;
-  pnl?: string;
+  pnl?: FormattedText;
   pnlState?: TooltipState;
   pnlTooltip?: string;
-  fees?: string;
+  fees?: FormattedText;
   feesTooltip?: TooltipContent;
   isLong?: boolean;
   indexTokenSymbol?: string;

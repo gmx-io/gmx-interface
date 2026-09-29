@@ -59,6 +59,7 @@ import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import {
   getAvailableUsdLiquidityForCollateral,
   getGlvOrMarketAddress,
+  getGlvOrMarketIconSymbol,
   getMarketIndexName,
   getTokenPoolType,
 } from "domain/synthetics/markets/utils";
@@ -67,7 +68,7 @@ import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPools
 import { ERC20Address, NativeTokenSupportedAddress } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
-import { formatAmountFree, formatUsd } from "lib/numbers";
+import { formatAmountFree } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { switchNetwork } from "lib/wallets";
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID, type AnyChainId, type GmxAccountPseudoChainId } from "sdk/configs/chains";
@@ -84,6 +85,7 @@ import {
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { useBestGmPoolAddressForGlv } from "components/MarketStats/hooks/useBestGmPoolForGlv";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
 import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -136,6 +138,7 @@ export function GmSwapBoxDepositWithdrawal() {
   const marketTokensData = useSelector(selectPoolsDetailsMarketTokensData);
   const marketInfo = useSelector(selectPoolsDetailsMarketInfo);
   const glvInfo = useSelector(selectPoolsDetailsGlvInfo);
+  const glvOrMarketInfo = glvInfo ?? marketInfo;
 
   const tradeTokensData = useSelector(selectPoolsDetailsTradeTokensDataWithSourceChainBalances);
   const isMarketTransferrableToSourceChain = useSelector(selectPoolsDetailsIsCrossChainMarket);
@@ -598,7 +601,7 @@ export function GmSwapBoxDepositWithdrawal() {
                 <BuyInputSection
                   qa="gm-first-token"
                   topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
-                  bottomLeftValue={formatUsd(firstTokenUsd ?? 0n)}
+                  bottomLeftValue={<UsdValue usd={firstTokenUsd ?? 0n} />}
                   bottomRightLabel={t`Balance`}
                   bottomRightValue={firstTokenMaxDetails.formattedBalance}
                   onClickTopRightLabel={isDeposit ? onMaxClickFirstToken : undefined}
@@ -611,6 +614,7 @@ export function GmSwapBoxDepositWithdrawal() {
                   {firstTokenAddress && isSingle && isDeposit ? (
                     <MultichainTokenSelectorForLp
                       chainId={chainId}
+                      label={t`Pay`}
                       tokenAddress={firstTokenAddress}
                       payChainId={
                         paySource === "gmxAccount"
@@ -642,6 +646,7 @@ export function GmSwapBoxDepositWithdrawal() {
                   ) : isWithdrawal && firstTokenAddress && isSingle && tokenOptions.length > 1 ? (
                     <TokenSelector
                       chainId={chainId}
+                      label={t`Receive`}
                       tokenAddress={firstTokenAddress}
                       onSelectToken={(token) => {
                         handleFirstTokenSelect(token.address as ERC20Address | NativeTokenSupportedAddress);
@@ -666,7 +671,7 @@ export function GmSwapBoxDepositWithdrawal() {
                   <div className="border-t-1/2 border-slate-600">
                     <BuyInputSection
                       topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
-                      bottomLeftValue={formatUsd(secondTokenUsd ?? 0n)}
+                      bottomLeftValue={<UsdValue usd={secondTokenUsd ?? 0n} />}
                       bottomRightLabel={t`Balance`}
                       bottomRightValue={secondTokenMaxDetails.formattedBalance}
                       inputValue={secondTokenInputValue}
@@ -697,7 +702,7 @@ export function GmSwapBoxDepositWithdrawal() {
               <div className={cx("flex", isWithdrawal ? "flex-col-reverse" : "flex-col")}>
                 <BuyInputSection
                   topLeftLabel={isWithdrawal ? t`Pay` : t`Receive`}
-                  bottomLeftValue={formatUsd(receiveTokenUsd ?? 0n)}
+                  bottomLeftValue={<UsdValue usd={receiveTokenUsd ?? 0n} />}
                   bottomRightLabel={t`Balance`}
                   bottomRightValue={marketTokenMaxDetails.formattedBalance}
                   inputValue={marketOrGlvTokenInputValue}
@@ -732,7 +737,7 @@ export function GmSwapBoxDepositWithdrawal() {
                           setPaySource("sourceChain");
                         }
                       }}
-                      marketInfo={glvInfo ?? marketInfo}
+                      marketInfo={glvOrMarketInfo}
                       tokenBalancesData={marketTokenBalancesData}
                       marketTokenPrice={
                         glvToken
@@ -743,11 +748,11 @@ export function GmSwapBoxDepositWithdrawal() {
                       }
                     />
                   ) : (
-                    (glvInfo || marketInfo) && (
+                    glvOrMarketInfo && (
                       <span className="inline-flex items-center">
                         <TokenIcon
                           className="mr-5"
-                          symbol={glvInfo?.glvToken.symbol ?? marketInfo?.indexToken.symbol ?? ""}
+                          symbol={getGlvOrMarketIconSymbol(glvOrMarketInfo)}
                           displaySize={20}
                           chainIdBadge={
                             paySource === "sourceChain"
@@ -757,7 +762,7 @@ export function GmSwapBoxDepositWithdrawal() {
                                 : undefined
                           }
                         />
-                        <SelectedPoolLabel glvOrMarketInfo={glvInfo ?? marketInfo} />
+                        <SelectedPoolLabel glvOrMarketInfo={glvOrMarketInfo} />
                       </span>
                     )
                   )}

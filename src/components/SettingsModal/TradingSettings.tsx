@@ -179,7 +179,7 @@ export function TradingSettings({
               disabled={isExpressTradingDisabled}
               disabledTooltip={expressDisabledTooltip}
               chip={
-                <Chip color="gray">
+                <Chip variant="outline">
                   <Trans>Optimal</Trans>
                 </Chip>
               }
@@ -203,7 +203,7 @@ export function TradingSettings({
                 </Trans>
               }
               chip={
-                <Chip color="blue">
+                <Chip variant="blue">
                   <Trans>Fastest</Trans>
                 </Chip>
               }

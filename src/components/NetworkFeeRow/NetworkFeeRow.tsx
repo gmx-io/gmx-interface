@@ -16,13 +16,14 @@ import {
 } from "domain/synthetics/fees/networkFeeSource";
 import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { TokenBalanceType, TokenData } from "domain/tokens";
-import { formatTokenAmountWithUsd } from "lib/numbers";
+import { formatTokenAmountWithUsdParts, numberParts } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { convertTokenAddress, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 import ExchangeInfoRow from "components/ExchangeInfoRow/ExchangeInfoRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { NumericValue } from "components/NumericValue/NumericValue";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { LabelWithTooltip } from "components/Tooltip/LabelWithTooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -124,7 +125,7 @@ export function NetworkFeeRow({
     return getByKey(tokensData, refundTokenAddress);
   }, [chainId, networkFee, refundSource, tokensData]);
 
-  const { estimatedRefundText, estimatedRefundUsd, estimatedRefundTokenAmount } = useMemo(() => {
+  const { estimatedRefundParts, estimatedRefundUsd, estimatedRefundTokenAmount } = useMemo(() => {
     let estimatedRefundUsd: bigint | undefined;
 
     if (!networkFee || executionFeeBufferBps === undefined) {
@@ -147,7 +148,7 @@ export function NetworkFeeRow({
       refundToken?.prices.minPrice
     );
 
-    const estimatedRefundAmountText = formatTokenAmountWithUsd(
+    const estimatedRefundAmountParts = formatTokenAmountWithUsdParts(
       estimatedRefundTokenAmount,
       estimatedRefundUsd,
       refundToken?.symbol,
@@ -159,13 +160,13 @@ export function NetworkFeeRow({
       }
     );
 
-    const estimatedRefundText =
-      estimatedRefundAmountText !== undefined
-        ? `${estimatedRefundAmountText} · ${getNetworkFeeSourceLabel(refundSource)}`
+    const estimatedRefundParts =
+      estimatedRefundAmountParts !== undefined
+        ? numberParts(estimatedRefundAmountParts, ` · ${getNetworkFeeSourceLabel(refundSource)}`)
         : undefined;
 
     return {
-      estimatedRefundText,
+      estimatedRefundParts,
       estimatedRefundUsd,
       estimatedRefundTokenAmount,
     };
@@ -176,7 +177,7 @@ export function NetworkFeeRow({
       return "-";
     }
 
-    const maxNetworkFeeText = formatTokenAmountWithUsd(
+    const maxNetworkFeeParts = formatTokenAmountWithUsdParts(
       networkFee.feeAmount,
       networkFee.feeUsd,
       networkFee.feeToken.symbol,
@@ -210,7 +211,7 @@ export function NetworkFeeRow({
             <StatsTooltipRow
               label={t`Max network fee`}
               showDollar={false}
-              value={maxNetworkFeeText}
+              value={<NumericValue parts={maxNetworkFeeParts} />}
               valueClassName="numbers"
             />
             <div className="h-8" />
@@ -227,7 +228,7 @@ export function NetworkFeeRow({
             <StatsTooltipRow
               label={t`Estimated fee refund`}
               showDollar={false}
-              value={estimatedRefundText}
+              value={<NumericValue parts={estimatedRefundParts} />}
               valueClassName="numbers"
               textClassName="text-green-500"
             />
@@ -261,7 +262,7 @@ export function NetworkFeeRow({
     chainId,
     feeSource,
     feeSourceExplanation,
-    estimatedRefundText,
+    estimatedRefundParts,
     additionalOrdersMsg,
   ]);
 

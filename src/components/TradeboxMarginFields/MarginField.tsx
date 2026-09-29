@@ -15,13 +15,14 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { DEFAULT_MAX_ACTIONS_STATE, MaxActionsState } from "domain/tokens/useMaxAvailableAmount";
-import { formatBalanceAmount, formatUsd, parseValue } from "lib/numbers";
+import { formatBalanceAmount, parseValue } from "lib/numbers";
 import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
 import useWallet from "lib/wallets/useWallet";
 
 import { useMultichainTradeTokensRequest } from "components/GmxAccountModal/hooks";
 import { getIsMaxActionDisabled, MaxActions } from "components/MaxActions/MaxActions";
 import NumberInput from "components/NumberInput/NumberInput";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { MultichainTokenSelector } from "components/TokenSelector/MultichainTokenSelector";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 
@@ -107,7 +108,11 @@ export function MarginField({
             placeholder="0.00"
             qa={qa ? qa + "-input" : undefined}
           />
-          {showUsd && <span className="shrink-0 text-12 text-typography-secondary numbers">≈{formatUsd(fromUsd)}</span>}
+          {showUsd && (
+            <span className="shrink-0 text-12 text-typography-secondary numbers">
+              ≈<UsdValue usd={fromUsd} />
+            </span>
+          )}
         </>
       }
       rightHeadline={

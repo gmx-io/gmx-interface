@@ -15,11 +15,12 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GasPaymentParams } from "domain/synthetics/express";
 import type { NetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { OrderType } from "domain/synthetics/orders";
-import { formatLeverage } from "domain/synthetics/positions";
+import { formatLeverageParts } from "domain/synthetics/positions";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatDeltaUsd, formatUsd } from "lib/numbers";
+import { formatDeltaUsdParts, formatUsdParts } from "lib/numbers";
 
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
@@ -80,7 +81,12 @@ export function PositionSellerAdvancedRows({
   const sizeRow = (
     <SyntheticsInfoRow
       label={t`Size`}
-      value={<ValueTransition from={formatUsd(position?.sizeInUsd)!} to={formatUsd(nextPositionValues?.nextSizeUsd)} />}
+      value={
+        <ValueTransition
+          from={formatUsdParts(position?.sizeInUsd)}
+          to={formatUsdParts(nextPositionValues?.nextSizeUsd)}
+        />
+      }
     />
   );
 
@@ -94,8 +100,8 @@ export function PositionSellerAdvancedRows({
     } else {
       leverageValue = (
         <ValueTransition
-          from={formatLeverage(position.leverage)}
-          to={formatLeverage(nextPositionValues?.nextLeverage)}
+          from={formatLeverageParts(position.leverage)}
+          to={formatLeverageParts(nextPositionValues?.nextLeverage)}
         />
       );
     }
@@ -138,11 +144,11 @@ export function PositionSellerAdvancedRows({
                 nextPositionValues?.nextPendingImpactDeltaUsd !== undefined &&
                 position?.pendingImpactUsd !== undefined ? (
                   <ValueTransition
-                    from={formatDeltaUsd(position?.pendingImpactUsd)}
-                    to={formatDeltaUsd(nextPositionValues?.nextPendingImpactDeltaUsd)}
+                    from={formatDeltaUsdParts(position?.pendingImpactUsd)}
+                    to={formatDeltaUsdParts(nextPositionValues?.nextPendingImpactDeltaUsd)}
                   />
                 ) : (
-                  formatDeltaUsd(nextPositionValues?.nextPendingImpactDeltaUsd)
+                  <DeltaUsdValue deltaUsd={nextPositionValues?.nextPendingImpactDeltaUsd} />
                 )
               }
               valueClassName="numbers"
@@ -166,8 +172,8 @@ export function PositionSellerAdvancedRows({
             }
             value={
               <ValueTransition
-                from={formatUsd(position?.collateralUsd)!}
-                to={formatUsd(nextPositionValues?.nextCollateralUsd)}
+                from={formatUsdParts(position?.collateralUsd)}
+                to={formatUsdParts(nextPositionValues?.nextCollateralUsd)}
               />
             }
           />

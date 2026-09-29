@@ -37,6 +37,7 @@ import {
 } from "context/GmxAccountContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { extractRelayTaskError } from "context/SyntheticsEvents/utils";
 import {
   selectGmxAccountExpressGlobalParams,
   selectGmxAccountGasPaymentToken,
@@ -79,6 +80,7 @@ import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
+import { isCustomError, parseError } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import {
   initMultichainWithdrawalMetricData,
@@ -89,7 +91,7 @@ import {
   sendTxnSentMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics";
-import { expandDecimals, formatUsd, parseValue, USD_DECIMALS } from "lib/numbers";
+import { expandDecimals, formatUsdParts, parseValue, USD_DECIMALS } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { TxnEventName } from "lib/transactions";
@@ -101,6 +103,7 @@ import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress, getToken, getWrappedToken, isValidTokenSafe } from "sdk/configs/tokens";
+import { CustomErrorName } from "sdk/utils/errors";
 import { convertToTokenAmount, getMidPrice } from "sdk/utils/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
 
@@ -109,12 +112,14 @@ import { Amount } from "components/Amount/Amount";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
+import { getTxnErrorToast } from "components/Errors/errorToasts";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import { calculateNetworkFeeDetails } from "components/GmxAccountModal/calculateNetworkFeeDetails";
 import { useAvailableToTradeAssetMultichain, useGmxAccountWithdrawNetworks } from "components/GmxAccountModal/hooks";
 import { MaxActions } from "components/MaxActions/MaxActions";
 import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
 import NumberInput from "components/NumberInput/NumberInput";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
@@ -464,8 +469,27 @@ function useWithdrawViewTransactions({
           if (txResult.transactionHash && mockWithdrawalId) {
             setMultichainWithdrawalSentTxnHash(mockWithdrawalId, txResult.transactionHash);
           }
-        } else if (txResult.status === "failed" && mockWithdrawalId) {
-          setMultichainWithdrawalSentError(mockWithdrawalId);
+        } else if (txResult.status === "failed") {
+          if (mockWithdrawalId) {
+            setMultichainWithdrawalSentError(mockWithdrawalId);
+          }
+
+          if (txResult.relayStatus) {
+            const relayError = extractRelayTaskError(txResult.relayStatus);
+            const toastParams = getTxnErrorToast(chainId, parseError(relayError), {
+              defaultMessage: t`Withdrawal failed`,
+            });
+
+            helperToast.error(toastParams.errorContent, {
+              autoClose: toastParams.autoCloseToast,
+              tradingErrorInfo: {
+                actionName: "Multichain Withdrawal",
+                errorData: relayError,
+                metricId: metricData.metricId,
+              },
+            });
+            sendTxnErrorMetric(metricData.metricId, relayError, "relayer");
+          }
         }
       });
     } catch (error) {
@@ -913,6 +937,10 @@ export const WithdrawalView = () => {
 
   const errors = useArbitraryError(expressTxnParamsAsyncResult.error, { isGmxAccount: true });
 
+  const isBridgeOutputBelowMinimum =
+    isCustomError(expressTxnParamsAsyncResult.error) &&
+    expressTxnParamsAsyncResult.error.name === CustomErrorName.InsufficientBridgeOutputAmount;
+
   const isOutOfTokenErrorToken = useMemo(() => {
     if (errors?.isOutOfTokenError?.tokenAddress) {
       return getByKey(tokensData, errors?.isOutOfTokenError?.tokenAddress);
@@ -1245,6 +1273,17 @@ export const WithdrawalView = () => {
       text: t`Insufficient balance`,
       disabled: true,
     };
+  } else if (isAboveLimit && withdrawalViewChain !== undefined) {
+    const networkName = getChainName(withdrawalViewChain);
+    buttonState = {
+      text: t`Insufficient bridge liquidity to ${networkName}`,
+      disabled: true,
+    };
+  } else if (isBelowLimit) {
+    buttonState = {
+      text: t`Withdraw`,
+      disabled: true,
+    };
   } else if (isNetworkFeeLoading) {
     buttonState = {
       text: (
@@ -1286,6 +1325,11 @@ export const WithdrawalView = () => {
     } else if (errors?.isOutOfTokenError) {
       buttonState = {
         text: t`Insufficient ${isOutOfTokenErrorToken?.symbol} balance`,
+        disabled: true,
+      };
+    } else if (isBridgeOutputBelowMinimum) {
+      buttonState = {
+        text: t`Receive amount below minimum`,
         disabled: true,
       };
     } else if (expressTxnParamsAsyncResult.error) {
@@ -1617,7 +1661,9 @@ export const WithdrawalView = () => {
               <span className="text-typography-secondary">{selectedToken?.symbol}</span>
             </div>
           </div>
-          <div className="text-body-medium text-typography-secondary numbers">{formatUsd(inputAmountUsd ?? 0n)}</div>
+          <div className="text-body-medium text-typography-secondary numbers">
+            <UsdValue usd={inputAmountUsd ?? 0n} />
+          </div>
         </div>
       </div>
 
@@ -1675,7 +1721,7 @@ export const WithdrawalView = () => {
               isGmxBalanceLoading ? (
                 valueSkeleton
               ) : (
-                <ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />
+                <ValueTransition from={formatUsdParts(gmxAccountUsd)} to={formatUsdParts(nextGmxAccountBalanceUsd)} />
               )
             }
           />

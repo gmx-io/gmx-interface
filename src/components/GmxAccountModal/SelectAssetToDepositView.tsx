@@ -17,13 +17,13 @@ import { TokenChainData } from "domain/multichain/types";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { TokenData, TokensData } from "domain/tokens";
 import { useChainId } from "lib/chains";
-import { formatUsd } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import { Amount } from "components/Amount/Amount";
 import Button from "components/Button/Button";
 import { useGmxAccountDepositEligibility, useMultichainTradeTokensRequest } from "components/GmxAccountModal/hooks";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import SearchInput from "components/SearchInput/SearchInput";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
@@ -60,7 +60,7 @@ const TokenListItem = ({ tokenChainData, onClick, className }: TokenListItemProp
           isStable={tokenChainData.isStable}
         />
         <div className="text-body-small text-typography-secondary">
-          {tokenChainData.sourceChainBalanceUsd > 0n ? formatUsd(tokenChainData.sourceChainBalanceUsd) : "-"}
+          {tokenChainData.sourceChainBalanceUsd > 0n ? <UsdValue usd={tokenChainData.sourceChainBalanceUsd} /> : "-"}
         </div>
       </div>
     </div>

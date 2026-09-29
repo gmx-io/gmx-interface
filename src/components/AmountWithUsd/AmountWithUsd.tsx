@@ -1,7 +1,10 @@
 import cx from "classnames";
 
 import { USD_DECIMALS } from "config/factors";
-import { formatAmountHuman, formatBalanceAmount, formatUsd } from "lib/numbers";
+import { formatBalanceAmount } from "lib/numbers";
+
+import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 
 export function AmountWithUsdHuman({
   amount,
@@ -24,12 +27,14 @@ export function AmountWithUsdHuman({
     return "...";
   }
 
-  let formattedAmount = formatAmountHuman(amount, decimals, false, 2);
-  if (symbol) {
-    formattedAmount = `${formattedAmount} ${symbol}`;
-  }
+  const formattedAmount = (
+    <>
+      <AmountHumanValue amount={amount} decimals={decimals} displayDecimals={2} />
+      {symbol ? ` ${symbol}` : ""}
+    </>
+  );
 
-  const formattedUsd = formatAmountHuman(usd, USD_DECIMALS, true, 2);
+  const formattedUsd = <AmountHumanValue amount={usd} decimals={USD_DECIMALS} showDollar displayDecimals={2} />;
 
   const topValue = usdOnTop ? formattedUsd : formattedAmount;
   const bottomValue = usdOnTop ? formattedAmount : formattedUsd;
@@ -76,7 +81,7 @@ export function AmountWithUsdBalance({
 
   const formattedAmount = formatBalanceAmount(amount, decimals, symbol, { showZero: true, isStable });
 
-  const formattedUsd = formatUsd(usd);
+  const formattedUsd = <UsdValue usd={usd} />;
 
   const { primaryValue, secondaryValue } = usdAsPrimary
     ? { primaryValue: formattedUsd, secondaryValue: formattedAmount }

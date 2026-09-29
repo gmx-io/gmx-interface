@@ -7,7 +7,7 @@ const API_URLS: Record<ApiEnvironment, Record<ContractsChainId, string | undefin
     [ARBITRUM]: "https://arbitrum.gmxapi.io",
     [AVALANCHE]: "https://avalanche.gmxapi.io",
     [AVALANCHE_FUJI]: undefined,
-    [ARBITRUM_SEPOLIA]: "https://gmx-api-arbitrum-sepolia-yp6pp.ondigitalocean.app",
+    [ARBITRUM_SEPOLIA]: "https://arbitrum-sepolia-test.gmxapi.ai",
     [MEGAETH]: "https://megaeth.gmxapi.io",
   },
   test: {

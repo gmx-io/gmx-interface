@@ -1,8 +1,8 @@
 import { useState } from "react";
 
-import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
 import EarnPageLayout from "pages/Earn/EarnPageLayout";
 
+import { BuyGmxModal } from "components/BuyGmxModal/BuyGmxModal";
 import EarnFaq from "components/Earn/Discovery/EarnFaq";
 import EarnProductCard from "components/Earn/Discovery/EarnProductCard";
 

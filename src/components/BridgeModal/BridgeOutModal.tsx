@@ -41,7 +41,7 @@ import { helperToast } from "lib/helperToast";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { getToken, getWrappedToken } from "sdk/configs/tokens";
 import { getMarketIndexName } from "sdk/utils/markets";
-import { formatBalanceAmount, formatUsd, parseValue } from "sdk/utils/numbers";
+import { formatBalanceAmount, parseValue } from "sdk/utils/numbers";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
@@ -55,6 +55,7 @@ import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 import { SlideModal } from "components/Modal/SlideModal";
 import { NetworkFeeValue, type NetworkFeeDetails } from "components/NetworkFeeRow/NetworkFeeValue";
 import { SimpleNetworkFeeRow } from "components/NetworkFeeRow/SimpleNetworkFeeRow";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
@@ -186,12 +187,13 @@ export function BridgeOutModal({
     });
   }, [bridgeOutChain, account, bridgeOutAmount, chainId]);
 
-  const { data: transferNativeFee } = useQuoteSendNativeFee({
+  const { data: quotedTransferNativeFee, error: transferNativeFeeError } = useQuoteSendNativeFee({
     fromChainId: chainId,
     toChainId: bridgeOutChain,
     sendParams,
     fromStargateAddress: bridgeOutParams?.provider,
   });
+  const transferNativeFee = bridgeOutChain === chainId ? 0n : quotedTransferNativeFee;
 
   const expressFeeDetails = useMemo((): NetworkFeeDetails | undefined => {
     if (gasPaymentToken === undefined) {
@@ -428,7 +430,7 @@ export function BridgeOutModal({
           topLeftLabel={t`Withdraw`}
           inputValue={bridgeOutInputValue}
           onInputValueChange={(e) => setBridgeOutInputValue(e.target.value)}
-          bottomLeftValue={formatUsd(bridgeOutUsd)}
+          bottomLeftValue={<UsdValue usd={bridgeOutUsd} />}
           bottomRightValue={formattedBalance}
           bottomRightLabel={t`Available`}
           onClickMax={
@@ -520,6 +522,8 @@ export function BridgeOutModal({
                 source={GMX_ACCOUNT_NETWORK_FEE_SOURCE}
                 tooltipContent={t`The bridge fee is paid in ${bridgeFeeTokenSymbol} from your GMX Account.`}
               />
+            ) : transferNativeFeeError !== undefined ? (
+              "-"
             ) : (
               "..."
             )

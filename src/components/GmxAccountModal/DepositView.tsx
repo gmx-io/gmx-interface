@@ -78,7 +78,7 @@ import {
   sendTxnErrorMetric,
   sendTxnSentMetric,
 } from "lib/metrics";
-import { USD_DECIMALS, adjustForDecimals, bigintToNumber, expandDecimals, formatUsd } from "lib/numbers";
+import { USD_DECIMALS, adjustForDecimals, bigintToNumber, expandDecimals, formatUsdParts } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -99,6 +99,7 @@ import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import { MaxActions } from "components/MaxActions/MaxActions";
 import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
 import NumberInput from "components/NumberInput/NumberInput";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
@@ -1413,7 +1414,7 @@ export const DepositView = () => {
             </div>
             {!selectedToken?.isStable && (
               <div className="text-body-medium text-typography-secondary numbers">
-                {formatUsd(inputAmountUsd ?? 0n)}
+                <UsdValue usd={inputAmountUsd ?? 0n} />
               </div>
             )}
             {isAboveLimit && (
@@ -1484,7 +1485,7 @@ export const DepositView = () => {
               isGmxBalanceLoading ? (
                 valueSkeleton
               ) : (
-                <ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />
+                <ValueTransition from={formatUsdParts(gmxAccountUsd)} to={formatUsdParts(nextGmxAccountBalanceUsd)} />
               )
             }
           />

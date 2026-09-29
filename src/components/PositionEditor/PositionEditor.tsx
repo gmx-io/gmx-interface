@@ -38,7 +38,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { getNetworkFeeGasPaymentParams } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
-import { formatLiquidationPrice, getIsPositionInfoLoaded } from "domain/synthetics/positions";
+import { formatLiquidationPriceParts, getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import { convertToTokenAmount, getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
 import { getMarkPrice, getMaxWithdrawAmount, getTradeFlagsForCollateralEdit } from "domain/synthetics/trade";
 import { Operation } from "domain/synthetics/trade/usePositionEditorState";
@@ -47,13 +47,7 @@ import { getConditionalDepositWarning } from "domain/synthetics/trade/utils/vali
 import { DEFAULT_MAX_ACTIONS_STATE, MaxActionsState, useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
-import {
-  formatAmountFree,
-  formatBalanceAmount,
-  formatTokenAmountWithUsd,
-  formatUsd,
-  formatUsdPrice,
-} from "lib/numbers";
+import { formatAmountFree, formatBalanceAmount, formatTokenAmountWithUsdParts } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import {
@@ -71,6 +65,9 @@ import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import { MaxActions } from "components/MaxActions/MaxActions";
 import Modal from "components/Modal/Modal";
 import NumberInput from "components/NumberInput/NumberInput";
+import { NumericValue } from "components/NumericValue/NumericValue";
+import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import Tabs from "components/Tabs/Tabs";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
@@ -527,9 +524,11 @@ export function PositionEditor() {
                     }
                   >
                     {t`Mark:`}{" "}
-                    <span className="numbers">
-                      {formatUsdPrice(markPrice, { visualMultiplier: position.indexToken?.visualMultiplier })}
-                    </span>
+                    <UsdPriceValue
+                      price={markPrice}
+                      visualMultiplier={position.indexToken?.visualMultiplier}
+                      className="numbers"
+                    />
                   </button>
                 }
                 inputValue={triggerPriceInputValue}
@@ -552,7 +551,7 @@ export function PositionEditor() {
                   />
                   {collateralDeltaUsd !== undefined && collateralDeltaUsd > 0n && !collateralToken?.isStable && (
                     <span className="shrink-0 text-12 text-typography-secondary numbers">
-                      ≈{formatUsd(collateralDeltaUsd)}
+                      ≈<UsdValue usd={collateralDeltaUsd} />
                     </span>
                   )}
                 </>
@@ -684,13 +683,17 @@ export function PositionEditor() {
               {!isDeposit && (
                 <SyntheticsInfoRow
                   label={t`Receive`}
-                  value={formatTokenAmountWithUsd(
-                    receiveAmount,
-                    receiveUsd,
-                    collateralToken?.symbol,
-                    collateralToken?.decimals,
-                    { fallbackToZero: true, isStable: collateralToken?.isStable }
-                  )}
+                  value={
+                    <NumericValue
+                      parts={formatTokenAmountWithUsdParts(
+                        receiveAmount,
+                        receiveUsd,
+                        collateralToken?.symbol,
+                        collateralToken?.decimals,
+                        { fallbackToZero: true, isStable: collateralToken?.isStable }
+                      )}
+                    />
+                  }
                 />
               )}
 
@@ -698,13 +701,13 @@ export function PositionEditor() {
                 label={t`Liquidation price`}
                 value={
                   <ValueTransition
-                    from={formatLiquidationPrice(position.liquidationPrice, {
+                    from={formatLiquidationPriceParts(position.liquidationPrice, {
                       displayDecimals: marketDecimals,
                       visualMultiplier: position.indexToken?.visualMultiplier,
                     })}
                     to={
                       hasNextValues
-                        ? formatLiquidationPrice(nextLiqPrice, {
+                        ? formatLiquidationPriceParts(nextLiqPrice, {
                             displayDecimals: marketDecimals,
                             visualMultiplier: position.indexToken?.visualMultiplier,
                           })

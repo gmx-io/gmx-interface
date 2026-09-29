@@ -46,6 +46,7 @@ export type AdditionalErrorParams = {
   isInternalSwapFallback?: boolean;
   isExternalSwapFallback?: boolean;
   permitIssueType?: PermitIssueType;
+  isOutdatedSubaccountApproval?: boolean;
   setIsSettingsVisible?: (isVisible: boolean) => void;
   expressTxn?: ExpressTxnErrorContext;
 };
@@ -199,6 +200,7 @@ export function getTxnErrorToast(
     isInternalSwapFallback,
     isExternalSwapFallback,
     permitIssueType,
+    isOutdatedSubaccountApproval,
     setIsSettingsVisible,
     expressTxn,
   }: AdditionalErrorParams
@@ -247,6 +249,11 @@ export function getTxnErrorToast(
     toastParams.errorContent = smartWalletContent;
     toastParams.autoCloseToast = false;
 
+    return toastParams;
+  }
+
+  if (isOutdatedSubaccountApproval) {
+    toastParams.errorContent = getOutdatedSubaccountApprovalToastContent();
     return toastParams;
   }
 
@@ -658,6 +665,14 @@ export function getExpiredPermitDeadlineToastContent() {
   return (
     <Trans>
       <div>Permit has expired. Try again</div>
+    </Trans>
+  );
+}
+
+export function getOutdatedSubaccountApprovalToastContent() {
+  return (
+    <Trans>
+      <div>One-Click Trading approval was outdated and has been refreshed. Try again</div>
     </Trans>
   );
 }

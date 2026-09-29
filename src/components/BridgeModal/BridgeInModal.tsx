@@ -32,7 +32,7 @@ import { EMPTY_OBJECT } from "lib/objects";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useThrottledAsync } from "lib/useThrottledAsync";
 import { getMarketIndexName } from "sdk/utils/markets";
-import { adjustForDecimals, formatBalanceAmount, formatUsd, parseValue } from "sdk/utils/numbers";
+import { adjustForDecimals, formatBalanceAmount, parseValue } from "sdk/utils/numbers";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
@@ -42,6 +42,7 @@ import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 import { SlideModal } from "components/Modal/SlideModal";
 import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import { MultichainMarketTokenSelector } from "components/TokenSelector/MultichainMarketTokenSelector";
 import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
@@ -336,7 +337,7 @@ export function BridgeInModal({
           topLeftLabel={t`Deposit`}
           inputValue={bridgeInInputValue}
           onInputValueChange={(e) => setBridgeInInputValue(e.target.value)}
-          bottomLeftValue={formatUsd(bridgeInUsd)}
+          bottomLeftValue={<UsdValue usd={bridgeInUsd} />}
           bottomRightValue={formattedBalance}
           bottomRightLabel={t`Available`}
           onClickMax={

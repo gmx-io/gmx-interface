@@ -1,5 +1,5 @@
 import { t, Trans } from "@lingui/macro";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
@@ -7,14 +7,17 @@ import { getIcons } from "config/icons";
 import { GMX_PRICE_DECIMALS } from "config/ui";
 import { useTotalGmxStaked } from "domain/legacy";
 import { GMX_DECIMALS } from "lib/legacy";
-import { expandDecimals, formatAmount, formatAmountHuman } from "lib/numbers";
+import { expandDecimals, formatAmount } from "lib/numbers";
 import { sumBigInts } from "lib/sumBigInts";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import { AppCard, AppCardSection, AppCardSplit } from "components/AppCard/AppCard";
 import Button from "components/Button/Button";
+import { BuyGmxModal } from "components/BuyGmxModal/BuyGmxModal";
 import InteractivePieChart from "components/InteractivePieChart/InteractivePieChart";
+import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipComponent from "components/Tooltip/Tooltip";
 
@@ -36,6 +39,7 @@ export function GmxCard({
   totalGmxInLiquidity: bigint;
 }) {
   const currentIcons = getIcons(chainId)!;
+  const [isBuyGmxModalVisible, setIsBuyGmxModalVisible] = useState(false);
 
   let { [AVALANCHE]: stakedGmxAvalanche, [ARBITRUM]: stakedGmxArbitrum, total: totalStakedGmx } = useTotalGmxStaked();
 
@@ -85,8 +89,6 @@ export function GmxCard({
     return arr;
   }, [liquidityPercent, notStakedPercent, stakedPercent]);
 
-  const formattedTotalStakedGmxUsd = formatAmountHuman(totalStakedGmxUsd, USD_DECIMALS, true, 2);
-
   return (
     <AppCard>
       <AppCardSplit
@@ -107,10 +109,11 @@ export function GmxCard({
                   </div>
                 </div>
                 <div className="h-32">
-                  <Button size="small" variant="secondary" to="/buy_gmx">
+                  <Button size="small" variant="secondary" onClick={() => setIsBuyGmxModalVisible(true)}>
                     <img src={currentIcons.gmx} width="16" alt={t`GMX icon`} />
                     <Trans>Buy GMX</Trans>
                   </Button>
+                  <BuyGmxModal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} />
                 </div>
               </div>
               <div className="text-13 text-typography-secondary">
@@ -133,7 +136,7 @@ export function GmxCard({
                     <TooltipComponent
                       position="bottom-end"
                       className="whitespace-nowrap"
-                      handle={"$\u200a" + formatAmount(gmxPrice, USD_DECIMALS, GMX_PRICE_DECIMALS, true)}
+                      handle={<UsdValue usd={gmxPrice} displayDecimals={GMX_PRICE_DECIMALS} />}
                       handleClassName="numbers"
                       content={
                         <>
@@ -160,7 +163,7 @@ export function GmxCard({
                 <div>
                   <TooltipComponent
                     position="bottom-end"
-                    handle={formatAmountHuman(totalGmxSupply, GMX_DECIMALS, false, 2)}
+                    handle={<AmountHumanValue amount={totalGmxSupply} decimals={GMX_DECIMALS} displayDecimals={2} />}
                     handleClassName="numbers"
                     content={t`Total circulating supply of GMX tokens`}
                   />
@@ -174,7 +177,14 @@ export function GmxCard({
                   <TooltipComponent
                     position="bottom-end"
                     tooltipClassName="!max-w-[450px]"
-                    handle={formattedTotalStakedGmxUsd}
+                    handle={
+                      <AmountHumanValue
+                        amount={totalStakedGmxUsd}
+                        decimals={USD_DECIMALS}
+                        showDollar
+                        displayDecimals={2}
+                      />
+                    }
                     handleClassName="numbers"
                     content={
                       <>
@@ -225,7 +235,13 @@ export function GmxCard({
                   <Trans>Market cap</Trans>
                 </div>
                 <div>
-                  <span className="numbers">{formatAmountHuman(gmxMarketCap, USD_DECIMALS, true, 2)}</span>
+                  <AmountHumanValue
+                    amount={gmxMarketCap}
+                    decimals={USD_DECIMALS}
+                    showDollar
+                    displayDecimals={2}
+                    className="numbers"
+                  />
                 </div>
               </div>
             </AppCardSection>
