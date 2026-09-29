@@ -1,0 +1,13 @@
+{
+  "extends": "../../../sdk/tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM"],
+    "composite": false,
+    "declaration": false,
+    "declarationDir": null,
+    "noEmit": true,
+    "types": ["node"]
+  },
+  "include": ["*.ts", "../../../playwright-funded.config.ts", "../../../viem-override.d.ts"]
+}

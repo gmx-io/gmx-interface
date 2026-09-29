@@ -2,7 +2,7 @@
 
 Initial Playwright coverage for the [release checklist](https://linear.app/gmx-io/document/release-regression-checklist-8b05a61482b0)
 and [PRO-4345](https://linear.app/gmx-io/issue/PRO-4345/chore-automate-weekly-release-regression-testing).
-This suite is a first slice, not a complete release sign-off. **Real-wallet transactions with funds are not implemented or tested.** The default suite covers public UI, mock-wallet states, indexers and gas-guard logic with simulated RPC responses. The separate live gas preflight is read-only and does not need a funded wallet.
+This suite is a first slice, not a complete release sign-off. The default suite covers public UI, mock-wallet states, indexers and gas-guard logic with simulated RPC responses. The separate live gas preflight is read-only and does not need a funded wallet. An opt-in [economy funded smoke](funded/README.md) uses API transactions to prepare a small position, then checks its browser display and refresh persistence. Its paid execution and cleanup have not yet been validated on mainnet; it does not cover UI-driven trade submission or the full funded checklist.
 
 ## Validation observations
 
@@ -118,7 +118,7 @@ REGRESSION_MAX_GAS_GWEI="$TEST_MAX_GAS_GWEI" \
 yarn test:regression:funded-preflight
 ```
 
-**Funded browser journeys are not enabled yet.** This gas preflight is a reusable prerequisite, not a safe transaction runner. Before enabling real transactions, implement:
+The default workflow does not receive a signing key or run paid transactions. It validates the separate economy harness with offline tests. See the [funded runner](funded/README.md) for the implemented small-wallet limits, durable journal, explicit local execution and final cleanup. The standalone gas preflight alone does not authorize transactions. Future funded scenarios must preserve:
 
 - A gas check immediately before **every** paid action on every participating chain, including approvals, relays, retries and cleanup. The preflight result alone cannot authorize later spending.
 - Per-action complete-fee and per-run budgets, including execution/relay/bridge/data fees and a cleanup reserve. Native gas price alone does not bound GMX costs.

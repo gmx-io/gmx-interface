@@ -10,5 +10,12 @@
     "noEmit": true,
     "types": ["node"]
   },
-  "include": ["**/*.ts", "../../playwright-regression.config.ts", "../../playwright-funded-preflight.config.ts"]
+  "include": ["**/*.ts", "../../playwright-regression.config.ts", "../../playwright-funded-preflight.config.ts"],
+  "exclude": [
+    "funded/cli.ts",
+    "funded/session.ts",
+    "funded/preparedOrder.ts",
+    "funded/trade.spec.ts",
+    "funded/*.test.ts"
+  ]
 }

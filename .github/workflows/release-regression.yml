@@ -119,6 +119,12 @@ jobs:
         run: yarn install --immutable --mode=skip-build
       - name: Typecheck regression tests
         run: yarn test:regression:types
+      - name: Install SDK dependencies for funded harness validation
+        run: yarn --cwd sdk install --immutable --mode=skip-build
+      - name: Validate funded policies without a wallet or transactions
+        run: |
+          yarn test:regression:funded:types
+          yarn test:regression:funded:unit
       - name: Install Chromium
         run: yarn exec playwright install --with-deps chromium
       - name: Run regression
