@@ -2273,9 +2273,10 @@ msgstr "탈중앙화 거래 프로토콜"
 msgid "Symbiosis"
 msgstr "Symbiosis"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "How it works"
-msgstr ""
+msgstr "작동 방식"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Order is already frozen"
@@ -6819,6 +6820,10 @@ msgstr "차트에 매수/매도 아이콘 표시"
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
 msgstr "이 스왑에는 외부 라우팅이 필요합니다. 활성화하려면 {0}(으)로 가스를 결제하세요."
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
+msgid "Apply with Paxos"
+msgstr "Paxos에서 신청하기"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Portuguese)"
 msgstr "GMX (포르투갈어)"
@@ -9045,6 +9050,10 @@ msgstr "스테이킹된 GMX"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Real-time referral dashboard"
 msgstr "실시간 추천 대시보드"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
+msgid "For businesses: mint USDG with Paxos"
+msgstr "기업용: Paxos로 USDG 발행하기"
 
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "Chains"
@@ -11617,6 +11626,10 @@ msgstr "LIQUIDITY LONG"
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "Is this custodial? Do I send you my funds?"
 msgstr "수탁형 서비스인가요? 제 자금을 보내야 하나요?"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
+msgid "Paxos, the issuer of USDG, mints it 1:1 from USD with no minting fee. Requires business verification with Paxos."
+msgstr "USDG 발행사인 Paxos가 발행 수수료 없이 USD를 1:1로 USDG로 발행합니다. Paxos의 기업 인증이 필요합니다."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL short"

@@ -2273,6 +2273,7 @@ msgstr "Decentralized trading protocol"
 msgid "Symbiosis"
 msgstr "Symbiosis"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "How it works"
 msgstr "How it works"
@@ -6819,6 +6820,10 @@ msgstr "Show buy/sell icons on chart"
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
 msgstr "This swap requires external routing. Pay gas in {0} to enable it."
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
+msgid "Apply with Paxos"
+msgstr "Apply with Paxos"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Portuguese)"
 msgstr "GMX (Portuguese)"
@@ -9045,6 +9050,10 @@ msgstr "Staked GMX"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Real-time referral dashboard"
 msgstr "Real-time referral dashboard"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
+msgid "For businesses: mint USDG with Paxos"
+msgstr "For businesses: mint USDG with Paxos"
 
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "Chains"
@@ -11617,6 +11626,10 @@ msgstr "LIQUIDITY LONG"
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "Is this custodial? Do I send you my funds?"
 msgstr "Is this custodial? Do I send you my funds?"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
+msgid "Paxos, the issuer of USDG, mints it 1:1 from USD with no minting fee. Requires business verification with Paxos."
+msgstr "Paxos, the issuer of USDG, mints it 1:1 from USD with no minting fee. Requires business verification with Paxos."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL short"

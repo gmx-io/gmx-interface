@@ -2273,9 +2273,10 @@ msgstr "Dezentrales Handelsprotokoll"
 msgid "Symbiosis"
 msgstr "Symbiosis"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "How it works"
-msgstr ""
+msgstr "So funktioniert es"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Order is already frozen"
@@ -6819,6 +6820,10 @@ msgstr "Kauf-/Verkaufssymbole im Chart anzeigen"
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
 msgstr "Dieser Swap erfordert externes Routing. Zahlen Sie Gas in {0}, um es zu aktivieren."
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
+msgid "Apply with Paxos"
+msgstr "Bei Paxos bewerben"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Portuguese)"
 msgstr "GMX (Portugiesisch)"
@@ -9045,6 +9050,10 @@ msgstr "Gestaktes GMX"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Real-time referral dashboard"
 msgstr "Referral-Dashboard in Echtzeit"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
+msgid "For businesses: mint USDG with Paxos"
+msgstr "Für Unternehmen: USDG über Paxos prägen"
 
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "Chains"
@@ -11617,6 +11626,10 @@ msgstr "LIQUIDITY LONG"
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "Is this custodial? Do I send you my funds?"
 msgstr "Ist das custodial? Sende ich Ihnen meine Gelder?"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
+msgid "Paxos, the issuer of USDG, mints it 1:1 from USD with no minting fee. Requires business verification with Paxos."
+msgstr "Paxos, der Emittent von USDG, prägt USDG im Verhältnis 1:1 aus USD ohne Prägegebühr. Erfordert eine Unternehmensverifizierung bei Paxos."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL short"

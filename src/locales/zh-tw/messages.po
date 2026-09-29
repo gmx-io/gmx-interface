@@ -2273,9 +2273,10 @@ msgstr "去中心化交易協議"
 msgid "Symbiosis"
 msgstr "Symbiosis"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "How it works"
-msgstr ""
+msgstr "運作方式"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Order is already frozen"
@@ -6819,6 +6820,10 @@ msgstr "在圖表上顯示買/賣圖示"
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
 msgstr "此交換需要外部路由。請用 {0} 支付 Gas 以啟用。"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
+msgid "Apply with Paxos"
+msgstr "向 Paxos 申請"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Portuguese)"
 msgstr "GMX（葡萄牙語）"
@@ -9045,6 +9050,10 @@ msgstr "已質押 GMX"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Real-time referral dashboard"
 msgstr "即時推薦儀表板"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
+msgid "For businesses: mint USDG with Paxos"
+msgstr "企業專享：透過 Paxos 鑄造 USDG"
 
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "Chains"
@@ -11617,6 +11626,10 @@ msgstr "做多流動性"
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "Is this custodial? Do I send you my funds?"
 msgstr "這是託管服務嗎？我需要把資金匯給你們嗎？"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
+msgid "Paxos, the issuer of USDG, mints it 1:1 from USD with no minting fee. Requires business verification with Paxos."
+msgstr "USDG 的發行方 Paxos 以 1:1 比例將 USD 鑄造為 USDG，不收取鑄造費。需通過 Paxos 的企業驗證。"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL short"
