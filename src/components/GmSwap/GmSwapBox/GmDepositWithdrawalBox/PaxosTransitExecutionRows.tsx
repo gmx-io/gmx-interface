@@ -12,7 +12,7 @@ import type { PaxosTransitState } from "./usePaxosTransitState";
 
 export function PaxosTransitExecutionRows({ transitState }: { transitState: PaxosTransitState }) {
   const { isDeposit } = useSelector(selectPoolsDetailsFlags);
-  const { quote, isZeroFeeCapacityShort, isWhitelisted, zeroFeeCapacity, tokenIn } = transitState;
+  const { isZeroFeeCapacityShort, isWhitelisted, zeroFeeCapacity, tokenIn } = transitState;
   const shouldShowZeroFeeCapacity =
     isWhitelisted && isDeposit && zeroFeeCapacity !== undefined && tokenIn !== undefined;
 
@@ -52,13 +52,11 @@ export function PaxosTransitExecutionRows({ transitState }: { transitState: Paxo
         />
       )}
 
-      {quote?.estimatedLatencyMs !== undefined && (
-        <SyntheticsInfoRow
-          label={<Trans>Estimated time</Trans>}
-          valueClassName="numbers"
-          value={<Trans>{Math.ceil(quote.estimatedLatencyMs / 60_000)}m</Trans>}
-        />
-      )}
+      <SyntheticsInfoRow
+        label={<Trans>Estimated time</Trans>}
+        valueClassName="numbers"
+        value={<Trans>2–10 min</Trans>}
+      />
 
       {isZeroFeeCapacityShort && (
         <AlertInfoCard type="warning" hideClose>
