@@ -26,7 +26,6 @@ import { TradeBox } from "../TradeBox";
 import { TradeBoxHeaderTabs } from "../TradeBoxHeaderTabs";
 
 const EXPRESS_ON_FEATURES = { relayRouterEnabled: true, subaccountRelayRouterEnabled: true };
-const EXPRESS_ON_SPONSORED_CALL = { isSponsoredCallAllowed: true };
 
 /** Mounts the external swap quote machinery, which lives in SyntheticsPage rather than TradeBox. */
 function ExternalSwapHandlerHost() {
@@ -148,7 +147,7 @@ export type TradeBoxStoryProps = {
   withExternalSwapLatchControl?: boolean;
   /** Turn the "External swaps" setting off (on by default) */
   externalSwapsSettingOff?: boolean;
-  /** Make express trading available: enables the relay-router features and Gelato sponsored calls */
+  /** Make express trading available: enables the relay-router features */
   expressOn?: boolean;
   /** Activate One-Click Trading via a mock subaccount (implies nothing else — combine with expressOn) */
   withOneClickSubaccount?: boolean;
@@ -234,7 +233,11 @@ export function TradeBoxStory({
   }, [positionIsShort, withPosition, withWethCollateralPosition]);
 
   const marketsInfoData = useMemo<MarketsInfoData | undefined>(() => {
-    const primaryMarket = positionMarketInfo ?? createMockMarketInfo();
+    // the fixture's default impact (2e-5 at exponent 2) moves the price ~1 % on a $50k order, so the
+    // resulting-position cap would bind on impact; the manual-leverage tests want a market-like impact
+    const primaryMarket =
+      positionMarketInfo ??
+      createMockMarketInfo(undefined, manualLeverage ? { positionImpactFactorNegative: expandDecimals(3, 20) } : {});
 
     if (marketScenario === "cappedLongOI") {
       const data: MarketsInfoData = {
@@ -299,12 +302,12 @@ export function TradeBoxStory({
       return data;
     }
 
-    if (positionMarketInfo) {
-      return { [MOCK_MARKET_ADDRESS]: positionMarketInfo };
+    if (positionMarketInfo || manualLeverage) {
+      return { [MOCK_MARKET_ADDRESS]: primaryMarket };
     }
 
     return undefined;
-  }, [marketScenario, positionMarketInfo, withSecondEthPool]);
+  }, [manualLeverage, marketScenario, positionMarketInfo, withSecondEthPool]);
 
   const tokensData: TokensData | undefined = useMemo(() => {
     if (zeroBalances) {
@@ -434,7 +437,6 @@ export function TradeBoxStory({
       marketsInfoData={marketsInfoData}
       tokensData={tokensData}
       features={expressOn ? EXPRESS_ON_FEATURES : undefined}
-      sponsoredCallBalanceData={expressOn ? EXPRESS_ON_SPONSORED_CALL : undefined}
       subaccount={mockSubaccount}
     >
       {withExternalSwapHandler && <ExternalSwapHandlerHost />}

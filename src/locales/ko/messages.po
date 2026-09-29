@@ -50,7 +50,7 @@ msgstr "추천 코드"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient funds for order costs. Remaining: {remainingCostUsdText}"
-msgstr ""
+msgstr "주문 비용을 지불할 자금이 부족합니다. 잔여 비용: {remainingCostUsdText}"
 
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing limit order uses {symbol} collateral. <0>Switch to {symbol} collateral</0>"
@@ -217,7 +217,7 @@ msgstr "디버그 값을 사용할 수 없습니다"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Insufficient {0} for gas on {networkName}<0/><1/><2>Swap</2> or <3>bridge</3> {1} to {networkName}"
-msgstr ""
+msgstr "{networkName}의 Gas 비용으로 사용할 {0}이 부족합니다<0/><1/><2>스왑</2> 또는 <3>브릿지</3>를 통해 {1}을 {networkName}으로 전송하세요"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing limit order in {0} pool but lacks liquidity for this order"
@@ -264,7 +264,7 @@ msgstr "(리베이트 적용)"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Accumulated rewards"
-msgstr ""
+msgstr "누적 보상"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Show other assets ({0})"
@@ -946,10 +946,6 @@ msgstr "{marketTypeLabel}에서 \"{query}\"와 일치하는 항목이 없습니�
 msgid "Negative value: traders pay funding"
 msgstr "음수 값: 트레이더가 펀딩을 지불합니다"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Transfer {nativeTokenSymbol} from other networks to {chainName}"
-msgstr "다른 네트워크에서 {chainName}으로 {nativeTokenSymbol}을 전송합니다"
-
 #: landing/src/pages/Builders/Footer/BuildersFooter.tsx
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 #: src/components/SideNav/SideNav.tsx
@@ -991,10 +987,6 @@ msgstr "{actionsCount, plural, one {주문} other {# 주문}}"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid collateral token. {tokenSymbol} isn't supported as collateral"
 msgstr "유효하지 않은 담보 토큰입니다. {tokenSymbol}은(는) 담보로 지원되지 않습니다"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX on centralized exchanges"
-msgstr "중앙화 거래소에서 GMX 구매"
 
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
@@ -1116,10 +1108,6 @@ msgstr "주문이 체결되지 않습니다: 트리거 가격이 청산 가격�
 msgid "Don't ask again"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "No options to buy {nativeTokenSymbol} on {chainName}"
-msgstr "{chainName}에서 {nativeTokenSymbol}을(를) 구매할 수 있는 옵션이 없습니다"
-
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values calculated when earned. Excludes incentives."
 msgstr "수수료 값은 수익 발생 시점에 계산됩니다. 인센티브는 제외됩니다."
@@ -1134,7 +1122,7 @@ msgstr "금고 및 풀의 TVL"
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX on Solana"
-msgstr ""
+msgstr "Solana의 GMX"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
@@ -1535,6 +1523,7 @@ msgstr "유동성은 {chainNames}에서만 이용 가능합니다. 계속하려�
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop-Loss"
@@ -1560,10 +1549,6 @@ msgstr "가스로 {0} 사용"
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Total margin funded"
 msgstr "총 납입 증거금"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "To buy GMX on {0}, <0>change your network</0>"
-msgstr "{0}에서 GMX를 구매하려면 <0>네트워크를 변경하십시오</0>"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Results are available in Perpetuals."
@@ -1960,10 +1945,6 @@ msgstr "결제 토큰을 선택하십시오"
 msgid "Market cap"
 msgstr "시가총액"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX using any token from any network"
-msgstr "모든 네트워크의 모든 토큰으로 GMX를 구매하십시오"
-
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Markets"
@@ -2101,6 +2082,7 @@ msgstr "{ordersText} 취소 중..."
 msgid "Received at close (GMX balance)"
 msgstr "청산 시 수령액 (GMX 잔액)"
 
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "Size (% of position)"
 msgstr "크기 (포지션의 %)"
@@ -2756,17 +2738,11 @@ msgstr "계정"
 msgid "Position exceeds max allowed leverage. <0>Read more</0>."
 msgstr "포지션이 허용된 최대 레버리지를 초과합니다. <0>자세히 보기</0>."
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy or transfer {nativeTokenSymbol} to {chainName}"
-msgstr "{chainName}에서 {nativeTokenSymbol} 구매 또는 전송"
-
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short borrowing rate"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX"
@@ -2982,10 +2958,6 @@ msgstr "RPC 엔드포인트 디버그 ({0})"
 msgid "Driven by our community"
 msgstr "우리 커뮤니티에 의해 주도됨"
 
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Buy {0}"
-msgstr "{0} 구매"
-
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting only available on {chainNames}. Switch networks to continue."
 msgstr "시프팅은 {chainNames}에서만 이용 가능합니다. 계속하려면 네트워크를 전환하십시오."
@@ -3129,10 +3101,6 @@ msgstr "<0>여기서 <1>@GMX_IO</1>를 주시해야 합니다. DeFi 전체가 �
 #: src/components/WhatsNewToast/WhatsNewToastContainer.tsx
 msgid "Update available"
 msgstr "업데이트 사용 가능"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX on {chainName}"
-msgstr "{chainName}에서 GMX 구매"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -3640,6 +3608,9 @@ msgid "Theme"
 msgstr "테마"
 
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
@@ -3671,10 +3642,6 @@ msgstr "AI 트레이딩 어시스턴트"
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "Allowed slippage"
 msgstr "허용 슬리피지"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "No centralized exchanges available"
-msgstr "이용 가능한 중앙화 거래소가 없습니다"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Loyalty"
@@ -3725,11 +3692,6 @@ msgstr "청산 시 지갑 수령액"
 msgid "GLV vaults"
 msgstr "GLV 볼트"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from centralized services"
-msgstr "중앙화 서비스에서 GMX 구매"
-
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute: insufficient liquidity at the trigger price. Reduce the order size."
@@ -3769,6 +3731,7 @@ msgstr "거래 내역을 불러오지 못했습니다"
 msgid "<0>Set recommended impact: {0}</0>."
 msgstr "<0>권장 영향값 설정: {0}</0>."
 
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Position would be liquidated immediately upon execution. Reduce the size."
 msgstr "실행 즉시 포지션이 청산됩니다. 크기를 줄이세요."
@@ -3803,6 +3766,7 @@ msgstr "트레이더 활동"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -3932,10 +3896,6 @@ msgstr ""
 msgid "Zero-fee capacity is used up for this amount. Convert now at the standard fee, convert a smaller amount, or wait for the next zero-fee window."
 msgstr "이 금액에 대한 수수료 무료 한도가 모두 소진되었습니다. 표준 수수료로 지금 변환하거나, 더 적은 금액을 변환하거나, 다음 수수료 무료 기간을 기다리세요."
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy from decentralized or centralized exchanges"
-msgstr "탈중앙화 또는 중앙화 거래소에서 구매"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "of limit"
 msgstr ""
@@ -4063,6 +4023,7 @@ msgid "This trigger price is beyond the current liquidation price. Your position
 msgstr "이 조건가는 현재 청산가를 초과합니다. 이 TP/SL 주문이 실행되기 전에 포지션이 청산될 수 있습니다."
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
@@ -4090,10 +4051,6 @@ msgstr "채용 공고"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "PNL (%)"
 msgstr "PnL (%)"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX using decentralized exchange aggregators"
-msgstr "탈중앙화 거래소 애그리게이터를 통해 GMX를 구매하십시오"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing, which isn't available with One-Click Trading. Disable One-Click to use Express Trading."
@@ -4208,7 +4165,7 @@ msgstr "최소 펀딩 계수(롱)"
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
 msgstr "GMX가 다른 영구 플랫폼보다 비용 효율적인 이유는 무엇인가요?"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Margin is below the minimum required for the position size"
 msgstr "마진이 포지션 규모에 필요한 최소 금액보다 적습니다"
 
@@ -5053,6 +5010,7 @@ msgid "{gmOrGlvLabel} bought successfully, but bridge to {0} failed. Your funds 
 msgstr "{gmOrGlvLabel} 구매에 성공했지만 {0}(으)로의 브리지에 실패했습니다. 자금은 GMX 계정에 안전하게 보관되어 있습니다. 브리지를 다시 시도하거나 {indexName} 풀로 이동하여 {gmOrGlvLabel} 토큰을 출금하세요."
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionItem/PositionItemOrders.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -5551,10 +5509,6 @@ msgstr "내 거래량"
 msgid "Fail external swaps"
 msgstr "외부 스왑 실패 처리"
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute: the resulting position would exceed the maximum allowed leverage. <0>Deposit margin</0> or reduce the order size before it triggers."
-msgstr "주문이 체결되지 않을 수 있습니다: 결과 포지션이 최대 허용 레버리지를 초과합니다. 트리거되기 전에 <0>증거금을 예치</0>하거나 주문 크기를 줄이세요."
-
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -5593,10 +5547,6 @@ msgstr "주문 수명 주기"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit supported:"
 msgstr "Permit 지원 여부:"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy {nativeTokenSymbol}"
-msgstr "{nativeTokenSymbol} 구매"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size too small"
@@ -5880,10 +5830,6 @@ msgstr "추천 코드가 추가되었습니다"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Your {symbol} margin exceeds the {indexName} short position size. Margin value rises with the index, covering any losses—no liquidation price."
 msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX bonds on Bond Protocol at a discount with a short vesting period"
-msgstr "Bond Protocol에서 짧은 베스팅 기간으로 GMX 채권을 할인 구매하십시오"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No results with the selected filters."
@@ -6372,10 +6318,6 @@ msgstr "GM: {1} [{2}]에서 {0}의 구매 한도에 도달했습니다. 다른 �
 msgid "<0>Permit approval failed. A standard approval transaction is required. Approve the token and try again</0>"
 msgstr "<0>퍼밋 승인에 실패했습니다. 표준 승인 트랜잭션이 필요합니다. 토큰을 승인한 후 다시 시도하세요</0>"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "No options to transfer {nativeTokenSymbol} to {chainName}"
-msgstr "{chainName}(으)로 {nativeTokenSymbol}을 전송할 수 있는 옵션이 없습니다"
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
 msgstr "<0>알림은 Notifi에서 제공되며 GMX와 무관합니다. 구독 시 Notifi에 제공한 정보가 </0><1>개인정보 정책</1><2> 및 </2><3>이용 약관</3>에 따라 관리됨에 동의합니다."
@@ -6430,10 +6372,6 @@ msgstr "차이"
 msgid "Stop-Loss price"
 msgstr ""
 
-#: src/components/OrderEditor/OrderEditor.tsx
-msgid "No valid leverage available"
-msgstr "유효한 레버리지가 없습니다"
-
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "swap amount"
 msgstr "스왑 금액"
@@ -6445,10 +6383,6 @@ msgstr "최적"
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{updateOrdersCount} TP/SL orders updated"
 msgstr "{updateOrdersCount}개의 TP/SL 주문이 업데이트되었습니다"
-
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Insufficient margin. Add more margin"
-msgstr ""
 
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "What's the minimum volume to qualify?"
@@ -6506,7 +6440,7 @@ msgstr "Rest API"
 msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none."
 msgstr "차트에 표시할 매수/매도 마크를 선택하세요: 모든 과거 거래, 현재 보유 중인 포지션만, 또는 표시 안 함."
 
-#: src/pages/BuyGMX/BuyGmxModal.tsx
+#: src/components/BuyGmxModal/BuyGmxModal.tsx
 msgid "Buy GMX on GMX swap"
 msgstr ""
 
@@ -6582,6 +6516,10 @@ msgstr ""
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "ACTIONS"
 msgstr ""
+
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Order exceeds max leverage. Reduce the size."
+msgstr "주문이 최대 레버리지를 초과합니다. 크기를 줄이세요."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6792,6 +6730,10 @@ msgstr "GMX 제안"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesPromoCard.tsx
 msgid "Activate someone's referral code to receive a permanent discount on all opening and closing <0/> fees. Your savings apply automatically on every trade. <1>Read more</1>."
 msgstr ""
+
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "This order may fail to execute because the resulting position would exceed the maximum allowed leverage. Increase the position's margin or reduce the order size before it triggers."
+msgstr "결과 포지션이 최대 허용 레버리지를 초과하여 이 주문이 체결되지 않을 수 있습니다. 주문이 트리거되기 전에 포지션의 증거금을 늘리거나 주문 크기를 줄이세요."
 
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "See more"
@@ -7148,10 +7090,6 @@ msgstr "GMX 거버넌스 페이지"
 #: src/components/WhatsNewToast/WhatsNewToastContainer.tsx
 msgid "A new version of GMX is ready. Reload when you are done to switch to it."
 msgstr "GMX의 새 버전이 준비되었습니다. 작업을 마친 후 새로고침하여 전환하세요."
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there"
-msgstr "{chainName}에서 직접 {nativeTokenSymbol}을(를) 구매하거나 전송하십시오"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded."
@@ -7654,11 +7592,6 @@ msgstr "wstETH APR"
 msgid "GMX Account withdrawals are limited by Stargate bridge liquidity. Try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "GMX Account 출금은 Stargate 브리지 유동성에 의해 제한됩니다. <0>{upperLimitFormatted}</0>보다 작은 금액으로 시도하십시오."
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "TraderJoe"
-msgstr "TraderJoe"
-
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated time to liquidation"
 msgstr "청산까지 예상 시간"
@@ -8095,6 +8028,10 @@ msgstr ""
 msgid "No open positions"
 msgstr "열려 있는 포지션 없음"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The position cannot be increased at the current leverage. Increase margin or reduce size. Current margin: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
+msgstr "현재 레버리지로는 포지션을 늘릴 수 없습니다. 증거금을 늘리거나 크기를 줄이세요. 현재 증거금: {remainingCollateralUsdText}, 필요: {minCollateralUsdForLeverageText}"
+
 #: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
 msgid "See the perks"
 msgstr "혜택 보기"
@@ -8359,11 +8296,6 @@ msgstr "목적"
 msgid "For me"
 msgstr "나에게"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Bond Protocol"
-msgstr "Bond Protocol"
-
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Fees and impacts"
 msgstr "수수료 및 영향"
@@ -8567,17 +8499,9 @@ msgstr "프로젝트"
 msgid "24h low"
 msgstr "24시간 최저"
 
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Insufficient margin. Add {missingCollateralUsdText} more margin"
-msgstr ""
-
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claim <0>{0}</0> of <1>{1}</1>"
 msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from TraderJoe"
-msgstr "TraderJoe에서 GMX 구매"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average leverage used"
@@ -8661,10 +8585,6 @@ msgstr ""
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Edit"
 msgstr "수정"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "No available leverage found"
-msgstr "사용 가능한 레버리지 없음"
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total supply"
@@ -8831,6 +8751,10 @@ msgstr "GLP 보상금 (테스트)"
 msgid "Built for those<0/>who do more."
 msgstr "더 많이 하는 이들을<0/>위해."
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Max leverage exceeded. Increase margin or reduce size"
+msgstr "최대 레버리지 초과. 증거금을 늘리거나 크기를 줄이세요"
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
 msgid "Convert, then buy"
 msgstr "변환 후 구매"
@@ -8990,11 +8914,6 @@ msgstr "사용 가능한 스왑 경로 없음"
 msgid "Execute Stop-Loss"
 msgstr "손절매 실행"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from decentralized exchanges"
-msgstr "분산 거래소에서 GMX 구매"
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Powered by"
 msgstr "Powered by"
@@ -9027,6 +8946,10 @@ msgstr ""
 msgid "Trade errors"
 msgstr "거래 오류"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "This order may fail to execute because the resulting position would exceed the maximum allowed leverage. <0>Increase the position's margin</0> or reduce the order size before it triggers."
+msgstr "결과 포지션이 최대 허용 레버리지를 초과하여 이 주문이 체결되지 않을 수 있습니다. 주문이 트리거되기 전에 <0>포지션의 증거금을 늘리</0>거나 주문 크기를 줄이세요."
+
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to and withdrawing from GMX Account..."
 msgstr "GMX Account 입금 및 출금 중..."
@@ -9038,6 +8961,10 @@ msgstr ""
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "SHORT LIQ."
 msgstr "숏 청산"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Max leverage exceeded. Remaining margin {remainingCollateralUsdText} is below the minimum for the position size. Increase margin or reduce size"
+msgstr "최대 레버리지 초과. 잔여 증거금 {remainingCollateralUsdText}이(가) 포지션 규모에 필요한 최소 금액보다 적습니다. 증거금을 늘리거나 크기를 줄이세요"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Account type"
@@ -9273,6 +9200,7 @@ msgstr "다음"
 msgid "More info"
 msgstr "더 많은 정보"
 
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -9515,6 +9443,10 @@ msgstr "GM 구매 실패"
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 msgid "This position's margin is below the minimum required for its size, so settlement will fail. Add margin, or close the position. Closing settles the funding automatically."
 msgstr "이 포지션의 마진이 규모에 필요한 최소 금액보다 적으므로 정산이 실패합니다. 마진을 추가하거나 포지션을 종료하세요. 종료하면 펀딩이 자동으로 정산됩니다."
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The position cannot be increased at the current leverage. Increase margin or reduce size."
+msgstr "현재 레버리지로는 포지션을 늘릴 수 없습니다. 증거금을 늘리거나 크기를 줄이세요."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max funding factor (long)"
@@ -9990,6 +9922,10 @@ msgstr "포지션 규모가 가용 미결제약정을 초과합니다. 델타: {
 msgid "Yes"
 msgstr "예"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Margin is below the minimum required for the position size. Current: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
+msgstr "마진이 포지션 규모에 필요한 최소 금액보다 적습니다. 현재: {remainingCollateralUsdText}, 필요: {minCollateralUsdForLeverageText}"
+
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (TWAP)"
 msgstr "규모 증가 (TWAP)"
@@ -10069,10 +10005,6 @@ msgstr "최대 예약 {directionLabel}"
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Technical guidance plus architecture and UX feedback."
 msgstr "기술 가이드와 아키텍처 및 UX 피드백."
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Transfer {nativeTokenSymbol}"
-msgstr "{nativeTokenSymbol} 전송"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "LIQUIDITY SHORT"
@@ -10154,9 +10086,9 @@ msgstr "입금할 자산 선택"
 msgid "Session generated"
 msgstr "세션 생성됨"
 
+#: src/components/BuyGmxModal/BuyGmxModal.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
-#: src/pages/BuyGMX/BuyGmxModal.tsx
+#: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Buy GMX"
 msgstr "GMX 구매"
@@ -10274,6 +10206,12 @@ msgstr "요청은 전송되었지만 결과를 확인할 수 없습니다. 이�
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short funding rate"
 msgstr ""
+
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "The resulting position would exceed the maximum allowed leverage. Increase margin or reduce size."
+msgstr "결과 포지션이 최대 허용 레버리지를 초과하게 됩니다. 증거금을 늘리거나 크기를 줄이세요."
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "No funds available for GMX Account deposit"
@@ -10418,10 +10356,6 @@ msgstr "스테이킹 중..."
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Buy request sent"
 msgstr "구매 요청 전송됨"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX using fiat gateways"
-msgstr "법정화폐 게이트웨이를 통해 GMX 구매"
 
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max network fee"
@@ -11474,10 +11408,6 @@ msgstr "내보내기를 완료할 수 없습니다. 다운로드된 파일이 �
 msgid "Open GMTrade in a new tab"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy {nativeTokenSymbol} directly on <0>{chainName}</0>"
-msgstr "<0>{chainName}</0>에서 직접 {nativeTokenSymbol} 구매"
-
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap Limit: Swap tokens when the trigger price is reached"
 msgstr "Limit Swap: 조건가에 도달하면 토큰을 스왑합니다"
@@ -11724,10 +11654,6 @@ msgstr "실패한 시도 이후 외부 라우팅이 일시적으로 중지되었
 msgid "Working prototype or live product"
 msgstr "작동하는 프로토타입 또는 라이브 제품"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from Uniswap or directly on GMX (select Arbitrum)"
-msgstr "Uniswap에서 GMX를 구매하거나 GMX에서 직접 구매하십시오 (Arbitrum 선택)"
-
 #: src/components/DepthChart/DepthChart.tsx
 msgid "Oracle price"
 msgstr "Oracle 가격"
@@ -11771,6 +11697,7 @@ msgid "Cancellable in ..."
 msgstr "취소 가능 시간 ..."
 
 #: src/components/Seo/SEO.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "GMX | decentralized perpetual exchange"
 msgstr ""
 
@@ -11814,6 +11741,8 @@ msgstr "펀딩 수수료 수령"
 msgid "Token permit testing"
 msgstr "토큰 허용 테스트"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -12551,7 +12480,7 @@ msgstr "USDG를 수령했습니다. 이제 이것으로 구매할 수 있습니�
 msgid "<0>Switch to {0} pool</0> for potentially lower price impact"
 msgstr "<0>{0} 풀로 전환</0>하면 가격 영향을 줄일 수 있습니다"
 
-#: src/pages/BuyGMX/BuyGmxModal.tsx
+#: src/components/BuyGmxModal/BuyGmxModal.tsx
 msgid "Buy on other platforms"
 msgstr "다른 플랫폼에서 구매"
 
@@ -12751,11 +12680,6 @@ msgstr "NET RATE / 1H"
 msgid "30d performance APY"
 msgstr "30일 실적 APY"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Uniswap"
-msgstr "Uniswap"
-
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 msgid "Share on"
@@ -12841,6 +12765,7 @@ msgstr "만료된 예치"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
+#: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take-Profit"
@@ -12901,10 +12826,6 @@ msgstr "이 체인에는 아직 기회가 없습니다"
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
 msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "No decentralized exchanges available"
-msgstr "이용 가능한 탈중앙화 거래소가 없습니다"
 
 #: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
 msgid "Code already taken on: {takenNetworkNamesJoined}. No rebates received from this network."

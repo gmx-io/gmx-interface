@@ -936,7 +936,7 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
     // SWAP-ONLY [USDC-USDG]
     "0x408E8e83d4b8Ac4BDefFDF896B49268A5FE5Ef44": {
       marketTokenAddress: "0x408E8e83d4b8Ac4BDefFDF896B49268A5FE5Ef44",
-      indexTokenAddress: "0x0000000000000000000000000000000000000000",
+      indexTokenAddress: zeroAddress,
       longTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       shortTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
     },

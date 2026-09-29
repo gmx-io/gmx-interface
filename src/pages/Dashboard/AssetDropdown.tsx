@@ -1,7 +1,7 @@
 import { autoUpdate, flip, FloatingPortal, shift, useFloating } from "@floating-ui/react";
 import { Menu } from "@headlessui/react";
 import { t, Trans } from "@lingui/macro";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { Operation, getMarketBadge } from "domain/synthetics/markets";
@@ -11,6 +11,7 @@ import { useChainId } from "lib/chains";
 import { isMobile as headlessUiIsMobile } from "lib/headlessUiIsMobile";
 import { getNormalizedTokenSymbol, getTokenBySymbol } from "sdk/configs/tokens";
 
+import { BuyGmxModal } from "components/BuyGmxModal/BuyGmxModal";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
@@ -18,12 +19,6 @@ import MenuDotsIcon from "img/ic_menu_dots.svg?react";
 import nansenPortfolioIcon from "img/nansen_portfolio.svg";
 
 import "./AssetDropdown.scss";
-
-const PLATFORM_TOKEN_ROUTES: Record<string, string> = {
-  GMX: "/buy_gmx",
-  GLP: "/buy_glp",
-  GM: "/pools",
-};
 
 type Props = {
   assetSymbol?: string;
@@ -34,6 +29,7 @@ type Props = {
 
 function AssetDropdown({ assetSymbol, token: propsToken, position = "right", marketsStats }: Props) {
   const { chainId } = useChainId();
+  const [isBuyGmxModalVisible, setIsBuyGmxModalVisible] = useState(false);
 
   const token = propsToken ? propsToken : assetSymbol && getTokenBySymbol(chainId, assetSymbol);
 
@@ -59,6 +55,8 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right", mar
     return null;
   }
 
+  const isGmx = token.symbol === "GMX";
+
   return (
     <div className="AssetDropdown-wrapper">
       <Menu>
@@ -78,13 +76,13 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right", mar
             className="z-10 rounded-8 border-1/2 border-slate-600 bg-slate-900 outline-none"
           >
             <Menu.Item as="div">
-              {token.isPlatformToken && (
-                <Link to={PLATFORM_TOKEN_ROUTES[token.symbol]} className="asset-item">
+              {isGmx && (
+                <div onClick={() => setIsBuyGmxModalVisible(true)} className="asset-item">
                   <img className="asset-item-icon" width={16} height={16} src={token.imageUrl} alt={token.symbol} />
                   <p>
-                    <Trans>Buy {token.symbol}</Trans>
+                    <Trans>Buy GMX</Trans>
                   </p>
-                </Link>
+                </div>
               )}
             </Menu.Item>
             <Menu.Item as="div">
@@ -111,6 +109,7 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right", mar
           </Menu.Items>
         </FloatingPortal>
       </Menu>
+      {isGmx && <BuyGmxModal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} />}
     </div>
   );
 }

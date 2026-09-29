@@ -26,7 +26,6 @@ const WEB3_PACKAGES = new Set([
   "isows",
   "ox",
   "viem",
-  "@gelatocloud/gasless",
   "@layerzerolabs/lz-v2-utilities",
   "@stargatefinance/stg-evm-sdk-v2",
   "@uniswap/sdk-core",
@@ -132,6 +131,11 @@ function isUiPackage(packageName: string) {
 
 function manualChunks(id: string) {
   const normalizedId = normalizePath(id);
+  // Keep startup recovery independent of vendor chunks that can fail to load.
+  if (normalizedId === "\0vite/preload-helper.js") {
+    return "preload-helper";
+  }
+
   const packageNames = getPackageNames(normalizedId);
   const packageName = packageNames.at(-1);
 
@@ -170,8 +174,8 @@ function manualChunks(id: string) {
   return undefined;
 }
 
-// sdk/node_modules has its own copies of these; bundling both breaks instanceof checks (e.g. SimulationFailedRpcError)
-const SDK_DEDUPED_PACKAGES = ["viem", "@gelatocloud/gasless"];
+// sdk/node_modules has its own copies of these; bundling both breaks instanceof checks (e.g. ContractFunctionRevertedError)
+const SDK_DEDUPED_PACKAGES = ["viem"];
 
 function isSdkDedupedSource(source: string) {
   return SDK_DEDUPED_PACKAGES.some((packageName) => source === packageName || source.startsWith(`${packageName}/`));
@@ -301,6 +305,8 @@ export function createViteConfig(
       assetsInlineLimit: 0,
       outDir: "build",
       sourcemap: true,
+      // WebKit can retain failed modulepreloads across reloads: https://bugs.webkit.org/show_bug.cgi?id=270357
+      modulePreload: false,
       rollupOptions: {
         output: {
           manualChunks,

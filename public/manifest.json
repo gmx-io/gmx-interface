@@ -3,7 +3,7 @@
   "short_name": "GMX",
   "description": "Trade crypto and commodities like Gold, Silver, WTI and Brent with up to 100x leverage, directly from your wallet.",
   "id": "/",
-  "start_url": "/",
+  "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
   "background_color": "#090A14",
@@ -11,15 +11,15 @@
   "shortcuts": [
     {
       "name": "Trade",
-      "url": "/trade"
+      "url": "/trade?source=pwa-shortcut"
     },
     {
       "name": "Pools",
-      "url": "/pools"
+      "url": "/pools?source=pwa-shortcut"
     },
     {
       "name": "Earn",
-      "url": "/earn"
+      "url": "/earn?source=pwa-shortcut"
     }
   ],
   "icons": [

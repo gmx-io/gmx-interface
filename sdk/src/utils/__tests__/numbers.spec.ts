@@ -15,6 +15,7 @@ import {
   formatBasisPoints,
   formatPriceImpactBps,
   formatFactor,
+  formatNumberHuman,
   formatPercentage,
   formatTokenAmount,
   formatUsdPrice,
@@ -366,7 +367,63 @@ describe("formatUsdPrice", () => {
   });
 });
 
+describe("formatNumberHuman", () => {
+  it.each([
+    [999.94, 1, "999.9"],
+    [999.96, 1, "1.0k"],
+    [1_000, 1, "1.0k"],
+    [999_940, 1, "999.9k"],
+    [999_960, 1, "1.0m"],
+    [999_996, 1, "1.0m"],
+    [1_000_000, 1, "1.0m"],
+    [999_940_000, 1, "999.9m"],
+    [999_960_000, 1, "1.0b"],
+    [1_000_000_000, 1, "1.0b"],
+    [999.4, 0, "999"],
+    [999.6, 0, "1k"],
+    [999_400, 0, "999k"],
+    [999_600, 0, "1m"],
+    [999_400_000, 0, "999m"],
+    [999_600_000, 0, "1b"],
+    [999.994, 2, "999.99"],
+    [999.996, 2, "1.00k"],
+    [999_994, 2, "999.99k"],
+    [999_996, 2, "1.00m"],
+    [999_994_000, 2, "999.99m"],
+    [999_996_000, 2, "1.00b"],
+  ])("formats %s at %s decimal places as %s", (value, displayDecimals, expected) => {
+    expect(formatNumberHuman(value, false, displayDecimals)).toBe(expected);
+    expect(formatNumberHuman(-value, false, displayDecimals)).toBe(`-${expected}`);
+    expect(formatNumberHuman(value, true, displayDecimals)).toBe(`$\u200a${expected}`);
+    expect(formatNumberHuman(-value, true, displayDecimals)).toBe(`-$\u200a${expected}`);
+  });
+
+  it("preserves zero and small values", () => {
+    expect(formatNumberHuman(0)).toBe("0.0");
+    expect(formatNumberHuman(0, true, 2)).toBe("$\u200a0.00");
+    expect(formatNumberHuman(0.04)).toBe("0.0");
+    expect(formatNumberHuman(-0.04)).toBe("-0.0");
+  });
+});
+
 describe("formatAmountHuman", () => {
+  it.each([
+    ["999.94", "$\u200a999.9"],
+    ["999.96", "$\u200a1.0k"],
+    ["999996", "$\u200a1.0m"],
+    ["999996000", "$\u200a1.0b"],
+  ])("formats the USD amount %s as %s", (value, expected) => {
+    const amount = toBigNumberWithDecimals(value, USD_DECIMALS);
+
+    expect(formatAmountHuman(amount, USD_DECIMALS, true, 1)).toBe(expected);
+    expect(formatAmountHuman(-amount, USD_DECIMALS, true, 1)).toBe(`-${expected}`);
+  });
+
+  it("preserves loading and zero values", () => {
+    expect(formatAmountHuman(undefined, USD_DECIMALS, true)).toBe("...");
+    expect(formatAmountHuman(0n, USD_DECIMALS, true)).toBe("$\u200a0.0");
+  });
+
   it("positive", () => {
     expect(formatAmountHuman(ONE_USD, USD_DECIMALS)).toBe("1.0");
     expect(formatAmountHuman(ONE_USD * 1000n, USD_DECIMALS)).toBe("1.0k");

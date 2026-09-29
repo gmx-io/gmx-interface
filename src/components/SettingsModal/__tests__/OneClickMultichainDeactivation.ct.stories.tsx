@@ -20,7 +20,6 @@ import { expandDecimals } from "lib/numbers";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
 
 const EXPRESS_AVAILABLE_FEATURES = { relayRouterEnabled: true, subaccountRelayRouterEnabled: true };
-const SPONSORED_CALL_ALLOWED = { isSponsoredCallAllowed: true };
 
 const DEPOSIT_CONTROL_STYLE = { position: "fixed", top: 0, left: 0, zIndex: 2000 } as const;
 
@@ -39,7 +38,6 @@ function MultichainSyntheticsState({ children }: { children: ReactNode }) {
   return (
     <MockSyntheticsStateProvider
       features={EXPRESS_AVAILABLE_FEATURES}
-      sponsoredCallBalanceData={SPONSORED_CALL_ALLOWED}
       srcChainId={srcChainId}
       l1ExpressOrderGasReference={MOCK_L1_EXPRESS_ORDER_GAS_REFERENCE}
       tokensData={tokensData}

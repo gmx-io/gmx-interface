@@ -130,6 +130,15 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isPermitSupported: true,
     },
     {
+      name: "Global Dollar",
+      symbol: "USDG",
+      decimals: 6,
+      address: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+      isStable: true,
+      imageUrl: "https://coin-images.coingecko.com/coins/images/51281/small/GDN_USDG_Token_200x200.png?1730484111",
+      explorerUrl: "https://arbiscan.io/token/0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+    },
+    {
       name: "Tether",
       symbol: "USDT",
       decimals: 6,
@@ -1204,14 +1213,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       categories: ["layer2", "defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/69995/standard/ICON.png?1760337992",
       explorerUrl: "https://arbiscan.io/token/0x13983f27Ce9365055a6a553233c49fE28e70103e",
-    },
-    {
-      name: "Global Dollar",
-      symbol: "USDG",
-      address: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
-      decimals: 6,
-      isStable: true,
-      explorerUrl: "https://arbiscan.io/token/0x004B506865409877C9fA29bfb1ebA929984B9bbC",
     },
   ],
   [AVALANCHE]: [

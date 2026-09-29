@@ -35,7 +35,7 @@ export function AnnouncementCard({
     <article
       data-announcement-id={event.id}
       className={cx(
-        "flex flex-col gap-16 rounded-8 p-20 transition-colors",
+        "flex scroll-mt-8 flex-col gap-16 rounded-8 p-20 transition-colors",
         isHighlighted ? "bg-button-secondaryHover duration-150" : "bg-fill-card duration-1000"
       )}
     >
