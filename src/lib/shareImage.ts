@@ -12,23 +12,17 @@ export type UploadedImageInfo = {
   id: string;
 };
 
-export function getShareURL(imageId: string, ref?: string, page?: "rewards"): string {
-  const params = new URLSearchParams({ id: imageId });
+export function getShareURL(imageId: string, ref?: string): string {
+  let url = `${SHARE_URL}?id=${imageId}`;
   if (ref) {
-    params.set("ref", ref);
+    url += `&ref=${ref}`;
   }
-  if (page) {
-    params.set("page", page);
-  }
-  return `${SHARE_URL}?${params}`;
+  return url;
 }
 
-export async function uploadElementAsShareImage(
-  element: HTMLElement,
-  extraOptions?: Parameters<typeof renderElementToBlob>[1]
-): Promise<UploadedImageInfo> {
+export async function uploadElementAsShareImage(element: HTMLElement): Promise<UploadedImageInfo> {
   try {
-    const blob = await renderElementToBlob(element, { ...UPLOAD_IMAGE_OPTIONS, ...extraOptions });
+    const blob = await renderElementToBlob(element, UPLOAD_IMAGE_OPTIONS);
 
     const res = await fetch(UPLOAD_URL, {
       method: "POST",

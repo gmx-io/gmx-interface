@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
 import { HomePageContextProvider } from "landing/pages/Home/contexts/HomePageContext";
+import { HeaderMenu } from "landing/pages/Home/HeaderMenu/HeaderMenu";
 import { useRef } from "react";
 
 import { getPageTitle } from "lib/legacy";
@@ -25,6 +26,7 @@ export default function Builders() {
   return (
     <SEO title={getPageTitle(t`Builders`)}>
       <HomePageContextProvider>
+        <HeaderMenu />
         <HeroSection ref={heroButtonsRef} />
         <ApiSurfacesSection />
         <RevenueSection />
