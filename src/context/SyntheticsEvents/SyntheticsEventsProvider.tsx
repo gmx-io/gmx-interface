@@ -104,6 +104,7 @@ import {
   WithdrawalStatuses,
 } from "./types";
 import { useMultichainEvents } from "./useMultichainEvents";
+import { useTransitRouteEvents } from "./useTransitRouteEvents";
 import { extractRelayTaskError, getPendingOrderKey } from "./utils";
 
 const SyntheticsEventsContext = createContext({});
@@ -1211,6 +1212,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     hasPageLostFocus,
   });
 
+  const transitRouteEventsState = useTransitRouteEvents(chainId);
+
   const [multichainTransferProgress, setMultichainTransferProgress] = useState<
     MultichainTransferProgress<string> | undefined
   >(undefined);
@@ -1420,6 +1423,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       },
 
       ...multichainEventsState,
+      ...transitRouteEventsState,
     };
   }, [
     orderStatuses,
@@ -1435,6 +1439,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     pendingExpressTxnParams,
     relayTaskStatuses,
     multichainEventsState,
+    transitRouteEventsState,
     marketsInfoData,
     tokensData,
     glvAndGmMarketsData,
