@@ -184,7 +184,8 @@ export function usePaxosTransitState({
   const isRouteSelectable =
     isWhitelisted && !isTransitInProgress && amountIn > 0n && quote !== undefined && canPoolFill;
 
-  const autoRoute: ConversionRoute = shouldUseTransit || isTransitLoading || !canPoolFill ? "transit" : "pool";
+  const autoRoute: ConversionRoute =
+    !feeTierError && (shouldUseTransit || isTransitLoading || !canPoolFill) ? "transit" : "pool";
   const conversionRoute =
     isRouteSelectable && conversionRoutePreference !== "auto" ? conversionRoutePreference : autoRoute;
 
