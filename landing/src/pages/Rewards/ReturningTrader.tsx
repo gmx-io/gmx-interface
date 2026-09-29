@@ -448,7 +448,7 @@ function FreshCard({
         "rewards-bonus-card rewards-fresh-card relative flex min-h-[477px] flex-col items-center overflow-hidden rounded-20 pb-0 pl-0 pr-0 pt-32",
         "text-center text-white shadow-[inset_0_-16px_60px_12px_#2d42fc66] [--rewards-skeleton-base:#b4bbff1a]",
         "[--rewards-skeleton-highlight:#b4bbff33] [background:url('../../src/img/rewards-landing/bonus-background.svg')_center_/_cover,_#090a14]",
-        "[&_h3]:text-50 [&_h3]:mb-8 [&_h3]:leading-[0.98] [&_h3]:tracking-[-0.04em]",
+        "[&_h3]:text-50 [&_h3]:mb-8 [&_h3]:leading-[1.2] [&_h3]:tracking-[-0.04em]",
         "[&>p]:text-18 [&>p]:font-medium [&>p]:leading-[1.36] [&>p]:text-slate-500",
         "max-mobile:[&_h3]:text-34",
         "max-tablet:px-24 max-tablet:py-28",
