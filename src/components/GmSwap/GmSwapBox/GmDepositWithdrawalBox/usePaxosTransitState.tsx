@@ -193,7 +193,7 @@ export function usePaxosTransitState({
   const shouldShowRouteSelector = isConversionNeeded && isFeeTierLoaded;
   const shouldShowWhitelistNote = shouldShowRouteSelector && !isWhitelisted && isLargeConversion;
 
-  const transitAmountOut = isDeposit && isTransitRoute ? amountOut : undefined;
+  const transitAmountOut = isTransitRoute ? amountOut : undefined;
 
   useEffect(
     function dropWithdrawalWithoutPayout() {
