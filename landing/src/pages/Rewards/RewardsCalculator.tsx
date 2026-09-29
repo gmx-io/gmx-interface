@@ -262,12 +262,18 @@ export function RewardsCalculator({
             <strong>{rewardRate}</strong>
           </div>
           <div className="mt-8 flex flex-col items-end gap-4">
-            <strong className="rewards-receipt-amount max-mobile:text-18 text-24 font-medium leading-[28px] tracking-[-0.032em] max-mobile:leading-[24px]">
+            <strong
+              className="max-mobile:text-18 text-24 font-medium leading-[28px] tracking-[-0.032em] max-mobile:leading-[24px]"
+              data-qa="rewards-receipt-amount"
+            >
               <RewardsValue loading={loading} width="5ch">
                 {estimate ? formatUsd(estimate.rewardsUsd, { displayDecimals: 0 }) : undefined}
               </RewardsValue>
             </strong>
-            <p className="rewards-receipt-split flex flex-wrap content-start justify-end gap-x-4 text-right text-14 leading-[20px] text-blue-100 [&>span]:whitespace-nowrap [&>span]:tabular-nums">
+            <p
+              className="flex flex-wrap content-start justify-end gap-x-4 text-right text-14 leading-[20px] text-blue-100 [&>span]:whitespace-nowrap [&>span]:tabular-nums"
+              data-qa="rewards-receipt-split"
+            >
               <span>
                 <RewardsValue loading={loading} width="5ch">
                   {estimate ? formatUsd(estimate.esGmxRewardsUsd, { displayDecimals: 0 }) : undefined}

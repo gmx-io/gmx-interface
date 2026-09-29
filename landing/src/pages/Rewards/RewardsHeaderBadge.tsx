@@ -48,7 +48,7 @@ export function RewardsHeaderBadge() {
       title={title}
     >
       <i aria-hidden="true" />
-      <span className="rewards-live-full max-compact:hidden">
+      <span className="rewards-live-full max-compact:hidden" data-qa="rewards-live-full">
         {countdown ? (
           <Trans>
             Season 1 - <span className="normal-case tabular-nums">{countdown}</span>
@@ -59,7 +59,7 @@ export function RewardsHeaderBadge() {
           <Trans>Season 1 · Soon</Trans>
         )}
       </span>
-      <span className="rewards-live-compact max-compact:inline hidden">
+      <span className="rewards-live-compact max-compact:inline hidden" data-qa="rewards-live-compact">
         {countdown ? (
           <span className="normal-case tabular-nums">{countdown}</span>
         ) : isLive ? (

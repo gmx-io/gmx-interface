@@ -369,7 +369,7 @@ function BonusCard({
       aria-busy={loading}
     >
       <div className="flex w-full flex-col items-center gap-8">
-        <p className="rewards-checked-address text-12 leading-[1.36] text-blue-100 [overflow-wrap:anywhere]">
+        <p className="text-12 leading-[1.36] text-blue-100 [overflow-wrap:anywhere]" data-qa="rewards-checked-address">
           <RewardsValue loading={loading} width="32ch">
             {account}
           </RewardsValue>

@@ -106,9 +106,9 @@ export const RewardsReferralCard = forwardRef<HTMLDivElement, ShareCardProps>(
         className={cx(
           "rewards-share-image relative flex min-h-[210px] w-[400px] min-w-0 max-w-full flex-col justify-between gap-16 rounded-12 p-16 text-left",
           "[background:#000001] [transform:rotate(-5.6deg)]",
-          "max-mobile:h-auto max-mobile:min-h-[194px] max-mobile:p-16",
-          hasBonus ? "is-comeback" : ""
+          "max-mobile:h-auto max-mobile:min-h-[194px] max-mobile:p-16"
         )}
+        data-qa="rewards-share-image"
       >
         <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]" aria-hidden="true">
           <div className="absolute left-[-39.25%] top-[-80.476%] h-[337.14%] w-[270.25%] opacity-[0.9] [background:url('../../src/img/rewards-landing/share-coins.png')_center_/_cover]" />
@@ -178,7 +178,10 @@ export const RewardsReferralCard = forwardRef<HTMLDivElement, ShareCardProps>(
           )}
         </div>
         <div className="relative flex items-center justify-between gap-16 text-12 text-slate-500 [&>span]:[overflow-wrap:anywhere]">
-          <span className="rewards-share-code rounded-7 px-7 py-4 text-blue-300 [background:#ffffff0a]">
+          <span
+            className="rewards-share-code rounded-7 px-7 py-4 text-blue-300 [background:#ffffff0a]"
+            data-qa="rewards-share-code"
+          >
             <RewardsValue loading={loadingCode} width="6ch">
               {code ?? (loadingCode ? undefined : "GMX")}
             </RewardsValue>

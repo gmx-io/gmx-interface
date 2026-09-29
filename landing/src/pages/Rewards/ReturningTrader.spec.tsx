@@ -178,7 +178,7 @@ describe("returning trader checker", () => {
     const view = render(<Page />);
     fireEvent.click(view.getByRole("button", { name: "Enter any wallet to see Comeback Bonus" }));
     expect(document.activeElement).toBe(view.getByRole("textbox", { name: "Wallet address" }));
-    expect(view.container.querySelectorAll(".rewards-spoiler")).toHaveLength(2);
+    expect(view.container.querySelectorAll('[data-qa="rewards-spoiler"]')).toHaveLength(2);
     expect(mocks.resolve).not.toHaveBeenCalled();
   });
 
@@ -191,7 +191,7 @@ describe("returning trader checker", () => {
     expect(view.getByRole("button", { name: "Checking..." })).toBeTruthy();
     expect(view.queryByRole("heading", { name: "On every trade" })).toBeNull();
     expect(view.queryByRole("button", { name: "Enter any wallet to see Comeback Bonus" })).toBeNull();
-    expect(view.container.querySelectorAll(".rewards-spoiler")).toHaveLength(2);
+    expect(view.container.querySelectorAll('[data-qa="rewards-spoiler"]')).toHaveLength(2);
     expect(view.queryByTestId("referral-account")).toBeNull();
 
     mocks.loading = false;
@@ -203,7 +203,7 @@ describe("returning trader checker", () => {
     expect(view.getByRole("heading", { name: "Keep building your rewards" })).toBeTruthy();
     expect(view.queryByRole("heading", { name: "On every trade" })).toBeNull();
     await waitFor(() => expect(view.getByTestId("referral-account").textContent).toBe(account));
-    expect(view.container.querySelectorAll(".rewards-spoiler")).toHaveLength(0);
+    expect(view.container.querySelectorAll('[data-qa="rewards-spoiler"]')).toHaveLength(0);
   });
 
   it("masks a cached bonus during a repeat check that returns no remaining bonus", async () => {
@@ -221,7 +221,7 @@ describe("returning trader checker", () => {
     view.rerender(<Page />);
 
     expect(view.queryByRole("heading", { name: "On every trade" })).toBeNull();
-    expect(view.container.querySelectorAll(".rewards-spoiler")).toHaveLength(2);
+    expect(view.container.querySelectorAll('[data-qa="rewards-spoiler"]')).toHaveLength(2);
     expect(view.queryByTestId("referral-account")).toBeNull();
 
     mocks.validating = false;
@@ -241,8 +241,8 @@ describe("returning trader checker", () => {
       await vi.dynamicImportSettled();
     });
     await waitFor(() => expect(view.getByTestId("referral-account").textContent).toBe(account));
-    expect(view.container.querySelector(".rewards-checked-address")?.textContent).toBe(account);
-    expect(view.container.querySelectorAll(".rewards-spoiler")).toHaveLength(0);
+    expect(view.container.querySelector('[data-qa="rewards-checked-address"]')?.textContent).toBe(account);
+    expect(view.container.querySelectorAll('[data-qa="rewards-spoiler"]')).toHaveLength(0);
   });
 
   it("ignores an old ENS response after a different wallet is entered and checked", async () => {
@@ -258,7 +258,7 @@ describe("returning trader checker", () => {
     submit(view, otherAccount);
     await act(async () => resolve(account));
     await waitFor(() => expect(view.getByTestId("referral-account").textContent).toBe(otherAccount));
-    expect(view.container.querySelector(".rewards-checked-address")?.textContent).toBe(otherAccount);
+    expect(view.container.querySelector('[data-qa="rewards-checked-address"]')?.textContent).toBe(otherAccount);
   });
 
   it("keeps the mask and gives a useful error for an ENS name without an address", async () => {
@@ -268,7 +268,7 @@ describe("returning trader checker", () => {
     await waitFor(() =>
       expect(view.getByRole("alert").textContent).toBe("No wallet address was found for this ENS name")
     );
-    expect(view.container.querySelectorAll(".rewards-spoiler")).toHaveLength(2);
+    expect(view.container.querySelectorAll('[data-qa="rewards-spoiler"]')).toHaveLength(2);
   });
 
   it("renders the fresh-wallet illustration and configured staking entry tier", async () => {

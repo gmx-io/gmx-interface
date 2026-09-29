@@ -173,7 +173,7 @@ describe("rewards referral card", () => {
       page: "rewards",
     });
     expect(mocks.success).toHaveBeenCalledWith("Link copied to clipboard");
-    expect(view.container.querySelector(".rewards-share-feedback")).toBeNull();
+    expect(view.queryByText("Link copied to clipboard")).toBeNull();
   });
 
   it("creates a new image when the card's bonus changes", async () => {
@@ -212,7 +212,7 @@ describe("rewards referral card", () => {
     fireEvent.click(view.getByRole("button", { name: "Copy link" }));
     const image = mocks.upload.mock.calls[0][0] as HTMLElement;
     view.rerender(<Page account={account} loading />);
-    expect(image.querySelector(".rewards-skeleton")).toBeNull();
+    expect(image.querySelector('[aria-busy="true"]')).toBeNull();
     expect(image.textContent).toContain("Up to 120%");
     await act(async () => completeUpload({ id: "ReadyImage" }));
     expect(mocks.success).toHaveBeenCalledWith("Link copied to clipboard");
@@ -336,14 +336,14 @@ describe("rewards referral card", () => {
       };
       mocks.connectedBonus = { manualRewardRemainingUsd: 0n };
       const view = render(<Page account={checkedAccount} hasBonus />);
-      expect(view.container.querySelector(".rewards-share-code")?.textContent).toBe("CheckedCode");
+      expect(view.container.querySelector('[data-qa="rewards-share-code"]')?.textContent).toBe("CheckedCode");
 
       mocks.account = connectedAccount;
       view.rerender(<Page account={checkedAccount} hasBonus />);
       expect(mocks.lookupCodes).toHaveBeenLastCalledWith(ARBITRUM, checkedAccount);
       expect(mocks.lookupBonus).not.toHaveBeenCalledWith(expect.any(String), connectedAccount);
-      expect(view.container.querySelector(".rewards-share-code")?.textContent).toBe("CheckedCode");
-      expect(view.container.querySelector(".is-comeback")).not.toBeNull();
+      expect(view.container.querySelector('[data-qa="rewards-share-code"]')?.textContent).toBe("CheckedCode");
+      expect(view.queryAllByText("I'm getting +2x rewards")).not.toHaveLength(0);
       expect(view.queryByRole("button", { name: "Connect wallet to create a code" })).toBeNull();
       expect(view.queryByRole("button", { name: "Create code and invite traders" })).toBeNull();
       await act(async () => fireEvent.click(view.getByRole("button", { name: "Copy link" })));
@@ -365,7 +365,7 @@ describe("rewards referral card", () => {
 
       mocks.account = undefined;
       view.rerender(<Page account={checkedAccount} hasBonus />);
-      expect(view.container.querySelector(".rewards-share-code")?.textContent).toBe("CheckedCode");
+      expect(view.container.querySelector('[data-qa="rewards-share-code"]')?.textContent).toBe("CheckedCode");
     }
   );
 
@@ -385,7 +385,7 @@ describe("rewards referral card", () => {
     mocks.account = connectedAccount;
     view.rerender(<Page account={checkedAccount} />);
     expect(mocks.lookupCodes).toHaveBeenLastCalledWith(ARBITRUM, connectedAccount);
-    expect(view.container.querySelector(".rewards-share-code")?.textContent).toBe("ConnectedCode");
+    expect(view.container.querySelector('[data-qa="rewards-share-code"]')?.textContent).toBe("ConnectedCode");
     await act(async () => fireEvent.click(view.getByRole("button", { name: "Copy link" })));
     expect(new URL(mocks.copyLink.mock.calls[0][0]).searchParams.get("ref")).toBe("ConnectedCode");
 
@@ -398,7 +398,7 @@ describe("rewards referral card", () => {
     view.rerender(<Page account={nextCheckedAccount} />);
     expect(mocks.lookupCodes).toHaveBeenLastCalledWith(ARBITRUM, nextCheckedAccount);
     expect(mocks.lookupBonus).toHaveBeenLastCalledWith(expect.any(String), undefined);
-    expect(view.container.querySelector(".rewards-share-code")?.textContent).toBe("NextCheckedCode");
+    expect(view.container.querySelector('[data-qa="rewards-share-code"]')?.textContent).toBe("NextCheckedCode");
     await act(async () => fireEvent.click(view.getByRole("button", { name: "Copy link" })));
     expect(new URL(mocks.copyLink.mock.calls[1][0]).searchParams.get("ref")).toBe("NextCheckedCode");
   });
@@ -423,7 +423,7 @@ describe("rewards referral card", () => {
     expect(view.getByRole("button", { name: "Share on X" })).toBeTruthy();
     expect(view.queryByRole("button", { name: "Connect wallet to create a code" })).toBeNull();
     expect(view.queryByRole("button", { name: "Create code and invite traders" })).toBeNull();
-    expect(view.container.querySelector(".is-comeback")).toBeNull();
+    expect(view.queryAllByText("I'm getting +2x rewards")).toHaveLength(0);
     await act(async () => fireEvent.click(view.getByRole("button", { name: "Copy link" })));
     expect(new URL(mocks.copyLink.mock.calls[0][0]).searchParams.get("ref")).toBe("NewCode");
 
@@ -431,7 +431,7 @@ describe("rewards referral card", () => {
     view.rerender(<Page account={checkedAccount} hasBonus />);
     expect(view.queryByRole("button", { name: "Share on X" })).toBeNull();
     expect(view.getByRole("button", { name: "Create code and invite traders" })).toBeTruthy();
-    expect(view.container.querySelector(".rewards-share-code")?.textContent).toBe("GMX");
+    expect(view.container.querySelector('[data-qa="rewards-share-code"]')?.textContent).toBe("GMX");
   });
 
   it("waits for the connected wallet's bonus and uses it instead of the checked wallet's rewards", async () => {
@@ -448,12 +448,12 @@ describe("rewards referral card", () => {
     expect(mocks.connect).toHaveBeenCalledOnce();
     expect(mocks.lookupBonus).toHaveBeenLastCalledWith(expect.any(String), mocks.account);
     expect((view.getByRole("button", { name: "Copy link" }) as HTMLButtonElement).disabled).toBe(true);
-    expect(view.container.querySelector(".is-comeback")).toBeNull();
+    expect(view.queryAllByText("I'm getting +2x rewards")).toHaveLength(0);
 
     mocks.connectedBonus = { manualRewardRemainingUsd: 500n * PRECISION };
     mocks.bonusLoading = false;
     view.rerender(<Page account={checkedAccount} />);
-    expect(view.container.querySelector(".is-comeback")).not.toBeNull();
+    expect(view.queryAllByText("I'm getting +2x rewards")).not.toHaveLength(0);
     await act(async () => fireEvent.click(view.getByRole("button", { name: "Copy link" })));
     expect(mocks.pushEvent).toHaveBeenCalledWith(
       {
@@ -483,7 +483,7 @@ describe("rewards referral card", () => {
     fireEvent.click(view.getByRole("button", { name: "Connect wallet" }));
     expect(mocks.connect).toHaveBeenCalledOnce();
     expect(view.queryByRole("button", { name: "Share on X" })).toBeNull();
-    expect(view.container.querySelector(".rewards-share-image svg")).toBeNull();
+    expect(view.container.querySelector('[data-qa="rewards-share-image"] svg')).toBeNull();
   });
 
   it("uses only the connected wallet's owned code in the share URL", async () => {
@@ -493,7 +493,7 @@ describe("rewards referral card", () => {
     await act(async () => fireEvent.click(view.getByRole("button", { name: "Share on X" })));
     const sharedUrl = new URL(new URL(mocks.replacePopup.mock.calls[0][0]).searchParams.get("url")!);
     expect(sharedUrl.searchParams.get("ref")).toBe("MyCode");
-    expect(view.container.querySelector(".rewards-share-image svg")).not.toBeNull();
+    expect(view.container.querySelector('[data-qa="rewards-share-image"] svg')).not.toBeNull();
     expect(view.queryByRole("button", { name: "Create code and invite traders" })).toBeNull();
   });
 
@@ -537,7 +537,7 @@ describe("rewards referral card", () => {
       { instantSend: true }
     );
     expect(view.getByRole("button", { name: "Share on X" })).toBeTruthy();
-    expect(view.container.querySelector(".rewards-share-code")?.textContent).toBe("NewCode");
+    expect(view.container.querySelector('[data-qa="rewards-share-code"]')?.textContent).toBe("NewCode");
     mocks.account = "0x0000000000000000000000000000000000000002";
     view.rerender(<Page />);
     expect(view.queryByRole("button", { name: "Share on X" })).toBeNull();

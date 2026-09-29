@@ -28,6 +28,7 @@ export function RewardsSpoiler({
         "[&[data-ready='true']>.rewards-spoiler-source]:opacity-[0]",
         "[&[data-ready='true']>canvas]:opacity-[1]"
       )}
+      data-qa="rewards-spoiler"
       data-ready={ready}
       style={style}
     >

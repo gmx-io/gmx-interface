@@ -49,8 +49,8 @@ describe("RewardsHeaderBadge", () => {
     mockConfig.mockReturnValue({ data: { programStartTimestamp: now / 1000 + untilStart } } as never);
     const view = render(<Page />);
     expect(view.getByTitle("Season 1 - 48h 23m")).toBeTruthy();
-    expect(view.container.querySelector(".rewards-live-full")?.textContent).toBe("Season 1 - 48h 23m");
-    expect(view.container.querySelector(".rewards-live-compact")?.textContent).toBe("48h 23m");
+    expect(view.container.querySelector('[data-qa="rewards-live-full"]')?.textContent).toBe("Season 1 - 48h 23m");
+    expect(view.container.querySelector('[data-qa="rewards-live-compact"]')?.textContent).toBe("48h 23m");
     expect(view.queryByText("Soon")).toBeNull();
 
     await act(async () => vi.advanceTimersByTimeAsync(30_000));
