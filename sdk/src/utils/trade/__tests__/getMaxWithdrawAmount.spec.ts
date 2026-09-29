@@ -201,6 +201,25 @@ describe("getMaxWithdrawAmount", () => {
     ).toBe(0n);
   });
 
+  it("returns zero instead of throwing when the max allowed leverage rounds down to zero", () => {
+    const { position, usdcToken } = buildScenario();
+    // a 25% min collateral factor allows under 5x, and the max allowed leverage is floored to 5x steps
+    const lowLeveragePosition = {
+      ...position,
+      marketInfo: { ...position.marketInfo, minCollateralFactor: expandDecimals(25, 28) },
+    };
+
+    expect(
+      getMaxWithdrawAmount({
+        position: lowLeveragePosition,
+        minCollateralUsd: expandDecimals(1, USD_DECIMALS),
+        collateralPrice: usdcToken.prices.minPrice,
+        collateralDecimals: usdcToken.decimals,
+        userReferralInfo: undefined,
+      })
+    ).toBe(0n);
+  });
+
   it("reserves the regular-factor minimum where it is above the liquidation one", () => {
     const { position, usdcToken } = buildScenario();
     const minCollateralUsd = expandDecimals(1, USD_DECIMALS);

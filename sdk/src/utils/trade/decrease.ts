@@ -594,6 +594,10 @@ export function getMaxWithdrawAmount(p: {
     positionFeeFactorForBalanceWasNotImproved: position.marketInfo.positionFeeFactorForBalanceWasNotImproved,
   });
 
+  if (maxAllowedLeverage <= 0) {
+    return 0n;
+  }
+
   const minCollateralUsdForMaxAllowedLeverage = roundUpDivision(
     position.sizeInUsd * BASIS_POINTS_DIVISOR_BIGINT,
     BigInt(maxAllowedLeverage)
