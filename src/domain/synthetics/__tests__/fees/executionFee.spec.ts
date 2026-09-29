@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { ARBITRUM, AVALANCHE, getExecutionFeePriorityFeeAllowance } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -97,5 +98,24 @@ describe("getMinimumExecutionFeeBufferBps", () => {
         expect(bigMath.abs(newDeltaBps)).toBeLessThan(100n);
       });
     });
+  });
+});
+
+describe("getExecutionFeePriorityFeeAllowance", () => {
+  it("covers the wallet priority fee on Arbitrum only", () => {
+    expect(getExecutionFeePriorityFeeAllowance(ARBITRUM)).toBe(30000000n);
+    expect(getExecutionFeePriorityFeeAllowance(AVALANCHE)).toBe(0n);
+  });
+
+  it("is added on top of the buffered gas price", () => {
+    const gasPrice = estimateExecutionGasPrice({
+      rawGasPrice: 20000000n,
+      maxPriorityFeePerGas: undefined,
+      bufferBps: 3000n,
+      premium: getExecutionFeePriorityFeeAllowance(ARBITRUM),
+    });
+
+    // 0.02 gwei × 1.3 + 0.03 gwei
+    expect(gasPrice).toBe(56000000n);
   });
 });

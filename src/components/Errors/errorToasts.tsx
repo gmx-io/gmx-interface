@@ -3,7 +3,7 @@ import { Signer } from "ethers";
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
-import { ContractsChainId, getChainName, getGasPricePremium } from "config/chains";
+import { ContractsChainId, getChainName, getExecutionFeePriorityFeeAllowance, getGasPricePremium } from "config/chains";
 import { JUMPER_BRIDGE_URL, SAFE_MULTICHAIN_DOCS_URL } from "config/links";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -454,7 +454,9 @@ export function getInsufficientExecutionFeeToastContent({
     minExecutionFee: minExecutionFee,
     estimatedExecutionFee: executionFee,
     currentBufferBps: getExecutionFeeBufferBps(chainId, executionFeeBufferBps),
-    premium: getGasPricePremium(chainId as ContractsChainId) || 0n,
+    premium:
+      (getGasPricePremium(chainId as ContractsChainId) || 0n) +
+      getExecutionFeePriorityFeeAllowance(chainId as ContractsChainId),
     gasLimit: estimatedExecutionGasLimit,
   });
 
