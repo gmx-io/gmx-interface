@@ -38,6 +38,7 @@ export function usePaxosTransit({
   isTransitRequired = false,
   isAmountEstimated = false,
   isWhitelistIgnored = false,
+  minAmountUsdOverride,
   isMocked,
   enabled,
   onFulfilled,
@@ -50,6 +51,7 @@ export function usePaxosTransit({
   isTransitRequired?: boolean;
   isAmountEstimated?: boolean;
   isWhitelistIgnored?: boolean;
+  minAmountUsdOverride?: bigint;
   isMocked: boolean;
   enabled: boolean;
   onFulfilled: (order: TransitOrder) => void;
@@ -58,6 +60,7 @@ export function usePaxosTransit({
   const api: TransitApi | undefined = isMocked ? mockTransitApi : sdk;
   const { account, signer } = useWallet();
   const paxosTransitConfig = getPaxosTransitConfig(chainId);
+  const minAmountUsd = minAmountUsdOverride ?? paxosTransitConfig?.minAmountUsd;
   const isActive = Boolean(enabled && paxosTransitConfig && api && account && tokenIn && tokenOut);
   const tokenInAddress = tokenIn?.address;
   const tokenOutAddress = tokenOut?.address;
@@ -99,8 +102,7 @@ export function usePaxosTransit({
   });
 
   const amountUsd = tokenIn ? convertToUsd(debouncedAmount, tokenIn.decimals, getMidPrice(tokenIn.prices)) : 0n;
-  const isLargeConversion =
-    paxosTransitConfig !== undefined && amountUsd !== undefined && amountUsd >= paxosTransitConfig.minAmountUsd;
+  const isLargeConversion = minAmountUsd !== undefined && amountUsd !== undefined && amountUsd >= minAmountUsd;
   const minOrderSize = feeTier === "zeroFee" ? minOrderSizes.zeroFee : minOrderSizes.standardFee;
   const isBelowMinOrderSize = minOrderSize !== undefined && debouncedAmount > 0n && debouncedAmount < minOrderSize;
   const isQuoteNeeded =
@@ -113,7 +115,7 @@ export function usePaxosTransit({
       isWhitelisted,
       collateralSwapTotalFeesDeltaUsd,
       amountUsd,
-      minAmountUsd: paxosTransitConfig!.minAmountUsd,
+      minAmountUsd: minAmountUsd!,
     });
 
   const getQuoteParams = useCallback(
@@ -152,7 +154,7 @@ export function usePaxosTransit({
         isWhitelisted,
         transitFeesUsd,
         collateralSwapTotalFeesDeltaUsd,
-        minAmountUsd: paxosTransitConfig!.minAmountUsd,
+        minAmountUsd: minAmountUsd!,
       }));
 
   useSWR(
@@ -283,6 +285,7 @@ export function usePaxosTransit({
   return {
     shouldUseTransit,
     isLargeConversion,
+    minAmountUsd,
     isQuoteNeeded,
     isAmountSettling: requestAmount !== debouncedAmount,
     isFeeTierLoaded: feeTierData !== undefined,
