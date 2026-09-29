@@ -1,15 +1,24 @@
 import { USD_DECIMALS } from "config/factors";
 import { getPaxosTransitConfig } from "config/paxosTransit";
-import { selectPoolsDetailsUsdcUsdgSwapLiquidity } from "context/PoolsDetailsContext/selectors";
+import {
+  selectPoolsDetailsGlvOrMarketInfo,
+  selectPoolsDetailsUsdcUsdgSwapLiquidity,
+} from "context/PoolsDetailsContext/selectors";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectDebugSwapMarketsConfig,
   selectSetDebugSwapMarketsConfig,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { mockTransitApi } from "domain/synthetics/paxosTransit/mockTransitApi";
+import type { TransitRouteDirection } from "domain/synthetics/paxosTransit/transitRouteProgress";
 import type { TokenData } from "domain/synthetics/tokens";
-import { formatAmount, formatBalanceAmount, formatUsd } from "lib/numbers";
+import { expandDecimals, formatAmount, formatBalanceAmount, formatUsd } from "lib/numbers";
+import useWallet from "lib/wallets/useWallet";
+import { getToken } from "sdk/configs/tokens";
 
+import Button from "components/Button/Button";
 import NumberInput from "components/NumberInput/NumberInput";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
@@ -38,7 +47,8 @@ export function PaxosTransitDebugCard({
   setThresholdUsdInput: (value: string) => void;
 }) {
   const poolLiquidity = useSelector(selectPoolsDetailsUsdcUsdgSwapLiquidity);
-  const paxosTransitConfig = getPaxosTransitConfig(useSelector(selectChainId));
+  const chainId = useSelector(selectChainId);
+  const glvOrMarketInfo = useSelector(selectPoolsDetailsGlvOrMarketInfo);
   const debugSwapMarketsConfig = useSelector(selectDebugSwapMarketsConfig);
   const setDebugSwapMarketsConfig = useSelector(selectSetDebugSwapMarketsConfig);
   const { account } = useWallet();
@@ -59,6 +69,36 @@ export function PaxosTransitDebugCard({
     });
   };
 
+  const showMockTransitToast = (direction: TransitRouteDirection, isConverting: boolean) => {
+    if (!paxosTransitConfig || !glvOrMarketInfo || !account) return;
+
+    const { usdcAddress, usdgAddress } = paxosTransitConfig;
+    const [offerAsset, wantAsset] =
+      direction === "usdcToUsdg" ? [usdcAddress, usdgAddress] : [usdgAddress, usdcAddress];
+    const offerToken = getToken(chainId, offerAsset);
+    const offerAmount = expandDecimals(1_000, offerToken.decimals);
+    const orderId = isConverting
+      ? mockTransitApi.submitOrder({
+          userAddress: account,
+          offerAsset,
+          wantAsset,
+          offerAmount,
+          sourceChainId: chainId,
+          destinationChainId: chainId,
+          feeTier: "zeroFee",
+        })
+      : undefined;
+
+    startTransitRouteProgress({
+      chainId,
+      account,
+      direction,
+      glvOrMarketInfo,
+      withdrawalTxnHash: undefined,
+      conversion: orderId ? { orderId, txnHash: undefined, offerAmount, isMocked: true } : undefined,
+    });
+  };
+
   return (
     <div className="flex w-full flex-col gap-14 rounded-8 bg-slate-900 p-12">
       <ToggleSwitch isChecked={isMocked} setIsChecked={setIsMocked}>
@@ -73,6 +113,17 @@ export function PaxosTransitDebugCard({
       <ToggleSwitch isChecked={isBuyUsdgHintForced} setIsChecked={setIsBuyUsdgHintForced}>
         Show the Buy USDG hint
       </ToggleSwitch>
+      <div className="flex flex-wrap gap-8">
+        <Button variant="secondary" onClick={() => showMockTransitToast("usdcToUsdg", true)}>
+          Buy toast
+        </Button>
+        <Button variant="secondary" onClick={() => showMockTransitToast("usdgToUsdc", false)}>
+          Sell toast
+        </Button>
+        <Button variant="secondary" onClick={() => showMockTransitToast("usdgToUsdc", true)}>
+          Sell converting toast
+        </Button>
+      </div>
       <SyntheticsInfoRow
         label="Transit size threshold, $"
         value={
