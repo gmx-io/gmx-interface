@@ -17,6 +17,7 @@ const DEFAULT_SORTER_STATE: SorterState = {
   "leaderboard-accounts-table": { orderBy: "unspecified", direction: "unspecified", isDefault: true },
   "leaderboard-positions-table": { orderBy: "unspecified", direction: "unspecified", isDefault: true },
   "position-list": { orderBy: "unspecified", direction: "unspecified", isDefault: true },
+  "solana-position-list": { orderBy: "unspecified", direction: "unspecified", isDefault: true },
 };
 
 type SorterContextType = {
