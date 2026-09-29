@@ -480,6 +480,19 @@ describe("getEditCollateralError — withdrawal above the max", () => {
     expect(result.buttonTooltipName).toBe(ValidationButtonTooltipName.maxLeverage);
   });
 
+  it("keeps the max-leverage state when the withdrawal also breaks the leverage cap and the liquidation price", () => {
+    const result = getEditCollateralError({
+      ...withdrawParams,
+      collateralDeltaAmount: expandDecimals(20, 6),
+      nextLeverage: 1_000n * 10_000n,
+      nextLiqPrice: expandDecimals(55_000, 30),
+      position: { isLong: true, markPrice: expandDecimals(50_000, 30) } as any,
+    });
+
+    expect(result.buttonErrorMessage).toBe("Max leverage exceeded");
+    expect(result.buttonTooltipName).toBe(ValidationButtonTooltipName.maxLeverage);
+  });
+
   it("says the withdrawal is not available when nothing can be withdrawn", () => {
     expect(getEditCollateralError({ ...withdrawParams, maxWithdrawAmount: 0n }).buttonErrorMessage).toBe(
       "Withdrawal not available"

@@ -765,6 +765,13 @@ export function getEditCollateralError(p: {
     return amountError;
   }
 
+  if (!isDeposit && maxWithdrawAmount !== undefined && collateralDeltaAmount > maxWithdrawAmount) {
+    return {
+      buttonErrorMessage: t`Max leverage exceeded`,
+      buttonTooltipName: ValidationButtonTooltipName.maxLeverage,
+    };
+  }
+
   if (nextLiqPrice !== undefined && position?.markPrice !== undefined) {
     if (position?.isLong && nextLiqPrice < maxUint256 && position?.markPrice < nextLiqPrice) {
       return {
@@ -792,13 +799,6 @@ export function getEditCollateralError(p: {
 
   if (nextLeverage !== undefined && nextLeverage > maxAllowedLeverage) {
     return { buttonErrorMessage: t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x` };
-  }
-
-  if (!isDeposit && maxWithdrawAmount !== undefined && collateralDeltaAmount > maxWithdrawAmount) {
-    return {
-      buttonErrorMessage: t`Max leverage exceeded`,
-      buttonTooltipName: ValidationButtonTooltipName.maxLeverage,
-    };
   }
 
   return {};
