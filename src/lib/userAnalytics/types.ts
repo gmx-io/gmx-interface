@@ -11,11 +11,6 @@ export type LandingPageViewEvent = {
   };
 };
 
-export type LandingPageRewardsClickEvent = {
-  event: "LandingPageAction";
-  data: { action: "RewardsPageClick" };
-};
-
 type LandingPageButtonPosition = "MenuButton" | "StickyHeader" | "Title" | "Chains" | "LaunchSection" | "HeroSection";
 
 export type LandingPageLaunchAppEvent = {
