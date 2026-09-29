@@ -43,7 +43,8 @@ export function useGasPrice(chainId: number | undefined) {
               rawGasPrice: feeData.gasPrice ?? 0n,
               maxPriorityFeePerGas: getMaxPriorityFeePerGas(chainId, feeData?.maxPriorityFeePerGas),
               bufferBps: getExecutionFeeBufferBps(chainId, bufferBps),
-              premium: getExecutionFeeGasPricePremium(chainId, settings.expressOrdersEnabled),
+              // the estimate covers a wallet-signed transaction; express takes the allowance out on its side
+              premium: getExecutionFeeGasPricePremium(chainId, false),
             });
 
             resolve(gasPrice);

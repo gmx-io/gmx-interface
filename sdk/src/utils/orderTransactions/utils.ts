@@ -4,9 +4,15 @@ import { encodeFunctionData, type Hex, zeroAddress, zeroHash } from "viem";
 import ExchangeRouterAbi from "abis/ExchangeRouter";
 import { abis } from "abis/index";
 import ERC20ABI from "abis/Token";
-import { ContractsChainId, getExcessiveExecutionFee, getHighExecutionFee } from "configs/chains";
+import {
+  ContractsChainId,
+  getExcessiveExecutionFee,
+  getExecutionFeePriorityFeeAllowance,
+  getHighExecutionFee,
+} from "configs/chains";
 import { getContract } from "configs/contracts";
 import { convertTokenAddress, getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
+import { bigMath } from "utils/bigmath";
 import { ExecutionFee } from "utils/fees/types";
 import { expandDecimals, MaxUint256, USD_DECIMALS } from "utils/numbers";
 import { getByKey } from "utils/objects";
@@ -556,6 +562,55 @@ export function getBatchTotalExecutionFee({
     feeToken: wnt,
     isFeeHigh,
     isFeeVeryHigh,
+  };
+}
+
+/**
+ * Execution fee estimates budget the wallet's priority fee (getExecutionFeePriorityFeeAllowance), while express
+ * transactions are sent by the keeper relay with a zero priority fee, so the allowance is taken out of the orders
+ * before they are estimated and signed for the relay.
+ */
+export function getExpressBatchOrderParams(
+  chainId: ContractsChainId,
+  batchParams: BatchOrderTxnParams
+): BatchOrderTxnParams {
+  const allowance = getExecutionFeePriorityFeeAllowance(chainId);
+
+  if (allowance === 0n) {
+    return batchParams;
+  }
+
+  const orderVaultAddress = getContract(chainId, "OrderVault");
+
+  return {
+    ...batchParams,
+    createOrderParams: batchParams.createOrderParams.map((co) => {
+      const delta = bigMath.min(allowance * co.params.executionGasLimit, co.orderPayload.numbers.executionFee);
+
+      if (delta === 0n) {
+        return co;
+      }
+
+      return {
+        ...co,
+        params: { ...co.params, executionFeeAmount: co.params.executionFeeAmount - delta },
+        orderPayload: {
+          ...co.orderPayload,
+          numbers: { ...co.orderPayload.numbers, executionFee: co.orderPayload.numbers.executionFee - delta },
+        },
+        tokenTransfersParams: co.tokenTransfersParams
+          ? {
+              ...co.tokenTransfersParams,
+              value: co.tokenTransfersParams.value - delta,
+              tokenTransfers: co.tokenTransfersParams.tokenTransfers.map((transfer) =>
+                transfer.tokenAddress === NATIVE_TOKEN_ADDRESS && transfer.destination === orderVaultAddress
+                  ? { ...transfer, amount: transfer.amount - delta }
+                  : transfer
+              ),
+            }
+          : co.tokenTransfersParams,
+      };
+    }),
   };
 }
 

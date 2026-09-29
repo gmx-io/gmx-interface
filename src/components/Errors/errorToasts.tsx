@@ -438,7 +438,7 @@ export function getInsufficientExecutionFeeToastContent({
   executionFee,
   chainId,
   executionFeeBufferBps,
-  expressOrdersEnabled,
+  isExpress,
   estimatedExecutionFee,
   estimatedExecutionGasLimit,
   txUrl,
@@ -450,7 +450,7 @@ export function getInsufficientExecutionFeeToastContent({
   executionFee: bigint;
   chainId: number;
   executionFeeBufferBps: number | undefined;
-  expressOrdersEnabled: boolean;
+  isExpress: boolean;
   estimatedExecutionFee: bigint | undefined;
   estimatedExecutionGasLimit: bigint | undefined;
   txUrl: string | undefined;
@@ -464,7 +464,7 @@ export function getInsufficientExecutionFeeToastContent({
     estimatedExecutionFee,
     estimatedExecutionGasLimit,
     currentBufferBps: getExecutionFeeBufferBps(chainId, executionFeeBufferBps),
-    premium: getExecutionFeeGasPricePremium(chainId, expressOrdersEnabled),
+    premium: getExecutionFeeGasPricePremium(chainId, isExpress),
   });
 
   const bufferText =

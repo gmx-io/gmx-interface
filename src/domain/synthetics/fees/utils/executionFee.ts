@@ -30,10 +30,16 @@ export function getExecutionFeeBufferBps(chainId: number, settledBufferBps: numb
 // Wallets may add a priority fee on top of the base fee, and the contracts validate the execution fee
 // against tx.gasprice, so wallet-signed transactions need an allowance for it. Express transactions
 // are sent by the keeper relay with a zero priority fee.
-export function getExecutionFeeGasPricePremium(chainId: number, expressOrdersEnabled: boolean) {
+export function getExecutionFeeGasPricePremium(chainId: number, isExpress: boolean) {
   const premium = getGasPricePremium(chainId as ContractsChainId) || 0n;
 
-  return expressOrdersEnabled ? premium : premium + getExecutionFeePriorityFeeAllowance(chainId as ContractsChainId);
+  return isExpress ? premium : premium + getExecutionFeePriorityFeeAllowance(chainId as ContractsChainId);
+}
+
+// The gas price for express estimates: the keeper relay pays no priority fee, so the allowance
+// budgeted into the wallet gas price is taken out.
+export function getExpressGasPrice(chainId: number, gasPrice: bigint) {
+  return bigMath.max(0n, gasPrice - getExecutionFeePriorityFeeAllowance(chainId as ContractsChainId));
 }
 
 export function getMaxPriorityFeePerGas(chainId: number, onChainMaxPriorityFeePerGas: bigint | undefined | null) {

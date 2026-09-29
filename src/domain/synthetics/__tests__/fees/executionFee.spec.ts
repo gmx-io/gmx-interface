@@ -2,12 +2,16 @@ import { describe, expect, it } from "vitest";
 
 import { ARBITRUM, AVALANCHE, getExecutionFeePriorityFeeAllowance, getGasPricePremium } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { getContract } from "sdk/configs/contracts";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
+import { BatchOrderTxnParams, getExpressBatchOrderParams } from "sdk/utils/orderTransactions";
 
 import {
   getMinimumExecutionFeeBufferBps,
   estimateExecutionGasPrice,
   getExecutionFeeGasPricePremium,
+  getExpressGasPrice,
 } from "../../fees/utils/executionFee";
 
 const PREMIUM = 3000000000n / 30n;
@@ -116,6 +120,12 @@ describe("getExecutionFeeGasPricePremium", () => {
     expect(getExecutionFeeGasPricePremium(ARBITRUM, true)).toBe(0n);
   });
 
+  it("takes the allowance out of the wallet gas price for express", () => {
+    expect(getExpressGasPrice(ARBITRUM, 56000000n)).toBe(26000000n);
+    expect(getExpressGasPrice(ARBITRUM, 10000000n)).toBe(0n);
+    expect(getExpressGasPrice(AVALANCHE, 56000000n)).toBe(56000000n);
+  });
+
   it("keeps the chain premium elsewhere", () => {
     expect(getExecutionFeePriorityFeeAllowance(AVALANCHE)).toBe(0n);
     expect(getExecutionFeeGasPricePremium(AVALANCHE, false)).toBe(getGasPricePremium(AVALANCHE));
@@ -183,5 +193,62 @@ describe("getMinimumExecutionFeeBufferBps with the Arbitrum allowance", () => {
         premium,
       })
     ).toBeUndefined();
+  });
+});
+
+describe("getExpressBatchOrderParams", () => {
+  const orderVault = getContract(ARBITRUM, "OrderVault");
+  const usdc = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831";
+  const executionGasLimit = 3000000n;
+  // 0.056 gwei × gas limit: the wallet budget with the 0.03 gwei allowance
+  const executionFee = 56000000n * executionGasLimit;
+  const payAmount = 500000000n;
+
+  function makeBatch(): BatchOrderTxnParams {
+    return {
+      createOrderParams: [
+        {
+          params: { executionGasLimit, executionFeeAmount: executionFee } as any,
+          orderPayload: { numbers: { executionFee, sizeDeltaUsd: 1n } } as any,
+          tokenTransfersParams: {
+            value: executionFee,
+            tokenTransfers: [
+              { tokenAddress: NATIVE_TOKEN_ADDRESS, destination: orderVault, amount: executionFee },
+              { tokenAddress: usdc, destination: orderVault, amount: payAmount },
+            ],
+          } as any,
+        },
+      ],
+      updateOrderParams: [],
+      cancelOrderParams: [],
+    };
+  }
+
+  it("takes the allowance out of every order, its native transfer and the value", () => {
+    const expressBatch = getExpressBatchOrderParams(ARBITRUM, makeBatch());
+    const [order] = expressBatch.createOrderParams;
+    const expectedFee = 26000000n * executionGasLimit;
+
+    expect(order.params.executionFeeAmount).toBe(expectedFee);
+    expect(order.orderPayload.numbers.executionFee).toBe(expectedFee);
+    expect(order.tokenTransfersParams?.value).toBe(expectedFee);
+    expect(order.tokenTransfersParams?.tokenTransfers).toEqual([
+      { tokenAddress: NATIVE_TOKEN_ADDRESS, destination: orderVault, amount: expectedFee },
+      { tokenAddress: usdc, destination: orderVault, amount: payAmount },
+    ]);
+  });
+
+  it("leaves the original batch untouched", () => {
+    const batch = makeBatch();
+    getExpressBatchOrderParams(ARBITRUM, batch);
+
+    expect(batch.createOrderParams[0].orderPayload.numbers.executionFee).toBe(executionFee);
+    expect(batch.createOrderParams[0].tokenTransfersParams?.value).toBe(executionFee);
+  });
+
+  it("is a no-op where there is no allowance", () => {
+    const batch = makeBatch();
+
+    expect(getExpressBatchOrderParams(AVALANCHE, batch)).toBe(batch);
   });
 });

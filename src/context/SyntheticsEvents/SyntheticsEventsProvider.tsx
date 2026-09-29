@@ -1128,7 +1128,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
                   executionFee: executionFeeErrorParams.args.executionFee,
                   chainId,
                   executionFeeBufferBps,
-                  expressOrdersEnabled: true,
+                  isExpress: true,
                   estimatedExecutionFee: pendingExpressTxn.estimatedExecutionFee,
                   estimatedExecutionGasLimit: pendingExpressTxn.estimatedExecutionGasLimit,
                   txUrl: undefined,
