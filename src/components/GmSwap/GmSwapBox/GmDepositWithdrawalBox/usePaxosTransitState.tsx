@@ -339,8 +339,6 @@ export function usePaxosTransitState(isWhitelistIgnored: boolean) {
     tokenIn,
     usdgToken,
     usdgStepAmount,
-    isConverting,
-    conversionOrder,
     ...transit,
   };
 }
