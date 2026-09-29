@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 
 import { getPaxosTransitConfig } from "config/paxosTransit";
@@ -98,6 +98,7 @@ export function usePaxosTransitState({
     setTransitRouteContinueRequested,
   } = useSyntheticsEvents();
 
+  const [transitFillCount, setTransitFillCount] = useState(0);
   const convertedOrderIdRef = useRef<string | undefined>(undefined);
 
   const paxosTransitConfig = getPaxosTransitConfig(chainId);
@@ -337,7 +338,8 @@ export function usePaxosTransitState({
         return;
       }
 
-      setTransitRouteContinueRequested(transitRouteProgress.id, false);
+      setTransitRouteContinueRequested(transitRouteProgressForMarket.id, false);
+      setTransitFillCount((count) => count + 1);
 
       if (transitRouteProgressForMarket.direction === "usdgToUsdc") {
         setFirstTokenAddress(paxosTransitConfig.usdcAddress as ERC20Address);
@@ -451,7 +453,12 @@ export function usePaxosTransitState({
     tokenIn,
     usdgToken,
     usdgStepAmount,
-    ...transit,
+    transitFillCount,
+    thresholdUsd,
+    isWhitelisted,
+    isZeroFeeCapacityShort,
+    zeroFeeCapacity,
+    transitFeesUsd,
   };
 }
 

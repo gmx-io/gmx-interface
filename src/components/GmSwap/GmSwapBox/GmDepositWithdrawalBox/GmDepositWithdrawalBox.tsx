@@ -80,6 +80,7 @@ import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmountFree, formatBalanceAmount, formatUsd, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { useAttentionHighlight } from "lib/useAttentionHighlight";
 import { switchNetwork } from "lib/wallets";
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID, type AnyChainId, type GmxAccountPseudoChainId } from "sdk/configs/chains";
 import { MARKETS } from "sdk/configs/markets";
@@ -344,6 +345,10 @@ export function GmSwapBoxDepositWithdrawal() {
         isDeposit ? marketToken?.prices?.maxPrice : marketToken?.prices?.minPrice
       )!;
 
+  const { ref: formRef, highlightClassName: submitHighlightClassName } = useAttentionHighlight<HTMLFormElement>(
+    transitState.transitFillCount
+  );
+
   // #region Callbacks
   const onFocusedCollateralInputChange = useCallback(
     (tokenAddress: string) => {
@@ -515,7 +520,12 @@ export function GmSwapBoxDepositWithdrawal() {
   // #region Render
   const submitButton = useMemo(() => {
     const btn = (
-      <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.disabled}>
+      <Button
+        className={cx("w-full", submitHighlightClassName)}
+        variant="primary-action"
+        type="submit"
+        disabled={submitState.disabled}
+      >
         {submitState.text}
       </Button>
     );
@@ -536,13 +546,13 @@ export function GmSwapBoxDepositWithdrawal() {
     }
 
     return btn;
-  }, [submitState]);
+  }, [submitHighlightClassName, submitState]);
 
   const gmOrGlvSymbol = glvInfo ? t`GLV` : t`GM`;
 
   return (
     <>
-      <form className="flex flex-col gap-8" onSubmit={handleSubmit}>
+      <form ref={formRef} className="flex flex-col gap-8" onSubmit={handleSubmit}>
         <div className="flex flex-col rounded-b-8 bg-slate-900">
           <div className="flex flex-col gap-12 p-12">
             <div className={cx("flex gap-4", isWithdrawal ? "flex-col-reverse" : "flex-col")}>
