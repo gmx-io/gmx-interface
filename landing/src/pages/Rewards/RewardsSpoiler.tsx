@@ -43,7 +43,7 @@ export function RewardsSpoiler({
         <button
           type="button"
           className={cx(
-            "rewards-spoiler-button absolute inset-0 h-full w-full cursor-pointer rounded-[inherit] [background:transparent] [border:0]",
+            "absolute inset-0 h-full w-full cursor-pointer rounded-[inherit] [background:transparent] [border:0]",
             "[&:active_.rewards-reveal-prompt]:shadow-none [&:active_.rewards-reveal-prompt]:[transform:translate(-50%,_-50%)_scale(0.98)]",
             "[&:focus-visible_.rewards-reveal-prompt]:border-[#ffffff40] [&:focus-visible_.rewards-reveal-prompt]:shadow-[0_0_20px_#7885ff26]",
             "[&:focus-visible_.rewards-reveal-prompt]:[background:#0101014d]",

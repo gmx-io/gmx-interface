@@ -128,7 +128,7 @@ export function RewardsFaq() {
   return (
     <section
       className={cx(
-        "rewards-faq px-0 py-[120px]",
+        "px-0 py-[120px]",
         "max-mobile:pb-64 max-mobile:pl-0 max-mobile:pr-0 max-mobile:pt-32",
         "[&>.rewards-container]:grid [&>.rewards-container]:grid-cols-[384px_minmax(0,_1fr)] [&>.rewards-container]:gap-24",
         "max-tablet:[&>.rewards-container]:grid-cols-[32%_minmax(0,_1fr)]",
@@ -141,7 +141,7 @@ export function RewardsFaq() {
         <h2>
           <Trans>FAQ</Trans>
         </h2>
-        <div className="rewards-faq-accordion [&>a]:text-18 [&>a]:inline-block [&>a]:font-medium [&>a]:leading-[1.36] [&>a]:text-blue-300 max-mobile:[&>a]:mt-28 max-mobile:[&>a]:text-14">
+        <div className="[&>a]:text-18 [&>a]:inline-block [&>a]:font-medium [&>a]:leading-[1.36] [&>a]:text-blue-300 max-mobile:[&>a]:mt-28 max-mobile:[&>a]:text-14">
           {items.map((item, index) => (
             <RewardsFaqItem key={index} question={item.question} defaultOpen={index < 2}>
               {item.answer}
@@ -171,7 +171,7 @@ function RewardsFaqItem({
   return (
     <div
       className={cx(
-        "rewards-faq-item px-0 py-24",
+        "px-0 py-24",
         "[&::after]:mt-16 [&::after]:block [&::after]:h-1 [&::after]:[background:#1e2033] [&::after]:[content:'']",
         "[&[data-open='true']_.rewards-faq-answer]:grid-rows-[1fr] [&[data-open='true']_.rewards-faq-answer]:opacity-[1]",
         "[&[data-open='true']_.rewards-faq-question>span]:[transform:rotate(45deg)]"

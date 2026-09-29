@@ -58,7 +58,7 @@ export function ReferralCardFrame({
       </p>
       <div
         className={cx(
-          "rewards-share-preview mx-0 my-24 grid min-h-[244px] w-full flex-1 grid-cols-[minmax(0,_1fr)] place-items-center px-20 py-[19.5px]",
+          "mx-0 my-24 grid min-h-[244px] w-full flex-1 grid-cols-[minmax(0,_1fr)] place-items-center px-20 py-[19.5px]",
           "max-tablet:pl-12 max-tablet:pr-12",
           "max-mobile:mx-0 max-mobile:my-16 max-mobile:min-h-[225px] max-mobile:px-12 max-mobile:py-16"
         )}
@@ -67,7 +67,7 @@ export function ReferralCardFrame({
       </div>
       <div
         className={cx(
-          "rewards-referral-actions flex w-full flex-col gap-12 text-14",
+          "flex w-full flex-col gap-12 text-14",
           "[&>.rewards-button_svg]:h-20 [&>.rewards-button_svg]:w-20",
           "[&_.rewards-button]:min-h-40 [&_.rewards-button]:w-full [&_.rewards-button]:pb-8 [&_.rewards-button]:pt-8"
         )}
@@ -110,14 +110,11 @@ export const RewardsReferralCard = forwardRef<HTMLDivElement, ShareCardProps>(
           hasBonus ? "is-comeback" : ""
         )}
       >
-        <div
-          className="rewards-share-art pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]"
-          aria-hidden="true"
-        >
-          <div className="rewards-share-coins absolute left-[-39.25%] top-[-80.476%] h-[337.14%] w-[270.25%] opacity-[0.9] [background:url('../../src/img/rewards-landing/share-coins.png')_center_/_cover]" />
+        <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]" aria-hidden="true">
+          <div className="absolute left-[-39.25%] top-[-80.476%] h-[337.14%] w-[270.25%] opacity-[0.9] [background:url('../../src/img/rewards-landing/share-coins.png')_center_/_cover]" />
           <div
             className={cx(
-              "rewards-share-glow rewards-share-glow-bottom absolute bottom-[-147.505%] right-[-89.965%] flex h-[314.649%] w-[168.216%] items-center",
+              "absolute bottom-[-147.505%] right-[-89.965%] flex h-[314.649%] w-[168.216%] items-center",
               "justify-center",
               "[&>div]:h-[63.304%] [&>div]:w-[78.417%]",
               "[&>div]:[background:linear-gradient(227deg,_#090a1400_1%,_#090a14_83%),_url('../../src/img/rewards-landing/share-glow.png')_51.4%_41.2%_/_423.76%_461.84%]",
@@ -128,7 +125,7 @@ export const RewardsReferralCard = forwardRef<HTMLDivElement, ShareCardProps>(
           </div>
           <div
             className={cx(
-              "rewards-share-glow rewards-share-glow-top absolute bottom-[32.905%] right-[61.338%] flex h-[162.655%] w-[74.602%] items-center justify-center",
+              "absolute bottom-[32.905%] right-[61.338%] flex h-[162.655%] w-[74.602%] items-center justify-center",
               "[&>div]:h-[85.838%] [&>div]:w-[112.952%]",
               "[&>div]:[background:linear-gradient(227deg,_#090a1400_1%,_#090a14_83%),_url('../../src/img/rewards-landing/share-glow.png')_51.4%_41.2%_/_423.76%_461.84%]",
               "[&>div]:[filter:blur(28px)] [&>div]:[transform:rotate(89.11deg)]"
@@ -139,7 +136,7 @@ export const RewardsReferralCard = forwardRef<HTMLDivElement, ShareCardProps>(
         </div>
         <div
           className={cx(
-            "rewards-share-image-header flex min-h-55 items-start justify-between [z-index:1]",
+            "flex min-h-55 items-start justify-between [z-index:1]",
             "[&>.rewards-skeleton]:absolute [&>.rewards-skeleton]:right-12 [&>.rewards-skeleton]:top-12 [&>.rewards-skeleton]:rounded-2",
             "[&>img]:mb-0 [&>img]:ml-3 [&>img]:mr-0 [&>img]:mt-2",
             "[&>svg]:absolute [&>svg]:right-12 [&>svg]:top-12 [&>svg]:rounded-2"
@@ -180,7 +177,7 @@ export const RewardsReferralCard = forwardRef<HTMLDivElement, ShareCardProps>(
             </>
           )}
         </div>
-        <div className="rewards-share-image-footer relative flex items-center justify-between gap-16 text-12 text-slate-500 [&>span]:[overflow-wrap:anywhere]">
+        <div className="relative flex items-center justify-between gap-16 text-12 text-slate-500 [&>span]:[overflow-wrap:anywhere]">
           <span className="rewards-share-code rounded-7 px-7 py-4 text-blue-300 [background:#ffffff0a]">
             <RewardsValue loading={loadingCode} width="6ch">
               {code ?? (loadingCode ? undefined : "GMX")}

@@ -37,7 +37,7 @@ export default function Rewards() {
     <SEO title={getPageTitle(t`Rewards`)}>
       <div
         className={cx(
-          "rewards-page min-h-screen overflow-clip pt-68 text-16 leading-[1.44] tracking-[-0.032em] text-white [--rewards-blue:#2d42fc]",
+          "min-h-screen overflow-clip pt-68 text-16 leading-[1.44] tracking-[-0.032em] text-white [--rewards-blue:#2d42fc]",
           "[--rewards-muted:#a0a3c4] [--rewards-skeleton-base:#b4bbff1a] [--rewards-skeleton-highlight:#b4bbff33] [background:transparent]",
           "[&_:where(h1)]:text-100 [&_:where(h1)]:font-medium [&_:where(h1)]:leading-[0.98] [&_:where(h1)]:tracking-[-0.05em]",
           "[&_:where(h2)]:text-80 [&_:where(h2)]:font-medium [&_:where(h2)]:leading-[0.98] [&_:where(h2)]:tracking-[-0.05em]",
@@ -97,7 +97,7 @@ export default function Rewards() {
         <main>
           <section
             className={cx(
-              "rewards-hero pb-[120px] pl-0 pr-0 pt-40",
+              "pb-[120px] pl-0 pr-0 pt-40",
               "[background:url('../../src/img/rewards-landing/hero-background.webp')_center_bottom_/_cover_no-repeat]",
               "max-mobile:px-0 max-mobile:py-40 max-mobile:[background:#090a14]",
               "[&_h1]:mb-24",
@@ -116,7 +116,7 @@ export default function Rewards() {
               <RewardsEpochSummary endpoint={config.endpoint} config={config.data} />
               <RewardsCalculator config={config.data} loading={loading} />
               {!config.data && !loading && (
-                <div className="rewards-config-status mt-64 flex flex-wrap items-center gap-12" role="status">
+                <div className="mt-64 flex flex-wrap items-center gap-12" role="status">
                   <p>
                     <Trans>Rewards data is temporarily unavailable.</Trans>
                   </p>
@@ -140,7 +140,7 @@ export default function Rewards() {
           <RewardsFaq />
           <section
             className={cx(
-              "rewards-closing relative pb-80 pl-0 pr-0 pt-[120px]",
+              "relative pb-80 pl-0 pr-0 pt-[120px]",
               "[&_h2]:text-80 [&_h2]:mb-40",
               "max-mobile:pb-64 max-mobile:pl-0 max-mobile:pr-0 max-mobile:pt-40",
               "[&_.rewards-button]:shrink-0 [&_.rewards-button]:px-20 [&_.rewards-button]:py-18 [&_.rewards-button]:text-16",
@@ -150,7 +150,7 @@ export default function Rewards() {
             )}
           >
             <img
-              className="rewards-closing-dial pointer-events-none absolute left-[calc(50%_+_270px)] top-[270px] h-[650px] w-[650px] max-w-none max-mobile:hidden"
+              className="pointer-events-none absolute left-[calc(50%_+_270px)] top-[270px] h-[650px] w-[650px] max-w-none max-mobile:hidden"
               src={dial}
               alt=""
               loading="lazy"
@@ -163,7 +163,7 @@ export default function Rewards() {
                   on your next trade
                 </Trans>
               </h2>
-              <div className="rewards-closing-cta flex items-center gap-24 max-mobile:flex-wrap max-mobile:gap-20">
+              <div className="flex items-center gap-24 max-mobile:flex-wrap max-mobile:gap-20">
                 <RewardsTradeButton placement="Closing" />
                 <RewardsClosingNote config={config.data} loading={loading} />
               </div>
@@ -172,7 +172,7 @@ export default function Rewards() {
         </main>
         <footer
           className={cx(
-            "rewards-footer rewards-container relative ml-auto mr-auto flex min-h-[144px] w-[min(1200px,_calc(100%_-_80px))] items-start justify-between",
+            "rewards-container relative ml-auto mr-auto flex min-h-[144px] w-[min(1200px,_calc(100%_-_80px))] items-start justify-between",
             "gap-24 pb-[104px] pl-0 pr-0 pt-24 text-[13px] font-medium leading-[16px] tracking-[0.002em] text-slate-600 [border-top:1px_solid_#1e2033]",
             "max-mobile:w-[calc(100%_-_32px)] max-mobile:flex-col max-mobile:items-start max-mobile:gap-24 max-mobile:pb-32",
             "[&>div]:flex [&>div]:items-center [&>div]:gap-8",

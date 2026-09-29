@@ -19,7 +19,7 @@ export function RewardsOrbit() {
   return (
     <div
       className={cx(
-        "home-rewards-orbit pointer-events-none absolute left-[calc(50%_+_55px)] top-[calc(50%_+_55px)] h-[263.422px] w-[970.193px]",
+        "pointer-events-none absolute left-[calc(50%_+_55px)] top-[calc(50%_+_55px)] h-[263.422px] w-[970.193px]",
         "[--orbit-duration:60s] [container-type:size] [transform:translate(-50%,_-50%)_rotate(-31.39deg)]",
         "max-desktop:h-[240px] max-desktop:w-[830px]",
         "max-tablet:left-1/2 max-tablet:top-1/2 max-tablet:h-[110%] max-tablet:w-[160%]",
@@ -31,9 +31,9 @@ export function RewardsOrbit() {
       data-animate={inView && windowVisible}
       aria-hidden="true"
     >
-      <img className="home-rewards-orbit-inner h-full w-full" src={innerOrbit} alt="" />
-      <img className="home-rewards-orbit-middle h-[108.342%] w-[108.342%]" src={middleOrbit} alt="" />
-      <img className="home-rewards-orbit-outer h-[116.451%] w-[116.451%]" src={outerOrbit} alt="" />
+      <img className="h-full w-full" src={innerOrbit} alt="" />
+      <img className="h-[108.342%] w-[108.342%]" src={middleOrbit} alt="" />
+      <img className="h-[116.451%] w-[116.451%]" src={outerOrbit} alt="" />
       {MULTIPLIERS.map((multiplier, index) => (
         <span
           key={multiplier}

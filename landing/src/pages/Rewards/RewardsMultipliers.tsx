@@ -124,7 +124,7 @@ export function RewardsMultipliers({
   return (
     <section
       className={cx(
-        "rewards-multipliers rewards-light relative overflow-clip pb-[200px] pl-0 pr-0 pt-[120px] text-slate-900 [--rewards-skeleton-base:#090a140d]",
+        "relative overflow-clip pb-[200px] pl-0 pr-0 pt-[120px] text-slate-900 [--rewards-skeleton-base:#090a140d]",
         "[--rewards-skeleton-highlight:#090a141a] [background:#f4f5f9]",
         "max-mobile:px-0 max-mobile:py-40",
         "[&>.rewards-container]:flex [&>.rewards-container]:flex-col [&>.rewards-container]:gap-48 [&>.rewards-container]:[z-index:1]",
@@ -143,7 +143,7 @@ export function RewardsMultipliers({
         </h2>
         <div
           className={cx(
-            "rewards-formula rounded-20 px-40 py-32 shadow-[0_6px_8px_-6px_#bec0da] [background:#fff]",
+            "rounded-20 px-40 py-32 shadow-[0_6px_8px_-6px_#bec0da] [background:#fff]",
             "max-mobile:p-16",
             "[&>p]:text-center [&>p]:leading-[1.02] [&>p]:tracking-[0.072em]",
             "max-mobile:[&>p]:text-12 max-mobile:[&>p]:normal-case max-mobile:[&>p]:leading-[15px] max-mobile:[&>p]:tracking-[0.002em]"
@@ -151,7 +151,7 @@ export function RewardsMultipliers({
         >
           <div
             className={cx(
-              "rewards-formula-equation mb-24 flex items-center justify-center gap-16",
+              "mb-24 flex items-center justify-center gap-16",
               "max-mobile:[&_strong]:text-18 max-mobile:[&_strong]:leading-[1.36]",
               "max-tablet:gap-12",
               "max-mobile:mb-8 max-mobile:flex-col max-mobile:gap-0",
@@ -175,7 +175,7 @@ export function RewardsMultipliers({
               </strong>
             </div>
           </div>
-          <p className="rewards-eyebrow text-12 font-medium uppercase leading-[15px] tracking-[0.002em] text-slate-500">
+          <p className="text-12 font-medium uppercase leading-[15px] tracking-[0.002em] text-slate-500">
             <Trans>
               Every 1x returns {perMultiplierRate} of your fees. At {exampleMultiplier}, that's {exampleRate} back.
             </Trans>
@@ -183,7 +183,7 @@ export function RewardsMultipliers({
         </div>
         <div
           className={cx(
-            "rewards-card-grid rewards-tiers grid grid-cols-[repeat(2,_minmax(0,_1fr))] gap-24",
+            "rewards-card-grid grid grid-cols-[repeat(2,_minmax(0,_1fr))] gap-24",
             "[&_tbody_th]:text-18 [&_tbody_th]:px-0 [&_tbody_th]:py-7 [&_tbody_th]:leading-[24px]",
             "[&_td:last-child]:text-18 [&_td:last-child]:w-64 [&_td:last-child]:font-medium [&_td:last-child]:text-blue-400",
             "max-mobile:[&_tbody_th]:text-18 max-mobile:[&_tbody_th]:leading-[1.36] max-mobile:[&_tbody_th]:tracking-[-0.032em]",
@@ -293,7 +293,7 @@ export function RewardsMultipliers({
         </div>
         <div
           className={cx(
-            "rewards-boost-cards grid grid-cols-[repeat(4,_minmax(0,_1fr))] gap-24",
+            "grid grid-cols-[repeat(4,_minmax(0,_1fr))] gap-24",
             "max-tablet:gap-16",
             "max-mobile:grid-cols-[repeat(2,_minmax(0,_1fr))] max-mobile:gap-8",
             "[&_article>p:last-child]:text-14 [&_article>p:last-child]:leading-[1.36] [&_article>p:last-child]:tracking-[-0.016em]",
@@ -309,7 +309,7 @@ export function RewardsMultipliers({
           )}
         >
           <article>
-            <strong className="rewards-boost-badge text-18 inline-grid h-60 min-w-60 place-items-center rounded-12 p-8 font-medium text-blue-400 [background:#f4f5f9]">
+            <strong className="text-18 inline-grid h-60 min-w-60 place-items-center rounded-12 p-8 font-medium text-blue-400 [background:#f4f5f9]">
               {boost("ManualAllocation")}
             </strong>
             <h4>
@@ -320,7 +320,7 @@ export function RewardsMultipliers({
             </p>
           </article>
           <article>
-            <strong className="rewards-boost-badge text-18 inline-grid h-60 min-w-60 place-items-center rounded-12 p-8 font-medium text-blue-400 [background:#f4f5f9]">
+            <strong className="text-18 inline-grid h-60 min-w-60 place-items-center rounded-12 p-8 font-medium text-blue-400 [background:#f4f5f9]">
               {boost("FeaturedMarkets")}
             </strong>
             <h4>
@@ -335,7 +335,7 @@ export function RewardsMultipliers({
             </p>
           </article>
           <article>
-            <strong className="rewards-boost-badge text-18 inline-grid h-60 min-w-60 place-items-center rounded-12 p-8 font-medium text-blue-400 [background:#f4f5f9]">
+            <strong className="text-18 inline-grid h-60 min-w-60 place-items-center rounded-12 p-8 font-medium text-blue-400 [background:#f4f5f9]">
               {boost("BalancingTrades")}
             </strong>
             <h4>
@@ -354,7 +354,7 @@ export function RewardsMultipliers({
             </p>
           </article>
           <article>
-            <strong className="rewards-boost-badge text-18 inline-grid h-60 min-w-60 place-items-center rounded-12 p-8 font-medium text-blue-400 [background:#f4f5f9]">
+            <strong className="text-18 inline-grid h-60 min-w-60 place-items-center rounded-12 p-8 font-medium text-blue-400 [background:#f4f5f9]">
               {boost("LifetimeTrading")}
             </strong>
             <h4>
@@ -373,13 +373,13 @@ export function RewardsMultipliers({
             </p>
           </article>
         </div>
-        <div className="rewards-referral flex flex-col gap-24 max-mobile:gap-16 [&>h3]:leading-[1.2] max-mobile:[&>h3]:text-[28px] max-mobile:[&>h3]:leading-[32px] max-mobile:[&>h3]:tracking-[-0.032em]">
+        <div className="flex flex-col gap-24 max-mobile:gap-16 [&>h3]:leading-[1.2] max-mobile:[&>h3]:text-[28px] max-mobile:[&>h3]:leading-[32px] max-mobile:[&>h3]:tracking-[-0.032em]">
           <h3>
             <Trans>Earn {referralShare} of all rewards your referrals earn</Trans>
           </h3>
           <div
             className={cx(
-              "rewards-referral-example rounded-20 p-32 [background:#fff]",
+              "rounded-20 p-32 [background:#fff]",
               "max-mobile:p-16",
               "[&>p]:mt-8 [&>p]:text-14 [&>p]:leading-[19px] [&>p]:tracking-[0.002em] [&>p]:text-slate-500",
               "max-mobile:[&>p]:mt-16 max-mobile:[&>p]:pt-16 max-mobile:[&>p]:[border-top:1px_solid_#f4f5f9]"
@@ -387,7 +387,7 @@ export function RewardsMultipliers({
           >
             <div
               className={cx(
-                "rewards-referral-comparison grid gap-2 rounded-16 p-4 [background:#bec0da33]",
+                "grid gap-2 rounded-16 p-4 [background:#bec0da33]",
                 "[&_strong>span]:text-18 [&_strong>span]:leading-[1]",
                 "max-mobile:flex max-mobile:flex-col max-mobile:gap-16 max-mobile:p-0 max-mobile:[background:none]",
                 "[&>div>span]:flex [&>div>span]:items-center [&>div>span]:gap-4 [&>div>span]:text-16 [&>div>span]:leading-[24px]",
@@ -405,7 +405,6 @@ export function RewardsMultipliers({
             >
               <div
                 className={cx(
-                  "rewards-referral-earned",
                   "[background:repeating-linear-gradient(105deg,_transparent_0_7px,_#bec0da1a_7px_8px),_linear-gradient(90deg,_#bec0da00,_#bec0da99)]",
                   "[&>span]:text-slate-600",
                   "max-mobile:[&>span]:w-full",
@@ -423,7 +422,7 @@ export function RewardsMultipliers({
               </div>
               <div
                 className={cx(
-                  "rewards-referral-bonus text-white [--rewards-skeleton-base:#ffffff26] [--rewards-skeleton-highlight:#ffffff4d]",
+                  "text-white [--rewards-skeleton-base:#ffffff26] [--rewards-skeleton-highlight:#ffffff4d]",
                   "[background:linear-gradient(110deg,_#2d42fc,_#2632df)]",
                   "[&>span]:text-blue-100",
                   "max-mobile:[&>span]:[background:linear-gradient(110deg,_#2d42fc,_#2632df)]",
@@ -469,7 +468,7 @@ export function RewardsMultipliers({
       </div>
       <div
         className={cx(
-          "rewards-referral-coins pointer-events-none absolute bottom-[-592.455px] left-[calc(50%_-_129.443px)] h-[981.009px] w-[804.775px]",
+          "pointer-events-none absolute bottom-[-592.455px] left-[calc(50%_-_129.443px)] h-[981.009px] w-[804.775px]",
           "overflow-clip [transform:translateX(-50%)_rotate(-57.83deg)]",
           "max-mobile:bottom-[-412.24px] max-mobile:left-[calc(50%_-_90.07px)] max-mobile:h-[682.64px] max-mobile:w-[560px]",
           "[&>img]:absolute [&>img]:left-[71.43%] [&>img]:top-[190.63%] [&>img]:h-auto [&>img]:w-[258%] [&>img]:max-w-none",

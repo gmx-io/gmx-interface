@@ -39,7 +39,7 @@ export function RewardsEpochSummary({
     <Tooltip
       as="button"
       type="button"
-      className="rewards-epoch-payout text-white underline decoration-dotted underline-offset-[3px]"
+      className="text-white underline decoration-dotted underline-offset-[3px]"
       tooltipClassName={cx(
         "rewards-epoch-tooltip",
         "[&>svg]:hidden",
@@ -63,21 +63,21 @@ export function RewardsEpochSummary({
     </Tooltip>
   ) : (
     <span
-      className="rewards-epoch-payout text-white underline decoration-dotted underline-offset-[3px]"
+      className="text-white underline decoration-dotted underline-offset-[3px]"
       title={formatUsd(stats.data.rewardsUsd)}
     >
       {payoutValue}
     </span>
   );
   const traders = (
-    <span className="rewards-epoch-traders text-white">
+    <span className="text-white">
       <Plural value={stats.data.traderCount} one="# trader" other="# traders" />
     </span>
   );
 
   return (
     <div
-      className="rewards-epoch-summary text-18 mb-24 flex min-h-25 items-center gap-8 leading-[1.36] text-blue-100 max-mobile:mb-16 max-mobile:min-h-24 max-mobile:text-16 max-mobile:leading-[24px] [&>img]:shrink-0"
+      className="text-18 mb-24 flex min-h-25 items-center gap-8 leading-[1.36] text-blue-100 max-mobile:mb-16 max-mobile:min-h-24 max-mobile:text-16 max-mobile:leading-[24px] [&>img]:shrink-0"
       aria-live="polite"
       aria-busy={stats.isValidating}
     >

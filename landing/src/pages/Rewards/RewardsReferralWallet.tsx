@@ -277,7 +277,7 @@ function ConnectedReferral({
           {code && url && (
             <div
               className={cx(
-                "rewards-share-export pointer-events-none fixed left-[-10000px] top-0 w-[400px]",
+                "pointer-events-none fixed left-[-10000px] top-0 w-[400px]",
                 "[&_.rewards-share-code]:max-w-[33%] [&_.rewards-share-code]:shrink-0",
                 "[&_.rewards-share-image-copy_strong]:text-[36px]",
                 "[&_.rewards-share-image]:min-h-[210px] [&_.rewards-share-image]:[transform:none]"
@@ -293,7 +293,7 @@ function ConnectedReferral({
       {code && url ? (
         <div
           className={cx(
-            "rewards-share-buttons flex gap-16",
+            "flex gap-16",
             "max-mobile:gap-8",
             "[&>*]:min-h-40 [&>*]:min-w-0 [&>*]:flex-1 [&>*]:gap-4 [&>*]:px-6 [&>*]:py-8 [&>*]:text-16",
             "max-mobile:[&>*]:text-[11px]",
@@ -344,7 +344,7 @@ function ConnectedReferral({
           </button>
         </div>
       ) : codes.error ? (
-        <div className="rewards-referral-error flex flex-col gap-12 [&>p]:leading-[20px] [&>p]:text-slate-400">
+        <div className="flex flex-col gap-12 [&>p]:leading-[20px] [&>p]:text-slate-400">
           <p role="alert">
             <Trans>Unable to load your referral codes.</Trans>
           </p>
@@ -360,7 +360,7 @@ function ConnectedReferral({
           </button>
         </div>
       ) : !codes.success ? (
-        <div className="rewards-referral-loading [&>.rewards-skeleton]:w-full" role="status">
+        <div className="[&>.rewards-skeleton]:w-full" role="status">
           <span className="sr-only">
             <Trans>Loading your referral codes...</Trans>
           </span>
@@ -408,7 +408,7 @@ function ConnectedReferral({
       ) : isCreating ? (
         <form
           className={cx(
-            "rewards-create-code flex flex-col gap-10 text-left",
+            "flex flex-col gap-10 text-left",
             "[&_[role='alert']]:text-[#ffa6b5]",
             "[&_input]:w-full [&_input]:rounded-8 [&_input]:p-12 [&_input]:text-white [&_input]:[background:#090a1480]",
             "[&_input]:[border:1px_solid_#515573]"

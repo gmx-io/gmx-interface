@@ -133,7 +133,7 @@ export function ReturningTrader({ config, loading, endpoint }: Props) {
   return (
     <section
       className={cx(
-        "rewards-comeback rewards-light px-0 py-[120px] text-slate-900 [--rewards-skeleton-base:#090a140d] [--rewards-skeleton-highlight:#090a141a]",
+        "px-0 py-[120px] text-slate-900 [--rewards-skeleton-base:#090a140d] [--rewards-skeleton-highlight:#090a141a]",
         "[background:#fff]",
         "max-mobile:px-0 max-mobile:py-40",
         "max-mobile:[&_.rewards-card-grid>.rewards-spoiler>.rewards-spoiler-source]:absolute",
@@ -159,7 +159,7 @@ export function ReturningTrader({ config, loading, endpoint }: Props) {
         </h2>
         <form
           className={cx(
-            "rewards-checker mb-48 flex gap-12",
+            "mb-48 flex gap-12",
             "[&_input]:text-18 [&_input]:h-60 [&_input]:w-full [&_input]:rounded-8 [&_input]:pb-0 [&_input]:pl-60 [&_input]:pr-20 [&_input]:pt-0",
             "[&_input]:text-slate-900 [&_input]:[background:#fff] [&_input]:[border:1px_solid_#bec0da] [&_input]:[caret-color:#2d42fc]",
             "max-mobile:[&_input]:text-18 max-mobile:[&_input]:pb-0 max-mobile:[&_input]:pl-60 max-mobile:[&_input]:pr-20 max-mobile:[&_input]:pt-0",
@@ -178,7 +178,7 @@ export function ReturningTrader({ config, loading, endpoint }: Props) {
           </label>
           <div
             className={cx(
-              "rewards-address-field relative min-w-0 flex-1",
+              "relative min-w-0 flex-1",
               "[&:not(:focus-within)_.rewards-address-highlight]:hidden",
               "[&>svg]:pointer-events-none [&>svg]:absolute [&>svg]:left-20 [&>svg]:top-18 [&>svg]:h-24 [&>svg]:w-24 [&>svg]:text-blue-400",
               "max-mobile:[&>svg]:left-20 max-mobile:[&>svg]:top-18 max-mobile:[&>svg]:h-24 max-mobile:[&>svg]:w-24"
@@ -237,7 +237,7 @@ export function ReturningTrader({ config, loading, endpoint }: Props) {
         </form>
         {validationError && (
           <p
-            className="rewards-form-error mb-24 ml-0 mr-0 mt-[-32px] text-[#a51b45] max-mobile:mt-0 max-mobile:text-[13px]"
+            className="mb-24 ml-0 mr-0 mt-[-32px] text-[#a51b45] max-mobile:mt-0 max-mobile:text-[13px]"
             id="rewards-address-error"
             role="alert"
           >
@@ -251,7 +251,7 @@ export function ReturningTrader({ config, loading, endpoint }: Props) {
           {result.error && !checking ? (
             <div
               className={cx(
-                "rewards-bonus-card relative flex min-h-[477px] flex-col items-center overflow-hidden rounded-20 pb-24 pl-32 pr-32 pt-32 text-center",
+                "relative flex min-h-[477px] flex-col items-center overflow-hidden rounded-20 pb-24 pl-32 pr-32 pt-32 text-center",
                 "text-white [--rewards-skeleton-base:#b4bbff1a] [--rewards-skeleton-highlight:#b4bbff33]",
                 "[background:url('../../src/img/rewards-landing/lines.svg')_center_142px_/_100%_auto_no-repeat,_url('../../src/img/rewards-landing/bonus-background.svg')_center_/_cover_no-repeat,_#090a14]",
                 "[&_h3]:text-50 [&_h3]:mb-8 [&_h3]:leading-[0.98] [&_h3]:tracking-[-0.04em]",
@@ -263,7 +263,7 @@ export function ReturningTrader({ config, loading, endpoint }: Props) {
                 "max-tablet:[&_h3]:text-[36px]"
               )}
             >
-              <div className="rewards-card-status m-auto [&_button]:mt-20" role="alert">
+              <div className="m-auto [&_button]:mt-20" role="alert">
                 <p>
                   <Trans>Unable to check this wallet. Please try again.</Trans>
                 </p>
@@ -353,7 +353,7 @@ function BonusCard({
   return (
     <div
       className={cx(
-        "rewards-bonus-card rewards-eligible-card relative flex min-h-[477px] flex-col items-center justify-between gap-20 overflow-hidden rounded-20",
+        "relative flex min-h-[477px] flex-col items-center justify-between gap-20 overflow-hidden rounded-20",
         "p-32 text-center text-white [--rewards-skeleton-base:#b4bbff1a] [--rewards-skeleton-highlight:#b4bbff33]",
         "[background-position:center_112px,_center]",
         "[background:url('../../src/img/rewards-landing/lines.svg')_center_142px_/_100%_auto_no-repeat,_url('../../src/img/rewards-landing/bonus-background.svg')_center_/_cover_no-repeat,_#090a14]",
@@ -368,13 +368,13 @@ function BonusCard({
       aria-live="polite"
       aria-busy={loading}
     >
-      <div className="rewards-bonus-wallet flex w-full flex-col items-center gap-8">
+      <div className="flex w-full flex-col items-center gap-8">
         <p className="rewards-checked-address text-12 leading-[1.36] text-blue-100 [overflow-wrap:anywhere]">
           <RewardsValue loading={loading} width="32ch">
             {account}
           </RewardsValue>
         </p>
-        <div className="rewards-volume-pill inline-block rounded-20 bg-[#090a1480] py-4 pl-4 pr-8 text-14 leading-[20px] text-blue-100">
+        <div className="inline-block rounded-20 bg-[#090a1480] py-4 pl-4 pr-8 text-14 leading-[20px] text-blue-100">
           <span
             aria-hidden="true"
             className="mr-4 inline-grid size-20 place-items-center rounded-full bg-blue-400 text-white"
@@ -397,14 +397,14 @@ function BonusCard({
       </div>
       <div
         className={cx(
-          "rewards-shield relative h-[250px] w-[250px] shrink-0 overflow-hidden",
+          "relative h-[250px] w-[250px] shrink-0 overflow-hidden",
           "max-mobile:h-[250px] max-mobile:w-[250px]",
           "[&_img]:absolute [&_img]:left-[-6.93%] [&_img]:top-[-6.92%] [&_img]:h-[113.92%] [&_img]:w-[113.52%] [&_img]:max-w-none"
         )}
       >
         <img src={shield} alt="" />
       </div>
-      <div className="rewards-bonus-reward [&_p]:text-18 [&_h3]:text-[40px] [&_p]:leading-[1.36] [&_p]:text-blue-100 max-mobile:[&_p]:text-15 [&_strong]:font-medium [&_strong]:text-white">
+      <div className="[&_p]:text-18 [&_h3]:text-[40px] [&_p]:leading-[1.36] [&_p]:text-blue-100 max-mobile:[&_p]:text-15 [&_strong]:font-medium [&_strong]:text-white">
         <h3>
           <Trans>On every trade</Trans>
         </h3>
@@ -445,7 +445,7 @@ function FreshCard({
   return (
     <div
       className={cx(
-        "rewards-bonus-card rewards-fresh-card relative flex min-h-[477px] flex-col items-center overflow-hidden rounded-20 pb-0 pl-0 pr-0 pt-32",
+        "relative flex min-h-[477px] flex-col items-center overflow-hidden rounded-20 pb-0 pl-0 pr-0 pt-32",
         "text-center text-white shadow-[inset_0_-16px_60px_12px_#2d42fc66] [--rewards-skeleton-base:#b4bbff1a]",
         "[--rewards-skeleton-highlight:#b4bbff33] [background:url('../../src/img/rewards-landing/bonus-background.svg')_center_/_cover,_#090a14]",
         "[&_h3]:text-50 [&_h3]:mb-8 [&_h3]:leading-[1.2] [&_h3]:tracking-[-0.04em]",
@@ -461,7 +461,7 @@ function FreshCard({
     >
       <div
         className={cx(
-          "rewards-fresh-heading w-full px-24 py-0 text-blue-100",
+          "w-full px-24 py-0 text-blue-100",
           "[&_h3]:text-transparent [&_h3]:[background-clip:text] [&_h3]:[background-image:linear-gradient(170deg,_#a4c3f9_15%,_#2d42fc_205%)]",
           "[&_p]:text-18 [&_p]:leading-[1.36]",
           "max-mobile:[&_p]:text-15"
@@ -523,7 +523,7 @@ function FreshCard({
       </div>
       <div
         className={cx(
-          "rewards-fresh-tips text-18 mt-64 flex flex-col items-center gap-8 px-16 py-0 leading-[24px] text-blue-100",
+          "text-18 mt-64 flex flex-col items-center gap-8 px-16 py-0 leading-[24px] text-blue-100",
           "max-mobile:mt-40 max-mobile:text-15",
           "[&_p>span[aria-hidden]]:mr-8 [&_p>span[aria-hidden]]:inline-grid [&_p>span[aria-hidden]]:h-24 [&_p>span[aria-hidden]]:w-24",
           "[&_p>span[aria-hidden]]:place-items-center [&_p>span[aria-hidden]]:rounded-full [&_p>span[aria-hidden]]:text-white",
@@ -551,10 +551,10 @@ function FreshCard({
           <Trans>Your volume tier builds from the first epoch</Trans>
         </p>
       </div>
-      <div className="rewards-fresh-chart pointer-events-none relative min-h-[160px] w-full flex-1" aria-hidden="true">
+      <div className="pointer-events-none relative min-h-[160px] w-full flex-1" aria-hidden="true">
         <div
           className={cx(
-            "rewards-fresh-bars absolute flex items-end gap-8 [inset:0_32px]",
+            "absolute flex items-end gap-8 [inset:0_32px]",
             "[&_i:first-child]:shadow-[0_0_12px_#2d42fc,_inset_0_0_8px_#fff6]",
             "[&_i]:flex-1 [&_i]:[background:linear-gradient(#2d42fc,_#1b2796)] [&_i]:[border-radius:4px_4px_0_0] [&_i]:[border:1px_solid_#7885ff]"
           )}
@@ -563,8 +563,8 @@ function FreshCard({
             <i key={style.height} style={style} />
           ))}
         </div>
-        <img className="rewards-fresh-curve absolute bottom-40 h-[119px] w-full" src={freshCurve} alt="" />
-        <img className="rewards-fresh-dot absolute bottom-24 left-40 h-36 w-36" src={freshDot} alt="" />
+        <img className="absolute bottom-40 h-[119px] w-full" src={freshCurve} alt="" />
+        <img className="absolute bottom-24 left-40 h-36 w-36" src={freshDot} alt="" />
       </div>
     </div>
   );

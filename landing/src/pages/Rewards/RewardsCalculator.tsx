@@ -64,16 +64,16 @@ export function RewardsCalculator({
   };
 
   return (
-    <div className="rewards-calculator-wrapper relative">
+    <div className="relative">
       <div
         className={cx(
-          "rewards-calculator relative grid grid-cols-[minmax(0,_1fr)_404px] items-center gap-x-40 rounded-32 p-32",
+          "relative grid grid-cols-[minmax(0,_1fr)_404px] items-center gap-x-40 rounded-32 p-32",
           "shadow-[inset_0_0_0_0.5px_#2e3b47,_0_24px_60px_#090a1424] [backdrop-filter:blur(8px)] [background:#17182799]",
           "max-tablet:grid-cols-[minmax(0,_1fr)_340px] max-tablet:gap-24 max-tablet:p-24",
           "max-mobile:grid-cols-[1fr] max-mobile:gap-0 max-mobile:rounded-32 max-mobile:p-16"
         )}
       >
-        <div className="rewards-calculator-controls flex min-w-0 flex-col max-mobile:contents">
+        <div className="flex min-w-0 flex-col max-mobile:contents">
           <TierSlider
             label={t`Weekly volume`}
             value={volumeUsd}
@@ -94,17 +94,17 @@ export function RewardsCalculator({
           />
           <div
             className={cx(
-              "rewards-boost-controls mt-64 pt-40 text-14 font-medium leading-[19px] [border-top:1px_solid_#7885ff33]",
+              "mt-64 pt-40 text-14 font-medium leading-[19px] [border-top:1px_solid_#7885ff33]",
               "max-mobile:mb-20 max-mobile:ml-0 max-mobile:mr-0 max-mobile:mt-16 max-mobile:pb-20 max-mobile:pl-0 max-mobile:pr-0 max-mobile:pt-0",
               "max-mobile:[border-bottom:1px_solid_#7885ff33] max-mobile:[border-top:0] max-mobile:[order:-1]",
               "[&_a]:text-[#8c96ff]"
             )}
           >
-            <div className="rewards-boost-options mb-20 flex flex-wrap gap-12 max-mobile:m-0 max-mobile:grid max-mobile:grid-cols-[repeat(4,_minmax(0,_1fr))] max-mobile:gap-4">
+            <div className="mb-20 flex flex-wrap gap-12 max-mobile:m-0 max-mobile:grid max-mobile:grid-cols-[repeat(4,_minmax(0,_1fr))] max-mobile:gap-4">
               {BOOST_IDS.map((boost) => (
                 <label
                   className={cx(
-                    "rewards-boost-toggle inline-flex cursor-pointer items-center gap-8 whitespace-nowrap rounded-16 px-12 py-8 text-14 font-medium leading-[20px]",
+                    "inline-flex cursor-pointer items-center gap-8 whitespace-nowrap rounded-16 px-12 py-8 text-14 font-medium leading-[20px]",
                     "text-slate-500 [background:#171827] [border:1px_solid_#3c4067]",
                     "[&:has(input:disabled):hover]:border-transparent",
                     "max-mobile:relative max-mobile:min-h-46 max-mobile:justify-center max-mobile:whitespace-normal max-mobile:px-4 max-mobile:py-7",
@@ -151,7 +151,7 @@ export function RewardsCalculator({
         </div>
         <div
           className={cx(
-            "rewards-receipt flex min-w-0 flex-col rounded-16 p-24 text-16 font-medium leading-[24px] shadow-[0_6px_16px_#1416271f]",
+            "flex min-w-0 flex-col rounded-16 p-24 text-16 font-medium leading-[24px] shadow-[0_6px_16px_#1416271f]",
             "[--rewards-skeleton-base:#ffffff26] [--rewards-skeleton-highlight:#ffffff4d]",
             "[background:#2d42fc_url('../../src/img/rewards-landing/summary-background.webp')_center_/_100%_100%_no-repeat]",
             "max-mobile:p-16 max-mobile:[order:-2]",
@@ -166,7 +166,7 @@ export function RewardsCalculator({
         >
           <dl
             className={cx(
-              "rewards-receipt-breakdown flex min-h-[108px] flex-col text-16 leading-[24px] text-[#ffffff99]",
+              "flex min-h-[108px] flex-col text-16 leading-[24px] text-[#ffffff99]",
               "max-mobile:min-h-92 max-mobile:text-14 max-mobile:leading-[20px]",
               "[&>div+div]:mt-4",
               "[&>div]:flex [&>div]:items-center [&>div]:justify-between [&>div]:gap-16",
@@ -201,7 +201,7 @@ export function RewardsCalculator({
               {boostMultipliers.map(({ boost, multiplier }) => (
                 <motion.div
                   key={boost}
-                  className="rewards-receipt-boost overflow-hidden"
+                  className="overflow-hidden"
                   variants={ROW_VARIANTS}
                   initial="collapsed"
                   animate="expanded"
@@ -221,7 +221,7 @@ export function RewardsCalculator({
               ))}
             </AnimatePresence>
           </dl>
-          <div className="rewards-receipt-multiplier mt-8 flex items-center justify-between gap-16 [&_strong]:text-[28px] [&_strong]:font-medium [&_strong]:leading-[32px] [&_strong]:tracking-[-0.03em]">
+          <div className="mt-8 flex items-center justify-between gap-16 [&_strong]:text-[28px] [&_strong]:font-medium [&_strong]:leading-[32px] [&_strong]:tracking-[-0.03em]">
             <span>
               <Trans>Total multiplier</Trans>
             </span>
@@ -236,7 +236,7 @@ export function RewardsCalculator({
           <AnimatePresence initial={false}>
             {estimate?.isMaxMultiplierReached && (
               <motion.p
-                className="rewards-cap-note mt-6 overflow-hidden text-right text-12 leading-[18px] text-[#d2d7ff]"
+                className="mt-6 overflow-hidden text-right text-12 leading-[18px] text-[#d2d7ff]"
                 variants={ROW_VARIANTS}
                 initial="collapsed"
                 animate="expanded"
@@ -250,7 +250,7 @@ export function RewardsCalculator({
           </AnimatePresence>
           <div
             className={cx(
-              "rewards-receipt-total mt-16 flex items-center justify-between gap-16 pt-15 [border-top:1px_dashed_#7885ff66]",
+              "mt-16 flex items-center justify-between gap-16 pt-15 [border-top:1px_dashed_#7885ff66]",
               "max-mobile:mt-8 max-mobile:pt-7",
               "[&_strong]:text-[40px] [&_strong]:font-medium [&_strong]:leading-[48px] [&_strong]:tracking-[-0.03em]",
               "max-mobile:[&_strong]:text-[28px] max-mobile:[&_strong]:leading-[32px]"
@@ -261,7 +261,7 @@ export function RewardsCalculator({
             </span>
             <strong>{rewardRate}</strong>
           </div>
-          <div className="rewards-receipt-payout mt-8 flex flex-col items-end gap-4">
+          <div className="mt-8 flex flex-col items-end gap-4">
             <strong className="rewards-receipt-amount max-mobile:text-18 text-24 font-medium leading-[28px] tracking-[-0.032em] max-mobile:leading-[24px]">
               <RewardsValue loading={loading} width="5ch">
                 {estimate ? formatUsd(estimate.rewardsUsd, { displayDecimals: 0 }) : undefined}
@@ -313,7 +313,7 @@ export function RewardsCalculator({
       </a>
       <p
         className={cx(
-          "rewards-estimate-note absolute left-32 right-32 top-full mt-16 text-12 text-[#a0a3c4cc]",
+          "absolute left-32 right-32 top-full mt-16 text-12 text-[#a0a3c4cc]",
           "max-mobile:static max-mobile:mt-16 max-mobile:text-12 max-mobile:leading-[15px] max-mobile:tracking-[0.002em] max-mobile:text-slate-600"
         )}
       >
