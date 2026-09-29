@@ -1540,10 +1540,6 @@ msgstr "流動性は {chainNames} でのみ利用可能です。続行するに�
 msgid "Stop-Loss"
 msgstr "ストップロス"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
-msgid "Transactions"
-msgstr "トランザクション数"
-
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "External swap {0} to {1}"
 msgstr "外部スワップ {0} → {1}"
@@ -1626,10 +1622,6 @@ msgstr "当初証拠金"
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Competition airdrop"
 msgstr "コンペティションエアドロップ"
-
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
-msgid "2, convert then buy"
-msgstr "2回、変換してから購入"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Settings update failed"
@@ -2644,6 +2636,10 @@ msgstr "過去の手数料"
 msgid "Max open interest {directionLabel}"
 msgstr "最大建玉 {directionLabel}"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "Steps"
+msgstr "ステップ"
+
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} cancellation failed"
 msgstr "{ordersText} のキャンセルに失敗しました"
@@ -3589,10 +3585,6 @@ msgstr "注文タイプ"
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr ""
-
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
-msgid "2, sell then convert"
-msgstr "2回、売却してから変換"
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "GMX Account uses a separate trading balance linked to your wallet. To trade, deposit funds from your wallet to your GMX Account."
@@ -5367,6 +5359,10 @@ msgstr "1時間あたり"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Perpetuals aggregator"
 msgstr "パーペチュアルアグリゲーター"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "Sell, then convert"
+msgstr "売却してから変換"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Swap"
@@ -8834,6 +8830,10 @@ msgstr "GLP払い戻し（テスト）"
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Built for those<0/>who do more."
 msgstr "もっとやる人の<0/>ために。"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "Convert, then buy"
+msgstr "変換してから購入"
 
 #: src/components/BridgingInfo/BridgingInfo.tsx
 msgid "Bridge {tokenSymbol} to {chainName} with"

@@ -1540,10 +1540,6 @@ msgstr "流动性仅在 {chainNames} 上可用。请切换网络以继续。"
 msgid "Stop-Loss"
 msgstr "止损"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
-msgid "Transactions"
-msgstr "交易笔数"
-
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "External swap {0} to {1}"
 msgstr "外部兑换 {0} 至 {1}"
@@ -1626,10 +1622,6 @@ msgstr "初始保证金"
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Competition airdrop"
 msgstr "竞赛空投"
-
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
-msgid "2, convert then buy"
-msgstr "2 笔，先转换后购买"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Settings update failed"
@@ -2644,6 +2636,10 @@ msgstr "过去的费用"
 msgid "Max open interest {directionLabel}"
 msgstr "最大未平仓量 {directionLabel}"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "Steps"
+msgstr "步骤"
+
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} cancellation failed"
 msgstr "{ordersText} 取消失败"
@@ -3589,10 +3585,6 @@ msgstr "订单类型"
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr ""
-
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
-msgid "2, sell then convert"
-msgstr "2 笔，先卖出后转换"
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "GMX Account uses a separate trading balance linked to your wallet. To trade, deposit funds from your wallet to your GMX Account."
@@ -5367,6 +5359,10 @@ msgstr "每 1 小时"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Perpetuals aggregator"
 msgstr "永续合约聚合器"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "Sell, then convert"
+msgstr "先卖出后转换"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Swap"
@@ -8834,6 +8830,10 @@ msgstr "GLP 补偿（测试）"
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Built for those<0/>who do more."
 msgstr "为做得更多的人<0/>而建。"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "Convert, then buy"
+msgstr "先转换后购买"
 
 #: src/components/BridgingInfo/BridgingInfo.tsx
 msgid "Bridge {tokenSymbol} to {chainName} with"
