@@ -48,8 +48,7 @@ export type PositionMarginStateParams = {
  * Port of `PositionUtils.isPositionLiquidatable` from the gmx-synthetics build deployed on Arbitrum
  * (release_2.2.1 @ 23c9d160: release-v2.2c plus MarketUtils.getPositivePnl in the per-position pnl cap)
  * for a position whose pending fees have just been settled — the state the contract validates right
- * after an increase or a decrease. `shouldValidateMinCollateralUsd` follows the caller in the contract:
- * true after an increase, false for the position that remains after a decrease.
+ * after an increase or a decrease.
  */
 export function getResultingPositionMarginState(p: PositionMarginStateParams): PositionMarginState {
   const {

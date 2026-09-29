@@ -42,14 +42,7 @@ export type DecreaseResultingPositionMarginStateParams = {
 /**
  * Mirrors the gates of `DecreasePositionUtils.decreasePosition` from the gmx-synthetics build deployed on
  * Arbitrum (release_2.2.1 @ 23c9d160) for a market decrease or a collateral withdrawal that leaves a
- * position open: `willPositionCollateralBeSufficient` on the estimated remainder, which reverts a pure
- * withdrawal and cancels the collateral withdrawal of a partial close, then `validatePosition` on the
- * remaining position. Returns undefined when the contract validates nothing: a full close, or a partial
- * close it turns into one.
- *
- * `getDecreasePositionAmounts` pays the closing costs from the realized profit first. The contract does so
- * only when the profit ends up in the collateral token; a profit that stays in the pnl token (receiving the
- * pnl token, split receive) is touched last, so the costs taken from it are charged to the collateral here.
+ * position open.
  */
 export function getDecreaseResultingPositionMarginState(
   p: DecreaseResultingPositionMarginStateParams
