@@ -9,7 +9,7 @@ import NumberInput from "components/NumberInput/NumberInput";
 
 type Props = {
   topLeftLabel: string;
-  bottomLeftValue?: string;
+  bottomLeftValue?: ReactNode;
   isBottomLeftValueMuted?: boolean;
   bottomRightLabel?: string;
   bottomRightValue?: ReactNode;

@@ -13,16 +13,17 @@ import { PLATFORM_TOKEN_DECIMALS } from "context/PoolsDetailsContext/selectors";
 import { getGlvOrMarketAddress } from "domain/synthetics/markets";
 import { isGlvAddress, isGlvInfo } from "domain/synthetics/markets/glv";
 import { GlvOrMarketInfo, GmPaySource } from "domain/synthetics/markets/types";
+import { getGlvOrMarketIconSymbol, getMarketIndexName } from "domain/synthetics/markets/utils";
 import { convertToUsd } from "domain/tokens";
-import { formatAmount, formatBalanceAmount } from "lib/numbers";
+import { formatBalanceAmount } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
-import { USD_DECIMALS } from "sdk/configs/factors";
 import { getTokenSymbolByMarket } from "sdk/configs/markets";
 import { getToken } from "sdk/configs/tokens";
 import { getMarketPoolName } from "sdk/utils/markets";
 
 import { SelectedPoolLabel } from "components/GmSwap/GmSwapBox/SelectedPool";
 import { SlideModal } from "components/Modal/SlideModal";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import Tabs from "components/Tabs/Tabs";
 import type { RegularOption } from "components/Tabs/types";
@@ -108,7 +109,7 @@ export function MultichainMarketTokenSelector({
         if (balance === undefined) {
           return undefined;
         }
-        const symbol = isGlvInfo(marketInfo) ? marketInfo.glvToken.symbol : marketInfo.indexToken.symbol;
+        const symbol = getGlvOrMarketIconSymbol(marketInfo);
         const indexTokenAddress = isGlvInfo(marketInfo) ? marketInfo.glvToken.address : marketInfo.indexToken.address;
 
         return {
@@ -117,6 +118,7 @@ export function MultichainMarketTokenSelector({
           balanceUsd: convertToUsd(balance, PLATFORM_TOKEN_DECIMALS, marketTokenPrice) ?? 0n,
           chainId: parseInt(chainId) as AnyChainId | GmxAccountPseudoChainId,
           symbol,
+          swapOnlyName: marketInfo.isSpotOnly ? `GM: ${getMarketIndexName(marketInfo)}` : undefined,
           indexTokenAddress,
           longTokenAddress: marketInfo.longToken.address,
           shortTokenAddress: marketInfo.shortToken.address,
@@ -170,7 +172,7 @@ export function MultichainMarketTokenSelector({
     >
       <SlideModal
         qa={"market-token-selector-modal"}
-        className="TokenSelector-modal text-body-medium text-white"
+        className="TokenSelector-modal text-body-medium text-typography-primary"
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={label}
@@ -203,7 +205,7 @@ export function MultichainMarketTokenSelector({
           <span className="inline-flex items-center">
             <TokenIcon
               className="mr-5"
-              symbol={isGlvInfo(marketInfo) ? marketInfo.glvToken.symbol : marketInfo.indexToken.symbol}
+              symbol={getGlvOrMarketIconSymbol(marketInfo)}
               displaySize={20}
               chainIdBadge={
                 paySource === "sourceChain"
@@ -226,6 +228,7 @@ export function MultichainMarketTokenSelector({
 type DisplayToken = {
   address: string;
   symbol: string;
+  swapOnlyName: string | undefined;
   indexTokenAddress: string | undefined;
   longTokenAddress: string;
   shortTokenAddress: string;
@@ -249,7 +252,7 @@ function AvailableToTradeTokenList({
         return (
           <div
             key={token.chainId ?? "settlement-chain"}
-            className="gmx-hover-gradient flex cursor-pointer items-center justify-between px-adaptive py-8"
+            className="flex cursor-pointer items-center justify-between px-adaptive py-8 gmx-hover:bg-fill-surfaceElevated50"
             onClick={() => onSelectTokenAddress(token.chainId)}
           >
             <div className="text-body-large flex items-center gap-8">
@@ -259,6 +262,8 @@ function AvailableToTradeTokenList({
                 <div>
                   {isGlvAddress(chainId, token.address) ? (
                     t`GLV`
+                  ) : token.swapOnlyName ? (
+                    token.swapOnlyName
                   ) : (
                     <>
                       {getTokenSymbolByMarket(chainId, token.address, "index")}
@@ -291,7 +296,11 @@ function AvailableToTradeTokenList({
               </div>
 
               <span className="text-body-small text-slate-100">
-                {token.balanceUsd > 0n && <div>(${formatAmount(token.balanceUsd, USD_DECIMALS, 2, true)})</div>}
+                {token.balanceUsd > 0n && (
+                  <div>
+                    (<UsdValue usd={token.balanceUsd} displayDecimals={2} />)
+                  </div>
+                )}
               </span>
             </div>
           </div>

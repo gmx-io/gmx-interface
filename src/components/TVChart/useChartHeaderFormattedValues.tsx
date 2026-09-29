@@ -14,15 +14,13 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { use24hPriceDeltaMap } from "domain/synthetics/tokens";
 import { use24hVolumes } from "domain/synthetics/tokens/use24Volumes";
-import {
-  formatAmountHuman,
-  formatPercentageDisplay,
-  formatRatePercentage,
-  formatUsdPrice,
-  numberWithCommas,
-} from "lib/numbers";
+import { formatPercentageDisplay, formatRatePercentage, numberWithCommasParts } from "lib/numbers";
 import { getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
+
+import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
+import { NumericValue } from "components/NumericValue/NumericValue";
+import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
 
 import LongIcon from "img/long.svg?react";
 import ShortIcon from "img/short.svg?react";
@@ -66,7 +64,7 @@ export function useChartHeaderFormattedValues() {
       value = value * visualMultiplier;
     }
 
-    return numberWithCommas(value.toFixed(oraclePriceDecimals), { showDollar: true });
+    return <NumericValue parts={numberWithCommasParts(value.toFixed(oraclePriceDecimals), { showDollar: true })} />;
   }, [dayPriceDeltaData, oraclePriceDecimals, visualMultiplier, isSwap]);
 
   const low24 = useMemo(() => {
@@ -79,7 +77,7 @@ export function useChartHeaderFormattedValues() {
       value = value * visualMultiplier;
     }
 
-    return numberWithCommas(value.toFixed(oraclePriceDecimals), { showDollar: true });
+    return <NumericValue parts={numberWithCommasParts(value.toFixed(oraclePriceDecimals), { showDollar: true })} />;
   }, [dayPriceDeltaData, oraclePriceDecimals, visualMultiplier, isSwap]);
 
   const dayPriceDelta = useMemo(() => {
@@ -96,11 +94,7 @@ export function useChartHeaderFormattedValues() {
   }, [dayPriceDeltaData]);
 
   const avgPrice = useMemo(() => {
-    return (
-      formatUsdPrice(avgPriceValue, {
-        visualMultiplier,
-      }) || "..."
-    );
+    return <UsdPriceValue price={avgPriceValue} visualMultiplier={visualMultiplier} fallback="..." />;
   }, [avgPriceValue, visualMultiplier]);
 
   const [longOIValue, longOIPercentage] = useMemo(() => {
@@ -108,9 +102,13 @@ export function useChartHeaderFormattedValues() {
       return [
         <>
           <LongIcon width={12} className="relative top-1 opacity-70" />
-          <span key="long-oi-value" className="whitespace-nowrap numbers">
-            {formatAmountHuman(info?.openInterestLong, USD_DECIMALS, true)}
-          </span>
+          <AmountHumanValue
+            key="long-oi-value"
+            amount={info?.openInterestLong}
+            decimals={USD_DECIMALS}
+            showDollar
+            className="whitespace-nowrap numbers"
+          />
         </>,
         formatPercentageDisplay(info.longOpenInterestPercentage),
       ];
@@ -124,9 +122,13 @@ export function useChartHeaderFormattedValues() {
       return [
         <>
           <ShortIcon width={12} className="relative opacity-70" />
-          <span key="short-oi-value" className="whitespace-nowrap numbers">
-            {formatAmountHuman(info?.openInterestShort, USD_DECIMALS, true)}
-          </span>
+          <AmountHumanValue
+            key="short-oi-value"
+            amount={info?.openInterestShort}
+            decimals={USD_DECIMALS}
+            showDollar
+            className="whitespace-nowrap numbers"
+          />
         </>,
         formatPercentageDisplay(info.shortOpenInterestPercentage),
       ];
@@ -145,7 +147,7 @@ export function useChartHeaderFormattedValues() {
     return (
       <span className="flex items-center justify-center gap-4 numbers">
         <LongIcon width={12} className="relative top-1 opacity-70" />
-        {formatAmountHuman(liquidity, USD_DECIMALS, true)}
+        <AmountHumanValue amount={liquidity} decimals={USD_DECIMALS} showDollar />
       </span>
     );
   }, [info?.liquidityLong]);
@@ -160,7 +162,7 @@ export function useChartHeaderFormattedValues() {
     return (
       <span className="flex items-center justify-center gap-4 numbers">
         <ShortIcon width={12} className="relative opacity-70" />
-        {formatAmountHuman(liquidity, USD_DECIMALS, true)}
+        <AmountHumanValue amount={liquidity} decimals={USD_DECIMALS} showDollar />
       </span>
     );
   }, [info?.liquidityShort]);
@@ -197,7 +199,7 @@ export function useChartHeaderFormattedValues() {
 
   const dailyVolume = useMemo(() => {
     return dailyVolumesValue !== undefined ? (
-      <span className="numbers">{formatAmountHuman(dailyVolumesValue, USD_DECIMALS, true)}</span>
+      <AmountHumanValue amount={dailyVolumesValue} decimals={USD_DECIMALS} showDollar className="numbers" />
     ) : (
       "..."
     );

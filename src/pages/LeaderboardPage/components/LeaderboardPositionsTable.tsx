@@ -21,10 +21,13 @@ import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets
 import { getLiquidationPrice } from "domain/synthetics/positions";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { calculateDisplayDecimals, formatAmount, formatUsd } from "lib/numbers";
+import { calculateDisplayDecimals, formatUsd } from "lib/numbers";
 
 import AddressView from "components/AddressView/AddressView";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
+import { LeverageValue } from "components/NumericValue/LeverageValue";
+import { NumericValue } from "components/NumericValue/NumericValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import { TopPositionsSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
@@ -40,7 +43,7 @@ import { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { filterLeaderboardPositions } from "./leaderboardPositionFilters";
-import { formatDelta, getSignedValueClassName } from "./shared";
+import { formatDeltaUsdSignedParts, getSignedValueClassName } from "./shared";
 
 function getWinnerRankClassname(rank: number | null) {
   if (rank === null) return undefined;
@@ -354,16 +357,16 @@ const TableRow = memo(
           <StatsTooltipRow
             label={t`Mark price`}
             value={
-              <span className="numbers">
-                {formatUsd(markPrice, {
-                  displayDecimals: calculateDisplayDecimals(
-                    markPrice,
-                    undefined,
-                    marketInfo?.indexToken.visualMultiplier
-                  ),
-                  visualMultiplier: marketInfo?.indexToken.visualMultiplier,
-                })}
-              </span>
+              <UsdValue
+                usd={markPrice}
+                displayDecimals={calculateDisplayDecimals(
+                  markPrice,
+                  undefined,
+                  marketInfo?.indexToken.visualMultiplier
+                )}
+                visualMultiplier={marketInfo?.indexToken.visualMultiplier}
+                className="numbers"
+              />
             }
             showDollar={false}
           />
@@ -371,17 +374,17 @@ const TableRow = memo(
             <StatsTooltipRow
               label={t`Price change to liquidation`}
               value={
-                <span className="numbers">
-                  {formatUsd(liquidationPrice - markPrice, {
-                    maxThreshold: "1000000",
-                    displayDecimals: calculateDisplayDecimals(
-                      markPrice,
-                      undefined,
-                      marketInfo?.indexToken.visualMultiplier
-                    ),
-                    visualMultiplier: marketInfo?.indexToken.visualMultiplier,
-                  })}
-                </span>
+                <UsdValue
+                  usd={liquidationPrice - markPrice}
+                  maxThreshold="1000000"
+                  displayDecimals={calculateDisplayDecimals(
+                    markPrice,
+                    undefined,
+                    marketInfo?.indexToken.visualMultiplier
+                  )}
+                  visualMultiplier={marketInfo?.indexToken.visualMultiplier}
+                  className="numbers"
+                />
               }
               showDollar={false}
             />
@@ -402,11 +405,7 @@ const TableRow = memo(
         </TableTd>
         <TableTd>
           <TooltipWithPortal
-            handle={
-              <span className={cx("numbers")}>
-                {formatDelta(position.qualifyingPnl, { signed: true, prefix: "$" })}
-              </span>
-            }
+            handle={<NumericValue parts={formatDeltaUsdSignedParts(position.qualifyingPnl)} className="numbers" />}
             handleClassName={getSignedValueClassName(position.qualifyingPnl)}
             position={index > 9 ? "top" : "bottom"}
             className="nowrap"
@@ -436,17 +435,16 @@ const TableRow = memo(
             variant="underline"
           />
         </TableTd>
-        <TableTd className="numbers first-letter:text-typography-secondary">
-          {formatUsd(position.entryPrice, {
-            displayDecimals: marketDecimals,
-            visualMultiplier: marketInfo?.indexToken.visualMultiplier,
-          })}
+        <TableTd className="numbers">
+          <UsdValue
+            usd={position.entryPrice}
+            displayDecimals={marketDecimals}
+            visualMultiplier={marketInfo?.indexToken.visualMultiplier}
+          />
         </TableTd>
         <TableTd>
           <TooltipWithPortal
-            handle={
-              <span className="numbers first-letter:text-typography-secondary">{formatUsd(position.sizeInUsd)}</span>
-            }
+            handle={<UsdValue usd={position.sizeInUsd} className="numbers" />}
             position={index > 9 ? "top-end" : "bottom-end"}
             renderContent={renderSizeTooltip}
             tooltipClassName="Table-SizeTooltip"
@@ -454,8 +452,7 @@ const TableRow = memo(
           />
         </TableTd>
         <TableTd className="numbers">
-          {formatAmount(position.leverage, 4, 2)}
-          <span className="ml-1 text-typography-secondary">{t`x`}</span>
+          <LeverageValue leverage={position.leverage} />
         </TableTd>
         <TableTd className="text-right">
           {liquidationPrice ? (
@@ -463,13 +460,13 @@ const TableRow = memo(
               position={index > 9 ? "top-end" : "bottom-end"}
               renderContent={renderLiquidationTooltip}
               handle={
-                <span className="numbers first-letter:text-typography-secondary">
-                  {formatUsd(liquidationPrice, {
-                    maxThreshold: "1000000",
-                    displayDecimals: marketDecimals,
-                    visualMultiplier: marketInfo?.indexToken.visualMultiplier,
-                  })}
-                </span>
+                <UsdValue
+                  usd={liquidationPrice}
+                  maxThreshold="1000000"
+                  displayDecimals={marketDecimals}
+                  visualMultiplier={marketInfo?.indexToken.visualMultiplier}
+                  className="numbers"
+                />
               }
               variant="underline"
             />
@@ -547,18 +544,20 @@ const LeaderboardPnlTooltipContent = memo(({ position }: { position: Leaderboard
         label={t`Realized PnL`}
         showDollar={false}
         value={
-          <span className={cx("numbers", getSignedValueClassName(realizedPnl))}>
-            {formatDelta(realizedPnl, { signed: true, prefix: "$" })}
-          </span>
+          <NumericValue
+            parts={formatDeltaUsdSignedParts(realizedPnl)}
+            className={cx("numbers", getSignedValueClassName(realizedPnl))}
+          />
         }
       />
       <StatsTooltipRow
         label={t`Unrealized PnL`}
         showDollar={false}
         value={
-          <span className={cx("numbers", getSignedValueClassName(unrealizedPnl))}>
-            {formatDelta(unrealizedPnl, { signed: true, prefix: "$" })}
-          </span>
+          <NumericValue
+            parts={formatDeltaUsdSignedParts(unrealizedPnl)}
+            className={cx("numbers", getSignedValueClassName(unrealizedPnl))}
+          />
         }
       />
 
@@ -569,18 +568,20 @@ const LeaderboardPnlTooltipContent = memo(({ position }: { position: Leaderboard
             label={t`Realized fees`}
             showDollar={false}
             value={
-              <span className={cx("numbers", getSignedValueClassName(realizedFees))}>
-                {formatDelta(realizedFees, { signed: true, prefix: "$" })}
-              </span>
+              <NumericValue
+                parts={formatDeltaUsdSignedParts(realizedFees)}
+                className={cx("numbers", getSignedValueClassName(realizedFees))}
+              />
             }
           />
           <StatsTooltipRow
             label={t`Unrealized fees`}
             showDollar={false}
             value={
-              <span className={cx("numbers", getSignedValueClassName(unrealizedFees))}>
-                {formatDelta(unrealizedFees, { signed: true, prefix: "$" })}
-              </span>
+              <NumericValue
+                parts={formatDeltaUsdSignedParts(unrealizedFees)}
+                className={cx("numbers", getSignedValueClassName(unrealizedFees))}
+              />
             }
           />
           <br />
@@ -588,9 +589,10 @@ const LeaderboardPnlTooltipContent = memo(({ position }: { position: Leaderboard
             label={t`Realized price impact`}
             showDollar={false}
             value={
-              <span className={cx("numbers", getSignedValueClassName(position.realizedPriceImpact))}>
-                {formatDelta(position.realizedPriceImpact, { signed: true, prefix: "$" })}
-              </span>
+              <NumericValue
+                parts={formatDeltaUsdSignedParts(position.realizedPriceImpact)}
+                className={cx("numbers", getSignedValueClassName(position.realizedPriceImpact))}
+              />
             }
           />
         </>

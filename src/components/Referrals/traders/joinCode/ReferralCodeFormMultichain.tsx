@@ -21,7 +21,6 @@ import { signSetTraderReferralCode } from "domain/synthetics/express/expressOrde
 import { useChainId } from "lib/chains";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
-import { formatUsd } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
@@ -30,6 +29,7 @@ import { quoteFromNativeFee } from "sdk/utils/multichain/sendParams";
 import { encodeReferralCode } from "sdk/utils/referrals";
 
 import Button from "components/Button/Button";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 
 import { getReferralCodeButtonState } from "./getReferralCodeButtonState";
@@ -215,7 +215,7 @@ export function ReferralCodeFormMultichain({
       {srcChainId && (
         <SyntheticsInfoRow
           label={t`Network fee`}
-          value={quoteResult.networkFeeUsd !== undefined ? formatUsd(quoteResult.networkFeeUsd) : "..."}
+          value={quoteResult.networkFeeUsd !== undefined ? <UsdValue usd={quoteResult.networkFeeUsd} /> : "..."}
         />
       )}
 

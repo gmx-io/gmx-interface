@@ -9,7 +9,9 @@ import {
   YAxis,
 } from "recharts";
 
-import { formatChartTooltipUsd, integerYAxisTickFormatter, usdYAxisTickFormatter } from "./chartValueUtils";
+import { NumericValue } from "components/NumericValue/NumericValue";
+
+import { formatChartTooltipUsdParts, integerYAxisTickFormatter, usdYAxisTickFormatter } from "./chartValueUtils";
 
 const CHART_MARGIN = { top: 8, right: 0, bottom: 0, left: 0 };
 
@@ -118,12 +120,13 @@ function SimpleChartTooltip({
 }) {
   if (!active || !payload?.length) return null;
   const item = payload[0].payload;
-  const value = isUsd ? formatChartTooltipUsd(item[fieldName]) : item[fieldName];
 
   return (
     <div className="rounded-8 border border-stroke-primary bg-slate-900 p-10">
       <div className="text-body-small mb-4 text-typography-secondary">{item.dateTooltip}</div>
-      <div className="text-body-small text-typography-primary numbers">{value}</div>
+      <div className="text-body-small text-typography-primary numbers">
+        {isUsd ? <NumericValue parts={formatChartTooltipUsdParts(item[fieldName])} /> : item[fieldName]}
+      </div>
     </div>
   );
 }
