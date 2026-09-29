@@ -162,6 +162,8 @@ export function SyntheticsPage(p: Props) {
           />
           <SolanaMarketLongTradeBox isLong />
           <SolanaMarketLongTradeBox isLong={false} />
+          <SolanaMarketLongTradeBox isLong orderType="limit" />
+          <SolanaMarketLongTradeBox isLong={false} orderType="limit" />
           <SolanaTradeList />
           <SolanaSignMessageCard />
           <SolanaRpcPage />

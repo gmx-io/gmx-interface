@@ -28,6 +28,8 @@ export type SolanaMarketLongOrder = {
   collateralAmount: bigint;
   sizeDeltaUsd: bigint;
   isLong: boolean;
+  triggerPrice?: bigint;
+  acceptablePrice?: bigint;
   config: SolanaMarketLongConfig;
 };
 
@@ -78,6 +80,8 @@ export async function buildSolanaMarketLongTransaction(
     sizeDeltaUsd: input.sizeDeltaUsd,
     options: {
       hint: { longToken, shortToken },
+      triggerPrice: input.triggerPrice,
+      acceptablePrice: input.acceptablePrice,
       shouldWrapNativeToken: false,
     },
   });

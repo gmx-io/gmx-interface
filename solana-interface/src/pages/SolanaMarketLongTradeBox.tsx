@@ -10,42 +10,58 @@ import {
   signAndSendSolanaMarketLong,
 } from "../../gmsol/marketLong";
 import { getSolanaRpcClient } from "../lib/rpc";
+import { useSolanaTokenPrices } from "../prices/useSolanaTokenPrices";
 import { useSolanaWallet } from "../wallet/useSolanaWallet";
 
 const USDC_DECIMALS = 6;
-const LEVERAGE_DECIMALS = 4;
 const SOLANA_USD_DECIMALS = 20;
+const SOLANA_INDEX_TOKEN_DECIMALS = 9;
+const SOLANA_INDEX_TOKEN_MINT = "So1Zu7vPQQxrguzUehKAyVLpjcc769zxgBuDAsxTUMH";
+const FIXED_LEVERAGE = 10n * 10n ** 4n;
 
 type SolanaMarketTradeBoxProps = {
   isLong: boolean;
+  orderType?: "market" | "limit";
 };
 
-export function SolanaMarketLongTradeBox({ isLong }: SolanaMarketTradeBoxProps) {
+export function SolanaMarketLongTradeBox({ isLong, orderType = "market" }: SolanaMarketTradeBoxProps) {
   const { address, wallet } = useSolanaWallet();
+  const { tokenPriceByMint } = useSolanaTokenPrices();
   const [collateralInput, setCollateralInput] = useState("");
-  const [leverageInput, setLeverageInput] = useState("1");
+  const [triggerPriceInput, setTriggerPriceInput] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string>();
   const [signature, setSignature] = useState<string>();
+  const [orderAddress, setOrderAddress] = useState<string>();
 
   const collateralAmount = useMemo(
     () => parseValue(collateralInput || "0", USDC_DECIMALS) ?? 0n,
     [collateralInput]
   );
-  const leverage = useMemo(
-    () => parseValue(leverageInput || "0", LEVERAGE_DECIMALS) ?? 0n,
-    [leverageInput]
-  );
   const sizeDeltaUsd = useMemo(
-    () => calculateSolanaMarketLongSizeDeltaUsd(collateralAmount, leverage),
-    [collateralAmount, leverage]
+    () => calculateSolanaMarketLongSizeDeltaUsd(collateralAmount, FIXED_LEVERAGE),
+    [collateralAmount]
   );
+  const triggerPrice = useMemo(
+    () => parseValue(triggerPriceInput || "0", SOLANA_USD_DECIMALS) ?? 0n,
+    [triggerPriceInput]
+  );
+  const currentPrice = tokenPriceByMint.get(SOLANA_INDEX_TOKEN_MINT)?.price;
+  const triggerUnitPrice = triggerPrice / 10n ** BigInt(SOLANA_INDEX_TOKEN_DECIMALS);
+  const isLimit = orderType === "limit";
+  const hasValidLimit =
+    !isLimit ||
+    (triggerPrice > 0n &&
+      currentPrice !== undefined &&
+      (isLong ? triggerPrice < currentPrice : triggerPrice > currentPrice) &&
+      triggerUnitPrice > 0n);
 
   async function submit() {
-    if (!address || !wallet || collateralAmount <= 0n || leverage <= 0n || isSubmitting) return;
+    if (!address || !wallet || collateralAmount <= 0n || !hasValidLimit || isSubmitting) return;
 
     setError(undefined);
     setSignature(undefined);
+    setOrderAddress(undefined);
     setIsSubmitting(true);
     try {
       const result = await signAndSendSolanaMarketLong(getSolanaRpcClient(), wallet, {
@@ -53,9 +69,12 @@ export function SolanaMarketLongTradeBox({ isLong }: SolanaMarketTradeBoxProps) 
         collateralAmount,
         sizeDeltaUsd,
         isLong,
+        triggerPrice: isLimit ? triggerUnitPrice : undefined,
+        acceptablePrice: isLimit ? triggerUnitPrice : undefined,
         config: getSolanaMarketLongConfig(),
       });
       setSignature(result.signature);
+      setOrderAddress(result.order.toBase58());
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : String(submitError));
     } finally {
@@ -63,19 +82,21 @@ export function SolanaMarketLongTradeBox({ isLong }: SolanaMarketTradeBoxProps) 
     }
   }
 
-  const canSubmit = Boolean(address && wallet && collateralAmount > 0n && leverage > 0n && !isSubmitting);
+  const canSubmit = Boolean(
+    address && wallet && collateralAmount > 0n && hasValidLimit && !isSubmitting
+  );
 
   return (
     <section className="flex min-w-0 flex-col gap-12 rounded-8 bg-slate-900 p-16">
       <div>
         <h2 className="text-16 font-medium">SOL/USD</h2>
         <p className="mt-4 text-12 text-typography-secondary">
-          Market {isLong ? "Long" : "Short"} · USDC collateral
+          {isLimit ? "Limit" : "Market"} {isLong ? "Long" : "Short"} · USDC collateral
         </p>
       </div>
 
       <TradeInputField
-        label="Collateral"
+        label="Margin"
         alternateValue={undefined}
         tokenSymbol="USDC"
         displayMode="token"
@@ -88,31 +109,61 @@ export function SolanaMarketLongTradeBox({ isLong }: SolanaMarketTradeBoxProps) 
         qa="solana-market-long-collateral"
       />
       <TradeInputField
-        label="Leverage"
+        label="Size"
         alternateValue={undefined}
         displayMode="usd"
         showDisplayModeToggle={false}
-        unitLabel="x"
-        inputValue={leverageInput}
-        onInputValueChange={(event) => setLeverageInput(event.target.value)}
-        placeholder="1.00"
-        maxDecimals={LEVERAGE_DECIMALS}
-        qa="solana-market-long-leverage"
+        unitLabel="USD"
+        rightHeadline="10x"
+        inputValue={(Number(sizeDeltaUsd) / 10 ** SOLANA_USD_DECIMALS).toFixed(2)}
+        onInputValueChange={() => undefined}
+        placeholder="0.00"
+        maxDecimals={2}
+        isDisabled
+        qa="solana-market-long-size"
       />
 
-      <div className="flex items-center justify-between text-13 text-typography-secondary">
-        <span>Position size</span>
-        <span className="numbers text-typography-primary">
-          ${Number(sizeDeltaUsd) / 10 ** SOLANA_USD_DECIMALS}
-        </span>
-      </div>
+      {isLimit ? (
+        <>
+          <TradeInputField
+            label="Limit price"
+            alternateValue={undefined}
+            displayMode="usd"
+            showDisplayModeToggle={false}
+            unitLabel="USD"
+            rightHeadline={
+              currentPrice === undefined
+                ? "Mark: Loading..."
+                : `Mark: $${Number(currentPrice) / 10 ** SOLANA_USD_DECIMALS}`
+            }
+            inputValue={triggerPriceInput}
+            onInputValueChange={(event) => setTriggerPriceInput(event.target.value)}
+            placeholder="140.00"
+            maxDecimals={2}
+            qa="solana-market-long-trigger-price"
+          />
+        </>
+      ) : null}
 
       <Button variant="primary-action" size="medium" disabled={!canSubmit} onClick={submit}>
-        {isSubmitting ? "Confirming..." : address ? `Open ${isLong ? "Long" : "Short"}` : "Connect Solana Wallet"}
+        {isSubmitting
+          ? "Confirming..."
+          : address
+            ? isLimit
+              ? `Place Limit ${isLong ? "Long" : "Short"}`
+              : `Open ${isLong ? "Long" : "Short"}`
+            : "Connect Solana Wallet"}
       </Button>
 
       {error ? <p className="text-12 text-red-300">{error}</p> : null}
-      {signature ? <p className="break-all text-12 text-green-300">Submitted: {signature}</p> : null}
+      {signature ? (
+        <p className="break-all text-12 text-green-300">
+          {isLimit ? "Limit order submitted" : "Submitted"}: {signature}
+        </p>
+      ) : null}
+      {isLimit && orderAddress ? (
+        <p className="break-all text-12 text-typography-secondary">Order: {orderAddress}</p>
+      ) : null}
     </section>
   );
 }
