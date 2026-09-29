@@ -1,7 +1,7 @@
 import type { Address } from "viem";
 
 import { USD_DECIMALS } from "config/factors";
-import { getIsPositionInfoLoaded, parsePositionKey } from "domain/synthetics/positions";
+import { getIsPositionInfoLoaded, parsePositionKey, substractMaxLeverageSlippage } from "domain/synthetics/positions";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { getMaxWithdrawAmount } from "domain/synthetics/trade";
 import { parseValue, truncateToBalanceDisplayDecimals } from "lib/numbers";
@@ -163,5 +163,9 @@ export const selectPositionEditorMaxWithdrawAmount = createSelector((q) => {
 
   if (!collateralToken) return maxWithdrawAmount;
 
-  return truncateToBalanceDisplayDecimals(maxWithdrawAmount, collateralToken.decimals, collateralToken.isStable);
+  return truncateToBalanceDisplayDecimals(
+    substractMaxLeverageSlippage(maxWithdrawAmount),
+    collateralToken.decimals,
+    collateralToken.isStable
+  );
 });
