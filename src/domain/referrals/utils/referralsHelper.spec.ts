@@ -2,8 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import { USD_DECIMALS } from "config/factors";
 import { expandDecimals } from "lib/numbers";
+import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
 
-import { shouldShowCreateReferralCodeTabLabel, shouldShowShareCardDiscounts } from "./referralsHelper";
+import { getCodeError, shouldShowCreateReferralCodeTabLabel, shouldShowShareCardDiscounts } from "./referralsHelper";
 
 describe("shouldShowShareCardDiscounts", () => {
   it("hides the discounts line when total discounts are unknown", () => {
@@ -75,5 +76,18 @@ describe("shouldShowCreateReferralCodeTabLabel", () => {
         hasAnyAffiliateCode: true,
       })
     ).toBe(false);
+  });
+});
+
+describe("getCodeError", () => {
+  it("accepts only codes that reach the contract unchanged PRO-4106", () => {
+    const inputs = ["tano_1", " tano_1 ", "A".repeat(20), "+++", "tano+++", "ab c", "   ", "тест", "a".repeat(21)];
+
+    for (const input of inputs) {
+      const code = input.trim();
+      const reachesContractUnchanged = code !== "" && decodeReferralCode(encodeReferralCode(code)) === code;
+
+      expect(getCodeError(input) === "", input).toBe(reachesContractUnchanged);
+    }
   });
 });

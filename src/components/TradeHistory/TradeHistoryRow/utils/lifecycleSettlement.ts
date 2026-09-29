@@ -5,11 +5,17 @@ import type { TokenData } from "domain/synthetics/tokens";
 import { convertToTokenAmount, convertToUsd, parseContractPrice } from "domain/synthetics/tokens";
 import type { LifecycleSettlementData } from "domain/synthetics/tradeHistory/useLifecycleSettlement";
 import { getSwapLegId } from "domain/synthetics/tradeHistory/useLifecycleSettlement";
-import { calculateDisplayDecimals, formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
+import {
+  calculateDisplayDecimals,
+  formatDeltaUsdParts,
+  formatTokenAmount,
+  formatUsdParts,
+  numberParts,
+} from "lib/numbers";
 import type { PositionTradeAction } from "sdk/utils/tradeHistory/types";
 
 import { getDecreasePayoutUsd, getFeesBreakdown, hasSecondaryOutputRisk } from "./position";
-import { Line, TooltipString, TooltipValue, infoRow, lines, numberToState } from "./shared";
+import { Line, TooltipString, TooltipValue, infoRow, lines, numberToState, numericText } from "./shared";
 
 export type LifecycleTokenLeg = {
   token: TokenData;
@@ -286,7 +292,7 @@ function formatLegAmount(leg: LifecycleTokenLeg): string | undefined {
 }
 
 function getCashflowValue(cashflow: LifecycleCashflow, tier: LifecycleTier): TooltipValue {
-  const approximateUsd = `~${formatUsd(cashflow.usd)}`;
+  const approximateUsd = numericText("~", formatUsdParts(cashflow.usd));
 
   if (tier === "usdOnly" || cashflow.legs.length === 0) {
     return approximateUsd;
@@ -303,7 +309,7 @@ function getCashflowValue(cashflow: LifecycleCashflow, tier: LifecycleTier): Too
   });
 
   if (tier === "tokenLegs") {
-    spans.push(" ", { text: `(${approximateUsd})`, state: "muted" });
+    spans.push(" ", { text: numberParts("(", approximateUsd.text, ")"), state: "muted" });
   }
 
   return spans.length === 1 ? spans[0] : spans;
@@ -338,11 +344,11 @@ export function getLifecycleSettlementLines(aggregate: LifecycleAggregate): Line
     ),
     "",
     infoRow(t`Lifecycle RPNL`, {
-      text: formatDeltaUsd(aggregate.lifecycleRpnlUsd),
+      text: formatDeltaUsdParts(aggregate.lifecycleRpnlUsd),
       state: numberToState(aggregate.lifecycleRpnlUsd),
     }),
     infoRow(t`Net lifecycle fees / impact`, {
-      text: formatDeltaUsd(aggregate.netFeesUsd),
+      text: formatDeltaUsdParts(aggregate.netFeesUsd),
       state: numberToState(aggregate.netFeesUsd),
     }),
     "",

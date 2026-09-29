@@ -248,7 +248,10 @@ test.describe("TradeBox", () => {
 
       await page.locator(getDataQALocator("leverage-slider")).first().click();
       await expect(page.getByText("Adjust leverage")).toBeVisible();
-      await page.getByText("5x", { exact: true }).click();
+      await page
+        .locator(".rc-slider-mark-text")
+        .filter({ hasText: /^5\s?x$/ })
+        .click();
 
       await expectInputInRange(sizeInput, 4900, 5000);
     });
@@ -419,13 +422,13 @@ test.describe("TradeBox", () => {
       await sizeInput.fill("3000");
 
       // the header leverage field displays the derived estimate (~3x)
-      await expect(leverageDisplay(page)).toContainText(/(2\.9\d*|3(\.0\d*)?)x/);
+      await expect(leverageDisplay(page)).toContainText(/(2\.9\d*|3(\.0\d*)?)\sx/);
 
       await expect(marginInput).toHaveValue("1000");
       await expect(sizeInput).toHaveValue(/^3000(\.00)?$/);
 
       await marginInput.fill("2000");
-      await expect(leverageDisplay(page)).toContainText(/(1\.4\d*|1\.5\d*)x/);
+      await expect(leverageDisplay(page)).toContainText(/(1\.4\d*|1\.5\d*)\sx/);
       await expect(sizeInput).toHaveValue(/^3000(\.00)?$/);
     });
 
@@ -473,7 +476,7 @@ test.describe("TradeBox", () => {
 
       await marginInput.fill("2000");
       // leverage re-derives but the manually typed size is preserved
-      await expect(leverageDisplay(page)).toContainText(/(1\.4\d*|1\.5\d*)x/);
+      await expect(leverageDisplay(page)).toContainText(/(1\.4\d*|1\.5\d*)\sx/);
       await expect(sizeInput).toHaveValue(/^3000(\.00)?$/);
     });
 
@@ -662,7 +665,7 @@ test.describe("TradeBox", () => {
       await mount(<TradeBoxStory seedLeverageOption={150} />);
 
       // 150x is clamped to the market max rounded down to a 5x step
-      await expect(page.locator(getDataQALocator("leverage-slider")).first()).toContainText("95x");
+      await expect(page.locator(getDataQALocator("leverage-slider")).first()).toContainText("95 x");
 
       // the clamped value drives the calculation: 100 USDC * 95x minus fees
       await page.locator(getDataQALocator("margin-input")).fill("100");

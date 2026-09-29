@@ -8,7 +8,6 @@ import BanxaIcon from "img/ic_banxa.svg?react";
 import BinanceIcon from "img/ic_binance.svg?react";
 import BybitIcon from "img/ic_bybit.svg?react";
 import MatchaIcon from "img/ic_matcha.svg?react";
-import TransakIcon from "img/ic_tansak.svg?react";
 import UniswapIcon from "img/tokens/ic_uni.svg?react";
 
 type BuyGmxModalButtonConfig = {
@@ -40,7 +39,7 @@ export const BUY_GMX_MODAL_LINKS: BuyGmxModalButtonConfig[] = [
     getLink: createGetLink(
       {
         [ARBITRUM]:
-          "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a",
+          "https://app.uniswap.org/swap?chain=arbitrum&inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a",
       },
       "https://app.uniswap.org/"
     ),
@@ -51,10 +50,10 @@ export const BUY_GMX_MODAL_LINKS: BuyGmxModalButtonConfig[] = [
     label: "1inch",
     getLink: createGetSwapLink(
       {
-        [ARBITRUM]: "https://app.1inch.io/#/42161/unified/swap/ETH/GMX",
-        [AVALANCHE]: "https://app.1inch.io/#/43114/unified/swap/AVAX/GMX",
+        [ARBITRUM]: "https://1inch.com/swap?src=42161:ETH&dst=42161:GMX",
+        [AVALANCHE]: "https://1inch.com/swap?src=43114:AVAX&dst=43114:GMX",
       },
-      "https://1inch.io/"
+      "https://1inch.com/"
     ),
   },
   {
@@ -103,18 +102,6 @@ export const BUY_GMX_MODAL_LINKS: BuyGmxModalButtonConfig[] = [
         [AVALANCHE]: "https://gmx.banxa.com/?coinType=GMX&fiatType=USD&fiatAmount=500&blockchain=avalanche",
       },
       "https://gmx.banxa.com"
-    ),
-  },
-  {
-    id: "transak",
-    icon: <TransakIcon className="size-20" />,
-    label: "Transak",
-    getLink: createGetLink(
-      {
-        [ARBITRUM]:
-          "https://global.transak.com/?apiKey=28a15a9b-d94e-4944-99cc-6aa35b45cc74&networks=arbitrum&defaultCryptoCurrency=GMX&isAutoFillUserData=true&hideMenu=true&isFeeCalculationHidden=true",
-      },
-      "https://global.transak.com"
     ),
   },
 ];

@@ -39,7 +39,7 @@ import { helperToast } from "lib/helperToast";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { getWrappedToken } from "sdk/configs/tokens";
 import { getMarketIndexName } from "sdk/utils/markets";
-import { formatBalanceAmount, formatUsd, parseValue } from "sdk/utils/numbers";
+import { formatBalanceAmount, parseValue } from "sdk/utils/numbers";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
@@ -51,6 +51,7 @@ import { SelectedPoolLabel } from "components/GmSwap/GmSwapBox/SelectedPool";
 import { useGmxAccountWithdrawNetworks } from "components/GmxAccountModal/hooks";
 import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 import { SlideModal } from "components/Modal/SlideModal";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
@@ -184,12 +185,13 @@ export function BridgeOutModal({
     });
   }, [bridgeOutChain, account, bridgeOutAmount, chainId]);
 
-  const { data: transferNativeFee } = useQuoteSendNativeFee({
+  const { data: quotedTransferNativeFee, error: transferNativeFeeError } = useQuoteSendNativeFee({
     fromChainId: chainId,
     toChainId: bridgeOutChain,
     sendParams,
     fromStargateAddress: bridgeOutParams?.provider,
   });
+  const transferNativeFee = bridgeOutChain === chainId ? 0n : quotedTransferNativeFee;
 
   const networkFeeUsd = useMemo(() => {
     if (
@@ -235,6 +237,12 @@ export function BridgeOutModal({
     tokensData,
     expressTxnParamsAsyncResult.data,
   ]);
+
+  let networkFeeFallback: string | undefined;
+  if (expressTransactionBuilder !== undefined) {
+    networkFeeFallback =
+      expressTxnParamsAsyncResult.error !== undefined || transferNativeFeeError !== undefined ? "-" : "...";
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -422,7 +430,7 @@ export function BridgeOutModal({
           topLeftLabel={t`Withdraw`}
           inputValue={bridgeOutInputValue}
           onInputValueChange={(e) => setBridgeOutInputValue(e.target.value)}
-          bottomLeftValue={formatUsd(bridgeOutUsd)}
+          bottomLeftValue={<UsdValue usd={bridgeOutUsd} />}
           bottomRightValue={formattedBalance}
           bottomRightLabel={t`Available`}
           onClickMax={
@@ -494,7 +502,10 @@ export function BridgeOutModal({
           </Button>
         </ButtonTooltipWrapper>
 
-        <SyntheticsInfoRow label={t`Network fee`} value={formatUsd(networkFeeUsd)} />
+        <SyntheticsInfoRow
+          label={t`Network fee`}
+          value={<UsdValue usd={networkFeeUsd} fallback={networkFeeFallback} />}
+        />
 
         <SyntheticsInfoRow
           label={t`GMX Account balance`}

@@ -15,11 +15,12 @@ import {
 } from "recharts";
 
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
-import { clamp, formatUsd } from "lib/numbers";
+import { clamp } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
 import Button from "components/Button/Button";
 import Loader from "components/Loader/Loader";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
 import RepeatIcon from "img/ic_repeat.svg?react";
@@ -749,13 +750,11 @@ export function DailyAndCumulativePnLChart({
           <div className="inline-block size-4 rounded-full bg-red-500" /> <Trans>Period loss</Trans>
         </div>
         <div className="flex items-center gap-8 text-13 font-medium">
-          <div className="inline-block size-4 rounded-full bg-blue-300" />{" "}
-          <Trans>
-            Cumulative PnL{" "}
-            <span className={getPositiveOrNegativeClass(groupedPnlData.at(-1)?.cumulativePnl)}>
-              {formatUsd(groupedPnlData.at(-1)?.cumulativePnl)}
-            </span>
-          </Trans>
+          <div className="inline-block size-4 rounded-full bg-blue-300" /> <Trans>Cumulative PnL</Trans>{" "}
+          <UsdValue
+            usd={groupedPnlData.at(-1)?.cumulativePnl}
+            className={getPositiveOrNegativeClass(groupedPnlData.at(-1)?.cumulativePnl)}
+          />
         </div>
         <DebugLegend lastPoint={groupedPnlData.at(-1)} />
         <Button
@@ -801,13 +800,13 @@ function ChartTooltip({ active, payload, grouping }: TooltipProps<any, any> & { 
       <StatsTooltipRow label={grouping === "daily" ? t`Date` : t`Period`} value={stats.date} showDollar={false} />
       <StatsTooltipRow
         label={t`PnL`}
-        value={formatUsd(stats.pnl)}
+        value={<UsdValue usd={stats.pnl} />}
         showDollar={false}
         textClassName={getPositiveOrNegativeClass(stats.pnl)}
       />
       <StatsTooltipRow
         label={t`Cumulative PnL`}
-        value={formatUsd(stats.cumulativePnl)}
+        value={<UsdValue usd={stats.cumulativePnl} />}
         showDollar={false}
         textClassName={getPositiveOrNegativeClass(stats.cumulativePnl)}
       />

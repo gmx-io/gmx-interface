@@ -30,7 +30,6 @@ import { useChainId } from "lib/chains";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
-import { formatUsd } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
@@ -43,6 +42,7 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ReferralsIcon from "img/ic_referrals.svg?react";
@@ -588,7 +588,7 @@ function CreateReferralCodeLayout({
             <span>
               <Trans>Network fee</Trans>
             </span>
-            <span>{formatUsd(networkFeeUsd)}</span>
+            <UsdValue usd={networkFeeUsd} />
           </div>
         )}
         {rpcFailedChains && rpcFailedChains.length > 0 && referralCodeCheckStatus !== "taken" && (
