@@ -114,7 +114,7 @@ export function RewardsCalculator({
                     "max-mobile:[&:has(input:focus-visible)]:[outline-offset:2px] max-mobile:[&:has(input:focus-visible)]:[outline:2px_solid_#a4c3f9]",
                     "[&:hover]:border-blue-300",
                     "[&_input:checked::after]:block [&_input:checked::after]:h-8 [&_input:checked::after]:w-5",
-                    "[&_input:checked::after]:[border-width:0_1.5px_1.5px_0] [&_input:checked::after]:[border:solid_#2d42fc] [&_input:checked::after]:[content:'']",
+                    "[&_input:checked::after]:border-solid [&_input:checked::after]:border-blue-400 [&_input:checked::after]:[border-width:0_1.5px_1.5px_0] [&_input:checked::after]:[content:'']",
                     "[&_input:checked::after]:[transform:translate(4.5px,_2px)_rotate(45deg)]",
                     "[&_input:checked]:[background:#fff]",
                     "[&_input]:h-14 [&_input]:w-14 [&_input]:shrink-0 [&_input]:appearance-none [&_input]:rounded-3 [&_input]:[background:#a0a3c4]",
@@ -166,8 +166,8 @@ export function RewardsCalculator({
         >
           <dl
             className={cx(
-              "rewards-receipt-breakdown flex min-h-80 flex-col text-16 leading-[24px] text-[#ffffff99]",
-              "max-mobile:min-h-68 max-mobile:text-14 max-mobile:leading-[20px]",
+              "rewards-receipt-breakdown flex min-h-[108px] flex-col text-16 leading-[24px] text-[#ffffff99]",
+              "max-mobile:min-h-92 max-mobile:text-14 max-mobile:leading-[20px]",
               "[&>div+div]:mt-4",
               "[&>div]:flex [&>div]:items-center [&>div]:justify-between [&>div]:gap-16",
               "[&_dd]:text-white"
