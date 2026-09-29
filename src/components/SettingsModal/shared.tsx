@@ -196,5 +196,9 @@ export function Chip({ children, variant }: { children: ReactNode; variant: "blu
     outline: "text-typography-primary ring-1 ring-inset ring-typography-primary",
   }[variant];
 
-  return <div className={cx(`rounded-full px-8 py-4 pb-3 text-[10px] font-medium`, variantClass)}>{children}</div>;
+  return (
+    <div className={cx(`whitespace-nowrap rounded-full px-8 py-4 pb-3 text-[10px] font-medium`, variantClass)}>
+      {children}
+    </div>
+  );
 }
