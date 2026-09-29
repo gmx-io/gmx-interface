@@ -7204,6 +7204,7 @@ msgid "Oracle price is stale"
 msgstr ""
 
 #: landing/src/pages/Rewards/ReturningTrader.tsx
+#: landing/src/pages/Rewards/ReturningTrader.tsx
 msgid "Retry historical volume"
 msgstr "重新查詢歷史交易量"
 
@@ -12288,6 +12289,10 @@ msgstr "交易失敗"
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "COLLATERAL"
 msgstr "抵押品"
+
+#: landing/src/pages/Rewards/ReturningTrader.tsx
+msgid "Your historical volume is <0>{0}</0>"
+msgstr "您的歷史交易量為 <0>{0}</0>"
 
 #: src/config/bridging.tsx
 msgid "Buy APE on Arbitrum with <0>Camelot</0>"
