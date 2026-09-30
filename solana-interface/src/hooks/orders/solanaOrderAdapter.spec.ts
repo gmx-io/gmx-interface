@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { deriveSwapRatio, toSolanaOrderViewModel } from "./solanaOrderAdapter";
+import { convertSolanaTokenAmount, deriveSwapRatio, toSolanaOrderViewModel } from "./solanaOrderAdapter";
 import { SOLANA_ORDER_KIND as K } from "./solanaOrderConstants";
 import type { RawSolanaOrder } from "./types";
 import type { SolanaMarketInfo, SolanaTicker } from "../../markets/solanaMarketSocketStore";
@@ -39,11 +39,21 @@ function raw(overrides: Partial<RawSolanaOrder>): RawSolanaOrder {
 }
 
 const solMarket: SolanaMarketInfo = { marketToken: MARKET, indexToken: SOL_INDEX, longToken: WSOL, shortToken: USDC, supply: "1" };
-const ticker = (symbol: string, price: bigint): SolanaTicker => ({ symbol, price, minUnitPrice: 1n, maxUnitPrice: 1n });
+const NATIVE_SOL = "11111111111111111111111111111111";
+const ticker = (symbol: string, price: bigint, unitPrice: bigint): SolanaTicker => ({
+  symbol,
+  price,
+  unitPrice,
+  minUnitPrice: 1n,
+  maxUnitPrice: 1n,
+});
+const SOL_UNIT = (150n * ONE_USD) / 10n ** 9n;
+const USDC_UNIT = ONE_USD / 10n ** 6n;
 const prices = new Map<string, SolanaTicker>([
-  [SOL_INDEX, ticker("SOL", 150n * ONE_USD)],
-  [WSOL, ticker("SOL", 150n * ONE_USD)],
-  [USDC, ticker("USDC", ONE_USD)],
+  [SOL_INDEX, ticker("SOL", 150n * ONE_USD, SOL_UNIT)],
+  [WSOL, ticker("SOL", 150n * ONE_USD, SOL_UNIT)],
+  [NATIVE_SOL, ticker("SOL", 150n * ONE_USD, SOL_UNIT)],
+  [USDC, ticker("USDC", ONE_USD, USDC_UNIT)],
 ]);
 
 describe("toSolanaOrderViewModel: position orders", () => {
@@ -65,9 +75,18 @@ describe("toSolanaOrderViewModel: position orders", () => {
       triggerThreshold: "<",
       acceptableComparator: "≤",
       noAcceptableLimit: false,
+      isBoundaryAcceptablePrice: false,
+      isFullClose: false,
+      poolName: "WSOL-USDC",
       collateralSymbol: "USDC",
       collateralDecimals: 6,
+      collateralIsStable: true,
       collateralDeltaAmount: 5_000_000n,
+      targetCollateralSymbol: "USDC",
+      targetCollateralDecimals: 6,
+      targetCollateralIsStable: true,
+      isCollateralSwap: false,
+      targetCollateralDeltaAmount: 5_000_000n,
     });
     expect(vm.sizeDeltaUsd).toBe(100n * 10n ** 30n);
     expect(vm.triggerPrice).toBe(150n * 10n ** 30n);
@@ -84,7 +103,39 @@ describe("toSolanaOrderViewModel: position orders", () => {
     expect(vm.triggerThreshold).toBe(">");
     expect(vm.noAcceptableLimit).toBe(true);
     expect(vm.acceptablePrice).toBeUndefined();
+    expect(vm.isBoundaryAcceptablePrice).toBe(true);
     expect(vm.typeLabel.message).toBe("Stop-Loss");
+  });
+
+  it("detects a collateral swap and converts the pay amount into the target collateral token", () => {
+    // 300 USDC into a wSOL position at 150 USD per SOL → 2 SOL
+    const swapped = toSolanaOrderViewModel(
+      raw({ initialCollateralToken: USDC, collateralToken: WSOL, initialCollateralDeltaAmount: 300_000_000n }),
+      { marketInfo: solMarket, tokenPriceByMint: prices }
+    );
+    if (swapped.category !== "position") throw new Error("expected position order");
+    expect(swapped.isCollateralSwap).toBe(true);
+    expect(swapped.targetCollateralDeltaAmount).toBe(2_000_000_000n);
+    expect(swapped.targetCollateralSymbol).toBe("SOL");
+    expect(swapped.targetCollateralDecimals).toBe(9);
+    expect(swapped.targetCollateralIsStable).toBe(false);
+
+    // native SOL paid into a wSOL position is not a swap
+    const native = toSolanaOrderViewModel(raw({ initialCollateralToken: NATIVE_SOL, collateralToken: WSOL }), {
+      marketInfo: solMarket,
+      tokenPriceByMint: prices,
+    });
+    if (native.category !== "position") throw new Error("expected position order");
+    expect(native.isCollateralSwap).toBe(false);
+    expect(native.targetCollateralDeltaAmount).toBe(5_000_000n);
+
+    // without prices the converted amount is unknown, never zero
+    const noPrices = toSolanaOrderViewModel(
+      raw({ initialCollateralToken: USDC, collateralToken: WSOL, initialCollateralDeltaAmount: 300_000_000n }),
+      { marketInfo: solMarket, tokenPriceByMint: new Map() }
+    );
+    if (noPrices.category !== "position") throw new Error("expected position order");
+    expect(noPrices.targetCollateralDeltaAmount).toBeUndefined();
   });
 
   it("flags forex markets and falls back without market info", () => {
@@ -121,6 +172,8 @@ describe("toSolanaOrderViewModel: collateral orders", () => {
     if (vm.category !== "collateral") return;
     expect(vm.isDeposit).toBe(true);
     expect(vm.collateralDeltaAmount).toBe(5_000_000n);
+    expect(vm.targetCollateralDeltaAmount).toBe(5_000_000n);
+    expect(vm.isCollateralSwap).toBe(false);
     expect(vm.typeLabel.message).toBe("Deposit Collateral");
   });
 
@@ -144,10 +197,12 @@ describe("toSolanaOrderViewModel: swap orders", () => {
       finalOutputToken: WSOL,
       initialCollateralDeltaAmount: 300_000_000n,
       minOutputAmount: 2_000_000_000n,
+      primarySwapPath: [MARKET, "OtherMarket1111111111111111111111111111111"],
     });
     const vm = toSolanaOrderViewModel(order, { marketInfo: undefined, tokenPriceByMint: prices });
     expect(vm.category).toBe("swap");
     if (vm.category !== "swap") return;
+    expect(vm.primarySwapPath).toEqual([MARKET, "OtherMarket1111111111111111111111111111111"]);
     expect(vm).toMatchObject({
       fromSymbol: "USDC",
       toSymbol: "SOL",
@@ -182,6 +237,15 @@ describe("toSolanaOrderViewModel: swap orders", () => {
     if (unknown.category !== "swap") throw new Error("expected swap order");
     expect(unknown.fromSymbol).toBeUndefined();
     expect(unknown.ratioLabel).toBeUndefined();
+  });
+});
+
+describe("convertSolanaTokenAmount", () => {
+  it("converts at the unit prices and refuses missing or zero prices", () => {
+    expect(convertSolanaTokenAmount(300_000_000n, USDC_UNIT, SOL_UNIT)).toBe(2_000_000_000n);
+    expect(convertSolanaTokenAmount(1n, undefined, SOL_UNIT)).toBeUndefined();
+    expect(convertSolanaTokenAmount(1n, USDC_UNIT, undefined)).toBeUndefined();
+    expect(convertSolanaTokenAmount(1n, USDC_UNIT, 0n)).toBeUndefined();
   });
 });
 

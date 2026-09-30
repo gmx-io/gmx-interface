@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 
-import { formatAmount, formatTokenAmount, formatUsd, formatUsdPrice } from "lib/numbers";
+import { formatAmount, formatBalanceAmount, formatTokenAmount, formatUsd, formatUsdPrice } from "lib/numbers";
 
 import type {
   SolanaCollateralOrderViewModel,
@@ -12,6 +12,8 @@ import type {
 // Same helpers as positions/solanaPositionFormatters.ts, redeclared here so this module (and its specs) do
 // not pull `domain/synthetics/positions` in through `formatLeverage`.
 export const SOLANA_ORDER_DASH = "—";
+/** GMX EVM tooltip rows fall back to "..." when a value is not available. */
+export const SOLANA_ORDER_UNAVAILABLE = "...";
 
 function formatSolanaPrice(value: bigint | undefined): string {
   return value === undefined ? SOLANA_ORDER_DASH : formatUsdPrice(value) ?? SOLANA_ORDER_DASH;
@@ -19,8 +21,6 @@ function formatSolanaPrice(value: bigint | undefined): string {
 
 /** GMTrade `formatTokenAmount` default (swap amounts). */
 const SWAP_AMOUNT_DECIMALS = 4;
-/** GMTrade `formatAmount` default (collateral delta tooltip). */
-const COLLATERAL_AMOUNT_DECIMALS = 5;
 
 function formatSolanaTokenAmount(
   amount: bigint,
@@ -58,9 +58,11 @@ export function formatSolanaRatioAmount(amount: bigint, decimals: number, displa
   return formatAmount(amount, decimals, displayDecimals, true);
 }
 
+/** GMX `SizeWithIcon`: "Full position close" for a decrease order closing the whole linked position. */
 export function formatSolanaOrderSize(order: SolanaOrderViewModel): string {
   switch (order.category) {
     case "position":
+      if (order.isFullClose) return t`Full position close`;
       return formatUsd(order.sizeDeltaUsd, { displayPlus: true }) ?? SOLANA_ORDER_DASH;
     case "collateral":
       return "$0";
@@ -77,33 +79,55 @@ export function formatSolanaSwapMinOutput(order: SolanaSwapOrderViewModel): stri
   return formatSolanaSwapAmount(order.toMinAmount, order.toDecimals, order.toSymbol);
 }
 
-/** `±amount SYMBOL`: deposit `+`, withdraw `-`, market orders with size `+`, otherwise unsigned. */
-export function formatSolanaCollateralDelta(
-  order: SolanaPositionOrderViewModel | SolanaCollateralOrderViewModel
-): string {
-  const amount = formatSolanaTokenAmount(
-    order.collateralDeltaAmount,
-    order.collateralDecimals,
-    order.collateralSymbol,
-    COLLATERAL_AMOUNT_DECIMALS
-  );
-  if (order.category === "collateral") return `${order.isDeposit ? "+" : "-"}${amount}`;
-  return order.isMarketOrder ? `+${amount}` : amount;
+type CollateralOrder = SolanaPositionOrderViewModel | SolanaCollateralOrderViewModel;
+
+function isDecreaseOrder(order: CollateralOrder): boolean {
+  return order.category === "collateral" ? !order.isDeposit : !order.isIncrease;
 }
 
-export function getSolanaCollateralDeltaLabel(order: SolanaPositionOrderViewModel | SolanaCollateralOrderViewModel): string {
-  if (order.category === "collateral" || order.isMarketOrder || !order.isIncrease) return t`Collateral Delta`;
-  return t`Collateral`;
+/** GMX `OrderSize` tooltip row label. */
+export function getSolanaCollateralDeltaLabel(order: CollateralOrder): string {
+  return isDecreaseOrder(order) ? t`Margin delta` : t`Margin`;
 }
 
+/**
+ * GMX `OrderSize.getCollateralText`: the margin change in target collateral token units, negative for
+ * decreases. A full close shows the live position margin. "..." when the amount cannot be derived.
+ */
+export function formatSolanaOrderMargin(order: CollateralOrder): string {
+  const amount =
+    order.category === "position" && order.isFullClose && order.positionCollateralAmount !== undefined
+      ? order.positionCollateralAmount
+      : order.targetCollateralDeltaAmount;
+  if (amount === undefined || order.targetCollateralDecimals === undefined) return SOLANA_ORDER_UNAVAILABLE;
+  const signed = isDecreaseOrder(order) ? -amount : amount;
+  return formatBalanceAmount(signed, order.targetCollateralDecimals, order.targetCollateralSymbol, {
+    isStable: order.targetCollateralIsStable,
+  });
+}
+
+/** GMX `OrderSize` swap note when the pay token differs from the position collateral. */
+export function formatSolanaCollateralSwapNote(order: CollateralOrder): string | undefined {
+  if (!order.isCollateralSwap) return undefined;
+  const amount =
+    order.collateralDecimals === undefined
+      ? SOLANA_ORDER_UNAVAILABLE
+      : formatBalanceAmount(order.collateralDeltaAmount, order.collateralDecimals, order.collateralSymbol, {
+          isStable: order.collateralIsStable,
+        });
+  const target = order.targetCollateralSymbol;
+  return t`${amount} swapped to ${target} when executed`;
+}
+
+/** GMX `TriggerPrice`: market orders (incl. deposit / withdraw) show "N/A". */
 export function formatSolanaTriggerPrice(order: SolanaOrderViewModel): string {
   switch (order.category) {
     case "collateral":
-      return SOLANA_ORDER_DASH;
+      return t`N/A`;
     case "swap":
       return order.triggerRatioText && order.ratioLabel ? `${order.triggerRatioText} ${order.ratioLabel}` : SOLANA_ORDER_DASH;
     case "position": {
-      if (order.isMarketOrder) return t`(Market)`;
+      if (order.isMarketOrder) return t`N/A`;
       const price = formatSolanaOrderPrice(order.triggerPrice, order.isForexPrecision);
       return order.triggerThreshold ? `${order.triggerThreshold} ${price}` : price;
     }
@@ -121,9 +145,26 @@ export function formatSolanaMarkPrice(order: SolanaOrderViewModel): string {
   }
 }
 
+/**
+ * GMX `TriggerPrice` "Acceptable price" row: "N/A" for stop-loss orders, the bare price for market orders
+ * and the trigger threshold plus price for limit / take-profit orders.
+ */
 export function formatSolanaAcceptablePrice(order: SolanaPositionOrderViewModel): string {
-  if (order.noAcceptableLimit) return t`No limit`;
-  if (order.acceptablePrice === undefined) return SOLANA_ORDER_DASH;
+  if (order.noAcceptableLimit) return "N/A";
+  if (order.acceptablePrice === undefined) return SOLANA_ORDER_UNAVAILABLE;
   const price = formatSolanaOrderPrice(order.acceptablePrice, order.isForexPrecision);
-  return order.acceptableComparator ? `${order.acceptableComparator} ${price}` : price;
+  return order.isMarketOrder || !order.triggerThreshold ? price : `${order.triggerThreshold} ${price}`;
+}
+
+/** GMX swap limit order trigger price tooltip. */
+export function formatSolanaSwapReceiveText(order: SolanaSwapOrderViewModel): string {
+  const minOutput = formatSolanaSwapMinOutput(order);
+  return t`Receive at least ${minOutput} if executed. Price updates based on fees and price impact.`;
+}
+
+/** GMX trigger order mark price tooltip. */
+export function formatSolanaOrderExecutionText(order: SolanaPositionOrderViewModel): string {
+  const threshold = order.triggerThreshold ?? "";
+  const price = formatSolanaOrderPrice(order.triggerPrice, order.isForexPrecision);
+  return t`Executes when oracle price is ${threshold} ${price}`;
 }

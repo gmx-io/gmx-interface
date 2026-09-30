@@ -5,12 +5,17 @@ import { SOLANA_ORDER_KIND as K } from "./solanaOrderConstants";
 import {
   formatBigintDivision,
   formatSolanaAcceptablePrice,
-  formatSolanaCollateralDelta,
+  formatSolanaCollateralSwapNote,
   formatSolanaMarkPrice,
+  formatSolanaOrderExecutionText,
+  formatSolanaOrderMargin,
   formatSolanaOrderPrice,
   formatSolanaOrderSize,
+  formatSolanaSwapReceiveText,
   formatSolanaTriggerPrice,
+  getSolanaCollateralDeltaLabel,
   SOLANA_ORDER_DASH,
+  SOLANA_ORDER_UNAVAILABLE,
 } from "./solanaOrderFormatters";
 import type { RawSolanaOrder } from "./types";
 import type { SolanaMarketInfo, SolanaTicker } from "../../markets/solanaMarketSocketStore";
@@ -21,10 +26,13 @@ const SOL_INDEX = "So1Zu7vPQQxrguzUehKAyVLpjcc769zxgBuDAsxTUMH";
 const MARKET = "MarketTokenAddress11111111111111111111111111";
 const ONE_USD = 10n ** 20n;
 const solMarket: SolanaMarketInfo = { marketToken: MARKET, indexToken: SOL_INDEX, longToken: WSOL, shortToken: USDC, supply: "1" };
+// Unit prices are per smallest unit: 150 USD / 1e9 lamports, 1 USD / 1e6 USDC units.
+const SOL_UNIT = (150n * ONE_USD) / 10n ** 9n;
+const USDC_UNIT = ONE_USD / 10n ** 6n;
 const prices = new Map<string, SolanaTicker>([
-  [SOL_INDEX, { symbol: "SOL", price: 150n * ONE_USD, minUnitPrice: 1n, maxUnitPrice: 1n }],
-  [WSOL, { symbol: "SOL", price: 150n * ONE_USD, minUnitPrice: 1n, maxUnitPrice: 1n }],
-  [USDC, { symbol: "USDC", price: ONE_USD, minUnitPrice: 1n, maxUnitPrice: 1n }],
+  [SOL_INDEX, { symbol: "SOL", price: 150n * ONE_USD, unitPrice: SOL_UNIT, minUnitPrice: 1n, maxUnitPrice: 1n }],
+  [WSOL, { symbol: "SOL", price: 150n * ONE_USD, unitPrice: SOL_UNIT, minUnitPrice: 1n, maxUnitPrice: 1n }],
+  [USDC, { symbol: "USDC", price: ONE_USD, unitPrice: USDC_UNIT, minUnitPrice: 1n, maxUnitPrice: 1n }],
 ]);
 
 function raw(overrides: Partial<RawSolanaOrder>): RawSolanaOrder {
@@ -80,47 +88,83 @@ describe("position orders", () => {
     expect(formatSolanaTriggerPrice(long)).toBe("< $ 140.000");
     expect(formatSolanaMarkPrice(long)).toBe("$ 150.000");
     if (long.category !== "position") throw new Error("expected position order");
-    expect(formatSolanaAcceptablePrice(long)).toBe("≤ $ 141.000");
-    expect(formatSolanaCollateralDelta(long)).toBe("5.00000\u00a0USDC");
+    // GMX prefixes the acceptable price with the trigger threshold
+    expect(formatSolanaAcceptablePrice(long)).toBe("< $ 141.000");
+    expect(getSolanaCollateralDeltaLabel(long)).toBe("Margin");
+    expect(formatSolanaOrderMargin(long)).toBe("5.00\u00a0USDC");
+    expect(formatSolanaCollateralSwapNote(long)).toBeUndefined();
+    expect(formatSolanaOrderExecutionText(long)).toBe("Executes when oracle price is < $ 140.000");
 
     const decrease = vm({ kind: K.LimitDecrease, isLong: false });
     expect(formatSolanaOrderSize(decrease)).toBe("-$ 100.00");
     expect(formatSolanaTriggerPrice(decrease)).toBe("< $ 140.000");
+    if (decrease.category !== "position") throw new Error("expected position order");
+    expect(getSolanaCollateralDeltaLabel(decrease)).toBe("Margin delta");
+    expect(formatSolanaOrderMargin(decrease)).toBe("-5.00\u00a0USDC");
   });
 
-  it("shows No limit for stop-loss and (Market) for market orders", () => {
+  it("shows the full close and the live position margin when the order closes the whole position", () => {
+    const decrease = vm({ kind: K.LimitDecrease });
+    if (decrease.category !== "position") throw new Error("expected position order");
+    const full = { ...decrease, isFullClose: true, positionCollateralAmount: 42_000_000n };
+    expect(formatSolanaOrderSize(full)).toBe("Full position close");
+    expect(formatSolanaOrderMargin(full)).toBe("-42.00\u00a0USDC");
+    // full close without the linked position margin falls back to the order amount
+    expect(formatSolanaOrderMargin({ ...full, positionCollateralAmount: undefined })).toBe("-5.00\u00a0USDC");
+  });
+
+  it("converts the pay token to the position collateral and explains the swap on execution", () => {
+    // pay 300 USDC into a wSOL-collateral position at 150 USD per SOL → 2 SOL
+    const swapped = vm({ initialCollateralToken: USDC, collateralToken: WSOL, initialCollateralDeltaAmount: 300_000_000n });
+    if (swapped.category !== "position") throw new Error("expected position order");
+    expect(formatSolanaOrderMargin(swapped)).toBe("2.0000\u00a0SOL");
+    expect(formatSolanaCollateralSwapNote(swapped)).toBe("300.00\u00a0USDC swapped to SOL when executed");
+
+    const noPrices = toSolanaOrderViewModel(
+      raw({ initialCollateralToken: USDC, collateralToken: WSOL, initialCollateralDeltaAmount: 300_000_000n }),
+      { marketInfo: solMarket, tokenPriceByMint: new Map() }
+    );
+    if (noPrices.category !== "position") throw new Error("expected position order");
+    expect(formatSolanaOrderMargin(noPrices)).toBe(SOLANA_ORDER_UNAVAILABLE);
+  });
+
+  it("shows N/A for the stop-loss acceptable price and for market order trigger prices", () => {
     const stopLoss = vm({ kind: K.StopLossDecrease });
     if (stopLoss.category !== "position") throw new Error("expected position order");
-    expect(formatSolanaAcceptablePrice(stopLoss)).toBe("No limit");
+    expect(formatSolanaAcceptablePrice(stopLoss)).toBe("N/A");
 
     const market = vm({ kind: K.MarketIncrease });
-    expect(formatSolanaTriggerPrice(market)).toBe("(Market)");
+    expect(formatSolanaTriggerPrice(market)).toBe("N/A");
     expect(formatSolanaMarkPrice(market)).toBe("$ 150.000");
     if (market.category !== "position") throw new Error("expected position order");
-    expect(formatSolanaCollateralDelta(market)).toBe("+5.00000\u00a0USDC");
+    // market orders have no trigger threshold: bare acceptable price
+    expect(formatSolanaAcceptablePrice(market)).toBe("$ 141.000");
+    expect(formatSolanaOrderMargin(market)).toBe("5.00\u00a0USDC");
   });
 
-  it("shows dashes when prices are unknown", () => {
+  it("shows dashes or the tooltip fallback when prices are unknown", () => {
     const noMarket = vm({}, null);
     expect(formatSolanaTriggerPrice(noMarket)).toBe(`< ${SOLANA_ORDER_DASH}`);
     expect(formatSolanaMarkPrice(noMarket)).toBe(SOLANA_ORDER_DASH);
     if (noMarket.category !== "position") throw new Error("expected position order");
-    expect(formatSolanaAcceptablePrice(noMarket)).toBe(SOLANA_ORDER_DASH);
+    expect(formatSolanaAcceptablePrice(noMarket)).toBe(SOLANA_ORDER_UNAVAILABLE);
   });
 });
 
 describe("collateral orders", () => {
-  it("shows $0, dashes and a signed collateral delta", () => {
+  it("shows $0, N/A and a signed margin delta", () => {
     const deposit = vm({ kind: K.MarketIncrease, sizeDeltaUsd: 0n });
     expect(formatSolanaOrderSize(deposit)).toBe("$0");
-    expect(formatSolanaTriggerPrice(deposit)).toBe(SOLANA_ORDER_DASH);
+    expect(formatSolanaTriggerPrice(deposit)).toBe("N/A");
     expect(formatSolanaMarkPrice(deposit)).toBe(SOLANA_ORDER_DASH);
     if (deposit.category !== "collateral") throw new Error("expected collateral order");
-    expect(formatSolanaCollateralDelta(deposit)).toBe("+5.00000\u00a0USDC");
+    expect(getSolanaCollateralDeltaLabel(deposit)).toBe("Margin");
+    expect(formatSolanaOrderMargin(deposit)).toBe("5.00\u00a0USDC");
 
     const withdraw = vm({ kind: K.MarketDecrease, sizeDeltaUsd: 0n });
     if (withdraw.category !== "collateral") throw new Error("expected collateral order");
-    expect(formatSolanaCollateralDelta(withdraw)).toBe("-5.00000\u00a0USDC");
+    expect(getSolanaCollateralDeltaLabel(withdraw)).toBe("Margin delta");
+    expect(formatSolanaOrderMargin(withdraw)).toBe("-5.00\u00a0USDC");
   });
 });
 
@@ -136,5 +180,9 @@ describe("swap orders", () => {
     expect(formatSolanaOrderSize(swap)).toBe("300.0000\u00a0USDC");
     expect(formatSolanaTriggerPrice(swap)).toBe("150.000 USDC / SOL");
     expect(formatSolanaMarkPrice(swap)).toBe("150.000 USDC / SOL");
+    if (swap.category !== "swap") throw new Error("expected swap order");
+    expect(formatSolanaSwapReceiveText(swap)).toBe(
+      "Receive at least 2.0000\u00a0SOL if executed. Price updates based on fees and price impact."
+    );
   });
 });

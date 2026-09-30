@@ -1,7 +1,9 @@
 import type { MessageDescriptor } from "@lingui/core";
 import { msg, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
+
+import type { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
 
 import Badge from "components/Badge/Badge";
 import Checkbox from "components/Checkbox/Checkbox";
@@ -11,6 +13,7 @@ import Tabs from "components/Tabs/Tabs";
 
 import { SolanaOrderList } from "../components/SolanaOrderList/SolanaOrderList";
 import { SolanaPositionList } from "../components/SolanaPositionList/SolanaPositionList";
+import type { SolanaMarketFilterItem } from "../hooks/orders/orderFilters";
 import { useSolanaOrders } from "../hooks/orders/useSolanaOrders";
 import { useSolanaPositions } from "../hooks/positions/useSolanaPositions";
 
@@ -35,7 +38,17 @@ export function SolanaTradeList() {
   const positions = useSolanaPositions();
   const positionsCount = positions.isLoading ? 0 : positions.positions.length;
   const orders = useSolanaOrders({ pollingEnabled: tab === "orders", positions: positions.positions });
+  // Tab badge: total displayable orders, independent of the list filters (GMX `selectOrdersCount`).
   const ordersCount = orders.isLoading ? 0 : orders.count;
+
+  // Orders list filters live with the tabs and reset on tab change (GMX `useOrdersControl`).
+  const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<SolanaMarketFilterItem[]>([]);
+  const [orderTypesFilter, setOrderTypesFilter] = useState<OrderTypeFilterValue[]>([]);
+  const handleTabChange = useCallback((next: ListTab) => {
+    setTab(next);
+    setMarketsDirectionsFilter([]);
+    setOrderTypesFilter([]);
+  }, []);
 
   const tabOptions = useMemo(
     () => [
@@ -69,7 +82,7 @@ export function SolanaTradeList() {
         <Tabs
           options={tabOptions}
           selectedValue={tab}
-          onChange={setTab}
+          onChange={handleTabChange}
           className="min-w-max"
           rightContent={
             (tab === "positions" || tab === "orders") && (
@@ -98,6 +111,11 @@ export function SolanaTradeList() {
       ) : tab === "orders" ? (
         <SolanaOrderList
           orders={orders.orders}
+          positions={positions.positions}
+          marketsDirectionsFilter={marketsDirectionsFilter}
+          setMarketsDirectionsFilter={setMarketsDirectionsFilter}
+          orderTypesFilter={orderTypesFilter}
+          setOrderTypesFilter={setOrderTypesFilter}
           isWalletConnected={orders.isWalletConnected}
           isLoading={orders.isLoading}
           isMarketDataPending={orders.isMarketDataPending}

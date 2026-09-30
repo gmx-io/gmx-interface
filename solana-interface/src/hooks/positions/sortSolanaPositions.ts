@@ -26,7 +26,7 @@ function fieldValue(position: SolanaPositionViewModel, field: SolanaPositionSort
     case "netValue":
       return position.netValue;
     case "collateral":
-      return position.collateralValue;
+      return position.netCollateralValue;
     case "entryPrice":
       return position.entryPrice;
     case "markPrice":

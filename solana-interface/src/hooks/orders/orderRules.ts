@@ -3,6 +3,7 @@ import { msg } from "@lingui/macro";
 
 import { SOLANA_ORDER_KIND } from "./solanaOrderConstants";
 import type { RawSolanaOrder, SolanaAcceptableComparator, SolanaOrderCategory, SolanaTriggerThreshold } from "./types";
+import { getSolanaTokenConfig } from "../../config/solanaProgram";
 
 const { MarketIncrease, MarketDecrease, LimitSwap, LimitIncrease, LimitDecrease, StopLossDecrease } = SOLANA_ORDER_KIND;
 
@@ -16,6 +17,12 @@ export function isOrdersListShowKind(kind: number): boolean {
     kind === MarketIncrease ||
     kind === MarketDecrease
   );
+}
+
+/** Native SOL orders settle into the wrapped mint, which is what position accounts store. */
+export function toSolanaPositionCollateralAddress(address: string): string {
+  const config = getSolanaTokenConfig(address);
+  return config?.isNative && config.wrappedAddress ? config.wrappedAddress : address;
 }
 
 export function isIncreaseKind(kind: number): boolean {

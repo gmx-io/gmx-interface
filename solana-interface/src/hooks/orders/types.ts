@@ -74,6 +74,8 @@ export type SolanaPositionOrderViewModel = SolanaOrderViewModelBase & {
   isLong: boolean;
   symbol: string;
   displayMarketName: string;
+  /** GMX "Market" tooltip pool label ("WSOL-USDC"); undefined without market info. */
+  poolName?: string;
   indexTokenAddress?: string;
   isForexPrecision: boolean;
   /** Signed: positive for increase orders, negative for decrease orders. */
@@ -88,28 +90,46 @@ export type SolanaPositionOrderViewModel = SolanaOrderViewModelBase & {
   /** Stop-loss orders have no acceptable price limit. */
   noAcceptableLimit: boolean;
   markPrice?: bigint;
+  /** Raw acceptable price is 0: no limit set (GMX EVM `isBoundaryAcceptablePrice`). */
+  isBoundaryAcceptablePrice: boolean;
+  /** Decrease order closing the whole linked position. False until `useSolanaOrders` joins the positions. */
+  isFullClose: boolean;
+  /** Raw collateral amount of the linked position (target collateral token units), when the position is known. */
+  positionCollateralAmount?: bigint;
+} & SolanaOrderCollateralFields;
+
+/** Pay / target collateral of increase, decrease and deposit / withdraw orders. */
+export type SolanaOrderCollateralFields = {
+  /** Raw units of the initial (pay) collateral token. */
   collateralDeltaAmount: bigint;
   /** Initial (pay) collateral token. */
   collateralSymbol: string;
   collateralDecimals?: number;
+  collateralIsStable: boolean;
   /** Position collateral token the order targets (`params.collateral_token`). */
   targetCollateralTokenAddress: string;
   targetCollateralSymbol: string;
+  targetCollateralDecimals?: number;
+  targetCollateralIsStable: boolean;
+  /** The pay token differs from the position collateral (native SOL counts as wSOL): swapped on execution. */
+  isCollateralSwap: boolean;
+  /**
+   * `collateralDeltaAmount` in target collateral token units, converted at the current unit prices when the
+   * tokens differ. Undefined without prices; equals `collateralDeltaAmount` when there is no swap.
+   */
+  targetCollateralDeltaAmount?: bigint;
 };
 
 /** MarketIncrease / MarketDecrease with `sizeDeltaUsd === 0`: deposit / withdraw collateral. */
-export type SolanaCollateralOrderViewModel = SolanaOrderViewModelBase & {
-  category: "collateral";
-  isDeposit: boolean;
-  isLong: boolean;
-  symbol: string;
-  displayMarketName: string;
-  collateralDeltaAmount: bigint;
-  collateralSymbol: string;
-  collateralDecimals?: number;
-  targetCollateralTokenAddress: string;
-  targetCollateralSymbol: string;
-};
+export type SolanaCollateralOrderViewModel = SolanaOrderViewModelBase &
+  SolanaOrderCollateralFields & {
+    category: "collateral";
+    isDeposit: boolean;
+    isLong: boolean;
+    symbol: string;
+    displayMarketName: string;
+    poolName?: string;
+  };
 
 export type SolanaSwapOrderViewModel = SolanaOrderViewModelBase & {
   category: "swap";
@@ -121,6 +141,8 @@ export type SolanaSwapOrderViewModel = SolanaOrderViewModelBase & {
   fromDecimals?: number;
   toMinAmount: bigint;
   toDecimals?: number;
+  /** Market token addresses of the swap route (first = source market, last = destination market). */
+  primarySwapPath: string[];
   /** "A / B": the token with the larger human-readable amount comes first (GMTrade rule). */
   ratioLabel?: string;
   /** Trigger exchange rate, already formatted (3 decimals). */

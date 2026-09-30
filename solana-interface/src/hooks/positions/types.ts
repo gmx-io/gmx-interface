@@ -74,7 +74,7 @@ export type SolanaPositionDeriveInput = {
  * Stable contract between the data layer and the read-only UI.
  * Unit conventions (so `lib/numbers` helpers apply unchanged):
  * - USD values and prices: 30 decimals, prices are per whole token.
- * - `leverage`: 4 decimals (`formatLeverage`).
+ * - `leverage` / `leverageWithPnl`: 4 decimals (`formatLeverage`).
  * - `pnlAfterFeesBps`: basis points.
  * - Token amounts: raw integers, decimals given alongside.
  */
@@ -95,6 +95,7 @@ export type SolanaPositionViewModel = {
   collateralAmount: bigint;
   collateralSymbol: string;
   collateralDecimals?: number;
+  collateralIsStable: boolean;
   collateralValue?: bigint;
   /** Initial collateral minus accrued borrowing and negative funding fees (GMTrade "margin"). */
   netCollateralValue?: bigint;
@@ -108,8 +109,15 @@ export type SolanaPositionViewModel = {
   pendingPnlBps?: bigint;
   pnlAfterFees?: bigint;
   pnlAfterFeesBps?: bigint;
+  /**
+   * GMX EVM display net value: `collateralValue + pendingPnl - pendingBorrowingFee - pendingFundingFee`.
+   * The SDK net value (which also deducts the close fee) only feeds `estimatedLiquidationHours`.
+   */
   netValue?: bigint;
+  /** `sizeInUsd / netCollateralValue` (basis points, 4 decimals); undefined when the margin is exhausted. */
   leverage?: bigint;
+  /** Same as `leverage` with the unrealized PnL added to the margin (Settings "Include PnL in leverage display"). */
+  leverageWithPnl?: bigint;
   pendingBorrowingFee?: bigint;
   pendingFundingFee?: bigint;
   /** Claimable positive funding fee (long + short token), USD. */
