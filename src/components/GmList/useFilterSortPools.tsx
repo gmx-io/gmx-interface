@@ -33,6 +33,7 @@ export function useFilterSortPools({
   favoriteTokens,
   performance,
   multichainMarketTokensBalances,
+  pinnedAddresses,
 }: {
   performance: PerformanceData | undefined;
   marketsInfo: MarketsInfoData | undefined;
@@ -48,6 +49,7 @@ export function useFilterSortPools({
   recentlyListedAddresses?: Set<string>;
   favoriteTokens: string[];
   multichainMarketTokensBalances: MultichainMarketTokensBalances | undefined;
+  pinnedAddresses: string[];
 }) {
   const sortedTokens = useMemo(() => {
     if (!marketsInfo || !marketTokensData) {
@@ -87,7 +89,12 @@ export function useFilterSortPools({
     }
 
     if (orderBy === "unspecified" || direction === "unspecified") {
-      return sortGmTokensDefault({ marketsInfoData: marketsInfo, marketTokensData, multichainMarketTokensBalances });
+      return sortGmTokensDefault({
+        marketsInfoData: marketsInfo,
+        marketTokensData,
+        multichainMarketTokensBalances,
+        pinnedAddresses,
+      });
     }
 
     return sortGmTokensByField({
@@ -112,6 +119,7 @@ export function useFilterSortPools({
     marketsTokensLidoAprData,
     multichainMarketTokensBalances,
     performance,
+    pinnedAddresses,
   ]);
 
   const filteredTokens = useMemo(() => {

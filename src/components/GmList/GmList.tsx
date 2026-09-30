@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import {
+  selectAccountWhitelistsResult,
   selectChainId,
   selectDepositMarketTokensData,
   selectMarketsInfoData,
@@ -22,6 +23,7 @@ import { useMarketsListingDates } from "domain/synthetics/markets/useMarketsList
 import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { PerformanceSnapshotsData } from "domain/synthetics/markets/usePerformanceSnapshots";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
+import { getWhitelistedMarketAddresses } from "domain/synthetics/whitelists/utils";
 import { useLocalizedMap } from "lib/i18n";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
@@ -78,6 +80,7 @@ export function GmList({
   const marketTokensData = useSelector(selectDepositMarketTokensData);
   const progressiveMarketTokensData = useSelector(selectProgressiveDepositMarketTokensDataWithoutGlv);
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
+  const whitelistsResult = useSelector(selectAccountWhitelistsResult);
 
   const { active } = useWallet();
   const {
@@ -155,6 +158,11 @@ export function GmList({
     [populatedTradfiSubCats, localizedSubCategoryLabels]
   );
 
+  const whitelistedMarketAddresses = useMemo(
+    () => getWhitelistedMarketAddresses(whitelistsResult.accountWhitelists),
+    [whitelistsResult]
+  );
+
   const filteredGmTokens = useFilterSortPools({
     marketsInfo,
     marketTokensData: progressiveMarketTokensData,
@@ -170,6 +178,7 @@ export function GmList({
     favoriteTokens,
     performance,
     multichainMarketTokensBalances,
+    pinnedAddresses: whitelistedMarketAddresses,
   });
 
   const { currentPage, currentData, pageCount, setCurrentPage } = usePagination(
