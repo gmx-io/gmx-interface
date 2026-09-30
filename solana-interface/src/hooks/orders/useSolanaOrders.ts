@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 
 import { getSolanaOrderErrors, type SolanaOrderErrorPosition } from "./orderErrors";
+import { linkSolanaOrderToPosition, type SolanaOrderLinkedPosition } from "./orderPositionLink";
 import { isOrdersListShowKind, sortSolanaOrdersForList } from "./orderRules";
 import { toSolanaOrderViewModel } from "./solanaOrderAdapter";
 import type { SolanaOrderViewModel } from "./types";
@@ -23,13 +24,15 @@ export type SolanaOrdersResult = {
   refresh: () => void;
 };
 
-const NO_POSITIONS: readonly SolanaOrderErrorPosition[] = [];
+export type SolanaOrdersPosition = SolanaOrderErrorPosition & SolanaOrderLinkedPosition;
+
+const NO_POSITIONS: readonly SolanaOrdersPosition[] = [];
 
 export type SolanaOrdersOptions = {
   /** Enable the 15 s snapshot poll (Orders tab active). */
   pollingEnabled?: boolean;
-  /** Wallet positions (from `useSolanaPositions`), used for the order type validation tooltip. */
-  positions?: readonly SolanaOrderErrorPosition[];
+  /** Wallet positions (from `useSolanaPositions`): order validation tooltip and full-close detection. */
+  positions?: readonly SolanaOrdersPosition[];
 };
 
 /**
@@ -48,8 +51,12 @@ export function useSolanaOrders({
   const orders = useMemo(() => {
     if (!owner) return [];
     const visible = sortSolanaOrdersForList(accounts.raw.filter((order) => isOrdersListShowKind(order.kind)));
+    const positionByAddress = new Map(positions.map((position) => [position.positionAddress, position]));
     return visible.map((raw) => {
-      const order = toSolanaOrderViewModel(raw, { marketInfo: marketInfoByToken.get(raw.marketToken), tokenPriceByMint });
+      const order = linkSolanaOrderToPosition(
+        toSolanaOrderViewModel(raw, { marketInfo: marketInfoByToken.get(raw.marketToken), tokenPriceByMint }),
+        positionByAddress
+      );
       return { ...order, errors: getSolanaOrderErrors(order, positions) };
     });
   }, [owner, accounts.raw, marketInfoByToken, tokenPriceByMint, positions]);

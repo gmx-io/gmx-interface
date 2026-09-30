@@ -1,6 +1,7 @@
 import { getBasisPoints } from "lib/numbers";
+import { getLeverage } from "sdk/utils/positions";
 
-import type { RawSolanaPosition, SolanaPositionCalculation, SolanaPositionViewModel } from "./types";
+import type { RawSolanaPosition, SolanaPositionCalculation, SolanaPositionStatus, SolanaPositionViewModel } from "./types";
 import { getSolanaTokenConfig, GMTRADE_USD_DECIMALS, ONE_GMTRADE_USD } from "../../config/solanaProgram";
 import type { SolanaMarketInfo, SolanaTicker } from "../../markets/solanaMarketSocketStore";
 import { solanaDisplaySymbol } from "../../wallet/solanaWalletSession";
@@ -8,8 +9,6 @@ import { solanaDisplaySymbol } from "../../wallet/solanaWalletSession";
 /** GMX EVM USD decimals, which `lib/numbers` formatters assume. */
 const GMX_USD_DECIMALS = 30;
 const USD_SCALE = 10n ** BigInt(GMX_USD_DECIMALS - GMTRADE_USD_DECIMALS);
-/** SDK leverage carries 20 decimals; `formatLeverage` expects 4. */
-const LEVERAGE_SCALE = 10n ** BigInt(GMTRADE_USD_DECIMALS - 4);
 
 /** 20-decimal GMTrade USD → 30-decimal GMX USD. */
 export function toGmxUsd(value: bigint): bigint {
@@ -21,8 +20,14 @@ export function unitPriceToTokenPrice(unitPrice: bigint, tokenDecimals: number):
   return unitPrice * 10n ** BigInt(tokenDecimals) * USD_SCALE;
 }
 
-export function toGmxLeverage(leverage: bigint): bigint {
-  return leverage / LEVERAGE_SCALE;
+/**
+ * GMX EVM `PositionItem` net value: margin before borrow/funding + PnL − borrow fee − negative funding fee.
+ * Unlike the SDK `netValue`, the close fee is not deducted. Inputs are the 20-decimal SDK status values.
+ */
+export function getSolanaNetValue(
+  status: Pick<SolanaPositionStatus, "collateralValue" | "pendingPnl" | "pendingBorrowingFeeValue" | "pendingFundingFeeValue">
+): bigint {
+  return status.collateralValue + status.pendingPnl - abs(status.pendingBorrowingFeeValue) - abs(status.pendingFundingFeeValue);
 }
 
 const HOURS_PER_DAY = 24n;
@@ -117,6 +122,7 @@ export function toSolanaPositionViewModel(
     collateralAmount: raw.collateralAmount,
     collateralSymbol: collateralToken?.displaySymbol ?? collateralToken?.symbol ?? shortenAddress(raw.collateralToken),
     collateralDecimals: collateralToken?.decimals,
+    collateralIsStable: collateralToken?.isStable ?? false,
     increasedAt: raw.increasedAt,
     updatedAtSlot: raw.updatedAtSlot,
     priceUnavailable: calculation.priceUnavailable,
@@ -156,6 +162,13 @@ export function toSolanaPositionViewModel(
   const collateralUnitPrice = collateralTicker?.unitPrice;
   const claimableFundingFee =
     status.pendingClaimableFundingFeeValueInLongToken + status.pendingClaimableFundingFeeValueInShortToken;
+  // GMX EVM `getLeverage`: size over the margin after accrued fees, optionally including the unrealized PnL.
+  const leverageInput = {
+    sizeInUsd: base.sizeInUsd,
+    collateralUsd: toGmxUsd(status.collateralValue),
+    pendingBorrowingFeesUsd: toGmxUsd(borrowingFee),
+    pendingFundingFeesUsd: toGmxUsd(fundingFee),
+  };
 
   return {
     ...base,
@@ -175,13 +188,15 @@ export function toSolanaPositionViewModel(
     pendingPnlBps: status.collateralValue > 0n ? getBasisPoints(status.pendingPnl, status.collateralValue) : 0n,
     pnlAfterFees: toGmxUsd(pnlAfterFees),
     pnlAfterFeesBps: pnlDenominator > 0n ? getBasisPoints(pnlAfterFees, pnlDenominator) : undefined,
-    netValue: toGmxUsd(status.netValue),
-    leverage: status.leverage === undefined ? undefined : toGmxLeverage(status.leverage),
+    netValue: toGmxUsd(getSolanaNetValue(status)),
+    leverage: getLeverage({ ...leverageInput, pnl: undefined }),
+    leverageWithPnl: getLeverage({ ...leverageInput, pnl: toGmxUsd(status.pendingPnl) }),
     pendingBorrowingFee: toGmxUsd(borrowingFee),
     pendingFundingFee: toGmxUsd(fundingFee),
     pendingClaimableFundingFee: toGmxUsd(claimableFundingFee),
     closeOrderFee: toGmxUsd(status.closeOrderFeeValue),
     estimatedLiquidationHours: estimateLiquidationHours({
+      // Keeps the SDK net value (close fee included): the liquidation estimate is a GMTrade rule.
       netValue: toGmxUsd(status.netValue),
       sizeInUsd: base.sizeInUsd,
       minCollateralFactor: raw.isLong

@@ -1,17 +1,36 @@
 import { Trans } from "@lingui/macro";
+import { useMemo } from "react";
 
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import type { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
 import { useBreakpoints } from "lib/useBreakpoints";
 
 import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
+import { OrderTypeFilter } from "components/OrderList/filters/OrderTypeFilter";
 import { Table, TableTh, TableTheadTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 
+import { SolanaMarketFilter } from "./SolanaMarketFilter";
 import { SolanaOrderCard, SolanaOrderRow } from "./SolanaOrderItem";
+import {
+  filterSolanaOrders,
+  getSolanaPositionsWithOrders,
+  SOLANA_ORDER_TYPE_FILTER_VALUES,
+  type SolanaMarketFilterItem,
+} from "../../hooks/orders/orderFilters";
 import type { SolanaOrderViewModel } from "../../hooks/orders/types";
+import type { SolanaPositionViewModel } from "../../hooks/positions/types";
 
 export type SolanaOrderListProps = {
-  orders: SolanaOrderViewModel[];
+  /** Every displayable order of the wallet; the list derives the filtered view itself. */
+  orders: readonly SolanaOrderViewModel[];
+  /** Wallet positions, for the "Open positions with orders" filter group. */
+  positions: readonly SolanaPositionViewModel[];
+  marketsDirectionsFilter: SolanaMarketFilterItem[];
+  setMarketsDirectionsFilter: (value: SolanaMarketFilterItem[]) => void;
+  orderTypesFilter: OrderTypeFilterValue[];
+  setOrderTypesFilter: (value: OrderTypeFilterValue[]) => void;
   isWalletConnected: boolean;
   isLoading: boolean;
   isMarketDataPending: boolean;
@@ -44,9 +63,14 @@ function SolanaOrdersError({ error, onRetry }: { error: Error; onRetry: () => vo
   );
 }
 
-/** Read-only Solana orders: desktop table (>1024px) or mobile cards. No selection, edit or cancel. */
+/** Read-only Solana orders (GMX `OrderList` layout): desktop table (>1024px) or mobile cards, with market / type filters. */
 export function SolanaOrderList({
   orders,
+  positions,
+  marketsDirectionsFilter,
+  setMarketsDirectionsFilter,
+  orderTypesFilter,
+  setOrderTypesFilter,
   isWalletConnected,
   isLoading,
   isMarketDataPending,
@@ -54,6 +78,13 @@ export function SolanaOrderList({
   onRetry,
 }: SolanaOrderListProps) {
   const { isTablet } = useBreakpoints();
+  const { isSetAcceptablePriceImpactEnabled } = useSettings();
+
+  const filteredOrders = useMemo(
+    () => filterSolanaOrders(orders, marketsDirectionsFilter, orderTypesFilter),
+    [orders, marketsDirectionsFilter, orderTypesFilter]
+  );
+  const positionsWithOrders = useMemo(() => getSolanaPositionsWithOrders(positions, orders), [positions, orders]);
 
   const isEmpty = orders.length === 0;
   const showLoading = isLoading || isMarketDataPending;
@@ -65,19 +96,48 @@ export function SolanaOrderList({
     <Trans>Connect a Solana wallet to view orders</Trans>
   );
 
+  const marketFilter = (asButton?: boolean) => (
+    <SolanaMarketFilter
+      asButton={asButton}
+      value={marketsDirectionsFilter}
+      onChange={setMarketsDirectionsFilter}
+      positionsWithOrders={positionsWithOrders}
+    />
+  );
+  const typeFilter = (asButton?: boolean) => (
+    <OrderTypeFilter
+      asButton={asButton}
+      value={orderTypesFilter}
+      onChange={setOrderTypesFilter}
+      allowedValues={SOLANA_ORDER_TYPE_FILTER_VALUES}
+    />
+  );
+
   if (isTablet) {
     return (
       <div className="flex grow flex-col">
         {showBanner && error && <SolanaOrdersErrorBanner error={error} onRetry={onRetry} />}
+        {!showLoading && (
+          <div className="flex flex-wrap items-center justify-between gap-8">
+            <div className="flex gap-8">
+              {marketFilter(true)}
+              {typeFilter(true)}
+            </div>
+          </div>
+        )}
         {showError && error ? (
           <SolanaOrdersError error={error} onRetry={onRetry} />
         ) : (
-          <EmptyTableContent isLoading={showLoading} isEmpty={isEmpty} emptyText={emptyText} />
+          <EmptyTableContent isLoading={showLoading} isEmpty={filteredOrders.length === 0} emptyText={emptyText} />
         )}
-        {!showLoading && orders.length > 0 && (
-          <div className="grid grid-cols-1 gap-8 min-[800px]:grid-cols-2">
-            {orders.map((order) => (
-              <SolanaOrderCard key={order.key} order={order} />
+        {!showLoading && filteredOrders.length > 0 && (
+          <div className="grid gap-8 sm:grid-cols-auto-fill-350">
+            {filteredOrders.map((order) => (
+              <SolanaOrderCard
+                key={order.key}
+                order={order}
+                isSetAcceptablePriceImpactEnabled={isSetAcceptablePriceImpactEnabled}
+              />
             ))}
           </div>
         )}
@@ -88,35 +148,37 @@ export function SolanaOrderList({
   return (
     <TableScrollFadeContainer disableScrollFade={isEmpty} hideControls className="flex grow flex-col bg-slate-900">
       {showBanner && error && <SolanaOrdersErrorBanner error={error} onRetry={onRetry} />}
-      <Table className="!w-[max(100%,900px)] table-fixed">
+      <Table className="!w-[max(100%,580px)] table-fixed">
         <thead className="text-body-medium">
           <TableTheadTr>
-            <TableTh className="w-[26%]">
-              <Trans>MARKET</Trans>
-            </TableTh>
-            <TableTh className="w-[14%]">
-              <Trans>TYPE</Trans>
-            </TableTh>
-            <TableTh className="w-[18%]">
+            <TableTh>{marketFilter()}</TableTh>
+            <TableTh className="w-[10%]">{typeFilter()}</TableTh>
+            <TableTh className="w-[15%]">
               <Trans>SIZE</Trans>
             </TableTh>
-            <TableTh className="w-[16%]">
+            <TableTh className="w-[18%]">
               <Trans>TRIGGER PRICE</Trans>
             </TableTh>
-            <TableTh className="w-[16%]">
+            <TableTh className="w-[18%]">
               <Trans>MARK PRICE</Trans>
             </TableTh>
-            {/* GMTrade layout: Edit and Close columns. Reserved, read-only in this build. */}
-            <TableTh className="w-[5%]" aria-label="Edit" />
-            <TableTh className="w-[5%]" aria-label="Close" />
           </TableTheadTr>
         </thead>
-        <tbody>{!showLoading && orders.map((order) => <SolanaOrderRow key={order.key} order={order} />)}</tbody>
+        <tbody>
+          {!showLoading &&
+            filteredOrders.map((order) => (
+              <SolanaOrderRow
+                key={order.key}
+                order={order}
+                isSetAcceptablePriceImpactEnabled={isSetAcceptablePriceImpactEnabled}
+              />
+            ))}
+        </tbody>
       </Table>
       {showError && error ? (
         <SolanaOrdersError error={error} onRetry={onRetry} />
       ) : (
-        <EmptyTableContent isLoading={showLoading} isEmpty={isEmpty} emptyText={emptyText} />
+        <EmptyTableContent isLoading={showLoading} isEmpty={filteredOrders.length === 0} emptyText={emptyText} />
       )}
     </TableScrollFadeContainer>
   );

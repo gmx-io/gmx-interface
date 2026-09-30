@@ -325,10 +325,6 @@ msgstr "パフォーマンス"
 msgid "Solana address"
 msgstr "Solanaアドレス"
 
-#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
-msgid "Negative funding fees and borrowing fees are settled against the collateral automatically and will influence the time to liquidation, as shown under the liquidation price tooltip."
-msgstr ""
-
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Open fees"
 msgstr "オープン手数料"
@@ -527,10 +523,6 @@ msgstr "出金を確認"
 msgid "Settled funding fees"
 msgstr "決済済みファンディング手数料"
 
-#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
-msgid "Estimated Time to Liquidation"
-msgstr ""
-
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Rebates are paid in the collateral tokens used by your referrals. For example, if a referral trades with USDC collateral, your rebate portion will be in USDC."
 msgstr "リベートはリファラルが使用した担保トークンで支払われます。例えば、リファラルがUSDC担保で取引した場合、あなたのリベート分はUSDCになります。"
@@ -584,10 +576,6 @@ msgstr "減少"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in any BTC/USD pool"
 msgstr "すべてのBTC/USDプールで流動性不足です"
-
-#: solana-interface/src/components/SolanaOrderList/SolanaOrderItem.tsx
-msgid "The order will be executed at the next available oracle price."
-msgstr ""
 
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 msgid "Unrealized base PnL"
@@ -913,6 +901,7 @@ msgstr "出金にはこのウォレットが提供できない署名が必要な
 msgid "Increased {positionText}, +{0}"
 msgstr "{positionText}を増加、+{0}"
 
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Positive funding fee"
 msgstr "プラスのファンディング手数料"
@@ -950,10 +939,6 @@ msgstr "高い外部スワップ影響"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Keep more of what you earn"
 msgstr "収益をより多く確保"
-
-#: solana-interface/src/components/SolanaOrderList/SolanaOrderItem.tsx
-msgid "The order will be executed when the oracle price is {0} {1}."
-msgstr ""
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Accrued funding fees available for settlement"
@@ -1017,10 +1002,6 @@ msgstr "詳細を表示"
 #: src/components/TradeBox/TradeBox.tsx
 msgid "More"
 msgstr "もっと"
-
-#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
-msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} short position size, the collateral value will increase to cover any negative PnL, so there is no liquidation price."
-msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "Global"
@@ -1301,7 +1282,6 @@ msgstr "Yield Yakスワップ"
 msgid "Vaultka"
 msgstr "Vaultka"
 
-#: solana-interface/src/components/SolanaOrderList/SolanaOrderList.tsx
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: solana-interface/src/pages/SolanaTradeList.tsx
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
@@ -1807,7 +1787,6 @@ msgstr "概要"
 msgid "Fetching swap route..."
 msgstr "スワップルートを取得中..."
 
-#: solana-interface/src/hooks/orders/solanaOrderFormatters.ts
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Collateral"
 msgstr "担保"
@@ -1820,6 +1799,7 @@ msgstr "株式"
 msgid "I'm an affiliate"
 msgstr "アフィリエイトです"
 
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated daily fees"
 msgstr "推定日次手数料"
@@ -1874,10 +1854,6 @@ msgstr "{0} を担保としてサポートするプールを選択"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Send permit"
 msgstr "パーミットを送信"
-
-#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
-msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price."
-msgstr ""
 
 #: src/components/Footer/constants.tsx
 msgid "V1 interface"
@@ -2008,6 +1984,7 @@ msgstr "時価総額"
 msgid "Buy GMX using any token from any network"
 msgstr "任意のネットワークの任意のトークンで GMX を購入"
 
+#: solana-interface/src/components/SolanaOrderList/SolanaMarketFilter.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Markets"
@@ -2239,6 +2216,7 @@ msgstr "割引"
 msgid "Insufficient deposit at trigger price"
 msgstr "トリガー価格での入金額が不足しています"
 
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Borrow fee / day"
 msgstr "借入手数料 / 日"
@@ -2805,10 +2783,6 @@ msgstr "ポジションが許容される最大レバレッジを超えていま
 msgid "Buy or transfer {nativeTokenSymbol} to {chainName}"
 msgstr "{nativeTokenSymbol}を{chainName}で購入または送金する"
 
-#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
-msgid "Close Fee"
-msgstr ""
-
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short borrowing rate"
 msgstr "ショート借入レート"
@@ -2929,11 +2903,6 @@ msgstr "建玉リザーブファクター（ロング）"
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Layer 2"
 msgstr "レイヤー2"
-
-#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
-#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
-msgid "Accrued Negative Funding Fee"
-msgstr ""
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "All valid codes give you at least a 5% discount. Premium affiliates (Tier 2/3) offer 10% discount. You'll see the exact discount percentage after the code has been applied."
@@ -3559,6 +3528,8 @@ msgstr "リファラルコードはコンテンツクリエイターやコミュ
 msgid "LIQUIDITY"
 msgstr "流動性"
 
+#: solana-interface/src/components/SolanaOrderList/SolanaMarketFilter.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaMarketFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
@@ -4122,10 +4093,6 @@ msgstr "バナー"
 msgid "Fees (including swap)"
 msgstr "手数料（スワップを含む）"
 
-#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
-msgid "PnL After Fees"
-msgstr ""
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Exponent (positive)"
 msgstr "指数（正）"
@@ -4342,6 +4309,7 @@ msgstr "ワーカースレッド"
 msgid "Failed to update orders"
 msgstr "注文の更新に失敗しました"
 
+#: solana-interface/src/hooks/orders/solanaOrderFormatters.ts
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Margin delta"
@@ -4736,6 +4704,8 @@ msgstr "GMXを始めるにはどうしたらいいですか？"
 msgid "Confirmed"
 msgstr "確認済み"
 
+#: solana-interface/src/components/SolanaOrderList/SolanaOrderItem.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaOrderItem.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -4751,6 +4721,7 @@ msgstr "このページ内ですぐに回答"
 msgid "Withdrawing from subaccount..."
 msgstr "サブアカウントから出金中…"
 
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Current margin"
 msgstr "現在の証拠金"
@@ -4771,6 +4742,7 @@ msgstr "esGMX"
 msgid "<0>Liquidity providers receive 63% of all trading and liquidation fees. By depositing WBTC, ETH, USDC, or other supported assets, you can earn up to ~35% annualized yield on the largest pools.</0><1><2> GM pools – choose single-market exposure for targeted returns</2><3> GLV vaults – auto-diversify across markets for a hands-off strategy</3></1><4>Historically, both options have outperformed standard LP benchmarks. See live stats on the pools page.</4>"
 msgstr "<0>流動性プロバイダーは取引手数料と清算手数料の63%を受け取ります。WBTC、ETH、USDC、またはその他の対応資産を入金することで、最大のプールで最大約35%の年率利回りを獲得できます。</0><1><2> GMプール – ターゲットリターン向けに単一市場エクスポージャーを選択</2><3> GLVボルト – 市場横断で自動分散し、手間いらずの戦略</3></1><4>歴史的に、どちらの選択肢も標準的なLPベンチマークを上回っています。プールページでライブ統計を確認してください。</4>"
 
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position value after PnL and accrued fees"
 msgstr "PnLと発生手数料後のポジション価値"
@@ -4897,6 +4869,8 @@ msgstr "自動キャンセルTP/SL注文は最大5件まで許可されていま
 msgid "Withdrawing {amountText} from {indexTokenText} Short..."
 msgstr "{indexTokenText}ショートから{amountText}を出金中..."
 
+#: solana-interface/src/components/SolanaOrderList/SolanaMarketFilter.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaOrderItem.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -4951,6 +4925,7 @@ msgstr "金額が送金上限を超えています。<0>{upperLimitFormatted}</0
 msgid "V2 volume"
 msgstr "V2 取引高"
 
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Liquidation price changes with fees and margin value."
 msgstr "清算価格は手数料と証拠金の価値に応じて変動します。"
@@ -5051,6 +5026,10 @@ msgstr "実際にどうやって稼ぐのですか？"
 msgid "Realized swap impact"
 msgstr "実現スワップインパクト"
 
+#: solana-interface/src/hooks/orders/solanaOrderFormatters.ts
+msgid "{amount} swapped to {target} when executed"
+msgstr ""
+
 #: solana-interface/src/wallet/SolanaWalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter recipient address"
@@ -5094,10 +5073,6 @@ msgstr "スワップを送信しました"
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Slippage differs from price impact, which is based on open interest imbalances. <4>Read more</4>."
 msgstr "ボラティリティによる予想約定価格と実際の約定価格の差です。スリッページが最大値を超えると注文は約定されません。デフォルト値は設定で調整できます。<0/><1/>低い値（例: -{0} 未満）を設定すると、ボラティリティが高い時に注文が失敗する可能性があります。<2/><3/>スリッページは建玉の偏りに基づく価格への影響とは異なります。<4>詳細はこちら</4>。"
 
-#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
-msgid "Accrued Positive Funding Fee"
-msgstr ""
-
 #: src/components/ChainDataImage.tsx
 #: src/components/ChainDataImage.tsx
 msgid "{chainName} data"
@@ -5137,6 +5112,7 @@ msgstr "プラスファクター"
 msgid "{gmOrGlvLabel} bought successfully, but bridge to {0} failed. Your funds are safe in your GMX Account. Retry the bridge or go to the {indexName} pool to withdraw your {gmOrGlvLabel} tokens."
 msgstr "{gmOrGlvLabel}の購入に成功しましたが、{0}へのブリッジに失敗しました。資金はGMXアカウントに安全に保管されています。ブリッジを再試行するか、{indexName}プールに移動して{gmOrGlvLabel}トークンを引き出してください。"
 
+#: solana-interface/src/hooks/orders/solanaOrderFormatters.ts
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -5154,6 +5130,7 @@ msgstr "すべての予測報酬および推定分配はあくまで最善の見
 msgid "Create Stop-Loss"
 msgstr "ストップロスを作成"
 
+#: solana-interface/src/components/SolanaOrderList/SolanaMarketFilter.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Direction"
 msgstr "方向"
@@ -5195,11 +5172,6 @@ msgstr "<0>{0}{1}の購入<1>{poolName}</1></0> <2>{tokensText}で</2>"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Pairs trading"
 msgstr "ペアトレーディング"
-
-#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
-#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
-msgid "Initial Collateral"
-msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Loading markets data..."
@@ -5357,6 +5329,7 @@ msgstr "{0}時間"
 msgid "Enter withdrawal amount"
 msgstr "引き出し金額を入力"
 
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active orders"
 msgstr "有効な注文"
@@ -5591,6 +5564,8 @@ msgstr "GMX Accountを介して紹介コードを作成するには、{1}にUSDC
 msgid "LayerZero scan"
 msgstr "LayerZero scan"
 
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
@@ -5870,6 +5845,8 @@ msgstr "利用規約"
 msgid "TVL (SUPPLY)"
 msgstr "TVL (供給)"
 
+#: solana-interface/src/components/SolanaOrderList/SolanaMarketFilter.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaMarketFilter.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Shorts"
@@ -5962,6 +5939,7 @@ msgstr "分配レート、{0}"
 msgid "Referral code added"
 msgstr "リファラルコードが追加されました"
 
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Your {symbol} margin exceeds the {indexName} short position size. Margin value rises with the index, covering any losses—no liquidation price."
 msgstr "あなたの{symbol}証拠金は{indexName}ショートポジションサイズを上回っています。証拠金の価値は指数とともに上昇し、損失をカバーするため清算価格はありません。"
@@ -6013,10 +5991,6 @@ msgstr "アカウント転送"
 msgid "LONGS NET RATE / 1H"
 msgstr "ロング純レート / 1H"
 
-#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
-msgid "Net Value: Initial Collateral + PnL - Borrowing Fee - Negative Funding Fee - Close Fee"
-msgstr ""
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "The permit signature could not be validated."
 msgstr "パーミット署名を検証できませんでした。"
@@ -6039,6 +6013,7 @@ msgstr "GMX の建玉情報を提供する Telegram ボット"
 msgid "<0>Order failed: wallet address mismatch</0><1/><2>Refresh and retry</2>"
 msgstr "<0>注文失敗: ウォレットアドレスの不一致</0><1/><2>更新して再試行してください</2>"
 
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Click to select, then use the trade box to increase size."
 msgstr "クリックして選択し、トレードボックスでサイズを増やしてください。"
@@ -6183,6 +6158,7 @@ msgstr "設定が更新されました"
 msgid "Connect wallet to view distributions"
 msgstr "分配を表示するにはウォレットを接続してください"
 
+#: solana-interface/src/components/SolanaOrderList/SolanaMarketFilter.tsx
 #: solana-interface/src/components/SolanaOrderList/SolanaOrderItem.tsx
 #: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
@@ -6412,6 +6388,8 @@ msgstr "リファラルコードの転送"
 msgid "PnL Analysis"
 msgstr "PnL 分析"
 
+#: solana-interface/src/components/SolanaOrderList/SolanaMarketFilter.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaMarketFilter.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Longs"
@@ -6420,11 +6398,6 @@ msgstr "ロング"
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Affiliate rewards claimed"
 msgstr "アフィリエイト報酬を受け取りました"
-
-#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
-#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
-msgid "Accrued Borrowing Fee"
-msgstr ""
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "transaction:"
@@ -6589,6 +6562,7 @@ msgstr "チャートに表示する売買マークを選択します：過去の
 msgid "Buy GMX on GMX swap"
 msgstr "GMXスワップでGMXを購入"
 
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/Claims/ClaimableCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -6992,6 +6966,7 @@ msgstr "無期限"
 msgid "Impact exponent (negative)"
 msgstr "インパクト指数（マイナス）"
 
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Use the \"Close\" button to reduce your position via market or TWAP orders."
 msgstr "「Close」ボタンを使用して、成行注文またはTWAP注文でポジションを縮小できます。"
@@ -7117,7 +7092,6 @@ msgstr "これは助成金プログラムですか？トークンはもらえま
 msgid "Set SL price above mark price"
 msgstr "SL価格をマーク価格より上に設定してください"
 
-#: solana-interface/src/components/SolanaOrderList/SolanaOrderList.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -7182,6 +7156,7 @@ msgstr "リベート"
 msgid "Insufficient {fromSymbol} balance. Gas token switched to {toSymbol}"
 msgstr "{fromSymbol}の残高が不足しています。ガストークンを{toSymbol}に切り替えました"
 
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may still liquidate from fees alone (funding + borrowing), reducing margin over time."
 msgstr "手数料のみ（ファンディング＋借入）でもポジションが清算される可能性があり、証拠金は時間とともに減少します。"
@@ -7255,10 +7230,6 @@ msgstr "注文の執行に失敗しました"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} and {1} up to the caps below. Remaining tokens are reserved for open positions."
 msgstr "以下の上限までGMを{0}および{1}で売却できます。残りのトークンはオープンポジション用に確保されています。"
-
-#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
-msgid "Current Borrowing Fee / Day"
-msgstr ""
 
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
@@ -7737,10 +7708,6 @@ msgstr "メディアキット"
 msgid "$ 0.00"
 msgstr "$ 0.00"
 
-#: solana-interface/src/hooks/orders/solanaOrderFormatters.ts
-msgid "Collateral Delta"
-msgstr ""
-
 #: src/components/Referrals/traders/dashboard/TradersPromoCard.tsx
 msgid "Create your referral code and earn rebates from your referrals"
 msgstr "リファラルコードを作成し、紹介からリベートを獲得"
@@ -7762,6 +7729,7 @@ msgstr "GMX Accountからの出金はStargateブリッジの流動性により�
 msgid "TraderJoe"
 msgstr "TraderJoe"
 
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated time to liquidation"
 msgstr "清算までの推定時間"
@@ -8039,6 +8007,7 @@ msgstr "THREAD"
 msgid "This position was funded from your GMX multichain balance; amounts are balance movements, not wallet transfers."
 msgstr "このポジションはGMXマルチチェーン残高から資金提供されています。金額は残高の移動であり、ウォレットの送金ではありません。"
 
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Negative funding fees reduce margin and affect liquidation price."
 msgstr "マイナスのファンディング手数料は証拠金を減らし、清算価格に影響します。"
@@ -8754,6 +8723,10 @@ msgstr "清算"
 msgid "{nativeTokenSymbol} rewards"
 msgstr "{nativeTokenSymbol}報酬"
 
+#: solana-interface/src/hooks/orders/solanaOrderFormatters.ts
+msgid "Executes when oracle price is {threshold} {price}"
+msgstr ""
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "RPC endpoints"
 msgstr "RPCエンドポイント"
@@ -8895,10 +8868,6 @@ msgstr "送金中..."
 msgid "Staked GMX:"
 msgstr "ステーク済みGMX:"
 
-#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
-msgid "Use the edit collateral icon to deposit or withdraw collateral."
-msgstr ""
-
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed."
 msgstr "{gmOrGlvLabel}の売却に失敗しました。"
@@ -8946,6 +8915,7 @@ msgstr "注文リクエスト送信済"
 msgid "Oracle Keeper debug"
 msgstr "Oracle Keeperデバッグ"
 
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Funding fee / day"
 msgstr "ファンディング手数料 / 日"
@@ -9032,6 +9002,10 @@ msgstr "前回"
 msgid "Max {0} long exceeded"
 msgstr "{0}の最大ロング値を超過しています"
 
+#: solana-interface/src/components/SolanaOrderList/SolanaOrderItem.tsx
+#: solana-interface/src/components/SolanaOrderList/SolanaOrderItem.tsx
+#: solana-interface/src/hooks/orders/solanaOrderFormatters.ts
+#: solana-interface/src/hooks/orders/solanaOrderFormatters.ts
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 #: src/components/EarningValue/EarningValue.tsx
@@ -9356,6 +9330,7 @@ msgstr "GMXリファラルダッシュボード"
 msgid "Error data (hex)"
 msgstr "エラーデータ（hex）"
 
+#: solana-interface/src/components/SolanaOrderList/SolanaMarketFilter.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions with orders"
 msgstr "注文付きオープンポジション"
@@ -9526,6 +9501,7 @@ msgstr "お知らせは見つかりませんでした"
 msgid "Your {currentTierDiscount}% discount is now active!"
 msgstr "{currentTierDiscount}% の割引が有効になりました！"
 
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Your {symbol} margin exceeds the {indexName} long position size. Stable margin covers any losses—no liquidation price."
 msgstr "あなたの {symbol} 証拠金が {indexName} ロングポジションサイズを上回っています。安定証拠金は損失をカバーするため、清算価格はありません。"
@@ -9753,10 +9729,6 @@ msgstr "{0} GMX"
 msgid "Price impact exceeds order size. Impact: {priceImpactUsdText}, order: {sizeDeltaUsdText}"
 msgstr "価格への影響が注文サイズを超えています。影響: {priceImpactUsdText}、注文: {sizeDeltaUsdText}"
 
-#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
-msgid "Active Orders"
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Jones DAO"
 msgstr "Jones DAO"
@@ -9796,10 +9768,6 @@ msgstr "ネットワーク手数料を支払うための {nativeTokenSymbol} 残
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Send remaining margin to"
 msgstr "残りの証拠金の送金先"
-
-#: solana-interface/src/components/SolanaOrderList/SolanaOrderItem.tsx
-msgid "Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and no oracle reports are produced or if the price impact exceeds your acceptable price."
-msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Buy GM with {0} up to the caps below"
@@ -10071,10 +10039,6 @@ msgstr "ボーナスリベート"
 msgid "Decentralized options strategies"
 msgstr "分散型オプション戦略"
 
-#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
-msgid "Positive funding fees are automatically claimed when the position is adjusted through any operation."
-msgstr ""
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Deposit not found. It may have been executed or canceled"
 msgstr "入金が見つかりません。すでに実行またはキャンセルされた可能性があります"
@@ -10095,10 +10059,6 @@ msgstr "オープン手数料"
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Edit referral code"
 msgstr "リファラルコードを編集"
-
-#: solana-interface/src/components/SolanaOrderList/SolanaOrderItem.tsx
-msgid "Acceptable Price"
-msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell request sent"
@@ -10223,10 +10183,6 @@ msgstr "最大予約済み {directionLabel}"
 msgid "Technical guidance plus architecture and UX feedback."
 msgstr "技術ガイダンスに加え、アーキテクチャとUXのフィードバック。"
 
-#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
-msgid "This position could still be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
-msgstr ""
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Transfer {nativeTokenSymbol}"
 msgstr "{nativeTokenSymbol} を移転"
@@ -10259,6 +10215,7 @@ msgid "Error submitting order"
 msgstr "注文提出エラー"
 
 #: solana-interface/src/components/SolanaPositionList/SolanaPositionCard.tsx
+#: solana-interface/src/hooks/orders/solanaOrderFormatters.ts
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeboxMarginFields/MarginField.tsx
@@ -10760,6 +10717,7 @@ msgstr "凍結"
 msgid "CONFIG"
 msgstr "CONFIG"
 
+#: solana-interface/src/components/SolanaOrderList/SolanaMarketFilter.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelectorSolana.tsx
 #: src/components/MarketSelector/MarketSelector.tsx
@@ -10769,6 +10727,8 @@ msgstr "CONFIG"
 msgid "Search market"
 msgstr "マーケットを検索"
 
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Negative funding fee"
@@ -10855,6 +10815,7 @@ msgstr "注文キー："
 msgid "Show size in USD"
 msgstr "サイズをUSDで表示"
 
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Positive funding fees are claimable in Claims."
 msgstr "プラスの資金調達手数料は請求ページで請求できます。"
@@ -10926,6 +10887,7 @@ msgstr "注文を更新できません。この注文タイプは変更に対応
 msgid "Unable to fetch swap route. Please try again."
 msgstr "スワップルートを取得できません。もう一度お試しください。"
 
+#: solana-interface/src/components/SolanaOrderList/SolanaMarketFilter.tsx
 #: solana-interface/src/components/SolanaOrderList/SolanaOrderItem.tsx
 #: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
@@ -11489,10 +11451,6 @@ msgstr "GMXと統合されたプロジェクト"
 msgid "Testnet LayerZero scan"
 msgstr "テストネットLayerZeroスキャン"
 
-#: solana-interface/src/hooks/orders/solanaOrderFormatters.ts
-msgid "No limit"
-msgstr ""
-
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Take-Profit"
 msgstr "テイクプロフィットをキャンセル"
@@ -11610,6 +11568,7 @@ msgstr "ネットワーク手数料を読み込み中…"
 msgid "All earnings auto-compound"
 msgstr "すべての収益が自動的に複利運用されます"
 
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Use the TP/SL button to set TP/SL orders."
 msgstr "TP/SLボタンを使用してTP/SL注文を設定してください。"
@@ -11617,6 +11576,10 @@ msgstr "TP/SLボタンを使用してTP/SL注文を設定してください。"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Close fees"
 msgstr "決済手数料"
+
+#: solana-interface/src/hooks/orders/solanaOrderFormatters.ts
+msgid "Receive at least {minOutput} if executed. Price updates based on fees and price impact."
+msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GM?"
@@ -11742,10 +11705,6 @@ msgstr "スワップルートを利用できません"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "I understand that staking power does not transfer. The receiving wallet will start with zero staking power and a fresh historical max."
 msgstr "ステーキングパワーは移転されないことを理解しています。受け取り側ウォレットはステーキングパワー 0 と新しい履歴最大値から開始します。"
-
-#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
-msgid "Current Funding Fee / Day"
-msgstr ""
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "<0>Positive funding fees accrued from your positions</0>"
@@ -11952,10 +11911,6 @@ msgstr "キャンセル可能まで ..."
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "GMX | decentralized perpetual exchange"
 msgstr "GMX | 分散型パーペチュアル取引所"
-
-#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
-msgid "Liquidation price is influenced by fees and collateral value."
-msgstr ""
 
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
@@ -12175,10 +12130,6 @@ msgstr "売却注文がキャンセルされました"
 msgid "Acceptable price impact"
 msgstr "許容価格への影響"
 
-#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
-msgid "Use the \"Close\" button to reduce your position."
-msgstr ""
-
 #: src/components/PositionList/SymbolSortDropdown.tsx
 msgid "Default sorting"
 msgstr "デフォルトの並べ替え"
@@ -12367,10 +12318,6 @@ msgstr "最大100倍のレバレッジと、オーダーブックの厚みに依
 msgid "Your current staked balance relative to your historical max. Dropping below 80% resets your accumulated staking power to zero."
 msgstr "現在のステーク残高の、履歴最大値に対する比率。80% を下回ると累積ステーキングパワーがゼロにリセットされます。"
 
-#: solana-interface/src/components/SolanaOrderList/SolanaOrderItem.tsx
-msgid "You will receive at least {0} if this order is executed. This price is being updated in real time based on swap fees and price impact."
-msgstr ""
-
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Oracle keeper monitoring"
 msgstr "Oracle keeper モニタリング"
@@ -12481,10 +12428,6 @@ msgstr "Rage Trade"
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "1h"
 msgstr "1時間"
-
-#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
-msgid "Click on the position to select it, then use the trade box to increase it."
-msgstr ""
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using funds from either your wallet or your GMX Account."
@@ -12606,10 +12549,6 @@ msgstr "節約を始めるには？"
 msgid "24H VOL."
 msgstr "24時間取引量"
 
-#: solana-interface/src/hooks/orders/solanaOrderFormatters.ts
-msgid "(Market)"
-msgstr ""
-
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX team"
 msgstr "GMXチームとの匿名チャット"
@@ -12709,10 +12648,6 @@ msgstr "デルタニュートラルボールト"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sending shift request..."
 msgstr "シフトリクエストを送信中…"
-
-#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
-msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
-msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -13018,6 +12953,7 @@ msgstr "卒業したトレーダーは、紹介プログラムの卒業しきい
 msgid "Enter a new price"
 msgstr "新しい価格を入力してください"
 
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may liquidate from fees alone (funding + borrowing), reducing margin over time."
 msgstr "ポジションは手数料のみ（資金調達 + 借入）で清算される可能性があり、証拠金は時間とともに減少します。"
@@ -13116,6 +13052,8 @@ msgstr "利用可能な分散型取引所はありません"
 msgid "Code already taken on: {takenNetworkNamesJoined}. No rebates received from this network."
 msgstr "コードがすでに使用されているネットワーク: {takenNetworkNamesJoined}。このネットワークからのリベートはありません。"
 
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
+#: solana-interface/src/components/SolanaPositionList/SolanaPositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Margin before borrow/funding"

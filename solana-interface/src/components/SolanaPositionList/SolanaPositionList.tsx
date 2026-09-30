@@ -1,6 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { useMemo } from "react";
 
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useBreakpoints } from "lib/useBreakpoints";
 
 import Button from "components/Button/Button";
@@ -63,6 +64,7 @@ export function SolanaPositionList({
   onRetry,
 }: SolanaPositionListProps) {
   const { isTablet } = useBreakpoints();
+  const { isPnlInLeverage } = useSettings();
   const { orderBy, direction, getSorterProps } = useSorterHandlers<SolanaPositionSortField>("solana-position-list");
   const sorted = useMemo(() => sortSolanaPositions(positions, orderBy, direction), [positions, orderBy, direction]);
   const ordersByPosition = useMemo(() => groupSolanaOrdersByPosition(orders), [orders]);
@@ -92,6 +94,7 @@ export function SolanaPositionList({
                 key={position.key}
                 position={position}
                 orders={ordersByPosition.get(position.positionAddress)}
+                isPnlInLeverage={isPnlInLeverage}
               />
             ))}
           </div>
@@ -153,6 +156,7 @@ export function SolanaPositionList({
                 key={position.key}
                 position={position}
                 orders={ordersByPosition.get(position.positionAddress)}
+                isPnlInLeverage={isPnlInLeverage}
               />
             ))}
         </tbody>

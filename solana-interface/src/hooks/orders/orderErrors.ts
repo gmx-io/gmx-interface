@@ -1,9 +1,8 @@
 import { msg } from "@lingui/macro";
 
-import { isIncreaseKind, isMarketKind } from "./orderRules";
+import { isIncreaseKind, isMarketKind, toSolanaPositionCollateralAddress } from "./orderRules";
 import { SOLANA_ORDER_KIND } from "./solanaOrderConstants";
 import type { SolanaOrderError, SolanaOrderViewModel } from "./types";
-import { getSolanaTokenConfig } from "../../config/solanaProgram";
 import type { SolanaPositionViewModel } from "../positions/types";
 
 export type SolanaOrderErrorPosition = Pick<
@@ -13,17 +12,11 @@ export type SolanaOrderErrorPosition = Pick<
 
 type PositionOrder = Extract<SolanaOrderViewModel, { category: "position" | "collateral" }>;
 
-/** Native SOL orders settle into the wrapped mint, which is what position accounts store. */
-function toPositionCollateral(address: string): string {
-  const config = getSolanaTokenConfig(address);
-  return config?.isNative && config.wrappedAddress ? config.wrappedAddress : address;
-}
-
 /** Source: gmx-solana-interface `isOrderForPosition`. */
 export function isSolanaOrderForPosition(order: PositionOrder, position: SolanaOrderErrorPosition): boolean {
   if (order.marketTokenAddress !== position.marketTokenAddress || order.isLong !== position.isLong) return false;
   if (order.kind === SOLANA_ORDER_KIND.LimitIncrease) {
-    return toPositionCollateral(order.targetCollateralTokenAddress) === position.collateralTokenAddress;
+    return toSolanaPositionCollateralAddress(order.targetCollateralTokenAddress) === position.collateralTokenAddress;
   }
   if (order.kind === SOLANA_ORDER_KIND.LimitDecrease || order.kind === SOLANA_ORDER_KIND.StopLossDecrease) {
     return order.targetCollateralTokenAddress === position.collateralTokenAddress;
