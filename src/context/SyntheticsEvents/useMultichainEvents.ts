@@ -111,6 +111,11 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
 
   const { address: currentAccount } = useAccount();
 
+  const accountPendingMultichainFunding = useMemo(
+    () => pendingMultichainFunding.filter((item) => item.account === currentAccount),
+    [currentAccount, pendingMultichainFunding]
+  );
+
   const [, setSelectedTransferGuid] = useGmxAccountSelectedTransferGuid();
   const [multichainFundingPendingIds, setMultichainFundingPendingIds] = useState<Record<string, string>>(EMPTY_OBJECT);
 
@@ -220,7 +225,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       );
 
       patch[pendingItemIndex] = {
-        account: currentAccount,
+        account: submittedDeposit.account,
         sentAmount,
         id: info.guid,
         sentTxn: info.txnHash,
@@ -501,7 +506,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       });
 
       patch[pendingItemIndex] = {
-        account: currentAccount,
+        account: submittedWithdrawal.account,
         // This is on settlement chain, no need to convert amount
         sentAmount: info.amountSentLD,
         id: info.guid,
@@ -820,7 +825,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
 
   const multichainEventsState = useMemo(
     (): MultichainEventsState => ({
-      pendingMultichainFunding,
+      pendingMultichainFunding: accountPendingMultichainFunding,
       multichainFundingPendingIds,
       setMultichainSubmittedDeposit: (submittedEvent) => {
         if (!currentAccount) {
@@ -998,6 +1003,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       },
     }),
     [
+      accountPendingMultichainFunding,
       pendingMultichainFunding,
       multichainFundingPendingIds,
       sourceChainApprovalStatuses,
@@ -1013,7 +1019,6 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
 
   useEffect(
     function resetOnAccountChange() {
-      setPendingMultichainFunding(DEFAULT_MULTICHAIN_FUNDING_STATE);
       setMultichainFundingPendingIds(EMPTY_OBJECT);
       setSourceChainApprovalStatuses(EMPTY_OBJECT);
     },
