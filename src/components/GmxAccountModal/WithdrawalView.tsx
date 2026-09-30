@@ -91,6 +91,7 @@ import { useJsonRpcProvider } from "lib/rpc";
 import { TxnEventName } from "lib/transactions";
 import { ExpressTxnData, sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { sendMultichainWithdrawalSuccessEvent } from "lib/userAnalytics/utils";
 import { AsyncResult, useThrottledAsync } from "lib/useThrottledAsync";
 import { WalletSigner } from "lib/wallets";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
@@ -458,6 +459,7 @@ function useWithdrawViewTransactions({
 
         if (txResult.status === "success") {
           sendTxnSentMetric(metricData.metricId);
+          sendMultichainWithdrawalSuccessEvent(metricData.metricId);
           if (txResult.transactionHash && mockWithdrawalId) {
             setMultichainWithdrawalSentTxnHash(mockWithdrawalId, txResult.transactionHash);
           }

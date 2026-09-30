@@ -60,7 +60,7 @@ import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedList } from "lib/i18n";
 import {
-  OrderMetricId,
+  MultichainDepositMetricData,
   initMultichainDepositMetricData,
   sendOrderSimulatedMetric,
   sendOrderSubmittedMetric,
@@ -72,6 +72,7 @@ import { USD_DECIMALS, adjustForDecimals, bigintToNumber, expandDecimals, format
 import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { sendMultichainDepositSuccessEvent } from "lib/userAnalytics/utils";
 import { useThrottledAsync } from "lib/useThrottledAsync";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
@@ -688,7 +689,7 @@ export const DepositView = () => {
   const makeCrossChainCallback = useCallback(
     (params: {
       depositViewChain: SourceChainId;
-      metricId: OrderMetricId;
+      metricId: MultichainDepositMetricData["metricId"];
       sendParams: SendParam;
       tokenAddress: string;
     }): TxnCallback<WalletTxnCtx> =>
@@ -735,6 +736,7 @@ export const DepositView = () => {
           setIsSubmitting(false);
 
           sendTxnSentMetric(params.metricId);
+          sendMultichainDepositSuccessEvent(params.metricId);
 
           if (latestInputAmountUsd.current !== undefined) {
             sendAddressablePixelEvent({
