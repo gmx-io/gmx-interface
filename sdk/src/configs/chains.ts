@@ -335,6 +335,15 @@ export function getGasPricePremium(chainId: ContractsChainId): bigint | undefine
   return CONTRACTS_CHAIN_CONFIGS[chainId]?.gasPricePremium;
 }
 
+// Priority fee wallets may add, charged on Arbitrum One since 2026-09-23; express is relayed with a zero tip
+const EXECUTION_FEE_PRIORITY_FEE_ALLOWANCE: Partial<Record<ContractsChainId, bigint>> = {
+  [ARBITRUM]: 30000000n, // 0.03 gwei
+};
+
+export function getExecutionFeePriorityFeeAllowance(chainId: ContractsChainId): bigint {
+  return EXECUTION_FEE_PRIORITY_FEE_ALLOWANCE[chainId] ?? 0n;
+}
+
 export function getMaxPriorityFeePerGas(chainId: ContractsChainId) {
   return CONTRACTS_CHAIN_CONFIGS[chainId]?.maxPriorityFeePerGas;
 }
