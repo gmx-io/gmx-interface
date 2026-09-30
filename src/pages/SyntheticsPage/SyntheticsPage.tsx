@@ -130,6 +130,7 @@ export function SyntheticsPage(p: Props) {
   const { isTablet } = useBreakpoints();
   const [solanaChartResolution, setSolanaChartResolution] = useState<TradingViewResolution>(5);
   const [solanaChartCandles, setSolanaChartCandles] = useState<SolanaChartCandles>();
+  const [solanaIndexTokenAddress, setSolanaIndexTokenAddress] = useState("So1Zu7vPQQxrguzUehKAyVLpjcc769zxgBuDAsxTUMH");
 
   if (isSolana) {
     return (
@@ -144,7 +145,10 @@ export function SyntheticsPage(p: Props) {
                   <LogoText className="max-md:hidden" />
                 </Link>
               ) : (
-                <ChartHeader />
+                <ChartHeader
+                  solanaIndexTokenAddress={solanaIndexTokenAddress}
+                  onSolanaIndexTokenChange={setSolanaIndexTokenAddress}
+                />
               )
             }
           />
@@ -153,17 +157,40 @@ export function SyntheticsPage(p: Props) {
         contentClassName="max-w-[none] md:pb-0 md:pt-0"
         pageWrapperClassName="!pl-0 max-lg:!pl-8 max-md:!pl-0"
       >
-        {isTablet ? <ChartHeader /> : null}
+        {isTablet ? (
+          <ChartHeader
+            solanaIndexTokenAddress={solanaIndexTokenAddress}
+            onSolanaIndexTokenChange={setSolanaIndexTokenAddress}
+          />
+        ) : null}
         <div className="grid grid-cols-1 items-start gap-12 md:grid-cols-2 lg:grid-cols-4">
           <SolanaChart
             resolution={solanaChartResolution}
             onResolutionChange={setSolanaChartResolution}
             candles={solanaChartCandles}
           />
-          <SolanaMarketLongTradeBox isLong />
-          <SolanaMarketLongTradeBox isLong={false} />
-          <SolanaMarketLongTradeBox isLong orderType="limit" />
-          <SolanaMarketLongTradeBox isLong={false} orderType="limit" />
+          <SolanaMarketLongTradeBox
+            key={`${solanaIndexTokenAddress}-market-long`}
+            indexTokenAddress={solanaIndexTokenAddress}
+            isLong
+          />
+          <SolanaMarketLongTradeBox
+            key={`${solanaIndexTokenAddress}-market-short`}
+            indexTokenAddress={solanaIndexTokenAddress}
+            isLong={false}
+          />
+          <SolanaMarketLongTradeBox
+            key={`${solanaIndexTokenAddress}-limit-long`}
+            indexTokenAddress={solanaIndexTokenAddress}
+            isLong
+            orderType="limit"
+          />
+          <SolanaMarketLongTradeBox
+            key={`${solanaIndexTokenAddress}-limit-short`}
+            indexTokenAddress={solanaIndexTokenAddress}
+            isLong={false}
+            orderType="limit"
+          />
           <SolanaTradeList />
           <SolanaSignMessageCard />
           <SolanaRpcPage />
