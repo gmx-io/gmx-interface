@@ -31,6 +31,7 @@ import {
   selectPoolsDetailsGlvTokenData,
   selectPoolsDetailsHasNeitherUsdcNorUsdg,
   selectPoolsDetailsIsCrossChainMarket,
+  selectPoolsDetailsIsDirectDepositBlocked,
   selectPoolsDetailsIsMarketTokenDeposit,
   selectPoolsDetailsMarketInfo,
   selectPoolsDetailsMarketOrGlvTokenAmount,
@@ -145,6 +146,7 @@ export function GmSwapBoxDepositWithdrawal() {
   const marketTokensData = useSelector(selectPoolsDetailsMarketTokensData);
   const marketInfo = useSelector(selectPoolsDetailsMarketInfo);
   const glvInfo = useSelector(selectPoolsDetailsGlvInfo);
+  const isDirectDepositBlocked = useSelector(selectPoolsDetailsIsDirectDepositBlocked);
   const glvOrMarketInfo = glvInfo ?? marketInfo;
 
   const tradeTokensData = useSelector(selectPoolsDetailsTradeTokensDataWithSourceChainBalances);
@@ -255,7 +257,8 @@ export function GmSwapBoxDepositWithdrawal() {
   const { shouldShowWarning, shouldShowWarningForExecutionFee, shouldShowWarningForPosition } = useGmWarningState({
     logicalFees,
     isOperationDisabled:
-      isDeposit && marketInfo !== undefined && isDepositDisabledMarket(chainId, marketInfo.marketTokenAddress),
+      isDirectDepositBlocked ||
+      (isDeposit && marketInfo !== undefined && isDepositDisabledMarket(chainId, marketInfo.marketTokenAddress)),
   });
 
   const shouldShowAvalancheGmxAccountWarning = paySource === "gmxAccount" && chainId === AVALANCHE && isDeposit;

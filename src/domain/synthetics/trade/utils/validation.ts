@@ -30,6 +30,7 @@ import type { GmPaySource } from "domain/synthetics/markets/types";
 import { getMarginDepositRiskLevel } from "domain/synthetics/orders/marginDeposit";
 import { PositionInfo, willPositionCollateralBeSufficientForPosition } from "domain/synthetics/positions";
 import { TokenData, TokensData, TokensRatio, getIsEquivalentTokens } from "domain/synthetics/tokens";
+import type { DirectDepositAccess } from "domain/synthetics/whitelists/utils";
 import { DUST_USD, isAddressZero } from "lib/legacy";
 import { PRECISION, adjustForDecimals, expandDecimals, formatAmount, formatUsd, roundWithDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -957,6 +958,7 @@ export function getGmSwapError(p: {
   isPair: boolean;
   chainId: ContractsChainId;
   srcChainId?: SourceChainId | undefined;
+  directDepositAccess?: DirectDepositAccess;
 }): ValidationResult {
   const {
     isDeposit,
@@ -984,6 +986,7 @@ export function getGmSwapError(p: {
     isPair,
     chainId,
     srcChainId,
+    directDepositAccess,
   } = p;
 
   if (!marketInfo || !marketToken) {
@@ -992,6 +995,14 @@ export function getGmSwapError(p: {
 
   if (isDeposit && isDepositDisabledMarket(chainId, marketInfo.marketTokenAddress)) {
     return { buttonErrorMessage: t`Buying GM unavailable` };
+  }
+
+  if (isDeposit && directDepositAccess === "loading") {
+    return { buttonErrorMessage: t`Loading...` };
+  }
+
+  if (isDeposit && directDepositAccess === "denied") {
+    return { buttonErrorMessage: t`Whitelist only` };
   }
 
   const glvTooltipMessage = glvInfo

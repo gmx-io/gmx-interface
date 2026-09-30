@@ -3,6 +3,7 @@ import mapValues from "lodash/mapValues";
 import { isSettlementChain, MULTI_CHAIN_PLATFORM_TOKENS_MAP } from "config/multichain";
 import { getPaxosTransitConfig } from "config/paxosTransit";
 import {
+  selectAccountWhitelistsResult,
   selectChainId,
   selectDepositMarketTokensData,
   selectGlvAndMarketsInfoData,
@@ -23,6 +24,7 @@ import { getMintableMarketTokens, isMarketInfo } from "domain/synthetics/markets
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { Mode, Operation } from "domain/synthetics/markets/types";
 import { getHasNoOnChainBalance } from "domain/synthetics/tokens";
+import { getDirectDepositAccess, getIsDirectDepositBlocked } from "domain/synthetics/whitelists/utils";
 import { ERC20Address, getGmToken, getTokenData, Token, TokenBalanceType } from "domain/tokens";
 import { getIsEnteredAmount } from "lib/getIsEnteredAmount";
 import { parseValue } from "lib/numbers";
@@ -287,6 +289,27 @@ export const selectPoolsDetailsMarketInfo = createSelector((q) => {
   return q((state) => {
     return getByKey(selectMarketsInfoData(state), marketTokenAddress);
   });
+});
+
+export const selectPoolsDetailsDirectDepositAccess = createSelector((q) => {
+  const { isDeposit } = q(selectPoolsDetailsFlags);
+  const glvInfo = q(selectPoolsDetailsGlvInfo);
+  const marketInfo = q(selectPoolsDetailsMarketInfo);
+
+  if (!isDeposit || glvInfo || !marketInfo) {
+    return undefined;
+  }
+
+  const chainId = q(selectChainId);
+  const whitelistsResult = q(selectAccountWhitelistsResult);
+
+  return getDirectDepositAccess({ chainId, market: marketInfo, whitelistsResult });
+});
+
+export const selectPoolsDetailsIsDirectDepositBlocked = createSelector((q) => {
+  const directDepositAccess = q(selectPoolsDetailsDirectDepositAccess);
+
+  return getIsDirectDepositBlocked(directDepositAccess);
 });
 
 export const selectPoolsDetailsMarketTokenData = createSelector((q) => {
