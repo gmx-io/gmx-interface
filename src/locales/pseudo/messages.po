@@ -349,10 +349,6 @@ msgstr ""
 msgid "Margin per part: {0} (min {1})"
 msgstr ""
 
-#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
-msgid "Buy {gasPaymentTokensText}"
-msgstr ""
-
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Show error"
 msgstr ""
@@ -514,6 +510,10 @@ msgstr ""
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Settled funding fees"
+msgstr ""
+
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
+msgid "<0>Swap</0> or <1>bridge</1> {gasPaymentTokenSymbol}."
 msgstr ""
 
 #: src/components/Referrals/affiliates/faq.tsx

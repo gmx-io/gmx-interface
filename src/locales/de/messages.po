@@ -349,10 +349,6 @@ msgstr "Virtueller Bestand für Positionen"
 msgid "Margin per part: {0} (min {1})"
 msgstr "Margin pro Teil: {0} (Min. {1})"
 
-#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
-msgid "Buy {gasPaymentTokensText}"
-msgstr "Kaufe {gasPaymentTokensText}"
-
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Show error"
 msgstr "Fehler anzeigen"
@@ -515,6 +511,10 @@ msgstr "Abhebung bestätigen"
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Settled funding fees"
 msgstr "Abgerechnete Fundinggebühren"
+
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
+msgid "<0>Swap</0> or <1>bridge</1> {gasPaymentTokenSymbol}."
+msgstr "<0>Tauschen</0> oder <1>bridgen</1> Sie {gasPaymentTokenSymbol}."
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Rebates are paid in the collateral tokens used by your referrals. For example, if a referral trades with USDC collateral, your rebate portion will be in USDC."
