@@ -30,6 +30,7 @@ type AnnouncementBannerProps = {
   onPointerEnter?: (event: React.PointerEvent) => void;
   onPointerLeave?: (event: React.PointerEvent) => void;
   className?: string;
+  truncateHeader?: boolean;
 };
 
 const variantContainerClass: Record<AnnouncementVariant, string> = {
@@ -92,6 +93,7 @@ export function AnnouncementBanner({
   onPointerEnter,
   onPointerLeave,
   className,
+  truncateHeader = true,
 }: AnnouncementBannerProps) {
   const accentText = variantAccentTextClass[variant];
 
@@ -110,7 +112,14 @@ export function AnnouncementBanner({
       <div className={cx("flex items-center justify-between gap-8 p-12", variantDividerClass[variant])}>
         <div className="flex min-w-0 items-center gap-8">
           {headerIcon !== undefined && <HeaderIcon kind={headerIcon} className={cx("size-20 shrink-0", accentText)} />}
-          <p className="text-body-medium truncate font-medium text-typography-primary">{headerLabel}</p>
+          <p
+            className={cx(
+              "text-body-medium font-medium text-typography-primary",
+              truncateHeader ? "truncate" : "break-words"
+            )}
+          >
+            {headerLabel}
+          </p>
         </div>
         {onClose && (
           <button

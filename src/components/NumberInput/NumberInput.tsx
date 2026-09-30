@@ -3,11 +3,25 @@ import { ChangeEvent, KeyboardEvent, RefObject } from "react";
 
 import { limitDecimals } from "lib/numbers";
 
-function escapeSpecialRegExpChars(string: string): string {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
+const inputRegex = /^(?:0|[1-9]\d*)(?:\.\d*)?$/;
 
-const inputRegex = RegExp(`^\\d*(?:\\\\[.])?\\d*$`);
+export function sanitizeNumberInputValue(rawValue: string): string | undefined {
+  let newValue = rawValue.replace(/,/g, ".");
+
+  if (newValue === "") {
+    return newValue;
+  }
+
+  if (newValue.startsWith(".")) {
+    newValue = `0${newValue}`;
+  }
+
+  if (!inputRegex.test(newValue)) {
+    return undefined;
+  }
+
+  return newValue;
+}
 
 type Props = {
   value?: string | number;
@@ -40,20 +54,17 @@ function NumberInput({
 }: Props) {
   function onChange(e: ChangeEvent<HTMLInputElement>) {
     if (!onValueChange) return;
-    // Replace comma with dot
-    let newValue = e.target.value.replace(/,/g, ".");
-    if (newValue === ".") {
-      newValue = "0.";
+
+    let newValue = sanitizeNumberInputValue(e.target.value);
+
+    if (newValue === undefined) return;
+
+    if (maxDecimals !== undefined) {
+      newValue = limitDecimals(newValue, maxDecimals);
     }
 
-    if (newValue === "" || inputRegex.test(escapeSpecialRegExpChars(newValue))) {
-      if (maxDecimals !== undefined) {
-        newValue = limitDecimals(newValue, maxDecimals);
-      }
-
-      e.target.value = newValue;
-      onValueChange(e);
-    }
+    e.target.value = newValue;
+    onValueChange(e);
   }
   return (
     <input

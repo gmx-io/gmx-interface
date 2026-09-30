@@ -76,3 +76,25 @@ export function useWallets() {
     ready: true,
   };
 }
+
+export function getEmbeddedConnectedWallet(
+  wallets: (typeof mockEthereumWallet)[]
+): typeof mockEthereumWallet | null {
+  return (
+    wallets.find(
+      (wallet) => wallet.walletClientType === "privy" && wallet.connectorType === "embedded" && !wallet.imported
+    ) ?? null
+  );
+}
+
+export function useExportWallet() {
+  return {
+    exportWallet: () => Promise.resolve(),
+  };
+}
+
+export function useAddFunds() {
+  return {
+    addFunds: () => Promise.resolve({ method: "crypto", status: "completed" }),
+  };
+}

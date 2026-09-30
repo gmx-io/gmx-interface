@@ -47,11 +47,13 @@ export function useExpressOrdersParams({
   orderParams,
   label,
   isGmxAccount,
+  canSwitchGasPaymentToken,
 }: {
   orderParams: BatchOrderTxnParams | undefined;
   totalExecutionFee?: bigint;
   label?: string;
   isGmxAccount: boolean;
+  canSwitchGasPaymentToken: boolean;
 }): ExpressOrdersParamsResult {
   const { chainId } = useChainId();
 
@@ -79,7 +81,7 @@ export function useExpressOrdersParams({
     : undefined;
   const externalSwapGasLimit = orderParams ? getBatchExternalSwapGasLimit(orderParams) : undefined;
 
-  const estimationKey = `${executionFeeKey}:${requiredActions}:${externalSwapGasLimit}:${globalExpressParams?.gasPaymentTokenAddress}`;
+  const estimationKey = `${executionFeeKey}:${requiredActions}:${externalSwapGasLimit}:${globalExpressParams?.gasPaymentTokenAddress}:${subaccount?.signedApproval.signature}`;
   const prevEstimationKey = usePrevious(estimationKey);
 
   const forceRecalculate = estimationKey !== prevEstimationKey;
@@ -225,6 +227,7 @@ export function useExpressOrdersParams({
     expressParams: result.expressParams,
     orderParams,
     isGmxAccount,
+    canSwitchGasPaymentToken,
   });
 
   if (showDebugValues && label && result.expressParams) {

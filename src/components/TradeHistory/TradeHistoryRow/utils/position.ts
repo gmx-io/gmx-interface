@@ -4,13 +4,15 @@ import { t } from "@lingui/macro";
 import { isBoundaryAcceptablePrice } from "domain/prices";
 import { getMarketFullName, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import {
+  DecreasePositionSwapType,
   OrderType,
   isDecreaseOrderType,
   isIncreaseOrderType,
   isLiquidationOrderType,
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
-import { convertToUsd, parseContractPrice } from "domain/synthetics/tokens";
+import { isMarginDepositOrder } from "domain/synthetics/orders/marginDeposit";
+import { convertToTokenAmount, convertToUsd, parseContractPrice } from "domain/synthetics/tokens";
 import { getShouldUseMaxPrice } from "domain/synthetics/trade";
 import { isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
 import { tryDecodeCustomError } from "lib/errors";
@@ -21,12 +23,14 @@ import {
   applyFactor,
   calculateDisplayDecimals,
   formatDeltaUsd,
+  formatPriceImpactBps,
   formatTokenAmount,
   formatTokenAmountWithUsd,
   formatUsd,
+  roundsToZero,
 } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
-import { PositionTradeAction, TradeActionType } from "sdk/utils/tradeHistory/types";
+import { PositionTradeAction, TradeActionType, USER_INITIATED_CANCEL } from "sdk/utils/tradeHistory/types";
 
 import {
   INEQUALITY_GT,
@@ -41,14 +45,14 @@ import {
   lines,
   numberToState,
 } from "./shared";
-import { actionTextMap, getActionTitle } from "../../keys";
+import { actionTextMap, expiredActionTextMap, getActionTitle } from "../../keys";
 
 export const formatPositionMessage = (
   tradeAction: PositionTradeAction,
   minCollateralUsd: bigint,
   relativeTimestamp = true
 ): RowDetails => {
-  const collateralToken = tradeAction.initialCollateralToken;
+  const collateralToken = getMarginDeltaCollateralToken(tradeAction);
   const isV22Action = tradeAction.srcChainId !== undefined;
 
   let sizeDeltaUsd = tradeAction.sizeDeltaUsd;
@@ -115,6 +119,13 @@ export const formatPositionMessage = (
 
   const isFullClose = isTriggerDecreaseOrderType(ot) && isFullPositionCloseSizeDeltaUsd(sizeDeltaUsd);
 
+  const isMarginDeposit = isMarginDepositOrder({
+    orderType: ot,
+    sizeDeltaUsd,
+    initialCollateralDeltaAmount: collateralDeltaAmount,
+    isTwap: Boolean(tradeAction.twapParams),
+  });
+
   const sizeDeltaText = isFullClose
     ? t`Full position close`
     : formatUsd(sizeDeltaUsd * (isIncrease ? BN_ONE : BN_NEGATIVE_ONE), {
@@ -152,7 +163,12 @@ export const formatPositionMessage = (
     visualMultiplier: tradeAction.indexToken.visualMultiplier,
   })!;
 
-  const action = getActionTitle(tradeAction.orderType, tradeAction.eventName, Boolean(tradeAction.twapParams));
+  const action = getActionTitle(
+    tradeAction.orderType,
+    tradeAction.eventName,
+    Boolean(tradeAction.twapParams),
+    tradeAction.reason
+  );
   const timestamp = formatTradeActionTimestamp(tradeAction.timestamp, relativeTimestamp);
   const timestampUTC = formatTradeActionTimestampUTC(tradeAction.timestamp);
 
@@ -180,6 +196,7 @@ export const formatPositionMessage = (
   });
 
   const priceImpactLines = getPriceImpactLines(tradeAction);
+  const sizeComment = getSizeComment(tradeAction);
 
   let displayedPriceImpact: string | undefined = undefined;
   if (isIncreaseOrderType(ot) && !isV22Action) {
@@ -190,6 +207,56 @@ export const formatPositionMessage = (
 
   let result: MakeOptional<RowDetails, "action" | "market" | "timestamp" | "timestampUTC" | "price" | "size"> = {
     priceComment: null,
+  };
+
+  const getCancelledMarketOrderResult = (
+    collateralActionKey: "Deposit-OrderCancelled" | "Withdraw-OrderCancelled"
+  ): typeof result => {
+    const isExpired = tradeAction.reason === USER_INITIATED_CANCEL;
+    const customAction =
+      sizeDeltaUsd > 0
+        ? action
+        : i18n._(isExpired ? expiredActionTextMap[collateralActionKey]! : actionTextMap[collateralActionKey]!);
+    const customSize = sizeDeltaUsd > 0 ? sizeDeltaText : formattedCollateralDelta;
+    const customPrice = acceptablePriceInequality + formattedAcceptablePrice;
+    const error = tradeAction.reasonBytes ? tryDecodeCustomError(tradeAction.reasonBytes) ?? undefined : undefined;
+    const hasMarkPrice = marketPrice !== undefined;
+
+    const priceComment = lines(
+      hasMarkPrice ? t`Mark price for the order` : t`Acceptable price for the order`,
+      hasMarkPrice || error?.args?.price !== undefined ? "" : undefined,
+      hasMarkPrice
+        ? infoRow(t`Order acceptable price`, acceptablePriceInequality + formattedAcceptablePrice)
+        : undefined,
+      error?.args?.price !== undefined
+        ? infoRow(
+            t`Order execution price`,
+            formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
+              displayDecimals: marketPriceDecimals,
+              visualMultiplier: tradeAction.indexToken.visualMultiplier,
+            })
+          )
+        : undefined
+    );
+
+    return {
+      action: customAction,
+      actionComment: isExpired
+        ? lines({
+            text: t`Order expired before it could be executed`,
+            state: "muted",
+          })
+        : error &&
+          lines({
+            text: getErrorTooltipTitle(error.name, true, error.args),
+            state: "error",
+          }),
+      size: customSize,
+      priceComment,
+      acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
+      isActionError: !isExpired,
+      ...(hasMarkPrice ? {} : { price: customPrice }),
+    };
   };
 
   //#region MarketIncrease
@@ -222,39 +289,7 @@ export const formatPositionMessage = (
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
     };
   } else if (ot === OrderType.MarketIncrease && ev === TradeActionType.OrderCancelled) {
-    const customAction = sizeDeltaUsd > 0 ? action : i18n._(actionTextMap["Deposit-OrderCancelled"]!);
-    const customSize = sizeDeltaUsd > 0 ? sizeDeltaText : formattedCollateralDelta;
-    const customPrice = acceptablePriceInequality + formattedAcceptablePrice;
-    const error = tradeAction.reasonBytes ? tryDecodeCustomError(tradeAction.reasonBytes) ?? undefined : undefined;
-
-    const priceComment = lines(
-      t`Acceptable price for the order`,
-      error?.args?.price !== undefined ? "" : undefined,
-      error?.args?.price !== undefined
-        ? infoRow(
-            t`Order execution price`,
-            formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
-              displayDecimals: marketPriceDecimals,
-              visualMultiplier: tradeAction.indexToken.visualMultiplier,
-            })
-          )
-        : undefined
-    );
-
-    result = {
-      action: customAction,
-      actionComment:
-        error &&
-        lines({
-          text: getErrorTooltipTitle(error.name, true, error.args),
-          state: "error",
-        }),
-      size: customSize,
-      price: customPrice,
-      priceComment,
-      acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
-      isActionError: true,
-    };
+    result = getCancelledMarketOrderResult("Deposit-OrderCancelled");
     //#endregion MarketIncrease
     //#region Twap
   } else if (tradeAction.twapParams) {
@@ -287,6 +322,72 @@ export const formatPositionMessage = (
       };
     }
     //#endregion Twap
+    //#region MarginDeposit
+  } else if (
+    isMarginDeposit &&
+    (ev === TradeActionType.OrderCreated ||
+      ev === TradeActionType.OrderUpdated ||
+      ev === TradeActionType.OrderCancelled)
+  ) {
+    const customPrice = triggerPriceInequality + formattedTriggerPrice;
+    const isAcceptablePriceUseful = !isBoundaryAcceptablePrice(tradeAction.acceptablePrice);
+
+    result = {
+      action: i18n._(actionTextMap[`MarginDeposit-${ev}`]!),
+      size: formattedCollateralDelta,
+      price: customPrice,
+      priceComment: lines(t`Trigger price for the order`),
+      triggerPrice: customPrice,
+      acceptablePrice: isAcceptablePriceUseful ? acceptablePriceInequality + formattedAcceptablePrice : undefined,
+    };
+  } else if (isMarginDeposit && ev === TradeActionType.OrderExecuted) {
+    const isAcceptablePriceUseful = !isBoundaryAcceptablePrice(tradeAction.acceptablePrice);
+
+    result = {
+      action: i18n._(actionTextMap["MarginDeposit-OrderExecuted"]!),
+      size: formattedCollateralDelta,
+      priceComment: lines(
+        t`Mark price for the order`,
+        "",
+        infoRow(t`Order trigger price`, triggerPriceInequality + formattedTriggerPrice),
+        ...priceImpactLines
+      ),
+      triggerPrice: triggerPriceInequality + formattedTriggerPrice,
+      acceptablePrice: isAcceptablePriceUseful ? acceptablePriceInequality + formattedAcceptablePrice : undefined,
+    };
+  } else if (isMarginDeposit && ev === TradeActionType.OrderFrozen) {
+    const error = tradeAction.reasonBytes ? tryDecodeCustomError(tradeAction.reasonBytes) ?? undefined : undefined;
+    const isAcceptablePriceUseful = !isBoundaryAcceptablePrice(tradeAction.acceptablePrice);
+    const customPrice = triggerPriceInequality + formattedTriggerPrice;
+
+    result = {
+      action: i18n._(actionTextMap["MarginDeposit-OrderFrozen"]!),
+      size: formattedCollateralDelta,
+      actionComment:
+        error &&
+        lines({
+          text: getErrorTooltipTitle(error.name, false, error.args),
+          state: "error",
+        }),
+      price: customPrice,
+      priceComment: lines(
+        t`Trigger price for the order`,
+        error?.args?.price !== undefined ? "" : undefined,
+        error?.args?.price !== undefined
+          ? infoRow(
+              t`Order execution price`,
+              formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
+                displayDecimals: marketPriceDecimals,
+                visualMultiplier: tradeAction.indexToken.visualMultiplier,
+              })
+            )
+          : undefined
+      ),
+      triggerPrice: customPrice,
+      acceptablePrice: isAcceptablePriceUseful ? acceptablePriceInequality + formattedAcceptablePrice : undefined,
+      isActionError: true,
+    };
+    //#endregion MarginDeposit
     //#region LimitIncrease and StopIncrease
   } else if (
     ((ot === OrderType.LimitIncrease || ot === OrderType.StopIncrease) && ev === TradeActionType.OrderCreated) ||
@@ -373,38 +474,7 @@ export const formatPositionMessage = (
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
     };
   } else if (ot === OrderType.MarketDecrease && ev === TradeActionType.OrderCancelled) {
-    const customAction = sizeDeltaUsd > 0 ? action : i18n._(actionTextMap["Withdraw-OrderCreated"]!);
-    const customSize = sizeDeltaUsd > 0 ? sizeDeltaText : formattedCollateralDelta;
-    const customPrice = acceptablePriceInequality + formattedAcceptablePrice;
-    const error = tradeAction.reasonBytes ? tryDecodeCustomError(tradeAction.reasonBytes) ?? undefined : undefined;
-    const priceComment = lines(
-      t`Acceptable price for the order`,
-      error?.args?.price !== undefined ? "" : undefined,
-      error?.args?.price !== undefined
-        ? infoRow(
-            t`Order execution price`,
-            formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
-              displayDecimals: marketPriceDecimals,
-              visualMultiplier: tradeAction.indexToken.visualMultiplier,
-            })
-          )
-        : undefined
-    );
-
-    result = {
-      action: customAction,
-      actionComment:
-        error &&
-        lines({
-          text: getErrorTooltipTitle(error.name, true, error.args),
-          state: "error",
-        }),
-      size: customSize,
-      price: customPrice,
-      priceComment,
-      acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
-      isActionError: true,
-    };
+    result = getCancelledMarketOrderResult("Withdraw-OrderCancelled");
   } else if (ot === OrderType.MarketDecrease && ev === TradeActionType.OrderExecuted) {
     const customAction = sizeDeltaUsd > 0 ? action : i18n._(actionTextMap["Withdraw-OrderExecuted"]!);
     const customSize = sizeDeltaUsd > 0 ? sizeDeltaText : formattedCollateralDelta;
@@ -413,7 +483,7 @@ export const formatPositionMessage = (
       action: customAction,
       size: customSize,
       priceComment:
-        priceImpactLines.length > 0
+        sizeDeltaUsd > 0 && priceImpactLines.length > 0
           ? lines(t`Mark price for the order`, "", ...priceImpactLines)
           : lines(t`Mark price for the order`),
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
@@ -538,11 +608,15 @@ export const formatPositionMessage = (
     //#endregion StopLossDecrease
     //#region Liquidation
   } else if (ot === OrderType.Liquidation && ev === TradeActionType.OrderExecuted) {
-    const maxLeverage =
-      tradeAction.marketInfo.minCollateralFactorForLiquidation === 0n
-        ? 0n
-        : PRECISION / tradeAction.marketInfo.minCollateralFactorForLiquidation;
-    const formattedMaxLeverage = Number(maxLeverage).toFixed(1) + "x";
+    const minCollateralFactorForLiquidation =
+      tradeAction.minCollateralFactorForLiquidation !== undefined && tradeAction.minCollateralFactorForLiquidation > 0n
+        ? tradeAction.minCollateralFactorForLiquidation
+        : undefined;
+
+    const formattedMaxLeverage =
+      minCollateralFactorForLiquidation === undefined
+        ? undefined
+        : Number(PRECISION / minCollateralFactorForLiquidation).toFixed(1) + "x";
 
     const initialCollateralUsd = convertToUsd(
       tradeAction.initialCollateralDeltaAmount,
@@ -589,8 +663,11 @@ export const formatPositionMessage = (
     );
     const formattedPositionFee = formatUsd(positionFeeUsd === undefined ? undefined : -positionFeeUsd);
 
-    let liquidationCollateralUsd = applyFactor(sizeDeltaUsd, tradeAction.marketInfo.minCollateralFactorForLiquidation);
-    if (liquidationCollateralUsd < minCollateralUsd) {
+    let liquidationCollateralUsd =
+      minCollateralFactorForLiquidation === undefined
+        ? undefined
+        : applyFactor(sizeDeltaUsd, minCollateralFactorForLiquidation);
+    if (liquidationCollateralUsd !== undefined && liquidationCollateralUsd < minCollateralUsd) {
       liquidationCollateralUsd = minCollateralUsd;
     }
 
@@ -600,7 +677,8 @@ export const formatPositionMessage = (
         : initialCollateralUsd + tradeAction.basePnlUsd! - borrowingFeeUsd! - fundingFeeUsd! - positionFeeUsd!;
 
     const formattedLeftoverCollateral = formatUsd(leftoverCollateralUsd!);
-    const formattedMinCollateral = formatUsd(liquidationCollateralUsd)!;
+    const formattedMinCollateral =
+      liquidationCollateralUsd === undefined ? undefined : formatUsd(liquidationCollateralUsd);
 
     const liquidationFeeUsd =
       convertToUsd(
@@ -643,7 +721,9 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the liquidation`,
         "",
-        t`Liquidated as max leverage of ${formattedMaxLeverage} was exceeded when accounting for fees.`,
+        formattedMaxLeverage === undefined
+          ? t`Liquidated as the max allowed leverage was exceeded when accounting for fees.`
+          : t`Liquidated as max leverage of ${formattedMaxLeverage} was exceeded when accounting for fees.`,
         "",
         infoRow(t`Initial margin`, formattedInitialCollateral!),
         infoRow(t`PnL`, {
@@ -663,7 +743,7 @@ export const formatPositionMessage = (
           state: "error",
         }),
         "",
-        infoRow(t`Minimum required margin`, formattedMinCollateral),
+        formattedMinCollateral === undefined ? undefined : infoRow(t`Minimum required margin`, formattedMinCollateral),
         infoRow(t`Margin at liquidation`, formattedLeftoverCollateral),
         "",
         ...priceImpactLines,
@@ -712,6 +792,7 @@ export const formatPositionMessage = (
     marketPrice: formattedMarketPrice,
     executionPrice: formattedExecutionPrice,
     priceImpact: displayedPriceImpact,
+    ...(sizeComment ? { sizeComment } : {}),
     indexName,
     poolName,
     ...result!,
@@ -722,7 +803,64 @@ export const formatPositionMessage = (
   };
 };
 
-function getFeesBreakdown(tradeAction: PositionTradeAction): { totalUsd: bigint; lines: Line[] } {
+function getAppliedImpactUsd(tradeAction: PositionTradeAction): bigint {
+  return tradeAction.totalImpactUsd ?? tradeAction.priceImpactUsd ?? 0n;
+}
+
+/** A decrease can pay out in both the collateral and the pnl token at once; no event carries that split. */
+export function hasSecondaryOutputRisk(tradeAction: PositionTradeAction): boolean {
+  const pnlToken = tradeAction.isLong ? tradeAction.marketInfo.longToken : tradeAction.marketInfo.shortToken;
+
+  if (pnlToken.address === tradeAction.initialCollateralToken.address) {
+    return false;
+  }
+
+  if (tradeAction.decreasePositionSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken) {
+    return true;
+  }
+
+  return (
+    (tradeAction.basePnlUsd ?? 0n) + getAppliedImpactUsd(tradeAction) > 0n &&
+    tradeAction.decreasePositionSwapType !== DecreasePositionSwapType.SwapPnlTokenToCollateralToken
+  );
+}
+
+/**
+ * Collateral released already includes the costs paid out of it, so the (negative) fee total is added back
+ * rather than subtracted, and impact beyond the cap goes to claimable collateral instead of the wallet.
+ * Both the close-side and the lifecycle settlement derive payouts here — they must not drift apart.
+ */
+export function getDecreasePayoutUsd(tradeAction: PositionTradeAction): bigint | undefined {
+  const collateralUsd = convertToUsd(
+    tradeAction.initialCollateralDeltaAmount,
+    tradeAction.initialCollateralToken.decimals,
+    tradeAction.collateralTokenPriceMin
+  );
+
+  if (collateralUsd === undefined) {
+    return undefined;
+  }
+
+  const payoutUsd =
+    collateralUsd +
+    (tradeAction.basePnlUsd ?? 0n) +
+    getFeesBreakdown(tradeAction).totalUsd -
+    (tradeAction.priceImpactDiffUsd ?? 0n);
+
+  return bigMath.max(0n, payoutUsd);
+}
+
+/** Fees an action took out of the collateral, as a positive collateral-token magnitude. */
+export function getRowFeesAmount(tradeAction: PositionTradeAction): bigint {
+  return (
+    (tradeAction.positionFeeAmount ?? 0n) +
+    (tradeAction.borrowingFeeAmount ?? 0n) +
+    (tradeAction.fundingFeeAmount ?? 0n) -
+    (tradeAction.traderDiscountAmount ?? 0n)
+  );
+}
+
+export function getFeesBreakdown(tradeAction: PositionTradeAction): { totalUsd: bigint; lines: Line[] } {
   const collateralPrice = tradeAction.collateralTokenPriceMin;
   const collateralDecimals = tradeAction.initialCollateralToken?.decimals;
   const orderType = tradeAction.orderType;
@@ -790,29 +928,73 @@ function getFeesBreakdown(tradeAction: PositionTradeAction): { totalUsd: bigint;
   return { totalUsd, lines: breakdownLines };
 }
 
+export function getSettlementTooltipLines(
+  tradeAction: PositionTradeAction,
+  openRow: PositionTradeAction | undefined,
+  isMultichain = false
+): Line[] {
+  const collateralToken = tradeAction.initialCollateralToken;
+  const collateralPrice = tradeAction.collateralTokenPriceMin;
+  const breakdown = getFeesBreakdown(tradeAction);
+
+  const formatCollateralAmount = (amount: bigint) =>
+    formatTokenAmount(amount, collateralToken.decimals, collateralToken.symbol, {
+      useCommas: true,
+      displayDecimals: calculateDisplayDecimals(amount, collateralToken.decimals, undefined, collateralToken.isStable),
+      isStable: collateralToken.isStable,
+    });
+
+  const marginAtCloseAmount = tradeAction.initialCollateralDeltaAmount;
+  const receivedUsd = getDecreasePayoutUsd(tradeAction);
+
+  let walletReceived: string | undefined;
+  if (receivedUsd !== undefined) {
+    const isSingleCollateralPayout = tradeAction.swapPath.length === 0 && !hasSecondaryOutputRisk(tradeAction);
+
+    const formatted = isSingleCollateralPayout
+      ? formatCollateralAmount(convertToTokenAmount(receivedUsd, collateralToken.decimals, collateralPrice)!)
+      : formatUsd(receivedUsd);
+
+    walletReceived = formatted === undefined ? undefined : `~${formatted}`;
+  }
+
+  return lines(
+    "",
+    t`Settlement`,
+    "",
+    openRow === undefined
+      ? undefined
+      : infoRow(
+          t`Initial margin`,
+          formatCollateralAmount(openRow.initialCollateralDeltaAmount + getRowFeesAmount(openRow))
+        ),
+    openRow === undefined
+      ? undefined
+      : infoRow(t`Open fee / discount`, formatCollateralAmount(-getRowFeesAmount(openRow))),
+    infoRow(t`Margin at close`, formatCollateralAmount(marginAtCloseAmount)),
+    infoRow(t`RPNL`, {
+      text: formatDeltaUsd(tradeAction.basePnlUsd),
+      state: numberToState(tradeAction.basePnlUsd),
+    }),
+    infoRow(t`Net close fees / impact`, {
+      text: formatDeltaUsd(breakdown.totalUsd),
+      state: numberToState(breakdown.totalUsd),
+    }),
+    walletReceived === undefined
+      ? undefined
+      : infoRow(isMultichain ? t`Received at close (GMX balance)` : t`Wallet received`, walletReceived)
+  );
+}
+
 function getPriceImpactLines(tradeAction: PositionTradeAction) {
   const isV22Action = tradeAction.srcChainId !== undefined;
   const lines: Line[] = [];
 
   if (isLiquidationOrderType(tradeAction.orderType)) {
     if (isV22Action && tradeAction.totalImpactUsd !== undefined) {
-      const formattedNetPriceImpact = formatDeltaUsd(tradeAction.totalImpactUsd);
-
-      lines.push(
-        infoRow(t`Net price impact`, {
-          text: formattedNetPriceImpact!,
-          state: numberToState(tradeAction.totalImpactUsd!),
-        })
-      );
+      lines.push(getPriceImpactLine(t`Net price impact`, tradeAction.totalImpactUsd, tradeAction.sizeDeltaUsd));
     } else {
-      const formattedPriceImpact = formatDeltaUsd(tradeAction.priceImpactUsd);
-
-      lines.push(
-        infoRow(t`Price impact`, {
-          text: formattedPriceImpact!,
-          state: numberToState(tradeAction.priceImpactUsd!),
-        })
-      );
+      lines.push(getPriceImpactLine(t`Price impact`, tradeAction.priceImpactUsd, tradeAction.sizeDeltaUsd));
     }
 
     return lines;
@@ -823,39 +1005,75 @@ function getPriceImpactLines(tradeAction: PositionTradeAction) {
       return [];
     }
 
-    const formattedPriceImpact = formatDeltaUsd(tradeAction.priceImpactUsd);
-
-    lines.push(
-      infoRow(t`Price impact`, {
-        text: formattedPriceImpact!,
-        state: numberToState(tradeAction.priceImpactUsd!),
-      })
-    );
+    lines.push(getPriceImpactLine(t`Price impact`, tradeAction.priceImpactUsd, tradeAction.sizeDeltaUsd));
   }
 
   if (isDecreaseOrderType(tradeAction.orderType)) {
     if (isV22Action && tradeAction.totalImpactUsd !== undefined) {
-      const formattedNetPriceImpact = formatDeltaUsd(tradeAction.totalImpactUsd);
-
-      lines.push(
-        infoRow(t`Net price impact`, {
-          text: formattedNetPriceImpact!,
-          state: numberToState(tradeAction.totalImpactUsd!),
-        })
-      );
+      lines.push(getPriceImpactLine(t`Net price impact`, tradeAction.totalImpactUsd, tradeAction.sizeDeltaUsd));
     } else {
-      const formattedPriceImpact = formatDeltaUsd(tradeAction.priceImpactUsd);
-
-      lines.push(
-        infoRow(t`Price impact`, {
-          text: formattedPriceImpact!,
-          state: numberToState(tradeAction.priceImpactUsd!),
-        })
-      );
+      lines.push(getPriceImpactLine(t`Price impact`, tradeAction.priceImpactUsd, tradeAction.sizeDeltaUsd));
     }
   }
 
   return lines;
+}
+
+function getPriceImpactLine(label: string, priceImpactUsd: bigint | undefined, sizeDeltaUsd: bigint): Line {
+  const state = numberToState(priceImpactUsd);
+  const usdLine = { text: formatDeltaUsd(priceImpactUsd), state };
+  const bpsText = formatPriceImpactBps(priceImpactUsd, sizeDeltaUsd);
+
+  return infoRow(label, bpsText ? [usdLine, " ", { text: `(${bpsText})`, state }] : usdLine);
+}
+
+function getSizeComment(tradeAction: PositionTradeAction): Line[] | undefined {
+  if (tradeAction.eventName !== TradeActionType.OrderExecuted) {
+    return undefined;
+  }
+
+  if (tradeAction.sizeDeltaUsd <= 0n || tradeAction.initialCollateralDeltaAmount === 0n) {
+    return undefined;
+  }
+
+  if (isLiquidationOrderType(tradeAction.orderType)) {
+    return undefined;
+  }
+
+  const collateralToken = getMarginDeltaCollateralToken(tradeAction);
+  const signedMarginDelta = isDecreaseOrderType(tradeAction.orderType)
+    ? -tradeAction.initialCollateralDeltaAmount
+    : tradeAction.initialCollateralDeltaAmount;
+  const displayDecimals = calculateDisplayDecimals(
+    tradeAction.initialCollateralDeltaAmount,
+    collateralToken.decimals,
+    undefined,
+    collateralToken.isStable
+  );
+
+  if (roundsToZero(signedMarginDelta, collateralToken.decimals, displayDecimals)) {
+    return undefined;
+  }
+
+  const formattedMarginDelta = formatTokenAmount(signedMarginDelta, collateralToken.decimals, collateralToken.symbol, {
+    useCommas: true,
+    displayPlus: true,
+    displayDecimals,
+    isStable: collateralToken.isStable,
+  });
+
+  if (!formattedMarginDelta) {
+    return undefined;
+  }
+
+  return lines(infoRow(t`Margin delta`, formattedMarginDelta));
+}
+
+function getMarginDeltaCollateralToken(tradeAction: PositionTradeAction) {
+  const isExecutedIncrease =
+    tradeAction.eventName === TradeActionType.OrderExecuted && isIncreaseOrderType(tradeAction.orderType);
+
+  return isExecutedIncrease ? tradeAction.targetCollateralToken : tradeAction.initialCollateralToken;
 }
 
 export function getTokenPriceByTradeAction(tradeAction: PositionTradeAction) {

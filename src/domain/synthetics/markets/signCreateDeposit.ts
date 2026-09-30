@@ -67,5 +67,5 @@ export async function signCreateDeposit({
     relayParams: hashRelayParams(relayParams),
   };
 
-  return signTypedData({ signer, domain, types, typedData, shouldUseSignerMethod });
+  return signTypedData({ signer, domain, types, typedData, shouldUseSignerMethod, verificationChainId: chainId });
 }

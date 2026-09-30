@@ -1,3 +1,5 @@
+import { GMX_DECIMALS } from "lib/legacy";
+import { bigintToNumber } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 
 export function getThresholdBalance(historicalMaxStaked: bigint): bigint {
@@ -35,4 +37,28 @@ export function getEffectiveHistoricalMax(
   stakingPowerData: { historicalMaxStaked: bigint | null } | undefined
 ): bigint | null {
   return stakingPowerData?.historicalMaxStaked ?? null;
+}
+
+export function getUserEstimatedApr({
+  avgWeeklyBuybackGmx,
+  userStakingPower,
+  totalNetworkStakingPower,
+  userStakedGmxAndEsGmx,
+}: {
+  avgWeeklyBuybackGmx: number | undefined;
+  userStakingPower: bigint | undefined;
+  totalNetworkStakingPower: bigint | undefined;
+  userStakedGmxAndEsGmx: bigint | undefined;
+}): number | undefined {
+  if (avgWeeklyBuybackGmx === undefined) return undefined;
+  if (userStakingPower === undefined || totalNetworkStakingPower === undefined) return undefined;
+  if (userStakingPower <= 0n) return undefined;
+  if (totalNetworkStakingPower <= 0n) return undefined;
+  if (userStakedGmxAndEsGmx === undefined || userStakedGmxAndEsGmx <= 0n) return undefined;
+
+  const userStakingPowerShare =
+    bigintToNumber(userStakingPower, GMX_DECIMALS) / bigintToNumber(totalNetworkStakingPower, GMX_DECIMALS);
+  const userAnnualizedRewardsGmx = avgWeeklyBuybackGmx * 52 * userStakingPowerShare;
+
+  return userAnnualizedRewardsGmx / bigintToNumber(userStakedGmxAndEsGmx, GMX_DECIMALS);
 }

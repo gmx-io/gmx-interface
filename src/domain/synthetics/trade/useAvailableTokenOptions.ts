@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import { zeroAddress } from "viem";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, MEGAETH } from "config/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, MEGAETH } from "config/chains";
 import { getSortedMarketsAddressesKey } from "config/localStorage";
 import { SORTED_MARKETS } from "config/static/sortedMarkets";
 import {
@@ -19,6 +19,7 @@ import { NATIVE_TOKEN_ADDRESS, getTokensMap } from "sdk/configs/tokens";
 
 import { isGlvInfo } from "../markets/glv";
 import { TokenData, TokensData, adaptToV1InfoTokens, convertToUsd } from "../tokens";
+import { getTokenAddressesSortedByPoolValue } from "./utils/tokenSorting";
 
 export type AvailableTokenOptions = {
   tokensMap: { [address: string]: Token };
@@ -68,13 +69,6 @@ function getSortedMarketsConfigs(marketsData?: MarketsData, sortedAddresses?: st
 }
 
 const FORCE_ALLOWED_COLLATERAL_TOKENS: Record<ContractsChainId, string[]> = {
-  // handled by wrapOrUnwrap or by stakeOrUnstake
-  [BOTANIX]: [
-    // bBTC
-    zeroAddress,
-    // pBTC
-    "0x0D2437F93Fed6EA64Ef01cCde385FB1263910C56",
-  ],
   [MEGAETH]: [
     // ETH - handled by wrapOrUnwrap
     zeroAddress,
@@ -126,8 +120,7 @@ export function useAvailableTokenOptions(
 
     const collaterals = new Set<TokenData>();
 
-    const longTokensWithPoolValue: { [address: string]: bigint } = {};
-    const shortTokensWithPoolValue: { [address: string]: bigint } = {};
+    const swapTokenPoolValues: { tokenAddress: string; poolValueUsd: bigint }[] = [];
 
     for (const marketInfo of marketsInfo) {
       if (isGlvInfo(marketInfo)) {
@@ -179,11 +172,10 @@ export function useAvailableTokenOptions(
         getMidPrice(marketInfo.shortToken.prices)
       )!;
 
-      longTokensWithPoolValue[longToken.address] =
-        (longTokensWithPoolValue[longToken.address] ?? 0n) + longPoolAmountUsd;
-
-      shortTokensWithPoolValue[shortToken.address] =
-        (shortTokensWithPoolValue[shortToken.address] ?? 0n) + shortPoolAmountUsd;
+      swapTokenPoolValues.push(
+        { tokenAddress: longToken.address, poolValueUsd: longPoolAmountUsd },
+        { tokenAddress: shortToken.address, poolValueUsd: shortPoolAmountUsd }
+      );
 
       const isSpcxMarket = marketInfo.marketTokenAddress === "0x470128853D74dab7423904a20eA5AA230e9e561B";
 
@@ -213,15 +205,7 @@ export function useAvailableTokenOptions(
 
     const sortedMarketConfigs = getSortedMarketsConfigs(marketsData, sortedMarketAddressesRef.current);
 
-    const sortedLongTokens = Object.keys(longTokensWithPoolValue).sort((a, b) => {
-      return longTokensWithPoolValue[b] > longTokensWithPoolValue[a] ? 1 : -1;
-    });
-
-    const sortedShortTokens = Object.keys(shortTokensWithPoolValue).sort((a, b) => {
-      return shortTokensWithPoolValue[b] > shortTokensWithPoolValue[a] ? 1 : -1;
-    });
-
-    const sortedLongAndShortTokens = sortedLongTokens.concat(sortedShortTokens);
+    const sortedLongAndShortTokens = getTokenAddressesSortedByPoolValue(swapTokenPoolValues);
 
     const collateralAddresses = new Set(Array.from(collaterals).map((c) => c.address));
 
@@ -255,7 +239,7 @@ export function useAvailableTokenOptions(
         ...adaptToV1InfoTokens(marketTokens || {}),
       },
       sortedIndexTokensWithPoolValue,
-      sortedLongAndShortTokens: Array.from(new Set(sortedLongAndShortTokens)),
+      sortedLongAndShortTokens,
       sortedAllMarkets,
       sortedMarketConfigs,
     };

@@ -1,3 +1,4 @@
+export * from "./errors";
 export * from "./generateSubaccount";
 export * from "./removeSubaccount";
 export type {

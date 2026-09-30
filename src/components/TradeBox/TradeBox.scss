@@ -130,25 +130,6 @@
   }
 }
 
-.Tradebox-handle {
-  z-index: 1;
-  cursor: pointer;
-  position: relative;
-  display: inline-flex;
-  text-decoration: underline;
-  text-decoration-style: solid;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 2px;
-  text-decoration-color: var(--color-gray-400);
-  user-select: none;
-  color: var(--color-gray-400);
-
-  &:hover {
-    text-decoration-color: var(--color-typography-primary);
-    color: var(--color-typography-primary);
-  }
-}
-
 .SwapBox-info-section .App-card-divider:last-child {
   display: none;
 }

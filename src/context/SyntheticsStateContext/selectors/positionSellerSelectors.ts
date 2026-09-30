@@ -151,7 +151,6 @@ export const selectPositionSellerSplitReceiveDecreaseAmounts = createSelector((q
   const decreaseAmountArgs = q(selectPositionSellerDecreaseAmountArgs);
 
   if (!decreaseAmountArgs) return undefined;
-  if (decreaseAmountArgs.tradeMode === TradeMode.Twap) return undefined;
 
   const keepLeverageRaw = q(selectPositionSellerKeepLeverageRaw);
   const keepLeverageDisabledByCollateral = q(selectPositionSellerLeverageDisabledByCollateral);
@@ -283,6 +282,11 @@ export const selectPositionSellerFees = createSelector((q) => {
 });
 
 export const selectPositionSellerReceiveToken = createSelector((q) => {
+  // TWAP has no receive-token selector and its legs/UI assume collateral — pin it to collateral.
+  if (q(selectPositionSellerOrderOption) === OrderOption.Twap) {
+    return q(selectPositionSellerPosition)?.collateralToken;
+  }
+
   const isChanged = q(selectPositionSellerReceiveTokenAddressChanged);
   const defaultReceiveTokenAddress = q(selectPositionSellerDefaultReceiveToken);
   const receiveTokenAddress = isChanged
@@ -458,8 +462,7 @@ const selectPositionSellerOptimalDecrease = createSelector((q) => {
     triggerOrderType,
     isSetAcceptablePriceImpactEnabled,
     receiveToken,
-    forceDecreaseSwapType:
-      isReceiveSeparated && tradeMode !== TradeMode.Twap ? DecreasePositionSwapType.NoSwap : undefined,
+    forceDecreaseSwapType: isReceiveSeparated ? DecreasePositionSwapType.NoSwap : undefined,
     findSwapPath,
     findSwapPathFromPnl,
     marketsInfoData,
@@ -488,11 +491,18 @@ export const selectPositionSellerAvailableReceiveTokens = createSelector((q) => 
 
   const reachableTokens = reachableAddresses
     .flatMap((address) => {
-      const token = getByKey(tokensData, address)!;
+      const token = getByKey(tokensData, address);
+
+      if (!token) {
+        return [];
+      }
 
       if (token.isWrapped && !wasNativeTokenInserted) {
+        const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
+
         wasNativeTokenInserted = true;
-        return [getByKey(tokensData, NATIVE_TOKEN_ADDRESS)!, token];
+
+        return nativeToken ? [nativeToken, token] : [token];
       }
 
       return [token];

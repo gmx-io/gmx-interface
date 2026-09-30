@@ -6,10 +6,11 @@ import { format } from "date-fns/format";
 import { formatRelative } from "date-fns/formatRelative";
 import { enUS as dateEn } from "date-fns/locale/en-US";
 
+import { getStringContractErrorArg } from "lib/errors";
 import { TradeActionType } from "sdk/utils/tradeHistory/types";
 
 import { LOCALE_DATE_LOCALE_MAP } from "components/DateRangeSelect/DateRangeSelect";
-import { getContractErrorMessage } from "components/Errors/getContractErrorMessage";
+import { getContractErrorMessage, getMarginBelowMinimumErrorMessage } from "components/Errors/getContractErrorMessage";
 
 import { CustomErrorName } from "./CustomErrorName";
 
@@ -46,6 +47,7 @@ export type TooltipString =
       text: string | undefined;
       state?: TooltipState;
     };
+export type TooltipValue = TooltipString | TooltipString[];
 
 export function numberToState(value: bigint | undefined): TooltipState {
   if (value === undefined) {
@@ -66,13 +68,13 @@ export type Line =
   | TooltipString[]
   | {
       key: string;
-      value: TooltipString;
+      value: TooltipValue;
     };
 export type TooltipContent = Line[];
 export function lines(...args: TooltipContent): TooltipContent {
   return args;
 }
-export function infoRow(key: string, value: TooltipString): Line {
+export function infoRow(key: string, value: TooltipValue): Line {
   return {
     key,
     value,
@@ -94,6 +96,7 @@ export type RowDetails = {
     poolName: string;
   }[];
   size: string;
+  sizeComment?: TooltipContent;
   price: string;
   priceComment: TooltipContent | null;
   pnl?: string;
@@ -184,7 +187,7 @@ export function getErrorTooltipTitle(errorName: string, isMarketOrder: boolean, 
     return t`Insufficient liquidity`;
   }
 
-  const tradeHistoryErrorMessage = getTradeHistoryErrorMessage(errorName);
+  const tradeHistoryErrorMessage = getTradeHistoryErrorMessage(errorName, errorArgs);
 
   if (tradeHistoryErrorMessage) {
     return tradeHistoryErrorMessage;
@@ -204,7 +207,9 @@ export function getErrorTooltipTitle(errorName: string, isMarketOrder: boolean, 
   return t`Order failed due to a protocol validation error: ${errorName}`;
 }
 
-function getTradeHistoryErrorMessage(errorName: string) {
+const MIN_COLLATERAL_FOR_LEVERAGE_REASON = "min collateral for leverage";
+
+function getTradeHistoryErrorMessage(errorName: string, errorArgs?: unknown) {
   switch (errorName) {
     case CustomErrorName.DisabledFeature:
       return t`This action is currently disabled`;
@@ -240,7 +245,9 @@ function getTradeHistoryErrorMessage(errorName: string) {
     case CustomErrorName.InsufficientFundsToPayForCosts:
       return t`Insufficient collateral to cover order costs`;
     case CustomErrorName.LiquidatablePosition:
-      return t`Position would be liquidatable at current prices`;
+      return getStringContractErrorArg(errorArgs, 0, "reason") === MIN_COLLATERAL_FOR_LEVERAGE_REASON
+        ? getMarginBelowMinimumErrorMessage()
+        : t`Position would be liquidatable at current prices`;
     default:
       return undefined;
   }

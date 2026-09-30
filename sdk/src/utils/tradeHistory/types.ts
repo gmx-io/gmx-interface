@@ -1,5 +1,5 @@
 import { MarketInfo } from "utils/markets/types";
-import { OrderType } from "utils/orders/types";
+import { DecreasePositionSwapType, OrderType } from "utils/orders/types";
 import { TokenData } from "utils/tokens/types";
 
 export enum TradeActionType {
@@ -9,6 +9,9 @@ export enum TradeActionType {
   OrderUpdated = "OrderUpdated",
   OrderFrozen = "OrderFrozen",
 }
+
+/** For market orders this means expired (keeper cancelled after requestExpirationTime). */
+export const USER_INITIATED_CANCEL = "USER_INITIATED_CANCEL";
 
 export type PositionTradeAction = {
   type: "position";
@@ -23,6 +26,10 @@ export type PositionTradeAction = {
   targetCollateralToken: TokenData;
   indexToken: TokenData;
   swapPath: string[];
+  positionKey?: string;
+  positionLifecycleId?: string;
+  positionSizeInUsd?: bigint;
+  positionSizeInTokens?: bigint;
   initialCollateralDeltaAmount: bigint;
   sizeDeltaUsd: bigint;
   sizeDeltaInTokens?: bigint;
@@ -45,6 +52,7 @@ export type PositionTradeAction = {
   pnlUsd?: bigint;
   basePnlUsd?: bigint;
   orderType: OrderType;
+  decreasePositionSwapType?: DecreasePositionSwapType;
   orderKey: string;
   isLong: boolean;
   reason?: string;
@@ -52,6 +60,7 @@ export type PositionTradeAction = {
   shouldUnwrapNativeToken: boolean;
   totalImpactUsd?: bigint;
   liquidationFeeAmount?: bigint;
+  minCollateralFactorForLiquidation?: bigint;
   twapParams:
     | {
         twapGroupId: string;
@@ -76,6 +85,8 @@ export type SwapTradeAction = {
   initialCollateralDeltaAmount: bigint;
   minOutputAmount: bigint;
   executionAmountOut?: bigint;
+  swapFeeUsd?: bigint;
+  swapImpactUsd?: bigint;
   orderType: OrderType;
   orderKey: string;
   reason?: string;

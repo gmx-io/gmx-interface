@@ -10,7 +10,12 @@ import { useHistory } from "react-router-dom";
 import { useLatest } from "react-use";
 
 import { AVALANCHE, ContractsChainId, SourceChainId } from "config/chains";
-import { getKeepLeverageKey, getLeverageKey, getSyntheticsTradeOptionsKey } from "config/localStorage";
+import {
+  getKeepLeverageKey,
+  getLeverageKey,
+  getSyntheticsTradeOptionsKey,
+  MARGIN_DEPOSIT_SUGGESTION_HIDDEN_KEY,
+} from "config/localStorage";
 import { isSettlementChain } from "config/multichain";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -27,7 +32,7 @@ import { TradeMode, TradeType } from "sdk/utils/trade/types";
 import { TwapDuration } from "sdk/utils/twap/types";
 
 import { MarketsData, MarketsInfoData } from "../markets";
-import { chooseSuitableMarket } from "../markets/chooseSuitableMarket";
+import { chooseSuitableMarket, UserSelectedMarkets } from "../markets/chooseSuitableMarket";
 import {
   isLimitOrderType,
   isStopIncreaseOrderType,
@@ -76,6 +81,9 @@ export type StoredTradeOptions = {
       long: string;
       short: string;
     };
+  };
+  userSelectedMarkets?: {
+    [indexTokenAddress: string]: UserSelectedMarkets;
   };
   collaterals?: {
     [marketAddress: string]: {
@@ -175,7 +183,11 @@ export function useTradeboxState(
         localStorage.setItem(JSON.stringify(getSyntheticsTradeOptionsKey(chainId)), JSON.stringify(newState));
 
         if (latestEnabled.current && newState.tradeType !== oldState.tradeType) {
-          latestHistory.current.replace(`/trade/${newState.tradeType.toLowerCase()}`);
+          latestHistory.current.replace({
+            pathname: `/trade/${newState.tradeType.toLowerCase()}`,
+            // The search still carries deep link params here, they are applied once markets load.
+            search: latestHistory.current.location.search,
+          });
         }
         return newState;
       });
@@ -205,7 +217,9 @@ export function useTradeboxState(
         const saved = JSON.parse(raw) as StoredTradeOptions;
 
         if (saved.tokens.indexTokenAddress && availableIndexTokensAddresses.includes(saved.tokens.indexTokenAddress)) {
-          setStoredOptionsOnChain(saved);
+          if (syncedChainId !== undefined) {
+            setStoredOptionsOnChain(saved);
+          }
           setSyncedChainId(chainId);
           return;
         }
@@ -217,8 +231,10 @@ export function useTradeboxState(
         return;
       }
 
-      setStoredOptionsOnChain({
+      setStoredOptionsOnChain((oldState) => ({
         ...INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE,
+        // A `/trade/short` link is applied before the chain defaults resolve, so keep its trade type.
+        tradeType: oldState.tradeType ?? INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE.tradeType,
         markets: {
           [market.indexTokenAddress]: {
             long: market.marketTokenAddress,
@@ -229,7 +245,7 @@ export function useTradeboxState(
           indexTokenAddress: market.indexTokenAddress,
           fromTokenAddress: market.shortTokenAddress,
         },
-      });
+      }));
       setSyncedChainId(chainId);
     },
     [
@@ -278,6 +294,7 @@ export function useTradeboxState(
   const [focusedInput, setFocusedInput] = useState<"from" | "to">();
   const [defaultTriggerAcceptablePriceImpactBps, setDefaultTriggerAcceptablePriceImpactBps] = useState<bigint>();
   const [selectedTriggerAcceptablePriceImpactBps, setSelectedTriggerAcceptablePriceImpactBps] = useState<bigint>();
+  const [isAcceptablePriceImpactCustomized, setIsAcceptablePriceImpactCustomized] = useState(false);
   const [defaultAllowedSwapSlippageBps, setDefaultAllowedSwapSlippageBps] = useState<bigint>();
   const [selectedAllowedSwapSlippageBps, setSelectedAllowedSwapSlippageBps] = useState<bigint>();
   const [closeSizeInputValue, setCloseSizeInputValue] = useState("");
@@ -290,6 +307,16 @@ export function useTradeboxState(
     storedOptions.advanced ?? INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE.advanced
   );
 
+  const latestDefaultTriggerAcceptablePriceImpactBps = useLatest(defaultTriggerAcceptablePriceImpactBps);
+
+  const setUserSelectedAcceptablePriceImpactBps = useCallback(
+    (value: bigint) => {
+      setSelectedTriggerAcceptablePriceImpactBps(value);
+      setIsAcceptablePriceImpactCustomized(value !== latestDefaultTriggerAcceptablePriceImpactBps.current);
+    },
+    [latestDefaultTriggerAcceptablePriceImpactBps]
+  );
+
   const { swapTokens } = availableTokensOptions;
 
   const tradeType = storedOptions?.tradeType;
@@ -299,6 +326,10 @@ export function useTradeboxState(
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
   const [limitPriceWarningHidden, setLimitPriceWarningHidden] = useLocalStorageSerializeKey(
     "limit-price-warning-hidden",
+    false
+  );
+  const [marginDepositSuggestionHidden, setMarginDepositSuggestionHidden] = useLocalStorageSerializeKey(
+    MARGIN_DEPOSIT_SUGGESTION_HIDDEN_KEY,
     false
   );
 
@@ -346,7 +377,7 @@ export function useTradeboxState(
 
         if (!token) return oldState;
 
-        const { maxLongLiquidityPool, maxShortLiquidityPool } = getMaxLongShortLiquidityPool(token);
+        const { maxLongLiquidityPool, maxShortLiquidityPool, indexTokenPools } = getMaxLongShortLiquidityPool(token);
 
         const patch = chooseSuitableMarket({
           indexTokenAddress: tokenAddress,
@@ -357,6 +388,8 @@ export function useTradeboxState(
           ordersInfo: ordersInfoData,
           preferredTradeType: tradeType,
           currentTradeType: oldState.tradeType,
+          userSelectedMarkets: oldState.userSelectedMarkets?.[tokenAddress],
+          availableIndexTokenPools: indexTokenPools,
         });
 
         if (!patch) {
@@ -441,7 +474,7 @@ export function useTradeboxState(
     return true;
   }, [enabled, storedOptions]);
 
-  const setMarketAddress = useCallback(
+  const setUserSelectedMarketAddress = useCallback(
     (marketAddress?: string) => {
       setStoredOptions((oldState) => {
         const toTokenAddress = oldState.tokens.indexTokenAddress;
@@ -452,6 +485,7 @@ export function useTradeboxState(
 
         return produce(oldState, (draft) => {
           draft.markets[toTokenAddress][isLong ? "long" : "short"] = marketAddress;
+          set(draft, ["userSelectedMarkets", toTokenAddress, isLong ? "long" : "short"], marketAddress);
         });
       });
     },
@@ -728,6 +762,7 @@ export function useTradeboxState(
     toTokenAddress,
     marketAddress,
     marketInfo,
+    userSelectedMarkets: storedOptions.userSelectedMarkets,
     collateralAddress,
     collateralToken,
     availableTokensOptions,
@@ -739,7 +774,7 @@ export function useTradeboxState(
     setActiveOrder,
     setFromTokenAddress,
     setToTokenAddress,
-    setMarketAddress,
+    setUserSelectedMarketAddress,
     setCollateralAddress,
     setTradeType,
     setTradeMode,
@@ -757,6 +792,9 @@ export function useTradeboxState(
     setDefaultTriggerAcceptablePriceImpactBps,
     selectedTriggerAcceptablePriceImpactBps,
     setSelectedAcceptablePriceImpactBps: setSelectedTriggerAcceptablePriceImpactBps,
+    setUserSelectedAcceptablePriceImpactBps,
+    isAcceptablePriceImpactCustomized,
+    setIsAcceptablePriceImpactCustomized,
     defaultAllowedSwapSlippageBps,
     setDefaultAllowedSwapSlippageBps,
     selectedAllowedSwapSlippageBps,
@@ -773,6 +811,8 @@ export function useTradeboxState(
     setKeepLeverage,
     limitPriceWarningHidden,
     setLimitPriceWarningHidden,
+    marginDepositSuggestionHidden,
+    setMarginDepositSuggestionHidden,
     advancedOptions,
     setAdvancedOptions,
     allowedSlippage,

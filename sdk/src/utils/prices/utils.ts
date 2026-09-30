@@ -44,6 +44,49 @@ export function getOrderThresholdType(orderType: OrderType, isLong: boolean) {
   return undefined;
 }
 
+export function getIsIncreaseOrderExecutableNow(p: {
+  orderType: OrderType | undefined;
+  isLong: boolean;
+  triggerPrice: bigint | undefined;
+  indexTokenPrices: TokenPrices;
+}): boolean {
+  const { orderType, isLong, triggerPrice, indexTokenPrices } = p;
+
+  if (orderType === OrderType.MarketIncrease) {
+    return true;
+  }
+
+  if (triggerPrice === undefined || triggerPrice <= 0n) {
+    return false;
+  }
+
+  if (orderType === OrderType.LimitIncrease) {
+    return isLong ? indexTokenPrices.maxPrice <= triggerPrice : indexTokenPrices.minPrice >= triggerPrice;
+  }
+
+  if (orderType === OrderType.StopIncrease) {
+    return isLong ? indexTokenPrices.maxPrice >= triggerPrice : indexTokenPrices.minPrice <= triggerPrice;
+  }
+
+  return false;
+}
+
+export function getIncreaseEvaluationIndexPrice(p: {
+  orderType: OrderType | undefined;
+  triggerPrice: bigint | undefined;
+}): bigint | undefined {
+  if (
+    p.triggerPrice === undefined ||
+    p.triggerPrice <= 0n ||
+    p.orderType === undefined ||
+    p.orderType === OrderType.MarketIncrease
+  ) {
+    return undefined;
+  }
+
+  return p.triggerPrice;
+}
+
 export function getAcceptablePriceInfo(p: {
   marketInfo: MarketInfo;
   isIncrease: boolean;
@@ -52,6 +95,7 @@ export function getAcceptablePriceInfo(p: {
   indexPrice: bigint;
   sizeDeltaUsd: bigint;
   maxNegativePriceImpactBps?: bigint;
+  sizeDeltaInTokens?: bigint;
 }) {
   const { marketInfo, isIncrease, isLong, indexPrice, sizeDeltaUsd, maxNegativePriceImpactBps } = p;
   const { indexToken } = marketInfo;
@@ -101,6 +145,7 @@ export function getAcceptablePriceInfo(p: {
     {
       fallbackToZero: !isIncrease,
       shouldCapNegativeImpact: false,
+      sizeDeltaInTokens: p.sizeDeltaInTokens,
     }
   );
 
@@ -134,6 +179,7 @@ export function getAcceptablePriceInfo(p: {
     {
       fallbackToZero: !isIncrease,
       shouldCapNegativeImpact: false,
+      sizeDeltaInTokens: p.sizeDeltaInTokens,
     }
   );
 

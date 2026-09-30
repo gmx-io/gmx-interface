@@ -8,12 +8,14 @@ export function useQuoteOftLimits({
   amountLD,
   isStable,
   decimals,
+  symbol,
   enabled,
 }: {
   quoteOft: QuoteOft | undefined;
   amountLD: bigint | undefined;
   isStable: boolean | undefined;
   decimals: number | undefined;
+  symbol?: string;
   enabled: boolean;
 }) {
   const lastMinAmountLD = useRef<bigint | undefined>(undefined);
@@ -40,7 +42,7 @@ export function useQuoteOftLimits({
 
   const lowerLimitFormatted =
     isBelowLimit && decimals && lastMinAmountLD.current !== undefined
-      ? formatBalanceAmount(lastMinAmountLD.current, decimals, undefined, {
+      ? formatBalanceAmount(lastMinAmountLD.current, decimals, symbol, {
           isStable,
         })
       : undefined;
@@ -52,7 +54,7 @@ export function useQuoteOftLimits({
 
   const upperLimitFormatted =
     isAboveLimit && decimals && lastMaxAmountLD.current !== undefined
-      ? formatBalanceAmount(lastMaxAmountLD.current, decimals, undefined, {
+      ? formatBalanceAmount(lastMaxAmountLD.current, decimals, symbol, {
           isStable,
         })
       : undefined;

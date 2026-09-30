@@ -105,6 +105,7 @@ export function LogoSection({ isCollapsed }: { isCollapsed: boolean | undefined 
 export interface NavItemProps {
   icon: ReactNode;
   label: ReactNode;
+  ariaLabel?: string;
   isActive?: boolean;
   isCollapsed: boolean | undefined;
   onClick?: () => void;
@@ -112,9 +113,22 @@ export interface NavItemProps {
   external?: boolean;
 }
 
-export function NavItem({ icon, label, isActive = false, isCollapsed = false, onClick, to, external }: NavItemProps) {
+export function NavItem({
+  icon,
+  label,
+  ariaLabel,
+  isActive = false,
+  isCollapsed = false,
+  onClick,
+  to,
+  external,
+}: NavItemProps) {
   const button = (
-    <button className={cx("group cursor-pointer select-none py-1", { "w-full": !isCollapsed })} onClick={onClick}>
+    <button
+      aria-label={ariaLabel}
+      className={cx("group cursor-pointer select-none py-1 text-left", { "w-full": !isCollapsed })}
+      onClick={onClick}
+    >
       <div
         className={cx(
           `relative flex cursor-pointer items-center gap-8

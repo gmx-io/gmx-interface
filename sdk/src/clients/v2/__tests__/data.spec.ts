@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { getTestSdk, getTestSigner } from "./testUtil";
+import { getOrCreateTestSigner, getTestSdk } from "./testUtil";
 
 const sdk = getTestSdk();
-const signer = getTestSigner();
+const signer = getOrCreateTestSigner();
 
 describe("GmxApiSdk — data fetching", () => {
   it("fetchMarketsInfo", async () => {
@@ -63,10 +63,10 @@ describe("GmxApiSdk — data fetching", () => {
 });
 
 describe("positions & orders", () => {
-  const account = signer?.address;
+  const account = signer.address;
 
-  it.skipIf(!signer)("fetchPositionsInfo returns positions for account", async () => {
-    const positions = await sdk.fetchPositionsInfo({ address: account! });
+  it("fetchPositionsInfo returns positions for account", async () => {
+    const positions = await sdk.fetchPositionsInfo({ address: account });
     expect(Array.isArray(positions)).toBe(true);
     if (positions.length > 0) {
       expect(positions[0].account).toBe(account);
@@ -75,17 +75,17 @@ describe("positions & orders", () => {
     }
   });
 
-  it.skipIf(!signer)("fetchPositionsInfo with includeRelatedOrders", async () => {
+  it("fetchPositionsInfo with includeRelatedOrders", async () => {
     const [without, withOrders] = await Promise.all([
-      sdk.fetchPositionsInfo({ address: account! }),
-      sdk.fetchPositionsInfo({ address: account!, includeRelatedOrders: true }),
+      sdk.fetchPositionsInfo({ address: account }),
+      sdk.fetchPositionsInfo({ address: account, includeRelatedOrders: true }),
     ]);
     expect(Array.isArray(withOrders)).toBe(true);
     expect(withOrders.length).toBeGreaterThanOrEqual(without.length);
   });
 
-  it.skipIf(!signer)("fetchOrders returns orders array", async () => {
-    const orders = await sdk.fetchOrders({ address: account! });
+  it("fetchOrders returns orders array", async () => {
+    const orders = await sdk.fetchOrders({ address: account });
     expect(Array.isArray(orders)).toBe(true);
   });
 

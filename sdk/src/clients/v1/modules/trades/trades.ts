@@ -237,7 +237,7 @@ export async function fetchTradeActions({
         tradeActions(
             offset: ${offset},
             limit: ${limit},
-            orderBy: timestamp_DESC,
+            orderBy: [timestamp_DESC, id_DESC],
             ${whereClause}
         ) {
             id
@@ -247,6 +247,9 @@ export async function fetchTradeActions({
             marketAddress
             swapPath
             initialCollateralTokenAddress
+            positionKey
+            positionSizeInUsd
+            positionSizeInTokens
 
             initialCollateralDeltaAmount
             sizeDeltaUsd
@@ -266,6 +269,7 @@ export async function fetchTradeActions({
             fundingFeeAmount
             swapFeeUsd
             liquidationFeeAmount
+            minCollateralFactorForLiquidation
             pnlUsd
             basePnlUsd
 

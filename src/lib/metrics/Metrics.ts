@@ -226,7 +226,7 @@ class Metrics {
       this.isGlobalPropsFilled = true;
     }
 
-    this.queue = this.queue.slice(MAX_BATCH_LENGTH - 1);
+    this.queue = this.queue.slice(MAX_BATCH_LENGTH);
 
     _debugMetrics?.logSendBatchItems(items);
 

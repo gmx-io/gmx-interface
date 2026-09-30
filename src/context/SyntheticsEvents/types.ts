@@ -1,11 +1,12 @@
-import type { ReactNode } from "react";
+import type { Dispatch, ReactNode, SetStateAction } from "react";
 
 import type { MultichainTransferProgress } from "domain/multichain/progress/MultichainTransferProgress";
 import type { MultichainFundingHistoryItem } from "domain/multichain/types";
-import type { OrderTxnType, OrderType } from "domain/synthetics/orders";
+import type { DecreasePositionSwapType, OrderTxnType, OrderType } from "domain/synthetics/orders";
 import type { SignedSubaccountApproval } from "domain/synthetics/subaccount";
+import type { PendingTpSlOrderBatch } from "domain/tpsl/types";
 import type { OrderMetricId } from "lib/metrics/types";
-import type { StatusCode } from "sdk/utils/gelatoRelay";
+import type { StatusCode } from "sdk/utils/express";
 import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 import type { ExternalSwapQuote } from "sdk/utils/trade/types";
 
@@ -16,7 +17,6 @@ type MultiTransactionStatus<TEventData> = {
   data?: TEventData;
   createdTxnHash?: string;
   cancelledTxnHash?: string;
-  gelatoTaskId?: string;
   updatedTxnHash?: string;
   executedTxnHash?: string;
   createdAt: number;
@@ -24,6 +24,7 @@ type MultiTransactionStatus<TEventData> = {
 };
 
 export type PositionIncreaseEvent = {
+  blockNumber: number;
   positionKey: string;
   contractPositionKey: string;
   account: string;
@@ -46,6 +47,7 @@ export type PositionIncreaseEvent = {
 };
 
 export type PositionDecreaseEvent = {
+  blockNumber: number;
   positionKey: string;
   contractPositionKey: string;
   account: string;
@@ -76,6 +78,7 @@ export type PendingPositionUpdate = {
   collateralDeltaAmount: bigint;
   updatedAt: number;
   updatedAtBlock: bigint;
+  orderKey?: string;
 };
 
 export type PendingExpressTxnParams = {
@@ -95,10 +98,11 @@ export type PendingExpressTxnParams = {
   errorMessage?: ReactNode;
   isViewed?: boolean;
   isRelayerMetricSent?: boolean;
+  isSubaccountApprovalErrorChecked?: boolean;
   sendFailed?: boolean;
 };
 
-export type GelatoTaskStatus = {
+export type RelayTaskStatus = {
   taskId: string;
   statusCode: StatusCode;
   message?: string;
@@ -171,11 +175,13 @@ export type SyntheticsEventsContextType = MultichainEventsState & {
   shiftStatuses: ShiftStatuses;
   approvalStatuses: ApprovalStatuses;
   pendingOrdersUpdates: PendingOrdersUpdates;
+  pendingTpSlOrderBatches: PendingTpSlOrderBatch[];
+  setPendingTpSlOrderBatches: Dispatch<SetStateAction<PendingTpSlOrderBatch[]>>;
   pendingPositionsUpdates: PendingPositionsUpdates;
   positionIncreaseEvents: PositionIncreaseEvent[] | undefined;
   positionDecreaseEvents: PositionDecreaseEvent[] | undefined;
   pendingExpressTxns: PendingExpressTxns;
-  gelatoTaskStatuses: { [taskId: string]: GelatoTaskStatus };
+  relayTaskStatuses: { [taskId: string]: RelayTaskStatus };
   setPendingExpressTxn: (params: PendingExpressTxnParams) => void;
   updatePendingExpressTxn: (params: Partial<PendingExpressTxnParams>) => void;
   setPendingOrder: SetPendingOrder;
@@ -222,6 +228,7 @@ export type OrderCreatedEventData = {
   minOutputAmount: bigint;
   updatedAtBlock: bigint;
   orderType: OrderType;
+  decreasePositionSwapType: DecreasePositionSwapType;
   isLong: boolean;
   shouldUnwrapNativeToken: boolean;
   externalSwapQuote: undefined;
@@ -246,6 +253,7 @@ export type PendingOrderData = {
   expectedOutputAmount?: bigint;
   sizeDeltaUsd: bigint;
   isLong: boolean;
+  decreasePositionSwapType: DecreasePositionSwapType;
   shouldUnwrapNativeToken: boolean;
   orderType: OrderType;
   referralCode?: string;
@@ -346,7 +354,9 @@ export type PendingShiftData = {
   minMarketTokens: bigint;
 };
 
-export type OrderStatus = MultiTransactionStatus<OrderCreatedEventData>;
+export type OrderStatus = MultiTransactionStatus<OrderCreatedEventData> & {
+  cancellationReasonBytes?: string;
+};
 export type DepositStatus = MultiTransactionStatus<DepositCreatedEventData | GLVDepositCreatedEventData>;
 export type WithdrawalStatus = MultiTransactionStatus<WithdrawalCreatedEventData>;
 export type ShiftStatus = MultiTransactionStatus<ShiftCreatedEventData>;

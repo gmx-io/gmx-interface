@@ -1,8 +1,7 @@
-import { USD_DECIMALS } from "utils/numbers";
 import { periodToSeconds } from "utils/time";
 import { Token } from "utils/tokens/types";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, MEGAETH, ContractsChainId } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, MEGAETH, ContractsChainId } from "./chains";
 import { getTokenBySymbol, getWrappedToken } from "./tokens";
 
 export const SUBACCOUNT_MESSAGE =
@@ -15,17 +14,19 @@ export const DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT = 90;
 export const DEFAULT_PERMIT_DEADLINE_DURATION = periodToSeconds(1, "1h");
 export const DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION = periodToSeconds(1, "1h");
 
-export const MIN_RELAYER_FEE_USD = 5n ** BigInt(USD_DECIMALS - 1); // 0.5$
+export const EXPRESS_EXTRA_EXECUTION_FEE_BUFFER_BPS = 1000;
 
-export const GELATO_API_KEYS: Partial<Record<ContractsChainId, string>> = {
-  [ARBITRUM]: "6dE6kOa9pc1ap4dQQC2iaK9i6nBFp8eYxQlm00VreWc_",
-  [AVALANCHE]: "FalsQh9loL6V0rwPy4gWgnQPR6uTHfWjSVT2qlTzUq4_",
-  [BOTANIX]: "s5GgkfX7dvd_2uYqsRSCjzMekUrXh0dibUvfLab1Anc_",
-  [ARBITRUM_SEPOLIA]: "nx5nyAg4h2kI_64YtOuPt7LSPDEXo4u8eJY_idF9xDw_",
-  [MEGAETH]: "MDPcJgFTWgc8ifFElmv_vHLaioG_h8GU2ZDju1eyQ4Y_",
+// since 2026-09-23 Arbitrum charges the gasPrice above the base fee as a priority fee, and the relayer bids 1.5x base fee
+const EXPRESS_EXTRA_EXECUTION_FEE_BUFFER_BPS_BY_CHAIN: Partial<Record<ContractsChainId, number>> = {
+  [ARBITRUM]: 3000,
 };
 
-export const EXPRESS_EXTRA_EXECUTION_FEE_BUFFER_BPS = 1000;
+export function getExpressExtraExecutionFeeBufferBps(chainId: number) {
+  return (
+    EXPRESS_EXTRA_EXECUTION_FEE_BUFFER_BPS_BY_CHAIN[chainId as ContractsChainId] ??
+    EXPRESS_EXTRA_EXECUTION_FEE_BUFFER_BPS
+  );
+}
 
 const GAS_PAYMENT_TOKENS: Record<ContractsChainId, string[]> = {
   [ARBITRUM]: [
@@ -46,7 +47,6 @@ const GAS_PAYMENT_TOKENS: Record<ContractsChainId, string[]> = {
     getTokenBySymbol(ARBITRUM_SEPOLIA, "USDC.SG").address,
     getTokenBySymbol(ARBITRUM_SEPOLIA, "WETH").address,
   ],
-  [BOTANIX]: [getTokenBySymbol(BOTANIX, "pBTC").address],
   [MEGAETH]: [getTokenBySymbol(MEGAETH, "USDM").address, getTokenBySymbol(MEGAETH, "WETH").address],
 };
 

@@ -1,62 +1,46 @@
-import uniq from "lodash/uniq";
+import { watchAccount } from "@wagmi/core";
 import useSWR from "swr";
-import { PublicClient, type Hex } from "viem";
+import { PublicClient } from "viem";
 import { useAccount } from "wagmi";
 
-import { AnyChainId, CONTRACTS_CHAIN_IDS, isTestnetChain, SOURCE_CHAIN_IDS } from "config/chains";
 import { useChainId } from "lib/chains";
-import { getIsNonEoaAccountError, nonEoaAccountError } from "lib/errors/customErrors";
+import { LRUCache } from "sdk/utils/LruCache";
 
-import { getPublicClientWithRpc } from "./walletConfig";
+import { getPublicClientWithRpc, getWagmiConfig } from "./walletConfig";
 
-enum AccountType {
-  Safe,
-  SmartAccount, // ERC-4337 compatible smart account
+export enum AccountType {
   PostEip7702EOA, // Post-EIP-7702 EOA (delegated EOA)
+  SmartAccount,
   EOA,
 }
 
-/**
- * Keep this in case if Safe API is down or deprecated some addresses
- * we still should be able to detect Safe accounts
- */
-const KNOWN_SAFE_SINGLETONS = new Set(
-  [
-    "0x3e5c63644e683549055b9be8653de26e0b4cd36e", // v1.3.0 L2 default
-    "0xfb1bffc9d739b8d520daf37df666da4c687191ea", // v1.3.0 L2
-    "0xd9db270c1b5e3bd161e8c8503c55ceabee709552", // v1.3.0
-    "0x69f4d1788e39c87893c980c06edf4b7f686e2938", // v1.3.0
-    "0x41675c099f32341bf84bfc5382af534df5c7461a", // v1.4.1
-    "0x29fcb43b46531bca003ddc8fcb67ffe91900c762", // v1.4.1 L2
-  ].map((a) => a.toLowerCase())
-);
+export const ACCOUNT_TYPE_LABELS: Record<AccountType, string> = {
+  [AccountType.PostEip7702EOA]: "postEip7702Eoa",
+  [AccountType.SmartAccount]: "smartAccount",
+  [AccountType.EOA]: "eoa",
+};
 
-async function isSafeAccount(
-  bytecode: Hex,
-  address: string,
-  client: PublicClient,
-  safeSingletonAddresses: Set<string>
-): Promise<boolean> {
-  if (bytecode === "0x") {
-    return false;
+const ACCOUNT_TYPES_CACHE = new LRUCache<Promise<AccountType>>(100);
+
+let unwatchAccount: (() => void) | undefined;
+
+/** Reconnecting is how a user tells us they added a network, so stop trusting what we saw before it. */
+function watchForReconnect() {
+  if (unwatchAccount) {
+    return;
   }
 
-  const storage = await client.getStorageAt({ address, slot: "0x0" });
-  if (!storage) {
-    return false;
-  }
-
-  const masterCopy = `0x${storage.slice(-40)}`.toLowerCase();
-
-  return KNOWN_SAFE_SINGLETONS.has(masterCopy) || safeSingletonAddresses.has(masterCopy);
+  unwatchAccount = watchAccount(getWagmiConfig(), {
+    onChange: (account, prevAccount) => {
+      if (account.address !== prevAccount.address || account.connector?.uid !== prevAccount.connector?.uid) {
+        ACCOUNT_TYPES_CACHE.clean();
+      }
+    },
+  });
 }
 
-async function getAccountType(
-  address: string,
-  client: PublicClient,
-  safeSingletonAddresses: Set<string>
-): Promise<AccountType> {
-  const bytecode = await client.getBytecode({ address });
+async function fetchAccountType(address: string, client: PublicClient): Promise<AccountType> {
+  const bytecode = await client.getCode({ address });
   if (!bytecode || bytecode === "0x") {
     return AccountType.EOA;
   }
@@ -65,63 +49,48 @@ async function getAccountType(
     return AccountType.PostEip7702EOA;
   }
 
-  if (safeSingletonAddresses.size > 0) {
-    const isSafe = await isSafeAccount(bytecode, address, client, safeSingletonAddresses);
-    if (isSafe) {
-      return AccountType.Safe;
-    }
-  }
-
   return AccountType.SmartAccount;
 }
 
-export function useIsNonEoaAccountOnAnyChain(): {
-  isNonEoaAccountOnAnyChain: boolean;
-  isLoading: boolean;
-} {
-  const { address } = useAccount();
-  const { chainId: currentChainId } = useChainId();
-  const isCurrentChainTestnet = isTestnetChain(currentChainId);
+export async function getAccountType(address: string, client: PublicClient): Promise<AccountType> {
+  const chainId = client.chain?.id;
 
-  const { data: isNonEoaAccountOnAnyChain = false, isLoading } = useSWR<boolean | undefined>(
-    address && [address, isCurrentChainTestnet, "detectIsNonEoaAccountOnAnyChain"],
+  if (chainId === undefined) {
+    throw new Error("getAccountType requires a chain-bound client");
+  }
+
+  watchForReconnect();
+
+  const key = `chainId:${chainId}:address:${address.toLowerCase()}`;
+  let accountTypePromise = ACCOUNT_TYPES_CACHE.get(key);
+
+  if (!accountTypePromise) {
+    accountTypePromise = fetchAccountType(address, client).catch((error) => {
+      ACCOUNT_TYPES_CACHE.delete(key);
+
+      throw error;
+    });
+    ACCOUNT_TYPES_CACHE.set(key, accountTypePromise);
+  }
+
+  return accountTypePromise;
+}
+
+export function useAccountType(): { accountType: AccountType | undefined; isLoading: boolean } {
+  const { address, connector } = useAccount();
+  const { chainId } = useChainId();
+
+  const { data: accountType, isLoading } = useSWR<AccountType | undefined>(
+    address && [address, chainId, connector?.uid, "accountType"],
     {
-      fetcher: async (): Promise<boolean | undefined> => {
-        if (!address) {
+      fetcher: async () => {
+        const publicClient = getPublicClientWithRpc(chainId);
+
+        if (!address || !publicClient) {
           return undefined;
         }
 
-        const chainIds = uniq([...CONTRACTS_CHAIN_IDS, ...SOURCE_CHAIN_IDS] as AnyChainId[]).filter(
-          (chainId) => isTestnetChain(chainId) === isCurrentChainTestnet
-        );
-
-        return Promise.all(
-          chainIds.map(async (chainId) => {
-            const publicClient = getPublicClientWithRpc(chainId);
-
-            if (!publicClient) {
-              return undefined;
-            }
-
-            const accountType = await getAccountType(address, publicClient, new Set<string>());
-
-            const isSomeEoaAccount = accountType === AccountType.EOA || accountType === AccountType.PostEip7702EOA;
-
-            if (!isSomeEoaAccount) {
-              return Promise.reject(nonEoaAccountError(chainId));
-            }
-          })
-        )
-          .then(() => {
-            return false;
-          })
-          .catch((error) => {
-            if (getIsNonEoaAccountError(error)) {
-              return true;
-            }
-
-            return false;
-          });
+        return getAccountType(address, publicClient);
       },
       refreshInterval: 0,
       revalidateOnFocus: false,
@@ -130,5 +99,5 @@ export function useIsNonEoaAccountOnAnyChain(): {
     }
   );
 
-  return { isNonEoaAccountOnAnyChain, isLoading };
+  return { accountType, isLoading };
 }

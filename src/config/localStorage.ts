@@ -20,7 +20,6 @@ export const REFERRAL_CODE_KEY = "GMX-referralCode";
 export const PENDING_REFERRAL_CODE_KEY = "GMX-pending-referral-code";
 export const REFERRALS_SELECTED_TAB_KEY = "Referrals-selected-tab";
 export const TV_SAVE_LOAD_CHARTS_KEY = "tv-save-load-charts";
-export const REDIRECT_POPUP_TIMESTAMP_KEY = "redirect-popup-timestamp";
 const LEVERAGE_OPTION_KEY = "leverage-option";
 const LEVERAGE_ENABLED_KEY = "leverage-enabled";
 const KEEP_LEVERAGE_FOR_DECREASE_KEY = "Exchange-keep-leverage";
@@ -31,11 +30,12 @@ export const DEBUG_RPC_ENDPOINTS_KEY = "debug_rpc_endpoints";
 export const ORACLE_KEEPER_DEBUG_STATE_KEY = "oracle_keeper_debug_state";
 export const MULTICALL_DEBUG_STATE_KEY = "multicall_debug_state";
 export const DEBUG_ERROR_BOUNDARY_KEY = "debug-error-boundary";
+export const STATS_API_URL_KEY = "stats-api-url";
 const SORTED_MARKETS_KEY = "sorted-markets-key";
 export const TWAP_NUMBER_OF_PARTS_KEY = "twap-number-of-parts";
 export const TWAP_INFO_CARD_CLOSED_KEY = "twap-info-card-closed";
 // key updated with chart overrides, to update tv chart with new release
-export const WAS_TV_CHART_OVERRIDDEN_KEY = "was-tv-chart-overridden-1";
+export const WAS_TV_CHART_OVERRIDDEN_KEY = "was-tv-chart-overridden-2";
 export const UTM_PARAMS_KEY = "utm_params";
 
 export const BREAKDOWN_NET_PRICE_IMPACT_ENABLED_KEY = "breakdown-net-price-impact-enabled";
@@ -55,11 +55,12 @@ export const DEBUG_SWAP_SETTINGS_KEY = "debug-swap-settings";
 export const EXTERNAL_SWAPS_ENABLED_KEY = "external-swaps-enabled";
 export const DEBUG_SWAP_MARKETS_CONFIG_KEY = "debug-swap-markets-config";
 
-const ONE_CLICK_TRADING_PROMO_HIDDEN_KEY = "one-click-trading-promo-hidden";
 export const EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY = "express-trading-native-token-warn-hidden";
 export const EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY = "express-trading-wrap-or-unwrap-warn-hidden";
 export const EXPRESS_TRADING_EXPIRED_SUBACCOUNT_WARN_HIDDEN_KEY = "express-trading-expired-subaccount-warn-hidden";
 export const EXPRESS_TRADING_ALLOWED_ACTIONS_WARN_HIDDEN_KEY = "express-trading-allowed-actions-warn-hidden";
+
+export const MARGIN_DEPOSIT_SUGGESTION_HIDDEN_KEY = "margin-deposit-suggestion-hidden";
 
 export const INTERVIEW_INVITATION_SHOWN_TIME_KEY = "interview-invitation-shown-time";
 export const TOKEN_FAVORITES_PREFERENCE_KEY = "token-favorites-preference";
@@ -73,6 +74,11 @@ export const METRICS_PENDING_EVENTS_KEY = "metrics-pending-events";
 export const METRICS_TIMERS_KEY = "metrics-timers-key";
 
 export const UI_FLAG_EVENTS_DISMISSED_KEY_PREFIX = "ui-flag-event-dismissed";
+export const DELISTING_ANNOUNCEMENT_DISMISSED_KEY_PREFIX = "delisting-announcement-dismissed";
+export const BALANCER_PROGRAM_ANNOUNCEMENT_DISMISSED_KEY = "balancer-program-announcement-dismissed";
+export const USDG_POOLS_ANNOUNCEMENT_DISMISSED_KEY = "usdg-pools-announcement-dismissed";
+
+export const GMX_ACCOUNT_CONNECTED_BANNER_DISMISSED_KEY = "gmx-account-connected-banner-dismissed";
 
 const DEBUG_MULTICALL_BATCHING_KEY = "debug-multicall-batching";
 export const PERMITS_DISABLED_KEY = "permits-disabled";
@@ -81,7 +87,7 @@ export const AB_FLAG_STORAGE_KEY = "ab-flags";
 
 export const API_ROLLOUT_BUCKET_KEY = "api-rollout-bucket";
 
-export const API_UI_FLAGS_CACHE_KEY = "api-ui-flags-cache";
+export const API_UI_FLAGS_CACHE_KEY = "api-ui-flags-cache-v2";
 
 export const IS_LARGE_ACCOUNT_KEY = "is-large-account-2";
 
@@ -106,11 +112,18 @@ const TOKEN_PERMITS_KEY = "token-permits";
 
 const HIGH_LEVERAGE_WARNING_DISMISSED_TIMESTAMP_KEY = "high-leverage-warning-dismissed-timestamp";
 
+const VERIFICATION_CHAIN_SIGNING_KEY = "verification-chain-signing";
+
 export const getIndexerUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 
-export function getSubaccountApprovalKey(chainId: number, account: string | undefined) {
+export function getSubaccountApprovalKey(chainId: number, account: string | undefined, srcChainId: number | undefined) {
   if (!chainId || !account) return null;
-  return [chainId, account, SUBACCOUNT_APPROVAL_KEY];
+
+  if (srcChainId === undefined) {
+    return [chainId, account, SUBACCOUNT_APPROVAL_KEY];
+  }
+
+  return [chainId, account, srcChainId, SUBACCOUNT_APPROVAL_KEY];
 }
 
 export function getTokenPermitsKey(chainId: number, account: string | undefined) {
@@ -221,10 +234,14 @@ export function getGmxAccountGasPaymentTokenAddressKey(chainId: number, account:
   return [chainId, account, GMX_ACCOUNT_GAS_PAYMENT_TOKEN_ADDRESS_KEY];
 }
 
-export function getOneClickTradingPromoHiddenKey(chainId: number) {
-  return `${chainId}-${ONE_CLICK_TRADING_PROMO_HIDDEN_KEY}`;
-}
-
 export function getHighLeverageWarningDismissedTimestampKey(account: string) {
   return `${account}-${HIGH_LEVERAGE_WARNING_DISMISSED_TIMESTAMP_KEY}`;
+}
+
+export function getVerificationChainSigningKey(
+  connectorId: string | undefined,
+  account: string,
+  verificationChainId: number
+) {
+  return [VERIFICATION_CHAIN_SIGNING_KEY, connectorId ?? "unknown", account, verificationChainId];
 }

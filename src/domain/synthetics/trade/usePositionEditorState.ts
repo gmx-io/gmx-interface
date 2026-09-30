@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 import { Address } from "viem";
 
 import type { ContractsChainId, SourceChainId } from "config/chains";
@@ -14,11 +14,30 @@ import { parsePositionKey } from "../positions";
 
 export type PositionEditorState = ReturnType<typeof usePositionEditorState>;
 
+export enum Operation {
+  Deposit = "Deposit",
+  Withdraw = "Withdraw",
+}
+
+export type PositionEditorDepositMode = "now" | "atPrice";
+
+export type PositionEditorAtPriceOpenRequest = {
+  positionKey: string;
+  collateralInputValue?: string;
+  triggerPriceInputValue?: string;
+  replacingOrderKey?: string;
+};
+
 export function usePositionEditorState(chainId: ContractsChainId, srcChainId: SourceChainId | undefined) {
   // const expressOrdersEnabled = useSelector(selectExpressOrdersEnabled);
   const { expressOrdersEnabled } = useSettings();
   const [editingPositionKey, setEditingPositionKey] = useState<string>();
   const [collateralInputValue, setCollateralInputValue] = useState("");
+  const [operation, setOperation] = useState(Operation.Deposit);
+  const [depositMode, setDepositMode] = useState<PositionEditorDepositMode>("now");
+  const [triggerPriceInputValue, setTriggerPriceInputValue] = useState("");
+  const [replacingOrderKey, setReplacingOrderKey] = useState<string>();
+  const [atPriceOpenRequest, setAtPriceOpenRequest] = useState<PositionEditorAtPriceOpenRequest>();
   const [selectedCollateralAddressMap, setSelectedCollateralAddressMap] = useLocalStorageSerializeKey<
     Partial<Record<Address, Address>>
   >(getSyntheticsCollateralEditAddressMapKey(chainId), {});
@@ -31,6 +50,42 @@ export function usePositionEditorState(chainId: ContractsChainId, srcChainId: So
     storedIsGmxAccount: storedIsCollateralTokenFromGmxAccount,
     setStoredIsGmxAccount: setStoredIsCollateralTokenFromGmxAccount,
   });
+
+  const resetAtPriceState = useCallback(() => {
+    setDepositMode("now");
+    setTriggerPriceInputValue("");
+    setReplacingOrderKey(undefined);
+    setAtPriceOpenRequest(undefined);
+  }, []);
+
+  const updateEditingPositionKey = useCallback(
+    (positionKey: SetStateAction<string | undefined>) => {
+      resetAtPriceState();
+      setEditingPositionKey(positionKey);
+    },
+    [resetAtPriceState]
+  );
+
+  const openAtPrice = useCallback((request: PositionEditorAtPriceOpenRequest) => {
+    setOperation(Operation.Deposit);
+    setDepositMode("atPrice");
+    setTriggerPriceInputValue(request.triggerPriceInputValue ?? "");
+    setReplacingOrderKey(request.replacingOrderKey);
+    setAtPriceOpenRequest(request);
+    setEditingPositionKey(request.positionKey);
+  }, []);
+
+  const openDepositNow = useCallback(
+    (positionKey: string) => {
+      setOperation(Operation.Deposit);
+      updateEditingPositionKey(positionKey);
+    },
+    [updateEditingPositionKey]
+  );
+
+  const clearAtPriceOpenRequest = useCallback(() => {
+    setAtPriceOpenRequest(undefined);
+  }, []);
 
   const setSelectedCollateralAddress = useCallback(
     (selectedCollateralAddress: Address) => {
@@ -46,10 +101,10 @@ export function usePositionEditorState(chainId: ContractsChainId, srcChainId: So
   );
 
   useEffect(() => {
-    setEditingPositionKey(undefined);
+    updateEditingPositionKey(undefined);
     setCollateralInputValue("");
     setStoredIsCollateralTokenFromGmxAccount(srcChainId !== undefined);
-  }, [setStoredIsCollateralTokenFromGmxAccount, srcChainId]);
+  }, [updateEditingPositionKey, setStoredIsCollateralTokenFromGmxAccount, srcChainId]);
 
   useEffect(
     function fallbackIsCollateralTokenFromGmxAccount() {
@@ -67,21 +122,42 @@ export function usePositionEditorState(chainId: ContractsChainId, srcChainId: So
   return useMemo(
     () => ({
       editingPositionKey,
-      setEditingPositionKey,
+      setEditingPositionKey: updateEditingPositionKey,
       collateralInputValue,
       setCollateralInputValue,
       selectedCollateralAddressMap,
       setSelectedCollateralAddress,
       isCollateralTokenFromGmxAccount,
       setIsCollateralTokenFromGmxAccount,
+      operation,
+      setOperation,
+      depositMode,
+      setDepositMode,
+      triggerPriceInputValue,
+      setTriggerPriceInputValue,
+      replacingOrderKey,
+      setReplacingOrderKey,
+      atPriceOpenRequest,
+      clearAtPriceOpenRequest,
+      openAtPrice,
+      openDepositNow,
     }),
     [
       collateralInputValue,
       editingPositionKey,
+      updateEditingPositionKey,
       selectedCollateralAddressMap,
       setSelectedCollateralAddress,
       isCollateralTokenFromGmxAccount,
       setIsCollateralTokenFromGmxAccount,
+      operation,
+      depositMode,
+      triggerPriceInputValue,
+      replacingOrderKey,
+      atPriceOpenRequest,
+      clearAtPriceOpenRequest,
+      openAtPrice,
+      openDepositNow,
     ]
   );
 }

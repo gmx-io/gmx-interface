@@ -1,12 +1,16 @@
 import { describe, expect, it } from "vitest";
 
+import { ARBITRUM, AVALANCHE_FUJI, MEGAETH } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { JUMPER_EXCHANGE_URL } from "config/links";
 import { mockExternalSwapQuote } from "domain/synthetics/testUtils/mocks";
 import { expandDecimals } from "lib/numbers";
+import { getTokenBySymbol } from "sdk/configs/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
 
 import {
   externalSwapRequestKeysMatch,
+  getExternalAggregatorSwapUrl,
   getExternalSwapRequestKey,
   inflateAmountForSlippage,
   isAmountWithinKeyTolerance,
@@ -307,9 +311,76 @@ describe("externalSwapRequestKeysMatch", () => {
     expect(externalSwapRequestKeysMatch(key(10_000_000n), key(20_000_000n))).toBe(false);
   });
 
+  it("requires an exact amount for manual-input strategies — tolerance only applies to leverageBySize", () => {
+    const manualKey = (amountIn: bigint) => key(amountIn, { strategy: "byFromValue" });
+    expect(externalSwapRequestKeysMatch(manualKey(10_000_000n), manualKey(10_030_000n))).toBe(false);
+    expect(externalSwapRequestKeysMatch(manualKey(10_000_000n), manualKey(10_000_000n))).toBe(true);
+  });
+
   it("requires exact match on the structural parts (tokens / strategy / slippage)", () => {
     expect(externalSwapRequestKeysMatch(key(10_000_000n), key(10_000_000n, { toTokenAddress: "0xother" }))).toBe(false);
     expect(externalSwapRequestKeysMatch(key(10_000_000n), key(10_000_000n, { slippage: 100 }))).toBe(false);
     expect(externalSwapRequestKeysMatch(key(10_000_000n), key(10_000_000n, { strategy: "byFromValue" }))).toBe(false);
+  });
+});
+
+describe("getExternalAggregatorSwapUrl", () => {
+  const USDC = getTokenBySymbol(ARBITRUM, "USDC");
+  const WETH = getTokenBySymbol(ARBITRUM, "WETH");
+  const SOL = getTokenBySymbol(ARBITRUM, "SOL");
+
+  it("builds a 1inch link with the pair preselected by symbols", () => {
+    expect(
+      getExternalAggregatorSwapUrl({
+        chainId: ARBITRUM,
+        isFromTokenGmxAccount: false,
+        fromTokenAddress: USDC.address,
+        toTokenAddress: WETH.address,
+      })
+    ).toBe("https://1inch.com/swap?src=42161:USDC&dst=42161:WETH");
+  });
+
+  it("uses the plain symbol for tokens whose assetSymbol is a display label, not a ticker", () => {
+    expect(
+      getExternalAggregatorSwapUrl({
+        chainId: ARBITRUM,
+        isFromTokenGmxAccount: false,
+        fromTokenAddress: USDC.address,
+        toTokenAddress: SOL.address,
+      })
+    ).toBe("https://1inch.com/swap?src=42161:USDC&dst=42161:SOL");
+  });
+
+  it("returns no link for a GMX Account pay token — the aggregator can't swap funds that aren't in the wallet", () => {
+    expect(
+      getExternalAggregatorSwapUrl({
+        chainId: ARBITRUM,
+        isFromTokenGmxAccount: true,
+        fromTokenAddress: USDC.address,
+        toTokenAddress: WETH.address,
+      })
+    ).toBeUndefined();
+  });
+
+  it("returns no link on a chain without a configured aggregator", () => {
+    expect(
+      getExternalAggregatorSwapUrl({
+        chainId: AVALANCHE_FUJI,
+        isFromTokenGmxAccount: false,
+        fromTokenAddress: undefined,
+        toTokenAddress: undefined,
+      })
+    ).toBeUndefined();
+  });
+
+  it("links to Jumper on MegaETH", () => {
+    expect(
+      getExternalAggregatorSwapUrl({
+        chainId: MEGAETH,
+        isFromTokenGmxAccount: false,
+        fromTokenAddress: undefined,
+        toTokenAddress: undefined,
+      })
+    ).toBe(JUMPER_EXCHANGE_URL);
   });
 });

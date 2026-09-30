@@ -11,21 +11,24 @@ import { zeroAddress } from "viem";
 import { ARBITRUM } from "config/chains";
 import { getContract } from "config/contracts";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { getRecentAvgWeeklyBuybackGmx } from "domain/buyback/useBuybackChartData";
+import { useBuybackWeeklyStats } from "domain/buyback/useBuybackWeeklyStats";
 import { useGmxPrice } from "domain/legacy";
-import { isLoyaltyTrackingActive, useStakingPowerData } from "domain/stake/useStakingPowerData";
+import { getUserEstimatedApr, isLoyaltyTrackingActive } from "domain/stake/useStakingPowerData";
+import { useTreasuryProjection } from "domain/stake/useTreasuryProjection";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { PLACEHOLDER_ACCOUNT, StakingProcessedData } from "lib/legacy";
-import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
+import { formatAmount, formatUsd } from "lib/numbers";
 import { sendEarnPortfolioItemClickEvent } from "lib/userAnalytics/earnEvents";
 import useWallet from "lib/wallets/useWallet";
-import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
 import { bigMath } from "sdk/utils/bigmath";
 import type { StakingPowerResponse } from "sdk/utils/staking/types";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
+import { BuyGmxModal } from "components/BuyGmxModal/BuyGmxModal";
 import { VestModal } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tooltip from "components/Tooltip/Tooltip";
@@ -46,7 +49,13 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
   const { active, signer, account } = useWallet();
   const { setPendingTxns } = usePendingTxns();
   const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
-  const { stakingPowerData, isLoading: isStakingPowerLoading } = useStakingPowerData(chainId, { account });
+  const {
+    stakingPowerData,
+    projectedRewardGmx: displayProjectedRewardGmx,
+    projectedRewardUsd: accumulatedGmxUsd,
+    isLoading: isStakingPowerLoading,
+  } = useTreasuryProjection(chainId);
+  const { data: buybackWeeklyStatsData, isLoading: isBuybackStatsLoading } = useBuybackWeeklyStats(chainId);
 
   const [isGmxStakeModalVisible, setIsGmxStakeModalVisible] = useState(false);
   const [gmxStakeValue, setGmxStakeValue] = useState("");
@@ -102,28 +111,28 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
 
   const priceRowValue = gmxPrice === undefined ? "..." : formatUsd(gmxPrice);
 
-  const displayProjectedRewardGmx = useMemo((): bigint | undefined => {
-    if (!stakingPowerData) {
-      return undefined;
-    }
-    if (stakingPowerData.treasuryGmxBalance === null) {
-      return undefined;
-    }
-    if (stakingPowerData.projectedRewardShare !== null) {
-      return stakingPowerData.projectedRewardShare;
-    }
-    if (stakingPowerData.totalNetworkPower === 0n) {
-      return 0n;
-    }
-    return undefined;
-  }, [stakingPowerData]);
+  const avgWeeklyBuybackGmx = useMemo(
+    () => getRecentAvgWeeklyBuybackGmx(buybackWeeklyStatsData),
+    [buybackWeeklyStatsData]
+  );
 
-  const accumulatedGmxUsd = useMemo(() => {
-    if (displayProjectedRewardGmx === undefined || gmxPrice === undefined) {
-      return undefined;
-    }
-    return bigMath.mulDiv(displayProjectedRewardGmx, gmxPrice, expandDecimals(1, 18));
-  }, [displayProjectedRewardGmx, gmxPrice]);
+  const userEstimatedApr = useMemo(
+    () =>
+      getUserEstimatedApr({
+        avgWeeklyBuybackGmx,
+        userStakingPower: stakingPowerData?.cumulativePower,
+        totalNetworkStakingPower: stakingPowerData?.totalNetworkPower,
+        userStakedGmxAndEsGmx: stakingPowerData?.currentStaked,
+      }),
+    [
+      avgWeeklyBuybackGmx,
+      stakingPowerData?.cumulativePower,
+      stakingPowerData?.totalNetworkPower,
+      stakingPowerData?.currentStaked,
+    ]
+  );
+
+  const isUserEstimatedAprLoading = Boolean(account) && (isStakingPowerLoading || isBuybackStatsLoading);
 
   const handleOpenGmxStakeModal = () => {
     sendEarnPortfolioItemClickEvent({ item: "GMX", type: "stake" });
@@ -181,6 +190,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
         <div className="mt-12">
           <span className="text-body-small text-typography-secondary">
             <Tooltip
+              variant="iconStroke"
               handle={<Trans>Accumulated rewards</Trans>}
               content={
                 <>
@@ -227,6 +237,37 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
             ) : (
               <span className="text-h3 font-bold text-typography-secondary">—</span>
             )}
+          </div>
+          <div className="mt-8">
+            <SyntheticsInfoRow
+              label={
+                <Tooltip
+                  variant="iconStroke"
+                  handle={<Trans>Est. APR</Trans>}
+                  content={
+                    <Trans>
+                      Estimated wallet-specific annualized rate based on the recent GMX buyback pace, your staking power
+                      share, and your current staked GMX + esGMX. Actual distribution is subject to DAO governance.
+                    </Trans>
+                  }
+                />
+              }
+              value={
+                isUserEstimatedAprLoading ? (
+                  <Skeleton
+                    baseColor="#B4BBFF1A"
+                    highlightColor="#B4BBFF1A"
+                    width={50}
+                    height={16}
+                    className="leading-base"
+                  />
+                ) : userEstimatedApr !== undefined ? (
+                  <span className="numbers">{(userEstimatedApr * 100).toFixed(2)}%</span>
+                ) : (
+                  "—"
+                )
+              }
+            />
           </div>
         </div>
 
@@ -392,6 +433,7 @@ function StakingPowerAlerts({ stakingPowerData }: { stakingPowerData: StakingPow
         <SyntheticsInfoRow
           label={
             <Tooltip
+              variant="iconStroke"
               handle={<Trans>Loyalty</Trans>}
               content={
                 <Trans>
@@ -413,6 +455,7 @@ function StakingPowerAlerts({ stakingPowerData }: { stakingPowerData: StakingPow
           <SyntheticsInfoRow
             label={
               <Tooltip
+                variant="iconStroke"
                 handle={<Trans>Staking power</Trans>}
                 content={
                   <Trans>
@@ -427,6 +470,7 @@ function StakingPowerAlerts({ stakingPowerData }: { stakingPowerData: StakingPow
           <SyntheticsInfoRow
             label={
               <Tooltip
+                variant="iconStroke"
                 handle={<Trans>Staking Power Share</Trans>}
                 content={
                   <Trans>
@@ -437,7 +481,7 @@ function StakingPowerAlerts({ stakingPowerData }: { stakingPowerData: StakingPow
                 }
               />
             }
-            value={<span className="numbers">{stakingPowerData.userSharePercent.toFixed(2)}%</span>}
+            value={<span className="numbers">{stakingPowerData.userSharePercent.toFixed(3)}%</span>}
           />
         </>
       )}

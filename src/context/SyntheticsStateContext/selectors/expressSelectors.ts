@@ -1,3 +1,4 @@
+import { isUiApiSupported } from "config/api";
 import { ARBITRUM } from "config/chains";
 import { isDevelopment } from "config/env";
 import type { GlobalExpressParams } from "domain/synthetics/express";
@@ -14,8 +15,8 @@ import {
   selectGasLimits,
   selectGasPaymentTokenAllowance,
   selectGasPrice,
+  selectIsExpressAvailableFlag,
   selectIsRelayRouterEnabled,
-  selectIsSponsoredCallAvailable,
   selectL1ExpressOrderGasReference,
   selectMarketsInfoData,
   selectSrcChainId,
@@ -50,11 +51,12 @@ export const selectGasPaymentToken = createSelector((q) => {
 });
 
 export const selectIsExpressTransactionAvailable = createSelector((q) => {
+  const chainId = q(selectChainId);
   const isExpressOrdersEnabledSetting = q(selectExpressOrdersEnabled);
   const isRelayRouterEnabled = q(selectIsRelayRouterEnabled);
-  const isSponsoredCallAvailable = q(selectIsSponsoredCallAvailable);
+  const isRelayAvailable = q(selectIsExpressAvailableFlag);
 
-  return isExpressOrdersEnabledSetting && isRelayRouterEnabled && isSponsoredCallAvailable;
+  return isUiApiSupported(chainId) && isExpressOrdersEnabledSetting && isRelayRouterEnabled && isRelayAvailable;
 });
 
 function createSelectExpressFindSwapPath(selectGasPaymentTokenAddressSelector: GasPaymentTokenAddressSelector) {

@@ -262,7 +262,7 @@ export type SharePositionClickEvent = {
   };
 };
 
-export type SharePositionActionSource = "auto-prompt" | "positions-list" | "trade-history-list";
+export type SharePositionActionSource = "auto-prompt" | "positions-list" | "trade-history-list" | "account-dashboard";
 
 export type SharePositionActionEvent = {
   event: "SharePositionAction";
@@ -292,13 +292,6 @@ export type ReferralShareEvent = {
   event: "ReferralCodeAction";
   data: {
     action: "ShareTwitter" | "CopyCode";
-  };
-};
-
-export type LandingPageAgreementConfirmationEvent = {
-  event: "LandingPageAction";
-  data: {
-    action: "AgreementConfirmationDialogShown" | "AgreementConfirmationAgreeClick";
   };
 };
 

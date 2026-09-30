@@ -151,5 +151,5 @@ async function signClaimCollateralPayload({
     relayParams: hashRelayParams(relayParams),
   };
 
-  return signTypedData({ signer, domain, types, typedData });
+  return signTypedData({ signer, domain, types, typedData, verificationChainId: chainId });
 }

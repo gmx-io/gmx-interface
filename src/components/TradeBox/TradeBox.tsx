@@ -8,7 +8,6 @@ import { GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { isSettlementChain } from "config/multichain";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
-import { useOpenMultichainDepositModal } from "context/GmxAccountContext/useOpenMultichainDepositModal";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
@@ -40,6 +39,7 @@ import {
   selectTradeboxFees,
   selectTradeboxFormState,
   selectTradeboxFromToken,
+  selectTradeboxHasPendingInput,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxKeepLeverage,
@@ -48,6 +48,7 @@ import {
   selectTradeboxMaxAllowedLeverage,
   selectTradeboxNextPositionValues,
   selectTradeboxOffHoursLiqRisk,
+  selectTradeboxExistingPositionForPreview,
   selectTradeboxSelectedPosition,
   selectTradeboxSelectedPositionKey,
   selectTradeboxSetDefaultAllowedSwapSlippageBps,
@@ -58,9 +59,15 @@ import {
   selectTradeboxTradeFlags,
   selectTradeboxTradeRatios,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import {
+  selectTradeboxIncreaseFreshPositionWarning,
+  selectTradeboxIncreaseLiquidationRiskWarning,
+  selectTradeboxIncreaseMaxLeverageAlert,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
+import { getPrimaryOrderGasPaymentTokenAmount } from "domain/synthetics/express/expressOrderUtils";
 import { getMarketIndexName, MarketInfo, OFF_HOURS_DOCS_URL } from "domain/synthetics/markets";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
 import { convertToUsd, getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
@@ -71,7 +78,6 @@ import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpa
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { Token } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
-import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { throttleLog } from "lib/logging";
 import {
@@ -88,10 +94,10 @@ import {
   parseValue,
 } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
+import { useBlockAutoReload } from "lib/pwa/blockAutoReload";
 import { useCursorInside } from "lib/useCursorInside";
 import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
 import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
-import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
@@ -100,6 +106,7 @@ import { estimateExecuteSwapOrderGasLimit, getExecutionFee } from "sdk/utils/fee
 import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
 import { TradeMode } from "sdk/utils/trade/types";
 
+import { useIsActiveForm } from "components/ActiveFormScope/ActiveFormScope";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -123,6 +130,10 @@ import ArrowDownIcon from "img/ic_arrow_down.svg?react";
 
 import { useIsCurtainOpen } from "./Curtain";
 import { ExpressTradingWarningCard } from "./ExpressTradingWarningCard";
+import { FreshPositionIncreaseWarningCard } from "./FreshPositionIncreaseWarningCard";
+import { LiquidatableIncreaseWarningCard } from "./LiquidatableIncreaseWarningCard";
+import { MarginDepositSuggestionCard } from "./MarginDepositSuggestionCard";
+import { ResultingMarginAlertCard } from "./ResultingMarginWarningCard";
 import { useMultichainTokens } from "../GmxAccountModal/hooks";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
@@ -142,7 +153,7 @@ import "./TradeBox.scss";
 
 const TRADEBOX_INPUT_PLACEHOLDER = "0.00";
 
-export function TradeBox({ isMobile }: { isMobile: boolean }) {
+export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; activeFormId: string }) {
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
 
@@ -177,8 +188,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const walletIconUrls = useWalletIconUrls();
 
   const { shouldDisableValidationForTesting: shouldDisableValidation } = useSettings();
-
-  const onDepositTokenAddress = useOpenMultichainDepositModal();
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
 
@@ -217,7 +226,12 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     setDuration,
     limitPriceWarningHidden,
     setLimitPriceWarningHidden,
+    marginDepositSuggestionHidden,
+    setMarginDepositSuggestionHidden,
   } = useSelector(selectTradeboxFormState);
+
+  const hasPendingInput = useSelector(selectTradeboxHasPendingInput);
+  useBlockAutoReload(hasPendingInput);
 
   const isTwapModeAvailable = useMemo(
     () =>
@@ -245,6 +259,10 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const selectedPositionKey = useSelector(selectTradeboxSelectedPositionKey);
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
+  const existingPositionForPreview = useSelector(selectTradeboxExistingPositionForPreview);
+  const showIncreaseLiquidationRiskWarning = useSelector(selectTradeboxIncreaseLiquidationRiskWarning);
+  const showIncreaseFreshPositionWarning = useSelector(selectTradeboxIncreaseFreshPositionWarning);
+  const increaseMaxLeverageAlert = useSelector(selectTradeboxIncreaseMaxLeverageAlert);
 
   const closeSizeHook = useCloseSizeInput({
     positionSizeInUsd: selectedPosition?.sizeInUsd,
@@ -341,9 +359,12 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     isCreatingNewAutoCancel: isTrigger,
   });
 
+  const isActiveForm = useIsActiveForm(activeFormId);
+
   const submitButtonState = useTradeboxButtonState({
     account,
     setToTokenInputValue,
+    canSwitchGasPaymentToken: isActiveForm,
   });
 
   const wrappedOnSubmit = useCallback(async () => {
@@ -360,16 +381,24 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       return undefined;
     }
 
-    const storedGasPaymentParams = submitButtonState.expressParams?.gasPaymentParams;
+    const storedExpressParams = submitButtonState.expressParams;
     if (
-      storedGasPaymentParams === undefined ||
-      storedGasPaymentParams.gasPaymentTokenAddress !== gasPaymentTokenAddress
+      storedExpressParams === undefined ||
+      storedExpressParams.gasPaymentParams.gasPaymentTokenAddress !== gasPaymentTokenAddress
     ) {
       return undefined;
     }
 
-    return storedGasPaymentParams.gasPaymentTokenAmount;
-  }, [expressOrdersEnabledForMax, submitButtonState.expressParams?.gasPaymentParams, gasPaymentTokenAddress]);
+    return getPrimaryOrderGasPaymentTokenAmount({
+      expressParams: storedExpressParams,
+      primaryExecutionFeeAmount: submitButtonState.primaryExecutionFee?.feeTokenAmount,
+    });
+  }, [
+    expressOrdersEnabledForMax,
+    submitButtonState.expressParams,
+    submitButtonState.primaryExecutionFee?.feeTokenAmount,
+    gasPaymentTokenAddress,
+  ]);
 
   const treatMinimalBufferAsEnough =
     isSwap &&
@@ -381,7 +410,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const gasPaymentTokenForMax = expressOrdersEnabledForMax ? gasPaymentTokenData : nativeToken;
   const gasPaymentTokenAmountForMax = expressOrdersEnabledForMax
     ? expressGasPaymentTokenAmount
-    : submitButtonState.totalExecutionFee?.feeTokenAmount;
+    : submitButtonState.primaryExecutionFee?.feeTokenAmount;
 
   const fallbackSwapExecutionFeeAmount = useMemo(() => {
     if (!isSwap || !gasLimits || gasPrice === undefined || !tokensData) return undefined;
@@ -651,14 +680,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     },
     [setFocusedInput, setToTokenInputValue]
   );
-  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
   const handleSelectFromTokenAddress = useCallback(
     (tokenAddress: string, isGmxAccount: boolean) => {
-      if (isGmxAccount && isNonEoaAccountOnAnyChain) {
-        helperToast.error(t`Smart wallets are not supported on Express Trading or One-Click Trading`);
-        return;
-      }
-
       if (isGmxAccount && !expressOrdersEnabled) {
         setExpressOrdersEnabled(true);
 
@@ -670,7 +693,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     },
     [
       expressOrdersEnabled,
-      isNonEoaAccountOnAnyChain,
       onSelectFromTokenAddress,
       setExpressOrdersEnabled,
       setIsFromTokenGmxAccount,
@@ -755,7 +777,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           placeholder={TRADEBOX_INPUT_PLACEHOLDER}
         >
           {fromTokenAddress &&
-            (!isSettlementChain(chainId) || isNonEoaAccountOnAnyChain ? (
+            (!isSettlementChain(chainId) ? (
               <TokenSelector
                 label={t`Pay`}
                 chainId={chainId}
@@ -786,7 +808,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 qa="collateral-selector"
                 tokensData={tokensData}
                 multichainTokens={multichainTokens}
-                onDepositTokenAddress={onDepositTokenAddress}
               />
             ))}
         </BuyInputSection>
@@ -1050,7 +1071,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     }
 
     if (isIncrease && (increaseAmounts === undefined || increaseAmounts.sizeDeltaUsd === 0n)) {
-      if (selectedPosition) {
+      if (existingPositionForPreview) {
         return undefined;
       } else {
         return "-";
@@ -1067,7 +1088,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     increaseAmounts,
     nextPositionValues?.nextLiqPrice,
     toToken?.visualMultiplier,
-    selectedPosition,
+    existingPositionForPreview,
   ]);
 
   const keepLeverage = useSelector(selectTradeboxKeepLeverage);
@@ -1116,7 +1137,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               {isIncrease && (
                 <TradeboxMarginFields
                   onSelectFromTokenAddress={handleSelectFromTokenAddress}
-                  onDepositTokenAddress={onDepositTokenAddress}
                   fromTokenInputValue={fromTokenInputValue}
                   setFromTokenInputValue={setFromTokenInputValue}
                   setFocusedInput={setFocusedInput}
@@ -1206,6 +1226,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             isWrapOrUnwrap={!tradeFlags.isTrigger && isWrapOrUnwrap}
             disabled={shouldShowDepositButton}
             isGmxAccount={isFromTokenGmxAccount}
+            showExternalSwapWarnings={tradeFlags.isSwap || tradeFlags.isIncrease}
           />
           {twapRecommendation && !twapRecommendationDismissed && (
             <AlertInfoCard onClose={() => setTwapRecommendationDismissed(true)}>
@@ -1232,6 +1253,14 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               </Trans>
             </AlertInfoCard>
           )}
+          {increaseMaxLeverageAlert && <ResultingMarginAlertCard level={increaseMaxLeverageAlert} />}
+          {!marginDepositSuggestionHidden && (
+            <MarginDepositSuggestionCard onClose={() => setMarginDepositSuggestionHidden(true)} />
+          )}
+          {showIncreaseLiquidationRiskWarning && (
+            <LiquidatableIncreaseWarningCard positionKey={selectedPosition?.key} />
+          )}
+          {showIncreaseFreshPositionWarning && <FreshPositionIncreaseWarningCard />}
           {gasPaymentTokenWarningContent && (
             <AlertInfoCard hideClose type="warning">
               {gasPaymentTokenWarningContent}
@@ -1304,8 +1333,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             value={
               <ValueTransition
                 from={
-                  selectedPosition
-                    ? formatLiquidationPrice(selectedPosition?.liquidationPrice, {
+                  existingPositionForPreview
+                    ? formatLiquidationPrice(existingPositionForPreview.liquidationPrice, {
                         visualMultiplier: toToken?.visualMultiplier,
                       })
                     : undefined

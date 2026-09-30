@@ -17,6 +17,7 @@ import { selectDepositMarketTokensData } from "context/SyntheticsStateContext/se
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useNativeTokenMultichainUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
 import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNetworkFeeError";
+import { useWithdrawBlockedError } from "domain/multichain/useWithdrawBlockedError";
 import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
 import { createBridgeInTxn, getBridgeInTxnParams } from "domain/synthetics/markets/createBridgeInTxn";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
@@ -55,6 +56,7 @@ export function BridgeInModal({
   glvOrMarketInfo: GlvOrMarketInfo | undefined;
 }) {
   const { chainId, srcChainId } = useChainId();
+  const withdrawBlockedError = useWithdrawBlockedError();
   const [, setSettlementChainId] = useGmxAccountSettlementChainId();
   const [bridgeInChain, setBridgeInChain] = useState<SourceChainId | undefined>(srcChainId);
   const [bridgeInInputValue, setBridgeInInputValue] = useState("");
@@ -296,6 +298,10 @@ export function BridgeInModal({
       };
     }
 
+    if (withdrawBlockedError) {
+      return withdrawBlockedError;
+    }
+
     return {
       text: t`Deposit`,
       disabled: false,
@@ -310,6 +316,7 @@ export function BridgeInModal({
     bridgeInAmount,
     sourceChainDecimals,
     sourceChainNativeFeeError,
+    withdrawBlockedError,
   ]);
 
   if (!glvOrMarketInfo) {

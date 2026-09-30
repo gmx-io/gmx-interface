@@ -3,7 +3,6 @@ import {
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
-  BOTANIX,
   MEGAETH,
   SOURCE_ETHEREUM_MAINNET,
   type ContractsChainId,
@@ -31,7 +30,7 @@ const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
     referrals:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/gmx-avalanche-referrals/master-240415215829-f6877d6/gn",
     syntheticsStats:
-      "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-avalanche-stats/master-250410222549-4486206/gn",
+      "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-avalanche-stats/master-260605222642-1049f5c/gn",
     subsquid: "https://gmx.squids.live/gmx-synthetics-avalanche:prod/api/graphql",
   },
 
@@ -45,12 +44,6 @@ const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
 
   [ARBITRUM_SEPOLIA]: {
     subsquid: "https://gmx.squids.live/gmx-synthetics-arb-sepolia:prod/api/graphql",
-  },
-
-  [BOTANIX]: {
-    subsquid: "https://gmx.squids.live/gmx-synthetics-botanix:prod/api/graphql",
-    syntheticsStats:
-      "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-botanix-stats/botanix-250617091016-f7b3bb5/gn",
   },
 
   [MEGAETH]: {

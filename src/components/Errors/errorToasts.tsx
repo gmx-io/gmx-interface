@@ -4,11 +4,16 @@ import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 import { ContractsChainId, getChainName, getGasPricePremium } from "config/chains";
-import { JUMPER_BRIDGE_URL } from "config/links";
+import { JUMPER_BRIDGE_URL, SAFE_MULTICHAIN_DOCS_URL } from "config/links";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getExecutionFeeBufferBps, getMinimumExecutionFeeBufferBps } from "domain/synthetics/fees/utils/executionFee";
 import { ErrorData } from "lib/errors";
+import {
+  SMART_WALLET_ACCOUNT_CHANGED_ERROR,
+  SMART_WALLET_CHAIN_UNAVAILABLE_ERROR,
+  SMART_WALLET_WRONG_CHAIN_ERROR,
+} from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import { formatPercentage } from "lib/numbers";
 import { switchNetwork } from "lib/wallets";
@@ -26,10 +31,12 @@ export type PermitIssueType = "invalidSignature" | "expiredDeadline";
 export type AdditionalErrorParams = {
   additionalContent?: ReactNode;
   slippageInputId?: string;
+  isSizeIncrease?: boolean;
   defaultMessage?: ReactNode;
   isInternalSwapFallback?: boolean;
   isExternalSwapFallback?: boolean;
   permitIssueType?: PermitIssueType;
+  isOutdatedSubaccountApproval?: boolean;
   setIsSettingsVisible?: (isVisible: boolean) => void;
 };
 
@@ -39,10 +46,12 @@ export function getTxnErrorToast(
   {
     additionalContent,
     slippageInputId,
+    isSizeIncrease,
     defaultMessage = getDefaultErrorMessage(errorData),
     isInternalSwapFallback,
     isExternalSwapFallback,
     permitIssueType,
+    isOutdatedSubaccountApproval,
     setIsSettingsVisible,
   }: AdditionalErrorParams
 ) {
@@ -79,6 +88,24 @@ export function getTxnErrorToast(
       </Trans>
     );
 
+    return toastParams;
+  }
+
+  const smartWalletContent = getSmartWalletErrorToastContent(
+    chainId,
+    errorData.errorMessage,
+    errorData.data?.walletName
+  );
+
+  if (smartWalletContent) {
+    toastParams.errorContent = smartWalletContent;
+    toastParams.autoCloseToast = false;
+
+    return toastParams;
+  }
+
+  if (isOutdatedSubaccountApproval) {
+    toastParams.errorContent = getOutdatedSubaccountApprovalToastContent();
     return toastParams;
   }
 
@@ -122,7 +149,7 @@ export function getTxnErrorToast(
     return toastParams;
   }
 
-  const contractErrorMessage = getContractErrorToastContent({ chainId, errorData, slippageInputId });
+  const contractErrorMessage = getContractErrorToastContent({ chainId, errorData, slippageInputId, isSizeIncrease });
   if (contractErrorMessage) {
     toastParams.errorContent = contractErrorMessage;
     return toastParams;
@@ -194,12 +221,17 @@ function getDefaultErrorMessage(errorData: ErrorData | undefined) {
   return t`Transaction failed`;
 }
 
-function getDebugErrorMessage(errorData: ErrorData | undefined) {
-  if (errorData?.contractError) {
-    return `${errorData.contractError} [${errorData.contractErrorArgs}] ${errorData.errorMessage}`;
-  }
+export function getDebugErrorMessage(errorData: ErrorData | undefined) {
+  const message = errorData?.contractError
+    ? `${errorData.contractError} [${errorData.contractErrorArgs}] ${errorData.errorMessage}`
+    : errorData?.errorMessage;
 
-  return errorData?.errorMessage;
+  const handles = [
+    typeof errorData?.data?.taskId === "string" ? `taskId: ${errorData.data.taskId}` : undefined,
+    typeof errorData?.data?.traceId === "string" ? `traceId: ${errorData.data.traceId}` : undefined,
+  ].filter(Boolean);
+
+  return [message, ...handles].filter(Boolean).join("\n") || undefined;
 }
 
 /**
@@ -277,8 +309,77 @@ export function getErrorMessage(
   return { failMsg, autoCloseToast };
 }
 
+export function getSmartWalletChainUnavailableToastContent(chainId: number, walletName = "wallet") {
+  return (
+    <>
+      <Trans>
+        <div>
+          Your {walletName} is not available on {getChainName(chainId)}
+        </div>
+        <br />
+        <div>
+          Add {getChainName(chainId)} to your {walletName}, then reconnect and try again
+        </div>
+      </Trans>
+      <br />
+      <SafeAddNetworkLink />
+    </>
+  );
+}
+
+/** Undefined for anything that is not a smart-wallet chain error. */
+export function getSmartWalletErrorToastContent(
+  chainId: number,
+  errorMessage: string | undefined,
+  rawWalletName?: string
+): ReactNode | undefined {
+  const walletName = rawWalletName || "wallet";
+
+  if (errorMessage === SMART_WALLET_CHAIN_UNAVAILABLE_ERROR) {
+    return getSmartWalletChainUnavailableToastContent(chainId, walletName);
+  }
+
+  if (errorMessage === SMART_WALLET_WRONG_CHAIN_ERROR) {
+    return (
+      <Trans>
+        <div>Your {walletName} is on a different network</div>
+        <br />
+        <div>
+          Switch your {walletName} to {getChainName(chainId)}, then try again
+        </div>
+      </Trans>
+    );
+  }
+
+  if (errorMessage === SMART_WALLET_ACCOUNT_CHANGED_ERROR) {
+    return (
+      <>
+        <Trans>
+          <div>Your wallet switched to a different account</div>
+          <br />
+          <div>
+            Signing on {getChainName(chainId)} requires the same account you started with. Instead of selecting another
+            account, add {getChainName(chainId)} to your current one in your wallet, then try again.
+          </div>
+        </Trans>
+        <br />
+        <SafeAddNetworkLink />
+      </>
+    );
+  }
+
+  return undefined;
+}
+
+function SafeAddNetworkLink() {
+  return (
+    <ExternalLink href={SAFE_MULTICHAIN_DOCS_URL}>
+      <Trans>Using Safe? Learn how to add a network</Trans>
+    </ExternalLink>
+  );
+}
+
 export const INVALID_NETWORK_TOAST_ID = "invalid-network";
-export const NON_EOA_ACCOUNT_CHAIN_WARNING_TOAST_ID = "non-eoa-account-chain-warning";
 
 export function getInvalidNetworkToastContent(chainId: number) {
   return (
@@ -317,16 +418,6 @@ export function getMultipleWalletsConnectedToastContent(
   );
 }
 
-export function getNonEoaAccountChainWarningToastContent(chainId: number) {
-  return (
-    <Trans>
-      <div>Smart wallets not supported on {getChainName(chainId)}</div>
-      <br />
-      <div>Switch to a different network or use an EOA wallet</div>
-    </Trans>
-  );
-}
-
 export function InvalidSignatureToastContent() {
   const { setIsSettingsVisible } = useSettings();
 
@@ -361,7 +452,7 @@ export function getInsufficientExecutionFeeToastContent({
   chainId: number;
   executionFeeBufferBps: number | undefined;
   estimatedExecutionGasLimit: bigint;
-  txUrl: string;
+  txUrl: string | undefined;
   errorMessage: string | undefined;
   shouldOfferExpress: boolean;
   setIsSettingsVisible: (isVisible: boolean) => void;
@@ -408,10 +499,16 @@ export function getInsufficientExecutionFeeToastContent({
         <br />
         <br />
         {suggestText}
-        <br />
-        <br />
-        <ExternalLink href={txUrl}>View</ExternalLink>
       </Trans>
+      {txUrl && (
+        <>
+          <br />
+          <br />
+          <ExternalLink href={txUrl}>
+            <Trans>View</Trans>
+          </ExternalLink>
+        </>
+      )}
       <br />
       <br />
       {errorMessage && <ToastifyDebug error={errorMessage} />}
@@ -433,6 +530,14 @@ export function getExpiredPermitDeadlineToastContent() {
   return (
     <Trans>
       <div>Permit has expired. Try again</div>
+    </Trans>
+  );
+}
+
+export function getOutdatedSubaccountApprovalToastContent() {
+  return (
+    <Trans>
+      <div>One-Click Trading approval was outdated and has been refreshed. Try again</div>
     </Trans>
   );
 }

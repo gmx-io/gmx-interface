@@ -1,9 +1,10 @@
 import { t, Trans } from "@lingui/macro";
 import pickBy from "lodash/pickBy";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useKey } from "react-use";
 import { Address } from "viem";
 
+import { USD_DECIMALS } from "config/factors";
 import { isSettlementChain } from "config/multichain";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
@@ -12,11 +13,17 @@ import {
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
+  usePositionEditorAtPriceOpenRequest,
   usePositionEditorCollateralInputValue,
+  usePositionEditorDepositMode,
   usePositionEditorIsCollateralTokenFromGmxAccount,
+  usePositionEditorOperation,
   usePositionEditorPosition,
   usePositionEditorPositionState,
+  usePositionEditorReplacingOrder,
   usePositionEditorSelectedCollateralAddress,
+  usePositionEditorTriggerPrice,
+  usePositionEditorTriggerPriceInputValue,
 } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
 import {
   selectPositionEditorCollateralInputAmountAndUsd,
@@ -27,17 +34,22 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { formatLiquidationPrice, getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import { getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
-import { getMaxWithdrawAmount, getTradeFlagsForCollateralEdit } from "domain/synthetics/trade";
+import { getMarkPrice, getMaxWithdrawAmount, getTradeFlagsForCollateralEdit } from "domain/synthetics/trade";
+import { Operation } from "domain/synthetics/trade/usePositionEditorState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
+import { getConditionalDepositWarning } from "domain/synthetics/trade/utils/validation";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
-import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
-import { formatAmountFree, formatBalanceAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import {
+  formatAmountFree,
+  formatBalanceAmount,
+  formatTokenAmountWithUsd,
+  formatUsd,
+  formatUsdPrice,
+} from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
-import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
-import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
 import {
   convertTokenAddress,
   getTokenVisualMultiplier,
@@ -46,6 +58,7 @@ import {
 } from "sdk/configs/tokens";
 import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
 
+import { useActiveForm } from "components/ActiveFormScope/ActiveFormScope";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
@@ -55,8 +68,10 @@ import Tabs from "components/Tabs/Tabs";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { TradeInputBox } from "components/TradeboxMarginFields/TradeInputBox";
+import { TradeInputField } from "components/TradeboxMarginFields/TradeInputField";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
+import InfoIcon from "img/ic_info_circle_stroke.svg?react";
 import WalletIcon from "img/ic_wallet.svg?react";
 
 import { PositionEditorCollateralSelector } from "../CollateralSelector/PositionEditorCollateralSelector";
@@ -65,8 +80,9 @@ import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
 import { usePositionEditorData } from "./hooks/usePositionEditorData";
 import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
+import { formatMarginDepositPriceInput, getMarginDepositPrefill } from "./marginDepositPrefill";
 import { PositionEditorAdvancedRows } from "./PositionEditorAdvancedRows";
-import { Operation, OPERATION_LABELS } from "./types";
+import { DEPOSIT_MODE_LABELS, DEPOSIT_MODES, OPERATION_LABELS } from "./types";
 import { usePositionEditorButtonState } from "./usePositionEditorButtonState";
 
 import "./PositionEditor.scss";
@@ -74,9 +90,6 @@ import "./PositionEditor.scss";
 export function PositionEditor() {
   const { chainId, srcChainId } = useChainId();
   const { expressOrdersEnabled, setExpressOrdersEnabled, setIsSettingsVisible } = useSettings();
-  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
-  const isGeminiWallet = useIsGeminiWallet();
-  const isExpressUnsupportedWallet = isNonEoaAccountOnAnyChain || isGeminiWallet;
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const tokensData = useTokensData();
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
@@ -84,14 +97,22 @@ export function PositionEditor() {
   const userReferralInfo = useUserReferralInfo();
   const position = usePositionEditorPosition();
   const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
+  const localizedDepositModeLabels = useLocalizedMap(DEPOSIT_MODE_LABELS);
 
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
   const isVisible = Boolean(position);
   const prevIsVisible = usePrevious(isVisible);
 
-  const [operation, setOperation] = useState(Operation.Deposit);
+  const [operation, setOperation] = usePositionEditorOperation();
   const isDeposit = operation === Operation.Deposit;
+
+  const [depositMode, setDepositMode] = usePositionEditorDepositMode();
+  const [triggerPriceInputValue, setTriggerPriceInputValue] = usePositionEditorTriggerPriceInputValue();
+  const triggerPrice = usePositionEditorTriggerPrice();
+  const [atPriceOpenRequest, clearAtPriceOpenRequest] = usePositionEditorAtPriceOpenRequest();
+  const replacingOrder = usePositionEditorReplacingOrder();
+  const isAtPriceDeposit = isDeposit && depositMode === "atPrice";
 
   const [selectedCollateralAddress, setSelectedCollateralAddress] = usePositionEditorSelectedCollateralAddress();
   const [isCollateralTokenFromGmxAccount, setIsCollateralTokenFromGmxAccount] =
@@ -99,11 +120,6 @@ export function PositionEditor() {
 
   const handleSetCollateralAddress = useCallback(
     (tokenAddress: string, isGmxAccount?: boolean) => {
-      if (isGmxAccount && isExpressUnsupportedWallet) {
-        helperToast.error(t`Smart wallets are not supported on Express Trading or One-Click Trading`);
-        return;
-      }
-
       if (isGmxAccount && !expressOrdersEnabled) {
         setExpressOrdersEnabled(true);
         toastEnableExpress(() => setIsSettingsVisible(true));
@@ -116,7 +132,6 @@ export function PositionEditor() {
     },
     [
       expressOrdersEnabled,
-      isExpressUnsupportedWallet,
       setSelectedCollateralAddress,
       setExpressOrdersEnabled,
       setIsSettingsVisible,
@@ -205,6 +220,14 @@ export function PositionEditor() {
 
   const marketDecimals = useSelector(makeSelectMarketPriceDecimals(position?.market.indexTokenAddress));
 
+  const markPrice = useMemo(() => {
+    if (!position) {
+      return undefined;
+    }
+
+    return getMarkPrice({ prices: position.indexToken.prices, isLong: position.isLong, isIncrease: true });
+  }, [position]);
+
   const maxWithdrawAmount = useMemo(() => {
     if (!getIsPositionInfoLoaded(position)) return 0n;
 
@@ -221,16 +244,19 @@ export function PositionEditor() {
     operation,
   });
 
-  const submitButtonState = usePositionEditorButtonState(operation);
+  const { formId, isActiveForm } = useActiveForm();
+  const submitButtonState = usePositionEditorButtonState(operation, isActiveForm);
   const gasPaymentToken = submitButtonState.expressParams?.gasPaymentParams.gasPaymentToken;
 
+  // express params cannot resolve without the trigger price, so fall back to the native-token estimate
+  const expressGasPaymentParams = submitButtonState.expressParams?.gasPaymentParams;
   const gasPaymentTokenForMax =
-    expressOrdersEnabled && !collateralToken?.isNative
-      ? submitButtonState.expressParams?.gasPaymentParams.gasPaymentToken
+    expressOrdersEnabled && !collateralToken?.isNative && expressGasPaymentParams !== undefined
+      ? expressGasPaymentParams.gasPaymentToken
       : nativeToken;
   const gasPaymentTokenAmountForMax =
-    expressOrdersEnabled && !collateralToken?.isNative
-      ? submitButtonState.expressParams?.gasPaymentParams?.gasPaymentTokenAmount
+    expressOrdersEnabled && !collateralToken?.isNative && expressGasPaymentParams !== undefined
+      ? expressGasPaymentParams.gasPaymentTokenAmount
       : executionFee?.feeTokenAmount;
 
   const expressEnabledForMax = expressOrdersEnabled && !collateralToken?.isNative;
@@ -292,6 +318,20 @@ export function PositionEditor() {
     operation,
   });
 
+  const conditionalDepositWarning = isAtPriceDeposit
+    ? getConditionalDepositWarning({
+        isLong: Boolean(position?.isLong),
+        triggerPrice,
+        currentLiqPrice: position?.liquidationPrice,
+        nextLiqPrice,
+      })
+    : undefined;
+
+  const hasNextValues =
+    collateralDeltaAmount !== undefined &&
+    collateralDeltaAmount > 0n &&
+    (!isAtPriceDeposit || triggerPrice !== undefined);
+
   useKey(
     "Enter",
     () => {
@@ -318,17 +358,53 @@ export function PositionEditor() {
   );
 
   useEffect(
-    function resetForm() {
-      if (isVisible !== prevIsVisible) {
+    function resetFormAndApplyOpenRequest() {
+      if (isVisible !== prevIsVisible || atPriceOpenRequest) {
         setCollateralInputValue("");
       }
+
+      if (!atPriceOpenRequest) {
+        return;
+      }
+
+      const prefill = getMarginDepositPrefill({
+        request: atPriceOpenRequest,
+        order: replacingOrder,
+        collateralTokenDecimals: position?.collateralToken?.decimals,
+        visualMultiplier: position?.indexToken?.visualMultiplier,
+      });
+
+      // keep the request until the replaced order loads
+      if (!prefill) {
+        return;
+      }
+
+      if (prefill.collateralInputValue !== undefined) {
+        setCollateralInputValue(prefill.collateralInputValue);
+      }
+
+      if (prefill.triggerPriceInputValue !== undefined) {
+        setTriggerPriceInputValue(prefill.triggerPriceInputValue);
+      }
+
+      clearAtPriceOpenRequest();
     },
-    [isVisible, prevIsVisible, setCollateralInputValue]
+    [
+      atPriceOpenRequest,
+      clearAtPriceOpenRequest,
+      isVisible,
+      position?.collateralToken?.decimals,
+      position?.indexToken?.visualMultiplier,
+      prevIsVisible,
+      replacingOrder,
+      setCollateralInputValue,
+      setTriggerPriceInputValue,
+    ]
   );
 
   const buttonContent = (
     <Button
-      className="w-full"
+      className="w-full gap-4"
       variant="primary-action"
       onClick={submitButtonState.onSubmit}
       disabled={submitButtonState.disabled}
@@ -336,6 +412,7 @@ export function PositionEditor() {
       qa="confirm-button"
     >
       {submitButtonState.text}
+      {submitButtonState.tooltipContent && <InfoIcon className="size-20" />}
     </Button>
   );
 
@@ -347,6 +424,7 @@ export function PositionEditor() {
       handle={buttonContent}
       handleClassName="w-full"
       position="top"
+      variant="none"
     />
   ) : (
     buttonContent
@@ -359,9 +437,17 @@ export function PositionEditor() {
     }));
   }, [localizedOperationLabels]);
 
+  const depositModeTabsOptions = useMemo(() => {
+    return DEPOSIT_MODES.map((mode) => ({
+      value: mode,
+      label: localizedDepositModeLabels[mode],
+    }));
+  }, [localizedDepositModeLabels]);
+
   return (
     <div className="PositionEditor">
       <Modal
+        activeFormId={formId}
         className="PositionEditor-modal"
         isVisible={!!position}
         setIsVisible={onClose}
@@ -385,6 +471,44 @@ export function PositionEditor() {
               className="PositionEditor-tabs"
               qa="operation-tabs"
             />
+            {isDeposit && (
+              <Tabs
+                onChange={setDepositMode}
+                selectedValue={depositMode}
+                options={depositModeTabsOptions}
+                type="pill"
+                qa="deposit-mode-tabs"
+              />
+            )}
+            {isAtPriceDeposit && (
+              <TradeInputField
+                qa="trigger-price-input"
+                label={t`Trigger price`}
+                alternateValue={null}
+                displayMode="usd"
+                showDisplayModeToggle={false}
+                unitLabel="USD"
+                rightHeadline={
+                  <button
+                    type="button"
+                    className="whitespace-nowrap text-typography-secondary hover:text-typography-primary"
+                    onClick={() =>
+                      setTriggerPriceInputValue(
+                        formatMarginDepositPriceInput(markPrice, position.indexToken?.visualMultiplier)
+                      )
+                    }
+                  >
+                    {t`Mark:`}{" "}
+                    <span className="numbers">
+                      {formatUsdPrice(markPrice, { visualMultiplier: position.indexToken?.visualMultiplier })}
+                    </span>
+                  </button>
+                }
+                inputValue={triggerPriceInputValue}
+                onInputValueChange={(e) => setTriggerPriceInputValue(e.target.value)}
+                maxDecimals={USD_DECIMALS}
+              />
+            )}
             <TradeInputBox
               qa="amount-input"
               leftHeadline={localizedOperationLabels[operation]}
@@ -482,6 +606,19 @@ export function PositionEditor() {
                   {submitButtonState.errorBannerContent}
                 </AlertInfoCard>
               )}
+              {isAtPriceDeposit &&
+                !submitButtonState.bannerErrorName &&
+                !submitButtonState.errorBannerContent &&
+                (conditionalDepositWarning !== undefined ? (
+                  <AlertInfoCard type="warning" hideClose>
+                    {conditionalDepositWarning}
+                  </AlertInfoCard>
+                ) : (
+                  <p className="text-12 text-typography-secondary">
+                    <Trans>Adds margin without increasing your position size when the trigger price is reached.</Trans>
+                  </p>
+                ))}
+
               {!submitButtonState.bannerErrorName &&
                 !submitButtonState.errorBannerContent &&
                 lowGasPaymentTokenWarningContent && (
@@ -522,7 +659,7 @@ export function PositionEditor() {
                       visualMultiplier: position.indexToken?.visualMultiplier,
                     })}
                     to={
-                      collateralDeltaAmount !== undefined && collateralDeltaAmount > 0
+                      hasNextValues
                         ? formatLiquidationPrice(nextLiqPrice, {
                             displayDecimals: marketDecimals,
                             visualMultiplier: position.indexToken?.visualMultiplier,

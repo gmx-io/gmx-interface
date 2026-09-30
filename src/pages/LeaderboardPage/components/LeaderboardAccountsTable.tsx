@@ -25,7 +25,7 @@ import { TableScrollFadeContainer } from "components/TableScrollFade/TableScroll
 import { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import { formatDelta, getSignedValueClassName } from "./shared";
+import { compareLeaderboardValues, formatDelta, getLeaderboardRealizedPnl, getSignedValueClassName } from "./shared";
 
 function getCellClassname(rank: number | null, competition: CompetitionType | undefined, pinned: boolean) {
   if (pinned) return cx("LeaderboardRankCell-Pinned relative");
@@ -94,20 +94,24 @@ export function LeaderboardAccountsTable({
         key = "totalQualifyingPnl";
       }
 
-      let directionMultiplier = direction === "asc" ? -1 : 1;
+      let sortDirection: "asc" | "desc" = direction === "asc" ? "asc" : "desc";
 
       if (key === "wins" && direction === "asc") {
         key = "losses";
-        directionMultiplier = 1;
+        sortDirection = "desc";
       }
 
-      if (typeof a[key] === "bigint" && typeof b[key] === "bigint") {
-        return directionMultiplier * ((a[key] as bigint) > (b[key] as bigint) ? -1 : 1);
-      } else if (typeof a[key] === "number" && typeof b[key] === "number") {
-        return directionMultiplier * (a[key] > b[key] ? -1 : 1);
-      } else {
-        return 1;
+      const aValue = a[key];
+      const bValue = b[key];
+
+      if (
+        (typeof aValue === "bigint" && typeof bValue === "bigint") ||
+        (typeof aValue === "number" && typeof bValue === "number")
+      ) {
+        return compareLeaderboardValues(aValue, bValue, sortDirection);
       }
+
+      return 0;
     });
   }, [data, direction, orderBy]);
 
@@ -464,10 +468,8 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
   const shouldShowStartValues = isCompetition || type !== "all";
 
   const realizedFees = useMemo(() => account.realizedFees * -1n, [account.realizedFees]);
-  const realizedPnl = useMemo(
-    () => (isPnlAfterFees ? account.realizedPnl + realizedFees + account.realizedPriceImpact : account.realizedPnl),
-    [account.realizedPnl, account.realizedPriceImpact, isPnlAfterFees, realizedFees]
-  );
+  const realizedSwapFees = useMemo(() => account.realizedSwapFees * -1n, [account.realizedSwapFees]);
+  const realizedPnl = useMemo(() => getLeaderboardRealizedPnl(account, isPnlAfterFees), [account, isPnlAfterFees]);
 
   const unrealizedFees = useMemo(() => account.unrealizedFees * -1n, [account.unrealizedFees]);
   const unrealizedPnl = useMemo(
@@ -525,6 +527,24 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
             }
           />
           <StatsTooltipRow
+            label={t`Realized swap fees`}
+            showDollar={false}
+            value={
+              <span className={cx("numbers", getSignedValueClassName(realizedSwapFees))}>
+                {formatDelta(realizedSwapFees, { signed: true, prefix: "$" })}
+              </span>
+            }
+          />
+          <StatsTooltipRow
+            label={t`Positive funding fees`}
+            showDollar={false}
+            value={
+              <span className={cx("numbers", getSignedValueClassName(account.positiveFundingFeesUsd))}>
+                {formatDelta(account.positiveFundingFeesUsd, { signed: true, prefix: "$" })}
+              </span>
+            }
+          />
+          <StatsTooltipRow
             label={t`Unrealized fees`}
             showDollar={false}
             value={
@@ -551,6 +571,15 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
             value={
               <span className={cx("numbers", getSignedValueClassName(account.realizedPriceImpact))}>
                 {formatDelta(account.realizedPriceImpact, { signed: true, prefix: "$" })}
+              </span>
+            }
+          />
+          <StatsTooltipRow
+            label={t`Realized swap impact`}
+            showDollar={false}
+            value={
+              <span className={cx("numbers", getSignedValueClassName(account.realizedSwapImpact))}>
+                {formatDelta(account.realizedSwapImpact, { signed: true, prefix: "$" })}
               </span>
             }
           />

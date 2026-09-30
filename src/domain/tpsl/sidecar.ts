@@ -11,6 +11,7 @@ import type { DecreasePositionAmounts } from "domain/synthetics/trade";
 import {
   buildDecreaseOrderPayload,
   buildUpdateOrderPayload,
+  CancelOrderTxnParams,
   CreateOrderTxnParams,
   DecreasePositionOrderParams,
   UpdateOrderTxnParams,
@@ -302,8 +303,10 @@ export function buildTpSlBatchPayloads(p: {
 }): {
   createOrderParams: CreateOrderTxnParams<DecreasePositionOrderParams>[];
   updateOrderParams: UpdateOrderTxnParams[];
+  cancelOrderParams: CancelOrderTxnParams[];
 } {
   const updateOrderParams: UpdateOrderTxnParams[] = [];
+  const cancelOrderParams: CancelOrderTxnParams[] = [];
   const createEntries: TpSlCreatePayloadEntry[] = [];
 
   for (const entry of p.entries) {
@@ -311,22 +314,30 @@ export function buildTpSlBatchPayloads(p: {
 
     if (replacesExisting && entry.amounts && entry.existingFullCloseOrder) {
       const order = entry.existingFullCloseOrder;
-      updateOrderParams.push(
-        buildUpdateOrderPayload({
-          chainId: p.chainId as any,
-          indexTokenAddress: order.indexToken.address,
-          orderKey: order.key,
-          orderType: order.orderType,
-          sizeDeltaUsd: FULL_POSITION_CLOSE_SIZE_DELTA_USD,
-          triggerPrice: entry.amounts.triggerPrice ?? 0n,
-          acceptablePrice: entry.amounts.acceptablePrice ?? 0n,
-          minOutputAmount: order.minOutputAmount,
-          autoCancel: order.autoCancel,
-          validFromTime: 0n,
-          executionFeeTopUp: 0n,
-        })
-      );
-      createEntries.push({ ...entry, amounts: undefined });
+      const nextSwapType = entry.amounts.decreaseSwapType ?? DecreasePositionSwapType.NoSwap;
+
+      // updateOrder can't change decreasePositionSwapType, so cancel + recreate when it differs.
+      if (nextSwapType === order.decreasePositionSwapType) {
+        updateOrderParams.push(
+          buildUpdateOrderPayload({
+            chainId: p.chainId as any,
+            indexTokenAddress: order.indexToken.address,
+            orderKey: order.key,
+            orderType: order.orderType,
+            sizeDeltaUsd: FULL_POSITION_CLOSE_SIZE_DELTA_USD,
+            triggerPrice: entry.amounts.triggerPrice ?? 0n,
+            acceptablePrice: entry.amounts.acceptablePrice ?? 0n,
+            minOutputAmount: order.minOutputAmount,
+            autoCancel: order.autoCancel,
+            validFromTime: 0n,
+            executionFeeTopUp: 0n,
+          })
+        );
+        createEntries.push({ ...entry, amounts: undefined });
+      } else {
+        cancelOrderParams.push({ orderKey: order.key });
+        createEntries.push(entry);
+      }
     } else {
       createEntries.push(entry);
     }
@@ -344,5 +355,5 @@ export function buildTpSlBatchPayloads(p: {
     userReferralCode: p.userReferralCode,
   });
 
-  return { createOrderParams, updateOrderParams };
+  return { createOrderParams, updateOrderParams, cancelOrderParams };
 }

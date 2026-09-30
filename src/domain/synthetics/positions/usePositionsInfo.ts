@@ -19,6 +19,10 @@ import { getAllPossiblePositionsKeys, useOptimisticPositionsInfo } from "./useOp
 import { usePositions } from "./usePositions";
 import { usePositionsConstantsRequest } from "./usePositionsConstants";
 
+// Wait this long for API positions before warming the RPC backup. The API is usually fast and a
+// cold RPC detour is slower than waiting, so we give API a grace window before paying RPC load.
+const RPC_WARMUP_DELAY_MS = 5_000;
+
 function composeApiPositionInfo(apiPosition: ApiPositionInfo, marketsInfoData: MarketsInfoData): PositionInfo | null {
   const marketInfo = getByKey(marketsInfoData, apiPosition.marketAddress);
 
@@ -80,6 +84,7 @@ export function usePositionsInfoRequest(
     apiError,
     isEnabled: Boolean(account),
     resetKey: account,
+    initialFallbackTimeout: RPC_WARMUP_DELAY_MS,
   });
 
   const { positionsData, error: positionsError } = usePositions(chainId, {
@@ -211,8 +216,12 @@ export function usePositionsInfoRequest(
   ]);
 
   const fallbackPositionsInfoData = rpcPositionsInfoData;
+  // Prefer API data that exists (including data retained across api-health flips) and hand over to
+  // RPC only once the fallback actually has data — a rendered list must never fall back to loading.
   const shouldUseApiPositionsInfoData =
-    isApiSdkEnabled && Boolean(recomputedApiPositionsInfoData) && (!shouldFallbackToRpc || !fallbackPositionsInfoData);
+    Boolean(apiPositionsInfoData) &&
+    Boolean(recomputedApiPositionsInfoData) &&
+    (!shouldFallbackToRpc || !fallbackPositionsInfoData);
 
   const positionsInfoData = useMemo(() => {
     if (shouldUseApiPositionsInfoData) {

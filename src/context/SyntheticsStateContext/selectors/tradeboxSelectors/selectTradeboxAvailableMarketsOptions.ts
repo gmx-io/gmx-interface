@@ -238,7 +238,10 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
         marketIncreasePositionAmounts.sizeDeltaUsd,
         isLong,
         true,
-        { shouldCapNegativeImpact: true }
+        {
+          shouldCapNegativeImpact: true,
+          sizeDeltaInTokens: marketIncreasePositionAmounts.sizeDeltaInTokens,
+        }
       );
 
       const { acceptablePriceDeltaBps } = getAcceptablePriceByPriceImpact({

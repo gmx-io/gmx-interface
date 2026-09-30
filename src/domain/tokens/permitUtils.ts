@@ -57,7 +57,14 @@ export async function createAndSignTokenPermit(
     deadline: BigInt(nowInSeconds() + DEFAULT_PERMIT_DEADLINE_DURATION),
   };
 
-  const signature = await signTypedData({ signer, domain, types, typedData: permitData, minified: false });
+  const signature = await signTypedData({
+    signer,
+    domain,
+    types,
+    typedData: permitData,
+    minified: false,
+    verificationChainId: chainId,
+  });
 
   const { r, s, v } = splitSignature(signature);
 

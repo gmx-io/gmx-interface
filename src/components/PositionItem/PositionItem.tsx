@@ -23,7 +23,7 @@ import {
 } from "domain/synthetics/positions";
 import { TradeMode } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
-import { formatBalanceAmount, formatDeltaUsd, formatUsd } from "lib/numbers";
+import { formatBalanceAmount, formatDeltaUsd, formatPriceImpactBps, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { getMarketIndexName } from "sdk/utils/markets";
@@ -58,6 +58,7 @@ export type Props = {
   onSelectPositionClick?: (tradeMode?: TradeMode, showCurtain?: boolean) => void;
   isLarge: boolean;
   onOrdersClick?: (key?: string) => void;
+  onViewPositionHistory?: () => void;
   onCancelOrder?: (orderKey: string) => void;
   hideOrderActions?: boolean;
 };
@@ -109,6 +110,8 @@ export function PositionItem(p: Props) {
   }, []);
 
   function renderNetValue() {
+    const netPriceImpactBps = formatPriceImpactBps(p.position.netPriceImapctDeltaUsd, p.position.sizeInUsd);
+
     return (
       <TooltipWithPortal
         handle={formatUsd(displayedNetValue)}
@@ -158,7 +161,12 @@ export function PositionItem(p: Props) {
               <>
                 <StatsTooltipRow
                   label={t`Net price impact`}
-                  value={formatDeltaUsd(p.position.netPriceImapctDeltaUsd) || "..."}
+                  value={
+                    <>
+                      {formatDeltaUsd(p.position.netPriceImapctDeltaUsd) || "..."}
+                      {netPriceImpactBps ? ` (${netPriceImpactBps})` : null}
+                    </>
+                  }
                   valueClassName="numbers"
                   showDollar={false}
                   textClassName={getPositiveOrNegativeClass(p.position.netPriceImapctDeltaUsd)}
@@ -643,6 +651,7 @@ export function PositionItem(p: Props) {
                 handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket)}
                 handleTwapIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Twap)}
                 handleTriggerClose={handleOpenAddTPSLModal}
+                handleViewPositionHistory={p.onViewPositionHistory}
                 disabled={isActionsDisabled}
               />
             </div>
@@ -838,6 +847,7 @@ export function PositionItem(p: Props) {
                     handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket, true)}
                     handleTwapIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Twap, true)}
                     handleTriggerClose={handleOpenAddTPSLModal}
+                    handleViewPositionHistory={p.onViewPositionHistory}
                     disabled={isActionsDisabled}
                   />
                 </div>

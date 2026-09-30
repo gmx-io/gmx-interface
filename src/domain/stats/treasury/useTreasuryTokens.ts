@@ -112,23 +112,20 @@ function buildTreasuryTokensRequest({
 }) {
   const multicallAddress = getContract(chainId, "Multicall");
 
-  return tokenAddresses.reduce<MulticallRequestConfig>(
-    (acc, tokenAddress) => {
-      const token = getToken(chainId, tokenAddress);
-      const isNativeToken = token.address === NATIVE_TOKEN_ADDRESS;
+  return tokenAddresses.reduce<MulticallRequestConfig>((acc, tokenAddress) => {
+    const token = getToken(chainId, tokenAddress);
+    const isNativeToken = token.address === NATIVE_TOKEN_ADDRESS;
 
-      const calls = createBalanceCalls(addresses, {
-        balanceMethodName: isNativeToken ? "getEthBalance" : "balanceOf",
-      });
+    const calls = createBalanceCalls(addresses, {
+      balanceMethodName: isNativeToken ? "getEthBalance" : "balanceOf",
+    });
 
-      acc[tokenAddress] = {
-        contractAddress: isNativeToken ? multicallAddress : token.address,
-        abiId: isNativeToken ? "Multicall" : "Token",
-        calls,
-      };
+    acc[tokenAddress] = {
+      contractAddress: isNativeToken ? multicallAddress : token.address,
+      abiId: isNativeToken ? "Multicall" : "Token",
+      calls,
+    };
 
-      return acc;
-    },
-    {}
-  );
+    return acc;
+  }, {});
 }

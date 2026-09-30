@@ -1,9 +1,7 @@
 import { getSourceChainDecimalsMapped } from "config/multichain";
-import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { TokenData, convertToTokenAmount } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { absDiffBps, formatAmountFree, formatBalanceAmount } from "lib/numbers";
-import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getResidualGasUsd, RESIDUAL_GAS_AMOUNT_MULTIPLIER } from "sdk/configs/fees";
 import { bigMath } from "sdk/utils/bigmath";
@@ -40,11 +38,13 @@ export function getMaxAvailableTokenAmount({
   useMinimalBuffer?: boolean;
 }): {
   maxAvailableAmount: bigint;
+  safeMaxAvailableAmount: bigint;
   bufferType?: "safe" | "minimal";
 } {
   if (fromTokenBalance === undefined || (!ignoreGasPaymentToken && gasPaymentToken === undefined)) {
     return {
       maxAvailableAmount: 0n,
+      safeMaxAvailableAmount: 0n,
       bufferType: undefined,
     };
   }
@@ -52,6 +52,7 @@ export function getMaxAvailableTokenAmount({
   if (ignoreGasPaymentToken || (gasPaymentToken !== undefined && fromTokenAddress !== gasPaymentToken.address)) {
     return {
       maxAvailableAmount: fromTokenBalance,
+      safeMaxAvailableAmount: fromTokenBalance,
       bufferType: "safe",
     };
   }
@@ -59,6 +60,7 @@ export function getMaxAvailableTokenAmount({
   if (gasPaymentToken === undefined || gasPaymentTokenBalance === undefined) {
     return {
       maxAvailableAmount: 0n,
+      safeMaxAvailableAmount: 0n,
       bufferType: undefined,
     };
   }
@@ -66,33 +68,37 @@ export function getMaxAvailableTokenAmount({
   const effectiveGasPaymentTokenAmount =
     gasPaymentTokenAmount > 0n ? gasPaymentTokenAmount : fallbackGasPaymentTokenAmount;
 
-  if (!useMinimalBuffer) {
-    const { min: minResidualUsd, max: maxResidualUsd } = getResidualGasUsd(chainId);
+  const { min: minResidualUsd, max: maxResidualUsd } = getResidualGasUsd(chainId);
 
-    const minResidualAmount = convertToTokenAmount(
-      minResidualUsd,
-      gasPaymentToken.decimals,
-      gasPaymentToken.prices.minPrice
-    )!;
+  const minResidualAmount = convertToTokenAmount(
+    minResidualUsd,
+    gasPaymentToken.decimals,
+    gasPaymentToken.prices.minPrice
+  )!;
 
-    const maxResidualAmount = convertToTokenAmount(
-      maxResidualUsd,
-      gasPaymentToken.decimals,
-      gasPaymentToken.prices.maxPrice
-    )!;
+  const maxResidualAmount = convertToTokenAmount(
+    maxResidualUsd,
+    gasPaymentToken.decimals,
+    gasPaymentToken.prices.maxPrice
+  )!;
 
-    let safeBuffer = bigMath.clamp(
-      effectiveGasPaymentTokenAmount * RESIDUAL_GAS_AMOUNT_MULTIPLIER,
-      minResidualAmount,
-      maxResidualAmount
-    );
+  const safeBuffer = bigMath.clamp(
+    effectiveGasPaymentTokenAmount * RESIDUAL_GAS_AMOUNT_MULTIPLIER,
+    minResidualAmount,
+    maxResidualAmount
+  );
 
-    if (safeBuffer + effectiveGasPaymentTokenAmount <= gasPaymentTokenBalance) {
-      return {
-        maxAvailableAmount: gasPaymentTokenBalance - safeBuffer - effectiveGasPaymentTokenAmount,
-        bufferType: "safe",
-      };
-    }
+  const hasSafeBuffer = safeBuffer + effectiveGasPaymentTokenAmount <= gasPaymentTokenBalance;
+  const safeMaxAvailableAmount = hasSafeBuffer
+    ? gasPaymentTokenBalance - safeBuffer - effectiveGasPaymentTokenAmount
+    : 0n;
+
+  if (!useMinimalBuffer && hasSafeBuffer) {
+    return {
+      maxAvailableAmount: safeMaxAvailableAmount,
+      safeMaxAvailableAmount,
+      bufferType: "safe",
+    };
   }
 
   if (effectiveGasPaymentTokenAmount > 0n) {
@@ -100,12 +106,32 @@ export function getMaxAvailableTokenAmount({
     if (gasPaymentTokenBalance >= minimalBuffer) {
       return {
         maxAvailableAmount: gasPaymentTokenBalance - minimalBuffer,
+        safeMaxAvailableAmount,
         bufferType: "minimal",
       };
     }
   }
 
-  return { maxAvailableAmount: 0n, bufferType: undefined };
+  return { maxAvailableAmount: 0n, safeMaxAvailableAmount, bufferType: undefined };
+}
+
+export function shouldShowGasPaymentTokenWarning({
+  fromTokenAmount,
+  fromTokenBalance,
+  maxAvailableAmount,
+  safeMaxAvailableAmount,
+}: {
+  fromTokenAmount: bigint;
+  fromTokenBalance: bigint;
+  maxAvailableAmount: bigint;
+  safeMaxAvailableAmount: bigint;
+}): boolean {
+  return (
+    maxAvailableAmount > 0n &&
+    fromTokenAmount > 0n &&
+    fromTokenAmount <= fromTokenBalance &&
+    fromTokenAmount > safeMaxAvailableAmount
+  );
 }
 
 export function useMaxAvailableAmount({
@@ -157,9 +183,8 @@ export function useMaxAvailableAmount({
   gasPaymentTokenWarningContent: string | undefined;
 } {
   const { chainId } = useChainId();
-  const isMetamaskMobile = useIsMetamaskMobile();
 
-  const { maxAvailableAmount, bufferType } = getMaxAvailableTokenAmount({
+  const { maxAvailableAmount, safeMaxAvailableAmount } = getMaxAvailableTokenAmount({
     chainId,
     fromTokenAddress: fromToken?.address,
     fromTokenBalance,
@@ -207,27 +232,22 @@ export function useMaxAvailableAmount({
     gasPaymentToken !== undefined &&
     gasPaymentTokenAmount !== undefined &&
     gasPaymentToken.address === fromToken.address &&
-    maxAvailableAmount > 0n &&
     fromTokenAmount !== undefined &&
-    fromTokenAmount > 0n
+    shouldShowGasPaymentTokenWarning({
+      fromTokenAmount,
+      fromTokenBalance,
+      maxAvailableAmount,
+      safeMaxAvailableAmount,
+    })
   ) {
-    const isDifferentEnough = fromTokenAmount > maxAvailableAmount;
-    const aboveBalance = fromTokenAmount > fromTokenBalance;
-
-    if (!aboveBalance && (bufferType === "minimal" || isDifferentEnough)) {
-      gasPaymentTokenWarningContent = getLowGasPaymentTokenBalanceWarning({
-        chainId,
-        isGmxAccount,
-        symbol: gasPaymentToken.symbol,
-      });
-    }
+    gasPaymentTokenWarningContent = getLowGasPaymentTokenBalanceWarning({
+      chainId: srcChainId ?? chainId,
+      isGmxAccount,
+      symbol: gasPaymentToken.symbol,
+    });
   }
 
-  const formattedMaxAvailableAmount = formatAmountFree(
-    maxAvailableAmount,
-    decimals,
-    isMetamaskMobile ? MAX_METAMASK_MOBILE_DECIMALS : undefined
-  );
+  const formattedMaxAvailableAmount = formatAmountFree(maxAvailableAmount, decimals);
 
   const isFromTokenInputValueNearMax = absDiffBps(fromTokenAmount, maxAvailableAmount) < 100n; /* 1% */
 

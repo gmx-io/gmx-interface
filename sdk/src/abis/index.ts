@@ -1,6 +1,8 @@
 import { erc20Abi } from "viem";
 
+import AbstractSubaccountApprovalNonceable from "./AbstractSubaccountApprovalNonceable";
 import ArbitrumNodeInterface from "./ArbitrumNodeInterface";
+import ArbSys from "./ArbSys";
 import ClaimHandler from "./ClaimHandler";
 import CustomErrors from "./CustomErrors";
 import DataStore from "./DataStore";
@@ -32,8 +34,8 @@ import RelayParams from "./RelayParams";
 import RewardReader from "./RewardReader";
 import RewardRouter from "./RewardRouter";
 import RewardTracker from "./RewardTracker";
+import SimulationRouter from "./SimulationRouter";
 import SmartAccount from "./SmartAccount";
-import StBTC from "./StBTC";
 import SubaccountGelatoRelayRouter from "./SubaccountGelatoRelayRouter";
 import SubaccountRouter from "./SubaccountRouter";
 import SyntheticsReader from "./SyntheticsReader";
@@ -54,31 +56,10 @@ import VenusVToken from "./VenusVToken";
 import Vester from "./Vester";
 import WETH from "./WETH";
 
-const AbstractSubaccountApprovalNonceable = [
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    name: "subaccountApprovalNonces",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-] as const;
-
 export const abis = {
   AbstractSubaccountApprovalNonceable,
   ArbitrumNodeInterface,
+  ArbSys,
   ClaimHandler,
   CustomErrors,
   DataStore,
@@ -108,8 +89,8 @@ export const abis = {
   RewardReader,
   RewardRouter,
   RewardTracker,
+  SimulationRouter,
   SmartAccount,
-  StBTC,
   SubaccountGelatoRelayRouter,
   SubaccountRouter,
   SyntheticsReader,

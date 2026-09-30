@@ -1,7 +1,9 @@
 import { Provider } from "ethers";
+import uniqueId from "lodash/uniqueId";
 import { withRetry } from "viem";
 
 import { ContractsChainId } from "config/chains";
+import { getSwapDebugSettings } from "config/externalSwaps";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { buildAndSignExpressBatchOrderTxn } from "domain/synthetics/express/expressOrderUtils";
 import { GlvShiftParam } from "domain/synthetics/jit/utils";
@@ -14,6 +16,7 @@ import { TxnCallback, TxnEventBuilder } from "lib/transactions/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { WalletSigner } from "lib/wallets";
 import { getContract } from "sdk/configs/contracts";
+import { isPermanentRelayError } from "sdk/utils/express";
 import {
   BatchOrderTxnParams,
   getBatchOrderMulticallPayload,
@@ -23,7 +26,7 @@ import {
 
 import { signerAddressError } from "components/Errors/errorToasts";
 
-import { encodeJitBatchOrderUiFeeReceiver, getNeedsJitOrder, isJitShiftError } from "./jitOrderUtils";
+import { encodeJitBatchOrderMetadata, getNeedsJitOrder, isJitShiftError } from "./jitOrderUtils";
 import { getOrdersTriggerPriceOverrides, getSimulationPrices, simulateExecution } from "./simulation";
 import { callRelayTransaction } from "../express/callRelayTransaction";
 
@@ -35,6 +38,7 @@ export type BatchSimulationParams = {
 };
 
 export type BatchOrderTxnCtx = {
+  batchId: string;
   expressParams: ExpressTxnParams | undefined;
   batchParams: BatchOrderTxnParams;
   signer: WalletSigner;
@@ -61,8 +65,9 @@ export async function sendBatchOrderTxn({
   simulationParams: BatchSimulationParams | undefined;
   callback: TxnCallback<BatchOrderTxnCtx> | undefined;
 }) {
-  const encodedBatchParams = encodeJitBatchOrderUiFeeReceiver(batchParams, simulationParams);
+  const encodedBatchParams = encodeJitBatchOrderMetadata(batchParams, simulationParams);
   const eventBuilder = new TxnEventBuilder<BatchOrderTxnCtx>({
+    batchId: uniqueId("order-batch-"),
     expressParams,
     batchParams: encodedBatchParams,
     signer,
@@ -97,6 +102,15 @@ export async function sendBatchOrderTxn({
       };
     }
 
+    if (getSwapDebugSettings()?.failExternalSwaps && getBatchHasExternalSwap(expressParams, encodedBatchParams)) {
+      runSimulation = () =>
+        Promise.reject(
+          extendError(new Error("Debug fail external swaps: execution reverted"), {
+            errorContext: "simulation",
+          })
+        );
+    }
+
     if (expressParams) {
       await runSimulation().then(() => callback?.(eventBuilder.Simulated()));
       const txnData = await buildAndSignExpressBatchOrderTxn({
@@ -121,6 +135,7 @@ export async function sendBatchOrderTxn({
         {
           retryCount: 3,
           delay: 300,
+          shouldRetry: ({ error }) => !isPermanentRelayError(error),
         }
       )
         .then(async (res) => {
@@ -134,8 +149,10 @@ export async function sendBatchOrderTxn({
           return res;
         })
         .catch((error) => {
+          // extendError assigns data unconditionally; without this the relay's traceId is wiped
           throw extendError(error, {
             errorContext: "sending",
+            data: error?.data,
           });
         });
 
@@ -261,7 +278,7 @@ const makeBatchOrderSimulation = async ({
         throw new Error("Multichain orders are only supported with express params");
       }
 
-      const { callData, feeAmount, feeToken, to } = await buildAndSignExpressBatchOrderTxn({
+      const { callData, to } = await buildAndSignExpressBatchOrderTxn({
         signer,
         chainId,
         relayParamsPayload: expressParams.relayParamsPayload,
@@ -274,10 +291,7 @@ const makeBatchOrderSimulation = async ({
       });
 
       await callRelayTransaction({
-        chainId,
         relayRouterAddress: to,
-        gelatoRelayFeeToken: feeToken,
-        gelatoRelayFeeAmount: feeAmount,
         provider,
         calldata: callData,
       });
@@ -328,3 +342,10 @@ const makeBatchOrderSimulation = async ({
     });
   }
 };
+
+function getBatchHasExternalSwap(expressParams: ExpressTxnParams | undefined, batchParams: BatchOrderTxnParams) {
+  return Boolean(
+    expressParams?.relayParamsPayload.externalCalls.externalCallDataList.length ||
+      batchParams.createOrderParams.some((cp) => cp.tokenTransfersParams?.externalCalls?.externalCallDataList.length)
+  );
+}

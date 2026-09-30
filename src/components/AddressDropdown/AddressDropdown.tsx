@@ -1,10 +1,9 @@
 import { useMemo } from "react";
 
-import { isSettlementChain, MULTI_CHAIN_TOKEN_MAPPING } from "config/multichain";
+import { isSettlementChain, isValidVisualSettlementChain, MULTI_CHAIN_TOKEN_MAPPING } from "config/multichain";
 import { useEmptyAvalancheGmxAccount } from "domain/multichain/useEmptyGmxAccounts";
 import { useChainId } from "lib/chains";
 import { EMPTY_OBJECT } from "lib/objects";
-import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import type { SettlementChainId } from "sdk/configs/chains";
 
 import { AddressDropdownWithMultichain } from "./AddressDropdownWithMultichain";
@@ -17,7 +16,6 @@ type Props = {
 export function AddressDropdown({ account }: Props) {
   const { chainId } = useChainId();
 
-  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
   const { isEmptyAvalancheGmxAccountOrNotConnected } = useEmptyAvalancheGmxAccount();
 
   const hasRelatedSourceChains = useMemo(
@@ -28,12 +26,11 @@ export function AddressDropdown({ account }: Props) {
     [chainId]
   );
 
-  if (
-    !isSettlementChain(chainId) ||
-    !hasRelatedSourceChains ||
-    isNonEoaAccountOnAnyChain ||
-    isEmptyAvalancheGmxAccountOrNotConnected
-  ) {
+  const showAccountModal =
+    !isValidVisualSettlementChain(chainId) ||
+    (isSettlementChain(chainId) && hasRelatedSourceChains && !isEmptyAvalancheGmxAccountOrNotConnected);
+
+  if (!showAccountModal) {
     return <AddressDropdownWithoutMultichain account={account} />;
   }
 

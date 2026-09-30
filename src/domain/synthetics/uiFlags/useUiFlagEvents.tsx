@@ -37,7 +37,7 @@ export function useUiFlagEvents(): ActiveUiFlagEvent[] {
     if (!uiFlags) return [];
 
     return uiFlagEventsData
-      .filter((event) => uiFlags[event.flagName] === true)
+      .filter((event) => uiFlags[event.flagName]?.enabled === true)
       .filter((event) => !isDismissedByCooldown(event.id, getUiFlagEventDismissCooldown(event)))
       .map((event) => ({
         data: event,

@@ -5,6 +5,7 @@ import { zeroAddress } from "viem";
 
 import { PendingTransaction, usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import {
   getPendingOrderKey,
   PendingOrderData,
@@ -28,6 +29,7 @@ import { parseError } from "lib/errors";
 import {
   getExpiredPermitDeadlineError,
   getInvalidPermitSignatureError,
+  getIsInvalidSubaccountApprovalNonceError,
   getIsPermitExpiredDeadlineOnSimulation,
   getIsPermitSignatureErrorOnSimulation,
   getIsPossibleExternalSwapError,
@@ -46,7 +48,7 @@ import { getByKey } from "lib/objects";
 import { TradingActionName } from "lib/tradingErrorTracker";
 import { TxnEvent, TxnEventName } from "lib/transactions";
 import { useBlockNumber } from "lib/useBlockNumber";
-import { isIncreaseOrderType, isMarketOrderType, isSwapOrderType } from "sdk/utils/orders";
+import { isIncreaseOrderType, isMarketOrderType, isSwapOrderType, isTriggerDecreaseOrderType } from "sdk/utils/orders";
 import { OrderInfo, OrdersInfoData } from "sdk/utils/orders/types";
 import {
   BatchOrderTxnParams,
@@ -64,6 +66,7 @@ import {
 
 import { getTxnErrorToast, PermitIssueType } from "components/Errors/errorToasts";
 
+import { getIsSizeIncreaseBatch } from "./getIsSizeIncreaseBatch";
 import { BatchOrderTxnCtx } from "./sendBatchOrderTxn";
 import { ExpressTxnParams } from "../express/types";
 
@@ -83,17 +86,20 @@ export function useOrderTxnCallbacks() {
   const { setPendingTxns } = usePendingTxns();
   const {
     setPendingOrder,
+    setPendingTpSlOrderBatches,
     setPendingPosition,
     setPendingOrderUpdate,
     updatePendingExpressTxn,
     setPendingExpressTxn,
     setPendingFundingFeeSettlement,
+    orderStatuses,
   } = useSyntheticsEvents();
   const { chainId, srcChainId } = useChainId();
   const { showDebugValues, setIsSettingsVisible } = useSettings();
   const ordersInfoData = useSelector(selectOrdersInfoData);
   const { addOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
   const { setIsPermitsDisabled, resetTokenPermits } = useTokenPermitsContext();
+  const { invalidateSubaccountApproval } = useSubaccountContext();
   const tokensData = useSelector(selectTokensData);
   const blockNumber = useBlockNumber(chainId);
 
@@ -104,7 +110,7 @@ export function useOrderTxnCallbacks() {
         console.log("TXN EVENT", e, ctx);
       }
 
-      const { expressParams, batchParams } = e.data;
+      const { expressParams, batchParams, batchId } = e.data;
       const isSubaccount = Boolean(expressParams?.subaccount);
 
       const actionsCount = getBatchRequiredActions(batchParams);
@@ -230,6 +236,24 @@ export function useOrderTxnCallbacks() {
 
       switch (e.event) {
         case TxnEventName.Submitted: {
+          const orders = batchParams.createOrderParams
+            .filter(
+              (cp) => isTriggerDecreaseOrderType(cp.orderPayload.orderType) && !getIsTwapOrderPayload(cp.orderPayload)
+            )
+            .map((cp) => getPendingCreateOrder(cp));
+
+          if (orders.length > 0) {
+            setPendingTpSlOrderBatches((batches) => [
+              ...batches,
+              {
+                id: batchId,
+                chainId,
+                orders,
+                existingOrderKeys: [...Object.keys(ordersInfoData ?? {}), ...Object.keys(orderStatuses)],
+              },
+            ]);
+          }
+
           if (isSubaccount) {
             handleTxnSubmitted();
           }
@@ -256,6 +280,20 @@ export function useOrderTxnCallbacks() {
         }
 
         case TxnEventName.Sent: {
+          const sentData = e.data;
+          setPendingTpSlOrderBatches((batches) =>
+            batches.map((batch) =>
+              batch.id === batchId
+                ? {
+                    ...batch,
+                    ...(sentData.type === "wallet"
+                      ? { transactionHash: sentData.transactionHash }
+                      : { relayTaskId: sentData.relayTaskId }),
+                  }
+                : batch
+            )
+          );
+
           if (ctx.metricId) {
             sendTxnSentMetric(ctx.metricId);
 
@@ -291,6 +329,16 @@ export function useOrderTxnCallbacks() {
 
             const pendingTxn: PendingTransaction = {
               hash: e.data.transactionHash,
+              chainId,
+              onError: () => setPendingTpSlOrderBatches((batches) => batches.filter((batch) => batch.id !== batchId)),
+              onReplaced: batchParams.createOrderParams.some((cp) =>
+                isTriggerDecreaseOrderType(cp.orderPayload.orderType)
+              )
+                ? (transactionHash) =>
+                    setPendingTpSlOrderBatches((batches) =>
+                      batches.map((batch) => (batch.id === batchId ? { ...batch, transactionHash } : batch))
+                    )
+                : undefined,
               message: getOperationMessage(mainActionType, "success", actionsCount, undefined, setIsSettingsVisible),
               metricId: ctx.metricId,
               actionName: ctx.actionName,
@@ -309,6 +357,7 @@ export function useOrderTxnCallbacks() {
         }
 
         case TxnEventName.Error: {
+          setPendingTpSlOrderBatches((batches) => batches.filter((batch) => batch.id !== batchId));
           const { error } = e.data;
           const errorData = parseError(error);
 
@@ -324,13 +373,21 @@ export function useOrderTxnCallbacks() {
             setIsSettingsVisible
           );
 
+          const sentSubaccountApproval = expressParams?.subaccount?.signedApproval;
+          const isOutdatedSubaccountApproval =
+            sentSubaccountApproval !== undefined && getIsInvalidSubaccountApprovalNonceError(error);
+
           const fallbackToInternalSwap =
-            hasExternalSwap(expressParams, batchParams) && getIsPossibleExternalSwapError(error)
+            !isOutdatedSubaccountApproval &&
+            hasExternalSwap(expressParams, batchParams) &&
+            getIsPossibleExternalSwapError(error)
               ? ctx.onInternalSwapFallback
               : undefined;
 
           const fallbackToExternalSwap =
-            !hasExternalSwap(expressParams, batchParams) && getIsPriceImpactTooLargeError(error)
+            !isOutdatedSubaccountApproval &&
+            !hasExternalSwap(expressParams, batchParams) &&
+            getIsPriceImpactTooLargeError(error)
               ? ctx.onExternalSwapFallback
               : undefined;
 
@@ -347,10 +404,12 @@ export function useOrderTxnCallbacks() {
           const toastParams = getTxnErrorToast(chainId, errorData, {
             defaultMessage: operationMessage,
             slippageInputId: ctx.slippageInputId,
+            isSizeIncrease: getIsSizeIncreaseBatch(batchParams),
             additionalContent: ctx.additionalErrorContent,
             isInternalSwapFallback: Boolean(fallbackToInternalSwap),
             isExternalSwapFallback: Boolean(fallbackToExternalSwap),
             permitIssueType,
+            isOutdatedSubaccountApproval,
             setIsSettingsVisible,
           });
 
@@ -398,6 +457,10 @@ export function useOrderTxnCallbacks() {
             resetTokenPermits();
           }
 
+          if (isOutdatedSubaccountApproval) {
+            invalidateSubaccountApproval(sentSubaccountApproval);
+          }
+
           if (expressParams) {
             updatePendingExpressTxn({
               key: getExpressParamsKey(expressParams),
@@ -418,7 +481,10 @@ export function useOrderTxnCallbacks() {
       blockNumber,
       chainId,
       srcChainId,
+      invalidateSubaccountApproval,
       ordersInfoData,
+      orderStatuses,
+      setPendingTpSlOrderBatches,
       resetTokenPermits,
       setIsPermitsDisabled,
       setIsSettingsVisible,
@@ -497,6 +563,7 @@ function getPendingCancelOrder(params: CancelOrderTxnParams, order: OrderInfo, c
     sizeDeltaUsd: order.sizeDeltaUsd,
     isLong: order.isLong,
     orderType: order.orderType,
+    decreasePositionSwapType: order.decreasePositionSwapType,
     shouldUnwrapNativeToken: false,
     externalSwapQuote: undefined,
     orderKey: params.orderKey,
@@ -558,6 +625,7 @@ function getPendingUpdateOrder(
     minOutputAmount: order.minOutputAmount,
     isLong: order.isLong,
     orderType: order.orderType,
+    decreasePositionSwapType: order.decreasePositionSwapType,
     shouldUnwrapNativeToken: false,
     externalSwapQuote: undefined,
     orderKey: updateOrderParams.params.orderKey,
@@ -610,6 +678,7 @@ function getPendingCreateOrder(
     autoCancel: createOrderPayload.orderPayload.autoCancel,
     isLong: createOrderPayload.orderPayload.isLong,
     orderType: createOrderPayload.orderPayload.orderType,
+    decreasePositionSwapType: createOrderPayload.orderPayload.decreasePositionSwapType,
     shouldUnwrapNativeToken: createOrderPayload.orderPayload.shouldUnwrapNativeToken,
     externalSwapQuote: createOrderPayload.params.externalSwapQuote,
     txnType: "create",

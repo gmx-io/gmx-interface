@@ -4,7 +4,10 @@ import { ReactNode, memo, useCallback, useEffect, useMemo, useState } from "reac
 
 import type { SortDirection } from "context/SorterContext/types";
 import { useTokenInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useLeaderboardIsCompetition } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
+import {
+  useLeaderboardChainId,
+  useLeaderboardIsCompetition,
+} from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
 import {
   selectPositionConstants,
@@ -27,11 +30,16 @@ import { TopPositionsSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import {
+  MarketFilterLongShort,
+  MarketFilterLongShortItemData,
+} from "components/TableMarketFilter/MarketFilterLongShort";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import { filterLeaderboardPositions } from "./leaderboardPositionFilters";
 import { formatDelta, getSignedValueClassName } from "./shared";
 
 function getWinnerRankClassname(rank: number | null) {
@@ -44,6 +52,7 @@ function getWinnerRankClassname(rank: number | null) {
 type LeaderboardPositionField = keyof LeaderboardPosition;
 
 const PER_PAGE = 20;
+const LEADERBOARD_POSITION_FILTER_DIRECTIONS = ["long", "short"] as const;
 
 export function LeaderboardPositionsTable({
   positions,
@@ -54,6 +63,9 @@ export function LeaderboardPositionsTable({
 }) {
   const { isLoading, data } = positions;
   const [page, setPage] = useState(1);
+  const [positionFilters, setPositionFilters] = useState<MarketFilterLongShortItemData[]>([]);
+  const chainId = useLeaderboardChainId();
+  const availableMarketAddresses = useMemo(() => Array.from(new Set(data.map((position) => position.market))), [data]);
   const { orderBy, direction, getSorterProps } = useSorterHandlers<LeaderboardPositionField>(
     "leaderboard-positions-table",
     {
@@ -66,6 +78,16 @@ export function LeaderboardPositionsTable({
   useEffect(() => {
     setPage(1);
   }, [term]);
+
+  useEffect(() => {
+    setPositionFilters((current) => (current.length ? [] : current));
+    setPage(1);
+  }, [chainId]);
+
+  const handlePositionFiltersChange = useCallback((nextPositionFilters: MarketFilterLongShortItemData[]) => {
+    setPositionFilters(nextPositionFilters);
+    setPage(1);
+  }, []);
 
   const sorted = useMemo(() => {
     return [...data].sort((a, b) => {
@@ -86,10 +108,15 @@ export function LeaderboardPositionsTable({
     });
   }, [data, direction, orderBy]);
 
+  const positionFilteredStats = useMemo(
+    () => filterLeaderboardPositions(sorted, positionFilters),
+    [positionFilters, sorted]
+  );
+
   const filteredStats = useMemo(() => {
     const q = term.toLowerCase().trim();
-    return sorted.filter((a) => a.account.toLowerCase().indexOf(q) >= 0);
-  }, [sorted, term]);
+    return positionFilteredStats.filter((a) => a.account.toLowerCase().indexOf(q) >= 0);
+  }, [positionFilteredStats, term]);
 
   const indexFrom = (page - 1) * PER_PAGE;
   const rowsData = useMemo(
@@ -151,7 +178,15 @@ export function LeaderboardPositionsTable({
                 tooltip={t`Total realized and unrealized PnL for the period. Includes price impact and fees.`}
                 tooltipPosition="bottom-end"
               />
-              <TableHeaderCell title={t`POSITION`} width={12} tooltipPosition="bottom-end" />
+              <TableTh className="w-[12%]">
+                <MarketFilterLongShort
+                  label={t`POSITION`}
+                  allowedDirections={LEADERBOARD_POSITION_FILTER_DIRECTIONS}
+                  availableMarketAddresses={availableMarketAddresses}
+                  value={positionFilters}
+                  onChange={handlePositionFiltersChange}
+                />
+              </TableTh>
               <TableHeaderCell {...getSorterProps("entryPrice")} title={t`ENTRY PRICE`} width={10} />
               <TableHeaderCell {...getSorterProps("sizeInUsd")} title={t`SIZE`} width={12} />
               <TableHeaderCell {...getSorterProps("leverage")} title={t`LEV.`} width={4} />

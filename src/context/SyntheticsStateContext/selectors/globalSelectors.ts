@@ -1,6 +1,7 @@
 import { getOrderRelayRouterAddress } from "domain/synthetics/express/expressOrderUtils";
 import type { FeaturesSettings } from "domain/synthetics/features/useDisabledFeatures";
 import { getIsInvalidSubaccount } from "domain/synthetics/subaccount/utils";
+import { getIsExpressAvailable } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 import { ProgressiveTokensData } from "domain/tokens";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
@@ -19,6 +20,7 @@ export const selectIsGmxAccountBalancesLoaded = (s: SyntheticsState) =>
 export const selectGmMarkets = (s: SyntheticsState) => s.globals.markets.marketsData;
 export const selectUiFeeFactor = (s: SyntheticsState) => s.globals.uiFeeFactor;
 export const selectUserReferralInfo = (s: SyntheticsState) => s.globals.userReferralInfo;
+export const selectProDiscountFactor = (s: SyntheticsState) => s.globals.proDiscountFactor;
 export const selectChainId = (s: SyntheticsState) => s.globals.chainId;
 export const selectSrcChainId = (s: SyntheticsState) => s.globals.srcChainId;
 export const selectDepositMarketTokensData = (s: SyntheticsState) => s.globals.depositMarketTokensData;
@@ -42,13 +44,15 @@ export const selectProgressiveDepositMarketTokensDataWithoutGlv = createSelector
 
 export const selectIsFirstOrder = (s: SyntheticsState) => s.globals.isFirstOrder;
 const selectFeatures = (s: SyntheticsState) => s.features;
-export const selectIsSponsoredCallAvailable = (s: SyntheticsState) =>
-  s.sponsoredCallBalanceData?.isSponsoredCallAllowed ?? false;
 export const selectSubaccountState = (s: SyntheticsState) => s.subaccountState;
 export const selectGasPaymentTokenAllowance = (s: SyntheticsState) => s.gasPaymentTokenAllowance;
 
 export const selectUpdateSubaccountSettings = (s: SyntheticsState) => s.subaccountState.updateSubaccountSettings;
 export const selectL1ExpressOrderGasReference = (s: SyntheticsState) => s.l1ExpressOrderGasReference;
+
+export const selectUiFlags = (s: SyntheticsState) => s.uiFlags;
+
+export const selectIsExpressAvailableFlag = createSelector((q) => getIsExpressAvailable(q(selectUiFlags)));
 
 const makeSelectEnabledFeature = (feature: keyof FeaturesSettings) => {
   return createSelector((q) => {
@@ -93,8 +97,6 @@ export const selectKeepLeverage = (s: SyntheticsState) => s.globals.keepLeverage
 export const selectLastWeekAccountStats = (s: SyntheticsState) => s.globals.lastWeekAccountStats;
 export const selectLastMonthAccountStats = (s: SyntheticsState) => s.globals.lastMonthAccountStats;
 export const selectAccountStats = (s: SyntheticsState) => s.globals.accountStats;
-
-export const selectBotanixStakingAssetsPerShare = (s: SyntheticsState) => s.globals.botanixStakingAssetsPerShare;
 
 export const selectPositionConstants = createSelectorDeprecated(
   [selectMinCollateralUsd, selectMinPositionSizeUsd],

@@ -1,4 +1,4 @@
-import { zeroAddress } from "viem";
+import { zeroHash } from "viem";
 
 import { USD_DECIMALS } from "configs/factors";
 import { usdToToken } from "test/mock";
@@ -81,6 +81,11 @@ export function mockMarketsInfoData(
       maxOpenInterestLong: expandDecimals(5, 29),
       maxOpenInterestShort: expandDecimals(5, 29),
 
+      maxCollateralSumLongTokenLong: 0n,
+      maxCollateralSumLongTokenShort: 0n,
+      maxCollateralSumShortTokenLong: 0n,
+      maxCollateralSumShortTokenShort: 0n,
+
       positionImpactPoolAmount: usdToToken(1000, indexToken),
       positionImpactPoolDistributionRate: 0n,
       minPositionImpactPoolAmount: 0n,
@@ -123,9 +128,12 @@ export function mockMarketsInfoData(
       fundingFactor: 0n,
       fundingExponentFactor: 0n,
       fundingIncreaseFactorPerSecond: 0n,
+      minFundingIncreaseRatePerSecond: 0n,
       fundingDecreaseFactorPerSecond: 0n,
-      maxFundingFactorPerSecond: 0n,
-      minFundingFactorPerSecond: 0n,
+      maxFundingFactorPerSecondLong: 0n,
+      maxFundingFactorPerSecondShort: 0n,
+      minFundingFactorPerSecondLong: 0n,
+      minFundingFactorPerSecondShort: 0n,
       thresholdForDecreaseFunding: 0n,
       thresholdForStableFunding: 0n,
 
@@ -159,10 +167,12 @@ export function mockMarketsInfoData(
       virtualPoolAmountForLongToken: 0n,
       virtualPoolAmountForShortToken: 0n,
       virtualInventoryForPositions: 0n,
+      virtualInventoryForPositionsInTokens: 0n,
 
-      virtualMarketId: zeroAddress,
-      virtualLongTokenId: zeroAddress,
-      virtualShortTokenId: zeroAddress,
+      virtualMarketId: zeroHash,
+      virtualIndexTokenId: zeroHash,
+      virtualLongTokenId: zeroHash,
+      virtualShortTokenId: zeroHash,
 
       ...(overrides[key] || {}),
     };

@@ -3,7 +3,6 @@ import {
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
-  BOTANIX,
   SOURCE_ETHEREUM_MAINNET,
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
@@ -40,12 +39,6 @@ export const NETWORK_OPTIONS: NetworkOption[] = [
     value: AVALANCHE,
     icon: getChainIcon(AVALANCHE),
     color: "#E841424D",
-  },
-  {
-    label: getChainName(BOTANIX),
-    value: BOTANIX,
-    icon: getChainIcon(BOTANIX),
-    color: "#F7931A",
   },
   {
     label: getChainName(SOURCE_BASE_MAINNET),

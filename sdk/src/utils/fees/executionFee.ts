@@ -37,7 +37,6 @@ export function getExecutionFee(
   const gasLimit = baseGasLimit + applyFactor(estimatedGasLimit, multiplierFactor);
   // #endregion
 
-  // avoid botanix gas spikes when chain is not actively used
   const minGasCostUsd = getMinExecutionFeeUsd(chainId as ContractsChainId);
   const minGasCost = convertToTokenAmount(minGasCostUsd, nativeToken.decimals, nativeToken.prices.minPrice);
 

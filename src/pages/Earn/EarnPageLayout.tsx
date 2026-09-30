@@ -6,7 +6,6 @@ import { sendEarnPageTabViewEvent, EarnAnalyticsTab } from "lib/userAnalytics/ea
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Button from "components/Button/Button";
-import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
 import PageTitle from "components/PageTitle/PageTitle";
 
@@ -60,7 +59,7 @@ export default function EarnPageLayout({ children }: EarnPageLayoutProps) {
   }, [analyticsTab]);
 
   return (
-    <AppPageLayout title={t`Earn`} header={<ChainContentHeader />}>
+    <AppPageLayout title={t`Earn`}>
       <PageTitle title={t`Earn`} subtitle={t`Stake GMX and buy GLV or GM to earn rewards`} isTop />
 
       <div className="mt-12 flex grow flex-col gap-8">

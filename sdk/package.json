@@ -1,6 +1,6 @@
 {
   "name": "@gmx-io/sdk",
-  "version": "1.6.3",
+  "version": "2.1.1",
   "type": "module",
   "repository": {
     "type": "git",
@@ -149,9 +149,6 @@
       ],
       "utils/common": [
         "./build/types/src/utils/common/index.d.ts"
-      ],
-      "utils/gelatoRelay": [
-        "./build/types/src/utils/gelatoRelay/index.d.ts"
       ],
       "utils/types": [
         "./build/types/src/utils/types/index.d.ts"
@@ -447,12 +444,6 @@
       "require": "./build/cjs/src/utils/common/index.js",
       "default": "./build/cjs/src/utils/common/index.js"
     },
-    "./utils/gelatoRelay": {
-      "types": "./build/types/src/utils/gelatoRelay/index.d.ts",
-      "import": "./build/esm/src/utils/gelatoRelay/index.js",
-      "require": "./build/cjs/src/utils/gelatoRelay/index.js",
-      "default": "./build/cjs/src/utils/gelatoRelay/index.js"
-    },
     "./utils/types": {
       "types": "./build/types/src/utils/types/index.d.ts",
       "import": "./build/esm/src/utils/types/index.js",
@@ -515,6 +506,7 @@
     "test:ci": "vitest run",
     "test:multicall": "vitest run --config vitest.multicall.config.ts",
     "test:v2": "vitest run --config vitest.v2.config.ts",
+    "test:v2:public": "vitest run --config vitest.v2.public.config.ts",
     "test:e2e": "vitest run --config vitest.e2e.config.ts",
     "build": "rm -rf build && yarn build:types && yarn build:cjs && yarn build:esm && yarn clean",
     "build:cjs": "tsc -p tsconfig.cjs.json && echo '{\"type\": \"commonjs\"}' > build/cjs/src/package.json",
@@ -539,7 +531,6 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "@gelatocloud/gasless": "0.0.10",
     "@layerzerolabs/lz-v2-utilities": "3.0.85",
     "cross-fetch": "4.0.0",
     "crypto-js": "4.2.0",
@@ -563,11 +554,12 @@
     "@types/node": "18.7.13",
     "@types/ws": "^8.5.10",
     "lint-staged": "12.3.4",
+    "prettier": "3.2.5",
     "ts-patch": "3.2.1",
     "tsx": "4.19.0",
     "typescript-transform-paths": "3.5.1",
     "viem": "2.48.11",
-    "vitest": "3.2.6"
+    "vitest": "4.1.11"
   },
   "files": [
     "build"
@@ -577,6 +569,6 @@
     "ox@0.14.20": "patch:ox@npm:0.14.29#../.yarn/patches/ox-npm-0.14.29-gmx-types",
     "viem@2.48.11": "patch:viem@npm:2.48.11#../.yarn/patches/viem-npm-2.48.11-gmx-hex-types",
     "lodash": "4.18.1",
-    "@vitest/pretty-format": "3.2.6"
+    "@vitest/pretty-format": "4.1.11"
   }
 }

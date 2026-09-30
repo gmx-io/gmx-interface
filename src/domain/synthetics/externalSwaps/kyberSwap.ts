@@ -7,6 +7,8 @@ import { expandDecimals, numberToBigint } from "lib/numbers";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 
+import { isAbortError } from "./utils";
+
 type KyberSwapRoutesResponse = {
   code: number;
   message: string;
@@ -197,6 +199,9 @@ export async function getKyberSwapTxnData({
     if (e instanceof KyberSwapSlippageError) {
       throw e;
     }
+    if (isAbortError(e)) {
+      throw e;
+    }
     e.message += ` URL: ${routeUrl.replace(receiverAddress, "...")}`;
     metrics.pushError(e, "externalSwap.getKyberSwapTxnData");
     return undefined;
@@ -216,12 +221,14 @@ export async function getKyberSwapRoute({
   tokenOutAddress,
   amountIn,
   gasPrice,
+  signal,
 }: {
   chainId: ContractsChainId;
   tokenInAddress: string;
   tokenOutAddress: string;
   amountIn: bigint;
   gasPrice: bigint;
+  signal?: AbortSignal;
 }): Promise<KyberSwapRouteResult | undefined> {
   const baseUrl = getKyberSwapUrl(chainId);
 
@@ -241,6 +248,7 @@ export async function getKyberSwapRoute({
   try {
     const routeRes = await fetch(routeUrl, {
       headers: { "x-client-id": KYBER_SWAP_CLIENT_ID },
+      signal,
     });
 
     if (routeRes.status === 403) {
@@ -266,6 +274,9 @@ export async function getKyberSwapRoute({
       amountIn: BigInt(routeSummary.amountIn),
     };
   } catch (e) {
+    if (isAbortError(e)) {
+      throw e;
+    }
     metrics.pushError(e, "externalSwap.getKyberSwapRoute");
     return undefined;
   }
@@ -280,6 +291,7 @@ export async function getKyberSwapBuildFromRoute({
   tokenInAddress,
   tokenOutAddress,
   gasPrice,
+  signal,
 }: {
   chainId: ContractsChainId;
   routeSummary: KyberSwapRouteSummary;
@@ -289,6 +301,7 @@ export async function getKyberSwapBuildFromRoute({
   tokenInAddress: string;
   tokenOutAddress: string;
   gasPrice: bigint;
+  signal?: AbortSignal;
 }): Promise<KyberSwapQuote | undefined> {
   const baseUrl = getKyberSwapUrl(chainId);
   const tokenIn = getToken(chainId, tokenInAddress);
@@ -309,6 +322,7 @@ export async function getKyberSwapBuildFromRoute({
         recipient: receiverAddress,
         slippageTolerance: slippage,
       }),
+      signal,
     });
 
     const buildData = (await buildRes.json()) as KyberSwapBuildResponse;
@@ -344,6 +358,9 @@ export async function getKyberSwapBuildFromRoute({
       slippage,
     };
   } catch (e) {
+    if (isAbortError(e)) {
+      throw e;
+    }
     metrics.pushError(e, "externalSwap.getKyberSwapBuildFromRoute");
     return undefined;
   }

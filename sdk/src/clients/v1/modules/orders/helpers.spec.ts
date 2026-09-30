@@ -8,8 +8,7 @@ import * as swapPath from "utils/swap/swapPath";
 import { TokenData, TokensData } from "utils/tokens/types";
 import * as tradeAmounts from "utils/trade/increase";
 
-// Skipped in CI (FEDEV-4029): beforeAll hits the live gmxinfra API and is flaky (FetchError: Premature close).
-describe.skip("increaseOrderHelper", () => {
+describe("increaseOrderHelper", () => {
   let marketsInfoData: MarketsInfoData;
   let tokensData: TokensData;
   let mockParams: any;

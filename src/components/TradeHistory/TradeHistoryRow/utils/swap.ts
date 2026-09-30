@@ -7,14 +7,15 @@ import type { TokenData } from "domain/synthetics/tokens";
 import { adaptToV1TokenInfo } from "domain/synthetics/tokens/utils";
 import { tryDecodeCustomError } from "lib/errors";
 import { getExchangeRateDisplay } from "lib/legacy";
-import { formatBalanceAmount } from "lib/numbers";
+import { formatBalanceAmount, formatDeltaUsd } from "lib/numbers";
 import { getTokensRatioByAmounts } from "sdk/utils/tokens";
 import type { Token, TokenInfo } from "sdk/utils/tokens/types";
-import { SwapTradeAction, TradeActionType } from "sdk/utils/tradeHistory/types";
+import { SwapTradeAction, TradeActionType, USER_INITIATED_CANCEL } from "sdk/utils/tradeHistory/types";
 
 import {
   INEQUALITY_GT,
   INEQUALITY_LT,
+  Line,
   MakeOptional,
   RowDetails,
   formatTradeActionTimestamp,
@@ -110,7 +111,12 @@ export const formatSwapMessage = (
     tradeAction.swapPath
   );
 
-  let actionText = getActionTitle(tradeAction.orderType, tradeAction.eventName, Boolean(tradeAction.twapParams));
+  let actionText = getActionTitle(
+    tradeAction.orderType,
+    tradeAction.eventName,
+    Boolean(tradeAction.twapParams),
+    tradeAction.reason
+  );
 
   let result: MakeOptional<RowDetails, "action" | "market" | "timestamp" | "timestampUTC">;
 
@@ -262,6 +268,7 @@ export const formatSwapMessage = (
       swapToTokenAmount: toExecutionAmountText,
     };
   } else if (ot === OrderType.MarketSwap && ev === TradeActionType.OrderCancelled) {
+    const isExpired = tradeAction.reason === USER_INITIATED_CANCEL;
     const error = tradeAction.reasonBytes ? tryDecodeCustomError(tradeAction.reasonBytes) ?? undefined : undefined;
     const outputAmount = error?.args?.outputAmount as bigint | undefined;
     const ratio =
@@ -274,6 +281,9 @@ export const formatSwapMessage = (
           })
         : undefined;
     const rate = getExchangeRateDisplay(ratio?.ratio, adapt(ratio?.smallestToken), adapt(ratio?.smallestToken));
+    const toMinAmountText = formatBalanceAmount(tradeAction.minOutputAmount, tokenOut?.decimals, undefined, {
+      isStable: tokenOut?.isStable,
+    });
     const toExecutionText = formatBalanceAmount(outputAmount ?? 0n, tokenOut?.decimals, tokenOut?.symbol, {
       isStable: tokenOut?.isStable,
     });
@@ -282,22 +292,43 @@ export const formatSwapMessage = (
     });
 
     result = {
-      actionComment:
-        error &&
-        lines({
-          text: getErrorTooltipTitle(error.name, true, error.args),
-          state: "error",
-        }),
-      price: rate,
-      priceComment: lines(
-        t`Execution price for the order`,
-        "",
-        infoRow(t`Order acceptable price`, `${acceptablePriceInequality}${acceptableRate}`)
-      ),
-      size: t`${fromText} to ${toExecutionText}`,
-      swapToTokenAmount: toExecutionAmountText,
-      isActionError: true,
+      actionComment: isExpired
+        ? lines({
+            text: t`Order expired before it could be executed`,
+            state: "muted",
+          })
+        : error &&
+          lines({
+            text: getErrorTooltipTitle(error.name, true, error.args),
+            state: "error",
+          }),
+      price: isExpired ? `${acceptablePriceInequality}${acceptableRate}` : rate,
+      priceComment: isExpired
+        ? lines(t`Acceptable price for the order`)
+        : lines(
+            t`Execution price for the order`,
+            "",
+            infoRow(t`Order acceptable price`, `${acceptablePriceInequality}${acceptableRate}`)
+          ),
+      size: isExpired ? t`${fromText} to ${toMinText}` : t`${fromText} to ${toExecutionText}`,
+      swapToTokenAmount: isExpired ? toMinAmountText : toExecutionAmountText,
+      isActionError: !isExpired,
     };
+  }
+
+  let fees: string | undefined;
+  let feesTooltip: Line[] | undefined;
+  let priceImpact: string | undefined;
+
+  if (ev === TradeActionType.OrderExecuted) {
+    const breakdown = getSwapFeesBreakdown(tradeAction);
+
+    if (breakdown.lines.length > 0) {
+      fees = formatDeltaUsd(breakdown.totalUsd);
+      feesTooltip = breakdown.lines;
+    }
+
+    priceImpact = formatDeltaUsd(tradeAction.swapImpactUsd);
   }
 
   return {
@@ -313,8 +344,27 @@ export const formatSwapMessage = (
     swapToTokenSymbol: tokenOut.symbol,
     swapFromTokenAmount: fromAmountText,
     ...result!,
+    ...(fees !== undefined ? { fees } : {}),
+    ...(feesTooltip !== undefined ? { feesTooltip } : {}),
+    ...(priceImpact !== undefined ? { priceImpact } : {}),
   };
 };
+
+function getSwapFeesBreakdown(tradeAction: SwapTradeAction): { totalUsd: bigint; lines: Line[] } {
+  const items: { label: string; amountUsd: bigint }[] = [];
+
+  if (tradeAction.swapFeeUsd !== undefined) {
+    items.push({ label: t`Swap fee`, amountUsd: -tradeAction.swapFeeUsd });
+  }
+
+  if (tradeAction.swapImpactUsd !== undefined) {
+    items.push({ label: t`Swap price impact`, amountUsd: tradeAction.swapImpactUsd });
+  }
+
+  const totalUsd = items.reduce((acc, item) => acc + item.amountUsd, 0n);
+
+  return { totalUsd, lines: items.map((item) => infoRow(item.label, formatDeltaUsd(item.amountUsd))) };
+}
 
 export function getSwapPathMarketFullNames(
   marketsInfoData: MarketsInfoData | undefined,

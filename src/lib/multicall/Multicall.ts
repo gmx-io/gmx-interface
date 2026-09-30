@@ -218,7 +218,7 @@ export class Multicall {
 
     return withFallback({
       endpoints: [providerUrl, ...providerUrls.fallbacks],
-      fn: async (providerUrl: string) => {
+      fn: async (providerUrl: string, { isLastAttempt }) => {
         const isFallback = providerUrl !== providerUrls.primary;
 
         const rpcProviderName = getProviderNameFromUrl(providerUrl);
@@ -288,17 +288,19 @@ export class Multicall {
               rpcProvider: rpcProviderName,
             });
 
-            emitMetricEvent<MulticallTimeoutEvent>({
-              event: "multicall.timeout",
-              isError: true,
-              data: {
-                metricType: "rpcTimeout",
-                isInMainThread: !isWebWorker,
-                requestType: isFallback ? "retry" : "initial",
-                rpcProvider: rpcProviderName,
-                errorMessage: "multicall timeout",
-              },
-            });
+            if (isLastAttempt) {
+              emitMetricEvent<MulticallTimeoutEvent>({
+                event: "multicall.timeout",
+                isError: true,
+                data: {
+                  metricType: "rpcTimeout",
+                  isInMainThread: !isWebWorker,
+                  requestType: isFallback ? "retry" : "initial",
+                  rpcProvider: rpcProviderName,
+                  errorMessage: "multicall timeout",
+                },
+              });
+            }
 
             return Promise.reject(new Error("multicall timeout"));
           }),
@@ -342,21 +344,27 @@ export class Multicall {
             // eslint-disable-next-line no-console
             console.groupEnd();
 
-            emitMetricEvent<MulticallErrorEvent>({
-              event: "multicall.error",
-              isError: true,
-              data: {
+            const isTimeoutError = _viemError.message === "multicall timeout";
+
+            if (!isTimeoutError) {
+              if (isLastAttempt) {
+                emitMetricEvent<MulticallErrorEvent>({
+                  event: "multicall.error",
+                  isError: true,
+                  data: {
+                    requestType: isFallback ? "retry" : "initial",
+                    rpcProvider: rpcProviderName,
+                    isInMainThread: !isWebWorker,
+                    errorMessage: _viemError.message,
+                  },
+                });
+              }
+
+              sendCounterEvent("error", {
                 requestType: isFallback ? "retry" : "initial",
                 rpcProvider: rpcProviderName,
-                isInMainThread: !isWebWorker,
-                errorMessage: _viemError.message,
-              },
-            });
-
-            sendCounterEvent("error", {
-              requestType: "initial",
-              rpcProvider: rpcProviderName,
-            });
+              });
+            }
 
             sendDebugEvent(isFallback ? "fallback-failed" : "primary-failed", { providerUrl });
 

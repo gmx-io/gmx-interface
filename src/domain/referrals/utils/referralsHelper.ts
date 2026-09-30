@@ -2,10 +2,10 @@ import { t } from "@lingui/macro";
 import identity from "lodash/identity";
 
 import { CONTRACTS_CHAIN_IDS, ContractsChainId } from "config/chains";
-import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { getReferralCodeOwner } from "domain/referrals";
 import { isAddressZero, MAX_REFERRAL_CODE_LENGTH, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
-import { formatAmount, removeTrailingZeros } from "lib/numbers";
+import { expandDecimals, formatAmount, removeTrailingZeros } from "lib/numbers";
 import { getRootUrl } from "lib/url";
 import { bigMath } from "sdk/utils/bigmath";
 import { encodeReferralCode } from "sdk/utils/referrals";
@@ -74,6 +74,12 @@ export function getTierIdDisplay(tierId: number | bigint | string): number {
   return Number(tierId) + 1;
 }
 
+const BALANCER_PROGRAM_TIERS = [6, 7];
+
+export function isBalancerProgramTier(tierId: number | undefined): boolean {
+  return tierId !== undefined && BALANCER_PROGRAM_TIERS.includes(tierId);
+}
+
 export function getSharePercentage(
   customDiscountShare: bigint | undefined,
   tierDiscountShare: bigint | undefined,
@@ -98,9 +104,9 @@ export function getSharePercentage(
 }
 
 export function getCodeError(value: string): string {
-  const trimmedValue = value.trim();
-  if (!trimmedValue) return "";
+  if (!value) return "";
 
+  const trimmedValue = value.trim();
   if (trimmedValue.length > MAX_REFERRAL_CODE_LENGTH) {
     return t`Max ${MAX_REFERRAL_CODE_LENGTH} characters`;
   }
@@ -112,7 +118,7 @@ export function getCodeError(value: string): string {
 }
 
 export function getReferralCodeTradeUrl(referralCode: string): string {
-  return `${getRootUrl()}/#/trade/?${REFERRAL_CODE_QUERY_PARAM}=${referralCode}`;
+  return `${getRootUrl()}/trade/?${REFERRAL_CODE_QUERY_PARAM}=${referralCode}`;
 }
 
 export type ProtocolReferralCodeType = "organic" | "graduated";
@@ -130,4 +136,33 @@ export function getProtocolReferralCodeType(codeString: string | undefined): Pro
   }
 
   return PROTOCOL_REFERRAL_CODES[codeString];
+}
+
+const SHARE_CARD_DISCOUNTS_THRESHOLD_USD = expandDecimals(100, USD_DECIMALS);
+
+export function shouldShowShareCardDiscounts(totalDiscountsUsd: bigint | undefined): boolean {
+  return totalDiscountsUsd !== undefined && totalDiscountsUsd >= SHARE_CARD_DISCOUNTS_THRESHOLD_USD;
+}
+
+export function shouldShowCreateReferralCodeTabLabel({
+  hasAddressInUrl,
+  hasAccount,
+  isReferralsDataLoading,
+  hasAnyAffiliateCode,
+}: {
+  hasAddressInUrl: boolean;
+  hasAccount: boolean;
+  isReferralsDataLoading: boolean;
+  hasAnyAffiliateCode: boolean;
+}): boolean {
+  // Another wallet's page is not yours to create a code on
+  if (hasAddressInUrl) {
+    return false;
+  }
+
+  if (!hasAccount) {
+    return true;
+  }
+
+  return !isReferralsDataLoading && !hasAnyAffiliateCode;
 }

@@ -24,6 +24,21 @@ export const BN_NEGATIVE_ONE = -1n;
 export const MaxUint256 = BigInt("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 export const MaxInt256 = BigInt("0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 
+const UINT_DECIMAL_STRING_REGEX = /^(0|[1-9]\d*)$/;
+
+export function parseUint256DecimalString(value: unknown): bigint | undefined {
+  if (typeof value !== "string" || !UINT_DECIMAL_STRING_REGEX.test(value)) {
+    return undefined;
+  }
+
+  const parsed = BigInt(value);
+  return parsed <= MaxUint256 ? parsed : undefined;
+}
+
+export function isUint256(value: unknown): value is bigint {
+  return typeof value === "bigint" && value >= 0n && value <= MaxUint256;
+}
+
 export const PERCENT_PRECISION_DECIMALS = PRECISION_DECIMALS - 2;
 
 const MAX_EXCEEDING_THRESHOLD = "1000000000";
@@ -79,12 +94,39 @@ export function getBasisPoints(numerator: bigint, denominator: bigint, shouldRou
   return result;
 }
 
+export function formatBasisPoints(bpsValue: bigint | undefined): string | undefined {
+  if (bpsValue === undefined) {
+    return undefined;
+  }
+
+  const sign = getPlusOrMinusSymbol(bpsValue);
+
+  return `${sign}${formatAmount(bigMath.abs(bpsValue), 0, 0, true)} bps`;
+}
+
+export function formatPriceImpactBps(priceImpactUsd: bigint | undefined, sizeUsd: bigint): string | undefined {
+  return formatBasisPoints(
+    priceImpactUsd !== undefined && sizeUsd > 0n ? getBasisPoints(priceImpactUsd, sizeUsd) : undefined
+  );
+}
+
 export function roundUpMagnitudeDivision(a: bigint, b: bigint) {
   if (a < 0n) {
     return (a - b + 1n) / b;
   }
 
   return (a + b - 1n) / b;
+}
+
+// True when the amount would render as zero at displayDecimals.
+export function roundsToZero(amount: bigint, decimals: number, displayDecimals: number) {
+  const hiddenDecimals = decimals - displayDecimals;
+
+  if (hiddenDecimals <= 0) {
+    return false;
+  }
+
+  return bigMath.abs(amount) < 10n ** BigInt(hiddenDecimals);
 }
 
 export function applyFactor(value: bigint, factor: bigint) {
@@ -240,13 +282,27 @@ export function formatDeltaUsd(
 
 export function formatPercentage(
   percentage?: bigint,
-  opts: { fallbackToZero?: boolean; signed?: boolean; displayDecimals?: number; bps?: boolean; showPlus?: boolean } = {}
+  opts: {
+    fallbackToZero?: boolean;
+    signed?: boolean;
+    displayDecimals?: number;
+    bps?: boolean;
+    showPlus?: boolean;
+    useCommas?: boolean;
+  } = {}
 ) {
-  const { fallbackToZero = false, signed = false, displayDecimals = 2, bps = true, showPlus = true } = opts;
+  const {
+    fallbackToZero = false,
+    signed = false,
+    displayDecimals = 2,
+    bps = true,
+    showPlus = true,
+    useCommas = false,
+  } = opts;
 
   if (percentage === undefined) {
     if (fallbackToZero) {
-      return `${formatAmount(0n, PERCENT_PRECISION_DECIMALS, displayDecimals)}%`;
+      return `${formatAmount(0n, PERCENT_PRECISION_DECIMALS, displayDecimals, useCommas)}%`;
     }
 
     return undefined;
@@ -255,7 +311,7 @@ export function formatPercentage(
   const sign = signed ? `${getPlusOrMinusSymbol(percentage)}` : "";
   const displaySign = !showPlus && sign === "+" ? "" : `${sign}`;
 
-  return `${displaySign}${displaySign ? "\u200a" : ""}${formatAmount(bigMath.abs(percentage), bps ? 2 : PERCENT_PRECISION_DECIMALS, displayDecimals)}%`;
+  return `${displaySign}${displaySign ? "\u200a" : ""}${formatAmount(bigMath.abs(percentage), bps ? 2 : PERCENT_PRECISION_DECIMALS, displayDecimals, useCommas)}%`;
 }
 
 export function formatTokenAmount(
@@ -399,15 +455,16 @@ export function formatNumberHuman(n: number, showDollar = false, displayDecimals
   const absN = Math.abs(n);
   const sign = showDollar ? "$\u200a" : "";
 
-  if (absN >= 1_000_000_000) {
+  // Promote the suffix when the displayed value rounds to 1000 in the smaller unit.
+  if (Number((absN / 1_000_000).toFixed(displayDecimals)) >= 1000) {
     return `${isNegative ? "-" : ""}${sign}${(absN / 1_000_000_000).toFixed(displayDecimals)}b`;
   }
 
-  if (absN >= 1_000_000) {
+  if (Number((absN / 1_000).toFixed(displayDecimals)) >= 1000) {
     return `${isNegative ? "-" : ""}${sign}${(absN / 1_000_000).toFixed(displayDecimals)}m`;
   }
 
-  if (absN >= 1000) {
+  if (Number(absN.toFixed(displayDecimals)) >= 1000) {
     return `${isNegative ? "-" : ""}${sign}${(absN / 1_000).toFixed(displayDecimals)}k`;
   }
 
@@ -503,8 +560,8 @@ export function formatFactor(factor: bigint) {
       .abs(factor)
       .toString()
       .match(/^(.+?)(?<zeroes>0*)$/)?.groups?.zeroes?.length || 0;
-  const factorDecimals = 30 - trailingZeroes;
-  return formatAmount(factor, 30, factorDecimals);
+  const factorDecimals = Math.max(PRECISION_DECIMALS - trailingZeroes, 0);
+  return formatAmount(factor, PRECISION_DECIMALS, factorDecimals);
 }
 export function numberWithCommas(x: BigNumberish, { showDollar = false }: { showDollar?: boolean } = {}) {
   if (x === undefined || x === null) {
@@ -735,8 +792,13 @@ export const parseValue = (value: string, tokenDecimals: number) => {
     return undefined;
   }
 
-  value = limitDecimals(value, tokenDecimals);
-  const amount = parseUnits(value, tokenDecimals);
+  let amount: bigint;
+  try {
+    value = limitDecimals(value, tokenDecimals);
+    amount = parseUnits(value, tokenDecimals);
+  } catch {
+    return undefined;
+  }
 
   // Cap at a safe maximum to prevent downstream BigInt overflow errors
   const MAX_ALLOWED = expandDecimals(1, 62);
@@ -782,9 +844,11 @@ export function maxbigint(...args: bigint[]) {
 }
 
 export function removeTrailingZeros(amount: string | number) {
-  const amountWithoutZeros = Number(amount);
-  if (!amountWithoutZeros) return amount;
-  return amountWithoutZeros;
+  if (typeof amount === "number" || !amount.includes(".") || amount.includes(",") || /^[-+]?0*\.0*$/.test(amount)) {
+    return amount;
+  }
+
+  return amount.replace(/0+$/, "").replace(/\.$/, "");
 }
 
 type SerializedBigIntsInObject<T> = {

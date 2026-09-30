@@ -5,7 +5,7 @@ import { useLatest, useLocalStorage, useMedia } from "react-use";
 import { isAddressEqual, type Address } from "viem";
 
 import { colors } from "config/colors";
-import { TV_SAVE_LOAD_CHARTS_KEY, WAS_TV_CHART_OVERRIDDEN_KEY } from "config/localStorage";
+import { WAS_TV_CHART_OVERRIDDEN_KEY } from "config/localStorage";
 import { type TradingViewResolution, RESOLUTION_TO_SECONDS, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -41,7 +41,14 @@ import Loader from "components/Loader/Loader";
 import type { MarketFilterLongShortItemData } from "components/TableMarketFilter/MarketFilterLongShort";
 
 import { ChartContextMenu } from "./ChartContextMenu";
-import { chartOverridesDark, chartOverridesLight, defaultChartProps, disabledFeaturesOnMobile } from "./constants";
+import {
+  PRICE_LINE_COLOR_KEY,
+  getChartThemeOverrides,
+  getThemeOverridesToApply,
+  isAppChartValue,
+  readSavedChartValues,
+} from "./chartThemeOverrides";
+import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
 import { CrosshairPercentageLabel } from "./CrosshairPercentageLabel";
 import { DynamicLines } from "./DynamicLines";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
@@ -52,7 +59,6 @@ import type { OpenChartTPSLModalParams } from "./useChartContextMenu";
 import { useChartContextMenu } from "./useChartContextMenu";
 import { useCrosshairPercentage } from "./useCrosshairPercentage";
 import type {
-  ChartData,
   ChartingLibraryWidgetOptions,
   IChartingLibraryWidget,
   PlusClickParams,
@@ -133,7 +139,6 @@ export default function TVChartContainer({
   const [chartReady, setChartReady] = useState(false);
   const [isChartChangingSymbol, setIsChartChangingSymbol] = useState(false);
   const [chartDataLoading, setChartDataLoading] = useState(true);
-  const [tvCharts, setTvCharts] = useLocalStorage<ChartData[] | undefined>(TV_SAVE_LOAD_CHARTS_KEY, []);
   const [wasChartOverridden, setWasChartOverridden] = useLocalStorage<boolean>(WAS_TV_CHART_OVERRIDDEN_KEY, false);
 
   const { theme } = useTheme();
@@ -229,17 +234,39 @@ export default function TVChartContainer({
   });
   const marksHistoryCacheRef = useRef<{
     key?: string;
-    raw?: Awaited<ReturnType<typeof fetchRawTradeActions>>;
+    raw?: NonNullable<Awaited<ReturnType<typeof fetchRawTradeActions>>>["tradeActions"];
     fetchedAt?: number;
   }>({});
 
   useEffect(() => {
-    if (chartReady && tvWidgetRef.current && true) {
-      const overrides = theme === "light" ? chartOverridesLight : chartOverridesDark;
-      tvWidgetRef.current.applyOverrides(overrides);
-      tvWidgetRef.current.saveChartToServer();
-      setWasChartOverridden(true);
+    const widget = tvWidgetRef.current;
+
+    if (!chartReady || !widget) {
+      return;
     }
+
+    const themeOverrides = getChartThemeOverrides(theme);
+
+    if (!wasChartOverridden) {
+      widget.applyOverrides(themeOverrides);
+      widget.saveChartToServer();
+      setWasChartOverridden(true);
+      return;
+    }
+
+    widget.save((state) => {
+      const overrides = getThemeOverridesToApply({
+        theme,
+        savedValues: readSavedChartValues(state, Object.keys(themeOverrides)),
+      });
+
+      if (Object.keys(overrides).length === 0 || tvWidgetRef.current !== widget) {
+        return;
+      }
+
+      widget.applyOverrides(overrides);
+      widget.saveChartToServer();
+    });
   }, [chartReady, wasChartOverridden, setWasChartOverridden, theme]);
 
   useEffect(() => {
@@ -361,7 +388,7 @@ export default function TVChartContainer({
         },
       ];
 
-      let raw;
+      let raw: NonNullable<Awaited<ReturnType<typeof fetchRawTradeActions>>>["tradeActions"] | undefined;
       let marketAddresses: string[] = [];
       try {
         const now = Math.floor(Date.now() / 1000);
@@ -394,10 +421,11 @@ export default function TVChartContainer({
         ) {
           raw = cached.raw;
         } else {
-          raw = await fetchRawTradeActions({
+          const rawResult = await fetchRawTradeActions({
             chainId: cid,
             pageIndex: 0,
             pageSize: MARKS_PAGE_SIZE,
+            includeTotalCount: false,
             marketsDirectionsFilter: marketFilters,
             forAllAccounts: false,
             account: acc,
@@ -406,6 +434,7 @@ export default function TVChartContainer({
             orderEventCombinations: combinations,
             showDebugValues: false,
           });
+          raw = rawResult?.tradeActions;
           marksHistoryCacheRef.current = { key: cacheKey, raw, fetchedAt: Date.now() };
         }
       } catch (err) {
@@ -751,7 +780,8 @@ export default function TVChartContainer({
     if (!datafeed) return;
 
     const onCurrentCandleUpdate = (event: Event) => {
-      if (!chartReady || !tvWidgetRef.current) return;
+      const widget = tvWidgetRef.current;
+      if (!chartReady || !widget) return;
 
       const detail = (event as CustomEvent).detail as {
         symbol: string;
@@ -759,24 +789,25 @@ export default function TVChartContainer({
         bar: { open: number; close: number };
       };
 
-      if (tvWidgetRef.current.activeChart().resolution() !== detail.resolution) return;
-      if (tvWidgetRef.current.activeChart().symbolExt()?.name !== detail.symbol) return;
+      if (widget.activeChart().resolution() !== detail.resolution) return;
+      if (widget.activeChart().symbolExt()?.name !== detail.symbol) return;
 
       const direction =
         detail.bar.close > detail.bar.open ? "up" : detail.bar.close < detail.bar.open ? "down" : "flat";
       if (markPriceDirectionRef.current === direction) return;
       markPriceDirectionRef.current = direction;
 
-      const neutralColor = (
-        theme === "light"
-          ? chartOverridesLight["mainSeriesProperties.priceLineColor"]
-          : chartOverridesDark["mainSeriesProperties.priceLineColor"]
-      ) as string;
-      const priceLineColor =
-        direction === "up" ? colors.green[500][theme] : direction === "down" ? colors.red[500][theme] : neutralColor;
+      widget.save((state) => {
+        const savedPriceLineColor = readSavedChartValues(state, [PRICE_LINE_COLOR_KEY])[PRICE_LINE_COLOR_KEY];
+        if (!isAppChartValue(PRICE_LINE_COLOR_KEY, savedPriceLineColor) || tvWidgetRef.current !== widget) return;
 
-      tvWidgetRef.current.applyOverrides({
-        "mainSeriesProperties.priceLineColor": priceLineColor,
+        const neutralColor = getChartThemeOverrides(theme)[PRICE_LINE_COLOR_KEY] as string;
+        const priceLineColor =
+          direction === "up" ? colors.green[500][theme] : direction === "down" ? colors.red[500][theme] : neutralColor;
+
+        widget.applyOverrides({
+          [PRICE_LINE_COLOR_KEY]: priceLineColor,
+        });
       });
     };
 
@@ -829,20 +860,21 @@ export default function TVChartContainer({
       fullscreen: defaultChartProps.fullscreen,
       autosize: defaultChartProps.autosize,
       custom_css_url: defaultChartProps.custom_css_url,
-      overrides: theme === "light" ? chartOverridesLight : chartOverridesDark,
+      overrides: getChartThemeOverrides(theme),
       interval: getObjectKeyFromValue(period, supportedResolutions) as ResolutionString,
       favorites: { ...defaultChartProps.favorites, intervals: Object.keys(supportedResolutions) as ResolutionString[] },
       custom_formatters: defaultChartProps.custom_formatters,
       load_last_chart: true,
       auto_save_delay: 1,
-      save_load_adapter: new SaveLoadAdapter(tvCharts, setTvCharts),
+      save_load_adapter: new SaveLoadAdapter(),
     };
-    tvWidgetRef.current = new window.TradingView.widget(widgetOptions);
+    const widget = new window.TradingView.widget(widgetOptions);
 
     let didTriggerOnChartReady = { current: false };
 
-    tvWidgetRef.current!.onChartReady(function () {
+    widget.onChartReady(function () {
       didTriggerOnChartReady.current = true;
+      tvWidgetRef.current = widget;
       setChartReady(true);
 
       const savedPeriod = tvWidgetRef.current?.activeChart().resolution();
@@ -925,12 +957,10 @@ export default function TVChartContainer({
 
     return () => {
       clearTimeout(forceInitTimeout);
-      if (tvWidgetRef.current) {
-        tvWidgetRef.current.remove();
-        tvWidgetRef.current = null;
-        setChartReady(false);
-        setChartDataLoading(true);
-      }
+      widget.remove();
+      tvWidgetRef.current = null;
+      setChartReady(false);
+      setChartDataLoading(true);
     };
     // We don't want to re-initialize the chart when the symbol changes. This will make the chart flicker.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -944,9 +974,12 @@ export default function TVChartContainer({
   return (
     <div className="ExchangeChart-error">
       {chartDataLoading && <Loader />}
-      <div style={style} ref={chartContainerRef} className="ExchangeChart-bottom-content">
-        {chartReady && <CrosshairPercentageLabel state={crosshairPercentageState} />}
-      </div>
+      <div style={style} ref={chartContainerRef} className="ExchangeChart-bottom-content" />
+      {chartReady && (
+        <div style={style} className="ExchangeChart-bottom-content pointer-events-none">
+          <CrosshairPercentageLabel state={crosshairPercentageState} />
+        </div>
+      )}
       {shouldShowPositionLines && chartReady && !isChartChangingSymbol && (
         <>
           <StaticLines tvWidgetRef={tvWidgetRef} chartLines={stackedStaticLines} bodyFontSizePt={bodyFontSizePt} />

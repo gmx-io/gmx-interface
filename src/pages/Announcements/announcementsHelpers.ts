@@ -2,6 +2,7 @@ import { format, isAfter, parse } from "date-fns";
 import { ReactNode } from "react";
 
 import { AnnouncementType, EventData } from "config/events";
+import type { UiFlags } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 
 export const ANNOUNCEMENTS_PAGE_SIZE = 20;
 
@@ -11,17 +12,23 @@ export function parseEventDate(raw: string): Date {
   return parse(`${raw}, +00`, "d MMM yyyy, H:mm, x", new Date());
 }
 
-export function getEventSortDate(event: EventData): Date {
-  return parseEventDate(event.startDate ?? event.endDate);
+export function getEventStartDate(event: EventData, uiFlags: UiFlags | undefined): Date | undefined {
+  if (event.startDate) return parseEventDate(event.startDate);
+  const createdAt = event.flagId ? uiFlags?.[event.flagId]?.createdAt : undefined;
+  return createdAt ? new Date(createdAt) : undefined;
+}
+
+export function getEventSortDate(event: EventData, uiFlags: UiFlags | undefined): Date {
+  return getEventStartDate(event, uiFlags) ?? parseEventDate(event.endDate);
 }
 
 export function formatEventDate(date: Date): string {
   return format(date, "EEEE, MMMM d, yyyy");
 }
 
-export function isEventActiveByFlag(event: EventData, uiFlags: Record<string, boolean> | undefined): boolean {
+export function isEventActiveByFlag(event: EventData, uiFlags: UiFlags | undefined): boolean {
   if (event.flagId !== undefined) {
-    return uiFlags?.[event.flagId] === true;
+    return uiFlags?.[event.flagId]?.enabled === true;
   }
   return event.isActive === true;
 }

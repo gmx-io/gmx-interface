@@ -1,5 +1,5 @@
 type WithFallbackOptions<TReturn, TEndpoint> = {
-  fn: (endpoint: TEndpoint) => Promise<TReturn>;
+  fn: (endpoint: TEndpoint, ctx: WithFallbackAttemptContext) => Promise<TReturn>;
   shouldFallback?: (error?: Error, result?: TReturn) => boolean;
   endpoints: TEndpoint[];
   onFallback?: (ctx: WithFallbackContext<TEndpoint>) => void;
@@ -8,6 +8,10 @@ type WithFallbackOptions<TReturn, TEndpoint> = {
 type WithFallbackContext<TEndpoint> = {
   endpoint: TEndpoint;
   fallbacks: TEndpoint[];
+};
+
+export type WithFallbackAttemptContext = {
+  isLastAttempt: boolean;
 };
 
 export async function withFallback<TReturn, TEndpoint>({
@@ -25,7 +29,7 @@ export async function withFallback<TReturn, TEndpoint>({
     const remainingFallbacks = isLast ? [] : endpoints.slice(i + 1);
 
     try {
-      const result = await fn(endpoint);
+      const result = await fn(endpoint, { isLastAttempt: isLast });
 
       const needFallback = typeof shouldFallback === "function" ? shouldFallback(undefined, result) : false;
 

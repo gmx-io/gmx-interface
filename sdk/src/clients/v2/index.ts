@@ -49,9 +49,15 @@ import {
   fetchApiMarketsInfo,
   fetchApiMarketsValues,
   fetchApiMarketsTickers,
+  fetchApiTradingCapacity,
   fetchApiTokensData,
 } from "utils/markets/api";
-import { MarketTicker, MarketWithTiers } from "utils/markets/types";
+import {
+  GetTradingCapacityParams,
+  MarketTickerWithCapacity,
+  MarketWithTiers,
+  TradingCapacity,
+} from "utils/markets/types";
 import {
   buildCrossChainWithdrawBridgeOutParams,
   buildSameChainDepositTxn,
@@ -72,10 +78,16 @@ import {
   prepareCancelOrder,
   prepareCollateral,
   fetchOrderStatus as fetchOrderStatusRaw,
+  isPrepareOrderError,
+  parsePrepareOrderError,
 } from "utils/orderTransactions/api";
 import type {
+  PrepareOrderError,
+  PrepareOrderErrorCode,
+  PrepareOrderFieldValidationErrors,
   PrepareOrderRequest,
   PrepareOrderResponse,
+  OrderValidationWarning,
   SubmitOrderRequest,
   SubmitOrderResponse,
   PrepareEditOrderRequest,
@@ -122,9 +134,36 @@ import { fetchApiTokens } from "utils/tokens/api";
 import type { TokenPricesData } from "utils/tokens/types";
 import { fetchApiTrades, searchApiTrades } from "utils/trades/api";
 import type { FetchTradesParams, SearchTradesParams, TradesListResponse } from "utils/trades/types";
+import { fetchApiGmPoolYieldPnl, fetchApiGmUserEarnings } from "utils/yield/api";
+import {
+  GmPoolsYieldPnlParams,
+  GmPoolsYieldPnlResponse,
+  GmUserEarningsParams,
+  GmUserEarningsResponse,
+} from "utils/yield/types";
 
 export type { ApyEntry, ApyParams, ApyResponse } from "utils/apy/types";
-export type { MarketTicker, MarketWithTiers } from "utils/markets/types";
+export type {
+  GmPoolYieldPnlComponents,
+  GmPoolYieldPnlEntry,
+  GmPoolYieldPnlWindow,
+  GmPoolsYieldPnlParams,
+  GmPoolsYieldPnlResponse,
+  GmUserEarningEntry,
+  GmUserEarningsParams,
+  GmUserEarningsResponse,
+  GmUserEarningsWindow,
+} from "utils/yield/types";
+export type {
+  GetTradingCapacityParams,
+  JitDataStatus,
+  MarketDataStatus,
+  MarketTicker,
+  MarketTickerWithCapacity,
+  MarketWithTiers,
+  TradingCapacity,
+  TradingCapacityLimitingFactor,
+} from "utils/markets/types";
 export type { Pair } from "utils/pairs/types";
 export type {
   PerformanceAnnualized,
@@ -134,7 +173,32 @@ export type {
 } from "utils/performance/types";
 export type { OhlcvCandle, OhlcvParams } from "utils/prices/types";
 export type { ApiParameterPeriod, MarketRates, RatesParams, RatesSnapshot } from "utils/rates/types";
-export type { BuybackWeekData, BuybackSummary, BuybackWeeklyStatsResponse } from "utils/buyback/types";
+export type {
+  BuybackWeekData,
+  BuybackMonthData,
+  BuybackSummary,
+  BuybackWeeklyStatsResponse,
+} from "utils/buyback/types";
+export {
+  fetchApiProtocolStatsSources,
+  fetchApiProtocolStatsSummary,
+  fetchApiProtocolStatsTimeseries,
+} from "utils/stats/api";
+export type {
+  ProtocolStatsCompleteness,
+  ProtocolStatsFilterParams,
+  ProtocolStatsMeta,
+  ProtocolStatsMetricSet,
+  ProtocolStatsNetwork,
+  ProtocolStatsSourceHealth,
+  ProtocolStatsSourceStatus,
+  ProtocolStatsSummaryResponse,
+  ProtocolStatsTimeseriesGroupBy,
+  ProtocolStatsTimeseriesMetric,
+  ProtocolStatsTimeseriesParams,
+  ProtocolStatsTimeseriesResponse,
+  ProtocolStatsVersion,
+} from "utils/stats/types";
 export type {
   FetchJitLiquidityInfoParams,
   GlvShiftParam,
@@ -155,8 +219,12 @@ export type {
   TradesListResponse,
 } from "utils/trades/types";
 export type {
+  PrepareOrderError,
+  PrepareOrderErrorCode,
+  PrepareOrderFieldValidationErrors,
   PrepareOrderRequest,
   PrepareOrderResponse,
+  OrderValidationWarning,
   SubmitOrderRequest,
   SubmitOrderResponse,
   PrepareEditOrderRequest,
@@ -165,6 +233,7 @@ export type {
   OrderStatusRequest,
   OrderStatusResponse,
 };
+export { isPrepareOrderError, parsePrepareOrderError };
 export type {
   WalletBalance,
   TokenAllowance,
@@ -299,8 +368,12 @@ export class GmxApiSdk {
     return fetchApiMarkets(this.ctx);
   }
 
-  fetchMarketsTickers(params?: { addresses?: string[]; symbols?: string[] }): Promise<MarketTicker[]> {
+  fetchMarketsTickers(params?: { addresses?: string[]; symbols?: string[] }): Promise<MarketTickerWithCapacity[]> {
     return fetchApiMarketsTickers(this.ctx, params);
+  }
+
+  getTradingCapacity(params: GetTradingCapacityParams): Promise<TradingCapacity> {
+    return fetchApiTradingCapacity(this.ctx, params);
   }
 
   fetchTokensData() {
@@ -382,6 +455,14 @@ export class GmxApiSdk {
 
   fetchPerformanceSnapshots(params?: PerformanceParams): Promise<PerformanceSnapshots[]> {
     return fetchApiPerformanceSnapshots(this.ctx, params);
+  }
+
+  fetchGmPoolYieldPnl(params?: GmPoolsYieldPnlParams): Promise<GmPoolsYieldPnlResponse> {
+    return fetchApiGmPoolYieldPnl(this.ctx, params);
+  }
+
+  fetchGmUserEarnings(params: GmUserEarningsParams): Promise<GmUserEarningsResponse> {
+    return fetchApiGmUserEarnings(this.ctx, params);
   }
 
   fetchBuybackWeeklyStats(): Promise<BuybackWeeklyStatsResponse> {

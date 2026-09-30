@@ -1,4 +1,4 @@
-import { t, Trans } from "@lingui/macro";
+import { Plural, t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { useKey, useLatest } from "react-use";
@@ -24,6 +24,7 @@ import {
   selectBlockTimestampData,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { makeSelectOrdersByPositionKey } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import {
   selectPositionSellerAvailableReceiveTokens,
   selectPositionSellerDecreaseAmounts,
@@ -49,6 +50,7 @@ import {
   reportMultichainExpressSubmitError,
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { OrderType } from "domain/synthetics/orders";
+import { getMarginDepositCancelOrderParams } from "domain/synthetics/orders/marginDeposit";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
@@ -69,6 +71,7 @@ import {
   getExpressError,
   takeValidationResult,
 } from "domain/synthetics/trade/utils/validation";
+import { getIsHighSwapProfitFee } from "domain/synthetics/trade/utils/warnings";
 import { Token } from "domain/tokens";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useChainId } from "lib/chains";
@@ -86,6 +89,7 @@ import {
   formatUsd,
   parseValue,
 } from "lib/numbers";
+import { EMPTY_ARRAY } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
@@ -106,6 +110,7 @@ import {
 import { TradeMode } from "sdk/utils/trade";
 import { getIsValidTwapParams } from "sdk/utils/twap";
 
+import { useActiveForm } from "components/ActiveFormScope/ActiveFormScope";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
@@ -279,6 +284,13 @@ export function PositionSeller() {
   const markPrice = useSelector(selectPositionSellerMarkPrice);
   const { maxLiquidity: maxSwapLiquidity } = useSelector(selectPositionSellerMaxLiquidityPath);
   const decreaseAmounts = useSelector(selectPositionSellerDecreaseAmounts);
+  const positionOrders = useSelector(makeSelectOrdersByPositionKey(position?.key));
+
+  // only market 100% closes: a TWAP close executes over a window where the deposit still protects the position
+  const marginDepositCancelParams = useMemo(
+    () => (isMarket && decreaseAmounts?.isFullClose ? getMarginDepositCancelOrderParams(positionOrders) : EMPTY_ARRAY),
+    [isMarket, decreaseAmounts?.isFullClose, positionOrders]
+  );
 
   useDebugExecutionPrice(chainId, {
     skip: true,
@@ -347,11 +359,19 @@ export function PositionSeller() {
     swapProfitFee: fees?.swapProfitFee,
   });
 
+  const twapSplitReceiveSwapProfitFeeWarning = getSplitReceiveSwapProfitFeeWarning({
+    shouldShow: isTwap && isSplitReceiveAvailable && !isReceiveSeparated && getIsHighSwapProfitFee(fees?.swapProfitFee),
+    receiveToken: position?.collateralToken,
+    profitToken: position?.pnlToken,
+    collateralToken: position?.collateralToken,
+    swapProfitFee: fees?.swapProfitFee,
+  });
+
   useEffect(() => {
-    if ((isTwap || !isSplitReceiveAvailable) && isReceiveSeparated) {
+    if (!isSplitReceiveAvailable && isReceiveSeparated) {
       setIsReceiveSeparated(false);
     }
-  }, [isTwap, isSplitReceiveAvailable, isReceiveSeparated, setIsReceiveSeparated]);
+  }, [isSplitReceiveAvailable, isReceiveSeparated, setIsReceiveSeparated]);
 
   useEffect(() => {
     if (isVisible) {
@@ -418,7 +438,7 @@ export function PositionSeller() {
     return {
       createOrderParams,
       updateOrderParams: [],
-      cancelOrderParams: [],
+      cancelOrderParams: marginDepositCancelParams,
     };
   }, [
     account,
@@ -434,6 +454,7 @@ export function PositionSeller() {
     executionFee?.gasLimit,
     isMarket,
     isTwap,
+    marginDepositCancelParams,
     marketsInfoData,
     numberOfParts,
     position,
@@ -444,6 +465,8 @@ export function PositionSeller() {
     tokensData,
     userReferralInfo?.referralCodeForTxn,
   ]);
+
+  const { formId, isActiveForm } = useActiveForm();
 
   const {
     expressParams,
@@ -456,6 +479,7 @@ export function PositionSeller() {
     label: "Position Seller",
     orderParams: batchParams,
     isGmxAccount: srcChainId !== undefined || effectiveIsReceiveToGmxAccount,
+    canSwitchGasPaymentToken: isActiveForm,
   });
 
   const approvalTokens = useMemo(() => {
@@ -853,6 +877,20 @@ export function PositionSeller() {
     />
   );
 
+  const twapReceiveRow = (
+    <SyntheticsInfoRow
+      label={t`Receive`}
+      value={
+        <DecreaseReceiveOutputDisplay
+          outputs={receiveOutputs}
+          className="max-w-full"
+          secondaryValueClassName="!text-14"
+          layout="stacked"
+        />
+      }
+    />
+  );
+
   const leverageCheckboxDisabledByCollateral = usePositionSellerLeverageDisabledByCollateral();
   const keepLeverage = usePositionSellerKeepLeverage();
   const keepLeverageChecked = decreaseAmounts?.isFullClose ? false : keepLeverage ?? false;
@@ -1026,6 +1064,7 @@ export function PositionSeller() {
   return (
     <div className="text-body-medium">
       <Modal
+        activeFormId={formId}
         isVisible={isVisible}
         setIsVisible={onClose}
         label={(() => {
@@ -1125,7 +1164,7 @@ export function PositionSeller() {
                   </ToggleSwitch>
                 )}
 
-                {!isTwap && isSplitReceiveAvailable && (
+                {isSplitReceiveAvailable && (
                   <ToggleSwitch
                     textClassName="text-typography-secondary"
                     isChecked={isReceiveSeparated}
@@ -1167,6 +1206,22 @@ export function PositionSeller() {
                   swapProfitFeeWarning={splitReceiveSwapProfitFeeWarning}
                 />
 
+                {twapSplitReceiveSwapProfitFeeWarning && (
+                  <AlertInfoCard type="warning" hideClose>
+                    {twapSplitReceiveSwapProfitFeeWarning}
+                  </AlertInfoCard>
+                )}
+
+                {marginDepositCancelParams.length > 0 && (
+                  <AlertInfoCard hideClose>
+                    <Plural
+                      value={marginDepositCancelParams.length}
+                      one="Closing will also cancel your pending margin deposit and return its funds."
+                      other="Closing will also cancel your # pending margin deposits and return their funds."
+                    />
+                  </AlertInfoCard>
+                )}
+
                 {twapRecommendation && !isTwapBannerDismissed && (
                   <ColorfulBanner color="blue" icon={InfoCircleIcon} onClose={() => setIsTwapBannerDismissed(true)}>
                     <div className="flex flex-col gap-8">
@@ -1198,12 +1253,14 @@ export function PositionSeller() {
                   </Button>
                 </ButtonTooltipWrapper>
 
-                {!isTwap && (
+                {!isTwap ? (
                   <>
                     {receiveTokenRow}
                     {liqPriceRow}
                     {pnlRow}
                   </>
+                ) : (
+                  twapReceiveRow
                 )}
 
                 <PositionSellerPriceImpactFeesRow />

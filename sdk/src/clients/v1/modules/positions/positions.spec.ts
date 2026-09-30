@@ -2,10 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import { arbitrumSdk } from "clients/v1/testUtil";
 
-// Skipped in CI (FEDEV-4029): hits the live gmxinfra API and is flaky (FetchError: Premature close).
-describe.skip("Positions", () => {
+describe("Positions", () => {
   describe("getPositions", () => {
-    it("should be able to get positions data", { timeout: 90_000 }, async () => {
+    it.skip("should be able to get positions data", { timeout: 90_000 }, async () => {
       const { marketsInfoData, tokensData } = (await arbitrumSdk.markets.getMarketsInfo()) ?? {};
 
       if (!tokensData || !marketsInfoData) {

@@ -2,9 +2,10 @@
 
 import { lingui } from "@lingui/vite-plugin";
 import react from "@vitejs/plugin-react";
+import { execFileSync } from "node:child_process";
 import path from "path";
 import { visualizer } from "rollup-plugin-visualizer";
-import { defineConfig, type PluginOption } from "vite";
+import { defineConfig, loadEnv, type ConfigEnv, type PluginOption, type UserConfig } from "vite";
 import { analyzer } from "vite-bundle-analyzer";
 import svgr from "vite-plugin-svgr";
 import tsconfigPaths from "vite-tsconfig-paths";
@@ -25,7 +26,6 @@ const WEB3_PACKAGES = new Set([
   "isows",
   "ox",
   "viem",
-  "@gelatocloud/gasless",
   "@layerzerolabs/lz-v2-utilities",
   "@stargatefinance/stg-evm-sdk-v2",
   "@uniswap/sdk-core",
@@ -49,6 +49,49 @@ const APP_SRC_DIR = path.resolve(__dirname, "src");
 const SDK_SRC_DIR = path.resolve(__dirname, "sdk/src");
 const SOLANA_SYSTEM_MODULE_ID = "@solana-program/system";
 const SOLANA_SYSTEM_STUB_ID = "\0gmx:solana-system-stub";
+const PWA_METADATA_PLACEHOLDER = "<!-- gmx-pwa-metadata -->";
+const APP_REDIRECTS = "/ /trade 302\n";
+
+function appRedirects(): PluginOption {
+  return {
+    name: "gmx-app-redirects",
+    apply: "build",
+    generateBundle() {
+      this.emitFile({
+        type: "asset",
+        fileName: "_redirects",
+        source: APP_REDIRECTS,
+      });
+    },
+  };
+}
+
+function getPwaBuildId(configuredBuildId: string | undefined) {
+  if (configuredBuildId) {
+    return configuredBuildId;
+  }
+
+  const commitTimestamp = execFileSync("git", ["show", "-s", "--format=%ct", "HEAD"], { encoding: "utf8" }).trim();
+
+  // Preserve ordering with the millisecond build IDs used by existing installs.
+  return `${commitTimestamp}000`;
+}
+
+function pwaMetadata(buildId: string, isEnabled: boolean): PluginOption {
+  return {
+    name: "gmx-pwa-metadata",
+    transformIndexHtml(html) {
+      const metadata = [
+        `<meta name="gmx-pwa-build-id" content="${buildId}" />`,
+        isEnabled ? '<meta name="gmx-pwa-enabled" content="true" />' : undefined,
+      ]
+        .filter(Boolean)
+        .join("\n    ");
+
+      return html.replace(PWA_METADATA_PLACEHOLDER, metadata);
+    },
+  };
+}
 
 function normalizePath(id: string) {
   return id.replace(/\\/g, "/");
@@ -88,6 +131,11 @@ function isUiPackage(packageName: string) {
 
 function manualChunks(id: string) {
   const normalizedId = normalizePath(id);
+  // Keep startup recovery independent of vendor chunks that can fail to load.
+  if (normalizedId === "\0vite/preload-helper.js") {
+    return "preload-helper";
+  }
+
   const packageNames = getPackageNames(normalizedId);
   const packageName = packageNames.at(-1);
 
@@ -126,15 +174,22 @@ function manualChunks(id: string) {
   return undefined;
 }
 
-function sdkViemDedupe(): PluginOption {
+// sdk/node_modules has its own copies of these; bundling both breaks instanceof checks (e.g. ContractFunctionRevertedError)
+const SDK_DEDUPED_PACKAGES = ["viem"];
+
+function isSdkDedupedSource(source: string) {
+  return SDK_DEDUPED_PACKAGES.some((packageName) => source === packageName || source.startsWith(`${packageName}/`));
+}
+
+function sdkDedupe(): PluginOption {
   const normalizedSdkSrcDir = normalizePath(SDK_SRC_DIR);
-  const appResolverImporter = path.join(APP_SRC_DIR, "__sdk-viem-dedupe.ts");
+  const appResolverImporter = path.join(APP_SRC_DIR, "__sdk-dedupe.ts");
 
   return {
-    name: "gmx-sdk-viem-dedupe",
+    name: "gmx-sdk-dedupe",
     enforce: "pre",
     async resolveId(source, importer, options) {
-      if (!importer || (source !== "viem" && !source.startsWith("viem/"))) {
+      if (!importer || !isSdkDedupedSource(source)) {
         return null;
       }
 
@@ -177,13 +232,23 @@ function optionalSolanaSystemStub(): PluginOption {
   };
 }
 
-export default defineConfig(({ mode }) => {
+export function createViteConfig(
+  { mode }: ConfigEnv,
+  { emitAppRedirects = true }: { emitAppRedirects?: boolean } = {}
+): UserConfig {
+  const env = loadEnv(mode, process.cwd(), "");
+  const pwaBuildId = getPwaBuildId(env.VITE_APP_PWA_GENERATION);
+
+  const pwaGeneration = Number(pwaBuildId);
+  if (!/^\d+$/.test(pwaBuildId) || !Number.isSafeInteger(pwaGeneration) || pwaGeneration <= 0) {
+    throw new Error("VITE_APP_PWA_GENERATION must be a positive integer");
+  }
+
   return {
     worker: {
       format: "es",
     },
     optimizeDeps: {
-      include: ["@vanilla-extract/sprinkles"],
       esbuildOptions: {
         target: "es2020",
       },
@@ -201,11 +266,13 @@ export default defineConfig(({ mode }) => {
       },
     },
     plugins: [
+      emitAppRedirects && appRedirects(),
+      pwaMetadata(pwaBuildId, env.VITE_APP_DISABLE_PWA !== "true"),
       svgr({
         include: "**/*.svg?react",
       }),
       optionalSolanaSystemStub(),
-      sdkViemDedupe(),
+      sdkDedupe(),
       tsconfigPaths(),
       react({
         babel: {
@@ -238,6 +305,8 @@ export default defineConfig(({ mode }) => {
       assetsInlineLimit: 0,
       outDir: "build",
       sourcemap: true,
+      // WebKit can retain failed modulepreloads across reloads: https://bugs.webkit.org/show_bug.cgi?id=270357
+      modulePreload: false,
       rollupOptions: {
         output: {
           manualChunks,
@@ -247,13 +316,10 @@ export default defineConfig(({ mode }) => {
     test: {
       environment: "happy-dom",
       globalSetup: "./vitest.global-setup.js",
-      exclude: ["./autotests", "node_modules", "./sdk", "**/*.ct.spec.tsx"],
+      exclude: ["./autotests", "node_modules", "./sdk", "./.claude", "**/*.ct.spec.tsx"],
       setupFiles: ["./src/lib/polyfills.ts", "@vitest/web-worker"],
-      server: {
-        deps: {
-          inline: ["@vanilla-extract/sprinkles"],
-        },
-      },
     },
   };
-});
+}
+
+export default defineConfig((props) => createViteConfig(props));

@@ -2,6 +2,8 @@ import type { SourceChainId } from "config/chains";
 import type { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import type { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import type { ErrorData } from "lib/errors";
+import type { DisplayMode } from "lib/pwa/getDisplayMode";
+import type { LaunchSource } from "lib/pwa/getLaunchSource";
 import type { TradeMode } from "sdk/utils/trade/types";
 import type { TwapDuration } from "sdk/utils/twap/types";
 
@@ -15,6 +17,8 @@ export type GlobalMetricData = {
   apiSdkPositions?: boolean;
   apiSdkOrders?: boolean;
   isMobile: boolean;
+  displayMode: DisplayMode;
+  launchSource?: LaunchSource;
   isHomeSite: boolean;
   browserName?: string;
   browserVersion?: string;
@@ -398,6 +402,7 @@ export type ErrorEvent = {
 };
 
 export type ExpressOrderMetricData = {
+  relayProvider: "gmx";
   isExpressValid: boolean;
   isOutGasTokenBalance: boolean;
   needGasTokenApproval: boolean;
@@ -610,8 +615,8 @@ export type MulticallRequestTiming = {
   };
 };
 
-export type GelatoPollingTiming = {
-  event: "express.pollGelatoTask.finalStatus";
+export type GmxRelayPollingTiming = {
+  event: "express.pollRelayTask.finalStatus";
   data: {
     status: string;
   };
@@ -623,6 +628,14 @@ export type MissedMarketPricesCounter = {
   data: {
     marketName: string;
     source: string;
+  };
+};
+
+export type AppUpdateCounter = {
+  event: `pwa.update.${"offered" | "accepted" | "declined" | "reloaded"}`;
+  data: {
+    fromBuildId: string;
+    toBuildId: string;
   };
 };
 
@@ -658,6 +671,14 @@ export type KyberSwapQuoteTiming = {
   event: "kyberSwap.quote.timing";
 };
 
+export type WorkerMulticallErrorCounter = {
+  event: "worker.multicall.error";
+  data: {
+    errorName: string;
+    errorMessage: string;
+  };
+};
+
 export type MulticallRequestCounter = {
   event: `multicall.request.${"call" | "timeout" | "error"}`;
   data: {
@@ -681,6 +702,26 @@ export type ImageExportError = {
 
 export type SetAutoCloseOrdersAction = {
   event: "announcement.autoCloseOrders.updateExistingOrders";
+};
+
+export type SignatureProducedEvent = {
+  event: "signature.produced";
+  isError: false;
+  data: {
+    /** EIP-712 primary type ("BridgeOut", "Batch", …) or "message". */
+    signaturePurpose: string;
+    signatureKind: "eoa" | "erc6492" | "erc1271" | "malformed";
+    signatureBytes: number | undefined;
+    ecdsaV: number | undefined;
+    isOnChainRecoverableShape: boolean | undefined;
+    isHighS: boolean | undefined;
+    signingChainId: number;
+    verificationChainId: number;
+    didSwitchChain: boolean;
+    isRetryAfterInvalidSignature: boolean;
+    accountTypeOnSigningChain: string | undefined;
+    accountTypeOnVerificationChain: string | undefined;
+  };
 };
 
 type MultichainFundingParams = {

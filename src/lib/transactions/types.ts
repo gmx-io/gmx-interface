@@ -1,5 +1,5 @@
 import { ErrorLike } from "lib/errors";
-import { StatusCode } from "sdk/utils/gelatoRelay";
+import { StatusCode } from "sdk/utils/express";
 
 export type TransactionWaiterResult = {
   relayStatus?:

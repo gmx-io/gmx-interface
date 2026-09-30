@@ -12,6 +12,27 @@ body,
   color: var(--color-typography-primary);
 }
 
+:root {
+  --safe-area-inset-top: 0px;
+  --safe-area-inset-right: 0px;
+  --safe-area-inset-bottom: 0px;
+  --safe-area-inset-left: 0px;
+}
+
+html[data-installed-app] {
+  --safe-area-inset-top: env(safe-area-inset-top, 0px);
+  --safe-area-inset-right: env(safe-area-inset-right, 0px);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-inset-left: env(safe-area-inset-left, 0px);
+}
+
+html[data-installed-app] #root {
+  padding-top: var(--safe-area-inset-top);
+  padding-right: var(--safe-area-inset-right);
+  padding-bottom: var(--safe-area-inset-bottom);
+  padding-left: var(--safe-area-inset-left);
+}
+
 /**
  * @see https://aykevl.nl/2014/09/fix-jumping-scrollbar
  * Used body selector and !important to avoid collisions with [data-scroll-locked] attribute
@@ -398,4 +419,20 @@ th {
   font-weight: 500;
   font-size: 11px;
   letter-spacing: 0.08em;
+}
+
+/**
+ * FEDEV-4037: the rem-based text shrink on Privy screens (html font-size 10px vs Privy's
+ * assumed 16px root) is now fixed globally by the stylis middleware in
+ * lib/wallets/privyUiCompat.ts; only the iframe-specific hack below remains.
+ *
+ * The Copy key / Copy Phrase iframe reserves ~15px for a scrollbar gutter
+ * (its own html { scrollbar-gutter: stable }) while its button row is laid out
+ * for the full 312px passed via the width query param, so the right button gets
+ * clipped when classic (non-overlay) scrollbars are on. Widen the iframe element
+ * by the gutter so the row fits; the extra strip paints the modal background and
+ * stays invisible. Escalated to Privy; remove once fixed on their side.
+ */
+#privy-dialog iframe[src*="embedded-wallets/export"] {
+  width: 327px !important;
 }

@@ -9,6 +9,7 @@ import {
 import { isSourceChain } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { metrics } from "lib/metrics";
+import { useBlockAutoReload } from "lib/pwa/blockAutoReload";
 import { switchNetwork } from "lib/wallets";
 
 export type ConnectModalContextValue = {
@@ -37,6 +38,8 @@ export function ConnectModalProvider({ children }: { children: ReactNode }) {
   const { isOpen: privyModalOpen } = useModalStatus();
   const { authenticated } = usePrivy();
 
+  useBlockAutoReload(connectModalOpen || privyModalOpen);
+
   const handleSuccess = useCallback(() => {
     connectRequestInFlightRef.current = false;
     setConnectModalOpen(false);
@@ -54,16 +57,18 @@ export function ConnectModalProvider({ children }: { children: ReactNode }) {
 
   const { connectOrCreateWallet } = useConnectOrCreateWallet({
     onSuccess: handleSuccess,
-    onError: () => {
+    onError: (error) => {
       connectRequestInFlightRef.current = false;
       setConnectModalOpen(false);
+      metrics.pushError(error, "connectModal.connectOrCreateWallet");
     },
   });
   const { connectWallet } = useConnectWallet({
     onSuccess: handleSuccess,
-    onError: () => {
+    onError: (error) => {
       connectRequestInFlightRef.current = false;
       setConnectModalOpen(false);
+      metrics.pushError(error, "connectModal.connectWallet");
     },
   });
 

@@ -48,7 +48,6 @@ import {
 import { getJitGlvShiftParams } from "domain/synthetics/jit/utils";
 import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets/utils";
 import { OrderType } from "domain/synthetics/orders";
-import { createStakeOrUnstakeTxn } from "domain/synthetics/orders/createStakeOrUnStakeTxn";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
 import { useWrapOrUnwrapExecutionFee } from "domain/synthetics/orders/estimateWrapOrUnwrapExecutionFee";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
@@ -74,9 +73,10 @@ import { useSidecarOrderPayloads } from "./useSidecarOrderPayloads";
 
 interface TradeboxTransactionsProps {
   setPendingTxns: (txns: any) => void;
+  canSwitchGasPaymentToken: boolean;
 }
 
-export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactionsProps) {
+export function useTradeboxTransactions({ setPendingTxns, canSwitchGasPaymentToken }: TradeboxTransactionsProps) {
   const { chainId, srcChainId } = useChainId();
   const { signer, account } = useWallet();
   const { provider } = useJsonRpcProvider(chainId);
@@ -153,6 +153,21 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       : undefined;
   }, [batchParams, chainId, isWrapOrUnwrap, tokensData, wrapOrUnwrapExecutionFee]);
 
+  const primaryExecutionFee = useMemo(() => {
+    if (isWrapOrUnwrap) {
+      return wrapOrUnwrapExecutionFee;
+    }
+    if (!tokensData || !primaryCreateOrderParams) {
+      return undefined;
+    }
+    return getBatchTotalExecutionFee({
+      batchParams: { createOrderParams: primaryCreateOrderParams, updateOrderParams: [], cancelOrderParams: [] },
+      chainId,
+      tokensData,
+      allowEmptyBatch: true,
+    });
+  }, [chainId, isWrapOrUnwrap, primaryCreateOrderParams, tokensData, wrapOrUnwrapExecutionFee]);
+
   const {
     expressParams,
     fastExpressParams,
@@ -164,6 +179,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     orderParams: batchParams,
     label: "TradeBox",
     isGmxAccount: isFromTokenGmxAccount,
+    canSwitchGasPaymentToken,
   });
 
   const initOrderMetricData = useCallback(() => {
@@ -417,31 +433,17 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     });
   }
 
-  function onSubmitStakeOrUnstake() {
-    if (!account || !swapAmounts || !fromToken || !signer || !toToken) {
-      return Promise.reject();
-    }
-
-    return createStakeOrUnstakeTxn(chainId, signer, {
-      amount: swapAmounts.amountIn,
-      isStake: Boolean(toToken.isStaking),
-      isWrapBeforeStake: Boolean(fromToken.isNative),
-      isUnwrapAfterStake: Boolean(toToken.isNative),
-      setPendingTxns,
-    });
-  }
-
   return {
     onSubmitSwap: onSubmitOrder,
     onSubmitIncreaseOrder: onSubmitOrder,
     onSubmitDecreaseOrder: onSubmitOrder,
     onSubmitWrapOrUnwrap,
-    onSubmitStakeOrUnstake,
     slippageInputId,
     expressParams,
     batchParams,
     isExpressLoading,
     isMultichainSubmitDisabled,
     totalExecutionFee,
+    primaryExecutionFee,
   };
 }

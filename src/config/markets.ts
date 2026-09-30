@@ -3,7 +3,7 @@ import mapValues from "lodash/mapValues";
 import { isDevelopment } from "config/env";
 import { SETTLEMENT_CHAINS } from "config/multichain";
 import { fixTokenSymbolFromMarketLabel } from "sdk/configs/markets";
-import { getTokenBySymbol } from "sdk/configs/tokens";
+import { convertTokenAddress, getTokenBySymbol } from "sdk/configs/tokens";
 
 import {
   ARBITRUM,
@@ -183,4 +183,10 @@ for (const chainId of SETTLEMENT_CHAINS) {
 
 export function getSettlementChainTradableTokenAddresses(chainId: SettlementChainId) {
   return SETTLEMENT_CHAIN_TRADABLE_ASSETS_MAP[chainId];
+}
+
+export function isGmxAccountHoldableToken(chainId: SettlementChainId, tokenAddress: string): boolean {
+  return Boolean(
+    SETTLEMENT_CHAIN_TRADABLE_ASSETS_MAP[chainId]?.includes(convertTokenAddress(chainId, tokenAddress, "wrapped"))
+  );
 }

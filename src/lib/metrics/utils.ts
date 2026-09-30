@@ -591,6 +591,7 @@ function getExpressMetricData({
   }
 
   const expressData: ExpressOrderMetricData = {
+    relayProvider: "gmx",
     isExpressValid: expressParams.gasPaymentValidations.isValid,
     isOutGasTokenBalance: expressParams.gasPaymentValidations.isOutGasTokenBalance,
     needGasTokenApproval: expressParams.gasPaymentValidations.needGasPaymentTokenApproval,

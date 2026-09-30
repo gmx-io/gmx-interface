@@ -5,7 +5,7 @@ import { TableTd, TableTr } from "components/Table/Table";
 export default function AccountPnlSummarySkeletonStructure() {
   return (
     <TableTr>
-      <TableTd>
+      <TableTd className="!py-16">
         <Skeleton width={60} />
       </TableTd>
       <TableTd>

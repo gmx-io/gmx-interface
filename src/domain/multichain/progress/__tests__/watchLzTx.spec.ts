@@ -1,8 +1,30 @@
-import { describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
+import { IS_RECORDING } from "domain/testUtils/rpc/recordedResponder";
 import { SOURCE_BASE_MAINNET } from "sdk/configs/chains";
 
 import { watchLzTxApi, watchLzTxRpc, type LzStatus } from "../watchLzTx";
+import { finishRecordedRpc, installRecordedRpc } from "./recordedRpc";
+
+vi.setConfig({ testTimeout: IS_RECORDING ? 30_000 : 10_000 });
+
+vi.mock("lib/wallets/walletConfig", async (importOriginal) => {
+  const original = await importOriginal<typeof import("lib/wallets/walletConfig")>();
+  const { createFastPollingPublicClient } = await import("./recordedRpc");
+
+  return {
+    ...original,
+    getPublicClientWithRpc: createFastPollingPublicClient(original.getRpcTransport),
+  };
+});
+
+beforeAll(() => {
+  installRecordedRpc();
+});
+
+afterAll(() => {
+  finishRecordedRpc();
+});
 
 describe.concurrent("watchLzTx watchers (Arbitrum withdraw)", () => {
   const TX_HASH = "0x1d84b3cb0b93d1634ccbc1916dc7d9d03a65556d4badcf6327480d64403e271f";
@@ -28,7 +50,7 @@ describe.concurrent("watchLzTx watchers (Arbitrum withdraw)", () => {
     });
 
     expect(lastUpdateCall).toEqual(EXPECTED_FINAL_UPDATE_CALL);
-  }, 30_000);
+  });
 
   it("watchLzTxRpc", async () => {
     let lastUpdateCall: LzStatus[] = [];
@@ -40,7 +62,7 @@ describe.concurrent("watchLzTx watchers (Arbitrum withdraw)", () => {
     await watchLzTxRpc({ chainId: SOURCE_BASE_MAINNET, txHash: TX_HASH, onUpdate, withLzCompose: true });
 
     expect(lastUpdateCall).toEqual(EXPECTED_FINAL_UPDATE_CALL);
-  }, 30_000);
+  });
 });
 
 describe.concurrent("watchLzTx watchers (Arbitrum withdraw)", () => {
@@ -67,7 +89,7 @@ describe.concurrent("watchLzTx watchers (Arbitrum withdraw)", () => {
     });
 
     expect(lastUpdateCall).toEqual(EXPECTED_FINAL_UPDATE_CALL);
-  }, 30_000);
+  });
 
   it("watchLzTxRpc", async () => {
     let lastUpdateCall: LzStatus[] = [];
@@ -79,7 +101,7 @@ describe.concurrent("watchLzTx watchers (Arbitrum withdraw)", () => {
     await watchLzTxRpc({ chainId: SOURCE_BASE_MAINNET, txHash: TX_HASH, onUpdate, withLzCompose: true });
 
     expect(lastUpdateCall).toEqual(EXPECTED_FINAL_UPDATE_CALL);
-  }, 30_000);
+  });
 });
 
 describe("watchLzTx reverted", () => {

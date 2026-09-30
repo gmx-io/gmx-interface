@@ -2,16 +2,22 @@ import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import partition from "lodash/partition";
+import { useMemo, useState, type ReactNode } from "react";
 import { useAccount } from "wagmi";
 
 import { getChainIcon } from "config/icons";
-import { isSettlementChain, isSourceChainForAnySettlementChain } from "config/multichain";
+import { isValidVisualSettlementChain, isValidVisualSourceChain } from "config/multichain";
 import type { NetworkOption } from "config/networkOptions";
+import { extendError } from "lib/errors";
+import { SMART_WALLET_CHAIN_UNAVAILABLE_ERROR } from "lib/errors/customErrors";
+import { helperToast } from "lib/helperToast";
+import { metrics } from "lib/metrics";
 import { switchNetwork } from "lib/wallets";
-import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
-import { AVALANCHE, getChainName, isContractsChain } from "sdk/configs/chains";
+import { useWalletCanSignTypedData, useWalletUnavailableChains } from "lib/wallets/useWalletSessionChains";
+import { getChainName, isContractsChain } from "sdk/configs/chains";
 
 import Button from "components/Button/Button";
+import { getSmartWalletChainUnavailableToastContent } from "components/Errors/errorToasts";
 import { NoopWrapper } from "components/NoopWrapper/NoopWrapper";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -19,7 +25,7 @@ import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
 import WalletIcon from "img/ic_wallet.svg?react";
 
-import SolanaNetworkItem from "./SolanaNetworkItem";
+import { GmTradeModal, SolanaNetworkItem } from "./SolanaNetworkItem";
 
 import "./NetworkDropdown.scss";
 
@@ -43,6 +49,8 @@ export default function NetworkDropdown({
   chainId: number;
   networkOptions: NetworkOption[];
 }) {
+  const [isGmTradeModalVisible, setIsGmTradeModalVisible] = useState(false);
+
   return (
     <div className="relative flex items-center gap-8">
       <Menu>
@@ -59,42 +67,80 @@ export default function NetworkDropdown({
             </Menu.Button>
             <Menu.Items as="div" className="network-dropdown-items" data-qa="networks-dropdown">
               <div className="network-dropdown-list">
-                <NetworkMenuItems networkOptions={networkOptions} chainId={chainId} />
+                <NetworkMenuItems
+                  networkOptions={networkOptions}
+                  chainId={chainId}
+                  onSolanaSelect={() => setIsGmTradeModalVisible(true)}
+                />
               </div>
             </Menu.Items>
           </>
         )}
       </Menu>
+      <GmTradeModal isVisible={isGmTradeModalVisible} setIsVisible={setIsGmTradeModalVisible} />
     </div>
   );
 }
 
-function isValidVisualSettlementChain(chainId: number) {
-  return isSettlementChain(chainId) && chainId !== AVALANCHE;
+type DisplayNetworkOption = NetworkOption & { disabledReason?: ReactNode };
+
+function getNetworkDisabledReason({
+  network,
+  unavailableChains,
+  canSignTypedData,
+}: {
+  network: NetworkOption;
+  unavailableChains: number[] | undefined;
+  canSignTypedData: boolean;
+}): ReactNode {
+  if (unavailableChains?.includes(network.value)) {
+    return <Trans>Your wallet is not connected to this network</Trans>;
+  }
+
+  // Source-only chains trade through the GMX Account, which is express-only and always needs a signature.
+  if (!canSignTypedData && !isContractsChain(network.value, true)) {
+    return <Trans>Your wallet cannot sign messages, which trading from this network requires</Trans>;
+  }
+
+  return undefined;
 }
 
-function isValidVisualSourceChain(chainId: number) {
-  return isSourceChainForAnySettlementChain(chainId) && chainId !== AVALANCHE;
-}
-
-function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: NetworkOption[]; chainId: number }) {
-  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
-
-  const [disabledNetworks, enabledNetworks] = partition(
-    networkOptions,
-    (network) =>
-      // True is passed to filter both dev and prod contracts chains
-      !isContractsChain(network.value, true) &&
-      isSourceChainForAnySettlementChain(network.value) &&
-      isNonEoaAccountOnAnyChain
+function NetworkMenuItems({
+  networkOptions,
+  chainId,
+  onSolanaSelect,
+}: {
+  networkOptions: NetworkOption[];
+  chainId: number;
+  onSolanaSelect: () => void;
+}) {
+  const { unavailableChains, isLoading: isAvailabilityLoading } = useWalletUnavailableChains(
+    networkOptions.map((network) => network.value)
   );
+  const { canSignTypedData, isLoading: isCanSignLoading } = useWalletCanSignTypedData();
+  const isVerdictPending = isAvailabilityLoading || isCanSignLoading;
 
-  const walletAndGmxAccountNetworks = enabledNetworks.filter(
-    (network) => isValidVisualSourceChain(network.value) || isValidVisualSettlementChain(network.value)
-  );
-  const walletOnlyNetworks = enabledNetworks.filter(
-    (network) => !(isValidVisualSourceChain(network.value) || isValidVisualSettlementChain(network.value))
-  );
+  const { walletAndGmxAccountNetworks, walletOnlyNetworks } = useMemo(() => {
+    const displayNetworks: DisplayNetworkOption[] = networkOptions.map((network) => ({
+      ...network,
+      disabledReason: isVerdictPending
+        ? undefined
+        : getNetworkDisabledReason({ network, unavailableChains, canSignTypedData }),
+    }));
+
+    const orderDisabledLast = (networks: DisplayNetworkOption[]) =>
+      partition(networks, (network) => !network.disabledReason).flat();
+
+    const isWalletAndGmxAccountNetwork = (network: DisplayNetworkOption) =>
+      isValidVisualSourceChain(network.value) || isValidVisualSettlementChain(network.value);
+
+    return {
+      walletAndGmxAccountNetworks: orderDisabledLast(displayNetworks.filter(isWalletAndGmxAccountNetwork)),
+      walletOnlyNetworks: orderDisabledLast(
+        displayNetworks.filter((network) => !isWalletAndGmxAccountNetwork(network))
+      ),
+    };
+  }, [networkOptions, unavailableChains, canSignTypedData, isVerdictPending]);
 
   return (
     <>
@@ -141,32 +187,20 @@ function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: Network
           ))}
         </>
       )}
-      <Menu.Item key="solana">
-        <SolanaNetworkItem />
-      </Menu.Item>
-      {disabledNetworks.map((network) => (
-        <NetworkMenuItem key={network.value} network={network} chainId={chainId} disabled />
-      ))}
+      <SolanaNetworkItem onSelect={onSolanaSelect} />
     </>
   );
 }
 
-function NetworkMenuItem({
-  network,
-  chainId,
-  disabled,
-}: {
-  network: NetworkOption;
-  chainId: number;
-  disabled?: boolean;
-}) {
+function NetworkMenuItem({ network, chainId }: { network: DisplayNetworkOption; chainId: number }) {
   const { isConnected } = useAccount();
+  const disabled = Boolean(network.disabledReason);
   const Wrapper = disabled ? TooltipWithPortal : NoopWrapper;
 
   return (
     <Menu.Item key={network.value} disabled={disabled}>
       {({ close }) => (
-        <Wrapper variant="none" as="div" content={<Trans>Smart wallets not supported on this network</Trans>}>
+        <Wrapper variant="none" as="div" content={network.disabledReason}>
           <div
             className={cx("network-dropdown-menu-item menu-item", {
               "disabled !cursor-not-allowed opacity-50": disabled,
@@ -177,7 +211,16 @@ function NetworkMenuItem({
                 return;
               }
               close();
-              switchNetwork(network.value, isConnected, { fallbackToAppSelectionOnError: true });
+              switchNetwork(network.value, isConnected, { fallbackToAppSelectionOnError: true }).catch((error) => {
+                if (error?.message === SMART_WALLET_CHAIN_UNAVAILABLE_ERROR) {
+                  helperToast.error(getSmartWalletChainUnavailableToastContent(network.value));
+                }
+
+                metrics.pushError(
+                  extendError(error, { data: { chainId: network.value } }),
+                  "networkDropdown.switchNetwork"
+                );
+              });
             }}
           >
             <div className="menu-item-group">

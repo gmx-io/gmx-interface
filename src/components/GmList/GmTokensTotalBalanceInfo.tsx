@@ -11,6 +11,7 @@ import { formatBalanceAmount, formatDeltaUsd, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
+import { EarningAttributionNote, EarningUnavailableNote, EarningValue } from "components/EarningValue/EarningValue";
 import {
   MultichainBalanceTooltip,
   useHasMultichainBreakdown,
@@ -25,20 +26,32 @@ export const GmTokensBalanceInfo = ({
   token,
   earnedTotal,
   earnedRecently,
+  earnedExpected365d,
   daysConsidered,
   multichainBalances,
   isGlv = false,
   singleLine = false,
   isMultichainBalancesLoading = false,
+  isUserEarningsLoading = false,
+  isUserEarningsUnavailable = false,
+  isEstimated365dFeesLoading = false,
+  isEstimated365dFeesUnavailable = false,
+  hasBalanceOutsideWallet = false,
 }: {
   token: ProgressiveTokenData | undefined;
   earnedTotal?: bigint;
   earnedRecently?: bigint;
+  earnedExpected365d?: bigint;
   daysConsidered: number;
   multichainBalances: MultichainMarketTokenBalances | undefined;
   isGlv?: boolean;
   singleLine?: boolean;
   isMultichainBalancesLoading?: boolean;
+  isUserEarningsLoading?: boolean;
+  isUserEarningsUnavailable?: boolean;
+  isEstimated365dFeesLoading?: boolean;
+  isEstimated365dFeesUnavailable?: boolean;
+  hasBalanceOutsideWallet?: boolean;
 }) => {
   const balance = multichainBalances?.totalBalance ?? 0n;
   const balanceUsd = getPlatformTokenBalanceAfterThreshold(multichainBalances?.totalBalanceUsd);
@@ -67,35 +80,105 @@ export const GmTokensBalanceInfo = ({
       <MultichainBalanceTooltip multichainBalances={multichainBalances} symbol={symbol} decimals={token?.decimals} />
     );
   }, [hasChainBalances, balanceUsd, multichainBalances, symbol, token?.decimals]);
-  const hasFees = earnedTotal !== undefined || earnedRecently !== undefined;
+  const hasEarnedFees = earnedTotal !== undefined || earnedRecently !== undefined;
+  const hasEstimated365dFees = earnedExpected365d !== undefined && earnedExpected365d > 0n;
+  const shouldShowFeesLoading = !isGlv && isUserEarningsLoading && balance !== 0n;
+  const shouldShowFeesUnavailable = !isGlv && isUserEarningsUnavailable && balance !== 0n;
+  const shouldShowFeesUnattributed = !isGlv && hasBalanceOutsideWallet && balance !== 0n;
+  const shouldShowEarnedFeeRows =
+    hasEarnedFees || shouldShowFeesLoading || shouldShowFeesUnavailable || shouldShowFeesUnattributed;
+  const shouldShowEstimated365dFeesLoading =
+    !isGlv && balance !== 0n && (shouldShowFeesLoading || isEstimated365dFeesLoading);
+  const shouldShowEstimated365dFeesUnavailable =
+    !isGlv && balance !== 0n && (shouldShowFeesUnavailable || isEstimated365dFeesUnavailable);
+  const shouldShowEstimated365dFeeRow =
+    hasEstimated365dFees || shouldShowEstimated365dFeesLoading || shouldShowEstimated365dFeesUnavailable;
+  const shouldShowFeeRows = shouldShowEarnedFeeRows || shouldShowEstimated365dFeeRow;
 
   const tooltipContent = useMemo(() => {
-    if (!hasFees && !hasChainBalances) {
+    if (!shouldShowFeeRows && !hasChainBalances) {
       return null;
     }
 
     return (
       <>
         {multichainBalanceTooltip}
-        {earnedTotal !== undefined && (
+        {shouldShowEarnedFeeRows && (
           <StatsTooltipRow
             showDollar={false}
             label={t`Total earned fees`}
-            textClassName={getPositiveOrNegativeClass(earnedTotal)}
-            value={formatDeltaUsd(earnedTotal, undefined)}
+            textClassName={
+              earnedTotal !== undefined && !shouldShowFeesUnattributed
+                ? getPositiveOrNegativeClass(earnedTotal)
+                : undefined
+            }
+            value={
+              <EarningValue
+                value={earnedTotal}
+                isLoading={!shouldShowFeesUnattributed && earnedTotal === undefined && shouldShowFeesLoading}
+                isAvailable={!shouldShowFeesUnattributed && (earnedTotal !== undefined || !shouldShowFeesUnavailable)}
+              >
+                {(value) => formatDeltaUsd(value, undefined)}
+              </EarningValue>
+            }
             valueClassName="numbers"
           />
         )}
-        {earnedRecently !== undefined && (
+        {shouldShowEarnedFeeRows && (
           <StatsTooltipRow
             showDollar={false}
-            textClassName={getPositiveOrNegativeClass(earnedRecently)}
+            textClassName={
+              earnedRecently !== undefined && !shouldShowFeesUnattributed
+                ? getPositiveOrNegativeClass(earnedRecently)
+                : undefined
+            }
             label={t`${daysConsidered}d earned fees`}
-            value={formatDeltaUsd(earnedRecently, undefined)}
+            value={
+              <EarningValue
+                value={earnedRecently}
+                isLoading={!shouldShowFeesUnattributed && earnedRecently === undefined && shouldShowFeesLoading}
+                isAvailable={
+                  !shouldShowFeesUnattributed && (earnedRecently !== undefined || !shouldShowFeesUnavailable)
+                }
+              >
+                {(value) => formatDeltaUsd(value, undefined)}
+              </EarningValue>
+            }
             valueClassName="numbers"
           />
         )}
-        {hasFees && (
+        {shouldShowEstimated365dFeeRow && (
+          <StatsTooltipRow
+            showDollar={false}
+            textClassName={
+              earnedExpected365d !== undefined ? getPositiveOrNegativeClass(earnedExpected365d) : undefined
+            }
+            label={t`365d estimated fees`}
+            value={
+              <EarningValue
+                value={earnedExpected365d}
+                isLoading={shouldShowEstimated365dFeesLoading}
+                isAvailable={!shouldShowEstimated365dFeesUnavailable}
+              >
+                {(value) => formatDeltaUsd(value, undefined)}
+              </EarningValue>
+            }
+            valueClassName="numbers"
+          />
+        )}
+        {(shouldShowFeesUnavailable || shouldShowEstimated365dFeesUnavailable) && (
+          <>
+            <br />
+            <EarningUnavailableNote />
+          </>
+        )}
+        {shouldShowFeesUnattributed && (
+          <>
+            <br />
+            <EarningAttributionNote scope="gm" />
+          </>
+        )}
+        {hasEarnedFees && !shouldShowFeesUnattributed && (
           <>
             <br />
             <div className="text-typography-primary">
@@ -103,11 +186,36 @@ export const GmTokensBalanceInfo = ({
             </div>
           </>
         )}
+        {hasEstimated365dFees && (
+          <>
+            <br />
+            <div className="text-typography-primary">
+              <Trans>Projected from last {daysConsidered} days' APY</Trans>
+            </div>
+          </>
+        )}
       </>
     );
-  }, [daysConsidered, earnedRecently, earnedTotal, hasChainBalances, hasFees, multichainBalanceTooltip]);
+  }, [
+    daysConsidered,
+    earnedExpected365d,
+    earnedRecently,
+    earnedTotal,
+    hasChainBalances,
+    hasEarnedFees,
+    hasEstimated365dFees,
+    multichainBalanceTooltip,
+    shouldShowEarnedFeeRows,
+    shouldShowEstimated365dFeeRow,
+    shouldShowEstimated365dFeesLoading,
+    shouldShowEstimated365dFeesUnavailable,
+    shouldShowFeeRows,
+    shouldShowFeesLoading,
+    shouldShowFeesUnattributed,
+    shouldShowFeesUnavailable,
+  ]);
 
-  if (!hasFees && !hasChainBalances) {
+  if (!shouldShowFeeRows && !hasChainBalances) {
     return content;
   }
 
@@ -125,17 +233,38 @@ export const GmTokensTotalBalanceInfo = ({
   balance,
   balanceUsd,
   userEarnings,
+  isUserEarningsLoading = false,
+  isUserEarningsUnavailable = false,
+  isEstimated365dFeesLoading = false,
+  isEstimated365dFeesUnavailable = false,
+  hasBalanceOutsideWallet = false,
   tooltipPosition,
   label,
 }: {
   balance?: bigint;
   balanceUsd?: bigint;
   userEarnings: UserEarningsData | null;
+  isUserEarningsLoading?: boolean;
+  isUserEarningsUnavailable?: boolean;
+  isEstimated365dFeesLoading?: boolean;
+  isEstimated365dFeesUnavailable?: boolean;
+  hasBalanceOutsideWallet?: boolean;
   tooltipPosition?: TooltipPosition;
   label: string;
 }) => {
   const shouldShowIncentivesNote = useLpIncentivesIsActive();
   const daysConsidered = useDaysConsideredInMarketsApr();
+  const shouldShowEarningsFallback = !userEarnings && (isUserEarningsLoading || isUserEarningsUnavailable);
+  const shouldShowEarningsRows = Boolean(userEarnings) || shouldShowEarningsFallback || hasBalanceOutsideWallet;
+  const isEarningsLoading = !userEarnings && isUserEarningsLoading;
+  const areEarningsAvailable = Boolean(userEarnings) || !isUserEarningsUnavailable;
+  const hasGmBalance = balance !== undefined && balance > 0n;
+  const shouldShowEstimated365dFees =
+    (userEarnings !== null && userEarnings.allMarkets.expected365d > 0n) ||
+    shouldShowEarningsFallback ||
+    (hasGmBalance && (isEstimated365dFeesLoading || isEstimated365dFeesUnavailable));
+  const isEstimated365dFeesValueLoading = isEarningsLoading || isEstimated365dFeesLoading;
+  const areEstimated365dFeesAvailable = areEarningsAvailable && !isEstimated365dFeesUnavailable;
 
   const renderTooltipContent = useCallback(() => {
     return (
@@ -145,50 +274,116 @@ export const GmTokensTotalBalanceInfo = ({
           value={<AmountWithUsdBalance amount={balance} decimals={18} symbol="GM" usd={balanceUsd} usdAsPrimary />}
           showDollar={false}
         />
-        {userEarnings && (
+        {shouldShowEarningsRows && (
           <>
             <StatsTooltipRow
               label={t`Total earned fees`}
-              textClassName={getPositiveOrNegativeClass(userEarnings.allMarkets.total)}
-              value={formatDeltaUsd(userEarnings.allMarkets.total, undefined, { showPlusForZero: true })}
+              textClassName={
+                userEarnings !== null && !hasBalanceOutsideWallet
+                  ? getPositiveOrNegativeClass(userEarnings.allMarkets.total)
+                  : undefined
+              }
+              value={
+                <EarningValue
+                  value={userEarnings?.allMarkets.total}
+                  isLoading={!hasBalanceOutsideWallet && isEarningsLoading}
+                  isAvailable={!hasBalanceOutsideWallet && areEarningsAvailable}
+                >
+                  {(value) => formatDeltaUsd(value, undefined, { showPlusForZero: true })}
+                </EarningValue>
+              }
               valueClassName="numbers"
               showDollar={false}
             />
             <StatsTooltipRow
               label={t`${daysConsidered}d earned fees`}
-              textClassName={getPositiveOrNegativeClass(userEarnings.allMarkets.recent)}
-              value={formatDeltaUsd(userEarnings.allMarkets.recent, undefined, { showPlusForZero: true })}
+              textClassName={
+                userEarnings !== null && !hasBalanceOutsideWallet
+                  ? getPositiveOrNegativeClass(userEarnings.allMarkets.recent)
+                  : undefined
+              }
+              value={
+                <EarningValue
+                  value={userEarnings?.allMarkets.recent}
+                  isLoading={!hasBalanceOutsideWallet && isEarningsLoading}
+                  isAvailable={!hasBalanceOutsideWallet && areEarningsAvailable}
+                >
+                  {(value) => formatDeltaUsd(value, undefined, { showPlusForZero: true })}
+                </EarningValue>
+              }
               valueClassName="numbers"
               showDollar={false}
             />
-            {userEarnings.allMarkets.expected365d > 0 && (
+            {shouldShowEstimated365dFees && (
               <>
                 <StatsTooltipRow
                   label={t`365d estimated fees`}
-                  textClassName={getPositiveOrNegativeClass(userEarnings.allMarkets.expected365d)}
-                  value={formatDeltaUsd(userEarnings.allMarkets.expected365d, undefined, { showPlusForZero: true })}
+                  textClassName={
+                    userEarnings !== null ? getPositiveOrNegativeClass(userEarnings.allMarkets.expected365d) : undefined
+                  }
+                  value={
+                    <EarningValue
+                      value={userEarnings?.allMarkets.expected365d}
+                      isLoading={isEstimated365dFeesValueLoading}
+                      isAvailable={areEstimated365dFeesAvailable}
+                    >
+                      {(value) => formatDeltaUsd(value, undefined, { showPlusForZero: true })}
+                    </EarningValue>
+                  }
                   valueClassName="numbers"
                   showDollar={false}
                 />
+                {userEarnings !== null &&
+                  userEarnings.allMarkets.expected365d > 0n &&
+                  areEstimated365dFeesAvailable && (
+                    <>
+                      <br />
+                      <div className="text-typography-primary">
+                        <Trans>Projected from last {daysConsidered} days' APY</Trans>
+                      </div>
+                      {shouldShowIncentivesNote && (
+                        <>
+                          <br />
+                          <div className="text-typography-primary">
+                            <Trans>Excludes incentives</Trans>
+                          </div>
+                        </>
+                      )}
+                    </>
+                  )}
+              </>
+            )}
+            {hasBalanceOutsideWallet && (
+              <>
                 <br />
-                <div className="text-typography-primary">
-                  <Trans>Projected from last {daysConsidered} days' APY</Trans>
-                </div>
-                {shouldShowIncentivesNote && (
-                  <>
-                    <br />
-                    <div className="text-typography-primary">
-                      <Trans>Excludes incentives</Trans>
-                    </div>
-                  </>
-                )}
+                <EarningAttributionNote scope="gm" />
+              </>
+            )}
+            {isUserEarningsUnavailable && (
+              <>
+                <br />
+                <EarningUnavailableNote />
               </>
             )}
           </>
         )}
       </>
     );
-  }, [balance, balanceUsd, daysConsidered, shouldShowIncentivesNote, userEarnings]);
+  }, [
+    balance,
+    balanceUsd,
+    areEarningsAvailable,
+    areEstimated365dFeesAvailable,
+    daysConsidered,
+    hasBalanceOutsideWallet,
+    isEarningsLoading,
+    isEstimated365dFeesValueLoading,
+    isUserEarningsUnavailable,
+    shouldShowEarningsRows,
+    shouldShowEstimated365dFees,
+    shouldShowIncentivesNote,
+    userEarnings,
+  ]);
 
   return balance !== undefined && balanceUsd !== undefined ? (
     <TooltipWithPortal

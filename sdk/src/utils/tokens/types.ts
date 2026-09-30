@@ -55,7 +55,6 @@ export type Token = {
   isV1Available?: boolean;
   isPlatformToken?: boolean;
   isPlatformTradingToken?: boolean;
-  isStaking?: boolean;
 };
 
 /**

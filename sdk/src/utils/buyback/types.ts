@@ -5,6 +5,13 @@ export type BuybackWeekData = {
   cumulativeAccrued: string;
 };
 
+export type BuybackMonthData = {
+  monthStart: number;
+  monthEnd: number;
+  monthlyAccrued: string;
+  cumulativeAccrued: string;
+};
+
 export type BuybackSummary = {
   totalAccrued: string;
   latestWeekAccrued: string;
@@ -14,4 +21,5 @@ export type BuybackSummary = {
 export type BuybackWeeklyStatsResponse = {
   summary: BuybackSummary;
   weeks: BuybackWeekData[];
+  months: BuybackMonthData[];
 };

@@ -1,7 +1,6 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { useEffect } from "react";
-import { HashRouter as Router } from "react-router-dom";
 import { SWRConfig } from "swr";
 
 import "react-toastify/dist/ReactToastify.css";
@@ -13,7 +12,6 @@ import "styles/DeprecatedExchageStyles.scss";
 import "components/Card/Card.css";
 import "./App.scss";
 
-import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import { ChainContextProvider } from "context/ChainContext/ChainContext";
 import { ConnectModalProvider } from "context/ConnectModalContext/ConnectModalContext";
 import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider";
@@ -27,8 +25,8 @@ import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
 import { TokenPermitsContextProvider } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { TokensBalancesContextProvider } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { TokensFavoritesContextProvider } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
+import { completeAppStartup } from "lib/appStartup";
 import { useChainId } from "lib/chains";
-import { defaultLocale, dynamicActivate } from "lib/i18n";
 
 import ErrorBoundary from "components/Errors/ErrorBoundary";
 import SEO from "components/Seo/SEO";
@@ -52,10 +50,7 @@ function SWRConfigWithKey({ children }: { children: React.ReactNode }) {
 }
 
 function App() {
-  useEffect(() => {
-    const defaultLanguage = localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale;
-    dynamicActivate(defaultLanguage);
-  }, []);
+  useEffect(completeAppStartup, []);
 
   let app = <AppRoutes />;
   app = (
@@ -79,7 +74,6 @@ function App() {
   app = <ChainContextProvider>{app}</ChainContextProvider>;
   app = <GmxAccountContextProvider>{app}</GmxAccountContextProvider>;
   app = <GmxSdkProvider>{app}</GmxSdkProvider>;
-  app = <Router>{app}</Router>;
 
   return app;
 }

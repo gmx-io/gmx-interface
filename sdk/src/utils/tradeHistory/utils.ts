@@ -5,6 +5,7 @@ import type { MarketsInfoData } from "utils/markets/types";
 import { toBigInt } from "utils/numbers";
 import { getByKey } from "utils/objects";
 import { isIncreaseOrderType, isSwapOrderType } from "utils/orders";
+import type { DecreasePositionSwapType } from "utils/orders/types";
 import { getSwapPathOutputAddresses } from "utils/swap/swapStats";
 import { parseContractPrice } from "utils/tokens";
 import { Token, TokensData } from "utils/tokens/types";
@@ -57,6 +58,8 @@ export function createRawTradeActionTransformer(
         initialCollateralDeltaAmount: toBigInt(rawAction.initialCollateralDeltaAmount)!,
         minOutputAmount: toBigInt(rawAction.minOutputAmount)!,
         executionAmountOut: rawAction.executionAmountOut ? toBigInt(rawAction.executionAmountOut) : undefined,
+        swapFeeUsd: toBigInt(rawAction.swapFeeUsd),
+        swapImpactUsd: toBigInt(rawAction.swapImpactUsd),
         shouldUnwrapNativeToken: rawAction.shouldUnwrapNativeToken!,
         targetCollateralToken,
         initialCollateralToken,
@@ -105,6 +108,10 @@ export function createRawTradeActionTransformer(
         srcChainId: rawAction.srcChainId ? Number(rawAction.srcChainId) : undefined,
         indexToken,
         swapPath,
+        positionKey: rawAction.positionKey ?? undefined,
+        positionLifecycleId: rawAction.positionLifecycleId ?? undefined,
+        positionSizeInUsd: rawAction.positionSizeInUsd ? toBigInt(rawAction.positionSizeInUsd) : undefined,
+        positionSizeInTokens: rawAction.positionSizeInTokens ? toBigInt(rawAction.positionSizeInTokens) : undefined,
         initialCollateralTokenAddress,
         initialCollateralToken,
         targetCollateralToken,
@@ -136,6 +143,10 @@ export function createRawTradeActionTransformer(
           : undefined,
 
         orderType,
+        decreasePositionSwapType:
+          rawAction.decreasePositionSwapType === null || rawAction.decreasePositionSwapType === undefined
+            ? undefined
+            : (Number(rawAction.decreasePositionSwapType) as DecreasePositionSwapType),
         orderKey: rawAction.orderKey,
         isLong: rawAction.isLong!,
         pnlUsd: rawAction.pnlUsd ? BigInt(rawAction.pnlUsd) : undefined,
@@ -151,6 +162,9 @@ export function createRawTradeActionTransformer(
         fundingFeeAmount: rawAction.fundingFeeAmount ? BigInt(rawAction.fundingFeeAmount) : undefined,
         swapFeeUsd: rawAction.swapFeeUsd ? BigInt(rawAction.swapFeeUsd) : undefined,
         liquidationFeeAmount: rawAction.liquidationFeeAmount ? BigInt(rawAction.liquidationFeeAmount) : undefined,
+        minCollateralFactorForLiquidation: rawAction.minCollateralFactorForLiquidation
+          ? BigInt(rawAction.minCollateralFactorForLiquidation)
+          : undefined,
 
         reason: rawAction.reason ?? undefined,
         reasonBytes: rawAction.reasonBytes ?? undefined,

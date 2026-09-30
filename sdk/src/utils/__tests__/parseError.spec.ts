@@ -5,10 +5,12 @@ import {
   InvalidInputRpcError,
   RpcRequestError,
   InsufficientFundsError,
+  encodeErrorResult,
 } from "viem";
 import { describe, expect, it } from "vitest";
 
-import { ErrorLike, parseError } from "utils/errors";
+import { abis } from "abis";
+import { decodeSimulationErrorFromViemError, ErrorLike, parseError } from "utils/errors";
 import { TxErrorType } from "utils/errors/transactionsErrors";
 
 describe("parseError", () => {
@@ -406,6 +408,30 @@ describe("parseError", () => {
           errorGroup: "Txn Error: NOT_ENOUGH_FUNDS",
         })
       );
+    });
+  });
+});
+
+describe("decodeSimulationErrorFromViemError", () => {
+  it("decodes the nested SimulationRouter sentinel from ExternalCallFailed", () => {
+    const nestedData = encodeErrorResult({
+      abi: abis.CustomErrors,
+      errorName: "EndOfOracleSimulation",
+    });
+    const outerData = encodeErrorResult({
+      abi: abis.CustomErrors,
+      errorName: "ExternalCallFailed",
+      args: [nestedData],
+    });
+    const error = {
+      walk(callback: (value: unknown) => boolean) {
+        callback({ data: outerData });
+      },
+    };
+
+    expect(decodeSimulationErrorFromViemError(error)).toEqual({
+      name: "EndOfOracleSimulation",
+      args: undefined,
     });
   });
 });

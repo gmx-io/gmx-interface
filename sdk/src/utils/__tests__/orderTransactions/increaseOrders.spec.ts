@@ -17,7 +17,6 @@ import {
   IncreasePositionOrderParams,
 } from "utils/orderTransactions";
 import { ContractPrice, ERC20Address } from "utils/tokens/types";
-import { decodeTwapUiFeeReceiver } from "utils/twap/uiFeeReceiver";
 
 beforeAll(() => {
   vi.spyOn(Math, "random").mockReturnValue(0.5);
@@ -578,17 +577,6 @@ describe("Increase Order Payloads", () => {
 
       const expectedOrders = Array.from({ length: twapParams.numberOfParts }, (_, i) => {
         const validFromTime = BigInt(Math.floor(startTime + intervalInSeconds * i));
-        const uiFeeReceiver = `0xff00000000000000000000000000000004800001`;
-
-        const decoded = decodeTwapUiFeeReceiver(uiFeeReceiver);
-
-        expect(decoded).toEqual({
-          isExpress: false,
-          isJit: false,
-          source: "00",
-          twapId: "8000",
-          numberOfParts: twapParams.numberOfParts,
-        });
 
         return {
           orderPayload: {
@@ -596,7 +584,7 @@ describe("Increase Order Payloads", () => {
               receiver: RECEIVER,
               cancellationReceiver: zeroAddress,
               callbackContract: zeroAddress,
-              uiFeeReceiver,
+              uiFeeReceiver: UI_FEE_RECEIVER,
               market: params.marketAddress,
               initialCollateralToken: WETH.address as ERC20Address,
               swapPath: [ETH_MARKET.marketTokenAddress],
@@ -617,7 +605,7 @@ describe("Increase Order Payloads", () => {
             shouldUnwrapNativeToken: true,
             autoCancel: false,
             referralCode: REFERRAL_CODE,
-            dataList: [],
+            dataList: ["0x676d786f3a313a343a383030303a30303a303a30000000000000000000000000"],
           },
           params: {
             ...params,
@@ -630,7 +618,7 @@ describe("Increase Order Payloads", () => {
             sizeDeltaInTokens: params.sizeDeltaInTokens / 4n,
             orderType: OrderType.LimitIncrease,
             allowedSlippage: 0,
-            uiFeeReceiver,
+            uiFeeReceiver: UI_FEE_RECEIVER,
             validFromTime,
           },
           tokenTransfersParams: {
@@ -685,16 +673,6 @@ describe("Increase Order Payloads", () => {
 
       const expectedOrders = Array.from({ length: twapParams.numberOfParts }, (_, i) => {
         const validFromTime = BigInt(Math.floor(startTime + intervalInSeconds * i));
-        const uiFeeReceiver = `0xff00000000000000000000000000000004800001`;
-
-        const decoded = decodeTwapUiFeeReceiver(uiFeeReceiver);
-        expect(decoded).toEqual({
-          isExpress: false,
-          isJit: false,
-          source: "00",
-          twapId: "8000",
-          numberOfParts: twapParams.numberOfParts,
-        });
 
         return {
           orderPayload: {
@@ -702,7 +680,7 @@ describe("Increase Order Payloads", () => {
               receiver: RECEIVER,
               cancellationReceiver: zeroAddress,
               callbackContract: zeroAddress,
-              uiFeeReceiver,
+              uiFeeReceiver: UI_FEE_RECEIVER,
               market: params.marketAddress,
               initialCollateralToken: WETH.address as ERC20Address,
               swapPath: [ETH_MARKET.marketTokenAddress],
@@ -723,7 +701,7 @@ describe("Increase Order Payloads", () => {
             shouldUnwrapNativeToken: true,
             autoCancel: false,
             referralCode: REFERRAL_CODE,
-            dataList: [],
+            dataList: ["0x676d786f3a313a343a383030303a30303a303a30000000000000000000000000"],
           },
           params: {
             ...params,
@@ -736,7 +714,7 @@ describe("Increase Order Payloads", () => {
             sizeDeltaInTokens: params.sizeDeltaInTokens / 4n,
             orderType: OrderType.LimitIncrease,
             allowedSlippage: 0,
-            uiFeeReceiver,
+            uiFeeReceiver: UI_FEE_RECEIVER,
             validFromTime,
           },
           tokenTransfersParams: {

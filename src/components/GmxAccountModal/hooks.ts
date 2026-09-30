@@ -1,13 +1,21 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import useSWRSubscription, { SWRSubscription } from "swr/subscription";
+import { useAccount } from "wagmi";
 
 import { ContractsChainId, getChainName, SettlementChainId, SourceChainId } from "config/chains";
+import { isGmxAccountHoldableToken } from "config/markets";
 import {
   getMappedTokenId,
   MULTI_CHAIN_PLATFORM_TOKENS_MAP,
   MULTI_CHAIN_TOKEN_MAPPING,
   MultichainTokenMapping,
 } from "config/multichain";
+import { GmxAccountModalView } from "context/GmxAccountContext/GmxAccountContext";
+import {
+  useGmxAccountModalOpen,
+  useGmxAccountWalletReceiveViewBackTo,
+  useGmxAccountWalletReceiveViewChain,
+} from "context/GmxAccountContext/hooks";
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { fetchMultichainTokenBalances } from "domain/multichain/fetchMultichainTokenBalances";
@@ -261,11 +269,10 @@ export function useMultichainMarketTokensBalancesRequest({
   isLoading: boolean;
 } {
   const platformTokens = MULTI_CHAIN_PLATFORM_TOKENS_MAP[chainId as SettlementChainId] as string[] | undefined;
+  const isSubscribed = Boolean(account && platformTokens?.length && enabled);
 
   const { data: balancesResult } = useSWRSubscription(
-    account && platformTokens?.length && enabled
-      ? ["multichain-market-tokens-balances", chainId, account, platformTokens, undefined]
-      : null,
+    isSubscribed && account ? ["multichain-market-tokens-balances", chainId, account, platformTokens, undefined] : null,
     // TODO MLTCH optimistically update useSourceChainTokensDataRequest
     subscribeMultichainTokenBalances
   );
@@ -306,7 +313,7 @@ export function useMultichainMarketTokensBalancesRequest({
 
   return {
     tokenBalances: balances,
-    isLoading: balancesResult?.isLoading ?? true,
+    isLoading: isSubscribed ? balancesResult?.isLoading ?? true : false,
   };
 }
 
@@ -415,4 +422,69 @@ export function useGmxAccountWithdrawNetworks() {
   }, [chainId, sourceChains]);
 
   return networks;
+}
+
+export function useGmxAccountDepositNetworks(): { id: number; name: string }[] {
+  const { chainId } = useChainId();
+
+  const networks = useMemo(() => {
+    const sourceChains = Object.keys(MULTI_CHAIN_TOKEN_MAPPING[chainId as SettlementChainId] || {}).map(Number);
+
+    return [
+      { id: chainId as number, name: getChainName(chainId) },
+      ...sourceChains.map((sourceChainId) => ({
+        id: sourceChainId,
+        name: getChainName(sourceChainId),
+      })),
+    ];
+  }, [chainId]);
+
+  return networks;
+}
+
+export function useGmxAccountDepositEligibility(): {
+  hasAnyDepositFunds: boolean;
+  hasDepositFundsOnChain: (network: number) => boolean;
+  isEligibilityLoading: boolean;
+} {
+  const { chainId, srcChainId } = useChainId();
+  const { address: account } = useAccount();
+
+  const { tokenChainDataArray, isBalanceDataLoading } = useMultichainTradeTokensRequest(chainId, account);
+  const { tokensData, isWalletBalancesLoaded } = useTokensDataRequest(chainId, srcChainId);
+
+  return useMemo(() => {
+    const hasSettlementChainFunds = Object.values(tokensData ?? (EMPTY_OBJECT as TokensData)).some(
+      (token) =>
+        token.walletBalance !== undefined &&
+        token.walletBalance > 0n &&
+        isGmxAccountHoldableToken(chainId as SettlementChainId, token.address)
+    );
+
+    const hasDepositFundsOnChain = (network: number): boolean =>
+      network === chainId
+        ? hasSettlementChainFunds
+        : tokenChainDataArray.some((token) => token.sourceChainId === network);
+
+    return {
+      hasAnyDepositFunds: hasSettlementChainFunds || tokenChainDataArray.length > 0,
+      hasDepositFundsOnChain,
+      isEligibilityLoading: isBalanceDataLoading || !isWalletBalancesLoaded,
+    };
+  }, [chainId, tokenChainDataArray, tokensData, isBalanceDataLoading, isWalletBalancesLoaded]);
+}
+
+export function useOpenWalletReceive(): (opts?: { chain?: SourceChainId; backTo?: GmxAccountModalView }) => void {
+  const [, setIsVisibleOrView] = useGmxAccountModalOpen();
+  const [, setWalletReceiveViewChain] = useGmxAccountWalletReceiveViewChain();
+  const [, setWalletReceiveViewBackTo] = useGmxAccountWalletReceiveViewBackTo();
+
+  return useCallback(
+    (opts?: { chain?: SourceChainId; backTo?: GmxAccountModalView }) => {
+      setWalletReceiveViewChain(opts?.chain);
+      setWalletReceiveViewBackTo(opts?.backTo);
+      setIsVisibleOrView("walletReceiveOptions");
+    },
+    [setIsVisibleOrView, setWalletReceiveViewBackTo, setWalletReceiveViewChain]
+  );
 }

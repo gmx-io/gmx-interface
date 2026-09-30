@@ -28,20 +28,6 @@ export type InternalSwapStrategy = BaseSwapStrategy & {
   externalSwapQuote: undefined;
 };
 
-export type CombinedSwapStrategy = BaseSwapStrategy & {
-  type: "combinedSwap";
-  externalSwapQuote: ExternalSwapQuote;
-  swapPathStats: SwapPathStats;
-};
+export type SwapStrategyForIncreaseOrders = NoSwapStrategy | ExternalSwapStrategy | InternalSwapStrategy;
 
-export type SwapStrategyForIncreaseOrders =
-  | NoSwapStrategy
-  | ExternalSwapStrategy
-  | InternalSwapStrategy
-  | CombinedSwapStrategy;
-
-export type SwapStrategyForSwapOrders =
-  | NoSwapStrategy
-  | ExternalSwapStrategy
-  | InternalSwapStrategy
-  | CombinedSwapStrategy;
+export type SwapStrategyForSwapOrders = NoSwapStrategy | ExternalSwapStrategy | InternalSwapStrategy;

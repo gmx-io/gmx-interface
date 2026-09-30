@@ -21,8 +21,10 @@ import { Operation } from "domain/synthetics/markets/types";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { ERC20Address, NativeTokenSupportedAddress } from "domain/tokens";
+import { getIsEnteredAmount } from "lib/getIsEnteredAmount";
 import { formatAmountFree, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { useBlockAutoReload } from "lib/pwa/blockAutoReload";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -60,6 +62,8 @@ export function GmShiftBox({
   const [selectedMarketText, setSelectedMarketText] = useState("");
   const [toMarketText, setToMarketText] = useState("");
   const [focusedInput, setFocusedInput] = useState<"selectedMarket" | "toMarket" | undefined>(undefined);
+
+  useBlockAutoReload(getIsEnteredAmount(selectedMarketText) || getIsEnteredAmount(toMarketText));
 
   const chainId = useSelector(selectChainId);
   const uiFeeFactor = useUiFeeFactor();

@@ -1,9 +1,11 @@
 import { msg } from "@lingui/macro";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 import {
   selectPoolsDetailsAvailableModes,
+  selectPoolsDetailsAvailableOperations,
   selectPoolsDetailsGlvOrMarketAddress,
+  selectPoolsDetailsHasPendingInput,
   selectPoolsDetailsMode,
   selectPoolsDetailsOperation,
   selectPoolsDetailsSetGlvOrMarketAddress,
@@ -11,9 +13,11 @@ import {
   selectPoolsDetailsSetOperation,
   selectPoolsDetailsSetSelectedMarketAddressForGlv,
 } from "context/PoolsDetailsContext/selectors";
+import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { Mode, Operation } from "domain/synthetics/markets/types";
 import { useLocalizedMap } from "lib/i18n";
+import { useBlockAutoReload } from "lib/pwa/blockAutoReload";
 
 import Tabs from "components/Tabs/Tabs";
 
@@ -36,7 +40,27 @@ export function GmSwapBox() {
   const setGlvOrMarketAddress = useSelector(selectPoolsDetailsSetGlvOrMarketAddress);
   const setSelectedMarketAddressForGlv = useSelector(selectPoolsDetailsSetSelectedMarketAddressForGlv);
 
+  const hasPendingInput = useSelector(selectPoolsDetailsHasPendingInput);
+  useBlockAutoReload(hasPendingInput);
+
   const availableModes = useSelector(selectPoolsDetailsAvailableModes);
+  const availableOperations = useSelector(selectPoolsDetailsAvailableOperations);
+  const shiftAvailableMarkets = useSelector(selectShiftAvailableMarkets);
+
+  // A sticky Shift operation must not mount GmShiftBox for a non-shiftable market (it would
+  // replace the selected market on mount); clamp only once shift availability is loaded.
+  const isShiftAvailabilityKnown = shiftAvailableMarkets.length > 0;
+  const operationToRender =
+    isShiftAvailabilityKnown && !availableOperations.includes(operation) ? Operation.Deposit : operation;
+
+  useEffect(
+    function fallbackUnavailableOperation() {
+      if (operationToRender !== operation) {
+        setOperation(operationToRender);
+      }
+    },
+    [operation, operationToRender, setOperation]
+  );
 
   const localizedModeLabels = useLocalizedMap(MODE_LABELS);
 
@@ -59,7 +83,7 @@ export function GmSwapBox() {
         type="inline"
       />
 
-      {operation === Operation.Deposit || operation === Operation.Withdrawal ? (
+      {operationToRender === Operation.Deposit || operationToRender === Operation.Withdrawal ? (
         <GmSwapBoxDepositWithdrawal />
       ) : (
         <GmShiftBox

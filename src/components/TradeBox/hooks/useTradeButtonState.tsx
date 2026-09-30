@@ -2,8 +2,7 @@ import { t, Trans } from "@lingui/macro";
 import { ReactNode, useCallback, useMemo } from "react";
 import { zeroAddress } from "viem";
 
-import { AVALANCHE, BOTANIX, SettlementChainId } from "config/chains";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { AVALANCHE, SettlementChainId } from "config/chains";
 import { JUMPER_BRIDGE_URL } from "config/links";
 import { MULTI_CHAIN_DEPOSIT_TRADE_TOKENS } from "config/multichain";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
@@ -26,11 +25,13 @@ import {
 import {
   selectChainId,
   selectMarketsInfoData,
+  selectProDiscountFactor,
   selectSrcChainId,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
+  selectExternalSwapBlockReason,
   selectExternalSwapDesirability,
   selectExternalSwapQuote,
   selectIsExternalSwapDisabledByExpressSchema,
@@ -38,14 +39,14 @@ import {
   selectIsWaitingForExternalSwapQuote,
   selectTradeboxFindSwapPath,
   selectTradeboxFromToken,
+  selectTradeboxSelectSwapToToken,
   selectTradeboxFromTokenAmount,
   selectTradeboxIsFromTokenGmxAccount,
-  selectTradeboxIsStakeOrUnstake,
   selectTradeboxIsTPSLEnabled,
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxMaxAllowedLeverage,
   selectTradeboxPayAmount,
-  selectTradeboxSelectedPosition,
+  selectTradeboxExistingPositionForPreview,
   selectTradeboxState,
   selectTradeboxToToken,
   selectTradeboxToTokenAmount,
@@ -60,23 +61,24 @@ import { selectExternalSwapQuoteParams } from "context/SyntheticsStateContext/se
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { ExpressTxnParams } from "domain/synthetics/express";
+import { getExternalAggregatorSwapUrl } from "domain/synthetics/externalSwaps/utils";
 import { substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
-import { getIncreasePositionAmounts } from "domain/synthetics/trade/utils/increase";
+import {
+  findMaxLeverageIncrease,
+  type MaxLeverageIncreaseParams,
+} from "domain/synthetics/trade/utils/maxLeverageSearch";
 import {
   getCommonError,
   getExpressError,
-  getIsMaxLeverageExceeded,
   getNativeGasError,
   takeValidationResult,
   ValidationButtonTooltipName,
   ValidationResult,
 } from "domain/synthetics/trade/utils/validation";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
-import { numericBinarySearch } from "lib/binarySearch";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
-import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { adjustForDecimals, formatAmountFree } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -85,15 +87,16 @@ import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
 import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
+import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import { getContract } from "sdk/configs/contracts";
 import { getToken, getTokenBySymbol } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/utils/fees/types";
 import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
 import { TokenData } from "sdk/utils/tokens/types";
-import { TradeMode, TradeType } from "sdk/utils/trade";
-import { getNextPositionValuesForIncreaseTrade } from "sdk/utils/trade/increase";
+import { getLimitOrderTypeByTradeMode, TradeMode, TradeType } from "sdk/utils/trade";
 import { mustNeverExist } from "sdk/utils/types";
 
+import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { useMultichainTokens } from "components/GmxAccountModal/hooks";
@@ -106,6 +109,7 @@ import { useTradeboxTransactions } from "./useTradeboxTransactions";
 interface TradeboxButtonStateOptions {
   account?: string;
   setToTokenInputValue: (value: string, shouldResetPriceImpactWarning: boolean) => void;
+  canSwitchGasPaymentToken: boolean;
 }
 
 type TradeboxButtonState = {
@@ -119,11 +123,13 @@ type TradeboxButtonState = {
   isExpressLoading: boolean;
   batchParams?: BatchOrderTxnParams;
   totalExecutionFee?: ExecutionFee;
+  primaryExecutionFee?: ExecutionFee;
 };
 
 export function useTradeboxButtonState({
   account,
   setToTokenInputValue,
+  canSwitchGasPaymentToken,
 }: TradeboxButtonStateOptions): TradeboxButtonState {
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
@@ -153,7 +159,6 @@ export function useTradeboxButtonState({
   const gmxAccountGasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
   const tokensData = useSelector(selectTokensData);
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
-  const isStakeOrUnstake = useSelector(selectTradeboxIsStakeOrUnstake);
   const payAmount = useSelector(selectTradeboxPayAmount);
   const isFromTokenGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
   const gasPaymentToken = isFromTokenGmxAccount ? gmxAccountGasPaymentToken : settlementChainGasPaymentToken;
@@ -163,10 +168,10 @@ export function useTradeboxButtonState({
 
   const { setPendingTxns } = usePendingTxns();
   const { openConnectModal } = useConnectModal();
+  const isWalletInitializing = useIsWalletInitializing();
 
   const {
     onSubmitWrapOrUnwrap,
-    onSubmitStakeOrUnstake,
     onSubmitSwap,
     onSubmitIncreaseOrder,
     onSubmitDecreaseOrder,
@@ -176,8 +181,10 @@ export function useTradeboxButtonState({
     isExpressLoading,
     isMultichainSubmitDisabled,
     totalExecutionFee,
+    primaryExecutionFee,
   } = useTradeboxTransactions({
     setPendingTxns,
+    canSwitchGasPaymentToken,
   });
 
   const approvalTokens = useMemo(() => {
@@ -213,9 +220,16 @@ export function useTradeboxButtonState({
   const isDataReady = Boolean(fromToken && payAmount !== undefined && gasPaymentToken);
   const isAllowanceLoaded = isDataReady && isAllowanceLoadedRaw;
 
-  const detectAndSetAvailableMaxLeverage = useDetectAndSetAvailableMaxLeverage({ setToTokenInputValue });
-
   const tradeError = useSelector(selectTradeboxTradeTypeError);
+
+  const isMaxLeverageActionOffered =
+    tradeError.buttonTooltipName === ValidationButtonTooltipName.maxLeverage ||
+    tradeError.buttonTooltipName === ValidationButtonTooltipName.resultingPositionMaxLeverage;
+
+  const { hasAvailableMaxLeverage, detectAndSetAvailableMaxLeverage } = useDetectAndSetAvailableMaxLeverage({
+    setToTokenInputValue,
+    enabled: isMaxLeverageActionOffered,
+  });
 
   const nativeGasError = useMemo((): ValidationResult => {
     if (gasPaymentToken && expressParams?.gasPaymentParams?.gasPaymentTokenAmount !== undefined) {
@@ -276,6 +290,16 @@ export function useTradeboxButtonState({
       nativeGasError
     );
 
+    const setMaxLeverageAction = hasAvailableMaxLeverage ? (
+      <>
+        <br />
+        <br />
+        <EmbeddedActionButton onClick={detectAndSetAvailableMaxLeverage}>
+          <Trans>Set max leverage</Trans>
+        </EmbeddedActionButton>
+      </>
+    ) : null;
+
     let tooltipContent: ReactNode = null;
     if (validationResult.buttonTooltipMessage) {
       tooltipContent = validationResult.buttonTooltipMessage;
@@ -292,21 +316,25 @@ export function useTradeboxButtonState({
               <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">
                 <Trans>Read more</Trans>
               </ExternalLink>
-              .
-              <br />
-              <br />
-              <span onClick={detectAndSetAvailableMaxLeverage} className="Tradebox-handle">
-                <Trans>Set max leverage</Trans>
-              </span>
+              .{setMaxLeverageAction}
             </>
           );
 
           break;
         }
-        case ValidationButtonTooltipName.liqPriceGtMarkPrice: {
+        case ValidationButtonTooltipName.resultingPositionMaxLeverage: {
           tooltipContent = (
-            <Trans>Position would be immediately liquidated upon execution. Try reducing the size.</Trans>
+            <>
+              <Trans>
+                The resulting position would exceed the maximum allowed leverage. Increase margin or reduce size.
+              </Trans>
+              {setMaxLeverageAction}
+            </>
           );
+          break;
+        }
+        case ValidationButtonTooltipName.liqPriceGtMarkPrice: {
+          tooltipContent = <Trans>Position would be liquidated immediately upon execution. Reduce the size.</Trans>;
           break;
         }
         case ValidationButtonTooltipName.noSwapPath: {
@@ -321,7 +349,15 @@ export function useTradeboxButtonState({
           break;
         }
 
+        case ValidationButtonTooltipName.insufficientGmxPoolLiquidity: {
+          tooltipContent = <InsufficientGmxPoolLiquidityTooltipContent />;
+          break;
+        }
+
+        // PositionEditor-only states
         case ValidationButtonTooltipName.minDeposit:
+        case ValidationButtonTooltipName.marginDepositAutoCancelLimit:
+        case ValidationButtonTooltipName.marginDepositInsufficient:
           break;
 
         default:
@@ -353,6 +389,7 @@ export function useTradeboxButtonState({
     toToken,
     isLeverageSliderEnabled,
     detectAndSetAvailableMaxLeverage,
+    hasAvailableMaxLeverage,
   ]);
 
   const payTokenSourceChainMappedBalance = useMemo(() => {
@@ -433,9 +470,7 @@ export function useTradeboxButtonState({
 
     let txnPromise: Promise<any>;
 
-    if (isStakeOrUnstake) {
-      txnPromise = onSubmitStakeOrUnstake();
-    } else if (isWrapOrUnwrap) {
+    if (isWrapOrUnwrap) {
       txnPromise = onSubmitWrapOrUnwrap();
     } else if (isSwap) {
       txnPromise = onSubmitSwap();
@@ -469,12 +504,10 @@ export function useTradeboxButtonState({
     isApproving,
     isFromTokenGmxAccount,
     isIncrease,
-    isStakeOrUnstake,
     isSwap,
     isWrapOrUnwrap,
     onSubmitDecreaseOrder,
     onSubmitIncreaseOrder,
-    onSubmitStakeOrUnstake,
     onSubmitSwap,
     onSubmitWrapOrUnwrap,
     openConnectModal,
@@ -498,8 +531,17 @@ export function useTradeboxButtonState({
       expressParams,
       batchParams,
       totalExecutionFee,
+      primaryExecutionFee,
       isExpressLoading,
     };
+
+    if (!account && isWalletInitializing) {
+      return {
+        ...commonState,
+        text: t`Connecting wallet...`,
+        disabled: true,
+      };
+    }
 
     if (!account && buttonErrorText) {
       return {
@@ -655,10 +697,12 @@ export function useTradeboxButtonState({
     expressParams,
     batchParams,
     totalExecutionFee,
+    primaryExecutionFee,
     isExpressLoading,
     isMultichainSubmitDisabled,
     isWaitingForExternalSwapQuote,
     account,
+    isWalletInitializing,
     buttonErrorText,
     shouldShowDepositButton,
     stopLoss.error?.percentage,
@@ -683,14 +727,17 @@ export function useTradeboxButtonState({
   ]);
 }
 
-function useDetectAndSetAvailableMaxLeverage({
+export function useDetectAndSetAvailableMaxLeverage({
   setToTokenInputValue,
+  enabled,
 }: {
   setToTokenInputValue: (value: string, shouldResetPriceImpactWarning: boolean) => void;
+  enabled: boolean;
 }) {
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isLong } = tradeFlags;
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
+  const tradeMode = useSelector(selectTradeboxTradeMode);
 
   const { minCollateralUsd } = usePositionsConstants();
 
@@ -704,107 +751,52 @@ function useDetectAndSetAvailableMaxLeverage({
   const toToken = useSelector(selectTradeboxToToken);
   const toTokenAmount = useSelector(selectTradeboxToTokenAmount);
 
-  const selectedPosition = useSelector(selectTradeboxSelectedPosition);
+  const existingPosition = useSelector(selectTradeboxExistingPositionForPreview);
 
   const maxAllowedLeverage = useSelector(selectTradeboxMaxAllowedLeverage);
 
   const findSwapPath = useSelector(selectTradeboxFindSwapPath);
   const uiFeeFactor = useUiFeeFactor();
   const userReferralInfo = useUserReferralInfo();
+  const proDiscountFactor = useSelector(selectProDiscountFactor);
   const acceptablePriceImpactBuffer = useSelector(selectSavedAcceptablePriceImpactBuffer);
   const externalSwapQuote = useSelector(selectExternalSwapQuote);
   const externalSwapQuoteParams = useSelector(selectExternalSwapQuoteParams);
   const chainId = useSelector(selectChainId);
   const marketsInfoData = useSelector(selectMarketsInfoData);
 
-  return useCallback(() => {
-    if (!collateralToken || !toToken || !fromToken || !marketInfo || minCollateralUsd === undefined) return;
-
-    const { result: maxLeverage, returnValue: sizeDeltaInTokens } = numericBinarySearch<bigint | undefined>(
-      1,
-      // "10 *" means we do 1..50 search but with 0.1x step
-      (10 * maxAllowedLeverage) / BASIS_POINTS_DIVISOR,
-      (lev) => {
-        const leverage = BigInt((lev / 10) * BASIS_POINTS_DIVISOR);
-        const increaseAmounts = getIncreasePositionAmounts({
-          collateralToken,
-          findSwapPath,
-          indexToken: toToken,
-          indexTokenAmount: toTokenAmount,
-          initialCollateralAmount: fromTokenAmount,
-          initialCollateralToken: fromToken,
-          externalSwapQuote,
-          isLong,
-          marketInfo,
-          position: selectedPosition,
-          strategy: "leverageByCollateral",
-          uiFeeFactor,
-          userReferralInfo,
-          acceptablePriceImpactBuffer,
-          fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
-          leverage,
-          triggerPrice,
-          marketsInfoData,
-          chainId,
-          externalSwapQuoteParams,
-          isSetAcceptablePriceImpactEnabled,
-        });
-
-        const nextPositionValues = getNextPositionValuesForIncreaseTrade({
-          collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
-          collateralDeltaUsd: increaseAmounts.collateralDeltaUsd,
-          collateralToken,
-          existingPosition: selectedPosition,
-          indexPrice: increaseAmounts.indexPrice,
-          isLong,
-          marketInfo,
-          minCollateralUsd,
-          showPnlInLeverage: false,
-          sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
-          sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
-          positionPriceImpactDeltaUsd: increaseAmounts.positionPriceImpactDeltaUsd,
-          userReferralInfo,
-        });
-
-        if (nextPositionValues.nextLeverage !== undefined) {
-          const isMaxLeverageExceeded = getIsMaxLeverageExceeded(
-            nextPositionValues.nextLeverage,
-            marketInfo,
-            isLong,
-            increaseAmounts.sizeDeltaUsd
-          );
-
-          return {
-            isValid: !isMaxLeverageExceeded,
-            returnValue: increaseAmounts.sizeDeltaInTokens,
-          };
-        }
-
-        return {
-          isValid: false,
-          returnValue: increaseAmounts.sizeDeltaInTokens,
-        };
-      }
-    );
-
-    if (sizeDeltaInTokens !== undefined) {
-      if (isLeverageSliderEnabled) {
-        // round to int if it's > 1x
-        const resultLeverage = maxLeverage > 10 ? Math.floor(maxLeverage / 10) : Math.floor(maxLeverage) / 10;
-
-        setLeverageOption(resultLeverage);
-      } else {
-        const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
-
-        setToTokenInputValue(
-          formatAmountFree(substractMaxLeverageSlippage(sizeDeltaInTokens / visualMultiplier), toToken.decimals, 8),
-          true
-        );
-      }
-    } else {
-      helperToast.error(t`No available leverage found`);
+  const maxLeverageSearchParams = useMemo((): MaxLeverageIncreaseParams | undefined => {
+    if (!enabled || !collateralToken || !toToken || !fromToken || !marketInfo || minCollateralUsd === undefined) {
+      return undefined;
     }
+
+    return {
+      collateralToken,
+      findSwapPath,
+      indexToken: toToken,
+      indexTokenAmount: toTokenAmount,
+      initialCollateralAmount: fromTokenAmount,
+      initialCollateralToken: fromToken,
+      externalSwapQuote,
+      isLong,
+      marketInfo,
+      position: existingPosition,
+      uiFeeFactor,
+      userReferralInfo,
+      proDiscountFactor,
+      acceptablePriceImpactBuffer,
+      fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
+      triggerPrice,
+      limitOrderType: getLimitOrderTypeByTradeMode(tradeMode),
+      marketsInfoData,
+      chainId,
+      externalSwapQuoteParams,
+      isSetAcceptablePriceImpactEnabled,
+      maxAllowedLeverage,
+      minCollateralUsd,
+    };
   }, [
+    enabled,
     acceptablePriceImpactBuffer,
     collateralToken,
     findSwapPath,
@@ -814,22 +806,127 @@ function useDetectAndSetAvailableMaxLeverage({
     chainId,
     marketsInfoData,
     fromTokenAmount,
-    isLeverageSliderEnabled,
     isLong,
     marketInfo,
     maxAllowedLeverage,
     minCollateralUsd,
-    selectedPosition,
+    existingPosition,
     selectedTriggerAcceptablePriceImpactBps,
-    setLeverageOption,
-    setToTokenInputValue,
     toToken,
     toTokenAmount,
     triggerPrice,
     uiFeeFactor,
     userReferralInfo,
+    proDiscountFactor,
     isSetAcceptablePriceImpactEnabled,
+    tradeMode,
   ]);
+
+  const maxLeverageIncrease = useMemo(
+    () => (maxLeverageSearchParams === undefined ? undefined : findMaxLeverageIncrease(maxLeverageSearchParams)),
+    [maxLeverageSearchParams]
+  );
+
+  const hasAvailableMaxLeverage = maxLeverageIncrease !== undefined;
+
+  const detectAndSetAvailableMaxLeverage = useCallback(() => {
+    if (!maxLeverageIncrease || !toToken) {
+      return;
+    }
+
+    if (isLeverageSliderEnabled) {
+      // round to int if it's > 1x
+      const resultLeverage =
+        maxLeverageIncrease.leverage > 10
+          ? Math.floor(maxLeverageIncrease.leverage / 10)
+          : Math.floor(maxLeverageIncrease.leverage) / 10;
+
+      setLeverageOption(resultLeverage);
+
+      return;
+    }
+
+    const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
+
+    setToTokenInputValue(
+      formatAmountFree(
+        substractMaxLeverageSlippage(maxLeverageIncrease.increaseAmounts.sizeDeltaInTokens / visualMultiplier),
+        toToken.decimals,
+        8
+      ),
+      true
+    );
+  }, [isLeverageSliderEnabled, maxLeverageIncrease, setLeverageOption, setToTokenInputValue, toToken]);
+
+  return {
+    hasAvailableMaxLeverage,
+    detectAndSetAvailableMaxLeverage,
+  };
+}
+
+function InsufficientGmxPoolLiquidityTooltipContent() {
+  const chainId = useSelector(selectChainId);
+  const externalSwapBlockReason = useSelector(selectExternalSwapBlockReason);
+  const fromToken = useSelector(selectTradeboxFromToken);
+  const swapToToken = useSelector(selectTradeboxSelectSwapToToken);
+  const isFromTokenGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
+  const { setTradeMode } = useSelector(selectTradeboxState);
+
+  const handleSwitchToMarketOrder = useCallback(() => {
+    setTradeMode(TradeMode.Market);
+  }, [setTradeMode]);
+
+  switch (externalSwapBlockReason) {
+    case "oneClickTrading":
+      return (
+        <Trans>
+          GMX pools can't fill this swap size. It needs an external route, which isn't available with One-Click Trading.
+          Disable One-Click Trading to proceed.
+        </Trans>
+      );
+    case "gasTokenConflict":
+      return (
+        <Trans>
+          GMX pools can't fill this swap size. It needs an external route, which isn't available while the gas payment
+          token matches the token you're swapping to. Change the gas payment token to proceed.
+        </Trans>
+      );
+    case "orderTypeNotSupported":
+      return (
+        <Trans>
+          TWAP swaps use GMX pool liquidity only, which can't fill this order size.
+          <br />
+          <br />
+          <EmbeddedActionButton onClick={handleSwitchToMarketOrder}>Switch to a market order</EmbeddedActionButton> to
+          enable external routes.
+        </Trans>
+      );
+    case "noRouteFound": {
+      const aggregatorSwapUrl = getExternalAggregatorSwapUrl({
+        chainId,
+        isFromTokenGmxAccount,
+        fromTokenAddress: fromToken?.address,
+        toTokenAddress: swapToToken?.address,
+      });
+
+      if (!aggregatorSwapUrl) {
+        return (
+          <Trans>
+            GMX pools can't fill this swap size, and no external route is currently available. Try reducing the amount.
+          </Trans>
+        );
+      }
+
+      return (
+        <Trans>
+          GMX pools can't fill this swap size, and no external route is currently available. Try reducing the amount or{" "}
+          <ExternalLink href={aggregatorSwapUrl}>swap on an external aggregator</ExternalLink>.
+        </Trans>
+      );
+    }
+    default:
+      return <Trans>GMX pools don't have enough liquidity for this swap size. Try reducing the amount.</Trans>;
+  }
 }
 
 function NoSwapPathTooltipContent({
@@ -844,6 +941,8 @@ function NoSwapPathTooltipContent({
   toToken: TokenData | undefined;
 }) {
   const { setFromTokenAddress, setToTokenAddress, setTradeType, setTradeMode } = useSelector(selectTradeboxState);
+  const { isSwap } = useSelector(selectTradeboxTradeFlags);
+  const isFromTokenGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
 
   const makeHandleSwapClick = useCallback(
     (fromTokenSymbol: string, toTokenSymbol: string) => () => {
@@ -859,27 +958,28 @@ function NoSwapPathTooltipContent({
     return <Trans>No swap path available</Trans>;
   }
 
-  if (chainId === BOTANIX) {
-    if (collateralToken) {
+  if (isSwap) {
+    const aggregatorSwapUrl = getExternalAggregatorSwapUrl({
+      chainId,
+      isFromTokenGmxAccount,
+      fromTokenAddress: fromToken.address,
+      toTokenAddress: toToken?.address,
+    });
+
+    if (!aggregatorSwapUrl) {
       return (
         <Trans>
-          No swap path available.{" "}
-          <span onClick={makeHandleSwapClick(fromToken.symbol, "STBTC")} className="Tradebox-handle">
-            Swap {fromToken.symbol} to STBTC
-          </span>{" "}
-          to use {collateralToken.symbol} as collateral.
+          No GMX swap route found for {fromToken.assetSymbol ?? fromToken.symbol} to{" "}
+          {toToken?.assetSymbol ?? toToken?.symbol}.
         </Trans>
       );
     }
 
-    const swapToTokenSymbol = fromToken.symbol === "STBTC" ? "PBTC" : "STBTC";
     return (
       <Trans>
-        No swap path available.{" "}
-        <span onClick={makeHandleSwapClick(fromToken.symbol, swapToTokenSymbol)} className="Tradebox-handle">
-          Swap {fromToken.symbol} to {swapToTokenSymbol}
-        </span>
-        , then to {toToken?.symbol}.
+        No GMX swap route found for {fromToken.assetSymbol ?? fromToken.symbol} to{" "}
+        {toToken?.assetSymbol ?? toToken?.symbol}. Try{" "}
+        <ExternalLink href={aggregatorSwapUrl}>an external aggregator</ExternalLink>.
       </Trans>
     );
   }
@@ -894,9 +994,9 @@ function NoSwapPathTooltipContent({
       No swap path found for {fromToken?.assetSymbol ?? fromToken?.symbol} to {collateralSymbol} within GMX.
       <br />
       <br />
-      <span onClick={makeHandleSwapClick(fromToken.symbol, collateralToken?.symbol ?? "")} className="Tradebox-handle">
+      <EmbeddedActionButton onClick={makeHandleSwapClick(fromToken.symbol, collateralToken?.symbol ?? "")}>
         Swap {collateralSymbol}
-      </span>{" "}
+      </EmbeddedActionButton>{" "}
       or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge {collateralSymbol}</ExternalLink>.
     </Trans>
   );

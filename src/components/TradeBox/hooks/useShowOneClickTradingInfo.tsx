@@ -15,9 +15,11 @@ import {
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
+  selectExternalSwapBlockReason,
   selectExternalSwapDesirability,
   selectIsExternalSwapDisabledByExpressSchema,
   selectIsOneClickActiveByUser,
+  selectRawExternalSwapDesirability,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -36,18 +38,20 @@ import {
 } from "domain/synthetics/subaccount";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
-import { getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 export function useExpressTradingWarnings({
   isWrapOrUnwrap,
   expressParams,
   payTokenAddress,
   isGmxAccount,
+  showExternalSwapWarnings,
 }: {
   isWrapOrUnwrap: boolean;
   payTokenAddress: string | undefined;
   expressParams: ExpressTxnParams | undefined;
   isGmxAccount: boolean;
+  showExternalSwapWarnings: boolean;
 }) {
   const account = useSelector(selectAccount);
   const chainId = useSelector(selectChainId);
@@ -59,14 +63,12 @@ export function useExpressTradingWarnings({
   const rawSubaccount = useSelector(selectRawSubaccount);
   const isOneClickActiveByUser = useSelector(selectIsOneClickActiveByUser);
   const externalSwapDesirability = useSelector(selectExternalSwapDesirability);
+  const rawExternalSwapDesirability = useSelector(selectRawExternalSwapDesirability);
+  const externalSwapBlockReason = useSelector(selectExternalSwapBlockReason);
   const isExternalSwapBlockedByGasConflict = useSelector(selectIsExternalSwapDisabledByExpressSchema);
 
   const isNativePayment = payTokenAddress === NATIVE_TOKEN_ADDRESS;
   const subaccountValidations = expressParams?.subaccountValidations;
-
-  const wrappedToken = getByKey(tokensData, getWrappedToken(chainId).address);
-  const wrappedTokenBalance = isGmxAccount ? wrappedToken?.gmxAccountBalance : wrappedToken?.walletBalance;
-  const hasWrappedTokenBalance = (wrappedTokenBalance ?? 0n) > 0n;
 
   const [nativeTokenWarningHidden] = useLocalStorageSerializeKey(EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY, false);
   const [wrapOrUnwrapWarningHidden] = useLocalStorageSerializeKey(
@@ -108,6 +110,24 @@ export function useExpressTradingWarnings({
     [account, chainId, isGmxAccount, rawSubaccount]
   );
 
+  const isSubaccountApprovalInvalid = Boolean(
+    isExpressTransactionAvailable &&
+      rawSubaccount &&
+      (subaccountValidations?.isApprovalInvalid ??
+        getIsSubaccountApprovalInvalid({
+          chainId,
+          signedApproval: rawSubaccount.signedApproval,
+          subaccountRouterAddress: getOrderRelayRouterAddress(chainId, true, isGmxAccount),
+          onchainData: rawSubaccount.onchainData,
+          signerChainId: srcChainId ?? chainId,
+        }))
+  );
+
+  const isSubaccountApprovalForAnotherNetwork =
+    isSubaccountApprovalInvalid &&
+    rawSubaccount !== undefined &&
+    rawSubaccount.signedApproval.signatureChainId !== rawSubaccount.signerChainId;
+
   const conditions = {
     shouldShowWrapOrUnwrapWarning: isExpressTransactionAvailable && isWrapOrUnwrap && !wrapOrUnwrapWarningHidden,
     shouldShowNativeTokenWarning:
@@ -132,25 +152,31 @@ export function useExpressTradingWarnings({
       !isGmxAccount &&
       nativeToken?.walletBalance !== undefined &&
       nativeToken.walletBalance > expressParams.gasPaymentParams.totalRelayerFeeTokenAmount,
-    shouldShowSubaccountApprovalInvalidWarning:
-      isExpressTransactionAvailable &&
-      rawSubaccount &&
-      (subaccountValidations?.isApprovalInvalid ??
-        getIsSubaccountApprovalInvalid({
-          chainId,
-          signedApproval: rawSubaccount.signedApproval,
-          subaccountRouterAddress: getOrderRelayRouterAddress(chainId, true, isGmxAccount),
-          onchainData: rawSubaccount.onchainData,
-          signerChainId: srcChainId ?? chainId,
-        })),
-    shouldShowExternalSwapSubaccountBlockedWarning: externalSwapDesirability === "required" && isOneClickActiveByUser,
+    shouldShowSubaccountApprovalInvalidWarning: isSubaccountApprovalInvalid && !isSubaccountApprovalForAnotherNetwork,
+    shouldShowSubaccountApprovalForAnotherNetworkWarning: isSubaccountApprovalForAnotherNetwork,
+    shouldShowExternalSwapSubaccountBlockedWarning:
+      showExternalSwapWarnings && externalSwapDesirability === "required" && isOneClickActiveByUser,
     shouldShowExternalSwapGasConflictRequiredWarning:
-      externalSwapDesirability === "required" && !isOneClickActiveByUser && isExternalSwapBlockedByGasConflict,
+      showExternalSwapWarnings &&
+      externalSwapDesirability === "required" &&
+      !isOneClickActiveByUser &&
+      isExternalSwapBlockedByGasConflict,
     shouldShowExternalSwapGasConflictOptionalWarning:
+      showExternalSwapWarnings &&
       externalSwapDesirability === "optional" &&
       !isOneClickActiveByUser &&
-      isExternalSwapBlockedByGasConflict &&
-      hasWrappedTokenBalance,
+      isExternalSwapBlockedByGasConflict,
+    shouldShowExternalSwapPausedByFailureWarning:
+      showExternalSwapWarnings && externalSwapBlockReason === "temporarilyDisabledByFailure",
+    shouldShowExternalSwapNoRouteWarning:
+      showExternalSwapWarnings &&
+      rawExternalSwapDesirability === "required" &&
+      externalSwapBlockReason === "noRouteFound",
+    shouldShowExternalSwapTwapNotSupportedWarning:
+      showExternalSwapWarnings &&
+      rawExternalSwapDesirability === "required" &&
+      externalSwapBlockReason === "orderTypeNotSupported" &&
+      Boolean(tradeFlags?.isTwap && tradeFlags?.isSwap),
   };
 
   const shouldShowWarning = Object.values(conditions).some(Boolean);

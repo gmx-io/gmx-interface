@@ -3,6 +3,10 @@ import { AnimatePresence, Variants, motion } from "framer-motion";
 import React, { PropsWithChildren, ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
 import { RemoveScroll } from "react-remove-scroll";
 
+import { useBlockAutoReload } from "lib/pwa/blockAutoReload";
+import { PRIVY_DIALOG_SCROLL_SHARDS } from "lib/wallets/privyUiCompat";
+
+import { ActiveFormScope } from "components/ActiveFormScope/ActiveFormScope";
 import Button from "components/Button/Button";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
 
@@ -26,7 +30,9 @@ const HIDDEN_STYLES: React.CSSProperties = {
   position: "fixed",
 };
 
-const TRANSITION = { duration: 0.2 };
+export const MODAL_ANIMATION_DURATION_MS = 200;
+
+const TRANSITION = { duration: MODAL_ANIMATION_DURATION_MS / 1000 };
 
 export type ModalProps = PropsWithChildren<{
   className?: string;
@@ -47,6 +53,8 @@ export type ModalProps = PropsWithChildren<{
   disableOverflowHandling?: boolean;
   withMobileBottomPosition?: boolean;
   takeFullHeight?: boolean;
+  hideHeaderBorder?: boolean;
+  activeFormId?: string;
 }>;
 
 export default function Modal({
@@ -66,8 +74,12 @@ export default function Modal({
   disableOverflowHandling = false,
   withMobileBottomPosition = false,
   takeFullHeight = false,
+  hideHeaderBorder = false,
+  activeFormId,
 }: ModalProps) {
   const modalRef = useRef<HTMLDivElement | null>(null);
+
+  useBlockAutoReload(Boolean(isVisible));
 
   useEffect(() => {
     if (!isVisible) return;
@@ -106,10 +118,31 @@ export default function Modal({
     e.stopPropagation();
   }, []);
 
+  const body = (
+    <ErrorBoundary id="Modal" variant="block" wrapperClassName="rounded-t-8">
+      {disableOverflowHandling ? (
+        children
+      ) : (
+        <div className={cx("overflow-auto", { "flex grow flex-col": takeFullHeight })}>
+          <div
+            className={cx("Modal-body", {
+              "px-adaptive": contentPadding,
+              "pb-adaptive": contentPadding && !footerContent,
+              "flex grow flex-col": takeFullHeight,
+            })}
+          >
+            {children}
+          </div>
+        </div>
+      )}
+      {footerContent && <div className="border-t-1/2 border-slate-600 px-adaptive py-16">{footerContent}</div>}
+    </ErrorBoundary>
+  );
+
   return (
     <AnimatePresence>
       {isVisible && (
-        <RemoveScroll>
+        <RemoveScroll shards={PRIVY_DIALOG_SCROLL_SHARDS}>
           <motion.div
             className={cx("Modal", className, { "max-md:!items-end": withMobileBottomPosition })}
             ref={modalRef}
@@ -138,7 +171,12 @@ export default function Modal({
               onClick={stopPropagation}
               data-qa={qa}
             >
-              <div className="Modal-header-wrapper flex flex-col gap-8 border-b-1/2 border-slate-600 px-adaptive pb-12 pt-adaptive">
+              <div
+                className={cx(
+                  "Modal-header-wrapper flex flex-col gap-8 px-adaptive pb-12 pt-adaptive",
+                  hideHeaderBorder ? "" : "border-b-1/2 border-slate-600"
+                )}
+              >
                 <div className="Modal-title-bar h-28">
                   <div className="Modal-title-group">
                     {onBack && (
@@ -154,28 +192,7 @@ export default function Modal({
                 </div>
                 {headerContent}
               </div>
-              <ErrorBoundary id="Modal" variant="block" wrapperClassName="rounded-t-8">
-                {disableOverflowHandling ? (
-                  children
-                ) : (
-                  <div className={cx("overflow-auto", { "flex grow flex-col": takeFullHeight })}>
-                    <div
-                      className={cx("Modal-body", {
-                        "px-adaptive": contentPadding,
-                        "pb-adaptive": contentPadding && !footerContent,
-                        "flex grow flex-col": takeFullHeight,
-                      })}
-                    >
-                      {children}
-                    </div>
-                  </div>
-                )}
-                {footerContent && (
-                  <>
-                    <div className="px-adaptive pb-adaptive">{footerContent}</div>
-                  </>
-                )}
-              </ErrorBoundary>
+              {activeFormId ? <ActiveFormScope formId={activeFormId}>{body}</ActiveFormScope> : body}
             </div>
           </motion.div>
         </RemoveScroll>

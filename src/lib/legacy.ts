@@ -10,7 +10,6 @@ import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { PRODUCTION_HOST } from "config/links";
 import type { TokenInfo } from "sdk/utils/tokens/types";
 
-import { isValidTimestamp } from "./dates";
 import { PRECISION, calculateDisplayDecimals, expandDecimals, formatAmount, toBigInt } from "./numbers";
 
 // use a random placeholder account instead of the zero address as the zero address might have tokens
@@ -620,8 +619,7 @@ export function getStakingProcessedData(
     stakingData.stakedGmxTracker.cumulativeRewards + stakingData.stakedGlpTracker.cumulativeRewards;
   const cumulativeEsGmxRewardsUsd = mulDiv(cumulativeEsGmxRewards, gmxPrice, expandDecimals(1, 18)) ?? 0n;
 
-  const cumulativeGmxRewards =
-    stakingData.extendedGmxTracker.cumulativeRewards + vestingData.gmxVesterClaimSum + vestingData.glpVesterClaimSum;
+  const cumulativeGmxRewards = stakingData.extendedGmxTracker.cumulativeRewards;
   const cumulativeGmxRewardsUsd = mulDiv(cumulativeGmxRewards, gmxPrice, expandDecimals(1, 18)) ?? 0n;
 
   const cumulativeNativeTokenRewards =
@@ -671,20 +669,12 @@ export function getHomeUrl() {
   return "https://gmx.io";
 }
 
-export function getAppBaseUrl() {
-  if (isLocal()) {
-    return "http://localhost:3011/#";
-  }
-
-  return PRODUCTION_HOST;
-}
-
 export function getTradePageUrl() {
   if (isLocal()) {
-    return "http://localhost:3011/#/trade";
+    return "http://localhost:3011/trade";
   }
 
-  return PRODUCTION_HOST + "/#/trade";
+  return PRODUCTION_HOST + "/trade";
 }
 
 export function getRootShareApiUrl() {
@@ -737,16 +727,6 @@ export function getTwitterIntentURL(text: string | string[], url = "", hashtag =
     }
   }
   return finalURL;
-}
-
-export function shouldShowRedirectModal(timestamp?: number): boolean {
-  if (!timestamp) {
-    return true;
-  }
-
-  const thirtyDays = 1000 * 60 * 60 * 24 * 30;
-  const expiryTime = timestamp + thirtyDays;
-  return !isValidTimestamp(timestamp) || Date.now() > expiryTime;
 }
 
 function mulDiv(a: bigint | number | undefined, b: bigint | number, c: bigint | number) {

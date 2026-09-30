@@ -10,6 +10,8 @@ const { resolve } = require("node:path");
  * @See https://www.notion.so/gmxio/Colors-Clean-Up-13303574745d80deb5dcebb6f15e41ad#13303574745d8066aad0cbd650848ca6
  */
 const colors = {
+  transparent: "transparent",
+  current: "currentColor",
   slate: {
     950: "#0B0B14",
     900: "#090A14",
@@ -30,6 +32,7 @@ const colors = {
   },
   white: "#ffffff",
   black: "#000000",
+  transparent: "transparent",
   stroke: {
     primary: "#363A59",
   },
@@ -189,6 +192,7 @@ export default {
       fontFamily: {
         sans: ["TTHoves", "sans-serif"],
         mono: ["TTHovesMono", "monospace"],
+        code: ["Space Mono", "TTHovesMono", "monospace"],
       },
       keyframes: {
         scroll: {

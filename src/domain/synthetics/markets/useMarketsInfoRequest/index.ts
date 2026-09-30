@@ -31,6 +31,7 @@ export function useMarketsInfoRequest(
   const {
     marketsInfoData: apiMarketsInfoData,
     isStale: isApiStale,
+    isIncomplete: isApiIncomplete,
     error: apiError,
   } = useApiMarketsInfoRequest(chainId, { enabled: isApiSdkEnabled });
 
@@ -78,9 +79,13 @@ export function useMarketsInfoRequest(
     marketsConstants,
   ]);
 
-  const fallbackMarketsInfoData = fullRpcMarketsInfoData || (!hasApiMarketsInfoData ? fastMarketInfoData : undefined);
+  const fallbackMarketsInfoData =
+    fullRpcMarketsInfoData || (!hasApiMarketsInfoData || isApiIncomplete ? fastMarketInfoData : undefined);
   const shouldUseApiMarketsInfoData =
-    isApiSdkEnabled && Boolean(apiMarketsInfoData) && (!shouldFallbackToRpc || !fallbackMarketsInfoData);
+    isApiSdkEnabled &&
+    !isApiIncomplete &&
+    Boolean(apiMarketsInfoData) &&
+    (!shouldFallbackToRpc || !fallbackMarketsInfoData);
 
   const rawMarketsInfoData = useMemo((): RawMarketsInfoData | undefined => {
     if (shouldUseApiMarketsInfoData) {

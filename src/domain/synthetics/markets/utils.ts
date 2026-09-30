@@ -1,10 +1,11 @@
+import type { ContractsChainId } from "config/chains";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { GLV_MARKETS } from "config/markets";
 import { MultichainMarketTokensBalances } from "domain/multichain/types";
 import { getTotalTokensBalance } from "domain/tokens/getTotalTokensBalance";
 import { expandDecimals, PRECISION } from "lib/numbers";
 import { getIsSpotOnlyMarket, getTokenSymbolByMarket } from "sdk/configs/markets";
-import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { getNormalizedTokenSymbol, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import {
   getAvailableUsdLiquidityForCollateral,
@@ -15,6 +16,7 @@ import {
   getReservedUsd,
   getTokenPoolType,
 } from "sdk/utils/markets";
+import { convertToTokenAmountForIncrease } from "sdk/utils/tokens/utils";
 
 import { getCappedPositionImpactUsd } from "../fees";
 import { JitLiquidityInfo, getJitMaxReservedUsd } from "../jit/utils";
@@ -32,6 +34,14 @@ export function getGlvMarketName(chainId: number, address: string) {
 
 export function getGlvDisplayName(glv: GlvInfo) {
   return glv.name !== undefined ? `GLV: ${glv.name}` : "GLV";
+}
+
+export function getGlvOrMarketIconSymbol(market: GlvOrMarketInfo) {
+  if (market.isSpotOnly) {
+    return getNormalizedTokenSymbol(market.longToken.symbol) + getNormalizedTokenSymbol(market.shortToken.symbol);
+  }
+
+  return isGlvInfo(market) ? market.glvToken.symbol : market.indexToken.symbol;
 }
 
 export function getGlvOrMarketAddress(marketOrGlvInfo: MarketInfo | GlvInfo): string;
@@ -228,8 +238,15 @@ export function getMinPriceImpactMarket(
     );
 
     if (isMarketIndexToken(marketInfo, indexTokenAddress) && liquidity > sizeDeltaUsd) {
+      const sizeDeltaInTokens = convertToTokenAmountForIncrease(
+        sizeDeltaUsd,
+        marketInfo.indexToken.decimals,
+        isLong ? marketInfo.indexToken.prices.maxPrice : marketInfo.indexToken.prices.minPrice,
+        isLong
+      );
       const { priceImpactDeltaUsd } = getCappedPositionImpactUsd(marketInfo, sizeDeltaUsd, isLong, true, {
         shouldCapNegativeImpact: true,
+        sizeDeltaInTokens,
       });
 
       if (bestImpactDeltaUsd === undefined || priceImpactDeltaUsd > bestImpactDeltaUsd) {
@@ -422,21 +439,25 @@ export function marketTokenAmountToUsd(marketInfo: MarketInfo, marketToken: Toke
 export function getTotalGmInfo({
   tokensData,
   multichainMarketTokensBalances,
+  chainId,
 }: {
   tokensData: TokensData | undefined;
   multichainMarketTokensBalances: MultichainMarketTokensBalances | undefined;
+  chainId: ContractsChainId;
 }) {
-  return getTotalTokensBalance(tokensData, ["GM"], multichainMarketTokensBalances);
+  return getTotalTokensBalance({ tokensData, tokenSymbols: ["GM"], multichainMarketTokensBalances, chainId });
 }
 
 export function getTotalGlvInfo({
   tokensData,
   multichainMarketTokensBalances,
+  chainId,
 }: {
   tokensData: TokensData | undefined;
   multichainMarketTokensBalances: MultichainMarketTokensBalances | undefined;
+  chainId: ContractsChainId;
 }) {
-  return getTotalTokensBalance(tokensData, ["GLV"], multichainMarketTokensBalances);
+  return getTotalTokensBalance({ tokensData, tokenSymbols: ["GLV"], multichainMarketTokensBalances, chainId });
 }
 
 export function getTradeboxLeverageSliderMarks(maxAllowedLeverage: number) {

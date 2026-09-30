@@ -11,6 +11,7 @@ import {
   selectSrcChainId,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { makeSelectFindSwapPath } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getAreBothCollateralsCrossChain } from "domain/multichain/areBothCollateralsCrossChain";
@@ -18,6 +19,7 @@ import { getMintableMarketTokens, isMarketInfo } from "domain/synthetics/markets
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { Mode, Operation } from "domain/synthetics/markets/types";
 import { ERC20Address, getGmToken, getTokenData, Token, TokenBalanceType } from "domain/tokens";
+import { getIsEnteredAmount } from "lib/getIsEnteredAmount";
 import { parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import {
@@ -30,6 +32,7 @@ import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { SwapPricingType } from "sdk/utils/orders/types";
 
 import { getGmSwapBoxAvailableModes } from "components/GmSwap/GmSwapBox/getGmSwapBoxAvailableModes";
+import { getGmSwapBoxAvailableOperations } from "components/GmSwap/GmSwapBox/getGmSwapBoxAvailableOperations";
 
 import {
   PLATFORM_TOKEN_DECIMALS,
@@ -46,6 +49,16 @@ import {
   selectPoolsDetailsSelectedMarketAddressForGlv,
   selectPoolsDetailsWithdrawalMarketTokensData,
 } from "./baseSelectors";
+
+export const selectPoolsDetailsHasPendingInput = createSelector((q) => {
+  const inputValues = [
+    q(selectPoolsDetailsFirstTokenInputValue),
+    q(selectPoolsDetailsSecondTokenInputValue),
+    q(selectPoolsDetailsMarketOrGlvTokenInputValue),
+  ];
+
+  return inputValues.some(getIsEnteredAmount);
+});
 
 export const selectPoolsDetailsFlags = createSelector((q) => {
   const operation = q(selectPoolsDetailsOperation);
@@ -96,6 +109,13 @@ export const selectPoolsDetailsAvailableModes = createSelector((q): Mode[] => {
   const areBothCollateralsCrossChain = q(selectPoolsDetailsAreBothCollateralsCrossChain);
 
   return getGmSwapBoxAvailableModes({ operation, market: marketInfo, paySource, areBothCollateralsCrossChain });
+});
+
+export const selectPoolsDetailsAvailableOperations = createSelector((q): Operation[] => {
+  const shiftAvailableMarkets = q(selectShiftAvailableMarkets);
+  const selectedGlvOrMarketAddress = q(selectPoolsDetailsGlvOrMarketAddress);
+
+  return getGmSwapBoxAvailableOperations({ shiftAvailableMarkets, selectedGlvOrMarketAddress });
 });
 
 export const selectPoolsDetailsSelectedMarketInfoForGlv = createSelector((q) => {

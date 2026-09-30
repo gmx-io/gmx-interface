@@ -3,14 +3,18 @@ import { describe, expect, it } from "vitest";
 
 import { OrderType } from "domain/synthetics/orders";
 import { TradeActionType } from "domain/synthetics/tradeHistory";
-import { MaxUint256 } from "lib/numbers";
+import { MaxUint256, PRECISION, applyFactor, formatUsd } from "lib/numbers";
+import { USER_INITIATED_CANCEL, type PositionTradeAction } from "sdk/utils/tradeHistory/types";
 
 import {
+  cancelMarginDeposit,
   cancelOrderIncreaseLong,
+  createMarginDeposit,
   createOrderDecreaseLong,
   createOrderIncreaseLong,
   createOrderStopMarketLong,
   deposit1Usd,
+  executeMarginDeposit,
   executeOrderIncreaseLong,
   executeOrderMarketIncreaseLongWithFee,
   executeOrderStopMarketLong,
@@ -18,16 +22,19 @@ import {
   executeSwap,
   executeTwapIncreaseWithFee,
   failedSwap,
+  frozenMarginDeposit,
   frozenOrderIncreaseShort,
   increaseLongETH,
   liquidated,
   requestIncreasePosition,
   requestSwap,
   undefinedOrder,
+  updateMarginDeposit,
   withdraw1Usd,
 } from "./mocks";
-import { formatPositionMessage } from "./utils/position";
-import { getErrorTooltipTitle } from "./utils/shared";
+import { formatPositionMessage, getSettlementTooltipLines } from "./utils/position";
+import { anchorCloseRow, anchorOpenRow } from "./utils/settlementMocks";
+import { INEQUALITY_GT, INEQUALITY_LT, getErrorTooltipTitle } from "./utils/shared";
 import { formatSwapMessage } from "./utils/swap";
 
 i18n.load({ en: {} });
@@ -47,6 +54,9 @@ describe("TradeHistoryRow helpers", () => {
     );
     expect(getErrorTooltipTitle("LiquidatablePosition", false)).toBe(
       "Position would be liquidatable at current prices"
+    );
+    expect(getErrorTooltipTitle("LiquidatablePosition", false, { reason: "min collateral for leverage" })).toBe(
+      "Margin is below the minimum required for the position size"
     );
     expect(getErrorTooltipTitle("MaxPoolAmountForDepositExceeded", false)).toBe(
       "Max deposit capacity reached for this pool"
@@ -256,14 +266,27 @@ describe("TradeHistoryRow helpers", () => {
           },
           {
             "key": "Price impact",
-            "value": {
-              "state": "error",
-              "text": "-$ 16.82",
-            },
+            "value": [
+              {
+                "state": "error",
+                "text": "-$ 16.82",
+              },
+              " ",
+              {
+                "state": "error",
+                "text": "(-81 bps)",
+              },
+            ],
           },
         ],
         "priceImpact": "-$ 16.82",
         "size": "+$ 2,070.19",
+        "sizeComment": [
+          {
+            "key": "Margin delta",
+            "value": "+202.62 USDC",
+          },
+        ],
         "timestamp": "18 Sep 2023, 16:43",
         "timestampUTC": "UTC: 2023-09-18 12:43:18",
       }
@@ -296,14 +319,27 @@ describe("TradeHistoryRow helpers", () => {
           "",
           {
             "key": "Price impact",
-            "value": {
-              "state": "error",
-              "text": "-$ 16.82",
-            },
+            "value": [
+              {
+                "state": "error",
+                "text": "-$ 16.82",
+              },
+              " ",
+              {
+                "state": "error",
+                "text": "(-81 bps)",
+              },
+            ],
           },
         ],
         "priceImpact": "-$ 16.82",
         "size": "+$ 2,070.19",
+        "sizeComment": [
+          {
+            "key": "Margin delta",
+            "value": "+202.62 USDC",
+          },
+        ],
         "timestamp": "18 Sep 2023, 16:43",
         "timestampUTC": "UTC: 2023-09-18 12:43:18",
       }
@@ -414,7 +450,7 @@ describe("TradeHistoryRow helpers", () => {
         "priceComment": [
           "Mark price for the liquidation",
           "",
-          "Liquidated as max leverage of 0.0x was exceeded when accounting for fees.",
+          "Liquidated as the max allowed leverage was exceeded when accounting for fees.",
           "",
           {
             "key": "Initial margin",
@@ -449,10 +485,7 @@ describe("TradeHistoryRow helpers", () => {
             },
           },
           "",
-          {
-            "key": "Minimum required margin",
-            "value": "< $ 0.01",
-          },
+          undefined,
           {
             "key": "Margin at liquidation",
             "value": "$ 83.95",
@@ -460,10 +493,17 @@ describe("TradeHistoryRow helpers", () => {
           "",
           {
             "key": "Price impact",
-            "value": {
-              "state": "error",
-              "text": "-$ 16.82",
-            },
+            "value": [
+              {
+                "state": "error",
+                "text": "-$ 16.82",
+              },
+              " ",
+              {
+                "state": "error",
+                "text": "(-26 bps)",
+              },
+            ],
           },
           {
             "key": "Liquidation fee",
@@ -512,14 +552,27 @@ describe("TradeHistoryRow helpers", () => {
           "",
           {
             "key": "Price impact",
-            "value": {
-              "state": "error",
-              "text": "-$ 0.09",
-            },
+            "value": [
+              {
+                "state": "error",
+                "text": "-$ 0.09",
+              },
+              " ",
+              {
+                "state": "error",
+                "text": "(-17 bps)",
+              },
+            ],
           },
         ],
         "priceImpact": "-$ 0.09",
         "size": "+$ 49.83",
+        "sizeComment": [
+          {
+            "key": "Margin delta",
+            "value": "+5.69 USDC",
+          },
+        ],
         "timestamp": "21 Sep 2023, 19:32",
         "timestampUTC": "UTC: 2023-09-21 15:32:40",
       }
@@ -596,14 +649,27 @@ describe("TradeHistoryRow helpers", () => {
           },
           {
             "key": "Price impact",
-            "value": {
-              "state": "success",
-              "text": "< +$ 0.01",
-            },
+            "value": [
+              {
+                "state": "success",
+                "text": "< +$ 0.01",
+              },
+              " ",
+              {
+                "state": "success",
+                "text": "(0 bps)",
+              },
+            ],
           },
         ],
         "priceImpact": "< +$ 0.01",
         "size": "+$ 3.62",
+        "sizeComment": [
+          {
+            "key": "Margin delta",
+            "value": "+3.02 USDC",
+          },
+        ],
         "timestamp": "18 Sep 2023, 16:43",
         "timestampUTC": "UTC: 2023-09-18 12:43:18",
       }
@@ -721,6 +787,70 @@ describe("TradeHistoryRow helpers", () => {
     `);
   });
 
+  describe("formatSwapMessage settled economics", () => {
+    const swapFeeUsd = (PRECISION * 3n) / 2n;
+    const swapImpactUsd = -PRECISION / 2n;
+
+    it("exposes swap fee and swap price impact for executed swaps", () => {
+      for (const executedSwap of [executeSwap, executeOrderSwap]) {
+        expect(formatSwapMessage({ ...executedSwap, swapFeeUsd, swapImpactUsd })).toMatchObject({
+          fees: "-$ 2.00",
+          feesTooltip: [
+            { key: "Swap fee", value: "-$ 1.50" },
+            { key: "Swap price impact", value: "-$ 0.50" },
+          ],
+          priceImpact: "-$ 0.50",
+        });
+      }
+    });
+
+    it("exposes settled economics for each executed TWAP swap part", () => {
+      const twapSwapPart = {
+        ...executeSwap,
+        twapParams: { twapGroupId: "0x01", numberOfParts: 3 },
+        swapFeeUsd,
+        swapImpactUsd,
+      };
+
+      expect(formatSwapMessage(twapSwapPart)).toMatchObject({
+        action: "Execute TWAP Swap part",
+        fees: "-$ 2.00",
+        priceImpact: "-$ 0.50",
+      });
+    });
+
+    it("keeps a genuine zero visible and omits missing economics", () => {
+      expect(formatSwapMessage({ ...executeSwap, swapFeeUsd, swapImpactUsd: 0n })).toMatchObject({
+        fees: "-$ 1.50",
+        feesTooltip: [
+          { key: "Swap fee", value: "-$ 1.50" },
+          { key: "Swap price impact", value: "$ 0.00" },
+        ],
+        priceImpact: "$ 0.00",
+      });
+
+      const withoutIndexedEconomics = formatSwapMessage({
+        ...executeSwap,
+        swapFeeUsd: undefined,
+        swapImpactUsd: undefined,
+      });
+
+      expect(withoutIndexedEconomics.fees).toBeUndefined();
+      expect(withoutIndexedEconomics.feesTooltip).toBeUndefined();
+      expect(withoutIndexedEconomics.priceImpact).toBeUndefined();
+    });
+
+    it("does not report economics for swap actions that did not execute", () => {
+      for (const notExecutedSwap of [requestSwap, failedSwap]) {
+        const details = formatSwapMessage({ ...notExecutedSwap, swapFeeUsd, swapImpactUsd });
+
+        expect(details.fees).toBeUndefined();
+        expect(details.feesTooltip).toBeUndefined();
+        expect(details.priceImpact).toBeUndefined();
+      }
+    });
+  });
+
   it("formatPositionMessage renders 'Full position close' for full-close TP/SL actions", () => {
     const fullCloseCreate = {
       ...createOrderDecreaseLong,
@@ -748,6 +878,58 @@ describe("TradeHistoryRow helpers", () => {
       sizeDeltaUsd: MaxUint256,
     };
     expect(formatPositionMessage(fullCloseStopLoss, minCollateralUsd).size).toBe("Full position close");
+  });
+
+  it("formatPositionMessage uses block-time minCollateralFactorForLiquidation for liquidations", () => {
+    const currentFactor = PRECISION / 200n;
+    const blockTimeFactor = PRECISION / 100n;
+
+    const historicalLiquidation = {
+      ...liquidated,
+      marketInfo: {
+        ...liquidated.marketInfo,
+        minCollateralFactorForLiquidation: currentFactor,
+      },
+      minCollateralFactorForLiquidation: blockTimeFactor,
+    };
+
+    const details = formatPositionMessage(historicalLiquidation, minCollateralUsd);
+
+    expect(details.priceComment).toContainEqual(
+      "Liquidated as max leverage of 100.0x was exceeded when accounting for fees."
+    );
+
+    const expectedMinMargin = formatUsd(applyFactor(historicalLiquidation.sizeDeltaUsd, blockTimeFactor));
+    const currentConfigMinMargin = formatUsd(applyFactor(historicalLiquidation.sizeDeltaUsd, currentFactor));
+    expect(expectedMinMargin).not.toBe(currentConfigMinMargin);
+    expect(details.priceComment).toContainEqual({ key: "Minimum required margin", value: expectedMinMargin });
+  });
+
+  it("formatPositionMessage hides factor-derived rows when the block-time factor is unresolved", () => {
+    for (const unresolved of [undefined, 0n]) {
+      const oldLiquidation = {
+        ...liquidated,
+        marketInfo: {
+          ...liquidated.marketInfo,
+          minCollateralFactorForLiquidation: PRECISION / 100n,
+        },
+        minCollateralFactorForLiquidation: unresolved,
+      };
+
+      const details = formatPositionMessage(oldLiquidation, minCollateralUsd);
+      const rowKeys = (details.priceComment ?? [])
+        .filter((line) => typeof line === "object" && line !== null && "key" in line)
+        .map((line) => (line as { key: string }).key);
+
+      expect(details.priceComment).toContainEqual(
+        "Liquidated as the max allowed leverage was exceeded when accounting for fees."
+      );
+      expect(details.priceComment).not.toContainEqual(
+        "Liquidated as max leverage of 0.0x was exceeded when accounting for fees."
+      );
+      expect(rowKeys).not.toContain("Minimum required margin");
+      expect(rowKeys).toContain("Margin at liquidation");
+    }
   });
 
   it("formatPositionMessage includes indexed trader discounts in the fee breakdown", () => {
@@ -786,5 +968,267 @@ describe("TradeHistoryRow helpers", () => {
         ],
       }
     );
+  });
+
+  describe("margin deposits", () => {
+    it("labels every event and shows the deposited collateral as the size", () => {
+      const created = formatPositionMessage(createMarginDeposit, minCollateralUsd);
+      expect(created.action).toBe("Create margin deposit");
+      expect(created.size).toBe("0.25000 WETH");
+      expect(created.price).toBe(`${INEQUALITY_LT}$ 1.00`);
+      expect(created.triggerPrice).toBe(`${INEQUALITY_LT}$ 1.00`);
+      expect(created.priceComment).toEqual(["Trigger price for the order"]);
+
+      const updated = formatPositionMessage(updateMarginDeposit, minCollateralUsd);
+      expect(updated.action).toBe("Update margin deposit");
+      expect(updated.size).toBe("0.25000 WETH");
+      expect(updated.triggerPrice).toBe(`${INEQUALITY_LT}$ 1.00`);
+
+      const cancelled = formatPositionMessage(cancelMarginDeposit, minCollateralUsd);
+      expect(cancelled.action).toBe("Cancel margin deposit");
+      expect(cancelled.size).toBe("0.25000 WETH");
+      expect(cancelled.triggerPrice).toBe(`${INEQUALITY_LT}$ 1.00`);
+
+      const executed = formatPositionMessage(executeMarginDeposit, minCollateralUsd);
+      expect(executed.action).toBe("Execute margin deposit");
+      expect(executed.size).toBe("500.00 USDC");
+      expect(executed.triggerPrice).toBe(`${INEQUALITY_GT}$ 0.83600`);
+      expect(executed.priceComment).toContainEqual({
+        key: "Order trigger price",
+        value: `${INEQUALITY_GT}$ 0.83600`,
+      });
+
+      const frozen = formatPositionMessage(frozenMarginDeposit, minCollateralUsd);
+      expect(frozen.action).toBe("Failed margin deposit");
+      expect(frozen.size).toBe("250.00 USDC.e");
+      expect(frozen.price).toBe(`${INEQUALITY_GT}$ 27,210.00`);
+      expect(frozen.triggerPrice).toBe(`${INEQUALITY_GT}$ 27,210.00`);
+      expect(frozen.isActionError).toBe(true);
+    });
+
+    it("never renders a zero USD size", () => {
+      const marginDeposits = [
+        createMarginDeposit,
+        updateMarginDeposit,
+        cancelMarginDeposit,
+        executeMarginDeposit,
+        frozenMarginDeposit,
+      ];
+
+      for (const marginDeposit of marginDeposits) {
+        expect(formatPositionMessage(marginDeposit, minCollateralUsd).size).not.toContain("$");
+      }
+    });
+
+    it("reads as cancelled for user initiated cancels, not expired", () => {
+      const userCancelled = { ...cancelMarginDeposit, reason: USER_INITIATED_CANCEL };
+
+      expect(formatPositionMessage(userCancelled, minCollateralUsd).action).toBe("Cancel margin deposit");
+    });
+
+    it("leaves limit increases with a size untouched", () => {
+      const details = formatPositionMessage(createOrderIncreaseLong, minCollateralUsd);
+
+      expect(details.action).toBe("Create Limit");
+      expect(details.size).toBe("+$ 2.64");
+    });
+
+    it("leaves zero size twap increases untouched", () => {
+      const twapDeposit = {
+        ...createMarginDeposit,
+        twapParams: { twapGroupId: "0xtwap-group-deposit", numberOfParts: 3 },
+      };
+
+      const details = formatPositionMessage(twapDeposit, minCollateralUsd);
+
+      expect(details.action).toBe("Create TWAP");
+      expect(details.price).toBe("N/A");
+    });
+
+    it("uses the position collateral token for executed increases with a swap path", () => {
+      const gmxToken = {
+        ...executeOrderIncreaseLong.targetCollateralToken,
+        name: "GMX",
+        symbol: "GMX",
+        decimals: 18,
+        address: "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a",
+        isStable: false,
+      };
+      const executedIncrease = {
+        ...executeOrderIncreaseLong,
+        swapPath: ["0x55391D178Ce46e7AC8eaAEa50A72D1A5a8A622Da"],
+        targetCollateralToken: gmxToken,
+        initialCollateralDeltaAmount: 204_579_982_339_079_771n,
+      };
+
+      expect(formatPositionMessage(executedIncrease, minCollateralUsd).sizeComment).toEqual([
+        { key: "Margin delta", value: "+0.20458\u00a0GMX" },
+      ]);
+      expect(formatPositionMessage({ ...executedIncrease, sizeDeltaUsd: 0n }, minCollateralUsd).size).toBe(
+        "0.20458\u00a0GMX"
+      );
+    });
+
+    it("does not hide a non-zero target collateral amount with fewer decimals", () => {
+      const executedIncrease = {
+        ...executeOrderIncreaseLong,
+        initialCollateralToken: {
+          ...executeOrderIncreaseLong.initialCollateralToken,
+          name: "Wrapped Ether",
+          symbol: "WETH",
+          decimals: 18,
+          address: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+          isStable: false,
+        },
+        initialCollateralTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+        swapPath: ["0x55391D178Ce46e7AC8eaAEa50A72D1A5a8A622Da"],
+        initialCollateralDeltaAmount: 1_510_000n,
+      };
+
+      expect(formatPositionMessage(executedIncrease, minCollateralUsd).sizeComment).toEqual([
+        { key: "Margin delta", value: "+1.51\u00a0USDC" },
+      ]);
+    });
+
+    it("keeps request and decrease rows denominated in the initial collateral token", () => {
+      const gmxToken = {
+        ...executeOrderIncreaseLong.targetCollateralToken,
+        name: "GMX",
+        symbol: "GMX",
+        decimals: 18,
+        address: "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a",
+        isStable: false,
+      };
+      const action = {
+        ...executeOrderIncreaseLong,
+        swapPath: ["0x55391D178Ce46e7AC8eaAEa50A72D1A5a8A622Da"],
+        targetCollateralToken: gmxToken,
+        initialCollateralDeltaAmount: 1_510_000n,
+      };
+
+      const request = formatPositionMessage(
+        { ...action, eventName: TradeActionType.OrderCreated, sizeDeltaUsd: 0n },
+        minCollateralUsd
+      );
+      const decrease = formatPositionMessage({ ...action, orderType: OrderType.MarketDecrease }, minCollateralUsd);
+      const withdrawal = formatPositionMessage(
+        { ...action, orderType: OrderType.MarketDecrease, sizeDeltaUsd: 0n },
+        minCollateralUsd
+      );
+
+      expect(request.size).toBe("1.51\u00a0USDC");
+      expect(decrease.sizeComment).toEqual([{ key: "Margin delta", value: "-1.51\u00a0USDC" }]);
+      expect(withdrawal.size).toBe("1.51\u00a0USDC");
+    });
+  });
+
+  describe("getSettlementTooltipLines", () => {
+    it("reconciles against the original margin when the opening row is matched", () => {
+      const result = getSettlementTooltipLines(anchorCloseRow, anchorOpenRow).filter((line) => line !== undefined);
+
+      expect(result).toEqual([
+        "",
+        "Settlement",
+        "",
+        { key: "Initial margin", value: "1,000.00\u00a0USDC" },
+        { key: "Open fee / discount", value: "-3.79\u00a0USDC" },
+        { key: "Margin at close", value: "996.21\u00a0USDC" },
+        { key: "RPNL", value: { text: "+$ 294.76", state: "success" } },
+        { key: "Net close fees / impact", value: { text: "+$ 35.58", state: "success" } },
+        { key: "Wallet received", value: "~1,326.64\u00a0USDC" },
+      ]);
+    });
+
+    it("falls back to close-side-only settlement when the opening row is not matched", () => {
+      const result = getSettlementTooltipLines(anchorCloseRow, undefined).filter((line) => line !== undefined);
+
+      expect(result).toEqual([
+        "",
+        "Settlement",
+        "",
+        { key: "Margin at close", value: "996.21\u00a0USDC" },
+        { key: "RPNL", value: { text: "+$ 294.76", state: "success" } },
+        { key: "Net close fees / impact", value: { text: "+$ 35.58", state: "success" } },
+        { key: "Wallet received", value: "~1,326.64\u00a0USDC" },
+      ]);
+    });
+
+    it("marks the USD received value as an estimate when the collateral was swapped on close", () => {
+      const swappedAction = {
+        ...anchorCloseRow,
+        swapPath: ["0x0000000000000000000000000000000000000001"],
+      } as unknown as PositionTradeAction;
+
+      const result = getSettlementTooltipLines(swappedAction, anchorOpenRow).filter((line) => line !== undefined);
+
+      expect(result.at(-1)).toEqual({ key: "Wallet received", value: "~$ 1,326.31" });
+    });
+
+    it("includes the liquidation fee in the settlement for liquidation actions", () => {
+      const liquidationAction = {
+        ...anchorCloseRow,
+        orderType: OrderType.Liquidation,
+        liquidationFeeAmount: 1000000n,
+      } as unknown as PositionTradeAction;
+
+      const result = getSettlementTooltipLines(liquidationAction, anchorOpenRow).filter((line) => line !== undefined);
+
+      expect(result).toEqual([
+        "",
+        "Settlement",
+        "",
+        { key: "Initial margin", value: "1,000.00\u00a0USDC" },
+        { key: "Open fee / discount", value: "-3.79\u00a0USDC" },
+        { key: "Margin at close", value: "996.21\u00a0USDC" },
+        { key: "RPNL", value: { text: "+$ 294.76", state: "success" } },
+        { key: "Net close fees / impact", value: { text: "+$ 34.58", state: "success" } },
+        { key: "Wallet received", value: "~1,325.64\u00a0USDC" },
+      ]);
+    });
+
+    it("reports a combined USD total when profit could have been paid in the pnl token", () => {
+      const splitPayoutAction = {
+        ...anchorCloseRow,
+        isLong: true,
+      } as unknown as PositionTradeAction;
+
+      const result = getSettlementTooltipLines(splitPayoutAction, anchorOpenRow).filter((line) => line !== undefined);
+
+      expect(result.at(-1)).toEqual({ key: "Wallet received", value: "~$\u200a1,326.31" });
+    });
+
+    it("excludes impact diverted to claimable collateral from the received amount", () => {
+      const withDiffAction = {
+        ...anchorCloseRow,
+        priceImpactDiffUsd: 100n * 10n ** 30n,
+      } as unknown as PositionTradeAction;
+
+      const withoutDiff = getSettlementTooltipLines(anchorCloseRow, anchorOpenRow).at(-1) as { value: string };
+      const withDiff = getSettlementTooltipLines(withDiffAction, anchorOpenRow).at(-1) as { value: string };
+
+      expect(withoutDiff.value).toBe("~1,326.64\u00a0USDC");
+      expect(withDiff.value).toBe("~1,226.61\u00a0USDC");
+    });
+
+    it("clamps the received amount to zero when costs wipe out the position", () => {
+      const wipedOutAction = {
+        ...anchorCloseRow,
+        orderType: OrderType.Liquidation,
+        basePnlUsd: -2_000n * 10n ** 30n,
+        liquidationFeeAmount: 1_000_000n,
+      } as unknown as PositionTradeAction;
+
+      const result = getSettlementTooltipLines(wipedOutAction, anchorOpenRow).at(-1) as { value: string };
+
+      expect(result.value).toBe("~0.00\u00a0USDC");
+    });
+
+    it("relabels the received row as a GMX balance movement for multichain closes", () => {
+      const result = getSettlementTooltipLines(anchorCloseRow, anchorOpenRow, true).filter(
+        (line) => line !== undefined
+      );
+
+      expect(result.at(-1)).toEqual({ key: "Received at close (GMX balance)", value: "~1,326.64\u00a0USDC" });
+    });
   });
 });

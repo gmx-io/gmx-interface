@@ -996,6 +996,13 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
           }
           return newPendingMultichainFunding;
         });
+        setSelectedTransferGuid((prev) => {
+          if (!prev || prev !== mockId) {
+            return prev;
+          }
+
+          return id;
+        });
       },
     }),
     [

@@ -71,8 +71,8 @@ export function useWhatsNewAnnouncements(): UseWhatsNewAnnouncementsResult {
     });
 
     result.sort((a, b) => {
-      const aTime = getEventSortDate(a).getTime();
-      const bTime = getEventSortDate(b).getTime();
+      const aTime = getEventSortDate(a, uiFlags).getTime();
+      const bTime = getEventSortDate(b, uiFlags).getTime();
       if (aTime !== bTime) return bTime - aTime;
       return a.id.localeCompare(b.id);
     });

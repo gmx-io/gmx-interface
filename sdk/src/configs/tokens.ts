@@ -2,7 +2,7 @@ import { zeroAddress } from "viem";
 
 import type { Token, TokenAddressTypesMap, TokenCategory } from "utils/tokens/types";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, MEGAETH } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, MEGAETH } from "./chains";
 import { getContract } from "./contracts";
 
 export const NATIVE_TOKEN_ADDRESS = zeroAddress;
@@ -455,15 +455,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
     },
     {
-      name: "TON",
-      symbol: "TON",
-      address: "0xB2f7cefaeEb08Aa347705ac829a7b8bE2FB560f3",
-      decimals: 9,
-      categories: ["layer1"],
-      imageUrl: "https://assets.coingecko.com/coins/images/17980/standard/photo_2024-09-10_17.09.00.jpeg?1725963446",
-      isSynthetic: true,
-    },
-    {
       name: "WLD",
       symbol: "WLD",
       address: "0x75B9AdD873641b253718810E6c65dB6d72311FD0",
@@ -633,30 +624,12 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
     },
     {
-      name: "Melania Meme",
-      symbol: "MELANIA",
-      address: "0xfa4F8E582214eBCe1A08eB2a65e08082053E441F",
-      decimals: 6,
-      categories: ["meme"],
-      imageUrl: "https://assets.coingecko.com/coins/images/53775/standard/melania-meme.png?1737329885",
-      isSynthetic: true,
-    },
-    {
       name: "Ethena Governance Token",
       symbol: "ENA",
       address: "0xfe1Aac2CD9C5cC77b58EeCfE75981866ed0c8b7a",
       decimals: 18,
       categories: ["defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/36530/standard/ethena.png?1711701436",
-      isSynthetic: true,
-    },
-    {
-      name: "ai16z",
-      symbol: "AI16Z",
-      address: "0xBb69bd9dc152C2c0F083507641a46193d2B61EBb",
-      decimals: 9,
-      categories: ["meme", "ai"],
-      imageUrl: "https://assets.coingecko.com/coins/images/51090/standard/AI16Z.jpg?1730027175",
       isSynthetic: true,
     },
     {
@@ -777,24 +750,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
     },
     {
-      name: "Maker",
-      symbol: "MKR",
-      address: "0x8904De84c3bB3B7D2383F934Af40FcB3Ef82F28b",
-      decimals: 18,
-      categories: ["defi"],
-      imageUrl: "https://assets.coingecko.com/coins/images/1364/standard/Mark_Maker.png?1696502423",
-      isSynthetic: true,
-    },
-    {
-      name: "MANTRA",
-      symbol: "OM",
-      address: "0x1f3407Ea067DfBDF6dEb6bBFdA4869215fB0ab77",
-      decimals: 18,
-      categories: ["layer1"],
-      imageUrl: "https://assets.coingecko.com/coins/images/12151/standard/OM_Token.png?1696511991",
-      isSynthetic: true,
-    },
-    {
       name: "Dolomite",
       symbol: "DOLO",
       address: "0x97Ce1F309B949f7FBC4f58c5cb6aa417A5ff8964",
@@ -828,15 +783,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 12,
       isSynthetic: true,
       imageUrl: "https://assets.coingecko.com/coins/images/69/standard/monero_logo.png?1696501460",
-      categories: ["layer1"],
-    },
-    {
-      name: "Pi Network",
-      symbol: "PI",
-      address: "0xd1738d37401a0A71f7E382d2cFeCD3ab69687017",
-      decimals: 18,
-      isSynthetic: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/54342/standard/pi_network.jpg?1739347576",
       categories: ["layer1"],
     },
     {
@@ -1001,24 +947,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/54023/standard/VVV_Token_Transparent.png?1741856877",
     },
     {
-      name: "Moonwell",
-      symbol: "WELL",
-      address: "0x465A31E5bA29b8EAcC860d499D714a6f07e56E85",
-      decimals: 18,
-      isSynthetic: true,
-      categories: ["defi"],
-      imageUrl: "https://assets.coingecko.com/coins/images/26133/standard/WELL.png?1696525221",
-    },
-    {
-      name: "KTA",
-      symbol: "KTA",
-      decimals: 18,
-      address: "0x96Ee343E36E8642627FAEa235D57a9FEC8a6e34f",
-      isSynthetic: true,
-      categories: ["layer1"],
-      imageUrl: "https://assets.coingecko.com/coins/images/54693/standard/zora.jpg?1741094751",
-    },
-    {
       name: "Zora",
       symbol: "ZORA",
       decimals: 18,
@@ -1166,15 +1094,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/71121/standard/lighter.png?1765888098",
     },
     {
-      name: "Story",
-      symbol: "IP",
-      address: "0xe7304E9F4ca383BD6312a5179cdC7B40B96A6F5a",
-      isSynthetic: true,
-      decimals: 18,
-      categories: ["layer1"],
-      imageUrl: "https://assets.coingecko.com/coins/images/54035/standard/Transparent_bg.png?1738075331",
-    },
-    {
       name: "Canton",
       symbol: "CC",
       address: "0x7F2A3967bd0999A860E13Ab8DC34aF98675CC208",
@@ -1255,6 +1174,26 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       categories: ["tradfi", "stocks"],
       searchAliases: ["Space", "X"],
       explorerUrl: "https://arbiscan.io/token/0x8CBd0d5d81e7957123E6D8fFaE657a40bDC5691b",
+    },
+    {
+      name: "Invesco QQQ Trust",
+      symbol: "QQQ",
+      address: "0xfe71D55D0080b6995Ec2C3f48b7702c86e200766",
+      isSynthetic: true,
+      decimals: 18,
+      categories: ["tradfi", "indices"],
+      searchAliases: ["Nasdaq", "Nasdaq-100", "NDX", "Invesco"],
+      explorerUrl: "https://arbiscan.io/token/0xfe71D55D0080b6995Ec2C3f48b7702c86e200766",
+    },
+    {
+      name: "SPDR S&P 500 ETF",
+      symbol: "SPY",
+      address: "0x0315441076FF6d3eA09814a2F90a1f980cF03e9e",
+      isSynthetic: true,
+      decimals: 18,
+      categories: ["tradfi", "indices"],
+      searchAliases: ["S&P", "S&P 500", "SPX", "SPDR"],
+      explorerUrl: "https://arbiscan.io/token/0x0315441076FF6d3eA09814a2F90a1f980cF03e9e",
     },
     {
       name: "MegaETH",
@@ -1367,15 +1306,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png",
       explorerUrl: "https://snowtrace.io/address/0xc7198437980c041c805A1EDcbA50c1Ce5db95118",
-    },
-    {
-      name: "Dai",
-      symbol: "DAI.E",
-      address: "0xd586E7F844cEa2F87f50152665BCbc2C279D8d70",
-      decimals: 18,
-      isStable: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/9956/thumb/4943.png?1636636734",
-      explorerUrl: "https://snowtrace.io/address/0xd586E7F844cEa2F87f50152665BCbc2C279D8d70",
     },
     {
       name: "Magic Internet Money",
@@ -1871,104 +1801,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isPlatformToken: true,
     },
   ],
-  [BOTANIX]: [
-    {
-      name: "Bitcoin",
-      symbol: "BTC",
-      assetSymbol: "BTC",
-      address: NATIVE_TOKEN_ADDRESS,
-      decimals: 18,
-      isNative: true,
-      isShortable: true,
-      categories: ["layer1"],
-      imageUrl: "https://assets.coingecko.com/coins/images/1/standard/bitcoin.png?1696501400",
-      baseSymbol: "BTC",
-    },
-    {
-      name: "Pegged BTC",
-      symbol: "PBTC",
-      assetSymbol: "pBTC",
-      address: "0x0D2437F93Fed6EA64Ef01cCde385FB1263910C56",
-      decimals: 18,
-      isShortable: true,
-      categories: ["layer1"],
-      imageUrl: "https://assets.coingecko.com/coins/images/1/standard/bitcoin.png?1696501400",
-      baseSymbol: "BTC",
-      isWrapped: true,
-    },
-    {
-      name: "Staked BTC",
-      symbol: "STBTC",
-      assetSymbol: "stBTC",
-      address: "0xF4586028FFdA7Eca636864F80f8a3f2589E33795",
-      decimals: 18,
-      isShortable: true,
-      categories: ["layer1"],
-      imageUrl: "https://assets.coingecko.com/coins/images/1/standard/bitcoin.png?1696501400",
-      baseSymbol: "BTC",
-      isStaking: true,
-    },
-    {
-      name: "BTC",
-      symbol: "BTC",
-      address: "0x1B9e25f54225bcdCf347569E38C41Ade9BB686e5",
-      decimals: 8,
-      isShortable: true,
-      categories: ["layer1"],
-      imageUrl: "https://assets.coingecko.com/coins/images/1/standard/bitcoin.png?1696501400",
-      isSynthetic: true,
-    },
-    {
-      name: "USDC.E",
-      symbol: "USDC.E",
-      assetSymbol: "USDC.e",
-      address: "0x29eE6138DD4C9815f46D34a4A1ed48F46758A402",
-      decimals: 6,
-      isStable: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      isPermitSupported: true,
-    },
-    {
-      name: "GMX",
-      symbol: "GMX",
-      address: "",
-      decimals: 18,
-      imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
-      isPlatformToken: true,
-    },
-    {
-      name: "Escrowed GMX",
-      symbol: "ESGMX",
-      address: "",
-      decimals: 18,
-      isPlatformToken: true,
-    },
-    {
-      name: "GMX LP",
-      symbol: "GLP",
-      address: "",
-      decimals: 18,
-      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
-      isPlatformToken: true,
-    },
-    /** Placeholder tokens */
-    {
-      name: "GMX Market tokens",
-      symbol: "GM",
-      address: GM_STUB_ADDRESS,
-      decimals: 18,
-      imageUrl: "https://raw.githubusercontent.com/gmx-io/gmx-assets/main/GMX-Assets/PNG/GM_LOGO.png",
-      isPlatformToken: true,
-    },
-    {
-      name: "GLV Market tokens",
-      symbol: "GLV",
-      address: GLV_STUB_ADDRESS,
-      decimals: 18,
-      imageUrl: "https://raw.githubusercontent.com/gmx-io/gmx-assets/main/GMX-Assets/PNG/GLV_LOGO.png",
-      isPlatformToken: true,
-    },
-  ],
   [MEGAETH]: [
     {
       name: "Ethereum",
@@ -2070,7 +1902,6 @@ export const TOKEN_COLOR_MAP: { default: string } & Partial<Record<string, strin
   ETH: "#6062a6",
   BTC: "#F7931A",
   WBTC: "#F7931A",
-  PBTC: "#F7931A",
   USDC: "#2775CA",
   "USDC.E": "#2A5ADA",
   "USDC.SG": "#2775CA",
@@ -2104,6 +1935,8 @@ export const TOKEN_COLOR_MAP: { default: string } & Partial<Record<string, strin
   GOLD: "#D69A00",
   SILVER: "#ADABB8",
   SPCX: "#1A1E21",
+  QQQ: "#000AD2",
+  SPY: "#273F33",
   XPT: "#C2B8AB",
   XPD: "#A9ACB6",
   default: "#6062a6",
@@ -2117,7 +1950,7 @@ export const TOKENS_BY_SYMBOL_MAP: { [chainId: number]: { [symbol: string]: Toke
 export const WRAPPED_TOKENS_MAP: { [chainId: number]: Token } = {};
 export const NATIVE_TOKENS_MAP: { [chainId: number]: Token } = {};
 
-const CHAIN_IDS = [ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ARBITRUM_SEPOLIA, MEGAETH];
+const CHAIN_IDS = [ARBITRUM, AVALANCHE, AVALANCHE_FUJI, ARBITRUM_SEPOLIA, MEGAETH];
 
 for (let j = 0; j < CHAIN_IDS.length; j++) {
   const chainId = CHAIN_IDS[j];
@@ -2281,8 +2114,6 @@ export function convertTokenAddress<T extends keyof TokenAddressTypesMap, R exte
 export function getNormalizedTokenSymbol(tokenSymbol: string) {
   if (["WBTC", "WETH", "WAVAX"].includes(tokenSymbol)) {
     return tokenSymbol.substr(1);
-  } else if (["PBTC", "STBTC"].includes(tokenSymbol)) {
-    return "BTC";
   } else if (tokenSymbol === "XAUT") {
     return "XAUT.v2";
   } else if (tokenSymbol.includes(".")) {

@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import { ContractsChainId } from "config/chains";
 import { TotalReferralsStats } from "domain/referrals";
 import { useChainId } from "lib/chains";
+import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 
 import Loader from "components/Loader/Loader";
 import usePagination from "components/Pagination/usePagination";
@@ -40,8 +41,9 @@ export function ReferralsDistributionsTab({ isLoading, account, referralsData }:
   }, []);
 
   const currentRebateData = getCurrentRebateData();
+  const isWalletInitializing = useIsWalletInitializing();
 
-  if (isLoading) return <Loader />;
+  if (isLoading || isWalletInitializing) return <Loader />;
 
   if (!account) {
     return (

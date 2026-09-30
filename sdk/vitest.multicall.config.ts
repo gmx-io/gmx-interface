@@ -19,11 +19,14 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      // Serve recorded keeper fixtures instead of live gmxinfra calls (FEDEV-4029)
+      "cross-fetch": path.resolve(__dirname, "./src/test/mockCrossFetch.ts"),
       configs: path.resolve(__dirname, "./src/configs"),
       clients: path.resolve(__dirname, "./src/clients"),
       utils: path.resolve(__dirname, "./src/utils"),
       codegen: path.resolve(__dirname, "./src/codegen"),
       abis: path.resolve(__dirname, "./src/abis"),
+      test: path.resolve(__dirname, "./src/test"),
     },
   },
 });

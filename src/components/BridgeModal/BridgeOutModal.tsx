@@ -117,7 +117,9 @@ export function BridgeOutModal({
     multichainMarketTokenBalances?.balances[GMX_ACCOUNT_PSEUDO_CHAIN_ID]?.balance;
 
   const nextGmxAccountMarketTokenBalance: bigint | undefined =
-    gmxAccountMarketTokenBalance !== undefined && bridgeOutAmount !== undefined
+    gmxAccountMarketTokenBalance !== undefined &&
+    bridgeOutAmount !== undefined &&
+    bridgeOutAmount <= gmxAccountMarketTokenBalance
       ? gmxAccountMarketTokenBalance - bridgeOutAmount
       : undefined;
 

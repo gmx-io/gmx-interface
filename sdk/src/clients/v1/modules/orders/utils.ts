@@ -209,6 +209,7 @@ export function parseGetOrdersResponse(res: MulticallResult<ReturnType<typeof bu
         executionFee: bigint;
         callbackGasLimit: bigint;
         minOutputAmount: bigint;
+        uiFeeFactor: bigint;
         updatedAtTime: bigint;
         validFromTime: bigint;
         srcChainId: bigint;
@@ -238,6 +239,7 @@ export function parseGetOrdersResponse(res: MulticallResult<ReturnType<typeof bu
         executionFee: BigInt(order.numbers.executionFee),
         callbackGasLimit: BigInt(order.numbers.callbackGasLimit),
         minOutputAmount: BigInt(order.numbers.minOutputAmount),
+        uiFeeFactor: BigInt(order.numbers.uiFeeFactor),
         updatedAtTime: BigInt(order.numbers.updatedAtTime),
         isLong: order.flags.isLong as boolean,
         shouldUnwrapNativeToken: order.flags.shouldUnwrapNativeToken as boolean,

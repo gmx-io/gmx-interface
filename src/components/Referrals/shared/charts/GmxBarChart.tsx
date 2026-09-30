@@ -9,7 +9,7 @@ import {
   YAxis,
 } from "recharts";
 
-import { formatUsd } from "lib/numbers";
+import { formatChartTooltipUsd, integerYAxisTickFormatter, usdYAxisTickFormatter } from "./chartValueUtils";
 
 const CHART_MARGIN = { top: 8, right: 0, bottom: 0, left: 0 };
 
@@ -34,25 +34,6 @@ const CHART_CURSOR_PROPS = {
   strokeWidth: 1,
   strokeDasharray: "2 2",
 };
-
-function usdYAxisTickFormatter(value: number) {
-  if (!isFinite(value) || value === 0) return "0";
-
-  return formatCompactNumber(value, 2);
-}
-
-function integerYAxisTickFormatter(value: number) {
-  if (!isFinite(value) || value === 0) return "0";
-
-  return formatCompactNumber(value, 0);
-}
-
-function formatCompactNumber(value: number, maximumFractionDigits: number) {
-  return new Intl.NumberFormat("en-US", {
-    notation: "compact",
-    maximumFractionDigits,
-  }).format(value);
-}
 
 const MIN_POINT_SIZE_PX = 3;
 
@@ -137,7 +118,7 @@ function SimpleChartTooltip({
 }) {
   if (!active || !payload?.length) return null;
   const item = payload[0].payload;
-  const value = isUsd ? formatUsd(item[fieldName]) : item[fieldName];
+  const value = isUsd ? formatChartTooltipUsd(item[fieldName]) : item[fieldName];
 
   return (
     <div className="rounded-8 border border-stroke-primary bg-slate-900 p-10">
@@ -188,19 +169,27 @@ function TradersReferredChartTooltip({
 }: {
   active?: boolean;
   payload?: Array<{
-    payload: { dateTooltip: string; tradersGained: number; tradersLost: number; tradersNet: number };
+    payload: {
+      dateTooltip: string;
+      tradersGained: number;
+      tradersGraduated: number;
+      tradersLost: number;
+      tradersNet: number;
+    };
   }>;
 }) {
   if (!active || !payload?.length) return null;
   const item = payload[0].payload as {
     dateTooltip: string;
     tradersGained: number;
+    tradersGraduated: number;
     tradersLost: number;
     tradersNet: number;
   };
+  const hasGraduated = item.tradersGraduated !== 0;
 
   return (
-    <div className="rounded-8 border border-stroke-primary bg-slate-900 p-10">
+    <div className="max-w-[240px] rounded-8 border border-stroke-primary bg-slate-900 p-10">
       <div className="text-body-small mb-6 text-typography-secondary">{item.dateTooltip}</div>
       <div className="text-body-small flex items-center justify-between gap-12 text-typography-primary">
         <span>
@@ -208,6 +197,14 @@ function TradersReferredChartTooltip({
         </span>
         <span className="text-green-500 numbers">{item.tradersGained}</span>
       </div>
+      {hasGraduated && (
+        <div className="text-body-small mt-2 flex items-center justify-between gap-12 text-typography-primary">
+          <span>
+            <Trans>Graduated</Trans>
+          </span>
+          <span className="text-yellow-500 numbers">{item.tradersGraduated}</span>
+        </div>
+      )}
       <div className="text-body-small mt-2 flex items-center justify-between gap-12 text-typography-primary">
         <span>
           <Trans>Lost</Trans>
@@ -220,6 +217,14 @@ function TradersReferredChartTooltip({
         </span>
         <span className="numbers">{item.tradersNet}</span>
       </div>
+      {hasGraduated && (
+        <div className="text-body-small mt-6 text-typography-secondary">
+          <Trans>
+            Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation
+            threshold.
+          </Trans>
+        </div>
+      )}
     </div>
   );
 }
@@ -231,12 +236,20 @@ export function TradersReferredChart({
     timestamp: number;
     dateCompact: string;
     tradersGained: number;
+    tradersGraduated: number;
     tradersLost: number;
     tradersNet: number;
   }[];
 }) {
   return (
     <GmxBarChart chartData={chartData} yAxisTickFormatter={integerYAxisTickFormatter} allowDecimals={false}>
+      <Bar
+        dataKey="tradersGraduated"
+        stackId="stack"
+        fill="var(--color-yellow-500)"
+        radius={2}
+        minPointSize={minPointSizeForNonZero}
+      />
       <Bar
         dataKey="tradersLost"
         stackId="stack"

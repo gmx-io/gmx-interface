@@ -1,10 +1,9 @@
-import { TransactionRevertedError, TransactionRejectedError } from "@gelatocloud/gasless";
 import { t } from "@lingui/macro";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useLatest } from "react-use";
 
-import { isDevelopment } from "config/env";
+import { ContractsChainId } from "config/chains";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
@@ -16,10 +15,11 @@ import {
 } from "context/WebsocketContext/subscribeToEvents";
 import { MultichainTransferProgress } from "domain/multichain/progress/MultichainTransferProgress";
 import { useMultichainTransferProgressView } from "domain/multichain/progress/MultichainTransferProgressView";
-import { useMarketsInfoRequest } from "domain/synthetics/markets";
+import { MarketsInfoData, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import {
+  DecreasePositionSwapType,
   isDecreaseOrderType,
   isIncreaseOrderType,
   isLiquidationOrderType,
@@ -30,11 +30,26 @@ import {
 import { getPositionKey } from "domain/synthetics/positions";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
+import {
+  applyOrderBackfillMatches,
+  getIsPendingOrderBackfillable,
+  getPendingTpSlOrdersForBackfill,
+  ORDER_BACKFILL_MAX_AGE_MS,
+  OrderBackfillMatch,
+} from "domain/synthetics/tradeHistory/orderStatusesBackfill";
+import { useOrderStatusesBackfill } from "domain/synthetics/tradeHistory/useOrderStatusesBackfill";
 import { TokenBalanceType } from "domain/tokens";
+import type { PendingTpSlOrderBatch } from "domain/tpsl/types";
 import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
-import { getIsInsufficientExecutionFeeError, getIsInvalidSignatureError } from "lib/errors/customErrors";
+import { ErrorLike } from "lib/errors";
+import {
+  getIsInsufficientExecutionFeeError,
+  getIsInvalidSignatureError,
+  getIsInvalidSubaccountApprovalNonceError,
+} from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
+import { metrics } from "lib/metrics";
 import {
   getGLVSwapMetricId,
   getGMSwapMetricId,
@@ -50,17 +65,21 @@ import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { deleteByKey, getByKey, setByKey, updateByKey } from "lib/objects";
 import { getProvider } from "lib/rpc";
 import { sleep } from "lib/sleep";
-import { getTenderlyAccountParams } from "lib/tenderly";
-import { getGelatoRelayerForChain, getGelatoTaskDebugInfo } from "lib/transactions/sendExpressTransaction";
+import type { RelayTaskOutcome } from "lib/transactions/relayTaskStatus";
+import { waitForRelayTaskOutcome } from "lib/transactions/relayTaskStatus";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import { sendUserAnalyticsOrderResultEvent, userAnalytics } from "lib/userAnalytics";
 import { TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
-import { StatusCode } from "sdk/utils/gelatoRelay";
-import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
+import { StatusCode } from "sdk/utils/express";
+import { decodeOrderTwapParams } from "sdk/utils/twap/uiFeeReceiver";
 
-import { getInsufficientExecutionFeeToastContent, InvalidSignatureToastContent } from "components/Errors/errorToasts";
+import {
+  getInsufficientExecutionFeeToastContent,
+  getOutdatedSubaccountApprovalToastContent,
+  InvalidSignatureToastContent,
+} from "components/Errors/errorToasts";
 import { FeesSettlementStatusNotification } from "components/StatusNotification/FeesSettlementStatusNotification";
 import { GmStatusNotification } from "components/StatusNotification/GmStatusNotification";
 import { OrdersStatusNotificiation } from "components/StatusNotification/OrderStatusNotification";
@@ -71,7 +90,6 @@ import {
   DepositStatuses,
   EventLogData,
   EventTxnParams,
-  GelatoTaskStatus,
   GLVDepositCreatedEventData,
   OrderCreatedEventData,
   OrderStatuses,
@@ -86,6 +104,7 @@ import {
   PendingWithdrawalData,
   PositionDecreaseEvent,
   PositionIncreaseEvent,
+  RelayTaskStatus,
   ShiftCreatedEventData,
   ShiftStatuses,
   SyntheticsEventsContextType,
@@ -93,7 +112,7 @@ import {
   WithdrawalStatuses,
 } from "./types";
 import { useMultichainEvents } from "./useMultichainEvents";
-import { extractGelatoError, getGelatoTaskUrl, getPendingOrderKey } from "./utils";
+import { extractRelayTaskError, getPendingOrderKey } from "./utils";
 
 const SyntheticsEventsContext = createContext({});
 
@@ -109,7 +128,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { executionFeeBufferBps, setIsSettingsVisible } = useSettings();
 
   const { resetTokenPermits } = useTokenPermitsContext();
-  const { refreshSubaccountData } = useSubaccountContext();
+  const { refreshSubaccountData, invalidateSubaccountApproval } = useSubaccountContext();
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
 
@@ -143,16 +162,18 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { setWebsocketTokenBalancesUpdates, setOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
   const [approvalStatuses, setApprovalStatuses] = useState<ApprovalStatuses>({});
 
+  const [pendingTpSlOrderBatches, setPendingTpSlOrderBatches] = useState<PendingTpSlOrderBatch[]>([]);
   const [pendingOrdersUpdates, setPendingOrdersUpdates] = useState<PendingOrdersUpdates>({});
   const [pendingPositionsUpdates, setPendingPositionsUpdates] = useState<PendingPositionsUpdates>({});
+  const [awaitingBackfillOrders, setAwaitingBackfillOrders] = useState<PendingOrderData[]>([]);
   const [positionIncreaseEvents, setPositionIncreaseEvents] = useState<PositionIncreaseEvent[]>([]);
   const [positionDecreaseEvents, setPositionDecreaseEvents] = useState<PositionDecreaseEvent[]>([]);
-  const [gelatoTaskStatuses, setGelatoTaskStatuses] = useState<{ [taskId: string]: GelatoTaskStatus }>({});
+  const [relayTaskStatuses, setRelayTaskStatuses] = useState<{ [taskId: string]: RelayTaskStatus }>({});
   const [pendingExpressTxnParams, setPendingExpressTxnParams] = useState<{
     [key: string]: Partial<PendingExpressTxnParams>;
   }>({});
   const latestPendingExpressTxnParams = useLatest(pendingExpressTxnParams);
-  const latestGelatoTaskStatuses = useLatest(gelatoTaskStatuses);
+  const latestRelayTaskStatuses = useLatest(relayTaskStatuses);
   const pendingOrderToastIdRef = useRef<number>();
   const eventLogHandlers = useRef({});
 
@@ -194,7 +215,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       updateNativeTokenBalance();
 
       const uiFeeReceiver = eventData.addressItems.items.uiFeeReceiver;
-      const twapParams = decodeTwapUiFeeReceiver(uiFeeReceiver);
+      const twapParams = decodeOrderTwapParams(eventData.bytes32Items.arrayItems.dataList, uiFeeReceiver);
 
       const data: OrderCreatedEventData = {
         account: eventData.addressItems.items.account,
@@ -212,6 +233,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         minOutputAmount: eventData.uintItems.items.minOutputAmount,
         updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
         orderType: Number(eventData.uintItems.items.orderType),
+        decreasePositionSwapType: Number(
+          eventData.uintItems.items.decreasePositionSwapType ?? DecreasePositionSwapType.NoSwap
+        ) as DecreasePositionSwapType,
         isLong: eventData.boolItems.items.isLong,
         shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
         isFrozen: eventData.boolItems.items.isFrozen,
@@ -240,10 +264,11 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
       setOrderStatuses((old) =>
         setByKey(old, data.key, {
+          ...old[data.key],
           key: data.key,
           data,
           createdTxnHash: txnParams.transactionHash,
-          createdAt: Date.now(),
+          createdAt: old[data.key]?.createdAt ?? Date.now(),
         })
       );
 
@@ -257,6 +282,24 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       }
 
       setPendingOrdersUpdates((old) => deleteByKey(old, data.key));
+
+      setAwaitingBackfillOrders((old) => {
+        const index = old.findIndex(
+          (order) => order.txnType === "create" && getPendingOrderKey(order) === pendingOrderKey
+        );
+
+        return index === -1 ? old : old.filter((_, i) => i !== index);
+      });
+
+      if (isMarketOrderType(data.orderType) && marketsInfoData) {
+        const pendingPositionKey = getPendingPositionKeyFromOrder(chainId, marketsInfoData, data);
+
+        if (pendingPositionKey) {
+          setPendingPositionsUpdates((old) =>
+            old[pendingPositionKey] ? updateByKey(old, pendingPositionKey, { orderKey: data.key }) : old
+          );
+        }
+      }
     },
 
     OrderUpdated: (eventData: EventLogData, txnParams: EventTxnParams) => {
@@ -283,6 +326,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       });
 
       setPendingOrdersUpdates((old) => deleteByKey(old, key));
+
+      setAwaitingBackfillOrders((old) =>
+        old.filter((order) => !(order.txnType === "update" && order.orderKey === key))
+      );
     },
 
     OrderExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
@@ -304,7 +351,18 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       }
 
       setOrderStatuses((old) => {
-        if (!old[key]) return old;
+        if (!old[key]) {
+          // Avoid tracking unrelated background executions.
+          if (awaitingBackfillOrders.length === 0) {
+            return old;
+          }
+
+          return setByKey(old, key, {
+            key,
+            createdAt: Date.now(),
+            executedTxnHash: txnParams.transactionHash,
+          });
+        }
 
         return updateByKey(old, key, { executedTxnHash: txnParams.transactionHash });
       });
@@ -320,10 +378,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         return;
       }
 
+      const cancellationReasonBytes = eventData.bytesItems.items.reasonBytes;
+
       setOrderStatuses((old) => {
         if (old[key]) {
           return updateByKey(old, key, {
             cancelledTxnHash: txnParams.transactionHash,
+            cancellationReasonBytes,
             isViewed: false,
           });
         } else {
@@ -331,9 +392,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             key,
             createdAt: Date.now(),
             cancelledTxnHash: txnParams.transactionHash,
+            cancellationReasonBytes,
           });
         }
       });
+
+      setAwaitingBackfillOrders((old) => old.filter((awaitingOrder) => awaitingOrder.orderKey !== key));
 
       const order = orderStatuses[key]?.data;
 
@@ -348,35 +412,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
       // If pending user order is cancelled, reset the pending position state
       if (order && marketsInfoData) {
-        const wrappedToken = getWrappedToken(chainId);
-
-        let pendingPositionKey: string | undefined;
-
-        // For increase orders, we need to check the target collateral token
-        if (isIncreaseOrderType(order.orderType)) {
-          const { outTokenAddress } = getSwapPathOutputAddresses({
-            marketsInfoData: marketsInfoData,
-            initialCollateralAddress: order.initialCollateralTokenAddress,
-            swapPath: order.swapPath,
-            wrappedNativeTokenAddress: wrappedToken.address,
-            shouldUnwrapNativeToken: order.shouldUnwrapNativeToken,
-            isIncrease: true,
-          });
-
-          if (outTokenAddress) {
-            pendingPositionKey = getPositionKey(order.account, order.marketAddress, outTokenAddress, order.isLong);
-          }
-        } else if (isDecreaseOrderType(order.orderType)) {
-          pendingPositionKey = getPositionKey(
-            order.account,
-            order.marketAddress,
-            order.initialCollateralTokenAddress,
-            order.isLong
-          );
-        }
+        const pendingPositionKey = getPendingPositionKeyFromOrder(chainId, marketsInfoData, order);
 
         if (pendingPositionKey) {
-          setPendingPositionsUpdates((old) => setByKey(old, pendingPositionKey!, undefined));
+          setPendingPositionsUpdates((old) => setByKey(old, pendingPositionKey, undefined));
         }
       }
     },
@@ -737,6 +776,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
     PositionIncrease: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const data: PositionIncreaseEvent = {
+        blockNumber: txnParams.blockNumber,
         positionKey: getPositionKey(
           eventData.addressItems.items.account,
           eventData.addressItems.items.market,
@@ -803,6 +843,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
     PositionDecrease: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const data: PositionDecreaseEvent = {
+        blockNumber: txnParams.blockNumber,
         positionKey: getPositionKey(
           eventData.addressItems.items.account,
           eventData.addressItems.items.market,
@@ -1007,101 +1048,52 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     [chainId, currentAccount]
   );
 
-  const pollingTaskIdsRef = useRef<Set<string>>(new Set());
-  const taskChainIdRef = useRef<Map<string, number>>(new Map());
+  const polledTaskIdsRef = useRef<Set<string>>(new Set());
+  const taskChainIdRef = useRef<Map<string, ContractsChainId>>(new Map());
 
   useEffect(() => {
-    const taskIds = Object.values(pendingExpressTxnParams)
-      .map((p) => p.taskId)
-      .filter(
-        (id): id is string =>
-          Boolean(id) && !latestGelatoTaskStatuses.current[id!] && !pollingTaskIdsRef.current.has(id!)
-      );
+    const pendingTasks = Object.values(pendingExpressTxnParams).filter(
+      (p): p is Partial<PendingExpressTxnParams> & { taskId: string } =>
+        Boolean(p.taskId) && !latestRelayTaskStatuses.current[p.taskId!] && !polledTaskIdsRef.current.has(p.taskId!)
+    );
 
-    if (taskIds.length === 0) return;
+    if (pendingTasks.length === 0) return;
 
-    for (const taskId of taskIds) {
+    for (const { taskId } of pendingTasks) {
       if (!taskChainIdRef.current.has(taskId)) {
         taskChainIdRef.current.set(taskId, chainId);
       }
 
       const taskChainId = taskChainIdRef.current.get(taskId)!;
-      const relayer = getGelatoRelayerForChain(taskChainId);
 
-      if (!relayer) continue;
-
-      pollingTaskIdsRef.current.add(taskId);
+      polledTaskIdsRef.current.add(taskId);
 
       (async () => {
+        let outcome: RelayTaskOutcome | undefined;
+
         try {
-          const receipt = await relayer.waitForReceipt({
-            id: taskId,
-            timeout: 120_000,
-            pollingInterval: 1_000,
-            throwOnReverted: true,
-          });
-
-          if (isDevelopment()) {
-            const { accountSlug, projectSlug } = getTenderlyAccountParams();
-            getGelatoTaskDebugInfo(taskId, accountSlug, projectSlug).then((debugInfo) =>
-              // eslint-disable-next-line no-console
-              console.log("gelatoDebugData", receipt, debugInfo)
-            );
-          }
-
-          setGelatoTaskStatuses((old) =>
-            setByKey(old, taskId, {
-              taskId,
-              statusCode: StatusCode.Success,
-              transactionHash: receipt.transactionHash,
-            })
-          );
-        } catch (e) {
-          if (e instanceof TransactionRevertedError) {
-            if (isDevelopment()) {
-              const { accountSlug, projectSlug } = getTenderlyAccountParams();
-              getGelatoTaskDebugInfo(taskId, accountSlug, projectSlug).then((debugInfo) =>
-                // eslint-disable-next-line no-console
-                console.log("gelatoDebugData reverted", e, debugInfo)
-              );
-            }
-
-            setGelatoTaskStatuses((old) =>
-              setByKey(old, taskId, {
-                taskId,
-                statusCode: StatusCode.Reverted,
-                message: e.errorMessage,
-                transactionHash: e.receipt.transactionHash,
-                revertData: typeof e.errorData === "string" ? e.errorData : undefined,
-              })
-            );
-          } else if (e instanceof TransactionRejectedError) {
-            setGelatoTaskStatuses((old) =>
-              setByKey(old, taskId, {
-                taskId,
-                statusCode: StatusCode.Rejected,
-                message: e.errorMessage,
-              })
-            );
-          } else {
-            // eslint-disable-next-line no-console
-            console.error(e);
-
-            setGelatoTaskStatuses((old) =>
-              setByKey(old, taskId, {
-                taskId,
-                statusCode: StatusCode.Rejected,
-                message: e instanceof Error ? e.message : "Task status polling failed",
-              })
-            );
-          }
-        } finally {
-          pollingTaskIdsRef.current.delete(taskId);
-          taskChainIdRef.current.delete(taskId);
+          // the callee owns the wait window and its transient retries; a second window here would
+          // double the pending time and re-fire the failure metric for the same operation
+          outcome = await waitForRelayTaskOutcome({ chainId: taskChainId, taskId });
+        } catch (error) {
+          metrics.pushError(error as ErrorLike, "pollRelayTaskOutcome");
         }
+
+        setRelayTaskStatuses((old) =>
+          setByKey(old, taskId, {
+            taskId,
+            ...(outcome ?? {
+              statusCode: StatusCode.Rejected,
+              message: t`The relay did not report an outcome for this operation.`,
+            }),
+          })
+        );
+
+        taskChainIdRef.current.delete(taskId);
+        polledTaskIdsRef.current.delete(taskId);
       })();
     }
-  }, [pendingExpressTxnParams, latestGelatoTaskStatuses, chainId]);
+  }, [pendingExpressTxnParams, latestRelayTaskStatuses, chainId]);
 
   useEffect(
     function notifyPendingExpressTxn() {
@@ -1119,8 +1111,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           return;
         }
 
-        if (pendingExpressTxn.taskId && pendingExpressTxn.key && gelatoTaskStatuses[pendingExpressTxn.taskId]) {
-          const status = gelatoTaskStatuses[pendingExpressTxn.taskId].statusCode;
+        if (pendingExpressTxn.taskId && pendingExpressTxn.key && relayTaskStatuses[pendingExpressTxn.taskId]) {
+          const status = relayTaskStatuses[pendingExpressTxn.taskId].statusCode;
 
           if (status === StatusCode.Success && pendingExpressTxn.successMessage && !pendingExpressTxn.isViewed) {
             helperToast.success(pendingExpressTxn.successMessage);
@@ -1130,13 +1122,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           if (status === StatusCode.Reverted || status === StatusCode.Rejected) {
             let isRelayerMetricSent = false;
             let isViewed = false;
+            const relayError = extractRelayTaskError(relayTaskStatuses[pendingExpressTxn.taskId]);
 
             if (pendingExpressTxn.metricId && !pendingExpressTxn.isRelayerMetricSent) {
-              const gelatoError = extractGelatoError(gelatoTaskStatuses[pendingExpressTxn.taskId]);
+              sendTxnErrorMetric(pendingExpressTxn.metricId, relayError, "relayer");
 
-              sendTxnErrorMetric(pendingExpressTxn.metricId, gelatoError, "relayer");
-
-              const executionFeeErrorParams = getIsInsufficientExecutionFeeError(gelatoError);
+              const executionFeeErrorParams = getIsInsufficientExecutionFeeError(relayError);
 
               if (executionFeeErrorParams.isErrorMatched) {
                 const totastContent = getInsufficientExecutionFeeToastContent({
@@ -1145,10 +1136,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
                   chainId,
                   executionFeeBufferBps,
                   estimatedExecutionGasLimit: pendingExpressTxn.estimatedExecutionGasLimit ?? 0n,
-                  txUrl: getGelatoTaskUrl({
-                    taskId: pendingExpressTxn.taskId,
-                    isDebug: false,
-                  }),
+                  txUrl: undefined,
                   errorMessage: executionFeeErrorParams.errorData.errorMessage,
                   shouldOfferExpress: false,
                   setIsSettingsVisible,
@@ -1168,7 +1156,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
                 isViewed = true;
               }
 
-              const invalidSignatureErrorParams = getIsInvalidSignatureError(gelatoError);
+              const invalidSignatureErrorParams = getIsInvalidSignatureError(relayError);
 
               if (invalidSignatureErrorParams.isErrorMatched) {
                 // Wait to ensure there is no race condition with the pending order toast
@@ -1186,6 +1174,25 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
               }
 
               isRelayerMetricSent = true;
+            }
+
+            // not gated on isViewed: the order status toast marks a new order's txn viewed before the relay answers
+            if (pendingExpressTxn.subaccountApproval && !pendingExpressTxn.isSubaccountApprovalErrorChecked) {
+              setPendingExpressTxnParams((old) =>
+                updateByKey(old, pendingExpressTxn.key!, { isSubaccountApprovalErrorChecked: true })
+              );
+
+              if (
+                getIsInvalidSubaccountApprovalNonceError(relayError) &&
+                invalidateSubaccountApproval(pendingExpressTxn.subaccountApproval)
+              ) {
+                // Wait to ensure there is no race condition with the pending order toast
+                sleep(500).then(() => {
+                  toast.dismiss(pendingOrderToastIdRef.current);
+                  helperToast.error(getOutdatedSubaccountApprovalToastContent());
+                });
+                isViewed = true;
+              }
             }
 
             if (pendingExpressTxn.errorMessage && !pendingExpressTxn.isViewed) {
@@ -1218,7 +1225,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     [
       chainId,
       executionFeeBufferBps,
-      gelatoTaskStatuses,
+      invalidateSubaccountApproval,
+      relayTaskStatuses,
       pendingExpressTxnParams,
       provider,
       setIsSettingsVisible,
@@ -1232,11 +1240,55 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   const [multichainTransferProgress, setMultichainTransferProgress] = useState<
     MultichainTransferProgress<string> | undefined
-  >(
-    undefined
-  );
+  >(undefined);
 
   useMultichainTransferProgressView(multichainTransferProgress);
+
+  useEffect(() => {
+    setAwaitingBackfillOrders([]);
+  }, [chainId, currentAccount]);
+
+  const handleOrderBackfillMatches = useCallback((matches: OrderBackfillMatch[]) => {
+    setOrderStatuses((old) => applyOrderBackfillMatches(old, matches));
+
+    setAwaitingBackfillOrders((old) => old.filter((order) => !matches.some((m) => m.pendingOrder === order)));
+  }, []);
+
+  useOrderStatusesBackfill({
+    chainId,
+    pendingOrders: awaitingBackfillOrders.filter((order) => order.createdAt + ORDER_BACKFILL_MAX_AGE_MS > Date.now()),
+    orderStatuses,
+    onMatches: handleOrderBackfillMatches,
+  });
+
+  const { pendingTpSlCreationOrders, pendingTpSlTerminalOrders } = useMemo(() => {
+    const orders = getPendingTpSlOrdersForBackfill({
+      batches: pendingTpSlOrderBatches,
+      chainId,
+      account: currentAccount,
+      orderStatuses,
+      relayTaskStatuses,
+    });
+
+    return {
+      pendingTpSlCreationOrders: orders.filter((order) => !order.orderKey),
+      pendingTpSlTerminalOrders: orders.filter((order) => order.orderKey),
+    };
+  }, [chainId, currentAccount, pendingTpSlOrderBatches, orderStatuses, relayTaskStatuses]);
+
+  useOrderStatusesBackfill({
+    chainId,
+    pendingOrders: pendingTpSlCreationOrders,
+    orderStatuses,
+    onMatches: handleOrderBackfillMatches,
+  });
+
+  useOrderStatusesBackfill({
+    chainId,
+    pendingOrders: pendingTpSlTerminalOrders,
+    orderStatuses,
+    onMatches: handleOrderBackfillMatches,
+  });
 
   const contextState: SyntheticsEventsContextType = useMemo(() => {
     return {
@@ -1246,11 +1298,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       shiftStatuses,
       approvalStatuses,
       pendingOrdersUpdates,
+      pendingTpSlOrderBatches,
+      setPendingTpSlOrderBatches,
       pendingPositionsUpdates,
       positionIncreaseEvents,
       positionDecreaseEvents,
       pendingExpressTxns: pendingExpressTxnParams,
-      gelatoTaskStatuses,
+      relayTaskStatuses,
       setPendingExpressTxn: (params: PendingExpressTxnParams) => {
         setPendingExpressTxnParams((old) => setByKey(old, params.key, params));
       },
@@ -1293,6 +1347,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         );
 
         setPendingOrdersUpdates((old) => ({ ...old, ...objData }));
+
+        const backfillableOrders = arrayData.filter(getIsPendingOrderBackfillable);
+
+        if (backfillableOrders.length > 0) {
+          setAwaitingBackfillOrders((old) => [...old, ...backfillableOrders]);
+        }
       },
       setPendingOrderUpdate: (data: PendingOrderData, remove?: "remove") => {
         setPendingOrdersUpdates((old) => {
@@ -1395,11 +1455,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     shiftStatuses,
     approvalStatuses,
     pendingOrdersUpdates,
+    pendingTpSlOrderBatches,
     pendingPositionsUpdates,
     positionIncreaseEvents,
     positionDecreaseEvents,
     pendingExpressTxnParams,
-    gelatoTaskStatuses,
+    relayTaskStatuses,
     multichainEventsState,
     marketsInfoData,
     tokensData,
@@ -1407,4 +1468,42 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   ]);
 
   return <SyntheticsEventsContext.Provider value={contextState}>{children}</SyntheticsEventsContext.Provider>;
+}
+
+function getPendingPositionKeyFromOrder(
+  chainId: number,
+  marketsInfoData: MarketsInfoData,
+  order: Pick<
+    OrderCreatedEventData,
+    | "account"
+    | "marketAddress"
+    | "initialCollateralTokenAddress"
+    | "swapPath"
+    | "shouldUnwrapNativeToken"
+    | "isLong"
+    | "orderType"
+  >
+): string | undefined {
+  if (isIncreaseOrderType(order.orderType)) {
+    const wrappedToken = getWrappedToken(chainId);
+
+    const { outTokenAddress } = getSwapPathOutputAddresses({
+      marketsInfoData,
+      initialCollateralAddress: order.initialCollateralTokenAddress,
+      swapPath: order.swapPath,
+      wrappedNativeTokenAddress: wrappedToken.address,
+      shouldUnwrapNativeToken: order.shouldUnwrapNativeToken,
+      isIncrease: true,
+    });
+
+    return outTokenAddress
+      ? getPositionKey(order.account, order.marketAddress, outTokenAddress, order.isLong)
+      : undefined;
+  }
+
+  if (isDecreaseOrderType(order.orderType)) {
+    return getPositionKey(order.account, order.marketAddress, order.initialCollateralTokenAddress, order.isLong);
+  }
+
+  return undefined;
 }

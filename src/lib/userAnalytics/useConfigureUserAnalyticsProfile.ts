@@ -3,7 +3,7 @@ import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
-import { AbFlag, getAbFlags, setAbFlagEnabled } from "config/ab";
+import { getAbFlags } from "config/ab";
 import { isDevelopment } from "config/env";
 import { USD_DECIMALS } from "config/factors";
 import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
@@ -16,6 +16,8 @@ import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmountForMetrics } from "lib/metrics";
+import { getDisplayMode } from "lib/pwa/getDisplayMode";
+import { getLaunchSource } from "lib/pwa/getLaunchSource";
 import { useBowser } from "lib/useBowser";
 import useRouteQuery from "lib/useRouteQuery";
 import useWallet from "lib/wallets/useWallet";
@@ -37,6 +39,8 @@ export function useConfigureUserAnalyticsProfile() {
   const { wallets } = useWallets();
   const { data: bowser } = useBowser();
   const { subaccount } = useSubaccountContext();
+  const displayMode = getDisplayMode();
+  const launchSource = getLaunchSource();
   const {
     shouldShowPositionLines,
     expressOrdersEnabled,
@@ -81,17 +85,6 @@ export function useConfigureUserAnalyticsProfile() {
         isUrlParamsChanged = true;
       }
 
-      const abFlags = getAbFlags();
-
-      Object.keys(abFlags).forEach((flag) => {
-        const urlFlagValue = query.get(flag);
-        if (urlFlagValue) {
-          setAbFlagEnabled(flag as AbFlag, urlFlagValue === "1");
-          query.delete(flag);
-          isUrlParamsChanged = true;
-        }
-      });
-
       if (isUrlParamsChanged) {
         history.replace({
           search: query.toString(),
@@ -107,12 +100,14 @@ export function useConfigureUserAnalyticsProfile() {
       browserName: bowser?.browser.name,
       ordersCount,
       isWalletConnected: active,
+      displayMode,
+      launchSource,
       isTest: isDevelopment(),
       isInited: Boolean(bowser),
       ...walletAnalyticsProvenance,
       ...getAbFlags(),
     });
-  }, [active, ordersCount, bowser, walletAnalyticsProvenance]);
+  }, [active, ordersCount, bowser, displayMode, launchSource, walletAnalyticsProvenance]);
 
   useEffect(() => {
     userAnalytics.pushProfileProps({

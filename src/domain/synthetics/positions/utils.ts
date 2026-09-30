@@ -12,16 +12,11 @@ import {
   formatUsdPrice,
 } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
+import { getLiquidationPriceImpactDeltaUsd } from "sdk/utils/positions";
 
-import {
-  capPositionImpactUsdByMaxPriceImpactFactor,
-  getBorrowingFeeRateUsd,
-  getFundingFeeRateUsd,
-  getPriceImpactForPosition,
-} from "../fees";
-import { OrderType } from "../orders/types";
-import { convertToUsd } from "../tokens";
+import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "../fees";
 import { PositionInfo, PositionInfoLoaded } from "./types";
+import { OrderType } from "../orders/types";
 
 export * from "sdk/utils/positions";
 
@@ -91,35 +86,20 @@ export function getEstimatedLiquidationTimeInHours(
 
   if (isOpening || minCollateralUsd === undefined || !marketInfo) return;
 
-  let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
+  let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactorForLiquidation);
   if (liquidationCollateralUsd < minCollateralUsd) {
     liquidationCollateralUsd = minCollateralUsd;
   }
   const borrowFeePerHour = getBorrowingFeeRateUsd(marketInfo, isLong, sizeInUsd, BigInt(CHART_PERIODS["1h"]));
   const fundingFeePerHour = getFundingFeeRateUsd(marketInfo, isLong, sizeInUsd, BigInt(CHART_PERIODS["1h"]));
-  const maxNegativePriceImpactUsd = -1n * applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations);
-  let { priceImpactDeltaUsd } = getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, {
-    fallbackToZero: true,
+
+  const priceImpactDeltaUsd = getLiquidationPriceImpactDeltaUsd({
+    marketInfo,
+    sizeInUsd,
+    sizeInTokens: position.sizeInTokens,
+    pendingImpactAmount: position.pendingImpactAmount,
+    isLong,
   });
-
-  if (priceImpactDeltaUsd > 0) {
-    priceImpactDeltaUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, sizeInUsd, priceImpactDeltaUsd);
-  }
-
-  const pendingImpactUsd = convertToUsd(
-    position.pendingImpactAmount,
-    marketInfo.indexToken.decimals,
-    position.pendingImpactAmount > 0 ? marketInfo.indexToken.prices.minPrice : marketInfo.indexToken.prices.maxPrice
-  )!;
-
-  priceImpactDeltaUsd = priceImpactDeltaUsd + pendingImpactUsd;
-
-  // Ignore positive price impact
-  if (priceImpactDeltaUsd > 0) {
-    priceImpactDeltaUsd = 0n;
-  } else if (priceImpactDeltaUsd < maxNegativePriceImpactUsd) {
-    priceImpactDeltaUsd = maxNegativePriceImpactUsd;
-  }
 
   const totalFeesPerHour =
     bigMath.abs(borrowFeePerHour) + (fundingFeePerHour < 0 ? bigMath.abs(fundingFeePerHour) : 0n);
