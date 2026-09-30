@@ -23,6 +23,7 @@ import {
 } from "context/PoolsDetailsContext/hooks";
 import {
   PLATFORM_TOKEN_DECIMALS,
+  selectPoolsDetailsDirectDepositAccess,
   selectPoolsDetailsFirstTokenAmount,
   selectPoolsDetailsFirstTokenData,
   selectPoolsDetailsFlags,
@@ -146,6 +147,7 @@ export function GmSwapBoxDepositWithdrawal() {
   const marketTokensData = useSelector(selectPoolsDetailsMarketTokensData);
   const marketInfo = useSelector(selectPoolsDetailsMarketInfo);
   const glvInfo = useSelector(selectPoolsDetailsGlvInfo);
+  const directDepositAccess = useSelector(selectPoolsDetailsDirectDepositAccess);
   const isDirectDepositBlocked = useSelector(selectPoolsDetailsIsDirectDepositBlocked);
   const glvOrMarketInfo = glvInfo ?? marketInfo;
 
@@ -237,8 +239,11 @@ export function GmSwapBoxDepositWithdrawal() {
 
   const hasNeitherUsdcNorUsdg = useSelector(selectPoolsDetailsHasNeitherUsdcNorUsdg);
   const isBuyUsdgHintForcedForDebug = showDebugValues && transitState.hasUsdgCollateral && Boolean(isBuyUsdgHintForced);
+  const shouldShowWhitelistOnlyHint = directDepositAccess === "denied";
   const shouldShowBuyUsdgHint =
-    isDeposit && ((account !== undefined && hasNeitherUsdcNorUsdg) || isBuyUsdgHintForcedForDebug);
+    isDeposit &&
+    !isDirectDepositBlocked &&
+    ((account !== undefined && hasNeitherUsdcNorUsdg) || isBuyUsdgHintForcedForDebug);
 
   const logicalFees = useDepositWithdrawalFees({
     amounts,
@@ -781,6 +786,7 @@ export function GmSwapBoxDepositWithdrawal() {
                 bannerErrorContent={submitState.bannerErrorContent}
                 shouldShowAvalancheGmxAccountWarning={shouldShowAvalancheGmxAccountWarning}
                 shouldShowBuyUsdgHint={shouldShowBuyUsdgHint}
+                shouldShowWhitelistOnlyHint={shouldShowWhitelistOnlyHint}
                 isSubmitDisabled={submitState.disabled}
                 gasPaymentTokenWarningContent={
                   firstTokenMaxDetails.gasPaymentTokenWarningContent ??
