@@ -91,19 +91,7 @@ export function MultichainMarketTokenSelector({
           hasWalletBalance = true;
         }
 
-        if (activeFilter === "all") {
-          return true;
-        }
-
-        if (activeFilter === "gmxAccount" && tokenChainId === GMX_ACCOUNT_PSEUDO_CHAIN_ID) {
-          return true;
-        }
-
-        if (activeFilter === "wallet" && tokenChainId !== GMX_ACCOUNT_PSEUDO_CHAIN_ID) {
-          return true;
-        }
-
-        return false;
+        return true;
       })
       .map(([chainId, balance]: [string, bigint | undefined]): DisplayToken | undefined => {
         if (balance === undefined) {
@@ -127,7 +115,22 @@ export function MultichainMarketTokenSelector({
       .filter((token): token is DisplayToken => token !== undefined);
 
     return { tokens, hasGmxAccountBalance, hasWalletBalance };
-  }, [activeFilter, marketInfo, marketTokenPrice, tokenBalancesData]);
+  }, [marketInfo, marketTokenPrice, tokenBalancesData]);
+
+  const showNetworksFilter = !hideTabs && hasGmxAccountBalance && hasWalletBalance;
+
+  const filteredTokens = useMemo(() => {
+    if (!showNetworksFilter || activeFilter === "all") {
+      return tokens;
+    }
+
+    return tokens.filter((token) => {
+      const isGmxAccount = token.chainId === GMX_ACCOUNT_PSEUDO_CHAIN_ID;
+      return activeFilter === "gmxAccount" ? isGmxAccount : !isGmxAccount;
+    });
+  }, [activeFilter, showNetworksFilter, tokens]);
+
+  const glvOrGm = isGlvInfo(marketInfo) ? "GLV" : "GM";
 
   const NETWORKS_FILTER = useMemo<RegularOption<"all" | "wallet" | "gmxAccount">[]>(() => {
     const wildCard: RegularOption<"all"> = {
@@ -177,7 +180,7 @@ export function MultichainMarketTokenSelector({
         setIsVisible={setIsModalVisible}
         label={label}
         headerContent={
-          hideTabs || hasGmxAccountBalance !== hasWalletBalance ? null : (
+          showNetworksFilter ? (
             <div className="pb-12">
               <ButtonRowScrollFadeContainer>
                 <Tabs
@@ -190,11 +193,21 @@ export function MultichainMarketTokenSelector({
                 />
               </ButtonRowScrollFadeContainer>
             </div>
-          )
+          ) : null
         }
         contentPadding={false}
       >
-        <AvailableToTradeTokenList chainId={chainId} onSelectTokenAddress={onSelectTokenAddress} tokens={tokens} />
+        {filteredTokens.length === 0 && marketInfo ? (
+          <div className="flex grow items-center justify-center p-adaptive text-center text-typography-secondary">
+            <Trans>No {glvOrGm} in your wallet or GMX Account</Trans>
+          </div>
+        ) : (
+          <AvailableToTradeTokenList
+            chainId={chainId}
+            onSelectTokenAddress={onSelectTokenAddress}
+            tokens={filteredTokens}
+          />
+        )}
       </SlideModal>
       <div
         data-qa={"market-token-selector"}

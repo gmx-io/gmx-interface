@@ -400,10 +400,6 @@ msgstr "Telegramボット"
 msgid "Cancel Limit Swap"
 msgstr "指値スワップのキャンセル"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Yield farming"
-msgstr "イールドファーミング"
-
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 msgid "Roadmap"
 msgstr "ロードマップ"
@@ -1082,10 +1078,6 @@ msgstr "価格が不安定です。<0>許容スリッページを増やしてく
 msgid "Only send <0>{chainName}-compatible assets</0> to this address!"
 msgstr "このアドレスには<0>{chainName}対応の資産</0>のみを送信してください！"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Plutus"
-msgstr "Plutus"
-
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {hours} hours{0}"
 msgstr ""
@@ -1117,10 +1109,6 @@ msgstr "Solana上のGMX"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
 msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Trading simulations on GMX using DOJO"
-msgstr "DOJOを使用したGMXでのトレーディングシミュレーション"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Can I unstake or withdraw anytime?"
@@ -1348,10 +1336,6 @@ msgstr "SHORTS NET RATE / 1H"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Error:"
 msgstr "エラー："
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Cross-chain one-click deposits into GM"
-msgstr "GMへのクロスチェーン1クリック入金"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "<0>Switch to TBTC-TBTC pool</0> for potentially lower price impact"
@@ -1709,7 +1693,7 @@ msgstr "請求可能な保留中合計"
 msgid "Not yet"
 msgstr "まだ早い"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Period loss"
 msgstr "期間損失"
 
@@ -2242,7 +2226,6 @@ msgstr "すべての{marketTypeLabel}を検索"
 msgid "Decentralized trading protocol"
 msgstr "分散型取引プロトコル"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Symbiosis"
 msgstr "Symbiosis"
@@ -2942,7 +2925,7 @@ msgstr "私たちのコミュニティによって駆動"
 msgid "Shifting only available on {chainNames}. Switch networks to continue."
 msgstr "シフトは{chainNames}でのみ利用可能です。続行するにはネットワークを切り替えてください。"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Cumulative PnL"
 msgstr "累積PnL"
@@ -2975,10 +2958,6 @@ msgstr "GM:"
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Confirm settle"
 msgstr "決済を確認"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Protocol risk explorer and stats"
-msgstr "プロトコルリスクエクスプローラーと統計"
 
 #: src/components/ShareModal/ShareCardFrame.tsx
 msgid "Generating shareable image..."
@@ -3343,10 +3322,6 @@ msgstr "残高"
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Net rate projection:"
 msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX market token price chart"
-msgstr "GMXマーケットトークン価格チャート"
 
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 msgid "Lifetime LP rewards"
@@ -4002,10 +3977,6 @@ msgstr "このトリガー価格は現在の清算価格を超えています。
 msgid "Creating..."
 msgstr "作成中…"
 
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Annualized fees:"
-msgstr ""
-
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "{0, plural, one {is} other {are}}"
@@ -4222,10 +4193,6 @@ msgstr "リファラル規約"
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "URL"
 msgstr "URL"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Decentralized options protocol"
-msgstr "分散型オプションプロトコル"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Trade at scale without worrying about thin order books or slippage"
@@ -5266,10 +5233,6 @@ msgstr "GMXプールではこのスワップサイズを約定できません。
 msgid "Per 1h"
 msgstr "1時間あたり"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Perpetuals aggregator"
-msgstr "パーペチュアルアグリゲーター"
-
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Swap"
 msgstr "マーケットスワップリクエスト"
@@ -5532,10 +5495,6 @@ msgstr "正の影響係数"
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "All trades"
 msgstr "すべての取引"
-
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Annualized data based on the past 7 days. Solana fees do not contribute to GMX buybacks."
-msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking more than 20% of your max historical staked GMX or esGMX will reset your accrued rewards."
@@ -6595,10 +6554,6 @@ msgstr "s:"
 msgid "RPC error.<0/><1/>Enable <2>Express Trading</2> in settings for better reliability"
 msgstr "RPCエラー。<0/><1/>信頼性向上のため、設定で<2>Express Trading</2>を有効にしてください"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "UniDex Leverage"
-msgstr "UniDexレバレッジ"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "High execution reliability using premium RPCs"
 msgstr "プレミアムRPCによる高い約定信頼性"
@@ -6766,10 +6721,6 @@ msgstr "GMXのステーキングはArbitrumおよびAvalancheで利用可能で�
 msgid "Your funds are safe in GMX contracts on the destination chain. Retry the compose transaction in LayerZero Scan or contact support."
 msgstr "お客様の資金は送信先チェーンのGMXコントラクトに安全に保管されています。LayerZero Scanでcomposeトランザクションを再試行するか、サポートにお問い合わせください。"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Mozaic Finance"
-msgstr "Mozaic Finance"
-
 #: src/components/ChartTokenSelector/ModeTabs.tsx
 msgid "Perpetuals"
 msgstr "無期限"
@@ -6781,10 +6732,6 @@ msgstr "インパクト指数（マイナス）"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Use the \"Close\" button to reduce your position via market or TWAP orders."
 msgstr "「Close」ボタンを使用して、成行注文またはTWAP注文でポジションを縮小できます。"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "ODOS"
-msgstr "ODOS"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Substack"
@@ -6801,10 +6748,6 @@ msgstr ""
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "This is an external swap routed through KyberSwap. Allowed slippage includes price impact and fees, unlike GMX native swaps where these are separate."
 msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Stryke"
-msgstr "Stryke"
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "GMX APR"
@@ -6975,10 +6918,6 @@ msgstr "{fromSymbol}の残高が不足しています。ガストークンを{to
 msgid "Position may still liquidate from fees alone (funding + borrowing), reducing margin over time."
 msgstr ""
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Firebird Finance"
-msgstr "Firebird Finance"
-
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "{balanceFormatted} remaining in old 1CT subaccount"
 msgstr "旧1CTサブアカウントに{balanceFormatted}が残っています"
@@ -7117,6 +7056,10 @@ msgstr "清算"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP and GMX autocompounding vaults"
 msgstr "GLPおよびGMXの自動複利ボールト"
+
+#: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
+msgid "No {glvOrGm} in your wallet or GMX Account"
+msgstr "ウォレットにもGMX Accountにも{glvOrGm}がありません"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size exceeds pool value. Delta: {usdDeltaText}, pool: {poolUsdText}"
@@ -7652,10 +7595,6 @@ msgstr ""
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "1m 40s"
 msgstr "1分40秒"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GLP autocompounding vaults"
-msgstr "GLP自動複利ボールト"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Yes. To earn rebates on both Arbitrum and Avalanche, create your code on both networks. You can use the same code name on each."
@@ -8619,8 +8558,6 @@ msgstr "{gmOrGlvLabel}の売却に失敗しました。"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DEX aggregator"
 msgstr "DEXアグリゲーター"
 
@@ -8691,10 +8628,6 @@ msgstr "5分以内に取引を開始"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum actions before reauthorization required"
 msgstr "再認証が必要になるまでの最大アクション数"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX risk monitoring"
-msgstr "GMXリスクモニタリング"
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Minimum capital used of {0} required to qualify for rankings"
@@ -8890,10 +8823,6 @@ msgstr "GMXプールではこのスワップサイズを約定できず、現在
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "EVENT NAME"
 msgstr "イベント名"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Compass Labs GM token dashboard"
-msgstr "Compass Labs GMトークンダッシュボード"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -9467,6 +9396,11 @@ msgstr ""
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Liquidation price"
 msgstr "清算価格"
+
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
+msgid "Reset zoom"
+msgstr "ズームをリセット"
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "So far, my referrals have saved {totalDiscountsFormatted} total in discounts with my code: {referralCode}"
@@ -10354,10 +10288,6 @@ msgstr ""
 msgid "Transaction sent"
 msgstr "トランザクションが送信されました"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Perfectswap"
-msgstr "Perfectswap"
-
 #: src/components/ShareModal/ShareCardReferralCodeStat.tsx
 msgid "Referral code"
 msgstr "リファラルコード"
@@ -10663,7 +10593,6 @@ msgstr "入金が送信されました"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
-#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield vaults"
 msgstr "利回りボールト"
 
@@ -10833,10 +10762,6 @@ msgstr "<0>トレーダー割引は、ティアが確定すると自動的にア
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "LP"
 msgstr "LP"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Leverage trading terminal"
-msgstr "レバレッジ取引ターミナル"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver address"
@@ -11865,10 +11790,6 @@ msgstr "詳細を読む"
 msgid "GMX trading chat"
 msgstr "GMX trading chat"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Compass Labs trading simulations"
-msgstr "Compass Labs trading simulations"
-
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "Manage liquidity"
 msgstr "流動性を管理"
@@ -12080,10 +12001,6 @@ msgstr "{0} 件の注文が更新されませんでした。上限に達しま�
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Proportional stored impact"
 msgstr "比例配分された蓄積インパクト"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Rage Trade"
-msgstr "Rage Trade"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "1h"
@@ -12449,7 +12366,7 @@ msgstr "{glvOrGm}を入金"
 msgid "Wallet GMX"
 msgstr ""
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Period profit"
 msgstr "期間利益"
 
@@ -12781,10 +12698,6 @@ msgstr "手数料や価格への影響により、約定価格が指値と異な
 #: src/pages/RpcDebug/parts.tsx
 msgid "Private"
 msgstr "プライベート"
-
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Annualized GMX buy pressure:"
-msgstr ""
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} update failed"
