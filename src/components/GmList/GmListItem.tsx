@@ -10,6 +10,7 @@ import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
+  selectAccountWhitelistsResult,
   selectChainId,
   selectGlvAndMarketsInfoData,
   selectMultichainMarketTokensBalancesIsLoading,
@@ -30,6 +31,7 @@ import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDays
 import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { PerformanceSnapshot, PerformanceSnapshotsData } from "domain/synthetics/markets/usePerformanceSnapshots";
 import { convertToUsd, getTokenData } from "domain/synthetics/tokens";
+import { getDirectDepositAccess } from "domain/synthetics/whitelists/utils";
 import { ProgressiveTokenData } from "domain/tokens";
 import { PRECISION_DECIMALS, bigintToNumber, formatPercentage } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
@@ -52,7 +54,7 @@ import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { FeeApyLabel } from "./FeeApyLabel";
 import { GmTokensBalanceInfo } from "./GmTokensTotalBalanceInfo";
 import { PerformanceLabel } from "./PerformanceLabel";
-import { LaunchBoostBadge } from "./UsdgPoolBadges";
+import { LaunchBoostBadge, WhitelistOnlyBadge } from "./UsdgPoolBadges";
 
 const tokenAddressStyle = { fontSize: 5 };
 
@@ -103,6 +105,7 @@ export function GmListItem({
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
   const multichainMarketTokenBalances = multichainMarketTokensBalances[token.address];
   const isMultichainBalancesLoading = useSelector(selectMultichainMarketTokensBalancesIsLoading);
+  const whitelistsResult = useSelector(selectAccountWhitelistsResult);
   const hasBalanceOutsideWallet = getHasBalanceOutsideWallet(multichainMarketTokenBalances, chainId);
 
   const marketOrGlv = getByKey(marketsInfoData, token?.address);
@@ -114,7 +117,10 @@ export function GmListItem({
   const shortToken = getTokenData(tokensData, marketOrGlv?.shortTokenAddress);
 
   const marketOrGlvTokenAddress = marketOrGlv && getGlvOrMarketAddress(marketOrGlv);
+  const directDepositAccess =
+    marketOrGlv && !isGlv ? getDirectDepositAccess({ chainId, market: marketOrGlv, whitelistsResult }) : undefined;
   const isUsdgGlv = chainId === ARBITRUM && marketOrGlvTokenAddress === ARBITRUM_USDG_GLV_ADDRESS;
+  const isWhitelistOnly = directDepositAccess === "denied";
 
   const apy = isGlv
     ? getByKey(glvTokensApyData, marketOrGlvTokenAddress)
@@ -184,6 +190,7 @@ export function GmListItem({
                 </span>
                 {showRecentlyListedBadge && <RecentlyListedBadge />}
                 {isUsdgGlv && <LaunchBoostBadge />}
+                {isWhitelistOnly && <WhitelistOnlyBadge />}
 
                 <div className="inline-block">
                   <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
@@ -304,6 +311,7 @@ export function GmListItem({
               </span>
 
               {isUsdgGlv && <LaunchBoostBadge className="ml-6" />}
+              {isWhitelistOnly && <WhitelistOnlyBadge className="ml-6" />}
 
               <div className="inline-block">
                 <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />

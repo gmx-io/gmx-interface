@@ -1,6 +1,7 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 
+import Badge from "components/Badge/Badge";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import sparkleIcon from "img/sparkle.svg";
@@ -23,6 +24,26 @@ export function LaunchBoostBadge({ className }: { className?: string }) {
     >
       <img className="h-10" src={sparkleIcon} alt="" />
       <Trans>Launch boost</Trans>
+    </TooltipWithPortal>
+  );
+}
+
+export function WhitelistOnlyBadge({ className }: { className?: string }) {
+  return (
+    <TooltipWithPortal
+      as="div"
+      variant="none"
+      className={cx("flex", className)}
+      content={
+        <Trans>
+          Direct deposits into this pool are open to whitelisted addresses. GLV [USDG] gives you the same markets in one
+          deposit.
+        </Trans>
+      }
+    >
+      <Badge>
+        <Trans>Whitelist only</Trans>
+      </Badge>
     </TooltipWithPortal>
   );
 }
