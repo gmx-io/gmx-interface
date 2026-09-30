@@ -7118,6 +7118,10 @@ msgstr "ЛИКВ."
 msgid "GLP and GMX autocompounding vaults"
 msgstr "Хранилища с автокомпаундингом GLP и GMX"
 
+#: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
+msgid "No {glvOrGm} in your wallet or GMX Account"
+msgstr "Нет {glvOrGm} ни в вашем кошельке, ни на GMX Account"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size exceeds pool value. Delta: {usdDeltaText}, pool: {poolUsdText}"
 msgstr "Размер позиции превышает стоимость пула. Delta: {usdDeltaText}, пул: {poolUsdText}"

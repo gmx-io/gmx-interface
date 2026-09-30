@@ -7118,6 +7118,10 @@ msgstr "清算"
 msgid "GLP and GMX autocompounding vaults"
 msgstr "GLP 和 GMX 自动复合金库"
 
+#: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
+msgid "No {glvOrGm} in your wallet or GMX Account"
+msgstr "您的钱包和 GMX Account 中都没有 {glvOrGm}"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size exceeds pool value. Delta: {usdDeltaText}, pool: {poolUsdText}"
 msgstr "仓位规模超过池价值。Delta：{usdDeltaText}，池：{poolUsdText}"

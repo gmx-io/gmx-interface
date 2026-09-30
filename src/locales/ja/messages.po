@@ -7118,6 +7118,10 @@ msgstr "清算"
 msgid "GLP and GMX autocompounding vaults"
 msgstr "GLPおよびGMXの自動複利ボールト"
 
+#: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
+msgid "No {glvOrGm} in your wallet or GMX Account"
+msgstr "ウォレットにもGMX Accountにも{glvOrGm}がありません"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size exceeds pool value. Delta: {usdDeltaText}, pool: {poolUsdText}"
 msgstr "ポジションサイズがプール値を超えています。デルタ: {usdDeltaText}、プール: {poolUsdText}"
