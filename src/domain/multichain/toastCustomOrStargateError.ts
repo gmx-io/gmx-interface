@@ -1,34 +1,34 @@
-import type { CallExceptionError, EthersError } from "ethers";
+import type { ReactNode } from "react";
 import { Abi, decodeErrorResult } from "viem";
 
 import type { AnyChainId } from "config/chains";
 import { StargateErrorsAbi } from "config/multichain";
-import { extractErrorDataFromViemError, isCustomError } from "lib/errors";
+import { parseError } from "lib/errors";
+import { decodeInnermostCustomErrorFromError, extractErrorRevertData } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import { TradingActionName } from "lib/tradingErrorTracker";
 import { abis } from "sdk/abis";
+import { TxErrorType } from "sdk/utils/errors/transactionsErrors";
 
 import { getTxnErrorToast } from "components/Errors/errorToasts";
+import { getContractErrorToastContent } from "components/Errors/getContractErrorToastContent";
 
 export function toastCustomOrStargateError(
   chainId: AnyChainId,
   error: Error,
-  errorInfo?: { actionName?: TradingActionName; requestId?: string; metricId?: string; collateral?: string }
+  errorInfo?: {
+    actionName?: TradingActionName;
+    requestId?: string;
+    metricId?: string;
+    collateral?: string;
+    isLpWithdrawal?: boolean;
+    defaultMessage?: ReactNode;
+  }
 ) {
   let prettyErrorName = error.name;
   let prettyErrorMessage = error.message;
-  let contractError: string | undefined;
-  let contractErrorArgs: unknown;
 
-  if (isCustomError(error)) {
-    contractError = error.name;
-    contractErrorArgs = error.args;
-  }
-
-  const data =
-    extractErrorDataFromViemError(error) ??
-    (error as EthersError)?.info?.error?.data ??
-    (error as CallExceptionError)?.data;
+  const data = extractErrorRevertData(error);
   if (data) {
     try {
       const parsedError = decodeErrorResult({
@@ -38,22 +38,27 @@ export function toastCustomOrStargateError(
 
       prettyErrorName = parsedError.errorName;
       prettyErrorMessage = JSON.stringify(parsedError, null, 2);
-      contractError = parsedError.errorName;
-      contractErrorArgs = parsedError.args;
     } catch (decodeError) {
       // pass
     }
   }
 
+  const customError = decodeInnermostCustomErrorFromError(error);
+  const errorData = parseError(error);
+
   const toastContext = getTxnErrorToast(
     chainId,
     {
       errorMessage: prettyErrorMessage,
-      contractError,
-      contractErrorArgs,
+      txErrorType: errorData?.isUserRejectedError ? TxErrorType.UserDenied : undefined,
     },
     {
-      defaultMessage: prettyErrorName,
+      defaultMessage:
+        getContractErrorToastContent({
+          chainId,
+          errorData: { contractError: customError?.name, contractErrorArgs: customError?.args },
+          isLpWithdrawal: errorInfo?.isLpWithdrawal,
+        }) ?? errorInfo?.defaultMessage,
     }
   );
 
@@ -62,7 +67,7 @@ export function toastCustomOrStargateError(
     tradingErrorInfo: errorInfo?.actionName
       ? {
           actionName: errorInfo.actionName,
-          errorData: error,
+          errorData,
           requestId: errorInfo.requestId,
           metricId: errorInfo.metricId,
           collateral: errorInfo.collateral,

@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import partition from "lodash/partition";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSWRConfig } from "swr";
 import { zeroAddress } from "viem";
 import { useAccount } from "wagmi";
@@ -8,6 +8,7 @@ import { useAccount } from "wagmi";
 import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useArbitraryError, useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
+import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
 import { getReferralsDataKey } from "domain/referrals/hooks/useReferralsData";
 import { ExpressTransactionBuilder } from "domain/synthetics/express/types";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
@@ -49,6 +50,7 @@ import useWallet from "lib/wallets/useWallet";
 import { getToken } from "sdk/configs/tokens";
 import type { TokenData } from "sdk/utils/tokens/types";
 
+import { getSimulationErrorButtonContent } from "components/Errors/getSimulationErrorButtonContent";
 import { calculateNetworkFeeDetails } from "components/GmxAccountModal/calculateNetworkFeeDetails";
 
 const MAIN_REWARDS_PREVIEW_COUNT = 5;
@@ -82,6 +84,7 @@ export type SubmitButtonState = {
   text: string;
   disabled: boolean;
   showSpinner?: boolean;
+  errorDescription?: ReactNode;
 };
 
 export function getRewardUsd(reward: AffiliateReward, marketsInfoData: MarketsInfoData | undefined): bigint {
@@ -346,7 +349,7 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
       }
     } catch (error) {
       metrics.pushError(error, "settlementClaimAffiliateRewards");
-      helperToast.error(t`Failed to claim affiliate rewards`);
+      toastCustomOrStargateError(chainId, error, { defaultMessage: t`Failed to claim affiliate rewards` });
     } finally {
       setIsSubmitting(false);
     }
@@ -471,9 +474,9 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
   );
 
   const settlementNetworkFeeGasLimit = settlementNetworkFeeAsyncResult.data;
-  const maybeSlippageError = useMaybeSlippageError(
-    srcChainId === undefined ? settlementNetworkFeeAsyncResult.error : expressTxnParamsAsyncResult.error
-  );
+  const claimSimulationError =
+    srcChainId === undefined ? settlementNetworkFeeAsyncResult.error : expressTxnParamsAsyncResult.error;
+  const maybeSlippageError = useMaybeSlippageError(claimSimulationError);
 
   const settlementNetworkFeeDetails = useMemo(
     () =>
@@ -529,7 +532,7 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
 
       onClose();
     } catch (error) {
-      helperToast.error(t`Claiming affiliate rewards failed`);
+      toastCustomOrStargateError(chainId, error, { defaultMessage: t`Claiming affiliate rewards failed` });
       metrics.pushError(error, "multichainClaimAffiliateRewards");
     } finally {
       setIsSubmitting(false);
@@ -684,7 +687,7 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
       return { text: t`Swap route unavailable`, disabled: true };
     } else if (isSlippageTooLow) {
       return { text: t`Slippage too low`, disabled: true };
-    } else if (networkFeeInfo.isLoading) {
+    } else if (networkFeeInfo.isLoading && !claimSimulationError) {
       return { text: t`Loading fees...`, disabled: true };
     } else if (isFallbackOutOfGasPaymentTokenBalance || errors?.isOutOfTokenError?.isGasPaymentToken) {
       return { text: getDefaultInsufficientGasMessage(), disabled: true };
@@ -693,9 +696,13 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
       return { text: t`Insufficient ${token?.symbol} balance`, disabled: true };
     } else if (isExpressParamsLoading) {
       return { text: t`Loading...`, disabled: true, showSpinner: true };
-    } else if (srcChainId !== undefined && expressTxnParamsAsyncResult.error) {
+    } else if (claimSimulationError) {
       return {
-        text: expressTxnParamsAsyncResult.error.name.slice(0, 32) || t`Error simulating claim`,
+        ...getSimulationErrorButtonContent({
+          chainId,
+          error: claimSimulationError,
+          fallbackText: t`Error simulating claim`,
+        }),
         disabled: true,
       };
     } else {
@@ -706,8 +713,8 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
     }
   }, [
     chainId,
+    claimSimulationError,
     errors?.isOutOfTokenError,
-    expressTxnParamsAsyncResult.error,
     hasOutdatedUi,
     hasSwapRouteErrorForSubmit,
     isExpressParamsLoading,
@@ -719,7 +726,6 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
     swapRouteFetchProgress,
     networkFeeInfo.isLoading,
     selectedMarketAddresses.length,
-    srcChainId,
     swapTargetTokenAddress,
   ]);
 

@@ -1,9 +1,21 @@
+import { ethers } from "ethers";
+import {
+  ContractFunctionExecutionError,
+  ContractFunctionRevertedError,
+  encodeErrorResult,
+  zeroAddress,
+  type Abi,
+  type Hex,
+} from "viem";
 import { describe, expect, it } from "vitest";
 
+import { ARBITRUM } from "config/chains";
+import { CustomError } from "lib/errors";
 import { expandDecimals } from "lib/numbers";
+import { abis } from "sdk/abis";
 import { CustomErrorName } from "sdk/utils/errors";
 
-import { getContractErrorMessage } from "./getContractErrorMessage";
+import { getContractErrorMessage, getContractErrorMessageFromError } from "./getContractErrorMessage";
 
 describe("getContractErrorMessage", () => {
   it("returns a friendly collateral cap error", () => {
@@ -123,5 +135,152 @@ describe("getContractErrorMessage — LiquidatablePosition", () => {
   it.each(["min collateral", "< 0"])("keeps the generic copy for reason '%s'", (reason) => {
     // formatUsd separates the sign with a non-breaking space, so match on the shape
     expect(call(reason)).toMatch(/^Position would be liquidatable\. Current: \$\s?90\.00, required: \$\s?100\.00$/);
+  });
+});
+
+describe("getContractErrorMessage — token amounts without token context PRO-4168", () => {
+  it.each([
+    [
+      CustomErrorName.MaxPoolAmountExceeded,
+      { poolAmount: 5_000_000_000_000n, maxPoolAmount: 4_000_000_000_000n },
+      "Max pool capacity reached",
+    ],
+    [
+      CustomErrorName.InsufficientPoolAmount,
+      { poolAmount: 1_000_000n, amount: 2_000_000n },
+      "Insufficient pool liquidity",
+    ],
+    [
+      CustomErrorName.InsufficientOutputAmount,
+      { outputAmount: 999_000n, minOutputAmount: 1_000_000n },
+      "Slippage exceeded",
+    ],
+  ])("does not show raw token units for %s", (contractError, contractErrorArgs, expected) => {
+    expect(getContractErrorMessage({ errorData: { contractError, contractErrorArgs } })).toBe(expected);
+  });
+});
+
+describe("getContractErrorMessage — GM/GLV and multichain flows PRO-4168", () => {
+  // TON GM withdrawal revert: 48.01% short PnL-to-pool ratio against the 45% withdrawal cap
+  const pnlFactorExceededForShorts = encodeErrorResult({
+    abi: abis.CustomErrors,
+    errorName: CustomErrorName.PnlFactorExceededForShorts,
+    args: [480103447088416912169261436793n, 450000000000000000000000000000n],
+  });
+  const wrapInExternalCall = (data: Hex) =>
+    encodeErrorResult({ abi: abis.CustomErrors, errorName: CustomErrorName.ExternalCallFailed, args: [data] });
+  const viemRevert = (data: Hex) =>
+    new ContractFunctionExecutionError(
+      new ContractFunctionRevertedError({ abi: abis.CustomErrors as Abi, data, functionName: "multicall" }),
+      { abi: [], functionName: "multicall" }
+    );
+
+  const shortsWithdrawalMessage =
+    "Withdrawal unavailable: selling this amount would raise short traders' PnL-to-pool ratio to 48.01%, above the 45% limit. Try a smaller amount or try again later.";
+
+  it.each([
+    ["a simulation revert", viemRevert(wrapInExternalCall(pnlFactorExceededForShorts))],
+    [
+      "a doubly wrapped simulation revert",
+      viemRevert(wrapInExternalCall(wrapInExternalCall(pnlFactorExceededForShorts))),
+    ],
+    [
+      "a relay call exception",
+      ethers.makeError("execution reverted (unknown custom error)", "CALL_EXCEPTION", {
+        transaction: { to: zeroAddress, data: "0x" },
+        data: wrapInExternalCall(pnlFactorExceededForShorts),
+        action: "call",
+        reason: null,
+        invocation: null,
+        revert: null,
+      }),
+    ],
+    [
+      "a wallet send revert",
+      ethers.makeError("could not coalesce error", "UNKNOWN_ERROR", {
+        error: { code: 3, message: "execution reverted", data: wrapInExternalCall(pnlFactorExceededForShorts) },
+      }),
+    ],
+    [
+      "a relay estimation error",
+      new CustomError({
+        name: CustomErrorName.ExternalCallFailed,
+        message: "",
+        args: { data: wrapInExternalCall(pnlFactorExceededForShorts) },
+      }),
+    ],
+  ])("resolves %s to the innermost PnL-factor cause of a withdrawal", (_, error) => {
+    expect(getContractErrorMessageFromError({ chainId: ARBITRUM, error, isLpWithdrawal: true })).toBe(
+      shortsWithdrawalMessage
+    );
+  });
+
+  it.each([
+    [
+      "an unmapped error",
+      wrapInExternalCall(encodeErrorResult({ abi: abis.CustomErrors, errorName: "EmptyWithdrawalAmount" })),
+    ],
+    ["a cause that is not a custom error", wrapInExternalCall("0x08c379a0")],
+  ])("leaves %s wrapped in ExternalCallFailed unmapped outside orders", (_, data) => {
+    expect(getContractErrorMessageFromError({ chainId: ARBITRUM, error: viemRevert(data) })).toBeUndefined();
+  });
+
+  it.each([
+    [
+      "long side of a withdrawal",
+      {
+        contractError: CustomErrorName.PnlFactorExceededForLongs,
+        contractErrorArgs: { pnlToPoolFactor: 623100000000000000000000000000n, maxPnlFactor: expandDecimals(6, 29) },
+      },
+      true,
+      "Withdrawal unavailable: selling this amount would raise long traders' PnL-to-pool ratio to 62.31%, above the 60% limit. Try a smaller amount or try again later.",
+    ],
+    [
+      "PnL factor outside a withdrawal",
+      {
+        contractError: CustomErrorName.PnlFactorExceededForShorts,
+        contractErrorArgs: { pnlToPoolFactor: 480103447088416912169261436793n, maxPnlFactor: expandDecimals(45, 28) },
+      },
+      false,
+      "Max profit limit reached. Current: 48.01%, max: 45.00%",
+    ],
+    [
+      "withdrawal ratio that rounds to its limit",
+      {
+        contractError: CustomErrorName.PnlFactorExceededForShorts,
+        contractErrorArgs: { pnlToPoolFactor: 450040000000000000000000000000n, maxPnlFactor: expandDecimals(45, 28) },
+      },
+      true,
+      "Withdrawal unavailable: selling this amount would raise short traders' PnL-to-pool ratio to 45.01%, above the 45% limit. Try a smaller amount or try again later.",
+    ],
+    [
+      "PnL factor that rounds to its limit outside a withdrawal",
+      {
+        contractError: CustomErrorName.PnlFactorExceededForLongs,
+        contractErrorArgs: { pnlToPoolFactor: 450040000000000000000000000000n, maxPnlFactor: expandDecimals(45, 28) },
+      },
+      false,
+      "Max profit limit reached. Current: 45.01%, max: 45.00%",
+    ],
+    [
+      "top-level mapped error",
+      { contractError: CustomErrorName.DisabledMarket, contractErrorArgs: { market: zeroAddress } },
+      true,
+      "Market temporarily disabled",
+    ],
+    [
+      "wrapped unmapped error",
+      {
+        contractError: CustomErrorName.ExternalCallFailed,
+        contractErrorArgs: {
+          data: encodeErrorResult({ abi: abis.CustomErrors, errorName: "EmptyWithdrawalAmount" }),
+        },
+      },
+      true,
+      "Order execution failed",
+    ],
+    ["unmapped error", { contractError: "EmptyWithdrawalAmount", contractErrorArgs: undefined }, true, undefined],
+  ])("maps %s", (_, errorData, isLpWithdrawal, expected) => {
+    expect(getContractErrorMessage({ chainId: ARBITRUM, errorData, isLpWithdrawal })).toBe(expected);
   });
 });
