@@ -1,0 +1,24 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Group 73">
+<g id="Ellipse">
+<circle cx="10" cy="10" r="4" fill="#2D42FC"/>
+<circle cx="10" cy="10" r="4" fill="url(#paint0_linear_1046_2767)"/>
+</g>
+<circle id="Ellipse_2" opacity="0.6" cx="10" cy="10" r="6.5" stroke="url(#paint1_linear_1046_2767)"/>
+<circle id="Ellipse_3" opacity="0.2" cx="10" cy="10" r="9.5" stroke="url(#paint2_linear_1046_2767)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_1046_2767" x1="10.401" y1="0.210526" x2="28.7131" y2="8.50698" gradientUnits="userSpaceOnUse">
+<stop stop-color="#A4C3F9"/>
+<stop offset="1" stop-color="#2D42FC"/>
+</linearGradient>
+<linearGradient id="paint1_linear_1046_2767" x1="10.7018" y1="-7.13158" x2="42.748" y2="7.38722" gradientUnits="userSpaceOnUse">
+<stop stop-color="#A4C3F9"/>
+<stop offset="1" stop-color="#2D42FC"/>
+</linearGradient>
+<linearGradient id="paint2_linear_1046_2767" x1="11.0025" y1="-14.4737" x2="56.7828" y2="6.26746" gradientUnits="userSpaceOnUse">
+<stop stop-color="#A4C3F9"/>
+<stop offset="1" stop-color="#2D42FC"/>
+</linearGradient>
+</defs>
+</svg>

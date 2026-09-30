@@ -1,4 +1,5 @@
 import { Trans } from "@lingui/macro";
+import { Link } from "react-router-dom";
 
 import IcGmxFooter from "img/ic_gmx_footer.svg?react";
 
@@ -8,9 +9,9 @@ export function BuildersFooter() {
   return (
     <footer className="relative w-full px-16 py-16 sm:px-40">
       <div className="mx-auto flex w-full max-w-[1200px] flex-col items-center justify-between gap-16 text-12 text-white sm:flex-row">
-        <a href="/" aria-label="GMX">
+        <Link to="/" aria-label="GMX">
           <IcGmxFooter className="h-24" />
-        </a>
+        </Link>
         <div className="flex items-center gap-12">
           <a
             href={GMX_DOCS_URL}

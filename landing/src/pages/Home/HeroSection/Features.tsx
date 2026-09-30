@@ -9,6 +9,7 @@ import IcProtection from "img/ic_protection.svg?react";
 import { ChainIcons } from "./ChainIcons";
 import { ProtectionBackground } from "./ProtectionBackground";
 import { SeamlessBackground } from "./SeamlessBackground";
+import { RedirectChainIds, useGoToTrade } from "../hooks/useGoToTrade";
 import { IconBox } from "../IconBox/IconBox";
 
 const assetsBgStyle = {
@@ -16,11 +17,12 @@ const assetsBgStyle = {
   backgroundSize: "cover",
 };
 
-type Props = {
-  goToTradeArbitrum: () => void;
-};
+export function Features() {
+  const goToTradeArbitrum = useGoToTrade({
+    buttonPosition: "HeroSection",
+    chainId: RedirectChainIds.Arbitum,
+  });
 
-export function Features({ goToTradeArbitrum }: Props) {
   return (
     <div className="relative flex flex-col gap-24 py-80 lg:grid lg:grid-cols-3 lg:grid-rows-3 lg:py-[120px]">
       <div className="flex flex-col gap-24 lg:col-start-1 lg:col-end-2 lg:row-start-1 lg:row-end-4">

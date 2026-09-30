@@ -10,6 +10,7 @@ import { useHomePageContext } from "landing/pages/Home/contexts/HomePageContext"
 import { RedirectChainIds } from "landing/pages/Home/hooks/useGoToTrade";
 import { getLandingReferralCode } from "landing/utils/referralCode";
 import { useCallback } from "react";
+import { Link } from "react-router-dom";
 
 import { REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
@@ -157,9 +158,9 @@ export function ContactSection() {
       </div>
 
       <div className="relative mt-76 flex w-full max-w-[1200px] flex-col items-center gap-16 pb-16 text-12 tracking-[0.024px] text-white sm:flex-row sm:justify-between">
-        <a href="/" aria-label="GMX">
+        <Link to="/" aria-label="GMX">
           <img src={footerLogo} alt="GMX" className="h-16 w-[70px]" />
-        </a>
+        </Link>
         <p className="text-center">
           <Trans>We reply within ~2 hours during market hours. No obligation — just a conversation.</Trans>
         </p>
