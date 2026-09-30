@@ -62,6 +62,10 @@ import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTrad
 import useIsFirstOrder from "domain/synthetics/tradeHistory/useIsFirstOrder";
 import { UiFlags, useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
+import {
+  AccountWhitelistsResult,
+  useAccountWhitelistsRequest,
+} from "domain/synthetics/whitelists/useAccountWhitelistsRequest";
 import { ProgressiveTokensData } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
@@ -139,6 +143,8 @@ export type SyntheticsState = {
     oracleSettings: OracleSettingsData | undefined;
 
     jitLiquidityData: JitLiquidityData;
+
+    accountWhitelistsResult: AccountWhitelistsResult;
   };
   claims: {
     accruedPositionPriceImpactFees: RebateInfoItem[];
@@ -261,6 +267,7 @@ export function SyntheticsStateContextProvider({
   const subaccountState = useSubaccountContext();
   const { features } = useEnabledFeaturesRequest(chainId);
   const { uiFlags } = useUiFlagsRequest();
+  const accountWhitelistsResult = useAccountWhitelistsRequest(chainId, account, { enabled: pageType === "pools" });
 
   const {
     isLoading,
@@ -422,6 +429,8 @@ export function SyntheticsStateContextProvider({
         oracleSettings,
 
         jitLiquidityData,
+
+        accountWhitelistsResult,
       },
       claims: { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees },
       leaderboard,
@@ -459,6 +468,7 @@ export function SyntheticsStateContextProvider({
     isCandlesLoaded,
     isFirstOrder,
     jitLiquidityData,
+    accountWhitelistsResult,
     isLargeAccount,
     isLoading,
     keepLeverage,
