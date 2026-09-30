@@ -107,11 +107,16 @@ function feeValueHandle(row: Locator): Locator {
   return row.locator(".text-right .Tooltip-handle").first();
 }
 
-/** `<amount> <TOKEN> ($<usd>) · <source>`; the formatters use non-breaking spaces */
+/** `-<amount> <TOKEN> (-$<usd>) · <source>`; the formatters use non-breaking spaces */
 async function expectFeeValue(row: Locator, token: string, source: string) {
   // fee estimation is throttled and, for GM, asynchronous, so give it room on a loaded machine
-  await expect(row).toContainText(new RegExp(`[\\d.,<]+\\s${token}\\s\\(\\$\\s?[\\d.,<]+\\)`), { timeout: 40_000 });
+  await expect(row).toContainText(new RegExp(`-[\\d.,<]+\\s${token}\\s\\(-\\$\\s?[\\d.,<]+\\)`), { timeout: 40_000 });
   await expect(row).toContainText(`· ${source}`);
+}
+
+async function getUsdValue(locator: Locator) {
+  const match = (await locator.innerText()).match(/\(-?\$\s?([\d.,]+)\)/);
+  return match ? Number(match[1].replace(/,/g, "")) : NaN;
 }
 
 function openExecutionDetails(page: PageLike) {
@@ -131,7 +136,9 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
 
       await feeValueHandle(row).hover();
       await expect(page.getByText(WALLET_CLASSIC_EXPLANATION)).toBeVisible();
-      await expect(page.getByText("Max network fee:", { exact: true })).toBeVisible();
+      const maxFeeLine = page.getByText("Max network fee:", { exact: true }).locator("..");
+      await expect(maxFeeLine).toBeVisible();
+      expect(await getUsdValue(row)).toBeLessThan(await getUsdValue(maxFeeLine));
     });
 
     test("Express: gas payment token from the wallet, refund in the native token to the wallet", async ({
@@ -148,7 +155,9 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
 
       await feeValueHandle(row).hover();
       await expect(page.getByText(WALLET_EXPRESS_EXPLANATION)).toBeVisible();
-      await expect(page.getByText("Max network fee:", { exact: true }).locator("..")).toContainText("USDC");
+      const maxFeeLine = page.getByText("Max network fee:", { exact: true }).locator("..");
+      await expect(maxFeeLine).toContainText("USDC");
+      expect(await getUsdValue(row)).toBeLessThan(await getUsdValue(maxFeeLine));
       const refundLine = page.getByText("Estimated fee refund").locator("..");
       await expect(refundLine).toContainText(" ETH (");
       await expect(refundLine).toContainText("· Wallet");
@@ -349,7 +358,7 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
       await page.getByText("Fees", { exact: true }).locator("..").locator(".Tooltip-handle").first().hover();
 
       const networkFeeLine = page.locator(".Tooltip-row").filter({ hasText: "Network fee:" });
-      await expect(networkFeeLine).toContainText(/[\d.,<]+\sETH\s\(\$\s?[\d.,<]+\)/, { timeout: 20_000 });
+      await expect(networkFeeLine).toContainText(/-[\d.,<]+\sETH\s\(-\$\s?[\d.,<]+\)/, { timeout: 20_000 });
       await expect(networkFeeLine).toContainText("· Wallet");
     });
 

@@ -1535,9 +1535,9 @@ export const WithdrawalView = () => {
     return (
       <AmountWithUsdBalance
         className="leading-1"
-        amount={protocolFeeAmount}
+        amount={protocolFeeAmount === undefined ? undefined : -protocolFeeAmount}
         decimals={selectedTokenSettlementChainTokenId.decimals}
-        usd={protocolFeeUsd}
+        usd={-protocolFeeUsd}
         symbol={selectedToken?.symbol}
       />
     );

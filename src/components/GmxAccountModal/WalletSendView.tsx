@@ -639,9 +639,9 @@ export function WalletSendView() {
     return (
       <AmountWithUsdBalance
         className="leading-1"
-        amount={protocolFeeAmount}
+        amount={-protocolFeeAmount}
         decimals={selectedToken.decimals}
-        usd={protocolFeeUsd}
+        usd={protocolFeeUsd === undefined ? undefined : -protocolFeeUsd}
         symbol={selectedToken.symbol}
       />
     );

@@ -1243,9 +1243,9 @@ export const DepositView = () => {
     return (
       <AmountWithUsdBalance
         className="leading-1"
-        amount={protocolFeeAmount}
+        amount={-protocolFeeAmount}
         decimals={selectedTokenSourceChainDecimals}
-        usd={protocolFeeUsd}
+        usd={protocolFeeUsd === undefined ? undefined : -protocolFeeUsd}
         symbol={selectedToken?.symbol}
       />
     );

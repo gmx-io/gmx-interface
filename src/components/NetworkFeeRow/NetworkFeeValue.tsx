@@ -44,7 +44,13 @@ export function NetworkFeeValue({
 
   const value = (
     <span className={className}>
-      <AmountWithUsdBalance amount={amount} decimals={decimals} usd={usd} symbol={symbol} isStable={isStable} />
+      <AmountWithUsdBalance
+        amount={amount === undefined ? undefined : -amount}
+        decimals={decimals}
+        usd={usd === undefined ? undefined : -usd}
+        symbol={symbol}
+        isStable={isStable}
+      />
       {source && <NetworkFeeSourceLabel source={source} />}
     </span>
   );

@@ -125,7 +125,7 @@ export function NetworkFeeRow({
     return getByKey(tokensData, refundTokenAddress);
   }, [chainId, networkFee, refundSource, tokensData]);
 
-  const { estimatedRefundParts, estimatedRefundUsd, estimatedRefundTokenAmount } = useMemo(() => {
+  const { estimatedRefundParts, estimatedRefundUsd } = useMemo(() => {
     let estimatedRefundUsd: bigint | undefined;
 
     if (!networkFee || executionFeeBufferBps === undefined) {
@@ -168,7 +168,6 @@ export function NetworkFeeRow({
     return {
       estimatedRefundParts,
       estimatedRefundUsd,
-      estimatedRefundTokenAmount,
     };
   }, [executionFeeBufferBps, networkFee, refundSource, refundToken]);
 
@@ -188,10 +187,11 @@ export function NetworkFeeRow({
       }
     );
 
-    const feeUsdAfterRefund = networkFee.isExpress ? networkFee.feeUsd : networkFee.feeUsd - (estimatedRefundUsd ?? 0n);
-    const feeAmountAfterRefund = networkFee.isExpress
-      ? networkFee.feeAmount
-      : networkFee.feeAmount - (estimatedRefundTokenAmount ?? 0n);
+    const feeUsdAfterRefund = networkFee.feeUsd - (estimatedRefundUsd ?? 0n);
+    const feeAmountAfterRefund =
+      networkFee.feeAmount -
+      (convertToTokenAmount(estimatedRefundUsd, networkFee.feeToken.decimals, networkFee.feeToken.prices.minPrice) ??
+        0n);
 
     const warning = executionFee ? getExecutionFeeWarning(chainId, executionFee) : undefined;
 
@@ -257,7 +257,6 @@ export function NetworkFeeRow({
     networkFee,
     networkFeeDisplayDecimals,
     estimatedRefundUsd,
-    estimatedRefundTokenAmount,
     executionFee,
     chainId,
     feeSource,
