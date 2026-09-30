@@ -124,8 +124,6 @@
     "worker-loader": "3.0.8"
   },
   "resolutions": {
-    "vite-plugin-top-level-await/@swc/core": "1.15.47",
-    "vite-plugin-top-level-await/@swc/wasm": "1.15.47",
     "vite": "6.4.3",
     "react-error-overlay": "6.0.9",
     "@coinbase/wallet-sdk": "4.3.0",
@@ -205,8 +203,6 @@
     "vite": "6.4.3",
     "vite-bundle-analyzer": "0.20.1",
     "vite-plugin-svgr": "4.2.0",
-    "vite-plugin-top-level-await": "^1.6.0",
-    "vite-plugin-wasm": "^3.5.0",
     "vite-tsconfig-paths": "5.0.1",
     "vitest": "4.1.11"
   },
