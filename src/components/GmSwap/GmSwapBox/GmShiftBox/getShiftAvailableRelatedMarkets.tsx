@@ -1,6 +1,8 @@
 import { isShiftIntoDisabledMarket } from "config/static/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import type { GlvAndGmMarketsInfoData, GlvOrMarketInfo } from "domain/synthetics/markets/types";
+import type { GlvAndGmMarketsInfoData, GlvOrMarketInfo, MarketInfo } from "domain/synthetics/markets/types";
+import type { AccountWhitelistsResult } from "domain/synthetics/whitelists/useAccountWhitelistsRequest";
+import { getDirectDepositAccess, getIsDirectDepositBlocked } from "domain/synthetics/whitelists/utils";
 import { EMPTY_ARRAY } from "lib/objects";
 
 export function getShiftAvailableRelatedMarkets({
@@ -8,19 +10,31 @@ export function getShiftAvailableRelatedMarkets({
   marketsInfoData,
   sortedMarketsInfoByIndexToken,
   marketTokenAddress,
+  whitelistsResult,
 }: {
   chainId: number;
   marketsInfoData: GlvAndGmMarketsInfoData | undefined;
   sortedMarketsInfoByIndexToken: GlvOrMarketInfo[];
   marketTokenAddress?: string;
+  whitelistsResult: AccountWhitelistsResult;
 }) {
   if (!marketsInfoData) {
     return EMPTY_ARRAY;
   }
 
+  const getIsShiftIntoAvailable = (marketInfo: MarketInfo) => {
+    if (isShiftIntoDisabledMarket(chainId, marketInfo.marketTokenAddress)) {
+      return false;
+    }
+
+    const directDepositAccess = getDirectDepositAccess({ chainId, market: marketInfo, whitelistsResult });
+
+    return !getIsDirectDepositBlocked(directDepositAccess);
+  };
+
   if (!marketTokenAddress) {
     return sortedMarketsInfoByIndexToken.filter(
-      (marketInfo) => isGlvInfo(marketInfo) || !isShiftIntoDisabledMarket(chainId, marketInfo.marketTokenAddress)
+      (marketInfo) => isGlvInfo(marketInfo) || getIsShiftIntoAvailable(marketInfo)
     );
   }
 
@@ -41,9 +55,9 @@ export function getShiftAvailableRelatedMarkets({
     const isSame = marketInfo.marketTokenAddress === marketTokenAddress;
     const isRelated =
       marketInfo.longTokenAddress === longTokenAddress && marketInfo.shortTokenAddress === shortTokenAddress;
-    const isShiftIntoDisabled = isShiftIntoDisabledMarket(chainId, marketInfo.marketTokenAddress);
+    const isShiftIntoAvailable = getIsShiftIntoAvailable(marketInfo);
 
-    return !isSame && isRelated && !isShiftIntoDisabled;
+    return !isSame && isRelated && isShiftIntoAvailable;
   });
 
   const relatedGlvs = sortedMarketsInfoByIndexToken.filter((marketInfo) => {
