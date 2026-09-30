@@ -11,7 +11,7 @@ import { MarketsInfoData } from "domain/synthetics/markets";
 import { getSubsquidGraphClient } from "lib/indexers";
 import { BN_ZERO, toBigInt } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { getToken } from "sdk/configs/tokens";
+import { getToken, isValidTokenSafe } from "sdk/configs/tokens";
 import { buildFiltersBody } from "sdk/utils/indexers";
 
 import { ClaimAction, ClaimCollateralAction, ClaimFundingFeeAction, ClaimMarketItem, ClaimType } from "./types";
@@ -19,6 +19,7 @@ import { ClaimAction, ClaimCollateralAction, ClaimFundingFeeAction, ClaimMarketI
 export type ClaimCollateralHistoryResult = {
   claimActions?: ClaimAction[];
   isLoading: boolean;
+  hasMorePages: boolean;
   pageIndex: number;
   setPageIndex: (...args: Parameters<SWRInfiniteResponse["setSize"]>) => void;
 };
@@ -112,6 +113,13 @@ export function useClaimCollateralHistory(
     return data
       .flatMap((page) => page.claimActions)
       .reduce((acc, rawAction) => {
+        if (
+          rawAction.tokenAddresses.some((address) => !isValidTokenSafe(chainId, getAddress(address))) ||
+          rawAction.marketAddresses.some((address) => !getByKey(marketsInfoData, getAddress(address)))
+        ) {
+          return acc;
+        }
+
         const eventName = rawAction.eventName;
 
         switch (eventName) {
@@ -134,9 +142,12 @@ export function useClaimCollateralHistory(
       }, [] as ClaimAction[]);
   }, [chainId, data, marketsInfoData, tokensData]);
 
+  const hasMorePages = data?.length === pageIndex && data?.at(-1)?.claimActions.length === pageSize;
+
   return {
     claimActions,
     isLoading,
+    hasMorePages,
     pageIndex,
     setPageIndex,
   };
