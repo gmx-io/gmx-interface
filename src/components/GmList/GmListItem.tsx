@@ -4,6 +4,8 @@ import Skeleton from "react-loading-skeleton";
 import { useHistory } from "react-router-dom";
 import { Area, AreaChart } from "recharts";
 
+import { ARBITRUM } from "config/chains";
+import { ARBITRUM_USDG_GLV_ADDRESS } from "config/usdgPools";
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -50,6 +52,7 @@ import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { FeeApyLabel } from "./FeeApyLabel";
 import { GmTokensBalanceInfo } from "./GmTokensTotalBalanceInfo";
 import { PerformanceLabel } from "./PerformanceLabel";
+import { LaunchBoostBadge } from "./UsdgPoolBadges";
 
 const tokenAddressStyle = { fontSize: 5 };
 
@@ -111,6 +114,7 @@ export function GmListItem({
   const shortToken = getTokenData(tokensData, marketOrGlv?.shortTokenAddress);
 
   const marketOrGlvTokenAddress = marketOrGlv && getGlvOrMarketAddress(marketOrGlv);
+  const isUsdgGlv = chainId === ARBITRUM && marketOrGlvTokenAddress === ARBITRUM_USDG_GLV_ADDRESS;
 
   const apy = isGlv
     ? getByKey(glvTokensApyData, marketOrGlvTokenAddress)
@@ -179,6 +183,7 @@ export function GmListItem({
                     : getMarketIndexName({ indexToken, isSpotOnly: marketOrGlv.isSpotOnly })}
                 </span>
                 {showRecentlyListedBadge && <RecentlyListedBadge />}
+                {isUsdgGlv && <LaunchBoostBadge />}
 
                 <div className="inline-block">
                   <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
@@ -297,6 +302,8 @@ export function GmListItem({
                   ? getGlvDisplayName(marketOrGlv)
                   : getMarketIndexName({ indexToken, isSpotOnly: Boolean(marketOrGlv?.isSpotOnly) })}
               </span>
+
+              {isUsdgGlv && <LaunchBoostBadge className="ml-6" />}
 
               <div className="inline-block">
                 <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
