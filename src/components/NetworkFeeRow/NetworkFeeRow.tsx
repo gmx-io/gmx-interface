@@ -8,6 +8,7 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GasPaymentParams } from "domain/synthetics/express";
 import { getExecutionFeeWarning, type ExecutionFee } from "domain/synthetics/fees";
+import { getPriorityFeeAllowanceAmount } from "domain/synthetics/fees/utils/executionFee";
 import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { TokenData } from "domain/tokens";
 import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
@@ -56,6 +57,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
     let feeUsd: bigint;
     let feeAmount: bigint;
     let feeToken: TokenData;
+    let allowanceUsd = 0n;
 
     if (gasPaymentToken && gasPaymentParams?.gasPaymentTokenAmount !== undefined) {
       feeToken = gasPaymentToken;
@@ -69,6 +71,10 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
       feeUsd = executionFee.feeUsd;
       feeAmount = executionFee.feeTokenAmount;
       feeToken = executionFeeToken;
+
+      if (feeAmount > 0n) {
+        allowanceUsd = bigMath.mulDiv(feeUsd, getPriorityFeeAllowanceAmount(chainId, executionFee), feeAmount);
+      }
     } else {
       return undefined;
     }
@@ -77,8 +83,9 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
       feeUsd,
       feeAmount,
       feeToken,
+      allowanceUsd,
     };
-  }, [executionFee, executionFeeToken, gasPaymentToken, gasPaymentParams]);
+  }, [chainId, executionFee, executionFeeToken, gasPaymentToken, gasPaymentParams]);
 
   const executionDisplayDecimals = executionFeeToken?.isStable ? 2 : 5;
   const networkFeeDisplayDecimals = networkFee?.feeToken.isStable ? 2 : 5;
@@ -90,7 +97,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
       estimatedRefundUsd = undefined;
     } else {
       const feeUsBeforeBuffer = bigMath.mulDiv(
-        networkFee.feeUsd,
+        networkFee.feeUsd - networkFee.allowanceUsd,
         BASIS_POINTS_DIVISOR_BIGINT,
         BigInt(BASIS_POINTS_DIVISOR + executionFeeBufferBps)
       );

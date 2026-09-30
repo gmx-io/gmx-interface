@@ -39,12 +39,15 @@ export function getExpressGasPrice(chainId: number, gasPrice: bigint) {
   return bigMath.max(0n, gasPrice - getExecutionFeePriorityFeeAllowance(chainId as ContractsChainId));
 }
 
-export function getExpressExecutionFeeAmount(chainId: number, executionFee: ExecutionFee) {
-  return bigMath.max(
-    0n,
-    executionFee.feeTokenAmount -
-      getExecutionFeePriorityFeeAllowance(chainId as ContractsChainId) * executionFee.gasLimit
+export function getPriorityFeeAllowanceAmount(chainId: number, executionFee: ExecutionFee) {
+  return bigMath.min(
+    executionFee.feeTokenAmount,
+    getExecutionFeePriorityFeeAllowance(chainId as ContractsChainId) * executionFee.gasLimit
   );
+}
+
+export function getExpressExecutionFeeAmount(chainId: number, executionFee: ExecutionFee) {
+  return executionFee.feeTokenAmount - getPriorityFeeAllowanceAmount(chainId, executionFee);
 }
 
 export function getMaxPriorityFeePerGas(chainId: number, onChainMaxPriorityFeePerGas: bigint | undefined | null) {
