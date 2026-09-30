@@ -11,6 +11,7 @@ import {
   getMinimumExecutionFeeBufferBps,
   estimateExecutionGasPrice,
   getExecutionFeeGasPricePremium,
+  getExpressExecutionFeeAmount,
   getExpressGasPrice,
 } from "../../fees/utils/executionFee";
 
@@ -126,6 +127,13 @@ describe("getExecutionFeeGasPricePremium", () => {
     expect(getExpressGasPrice(AVALANCHE, 56000000n)).toBe(56000000n);
   });
 
+  it("takes the allowance out of a single estimate for express", () => {
+    const executionFee = { feeTokenAmount: 56000000n * 3000000n, gasLimit: 3000000n } as any;
+
+    expect(getExpressExecutionFeeAmount(ARBITRUM, executionFee)).toBe(26000000n * 3000000n);
+    expect(getExpressExecutionFeeAmount(AVALANCHE, executionFee)).toBe(56000000n * 3000000n);
+  });
+
   it("keeps the chain premium elsewhere", () => {
     expect(getExecutionFeePriorityFeeAllowance(AVALANCHE)).toBe(0n);
     expect(getExecutionFeeGasPricePremium(AVALANCHE, false)).toBe(getGasPricePremium(AVALANCHE));
@@ -175,6 +183,26 @@ describe("getMinimumExecutionFeeBufferBps with the Arbitrum allowance", () => {
       // two equal orders in the batch: the estimate covers both
       estimatedExecutionFee: orderExecutionFee * 2n,
       estimatedExecutionGasLimit: orderGasLimit * 2n,
+      currentBufferBps: 3000n,
+      premium,
+    });
+
+    expect(requiredBufferBps).toBe(5500n);
+  });
+
+  it("takes the reported order's own gas limit in a mixed batch", () => {
+    const tpSlGasLimit = 2000000n;
+    const topUp = 1000000000000n;
+    const requiredBufferBps = getMinimumExecutionFeeBufferBps({
+      minExecutionFee,
+      executionFee: orderExecutionFee,
+      // the increase order, an attached TP/SL order and an update top-up without a gas limit
+      estimatedExecutionFee: orderExecutionFee + gasPrice * tpSlGasLimit + topUp,
+      estimatedExecutionGasLimit: orderGasLimit + tpSlGasLimit,
+      estimatedOrders: [
+        { executionFee: orderExecutionFee, gasLimit: orderGasLimit },
+        { executionFee: gasPrice * tpSlGasLimit, gasLimit: tpSlGasLimit },
+      ],
       currentBufferBps: 3000n,
       premium,
     });
@@ -250,5 +278,39 @@ describe("getExpressBatchOrderParams", () => {
     const batch = makeBatch();
 
     expect(getExpressBatchOrderParams(AVALANCHE, batch)).toBe(batch);
+  });
+
+  it("leaves an order without a gas limit as it is", () => {
+    const batch = makeBatch();
+    batch.createOrderParams[0].params.executionGasLimit = 0n;
+
+    expect(getExpressBatchOrderParams(ARBITRUM, batch).createOrderParams[0].orderPayload.numbers.executionFee).toBe(
+      executionFee
+    );
+  });
+
+  it("takes the allowance out of an update top-up, but not below zero", () => {
+    const makeUpdate = (executionFeeTopUp: bigint, executionGasLimit: bigint | undefined) =>
+      ({
+        params: { executionFeeTopUp, executionGasLimit } as any,
+        updatePayload: { executionFeeTopUp } as any,
+      }) as BatchOrderTxnParams["updateOrderParams"][number];
+    const batch: BatchOrderTxnParams = {
+      createOrderParams: [],
+      updateOrderParams: [
+        makeUpdate(90000000000000n, executionGasLimit),
+        makeUpdate(10000000000000n, executionGasLimit),
+        makeUpdate(10000000000000n, undefined),
+      ],
+      cancelOrderParams: [],
+    };
+
+    const [covered, small, unknown] = getExpressBatchOrderParams(ARBITRUM, batch).updateOrderParams;
+
+    // 0.03 gwei × 3M gas = 0.00009 ETH comes out of the top-up
+    expect(covered.updatePayload.executionFeeTopUp).toBe(0n);
+    expect(covered.params.executionFeeTopUp).toBe(0n);
+    expect(small.updatePayload.executionFeeTopUp).toBe(0n);
+    expect(unknown.updatePayload.executionFeeTopUp).toBe(10000000000000n);
   });
 });

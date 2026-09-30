@@ -7,6 +7,8 @@ import {
 } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { bigMath } from "sdk/utils/bigmath";
+import type { ExecutionFee } from "sdk/utils/fees/types";
+import type { ExecutionFeeEstimate } from "sdk/utils/orderTransactions";
 
 export function estimateExecutionGasPrice(p: {
   rawGasPrice: bigint | undefined;
@@ -42,6 +44,15 @@ export function getExpressGasPrice(chainId: number, gasPrice: bigint) {
   return bigMath.max(0n, gasPrice - getExecutionFeePriorityFeeAllowance(chainId as ContractsChainId));
 }
 
+// The same estimate priced for express, which pays no priority fee.
+export function getExpressExecutionFeeAmount(chainId: number, executionFee: ExecutionFee) {
+  return bigMath.max(
+    0n,
+    executionFee.feeTokenAmount -
+      getExecutionFeePriorityFeeAllowance(chainId as ContractsChainId) * executionFee.gasLimit
+  );
+}
+
 export function getMaxPriorityFeePerGas(chainId: number, onChainMaxPriorityFeePerGas: bigint | undefined | null) {
   const executionFeeConfig = getExecutionFeeConfig(chainId as ContractsChainId);
 
@@ -60,6 +71,7 @@ export function getMinimumExecutionFeeBufferBps(p: {
   executionFee: bigint;
   estimatedExecutionFee: bigint | undefined;
   estimatedExecutionGasLimit: bigint | undefined;
+  estimatedOrders?: ExecutionFeeEstimate[];
   currentBufferBps: bigint;
   premium: bigint;
 }) {
@@ -68,25 +80,23 @@ export function getMinimumExecutionFeeBufferBps(p: {
     executionFee,
     estimatedExecutionFee,
     estimatedExecutionGasLimit,
+    estimatedOrders,
     currentBufferBps,
     premium,
   } = p;
 
-  if (
-    estimatedExecutionFee === undefined ||
-    estimatedExecutionFee === 0n ||
-    estimatedExecutionGasLimit === undefined ||
-    estimatedExecutionGasLimit === 0n ||
-    currentBufferBps === 0n
-  ) {
+  if (currentBufferBps === 0n) {
     return undefined;
   }
 
-  // The contract reports the fee of a single order, while the estimate covers the whole transaction (a batch
-  // may contain several orders), so take the gas limit share of the reported order.
-  const orderGasLimit = bigMath.mulDiv(estimatedExecutionGasLimit, executionFee, estimatedExecutionFee);
+  const orderGasLimit = getReportedOrderGasLimit({
+    executionFee,
+    estimatedExecutionFee,
+    estimatedExecutionGasLimit,
+    estimatedOrders,
+  });
 
-  if (orderGasLimit === 0n) {
+  if (orderGasLimit === undefined || orderGasLimit === 0n) {
     return undefined;
   }
 
@@ -107,4 +117,32 @@ export function getMinimumExecutionFeeBufferBps(p: {
   const requiredBufferBps = bufferBps + (BASIS_POINTS_DIVISOR_BIGINT / 100n) * 5n;
 
   return requiredBufferBps;
+}
+
+// The contract reports the fee of a single order: take that order's gas limit when the estimate lists it,
+// otherwise its share of the whole transaction's estimate (a batch may contain several orders).
+function getReportedOrderGasLimit(p: {
+  executionFee: bigint;
+  estimatedExecutionFee: bigint | undefined;
+  estimatedExecutionGasLimit: bigint | undefined;
+  estimatedOrders: ExecutionFeeEstimate[] | undefined;
+}) {
+  const { executionFee, estimatedExecutionFee, estimatedExecutionGasLimit, estimatedOrders } = p;
+
+  const reportedOrder = estimatedOrders?.find((order) => order.executionFee === executionFee && order.gasLimit > 0n);
+
+  if (reportedOrder) {
+    return reportedOrder.gasLimit;
+  }
+
+  if (
+    estimatedExecutionFee === undefined ||
+    estimatedExecutionFee === 0n ||
+    estimatedExecutionGasLimit === undefined ||
+    estimatedExecutionGasLimit === 0n
+  ) {
+    return undefined;
+  }
+
+  return bigMath.mulDiv(estimatedExecutionGasLimit, executionFee, estimatedExecutionFee);
 }

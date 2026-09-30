@@ -102,7 +102,11 @@ export type UpdateOrderParams = {
   validFromTime: bigint;
   // used to top-up execution fee for frozen orders
   executionFeeTopUp: bigint;
+  // gas limit behind the top-up estimate, so express can take the wallet allowance out of it
+  executionGasLimit?: bigint;
 };
+
+export type ExecutionFeeEstimate = { executionFee: bigint; gasLimit: bigint };
 
 export type UpdateOrderPayload = {
   orderKey: string;
@@ -570,6 +574,14 @@ export function getBatchTotalExecutionFee({
  * transactions are sent by the keeper relay with a zero priority fee, so the allowance is taken out of the orders
  * before they are estimated and signed for the relay.
  */
+/** Execution fee and gas limit of every order the batch creates, in payload order. */
+export function getBatchExecutionFeeEstimates(batchParams: BatchOrderTxnParams): ExecutionFeeEstimate[] {
+  return batchParams.createOrderParams.map((co) => ({
+    executionFee: co.orderPayload.numbers.executionFee,
+    gasLimit: co.params.executionGasLimit,
+  }));
+}
+
 export function getExpressBatchOrderParams(
   chainId: ContractsChainId,
   batchParams: BatchOrderTxnParams
@@ -584,6 +596,19 @@ export function getExpressBatchOrderParams(
 
   return {
     ...batchParams,
+    updateOrderParams: batchParams.updateOrderParams.map((uo) => {
+      const delta = bigMath.min(allowance * (uo.params.executionGasLimit ?? 0n), uo.updatePayload.executionFeeTopUp);
+
+      if (delta === 0n) {
+        return uo;
+      }
+
+      return {
+        ...uo,
+        params: { ...uo.params, executionFeeTopUp: uo.params.executionFeeTopUp - delta },
+        updatePayload: { ...uo.updatePayload, executionFeeTopUp: uo.updatePayload.executionFeeTopUp - delta },
+      };
+    }),
     createOrderParams: batchParams.createOrderParams.map((co) => {
       const delta = bigMath.min(allowance * co.params.executionGasLimit, co.orderPayload.numbers.executionFee);
 

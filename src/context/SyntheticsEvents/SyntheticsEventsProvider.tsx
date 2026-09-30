@@ -1131,6 +1131,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
                   isExpress: true,
                   estimatedExecutionFee: pendingExpressTxn.estimatedExecutionFee,
                   estimatedExecutionGasLimit: pendingExpressTxn.estimatedExecutionGasLimit,
+                  estimatedOrders: pendingExpressTxn.estimatedOrders,
                   txUrl: undefined,
                   errorMessage: executionFeeErrorParams.errorData.errorMessage,
                   shouldOfferExpress: false,

@@ -23,6 +23,7 @@ import { formatPercentage } from "lib/numbers";
 import { switchNetwork } from "lib/wallets";
 import { getNativeToken } from "sdk/configs/tokens";
 import { extractTxnError, TxError, TxErrorType } from "sdk/utils/errors/transactionsErrors";
+import type { ExecutionFeeEstimate } from "sdk/utils/orderTransactions";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -441,6 +442,7 @@ export function getInsufficientExecutionFeeToastContent({
   isExpress,
   estimatedExecutionFee,
   estimatedExecutionGasLimit,
+  estimatedOrders,
   txUrl,
   errorMessage,
   shouldOfferExpress,
@@ -453,6 +455,7 @@ export function getInsufficientExecutionFeeToastContent({
   isExpress: boolean;
   estimatedExecutionFee: bigint | undefined;
   estimatedExecutionGasLimit: bigint | undefined;
+  estimatedOrders?: ExecutionFeeEstimate[];
   txUrl: string | undefined;
   errorMessage: string | undefined;
   shouldOfferExpress: boolean;
@@ -463,6 +466,7 @@ export function getInsufficientExecutionFeeToastContent({
     executionFee,
     estimatedExecutionFee,
     estimatedExecutionGasLimit,
+    estimatedOrders,
     currentBufferBps: getExecutionFeeBufferBps(chainId, executionFeeBufferBps),
     premium: getExecutionFeeGasPricePremium(chainId, isExpress),
   });

@@ -68,6 +68,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { getPrimaryOrderGasPaymentTokenAmount } from "domain/synthetics/express/expressOrderUtils";
+import { getExpressExecutionFeeAmount } from "domain/synthetics/fees/utils/executionFee";
 import { getMarketIndexName, MarketInfo, OFF_HOURS_DOCS_URL } from "domain/synthetics/markets";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
 import { convertToUsd, getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
@@ -391,12 +392,15 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
 
     return getPrimaryOrderGasPaymentTokenAmount({
       expressParams: storedExpressParams,
-      primaryExecutionFeeAmount: submitButtonState.primaryExecutionFee?.feeTokenAmount,
+      primaryExecutionFeeAmount: submitButtonState.primaryExecutionFee
+        ? getExpressExecutionFeeAmount(chainId, submitButtonState.primaryExecutionFee)
+        : undefined,
     });
   }, [
+    chainId,
     expressOrdersEnabledForMax,
     submitButtonState.expressParams,
-    submitButtonState.primaryExecutionFee?.feeTokenAmount,
+    submitButtonState.primaryExecutionFee,
     gasPaymentTokenAddress,
   ]);
 
@@ -419,9 +423,12 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
       callbackGasLimit: 0n,
     });
     const oraclePriceCount = estimateOrderOraclePriceCount(0);
-    return getExecutionFee(chainId, gasLimits, tokensData, estimatedGasLimit, gasPrice, oraclePriceCount)
-      ?.feeTokenAmount;
-  }, [isSwap, gasLimits, gasPrice, tokensData, chainId]);
+    const fee = getExecutionFee(chainId, gasLimits, tokensData, estimatedGasLimit, gasPrice, oraclePriceCount);
+
+    if (!fee) return undefined;
+
+    return expressOrdersEnabledForMax ? getExpressExecutionFeeAmount(chainId, fee) : fee.feeTokenAmount;
+  }, [isSwap, gasLimits, gasPrice, tokensData, chainId, expressOrdersEnabledForMax]);
 
   const isMaxAmountLoading = expressOrdersEnabledForMax && submitButtonState.isExpressLoading;
 

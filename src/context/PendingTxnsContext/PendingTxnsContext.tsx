@@ -25,6 +25,7 @@ import { useBlockAutoReload } from "lib/pwa/blockAutoReload";
 import { getProvider, useJsonRpcProvider } from "lib/rpc";
 import { TradingActionName } from "lib/tradingErrorTracker";
 import { sendUserAnalyticsOrderResultEvent } from "lib/userAnalytics";
+import type { ExecutionFeeEstimate } from "sdk/utils/orderTransactions";
 
 import { getInsufficientExecutionFeeToastContent } from "components/Errors/errorToasts";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -34,6 +35,7 @@ import { PendingTxnReplacementTracker } from "./PendingTxnReplacementTracker";
 export type PendingTransactionData = {
   estimatedExecutionFee: bigint;
   estimatedExecutionGasLimit: bigint;
+  estimatedOrders?: ExecutionFeeEstimate[];
 };
 
 export type PendingTransaction = {
@@ -179,6 +181,7 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
                   isExpress: false,
                   estimatedExecutionFee: pendingTxn.data?.estimatedExecutionFee,
                   estimatedExecutionGasLimit: pendingTxn.data?.estimatedExecutionGasLimit,
+                  estimatedOrders: pendingTxn.data?.estimatedOrders,
                   txUrl,
                   errorMessage: errorData?.errorMessage,
                   shouldOfferExpress: true,
