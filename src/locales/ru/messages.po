@@ -3482,6 +3482,10 @@ msgstr "Недостаточный баланс {symbol}: доступно {avai
 msgid "POSITION"
 msgstr "ПОЗИЦИЯ"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Insufficient {nativeTokenSymbol} for gas on {chainName}<0/><1/><2>Bridge</2> {nativeTokenSymbol} to {chainName}"
+msgstr "Недостаточно {nativeTokenSymbol} для газа в сети {chainName}<0/><1/><2>Переведите</2> {nativeTokenSymbol} в сеть {chainName} через мост"
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
 msgstr "<0>Внести</0> или <1>купить</1> {wrappedNativeTokenSymbol}."

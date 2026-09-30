@@ -3482,6 +3482,10 @@ msgstr "Unzureichendes {symbol}-Guthaben: {availableFormatted} verfügbar, {requ
 msgid "POSITION"
 msgstr "POSITION"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Insufficient {nativeTokenSymbol} for gas on {chainName}<0/><1/><2>Bridge</2> {nativeTokenSymbol} to {chainName}"
+msgstr "Unzureichendes {nativeTokenSymbol} für Gas auf {chainName}<0/><1/>Übertragen Sie {nativeTokenSymbol} per <2>Bridge</2> nach {chainName}"
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
 msgstr "<0>Einzahlen</0> oder <1>kaufen</1> {wrappedNativeTokenSymbol}."

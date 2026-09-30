@@ -731,6 +731,7 @@ export const DepositView = () => {
           } else {
             const toastParams = getTxnErrorToast(params.depositViewChain, parseError(txnEvent.data.error), {
               defaultMessage: t`Deposit failed`,
+              isSourceChainTxn: true,
             });
 
             helperToast.error(toastParams.errorContent, {

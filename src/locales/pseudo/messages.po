@@ -3482,6 +3482,10 @@ msgstr ""
 msgid "POSITION"
 msgstr ""
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Insufficient {nativeTokenSymbol} for gas on {chainName}<0/><1/><2>Bridge</2> {nativeTokenSymbol} to {chainName}"
+msgstr ""
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
 msgstr ""

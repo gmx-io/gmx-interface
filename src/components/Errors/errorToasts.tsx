@@ -38,6 +38,7 @@ export type AdditionalErrorParams = {
   permitIssueType?: PermitIssueType;
   isOutdatedSubaccountApproval?: boolean;
   setIsSettingsVisible?: (isVisible: boolean) => void;
+  isSourceChainTxn?: boolean;
 };
 
 export function getTxnErrorToast(
@@ -53,6 +54,7 @@ export function getTxnErrorToast(
     permitIssueType,
     isOutdatedSubaccountApproval,
     setIsSettingsVisible,
+    isSourceChainTxn,
   }: AdditionalErrorParams
 ) {
   const debugErrorMessage = getDebugErrorMessage(errorData);
@@ -156,6 +158,21 @@ export function getTxnErrorToast(
   switch (errorData.txErrorType) {
     case TxErrorType.NotEnoughFunds: {
       const nativeToken = getViemChain(chainId).nativeCurrency;
+
+      if (isSourceChainTxn) {
+        const nativeTokenSymbol = nativeToken.symbol;
+        const chainName = getChainName(chainId);
+
+        toastParams.errorContent = (
+          <Trans>
+            Insufficient {nativeTokenSymbol} for gas on {chainName}
+            <br />
+            <br />
+            <ExternalLink href={JUMPER_BRIDGE_URL}>Bridge</ExternalLink> {nativeTokenSymbol} to {chainName}
+          </Trans>
+        );
+        break;
+      }
 
       toastParams.errorContent = (
         <Trans>

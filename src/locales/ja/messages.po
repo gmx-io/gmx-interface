@@ -3482,6 +3482,10 @@ msgstr "{symbol}の残高が不足しています：利用可能 {availableForma
 msgid "POSITION"
 msgstr "ポジション"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Insufficient {nativeTokenSymbol} for gas on {chainName}<0/><1/><2>Bridge</2> {nativeTokenSymbol} to {chainName}"
+msgstr "{chainName}のガス用の{nativeTokenSymbol}が不足しています<0/><1/>{nativeTokenSymbol}を{chainName}に<2>ブリッジ</2>してください"
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
 msgstr "<0>入金</0>または<1>購入</1>{wrappedNativeTokenSymbol}。"

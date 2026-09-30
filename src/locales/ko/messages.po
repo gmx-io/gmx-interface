@@ -3482,6 +3482,10 @@ msgstr "{symbol} 잔액 부족: {availableFormatted} 사용 가능, {requiredFor
 msgid "POSITION"
 msgstr "포지션"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Insufficient {nativeTokenSymbol} for gas on {chainName}<0/><1/><2>Bridge</2> {nativeTokenSymbol} to {chainName}"
+msgstr "{chainName}의 가스용 {nativeTokenSymbol}가 부족합니다<0/><1/>{nativeTokenSymbol}을(를) {chainName}(으)로 <2>브릿지</2>하세요"
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
 msgstr "<0>입금</0> 또는 <1>구매</1> {wrappedNativeTokenSymbol}."

@@ -3482,6 +3482,10 @@ msgstr "{symbol} 餘額不足：可用 {availableFormatted}，需要 {requiredFo
 msgid "POSITION"
 msgstr "倉位"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Insufficient {nativeTokenSymbol} for gas on {chainName}<0/><1/><2>Bridge</2> {nativeTokenSymbol} to {chainName}"
+msgstr "{chainName} 上用於支付 Gas 的 {nativeTokenSymbol} 不足<0/><1/>將 {nativeTokenSymbol} <2>橋接</2>至 {chainName}"
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
 msgstr "<0>存入</0>或<1>買入</1> {wrappedNativeTokenSymbol}。"

@@ -3482,6 +3482,10 @@ msgstr "Solde {symbol} insuffisant : {availableFormatted} disponible, {requiredF
 msgid "POSITION"
 msgstr "POSITION"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Insufficient {nativeTokenSymbol} for gas on {chainName}<0/><1/><2>Bridge</2> {nativeTokenSymbol} to {chainName}"
+msgstr "{nativeTokenSymbol} insuffisant pour le gaz sur {chainName}<0/><1/><2>Transférez</2> des {nativeTokenSymbol} vers {chainName} via un pont"
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
 msgstr "<0>Déposer</0> ou <1>acheter</1> {wrappedNativeTokenSymbol}."
