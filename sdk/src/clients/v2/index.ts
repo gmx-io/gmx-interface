@@ -70,7 +70,6 @@ import {
   type SameChainDepositRequest,
   type SameChainWithdrawRequest,
 } from "utils/multichain";
-import { deserializeBigIntsInObject } from "utils/numbers";
 import { fetchApiOrders } from "utils/orders/api";
 import {
   prepareOrder,
@@ -100,14 +99,14 @@ import { fetchApiPairs } from "utils/pairs/api";
 import { fetchApiPerformanceAnnualized, fetchApiPerformanceSnapshots } from "utils/performance/api";
 import { PerformanceAnnualized, PerformanceParams, PerformanceSnapshots } from "utils/performance/types";
 import { fetchApiPositionsInfo } from "utils/positions/api";
-import { fetchApiOhlcv, fetchApiTokenPrices } from "utils/prices/api";
+import { fetchApiOhlcv, fetchApiTokenPrices, parseApiTokenPrices } from "utils/prices/api";
 import type { OhlcvCandle, OhlcvParams } from "utils/prices/types";
 import { fetchApiRates } from "utils/rates/api";
 import { MarketRates, RatesParams } from "utils/rates/types";
 import type { IAbstractSigner } from "utils/signer";
 import { fetchApiStakingPower } from "utils/staking/api";
 import { StakingPowerResponse } from "utils/staking/types";
-import type { Subscription, WebSocketCtor } from "utils/stream";
+import type { StreamCandlePeriod, Subscription, WebSocketCtor } from "utils/stream";
 import { WsStreamClient, createChannelSubscription, toStreamUrl } from "utils/stream";
 import { fetchSubaccountStatus, prepareSubaccountApproval, signSubaccountApproval } from "utils/subaccount/api";
 import type {
@@ -262,7 +261,7 @@ export { PrivateKeySigner } from "utils/signer";
 export { HttpError } from "utils/http/http";
 export { HttpClientWithFallback } from "utils/http/httpFallback";
 export type { IHttp } from "utils/http/types";
-export type { FrameMeta, StreamStatus, Subscription, WebSocketCtor } from "utils/stream";
+export type { FrameMeta, StreamCandlePeriod, StreamStatus, Subscription, WebSocketCtor } from "utils/stream";
 export { getGasPaymentTokens } from "configs/express";
 export type {
   SubaccountStatusRequest,
@@ -397,19 +396,15 @@ export class GmxApiSdk {
     return this._streamClient;
   }
 
-  fetchTokenPrices(): Promise<TokenPricesData> {
+  fetchTokenPrices(): Promise<{ prices: TokenPricesData; originTs: number }> {
     return fetchApiTokenPrices(this.ctx);
   }
 
   watchTokenPrices(): Subscription<TokenPricesData> {
-    return createChannelSubscription(
-      this.getStreamClient(),
-      "prices",
-      (raw) => deserializeBigIntsInObject(raw as Record<string, unknown>, { handleInts: true }) as unknown as TokenPricesData
-    );
+    return createChannelSubscription(this.getStreamClient(), "prices", parseApiTokenPrices);
   }
 
-  watchCandles(params: { symbol: string; timeframe: string }): Subscription<OhlcvCandle> {
+  watchCandles(params: { symbol: string; timeframe: StreamCandlePeriod }): Subscription<OhlcvCandle> {
     return createChannelSubscription(
       this.getStreamClient(),
       `candles:${params.symbol}:${params.timeframe}`,

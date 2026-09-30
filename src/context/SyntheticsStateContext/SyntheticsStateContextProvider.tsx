@@ -51,7 +51,6 @@ import {
   useTokensAllowanceData,
   useTokensDataRequest,
 } from "domain/synthetics/tokens";
-import { useWsPriceOverlay } from "domain/synthetics/tokens/useWsPriceOverlay";
 import { ConfirmationBoxState, useConfirmationBoxState } from "domain/synthetics/trade/useConfirmationBoxState";
 import { PositionEditorState, usePositionEditorState } from "domain/synthetics/trade/usePositionEditorState";
 import {
@@ -197,8 +196,6 @@ export function SyntheticsStateContextProvider({
   const tokensDataResult = useTokensDataRequest(chainId, srcChainId);
 
   const marketsInfo = useMarketsInfoRequest(chainId, { tokensData: tokensDataResult.tokensData });
-
-  useWsPriceOverlay(chainId);
 
   const { isFirstOrder } = useIsFirstOrder(chainId, { account });
 

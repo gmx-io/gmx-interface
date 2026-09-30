@@ -1,5 +1,7 @@
 export type StreamStatus = "connecting" | "live" | "reconnecting" | "closed";
 
+export type StreamCandlePeriod = "1m" | "5m" | "15m" | "1h" | "4h" | "1d";
+
 export type Unsubscribe = () => void;
 
 export type FrameMeta = {
@@ -16,6 +18,7 @@ export interface Subscription<T> {
   getMeta(): FrameMeta | undefined;
   subscribe(listener: (value: T) => void): Unsubscribe;
   subscribeStatus(listener: (status: StreamStatus) => void): Unsubscribe;
+  subscribeError(listener: (error: { message: string }) => void): Unsubscribe;
   readonly status: StreamStatus;
   close(): void;
 }
@@ -24,16 +27,16 @@ export interface WebSocketLike {
   readyState: number;
   send(data: string): void;
   close(code?: number, reason?: string): void;
-  onopen: ((ev: unknown) => void) | null;
-  onmessage: ((ev: { data: unknown }) => void) | null;
-  onclose: ((ev: unknown) => void) | null;
-  onerror: ((ev: unknown) => void) | null;
+  onopen: ((ev: any) => void) | null;
+  onmessage: ((ev: any) => void) | null;
+  onclose: ((ev: any) => void) | null;
+  onerror: ((ev: any) => void) | null;
 }
 
-export type WebSocketCtor = new (url: string) => WebSocketLike;
+export type WebSocketCtor = new (url: string, ...rest: any[]) => WebSocketLike;
 
 // Wire protocol — mirrors gmx-api src/stream/protocol.ts.
 export type StreamServerFrame =
   | { op: "ack"; channels: string[] }
-  | { op: "error"; message: string }
+  | { op: "error"; message: string; channels?: string[] }
   | { ch: string; type: "snapshot"; serverTs: number; originTs?: number; data: unknown };

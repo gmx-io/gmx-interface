@@ -1,5 +1,5 @@
 import { FrameMeta, StreamStatus, Subscription, Unsubscribe } from "./types";
-import { ChannelFrame, WsStreamClient } from "./WsStreamClient";
+import { callListener, ChannelFrame, WsStreamClient } from "./WsStreamClient";
 
 export function createChannelSubscription<T>(
   client: WsStreamClient,
@@ -9,19 +9,29 @@ export function createChannelSubscription<T>(
   let value: T | undefined;
   let meta: FrameMeta | undefined;
   const listeners = new Set<(value: T) => void>();
+  const errorListeners = new Set<(error: { message: string }) => void>();
+  const statusUnsubscribers = new Set<Unsubscribe>();
 
-  const unsubscribeTransport = client.subscribe(channel, (frame: ChannelFrame) => {
-    value = transform(frame.data);
-    meta = {
-      serverTs: frame.serverTs,
-      receivedAt: frame.receivedAt,
-      byteLength: frame.byteLength,
-      originTs: frame.originTs,
-    };
-    for (const listener of listeners) {
-      listener(value);
+  const unsubscribeTransport = client.subscribe(
+    channel,
+    (frame: ChannelFrame) => {
+      value = transform(frame.data);
+      meta = {
+        serverTs: frame.serverTs,
+        receivedAt: frame.receivedAt,
+        byteLength: frame.byteLength,
+        originTs: frame.originTs,
+      };
+      for (const listener of listeners) {
+        callListener(listener, value);
+      }
+    },
+    (error) => {
+      for (const listener of errorListeners) {
+        callListener(listener, error);
+      }
     }
-  });
+  );
 
   return {
     get: () => value,
@@ -36,10 +46,24 @@ export function createChannelSubscription<T>(
       };
     },
     subscribeStatus(listener: (status: StreamStatus) => void): Unsubscribe {
-      return client.addStatusListener(listener);
+      const remove = client.addStatusListener(listener);
+      statusUnsubscribers.add(remove);
+      return () => {
+        statusUnsubscribers.delete(remove);
+        remove();
+      };
+    },
+    subscribeError(listener: (error: { message: string }) => void): Unsubscribe {
+      errorListeners.add(listener);
+      return () => {
+        errorListeners.delete(listener);
+      };
     },
     close() {
       listeners.clear();
+      errorListeners.clear();
+      statusUnsubscribers.forEach((remove) => remove());
+      statusUnsubscribers.clear();
       unsubscribeTransport();
     },
   };

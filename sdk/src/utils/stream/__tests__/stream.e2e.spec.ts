@@ -134,9 +134,7 @@ describe("stream e2e (real client <-> real ws server)", () => {
     sub.subscribe((value) => values.push(value));
 
     await vi.waitFor(() => expect(sub.status).toBe("live"));
-    await vi.waitFor(() =>
-      expect(server.received).toContainEqual({ op: "subscribe", channels: ["candles:BTC:1m"] })
-    );
+    await vi.waitFor(() => expect(server.received).toContainEqual({ op: "subscribe", channels: ["candles:BTC:1m"] }));
 
     const bar = { timestamp: 1_700_000_060_000, open: "4", high: "6", low: "3", close: "5" };
     server.broadcast({ ch: "candles:BTC:1m", type: "snapshot", serverTs: 1, data: bar });

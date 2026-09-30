@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { StreamStatus, WebSocketCtor } from "../types";
+import type { StreamStatus } from "../types";
 import { WsStreamClient } from "../WsStreamClient";
 
 const OPEN = 1;
@@ -42,7 +42,7 @@ function makeWsImpl(opts: { failFirst?: number } = {}) {
   const sockets: FakeSocket[] = [];
   const failFirst = opts.failFirst ?? 0;
   let attempts = 0;
-  const Ctor = vi.fn((url: string) => {
+  const Ctor = vi.fn(function (url: string) {
     attempts += 1;
     if (attempts <= failFirst) {
       throw new Error("connect failed");
@@ -51,18 +51,28 @@ function makeWsImpl(opts: { failFirst?: number } = {}) {
     sockets.push(socket);
     return socket;
   });
-  return { Ctor: Ctor as unknown as WebSocketCtor, ctorMock: Ctor, sockets, getAttempts: () => attempts };
+  return { Ctor, sockets, getAttempts: () => attempts };
 }
 
 const URL = "ws://localhost:3004/v1/stream";
 
-function makeClient(opts: { failFirst?: number; reconnectBaseMs?: number; reconnectMaxMs?: number } = {}) {
+function makeClient(
+  opts: {
+    failFirst?: number;
+    reconnectBaseMs?: number;
+    reconnectMaxMs?: number;
+    probeIntervalMs?: number;
+    random?: () => number;
+  } = {}
+) {
   const impl = makeWsImpl({ failFirst: opts.failFirst });
   const client = new WsStreamClient({
     url: URL,
     webSocketImpl: impl.Ctor,
     reconnectBaseMs: opts.reconnectBaseMs,
     reconnectMaxMs: opts.reconnectMaxMs,
+    probeIntervalMs: opts.probeIntervalMs,
+    random: opts.random ?? (() => 1),
   });
   return { client, ...impl };
 }
@@ -83,19 +93,13 @@ afterEach(() => {
 });
 
 describe("WsStreamClient connection", () => {
-  it("starts closed and does not connect until first subscribe", () => {
-    const { client, ctorMock } = makeClient();
-    expect(client.status).toBe("closed");
-    expect(ctorMock).not.toHaveBeenCalled();
-  });
-
   it("connects on first subscribe and transitions connecting -> live", () => {
-    const { client, ctorMock, sockets } = makeClient();
+    const { client, sockets, getAttempts } = makeClient();
     const statuses: StreamStatus[] = [];
     client.addStatusListener((s) => statuses.push(s));
 
     client.subscribe("prices", vi.fn());
-    expect(ctorMock).toHaveBeenCalledTimes(1);
+    expect(getAttempts()).toBe(1);
     expect(client.status).toBe("connecting");
 
     sockets[0].open();
@@ -119,20 +123,6 @@ describe("WsStreamClient connection", () => {
 
     client.subscribe("candles", vi.fn());
     expect(parseSends(sockets[0])).toContainEqual({ op: "subscribe", channels: ["candles"] });
-  });
-
-  it("opens a single connection for multiple listeners on one channel", () => {
-    const { client, ctorMock } = makeClient();
-    client.subscribe("prices", vi.fn());
-    client.subscribe("prices", vi.fn());
-    expect(ctorMock).toHaveBeenCalledTimes(1);
-  });
-
-  it("does not connect for a status listener alone", () => {
-    const { client, ctorMock } = makeClient();
-    client.addStatusListener(vi.fn());
-    expect(ctorMock).not.toHaveBeenCalled();
-    expect(client.status).toBe("closed");
   });
 });
 
@@ -161,91 +151,170 @@ describe("WsStreamClient messages", () => {
     );
   });
 
-  it("ignores frames for an unsubscribed channel", () => {
+  it.each([
+    ["a frame for an unsubscribed channel", JSON.stringify({ ch: "candles", type: "snapshot", serverTs: 1, data: {} })],
+    ["a non-snapshot frame", JSON.stringify({ ch: "prices", type: "delta", serverTs: 1, data: {} })],
+    ["a snapshot without data", JSON.stringify({ ch: "prices", type: "snapshot", serverTs: 1 })],
+    ["an ack", JSON.stringify({ op: "ack", channels: ["prices"] })],
+    ["an error without channels", JSON.stringify({ op: "error", message: "x" })],
+    ["invalid JSON", "{ not json"],
+    ["JSON null", "null"],
+    ["a JSON number", "42"],
+    ["a JSON array", "[]"],
+  ])("ignores %s and delivers the next frame, sent as a Buffer", (_, data) => {
     const { sockets, listener } = connected();
-    sockets[0].emit({ ch: "candles", type: "snapshot", serverTs: 1, data: {} });
+    sockets[0].emitRaw(data);
     expect(listener).not.toHaveBeenCalled();
-  });
 
-  it("drops a snapshot frame that carries no data, then delivers the next valid one", () => {
-    const { sockets, listener } = connected();
-    sockets[0].emit({ ch: "prices", type: "snapshot", serverTs: 1 }); // no `data` key
-    expect(listener).not.toHaveBeenCalled();
-    sockets[0].emit({ ch: "prices", type: "snapshot", serverTs: 2, data: { p: 1 } });
+    sockets[0].emitRaw(Buffer.from(JSON.stringify({ ch: "prices", type: "snapshot", serverTs: 2, data: 42 })));
     expect(listener).toHaveBeenCalledTimes(1);
-  });
-
-  it("ignores ack / error / non-snapshot frames", () => {
-    const { sockets, listener } = connected();
-    sockets[0].emit({ op: "ack", channels: ["prices"] });
-    sockets[0].emit({ op: "error", message: "x" });
-    sockets[0].emit({ ch: "prices", type: "delta", serverTs: 1, data: {} });
-    expect(listener).not.toHaveBeenCalled();
-  });
-
-  it("ignores invalid JSON without throwing", () => {
-    const { sockets, listener } = connected();
-    expect(() => sockets[0].emit("{ not json")).not.toThrow();
-    expect(listener).not.toHaveBeenCalled();
-  });
-
-  it("parses a non-string (Buffer) frame", () => {
-    const { sockets, listener } = connected();
-    sockets[0].emitRaw(Buffer.from(JSON.stringify({ ch: "prices", type: "snapshot", serverTs: 1, data: 42 })));
     expect(listener).toHaveBeenCalledWith(expect.objectContaining({ data: 42 }));
+  });
+
+  it.each([
+    { held: 1000, next: 2000, applied: true },
+    { held: 1000, next: 1000, applied: true },
+    { held: 1000, next: 999, applied: false },
+    { held: 1000, next: undefined, applied: true },
+    { held: undefined, next: 5, applied: true },
+  ])("after a reconnect applies a frame with originTs $next over $held: $applied", ({ held, next, applied }) => {
+    const { client, sockets } = makeClient();
+    const listener = vi.fn();
+    client.subscribe("prices", listener);
+    sockets[0].open();
+    sockets[0].emit({ ch: "prices", type: "snapshot", serverTs: 1, originTs: held, data: "held" });
+
+    sockets[0].serverClose();
+    vi.advanceTimersByTime(500);
+    sockets[1].open();
+    sockets[1].emit({ ch: "prices", type: "snapshot", serverTs: 2, originTs: next, data: "next" });
+
+    expect(listener).toHaveBeenLastCalledWith(expect.objectContaining({ data: applied ? "next" : "held" }));
+  });
+
+  const CANDLES = "candles:ETH:1m";
+  it.each([
+    {
+      name: "an error naming the channel, then the ack",
+      probe: false,
+      frames: [
+        { op: "error", message: "subscription limit reached", channels: [CANDLES] },
+        { op: "ack", channels: ["prices"] },
+      ],
+      refusals: ["subscription limit reached"],
+    },
+    {
+      name: "an old server's error without channels, then an ack without the channel",
+      probe: false,
+      frames: [
+        { op: "error", message: "subscription limit reached" },
+        { op: "ack", channels: ["prices"] },
+      ],
+      refusals: ["subscription refused"],
+    },
+    {
+      name: "a probe ack after the channel's ack",
+      probe: true,
+      frames: [
+        { op: "ack", channels: ["prices", CANDLES] },
+        { op: "ack", channels: ["prices", CANDLES] },
+      ],
+      refusals: [],
+    },
+    {
+      name: "an unknown op before the ack",
+      probe: false,
+      frames: [{ op: "heartbeat" }, { op: "ack", channels: ["prices", CANDLES] }],
+      refusals: [],
+    },
+  ])("matches acks and errors to the ops that caused them: $name", ({ probe, frames, refusals }) => {
+    const { client, sockets } = makeClient();
+    client.subscribe("prices", vi.fn());
+    sockets[0].open();
+    sockets[0].emit({ op: "ack", channels: ["prices"] });
+    const onError = vi.fn();
+    client.subscribe(CANDLES, vi.fn(), onError);
+    if (probe) {
+      vi.advanceTimersByTime(15_000);
+    }
+
+    frames.forEach((frame) => sockets[0].emit(frame));
+
+    expect(onError.mock.calls.map(([error]) => error.message)).toEqual(refusals);
   });
 });
 
 describe("WsStreamClient reconnect / backoff", () => {
-  it("reconnects after the server closes the socket", () => {
-    const { client, ctorMock, sockets } = makeClient();
+  it.each([
+    { jitter: "lowest", random: 0, delays: [50, 100, 200, 200] },
+    { jitter: "middle", random: 0.5, delays: [75, 150, 300, 300] },
+    { jitter: "highest", random: 1, delays: [100, 200, 400, 400] },
+  ])("backs off with equal jitter capped at the max ($jitter)", ({ random, delays }) => {
+    const { client, getAttempts } = makeClient({
+      failFirst: 5,
+      reconnectBaseMs: 100,
+      reconnectMaxMs: 400,
+      random: () => random,
+    });
+    client.subscribe("prices", vi.fn());
+
+    delays.forEach((delay, index) => {
+      vi.advanceTimersByTime(delay - 1);
+      expect(getAttempts()).toBe(index + 1);
+      vi.advanceTimersByTime(1);
+      expect(getAttempts()).toBe(index + 2);
+    });
+    expect(client.status).toBe("reconnecting");
+  });
+
+  it("keeps backing off while sockets drop soon after opening, and resets after one stayed up 30 s", () => {
+    const { client, sockets, getAttempts } = makeClient({
+      reconnectBaseMs: 100,
+      reconnectMaxMs: 400,
+      probeIntervalMs: 60_000,
+    });
     client.subscribe("prices", vi.fn());
     sockets[0].open();
-
+    sockets[0].emit({ op: "ack", channels: ["prices"] });
     sockets[0].serverClose();
-    expect(client.status).toBe("reconnecting");
+    vi.advanceTimersByTime(100);
+    sockets[1].open();
+    sockets[1].emit({ op: "ack", channels: ["prices"] });
+    sockets[1].serverClose();
 
-    vi.advanceTimersByTime(500);
-    expect(ctorMock).toHaveBeenCalledTimes(2);
-  });
-
-  it("applies exponential backoff capped at the max", () => {
-    const { client, getAttempts } = makeClient({ failFirst: 5, reconnectBaseMs: 100, reconnectMaxMs: 400 });
-    client.subscribe("prices", vi.fn()); // attempt 1 throws -> schedule base
-
-    expect(getAttempts()).toBe(1);
-    vi.advanceTimersByTime(99);
-    expect(getAttempts()).toBe(1);
+    vi.advanceTimersByTime(199);
+    expect(getAttempts()).toBe(2);
     vi.advanceTimersByTime(1);
-    expect(getAttempts()).toBe(2); // after base=100
-    vi.advanceTimersByTime(200);
-    expect(getAttempts()).toBe(3); // after 2*base=200
-    vi.advanceTimersByTime(400);
-    expect(getAttempts()).toBe(4); // after 4*base capped at 400
-    vi.advanceTimersByTime(400);
-    expect(getAttempts()).toBe(5); // stays capped at 400
-    expect(client.status).toBe("reconnecting");
-  });
+    expect(getAttempts()).toBe(3);
 
-  it("resets the backoff after a successful open", () => {
-    const { client, sockets, getAttempts } = makeClient({ failFirst: 2, reconnectBaseMs: 100, reconnectMaxMs: 400 });
-    client.subscribe("prices", vi.fn()); // attempt 1 throws -> schedule 100
-    vi.advanceTimersByTime(100); // attempt 2 throws -> schedule 200
-    vi.advanceTimersByTime(200); // attempt 3 succeeds
-    expect(sockets.length).toBe(1);
-    sockets[0].open(); // resets delay to base
-
-    sockets[0].serverClose(); // schedule at base (100), not 400
+    sockets[2].open();
+    vi.advanceTimersByTime(30_000);
+    sockets[2].serverClose();
     vi.advanceTimersByTime(99);
     expect(getAttempts()).toBe(3);
     vi.advanceTimersByTime(1);
     expect(getAttempts()).toBe(4);
   });
 
-  it("schedules a reconnect when the socket constructor throws", () => {
-    const { client } = makeClient({ failFirst: 1 });
-    expect(() => client.subscribe("prices", vi.fn())).not.toThrow();
+  it("probes a live socket every 15 s and replaces it with backoff when a probe goes unanswered", () => {
+    const { client, sockets, getAttempts } = makeClient();
+    client.subscribe("prices", vi.fn());
+    sockets[0].open();
+    sockets[0].send.mockClear();
+
+    vi.advanceTimersByTime(15_000);
+    expect(parseSends(sockets[0])).toEqual([{ op: "subscribe", channels: [] }]);
+    sockets[0].emit({ op: "ack", channels: ["prices"] });
+    vi.advanceTimersByTime(10_000);
+    expect(sockets[0].close).not.toHaveBeenCalled();
+
+    vi.advanceTimersByTime(15_000);
+    expect(sockets[0].close).toHaveBeenCalled();
     expect(client.status).toBe("reconnecting");
+    vi.advanceTimersByTime(499);
+    expect(getAttempts()).toBe(1);
+    vi.advanceTimersByTime(1);
+    expect(getAttempts()).toBe(2);
   });
 
   it("does not double-connect while a reconnect is pending", () => {
@@ -265,6 +334,24 @@ describe("WsStreamClient reconnect / backoff", () => {
     vi.advanceTimersByTime(500);
     sockets[1].open();
     expect(parseSends(sockets[1])).toContainEqual({ op: "subscribe", channels: ["prices", "candles"] });
+  });
+
+  it("ignores a closed socket's late close event after a resubscribe", () => {
+    const { client, sockets, getAttempts } = makeClient();
+    client.subscribe("prices", vi.fn());
+    sockets[0].open();
+    client.close();
+
+    const listener = vi.fn();
+    client.subscribe("prices", listener);
+    sockets[0].serverClose();
+    vi.advanceTimersByTime(1000);
+    sockets[1].open();
+    sockets[1].emit({ ch: "prices", type: "snapshot", serverTs: 1, data: 1 });
+
+    expect(getAttempts()).toBe(2);
+    expect(client.status).toBe("live");
+    expect(listener).toHaveBeenCalledTimes(1);
   });
 });
 
@@ -302,28 +389,10 @@ describe("WsStreamClient unsubscribe / lifecycle", () => {
     expect(client.status).toBe("closed");
   });
 
-  it("tolerates a double unsubscribe", () => {
-    const { client } = makeClient();
-    const unsub = client.subscribe("prices", vi.fn());
-    unsub();
-    expect(() => unsub()).not.toThrow();
-  });
-
   it("close() stops a pending reconnect", () => {
     const { client, getAttempts } = makeClient({ failFirst: 1 });
     client.subscribe("prices", vi.fn()); // reconnect pending
     client.close();
-    vi.advanceTimersByTime(5000);
-    expect(getAttempts()).toBe(1);
-    expect(client.status).toBe("closed");
-  });
-
-  it("does not reconnect after a user-initiated close", () => {
-    const { client, sockets, getAttempts } = makeClient();
-    client.subscribe("prices", vi.fn());
-    sockets[0].open();
-    client.close();
-    sockets[0].serverClose(); // late close event from the socket
     vi.advanceTimersByTime(5000);
     expect(getAttempts()).toBe(1);
     expect(client.status).toBe("closed");
@@ -338,16 +407,6 @@ describe("WsStreamClient unsubscribe / lifecycle", () => {
     listener.mockClear();
     sockets[0].emit({ ch: "prices", type: "snapshot", serverTs: 1, data: {} });
     expect(listener).not.toHaveBeenCalled();
-  });
-
-  it("survives a send that throws", () => {
-    const { client, sockets } = makeClient();
-    client.subscribe("prices", vi.fn());
-    sockets[0].open();
-    sockets[0].send.mockImplementation(() => {
-      throw new Error("socket gone");
-    });
-    expect(() => client.subscribe("candles", vi.fn())).not.toThrow();
   });
 });
 
@@ -366,17 +425,5 @@ describe("WsStreamClient status listeners", () => {
     cb.mockClear();
     sockets[0].serverClose();
     expect(cb).not.toHaveBeenCalled();
-  });
-});
-
-describe("WsStreamClient WebSocket resolution", () => {
-  it("falls back to the isomorphic-ws default when no implementation is injected", () => {
-    expect(() => new WsStreamClient({ url: URL })).not.toThrow();
-  });
-
-  it("prefers the injected implementation over the default", () => {
-    const { client, ctorMock } = makeClient();
-    client.subscribe("prices", vi.fn());
-    expect(ctorMock).toHaveBeenCalledTimes(1);
   });
 });

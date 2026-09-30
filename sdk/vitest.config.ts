@@ -8,7 +8,6 @@ export default defineConfig({
     exclude: [
       "**/build/**",
       "**/node_modules/**",
-      "**/*.e2e.spec.ts",
       "**/clients/v1/modules/markets/markets.spec.ts",
       "**/clients/v1/modules/tokens/tokens.spec.ts",
       "**/clients/v1/modules/positions/positions.spec.ts",

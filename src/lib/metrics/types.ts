@@ -173,7 +173,7 @@ export type LoadingFailedEvent = {
 export type ApiDataFallbackCounter = {
   event: "apiData.fallback";
   data: {
-    domain: "markets" | "positions" | "orders";
+    domain: "markets" | "positions" | "orders" | "wsPrices";
     reason: "stale" | "error" | "initial";
     chainId: number;
   };
@@ -208,7 +208,6 @@ export type WsPriceTickTiming = {
     chainId: number;
     tokenCount: number;
     byteLength: number;
-    status: string;
   };
 };
 

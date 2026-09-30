@@ -145,7 +145,7 @@ export default function TVChartContainer({
 
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId as ContractsChainId);
   const sdk = useGmxSdk(chainId as ContractsChainId);
-  const wsCandlesEnabled = useIsApiSdkEnabled(API_UI_FLAGS.wsCandles);
+  const wsCandlesEnabled = useIsApiSdkEnabled(API_UI_FLAGS.wsCandles, chainId as ContractsChainId);
 
   const [datafeed, setDatafeed] = useState<DataFeed | null>(null);
   const { positionIncreaseEvents, positionDecreaseEvents } = useSyntheticsEvents();
@@ -227,9 +227,7 @@ export default function TVChartContainer({
     visualMultiplier,
     chainId,
     account,
-    shouldShowPositionLines,
     sdk,
-    wsCandlesEnabled,
     buySellIconsMode,
   });
   const marksHistoryCacheRef = useRef<{
@@ -277,13 +275,9 @@ export default function TVChartContainer({
       const token = Object.values(data).find((t) => t.symbol === symbol);
       return token?.prices?.minPrice;
     });
-    newDatafeed.setCandleStreamFactory((symbol, timeframe) => {
-      const { sdk: liveSdk, wsCandlesEnabled: enabled } = marksStateRef.current;
-      if (!enabled || !liveSdk) {
-        return undefined;
-      }
-      return liveSdk.watchCandles({ symbol, timeframe });
-    });
+    newDatafeed.setCandleStreamFactory((symbol, timeframe) =>
+      marksStateRef.current.sdk?.watchCandles({ symbol, timeframe })
+    );
     newDatafeed.setMarksGetter(async (_symbolInfo, from, to, resolution) => {
       const {
         positionIncreaseEvents: inc,
@@ -710,6 +704,10 @@ export default function TVChartContainer({
       datafeed.notifyPricesReady();
     }
   }, [tokensData, datafeed]);
+
+  useEffect(() => {
+    datafeed?.setCandleStreamEnabled(wsCandlesEnabled);
+  }, [datafeed, wsCandlesEnabled]);
 
   useEffect(() => {
     if (
