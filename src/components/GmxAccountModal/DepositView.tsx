@@ -57,6 +57,7 @@ import { AddressablePixelEventName, sendAddressablePixelEvent } from "lib/addres
 import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
+import { parseError } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedList } from "lib/i18n";
 import {
@@ -649,8 +650,16 @@ export const DepositView = () => {
             });
         }
       } else if (txnEvent.event === TxnEventName.Error) {
-        helperToast.error(t`Deposit failed`, { toastId: "same-chain-gmx-account-deposit" });
         setIsSubmitting(false);
+
+        const toastParams = getTxnErrorToast(settlementChainId, parseError(txnEvent.data.error), {
+          defaultMessage: t`Deposit failed`,
+        });
+
+        helperToast.error(toastParams.errorContent, {
+          autoClose: toastParams.autoCloseToast,
+          toastId: "same-chain-gmx-account-deposit",
+        });
       }
     },
     [
@@ -720,7 +729,7 @@ export const DepositView = () => {
               toastId: "gmx-account-deposit",
             });
           } else {
-            const toastParams = getTxnErrorToast(params.depositViewChain, txnEvent.data.error, {
+            const toastParams = getTxnErrorToast(params.depositViewChain, parseError(txnEvent.data.error), {
               defaultMessage: t`Deposit failed`,
             });
 

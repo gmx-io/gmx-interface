@@ -12077,6 +12077,10 @@ msgstr "Pool USD short"
 msgid "{0} orders not updated, limit reached"
 msgstr "{0} ordres non mis à jour, limite atteinte"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Wallet request expired. Try again and confirm in your wallet"
+msgstr "La demande du portefeuille a expiré. Réessayez et confirmez dans votre portefeuille"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Proportional stored impact"
 msgstr "Impact stocké proportionnel"

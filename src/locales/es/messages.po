@@ -12077,6 +12077,10 @@ msgstr "Pool USD corto"
 msgid "{0} orders not updated, limit reached"
 msgstr "{0} órdenes no actualizadas, límite alcanzado"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Wallet request expired. Try again and confirm in your wallet"
+msgstr "La solicitud del monedero ha caducado. Vuelva a intentarlo y confirme en su monedero"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Proportional stored impact"
 msgstr "Impacto almacenado proporcional"

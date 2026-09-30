@@ -12077,6 +12077,10 @@ msgstr "Pool USD шорт"
 msgid "{0} orders not updated, limit reached"
 msgstr "{0} ордеров не обновлено, достигнут лимит"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Wallet request expired. Try again and confirm in your wallet"
+msgstr "Срок действия запроса в кошельке истёк. Повторите попытку и подтвердите в кошельке"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Proportional stored impact"
 msgstr "Пропорциональное сохранённое влияние"
