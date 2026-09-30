@@ -53,7 +53,6 @@ async function calculateGmxAccountDepositTechnicalFees(
     chainId: params.chainId,
     gasLimits: params.gasLimits,
     tokensData: params.tokensData,
-    // relayed by the keeper, so priced without the wallet priority fee allowance
     gasPrice: params.globalExpressParams.gasPrice,
   });
 
@@ -194,7 +193,6 @@ async function calculateGmxAccountWithdrawalTechnicalFees(
     chainId: params.chainId,
     gasLimits: params.gasLimits,
     tokensData: params.tokensData,
-    // relayed by the keeper, so priced without the wallet priority fee allowance
     gasPrice: params.globalExpressParams.gasPrice,
   });
 

@@ -102,7 +102,7 @@ export type UpdateOrderParams = {
   validFromTime: bigint;
   // used to top-up execution fee for frozen orders
   executionFeeTopUp: bigint;
-  // gas limit behind the top-up estimate, so express can take the wallet allowance out of it
+  // lets express take the priority fee allowance out of the top-up
   executionGasLimit?: bigint;
 };
 
@@ -569,12 +569,6 @@ export function getBatchTotalExecutionFee({
   };
 }
 
-/**
- * Execution fee estimates budget the wallet's priority fee (getExecutionFeePriorityFeeAllowance), while express
- * transactions are sent by the keeper relay with a zero priority fee, so the allowance is taken out of the orders
- * before they are estimated and signed for the relay.
- */
-/** Execution fee and gas limit of every order the batch creates, in payload order. */
 export function getBatchExecutionFeeEstimates(batchParams: BatchOrderTxnParams): ExecutionFeeEstimate[] {
   return batchParams.createOrderParams.map((co) => ({
     executionFee: co.orderPayload.numbers.executionFee,
@@ -582,6 +576,7 @@ export function getBatchExecutionFeeEstimates(batchParams: BatchOrderTxnParams):
   }));
 }
 
+// Expects wallet-priced params: apply once, right before estimating or signing for the relay
 export function getExpressBatchOrderParams(
   chainId: ContractsChainId,
   batchParams: BatchOrderTxnParams

@@ -29,22 +29,16 @@ export function getExecutionFeeBufferBps(chainId: number, settledBufferBps: numb
   return BigInt(settledBufferBps ?? getExecutionFeeConfig(chainId as ContractsChainId)?.defaultBufferBps ?? 0);
 }
 
-// Wallets may add a priority fee on top of the base fee, and the contracts validate the execution fee
-// against tx.gasprice, so wallet-signed transactions need an allowance for it. Express transactions
-// are sent by the keeper relay with a zero priority fee.
 export function getExecutionFeeGasPricePremium(chainId: number, isExpress: boolean) {
   const premium = getGasPricePremium(chainId as ContractsChainId) || 0n;
 
   return isExpress ? premium : premium + getExecutionFeePriorityFeeAllowance(chainId as ContractsChainId);
 }
 
-// The gas price for express estimates: the keeper relay pays no priority fee, so the allowance
-// budgeted into the wallet gas price is taken out.
 export function getExpressGasPrice(chainId: number, gasPrice: bigint) {
   return bigMath.max(0n, gasPrice - getExecutionFeePriorityFeeAllowance(chainId as ContractsChainId));
 }
 
-// The same estimate priced for express, which pays no priority fee.
 export function getExpressExecutionFeeAmount(chainId: number, executionFee: ExecutionFee) {
   return bigMath.max(
     0n,
@@ -119,8 +113,7 @@ export function getMinimumExecutionFeeBufferBps(p: {
   return requiredBufferBps;
 }
 
-// The contract reports the fee of a single order: take that order's gas limit when the estimate lists it,
-// otherwise its share of the whole transaction's estimate (a batch may contain several orders).
+// The contract reports a single order's fee: use that order's gas limit, or its share of the batch estimate
 function getReportedOrderGasLimit(p: {
   executionFee: bigint;
   estimatedExecutionFee: bigint | undefined;
