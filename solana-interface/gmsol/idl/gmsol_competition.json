@@ -1,0 +1,1539 @@
+{
+  "address": "2AxuNr6euZPKQbTwNsLBjzFTZFAevA85F4PW9m9Dv8pc",
+  "metadata": {
+    "name": "gmsol_competition",
+    "version": "0.8.0",
+    "spec": "0.1.0",
+    "description": "GMX-Solana is an extension of GMX on the Solana blockchain.",
+    "repository": "https://github.com/gmsol-labs/gmx-solana"
+  },
+  "instructions": [
+    {
+      "name": "close_participant",
+      "docs": [
+        "Close the participant account and recover rent."
+      ],
+      "discriminator": [
+        192,
+        162,
+        92,
+        5,
+        148,
+        191,
+        207,
+        151
+      ],
+      "accounts": [
+        {
+          "name": "trader",
+          "docs": [
+            "The trader that owns the participant account."
+          ],
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "participant"
+          ]
+        },
+        {
+          "name": "competition",
+          "docs": [
+            "The competition account this participant belongs to."
+          ],
+          "relations": [
+            "participant"
+          ]
+        },
+        {
+          "name": "participant",
+          "docs": [
+            "The participant PDA to close."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  97,
+                  114,
+                  116,
+                  105,
+                  99,
+                  105,
+                  112,
+                  97,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "competition"
+              },
+              {
+                "kind": "account",
+                "path": "trader"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_participant_idempotent",
+      "docs": [
+        "Create [`Participant`](crate::states::Participant) PDA idempotently."
+      ],
+      "discriminator": [
+        156,
+        72,
+        209,
+        80,
+        153,
+        251,
+        119,
+        15
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "docs": [
+            "Payer that funds the new PDA when it does **not** exist."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "competition",
+          "docs": [
+            "The competition account this participant belongs to."
+          ]
+        },
+        {
+          "name": "participant",
+          "docs": [
+            "The participant PDA."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  97,
+                  114,
+                  116,
+                  105,
+                  99,
+                  105,
+                  112,
+                  97,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "competition"
+              },
+              {
+                "kind": "account",
+                "path": "trader"
+              }
+            ]
+          }
+        },
+        {
+          "name": "trader",
+          "docs": [
+            "The trader address."
+          ]
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "System program."
+          ],
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_competition",
+      "docs": [
+        "Initialize the global [`Competition`](crate::states::Competition) PDA."
+      ],
+      "discriminator": [
+        51,
+        234,
+        53,
+        254,
+        166,
+        217,
+        144,
+        224
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "docs": [
+            "Payer and the authority of the competition."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "competition",
+          "docs": [
+            "The global competition PDA."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  109,
+                  112,
+                  101,
+                  116,
+                  105,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "payer"
+              },
+              {
+                "kind": "arg",
+                "path": "start_time"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "start_time",
+          "type": "i64"
+        },
+        {
+          "name": "end_time",
+          "type": "i64"
+        },
+        {
+          "name": "volume_threshold",
+          "type": "u128"
+        },
+        {
+          "name": "extension_duration",
+          "type": "i64"
+        },
+        {
+          "name": "extension_cap",
+          "type": "i64"
+        },
+        {
+          "name": "only_count_increase",
+          "type": "bool"
+        },
+        {
+          "name": "volume_merge_window",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "on_closed",
+      "docs": [
+        "Triggered when an order is **closed / cancelled**.",
+        "Currently ignored by the competition contract."
+      ],
+      "discriminator": [
+        205,
+        52,
+        56,
+        138,
+        35,
+        157,
+        126,
+        10
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "The callback‑authority PDA (must be a signer)."
+          ],
+          "signer": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  108,
+                  108,
+                  98,
+                  97,
+                  99,
+                  107
+                ]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                234,
+                94,
+                74,
+                175,
+                228,
+                208,
+                167,
+                114,
+                85,
+                24,
+                18,
+                149,
+                120,
+                219,
+                76,
+                130,
+                12,
+                54,
+                252,
+                80,
+                147,
+                170,
+                106,
+                18,
+                19,
+                192,
+                130,
+                125,
+                110,
+                213,
+                68,
+                8
+              ]
+            }
+          }
+        },
+        {
+          "name": "competition"
+        },
+        {
+          "name": "participant"
+        },
+        {
+          "name": "trader",
+          "docs": [
+            "The trader public key."
+          ]
+        },
+        {
+          "name": "action",
+          "docs": [
+            "The action account."
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "_authority_bump",
+          "type": "u8"
+        },
+        {
+          "name": "_action_kind",
+          "type": "u8"
+        },
+        {
+          "name": "_callback_version",
+          "type": "u8"
+        },
+        {
+          "name": "_extra_account_count",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "on_created",
+      "docs": [
+        "Triggered immediately **after an order is created**.",
+        "The competition logic is unaffected, so this is a no‑op kept only",
+        "for interface compatibility."
+      ],
+      "discriminator": [
+        84,
+        33,
+        24,
+        120,
+        108,
+        57,
+        59,
+        163
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "The callback‑authority PDA (must be a signer)."
+          ],
+          "signer": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  108,
+                  108,
+                  98,
+                  97,
+                  99,
+                  107
+                ]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                234,
+                94,
+                74,
+                175,
+                228,
+                208,
+                167,
+                114,
+                85,
+                24,
+                18,
+                149,
+                120,
+                219,
+                76,
+                130,
+                12,
+                54,
+                252,
+                80,
+                147,
+                170,
+                106,
+                18,
+                19,
+                192,
+                130,
+                125,
+                110,
+                213,
+                68,
+                8
+              ]
+            }
+          }
+        },
+        {
+          "name": "competition",
+          "docs": [
+            "The global competition account."
+          ],
+          "relations": [
+            "participant"
+          ]
+        },
+        {
+          "name": "participant",
+          "docs": [
+            "The participant PDA (created on demand)."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  97,
+                  114,
+                  116,
+                  105,
+                  99,
+                  105,
+                  112,
+                  97,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "competition"
+              },
+              {
+                "kind": "account",
+                "path": "trader"
+              }
+            ]
+          }
+        },
+        {
+          "name": "trader",
+          "docs": [
+            "The trader public key."
+          ],
+          "relations": [
+            "participant"
+          ]
+        },
+        {
+          "name": "action",
+          "docs": [
+            "The action account."
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "authority_bump",
+          "type": "u8"
+        },
+        {
+          "name": "action_kind",
+          "type": "u8"
+        },
+        {
+          "name": "callback_version",
+          "type": "u8"
+        },
+        {
+          "name": "extra_account_count",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "on_executed",
+      "docs": [
+        "Triggered when an order is **executed**.",
+        "Updates the participant statistics and the on‑chain leaderboard."
+      ],
+      "discriminator": [
+        182,
+        182,
+        238,
+        41,
+        72,
+        21,
+        100,
+        240
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "The callback‑authority PDA (must be a signer)."
+          ],
+          "signer": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  108,
+                  108,
+                  98,
+                  97,
+                  99,
+                  107
+                ]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                234,
+                94,
+                74,
+                175,
+                228,
+                208,
+                167,
+                114,
+                85,
+                24,
+                18,
+                149,
+                120,
+                219,
+                76,
+                130,
+                12,
+                54,
+                252,
+                80,
+                147,
+                170,
+                106,
+                18,
+                19,
+                192,
+                130,
+                125,
+                110,
+                213,
+                68,
+                8
+              ]
+            }
+          }
+        },
+        {
+          "name": "competition",
+          "docs": [
+            "The global competition account."
+          ],
+          "writable": true
+        },
+        {
+          "name": "participant",
+          "docs": [
+            "The participant PDA (created on demand)."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  97,
+                  114,
+                  116,
+                  105,
+                  99,
+                  105,
+                  112,
+                  97,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "competition"
+              },
+              {
+                "kind": "account",
+                "path": "trader"
+              }
+            ]
+          }
+        },
+        {
+          "name": "trader",
+          "docs": [
+            "The trader public key."
+          ]
+        },
+        {
+          "name": "action",
+          "docs": [
+            "The action account."
+          ]
+        },
+        {
+          "name": "position"
+        },
+        {
+          "name": "trade_event",
+          "docs": [
+            "Trade event data."
+          ],
+          "optional": true
+        }
+      ],
+      "args": [
+        {
+          "name": "authority_bump",
+          "type": "u8"
+        },
+        {
+          "name": "action_kind",
+          "type": "u8"
+        },
+        {
+          "name": "callback_version",
+          "type": "u8"
+        },
+        {
+          "name": "success",
+          "type": "bool"
+        },
+        {
+          "name": "extra_account_count",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "on_updated",
+      "docs": [
+        "Triggered when an order is updated.",
+        "Currently ignored by the competition contract."
+      ],
+      "discriminator": [
+        128,
+        254,
+        199,
+        49,
+        187,
+        205,
+        190,
+        74
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "The callback‑authority PDA (must be a signer)."
+          ],
+          "signer": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  108,
+                  108,
+                  98,
+                  97,
+                  99,
+                  107
+                ]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                234,
+                94,
+                74,
+                175,
+                228,
+                208,
+                167,
+                114,
+                85,
+                24,
+                18,
+                149,
+                120,
+                219,
+                76,
+                130,
+                12,
+                54,
+                252,
+                80,
+                147,
+                170,
+                106,
+                18,
+                19,
+                192,
+                130,
+                125,
+                110,
+                213,
+                68,
+                8
+              ]
+            }
+          }
+        },
+        {
+          "name": "competition"
+        },
+        {
+          "name": "participant"
+        },
+        {
+          "name": "trader",
+          "docs": [
+            "The trader public key."
+          ]
+        },
+        {
+          "name": "action",
+          "docs": [
+            "The action account."
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "_authority_bump",
+          "type": "u8"
+        },
+        {
+          "name": "_action_kind",
+          "type": "u8"
+        },
+        {
+          "name": "_callback_version",
+          "type": "u8"
+        },
+        {
+          "name": "_extra_account_count",
+          "type": "u8"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Competition",
+      "discriminator": [
+        193,
+        49,
+        76,
+        118,
+        106,
+        22,
+        221,
+        106
+      ]
+    },
+    {
+      "name": "Participant",
+      "discriminator": [
+        32,
+        142,
+        108,
+        79,
+        247,
+        179,
+        54,
+        6
+      ]
+    },
+    {
+      "name": "TradeData",
+      "discriminator": [
+        226,
+        22,
+        163,
+        52,
+        243,
+        223,
+        187,
+        74
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "OutsideCompetitionTime",
+      "msg": "outside competition time"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidTradeEvent",
+      "msg": "invalid trade event"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidActionKind",
+      "msg": "invalid action kind"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidTimeRange",
+      "msg": "invalid time range"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidTimeExtension",
+      "msg": "invalid time extension"
+    },
+    {
+      "code": 6005,
+      "name": "InvalidVolumeThreshold",
+      "msg": "invalid volume threshold"
+    },
+    {
+      "code": 6006,
+      "name": "InvalidMaxExtension",
+      "msg": "invalid max extension"
+    },
+    {
+      "code": 6007,
+      "name": "CompetitionInProgress",
+      "msg": "competition is still in progress"
+    },
+    {
+      "code": 6008,
+      "name": "InvalidVolumeMergeWindow",
+      "msg": "invalid volume merge window"
+    }
+  ],
+  "types": [
+    {
+      "name": "Competition",
+      "docs": [
+        "The global competition data."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "authority",
+            "docs": [
+              "The authority of this competition."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "start_time",
+            "docs": [
+              "The competition start timestamp."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "end_time",
+            "docs": [
+              "The competition end timestamp."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "leaderboard",
+            "docs": [
+              "The fixed-length leaderboard."
+            ],
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "LeaderEntry"
+                }
+              }
+            }
+          },
+          {
+            "name": "volume_threshold",
+            "docs": [
+              "Volume threshold in USD."
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "extension_duration",
+            "docs": [
+              "Time extension in seconds."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "extension_cap",
+            "docs": [
+              "Maximum time extension in seconds."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "extension_triggerer",
+            "docs": [
+              "Address that triggered time extension."
+            ],
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "only_count_increase",
+            "docs": [
+              "Whether to only count volume from position increases."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "volume_merge_window",
+            "docs": [
+              "Time window in seconds for merging volumes from the same trader."
+            ],
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LeaderEntry",
+      "docs": [
+        "A single leaderboard record."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "address",
+            "docs": [
+              "The trader address."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "volume",
+            "docs": [
+              "The cumulative traded volume."
+            ],
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Participant",
+      "docs": [
+        "The per-trader statistics."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "competition",
+            "docs": [
+              "The competition account this entry belongs to."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "trader",
+            "docs": [
+              "The trader address."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "volume",
+            "docs": [
+              "The cumulative traded volume."
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "last_updated_at",
+            "docs": [
+              "The last update timestamp."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "merged_volume",
+            "docs": [
+              "The merged volume within the time window."
+            ],
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PositionState",
+      "docs": [
+        "Position State."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "trade_id",
+            "type": "u64"
+          },
+          {
+            "name": "increased_at",
+            "type": "i64"
+          },
+          {
+            "name": "updated_at_slot",
+            "type": "u64"
+          },
+          {
+            "name": "decreased_at",
+            "type": "i64"
+          },
+          {
+            "name": "size_in_tokens",
+            "type": "u128"
+          },
+          {
+            "name": "collateral_amount",
+            "type": "u128"
+          },
+          {
+            "name": "size_in_usd",
+            "type": "u128"
+          },
+          {
+            "name": "borrowing_factor",
+            "type": "u128"
+          },
+          {
+            "name": "funding_fee_amount_per_size",
+            "type": "u128"
+          },
+          {
+            "name": "long_token_claimable_funding_amount_per_size",
+            "type": "u128"
+          },
+          {
+            "name": "short_token_claimable_funding_amount_per_size",
+            "type": "u128"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                128
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "TradeData",
+      "docs": [
+        "Trade event data."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "flags",
+            "type": "u8"
+          },
+          {
+            "name": "padding_0",
+            "type": {
+              "array": [
+                "u8",
+                7
+              ]
+            }
+          },
+          {
+            "name": "trade_id",
+            "type": "u64"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "store",
+            "type": "pubkey"
+          },
+          {
+            "name": "market_token",
+            "type": "pubkey"
+          },
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "position",
+            "type": "pubkey"
+          },
+          {
+            "name": "order",
+            "type": "pubkey"
+          },
+          {
+            "name": "final_output_token",
+            "type": "pubkey"
+          },
+          {
+            "name": "ts",
+            "type": "i64"
+          },
+          {
+            "name": "slot",
+            "type": "u64"
+          },
+          {
+            "name": "before",
+            "type": {
+              "defined": {
+                "name": "PositionState"
+              }
+            }
+          },
+          {
+            "name": "after",
+            "type": {
+              "defined": {
+                "name": "PositionState"
+              }
+            }
+          },
+          {
+            "name": "transfer_out",
+            "type": {
+              "defined": {
+                "name": "TransferOut"
+              }
+            }
+          },
+          {
+            "name": "padding_1",
+            "type": {
+              "array": [
+                "u8",
+                8
+              ]
+            }
+          },
+          {
+            "name": "prices",
+            "type": {
+              "defined": {
+                "name": "TradePrices"
+              }
+            }
+          },
+          {
+            "name": "execution_price",
+            "type": "u128"
+          },
+          {
+            "name": "price_impact_value",
+            "type": "i128"
+          },
+          {
+            "name": "price_impact_diff",
+            "type": "u128"
+          },
+          {
+            "name": "pnl",
+            "type": {
+              "defined": {
+                "name": "TradePnl"
+              }
+            }
+          },
+          {
+            "name": "fees",
+            "type": {
+              "defined": {
+                "name": "TradeFees"
+              }
+            }
+          },
+          {
+            "name": "output_amounts",
+            "type": {
+              "defined": {
+                "name": "TradeOutputAmounts"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "TradeFees",
+      "docs": [
+        "Trade Fees."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "order_fee_for_receiver_amount",
+            "type": "u128"
+          },
+          {
+            "name": "order_fee_for_pool_amount",
+            "type": "u128"
+          },
+          {
+            "name": "liquidation_fee_amount",
+            "type": "u128"
+          },
+          {
+            "name": "liquidation_fee_for_receiver_amount",
+            "type": "u128"
+          },
+          {
+            "name": "total_borrowing_fee_amount",
+            "type": "u128"
+          },
+          {
+            "name": "borrowing_fee_for_receiver_amount",
+            "type": "u128"
+          },
+          {
+            "name": "funding_fee_amount",
+            "type": "u128"
+          },
+          {
+            "name": "claimable_funding_fee_long_token_amount",
+            "type": "u128"
+          },
+          {
+            "name": "claimable_funding_fee_short_token_amount",
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TradeOutputAmounts",
+      "docs": [
+        "Output amounts."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "output_amount",
+            "type": "u128"
+          },
+          {
+            "name": "secondary_output_amount",
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TradePnl",
+      "docs": [
+        "Trade PnL."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pnl",
+            "type": "i128"
+          },
+          {
+            "name": "uncapped_pnl",
+            "type": "i128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TradePrice",
+      "docs": [
+        "Price."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "min",
+            "type": "u128"
+          },
+          {
+            "name": "max",
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TradePrices",
+      "docs": [
+        "Prices."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "index",
+            "type": {
+              "defined": {
+                "name": "TradePrice"
+              }
+            }
+          },
+          {
+            "name": "long",
+            "type": {
+              "defined": {
+                "name": "TradePrice"
+              }
+            }
+          },
+          {
+            "name": "short",
+            "type": {
+              "defined": {
+                "name": "TradePrice"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "TransferOut",
+      "docs": [
+        "Transfer Out."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "executed",
+            "type": "u8"
+          },
+          {
+            "name": "padding_0",
+            "type": {
+              "array": [
+                "u8",
+                7
+              ]
+            }
+          },
+          {
+            "name": "final_output_token",
+            "type": "u64"
+          },
+          {
+            "name": "secondary_output_token",
+            "type": "u64"
+          },
+          {
+            "name": "long_token",
+            "type": "u64"
+          },
+          {
+            "name": "short_token",
+            "type": "u64"
+          },
+          {
+            "name": "long_token_for_claimable_account_of_user",
+            "type": "u64"
+          },
+          {
+            "name": "short_token_for_claimable_account_of_user",
+            "type": "u64"
+          },
+          {
+            "name": "long_token_for_claimable_account_of_holding",
+            "type": "u64"
+          },
+          {
+            "name": "short_token_for_claimable_account_of_holding",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ],
+  "constants": [
+    {
+      "name": "COMPETITION_SEED",
+      "docs": [
+        "The seed for [`Competition`] account."
+      ],
+      "type": "bytes",
+      "value": "[99, 111, 109, 112, 101, 116, 105, 116, 105, 111, 110]"
+    },
+    {
+      "name": "MAX_LEADERBOARD_LEN",
+      "docs": [
+        "The maximum number of leaderboard entries kept on chain."
+      ],
+      "type": "u8",
+      "value": "5"
+    },
+    {
+      "name": "PARTICIPANT_SEED",
+      "docs": [
+        "The seed for [`Participant`] account."
+      ],
+      "type": "bytes",
+      "value": "[112, 97, 114, 116, 105, 99, 105, 112, 97, 110, 116]"
+    }
+  ]
+}

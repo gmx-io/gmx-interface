@@ -457,9 +457,15 @@ const ChartHeaderMobileItem = ({ label, value }: { label: ReactNode; value: Reac
   );
 };
 
-function ChartHeaderSolana() {
+type ChartHeaderProps = {
+  solanaIndexTokenAddress?: string;
+  onSolanaIndexTokenChange?: (address: string) => void;
+};
+
+function ChartHeaderSolana({ solanaIndexTokenAddress, onSolanaIndexTokenChange }: ChartHeaderProps) {
   const [items, setItems] = useState<SolanaMarketItem[]>([]);
-  const [selectedAddress, setSelectedAddress] = useState<string>();
+  const [localSelectedAddress, setLocalSelectedAddress] = useState<string>();
+  const selectedAddress = solanaIndexTokenAddress ?? localSelectedAddress;
   const selectedItem = selectedAddress
     ? items.find((item) => item.token.address === selectedAddress)
     : items.find((item) => item.token.symbol === "SOL");
@@ -472,7 +478,7 @@ function ChartHeaderSolana() {
       <ChartTokenSelectorSolana
         selectedToken={selectedItem?.token}
         oneRowLabels={true}
-        onSelect={setSelectedAddress}
+        onSelect={onSolanaIndexTokenChange ?? setLocalSelectedAddress}
         onItemsChange={setItems}
       />
       <div className="flex flex-col justify-center gap-2 numbers">
@@ -507,11 +513,11 @@ function ChartHeaderSolana() {
   );
 }
 
-export default function ChartHeader() {
+export default function ChartHeader(props: ChartHeaderProps) {
   const { isMobile } = useBreakpoints();
   const { isSolana } = useChainId();
 
-  if (isSolana) return <ChartHeaderSolana />;
+  if (isSolana) return <ChartHeaderSolana {...props} />;
 
   return isMobile ? <ChartHeaderMobile /> : <ChartHeaderDesktop />;
 }

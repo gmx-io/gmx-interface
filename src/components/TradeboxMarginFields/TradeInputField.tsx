@@ -36,6 +36,7 @@ type Props = {
   placeholder?: string;
   qa?: string;
   maxDecimals?: number;
+  isDisabled?: boolean;
 };
 
 export function TradeInputField({
@@ -54,6 +55,7 @@ export function TradeInputField({
   placeholder = "0.00",
   qa,
   maxDecimals,
+  isDisabled = false,
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
@@ -115,6 +117,7 @@ export function TradeInputField({
             placeholder={placeholder}
             qa={qa ? qa + "-input" : undefined}
             maxDecimals={maxDecimals}
+            isDisabled={isDisabled}
           />
           {alternateValue && (
             <span className="shrink-0 text-12 text-typography-secondary numbers">≈{alternateValue}</span>
@@ -124,6 +127,7 @@ export function TradeInputField({
       rightHeadline={rightHeadline}
       rightContent={rightContent}
       hideDivider={!showDisplayModeToggle || !onDisplayModeChange}
+      isDisabled={isDisabled}
     />
   );
 }
