@@ -173,7 +173,7 @@ export const wrapNativeToken = async (owner: PublicKey, lamports: BN) => {
     lamports: toBigInt(lamports),
   });
   const sync = createSyncNativeInstruction(account);
-
+  console.debug('transfer', transfer.toString());
   return [transfer, sync];
 };
 
