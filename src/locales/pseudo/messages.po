@@ -400,10 +400,6 @@ msgstr ""
 msgid "Cancel Limit Swap"
 msgstr ""
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Yield farming"
-msgstr ""
-
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 msgid "Roadmap"
 msgstr ""
@@ -1082,10 +1078,6 @@ msgstr ""
 msgid "Only send <0>{chainName}-compatible assets</0> to this address!"
 msgstr ""
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Plutus"
-msgstr ""
-
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {hours} hours{0}"
 msgstr ""
@@ -1116,10 +1108,6 @@ msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
-msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Trading simulations on GMX using DOJO"
 msgstr ""
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
@@ -1347,10 +1335,6 @@ msgstr ""
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Error:"
-msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Cross-chain one-click deposits into GM"
 msgstr ""
 
 #: src/pages/UiPage/BannerTest.tsx
@@ -2243,7 +2227,6 @@ msgid "Decentralized trading protocol"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
-#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Symbiosis"
 msgstr ""
 
@@ -2976,10 +2959,6 @@ msgstr ""
 msgid "Confirm settle"
 msgstr ""
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Protocol risk explorer and stats"
-msgstr ""
-
 #: src/components/ShareModal/ShareCardFrame.tsx
 msgid "Generating shareable image..."
 msgstr ""
@@ -3342,10 +3321,6 @@ msgstr ""
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Net rate projection:"
-msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX market token price chart"
 msgstr ""
 
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
@@ -4221,10 +4196,6 @@ msgstr ""
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "URL"
-msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Decentralized options protocol"
 msgstr ""
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
@@ -5264,10 +5235,6 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Per 1h"
-msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Perpetuals aggregator"
 msgstr ""
 
 #: src/components/TradeHistory/keys.ts
@@ -6595,10 +6562,6 @@ msgstr ""
 msgid "RPC error.<0/><1/>Enable <2>Express Trading</2> in settings for better reliability"
 msgstr ""
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "UniDex Leverage"
-msgstr ""
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "High execution reliability using premium RPCs"
 msgstr ""
@@ -6766,10 +6729,6 @@ msgstr ""
 msgid "Your funds are safe in GMX contracts on the destination chain. Retry the compose transaction in LayerZero Scan or contact support."
 msgstr ""
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Mozaic Finance"
-msgstr ""
-
 #: src/components/ChartTokenSelector/ModeTabs.tsx
 msgid "Perpetuals"
 msgstr "[!! Perpetuals !!]"
@@ -6780,10 +6739,6 @@ msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Use the \"Close\" button to reduce your position via market or TWAP orders."
-msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "ODOS"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -6800,10 +6755,6 @@ msgstr ""
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "This is an external swap routed through KyberSwap. Allowed slippage includes price impact and fees, unlike GMX native swaps where these are separate."
-msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Stryke"
 msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
@@ -6973,10 +6924,6 @@ msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may still liquidate from fees alone (funding + borrowing), reducing margin over time."
-msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Firebird Finance"
 msgstr ""
 
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
@@ -7655,10 +7602,6 @@ msgstr ""
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "1m 40s"
-msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GLP autocompounding vaults"
 msgstr ""
 
 #: src/components/Referrals/affiliates/faq.tsx
@@ -8623,8 +8566,6 @@ msgstr ""
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DEX aggregator"
 msgstr ""
 
@@ -8694,10 +8635,6 @@ msgstr ""
 
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum actions before reauthorization required"
-msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX risk monitoring"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -8893,10 +8830,6 @@ msgstr ""
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "EVENT NAME"
-msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Compass Labs GM token dashboard"
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
@@ -10358,10 +10291,6 @@ msgstr ""
 msgid "Transaction sent"
 msgstr ""
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Perfectswap"
-msgstr ""
-
 #: src/components/ShareModal/ShareCardReferralCodeStat.tsx
 msgid "Referral code"
 msgstr ""
@@ -10667,7 +10596,6 @@ msgstr ""
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
-#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield vaults"
 msgstr ""
 
@@ -10836,10 +10764,6 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "LP"
-msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Leverage trading terminal"
 msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -11869,10 +11793,6 @@ msgstr ""
 msgid "GMX trading chat"
 msgstr ""
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Compass Labs trading simulations"
-msgstr ""
-
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "Manage liquidity"
 msgstr ""
@@ -12083,10 +12003,6 @@ msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Proportional stored impact"
-msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Rage Trade"
 msgstr ""
 
 #: src/components/NetRateChart/NetRateChart.tsx

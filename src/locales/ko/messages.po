@@ -400,10 +400,6 @@ msgstr "Telegram 봇"
 msgid "Cancel Limit Swap"
 msgstr "지정가 스왑 취소"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Yield farming"
-msgstr "수익률 파밍"
-
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 msgid "Roadmap"
 msgstr "로드맵"
@@ -1082,10 +1078,6 @@ msgstr "가격 변동이 심합니다. <0>허용 슬리피지를 높이십시오
 msgid "Only send <0>{chainName}-compatible assets</0> to this address!"
 msgstr "이 주소로는 <0>{chainName} 호환 자산</0>만 보내십시오!"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Plutus"
-msgstr "Plutus"
-
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {hours} hours{0}"
 msgstr ""
@@ -1117,10 +1109,6 @@ msgstr "Solana의 GMX"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
 msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Trading simulations on GMX using DOJO"
-msgstr "DOJO를 사용한 GMX 트레이딩 시뮬레이션"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Can I unstake or withdraw anytime?"
@@ -1348,10 +1336,6 @@ msgstr "SHORTS NET RATE / 1H"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Error:"
 msgstr "오류:"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Cross-chain one-click deposits into GM"
-msgstr "GM으로 크로스체인 원클릭 예치"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "<0>Switch to TBTC-TBTC pool</0> for potentially lower price impact"
@@ -2243,7 +2227,6 @@ msgid "Decentralized trading protocol"
 msgstr "탈중앙화 거래 프로토콜"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
-#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Symbiosis"
 msgstr "Symbiosis"
 
@@ -2976,10 +2959,6 @@ msgstr "GM:"
 msgid "Confirm settle"
 msgstr "정산 확인"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Protocol risk explorer and stats"
-msgstr "프로토콜 위험 탐색기 및 통계"
-
 #: src/components/ShareModal/ShareCardFrame.tsx
 msgid "Generating shareable image..."
 msgstr "공유가능한 이미지 생성중..."
@@ -3343,10 +3322,6 @@ msgstr "잔액"
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Net rate projection:"
 msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX market token price chart"
-msgstr "GMX 마켓 토큰 가격 차트"
 
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 msgid "Lifetime LP rewards"
@@ -4222,10 +4197,6 @@ msgstr "추천 약관"
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "URL"
 msgstr "URL"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Decentralized options protocol"
-msgstr "탈중앙화 옵션 프로토콜"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Trade at scale without worrying about thin order books or slippage"
@@ -5265,10 +5236,6 @@ msgstr "GMX 풀에서 이 스왑 규모를 체결할 수 없습니다. 외부 �
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Per 1h"
 msgstr "1시간당"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Perpetuals aggregator"
-msgstr "무기한 선물 애그리게이터"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Swap"
@@ -6595,10 +6562,6 @@ msgstr "s:"
 msgid "RPC error.<0/><1/>Enable <2>Express Trading</2> in settings for better reliability"
 msgstr "RPC 오류.<0/><1/>안정성 향상을 위해 설정에서 <2>Express Trading</2>을 활성화하십시오"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "UniDex Leverage"
-msgstr "UniDex 레버리지"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "High execution reliability using premium RPCs"
 msgstr "프리미엄 RPC를 통한 높은 체결 안정성"
@@ -6766,10 +6729,6 @@ msgstr "GMX 스테이킹은 Arbitrum 및 Avalanche에서 이용 가능합니다.
 msgid "Your funds are safe in GMX contracts on the destination chain. Retry the compose transaction in LayerZero Scan or contact support."
 msgstr "자금은 목적지 체인의 GMX 컨트랙트에 안전하게 보관되어 있습니다. LayerZero Scan에서 컴포즈 트랜잭션을 재시도하거나 지원팀에 문의하십시오."
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Mozaic Finance"
-msgstr "Mozaic Finance"
-
 #: src/components/ChartTokenSelector/ModeTabs.tsx
 msgid "Perpetuals"
 msgstr "무기한"
@@ -6781,10 +6740,6 @@ msgstr "영향 지수 (음수)"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Use the \"Close\" button to reduce your position via market or TWAP orders."
 msgstr "\"Close\" 버튼을 사용하여 시장가 또는 TWAP 주문으로 포지션을 축소하십시오."
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "ODOS"
-msgstr "ODOS"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Substack"
@@ -6801,10 +6756,6 @@ msgstr ""
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "This is an external swap routed through KyberSwap. Allowed slippage includes price impact and fees, unlike GMX native swaps where these are separate."
 msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Stryke"
-msgstr "Stryke"
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "GMX APR"
@@ -6974,10 +6925,6 @@ msgstr "{fromSymbol} 잔액 부족. Gas 토큰이 {toSymbol}(으)로 변경되�
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may still liquidate from fees alone (funding + borrowing), reducing margin over time."
 msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Firebird Finance"
-msgstr "Firebird Finance"
 
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "{balanceFormatted} remaining in old 1CT subaccount"
@@ -7656,10 +7603,6 @@ msgstr ""
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "1m 40s"
 msgstr "1분 40초"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GLP autocompounding vaults"
-msgstr "GLP 자동 복리 볼트"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Yes. To earn rebates on both Arbitrum and Avalanche, create your code on both networks. You can use the same code name on each."
@@ -8623,8 +8566,6 @@ msgstr "{gmOrGlvLabel} 판매에 실패했습니다."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DEX aggregator"
 msgstr "DEX 애그리게이터"
 
@@ -8695,10 +8636,6 @@ msgstr "5분 안에 거래를 시작하세요"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum actions before reauthorization required"
 msgstr "재승인이 필요하기 전 최대 실행 횟수"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX risk monitoring"
-msgstr "GMX 리스크 모니터링"
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Minimum capital used of {0} required to qualify for rankings"
@@ -8894,10 +8831,6 @@ msgstr "GMX 풀에서 이 스왑 규모를 체결할 수 없으며, 현재 사�
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "EVENT NAME"
 msgstr "이벤트명"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Compass Labs GM token dashboard"
-msgstr "Compass Labs GM 토큰 대시보드"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -10358,10 +10291,6 @@ msgstr ""
 msgid "Transaction sent"
 msgstr "거래 전송됨"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Perfectswap"
-msgstr "퍼펙트스왑"
-
 #: src/components/ShareModal/ShareCardReferralCodeStat.tsx
 msgid "Referral code"
 msgstr "추천 코드"
@@ -10667,7 +10596,6 @@ msgstr "입금이 제출되었습니다"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
-#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield vaults"
 msgstr "수익률 볼트"
 
@@ -10837,10 +10765,6 @@ msgstr "<0>트레이더 할인은 등급이 확정되면 계정에 자동으로 
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "LP"
 msgstr "LP"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Leverage trading terminal"
-msgstr "레버리지 거래 터미널"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver address"
@@ -11869,10 +11793,6 @@ msgstr "상세 내용 보기"
 msgid "GMX trading chat"
 msgstr "GMX trading chat"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Compass Labs trading simulations"
-msgstr "Compass Labs trading simulations"
-
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "Manage liquidity"
 msgstr "유동성 관리"
@@ -12084,10 +12004,6 @@ msgstr "{0}개 주문이 업데이트되지 않았습니다. 한도에 도달했
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Proportional stored impact"
 msgstr "비례 저장 영향"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Rage Trade"
-msgstr "레이지 트레이드"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "1h"
