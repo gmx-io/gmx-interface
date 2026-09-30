@@ -99,8 +99,8 @@ export const communityProjects: EcosystemCommunityProject[] = [
     link: "https://app.copin.io",
     linkLabel: "copin.io",
     about: msg`Explore, analyze, and copy on-chain traders`,
-    creatorLabel: ["@0xanol", "@tungle_eth"],
-    creatorLink: ["https://x.com/0xanol", "https://x.com/tungle_eth"],
+    creatorLabel: "@0xanol",
+    creatorLink: "https://x.com/0xanol",
     chainIds: [ARBITRUM],
   },
   {
