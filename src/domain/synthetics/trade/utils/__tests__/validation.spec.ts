@@ -12,6 +12,7 @@ import {
   getConditionalDepositError,
   getConditionalDepositWarning,
   getEditCollateralError,
+  getGmShiftError,
   getGmSwapError,
   getIncreaseError,
   getMarginDepositAutoCancelLimitMessage,
@@ -630,6 +631,48 @@ describe("getGmSwapError — whitelist-only direct deposits", () => {
 
     expect(getGmSwapError({ ...withdrawalParams, directDepositAccess: "denied" })).toEqual(
       getGmSwapError(withdrawalParams)
+    );
+  });
+});
+
+describe("getGmShiftError — whitelist-only target market", () => {
+  const shiftParams: Parameters<typeof getGmShiftError>[0] = {
+    chainId: ARBITRUM,
+    fromMarketInfo: sameCollateralMarket,
+    fromToken: marketToken,
+    fromTokenAmount: expandDecimals(1, 18),
+    fromTokenUsd: expandDecimals(1, 30),
+    fromLongTokenAmount: 0n,
+    fromShortTokenAmount: expandDecimals(1, 6),
+    toMarketInfo: sameCollateralMarket,
+    toToken: marketToken,
+    toTokenAmount: expandDecimals(1, 18),
+    fees: undefined,
+    priceImpactUsd: 0n,
+  };
+
+  it("blocks shifting into a denied market", () => {
+    expect(getGmShiftError({ ...shiftParams, toMarketDirectDepositAccess: "denied" }).buttonErrorMessage).toBe(
+      "Whitelist only"
+    );
+  });
+
+  it("says Whitelist only for a denied market that is not resolved yet", () => {
+    expect(
+      getGmShiftError({ ...shiftParams, toMarketInfo: undefined, toMarketDirectDepositAccess: "denied" })
+        .buttonErrorMessage
+    ).toBe("Whitelist only");
+  });
+
+  it("waits while target access is loading", () => {
+    expect(getGmShiftError({ ...shiftParams, toMarketDirectDepositAccess: "loading" }).buttonErrorMessage).toBe(
+      "Loading..."
+    );
+  });
+
+  it("does not block shifting into a whitelisted market", () => {
+    expect(getGmShiftError({ ...shiftParams, toMarketDirectDepositAccess: "whitelisted" })).toEqual(
+      getGmShiftError(shiftParams)
     );
   });
 });

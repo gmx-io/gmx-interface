@@ -1203,6 +1203,7 @@ export function getGmShiftError({
   toTokenAmount,
   fees,
   priceImpactUsd,
+  toMarketDirectDepositAccess,
 }: {
   chainId: number;
   fromMarketInfo: MarketInfo | undefined;
@@ -1216,8 +1217,17 @@ export function getGmShiftError({
   toTokenAmount: bigint | undefined;
   fees: GmSwapFees | undefined;
   priceImpactUsd: bigint | undefined;
+  toMarketDirectDepositAccess?: DirectDepositAccess;
 }) {
   const isGlv = isGlvInfo(toMarketInfo);
+
+  if (toMarketDirectDepositAccess === "denied") {
+    return { buttonErrorMessage: t`Whitelist only` };
+  }
+
+  if (toMarketDirectDepositAccess === "loading") {
+    return { buttonErrorMessage: t`Loading...` };
+  }
 
   if (!fromMarketInfo || !fromToken || !toMarketInfo || !toToken) {
     return { buttonErrorMessage: t`Loading...` };
