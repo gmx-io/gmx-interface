@@ -266,7 +266,6 @@ export type OrderCancelledEvent = {
 };
 
 // Fallback tracking
-// Switches folded into one endpoints update report
 export type EndpointsPairRepeats = {
   repeatCount: number;
   firstTs: number;
