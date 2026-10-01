@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo } from "react";
 import { AVALANCHE } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import {
+  DEBUG_PAXOS_TRANSIT_FORCE_BUY_USDG_HINT_KEY,
   DEBUG_PAXOS_TRANSIT_IGNORE_WHITELIST_KEY,
   DEBUG_PAXOS_TRANSIT_THRESHOLD_USD_KEY,
   DEBUG_PAXOS_TRANSIT_MOCK_KEY,
@@ -28,6 +29,7 @@ import {
   selectPoolsDetailsGlvInfo,
   selectPoolsDetailsGlvOrMarketAddress,
   selectPoolsDetailsGlvTokenData,
+  selectPoolsDetailsHasNeitherUsdcNorUsdg,
   selectPoolsDetailsIsCrossChainMarket,
   selectPoolsDetailsIsMarketTokenDeposit,
   selectPoolsDetailsMarketInfo,
@@ -213,6 +215,10 @@ export function GmSwapBoxDepositWithdrawal() {
     false
   );
   const [isTransitMocked, setIsTransitMocked] = useLocalStorageSerializeKey(DEBUG_PAXOS_TRANSIT_MOCK_KEY, false);
+  const [isBuyUsdgHintForced, setIsBuyUsdgHintForced] = useLocalStorageSerializeKey(
+    DEBUG_PAXOS_TRANSIT_FORCE_BUY_USDG_HINT_KEY,
+    false
+  );
   const [transitThresholdUsdInput, setTransitThresholdUsdInput] = useLocalStorageSerializeKey(
     DEBUG_PAXOS_TRANSIT_THRESHOLD_USD_KEY,
     ""
@@ -224,6 +230,11 @@ export function GmSwapBoxDepositWithdrawal() {
     isMocked: showDebugValues && Boolean(isTransitMocked),
     shouldDisableValidation: shouldDisableValidationForTesting,
   });
+
+  const hasNeitherUsdcNorUsdg = useSelector(selectPoolsDetailsHasNeitherUsdcNorUsdg);
+  const isBuyUsdgHintForcedForDebug = showDebugValues && transitState.hasUsdgCollateral && Boolean(isBuyUsdgHintForced);
+  const shouldShowBuyUsdgHint =
+    isDeposit && ((account !== undefined && hasNeitherUsdcNorUsdg) || isBuyUsdgHintForcedForDebug);
 
   const logicalFees = useDepositWithdrawalFees({
     amounts,
@@ -755,6 +766,7 @@ export function GmSwapBoxDepositWithdrawal() {
                 shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
                 bannerErrorContent={submitState.bannerErrorContent}
                 shouldShowAvalancheGmxAccountWarning={shouldShowAvalancheGmxAccountWarning}
+                shouldShowBuyUsdgHint={shouldShowBuyUsdgHint}
                 isSubmitDisabled={submitState.disabled}
                 gasPaymentTokenWarningContent={
                   firstTokenMaxDetails.gasPaymentTokenWarningContent ??
@@ -793,6 +805,8 @@ export function GmSwapBoxDepositWithdrawal() {
             setIsWhitelistIgnored={setIsTransitWhitelistIgnored}
             isMocked={Boolean(isTransitMocked)}
             setIsMocked={setIsTransitMocked}
+            isBuyUsdgHintForced={Boolean(isBuyUsdgHintForced)}
+            setIsBuyUsdgHintForced={setIsBuyUsdgHintForced}
             thresholdUsdInput={transitThresholdUsdInput ?? ""}
             setThresholdUsdInput={setTransitThresholdUsdInput}
           />
