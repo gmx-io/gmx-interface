@@ -13,7 +13,7 @@ import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { usePerformanceAnnualized } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { PerformanceSnapshot, usePerformanceSnapshots } from "domain/synthetics/markets/usePerformanceSnapshots";
 import { POOLS_TIME_RANGE_OPTIONS, convertPoolsTimeRangeToPeriod } from "domain/synthetics/markets/usePoolsTimeRange";
-import { PoolsTimeRange, usePoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
+import { PoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
 import { usePriceSnapshots } from "domain/synthetics/markets/usePriceSnapshots";
 import { TokensData, getMidPrice } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
@@ -75,9 +75,16 @@ const getGraphValue = ({
   return valuesMap[marketGraphType];
 };
 
-export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarketInfo }) {
+export function MarketGraphs({
+  glvOrMarketInfo,
+  timeRange,
+  setTimeRange,
+}: {
+  glvOrMarketInfo: GlvOrMarketInfo;
+  timeRange: PoolsTimeRange;
+  setTimeRange: (timeRange: PoolsTimeRange) => void;
+}) {
   const [marketGraphType, setMarketGraphType] = useState<MarketGraphType>(MARKET_GRAPHS_TYPES[0]);
-  const { timeRange, setTimeRange } = usePoolsTimeRange();
 
   const address = isGlvInfo(glvOrMarketInfo) ? glvOrMarketInfo.glvTokenAddress : glvOrMarketInfo.marketTokenAddress;
 
