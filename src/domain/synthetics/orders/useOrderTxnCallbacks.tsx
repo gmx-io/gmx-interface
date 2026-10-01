@@ -12,7 +12,7 @@ import {
   PendingPositionUpdate,
   useSyntheticsEvents,
 } from "context/SyntheticsEvents";
-import { selectOrdersInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectOrdersInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import {
@@ -55,9 +55,10 @@ import {
   CancelOrderTxnParams,
   CreateOrderTxnParams,
   DecreasePositionOrderParams,
+  getBatchExecutionFeeEstimates,
   getBatchRequiredActions,
-  getBatchTotalExecutionFee,
   getBatchTotalPayCollateralAmount,
+  getExpressBatchOrderParams,
   getIsTwapOrderPayload,
   IncreasePositionOrderParams,
   SwapOrderParams,
@@ -100,7 +101,6 @@ export function useOrderTxnCallbacks() {
   const { addOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
   const { setIsPermitsDisabled, resetTokenPermits } = useTokenPermitsContext();
   const { invalidateSubaccountApproval } = useSubaccountContext();
-  const tokensData = useSelector(selectTokensData);
   const blockNumber = useBlockNumber(chainId);
 
   const batchTxnCallback = useCallback(
@@ -222,6 +222,7 @@ export function useOrderTxnCallbacks() {
             pendingPositionsKeys: pendingPositions.map((p) => p.positionKey),
             estimatedExecutionFee: expressParams.executionFeeAmount,
             estimatedExecutionGasLimit: expressParams.executionGasLimit,
+            estimatedOrders: getBatchExecutionFeeEstimates(getExpressBatchOrderParams(chainId, e.data.batchParams)),
             metricId: ctx.metricId,
             createdAt,
             taskId: undefined,
@@ -319,13 +320,7 @@ export function useOrderTxnCallbacks() {
               taskId: e.data.relayTaskId,
             });
           } else if (e.data.type === "wallet") {
-            const totalExecutionFee = tokensData
-              ? getBatchTotalExecutionFee({
-                  batchParams: e.data.batchParams,
-                  chainId,
-                  tokensData,
-                })
-              : undefined;
+            const estimatedOrders = getBatchExecutionFeeEstimates(e.data.batchParams);
 
             const pendingTxn: PendingTransaction = {
               hash: e.data.transactionHash,
@@ -342,10 +337,11 @@ export function useOrderTxnCallbacks() {
               message: getOperationMessage(mainActionType, "success", actionsCount, undefined, setIsSettingsVisible),
               metricId: ctx.metricId,
               actionName: ctx.actionName,
-              data: totalExecutionFee
+              data: estimatedOrders.length
                 ? {
-                    estimatedExecutionFee: totalExecutionFee.feeTokenAmount,
-                    estimatedExecutionGasLimit: totalExecutionFee.gasLimit,
+                    estimatedExecutionFee: estimatedOrders.reduce((sum, order) => sum + order.executionFee, 0n),
+                    estimatedExecutionGasLimit: estimatedOrders.reduce((sum, order) => sum + order.gasLimit, 0n),
+                    estimatedOrders,
                   }
                 : undefined,
             };
@@ -495,7 +491,6 @@ export function useOrderTxnCallbacks() {
       setPendingPosition,
       setPendingTxns,
       showDebugValues,
-      tokensData,
       updatePendingExpressTxn,
     ]
   );

@@ -7,6 +7,7 @@ import { getGasPaymentTokens, getRelayerFeeToken } from "sdk/configs/express";
 import { estimateBatchMinGasPaymentTokenAmount } from "sdk/utils/fees/executionFee";
 
 import { useGasLimits, useGasPrice } from "../fees";
+import { getExpressGasPrice } from "../fees/utils/executionFee";
 import { useTokensDataRequest } from "../tokens";
 import { useL1ExpressOrderGasReference } from "./useL1ExpressGasReference";
 
@@ -14,7 +15,8 @@ export function useIsOutOfGasPaymentBalance() {
   const { chainId, srcChainId } = useChainId();
   const { address: account } = useAccount();
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
-  const gasPrice = useGasPrice(chainId);
+  const walletGasPrice = useGasPrice(chainId);
+  const gasPrice = walletGasPrice === undefined ? undefined : getExpressGasPrice(chainId, walletGasPrice);
   const gasLimits = useGasLimits(chainId);
   const l1Reference = useL1ExpressOrderGasReference();
 

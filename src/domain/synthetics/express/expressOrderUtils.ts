@@ -42,6 +42,7 @@ import {
   getBatchRequiredActions,
   getBatchTotalExecutionFee,
   getBatchTotalPayCollateralAmount,
+  getExpressBatchOrderParams,
   getIsEmptyBatch,
 } from "sdk/utils/orderTransactions";
 import type { IRpc, StateOverrideEntry } from "sdk/utils/rpc";
@@ -149,7 +150,7 @@ function getBatchExpressEstimatorParams({
   const payAmounts = getBatchTotalPayCollateralAmount(batchParams);
   const gasPaymentTokenAsCollateralAmount = getByKey(payAmounts, gasPaymentToken.address) ?? 0n;
   const executionFeeAmount = getBatchTotalExecutionFee({
-    batchParams,
+    batchParams: getExpressBatchOrderParams(chainId, batchParams),
     chainId,
     tokensData,
     allowEmptyBatch: estimationMethod === "approximate",
@@ -279,6 +280,7 @@ export async function buildAndSignExpressBatchOrderTxn({
   const crossChainId = isGmxAccount ? await getMultichainInfoFromSigner(signer, chainId) : undefined;
   const effectiveSrcChainId = isGmxAccount ? crossChainId ?? chainId : undefined;
   const relayRouterAddress = getOrderRelayRouterAddress(chainId, subaccount !== undefined, isGmxAccount);
+  const expressBatchParams = getExpressBatchOrderParams(chainId, batchParams);
 
   const relayPayload: RelayParamsPayload = {
     ...(relayParamsPayload as RelayParamsPayload),
@@ -293,7 +295,7 @@ export async function buildAndSignExpressBatchOrderTxn({
     const typedData = getBatchTypedData({
       chainId,
       signingChainId: crossChainId ?? chainId,
-      batchParams,
+      batchParams: expressBatchParams,
       relayParams: relayPayload,
       account: signer.address,
       subaccountApprovalHash: subaccount?.signedApproval
@@ -324,7 +326,7 @@ export async function buildAndSignExpressBatchOrderTxn({
 
   const result = buildBatchOrderCalldata({
     chainId,
-    batchParams,
+    batchParams: expressBatchParams,
     relayParamsPayload: relayPayload,
     signature,
     account: signer.address,

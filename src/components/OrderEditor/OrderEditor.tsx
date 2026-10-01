@@ -464,6 +464,7 @@ export function OrderEditor(p: Props) {
             autoCancel: p.order.autoCancel,
             validFromTime: 0n,
             executionFeeTopUp: additionalExecutionFee?.feeTokenAmount ?? 0n,
+            executionGasLimit: executionFee?.gasLimit,
           }),
         ],
         cancelOrderParams: [],
@@ -498,6 +499,7 @@ export function OrderEditor(p: Props) {
             autoCancel: positionOrder.autoCancel,
             validFromTime: 0n,
             executionFeeTopUp: additionalExecutionFee?.feeTokenAmount ?? 0n,
+            executionGasLimit: executionFee?.gasLimit,
           }),
         ],
         cancelOrderParams: [],
@@ -506,6 +508,7 @@ export function OrderEditor(p: Props) {
   }, [
     signer,
     tokensData,
+    executionFee?.gasLimit,
     marketsInfoData,
     p.order,
     existingPosition,
