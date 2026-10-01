@@ -7,9 +7,6 @@ type PendingSummary<TData> = {
   repeats: EndpointsPairRepeats;
 };
 
-// Reports switches of a tracker's (primary, secondary) pair. A switch to a pair not reported yet, or the first
-// switch after a quiet interval, is reported at once; further switches back to reported pairs are folded into one
-// summary per interval, so a tracker flapping between two endpoints doesn't report every probe
 export function createEndpointsPairReporter<TData>(report: (data: TData, repeats?: EndpointsPairRepeats) => void) {
   const reportedPairs = new Set<string>();
   let currentPair: string | undefined;
@@ -53,7 +50,6 @@ export function createEndpointsPairReporter<TData>(report: (data: TData, repeats
 
     if (!reportedPairs.has(pair)) {
       reportedPairs.add(pair);
-      // Folded switches happened before this one, so they go first
       flush();
       report(p.data);
       return;
