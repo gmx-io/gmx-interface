@@ -25,6 +25,7 @@ import { getGmSwapError } from "domain/synthetics/trade/utils/validation";
 import { useChainId } from "lib/chains";
 import { absDiffBps } from "lib/numbers";
 import { usePrevious } from "lib/usePrevious";
+import { bigMath } from "sdk/utils/bigmath";
 
 import {
   useDepositableGlvGmMarketAddresses,
@@ -70,7 +71,7 @@ export const useBestGmPoolAddressForGlv = ({
       return [];
     }
 
-    const halfOfLong = longTokenAmount !== undefined ? longTokenAmount / 2n : undefined;
+    const positiveAmount = bigMath.max(longTokenAmount, shortTokenAmount);
 
     const candidateMarkets = isDeposit
       ? marketsWithComposition.filter(
@@ -81,13 +82,10 @@ export const useBestGmPoolAddressForGlv = ({
     return [...candidateMarkets].map((marketConfig) => {
       const marketInfo = marketConfig.market;
 
-      const adjustedLongTokenAmount = (marketInfo.isSameCollaterals ? halfOfLong : longTokenAmount) || 0n;
-      const adjustedShortTokenAmount =
-        (marketInfo.isSameCollaterals
-          ? longTokenAmount !== undefined
-            ? longTokenAmount - longTokenAmount / 2n
-            : undefined
-          : shortTokenAmount) || 0n;
+      const adjustedLongTokenAmount = marketInfo.isSameCollaterals ? positiveAmount / 2n : longTokenAmount;
+      const adjustedShortTokenAmount = marketInfo.isSameCollaterals
+        ? positiveAmount - adjustedLongTokenAmount
+        : shortTokenAmount;
 
       const amounts = getDepositAmounts({
         marketInfo,
