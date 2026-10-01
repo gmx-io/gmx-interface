@@ -46,6 +46,10 @@ function usdgPool(marketTokenAddress: string): Market {
   return market({ marketTokenAddress, longTokenAddress: USDG, shortTokenAddress: USDG });
 }
 
+function swapPool(marketTokenAddress: string): Market {
+  return market({ marketTokenAddress, longTokenAddress: USDC, shortTokenAddress: USDG });
+}
+
 function wethUsdcPool(marketTokenAddress: string): Market {
   return market({ marketTokenAddress, longTokenAddress: WETH, shortTokenAddress: USDC });
 }
@@ -103,6 +107,18 @@ describe("getDirectDepositAccess", () => {
       case: "USDG pool when whitelists fail",
       whitelistsResult: FAILED_RESULT,
       market: usdgPool(DENIED_MARKET),
+      expected: "denied",
+    },
+    {
+      case: "USDC-USDG swap pool while whitelists load",
+      whitelistsResult: LOADING_RESULT,
+      market: swapPool(DENIED_MARKET),
+      expected: "loading",
+    },
+    {
+      case: "USDC-USDG swap pool when whitelists fail",
+      whitelistsResult: FAILED_RESULT,
+      market: swapPool(DENIED_MARKET),
       expected: "denied",
     },
   ])("$case -> $expected", ({ expected, ...params }) => {

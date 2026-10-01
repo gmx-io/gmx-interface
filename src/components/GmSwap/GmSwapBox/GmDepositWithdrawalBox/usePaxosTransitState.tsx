@@ -24,6 +24,7 @@ import {
 import {
   selectPoolsDetailsAvailableCollateralSwapToken,
   selectPoolsDetailsCollateralSwapTokens,
+  selectPoolsDetailsIsDirectDepositBlocked,
 } from "context/PoolsDetailsContext/selectors/poolsDetailsDerivedSelectors";
 import {
   selectDepositWithdrawalAmounts,
@@ -79,6 +80,7 @@ export function usePaxosTransitState({
   const setTransitAmountOut = useSelector(selectPoolsDetailsSetTransitAmountOut);
   const usdcToken = useSelector(selectPoolsDetailsAvailableCollateralSwapToken);
   const collateralSwapTokens = useSelector(selectPoolsDetailsCollateralSwapTokens);
+  const isDirectDepositBlocked = useSelector(selectPoolsDetailsIsDirectDepositBlocked);
   const glvOrMarketAddress = useSelector(selectPoolsDetailsGlvOrMarketAddress);
   const glvOrMarketInfo = useSelector(selectPoolsDetailsGlvOrMarketInfo);
   const currentOperation = useSelector(selectPoolsDetailsOperation);
@@ -104,7 +106,7 @@ export function usePaxosTransitState({
   const paxosTransitConfig = getPaxosTransitConfig(chainId);
   const usdgToken = getByKey(tokensData, paxosTransitConfig?.usdgAddress);
   const isUsdcConversionOffered = usdcToken !== undefined;
-  const isConversionNeeded = collateralSwapTokens !== undefined;
+  const isConversionNeeded = collateralSwapTokens !== undefined && !isDirectDepositBlocked;
   const [tokenIn, tokenOut] = isDeposit ? [usdcToken, usdgToken] : [usdgToken, usdcToken];
 
   const direction: TransitRouteDirection = isDeposit ? "usdcToUsdg" : "usdgToUsdc";
@@ -184,7 +186,7 @@ export function usePaxosTransitState({
     isWhitelistIgnored,
     thresholdUsdOverride,
     isMocked,
-    enabled: isUsdcConversionOffered,
+    enabled: isUsdcConversionOffered && !isDirectDepositBlocked,
     onPendingOrderFound,
   });
 

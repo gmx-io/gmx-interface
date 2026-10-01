@@ -7,9 +7,11 @@ import { getMappedTokenId } from "config/multichain";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import {
   selectPoolsDetailsCollateralSwapTokens,
+  selectPoolsDetailsDirectDepositAccess,
   selectPoolsDetailsFirstTokenAmount,
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvInfo,
+  selectPoolsDetailsIsDirectDepositBlocked,
   selectPoolsDetailsIsMarketTokenDeposit,
   selectPoolsDetailsIsTransitRoute,
   selectPoolsDetailsLongTokenAddress,
@@ -126,6 +128,8 @@ export const useGmSwapSubmitState = ({
   const payShortToken = useSelector(selectPoolsDetailsPayShortToken);
 
   const marketInfo = useSelector(selectPoolsDetailsMarketInfo);
+  const directDepositAccess = useSelector(selectPoolsDetailsDirectDepositAccess);
+  const isDirectDepositBlocked = useSelector(selectPoolsDetailsIsDirectDepositBlocked);
   const amounts = useSelector(selectDepositWithdrawalAmounts);
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
@@ -205,12 +209,13 @@ export const useGmSwapSubmitState = ({
     chainId,
     srcChainId,
     marketToken,
+    directDepositAccess,
   });
 
   const collateralSwapError = useMemo((): ValidationResult | undefined => {
     const hasInput = firstTokenAmount > 0n || marketOrGlvTokenAmount > 0n;
 
-    if (!collateralSwapTokens || isTransitRoute || !hasInput) {
+    if (!collateralSwapTokens || isTransitRoute || !hasInput || isDirectDepositBlocked) {
       return undefined;
     }
 
@@ -224,7 +229,15 @@ export const useGmSwapSubmitState = ({
     }
 
     return { buttonErrorMessage: t`Insufficient GMX pool liquidity` };
-  }, [amounts, collateralSwapTokens, firstTokenAmount, isDeposit, isTransitRoute, marketOrGlvTokenAmount]);
+  }, [
+    amounts,
+    collateralSwapTokens,
+    firstTokenAmount,
+    isDeposit,
+    isDirectDepositBlocked,
+    isTransitRoute,
+    marketOrGlvTokenAmount,
+  ]);
 
   const expressError = useExpressError({
     paySource,

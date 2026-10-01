@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { ARBITRUM } from "config/chains";
 import { mockExternalSwapQuote } from "domain/synthetics/testUtils/mocks";
+import type { DirectDepositAccess } from "domain/synthetics/whitelists/utils";
 import { expandDecimals, formatUsd } from "lib/numbers";
 import { mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
 import { PositionMarginFailureReason, PositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
@@ -11,6 +12,7 @@ import {
   getConditionalDepositError,
   getConditionalDepositWarning,
   getEditCollateralError,
+  getGmShiftError,
   getGmSwapError,
   getIncreaseError,
   getMarginDepositAutoCancelLimitMessage,
@@ -560,56 +562,117 @@ describe("getIncreaseError — resulting-position margin check", () => {
   });
 });
 
-describe("getGmSwapError — paying a same-collateral pool with another token", () => {
-  const stableTokensData = mockTokensData({
-    USDC: { walletBalance: 0n },
-    DAI: { walletBalance: expandDecimals(100, 30) },
-  });
-  const sameCollateralMarket = mockMarketsInfoData(stableTokensData, ["ETH-USDC-USDC"], {
-    "ETH-USDC-USDC": {
-      maxLongPoolUsdForDeposit: expandDecimals(10_000, 30),
-      maxShortPoolUsdForDeposit: expandDecimals(10_000, 30),
-    },
-  })["ETH-USDC-USDC"];
-  const marketToken = {
-    ...stableTokensData.USDC,
-    address: sameCollateralMarket.marketTokenAddress,
-    symbol: "GM",
-    decimals: 18,
-    totalSupply: expandDecimals(2000, 18),
-  };
-  const params: Parameters<typeof getGmSwapError>[0] = {
-    isDeposit: true,
-    marketInfo: sameCollateralMarket,
-    marketToken,
-    payLongToken: stableTokensData.USDC,
-    payShortToken: stableTokensData.DAI,
-    glvToken: undefined,
-    glvTokenAmount: undefined,
-    glvTokenUsd: undefined,
-    longTokenAmount: 0n,
-    shortTokenAmount: expandDecimals(50, 6),
-    initialShortTokenAmount: expandDecimals(50, 30),
-    longTokenUsd: 0n,
-    shortTokenUsd: expandDecimals(50, 30),
-    marketTokenAmount: expandDecimals(50, 18),
-    marketTokenUsd: expandDecimals(50, 30),
-    longTokenLiquidityUsd: expandDecimals(10_000, 30),
-    shortTokenLiquidityUsd: expandDecimals(10_000, 30),
-    fees: undefined,
-    priceImpactUsd: 0n,
-    paySource: "settlementChain",
-    isPair: false,
-    chainId: ARBITRUM,
-  };
+const stableTokensData = mockTokensData({
+  USDC: { walletBalance: 0n },
+  DAI: { walletBalance: expandDecimals(100, 30) },
+});
+const sameCollateralMarket = mockMarketsInfoData(stableTokensData, ["ETH-USDC-USDC"], {
+  "ETH-USDC-USDC": {
+    maxLongPoolUsdForDeposit: expandDecimals(10_000, 30),
+    maxShortPoolUsdForDeposit: expandDecimals(10_000, 30),
+  },
+})["ETH-USDC-USDC"];
+const marketToken = {
+  ...stableTokensData.USDC,
+  address: sameCollateralMarket.marketTokenAddress,
+  symbol: "GM",
+  decimals: 18,
+  totalSupply: expandDecimals(2000, 18),
+};
+const baseGmSwapParams: Parameters<typeof getGmSwapError>[0] = {
+  isDeposit: true,
+  marketInfo: sameCollateralMarket,
+  marketToken,
+  payLongToken: stableTokensData.USDC,
+  payShortToken: stableTokensData.DAI,
+  glvToken: undefined,
+  glvTokenAmount: undefined,
+  glvTokenUsd: undefined,
+  longTokenAmount: 0n,
+  shortTokenAmount: expandDecimals(50, 6),
+  initialShortTokenAmount: expandDecimals(50, 30),
+  longTokenUsd: 0n,
+  shortTokenUsd: expandDecimals(50, 30),
+  marketTokenAmount: expandDecimals(50, 18),
+  marketTokenUsd: expandDecimals(50, 30),
+  longTokenLiquidityUsd: expandDecimals(10_000, 30),
+  shortTokenLiquidityUsd: expandDecimals(10_000, 30),
+  fees: undefined,
+  priceImpactUsd: 0n,
+  paySource: "settlementChain",
+  isPair: false,
+  chainId: ARBITRUM,
+};
 
+describe("getGmSwapError — paying a same-collateral pool with another token", () => {
   it("checks the paid token balance instead of the pool collateral balance", () => {
-    expect(getGmSwapError(params).buttonErrorMessage).toBeUndefined();
+    expect(getGmSwapError(baseGmSwapParams).buttonErrorMessage).toBeUndefined();
   });
 
   it("reports the paid token when its balance is short", () => {
-    expect(getGmSwapError({ ...params, initialShortTokenAmount: expandDecimals(150, 30) }).buttonErrorMessage).toBe(
-      "Insufficient DAI balance"
+    expect(
+      getGmSwapError({ ...baseGmSwapParams, initialShortTokenAmount: expandDecimals(150, 30) }).buttonErrorMessage
+    ).toBe("Insufficient DAI balance");
+  });
+});
+
+describe("getGmSwapError — whitelist-only direct deposits", () => {
+  it.each<{ access: DirectDepositAccess; expected: string | undefined }>([
+    { access: "denied", expected: "Whitelist only" },
+    { access: "loading", expected: "Loading..." },
+    { access: "ungated", expected: undefined },
+    { access: "whitelisted", expected: undefined },
+  ])("direct GM deposit with $access access -> $expected", ({ access, expected }) => {
+    expect(getGmSwapError({ ...baseGmSwapParams, directDepositAccess: access }).buttonErrorMessage).toBe(expected);
+  });
+
+  it("does not block a withdrawal", () => {
+    const withdrawalParams = { ...baseGmSwapParams, isDeposit: false };
+
+    expect(getGmSwapError({ ...withdrawalParams, directDepositAccess: "denied" })).toEqual(
+      getGmSwapError(withdrawalParams)
+    );
+  });
+});
+
+describe("getGmShiftError — whitelist-only target market", () => {
+  const shiftParams: Parameters<typeof getGmShiftError>[0] = {
+    chainId: ARBITRUM,
+    fromMarketInfo: sameCollateralMarket,
+    fromToken: marketToken,
+    fromTokenAmount: expandDecimals(1, 18),
+    fromTokenUsd: expandDecimals(1, 30),
+    fromLongTokenAmount: 0n,
+    fromShortTokenAmount: expandDecimals(1, 6),
+    toMarketInfo: sameCollateralMarket,
+    toToken: marketToken,
+    toTokenAmount: expandDecimals(1, 18),
+    fees: undefined,
+    priceImpactUsd: 0n,
+  };
+
+  it("blocks shifting into a denied market", () => {
+    expect(getGmShiftError({ ...shiftParams, toMarketDirectDepositAccess: "denied" }).buttonErrorMessage).toBe(
+      "Whitelist only"
+    );
+  });
+
+  it("says Whitelist only for a denied market that is not resolved yet", () => {
+    expect(
+      getGmShiftError({ ...shiftParams, toMarketInfo: undefined, toMarketDirectDepositAccess: "denied" })
+        .buttonErrorMessage
+    ).toBe("Whitelist only");
+  });
+
+  it("waits while target access is loading", () => {
+    expect(getGmShiftError({ ...shiftParams, toMarketDirectDepositAccess: "loading" }).buttonErrorMessage).toBe(
+      "Loading..."
+    );
+  });
+
+  it("does not block shifting into a whitelisted market", () => {
+    expect(getGmShiftError({ ...shiftParams, toMarketDirectDepositAccess: "whitelisted" })).toEqual(
+      getGmShiftError(shiftParams)
     );
   });
 });

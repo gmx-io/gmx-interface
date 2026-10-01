@@ -10,7 +10,6 @@ const ARBITRUM_USDG_ADDRESS = getTokenBySymbol(ARBITRUM, "USDG").address;
 export function getIsUsdgPool(chainId: number, p: { longTokenAddress: string; shortTokenAddress: string }): boolean {
   return (
     chainId === ARBITRUM &&
-    p.longTokenAddress === ARBITRUM_USDG_ADDRESS &&
-    p.shortTokenAddress === ARBITRUM_USDG_ADDRESS
+    (p.longTokenAddress === ARBITRUM_USDG_ADDRESS || p.shortTokenAddress === ARBITRUM_USDG_ADDRESS)
   );
 }
