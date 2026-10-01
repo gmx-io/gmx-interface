@@ -13,17 +13,14 @@ import type { ContractsChainId } from "sdk/configs/chains";
 import { HttpError } from "sdk/utils/http/http";
 import type { TransitOrder, TransitQuoteParams } from "sdk/utils/paxos/types";
 
-import { MOCK_CONVERSION_MS, mockTransitApi, type TransitApi } from "./mockTransitApi";
+import { MOCK_CONVERSION_MS, mockTransitApi } from "./mockTransitApi";
 import { findPendingTransitOrder, getSubmittedTransitOrderId } from "./transitOrders";
+import type { PaxosTransitConversion } from "./transitRouteProgress";
+import type { TransitApi } from "./types";
+import { useTransitMinOrderSizes } from "./useTransitMinOrderSizes";
 import { getIsTransitQuoteNeeded, getShouldUseTransit, getTransitFeeTier } from "./utils";
 
-export type PaxosTransitSubmitStep = "idle" | "approving" | "submitting";
-
-export type TransitSubmission = {
-  orderId: string;
-  txnHash: string | undefined;
-  offerAmount: bigint;
-};
+type PaxosTransitSubmitStep = "idle" | "approving" | "submitting";
 
 const FEE_TIER_REFRESH_INTERVAL = 60_000;
 const QUOTE_REFRESH_INTERVAL = 30_000;
@@ -75,18 +72,31 @@ export function usePaxosTransit({
     { refreshInterval: FEE_TIER_REFRESH_INTERVAL }
   );
 
+  const minOrderSizes = useTransitMinOrderSizes({
+    api,
+    chainId,
+    offerAsset: tokenInAddress,
+    wantAsset: tokenOutAddress,
+    isActive,
+    isZeroFeeEligible: feeTierData?.feeTier === "zeroFee",
+  });
+
   const { isWhitelisted, isZeroFeeCapacityShort, feeTier } = getTransitFeeTier({
     feeTierData,
     isWhitelistIgnored,
     isUsdcOffered: tokenInAddress === paxosTransitConfig?.usdcAddress,
     amount,
+    zeroFeeMinOrderSize: minOrderSizes.zeroFee,
     isStandardFeeForced,
   });
 
   const amountUsd = tokenIn ? convertToUsd(debouncedAmount, tokenIn.decimals, getMidPrice(tokenIn.prices)) : 0n;
+  const minOrderSize = feeTier === "zeroFee" ? minOrderSizes.zeroFee : minOrderSizes.standardFee;
+  const isBelowMinOrderSize = minOrderSize !== undefined && debouncedAmount > 0n && debouncedAmount < minOrderSize;
   const isQuoteNeeded =
     isActive &&
     debouncedAmount > 0n &&
+    !isBelowMinOrderSize &&
     feeTierData !== undefined &&
     getIsTransitQuoteNeeded({
       isTransitRequired,
@@ -114,7 +124,7 @@ export function usePaxosTransit({
       ? ["paxosTransitQuote", chainId, account, tokenInAddress, debouncedAmount.toString(), feeTier]
       : null,
     () => api!.fetchTransitQuote(getQuoteParams(debouncedAmount)),
-    { refreshInterval: QUOTE_REFRESH_INTERVAL, shouldRetryOnError: false, keepPreviousData: true }
+    { refreshInterval: QUOTE_REFRESH_INTERVAL, shouldRetryOnError: false, keepPreviousData: !isBelowMinOrderSize }
   );
 
   const transitFeesUsd =
@@ -150,10 +160,16 @@ export function usePaxosTransit({
 
       return pendingOrder ?? null;
     },
-    { refreshInterval: 0, revalidateOnFocus: false, revalidateOnReconnect: false, revalidateIfStale: false }
+    {
+      refreshInterval: 0,
+      revalidateOnMount: true,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      revalidateIfStale: false,
+    }
   );
 
-  const submitTransit = useCallback(async (): Promise<TransitSubmission | undefined> => {
+  const submitTransit = useCallback(async (): Promise<PaxosTransitConversion | undefined> => {
     if (!isActive || !signer || amount <= 0n) return undefined;
 
     const params = getQuoteParams(amount);
@@ -229,7 +245,7 @@ export function usePaxosTransit({
 
       setStep("idle");
 
-      return { orderId: submittedOrderId, txnHash: submitTxnHash, offerAmount: amount };
+      return { orderId: submittedOrderId, txnHash: submitTxnHash, offerAmount: amount, isMocked };
     } catch (error) {
       setStep("idle");
 
@@ -244,13 +260,13 @@ export function usePaxosTransit({
   return {
     shouldUseTransit,
     isQuoteNeeded,
-    isAmountSettling: requestAmount !== debouncedAmount,
     isFeeTierLoaded: feeTierData !== undefined,
     isWhitelisted,
     zeroFeeCapacity: feeTierData?.zeroFeeCapacity,
     feeTierError,
     isZeroFeeCapacityShort,
-    feeTier,
+    isBelowMinOrderSize,
+    minOrderSize,
     quote,
     quoteError,
     transitFeesUsd,
