@@ -1,4 +1,5 @@
 import { getTokenBySymbol } from "sdk/configs/tokens";
+import { expandDecimals } from "sdk/utils/numbers";
 
 import { ARBITRUM } from "./chains";
 import { getGlvByLabel } from "./markets";
@@ -13,3 +14,9 @@ export function getIsUsdgPool(chainId: number, p: { longTokenAddress: string; sh
     (p.longTokenAddress === ARBITRUM_USDG_ADDRESS || p.shortTokenAddress === ARBITRUM_USDG_ADDRESS)
   );
 }
+
+export const USDG_LAUNCH_BOOST_TARGET_GLV_APR = expandDecimals(8, 28);
+export const USDG_LAUNCH_BOOST_TARGET_GM_APR = expandDecimals(5, 28);
+
+export const USDG_LAUNCH_BOOST_ROUND_SECONDS = 4 * 60 * 60;
+export const USDG_LAUNCH_BOOST_PAUSED_AFTER_SECONDS = 12 * 60 * 60;
