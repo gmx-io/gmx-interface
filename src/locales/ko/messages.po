@@ -257,7 +257,9 @@ msgstr "GMTrade"
 msgid "RPC monitoring"
 msgstr "RPC 모니터링"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 #: src/components/GmList/UsdgPoolBadges.tsx
+#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
 msgid "Launch boost"
 msgstr "출시 부스트"
 
@@ -2804,6 +2806,7 @@ msgid "No funds to claim"
 msgstr "청구할 자금 없음"
 
 #: src/components/AprInfo/AprInfo.tsx
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Sparkle"
@@ -3457,6 +3460,10 @@ msgstr "다른 체인에서 전송"
 msgid "Take-Profit / Stop-Loss"
 msgstr "익절매 / 손절매"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Paid into the {tokenSymbol} price every 4 hours. Nothing to claim."
+msgstr "4시간마다 {tokenSymbol} 가격에 반영됩니다. 청구할 필요가 없습니다."
+
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Yield trading"
 msgstr "수익률 트레이딩"
@@ -3597,6 +3604,10 @@ msgstr "GMX 프리미엄 RPC로 더 빠른 실행"
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets in your GMX Account"
 msgstr "GMX Account에 자산이 없습니다"
+
+#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
+msgid "{boostValue} APR"
+msgstr "{boostValue} APR"
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Order type"
@@ -4051,6 +4062,10 @@ msgstr "허가 서명 완료"
 #: src/components/SideNav/BottomMenuSection.tsx
 msgid "Collapse"
 msgstr "접기"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Launch boost (target)"
+msgstr "출시 부스트 (목표)"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Banners"
@@ -6532,6 +6547,10 @@ msgstr "다음 {2} 동안 {3}에 대해 각 {1}의 {0} {type} 주문을 {numberO
 msgid "Docs"
 msgstr "문서"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Last round paid {lastRoundPaidAt}. The boost returns with the next successful round."
+msgstr "마지막 라운드 지급: {lastRoundPaidAt}. 다음 라운드가 성공적으로 완료되면 부스트가 재개됩니다."
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Marketing Kit + Co-marketing"
 msgstr "마케팅 키트 + 공동 마케팅"
@@ -6680,6 +6699,10 @@ msgstr "GLV (GMX Liquidity Vault)는 다양한 GM 토큰을 보유하여 GMX 마
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Settlement network changed to Arbitrum, but $12.50 remains in your Base GMX Account"
 msgstr "정산 네트워크가 Arbitrum으로 변경되었으나 $12.50이 Base GMX Account에 남아 있습니다"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Paused"
+msgstr "일시 중지됨"
 
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -8909,6 +8932,7 @@ msgstr "{0} 롱 최대치 초과"
 
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 #: src/components/EarningValue/EarningValue.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -8925,6 +8949,7 @@ msgstr "{0} 롱 최대치 초과"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "N/A"
 msgstr "N/A"
 
@@ -9429,6 +9454,10 @@ msgstr "실행에 필요한 Gas가 부족합니다. 예상치: {estimatedGasLimi
 msgid "Min receive"
 msgstr ""
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "The boost rate can't be loaded right now."
+msgstr "현재 부스트 비율을 불러올 수 없습니다."
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "x"
@@ -9748,6 +9777,10 @@ msgstr "보기"
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Stop Market"
 msgstr "스톱 마켓 실행"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Unavailable"
+msgstr "사용 불가"
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Go to trader dashboard"
@@ -11375,6 +11408,7 @@ msgstr "GMX 거래를 X에 공유하기"
 msgid "Pool short amount"
 msgstr "풀 숏 수량"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
 msgstr "수수료 APY"
@@ -11481,6 +11515,10 @@ msgstr "TP/SL 버튼을 사용하여 TP/SL 주문을 설정하십시오."
 msgid "Close fees"
 msgstr "종료 수수료"
 
+#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
+msgid "APY"
+msgstr "APY"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GM?"
 msgstr "GM이란 무엇인가요?"
@@ -11545,6 +11583,10 @@ msgstr "{positionName} 정산 실패"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Illustrative, based on a ~0.05% effective fee.<0/>Real earnings depend on referral tier and each trader's activity."
 msgstr "실효 수수료 약 0.05% 기준의 참고 값입니다.<0/>실제 수익은 제휴 등급과 각 트레이더의 활동에 따라 달라집니다."
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Starts with the first reward round."
+msgstr "첫 보상 라운드부터 시작됩니다."
 
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "Receive to this wallet"
@@ -11919,6 +11961,10 @@ msgstr "<0>Camelot</0>을 통해 Arbitrum에서 APE를 구매하십시오"
 msgid "Depositing..."
 msgstr "입금 중…"
 
+#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
+msgid "Paid into the {tokenSymbol} price every 4 hours. Nothing to claim. Already included in the APY above."
+msgstr "4시간마다 {tokenSymbol} 가격에 반영됩니다. 청구할 필요가 없습니다. 위 APY에 이미 포함되어 있습니다."
+
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
 msgstr "{pools} {verb} 상장 폐지됩니다. 더 이상 예치할 수 없으므로 유동성을 인출하거나 GLV로 옮겨 계속 수익을 얻으세요."
@@ -11995,6 +12041,10 @@ msgstr "자금은 안전합니다. 지원팀에 문의하십시오."
 #: src/components/PositionList/PositionList.tsx
 msgid "NET VALUE"
 msgstr "순가치"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "First 8 weeks: GLV 8% or higher, GM pools 5%. Rates dilute above $100M program TVL. Funded by Arbitrum's USDG program with GMX. Period 1: {periodStart} – {periodEnd}."
+msgstr "첫 8주: GLV 8% 이상, GM 풀 5%. 프로그램 TVL이 $100M을 초과하면 비율이 희석됩니다. Arbitrum의 USDG 프로그램과 GMX가 자금을 지원합니다. 기간 1: {periodStart} – {periodEnd}."
 
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx
@@ -12340,6 +12390,10 @@ msgstr "EIP-4844, 3월 20-27일"
 msgid "Lifetime rewards"
 msgstr "누적 보상"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Not enough history yet"
+msgstr "아직 기록이 충분하지 않음"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "This trigger is at or beyond the estimated liquidation price. The margin deposit will be attempted before liquidation when eligible, but execution is not guaranteed."
 msgstr "이 조건가는 예상 청산가 또는 그 너머에 있습니다. 증거금 예치는 대상이 되는 경우 청산 전에 시도되지만 실행이 보장되지는 않습니다."
@@ -12448,6 +12502,10 @@ msgstr ""
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H VOL."
 msgstr "24시간 거래량"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Rate paid in the last round, on average balances."
+msgstr "직전 라운드에서 평균 잔액 기준으로 지급된 비율입니다."
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX team"

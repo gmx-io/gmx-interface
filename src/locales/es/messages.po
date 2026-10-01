@@ -257,7 +257,9 @@ msgstr "GMTrade"
 msgid "RPC monitoring"
 msgstr "Monitorización RPC"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 #: src/components/GmList/UsdgPoolBadges.tsx
+#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
 msgid "Launch boost"
 msgstr "Impulso de lanzamiento"
 
@@ -2804,6 +2806,7 @@ msgid "No funds to claim"
 msgstr "No hay fondos para reclamar"
 
 #: src/components/AprInfo/AprInfo.tsx
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Sparkle"
@@ -3457,6 +3460,10 @@ msgstr "Transferir desde otra cadena"
 msgid "Take-Profit / Stop-Loss"
 msgstr "Take-Profit / Stop-Loss"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Paid into the {tokenSymbol} price every 4 hours. Nothing to claim."
+msgstr "Se abona en el precio de {tokenSymbol} cada 4 horas. No hay nada que reclamar."
+
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Yield trading"
 msgstr "Operaciones de rendimiento"
@@ -3597,6 +3604,10 @@ msgstr "Ejecución más rápida con RPC premium de GMX"
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets in your GMX Account"
 msgstr "No hay activos en tu GMX Account"
+
+#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
+msgid "{boostValue} APR"
+msgstr "{boostValue} APR"
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Order type"
@@ -4051,6 +4062,10 @@ msgstr "Permiso firmado"
 #: src/components/SideNav/BottomMenuSection.tsx
 msgid "Collapse"
 msgstr "Contraer"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Launch boost (target)"
+msgstr "Impulso de lanzamiento (objetivo)"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Banners"
@@ -6532,6 +6547,10 @@ msgstr "Ejecuta {numberOfParts} órdenes {type} {0} de {1} cada una durante las 
 msgid "Docs"
 msgstr "Docs"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Last round paid {lastRoundPaidAt}. The boost returns with the next successful round."
+msgstr "Última ronda pagada el {lastRoundPaidAt}. El impulso se reanuda con la próxima ronda exitosa."
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Marketing Kit + Co-marketing"
 msgstr "Kit de marketing + Co-marketing"
@@ -6680,6 +6699,10 @@ msgstr "GLV (GMX Liquidity Vault) contiene diversos tokens GM, ofreciéndole una
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Settlement network changed to Arbitrum, but $12.50 remains in your Base GMX Account"
 msgstr "La red de compensación se ha cambiado a Arbitrum, pero quedan $12.50 en su GMX Account de Base"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Paused"
+msgstr "Pausado"
 
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -8909,6 +8932,7 @@ msgstr "Superados largos Máx. de {0}"
 
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 #: src/components/EarningValue/EarningValue.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -8925,6 +8949,7 @@ msgstr "Superados largos Máx. de {0}"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "N/A"
 msgstr "N/A"
 
@@ -9429,6 +9454,10 @@ msgstr "Gas insuficiente para la ejecución. Estimado: {estimatedGasLimitText}, 
 msgid "Min receive"
 msgstr ""
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "The boost rate can't be loaded right now."
+msgstr "La tasa del impulso no se puede cargar en este momento."
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "x"
@@ -9748,6 +9777,10 @@ msgstr "Ver"
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Stop Market"
 msgstr "Ejecutar Stop Market"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Unavailable"
+msgstr "No disponible"
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Go to trader dashboard"
@@ -11375,6 +11408,7 @@ msgstr "Comparta su operación de GMX en X"
 msgid "Pool short amount"
 msgstr "Cantidad corta del pool"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
 msgstr "APY de Comisión"
@@ -11481,6 +11515,10 @@ msgstr "Utilice el botón TP/SL para establecer órdenes TP/SL."
 msgid "Close fees"
 msgstr "Comisiones de cierre"
 
+#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
+msgid "APY"
+msgstr "APY"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GM?"
 msgstr "¿Qué es GM?"
@@ -11545,6 +11583,10 @@ msgstr "{positionName} no se ha podido liquidar"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Illustrative, based on a ~0.05% effective fee.<0/>Real earnings depend on referral tier and each trader's activity."
 msgstr "Ilustrativo, basado en una comisión efectiva de ~0,05%.<0/>Las ganancias reales dependen del nivel de afiliado y de la actividad de cada trader."
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Starts with the first reward round."
+msgstr "Comienza con la primera ronda de recompensas."
 
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "Receive to this wallet"
@@ -11919,6 +11961,10 @@ msgstr "Comprar APE en Arbitrum con <0>Camelot</0>"
 msgid "Depositing..."
 msgstr "Depositando…"
 
+#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
+msgid "Paid into the {tokenSymbol} price every 4 hours. Nothing to claim. Already included in the APY above."
+msgstr "Se abona en el precio de {tokenSymbol} cada 4 horas. No hay nada que reclamar. Ya incluido en el APY de arriba."
+
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
 msgstr "{pools} {verb} en proceso de baja. Retira tu liquidez, ya que los depósitos ya no están disponibles, o muévela a GLV para seguir generando rendimiento."
@@ -11995,6 +12041,10 @@ msgstr "Sus fondos están seguros. Contacte con el soporte para obtener ayuda."
 #: src/components/PositionList/PositionList.tsx
 msgid "NET VALUE"
 msgstr "VALOR NETO"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "First 8 weeks: GLV 8% or higher, GM pools 5%. Rates dilute above $100M program TVL. Funded by Arbitrum's USDG program with GMX. Period 1: {periodStart} – {periodEnd}."
+msgstr "Primeras 8 semanas: GLV 8% o más, GM pools 5%. Las tasas se diluyen por encima de $100M de TVL del programa. Financiado por el programa USDG de Arbitrum con GMX. Período 1: {periodStart} – {periodEnd}."
 
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx
@@ -12340,6 +12390,10 @@ msgstr "EIP-4844, 20-27 Mar"
 msgid "Lifetime rewards"
 msgstr "Recompensas históricas"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Not enough history yet"
+msgstr "Aún no hay suficiente historial"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "This trigger is at or beyond the estimated liquidation price. The margin deposit will be attempted before liquidation when eligible, but execution is not guaranteed."
 msgstr "Este activador está en o más allá del precio de liquidación estimado. El depósito de margen se intentará antes de la liquidación cuando sea elegible, pero la ejecución no está garantizada."
@@ -12448,6 +12502,10 @@ msgstr ""
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H VOL."
 msgstr "VOL. 24H"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Rate paid in the last round, on average balances."
+msgstr "Tasa pagada en la última ronda, sobre saldos promedio."
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX team"

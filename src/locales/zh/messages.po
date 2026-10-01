@@ -257,7 +257,9 @@ msgstr "GMTrade"
 msgid "RPC monitoring"
 msgstr "RPC 监控"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 #: src/components/GmList/UsdgPoolBadges.tsx
+#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
 msgid "Launch boost"
 msgstr "上线加成"
 
@@ -2804,6 +2806,7 @@ msgid "No funds to claim"
 msgstr "无资金可申领"
 
 #: src/components/AprInfo/AprInfo.tsx
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Sparkle"
@@ -3457,6 +3460,10 @@ msgstr "从其他链转账"
 msgid "Take-Profit / Stop-Loss"
 msgstr "止盈 / 止损"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Paid into the {tokenSymbol} price every 4 hours. Nothing to claim."
+msgstr "每 4 小时计入 {tokenSymbol} 价格。无需申领。"
+
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Yield trading"
 msgstr "收益交易"
@@ -3597,6 +3604,10 @@ msgstr "使用 GMX 高级 RPC 实现更快执行"
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets in your GMX Account"
 msgstr "您的 GMX Account 中没有资产"
+
+#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
+msgid "{boostValue} APR"
+msgstr "{boostValue} APR"
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Order type"
@@ -4051,6 +4062,10 @@ msgstr "Permit 已签署"
 #: src/components/SideNav/BottomMenuSection.tsx
 msgid "Collapse"
 msgstr "折叠"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Launch boost (target)"
+msgstr "上线加成（目标）"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Banners"
@@ -6532,6 +6547,10 @@ msgstr "在接下来的 {2} 内，为 {3} 执行 {numberOfParts} 个 {0} {type} 
 msgid "Docs"
 msgstr "文档"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Last round paid {lastRoundPaidAt}. The boost returns with the next successful round."
+msgstr "上一轮已于 {lastRoundPaidAt} 发放。加成将在下一轮成功发放后恢复。"
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Marketing Kit + Co-marketing"
 msgstr "营销工具包 + 联合营销"
@@ -6680,6 +6699,10 @@ msgstr "GLV（GMX Liquidity Vault）持有多种 GM 代币，为您提供对 GMX
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Settlement network changed to Arbitrum, but $12.50 remains in your Base GMX Account"
 msgstr "结算网络已切换至 Arbitrum，但您的 Base GMX Account 中仍有 $12.50 余额"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Paused"
+msgstr "已暂停"
 
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -8909,6 +8932,7 @@ msgstr "超过最大 {0} 多头"
 
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 #: src/components/EarningValue/EarningValue.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -8925,6 +8949,7 @@ msgstr "超过最大 {0} 多头"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "N/A"
 msgstr "不适用"
 
@@ -9429,6 +9454,10 @@ msgstr "Gas 不足以执行。预估：{estimatedGasLimitText}，起始：{start
 msgid "Min receive"
 msgstr ""
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "The boost rate can't be loaded right now."
+msgstr "目前无法加载加成费率。"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "x"
@@ -9748,6 +9777,10 @@ msgstr "查看"
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Stop Market"
 msgstr "执行止损市价单"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Unavailable"
+msgstr "不可用"
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Go to trader dashboard"
@@ -11375,6 +11408,7 @@ msgstr "在 X 上分享您的 GMX 交易"
 msgid "Pool short amount"
 msgstr "池做空金额"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
 msgstr "费用年利率"
@@ -11481,6 +11515,10 @@ msgstr "使用 TP/SL 按钮设置 TP/SL 订单。"
 msgid "Close fees"
 msgstr "平仓费用"
 
+#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
+msgid "APY"
+msgstr "APY"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GM?"
 msgstr "什么是 GM？"
@@ -11545,6 +11583,10 @@ msgstr "{positionName} 结算失败"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Illustrative, based on a ~0.05% effective fee.<0/>Real earnings depend on referral tier and each trader's activity."
 msgstr "仅供参考，按约 0.05% 的实际费率估算。<0/>实际收益取决于联盟等级及每位交易者的活跃度。"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Starts with the first reward round."
+msgstr "从第一轮奖励开始。"
 
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "Receive to this wallet"
@@ -11919,6 +11961,10 @@ msgstr "在 Arbitrum 上通过 <0>Camelot</0> 买入 APE"
 msgid "Depositing..."
 msgstr "正在存入…"
 
+#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
+msgid "Paid into the {tokenSymbol} price every 4 hours. Nothing to claim. Already included in the APY above."
+msgstr "每 4 小时计入 {tokenSymbol} 价格。无需申领。已计入上方 APY。"
+
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
 msgstr "{pools} {verb}下架。存入已不可用，请提取您的流动性，或将其转入 GLV 以继续赚取收益。"
@@ -11995,6 +12041,10 @@ msgstr "您的资金是安全的。请联系客服获取帮助。"
 #: src/components/PositionList/PositionList.tsx
 msgid "NET VALUE"
 msgstr "净值"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "First 8 weeks: GLV 8% or higher, GM pools 5%. Rates dilute above $100M program TVL. Funded by Arbitrum's USDG program with GMX. Period 1: {periodStart} – {periodEnd}."
+msgstr "前 8 周：GLV 8% 或更高，GM 池 5%。计划 TVL 超过 $100M 后费率将被稀释。由 Arbitrum 的 USDG 计划与 GMX 共同资助。第 1 期：{periodStart} – {periodEnd}。"
 
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx
@@ -12340,6 +12390,10 @@ msgstr "EIP-4844, 3 月 20-27 日"
 msgid "Lifetime rewards"
 msgstr "累计奖励"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Not enough history yet"
+msgstr "历史数据尚不足"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "This trigger is at or beyond the estimated liquidation price. The margin deposit will be attempted before liquidation when eligible, but execution is not guaranteed."
 msgstr "该触发价格已达到或超出预估清算价格。符合条件时将在清算前尝试执行保证金存入，但不保证执行成功。"
@@ -12448,6 +12502,10 @@ msgstr ""
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H VOL."
 msgstr "24 小时交易量"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Rate paid in the last round, on average balances."
+msgstr "上一轮按平均余额支付的费率。"
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX team"

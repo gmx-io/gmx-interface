@@ -257,7 +257,9 @@ msgstr "GMTrade"
 msgid "RPC monitoring"
 msgstr "RPCモニタリング"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 #: src/components/GmList/UsdgPoolBadges.tsx
+#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
 msgid "Launch boost"
 msgstr "ローンチブースト"
 
@@ -2804,6 +2806,7 @@ msgid "No funds to claim"
 msgstr "請求する資金なし"
 
 #: src/components/AprInfo/AprInfo.tsx
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Sparkle"
@@ -3457,6 +3460,10 @@ msgstr "別のチェーンから転送"
 msgid "Take-Profit / Stop-Loss"
 msgstr "テイクプロフィット / ストップロス"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Paid into the {tokenSymbol} price every 4 hours. Nothing to claim."
+msgstr "4時間ごとに{tokenSymbol}の価格に反映されます。請求は不要です。"
+
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Yield trading"
 msgstr "利回りトレーディング"
@@ -3597,6 +3604,10 @@ msgstr "GMXプレミアムRPCで高速実行"
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets in your GMX Account"
 msgstr "GMX Accountに資産がありません"
+
+#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
+msgid "{boostValue} APR"
+msgstr "{boostValue} APR"
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Order type"
@@ -4051,6 +4062,10 @@ msgstr "Permit が署名されました"
 #: src/components/SideNav/BottomMenuSection.tsx
 msgid "Collapse"
 msgstr "折りたたむ"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Launch boost (target)"
+msgstr "ローンチブースト（目標）"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Banners"
@@ -6532,6 +6547,10 @@ msgstr "{3} で {2} にわたり、{1} ずつの {0} {type} 注文を {numberOfP
 msgid "Docs"
 msgstr "ドキュメント"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Last round paid {lastRoundPaidAt}. The boost returns with the next successful round."
+msgstr "前回のラウンドは{lastRoundPaidAt}に支払われました。次のラウンドが正常に完了するとブーストが再開されます。"
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Marketing Kit + Co-marketing"
 msgstr "マーケティングキット + 共同マーケティング"
@@ -6680,6 +6699,10 @@ msgstr "GLV（GMX Liquidity Vault）は様々なGMトークンを保有し、GMX
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Settlement network changed to Arbitrum, but $12.50 remains in your Base GMX Account"
 msgstr "決済ネットワークがArbitrumに変更されましたが、$12.50がBaseのGMX Accountに残っています"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Paused"
+msgstr "一時停止中"
 
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -8909,6 +8932,7 @@ msgstr "{0}の最大ロング値を超過しています"
 
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 #: src/components/EarningValue/EarningValue.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -8925,6 +8949,7 @@ msgstr "{0}の最大ロング値を超過しています"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "N/A"
 msgstr "該当なし"
 
@@ -9429,6 +9454,10 @@ msgstr "実行に必要なGasが不足しています。推定: {estimatedGasLim
 msgid "Min receive"
 msgstr ""
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "The boost rate can't be loaded right now."
+msgstr "現在ブーストレートを読み込めません。"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "x"
@@ -9748,6 +9777,10 @@ msgstr "見る"
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Stop Market"
 msgstr "ストップマーケットを執行"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Unavailable"
+msgstr "利用不可"
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Go to trader dashboard"
@@ -11375,6 +11408,7 @@ msgstr "GMXの取引をXでシェア"
 msgid "Pool short amount"
 msgstr "プールのショート数量"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
 msgstr "手数料APY"
@@ -11481,6 +11515,10 @@ msgstr "TP/SLボタンを使用してTP/SL注文を設定してください。"
 msgid "Close fees"
 msgstr "決済手数料"
 
+#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
+msgid "APY"
+msgstr "APY"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GM?"
 msgstr "GMとは？"
@@ -11545,6 +11583,10 @@ msgstr "{positionName}の決済に失敗しました"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Illustrative, based on a ~0.05% effective fee.<0/>Real earnings depend on referral tier and each trader's activity."
 msgstr "実効手数料約0.05%に基づく参考値です。<0/>実際の収益はアフィリエイトのティアと各トレーダーの取引量によって異なります。"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Starts with the first reward round."
+msgstr "最初の報酬ラウンドから開始されます。"
 
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "Receive to this wallet"
@@ -11919,6 +11961,10 @@ msgstr "Arbitrum で APE を <0>Camelot</0> で購入"
 msgid "Depositing..."
 msgstr "入金中…"
 
+#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
+msgid "Paid into the {tokenSymbol} price every 4 hours. Nothing to claim. Already included in the APY above."
+msgstr "4時間ごとに{tokenSymbol}の価格に反映されます。請求は不要です。上記のAPYにすでに含まれています。"
+
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
 msgstr "{pools}は{verb}上場廃止されます。入金ができなくなるため、流動性を出金するか、GLVに移動して収益を得続けてください。"
@@ -11995,6 +12041,10 @@ msgstr "お客様の資金は安全です。サポートにお問い合わせく
 #: src/components/PositionList/PositionList.tsx
 msgid "NET VALUE"
 msgstr "純価値"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "First 8 weeks: GLV 8% or higher, GM pools 5%. Rates dilute above $100M program TVL. Funded by Arbitrum's USDG program with GMX. Period 1: {periodStart} – {periodEnd}."
+msgstr "最初の8週間：GLV 8%以上、GM プール 5%。プログラムTVLが$100Mを超えるとレートは希薄化します。ArbitrumのUSDGプログラムとGMXによる提供。期間1：{periodStart} – {periodEnd}。"
 
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx
@@ -12340,6 +12390,10 @@ msgstr "EIP-4844、3月20-27日"
 msgid "Lifetime rewards"
 msgstr "累計報酬"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Not enough history yet"
+msgstr "まだ十分な履歴がありません"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "This trigger is at or beyond the estimated liquidation price. The margin deposit will be attempted before liquidation when eligible, but execution is not guaranteed."
 msgstr "このトリガーは推定清算価格かそれを超えた水準にあります。証拠金入金は対象となる場合に清算前に試行されますが、執行は保証されません。"
@@ -12448,6 +12502,10 @@ msgstr ""
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H VOL."
 msgstr "24時間取引量"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Rate paid in the last round, on average balances."
+msgstr "前回のラウンドで平均残高に対して支払われたレート。"
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX team"
