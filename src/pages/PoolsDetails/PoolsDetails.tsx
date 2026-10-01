@@ -14,6 +14,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isGlvAddress, isGlvInfo } from "domain/synthetics/markets/glv";
+import { usePoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
 import { getTokenData } from "domain/synthetics/tokens";
 import { useBreakpoints } from "lib/useBreakpoints";
 import useRouteQuery from "lib/useRouteQuery";
@@ -61,6 +62,8 @@ export function PoolsDetails() {
     marketTokensData: depositMarketTokensData,
   });
 
+  const { timeRange, setTimeRange } = usePoolsTimeRange();
+
   const isMobile = usePoolsIsMobilePage();
 
   const { isDesktop: isInCurtain } = useBreakpoints();
@@ -96,7 +99,9 @@ export function PoolsDetails() {
             <div className={cx("flex justify-between gap-8", { "flex-wrap": isInCurtain })}>
               <div className="flex grow flex-col gap-8">
                 <ErrorBoundary id="PoolsDetails-MarketGraphs" variant="block" wrapperClassName="rounded-t-8">
-                  {glvOrMarketInfo && <MarketGraphs glvOrMarketInfo={glvOrMarketInfo} />}
+                  {glvOrMarketInfo && (
+                    <MarketGraphs glvOrMarketInfo={glvOrMarketInfo} timeRange={timeRange} setTimeRange={setTimeRange} />
+                  )}
                 </ErrorBoundary>
 
                 <ErrorBoundary id="PoolsDetails-MarketComposition" variant="block" wrapperClassName="rounded-t-8">
