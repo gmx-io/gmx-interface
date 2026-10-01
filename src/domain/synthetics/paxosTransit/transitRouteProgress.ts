@@ -8,6 +8,7 @@ export type PaxosTransitConversion = {
   orderId: string;
   txnHash: string | undefined;
   offerAmount: bigint;
+  isMocked: boolean;
 };
 
 export type TransitRouteProgress = {
@@ -15,10 +16,14 @@ export type TransitRouteProgress = {
   chainId: ContractsChainId;
   direction: TransitRouteDirection;
   marketInfo: GlvOrMarketInfo;
+  withdrawalTxnHash: string | undefined;
   conversion: PaxosTransitConversion | undefined;
 };
 
-export type NewTransitRouteProgress = Pick<TransitRouteProgress, "chainId" | "direction" | "marketInfo" | "conversion">;
+export type NewTransitRouteProgress = Pick<
+  TransitRouteProgress,
+  "chainId" | "direction" | "marketInfo" | "withdrawalTxnHash" | "conversion"
+>;
 
 export function getIsTransitOrderFinal(order: TransitOrder | undefined) {
   return order?.status === "PROCESSED" || order?.status === "REMOVED";

@@ -33,6 +33,7 @@ export const emptySyntheticsEventsState: SyntheticsEventsContextType = {
 
   transitRouteProgress: undefined,
   paxosTransitOrder: undefined,
+  isPaxosTransitOrderStatusUnknown: false,
   startTransitRouteProgress: noop,
   attachTransitRouteConversion: noop,
 

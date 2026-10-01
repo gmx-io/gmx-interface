@@ -7,6 +7,7 @@ import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import type { SetPendingWithdrawal } from "context/SyntheticsEvents";
 import { callContract } from "lib/contracts";
 import type { OrderMetricId } from "lib/metrics/types";
+import type { WalletTxnResult } from "lib/transactions/sendWalletTransaction";
 import type { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
@@ -43,7 +44,7 @@ export async function createWithdrawalTxn({
   params: CreateWithdrawalParams;
   setPendingTxns: (txns: any) => void;
   setPendingWithdrawal: SetPendingWithdrawal;
-}) {
+}): Promise<Pick<WalletTxnResult, "transactionHash">> {
   const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
   const withdrawalVaultAddress = getContract(chainId, "WithdrawalVault");
 
@@ -120,7 +121,7 @@ export async function createWithdrawalTxn({
       estimatedExecutionFee: params.executionFee,
       estimatedExecutionGasLimit: executionGasLimit,
     },
-  }).then(() => {
+  }).then((res) => {
     setPendingWithdrawal({
       account: params.addresses.receiver,
       marketAddress: params.addresses.market,
@@ -129,5 +130,7 @@ export async function createWithdrawalTxn({
       minShortTokenAmount: params.minShortTokenAmount,
       shouldUnwrapNativeToken: params.shouldUnwrapNativeToken,
     });
+
+    return { transactionHash: res?.hash };
   });
 }

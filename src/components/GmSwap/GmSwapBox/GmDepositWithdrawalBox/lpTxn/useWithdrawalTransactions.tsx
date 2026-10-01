@@ -7,6 +7,8 @@ import {
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvInfo,
   selectPoolsDetailsIsFirstBuy,
+  selectPoolsDetailsIsTransitRoute,
+  selectPoolsDetailsGlvOrMarketInfo,
   selectPoolsDetailsLongTokenAddress,
   selectPoolsDetailsMarketInfo,
   selectPoolsDetailsMarketTokenData,
@@ -73,10 +75,12 @@ export const useWithdrawalTransactions = ({
 } => {
   const { chainId, srcChainId } = useChainId();
   const { signer } = useWallet();
-  const { setPendingWithdrawal } = useSyntheticsEvents();
+  const { setPendingWithdrawal, startTransitRouteProgress } = useSyntheticsEvents();
   const { setPendingTxns } = usePendingTxns();
   const { addOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
   const blockTimestampData = useSelector(selectBlockTimestampData);
+  const isTransitRoute = useSelector(selectPoolsDetailsIsTransitRoute);
+  const glvOrMarketInfo = useSelector(selectPoolsDetailsGlvOrMarketInfo);
   const globalExpressParams = useSelector(selectExpressGlobalParams);
   const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
   const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
@@ -94,6 +98,21 @@ export const useWithdrawalTransactions = ({
     marketTokenAmount = 0n,
     marketTokenUsd = 0n,
   } = amounts ?? {};
+
+  const recordTransitWithdrawal = useCallback(
+    (txnHash: string | undefined) => {
+      if (!isTransitRoute || !txnHash || !glvOrMarketInfo) return;
+
+      startTransitRouteProgress({
+        chainId,
+        direction: "sell",
+        marketInfo: glvOrMarketInfo,
+        withdrawalTxnHash: txnHash,
+        conversion: undefined,
+      });
+    },
+    [chainId, glvOrMarketInfo, isTransitRoute, startTransitRouteProgress]
+  );
 
   const selectedMarketInfoForGlv = useSelector(selectPoolsDetailsSelectedMarketInfoForGlv);
 
@@ -332,7 +351,7 @@ export const useWithdrawalTransactions = ({
           blockTimestampData,
           glvTokenAmount: glvTokenAmount!,
           skipSimulation: shouldDisableValidation,
-        });
+        }).then(({ transactionHash }) => recordTransitWithdrawal(transactionHash));
       } else {
         throw new Error(`Invalid pay source: ${paySource}`);
       }
@@ -360,6 +379,7 @@ export const useWithdrawalTransactions = ({
       setMultichainTransferProgress,
       multichainWithdrawalExpressTxnParams.data,
       addOptimisticTokensBalancesUpdates,
+      recordTransitWithdrawal,
       setPendingWithdrawal,
       setPendingTxns,
       blockTimestampData,
@@ -490,7 +510,7 @@ export const useWithdrawalTransactions = ({
           setPendingTxns,
           setPendingWithdrawal,
           blockTimestampData,
-        });
+        }).then(({ transactionHash }) => recordTransitWithdrawal(transactionHash));
       } else {
         throw new Error(`Invalid pay source: ${paySource}`);
       }
@@ -524,6 +544,7 @@ export const useWithdrawalTransactions = ({
       setMultichainTransferProgress,
       multichainWithdrawalExpressTxnParams.data,
       addOptimisticTokensBalancesUpdates,
+      recordTransitWithdrawal,
       setPendingWithdrawal,
       shouldDisableValidation,
       setPendingTxns,
