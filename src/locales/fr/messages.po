@@ -183,6 +183,7 @@ msgstr "Créer un Swap TWAP"
 msgid "Rewards paused"
 msgstr "Récompenses en pause"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -255,6 +256,10 @@ msgstr "GMTrade"
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "RPC monitoring"
 msgstr "Surveillance RPC"
+
+#: src/components/GmList/UsdgPoolBadges.tsx
+msgid "Launch boost"
+msgstr "Boost de lancement"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "(rebated)"
@@ -476,6 +481,10 @@ msgstr "Augmentation de marché expirée"
 msgid "Percentage"
 msgstr "Pourcentage"
 
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "{tokenOut} received"
+msgstr "{tokenOut} reçu"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap UI fee"
 msgstr "Frais d'interface de swap"
@@ -672,6 +681,10 @@ msgstr "Délistings"
 msgid "Unrealized fees"
 msgstr "Frais non réalisés"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Convert {tokenInSymbol} to {tokenOutSymbol}"
+msgstr "Convertir {tokenInSymbol} en {tokenOutSymbol}"
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max slippage precision is 0.01%"
 msgstr "La précision maximale du glissement est de 0,01 %"
@@ -704,6 +717,7 @@ msgstr "Aucuns fonds disponibles pour déposer depuis {networkName}"
 msgid "sell"
 msgstr "vendre"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GMX pool liquidity"
 msgstr "Liquidité insuffisante dans les pools GMX"
@@ -993,6 +1007,10 @@ msgstr "Liquidité disponible"
 msgid "GMX pools can't fill this swap, and no external route is currently available. Try reducing the amount."
 msgstr "Les pools GMX ne peuvent pas exécuter ce swap et aucune route externe n'est actuellement disponible. Essayez de réduire le montant."
 
+#: src/components/GmList/UsdgPoolBadges.tsx
+msgid "Only GMX adds liquidity to this pool. It serves USDC and USDG swaps."
+msgstr "Seul GMX fournit de la liquidité à ce pool. Il sert aux swaps entre USDC et USDG."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Funding decrease factor"
 msgstr "Facteur de diminution du financement"
@@ -1012,6 +1030,10 @@ msgstr ""
 #: src/components/HistoryExport/HistoryExportModal.tsx
 msgid "GMX Detailed CSV"
 msgstr "GMX Detailed CSV"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Sending conversion..."
+msgstr "Envoi de la conversion..."
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {seconds} seconds"
@@ -1086,6 +1108,10 @@ msgstr "Envoyez uniquement des <0>actifs compatibles avec {chainName}</0> à cet
 msgid "Plutus"
 msgstr "Plutus"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "USDG issuer, separate transaction, usually 2–10 min. No Paxos fee for whitelisted addresses."
+msgstr "Émetteur de l'USDG, transaction séparée, généralement 2–10 min. Sans frais Paxos pour les adresses sur liste blanche."
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {hours} hours{0}"
 msgstr ""
@@ -1097,6 +1123,10 @@ msgstr "L'ordre ne s'exécutera pas : le prix de déclenchement est au-delà du 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "Don't ask again"
 msgstr ""
+
+#: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
+msgid "Shifting from GM to GLV is similar to buying GLV with a GM token. You will be redirected to the buy GLV tab when selected."
+msgstr "Le shift de GM vers GLV est similaire à l'achat de GLV avec un token GM. Si vous le sélectionnez, vous serez redirigé vers l'onglet Acheter GLV."
 
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values calculated when earned. Excludes incentives."
@@ -1146,6 +1176,10 @@ msgstr "Estimez vos revenus"
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Replace margin deposit"
 msgstr "Remplacer le dépôt de marge"
+
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Buy {poolTokenSymbol}"
+msgstr "Acheter {poolTokenSymbol}"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GlvList.tsx
@@ -1357,6 +1391,10 @@ msgstr "Erreur :"
 msgid "Cross-chain one-click deposits into GM"
 msgstr "Dépôts en un clic cross-chain dans GM"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Approving {tokenInSymbol}..."
+msgstr "Approbation de {tokenInSymbol}..."
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "<0>Switch to TBTC-TBTC pool</0> for potentially lower price impact"
 msgstr "<0>Passer au pool TBTC-TBTC</0> pour un impact sur le prix potentiellement plus faible"
@@ -1518,6 +1556,10 @@ msgstr "Stop-Loss"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "External swap {0} to {1}"
 msgstr "Échange externe de {0} vers {1}"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Instant swap"
+msgstr "Swap instantané"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Net wallet result"
@@ -1784,6 +1826,7 @@ msgstr "Points d'accès Oracle"
 msgid "Maintenance"
 msgstr "Maintenance"
 
+#: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Swap fee"
@@ -1931,9 +1974,19 @@ msgstr "Capitalisation boursière"
 msgid "Markets"
 msgstr "Marchés"
 
+#: src/components/GmList/UsdgPoolBadges.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Whitelist only"
+msgstr "Liste blanche uniquement"
+
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
 msgstr "Réessayer"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Minimum conversion is {0} {tokenInSymbol}"
+msgstr "La conversion minimale est de {0} {tokenInSymbol}"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Available liquidity {directionLabel}"
@@ -1946,6 +1999,10 @@ msgstr "Afficher moins"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Vest"
 msgstr "Vester"
+
+#: src/components/GmList/UsdgPoolBadges.tsx
+msgid "Extra yield for GLV [USDG] liquidity providers during the launch, targeting 8% or more on top of trading fees. Paid into the GLV price every 4 hours, so there's nothing to claim."
+msgstr "Rendement supplémentaire pour les fournisseurs de liquidité GLV [USDG] pendant le lancement, avec un objectif d'au moins 8 % en plus des frais de trading. Versé dans le prix du GLV toutes les 4 heures, il n'y a donc rien à réclamer."
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Set TP price below limit price"
@@ -2111,6 +2168,10 @@ msgstr "Swap TWAP"
 msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees."
 msgstr "GM est le jeton de fournisseur de liquidité pour les marchés GMX V2. Il accumule 63 % des frais générés par les marchés V2."
 
+#: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+msgid "You need USDC or USDG to buy."
+msgstr "Vous avez besoin d'USDC ou d'USDG pour acheter."
+
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Public"
@@ -2202,6 +2263,10 @@ msgstr "Retirer {glvOrGm}"
 msgid "Receive voting power and participate in governance"
 msgstr "Recevoir du pouvoir de vote et participer à la gouvernance"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Auto · {routeLabel}"
+msgstr "Auto · {routeLabel}"
+
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No GMX swap route found for {0} to {1}. Try <0>an external aggregator</0>."
 msgstr "Aucune route de swap GMX trouvée de {0} vers {1}. Essayez <0>un agrégateur externe</0>."
@@ -2242,6 +2307,7 @@ msgstr "Protocole de trading décentralisé"
 msgid "Symbiosis"
 msgstr "Symbiosis"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "How it works"
 msgstr ""
@@ -2591,6 +2657,10 @@ msgstr "Frais pour le passé"
 msgid "Max open interest {directionLabel}"
 msgstr "Positions ouvertes maximales {directionLabel}"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "Steps"
+msgstr "Étapes"
+
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} cancellation failed"
 msgstr "Échec de l'annulation de {ordersText}"
@@ -2677,6 +2747,10 @@ msgstr "Les swaps TWAP n'utilisent que la liquidité des pools GMX, qui ne peut 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "How do I choose?"
 msgstr ""
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "This pool holds USDG, so USDC is converted to USDG when you buy and back to USDC when you sell.<0/><1/>Instant swap goes through the GMX USDC/USDG pool within your buy or sell, in one transaction. You pay its swap fee and price impact.<2/><3/>Direct with Paxos converts with Paxos, the issuer of USDG, in a separate transaction that usually settles in 2–10 min. The converted tokens land in your wallet first.<4/><5/>Auto picks the cheaper option. Whitelisted addresses can choose either option and convert USDC to USDG with no Paxos fee. Other addresses always use Auto, and Direct with Paxos is only offered from {minAmount}.<6/><7/>The choice is fixed when only one option can handle the amount or a conversion is in progress."
+msgstr "Ce pool détient de l'USDG, donc l'USDC est converti en USDG lorsque vous achetez et reconverti en USDC lorsque vous vendez.<0/><1/>Le swap instantané passe par le pool GMX USDC/USDG au sein de votre achat ou de votre vente, en une seule transaction. Vous payez ses frais d'échange et l'impact sur le prix.<2/><3/>Direct avec Paxos effectue la conversion auprès de Paxos, l'émetteur de l'USDG, dans une transaction séparée généralement réglée en 2–10 min. Les tokens convertis arrivent d'abord dans votre portefeuille.<4/><5/>Auto choisit l'option la moins chère. Les adresses sur liste blanche peuvent choisir l'une ou l'autre option et convertir l'USDC en USDG sans frais Paxos. Les autres adresses utilisent toujours Auto, et Direct avec Paxos n'est proposé qu'à partir de {minAmount}.<6/><7/>Le choix est figé lorsqu'une seule option peut traiter le montant ou qu'une conversion est en cours."
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Grouping"
@@ -3352,6 +3426,11 @@ msgstr "S'abonner"
 msgid "Decentralized finance dashboard"
 msgstr "Tableau de bord de la finance décentralisée"
 
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "{0} received"
+msgstr "{0} reçu"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending PnL from all open positions"
 msgstr "PnL en attente de toutes les positions ouvertes"
@@ -3497,6 +3576,10 @@ msgstr ""
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact USD"
 msgstr "Impact USD prêtable max."
+
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {offerAmount}</2>"
+msgstr "<0>Achat de {0}{1}<1>{poolName}</1></0> <2>avec {offerAmount}</2>"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -3786,6 +3869,11 @@ msgstr "Groupes Telegram animés par la communauté"
 msgid "Change to {0}"
 msgstr "Changer pour {0}"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Conversion"
+msgstr "Conversion"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Relayer request failed"
 msgstr "Échec de la demande de relais"
@@ -3851,6 +3939,14 @@ msgstr "TypeScript SDK"
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing limit order in {0} pool<0>Switch to {1} pool</0>"
 msgstr ""
+
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Continue to buy"
+msgstr "Continuer vers l'achat"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "Zero-fee capacity is used up for this amount. Convert now at the standard fee, convert a smaller amount, or wait for the next zero-fee window."
+msgstr "La capacité sans frais est épuisée pour ce montant. Convertissez maintenant aux frais standard, convertissez un montant plus faible ou attendez la prochaine fenêtre sans frais."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "of limit"
@@ -4081,6 +4177,10 @@ msgstr "Portefeuille uniquement"
 msgid "Listing"
 msgstr "Listing"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Conversion failed: {0}"
+msgstr "Échec de la conversion : {0}"
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Signing approval..."
 msgstr "Signature de l'approbation..."
@@ -4167,6 +4267,10 @@ msgstr ""
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker thread"
 msgstr "Thread Worker"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Cheaper option for your amount"
+msgstr "Option la moins chère pour votre montant"
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Failed to update orders"
@@ -4428,6 +4532,7 @@ msgid "Sending order request..."
 msgstr "Envoi de la demande d'ordre…"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
 msgstr "<0>Vente de {0}{1}<1>{poolName}</1></0>"
 
@@ -4506,6 +4611,10 @@ msgstr "Partagez votre avis sur GMX"
 msgid "Withdraw failed"
 msgstr "Échec du retrait"
 
+#: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+msgid "Only GMX adds liquidity to this pool. To provide USDG liquidity, use GLV [USDG]."
+msgstr "Seul GMX fournit de la liquidité à ce pool. Pour fournir de la liquidité en USDG, utilisez GLV [USDG]."
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Minimum {0} capital required for rankings.<0/><1/>Capital = max(sum of margin of open positions - realized PnL + starting pending PnL)."
 msgstr ""
@@ -4518,6 +4627,11 @@ msgstr "Solde {0}"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "numerous assets"
 msgstr "de nombreux actifs"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+msgid "Step 2: Receive"
+msgstr "Étape 2 : Recevoir"
 
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Error name:"
@@ -4663,6 +4777,10 @@ msgstr "Signer le permis"
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "{daysConsidered}d earned fees"
 msgstr "Frais gagnés sur {daysConsidered}j"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Waiting for {tokenInSymbol}..."
+msgstr "En attente de {tokenInSymbol}..."
 
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
 msgid "Wallet icon"
@@ -4997,6 +5115,10 @@ msgstr "Déclencher des tickers partiels"
 msgid "{collateralSymbol} is required for collateral.<0/><1/>No swap path found for {0} to {collateralSymbol} within GMX.<2/><3/><4>Swap {collateralSymbol}</4> or <5>bridge {collateralSymbol}</5>."
 msgstr ""
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "First the pool pays out USDG to your wallet, then you confirm the conversion to USDC. If it fails, the USDG stays in your wallet."
+msgstr "D'abord, le pool verse des USDG sur votre portefeuille, puis vous confirmez la conversion en USDC. En cas d'échec, les USDG restent dans votre portefeuille."
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {tokensText}</2>"
 msgstr "<0>Achat de {0}{1}<1>{poolName}</1></0> <2>avec {tokensText}</2>"
@@ -5253,6 +5375,10 @@ msgstr "Par heure"
 msgid "Perpetuals aggregator"
 msgstr "Agrégateur de perpétuels"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "Sell, then convert"
+msgstr "Vendre, puis convertir"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Swap"
 msgstr "Demander un échange de marché"
@@ -5465,6 +5591,10 @@ msgstr "Actualiser Stop Market"
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "USD"
 msgstr "USD"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "GMX USDC/USDG pool, same transaction"
+msgstr "Pool GMX USDC/USDG, même transaction"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Order lifecycle"
@@ -5694,6 +5824,10 @@ msgstr "Ordre d'achat GM inconnu"
 msgid "Build on GMX.<0/>Get paid on every trade."
 msgstr "Construisez sur GMX.<0/>Soyez payé à chaque trade."
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Insufficient {tokenInSymbol} balance"
+msgstr "Solde {tokenInSymbol} insuffisant"
+
 #: src/lib/useHasOutdatedUi.ts
 msgid "Page outdated. Refresh"
 msgstr "Page obsolète. Actualisez"
@@ -5921,6 +6055,14 @@ msgstr "Max {MAX_REFERRAL_CODE_LENGTH} caractères"
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "Buy with card"
 msgstr "Acheter par carte"
+
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Step 1: Sell"
+msgstr "Étape 1 : Vendre"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Auto"
+msgstr "Auto"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Provide isolated liquidity per market"
@@ -6184,9 +6326,17 @@ msgstr "Le shifting est uniquement disponible sur {chainNames} ou {lastChainName
 msgid "Monthly bought"
 msgstr "Achats mensuels"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "Zero-fee capacity left"
+msgstr "Capacité sans frais restante"
+
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
 msgstr ""
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "2–10 min"
+msgstr "2–10 min"
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "PnL Analysis"
@@ -6730,6 +6880,10 @@ msgstr "Afficher les icônes d'achat/vente sur le graphique"
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
 msgstr "Ce swap nécessite un routage externe. Payez le gaz en {0} pour l'activer."
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
+msgid "Apply with Paxos"
+msgstr "Postuler auprès de Paxos"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Portuguese)"
 msgstr "GMX (Portugais)"
@@ -7055,6 +7209,7 @@ msgid "Earn on every trade they make."
 msgstr "Gagnez sur chaque trade qu'ils effectuent."
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Buy order cancelled"
 msgstr "Ordre d'achat annulé"
 
@@ -7259,6 +7414,7 @@ msgid "Referrals"
 msgstr "Parrainages"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Fulfilling sell request..."
 msgstr "Exécution de la demande de vente…"
 
@@ -7347,6 +7503,8 @@ msgstr ""
 #: src/components/Claims/Claims.tsx
 #: src/components/EmptyTableContent/EmptyTableContent.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
@@ -7360,6 +7518,8 @@ msgstr ""
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7465,6 +7625,10 @@ msgstr "Les frais gagnés ne sont suivis que pour les GM et GLV détenus dans vo
 msgid "Set long Limit @ {0}"
 msgstr ""
 
+#: src/components/GmList/UsdgPoolBadges.tsx
+msgid "Direct deposits into this pool are open to whitelisted addresses. GLV [USDG] gives you the same markets in one deposit."
+msgstr "Les dépôts directs dans ce pool sont ouverts aux adresses sur liste blanche. GLV [USDG] vous donne accès aux mêmes marchés en un seul dépôt."
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position would be liquidatable"
 msgstr "La position serait liquidable"
@@ -7485,6 +7649,10 @@ msgstr ""
 #: src/components/GmList/GlvList.tsx
 msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets"
 msgstr "Coffres optimisés pour le rendement fournissant de la liquidité sur plusieurs marchés GMX"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Conversion status unavailable"
+msgstr "Statut de la conversion indisponible"
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "wstETH APR"
@@ -7654,6 +7822,14 @@ msgstr "payer"
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your previous referral code has been replaced with a GMX protocol code after your trades reached the referral program's graduation threshold. You keep your {currentTierDiscount}% discount on opening and closing fees. <0>Read more</0>"
 msgstr "Votre code de parrainage précédent a été remplacé par un code de protocole GMX après que vos transactions ont atteint le seuil de fin du programme de parrainage. Vous conservez votre réduction de {currentTierDiscount}% sur les frais d'ouverture et de clôture. <0>En savoir plus</0>"
+
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Converting with Paxos, usually 2–10 min..."
+msgstr "Conversion avec Paxos, généralement 2–10 min..."
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "First you convert USDC to USDG in your wallet, then you confirm the buy. If the buy fails, the USDG stays in your wallet."
+msgstr "D'abord, vous convertissez des USDC en USDG dans votre portefeuille, puis vous confirmez l'achat. Si l'achat échoue, les USDG restent dans votre portefeuille."
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match your holdings"
@@ -8641,6 +8817,10 @@ msgstr "Débogage Oracle Keeper"
 msgid "Funding fee / day"
 msgstr "Frais de funding / jour"
 
+#: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+msgid "Buy GLV [USDG]"
+msgstr "Acheter GLV [USDG]"
+
 #: src/components/UserIncentiveDistribution/utils.tsx
 msgid "GLP reimbursement (test)"
 msgstr "Remboursement GLP (test)"
@@ -8652,6 +8832,10 @@ msgstr "Conçu pour ceux<0/>qui font plus."
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max leverage exceeded. Increase margin or reduce size"
 msgstr "Effet de levier maximum dépassé. Augmentez la marge ou réduisez la taille"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "Convert, then buy"
+msgstr "Convertir, puis acheter"
 
 #: src/components/BridgingInfo/BridgingInfo.tsx
 msgid "Bridge {tokenSymbol} to {chainName} with"
@@ -8770,6 +8954,7 @@ msgstr "{formattedNetRate} / 1h"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
@@ -8808,6 +8993,7 @@ msgid "Powered by"
 msgstr "Propulsé par"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Buy order executed"
 msgstr "Ordre d'achat exécuté"
 
@@ -8930,6 +9116,10 @@ msgstr "GMX stakés"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Real-time referral dashboard"
 msgstr "Tableau de bord de parrainage en temps réel"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
+msgid "For businesses: mint USDG with Paxos"
+msgstr "Pour les entreprises : frappez des USDG avec Paxos"
 
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "Chains"
@@ -9206,6 +9396,11 @@ msgstr "PNL EST."
 msgid "No announcements found"
 msgstr "Aucune annonce trouvée"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "{tokenInSymbol} conversion is unavailable"
+msgstr "La conversion de {tokenInSymbol} est indisponible"
+
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your {currentTierDiscount}% discount is now active!"
 msgstr ""
@@ -9317,6 +9512,7 @@ msgid "Trigger tickers failure"
 msgstr "Forcer l'échec des tickers"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Fulfilling buy request..."
 msgstr "Exécution de la demande d'achat…"
 
@@ -9533,6 +9729,8 @@ msgstr "Capacité maximale du pool atteinte"
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/GmSwap/GmFees/GmFees.tsx
+#: src/components/GmSwap/GmFees/GmFees.tsx
+#: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "(<0>{0}</0> of {operationText} amount)"
 msgstr "(<0>{0}</0> du montant de {operationText})"
 
@@ -9564,6 +9762,10 @@ msgstr "IA"
 msgid "Referral code submitted"
 msgstr "Code de parrainage soumis"
 
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Conversion request sent"
+msgstr "Demande de conversion envoyée"
+
 #: src/components/AprInfo/AprInfo.tsx
 msgid "Bonus APR paid as {airdropTokenTitle} airdrops. <0>Read more</0>."
 msgstr "APR bonus versé sous forme d'airdrops {airdropTokenTitle}. <0>En savoir plus</0>."
@@ -9571,6 +9773,10 @@ msgstr "APR bonus versé sous forme d'airdrops {airdropTokenTitle}. <0>En savoir
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "Execution price"
 msgstr "Prix d'exécution"
+
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Conversion cancelled"
+msgstr "Conversion annulée"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake failed"
@@ -9766,6 +9972,7 @@ msgid "Edit referral code"
 msgstr "Modifier le code de parrainage"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Sell request sent"
 msgstr "Demande de vente envoyée"
 
@@ -10112,6 +10319,10 @@ msgstr ""
 msgid "Decode error"
 msgstr "Décoder l'erreur"
 
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Step 2: Buy"
+msgstr "Étape 2 : Acheter"
+
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "0x..."
 msgstr "0x..."
@@ -10187,6 +10398,10 @@ msgstr ""
 msgid "Select positions where accrued funding fee exceeds the {0} gas cost to settle"
 msgstr "Sélectionnez les positions dont les frais de financement accumulés dépassent le coût en gas de {0} pour le règlement"
 
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Continue to convert"
+msgstr "Continuer vers la conversion"
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Large account"
 msgstr "Compte important"
@@ -10202,6 +10417,10 @@ msgstr "Actif"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Swap {0} for {1}"
 msgstr "Échanger {0} pour {1}"
+
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Step 2: Convert"
+msgstr "Étape 2 : Convertir"
 
 #: src/components/TVChart/Chart.tsx
 msgid "Depth"
@@ -10236,6 +10455,7 @@ msgid "Staking..."
 msgstr "Staking en cours..."
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Buy request sent"
 msgstr "Demande d'achat envoyée"
 
@@ -10633,6 +10853,10 @@ msgstr "Venus"
 msgid "No swap route available"
 msgstr ""
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+msgid "Step 1: Receive"
+msgstr "Étape 1 : Recevoir"
+
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "How much could I earn?"
 msgstr "Combien pourrais-je gagner ?"
@@ -10890,6 +11114,10 @@ msgstr "Déposé :"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Increase"
 msgstr "Augmenter"
+
+#: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+msgid "Buy USDG"
+msgstr "Acheter USDG"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -11155,6 +11383,10 @@ msgstr "TAEG des frais"
 msgid "Trading pair price alerts"
 msgstr "Alertes de prix des paires de négociation"
 
+#: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+msgid "Direct deposits into this pool are open to whitelisted addresses. GLV [USDG] gives you the same markets in one deposit. To get whitelisted, message <0>@GMXPartners</0> on Telegram and mention \"USDG whitelist\"."
+msgstr "Les dépôts directs dans ce pool sont ouverts aux adresses sur liste blanche. GLV [USDG] vous donne accès aux mêmes marchés en un seul dépôt. Pour être ajouté à la liste blanche, écrivez à <0>@GMXPartners</0> sur Telegram en mentionnant \"USDG whitelist\"."
+
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "Can I build on top of GMX or integrate it into my DeFi app?"
 msgstr "Puis-je construire sur GMX ou l'intégrer dans mon app DeFi ?"
@@ -11377,6 +11609,10 @@ msgstr ""
 msgid "<0>Positive funding fees accrued from your positions</0>"
 msgstr "<0>Frais de financement positifs accumulés à partir de vos positions</0>"
 
+#: src/components/GmSwap/GmFees/GmFees.tsx
+msgid "Conversion fee"
+msgstr "Frais de conversion"
+
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Message us on Telegram"
 msgstr "Écrivez-nous sur Telegram"
@@ -11483,6 +11719,10 @@ msgstr "LIQUIDITÉ LONG"
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "Is this custodial? Do I send you my funds?"
 msgstr "Est-ce un service custodial ? Dois-je vous envoyer mes fonds ?"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
+msgid "Paxos, the issuer of USDG, mints it 1:1 from USD with no minting fee. Requires business verification with Paxos."
+msgstr "Paxos, l'émetteur d'USDG, le frappe à 1:1 à partir d'USD sans frais de frappe. Nécessite une vérification d'entreprise auprès de Paxos."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL short"
@@ -11773,7 +12013,12 @@ msgstr "Augmentez le tampon maximal des frais de réseau à {0} dans {settingsLi
 msgid "GLP to GM airdrop"
 msgstr "Airdrop GLP vers GM"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Whitelisted addresses convert USDC to USDG with no Paxos fee. To get whitelisted, message <0>@GMXPartners</0> on Telegram and mention \"USDG whitelist\"."
+msgstr "Les adresses sur liste blanche convertissent l'USDC en USDG sans frais Paxos. Pour être ajouté à la liste blanche, écrivez à <0>@GMXPartners</0> sur Telegram en mentionnant \"USDG whitelist\"."
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Sell order cancelled"
 msgstr "Ordre de vente annulé"
 
@@ -12099,6 +12344,10 @@ msgstr "Récompenses cumulées"
 msgid "This trigger is at or beyond the estimated liquidation price. The margin deposit will be attempted before liquidation when eligible, but execution is not guaranteed."
 msgstr "Ce déclencheur est au niveau ou au-delà du prix de liquidation estimé. Le dépôt de marge sera tenté avant la liquidation lorsqu'il est éligible, mais l'exécution n'est pas garantie."
 
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Step 1: Convert"
+msgstr "Étape 1 : Convertir"
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Save on costs"
 msgstr "Réduisez vos coûts"
@@ -12157,6 +12406,10 @@ msgstr "Passer au pool WBTC-USDC"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Traders referred"
 msgstr "Traders parrainés"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Converting {tokenInSymbol} to {tokenOutSymbol}..."
+msgstr "Conversion de {tokenInSymbol} en {tokenOutSymbol}..."
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max deposit limit reached: {maxPoolUsdText}"
@@ -12267,6 +12520,10 @@ msgstr "{count, plural, one {Ordre} other {# Ordres}}"
 msgid "Avalanche trading incentives"
 msgstr "Incitations au trading sur Avalanche"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Direct with Paxos"
+msgstr "Direct avec Paxos"
+
 #: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
 msgid "External routes are only used for market swaps."
 msgstr "Les routes externes ne sont utilisées que pour les swaps au marché."
@@ -12300,6 +12557,10 @@ msgstr "Envoi de la demande de transfert…"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Order expired before it could be executed"
 msgstr "L'ordre a expiré avant de pouvoir être exécuté"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Confirming conversion..."
+msgstr "Confirmation de la conversion..."
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "PNG"
@@ -12705,6 +12966,10 @@ msgstr "Saisir un ratio"
 #: src/pages/RpcDebug/parts.tsx
 msgid "OK"
 msgstr "OK"
+
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Convert to {0}"
+msgstr "Convertir en {0}"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Net total of action-level fees, and price impact. Hover the value to see the breakdown."
