@@ -16,6 +16,7 @@ import {
   selectPoolsDetailsSetMarketOrGlvTokenInputValue,
   selectPoolsDetailsSetSecondTokenInputValue,
   selectPoolsDetailsShortTokenAddress,
+  selectPoolsDetailsTransitAmountOut,
 } from "context/PoolsDetailsContext/selectors";
 import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -73,6 +74,7 @@ export function useUpdateInputAmounts() {
   const secondTokenWrappedAddress = secondToken?.wrappedAddress ?? secondToken?.address;
   const focusedInput = useSelector(selectPoolsDetailsFocusedInput);
   const collateralSwapTokens = useSelector(selectPoolsDetailsCollateralSwapTokens);
+  const transitAmountOut = useSelector(selectPoolsDetailsTransitAmountOut);
 
   const setFirstTokenInputValue = useSelector(selectPoolsDetailsSetFirstTokenInputValue);
   const setSecondTokenInputValue = useSelector(selectPoolsDetailsSetSecondTokenInputValue);
@@ -193,10 +195,19 @@ export function useUpdateInputAmounts() {
       if (collateralSwapTokens && firstToken) {
         const { token } = collateralSwapTokens;
         const { longTokenSwapPathStats, shortTokenSwapPathStats } = amounts as WithdrawalAmounts;
-        const tokenAmount =
-          longTokenSwapPathStats && shortTokenSwapPathStats
-            ? longTokenSwapPathStats.amountOut + shortTokenSwapPathStats.amountOut
-            : convertToTokenAmount(amounts.longTokenUsd + amounts.shortTokenUsd, token.decimals, token.prices.maxPrice);
+        let tokenAmount: bigint | undefined;
+
+        if (transitAmountOut !== undefined) {
+          tokenAmount = transitAmountOut;
+        } else if (longTokenSwapPathStats && shortTokenSwapPathStats) {
+          tokenAmount = longTokenSwapPathStats.amountOut + shortTokenSwapPathStats.amountOut;
+        } else {
+          tokenAmount = convertToTokenAmount(
+            amounts.longTokenUsd + amounts.shortTokenUsd,
+            token.decimals,
+            token.prices.maxPrice
+          );
+        }
 
         setFirstTokenInputValue(formatTokenAmount(tokenAmount, firstToken.decimals));
         return;
@@ -272,6 +283,7 @@ export function useUpdateInputAmounts() {
     hasMarketInfo,
     focusedInput,
     collateralSwapTokens,
+    transitAmountOut,
     isSameCollaterals,
     setFirstTokenInputValue,
     setSecondTokenInputValue,

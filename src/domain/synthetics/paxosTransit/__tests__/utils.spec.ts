@@ -5,7 +5,7 @@ import type { WithdrawalStatuses } from "context/SyntheticsEvents/types";
 import { expandDecimals } from "lib/numbers";
 import type { TransitFeeTierResponse } from "sdk/utils/paxos/types";
 
-import { findTransitWithdrawalStatus, getIsTransitQuoteNeeded, getTransitFeeTier } from "../utils";
+import { findTransitWithdrawalStatus, getIsTransitQuoteNeeded, getShouldUseTransit, getTransitFeeTier } from "../utils";
 
 const usd = (value: number) => expandDecimals(value, USD_DECIMALS);
 const ZERO_FEE: TransitFeeTierResponse = { feeTier: "zeroFee", zeroFeeCapacity: 1_000_000n };
@@ -48,11 +48,49 @@ describe("getTransitFeeTier", () => {
   });
 });
 
+describe("getShouldUseTransit", () => {
+  const LARGE = {
+    amountUsd: usd(300_000),
+    isWhitelisted: false,
+    transitFeesUsd: usd(10),
+    collateralSwapTotalFeesDeltaUsd: -usd(50),
+    thresholdUsd: usd(250_000),
+  };
+
+  it("uses Transit for a large conversion where it is cheaper", () => {
+    expect(getShouldUseTransit(LARGE)).toBe(true);
+  });
+
+  it("counts an amount at exactly the threshold as large", () => {
+    expect(getShouldUseTransit({ ...LARGE, amountUsd: LARGE.thresholdUsd })).toBe(true);
+  });
+
+  it("keeps our pool below the size threshold or when it is cheaper", () => {
+    expect(getShouldUseTransit({ ...LARGE, amountUsd: usd(2) })).toBe(false);
+    expect(getShouldUseTransit({ ...LARGE, collateralSwapTotalFeesDeltaUsd: -usd(5) })).toBe(false);
+  });
+
+  it("keeps our pool without a Transit quote", () => {
+    expect(getShouldUseTransit({ ...LARGE, transitFeesUsd: undefined })).toBe(false);
+  });
+
+  it("uses Transit when our pool can't fill the swap, at any size", () => {
+    expect(getShouldUseTransit({ ...LARGE, collateralSwapTotalFeesDeltaUsd: undefined })).toBe(true);
+    expect(getShouldUseTransit({ ...LARGE, amountUsd: usd(1), collateralSwapTotalFeesDeltaUsd: undefined })).toBe(true);
+  });
+
+  it("always uses Transit for whitelisted addresses", () => {
+    expect(getShouldUseTransit({ ...LARGE, amountUsd: usd(1), transitFeesUsd: undefined, isWhitelisted: true })).toBe(
+      true
+    );
+  });
+});
+
 describe("getIsTransitQuoteNeeded", () => {
   const params = {
     isTransitRequired: false,
     isWhitelisted: false,
-    swapFeesUsd: usd(1),
+    collateralSwapTotalFeesDeltaUsd: -usd(1),
     amountUsd: usd(100),
     thresholdUsd: usd(250),
   };
@@ -69,7 +107,7 @@ describe("getIsTransitQuoteNeeded", () => {
     expect(getIsTransitQuoteNeeded({ ...params, isTransitRequired: true })).toBe(true);
     expect(getIsTransitQuoteNeeded({ ...params, isWhitelisted: true })).toBe(true);
     expect(getIsTransitQuoteNeeded({ ...params, amountUsd: usd(300) })).toBe(true);
-    expect(getIsTransitQuoteNeeded({ ...params, swapFeesUsd: undefined })).toBe(true);
+    expect(getIsTransitQuoteNeeded({ ...params, collateralSwapTotalFeesDeltaUsd: undefined })).toBe(true);
   });
 });
 
