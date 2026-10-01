@@ -253,8 +253,7 @@ export function GmShiftBox({
   const getShiftReceiveMarketState = useCallback((glvOrMarketInfo: GlvOrMarketInfo): MarketState => {
     if (isGlvInfo(glvOrMarketInfo)) {
       return {
-        warning:
-          "Shifting From GM to GLV is similar to buying GLV with a GM token. You will be redirected to the buy GLV tab when selected.",
+        warning: t`Shifting from GM to GLV is similar to buying GLV with a GM token. You will be redirected to the buy GLV tab when selected.`,
       };
     }
 
