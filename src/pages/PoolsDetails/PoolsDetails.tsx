@@ -16,6 +16,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isGlvAddress, isGlvInfo } from "domain/synthetics/markets/glv";
 import { usePoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
 import { getTokenData } from "domain/synthetics/tokens";
+import { useUsdgLaunchBoost } from "domain/synthetics/usdgLaunchBoost/useUsdgLaunchBoost";
 import { useBreakpoints } from "lib/useBreakpoints";
 import useRouteQuery from "lib/useRouteQuery";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
@@ -55,6 +56,7 @@ export function PoolsDetails() {
     (isMarketTokenAddress(chainId, requestedMarketAddress) || isGlvAddress(chainId, requestedMarketAddress));
 
   const marketToken = getTokenData(depositMarketTokensData, glvOrMarketAddress);
+  const launchBoost = useUsdgLaunchBoost(glvOrMarketInfo);
 
   const { backing: backingComposition, market: marketComposition } = useCompositionData({
     glvOrMarketInfo: glvOrMarketInfo,
@@ -94,7 +96,12 @@ export function PoolsDetails() {
       <div className={cx("flex flex-col gap-8")}>
         {glvOrMarketInfo ? (
           <>
-            <PoolsDetailsHeader glvOrMarketInfo={glvOrMarketInfo} marketToken={marketToken} />
+            <PoolsDetailsHeader
+              glvOrMarketInfo={glvOrMarketInfo}
+              marketToken={marketToken}
+              timeRange={timeRange}
+              launchBoost={launchBoost}
+            />
 
             <div className={cx("flex justify-between gap-8", { "flex-wrap": isInCurtain })}>
               <div className="flex grow flex-col gap-8">
