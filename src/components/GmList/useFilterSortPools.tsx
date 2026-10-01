@@ -26,6 +26,7 @@ export function useFilterSortPools({
   marketsTokensApyData,
   marketsTokensIncentiveAprData,
   marketsTokensLidoAprData,
+  marketsTokensLaunchBoostAprData,
   searchText,
   topLevelTab,
   subCategoryTab,
@@ -43,6 +44,7 @@ export function useFilterSortPools({
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
+  marketsTokensLaunchBoostAprData: MarketTokensAPRData | undefined;
   searchText: string;
   topLevelTab: TopLevelTab;
   subCategoryTab: SubCategoryTab;
@@ -105,6 +107,7 @@ export function useFilterSortPools({
       marketsTokensApyData,
       marketsTokensIncentiveAprData,
       marketsTokensLidoAprData,
+      marketsTokensLaunchBoostAprData,
       multichainMarketTokensBalances,
       performance,
     });
@@ -117,6 +120,7 @@ export function useFilterSortPools({
     marketsTokensApyData,
     marketsTokensIncentiveAprData,
     marketsTokensLidoAprData,
+    marketsTokensLaunchBoostAprData,
     multichainMarketTokensBalances,
     performance,
     pinnedAddresses,
