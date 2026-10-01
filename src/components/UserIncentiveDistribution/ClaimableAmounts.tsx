@@ -13,7 +13,7 @@ import { useClaimFundsTransactionCallback } from "domain/synthetics/claims/useCl
 import useUserClaimableAmounts from "domain/synthetics/claims/useUserClaimableAmounts";
 import { estimateExecutionGasPrice, getExecutionFeeBufferBps } from "domain/synthetics/fees/utils/executionFee";
 import { useTokenBalances } from "domain/synthetics/tokens";
-import { formatBalanceAmount, formatUsd } from "lib/numbers";
+import { formatBalanceAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
@@ -22,6 +22,7 @@ import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
@@ -279,7 +280,7 @@ export default function ClaimableAmounts() {
           <Trans>Total to claim</Trans>
         </span>
         <Tooltip
-          handle={formatUsd(totalFundsToClaimUsd)}
+          handle={<UsdValue usd={totalFundsToClaimUsd} />}
           handleClassName="cursor-help numbers"
           className="whitespace-nowrap"
           renderContent={renderTotalTooltipContent}

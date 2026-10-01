@@ -20,7 +20,7 @@ import { Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { formatDate, formatDateTime, getDaysAgo } from "lib/dates";
 import { GM_DECIMALS } from "lib/legacy";
-import { expandDecimals, formatBalanceAmount, formatUsd } from "lib/numbers";
+import { expandDecimals, formatBalanceAmount } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { shortenAddressOrEns } from "lib/wallets";
 import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
@@ -32,6 +32,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import usePagination from "components/Pagination/usePagination";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -281,7 +282,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
         {!isMobile && <TableTdActionable data-label={t`TYPE`}>{type}</TableTdActionable>}
         <TableTdActionable className="max-xl:text-right" data-label={t`AMOUNT`}>
           <Tooltip
-            handle={formatUsd(totalUsd)}
+            handle={<UsdValue usd={totalUsd} />}
             handleClassName="numbers"
             className="whitespace-nowrap"
             renderContent={renderTotalTooltipContent}

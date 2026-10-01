@@ -60,8 +60,10 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
   getExpressParamsForSubmit,
+  getNetworkFeeGasPaymentParams,
   reportMultichainExpressSubmitError,
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
+import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import {
   EditingOrderSource,
@@ -81,9 +83,9 @@ import { getMarginDepositRiskLevel, isMarginDepositOrder } from "domain/syntheti
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import {
-  formatAcceptablePrice,
-  formatLeverage,
-  formatLiquidationPrice,
+  formatAcceptablePriceParts,
+  formatLeverageParts,
+  formatLiquidationPriceParts,
   getNameByOrderType,
   substractMaxLeverageSlippage,
 } from "domain/synthetics/positions";
@@ -116,10 +118,6 @@ import {
   formatAmount,
   formatAmountFree,
   formatBalanceAmount,
-  formatDeltaUsd,
-  formatTokenAmountWithUsd,
-  formatUsd,
-  formatUsdPrice,
   parseValue,
 } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -139,9 +137,16 @@ import Button from "components/Button/Button";
 import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
+import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarginDepositInsufficientMessage } from "components/MarginRemediation/MarginRemediationActions";
 import Modal from "components/Modal/Modal";
+import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
+import { LiquidationPriceValue } from "components/NumericValue/LiquidationPriceValue";
+import { NumericValue } from "components/NumericValue/NumericValue";
+import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
@@ -530,28 +535,29 @@ export function OrderEditor(p: Props) {
     canSwitchGasPaymentToken: isActiveForm,
   });
 
+  const expressError = useMemo(() => getExpressError({ expressParams, tokensData }), [expressParams, tokensData]);
+
   const networkFee = useMemo(() => {
-    if (!additionalExecutionFee) {
-      return undefined;
+    const gasPaymentParams = getNetworkFeeGasPaymentParams({
+      expressParams,
+      tokensData,
+      canApproveGasPaymentToken: false,
+    });
+    const gasPaymentToken = getByKey(tokensData, gasPaymentParams?.gasPaymentTokenAddress);
+
+    if (gasPaymentToken && gasPaymentParams?.gasPaymentTokenAmount !== undefined) {
+      return {
+        feeToken: gasPaymentToken,
+        feeTokenAmount: gasPaymentParams.gasPaymentTokenAmount,
+        feeUsd: convertToUsd(
+          gasPaymentParams.gasPaymentTokenAmount,
+          gasPaymentToken.decimals,
+          gasPaymentToken.prices.minPrice
+        ),
+      };
     }
 
-    let feeToken = additionalExecutionFee?.feeToken;
-    let feeTokenAmount = additionalExecutionFee?.feeTokenAmount;
-    let feeUsd = additionalExecutionFee?.feeUsd;
-
-    const gasPaymentToken = getByKey(tokensData, expressParams?.gasPaymentParams.gasPaymentTokenAddress);
-
-    if (gasPaymentToken && expressParams?.gasPaymentParams.gasPaymentTokenAmount !== undefined) {
-      feeToken = gasPaymentToken;
-      feeTokenAmount = expressParams?.gasPaymentParams.gasPaymentTokenAmount;
-      feeUsd = convertToUsd(feeTokenAmount, feeToken.decimals, gasPaymentToken.prices.minPrice);
-    }
-
-    return {
-      feeToken,
-      feeTokenAmount,
-      feeUsd,
-    };
+    return additionalExecutionFee;
   }, [additionalExecutionFee, expressParams, tokensData]);
 
   const error = useMemo(() => {
@@ -576,19 +582,10 @@ export function OrderEditor(p: Props) {
         return t`Set limit price above mark price`;
       }
 
-      const expressError = getExpressError({
-        expressParams,
-        tokensData,
-      });
-
-      if (expressError.buttonErrorMessage) {
-        return expressError.buttonErrorMessage;
-      }
-
-      return;
+      return expressError.buttonErrorMessage;
     }
 
-    return positionOrderError;
+    return positionOrderError ?? expressError.buttonErrorMessage;
   }, [
     isSubmitting,
     p.order.orderType,
@@ -598,8 +595,7 @@ export function OrderEditor(p: Props) {
     minOutputAmount,
     isRatioInverted,
     markRatio,
-    expressParams,
-    tokensData,
+    expressError,
   ]);
 
   const showResultingPositionMaxLeverageWarning =
@@ -1018,19 +1014,21 @@ export function OrderEditor(p: Props) {
                 </div>
               ) : (
                 <BuyInputSection
+                  qa="amount-input"
                   topLeftLabel={isTriggerDecrease ? t`Close` : t`Size`}
                   inputValue={isTriggerDecrease ? closeSize.closeSizeInput : sizeInputValue}
                   onInputValueChange={
                     isTriggerDecrease ? closeSize.handleInputChange : (e) => setSizeInputValue(e.target.value)
                   }
-                  bottomLeftValue={isTriggerDecrease ? formatUsd(sizeUsd) : undefined}
+                  bottomLeftValue={isTriggerDecrease ? <UsdValue usd={sizeUsd} /> : undefined}
                   bottomRightLabel={isTriggerDecrease && positionSize !== undefined ? t`Max` : undefined}
-                  bottomRightValue={isTriggerDecrease ? formatUsdPrice(positionSize) : undefined}
+                  bottomRightValue={isTriggerDecrease ? <UsdPriceValue price={positionSize} /> : undefined}
                   onClickMax={
-                    isTriggerDecrease && positionSize !== undefined && positionSize > 0 && sizeUsd !== positionSize
+                    isTriggerDecrease && positionSize !== undefined && positionSize > 0
                       ? closeSize.setMaxCloseSize
                       : undefined
                   }
+                  isMaxSelected={sizeUsd === positionSize}
                   maxDecimals={
                     isTriggerDecrease && closeSize.showSizeInTokens ? positionIndexToken?.decimals ?? 18 : USD_DECIMALS
                   }
@@ -1046,11 +1044,10 @@ export function OrderEditor(p: Props) {
               )}
 
               <BuyInputSection
+                qa="trigger-price-input"
                 topLeftLabel={priceLabel}
                 topRightLabel={t`Mark`}
-                topRightValue={formatUsdPrice(markPrice, {
-                  visualMultiplier: indexToken?.visualMultiplier,
-                })}
+                topRightValue={<UsdPriceValue price={markPrice} visualMultiplier={indexToken?.visualMultiplier} />}
                 onClickTopRightLabel={() =>
                   setTriggerPriceInputValue(
                     formatAmount(
@@ -1107,9 +1104,9 @@ export function OrderEditor(p: Props) {
               label={t`Leverage`}
               value={
                 <ValueTransition
-                  from={formatLeverage(existingPositionForPreview?.leverage)}
+                  from={formatLeverageParts(existingPositionForPreview?.leverage)}
                   to={
-                    formatLeverage(
+                    formatLeverageParts(
                       isMarginDeposit
                         ? marginDepositProjections?.nextLeverage
                         : nextPositionValuesForIncrease?.nextLeverage
@@ -1138,9 +1135,13 @@ export function OrderEditor(p: Props) {
               {isSetAcceptablePriceImpactEnabled && !isMarginDeposit && (
                 <SyntheticsInfoRow
                   label={t`Acceptable price`}
-                  value={formatAcceptablePrice(acceptablePrice, {
-                    visualMultiplier: indexToken?.visualMultiplier,
-                  })}
+                  value={
+                    <NumericValue
+                      parts={formatAcceptablePriceParts(acceptablePrice, {
+                        visualMultiplier: indexToken?.visualMultiplier,
+                      })}
+                    />
+                  }
                 />
               )}
 
@@ -1150,19 +1151,20 @@ export function OrderEditor(p: Props) {
                   value={
                     isMarginDeposit ? (
                       <ValueTransition
-                        from={formatLiquidationPrice(existingPositionForPreview.liquidationPrice, {
+                        from={formatLiquidationPriceParts(existingPositionForPreview.liquidationPrice, {
                           visualMultiplier: indexToken?.visualMultiplier,
                         })}
                         to={
-                          formatLiquidationPrice(marginDepositProjections?.nextLiqPrice, {
+                          formatLiquidationPriceParts(marginDepositProjections?.nextLiqPrice, {
                             visualMultiplier: indexToken?.visualMultiplier,
                           }) ?? "-"
                         }
                       />
                     ) : (
-                      formatLiquidationPrice(existingPositionForPreview.liquidationPrice, {
-                        visualMultiplier: indexToken?.visualMultiplier,
-                      })
+                      <LiquidationPriceValue
+                        liquidationPrice={existingPositionForPreview.liquidationPrice}
+                        visualMultiplier={indexToken?.visualMultiplier}
+                      />
                     )
                   }
                 />
@@ -1177,27 +1179,33 @@ export function OrderEditor(p: Props) {
                 <TooltipWithPortal
                   position="top-end"
                   tooltipClassName="PositionEditor-fees-tooltip"
-                  handle={formatDeltaUsd(networkFee.feeUsd === undefined ? undefined : networkFee.feeUsd * -1n)}
+                  handle={
+                    <DeltaUsdValue deltaUsd={networkFee.feeUsd === undefined ? undefined : networkFee.feeUsd * -1n} />
+                  }
                   renderContent={() => (
                     <>
                       <StatsTooltipRow
                         label={<div className="text-typography-primary">{t`Network fee`}:</div>}
-                        value={formatTokenAmountWithUsd(
-                          networkFee.feeTokenAmount * -1n,
-                          networkFee.feeUsd === undefined ? undefined : networkFee.feeUsd * -1n,
-                          networkFee.feeToken.symbol,
-                          networkFee.feeToken.decimals,
-                          {
-                            displayDecimals: 5,
-                            isStable: networkFee.feeToken.isStable,
-                          }
-                        )}
+                        value={
+                          <NetworkFeeValue
+                            amount={networkFee.feeTokenAmount}
+                            usd={networkFee.feeUsd}
+                            decimals={networkFee.feeToken.decimals}
+                            symbol={networkFee.feeToken.symbol}
+                            isStable={networkFee.feeToken.isStable}
+                            source={getNetworkFeeSource({ isGmxAccount: srcChainId !== undefined })}
+                          />
+                        }
                         showDollar={false}
                       />
-                      <br />
-                      <div className="text-typography-primary">
-                        <Trans>Network fees increased. Additional fee required.</Trans>
-                      </div>
+                      {additionalExecutionFee && (
+                        <>
+                          <br />
+                          <div className="text-typography-primary">
+                            <Trans>Network fees increased. Additional fee required.</Trans>
+                          </div>
+                        </>
+                      )}
                     </>
                   )}
                 />
@@ -1240,6 +1248,18 @@ export function OrderEditor(p: Props) {
           {marginDepositRisk?.warning !== undefined && (
             <AlertInfoCard type="warning" hideClose>
               {marginDepositRisk.warning}
+            </AlertInfoCard>
+          )}
+
+          {expressError.bannerErrorName && (
+            <AlertInfoCard type="error" hideClose>
+              <ValidationBannerErrorContent
+                validationBannerErrorName={expressError.bannerErrorName}
+                chainId={chainId}
+                srcChainId={srcChainId}
+                gasPaymentTokenAddress={expressParams?.gasPaymentParams.gasPaymentTokenAddress}
+                onBeforeNavigation={p.onClose}
+              />
             </AlertInfoCard>
           )}
 

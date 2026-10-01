@@ -6,10 +6,11 @@ import { getBalanceByBalanceType } from "domain/synthetics/tokens";
 import { useTokensDataRequest } from "domain/synthetics/tokens/useTokensDataRequest";
 import { convertToUsd, TokenBalanceType, TokenData } from "domain/tokens";
 import { useChainId } from "lib/chains";
-import { formatTokenAmount, formatUsd } from "lib/numbers";
+import { formatTokenAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getGasPaymentTokens } from "sdk/configs/express";
 
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { SelectorBase, useSelectorClose } from "components/SelectorBase/SelectorBase";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
@@ -109,7 +110,7 @@ function GasTokenOption({
         <span className="mr-4 inline-block align-baseline">{formatTokenAmount(balance, token.decimals)}</span>
         {token.symbol}
       </div>
-      <div className="text-right">{formatUsd(balanceUsd)}</div>
+      <UsdValue usd={balanceUsd} className="text-right" />
     </div>
   );
 }

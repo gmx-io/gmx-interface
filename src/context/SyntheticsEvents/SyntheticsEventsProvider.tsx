@@ -15,6 +15,7 @@ import {
 } from "context/WebsocketContext/subscribeToEvents";
 import { MultichainTransferProgress } from "domain/multichain/progress/MultichainTransferProgress";
 import { useMultichainTransferProgressView } from "domain/multichain/progress/MultichainTransferProgressView";
+import { getPossiblyInsufficientPayTokens } from "domain/synthetics/express/insufficientPayTokens";
 import { MarketsInfoData, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
@@ -42,8 +43,12 @@ import { TokenBalanceType } from "domain/tokens";
 import type { PendingTpSlOrderBatch } from "domain/tpsl/types";
 import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
-import { ErrorLike } from "lib/errors";
-import { getIsInsufficientExecutionFeeError, getIsInvalidSignatureError } from "lib/errors/customErrors";
+import { ErrorLike, parseError } from "lib/errors";
+import {
+  getIsInsufficientExecutionFeeError,
+  getIsInvalidSignatureError,
+  getIsInvalidSubaccountApprovalNonceError,
+} from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import {
@@ -71,7 +76,14 @@ import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tok
 import { StatusCode } from "sdk/utils/express";
 import { decodeOrderTwapParams } from "sdk/utils/twap/uiFeeReceiver";
 
-import { getInsufficientExecutionFeeToastContent, InvalidSignatureToastContent } from "components/Errors/errorToasts";
+import {
+  getDebugErrorMessage,
+  getInsufficientBalanceToastBanner,
+  getInsufficientBalanceToastContent,
+  getInsufficientExecutionFeeToastContent,
+  getOutdatedSubaccountApprovalToastContent,
+  InvalidSignatureToastContent,
+} from "components/Errors/errorToasts";
 import { FeesSettlementStatusNotification } from "components/StatusNotification/FeesSettlementStatusNotification";
 import { GmStatusNotification } from "components/StatusNotification/GmStatusNotification";
 import { OrdersStatusNotificiation } from "components/StatusNotification/OrderStatusNotification";
@@ -120,7 +132,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { executionFeeBufferBps, setIsSettingsVisible } = useSettings();
 
   const { resetTokenPermits } = useTokenPermitsContext();
-  const { refreshSubaccountData } = useSubaccountContext();
+  const { refreshSubaccountData, invalidateSubaccountApproval } = useSubaccountContext();
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
 
@@ -151,7 +163,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const [withdrawalStatuses, setWithdrawalStatuses] = useState<WithdrawalStatuses>({});
   const [shiftStatuses, setShiftStatuses] = useState<ShiftStatuses>({});
 
-  const { setWebsocketTokenBalancesUpdates, setOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
+  const {
+    setWebsocketTokenBalancesUpdates,
+    setOptimisticTokensBalancesUpdates,
+    optimisticTokensBalancesUpdates,
+    websocketTokenBalancesUpdates,
+  } = useTokensBalancesUpdates();
   const [approvalStatuses, setApprovalStatuses] = useState<ApprovalStatuses>({});
 
   const [pendingTpSlOrderBatches, setPendingTpSlOrderBatches] = useState<PendingTpSlOrderBatch[]>([]);
@@ -1094,7 +1111,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           setPendingExpressTxnParams((old) => updateByKey(old, pendingExpressTxn.key!, { isViewed: true }));
           setOptimisticTokensBalancesUpdates((old) => {
             const newState = { ...old };
-            pendingExpressTxn.payTokenAddresses?.forEach((tokenAddress) => {
+            Object.keys(pendingExpressTxn.payAmounts ?? {}).forEach((tokenAddress) => {
               delete newState[tokenAddress];
             });
             return newState;
@@ -1114,10 +1131,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           if (status === StatusCode.Reverted || status === StatusCode.Rejected) {
             let isRelayerMetricSent = false;
             let isViewed = false;
+            const relayError = extractRelayTaskError(relayTaskStatuses[pendingExpressTxn.taskId]);
 
             if (pendingExpressTxn.metricId && !pendingExpressTxn.isRelayerMetricSent) {
-              const relayError = extractRelayTaskError(relayTaskStatuses[pendingExpressTxn.taskId]);
-
               sendTxnErrorMetric(pendingExpressTxn.metricId, relayError, "relayer");
 
               const executionFeeErrorParams = getIsInsufficientExecutionFeeError(relayError);
@@ -1172,7 +1188,69 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
               isRelayerMetricSent = true;
             }
 
-            if (pendingExpressTxn.errorMessage && !pendingExpressTxn.isViewed) {
+            // not gated on isViewed: the order status toast marks a new order's txn viewed before the relay answers
+            if (pendingExpressTxn.subaccountApproval && !pendingExpressTxn.isSubaccountApprovalErrorChecked) {
+              setPendingExpressTxnParams((old) =>
+                updateByKey(old, pendingExpressTxn.key!, { isSubaccountApprovalErrorChecked: true })
+              );
+
+              if (
+                getIsInvalidSubaccountApprovalNonceError(relayError) &&
+                invalidateSubaccountApproval(pendingExpressTxn.subaccountApproval)
+              ) {
+                // Wait to ensure there is no race condition with the pending order toast
+                sleep(500).then(() => {
+                  toast.dismiss(pendingOrderToastIdRef.current);
+                  helperToast.error(getOutdatedSubaccountApprovalToastContent());
+                });
+                isViewed = true;
+              }
+            }
+
+            const relayErrorData = parseError(relayError);
+            const payAmounts = pendingExpressTxn.payAmounts ?? {};
+            const balanceBanner = getInsufficientBalanceToastBanner({
+              chainId,
+              errorData: relayErrorData,
+              expressTxn: pendingExpressTxn.gasPaymentTokenAddress
+                ? {
+                    gasPaymentTokenAddress: pendingExpressTxn.gasPaymentTokenAddress,
+                    isGmxAccount: Boolean(pendingExpressTxn.isGmxAccount),
+                    payTokenAddresses: Object.keys(payAmounts),
+                    possiblyInsufficientTokenAddresses: getPossiblyInsufficientPayTokens({
+                      payAmounts,
+                      tokensData,
+                      optimisticUpdates: optimisticTokensBalancesUpdates,
+                      websocketUpdates: websocketTokenBalancesUpdates,
+                      balanceType: pendingExpressTxn.isGmxAccount
+                        ? TokenBalanceType.GmxAccount
+                        : TokenBalanceType.Wallet,
+                    }),
+                  }
+                : undefined,
+            });
+
+            if (balanceBanner && !isViewed && !pendingExpressTxn.isViewed) {
+              const balanceToastContent = getInsufficientBalanceToastContent({
+                chainId,
+                banner: balanceBanner,
+                debugErrorMessage: getDebugErrorMessage(relayErrorData),
+              });
+
+              sleep(500).then(() => {
+                toast.dismiss(pendingOrderToastIdRef.current);
+                helperToast.error(balanceToastContent, {
+                  tradingErrorInfo: {
+                    actionName: "Express Order",
+                    errorData: relayErrorData,
+                    metricId: pendingExpressTxn.metricId,
+                  },
+                });
+              });
+              isViewed = true;
+            }
+
+            if (pendingExpressTxn.errorMessage && !pendingExpressTxn.isViewed && !isViewed) {
               helperToast.error(pendingExpressTxn.errorMessage, {
                 tradingErrorInfo: {
                   actionName: "Express Order",
@@ -1188,7 +1266,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
               );
               setOptimisticTokensBalancesUpdates((old) => {
                 const newState = { ...old };
-                pendingExpressTxn.payTokenAddresses?.forEach((tokenAddress) => {
+                Object.keys(pendingExpressTxn.payAmounts ?? {}).forEach((tokenAddress) => {
                   delete newState[tokenAddress];
                 });
                 return newState;
@@ -1202,11 +1280,15 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     [
       chainId,
       executionFeeBufferBps,
+      invalidateSubaccountApproval,
       relayTaskStatuses,
       pendingExpressTxnParams,
       provider,
       setIsSettingsVisible,
       setOptimisticTokensBalancesUpdates,
+      tokensData,
+      optimisticTokensBalancesUpdates,
+      websocketTokenBalancesUpdates,
     ]
   );
 

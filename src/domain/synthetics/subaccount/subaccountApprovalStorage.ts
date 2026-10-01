@@ -62,6 +62,18 @@ export function writeStoredSubaccountApproval(
   writeLocalStorageItem(key, approval, { serializer: serializeSubaccountApproval });
 }
 
+export function removeStoredSubaccountApproval(
+  chainId: ContractsChainId,
+  account: string,
+  srcChainId: SourceChainId | undefined
+): void {
+  const key = getSubaccountApprovalKey(chainId, account, srcChainId);
+
+  if (key) {
+    removeLocalStorageItem(key);
+  }
+}
+
 function getRelatedSourceChainIds(chainId: ContractsChainId): SourceChainId[] {
   return SOURCE_CHAIN_IDS.filter((sourceChainId) => isSourceChain(sourceChainId, chainId));
 }
@@ -70,11 +82,7 @@ export function removeAllStoredSubaccountApprovals(chainId: ContractsChainId, ac
   const contextSrcChainIds: (SourceChainId | undefined)[] = [undefined, ...getRelatedSourceChainIds(chainId)];
 
   for (const srcChainId of contextSrcChainIds) {
-    const key = getSubaccountApprovalKey(chainId, account, srcChainId);
-
-    if (key) {
-      removeLocalStorageItem(key);
-    }
+    removeStoredSubaccountApproval(chainId, account, srcChainId);
   }
 }
 
