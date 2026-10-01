@@ -14,7 +14,7 @@ describe("getTransitFeeTier", () => {
   const params = {
     feeTierData: ZERO_FEE,
     isWhitelistIgnored: false,
-    isUsdcOffered: true,
+    isUsdcToUsdg: true,
     amount: 500_000n,
     zeroFeeMinOrderSize: 100_000n,
     isStandardFeeForced: false,
@@ -48,8 +48,13 @@ describe("getTransitFeeTier", () => {
     expect(getTransitFeeTier({ ...params, zeroFeeMinOrderSize: undefined }).feeTier).toBe("zeroFee");
   });
 
-  it("ignores capacity when USDG is offered", () => {
-    expect(getTransitFeeTier({ ...params, isUsdcOffered: false, amount: 2_000_000n }).feeTier).toBe("zeroFee");
+  it("keeps zero fee at exactly the capacity and the zero fee minimum order size", () => {
+    expect(getTransitFeeTier({ ...params, amount: ZERO_FEE.zeroFeeCapacity }).feeTier).toBe("zeroFee");
+    expect(getTransitFeeTier({ ...params, zeroFeeMinOrderSize: params.amount }).feeTier).toBe("zeroFee");
+  });
+
+  it("ignores capacity from USDG to USDC", () => {
+    expect(getTransitFeeTier({ ...params, isUsdcToUsdg: false, amount: 2_000_000n }).feeTier).toBe("zeroFee");
   });
 
   it("uses standard fee when forced, ignored or not whitelisted", () => {

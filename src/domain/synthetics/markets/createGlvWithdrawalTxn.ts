@@ -46,7 +46,7 @@ export async function createGlvWithdrawalTxn({
   params: CreateGlvWithdrawalParams;
   glvTokenAmount: bigint;
   setPendingTxns: (txns: any) => void;
-  setPendingWithdrawal: SetPendingWithdrawal;
+  setPendingWithdrawal?: SetPendingWithdrawal;
 }): Promise<Pick<WalletTxnResult, "transactionHash">> {
   const contract = new ethers.Contract(getContract(chainId, "GlvRouter"), abis.GlvRouter, signer);
   const withdrawalVaultAddress = getContract(chainId, "GlvVault");
@@ -131,7 +131,7 @@ export async function createGlvWithdrawalTxn({
       estimatedExecutionGasLimit: executionGasLimit,
     },
   }).then((res) => {
-    setPendingWithdrawal({
+    setPendingWithdrawal?.({
       account: params.addresses.receiver,
       marketAddress: params.addresses.glv,
       marketTokenAmount: glvTokenAmount,

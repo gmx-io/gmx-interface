@@ -43,7 +43,7 @@ export async function createWithdrawalTxn({
   blockTimestampData: BlockTimestampData | undefined;
   params: CreateWithdrawalParams;
   setPendingTxns: (txns: any) => void;
-  setPendingWithdrawal: SetPendingWithdrawal;
+  setPendingWithdrawal?: SetPendingWithdrawal;
 }): Promise<Pick<WalletTxnResult, "transactionHash">> {
   const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
   const withdrawalVaultAddress = getContract(chainId, "WithdrawalVault");
@@ -122,7 +122,7 @@ export async function createWithdrawalTxn({
       estimatedExecutionGasLimit: executionGasLimit,
     },
   }).then((res) => {
-    setPendingWithdrawal({
+    setPendingWithdrawal?.({
       account: params.addresses.receiver,
       marketAddress: params.addresses.market,
       marketTokenAmount: marketTokenAmount,

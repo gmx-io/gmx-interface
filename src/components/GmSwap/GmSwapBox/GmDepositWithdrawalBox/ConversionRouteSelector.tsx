@@ -47,8 +47,8 @@ export function ConversionRouteSelector({ transitState }: { transitState: PaxosT
                   its swap fee and price impact.
                   <br />
                   <br />
-                  Direct with Paxos converts with Paxos, the issuer of USDG, in a separate transaction that settles in a
-                  few minutes. The converted tokens land in your wallet first.
+                  Direct with Paxos converts with Paxos, the issuer of USDG, in a separate transaction that usually
+                  settles in 2–10 min. The converted tokens land in your wallet first.
                   <br />
                   <br />
                   Auto picks the cheaper option. Whitelisted addresses can choose either option and convert USDC to USDG
@@ -88,7 +88,7 @@ export function ConversionRouteSelector({ transitState }: { transitState: PaxosT
       {shouldShowWhitelistNote && (
         <AlertInfoCard type="info" hideClose>
           <Trans>
-            Whitelisted addresses convert USDC to USDG at 0 bps. To get whitelisted, message{" "}
+            Whitelisted addresses convert USDC to USDG with no Paxos fee. To get whitelisted, message{" "}
             <ExternalLink href={GMX_PARTNER_TELEGRAM_URL}>@GMXPartners</ExternalLink> on Telegram and mention "USDG
             whitelist".
           </Trans>
@@ -148,6 +148,6 @@ function getRoutePreferenceDescription(preference: ConversionRoutePreference): s
     case "pool":
       return t`GMX USDC/USDG pool, same transaction`;
     case "transit":
-      return t`USDG issuer, separate transaction, a few minutes. Zero fee for whitelisted addresses.`;
+      return t`USDG issuer, separate transaction, usually 2–10 min. No Paxos fee for whitelisted addresses.`;
   }
 }

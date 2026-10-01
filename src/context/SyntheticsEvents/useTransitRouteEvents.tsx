@@ -1,4 +1,5 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { toast } from "react-toastify";
 import useSWR from "swr";
 
 import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
@@ -9,8 +10,11 @@ import {
   type PaxosTransitConversion,
   type TransitRouteProgress,
 } from "domain/synthetics/paxosTransit/transitRouteProgress";
+import { helperToast } from "lib/helperToast";
 import type { ContractsChainId } from "sdk/configs/chains";
 import type { TransitOrder } from "sdk/utils/paxos/types";
+
+import { PaxosTransitStatusNotification } from "components/StatusNotification/PaxosTransitStatusNotification";
 
 const ORDER_REFRESH_INTERVAL = 5_000;
 
@@ -20,10 +24,13 @@ export type TransitRouteEventsState = {
   isPaxosTransitOrderStatusUnknown: boolean;
   startTransitRouteProgress: (params: NewTransitRouteProgress) => void;
   attachTransitRouteConversion: (progressId: number, conversion: PaxosTransitConversion) => void;
+  attachTransitRouteDeposit: (progressId: number, depositTxnHash: string) => void;
+  setTransitRouteContinueRequested: (progressId: number, isContinueRequested: boolean) => void;
 };
 
 export function useTransitRouteEvents(chainId: ContractsChainId): TransitRouteEventsState {
   const [transitRouteProgress, setTransitRouteProgress] = useState<TransitRouteProgress | undefined>(undefined);
+  const progressIdRef = useRef<number | undefined>(undefined);
 
   const progressChainId = transitRouteProgress?.chainId ?? chainId;
   const conversion = transitRouteProgress?.conversion;
@@ -41,12 +48,31 @@ export function useTransitRouteEvents(chainId: ContractsChainId): TransitRouteEv
   }, []);
 
   const startTransitRouteProgress = useCallback((params: NewTransitRouteProgress) => {
-    setTransitRouteProgress({ ...params, id: Date.now() });
+    if (progressIdRef.current !== undefined) {
+      toast.dismiss(progressIdRef.current);
+    }
+
+    const id = Date.now();
+    progressIdRef.current = id;
+    setTransitRouteProgress({ ...params, id, depositTxnHash: undefined, isContinueRequested: false });
+
+    helperToast.success(<PaxosTransitStatusNotification toastTimestamp={id} />, { autoClose: false, toastId: id });
   }, []);
 
   const attachTransitRouteConversion = useCallback(
     (progressId: number, paxosTransitConversion: PaxosTransitConversion) =>
       updateTransitRouteProgress(progressId, { conversion: paxosTransitConversion }),
+    [updateTransitRouteProgress]
+  );
+
+  const attachTransitRouteDeposit = useCallback(
+    (progressId: number, depositTxnHash: string) => updateTransitRouteProgress(progressId, { depositTxnHash }),
+    [updateTransitRouteProgress]
+  );
+
+  const setTransitRouteContinueRequested = useCallback(
+    (progressId: number, isContinueRequested: boolean) =>
+      updateTransitRouteProgress(progressId, { isContinueRequested }),
     [updateTransitRouteProgress]
   );
 
@@ -57,12 +83,16 @@ export function useTransitRouteEvents(chainId: ContractsChainId): TransitRouteEv
       isPaxosTransitOrderStatusUnknown: paxosTransitOrderError !== undefined,
       startTransitRouteProgress,
       attachTransitRouteConversion,
+      attachTransitRouteDeposit,
+      setTransitRouteContinueRequested,
     }),
     [
+      attachTransitRouteDeposit,
       attachTransitRouteConversion,
       paxosTransitOrder,
       paxosTransitOrderError,
       transitRouteProgress,
+      setTransitRouteContinueRequested,
       startTransitRouteProgress,
     ]
   );

@@ -348,7 +348,7 @@ export const useWithdrawalTransactions = ({
           tokensData,
           glvToken,
           setPendingTxns,
-          setPendingWithdrawal,
+          setPendingWithdrawal: isTransitRoute ? undefined : setPendingWithdrawal,
           blockTimestampData,
           glvTokenAmount: glvTokenAmount!,
           skipSimulation: shouldDisableValidation,
@@ -382,6 +382,7 @@ export const useWithdrawalTransactions = ({
       addOptimisticTokensBalancesUpdates,
       recordTransitWithdrawal,
       setPendingWithdrawal,
+      isTransitRoute,
       setPendingTxns,
       blockTimestampData,
       shouldDisableValidation,
@@ -509,7 +510,7 @@ export const useWithdrawalTransactions = ({
           tokensData,
           skipSimulation: shouldDisableValidation,
           setPendingTxns,
-          setPendingWithdrawal,
+          setPendingWithdrawal: isTransitRoute ? undefined : setPendingWithdrawal,
           blockTimestampData,
         }).then(({ transactionHash }) => recordTransitWithdrawal(transactionHash));
       } else {
@@ -547,6 +548,7 @@ export const useWithdrawalTransactions = ({
       addOptimisticTokensBalancesUpdates,
       recordTransitWithdrawal,
       setPendingWithdrawal,
+      isTransitRoute,
       shouldDisableValidation,
       setPendingTxns,
       blockTimestampData,
