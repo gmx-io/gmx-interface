@@ -332,6 +332,7 @@ export function GmShiftBox({
               shouldShowWarningForPosition={shouldShowWarningForPosition}
               shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
               shouldShowWhitelistOnlyHint={shouldShowWhitelistOnlyHint}
+              isSpotOnlyMarket={toMarketInfo?.isSpotOnly}
             />
           </div>
 

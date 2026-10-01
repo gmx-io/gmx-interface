@@ -190,7 +190,7 @@ export function GmListItem({
                 </span>
                 {showRecentlyListedBadge && <RecentlyListedBadge />}
                 {isUsdgGlv && <LaunchBoostBadge />}
-                {isWhitelistOnly && <WhitelistOnlyBadge />}
+                {isWhitelistOnly && <WhitelistOnlyBadge isSpotOnly={marketOrGlv.isSpotOnly} />}
 
                 <div className="inline-block">
                   <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
@@ -311,7 +311,7 @@ export function GmListItem({
               </span>
 
               {isUsdgGlv && <LaunchBoostBadge className="ml-6" />}
-              {isWhitelistOnly && <WhitelistOnlyBadge className="ml-6" />}
+              {isWhitelistOnly && <WhitelistOnlyBadge className="ml-6" isSpotOnly={marketOrGlv?.isSpotOnly} />}
 
               <div className="inline-block">
                 <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />

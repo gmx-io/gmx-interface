@@ -18,6 +18,7 @@ export function GmSwapWarningsRow({
   shouldShowAvalancheGmxAccountWarning,
   shouldShowBuyUsdgHint,
   shouldShowWhitelistOnlyHint,
+  isSpotOnlyMarket,
   gasPaymentTokenWarningContent,
   isSubmitDisabled,
 }: {
@@ -28,6 +29,7 @@ export function GmSwapWarningsRow({
   shouldShowAvalancheGmxAccountWarning?: boolean;
   shouldShowBuyUsdgHint?: boolean;
   shouldShowWhitelistOnlyHint?: boolean;
+  isSpotOnlyMarket: boolean | undefined;
   gasPaymentTokenWarningContent?: string;
   isSubmitDisabled?: boolean;
 }) {
@@ -79,11 +81,16 @@ export function GmSwapWarningsRow({
   if (shouldShowWhitelistOnlyHint) {
     warnings.push(
       <ColorfulBanner color="blue" icon={InfoIcon} key="whitelistOnlyHint">
-        <Trans>
-          Direct deposits into this pool are open to whitelisted addresses. GLV [USDG] gives you the same markets in one
-          deposit. To get whitelisted, message <ExternalLink href={GMX_PARTNER_TELEGRAM_URL}>@GMXPartners</ExternalLink>{" "}
-          on Telegram and mention "USDG whitelist".
-        </Trans>
+        {isSpotOnlyMarket ? (
+          <Trans>Only GMX adds liquidity to this pool. To provide USDG liquidity, use GLV [USDG].</Trans>
+        ) : (
+          <Trans>
+            Direct deposits into this pool are open to whitelisted addresses. GLV [USDG] gives you the same markets in
+            one deposit. To get whitelisted, message{" "}
+            <ExternalLink href={GMX_PARTNER_TELEGRAM_URL}>@GMXPartners</ExternalLink> on Telegram and mention "USDG
+            whitelist".
+          </Trans>
+        )}
         <ColorfulButtonLink color="blue" to={`/pools/details?market=${ARBITRUM_USDG_GLV_ADDRESS}`}>
           <Trans>Buy GLV [USDG]</Trans>
         </ColorfulButtonLink>

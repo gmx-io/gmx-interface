@@ -28,17 +28,21 @@ export function LaunchBoostBadge({ className }: { className?: string }) {
   );
 }
 
-export function WhitelistOnlyBadge({ className }: { className?: string }) {
+export function WhitelistOnlyBadge({ className, isSpotOnly }: { className?: string; isSpotOnly: boolean | undefined }) {
   return (
     <TooltipWithPortal
       as="div"
       variant="none"
       className={cx("flex", className)}
       content={
-        <Trans>
-          Direct deposits into this pool are open to whitelisted addresses. GLV [USDG] gives you the same markets in one
-          deposit.
-        </Trans>
+        isSpotOnly ? (
+          <Trans>Only GMX adds liquidity to this pool. It serves USDC and USDG swaps.</Trans>
+        ) : (
+          <Trans>
+            Direct deposits into this pool are open to whitelisted addresses. GLV [USDG] gives you the same markets in
+            one deposit.
+          </Trans>
+        )
       }
     >
       <Badge>
