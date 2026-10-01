@@ -11,12 +11,14 @@ export function getContractErrorToastContent({
   errorData,
   slippageInputId,
   isSizeIncrease,
+  isDecrease,
   decodeDepth = 0,
 }: {
   chainId: number;
   errorData: Pick<ErrorData, "contractError" | "contractErrorArgs">;
   slippageInputId?: string;
   isSizeIncrease?: boolean;
+  isDecrease?: boolean;
   decodeDepth?: number;
 }): ReactNode | undefined {
   if (!errorData.contractError) {
@@ -57,6 +59,7 @@ export function getContractErrorToastContent({
               },
               slippageInputId,
               isSizeIncrease,
+              isDecrease,
               decodeDepth: decodeDepth + 1,
             });
 
@@ -67,10 +70,10 @@ export function getContractErrorToastContent({
         }
       }
 
-      return getContractErrorMessage({ chainId, errorData, isSizeIncrease, decodeDepth });
+      return getContractErrorMessage({ chainId, errorData, isSizeIncrease, isDecrease, decodeDepth });
     }
 
     default:
-      return getContractErrorMessage({ chainId, errorData, isSizeIncrease, decodeDepth });
+      return getContractErrorMessage({ chainId, errorData, isSizeIncrease, isDecrease, decodeDepth });
   }
 }

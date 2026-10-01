@@ -12,6 +12,7 @@ import {
   useClick,
   useDismiss,
   useFloating,
+  useFocus,
   useHover,
   useInteractions,
   useMergeRefs,
@@ -192,11 +193,14 @@ export default function Tooltip<T extends ElementType>({
     enabled: Boolean(!disabled && !disableClickToggle && closeOnDoubleClick),
     toggle: closeOnDoubleClick,
   });
+  const focus = useFocus(context, {
+    enabled: !disabled && Boolean(isHandlerDisabled),
+  });
   const dismiss = useDismiss(context, {
     enabled: !disabled,
   });
 
-  const { getReferenceProps, getFloatingProps } = useInteractions([hover, click, dismiss]);
+  const { getReferenceProps, getFloatingProps } = useInteractions([hover, focus, click, dismiss]);
 
   const preventClick = useCallback(
     (event: MouseEvent) => {
@@ -289,6 +293,7 @@ export default function Tooltip<T extends ElementType>({
         ref={setReference}
         className={cx("Tooltip-handle group", handleClassName)}
         style={handleStyle}
+        tabIndex={isHandlerDisabled ? 0 : undefined}
         {...getReferenceProps({
           onClick: (e: MouseEvent) => {
             preventClick(e);

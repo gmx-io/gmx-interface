@@ -37,6 +37,7 @@ export type AdditionalErrorParams = {
   additionalContent?: ReactNode;
   slippageInputId?: string;
   isSizeIncrease?: boolean;
+  isDecrease?: boolean;
   defaultMessage?: ReactNode;
   isInternalSwapFallback?: boolean;
   isExternalSwapFallback?: boolean;
@@ -52,6 +53,7 @@ export function getTxnErrorToast(
     additionalContent,
     slippageInputId,
     isSizeIncrease,
+    isDecrease,
     defaultMessage = getDefaultErrorMessage(errorData),
     isInternalSwapFallback,
     isExternalSwapFallback,
@@ -154,7 +156,13 @@ export function getTxnErrorToast(
     return toastParams;
   }
 
-  const contractErrorMessage = getContractErrorToastContent({ chainId, errorData, slippageInputId, isSizeIncrease });
+  const contractErrorMessage = getContractErrorToastContent({
+    chainId,
+    errorData,
+    slippageInputId,
+    isSizeIncrease,
+    isDecrease,
+  });
   if (contractErrorMessage) {
     toastParams.errorContent = contractErrorMessage;
     return toastParams;
@@ -227,8 +235,14 @@ function getDefaultErrorMessage(errorData: ErrorData | undefined) {
 }
 
 export function getDebugErrorMessage(errorData: ErrorData | undefined) {
+  const contractErrorArgs = errorData?.contractErrorArgs;
+  const contractErrorArgValues =
+    contractErrorArgs && typeof contractErrorArgs === "object" && !Array.isArray(contractErrorArgs)
+      ? Object.values(contractErrorArgs)
+      : contractErrorArgs;
+
   const message = errorData?.contractError
-    ? `${errorData.contractError} [${errorData.contractErrorArgs}] ${errorData.errorMessage}`
+    ? `${errorData.contractError} [${contractErrorArgValues}] ${errorData.errorMessage}`
     : errorData?.errorMessage;
 
   const handles = [

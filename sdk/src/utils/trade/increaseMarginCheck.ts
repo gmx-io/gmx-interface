@@ -12,6 +12,7 @@ export enum PositionMarginFailureReason {
   NonPositiveRemainingMargin = "< 0",
   MinCollateralForLeverage = "min collateral for leverage",
   InsufficientCollateralUsd = "insufficient collateral usd",
+  UnableToWithdrawCollateral = "unable to withdraw collateral",
 }
 
 export function getIsMaxLeverageMarginReason(reason: PositionMarginFailureReason | undefined): boolean {
@@ -40,13 +41,14 @@ export type PositionMarginStateParams = {
   isLong: boolean;
   userReferralInfo: UserReferralInfo | undefined;
   proDiscountFactor?: bigint;
+  shouldValidateMinCollateralUsd?: boolean;
 };
 
 /**
  * Port of `PositionUtils.isPositionLiquidatable` from the gmx-synthetics build deployed on Arbitrum
  * (release_2.2.1 @ 23c9d160: release-v2.2c plus MarketUtils.getPositivePnl in the per-position pnl cap)
  * for a position whose pending fees have just been settled — the state the contract validates right
- * after an increase.
+ * after an increase or a decrease.
  */
 export function getResultingPositionMarginState(p: PositionMarginStateParams): PositionMarginState {
   const {
@@ -60,6 +62,7 @@ export function getResultingPositionMarginState(p: PositionMarginStateParams): P
     isLong,
     userReferralInfo,
     proDiscountFactor,
+    shouldValidateMinCollateralUsd = true,
   } = p;
 
   const { indexToken } = marketInfo;
@@ -143,7 +146,7 @@ export function getResultingPositionMarginState(p: PositionMarginStateParams): P
     minCollateralUsdForLeverage,
   };
 
-  if (remainingCollateralUsd < minCollateralUsd) {
+  if (shouldValidateMinCollateralUsd && remainingCollateralUsd < minCollateralUsd) {
     return { ...state, isLiquidatable: true, reason: PositionMarginFailureReason.MinCollateral };
   }
 
