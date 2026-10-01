@@ -16,6 +16,7 @@ import {
   selectPoolsDetailsShortTokenAddress,
   selectPoolsDetailsShortTokenAmount,
 } from "context/PoolsDetailsContext/selectors";
+import { selectPoolsDetailsDepositCollateralSwapAmountOut } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getAvailableUsdLiquidityForCollateral } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
@@ -60,6 +61,8 @@ export const useBestGmPoolAddressForGlv = ({
   const longTokenAmount = useSelector(selectPoolsDetailsLongTokenAmount);
   const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
   const shortTokenAmount = useSelector(selectPoolsDetailsShortTokenAmount);
+  const collateralSwapAmountOut = useSelector(selectPoolsDetailsDepositCollateralSwapAmountOut);
+  const depositShortTokenAmount = collateralSwapAmountOut ?? shortTokenAmount;
   const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
   const selectedMarketForGlv = useSelector(selectPoolsDetailsSelectedMarketAddressForGlv);
   const setSelectedMarketAddressForGlv = useSelector(selectPoolsDetailsSetSelectedMarketAddressForGlv);
@@ -71,7 +74,7 @@ export const useBestGmPoolAddressForGlv = ({
       return [];
     }
 
-    const positiveAmount = bigMath.max(longTokenAmount, shortTokenAmount);
+    const positiveAmount = bigMath.max(longTokenAmount, depositShortTokenAmount);
 
     const candidateMarkets = isDeposit
       ? marketsWithComposition.filter(
@@ -85,7 +88,7 @@ export const useBestGmPoolAddressForGlv = ({
       const adjustedLongTokenAmount = marketInfo.isSameCollaterals ? positiveAmount / 2n : longTokenAmount;
       const adjustedShortTokenAmount = marketInfo.isSameCollaterals
         ? positiveAmount - adjustedLongTokenAmount
-        : shortTokenAmount;
+        : depositShortTokenAmount;
 
       const amounts = getDepositAmounts({
         marketInfo,
@@ -154,7 +157,7 @@ export const useBestGmPoolAddressForGlv = ({
     glvInfo,
     longTokenAmount,
     marketsWithComposition,
-    shortTokenAmount,
+    depositShortTokenAmount,
     marketTokenAmount,
     uiFeeFactor,
     glvTokenAmount,
@@ -228,7 +231,7 @@ export const useBestGmPoolAddressForGlv = ({
     if (isDeposit) {
       if (
         (longTokenAmount === 0n || longTokenAmount === undefined) &&
-        (shortTokenAmount === 0n || shortTokenAmount === undefined)
+        (depositShortTokenAmount === 0n || depositShortTokenAmount === undefined)
       ) {
         return byComposition[0]?.marketTokenAddress;
       }
@@ -244,13 +247,13 @@ export const useBestGmPoolAddressForGlv = ({
     depositableMarketAddresses,
     isDeposit,
     longTokenAmount,
-    shortTokenAmount,
+    depositShortTokenAmount,
     byAmount,
     byComposition,
   ]);
 
   const previousLongAmount = usePrevious(longTokenAmount);
-  const previousShortAmount = usePrevious(shortTokenAmount);
+  const previousShortAmount = usePrevious(depositShortTokenAmount);
   const previousMarketTokenAmount = usePrevious(marketTokenAmount);
   const previousLongTokenAddress = usePrevious(longTokenAddress);
   const previousShortTokenAddress = usePrevious(shortTokenAddress);
@@ -284,7 +287,7 @@ export const useBestGmPoolAddressForGlv = ({
 
     const longAmountChanged = absDiffBps(longTokenAmount ?? 0n, previousLongAmount ?? 0n) > AMOUNT_CHANGE_THRESHOLD_BPS;
     const shortAmountChanged =
-      absDiffBps(shortTokenAmount ?? 0n, previousShortAmount ?? 0n) > AMOUNT_CHANGE_THRESHOLD_BPS;
+      absDiffBps(depositShortTokenAmount ?? 0n, previousShortAmount ?? 0n) > AMOUNT_CHANGE_THRESHOLD_BPS;
     const marketTokenAmountChanged =
       absDiffBps(marketTokenAmount ?? 0n, previousMarketTokenAmount ?? 0n) > AMOUNT_CHANGE_THRESHOLD_BPS;
 
@@ -314,7 +317,7 @@ export const useBestGmPoolAddressForGlv = ({
     isEligible,
     isDeposit,
     longTokenAmount,
-    shortTokenAmount,
+    depositShortTokenAmount,
     longTokenAddress,
     shortTokenAddress,
   ]);
