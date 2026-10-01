@@ -1,11 +1,13 @@
 import { formatLeverage } from "domain/synthetics/positions";
-import { formatDeltaUsd, formatTokenAmount, formatUsd, formatUsdPrice } from "lib/numbers";
+import { formatDeltaUsd, formatUsd, formatUsdPrice } from "lib/numbers";
 
 import type { SolanaPositionViewModel } from "./types";
 import { formatSolanaOrderPrice } from "../orders/solanaOrderFormatters";
 import type { SolanaPositionOrderViewModel } from "../orders/types";
 
 export const SOLANA_POSITION_DASH = "—";
+/** GMX EVM tooltip rows and leverage fall back to "..." when a value is not available. */
+export const SOLANA_UNAVAILABLE = "...";
 
 export function formatSolanaUsd(value: bigint | undefined): string {
   return value === undefined ? SOLANA_POSITION_DASH : formatUsd(value) ?? SOLANA_POSITION_DASH;
@@ -15,24 +17,40 @@ export function formatSolanaPrice(value: bigint | undefined): string {
   return value === undefined ? SOLANA_POSITION_DASH : formatUsdPrice(value) ?? SOLANA_POSITION_DASH;
 }
 
-/** SDK returns no liquidation price for fully covered positions; the corrected value may also be <= 0. */
+/**
+ * SDK returns no liquidation price for fully covered positions; the corrected value may also be <= 0.
+ * GMX EVM `formatLiquidationPrice` shows "NA" in that case.
+ */
 export function formatSolanaLiquidationPrice(value: bigint | undefined): string {
-  return value === undefined || value <= 0n ? SOLANA_POSITION_DASH : formatSolanaPrice(value);
+  return value === undefined || value <= 0n ? "NA" : formatSolanaPrice(value);
 }
 
+/** GMX EVM `PositionItem`: `formatLeverage(leverage) || "..."`. */
 export function formatSolanaLeverage(value: bigint | undefined): string {
-  return value === undefined ? SOLANA_POSITION_DASH : formatLeverage(value) ?? SOLANA_POSITION_DASH;
+  return formatLeverage(value) || SOLANA_UNAVAILABLE;
+}
+
+/** Settings "Include PnL in leverage display" picks which derived leverage the list shows. */
+export function getSolanaDisplayedLeverage(
+  position: Pick<SolanaPositionViewModel, "leverage" | "leverageWithPnl">,
+  isPnlInLeverage: boolean
+): bigint | undefined {
+  return isPnlInLeverage ? position.leverageWithPnl : position.leverage;
+}
+
+/** Tooltip row value (GMX EVM `formatUsd(x) || "..."`). */
+export function formatSolanaTooltipUsd(value: bigint | undefined): string {
+  return value === undefined ? SOLANA_UNAVAILABLE : formatUsd(value) || SOLANA_UNAVAILABLE;
+}
+
+/** Tooltip row value (GMX EVM `formatDeltaUsd(x) || "..."`). */
+export function formatSolanaTooltipDeltaUsd(value: bigint | undefined): string {
+  return value === undefined ? SOLANA_UNAVAILABLE : formatDeltaUsd(value) || SOLANA_UNAVAILABLE;
 }
 
 /** Signed USD without percentage ("+$1.00" / "-$1.00" / "$0.00"), as GMTrade formats fee rows. */
 export function formatSolanaSignedUsd(value: bigint | undefined): string {
   return value === undefined ? SOLANA_POSITION_DASH : formatDeltaUsd(value) ?? SOLANA_POSITION_DASH;
-}
-
-/** Tooltip "PnL After Fees" row. */
-export function formatSolanaPnlAfterFees(position: SolanaPositionViewModel): string {
-  if (position.pnlAfterFees === undefined) return SOLANA_POSITION_DASH;
-  return formatDeltaUsd(position.pnlAfterFees, position.pnlAfterFeesBps) ?? SOLANA_POSITION_DASH;
 }
 
 /**
@@ -62,9 +80,4 @@ export function formatSolanaEstimatedLiquidationTime(hours: bigint | undefined):
   if (days > 1000n) return "> 1000 days";
   if (hours < 24n) return `${hours} ${hours === 1n ? "hour" : "hours"}`;
   return `${days} days`;
-}
-
-export function formatSolanaTokenAmount(amount: bigint, decimals: number | undefined, symbol: string): string {
-  if (decimals === undefined) return `${amount.toString()} ${symbol}`;
-  return formatTokenAmount(amount, decimals, symbol, { useCommas: true }) ?? SOLANA_POSITION_DASH;
 }

@@ -5,6 +5,7 @@ import {
   getSolanaTriggerThreshold,
   isIncreaseKind,
   isMarketKind,
+  toSolanaPositionCollateralAddress,
 } from "./orderRules";
 import { SOLANA_FOREX_PRECISION_MINTS, SOLANA_ORDER_KIND } from "./solanaOrderConstants";
 import { formatBigintDivision, formatSolanaRatioAmount } from "./solanaOrderFormatters";
@@ -17,7 +18,7 @@ import type {
 } from "./types";
 import { getSolanaTokenConfig, type SolanaTokenConfig } from "../../config/solanaProgram";
 import type { SolanaMarketInfo, SolanaTicker } from "../../markets/solanaMarketSocketStore";
-import { shortenAddress, toGmxUsd, unitPriceToTokenPrice } from "../positions/solanaPositionAdapter";
+import { getSolanaPoolName, shortenAddress, toGmxUsd, unitPriceToTokenPrice } from "../positions/solanaPositionAdapter";
 
 export type SolanaOrderAdapterContext = {
   marketInfo?: SolanaMarketInfo;
@@ -28,19 +29,46 @@ function tokenLabel(config: SolanaTokenConfig | undefined): string | undefined {
   return config?.displaySymbol ?? config?.symbol;
 }
 
-function marketFields(raw: RawSolanaOrder, indexTokenAddress: string | undefined) {
-  const indexToken = getSolanaTokenConfig(indexTokenAddress);
+/**
+ * Amount of one token expressed in another token at the same USD value. Unit prices are per smallest
+ * unit (20 decimals), so no decimals are needed. Undefined without prices.
+ */
+export function convertSolanaTokenAmount(
+  amount: bigint,
+  fromUnitPrice: bigint | undefined,
+  toUnitPrice: bigint | undefined
+): bigint | undefined {
+  if (fromUnitPrice === undefined || toUnitPrice === undefined || toUnitPrice <= 0n) return undefined;
+  return (amount * fromUnitPrice) / toUnitPrice;
+}
+
+function marketFields(raw: RawSolanaOrder, ctx: SolanaOrderAdapterContext) {
+  const indexToken = getSolanaTokenConfig(ctx.marketInfo?.indexToken);
   const collateralToken = getSolanaTokenConfig(raw.initialCollateralToken);
   const targetCollateralToken = getSolanaTokenConfig(raw.collateralToken);
   const symbol = tokenLabel(indexToken) ?? shortenAddress(raw.marketToken);
+  const isCollateralSwap = toSolanaPositionCollateralAddress(raw.initialCollateralToken) !== raw.collateralToken;
   return {
     indexToken,
     symbol,
     displayMarketName: indexToken?.displayMarketName ?? (indexToken ? `${symbol}/USD` : shortenAddress(raw.marketToken)),
+    poolName: getSolanaPoolName(ctx.marketInfo),
+    collateralDeltaAmount: raw.initialCollateralDeltaAmount,
     collateralSymbol: tokenLabel(collateralToken) ?? shortenAddress(raw.initialCollateralToken),
     collateralDecimals: collateralToken?.decimals,
+    collateralIsStable: collateralToken?.isStable ?? false,
     targetCollateralTokenAddress: raw.collateralToken,
     targetCollateralSymbol: tokenLabel(targetCollateralToken) ?? shortenAddress(raw.collateralToken),
+    targetCollateralDecimals: targetCollateralToken?.decimals,
+    targetCollateralIsStable: targetCollateralToken?.isStable ?? false,
+    isCollateralSwap,
+    targetCollateralDeltaAmount: isCollateralSwap
+      ? convertSolanaTokenAmount(
+          raw.initialCollateralDeltaAmount,
+          ctx.tokenPriceByMint.get(raw.initialCollateralToken)?.unitPrice,
+          ctx.tokenPriceByMint.get(raw.collateralToken)?.unitPrice
+        )
+      : raw.initialCollateralDeltaAmount,
   };
 }
 
@@ -117,6 +145,7 @@ export function toSolanaOrderViewModel(raw: RawSolanaOrder, ctx: SolanaOrderAdap
       fromDecimals: fromToken?.decimals,
       toMinAmount: raw.minOutputAmount,
       toDecimals: toToken?.decimals,
+      primarySwapPath: raw.primarySwapPath,
       ...deriveSwapRatio({
         fromAmount: raw.initialCollateralDeltaAmount,
         fromDecimals: fromToken?.decimals,
@@ -132,36 +161,29 @@ export function toSolanaOrderViewModel(raw: RawSolanaOrder, ctx: SolanaOrderAdap
   }
 
   const indexTokenAddress = ctx.marketInfo?.indexToken;
-  const fields = marketFields(raw, indexTokenAddress);
+  const { indexToken, ...fields } = marketFields(raw, ctx);
   const ticker = indexTokenAddress ? ctx.tokenPriceByMint.get(indexTokenAddress) : undefined;
   const markPrice = ticker?.price !== undefined ? toGmxUsd(ticker.price) : undefined;
 
   if (category === "collateral") {
     const model: SolanaCollateralOrderViewModel = {
       ...base(raw),
+      ...fields,
       category,
       isDeposit: raw.kind === SOLANA_ORDER_KIND.MarketIncrease,
       isLong: raw.isLong,
-      symbol: fields.symbol,
-      displayMarketName: fields.displayMarketName,
-      collateralDeltaAmount: raw.initialCollateralDeltaAmount,
-      collateralSymbol: fields.collateralSymbol,
-      collateralDecimals: fields.collateralDecimals,
-      targetCollateralTokenAddress: fields.targetCollateralTokenAddress,
-      targetCollateralSymbol: fields.targetCollateralSymbol,
     };
     return model;
   }
 
   const isIncrease = isIncreaseKind(raw.kind);
   const toPrice = (unitPrice: bigint) =>
-    fields.indexToken && unitPrice > 0n ? unitPriceToTokenPrice(unitPrice, fields.indexToken.decimals) : undefined;
+    indexToken && unitPrice > 0n ? unitPriceToTokenPrice(unitPrice, indexToken.decimals) : undefined;
   const model: SolanaPositionOrderViewModel = {
     ...base(raw),
+    ...fields,
     category,
     isLong: raw.isLong,
-    symbol: fields.symbol,
-    displayMarketName: fields.displayMarketName,
     indexTokenAddress,
     isForexPrecision: indexTokenAddress !== undefined && SOLANA_FOREX_PRECISION_MINTS.has(indexTokenAddress),
     sizeDeltaUsd: toGmxUsd(raw.sizeDeltaUsd) * (isIncrease ? 1n : -1n),
@@ -172,12 +194,9 @@ export function toSolanaOrderViewModel(raw: RawSolanaOrder, ctx: SolanaOrderAdap
     acceptablePrice: toPrice(raw.acceptablePrice),
     acceptableComparator: getSolanaAcceptableComparator(raw.kind, raw.isLong),
     noAcceptableLimit: raw.kind === SOLANA_ORDER_KIND.StopLossDecrease,
+    isBoundaryAcceptablePrice: raw.acceptablePrice === 0n,
+    isFullClose: false,
     markPrice,
-    collateralDeltaAmount: raw.initialCollateralDeltaAmount,
-    collateralSymbol: fields.collateralSymbol,
-    collateralDecimals: fields.collateralDecimals,
-    targetCollateralTokenAddress: fields.targetCollateralTokenAddress,
-    targetCollateralSymbol: fields.targetCollateralSymbol,
   };
   return model;
 }

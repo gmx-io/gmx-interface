@@ -1,8 +1,11 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
+import { useCallback, useState, type ReactNode } from "react";
 
+import { formatBalanceAmount } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
+import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTr } from "components/Table/Table";
@@ -13,21 +16,24 @@ import NewLinkIcon from "img/ic_new_link.svg?react";
 import { formatSolanaOrderSize, formatSolanaTriggerPrice } from "../../hooks/orders/solanaOrderFormatters";
 import type { SolanaPositionOrderViewModel } from "../../hooks/orders/types";
 import type { SolanaPositionOrders } from "../../hooks/positions/positionOrders";
+import { canToggleSolanaPositionSize, formatSolanaPositionSize } from "../../hooks/positions/positionSize";
 import {
-  formatSolanaLeverage,
-  formatSolanaLiquidationPrice,
   formatSolanaDisplayedPnl,
   formatSolanaEstimatedLiquidationTime,
-  formatSolanaPnlAfterFees,
+  formatSolanaLeverage,
+  formatSolanaLiquidationPrice,
   formatSolanaPrice,
-  formatSolanaSignedUsd,
-  formatSolanaTokenAmount,
+  formatSolanaTooltipDeltaUsd,
+  formatSolanaTooltipUsd,
   formatSolanaTpSlSummary,
   formatSolanaUsd,
+  getSolanaDisplayedLeverage,
   SOLANA_POSITION_DASH,
 } from "../../hooks/positions/solanaPositionFormatters";
 import type { SolanaPositionViewModel } from "../../hooks/positions/types";
 import { SolanaTokenIcon } from "../SolanaTokenIcon";
+
+type CellProps = { position: SolanaPositionViewModel; isLarge?: boolean };
 
 export function SolanaPositionTitle({ position, iconSize }: { position: SolanaPositionViewModel; iconSize: number }) {
   return (
@@ -38,7 +44,7 @@ export function SolanaPositionTitle({ position, iconSize }: { position: SolanaPo
   );
 }
 
-/** "SOL/USD [SOL-USDC]" as in the GMTrade "Pool" row and tooltip. */
+/** "SOL/USD [WSOL-USDC]" as in the GMX "Pool" row and tooltip. */
 export function SolanaPositionPoolName({ position }: { position: SolanaPositionViewModel }) {
   return (
     <span>
@@ -49,7 +55,7 @@ export function SolanaPositionPoolName({ position }: { position: SolanaPositionV
 }
 
 /**
- * Desktop title: mirrors the GMTrade title tooltip and its Solscan link to the position account.
+ * Desktop title: GMX `PositionItem` title tooltip plus a Solscan link to the position account.
  * Only the market name is the tooltip handle, so the underline excludes both icons.
  */
 export function SolanaPositionTitleWithTooltip({ position }: { position: SolanaPositionViewModel }) {
@@ -67,10 +73,13 @@ export function SolanaPositionTitleWithTooltip({ position }: { position: SolanaP
               showDollar={false}
             />
             <br />
-            <Trans>Click on the position to select it, then use the trade box to increase it.</Trans>
+            <Trans>Click to select, then use the trade box to increase size.</Trans>
             <br />
             <br />
-            <Trans>Use the "Close" button to reduce your position.</Trans>
+            <Trans>Use the TP/SL button to set TP/SL orders.</Trans>
+            <br />
+            <br />
+            <Trans>Use the "Close" button to reduce your position via market or TWAP orders.</Trans>
           </>
         }
       />
@@ -92,76 +101,91 @@ export function SolanaPositionSide({ position }: { position: SolanaPositionViewM
   );
 }
 
+/** Leverage as GMX shows it, following Settings "Include PnL in leverage display". */
+export function SolanaPositionLeverage({
+  position,
+  isPnlInLeverage,
+  className,
+}: {
+  position: SolanaPositionViewModel;
+  isPnlInLeverage: boolean;
+  className?: string;
+}) {
+  return <span className={className}>{formatSolanaLeverage(getSolanaDisplayedLeverage(position, isPnlInLeverage))}</span>;
+}
+
+/**
+ * GMX `PositionItem` size cell: click toggles between USD and index token amount. The toggle is per
+ * position (component state) and is disabled when the token decimals are unknown.
+ */
+export function useSolanaPositionSizeToggle(position: SolanaPositionViewModel) {
+  const [showSizeInTokens, setShowSizeInTokens] = useState(false);
+  const canToggle = canToggleSolanaPositionSize(position);
+  const toggle = useCallback(() => {
+    if (canToggle) setShowSizeInTokens((prev) => !prev);
+  }, [canToggle]);
+  return {
+    text: formatSolanaPositionSize(position, showSizeInTokens),
+    onClick: canToggle ? toggle : undefined,
+    className: canToggle ? "cursor-pointer select-none" : undefined,
+  };
+}
+
 function negate(value: bigint | undefined): bigint | undefined {
   return value === undefined ? undefined : -value;
 }
 
-/** Mirrors gmx-solana-interface PositionItem.tsx `renderNetValue`. */
-export function SolanaPositionNetValue({ position }: { position: SolanaPositionViewModel }) {
-  if (position.netValue === undefined) return <span className="numbers">{SOLANA_POSITION_DASH}</span>;
+function isNonZero(value: bigint | undefined): boolean {
+  return value !== undefined && value !== 0n;
+}
+
+/** Mirrors GMX `PositionItem.renderNetValue` (the default variant without "PnL after all fees"). */
+export function SolanaPositionNetValue({ position, isLarge = true }: CellProps) {
+  if (position.netValue === undefined) return <SolanaUnavailableValue position={position} />;
   return (
     <TooltipWithPortal
       handle={formatSolanaUsd(position.netValue)}
       handleClassName="numbers"
-      position="bottom-start"
+      position={isLarge ? "bottom-start" : "bottom-end"}
       content={
-        <>
-          <Trans>Net Value: Initial Collateral + PnL - Borrowing Fee - Negative Funding Fee - Close Fee</Trans>
+        <div>
+          <Trans>Position value after PnL and accrued fees</Trans>
           <br />
           <br />
           <StatsTooltipRow
-            label={t`Initial Collateral`}
-            value={formatSolanaUsd(position.collateralValue)}
-            showDollar={false}
+            label={t`Margin before borrow/funding`}
+            value={formatSolanaTooltipUsd(position.collateralValue)}
             valueClassName="numbers"
+            showDollar={false}
           />
           <StatsTooltipRow
             label={t`PnL`}
-            value={formatSolanaSignedUsd(position.pendingPnl)}
-            showDollar={false}
+            value={formatSolanaTooltipDeltaUsd(position.pendingPnl)}
             valueClassName="numbers"
+            showDollar={false}
             textClassName={getPositiveOrNegativeClass(position.pendingPnl)}
           />
           <StatsTooltipRow
-            label={t`Accrued Borrowing Fee`}
-            value={formatSolanaSignedUsd(negate(position.pendingBorrowingFee))}
-            showDollar={false}
+            label={t`Borrow fee`}
+            value={formatSolanaTooltipUsd(negate(position.pendingBorrowingFee))}
             valueClassName="numbers"
-            textClassName={cx({
-              "text-red-500": position.pendingBorrowingFee !== undefined && position.pendingBorrowingFee !== 0n,
-            })}
+            showDollar={false}
+            textClassName={cx({ "text-red-500": isNonZero(position.pendingBorrowingFee) })}
           />
           <StatsTooltipRow
-            label={t`Accrued Negative Funding Fee`}
-            value={formatSolanaSignedUsd(negate(position.pendingFundingFee))}
-            showDollar={false}
+            label={t`Negative funding fee`}
+            value={formatSolanaTooltipUsd(negate(position.pendingFundingFee))}
             valueClassName="numbers"
-            textClassName={cx({
-              "text-red-500": position.pendingFundingFee !== undefined && position.pendingFundingFee !== 0n,
-            })}
-          />
-          <StatsTooltipRow
-            label={t`Close Fee`}
-            value={formatSolanaSignedUsd(negate(position.closeOrderFee))}
             showDollar={false}
-            valueClassName="numbers"
-            textClassName="text-red-500"
+            textClassName={cx({ "text-red-500": isNonZero(position.pendingFundingFee) })}
           />
-          <br />
-          <StatsTooltipRow
-            label={t`PnL After Fees`}
-            value={formatSolanaPnlAfterFees(position)}
-            showDollar={false}
-            valueClassName="numbers"
-            textClassName={getPositiveOrNegativeClass(position.pnlAfterFees)}
-          />
-        </>
+        </div>
       }
     />
   );
 }
 
-/** PnL before fees under the net value, as GMTrade renders it by default. */
+/** PnL before fees under the net value (GMX default without the "after all fees" setting). */
 export function SolanaPositionPnl({ position }: { position: SolanaPositionViewModel }) {
   const pnl = position.pendingPnl;
   return (
@@ -178,55 +202,70 @@ export function SolanaPositionPnl({ position }: { position: SolanaPositionViewMo
 }
 
 /**
- * Mirrors gmx-solana-interface PositionItem.tsx `renderCollateral`: the handle is the margin after
- * accrued fees, with its token amount underneath. The low-collateral warning of the reference is
- * not rendered (it needs open-interest data this list does not load).
+ * Mirrors GMX `PositionItem.renderCollateral`: the handle is the margin after accrued fees with its token
+ * amount underneath. The low-margin warning is not rendered: this list has no reliable max-leverage rule.
  */
-export function SolanaPositionCollateral({ position }: { position: SolanaPositionViewModel }) {
-  const initialCollateralAmount = formatSolanaTokenAmount(
-    position.collateralAmount,
-    position.collateralDecimals,
-    position.collateralSymbol
-  );
-  if (position.netCollateralValue === undefined) return <span className="numbers">{initialCollateralAmount}</span>;
+export function SolanaPositionCollateral({ position, isLarge = true }: CellProps) {
+  if (position.netCollateralValue === undefined) return <SolanaUnavailableValue position={position} />;
+
+  const renderMarginValue = (amount: bigint | undefined, usd: bigint | undefined): ReactNode =>
+    position.collateralIsStable || position.collateralDecimals === undefined || amount === undefined ? (
+      formatSolanaTooltipUsd(usd)
+    ) : (
+      <AmountWithUsdBalance
+        amount={amount}
+        decimals={position.collateralDecimals}
+        usd={usd}
+        symbol={position.collateralSymbol}
+        isStable={position.collateralIsStable}
+        usdAsPrimary
+      />
+    );
+
   return (
     <div className="flex flex-col gap-4">
       <TooltipWithPortal
         handle={formatSolanaUsd(position.netCollateralValue)}
         handleClassName="numbers"
-        position="bottom-start"
+        position={isLarge ? "bottom-start" : "bottom-end"}
         className="PositionItem-collateral-tooltip"
         content={
           <>
             <StatsTooltipRow
-              label={t`Initial Collateral`}
-              value={`${initialCollateralAmount} (${formatSolanaUsd(position.collateralValue)})`}
+              label={t`Current margin`}
               showDollar={false}
+              value={renderMarginValue(position.netCollateralAmount, position.netCollateralValue)}
               valueClassName="numbers"
             />
             <br />
             <StatsTooltipRow
-              label={t`Accrued Borrowing Fee`}
-              value={formatSolanaSignedUsd(negate(position.pendingBorrowingFee))}
+              label={t`Margin before borrow/funding`}
               showDollar={false}
+              value={renderMarginValue(position.collateralAmount, position.collateralValue)}
               valueClassName="numbers"
-              textClassName={cx({
-                "text-red-500": position.pendingBorrowingFee !== undefined && position.pendingBorrowingFee !== 0n,
-              })}
             />
             <StatsTooltipRow
-              label={t`Accrued Negative Funding Fee`}
-              value={formatSolanaSignedUsd(negate(position.pendingFundingFee))}
+              label={t`Borrow fee`}
               showDollar={false}
+              value={formatSolanaTooltipUsd(negate(position.pendingBorrowingFee))}
               valueClassName="numbers"
-              textClassName={cx({
-                "text-red-500": position.pendingFundingFee !== undefined && position.pendingFundingFee !== 0n,
-              })}
+              textClassName={cx({ "text-red-500": isNonZero(position.pendingBorrowingFee) })}
             />
             <StatsTooltipRow
-              label={t`Accrued Positive Funding Fee`}
-              value={formatSolanaSignedUsd(position.pendingClaimableFundingFee)}
+              label={t`Negative funding fee`}
               showDollar={false}
+              value={formatSolanaTooltipDeltaUsd(negate(position.pendingFundingFee))}
+              valueClassName="numbers"
+              textClassName={cx({ "text-red-500": isNonZero(position.pendingFundingFee) })}
+            />
+            <br />
+            <div className="mb-4 text-typography-primary">
+              <Trans>Claimable</Trans>
+            </div>
+            <StatsTooltipRow
+              label={t`Positive funding fee`}
+              showDollar={false}
+              value={formatSolanaTooltipDeltaUsd(position.pendingClaimableFundingFee)}
               valueClassName="numbers"
               textClassName={cx({
                 "text-green-500":
@@ -234,48 +273,40 @@ export function SolanaPositionCollateral({ position }: { position: SolanaPositio
               })}
             />
             <br />
+            <div className="mb-4 text-typography-primary">
+              <Trans>Estimated daily fees</Trans>
+            </div>
             <StatsTooltipRow
-              label={t`Current Borrowing Fee / Day`}
-              value={formatSolanaUsd(position.borrowingFeePerDay)}
               showDollar={false}
+              label={t`Borrow fee / day`}
+              value={formatSolanaTooltipUsd(position.borrowingFeePerDay)}
               valueClassName="numbers"
               textClassName={cx({
                 "text-red-500": position.borrowingFeePerDay !== undefined && position.borrowingFeePerDay < 0n,
               })}
             />
             <StatsTooltipRow
-              label={t`Current Funding Fee / Day`}
-              value={formatSolanaSignedUsd(position.fundingFeePerDay)}
               showDollar={false}
+              label={t`Funding fee / day`}
+              value={formatSolanaTooltipDeltaUsd(position.fundingFeePerDay)}
               valueClassName="numbers"
               textClassName={getPositiveOrNegativeClass(position.fundingFeePerDay)}
             />
             <br />
-            <Trans>Use the edit collateral icon to deposit or withdraw collateral.</Trans>
+            <Trans>Negative funding fees reduce margin and affect liquidation price.</Trans>
             <br />
-            <br />
-            <Trans>
-              Negative funding fees and borrowing fees are settled against the collateral automatically and will
-              influence the time to liquidation, as shown under the liquidation price tooltip.
-            </Trans>
-            <br />
-            <br />
-            <Trans>
-              Positive funding fees are automatically claimed when the position is adjusted through any operation.
-            </Trans>
+            <Trans>Positive funding fees are claimable in Claims.</Trans>
           </>
         }
       />
-      {position.netCollateralAmount !== undefined && (
-        <span className="muted text-body-small numbers">
+      {position.netCollateralAmount !== undefined && position.collateralDecimals !== undefined && (
+        <div className="muted text-body-small numbers">
           (
-          {formatSolanaTokenAmount(
-            position.netCollateralAmount,
-            position.collateralDecimals,
-            position.collateralSymbol
-          )}
+          {formatBalanceAmount(position.netCollateralAmount, position.collateralDecimals, position.collateralSymbol, {
+            isStable: position.collateralIsStable,
+          })}
           )
-        </span>
+        </div>
       )}
     </div>
   );
@@ -286,16 +317,19 @@ function getNoLiquidationPriceWarning(position: SolanaPositionViewModel): string
   const indexName = position.symbol;
   switch (position.noLiquidationPriceReason) {
     case "short-collateral-covers-size":
-      return t`Since your position's collateral is in ${symbol}, with an initial value higher than the ${indexName} short position size, the collateral value will increase to cover any negative PnL, so there is no liquidation price.`;
+      return t`Your ${symbol} margin exceeds the ${indexName} short position size. Margin value rises with the index, covering any losses—no liquidation price.`;
     case "long-stable-collateral-covers-size":
-      return t`Since your position's collateral is in ${symbol}, with an initial value higher than the ${indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price.`;
+      return t`Your ${symbol} margin exceeds the ${indexName} long position size. Stable margin covers any losses—no liquidation price.`;
     default:
       return undefined;
   }
 }
 
-/** Mirrors gmx-solana-interface PositionItem.tsx `renderLiquidationPrice` (tooltip only, no actions). */
-export function SolanaPositionLiquidationPrice({ position }: { position: SolanaPositionViewModel }) {
+/**
+ * Mirrors GMX `PositionItem.renderLiquidationPrice` without the off-hours section (no Solana off-hours
+ * parameters). The estimate keeps the GMTrade liquidation rule.
+ */
+export function SolanaPositionLiquidationPrice({ position }: CellProps) {
   const handle = formatSolanaLiquidationPrice(position.liquidationPrice);
   const warning = getNoLiquidationPriceWarning(position);
   const hours = position.estimatedLiquidationHours;
@@ -315,26 +349,22 @@ export function SolanaPositionLiquidationPrice({ position }: { position: SolanaP
             <div>
               {!warning && (
                 <>
-                  <Trans>Liquidation price is influenced by fees and collateral value.</Trans>
+                  <Trans>Liquidation price changes with fees and margin value.</Trans>
                   <br />
                 </>
               )}
               <br />
               {warning ? (
                 <Trans>
-                  This position could still be liquidated, excluding any price movement, due to funding and borrowing
-                  fee rates reducing the position's collateral over time.
+                  Position may still liquidate from fees alone (funding + borrowing), reducing margin over time.
                 </Trans>
               ) : (
-                <Trans>
-                  This position could be liquidated, excluding any price movement, due to funding and borrowing fee
-                  rates reducing the position's collateral over time.
-                </Trans>
+                <Trans>Position may liquidate from fees alone (funding + borrowing), reducing margin over time.</Trans>
               )}
               <br />
               <br />
               <StatsTooltipRow
-                label={t`Estimated Time to Liquidation`}
+                label={t`Estimated time to liquidation`}
                 value={formatSolanaEstimatedLiquidationTime(hours)}
                 showDollar={false}
                 valueClassName="numbers"
@@ -347,41 +377,46 @@ export function SolanaPositionLiquidationPrice({ position }: { position: SolanaP
   );
 }
 
-/** GMTrade `PositionItemOrderText`: "TP: > $price: -$size" / "SL: …" / "Limit: < $price: +$size". */
+/** GMX `PositionItemOrderText`: "TP: > $price: -$size" / "SL: …" / "Limit: < $price: +$size" / "Full position close". */
 export function SolanaPositionOrderText({ order }: { order: SolanaPositionOrderViewModel }) {
   const label = order.isIncrease ? t`Limit` : order.kind === 8 ? t`SL` : t`TP`;
   return (
-    <div className="text-start text-typography-secondary numbers">
-      {label}: {formatSolanaTriggerPrice(order)}: <span>{formatSolanaOrderSize(order)}</span>
+    <div className="text-start">
+      {label}: <span className="numbers">{formatSolanaTriggerPrice(order)}</span>:{" "}
+      <span className="numbers">{formatSolanaOrderSize(order)}</span>
     </div>
   );
 }
 
-/** GMTrade size-cell "Orders (N)" handle listing the position's active orders. Read-only: no edit / cancel. */
+/** GMX `PositionItemOrdersLarge` handle "Orders (N)" listing the position's active orders. Read-only. */
 export function SolanaPositionActiveOrders({ orders }: { orders: SolanaPositionOrders | undefined }) {
   if (!orders || orders.all.length === 0) return null;
   const count = orders.all.length;
   return (
-    <TooltipWithPortal
-      handle={<Trans>Orders ({count})</Trans>}
-      handleClassName="Exchange-list-info-label text-typography-secondary"
-      position="bottom-start"
-      maxAllowedWidth={370}
-      content={
-        <div className="flex max-h-[350px] flex-col gap-10 overflow-y-auto">
-          <div>
-            <Trans>Active Orders</Trans>
+    <div>
+      <TooltipWithPortal
+        className="Position-list-active-orders"
+        handle={<Trans>Orders ({count})</Trans>}
+        position="bottom"
+        handleClassName="Exchange-list-info-label Exchange-position-list-orders text-typography-secondary"
+        maxAllowedWidth={370}
+        tooltipClassName="!z-10 w-[370px]"
+        content={
+          <div className="flex max-h-[350px] cursor-auto flex-col gap-8 overflow-y-auto leading-base">
+            <div className="font-medium">
+              <Trans>Active orders</Trans>
+            </div>
+            {orders.all.map((order) => (
+              <SolanaPositionOrderText key={order.key} order={order} />
+            ))}
           </div>
-          {orders.all.map((order) => (
-            <SolanaPositionOrderText key={order.key} order={order} />
-          ))}
-        </div>
-      }
-    />
+        }
+      />
+    </div>
   );
 }
 
-/** GMTrade `RenderTpl`: lowest take-profit and highest stop-loss trigger price with the order count. */
+/** GMX TP/SL cell: lowest take-profit and highest stop-loss trigger price with the order count. */
 export function SolanaPositionTpSl({ orders }: { orders: SolanaPositionOrders | undefined }) {
   return (
     <div className="flex flex-col numbers">
@@ -391,41 +426,52 @@ export function SolanaPositionTpSl({ orders }: { orders: SolanaPositionOrders | 
   );
 }
 
-export function SolanaPriceUnavailableHint({ position }: { position: SolanaPositionViewModel }) {
-  if (!position.priceUnavailable) return null;
+/** Missing derived value: a dash, explained by a tooltip when the price feed is the reason. Never a zero. */
+export function SolanaUnavailableValue({ position }: { position: SolanaPositionViewModel }) {
+  if (!position.priceUnavailable) return <span className="numbers">{SOLANA_POSITION_DASH}</span>;
   return (
     <TooltipWithPortal
-      handle={<span className="muted">{SOLANA_POSITION_DASH}</span>}
+      handle={SOLANA_POSITION_DASH}
+      handleClassName="numbers"
       position="bottom-start"
       content={<Trans>Price data is not available yet. Values depending on it are hidden.</Trans>}
     />
   );
 }
 
-/** Desktop row. Read-only: no click handlers, no actions. */
+/** Desktop row. Read-only: no selection, no actions. */
 export function SolanaPositionItem({
   position,
   orders,
+  isPnlInLeverage,
 }: {
   position: SolanaPositionViewModel;
   orders?: SolanaPositionOrders;
+  isPnlInLeverage: boolean;
 }) {
+  const size = useSolanaPositionSizeToggle(position);
   return (
-    <TableTr data-qa={`solana-position-item-${position.symbol}-${position.isLong ? "Long" : "Short"}`}>
+    <TableTr hoverable data-qa={`solana-position-item-${position.symbol}-${position.isLong ? "Long" : "Short"}`}>
       <TableTd className="flex">
         <div className="Position-item-info relative">
           <div className="Exchange-list-title">
             <SolanaPositionTitleWithTooltip position={position} />
           </div>
           <div className="Exchange-list-info-label">
-            <span className="muted mr-4 rounded-2 px-2 pb-1 numbers">{formatSolanaLeverage(position.leverage)}</span>
+            <SolanaPositionLeverage
+              position={position}
+              isPnlInLeverage={isPnlInLeverage}
+              className="muted mr-4 rounded-2 px-2 pb-1 numbers"
+            />
             <SolanaPositionSide position={position} />
           </div>
         </div>
       </TableTd>
       <TableTd>
         <div className="flex flex-col gap-4">
-          <span className="numbers">{formatSolanaUsd(position.sizeInUsd)}</span>
+          <span className={cx("numbers", size.className)} onClick={size.onClick}>
+            {size.text}
+          </span>
           <SolanaPositionActiveOrders orders={orders} />
         </div>
       </TableTd>

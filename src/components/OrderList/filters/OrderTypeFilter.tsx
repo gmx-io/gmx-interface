@@ -67,24 +67,28 @@ type Props = {
   value: OrderTypeFilterValue[];
   onChange: (value: OrderTypeFilterValue[]) => void;
   asButton?: boolean;
+  /** Restrict the options to these values (groups left empty are dropped). Default: every option. */
+  allowedValues?: readonly OrderTypeFilterValue[];
 };
 
-export function OrderTypeFilter({ value, onChange, asButton }: Props) {
+export function OrderTypeFilter({ value, onChange, asButton, allowedValues }: Props) {
   const { i18n } = useLingui();
   const localizedGroups = useMemo(() => {
     return GROUPS.map((group) => {
       return {
         groupName: i18n._(group.groupName),
-        items: group.items.map((item) => {
-          return {
-            data: item.data,
-            text: i18n._(item.text),
-            hidden: item.hidden,
-          };
-        }),
+        items: group.items
+          .filter((item) => allowedValues === undefined || allowedValues.includes(item.data))
+          .map((item) => {
+            return {
+              data: item.data,
+              text: i18n._(item.text),
+              hidden: item.hidden,
+            };
+          }),
       };
-    });
-  }, [i18n]);
+    }).filter((group) => group.items.length > 0);
+  }, [allowedValues, i18n]);
 
   return (
     <TableOptionsFilter<OrderTypeFilterValue>

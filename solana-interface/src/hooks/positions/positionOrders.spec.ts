@@ -30,10 +30,15 @@ function order(
     isMarketOrder: false,
     triggerPrice,
     noAcceptableLimit: kind === SOLANA_ORDER_KIND.StopLossDecrease,
+    isBoundaryAcceptablePrice: true,
+    isFullClose: false,
     collateralDeltaAmount: 0n,
     collateralSymbol: "USDC",
+    collateralIsStable: true,
     targetCollateralTokenAddress: "usdc",
     targetCollateralSymbol: "USDC",
+    targetCollateralIsStable: true,
+    isCollateralSwap: false,
   };
 }
 

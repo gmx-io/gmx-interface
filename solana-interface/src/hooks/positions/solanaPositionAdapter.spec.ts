@@ -3,9 +3,9 @@ import { describe, expect, it } from "vitest";
 import {
   estimateLiquidationHours,
   feePerDayUsd,
+  getSolanaNetValue,
   getSolanaPoolName,
   NO_LIQUIDATION_BY_FEES_HOURS,
-  toGmxLeverage,
   toGmxUsd,
   toSolanaPositionViewModel,
   unitPriceToTokenPrice,
@@ -51,10 +51,6 @@ describe("unit conversions", () => {
     expect(unitPriceToTokenPrice(perLamport, 9)).toBe(200n * 10n ** 30n);
   });
 
-  it("scales 20-decimal leverage to 4 decimals", () => {
-    expect(toGmxLeverage(25n * 10n ** 19n)).toBe(25_000n); // 2.5x
-  });
-
   it("projects an hourly rate over 24h on the position size, keeping the sign", () => {
     // -0.01% per hour on 1000 USD = -0.1 USD per hour = -2.4 USD per day
     const ratePerHour = -(ONE_USD / 10_000n);
@@ -73,6 +69,19 @@ describe("getSolanaPoolName", () => {
     );
     expect(getSolanaPoolName({ ...marketInfo, longToken: "unknown" })).toBeUndefined();
     expect(getSolanaPoolName(undefined)).toBeUndefined();
+  });
+});
+
+describe("getSolanaNetValue", () => {
+  it("adds PnL and subtracts accrued fees regardless of their sign, without the close fee", () => {
+    const status = {
+      collateralValue: 100n * ONE_USD,
+      pendingPnl: 10n * ONE_USD,
+      pendingBorrowingFeeValue: -1n * ONE_USD,
+      pendingFundingFeeValue: 2n * ONE_USD,
+    };
+    expect(getSolanaNetValue(status)).toBe(107n * ONE_USD);
+    expect(getSolanaNetValue({ ...status, pendingPnl: -50n * ONE_USD })).toBe(47n * ONE_USD);
   });
 });
 
@@ -122,9 +131,12 @@ describe("toSolanaPositionViewModel", () => {
     expect(vm.poolName).toBe("WSOL-USDC");
     expect(vm.collateralSymbol).toBe("USDC");
     expect(vm.collateralDecimals).toBe(6);
+    expect(vm.collateralIsStable).toBe(true);
     expect(vm.sizeInUsd).toBe(1_000n * 10n ** 30n);
     expect(vm.entryPrice).toBeUndefined();
     expect(vm.netValue).toBeUndefined();
+    expect(vm.leverage).toBeUndefined();
+    expect(vm.leverageWithPnl).toBeUndefined();
     expect(vm.netCollateralValue).toBeUndefined();
     expect(vm.markPrice).toBeUndefined();
     expect(vm.priceUnavailable).toBe(true);
@@ -184,10 +196,13 @@ describe("toSolanaPositionViewModel", () => {
     // displayed PnL before fees: 10 USD over 100 USD collateral
     expect(vm.pendingPnl).toBe(10n * 10n ** 30n);
     expect(vm.pendingPnlBps).toBe(1_000n);
-    expect(vm.leverage).toBe(100_000n); // 10x with 4 decimals
-    expect(vm.netValue).toBe(106n * 10n ** 30n);
+    // GMX display net value: 100 + 10 - 1 - 2 = 107 USD; the SDK value (106, close fee deducted) is not shown
+    expect(vm.netValue).toBe(107n * 10n ** 30n);
     // margin after fees: 100 - 1 - 2 = 97 USD, i.e. 97 USDC at 1 USD
     expect(vm.netCollateralValue).toBe(97n * 10n ** 30n);
+    // leverage = size / current margin (bps); with PnL the margin is 107 USD
+    expect(vm.leverage).toBe((1_000n * 10_000n) / 97n);
+    expect(vm.leverageWithPnl).toBe((1_000n * 10_000n) / 107n);
     expect(vm.netCollateralAmount).toBe(97n * 10n ** 6n);
     expect(vm.pendingClaimableFundingFee).toBe(5n * 10n ** 29n);
     // no rates or factor in marketInfo → no estimate; liquidation price present → no warning
@@ -253,6 +268,30 @@ describe("toSolanaPositionViewModel", () => {
       undefined
     );
     expect(plain.noLiquidationPriceReason).toBeUndefined();
+  });
+
+  it("reports no leverage when the margin after PnL and fees is exhausted", () => {
+    const status = {
+      entryPrice: 1n,
+      collateralValue: 100n * ONE_USD,
+      pendingPnl: -150n * ONE_USD,
+      pendingBorrowingFeeValue: 0n,
+      pendingFundingFeeValue: 0n,
+      pendingClaimableFundingFeeValueInLongToken: 0n,
+      pendingClaimableFundingFeeValueInShortToken: 0n,
+      closeOrderFeeValue: 0n,
+      netValue: -50n * ONE_USD,
+    };
+    const vm = toSolanaPositionViewModel(raw, { priceUnavailable: false, status }, marketInfo, undefined);
+    expect(vm.leverage).toBe(100_000n); // 10x without PnL
+    expect(vm.leverageWithPnl).toBeUndefined();
+    const drained = toSolanaPositionViewModel(
+      raw,
+      { priceUnavailable: false, status: { ...status, pendingBorrowingFeeValue: -100n * ONE_USD } },
+      marketInfo,
+      undefined
+    );
+    expect(drained.leverage).toBeUndefined();
   });
 
   it("omits the net collateral token amount without a collateral price", () => {
