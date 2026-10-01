@@ -288,18 +288,19 @@ export function GmListItem({
     ? formatPercentage(marketPerformance, { bps: false, signed: true, showPlus: false })
     : "N/A";
 
-  const apyValue =
-    (apy !== undefined && apy !== 0n) || launchBoost ? (
-      <AprInfo
-        apy={apy}
-        incentiveApr={incentiveApr}
-        lidoApr={lidoApr}
-        launchBoost={launchBoost}
-        marketAddress={token.address}
-      />
-    ) : (
-      "N/A"
-    );
+  const shouldShowApy = (apy !== undefined && apy !== 0n) || launchBoost !== undefined;
+
+  const apyValue = shouldShowApy ? (
+    <AprInfo
+      apy={apy}
+      incentiveApr={incentiveApr}
+      lidoApr={lidoApr}
+      launchBoost={launchBoost}
+      marketAddress={token.address}
+    />
+  ) : (
+    "N/A"
+  );
 
   return (
     <TableTrActionable key={token.address} className="cursor-pointer" onClick={handleItemClick}>
