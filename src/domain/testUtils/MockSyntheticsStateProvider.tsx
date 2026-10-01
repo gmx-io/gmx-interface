@@ -151,6 +151,7 @@ export function MockSyntheticsStateProvider({
         oracleSettings: undefined,
 
         jitLiquidityData: { jitLiquidityMap: undefined },
+        accountWhitelistsResult: { accountWhitelists: undefined },
       },
       claims: { accruedPositionPriceImpactFees: [], claimablePositionPriceImpactFees: [] },
       // page-scoped, unrelated to trading widgets

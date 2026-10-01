@@ -150,6 +150,8 @@ import type { SdkSubaccountApproval, SdkSubaccountStatus, SubaccountState } from
 import { fetchApiTokens } from "utils/tokens/api";
 import { fetchApiTrades, searchApiTrades } from "utils/trades/api";
 import type { FetchTradesParams, SearchTradesParams, TradesListResponse } from "utils/trades/types";
+import { fetchApiWhitelists } from "utils/whitelists/api";
+import type { AccountWhitelists } from "utils/whitelists/types";
 import { fetchApiGmPoolYieldPnl, fetchApiGmUserEarnings } from "utils/yield/api";
 import {
   GmPoolsYieldPnlParams,
@@ -224,6 +226,7 @@ export type {
   JitLiquidityMap,
 } from "utils/jitLiquidity/types";
 export type { StakingPowerResponse } from "utils/staking/types";
+export type { AccountWhitelists } from "utils/whitelists/types";
 export type {
   TransitAuthorizationMethod,
   TransitAuthorizationParams,
@@ -475,6 +478,10 @@ export class GmxApiSdk {
 
   fetchTransitOrders(params: TransitOrdersParams): Promise<TransitOrdersResponse> {
     return fetchApiTransitOrders(this.ctx, params);
+  }
+
+  fetchWhitelists(params: { address: string }): Promise<AccountWhitelists> {
+    return fetchApiWhitelists(this.ctx, params);
   }
 
   fetchWalletBalances(params: { address: string }): Promise<WalletBalance[]> {
