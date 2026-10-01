@@ -1037,6 +1037,16 @@ export function getGmSwapError(p: {
 
     const totalCollateralUsd = (longTokenUsd ?? 0n) + (shortTokenUsd ?? 0n);
 
+    let adjustedLongTokenAmount = longTokenAmount;
+    let adjustedShortTokenAmount = shortTokenAmount;
+
+    if (marketInfo.isSameCollaterals) {
+      const combinedAmount = (longTokenAmount ?? 0n) + (shortTokenAmount ?? 0n);
+
+      adjustedLongTokenAmount = combinedAmount / 2n;
+      adjustedShortTokenAmount = combinedAmount - adjustedLongTokenAmount;
+    }
+
     if (
       (fees?.totalFees?.deltaUsd === undefined ? undefined : fees?.totalFees?.deltaUsd < 0) &&
       bigMath.abs(fees?.totalFees?.deltaUsd ?? 0n) > totalCollateralUsd
@@ -1055,9 +1065,10 @@ export function getGmSwapError(p: {
       }
 
       const mintableInfo = getMintableMarketTokens(marketInfo, marketToken);
-      const maxLongExceeded = longTokenAmount !== undefined && longTokenAmount > mintableInfo.longDepositCapacityAmount;
+      const maxLongExceeded =
+        adjustedLongTokenAmount !== undefined && adjustedLongTokenAmount > mintableInfo.longDepositCapacityAmount;
       const maxShortExceeded =
-        shortTokenAmount !== undefined && shortTokenAmount > mintableInfo.shortDepositCapacityAmount;
+        adjustedShortTokenAmount !== undefined && adjustedShortTokenAmount > mintableInfo.shortDepositCapacityAmount;
 
       if (maxLongExceeded) {
         return {
@@ -1074,11 +1085,14 @@ export function getGmSwapError(p: {
       }
     } else {
       const mintableInfo = getMintableMarketTokens(marketInfo, marketToken);
-      if (longTokenAmount !== undefined && longTokenAmount > mintableInfo.longDepositCapacityAmount) {
+      if (adjustedLongTokenAmount !== undefined && adjustedLongTokenAmount > mintableInfo.longDepositCapacityAmount) {
         return { buttonErrorMessage: t`Max ${marketInfo.longToken.symbol} amount exceeded` };
       }
 
-      if (shortTokenAmount !== undefined && shortTokenAmount > mintableInfo.shortDepositCapacityAmount) {
+      if (
+        adjustedShortTokenAmount !== undefined &&
+        adjustedShortTokenAmount > mintableInfo.shortDepositCapacityAmount
+      ) {
         return { buttonErrorMessage: t`Max ${marketInfo.shortToken.symbol} amount exceeded` };
       }
     }
