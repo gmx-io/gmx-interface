@@ -99,6 +99,7 @@ export function createMockSyntheticsState(overrides: MockSyntheticsStateOverride
       proDiscountFactor,
       jitLiquidityData: {},
       accountWhitelistsResult: { accountWhitelists: undefined },
+      usdgBoostAprResult: { usdgBoostAprResponse: undefined },
       isFirstOrder: false,
       account,
       positionsConstants,

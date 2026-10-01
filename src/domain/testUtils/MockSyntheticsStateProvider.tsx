@@ -152,6 +152,7 @@ export function MockSyntheticsStateProvider({
 
         jitLiquidityData: { jitLiquidityMap: undefined },
         accountWhitelistsResult: { accountWhitelists: undefined },
+        usdgBoostAprResult: { usdgBoostAprResponse: undefined },
       },
       claims: { accruedPositionPriceImpactFees: [], claimablePositionPriceImpactFees: [] },
       // page-scoped, unrelated to trading widgets

@@ -222,3 +222,5 @@ export const selectMultichainMarketTokensBalancesIsLoading = (s: SyntheticsState
 export const selectJitLiquidityMap = (s: SyntheticsState) => s.globals.jitLiquidityData.jitLiquidityMap;
 
 export const selectAccountWhitelistsResult = (s: SyntheticsState) => s.globals.accountWhitelistsResult;
+
+export const selectUsdgBoostAprResult = (s: SyntheticsState) => s.globals.usdgBoostAprResult;

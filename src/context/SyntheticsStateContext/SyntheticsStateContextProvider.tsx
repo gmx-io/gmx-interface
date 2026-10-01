@@ -61,6 +61,7 @@ import {
 import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
 import useIsFirstOrder from "domain/synthetics/tradeHistory/useIsFirstOrder";
 import { UiFlags, useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
+import { UsdgBoostAprResult, useUsdgBoostAprRequest } from "domain/synthetics/usdgLaunchBoost/useUsdgBoostAprRequest";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import {
   AccountWhitelistsResult,
@@ -145,6 +146,7 @@ export type SyntheticsState = {
     jitLiquidityData: JitLiquidityData;
 
     accountWhitelistsResult: AccountWhitelistsResult;
+    usdgBoostAprResult: UsdgBoostAprResult;
   };
   claims: {
     accruedPositionPriceImpactFees: RebateInfoItem[];
@@ -268,6 +270,7 @@ export function SyntheticsStateContextProvider({
   const { features } = useEnabledFeaturesRequest(chainId);
   const { uiFlags } = useUiFlagsRequest();
   const accountWhitelistsResult = useAccountWhitelistsRequest(chainId, account, { enabled: pageType === "pools" });
+  const usdgBoostAprResult = useUsdgBoostAprRequest(chainId, { enabled: pageType === "pools" });
 
   const {
     isLoading,
@@ -431,6 +434,7 @@ export function SyntheticsStateContextProvider({
         jitLiquidityData,
 
         accountWhitelistsResult,
+        usdgBoostAprResult,
       },
       claims: { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees },
       leaderboard,
@@ -469,6 +473,7 @@ export function SyntheticsStateContextProvider({
     isFirstOrder,
     jitLiquidityData,
     accountWhitelistsResult,
+    usdgBoostAprResult,
     isLargeAccount,
     isLoading,
     keepLeverage,
