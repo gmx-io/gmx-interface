@@ -616,6 +616,42 @@ describe("getGmSwapError — paying a same-collateral pool with another token", 
   });
 });
 
+describe("getGmSwapError — deposit capacity on a same-collateral pool", () => {
+  const poolWith100UsdcRoomPerSide = {
+    ...sameCollateralMarket,
+    maxLongPoolAmount: sameCollateralMarket.longPoolAmount + expandDecimals(100, 6),
+    maxShortPoolAmount: sameCollateralMarket.shortPoolAmount + expandDecimals(100, 6),
+  };
+  const usdcInWallet = { ...stableTokensData.USDC, walletBalance: expandDecimals(1000, 6) };
+  const capacityParams = { ...baseGmSwapParams, marketInfo: poolWith100UsdcRoomPerSide };
+
+  it.each<{ case: string; params: Partial<Parameters<typeof getGmSwapError>[0]>; expected: string | undefined }>([
+    {
+      case: "a direct USDC deposit of 150, split 75/75, fits",
+      params: {
+        payLongToken: usdcInWallet,
+        payShortToken: usdcInWallet,
+        longTokenAmount: expandDecimals(75, 6),
+        shortTokenAmount: expandDecimals(75, 6),
+        initialShortTokenAmount: undefined,
+      },
+      expected: undefined,
+    },
+    {
+      case: "a DAI deposit converted to 150 USDC fits like the direct one",
+      params: { longTokenAmount: 0n, shortTokenAmount: expandDecimals(150, 6) },
+      expected: undefined,
+    },
+    {
+      case: "a DAI deposit converted to 250 USDC exceeds 100 per side",
+      params: { longTokenAmount: 0n, shortTokenAmount: expandDecimals(250, 6) },
+      expected: "Max USDC amount exceeded",
+    },
+  ])("$case", ({ params, expected }) => {
+    expect(getGmSwapError({ ...capacityParams, ...params }).buttonErrorMessage).toBe(expected);
+  });
+});
+
 describe("getGmSwapError — whitelist-only direct deposits", () => {
   it.each<{ access: DirectDepositAccess; expected: string | undefined }>([
     { access: "denied", expected: "Whitelist only" },
