@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64px" height="64px" viewBox="0 0 64 64" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>ic_msft_40</title>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(-442.000000, -241.000000)" fill-rule="nonzero">
+            <g id="ic_msft_40" transform="translate(442.000000, 241.000000)">
+                <circle fill="#F0F3FA" cx="32" cy="32" r="32"></circle>
+                <polygon fill="#F0502A" points="17.7777778 17.7777778 32 17.7777778 32 32 17.7777778 32"></polygon>
+                <polygon fill="#82BA22" points="32 17.7777778 46.2222222 17.7777778 46.2222222 32 32 32"></polygon>
+                <polygon fill="#FDB92C" points="32 32 46.2222222 32 46.2222222 46.2222222 32 46.2222222"></polygon>
+                <polygon fill="#1CA7ED" points="17.7777778 32 32 32 32 46.2222222 17.7777778 46.2222222"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

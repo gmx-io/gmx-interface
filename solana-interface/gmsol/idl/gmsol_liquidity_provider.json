@@ -1,0 +1,4516 @@
+{
+  "address": "LPMWczEVgXyQ3979XaqqEttanCXmYGvtJqPVtw1PvC8",
+  "metadata": {
+    "name": "gmsol_liquidity_provider",
+    "version": "0.8.0",
+    "spec": "0.1.0",
+    "description": "GMX-Solana is an extension of GMX on the Solana blockchain.",
+    "repository": "https://github.com/gmsol-labs/gmx-solana"
+  },
+  "instructions": [
+    {
+      "name": "accept_authority",
+      "docs": [
+        "Accept authority if you are the pending_authority; finalizes the handover."
+      ],
+      "discriminator": [
+        107,
+        86,
+        198,
+        91,
+        33,
+        12,
+        107,
+        160
+      ],
+      "accounts": [
+        {
+          "name": "global_state",
+          "docs": [
+            "Global config (PDA). The signer must equal `global_state.pending_authority`."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "pending_authority",
+          "docs": [
+            "Pending authority accepting control (must match `global_state.pending_authority`)"
+          ],
+          "signer": true,
+          "relations": [
+            "global_state"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "calculate_gt_reward",
+      "docs": [
+        "Calculate GT rewards for LP based on stored Position data (no mint)"
+      ],
+      "discriminator": [
+        118,
+        226,
+        87,
+        38,
+        17,
+        161,
+        244,
+        218
+      ],
+      "accounts": [
+        {
+          "name": "global_state",
+          "docs": [
+            "Global config (PDA)"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          },
+          "relations": [
+            "controller"
+          ]
+        },
+        {
+          "name": "controller",
+          "docs": [
+            "LP token controller for this position's mint"
+          ],
+          "relations": [
+            "position"
+          ]
+        },
+        {
+          "name": "gt_store",
+          "docs": [
+            "The GT Store account (loaded & mutated by CPI)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "gt_program",
+          "docs": [
+            "The GT program"
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        },
+        {
+          "name": "position",
+          "docs": [
+            "Position tied to (controller, owner, position_id)"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  115,
+                  105,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "controller"
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "arg",
+                "path": "position_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "owner",
+          "docs": [
+            "Owner of the position (not required to sign for read-only calc)"
+          ],
+          "relations": [
+            "position"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "claim_gt",
+      "docs": [
+        "Claim GT rewards for a position, minting tokens and updating snapshot"
+      ],
+      "discriminator": [
+        13,
+        225,
+        198,
+        47,
+        68,
+        147,
+        199,
+        163
+      ],
+      "accounts": [
+        {
+          "name": "global_state",
+          "docs": [
+            "Global config (PDA)"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          },
+          "relations": [
+            "controller"
+          ]
+        },
+        {
+          "name": "controller",
+          "docs": [
+            "LP token controller for this position's mint"
+          ],
+          "relations": [
+            "position"
+          ]
+        },
+        {
+          "name": "store",
+          "docs": [
+            "The GT Store account (mutated by CPI)"
+          ],
+          "writable": true,
+          "relations": [
+            "gt_user"
+          ]
+        },
+        {
+          "name": "gt_program",
+          "docs": [
+            "The GT program"
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        },
+        {
+          "name": "position",
+          "docs": [
+            "Position tied to (controller, owner, position_id)"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  115,
+                  105,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "controller"
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "arg",
+                "path": "position_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "owner",
+          "docs": [
+            "Owner of the position"
+          ],
+          "signer": true,
+          "relations": [
+            "position",
+            "gt_user"
+          ]
+        },
+        {
+          "name": "gt_user",
+          "docs": [
+            "GT User account (mut) managed by the GT program; must correspond to (store, owner)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "event_authority"
+        }
+      ],
+      "args": [
+        {
+          "name": "_position_id",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "create_lp_token_controller",
+      "docs": [
+        "Create a new LP token controller for a specific token mint"
+      ],
+      "discriminator": [
+        192,
+        171,
+        199,
+        177,
+        191,
+        214,
+        186,
+        8
+      ],
+      "accounts": [
+        {
+          "name": "global_state",
+          "docs": [
+            "Global config (PDA). The `authority` signer must match `global_state.authority`."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "controller",
+          "docs": [
+            "LP token controller to initialize"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  108,
+                  112,
+                  95,
+                  116,
+                  111,
+                  107,
+                  101,
+                  110,
+                  95,
+                  99,
+                  111,
+                  110,
+                  116,
+                  114,
+                  111,
+                  108,
+                  108,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "global_state"
+              },
+              {
+                "kind": "arg",
+                "path": "lp_token_mint"
+              },
+              {
+                "kind": "arg",
+                "path": "controller_index"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "docs": [
+            "Current authority"
+          ],
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "global_state"
+          ]
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "lp_token_mint",
+          "type": "pubkey"
+        },
+        {
+          "name": "controller_index",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "disable_lp_token_controller",
+      "docs": [
+        "Disable LP token controller (irreversible)"
+      ],
+      "discriminator": [
+        234,
+        244,
+        255,
+        11,
+        164,
+        136,
+        159,
+        144
+      ],
+      "accounts": [
+        {
+          "name": "global_state",
+          "docs": [
+            "Global config (PDA). The `authority` signer must match `global_state.authority`."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          },
+          "relations": [
+            "controller"
+          ]
+        },
+        {
+          "name": "controller",
+          "docs": [
+            "LP token controller to disable"
+          ],
+          "writable": true
+        },
+        {
+          "name": "gt_store",
+          "docs": [
+            "The GT Store account (mutated by CPI)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "gt_program",
+          "docs": [
+            "GT program"
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        },
+        {
+          "name": "authority",
+          "docs": [
+            "Current authority"
+          ],
+          "signer": true,
+          "relations": [
+            "global_state"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize",
+      "docs": [
+        "Initialize LP staking program"
+      ],
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "global_state",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "min_stake_value",
+          "type": "u128"
+        },
+        {
+          "name": "initial_apy",
+          "type": "u128"
+        }
+      ]
+    },
+    {
+      "name": "set_claim_enabled",
+      "docs": [
+        "Toggle whether LPs can claim GT without unstaking."
+      ],
+      "discriminator": [
+        251,
+        228,
+        158,
+        120,
+        230,
+        38,
+        185,
+        27
+      ],
+      "accounts": [
+        {
+          "name": "global_state",
+          "docs": [
+            "Global config (PDA). The `authority` signer must match `global_state.authority`."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "docs": [
+            "Current authority"
+          ],
+          "signer": true,
+          "relations": [
+            "global_state"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "enabled",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "set_pricing_staleness",
+      "docs": [
+        "Set pricing staleness configuration"
+      ],
+      "discriminator": [
+        161,
+        221,
+        21,
+        196,
+        66,
+        110,
+        222,
+        97
+      ],
+      "accounts": [
+        {
+          "name": "global_state",
+          "docs": [
+            "Global config (PDA). The `authority` signer must match `global_state.authority`."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "docs": [
+            "Current authority"
+          ],
+          "signer": true,
+          "relations": [
+            "global_state"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "staleness_seconds",
+          "type": "u32"
+        }
+      ]
+    },
+    {
+      "name": "stake_glv",
+      "docs": [
+        "Stake GLV tokens with automatic pricing via CPI"
+      ],
+      "discriminator": [
+        156,
+        92,
+        208,
+        171,
+        0,
+        173,
+        219,
+        232
+      ],
+      "accounts": [
+        {
+          "name": "global_state",
+          "docs": [
+            "Global config (PDA)"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          },
+          "relations": [
+            "controller"
+          ]
+        },
+        {
+          "name": "controller",
+          "docs": [
+            "LP token controller for this mint"
+          ],
+          "writable": true
+        },
+        {
+          "name": "lp_mint",
+          "docs": [
+            "GLV token mint to be staked"
+          ]
+        },
+        {
+          "name": "position",
+          "docs": [
+            "Position PDA to initialize"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  115,
+                  105,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "controller"
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "arg",
+                "path": "position_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "position_vault",
+          "docs": [
+            "Vault token account (PDA) to hold staked GLV tokens"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "position"
+              }
+            ]
+          }
+        },
+        {
+          "name": "gt_store",
+          "docs": [
+            "The GT Store account (mutated by CPI)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "gt_program",
+          "docs": [
+            "GT program"
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        },
+        {
+          "name": "owner",
+          "docs": [
+            "Owner paying rent and recorded as position owner"
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "user_lp_token",
+          "docs": [
+            "User's GLV token account"
+          ],
+          "writable": true
+        },
+        {
+          "name": "token_map"
+        },
+        {
+          "name": "oracle",
+          "writable": true
+        },
+        {
+          "name": "glv"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "position_id",
+          "type": "u64"
+        },
+        {
+          "name": "glv_staked_amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "stake_gm",
+      "docs": [
+        "Stake GM tokens with automatic pricing via CPI"
+      ],
+      "discriminator": [
+        42,
+        189,
+        6,
+        136,
+        24,
+        96,
+        191,
+        130
+      ],
+      "accounts": [
+        {
+          "name": "global_state",
+          "docs": [
+            "Global config (PDA)"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          },
+          "relations": [
+            "controller"
+          ]
+        },
+        {
+          "name": "controller",
+          "docs": [
+            "LP token controller for this mint"
+          ],
+          "writable": true
+        },
+        {
+          "name": "lp_mint",
+          "docs": [
+            "GM token mint to be staked (market token)"
+          ]
+        },
+        {
+          "name": "position",
+          "docs": [
+            "Position PDA to initialize"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  115,
+                  105,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "controller"
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "arg",
+                "path": "position_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "position_vault",
+          "docs": [
+            "Vault token account (PDA) to hold staked GM tokens"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "position"
+              }
+            ]
+          }
+        },
+        {
+          "name": "gt_store",
+          "docs": [
+            "The GT Store account (mutated by CPI)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "gt_program",
+          "docs": [
+            "GT program"
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        },
+        {
+          "name": "owner",
+          "docs": [
+            "Owner paying rent and recorded as position owner"
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "user_lp_token",
+          "docs": [
+            "User's GM token account"
+          ],
+          "writable": true
+        },
+        {
+          "name": "token_map"
+        },
+        {
+          "name": "oracle",
+          "writable": true
+        },
+        {
+          "name": "market"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "position_id",
+          "type": "u64"
+        },
+        {
+          "name": "gm_staked_amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "transfer_authority",
+      "docs": [
+        "Propose transferring program authority to `new_authority` (two-step handover)."
+      ],
+      "discriminator": [
+        48,
+        169,
+        76,
+        72,
+        229,
+        180,
+        55,
+        161
+      ],
+      "accounts": [
+        {
+          "name": "global_state",
+          "docs": [
+            "Global config (PDA). The `authority` signer must match `global_state.authority`."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "docs": [
+            "Current authority proposing a transfer"
+          ],
+          "signer": true,
+          "relations": [
+            "global_state"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "new_authority",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "unstake_lp",
+      "docs": [
+        "Unstake LP: first claim rewards, then either close the position (full) or update proportionally (partial)"
+      ],
+      "discriminator": [
+        114,
+        4,
+        7,
+        206,
+        251,
+        176,
+        233,
+        119
+      ],
+      "accounts": [
+        {
+          "name": "global_state",
+          "docs": [
+            "Global config (PDA)"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          },
+          "relations": [
+            "controller"
+          ]
+        },
+        {
+          "name": "controller",
+          "docs": [
+            "LP token controller for this position's mint"
+          ],
+          "writable": true,
+          "relations": [
+            "position"
+          ]
+        },
+        {
+          "name": "lp_mint",
+          "docs": [
+            "LP token mint for this position (must match position.lp_mint)"
+          ]
+        },
+        {
+          "name": "store",
+          "docs": [
+            "The GT Store account (mutated by CPI)"
+          ],
+          "writable": true,
+          "relations": [
+            "gt_user"
+          ]
+        },
+        {
+          "name": "gt_program",
+          "docs": [
+            "The GT program"
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        },
+        {
+          "name": "position",
+          "docs": [
+            "Position tied to (controller, owner, position_id)"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  115,
+                  105,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "controller"
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "arg",
+                "path": "position_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "position_vault",
+          "docs": [
+            "Vault holding staked LP tokens (PDA)"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "position"
+              }
+            ]
+          }
+        },
+        {
+          "name": "owner",
+          "docs": [
+            "Owner of the position"
+          ],
+          "signer": true,
+          "relations": [
+            "position",
+            "gt_user"
+          ]
+        },
+        {
+          "name": "gt_user",
+          "docs": [
+            "GT User account (mut) managed by the GT program; must correspond to (store, owner)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "user_lp_token",
+          "docs": [
+            "Destination LP token account to receive unstaked tokens"
+          ],
+          "writable": true
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "_position_id",
+          "type": "u64"
+        },
+        {
+          "name": "unstake_amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "update_apy_gradient_range",
+      "docs": [
+        "Update APY gradient for a contiguous range of buckets",
+        "",
+        "Note: APY changes are applied retroactively and affect all existing positions.",
+        "Rewards are calculated using current APY gradients at claim/unstake time."
+      ],
+      "discriminator": [
+        11,
+        49,
+        254,
+        237,
+        67,
+        100,
+        145,
+        61
+      ],
+      "accounts": [
+        {
+          "name": "global_state",
+          "docs": [
+            "Global config (PDA). The `authority` signer must match `global_state.authority`."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "docs": [
+            "Current authority"
+          ],
+          "signer": true,
+          "relations": [
+            "global_state"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "start_bucket",
+          "type": "u8"
+        },
+        {
+          "name": "end_bucket",
+          "type": "u8"
+        },
+        {
+          "name": "apy_values",
+          "type": {
+            "vec": "u128"
+          }
+        }
+      ]
+    },
+    {
+      "name": "update_apy_gradient_sparse",
+      "docs": [
+        "Update APY gradient with a sparse table (only non-zero buckets)",
+        "",
+        "Note: APY changes are applied retroactively and affect all existing positions.",
+        "Rewards are calculated using current APY gradients at claim/unstake time."
+      ],
+      "discriminator": [
+        130,
+        192,
+        17,
+        128,
+        242,
+        224,
+        186,
+        254
+      ],
+      "accounts": [
+        {
+          "name": "global_state",
+          "docs": [
+            "Global config (PDA). The `authority` signer must match `global_state.authority`."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "docs": [
+            "Current authority"
+          ],
+          "signer": true,
+          "relations": [
+            "global_state"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "bucket_indices",
+          "type": "bytes"
+        },
+        {
+          "name": "apy_values",
+          "type": {
+            "vec": "u128"
+          }
+        }
+      ]
+    },
+    {
+      "name": "update_min_stake_value",
+      "docs": [
+        "Update the minimum stake value (1e20 scaled)"
+      ],
+      "discriminator": [
+        226,
+        7,
+        46,
+        39,
+        38,
+        22,
+        164,
+        122
+      ],
+      "accounts": [
+        {
+          "name": "global_state",
+          "docs": [
+            "Global config (PDA). The `authority` signer must match `global_state.authority`."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "docs": [
+            "Current authority"
+          ],
+          "signer": true,
+          "relations": [
+            "global_state"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "new_min_stake_value",
+          "type": "u128"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "GlobalState",
+      "discriminator": [
+        163,
+        46,
+        74,
+        168,
+        216,
+        123,
+        133,
+        98
+      ]
+    },
+    {
+      "name": "Glv",
+      "discriminator": [
+        136,
+        174,
+        157,
+        179,
+        203,
+        155,
+        156,
+        243
+      ]
+    },
+    {
+      "name": "LpTokenController",
+      "discriminator": [
+        210,
+        163,
+        6,
+        69,
+        215,
+        217,
+        239,
+        57
+      ]
+    },
+    {
+      "name": "Market",
+      "discriminator": [
+        219,
+        190,
+        213,
+        55,
+        0,
+        227,
+        198,
+        154
+      ]
+    },
+    {
+      "name": "Oracle",
+      "discriminator": [
+        139,
+        194,
+        131,
+        179,
+        140,
+        179,
+        229,
+        244
+      ]
+    },
+    {
+      "name": "Position",
+      "discriminator": [
+        170,
+        188,
+        143,
+        228,
+        122,
+        64,
+        247,
+        208
+      ]
+    },
+    {
+      "name": "Store",
+      "discriminator": [
+        130,
+        48,
+        247,
+        244,
+        182,
+        191,
+        30,
+        26
+      ]
+    },
+    {
+      "name": "TokenMapHeader",
+      "discriminator": [
+        107,
+        43,
+        27,
+        24,
+        245,
+        62,
+        145,
+        126
+      ]
+    },
+    {
+      "name": "UserHeader",
+      "discriminator": [
+        12,
+        78,
+        211,
+        244,
+        225,
+        77,
+        209,
+        249
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "Unauthorized",
+      "msg": "Unauthorized operation"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidArgument",
+      "msg": "Invalid argument"
+    },
+    {
+      "code": 6002,
+      "name": "MathOverflow",
+      "msg": "Math overflow"
+    },
+    {
+      "code": 6003,
+      "name": "ApyTooLarge",
+      "msg": "APY value exceeds the configured maximum"
+    },
+    {
+      "code": 6004,
+      "name": "ClaimDisabled",
+      "msg": "Claim is disabled by protocol policy"
+    },
+    {
+      "code": 6005,
+      "name": "ControllerNotFound",
+      "msg": "LP token controller not found"
+    },
+    {
+      "code": 6006,
+      "name": "StakingDisabled",
+      "msg": "Staking is disabled for this LP token"
+    },
+    {
+      "code": 6007,
+      "name": "AlreadyDisabled",
+      "msg": "Controller is already disabled"
+    }
+  ],
+  "types": [
+    {
+      "name": "Addresses",
+      "docs": [
+        "Addresses."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "holding",
+            "type": "pubkey"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "pubkey",
+                30
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Amounts",
+      "docs": [
+        "Amounts."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "claimable_time_window",
+            "type": "u64"
+          },
+          {
+            "name": "recent_time_window",
+            "type": "u64"
+          },
+          {
+            "name": "request_expiration",
+            "type": "u64"
+          },
+          {
+            "name": "oracle_max_age",
+            "type": "u64"
+          },
+          {
+            "name": "oracle_max_timestamp_range",
+            "type": "u64"
+          },
+          {
+            "name": "oracle_max_future_timestamp_excess",
+            "type": "u64"
+          },
+          {
+            "name": "adl_prices_max_staleness",
+            "type": "u64"
+          },
+          {
+            "name": "min_position_age_for_manual_close",
+            "type": "u64"
+          },
+          {
+            "name": "market_closed_prices_max_staleness",
+            "type": "u64"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u64",
+                124
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Clocks",
+      "docs": [
+        "Market clocks."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                8
+              ]
+            }
+          },
+          {
+            "name": "rev",
+            "type": "u64"
+          },
+          {
+            "name": "price_impact_distribution",
+            "type": "i64"
+          },
+          {
+            "name": "borrowing",
+            "type": "i64"
+          },
+          {
+            "name": "funding",
+            "type": "i64"
+          },
+          {
+            "name": "adl_for_long",
+            "type": "i64"
+          },
+          {
+            "name": "adl_for_short",
+            "type": "i64"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "i64",
+                3
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "DisabledFeatures",
+      "docs": [
+        "Disabled Features State."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "map",
+            "type": {
+              "defined": {
+                "name": "DisabledMap"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "DisabledMap",
+      "docs": [
+        "Fixed size map generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "data",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "DisabledMapEntry"
+                  }
+                },
+                64
+              ]
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                0
+              ]
+            }
+          },
+          {
+            "name": "count",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DisabledMapEntry",
+      "docs": [
+        "Entry."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "key",
+            "type": {
+              "array": [
+                "u8",
+                2
+              ]
+            }
+          },
+          {
+            "name": "value",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Factors",
+      "docs": [
+        "Factors."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "oracle_ref_price_deviation",
+            "type": "u128"
+          },
+          {
+            "name": "order_fee_discount_for_referred_user",
+            "type": "u128"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u128",
+                64
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "GlobalState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "docs": [
+              "Program administrator with governance privileges"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "pending_authority",
+            "docs": [
+              "Pending authority awaiting acceptance (Pubkey::default() if none)"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "apy_gradient",
+            "docs": [
+              "APY gradient buckets (APY_BUCKETS), each is 1e20-scaled APR for week buckets [0-1), [1-2), ..., [APY_BUCKETS, +inf)"
+            ],
+            "type": {
+              "array": [
+                "u128",
+                53
+              ]
+            }
+          },
+          {
+            "name": "min_stake_value",
+            "docs": [
+              "Minimum stake value in USD scaled by 1e20"
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "claim_enabled",
+            "docs": [
+              "If true, LPs may call `claim_gt` at any time without unstaking"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "PDA bump for this GlobalState (derived from seed [GLOBAL_STATE_SEED])"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "pricing_staleness_seconds",
+            "docs": [
+              "Price staleness configuration in seconds"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "reserved",
+            "type": "bytes"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Glv",
+      "docs": [
+        "Glv."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "bump_bytes",
+            "type": {
+              "array": [
+                "u8",
+                1
+              ]
+            }
+          },
+          {
+            "name": "padding_0",
+            "type": {
+              "array": [
+                "u8",
+                3
+              ]
+            }
+          },
+          {
+            "name": "index",
+            "type": "u16"
+          },
+          {
+            "name": "store",
+            "type": "pubkey"
+          },
+          {
+            "name": "glv_token",
+            "type": "pubkey"
+          },
+          {
+            "name": "long_token",
+            "type": "pubkey"
+          },
+          {
+            "name": "short_token",
+            "type": "pubkey"
+          },
+          {
+            "name": "shift_last_executed_at",
+            "type": "i64"
+          },
+          {
+            "name": "min_tokens_for_first_deposit",
+            "type": "u64"
+          },
+          {
+            "name": "shift_min_interval_secs",
+            "type": "u32"
+          },
+          {
+            "name": "padding_1",
+            "type": {
+              "array": [
+                "u8",
+                4
+              ]
+            }
+          },
+          {
+            "name": "shift_max_price_impact_factor",
+            "type": "u128"
+          },
+          {
+            "name": "shift_min_value",
+            "type": "u128"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                256
+              ]
+            }
+          },
+          {
+            "name": "markets",
+            "type": {
+              "defined": {
+                "name": "GlvMarkets"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "GlvMarketConfig",
+      "docs": [
+        "Market Config for GLV."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "max_amount",
+            "type": "u64"
+          },
+          {
+            "name": "flags",
+            "type": {
+              "defined": {
+                "name": "GlvMarketFlagContainer"
+              }
+            }
+          },
+          {
+            "name": "padding_0",
+            "type": {
+              "array": [
+                "u8",
+                7
+              ]
+            }
+          },
+          {
+            "name": "max_value",
+            "type": "u128"
+          },
+          {
+            "name": "balance",
+            "type": "u64"
+          },
+          {
+            "name": "padding_1",
+            "type": {
+              "array": [
+                "u8",
+                8
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "GlvMarketFlagContainer",
+      "docs": [
+        "Flags container generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "value",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GlvMarkets",
+      "docs": [
+        "Fixed size map generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "data",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "GlvMarketsEntry"
+                  }
+                },
+                96
+              ]
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                12
+              ]
+            }
+          },
+          {
+            "name": "count",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GlvMarketsEntry",
+      "docs": [
+        "Entry."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "key",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "value",
+            "type": {
+              "defined": {
+                "name": "GlvMarketConfig"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "GtState",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "decimals",
+            "type": "u8"
+          },
+          {
+            "name": "padding_0",
+            "type": {
+              "array": [
+                "u8",
+                7
+              ]
+            }
+          },
+          {
+            "name": "last_minted_at",
+            "type": "i64"
+          },
+          {
+            "name": "total_minted",
+            "type": "u64"
+          },
+          {
+            "name": "grow_step_amount",
+            "type": "u64"
+          },
+          {
+            "name": "grow_steps",
+            "type": "u64"
+          },
+          {
+            "name": "supply",
+            "type": "u64"
+          },
+          {
+            "name": "last_cumulative_inv_cost_factor_ts",
+            "type": "i64"
+          },
+          {
+            "name": "gt_vault",
+            "type": "u64"
+          },
+          {
+            "name": "cumulative_inv_cost_factor",
+            "type": "u128"
+          },
+          {
+            "name": "minting_cost_grow_factor",
+            "type": "u128"
+          },
+          {
+            "name": "minting_cost",
+            "type": "u128"
+          },
+          {
+            "name": "padding_3",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "exchange_time_window",
+            "type": "u32"
+          },
+          {
+            "name": "padding_4",
+            "type": {
+              "array": [
+                "u8",
+                12
+              ]
+            }
+          },
+          {
+            "name": "max_rank",
+            "type": "u64"
+          },
+          {
+            "name": "ranks",
+            "type": {
+              "array": [
+                "u64",
+                15
+              ]
+            }
+          },
+          {
+            "name": "order_fee_discount_factors",
+            "type": {
+              "array": [
+                "u128",
+                16
+              ]
+            }
+          },
+          {
+            "name": "referral_reward_factors",
+            "type": {
+              "array": [
+                "u128",
+                16
+              ]
+            }
+          },
+          {
+            "name": "padding_5",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                256
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Indexer",
+      "docs": [
+        "Market indexer."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "trade_count",
+            "type": "u64"
+          },
+          {
+            "name": "deposit_count",
+            "type": "u64"
+          },
+          {
+            "name": "withdrawal_count",
+            "type": "u64"
+          },
+          {
+            "name": "order_count",
+            "type": "u64"
+          },
+          {
+            "name": "shift_count",
+            "type": "u64"
+          },
+          {
+            "name": "glv_deposit_count",
+            "type": "u64"
+          },
+          {
+            "name": "glv_withdrawal_count",
+            "type": "u64"
+          },
+          {
+            "name": "padding_0",
+            "type": {
+              "array": [
+                "u8",
+                8
+              ]
+            }
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                128
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "LpTokenController",
+      "docs": [
+        "LP Token Controller for managing specific LP token staking"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "global_state",
+            "docs": [
+              "Associated global_state"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "lp_token_mint",
+            "docs": [
+              "Corresponding LP token mint"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "controller_index",
+            "docs": [
+              "Controller index to allow multiple controllers per token"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "total_positions",
+            "docs": [
+              "Current number of active positions"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "is_enabled",
+            "docs": [
+              "Whether staking is enabled (default true, irreversible when set to false)"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "disabled_at",
+            "docs": [
+              "Timestamp when disabled (only valid when is_enabled = false)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "disabled_cum_inv_cost",
+            "docs": [
+              "Cumulative inverse cost factor snapshot when disabled (only valid when is_enabled = false)"
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "PDA bump"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "reserved",
+            "type": "bytes"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Market",
+      "docs": [
+        "Market."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "flags",
+            "type": {
+              "defined": {
+                "name": "MarketFlagContainer"
+              }
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                5
+              ]
+            }
+          },
+          {
+            "name": "closed_state_updated_at",
+            "type": "i64"
+          },
+          {
+            "name": "name",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          },
+          {
+            "name": "meta",
+            "type": {
+              "defined": {
+                "name": "MarketMeta"
+              }
+            }
+          },
+          {
+            "name": "store",
+            "type": "pubkey"
+          },
+          {
+            "name": "config",
+            "type": {
+              "defined": {
+                "name": "MarketConfig"
+              }
+            }
+          },
+          {
+            "name": "indexer",
+            "type": {
+              "defined": {
+                "name": "Indexer"
+              }
+            }
+          },
+          {
+            "name": "state",
+            "type": {
+              "defined": {
+                "name": "State"
+              }
+            }
+          },
+          {
+            "name": "buffer",
+            "type": {
+              "defined": {
+                "name": "RevertibleBuffer"
+              }
+            }
+          },
+          {
+            "name": "virtual_inventory_for_swaps",
+            "type": "pubkey"
+          },
+          {
+            "name": "virtual_inventory_for_positions",
+            "type": "pubkey"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                192
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "MarketConfig",
+      "docs": [
+        "Market Config."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "flag",
+            "type": {
+              "defined": {
+                "name": "MarketConfigFlagContainer"
+              }
+            }
+          },
+          {
+            "name": "swap_impact_exponent",
+            "type": "u128"
+          },
+          {
+            "name": "swap_impact_positive_factor",
+            "type": "u128"
+          },
+          {
+            "name": "swap_impact_negative_factor",
+            "type": "u128"
+          },
+          {
+            "name": "swap_fee_receiver_factor",
+            "type": "u128"
+          },
+          {
+            "name": "swap_fee_factor_for_positive_impact",
+            "type": "u128"
+          },
+          {
+            "name": "swap_fee_factor_for_negative_impact",
+            "type": "u128"
+          },
+          {
+            "name": "min_position_size_usd",
+            "type": "u128"
+          },
+          {
+            "name": "min_collateral_value",
+            "type": "u128"
+          },
+          {
+            "name": "min_collateral_factor",
+            "type": "u128"
+          },
+          {
+            "name": "min_collateral_factor_for_open_interest_multiplier_for_long",
+            "type": "u128"
+          },
+          {
+            "name": "min_collateral_factor_for_open_interest_multiplier_for_short",
+            "type": "u128"
+          },
+          {
+            "name": "max_positive_position_impact_factor",
+            "type": "u128"
+          },
+          {
+            "name": "max_negative_position_impact_factor",
+            "type": "u128"
+          },
+          {
+            "name": "max_position_impact_factor_for_liquidations",
+            "type": "u128"
+          },
+          {
+            "name": "position_impact_exponent",
+            "type": "u128"
+          },
+          {
+            "name": "position_impact_positive_factor",
+            "type": "u128"
+          },
+          {
+            "name": "position_impact_negative_factor",
+            "type": "u128"
+          },
+          {
+            "name": "order_fee_receiver_factor",
+            "type": "u128"
+          },
+          {
+            "name": "order_fee_factor_for_positive_impact",
+            "type": "u128"
+          },
+          {
+            "name": "order_fee_factor_for_negative_impact",
+            "type": "u128"
+          },
+          {
+            "name": "liquidation_fee_receiver_factor",
+            "type": "u128"
+          },
+          {
+            "name": "liquidation_fee_factor",
+            "type": "u128"
+          },
+          {
+            "name": "position_impact_distribute_factor",
+            "type": "u128"
+          },
+          {
+            "name": "min_position_impact_pool_amount",
+            "type": "u128"
+          },
+          {
+            "name": "borrowing_fee_receiver_factor",
+            "type": "u128"
+          },
+          {
+            "name": "borrowing_fee_factor_for_long",
+            "type": "u128"
+          },
+          {
+            "name": "borrowing_fee_factor_for_short",
+            "type": "u128"
+          },
+          {
+            "name": "borrowing_fee_exponent_for_long",
+            "type": "u128"
+          },
+          {
+            "name": "borrowing_fee_exponent_for_short",
+            "type": "u128"
+          },
+          {
+            "name": "borrowing_fee_optimal_usage_factor_for_long",
+            "type": "u128"
+          },
+          {
+            "name": "borrowing_fee_optimal_usage_factor_for_short",
+            "type": "u128"
+          },
+          {
+            "name": "borrowing_fee_base_factor_for_long",
+            "type": "u128"
+          },
+          {
+            "name": "borrowing_fee_base_factor_for_short",
+            "type": "u128"
+          },
+          {
+            "name": "borrowing_fee_above_optimal_usage_factor_for_long",
+            "type": "u128"
+          },
+          {
+            "name": "borrowing_fee_above_optimal_usage_factor_for_short",
+            "type": "u128"
+          },
+          {
+            "name": "funding_fee_exponent",
+            "type": "u128"
+          },
+          {
+            "name": "funding_fee_factor",
+            "type": "u128"
+          },
+          {
+            "name": "funding_fee_max_factor_per_second",
+            "type": "u128"
+          },
+          {
+            "name": "funding_fee_min_factor_per_second",
+            "type": "u128"
+          },
+          {
+            "name": "funding_fee_increase_factor_per_second",
+            "type": "u128"
+          },
+          {
+            "name": "funding_fee_decrease_factor_per_second",
+            "type": "u128"
+          },
+          {
+            "name": "funding_fee_threshold_for_stable_funding",
+            "type": "u128"
+          },
+          {
+            "name": "funding_fee_threshold_for_decrease_funding",
+            "type": "u128"
+          },
+          {
+            "name": "reserve_factor",
+            "type": "u128"
+          },
+          {
+            "name": "open_interest_reserve_factor",
+            "type": "u128"
+          },
+          {
+            "name": "max_pnl_factor_for_long_deposit",
+            "type": "u128"
+          },
+          {
+            "name": "max_pnl_factor_for_short_deposit",
+            "type": "u128"
+          },
+          {
+            "name": "max_pnl_factor_for_long_withdrawal",
+            "type": "u128"
+          },
+          {
+            "name": "max_pnl_factor_for_short_withdrawal",
+            "type": "u128"
+          },
+          {
+            "name": "max_pnl_factor_for_long_trader",
+            "type": "u128"
+          },
+          {
+            "name": "max_pnl_factor_for_short_trader",
+            "type": "u128"
+          },
+          {
+            "name": "max_pnl_factor_for_long_adl",
+            "type": "u128"
+          },
+          {
+            "name": "max_pnl_factor_for_short_adl",
+            "type": "u128"
+          },
+          {
+            "name": "min_pnl_factor_after_long_adl",
+            "type": "u128"
+          },
+          {
+            "name": "min_pnl_factor_after_short_adl",
+            "type": "u128"
+          },
+          {
+            "name": "max_pool_amount_for_long_token",
+            "type": "u128"
+          },
+          {
+            "name": "max_pool_amount_for_short_token",
+            "type": "u128"
+          },
+          {
+            "name": "max_pool_value_for_deposit_for_long_token",
+            "type": "u128"
+          },
+          {
+            "name": "max_pool_value_for_deposit_for_short_token",
+            "type": "u128"
+          },
+          {
+            "name": "max_open_interest_for_long",
+            "type": "u128"
+          },
+          {
+            "name": "max_open_interest_for_short",
+            "type": "u128"
+          },
+          {
+            "name": "min_tokens_for_first_deposit",
+            "type": "u128"
+          },
+          {
+            "name": "min_collateral_factor_for_liquidation",
+            "type": "u128"
+          },
+          {
+            "name": "market_closed_min_collateral_factor_for_liquidation",
+            "type": "u128"
+          },
+          {
+            "name": "market_closed_borrowing_fee_base_factor",
+            "type": "u128"
+          },
+          {
+            "name": "market_closed_borrowing_fee_above_optimal_usage_factor",
+            "type": "u128"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u128",
+                28
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "MarketConfigFactorContainer",
+      "docs": [
+        "Flags container generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "value",
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MarketConfigFlagContainer",
+      "docs": [
+        "Flags container generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "value",
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MarketConfigPermissions",
+      "docs": [
+        "Permission store related to market config."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "updatable_market_config_flags",
+            "type": {
+              "defined": {
+                "name": "MarketConfigFlagContainer"
+              }
+            }
+          },
+          {
+            "name": "updatable_market_config_factors",
+            "type": {
+              "defined": {
+                "name": "MarketConfigFactorContainer"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "MarketFlagContainer",
+      "docs": [
+        "Flags container generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "value",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MarketMeta",
+      "docs": [
+        "Market Metadata."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "market_token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "index_token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "long_token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "short_token_mint",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Members",
+      "docs": [
+        "Fixed size map generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "data",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "MembersEntry"
+                  }
+                },
+                64
+              ]
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                0
+              ]
+            }
+          },
+          {
+            "name": "count",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MembersEntry",
+      "docs": [
+        "Entry."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "key",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "value",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Oracle",
+      "docs": [
+        "Oracle Account."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u8"
+          },
+          {
+            "name": "padding_0",
+            "type": {
+              "array": [
+                "u8",
+                7
+              ]
+            }
+          },
+          {
+            "name": "store",
+            "type": "pubkey"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "min_oracle_ts",
+            "type": "i64"
+          },
+          {
+            "name": "max_oracle_ts",
+            "type": "i64"
+          },
+          {
+            "name": "min_oracle_slot",
+            "type": "u64"
+          },
+          {
+            "name": "primary",
+            "type": {
+              "defined": {
+                "name": "PriceMap"
+              }
+            }
+          },
+          {
+            "name": "flags",
+            "type": {
+              "defined": {
+                "name": "OracleFlagContainer"
+              }
+            }
+          },
+          {
+            "name": "padding_1",
+            "type": {
+              "array": [
+                "u8",
+                3
+              ]
+            }
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                256
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "OracleFlagContainer",
+      "docs": [
+        "Flags container generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "value",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "OraclePriceFlagContainer",
+      "docs": [
+        "Flags container generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "value",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "OtherState",
+      "docs": [
+        "Market State."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                16
+              ]
+            }
+          },
+          {
+            "name": "rev",
+            "type": "u64"
+          },
+          {
+            "name": "trade_count",
+            "type": "u64"
+          },
+          {
+            "name": "long_token_balance",
+            "type": "u64"
+          },
+          {
+            "name": "short_token_balance",
+            "type": "u64"
+          },
+          {
+            "name": "funding_factor_per_second",
+            "type": "i128"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                256
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Pool",
+      "docs": [
+        "A pool for market."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "is_pure",
+            "type": "u8"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                15
+              ]
+            }
+          },
+          {
+            "name": "long_token_amount",
+            "type": "u128"
+          },
+          {
+            "name": "short_token_amount",
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PoolStorage",
+      "docs": [
+        "A pool storage for market."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "rev",
+            "type": "u64"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                8
+              ]
+            }
+          },
+          {
+            "name": "pool",
+            "type": {
+              "defined": {
+                "name": "Pool"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Pools",
+      "docs": [
+        "Market Pools."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "primary",
+            "type": {
+              "defined": {
+                "name": "PoolStorage"
+              }
+            }
+          },
+          {
+            "name": "swap_impact",
+            "type": {
+              "defined": {
+                "name": "PoolStorage"
+              }
+            }
+          },
+          {
+            "name": "claimable_fee",
+            "type": {
+              "defined": {
+                "name": "PoolStorage"
+              }
+            }
+          },
+          {
+            "name": "open_interest_for_long",
+            "type": {
+              "defined": {
+                "name": "PoolStorage"
+              }
+            }
+          },
+          {
+            "name": "open_interest_for_short",
+            "type": {
+              "defined": {
+                "name": "PoolStorage"
+              }
+            }
+          },
+          {
+            "name": "open_interest_in_tokens_for_long",
+            "type": {
+              "defined": {
+                "name": "PoolStorage"
+              }
+            }
+          },
+          {
+            "name": "open_interest_in_tokens_for_short",
+            "type": {
+              "defined": {
+                "name": "PoolStorage"
+              }
+            }
+          },
+          {
+            "name": "position_impact",
+            "type": {
+              "defined": {
+                "name": "PoolStorage"
+              }
+            }
+          },
+          {
+            "name": "borrowing_factor",
+            "type": {
+              "defined": {
+                "name": "PoolStorage"
+              }
+            }
+          },
+          {
+            "name": "funding_amount_per_size_for_long",
+            "type": {
+              "defined": {
+                "name": "PoolStorage"
+              }
+            }
+          },
+          {
+            "name": "funding_amount_per_size_for_short",
+            "type": {
+              "defined": {
+                "name": "PoolStorage"
+              }
+            }
+          },
+          {
+            "name": "claimable_funding_amount_per_size_for_long",
+            "type": {
+              "defined": {
+                "name": "PoolStorage"
+              }
+            }
+          },
+          {
+            "name": "claimable_funding_amount_per_size_for_short",
+            "type": {
+              "defined": {
+                "name": "PoolStorage"
+              }
+            }
+          },
+          {
+            "name": "collateral_sum_for_long",
+            "type": {
+              "defined": {
+                "name": "PoolStorage"
+              }
+            }
+          },
+          {
+            "name": "collateral_sum_for_short",
+            "type": {
+              "defined": {
+                "name": "PoolStorage"
+              }
+            }
+          },
+          {
+            "name": "total_borrowing",
+            "type": {
+              "defined": {
+                "name": "PoolStorage"
+              }
+            }
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "PoolStorage"
+                  }
+                },
+                16
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Position",
+      "docs": [
+        "Position account to persist LP stake data and snapshot stake-time values"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "docs": [
+              "Owner of this LP position"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "controller",
+            "docs": [
+              "LP token controller that manages this position"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "lp_mint",
+            "docs": [
+              "LP token mint for this position"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "vault",
+            "docs": [
+              "PDA token account that escrows staked LP tokens"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "position_id",
+            "docs": [
+              "Position id to allow multiple positions per owner"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "staked_amount",
+            "docs": [
+              "Staked LP amount at stake time (raw amount as provided by caller; optional semantics)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "staked_value_usd",
+            "docs": [
+              "Staked value in USD (scaled by 1e20) captured at stake time"
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "stake_start_time",
+            "docs": [
+              "Stake start unix timestamp (seconds)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "cum_inv_cost",
+            "docs": [
+              "Cumulative inverse-cost factor snapshot (last claim/stake checkpoint)"
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "PDA bump"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "reserved",
+            "type": "bytes"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PriceMap",
+      "docs": [
+        "Fixed size map generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "data",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "PriceMapEntry"
+                  }
+                },
+                512
+              ]
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                0
+              ]
+            }
+          },
+          {
+            "name": "count",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PriceMapEntry",
+      "docs": [
+        "Entry."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "key",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "value",
+            "type": {
+              "defined": {
+                "name": "SmallPrices"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Referral",
+      "docs": [
+        "Referral."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "referrer",
+            "type": "pubkey"
+          },
+          {
+            "name": "code",
+            "type": "pubkey"
+          },
+          {
+            "name": "referee_count",
+            "type": "u128"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "RevertibleBuffer",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "rev",
+            "type": "u64"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                8
+              ]
+            }
+          },
+          {
+            "name": "state",
+            "type": {
+              "defined": {
+                "name": "State"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "RoleMap",
+      "docs": [
+        "Fixed size map generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "data",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "RoleMapEntry"
+                  }
+                },
+                32
+              ]
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                0
+              ]
+            }
+          },
+          {
+            "name": "count",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RoleMapEntry",
+      "docs": [
+        "Entry."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "key",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "value",
+            "type": {
+              "defined": {
+                "name": "RoleMetadata"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "RoleMetadata",
+      "docs": [
+        "Role Metadata."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "enabled",
+            "type": "u8"
+          },
+          {
+            "name": "index",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RoleStore",
+      "docs": [
+        "Roles Store."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "roles",
+            "type": {
+              "defined": {
+                "name": "RoleMap"
+              }
+            }
+          },
+          {
+            "name": "members",
+            "type": {
+              "defined": {
+                "name": "Members"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "SmallPrices",
+      "docs": [
+        "Zero-copy price structure for storing min max prices."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "decimal_multiplier",
+            "type": "u8"
+          },
+          {
+            "name": "flags",
+            "type": {
+              "defined": {
+                "name": "OraclePriceFlagContainer"
+              }
+            }
+          },
+          {
+            "name": "padding_0",
+            "type": {
+              "array": [
+                "u8",
+                2
+              ]
+            }
+          },
+          {
+            "name": "min",
+            "type": "u32"
+          },
+          {
+            "name": "max",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pools",
+            "type": {
+              "defined": {
+                "name": "Pools"
+              }
+            }
+          },
+          {
+            "name": "clocks",
+            "type": {
+              "defined": {
+                "name": "Clocks"
+              }
+            }
+          },
+          {
+            "name": "other",
+            "type": {
+              "defined": {
+                "name": "OtherState"
+              }
+            }
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                1024
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Store",
+      "docs": [
+        "Data Store."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": {
+              "array": [
+                "u8",
+                1
+              ]
+            }
+          },
+          {
+            "name": "key_seed",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "key",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "padding_0",
+            "type": {
+              "array": [
+                "u8",
+                6
+              ]
+            }
+          },
+          {
+            "name": "role",
+            "type": {
+              "defined": {
+                "name": "RoleStore"
+              }
+            }
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "next_authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_map",
+            "type": "pubkey"
+          },
+          {
+            "name": "disabled_features",
+            "type": {
+              "defined": {
+                "name": "DisabledFeatures"
+              }
+            }
+          },
+          {
+            "name": "padding_1",
+            "type": {
+              "array": [
+                "u8",
+                4
+              ]
+            }
+          },
+          {
+            "name": "last_restarted_slot",
+            "type": "u64"
+          },
+          {
+            "name": "treasury",
+            "type": {
+              "defined": {
+                "name": "Treasury"
+              }
+            }
+          },
+          {
+            "name": "amount",
+            "type": {
+              "defined": {
+                "name": "Amounts"
+              }
+            }
+          },
+          {
+            "name": "padding_2",
+            "type": {
+              "array": [
+                "u8",
+                8
+              ]
+            }
+          },
+          {
+            "name": "factor",
+            "type": {
+              "defined": {
+                "name": "Factors"
+              }
+            }
+          },
+          {
+            "name": "address",
+            "type": {
+              "defined": {
+                "name": "Addresses"
+              }
+            }
+          },
+          {
+            "name": "gt",
+            "type": {
+              "defined": {
+                "name": "GtState"
+              }
+            }
+          },
+          {
+            "name": "market_config_permissions",
+            "type": {
+              "defined": {
+                "name": "MarketConfigPermissions"
+              }
+            }
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                992
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenMapHeader",
+      "docs": [
+        "Header of `TokenMap`."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u8"
+          },
+          {
+            "name": "padding_0",
+            "type": {
+              "array": [
+                "u8",
+                7
+              ]
+            }
+          },
+          {
+            "name": "store",
+            "type": "pubkey"
+          },
+          {
+            "name": "tokens",
+            "type": {
+              "defined": {
+                "name": "Tokens"
+              }
+            }
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tokens",
+      "docs": [
+        "Fixed size map generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "data",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "TokensEntry"
+                  }
+                },
+                256
+              ]
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                0
+              ]
+            }
+          },
+          {
+            "name": "count",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokensEntry",
+      "docs": [
+        "Entry."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "key",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "value",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Treasury",
+      "docs": [
+        "Treasury."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "receiver",
+            "type": "pubkey"
+          },
+          {
+            "name": "next_receiver",
+            "type": "pubkey"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                128
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "UserFlagContainer",
+      "docs": [
+        "Flags container generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "value",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UserGtState",
+      "docs": [
+        "GT State."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "rank",
+            "type": "u8"
+          },
+          {
+            "name": "padding_0",
+            "type": {
+              "array": [
+                "u8",
+                7
+              ]
+            }
+          },
+          {
+            "name": "last_minted_at",
+            "type": "i64"
+          },
+          {
+            "name": "total_minted",
+            "type": "u64"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "padding_1",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "paid_fee_value",
+            "type": "u128"
+          },
+          {
+            "name": "minted_fee_value",
+            "type": "u128"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "UserHeader",
+      "docs": [
+        "Header of `User` Account."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "flags",
+            "type": {
+              "defined": {
+                "name": "UserFlagContainer"
+              }
+            }
+          },
+          {
+            "name": "padding_0",
+            "type": {
+              "array": [
+                "u8",
+                13
+              ]
+            }
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "store",
+            "type": "pubkey"
+          },
+          {
+            "name": "referral",
+            "type": {
+              "defined": {
+                "name": "Referral"
+              }
+            }
+          },
+          {
+            "name": "gt",
+            "type": {
+              "defined": {
+                "name": "UserGtState"
+              }
+            }
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                128
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "constants": [
+    {
+      "name": "APY_BUCKETS_U8",
+      "type": "u8",
+      "value": "53"
+    },
+    {
+      "name": "APY_LAST_INDEX_U8",
+      "type": "u8",
+      "value": "52"
+    },
+    {
+      "name": "APY_MAX",
+      "type": "u128",
+      "value": "200000000000000000000"
+    },
+    {
+      "name": "DEFAULT_PRICING_STALENESS_SECONDS",
+      "type": "u32",
+      "value": "300"
+    },
+    {
+      "name": "GLOBAL_STATE_RESERVED_LEN",
+      "type": "u32",
+      "value": "256"
+    },
+    {
+      "name": "GLOBAL_STATE_SEED",
+      "type": "bytes",
+      "value": "[103, 108, 111, 98, 97, 108, 95, 115, 116, 97, 116, 101]"
+    },
+    {
+      "name": "LP_TOKEN_CONTROLLER_RESERVED_LEN",
+      "type": "u32",
+      "value": "256"
+    },
+    {
+      "name": "LP_TOKEN_CONTROLLER_SEED",
+      "type": "bytes",
+      "value": "[108, 112, 95, 116, 111, 107, 101, 110, 95, 99, 111, 110, 116, 114, 111, 108, 108, 101, 114]"
+    },
+    {
+      "name": "POSITION_RESERVED_LEN",
+      "type": "u32",
+      "value": "64"
+    },
+    {
+      "name": "POSITION_SEED",
+      "type": "bytes",
+      "value": "[112, 111, 115, 105, 116, 105, 111, 110]"
+    },
+    {
+      "name": "VAULT_SEED",
+      "type": "bytes",
+      "value": "[118, 97, 117, 108, 116]"
+    }
+  ]
+}

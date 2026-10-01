@@ -72,9 +72,14 @@ export type AccountModalMode = "walletAndGmxAccount" | "gmxAccount" | "walletOnl
 
 export function getAccountModalMode(
   chainId: ContractsChainId,
-  srcChainId: SourceChainId | undefined
+  srcChainId: SourceChainId | undefined,
+  selectedNetworkId: number = srcChainId ?? chainId
 ): AccountModalMode {
-  if (!isValidVisualSettlementChain(chainId)) {
+  if (isValidVisualSourceChain(selectedNetworkId) && !isValidVisualSettlementChain(selectedNetworkId)) {
+    return "gmxAccount";
+  }
+
+  if (!isValidVisualSettlementChain(selectedNetworkId)) {
     return "walletOnly";
   }
 

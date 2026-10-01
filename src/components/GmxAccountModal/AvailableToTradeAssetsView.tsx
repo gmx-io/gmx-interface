@@ -12,6 +12,7 @@ import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
 import { formatUsd } from "lib/numbers";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
+import { SolanaAssetsList } from "solana-interface/wallet/SolanaAssetsList";
 
 import { Amount } from "components/Amount/Amount";
 import Button from "components/Button/Button";
@@ -20,6 +21,7 @@ import { VerticalScrollFadeContainer } from "components/TableScrollFade/Vertical
 import Tabs from "components/Tabs/Tabs";
 import type { Option as TabOption } from "components/Tabs/types";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+
 
 import { useOpenWalletReceive } from "./hooks";
 
@@ -226,6 +228,9 @@ const AssetListSettlementChain = () => {
 
 export const AvailableToTradeAssetsView = () => {
   const { chainId } = useAccount();
+  const { isSolana } = useChainId();
+
+  if (isSolana) return <SolanaAssetsList />;
 
   return isSettlementChain(chainId!) ? <AssetListSettlementChain /> : <AssetListMultichain />;
 };

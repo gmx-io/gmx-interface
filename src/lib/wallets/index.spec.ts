@@ -7,20 +7,15 @@ import {
 } from "config/localStorage";
 import { SMART_WALLET_CHAIN_UNAVAILABLE_ERROR } from "lib/errors/customErrors";
 
-const { switchChainMock, getAccountMock, willChangeAccountMock, disconnectMock, disconnectPrivyMock } = vi.hoisted(
-  () => ({
-    switchChainMock: vi.fn(),
-    getAccountMock: vi.fn(),
-    willChangeAccountMock: vi.fn(),
-    disconnectMock: vi.fn(),
-    disconnectPrivyMock: vi.fn(),
-  })
-);
+const { switchChainMock, getAccountMock, willChangeAccountMock } = vi.hoisted(() => ({
+  switchChainMock: vi.fn(),
+  getAccountMock: vi.fn(),
+  willChangeAccountMock: vi.fn(),
+}));
 
 vi.mock("@wagmi/core", () => ({
   switchChain: switchChainMock,
   getAccount: getAccountMock,
-  disconnect: disconnectMock,
 }));
 
 vi.mock("./walletConfig", () => ({
@@ -31,10 +26,6 @@ vi.mock("./useWalletSessionChains", () => ({
   getWillChainSwitchChangeAccount: willChangeAccountMock,
 }));
 
-vi.mock("./privyWagmi", () => ({
-  disconnectPrivyWalletsFromWagmi: disconnectPrivyMock,
-}));
-
 import { switchNetwork } from "./index";
 
 describe("switchNetwork", () => {
@@ -43,8 +34,6 @@ describe("switchNetwork", () => {
     switchChainMock.mockReset();
     getAccountMock.mockReset().mockReturnValue({ address: undefined });
     willChangeAccountMock.mockReset().mockResolvedValue(false);
-    disconnectMock.mockReset().mockResolvedValue(undefined);
-    disconnectPrivyMock.mockReset().mockResolvedValue(undefined);
   });
 
   it("keeps strict switchChain behavior by default", async () => {
@@ -96,7 +85,7 @@ describe("switchNetwork", () => {
     expect(localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY)).toBe("42161");
   });
 
-  it("disconnects the EVM wallet and reloads when selecting Solana", async () => {
+  it("keeps the EVM wallet connected when selecting Solana", async () => {
     const reloadSpy = vi.spyOn(document.location, "reload").mockImplementation(() => undefined);
     const networkChangeHandler = vi.fn();
     document.addEventListener("networkChange", networkChangeHandler);
@@ -105,12 +94,10 @@ describe("switchNetwork", () => {
 
     expect(switchChainMock).not.toHaveBeenCalled();
     expect(willChangeAccountMock).not.toHaveBeenCalled();
-    expect(disconnectPrivyMock).toHaveBeenCalledWith([]);
-    expect(disconnectMock).toHaveBeenCalledWith({});
     expect(localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY)).toBe(String(SOLANA));
     expect(localStorage.getItem(SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY)).toBe("true");
     expect(networkChangeHandler).toHaveBeenCalledWith(expect.objectContaining({ detail: { chainId: SOLANA } }));
-    expect(reloadSpy).toHaveBeenCalledOnce();
+    expect(reloadSpy).not.toHaveBeenCalled();
 
     document.removeEventListener("networkChange", networkChangeHandler);
     reloadSpy.mockRestore();

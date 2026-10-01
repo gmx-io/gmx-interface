@@ -1,0 +1,2044 @@
+{
+  "address": "TimeBQ7gQyWyQMD3bTteAdy7hTVDNWSwELdSVZHfSXL",
+  "metadata": {
+    "name": "gmsol_timelock",
+    "version": "0.8.0",
+    "spec": "0.1.0",
+    "description": "GMX-Solana is an extension of GMX on the Solana blockchain.",
+    "repository": "https://github.com/gmsol-labs/gmx-solana"
+  },
+  "instructions": [
+    {
+      "name": "approve_instruction",
+      "docs": [
+        "Approve instruction."
+      ],
+      "discriminator": [
+        165,
+        74,
+        223,
+        204,
+        102,
+        65,
+        199,
+        112
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "Authority."
+          ],
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ],
+          "relations": [
+            "executor"
+          ]
+        },
+        {
+          "name": "executor",
+          "docs": [
+            "Executor."
+          ],
+          "relations": [
+            "instruction"
+          ]
+        },
+        {
+          "name": "instruction",
+          "docs": [
+            "Instruction to approve."
+          ],
+          "writable": true
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "Store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        }
+      ],
+      "args": [
+        {
+          "name": "role",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "approve_instructions",
+      "docs": [
+        "Approve multiple instructions."
+      ],
+      "discriminator": [
+        106,
+        131,
+        218,
+        58,
+        251,
+        191,
+        49,
+        87
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "Authority."
+          ],
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ],
+          "relations": [
+            "executor"
+          ]
+        },
+        {
+          "name": "executor",
+          "docs": [
+            "Executor."
+          ]
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "Store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        }
+      ],
+      "args": [
+        {
+          "name": "role",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "cancel_instruction",
+      "docs": [
+        "Cancel instruction."
+      ],
+      "discriminator": [
+        189,
+        67,
+        87,
+        101,
+        160,
+        77,
+        91,
+        23
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "Authority."
+          ],
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ],
+          "relations": [
+            "executor"
+          ]
+        },
+        {
+          "name": "executor",
+          "docs": [
+            "Executor."
+          ],
+          "relations": [
+            "instruction"
+          ]
+        },
+        {
+          "name": "rent_receiver",
+          "docs": [
+            "Rent receiver."
+          ],
+          "writable": true,
+          "relations": [
+            "instruction"
+          ]
+        },
+        {
+          "name": "instruction",
+          "docs": [
+            "Instruction to cancel."
+          ],
+          "writable": true
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "Store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "cancel_instructions",
+      "docs": [
+        "Cancel multiple instructions that sharing the same `executor` and `rent_receiver`."
+      ],
+      "discriminator": [
+        255,
+        161,
+        134,
+        99,
+        236,
+        50,
+        174,
+        218
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "Authority."
+          ],
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ],
+          "relations": [
+            "executor"
+          ]
+        },
+        {
+          "name": "executor",
+          "docs": [
+            "Executor."
+          ]
+        },
+        {
+          "name": "rent_receiver",
+          "docs": [
+            "Rent receiver."
+          ],
+          "writable": true
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "Store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_instruction_buffer",
+      "docs": [
+        "Create instruction buffer."
+      ],
+      "discriminator": [
+        114,
+        27,
+        38,
+        228,
+        192,
+        186,
+        50,
+        67
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "Authority."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ],
+          "relations": [
+            "executor"
+          ]
+        },
+        {
+          "name": "executor",
+          "docs": [
+            "Expected executor."
+          ]
+        },
+        {
+          "name": "instruction_buffer",
+          "docs": [
+            "Instruction buffer to create."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "instruction_program",
+          "docs": [
+            "Instruction Program."
+          ]
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "Store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "The system program."
+          ],
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "num_accounts",
+          "type": "u16"
+        },
+        {
+          "name": "data_len",
+          "type": "u16"
+        },
+        {
+          "name": "data",
+          "type": "bytes"
+        },
+        {
+          "name": "signers",
+          "type": {
+            "vec": "u16"
+          }
+        }
+      ]
+    },
+    {
+      "name": "execute_instruction",
+      "docs": [
+        "Execute instruction."
+      ],
+      "discriminator": [
+        48,
+        18,
+        40,
+        40,
+        75,
+        74,
+        147,
+        110
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "Authority."
+          ],
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ],
+          "relations": [
+            "timelock_config",
+            "executor"
+          ]
+        },
+        {
+          "name": "timelock_config",
+          "docs": [
+            "Timelock config."
+          ]
+        },
+        {
+          "name": "executor",
+          "docs": [
+            "Executor."
+          ],
+          "relations": [
+            "instruction"
+          ]
+        },
+        {
+          "name": "wallet",
+          "docs": [
+            "Executor Wallet.",
+            "the instruction to close it."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  119,
+                  97,
+                  108,
+                  108,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "executor"
+              }
+            ]
+          }
+        },
+        {
+          "name": "rent_receiver",
+          "docs": [
+            "Rent receiver."
+          ],
+          "writable": true,
+          "relations": [
+            "instruction"
+          ]
+        },
+        {
+          "name": "instruction",
+          "docs": [
+            "Instruction to execute."
+          ],
+          "writable": true
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "Store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "increase_delay",
+      "docs": [
+        "Increase timelock delay."
+      ],
+      "discriminator": [
+        91,
+        163,
+        172,
+        194,
+        193,
+        133,
+        174,
+        25
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "Authority."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ],
+          "relations": [
+            "timelock_config"
+          ]
+        },
+        {
+          "name": "timelock_config",
+          "writable": true
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "Store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        }
+      ],
+      "args": [
+        {
+          "name": "delta",
+          "type": "u32"
+        }
+      ]
+    },
+    {
+      "name": "initialize_config",
+      "docs": [
+        "Initialize timelock config."
+      ],
+      "discriminator": [
+        208,
+        127,
+        21,
+        1,
+        194,
+        190,
+        196,
+        70
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "Authority."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ],
+          "writable": true,
+          "relations": [
+            "executor"
+          ]
+        },
+        {
+          "name": "timelock_config",
+          "docs": [
+            "Config."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  105,
+                  109,
+                  101,
+                  108,
+                  111,
+                  99,
+                  107,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "store"
+              }
+            ]
+          }
+        },
+        {
+          "name": "executor",
+          "docs": [
+            "Admin executor."
+          ]
+        },
+        {
+          "name": "wallet",
+          "docs": [
+            "Admin executor wallet."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  119,
+                  97,
+                  108,
+                  108,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "executor"
+              }
+            ]
+          }
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "Store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "System program."
+          ],
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "delay",
+          "type": "u32"
+        }
+      ]
+    },
+    {
+      "name": "initialize_executor",
+      "docs": [
+        "Initialize executor."
+      ],
+      "discriminator": [
+        176,
+        40,
+        133,
+        151,
+        198,
+        251,
+        10,
+        91
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "docs": [
+            "Payer."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ]
+        },
+        {
+          "name": "executor",
+          "docs": [
+            "Executor to initialize."
+          ],
+          "writable": true
+        },
+        {
+          "name": "wallet",
+          "docs": [
+            "Executor wallet."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  119,
+                  97,
+                  108,
+                  108,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "executor"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "The system program."
+          ],
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "role",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "revoke_role",
+      "docs": [
+        "Revoke role."
+      ],
+      "discriminator": [
+        179,
+        232,
+        2,
+        180,
+        48,
+        227,
+        82,
+        7
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "Authority."
+          ],
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ],
+          "writable": true,
+          "relations": [
+            "executor"
+          ]
+        },
+        {
+          "name": "executor",
+          "docs": [
+            "Executor."
+          ]
+        },
+        {
+          "name": "wallet",
+          "docs": [
+            "Executor Wallet."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  119,
+                  97,
+                  108,
+                  108,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "executor"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "docs": [
+            "User."
+          ]
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "Store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        }
+      ],
+      "args": [
+        {
+          "name": "role",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "set_expected_price_provider",
+      "docs": [
+        "Set expected price provider."
+      ],
+      "discriminator": [
+        182,
+        103,
+        5,
+        161,
+        72,
+        6,
+        5,
+        154
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "Authority."
+          ],
+          "signer": true
+        },
+        {
+          "name": "store",
+          "docs": [
+            "Store."
+          ],
+          "writable": true,
+          "relations": [
+            "executor"
+          ]
+        },
+        {
+          "name": "token_map",
+          "docs": [
+            "Token map."
+          ],
+          "writable": true
+        },
+        {
+          "name": "executor",
+          "docs": [
+            "Executor."
+          ]
+        },
+        {
+          "name": "wallet",
+          "docs": [
+            "Executor Wallet."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  119,
+                  97,
+                  108,
+                  108,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "executor"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token",
+          "docs": [
+            "Token to update."
+          ]
+        },
+        {
+          "name": "store_program",
+          "docs": [
+            "Store program."
+          ],
+          "address": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo"
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "System program."
+          ],
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "new_expected_price_provider",
+          "type": "u8"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Executor",
+      "discriminator": [
+        81,
+        168,
+        99,
+        99,
+        156,
+        134,
+        16,
+        166
+      ]
+    },
+    {
+      "name": "InstructionHeader",
+      "discriminator": [
+        23,
+        218,
+        71,
+        2,
+        252,
+        204,
+        29,
+        245
+      ]
+    },
+    {
+      "name": "Store",
+      "discriminator": [
+        130,
+        48,
+        247,
+        244,
+        182,
+        191,
+        30,
+        26
+      ]
+    },
+    {
+      "name": "TimelockConfig",
+      "discriminator": [
+        189,
+        87,
+        27,
+        18,
+        189,
+        173,
+        47,
+        197
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "Addresses",
+      "docs": [
+        "Addresses."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "holding",
+            "type": "pubkey"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "pubkey",
+                30
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Amounts",
+      "docs": [
+        "Amounts."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "claimable_time_window",
+            "type": "u64"
+          },
+          {
+            "name": "recent_time_window",
+            "type": "u64"
+          },
+          {
+            "name": "request_expiration",
+            "type": "u64"
+          },
+          {
+            "name": "oracle_max_age",
+            "type": "u64"
+          },
+          {
+            "name": "oracle_max_timestamp_range",
+            "type": "u64"
+          },
+          {
+            "name": "oracle_max_future_timestamp_excess",
+            "type": "u64"
+          },
+          {
+            "name": "adl_prices_max_staleness",
+            "type": "u64"
+          },
+          {
+            "name": "min_position_age_for_manual_close",
+            "type": "u64"
+          },
+          {
+            "name": "market_closed_prices_max_staleness",
+            "type": "u64"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u64",
+                124
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "DisabledFeatures",
+      "docs": [
+        "Disabled Features State."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "map",
+            "type": {
+              "defined": {
+                "name": "DisabledMap"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "DisabledMap",
+      "docs": [
+        "Fixed size map generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "data",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "DisabledMapEntry"
+                  }
+                },
+                64
+              ]
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                0
+              ]
+            }
+          },
+          {
+            "name": "count",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DisabledMapEntry",
+      "docs": [
+        "Entry."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "key",
+            "type": {
+              "array": [
+                "u8",
+                2
+              ]
+            }
+          },
+          {
+            "name": "value",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Executor",
+      "docs": [
+        "Executor."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "wallet_bump",
+            "type": "u8"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                13
+              ]
+            }
+          },
+          {
+            "name": "store",
+            "type": "pubkey"
+          },
+          {
+            "name": "role_name",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                256
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Factors",
+      "docs": [
+        "Factors."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "oracle_ref_price_deviation",
+            "type": "u128"
+          },
+          {
+            "name": "order_fee_discount_for_referred_user",
+            "type": "u128"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u128",
+                64
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "GtState",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "decimals",
+            "type": "u8"
+          },
+          {
+            "name": "padding_0",
+            "type": {
+              "array": [
+                "u8",
+                7
+              ]
+            }
+          },
+          {
+            "name": "last_minted_at",
+            "type": "i64"
+          },
+          {
+            "name": "total_minted",
+            "type": "u64"
+          },
+          {
+            "name": "grow_step_amount",
+            "docs": [
+              "Grow step amount. It must be immutable."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "grow_steps",
+            "type": "u64"
+          },
+          {
+            "name": "supply",
+            "docs": [
+              "Supply of buybackable GT."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "last_cumulative_inv_cost_factor_ts",
+            "docs": [
+              "Timestamp of the last update to `cumulative_inv_cost_factor`."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "gt_vault",
+            "docs": [
+              "Vault for non-buybackable GT."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "cumulative_inv_cost_factor",
+            "docs": [
+              "Cumulative `1 / minting_cost` factor."
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "minting_cost_grow_factor",
+            "type": "u128"
+          },
+          {
+            "name": "minting_cost",
+            "type": "u128"
+          },
+          {
+            "name": "padding_3",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "exchange_time_window",
+            "type": "u32"
+          },
+          {
+            "name": "padding_4",
+            "type": {
+              "array": [
+                "u8",
+                12
+              ]
+            }
+          },
+          {
+            "name": "max_rank",
+            "type": "u64"
+          },
+          {
+            "name": "ranks",
+            "type": {
+              "array": [
+                "u64",
+                15
+              ]
+            }
+          },
+          {
+            "name": "order_fee_discount_factors",
+            "type": {
+              "array": [
+                "u128",
+                16
+              ]
+            }
+          },
+          {
+            "name": "referral_reward_factors",
+            "type": {
+              "array": [
+                "u128",
+                16
+              ]
+            }
+          },
+          {
+            "name": "padding_5",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                256
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "InstructionFlagContainer",
+      "docs": [
+        "Flags container generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "value",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InstructionHeader",
+      "docs": [
+        "Instruction Header."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u8"
+          },
+          {
+            "name": "flags",
+            "type": {
+              "defined": {
+                "name": "InstructionFlagContainer"
+              }
+            }
+          },
+          {
+            "name": "wallet_bump",
+            "type": "u8"
+          },
+          {
+            "name": "padding_0",
+            "type": {
+              "array": [
+                "u8",
+                5
+              ]
+            }
+          },
+          {
+            "name": "approved_at",
+            "docs": [
+              "Approved ts."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "executor",
+            "docs": [
+              "Executor."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "program_id",
+            "docs": [
+              "Program ID."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "num_accounts",
+            "docs": [
+              "Number of accounts."
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "data_len",
+            "docs": [
+              "Data length."
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "padding_1",
+            "type": {
+              "array": [
+                "u8",
+                12
+              ]
+            }
+          },
+          {
+            "name": "rent_receiver",
+            "type": "pubkey"
+          },
+          {
+            "name": "approver",
+            "type": "pubkey"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "MarketConfigFactorContainer",
+      "docs": [
+        "Flags container generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "value",
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MarketConfigFlagContainer",
+      "docs": [
+        "Flags container generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "value",
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MarketConfigPermissions",
+      "docs": [
+        "Permission store related to market config."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "updatable_market_config_flags",
+            "docs": [
+              "Market config flags updatable by a [`MARKET_CONFIG_KEEPER`](`gmsol_utils::role::RoleKey::MARKET_CONFIG_KEEPER`)."
+            ],
+            "type": {
+              "defined": {
+                "name": "MarketConfigFlagContainer"
+              }
+            }
+          },
+          {
+            "name": "updatable_market_config_factors",
+            "docs": [
+              "Market config factors updatable by a [`MARKET_CONFIG_KEEPER`](`gmsol_utils::role::RoleKey::MARKET_CONFIG_KEEPER`)."
+            ],
+            "type": {
+              "defined": {
+                "name": "MarketConfigFactorContainer"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Members",
+      "docs": [
+        "Fixed size map generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "data",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "MembersEntry"
+                  }
+                },
+                64
+              ]
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                0
+              ]
+            }
+          },
+          {
+            "name": "count",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MembersEntry",
+      "docs": [
+        "Entry."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "key",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "value",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RoleMap",
+      "docs": [
+        "Fixed size map generated by the macro."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "data",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "RoleMapEntry"
+                  }
+                },
+                32
+              ]
+            }
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u8",
+                0
+              ]
+            }
+          },
+          {
+            "name": "count",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RoleMapEntry",
+      "docs": [
+        "Entry."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "key",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "value",
+            "type": {
+              "defined": {
+                "name": "RoleMetadata"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "RoleMetadata",
+      "docs": [
+        "Role Metadata."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "enabled",
+            "type": "u8"
+          },
+          {
+            "name": "index",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RoleStore",
+      "docs": [
+        "Roles Store."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "roles",
+            "type": {
+              "defined": {
+                "name": "RoleMap"
+              }
+            }
+          },
+          {
+            "name": "members",
+            "type": {
+              "defined": {
+                "name": "Members"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Store",
+      "docs": [
+        "Data Store."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": {
+              "array": [
+                "u8",
+                1
+              ]
+            }
+          },
+          {
+            "name": "key_seed",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "key",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "padding_0",
+            "type": {
+              "array": [
+                "u8",
+                6
+              ]
+            }
+          },
+          {
+            "name": "role",
+            "type": {
+              "defined": {
+                "name": "RoleStore"
+              }
+            }
+          },
+          {
+            "name": "authority",
+            "docs": [
+              "Store authority."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "next_authority",
+            "docs": [
+              "Next authority."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "token_map",
+            "docs": [
+              "The token map to used."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "disabled_features",
+            "docs": [
+              "Disabled features."
+            ],
+            "type": {
+              "defined": {
+                "name": "DisabledFeatures"
+              }
+            }
+          },
+          {
+            "name": "padding_1",
+            "type": {
+              "array": [
+                "u8",
+                4
+              ]
+            }
+          },
+          {
+            "name": "last_restarted_slot",
+            "docs": [
+              "Cached last cluster restart slot."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "treasury",
+            "docs": [
+              "Treasury Config."
+            ],
+            "type": {
+              "defined": {
+                "name": "Treasury"
+              }
+            }
+          },
+          {
+            "name": "amount",
+            "docs": [
+              "Amounts."
+            ],
+            "type": {
+              "defined": {
+                "name": "Amounts"
+              }
+            }
+          },
+          {
+            "name": "padding_2",
+            "type": {
+              "array": [
+                "u8",
+                8
+              ]
+            }
+          },
+          {
+            "name": "factor",
+            "docs": [
+              "Factors."
+            ],
+            "type": {
+              "defined": {
+                "name": "Factors"
+              }
+            }
+          },
+          {
+            "name": "address",
+            "docs": [
+              "Addresses."
+            ],
+            "type": {
+              "defined": {
+                "name": "Addresses"
+              }
+            }
+          },
+          {
+            "name": "gt",
+            "docs": [
+              "GT State."
+            ],
+            "type": {
+              "defined": {
+                "name": "GtState"
+              }
+            }
+          },
+          {
+            "name": "market_config_permissions",
+            "type": {
+              "defined": {
+                "name": "MarketConfigPermissions"
+              }
+            }
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                992
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "TimelockConfig",
+      "docs": [
+        "Timelock Config."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "padding_0",
+            "type": {
+              "array": [
+                "u8",
+                6
+              ]
+            }
+          },
+          {
+            "name": "delay",
+            "type": "u32"
+          },
+          {
+            "name": "padding_1",
+            "type": {
+              "array": [
+                "u8",
+                4
+              ]
+            }
+          },
+          {
+            "name": "store",
+            "type": "pubkey"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                256
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Treasury",
+      "docs": [
+        "Treasury."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "receiver",
+            "docs": [
+              "Receiver."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "next_receiver",
+            "docs": [
+              "Next receiver."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                128
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

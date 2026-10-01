@@ -1,4 +1,4 @@
-import { Component, ReactNode } from "react";
+import { Component, ErrorInfo, ReactNode } from "react";
 
 import { showAppLoadError } from "lib/appStartup";
 
@@ -9,8 +9,8 @@ export default class StartupErrorBoundary extends Component<{ children: ReactNod
     return { hasError: true };
   }
 
-  componentDidCatch(error: Error) {
-    showAppLoadError(error);
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    showAppLoadError(error, info.componentStack);
   }
 
   render() {

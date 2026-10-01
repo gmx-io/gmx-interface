@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { type KeyboardEvent, type ReactNode } from "react";
 
-import { getChainName } from "config/chains";
+import { getAppNetworkName, getChainName } from "config/chains";
 import { getAccountModalMode } from "config/multichain";
 import { GmxAccountModalView } from "context/GmxAccountContext/GmxAccountContext";
 import { useGmxAccountModalOpen, useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hooks";
@@ -135,9 +135,9 @@ function WalletAndGmxAccountInfo() {
 }
 
 export function MainViewTitle() {
-  const { chainId, srcChainId } = useChainId();
+  const { chainId, srcChainId, selectedNetworkId } = useChainId();
   const [modalState] = useGmxAccountModalOpen();
-  const mode = getAccountModalMode(chainId, srcChainId);
+  const mode = getAccountModalMode(chainId, srcChainId, selectedNetworkId);
 
   const isMainViewActive = modalState === true || modalState === "main";
 
@@ -149,7 +149,7 @@ export function MainViewTitle() {
 
   if (mode === "walletOnly") {
     title = <Trans>Wallet</Trans>;
-    info = <WalletOnlyInfo chainName={settlementChainName} />;
+    info = <WalletOnlyInfo chainName={getAppNetworkName(selectedNetworkId)} />;
   } else if (mode === "gmxAccount") {
     title = <Trans>GMX Account</Trans>;
     info = <GmxAccountInfo sourceChainName={sourceChainName} settlementChainName={settlementChainName} />;

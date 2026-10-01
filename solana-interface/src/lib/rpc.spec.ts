@@ -1,6 +1,16 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { getSolanaRpcClient, sendSolanaRpcRequest } from "./rpc";
+import { getSolanaRpcClient, sendSolanaRpcRequest, solanaWebsocketEndpoint } from "./rpc";
+
+describe("solanaWebsocketEndpoint", () => {
+  it("keeps the local proxy port", () => {
+    expect(solanaWebsocketEndpoint("http://localhost:9010/")).toBe("ws://localhost:9010/");
+  });
+
+  it("uses wss for an https endpoint", () => {
+    expect(solanaWebsocketEndpoint("https://rpc-1.gmtrade.xyz/")).toBe("wss://rpc-1.gmtrade.xyz/");
+  });
+});
 
 describe("getSolanaRpcClient", () => {
   it("reuses the same Connection for the same endpoint", () => {

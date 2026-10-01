@@ -80,13 +80,13 @@ function FundingOptionRow({
 
 export function WalletReceiveOptionsView() {
   const { address } = useAccount();
-  const { chainId: settlementChainId, srcChainId } = useChainId();
+  const { chainId: settlementChainId, srcChainId, selectedNetworkId } = useChainId();
   const [walletReceiveViewChain] = useGmxAccountWalletReceiveViewChain();
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
 
   const chainId = walletReceiveViewChain ?? srcChainId ?? settlementChainId;
   const chainName = getChainName(chainId);
-  const mode = getAccountModalMode(settlementChainId, srcChainId);
+  const mode = getAccountModalMode(settlementChainId, srcChainId, selectedNetworkId);
 
   const { addFunds } = useAddFunds();
 

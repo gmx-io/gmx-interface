@@ -4,10 +4,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useCopyToClipboard } from "react-use";
 import { useAccount } from "wagmi";
 
-import { getChainName } from "config/chains";
 import { getChainIcon } from "config/icons";
 import { useGmxAccountWalletReceiveViewChain } from "context/GmxAccountContext/hooks";
 import { useChainId } from "lib/chains";
+import { SOLANA, getAppNetworkName } from "sdk/configs/appNetworks";
+import { useSolanaWallet } from "solana-interface/wallet/useSolanaWallet";
 
 import Button from "components/Button/Button";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
@@ -16,11 +17,13 @@ import CheckIcon from "img/ic_check.svg?react";
 import CopyIcon from "img/ic_copy.svg?react";
 
 export function WalletReceiveView() {
-  const { address } = useAccount();
-  const { chainId: settlementChainId, srcChainId } = useChainId();
+  const { address: evmAddress } = useAccount();
+  const { address: solanaAddress } = useSolanaWallet();
+  const { chainId: settlementChainId, srcChainId, isSolana } = useChainId();
   const [walletReceiveViewChain] = useGmxAccountWalletReceiveViewChain();
-  const chainId = walletReceiveViewChain ?? srcChainId ?? settlementChainId;
-  const chainName = getChainName(chainId);
+  const address = isSolana ? solanaAddress : evmAddress;
+  const chainId = isSolana ? SOLANA : (walletReceiveViewChain ?? srcChainId ?? settlementChainId);
+  const chainName = getAppNetworkName(chainId);
   const chainIcon = getChainIcon(chainId);
 
   const [isCopied, setIsCopied] = useState(false);

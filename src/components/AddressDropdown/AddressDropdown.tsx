@@ -14,8 +14,7 @@ type Props = {
 };
 
 export function AddressDropdown({ account }: Props) {
-  const { chainId } = useChainId();
-
+  const { chainId, isSolana } = useChainId();
   const { isEmptyAvalancheGmxAccountOrNotConnected } = useEmptyAvalancheGmxAccount();
 
   const hasRelatedSourceChains = useMemo(
@@ -30,7 +29,7 @@ export function AddressDropdown({ account }: Props) {
     !isValidVisualSettlementChain(chainId) ||
     (isSettlementChain(chainId) && hasRelatedSourceChains && !isEmptyAvalancheGmxAccountOrNotConnected);
 
-  if (!showAccountModal) {
+  if (!isSolana && !showAccountModal) {
     return <AddressDropdownWithoutMultichain account={account} />;
   }
 

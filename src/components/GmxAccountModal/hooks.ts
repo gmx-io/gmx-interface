@@ -475,6 +475,7 @@ export function useGmxAccountDepositEligibility(): {
 }
 
 export function useOpenWalletReceive(): (opts?: { chain?: SourceChainId; backTo?: GmxAccountModalView }) => void {
+  const { isSolana } = useChainId();
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
   const [, setWalletReceiveViewChain] = useGmxAccountWalletReceiveViewChain();
   const [, setWalletReceiveViewBackTo] = useGmxAccountWalletReceiveViewBackTo();
@@ -483,8 +484,8 @@ export function useOpenWalletReceive(): (opts?: { chain?: SourceChainId; backTo?
     (opts?: { chain?: SourceChainId; backTo?: GmxAccountModalView }) => {
       setWalletReceiveViewChain(opts?.chain);
       setWalletReceiveViewBackTo(opts?.backTo);
-      setIsVisibleOrView("walletReceiveOptions");
+      setIsVisibleOrView(isSolana ? "walletReceive" : "walletReceiveOptions");
     },
-    [setIsVisibleOrView, setWalletReceiveViewBackTo, setWalletReceiveViewChain]
+    [isSolana, setIsVisibleOrView, setWalletReceiveViewBackTo, setWalletReceiveViewChain]
   );
 }

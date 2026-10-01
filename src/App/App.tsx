@@ -27,9 +27,11 @@ import { TokensBalancesContextProvider } from "context/TokensBalancesContext/Tok
 import { TokensFavoritesContextProvider } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { completeAppStartup } from "lib/appStartup";
 import { useChainId } from "lib/chains";
+import { SolanaWalletSession } from "solana-interface/wallet/useSolanaWallet";
 
 import ErrorBoundary from "components/Errors/ErrorBoundary";
 import SEO from "components/Seo/SEO";
+
 
 import { AppRoutes } from "./AppRoutes";
 import { SWRConfigProp } from "./swrConfig";
@@ -65,7 +67,12 @@ function App() {
   app = <TokenPermitsContextProvider>{app}</TokenPermitsContextProvider>;
   app = <TokensBalancesContextProvider>{app}</TokensBalancesContextProvider>;
   app = <SEO>{app}</SEO>;
-  app = <ConnectModalProvider>{app}</ConnectModalProvider>;
+  app = (
+    <ConnectModalProvider>
+      <SolanaWalletSession />
+      {app}
+    </ConnectModalProvider>
+  );
   app = <I18nProvider i18n={i18n as any}>{app}</I18nProvider>;
   app = <PendingTxnsContextProvider>{app}</PendingTxnsContextProvider>;
   app = <SWRConfigWithKey>{app}</SWRConfigWithKey>;
