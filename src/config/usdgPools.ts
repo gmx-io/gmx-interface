@@ -18,5 +18,8 @@ export function getIsUsdgPool(chainId: number, p: { longTokenAddress: string; sh
 export const USDG_LAUNCH_BOOST_TARGET_GLV_APR = expandDecimals(8, 28);
 export const USDG_LAUNCH_BOOST_TARGET_GM_APR = expandDecimals(5, 28);
 
+export const USDG_LAUNCH_BOOST_PERIOD_1_START = Date.UTC(2026, 9, 6) / 1000;
+export const USDG_LAUNCH_BOOST_PERIOD_1_END = Date.UTC(2026, 10, 30) / 1000;
+
 export const USDG_LAUNCH_BOOST_ROUND_SECONDS = 4 * 60 * 60;
 export const USDG_LAUNCH_BOOST_PAUSED_AFTER_SECONDS = 12 * 60 * 60;

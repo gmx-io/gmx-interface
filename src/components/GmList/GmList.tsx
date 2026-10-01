@@ -1,4 +1,5 @@
 import { Trans, t } from "@lingui/macro";
+import mapValues from "lodash/mapValues";
 import { useMemo, useState } from "react";
 
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
@@ -9,6 +10,7 @@ import {
   selectMarketsInfoData,
   selectProgressiveDepositMarketTokensDataWithoutGlv,
   selectSrcChainId,
+  selectUsdgBoostAprResult,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
@@ -23,12 +25,14 @@ import { useMarketsListingDates } from "domain/synthetics/markets/useMarketsList
 import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { PerformanceSnapshotsData } from "domain/synthetics/markets/usePerformanceSnapshots";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
+import { getUsdgLaunchBoost, getUsdgLaunchBoostApr } from "domain/synthetics/usdgLaunchBoost/utils";
 import { getWhitelistedMarketAddresses } from "domain/synthetics/whitelists/utils";
 import { useLocalizedMap } from "lib/i18n";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import PoolsCard from "pages/Pools/PoolsCard";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
+import { nowInSeconds } from "sdk/utils/time";
 
 import { getRecentlyListedTokenAddresses } from "components/ChartTokenSelector/marketFilters";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
@@ -81,6 +85,7 @@ export function GmList({
   const progressiveMarketTokensData = useSelector(selectProgressiveDepositMarketTokensDataWithoutGlv);
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
   const whitelistsResult = useSelector(selectAccountWhitelistsResult);
+  const usdgBoostAprResult = useSelector(selectUsdgBoostAprResult);
 
   const { active } = useWallet();
   const {
@@ -163,6 +168,15 @@ export function GmList({
     [whitelistsResult]
   );
 
+  const marketsTokensLaunchBoostAprData = useMemo(() => {
+    const nowSeconds = nowInSeconds();
+
+    return mapValues(marketsInfo ?? {}, (market) => {
+      const launchBoost = getUsdgLaunchBoost({ chainId, glvOrMarket: market, usdgBoostAprResult, nowSeconds });
+      return getUsdgLaunchBoostApr(launchBoost);
+    });
+  }, [chainId, marketsInfo, usdgBoostAprResult]);
+
   const filteredGmTokens = useFilterSortPools({
     marketsInfo,
     marketTokensData: progressiveMarketTokensData,
@@ -171,6 +185,7 @@ export function GmList({
     marketsTokensApyData,
     marketsTokensIncentiveAprData,
     marketsTokensLidoAprData,
+    marketsTokensLaunchBoostAprData,
     searchText,
     topLevelTab,
     subCategoryTab,

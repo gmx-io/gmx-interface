@@ -31,6 +31,7 @@ import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDays
 import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { PerformanceSnapshot, PerformanceSnapshotsData } from "domain/synthetics/markets/usePerformanceSnapshots";
 import { convertToUsd, getTokenData } from "domain/synthetics/tokens";
+import { useUsdgLaunchBoost } from "domain/synthetics/usdgLaunchBoost/useUsdgLaunchBoost";
 import { getDirectDepositAccess } from "domain/synthetics/whitelists/utils";
 import { ProgressiveTokenData } from "domain/tokens";
 import { PRECISION_DECIMALS, bigintToNumber, formatPercentage } from "lib/numbers";
@@ -129,6 +130,7 @@ export function GmListItem({
     ? getByKey(glvTokensIncentiveAprData, token?.address)
     : getByKey(marketsTokensIncentiveAprData, token?.address);
   const lidoApr = getByKey(marketsTokensLidoAprData, token?.address);
+  const launchBoost = useUsdgLaunchBoost(marketOrGlv);
   const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);
 
   const isMobile = usePoolsIsMobilePage();
@@ -253,7 +255,16 @@ export function GmListItem({
           />
           <SyntheticsInfoRow
             label={<FeeApyLabel />}
-            value={<AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} marketAddress={token.address} />}
+            value={
+              <AprInfo
+                apy={apy}
+                incentiveApr={incentiveApr}
+                lidoApr={lidoApr}
+                launchBoost={launchBoost}
+                isApyLoading={apyLoading}
+                marketAddress={token.address}
+              />
+            }
           />
           <SyntheticsInfoRow
             label={<PerformanceLabel />}
@@ -277,8 +288,16 @@ export function GmListItem({
     ? formatPercentage(marketPerformance, { bps: false, signed: true, showPlus: false })
     : "N/A";
 
-  const apyValue = apy ? (
-    <AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} marketAddress={token.address} />
+  const shouldShowApy = (apy !== undefined && apy !== 0n) || launchBoost !== undefined;
+
+  const apyValue = shouldShowApy ? (
+    <AprInfo
+      apy={apy}
+      incentiveApr={incentiveApr}
+      lidoApr={lidoApr}
+      launchBoost={launchBoost}
+      marketAddress={token.address}
+    />
   ) : (
     "N/A"
   );

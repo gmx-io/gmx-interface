@@ -18,6 +18,7 @@ export function sortGmTokensByField({
   marketsTokensApyData,
   marketsTokensIncentiveAprData,
   marketsTokensLidoAprData,
+  marketsTokensLaunchBoostAprData,
   performance,
   multichainMarketTokensBalances,
 }: {
@@ -28,6 +29,7 @@ export function sortGmTokensByField({
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
+  marketsTokensLaunchBoostAprData: MarketTokensAPRData | undefined;
   performance: PerformanceData | undefined;
   multichainMarketTokensBalances: MultichainMarketTokensBalances | undefined;
 }) {
@@ -74,13 +76,15 @@ export function sortGmTokensByField({
     return gmTokens.sort((a, b) => {
       const bonusAprA = marketsTokensIncentiveAprData?.[a.address] ?? 0n;
       const lidoAprA = marketsTokensLidoAprData?.[a.address] ?? 0n;
-      let aprA = bonusAprA + lidoAprA;
+      const launchBoostAprA = marketsTokensLaunchBoostAprData?.[a.address] ?? 0n;
+      let aprA = bonusAprA + lidoAprA + launchBoostAprA;
 
       aprA += marketsTokensApyData?.[a.address] ?? 0n;
 
       const bonusAprB = marketsTokensIncentiveAprData?.[b.address] ?? 0n;
       const lidoAprB = marketsTokensLidoAprData?.[b.address] ?? 0n;
-      let aprB = bonusAprB + lidoAprB;
+      const launchBoostAprB = marketsTokensLaunchBoostAprData?.[b.address] ?? 0n;
+      let aprB = bonusAprB + lidoAprB + launchBoostAprB;
 
       aprB += marketsTokensApyData?.[b.address] ?? 0n;
 
