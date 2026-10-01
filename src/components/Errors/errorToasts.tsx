@@ -2,11 +2,15 @@ import { t, Trans } from "@lingui/macro";
 import { Signer } from "ethers";
 import { ReactNode } from "react";
 
-import { ContractsChainId, getChainName, getGasPricePremium } from "config/chains";
+import { ContractsChainId, getChainName } from "config/chains";
 import { SAFE_MULTICHAIN_DOCS_URL } from "config/links";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { getExecutionFeeBufferBps, getMinimumExecutionFeeBufferBps } from "domain/synthetics/fees/utils/executionFee";
+import {
+  getExecutionFeeBufferBps,
+  getExecutionFeeGasPricePremium,
+  getMinimumExecutionFeeBufferBps,
+} from "domain/synthetics/fees/utils/executionFee";
 import { ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
 import { ErrorData } from "lib/errors";
 import {
@@ -21,6 +25,7 @@ import { switchNetwork } from "lib/wallets";
 import { isSourceChainForAnySettlementChain } from "sdk/configs/multichain";
 import { getNativeToken, isValidTokenSafe } from "sdk/configs/tokens";
 import { extractTxnError, TxError, TxErrorType } from "sdk/utils/errors/transactionsErrors";
+import type { ExecutionFeeEstimate } from "sdk/utils/orderTransactions";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -576,7 +581,10 @@ export function getInsufficientExecutionFeeToastContent({
   executionFee,
   chainId,
   executionFeeBufferBps,
+  isExpress,
+  estimatedExecutionFee,
   estimatedExecutionGasLimit,
+  estimatedOrders,
   txUrl,
   errorMessage,
   shouldOfferExpress,
@@ -586,18 +594,23 @@ export function getInsufficientExecutionFeeToastContent({
   executionFee: bigint;
   chainId: number;
   executionFeeBufferBps: number | undefined;
-  estimatedExecutionGasLimit: bigint;
+  isExpress: boolean;
+  estimatedExecutionFee: bigint | undefined;
+  estimatedExecutionGasLimit: bigint | undefined;
+  estimatedOrders?: ExecutionFeeEstimate[];
   txUrl: string | undefined;
   errorMessage: string | undefined;
   shouldOfferExpress: boolean;
   setIsSettingsVisible: (isVisible: boolean) => void;
 }) {
   const requiredBufferBps = getMinimumExecutionFeeBufferBps({
-    minExecutionFee: minExecutionFee,
-    estimatedExecutionFee: executionFee,
+    minExecutionFee,
+    executionFee,
+    estimatedExecutionFee,
+    estimatedExecutionGasLimit,
+    estimatedOrders,
     currentBufferBps: getExecutionFeeBufferBps(chainId, executionFeeBufferBps),
-    premium: getGasPricePremium(chainId as ContractsChainId) || 0n,
-    gasLimit: estimatedExecutionGasLimit,
+    premium: getExecutionFeeGasPricePremium(chainId, isExpress),
   });
 
   const bufferText =

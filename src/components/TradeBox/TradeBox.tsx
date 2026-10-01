@@ -70,6 +70,7 @@ import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { getNetworkFeeGasPaymentParams } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
+import { getExpressExecutionFeeAmount, getExpressGasPrice } from "domain/synthetics/fees/utils/executionFee";
 import { getMarketIndexName, MarketInfo, OFF_HOURS_DOCS_URL } from "domain/synthetics/markets";
 import { formatLeverage, formatLiquidationPriceParts } from "domain/synthetics/positions";
 import { convertToUsd, getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
@@ -420,14 +421,14 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
           gasPaymentToken: gasPaymentTokenData,
           relayFeeToken: relayerFeeToken,
           isGmxAccount: isFromTokenGmxAccount,
-          gasPrice,
+          gasPrice: getExpressGasPrice(chainId, gasPrice),
           gasLimits,
           l1Reference: l1ExpressOrderGasReference,
           tokensData,
           createOrdersCount: 1,
           updateOrdersCount: 0,
           cancelOrdersCount: 0,
-          executionFeeAmount: executionFee.feeTokenAmount,
+          executionFeeAmount: getExpressExecutionFeeAmount(chainId, executionFee),
         })
       : undefined;
   }, [

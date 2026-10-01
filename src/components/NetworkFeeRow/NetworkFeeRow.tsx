@@ -14,6 +14,7 @@ import {
   WALLET_NETWORK_FEE_SOURCE,
   type NetworkFeeSource,
 } from "domain/synthetics/fees/networkFeeSource";
+import { getPriorityFeeAllowanceAmount } from "domain/synthetics/fees/utils/executionFee";
 import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { TokenBalanceType, TokenData } from "domain/tokens";
 import { formatTokenAmountWithUsdParts, numberParts } from "lib/numbers";
@@ -78,6 +79,7 @@ export function NetworkFeeRow({
     let feeAmount: bigint;
     let feeToken: TokenData;
     let isExpress: boolean;
+    let allowanceUsd = 0n;
 
     if (gasPaymentToken && gasPaymentParams?.gasPaymentTokenAmount !== undefined) {
       feeToken = gasPaymentToken;
@@ -93,6 +95,10 @@ export function NetworkFeeRow({
       feeAmount = executionFee.feeTokenAmount;
       feeToken = executionFeeToken;
       isExpress = false;
+
+      if (feeAmount > 0n) {
+        allowanceUsd = bigMath.mulDiv(feeUsd, getPriorityFeeAllowanceAmount(chainId, executionFee), feeAmount);
+      }
     } else {
       return undefined;
     }
@@ -102,8 +108,9 @@ export function NetworkFeeRow({
       feeAmount,
       feeToken,
       isExpress,
+      allowanceUsd,
     };
-  }, [executionFee, executionFeeToken, gasPaymentToken, gasPaymentParams]);
+  }, [chainId, executionFee, executionFeeToken, gasPaymentToken, gasPaymentParams]);
 
   const networkFeeDisplayDecimals = networkFee?.feeToken.isStable ? 2 : 5;
 
@@ -132,7 +139,7 @@ export function NetworkFeeRow({
       estimatedRefundUsd = undefined;
     } else {
       const feeUsBeforeBuffer = bigMath.mulDiv(
-        networkFee.feeUsd,
+        networkFee.feeUsd - networkFee.allowanceUsd,
         BASIS_POINTS_DIVISOR_BIGINT,
         BigInt(BASIS_POINTS_DIVISOR + executionFeeBufferBps)
       );

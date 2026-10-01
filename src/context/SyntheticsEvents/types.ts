@@ -7,6 +7,7 @@ import type { SignedSubaccountApproval } from "domain/synthetics/subaccount";
 import type { PendingTpSlOrderBatch } from "domain/tpsl/types";
 import type { OrderMetricId } from "lib/metrics/types";
 import type { StatusCode } from "sdk/utils/express";
+import type { ExecutionFeeEstimate } from "sdk/utils/orderTransactions";
 import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 import type { ExternalSwapQuote } from "sdk/utils/trade/types";
 
@@ -93,6 +94,7 @@ export type PendingExpressTxnParams = {
   pendingPositionsKeys?: string[];
   estimatedExecutionFee?: bigint;
   estimatedExecutionGasLimit?: bigint;
+  estimatedOrders?: ExecutionFeeEstimate[];
   createdAt: number;
   metricId?: OrderMetricId;
   successMessage?: ReactNode;
