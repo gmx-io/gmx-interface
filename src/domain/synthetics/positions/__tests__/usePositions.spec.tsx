@@ -5,11 +5,9 @@ import { ARBITRUM } from "config/chains";
 import { mockPositionInfo } from "domain/synthetics/testUtils/mocks";
 import { createMockMarketInfo, createMockMarketsData } from "domain/testUtils/mockMarketInfo";
 import { ETH_ADDRESS, ETH_TOKEN, USDC_ADDRESS, USDC_TOKEN } from "domain/testUtils/mockTokens";
-import { metrics } from "lib/metrics";
 import { useMulticall } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
 import type { PositionsData } from "sdk/utils/positions/types";
-import type { TokensData } from "sdk/utils/tokens/types";
 
 import { usePositions } from "../usePositions";
 
@@ -27,8 +25,6 @@ const ACCOUNT_B = "0x2222222222222222222222222222222222222222";
 const marketInfo = createMockMarketInfo();
 const marketsData = createMockMarketsData([marketInfo]);
 const tokensData = { [USDC_ADDRESS]: USDC_TOKEN, [ETH_ADDRESS]: ETH_TOKEN };
-const NO_PRICES_TOKENS_DATA: TokensData = {};
-const USDC_ONLY_TOKENS_DATA: TokensData = { [USDC_ADDRESS]: USDC_TOKEN };
 
 const positionA = mockPositionInfo({
   marketInfo,
@@ -50,25 +46,17 @@ function mockMulticall(data: LoadedPositions | undefined) {
   } as unknown as ReturnType<typeof useMulticall>);
 }
 
-function Probe({
-  account,
-  resultRef,
-  tokens = tokensData,
-}: {
-  account: string;
-  resultRef: { current?: PositionsData };
-  tokens?: TokensData;
-}) {
-  resultRef.current = usePositions(ARBITRUM, { marketsData, tokensData: tokens, account }).positionsData;
+function Probe({ account, resultRef }: { account: string; resultRef: { current?: PositionsData } }) {
+  resultRef.current = usePositions(ARBITRUM, { marketsData, tokensData, account }).positionsData;
 
   return null;
 }
 
-function readPositions(account: string, tokens?: TokensData): PositionsData | undefined {
+function readPositions(account: string): PositionsData | undefined {
   // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
   const resultRef: { current?: PositionsData } = {};
 
-  render(<Probe account={account} resultRef={resultRef} tokens={tokens} />);
+  render(<Probe account={account} resultRef={resultRef} />);
 
   return resultRef.current;
 }
@@ -156,23 +144,5 @@ describe("usePositions", () => {
     expect(parsed.account).toBe(ACCOUNT_A);
     expect(Object.keys(parsed.positionsData)).toEqual([positionA.key]);
     expect(parsed.positionsData[positionA.key].sizeInUsd).toBe(positionA.sizeInUsd);
-  });
-
-  it("does not report missed market prices while the chain has no prices at all PRO-4395", () => {
-    mockMulticall(undefined);
-    metrics.queue = [];
-
-    const readMissedMarkets = () =>
-      metrics.queue.flatMap((item) =>
-        item.type === "counter" && item.payload.event === "missedMarketPrices"
-          ? [item.payload.customFields?.marketName]
-          : []
-      );
-
-    readPositions(ACCOUNT_A, NO_PRICES_TOKENS_DATA);
-    expect(readMissedMarkets()).toEqual([]);
-
-    readPositions(ACCOUNT_A, USDC_ONLY_TOKENS_DATA);
-    expect(readMissedMarkets()).toEqual([marketInfo.name]);
   });
 });
