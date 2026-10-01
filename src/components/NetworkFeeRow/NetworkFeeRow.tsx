@@ -184,8 +184,8 @@ export function NetworkFeeRow({
     }
 
     const maxNetworkFeeParts = formatTokenAmountWithUsdParts(
-      networkFee.feeAmount,
-      networkFee.feeUsd,
+      -networkFee.feeAmount,
+      -networkFee.feeUsd,
       networkFee.feeToken.symbol,
       networkFee.feeToken.decimals,
       {
