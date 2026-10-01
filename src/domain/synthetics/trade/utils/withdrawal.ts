@@ -1,8 +1,10 @@
+import { getSwapFee } from "domain/synthetics/fees";
 import { GlvInfo, MarketInfo, marketTokenAmountToUsd, usdToMarketTokenAmount } from "domain/synthetics/markets";
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { ERC20Address } from "domain/tokens";
 import { applyFactor } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
+import { SwapPricingType } from "sdk/utils/orders/types";
 import { FindSwapPath, WithdrawalAmounts } from "sdk/utils/trade/types";
 
 export function getWithdrawalAmounts(p: {
@@ -99,10 +101,10 @@ export function getWithdrawalAmounts(p: {
     // TODO MLTCH: add atomic swap fees
     const longSwapFeeUsd = p.forShift
       ? 0n
-      : applyFactor(values.longTokenUsd, p.marketInfo.swapFeeFactorForBalanceWasNotImproved);
+      : getSwapFee(p.marketInfo, values.longTokenUsd, false, SwapPricingType.Withdrawal);
     const shortSwapFeeUsd = p.forShift
       ? 0n
-      : applyFactor(values.shortTokenUsd, p.marketInfo.swapFeeFactorForBalanceWasNotImproved);
+      : getSwapFee(p.marketInfo, values.shortTokenUsd, false, SwapPricingType.Withdrawal);
 
     const longUiFeeUsd = applyFactor(values.marketTokenUsd, uiFeeFactor);
     const shortUiFeeUsd = applyFactor(values.shortTokenUsd, uiFeeFactor);
@@ -283,9 +285,11 @@ export function getWithdrawalAmounts(p: {
 
     values.marketTokenUsd = values.marketTokenUsd + values.longTokenUsd + values.shortTokenUsd;
     if (!p.forShift) {
-      values.swapFeeUsd = applyFactor(
+      values.swapFeeUsd = getSwapFee(
+        p.marketInfo,
         values.longTokenUsd + values.shortTokenUsd,
-        p.marketInfo.swapFeeFactorForBalanceWasNotImproved
+        false,
+        SwapPricingType.Withdrawal
       );
     }
 
