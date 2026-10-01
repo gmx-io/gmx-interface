@@ -147,6 +147,7 @@ export function useTokenApproval({
                 abi: abis.ERC20,
                 functionName: "allowance",
                 args: [receipt.from, spender as Address],
+                blockNumber: receipt.blockNumber,
               })
               .catch(() => undefined)
           : undefined;
