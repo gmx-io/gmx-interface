@@ -1160,11 +1160,6 @@ export const DepositView = () => {
     };
   } else if (withdrawBlockedError) {
     buttonState = withdrawBlockedError;
-  } else if (needTokenApprove) {
-    buttonState = {
-      text: t`Approve ${selectedToken?.symbol}`,
-      onClick: handleApproveClick,
-    };
   } else if (isSubmitting) {
     buttonState = {
       text: (
@@ -1197,6 +1192,11 @@ export const DepositView = () => {
       }),
       bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
       disabled: true,
+    };
+  } else if (needTokenApprove) {
+    buttonState = {
+      text: t`Approve ${selectedToken?.symbol}`,
+      onClick: handleApproveClick,
     };
   } else if (isNetworkFeeLoading) {
     buttonState = {
