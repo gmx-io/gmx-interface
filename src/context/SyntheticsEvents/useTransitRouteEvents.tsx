@@ -3,8 +3,8 @@ import useSWR from "swr";
 
 import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { mockTransitApi } from "domain/synthetics/paxosTransit/mockTransitApi";
+import { getIsTransitOrderFinal } from "domain/synthetics/paxosTransit/transitOrders";
 import {
-  getIsTransitOrderFinal,
   type NewTransitRouteProgress,
   type PaxosTransitConversion,
   type TransitRouteProgress,

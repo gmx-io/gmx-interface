@@ -55,6 +55,7 @@ import { createMultichainGlvDepositTxn } from "domain/synthetics/markets/createM
 import { createSourceChainDepositTxn } from "domain/synthetics/markets/createSourceChainDepositTxn";
 import { createSourceChainGlvDepositTxn } from "domain/synthetics/markets/createSourceChainGlvDepositTxn";
 import { TechnicalGmFees } from "domain/synthetics/markets/technicalFees/technical-fees-types";
+import { getTransitRouteProgressForMarket } from "domain/synthetics/paxosTransit/transitRouteProgress";
 import { ERC20Address, TokenBalanceType } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import {

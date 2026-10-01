@@ -74,7 +74,7 @@ export const useWithdrawalTransactions = ({
   error: Error | undefined;
 } => {
   const { chainId, srcChainId } = useChainId();
-  const { signer } = useWallet();
+  const { account, signer } = useWallet();
   const { setPendingWithdrawal, startTransitRouteProgress } = useSyntheticsEvents();
   const { setPendingTxns } = usePendingTxns();
   const { addOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
@@ -101,17 +101,18 @@ export const useWithdrawalTransactions = ({
 
   const recordTransitWithdrawal = useCallback(
     (txnHash: string | undefined) => {
-      if (!isTransitRoute || !txnHash || !glvOrMarketInfo) return;
+      if (!isTransitRoute || !txnHash || !glvOrMarketInfo || !account) return;
 
       startTransitRouteProgress({
         chainId,
-        direction: "sell",
-        marketInfo: glvOrMarketInfo,
+        account,
+        direction: "usdgToUsdc",
+        glvOrMarketInfo,
         withdrawalTxnHash: txnHash,
         conversion: undefined,
       });
     },
-    [chainId, glvOrMarketInfo, isTransitRoute, startTransitRouteProgress]
+    [account, chainId, glvOrMarketInfo, isTransitRoute, startTransitRouteProgress]
   );
 
   const selectedMarketInfoForGlv = useSelector(selectPoolsDetailsSelectedMarketInfoForGlv);
