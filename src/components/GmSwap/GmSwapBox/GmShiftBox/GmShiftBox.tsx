@@ -15,6 +15,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { WALLET_NETWORK_FEE_SOURCE } from "domain/synthetics/fees/networkFeeSource";
 import { GlvOrMarketInfo, getGlvOrMarketAddress, getMarketIndexName } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { Operation } from "domain/synthetics/markets/types";
@@ -128,10 +129,8 @@ export function GmShiftBox({
       toMarketInfo !== undefined && isShiftIntoDisabledMarket(chainId, toMarketInfo.marketTokenAddress),
   });
 
-  const noAmountSet = amounts?.fromTokenAmount === undefined;
-  const balanceNotEqualToAmount = selectedToken?.balance !== amounts?.fromTokenAmount;
   const hasBalance = selectedToken?.balance !== undefined && selectedToken.balance > 0n;
-  const selectedTokenShowMaxButton = hasBalance && (noAmountSet || balanceNotEqualToAmount);
+  const isMaxSelected = selectedToken?.balance !== undefined && amounts?.fromTokenAmount === selectedToken.balance;
 
   const selectedTokenDollarAmount = (
     <UsdValue usd={amounts?.fromTokenUsd !== undefined && amounts.fromTokenUsd > 0n ? amounts.fromTokenUsd : 0n} />
@@ -270,7 +269,8 @@ export function GmShiftBox({
                     : undefined
                 }
                 onClickBottomRightLabel={handleSelectedTokenClickMax}
-                onClickMax={selectedTokenShowMaxButton ? handleSelectedTokenClickMax : undefined}
+                onClickMax={hasBalance ? handleSelectedTokenClickMax : undefined}
+                isMaxSelected={isMaxSelected}
                 inputValue={selectedMarketText}
                 onInputValueChange={handleSelectedTokenInputValueChange}
                 onFocus={handleSelectedTokenFocus}
@@ -351,7 +351,7 @@ export function GmShiftBox({
             contentClassName="flex flex-col gap-12"
             wrapped
           >
-            <NetworkFeeRow rowPadding executionFee={executionFee} />
+            <NetworkFeeRow rowPadding executionFee={executionFee} feeSource={WALLET_NETWORK_FEE_SOURCE} />
           </ExpandableRow>
         </div>
       </form>

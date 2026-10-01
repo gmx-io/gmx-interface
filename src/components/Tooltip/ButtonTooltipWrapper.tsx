@@ -5,9 +5,10 @@ import TooltipWithPortal from "./TooltipWithPortal";
 type Props = {
   children: ReactNode;
   content?: ReactNode | null;
+  isHandlerDisabled?: boolean;
 };
 
-export function ButtonTooltipWrapper({ children, content }: Props) {
+export function ButtonTooltipWrapper({ children, content, isHandlerDisabled = true }: Props) {
   if (!content) {
     return <>{children}</>;
   }
@@ -19,7 +20,7 @@ export function ButtonTooltipWrapper({ children, content }: Props) {
       variant="none"
       className="w-full"
       handleClassName="w-full"
-      isHandlerDisabled
+      isHandlerDisabled={isHandlerDisabled}
       shouldPreventDefault={false}
     >
       {children}

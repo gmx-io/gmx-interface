@@ -60,8 +60,10 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
   getExpressParamsForSubmit,
+  getNetworkFeeGasPaymentParams,
   reportMultichainExpressSubmitError,
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
+import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import {
   EditingOrderSource,
@@ -116,7 +118,6 @@ import {
   formatAmount,
   formatAmountFree,
   formatBalanceAmount,
-  formatTokenAmountWithUsdParts,
   parseValue,
 } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -136,9 +137,11 @@ import Button from "components/Button/Button";
 import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
+import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarginDepositInsufficientMessage } from "components/MarginRemediation/MarginRemediationActions";
 import Modal from "components/Modal/Modal";
+import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
 import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
 import { LiquidationPriceValue } from "components/NumericValue/LiquidationPriceValue";
 import { NumericValue } from "components/NumericValue/NumericValue";
@@ -532,28 +535,29 @@ export function OrderEditor(p: Props) {
     canSwitchGasPaymentToken: isActiveForm,
   });
 
+  const expressError = useMemo(() => getExpressError({ expressParams, tokensData }), [expressParams, tokensData]);
+
   const networkFee = useMemo(() => {
-    if (!additionalExecutionFee) {
-      return undefined;
+    const gasPaymentParams = getNetworkFeeGasPaymentParams({
+      expressParams,
+      tokensData,
+      canApproveGasPaymentToken: false,
+    });
+    const gasPaymentToken = getByKey(tokensData, gasPaymentParams?.gasPaymentTokenAddress);
+
+    if (gasPaymentToken && gasPaymentParams?.gasPaymentTokenAmount !== undefined) {
+      return {
+        feeToken: gasPaymentToken,
+        feeTokenAmount: gasPaymentParams.gasPaymentTokenAmount,
+        feeUsd: convertToUsd(
+          gasPaymentParams.gasPaymentTokenAmount,
+          gasPaymentToken.decimals,
+          gasPaymentToken.prices.minPrice
+        ),
+      };
     }
 
-    let feeToken = additionalExecutionFee?.feeToken;
-    let feeTokenAmount = additionalExecutionFee?.feeTokenAmount;
-    let feeUsd = additionalExecutionFee?.feeUsd;
-
-    const gasPaymentToken = getByKey(tokensData, expressParams?.gasPaymentParams.gasPaymentTokenAddress);
-
-    if (gasPaymentToken && expressParams?.gasPaymentParams.gasPaymentTokenAmount !== undefined) {
-      feeToken = gasPaymentToken;
-      feeTokenAmount = expressParams?.gasPaymentParams.gasPaymentTokenAmount;
-      feeUsd = convertToUsd(feeTokenAmount, feeToken.decimals, gasPaymentToken.prices.minPrice);
-    }
-
-    return {
-      feeToken,
-      feeTokenAmount,
-      feeUsd,
-    };
+    return additionalExecutionFee;
   }, [additionalExecutionFee, expressParams, tokensData]);
 
   const error = useMemo(() => {
@@ -578,19 +582,10 @@ export function OrderEditor(p: Props) {
         return t`Set limit price above mark price`;
       }
 
-      const expressError = getExpressError({
-        expressParams,
-        tokensData,
-      });
-
-      if (expressError.buttonErrorMessage) {
-        return expressError.buttonErrorMessage;
-      }
-
-      return;
+      return expressError.buttonErrorMessage;
     }
 
-    return positionOrderError;
+    return positionOrderError ?? expressError.buttonErrorMessage;
   }, [
     isSubmitting,
     p.order.orderType,
@@ -600,8 +595,7 @@ export function OrderEditor(p: Props) {
     minOutputAmount,
     isRatioInverted,
     markRatio,
-    expressParams,
-    tokensData,
+    expressError,
   ]);
 
   const showResultingPositionMaxLeverageWarning =
@@ -1020,6 +1014,7 @@ export function OrderEditor(p: Props) {
                 </div>
               ) : (
                 <BuyInputSection
+                  qa="amount-input"
                   topLeftLabel={isTriggerDecrease ? t`Close` : t`Size`}
                   inputValue={isTriggerDecrease ? closeSize.closeSizeInput : sizeInputValue}
                   onInputValueChange={
@@ -1029,10 +1024,11 @@ export function OrderEditor(p: Props) {
                   bottomRightLabel={isTriggerDecrease && positionSize !== undefined ? t`Max` : undefined}
                   bottomRightValue={isTriggerDecrease ? <UsdPriceValue price={positionSize} /> : undefined}
                   onClickMax={
-                    isTriggerDecrease && positionSize !== undefined && positionSize > 0 && sizeUsd !== positionSize
+                    isTriggerDecrease && positionSize !== undefined && positionSize > 0
                       ? closeSize.setMaxCloseSize
                       : undefined
                   }
+                  isMaxSelected={sizeUsd === positionSize}
                   maxDecimals={
                     isTriggerDecrease && closeSize.showSizeInTokens ? positionIndexToken?.decimals ?? 18 : USD_DECIMALS
                   }
@@ -1048,6 +1044,7 @@ export function OrderEditor(p: Props) {
               )}
 
               <BuyInputSection
+                qa="trigger-price-input"
                 topLeftLabel={priceLabel}
                 topRightLabel={t`Mark`}
                 topRightValue={<UsdPriceValue price={markPrice} visualMultiplier={indexToken?.visualMultiplier} />}
@@ -1190,25 +1187,25 @@ export function OrderEditor(p: Props) {
                       <StatsTooltipRow
                         label={<div className="text-typography-primary">{t`Network fee`}:</div>}
                         value={
-                          <NumericValue
-                            parts={formatTokenAmountWithUsdParts(
-                              networkFee.feeTokenAmount * -1n,
-                              networkFee.feeUsd === undefined ? undefined : networkFee.feeUsd * -1n,
-                              networkFee.feeToken.symbol,
-                              networkFee.feeToken.decimals,
-                              {
-                                displayDecimals: 5,
-                                isStable: networkFee.feeToken.isStable,
-                              }
-                            )}
+                          <NetworkFeeValue
+                            amount={networkFee.feeTokenAmount}
+                            usd={networkFee.feeUsd}
+                            decimals={networkFee.feeToken.decimals}
+                            symbol={networkFee.feeToken.symbol}
+                            isStable={networkFee.feeToken.isStable}
+                            source={getNetworkFeeSource({ isGmxAccount: srcChainId !== undefined })}
                           />
                         }
                         showDollar={false}
                       />
-                      <br />
-                      <div className="text-typography-primary">
-                        <Trans>Network fees increased. Additional fee required.</Trans>
-                      </div>
+                      {additionalExecutionFee && (
+                        <>
+                          <br />
+                          <div className="text-typography-primary">
+                            <Trans>Network fees increased. Additional fee required.</Trans>
+                          </div>
+                        </>
+                      )}
                     </>
                   )}
                 />
@@ -1251,6 +1248,18 @@ export function OrderEditor(p: Props) {
           {marginDepositRisk?.warning !== undefined && (
             <AlertInfoCard type="warning" hideClose>
               {marginDepositRisk.warning}
+            </AlertInfoCard>
+          )}
+
+          {expressError.bannerErrorName && (
+            <AlertInfoCard type="error" hideClose>
+              <ValidationBannerErrorContent
+                validationBannerErrorName={expressError.bannerErrorName}
+                chainId={chainId}
+                srcChainId={srcChainId}
+                gasPaymentTokenAddress={expressParams?.gasPaymentParams.gasPaymentTokenAddress}
+                onBeforeNavigation={p.onClose}
+              />
             </AlertInfoCard>
           )}
 

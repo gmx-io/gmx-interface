@@ -12,7 +12,7 @@ import {
   PendingPositionUpdate,
   useSyntheticsEvents,
 } from "context/SyntheticsEvents";
-import { selectOrdersInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectOrdersInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import {
@@ -69,6 +69,7 @@ import { getTxnErrorToast, PermitIssueType } from "components/Errors/errorToasts
 
 import { getIsSizeIncreaseBatch } from "./getIsSizeIncreaseBatch";
 import { BatchOrderTxnCtx } from "./sendBatchOrderTxn";
+import { getPossiblyInsufficientPayTokens } from "../express/insufficientPayTokens";
 import { ExpressTxnParams } from "../express/types";
 
 export type CallbackUiCtx = {
@@ -98,9 +99,11 @@ export function useOrderTxnCallbacks() {
   const { chainId, srcChainId } = useChainId();
   const { showDebugValues, setIsSettingsVisible } = useSettings();
   const ordersInfoData = useSelector(selectOrdersInfoData);
-  const { addOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
+  const { addOptimisticTokensBalancesUpdates, optimisticTokensBalancesUpdates, websocketTokenBalancesUpdates } =
+    useTokensBalancesUpdates();
   const { setIsPermitsDisabled, resetTokenPermits } = useTokenPermitsContext();
   const { invalidateSubaccountApproval } = useSubaccountContext();
+  const tokensData = useSelector(selectTokensData);
   const blockNumber = useBlockNumber(chainId);
 
   const batchTxnCallback = useCallback(
@@ -217,7 +220,7 @@ export function useOrderTxnCallbacks() {
             key: getExpressParamsKey(expressParams),
             subaccountApproval: expressParams.subaccount?.signedApproval,
             tokenPermits: expressParams.relayParamsPayload.tokenPermits,
-            payTokenAddresses: Object.keys(optimisticBatchPayAmounts),
+            payAmounts: optimisticBatchPayAmounts,
             pendingOrdersKeys: pendingOrders.map(getPendingOrderKey),
             pendingPositionsKeys: pendingPositions.map((p) => p.positionKey),
             estimatedExecutionFee: expressParams.executionFeeAmount,
@@ -231,6 +234,7 @@ export function useOrderTxnCallbacks() {
             successMessage,
             errorMessage,
             isGmxAccount: expressParams.isGmxAccount,
+            gasPaymentTokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
           });
         }
       };
@@ -397,6 +401,8 @@ export function useOrderTxnCallbacks() {
             }
           }
 
+          const payAmounts = getOptimisticBatchPayAmounts(e.data);
+
           const toastParams = getTxnErrorToast(chainId, errorData, {
             defaultMessage: operationMessage,
             slippageInputId: ctx.slippageInputId,
@@ -407,6 +413,20 @@ export function useOrderTxnCallbacks() {
             permitIssueType,
             isOutdatedSubaccountApproval,
             setIsSettingsVisible,
+            expressTxn: expressParams
+              ? {
+                  gasPaymentTokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
+                  isGmxAccount: expressParams.isGmxAccount,
+                  payTokenAddresses: Object.keys(payAmounts),
+                  possiblyInsufficientTokenAddresses: getPossiblyInsufficientPayTokens({
+                    payAmounts,
+                    tokensData,
+                    optimisticUpdates: optimisticTokensBalancesUpdates,
+                    websocketUpdates: websocketTokenBalancesUpdates,
+                    balanceType: expressParams.isGmxAccount ? TokenBalanceType.GmxAccount : TokenBalanceType.Wallet,
+                  }),
+                }
+              : undefined,
           });
 
           helperToast.error(toastParams.errorContent, {
@@ -474,6 +494,8 @@ export function useOrderTxnCallbacks() {
     },
     [
       addOptimisticTokensBalancesUpdates,
+      optimisticTokensBalancesUpdates,
+      websocketTokenBalancesUpdates,
       blockNumber,
       chainId,
       srcChainId,
@@ -491,6 +513,7 @@ export function useOrderTxnCallbacks() {
       setPendingPosition,
       setPendingTxns,
       showDebugValues,
+      tokensData,
       updatePendingExpressTxn,
     ]
   );

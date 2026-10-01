@@ -13,6 +13,7 @@ import {
   getFeeItem,
   getTotalFeeItem,
 } from "domain/synthetics/fees";
+import type { NetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { DecreasePositionSwapType } from "domain/synthetics/orders";
 import { TradeFees } from "domain/synthetics/trade";
 import { Operation } from "domain/synthetics/trade/usePositionEditorState";
@@ -22,6 +23,7 @@ import { getExecutionFee } from "sdk/utils/fees/executionFee";
 export type Options = {
   operation: Operation;
   gasPaymentParams?: GasPaymentParams;
+  feeSource?: NetworkFeeSource;
 };
 
 // todo make it a selector
