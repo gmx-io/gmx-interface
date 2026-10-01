@@ -150,6 +150,8 @@ import type { SdkSubaccountApproval, SdkSubaccountStatus, SubaccountState } from
 import { fetchApiTokens } from "utils/tokens/api";
 import { fetchApiTrades, searchApiTrades } from "utils/trades/api";
 import type { FetchTradesParams, SearchTradesParams, TradesListResponse } from "utils/trades/types";
+import { fetchApiUsdgBoostApr } from "utils/usdgBoostApr/api";
+import type { UsdgBoostAprResponse } from "utils/usdgBoostApr/types";
 import { fetchApiWhitelists } from "utils/whitelists/api";
 import type { AccountWhitelists } from "utils/whitelists/types";
 import { fetchApiGmPoolYieldPnl, fetchApiGmUserEarnings } from "utils/yield/api";
@@ -226,6 +228,7 @@ export type {
   JitLiquidityMap,
 } from "utils/jitLiquidity/types";
 export type { StakingPowerResponse } from "utils/staking/types";
+export type { UsdgBoostAprResponse, UsdgGlvBoostApr, UsdgPoolBoostApr } from "utils/usdgBoostApr/types";
 export type { AccountWhitelists } from "utils/whitelists/types";
 export type {
   TransitAuthorizationMethod,
@@ -482,6 +485,10 @@ export class GmxApiSdk {
 
   fetchWhitelists(params: { address: string }): Promise<AccountWhitelists> {
     return fetchApiWhitelists(this.ctx, params);
+  }
+
+  fetchUsdgBoostApr(): Promise<UsdgBoostAprResponse> {
+    return fetchApiUsdgBoostApr(this.ctx);
   }
 
   fetchWalletBalances(params: { address: string }): Promise<WalletBalance[]> {
