@@ -55,6 +55,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { paySourceToTokenBalanceType } from "domain/multichain/paySourceToTokenBalanceType";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
+import { getExpressExecutionFeeAmount, getExpressGasPrice } from "domain/synthetics/fees/utils/executionFee";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import {
   getAvailableUsdLiquidityForCollateral,
@@ -275,14 +276,14 @@ export function GmSwapBoxDepositWithdrawal() {
           gasPaymentToken,
           relayFeeToken: relayerFeeToken,
           isGmxAccount: true,
-          gasPrice,
+          gasPrice: getExpressGasPrice(chainId, gasPrice),
           gasLimits,
           l1Reference: l1ExpressOrderGasReference,
           tokensData: tradeTokensData,
           createOrdersCount: 1,
           updateOrdersCount: 0,
           cancelOrdersCount: 0,
-          executionFeeAmount: executionFee.feeTokenAmount,
+          executionFeeAmount: getExpressExecutionFeeAmount(chainId, executionFee),
         })
       : undefined;
   }, [
