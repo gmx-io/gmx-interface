@@ -43,7 +43,7 @@ export function ClaimsHistory() {
 
   const {
     claimActions,
-    pageIndex,
+    hasMorePages,
     setPageIndex,
     isLoading: isHistoryLoading,
   } = useClaimCollateralHistory(chainId, {
@@ -67,15 +67,10 @@ export function ClaimsHistory() {
   const hasFilters = Boolean(startDate || endDate || eventNameFilter.length || marketAddressesFilter.length);
 
   useEffect(() => {
-    if (!pageCount || !currentPage) return;
-    const totalPossiblePages = (CLAIMS_HISTORY_PREFETCH_SIZE * pageIndex) / CLAIMS_HISTORY_PER_PAGE;
-    const doesMoreDataExist = pageCount >= totalPossiblePages;
-    const isCloseToEnd = pageCount && pageCount < currentPage + 2;
-
-    if (doesMoreDataExist && isCloseToEnd) {
+    if (hasMorePages && pageCount < currentPage + 2) {
       setPageIndex((prevIndex) => prevIndex + 1);
     }
-  }, [currentPage, pageCount, pageIndex, setPageIndex]);
+  }, [currentPage, pageCount, hasMorePages, setPageIndex]);
 
   const historyExport = useClaimsHistoryExport({
     account,

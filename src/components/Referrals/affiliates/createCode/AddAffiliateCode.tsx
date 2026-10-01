@@ -24,12 +24,12 @@ import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNe
 import { REFERRAL_CODE_REGEX } from "domain/referrals/utils/referralCode";
 import { getCodeError, getReferralCodeTakenStatus } from "domain/referrals/utils/referralsHelper";
 import { signRegisterCode } from "domain/synthetics/express/expressOrderUtils";
+import { getSourceChainNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
 import { useChainId } from "lib/chains";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
-import { formatUsd } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
@@ -41,6 +41,7 @@ import { encodeReferralCode } from "sdk/utils/referrals";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
+import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
 import { useRecentReferralCodes } from "components/Referrals/shared/hooks/useRecentReferralCodes";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 
@@ -335,7 +336,20 @@ function AffiliateCodeFormMultichain({
       {srcChainId && (
         <SyntheticsInfoRow
           label={t`Network fee`}
-          value={quoteResult.networkFeeUsd !== undefined ? formatUsd(quoteResult.networkFeeUsd) : "..."}
+          value={
+            quoteResult.networkFee !== undefined ? (
+              <NetworkFeeValue
+                amount={quoteResult.networkFee}
+                usd={quoteResult.networkFeeUsd}
+                decimals={getViemChain(srcChainId).nativeCurrency.decimals}
+                symbol={getViemChain(srcChainId).nativeCurrency.symbol}
+                source={getSourceChainNetworkFeeSource(srcChainId)}
+                isExpress={false}
+              />
+            ) : (
+              "..."
+            )
+          }
         />
       )}
       {rpcFailedChains.length > 0 && referralCodeCheckStatus !== "taken" && (

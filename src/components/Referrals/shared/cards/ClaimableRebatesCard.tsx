@@ -6,9 +6,9 @@ import { useAffiliateRewards } from "domain/synthetics/referrals/useAffiliateRew
 import { getTotalClaimableAffiliateRewardsUsd } from "domain/synthetics/referrals/utils";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { formatUsd } from "lib/numbers";
 
 import Button from "components/Button/Button";
+import { UsdValue } from "components/NumericValue/UsdValue";
 
 import EarnIcon from "img/ic_earn.svg?react";
 
@@ -37,7 +37,7 @@ export function ClaimableRebatesCard() {
         </div>
         <div className="flex items-center justify-between gap-4">
           <div className="text-24 font-medium text-typography-primary numbers">
-            {formatUsd(totalClaimableRewardsUsd)}
+            <UsdValue usd={totalClaimableRewardsUsd} />
           </div>
           <Button variant="primary" onClick={() => setIsClaiming(true)} disabled={totalClaimableRewardsUsd <= 0n}>
             <Trans>Claim rebates</Trans>

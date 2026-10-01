@@ -3,20 +3,24 @@ import { useState } from "react";
 
 import { Operation } from "domain/synthetics/markets/types";
 import { GmSwapFees } from "domain/synthetics/trade";
-import { formatDeltaUsd } from "lib/numbers";
 
 import { ExpandableRow } from "components/ExpandableRow";
 import { GmFees } from "components/GmSwap/GmFees/GmFees";
+import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import { UsdValueWithSkeleton } from "components/UsdValueWithSkeleton/UsdValueWithSkeleton";
+
+import type { GmNetworkFeeInfo } from "./useGmNetworkFeeDetails";
 
 export function InfoRows({
   isDeposit,
   fees,
+  networkFee,
   isLoading,
 }: {
   isDeposit: boolean;
   fees: GmSwapFees | undefined;
+  networkFee: GmNetworkFeeInfo | undefined;
   isLoading?: boolean;
 }) {
   const [isExecutionDetailsOpen, setIsExecutionDetailsOpen] = useState(false);
@@ -44,14 +48,23 @@ export function InfoRows({
         contentClassName="flex flex-col gap-12"
       >
         <SyntheticsInfoRow
+          qa="network-fee"
           label={<Trans>Network fee</Trans>}
           value={
             isLoading ? (
               <UsdValueWithSkeleton usd={undefined} />
-            ) : fees?.logicalNetworkFee?.deltaUsd === undefined ? (
+            ) : networkFee?.details === undefined ? (
               "..."
             ) : (
-              formatDeltaUsd(fees.logicalNetworkFee.deltaUsd)
+              <NetworkFeeValue
+                amount={networkFee.details.amount}
+                usd={networkFee.details.usd}
+                decimals={networkFee.details.decimals}
+                symbol={networkFee.details.symbol}
+                isStable={networkFee.details.isStable}
+                source={networkFee.source}
+                isExpress={networkFee.isExpress}
+              />
             )
           }
         />

@@ -30,11 +30,7 @@ export function SocialSection() {
       },
       {
         ...SOCIAL_MAP.Github,
-        value: (
-          <a href={SOCIAL_MAP.Github.link}>
-            <Trans>Join</Trans>
-          </a>
-        ),
+        value: <Trans>Join</Trans>,
       },
     ],
     []
