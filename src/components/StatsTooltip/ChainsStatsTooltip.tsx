@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
 
 import { USD_DECIMALS } from "config/factors";
-import { formatAmountHuman } from "lib/numbers";
 
+import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
 import TooltipComponent from "components/Tooltip/Tooltip";
 
 import ChainsStatsTooltipRow from "./ChainsStatsTooltipRow";
@@ -13,7 +13,6 @@ type Props = {
   entries: ChainsStatsEntries;
   staleEntries?: ChainsStatsStaleEntry[];
   caption?: ReactNode;
-  subtotal?: ReactNode;
   showDollar?: boolean;
   decimalsForConversion?: number;
 };
@@ -25,7 +24,6 @@ export default function ChainsStatsTooltip({
   entries,
   staleEntries = NO_STALE_ENTRIES,
   caption,
-  subtotal,
   showDollar = true,
   decimalsForConversion = USD_DECIMALS,
 }: Props) {
@@ -40,7 +38,14 @@ export default function ChainsStatsTooltip({
     <TooltipComponent
       position="bottom-end"
       className={caption ? undefined : "whitespace-nowrap"}
-      handle={formatAmountHuman(summary.total, decimalsForConversion, showDollar, 2)}
+      handle={
+        <AmountHumanValue
+          amount={summary.total}
+          decimals={decimalsForConversion}
+          showDollar={showDollar}
+          displayDecimals={2}
+        />
+      }
       handleClassName="numbers"
       content={
         <>
@@ -54,7 +59,6 @@ export default function ChainsStatsTooltip({
           <ChainsStatsTooltipRow
             summary={summary}
             staleEntries={staleEntries}
-            subtotal={subtotal}
             showDollar={showDollar}
             decimalsForConversion={decimalsForConversion}
           />

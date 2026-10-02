@@ -84,6 +84,10 @@ type InnerTooltipProps<T extends ElementType | undefined> = {
    * Disables the click toggle behavior that keeps the tooltip open after clicking.
    */
   disableClickToggle?: boolean;
+  /**
+   * Flips only to the opposite side when the preferred one has no room; horizontal overflow is shifted instead.
+   */
+  flipOnlyToOppositeSide?: boolean;
 
   variant?: "icon" | "iconStroke" | "underline" | "none";
   iconClassName?: string;
@@ -116,6 +120,7 @@ export default function Tooltip<T extends ElementType>({
   fitHandleWidth,
   closeOnDoubleClick,
   disableClickToggle,
+  flipOnlyToOppositeSide,
   variant = "underline",
   iconClassName,
   ...containerProps
@@ -135,16 +140,20 @@ export default function Tooltip<T extends ElementType>({
   const { refs, floatingStyles, context } = useFloating({
     middleware: [
       offset(10),
-      flip({
-        fallbackPlacements: [
-          getOppositeAlignmentPlacement(position),
-          getOppositePlacement(position),
-          "left-start",
-          "right-start",
-          "bottom",
-          "top",
-        ],
-      }),
+      flip(
+        flipOnlyToOppositeSide
+          ? { crossAxis: false, fallbackPlacements: [getOppositePlacement(position)] }
+          : {
+              fallbackPlacements: [
+                getOppositeAlignmentPlacement(position),
+                getOppositePlacement(position),
+                "left-start",
+                "right-start",
+                "bottom",
+                "top",
+              ],
+            }
+      ),
       shift({
         padding: 10,
       }),

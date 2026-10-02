@@ -3,8 +3,9 @@ import { ReactNode, useMemo } from "react";
 
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { formatAmount, formatUsd } from "lib/numbers";
+import { formatAmount } from "lib/numbers";
 
+import { UsdValue } from "components/NumericValue/UsdValue";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
 export function OpenInterestTooltip() {
@@ -29,18 +30,22 @@ export function OpenInterestTooltip() {
 
     const longTokens = formatAmount(openInterestLongInTokens, decimals, 2, true);
     const shortTokens = formatAmount(openInterestShortInTokens, decimals, 2, true);
-    const longUsd = formatUsd(openInterestLong, { displayDecimals: 0 });
-    const shortUsd = formatUsd(openInterestShort, { displayDecimals: 0 });
 
     return {
       longOIFormatted: (
         <>
-          {longTokens} {indexTokenSymbol} <span className="text-typography-secondary">({longUsd})</span>
+          {longTokens} {indexTokenSymbol}{" "}
+          <span className="whitespace-nowrap text-typography-secondary">
+            (<UsdValue usd={openInterestLong} displayDecimals={0} />)
+          </span>
         </>
       ),
       shortOIFormatted: (
         <>
-          {shortTokens} {indexTokenSymbol} <span className="text-typography-secondary">({shortUsd})</span>
+          {shortTokens} {indexTokenSymbol}{" "}
+          <span className="whitespace-nowrap text-typography-secondary">
+            (<UsdValue usd={openInterestShort} displayDecimals={0} />)
+          </span>
         </>
       ),
     };

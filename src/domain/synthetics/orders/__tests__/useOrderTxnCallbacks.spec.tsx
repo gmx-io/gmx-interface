@@ -44,6 +44,7 @@ vi.mock("context/PendingTxnsContext/PendingTxnsContext", () => ({
   }),
 }));
 vi.mock("context/SettingsContext/SettingsContextProvider", () => ({ useSettings: () => ({}) }));
+vi.mock("context/SubaccountContext/SubaccountContextProvider", () => ({ useSubaccountContext: () => ({}) }));
 vi.mock("context/TokenPermitsContext/TokenPermitsContextProvider", () => ({ useTokenPermitsContext: () => ({}) }));
 vi.mock("context/TokensBalancesContext/TokensBalancesContextProvider", () => ({
   useTokensBalancesUpdates: () => ({ addOptimisticTokensBalancesUpdates: vi.fn() }),

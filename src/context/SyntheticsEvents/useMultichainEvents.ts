@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
-import { AnyChainId, getChainName, SourceChainId } from "config/chains";
+import { AnyChainId, SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import {
   CHAIN_ID_TO_TOKEN_ID_MAP,
@@ -27,16 +27,8 @@ import { isMultichainFundingItemLoading } from "domain/multichain/isMultichainFu
 import { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { isStepGreater } from "domain/multichain/useGmxAccountFundingHistory";
 import { useChainId } from "lib/chains";
-import {
-  getMultichainDepositMetricId,
-  getMultichainWithdrawalMetricId,
-  metrics,
-  MultichainDepositMetricData,
-  MultichainWithdrawalMetricData,
-  sendOrderExecutedMetric,
-} from "lib/metrics";
+import { getMultichainDepositMetricId, getMultichainWithdrawalMetricId, sendOrderExecutedMetric } from "lib/metrics";
 import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
-import { sendMultichainDepositSuccessEvent, sendMultichainWithdrawalSuccessEvent } from "lib/userAnalytics/utils";
 import { LayerZeroEndpointId } from "sdk/configs/multichain";
 import { getToken } from "sdk/configs/tokens";
 import { adjustForDecimals } from "sdk/utils/numbers";
@@ -118,6 +110,11 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
   }, [pendingMultichainFunding, srcChainId]);
 
   const { address: currentAccount } = useAccount();
+
+  const accountPendingMultichainFunding = useMemo(
+    () => pendingMultichainFunding.filter((item) => item.account === currentAccount),
+    [currentAccount, pendingMultichainFunding]
+  );
 
   const [, setSelectedTransferGuid] = useGmxAccountSelectedTransferGuid();
   const [multichainFundingPendingIds, setMultichainFundingPendingIds] = useState<Record<string, string>>(EMPTY_OBJECT);
@@ -228,7 +225,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       );
 
       patch[pendingItemIndex] = {
-        account: currentAccount,
+        account: submittedDeposit.account,
         sentAmount,
         id: info.guid,
         sentTxn: info.txnHash,
@@ -509,7 +506,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       });
 
       patch[pendingItemIndex] = {
-        account: currentAccount,
+        account: submittedWithdrawal.account,
         // This is on settlement chain, no need to convert amount
         sentAmount: info.amountSentLD,
         id: info.guid,
@@ -828,7 +825,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
 
   const multichainEventsState = useMemo(
     (): MultichainEventsState => ({
-      pendingMultichainFunding,
+      pendingMultichainFunding: accountPendingMultichainFunding,
       multichainFundingPendingIds,
       setMultichainSubmittedDeposit: (submittedEvent) => {
         if (!currentAccount) {
@@ -1006,6 +1003,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       },
     }),
     [
+      accountPendingMultichainFunding,
       pendingMultichainFunding,
       multichainFundingPendingIds,
       sourceChainApprovalStatuses,
@@ -1021,7 +1019,6 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
 
   useEffect(
     function resetOnAccountChange() {
-      setPendingMultichainFunding(DEFAULT_MULTICHAIN_FUNDING_STATE);
       setMultichainFundingPendingIds(EMPTY_OBJECT);
       setSourceChainApprovalStatuses(EMPTY_OBJECT);
     },
@@ -1102,17 +1099,6 @@ function queueSendDepositExecutedMetric(deposit: MultichainFundingHistoryItem) {
     assetSymbol: token.symbol,
   });
 
-  const cache = metrics.getCachedMetricData<MultichainDepositMetricData>(metricId);
-  if (cache) {
-    sendMultichainDepositSuccessEvent({
-      settlementChain: getChainName(deposit.settlementChainId),
-      sourceChain: getChainName(deposit.sourceChainId),
-      asset: token.symbol,
-      sizeInUsd: cache.sizeInUsd,
-      isFirstTime: cache.isFirstDeposit,
-    });
-  }
-
   sendOrderExecutedMetric(metricId);
 }
 
@@ -1123,17 +1109,6 @@ function queueSendWithdrawalReceivedMetric(withdrawal: MultichainFundingHistoryI
     sourceChain: withdrawal.sourceChainId,
     assetSymbol: token.symbol,
   });
-
-  const cache = metrics.getCachedMetricData<MultichainWithdrawalMetricData>(metricId);
-  if (cache) {
-    sendMultichainWithdrawalSuccessEvent({
-      settlementChain: getChainName(withdrawal.settlementChainId),
-      sourceChain: getChainName(withdrawal.sourceChainId),
-      asset: token.symbol,
-      sizeInUsd: cache.sizeInUsd,
-      isFirstTime: cache.isFirstWithdrawal,
-    });
-  }
 
   sendOrderExecutedMetric(metricId);
 }

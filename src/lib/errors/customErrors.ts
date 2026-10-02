@@ -53,6 +53,10 @@ export function getIsInvalidSignatureError(error: ErrorLike) {
   };
 }
 
+export function getIsInvalidSubaccountApprovalNonceError(error: ErrorLike) {
+  return parseError(error)?.contractError === "InvalidSubaccountApprovalNonce";
+}
+
 export function getIsPermitSignatureErrorOnSimulation(error: ErrorLike) {
   return isPermitExternalCallFailedOnSimulation(error, "invalid signature");
 }
@@ -139,6 +143,28 @@ export function isIgnoredEstimateGasError(error: ErrorLike): boolean {
   }
 
   return false;
+}
+
+const INSUFFICIENT_FEE_MESSAGE_PATTERN = "ERC20: transfer amount exceeds balance";
+
+export function getInsufficientFeeError(
+  errorData: ErrorData | undefined
+): { isErrorMatched: false } | { isErrorMatched: true; tokenAddress: string | undefined } {
+  if (!errorData) {
+    return { isErrorMatched: false };
+  }
+
+  if (errorData.contractError === "InsufficientMultichainBalance") {
+    const tokenArg = errorData.contractErrorArgs?.[1];
+
+    return { isErrorMatched: true, tokenAddress: typeof tokenArg === "string" ? tokenArg : undefined };
+  }
+
+  const isBalanceRevert = [errorData.errorMessage, errorData.data?.message].some(
+    (message) => typeof message === "string" && message.includes(INSUFFICIENT_FEE_MESSAGE_PATTERN)
+  );
+
+  return isBalanceRevert ? { isErrorMatched: true, tokenAddress: undefined } : { isErrorMatched: false };
 }
 
 export function getIsPossibleExternalSwapError(error: ErrorLike) {
