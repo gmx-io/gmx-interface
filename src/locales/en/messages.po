@@ -482,10 +482,6 @@ msgstr "Expired Market Increase"
 msgid "Percentage"
 msgstr "Percentage"
 
-#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
-msgid "{tokenOut} received"
-msgstr "{tokenOut} received"
-
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap UI fee"
 msgstr "Swap UI fee"
@@ -1435,6 +1431,10 @@ msgstr "Estimated impact rebate"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized yield products"
 msgstr "Decentralized yield products"
+
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "{tokenOutSymbol} received"
+msgstr "{tokenOutSymbol} received"
 
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/SwapCard/SwapCard.tsx
@@ -7676,6 +7676,7 @@ msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets"
 msgstr "Yield-optimized vaults supplying liquidity across multiple GMX markets"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Conversion status unavailable"
 msgstr "Conversion status unavailable"
 

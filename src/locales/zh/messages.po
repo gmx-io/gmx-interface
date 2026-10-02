@@ -482,10 +482,6 @@ msgstr "已过期的市价增仓"
 msgid "Percentage"
 msgstr "百分比"
 
-#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
-msgid "{tokenOut} received"
-msgstr "已收到 {tokenOut}"
-
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap UI fee"
 msgstr "兑换界面费用"
@@ -1435,6 +1431,10 @@ msgstr "预估价格影响返还"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized yield products"
 msgstr "去中心化收益产品"
+
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "{tokenOutSymbol} received"
+msgstr "已收到 {tokenOutSymbol}"
 
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/SwapCard/SwapCard.tsx
@@ -7676,6 +7676,7 @@ msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets"
 msgstr "收益优化金库，跨多个 GMX 市场提供流动性"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Conversion status unavailable"
 msgstr "转换状态不可用"
 

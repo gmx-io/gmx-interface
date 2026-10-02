@@ -482,10 +482,6 @@ msgstr "만료된 시장 증가"
 msgid "Percentage"
 msgstr "비율"
 
-#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
-msgid "{tokenOut} received"
-msgstr "{tokenOut}을(를) 수령했습니다"
-
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap UI fee"
 msgstr "스왑 UI 수수료"
@@ -1435,6 +1431,10 @@ msgstr "예상 가격 영향 리베이트"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized yield products"
 msgstr "탈중앙화 수익률 상품"
+
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "{tokenOutSymbol} received"
+msgstr "{tokenOutSymbol}을(를) 수령했습니다"
 
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/SwapCard/SwapCard.tsx
@@ -7676,6 +7676,7 @@ msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets"
 msgstr "여러 GMX 마켓에 유동성을 공급하는 수익률 최적화 볼트"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Conversion status unavailable"
 msgstr "변환 상태를 사용할 수 없습니다"
 
