@@ -183,6 +183,7 @@ msgstr "建立 TWAP 兌換"
 msgid "Rewards paused"
 msgstr "獎勵已暫停"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -255,6 +256,11 @@ msgstr "GMTrade"
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "RPC monitoring"
 msgstr "RPC 監控"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+#: src/components/GmList/UsdgPoolBadges.tsx
+msgid "Launch boost"
+msgstr "上線加成"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "(rebated)"
@@ -476,6 +482,10 @@ msgstr "已過期的市價增倉"
 msgid "Percentage"
 msgstr "百分比"
 
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "{tokenOut} received"
+msgstr "已收到 {tokenOut}"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap UI fee"
 msgstr "兌換介面費用"
@@ -672,6 +682,10 @@ msgstr "下架"
 msgid "Unrealized fees"
 msgstr "未實現費用"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Convert {tokenInSymbol} to {tokenOutSymbol}"
+msgstr "將 {tokenInSymbol} 轉換為 {tokenOutSymbol}"
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max slippage precision is 0.01%"
 msgstr "最大滑點精度為 0.01%"
@@ -704,6 +718,7 @@ msgstr "沒有可從 {networkName} 存入的資金"
 msgid "sell"
 msgstr "賣出"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GMX pool liquidity"
 msgstr "GMX 池流動性不足"
@@ -993,6 +1008,10 @@ msgstr "可用流動性"
 msgid "GMX pools can't fill this swap, and no external route is currently available. Try reducing the amount."
 msgstr "GMX 池無法完成此交換，且當前沒有可用的外部路由。請嘗試減少金額。"
 
+#: src/components/GmList/UsdgPoolBadges.tsx
+msgid "Only GMX adds liquidity to this pool. It serves USDC and USDG swaps."
+msgstr "只有 GMX 向此池提供流動性。此池用於 USDC 與 USDG 之間的兌換。"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Funding decrease factor"
 msgstr "資金遞減因子"
@@ -1012,6 +1031,10 @@ msgstr ""
 #: src/components/HistoryExport/HistoryExportModal.tsx
 msgid "GMX Detailed CSV"
 msgstr "GMX Detailed CSV"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Sending conversion..."
+msgstr "正在傳送轉換..."
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {seconds} seconds"
@@ -1086,6 +1109,10 @@ msgstr "請僅將<0>與 {chainName} 相容的資產</0>傳送至此地址！"
 msgid "Plutus"
 msgstr "Plutus"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "USDG issuer, separate transaction, usually 2–10 min. No Paxos fee for whitelisted addresses."
+msgstr "USDG 發行方，獨立交易，通常需 2–10 分鐘。白名單地址免 Paxos 手續費。"
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {hours} hours{0}"
 msgstr ""
@@ -1097,6 +1124,10 @@ msgstr "訂單將無法執行：觸發價格已越過清算價格。請編輯觸
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "Don't ask again"
 msgstr ""
+
+#: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
+msgid "Shifting from GM to GLV is similar to buying GLV with a GM token. You will be redirected to the buy GLV tab when selected."
+msgstr "從 GM 轉移至 GLV 類似於用 GM 代幣買入 GLV。選擇後將跳轉至「買入 GLV」分頁。"
 
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values calculated when earned. Excludes incentives."
@@ -1146,6 +1177,10 @@ msgstr "試算您的收益"
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Replace margin deposit"
 msgstr "替換保證金存入"
+
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Buy {poolTokenSymbol}"
+msgstr "買入 {poolTokenSymbol}"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GlvList.tsx
@@ -1357,6 +1392,10 @@ msgstr "錯誤："
 msgid "Cross-chain one-click deposits into GM"
 msgstr "跨鏈一鍵存入 GM"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Approving {tokenInSymbol}..."
+msgstr "正在授權 {tokenInSymbol}..."
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "<0>Switch to TBTC-TBTC pool</0> for potentially lower price impact"
 msgstr "<0>切換至 TBTC-TBTC 池</0>以獲得可能更低的價格影響"
@@ -1518,6 +1557,10 @@ msgstr "止損"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "External swap {0} to {1}"
 msgstr "外部兌換 {0} 至 {1}"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Instant swap"
+msgstr "即時兌換"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Net wallet result"
@@ -1784,6 +1827,7 @@ msgstr "Oracle 端點"
 msgid "Maintenance"
 msgstr "維護"
 
+#: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Swap fee"
@@ -1931,9 +1975,19 @@ msgstr "市值"
 msgid "Markets"
 msgstr "市場"
 
+#: src/components/GmList/UsdgPoolBadges.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Whitelist only"
+msgstr "僅限白名單"
+
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
 msgstr "重試"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Minimum conversion is {0} {tokenInSymbol}"
+msgstr "最低轉換金額為 {0} {tokenInSymbol}"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Available liquidity {directionLabel}"
@@ -1946,6 +2000,10 @@ msgstr "收起"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Vest"
 msgstr "歸屬"
+
+#: src/components/GmList/UsdgPoolBadges.tsx
+msgid "Extra yield for GLV [USDG] liquidity providers during the launch, targeting 8% or more on top of trading fees. Paid into the GLV price every 4 hours, so there's nothing to claim."
+msgstr "上線期間為 GLV [USDG] 流動性提供者提供的額外收益，目標是在交易手續費之外再獲得 8% 或更高收益。每 4 小時計入 GLV 價格，因此無需領取。"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Set TP price below limit price"
@@ -2111,6 +2169,10 @@ msgstr "TWAP Swap"
 msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees."
 msgstr "GM 是 GMX V2 市場的流動性提供者代幣。可累積 V2 市場所產生費用的 63%。"
 
+#: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+msgid "You need USDC or USDG to buy."
+msgstr "買入需要 USDC 或 USDG。"
+
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Public"
@@ -2201,6 +2263,10 @@ msgstr "提取 {glvOrGm}"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Receive voting power and participate in governance"
 msgstr "獲得投票權並參與治理"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Auto · {routeLabel}"
+msgstr "自動 · {routeLabel}"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No GMX swap route found for {0} to {1}. Try <0>an external aggregator</0>."
@@ -2591,6 +2657,10 @@ msgstr "過去的費用"
 msgid "Max open interest {directionLabel}"
 msgstr "最大未平倉量 {directionLabel}"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "Steps"
+msgstr "步驟"
+
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} cancellation failed"
 msgstr "{ordersText} 取消失敗"
@@ -2678,6 +2748,10 @@ msgstr "TWAP 交換僅使用 GMX 池流動性，無法完成此訂單規模。<0
 msgid "How do I choose?"
 msgstr ""
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "This pool holds USDG, so USDC is converted to USDG when you buy and back to USDC when you sell.<0/><1/>Instant swap goes through the GMX USDC/USDG pool within your buy or sell, in one transaction. You pay its swap fee and price impact.<2/><3/>Direct with Paxos converts with Paxos, the issuer of USDG, in a separate transaction that usually settles in 2–10 min. The converted tokens land in your wallet first.<4/><5/>Auto picks the cheaper option. Whitelisted addresses can choose either option and convert USDC to USDG with no Paxos fee. Other addresses always use Auto, and Direct with Paxos is only offered from {minAmount}.<6/><7/>The choice is fixed when only one option can handle the amount or a conversion is in progress."
+msgstr "此池持有 USDG，因此買入時 USDC 會轉換為 USDG，賣出時再轉換回 USDC。<0/><1/>即時兌換在您的買入或賣出中透過 GMX USDC/USDG 池完成，僅需一筆交易。您需支付該池的兌換費用和價格影響。<2/><3/>透過 Paxos 直接轉換是與 USDG 發行方 Paxos 進行轉換，使用獨立交易，通常在 2–10 分鐘內完成結算。轉換後的代幣會先進入您的錢包。<4/><5/>自動會選擇較便宜的選項。白名單地址可選擇任一選項，並以零 Paxos 手續費將 USDC 轉換為 USDG。其他地址一律使用自動，且透過 Paxos 直接轉換僅在 {minAmount} 起提供。<6/><7/>當只有一個選項能處理該金額或轉換正在進行時，選擇將被固定。"
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Grouping"
 msgstr "分組"
@@ -2730,6 +2804,7 @@ msgid "No funds to claim"
 msgstr "無可領取的資金"
 
 #: src/components/AprInfo/AprInfo.tsx
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Sparkle"
@@ -3352,6 +3427,11 @@ msgstr "訂閱"
 msgid "Decentralized finance dashboard"
 msgstr "去中心化金融儀表板"
 
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "{0} received"
+msgstr "已收到 {0}"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending PnL from all open positions"
 msgstr "所有未平倉倉位的待結算 PnL"
@@ -3377,6 +3457,10 @@ msgstr "從其他鏈轉帳"
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Take-Profit / Stop-Loss"
 msgstr "止盈 / 止損"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Paid into the {tokenSymbol} price every 4 hours. Nothing to claim."
+msgstr "每 4 小時計入 {tokenSymbol} 價格。無需領取。"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Yield trading"
@@ -3497,6 +3581,10 @@ msgstr ""
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact USD"
 msgstr "最大可借出影響 USD"
+
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {offerAmount}</2>"
+msgstr "<0>買入 {0}{1}<1>{poolName}</1></0> <2>使用 {offerAmount}</2>"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -3786,6 +3874,11 @@ msgstr "社群主導的 Telegram 群組"
 msgid "Change to {0}"
 msgstr "切換至 {0}"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Conversion"
+msgstr "轉換"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Relayer request failed"
 msgstr "中繼器請求失敗"
@@ -3851,6 +3944,18 @@ msgstr "TypeScript SDK"
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing limit order in {0} pool<0>Switch to {1} pool</0>"
 msgstr ""
+
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Continue to buy"
+msgstr "繼續買入"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "Zero-fee capacity is used up for this amount. Convert now at the standard fee, convert a smaller amount, or wait for the next zero-fee window."
+msgstr "此金額的零費用額度已用盡。可依標準費用立即轉換、轉換較小的金額，或等待下一個零費用時段。"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Direct with Paxos is unavailable. Conversion switched to Auto"
+msgstr "透過 Paxos 直接轉換無法使用。轉換方式已切換為自動"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "of limit"
@@ -3955,6 +4060,10 @@ msgstr "許可已簽署"
 #: src/components/SideNav/BottomMenuSection.tsx
 msgid "Collapse"
 msgstr "收合"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Launch boost (target)"
+msgstr "上線加成（目標）"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Banners"
@@ -4081,6 +4190,10 @@ msgstr "僅限錢包"
 msgid "Listing"
 msgstr "上架"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Conversion failed: {0}"
+msgstr "轉換失敗：{0}"
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Signing approval..."
 msgstr "正在簽署授權..."
@@ -4167,6 +4280,10 @@ msgstr ""
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker thread"
 msgstr "工作執行緒"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Cheaper option for your amount"
+msgstr "此金額下更便宜的選項"
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Failed to update orders"
@@ -4428,6 +4545,7 @@ msgid "Sending order request..."
 msgstr "正在提交訂單請求..."
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
 msgstr "<0>賣出 {0}{1}<1>{poolName}</1></0>"
 
@@ -4506,6 +4624,10 @@ msgstr "分享 GMX 意見回饋"
 msgid "Withdraw failed"
 msgstr "提取失敗"
 
+#: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+msgid "Only GMX adds liquidity to this pool. To provide USDG liquidity, use GLV [USDG]."
+msgstr "只有 GMX 向此池提供流動性。如需提供 USDG 流動性，請使用 GLV [USDG]。"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Minimum {0} capital required for rankings.<0/><1/>Capital = max(sum of margin of open positions - realized PnL + starting pending PnL)."
 msgstr ""
@@ -4518,6 +4640,11 @@ msgstr "{0} 餘額"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "numerous assets"
 msgstr "眾多資產"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+msgid "Step 2: Receive"
+msgstr "步驟 2：收到"
 
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Error name:"
@@ -4663,6 +4790,10 @@ msgstr "簽署授權"
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "{daysConsidered}d earned fees"
 msgstr "{daysConsidered} 天已賺取費用"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Waiting for {tokenInSymbol}..."
+msgstr "正在等待 {tokenInSymbol}..."
 
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
 msgid "Wallet icon"
@@ -4997,6 +5128,10 @@ msgstr "觸發部分報價"
 msgid "{collateralSymbol} is required for collateral.<0/><1/>No swap path found for {0} to {collateralSymbol} within GMX.<2/><3/><4>Swap {collateralSymbol}</4> or <5>bridge {collateralSymbol}</5>."
 msgstr ""
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "First the pool pays out USDG to your wallet, then you confirm the conversion to USDC. If it fails, the USDG stays in your wallet."
+msgstr "池會先將 USDG 支付到您的錢包，然後由您確認轉換為 USDC。若失敗，USDG 將留在您的錢包中。"
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {tokensText}</2>"
 msgstr "<0>買入 {0}{1}<1>{poolName}</1></0> <2>使用 {tokensText}</2>"
@@ -5253,6 +5388,10 @@ msgstr "每 1 小時"
 msgid "Perpetuals aggregator"
 msgstr "永續合約聚合器"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "Sell, then convert"
+msgstr "先賣出後轉換"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Swap"
 msgstr "Request Market Swap"
@@ -5466,6 +5605,10 @@ msgstr "更新止損市價單"
 msgid "USD"
 msgstr "USD"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "GMX USDC/USDG pool, same transaction"
+msgstr "GMX USDC/USDG 池，同一筆交易"
+
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Order lifecycle"
 msgstr "訂單生命週期"
@@ -5509,6 +5652,10 @@ msgstr "結算 {totalStr}"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Sellable cap for pool GM: {0} [{1}] reached, as tokens are reserved by traders. Choose a different pool, reduce the sell size, or split the withdrawal across pools."
 msgstr ""
+
+#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
+msgid "Launch boost · {boostValue} APR · Paid into {tokenSymbol} price every 4h, nothing to claim. <0>Read more</0>"
+msgstr "上線加成 · {boostValue} APR · 每 4 小時計入 {tokenSymbol} 價格，無需領取。<0>了解更多</0>"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive impact factor"
@@ -5597,6 +5744,10 @@ msgstr "平倉前收到（GMX 餘額）"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Open interest {directionLabel}"
 msgstr "未平倉量 {directionLabel}"
+
+#: src/components/GmList/UsdgPoolBadges.tsx
+msgid "Deposits into this vault are open to whitelisted addresses."
+msgstr "此金庫的存入僅對白名單地址開放。"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
@@ -5693,6 +5844,10 @@ msgstr "未知的買入 GM 訂單"
 #: landing/src/pages/Builders/HeroSection/HeroSection.tsx
 msgid "Build on GMX.<0/>Get paid on every trade."
 msgstr "在 GMX 上構建。<0/>每筆交易都有收益。"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Insufficient {tokenInSymbol} balance"
+msgstr "{tokenInSymbol} 餘額不足"
 
 #: src/lib/useHasOutdatedUi.ts
 msgid "Page outdated. Refresh"
@@ -5921,6 +6076,14 @@ msgstr "最多 {MAX_REFERRAL_CODE_LENGTH} 個字元"
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "Buy with card"
 msgstr "使用銀行卡購買"
+
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Step 1: Sell"
+msgstr "步驟 1：賣出"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Auto"
+msgstr "自動"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Provide isolated liquidity per market"
@@ -6184,9 +6347,17 @@ msgstr "Shifting 僅適用於 {chainNames} 或 {lastChainName}。請切換網路
 msgid "Monthly bought"
 msgstr "月度回購量"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "Zero-fee capacity left"
+msgstr "剩餘零費用額度"
+
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
 msgstr ""
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "2–10 min"
+msgstr "2–10 分鐘"
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "PnL Analysis"
@@ -6382,6 +6553,10 @@ msgstr "在接下來的 {2} 內，為 {3} 執行 {numberOfParts} 筆 {0} {type} 
 msgid "Docs"
 msgstr "文件"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Last round paid {lastRoundPaidAt}. The boost returns with the next successful round."
+msgstr "上一輪已於 {lastRoundPaidAt} 發放。加成將在下一輪成功發放後恢復。"
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Marketing Kit + Co-marketing"
 msgstr "行銷工具包 + 聯合行銷"
@@ -6530,6 +6705,10 @@ msgstr "GLV（GMX Liquidity Vault）持有各種 GM 代幣，為您提供對 GMX
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Settlement network changed to Arbitrum, but $12.50 remains in your Base GMX Account"
 msgstr "結算網路已切換至 Arbitrum，但您的 Base GMX Account 中仍有 $12.50"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Paused"
+msgstr "已暫停"
 
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -7055,6 +7234,7 @@ msgid "Earn on every trade they make."
 msgstr "他們每筆交易，您都能賺取收益。"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Buy order cancelled"
 msgstr "買入訂單已取消"
 
@@ -7259,6 +7439,7 @@ msgid "Referrals"
 msgstr "推薦計畫"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Fulfilling sell request..."
 msgstr "正在處理賣出請求..."
 
@@ -7347,6 +7528,8 @@ msgstr ""
 #: src/components/Claims/Claims.tsx
 #: src/components/EmptyTableContent/EmptyTableContent.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
@@ -7360,6 +7543,8 @@ msgstr ""
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7465,6 +7650,10 @@ msgstr "已賺取的費用僅針對您在 {chainName} 錢包中持有的 GM 與 
 msgid "Set long Limit @ {0}"
 msgstr ""
 
+#: src/components/GmList/UsdgPoolBadges.tsx
+msgid "Direct deposits into this pool are open to whitelisted addresses. GLV [USDG] gives you the same markets in one deposit."
+msgstr "此池的直接存入僅對白名單地址開放。GLV [USDG] 讓您一次存入即可涵蓋相同的市場。"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position would be liquidatable"
 msgstr "倉位將面臨清算"
@@ -7485,6 +7674,10 @@ msgstr ""
 #: src/components/GmList/GlvList.tsx
 msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets"
 msgstr "跨多個 GMX 市場提供流動性的收益優化金庫"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Conversion status unavailable"
+msgstr "轉換狀態無法使用"
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "wstETH APR"
@@ -7654,6 +7847,14 @@ msgstr "支付"
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your previous referral code has been replaced with a GMX protocol code after your trades reached the referral program's graduation threshold. You keep your {currentTierDiscount}% discount on opening and closing fees. <0>Read more</0>"
 msgstr "在您的交易達到推薦計畫的畢業門檻後，您先前的推薦碼已被替換為 GMX 協議碼。您將保留開倉和平倉費用 {currentTierDiscount}% 的折扣。<0>瞭解更多</0>"
+
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Converting with Paxos, usually 2–10 min..."
+msgstr "正在透過 Paxos 轉換，通常需 2–10 分鐘..."
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "First you convert USDC to USDG in your wallet, then you confirm the buy. If the buy fails, the USDG stays in your wallet."
+msgstr "您先在錢包中將 USDC 轉換為 USDG，然後確認買入。若買入失敗，USDG 將留在您的錢包中。"
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match your holdings"
@@ -7859,6 +8060,10 @@ msgstr "勝率"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading stats"
 msgstr "GMX 交易統計"
+
+#: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+msgid "Deposits into this vault are open to whitelisted addresses. To get whitelisted, message <0>@GMXPartners</0> on Telegram and mention \"USDG whitelist\"."
+msgstr "此金庫的存入僅對白名單地址開放。如需加入白名單，請在 Telegram 上聯繫 <0>@GMXPartners</0> 並註明 \"USDG whitelist\"。"
 
 #: src/components/LeverageField/LeverageField.tsx
 #: src/pages/UiPage/BannerTest.tsx
@@ -8641,6 +8846,10 @@ msgstr "Oracle Keeper 除錯"
 msgid "Funding fee / day"
 msgstr "每日資金費用"
 
+#: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+msgid "Buy GLV [USDG]"
+msgstr "買入 GLV [USDG]"
+
 #: src/components/UserIncentiveDistribution/utils.tsx
 msgid "GLP reimbursement (test)"
 msgstr "GLP 補償（測試）"
@@ -8652,6 +8861,10 @@ msgstr "為做得更多的人<0/>而建。"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max leverage exceeded. Increase margin or reduce size"
 msgstr "超過最大槓桿。請增加保證金或減小規模"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+msgid "Convert, then buy"
+msgstr "先轉換後買入"
 
 #: src/components/BridgingInfo/BridgingInfo.tsx
 msgid "Bridge {tokenSymbol} to {chainName} with"
@@ -8725,6 +8938,7 @@ msgstr "超過 {0} 最大做多量"
 
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 #: src/components/EarningValue/EarningValue.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -8741,6 +8955,7 @@ msgstr "超過 {0} 最大做多量"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "N/A"
 msgstr "N/A"
 
@@ -8767,6 +8982,7 @@ msgstr "{formattedNetRate} / 1h"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GmListItem.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
@@ -8808,6 +9024,7 @@ msgid "Powered by"
 msgstr "技術提供"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Buy order executed"
 msgstr "買入訂單已成交"
 
@@ -9187,6 +9404,10 @@ msgstr ""
 msgid "{0}ms"
 msgstr "{0}ms"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
+msgid "Business? Mint USDG 1:1 with Paxos"
+msgstr "企業用戶？透過 Paxos 1:1 鑄造 USDG"
+
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -9205,6 +9426,11 @@ msgstr "預估 PNL"
 #: src/pages/Announcements/Announcements.tsx
 msgid "No announcements found"
 msgstr "未找到公告"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "{tokenInSymbol} conversion is unavailable"
+msgstr "{tokenInSymbol} 轉換無法使用"
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your {currentTierDiscount}% discount is now active!"
@@ -9233,6 +9459,10 @@ msgstr "執行 Gas 不足。預估：{estimatedGasLimitText}，起始：{startin
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Min receive"
 msgstr ""
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "The boost rate can't be loaded right now."
+msgstr "目前無法載入加成費率。"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -9317,6 +9547,7 @@ msgid "Trigger tickers failure"
 msgstr "觸發行情報價失敗"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Fulfilling buy request..."
 msgstr "正在執行買入請求..."
 
@@ -9533,6 +9764,8 @@ msgstr "已達池最大容量"
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/GmSwap/GmFees/GmFees.tsx
+#: src/components/GmSwap/GmFees/GmFees.tsx
+#: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "(<0>{0}</0> of {operationText} amount)"
 msgstr "（<0>{0}</0>，佔{operationText}金額）"
 
@@ -9551,6 +9784,10 @@ msgstr "查看"
 msgid "Execute Stop Market"
 msgstr "執行停損市價單"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Unavailable"
+msgstr "無法使用"
+
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Go to trader dashboard"
 msgstr ""
@@ -9564,6 +9801,10 @@ msgstr "AI"
 msgid "Referral code submitted"
 msgstr "推薦碼已提交"
 
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Conversion request sent"
+msgstr "轉換請求已發送"
+
 #: src/components/AprInfo/AprInfo.tsx
 msgid "Bonus APR paid as {airdropTokenTitle} airdrops. <0>Read more</0>."
 msgstr "額外 APR 以 {airdropTokenTitle} 空投形式發放。<0>閱讀更多</0>。"
@@ -9571,6 +9812,10 @@ msgstr "額外 APR 以 {airdropTokenTitle} 空投形式發放。<0>閱讀更多<
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "Execution price"
 msgstr "成交價格"
+
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Conversion cancelled"
+msgstr "轉換已取消"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake failed"
@@ -9766,6 +10011,7 @@ msgid "Edit referral code"
 msgstr "編輯推薦碼"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Sell request sent"
 msgstr "賣出請求已發送"
 
@@ -10112,6 +10358,10 @@ msgstr ""
 msgid "Decode error"
 msgstr "解碼錯誤"
 
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Step 2: Buy"
+msgstr "步驟 2：買入"
+
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "0x..."
 msgstr "0x..."
@@ -10187,6 +10437,10 @@ msgstr ""
 msgid "Select positions where accrued funding fee exceeds the {0} gas cost to settle"
 msgstr "選擇累計資金費用超過 {0} Gas 費用的倉位進行結算"
 
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Continue to convert"
+msgstr "繼續轉換"
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Large account"
 msgstr "大型帳戶"
@@ -10202,6 +10456,10 @@ msgstr "正常"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Swap {0} for {1}"
 msgstr "將 {0} 兌換為 {1}"
+
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Step 2: Convert"
+msgstr "步驟 2：轉換"
 
 #: src/components/TVChart/Chart.tsx
 msgid "Depth"
@@ -10236,6 +10494,7 @@ msgid "Staking..."
 msgstr "質押中..."
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Buy request sent"
 msgstr "買入請求已發送"
 
@@ -10633,6 +10892,10 @@ msgstr "Venus"
 msgid "No swap route available"
 msgstr ""
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+msgid "Step 1: Receive"
+msgstr "步驟 1：收到"
+
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "How much could I earn?"
 msgstr "我能賺多少？"
@@ -10891,6 +11154,10 @@ msgstr "已存入："
 msgid "Increase"
 msgstr "加倉"
 
+#: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+msgid "Buy USDG"
+msgstr "買入 USDG"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -11147,6 +11414,7 @@ msgstr "在 X 上分享您的 GMX 交易"
 msgid "Pool short amount"
 msgstr "池做空數量"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
 msgstr "手續費 APY"
@@ -11154,6 +11422,10 @@ msgstr "手續費 APY"
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trading pair price alerts"
 msgstr "交易對價格提醒"
+
+#: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+msgid "Direct deposits into this pool are open to whitelisted addresses. GLV [USDG] gives you the same markets in one deposit. To get whitelisted, message <0>@GMXPartners</0> on Telegram and mention \"USDG whitelist\"."
+msgstr "此池的直接存入僅對白名單地址開放。GLV [USDG] 讓您一次存入即可涵蓋相同的市場。如需加入白名單，請在 Telegram 上聯繫 <0>@GMXPartners</0> 並註明 \"USDG whitelist\"。"
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "Can I build on top of GMX or integrate it into my DeFi app?"
@@ -11249,6 +11521,10 @@ msgstr "使用 TP/SL 按鈕設定 TP/SL 訂單。"
 msgid "Close fees"
 msgstr "平倉費用"
 
+#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
+msgid "APY"
+msgstr "APY"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GM?"
 msgstr "什麼是 GM？"
@@ -11314,6 +11590,10 @@ msgstr "{positionName} 結算失敗"
 msgid "Illustrative, based on a ~0.05% effective fee.<0/>Real earnings depend on referral tier and each trader's activity."
 msgstr "僅供參考，按約 0.05% 的實際費率估算。<0/>實際收益取決於聯盟等級及每位交易者的活躍度。"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Starts with the first reward round."
+msgstr "從第一輪獎勵開始。"
+
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "Receive to this wallet"
 msgstr "接收至此錢包"
@@ -11376,6 +11656,10 @@ msgstr ""
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "<0>Positive funding fees accrued from your positions</0>"
 msgstr "<0>從您的倉位中累積的正向資金費用</0>"
+
+#: src/components/GmSwap/GmFees/GmFees.tsx
+msgid "Conversion fee"
+msgstr "轉換費用"
 
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Message us on Telegram"
@@ -11756,6 +12040,10 @@ msgstr "您的資金是安全的。如需協助請聯繫客服。"
 msgid "NET VALUE"
 msgstr "淨值"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "First 8 weeks: GLV 8% or higher, GM pools 5%. Rates dilute above $100M program TVL. Funded by Arbitrum's USDG program with GMX. Period 1: {periodStart} – {periodEnd}."
+msgstr "前 8 週：GLV 8% 或更高，GM 池 5%。計畫 TVL 超過 $100M 後費率將被稀釋。由 Arbitrum 的 USDG 計畫與 GMX 共同資助。第 1 期：{periodStart} – {periodEnd}。"
+
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx
 msgid "MARK PRICE"
@@ -11773,7 +12061,12 @@ msgstr "在 {settingsLink} 中將最大網路費用緩衝增加至 {0}"
 msgid "GLP to GM airdrop"
 msgstr "GLP 轉 GM 空投"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Whitelisted addresses convert USDC to USDG with no Paxos fee. To get whitelisted, message <0>@GMXPartners</0> on Telegram and mention \"USDG whitelist\"."
+msgstr "白名單地址可免 Paxos 手續費將 USDC 轉換為 USDG。如需加入白名單，請在 Telegram 上聯繫 <0>@GMXPartners</0> 並註明 \"USDG whitelist\"。"
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Sell order cancelled"
 msgstr "賣出訂單已取消"
 
@@ -12095,9 +12388,17 @@ msgstr "EIP-4844, 20-27 Mar"
 msgid "Lifetime rewards"
 msgstr "累計獎勵"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Not enough history yet"
+msgstr "歷史資料尚不足"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "This trigger is at or beyond the estimated liquidation price. The margin deposit will be attempted before liquidation when eligible, but execution is not guaranteed."
 msgstr "該觸發價格已達到或超出預估清算價格。符合條件時將在清算前嘗試執行保證金存入，但不保證執行成功。"
+
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Step 1: Convert"
+msgstr "步驟 1：轉換"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Save on costs"
@@ -12158,6 +12459,10 @@ msgstr "切換至 WBTC-USDC 池"
 msgid "Traders referred"
 msgstr "推薦交易者"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Converting {tokenInSymbol} to {tokenOutSymbol}..."
+msgstr "正在將 {tokenInSymbol} 轉換為 {tokenOutSymbol}..."
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max deposit limit reached: {maxPoolUsdText}"
 msgstr "已達最大存入上限：{maxPoolUsdText}"
@@ -12195,6 +12500,10 @@ msgstr ""
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H VOL."
 msgstr "24H 交易量"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Rate paid in the last round, on average balances."
+msgstr "上一輪按平均餘額支付的費率。"
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX team"
@@ -12267,6 +12576,10 @@ msgstr "{count, plural, one {訂單} other {# 筆訂單}}"
 msgid "Avalanche trading incentives"
 msgstr "Avalanche 交易獎勵"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Direct with Paxos"
+msgstr "透過 Paxos 直接轉換"
+
 #: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
 msgid "External routes are only used for market swaps."
 msgstr "外部路由僅用於市價交換。"
@@ -12300,6 +12613,10 @@ msgstr "正在發送轉移請求..."
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Order expired before it could be executed"
 msgstr "訂單在執行前已過期"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Confirming conversion..."
+msgstr "正在確認轉換..."
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "PNG"
@@ -12705,6 +13022,10 @@ msgstr "請輸入比率"
 #: src/pages/RpcDebug/parts.tsx
 msgid "OK"
 msgstr "OK"
+
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Convert to {0}"
+msgstr "轉換為 {0}"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Net total of action-level fees, and price impact. Hover the value to see the breakdown."
