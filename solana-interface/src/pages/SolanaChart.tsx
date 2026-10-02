@@ -15,7 +15,9 @@ import {
   disabledFeaturesOnMobile,
 } from "components/TVChartContainer/constants";
 
+import { getSolanaTokenConfig } from "../config/solanaProgram";
 import { selectSolanaBars, type SolanaChartCandles } from "../lib/chartCandles";
+import { filterStockBarsByTradingDays } from "../lib/marketOpenFilter";
 
 import "components/TVChart/TVChart.scss";
 
@@ -77,6 +79,8 @@ function createDatafeed(
 }
 
 type Props = {
+  tokenSymbol: string;
+  indexTokenAddress: string;
   resolution: TradingViewResolution;
   onResolutionChange: (resolution: TradingViewResolution) => void;
   candles: SolanaChartCandles | undefined;
@@ -97,7 +101,15 @@ export function SolanaChart(props: Props) {
   );
 }
 
-function SolanaPriceChart({ resolution, onResolutionChange, candles }: Props) {
+function SolanaPriceChart({ tokenSymbol, indexTokenAddress, resolution, onResolutionChange, candles: rawCandles }: Props) {
+  const isStock = getSolanaTokenConfig(indexTokenAddress)?.type === "stock";
+  const candles = useMemo(
+    () =>
+      rawCandles && isStock
+        ? { ...rawCandles, bars: filterStockBarsByTradingDays(rawCandles.bars, rawCandles.resolution) }
+        : rawCandles,
+    [rawCandles, isStock]
+  );
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetRef = useRef<IChartingLibraryWidget | null>(null);
   const [chartReady, setChartReady] = useState(false);
@@ -117,7 +129,7 @@ function SolanaPriceChart({ resolution, onResolutionChange, candles }: Props) {
       ...defaultChartProps,
       library_path: "/charting_library/",
       container: containerRef.current!,
-      symbol: "SOL",
+      symbol: tokenSymbol,
       datafeed,
       interval: String(resolutionRef.current) as ResolutionString,
       theme,
@@ -151,7 +163,7 @@ function SolanaPriceChart({ resolution, onResolutionChange, candles }: Props) {
       widget.remove();
       resetCallbacks.clear();
     };
-  }, [theme, isMobile, datafeed, resolutionRef, onResolutionChangeRef, resetCallbacks]);
+  }, [tokenSymbol, theme, isMobile, datafeed, resolutionRef, onResolutionChangeRef, resetCallbacks]);
 
   useEffect(() => {
     if (!chartReady || !widgetRef.current || !candles) return;

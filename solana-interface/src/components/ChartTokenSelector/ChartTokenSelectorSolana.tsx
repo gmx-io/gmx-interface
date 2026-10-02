@@ -25,10 +25,18 @@ import { useBreakpoints } from "lib/useBreakpoints";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
+import {
+  applySubCategoryFilter,
+  applyTopLevelFilter,
+  getMarketSearchEmptyStateActions,
+  isMarketRecentlyListed,
+} from "components/ChartTokenSelector/marketFilters";
+import { ModeTabs } from "components/ChartTokenSelector/ModeTabs";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import { RecentlyListedFavoriteSlot } from "components/FavoriteTabs/RecentlyListedFavoriteSlot";
 import SearchInput from "components/SearchInput/SearchInput";
+import { SelectorBase, useSelectorClose } from "components/SelectorBase/SelectorBase";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import Tabs from "components/Tabs/Tabs";
@@ -40,14 +48,6 @@ import LongIcon from "img/long.svg?react";
 import SearchIconComponent from "img/search.svg?react";
 import ShortIcon from "img/short.svg?react";
 
-import {
-  applySubCategoryFilter,
-  applyTopLevelFilter,
-  getMarketSearchEmptyStateActions,
-  isMarketRecentlyListed,
-} from "./marketFilters";
-import { ModeTabs } from "./ModeTabs";
-import { SelectorBase, useSelectorClose } from "../SelectorBase/SelectorBase";
 
 type Props = {
   selectedToken: Token | undefined;
@@ -66,6 +66,12 @@ export type SolanaMarketItem = {
   maxLeverage?: number;
   longLiquidity?: bigint;
   shortLiquidity?: bigint;
+  netRateLong?: bigint;
+  netRateShort?: bigint;
+  fundingRateLong?: bigint;
+  fundingRateShort?: bigint;
+  borrowingRateLong?: bigint;
+  borrowingRateShort?: bigint;
   listingDate?: number;
 };
 
@@ -152,6 +158,8 @@ export function convertSolanaIndexTokensToMarketItems(response: SolanaIndexToken
     const percentChange = toBigInt(item.percentChange24h);
     const deltaPercentage = percentChange === null ? 0 : bigintToNumber(percentChange, 2);
     const maxLeverage = toBigInt(item.maxLeverage);
+    // default to the first marketInfo of the index token: 2026-10-02
+    const firstMarketInfo = item.marketInfos?.[0];
 
     return {
       token,
@@ -170,6 +178,12 @@ export function convertSolanaIndexTokensToMarketItems(response: SolanaIndexToken
       maxLeverage: maxLeverage === null ? 0 : bigintToNumber(maxLeverage, SOLANA_USD_DECIMALS),
       longLiquidity: toBigInt(item.lpLong) ?? BigInt('0'),
       shortLiquidity: toBigInt(item.lpShort) ?? BigInt('0'),
+      netRateLong: toBigInt(firstMarketInfo?.longNetRatePerHour) ?? undefined,
+      netRateShort: toBigInt(firstMarketInfo?.shortNetRatePerHour) ?? undefined,
+      fundingRateLong: toBigInt(firstMarketInfo?.longFundingFeeRateHour) ?? undefined,
+      fundingRateShort: toBigInt(firstMarketInfo?.shortFundingFeeRateHour) ?? undefined,
+      borrowingRateLong: toBigInt(firstMarketInfo?.longBorrowingFeeRateHour) ?? undefined,
+      borrowingRateShort: toBigInt(firstMarketInfo?.shortBorrowingFeeRateHour) ?? undefined,
       dayPriceDelta: {
         close: 0,
         deltaPercentage,
@@ -478,8 +492,6 @@ export function convertSolanaIndexTokensToMarketItems(response: SolanaIndexToken
 //       ]
 //     }]
 // }
-
-// const mock_items2: SolanaMarketItem[] = convertSolanaIndexTokensToMarketItems(solana_data)
 
 const SWAP_EXCLUDED_TOP_LEVEL_TABS: TopLevelTab[] = ["tradfi", "recently-listed"];
 const MAX_MARKET_SEARCH_QUERY_LENGTH = 100;

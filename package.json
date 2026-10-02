@@ -82,6 +82,7 @@
     "core-js": "3.39.0",
     "crypto-js": "4.2.0",
     "date-fns": "4.1.0",
+    "date-holidays": "3.26.9",
     "env-cmd": "10.1.0",
     "eslint-config-prettier": "9.0.0",
     "eslint-config-recommended": "4.1.0",
@@ -234,5 +235,5 @@
       "prettier --write"
     ]
   },
-  "packageManager": "yarn@4.12.0"
+  "packageManager": "yarn@4.18.1"
 }
