@@ -42,7 +42,6 @@ import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCo
 import { stripBlacklistedWords, type Token } from "domain/tokens";
 import { getMidPrice } from "domain/tokens/utils";
 import { useLocalizedMap } from "lib/i18n";
-import { formatAmountHuman, formatUsdPrice } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { searchBy } from "lib/searchBy";
 import { useBreakpoints } from "lib/useBreakpoints";
@@ -52,6 +51,8 @@ import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import { RecentlyListedFavoriteSlot } from "components/FavoriteTabs/RecentlyListedFavoriteSlot";
+import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
+import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
 import SearchInput from "components/SearchInput/SearchInput";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
@@ -826,9 +827,11 @@ function MarketListItem({
         <td className={tdClassName}>
           <div className="flex flex-col gap-4">
             <span className="numbers">
-              {tokenData
-                ? formatUsdPrice(getMidPrice(tokenData.prices), { visualMultiplier: tokenData.visualMultiplier })
-                : "-"}
+              {tokenData ? (
+                <UsdPriceValue price={getMidPrice(tokenData.prices)} visualMultiplier={tokenData.visualMultiplier} />
+              ) : (
+                "-"
+              )}
             </span>
             {isMobile && <span>{dayPriceDeltaComponent}</span>}
           </div>
@@ -866,29 +869,31 @@ function MarketListItem({
       <td className={tdClassName}>
         <div className="flex flex-col gap-4">
           <span className="numbers">
-            {tokenData
-              ? formatUsdPrice(getMidPrice(tokenData.prices), { visualMultiplier: tokenData.visualMultiplier })
-              : "-"}
+            {tokenData ? (
+              <UsdPriceValue price={getMidPrice(tokenData.prices)} visualMultiplier={tokenData.visualMultiplier} />
+            ) : (
+              "-"
+            )}
           </span>
           {isMobile && <span>{dayPriceDeltaComponent}</span>}
         </div>
       </td>
       {!isMobile && <td className={tdClassName}>{dayPriceDeltaComponent}</td>}
       <td className={cx(tdClassName, "numbers")}>
-        {dayVolume ? formatAmountHuman(dayVolume, USD_DECIMALS, true) : "-"}
+        {dayVolume ? <AmountHumanValue amount={dayVolume} decimals={USD_DECIMALS} showDollar /> : "-"}
       </td>
       {!isMobile && (
         <>
           <td className={cx(tdClassName, "pr-4 numbers")}>
             <span className="inline-flex items-center gap-6">
               <LongIcon width={12} className="relative top-1 mb-2 opacity-70" />
-              {formatAmountHuman(openInterestLong ?? 0n, USD_DECIMALS, true)}
+              <AmountHumanValue amount={openInterestLong ?? 0n} decimals={USD_DECIMALS} showDollar />
             </span>
           </td>
           <td className={cx(tdClassName, "pl-4 numbers")}>
             <span className="inline-flex items-center gap-6">
               <ShortIcon width={12} className="relative top-1 mb-2 opacity-70" />
-              {formatAmountHuman(openInterestShort ?? 0n, USD_DECIMALS, true)}
+              <AmountHumanValue amount={openInterestShort ?? 0n} decimals={USD_DECIMALS} showDollar />
             </span>
           </td>
         </>
@@ -899,13 +904,13 @@ function MarketListItem({
           <td className={cx(tdClassName, "group pr-4 numbers hover:bg-slate-800")} onClick={handleSelectLong}>
             <div className="inline-flex items-center justify-end gap-6">
               <LongIcon width={12} className="relative top-1 mb-2 opacity-70" />
-              {formatAmountHuman(maxLongLiquidityPool?.maxLongLiquidity, USD_DECIMALS, true)}
+              <AmountHumanValue amount={maxLongLiquidityPool?.maxLongLiquidity} decimals={USD_DECIMALS} showDollar />
             </div>
           </td>
           <td className={cx(tdClassName, "group pl-4 numbers hover:bg-slate-800")} onClick={handleSelectShort}>
             <div className="inline-flex items-center justify-end gap-6">
               <ShortIcon width={12} className="relative top-1 mb-2 opacity-70" />
-              {formatAmountHuman(maxShortLiquidityPool?.maxShortLiquidity, USD_DECIMALS, true)}
+              <AmountHumanValue amount={maxShortLiquidityPool?.maxShortLiquidity} decimals={USD_DECIMALS} showDollar />
             </div>
           </td>
         </>

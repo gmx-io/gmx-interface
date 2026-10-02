@@ -47,13 +47,15 @@ import { useInitCollateralCloseDestination } from "domain/synthetics/express/use
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
   getExpressParamsForSubmit,
+  getNetworkFeeGasPaymentParams,
   reportMultichainExpressSubmitError,
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
+import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { OrderType } from "domain/synthetics/orders";
 import { getMarginDepositCancelOrderParams } from "domain/synthetics/orders/marginDeposit";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
-import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
+import { formatLeverage, formatLiquidationPriceParts } from "domain/synthetics/positions";
 import {
   getDecreaseReceiveOutputs,
   getIsSplitReceiveAvailable,
@@ -73,6 +75,7 @@ import {
 } from "domain/synthetics/trade/utils/validation";
 import { getIsHighSwapProfitFee } from "domain/synthetics/trade/utils/warnings";
 import { Token } from "domain/tokens";
+import { getApproveButtonText, getGasPaymentTokenApprovalTooltip } from "domain/tokens/gasPaymentTokenApproval";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
@@ -81,14 +84,7 @@ import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { initDecreaseOrderMetricData, sendOrderSubmittedMetric, sendTxnValidationErrorMetric } from "lib/metrics/utils";
-import {
-  expandDecimals,
-  formatDeltaUsd,
-  formatPercentage,
-  formatTokenAmount,
-  formatUsd,
-  parseValue,
-} from "lib/numbers";
+import { expandDecimals, formatDeltaUsdParts, formatPercentage, formatTokenAmount, parseValue } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -123,6 +119,8 @@ import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarginDestinationSelector } from "components/MarginDestinationSelector/MarginDestinationSelector";
 import Modal from "components/Modal/Modal";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -502,7 +500,7 @@ export function PositionSeller() {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokens: approvalTokens,
     allowPermit: Boolean(expressParams),
-    skip: Boolean(srcChainId),
+    skip: srcChainId !== undefined || effectiveIsReceiveToGmxAccount,
   });
 
   const isAllowanceLoaded = Boolean(batchParams) && isAllowanceLoadedRaw;
@@ -786,17 +784,15 @@ export function PositionSeller() {
       label={t`Liquidation price`}
       value={
         <ValueTransition
-          from={
-            formatLiquidationPrice(position.liquidationPrice, {
-              displayDecimals: marketDecimals,
-              visualMultiplier: toToken?.visualMultiplier,
-            })!
-          }
+          from={formatLiquidationPriceParts(position.liquidationPrice, {
+            displayDecimals: marketDecimals,
+            visualMultiplier: toToken?.visualMultiplier,
+          })}
           to={
             decreaseAmounts?.isFullClose
               ? "-"
               : decreaseAmounts?.sizeDeltaUsd
-                ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
+                ? formatLiquidationPriceParts(nextPositionValues?.nextLiqPrice, {
                     displayDecimals: marketDecimals,
                     visualMultiplier: toToken?.visualMultiplier,
                   })
@@ -933,7 +929,7 @@ export function PositionSeller() {
           <ValueTransition
             from={
               <TooltipWithPortal
-                handle={formatDeltaUsd(position.pnl, position.pnlPercentage, { hidePercentage: true })}
+                handle={<DeltaUsdValue deltaUsd={position.pnl} percentage={position.pnlPercentage} hidePercentage />}
                 content={
                   <span className={position.pnl > 0n ? "text-green-500" : "text-red-500"}>
                     {formatPercentage(position.pnlPercentage, { signed: true })}
@@ -943,9 +939,13 @@ export function PositionSeller() {
             }
             to={
               <TooltipWithPortal
-                handle={formatDeltaUsd(nextPositionValues?.nextPnl, nextPositionValues?.nextPnlPercentage, {
-                  hidePercentage: true,
-                })}
+                handle={
+                  <DeltaUsdValue
+                    deltaUsd={nextPositionValues?.nextPnl}
+                    percentage={nextPositionValues?.nextPnlPercentage}
+                    hidePercentage
+                  />
+                }
                 content={
                   <span
                     className={
@@ -962,8 +962,8 @@ export function PositionSeller() {
           />
         ) : (
           <ValueTransition
-            from={formatDeltaUsd(position.pnl, position.pnlPercentage)}
-            to={formatDeltaUsd(nextPositionValues?.nextPnl, nextPositionValues?.nextPnlPercentage)}
+            from={formatDeltaUsdParts(position.pnl, position.pnlPercentage)}
+            to={formatDeltaUsdParts(nextPositionValues?.nextPnl, nextPositionValues?.nextPnlPercentage)}
           />
         )
       }
@@ -998,23 +998,19 @@ export function PositionSeller() {
       };
     }
 
-    if (isApproving && tokensToApprove.length) {
-      const tokenToApprove = tokensToApprove[0];
+    if (tokensToApprove.length) {
+      const tokenSymbol = getToken(chainId, tokensToApprove[0]).symbol;
+      const approveButtonText = getApproveButtonText({ tokenSymbol, isGasPaymentToken: true });
       return {
-        text: (
+        text: isApproving ? (
           <>
-            {t`Approve ${getToken(chainId, tokenToApprove).symbol}`} <SpinnerIcon className="ml-4 animate-spin" />
+            {approveButtonText} <SpinnerIcon className="ml-4 animate-spin" />
           </>
+        ) : (
+          approveButtonText
         ),
-        disabled: true,
-      };
-    }
-
-    if (isAllowanceLoaded && tokensToApprove.length) {
-      const tokenToApprove = tokensToApprove[0];
-      return {
-        text: t`Approve ${getToken(chainId, tokenToApprove).symbol}`,
-        disabled: false,
+        errorDescription: getGasPaymentTokenApprovalTooltip(tokenSymbol),
+        disabled: isApproving,
       };
     }
 
@@ -1111,7 +1107,7 @@ export function PositionSeller() {
                     tokenSymbol={position?.indexToken?.symbol}
                     alternateValue={(() => {
                       if (closeSize.showSizeInTokens) {
-                        return formatUsd(closeSize.closeSizeUsd);
+                        return <UsdValue usd={closeSize.closeSizeUsd} />;
                       }
                       if (!position || !toToken || position.sizeInUsd === 0n) return "0";
                       const closeSizeInTokens = (closeSize.closeSizeUsd * position.sizeInTokens) / position.sizeInUsd;
@@ -1240,7 +1236,7 @@ export function PositionSeller() {
                   </ColorfulBanner>
                 )}
 
-                <ButtonTooltipWrapper content={buttonState.errorDescription}>
+                <ButtonTooltipWrapper content={buttonState.errorDescription} isHandlerDisabled={buttonState.disabled}>
                   <Button
                     className="w-full"
                     variant="primary-action"
@@ -1268,7 +1264,10 @@ export function PositionSeller() {
                 <PositionSellerAdvancedRows
                   triggerPriceInputValue={triggerPriceInputValue}
                   slippageInputId={slippageInputId}
-                  gasPaymentParams={expressParams?.gasPaymentParams}
+                  gasPaymentParams={getNetworkFeeGasPaymentParams({ expressParams, tokensData })}
+                  feeSource={getNetworkFeeSource({
+                    isGmxAccount: srcChainId !== undefined || effectiveIsReceiveToGmxAccount,
+                  })}
                 />
               </div>
             </>

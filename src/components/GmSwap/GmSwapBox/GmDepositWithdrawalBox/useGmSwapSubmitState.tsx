@@ -32,7 +32,6 @@ import {
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
-  selectGasPrice,
   selectSrcChainId,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -43,15 +42,16 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNetworkFeeError";
 import { ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "domain/synthetics/express/expressOrderUtils";
+import { GMX_ACCOUNT_NETWORK_FEE_SOURCE } from "domain/synthetics/fees/networkFeeSource";
 import type { GlvAndGmMarketsInfoData, GmPaySource, MarketsInfoData } from "domain/synthetics/markets";
 import { TechnicalGmFees } from "domain/synthetics/markets/technicalFees/technical-fees-types";
 import { Operation } from "domain/synthetics/markets/types";
 import { convertToTokenAmount, type TokenData } from "domain/synthetics/tokens";
 import {
   getCommonError,
-  getDefaultInsufficientGasMessage,
+  getGmNativeGasError,
   getGmSwapError,
-  getNativeGasError,
+  getInsufficientFeeButtonMessage,
   takeValidationResult,
   ValidationBannerErrorName,
   ValidationResult,
@@ -133,7 +133,6 @@ export const useGmSwapSubmitState = ({
   const amounts = useSelector(selectDepositWithdrawalAmounts);
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
-  const gasPrice = useSelector(selectGasPrice);
   const tokensData = useSelector(selectTokensData);
   const settlementChainGasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
   const gmxAccountGasPaymentTokenAddress = useSelector(selectGmxAccountGasPaymentTokenAddress);
@@ -251,37 +250,16 @@ export const useGmSwapSubmitState = ({
     isDeposit,
   });
 
-  const settlementChainNativeTokenAmount = useMemo(() => {
-    if (paySource !== "settlementChain" || !isDeposit) {
-      return 0n;
-    }
-
-    let amount = 0n;
-
-    if (payLongToken?.address === zeroAddress) {
-      amount += longTokenAmount;
-    }
-
-    if (payShortToken?.address === zeroAddress) {
-      amount += shortTokenAmount;
-    }
-
-    return amount;
-  }, [isDeposit, longTokenAmount, payLongToken, payShortToken, paySource, shortTokenAmount]);
-
-  const nativeGasError = useMemo((): ValidationResult | undefined => {
-    if (technicalFees?.kind !== "settlementChain") {
-      return undefined;
-    }
-
-    const walletTxGasAmount = gasPrice !== undefined ? technicalFees.fees.gasLimit * gasPrice : 0n;
-    const requiredAmount = technicalFees.fees.feeTokenAmount + settlementChainNativeTokenAmount + walletTxGasAmount;
-
-    return getNativeGasError({
-      networkFee: requiredAmount,
-      nativeBalance: getByKey(tokensData, zeroAddress)?.walletBalance,
-    });
-  }, [gasPrice, settlementChainNativeTokenAmount, technicalFees, tokensData]);
+  const nativeGasError = getGmNativeGasError({
+    chainId,
+    isDeposit,
+    executionFeeAmount: technicalFees?.kind === "settlementChain" ? technicalFees.fees.feeTokenAmount : undefined,
+    payLongToken,
+    payShortToken,
+    longTokenAmount,
+    shortTokenAmount,
+    nativeBalance: getByKey(tokensData, zeroAddress)?.walletBalance,
+  });
 
   const paySourceChainNativeTokenAmount = useMemo(() => {
     if (srcChainId === undefined || !isDeposit) {
@@ -327,56 +305,6 @@ export const useGmSwapSubmitState = ({
     paySourceChainNativeTokenAmount,
   });
 
-  const nativeToken = getByKey(tokensData, zeroAddress);
-  const nativeTokenWalletBalance = nativeToken?.walletBalance;
-  const settlementChainFeeTokenAmount =
-    technicalFees?.kind === "settlementChain" ? technicalFees.fees.feeTokenAmount : undefined;
-
-  const settlementChainNativeFeeError = useMemo((): ValidationResult | undefined => {
-    if (
-      paySource !== "settlementChain" ||
-      nativeTokenWalletBalance === undefined ||
-      settlementChainFeeTokenAmount === undefined
-    ) {
-      return undefined;
-    }
-
-    const insufficientWithLongCollateral =
-      isDeposit &&
-      payLongToken &&
-      nativeToken &&
-      payLongToken.address === nativeToken.address &&
-      nativeTokenWalletBalance < settlementChainFeeTokenAmount + longTokenAmount;
-
-    const insufficientWithShortCollateral =
-      isDeposit &&
-      payShortToken &&
-      nativeToken &&
-      payShortToken.address === nativeToken.address &&
-      nativeTokenWalletBalance < settlementChainFeeTokenAmount + shortTokenAmount;
-
-    if (
-      nativeTokenWalletBalance < settlementChainFeeTokenAmount ||
-      insufficientWithLongCollateral ||
-      insufficientWithShortCollateral
-    ) {
-      return {
-        buttonErrorMessage: getDefaultInsufficientGasMessage(),
-        bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
-      };
-    }
-  }, [
-    paySource,
-    nativeTokenWalletBalance,
-    settlementChainFeeTokenAmount,
-    isDeposit,
-    payLongToken,
-    nativeToken,
-    longTokenAmount,
-    payShortToken,
-    shortTokenAmount,
-  ]);
-
   const formattedEstimationError = useMemo((): ValidationResult | undefined => {
     if (estimationError instanceof ExpressEstimationInsufficientGasPaymentTokenBalanceError) {
       if (gasPaymentToken) {
@@ -401,7 +329,12 @@ export const useGmSwapSubmitState = ({
         const requiredFormatted = formatBalanceAmount(totalRequired, decimals);
 
         return {
-          buttonErrorMessage: t`Insufficient ${symbol} balance: ${availableFormatted} available, ${requiredFormatted} required`,
+          buttonErrorMessage: getInsufficientFeeButtonMessage({
+            tokenSymbol: symbol,
+            feeSource: GMX_ACCOUNT_NETWORK_FEE_SOURCE,
+          }),
+          buttonTooltipMessage: t`${availableFormatted} ${symbol} available, ${requiredFormatted} ${symbol} required`,
+          bannerErrorName: ValidationBannerErrorName.insufficientGmxAccountCurrentGasTokenBalance,
         };
       }
     } else if (estimationError) {
@@ -429,7 +362,6 @@ export const useGmSwapSubmitState = ({
     expressError,
     nativeGasError,
     sourceChainNativeFeeError,
-    settlementChainNativeFeeError,
     formattedEstimationError
   );
 
@@ -494,6 +426,7 @@ export const useGmSwapSubmitState = ({
             validationBannerErrorName={error.bannerErrorName}
             chainId={chainId}
             srcChainId={srcChainId}
+            gasPaymentTokenAddress={gasPaymentTokenAddress}
           />
         ) : null,
       };
@@ -590,6 +523,7 @@ export const useGmSwapSubmitState = ({
     shouldDisableValidation,
     chainId,
     srcChainId,
+    gasPaymentTokenAddress,
     approve,
     operation,
   ]);
@@ -654,8 +588,11 @@ function useExpressError({
 
     if (totalRequired > gmxAccountBalance) {
       return {
-        buttonErrorMessage: getDefaultInsufficientGasMessage(),
-        bannerErrorName: ValidationBannerErrorName.insufficientGmxAccountSomeGasTokenBalance,
+        buttonErrorMessage: getInsufficientFeeButtonMessage({
+          tokenSymbol: gasPaymentToken.symbol,
+          feeSource: GMX_ACCOUNT_NETWORK_FEE_SOURCE,
+        }),
+        bannerErrorName: ValidationBannerErrorName.insufficientGmxAccountCurrentGasTokenBalance,
       };
     }
 

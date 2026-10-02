@@ -398,10 +398,8 @@ export function StakeModal(props: {
   const activeTokenSymbol = tokenSymbol;
   const activeTitle = activeTab === "stake" ? stakeTitle : unstakeTitle;
 
-  const stakeCanClickMax = stakeMaxAmount !== undefined && stakeMaxAmount !== 0n && stakeAmount !== stakeMaxAmount;
-  const unstakeCanClickMax =
-    unstakeMaxAmount !== undefined && unstakeMaxAmount !== 0n && unstakeAmount !== unstakeMaxAmount;
-  const canClickMax = activeTab === "stake" ? stakeCanClickMax : unstakeCanClickMax;
+  const hasMax = activeMaxAmount !== undefined && activeMaxAmount !== 0n;
+  const isMaxSelected = (activeTab === "stake" ? stakeAmount : unstakeAmount) === activeMaxAmount;
   const onClickMax = activeTab === "stake" ? handleStakeMax : handleUnstakeMax;
 
   const showStakeBonus =
@@ -448,7 +446,8 @@ export function StakeModal(props: {
             topLeftLabel={activeTab === "stake" ? t`Stake` : t`Unstake`}
             topRightLabel={t`Available`}
             topRightValue={formatAmount(activeMaxAmount, 18, 2, true)}
-            onClickMax={canClickMax ? onClickMax : undefined}
+            onClickMax={hasMax ? onClickMax : undefined}
+            isMaxSelected={isMaxSelected}
             inputValue={activeValue}
             onInputValueChange={(e) =>
               activeTab === "stake" ? setStakeValue(e.target.value) : setUnstakeValue(e.target.value)

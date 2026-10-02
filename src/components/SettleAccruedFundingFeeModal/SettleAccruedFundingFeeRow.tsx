@@ -3,9 +3,10 @@ import { ReactNode, useCallback } from "react";
 
 import { PositionInfo } from "domain/synthetics/positions";
 import { TokenData } from "domain/synthetics/tokens";
-import { formatDeltaUsd, formatTokenAmount } from "lib/numbers";
+import { formatTokenAmount } from "lib/numbers";
 
 import Checkbox from "components/Checkbox/Checkbox";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
 import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -125,7 +126,7 @@ export const SettleAccruedFundingFeeRow = ({
         <Tooltip
           className="ClaimSettleModal-tooltip"
           position="top-end"
-          handle={formatDeltaUsd(position.pendingClaimableFundingFeesUsd)}
+          handle={<DeltaUsdValue deltaUsd={position.pendingClaimableFundingFeesUsd} />}
           renderContent={renderTooltipContent}
         />
       </div>

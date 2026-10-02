@@ -7,6 +7,7 @@ import type { SignedSubaccountApproval } from "domain/synthetics/subaccount";
 import type { PendingTpSlOrderBatch } from "domain/tpsl/types";
 import type { OrderMetricId } from "lib/metrics/types";
 import type { StatusCode } from "sdk/utils/express";
+import type { ExecutionFeeEstimate } from "sdk/utils/orderTransactions";
 import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 import type { ExternalSwapQuote } from "sdk/utils/trade/types";
 
@@ -86,19 +87,22 @@ export type PendingExpressTxnParams = {
   key: string;
   taskId: string | undefined;
   isGmxAccount: boolean;
+  gasPaymentTokenAddress?: string;
   subaccountApproval?: SignedSubaccountApproval;
   tokenPermits?: SignedTokenPermit[];
-  payTokenAddresses?: string[];
+  payAmounts?: { [tokenAddress: string]: bigint };
   pendingOrdersKeys?: string[];
   pendingPositionsKeys?: string[];
   estimatedExecutionFee?: bigint;
   estimatedExecutionGasLimit?: bigint;
+  estimatedOrders?: ExecutionFeeEstimate[];
   createdAt: number;
   metricId?: OrderMetricId;
   successMessage?: ReactNode;
   errorMessage?: ReactNode;
   isViewed?: boolean;
   isRelayerMetricSent?: boolean;
+  isSubaccountApprovalErrorChecked?: boolean;
   sendFailed?: boolean;
 };
 
