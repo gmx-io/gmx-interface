@@ -8,6 +8,7 @@ import { convertToTokenAmount, convertToUsd, getMidPrice, type TokenData } from 
 import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
 import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
+import { retryAtRefreshCadence } from "lib/useSWRWithFreshness";
 import useWallet from "lib/wallets/useWallet";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { HttpError } from "sdk/utils/http/http";
@@ -128,7 +129,11 @@ export function usePaxosTransit({
       ? ["paxosTransitQuote", chainId, account, tokenInAddress, debouncedAmount.toString(), feeTier]
       : null,
     () => api!.fetchTransitQuote(getQuoteParams(debouncedAmount)),
-    { refreshInterval: QUOTE_REFRESH_INTERVAL, shouldRetryOnError: false, keepPreviousData: !isBelowMinOrderSize }
+    {
+      refreshInterval: QUOTE_REFRESH_INTERVAL,
+      onErrorRetry: retryAtRefreshCadence,
+      keepPreviousData: !isBelowMinOrderSize,
+    }
   );
 
   const transitFeesUsd =
