@@ -27,7 +27,7 @@ export function getShiftAvailableRelatedMarkets({
       return false;
     }
 
-    const directDepositAccess = getDirectDepositAccess({ chainId, market: marketInfo, whitelistsResult });
+    const directDepositAccess = getDirectDepositAccess({ chainId, glvOrMarket: marketInfo, whitelistsResult });
 
     return !getIsDirectDepositBlocked(directDepositAccess);
   };
