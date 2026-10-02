@@ -67,15 +67,16 @@ import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { getOrderKeys, isOrderForPosition } from "sdk/utils/orders";
+import SolanaChartHeader from 'solana-interface/components/TVChart/ChartHeader'
 import type { SolanaChartCandles } from "solana-interface/lib/chartCandles";
 import { SolanaChart } from "solana-interface/pages/SolanaChart";
 import { SolanaFetchCard } from "solana-interface/pages/SolanaFetchCard";
 import { SolanaMarketLongTradeBox } from "solana-interface/pages/SolanaMarketLongTradeBox";
 import { SolanaRpcPage } from "solana-interface/pages/SolanaRpcPage";
-import { SolanaUnwrapCard } from "solana-interface/pages/SolanaUnwrapCard";
 import { SolanaSendCard } from "solana-interface/pages/SolanaSendCard";
 import { SolanaSignMessageCard } from "solana-interface/pages/SolanaSignMessageCard";
 import { SolanaTradeList } from "solana-interface/pages/SolanaTradeList";
+import { SolanaUnwrapCard } from "solana-interface/pages/SolanaUnwrapCard";
 import { SolanaWebSocketCard } from "solana-interface/pages/SolanaWebSocketCard";
 
 import { AppHeader } from "components/AppHeader/AppHeader";
@@ -129,8 +130,13 @@ export function SyntheticsPage(p: Props) {
   const { isSolana } = useChainId();
   const { isTablet } = useBreakpoints();
   const [solanaChartResolution, setSolanaChartResolution] = useState<TradingViewResolution>(5);
-  const [solanaChartCandles, setSolanaChartCandles] = useState<SolanaChartCandles>();
+  const [solanaChartCandles, setSolanaChartCandles] = useState<SolanaChartCandles & { tokenSymbol: string }>();
   const [solanaIndexTokenAddress, setSolanaIndexTokenAddress] = useState("So1Zu7vPQQxrguzUehKAyVLpjcc769zxgBuDAsxTUMH");
+  const [solanaTokenSymbol, setSolanaTokenSymbol] = useState("SOL");
+  const handleSolanaIndexTokenChange = useCallback((address: string, symbol: string) => {
+    setSolanaIndexTokenAddress(address);
+    setSolanaTokenSymbol(symbol);
+  }, []);
 
   if (isSolana) {
     return (
@@ -145,9 +151,9 @@ export function SyntheticsPage(p: Props) {
                   <LogoText className="max-md:hidden" />
                 </Link>
               ) : (
-                <ChartHeader
+                <SolanaChartHeader
                   solanaIndexTokenAddress={solanaIndexTokenAddress}
-                  onSolanaIndexTokenChange={setSolanaIndexTokenAddress}
+                  onSolanaIndexTokenChange={handleSolanaIndexTokenChange}
                 />
               )
             }
@@ -158,16 +164,17 @@ export function SyntheticsPage(p: Props) {
         pageWrapperClassName="!pl-0 max-lg:!pl-8 max-md:!pl-0"
       >
         {isTablet ? (
-          <ChartHeader
+          <SolanaChartHeader
             solanaIndexTokenAddress={solanaIndexTokenAddress}
-            onSolanaIndexTokenChange={setSolanaIndexTokenAddress}
+            onSolanaIndexTokenChange={handleSolanaIndexTokenChange}
           />
         ) : null}
         <div className="grid grid-cols-1 items-start gap-12 md:grid-cols-2 lg:grid-cols-4">
           <SolanaChart
+            tokenSymbol={solanaTokenSymbol}
             resolution={solanaChartResolution}
             onResolutionChange={setSolanaChartResolution}
-            candles={solanaChartCandles}
+            candles={solanaChartCandles?.tokenSymbol === solanaTokenSymbol ? solanaChartCandles : undefined}
           />
           <SolanaMarketLongTradeBox
             key={`${solanaIndexTokenAddress}-market-long`}
@@ -194,7 +201,11 @@ export function SyntheticsPage(p: Props) {
           <SolanaTradeList />
           <SolanaSignMessageCard />
           <SolanaRpcPage />
-          <SolanaFetchCard resolution={solanaChartResolution} onCandlesLoaded={setSolanaChartCandles} />
+          <SolanaFetchCard
+            tokenSymbol={solanaTokenSymbol}
+            resolution={solanaChartResolution}
+            onCandlesLoaded={setSolanaChartCandles}
+          />
           <SolanaWebSocketCard />
           <SolanaUnwrapCard />
           <SolanaSendCard />
@@ -330,7 +341,7 @@ function EvmSyntheticsPage(p: Props) {
 
     const title = getPageTitle(
       currentTokenPriceStr +
-        ` | ${prefix}${chartToken?.symbol}${chartToken?.symbol ? " " : ""}${chartToken?.isStable ? "" : "USD"}`
+      ` | ${prefix}${chartToken?.symbol}${chartToken?.symbol ? " " : ""}${chartToken?.isStable ? "" : "USD"}`
     );
     document.title = title;
   }, [chartToken, isSwap]);
@@ -429,12 +440,12 @@ function EvmSyntheticsPage(p: Props) {
     setOrdersModalState(
       visible
         ? (prev) => ({
-            ...prev,
-            isVisible: true,
-          })
+          ...prev,
+          isVisible: true,
+        })
         : {
-            isVisible: false,
-          }
+          isVisible: false,
+        }
     );
   }, []);
 
