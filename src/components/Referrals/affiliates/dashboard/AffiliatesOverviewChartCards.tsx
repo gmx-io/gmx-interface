@@ -5,9 +5,11 @@ import { REFERRALS_DOCS_URL } from "config/links";
 import { AffiliateReferralStats } from "domain/referrals";
 import { useMegaethPointsActive } from "domain/synthetics/common/useMegaethPointsActive";
 import { TimeRangeInfo } from "domain/synthetics/markets/useTimeRange";
-import { formatBigUsd, formatUsd } from "lib/numbers";
+import { formatBigUsdParts } from "lib/numbers";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { NumericValue } from "components/NumericValue/NumericValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { OverviewChartCard } from "components/Referrals/shared/cards/ReferralsOverviewChartCard";
 import { ShareReferralCardModal } from "components/Referrals/shared/cards/ShareReferralCardModal";
 import { TradersVolumeChartContainer } from "components/Referrals/shared/charts/TradersVolumeChartContainer";
@@ -74,8 +76,12 @@ export function TradingVolumeChartCard({
           ) : undefined
         }
         tooltipContent={<Trans>Volume traded by your referred traders</Trans>}
-        value={formatBigUsd(stats?.summary.volumeUsd ?? 0n)}
-        valueChange={formatUsd(stats?.summary.volumeUsdDelta, { displayPlus: true })}
+        value={<NumericValue parts={formatBigUsdParts(stats?.summary.volumeUsd ?? 0n)} />}
+        valueChange={
+          stats?.summary.volumeUsdDelta !== undefined ? (
+            <UsdValue usd={stats.summary.volumeUsdDelta} displayPlus />
+          ) : undefined
+        }
         isValueChangePositive={(stats?.summary.volumeUsdDelta ?? 0n) >= 0n}
         topRightContent={
           <button
@@ -177,10 +183,12 @@ export function RebatesChartCard({ stats, isLoading, timeRangeInfo }: BaseChartC
     <OverviewChartCard
       label={<Trans>Rebates</Trans>}
       tooltipContent={<Trans>Rebates earned as an affiliate</Trans>}
-      value={formatUsd(stats?.summary.rebatesUsd ?? 0n)}
-      valueChange={formatUsd(stats?.summary.rebatesUsdDelta, {
-        displayPlus: true,
-      })}
+      value={<UsdValue usd={stats?.summary.rebatesUsd ?? 0n} />}
+      valueChange={
+        stats?.summary.rebatesUsdDelta !== undefined ? (
+          <UsdValue usd={stats.summary.rebatesUsdDelta} displayPlus />
+        ) : undefined
+      }
       isValueChangePositive={(stats?.summary.rebatesUsdDelta ?? 0n) >= 0n}
     >
       <TradersVolumeChartContainer

@@ -125,3 +125,81 @@ describe("findNextGasPaymentToken", () => {
     expect(next).toBe(USDC.address);
   });
 });
+
+describe("findNextGasPaymentToken — tokensAllowanceData", () => {
+  const MAX_ALLOWANCE = 2n ** 256n - 1n;
+
+  it("rejects a funded candidate that is not approved", () => {
+    const tokensData = buildTokensData({ usdcBalance: 100_000_000n, usdtBalance: ONE_USDT, wethBalance: 0n });
+    const next = findNextGasPaymentToken({
+      chainId: ARBITRUM,
+      tokensData,
+      gasPaymentToken: tokensData[USDT.address]!,
+      gasPaymentTokenAmount: ONE_USDT,
+      payAmounts: {},
+      isGmxAccount: false,
+      tokensAllowanceData: { [USDC.address]: 0n, [WETH.address]: 0n },
+    });
+    expect(next).toBeUndefined();
+  });
+
+  it("rejects a candidate whose allowance is not loaded yet", () => {
+    const tokensData = buildTokensData({ usdcBalance: 100_000_000n, usdtBalance: ONE_USDT, wethBalance: 0n });
+    const next = findNextGasPaymentToken({
+      chainId: ARBITRUM,
+      tokensData,
+      gasPaymentToken: tokensData[USDT.address]!,
+      gasPaymentTokenAmount: ONE_USDT,
+      payAmounts: {},
+      isGmxAccount: false,
+      tokensAllowanceData: {},
+    });
+    expect(next).toBeUndefined();
+  });
+
+  it("rejects an approved candidate that is not funded", () => {
+    const tokensData = buildTokensData({ usdcBalance: 1_000_000n, usdtBalance: ONE_USDT, wethBalance: 0n });
+    const next = findNextGasPaymentToken({
+      chainId: ARBITRUM,
+      tokensData,
+      gasPaymentToken: tokensData[USDT.address]!,
+      gasPaymentTokenAmount: ONE_USDT,
+      payAmounts: { [USDC.address]: 3_000_000n },
+      isGmxAccount: false,
+      tokensAllowanceData: { [USDC.address]: MAX_ALLOWANCE, [WETH.address]: MAX_ALLOWANCE },
+    });
+    expect(next).toBeUndefined();
+  });
+
+  it("accepts a candidate that is both approved and funded", () => {
+    const tokensData = buildTokensData({ usdcBalance: 100_000_000n, usdtBalance: ONE_USDT, wethBalance: 0n });
+    const next = findNextGasPaymentToken({
+      chainId: ARBITRUM,
+      tokensData,
+      gasPaymentToken: tokensData[USDT.address]!,
+      gasPaymentTokenAmount: ONE_USDT,
+      payAmounts: {},
+      isGmxAccount: false,
+      tokensAllowanceData: { [USDC.address]: MAX_ALLOWANCE, [WETH.address]: 0n },
+    });
+    expect(next).toBe(USDC.address);
+  });
+
+  it("requires the candidate to be approved for the pay overlap too", () => {
+    const tokensData = buildTokensData({ usdcBalance: 100_000_000n, usdtBalance: ONE_USDT, wethBalance: 0n });
+    const params = {
+      chainId: ARBITRUM,
+      tokensData,
+      gasPaymentToken: tokensData[USDT.address]!,
+      gasPaymentTokenAmount: ONE_USDT,
+      payAmounts: { [USDC.address]: 3_000_000n },
+      isGmxAccount: false,
+    };
+
+    // 1.3 USDC covers the buffered gas amount but not pay + gas = 4.3 USDC.
+    expect(findNextGasPaymentToken({ ...params, tokensAllowanceData: { [USDC.address]: 1_300_000n } })).toBeUndefined();
+    expect(findNextGasPaymentToken({ ...params, tokensAllowanceData: { [USDC.address]: 4_300_000n } })).toBe(
+      USDC.address
+    );
+  });
+});

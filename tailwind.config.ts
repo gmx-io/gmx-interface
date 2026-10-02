@@ -25,6 +25,29 @@ function injectColorsPlugin({ addBase }: any) {
   });
 }
 
+function textColorNames(tree: object, prefix = ""): string[] {
+  return Object.entries(tree).flatMap(([key, value]) => {
+    const name = prefix ? `${prefix}-${key}` : key;
+
+    return value && typeof value === "object" && !("light" in value) ? textColorNames(value, name) : [name];
+  });
+}
+
+const PRIMARY_TEXT_COLOR_NAMES = ["white", "black", "typography-primary"];
+
+function affixColor(textColorName: string) {
+  return PRIMARY_TEXT_COLOR_NAMES.includes(textColorName) ? "var(--color-typography-secondary)" : "currentColor";
+}
+
+function injectAffixColorsPlugin({ addUtilities }: PluginAPI) {
+  addUtilities({
+    ".numeric-affix": {
+      color: "var(--affix-color, var(--color-typography-secondary))",
+    },
+    ...fromPairs(textColorNames(colors).map((name) => [`.text-${name}`, { "--affix-color": affixColor(name) }])),
+  });
+}
+
 function injectAdaptiveVariablesPlugin({ addBase }: PluginAPI) {
   addBase({
     ":root": {
@@ -209,7 +232,13 @@ const config: Config = {
       },
     },
   },
-  plugins: [injectColorsPlugin, customUtilsPlugin, fontComponentsPlugin, injectAdaptiveVariablesPlugin],
+  plugins: [
+    injectColorsPlugin,
+    injectAffixColorsPlugin,
+    customUtilsPlugin,
+    fontComponentsPlugin,
+    injectAdaptiveVariablesPlugin,
+  ],
 };
 
 export default config;
