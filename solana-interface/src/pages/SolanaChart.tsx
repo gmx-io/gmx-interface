@@ -15,7 +15,9 @@ import {
   disabledFeaturesOnMobile,
 } from "components/TVChartContainer/constants";
 
+import { SOLANA_MOCK_STOCK_SYMBOLS } from "../components/ChartTokenSelector/ChartTokenSelectorSolana";
 import { selectSolanaBars, type SolanaChartCandles } from "../lib/chartCandles";
+import { filterStockBarsByTradingDays } from "../lib/marketOpenFilter";
 
 import "components/TVChart/TVChart.scss";
 
@@ -98,7 +100,15 @@ export function SolanaChart(props: Props) {
   );
 }
 
-function SolanaPriceChart({ tokenSymbol, resolution, onResolutionChange, candles }: Props) {
+function SolanaPriceChart({ tokenSymbol, resolution, onResolutionChange, candles: rawCandles }: Props) {
+  const isStock = SOLANA_MOCK_STOCK_SYMBOLS.includes(tokenSymbol);
+  const candles = useMemo(
+    () =>
+      rawCandles && isStock
+        ? { ...rawCandles, bars: filterStockBarsByTradingDays(rawCandles.bars, rawCandles.resolution) }
+        : rawCandles,
+    [rawCandles, isStock]
+  );
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetRef = useRef<IChartingLibraryWidget | null>(null);
   const [chartReady, setChartReady] = useState(false);
