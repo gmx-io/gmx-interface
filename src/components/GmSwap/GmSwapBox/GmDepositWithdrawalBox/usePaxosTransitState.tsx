@@ -123,22 +123,23 @@ export function usePaxosTransitState({
 
   const withdrawalUsdgAmount = isWithdrawal && amounts ? amounts.longTokenAmount + amounts.shortTokenAmount : 0n;
 
-  const withdrawalTxnHash =
-    isWithdrawal && !isConversionFinal ? transitRouteProgressForDirection?.withdrawalTxnHash : undefined;
+  const transitRouteProgressForWithdrawal =
+    isWithdrawal && !isConversionFinal ? transitRouteProgressForDirection : undefined;
+  const withdrawalTxnHash = transitRouteProgressForWithdrawal?.withdrawalTxnHash;
+  const withdrawalExecutedTxnHash = transitRouteProgressForWithdrawal?.withdrawalExecutedTxnHash;
   const withdrawalStatus =
     withdrawalTxnHash === undefined
       ? undefined
       : Object.values(withdrawalStatuses).find((status) => status.createdTxnHash === withdrawalTxnHash);
-  const executedTxnHash = withdrawalStatus?.executedTxnHash;
 
   const { data: receivedUsdg } = useSWR(
-    executedTxnHash && account && paxosTransitConfig
-      ? ["paxosTransitReceivedUsdg", chainId, executedTxnHash, account]
+    withdrawalExecutedTxnHash && account && paxosTransitConfig
+      ? ["paxosTransitReceivedUsdg", chainId, withdrawalExecutedTxnHash, account]
       : null,
     () =>
       getReceivedTokenAmount({
         chainId,
-        txnHash: executedTxnHash!,
+        txnHash: withdrawalExecutedTxnHash!,
         tokenAddress: paxosTransitConfig!.usdgAddress,
         account: account!,
       }),
@@ -148,13 +149,14 @@ export function usePaxosTransitState({
   const isNoUsdgReceived = receivedUsdg === 0n || withdrawalStatus?.cancelledTxnHash !== undefined;
   const withdrawalStatusWithUsdg = isNoUsdgReceived ? undefined : withdrawalStatus;
   const isWithdrawalSent = withdrawalTxnHash !== undefined && !isNoUsdgReceived;
+  const isWithdrawalUsdgPendingConversion = isWithdrawalSettled || withdrawalStatusWithUsdg !== undefined;
 
   let amountIn = 0n;
 
-  if (withdrawalStatusWithUsdg?.data) {
-    amountIn =
-      receivedUsdg ??
-      withdrawalStatusWithUsdg.data.minLongTokenAmount + withdrawalStatusWithUsdg.data.minShortTokenAmount;
+  if (receivedUsdg !== undefined && isWithdrawalSettled) {
+    amountIn = receivedUsdg;
+  } else if (withdrawalStatusWithUsdg?.data) {
+    amountIn = withdrawalStatusWithUsdg.data.minLongTokenAmount + withdrawalStatusWithUsdg.data.minShortTokenAmount;
   } else if (isConversionNeeded) {
     amountIn = isDeposit ? firstTokenAmount : withdrawalUsdgAmount;
   }
@@ -182,7 +184,7 @@ export function usePaxosTransitState({
     amount: amountIn,
     collateralSwapTotalFeesDeltaUsd,
     isTransitRequired: isWithdrawalSettled,
-    isAmountEstimated: isWithdrawal && !withdrawalStatusWithUsdg?.data,
+    isAmountEstimated: isWithdrawal && !isWithdrawalSettled && !withdrawalStatusWithUsdg?.data,
     isWhitelistIgnored,
     thresholdUsdOverride,
     isMocked,
@@ -215,7 +217,7 @@ export function usePaxosTransitState({
   const isQuoteLoading = isQuoteNeeded && !quote && !quoteError;
   const isTransitLoading = isTransitAvailable && (isFeeTierLoading || isQuoteLoading);
 
-  const isTransitInProgress = step !== "idle" || isConverting || withdrawalStatusWithUsdg !== undefined;
+  const isTransitInProgress = step !== "idle" || isConverting || isWithdrawalUsdgPendingConversion;
   const hasAmountIn = amountIn > 0n;
   const canPoolFill = collateralSwapTotalFeesDeltaUsd !== undefined;
   const isRouteSelectable = isWhitelisted && !isTransitInProgress && hasAmountIn && quote !== undefined && canPoolFill;
@@ -405,7 +407,7 @@ export function usePaxosTransitState({
       isTransitLoading,
     });
 
-    if (isWithdrawal && !withdrawalStatusWithUsdg) {
+    if (isWithdrawal && !isWithdrawalUsdgPendingConversion) {
       if (isWithdrawalSent || shouldDisableValidation) return undefined;
       if (conversionError) return { text: conversionError, disabled: true };
       if (isTransitLoading) return { text: t`Loading...`, disabled: true };
@@ -444,7 +446,7 @@ export function usePaxosTransitState({
     quote,
     quoteError,
     shouldDisableValidation,
-    withdrawalStatusWithUsdg,
+    isWithdrawalUsdgPendingConversion,
     step,
     tokenIn,
     tokenOut,
