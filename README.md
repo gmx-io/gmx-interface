@@ -43,3 +43,4 @@ The trading app dev server runs at [http://localhost:3010](http://localhost:3010
 - [GMX docs](https://docs.gmx.io) — protocol, API, and integration documentation
 - [SDK overview](https://docs.gmx.io/docs/sdk/overview) — SDK guides on the docs site
 - [SDK changelog](https://docs.gmx.io/docs/sdk/changelog) — the canonical `@gmx-io/sdk` changelog
+
