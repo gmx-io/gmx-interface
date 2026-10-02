@@ -77,6 +77,7 @@ function createDatafeed(
 }
 
 type Props = {
+  tokenSymbol: string;
   resolution: TradingViewResolution;
   onResolutionChange: (resolution: TradingViewResolution) => void;
   candles: SolanaChartCandles | undefined;
@@ -97,7 +98,7 @@ export function SolanaChart(props: Props) {
   );
 }
 
-function SolanaPriceChart({ resolution, onResolutionChange, candles }: Props) {
+function SolanaPriceChart({ tokenSymbol, resolution, onResolutionChange, candles }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetRef = useRef<IChartingLibraryWidget | null>(null);
   const [chartReady, setChartReady] = useState(false);
@@ -117,7 +118,7 @@ function SolanaPriceChart({ resolution, onResolutionChange, candles }: Props) {
       ...defaultChartProps,
       library_path: "/charting_library/",
       container: containerRef.current!,
-      symbol: "SOL",
+      symbol: tokenSymbol,
       datafeed,
       interval: String(resolutionRef.current) as ResolutionString,
       theme,
@@ -151,7 +152,7 @@ function SolanaPriceChart({ resolution, onResolutionChange, candles }: Props) {
       widget.remove();
       resetCallbacks.clear();
     };
-  }, [theme, isMobile, datafeed, resolutionRef, onResolutionChangeRef, resetCallbacks]);
+  }, [tokenSymbol, theme, isMobile, datafeed, resolutionRef, onResolutionChangeRef, resetCallbacks]);
 
   useEffect(() => {
     if (!chartReady || !widgetRef.current || !candles) return;

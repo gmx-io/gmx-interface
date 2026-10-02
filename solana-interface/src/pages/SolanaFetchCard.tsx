@@ -8,18 +8,19 @@ import Button from "components/Button/Button";
 import { parseSolanaCandles, type SolanaChartCandles } from "../lib/chartCandles";
 
 type Props = {
+  tokenSymbol: string;
   resolution: TradingViewResolution;
-  onCandlesLoaded: (candles: SolanaChartCandles) => void;
+  onCandlesLoaded: (candles: SolanaChartCandles & { tokenSymbol: string }) => void;
 };
 
-export function SolanaFetchCard({ resolution, onCandlesLoaded }: Props) {
+export function SolanaFetchCard({ tokenSymbol, resolution, onCandlesLoaded }: Props) {
   const [response, setResponse] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const hasRequestedInitialCandles = useRef(false);
+  const requestIdRef = useRef(0);
 
   const fetchCandles = useCallback(async () => {
-    if (isLoading) return;
+    const requestId = ++requestIdRef.current;
 
     setIsLoading(true);
     setError(null);
@@ -27,31 +28,35 @@ export function SolanaFetchCard({ resolution, onCandlesLoaded }: Props) {
 
     try {
       const result = await gmxSolanaRequest.fetchJson<unknown>("/v2/cache/prices/candles", {
-        query: { tokenSymbol: "SOL", period: SUPPORTED_RESOLUTIONS_V2[resolution], limit: 2000 },
+        query: { tokenSymbol, period: SUPPORTED_RESOLUTIONS_V2[resolution], limit: 2000 },
       });
+      if (requestId !== requestIdRef.current) return;
       setResponse(JSON.stringify(result, null, 2));
-      onCandlesLoaded({ resolution, bars: parseSolanaCandles(result) });
+      onCandlesLoaded({ tokenSymbol, resolution, bars: parseSolanaCandles(result) });
     } catch (cause) {
+      if (requestId !== requestIdRef.current) return;
       setError(`Request failed: ${cause instanceof Error ? cause.message : String(cause)}`);
       if (cause instanceof HttpError && cause.body !== undefined) {
         setResponse(JSON.stringify(cause.body, null, 2));
       }
     } finally {
-      setIsLoading(false);
+      if (requestId === requestIdRef.current) setIsLoading(false);
     }
-  }, [isLoading, resolution, onCandlesLoaded]);
+  }, [tokenSymbol, resolution, onCandlesLoaded]);
 
   useEffect(() => {
-    if (hasRequestedInitialCandles.current) return;
-    hasRequestedInitialCandles.current = true;
+    const requestState = requestIdRef;
     void fetchCandles();
+    return () => {
+      requestState.current++;
+    };
   }, [fetchCandles]);
 
   return (
     <section className="min-w-0 rounded-8 bg-slate-900 p-12" aria-busy={isLoading}>
       <h2 className="mb-4 text-16 font-medium">Solana Fetch</h2>
       <p className="mb-12 text-12 text-typography-secondary">
-        SOL candles · {SUPPORTED_RESOLUTIONS_V2[resolution]} · Limit 2000
+        {tokenSymbol} candles · {SUPPORTED_RESOLUTIONS_V2[resolution]} · Limit 2000
       </p>
       <div className="flex flex-col gap-8">
         <Button variant="primary" disabled={isLoading} onClick={fetchCandles}>
