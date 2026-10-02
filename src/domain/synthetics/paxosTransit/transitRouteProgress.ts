@@ -1,5 +1,3 @@
-import type { GlvOrMarketInfo } from "domain/synthetics/markets/types";
-import { getGlvOrMarketAddress } from "domain/synthetics/markets/utils";
 import type { ContractsChainId } from "sdk/configs/chains";
 
 export type TransitRouteDirection = "usdcToUsdg" | "usdgToUsdc";
@@ -16,7 +14,7 @@ export type TransitRouteProgress = {
   chainId: ContractsChainId;
   account: string;
   direction: TransitRouteDirection;
-  glvOrMarketInfo: GlvOrMarketInfo;
+  glvOrMarketAddress: string;
   withdrawalTxnHash: string | undefined;
   conversion: PaxosTransitConversion | undefined;
   depositTxnHash: string | undefined;
@@ -25,7 +23,7 @@ export type TransitRouteProgress = {
 
 export type NewTransitRouteProgress = Pick<
   TransitRouteProgress,
-  "chainId" | "account" | "direction" | "glvOrMarketInfo" | "withdrawalTxnHash" | "conversion"
+  "chainId" | "account" | "direction" | "glvOrMarketAddress" | "withdrawalTxnHash" | "conversion"
 >;
 
 export function getTransitRouteProgressForMarket(
@@ -36,9 +34,7 @@ export function getTransitRouteProgressForMarket(
 
   if (progress.account !== p.account) return undefined;
 
-  const progressMarketAddress = getGlvOrMarketAddress(progress.glvOrMarketInfo);
-
-  if (progressMarketAddress !== p.glvOrMarketAddress) return undefined;
+  if (progress.glvOrMarketAddress !== p.glvOrMarketAddress) return undefined;
 
   return progress;
 }

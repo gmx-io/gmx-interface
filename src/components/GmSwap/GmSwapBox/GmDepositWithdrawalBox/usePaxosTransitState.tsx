@@ -7,7 +7,6 @@ import {
   selectPoolsDetailsFirstTokenAmount,
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvOrMarketAddress,
-  selectPoolsDetailsGlvOrMarketInfo,
   selectPoolsDetailsLongTokenAddress,
   selectPoolsDetailsOperation,
   selectPoolsDetailsConversionRoutePreference,
@@ -84,7 +83,6 @@ export function usePaxosTransitState({
   const collateralSwapTokens = useSelector(selectPoolsDetailsCollateralSwapTokens);
   const isDirectDepositBlocked = useSelector(selectPoolsDetailsIsDirectDepositBlocked);
   const glvOrMarketAddress = useSelector(selectPoolsDetailsGlvOrMarketAddress);
-  const glvOrMarketInfo = useSelector(selectPoolsDetailsGlvOrMarketInfo);
   const currentOperation = useSelector(selectPoolsDetailsOperation);
   const setOperation = useSelector(selectPoolsDetailsSetOperation);
   const tokensData = useSelector(selectTokensData);
@@ -163,18 +161,18 @@ export function usePaxosTransitState({
 
   const onPendingOrderFound = useCallback(
     (order: TransitOrder) => {
-      if (!glvOrMarketInfo || !account || transitRouteProgress?.conversion?.orderId === order.id) return;
+      if (!glvOrMarketAddress || !account || transitRouteProgress?.conversion?.orderId === order.id) return;
 
       startTransitRouteProgress({
         chainId,
         account,
         direction,
-        glvOrMarketInfo,
+        glvOrMarketAddress,
         withdrawalTxnHash: undefined,
         conversion: { orderId: order.id, txnHash: undefined, offerAmount: order.offerAmount, isMocked },
       });
     },
-    [account, chainId, direction, glvOrMarketInfo, isMocked, transitRouteProgress, startTransitRouteProgress]
+    [account, chainId, direction, glvOrMarketAddress, isMocked, transitRouteProgress, startTransitRouteProgress]
   );
 
   const transit = usePaxosTransit({
@@ -258,7 +256,7 @@ export function usePaxosTransitState({
   const onConvert = useCallback(() => {
     submitTransit()
       .then((conversion) => {
-        if (!conversion || !glvOrMarketInfo || !account) return;
+        if (!conversion || !glvOrMarketAddress || !account) return;
 
         if (
           transitRouteProgressForDirection?.withdrawalTxnHash &&
@@ -272,7 +270,7 @@ export function usePaxosTransitState({
           chainId,
           account,
           direction,
-          glvOrMarketInfo,
+          glvOrMarketAddress,
           withdrawalTxnHash: undefined,
           conversion,
         });
@@ -285,7 +283,7 @@ export function usePaxosTransitState({
     attachTransitRouteConversion,
     chainId,
     direction,
-    glvOrMarketInfo,
+    glvOrMarketAddress,
     startTransitRouteProgress,
     submitTransit,
     transitRouteProgressForDirection,

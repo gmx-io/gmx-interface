@@ -1,8 +1,9 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import useSWR from "swr";
 
 import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
+import type { GlvAndGmMarketsInfoData } from "domain/synthetics/markets/types";
 import { mockTransitApi } from "domain/synthetics/paxosTransit/mockTransitApi";
 import { getIsTransitOrderFinal } from "domain/synthetics/paxosTransit/transitOrders";
 import {
@@ -11,6 +12,7 @@ import {
   type TransitRouteProgress,
 } from "domain/synthetics/paxosTransit/transitRouteProgress";
 import { helperToast } from "lib/helperToast";
+import { getByKey } from "lib/objects";
 import type { ContractsChainId } from "sdk/configs/chains";
 import type { TransitOrder } from "sdk/utils/paxos/types";
 
@@ -28,7 +30,10 @@ export type TransitRouteEventsState = {
   setTransitRouteContinueRequested: (progressId: number, isContinueRequested: boolean) => void;
 };
 
-export function useTransitRouteEvents(chainId: ContractsChainId): TransitRouteEventsState {
+export function useTransitRouteEvents(
+  chainId: ContractsChainId,
+  { glvAndGmMarketsData }: { glvAndGmMarketsData: GlvAndGmMarketsInfoData }
+): TransitRouteEventsState {
   const [transitRouteProgress, setTransitRouteProgress] = useState<TransitRouteProgress | undefined>(undefined);
   const progressIdRef = useRef<number | undefined>(undefined);
 
@@ -43,6 +48,8 @@ export function useTransitRouteEvents(chainId: ContractsChainId): TransitRouteEv
     { refreshInterval: (order) => (getIsTransitOrderFinal(order) ? 0 : ORDER_REFRESH_INTERVAL) }
   );
 
+  const glvOrMarketInfo = getByKey(glvAndGmMarketsData, transitRouteProgress?.glvOrMarketAddress);
+
   const updateTransitRouteProgress = useCallback((progressId: number, patch: Partial<TransitRouteProgress>) => {
     setTransitRouteProgress((current) => (current?.id === progressId ? { ...current, ...patch } : current));
   }, []);
@@ -52,12 +59,25 @@ export function useTransitRouteEvents(chainId: ContractsChainId): TransitRouteEv
       toast.dismiss(progressIdRef.current);
     }
 
-    const id = Date.now();
-    progressIdRef.current = id;
-    setTransitRouteProgress({ ...params, id, depositTxnHash: undefined, isContinueRequested: false });
-
-    helperToast.success(<PaxosTransitStatusNotification toastTimestamp={id} />, { autoClose: false, toastId: id });
+    setTransitRouteProgress({ ...params, id: Date.now(), depositTxnHash: undefined, isContinueRequested: false });
   }, []);
+
+  useEffect(
+    function showTransitRouteToast() {
+      if (!transitRouteProgress || !glvOrMarketInfo || progressIdRef.current === transitRouteProgress.id) {
+        return;
+      }
+
+      const progressId = transitRouteProgress.id;
+      progressIdRef.current = progressId;
+
+      helperToast.success(
+        <PaxosTransitStatusNotification toastTimestamp={progressId} glvOrMarketInfo={glvOrMarketInfo} />,
+        { autoClose: false, toastId: progressId }
+      );
+    },
+    [glvOrMarketInfo, transitRouteProgress]
+  );
 
   const attachTransitRouteConversion = useCallback(
     (progressId: number, paxosTransitConversion: PaxosTransitConversion) =>
