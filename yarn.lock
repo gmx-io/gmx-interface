@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 8
+  version: 10
   cacheKey: 10
 
 "@aashutoshrathi/word-wrap@npm:^1.2.3":
@@ -10195,6 +10195,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"astronomia@npm:^4.1.0, astronomia@npm:^4.1.1":
+  version: 4.2.0
+  resolution: "astronomia@npm:4.2.0"
+  checksum: 10/f1e3fb5e08ccc5c30c9070e1f90450eede9a4fb50e3548ed64c6d8533bd7d9d2ad55b111e9908568b66cf1ddbc4a8c3f2928443064602358ccf2499c3e7dcf97
+  languageName: node
+  linkType: hard
+
 "async-mutex@npm:^0.2.6":
   version: 0.2.6
   resolution: "async-mutex@npm:0.2.6"
@@ -10706,6 +10713,15 @@ __metadata:
     tar: "npm:^6.1.11"
     unique-filename: "npm:^3.0.0"
   checksum: 10/216fb41c739b845c5acbc1f8a01876ccc6293644e701ad0abb7acb87b648a12abc2af5fc4b86df2d82731d0f7d6beebee85e62b1d59211535ed72de4b8b0fce6
+  languageName: node
+  linkType: hard
+
+"caldate@npm:^2.0.5":
+  version: 2.0.5
+  resolution: "caldate@npm:2.0.5"
+  dependencies:
+    moment-timezone: "npm:^0.5.43"
+  checksum: 10/3134a7bb6be47a72b7813af08c79b54b5aa981ff7f764dff7e3c04a97f70905a1e4020daa4d3b71997a9a4fdc0908fc50acec2548f6f0e8103e64b22f5490f5f
   languageName: node
   linkType: hard
 
@@ -11627,10 +11643,63 @@ __metadata:
   languageName: node
   linkType: hard
 
+"date-bengali-revised@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "date-bengali-revised@npm:2.0.2"
+  checksum: 10/23f5e03b20a2334de5e8b7c42925ff4ebf24db3404e1ec272c66b0deab6bfc3cbc1fb9581d06ab72a0c3fe338c618b1f94062147a74c4544217e9a7fc70a62aa
+  languageName: node
+  linkType: hard
+
+"date-chinese@npm:^2.1.4":
+  version: 2.1.4
+  resolution: "date-chinese@npm:2.1.4"
+  dependencies:
+    astronomia: "npm:^4.1.0"
+  checksum: 10/365c6a52dd1f62f26482132853871cd85e4eac3757740f8a37259d60d94bddad760c2ea62575046a8cfc89dac57f0cac9784aea9383b6f0b97b3524760bbc71b
+  languageName: node
+  linkType: hard
+
+"date-easter@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "date-easter@npm:1.0.3"
+  checksum: 10/1e19d22c5205ea7d6ae801e3fbc0edf7265e5d5187799e9a5862d04556c019b803bd9bffa383843130e5076445699e1079566493219e524842f09f80f0b92e8f
+  languageName: node
+  linkType: hard
+
 "date-fns@npm:4.1.0":
   version: 4.1.0
   resolution: "date-fns@npm:4.1.0"
   checksum: 10/d5f6e9de5bbc52310f786099e18609289ed5e30af60a71e0646784c8185ddd1d0eebcf7c96b7faaaefc4a8366f3a3a4244d099b6d0866ee2bec80d1361e64342
+  languageName: node
+  linkType: hard
+
+"date-holidays-parser@npm:^3.4.7":
+  version: 3.4.7
+  resolution: "date-holidays-parser@npm:3.4.7"
+  dependencies:
+    astronomia: "npm:^4.1.1"
+    caldate: "npm:^2.0.5"
+    date-bengali-revised: "npm:^2.0.2"
+    date-chinese: "npm:^2.1.4"
+    date-easter: "npm:^1.0.3"
+    deepmerge: "npm:^4.3.1"
+    jalaali-js: "npm:^1.2.7"
+    moment-timezone: "npm:^0.5.47"
+  checksum: 10/c34f9381e9f7746bfe4234ab2dac9da98f3bfa454e6c234cc9c9c3d6bb48a3469f4f88d56414a898c8fd7f6a1c3f25886db0ba4883d55f14d47eee8991e556ca
+  languageName: node
+  linkType: hard
+
+"date-holidays@npm:3.26.9":
+  version: 3.26.9
+  resolution: "date-holidays@npm:3.26.9"
+  dependencies:
+    date-holidays-parser: "npm:^3.4.7"
+    js-yaml: "npm:^4.1.1"
+    lodash: "npm:^4.17.21"
+    prepin: "npm:^1.0.3"
+  bin:
+    holidays2json: scripts/holidays2json.cjs
+  checksum: 10/bc8537d522e72a079dc603d2e69c7029a3fb6b1eacfc22f1b5d43dc17ef461e1329782cb0c295f77f7e2002c219774b24f2ba241e0a72a996830daf380d1f63c
   languageName: node
   linkType: hard
 
@@ -11718,6 +11787,13 @@ __metadata:
   version: 0.1.4
   resolution: "deep-is@npm:0.1.4"
   checksum: 10/ec12d074aef5ae5e81fa470b9317c313142c9e8e2afe3f8efa124db309720db96d1d222b82b84c834e5f87e7a614b44a4684b6683583118b87c833b3be40d4d8
+  languageName: node
+  linkType: hard
+
+"deepmerge@npm:^4.3.1":
+  version: 4.3.1
+  resolution: "deepmerge@npm:4.3.1"
+  checksum: 10/058d9e1b0ff1a154468bf3837aea436abcfea1ba1d165ddaaf48ca93765fdd01a30d33c36173da8fbbed951dd0a267602bc782fe288b0fc4b7e1e7091afc4529
   languageName: node
   linkType: hard
 
@@ -14155,6 +14231,7 @@ __metadata:
     core-js: "npm:3.39.0"
     crypto-js: "npm:4.2.0"
     date-fns: "npm:4.1.0"
+    date-holidays: "npm:3.26.9"
     env-cmd: "npm:10.1.0"
     eslint: "npm:8.57.1"
     eslint-config-prettier: "npm:9.0.0"
@@ -15222,6 +15299,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jalaali-js@npm:^1.2.7":
+  version: 1.2.8
+  resolution: "jalaali-js@npm:1.2.8"
+  checksum: 10/e722bb89977d5111b3e2fd5cc80e8c7b5894b14aadfce7c2e087619c1b57edd31c1db4e906ee3c5eb1924351bd597a159e499daf912f0cda649e1facbe785670
+  languageName: node
+  linkType: hard
+
 "jayson@npm:^4.1.1":
   version: 4.2.0
   resolution: "jayson@npm:4.2.0"
@@ -15427,6 +15511,17 @@ __metadata:
   bin:
     js-yaml: bin/js-yaml.js
   checksum: 10/c138a34a3fd0d08ebaf71273ad4465569a483b8a639e0b118ff65698d257c2791d3199e3f303631f2cb98213fa7b5f5d6a4621fd0fff819421b990d30d967140
+  languageName: node
+  linkType: hard
+
+"js-yaml@npm:^4.1.1":
+  version: 4.3.2
+  resolution: "js-yaml@npm:4.3.2"
+  dependencies:
+    argparse: "npm:^2.0.1"
+  bin:
+    js-yaml: bin/js-yaml.js
+  checksum: 10/05c44b9c73e4901d92703b155e76518df64bf01ac62e4c036b47de4b391e19b72e32656e8954d51b436307f08cc9d0c0d4ec617d061cf2f65fffee9f3114bee7
   languageName: node
   linkType: hard
 
@@ -16260,6 +16355,22 @@ __metadata:
     pkg-types: "npm:^1.0.3"
     ufo: "npm:^1.3.2"
   checksum: 10/00b4c355236eb3d0294106f208718db486f6e34e28bbb7f6965bd9d6237db338e566f2e13489fbf8bfa9b1337c0f2568d4aeac1840f9963054c91881acc974a9
+  languageName: node
+  linkType: hard
+
+"moment-timezone@npm:^0.5.43, moment-timezone@npm:^0.5.47":
+  version: 0.5.48
+  resolution: "moment-timezone@npm:0.5.48"
+  dependencies:
+    moment: "npm:^2.29.4"
+  checksum: 10/8e0b7a05577623552293b28eeee4e60634b8be87fdb74084fa6d5ccc516771eb42d88f29c5a5e50a94c494048d14cdef94f94526a9dfd5e1b0050ff29d0a6c0a
+  languageName: node
+  linkType: hard
+
+"moment@npm:^2.29.4":
+  version: 2.31.0
+  resolution: "moment@npm:2.31.0"
+  checksum: 10/fd3708d46f820c64fe1e064a60747533a55ee0aefd944490e18f08b2a83a5b6418bb4f42e1de47ef1f1a29f450c7ac41edd1fa6f940db30ded247c9717301b9f
   languageName: node
   linkType: hard
 
@@ -17533,6 +17644,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"prepin@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "prepin@npm:1.0.3"
+  bin:
+    prepin: ./bin/prepin.js
+  checksum: 10/9b4c4ca6db0c3a4fe1e96b0a7f207797ce006d64a28c9b408a0fb4f3f2da8d57ade987d0f9f9d787ede2cc503c660385aaa1e6da43fec6b265fc631a0571e3ae
+  languageName: node
+  linkType: hard
+
 "prettier-plugin-tailwindcss@npm:0.6.5":
   version: 0.6.5
   resolution: "prettier-plugin-tailwindcss@npm:0.6.5"
@@ -18604,27 +18724,27 @@ __metadata:
 
 "resolve@patch:resolve@npm%3A^1.1.7#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.12.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.14.2#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.19.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.2#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.4#optional!builtin<compat/resolve>":
   version: 1.22.8
-  resolution: "resolve@patch:resolve@npm%3A1.22.8#optional!builtin<compat/resolve>::version=1.22.8&hash=c3c19d"
+  resolution: "resolve@patch:resolve@npm%3A1.22.8#optional!builtin<compat/resolve>::version=1.22.8&hash=9bd1a5"
   dependencies:
     is-core-module: "npm:^2.13.0"
     path-parse: "npm:^1.0.7"
     supports-preserve-symlinks-flag: "npm:^1.0.0"
   bin:
     resolve: bin/resolve
-  checksum: 10/f345cd37f56a2c0275e3fe062517c650bb673815d885e7507566df589375d165bbbf4bdb6aa95600a9bc55f4744b81f452b5a63f95b9f10a72787dba3c90890a
+  checksum: 10/b14c82cbce48701a1e963c60f196b91a289186e8b596334e09c881df8069cefcfb0ac9ce85ea768742b361a58005494bf2428a95dc5056d2ba441aa993731b1f
   languageName: node
   linkType: hard
 
 "resolve@patch:resolve@npm%3A^2.0.0-next.4#optional!builtin<compat/resolve>":
   version: 2.0.0-next.4
-  resolution: "resolve@patch:resolve@npm%3A2.0.0-next.4#optional!builtin<compat/resolve>::version=2.0.0-next.4&hash=c3c19d"
+  resolution: "resolve@patch:resolve@npm%3A2.0.0-next.4#optional!builtin<compat/resolve>::version=2.0.0-next.4&hash=9bd1a5"
   dependencies:
     is-core-module: "npm:^2.9.0"
     path-parse: "npm:^1.0.7"
     supports-preserve-symlinks-flag: "npm:^1.0.0"
   bin:
     resolve: bin/resolve
-  checksum: 10/27bff19d8219385bb1e271066317e553cff18daa2a19db9598d94ae444417ef3f5aec19e86927872d6cb241d02649cfb35a4c0d9d10ef2afa6325bce8bc8d903
+  checksum: 10/022d9ded746726e984b08da1d4f7739fb221f35271b39f0f28fd3ec5ee98ebe009c9fcbc0412880eaf8f0ce6aaaeaa8aa455d72984c080bc1ffb1f22f8819f2f
   languageName: node
   linkType: hard
 
