@@ -5743,6 +5743,10 @@ msgstr "Eingang vor dem Schließen (GMX-Guthaben)"
 msgid "Open interest {directionLabel}"
 msgstr "Open Interest {directionLabel}"
 
+#: src/components/GmList/UsdgPoolBadges.tsx
+msgid "Deposits into this vault are open to whitelisted addresses."
+msgstr "Einzahlungen in diesen Vault stehen Whitelist-Adressen offen."
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
@@ -8058,6 +8062,10 @@ msgstr "Gewinnrate"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading stats"
 msgstr "GMX trading stats"
+
+#: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+msgid "Deposits into this vault are open to whitelisted addresses. To get whitelisted, message <0>@GMXPartners</0> on Telegram and mention \"USDG whitelist\"."
+msgstr "Einzahlungen in diesen Vault stehen Whitelist-Adressen offen. Um auf die Whitelist zu kommen, schreiben Sie <0>@GMXPartners</0> auf Telegram und erwähnen Sie \"USDG whitelist\"."
 
 #: src/components/LeverageField/LeverageField.tsx
 #: src/pages/UiPage/BannerTest.tsx
