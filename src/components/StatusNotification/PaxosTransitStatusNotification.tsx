@@ -42,8 +42,13 @@ function TransitRouteProgressContent({
   glvOrMarketInfo: GlvOrMarketInfo;
 }) {
   const history = useHistory();
-  const { withdrawalStatuses, depositStatuses, paxosTransitOrder, setTransitRouteContinueRequested } =
-    useSyntheticsEvents();
+  const {
+    withdrawalStatuses,
+    depositStatuses,
+    paxosTransitOrder,
+    isPaxosTransitOrderStatusUnknown,
+    setTransitRouteContinueRequested,
+  } = useSyntheticsEvents();
   const { conversion, withdrawalExecutedTxnHash } = progress;
   const order = conversion ? paxosTransitOrder : undefined;
 
@@ -80,7 +85,10 @@ function TransitRouteProgressContent({
   const conversionRows = conversion ? (
     <>
       <TransactionStatus status="success" txnHash={conversion.txnHash} text={t`Conversion request sent`} />
-      <TransactionStatus status={getConversionStatus(order)} text={getConversionText(order, tokenOut?.symbol)} />
+      <TransactionStatus
+        status={getConversionStatus(order)}
+        text={getConversionText({ order, isPaxosTransitOrderStatusUnknown, tokenOutSymbol: tokenOut?.symbol })}
+      />
     </>
   ) : undefined;
 
@@ -196,9 +204,19 @@ function getConversionStatus(order: TransitOrder | undefined): TransactionStatus
   return "loading";
 }
 
-function getConversionText(order: TransitOrder | undefined, tokenOut: string | undefined): string {
-  if (order?.status === "PROCESSED") return t`${tokenOut} received`;
+function getConversionText(p: {
+  order: TransitOrder | undefined;
+  isPaxosTransitOrderStatusUnknown: boolean;
+  tokenOutSymbol: string | undefined;
+}): React.ReactNode {
+  const { order, isPaxosTransitOrderStatusUnknown, tokenOutSymbol } = p;
+
+  if (order?.status === "PROCESSED") return t`${tokenOutSymbol} received`;
   if (order?.status === "REMOVED") return t`Conversion cancelled`;
+  if (isPaxosTransitOrderStatusUnknown) {
+    return <span className="text-yellow-300">{t`Conversion status unavailable`}</span>;
+  }
+
   return t`Converting with Paxos, usually 2–10 min...`;
 }
 
