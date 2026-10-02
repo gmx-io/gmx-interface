@@ -3,14 +3,9 @@ import { useHistory } from "react-router-dom";
 
 import { getPaxosTransitConfig } from "config/paxosTransit";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import {
-  getGlvDisplayName,
-  getGlvOrMarketAddress,
-  getMarketIndexName,
-  getMarketPoolName,
-} from "domain/synthetics/markets";
+import { getGlvDisplayName, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { Mode } from "domain/synthetics/markets/types";
+import { Mode, type GlvOrMarketInfo } from "domain/synthetics/markets/types";
 import type { TransitRouteProgress } from "domain/synthetics/paxosTransit/transitRouteProgress";
 import { formatBalanceAmount } from "lib/numbers";
 import { getToken } from "sdk/configs/tokens";
@@ -23,21 +18,33 @@ import { PoolName } from "./GmStatusNotification";
 import { StatusNotification } from "./StatusNotification";
 import { useToastAutoClose } from "./useToastAutoClose";
 
-export function PaxosTransitStatusNotification({ toastTimestamp }: { toastTimestamp: number }) {
+export function PaxosTransitStatusNotification({
+  toastTimestamp,
+  glvOrMarketInfo,
+}: {
+  toastTimestamp: number;
+  glvOrMarketInfo: GlvOrMarketInfo;
+}) {
   const { transitRouteProgress } = useSyntheticsEvents();
 
   if (transitRouteProgress?.id !== toastTimestamp) {
     return null;
   }
 
-  return <TransitRouteProgressContent progress={transitRouteProgress} />;
+  return <TransitRouteProgressContent progress={transitRouteProgress} glvOrMarketInfo={glvOrMarketInfo} />;
 }
 
-function TransitRouteProgressContent({ progress }: { progress: TransitRouteProgress }) {
+function TransitRouteProgressContent({
+  progress,
+  glvOrMarketInfo,
+}: {
+  progress: TransitRouteProgress;
+  glvOrMarketInfo: GlvOrMarketInfo;
+}) {
   const history = useHistory();
   const { withdrawalStatuses, depositStatuses, paxosTransitOrder, setTransitRouteContinueRequested } =
     useSyntheticsEvents();
-  const { conversion, glvOrMarketInfo } = progress;
+  const { conversion } = progress;
   const order = conversion ? paxosTransitOrder : undefined;
 
   const withdrawalStatus = progress.withdrawalTxnHash
@@ -67,8 +74,7 @@ function TransitRouteProgressContent({ progress }: { progress: TransitRouteProgr
   const requestContinue = () => {
     setTransitRouteContinueRequested(progress.id, true);
 
-    const marketAddress = getGlvOrMarketAddress(glvOrMarketInfo);
-    history.push(`/pools/details?market=${marketAddress}&mode=${Mode.Single}`);
+    history.push(`/pools/details?market=${progress.glvOrMarketAddress}&mode=${Mode.Single}`);
   };
 
   const conversionRows = conversion ? (
