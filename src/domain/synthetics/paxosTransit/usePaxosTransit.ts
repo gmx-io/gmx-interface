@@ -73,7 +73,7 @@ export function usePaxosTransit({
   const { data: feeTierData, error: feeTierError } = useSWR(
     isActive ? ["paxosTransitFeeTier", chainId, account] : null,
     () => api!.fetchTransitFeeTier({ userAddress: account! }),
-    { refreshInterval: FEE_TIER_REFRESH_INTERVAL }
+    { refreshInterval: FEE_TIER_REFRESH_INTERVAL, onErrorRetry: retryAtRefreshCadence }
   );
 
   const minOrderSizes = useTransitMinOrderSizes({
