@@ -55,6 +55,8 @@ import type { SubmitButtonState } from "./useGmSwapSubmitState";
 
 export type PaxosTransitState = ReturnType<typeof usePaxosTransitState>;
 
+const CONVERSION_ROUTE_SWITCHED_TOAST_ID = "conversion-route-switched";
+
 export function usePaxosTransitState({
   isWhitelistIgnored,
   thresholdUsdOverride,
@@ -239,6 +241,18 @@ export function usePaxosTransitState({
       setTransitAmountOut(transitAmountOut);
     },
     [isTransitRoute, setIsTransitRoute, setTransitAmountOut, transitAmountOut]
+  );
+
+  useEffect(
+    function switchUnavailableTransitRouteToAuto() {
+      if (conversionRoute !== "transit" || isTransitAvailable) return;
+
+      setConversionRoutePreference("auto");
+      helperToast.info(t`Direct with Paxos is unavailable. Conversion switched to Auto`, {
+        toastId: CONVERSION_ROUTE_SWITCHED_TOAST_ID,
+      });
+    },
+    [conversionRoute, isTransitAvailable, setConversionRoutePreference]
   );
 
   const onConvert = useCallback(() => {
