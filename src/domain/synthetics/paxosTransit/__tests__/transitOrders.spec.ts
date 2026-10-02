@@ -92,8 +92,8 @@ function makeOrderSubmittedLog(address: string) {
 function makeOrder(id: string, overrides: Partial<TransitOrder> = {}): TransitOrder {
   return {
     id,
-    offerAsset: USDC.toLowerCase(),
-    wantAsset: USDG.toLowerCase(),
+    offerAsset: USDC,
+    wantAsset: USDG,
     amountDue: 0n,
     remainingAmountDue: 0n,
     offerAmount: 1_000_000n,
@@ -115,7 +115,7 @@ function makeOrder(id: string, overrides: Partial<TransitOrder> = {}): TransitOr
 describe("findPendingTransitOrder", () => {
   it("finds an unfinished order in the requested direction", () => {
     const orders = [
-      makeOrder("0xsell", { offerAsset: USDG.toLowerCase(), wantAsset: USDC.toLowerCase(), status: "PROCESSING" }),
+      makeOrder("0xsell", { offerAsset: USDG, wantAsset: USDC, status: "PROCESSING" }),
       makeOrder("0xdone", { status: "PROCESSED" }),
       makeOrder("0xbridging", { status: "PENDING_BRIDGE" }),
       makeOrder("0xprocessing", { status: "PROCESSING" }),
@@ -129,6 +129,12 @@ describe("findPendingTransitOrder", () => {
     const orders = [makeOrder("0xdone", { status: "PROCESSED" }), makeOrder("0xremoved", { status: "REMOVED" })];
 
     expect(findPendingTransitOrder(orders, { offerAsset: USDC, wantAsset: USDG })).toBeUndefined();
+  });
+
+  it("matches order assets regardless of address case", () => {
+    const orders = [makeOrder("0xlowercase", { offerAsset: USDC.toLowerCase(), wantAsset: USDG.toLowerCase() })];
+
+    expect(findPendingTransitOrder(orders, { offerAsset: USDC, wantAsset: USDG })?.id).toBe("0xlowercase");
   });
 });
 
