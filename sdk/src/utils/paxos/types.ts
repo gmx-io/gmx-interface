@@ -88,7 +88,7 @@ export type TransitQuoteTransaction = {
   data?: string;
   value: bigint;
   abi?: unknown[];
-  functionName: "submitOrder" | "submitOrderWithPermit";
+  functionName?: "submitOrder" | "submitOrderWithPermit";
   args?: unknown[];
 };
 
