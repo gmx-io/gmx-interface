@@ -18,8 +18,9 @@ import {
 import { helperToast } from "lib/helperToast";
 import { getByKey } from "lib/objects";
 import type { ContractsChainId } from "sdk/configs/chains";
-import type { TransitOrder } from "sdk/utils/paxos/types";
+import type { TransitOrder, TransitOrderStatus } from "sdk/utils/paxos/types";
 
+import { CloseToastButton } from "components/CloseToastButton/CloseToastButton";
 import { PaxosTransitStatusNotification } from "components/StatusNotification/PaxosTransitStatusNotification";
 
 import type { WithdrawalStatuses } from "./types";
@@ -46,7 +47,7 @@ export function useTransitRouteEvents(
   const [transitRouteProgress, setTransitRouteProgress] = useState<TransitRouteProgress | undefined>(
     readStoredTransitRouteProgress
   );
-  const progressIdRef = useRef<number | undefined>(undefined);
+  const toastShownForRef = useRef<{ progress: TransitRouteProgress; orderStatus: TransitOrderStatus | undefined }>();
 
   const progressChainId = transitRouteProgress?.chainId ?? chainId;
   const conversion = transitRouteProgress?.conversion;
@@ -59,6 +60,7 @@ export function useTransitRouteEvents(
     { refreshInterval: (order) => (getIsTransitOrderFinal(order) ? 0 : ORDER_REFRESH_INTERVAL) }
   );
 
+  const orderStatus = paxosTransitOrder?.status;
   const glvOrMarketInfo = getByKey(glvAndGmMarketsData, transitRouteProgress?.glvOrMarketAddress);
   const withdrawalTxnHash = transitRouteProgress?.withdrawalTxnHash;
   const withdrawalStatus =
@@ -81,8 +83,8 @@ export function useTransitRouteEvents(
   }, []);
 
   const startTransitRouteProgress = useCallback((params: NewTransitRouteProgress) => {
-    if (progressIdRef.current !== undefined) {
-      toast.dismiss(progressIdRef.current);
+    if (toastShownForRef.current) {
+      toast.dismiss(toastShownForRef.current.progress.id);
     }
 
     setTransitRouteProgress({
@@ -97,23 +99,43 @@ export function useTransitRouteEvents(
 
   useEffect(
     function showTransitRouteToast() {
-      if (!transitRouteProgress || !glvOrMarketInfo || progressIdRef.current === transitRouteProgress.id) {
+      if (!transitRouteProgress || !glvOrMarketInfo || transitRouteProgress.isDismissed) {
         return;
       }
 
+      const toastShownFor = toastShownForRef.current;
+      const isToastUpToDate =
+        toastShownFor?.progress === transitRouteProgress && toastShownFor.orderStatus === orderStatus;
+
+      if (isToastUpToDate) {
+        return;
+      }
+
+      toastShownForRef.current = { progress: transitRouteProgress, orderStatus };
       const progressId = transitRouteProgress.id;
-      progressIdRef.current = progressId;
+
+      if (toast.isActive(progressId)) {
+        return;
+      }
 
       helperToast.success(
         <PaxosTransitStatusNotification toastTimestamp={progressId} glvOrMarketInfo={glvOrMarketInfo} />,
         {
           autoClose: false,
           toastId: progressId,
-          onClose: () => updateTransitRouteProgress(progressId, { isDismissed: true }),
+          // only the user's close counts as dismissed: onClose also fires when another toast replaces this one
+          closeButton: ({ closeToast }) => (
+            <CloseToastButton
+              closeToast={(event) => {
+                updateTransitRouteProgress(progressId, { isDismissed: true });
+                closeToast(event);
+              }}
+            />
+          ),
         }
       );
     },
-    [glvOrMarketInfo, transitRouteProgress, updateTransitRouteProgress]
+    [glvOrMarketInfo, orderStatus, transitRouteProgress, updateTransitRouteProgress]
   );
 
   useEffect(

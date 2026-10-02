@@ -188,6 +188,7 @@ export const useDepositTransactions = ({
   const isPayingUsdg = firstTokenAddress === usdgAddress;
   const transitBuyProgress =
     isUsdcToUsdg && isConverted && !isDepositSent && isPayingUsdg ? transitRouteProgressForMarket : undefined;
+  const isBuyTrackedByTransitToast = transitBuyProgress !== undefined && !transitBuyProgress.isDismissed;
 
   const recordTransitDeposit = useCallback(
     (txnHash: string | undefined) => {
@@ -429,7 +430,7 @@ export const useDepositTransactions = ({
           metricId: metricData.metricId,
           params: params as CreateDepositParams,
           setPendingTxns,
-          setPendingDeposit: transitBuyProgress ? undefined : setPendingDeposit,
+          setPendingDeposit: isBuyTrackedByTransitToast ? undefined : setPendingDeposit,
         }).then(({ transactionHash }) => recordTransitDeposit(transactionHash));
       } else {
         throw new Error(`Invalid pay source: ${paySource}`);
@@ -462,7 +463,7 @@ export const useDepositTransactions = ({
       params,
       addOptimisticTokensBalancesUpdates,
       setPendingDeposit,
-      transitBuyProgress,
+      isBuyTrackedByTransitToast,
       recordTransitDeposit,
       blockTimestampData,
       shouldDisableValidation,
@@ -670,7 +671,7 @@ export const useDepositTransactions = ({
           glvToken,
           blockTimestampData,
           setPendingTxns,
-          setPendingDeposit: transitBuyProgress ? undefined : setPendingDeposit,
+          setPendingDeposit: isBuyTrackedByTransitToast ? undefined : setPendingDeposit,
         }).then(({ transactionHash }) => recordTransitDeposit(transactionHash));
       } else {
         throw new Error(`Invalid pay source: ${paySource}`);
@@ -705,7 +706,7 @@ export const useDepositTransactions = ({
       params,
       addOptimisticTokensBalancesUpdates,
       setPendingDeposit,
-      transitBuyProgress,
+      isBuyTrackedByTransitToast,
       recordTransitDeposit,
       firstTokenAddress,
       secondTokenAddress,
