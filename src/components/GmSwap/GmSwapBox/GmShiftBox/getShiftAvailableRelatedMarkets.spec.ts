@@ -28,7 +28,7 @@ function toMarketsInfoData(markets: GlvOrMarketInfo[]): GlvAndGmMarketsInfoData 
   return Object.fromEntries(markets.map((m) => [isGlvInfo(m) ? m.glvTokenAddress : m.marketTokenAddress, m]));
 }
 
-const LOADED_EMPTY_RESULT: AccountWhitelistsResult = { accountWhitelists: { deposit: { markets: {} } } };
+const LOADED_EMPTY_RESULT: AccountWhitelistsResult = { accountWhitelists: { deposit: { markets: {}, glvs: {} } } };
 const LOADING_RESULT: AccountWhitelistsResult = { accountWhitelists: undefined };
 
 describe("getShiftAvailableRelatedMarkets", () => {
@@ -42,6 +42,7 @@ describe("getShiftAvailableRelatedMarkets", () => {
     accountWhitelists: {
       deposit: {
         markets: { [whitelisted.marketTokenAddress]: true, [gated.marketTokenAddress]: false },
+        glvs: {},
       },
     },
   };

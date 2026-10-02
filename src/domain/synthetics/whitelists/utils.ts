@@ -1,5 +1,7 @@
 import { getIsUsdgPool } from "config/usdgPools";
-import type { Market } from "sdk/utils/markets/types";
+import { isGlvInfo } from "domain/synthetics/markets/glv";
+import type { GlvOrMarketInfo } from "domain/synthetics/markets/types";
+import { getGlvOrMarketAddress } from "domain/synthetics/markets/utils";
 import type { AccountWhitelists } from "sdk/utils/whitelists/types";
 
 import type { AccountWhitelistsResult } from "./useAccountWhitelistsRequest";
@@ -8,13 +10,14 @@ export type DirectDepositAccess = "ungated" | "whitelisted" | "denied" | "loadin
 
 export function getDirectDepositAccess(p: {
   chainId: number;
-  market: Market;
+  glvOrMarket: GlvOrMarketInfo;
   whitelistsResult: AccountWhitelistsResult;
 }): DirectDepositAccess {
-  const { accountWhitelists, error } = p.whitelistsResult;
+  const { chainId, glvOrMarket, whitelistsResult } = p;
+  const { accountWhitelists, error } = whitelistsResult;
 
   if (!accountWhitelists) {
-    const isUsdgPool = getIsUsdgPool(p.chainId, p.market);
+    const isUsdgPool = getIsUsdgPool(chainId, glvOrMarket);
 
     if (!isUsdgPool) {
       return "ungated";
@@ -23,7 +26,11 @@ export function getDirectDepositAccess(p: {
     return error ? "denied" : "loading";
   }
 
-  const isWhitelisted = accountWhitelists.deposit.markets[p.market.marketTokenAddress];
+  const whitelistedByAddress = isGlvInfo(glvOrMarket)
+    ? accountWhitelists.deposit.glvs
+    : accountWhitelists.deposit.markets;
+  const glvOrMarketAddress = getGlvOrMarketAddress(glvOrMarket);
+  const isWhitelisted = whitelistedByAddress[glvOrMarketAddress];
 
   if (isWhitelisted === undefined) {
     return "ungated";

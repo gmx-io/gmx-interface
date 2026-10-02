@@ -119,7 +119,7 @@ export function GmListItem({
 
   const marketOrGlvTokenAddress = marketOrGlv && getGlvOrMarketAddress(marketOrGlv);
   const directDepositAccess =
-    marketOrGlv && !isGlv ? getDirectDepositAccess({ chainId, market: marketOrGlv, whitelistsResult }) : undefined;
+    marketOrGlv && getDirectDepositAccess({ chainId, glvOrMarket: marketOrGlv, whitelistsResult });
   const isUsdgGlv = chainId === ARBITRUM && marketOrGlvTokenAddress === ARBITRUM_USDG_GLV_ADDRESS;
   const isWhitelistOnly = directDepositAccess === "denied";
 
@@ -192,7 +192,7 @@ export function GmListItem({
                 </span>
                 {showRecentlyListedBadge && <RecentlyListedBadge />}
                 {isUsdgGlv && <LaunchBoostBadge />}
-                {isWhitelistOnly && <WhitelistOnlyBadge isSpotOnly={marketOrGlv.isSpotOnly} />}
+                {isWhitelistOnly && <WhitelistOnlyBadge isGlv={isGlv} isSpotOnly={marketOrGlv.isSpotOnly} />}
 
                 <div className="inline-block">
                   <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
@@ -330,7 +330,9 @@ export function GmListItem({
               </span>
 
               {isUsdgGlv && <LaunchBoostBadge className="ml-6" />}
-              {isWhitelistOnly && <WhitelistOnlyBadge className="ml-6" isSpotOnly={marketOrGlv?.isSpotOnly} />}
+              {isWhitelistOnly && (
+                <WhitelistOnlyBadge className="ml-6" isGlv={isGlv} isSpotOnly={marketOrGlv?.isSpotOnly} />
+              )}
 
               <div className="inline-block">
                 <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
