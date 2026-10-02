@@ -77,9 +77,6 @@ export type SolanaMarketItem = {
 
 const EMPTY_ITEMS: SolanaMarketItem[] = [];
 
-/// mock stock symbols for category, also used by the chart to filter non-trading days
-export const SOLANA_MOCK_STOCK_SYMBOLS = ["MSFT", "MSTR", "NVDA", "META", "SPCX", "AAPL", "AMZN", "GOOGL"];
-
 export type SolanaIndexTokensResponse = {
   type: "indexTokens";
   payload: {
@@ -102,7 +99,7 @@ export type SolanaIndexTokensResponse = {
 export function convertSolanaIndexTokensToMarketItems(response: SolanaIndexTokensResponse) {
   const toBigInt = (value: string | null | undefined) => (value == null ? null : BigInt(value));
   /// some mock datas for category
-  const mockTradFiStocks = SOLANA_MOCK_STOCK_SYMBOLS;
+  const mockTradFiStocks = ["MSFT", "MSTR", "NVDA", "META", "SPCX", "AAPL", "AMZN", "GOOGL"];
   const mockTradFiIndices = ["QQQ", "SPY"];
   const mockTradFiCommodities = ["WTI"];
   const tradFiFx = ["AUD", "EUR", "GBP", "NZD", "USDCAD", "USDCHF", "USDJPY", "USDMXN"];

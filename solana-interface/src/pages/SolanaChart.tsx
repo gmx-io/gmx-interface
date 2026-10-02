@@ -15,7 +15,7 @@ import {
   disabledFeaturesOnMobile,
 } from "components/TVChartContainer/constants";
 
-import { SOLANA_MOCK_STOCK_SYMBOLS } from "../components/ChartTokenSelector/ChartTokenSelectorSolana";
+import { getSolanaTokenConfig } from "../config/solanaProgram";
 import { selectSolanaBars, type SolanaChartCandles } from "../lib/chartCandles";
 import { filterStockBarsByTradingDays } from "../lib/marketOpenFilter";
 
@@ -80,6 +80,7 @@ function createDatafeed(
 
 type Props = {
   tokenSymbol: string;
+  indexTokenAddress: string;
   resolution: TradingViewResolution;
   onResolutionChange: (resolution: TradingViewResolution) => void;
   candles: SolanaChartCandles | undefined;
@@ -100,8 +101,8 @@ export function SolanaChart(props: Props) {
   );
 }
 
-function SolanaPriceChart({ tokenSymbol, resolution, onResolutionChange, candles: rawCandles }: Props) {
-  const isStock = SOLANA_MOCK_STOCK_SYMBOLS.includes(tokenSymbol);
+function SolanaPriceChart({ tokenSymbol, indexTokenAddress, resolution, onResolutionChange, candles: rawCandles }: Props) {
+  const isStock = getSolanaTokenConfig(indexTokenAddress)?.type === "stock";
   const candles = useMemo(
     () =>
       rawCandles && isStock

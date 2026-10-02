@@ -172,6 +172,7 @@ export function SyntheticsPage(p: Props) {
         <div className="grid grid-cols-1 items-start gap-12 md:grid-cols-2 lg:grid-cols-4">
           <SolanaChart
             tokenSymbol={solanaTokenSymbol}
+            indexTokenAddress={solanaIndexTokenAddress}
             resolution={solanaChartResolution}
             onResolutionChange={setSolanaChartResolution}
             candles={solanaChartCandles?.tokenSymbol === solanaTokenSymbol ? solanaChartCandles : undefined}
