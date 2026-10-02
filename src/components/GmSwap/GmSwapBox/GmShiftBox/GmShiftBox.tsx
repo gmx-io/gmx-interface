@@ -112,11 +112,11 @@ export function GmShiftBox({
   const toToken = getByKey(depositMarketTokensData, toMarketAddress);
 
   const selectedMarketDirectDepositAccess = selectedMarketInfo
-    ? getDirectDepositAccess({ chainId, market: selectedMarketInfo, whitelistsResult })
+    ? getDirectDepositAccess({ chainId, glvOrMarket: selectedMarketInfo, whitelistsResult })
     : undefined;
   // No target left when every related GM pool is whitelist-only: the selected pool's access stands in, as USDG pools are gated together
   const toMarketDirectDepositAccess = toMarketInfo
-    ? getDirectDepositAccess({ chainId, market: toMarketInfo, whitelistsResult })
+    ? getDirectDepositAccess({ chainId, glvOrMarket: toMarketInfo, whitelistsResult })
     : selectedMarketDirectDepositAccess;
   const shouldShowWhitelistOnlyHint = toMarketDirectDepositAccess === "denied";
 

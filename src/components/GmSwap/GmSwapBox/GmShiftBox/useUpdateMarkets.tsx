@@ -63,7 +63,7 @@ export function useUpdateMarkets({
         toMarketInfo?.shortTokenAddress === selectedMarketInfo?.shortTokenAddress;
       const isToMarketSameAsSelected = toMarketAddress === newSelectedGlvOrMarketAddress;
       const toMarketDirectDepositAccess = toMarketInfo
-        ? getDirectDepositAccess({ chainId, market: toMarketInfo, whitelistsResult })
+        ? getDirectDepositAccess({ chainId, glvOrMarket: toMarketInfo, whitelistsResult })
         : undefined;
       const isToMarketBlocked = getIsDirectDepositBlocked(toMarketDirectDepositAccess);
       const isToMarketValid =

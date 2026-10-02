@@ -787,6 +787,7 @@ export function GmSwapBoxDepositWithdrawal() {
                 shouldShowAvalancheGmxAccountWarning={shouldShowAvalancheGmxAccountWarning}
                 shouldShowBuyUsdgHint={shouldShowBuyUsdgHint}
                 shouldShowWhitelistOnlyHint={shouldShowWhitelistOnlyHint}
+                isGlv={glvInfo !== undefined}
                 isSpotOnlyMarket={marketInfo?.isSpotOnly}
                 isSubmitDisabled={submitState.disabled}
                 gasPaymentTokenWarningContent={

@@ -295,15 +295,16 @@ export const selectPoolsDetailsDirectDepositAccess = createSelector((q) => {
   const { isDeposit } = q(selectPoolsDetailsFlags);
   const glvInfo = q(selectPoolsDetailsGlvInfo);
   const marketInfo = q(selectPoolsDetailsMarketInfo);
+  const glvOrMarket = glvInfo ?? marketInfo;
 
-  if (!isDeposit || glvInfo || !marketInfo) {
+  if (!isDeposit || !glvOrMarket) {
     return undefined;
   }
 
   const chainId = q(selectChainId);
   const whitelistsResult = q(selectAccountWhitelistsResult);
 
-  return getDirectDepositAccess({ chainId, market: marketInfo, whitelistsResult });
+  return getDirectDepositAccess({ chainId, glvOrMarket, whitelistsResult });
 });
 
 export const selectPoolsDetailsIsDirectDepositBlocked = createSelector((q) => {
