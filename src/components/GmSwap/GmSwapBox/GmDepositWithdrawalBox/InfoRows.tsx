@@ -1,8 +1,7 @@
 import { t, Trans } from "@lingui/macro";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 
 import { Operation } from "domain/synthetics/markets/types";
-import { GmSwapFees } from "domain/synthetics/trade";
 
 import { ExpandableRow } from "components/ExpandableRow";
 import { GmFees } from "components/GmSwap/GmFees/GmFees";
@@ -10,6 +9,7 @@ import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import { UsdValueWithSkeleton } from "components/UsdValueWithSkeleton/UsdValueWithSkeleton";
 
+import type { GmLogicalFees } from "./useDepositWithdrawalFees";
 import type { GmNetworkFeeInfo } from "./useGmNetworkFeeDetails";
 
 export function InfoRows({
@@ -17,11 +17,15 @@ export function InfoRows({
   fees,
   networkFee,
   isLoading,
+  afterFeesContent,
+  executionDetails,
 }: {
   isDeposit: boolean;
-  fees: GmSwapFees | undefined;
+  fees: GmLogicalFees | undefined;
   networkFee: GmNetworkFeeInfo | undefined;
   isLoading?: boolean;
+  afterFeesContent?: ReactNode;
+  executionDetails?: ReactNode;
 }) {
   const [isExecutionDetailsOpen, setIsExecutionDetailsOpen] = useState(false);
 
@@ -35,10 +39,14 @@ export function InfoRows({
         operation={isDeposit ? Operation.Deposit : Operation.Withdrawal}
         totalFees={fees?.totalFees}
         swapFee={fees?.swapFee}
+        collateralSwapFee={fees?.collateralSwapFee}
+        transitFee={fees?.transitFee}
         swapPriceImpact={fees?.swapPriceImpact}
         uiFee={fees?.uiFee}
         isLoading={isLoading}
       />
+
+      {afterFeesContent}
 
       <ExpandableRow
         title={t`Execution details`}
@@ -68,6 +76,7 @@ export function InfoRows({
             )
           }
         />
+        {executionDetails}
       </ExpandableRow>
     </div>
   );

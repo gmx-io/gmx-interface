@@ -7,6 +7,7 @@ import { usePoolsDetailsFirstTokenAddress } from "context/PoolsDetailsContext/ho
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData, useUiFeeFactor } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
+  selectAccountWhitelistsResult,
   selectChainId,
   selectGasLimits,
   selectGasPrice,
@@ -21,6 +22,7 @@ import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { Operation } from "domain/synthetics/markets/types";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
+import { getDirectDepositAccess, getIsDirectDepositBlocked } from "domain/synthetics/whitelists/utils";
 import { ERC20Address, NativeTokenSupportedAddress } from "domain/tokens";
 import { getIsEnteredAmount } from "lib/getIsEnteredAmount";
 import { formatAmountFree, formatBalanceAmount } from "lib/numbers";
@@ -74,6 +76,7 @@ export function GmShiftBox({
   const glvAndMarketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const tokensData = useTokensData();
   const srcChainId = useSelector(selectSrcChainId);
+  const whitelistsResult = useSelector(selectAccountWhitelistsResult);
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: true });
   const { marketsInfo: sortedMarketsInfoByIndexToken } = useSortedPoolsWithIndexToken(
     glvAndMarketsInfoData,
@@ -110,6 +113,15 @@ export function GmShiftBox({
   const toIndexName = toMarketInfo ? getMarketIndexName(toMarketInfo) : "...";
   const toToken = getByKey(depositMarketTokensData, toMarketAddress);
 
+  const selectedMarketDirectDepositAccess = selectedMarketInfo
+    ? getDirectDepositAccess({ chainId, glvOrMarket: selectedMarketInfo, whitelistsResult })
+    : undefined;
+  // No target left when every related GM pool is whitelist-only: the selected pool's access stands in, as USDG pools are gated together
+  const toMarketDirectDepositAccess = toMarketInfo
+    ? getDirectDepositAccess({ chainId, glvOrMarket: toMarketInfo, whitelistsResult })
+    : selectedMarketDirectDepositAccess;
+  const shouldShowWhitelistOnlyHint = toMarketDirectDepositAccess === "denied";
+
   const amounts = useShiftAmounts({
     selectedMarketInfo,
     selectedToken,
@@ -126,7 +138,8 @@ export function GmShiftBox({
   const { shouldShowWarning, shouldShowWarningForExecutionFee, shouldShowWarningForPosition } = useGmWarningState({
     logicalFees: fees,
     isOperationDisabled:
-      toMarketInfo !== undefined && isShiftIntoDisabledMarket(chainId, toMarketInfo.marketTokenAddress),
+      getIsDirectDepositBlocked(toMarketDirectDepositAccess) ||
+      (toMarketInfo !== undefined && isShiftIntoDisabledMarket(chainId, toMarketInfo.marketTokenAddress)),
   });
 
   const hasBalance = selectedToken?.balance !== undefined && selectedToken.balance > 0n;
@@ -154,6 +167,7 @@ export function GmShiftBox({
     executionFee,
     routerAddress,
     glvOrMarketInfoData: glvAndMarketsInfoData,
+    toMarketDirectDepositAccess,
   });
 
   useUpdateMarkets({
@@ -239,8 +253,7 @@ export function GmShiftBox({
   const getShiftReceiveMarketState = useCallback((glvOrMarketInfo: GlvOrMarketInfo): MarketState => {
     if (isGlvInfo(glvOrMarketInfo)) {
       return {
-        warning:
-          "Shifting From GM to GLV is similar to buying GLV with a GM token. You will be redirected to the buy GLV tab when selected.",
+        warning: t`Shifting from GM to GLV is similar to buying GLV with a GM token. You will be redirected to the buy GLV tab when selected.`,
       };
     }
 
@@ -320,6 +333,8 @@ export function GmShiftBox({
               shouldShowWarning={shouldShowWarning}
               shouldShowWarningForPosition={shouldShowWarningForPosition}
               shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
+              shouldShowWhitelistOnlyHint={shouldShowWhitelistOnlyHint}
+              isSpotOnlyMarket={toMarketInfo?.isSpotOnly}
             />
           </div>
 

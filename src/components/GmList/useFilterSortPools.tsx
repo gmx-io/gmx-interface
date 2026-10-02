@@ -26,6 +26,7 @@ export function useFilterSortPools({
   marketsTokensApyData,
   marketsTokensIncentiveAprData,
   marketsTokensLidoAprData,
+  marketsTokensLaunchBoostAprData,
   searchText,
   topLevelTab,
   subCategoryTab,
@@ -33,6 +34,7 @@ export function useFilterSortPools({
   favoriteTokens,
   performance,
   multichainMarketTokensBalances,
+  pinnedAddresses,
 }: {
   performance: PerformanceData | undefined;
   marketsInfo: MarketsInfoData | undefined;
@@ -42,12 +44,14 @@ export function useFilterSortPools({
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
+  marketsTokensLaunchBoostAprData: MarketTokensAPRData | undefined;
   searchText: string;
   topLevelTab: TopLevelTab;
   subCategoryTab: SubCategoryTab;
   recentlyListedAddresses?: Set<string>;
   favoriteTokens: string[];
   multichainMarketTokensBalances: MultichainMarketTokensBalances | undefined;
+  pinnedAddresses: string[];
 }) {
   const sortedTokens = useMemo(() => {
     if (!marketsInfo || !marketTokensData) {
@@ -87,7 +91,12 @@ export function useFilterSortPools({
     }
 
     if (orderBy === "unspecified" || direction === "unspecified") {
-      return sortGmTokensDefault({ marketsInfoData: marketsInfo, marketTokensData, multichainMarketTokensBalances });
+      return sortGmTokensDefault({
+        marketsInfoData: marketsInfo,
+        marketTokensData,
+        multichainMarketTokensBalances,
+        pinnedAddresses,
+      });
     }
 
     return sortGmTokensByField({
@@ -98,6 +107,7 @@ export function useFilterSortPools({
       marketsTokensApyData,
       marketsTokensIncentiveAprData,
       marketsTokensLidoAprData,
+      marketsTokensLaunchBoostAprData,
       multichainMarketTokensBalances,
       performance,
     });
@@ -110,8 +120,10 @@ export function useFilterSortPools({
     marketsTokensApyData,
     marketsTokensIncentiveAprData,
     marketsTokensLidoAprData,
+    marketsTokensLaunchBoostAprData,
     multichainMarketTokensBalances,
     performance,
+    pinnedAddresses,
   ]);
 
   const filteredTokens = useMemo(() => {

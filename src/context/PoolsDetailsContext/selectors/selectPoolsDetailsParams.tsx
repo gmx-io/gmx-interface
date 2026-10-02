@@ -45,6 +45,7 @@ import {
   RawCreateGlvWithdrawalParams,
   RawCreateWithdrawalParams,
 } from "domain/synthetics/markets/types";
+import type { ERC20Address } from "domain/tokens";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { getTokenAddressByMarket } from "sdk/configs/markets";
@@ -93,6 +94,9 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
   const marketOrGlvTokenAmount = q(selectPoolsDetailsMarketOrGlvTokenAmount);
 
   const amounts = q(selectDepositWithdrawalAmounts);
+  const depositSwapPathStats = isDeposit ? amounts?.shortTokenSwapPathStats : undefined;
+  const depositSwapTokenInAddress = depositSwapPathStats?.tokenInAddress as ERC20Address | undefined;
+  const depositSwapPath = depositSwapPathStats?.swapPath ?? [];
   const withdrawalReceiveTokenAddress = q(selectPoolsDetailsWithdrawalReceiveTokenAddress);
 
   /**
@@ -158,6 +162,9 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
       dataList = [GMX_DATA_ACTION_HASH, ...bytes32array];
     }
 
+    const initialShortToken =
+      depositSwapTokenInAddress ?? getTokenAddressByMarket(chainId, marketOrGlvTokenAddress, "short");
+
     return {
       addresses: {
         receiver: account,
@@ -165,9 +172,9 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
         uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? zeroAddress,
         market: marketOrGlvTokenAddress,
         initialLongToken: getTokenAddressByMarket(chainId, marketOrGlvTokenAddress, "long"),
-        initialShortToken: getTokenAddressByMarket(chainId, marketOrGlvTokenAddress, "short"),
+        initialShortToken,
         longTokenSwapPath: [],
-        shortTokenSwapPath: [],
+        shortTokenSwapPath: depositSwapPath,
       },
       minMarketTokens,
       shouldUnwrapNativeToken,
@@ -219,6 +226,9 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
       dataList = [GMX_DATA_ACTION_HASH, ...bytes32array];
     }
 
+    const marketShortToken = getTokenAddressByMarket(chainId, selectedMarketForGlv, "short");
+    const initialShortToken = isMarketTokenDeposit ? zeroAddress : depositSwapTokenInAddress ?? marketShortToken;
+
     return {
       addresses: {
         glv: glvInfo!.glvTokenAddress,
@@ -229,11 +239,9 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
         initialLongToken: isMarketTokenDeposit
           ? zeroAddress
           : getTokenAddressByMarket(chainId, selectedMarketForGlv, "long"),
-        initialShortToken: isMarketTokenDeposit
-          ? zeroAddress
-          : getTokenAddressByMarket(chainId, selectedMarketForGlv, "short"),
+        initialShortToken,
         longTokenSwapPath: [],
-        shortTokenSwapPath: [],
+        shortTokenSwapPath: depositSwapPath,
       },
       minGlvTokens,
       callbackGasLimit: 0n,
