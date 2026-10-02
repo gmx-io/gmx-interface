@@ -198,3 +198,21 @@ export const selectPoolsDetailsCollateralSwapTotalFeesDeltaUsd = createSelector(
 
   return swapPathStats.totalFeesDeltaUsd;
 });
+
+export const selectPoolsDetailsDepositCollateralSwapAmountOut = createSelector((q): bigint | undefined => {
+  const { isDeposit } = q(selectPoolsDetailsFlags);
+  const collateralSwapTokens = q(selectPoolsDetailsCollateralSwapTokens);
+  const isTransitRoute = q(selectPoolsDetailsIsTransitRoute);
+
+  if (!isDeposit || !collateralSwapTokens) {
+    return undefined;
+  }
+
+  if (isTransitRoute) {
+    return q(selectPoolsDetailsTransitAmountOut);
+  }
+
+  const amounts = q(selectDepositWithdrawalAmounts) as DepositAmounts | undefined;
+
+  return amounts?.shortTokenSwapPathStats?.amountOut;
+});

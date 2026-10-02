@@ -8,7 +8,7 @@ import {
   selectPoolsDetailsGlvInfo,
   selectPoolsDetailsIsFirstBuy,
   selectPoolsDetailsIsTransitRoute,
-  selectPoolsDetailsGlvOrMarketInfo,
+  selectPoolsDetailsGlvOrMarketAddress,
   selectPoolsDetailsLongTokenAddress,
   selectPoolsDetailsMarketInfo,
   selectPoolsDetailsMarketTokenData,
@@ -80,7 +80,7 @@ export const useWithdrawalTransactions = ({
   const { addOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
   const blockTimestampData = useSelector(selectBlockTimestampData);
   const isTransitRoute = useSelector(selectPoolsDetailsIsTransitRoute);
-  const glvOrMarketInfo = useSelector(selectPoolsDetailsGlvOrMarketInfo);
+  const glvOrMarketAddress = useSelector(selectPoolsDetailsGlvOrMarketAddress);
   const globalExpressParams = useSelector(selectExpressGlobalParams);
   const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
   const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
@@ -101,18 +101,18 @@ export const useWithdrawalTransactions = ({
 
   const recordTransitWithdrawal = useCallback(
     (txnHash: string | undefined) => {
-      if (!isTransitRoute || !txnHash || !glvOrMarketInfo || !account) return;
+      if (!isTransitRoute || !txnHash || !glvOrMarketAddress || !account) return;
 
       startTransitRouteProgress({
         chainId,
         account,
         direction: "usdgToUsdc",
-        glvOrMarketInfo,
+        glvOrMarketAddress,
         withdrawalTxnHash: txnHash,
         conversion: undefined,
       });
     },
-    [account, chainId, glvOrMarketInfo, isTransitRoute, startTransitRouteProgress]
+    [account, chainId, glvOrMarketAddress, isTransitRoute, startTransitRouteProgress]
   );
 
   const selectedMarketInfoForGlv = useSelector(selectPoolsDetailsSelectedMarketInfoForGlv);

@@ -84,5 +84,6 @@ export const BALANCER_PROGRAM_URL = "https://gmxio.substack.com/p/introducing-th
 
 export const GMX_PARTNER_TELEGRAM_URL = "https://t.me/GMXPartners";
 
+export const USDG_LAUNCH_BOOST_DOCS_URL = "https://docs.gmx.io/docs/usdg-launch-boost";
+
 export const PAXOS_SIGNUP_URL = "https://dashboard.paxos.com/signup";
-export const PAXOS_CONVERT_DOCS_URL = "https://docs.paxos.com/guides/dashboard/convert";

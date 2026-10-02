@@ -5,7 +5,7 @@ import { ERC20Address } from "domain/tokens";
 import { applyFactor } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 import { SwapPricingType } from "sdk/utils/orders/types";
-import { FindSwapPath, WithdrawalAmounts } from "sdk/utils/trade/types";
+import { FindSwapPath, SwapPathStats, WithdrawalAmounts } from "sdk/utils/trade/types";
 
 export function getWithdrawalAmounts(p: {
   marketInfo: MarketInfo;
@@ -153,8 +153,11 @@ export function getWithdrawalAmounts(p: {
         shortToken.prices.maxPrice
       )!;
     } else if (isSameCollaterals && wrappedReceiveTokenAddress) {
-      const longToReceiveSwapPathStats = findSwapPath!(values.longTokenUsd);
-      const shortToReceiveSwapPathStats = findSwapPath!(values.shortTokenUsd);
+      const [longToReceiveSwapPathStats, shortToReceiveSwapPathStats] = findSequentialSwapPaths(
+        findSwapPath!,
+        values.longTokenUsd,
+        values.shortTokenUsd
+      );
       if (!longToReceiveSwapPathStats || !shortToReceiveSwapPathStats) {
         return values;
       }
@@ -241,8 +244,11 @@ export function getWithdrawalAmounts(p: {
         values.shortTokenUsd = convertToUsd(values.shortTokenAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
 
         if (isReceiveTokenSwapped) {
-          const longToReceiveSwapPathStats = findSwapPath!(values.longTokenUsd);
-          const shortToReceiveSwapPathStats = findSwapPath!(values.shortTokenUsd);
+          const [longToReceiveSwapPathStats, shortToReceiveSwapPathStats] = findSequentialSwapPaths(
+            findSwapPath!,
+            values.longTokenUsd,
+            values.shortTokenUsd
+          );
           if (longToReceiveSwapPathStats && shortToReceiveSwapPathStats) {
             values.longTokenSwapPathStats = longToReceiveSwapPathStats;
             values.shortTokenSwapPathStats = shortToReceiveSwapPathStats;
@@ -303,4 +309,32 @@ export function getWithdrawalAmounts(p: {
   }
 
   return values;
+}
+
+// TODO PRO-4414: stopgap. Quotes the second swap as (both swaps together) minus (first swap), so only the totals are
+// split and the steps still describe the combined swap. The proper fix is to quote it against the pool state left by
+// the first.
+function findSequentialSwapPaths(
+  findSwapPath: FindSwapPath,
+  firstUsdIn: bigint,
+  secondUsdIn: bigint
+): [SwapPathStats | undefined, SwapPathStats | undefined] {
+  const firstSwapPathStats = findSwapPath(firstUsdIn);
+  const combinedSwapPathStats = findSwapPath(firstUsdIn + secondUsdIn);
+
+  if (!firstSwapPathStats || !combinedSwapPathStats) {
+    return [firstSwapPathStats, undefined];
+  }
+
+  const secondSwapPathStats: SwapPathStats = {
+    ...combinedSwapPathStats,
+    totalSwapPriceImpactDeltaUsd:
+      combinedSwapPathStats.totalSwapPriceImpactDeltaUsd - firstSwapPathStats.totalSwapPriceImpactDeltaUsd,
+    totalSwapFeeUsd: combinedSwapPathStats.totalSwapFeeUsd - firstSwapPathStats.totalSwapFeeUsd,
+    totalFeesDeltaUsd: combinedSwapPathStats.totalFeesDeltaUsd - firstSwapPathStats.totalFeesDeltaUsd,
+    usdOut: combinedSwapPathStats.usdOut - firstSwapPathStats.usdOut,
+    amountOut: combinedSwapPathStats.amountOut - firstSwapPathStats.amountOut,
+  };
+
+  return [firstSwapPathStats, secondSwapPathStats];
 }

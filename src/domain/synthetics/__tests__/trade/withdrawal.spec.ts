@@ -123,6 +123,32 @@ describe("getWithdrawalAmounts with a receive token outside a same-collateral po
     expect(amounts.marketTokenAmount).toBe(expandDecimals(10, 18));
   });
 
+  it.each(["byMarketToken", "byLongCollateral"] as const)(
+    "quotes the second half after the first moves the pool, %s",
+    (strategy) => {
+      const findSwapPathWithImpact: FindSwapPath = (usdIn) => {
+        const priceImpactUsd = (usdIn * usdIn) / (100n * USD);
+        const usdOut = usdIn - priceImpactUsd;
+
+        return {
+          swapPath: ["0xpool"],
+          swapSteps: [],
+          usdOut,
+          amountOut: usdOut / expandDecimals(1, 30 - receiveToken.decimals),
+          totalSwapPriceImpactDeltaUsd: -priceImpactUsd,
+          totalSwapFeeUsd: 0n,
+          totalFeesDeltaUsd: -priceImpactUsd,
+        } as unknown as SwapPathStats;
+      };
+
+      const amounts = getAmounts({ findSwapPath: findSwapPathWithImpact, strategy });
+
+      expect(amounts.longTokenSwapPathStats?.usdOut).toBe((475n * USD) / 100n);
+      expect(amounts.shortTokenSwapPathStats?.usdOut).toBe((425n * USD) / 100n);
+      expect(amounts.shortTokenSwapPathStats?.totalSwapPriceImpactDeltaUsd).toBe((-75n * USD) / 100n);
+    }
+  );
+
   it("leaves the outputs unswapped without a route", () => {
     for (const strategy of ["byMarketToken", "byLongCollateral"] as const) {
       const amounts = getAmounts({ findSwapPath: () => undefined, strategy });

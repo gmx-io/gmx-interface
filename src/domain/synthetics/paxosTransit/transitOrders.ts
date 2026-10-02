@@ -29,7 +29,7 @@ export async function getSubmittedTransitOrderId(p: {
   txnHash: string;
   stationAddress: string;
 }): Promise<string | undefined> {
-  const receipt = await getPublicClientWithRpc(p.chainId).getTransactionReceipt({ hash: p.txnHash });
+  const receipt = await getPublicClientWithRpc(p.chainId).waitForTransactionReceipt({ hash: p.txnHash });
   const orderSubmittedLogs = parseEventLogs({
     abi: abis.TransitStation,
     eventName: "OrderSubmitted",

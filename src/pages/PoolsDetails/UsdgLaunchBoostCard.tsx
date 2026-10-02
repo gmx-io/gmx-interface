@@ -1,47 +1,28 @@
 import { Trans } from "@lingui/macro";
-import cx from "classnames";
-import type { SVGProps } from "react";
 
+import { USDG_LAUNCH_BOOST_DOCS_URL } from "config/links";
 import { UsdgLaunchBoost, getIsUsdgLaunchBoostIncluded } from "domain/synthetics/usdgLaunchBoost/utils";
 
-import {
-  UsdgLaunchBoostProgramNote,
-  UsdgLaunchBoostStatusNote,
-  formatUsdgLaunchBoostValue,
-} from "components/AprInfo/UsdgLaunchBoostAprInfo";
+import { formatUsdgLaunchBoostValue } from "components/AprInfo/UsdgLaunchBoostAprInfo";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import SparkleIcon from "img/sparkle.svg?react";
 
-function GreySparkleIcon({ className, ...props }: SVGProps<SVGSVGElement>) {
-  return <SparkleIcon className={cx(className, "opacity-50 grayscale")} {...props} />;
-}
-
 export function UsdgLaunchBoostCard({ launchBoost, className }: { launchBoost: UsdgLaunchBoost; className?: string }) {
-  const tokenSymbol = launchBoost.isGlv ? "GLV" : "GM";
-  const isBoostIncluded = getIsUsdgLaunchBoostIncluded(launchBoost);
-  const icon = isBoostIncluded ? SparkleIcon : GreySparkleIcon;
+  if (!getIsUsdgLaunchBoostIncluded(launchBoost)) {
+    return null;
+  }
 
+  const tokenSymbol = launchBoost.isGlv ? "GLV" : "GM";
   const boostValue = formatUsdgLaunchBoostValue(launchBoost);
-  const value = isBoostIncluded ? <Trans>{boostValue} APR</Trans> : boostValue;
 
   return (
-    <ColorfulBanner className={className} color="blue" icon={icon}>
-      <div className="flex justify-between gap-8 font-medium">
-        <Trans>Launch boost</Trans>
-        <span className="numbers">{value}</span>
-      </div>
-      <div>
-        <UsdgLaunchBoostStatusNote launchBoost={launchBoost} />{" "}
-        {isBoostIncluded && (
-          <Trans>
-            Paid into the {tokenSymbol} price every 4 hours. Nothing to claim. Already included in the APY above.
-          </Trans>
-        )}
-      </div>
-      <div>
-        <UsdgLaunchBoostProgramNote />
-      </div>
+    <ColorfulBanner className={className} color="blue" icon={SparkleIcon}>
+      <Trans>
+        Launch boost · {boostValue} APR · Paid into {tokenSymbol} price every 4h, nothing to claim.{" "}
+        <ExternalLink href={USDG_LAUNCH_BOOST_DOCS_URL}>Read more</ExternalLink>
+      </Trans>
     </ColorfulBanner>
   );
 }

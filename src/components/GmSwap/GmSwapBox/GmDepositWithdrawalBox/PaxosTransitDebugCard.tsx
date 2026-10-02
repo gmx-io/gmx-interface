@@ -1,7 +1,7 @@
 import { USD_DECIMALS } from "config/factors";
 import { getPaxosTransitConfig } from "config/paxosTransit";
 import {
-  selectPoolsDetailsGlvOrMarketInfo,
+  selectPoolsDetailsGlvOrMarketAddress,
   selectPoolsDetailsUsdcUsdgSwapLiquidity,
 } from "context/PoolsDetailsContext/selectors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
@@ -48,7 +48,7 @@ export function PaxosTransitDebugCard({
 }) {
   const poolLiquidity = useSelector(selectPoolsDetailsUsdcUsdgSwapLiquidity);
   const chainId = useSelector(selectChainId);
-  const glvOrMarketInfo = useSelector(selectPoolsDetailsGlvOrMarketInfo);
+  const glvOrMarketAddress = useSelector(selectPoolsDetailsGlvOrMarketAddress);
   const debugSwapMarketsConfig = useSelector(selectDebugSwapMarketsConfig);
   const setDebugSwapMarketsConfig = useSelector(selectSetDebugSwapMarketsConfig);
   const { account } = useWallet();
@@ -70,7 +70,7 @@ export function PaxosTransitDebugCard({
   };
 
   const showMockTransitToast = (direction: TransitRouteDirection, isConverting: boolean) => {
-    if (!paxosTransitConfig || !glvOrMarketInfo || !account) return;
+    if (!paxosTransitConfig || !glvOrMarketAddress || !account) return;
 
     const { usdcAddress, usdgAddress } = paxosTransitConfig;
     const [offerAsset, wantAsset] =
@@ -93,7 +93,7 @@ export function PaxosTransitDebugCard({
       chainId,
       account,
       direction,
-      glvOrMarketInfo,
+      glvOrMarketAddress,
       withdrawalTxnHash: undefined,
       conversion: orderId ? { orderId, txnHash: undefined, offerAmount, isMocked: true } : undefined,
     });
