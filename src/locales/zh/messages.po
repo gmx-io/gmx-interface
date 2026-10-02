@@ -259,7 +259,6 @@ msgstr "RPC 监控"
 
 #: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 #: src/components/GmList/UsdgPoolBadges.tsx
-#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
 msgid "Launch boost"
 msgstr "上线加成"
 
@@ -2309,7 +2308,6 @@ msgstr "去中心化交易协议"
 msgid "Symbiosis"
 msgstr "Symbiosis"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "How it works"
 msgstr ""
@@ -3605,10 +3603,6 @@ msgstr "使用 GMX 高级 RPC 实现更快执行"
 msgid "No assets in your GMX Account"
 msgstr "您的 GMX Account 中没有资产"
 
-#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
-msgid "{boostValue} APR"
-msgstr "{boostValue} APR"
-
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Order type"
 msgstr "订单类型"
@@ -3958,6 +3952,10 @@ msgstr "继续购买"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
 msgid "Zero-fee capacity is used up for this amount. Convert now at the standard fee, convert a smaller amount, or wait for the next zero-fee window."
 msgstr "此金额的零费用额度已用尽。可按标准费用立即转换、转换更小的金额，或等待下一个零费用窗口。"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Direct with Paxos is unavailable. Conversion switched to Auto"
+msgstr "通过 Paxos 直接转换不可用。转换方式已切换为自动"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "of limit"
@@ -5655,6 +5653,10 @@ msgstr "结算 {totalStr}"
 msgid "Sellable cap for pool GM: {0} [{1}] reached, as tokens are reserved by traders. Choose a different pool, reduce the sell size, or split the withdrawal across pools."
 msgstr ""
 
+#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
+msgid "Launch boost · {boostValue} APR · Paid into {tokenSymbol} price every 4h, nothing to claim. <0>Read more</0>"
+msgstr "上线加成 · {boostValue} APR · 每 4 小时计入 {tokenSymbol} 价格，无需申领。<0>阅读更多</0>"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive impact factor"
 msgstr "正向影响因子"
@@ -6906,10 +6908,6 @@ msgstr "在图表上显示买/卖图标"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
 msgstr "此交换需要外部路由。请用 {0} 支付 Gas 以启用。"
-
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
-msgid "Apply with Paxos"
-msgstr "向 Paxos 申请"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Portuguese)"
@@ -9150,10 +9148,6 @@ msgstr "已质押 GMX"
 msgid "Real-time referral dashboard"
 msgstr "实时推荐仪表盘"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
-msgid "For businesses: mint USDG with Paxos"
-msgstr "企业专享：通过 Paxos 铸造 USDG"
-
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "Chains"
 msgstr "链"
@@ -9409,6 +9403,10 @@ msgstr ""
 #: src/pages/RpcDebug/parts.tsx
 msgid "{0}ms"
 msgstr "{0}ms"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
+msgid "Business? Mint USDG 1:1 with Paxos"
+msgstr "企业用户？通过 Paxos 1:1 铸造 USDG"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
@@ -11770,10 +11768,6 @@ msgstr "LIQUIDITY LONG"
 msgid "Is this custodial? Do I send you my funds?"
 msgstr "这是托管服务吗？我需要将资金发送给你们吗？"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
-msgid "Paxos, the issuer of USDG, mints it 1:1 from USD with no minting fee. Requires business verification with Paxos."
-msgstr "USDG 的发行方 Paxos 以 1:1 比例将 USD 铸造为 USDG，不收取铸造费。需通过 Paxos 的企业认证。"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL short"
 msgstr "做空 PnL"
@@ -11968,10 +11962,6 @@ msgstr "在 Arbitrum 上通过 <0>Camelot</0> 买入 APE"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Depositing..."
 msgstr "正在存入…"
-
-#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
-msgid "Paid into the {tokenSymbol} price every 4 hours. Nothing to claim. Already included in the APY above."
-msgstr "每 4 小时计入 {tokenSymbol} 价格。无需申领。已计入上方 APY。"
 
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."

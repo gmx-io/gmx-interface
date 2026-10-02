@@ -259,7 +259,6 @@ msgstr ""
 
 #: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 #: src/components/GmList/UsdgPoolBadges.tsx
-#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
 msgid "Launch boost"
 msgstr ""
 
@@ -2309,7 +2308,6 @@ msgstr ""
 msgid "Symbiosis"
 msgstr ""
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "How it works"
 msgstr ""
@@ -3605,10 +3603,6 @@ msgstr ""
 msgid "No assets in your GMX Account"
 msgstr ""
 
-#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
-msgid "{boostValue} APR"
-msgstr ""
-
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Order type"
 msgstr ""
@@ -3957,6 +3951,10 @@ msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
 msgid "Zero-fee capacity is used up for this amount. Convert now at the standard fee, convert a smaller amount, or wait for the next zero-fee window."
+msgstr ""
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Direct with Paxos is unavailable. Conversion switched to Auto"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
@@ -5655,6 +5653,10 @@ msgstr ""
 msgid "Sellable cap for pool GM: {0} [{1}] reached, as tokens are reserved by traders. Choose a different pool, reduce the sell size, or split the withdrawal across pools."
 msgstr ""
 
+#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
+msgid "Launch boost · {boostValue} APR · Paid into {tokenSymbol} price every 4h, nothing to claim. <0>Read more</0>"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive impact factor"
 msgstr ""
@@ -6905,10 +6907,6 @@ msgstr ""
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
-msgstr ""
-
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
-msgid "Apply with Paxos"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -9150,10 +9148,6 @@ msgstr ""
 msgid "Real-time referral dashboard"
 msgstr ""
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
-msgid "For businesses: mint USDG with Paxos"
-msgstr ""
-
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "Chains"
 msgstr ""
@@ -9408,6 +9402,10 @@ msgstr ""
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "{0}ms"
+msgstr ""
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
+msgid "Business? Mint USDG 1:1 with Paxos"
 msgstr ""
 
 #: src/components/BridgeModal/BridgeInModal.tsx
@@ -11770,10 +11768,6 @@ msgstr ""
 msgid "Is this custodial? Do I send you my funds?"
 msgstr ""
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
-msgid "Paxos, the issuer of USDG, mints it 1:1 from USD with no minting fee. Requires business verification with Paxos."
-msgstr ""
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL short"
 msgstr ""
@@ -11967,10 +11961,6 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Depositing..."
-msgstr ""
-
-#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
-msgid "Paid into the {tokenSymbol} price every 4 hours. Nothing to claim. Already included in the APY above."
 msgstr ""
 
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts

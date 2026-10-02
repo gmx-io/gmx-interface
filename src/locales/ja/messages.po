@@ -259,7 +259,6 @@ msgstr "RPCモニタリング"
 
 #: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 #: src/components/GmList/UsdgPoolBadges.tsx
-#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
 msgid "Launch boost"
 msgstr "ローンチブースト"
 
@@ -2309,7 +2308,6 @@ msgstr "分散型取引プロトコル"
 msgid "Symbiosis"
 msgstr "Symbiosis"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "How it works"
 msgstr ""
@@ -3605,10 +3603,6 @@ msgstr "GMXプレミアムRPCで高速実行"
 msgid "No assets in your GMX Account"
 msgstr "GMX Accountに資産がありません"
 
-#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
-msgid "{boostValue} APR"
-msgstr "{boostValue} APR"
-
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Order type"
 msgstr "注文タイプ"
@@ -3958,6 +3952,10 @@ msgstr "購入に進む"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
 msgid "Zero-fee capacity is used up for this amount. Convert now at the standard fee, convert a smaller amount, or wait for the next zero-fee window."
 msgstr "この金額では手数料無料枠を使い切っています。標準手数料で今すぐ変換するか、より少ない金額を変換するか、次の手数料無料枠をお待ちください。"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Direct with Paxos is unavailable. Conversion switched to Auto"
+msgstr "Paxosで直接変換は利用できません。変換を自動に切り替えました"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "of limit"
@@ -5655,6 +5653,10 @@ msgstr "{totalStr}を決済する"
 msgid "Sellable cap for pool GM: {0} [{1}] reached, as tokens are reserved by traders. Choose a different pool, reduce the sell size, or split the withdrawal across pools."
 msgstr ""
 
+#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
+msgid "Launch boost · {boostValue} APR · Paid into {tokenSymbol} price every 4h, nothing to claim. <0>Read more</0>"
+msgstr "ローンチブースト · {boostValue} APR · 4時間ごとに{tokenSymbol}の価格に反映され、請求は不要です。<0>詳細について読む</0>"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive impact factor"
 msgstr "正の影響係数"
@@ -6906,10 +6908,6 @@ msgstr "チャートに売買アイコンを表示"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
 msgstr "このスワップには外部ルーティングが必要です。有効にするには {0} でガスを支払ってください。"
-
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
-msgid "Apply with Paxos"
-msgstr "Paxosで申し込む"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Portuguese)"
@@ -9150,10 +9148,6 @@ msgstr "ステーキング中のGMX"
 msgid "Real-time referral dashboard"
 msgstr "リアルタイム紹介ダッシュボード"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
-msgid "For businesses: mint USDG with Paxos"
-msgstr "法人向け：PaxosでUSDGをミント"
-
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "Chains"
 msgstr "チェーン"
@@ -9409,6 +9403,10 @@ msgstr ""
 #: src/pages/RpcDebug/parts.tsx
 msgid "{0}ms"
 msgstr "{0}ms"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
+msgid "Business? Mint USDG 1:1 with Paxos"
+msgstr "法人向け：PaxosでUSDGを1:1でミント"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
@@ -11770,10 +11768,6 @@ msgstr "LIQUIDITY LONG"
 msgid "Is this custodial? Do I send you my funds?"
 msgstr "これはカストディアル型ですか？資金をお預けする必要がありますか？"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
-msgid "Paxos, the issuer of USDG, mints it 1:1 from USD with no minting fee. Requires business verification with Paxos."
-msgstr "USDGの発行体であるPaxosが、USDから1:1でUSDGをミントします。ミント手数料はかかりません。Paxosでの法人認証が必要です。"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL short"
 msgstr "PnLショート"
@@ -11968,10 +11962,6 @@ msgstr "Arbitrum で APE を <0>Camelot</0> で購入"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Depositing..."
 msgstr "入金中…"
-
-#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
-msgid "Paid into the {tokenSymbol} price every 4 hours. Nothing to claim. Already included in the APY above."
-msgstr "4時間ごとに{tokenSymbol}の価格に反映されます。請求は不要です。上記のAPYにすでに含まれています。"
 
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."

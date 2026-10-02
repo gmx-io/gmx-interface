@@ -259,7 +259,6 @@ msgstr "Monitorización RPC"
 
 #: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 #: src/components/GmList/UsdgPoolBadges.tsx
-#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
 msgid "Launch boost"
 msgstr "Impulso de lanzamiento"
 
@@ -2309,7 +2308,6 @@ msgstr "Protocolo de negociación descentralizado"
 msgid "Symbiosis"
 msgstr "Symbiosis"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "How it works"
 msgstr ""
@@ -3605,10 +3603,6 @@ msgstr "Ejecución más rápida con RPC premium de GMX"
 msgid "No assets in your GMX Account"
 msgstr "No hay activos en tu GMX Account"
 
-#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
-msgid "{boostValue} APR"
-msgstr "{boostValue} APR"
-
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Order type"
 msgstr "Tipo de orden"
@@ -3958,6 +3952,10 @@ msgstr "Continuar a la compra"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
 msgid "Zero-fee capacity is used up for this amount. Convert now at the standard fee, convert a smaller amount, or wait for the next zero-fee window."
 msgstr "La capacidad sin comisión se ha agotado para este importe. Convierta ahora con la comisión estándar, convierta un importe menor o espere a la próxima ventana sin comisión."
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Direct with Paxos is unavailable. Conversion switched to Auto"
+msgstr "Directo con Paxos no está disponible. Conversión cambiada a Auto"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "of limit"
@@ -5655,6 +5653,10 @@ msgstr "Liquidar {totalStr}"
 msgid "Sellable cap for pool GM: {0} [{1}] reached, as tokens are reserved by traders. Choose a different pool, reduce the sell size, or split the withdrawal across pools."
 msgstr ""
 
+#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
+msgid "Launch boost · {boostValue} APR · Paid into {tokenSymbol} price every 4h, nothing to claim. <0>Read more</0>"
+msgstr "Impulso de lanzamiento · {boostValue} APR · Se abona en el precio de {tokenSymbol} cada 4 h, no hay nada que reclamar. <0>Leer más</0>"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive impact factor"
 msgstr "Factor de impacto positivo"
@@ -6906,10 +6908,6 @@ msgstr "Mostrar iconos de compra/venta en el gráfico"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
 msgstr "Este swap requiere enrutamiento externo. Pague el gas en {0} para habilitarlo."
-
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
-msgid "Apply with Paxos"
-msgstr "Solicitar con Paxos"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Portuguese)"
@@ -9150,10 +9148,6 @@ msgstr "GMX en staking"
 msgid "Real-time referral dashboard"
 msgstr "Panel de referidos en tiempo real"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
-msgid "For businesses: mint USDG with Paxos"
-msgstr "Para empresas: acuña USDG con Paxos"
-
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "Chains"
 msgstr "Cadenas"
@@ -9409,6 +9403,10 @@ msgstr ""
 #: src/pages/RpcDebug/parts.tsx
 msgid "{0}ms"
 msgstr "{0}ms"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
+msgid "Business? Mint USDG 1:1 with Paxos"
+msgstr "¿Empresa? Acuña USDG 1:1 con Paxos"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
@@ -11770,10 +11768,6 @@ msgstr "LIQUIDEZ LARGO"
 msgid "Is this custodial? Do I send you my funds?"
 msgstr "¿Esto es custodial? ¿Tengo que enviarle mis fondos?"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
-msgid "Paxos, the issuer of USDG, mints it 1:1 from USD with no minting fee. Requires business verification with Paxos."
-msgstr "Paxos, el emisor de USDG, lo acuña 1:1 a partir de USD sin comisión de acuñación. Requiere verificación empresarial con Paxos."
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL short"
 msgstr "PnL corto"
@@ -11968,10 +11962,6 @@ msgstr "Comprar APE en Arbitrum con <0>Camelot</0>"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Depositing..."
 msgstr "Depositando…"
-
-#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
-msgid "Paid into the {tokenSymbol} price every 4 hours. Nothing to claim. Already included in the APY above."
-msgstr "Se abona en el precio de {tokenSymbol} cada 4 horas. No hay nada que reclamar. Ya incluido en el APY de arriba."
 
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."

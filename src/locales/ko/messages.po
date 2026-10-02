@@ -259,7 +259,6 @@ msgstr "RPC 모니터링"
 
 #: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 #: src/components/GmList/UsdgPoolBadges.tsx
-#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
 msgid "Launch boost"
 msgstr "출시 부스트"
 
@@ -2309,7 +2308,6 @@ msgstr "탈중앙화 거래 프로토콜"
 msgid "Symbiosis"
 msgstr "Symbiosis"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "How it works"
 msgstr ""
@@ -3605,10 +3603,6 @@ msgstr "GMX 프리미엄 RPC로 더 빠른 실행"
 msgid "No assets in your GMX Account"
 msgstr "GMX Account에 자산이 없습니다"
 
-#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
-msgid "{boostValue} APR"
-msgstr "{boostValue} APR"
-
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Order type"
 msgstr "주문 유형"
@@ -3958,6 +3952,10 @@ msgstr "구매 계속하기"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
 msgid "Zero-fee capacity is used up for this amount. Convert now at the standard fee, convert a smaller amount, or wait for the next zero-fee window."
 msgstr "이 금액에 대한 수수료 무료 한도가 모두 소진되었습니다. 표준 수수료로 지금 변환하거나, 더 적은 금액을 변환하거나, 다음 수수료 무료 기간을 기다리세요."
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Direct with Paxos is unavailable. Conversion switched to Auto"
+msgstr "Paxos 직접 변환을 사용할 수 없습니다. 변환이 자동으로 변경되었습니다"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "of limit"
@@ -5655,6 +5653,10 @@ msgstr "{totalStr} 정산"
 msgid "Sellable cap for pool GM: {0} [{1}] reached, as tokens are reserved by traders. Choose a different pool, reduce the sell size, or split the withdrawal across pools."
 msgstr ""
 
+#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
+msgid "Launch boost · {boostValue} APR · Paid into {tokenSymbol} price every 4h, nothing to claim. <0>Read more</0>"
+msgstr "출시 부스트 · {boostValue} APR · 4시간마다 {tokenSymbol} 가격에 반영되며, 청구할 필요가 없습니다. <0>더 알아보기</0>"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive impact factor"
 msgstr "긍정적 영향 계수"
@@ -6906,10 +6908,6 @@ msgstr "차트에 매수/매도 아이콘 표시"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
 msgstr "이 스왑에는 외부 라우팅이 필요합니다. 활성화하려면 {0}(으)로 가스를 결제하세요."
-
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
-msgid "Apply with Paxos"
-msgstr "Paxos에서 신청하기"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Portuguese)"
@@ -9150,10 +9148,6 @@ msgstr "스테이킹된 GMX"
 msgid "Real-time referral dashboard"
 msgstr "실시간 추천 대시보드"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
-msgid "For businesses: mint USDG with Paxos"
-msgstr "기업용: Paxos로 USDG 발행하기"
-
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "Chains"
 msgstr "체인"
@@ -9409,6 +9403,10 @@ msgstr ""
 #: src/pages/RpcDebug/parts.tsx
 msgid "{0}ms"
 msgstr "{0}ms"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
+msgid "Business? Mint USDG 1:1 with Paxos"
+msgstr "기업이신가요? Paxos로 USDG 1:1 발행하기"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
@@ -11770,10 +11768,6 @@ msgstr "LIQUIDITY LONG"
 msgid "Is this custodial? Do I send you my funds?"
 msgstr "수탁형 서비스인가요? 제 자금을 보내야 하나요?"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosMintNote.tsx
-msgid "Paxos, the issuer of USDG, mints it 1:1 from USD with no minting fee. Requires business verification with Paxos."
-msgstr "USDG 발행사인 Paxos가 발행 수수료 없이 USD를 1:1로 USDG로 발행합니다. Paxos의 기업 인증이 필요합니다."
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL short"
 msgstr "PnL 숏"
@@ -11968,10 +11962,6 @@ msgstr "<0>Camelot</0>을 통해 Arbitrum에서 APE를 구매하십시오"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Depositing..."
 msgstr "입금 중…"
-
-#: src/pages/PoolsDetails/UsdgLaunchBoostCard.tsx
-msgid "Paid into the {tokenSymbol} price every 4 hours. Nothing to claim. Already included in the APY above."
-msgstr "4시간마다 {tokenSymbol} 가격에 반영됩니다. 청구할 필요가 없습니다. 위 APY에 이미 포함되어 있습니다."
 
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
