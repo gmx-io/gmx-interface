@@ -44,7 +44,7 @@ function TransitRouteProgressContent({
   const history = useHistory();
   const { withdrawalStatuses, depositStatuses, paxosTransitOrder, setTransitRouteContinueRequested } =
     useSyntheticsEvents();
-  const { conversion } = progress;
+  const { conversion, withdrawalExecutedTxnHash } = progress;
   const order = conversion ? paxosTransitOrder : undefined;
 
   const withdrawalStatus = progress.withdrawalTxnHash
@@ -62,7 +62,7 @@ function TransitRouteProgressContent({
 
   const isConverted = order?.status === "PROCESSED";
   const isConversionRemoved = order?.status === "REMOVED";
-  const isWithdrawalExecuted = progress.withdrawalTxnHash === undefined || Boolean(withdrawalStatus?.executedTxnHash);
+  const isWithdrawalExecuted = progress.withdrawalTxnHash === undefined || withdrawalExecutedTxnHash !== undefined;
   const isWithdrawalCancelled = Boolean(withdrawalStatus?.cancelledTxnHash);
 
   const isCompleted = isBuy
@@ -154,13 +154,13 @@ function TransitRouteProgressContent({
               <>
                 <TransactionStatus status="success" txnHash={progress.withdrawalTxnHash} text={t`Sell request sent`} />
                 <TransactionStatus
-                  status={getRequestStatus(withdrawalStatus?.executedTxnHash, withdrawalStatus?.cancelledTxnHash)}
-                  txnHash={withdrawalStatus?.executedTxnHash ?? withdrawalStatus?.cancelledTxnHash}
+                  status={getRequestStatus(withdrawalExecutedTxnHash, withdrawalStatus?.cancelledTxnHash)}
+                  txnHash={withdrawalExecutedTxnHash ?? withdrawalStatus?.cancelledTxnHash}
                   text={getRequestText({
                     executed: t`${usdg?.symbol} received`,
                     cancelled: t`Sell order cancelled`,
                     pending: t`Fulfilling sell request...`,
-                    executedTxnHash: withdrawalStatus?.executedTxnHash,
+                    executedTxnHash: withdrawalExecutedTxnHash,
                     cancelledTxnHash: withdrawalStatus?.cancelledTxnHash,
                   })}
                 />

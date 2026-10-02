@@ -1212,7 +1212,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     hasPageLostFocus,
   });
 
-  const transitRouteEventsState = useTransitRouteEvents(chainId, { glvAndGmMarketsData });
+  const transitRouteEventsState = useTransitRouteEvents(chainId, { glvAndGmMarketsData, withdrawalStatuses });
 
   const [multichainTransferProgress, setMultichainTransferProgress] = useState<
     MultichainTransferProgress<string> | undefined
