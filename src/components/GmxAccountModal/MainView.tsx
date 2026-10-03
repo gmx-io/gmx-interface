@@ -296,7 +296,7 @@ function GmxAccountBlock({ showDisconnectButton }: { showDisconnectButton: boole
   return (
     <div className="flex flex-col gap-12 rounded-12 border-1/2 border-stroke-primary bg-slate-950/50 p-12">
       <div className="flex items-start justify-between gap-8">
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6" data-qa="gmx-account-balance">
           <span className="text-body-small font-medium text-typography-secondary">
             <Trans>GMX Account Balance</Trans>
           </span>

@@ -11,6 +11,21 @@ export type FundedAction = {
   txHash?: `0x${string}`;
   orderKeys?: string[];
   state: "pending" | "created" | "settled" | "failed";
+  step?: string;
+  settlement?: "execution" | "creation" | "receipt";
+  chainId?: 42161 | 8453;
+  startedAt?: string;
+  finishedAt?: string;
+  gasPaidWei?: string;
+  gasPaidUsd?: string;
+  nativePriceUsd?: string;
+  requestKind?: "bridge";
+};
+
+export type FundedCheckpoint = {
+  startedAt: string;
+  finishedAt?: string;
+  result?: string;
 };
 
 export type FundedJournal = {
@@ -21,11 +36,18 @@ export type FundedJournal = {
   createdAt: string;
   initialNativeUsd: string;
   initialStableUsd: string;
+  targetNativeBps?: string;
+  balanceCleanupId?: string;
   marketAddress: string;
   ownedPositionKeys: string[];
   ownedOrderKeys: string[];
   actions: FundedAction[];
   completed: boolean;
+  checkpoints?: Record<string, FundedCheckpoint>;
+  scenarios?: Record<string, { startedAt: string; finishedAt?: string; status: "running" | "passed" | "failed" }>;
+  inventory?: Record<string, string>;
+  selectedCases?: string[];
+  feeProfile?: "economy" | "glv";
 };
 
 // Outside Playwright output directories and shared by local workspaces.

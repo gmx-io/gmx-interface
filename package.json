@@ -41,8 +41,10 @@
     "test:regression:report": "playwright show-report playwright-report/regression",
     "test:regression:funded:plan": "TSX_TSCONFIG_PATH=autotests/regression/funded/tsconfig.json node --env-file-if-exists=.env.test.local --import tsx autotests/regression/funded/cli.ts plan",
     "test:regression:funded": "TSX_TSCONFIG_PATH=autotests/regression/funded/tsconfig.json node --env-file-if-exists=.env.test.local --import tsx autotests/regression/funded/cli.ts run",
+    "test:regression:funded:all": "TSX_TSCONFIG_PATH=autotests/regression/funded/tsconfig.json node --env-file-if-exists=.env.test.local --import tsx autotests/regression/funded/batchCli.ts",
     "test:regression:funded:cleanup": "TSX_TSCONFIG_PATH=autotests/regression/funded/tsconfig.json node --env-file-if-exists=.env.test.local --import tsx autotests/regression/funded/cli.ts cleanup",
     "test:regression:funded:unit": "tsx --tsconfig autotests/regression/funded/tsconfig.json --test --test-concurrency=3 autotests/regression/funded/*.test.ts",
+    "test:regression:funded:list": "TSX_TSCONFIG_PATH=autotests/regression/funded/tsconfig.json node --import tsx autotests/regression/funded/cli.ts list --group all",
     "test:regression:funded:types": "tsc -p autotests/regression/funded/tsconfig.json"
   },
   "dependencies": {

@@ -667,6 +667,7 @@ function OrderItemLarge({
 
   return (
     <TableTr
+      data-qa={`order-${order.key}`}
       hoverable={true}
       ref={handleSetRef}
       className={cx({
@@ -845,7 +846,7 @@ function OrderItemSmall({
   );
 
   return (
-    <AppCard ref={handleSetRef}>
+    <AppCard ref={handleSetRef} dataQa={`order-${order.key}`}>
       <AppCardSection
         className={cx("relative", {
           "after:absolute after:left-10 after:top-[50%] after:h-16 after:w-2 after:-translate-y-[50%] after:bg-blue-300":

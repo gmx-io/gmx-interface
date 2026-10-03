@@ -9,5 +9,10 @@
     "noEmit": true,
     "types": ["node"]
   },
-  "include": ["*.ts", "../../../playwright-funded.config.ts", "../../../viem-override.d.ts"]
+  "include": [
+    "*.ts",
+    "../../../playwright-funded.config.ts",
+    "../../../playwright-funded-deployment.config.ts",
+    "../../../viem-override.d.ts"
+  ]
 }

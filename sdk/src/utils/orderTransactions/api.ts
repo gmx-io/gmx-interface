@@ -202,6 +202,7 @@ export type CollateralOperation = "deposit" | "withdraw";
 
 export type PrepareCollateralRequest = {
   operation: CollateralOperation;
+  /** Use position.contractKey, the bytes32 contract hash. */
   positionKey: string;
   amount: bigint;
   slippage?: number;

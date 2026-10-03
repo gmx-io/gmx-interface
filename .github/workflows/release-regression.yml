@@ -125,6 +125,7 @@ jobs:
         run: |
           yarn test:regression:funded:types
           yarn test:regression:funded:unit
+          REGRESSION_FUNDED_RUN_ID=listing REGRESSION_FUNDED_EXECUTE=1 REGRESSION_FUNDED_CASES=all yarn exec playwright test -c playwright-funded.config.ts --list
       - name: Install Chromium
         run: yarn exec playwright install --with-deps chromium
       - name: Run regression

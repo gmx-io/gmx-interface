@@ -51,5 +51,12 @@ export default defineConfig({
     { name: "ui", testMatch: "ui/*.spec.ts" },
     { name: "connected-state", testMatch: "connected-state/*.spec.ts" },
     { name: "gates", testMatch: "gates/*.spec.ts" },
+    { name: "funded-runtime", testMatch: "funded/runtime.spec.ts" },
+    {
+      name: "funded-browser",
+      testMatch: "funded/browser.spec.ts",
+      expect: { timeout: 1_000 },
+      use: { actionTimeout: 1_000, navigationTimeout: 1_000 },
+    },
   ],
 });

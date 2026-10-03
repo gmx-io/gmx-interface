@@ -249,6 +249,7 @@ export function GmGlvAssetCard({
         )}
         <SyntheticsInfoRow
           label={<Trans>Balance</Trans>}
+          qa={`lp-balance-${marketAddress}`}
           value={
             balance !== 0n ? (
               tooltipContent ? (
