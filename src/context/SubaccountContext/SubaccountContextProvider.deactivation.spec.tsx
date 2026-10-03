@@ -1,9 +1,11 @@
 import { act, cleanup, render } from "@testing-library/react";
+import { type Abi, encodeErrorResult } from "viem";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import "lib/monkeyPatching";
 import { getSubaccountConfigKey } from "config/localStorage";
 import { SubaccountRemovalResultUnknownError } from "domain/synthetics/subaccount/errors";
+import { abis } from "sdk/abis";
 import { ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "sdk/utils/express";
 
 import {
@@ -14,12 +16,13 @@ import {
 } from "./SubaccountContextProvider";
 import type { SubaccountState } from "./SubaccountContextProvider";
 
-const { mocks, chainState, ACCOUNT, CHAIN_ID, SRC_CHAIN_ID, SUBACCOUNT_ADDRESS } = vi.hoisted(() => ({
+const { mocks, chainState, ACCOUNT, CHAIN_ID, SRC_CHAIN_ID, SUBACCOUNT_ADDRESS, WETH } = vi.hoisted(() => ({
   mocks: {
     getIsSubaccountRemovalRequired: vi.fn(),
     removeSubaccountExpressTxn: vi.fn(),
     removeSubaccountWalletTxn: vi.fn(),
     selectExpressGlobalParams: vi.fn(),
+    selectGmxAccountGasPaymentToken: vi.fn(),
     refreshSubaccountData: vi.fn(),
     pushError: vi.fn(),
   },
@@ -28,10 +31,12 @@ const { mocks, chainState, ACCOUNT, CHAIN_ID, SRC_CHAIN_ID, SUBACCOUNT_ADDRESS }
   CHAIN_ID: 42161,
   SRC_CHAIN_ID: 8453,
   SUBACCOUNT_ADDRESS: "0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa",
+  WETH: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
 }));
 
 vi.mock("context/SyntheticsStateContext/selectors/expressSelectors", () => ({
   selectExpressGlobalParams: mocks.selectExpressGlobalParams,
+  selectGmxAccountGasPaymentToken: mocks.selectGmxAccountGasPaymentToken,
 }));
 
 vi.mock("context/SyntheticsStateContext/selectors/tradeboxSelectors", () => ({
@@ -163,6 +168,7 @@ describe("SubaccountContextProvider.tryDisableSubaccount", () => {
     chainState.srcChainId = undefined;
     mocks.getIsSubaccountRemovalRequired.mockResolvedValue(true);
     mocks.selectExpressGlobalParams.mockReturnValue(globalExpressParams);
+    mocks.selectGmxAccountGasPaymentToken.mockReturnValue({ symbol: "USDC" });
     seedStoredSubaccount();
   });
 
@@ -336,6 +342,32 @@ describe("SubaccountContextProvider.tryDisableSubaccount", () => {
     expect(context.current.subaccountDeactivationFailureReason).toBe(
       SubaccountDeactivationFailureReason.InsufficientGasPaymentTokenBalance
     );
+    expect(context.current.subaccountDeactivationFailureTokenSymbol).toBe("USDC");
+    expect(getIsSubaccountStoredLocally()).toBe(true);
+  });
+
+  it("names the token from an InsufficientMultichainBalance revert over the selected gas token (multichain)", async () => {
+    chainState.srcChainId = SRC_CHAIN_ID;
+    const revertData = encodeErrorResult({
+      abi: abis.CustomErrors as Abi,
+      errorName: "InsufficientMultichainBalance",
+      args: [ACCOUNT, WETH, 0n, 1n],
+    });
+    mocks.removeSubaccountExpressTxn.mockRejectedValueOnce(new Error(`data="${revertData}"`));
+
+    const context = setup();
+
+    let result: boolean | undefined;
+    await act(async () => {
+      result = await context.current.tryDisableSubaccount();
+    });
+
+    expect(result).toBe(false);
+    expect(context.current.subaccountDeactivationState).toBe(SubaccountDeactivationState.Error);
+    expect(context.current.subaccountDeactivationFailureReason).toBe(
+      SubaccountDeactivationFailureReason.InsufficientGasPaymentTokenBalance
+    );
+    expect(context.current.subaccountDeactivationFailureTokenSymbol).toBe("WETH");
     expect(getIsSubaccountStoredLocally()).toBe(true);
   });
 });

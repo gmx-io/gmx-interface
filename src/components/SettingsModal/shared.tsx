@@ -1,15 +1,15 @@
 import cx from "classnames";
-import { ComponentProps, ReactNode } from "react";
+import { ReactNode } from "react";
 
 import { useBreakpoints } from "lib/useBreakpoints";
 
 import { NoopWrapper } from "components/NoopWrapper/NoopWrapper";
 import PercentageInput from "components/PercentageInput/PercentageInput";
+import { LabelWithTooltip } from "components/Tooltip/LabelWithTooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueInput } from "components/ValueInput/ValueInput";
 
 import InfoIcon from "img/ic_info.svg?react";
-import InfoCircleIcon from "img/ic_info_circle.svg?react";
 
 export enum TradingMode {
   Classic = "classic",
@@ -20,44 +20,6 @@ export enum TradingMode {
 export function SettingsSection({ children, className }: { children?: React.ReactNode; className?: string }) {
   return (
     <div className={cx("flex flex-col gap-16 rounded-8 bg-fill-surfaceElevated50 p-12", className)}>{children}</div>
-  );
-}
-
-export function SettingLabelWithTooltip({
-  label,
-  tooltip,
-  position,
-  className,
-  labelClassName,
-}: {
-  label: string;
-  tooltip: ReactNode;
-  position?: ComponentProps<typeof TooltipWithPortal>["position"];
-  className?: string;
-  labelClassName?: string;
-}) {
-  // Keep the info icon glued to the last word so it never wraps onto a line by itself.
-  const trimmed = label.trim();
-  const lastSpace = trimmed.lastIndexOf(" ");
-  const head = lastSpace === -1 ? "" : trimmed.slice(0, lastSpace + 1);
-  const lastWord = lastSpace === -1 ? trimmed : trimmed.slice(lastSpace + 1);
-
-  return (
-    <TooltipWithPortal
-      className={className}
-      position={position}
-      variant="none"
-      content={tooltip}
-      handle={
-        <span className={labelClassName}>
-          {head}
-          <span className="whitespace-nowrap">
-            {lastWord}
-            <InfoCircleIcon className="ml-4 inline-block size-16 align-middle" />
-          </span>
-        </span>
-      }
-    />
   );
 }
 
@@ -85,12 +47,7 @@ export function InputSetting({
   type?: "percentage" | "number";
 }) {
   const titleWithDescription = description ? (
-    <SettingLabelWithTooltip
-      label={title}
-      tooltip={description}
-      position="bottom"
-      labelClassName="text-14 font-medium"
-    />
+    <LabelWithTooltip label={title} tooltip={description} position="bottom" labelClassName="text-14 font-medium" />
   ) : (
     <span className="text-14 font-medium">{title}</span>
   );
@@ -150,10 +107,10 @@ export function SettingButton({
   const Wrapper = disabled && disabledTooltip ? TooltipWithPortal : NoopWrapper;
 
   return (
-    <Wrapper content={disabledTooltip} variant="none">
+    <Wrapper content={disabledTooltip} variant="none" className="w-full" handleClassName="w-full">
       <div
         className={cx(
-          `grid min-h-66 select-none grid-cols-[66px_auto] items-center rounded-8 border border-solid hover:border-slate-100`,
+          `grid min-h-66 w-full select-none grid-cols-[66px_auto] items-center rounded-8 border border-solid hover:border-slate-100`,
           active ? "border-slate-100 text-typography-primary" : "border-slate-600",
           disabled ? "muted cursor-not-allowed" : "cursor-pointer"
         )}
@@ -190,13 +147,15 @@ export function SettingButton({
   );
 }
 
-export function Chip({ children, color }: { children: ReactNode; color: "blue" | "gray" }) {
-  const colorClass = {
-    blue: "bg-blue-600",
-    gray: "bg-slate-500",
-  }[color];
+export function Chip({ children, variant }: { children: ReactNode; variant: "blue" | "outline" }) {
+  const variantClass = {
+    blue: "bg-blue-600 text-white",
+    outline: "text-typography-primary ring-1 ring-inset ring-typography-primary",
+  }[variant];
 
   return (
-    <div className={cx(`rounded-full px-8 py-4 pb-3 text-[10px] font-medium text-white`, colorClass)}>{children}</div>
+    <div className={cx(`whitespace-nowrap rounded-full px-8 py-4 pb-3 text-[10px] font-medium`, variantClass)}>
+      {children}
+    </div>
   );
 }

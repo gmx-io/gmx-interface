@@ -4,9 +4,7 @@ import { useEffect } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { SWRConfig } from "swr";
 
-import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import { ThemeProvider } from "context/ThemeContext/ThemeContext";
-import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import { ARBITRUM } from "sdk/configs/chainIds";
 
@@ -16,11 +14,6 @@ import { LandingRoutes } from "./LandingRoutes";
 
 export default function App() {
   const fetcher = useOracleKeeperFetcher(ARBITRUM);
-  useEffect(() => {
-    const defaultLanguage = localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale;
-    dynamicActivate(defaultLanguage);
-  }, []);
-
   useEffect(() => {
     const metrics = import("lib/metrics/Metrics");
     metrics.then((m) => {

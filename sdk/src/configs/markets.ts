@@ -240,13 +240,6 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
       longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
-    //  SATS/USD [WBTC-USDC]
-    "0x8ea4Fb801493DaD8724F90Fb2e279534fa591366": {
-      marketTokenAddress: "0x8ea4Fb801493DaD8724F90Fb2e279534fa591366",
-      indexTokenAddress: "0x2cD2eB61D17b78239Fcd19aafF72981B5D5eF319",
-      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
-      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-    },
     // POL/USD [ETH-USDC]
     "0xD0a1AFDDE31Eb51e8b53bdCE989EB8C2404828a4": {
       marketTokenAddress: "0xD0a1AFDDE31Eb51e8b53bdCE989EB8C2404828a4",
@@ -338,31 +331,10 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
       longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
-    // BOME/USD [WBTC/USDC]
-    "0x71237F8C3d1484495A136022E16840b70fF84a69": {
-      marketTokenAddress: "0x71237F8C3d1484495A136022E16840b70fF84a69",
-      indexTokenAddress: "0x3Eea56A1ccCdbfB70A26aD381C71Ee17E4c8A15F",
-      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
-      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-    },
     // FLOKI/USD [WBTC/USDC]
     "0xfD46a5702D4d97cE0164375744c65F0c31A3901b": {
       marketTokenAddress: "0xfD46a5702D4d97cE0164375744c65F0c31A3901b",
       indexTokenAddress: "0x6792c5B8962ffbDD020c6b6FD0Be7b182e0e33a3",
-      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
-      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-    },
-    // MEME/USD [WBTC/USDC]
-    "0x6CB901Cc64c024C3Fe4404c940FF9a3Acc229D2C": {
-      marketTokenAddress: "0x6CB901Cc64c024C3Fe4404c940FF9a3Acc229D2C",
-      indexTokenAddress: "0xaF770F03518686a365300ab35AD860e99967B2f0",
-      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
-      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-    },
-    // MEW/USD [WBTC/USDC]
-    "0x71B7fF592a974e2B501D8A7a11f5c42DcD365244": {
-      marketTokenAddress: "0x71B7fF592a974e2B501D8A7a11f5c42DcD365244",
-      indexTokenAddress: "0x5503CF72f54b6d692d36BBCD391516A7dE068687",
       longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
@@ -671,13 +643,6 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
     "0xfaEaE570B07618D3F10360608E43c241181c4614": {
       marketTokenAddress: "0xfaEaE570B07618D3F10360608E43c241181c4614",
       indexTokenAddress: "0xEcc5eb985Ddbb8335b175b0A2A1144E4c978F1f6",
-      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
-      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-    },
-    // BRETT/USD [WETH-USDC]
-    "0x6EeE8098dBC106aEde99763FA5F955A5bBc42C50": {
-      marketTokenAddress: "0x6EeE8098dBC106aEde99763FA5F955A5bBc42C50",
-      indexTokenAddress: "0x4249F6e0808bEfF7368AaAD3F7A3Fd511F61Ee60",
       longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
@@ -1009,13 +974,6 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
     "0xfB626c4e3E153947A6A94041814c25E449064dAD": {
       marketTokenAddress: "0xfB626c4e3E153947A6A94041814c25E449064dAD",
       indexTokenAddress: "0x2f6d7be53fab5538065a226BA091015d422a7528",
-      longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-      shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-    },
-    // MELANIA/USD [WAVAX-USDC]
-    "0xe19da27Bf9733c429445E289B662bECDCa6ce10b": {
-      marketTokenAddress: "0xe19da27Bf9733c429445E289B662bECDCa6ce10b",
-      indexTokenAddress: "0xd42C991a4FAb293C57a7bf25C2E2ec5aE1dB1714",
       longTokenAddress: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
       shortTokenAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
     },

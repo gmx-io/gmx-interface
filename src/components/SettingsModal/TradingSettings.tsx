@@ -2,7 +2,7 @@ import { t, Trans } from "@lingui/macro";
 import { useCallback, useMemo } from "react";
 import { useAccount } from "wagmi";
 
-import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
+import { ARBITRUM, AVALANCHE, getChainName, getViemChain } from "config/chains";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { getIsExpressSupported } from "config/features";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
@@ -34,12 +34,13 @@ import { MarginDestinationSelector } from "components/MarginDestinationSelector/
 import { OldSubaccountWithdraw } from "components/OldSubaccountWithdraw/OldSubaccountWithdraw";
 import { OneClickAdvancedSettings } from "components/OneClickAdvancedSettings/OneClickAdvancedSettings";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import { LabelWithTooltip } from "components/Tooltip/LabelWithTooltip";
 
 import ExpressIcon from "img/ic_express.svg?react";
 import HourGlassIcon from "img/ic_hourglass.svg?react";
 import OneClickIcon from "img/ic_one_click.svg?react";
 
-import { Chip, InputSetting, SettingButton, SettingLabelWithTooltip, SettingsSection, TradingMode } from "./shared";
+import { Chip, InputSetting, SettingButton, SettingsSection, TradingMode } from "./shared";
 
 interface TradingSettingsProps {
   tradingMode: TradingMode | undefined;
@@ -66,13 +67,20 @@ export function TradingSettings({
   const { isConnected } = useAccount();
   const settings = useSettings();
   const subaccountState = useSubaccountContext();
-  const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
+  const { isWalletOutOfGasPaymentBalance, isGmxAccountOutOfGasPaymentBalance } = useIsOutOfGasPaymentBalance();
   const { canSignTypedData } = useWalletCanSignTypedData();
   const [settlementChainId, setSettlementChainId] = useGmxAccountSettlementChainId();
   const { emptyGmxAccounts } = useEmptyGmxAccounts([AVALANCHE]);
   const isAvalancheEmpty = emptyGmxAccounts?.[AVALANCHE] === true;
+  const isOutOfGasPaymentBalance =
+    srcChainId === undefined
+      ? isWalletOutOfGasPaymentBalance && isGmxAccountOutOfGasPaymentBalance
+      : isGmxAccountOutOfGasPaymentBalance;
   const isExpressTradingDisabled = !canSignTypedData || (isOutOfGasPaymentBalance && srcChainId === undefined);
   const nativeTokenSymbol = getNativeToken(chainId).symbol;
+  const srcChainNativeTokenSymbol =
+    srcChainId === undefined ? undefined : getViemChain(srcChainId).nativeCurrency.symbol;
+  const srcChainName = srcChainId === undefined ? undefined : getChainName(srcChainId);
   const { gasPaymentTokensText } = useGasPaymentTokensText(chainId);
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const gasPaymentTokens = getGasPaymentTokens(chainId);
@@ -95,6 +103,25 @@ export function TradingSettings({
   );
   const showWalletGasPaymentTokenSelector = srcChainId === undefined || hasWalletGasPaymentTokenBalance;
   const showGmxAccountGasPaymentTokenSelector = srcChainId !== undefined || hasGmxAccountGasPaymentTokenBalance;
+
+  const expressDisabledTooltip = !canSignTypedData ? (
+    srcChainId !== undefined ? (
+      <Trans>Your wallet cannot sign messages. Connect a different wallet to trade.</Trans>
+    ) : (
+      <Trans>Your wallet cannot sign messages. Use Classic mode to trade.</Trans>
+    )
+  ) : isExpressTradingDisabled ? (
+    <div className="flex flex-col gap-8">
+      <div>
+        <Trans>Express needs {gasPaymentTokensText} in your Wallet. Swap or bridge one of them.</Trans>
+      </div>
+      {showGmxAccountGasPaymentTokenSelector && (
+        <div>
+          <Trans>Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them.</Trans>
+        </div>
+      )}
+    </div>
+  ) : undefined;
 
   const handleSelectGasPaymentToken = useCallback(
     (tokenAddress: string) => {
@@ -145,13 +172,14 @@ export function TradingSettings({
                   Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.
                   <br />
                   <br />
-                  Gas payments in {gasPaymentTokensText}.
+                  Fees are paid in your gas payment token from the balance the action uses.
                 </Trans>
               }
               icon={<ExpressIcon className="size-28" />}
               disabled={isExpressTradingDisabled}
+              disabledTooltip={expressDisabledTooltip}
               chip={
-                <Chip color="gray">
+                <Chip variant="outline">
                   <Trans>Optimal</Trans>
                 </Chip>
               }
@@ -164,17 +192,18 @@ export function TradingSettings({
               description={<Trans>Seamless trading with Express reliability</Trans>}
               icon={<OneClickIcon className="size-28" />}
               disabled={isExpressTradingDisabled}
+              disabledTooltip={expressDisabledTooltip}
               info={
                 <Trans>
                   GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for
                   reliability, even during network congestion.
                   <br />
                   <br />
-                  Gas payments in {gasPaymentTokensText}.
+                  Fees are paid in your gas payment token from the balance the action uses.
                 </Trans>
               }
               chip={
-                <Chip color="blue">
+                <Chip variant="blue">
                   <Trans>Fastest</Trans>
                 </Chip>
               }
@@ -198,6 +227,20 @@ export function TradingSettings({
               <div className="flex flex-col gap-8">
                 <div className="text-14 font-medium text-typography-secondary">
                   <Trans>Gas payment token</Trans>
+                </div>
+                <div className="text-12 text-typography-secondary">
+                  {srcChainId === undefined ? (
+                    <Trans>
+                      Used for Express and One-Click fees only, paid from the balance the action uses. Classic
+                      transactions, same-chain GMX Account transfers, and bridges pay gas in {nativeTokenSymbol} from
+                      your Wallet.
+                    </Trans>
+                  ) : (
+                    <Trans>
+                      Used for Express and One-Click fees only, paid from the balance the action uses. Bridges pay gas
+                      in {srcChainNativeTokenSymbol} from your {srcChainName} wallet.
+                    </Trans>
+                  )}
                 </div>
                 {showWalletGasPaymentTokenSelector && (
                   <GasPaymentTokenSelector
@@ -224,7 +267,7 @@ export function TradingSettings({
       {srcChainId && !isAvalancheEmpty && isConnected && (
         <SettingsSection className="mt-2">
           <div className="flex items-center justify-between">
-            <SettingLabelWithTooltip
+            <LabelWithTooltip
               className="font-medium"
               tooltip={
                 <Trans>
@@ -321,7 +364,7 @@ export function TradingSettings({
 
         {chainId === ARBITRUM && srcChainId === undefined && settings.expressOrdersEnabled && (
           <div className="flex w-full items-center justify-between">
-            <SettingLabelWithTooltip
+            <LabelWithTooltip
               className="font-medium"
               label={t`Send remaining margin to`}
               tooltip={
@@ -352,7 +395,7 @@ export function TradingSettings({
         )}
 
         <ToggleSwitch isChecked={settings.isAutoCancelTPSL} setIsChecked={settings.setIsAutoCancelTPSL}>
-          <SettingLabelWithTooltip
+          <LabelWithTooltip
             tooltip={
               <div>
                 <Trans>

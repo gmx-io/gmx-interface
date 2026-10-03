@@ -240,7 +240,7 @@ export default function TVChartContainer({
 
     const themeOverrides = getChartThemeOverrides(theme);
 
-    if (!wasChartOverridden) {
+    if (!wasChartOverridden || !widget.layoutName()) {
       widget.applyOverrides(themeOverrides);
       widget.saveChartToServer();
       setWasChartOverridden(true);

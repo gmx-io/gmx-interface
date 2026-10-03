@@ -15,6 +15,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { WALLET_NETWORK_FEE_SOURCE } from "domain/synthetics/fees/networkFeeSource";
 import { GlvOrMarketInfo, getGlvOrMarketAddress, getMarketIndexName } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { Operation } from "domain/synthetics/markets/types";
@@ -22,7 +23,7 @@ import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensDa
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { ERC20Address, NativeTokenSupportedAddress } from "domain/tokens";
 import { getIsEnteredAmount } from "lib/getIsEnteredAmount";
-import { formatAmountFree, formatBalanceAmount, formatUsd } from "lib/numbers";
+import { formatAmountFree, formatBalanceAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useBlockAutoReload } from "lib/pwa/blockAutoReload";
 
@@ -32,6 +33,7 @@ import { ExpandableRow } from "components/ExpandableRow";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { MarketState } from "components/MarketSelector/types";
 import { NetworkFeeRow } from "components/NetworkFeeRow/NetworkFeeRow";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
 import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
@@ -127,16 +129,14 @@ export function GmShiftBox({
       toMarketInfo !== undefined && isShiftIntoDisabledMarket(chainId, toMarketInfo.marketTokenAddress),
   });
 
-  const noAmountSet = amounts?.fromTokenAmount === undefined;
-  const balanceNotEqualToAmount = selectedToken?.balance !== amounts?.fromTokenAmount;
   const hasBalance = selectedToken?.balance !== undefined && selectedToken.balance > 0n;
-  const selectedTokenShowMaxButton = hasBalance && (noAmountSet || balanceNotEqualToAmount);
+  const isMaxSelected = selectedToken?.balance !== undefined && amounts?.fromTokenAmount === selectedToken.balance;
 
-  const selectedTokenDollarAmount = formatUsd(
-    amounts?.fromTokenUsd !== undefined && amounts.fromTokenUsd > 0n ? amounts.fromTokenUsd : 0n
+  const selectedTokenDollarAmount = (
+    <UsdValue usd={amounts?.fromTokenUsd !== undefined && amounts.fromTokenUsd > 0n ? amounts.fromTokenUsd : 0n} />
   );
-  const toTokenShowDollarAmount = formatUsd(
-    amounts?.toTokenUsd !== undefined && amounts.toTokenUsd > 0n ? amounts.toTokenUsd : 0n
+  const toTokenShowDollarAmount = (
+    <UsdValue usd={amounts?.toTokenUsd !== undefined && amounts.toTokenUsd > 0n ? amounts.toTokenUsd : 0n} />
   );
 
   const routerAddress = getContract(chainId, "SyntheticsRouter");
@@ -269,7 +269,8 @@ export function GmShiftBox({
                     : undefined
                 }
                 onClickBottomRightLabel={handleSelectedTokenClickMax}
-                onClickMax={selectedTokenShowMaxButton ? handleSelectedTokenClickMax : undefined}
+                onClickMax={hasBalance ? handleSelectedTokenClickMax : undefined}
+                isMaxSelected={isMaxSelected}
                 inputValue={selectedMarketText}
                 onInputValueChange={handleSelectedTokenInputValueChange}
                 onFocus={handleSelectedTokenFocus}
@@ -297,6 +298,7 @@ export function GmShiftBox({
                 >
                   <PoolSelector
                     chainId={chainId}
+                    label={t`Receive`}
                     size="l"
                     selectedMarketAddress={toMarketAddress}
                     markets={shiftAvailableRelatedMarkets}
@@ -349,7 +351,7 @@ export function GmShiftBox({
             contentClassName="flex flex-col gap-12"
             wrapped
           >
-            <NetworkFeeRow rowPadding executionFee={executionFee} />
+            <NetworkFeeRow rowPadding executionFee={executionFee} feeSource={WALLET_NETWORK_FEE_SOURCE} />
           </ExpandableRow>
         </div>
       </form>

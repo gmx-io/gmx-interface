@@ -1,14 +1,18 @@
 import { t, Trans } from "@lingui/macro";
 import { AnimatePresence, motion } from "framer-motion";
 
+import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { CLAIM_AFFILIATE_FIXED_SLIPPAGE_BPS } from "domain/synthetics/referrals/useClaimAffiliateSwapRoutes";
-import { formatUsd } from "lib/numbers";
+import { useChainId } from "lib/chains";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
+import { InsufficientGmxAccountGasTokenBalanceMessage } from "components/Errors/gasErrors";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
+import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import { Table, TableTh, TableTheadTr } from "components/Table/Table";
@@ -29,6 +33,7 @@ type Props = {
 
 export function ClaimAffiliatesModal({ onClose }: Props) {
   const state = useClaimAffiliatesModalState({ onClose });
+  const { chainId, srcChainId } = useChainId();
 
   return (
     <ModalWithPortal
@@ -40,7 +45,9 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
     >
       <div className="flex flex-col gap-12">
         <div className="text-center text-20 font-medium">
-          <Trans>Claim {formatUsd(state.totalClaimableFundingUsd)}</Trans>
+          <Trans>
+            Claim <UsdValue usd={state.totalClaimableFundingUsd} />
+          </Trans>
         </div>
 
         <Table>
@@ -163,7 +170,7 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
                   />
                   <SyntheticsInfoRow
                     label={<Trans>Total value of assets</Trans>}
-                    value={formatUsd(state.selectedClaimTokensUsd)}
+                    value={<UsdValue usd={state.selectedClaimTokensUsd} />}
                   />
                   <SyntheticsInfoRow
                     label={
@@ -222,12 +229,14 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
             ) : state.networkFeeInfo.amount === undefined ? (
               "-"
             ) : (
-              <AmountWithUsdBalance
+              <NetworkFeeValue
                 amount={state.networkFeeInfo.amount}
                 decimals={state.networkFeeInfo.decimals}
                 usd={state.networkFeeInfo.amountUsd}
                 symbol={state.networkFeeInfo.symbol}
                 isStable={state.networkFeeInfo.isStable}
+                source={getNetworkFeeSource({ isGmxAccount: srcChainId !== undefined })}
+                isExpress={srcChainId !== undefined}
               />
             )
           }
@@ -243,7 +252,17 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
           </AlertInfoCard>
         )}
 
-        <OutOfTokenErrorAlert errors={state.errors} token={state.isOutOfTokenErrorToken} onClose={onClose} />
+        {state.errors?.isOutOfTokenError?.isGasPaymentToken ? (
+          <AlertInfoCard type="error" hideClose>
+            <InsufficientGmxAccountGasTokenBalanceMessage
+              chainId={chainId}
+              gasPaymentTokenAddress={state.errors.isOutOfTokenError.tokenAddress}
+              onBeforeNavigation={onClose}
+            />
+          </AlertInfoCard>
+        ) : (
+          <OutOfTokenErrorAlert errors={state.errors} token={state.isOutOfTokenErrorToken} onClose={onClose} />
+        )}
 
         <Button
           className="w-full"

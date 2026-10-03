@@ -4,7 +4,10 @@ import { describe, expect, it } from "vitest";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import type { PositionTradeAction } from "sdk/utils/tradeHistory/types";
 
-import { getLifecycleSettlementLines, getLifecycleSettlementView } from "./lifecycleSettlement";
+import {
+  getLifecycleSettlementLines as getLifecycleSettlementLinesParts,
+  getLifecycleSettlementView,
+} from "./lifecycleSettlement";
 import {
   CLOSE_ORDER_KEY,
   OPEN_ORDER_KEY,
@@ -19,6 +22,10 @@ import {
   buildIncreaseRow,
   buildLifecycleData,
 } from "./settlementMocks";
+import { withPlainText } from "./testUtils";
+
+const getLifecycleSettlementLines = (...args: Parameters<typeof getLifecycleSettlementLinesParts>) =>
+  withPlainText(getLifecycleSettlementLinesParts(...args));
 
 i18n.load({ en: {} });
 i18n.activate("en");

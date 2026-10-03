@@ -99,11 +99,7 @@ test.describe("Trading Settings: multichain Express+1CT -> Express deactivation 
     await modeButton(page, "Express").click();
 
     await expect(page.getByText("Deactivation failed")).toBeVisible({ timeout: 30_000 });
-    await expect(
-      page.getByText(
-        "Insufficient gas payment token balance in your GMX Account to cover network fees. Deposit funds and retry."
-      )
-    ).toBeVisible();
+    await expect(page.getByText("Insufficient ETH in your GMX Account for gas. Deposit ETH.")).toBeVisible();
 
     expect(countSignatureRequests(chain)).toBe(0);
     expect(chain.signedTypedData).toHaveLength(0);
