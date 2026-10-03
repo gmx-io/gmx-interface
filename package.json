@@ -34,7 +34,18 @@
     "prettier": "prettier --write src/**/*.{js,ts,jsx,tsx,css,scss} landing/**/*.{js,ts,jsx,tsx,css,scss}",
     "postinstall": "cd ./sdk && echo \"Building SDK\" && yarn && yarn build",
     "prebuild": "cd ./sdk && yarn tsx scripts/prebuild",
-    "test:ct": "NODE_OPTIONS='--max-old-space-size=8192' playwright test -c playwright-ct.config.ts"
+    "test:ct": "NODE_OPTIONS='--max-old-space-size=8192' playwright test -c playwright-ct.config.ts",
+    "test:regression": "playwright test -c playwright-regression.config.ts",
+    "test:regression:funded-preflight": "playwright test -c playwright-funded-preflight.config.ts && node autotests/regression/report.cjs test-results/funded-preflight-results.json",
+    "test:regression:types": "tsc -p autotests/regression/tsconfig.json",
+    "test:regression:report": "playwright show-report playwright-report/regression",
+    "test:regression:funded:plan": "TSX_TSCONFIG_PATH=autotests/regression/funded/tsconfig.json node --env-file-if-exists=.env.test.local --import tsx autotests/regression/funded/cli.ts plan",
+    "test:regression:funded": "TSX_TSCONFIG_PATH=autotests/regression/funded/tsconfig.json node --env-file-if-exists=.env.test.local --import tsx autotests/regression/funded/cli.ts run",
+    "test:regression:funded:all": "TSX_TSCONFIG_PATH=autotests/regression/funded/tsconfig.json node --env-file-if-exists=.env.test.local --import tsx autotests/regression/funded/batchCli.ts",
+    "test:regression:funded:cleanup": "TSX_TSCONFIG_PATH=autotests/regression/funded/tsconfig.json node --env-file-if-exists=.env.test.local --import tsx autotests/regression/funded/cli.ts cleanup",
+    "test:regression:funded:unit": "tsx --tsconfig autotests/regression/funded/tsconfig.json --test --test-concurrency=3 autotests/regression/funded/*.test.ts",
+    "test:regression:funded:list": "TSX_TSCONFIG_PATH=autotests/regression/funded/tsconfig.json node --import tsx autotests/regression/funded/cli.ts list --group all",
+    "test:regression:funded:types": "tsc -p autotests/regression/funded/tsconfig.json"
   },
   "dependencies": {
     "@apollo/client": "3.5.6",
@@ -160,6 +171,7 @@
     "@lingui/loader": "4.10.0",
     "@lingui/vite-plugin": "4.11.3",
     "@playwright/experimental-ct-react": "1.58.2",
+    "@playwright/test": "1.58.2",
     "@types/crypto-js": "4.2.2",
     "@types/react-date-range": "1.4.9",
     "@types/react-helmet": "6.1.11",
