@@ -150,6 +150,8 @@ export function PoolSelector({
             (item) => (isGlvInfo(item.glvOrMarketInfo) ? getGlvDisplayName(item.glvOrMarketInfo) : item.name),
             (item) => stripBlacklistedWords(item.glvOrMarketInfo.longToken.name),
             (item) => stripBlacklistedWords(item.glvOrMarketInfo.shortToken.name),
+            (item) => item.glvOrMarketInfo.longToken.symbol,
+            (item) => item.glvOrMarketInfo.shortToken.symbol,
           ],
           searchKeyword
         )
