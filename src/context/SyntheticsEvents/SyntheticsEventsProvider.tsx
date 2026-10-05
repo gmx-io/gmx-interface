@@ -15,6 +15,7 @@ import {
 } from "context/WebsocketContext/subscribeToEvents";
 import { MultichainTransferProgress } from "domain/multichain/progress/MultichainTransferProgress";
 import { useMultichainTransferProgressView } from "domain/multichain/progress/MultichainTransferProgressView";
+import { getPossiblyInsufficientPayTokens } from "domain/synthetics/express/insufficientPayTokens";
 import { MarketsInfoData, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
@@ -42,7 +43,7 @@ import { TokenBalanceType } from "domain/tokens";
 import type { PendingTpSlOrderBatch } from "domain/tpsl/types";
 import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
-import { ErrorLike } from "lib/errors";
+import { ErrorLike, parseError } from "lib/errors";
 import {
   getIsInsufficientExecutionFeeError,
   getIsInvalidSignatureError,
@@ -76,6 +77,9 @@ import { StatusCode } from "sdk/utils/express";
 import { decodeOrderTwapParams } from "sdk/utils/twap/uiFeeReceiver";
 
 import {
+  getDebugErrorMessage,
+  getInsufficientBalanceToastBanner,
+  getInsufficientBalanceToastContent,
   getInsufficientExecutionFeeToastContent,
   getOutdatedSubaccountApprovalToastContent,
   InvalidSignatureToastContent,
@@ -159,7 +163,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const [withdrawalStatuses, setWithdrawalStatuses] = useState<WithdrawalStatuses>({});
   const [shiftStatuses, setShiftStatuses] = useState<ShiftStatuses>({});
 
-  const { setWebsocketTokenBalancesUpdates, setOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
+  const {
+    setWebsocketTokenBalancesUpdates,
+    setOptimisticTokensBalancesUpdates,
+    optimisticTokensBalancesUpdates,
+    websocketTokenBalancesUpdates,
+  } = useTokensBalancesUpdates();
   const [approvalStatuses, setApprovalStatuses] = useState<ApprovalStatuses>({});
 
   const [pendingTpSlOrderBatches, setPendingTpSlOrderBatches] = useState<PendingTpSlOrderBatch[]>([]);
@@ -1102,7 +1111,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           setPendingExpressTxnParams((old) => updateByKey(old, pendingExpressTxn.key!, { isViewed: true }));
           setOptimisticTokensBalancesUpdates((old) => {
             const newState = { ...old };
-            pendingExpressTxn.payTokenAddresses?.forEach((tokenAddress) => {
+            Object.keys(pendingExpressTxn.payAmounts ?? {}).forEach((tokenAddress) => {
               delete newState[tokenAddress];
             });
             return newState;
@@ -1135,7 +1144,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
                   executionFee: executionFeeErrorParams.args.executionFee,
                   chainId,
                   executionFeeBufferBps,
-                  estimatedExecutionGasLimit: pendingExpressTxn.estimatedExecutionGasLimit ?? 0n,
+                  isExpress: true,
+                  estimatedExecutionFee: pendingExpressTxn.estimatedExecutionFee,
+                  estimatedExecutionGasLimit: pendingExpressTxn.estimatedExecutionGasLimit,
+                  estimatedOrders: pendingExpressTxn.estimatedOrders,
                   txUrl: undefined,
                   errorMessage: executionFeeErrorParams.errorData.errorMessage,
                   shouldOfferExpress: false,
@@ -1195,7 +1207,50 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
               }
             }
 
-            if (pendingExpressTxn.errorMessage && !pendingExpressTxn.isViewed) {
+            const relayErrorData = parseError(relayError);
+            const payAmounts = pendingExpressTxn.payAmounts ?? {};
+            const balanceBanner = getInsufficientBalanceToastBanner({
+              chainId,
+              errorData: relayErrorData,
+              expressTxn: pendingExpressTxn.gasPaymentTokenAddress
+                ? {
+                    gasPaymentTokenAddress: pendingExpressTxn.gasPaymentTokenAddress,
+                    isGmxAccount: Boolean(pendingExpressTxn.isGmxAccount),
+                    payTokenAddresses: Object.keys(payAmounts),
+                    possiblyInsufficientTokenAddresses: getPossiblyInsufficientPayTokens({
+                      payAmounts,
+                      tokensData,
+                      optimisticUpdates: optimisticTokensBalancesUpdates,
+                      websocketUpdates: websocketTokenBalancesUpdates,
+                      balanceType: pendingExpressTxn.isGmxAccount
+                        ? TokenBalanceType.GmxAccount
+                        : TokenBalanceType.Wallet,
+                    }),
+                  }
+                : undefined,
+            });
+
+            if (balanceBanner && !isViewed && !pendingExpressTxn.isViewed) {
+              const balanceToastContent = getInsufficientBalanceToastContent({
+                chainId,
+                banner: balanceBanner,
+                debugErrorMessage: getDebugErrorMessage(relayErrorData),
+              });
+
+              sleep(500).then(() => {
+                toast.dismiss(pendingOrderToastIdRef.current);
+                helperToast.error(balanceToastContent, {
+                  tradingErrorInfo: {
+                    actionName: "Express Order",
+                    errorData: relayErrorData,
+                    metricId: pendingExpressTxn.metricId,
+                  },
+                });
+              });
+              isViewed = true;
+            }
+
+            if (pendingExpressTxn.errorMessage && !pendingExpressTxn.isViewed && !isViewed) {
               helperToast.error(pendingExpressTxn.errorMessage, {
                 tradingErrorInfo: {
                   actionName: "Express Order",
@@ -1211,7 +1266,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
               );
               setOptimisticTokensBalancesUpdates((old) => {
                 const newState = { ...old };
-                pendingExpressTxn.payTokenAddresses?.forEach((tokenAddress) => {
+                Object.keys(pendingExpressTxn.payAmounts ?? {}).forEach((tokenAddress) => {
                   delete newState[tokenAddress];
                 });
                 return newState;
@@ -1231,6 +1286,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       provider,
       setIsSettingsVisible,
       setOptimisticTokensBalancesUpdates,
+      tokensData,
+      optimisticTokensBalancesUpdates,
+      websocketTokenBalancesUpdates,
     ]
   );
 

@@ -1,15 +1,16 @@
-const heroGlowStyle = {
-  background: `
-    radial-gradient(ellipse 42% 72% at 72% 45%, rgba(63, 38, 196, 0.75), rgba(31, 20, 104, 0.48) 48%, rgba(9, 10, 20, 0) 78%),
-    radial-gradient(ellipse 24% 42% at 61% 30%, rgba(83, 49, 244, 0.3), rgba(9, 10, 20, 0) 72%)
-  `,
-};
+import heroBg from "img/bg_hero_blurred.png";
 
 export function HeroBackground() {
   return (
-    <div
-      style={heroGlowStyle}
-      className="pointer-events-none absolute -right-[620px] h-[724px] w-[1547px] sm:-bottom-42 sm:left-83"
-    />
+    <div className="pointer-events-none absolute -right-[620px] h-[724px] w-[1547px] sm:-bottom-42 sm:left-83">
+      {/* Pre-rendered blur with 720px padding preserves the fade without Safari's costly live filters. */}
+      <img
+        src={heroBg}
+        alt=""
+        width={2988}
+        height={2164}
+        className="absolute -left-[720px] -top-[720px] h-[2164px] w-[2988px] max-w-none"
+      />
+    </div>
   );
 }

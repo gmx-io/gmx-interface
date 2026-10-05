@@ -55,9 +55,10 @@ import {
   CancelOrderTxnParams,
   CreateOrderTxnParams,
   DecreasePositionOrderParams,
+  getBatchExecutionFeeEstimates,
   getBatchRequiredActions,
-  getBatchTotalExecutionFee,
   getBatchTotalPayCollateralAmount,
+  getExpressBatchOrderParams,
   getIsTwapOrderPayload,
   IncreasePositionOrderParams,
   SwapOrderParams,
@@ -69,6 +70,7 @@ import { getTxnErrorToast, PermitIssueType } from "components/Errors/errorToasts
 import { getIsDecreaseBatch } from "./getIsDecreaseBatch";
 import { getIsSizeIncreaseBatch } from "./getIsSizeIncreaseBatch";
 import { BatchOrderTxnCtx } from "./sendBatchOrderTxn";
+import { getPossiblyInsufficientPayTokens } from "../express/insufficientPayTokens";
 import { ExpressTxnParams } from "../express/types";
 
 export type CallbackUiCtx = {
@@ -98,7 +100,8 @@ export function useOrderTxnCallbacks() {
   const { chainId, srcChainId } = useChainId();
   const { showDebugValues, setIsSettingsVisible } = useSettings();
   const ordersInfoData = useSelector(selectOrdersInfoData);
-  const { addOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
+  const { addOptimisticTokensBalancesUpdates, optimisticTokensBalancesUpdates, websocketTokenBalancesUpdates } =
+    useTokensBalancesUpdates();
   const { setIsPermitsDisabled, resetTokenPermits } = useTokenPermitsContext();
   const { invalidateSubaccountApproval } = useSubaccountContext();
   const tokensData = useSelector(selectTokensData);
@@ -218,11 +221,12 @@ export function useOrderTxnCallbacks() {
             key: getExpressParamsKey(expressParams),
             subaccountApproval: expressParams.subaccount?.signedApproval,
             tokenPermits: expressParams.relayParamsPayload.tokenPermits,
-            payTokenAddresses: Object.keys(optimisticBatchPayAmounts),
+            payAmounts: optimisticBatchPayAmounts,
             pendingOrdersKeys: pendingOrders.map(getPendingOrderKey),
             pendingPositionsKeys: pendingPositions.map((p) => p.positionKey),
             estimatedExecutionFee: expressParams.executionFeeAmount,
             estimatedExecutionGasLimit: expressParams.executionGasLimit,
+            estimatedOrders: getBatchExecutionFeeEstimates(getExpressBatchOrderParams(chainId, e.data.batchParams)),
             metricId: ctx.metricId,
             createdAt,
             taskId: undefined,
@@ -231,6 +235,7 @@ export function useOrderTxnCallbacks() {
             successMessage,
             errorMessage,
             isGmxAccount: expressParams.isGmxAccount,
+            gasPaymentTokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
           });
         }
       };
@@ -320,13 +325,7 @@ export function useOrderTxnCallbacks() {
               taskId: e.data.relayTaskId,
             });
           } else if (e.data.type === "wallet") {
-            const totalExecutionFee = tokensData
-              ? getBatchTotalExecutionFee({
-                  batchParams: e.data.batchParams,
-                  chainId,
-                  tokensData,
-                })
-              : undefined;
+            const estimatedOrders = getBatchExecutionFeeEstimates(e.data.batchParams);
 
             const pendingTxn: PendingTransaction = {
               hash: e.data.transactionHash,
@@ -343,10 +342,11 @@ export function useOrderTxnCallbacks() {
               message: getOperationMessage(mainActionType, "success", actionsCount, undefined, setIsSettingsVisible),
               metricId: ctx.metricId,
               actionName: ctx.actionName,
-              data: totalExecutionFee
+              data: estimatedOrders.length
                 ? {
-                    estimatedExecutionFee: totalExecutionFee.feeTokenAmount,
-                    estimatedExecutionGasLimit: totalExecutionFee.gasLimit,
+                    estimatedExecutionFee: estimatedOrders.reduce((sum, order) => sum + order.executionFee, 0n),
+                    estimatedExecutionGasLimit: estimatedOrders.reduce((sum, order) => sum + order.gasLimit, 0n),
+                    estimatedOrders,
                   }
                 : undefined,
             };
@@ -402,6 +402,8 @@ export function useOrderTxnCallbacks() {
             }
           }
 
+          const payAmounts = getOptimisticBatchPayAmounts(e.data);
+
           const toastParams = getTxnErrorToast(chainId, errorData, {
             defaultMessage: operationMessage,
             slippageInputId: ctx.slippageInputId,
@@ -413,6 +415,20 @@ export function useOrderTxnCallbacks() {
             permitIssueType,
             isOutdatedSubaccountApproval,
             setIsSettingsVisible,
+            expressTxn: expressParams
+              ? {
+                  gasPaymentTokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
+                  isGmxAccount: expressParams.isGmxAccount,
+                  payTokenAddresses: Object.keys(payAmounts),
+                  possiblyInsufficientTokenAddresses: getPossiblyInsufficientPayTokens({
+                    payAmounts,
+                    tokensData,
+                    optimisticUpdates: optimisticTokensBalancesUpdates,
+                    websocketUpdates: websocketTokenBalancesUpdates,
+                    balanceType: expressParams.isGmxAccount ? TokenBalanceType.GmxAccount : TokenBalanceType.Wallet,
+                  }),
+                }
+              : undefined,
           });
 
           helperToast.error(toastParams.errorContent, {
@@ -480,6 +496,8 @@ export function useOrderTxnCallbacks() {
     },
     [
       addOptimisticTokensBalancesUpdates,
+      optimisticTokensBalancesUpdates,
+      websocketTokenBalancesUpdates,
       blockNumber,
       chainId,
       srcChainId,

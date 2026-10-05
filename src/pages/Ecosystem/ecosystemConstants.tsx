@@ -99,8 +99,8 @@ export const communityProjects: EcosystemCommunityProject[] = [
     link: "https://app.copin.io",
     linkLabel: "copin.io",
     about: msg`Explore, analyze, and copy on-chain traders`,
-    creatorLabel: ["@0xanol", "@tungle_eth"],
-    creatorLink: ["https://x.com/0xanol", "https://x.com/tungle_eth"],
+    creatorLabel: "@0xanol",
+    creatorLink: "https://x.com/0xanol",
     chainIds: [ARBITRUM],
   },
   {
@@ -144,39 +144,12 @@ export const dashboardProjects: EcosystemDashboardProject[] = [
     chainIds: [ARBITRUM, AVALANCHE],
   },
   {
-    title: msg`GMX risk monitoring`,
-    link: "https://community.chaoslabs.xyz/gmx-arbitrum/ccar-perps/overview",
-    linkLabel: "chaoslabs.xyz",
-    about: msg`Protocol risk explorer and stats`,
-    creatorLabel: "@chaos_labs",
-    creatorLink: "https://x.com/chaos_labs",
-    chainIds: [ARBITRUM, AVALANCHE],
-  },
-  {
     title: msg`Saulius GMX analytics`,
     link: "https://dune.com/saulius/gmx-analytics",
     linkLabel: "dune.com",
     about: msg`Protocol analytics`,
     creatorLabel: "@sliux",
     creatorLink: "https://x.com/sliux",
-    chainIds: [ARBITRUM, AVALANCHE],
-  },
-  {
-    title: msg`Compass Labs trading simulations`,
-    link: "https://www.compasslabs.ai/dashboard?example=gmxV2_swap_orders",
-    linkLabel: "compasslabs.ai",
-    about: msg`Trading simulations on GMX using DOJO`,
-    creatorLabel: "@labs_compass",
-    creatorLink: "https://x.com/labs_compass",
-    chainIds: [ARBITRUM, AVALANCHE],
-  },
-  {
-    title: msg`Compass Labs GM token dashboard`,
-    link: "https://www.compasslabs.ai/dashboard?example=gmxV2_market_orders",
-    linkLabel: "compasslabs.ai",
-    about: msg`GMX market token price chart`,
-    creatorLabel: "@labs_compass",
-    creatorLink: "https://x.com/labs_compass",
     chainIds: [ARBITRUM, AVALANCHE],
   },
 ];
@@ -195,14 +168,6 @@ export const integrations: EcosystemGmxPage[] = [
     link: "https://defillama.com",
     linkLabel: "defillama.com",
     about: msg`Decentralized finance dashboard`,
-
-    chainIds: [ARBITRUM, AVALANCHE],
-  },
-  {
-    title: msg`Stryke`,
-    link: "https://www.stryke.xyz",
-    linkLabel: "stryke.xyz",
-    about: msg`Decentralized options protocol`,
 
     chainIds: [ARBITRUM, AVALANCHE],
   },
@@ -263,14 +228,6 @@ export const integrations: EcosystemGmxPage[] = [
     chainIds: [ARBITRUM, AVALANCHE],
   },
   {
-    title: msg`Firebird Finance`,
-    link: "https://app.firebird.finance/swap",
-    linkLabel: "firebird.finance",
-    about: msg`DEX aggregator`,
-
-    chainIds: [AVALANCHE],
-  },
-  {
     title: msg`Yield Yak Swap`,
     link: "https://yieldyak.com/swap",
     linkLabel: "yieldyak.com",
@@ -279,26 +236,10 @@ export const integrations: EcosystemGmxPage[] = [
     chainIds: [AVALANCHE],
   },
   {
-    title: msg`Plutus`,
-    link: "https://plutusdao.io/vaults",
-    linkLabel: "plutusdao.io",
-    about: msg`GLP autocompounding vaults`,
-
-    chainIds: [ARBITRUM],
-  },
-  {
     title: msg`Beefy`,
     link: "https://app.beefy.com/",
     linkLabel: "beefy.com",
     about: msg`GLP and GMX autocompounding vaults`,
-
-    chainIds: [ARBITRUM, AVALANCHE],
-  },
-  {
-    title: msg`ODOS`,
-    link: "https://app.odos.xyz/",
-    linkLabel: "odos.xyz",
-    about: msg`DEX aggregator`,
 
     chainIds: [ARBITRUM, AVALANCHE],
   },
@@ -311,13 +252,6 @@ export const integrations: EcosystemGmxPage[] = [
     chainIds: [ARBITRUM],
   },
   {
-    title: msg`UniDex Leverage`,
-    link: "https://leverage.unidex.exchange/",
-    linkLabel: "unidex.exchange",
-    about: msg`Leverage trading terminal`,
-    chainIds: [ARBITRUM, AVALANCHE],
-  },
-  {
     title: msg`Symbiosis`,
     link: "https://app.symbiosis.finance/",
     linkLabel: "symbiosis.finance",
@@ -326,8 +260,8 @@ export const integrations: EcosystemGmxPage[] = [
   },
   {
     title: msg`0x`,
-    link: "https://explorer.0xprotocol.org/liquiditySources",
-    linkLabel: "0xprotocol.org",
+    link: "https://0x.org/",
+    linkLabel: "0x.org",
     about: msg`DEX aggregator`,
     chainIds: [ARBITRUM, AVALANCHE],
   },
@@ -395,13 +329,6 @@ export const integrations: EcosystemGmxPage[] = [
     chainIds: [ARBITRUM],
   },
   {
-    title: msg`Rage Trade`,
-    link: "https://www.rage.trade/",
-    linkLabel: "rage.trade",
-    about: msg`Perpetuals aggregator`,
-    chainIds: [ARBITRUM],
-  },
-  {
     title: msg`Pear Protocol`,
     link: "https://www.pear.garden/",
     linkLabel: "pear.garden",
@@ -409,31 +336,10 @@ export const integrations: EcosystemGmxPage[] = [
     chainIds: [ARBITRUM],
   },
   {
-    title: msg`Mozaic Finance`,
-    link: "https://app.mozaic.finance/",
-    linkLabel: "mozaic.finance",
-    about: msg`Yield farming`,
-    chainIds: [ARBITRUM],
-  },
-  {
     title: msg`Solv Finance`,
     link: "https://solv.finance/",
     linkLabel: "solv.finance",
     about: msg`Asset management`,
-    chainIds: [ARBITRUM],
-  },
-  {
-    title: msg`Perfectswap`,
-    link: "https://vaults.perfectswap.io/#/",
-    linkLabel: "perfectswap.io",
-    about: msg`Yield vaults`,
-    chainIds: [ARBITRUM],
-  },
-  {
-    title: msg`Symbiosis`,
-    link: "https://app.symbiosis.finance/zap",
-    linkLabel: "symbiosis.finance",
-    about: msg`Cross-chain one-click deposits into GM`,
     chainIds: [ARBITRUM],
   },
   {
