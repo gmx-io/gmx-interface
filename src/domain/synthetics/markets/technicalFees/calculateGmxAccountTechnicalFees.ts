@@ -53,7 +53,7 @@ async function calculateGmxAccountDepositTechnicalFees(
     chainId: params.chainId,
     gasLimits: params.gasLimits,
     tokensData: params.tokensData,
-    gasPrice: params.gasPrice,
+    gasPrice: params.globalExpressParams.gasPrice,
   });
 
   const transferRequests = buildDepositTransferRequests({
@@ -193,7 +193,7 @@ async function calculateGmxAccountWithdrawalTechnicalFees(
     chainId: params.chainId,
     gasLimits: params.gasLimits,
     tokensData: params.tokensData,
-    gasPrice: params.gasPrice,
+    gasPrice: params.globalExpressParams.gasPrice,
   });
 
   const transferRequests = buildWithdrawalTransferRequests({

@@ -133,6 +133,7 @@ describe("useTokenApproval", () => {
         address: mocks.TOKEN,
         functionName: "allowance",
         args: [mocks.OWNER, mocks.SPENDER],
+        blockNumber: 105n,
       })
     );
     expect(view.result.isApproving).toBe(false);

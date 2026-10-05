@@ -7,7 +7,15 @@ import { useLatest } from "react-use";
 import { decodeErrorResult, encodeEventTopics, isHex, toHex, zeroAddress } from "viem";
 import { useAccount, useChains } from "wagmi";
 
-import { AVALANCHE, AnyChainId, SettlementChainId, SourceChainId, getChainName, isTestnetChain } from "config/chains";
+import {
+  AVALANCHE,
+  AnyChainId,
+  SettlementChainId,
+  SourceChainId,
+  getChainName,
+  getViemChain,
+  isTestnetChain,
+} from "config/chains";
 import { getContract } from "config/contracts";
 import { getChainIcon } from "config/icons";
 import { isGmxAccountHoldableToken } from "config/markets";
@@ -30,6 +38,7 @@ import {
   useGmxAccountSettlementChainId,
 } from "context/GmxAccountContext/hooks";
 import { selectGmxAccountDepositViewTokenInputAmount } from "context/GmxAccountContext/selectors";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useMultichainApprovalsActiveListener } from "context/SyntheticsEvents/useMultichainEvents";
@@ -47,9 +56,10 @@ import { useQuoteOft } from "domain/multichain/useQuoteOft";
 import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
 import { useQuoteSendNativeFeeWithGasLimit } from "domain/multichain/useQuoteSend";
 import { useWithdrawBlockedError } from "domain/multichain/useWithdrawBlockedError";
+import { WALLET_NETWORK_FEE_SOURCE, getSourceChainNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import { getBalanceByBalanceType, useTokensDataRequest } from "domain/synthetics/tokens";
-import { ValidationBannerErrorName, getDefaultInsufficientGasMessage } from "domain/synthetics/trade/utils/validation";
+import { ValidationBannerErrorName, getInsufficientFeeButtonMessage } from "domain/synthetics/trade/utils/validation";
 import { NativeTokenSupportedAddress } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
@@ -61,7 +71,7 @@ import { parseError } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedList } from "lib/i18n";
 import {
-  OrderMetricId,
+  MultichainDepositMetricData,
   initMultichainDepositMetricData,
   sendOrderSimulatedMetric,
   sendOrderSubmittedMetric,
@@ -73,10 +83,11 @@ import { USD_DECIMALS, adjustForDecimals, bigintToNumber, expandDecimals, format
 import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { sendMultichainDepositSuccessEvent } from "lib/userAnalytics/utils";
 import { useThrottledAsync } from "lib/useThrottledAsync";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
-import { convertTokenAddress, getToken } from "sdk/configs/tokens";
+import { convertTokenAddress, getNativeToken, getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { TokenBalanceType, TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "sdk/utils/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
@@ -87,6 +98,8 @@ import Button from "components/Button/Button";
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
+import { MaxActions } from "components/MaxActions/MaxActions";
+import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
 import NumberInput from "components/NumberInput/NumberInput";
 import { UsdValue } from "components/NumericValue/UsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
@@ -543,39 +556,45 @@ export const DepositView = () => {
   const gasPaymentTokenBalanceForDeposit = getBalanceByBalanceType(gasPaymentToken, depositBalanceType);
   const gasPaymentTokenAmountForDepositView =
     depositViewChain === settlementChainId ? sameChainNetworkFeeDetails?.amount : networkFee;
-  const needsGasPaymentTokenBuffer =
-    !ignoreGasPaymentToken &&
-    paymentToken !== undefined &&
-    gasPaymentToken !== undefined &&
-    paymentToken.address === gasPaymentToken.address;
 
   const isLoadingDepositMax =
     depositViewChain === settlementChainId
       ? false
       : isComposeGasLoading ||
         isBaseQuoteSendNativeFeeLoading ||
-        ((inputAmount ?? 0n) > 0n && isQuoteSendNativeFeeLoading) ||
-        (needsGasPaymentTokenBuffer && networkFee === undefined);
+        ((inputAmount ?? 0n) > 0n && isQuoteSendNativeFeeLoading);
+
+  const { expressOrdersEnabled, gasPaymentTokenAddress: settlementChainGasPaymentTokenAddress } = useSettings();
+  const reserveTokenForDeposit =
+    depositViewChain === settlementChainId && expressOrdersEnabled
+      ? getByKey(settlementChainTokensData, settlementChainGasPaymentTokenAddress)
+      : undefined;
+
+  const paymentTokenBalance = getBalanceByBalanceType(paymentToken, depositBalanceType);
 
   const depositMaxDetails = useMaxAvailableAmount({
     fromToken: paymentToken,
-    fromTokenBalance: getBalanceByBalanceType(paymentToken, depositBalanceType),
+    fromTokenBalance: paymentTokenBalance,
     fromTokenAmount: inputAmount,
-    fromTokenInputValue: inputValue ?? "",
     isLoading: isLoadingDepositMax,
     srcChainId: depositViewChain,
-    gasPaymentToken,
-    gasPaymentTokenBalance: gasPaymentTokenBalanceForDeposit,
-    gasPaymentTokenAmount: gasPaymentTokenAmountForDepositView,
-    ignoreGasPaymentToken,
-    useMinimalBuffer: depositViewChain !== undefined && depositViewChain !== settlementChainId,
+    feeToken: ignoreGasPaymentToken ? undefined : gasPaymentToken,
+    feeTokenAmount: gasPaymentTokenAmountForDepositView,
+    reserveToken: reserveTokenForDeposit,
+    isFeeEstimationFailed: depositViewChain === settlementChainId && sameChainNetworkFeeAsyncResult.error !== undefined,
   });
 
   const handleMaxButtonClick = useCallback(() => {
-    if (depositMaxDetails.formattedMaxAvailableAmount) {
+    if (depositMaxDetails.maxAvailableAmount > 0n) {
       setInputValue(depositMaxDetails.formattedMaxAvailableAmount);
     }
-  }, [depositMaxDetails.formattedMaxAvailableAmount, setInputValue]);
+  }, [depositMaxDetails.maxAvailableAmount, depositMaxDetails.formattedMaxAvailableAmount, setInputValue]);
+
+  const handleKeepGasClick = useCallback(() => {
+    if (depositMaxDetails.formattedKeepGasAmount !== undefined) {
+      setInputValue(depositMaxDetails.formattedKeepGasAmount);
+    }
+  }, [depositMaxDetails.formattedKeepGasAmount, setInputValue]);
 
   const isFirstDeposit = useIsFirstDeposit();
   const latestIsFirstDeposit = useLatest(isFirstDeposit);
@@ -697,7 +716,7 @@ export const DepositView = () => {
   const makeCrossChainCallback = useCallback(
     (params: {
       depositViewChain: SourceChainId;
-      metricId: OrderMetricId;
+      metricId: MultichainDepositMetricData["metricId"];
       sendParams: SendParam;
       tokenAddress: string;
     }): TxnCallback<WalletTxnCtx> =>
@@ -731,7 +750,6 @@ export const DepositView = () => {
           } else {
             const toastParams = getTxnErrorToast(params.depositViewChain, parseError(txnEvent.data.error), {
               defaultMessage: t`Deposit failed`,
-              isSourceChainTxn: true,
             });
 
             helperToast.error(toastParams.errorContent, {
@@ -745,6 +763,7 @@ export const DepositView = () => {
           setIsSubmitting(false);
 
           sendTxnSentMetric(params.metricId);
+          sendMultichainDepositSuccessEvent(params.metricId);
 
           if (latestInputAmountUsd.current !== undefined) {
             sendAddressablePixelEvent({
@@ -1137,7 +1156,7 @@ export const DepositView = () => {
     buttonState = {
       text: (
         <>
-          <Trans>Approving...</Trans>
+          {t`Approve ${selectedToken?.symbol}`}
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
@@ -1150,11 +1169,6 @@ export const DepositView = () => {
     };
   } else if (withdrawBlockedError) {
     buttonState = withdrawBlockedError;
-  } else if (needTokenApprove) {
-    buttonState = {
-      text: t`Allow ${selectedToken?.symbol} spending`,
-      onClick: handleApproveClick,
-    };
   } else if (isSubmitting) {
     buttonState = {
       text: (
@@ -1172,14 +1186,26 @@ export const DepositView = () => {
     };
   } else if (isInsufficientSourceChainNativeBalance) {
     buttonState = {
-      text: getDefaultInsufficientGasMessage(),
+      text: getInsufficientFeeButtonMessage({
+        tokenSymbol: getViemChain(depositViewChain as SourceChainId).nativeCurrency.symbol,
+        feeSource: getSourceChainNetworkFeeSource(depositViewChain as SourceChainId),
+      }),
       bannerErrorName: ValidationBannerErrorName.insufficientSourceChainNativeTokenBalance,
       disabled: true,
     };
   } else if (isInsufficientSameChainNativeGasBalance) {
     buttonState = {
-      text: getDefaultInsufficientGasMessage(),
+      text: getInsufficientFeeButtonMessage({
+        tokenSymbol: getNativeToken(settlementChainId).symbol,
+        feeSource: WALLET_NETWORK_FEE_SOURCE,
+      }),
+      bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
       disabled: true,
+    };
+  } else if (needTokenApprove) {
+    buttonState = {
+      text: t`Approve ${selectedToken?.symbol}`,
+      onClick: handleApproveClick,
     };
   } else if (isNetworkFeeLoading) {
     buttonState = {
@@ -1228,9 +1254,9 @@ export const DepositView = () => {
     return (
       <AmountWithUsdBalance
         className="leading-1"
-        amount={protocolFeeAmount}
+        amount={-protocolFeeAmount}
         decimals={selectedTokenSourceChainDecimals}
-        usd={protocolFeeUsd}
+        usd={protocolFeeUsd === undefined ? undefined : -protocolFeeUsd}
         symbol={selectedToken?.symbol}
       />
     );
@@ -1254,27 +1280,31 @@ export const DepositView = () => {
       }
 
       return (
-        <AmountWithUsdBalance
+        <NetworkFeeValue
           className="leading-1"
           amount={sameChainNetworkFeeDetails.amount}
           decimals={sameChainNetworkFeeDetails.decimals}
           usd={sameChainNetworkFeeDetails?.usd}
           symbol={sameChainNetworkFeeDetails?.symbol}
+          source={WALLET_NETWORK_FEE_SOURCE}
+          isExpress={false}
         />
       );
     }
 
-    if (networkFee === undefined) {
+    if (networkFee === undefined || depositViewChain === undefined) {
       return "...";
     }
 
     return (
-      <AmountWithUsdBalance
+      <NetworkFeeValue
         className="leading-1"
         amount={networkFee}
         decimals={depositViewViemChain.nativeCurrency.decimals}
         usd={networkFeeUsd}
         symbol={depositViewViemChain.nativeCurrency.symbol}
+        source={getSourceChainNetworkFeeSource(depositViewChain)}
+        isExpress={false}
       />
     );
   }, [
@@ -1362,11 +1392,21 @@ export const DepositView = () => {
             <div className="text-body-medium flex items-center justify-between gap-6 text-typography-secondary">
               <Trans>Deposit</Trans>
               {selectedToken !== undefined && (
-                <div>
-                  <Trans>Available</Trans>{" "}
-                  <span className="text-typography-primary">
-                    <span className="numbers">{depositMaxDetails.formattedBalance}</span> {selectedToken?.symbol}
-                  </span>
+                <div className="flex items-center gap-8">
+                  {paymentTokenBalance !== undefined && paymentTokenBalance > 0n && (
+                    <MaxActions
+                      qa="deposit"
+                      state={depositMaxDetails.maxActions}
+                      onMax={handleMaxButtonClick}
+                      onKeepGas={handleKeepGasClick}
+                    />
+                  )}
+                  <button type="button" onClick={handleMaxButtonClick}>
+                    <Trans>Available</Trans>{" "}
+                    <span className="text-typography-primary">
+                      <span className="numbers">{depositMaxDetails.formattedBalance}</span> {selectedToken?.symbol}
+                    </span>
+                  </button>
                 </div>
               )}
             </div>
@@ -1381,16 +1421,6 @@ export const DepositView = () => {
               />
               <div className="pointer-events-none absolute right-14 top-1/2 flex -translate-y-1/2 items-center gap-8">
                 <span className="text-typography-secondary">{selectedToken?.symbol}</span>
-                {depositMaxDetails.showClickMax && (
-                  <button
-                    className="text-body-small pointer-events-auto rounded-full bg-slate-600 px-8 py-2 font-medium
-                             hover:bg-slate-500 focus-visible:bg-slate-500 active:bg-slate-500/70"
-                    type="button"
-                    onClick={handleMaxButtonClick}
-                  >
-                    <Trans>Max</Trans>
-                  </button>
-                )}
               </div>
             </div>
             {!selectedToken?.isStable && (

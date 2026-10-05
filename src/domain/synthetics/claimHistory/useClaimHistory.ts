@@ -19,6 +19,7 @@ import { ClaimAction, ClaimCollateralAction, ClaimFundingFeeAction, ClaimMarketI
 export type ClaimCollateralHistoryResult = {
   claimActions?: ClaimAction[];
   isLoading: boolean;
+  hasMorePages: boolean;
   pageIndex: number;
   setPageIndex: (...args: Parameters<SWRInfiniteResponse["setSize"]>) => void;
 };
@@ -112,12 +113,20 @@ export function useClaimCollateralHistory(
     return data
       .flatMap((page) => page.claimActions)
       .reduce((acc, rawAction) => {
+        let tokens: ClaimAction["tokens"];
+        try {
+          // getToken also supports legacy token addresses.
+          tokens = rawAction.tokenAddresses.map((address) => getToken(chainId, getAddress(address)));
+        } catch {
+          return acc;
+        }
+
         const eventName = rawAction.eventName;
 
         switch (eventName) {
           case ClaimType.ClaimFunding:
           case ClaimType.ClaimPriceImpact: {
-            const claimCollateralAction = createClaimCollateralAction(chainId, eventName, rawAction, marketsInfoData);
+            const claimCollateralAction = createClaimCollateralAction(tokens, eventName, rawAction, marketsInfoData);
 
             return claimCollateralAction ? [...acc, claimCollateralAction] : acc;
           }
@@ -125,7 +134,7 @@ export function useClaimCollateralHistory(
           case ClaimType.SettleFundingFeeCreated:
           case ClaimType.SettleFundingFeeExecuted:
           case ClaimType.SettleFundingFeeCancelled: {
-            const settleAction = createSettleFundingFeeAction(chainId, eventName, rawAction, marketsInfoData);
+            const settleAction = createSettleFundingFeeAction(tokens, eventName, rawAction, marketsInfoData);
             return settleAction ? [...acc, settleAction] : acc;
           }
           default:
@@ -134,9 +143,12 @@ export function useClaimCollateralHistory(
       }, [] as ClaimAction[]);
   }, [chainId, data, marketsInfoData, tokensData]);
 
+  const hasMorePages = data?.length === pageIndex && data?.at(-1)?.claimActions.length === pageSize;
+
   return {
     claimActions,
     isLoading,
+    hasMorePages,
     pageIndex,
     setPageIndex,
   };
@@ -240,13 +252,11 @@ export async function fetchRawClaimActions({
 }
 
 function createClaimCollateralAction(
-  chainId: number,
+  tokens: ClaimCollateralAction["tokens"],
   eventName: ClaimCollateralAction["eventName"],
   rawAction: RawClaimAction,
   marketsInfoData: MarketsInfoData | undefined
 ): ClaimCollateralAction | null {
-  const tokens = rawAction.tokenAddresses.map((address) => getToken(chainId, getAddress(address))).filter(Boolean);
-
   const claimItemsMap: { [marketAddress: string]: ClaimMarketItem } = {};
   const claimAction: ClaimCollateralAction = {
     id: rawAction.id,
@@ -303,7 +313,7 @@ function createClaimCollateralAction(
 }
 
 function createSettleFundingFeeAction(
-  chainId: number,
+  tokens: ClaimFundingFeeAction["tokens"],
   eventName: ClaimFundingFeeAction["eventName"],
   rawAction: RawClaimAction,
   marketsInfoData: MarketsInfoData | null
@@ -315,8 +325,6 @@ function createSettleFundingFeeAction(
     .filter(Boolean);
 
   if (!markets.length) return null;
-
-  const tokens = rawAction.tokenAddresses.map((address) => getToken(chainId, getAddress(address))).filter(Boolean);
 
   const claimItemsMap: { [marketAddress: string]: ClaimMarketItem } = {};
   if (rawAction.eventName === ClaimType.SettleFundingFeeExecuted) {

@@ -8,24 +8,35 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GasPaymentParams } from "domain/synthetics/express";
 import { getExecutionFeeWarning, type ExecutionFee } from "domain/synthetics/fees";
+import {
+  getNetworkFeeSourceExplanation,
+  getNetworkFeeSourceLabel,
+  WALLET_NETWORK_FEE_SOURCE,
+  type NetworkFeeSource,
+} from "domain/synthetics/fees/networkFeeSource";
+import { getPriorityFeeAllowanceAmount } from "domain/synthetics/fees/utils/executionFee";
 import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
-import { TokenData } from "domain/tokens";
-import { formatTokenAmountWithUsdParts } from "lib/numbers";
+import { TokenBalanceType, TokenData } from "domain/tokens";
+import { formatTokenAmountWithUsdParts, numberParts } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { convertTokenAddress, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 import ExchangeInfoRow from "components/ExchangeInfoRow/ExchangeInfoRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { NumericValue } from "components/NumericValue/NumericValue";
-import { UsdValue } from "components/NumericValue/UsdValue";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { LabelWithTooltip } from "components/Tooltip/LabelWithTooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import { NetworkFeeValue } from "./NetworkFeeValue";
 
 type Props = {
   executionFee?: ExecutionFee;
   gasPaymentParams?: GasPaymentParams;
+  feeSource: NetworkFeeSource | undefined;
+  feeSourceExplanation?: string;
   isAdditionOrdersMsg?: boolean;
   rowPadding?: boolean;
 };
@@ -36,12 +47,21 @@ type Props = {
  */
 const ESTIMATED_REFUND_BPS = 10 * 100;
 
-export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrdersMsg, rowPadding = false }: Props) {
+export function NetworkFeeRow({
+  executionFee,
+  gasPaymentParams,
+  feeSource,
+  feeSourceExplanation,
+  isAdditionOrdersMsg,
+  rowPadding = false,
+}: Props) {
   const executionFeeBufferBps = useExecutionFeeBufferBps();
   const tokensData = useTokensData();
   const chainId = useSelector(selectChainId);
   const gasPaymentToken = getByKey(tokensData, gasPaymentParams?.gasPaymentTokenAddress);
-  const executionFeeToken = getByKey(tokensData, executionFee?.feeToken.address);
+  const executionFeeToken = executionFee
+    ? getByKey(tokensData, convertTokenAddress(chainId, executionFee.feeToken.address, "native"))
+    : undefined;
 
   const additionalOrdersMsg = useMemo(
     () =>
@@ -58,6 +78,8 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
     let feeUsd: bigint;
     let feeAmount: bigint;
     let feeToken: TokenData;
+    let isExpress: boolean;
+    let allowanceUsd = 0n;
 
     if (gasPaymentToken && gasPaymentParams?.gasPaymentTokenAmount !== undefined) {
       feeToken = gasPaymentToken;
@@ -67,10 +89,16 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
         gasPaymentToken.decimals,
         gasPaymentToken.prices.minPrice
       )!;
+      isExpress = true;
     } else if (executionFee && executionFeeToken) {
       feeUsd = executionFee.feeUsd;
       feeAmount = executionFee.feeTokenAmount;
       feeToken = executionFeeToken;
+      isExpress = false;
+
+      if (feeAmount > 0n) {
+        allowanceUsd = bigMath.mulDiv(feeUsd, getPriorityFeeAllowanceAmount(chainId, executionFee), feeAmount);
+      }
     } else {
       return undefined;
     }
@@ -79,11 +107,30 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
       feeUsd,
       feeAmount,
       feeToken,
+      isExpress,
+      allowanceUsd,
     };
-  }, [executionFee, executionFeeToken, gasPaymentToken, gasPaymentParams]);
+  }, [chainId, executionFee, executionFeeToken, gasPaymentToken, gasPaymentParams]);
 
-  const executionDisplayDecimals = executionFeeToken?.isStable ? 2 : 5;
   const networkFeeDisplayDecimals = networkFee?.feeToken.isStable ? 2 : 5;
+
+  const refundSource = feeSource ?? WALLET_NETWORK_FEE_SOURCE;
+  const refundToken = useMemo(() => {
+    if (!networkFee) {
+      return undefined;
+    }
+
+    if (!networkFee.isExpress) {
+      return networkFee.feeToken;
+    }
+
+    const refundTokenAddress =
+      refundSource.balanceType === TokenBalanceType.GmxAccount
+        ? getWrappedToken(chainId).address
+        : NATIVE_TOKEN_ADDRESS;
+
+    return getByKey(tokensData, refundTokenAddress);
+  }, [chainId, networkFee, refundSource, tokensData]);
 
   const { estimatedRefundParts, estimatedRefundUsd } = useMemo(() => {
     let estimatedRefundUsd: bigint | undefined;
@@ -92,7 +139,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
       estimatedRefundUsd = undefined;
     } else {
       const feeUsBeforeBuffer = bigMath.mulDiv(
-        networkFee.feeUsd,
+        networkFee.feeUsd - networkFee.allowanceUsd,
         BASIS_POINTS_DIVISOR_BIGINT,
         BigInt(BASIS_POINTS_DIVISOR + executionFeeBufferBps)
       );
@@ -104,35 +151,32 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
 
     const estimatedRefundTokenAmount = convertToTokenAmount(
       estimatedRefundUsd,
-      executionFeeToken?.decimals,
-      executionFeeToken?.prices.minPrice
+      refundToken?.decimals,
+      refundToken?.prices.minPrice
     );
 
-    const estimatedRefundParts = formatTokenAmountWithUsdParts(
+    const estimatedRefundAmountParts = formatTokenAmountWithUsdParts(
       estimatedRefundTokenAmount,
       estimatedRefundUsd,
-      executionFeeToken?.symbol,
-      executionFeeToken?.decimals,
+      refundToken?.symbol,
+      refundToken?.decimals,
       {
         displayPlus: true,
-        displayDecimals: executionDisplayDecimals,
-        isStable: executionFeeToken?.isStable,
+        displayDecimals: refundToken?.isStable ? 2 : 5,
+        isStable: refundToken?.isStable,
       }
     );
+
+    const estimatedRefundParts =
+      estimatedRefundAmountParts !== undefined
+        ? numberParts(estimatedRefundAmountParts, ` · ${getNetworkFeeSourceLabel(refundSource)}`)
+        : undefined;
 
     return {
       estimatedRefundParts,
       estimatedRefundUsd,
     };
-  }, [
-    executionDisplayDecimals,
-    executionFeeBufferBps,
-    executionFeeToken?.decimals,
-    executionFeeToken?.isStable,
-    executionFeeToken?.prices.minPrice,
-    executionFeeToken?.symbol,
-    networkFee,
-  ]);
+  }, [executionFeeBufferBps, networkFee, refundSource, refundToken]);
 
   const value: ReactNode = useMemo(() => {
     if (networkFee === undefined) {
@@ -141,7 +185,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
 
     const maxNetworkFeeParts = formatTokenAmountWithUsdParts(
       -networkFee.feeAmount,
-      networkFee.feeUsd,
+      -networkFee.feeUsd,
       networkFee.feeToken.symbol,
       networkFee.feeToken.decimals,
       {
@@ -151,8 +195,18 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
     );
 
     const feeUsdAfterRefund = networkFee.feeUsd - (estimatedRefundUsd ?? 0n);
+    const feeAmountAfterRefund =
+      networkFee.feeAmount -
+      (convertToTokenAmount(estimatedRefundUsd, networkFee.feeToken.decimals, networkFee.feeToken.prices.minPrice) ??
+        0n);
 
     const warning = executionFee ? getExecutionFeeWarning(chainId, executionFee) : undefined;
+
+    const sourceExplanation =
+      feeSourceExplanation ??
+      (feeSource
+        ? getNetworkFeeSourceExplanation({ source: feeSource, isExpress: networkFee.isExpress, chainId })
+        : undefined);
 
     return (
       <TooltipWithPortal
@@ -185,12 +239,25 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
               valueClassName="numbers"
               textClassName="text-green-500"
             />
+            {sourceExplanation && (
+              <>
+                <br />
+                <p>{sourceExplanation}</p>
+              </>
+            )}
             {warning && <p className="text-yellow-300">{warning}</p>}
             {additionalOrdersMsg && <p>{additionalOrdersMsg}</p>}
           </>
         }
       >
-        <UsdValue usd={-feeUsdAfterRefund} />
+        <NetworkFeeValue
+          amount={feeAmountAfterRefund}
+          usd={feeUsdAfterRefund}
+          decimals={networkFee.feeToken.decimals}
+          symbol={networkFee.feeToken.symbol}
+          isStable={networkFee.feeToken.isStable}
+          source={feeSource}
+        />
       </TooltipWithPortal>
     );
   }, [
@@ -199,39 +266,24 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
     estimatedRefundUsd,
     executionFee,
     chainId,
+    feeSource,
+    feeSourceExplanation,
     estimatedRefundParts,
     additionalOrdersMsg,
   ]);
 
-  if (rowPadding) {
-    return (
-      <ExchangeInfoRow
-        label={
-          <TooltipWithPortal
-            position="left-start"
-            variant="iconStroke"
-            content={<Trans>Blockchain gas fee (not GMX-specific). Doesn't impact your margin.</Trans>}
-          >
-            <Trans>Network fee</Trans>
-          </TooltipWithPortal>
-        }
-        value={value}
-      />
-    );
-  }
-
-  return (
-    <SyntheticsInfoRow
-      label={
-        <TooltipWithPortal
-          position="left-start"
-          variant="iconStroke"
-          content={<Trans>Blockchain gas fee (not GMX-specific). Doesn't impact your margin.</Trans>}
-        >
-          <Trans>Network fee</Trans>
-        </TooltipWithPortal>
-      }
-      value={value}
+  const label = (
+    <LabelWithTooltip
+      label={t`Network fee`}
+      tooltip={<Trans>Blockchain gas fee (not GMX-specific). Doesn't impact your margin.</Trans>}
+      position="left-start"
+      variant="iconStroke"
     />
   );
+
+  if (rowPadding) {
+    return <ExchangeInfoRow qa="network-fee" label={label} value={value} />;
+  }
+
+  return <SyntheticsInfoRow qa="network-fee" label={label} value={value} />;
 }

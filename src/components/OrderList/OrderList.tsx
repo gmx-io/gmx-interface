@@ -19,6 +19,10 @@ import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateCon
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import {
+  getExpressParamsForSubmit,
+  reportMultichainExpressSubmitError,
+} from "domain/synthetics/express/validateMultichainExpressSubmit";
+import {
   OrderInfo,
   PositionOrderInfo,
   SwapOrderInfo,
@@ -173,34 +177,48 @@ export function OrderList({
       cancelOrderParams: orderKeys.map((key) => ({ orderKey: key })),
     };
 
-    const expressParams = await estimateBatchExpressParams({
-      signer,
-      chainId,
-      batchParams,
-      requireValidations: true,
-      globalExpressParams,
-      estimationMethod: "approximate",
-      provider,
-      isGmxAccount: srcChainId !== undefined,
-      subaccount,
-    });
+    try {
+      const expressParams = await estimateBatchExpressParams({
+        signer,
+        chainId,
+        batchParams,
+        requireValidations: false,
+        globalExpressParams,
+        estimationMethod: "approximate",
+        provider,
+        isGmxAccount: srcChainId !== undefined,
+        subaccount,
+      });
 
-    sendBatchOrderTxn({
-      chainId,
-      signer,
-      batchParams,
-      expressParams,
-      simulationParams: undefined,
-      callback: makeOrderTxnCallback({
-        actionName: "Cancel Order",
-        collateralSymbol: order.initialCollateralToken.symbol,
-      }),
-      provider,
-      isGmxAccount: srcChainId !== undefined,
-    }).finally(() => {
+      if (
+        reportMultichainExpressSubmitError({
+          isGmxAccount: srcChainId !== undefined,
+          expressParams,
+          tokensData: undefined,
+          actionName: "Cancel Order",
+          collateral: order.initialCollateralToken.symbol,
+        })
+      ) {
+        return;
+      }
+
+      await sendBatchOrderTxn({
+        chainId,
+        signer,
+        batchParams,
+        expressParams: getExpressParamsForSubmit(expressParams),
+        simulationParams: undefined,
+        callback: makeOrderTxnCallback({
+          actionName: "Cancel Order",
+          collateralSymbol: order.initialCollateralToken.symbol,
+        }),
+        provider,
+        isGmxAccount: srcChainId !== undefined,
+      });
+    } finally {
       setCancellingOrdersKeys((prev) => prev.filter((k) => !orderKeys.includes(k)));
       setSelectedOrderKeys?.(EMPTY_ARRAY);
-    });
+    }
   }
 
   const handleSetRef = useCallback((el: HTMLElement | null, orderKey: string) => {
