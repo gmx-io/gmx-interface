@@ -8117,10 +8117,6 @@ msgstr "勝率"
 msgid "GMX trading stats"
 msgstr "GMX 交易統計"
 
-#: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
-msgid "Deposits into this vault are open to whitelisted addresses. To get whitelisted, message <0>@GMXPartners</0> on Telegram and mention \"USDG whitelist\"."
-msgstr "此金庫的存入僅對白名單地址開放。如需加入白名單，請在 Telegram 上聯繫 <0>@GMXPartners</0> 並註明 \"USDG whitelist\"。"
-
 #: src/components/LeverageField/LeverageField.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "High leverage increases liquidation risk"
