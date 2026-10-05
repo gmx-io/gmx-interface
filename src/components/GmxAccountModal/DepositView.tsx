@@ -675,10 +675,7 @@ export const DepositView = () => {
           defaultMessage: t`Deposit failed`,
         });
 
-        helperToast.error(toastParams.errorContent, {
-          autoClose: toastParams.autoCloseToast,
-          toastId: "same-chain-gmx-account-deposit",
-        });
+        helperToast.error(toastParams.errorContent, { autoClose: toastParams.autoCloseToast });
       }
     },
     [
@@ -739,19 +736,13 @@ export const DepositView = () => {
               { defaultMessage: t`Deposit failed` }
             );
 
-            helperToast.error(toastParams.errorContent, {
-              autoClose: toastParams.autoCloseToast,
-              toastId: "gmx-account-deposit",
-            });
+            helperToast.error(toastParams.errorContent, { autoClose: toastParams.autoCloseToast });
           } else {
             const toastParams = getTxnErrorToast(params.depositViewChain, parseError(txnEvent.data.error), {
               defaultMessage: t`Deposit failed`,
             });
 
-            helperToast.error(toastParams.errorContent, {
-              autoClose: toastParams.autoCloseToast,
-              toastId: "gmx-account-deposit",
-            });
+            helperToast.error(toastParams.errorContent, { autoClose: toastParams.autoCloseToast });
           }
 
           sendTxnErrorMetric(params.metricId, prettyError, "unknown");
