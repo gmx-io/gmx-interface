@@ -128,6 +128,7 @@ export type DecreasePositionAmounts = {
 
   payedOutputUsd: bigint;
   payedRemainingCollateralUsd: bigint;
+  unpaidCostUsd: bigint;
 
   receiveTokenAmount: bigint;
   receiveUsd: bigint;

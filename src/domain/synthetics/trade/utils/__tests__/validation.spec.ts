@@ -540,6 +540,8 @@ describe("getDecreaseError — remaining-position margin check", () => {
     isTwap: false,
     numberOfParts: 0,
     remainingPositionMarginState: undefined,
+    shouldValidateLeftoverCollateral: true,
+    isInsufficientCollateralForCosts: false,
   };
 
   it.each([

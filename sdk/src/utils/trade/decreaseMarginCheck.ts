@@ -3,17 +3,21 @@ import { getProportionalPendingImpactValues } from "utils/fees";
 import { getMarketInfoWithOpenInterestDelta, getOpenInterestUsd, getPriceForPnl } from "utils/markets";
 import { MarketInfo } from "utils/markets/types";
 import { applyFactor } from "utils/numbers";
-import { DecreasePositionSwapType } from "utils/orders/types";
 import { getPositionPnlUsd } from "utils/positions";
 import { UserReferralInfo } from "utils/referrals/types";
-import { convertToTokenAmount, convertToUsd, getIsEquivalentTokens } from "utils/tokens";
+import { convertToUsd } from "utils/tokens";
 import { TokenData } from "utils/tokens/types";
+import { getCollateralDeltaAmountAfterPriceImpactDiff } from "utils/trade/decrease";
 
 import {
   getResultingPositionMarginState,
   PositionMarginFailureReason,
   PositionMarginState,
 } from "./increaseMarginCheck";
+
+export type DecreasePositionMarginState = PositionMarginState & {
+  isCollateralWithdrawalCancelled: boolean;
+};
 
 export type DecreaseResultingPositionMarginStateParams = {
   marketInfo: MarketInfo;
@@ -29,10 +33,7 @@ export type DecreaseResultingPositionMarginStateParams = {
   sizeDeltaInTokens: bigint;
   collateralDeltaAmount: bigint;
   payedRemainingCollateralAmount: bigint;
-  payedOutputUsd: bigint;
-  swapProfitFeeUsd: bigint;
-  swapUiFeeUsd: bigint;
-  decreaseSwapType: DecreasePositionSwapType;
+  priceImpactDiffUsd: bigint;
   minCollateralUsd: bigint;
   minPositionSizeUsd: bigint;
   userReferralInfo: UserReferralInfo | undefined;
@@ -46,7 +47,7 @@ export type DecreaseResultingPositionMarginStateParams = {
  */
 export function getDecreaseResultingPositionMarginState(
   p: DecreaseResultingPositionMarginStateParams
-): PositionMarginState | undefined {
+): DecreasePositionMarginState | undefined {
   const {
     marketInfo,
     collateralToken,
@@ -55,10 +56,7 @@ export function getDecreaseResultingPositionMarginState(
     sizeDeltaUsd,
     sizeDeltaInTokens,
     payedRemainingCollateralAmount,
-    payedOutputUsd,
-    swapProfitFeeUsd,
-    swapUiFeeUsd,
-    decreaseSwapType,
+    priceImpactDiffUsd,
     minCollateralUsd,
     minPositionSizeUsd,
     userReferralInfo,
@@ -126,6 +124,8 @@ export function getDecreaseResultingPositionMarginState(
   const willCollateralBeSufficient =
     estimatedRemainingCollateralUsd >= 0n && estimatedRemainingCollateralUsd >= minCollateralUsdForOpenInterest;
 
+  let isCollateralWithdrawalCancelled = false;
+
   if (!willCollateralBeSufficient || estimatedRemainingCollateralUsd + estimatedRemainingPnlUsd < minCollateralUsd) {
     if (sizeDeltaUsd === 0n) {
       return {
@@ -134,9 +134,11 @@ export function getDecreaseResultingPositionMarginState(
         remainingCollateralUsd: estimatedRemainingCollateralUsd,
         minCollateralUsd,
         minCollateralUsdForLeverage: minCollateralUsdForOpenInterest,
+        isCollateralWithdrawalCancelled: false,
       };
     }
 
+    isCollateralWithdrawalCancelled = collateralDeltaAmount > 0n;
     estimatedRemainingCollateralUsd += convertToUsd(
       collateralDeltaAmount,
       collateralToken.decimals,
@@ -160,23 +162,21 @@ export function getDecreaseResultingPositionMarginState(
     indexToken,
   });
 
-  const pnlToken = isLong ? marketInfo.longToken : marketInfo.shortToken;
-  const isProfitPaidInCollateralToken =
-    decreaseSwapType === DecreasePositionSwapType.SwapPnlTokenToCollateralToken ||
-    getIsEquivalentTokens(pnlToken, collateralToken);
+  const collateralAfterCostsAmount = position.collateralAmount - payedRemainingCollateralAmount;
 
-  const payedCollateralAmount = isProfitPaidInCollateralToken
-    ? payedRemainingCollateralAmount
-    : payedRemainingCollateralAmount +
-      convertToTokenAmount(
-        payedOutputUsd - swapProfitFeeUsd - swapUiFeeUsd,
-        collateralToken.decimals,
-        collateralToken.prices.minPrice
-      )!;
+  collateralDeltaAmount = getCollateralDeltaAmountAfterPriceImpactDiff({
+    collateralDeltaAmount,
+    priceImpactDiffUsd,
+    collateralToken,
+  });
 
-  const nextCollateralAmount = position.collateralAmount - payedCollateralAmount - collateralDeltaAmount;
+  if (collateralDeltaAmount > collateralAfterCostsAmount) {
+    collateralDeltaAmount = collateralAfterCostsAmount > 0n ? collateralAfterCostsAmount : 0n;
+  }
 
-  return getResultingPositionMarginState({
+  const nextCollateralAmount = collateralAfterCostsAmount - collateralDeltaAmount;
+
+  const marginState = getResultingPositionMarginState({
     marketInfo: getMarketInfoWithOpenInterestDelta({
       marketInfo,
       collateralToken,
@@ -195,4 +195,6 @@ export function getDecreaseResultingPositionMarginState(
     proDiscountFactor,
     shouldValidateMinCollateralUsd: false,
   });
+
+  return { ...marginState, isCollateralWithdrawalCancelled };
 }

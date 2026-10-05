@@ -575,6 +575,8 @@ export function getDecreaseError(p: {
   isTwap: boolean;
   numberOfParts: number;
   remainingPositionMarginState: PositionMarginState | undefined;
+  shouldValidateLeftoverCollateral: boolean;
+  isInsufficientCollateralForCosts: boolean;
 }): ValidationResult {
   const {
     marketInfo,
@@ -595,6 +597,8 @@ export function getDecreaseError(p: {
     isTwap,
     numberOfParts,
     remainingPositionMarginState,
+    shouldValidateLeftoverCollateral,
+    isInsufficientCollateralForCosts,
   } = p;
 
   if (isContractAccount && isAddressZero(receiveToken?.address)) {
@@ -652,6 +656,7 @@ export function getDecreaseError(p: {
     }
 
     if (
+      shouldValidateLeftoverCollateral &&
       existingPosition.sizeInUsd - sizeDeltaUsd > DUST_USD &&
       (nextPositionValues?.nextCollateralUsd === undefined
         ? undefined
@@ -660,6 +665,10 @@ export function getDecreaseError(p: {
       return {
         buttonErrorMessage: t`Leftover margin below ${formatAmount(minCollateralUsd, USD_DECIMALS, 2)} USD`,
       };
+    }
+
+    if (isInsufficientCollateralForCosts && existingPosition.sizeInUsd - sizeDeltaUsd > DUST_USD) {
+      return { buttonErrorMessage: t`Insufficient collateral to cover order costs` };
     }
   }
 

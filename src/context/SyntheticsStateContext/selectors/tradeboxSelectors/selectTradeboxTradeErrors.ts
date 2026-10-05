@@ -242,6 +242,8 @@ const selectTradeboxDecreaseTradeError = createSelector((q) => {
     isTwap,
     numberOfParts,
     remainingPositionMarginState: undefined,
+    shouldValidateLeftoverCollateral: true,
+    isInsufficientCollateralForCosts: false,
   });
 });
 
