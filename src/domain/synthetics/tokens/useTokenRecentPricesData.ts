@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 
 import { ContractsChainId } from "config/chains";
 import { GLV_MARKETS } from "config/markets";
-import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
+import { useOptionalGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { parseContractPrice, TokenPricesData } from "domain/synthetics/tokens";
 import { API_UI_FLAGS, useIsApiSdkEnabled } from "domain/synthetics/uiFlags/useIsApiSdkEnabled";
 import { FreshnessMetricId, metrics, TickersErrorsCounter } from "lib/metrics";
@@ -59,7 +59,7 @@ export function useTokenRecentPricesRequest(
   PRICES_CACHE[chainId] = PRICES_CACHE[chainId] || {};
   PRICES_CACHE_UPDATED[chainId] = PRICES_CACHE_UPDATED[chainId] || {};
 
-  const sdk = useGmxSdk(chainId);
+  const sdk = useOptionalGmxSdk(chainId);
   const isWsPricesEnabled = useIsApiSdkEnabled(API_UI_FLAGS.wsPrices, chainId);
   const store =
     enabled && isWsPricesEnabled && sdk && refreshPricesInterval === PRICES_UPDATE_INTERVAL

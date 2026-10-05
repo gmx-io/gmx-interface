@@ -7,7 +7,7 @@ import { isAddressEqual, type Address } from "viem";
 import { colors } from "config/colors";
 import { WAS_TV_CHART_OVERRIDDEN_KEY } from "config/localStorage";
 import { type TradingViewResolution, RESOLUTION_TO_SECONDS, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
-import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
+import { useOptionalGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents/SyntheticsEventsProvider";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
@@ -144,7 +144,7 @@ export default function TVChartContainer({
   const { theme } = useTheme();
 
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId as ContractsChainId);
-  const sdk = useGmxSdk(chainId as ContractsChainId);
+  const sdk = useOptionalGmxSdk(chainId as ContractsChainId);
   const wsCandlesEnabled = useIsApiSdkEnabled(API_UI_FLAGS.wsCandles, chainId as ContractsChainId);
 
   const [datafeed, setDatafeed] = useState<DataFeed | null>(null);
