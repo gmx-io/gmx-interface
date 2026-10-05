@@ -217,7 +217,7 @@ describe("position seller — remaining position after a market partial close", 
     expect(selectPositionSellerDecreaseError(state)).toEqual({});
   });
 
-  it("lets the remaining-position check judge a remainder with under 1 USD of collateral", () => {
+  it("keeps the 1 USD collateral floor of a market close only where the contract would close the whole position", () => {
     // 0.5 of collateral and 200 of profit: the remaining 40 has 0.5 + 0.8 of margin against 0.4, which the contract
     // executes; only the TWAP tab, at 80x, keeps the release collateral floor
     const params = { collateralUsd: usd(1) / 2n, pnlUsd: usd(200), closeUsd: "9960", keepLeverage: false };
@@ -226,6 +226,10 @@ describe("position seller — remaining position after a market partial close", 
     expect(
       selectPositionSellerDecreaseError(createState({ ...params, orderOption: OrderOption.Twap }))?.buttonErrorMessage
     ).toBe("Leftover margin below 1.00 USD");
+    // the remaining 10 has 0.5 + 0.2, under 1 USD: the contract would close the whole position instead
+    expect(selectPositionSellerDecreaseError(createState({ ...params, closeUsd: "9990" }))?.buttonErrorMessage).toBe(
+      "Leftover margin below 1.00 USD"
+    );
   });
 
   it.each([false, true])(

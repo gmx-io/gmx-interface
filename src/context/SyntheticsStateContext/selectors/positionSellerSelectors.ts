@@ -606,6 +606,7 @@ export const selectPositionSellerDecreaseError = createSelector((q) => {
   const isTwap = q(selectPositionSellerOrderOption) === OrderOption.Twap;
   const decreaseAmounts = q(selectPositionSellerDecreaseAmounts);
   const nextPositionValues = q(selectPositionSellerNextPositionValuesForDecrease);
+  const remainingPositionMarginState = q(selectPositionSellerRemainingPositionMarginState);
   const { minCollateralUsd, minPositionSizeUsd } = q(selectPositionConstants);
 
   return getDecreaseError({
@@ -627,8 +628,8 @@ export const selectPositionSellerDecreaseError = createSelector((q) => {
     minPositionSizeUsd,
     isTwap,
     numberOfParts: q(selectPositionSellerNumberOfParts),
-    remainingPositionMarginState: q(selectPositionSellerRemainingPositionMarginState),
-    shouldValidateLeftoverCollateral: isTwap,
+    remainingPositionMarginState,
+    shouldValidateLeftoverCollateral: isTwap || !remainingPositionMarginState,
     isInsufficientCollateralForCosts: !isTwap && (decreaseAmounts?.unpaidCostUsd ?? 0n) > 0n,
   });
 });
