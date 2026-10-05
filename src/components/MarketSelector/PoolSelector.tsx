@@ -250,30 +250,28 @@ export function PoolSelector({
         </VerticalScrollFadeContainer>
       </SlideModal>
 
-      {marketInfo && (
-        <div className="inline-flex items-center">
-          {showIndexIcon && (
-            <TokenIcon
-              className="mr-5"
-              symbol={
-                marketInfo.isSpotOnly
-                  ? getNormalizedTokenSymbol(marketInfo.longToken.symbol) +
-                    getNormalizedTokenSymbol(marketInfo.shortToken.symbol)
-                  : isGlvInfo(marketInfo)
-                    ? marketInfo.glvToken.symbol
-                    : marketInfo?.indexToken.symbol
-              }
-              displaySize={20}
-            />
-          )}
-          <PoolLabel
-            marketInfo={marketInfo}
-            showAllPools={showAllPools}
-            marketsOptions={marketsOptions}
-            onClick={handleClick}
+      <div className="inline-flex items-center">
+        {showIndexIcon && marketInfo && (
+          <TokenIcon
+            className="mr-5"
+            symbol={
+              marketInfo.isSpotOnly
+                ? getNormalizedTokenSymbol(marketInfo.longToken.symbol) +
+                  getNormalizedTokenSymbol(marketInfo.shortToken.symbol)
+                : isGlvInfo(marketInfo)
+                  ? marketInfo.glvToken.symbol
+                  : marketInfo?.indexToken.symbol
+            }
+            displaySize={20}
           />
-        </div>
-      )}
+        )}
+        <PoolLabel
+          marketInfo={marketInfo}
+          showAllPools={showAllPools}
+          marketsOptions={marketsOptions}
+          onClick={handleClick}
+        />
+      </div>
     </div>
   );
 }
