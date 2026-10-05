@@ -80,17 +80,7 @@ export function GmSwapWarningsRow({
     );
   }
 
-  if (shouldShowWhitelistOnlyHint && isGlv) {
-    warnings.push(
-      <ColorfulBanner color="blue" icon={InfoIcon} key="whitelistOnlyHint">
-        <Trans>
-          Deposits into this vault are open to whitelisted addresses. To get whitelisted, message{" "}
-          <ExternalLink href={GMX_PARTNER_TELEGRAM_URL}>@GMXPartners</ExternalLink> on Telegram and mention "USDG
-          whitelist".
-        </Trans>
-      </ColorfulBanner>
-    );
-  } else if (shouldShowWhitelistOnlyHint) {
+  if (shouldShowWhitelistOnlyHint && !isGlv) {
     warnings.push(
       <ColorfulBanner color="blue" icon={InfoIcon} key="whitelistOnlyHint">
         {isSpotOnlyMarket ? (
