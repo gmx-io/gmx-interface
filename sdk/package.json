@@ -541,7 +541,7 @@
     "typescript": "5.4.2",
     "universal-perf-hooks": "1.0.1",
     "viem": "^2.48.11",
-    "ws": "8.18.3"
+    "ws": "8.22.0"
   },
   "devDependencies": {
     "@babel/plugin-transform-private-property-in-object": "7.25.9",
