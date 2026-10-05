@@ -7524,10 +7524,6 @@ msgstr "已賺取的費用僅針對您在 {chainName} 錢包中持有的 GM 與 
 msgid "Set long Limit @ {0}"
 msgstr ""
 
-#: src/components/Errors/gasErrors.tsx
-msgid "Insufficient {nativeTokenSymbol} on {chainName} for this transaction. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
-msgstr "{chainName} 上用於此交易的 {nativeTokenSymbol} 不足。請<0>兌換</0>或<1>跨鏈橋</1>轉入 {nativeTokenSymbol}。"
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position would be liquidatable"
 msgstr "倉位將面臨清算"
@@ -11450,6 +11446,10 @@ msgstr "正在更新訂單..."
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "Escrowed GMX APR"
 msgstr "託管 GMX APR"
+
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {nativeTokenSymbol} on {chainName} for this transaction. <0>Bridge</0> {nativeTokenSymbol}."
+msgstr "{chainName} 上用於此交易的 {nativeTokenSymbol} 不足。請<0>跨鏈橋</0>轉入 {nativeTokenSymbol}。"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting only available on {chainNames}. Switch networks to continue."

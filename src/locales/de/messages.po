@@ -7524,10 +7524,6 @@ msgstr "Verdiente Gebühren werden nur für GM und GLV in Ihrer Wallet auf {chai
 msgid "Set long Limit @ {0}"
 msgstr ""
 
-#: src/components/Errors/gasErrors.tsx
-msgid "Insufficient {nativeTokenSymbol} on {chainName} for this transaction. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
-msgstr "Nicht genügend {nativeTokenSymbol} auf {chainName} für diese Transaktion. <0>Tauschen</0> oder <1>bridgen</1> Sie {nativeTokenSymbol}."
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position would be liquidatable"
 msgstr "Position wäre liquidierbar"
@@ -11450,6 +11446,10 @@ msgstr "Order wird aktualisiert…"
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "Escrowed GMX APR"
 msgstr "Escrowed GMX APR"
+
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {nativeTokenSymbol} on {chainName} for this transaction. <0>Bridge</0> {nativeTokenSymbol}."
+msgstr "Nicht genügend {nativeTokenSymbol} auf {chainName} für diese Transaktion. <0>Bridgen</0> Sie {nativeTokenSymbol}."
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting only available on {chainNames}. Switch networks to continue."

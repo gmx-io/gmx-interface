@@ -7524,10 +7524,6 @@ msgstr "Les frais gagnés ne sont suivis que pour les GM et GLV détenus dans vo
 msgid "Set long Limit @ {0}"
 msgstr ""
 
-#: src/components/Errors/gasErrors.tsx
-msgid "Insufficient {nativeTokenSymbol} on {chainName} for this transaction. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
-msgstr "{nativeTokenSymbol} insuffisant sur {chainName} pour cette transaction. <0>Échangez</0> ou <1>bridgez</1> {nativeTokenSymbol}."
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position would be liquidatable"
 msgstr "La position serait liquidable"
@@ -11450,6 +11446,10 @@ msgstr "Mise à jour de l'ordre…"
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "Escrowed GMX APR"
 msgstr "TAEG GMX sous séquestre"
+
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {nativeTokenSymbol} on {chainName} for this transaction. <0>Bridge</0> {nativeTokenSymbol}."
+msgstr "{nativeTokenSymbol} insuffisant sur {chainName} pour cette transaction. <0>Bridgez</0> {nativeTokenSymbol}."
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting only available on {chainNames}. Switch networks to continue."

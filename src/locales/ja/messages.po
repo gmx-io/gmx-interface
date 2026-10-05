@@ -7524,10 +7524,6 @@ msgstr "獲得手数料は、{chainName}のウォレットに保有するGMとGL
 msgid "Set long Limit @ {0}"
 msgstr ""
 
-#: src/components/Errors/gasErrors.tsx
-msgid "Insufficient {nativeTokenSymbol} on {chainName} for this transaction. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
-msgstr "この取引に必要な{nativeTokenSymbol}が{chainName}に不足しています。{nativeTokenSymbol}を<0>スワップ</0>または<1>ブリッジ</1>してください。"
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position would be liquidatable"
 msgstr "ポジションが清算対象となります"
@@ -11450,6 +11446,10 @@ msgstr "注文を更新中…"
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "Escrowed GMX APR"
 msgstr "エスクローGMX APR"
+
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {nativeTokenSymbol} on {chainName} for this transaction. <0>Bridge</0> {nativeTokenSymbol}."
+msgstr "この取引に必要な{nativeTokenSymbol}が{chainName}に不足しています。{nativeTokenSymbol}を<0>ブリッジ</0>してください。"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting only available on {chainNames}. Switch networks to continue."

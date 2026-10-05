@@ -7524,10 +7524,6 @@ msgstr "획득한 수수료는 {chainName}의 지갑에 보유한 GM과 GLV에 �
 msgid "Set long Limit @ {0}"
 msgstr ""
 
-#: src/components/Errors/gasErrors.tsx
-msgid "Insufficient {nativeTokenSymbol} on {chainName} for this transaction. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
-msgstr "이 트랜잭션에 필요한 {nativeTokenSymbol}이(가) {chainName}에 부족합니다. {nativeTokenSymbol}을(를) <0>스왑</0>하거나 <1>브리지</1>하세요."
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position would be liquidatable"
 msgstr "포지션이 청산 대상이 됩니다"
@@ -11450,6 +11446,10 @@ msgstr "주문 업데이트 중…"
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "Escrowed GMX APR"
 msgstr "에스크로 GMX APR"
+
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {nativeTokenSymbol} on {chainName} for this transaction. <0>Bridge</0> {nativeTokenSymbol}."
+msgstr "이 트랜잭션에 필요한 {nativeTokenSymbol}이(가) {chainName}에 부족합니다. {nativeTokenSymbol}을(를) <0>브리지</0>하세요."
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting only available on {chainNames}. Switch networks to continue."

@@ -7524,10 +7524,6 @@ msgstr "Заработанные комиссии учитываются тол�
 msgid "Set long Limit @ {0}"
 msgstr ""
 
-#: src/components/Errors/gasErrors.tsx
-msgid "Insufficient {nativeTokenSymbol} on {chainName} for this transaction. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
-msgstr "Недостаточно {nativeTokenSymbol} в сети {chainName} для этой транзакции. <0>Обменяйте</0> или <1>переведите через мост</1> {nativeTokenSymbol}."
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position would be liquidatable"
 msgstr "Позиция будет подлежать ликвидации"
@@ -11450,6 +11446,10 @@ msgstr "Обновление ордера…"
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "Escrowed GMX APR"
 msgstr "APR эскроуированного GMX"
+
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {nativeTokenSymbol} on {chainName} for this transaction. <0>Bridge</0> {nativeTokenSymbol}."
+msgstr "Недостаточно {nativeTokenSymbol} в сети {chainName} для этой транзакции. <0>Переведите через мост</0> {nativeTokenSymbol}."
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting only available on {chainNames}. Switch networks to continue."
