@@ -4,7 +4,7 @@ import cx from "classnames";
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useLatest } from "react-use";
-import { decodeErrorResult, encodeEventTopics, isHex, toHex, zeroAddress } from "viem";
+import { Hex, decodeErrorResult, encodeEventTopics, isHex, toHex, zeroAddress } from "viem";
 import { useAccount, useChains } from "wagmi";
 
 import {
@@ -725,20 +725,16 @@ export const DepositView = () => {
           setIsSubmitting(false);
           let prettyError = txnEvent.data.error;
           const data = txnEvent.data.error.info?.error?.data;
+          const stargateError = isHex(data) ? tryDecodeStargateError(data) : undefined;
 
-          if (isHex(data)) {
-            const error = decodeErrorResult({
-              abi: StargateErrorsAbi,
-              data,
-            });
-
-            prettyError = new Error(JSON.stringify(error, null, 2));
-            prettyError.name = error.errorName;
+          if (stargateError) {
+            prettyError = new Error(JSON.stringify(stargateError, null, 2));
+            prettyError.name = stargateError.errorName;
 
             const toastParams = getTxnErrorToast(
               params.depositViewChain,
               {
-                errorMessage: JSON.stringify(error, null, 2),
+                errorMessage: JSON.stringify(stargateError, null, 2),
               },
               { defaultMessage: t`Deposit failed` }
             );
@@ -1547,6 +1543,14 @@ export const DepositView = () => {
     </form>
   );
 };
+
+function tryDecodeStargateError(data: Hex) {
+  try {
+    return decodeErrorResult({ abi: StargateErrorsAbi, data });
+  } catch {
+    return undefined;
+  }
+}
 
 function depositNetworkItemKey(option: { id: number; name: string }) {
   return option.id;
