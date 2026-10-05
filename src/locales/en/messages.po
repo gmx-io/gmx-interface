@@ -8117,10 +8117,6 @@ msgstr "Win rate"
 msgid "GMX trading stats"
 msgstr "GMX trading stats"
 
-#: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
-msgid "Deposits into this vault are open to whitelisted addresses. To get whitelisted, message <0>@GMXPartners</0> on Telegram and mention \"USDG whitelist\"."
-msgstr "Deposits into this vault are open to whitelisted addresses. To get whitelisted, message <0>@GMXPartners</0> on Telegram and mention \"USDG whitelist\"."
-
 #: src/components/LeverageField/LeverageField.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "High leverage increases liquidation risk"
