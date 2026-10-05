@@ -11,10 +11,16 @@ import {
   RpcTrackerEndpointTiming,
   RpcTrackerUpdateEndpointsEvent,
 } from ".";
-import { createEndpointsPairDedup } from "./endpointsPairDedup";
+import { createEndpointsPairReporter } from "./endpointsPairReporter";
 
 export function subscribeForRpcTrackerMetrics(tracker: RpcTracker) {
-  const shouldReportEndpointsPair = createEndpointsPairDedup();
+  const endpointsPairReporter = createEndpointsPairReporter<RpcTrackerUpdateEndpointsEvent["data"]>((data, repeats) => {
+    metrics.pushEvent<RpcTrackerUpdateEndpointsEvent>({
+      event: "rpcTracker.endpoint.updated",
+      isError: false,
+      data: { ...data, ...repeats },
+    });
+  });
 
   const cleanupBannedSubscription = addFallbackTrackerListener(
     "endpointBanned",
@@ -41,18 +47,14 @@ export function subscribeForRpcTrackerMetrics(tracker: RpcTracker) {
 
       const secondary: string | undefined = fallbacks[0];
 
-      if (!shouldReportEndpointsPair(primary, secondary)) {
-        return;
-      }
-
       const bestBlock = getBestBlock(endpointsStats);
 
       const primaryStats = endpointsStats.find((stat) => stat.endpoint === primary);
       const secondaryStats = secondary ? endpointsStats.find((stat) => stat.endpoint === secondary) : undefined;
 
-      metrics.pushEvent<RpcTrackerUpdateEndpointsEvent>({
-        event: "rpcTracker.endpoint.updated",
-        isError: false,
+      endpointsPairReporter.onPairUpdated({
+        primary,
+        secondary,
         data: {
           isOld: false,
           chainId: tracker.params.chainId,
@@ -100,6 +102,7 @@ export function subscribeForRpcTrackerMetrics(tracker: RpcTracker) {
   );
 
   return () => {
+    endpointsPairReporter.flush();
     cleanupBannedSubscription();
     cleanupEndpointsUpdatedSubscription();
     cleanupTrackingFinishedSubscription();

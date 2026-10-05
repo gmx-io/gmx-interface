@@ -1,6 +1,14 @@
+import uniq from "lodash/uniq";
 import { useEffect, useState } from "react";
 
-import { CONTRACTS_CHAIN_IDS, ContractsChainId, isContractsChain, SOURCE_CHAIN_IDS } from "config/chains";
+import {
+  CONTRACTS_CHAIN_IDS,
+  ContractsChainId,
+  isContractsChain,
+  isTestnetChain,
+  SOURCE_CHAIN_IDS,
+} from "config/chains";
+import { isDevelopment } from "config/env";
 import {
   getExpressRpcUrl,
   getRpcProviders,
@@ -36,7 +44,9 @@ class RpcTrackersRegistry {
     }
 
     const networkStatusObserver = NetworkStatusObserver.getInstance();
-    const chainIds = [...CONTRACTS_CHAIN_IDS, ...SOURCE_CHAIN_IDS];
+    const chainIds = uniq([...CONTRACTS_CHAIN_IDS, ...SOURCE_CHAIN_IDS]).filter(
+      (chainId) => isDevelopment() || !isTestnetChain(chainId)
+    );
 
     for (const chainId of chainIds) {
       const config = isContractsChain(chainId)
