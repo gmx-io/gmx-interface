@@ -25,9 +25,10 @@ import { selectTradeboxCollateralSpreadInfo } from "context/SyntheticsStateConte
 import { selectTradeboxLiquidityInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxLiquidityInfo";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GasPaymentParams } from "domain/synthetics/express";
+import type { NetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { OrderType } from "domain/synthetics/orders";
-import { formatLeverage } from "domain/synthetics/positions";
-import { formatUsd } from "lib/numbers";
+import { formatLeverageParts } from "domain/synthetics/positions";
+import { formatUsdParts } from "lib/numbers";
 import { ExecutionFee } from "sdk/utils/fees/types";
 import { isStopIncreaseOrderType } from "sdk/utils/orders";
 import { convertToUsd } from "sdk/utils/tokens";
@@ -64,8 +65,8 @@ function LeverageInfoRows() {
         value={
           nextPositionValues?.nextLeverage && increaseAmounts?.sizeDeltaUsd && increaseAmounts?.sizeDeltaUsd > 0 ? (
             <ValueTransition
-              from={formatLeverage(existingPosition?.leverage)}
-              to={formatLeverage(nextPositionValues?.nextLeverage) || "-"}
+              from={formatLeverageParts(existingPosition?.leverage)}
+              to={formatLeverageParts(nextPositionValues?.nextLeverage) || "-"}
             />
           ) : (
             "-"
@@ -83,8 +84,8 @@ function LeverageInfoRows() {
     } else {
       leverageValue = (
         <ValueTransition
-          from={formatLeverage(existingPosition.leverage)}
-          to={formatLeverage(nextPositionValues?.nextLeverage)}
+          from={formatLeverageParts(existingPosition.leverage)}
+          to={formatLeverageParts(nextPositionValues?.nextLeverage)}
         />
       );
     }
@@ -125,8 +126,8 @@ function ExistingPositionInfoRows() {
           label={t`Size`}
           value={
             <ValueTransition
-              from={formatUsd(existingPosition.sizeInUsd)!}
-              to={formatUsd(nextPositionValues?.nextSizeUsd)}
+              from={formatUsdParts(existingPosition.sizeInUsd)}
+              to={formatUsdParts(nextPositionValues?.nextSizeUsd)}
             />
           }
         />
@@ -135,8 +136,8 @@ function ExistingPositionInfoRows() {
         label={t`Margin (${existingPosition?.collateralToken?.symbol})`}
         value={
           <ValueTransition
-            from={formatUsd(existingCollateralUsd)}
-            to={formatUsd(nextPositionValues?.nextCollateralUsd)}
+            from={formatUsdParts(existingCollateralUsd)}
+            to={formatUsdParts(nextPositionValues?.nextCollateralUsd)}
           />
         }
       />
@@ -148,10 +149,12 @@ export function TradeBoxAdvancedGroups({
   slippageInputId,
   gasPaymentParams,
   totalExecutionFee,
+  feeSource,
 }: {
   slippageInputId: string;
   gasPaymentParams: GasPaymentParams | undefined;
   totalExecutionFee: ExecutionFee | undefined;
+  feeSource: NetworkFeeSource | undefined;
 }) {
   const options = useSelector(selectTradeboxAdvancedOptions);
   const setOptions = useSelector(selectTradeboxSetAdvancedOptions);
@@ -239,7 +242,7 @@ export function TradeBoxAdvancedGroups({
 
       <TradeFeesRow {...fees} feesType={feesType} />
       {showDebugValues && <SwapDebugRow />}
-      <NetworkFeeRow executionFee={totalExecutionFee} gasPaymentParams={gasPaymentParams} />
+      <NetworkFeeRow executionFee={totalExecutionFee} gasPaymentParams={gasPaymentParams} feeSource={feeSource} />
 
       {isTwap && isSwap ? (
         <SyntheticsInfoRow label={<Trans>Acceptable swap impact</Trans>} value={<Trans>N/A</Trans>} />

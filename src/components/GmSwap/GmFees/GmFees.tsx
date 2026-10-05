@@ -4,11 +4,12 @@ import { ReactNode, useMemo } from "react";
 import Skeleton from "react-loading-skeleton";
 
 import { Operation } from "domain/synthetics/markets/types";
-import { formatDeltaUsd, formatPercentage } from "lib/numbers";
+import { formatPercentage } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { bigMath } from "sdk/utils/bigmath";
 import { FeeItem } from "sdk/utils/fees/types";
 
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tooltip from "components/Tooltip/Tooltip";
@@ -106,7 +107,7 @@ export function GmFees(p: Props) {
                       </div>
                     </div>
                   }
-                  value={formatDeltaUsd(p.swapPriceImpact?.deltaUsd)!}
+                  value={<DeltaUsdValue deltaUsd={p.swapPriceImpact?.deltaUsd} />}
                   valueClassName="numbers"
                   showDollar={false}
                   textClassName={getPositiveOrNegativeClass(
@@ -137,7 +138,7 @@ export function GmFees(p: Props) {
                         </div>
                       </div>
                     }
-                    value={formatDeltaUsd(p.swapFee.deltaUsd)!}
+                    value={<DeltaUsdValue deltaUsd={p.swapFee.deltaUsd} />}
                     valueClassName="numbers"
                     showDollar={false}
                     textClassName={getPositiveOrNegativeClass(p.swapFee.deltaUsd)}
@@ -164,7 +165,7 @@ export function GmFees(p: Props) {
                       </div>
                     </div>
                   }
-                  value={formatDeltaUsd(p.collateralSwapFee?.deltaUsd)!}
+                  value={<DeltaUsdValue deltaUsd={p.collateralSwapFee?.deltaUsd} />}
                   valueClassName="numbers"
                   showDollar={false}
                   textClassName={getPositiveOrNegativeClass(p.collateralSwapFee?.deltaUsd)}
@@ -190,7 +191,7 @@ export function GmFees(p: Props) {
                       </div>
                     </div>
                   }
-                  value={formatDeltaUsd(p.transitFee?.deltaUsd)!}
+                  value={<DeltaUsdValue deltaUsd={p.transitFee?.deltaUsd} />}
                   valueClassName="numbers"
                   showDollar={false}
                   textClassName={getPositiveOrNegativeClass(p.transitFee?.deltaUsd)}
@@ -216,7 +217,7 @@ export function GmFees(p: Props) {
                       </div>
                     </div>
                   }
-                  value={formatDeltaUsd(p.uiFee?.deltaUsd)!}
+                  value={<DeltaUsdValue deltaUsd={p.uiFee?.deltaUsd} />}
                   valueClassName="numbers"
                   showDollar={false}
                   textClassName="text-red-500"
@@ -242,7 +243,7 @@ export function GmFees(p: Props) {
                       </div>
                     </div>
                   }
-                  value={formatDeltaUsd(p.shiftFee.deltaUsd)!}
+                  value={<DeltaUsdValue deltaUsd={p.shiftFee.deltaUsd} />}
                   valueClassName="numbers"
                   showDollar={false}
                 />

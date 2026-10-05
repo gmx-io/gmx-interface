@@ -6,6 +6,7 @@
 .Toastify__toast-container {
   width: 38rem;
   padding: 0;
+  z-index: 10001;
 
   &--top-right {
     right: calc(3rem + var(--safe-area-inset-right)) !important;

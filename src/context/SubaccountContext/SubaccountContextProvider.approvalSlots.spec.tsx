@@ -34,13 +34,15 @@ const { mocks, chainState, onchainState, ACCOUNT, CHAIN_ID, SUBACCOUNT_ADDRESS, 
 
 vi.mock("context/SyntheticsStateContext/selectors/expressSelectors", () => ({
   selectExpressGlobalParams: () => undefined,
+  selectGmxAccountGasPaymentToken: () => undefined,
 }));
 
 vi.mock("context/SyntheticsStateContext/selectors/tradeboxSelectors", () => ({
   selectTradeboxIsFromTokenGmxAccount: () => false,
 }));
 
-vi.mock("context/SyntheticsStateContext/utils", () => ({
+vi.mock("context/SyntheticsStateContext/utils", async (importOriginal) => ({
+  ...(await importOriginal<object>()),
   useCalcSelector: () => () => false,
 }));
 
@@ -275,6 +277,33 @@ describe("SubaccountContextProvider approval slots", () => {
     expect(readSlot(SOURCE_BASE_MAINNET)?.signatureChainId).toBe(SOURCE_BASE_MAINNET);
     expect(captured.current.subaccount?.signedApproval.signatureChainId).toBe(SOURCE_BSC_MAINNET);
   });
+
+  it.each([
+    { slot: undefined, signatureChainId: ARBITRUM, storedSignature: "0x01", isRemoved: true },
+    { slot: SOURCE_BASE_MAINNET, signatureChainId: SOURCE_BASE_MAINNET, storedSignature: "0x01", isRemoved: true },
+    { slot: undefined, signatureChainId: ARBITRUM, storedSignature: "0x02", isRemoved: false },
+  ] as const)(
+    "removes a stored approval only when it is the one rejected for an outdated nonce FEDEV-3297 (%o)",
+    ({ slot, signatureChainId, storedSignature, isRemoved }) => {
+      const approvalWith = (signature: string) =>
+        createApproval({
+          signatureChainId,
+          signature,
+          ...(slot === undefined ? { subaccountRouterAddress: gelatoRouterAddress, nonce: 5n } : {}),
+        });
+      seedSlot(slot, approvalWith(storedSignature));
+
+      const { captured } = setup();
+
+      let result: boolean | undefined;
+      act(() => {
+        result = captured.current.invalidateSubaccountApproval(approvalWith("0x01"));
+      });
+
+      expect(result).toBe(isRemoved);
+      expect(readSlot(slot)?.signature).toBe(isRemoved ? undefined : storedSignature);
+    }
+  );
 
   it("ignores stored approvals of another subaccount address", () => {
     seedSlot(

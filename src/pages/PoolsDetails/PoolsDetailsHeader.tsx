@@ -22,7 +22,7 @@ import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { convertToUsd, TokenData } from "domain/synthetics/tokens";
 import type { UsdgLaunchBoost } from "domain/synthetics/usdgLaunchBoost/utils";
 import { useChainId } from "lib/chains";
-import { formatAmountHuman, formatBalanceAmount, formatUsd } from "lib/numbers";
+import { formatBalanceAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
@@ -36,6 +36,8 @@ import {
   MultichainBalanceTooltip,
   useHasMultichainBreakdown,
 } from "components/MultichainBalanceTooltip/MultichainBalanceTooltip";
+import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { ShimmerText } from "components/ShimmerText/ShimmerText";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
@@ -165,11 +167,25 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken, timeRange, la
               <div className="flex gap-14 max-md:flex-col">
                 <PoolsDetailsMarketAmount
                   label={<Trans>TVL (supply)</Trans>}
-                  value={formatAmountHuman(marketTotalSupplyUsd, USD_DECIMALS, true, 2)}
+                  value={
+                    <AmountHumanValue
+                      amount={marketTotalSupplyUsd}
+                      decimals={USD_DECIMALS}
+                      showDollar
+                      displayDecimals={2}
+                    />
+                  }
                   secondaryValue={
-                    typeof marketTotalSupply === "bigint" && typeof marketToken?.decimals === "number"
-                      ? `${formatAmountHuman(marketTotalSupply, marketToken?.decimals, false, 2)} ${isGlv ? "GLV" : "GM"}`
-                      : undefined
+                    typeof marketTotalSupply === "bigint" && typeof marketToken?.decimals === "number" ? (
+                      <>
+                        <AmountHumanValue
+                          amount={marketTotalSupply}
+                          decimals={marketToken.decimals}
+                          displayDecimals={2}
+                        />{" "}
+                        {isGlv ? "GLV" : "GM"}
+                      </>
+                    ) : undefined
                   }
                 />
                 {marketToken && (
@@ -196,9 +212,11 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken, timeRange, la
                     label={<Trans>Balance</Trans>}
                     value={
                       isMultichainBalancesLoading ? (
-                        <ShimmerText>{formatUsd(marketBalanceUsd)}</ShimmerText>
+                        <ShimmerText>
+                          <UsdValue usd={marketBalanceUsd} />
+                        </ShimmerText>
                       ) : (
-                        formatUsd(marketBalanceUsd)
+                        <UsdValue usd={marketBalanceUsd} />
                       )
                     }
                     secondaryValue={`${formatBalanceAmount(totalBalance, marketToken?.decimals, undefined, {
@@ -267,7 +285,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken, timeRange, la
                         }
                         unavailableTooltip={hasBalanceOutsideWallet ? <EarningAttributionNote scope="gm" /> : undefined}
                       >
-                        {(value) => formatUsd(value)}
+                        {(value) => <UsdValue usd={value} />}
                       </EarningValue>
                     }
                   />

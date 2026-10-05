@@ -1,31 +1,42 @@
 import { useEffect } from "react";
 
+import type { SettlementChainId } from "config/chains";
 import {
   selectPoolsDetailsFirstTokenAddress,
   selectPoolsDetailsFlags,
+  selectPoolsDetailsLongTokenAddress,
+  selectPoolsDetailsPaySource,
   selectPoolsDetailsSecondTokenAmount,
   selectPoolsDetailsSecondTokenAddress,
   selectPoolsDetailsSetFirstTokenAddress,
   selectPoolsDetailsSetFocusedInput,
   selectPoolsDetailsSetSecondTokenAddress,
   selectPoolsDetailsSetSecondTokenInputValue,
+  selectPoolsDetailsShortTokenAddress,
 } from "context/PoolsDetailsContext/selectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GlvOrMarketInfo } from "domain/synthetics/markets/types";
 import { getTokenPoolType } from "domain/synthetics/markets/utils";
-import { ERC20Address, NativeTokenSupportedAddress, Token } from "domain/tokens";
+import { ERC20Address, NativeTokenSupportedAddress } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
+
+import type { DisplayToken } from "components/TokenSelector/types";
+
+import { resolveSourceChainPayTokenAddress } from "./resolveSourceChainPayTokenAddress";
 
 export function useUpdateTokens({
   tokenOptions,
   marketInfo,
 }: {
-  tokenOptions: Token[];
+  tokenOptions: DisplayToken[];
   marketInfo: GlvOrMarketInfo | undefined;
 }) {
-  const { chainId } = useChainId();
-  const { isPair, isSingle } = useSelector(selectPoolsDetailsFlags);
+  const { chainId, srcChainId } = useChainId();
+  const { isPair, isSingle, isDeposit } = useSelector(selectPoolsDetailsFlags);
+  const paySource = useSelector(selectPoolsDetailsPaySource);
+  const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
+  const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
 
   const firstTokenAddress = useSelector(selectPoolsDetailsFirstTokenAddress);
   const setFirstTokenAddress = useSelector(selectPoolsDetailsSetFirstTokenAddress);
@@ -45,8 +56,24 @@ export function useUpdateTokens({
         return;
       }
 
-      const isFirstTokenValid = tokenOptions.find((token) => token.address === firstTokenAddress);
-      if (!isFirstTokenValid) {
+      const sourceChainPayTokenAddress =
+        isDeposit && paySource === "sourceChain" && srcChainId !== undefined
+          ? resolveSourceChainPayTokenAddress({
+              chainId: chainId as SettlementChainId,
+              srcChainId,
+              firstTokenAddress,
+              tokenOptions,
+              collateralTokenAddresses: [longTokenAddress, shortTokenAddress].filter(
+                (tokenAddress): tokenAddress is ERC20Address => tokenAddress !== undefined
+              ),
+            })
+          : undefined;
+
+      if (sourceChainPayTokenAddress !== undefined) {
+        if (sourceChainPayTokenAddress !== firstTokenAddress) {
+          setFirstTokenAddress(sourceChainPayTokenAddress as ERC20Address | NativeTokenSupportedAddress);
+        }
+      } else if (!tokenOptions.some((token) => token.address === firstTokenAddress)) {
         setFirstTokenAddress(tokenOptions[0].address as ERC20Address | NativeTokenSupportedAddress);
       }
 
@@ -89,15 +116,20 @@ export function useUpdateTokens({
     [
       chainId,
       firstTokenAddress,
+      isDeposit,
       isPair,
       isSingle,
+      longTokenAddress,
       marketInfo,
+      paySource,
       secondTokenAddress,
       secondTokenAmount,
       setFirstTokenAddress,
       setFocusedInput,
       setSecondTokenAddress,
       setSecondTokenInputValue,
+      shortTokenAddress,
+      srcChainId,
       tokenOptions,
     ]
   );

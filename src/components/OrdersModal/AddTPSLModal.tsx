@@ -29,9 +29,11 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
   getExpressParamsForSubmit,
+  getNetworkFeeGasPaymentParams,
   reportMultichainExpressSubmitError,
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { estimateExecuteDecreaseOrderGasLimit, estimateOrderOraclePriceCount } from "domain/synthetics/fees";
+import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import {
   DecreasePositionSwapType,
   isLimitDecreaseOrderType,
@@ -44,7 +46,8 @@ import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallba
 import {
   PositionInfo,
   formatLeverage,
-  formatLiquidationPrice,
+  formatLeverageParts,
+  formatLiquidationPriceParts,
   getIsPositionInfoLoaded,
 } from "domain/synthetics/positions";
 import { SidecarSlTpOrderEntry } from "domain/synthetics/sidecarOrders/types";
@@ -65,6 +68,7 @@ import {
 } from "domain/synthetics/trade";
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
+import { getExpressError } from "domain/synthetics/trade/utils/validation";
 import { getIsHighSwapProfitFee } from "domain/synthetics/trade/utils/warnings";
 import { buildTpSlBatchPayloads, buildTpSlInputPositionData, getTpSlDecreaseAmounts } from "domain/tpsl/sidecar";
 import {
@@ -76,10 +80,10 @@ import { DUST_USD } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   calculateDisplayDecimals,
-  formatDeltaUsd,
+  formatDeltaUsdParts,
   formatPercentage,
   formatTokenAmount,
-  formatUsd,
+  formatUsdParts,
   parseValue,
 } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
@@ -98,15 +102,20 @@ import {
   DecreaseReceiveOutputDisplay,
   SplitReceiveTokensLabel,
 } from "components/DecreaseReceiveOutput/DecreaseReceiveOutput";
+import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import { ExitPriceRow } from "components/ExitPriceRow/ExitPriceRow";
 import { ExpandableRow } from "components/ExpandableRow";
 import Modal from "components/Modal/Modal";
 import { NetworkFeeRow } from "components/NetworkFeeRow/NetworkFeeRow";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
+import { NumericValue } from "components/NumericValue/NumericValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { getSplitReceiveSwapProfitFeeWarning } from "components/PositionSeller/SplitReceiveSwapProfitFeeWarning";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { ExpressTradingWarningCard } from "components/TradeBox/ExpressTradingWarningCard";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { TradeInputField, DisplayMode } from "components/TradeboxMarginFields/TradeInputField";
 import { TradeFeesRow } from "components/TradeFeesRow/TradeFeesRow";
@@ -773,12 +782,15 @@ export function AddTPSLModal({
 
   const { formId, isActiveForm } = useActiveForm();
 
-  const { expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
+  const { expressParams, expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Add TP/SL",
     isGmxAccount: srcChainId !== undefined,
     canSwitchGasPaymentToken: isActiveForm,
   });
+
+  const expressError = useMemo(() => getExpressError({ expressParams, tokensData }), [expressParams, tokensData]);
+  const feeSource = getNetworkFeeSource({ isGmxAccount: srcChainId !== undefined });
 
   const submitError = useMemo(() => {
     if (!tpPriceInput && !slPriceInput) {
@@ -940,6 +952,13 @@ export function AddTPSLModal({
       };
     }
 
+    if (expressError.buttonErrorMessage) {
+      return {
+        text: expressError.buttonErrorMessage,
+        disabled: true,
+      };
+    }
+
     return {
       text: `${modePrefix}: ${actionLabel} ${marketPairLabel} ${directionLabel}`,
       disabled: false,
@@ -947,6 +966,7 @@ export function AddTPSLModal({
   }, [
     actionLabel,
     directionLabel,
+    expressError.buttonErrorMessage,
     isMultichainSubmitDisabled,
     isSubmitting,
     isCreationPending,
@@ -956,6 +976,7 @@ export function AddTPSLModal({
   ]);
 
   const currentLeverage = formatLeverage(position.leverage);
+  const currentLeverageParts = useMemo(() => formatLeverageParts(position.leverage), [position.leverage]);
   const nextLeverage = activeNextPositionValues?.nextLeverage;
 
   const leverageValue: ReactNode = useMemo(() => {
@@ -968,14 +989,14 @@ export function AddTPSLModal({
     }
 
     if (activeDecreaseAmounts?.sizeDeltaUsd && activeDecreaseAmounts.sizeDeltaUsd > 0n) {
-      return <ValueTransition from={currentLeverage} to={formatLeverage(nextLeverage)} />;
+      return <ValueTransition from={currentLeverageParts} to={formatLeverageParts(nextLeverage)} />;
     }
 
-    return currentLeverage;
+    return <NumericValue parts={currentLeverageParts} />;
   }, [
     activeDecreaseAmounts?.isFullClose,
     activeDecreaseAmounts?.sizeDeltaUsd,
-    currentLeverage,
+    currentLeverageParts,
     nextLeverage,
     position.sizeInUsd,
   ]);
@@ -1088,7 +1109,7 @@ export function AddTPSLModal({
               tokenSymbol={indexToken.symbol}
               alternateValue={(() => {
                 if (closeSize.showSizeInTokens) {
-                  return formatUsd(closeSize.closeSizeUsd);
+                  return <UsdValue usd={closeSize.closeSizeUsd} />;
                 }
                 if (position.sizeInUsd === 0n) return "0";
                 const closeSizeInTokens = (closeSize.closeSizeUsd * position.sizeInTokens) / position.sizeInUsd;
@@ -1112,6 +1133,26 @@ export function AddTPSLModal({
             <MarginPercentageSlider value={closePercentage} onChange={closeSize.handleSliderChange} />
           </div>
         )}
+
+        {expressError.bannerErrorName && (
+          <AlertInfoCard type="error" hideClose>
+            <ValidationBannerErrorContent
+              validationBannerErrorName={expressError.bannerErrorName}
+              chainId={chainId}
+              srcChainId={srcChainId}
+              gasPaymentTokenAddress={expressParams?.gasPaymentParams.gasPaymentTokenAddress}
+              onBeforeNavigation={() => setIsVisible(false)}
+            />
+          </AlertInfoCard>
+        )}
+
+        <ExpressTradingWarningCard
+          expressParams={expressParams}
+          payTokenAddress={undefined}
+          isWrapOrUnwrap={false}
+          isGmxAccount={srcChainId !== undefined}
+          onAfterAction={() => setIsVisible(false)}
+        />
 
         <Button
           variant="primary-action"
@@ -1143,7 +1184,7 @@ export function AddTPSLModal({
                   label={<Trans>Liquidation price</Trans>}
                   value={
                     <ValueTransition
-                      from={formatLiquidationPrice(position.liquidationPrice, {
+                      from={formatLiquidationPriceParts(position.liquidationPrice, {
                         displayDecimals: priceDecimals,
                         visualMultiplier,
                       })}
@@ -1151,7 +1192,7 @@ export function AddTPSLModal({
                         activeDecreaseAmounts.isFullClose
                           ? "-"
                           : activeDecreaseAmounts.sizeDeltaUsd > 0n
-                            ? formatLiquidationPrice(activeNextPositionValues?.nextLiqPrice, {
+                            ? formatLiquidationPriceParts(activeNextPositionValues?.nextLiqPrice, {
                                 displayDecimals: priceDecimals,
                                 visualMultiplier,
                               })
@@ -1164,8 +1205,8 @@ export function AddTPSLModal({
                   label={<Trans>PnL</Trans>}
                   value={
                     <ValueTransition
-                      from={formatDeltaUsd(activeEstimatedPnl, activeEstimatedPnlPercentage)}
-                      to={formatDeltaUsd(
+                      from={formatDeltaUsdParts(activeEstimatedPnl, activeEstimatedPnlPercentage)}
+                      to={formatDeltaUsdParts(
                         activeNextPositionValues?.nextPnl,
                         activeNextPositionValues?.nextPnlPercentage
                       )}
@@ -1212,7 +1253,15 @@ export function AddTPSLModal({
         >
           <ExitPriceRow price={activeTriggerPrice} isLong={isLong} isSwap={false} fees={activeFees} />
           <TradeFeesRow {...(activeFees || {})} feesType="decrease" />
-          <NetworkFeeRow executionFee={totalExecutionFee} />
+          <NetworkFeeRow
+            executionFee={totalExecutionFee}
+            gasPaymentParams={getNetworkFeeGasPaymentParams({
+              expressParams,
+              tokensData,
+              canApproveGasPaymentToken: false,
+            })}
+            feeSource={feeSource}
+          />
           {breakdownNetPriceImpactEnabled && (
             <SyntheticsInfoRow
               label={t`Stored price impact`}
@@ -1220,11 +1269,11 @@ export function AddTPSLModal({
                 activeNextPositionValues?.nextPendingImpactDeltaUsd !== undefined &&
                 position?.pendingImpactUsd !== undefined ? (
                   <ValueTransition
-                    from={formatDeltaUsd(position?.pendingImpactUsd)}
-                    to={formatDeltaUsd(activeNextPositionValues?.nextPendingImpactDeltaUsd)}
+                    from={formatDeltaUsdParts(position?.pendingImpactUsd)}
+                    to={formatDeltaUsdParts(activeNextPositionValues?.nextPendingImpactDeltaUsd)}
                   />
                 ) : (
-                  formatDeltaUsd(activeNextPositionValues?.nextPendingImpactDeltaUsd)
+                  <DeltaUsdValue deltaUsd={activeNextPositionValues?.nextPendingImpactDeltaUsd} />
                 )
               }
               valueClassName="numbers"
@@ -1235,8 +1284,8 @@ export function AddTPSLModal({
             label={<Trans>Size</Trans>}
             value={
               <ValueTransition
-                from={formatUsd(position.sizeInUsd)}
-                to={formatUsd(activeNextPositionValues?.nextSizeUsd)}
+                from={formatUsdParts(position.sizeInUsd)}
+                to={formatUsdParts(activeNextPositionValues?.nextSizeUsd)}
               />
             }
           />
@@ -1250,8 +1299,8 @@ export function AddTPSLModal({
             }
             value={
               <ValueTransition
-                from={formatUsd(position.collateralUsd)}
-                to={formatUsd(activeNextPositionValues?.nextCollateralUsd)}
+                from={formatUsdParts(position.collateralUsd)}
+                to={formatUsdParts(activeNextPositionValues?.nextCollateralUsd)}
               />
             }
           />
