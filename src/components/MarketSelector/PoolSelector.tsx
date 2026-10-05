@@ -132,7 +132,9 @@ export function PoolSelector({
       return (b.balanceUsd ?? 0n) > (a.balanceUsd ?? 0n) ? 1 : -1;
     });
 
-    return [...sortedMartketsWithBalance, ...marketsWithoutBalance];
+    return [...sortedMartketsWithBalance, ...marketsWithoutBalance].sort(
+      (a, b) => Number(isGlvInfo(b.glvOrMarketInfo)) - Number(isGlvInfo(a.glvOrMarketInfo))
+    );
   }, [getMarketState, marketTokensData, markets, selectedIndexName, showAllPools]);
 
   const marketInfo = useMemo(
