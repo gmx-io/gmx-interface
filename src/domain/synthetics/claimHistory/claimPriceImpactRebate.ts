@@ -1,15 +1,17 @@
 import { t } from "@lingui/macro";
 import { Signer, ethers } from "ethers";
-import { encodeFunctionData } from "viem";
+import { encodeFunctionData, type Address } from "viem";
 
 import { getContract } from "config/contracts";
 import { callContract } from "lib/contracts";
 import type { ExpressTxnData } from "lib/transactions";
 import type { WalletSigner } from "lib/wallets";
 import { signTypedData } from "lib/wallets/signing";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { ContractsChainId } from "sdk/configs/chains";
 import type { SourceChainId } from "sdk/configs/chains";
+import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
 
 import { type RelayParamsPayload, getGelatoRelayRouterDomain, hashRelayParams } from "../express";
 import { getMultichainInfoFromSigner } from "../express/expressOrderUtils";
@@ -42,6 +44,32 @@ export async function createClaimCollateralTxn(
   });
 
   return txn;
+}
+
+export async function estimateClaimCollateralGas(
+  chainId: ContractsChainId,
+  { account, claimablePositionPriceImpactFees }: ClaimPriceImpactRebateParams
+): Promise<bigint> {
+  const client = getPublicClientWithRpc(chainId);
+
+  const callData = encodeFunctionData({
+    abi: abis.ExchangeRouter,
+    functionName: "claimCollateral",
+    args: [
+      claimablePositionPriceImpactFees.map((p) => p.marketAddress),
+      claimablePositionPriceImpactFees.map((p) => p.tokenAddress),
+      claimablePositionPriceImpactFees.map((p) => BigInt(p.timeKey)),
+      account,
+    ],
+  });
+
+  return client
+    .estimateGas({
+      account: account as Address,
+      to: getContract(chainId, "ExchangeRouter"),
+      data: callData,
+    })
+    .then(applyGasLimitBuffer);
 }
 
 export async function buildAndSignClaimPositionPriceImpactFeesTxn({
