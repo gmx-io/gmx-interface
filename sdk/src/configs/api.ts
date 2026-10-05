@@ -4,7 +4,7 @@ export type ApiEnvironment = "production" | "test";
 
 const API_URLS: Record<ApiEnvironment, Record<ContractsChainId, string | undefined>> = {
   production: {
-    [ARBITRUM]: "https://arbitrum-test.gmxapi.ai",
+    [ARBITRUM]: "https://arbitrum.gmxapi.io",
     [AVALANCHE]: "https://avalanche.gmxapi.io",
     [AVALANCHE_FUJI]: undefined,
     [ARBITRUM_SEPOLIA]: "https://arbitrum-sepolia-test.gmxapi.ai",
