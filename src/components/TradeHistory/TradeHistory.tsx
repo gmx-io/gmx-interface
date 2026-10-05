@@ -92,9 +92,7 @@ export function TradeHistory(p: Props) {
     chainId,
     positionKey: viewPositionKeyHistory,
     onResolve: (lifecycleId) => {
-      if (lifecycleId) {
-        setPositionLifecycleId(lifecycleId);
-      }
+      setPositionLifecycleId(lifecycleId);
       onViewPositionKeyHistoryConsumed?.();
     },
   });

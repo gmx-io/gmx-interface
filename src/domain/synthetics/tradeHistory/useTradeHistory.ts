@@ -11,7 +11,7 @@ import { OrderType } from "domain/synthetics/orders";
 import { definedOrThrow } from "lib/guards";
 import { getSubsquidGraphClient } from "lib/indexers";
 import { EMPTY_ARRAY } from "lib/objects";
-import { TradeAction as SubsquidTradeAction } from "sdk/codegen/subsquid";
+import { Query as SubsquidQuery, TradeAction as SubsquidTradeAction } from "sdk/codegen/subsquid";
 import { GraphQlFilters, buildFiltersBody, queryPaginated } from "sdk/utils/indexers";
 import { TradeAction, TradeActionType } from "sdk/utils/tradeHistory/types";
 
@@ -503,7 +503,7 @@ export async function fetchTwapGroupExecutedActions({
   return actions;
 }
 
-// Resolves a position slot's lifecycle id from its latest indexed action.
+// Unexecuted increases can have their own lifecycle id, so use the position slot's open lifecycle.
 export async function fetchPositionLifecycleId({
   chainId,
   positionKey,
@@ -517,14 +517,21 @@ export async function fetchPositionLifecycleId({
     return undefined;
   }
 
-  const query = gql(`{
-        tradeActions(limit: 1, orderBy: [timestamp_DESC, id_DESC], where: { positionKey_eq: "${positionKey}" }) {
-            positionLifecycleId
-        }
-      }`);
+  const query = gql`
+    query PositionLifecycle($positionKey: String!) {
+      positionLifecycleById(id: $positionKey) {
+        currentLifecycleId
+        isOpen
+      }
+    }
+  `;
 
-  const result = await client.query({ query, fetchPolicy: "no-cache" });
-  const latestAction = ((result.data?.tradeActions ?? []) as SubsquidTradeAction[])[0];
+  const result = await client.query<Pick<SubsquidQuery, "positionLifecycleById">>({
+    query,
+    variables: { positionKey },
+    fetchPolicy: "no-cache",
+  });
+  const lifecycle = result.data?.positionLifecycleById;
 
-  return latestAction?.positionLifecycleId ?? undefined;
+  return lifecycle?.isOpen ? lifecycle.currentLifecycleId ?? undefined : undefined;
 }
