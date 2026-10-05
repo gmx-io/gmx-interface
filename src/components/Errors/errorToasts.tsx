@@ -335,7 +335,7 @@ export function getTxnErrorToast(
       toastParams.errorContent = t`Mark price changed. Increase allowed slippage`;
       break;
     case TxErrorType.RpcError: {
-      const isContractRevert = errorData.errorMessage?.includes("execution reverted");
+      const isContractRevert = /execution reverted/i.test(errorData.errorMessage ?? "");
 
       if (isContractRevert) {
         break;

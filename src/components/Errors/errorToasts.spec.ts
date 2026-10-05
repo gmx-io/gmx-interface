@@ -270,6 +270,13 @@ describe("getTxnErrorToast wallet errors", () => {
       hides: "RPC error",
     },
     {
+      name: "Besu revert, capitalized",
+      error: sendTransactionError({ code: -32000, message: "Execution reverted" }),
+      setIsSettingsVisible: undefined,
+      shows: "Deposit failed",
+      hides: "RPC error",
+    },
+    {
       name: "wallet RPC failure in a flow without settings",
       error: sendTransactionError({ code: -32603, message: "Internal JSON-RPC error." }),
       setIsSettingsVisible: undefined,
