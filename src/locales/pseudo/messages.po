@@ -7989,6 +7989,10 @@ msgstr ""
 msgid "See the perks"
 msgstr ""
 
+#: src/components/NetworkFeeRow/NetworkFeeValue.tsx
+msgid "Paid from"
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Open fee / discount"
 msgstr ""

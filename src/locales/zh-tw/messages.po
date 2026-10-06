@@ -7989,6 +7989,10 @@ msgstr "當前槓桿下無法增加倉位。請增加保證金或減小規模。
 msgid "See the perks"
 msgstr "查看專屬禮遇"
 
+#: src/components/NetworkFeeRow/NetworkFeeValue.tsx
+msgid "Paid from"
+msgstr "支付來源"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Open fee / discount"
 msgstr "開倉費用 / 折扣"

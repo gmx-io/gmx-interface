@@ -1459,7 +1459,6 @@ export const WithdrawalView = () => {
 
       return (
         <NetworkFeeValue
-          className="leading-1"
           amount={sameChainNetworkFeeDetails.amount}
           decimals={sameChainNetworkFeeDetails.decimals}
           usd={sameChainNetworkFeeDetails.usd}
@@ -1478,7 +1477,6 @@ export const WithdrawalView = () => {
 
     return (
       <NetworkFeeValue
-        className="leading-1"
         amount={someExpressFeeAmount}
         decimals={gasPaymentToken.decimals}
         usd={convertToUsd(someExpressFeeAmount, gasPaymentToken.decimals, getMidPrice(gasPaymentToken.prices))}
@@ -1508,7 +1506,6 @@ export const WithdrawalView = () => {
 
     return (
       <NetworkFeeValue
-        className="leading-1"
         amount={someBridgeNetworkFee}
         decimals={relayerFeeToken.decimals}
         usd={someBridgeNetworkFeeUsd}
@@ -1705,11 +1702,13 @@ export const WithdrawalView = () => {
           />
           <SyntheticsInfoRow
             label={<Trans>Network fee</Trans>}
+            labelClassName="whitespace-nowrap"
             value={isNetworkFeeLoading ? valueSkeleton : networkFeeValue}
           />
           {!isSameChain && (
             <SyntheticsInfoRow
               label={<Trans>Bridge fee</Trans>}
+              labelClassName="whitespace-nowrap"
               value={isNetworkFeeLoading ? valueSkeleton : bridgeFeeValue}
             />
           )}

@@ -223,6 +223,7 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
 
         <SyntheticsInfoRow
           label={<Trans>Network fee</Trans>}
+          labelClassName="whitespace-nowrap"
           value={
             state.networkFeeInfo.isLoading ? (
               "..."

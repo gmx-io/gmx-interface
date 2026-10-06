@@ -1272,7 +1272,6 @@ export const DepositView = () => {
 
       return (
         <NetworkFeeValue
-          className="leading-1"
           amount={sameChainNetworkFeeDetails.amount}
           decimals={sameChainNetworkFeeDetails.decimals}
           usd={sameChainNetworkFeeDetails?.usd}
@@ -1289,7 +1288,6 @@ export const DepositView = () => {
 
     return (
       <NetworkFeeValue
-        className="leading-1"
         amount={networkFee}
         decimals={depositViewViemChain.nativeCurrency.decimals}
         usd={networkFeeUsd}
@@ -1475,6 +1473,7 @@ export const DepositView = () => {
           <SyntheticsInfoRow label={<Trans>Estimated time</Trans>} value={estimatedTimeValue} />
           <SyntheticsInfoRow
             label={<Trans>Network fee</Trans>}
+            labelClassName="whitespace-nowrap"
             value={isNetworkFeeLoading ? valueSkeleton : networkFeeValue}
           />
           <SyntheticsInfoRow

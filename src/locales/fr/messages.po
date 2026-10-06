@@ -7989,6 +7989,10 @@ msgstr "La position ne peut pas être augmentée avec l'effet de levier actuel. 
 msgid "See the perks"
 msgstr "Voir les avantages"
 
+#: src/components/NetworkFeeRow/NetworkFeeValue.tsx
+msgid "Paid from"
+msgstr "Source de paiement"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Open fee / discount"
 msgstr "Frais d'ouverture / remise"

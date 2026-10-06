@@ -7989,6 +7989,10 @@ msgstr "La posición no puede aumentarse con el apalancamiento actual. Aumente e
 msgid "See the perks"
 msgstr "Vea las ventajas"
 
+#: src/components/NetworkFeeRow/NetworkFeeValue.tsx
+msgid "Paid from"
+msgstr "Origen del pago"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Open fee / discount"
 msgstr "Comisión de apertura / descuento"
