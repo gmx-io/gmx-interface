@@ -253,6 +253,22 @@ export default function BeginAccountTransfer() {
   ];
   const hasStakedGmx = receiverGmxStakingValues.some((value) => value > 0);
   const hasStakedGlp = receiverGlpStakingValues.some((value) => value > 0);
+  const isSenderCheckLoading = [
+    gmxVesterBalance,
+    glpVesterBalance,
+    affiliateVesterBalance,
+    feeGmxTrackerBalance,
+    feeGmxTrackerStakedAmount,
+    stakedGlpTrackerBalance,
+    stakedGlpTrackerStakedAmount,
+    gmxStaked,
+    claimableGmxRewards,
+    gmxAllowance,
+    pendingReceiver,
+  ].some((value) => value === undefined);
+  const isReceiverCheckLoading = [...receiverGmxStakingValues, ...receiverGlpStakingValues].some(
+    (value) => value === undefined
+  );
   const hasPendingReceiver = pendingReceiver && pendingReceiver !== zeroAddress;
 
   const getError = () => {
@@ -311,7 +327,10 @@ export default function BeginAccountTransfer() {
     if (isTransferring) {
       return false;
     }
-    if (hasValidReceiver && !feeGmxAllowanceData) {
+    if (isSenderCheckLoading) {
+      return false;
+    }
+    if (hasValidReceiver && (!feeGmxAllowanceData || isReceiverCheckLoading)) {
       return false;
     }
     if (!isStakingPowerResetAcknowledged) {
