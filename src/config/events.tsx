@@ -49,6 +49,23 @@ export type EventData = {
 
 export const appEventsData: EventData[] = [
   {
+    id: "glv-usdg-launch",
+    type: "listing",
+    isActive: true,
+    startDate: "06 Oct 2026, 00:00",
+    endDate: "13 Oct 2026, 00:00",
+    title: "New: GLV [USDG-USDG] is live with an 8%+ launch boost",
+    description: (
+      <>
+        Deposit dollars, earn dollars, with no crypto price exposure on your deposit. USDC works too; the app converts
+        it for you in the same flow. For the first 8 weeks, the GMX Dollar Vault earns a launch boost of 8% APR or
+        higher on top of trading fees, paid into the GLV price every 4 hours. Nothing to claim. Rates for later periods
+        will be published before each one starts.
+      </>
+    ),
+    link: { text: "Read the announcement", href: "https://x.com/GMX_IO/status/2107458863469302101", newTab: true },
+  },
+  {
     id: "release-127-128-129-highlights",
     type: "update",
     isActive: true,
