@@ -87,6 +87,22 @@ export default function BeginAccountTransfer() {
     }
   );
 
+  const extendedGmxTrackerAddress = getContract(chainId, "ExtendedGmxTracker");
+  const { data: cumulativeExtendedGmxTrackerRewards } = useSWR(
+    [active, chainId, extendedGmxTrackerAddress, "cumulativeRewards", parsedReceiver],
+    {
+      fetcher: contractFetcher(signer, "RewardTracker"),
+    }
+  );
+
+  const feeGmxTrackerAddress = getContract(chainId, "FeeGmxTracker");
+  const { data: cumulativeFeeGmxTrackerRewards } = useSWR(
+    [active, chainId, feeGmxTrackerAddress, "cumulativeRewards", parsedReceiver],
+    {
+      fetcher: contractFetcher(signer, "RewardTracker"),
+    }
+  );
+
   const feeGlpTrackerAddress = getContract(chainId, "FeeGlpTracker");
   const { data: cumulativeFeeGlpTrackerRewards } = useSWR(
     [active, chainId, feeGlpTrackerAddress, "cumulativeRewards", parsedReceiver],
@@ -117,6 +133,28 @@ export default function BeginAccountTransfer() {
     }
   );
 
+  const { data: transferredAverageStakedGmx } = useSWR(
+    [active, chainId, gmxVesterAddress, "transferredAverageStakedAmounts", parsedReceiver],
+    {
+      fetcher: contractFetcher(signer, "Vester"),
+    }
+  );
+
+  const { data: transferredAverageStakedGlp } = useSWR(
+    [active, chainId, glpVesterAddress, "transferredAverageStakedAmounts", parsedReceiver],
+    {
+      fetcher: contractFetcher(signer, "Vester"),
+    }
+  );
+
+  const { data: receiverGmxVesterBalance } = useSWR([active, chainId, gmxVesterAddress, "balanceOf", parsedReceiver], {
+    fetcher: contractFetcher(signer, "Token"),
+  });
+
+  const { data: receiverGlpVesterBalance } = useSWR([active, chainId, glpVesterAddress, "balanceOf", parsedReceiver], {
+    fetcher: contractFetcher(signer, "Token"),
+  });
+
   const { data: pendingReceiver } = useSWR(
     active && [active, chainId, rewardRouterAddress, "pendingReceivers", account],
     {
@@ -129,8 +167,6 @@ export default function BeginAccountTransfer() {
     tokenAddresses: [gmxAddress],
   });
   const gmxAllowance = gmxAllowanceData?.[gmxAddress];
-
-  const feeGmxTrackerAddress = getContract(chainId, "FeeGmxTracker");
 
   const { tokensAllowanceData: feeGmxAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: parsedReceiver,
@@ -168,14 +204,24 @@ export default function BeginAccountTransfer() {
   const hasVestedGmx = gmxVesterBalance > 0;
   const hasVestedGlp = glpVesterBalance > 0;
   const hasVestedAffiliate = affiliateVesterBalance > 0;
-  const hasStakedGmx =
-    (cumulativeGmxRewards && cumulativeGmxRewards > 0) ||
-    (transferredCumulativeGmxRewards && transferredCumulativeGmxRewards > 0) ||
-    (cumulativeBonusGmxTrackerRewards && cumulativeBonusGmxTrackerRewards > 0);
-  const hasStakedGlp =
-    (cumulativeGlpRewards && cumulativeGlpRewards > 0) ||
-    (transferredCumulativeGlpRewards && transferredCumulativeGlpRewards > 0) ||
-    (cumulativeFeeGlpTrackerRewards && cumulativeFeeGlpTrackerRewards > 0);
+  const receiverGmxStakingValues = [
+    cumulativeGmxRewards,
+    cumulativeBonusGmxTrackerRewards,
+    cumulativeExtendedGmxTrackerRewards,
+    cumulativeFeeGmxTrackerRewards,
+    transferredCumulativeGmxRewards,
+    transferredAverageStakedGmx,
+    receiverGmxVesterBalance,
+  ];
+  const receiverGlpStakingValues = [
+    cumulativeGlpRewards,
+    cumulativeFeeGlpTrackerRewards,
+    transferredCumulativeGlpRewards,
+    transferredAverageStakedGlp,
+    receiverGlpVesterBalance,
+  ];
+  const hasStakedGmx = receiverGmxStakingValues.some((value) => value > 0);
+  const hasStakedGlp = receiverGlpStakingValues.some((value) => value > 0);
   const hasPendingReceiver = pendingReceiver && pendingReceiver !== zeroAddress;
 
   const getError = () => {
