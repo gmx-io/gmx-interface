@@ -112,9 +112,14 @@ describe("BeginAccountTransfer", () => {
     }
   );
 
-  it("sends a receiver without staking history to the approval step", () => {
+  it.each([
+    ["sbfGMX", 0n, "Allow all tokens to transfer to the new account"],
+    ["GMX", 12871058473350485739n, "Approve GMX"],
+  ] as const)("asks for the %s approval the transfer needs PRO-3328", (_token, claimableGmx, buttonText) => {
+    setChainValue(SENDER, "ExtendedGmxTracker", "claimable", claimableGmx);
+
     const { getByRole } = renderWithReceiver();
 
-    expect(getByRole("button", { name: "Allow all tokens to transfer to the new account" })).toBeTruthy();
+    expect(getByRole("button", { name: buttonText })).toBeTruthy();
   });
 });

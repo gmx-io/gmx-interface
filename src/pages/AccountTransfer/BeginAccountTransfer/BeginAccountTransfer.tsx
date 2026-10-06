@@ -221,7 +221,16 @@ export default function BeginAccountTransfer() {
     }
   );
 
-  const needApproval = gmxAllowance !== undefined && gmxStaked && gmxStaked > gmxAllowance;
+  const { data: claimableGmxRewards } = useSWR(
+    active && [active, chainId, extendedGmxTrackerAddress, "claimable", account],
+    {
+      fetcher: contractFetcher(signer, "RewardTracker"),
+    }
+  );
+
+  const gmxSpentOnAccept =
+    gmxStaked !== undefined && claimableGmxRewards !== undefined ? gmxStaked + 2n * claimableGmxRewards : undefined;
+  const needApproval = gmxAllowance !== undefined && gmxSpentOnAccept !== undefined && gmxSpentOnAccept > gmxAllowance;
 
   const hasVestedGmx = gmxVesterBalance > 0 || feeGmxTrackerBalance < feeGmxTrackerStakedAmount;
   const hasVestedGlp = glpVesterBalance > 0 || stakedGlpTrackerBalance < stakedGlpTrackerStakedAmount;
