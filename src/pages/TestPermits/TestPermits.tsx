@@ -138,6 +138,7 @@ export function TestPermits() {
       });
 
       const tx = await signer.sendTransaction({
+        chainId,
         to: selectedToken.address,
         data,
       });
