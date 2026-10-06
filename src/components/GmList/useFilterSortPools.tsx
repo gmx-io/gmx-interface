@@ -58,9 +58,12 @@ export function useFilterSortPools({
       return [];
     }
 
-    if (searchText.trim()) {
-      return searchBy(
-        values(marketTokensData),
+    const trimmedSearchText = searchText.trim();
+
+    if (trimmedSearchText) {
+      const tokens = values(marketTokensData);
+      const matchingTokens = searchBy(
+        tokens,
         [
           (marketToken) => {
             const market = getByKey(marketsInfo, marketToken?.address);
@@ -86,8 +89,30 @@ export function useFilterSortPools({
             return (market.indexToken.searchAliases ?? []).join(" ");
           },
         ],
-        searchText
+        trimmedSearchText
       );
+
+      const hasMatchingMarket = matchingTokens.some((marketToken) => {
+        const market = getByKey(marketsInfo, marketToken?.address);
+        return market && !market.isSpotOnly && !market.isDisabled;
+      });
+
+      if (hasMatchingMarket) {
+        return matchingTokens;
+      }
+
+      const collateralMatches = searchBy(
+        tokens,
+        [
+          (marketToken) => {
+            const market = getByKey(marketsInfo, marketToken?.address);
+            return market ? getMarketPoolName(market) : "";
+          },
+        ],
+        trimmedSearchText
+      );
+
+      return Array.from(new Set([...matchingTokens, ...collateralMatches]));
     }
 
     if (orderBy === "unspecified" || direction === "unspecified") {
