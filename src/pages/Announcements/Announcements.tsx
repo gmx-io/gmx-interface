@@ -365,6 +365,7 @@ function FiltersBar({
             startDate={startDate}
             endDate={endDate}
             onChange={onDateRangeChange}
+            allowFutureDates
             handleClassName="outline-none"
             renderHandle={({ buttonText, open }) => (
               <span

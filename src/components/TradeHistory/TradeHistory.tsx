@@ -239,7 +239,12 @@ export function TradeHistory(p: Props) {
     <>
       {pnlAnalysisButton}
 
-      <DateRangeSelect startDate={startDate} endDate={endDate} onChange={setDateRange} />
+      <DateRangeSelect
+        startDate={startDate}
+        endDate={endDate}
+        onChange={setDateRange}
+        timezone={hasExternalDateRange ? "utc" : "device"}
+      />
 
       <Button
         variant="ghost"

@@ -263,6 +263,11 @@
     .react-calendar__year-view__months__month {
       color: var(--color-typography-secondary);
     }
+
+    .react-calendar__tile:disabled {
+      background: transparent;
+      color: var(--color-typography-inactive);
+    }
   }
 
   @media (max-width: 600px) {
