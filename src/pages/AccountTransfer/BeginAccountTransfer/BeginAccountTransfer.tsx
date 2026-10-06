@@ -181,15 +181,37 @@ export default function BeginAccountTransfer() {
     }
   );
 
+  const { data: feeGmxTrackerStakedAmount } = useSWR(
+    active && [active, chainId, feeGmxTrackerAddress, "stakedAmounts", account],
+    {
+      fetcher: contractFetcher(signer, "RewardTracker"),
+      refreshInterval: 1000,
+    }
+  );
+
+  const { data: stakedGlpTrackerBalance } = useSWR(
+    active && [active, chainId, stakedGlpTrackerAddress, "balanceOf", account],
+    {
+      fetcher: contractFetcher(signer, "Token"),
+    }
+  );
+
+  const { data: stakedGlpTrackerStakedAmount } = useSWR(
+    active && [active, chainId, stakedGlpTrackerAddress, "stakedAmounts", account],
+    {
+      fetcher: contractFetcher(signer, "RewardTracker"),
+    }
+  );
+
   const needFeeGmxTrackerApproval = useMemo(
     () =>
       Boolean(
         hasValidReceiver &&
-          feeGmxTrackerBalance !== undefined &&
+          feeGmxTrackerStakedAmount !== undefined &&
           feeGmxAllowanceData &&
-          getNeedTokenApprove(feeGmxAllowanceData, feeGmxTrackerAddress, feeGmxTrackerBalance, [])
+          getNeedTokenApprove(feeGmxAllowanceData, feeGmxTrackerAddress, feeGmxTrackerStakedAmount, [])
       ),
-    [feeGmxTrackerAddress, feeGmxTrackerBalance, hasValidReceiver, feeGmxAllowanceData]
+    [feeGmxTrackerAddress, feeGmxTrackerStakedAmount, hasValidReceiver, feeGmxAllowanceData]
   );
 
   const { data: gmxStaked } = useSWR(
@@ -201,8 +223,8 @@ export default function BeginAccountTransfer() {
 
   const needApproval = gmxAllowance !== undefined && gmxStaked && gmxStaked > gmxAllowance;
 
-  const hasVestedGmx = gmxVesterBalance > 0;
-  const hasVestedGlp = glpVesterBalance > 0;
+  const hasVestedGmx = gmxVesterBalance > 0 || feeGmxTrackerBalance < feeGmxTrackerStakedAmount;
+  const hasVestedGlp = glpVesterBalance > 0 || stakedGlpTrackerBalance < stakedGlpTrackerStakedAmount;
   const hasVestedAffiliate = affiliateVesterBalance > 0;
   const receiverGmxStakingValues = [
     cumulativeGmxRewards,
@@ -335,7 +357,7 @@ export default function BeginAccountTransfer() {
         spender: parsedReceiver,
         chainId,
         permitParams: undefined,
-        approveAmount: feeGmxTrackerBalance,
+        approveAmount: feeGmxTrackerStakedAmount,
       });
       return;
     }

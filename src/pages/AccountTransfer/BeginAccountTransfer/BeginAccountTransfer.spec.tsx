@@ -72,6 +72,7 @@ beforeAll(() => {
 beforeEach(() => {
   chainValues = {};
   setChainValue(SENDER, "FeeGmxTracker", "balanceOf", STAKED_AMOUNT);
+  setChainValue(SENDER, "FeeGmxTracker", "stakedAmounts", STAKED_AMOUNT);
 });
 
 afterEach(cleanup);
@@ -98,6 +99,8 @@ describe("BeginAccountTransfer", () => {
     ["receiver", "GlpVester", "transferredAverageStakedAmounts", "Receiver has staked GMX/GLP"],
     ["receiver", "GmxVester", "balanceOf", "Receiver has staked GMX/GLP"],
     ["receiver", "GlpVester", "balanceOf", "Receiver has staked GMX/GLP"],
+    ["sender", "FeeGmxTracker", "balanceOf", "Vested GMX not withdrawn"],
+    ["sender", "StakedGlpTracker", "stakedAmounts", "Vested GLP not withdrawn"],
   ] as const)(
     "blocks a transfer the RewardRouter rejects: %s %s.%s PRO-3328",
     (party, contractName, method, buttonText) => {
