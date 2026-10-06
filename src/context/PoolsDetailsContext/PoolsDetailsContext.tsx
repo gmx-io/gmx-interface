@@ -71,6 +71,7 @@ export type PoolsDetailsState = {
   secondTokenInputValue: string;
   marketOrGlvTokenInputValue: string;
   isMarketForGlvSelectedManually: boolean;
+  isFirstTokenPinned: boolean;
   isTransitRoute: boolean;
   transitAmountOut: bigint | undefined;
   conversionRoutePreference: ConversionRoutePreference;
@@ -88,6 +89,7 @@ export type PoolsDetailsState = {
   setSecondTokenInputValue: (value: string) => void;
   setMarketOrGlvTokenInputValue: (value: string) => void;
   setIsMarketForGlvSelectedManually: (value: boolean) => void;
+  setIsFirstTokenPinned: (value: boolean) => void;
   setIsTransitRoute: (value: boolean) => void;
   setTransitAmountOut: (value: bigint | undefined) => void;
   setConversionRoutePreference: (value: ConversionRoutePreference) => void;
@@ -159,6 +161,11 @@ export function usePoolsDetailsState({
       }
     | undefined
   >([chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, glvOrMarketAddress, "inputTokenAddresses"], undefined);
+
+  const [isFirstTokenPinned = false, setIsFirstTokenPinned] = useLocalStorageSerializeKeySafe<boolean>(
+    [chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, glvOrMarketAddress, "isFirstTokenPinned"],
+    false
+  );
 
   const firstTokenAddress = inputTokenAddresses?.first;
   const secondTokenAddress =
@@ -293,6 +300,7 @@ export function usePoolsDetailsState({
       secondTokenInputValue,
       marketOrGlvTokenInputValue,
       isMarketForGlvSelectedManually,
+      isFirstTokenPinned,
       isTransitRoute,
       transitAmountOut,
       conversionRoutePreference,
@@ -310,6 +318,7 @@ export function usePoolsDetailsState({
       setSecondTokenInputValue,
       setMarketOrGlvTokenInputValue,
       setIsMarketForGlvSelectedManually,
+      setIsFirstTokenPinned,
       setIsTransitRoute,
       setTransitAmountOut,
       setConversionRoutePreference,
@@ -329,6 +338,7 @@ export function usePoolsDetailsState({
     secondTokenInputValue,
     marketOrGlvTokenInputValue,
     isMarketForGlvSelectedManually,
+    isFirstTokenPinned,
     isTransitRoute,
     transitAmountOut,
     conversionRoutePreference,
@@ -337,6 +347,7 @@ export function usePoolsDetailsState({
     setPaySource,
     setFirstTokenAddress,
     setSecondTokenAddress,
+    setIsFirstTokenPinned,
     setFirstTokenInputValue,
     setSecondTokenInputValue,
     setMarketOrGlvTokenInputValue,

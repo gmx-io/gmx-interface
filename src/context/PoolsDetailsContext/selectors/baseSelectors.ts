@@ -65,6 +65,10 @@ export const selectPoolsDetailsIsMarketForGlvSelectedManually = (s: SyntheticsSt
 export const selectPoolsDetailsSetIsMarketForGlvSelectedManually = (s: SyntheticsState) =>
   s.poolsDetails?.setIsMarketForGlvSelectedManually ?? FALLBACK_BOOLEAN_SETTER;
 
+export const selectPoolsDetailsIsFirstTokenPinned = (s: SyntheticsState) => s.poolsDetails?.isFirstTokenPinned ?? false;
+export const selectPoolsDetailsSetIsFirstTokenPinned = (s: SyntheticsState) =>
+  s.poolsDetails?.setIsFirstTokenPinned ?? FALLBACK_BOOLEAN_SETTER;
+
 export const selectPoolsDetailsIsTransitRoute = (s: SyntheticsState) => s.poolsDetails?.isTransitRoute ?? false;
 export const selectPoolsDetailsSetIsTransitRoute = (s: SyntheticsState) =>
   s.poolsDetails?.setIsTransitRoute ?? FALLBACK_BOOLEAN_SETTER;

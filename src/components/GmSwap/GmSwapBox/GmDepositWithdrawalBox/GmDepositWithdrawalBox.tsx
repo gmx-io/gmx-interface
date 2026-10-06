@@ -45,6 +45,7 @@ import {
   selectPoolsDetailsSelectedMarketAddressForGlv,
   selectPoolsDetailsSetFocusedInput,
   selectPoolsDetailsSetGlvOrMarketAddress,
+  selectPoolsDetailsSetIsFirstTokenPinned,
   selectPoolsDetailsSetIsMarketForGlvSelectedManually,
   selectPoolsDetailsSetSelectedMarketAddressForGlv,
   selectPoolsDetailsTradeTokensDataWithSourceChainBalances,
@@ -142,6 +143,7 @@ export function GmSwapBoxDepositWithdrawal() {
   const selectedMarketForGlv = useSelector(selectPoolsDetailsSelectedMarketAddressForGlv);
   const setSelectedMarketAddressForGlv = useSelector(selectPoolsDetailsSetSelectedMarketAddressForGlv);
   const setIsMarketForGlvSelectedManually = useSelector(selectPoolsDetailsSetIsMarketForGlvSelectedManually);
+  const setIsFirstTokenPinned = useSelector(selectPoolsDetailsSetIsFirstTokenPinned);
 
   const [firstTokenAddress, setFirstTokenAddress] = usePoolsDetailsFirstTokenAddress();
   const [secondTokenAddress] = usePoolsDetailsSecondTokenAddress();
@@ -718,6 +720,7 @@ export function GmSwapBoxDepositWithdrawal() {
                               ? "gmxAccount"
                               : "settlementChain"
                         );
+                        setIsFirstTokenPinned(true);
                         handleFirstTokenSelect(tokenAddress as ERC20Address | NativeTokenSupportedAddress);
                       }}
                     />

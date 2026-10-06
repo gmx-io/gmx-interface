@@ -196,6 +196,7 @@ function useMockPoolsDetailsState({
   const [secondTokenInputValue, setSecondTokenInputValue] = useState("");
   const [marketOrGlvTokenInputValue, setMarketOrGlvTokenInputValue] = useState("");
   const [isMarketForGlvSelectedManually, setIsMarketForGlvSelectedManually] = useState(false);
+  const [isFirstTokenPinned, setIsFirstTokenPinned] = useState(false);
   const [isTransitRoute, setIsTransitRoute] = useState(false);
   const [transitAmountOut, setTransitAmountOut] = useState<bigint | undefined>(undefined);
   const [conversionRoutePreference, setConversionRoutePreference] =
@@ -216,6 +217,7 @@ function useMockPoolsDetailsState({
       secondTokenInputValue,
       marketOrGlvTokenInputValue,
       isMarketForGlvSelectedManually,
+      isFirstTokenPinned,
       isTransitRoute,
       transitAmountOut,
       conversionRoutePreference,
@@ -236,6 +238,7 @@ function useMockPoolsDetailsState({
       setSecondTokenInputValue,
       setMarketOrGlvTokenInputValue,
       setIsMarketForGlvSelectedManually,
+      setIsFirstTokenPinned,
       setIsTransitRoute,
       setTransitAmountOut,
       setConversionRoutePreference,
@@ -248,6 +251,7 @@ function useMockPoolsDetailsState({
       focusedInput,
       glvOrMarketAddress,
       isMarketForGlvSelectedManually,
+      isFirstTokenPinned,
       isTransitRoute,
       marketOrGlvTokenInputValue,
       marketTokensData,

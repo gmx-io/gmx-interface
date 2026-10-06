@@ -11,6 +11,7 @@ import {
   selectPoolsDetailsOperation,
   selectPoolsDetailsConversionRoutePreference,
   selectPoolsDetailsSetFirstTokenAddress,
+  selectPoolsDetailsSetIsFirstTokenPinned,
   selectPoolsDetailsSetFirstTokenInputValue,
   selectPoolsDetailsSetFocusedInput,
   selectPoolsDetailsSetIsTransitRoute,
@@ -74,6 +75,7 @@ export function usePaxosTransitState({
   const firstTokenAmount = useSelector(selectPoolsDetailsFirstTokenAmount);
   const amounts = useSelector(selectDepositWithdrawalAmounts);
   const setFirstTokenAddress = useSelector(selectPoolsDetailsSetFirstTokenAddress);
+  const setIsFirstTokenPinned = useSelector(selectPoolsDetailsSetIsFirstTokenPinned);
   const setFirstTokenInputValue = useSelector(selectPoolsDetailsSetFirstTokenInputValue);
   const setMarketOrGlvTokenInputValue = useSelector(selectPoolsDetailsSetMarketOrGlvTokenInputValue);
   const setFocusedInput = useSelector(selectPoolsDetailsSetFocusedInput);
@@ -298,6 +300,7 @@ export function usePaxosTransitState({
       const usdg = getToken(chainId, paxosTransitConfig.usdgAddress);
 
       setFirstTokenAddress(paxosTransitConfig.usdgAddress as ERC20Address);
+      setIsFirstTokenPinned(true);
 
       if (amountDue !== undefined) {
         setFirstTokenInputValue(formatAmountFree(amountDue, usdg.decimals));
@@ -305,7 +308,7 @@ export function usePaxosTransitState({
 
       setFocusedInput("first");
     },
-    [chainId, paxosTransitConfig, setFirstTokenAddress, setFirstTokenInputValue, setFocusedInput]
+    [chainId, paxosTransitConfig, setFirstTokenAddress, setFirstTokenInputValue, setFocusedInput, setIsFirstTokenPinned]
   );
 
   useEffect(
