@@ -5,47 +5,37 @@ import { cloneElement, Fragment, isValidElement, ReactNode } from "react";
 import { getChainName } from "config/chains";
 import { AnnouncementType, EventData } from "config/events";
 import { getChainIcon } from "config/icons";
-import type { UiFlags } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 
 import Button from "components/Button/Button";
 
 import UpRightArrowIcon from "img/ic_up_right_arrow.svg?react";
 
-import { formatEventDate, getEventSortDate, reactNodeToText, splitByMatches } from "./announcementsHelpers";
+import { reactNodeToText, splitByMatches } from "./announcementsHelpers";
 
 const EMPTY_TOKENS: string[] = [];
 
 type AnnouncementCardProps = {
   event: EventData;
-  uiFlags: UiFlags | undefined;
   searchTokens?: string[];
   isHighlighted?: boolean;
 };
 
-export function AnnouncementCard({
-  event,
-  uiFlags,
-  searchTokens = EMPTY_TOKENS,
-  isHighlighted,
-}: AnnouncementCardProps) {
-  const date = getEventSortDate(event, uiFlags);
+export function AnnouncementCard({ event, searchTokens = EMPTY_TOKENS, isHighlighted }: AnnouncementCardProps) {
   const titleText = reactNodeToText(event.title);
 
   return (
     <article
-      data-announcement-id={event.id}
       className={cx(
-        "flex scroll-mt-8 flex-col gap-16 rounded-8 p-20 transition-colors",
+        "flex flex-col gap-16 rounded-8 p-20 transition-colors max-md:p-16",
         isHighlighted ? "bg-button-secondaryHover duration-150" : "bg-fill-card duration-1000"
       )}
     >
-      <div className="grid grid-cols-[1fr_auto] items-start gap-x-12 gap-y-8 max-lg:grid-cols-1">
-        <p className="text-body-small font-medium text-blue-100">{formatEventDate(date)}</p>
-        <div className="flex shrink-0 flex-wrap items-center justify-end gap-4 max-lg:order-last max-lg:mt-4 max-lg:justify-start">
+      <div className="flex flex-col gap-8">
+        <div className="flex flex-wrap items-center gap-4">
           {event.chains?.map((chainId) => <ChainBadge key={chainId} chainId={chainId} />)}
           <TypeTag type={event.type} />
         </div>
-        <h3 className="text-h2 col-span-full max-w-[660px] text-typography-primary">
+        <h3 className="text-h2 max-w-[660px] text-typography-primary">
           <HighlightedText text={titleText} tokens={searchTokens} />
         </h3>
       </div>
