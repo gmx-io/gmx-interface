@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
-import { isAddress, zeroAddress } from "viem";
+import { getAddress, isAddress, zeroAddress } from "viem";
 
 import { getContract } from "config/contracts";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
@@ -44,8 +44,8 @@ export default function BeginAccountTransfer() {
   const [isAffiliateVesterSkipValidation, setIsAffiliateVesterSkipValidation] = useState(false);
   const [isStakingPowerResetAcknowledged, setIsStakingPowerResetAcknowledged] = useState(false);
   let parsedReceiver: string = zeroAddress;
-  if (isAddress(receiver, { strict: false })) {
-    parsedReceiver = receiver;
+  if (isAddress(receiver) || /^0x[0-9A-F]{40}$/.test(receiver)) {
+    parsedReceiver = getAddress(receiver);
   }
   const hasValidReceiver = parsedReceiver !== zeroAddress;
 
@@ -268,7 +268,7 @@ export default function BeginAccountTransfer() {
     if (!receiver || receiver.length === 0) {
       return t`Enter receiver address`;
     }
-    if (!isAddress(receiver, { strict: false })) {
+    if (!hasValidReceiver) {
       return t`Invalid receiver address`;
     }
 
