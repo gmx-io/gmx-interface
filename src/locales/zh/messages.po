@@ -1690,6 +1690,10 @@ msgstr "导出领取历史"
 msgid "Charts by TradingView"
 msgstr "TradingView 图表"
 
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "No transfer history"
+msgstr "暂无转账历史"
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Total trades"
@@ -5464,10 +5468,6 @@ msgstr "执行止盈"
 msgid "Market Increase"
 msgstr "市场增加"
 
-#: src/components/GmxAccountModal/MainView.tsx
-msgid "No funding activity"
-msgstr "无资金活动"
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "This token does not support permit approvals."
 msgstr "此代币不支持 Permit 授权。"
@@ -7189,6 +7189,10 @@ msgstr "增加仓位（限价）"
 msgid "PnL relative to capital used (return on capital)"
 msgstr "PnL 相对于已用资金（资本回报率）"
 
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "No transfer history matching search"
+msgstr "未找到匹配搜索的转账历史"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Create Stop Market"
 msgstr "创建止损市价单"
@@ -7465,10 +7469,6 @@ msgstr "跨链桥费用上涨。资金仍保留在您的 GMX Account 中。请�
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Launch"
 msgstr "上线"
-
-#: src/components/GmxAccountModal/MainView.tsx
-msgid "No funding activity matching search"
-msgstr "未找到匹配搜索的资金费用记录"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeFi portfolio tracker"
