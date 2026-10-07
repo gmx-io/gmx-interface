@@ -759,6 +759,10 @@ msgstr "{0} j"
 msgid "Incentives, airdrops, and prizes will appear here"
 msgstr "Les incitations, airdrops et récompenses apparaîtront ici"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: at the trigger price, the remaining position would exceed max leverage. Edit the order or <0>increase the position's margin</0>."
+msgstr "L'ordre peut ne pas s'exécuter : au prix de déclenchement, la position restante dépasserait l'effet de levier maximal. Modifiez l'ordre ou <0>augmentez la marge de la position</0>."
+
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using funds directly from your connected wallet."
 msgstr "Vous pouvez ouvrir des positions isolées sur GMX en utilisant directement les fonds de votre portefeuille connecté."
@@ -4559,6 +4563,11 @@ msgstr "Solde {0}"
 msgid "numerous assets"
 msgstr "de nombreux actifs"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "Close the full position, change the trigger price, or add margin."
+msgstr "Clôturez toute la position, modifiez le prix de déclenchement ou ajoutez de la marge."
+
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Error name:"
 msgstr "Nom de l'erreur :"
@@ -7667,6 +7676,10 @@ msgstr "Symbole (A à Z)"
 msgid "Full lifecycle reconciliation is unavailable because part of this position's history could not be matched reliably."
 msgstr "Le rapprochement complet du cycle de vie est indisponible car une partie de l'historique de cette position n'a pas pu être associée de façon fiable."
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "At this trigger price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "À ce prix de déclenchement, la position restante dépasserait l'effet de levier maximal et l'ordre pourrait ne pas s'exécuter."
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr "{orderText} mis à jour"
@@ -9207,6 +9220,10 @@ msgstr "Montant"
 msgid "Integrate GMX"
 msgstr "Intégrez GMX"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Take-Profit price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "Au prix de Take-Profit, la position restante dépasserait l'effet de levier maximal et l'ordre pourrait ne pas s'exécuter."
+
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Show line values in USD"
 msgstr "Afficher les valeurs de ligne en USD"
@@ -10059,6 +10076,10 @@ msgstr "Ajouter RPC"
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Market: {0} a long position at the current price."
 msgstr "{typeString} Long au marché : {0} une position long au prix actuel."
+
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "Turn off \"Keep leverage\", close the full position, change the trigger price, or add margin."
+msgstr "Désactivez « Maintenir l'effet de levier », clôturez toute la position, modifiez le prix de déclenchement ou ajoutez de la marge."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a collateral"
@@ -11356,6 +11377,10 @@ msgstr "Limit Swap : échanger des jetons lorsque le prix de déclenchement est 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "Recevez des alertes et des annonces de GMX pour suivre vos transactions, le risque de liquidation et bien plus encore"
+
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Stop-Loss price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "Au prix du Stop-Loss, la position restante dépasserait l'effet de levier maximal et l'ordre pourrait ne pas s'exécuter."
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated off-hours liquidation price"
