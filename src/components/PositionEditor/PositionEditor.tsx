@@ -7,11 +7,7 @@ import { Address } from "viem";
 import { USD_DECIMALS } from "config/factors";
 import { isSettlementChain } from "config/multichain";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import {
-  usePositionsConstants,
-  useTokensData,
-  useUserReferralInfo,
-} from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   usePositionEditorAtPriceOpenRequest,
   usePositionEditorCollateralInputValue,
@@ -31,6 +27,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectPositionEditorCollateralInputAmountAndUsd,
+  selectPositionEditorMaxWithdrawAmount,
   selectPositionEditorSelectedCollateralToken,
 } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
@@ -38,9 +35,9 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { getNetworkFeeGasPaymentParams } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
-import { formatLiquidationPriceParts, getIsPositionInfoLoaded } from "domain/synthetics/positions";
+import { formatLiquidationPriceParts } from "domain/synthetics/positions";
 import { convertToTokenAmount, getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
-import { getMarkPrice, getMaxWithdrawAmount, getTradeFlagsForCollateralEdit } from "domain/synthetics/trade";
+import { getMarkPrice, getTradeFlagsForCollateralEdit } from "domain/synthetics/trade";
 import { Operation } from "domain/synthetics/trade/usePositionEditorState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getConditionalDepositWarning } from "domain/synthetics/trade/utils/validation";
@@ -97,8 +94,6 @@ export function PositionEditor() {
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const tokensData = useTokensData();
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
-  const { minCollateralUsd } = usePositionsConstants();
-  const userReferralInfo = useUserReferralInfo();
   const position = usePositionEditorPosition();
   const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
   const localizedDepositModeLabels = useLocalizedMap(DEPOSIT_MODE_LABELS);
@@ -217,8 +212,6 @@ export function PositionEditor() {
     setEditingPositionKey(undefined);
   }, [setEditingPositionKey]);
 
-  const collateralPrice = collateralToken?.prices.minPrice;
-
   const [collateralInputValue, setCollateralInputValue] = usePositionEditorCollateralInputValue();
   const { collateralDeltaAmount, collateralDeltaUsd } = useSelector(selectPositionEditorCollateralInputAmountAndUsd);
 
@@ -232,17 +225,7 @@ export function PositionEditor() {
     return getMarkPrice({ prices: position.indexToken.prices, isLong: position.isLong, isIncrease: true });
   }, [position]);
 
-  const maxWithdrawAmount = useMemo(() => {
-    if (!getIsPositionInfoLoaded(position)) return 0n;
-
-    return getMaxWithdrawAmount({
-      position,
-      minCollateralUsd,
-      collateralPrice,
-      collateralDecimals: collateralToken?.decimals,
-      userReferralInfo,
-    });
-  }, [collateralPrice, collateralToken?.decimals, minCollateralUsd, position, userReferralInfo]);
+  const maxWithdrawAmount = useSelector(selectPositionEditorMaxWithdrawAmount);
 
   const { fees, executionFee } = usePositionEditorFees({
     operation,

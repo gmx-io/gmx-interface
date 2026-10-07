@@ -80,4 +80,37 @@ test.describe("Tooltip", () => {
     await page.waitForTimeout(500);
     await expect(page.getByText(CONTENT)).toBeVisible();
   });
+
+  test("opens on keyboard focus of a disabled handle and hides when focus leaves", async ({ mount, page }) => {
+    await mount(
+      <div style={WRAPPER_STYLE}>
+        <button>Before</button>
+        <Tooltip handle={<button disabled>Submit</button>} content={CONTENT} variant="none" isHandlerDisabled />
+      </div>
+    );
+
+    await page.getByRole("button", { name: "Before" }).focus();
+    await page.keyboard.press("Tab");
+    await expect(page.getByText(CONTENT)).toBeVisible();
+
+    await page.keyboard.press("Shift+Tab");
+    await expect(page.getByText(CONTENT)).not.toBeVisible();
+  });
+
+  test("hides after a disabled handle is clicked and the mouse leaves", async ({ mount, page }) => {
+    await mount(
+      <div style={WRAPPER_STYLE}>
+        <Tooltip handle={<button disabled>Submit</button>} content={CONTENT} variant="none" isHandlerDisabled />
+      </div>
+    );
+
+    const handle = page.getByText("Submit");
+    await handle.hover({ force: true });
+    await expect(page.getByText(CONTENT)).toBeVisible();
+
+    await handle.click({ force: true });
+    await page.mouse.move(0, 0);
+
+    await expect(page.getByText(CONTENT)).not.toBeVisible();
+  });
 });

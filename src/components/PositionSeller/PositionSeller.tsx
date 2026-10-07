@@ -11,7 +11,6 @@ import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   useClosingPositionKeyState,
-  usePositionsConstants,
   useTokensData,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -28,14 +27,13 @@ import { makeSelectOrdersByPositionKey } from "context/SyntheticsStateContext/se
 import {
   selectPositionSellerAvailableReceiveTokens,
   selectPositionSellerDecreaseAmounts,
+  selectPositionSellerDecreaseError,
   selectPositionSellerFees,
-  selectPositionSellerMarkPrice,
-  selectPositionSellerMaxLiquidityPath,
+  selectPositionSellerIsNotEnoughReceiveTokenLiquidity,
   selectPositionSellerNextPositionValuesForDecrease,
   selectPositionSellerPosition,
   selectPositionSellerReceiveToken,
   selectPositionSellerSetDefaultReceiveToken,
-  selectPositionSellerShouldSwap,
   selectPositionSellerSplitReceiveDecreaseAmounts,
   selectPositionSellerSwapAmounts,
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
@@ -67,12 +65,7 @@ import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import { ORDER_OPTION_TO_TRADE_MODE, OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
-import {
-  getCommonError,
-  getDecreaseError,
-  getExpressError,
-  takeValidationResult,
-} from "domain/synthetics/trade/utils/validation";
+import { getCommonError, getExpressError, takeValidationResult } from "domain/synthetics/trade/utils/validation";
 import { getIsHighSwapProfitFee } from "domain/synthetics/trade/utils/warnings";
 import { Token } from "domain/tokens";
 import { getApproveButtonText, getGasPaymentTokenApprovalTooltip } from "domain/tokens/gasPaymentTokenApproval";
@@ -162,7 +155,6 @@ export function PositionSeller() {
   const { signer, account } = useWallet();
   const { provider } = useJsonRpcProvider(chainId);
   const { openConnectModal } = useConnectModal();
-  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
@@ -279,8 +271,6 @@ export function PositionSeller() {
     }
   }, [isVisible, resetPositionSeller, closeSizeReset]);
 
-  const markPrice = useSelector(selectPositionSellerMarkPrice);
-  const { maxLiquidity: maxSwapLiquidity } = useSelector(selectPositionSellerMaxLiquidityPath);
   const decreaseAmounts = useSelector(selectPositionSellerDecreaseAmounts);
   const positionOrders = useSelector(makeSelectOrdersByPositionKey(position?.key));
 
@@ -299,7 +289,6 @@ export function PositionSeller() {
     isLong: position?.isLong,
   });
 
-  const shouldSwap = useSelector(selectPositionSellerShouldSwap);
   const swapAmounts = useSelector(selectPositionSellerSwapAmounts);
 
   const receiveUsd = swapAmounts?.usdOut || decreaseAmounts?.receiveUsd;
@@ -325,6 +314,7 @@ export function PositionSeller() {
   }, [swapAmounts, decreaseAmounts]);
 
   const nextPositionValues = useSelector(selectPositionSellerNextPositionValuesForDecrease);
+  const decreaseError = useSelector(selectPositionSellerDecreaseError);
 
   const { fees, executionFee } = useSelector(selectPositionSellerFees);
 
@@ -343,7 +333,7 @@ export function PositionSeller() {
     payUsd: closeSizeUsd,
   });
 
-  const isNotEnoughReceiveTokenLiquidity = shouldSwap ? maxSwapLiquidity < (receiveUsd ?? 0n) : false;
+  const isNotEnoughReceiveTokenLiquidity = useSelector(selectPositionSellerIsNotEnoughReceiveTokenLiquidity);
   const setIsDismissedLatestRef = useLatest(priceImpactWarningState.setIsDismissed);
 
   const slippageInputId = useId();
@@ -521,26 +511,6 @@ export function PositionSeller() {
       tokensData,
     });
 
-    const decreaseError = getDecreaseError({
-      marketInfo: position.marketInfo,
-      inputSizeUsd: closeSizeUsd,
-      sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
-      receiveToken,
-      isTrigger: false,
-      triggerPrice: undefined,
-      triggerThresholdType: undefined,
-      existingPosition: position,
-      markPrice,
-      nextPositionValues,
-      isLong: position.isLong,
-      isContractAccount: false,
-      minCollateralUsd,
-      isNotEnoughReceiveTokenLiquidity,
-      minPositionSizeUsd,
-      isTwap,
-      numberOfParts,
-    });
-
     const validationResult = takeValidationResult(
       commonError,
       multipleWalletExtensionsChainError,
@@ -564,21 +534,12 @@ export function PositionSeller() {
   }, [
     account,
     chainId,
-    closeSizeUsd,
-    decreaseAmounts?.sizeDeltaUsd,
+    decreaseError,
     expressParams,
     hasOutdatedUi,
-    isNotEnoughReceiveTokenLiquidity,
     isSubmitting,
-    markPrice,
-    minCollateralUsd,
-    nextPositionValues,
     position,
-    receiveToken,
     tokensData,
-    minPositionSizeUsd,
-    isTwap,
-    numberOfParts,
     multipleWalletExtensionsChainError,
   ]);
 

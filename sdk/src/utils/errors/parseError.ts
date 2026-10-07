@@ -187,6 +187,11 @@ export function parseError(error: ErrorLike | string | undefined, errorDepth = 0
       //
     }
 
+    if (isCustomError(error as Error)) {
+      contractError = (error as CustomError).name;
+      contractErrorArgs = (error as CustomError).args;
+    }
+
     if (!contractError) {
       const errorData =
         (error && typeof error === "object" ? extractErrorDataFromViemError(error) : undefined) ??

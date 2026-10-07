@@ -421,6 +421,7 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
           triggerOrderType,
           isSetAcceptablePriceImpactEnabled,
           forceDecreaseSwapType,
+          isTwap: tradeFlags.isTwap,
         });
       }
     )
