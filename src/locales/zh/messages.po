@@ -2803,6 +2803,10 @@ msgstr "已达到最大存入限额"
 msgid "Total staked"
 msgstr "总质押量"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min size per part: {0}"
+msgstr "每份最小大小：{0}"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No results found"

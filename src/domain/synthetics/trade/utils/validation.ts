@@ -535,6 +535,16 @@ export function getIncreaseError(p: {
     return { buttonErrorMessage: t`Min position size: ${formatUsd(minPositionSizeUsd)}` };
   }
 
+  if (
+    isTwap &&
+    !existingPosition &&
+    numberOfParts > 0 &&
+    minPositionSizeUsd !== undefined &&
+    sizeDeltaUsd / BigInt(numberOfParts) < minPositionSizeUsd
+  ) {
+    return { buttonErrorMessage: t`Min size per part: ${formatUsd(minPositionSizeUsd)}` };
+  }
+
   if (isResultingPositionCheckBlocking && getIsMaxLeverageMarginReason(resultingPositionMarginState?.reason)) {
     return {
       buttonErrorMessage: t`Max leverage exceeded`,

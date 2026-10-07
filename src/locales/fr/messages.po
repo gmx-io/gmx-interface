@@ -2803,6 +2803,10 @@ msgstr "Limite maximale de dépôt atteinte"
 msgid "Total staked"
 msgstr "Total mis en staking"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min size per part: {0}"
+msgstr "Taille minimale par partie : {0}"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No results found"

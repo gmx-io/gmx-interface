@@ -213,6 +213,31 @@ describe("TWAP increase sequential validation", () => {
       }
     );
 
+    it.each([
+      {
+        name: "blocks",
+        sizeEth: "0.002",
+        buttonErrorMessage: `Min size per part: ${formatUsd(expandDecimals(1, 30))}`,
+      },
+      { name: "allows", sizeEth: "0.00275", buttonErrorMessage: undefined },
+    ])(
+      "$name a fresh TWAP whose part is $sizeEth ETH against the 1 USD min position size PRO-4134",
+      ({ sizeEth, buttonErrorMessage }) => {
+        // 6 USDC over five parts: 4 USD of size leaves 0.80 per part, 5.50 leaves 1.10
+        const state = createMockSyntheticsState({
+          marketInfo,
+          isLeverageSliderEnabled: false,
+          tradeMode: TradeMode.Twap,
+          fromTokenInputValue: "6",
+          toTokenInputValue: sizeEth,
+          twapNumberOfParts: 5,
+          account: MOCK_ACCOUNT,
+        });
+
+        expect(selectTradeboxTradeTypeError(state).buttonErrorMessage).toBe(buttonErrorMessage);
+      }
+    );
+
     it("values a margin paid in ETH at what reaches the USDC collateral after the swap", () => {
       const direct = selectTradeboxTwapIncreaseSequentialMarginState(createState({ sizeEth: "20" }))!;
       const swappedState = createState({ sizeEth: "20", payInEth: true });

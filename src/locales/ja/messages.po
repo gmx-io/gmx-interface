@@ -2803,6 +2803,10 @@ msgstr "入金上限に達しました"
 msgid "Total staked"
 msgstr "合計ステーキング額"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min size per part: {0}"
+msgstr "パートあたりの最小サイズ: {0}"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No results found"

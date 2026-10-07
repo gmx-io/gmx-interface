@@ -2803,6 +2803,10 @@ msgstr "최대 입금 한도에 도달했습니다"
 msgid "Total staked"
 msgstr "총 스테이킹 금액"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min size per part: {0}"
+msgstr "파트당 최소 크기: {0}"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No results found"

@@ -2803,6 +2803,10 @@ msgstr "Достигнут максимальный лимит депозита"
 msgid "Total staked"
 msgstr "Всего застейкано"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min size per part: {0}"
+msgstr "Мин размер на часть: {0}"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No results found"
