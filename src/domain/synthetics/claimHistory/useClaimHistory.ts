@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import { useMemo } from "react";
-import useSWRInfinite, { SWRInfiniteResponse } from "swr/infinite";
+import useSWRInfinite, { SWRInfiniteResponse, unstable_serialize } from "swr/infinite";
 import { getAddress } from "viem";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -42,6 +42,12 @@ export type RawClaimActionsResult = {
   totalCount?: number;
 };
 
+type ClaimHistoryPage = RawClaimActionsResult & {
+  account: string;
+  chainId: number;
+  requestKey: string;
+};
+
 export function useClaimCollateralHistory(
   chainId: number,
   p: {
@@ -81,15 +87,18 @@ export function useClaimCollateralHistory(
     ];
   };
 
+  const requestKey = unstable_serialize(key);
   const {
     data,
     error,
+    isLoading: isRequestLoading,
     size: pageIndex,
     setSize: setPageIndex,
-  } = useSWRInfinite<RawClaimActionsResult>(key, {
+  } = useSWRInfinite<ClaimHistoryPage>(key, {
+    keepPreviousData: true,
     fetcher: async (key) => {
       const pageIndex = key[3];
-      return fetchRawClaimActions({
+      const result = await fetchRawClaimActions({
         chainId,
         account: account!,
         pageIndex,
@@ -100,17 +109,26 @@ export function useClaimCollateralHistory(
         marketAddresses,
         showDebugValues,
       });
+      return { ...result, account: account!, chainId, requestKey };
     },
   });
 
-  const isLoading = (!error && !data) || !marketsInfoData || !tokensData;
+  // Keep filter results during loading without carrying them across accounts or chains.
+  const historyData =
+    !queryDisabled &&
+    (!error || data?.[0]?.requestKey === requestKey) &&
+    data?.[0]?.account === account &&
+    data?.[0]?.chainId === chainId
+      ? data
+      : undefined;
+  const isLoading = !queryDisabled && ((!error && !historyData) || !marketsInfoData || !tokensData);
 
   const claimActions = useMemo(() => {
-    if (!data || !tokensData || !marketsInfoData) {
+    if (!historyData || !tokensData || !marketsInfoData) {
       return undefined;
     }
 
-    return data
+    return historyData
       .flatMap((page) => page.claimActions)
       .reduce((acc, rawAction) => {
         let tokens: ClaimAction["tokens"];
@@ -141,9 +159,13 @@ export function useClaimCollateralHistory(
             return acc;
         }
       }, [] as ClaimAction[]);
-  }, [chainId, data, marketsInfoData, tokensData]);
+  }, [chainId, historyData, marketsInfoData, tokensData]);
 
-  const hasMorePages = data?.length === pageIndex && data?.at(-1)?.claimActions.length === pageSize;
+  const hasMorePages =
+    !error &&
+    !isRequestLoading &&
+    historyData?.length === pageIndex &&
+    historyData?.at(-1)?.claimActions.length === pageSize;
 
   return {
     claimActions,

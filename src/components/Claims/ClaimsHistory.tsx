@@ -56,8 +56,16 @@ export function ClaimsHistory() {
   const isConnected = Boolean(account);
   const isLoading = isConnected && isHistoryLoading;
 
+  const paginationKey = JSON.stringify([
+    chainId,
+    account,
+    fromTxTimestamp,
+    toTxTimestamp,
+    eventNameFilter,
+    marketAddressesFilter,
+  ]);
   const { currentPage, setCurrentPage, getCurrentData, pageCount } = usePagination(
-    String(account),
+    paginationKey,
     claimActions || EMPTY_ARRAY,
     CLAIMS_HISTORY_PER_PAGE
   );
