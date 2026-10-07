@@ -16,6 +16,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatUsd } from "lib/numbers";
 
 import AddressView from "components/AddressView/AddressView";
+import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import { LeverageValue } from "components/NumericValue/LeverageValue";
 import { NumericValue } from "components/NumericValue/NumericValue";
 import { UsdValue } from "components/NumericValue/UsdValue";
@@ -152,10 +153,11 @@ export function LeaderboardAccountsTable({
     };
   }, [activeRank, currentAccount, term]);
   const pageCount = Math.ceil(filteredStats.length / PER_PAGE);
+  const isEmpty = !isLoading && !rowsData.length && !pinnedRowData;
 
   const content = isLoading ? (
     <TopAccountsSkeleton count={PER_PAGE} />
-  ) : (
+  ) : isEmpty ? null : (
     <>
       {pinnedRowData && (
         <TableRow
@@ -166,22 +168,18 @@ export function LeaderboardAccountsTable({
           activeCompetition={activeCompetition}
         />
       )}
-      {rowsData.length ? (
-        rowsData.map(({ account, index, rank }) => {
-          return (
-            <TableRow
-              key={account.account}
-              account={account}
-              index={index}
-              pinned={false}
-              rank={rank}
-              activeCompetition={activeCompetition}
-            />
-          );
-        })
-      ) : (
-        <EmptyRow />
-      )}
+      {rowsData.map(({ account, index, rank }) => {
+        return (
+          <TableRow
+            key={account.account}
+            account={account}
+            index={index}
+            pinned={false}
+            rank={rank}
+            activeCompetition={activeCompetition}
+          />
+        );
+      })}
       {rowsData.length < PER_PAGE && <TopAccountsSkeleton invisible count={PER_PAGE - rowsData.length} />}
     </>
   );
@@ -250,6 +248,7 @@ export function LeaderboardAccountsTable({
           <tbody>{content}</tbody>
         </table>
       </TableScrollFadeContainer>
+      <EmptyTableContent isLoading={false} isEmpty={isEmpty} emptyText={<Trans>No results found</Trans>} />
       <BottomTablePagination page={page} pageCount={pageCount} onPageChange={setPage} />
     </div>
   );
@@ -429,16 +428,6 @@ const TableRow = memo(
     );
   }
 );
-
-const EmptyRow = memo(() => {
-  return (
-    <TableTr className="h-47">
-      <TableTd colSpan={7} className="align-top text-typography-secondary">
-        <Trans>No results found</Trans>
-      </TableTd>
-    </TableTr>
-  );
-});
 
 const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeCapital: boolean }) => {
   const isCompetition = useLeaderboardIsCompetition();
