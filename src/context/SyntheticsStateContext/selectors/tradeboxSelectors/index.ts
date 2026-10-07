@@ -72,7 +72,7 @@ import { convertToTokenAmount, getIsEquivalentTokens } from "sdk/utils/tokens";
 import { TokenBalanceType } from "sdk/utils/tokens/types";
 import { createTradeFlags } from "sdk/utils/trade";
 import type { TwapIncreaseSequenceParams } from "sdk/utils/trade/twapIncreaseMarginCheck";
-import { getIsValidTwapParams, getTwapEligibleNowPartsCount } from "sdk/utils/twap";
+import { getIsValidTwapParams, getTwapPartDelaysSeconds } from "sdk/utils/twap";
 
 import {
   selectGmxAccountGasPaymentToken,
@@ -578,7 +578,7 @@ export const selectTradeboxTwapIncreaseSequenceParams = createSelector((q): Twap
 
   return {
     numberOfParts,
-    eligibleNowCount: getTwapEligibleNowPartsCount(duration, numberOfParts),
+    partDelaysSeconds: getTwapPartDelaysSeconds(duration, numberOfParts),
   };
 });
 const selectTradeboxSetTriggerRatioInputValue = (s: SyntheticsState) => s.tradebox.setTriggerRatioInputValue;

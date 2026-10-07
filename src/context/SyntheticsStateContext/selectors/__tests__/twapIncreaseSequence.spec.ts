@@ -1,5 +1,5 @@
 import { maxUint256 } from "viem";
-import { describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { mockPositionInfo } from "domain/synthetics/testUtils/mocks";
 import { ValidationButtonTooltipName } from "domain/synthetics/trade/utils/validation";
@@ -23,13 +23,18 @@ import {
   selectTradeboxTwapIncreaseSequentialMarginState,
 } from "../tradeboxSelectors/selectTradeboxTradeErrors";
 
-// no fees, no price impact: each part is checked as collateral against 1% of the size it leaves
+// no fees, no price impact: each part is checked as collateral against 1% of the size it leaves;
+// 2e-8 of borrowing per second accrues on the position between the parts
 const marketInfo = createMockMarketInfo(ETH_TOKEN, {
   positionFeeFactorForBalanceWasImproved: 0n,
   positionFeeFactorForBalanceWasNotImproved: 0n,
   positionImpactFactorPositive: 0n,
   positionImpactFactorNegative: 0n,
+  borrowingFactorPerSecondForLongs: expandDecimals(2, 22),
 });
+
+// the orders below are stamped from this moment: the preview's 10 h / 4 parts put them 12 000 s apart
+const NOW_SECONDS = 1_800_000_000;
 
 function makePosition({ sizeUsd = 10_000, collateralUsd }: { sizeUsd?: number; collateralUsd: number }) {
   return mockPositionInfo(
@@ -213,6 +218,20 @@ describe("TWAP increase sequential validation", () => {
       }
     );
 
+    it("warns about a later part only once the borrowing accrued before it is counted PRO-4134", () => {
+      // 19 800 in four parts: after the last one 300 of collateral holds 29 800 — 2 USD above the 1% minimum,
+      // which 10 hours of borrowing on the growing position eat up
+      const overTenHours = createState({ sizeEth: "9.9" });
+      const atOnce = createState({ sizeEth: "9.9", hours: 0 });
+
+      expect(selectTradeboxTwapIncreaseSequentialMarginState(overTenHours)?.failingPartIndex).toBe(3);
+      expect(selectTradeboxTradeTypeError(overTenHours).buttonErrorMessage).toBeUndefined();
+      expect(selectTradeboxIncreaseMaxLeverageAlert(overTenHours)).toBe("warning");
+
+      expect(selectTradeboxTwapIncreaseSequentialMarginState(atOnce)?.failingPartIndex).toBeUndefined();
+      expect(selectTradeboxIncreaseMaxLeverageAlert(atOnce)).toBeUndefined();
+    });
+
     it.each([
       {
         name: "blocks",
@@ -255,6 +274,14 @@ describe("TWAP increase sequential validation", () => {
   describe("in the orders tab", () => {
     type TwapOrderParams = { partSizeUsd: number; payInEth?: boolean; executedParts?: number };
 
+    beforeAll(() => {
+      vi.useFakeTimers({ now: NOW_SECONDS * 1000, toFake: ["Date"] });
+    });
+
+    afterAll(() => {
+      vi.useRealTimers();
+    });
+
     function makeTwapOrder({ partSizeUsd, payInEth = false, executedParts = 0 }: TwapOrderParams) {
       const initialCollateralToken = payInEth ? ETH_TOKEN : USDC_TOKEN;
       // 25 USD per part: 25 USDC, or 0.0125 ETH swapped into USDC along the saved route
@@ -278,7 +305,7 @@ describe("TWAP increase sequential validation", () => {
         isTwap: false,
         isSwap: false,
         orderType: OrderType.LimitIncrease,
-        validFromTime: BigInt(1_800_000_000 + (executedParts + i) * 3_600),
+        validFromTime: BigInt(NOW_SECONDS + (executedParts + i) * 12_000),
         updatedAtTime: 0n,
         uiFeeFactor: undefined,
         executionFee: 0n,
@@ -353,14 +380,29 @@ describe("TWAP increase sequential validation", () => {
     it("re-projects the remaining parts from the position an executed part left behind", () => {
       const selectSequence = makeSelectTwapIncreaseOrderSequentialMarginState("twap-order");
       const before = selectSequence(createState({ partSizeUsd: 10_000, collateralUsd: 200 }))!;
-      // the first part added its 10 000 of size and 25 USDC of margin, three parts remain
+      // the first part added its 10 000 of size and 25 USDC of margin, three parts remain;
+      // the next one is 12 000 s away, so the position still pays the same borrowing before it
       const afterState = createState({ partSizeUsd: 10_000, sizeUsd: 20_000, collateralUsd: 225, executedParts: 1 });
       const after = selectSequence(afterState)!;
 
       expect(before).toMatchObject({ numberOfParts: 4, failingPartIndex: 1 });
-      expect(after).toMatchObject({ numberOfParts: 3, failingPartIndex: 0 });
+      expect(after).toMatchObject({ numberOfParts: 3, failingPartIndex: 0, isFailingPartEligibleNow: false });
       expect(after.marginState).toEqual(before.marginState);
       expect(makeSelectOrderErrorByOrderKey("twap-order")(afterState).level).toBe("error");
+    });
+
+    it("counts the borrowing the position accrues before each remaining part PRO-4134", () => {
+      const selectSequence = makeSelectTwapIncreaseOrderSequentialMarginState("twap-order");
+      const now = selectSequence(createState({ partSizeUsd: 1_000, collateralUsd: 200 }))!;
+      vi.setSystemTime((NOW_SECONDS - 12_000) * 1000);
+      const anIntervalEarlier = selectSequence(createState({ partSizeUsd: 1_000, collateralUsd: 200 }))!;
+      vi.setSystemTime(NOW_SECONDS * 1000);
+
+      // seen 12 000 s earlier, the 10 000 position pays 2.40 more of borrowing before the first part
+      expect(now.failingPartIndex).toBeUndefined();
+      expect(now.marginState.remainingCollateralUsd - anIntervalEarlier.marginState.remainingCollateralUsd).toBe(
+        expandDecimals(240, 28)
+      );
     });
 
     it.each([

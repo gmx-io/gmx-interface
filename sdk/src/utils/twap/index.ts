@@ -34,14 +34,10 @@ export function getTwapValidFromTime(duration: TwapDuration, numberOfParts: numb
   return BigInt(startTime + getTwapPartDelaySeconds(duration, numberOfParts, partIndex));
 }
 
-export function getTwapEligibleNowPartsCount(duration: TwapDuration, numberOfParts: number) {
-  let count = 0;
-
-  while (count < numberOfParts && getTwapPartDelaySeconds(duration, numberOfParts, count) === 0) {
-    count++;
-  }
-
-  return count;
+export function getTwapPartDelaysSeconds(duration: TwapDuration, numberOfParts: number): number[] {
+  return Array.from({ length: numberOfParts }, (_, partIndex) =>
+    getTwapPartDelaySeconds(duration, numberOfParts, partIndex)
+  );
 }
 
 export function changeTwapNumberOfPartsValue(value: number) {

@@ -760,7 +760,7 @@ describe("calcMaxSizeDeltaInUsdByLeverage — resulting position margin cap", ()
   });
 
   it("caps a TWAP at the size whose every part passes the sequential check PRO-4134", () => {
-    const twap = { numberOfParts: 4, eligibleNowCount: 1 };
+    const twap = { numberOfParts: 4, partDelaysSeconds: [0, 12_000, 24_000, 36_000] };
     const capped = boundUsd({ ...baseParams, twap })!;
 
     const isSequenceAccepted = (sizeDeltaUsd: bigint) =>

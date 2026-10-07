@@ -139,7 +139,7 @@ const fixtures = [
             collateralUsd: expandDecimals(400, 30),
           })
         ),
-        twap: { numberOfParts: 4, eligibleNowCount: 1 },
+        twap: { numberOfParts: 4, partDelaysSeconds: [0, 12_000, 24_000, 36_000] },
       };
     })(),
   },

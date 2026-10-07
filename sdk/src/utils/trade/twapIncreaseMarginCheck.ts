@@ -1,6 +1,6 @@
 import { BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
 import { bigMath } from "utils/bigmath";
-import { getPositionFee, getPriceImpactForPosition } from "utils/fees";
+import { getBorrowingFeeRateUsd, getFundingFeeRateUsd, getPositionFee, getPriceImpactForPosition } from "utils/fees";
 import { getMaxAllowedLeverage } from "utils/markets";
 import { MarketInfo } from "utils/markets/types";
 import { applyFactor } from "utils/numbers";
@@ -20,7 +20,7 @@ import { IncreasePositionAmounts } from "./types";
 
 export type TwapIncreaseSequenceParams = {
   numberOfParts: number;
-  eligibleNowCount: number;
+  partDelaysSeconds: number[];
 };
 
 export type TwapIncreaseAggregateAmounts = {
@@ -122,6 +122,23 @@ function getMaxAllowedLeverageMarginState({
   };
 }
 
+function getPositionFeesAccruedUsd(
+  marketInfo: MarketInfo,
+  isLong: boolean,
+  sizeInUsd: bigint,
+  periodSeconds: number
+): bigint {
+  if (periodSeconds <= 0 || sizeInUsd <= 0n) {
+    return 0n;
+  }
+
+  const period = BigInt(periodSeconds);
+  const borrowingUsd = getBorrowingFeeRateUsd(marketInfo, isLong, sizeInUsd, period);
+  const fundingUsd = getFundingFeeRateUsd(marketInfo, isLong, sizeInUsd, period);
+
+  return borrowingUsd + (fundingUsd < 0n ? -fundingUsd : 0n);
+}
+
 export function getTwapIncreaseSequentialMarginState(
   p: TwapIncreaseSequentialMarginStateParams
 ): TwapIncreaseSequentialMarginState | undefined {
@@ -129,7 +146,7 @@ export function getTwapIncreaseSequentialMarginState(
     collateralToken,
     isLong,
     numberOfParts,
-    eligibleNowCount,
+    partDelaysSeconds,
     partSizeDeltaUsd,
     partGrossCollateralUsd,
     pendingFeesUsd,
@@ -174,8 +191,15 @@ export function getTwapIncreaseSequentialMarginState(
   let marketInfo = p.marketInfo;
   let position = p.existingPosition;
   let contractMarginState: PositionMarginState | undefined;
+  let previousPartDelaySeconds = 0;
 
   for (let partIndex = 0; partIndex < numberOfParts; partIndex++) {
+    const partDelaySeconds = Math.max(0, partDelaysSeconds[partIndex] ?? 0);
+    const accruedFeesUsd = position
+      ? getPositionFeesAccruedUsd(marketInfo, isLong, position.sizeInUsd, partDelaySeconds - previousPartDelaySeconds)
+      : 0n;
+    previousPartDelaySeconds = partDelaySeconds;
+
     const { balanceWasImproved } = getPriceImpactForPosition(marketInfo, partSizeDeltaUsd, isLong, {
       fallbackToZero: true,
       sizeDeltaInTokens: partSizeDeltaInTokens,
@@ -189,7 +213,7 @@ export function getTwapIncreaseSequentialMarginState(
       proDiscountFactor
     );
     const uiFeeUsd = applyFactor(partSizeDeltaUsd, uiFeeFactor);
-    const settledFeesUsd = partIndex === 0 ? pendingFeesUsd : 0n;
+    const settledFeesUsd = (partIndex === 0 ? pendingFeesUsd : 0n) + accruedFeesUsd;
     const collateralDeltaUsd = partGrossCollateralUsd - positionFeeUsd - uiFeeUsd - settledFeesUsd;
     const collateralDeltaAmount = convertToTokenAmount(collateralDeltaUsd, collateralToken.decimals, collateralPrice)!;
 
@@ -224,7 +248,7 @@ export function getTwapIncreaseSequentialMarginState(
       return {
         numberOfParts,
         failingPartIndex: partIndex,
-        isFailingPartEligibleNow: partIndex < eligibleNowCount,
+        isFailingPartEligibleNow: partDelaySeconds === 0,
         marginState,
         contractMarginState,
       };

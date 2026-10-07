@@ -809,13 +809,13 @@ export function getTwapIncreaseOrderSequentialMarginState({
     return undefined;
   }
 
-  const nowSeconds = BigInt(Math.floor(Date.now() / 1000));
+  const nowSeconds = Math.floor(Date.now() / 1000);
 
   return getTwapIncreaseSequentialMarginState({
     ...getTwapIncreasePartAmounts(getTwapIncreaseAggregateAmounts(remainingAmounts), parts.length),
     partSizeDeltaUsd: firstPart.sizeDeltaUsd,
     numberOfParts: parts.length,
-    eligibleNowCount: parts.filter((part) => part.validFromTime <= nowSeconds).length,
+    partDelaysSeconds: parts.map((part) => Math.max(0, Number(part.validFromTime) - nowSeconds)),
     marketInfo,
     collateralToken: order.targetCollateralToken,
     isLong: order.isLong,
