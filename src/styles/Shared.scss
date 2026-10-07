@@ -81,20 +81,22 @@ code {
 }
 
 @supports selector(::-webkit-scrollbar) {
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
+  @media (hover: hover) and (pointer: fine) {
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
 
-  /* Track */
-  ::-webkit-scrollbar-track {
-    background-color: var(--color-slate-900);
-  }
+    /* Track */
+    ::-webkit-scrollbar-track {
+      background-color: var(--color-slate-900);
+    }
 
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background-color: var(--color-slate-500);
-    border-radius: 15px;
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--color-slate-500);
+      border-radius: 15px;
+    }
   }
 }
 
