@@ -7067,6 +7067,10 @@ msgstr "订单执行失败"
 msgid "Sell GM for {0} and {1} up to the caps below. Remaining tokens are reserved for open positions."
 msgstr "卖出 GM 以获取 {0} 和 {1}，上限如下所示。剩余代币为未平仓位预留。"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Parts of this order may not execute: the resulting position would exceed the maximum allowed leverage when they trigger. <0>Increase the position's margin</0> or cancel the order."
+msgstr "此订单的部分可能无法执行：触发时最终仓位将超过允许的最大杠杆。<0>增加仓位保证金</0>或取消订单。"
+
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx

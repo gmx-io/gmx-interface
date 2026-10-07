@@ -7067,6 +7067,10 @@ msgstr "Orderausführung fehlgeschlagen"
 msgid "Sell GM for {0} and {1} up to the caps below. Remaining tokens are reserved for open positions."
 msgstr "Verkaufen Sie GM für {0} und {1} bis zu den unten angegebenen Obergrenzen. Verbleibende Token sind für offene Positionen reserviert."
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Parts of this order may not execute: the resulting position would exceed the maximum allowed leverage when they trigger. <0>Increase the position's margin</0> or cancel the order."
+msgstr "Teile dieser Order werden möglicherweise nicht ausgeführt: Die resultierende Position würde beim Auslösen den maximal zulässigen Hebel überschreiten. <0>Erhöhen Sie die Margin der Position</0> oder stornieren Sie die Order."
+
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx

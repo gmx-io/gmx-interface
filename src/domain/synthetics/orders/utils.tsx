@@ -195,6 +195,21 @@ function getMaxLeverageOrderError(positionKey: string | undefined): OrderError {
   };
 }
 
+function getTwapMaxLeverageOrderError(positionKey: string | undefined): OrderError {
+  return {
+    msg: (
+      <Trans>
+        Parts of this order may not execute: the resulting position would exceed the maximum allowed leverage when they
+        trigger.{" "}
+        <DepositMarginNowAction positionKey={positionKey}>Increase the position's margin</DepositMarginNowAction> or
+        cancel the order.
+      </Trans>
+    ),
+    key: "maxLeverage",
+    level: "error",
+  };
+}
+
 function getResultingLiquidatableOrderError(positionKey: string | undefined): OrderError {
   return {
     key: "resultingLiquidatable",
@@ -258,7 +273,7 @@ export function getOrderErrors(p: {
 
         errors.push(
           getIsMaxLeverageMarginReason(p.resultingPositionMarginState.reason)
-            ? getMaxLeverageOrderError(position?.key)
+            ? getTwapMaxLeverageOrderError(position?.key)
             : getResultingLiquidatableOrderError(position?.key)
         );
       }
