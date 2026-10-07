@@ -499,7 +499,9 @@ export function getIncreaseError(p: {
     positionFeeFactorForBalanceWasNotImproved: marketInfo?.positionFeeFactorForBalanceWasNotImproved,
   });
 
-  if (!isTwap && nextLeverageWithoutPnl !== undefined) {
+  const isAggregateLeverageCheckNeeded = !isTwap || resultingPositionMarginState === undefined;
+
+  if (isAggregateLeverageCheckNeeded && nextLeverageWithoutPnl !== undefined) {
     if (nextLeverageWithoutPnl > maxAllowedLeverage) {
       return { buttonErrorMessage: t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x` };
     }
@@ -530,7 +532,7 @@ export function getIncreaseError(p: {
   if (
     (isResultingPositionCheckBlocking && resultingPositionMarginState?.isLiquidatable) ||
     (!isLimit &&
-      !isTwap &&
+      isAggregateLeverageCheckNeeded &&
       getIsPositionLiquidatableAtPrice({ liqPrice: nextPositionValues?.nextLiqPrice, price: markPrice, isLong }))
   ) {
     return {

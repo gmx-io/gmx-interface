@@ -16,7 +16,7 @@ import {
   makeSelectTwapIncreaseOrderSequentialMarginState,
   selectOrderErrorsCount,
 } from "../orderSelectors";
-import { selectTradeboxIncreasePositionAmounts } from "../tradeboxSelectors";
+import { selectTradeboxIncreasePositionAmounts, selectTradeboxTwapIncreaseSequenceParams } from "../tradeboxSelectors";
 import {
   selectTradeboxIncreaseMaxLeverageAlert,
   selectTradeboxTradeTypeError,
@@ -52,10 +52,14 @@ describe("TWAP increase sequential validation", () => {
       sizeEth,
       hours = 10,
       payInEth = false,
+      numberOfParts = 4,
+      isPositionsLoading = false,
     }: {
       sizeEth: string;
       hours?: number;
       payInEth?: boolean;
+      numberOfParts?: number;
+      isPositionsLoading?: boolean;
     }) {
       const position = makePosition({ collateralUsd: 200 });
 
@@ -68,10 +72,11 @@ describe("TWAP increase sequential validation", () => {
         // 100 USD of margin either way: 100 USDC, or 0.05 ETH at the mocked 2 000
         fromTokenInputValue: payInEth ? "0.05" : "100",
         toTokenInputValue: sizeEth,
-        twapNumberOfParts: 4,
+        twapNumberOfParts: numberOfParts,
         twapDuration: { hours, minutes: 0 },
         account: MOCK_ACCOUNT,
-        positionsInfoData: { [position.key]: position },
+        isPositionsLoading,
+        positionsInfoData: isPositionsLoading ? undefined : { [position.key]: position },
       });
     }
 
@@ -115,6 +120,28 @@ describe("TWAP increase sequential validation", () => {
         buttonErrorMessage ? ValidationButtonTooltipName.resultingPositionMaxLeverage : undefined
       );
       expect(selectTradeboxIncreaseMaxLeverageAlert(state)).toBe(alert);
+    });
+
+    it("keeps the aggregate max-leverage guard while the positions are still loading PRO-4134", () => {
+      // 50 ETH on 100 USDC is 1000x: without the position the parts cannot be projected, the aggregate still can
+      const blocked = createState({ sizeEth: "50", isPositionsLoading: true });
+      const allowed = createState({ sizeEth: "2", isPositionsLoading: true });
+
+      expect(selectTradeboxTwapIncreaseSequentialMarginState(blocked)).toBeUndefined();
+      expect(selectTradeboxTradeTypeError(blocked).buttonErrorMessage).toBe("Max leverage: 100.0x");
+      expect(selectTradeboxTradeTypeError(allowed).buttonErrorMessage).toBeUndefined();
+    });
+
+    it.each([
+      { numberOfParts: 0, buttonErrorMessage: "Min TWAP parts: 2" },
+      { numberOfParts: 1, buttonErrorMessage: "Min TWAP parts: 2" },
+      { numberOfParts: 31, buttonErrorMessage: "Max TWAP parts: 30" },
+      { numberOfParts: 3000, buttonErrorMessage: "Max TWAP parts: 30" },
+    ])("skips the projection for $numberOfParts parts PRO-4134", ({ numberOfParts, buttonErrorMessage }) => {
+      const state = createState({ sizeEth: "2", numberOfParts });
+
+      expect(selectTradeboxTwapIncreaseSequenceParams(state)).toBeUndefined();
+      expect(selectTradeboxTradeTypeError(state).buttonErrorMessage).toBe(buttonErrorMessage);
     });
 
     it("blocks a fresh short whose first part exceeds the market's max allowed leverage PRO-4134", () => {
