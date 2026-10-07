@@ -62,16 +62,20 @@ export function useUpdateTokens({
   const setFocusedInput = useSelector(selectPoolsDetailsSetFocusedInput);
   const secondTokenAmount = useSelector(selectPoolsDetailsSecondTokenAmount);
 
-  const { transitRouteProgress } = useSyntheticsEvents();
+  const { transitRouteProgress, paxosTransitOrder } = useSyntheticsEvents();
 
   const transitRouteProgressForMarket = getTransitRouteProgressForMarket(transitRouteProgress, {
     account,
     glvOrMarketAddress,
   });
+  const isUsdcToUsdgTransitPending =
+    transitRouteProgressForMarket?.direction === "usdcToUsdg" &&
+    transitRouteProgressForMarket.depositTxnHash === undefined &&
+    paxosTransitOrder?.status !== "REMOVED";
 
   const isUsdgPool =
     longTokenAddress !== undefined &&
-    shortTokenAddress !== undefined &&
+    longTokenAddress === shortTokenAddress &&
     getIsUsdgPool(chainId, { longTokenAddress, shortTokenAddress });
 
   const canPickMaxBalanceToken =
@@ -82,7 +86,7 @@ export function useUpdateTokens({
     !isFirstTokenPinned &&
     firstTokenInputValue === "" &&
     marketOrGlvTokenInputValue === "" &&
-    transitRouteProgressForMarket === undefined;
+    !isUsdcToUsdgTransitPending;
 
   const payTokenChainId = paySource === "gmxAccount" ? GMX_ACCOUNT_PSEUDO_CHAIN_ID : chainId;
 

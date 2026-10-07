@@ -31,7 +31,10 @@ vi.mock("context/PoolsDetailsContext/selectors", () => ({
 }));
 
 vi.mock("context/SyntheticsEvents", () => ({
-  useSyntheticsEvents: () => ({ transitRouteProgress: selectorValues.get("transitRouteProgress") }),
+  useSyntheticsEvents: () => ({
+    transitRouteProgress: selectorValues.get("transitRouteProgress"),
+    paxosTransitOrder: selectorValues.get("paxosTransitOrder"),
+  }),
 }));
 
 vi.mock("context/SyntheticsStateContext/selectors/globalSelectors", () => ({
@@ -207,7 +210,11 @@ describe("useUpdateTokens", () => {
   });
 
   it("leaves the pay token to a USDC to USDG conversion in progress on this pool", () => {
-    selectorValues.set("transitRouteProgress", { account: ACCOUNT, glvOrMarketAddress: USDG_GLV });
+    selectorValues.set("transitRouteProgress", {
+      account: ACCOUNT,
+      glvOrMarketAddress: USDG_GLV,
+      direction: "usdcToUsdg",
+    });
 
     render(
       <Harness
@@ -222,9 +229,34 @@ describe("useUpdateTokens", () => {
   });
 
   it.each([
+    { name: "a finished USDG to USDC withdrawal", progress: { direction: "usdgToUsdc" }, order: undefined },
+    {
+      name: "a USDC to USDG conversion whose deposit was sent",
+      progress: { direction: "usdcToUsdg", depositTxnHash: "0xdeposit" },
+      order: undefined,
+    },
+    { name: "a removed USDC to USDG conversion", progress: { direction: "usdcToUsdg" }, order: { status: "REMOVED" } },
+  ])("picks the larger balance after $name on this pool", ({ progress, order }) => {
+    selectorValues.set("transitRouteProgress", { account: ACCOUNT, glvOrMarketAddress: USDG_GLV, ...progress });
+    selectorValues.set("paxosTransitOrder", order);
+
+    render(
+      <Harness
+        tokenOptions={USDC_HOLDER_OPTIONS}
+        account={ACCOUNT}
+        isWalletBalancesLoaded
+        initialFirstTokenAddress={USDG}
+      />
+    );
+
+    expect(latestFirstTokenAddress).toBe(USDC);
+  });
+
+  it.each([
     { name: "withdrawal receive token", props: { flags: { isPair: false, isSingle: true, isDeposit: false } } },
     { name: "pair deposit", props: { flags: { isPair: true, isSingle: false, isDeposit: true } } },
     { name: "pay token of a non-USDG pool", props: { longTokenAddress: WETH, shortTokenAddress: USDC } },
+    { name: "pay token of the USDC-USDG swap pool", props: { longTokenAddress: USDC, shortTokenAddress: USDG } },
   ])("leaves the $name alone", ({ props }) => {
     const { rerender } = render(<Harness tokenOptions={DISCONNECTED_OPTIONS} {...props} />);
 
