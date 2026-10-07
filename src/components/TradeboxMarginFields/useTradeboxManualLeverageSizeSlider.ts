@@ -20,6 +20,7 @@ import {
   selectTradeboxTradeFlags,
   selectTradeboxState,
   selectTradeboxTriggerPrice,
+  selectTradeboxTwapIncreaseSequenceParams,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
@@ -69,6 +70,7 @@ export function useTradeboxManualLeverageSizeSlider({
   const userReferralInfo = useSelector(selectUserReferralInfo);
   const proDiscountFactor = useSelector(selectProDiscountFactor);
   const uiFeeFactor = useSelector(selectUiFeeFactor);
+  const twap = useSelector(selectTradeboxTwapIncreaseSequenceParams);
 
   const lastInteractionRef = useRef<"slider" | "field">("field");
   const fixedPercentageRef = useRef<number>(0);
@@ -137,6 +139,7 @@ export function useTradeboxManualLeverageSizeSlider({
         orderType: increaseAmounts?.limitOrderType ?? OrderType.MarketIncrease,
         triggerPrice,
       }),
+      twap,
     });
   }, [
     collateralToken,
@@ -157,6 +160,7 @@ export function useTradeboxManualLeverageSizeSlider({
     uiFeeFactor,
     userReferralInfo,
     proDiscountFactor,
+    twap,
   ]);
 
   const sizePercentage = useMemo(

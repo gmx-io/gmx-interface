@@ -12,7 +12,16 @@ import type { UserReferralInfo } from "sdk/utils/referrals/types";
 import { convertToTokenAmount, convertToUsd, getIsEquivalentTokens } from "sdk/utils/tokens";
 import type { TokenData } from "sdk/utils/tokens/types";
 import { convertToTokenAmountForIncrease } from "sdk/utils/tokens/utils";
-import { getIncreaseResultingPositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
+import {
+  getIncreaseResultingPositionMarginState,
+  type IncreasePositionState,
+} from "sdk/utils/trade/increaseMarginCheck";
+import {
+  getIsTwapIncreaseSequenceSafe,
+  getTwapIncreasePartAmounts,
+  getTwapIncreaseSequentialMarginState,
+  TwapIncreaseSequenceParams,
+} from "sdk/utils/trade/twapIncreaseMarginCheck";
 
 export function clampPercentage(value: number): number {
   if (!Number.isFinite(value)) return 0;
@@ -43,6 +52,7 @@ export type CalcMaxSizeDeltaParams = {
   indexPriceForEvaluation?: bigint;
   uiFeeFactor?: bigint;
   baseCollateralUsd?: bigint;
+  twap?: TwapIncreaseSequenceParams;
 };
 
 const RESULTING_POSITION_BISECTION_STEPS = 24;
@@ -100,9 +110,7 @@ function capSizeDeltaByResultingPositionMargin({
     return sizeDeltaUsdBound;
   }
 
-  let resultingExistingPosition:
-    | { sizeInUsd: bigint; sizeInTokens: bigint; collateralAmount: bigint; pendingImpactAmount: bigint }
-    | undefined;
+  let resultingExistingPosition: IncreasePositionState | undefined;
 
   if (existingPosition) {
     const { sizeInUsd, sizeInTokens, collateralAmount, pendingImpactAmount } = existingPosition;
@@ -116,6 +124,29 @@ function capSizeDeltaByResultingPositionMargin({
 
   const isSizeDeltaValid = (sizeDeltaUsd: bigint): boolean => {
     if (sizeDeltaUsd <= 0n) return true;
+
+    if (params.twap) {
+      const pendingFeesUsd =
+        (existingPosition?.pendingBorrowingFeesUsd ?? 0n) + (existingPosition?.pendingFundingFeesUsd ?? 0n);
+
+      return getIsTwapIncreaseSequenceSafe(
+        getTwapIncreaseSequentialMarginState({
+          ...params.twap,
+          ...getTwapIncreasePartAmounts(
+            { sizeDeltaUsd, grossCollateralUsd: baseCollateralUsd + pendingFeesUsd, pendingFeesUsd },
+            params.twap.numberOfParts
+          ),
+          marketInfo,
+          collateralToken,
+          isLong,
+          existingPosition: resultingExistingPosition,
+          uiFeeFactor: params.uiFeeFactor ?? 0n,
+          minCollateralUsd,
+          userReferralInfo: params.userReferralInfo,
+          proDiscountFactor: params.proDiscountFactor,
+        })
+      );
+    }
 
     const sizeDeltaInTokens = convertToTokenAmountForIncrease(
       sizeDeltaUsd,

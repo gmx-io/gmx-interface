@@ -12743,6 +12743,10 @@ msgstr "トリガー価格をマーク価格より高く設定してください
 msgid "No opportunities on this chain yet"
 msgstr "このチェーンにはまだ機会がありません"
 
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "One or more later TWAP parts may fail because the resulting position would exceed the maximum allowed leverage. Increase margin or reduce the total size."
+msgstr "結果として生じるポジションが最大許容レバレッジを超えるため、後続のTWAPパートの一部が失敗する可能性があります。証拠金を増やすか、合計サイズを減らしてください。"
+
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
 msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> から </1>{0}{toTokenIcon}{1}"

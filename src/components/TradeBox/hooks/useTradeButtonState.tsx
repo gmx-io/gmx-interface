@@ -54,6 +54,7 @@ import {
   selectTradeboxTradeFlags,
   selectTradeboxTradeMode,
   selectTradeboxTriggerPrice,
+  selectTradeboxTwapIncreaseSequenceParams,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxHasExistingPosition,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -867,6 +868,7 @@ export function useDetectAndSetAvailableMaxLeverage({
   const externalSwapQuoteParams = useSelector(selectExternalSwapQuoteParams);
   const chainId = useSelector(selectChainId);
   const marketsInfoData = useSelector(selectMarketsInfoData);
+  const twap = useSelector(selectTradeboxTwapIncreaseSequenceParams);
 
   const maxLeverageSearchParams = useMemo((): MaxLeverageIncreaseParams | undefined => {
     if (!enabled || !collateralToken || !toToken || !fromToken || !marketInfo || minCollateralUsd === undefined) {
@@ -874,6 +876,7 @@ export function useDetectAndSetAvailableMaxLeverage({
     }
 
     return {
+      twap,
       collateralToken,
       findSwapPath,
       indexToken: toToken,
@@ -923,6 +926,7 @@ export function useDetectAndSetAvailableMaxLeverage({
     proDiscountFactor,
     isSetAcceptablePriceImpactEnabled,
     tradeMode,
+    twap,
   ]);
 
   const maxLeverageIncrease = useMemo(

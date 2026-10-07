@@ -12743,6 +12743,10 @@ msgstr "将触发价格设置为高于标记价格"
 msgid "No opportunities on this chain yet"
 msgstr "此链上暂无机会"
 
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "One or more later TWAP parts may fail because the resulting position would exceed the maximum allowed leverage. Increase margin or reduce the total size."
+msgstr "由于最终仓位将超过允许的最大杠杆，一个或多个后续 TWAP 部分可能失败。请增加保证金或减小总规模。"
+
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
 msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> 到 </1>{0}{toTokenIcon}{1}"

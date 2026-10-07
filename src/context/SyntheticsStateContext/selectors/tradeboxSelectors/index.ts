@@ -71,6 +71,8 @@ import { ExternalSwapStrategy } from "sdk/utils/swap/types";
 import { convertToTokenAmount, getIsEquivalentTokens } from "sdk/utils/tokens";
 import { TokenBalanceType } from "sdk/utils/tokens/types";
 import { createTradeFlags } from "sdk/utils/trade";
+import type { TwapIncreaseSequenceParams } from "sdk/utils/trade/twapIncreaseMarginCheck";
+import { getTwapEligibleNowPartsCount } from "sdk/utils/twap";
 
 import {
   selectGmxAccountGasPaymentToken,
@@ -564,6 +566,20 @@ export const selectTradeboxTwapDuration = (s: SyntheticsState) => s.tradebox.dur
 const selectTradeboxSetTwapDuration = (s: SyntheticsState) => s.tradebox.setDuration;
 export const selectTradeboxTwapNumberOfParts = (s: SyntheticsState) => s.tradebox.numberOfParts;
 const selectTradeboxSetTwapNumberOfParts = (s: SyntheticsState) => s.tradebox.setNumberOfParts;
+
+export const selectTradeboxTwapIncreaseSequenceParams = createSelector((q): TwapIncreaseSequenceParams | undefined => {
+  const { isIncrease, isTwap } = q(selectTradeboxTradeFlags);
+  const numberOfParts = q(selectTradeboxTwapNumberOfParts);
+
+  if (!isIncrease || !isTwap || !Number.isInteger(numberOfParts) || numberOfParts < 1) {
+    return undefined;
+  }
+
+  return {
+    numberOfParts,
+    eligibleNowCount: getTwapEligibleNowPartsCount(q(selectTradeboxTwapDuration), numberOfParts),
+  };
+});
 const selectTradeboxSetTriggerRatioInputValue = (s: SyntheticsState) => s.tradebox.setTriggerRatioInputValue;
 const selectTradeboxSetLeverageOption = (s: SyntheticsState) => s.tradebox.setLeverageOption;
 const selectTradeboxIsSwitchTokensAllowed = (s: SyntheticsState) => s.tradebox.isSwitchTokensAllowed;

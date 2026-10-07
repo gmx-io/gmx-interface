@@ -4,6 +4,13 @@ import { OrderType } from "sdk/utils/orders/types";
 import { getIncreaseEvaluationIndexPrice } from "sdk/utils/prices";
 import { getIncreasePositionAmounts, getNextPositionValuesForIncreaseTrade } from "sdk/utils/trade/increase";
 import { getIncreaseResultingPositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
+import {
+  getIsTwapIncreaseSequenceSafe,
+  getTwapIncreaseAggregateAmounts,
+  getTwapIncreasePartAmounts,
+  getTwapIncreaseSequentialMarginState,
+  TwapIncreaseSequenceParams,
+} from "sdk/utils/trade/twapIncreaseMarginCheck";
 import type { IncreasePositionAmounts } from "sdk/utils/trade/types";
 
 import { getIsMaxLeverageExceeded } from "./validation";
@@ -13,6 +20,7 @@ type IncreasePositionAmountsParams = Parameters<typeof getIncreasePositionAmount
 export type MaxLeverageIncreaseParams = Omit<IncreasePositionAmountsParams, "leverage" | "strategy"> & {
   maxAllowedLeverage: number;
   minCollateralUsd: bigint;
+  twap?: TwapIncreaseSequenceParams;
 };
 
 export type MaxLeverageIncrease = {
@@ -28,7 +36,7 @@ function getHighestLeverageStep(maxAllowedLeverage: number): number {
 }
 
 export function evaluateLeverageStep(
-  { maxAllowedLeverage: _maxAllowedLeverage, minCollateralUsd, ...increaseParams }: MaxLeverageIncreaseParams,
+  { maxAllowedLeverage: _maxAllowedLeverage, minCollateralUsd, twap, ...increaseParams }: MaxLeverageIncreaseParams,
   leverageStep: number
 ): { isValid: boolean; increaseAmounts: IncreasePositionAmounts } {
   const { marketInfo, collateralToken, isLong, position, triggerPrice, limitOrderType, userReferralInfo } =
@@ -60,6 +68,26 @@ export function evaluateLeverageStep(
 
   if (nextPositionValues.nextLeverage === undefined) {
     return { isValid: false, increaseAmounts };
+  }
+
+  if (twap) {
+    const sequenceState = getTwapIncreaseSequentialMarginState({
+      ...twap,
+      ...getTwapIncreasePartAmounts(getTwapIncreaseAggregateAmounts(increaseAmounts), twap.numberOfParts),
+      marketInfo,
+      collateralToken,
+      isLong,
+      existingPosition: position,
+      uiFeeFactor: increaseParams.uiFeeFactor,
+      minCollateralUsd,
+      userReferralInfo,
+      proDiscountFactor: increaseParams.proDiscountFactor,
+    });
+
+    return {
+      isValid: increaseAmounts.sizeDeltaUsd > 0n && getIsTwapIncreaseSequenceSafe(sequenceState),
+      increaseAmounts,
+    };
   }
 
   const isMaxLeverageExceeded = getIsMaxLeverageExceeded(

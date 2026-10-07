@@ -12743,6 +12743,10 @@ msgstr "Установите цену активации выше расчётн
 msgid "No opportunities on this chain yet"
 msgstr "На этой сети пока нет возможностей"
 
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "One or more later TWAP parts may fail because the resulting position would exceed the maximum allowed leverage. Increase margin or reduce the total size."
+msgstr "Одна или несколько последующих частей TWAP могут не исполниться: итоговая позиция превысит максимально допустимое плечо. Увеличьте маржу или уменьшите общий размер."
+
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
 msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> на </1>{0}{toTokenIcon}{1}"

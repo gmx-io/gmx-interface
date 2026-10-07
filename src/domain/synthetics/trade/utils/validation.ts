@@ -499,14 +499,12 @@ export function getIncreaseError(p: {
     positionFeeFactorForBalanceWasNotImproved: marketInfo?.positionFeeFactorForBalanceWasNotImproved,
   });
 
-  if (nextLeverageWithoutPnl !== undefined && nextLeverageWithoutPnl > maxAllowedLeverage) {
-    return { buttonErrorMessage: t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x` };
-  }
+  if (!isTwap && nextLeverageWithoutPnl !== undefined) {
+    if (nextLeverageWithoutPnl > maxAllowedLeverage) {
+      return { buttonErrorMessage: t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x` };
+    }
 
-  if (nextLeverageWithoutPnl !== undefined) {
-    const maxLeverageError = getIsMaxLeverageExceeded(nextLeverageWithoutPnl, marketInfo, isLong, sizeDeltaUsd);
-
-    if (maxLeverageError) {
+    if (getIsMaxLeverageExceeded(nextLeverageWithoutPnl, marketInfo, isLong, sizeDeltaUsd)) {
       return {
         buttonErrorMessage: t`Max leverage exceeded`,
         buttonTooltipName: ValidationButtonTooltipName.maxLeverage,
@@ -532,6 +530,7 @@ export function getIncreaseError(p: {
   if (
     (isResultingPositionCheckBlocking && resultingPositionMarginState?.isLiquidatable) ||
     (!isLimit &&
+      !isTwap &&
       getIsPositionLiquidatableAtPrice({ liqPrice: nextPositionValues?.nextLiqPrice, price: markPrice, isLong }))
   ) {
     return {

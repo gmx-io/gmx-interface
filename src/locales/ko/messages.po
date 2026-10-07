@@ -12743,6 +12743,10 @@ msgstr "조건가를 기준가보다 높게 설정하십시오"
 msgid "No opportunities on this chain yet"
 msgstr "이 체인에는 아직 기회가 없습니다"
 
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "One or more later TWAP parts may fail because the resulting position would exceed the maximum allowed leverage. Increase margin or reduce the total size."
+msgstr "결과 포지션이 최대 허용 레버리지를 초과하게 되어 이후 TWAP 파트 중 하나 이상이 실패할 수 있습니다. 증거금을 늘리거나 전체 규모를 줄이세요."
+
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
 msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
