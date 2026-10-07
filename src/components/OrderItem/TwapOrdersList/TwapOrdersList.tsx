@@ -41,10 +41,10 @@ export default function TwapOrdersList({ order }: { order: TwapOrderInfo }) {
       <div className="text-body-medium">
         <table>
           {executedOrders.map((o) => (
-            <TwapOrderItem key={o.key} order={o} isExecuted={true} />
+            <TwapOrderItem key={o.key} order={o} status="executed" />
           ))}
           {sortedOrders.map((o) => (
-            <TwapOrderItem key={o.key} order={o} isExecuted={false} />
+            <TwapOrderItem key={o.key} order={o} status={o.isFrozen ? "frozen" : "pending"} />
           ))}
         </table>
       </div>
@@ -52,9 +52,11 @@ export default function TwapOrdersList({ order }: { order: TwapOrderInfo }) {
   );
 }
 
+type TwapOrderPartStatus = "executed" | "pending" | "frozen";
+
 function TwapOrderItem({
   order,
-  isExecuted,
+  status,
 }: {
   order: {
     orderType: OrderType;
@@ -65,7 +67,7 @@ function TwapOrderItem({
     initialCollateralToken: Token;
     targetCollateralToken: Token;
   };
-  isExecuted: boolean;
+  status: TwapOrderPartStatus;
 }) {
   const sizeText = (
     <UsdValue usd={order.sizeDeltaUsd * (isIncreaseOrderType(order.orderType) ? 1n : -1n)} displayPlus />
@@ -96,7 +98,7 @@ function TwapOrderItem({
           </div>
         </td>
         <td className="py-8 text-right">
-          <Trans>{isExecuted ? "Executed" : "Pending"}</Trans>
+          <TwapOrderPartStatusLabel status={status} />
         </td>
       </tr>
     );
@@ -107,8 +109,20 @@ function TwapOrderItem({
       <td className="py-8 pr-8 text-typography-secondary">{formatDateTime(Number(order.validFromTime))}</td>
       <td className="py-8 pr-8">{sizeText}</td>
       <td className="py-8 text-right">
-        <Trans>{isExecuted ? "Executed" : "Pending"}</Trans>
+        <TwapOrderPartStatusLabel status={status} />
       </td>
     </tr>
   );
+}
+
+function TwapOrderPartStatusLabel({ status }: { status: TwapOrderPartStatus }) {
+  if (status === "frozen") {
+    return (
+      <span className="text-yellow-300">
+        <Trans>Frozen</Trans>
+      </span>
+    );
+  }
+
+  return <Trans>{status === "executed" ? "Executed" : "Pending"}</Trans>;
 }

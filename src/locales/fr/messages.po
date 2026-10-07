@@ -2582,6 +2582,11 @@ msgstr "Échec de la récupération"
 msgid "Total value of tokens in GM pools"
 msgstr "Valeur totale des jetons dans les pools GM"
 
+#: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+msgid "Frozen"
+msgstr "Gelé"
+
 #: src/components/Claims/ClaimableCardUI.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price impact rebates"
@@ -4461,7 +4466,6 @@ msgstr "Builder Program"
 
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
-#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "{0}"
 msgstr "{0}"
 
@@ -5977,6 +5981,10 @@ msgstr "Votre marge en {symbol} dépasse la taille de la position short sur {ind
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No results with the selected filters."
 msgstr "Aucun résultat avec les filtres sélectionnés."
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Some TWAP parts failed to execute and are frozen. They stay open and may still execute later if conditions allow.<0/><1/>See the Trades tab for the reason."
+msgstr "Certaines parties TWAP n'ont pas pu être exécutées et elles sont gelées. Elles restent ouvertes et peuvent encore s'exécuter plus tard si les conditions le permettent.<0/><1/>Consultez la raison dans l'onglet Opérations."
 
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "{positionTitle} orders"
@@ -7698,6 +7706,10 @@ msgstr "Le trading peut être temporairement indisponible. Notre équipe travail
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Order acceptable price"
 msgstr "Prix acceptable de l'ordre"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order failed to execute and is frozen. It stays open and may still execute later if conditions allow.<0/><1/>See the Trades tab for the reason."
+msgstr "L'ordre n'a pas pu être exécuté et il est gelé. Il reste ouvert et peut encore s'exécuter plus tard si les conditions le permettent.<0/><1/>Consultez la raison dans l'onglet Opérations."
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Updating {updateOrdersCount} TP/SL orders..."

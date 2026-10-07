@@ -2582,6 +2582,11 @@ msgstr "수령 실패"
 msgid "Total value of tokens in GM pools"
 msgstr "GM 풀 내 토큰 총 가치"
 
+#: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+msgid "Frozen"
+msgstr "동결됨"
+
 #: src/components/Claims/ClaimableCardUI.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price impact rebates"
@@ -4461,7 +4466,6 @@ msgstr "빌더 프로그램"
 
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
-#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "{0}"
 msgstr "{0}"
 
@@ -5977,6 +5981,10 @@ msgstr "{symbol} 증거금이 {indexName} 숏 포지션 규모를 초과합니�
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No results with the selected filters."
 msgstr "선택한 필터와 일치하는 결과가 없습니다."
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Some TWAP parts failed to execute and are frozen. They stay open and may still execute later if conditions allow.<0/><1/>See the Trades tab for the reason."
+msgstr "일부 TWAP 부분의 체결에 실패하여 동결되었습니다. 해당 부분은 계속 열려 있으며 조건이 충족되면 나중에 체결될 수 있습니다.<0/><1/>사유는 거래 탭에서 확인하세요."
 
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "{positionTitle} orders"
@@ -7698,6 +7706,10 @@ msgstr "거래가 일시적으로 불가할 수 있습니다. 팀에서 문제 �
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Order acceptable price"
 msgstr "주문 허용 가격"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order failed to execute and is frozen. It stays open and may still execute later if conditions allow.<0/><1/>See the Trades tab for the reason."
+msgstr "주문 체결에 실패하여 동결되었습니다. 주문은 계속 열려 있으며 조건이 충족되면 나중에 체결될 수 있습니다.<0/><1/>사유는 거래 탭에서 확인하세요."
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Updating {updateOrdersCount} TP/SL orders..."

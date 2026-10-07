@@ -2582,6 +2582,11 @@ msgstr "領取失敗"
 msgid "Total value of tokens in GM pools"
 msgstr "GM 池中代幣的總價值"
 
+#: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+msgid "Frozen"
+msgstr "已凍結"
+
 #: src/components/Claims/ClaimableCardUI.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price impact rebates"
@@ -4461,7 +4466,6 @@ msgstr "建構者計畫"
 
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
-#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "{0}"
 msgstr "{0}"
 
@@ -5977,6 +5981,10 @@ msgstr "您的 {symbol} 保證金超過 {indexName} 做空倉位規模。保證�
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No results with the selected filters."
 msgstr "所選篩選條件下沒有結果。"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Some TWAP parts failed to execute and are frozen. They stay open and may still execute later if conditions allow.<0/><1/>See the Trades tab for the reason."
+msgstr "有些 TWAP 部分執行失敗，已被凍結。這些部分仍保持開啟，條件允許時仍可能在稍後執行。<0/><1/>請在「交易」分頁中查看原因。"
 
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "{positionTitle} orders"
@@ -7698,6 +7706,10 @@ msgstr "交易可能暫時無法使用。我們的團隊正在解決此問題。
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Order acceptable price"
 msgstr "訂單可接受價格"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order failed to execute and is frozen. It stays open and may still execute later if conditions allow.<0/><1/>See the Trades tab for the reason."
+msgstr "訂單執行失敗，已被凍結。訂單仍保持開啟，條件允許時仍可能在稍後執行。<0/><1/>請在「交易」分頁中查看原因。"
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Updating {updateOrdersCount} TP/SL orders..."

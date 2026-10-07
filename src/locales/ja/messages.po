@@ -2582,6 +2582,11 @@ msgstr "受け取りに失敗しました"
 msgid "Total value of tokens in GM pools"
 msgstr "GM プール内のトークンの合計価値"
 
+#: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+msgid "Frozen"
+msgstr "凍結中"
+
 #: src/components/Claims/ClaimableCardUI.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price impact rebates"
@@ -4461,7 +4466,6 @@ msgstr "ビルダープログラム"
 
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
-#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "{0}"
 msgstr "{0}"
 
@@ -5977,6 +5981,10 @@ msgstr "{symbol}建ての証拠金が{indexName}のショートポジション�
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No results with the selected filters."
 msgstr "選択したフィルターに一致する結果はありません。"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Some TWAP parts failed to execute and are frozen. They stay open and may still execute later if conditions allow.<0/><1/>See the Trades tab for the reason."
+msgstr "一部の TWAP パートの約定に失敗したため、凍結されています。これらは有効なままで、条件が整えば後で約定する可能性があります。<0/><1/>理由は「取引」タブで確認できます。"
 
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "{positionTitle} orders"
@@ -7698,6 +7706,10 @@ msgstr "取引が一時的に利用できない場合があります。チーム
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Order acceptable price"
 msgstr "注文の許容価格"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order failed to execute and is frozen. It stays open and may still execute later if conditions allow.<0/><1/>See the Trades tab for the reason."
+msgstr "注文の約定に失敗したため、凍結されています。注文は有効なままで、条件が整えば後で約定する可能性があります。<0/><1/>理由は「取引」タブで確認できます。"
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Updating {updateOrdersCount} TP/SL orders..."
