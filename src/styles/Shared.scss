@@ -73,15 +73,17 @@ code {
   box-sizing: border-box;
 }
 
-// Standard scrollbar colors override WebKit's custom scrollbar styling.
-@supports not selector(::-webkit-scrollbar) {
-  :root {
-    scrollbar-color: var(--color-slate-500) var(--color-slate-900);
-  }
+:root {
+  scrollbar-color: var(--color-slate-500) var(--color-slate-900);
 }
 
 @supports selector(::-webkit-scrollbar) {
   @media (hover: hover) and (pointer: fine) {
+    // Standard scrollbar colors override WebKit's custom scrollbar styling.
+    :root {
+      scrollbar-color: auto;
+    }
+
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
