@@ -11386,6 +11386,10 @@ msgstr "At the Stop-Loss price, the remaining position would exceed max leverage
 msgid "Estimated off-hours liquidation price"
 msgstr "Estimated off-hours liquidation price"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Take-Profit and Stop-Loss prices, the remaining position would exceed max leverage and the orders may not execute."
+msgstr "At the Take-Profit and Stop-Loss prices, the remaining position would exceed max leverage and the orders may not execute."
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Repeat transaction"
 msgstr "Repeat transaction"

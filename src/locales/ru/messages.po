@@ -11386,6 +11386,10 @@ msgstr "По цене стоп-лосса оставшаяся позиция п
 msgid "Estimated off-hours liquidation price"
 msgstr "Расчётная цена ликвидации в нерабочие часы"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Take-Profit and Stop-Loss prices, the remaining position would exceed max leverage and the orders may not execute."
+msgstr "По ценам тейк-профита и стоп-лосса оставшаяся позиция превысит максимальное плечо, и ордера могут не исполниться."
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Repeat transaction"
 msgstr "Повторить транзакцию"

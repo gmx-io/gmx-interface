@@ -11386,6 +11386,10 @@ msgstr "在止损价格下，剩余仓位将超过最大杠杆，订单可能无
 msgid "Estimated off-hours liquidation price"
 msgstr "预计非交易时段清算价格"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Take-Profit and Stop-Loss prices, the remaining position would exceed max leverage and the orders may not execute."
+msgstr "在止盈和止损价格下，剩余仓位将超过最大杠杆，订单可能无法执行。"
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Repeat transaction"
 msgstr "重复交易"

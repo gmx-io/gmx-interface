@@ -11386,6 +11386,10 @@ msgstr "ストップロス価格では残りのポジションが最大レバレ
 msgid "Estimated off-hours liquidation price"
 msgstr "時間外の推定清算価格"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Take-Profit and Stop-Loss prices, the remaining position would exceed max leverage and the orders may not execute."
+msgstr "テイクプロフィット価格とストップロス価格では残りのポジションが最大レバレッジを超えるため、注文が約定しない可能性があります。"
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Repeat transaction"
 msgstr "取引を繰り返す"

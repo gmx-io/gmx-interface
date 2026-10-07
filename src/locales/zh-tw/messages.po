@@ -11386,6 +11386,10 @@ msgstr "在止損價格下，剩餘倉位將超過最大槓桿，訂單可能無
 msgid "Estimated off-hours liquidation price"
 msgstr "預計非交易時段清算價格"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Take-Profit and Stop-Loss prices, the remaining position would exceed max leverage and the orders may not execute."
+msgstr "在止盈和止損價格下，剩餘倉位將超過最大槓桿，訂單可能無法執行。"
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Repeat transaction"
 msgstr "重複交易"

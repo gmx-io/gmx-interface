@@ -77,6 +77,7 @@ import {
   getTpSlRemainingPositionWarning,
   isFullClosePositionOrder,
   isTriggerBeyondLiquidation,
+  TpSlRemainingPositionWarning,
 } from "domain/tpsl/utils";
 import { DUST_USD } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -1237,19 +1238,7 @@ export function AddTPSLModal({
           onAfterAction={() => setIsVisible(false)}
         />
 
-        {remainingPositionWarning?.isTakeProfitAboveMaxLeverage && (
-          <RemainingPositionWarningCard
-            orderType="takeProfit"
-            isKeepLeverageFix={remainingPositionWarning.isKeepLeverageFix}
-          />
-        )}
-
-        {remainingPositionWarning?.isStopLossAboveMaxLeverage && (
-          <RemainingPositionWarningCard
-            orderType="stopLoss"
-            isKeepLeverageFix={remainingPositionWarning.isKeepLeverageFix}
-          />
-        )}
+        {remainingPositionWarning && <RemainingPositionWarningCard warning={remainingPositionWarning} />}
 
         <Button
           variant="primary-action"
@@ -1407,18 +1396,19 @@ export function AddTPSLModal({
   );
 }
 
-function RemainingPositionWarningCard({
-  orderType,
-  isKeepLeverageFix,
-}: {
-  orderType: "takeProfit" | "stopLoss";
-  isKeepLeverageFix: boolean;
-}) {
+function RemainingPositionWarningCard({ warning }: { warning: TpSlRemainingPositionWarning }) {
+  const { isTakeProfitAboveMaxLeverage, isStopLossAboveMaxLeverage, isKeepLeverageFix } = warning;
+
   return (
     <AlertInfoCard type="warning" hideClose>
       <div className="flex flex-col gap-8">
         <div>
-          {orderType === "takeProfit" ? (
+          {isTakeProfitAboveMaxLeverage && isStopLossAboveMaxLeverage ? (
+            <Trans>
+              At the Take-Profit and Stop-Loss prices, the remaining position would exceed max leverage and the orders
+              may not execute.
+            </Trans>
+          ) : isTakeProfitAboveMaxLeverage ? (
             <Trans>
               At the Take-Profit price, the remaining position would exceed max leverage and the order may not execute.
             </Trans>

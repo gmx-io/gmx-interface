@@ -11386,6 +11386,10 @@ msgstr "Au prix du Stop-Loss, la position restante dépasserait l'effet de levie
 msgid "Estimated off-hours liquidation price"
 msgstr "Prix de liquidation estimé hors heures de marché"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Take-Profit and Stop-Loss prices, the remaining position would exceed max leverage and the orders may not execute."
+msgstr "Aux prix de Take-Profit et de Stop-Loss, la position restante dépasserait l'effet de levier maximal et les ordres pourraient ne pas s'exécuter."
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Repeat transaction"
 msgstr "Répéter la transaction"
