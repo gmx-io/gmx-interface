@@ -20,7 +20,7 @@ yarn
 yarn start
 ```
 
-The trading app dev server runs at [http://localhost:3010](http://localhost:3010).
+The trading app dev server runs at [http://localhost:3010](http://localhost:3010). Setup details, development mode, the test API and the checks before a PR are in [docs/local-development.md](docs/local-development.md).
 
 ## Scripts
 
