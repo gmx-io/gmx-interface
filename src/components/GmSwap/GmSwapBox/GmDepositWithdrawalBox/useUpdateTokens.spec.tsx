@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ARBITRUM } from "config/chains";
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "sdk/configs/chains";
+import { getTokenBySymbol } from "sdk/configs/tokens";
 
 import type { DisplayToken } from "components/TokenSelector/types";
 
@@ -13,28 +14,29 @@ const { selectorValues } = vi.hoisted(() => ({
 
 vi.mock("context/PoolsDetailsContext/selectors", () => ({
   selectPoolsDetailsFirstTokenAddress: "firstTokenAddress",
+  selectPoolsDetailsFirstTokenInputValue: "firstTokenInputValue",
   selectPoolsDetailsFlags: "flags",
   selectPoolsDetailsGlvOrMarketAddress: "glvOrMarketAddress",
   selectPoolsDetailsIsFirstTokenPinned: "isFirstTokenPinned",
   selectPoolsDetailsLongTokenAddress: "longTokenAddress",
+  selectPoolsDetailsMarketOrGlvTokenInputValue: "marketOrGlvTokenInputValue",
   selectPoolsDetailsPaySource: "paySource",
   selectPoolsDetailsSecondTokenAmount: "secondTokenAmount",
   selectPoolsDetailsSecondTokenAddress: "secondTokenAddress",
   selectPoolsDetailsSetFirstTokenAddress: "setFirstTokenAddress",
   selectPoolsDetailsSetFocusedInput: "setFocusedInput",
-  selectPoolsDetailsSetIsFirstTokenPinned: "setIsFirstTokenPinned",
   selectPoolsDetailsSetSecondTokenAddress: "setSecondTokenAddress",
   selectPoolsDetailsSetSecondTokenInputValue: "setSecondTokenInputValue",
   selectPoolsDetailsShortTokenAddress: "shortTokenAddress",
 }));
 
+vi.mock("context/SyntheticsEvents", () => ({
+  useSyntheticsEvents: () => ({ transitRouteProgress: selectorValues.get("transitRouteProgress") }),
+}));
+
 vi.mock("context/SyntheticsStateContext/selectors/globalSelectors", () => ({
   selectAccount: "account",
   selectIsWalletBalancesLoaded: "isWalletBalancesLoaded",
-}));
-
-vi.mock("context/SyntheticsEvents", () => ({
-  useSyntheticsEvents: () => ({ transitRouteProgress: selectorValues.get("transitRouteProgress") }),
 }));
 
 vi.mock("context/SyntheticsStateContext/utils", async (importOriginal) => ({
@@ -48,10 +50,10 @@ vi.mock("lib/chains", () => ({
 
 import { useUpdateTokens } from "./useUpdateTokens";
 
-const USDG = "0xusdg";
-const USDC = "0xusdc";
+const USDG = getTokenBySymbol(ARBITRUM, "USDG").address;
+const USDC = getTokenBySymbol(ARBITRUM, "USDC").address;
+const WETH = getTokenBySymbol(ARBITRUM, "WETH").address;
 const USDG_GLV = "0xglv";
-const OTHER_POOL = "0xpool";
 const ACCOUNT = "0xaccount";
 
 const DEPOSIT_FLAGS = { isPair: false, isSingle: true, isDeposit: true };
@@ -76,7 +78,10 @@ type HarnessProps = {
   isWalletBalancesLoaded?: boolean;
   flags?: typeof DEPOSIT_FLAGS;
   paySource?: "settlementChain" | "gmxAccount";
-  glvOrMarketAddress?: string;
+  longTokenAddress?: string;
+  shortTokenAddress?: string;
+  firstTokenInputValue?: string;
+  marketOrGlvTokenInputValue?: string;
   initialFirstTokenAddress?: string;
 };
 
@@ -89,23 +94,25 @@ function Harness({
   isWalletBalancesLoaded = false,
   flags = DEPOSIT_FLAGS,
   paySource = "settlementChain",
-  glvOrMarketAddress = USDG_GLV,
+  longTokenAddress = USDG,
+  shortTokenAddress = USDG,
+  firstTokenInputValue = "",
+  marketOrGlvTokenInputValue = "",
   initialFirstTokenAddress,
 }: HarnessProps) {
   const [firstTokenAddress, setFirstTokenAddress] = useState<string | undefined>(initialFirstTokenAddress);
-  const [pinnedPools, setPinnedPools] = useState<Record<string, boolean>>({});
-  const setIsFirstTokenPinned = (value: boolean) =>
-    setPinnedPools((prev) => ({ ...prev, [glvOrMarketAddress]: value }));
+  const [isFirstTokenPinned, setIsFirstTokenPinned] = useState(false);
 
   selectorValues.set("flags", flags);
   selectorValues.set("paySource", paySource);
-  selectorValues.set("glvOrMarketAddress", glvOrMarketAddress);
-  selectorValues.set("longTokenAddress", USDG);
-  selectorValues.set("shortTokenAddress", USDG);
+  selectorValues.set("glvOrMarketAddress", USDG_GLV);
+  selectorValues.set("longTokenAddress", longTokenAddress);
+  selectorValues.set("shortTokenAddress", shortTokenAddress);
   selectorValues.set("firstTokenAddress", firstTokenAddress);
   selectorValues.set("setFirstTokenAddress", setFirstTokenAddress);
-  selectorValues.set("isFirstTokenPinned", pinnedPools[glvOrMarketAddress] ?? false);
-  selectorValues.set("setIsFirstTokenPinned", setIsFirstTokenPinned);
+  selectorValues.set("isFirstTokenPinned", isFirstTokenPinned);
+  selectorValues.set("firstTokenInputValue", firstTokenInputValue);
+  selectorValues.set("marketOrGlvTokenInputValue", marketOrGlvTokenInputValue);
   selectorValues.set("account", account);
   selectorValues.set("isWalletBalancesLoaded", isWalletBalancesLoaded);
 
@@ -132,17 +139,54 @@ describe("useUpdateTokens", () => {
 
   afterEach(cleanup);
 
-  it("replaces a remembered token with the largest balance only once the wallet balances load", () => {
+  it("shows USDG without a wallet, even when USDC was remembered", () => {
+    render(<Harness tokenOptions={DISCONNECTED_OPTIONS} initialFirstTokenAddress={USDC} />);
+
+    expect(latestFirstTokenAddress).toBe(USDG);
+  });
+
+  it("switches to the larger balance only once the wallet balances load", () => {
     const { rerender } = render(<Harness tokenOptions={DISCONNECTED_OPTIONS} initialFirstTokenAddress={USDG} />);
 
-    rerender(<Harness tokenOptions={DISCONNECTED_OPTIONS} account={ACCOUNT} />);
+    rerender(<Harness tokenOptions={USDC_HOLDER_OPTIONS} account={ACCOUNT} />);
     expect(latestFirstTokenAddress).toBe(USDG);
 
     rerender(<Harness tokenOptions={USDC_HOLDER_OPTIONS} account={ACCOUNT} isWalletBalancesLoaded />);
     expect(latestFirstTokenAddress).toBe(USDC);
   });
 
-  it("keeps a token the user picked before the balances loaded", () => {
+  it("follows the larger balance while nothing is typed", () => {
+    const { rerender } = render(
+      <Harness tokenOptions={USDC_HOLDER_OPTIONS} account={ACCOUNT} isWalletBalancesLoaded />
+    );
+
+    rerender(<Harness tokenOptions={USDG_HOLDER_OPTIONS} account={ACCOUNT} isWalletBalancesLoaded />);
+
+    expect(latestFirstTokenAddress).toBe(USDG);
+  });
+
+  it.each([
+    { input: "Pay", firstTokenInputValue: "10", marketOrGlvTokenInputValue: "" },
+    { input: "GLV", firstTokenInputValue: "", marketOrGlvTokenInputValue: "10" },
+  ])("keeps the token once an amount is typed in $input", ({ firstTokenInputValue, marketOrGlvTokenInputValue }) => {
+    const { rerender } = render(
+      <Harness tokenOptions={USDC_HOLDER_OPTIONS} account={ACCOUNT} isWalletBalancesLoaded />
+    );
+
+    rerender(
+      <Harness
+        tokenOptions={USDG_HOLDER_OPTIONS}
+        account={ACCOUNT}
+        isWalletBalancesLoaded
+        firstTokenInputValue={firstTokenInputValue}
+        marketOrGlvTokenInputValue={marketOrGlvTokenInputValue}
+      />
+    );
+
+    expect(latestFirstTokenAddress).toBe(USDC);
+  });
+
+  it("keeps a token the user picked", () => {
     const { rerender } = render(<Harness tokenOptions={DISCONNECTED_OPTIONS} />);
 
     act(() => latestUserPicksFirstToken(USDC));
@@ -151,50 +195,10 @@ describe("useUpdateTokens", () => {
     expect(latestFirstTokenAddress).toBe(USDC);
   });
 
-  it("does not switch again when the balances change later", () => {
-    const { rerender } = render(
-      <Harness tokenOptions={USDC_HOLDER_OPTIONS} account={ACCOUNT} isWalletBalancesLoaded />
-    );
-
-    rerender(<Harness tokenOptions={USDG_HOLDER_OPTIONS} account={ACCOUNT} isWalletBalancesLoaded />);
-
-    expect(latestFirstTokenAddress).toBe(USDC);
-  });
-
-  it.each([
-    {
-      name: "keeps the pinned token for another account",
-      account: "0xother",
-      glvOrMarketAddress: USDG_GLV,
-      expected: USDC,
-    },
-    {
-      name: "picks the largest balance again for another pool",
-      account: ACCOUNT,
-      glvOrMarketAddress: OTHER_POOL,
-      expected: USDG,
-    },
-  ])("$name", ({ account, glvOrMarketAddress, expected }) => {
-    const { rerender } = render(
-      <Harness tokenOptions={USDC_HOLDER_OPTIONS} account={ACCOUNT} isWalletBalancesLoaded />
-    );
-
-    rerender(
-      <Harness
-        tokenOptions={USDG_HOLDER_OPTIONS}
-        account={account}
-        glvOrMarketAddress={glvOrMarketAddress}
-        isWalletBalancesLoaded
-      />
-    );
-
-    expect(latestFirstTokenAddress).toBe(expected);
-  });
-
   it.each([
     { paySource: "settlementChain" as const, expected: USDC },
     { paySource: "gmxAccount" as const, expected: USDG },
-  ])("picks the largest balance among the $paySource options", ({ paySource, expected }) => {
+  ])("picks the larger balance among the $paySource options", ({ paySource, expected }) => {
     render(
       <Harness tokenOptions={MIXED_PAY_SOURCE_OPTIONS} account={ACCOUNT} isWalletBalancesLoaded paySource={paySource} />
     );
@@ -218,12 +222,13 @@ describe("useUpdateTokens", () => {
   });
 
   it.each([
-    { name: "withdrawal receive token", flags: { isPair: false, isSingle: true, isDeposit: false } },
-    { name: "pair deposit", flags: { isPair: true, isSingle: false, isDeposit: true } },
-  ])("leaves the $name alone", ({ flags }) => {
-    const { rerender } = render(<Harness tokenOptions={DISCONNECTED_OPTIONS} flags={flags} />);
+    { name: "withdrawal receive token", props: { flags: { isPair: false, isSingle: true, isDeposit: false } } },
+    { name: "pair deposit", props: { flags: { isPair: true, isSingle: false, isDeposit: true } } },
+    { name: "pay token of a non-USDG pool", props: { longTokenAddress: WETH, shortTokenAddress: USDC } },
+  ])("leaves the $name alone", ({ props }) => {
+    const { rerender } = render(<Harness tokenOptions={DISCONNECTED_OPTIONS} {...props} />);
 
-    rerender(<Harness tokenOptions={USDC_HOLDER_OPTIONS} account={ACCOUNT} isWalletBalancesLoaded flags={flags} />);
+    rerender(<Harness tokenOptions={USDC_HOLDER_OPTIONS} account={ACCOUNT} isWalletBalancesLoaded {...props} />);
 
     expect(latestFirstTokenAddress).toBe(USDG);
   });

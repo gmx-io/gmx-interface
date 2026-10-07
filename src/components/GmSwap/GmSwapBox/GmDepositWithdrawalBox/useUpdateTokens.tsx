@@ -1,18 +1,20 @@
 import { useEffect } from "react";
 
 import type { SettlementChainId } from "config/chains";
+import { getIsUsdgPool } from "config/usdgPools";
 import {
   selectPoolsDetailsFirstTokenAddress,
+  selectPoolsDetailsFirstTokenInputValue,
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvOrMarketAddress,
   selectPoolsDetailsIsFirstTokenPinned,
   selectPoolsDetailsLongTokenAddress,
+  selectPoolsDetailsMarketOrGlvTokenInputValue,
   selectPoolsDetailsPaySource,
   selectPoolsDetailsSecondTokenAmount,
   selectPoolsDetailsSecondTokenAddress,
   selectPoolsDetailsSetFirstTokenAddress,
   selectPoolsDetailsSetFocusedInput,
-  selectPoolsDetailsSetIsFirstTokenPinned,
   selectPoolsDetailsSetSecondTokenAddress,
   selectPoolsDetailsSetSecondTokenInputValue,
   selectPoolsDetailsShortTokenAddress,
@@ -52,7 +54,8 @@ export function useUpdateTokens({
   const firstTokenAddress = useSelector(selectPoolsDetailsFirstTokenAddress);
   const setFirstTokenAddress = useSelector(selectPoolsDetailsSetFirstTokenAddress);
   const isFirstTokenPinned = useSelector(selectPoolsDetailsIsFirstTokenPinned);
-  const setIsFirstTokenPinned = useSelector(selectPoolsDetailsSetIsFirstTokenPinned);
+  const firstTokenInputValue = useSelector(selectPoolsDetailsFirstTokenInputValue);
+  const marketOrGlvTokenInputValue = useSelector(selectPoolsDetailsMarketOrGlvTokenInputValue);
   const secondTokenAddress = useSelector(selectPoolsDetailsSecondTokenAddress);
   const setSecondTokenAddress = useSelector(selectPoolsDetailsSetSecondTokenAddress);
   const setSecondTokenInputValue = useSelector(selectPoolsDetailsSetSecondTokenInputValue);
@@ -66,12 +69,19 @@ export function useUpdateTokens({
     glvOrMarketAddress,
   });
 
+  const isUsdgPool =
+    longTokenAddress !== undefined &&
+    shortTokenAddress !== undefined &&
+    getIsUsdgPool(chainId, { longTokenAddress, shortTokenAddress });
+
   const canPickMaxBalanceToken =
     isDeposit &&
     isSingle &&
-    account !== undefined &&
-    isWalletBalancesLoaded &&
+    isUsdgPool &&
+    (account === undefined || isWalletBalancesLoaded) &&
     !isFirstTokenPinned &&
+    firstTokenInputValue === "" &&
+    marketOrGlvTokenInputValue === "" &&
     transitRouteProgressForMarket === undefined;
 
   const payTokenChainId = paySource === "gmxAccount" ? GMX_ACCOUNT_PSEUDO_CHAIN_ID : chainId;
@@ -110,8 +120,6 @@ export function useUpdateTokens({
         const isFirstTokenInOptions = tokenOptions.some((token) => token.address === firstTokenAddress);
 
         if (maxBalanceTokenAddress !== undefined) {
-          setIsFirstTokenPinned(true);
-
           if (maxBalanceTokenAddress !== firstTokenAddress) {
             setFirstTokenAddress(maxBalanceTokenAddress as ERC20Address | NativeTokenSupportedAddress);
           }
@@ -171,7 +179,6 @@ export function useUpdateTokens({
       secondTokenAmount,
       setFirstTokenAddress,
       setFocusedInput,
-      setIsFirstTokenPinned,
       setSecondTokenAddress,
       setSecondTokenInputValue,
       shortTokenAddress,
