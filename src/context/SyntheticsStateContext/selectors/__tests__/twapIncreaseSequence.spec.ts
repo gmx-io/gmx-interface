@@ -300,15 +300,20 @@ describe("TWAP increase sequential validation", () => {
       expect(makeSelectOrderErrorByOrderKey("twap-order")(afterState).level).toBe("error");
     });
 
-    it("agrees with the trade box preview of the same TWAP on the same snapshot", () => {
+    it.each([
+      { name: "paid in USDC", payInEth: false },
+      { name: "paid in ETH through the swap route", payInEth: true },
+    ])("agrees with the trade box preview of the same TWAP on the same snapshot, $name", ({ payInEth }) => {
       const position = makePosition({ collateralUsd: 200 });
-      const order = makeTwapOrder({ partSizeUsd: 10_000 });
-      // the preview splits 20 ETH (40 000 USD) and 100 USDC into the same four parts the order holds
+      const order = makeTwapOrder({ partSizeUsd: 10_000, payInEth });
+      // the preview splits 20 ETH (40 000 USD) and 100 USD of margin into the same four parts the order holds
       const state = createMockSyntheticsState({
         marketInfo,
         isLeverageSliderEnabled: false,
         tradeMode: TradeMode.Twap,
-        fromTokenInputValue: "100",
+        fromTokenAddress: payInEth ? ETH_ADDRESS : USDC_ADDRESS,
+        collateralAddress: USDC_ADDRESS,
+        fromTokenInputValue: payInEth ? "0.05" : "100",
         toTokenInputValue: "20",
         twapNumberOfParts: 4,
         account: MOCK_ACCOUNT,

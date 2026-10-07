@@ -778,15 +778,20 @@ export function getTwapIncreaseOrderSequentialMarginState({
   }
 
   const markPrice = getMarkPrice({ prices: marketInfo.indexToken.prices, isIncrease: true, isLong: order.isLong });
+  const remainingParts = BigInt(parts.length);
 
-  const partAmounts = getIncreasePositionAmounts({
+  const remainingAmounts = getIncreasePositionAmounts({
     marketInfo,
     indexToken: marketInfo.indexToken,
     initialCollateralToken: order.initialCollateralToken,
     collateralToken: order.targetCollateralToken,
     isLong: order.isLong,
-    initialCollateralAmount: firstPart.initialCollateralDeltaAmount,
-    indexTokenAmount: convertToTokenAmount(firstPart.sizeDeltaUsd, marketInfo.indexToken.decimals, markPrice),
+    initialCollateralAmount: firstPart.initialCollateralDeltaAmount * remainingParts,
+    indexTokenAmount: convertToTokenAmount(
+      firstPart.sizeDeltaUsd * remainingParts,
+      marketInfo.indexToken.decimals,
+      markPrice
+    ),
     externalSwapQuote: undefined,
     position,
     findSwapPath,
@@ -800,14 +805,14 @@ export function getTwapIncreaseOrderSequentialMarginState({
     isSetAcceptablePriceImpactEnabled,
   });
 
-  if (firstPart.initialCollateralDeltaAmount > 0n && partAmounts.swapStrategy.amountOut <= 0n) {
+  if (firstPart.initialCollateralDeltaAmount > 0n && remainingAmounts.swapStrategy.amountOut <= 0n) {
     return undefined;
   }
 
   const nowSeconds = BigInt(Math.floor(Date.now() / 1000));
 
   return getTwapIncreaseSequentialMarginState({
-    ...getTwapIncreasePartAmounts(getTwapIncreaseAggregateAmounts(partAmounts), 1),
+    ...getTwapIncreasePartAmounts(getTwapIncreaseAggregateAmounts(remainingAmounts), parts.length),
     partSizeDeltaUsd: firstPart.sizeDeltaUsd,
     numberOfParts: parts.length,
     eligibleNowCount: parts.filter((part) => part.validFromTime <= nowSeconds).length,
