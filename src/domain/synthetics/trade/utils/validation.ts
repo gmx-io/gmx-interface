@@ -43,7 +43,11 @@ import { getPageOutdatedError } from "lib/useHasOutdatedUi";
 import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 import { bigMath } from "sdk/utils/bigmath";
-import { getIsMaxLeverageMarginReason, PositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
+import {
+  getIsMaxLeverageMarginReason,
+  PositionMarginFailureReason,
+  PositionMarginState,
+} from "sdk/utils/trade/increaseMarginCheck";
 import {
   ExternalSwapQuote,
   GmSwapFees,
@@ -422,16 +426,25 @@ export function getIncreaseError(p: {
   const _minCollateralUsd = expandDecimals(2, USD_DECIMALS);
 
   const minTwapPartSize = _minCollateralUsd / 2n;
-  if (
-    !existingPosition &&
+  const twapPartMarginShortfallUsd =
     isTwap &&
-    numberOfParts > 0 &&
-    (collateralUsd === undefined ? undefined : collateralUsd / BigInt(numberOfParts) < minTwapPartSize)
-  ) {
-    const actualMarginPerPart = collateralUsd! / BigInt(numberOfParts);
-    return {
-      buttonErrorMessage: t`Margin per part: ${formatUsd(actualMarginPerPart, { roundMode: "floor" })} (min ${formatUsd(minTwapPartSize)})`,
-    };
+    isResultingPositionCheckBlocking &&
+    resultingPositionMarginState?.reason === PositionMarginFailureReason.MinCollateral
+      ? resultingPositionMarginState.minCollateralUsd - resultingPositionMarginState.remainingCollateralUsd
+      : undefined;
+
+  if (!existingPosition && isTwap && numberOfParts > 0 && collateralUsd !== undefined) {
+    const actualMarginPerPart = collateralUsd / BigInt(numberOfParts);
+
+    if (actualMarginPerPart < minTwapPartSize || twapPartMarginShortfallUsd !== undefined) {
+      const usdCent = expandDecimals(1, USD_DECIMALS - 2);
+      const minMarginPerPart =
+        twapPartMarginShortfallUsd !== undefined ? actualMarginPerPart + twapPartMarginShortfallUsd : minTwapPartSize;
+
+      return {
+        buttonErrorMessage: t`Margin per part: ${formatUsd(actualMarginPerPart, { roundMode: "floor" })} (min ${formatUsd(roundUpMagnitudeDivision(minMarginPerPart, usdCent) * usdCent)})`,
+      };
+    }
   }
 
   if (

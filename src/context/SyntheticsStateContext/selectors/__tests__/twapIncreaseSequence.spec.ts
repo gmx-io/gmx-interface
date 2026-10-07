@@ -6,7 +6,7 @@ import { ValidationButtonTooltipName } from "domain/synthetics/trade/utils/valid
 import { createMockMarketInfo, MOCK_MARKET_ADDRESS } from "domain/testUtils/mockMarketInfo";
 import { createMockSyntheticsState, MOCK_ACCOUNT } from "domain/testUtils/mockSyntheticsState";
 import { ETH_ADDRESS, ETH_TOKEN, USDC_ADDRESS, USDC_TOKEN } from "domain/testUtils/mockTokens";
-import { expandDecimals, PRECISION } from "lib/numbers";
+import { expandDecimals, formatUsd, PRECISION } from "lib/numbers";
 import { OrderType, PositionOrderInfo, TwapOrderInfo } from "sdk/utils/orders/types";
 import { PositionMarginFailureReason } from "sdk/utils/trade/increaseMarginCheck";
 import { TradeMode, TradeType } from "sdk/utils/trade/types";
@@ -174,6 +174,44 @@ describe("TWAP increase sequential validation", () => {
       expect(tradeError.buttonTooltipName).toBe(ValidationButtonTooltipName.resultingPositionMaxLeverage);
       expect(selectTradeboxIncreaseMaxLeverageAlert(state)).toBe("error");
     });
+
+    it.each([
+      // 5 x 1.05 USDC at 48.6x: 1.0245 USD per part after the opening fee, 0.9989 USD after the closing fee
+      {
+        name: "blocks",
+        sizeEth: "0.127675",
+        buttonErrorMessage: `Margin per part: ${formatUsd(expandDecimals(102, 28))} (min ${formatUsd(expandDecimals(103, 28))})`,
+      },
+      { name: "allows the same margin at 5x", sizeEth: "0.013125", buttonErrorMessage: undefined },
+    ])(
+      "$name a fresh TWAP whose part must hold 1 USD after closing costs PRO-4134",
+      ({ sizeEth, buttonErrorMessage }) => {
+        const state = createMockSyntheticsState({
+          marketInfo: createMockMarketInfo(ETH_TOKEN, {
+            positionFeeFactorForBalanceWasImproved: PRECISION / 2000n,
+            positionFeeFactorForBalanceWasNotImproved: PRECISION / 2000n,
+            positionImpactFactorPositive: 0n,
+            positionImpactFactorNegative: 0n,
+            minCollateralFactor: PRECISION / 200n,
+          }),
+          isLeverageSliderEnabled: false,
+          tradeMode: TradeMode.Twap,
+          fromTokenInputValue: "5.25",
+          toTokenInputValue: sizeEth,
+          twapNumberOfParts: 5,
+          account: MOCK_ACCOUNT,
+        });
+        const sequence = selectTradeboxTwapIncreaseSequentialMarginState(state)!;
+        const tradeError = selectTradeboxTradeTypeError(state);
+
+        expect(sequence.failingPartIndex).toBe(buttonErrorMessage ? 0 : undefined);
+        expect(sequence.marginState.reason).toBe(
+          buttonErrorMessage ? PositionMarginFailureReason.MinCollateral : undefined
+        );
+        expect(tradeError.buttonErrorMessage).toBe(buttonErrorMessage);
+        expect(tradeError.buttonTooltipName).toBeUndefined();
+      }
+    );
 
     it("values a margin paid in ETH at what reaches the USDC collateral after the swap", () => {
       const direct = selectTradeboxTwapIncreaseSequentialMarginState(createState({ sizeEth: "20" }))!;
