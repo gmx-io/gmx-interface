@@ -507,9 +507,11 @@ export async function fetchTwapGroupExecutedActions({
 export async function fetchPositionLifecycleId({
   chainId,
   positionKey,
+  increasedAtTime,
 }: {
   chainId: number;
   positionKey: string;
+  increasedAtTime: bigint;
 }): Promise<string | undefined> {
   const client = getSubsquidGraphClient(chainId);
 
@@ -518,20 +520,29 @@ export async function fetchPositionLifecycleId({
   }
 
   const query = gql`
-    query PositionLifecycle($positionKey: String!) {
+    query PositionLifecycle($positionKey: String!, $chainId: String!) {
       positionLifecycleById(id: $positionKey) {
         currentLifecycleId
         isOpen
       }
+      processorStatusById(id: $chainId) {
+        lastParsedBlockTimestamp
+      }
     }
   `;
 
-  const result = await client.query<Pick<SubsquidQuery, "positionLifecycleById">>({
+  const result = await client.query<Pick<SubsquidQuery, "positionLifecycleById" | "processorStatusById">>({
     query,
-    variables: { positionKey },
+    variables: { positionKey, chainId: String(chainId) },
     fetchPolicy: "no-cache",
   });
   const lifecycle = result.data?.positionLifecycleById;
+  const processorStatus = result.data?.processorStatusById;
+
+  // A stale open lifecycle may belong to the position before a close and reopen.
+  if (!processorStatus || processorStatus.lastParsedBlockTimestamp < increasedAtTime) {
+    return undefined;
+  }
 
   return lifecycle?.isOpen ? lifecycle.currentLifecycleId ?? undefined : undefined;
 }

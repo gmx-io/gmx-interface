@@ -1,15 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { getSubsquidGraphClient } from "lib/indexers";
 import { SUBSQUID_PAGINATION_LIMIT } from "sdk/configs/batch";
-import { TradeActionType } from "sdk/utils/tradeHistory/types";
 
 import { fetchPositionLifecycleId, fetchTwapGroupExecutedActions } from "./useTradeHistory";
 
 const queryMock = vi.fn();
 
 vi.mock("lib/indexers", () => ({
-  getSubsquidGraphClient: vi.fn(() => ({ query: queryMock })),
+  getSubsquidGraphClient: () => ({ query: queryMock }),
 }));
 
 function getQueryBody(callIndex: number): string {
@@ -76,63 +74,34 @@ describe("fetchTwapGroupExecutedActions", () => {
 });
 
 describe("fetchPositionLifecycleId", () => {
-  const positionKey = "0xPosition";
-  const currentLifecycleId = `${positionKey}:0xOpen`;
-  const params = { chainId: 42161, positionKey };
+  beforeEach(() => queryMock.mockReset());
 
-  beforeEach(() => {
-    queryMock.mockReset();
-  });
-
-  it.each([TradeActionType.OrderCreated, TradeActionType.OrderCancelled, TradeActionType.OrderFrozen])(
-    "selects the open position when the newest increase or margin deposit is %s",
-    async (eventName) => {
-      queryMock.mockResolvedValue({
-        data: {
-          positionLifecycleById: { currentLifecycleId, isOpen: true },
-          tradeActions: [{ eventName, positionLifecycleId: `${positionKey}:0xUnexecutedIncrease` }],
-        },
-      });
-
-      await expect(fetchPositionLifecycleId(params)).resolves.toBe(currentLifecycleId);
-      expect(queryMock).toHaveBeenCalledTimes(1);
-      expect(queryMock.mock.calls[0][0]).toMatchObject({ variables: { positionKey }, fetchPolicy: "no-cache" });
-    }
-  );
-
-  it("selects the new lifecycle after a full close and reopen", async () => {
-    const reopenedLifecycleId = `${positionKey}:0xReopen`;
+  it.each([
+    ["unexecuted increase", "open", true, 101, "open"],
+    ["reopen not indexed", "previous", true, 99, undefined],
+    ["reopen indexed at the same timestamp", "reopened", true, 100, "reopened"],
+    ["reopen indexed later", "reopened", true, 101, "reopened"],
+    ["closed lifecycle", "previous", false, 101, undefined],
+    ["missing lifecycle", null, false, 101, undefined],
+    ["missing processor status", "previous", true, null, undefined],
+  ])("PRO-4408 resolves current position history: %s", async (_, currentLifecycleId, isOpen, timestamp, expected) => {
     queryMock.mockResolvedValue({
       data: {
-        positionLifecycleById: {
-          currentLifecycleId: reopenedLifecycleId,
-          lastClosedLifecycleId: currentLifecycleId,
-          isOpen: true,
-        },
-        tradeActions: [{ positionLifecycleId: currentLifecycleId }],
+        positionLifecycleById: currentLifecycleId ? { currentLifecycleId, isOpen } : null,
+        processorStatusById: timestamp === null ? null : { lastParsedBlockTimestamp: timestamp },
+        tradeActions: [{ positionLifecycleId: "unexecuted" }],
       },
     });
 
-    await expect(fetchPositionLifecycleId(params)).resolves.toBe(reopenedLifecycleId);
-  });
-
-  it.each([
-    null,
-    { currentLifecycleId: null, isOpen: false },
-    { currentLifecycleId, lastClosedLifecycleId: currentLifecycleId, isOpen: false },
-    { currentLifecycleId: null, isOpen: true },
-  ])("falls back to full history when no open lifecycle is indexed (%j)", async (positionLifecycleById) => {
-    queryMock.mockResolvedValue({
-      data: { positionLifecycleById, tradeActions: [{ positionLifecycleId: currentLifecycleId }] },
+    await expect(
+      fetchPositionLifecycleId({ chainId: 42161, positionKey: "0xPosition", increasedAtTime: 100n })
+    ).resolves.toBe(expected);
+    expect(queryMock).toHaveBeenCalledTimes(1);
+    expect(queryMock.mock.calls[0][0]).toMatchObject({
+      variables: { positionKey: "0xPosition", chainId: "42161" },
+      fetchPolicy: "no-cache",
     });
-
-    await expect(fetchPositionLifecycleId(params)).resolves.toBeUndefined();
-  });
-
-  it("falls back to full history when the chain has no indexer", async () => {
-    vi.mocked(getSubsquidGraphClient).mockReturnValueOnce(null);
-
-    await expect(fetchPositionLifecycleId(params)).resolves.toBeUndefined();
-    expect(queryMock).not.toHaveBeenCalled();
+    expect(getQueryBody(0)).toContain("processorStatusById(id: $chainId)");
+    expect(getQueryBody(0)).toContain("lastParsedBlockTimestamp");
   });
 });
