@@ -135,6 +135,7 @@ export function createMockSyntheticsState(overrides: MockSyntheticsStateOverride
       triggerPriceInputValue,
       isFromTokenGmxAccount: false,
       leverageOption,
+      setFocusedInput: noop,
       allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
       numberOfParts: twapNumberOfParts,
       duration: twapDuration,

@@ -845,7 +845,7 @@ export function useDetectAndSetAvailableMaxLeverage({
 
   const { minCollateralUsd } = usePositionsConstants();
 
-  const { collateralToken, marketInfo, selectedTriggerAcceptablePriceImpactBps, setLeverageOption } =
+  const { collateralToken, marketInfo, selectedTriggerAcceptablePriceImpactBps, setLeverageOption, setFocusedInput } =
     useSelector(selectTradeboxState);
 
   const { isLeverageSliderEnabled, isSetAcceptablePriceImpactEnabled } = useSettings();
@@ -955,6 +955,7 @@ export function useDetectAndSetAvailableMaxLeverage({
 
     const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
 
+    setFocusedInput("from");
     setToTokenInputValue(
       formatAmountFree(
         substractMaxLeverageSlippage(maxLeverageIncrease.increaseAmounts.sizeDeltaInTokens / visualMultiplier),
@@ -963,7 +964,7 @@ export function useDetectAndSetAvailableMaxLeverage({
       ),
       true
     );
-  }, [isLeverageSliderEnabled, maxLeverageIncrease, setLeverageOption, setToTokenInputValue, toToken]);
+  }, [isLeverageSliderEnabled, maxLeverageIncrease, setFocusedInput, setLeverageOption, setToTokenInputValue, toToken]);
 
   return {
     hasAvailableMaxLeverage,
