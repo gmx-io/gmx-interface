@@ -2583,7 +2583,6 @@ msgid "Total value of tokens in GM pools"
 msgstr "GM 풀 내 토큰 총 가치"
 
 #: src/components/OrderItem/OrderItem.tsx
-#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "Frozen"
 msgstr "동결됨"
 
@@ -3016,6 +3015,11 @@ msgstr "이 크기에서 롱 증가를 위한 유동성이 없습니다.<0/>최�
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Transfer completed"
 msgstr "전송 완료"
+
+#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+msgctxt "TWAP part status"
+msgid "Frozen"
+msgstr "동결됨"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "GM bridging to..."
@@ -4465,7 +4469,6 @@ msgid "Builder Program"
 msgstr "빌더 프로그램"
 
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
-#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "{0}"
 msgstr "{0}"
 
@@ -4946,6 +4949,7 @@ msgstr "추천 링크가 클립보드에 복사되었습니다"
 msgid "Insufficient bridge liquidity to {networkName}"
 msgstr "{networkName}(으)로의 브릿지 유동성이 부족합니다"
 
+#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
 msgstr "실행됨"
@@ -6829,6 +6833,10 @@ msgstr "Umami DAO"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Staked on Avalanche"
 msgstr "Avalanche에서 스테이킹됨"
+
+#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+msgid "Pending"
+msgstr "대기 중"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "s:"

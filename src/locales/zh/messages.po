@@ -2583,7 +2583,6 @@ msgid "Total value of tokens in GM pools"
 msgstr "GM 池中代币的总价值"
 
 #: src/components/OrderItem/OrderItem.tsx
-#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "Frozen"
 msgstr "已冻结"
 
@@ -3016,6 +3015,11 @@ msgstr "在此规模下无可用流动性来增加做多仓位。<0/>最大做�
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Transfer completed"
 msgstr "转账完成"
+
+#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+msgctxt "TWAP part status"
+msgid "Frozen"
+msgstr "已冻结"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "GM bridging to..."
@@ -4465,7 +4469,6 @@ msgid "Builder Program"
 msgstr "开发者计划"
 
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
-#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "{0}"
 msgstr "{0}"
 
@@ -4946,6 +4949,7 @@ msgstr "推荐链接已复制到剪贴板"
 msgid "Insufficient bridge liquidity to {networkName}"
 msgstr "到 {networkName} 的跨链桥流动性不足"
 
+#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
 msgstr "已执行"
@@ -6829,6 +6833,10 @@ msgstr "Umami DAO"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Staked on Avalanche"
 msgstr "Avalanche 上已质押"
+
+#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+msgid "Pending"
+msgstr "待执行"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "s:"

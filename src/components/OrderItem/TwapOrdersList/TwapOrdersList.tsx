@@ -116,13 +116,17 @@ function TwapOrderItem({
 }
 
 function TwapOrderPartStatusLabel({ status }: { status: TwapOrderPartStatus }) {
+  if (status === "executed") {
+    return <Trans>Executed</Trans>;
+  }
+
   if (status === "frozen") {
     return (
       <span className="text-yellow-300">
-        <Trans>Frozen</Trans>
+        <Trans context="TWAP part status">Frozen</Trans>
       </span>
     );
   }
 
-  return <Trans>{status === "executed" ? "Executed" : "Pending"}</Trans>;
+  return <Trans>Pending</Trans>;
 }

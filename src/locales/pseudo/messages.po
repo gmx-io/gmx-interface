@@ -2583,7 +2583,6 @@ msgid "Total value of tokens in GM pools"
 msgstr ""
 
 #: src/components/OrderItem/OrderItem.tsx
-#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "Frozen"
 msgstr ""
 
@@ -3015,6 +3014,11 @@ msgstr ""
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Transfer completed"
+msgstr ""
+
+#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+msgctxt "TWAP part status"
+msgid "Frozen"
 msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
@@ -4465,7 +4469,6 @@ msgid "Builder Program"
 msgstr ""
 
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
-#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "{0}"
 msgstr ""
 
@@ -4946,6 +4949,7 @@ msgstr ""
 msgid "Insufficient bridge liquidity to {networkName}"
 msgstr ""
 
+#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
 msgstr ""
@@ -6828,6 +6832,10 @@ msgstr ""
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Staked on Avalanche"
+msgstr ""
+
+#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+msgid "Pending"
 msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
