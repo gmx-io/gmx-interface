@@ -258,10 +258,9 @@ class Metrics {
     return this.sendBatchItems(items)
       .then(async (res) => {
         if (res.status === 400) {
-          const errorData = await res.json();
-
-          const error = new Error(JSON.stringify(errorData));
+          const error = new Error(await res.text());
           error.name = BAD_REQUEST_ERROR;
+          throw error;
         }
 
         if (!res.ok) {
