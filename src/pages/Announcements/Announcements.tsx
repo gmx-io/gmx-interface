@@ -5,6 +5,7 @@ import { msg, t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { useMeasure } from "react-use";
 
 import { CONTRACTS_CHAIN_IDS, getChainName } from "config/chains";
 import { AnnouncementType, EventData, appEventsData } from "config/events";
@@ -13,6 +14,7 @@ import { useDateRange, useNormalizeDateRange } from "lib/dates";
 import { useLocalizedMap } from "lib/i18n";
 import useSearchParams from "lib/useSearchParams";
 
+import { AppHeader } from "components/AppHeader/AppHeader";
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { DateRangeSelect } from "components/DateRangeSelect/DateRangeSelect";
 import Loader from "components/Loader/Loader";
@@ -27,6 +29,7 @@ import { AnnouncementCard } from "./AnnouncementCard";
 import {
   ANNOUNCEMENTS_PAGE_SIZE,
   AnnouncementTab,
+  formatEventDate,
   getEventSortDate,
   hasEventStarted,
   isEventActiveByFlag,
@@ -192,9 +195,22 @@ export default function AnnouncementsPage() {
     [tabOptions, typeCounts]
   );
 
+  const [toolbarRef, { height: toolbarHeight }] = useMeasure<HTMLDivElement>();
+  const rowStyle = useMemo(() => ({ scrollMarginTop: toolbarHeight + 32 }), [toolbarHeight]);
+  const dateStyle = useMemo(() => ({ top: toolbarHeight }), [toolbarHeight]);
+
   return (
-    <AppPageLayout title={t`Announcements`}>
-      <div className="default-container page-layout flex flex-col gap-20 max-lg:gap-16">
+    <AppPageLayout
+      title={t`Announcements`}
+      header={
+        <div className="md:pt-8">
+          <AppHeader />
+        </div>
+      }
+      pageWrapperClassName="md:!pt-0"
+      contentClassName="max-md:!px-12"
+    >
+      <div className="flex flex-col gap-12 max-lg:gap-8">
         <div>
           <h1 className="text-h1 font-medium text-typography-primary">
             <Trans>Announcements</Trans>
@@ -204,21 +220,23 @@ export default function AnnouncementsPage() {
           </p>
         </div>
 
-        <div className="flex flex-col gap-12 max-lg:gap-8">
-          <FiltersBar
-            search={search}
-            setSearch={handleSetSearch}
-            activeTab={tab}
-            setTab={handleSetTab}
-            tabOptions={visibleTabs}
-            selectedChainId={selectedChainId}
-            setSelectedChainId={handleSetChain}
-            startDate={startDate}
-            endDate={endDate}
-            onDateRangeChange={handleSetDateRange}
-          />
+        <div className="flex flex-col">
+          <div ref={toolbarRef} className="sticky top-0 z-10 bg-slate-950">
+            <FiltersBar
+              search={search}
+              setSearch={handleSetSearch}
+              activeTab={tab}
+              setTab={handleSetTab}
+              tabOptions={visibleTabs}
+              selectedChainId={selectedChainId}
+              setSelectedChainId={handleSetChain}
+              startDate={startDate}
+              endDate={endDate}
+              onDateRangeChange={handleSetDateRange}
+            />
+          </div>
 
-          <div className="flex min-h-[70vh] flex-col gap-8">
+          <div className="flex min-h-[70vh] w-full flex-col gap-8 pt-32 lg:mx-auto lg:max-w-[1080px] xl:max-w-[1236px]">
             {isLoading ? (
               <div className="flex flex-1 items-center justify-center">
                 <Loader />
@@ -233,13 +251,24 @@ export default function AnnouncementsPage() {
               </div>
             ) : (
               list.map((event) => (
-                <AnnouncementCard
+                <div
                   key={event.id}
-                  event={event}
-                  uiFlags={uiFlags}
-                  searchTokens={searchTokens}
-                  isHighlighted={event.id === highlightedId}
-                />
+                  data-announcement-id={event.id}
+                  className="flex flex-col gap-8 lg:grid lg:grid-cols-[170px_minmax(0,700px)] lg:gap-x-20 xl:grid-cols-[244px_700px] xl:gap-x-24"
+                  style={rowStyle}
+                >
+                  <p
+                    className="text-body-small pt-12 font-medium text-blue-400 dark:text-blue-100 lg:sticky lg:self-start lg:pt-21"
+                    style={dateStyle}
+                  >
+                    {formatEventDate(getEventSortDate(event, uiFlags))}
+                  </p>
+                  <AnnouncementCard
+                    event={event}
+                    searchTokens={searchTokens}
+                    isHighlighted={event.id === highlightedId}
+                  />
+                </div>
               ))
             )}
             {!isLoading && hasMore && <div ref={sentinelRef} className="h-1" />}
@@ -333,7 +362,10 @@ function FiltersBar({
   });
 
   return (
-    <div ref={containerRef} className="flex flex-wrap items-center gap-12 max-lg:gap-8 lg:flex-nowrap">
+    <div
+      ref={containerRef}
+      className="flex flex-wrap items-center gap-12 border-b-1/2 border-stroke-primary pb-12 pt-8 max-md:gap-8 lg:flex-nowrap"
+    >
       <ButtonRowScrollFadeContainer className="min-w-0 grow max-lg:basis-full" gradientColor="slate-950">
         <div ref={tabsContentRef} className="flex w-max items-center gap-4">
           {tabOptions.map((opt) => (
@@ -358,8 +390,8 @@ function FiltersBar({
         </div>
       </ButtonRowScrollFadeContainer>
 
-      <div ref={controlsRef} className="flex shrink-0 items-center max-lg:w-full max-lg:gap-8 lg:gap-0">
-        <div className="flex items-center gap-4 max-lg:gap-8">
+      <div ref={controlsRef} className="flex shrink-0 items-center max-lg:w-full max-md:gap-8">
+        <div className="flex items-center gap-4 max-md:gap-8">
           <ChainDropdown selected={selectedChainId} onChange={setSelectedChainId} isCompact={isCompact} />
           <DateRangeSelect
             startDate={startDate}
@@ -370,21 +402,24 @@ function FiltersBar({
               <span
                 className={cx(
                   "relative inline-flex h-32 items-center gap-4 rounded-8 px-12 text-13 font-medium transition-colors",
-                  "max-lg:w-32 max-lg:justify-center max-lg:bg-button-secondary max-lg:px-0",
+                  "max-md:w-32 max-md:justify-center max-md:bg-button-secondary max-md:px-0",
                   isCompact && "lg:w-32 lg:justify-center lg:px-0",
                   open ? "text-typography-primary" : "text-typography-secondary hover:text-typography-primary"
                 )}
               >
                 {(startDate || endDate) && (
                   <span
-                    className={cx("absolute right-6 top-6 size-6 rounded-full bg-blue-300", !isCompact && "lg:hidden")}
+                    className={cx(
+                      "absolute right-6 top-6 size-6 rounded-full bg-blue-300 md:hidden",
+                      isCompact && "lg:block"
+                    )}
                   />
                 )}
                 <CalendarIcon className="size-16 shrink-0" />
-                <span className={cx("whitespace-nowrap max-lg:sr-only", isCompact && "lg:sr-only")}>{buttonText}</span>
+                <span className={cx("whitespace-nowrap max-md:sr-only", isCompact && "lg:sr-only")}>{buttonText}</span>
                 <ChevronDownIcon
                   className={cx(
-                    "size-16 transition-transform max-lg:hidden",
+                    "size-16 transition-transform max-md:hidden",
                     isCompact && "lg:hidden",
                     open && "rotate-180"
                   )}
@@ -394,14 +429,14 @@ function FiltersBar({
           />
         </div>
 
-        <div className="mx-12 h-20 w-1 shrink-0 bg-stroke-primary max-lg:hidden" />
+        <div className="mx-12 h-20 w-1 shrink-0 bg-stroke-primary max-md:hidden" />
 
         <SearchInput
           value={search}
           setValue={setSearch}
           placeholder={t`Search`}
           autoFocus={false}
-          className="shrink-0 max-lg:order-first lg:!w-[260px] lg:!grow-0 [&_input:hover]:bg-button-secondaryHover [&_input:not(:focus)]:border-button-secondary [&_input]:bg-button-secondary"
+          className="min-w-0 max-md:order-first lg:!w-[260px] lg:!grow-0 lg:shrink-0 [&_input:hover]:bg-button-secondaryHover [&_input:not(:focus)]:border-button-secondary [&_input]:bg-button-secondary"
         />
       </div>
     </div>
@@ -430,7 +465,7 @@ function ChainDropdown({
           <Popover.Button
             className={cx(
               "inline-flex h-32 items-center gap-4 rounded-8 px-12 text-13 font-medium outline-none transition-colors",
-              "max-lg:w-32 max-lg:justify-center max-lg:bg-button-secondary max-lg:px-0",
+              "max-md:w-32 max-md:justify-center max-md:bg-button-secondary max-md:px-0",
               isCompact && "lg:w-32 lg:justify-center lg:px-0",
               open ? "text-typography-primary" : "text-typography-secondary hover:text-typography-primary"
             )}
@@ -440,12 +475,12 @@ function ChainDropdown({
             ) : (
               <ChainIcon className="size-16 shrink-0" />
             )}
-            <span className={cx("whitespace-nowrap max-lg:sr-only", isCompact && "lg:sr-only")}>
+            <span className={cx("whitespace-nowrap max-md:sr-only", isCompact && "lg:sr-only")}>
               {selected === null ? <Trans>All chains</Trans> : getChainName(selected)}
             </span>
             <ChevronDownIcon
               className={cx(
-                "size-16 transition-transform max-lg:hidden",
+                "size-16 transition-transform max-md:hidden",
                 isCompact && "lg:hidden",
                 open && "rotate-180"
               )}
