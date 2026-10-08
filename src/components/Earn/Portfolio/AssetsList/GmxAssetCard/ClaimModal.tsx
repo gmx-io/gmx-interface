@@ -7,6 +7,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ARBITRUM, type ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
+import { getRewardsClaimAction, sendStakingActionMetric } from "domain/stake/sendStakingActionMetric";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
@@ -164,6 +165,7 @@ export function ClaimModal(props: {
         chainId,
         permitParams: undefined,
         approveAmount: undefined,
+        metric: { flow: "claimRewards" },
         onApproveFail: () => {
           setIsApproving(false);
         },
@@ -173,6 +175,12 @@ export function ClaimModal(props: {
 
     setIsClaiming(true);
 
+    const stakingAction = getRewardsClaimAction({
+      shouldStakeGmx,
+      totalGmxRewards,
+      shouldStakeEsGmx,
+      totalEsGmxRewards,
+    });
     const contract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
     callContract(
       chainId,
@@ -196,8 +204,13 @@ export function ClaimModal(props: {
       }
     )
       .then(() => {
+        sendStakingActionMetric({ action: stakingAction, tokenSymbol: undefined, chainId });
         setIsVisible(false);
         onClaimSuccess?.();
+      })
+      .catch((error) => {
+        sendStakingActionMetric({ action: stakingAction, tokenSymbol: undefined, chainId, error });
+        throw error;
       })
       .finally(() => {
         setIsClaiming(false);
@@ -220,6 +233,8 @@ export function ClaimModal(props: {
     setPendingTxns,
     setIsVisible,
     onClaimSuccess,
+    totalGmxRewards,
+    totalEsGmxRewards,
   ]);
 
   const toggleShouldStakeGmx = useCallback(

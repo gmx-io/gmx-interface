@@ -1,12 +1,15 @@
 import { useCallback, useState } from "react";
 import useSWR from "swr";
+import { decodeFunctionData, erc20Abi, type Hex, maxUint256 } from "viem";
 
 import { getPaxosTransitConfig } from "config/paxosTransit";
 import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { useStableRequestAmountIn } from "domain/synthetics/externalSwaps/useExternalSwapOutputRequest";
 import { convertToTokenAmount, convertToUsd, getMidPrice, type TokenData } from "domain/synthetics/tokens";
+import { sendTokenApprovalMetric } from "domain/tokens/tokenApprovalMetric";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
+import { getTxnErrorOutcome } from "lib/metrics/txnErrorOutcome";
 import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
 import { retryAtRefreshCadence } from "lib/useSWRWithFreshness";
 import useWallet from "lib/wallets/useWallet";
@@ -201,12 +204,26 @@ export function usePaxosTransit({
           throw new Error("Paxos Transit returned no approval transaction");
         }
 
+        const approveCall = decodeApproveCall(approveMethod.transaction.encoded);
+        const approvalMetric = {
+          metric: { flow: "paxosTransit" },
+          method: "transaction",
+          chainId,
+          tokenAddress: params.offerAsset,
+          spender: approveCall?.spender ?? approvalQuote.transaction.to,
+          isUnlimited: approveCall ? approveCall.amount === maxUint256 : undefined,
+        } as const;
+
         const approveTxn = await sendWalletTransaction({
           chainId,
           signer,
           to: params.offerAsset,
           callData: approveMethod.transaction.encoded,
+        }).catch((error) => {
+          sendTokenApprovalMetric({ ...approvalMetric, outcome: getTxnErrorOutcome(error), error });
+          throw error;
         });
+        sendTokenApprovalMetric({ ...approvalMetric, outcome: "accepted" });
         await approveTxn.wait();
       }
 
@@ -285,4 +302,14 @@ export function usePaxosTransit({
     step,
     submitTransit,
   };
+}
+
+function decodeApproveCall(callData: string) {
+  try {
+    const { functionName, args } = decodeFunctionData({ abi: erc20Abi, data: callData as Hex });
+
+    return functionName === "approve" ? { spender: args[0], amount: args[1] } : undefined;
+  } catch {
+    return undefined;
+  }
 }

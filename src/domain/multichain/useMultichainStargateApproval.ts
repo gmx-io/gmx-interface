@@ -54,6 +54,7 @@ export function useMultichainStargateApproval({
     tokens,
     approveAmount: amountToApprove,
     skip: srcChainId === undefined || sourceChainTokenAddress === undefined || sourceChainTokenAddress === zeroAddress,
+    metric: { flow: "referral" },
   });
 
   const needsApproval = sourceChainTokenAddress !== zeroAddress && needsTokenApproval;

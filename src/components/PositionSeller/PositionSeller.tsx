@@ -501,6 +501,12 @@ export function PositionSeller() {
     tokens: approvalTokens,
     allowPermit: Boolean(expressParams),
     skip: srcChainId !== undefined || effectiveIsReceiveToGmxAccount,
+    metric: {
+      flow: "closePosition",
+      isExpress: Boolean(expressParams),
+      isExpress1CT: Boolean(expressParams?.subaccount),
+      gasPaymentTokenAddress: expressParams?.gasPaymentParams?.gasPaymentTokenAddress,
+    },
   });
 
   const isAllowanceLoaded = Boolean(batchParams) && isAllowanceLoadedRaw;
