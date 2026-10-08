@@ -89,7 +89,7 @@ export async function callContract(
       return;
     }
 
-    const txnOpts: Overrides = {};
+    const txnOpts: Overrides = { chainId };
 
     if (opts.value) {
       txnOpts.value = opts.value;

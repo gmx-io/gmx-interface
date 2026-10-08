@@ -35,5 +35,13 @@ export function SimpleNetworkFeeRow({ details, isLoading, source, isExpress, cla
     );
   }
 
-  return <SyntheticsInfoRow qa="network-fee" className={className} label={<Trans>Network fee</Trans>} value={value} />;
+  return (
+    <SyntheticsInfoRow
+      qa="network-fee"
+      className={className}
+      label={<Trans>Network fee</Trans>}
+      labelClassName="whitespace-nowrap"
+      value={value}
+    />
+  );
 }

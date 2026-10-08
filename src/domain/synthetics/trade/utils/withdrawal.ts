@@ -1,9 +1,11 @@
+import { getSwapFee } from "domain/synthetics/fees";
 import { GlvInfo, MarketInfo, marketTokenAmountToUsd, usdToMarketTokenAmount } from "domain/synthetics/markets";
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { ERC20Address } from "domain/tokens";
 import { applyFactor } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
-import { FindSwapPath, WithdrawalAmounts } from "sdk/utils/trade/types";
+import { SwapPricingType } from "sdk/utils/orders/types";
+import { FindSwapPath, SwapPathStats, WithdrawalAmounts } from "sdk/utils/trade/types";
 
 export function getWithdrawalAmounts(p: {
   marketInfo: MarketInfo;
@@ -12,6 +14,8 @@ export function getWithdrawalAmounts(p: {
   longTokenAmount: bigint;
   shortTokenAmount: bigint;
   wrappedReceiveTokenAddress?: ERC20Address;
+  receiveToken?: TokenData;
+  receiveTokenAmount?: bigint;
   uiFeeFactor: bigint;
   strategy: "byMarketToken" | "byLongCollateral" | "byShortCollateral" | "byCollaterals";
   forShift?: boolean;
@@ -34,6 +38,8 @@ export function getWithdrawalAmounts(p: {
     glvTokenAmount,
     findSwapPath,
     wrappedReceiveTokenAddress,
+    receiveToken,
+    receiveTokenAmount,
     isSameCollaterals,
   } = p;
 
@@ -66,6 +72,11 @@ export function getWithdrawalAmounts(p: {
   };
 
   if (totalPoolUsd == 0n) {
+    if (strategy === "byMarketToken") {
+      values.marketTokenAmount = marketTokenAmount;
+      values.glvTokenAmount = glvTokenAmount ?? 0n;
+    }
+
     return values;
   }
 
@@ -90,10 +101,10 @@ export function getWithdrawalAmounts(p: {
     // TODO MLTCH: add atomic swap fees
     const longSwapFeeUsd = p.forShift
       ? 0n
-      : applyFactor(values.longTokenUsd, p.marketInfo.swapFeeFactorForBalanceWasNotImproved);
+      : getSwapFee(p.marketInfo, values.longTokenUsd, false, SwapPricingType.Withdrawal);
     const shortSwapFeeUsd = p.forShift
       ? 0n
-      : applyFactor(values.shortTokenUsd, p.marketInfo.swapFeeFactorForBalanceWasNotImproved);
+      : getSwapFee(p.marketInfo, values.shortTokenUsd, false, SwapPricingType.Withdrawal);
 
     const longUiFeeUsd = applyFactor(values.marketTokenUsd, uiFeeFactor);
     const shortUiFeeUsd = applyFactor(values.shortTokenUsd, uiFeeFactor);
@@ -141,9 +152,20 @@ export function getWithdrawalAmounts(p: {
         shortToken.decimals,
         shortToken.prices.maxPrice
       )!;
+    } else if (isSameCollaterals && wrappedReceiveTokenAddress) {
+      const [longToReceiveSwapPathStats, shortToReceiveSwapPathStats] = findSequentialSwapPaths(
+        findSwapPath!,
+        values.longTokenUsd,
+        values.shortTokenUsd
+      );
+      if (!longToReceiveSwapPathStats || !shortToReceiveSwapPathStats) {
+        return values;
+      }
+      values.longTokenSwapPathStats = longToReceiveSwapPathStats;
+      values.shortTokenSwapPathStats = shortToReceiveSwapPathStats;
     }
   } else {
-    if (wrappedReceiveTokenAddress) {
+    if (wrappedReceiveTokenAddress && !isSameCollaterals) {
       if (strategy === "byLongCollateral" && longPoolUsd > 0 && wrappedReceiveTokenAddress === longToken.address) {
         values.longTokenAmount = longTokenAmount;
         values.longTokenUsd = convertToUsd(longTokenAmount, longToken.decimals, longToken.prices.maxPrice)!;
@@ -189,13 +211,49 @@ export function getWithdrawalAmounts(p: {
       }
     } else {
       if (isSameCollaterals) {
-        const positiveAmount = bigMath.max(longTokenAmount, shortTokenAmount);
-        values.longTokenAmount = positiveAmount / 2n;
+        const isReceiveTokenSwapped =
+          wrappedReceiveTokenAddress !== undefined && wrappedReceiveTokenAddress !== longToken.address;
+
+        let collateralBeforeSwapAmount = bigMath.max(longTokenAmount, shortTokenAmount);
+
+        if (receiveToken && receiveTokenAmount !== undefined) {
+          const preferredUsdOut = convertToUsd(
+            receiveTokenAmount,
+            receiveToken.decimals,
+            receiveToken.prices.minPrice
+          )!;
+          const approximateUsdIn = preferredUsdOut;
+          const approximateSwapPathStats = isReceiveTokenSwapped ? findSwapPath!(approximateUsdIn) : undefined;
+          const adjustedUsdIn =
+            approximateSwapPathStats && approximateSwapPathStats.usdOut > 0n
+              ? bigMath.mulDiv(approximateUsdIn, preferredUsdOut, approximateSwapPathStats.usdOut)
+              : approximateUsdIn;
+
+          collateralBeforeSwapAmount = convertToTokenAmount(
+            adjustedUsdIn,
+            longToken.decimals,
+            longToken.prices.maxPrice
+          )!;
+        }
+
+        values.longTokenAmount = collateralBeforeSwapAmount / 2n;
         values.longTokenBeforeSwapAmount = values.longTokenAmount;
-        values.shortTokenAmount = positiveAmount - values.longTokenAmount;
+        values.shortTokenAmount = collateralBeforeSwapAmount - values.longTokenAmount;
         values.shortTokenBeforeSwapAmount = values.shortTokenAmount;
         values.longTokenUsd = convertToUsd(values.longTokenAmount, longToken.decimals, longToken.prices.maxPrice)!;
         values.shortTokenUsd = convertToUsd(values.shortTokenAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
+
+        if (isReceiveTokenSwapped) {
+          const [longToReceiveSwapPathStats, shortToReceiveSwapPathStats] = findSequentialSwapPaths(
+            findSwapPath!,
+            values.longTokenUsd,
+            values.shortTokenUsd
+          );
+          if (longToReceiveSwapPathStats && shortToReceiveSwapPathStats) {
+            values.longTokenSwapPathStats = longToReceiveSwapPathStats;
+            values.shortTokenSwapPathStats = shortToReceiveSwapPathStats;
+          }
+        }
       } else if (strategy === "byLongCollateral" && longPoolUsd > 0) {
         values.longTokenAmount = longTokenAmount;
         values.longTokenBeforeSwapAmount = values.longTokenAmount;
@@ -233,9 +291,11 @@ export function getWithdrawalAmounts(p: {
 
     values.marketTokenUsd = values.marketTokenUsd + values.longTokenUsd + values.shortTokenUsd;
     if (!p.forShift) {
-      values.swapFeeUsd = applyFactor(
+      values.swapFeeUsd = getSwapFee(
+        p.marketInfo,
         values.longTokenUsd + values.shortTokenUsd,
-        p.marketInfo.swapFeeFactorForBalanceWasNotImproved
+        false,
+        SwapPricingType.Withdrawal
       );
     }
 
@@ -249,4 +309,32 @@ export function getWithdrawalAmounts(p: {
   }
 
   return values;
+}
+
+// TODO PRO-4414: stopgap. Quotes the second swap as (both swaps together) minus (first swap), so only the totals are
+// split and the steps still describe the combined swap. The proper fix is to quote it against the pool state left by
+// the first.
+function findSequentialSwapPaths(
+  findSwapPath: FindSwapPath,
+  firstUsdIn: bigint,
+  secondUsdIn: bigint
+): [SwapPathStats | undefined, SwapPathStats | undefined] {
+  const firstSwapPathStats = findSwapPath(firstUsdIn);
+  const combinedSwapPathStats = findSwapPath(firstUsdIn + secondUsdIn);
+
+  if (!firstSwapPathStats || !combinedSwapPathStats) {
+    return [firstSwapPathStats, undefined];
+  }
+
+  const secondSwapPathStats: SwapPathStats = {
+    ...combinedSwapPathStats,
+    totalSwapPriceImpactDeltaUsd:
+      combinedSwapPathStats.totalSwapPriceImpactDeltaUsd - firstSwapPathStats.totalSwapPriceImpactDeltaUsd,
+    totalSwapFeeUsd: combinedSwapPathStats.totalSwapFeeUsd - firstSwapPathStats.totalSwapFeeUsd,
+    totalFeesDeltaUsd: combinedSwapPathStats.totalFeesDeltaUsd - firstSwapPathStats.totalFeesDeltaUsd,
+    usdOut: combinedSwapPathStats.usdOut - firstSwapPathStats.usdOut,
+    amountOut: combinedSwapPathStats.amountOut - firstSwapPathStats.amountOut,
+  };
+
+  return [firstSwapPathStats, secondSwapPathStats];
 }

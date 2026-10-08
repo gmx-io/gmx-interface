@@ -349,6 +349,12 @@
   bottom: auto;
 }
 
+.PositionEditor .PositionEditor-modal > .Modal-content,
+.PositionEditor .PositionSeller-modal > .Modal-content {
+  max-height: 90vh;
+  max-height: 90dvh;
+}
+
 .PositionEditor .Tab {
   margin-bottom: 1.05rem;
 }

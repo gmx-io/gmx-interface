@@ -295,6 +295,12 @@ export type OrderCancelledEvent = {
 };
 
 // Fallback tracking
+export type EndpointsPairRepeats = {
+  repeatCount: number;
+  firstTs: number;
+  lastTs: number;
+};
+
 export type RpcTrackerEndpointBannedEvent = {
   event: "rpcTracker.endpoint.banned";
   isError: false;
@@ -317,7 +323,7 @@ export type RpcTrackerUpdateEndpointsEvent = {
     secondary: string;
     primaryBlockGap: number | "unknown";
     secondaryBlockGap: number | "unknown";
-  };
+  } & Partial<EndpointsPairRepeats>;
 };
 
 export type RpcTrackerEndpointTiming = {
@@ -344,7 +350,7 @@ export type OracleKeeperUpdateEndpointsEvent = {
     chainName: string;
     primary: string;
     secondary: string;
-  };
+  } & Partial<EndpointsPairRepeats>;
 };
 
 export type OracleKeeperEndpointBannedEvent = {
@@ -600,7 +606,7 @@ export type MulticallBatchedTiming = {
   data: {
     chainId: number;
     priority: string;
-    callsCount: number;
+    callsCountBucket: string;
   };
 };
 
@@ -653,7 +659,7 @@ export type MulticallBatchedCallCounter = {
   data: {
     chainId: number;
     priority: string;
-    callsCount: number;
+    callsCountBucket: string;
   };
 };
 
@@ -662,7 +668,7 @@ export type MulticallBatchedErrorCounter = {
   data: {
     chainId: number;
     priority: string;
-    callsCount: number;
+    callsCountBucket: string;
   };
 };
 
