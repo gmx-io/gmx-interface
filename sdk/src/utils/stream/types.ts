@@ -35,8 +35,8 @@ export interface WebSocketLike {
 
 export type WebSocketCtor = new (url: string, ...rest: any[]) => WebSocketLike;
 
-// Wire protocol — mirrors gmx-api src/stream/protocol.ts.
+// Wire protocol — mirrors gmx-api src/lib/stream/protocol.ts.
 export type StreamServerFrame =
   | { op: "ack"; channels: string[] }
-  | { op: "error"; message: string; channels?: string[] }
+  | { op: "error"; message: string; channels: string[] }
   | { ch: string; type: "snapshot"; serverTs: number; originTs?: number; data: unknown };
