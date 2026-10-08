@@ -416,13 +416,10 @@ export async function signUpdatedSubaccountSettings({
     nextMaxAllowedCount = oldMaxAllowedCount + nextRemainigActions - oldRemainingActions;
   }
 
-  const oldExpiresAt = getSubaccountExpiresAt(subaccount);
-  const oldRemainingSeconds = getRemainingSubaccountSeconds(subaccount);
-
-  let nextExpiresAt = oldExpiresAt;
+  let nextExpiresAt = getSubaccountExpiresAt(subaccount);
 
   if (nextRemainingSeconds !== undefined) {
-    nextExpiresAt = oldExpiresAt + nextRemainingSeconds - oldRemainingSeconds;
+    nextExpiresAt = BigInt(nowInSeconds()) + nextRemainingSeconds;
   }
 
   const signedSubaccountApproval = await createAndSignSubaccountApproval(

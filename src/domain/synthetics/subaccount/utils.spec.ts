@@ -479,5 +479,21 @@ describe("One-Click session limits", () => {
       expect(approval.maxAllowedCount).toBe(490n);
       expect(approval.expiresAt).toBe(BigInt(NOW + 30 * DAY));
     });
+
+    it("renews an expired session for 30 days from now", async () => {
+      const subaccount = createActiveSubaccount({
+        currentActionsCount: 40n,
+        maxAllowedCount: 400n,
+        expiresAt: BigInt(NOW - 10 * DAY),
+      });
+
+      const approval = await signUpdate(subaccount, {
+        nextRemainigActions: BigInt(DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS),
+        nextRemainingSeconds: BigInt(DEFAULT_ONE_CLICK_SESSION_DURATION),
+      });
+
+      expect(approval.maxAllowedCount).toBe(440n);
+      expect(approval.expiresAt).toBe(BigInt(NOW + 30 * DAY));
+    });
   });
 });
