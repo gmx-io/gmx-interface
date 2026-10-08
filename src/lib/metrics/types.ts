@@ -202,8 +202,8 @@ export type FreshnessTiming = {
   };
 };
 
-export type WsPriceTickTiming = {
-  event: "wsPrices.tick";
+export type WsPriceLatencyTiming = {
+  event: "wsPrices.latency";
   data: {
     chainId: number;
     tokenCount: number;
@@ -211,13 +211,13 @@ export type WsPriceTickTiming = {
   };
 };
 
-export type WsPriceFreshnessTiming = {
-  event: "wsPrices.freshness";
+export type WsPriceAgeAtSendTiming = {
+  event: "wsPrices.ageAtSend";
   data: { chainId: number };
 };
 
-export type WsPriceFirstTickTiming = {
-  event: "wsPrices.firstTick";
+export type WsPriceFirstFrameTiming = {
+  event: "wsPrices.firstFrame";
   data: { chainId: number };
 };
 

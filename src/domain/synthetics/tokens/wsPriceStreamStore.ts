@@ -1,9 +1,9 @@
 import { emitMetricCounter, emitMetricTiming } from "lib/metrics/emitMetricEvent";
 import type {
-  WsPriceFirstTickTiming,
-  WsPriceFreshnessTiming,
+  WsPriceAgeAtSendTiming,
+  WsPriceFirstFrameTiming,
   WsPriceInterArrivalTiming,
-  WsPriceTickTiming,
+  WsPriceLatencyTiming,
   WsStreamStatusCounter,
 } from "lib/metrics/types";
 import { watchPageHidden } from "lib/watchPageHidden";
@@ -59,8 +59,8 @@ export function getWsPriceStore(sdk: GmxApiSdk): WsPriceStore {
     }
 
     if (frameCount === 1) {
-      emitMetricTiming<WsPriceFirstTickTiming>({
-        event: "wsPrices.firstTick",
+      emitMetricTiming<WsPriceFirstFrameTiming>({
+        event: "wsPrices.firstFrame",
         time: now - openedAt,
         data: { chainId },
       });
@@ -75,14 +75,14 @@ export function getWsPriceStore(sdk: GmxApiSdk): WsPriceStore {
       time: now - previousFrameAt,
       data: { chainId },
     });
-    emitMetricTiming<WsPriceTickTiming>({
-      event: "wsPrices.tick",
+    emitMetricTiming<WsPriceLatencyTiming>({
+      event: "wsPrices.latency",
       time: meta.receivedAt - meta.serverTs,
       data: { chainId, tokenCount: Object.keys(snapshot).length, byteLength: meta.byteLength },
     });
     if (meta.originTs !== undefined) {
-      emitMetricTiming<WsPriceFreshnessTiming>({
-        event: "wsPrices.freshness",
+      emitMetricTiming<WsPriceAgeAtSendTiming>({
+        event: "wsPrices.ageAtSend",
         time: meta.serverTs - meta.originTs,
         data: { chainId },
       });
