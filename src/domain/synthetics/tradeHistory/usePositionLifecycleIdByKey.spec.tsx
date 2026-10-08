@@ -23,7 +23,11 @@ function Harness({
   onResolve: (lifecycleId: string | undefined) => void;
   onRender: (result: HookResult) => void;
 }) {
-  const result = usePositionLifecycleIdByKey({ chainId: CHAIN_ID, positionKey, onResolve });
+  const result = usePositionLifecycleIdByKey({
+    chainId: CHAIN_ID,
+    position: positionKey ? { contractKey: positionKey, increasedAtTime: 100n } : undefined,
+    onResolve,
+  });
   onRender(result);
   return null;
 }
@@ -52,7 +56,7 @@ describe("usePositionLifecycleIdByKey", () => {
 
     render(<Harness positionKey="0xkey" onResolve={onResolve} onRender={(r) => (latest = r)} />);
 
-    expect(mockedFetch).toHaveBeenCalledWith({ chainId: CHAIN_ID, positionKey: "0xkey" });
+    expect(mockedFetch).toHaveBeenCalledWith({ chainId: CHAIN_ID, positionKey: "0xkey", increasedAtTime: 100n });
     expect(latest.isResolving).toBe(true);
 
     await waitFor(() => expect(onResolve).toHaveBeenCalledWith("lifecycle-1"));

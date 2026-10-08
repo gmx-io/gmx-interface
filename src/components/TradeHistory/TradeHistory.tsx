@@ -19,6 +19,7 @@ import { usePositionLifecycleIdByKey } from "domain/synthetics/tradeHistory/useP
 import { normalizeDateRange, normalizeDateRangeToUtcDays, useDateRange } from "lib/dates";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
+import type { Position } from "sdk/utils/positions/types";
 
 import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
@@ -56,8 +57,8 @@ type Props = {
   account: Address | null | undefined;
   forAllAccounts?: boolean;
   hideDashboardLink?: boolean;
-  viewPositionKeyHistory?: string;
-  onViewPositionKeyHistoryConsumed?: () => void;
+  viewPositionHistory?: Pick<Position, "contractKey" | "increasedAtTime">;
+  onViewPositionHistoryConsumed?: () => void;
 } & (
   | {
       dateRange: [Date | undefined, Date | undefined];
@@ -70,13 +71,7 @@ type Props = {
 );
 
 export function TradeHistory(p: Props) {
-  const {
-    forAllAccounts,
-    account,
-    hideDashboardLink = false,
-    viewPositionKeyHistory,
-    onViewPositionKeyHistoryConsumed,
-  } = p;
+  const { forAllAccounts, account, hideDashboardLink = false, viewPositionHistory, onViewPositionHistoryConsumed } = p;
   const chainId = useSelector(selectChainId);
   const showDebugValues = useShowDebugValues();
   const [localStartDate, localEndDate, setLocalDateRange] = useDateRange();
@@ -90,12 +85,10 @@ export function TradeHistory(p: Props) {
   // Resolve the opened position's lifecycle id and apply it as the filter (consumed once).
   const { isResolving: isResolvingLifecycle } = usePositionLifecycleIdByKey({
     chainId,
-    positionKey: viewPositionKeyHistory,
+    position: viewPositionHistory,
     onResolve: (lifecycleId) => {
-      if (lifecycleId) {
-        setPositionLifecycleId(lifecycleId);
-      }
-      onViewPositionKeyHistoryConsumed?.();
+      setPositionLifecycleId(lifecycleId);
+      onViewPositionHistoryConsumed?.();
     },
   });
 
