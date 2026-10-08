@@ -70,6 +70,27 @@ export function getDefaultEntry<T extends SidecarOrderEntryBase>(
   } as T;
 }
 
+export function getCarriedOverEntries<T extends SidecarOrderEntryBase>({
+  entries,
+  initialEntries,
+  keepTypedPrice,
+}: {
+  entries: T[];
+  initialEntries: T[];
+  keepTypedPrice: boolean;
+}): T[] {
+  const [initialEntry] = initialEntries;
+  const typedEntry = entries.find(
+    (entry) => (entry.txnType === "create" || entry.txnType === "update") && entry.price.input
+  );
+
+  if (!keepTypedPrice || !typedEntry || !initialEntry || initialEntries.some((entry) => entry.order)) {
+    return initialEntries;
+  }
+
+  return [{ ...initialEntry, price: typedEntry.price, txnType: "create" }];
+}
+
 export function prepareInitialEntries({
   positionOrders,
   sort = "desc",
