@@ -58,6 +58,27 @@ describe("DataFeed candle stream and poll", () => {
       ],
     },
     {
+      name: "a frame for the closed bar does not stop the poll from updating the new bar",
+      start: 58_500,
+      keeper: [bar(0, 100)],
+      steps: [
+        { at: 60_000, keeper: [bar(0, 100), bar(1, 101)] },
+        { at: 60_600, frame: bar(0, 100.5) },
+        { at: 60_900, keeper: [bar(0, 100), bar(1, 102)] },
+        { at: 61_400, frame: bar(0, 100.6) },
+        { at: 61_900, keeper: [bar(0, 100), bar(1, 103)] },
+      ],
+      end: 62_600,
+      expected: [
+        [0, 100, 100],
+        [0, 100, 100],
+        [0, 101, 101],
+        [1, 101, 101],
+        [1, 102, 102],
+        [1, 103, 103],
+      ],
+    },
+    {
       name: "the poll backfills a gap after both sources were down although the stream came back first",
       start: 30_000,
       keeper: [bar(0, 100)],

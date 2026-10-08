@@ -388,9 +388,9 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
         }
         subscription = this.candleStreamFactory?.(symbolInfo.name, period);
         subscription?.subscribe((candle) => {
-          lastStreamFrameAt = Date.now();
           const bar = ohlcvCandleToBar(candle);
           if (bar.time === chartBar?.time) {
+            lastStreamFrameAt = Date.now();
             emit(bar);
           }
         });
