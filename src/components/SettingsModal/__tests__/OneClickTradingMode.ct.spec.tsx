@@ -91,7 +91,7 @@ test.describe("Trading Settings: Express+1CT -> Express deactivation (FEDEV-2133
     await modeButton(page, "Express").click();
 
     await expect(page.getByText("Deactivation failed")).toBeVisible({ timeout: 20_000 });
-    await expect(page.getByText("Insufficient ETH balance to cover network fees. Add funds and retry.")).toBeVisible();
+    await expect(page.getByText("Insufficient ETH in your Wallet for gas. Swap or bridge ETH.")).toBeVisible();
 
     await expectModeActive(modeButton(page, "Express + One-Click"));
     await expectModeInactive(modeButton(page, "Express"));

@@ -84,6 +84,10 @@ type InnerTooltipProps<T extends ElementType | undefined> = {
    * Disables the click toggle behavior that keeps the tooltip open after clicking.
    */
   disableClickToggle?: boolean;
+  /**
+   * Flips only to the opposite side when the preferred one has no room; horizontal overflow is shifted instead.
+   */
+  flipOnlyToOppositeSide?: boolean;
 
   variant?: "icon" | "iconStroke" | "underline" | "none";
   iconClassName?: string;
@@ -116,6 +120,7 @@ export default function Tooltip<T extends ElementType>({
   fitHandleWidth,
   closeOnDoubleClick,
   disableClickToggle,
+  flipOnlyToOppositeSide,
   variant = "underline",
   iconClassName,
   ...containerProps
@@ -135,16 +140,20 @@ export default function Tooltip<T extends ElementType>({
   const { refs, floatingStyles, context } = useFloating({
     middleware: [
       offset(10),
-      flip({
-        fallbackPlacements: [
-          getOppositeAlignmentPlacement(position),
-          getOppositePlacement(position),
-          "left-start",
-          "right-start",
-          "bottom",
-          "top",
-        ],
-      }),
+      flip(
+        flipOnlyToOppositeSide
+          ? { crossAxis: false, fallbackPlacements: [getOppositePlacement(position)] }
+          : {
+              fallbackPlacements: [
+                getOppositeAlignmentPlacement(position),
+                getOppositePlacement(position),
+                "left-start",
+                "right-start",
+                "bottom",
+                "top",
+              ],
+            }
+      ),
       shift({
         padding: 10,
       }),
@@ -306,24 +315,20 @@ export default function Tooltip<T extends ElementType>({
           )}
           {variant === "icon" && <InfoIcon className={cx("h-16 w-16", iconClassName)} />}
           {variant === "iconStroke" && <InfoIconStroke className={cx("h-16 w-16", iconClassName)} />}
-          {variant === "underline" && (
-            <svg className="absolute -bottom-0 left-0 h-1 w-full overflow-hidden">
-              <line
-                stroke="currentColor"
-                x1="0"
-                y1="0"
-                x2="100%"
-                y2="0"
-                strokeWidth="0.75"
-                strokeDasharray="1.25,2.25"
-              />
-            </svg>
-          )}
+          {variant === "underline" && <TooltipUnderline />}
         </div>
       </span>
       {visible && withPortal && <FloatingPortal>{tooltipContent}</FloatingPortal>}
       {visible && !withPortal && tooltipContent}
     </span>
+  );
+}
+
+export function TooltipUnderline() {
+  return (
+    <svg className="absolute -bottom-0 left-0 h-1 w-full overflow-hidden">
+      <line stroke="currentColor" x1="0" y1="0" x2="100%" y2="0" strokeWidth="0.75" strokeDasharray="1.25,2.25" />
+    </svg>
   );
 }
 

@@ -10,7 +10,11 @@ import { TradingActionName } from "lib/tradingErrorTracker";
 import { abis } from "sdk/abis";
 import { TxErrorType } from "sdk/utils/errors/transactionsErrors";
 
-import { getTxnErrorToast } from "components/Errors/errorToasts";
+import {
+  type ExpressTxnErrorContext,
+  getInsufficientBalanceToastBanner,
+  getTxnErrorToast,
+} from "components/Errors/errorToasts";
 import { getContractErrorToastContent } from "components/Errors/getContractErrorToastContent";
 
 export function toastCustomOrStargateError(
@@ -23,6 +27,7 @@ export function toastCustomOrStargateError(
     collateral?: string;
     isLpWithdrawal?: boolean;
     defaultMessage?: ReactNode;
+    expressTxn?: ExpressTxnErrorContext;
   }
 ) {
   let prettyErrorName = error.name;
@@ -45,22 +50,25 @@ export function toastCustomOrStargateError(
 
   const customError = decodeInnermostCustomErrorFromError(error);
   const errorData = parseError(error);
+  const expressTxn = errorInfo?.expressTxn;
 
-  const toastContext = getTxnErrorToast(
-    chainId,
-    {
-      errorMessage: prettyErrorMessage,
-      txErrorType: errorData?.isUserRejectedError ? TxErrorType.UserDenied : undefined,
-    },
-    {
-      defaultMessage:
-        getContractErrorToastContent({
-          chainId,
-          errorData: { contractError: customError?.name, contractErrorArgs: customError?.args },
-          isLpWithdrawal: errorInfo?.isLpWithdrawal,
-        }) ?? errorInfo?.defaultMessage,
-    }
-  );
+  const toastContext = getInsufficientBalanceToastBanner({ chainId, errorData, expressTxn })
+    ? getTxnErrorToast(chainId, errorData, { defaultMessage: errorInfo?.defaultMessage, expressTxn })
+    : getTxnErrorToast(
+        chainId,
+        {
+          errorMessage: prettyErrorMessage,
+          txErrorType: errorData?.isUserRejectedError ? TxErrorType.UserDenied : undefined,
+        },
+        {
+          defaultMessage:
+            getContractErrorToastContent({
+              chainId,
+              errorData: { contractError: customError?.name, contractErrorArgs: customError?.args },
+              isLpWithdrawal: errorInfo?.isLpWithdrawal,
+            }) ?? errorInfo?.defaultMessage,
+        }
+      );
 
   helperToast.error(toastContext.errorContent, {
     autoClose: toastContext.autoCloseToast,

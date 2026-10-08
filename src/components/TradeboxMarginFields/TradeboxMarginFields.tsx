@@ -14,6 +14,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { calcMarginAmountByPercentage, calcMarginPercentage } from "domain/synthetics/trade";
+import { MaxActionsState } from "domain/tokens/useMaxAvailableAmount";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
 
@@ -26,6 +27,8 @@ import { useTradeboxManualLeverageSizeSlider } from "./useTradeboxManualLeverage
 
 type Props = {
   maxAvailableAmount: bigint;
+  maxActions?: MaxActionsState;
+  onKeepGasClick?: () => void;
   onSelectFromTokenAddress: (tokenAddress: string, isGmxAccount: boolean) => void;
   fromTokenInputValue: string;
   setFromTokenInputValue: (value: string, resetPriceImpact?: boolean) => void;
@@ -39,6 +42,8 @@ type Props = {
 
 export function TradeboxMarginFields({
   maxAvailableAmount,
+  maxActions,
+  onKeepGasClick,
   onSelectFromTokenAddress,
   fromTokenInputValue,
   setFromTokenInputValue,
@@ -291,6 +296,8 @@ export function TradeboxMarginFields({
           onInputValueChange={handleFromInputChange}
           onSelectFromTokenAddress={onSelectFromTokenAddress}
           onMaxClick={() => handleMarginPercentageChange(100)}
+          onKeepGasClick={onKeepGasClick}
+          maxActions={maxActions}
           onFocus={() => setFocusedInput("from")}
           qa="margin"
         />

@@ -6,11 +6,13 @@ import { zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
 import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import { selectGmxAccountGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useArbitraryError, useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
 import { getReferralsDataKey } from "domain/referrals/hooks/useReferralsData";
 import { ExpressTransactionBuilder } from "domain/synthetics/express/types";
+import { GMX_ACCOUNT_NETWORK_FEE_SOURCE } from "domain/synthetics/fees/networkFeeSource";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import { MarketsInfoData, useMarketsInfoRequest } from "domain/synthetics/markets";
 import {
@@ -36,7 +38,7 @@ import {
 import { useMaybeSlippageError } from "domain/synthetics/referrals/useMaybeSlippageError";
 import { getTotalClaimableAffiliateRewardsUsd } from "domain/synthetics/referrals/utils";
 import { convertToTokenAmount, convertToUsd, useTokensDataRequest } from "domain/synthetics/tokens";
-import { getDefaultInsufficientGasMessage } from "domain/synthetics/trade/utils/validation";
+import { getInsufficientFeeButtonMessage } from "domain/synthetics/trade/utils/validation";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
@@ -304,6 +306,7 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
   }, [isAllChecked, isSelectionLimitedBySwapMultichain, selectableMarketAddresses]);
 
   const gasPaymentToken = useSelector(selectGasPaymentToken);
+  const gmxAccountGasPaymentTokenAddress = useSelector(selectGmxAccountGasPaymentTokenAddress);
   const gasPrice = useGasPrice(chainId);
 
   const handleSubmitSettlementChain = useCallback(async () => {
@@ -690,7 +693,13 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
     } else if (networkFeeInfo.isLoading && !claimSimulationError) {
       return { text: t`Loading fees...`, disabled: true };
     } else if (isFallbackOutOfGasPaymentTokenBalance || errors?.isOutOfTokenError?.isGasPaymentToken) {
-      return { text: getDefaultInsufficientGasMessage(), disabled: true };
+      return {
+        text: getInsufficientFeeButtonMessage({
+          tokenSymbol: getToken(chainId, gmxAccountGasPaymentTokenAddress).symbol,
+          feeSource: GMX_ACCOUNT_NETWORK_FEE_SOURCE,
+        }),
+        disabled: true,
+      };
     } else if (errors?.isOutOfTokenError) {
       const token = getToken(chainId, errors.isOutOfTokenError.tokenAddress);
       return { text: t`Insufficient ${token?.symbol} balance`, disabled: true };
@@ -715,6 +724,7 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
     chainId,
     claimSimulationError,
     errors?.isOutOfTokenError,
+    gmxAccountGasPaymentTokenAddress,
     hasOutdatedUi,
     hasSwapRouteErrorForSubmit,
     isExpressParamsLoading,

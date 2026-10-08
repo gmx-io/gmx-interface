@@ -343,15 +343,6 @@
       "listingDate": "2023-08-08T00:00:00.000Z"
     },
     {
-      "name": "MEME/USD [WBTC.b-USDC]",
-      "marketToken": "0x6CB901Cc64c024C3Fe4404c940FF9a3Acc229D2C",
-      "indexToken": "0xaF770F03518686a365300ab35AD860e99967B2f0",
-      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
-      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-      "isListed": true,
-      "listingDate": "2024-11-21T00:00:00.000Z"
-    },
-    {
       "name": "UNI/USD [UNI-USDC]",
       "marketToken": "0xc7Abb2C5f3BF3CEB389dF0Eecd6120D451170B50",
       "indexToken": "0xFa7F8980b0f1E64A2062791cc3b0871572f1F7f0",
@@ -640,15 +631,6 @@
       "listingDate": "2025-08-21T00:00:00.000Z"
     },
     {
-      "name": "MEW/USD [WBTC.b-USDC]",
-      "marketToken": "0x71B7fF592a974e2B501D8A7a11f5c42DcD365244",
-      "indexToken": "0x5503CF72f54b6d692d36BBCD391516A7dE068687",
-      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
-      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-      "isListed": true,
-      "listingDate": "2024-11-21T00:00:00.000Z"
-    },
-    {
       "name": "CHZ/USD [ETH-USDC]",
       "marketToken": "0x3600592DdEd7e6E0B05029DfB637fFc5A85D6f6B",
       "indexToken": "0x5dB4692926C8ceebF6Da0995358Bbc438F3fd80C",
@@ -883,15 +865,6 @@
       "listingDate": "2024-11-07T00:00:00.000Z"
     },
     {
-      "name": "BOME/USD [WBTC.b-USDC]",
-      "marketToken": "0x71237F8C3d1484495A136022E16840b70fF84a69",
-      "indexToken": "0x3Eea56A1ccCdbfB70A26aD381C71Ee17E4c8A15F",
-      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
-      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-      "isListed": true,
-      "listingDate": "2024-11-21T00:00:00.000Z"
-    },
-    {
       "name": "MOODENG/USD [WBTC.b-USDC]",
       "marketToken": "0x2523B89298908FEf4c5e5bd6F55F20926e22058f",
       "indexToken": "0xd3898c6570974AEca38a8ACf22fd60739e528A99",
@@ -1045,15 +1018,6 @@
       "listingDate": "2024-03-20T00:00:00.000Z"
     },
     {
-      "name": "BRETT/USD [ETH-USDC]",
-      "marketToken": "0x6EeE8098dBC106aEde99763FA5F955A5bBc42C50",
-      "indexToken": "0x4249F6e0808bEfF7368AaAD3F7A3Fd511F61Ee60",
-      "longToken": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
-      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-      "isListed": true,
-      "listingDate": "2025-08-27T00:00:00.000Z"
-    },
-    {
       "name": "LDO/USD [ETH-USDC]",
       "marketToken": "0xE61e608Ba010fF48A7dcE8eDd8B906744263d33E",
       "indexToken": "0x9D678B4Dd38a6E01df8090aEB7974aD71142b05f",
@@ -1115,15 +1079,6 @@
       "shortToken": "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
       "isListed": true,
       "listingDate": "2023-08-08T00:00:00.000Z"
-    },
-    {
-      "name": "SATS/USD [WBTC.b-USDC]",
-      "marketToken": "0x8ea4Fb801493DaD8724F90Fb2e279534fa591366",
-      "indexToken": "0x2cD2eB61D17b78239Fcd19aafF72981B5D5eF319",
-      "longToken": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
-      "shortToken": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-      "isListed": true,
-      "listingDate": "2024-10-10T00:00:00.000Z"
     },
     {
       "name": "SWAP-ONLY [wstETH-ETH]",
