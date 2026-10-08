@@ -6,6 +6,7 @@ import type {
   WsPriceTickTiming,
   WsStreamStatusCounter,
 } from "lib/metrics/types";
+import { watchPageHidden } from "lib/watchPageHidden";
 import type { FrameMeta, GmxApiSdk } from "sdk/clients/v2";
 
 type PriceSubscription = ReturnType<GmxApiSdk["watchTokenPrices"]>;
@@ -18,7 +19,6 @@ export type WsPriceStore = {
   isLive: () => boolean;
 };
 
-export const HIDDEN_CLOSE_DELAY_MS = 10_000;
 const TEARDOWN_DELAY_MS = 3_000;
 const METRIC_SAMPLE_EVERY = 10;
 
@@ -35,7 +35,7 @@ export function getWsPriceStore(sdk: GmxApiSdk): WsPriceStore {
   let snapshot: WsPrices | undefined;
   let meta: FrameMeta | undefined;
   let refCount = 0;
-  let hiddenTimer: ReturnType<typeof setTimeout> | undefined;
+  let stopWatchingPage: (() => void) | undefined;
   let teardownTimer: ReturnType<typeof setTimeout> | undefined;
   let openedAt = 0;
   let frameCount = 0;
@@ -112,8 +112,6 @@ export function getWsPriceStore(sdk: GmxApiSdk): WsPriceStore {
   };
 
   const close = () => {
-    clearTimeout(hiddenTimer);
-    hiddenTimer = undefined;
     if (!subscription) {
       return;
     }
@@ -124,21 +122,10 @@ export function getWsPriceStore(sdk: GmxApiSdk): WsPriceStore {
     notify();
   };
 
-  const onVisibilityChange = () => {
-    if (!document.hidden) {
-      clearTimeout(hiddenTimer);
-      hiddenTimer = undefined;
-      if (refCount > 0) {
-        open();
-      }
-    } else if (subscription && !hiddenTimer) {
-      hiddenTimer = setTimeout(close, HIDDEN_CLOSE_DELAY_MS);
-    }
-  };
-
   const teardown = () => {
     teardownTimer = undefined;
-    document.removeEventListener("visibilitychange", onVisibilityChange);
+    stopWatchingPage?.();
+    stopWatchingPage = undefined;
     close();
   };
 
@@ -150,7 +137,14 @@ export function getWsPriceStore(sdk: GmxApiSdk): WsPriceStore {
         clearTimeout(teardownTimer);
         teardownTimer = undefined;
       } else if (refCount === 1) {
-        document.addEventListener("visibilitychange", onVisibilityChange);
+        stopWatchingPage = watchPageHidden({
+          onHiddenLong: close,
+          onShow: () => {
+            if (refCount > 0) {
+              open();
+            }
+          },
+        });
       }
       open();
       return () => {

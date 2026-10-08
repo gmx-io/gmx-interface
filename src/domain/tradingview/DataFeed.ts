@@ -14,7 +14,6 @@ import {
 } from "charting_library";
 import { type TradingViewResolution, RESOLUTION_TO_SECONDS, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { getChainlinkChartPricesFromGraph } from "domain/prices";
-import { HIDDEN_CLOSE_DELAY_MS } from "domain/synthetics/tokens/wsPriceStreamStore";
 import { Bar, FromOldToNewArray } from "domain/tradingview/types";
 import {
   formatTimeInBarToMs,
@@ -38,6 +37,7 @@ import { calculateDisplayDecimals } from "lib/numbers";
 import { OracleFetcher } from "lib/oracleKeeperFetcher/types";
 import { PauseableInterval } from "lib/PauseableInterval";
 import { sleep } from "lib/sleep";
+import { watchPageHidden } from "lib/watchPageHidden";
 import type { OhlcvCandle, StreamCandlePeriod, Subscription } from "sdk/clients/v2";
 import {
   getNativeToken,
@@ -73,8 +73,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
   private candleStreamFactory?: CandleStreamFactory;
   private isCandleStreamEnabled = false;
   private prefetchedBarsPromises: Record<string, Promise<FromOldToNewArray<Bar>>> = {};
-  private visibilityHandler: () => void;
-  private hiddenCloseTimer?: ReturnType<typeof setTimeout>;
+  private stopWatchingPage: () => void;
   private marksGetter?: (
     symbolInfo: LibrarySymbolInfo,
     from: number,
@@ -102,15 +101,11 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     metrics.startTimer("candlesLoad");
     metrics.startTimer("candlesDisplay");
 
-    this.visibilityHandler = () => {
-      if (document.visibilityState === "hidden") {
-        this.pauseAll();
-      } else {
-        this.resumeAll();
-      }
-    };
-
-    document.addEventListener("visibilitychange", this.visibilityHandler);
+    this.stopWatchingPage = watchPageHidden({
+      onHide: () => this.pauseAll(),
+      onHiddenLong: () => this.closeCandleStreams(),
+      onShow: () => this.resumeAll(),
+    });
   }
 
   searchSymbols(): void {
@@ -462,16 +457,13 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 
   private pauseAll() {
     Object.values(this.subscriptions).forEach((subscription) => subscription.pause());
-    clearTimeout(this.hiddenCloseTimer);
-    // like the price stream, a quick tab switch keeps the socket
-    this.hiddenCloseTimer = setTimeout(() => {
-      Object.values(this.candleStreams).forEach((stream) => stream.close());
-    }, HIDDEN_CLOSE_DELAY_MS);
+  }
+
+  private closeCandleStreams() {
+    Object.values(this.candleStreams).forEach((stream) => stream.close());
   }
 
   private resumeAll() {
-    clearTimeout(this.hiddenCloseTimer);
-    this.hiddenCloseTimer = undefined;
     Object.values(this.subscriptions).forEach((subscription) => subscription.resume());
     Object.values(this.candleStreams).forEach((stream) => stream.open());
   }
@@ -566,11 +558,10 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
   }
 
   destroy() {
-    clearTimeout(this.hiddenCloseTimer);
+    this.stopWatchingPage();
     Object.values(this.subscriptions).forEach((subscription) => subscription.destroy());
-    Object.values(this.candleStreams).forEach((stream) => stream.close());
+    this.closeCandleStreams();
     this.candleStreams = {};
-    document.removeEventListener("visibilitychange", this.visibilityHandler);
   }
 }
 
