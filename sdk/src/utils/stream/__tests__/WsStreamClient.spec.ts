@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { StreamStatus } from "../types";
+import type { StreamConnectionStatus } from "../types";
 import { WsStreamClient } from "../WsStreamClient";
 
 const OPEN = 1;
@@ -95,7 +95,7 @@ afterEach(() => {
 describe("WsStreamClient connection", () => {
   it("connects on first subscribe and transitions connecting -> live", () => {
     const { client, sockets, getAttempts } = makeClient();
-    const statuses: StreamStatus[] = [];
+    const statuses: StreamConnectionStatus[] = [];
     client.addStatusListener((s) => statuses.push(s));
 
     client.subscribe("prices", vi.fn());

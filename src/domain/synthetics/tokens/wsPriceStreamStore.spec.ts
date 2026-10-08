@@ -1,18 +1,18 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ARBITRUM } from "config/chains";
-import type { GmxApiSdk, StreamStatus } from "sdk/clients/v2";
+import type { GmxApiSdk, StreamConnectionStatus } from "sdk/clients/v2";
 
 import { getWsPriceStore } from "./wsPriceStreamStore";
 
 function createFakeSubscription() {
   return {
     closed: false,
-    status: "live" as StreamStatus,
+    connectionStatus: "live" as StreamConnectionStatus,
     get: () => undefined,
     getMeta: () => undefined,
     subscribe: () => () => undefined,
-    subscribeStatus: () => () => undefined,
+    subscribeConnectionStatus: () => () => undefined,
     close() {
       this.closed = true;
     },

@@ -1,4 +1,4 @@
-import { FrameMeta, StreamStatus, Subscription, Unsubscribe } from "./types";
+import { FrameMeta, StreamConnectionStatus, Subscription, Unsubscribe } from "./types";
 import { callListener, ChannelFrame, WsStreamClient } from "./WsStreamClient";
 
 export function createChannelSubscription<T>(
@@ -10,7 +10,7 @@ export function createChannelSubscription<T>(
   let meta: FrameMeta | undefined;
   const listeners = new Set<(value: T) => void>();
   const errorListeners = new Set<(error: { message: string }) => void>();
-  const statusUnsubscribers = new Set<Unsubscribe>();
+  const connectionStatusUnsubscribers = new Set<Unsubscribe>();
 
   const unsubscribeTransport = client.subscribe(
     channel,
@@ -36,7 +36,7 @@ export function createChannelSubscription<T>(
   return {
     get: () => value,
     getMeta: () => meta,
-    get status() {
+    get connectionStatus() {
       return client.status;
     },
     subscribe(listener: (value: T) => void): Unsubscribe {
@@ -45,11 +45,11 @@ export function createChannelSubscription<T>(
         listeners.delete(listener);
       };
     },
-    subscribeStatus(listener: (status: StreamStatus) => void): Unsubscribe {
+    subscribeConnectionStatus(listener: (status: StreamConnectionStatus) => void): Unsubscribe {
       const remove = client.addStatusListener(listener);
-      statusUnsubscribers.add(remove);
+      connectionStatusUnsubscribers.add(remove);
       return () => {
-        statusUnsubscribers.delete(remove);
+        connectionStatusUnsubscribers.delete(remove);
         remove();
       };
     },
@@ -62,8 +62,8 @@ export function createChannelSubscription<T>(
     close() {
       listeners.clear();
       errorListeners.clear();
-      statusUnsubscribers.forEach((remove) => remove());
-      statusUnsubscribers.clear();
+      connectionStatusUnsubscribers.forEach((remove) => remove());
+      connectionStatusUnsubscribers.clear();
       unsubscribeTransport();
     },
   };

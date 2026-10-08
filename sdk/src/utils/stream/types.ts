@@ -1,4 +1,4 @@
-export type StreamStatus = "connecting" | "live" | "reconnecting" | "closed";
+export type StreamConnectionStatus = "connecting" | "live" | "reconnecting" | "closed";
 
 export type StreamCandlePeriod = "1m" | "5m" | "15m" | "1h" | "4h" | "1d";
 
@@ -17,9 +17,9 @@ export interface Subscription<T> {
   get(): T | undefined;
   getMeta(): FrameMeta | undefined;
   subscribe(listener: (value: T) => void): Unsubscribe;
-  subscribeStatus(listener: (status: StreamStatus) => void): Unsubscribe;
+  subscribeConnectionStatus(listener: (status: StreamConnectionStatus) => void): Unsubscribe;
   subscribeError(listener: (error: { message: string }) => void): Unsubscribe;
-  readonly status: StreamStatus;
+  readonly connectionStatus: StreamConnectionStatus;
   close(): void;
 }
 

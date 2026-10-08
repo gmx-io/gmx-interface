@@ -4,7 +4,7 @@ export { createChannelSubscription } from "./subscription";
 export type {
   FrameMeta,
   StreamCandlePeriod,
-  StreamStatus,
+  StreamConnectionStatus,
   Subscription,
   Unsubscribe,
   WebSocketCtor,

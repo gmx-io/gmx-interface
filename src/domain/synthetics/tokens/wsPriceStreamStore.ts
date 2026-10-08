@@ -103,7 +103,7 @@ export function getWsPriceStore(sdk: GmxApiSdk): WsPriceStore {
       reportFrame();
       notify();
     });
-    next.subscribeStatus((status) => {
+    next.subscribeConnectionStatus((status) => {
       notify();
       if (!document.hidden) {
         emitMetricCounter<WsStreamStatusCounter>({ event: "wsPrices.status", data: { chainId, status } });
@@ -157,7 +157,7 @@ export function getWsPriceStore(sdk: GmxApiSdk): WsPriceStore {
     },
     getSnapshot: () => snapshot,
     getMeta: () => meta,
-    isLive: () => subscription?.status === "live",
+    isLive: () => subscription?.connectionStatus === "live",
   };
 
   stores.set(sdk, store);

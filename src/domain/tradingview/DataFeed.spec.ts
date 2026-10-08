@@ -126,9 +126,9 @@ describe("DataFeed candle stream and poll", () => {
         pushFrame = listener;
         return () => undefined;
       },
-      subscribeStatus: () => () => undefined,
+      subscribeConnectionStatus: () => () => undefined,
       subscribeError: () => () => undefined,
-      status: "live",
+      connectionStatus: "live",
       close: () => undefined,
     };
     const oracleFetcher = {

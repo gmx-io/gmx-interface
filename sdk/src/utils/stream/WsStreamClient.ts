@@ -1,6 +1,13 @@
 import IsomorphicWebSocket from "isomorphic-ws";
 
-import { FrameMeta, StreamServerFrame, StreamStatus, Unsubscribe, WebSocketCtor, WebSocketLike } from "./types";
+import {
+  FrameMeta,
+  StreamServerFrame,
+  StreamConnectionStatus,
+  Unsubscribe,
+  WebSocketCtor,
+  WebSocketLike,
+} from "./types";
 
 const DEFAULT_RECONNECT_BASE_MS = 500;
 const DEFAULT_RECONNECT_MAX_MS = 10_000;
@@ -31,7 +38,7 @@ export function callListener<T>(listener: (value: T) => void, value: T) {
 }
 
 export class WsStreamClient {
-  status: StreamStatus = "closed";
+  status: StreamConnectionStatus = "closed";
 
   private ws?: WebSocketLike;
   private readonly url: string;
@@ -42,7 +49,7 @@ export class WsStreamClient {
   private readonly probeTimeoutMs: number;
   private readonly random: () => number;
   private readonly listeners = new Map<string, Set<ChannelSubscriber>>();
-  private readonly statusListeners = new Set<(status: StreamStatus) => void>();
+  private readonly statusListeners = new Set<(status: StreamConnectionStatus) => void>();
   private readonly lastFrameByChannel = new Map<string, ChannelFrame>();
   private readonly originTsByChannel = new Map<string, number>();
   private readonly refusalByChannel = new Map<string, { message: string }>();
@@ -110,7 +117,7 @@ export class WsStreamClient {
     };
   }
 
-  addStatusListener(listener: (status: StreamStatus) => void): Unsubscribe {
+  addStatusListener(listener: (status: StreamConnectionStatus) => void): Unsubscribe {
     this.statusListeners.add(listener);
     return () => {
       this.statusListeners.delete(listener);
@@ -348,7 +355,7 @@ export class WsStreamClient {
     }
   }
 
-  private setStatus(status: StreamStatus) {
+  private setStatus(status: StreamConnectionStatus) {
     if (this.status === status) {
       return;
     }

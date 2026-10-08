@@ -81,7 +81,7 @@ describe("stream e2e (real client <-> real ws server)", () => {
     const values: unknown[] = [];
     sub.subscribe((value) => values.push(value));
 
-    await vi.waitFor(() => expect(sub.status).toBe("live"));
+    await vi.waitFor(() => expect(sub.connectionStatus).toBe("live"));
     await vi.waitFor(() => expect(server.received).toContainEqual({ op: "subscribe", channels: ["prices"] }));
 
     server.broadcast(snapshot("123", "124"));
@@ -94,16 +94,16 @@ describe("stream e2e (real client <-> real ws server)", () => {
     const sub = sdk.watchTokenPrices();
     open.push(sub);
     const statuses: string[] = [];
-    sub.subscribeStatus((status) => statuses.push(status));
+    sub.subscribeConnectionStatus((status) => statuses.push(status));
     sub.subscribe(vi.fn());
 
-    await vi.waitFor(() => expect(sub.status).toBe("live"));
+    await vi.waitFor(() => expect(sub.connectionStatus).toBe("live"));
     expect(server.connections.length).toBe(1);
 
     server.connections[0].close();
 
     await vi.waitFor(() => expect(server.connections.length).toBe(2));
-    await vi.waitFor(() => expect(sub.status).toBe("live"));
+    await vi.waitFor(() => expect(sub.connectionStatus).toBe("live"));
     await vi.waitFor(() => expect(server.subscribeCount()).toBeGreaterThanOrEqual(2));
     expect(statuses).toContain("reconnecting");
 
@@ -124,7 +124,7 @@ describe("stream e2e (real client <-> real ws server)", () => {
     await vi.waitFor(() => expect(socket.readyState).toBe(WebSocket.CLOSED));
     await new Promise((resolve) => setTimeout(resolve, 60));
     expect(server.connections.length).toBe(1);
-    expect(sub.status).toBe("closed");
+    expect(sub.connectionStatus).toBe("closed");
   });
 
   it("subscribes to a per-token candle channel and delivers the forming bar", async () => {
@@ -133,7 +133,7 @@ describe("stream e2e (real client <-> real ws server)", () => {
     const values: unknown[] = [];
     sub.subscribe((value) => values.push(value));
 
-    await vi.waitFor(() => expect(sub.status).toBe("live"));
+    await vi.waitFor(() => expect(sub.connectionStatus).toBe("live"));
     await vi.waitFor(() => expect(server.received).toContainEqual({ op: "subscribe", channels: ["candles:BTC:1m"] }));
 
     const bar = { timestamp: 1_700_000_060_000, open: "4", high: "6", low: "3", close: "5" };

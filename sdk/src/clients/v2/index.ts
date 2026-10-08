@@ -307,7 +307,7 @@ export { PrivateKeySigner } from "utils/signer";
 export { HttpError } from "utils/http/http";
 export { HttpClientWithFallback } from "utils/http/httpFallback";
 export type { IHttp } from "utils/http/types";
-export type { FrameMeta, StreamCandlePeriod, StreamStatus, Subscription, WebSocketCtor } from "utils/stream";
+export type { FrameMeta, StreamCandlePeriod, StreamConnectionStatus, Subscription, WebSocketCtor } from "utils/stream";
 export { getGasPaymentTokens } from "configs/express";
 export type {
   SubaccountStatusRequest,
