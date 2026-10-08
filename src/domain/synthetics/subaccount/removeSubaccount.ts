@@ -286,7 +286,7 @@ export async function removeSubaccountExpressTxn({
         srcChainId !== undefined
           ? globalExpressParams.gasPaymentToken.gmxAccountBalance
           : globalExpressParams.gasPaymentToken.walletBalance,
-      requiredAmount: relayFeeParams.gasPaymentParams.totalRelayerFeeTokenAmount,
+      requiredAmount: relayFeeParams.gasPaymentParams.gasPaymentTokenAmount,
     });
   }
 

@@ -6,6 +6,7 @@ import { getContract } from "config/contracts";
 import type { SetPendingDeposit } from "context/SyntheticsEvents";
 import { callContract } from "lib/contracts";
 import type { OrderMetricId } from "lib/metrics/types";
+import type { WalletTxnResult } from "lib/transactions/sendWalletTransaction";
 import type { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
@@ -44,9 +45,9 @@ export async function createDepositTxn({
   metricId?: OrderMetricId;
   blockTimestampData: BlockTimestampData | undefined;
   setPendingTxns: (txns: any) => void;
-  setPendingDeposit: SetPendingDeposit;
+  setPendingDeposit?: SetPendingDeposit;
   params: CreateDepositParams;
-}) {
+}): Promise<Pick<WalletTxnResult, "transactionHash">> {
   const contract = new Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
   const depositVaultAddress = getContract(chainId, "DepositVault");
 
@@ -141,8 +142,8 @@ export async function createDepositTxn({
       estimatedExecutionFee: executionFee,
       estimatedExecutionGasLimit: executionGasLimit,
     },
-  }).then(() => {
-    setPendingDeposit({
+  }).then((res) => {
+    setPendingDeposit?.({
       account: params.addresses.receiver,
       marketAddress: params.addresses.market,
       initialLongTokenAddress: params.addresses.initialLongToken,
@@ -155,5 +156,7 @@ export async function createDepositTxn({
       shouldUnwrapNativeToken,
       isGlvDeposit: false,
     });
+
+    return { transactionHash: res?.hash };
   });
 }
