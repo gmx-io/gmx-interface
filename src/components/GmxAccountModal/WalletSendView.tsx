@@ -315,7 +315,6 @@ export function WalletSendView() {
     chainId,
     spenderAddress: stargateAddress,
     tokens: approvalTokens,
-    approveAmount: amount,
     skip: isSameChain || isDestinationUnsupported || selectedToken?.isNative || stargateAddress === undefined,
   });
 
