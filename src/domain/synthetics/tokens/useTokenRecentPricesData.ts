@@ -107,7 +107,6 @@ export function useTokenRecentPricesRequest(
   const frame = wsFrame?.store === store ? wsFrame : undefined;
   const isFrameFresh = frame !== undefined && Date.now() < getWsFrameExpiresAt(frame.meta);
   const liveFreshFrame = isFrameFresh && frame.isLive ? frame : undefined;
-  const isFrameUsableRef = useRef(false);
 
   // a token the frames lack is priced by REST alone, so REST keeps its cadence until the frames cover every token
   const lastRestPricesRef = useRef<TokenPricesData | undefined>(undefined);
@@ -116,6 +115,8 @@ export function useTokenRecentPricesRequest(
     liveFreshFrame !== undefined &&
     lastRestPrices !== undefined &&
     Object.keys(lastRestPrices).every((address) => address in liveFreshFrame.prices);
+  const isRestCoveredByStreamRef = useRef(false);
+  isRestCoveredByStreamRef.current = isRestCoveredByStream;
 
   const key = enabled ? [chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"] : null;
 
@@ -165,7 +166,7 @@ export function useTokenRecentPricesRequest(
         result[NATIVE_TOKEN_ADDRESS] = result[wrappedToken.address];
       }
 
-      if (isFrameUsableRef.current) {
+      if (isRestCoveredByStreamRef.current) {
         // the stream serves prices meanwhile, so the slower REST cadence is not a ticker freshness gap
         freshnessMetrics.clear(chainId, FreshnessMetricId.Tickers);
       } else {
@@ -183,7 +184,6 @@ export function useTokenRecentPricesRequest(
   lastRestPricesRef.current = restPricesData;
   const isFrameNewerThanRest = frame !== undefined && frame.meta.receivedAt > (data?.updatedAt ?? 0);
   const usableFrame = isFrameFresh && (frame.isLive || isFrameNewerThanRest) ? frame : undefined;
-  isFrameUsableRef.current = usableFrame !== undefined;
   const wsPricesData = usableFrame?.prices;
   const pricesData = useMemo(
     () => (wsPricesData ? { ...restPricesData, ...wsPricesData } : restPricesData),
