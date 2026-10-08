@@ -5,6 +5,7 @@ import { useAccount } from "wagmi";
 import { getWagmiConfig } from "./walletConfig";
 
 const NO_CAPABILITIES: GetCapabilitiesReturnType = {};
+const ALL_CHAINS_ID = 0;
 
 export function useHasAlternateGasFees({ chainId, enabled }: { chainId: number; enabled: boolean }): boolean {
   const { connector, address } = useAccount();
@@ -20,5 +21,7 @@ export function useHasAlternateGasFees({ chainId, enabled }: { chainId: number; 
     }
   );
 
-  return capabilities?.[chainId]?.alternateGasFees?.supported === true;
+  const alternateGasFees = capabilities?.[chainId]?.alternateGasFees ?? capabilities?.[ALL_CHAINS_ID]?.alternateGasFees;
+
+  return alternateGasFees?.supported === true;
 }
