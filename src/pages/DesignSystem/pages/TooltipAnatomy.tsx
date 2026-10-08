@@ -12,6 +12,7 @@ import {
   TooltipText,
   TooltipTitle,
 } from "components/Tooltip/TooltipBlocks";
+import { POINTER_BOX_WIDTH, POINTER_HEIGHT, POINTER_WIDTH } from "components/Tooltip/TooltipPointer";
 
 import { DocsCard, DocsCards } from "../DocsLayout";
 import { TooltipPreview, type TooltipLook, type TooltipPreviewGeometry } from "./TooltipPreview";
@@ -23,7 +24,7 @@ const PARTS = [
   { id: "pointer", name: "Pointer", description: "14 × 7px, under the middle of the trigger." },
   { id: "panel", name: "Panel", description: "1px border, 8px corners. 12px on the sides, 8px at the top and bottom." },
   { id: "title", name: "Title", description: "Medium weight, with an optional value on the right." },
-  { id: "text", name: "Text", description: "Plain words in the main text color (gray-100)." },
+  { id: "text", name: "Text", description: "Plain words in the main text color." },
   { id: "rows", name: "Rows", description: "Muted label, value on the right. No colons." },
   { id: "total", name: "Total", description: "A divider above it. The label is in the main color." },
   { id: "footnote", name: "Link or footnote", description: "Always last." },
@@ -44,10 +45,6 @@ const BRACKET_WIDTH = 4;
 // Middle of the first line: 14/18 text, and 12/16 for the footnote
 const FIRST_LINE_MIDDLE = 9;
 const FOOTNOTE_FIRST_LINE_MIDDLE = 8;
-// The pointer: FloatingArrow draws it 14 × 7, in an svg widened by the 1px outline on both sides
-const POINTER_WIDTH = 14;
-const POINTER_HEIGHT = 7;
-const POINTER_HALF_SVG_WIDTH = (POINTER_WIDTH + 2 * STANDARD_TOOLTIP_LOOK.arrowStrokeWidth) / 2;
 // The pointer's marker sits this far right of the trigger, at the trigger's height
 const POINTER_MARKER_GAP = 32;
 
@@ -57,12 +54,9 @@ const ANATOMY_LOOK: TooltipLook = {
   popupClassName: cx(STANDARD_TOOLTIP_LOOK.popupClassName, "overflow-visible"),
 };
 
-// No fill: the markers inside the panel's markup would pick up its dark-theme colors in the light theme
 const MARKER_CLASSNAME = `text-body-small flex size-20 shrink-0 items-center justify-center rounded-full border
   border-blue-400 font-medium text-blue-400 dark:border-blue-300 dark:text-blue-300`;
 const LINE_CLASSNAME = "h-1 shrink-0 bg-blue-400 dark:bg-blue-300";
-// The panel is dark in both themes, so the part of a line inside it is always the lighter blue
-const LINE_IN_PANEL_CLASSNAME = "h-1 shrink-0 bg-blue-300";
 
 function Marker({ id }: { id: PartId }) {
   return <span className={MARKER_CLASSNAME}>{PARTS.findIndex((part) => part.id === id) + 1}</span>;
@@ -106,10 +100,14 @@ function LeftCallout({
       <span aria-hidden className="absolute flex -translate-y-1/2 items-center" style={calloutStyle}>
         <Marker id={id} />
         <span className={LINE_CLASSNAME} style={outerLineStyle} />
-        {inset > 0 && <span className={LINE_IN_PANEL_CLASSNAME} style={innerLineStyle} />}
+        {inset > 0 && <span className={LINE_CLASSNAME} style={innerLineStyle} />}
       </span>
       {group && (
-        <span aria-hidden className="absolute inset-y-0 border-y border-l border-blue-300" style={bracketStyle} />
+        <span
+          aria-hidden
+          className="absolute inset-y-0 border-y border-l border-blue-400 dark:border-blue-300"
+          style={bracketStyle}
+        />
       )}
       {children}
     </div>
@@ -134,9 +132,9 @@ function PanelCallout() {
  */
 function PointerCallout({ arrowX, triggerWidth, triggerHeight }: TooltipPreviewGeometry) {
   const [lineStyle, markerStyle] = useMemo(() => {
-    // Two thirds of the way down the pointer's right slope
-    const slopeX = arrowX + POINTER_HALF_SVG_WIDTH + ((POINTER_WIDTH / 2) * 2) / 3;
-    const slopeY = -POINTER_HEIGHT / 3;
+    // Two thirds of the way down the pointer's right slope. The pointer sits outside the border: its base is at y = -1.
+    const slopeX = arrowX + POINTER_BOX_WIDTH / 2 + ((POINTER_WIDTH / 2) * 2) / 3;
+    const slopeY = -PANEL_BORDER - POINTER_HEIGHT / 3;
     // The trigger starts at the panel's outer edge, one border to the left
     const markerX = triggerWidth - PANEL_BORDER + POINTER_MARKER_GAP + MARKER_SIZE / 2;
     const markerY = -(PANEL_BORDER + TOOLTIP_OFFSET + triggerHeight / 2);

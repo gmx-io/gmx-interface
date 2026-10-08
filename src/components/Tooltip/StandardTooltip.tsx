@@ -18,9 +18,8 @@ export const STANDARD_TOOLTIP_MAX_WIDTH: Record<StandardTooltipSize, number> = {
  * The design system site draws open previews with the same look.
  */
 export const STANDARD_TOOLTIP_LOOK = {
-  popupClassName: "Tooltip-popup--standard theme-dark",
-  arrowClassName: "Tooltip-arrow--standard",
-  arrowStrokeWidth: 1,
+  popupClassName: "Tooltip-popup--standard",
+  seamlessPointer: true,
   viewportPadding: 8,
 };
 
@@ -30,8 +29,7 @@ type Props<T extends ElementType | undefined> = Omit<
   | "maxAllowedWidth"
   | "animated"
   | "flipOnlyToOppositeSide"
-  | "arrowClassName"
-  | "arrowStrokeWidth"
+  | "seamlessPointer"
   | "viewportPadding"
   | "closeOnScroll"
   | "keyboardAccessible"
@@ -50,7 +48,7 @@ type Props<T extends ElementType | undefined> = Omit<
 };
 
 /**
- * Tooltip standard: one dark panel in both themes, two sizes, placement above or below the trigger,
+ * Tooltip standard: one see-through, blurred panel that follows the app theme, two sizes, placement above or below the trigger,
  * 200 ms open delay, an origin-aware enter animation and a normal cursor over the trigger.
  * It stays open while the cursor moves into it, so links work and text can be copied.
  * Pass `interactive={false}` to let the cursor pass through.
@@ -76,8 +74,7 @@ export default function StandardTooltip<T extends ElementType | undefined>({
       flipOnlyToOppositeSide
       tooltipClassName={cx(STANDARD_TOOLTIP_LOOK.popupClassName, tooltipClassName)}
       handleClassName={cx("Tooltip-handle--standard", handleClassName)}
-      arrowClassName={STANDARD_TOOLTIP_LOOK.arrowClassName}
-      arrowStrokeWidth={STANDARD_TOOLTIP_LOOK.arrowStrokeWidth}
+      seamlessPointer={STANDARD_TOOLTIP_LOOK.seamlessPointer}
       viewportPadding={STANDARD_TOOLTIP_LOOK.viewportPadding}
       closeOnScroll
       keyboardAccessible

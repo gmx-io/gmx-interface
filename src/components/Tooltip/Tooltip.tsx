@@ -20,10 +20,11 @@ import {
   useMergeRefs,
   useRole,
 } from "@floating-ui/react";
-import { getOppositePlacement, getOppositeAlignmentPlacement } from "@floating-ui/utils";
+import { getOppositePlacement, getOppositeAlignmentPlacement, getSide } from "@floating-ui/utils";
 import cx from "classnames";
 import {
   ComponentPropsWithoutRef,
+  CSSProperties,
   ElementType,
   FocusEvent,
   MouseEvent,
@@ -46,6 +47,7 @@ import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
 
 import { TooltipGroupContext } from "./TooltipGroup";
 import { TooltipMotion, type TooltipMotionProps } from "./TooltipMotion";
+import { getPointerGapX, TooltipPointer } from "./TooltipPointer";
 
 import "./Tooltip.scss";
 
@@ -116,11 +118,11 @@ type InnerTooltipProps<T extends ElementType | undefined> = {
    * When `false`, the popup ignores the pointer and closes as soon as the cursor leaves the handle.
    */
   interactive?: boolean;
-  arrowClassName?: string;
   /**
-   * Outline width of the pointer, to match a bordered tooltip panel. The outline color comes from CSS.
+   * Draws the pointer and an animated panel as one shape (TooltipPointer): the pointer sits outside the panel's
+   * border, which opens under it, so a see-through panel shows no overlaps.
    */
-  arrowStrokeWidth?: number;
+  seamlessPointer?: boolean;
   /**
    * Keeps the popup this many px away from the screen edges and never wider than the screen allows.
    */
@@ -177,8 +179,7 @@ export default function Tooltip<T extends ElementType>({
   iconClassName,
   animated = false,
   interactive = true,
-  arrowClassName,
-  arrowStrokeWidth,
+  seamlessPointer = false,
   viewportPadding,
   closeOnScroll = false,
   keyboardAccessible = false,
@@ -465,21 +466,22 @@ export default function Tooltip<T extends ElementType>({
     };
   }, [isDescription, visible, context.floatingId]);
 
-  const outerStyles = useMemo(
-    () => (interactive ? floatingStyles : { ...floatingStyles, pointerEvents: "none" as const }),
-    [floatingStyles, interactive]
-  );
+  const arrowX = context.middlewareData.arrow?.x;
+  const pointerGapX = seamlessPointer && arrowX !== undefined ? getPointerGapX(arrowX) : undefined;
+
+  const outerStyles = useMemo(() => {
+    const styles: CSSProperties = interactive ? floatingStyles : { ...floatingStyles, pointerEvents: "none" };
+    // Where the panel's border opens under the pointer (Tooltip.scss)
+    return pointerGapX === undefined ? styles : ({ ...styles, "--tooltip-gap-x": `${pointerGapX}px` } as CSSProperties);
+  }, [floatingStyles, interactive, pointerGapX]);
 
   // Builds the popup only while it is on screen, so a closed tooltip renders no portal or focus manager.
   // Animated tooltips get `motion` from TooltipMotion, which also keeps the popup on screen while it leaves.
   const renderPopup = (motion?: TooltipMotionProps) => {
-    const arrowElement = (
-      <FloatingArrow
-        ref={arrowRef}
-        context={context}
-        className={arrowClassName ?? DEFAULT_TOOLTIP_ARROW_CLASSNAME}
-        strokeWidth={arrowStrokeWidth}
-      />
+    const arrowElement = seamlessPointer ? (
+      <TooltipPointer ref={arrowRef} side={getSide(context.placement)} arrowX={arrowX} />
+    ) : (
+      <FloatingArrow ref={arrowRef} context={context} className={DEFAULT_TOOLTIP_ARROW_CLASSNAME} />
     );
     const finalContent = content ?? renderContent?.();
 
@@ -495,7 +497,12 @@ export default function Tooltip<T extends ElementType>({
           {...getFloatingProps(floatingFocusProps)}
           className="Tooltip-floating"
         >
-          <div className={cx("Tooltip-popup relative", tooltipClassName)} {...motion}>
+          {/* The panel is cut to its shape with the pointer, which would also cut its shadow, so the shadow is here */}
+          {seamlessPointer && <div className="Tooltip-shadow" {...motion} />}
+          <div
+            className={cx("Tooltip-popup relative", { "Tooltip-surface": seamlessPointer }, tooltipClassName)}
+            {...motion}
+          >
             {arrowElement}
             {finalContent}
           </div>

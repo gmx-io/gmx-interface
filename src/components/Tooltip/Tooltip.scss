@@ -1,3 +1,7 @@
+@use "sass:list";
+@use "sass:math";
+@use "sass:string";
+
 .Tooltip {
   position: relative;
 }
@@ -171,9 +175,11 @@
   z-index: 10000;
 }
 
-// Enter and exit motion of animated tooltips (only their panel has data-status). TooltipMotion sets the state and the
-// --tooltip-* timing from config/ui.ts. Only opacity and transform change, so the browser skips layout and paint.
-.Tooltip-popup[data-status] {
+// Enter and exit motion of animated tooltips (their panel, and the standard tooltip's shadow, have data-status).
+// TooltipMotion sets the state and the --tooltip-* timing from config/ui.ts. Only opacity and transform change, so
+// the browser skips layout and paint.
+.Tooltip-popup[data-status],
+.Tooltip-shadow[data-status] {
   --tooltip-enter-y: 0px;
 
   // Hidden before the enter and during the exit
@@ -223,58 +229,261 @@
   }
 }
 
+// The standard pointer (TooltipPointer.tsx): 14 × 7, with a 1px outline that reaches √2 past the 45° slopes
+$pointer-width: 14px;
+$pointer-overhang: 1.4142px;
+$pointer-box-height: 7px + $pointer-overhang;
+$tooltip-radius: 8px;
+// Where the panel's border opens under the pointer, from the panel's outer left edge (set by the tooltip)
+$gap-x: var(--tooltip-gap-x, -100px);
+$tooltip-shadow-light: 0 4px 14px 0 rgba(9, 10, 20, 0.08);
+$tooltip-shadow-dark: 0 4px 14px 0 rgba(0, 0, 0, 0.25);
+
+@function round3($value) {
+  @return math.div(math.round($value * 1000), 1000);
+}
+
+// Points along a rounded corner of $tooltip-radius around the center ($cx, $cy), from $from to $to degrees
+@function corner($cx, $cy, $from, $to) {
+  $points: ();
+  @for $step from 0 through 6 {
+    $angle: ($from + math.div(($to - $from) * $step, 6)) * 1deg;
+    $x: string.unquote("calc(#{$cx} + #{round3($tooltip-radius * math.cos($angle))})");
+    $y: string.unquote("calc(#{$cy} + #{round3($tooltip-radius * math.sin($angle))})");
+    $points: list.append($points, $x $y, $separator: comma);
+  }
+  @return $points;
+}
+
+// The pointer's outer triangle (with its outline) on the top or bottom edge, given the edge's y and the tip's y.
+// Left to right, or right to left with $reverse.
+@function pointer-points($base-y, $tip-y, $reverse: false) {
+  $left: calc(#{$gap-x} - #{$pointer-overhang}) $base-y;
+  $tip: calc(#{$gap-x} + #{math.div($pointer-width, 2)}) $tip-y;
+  $right: calc(#{$gap-x} + #{$pointer-width + $pointer-overhang}) $base-y;
+  @if $reverse {
+    @return ($right, $tip, $left);
+  }
+  @return ($left, $tip, $right);
+}
+
+// The panel and the pointer as one shape, for a panel box that reaches over the pointer: the pointer on top, the
+// rounded panel below it, and the other way round
+$surface-shape-top: polygon(
+  corner($tooltip-radius, $pointer-box-height + $tooltip-radius, 180, 270),
+  pointer-points($pointer-box-height, 0px),
+  corner("100% - #{$tooltip-radius}", $pointer-box-height + $tooltip-radius, 270, 360),
+  corner("100% - #{$tooltip-radius}", "100% - #{$tooltip-radius}", 0, 90),
+  corner($tooltip-radius, "100% - #{$tooltip-radius}", 90, 180)
+);
+$surface-shape-bottom: polygon(
+  corner($tooltip-radius, $tooltip-radius, 180, 270),
+  corner("100% - #{$tooltip-radius}", $tooltip-radius, 270, 360),
+  corner("100% - #{$tooltip-radius}", "100% - #{$pointer-box-height + $tooltip-radius}", 0, 90),
+  pointer-points(calc(100% - #{$pointer-box-height}), 100%, $reverse: true),
+  corner($tooltip-radius, "100% - #{$pointer-box-height + $tooltip-radius}", 90, 180)
+);
+
+// Everything around the panel except the pointer, so the panel's shadow never shows through the see-through pointer
+@function shadow-shape($base-y, $tip-y) {
+  $pointer: pointer-points($base-y, $tip-y);
+  @return polygon(
+    evenodd,
+    -40px -40px,
+    calc(100% + 40px) -40px,
+    calc(100% + 40px) calc(100% + 40px),
+    -40px calc(100% + 40px),
+    -40px -40px,
+    $pointer,
+    list.nth($pointer, 1),
+    -40px -40px
+  );
+}
+
+$shadow-shape-top: shadow-shape(0px, -$pointer-box-height);
+$shadow-shape-bottom: shadow-shape(100%, calc(100% + #{$pointer-box-height}));
+
 .Tooltip-popup--standard {
-  // Dark in both themes (StandardTooltip adds .theme-dark).
-  // DS Fill/SurfaceElevated + Fill/SurfaceHover, flattened into one color so the pointer can share it
-  --tooltip-bg: color-mix(in srgb, var(--color-fill-surfaceElevated), #a0a3c4 10%);
+  // A see-through panel that blurs what's behind it, light or dark with the app theme. The pointer shares its color.
+  // Light theme: DS Fill/SurfaceElevated at 80%
+  --tooltip-solid: var(--color-fill-surfaceElevated);
+  --tooltip-opacity: 80%;
+  --tooltip-bg: color-mix(in srgb, var(--tooltip-solid) var(--tooltip-opacity), transparent);
   // "$" and units have the same color as their number (the base tooltip mutes them)
   --affix-color: currentColor;
   --tooltip-padding-x: 12px;
   --tooltip-padding-y: 8px;
   --tooltip-radius: 8px;
-  // DS Stroke/Primary (dark value, since the panel is dark in both themes)
+  // DS Stroke/Primary
   --tooltip-border: var(--color-slate-600);
 
   padding: var(--tooltip-padding-y) var(--tooltip-padding-x);
-  border: 1px solid var(--tooltip-border);
+  // The visible border is ::before, so it can open where the pointer joins the panel
+  border: 1px solid transparent;
   border-radius: var(--tooltip-radius);
   background: var(--tooltip-bg);
-  backdrop-filter: none;
-  // One step below the app's primary text: pure white is too strong on the panel
-  color: var(--color-gray-100);
+  backdrop-filter: blur(12px);
+  // DS TextIcon/Primary
+  color: var(--color-typography-primary);
   // Light theme: a soft shadow tinted with slate-950; the dark theme keeps today's shadow
-  box-shadow: 0 4px 14px 0 rgba(9, 10, 20, 0.08);
+  --tooltip-shadow: #{$tooltip-shadow-light};
   line-height: var(--line-height-body-medium);
   letter-spacing: normal;
   max-width: inherit;
+
+  // The shadow, on its own layer so it can leave out the pointer
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    box-shadow: var(--tooltip-shadow);
+    pointer-events: none;
+  }
+
+  &[data-side="bottom"]::after {
+    clip-path: $shadow-shape-top;
+  }
+
+  &[data-side="top"]::after {
+    clip-path: $shadow-shape-bottom;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border: 1px solid var(--tooltip-border);
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  // The border opens under the pointer's base (TooltipPointer, --tooltip-gap-x): on the top edge when the tooltip
+  // is below its trigger, on the bottom edge when it is above
+  &[data-side="bottom"]::before,
+  &[data-side="top"]::before {
+    -webkit-mask-image: linear-gradient(#000 0 0), linear-gradient(#000 0 0);
+    -webkit-mask-size:
+      14px 1px,
+      100% 100%;
+    -webkit-mask-position:
+      var(--tooltip-gap-x, -100px) var(--tooltip-gap-y),
+      0 0;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-composite: xor;
+    mask-image: linear-gradient(#000 0 0), linear-gradient(#000 0 0);
+    mask-size:
+      14px 1px,
+      100% 100%;
+    mask-position:
+      var(--tooltip-gap-x, -100px) var(--tooltip-gap-y),
+      0 0;
+    mask-repeat: no-repeat;
+    mask-composite: exclude;
+  }
+
+  &[data-side="bottom"]::before {
+    --tooltip-gap-y: 0;
+  }
+
+  &[data-side="top"]::before {
+    --tooltip-gap-y: 100%;
+  }
+}
+
+// A live standard tooltip: one surface for the panel and the pointer. The panel reaches over the pointer and is cut
+// to their shape, so one background and one blur cover both, with no seam between them. Its shadow is .Tooltip-shadow,
+// behind it, because the cut would take the shadow off.
+.Tooltip-popup--standard.Tooltip-surface {
+  &::after {
+    content: none;
+  }
+
+  .Tooltip-pointer-fill {
+    display: none;
+  }
+
+  &[data-side="bottom"] {
+    margin-top: -$pointer-box-height;
+    padding-top: calc(var(--tooltip-padding-y) + #{$pointer-box-height});
+    clip-path: $surface-shape-top;
+
+    &::before {
+      top: calc(#{$pointer-box-height} - 1px);
+    }
+
+    .Tooltip-pointer {
+      top: -1px;
+      bottom: auto;
+    }
+  }
+
+  &[data-side="top"] {
+    margin-bottom: -$pointer-box-height;
+    padding-bottom: calc(var(--tooltip-padding-y) + #{$pointer-box-height});
+    clip-path: $surface-shape-bottom;
+
+    &::before {
+      bottom: calc(#{$pointer-box-height} - 1px);
+    }
+
+    .Tooltip-pointer {
+      top: auto;
+      bottom: -1px;
+    }
+  }
+}
+
+.Tooltip-shadow {
+  position: absolute;
+  inset: 0;
+  border-radius: $tooltip-radius;
+  box-shadow: $tooltip-shadow-light;
+  pointer-events: none;
+
+  &[data-side="bottom"] {
+    clip-path: $shadow-shape-top;
+  }
+
+  &[data-side="top"] {
+    clip-path: $shadow-shape-bottom;
+  }
+}
+
+.dark .Tooltip-shadow {
+  box-shadow: $tooltip-shadow-dark;
+}
+
+// Outside the panel's border: below the trigger on the panel's top edge, above it on the bottom edge, pointing down
+.Tooltip-pointer {
+  position: absolute;
+  pointer-events: none;
+
+  &[data-edge="top"] {
+    bottom: calc(100% + 1px);
+  }
+
+  &[data-edge="bottom"] {
+    top: calc(100% + 1px);
+    transform: rotate(180deg);
+  }
+}
+
+.Tooltip-pointer-fill {
+  fill: var(--tooltip-bg);
+}
+
+.Tooltip-pointer-outline {
+  fill: var(--tooltip-border);
 }
 
 .dark .Tooltip-popup--standard {
-  box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.25);
-}
-
-// Experiment: a see-through panel that blurs what's behind it. The pointer shares the same color.
-.Tooltip-popup--blur {
-  --tooltip-bg: color-mix(in srgb, var(--color-fill-surfaceElevated) 70%, transparent);
-  backdrop-filter: blur(12px);
-}
-
-// Dark in both themes, like the standard. On light cards the glass is denser so it still reads as dark.
-:root:not(.dark) .Tooltip-popup--blur {
-  --tooltip-bg: color-mix(in srgb, var(--color-fill-surfaceElevated) 85%, transparent);
-}
-
-.Tooltip-arrow--standard {
-  fill: var(--tooltip-bg);
-
-  // With a stroke width, FloatingArrow draws the outline first, then the fill with a stroke in the panel color
-  path:nth-of-type(1) {
-    stroke: var(--tooltip-border);
-  }
-
-  path:nth-of-type(2) {
-    stroke: var(--tooltip-bg);
-  }
+  // Dark theme: DS Fill/SurfaceElevated + Fill/SurfaceHover (slate-100 at 10%), flattened, at 70%
+  --tooltip-solid: color-mix(in srgb, var(--color-fill-surfaceElevated), var(--color-slate-100) 10%);
+  --tooltip-opacity: 70%;
+  --tooltip-shadow: #{$tooltip-shadow-dark};
+  // One step below the app's primary text: pure white is too strong on the panel
+  color: var(--color-gray-100);
 }
 
 .Tooltip-handle--standard {

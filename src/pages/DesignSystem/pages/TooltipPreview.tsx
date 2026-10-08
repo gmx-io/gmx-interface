@@ -21,6 +21,7 @@ import {
   TOOLTIP_OFFSET,
   type TooltipPosition,
 } from "components/Tooltip/Tooltip";
+import { getPointerGapX, TooltipPointer } from "components/Tooltip/TooltipPointer";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 // Tooltips drawn open on the page, for the docs: the real trigger, panel, pointer and content, no hover needed.
@@ -30,16 +31,15 @@ type TriggerVariant = "underline" | "iconStroke";
 // How a tooltip family draws its panel and pointer. Required keys, so a renamed key in a look fails to compile.
 export type TooltipLook = {
   popupClassName: string;
-  arrowClassName: string;
-  arrowStrokeWidth: number;
+  // The standard pointer (TooltipPointer) instead of the app's default arrow
+  seamlessPointer: boolean;
   // Keeps the panel this far inside the screen edges, like the live tooltip
   viewportPadding?: number;
 };
 
 const LEGACY_LOOK: TooltipLook = {
   popupClassName: "",
-  arrowClassName: DEFAULT_TOOLTIP_ARROW_CLASSNAME,
-  arrowStrokeWidth: 0,
+  seamlessPointer: false,
 };
 
 // Where things are, for drawings on top of the panel
@@ -114,13 +114,16 @@ export function TooltipPreview({
     return { gap: TOOLTIP_OFFSET, maxWidth: `min(${maxWidth}px${screenLimit}, 100%)` };
   }, [maxWidth, look.viewportPadding]);
   // Inline max-width beats the panel classes' own limits. z-index 0: live tooltips and menus open above it.
-  const popupStyle = useMemo<CSSProperties>(
-    () => ({
-      maxWidth: "100%",
-      zIndex: 0,
-      transform: alignmentOffset ? `translateX(${alignmentOffset}px)` : undefined,
-    }),
-    [alignmentOffset]
+  const popupStyle = useMemo(
+    () =>
+      ({
+        maxWidth: "100%",
+        zIndex: 0,
+        transform: alignmentOffset ? `translateX(${alignmentOffset}px)` : undefined,
+        // Where the border opens under the standard pointer, as on the live tooltip
+        "--tooltip-gap-x": look.seamlessPointer && arrowX !== undefined ? `${getPointerGapX(arrowX)}px` : undefined,
+      }) as CSSProperties,
+    [alignmentOffset, look.seamlessPointer, arrowX]
   );
 
   const geometry = useMemo(
@@ -139,13 +142,18 @@ export function TooltipPreview({
         <div ref={refs.setReference} className="flex">
           {trigger}
         </div>
-        <div ref={refs.setFloating} className={cx("Tooltip-popup relative", look.popupClassName)} style={popupStyle}>
-          <FloatingArrow
-            ref={arrowRef}
-            context={context}
-            className={look.arrowClassName}
-            strokeWidth={look.arrowStrokeWidth}
-          />
+        <div
+          ref={refs.setFloating}
+          className={cx("Tooltip-popup relative", look.popupClassName)}
+          style={popupStyle}
+          // Below the trigger, as the live tooltip marks its side
+          data-side="bottom"
+        >
+          {look.seamlessPointer ? (
+            <TooltipPointer ref={arrowRef} side="bottom" arrowX={arrowX} />
+          ) : (
+            <FloatingArrow ref={arrowRef} context={context} className={DEFAULT_TOOLTIP_ARROW_CLASSNAME} />
+          )}
           {content}
           {geometry && renderOverlay?.(geometry)}
         </div>

@@ -267,17 +267,17 @@ const BEFORE_NET_RATE = (
   </div>
 );
 
-// Something behind the experiment tooltips, so the blur has content to work on
-const EXPERIMENT_ROWS = [
+// Something behind the tooltip, so the blur has content to work on
+const BACKDROP_ROWS = [
   ["ETH/USD", "$2,431.20", "+1.24%"],
   ["BTC/USD", "$63,912.05", "-0.58%"],
   ["SOL/USD", "$142.87", "+3.10%"],
 ];
 
-function ExperimentBackdrop() {
+function BlurBackdrop() {
   return (
     <div className="text-body-medium grid w-fit grid-cols-[repeat(3,auto)] gap-x-16 gap-y-4" aria-hidden>
-      {EXPERIMENT_ROWS.map(([market, price, change]) => (
+      {BACKDROP_ROWS.map(([market, price, change]) => (
         <Fragment key={market}>
           <span className="text-typography-secondary">{market}</span>
           <span>{price}</span>
@@ -296,7 +296,7 @@ const SECTIONS = {
   panel: { id: "tooltip-panel", title: "Sizes and placement", icon: CardIcon },
   examples: { id: "tooltip-examples", title: "In the app", icon: MessageIcon },
   motion: { id: "tooltip-motion", title: "Motion", icon: ExpressIcon },
-  experiments: { id: "tooltip-experiments", title: "Experiments", icon: StarIcon },
+  seeThrough: { id: "tooltip-see-through", title: "See-through", icon: StarIcon },
   beforeAfter: { id: "tooltip-before-after", title: "Before → after", icon: RepeatIcon },
   specs: { id: "tooltip-specs", title: "Specs", icon: SettingsIcon },
   placementRules: { id: "tooltip-placement-rules", title: "Placement and triggers", icon: SortableIcon },
@@ -311,15 +311,18 @@ const SECTIONS = {
 const SPECS: DocsRule[] = [
   [
     "Panel",
-    "One dark panel in both themes, so the light theme gets dark tooltips too. DS Fill/SurfaceElevated + Fill/SurfaceHover.",
+    "See-through with a 12px background blur, light or dark with the app theme. Light: DS Fill/SurfaceElevated at 80%. Dark: Fill/SurfaceElevated + Fill/SurfaceHover at 70%.",
   ],
   ["Padding and corners", "12px on the sides, 8px at the top and bottom, 8px corners, 8px between blocks."],
-  ["Border", "1px, DS Stroke/Primary (#363A59), on the panel and the pointer."],
+  ["Border", "1px, DS Stroke/Primary, on the panel and the pointer."],
   [
     "Sizes",
     "Default grows up to 350px, for text, rows and links. Wide grows up to 480px, only for tables. Short tooltips shrink to fit.",
   ],
-  ["Text", "Main text is gray-100 (#E7E7E9), slightly softer than white. Muted text for row labels and footnotes."],
+  [
+    "Text",
+    "Main text is TextIcon/Primary in the light theme and gray-100 in the dark theme, slightly softer than white. Muted text for row labels and footnotes.",
+  ],
   ["Type", "14/18 for text, 14/18 medium for titles, 12/16 for footnotes and table headers."],
   ["Shadow", "0 4 14: 25% black in the dark theme, 8% slate-950 in the light theme."],
   ["Pointer", "14 × 7px, the panel color."],
@@ -464,11 +467,11 @@ export function TooltipExamples() {
             </DocsCards>
           </DocsSection>
 
-          <DocsSection section={SECTIONS.experiments} flush>
+          <DocsSection section={SECTIONS.seeThrough} flush>
             <DocsCards columns={1}>
-              <DocsCard label="Blur · see-through">
-                <StandardTooltip handle="Hover me" content={PLAIN_TEXT} tooltipClassName="Tooltip-popup--blur" />
-                <ExperimentBackdrop />
+              <DocsCard label="Over content: the panel blurs what's behind it">
+                <StandardTooltip handle="Hover me" content={PLAIN_TEXT} />
+                <BlurBackdrop />
               </DocsCard>
             </DocsCards>
           </DocsSection>
@@ -606,7 +609,7 @@ const CHANGELOG: DocsChangelogEntry[] = [
     icon: CalendarIcon,
     date: "Oct 3, 2026",
     changes: [
-      "One dark panel for every tooltip, in both themes, with a 1px border and 8px corners.",
+      "One see-through, blurred panel for every tooltip, light or dark with the app theme, with a 1px border and 8px corners.",
       "Two sizes: Default up to 350px; Wide up to 480px, for tables only.",
       "Five content blocks (title, text, rows, table, link or footnote) replace hand-built layouts.",
       "Opens after 200 ms, grows out of the pointer and leaves quickly; neighbouring tooltips open instantly.",
@@ -624,7 +627,7 @@ export function TooltipChangelog() {
         <div className="flex flex-col divide-y divide-fill-surfaceElevated">
           <BeforeAfter
             label="Price impact"
-            change="Dark in both themes. 12px on the sides, 8px at the top and bottom. The link moves to its own line."
+            change="See-through with a blur. 12px on the sides, 8px at the top and bottom. The link moves to its own line."
             before={<LegacyTooltipPreview handle="Price impact / fees" content={BEFORE_PRICE_IMPACT} />}
             after={<StandardTooltipPreview handle="Price impact / fees" content={PRICE_IMPACT} />}
           />

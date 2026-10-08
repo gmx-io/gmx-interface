@@ -10,6 +10,8 @@ import {
   TOOLTIP_EXIT_DURATION,
 } from "config/ui";
 
+import { getPointerCenterX } from "./TooltipPointer";
+
 /**
  * Spread on the animated panel. Tooltip.scss runs the motion from these (`.Tooltip-popup[data-status]`).
  */
@@ -28,8 +30,6 @@ const MOTION_VARIABLES = {
   "--tooltip-enter-offset": `${TOOLTIP_ENTER_OFFSET}px`,
   "--tooltip-easing": TOOLTIP_EASING,
 };
-
-const ARROW_WIDTH = 14; // FloatingArrow default
 
 type Props = {
   context: FloatingContext;
@@ -60,7 +60,7 @@ export function TooltipMotion({ context, instant, children }: Props) {
   // The panel grows from the pointer, so it looks like it comes out of the trigger.
   // Always set, so a tooltip nested inside another never inherits its value.
   const arrowX = context.middlewareData.arrow?.x;
-  const pointerX = arrowX === undefined ? "center" : `${arrowX + ARROW_WIDTH / 2}px`;
+  const pointerX = arrowX === undefined ? "center" : `${getPointerCenterX(arrowX)}px`;
 
   return children({
     "data-status": status,
