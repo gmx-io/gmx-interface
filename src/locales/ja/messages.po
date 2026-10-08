@@ -1690,6 +1690,10 @@ msgstr "クレーム履歴をエクスポート"
 msgid "Charts by TradingView"
 msgstr "TradingViewによるチャート"
 
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "No transfer history"
+msgstr "送金履歴はありません"
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Total trades"
@@ -5464,10 +5468,6 @@ msgstr "テイクプロフィットを約定"
 msgid "Market Increase"
 msgstr "マーケット増加"
 
-#: src/components/GmxAccountModal/MainView.tsx
-msgid "No funding activity"
-msgstr "資金活動なし"
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "This token does not support permit approvals."
 msgstr "このトークンはパーミット承認に対応していません。"
@@ -7189,6 +7189,10 @@ msgstr "サイズを増加（指値）"
 msgid "PnL relative to capital used (return on capital)"
 msgstr "使用資本に対するPnL（資本利益率）"
 
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "No transfer history matching search"
+msgstr "検索に一致する送金履歴はありません"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Create Stop Market"
 msgstr "ストップマーケットを作成"
@@ -7465,10 +7469,6 @@ msgstr "ブリッジ手数料が上昇しました。資金はGMX Accountに残�
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Launch"
 msgstr "ローンチ"
-
-#: src/components/GmxAccountModal/MainView.tsx
-msgid "No funding activity matching search"
-msgstr "検索に一致するファンディング活動はありません"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeFi portfolio tracker"
