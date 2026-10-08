@@ -96,6 +96,7 @@ import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
 import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
+import { useHasAlternateGasFees } from "lib/wallets/useHasAlternateGasFees";
 import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import { getContract } from "sdk/configs/contracts";
 import { getToken, getTokenBySymbol, getWrappedToken } from "sdk/configs/tokens";
@@ -270,7 +271,7 @@ export function useTradeboxButtonState({
     totalExecutionFee?.feeTokenAmount,
   ]);
 
-  const approvalGasError = useMemo((): ValidationResult => {
+  const nativeApprovalGasError = useMemo((): ValidationResult => {
     if (!expressParams) {
       return {};
     }
@@ -281,6 +282,13 @@ export function useTradeboxButtonState({
       gasPrice: expressParams.gasPrice,
     });
   }, [expressParams, pendingApprovalTokenAddress, tokensData]);
+
+  const hasAlternateGasFees = useHasAlternateGasFees({
+    chainId,
+    enabled: nativeApprovalGasError.buttonErrorMessage !== undefined,
+  });
+
+  const approvalGasError: ValidationResult = hasAlternateGasFees ? EMPTY_OBJECT : nativeApprovalGasError;
 
   const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
   const externalSwapDesirability = useSelector(selectExternalSwapDesirability);
