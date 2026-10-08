@@ -26,7 +26,7 @@ const WS_FRESH_PRICES_UPDATE_INTERVAL = 10_000;
 
 type WsFrame = { store: WsPriceStore; prices: TokenPricesData; meta: FrameMeta; isLive: boolean };
 
-function getWsFrameExpiresAt({ serverTs, originTs, receivedAt }: FrameMeta): number {
+export function getWsFrameExpiresAt({ serverTs, originTs, receivedAt }: FrameMeta): number {
   // age at send on the server clock plus time since receipt on the client clock, so clock skew never enters
   return originTs === undefined ? 0 : receivedAt + WS_PRICES_STALE_MS - Math.max(0, serverTs - originTs);
 }
