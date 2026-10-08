@@ -266,9 +266,11 @@ export default function BeginAccountTransfer() {
     gmxAllowance,
     pendingReceiver,
   ].some((value) => value === undefined);
-  const isReceiverCheckLoading = [...receiverGmxStakingValues, ...receiverGlpStakingValues].some(
-    (value) => value === undefined
-  );
+  const isReceiverCheckLoading =
+    hasValidReceiver &&
+    (!feeGmxAllowanceData ||
+      [...receiverGmxStakingValues, ...receiverGlpStakingValues].some((value) => value === undefined));
+  const isCheckLoading = isSenderCheckLoading || isReceiverCheckLoading;
   const hasPendingReceiver = pendingReceiver && pendingReceiver !== zeroAddress;
 
   const getError = () => {
@@ -296,14 +298,11 @@ export default function BeginAccountTransfer() {
       return t`Receiver has staked GMX/GLP`;
     }
 
-    if ((parsedReceiver || "").toString().toLowerCase() === (account || "").toString().toLowerCase()) {
+    if (parsedReceiver === account) {
       return t`Self-transfer not supported`;
     }
 
-    if (
-      (parsedReceiver || "").length > 0 &&
-      (parsedReceiver || "").toString().toLowerCase() === (pendingReceiver || "").toString().toLowerCase()
-    ) {
+    if (parsedReceiver === pendingReceiver) {
       return t`Transfer already initiated`;
     }
   };
@@ -327,10 +326,7 @@ export default function BeginAccountTransfer() {
     if (isTransferring) {
       return false;
     }
-    if (isSenderCheckLoading) {
-      return false;
-    }
-    if (hasValidReceiver && (!feeGmxAllowanceData || isReceiverCheckLoading)) {
+    if (isCheckLoading) {
       return false;
     }
     if (!isStakingPowerResetAcknowledged) {
@@ -346,6 +342,9 @@ export default function BeginAccountTransfer() {
     }
     if (isApproving) {
       return t`Approving...`;
+    }
+    if (isCheckLoading) {
+      return t`Loading...`;
     }
     if (needApproval) {
       return t`Approve GMX`;
