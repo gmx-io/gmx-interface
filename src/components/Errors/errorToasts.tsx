@@ -328,11 +328,25 @@ export function getTxnErrorToast(
     case TxErrorType.UserDenied:
       toastParams.errorContent = t`Transaction canceled`;
       break;
+    case TxErrorType.Expired:
+      toastParams.errorContent = t`Wallet request expired. Try again and confirm in your wallet`;
+      break;
     case TxErrorType.Slippage:
       toastParams.errorContent = t`Mark price changed. Increase allowed slippage`;
       break;
     case TxErrorType.RpcError: {
+      const isContractRevert = /execution reverted/i.test(errorData.errorMessage ?? "");
+
+      if (isContractRevert) {
+        break;
+      }
+
       toastParams.autoCloseToast = false;
+
+      if (!setIsSettingsVisible) {
+        toastParams.errorContent = getRpcErrorToastContent(debugErrorMessage);
+        break;
+      }
 
       toastParams.errorContent = (
         <div>
@@ -418,18 +432,7 @@ export function getErrorMessage(
 
       const originalError = errorData?.error?.message || errorData?.message || message;
 
-      failMsg = (
-        <div>
-          <Trans>
-            RPC error. Update your wallet's RPC via{" "}
-            <ExternalLink href="https://chainlist.org">chainlist.org</ExternalLink>.{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/overview/#rpc-urls">Read more</ExternalLink>.
-          </Trans>
-          <br />
-          <br />
-          {originalError && <ToastifyDebug error={originalError} />}
-        </div>
-      );
+      failMsg = getRpcErrorToastContent(originalError);
       break;
     }
     default:
@@ -447,6 +450,20 @@ export function getErrorMessage(
   }
 
   return { failMsg, autoCloseToast };
+}
+
+function getRpcErrorToastContent(debugErrorMessage: string | undefined) {
+  return (
+    <div>
+      <Trans>
+        RPC error. Update your wallet's RPC via <ExternalLink href="https://chainlist.org">chainlist.org</ExternalLink>.{" "}
+        <ExternalLink href="https://docs.gmx.io/docs/trading/overview/#rpc-urls">Read more</ExternalLink>.
+      </Trans>
+      <br />
+      <br />
+      {debugErrorMessage && <ToastifyDebug error={debugErrorMessage} />}
+    </div>
+  );
 }
 
 export function getSmartWalletChainUnavailableToastContent(chainId: number, walletName = "wallet") {

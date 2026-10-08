@@ -7524,10 +7524,6 @@ msgstr "Заработанные комиссии учитываются тол�
 msgid "Set long Limit @ {0}"
 msgstr "Установить лимитный ордер на лонг @ {0}"
 
-#: src/components/Errors/gasErrors.tsx
-msgid "Insufficient {nativeTokenSymbol} on {chainName} for this transaction. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
-msgstr "Недостаточно {nativeTokenSymbol} в сети {chainName} для этой транзакции. <0>Обменяйте</0> или <1>переведите через мост</1> {nativeTokenSymbol}."
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position would be liquidatable"
 msgstr "Позиция будет подлежать ликвидации"
@@ -11455,6 +11451,10 @@ msgstr "Обновление ордера…"
 msgid "Escrowed GMX APR"
 msgstr "APR эскроуированного GMX"
 
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {nativeTokenSymbol} on {chainName} for this transaction. <0>Bridge</0> {nativeTokenSymbol}."
+msgstr "Недостаточно {nativeTokenSymbol} в сети {chainName} для этой транзакции. <0>Переведите через мост</0> {nativeTokenSymbol}."
+
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting only available on {chainNames}. Switch networks to continue."
 msgstr "Вестинг доступен только на {chainNames}. Переключите сеть для продолжения."
@@ -12128,6 +12128,10 @@ msgstr "Pool USD шорт"
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders not updated, limit reached"
 msgstr "{0} ордеров не обновлено, достигнут лимит"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Wallet request expired. Try again and confirm in your wallet"
+msgstr "Срок действия запроса в кошельке истёк. Повторите попытку и подтвердите в кошельке"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Proportional stored impact"

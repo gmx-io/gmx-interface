@@ -7524,10 +7524,6 @@ msgstr "已賺取的費用僅針對您在 {chainName} 錢包中持有的 GM 與 
 msgid "Set long Limit @ {0}"
 msgstr "在 {0} 設定做多限價單"
 
-#: src/components/Errors/gasErrors.tsx
-msgid "Insufficient {nativeTokenSymbol} on {chainName} for this transaction. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
-msgstr "{chainName} 上用於此交易的 {nativeTokenSymbol} 不足。請<0>兌換</0>或<1>跨鏈橋</1>轉入 {nativeTokenSymbol}。"
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position would be liquidatable"
 msgstr "倉位將面臨清算"
@@ -11455,6 +11451,10 @@ msgstr "正在更新訂單..."
 msgid "Escrowed GMX APR"
 msgstr "託管 GMX APR"
 
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {nativeTokenSymbol} on {chainName} for this transaction. <0>Bridge</0> {nativeTokenSymbol}."
+msgstr "{chainName} 上用於此交易的 {nativeTokenSymbol} 不足。請<0>跨鏈橋</0>轉入 {nativeTokenSymbol}。"
+
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting only available on {chainNames}. Switch networks to continue."
 msgstr "歸屬僅在 {chainNames} 上可用。請切換網路以繼續。"
@@ -12128,6 +12128,10 @@ msgstr "池 USD 做空"
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders not updated, limit reached"
 msgstr "{0} 筆訂單未更新，已達上限"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Wallet request expired. Try again and confirm in your wallet"
+msgstr "錢包請求已過期。請重試並在錢包中確認"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Proportional stored impact"

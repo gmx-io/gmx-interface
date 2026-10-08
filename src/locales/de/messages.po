@@ -7524,10 +7524,6 @@ msgstr "Verdiente Gebühren werden nur für GM und GLV in Ihrer Wallet auf {chai
 msgid "Set long Limit @ {0}"
 msgstr "Limitorder für Long bei {0} festlegen"
 
-#: src/components/Errors/gasErrors.tsx
-msgid "Insufficient {nativeTokenSymbol} on {chainName} for this transaction. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
-msgstr "Nicht genügend {nativeTokenSymbol} auf {chainName} für diese Transaktion. <0>Tauschen</0> oder <1>bridgen</1> Sie {nativeTokenSymbol}."
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position would be liquidatable"
 msgstr "Position wäre liquidierbar"
@@ -11455,6 +11451,10 @@ msgstr "Order wird aktualisiert…"
 msgid "Escrowed GMX APR"
 msgstr "Escrowed GMX APR"
 
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {nativeTokenSymbol} on {chainName} for this transaction. <0>Bridge</0> {nativeTokenSymbol}."
+msgstr "Nicht genügend {nativeTokenSymbol} auf {chainName} für diese Transaktion. <0>Bridgen</0> Sie {nativeTokenSymbol}."
+
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting only available on {chainNames}. Switch networks to continue."
 msgstr "Vesting nur verfügbar auf {chainNames}. Wechseln Sie das Netzwerk, um fortzufahren."
@@ -12128,6 +12128,10 @@ msgstr "Pool USD Short"
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders not updated, limit reached"
 msgstr "{0} Orders nicht aktualisiert, Limit erreicht"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Wallet request expired. Try again and confirm in your wallet"
+msgstr "Wallet-Anfrage abgelaufen. Versuchen Sie es erneut und bestätigen Sie in Ihrer Wallet"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Proportional stored impact"

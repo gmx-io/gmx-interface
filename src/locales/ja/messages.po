@@ -7524,10 +7524,6 @@ msgstr "獲得手数料は、{chainName}のウォレットに保有するGMとGL
 msgid "Set long Limit @ {0}"
 msgstr "ロングの指値注文を設定 @ {0}"
 
-#: src/components/Errors/gasErrors.tsx
-msgid "Insufficient {nativeTokenSymbol} on {chainName} for this transaction. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
-msgstr "この取引に必要な{nativeTokenSymbol}が{chainName}に不足しています。{nativeTokenSymbol}を<0>スワップ</0>または<1>ブリッジ</1>してください。"
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position would be liquidatable"
 msgstr "ポジションが清算対象となります"
@@ -11455,6 +11451,10 @@ msgstr "注文を更新中…"
 msgid "Escrowed GMX APR"
 msgstr "エスクローGMX APR"
 
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {nativeTokenSymbol} on {chainName} for this transaction. <0>Bridge</0> {nativeTokenSymbol}."
+msgstr "この取引に必要な{nativeTokenSymbol}が{chainName}に不足しています。{nativeTokenSymbol}を<0>ブリッジ</0>してください。"
+
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting only available on {chainNames}. Switch networks to continue."
 msgstr "ベスティングは{chainNames}でのみ利用可能です。続行するにはネットワークを切り替えてください。"
@@ -12128,6 +12128,10 @@ msgstr "プール USD ショート"
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders not updated, limit reached"
 msgstr "{0} 件の注文が更新されませんでした。上限に達しました"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Wallet request expired. Try again and confirm in your wallet"
+msgstr "ウォレットのリクエストの有効期限が切れました。もう一度お試しいただき、ウォレットで承認してください"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Proportional stored impact"

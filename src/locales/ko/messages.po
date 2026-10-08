@@ -7524,10 +7524,6 @@ msgstr "획득한 수수료는 {chainName}의 지갑에 보유한 GM과 GLV에 �
 msgid "Set long Limit @ {0}"
 msgstr "롱 지정가 주문 설정 @ {0}"
 
-#: src/components/Errors/gasErrors.tsx
-msgid "Insufficient {nativeTokenSymbol} on {chainName} for this transaction. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
-msgstr "이 트랜잭션에 필요한 {nativeTokenSymbol}이(가) {chainName}에 부족합니다. {nativeTokenSymbol}을(를) <0>스왑</0>하거나 <1>브리지</1>하세요."
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position would be liquidatable"
 msgstr "포지션이 청산 대상이 됩니다"
@@ -11455,6 +11451,10 @@ msgstr "주문 업데이트 중…"
 msgid "Escrowed GMX APR"
 msgstr "에스크로 GMX APR"
 
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {nativeTokenSymbol} on {chainName} for this transaction. <0>Bridge</0> {nativeTokenSymbol}."
+msgstr "이 트랜잭션에 필요한 {nativeTokenSymbol}이(가) {chainName}에 부족합니다. {nativeTokenSymbol}을(를) <0>브리지</0>하세요."
+
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting only available on {chainNames}. Switch networks to continue."
 msgstr "베스팅은 {chainNames}에서만 이용 가능합니다. 계속하려면 네트워크를 전환하십시오."
@@ -12128,6 +12128,10 @@ msgstr "풀 USD 숏"
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders not updated, limit reached"
 msgstr "{0}개 주문이 업데이트되지 않았습니다. 한도에 도달했습니다"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Wallet request expired. Try again and confirm in your wallet"
+msgstr "지갑 요청이 만료되었습니다. 다시 시도한 후 지갑에서 승인하세요"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Proportional stored impact"
