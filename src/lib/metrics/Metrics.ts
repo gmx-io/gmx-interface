@@ -20,6 +20,7 @@ import {
   METRIC_EVENT_DISPATCH_NAME,
   METRIC_TIMING_DISPATCH_NAME,
 } from "./emitMetricEvent";
+import { createRepeatedEventsReporter } from "./repeatedEventsReporter";
 import { getStorageItem, setStorageItem } from "./storage";
 import { ErrorEvent, GlobalMetricData, LongTaskTiming } from "./types";
 
@@ -38,10 +39,21 @@ const MAX_BATCH_LENGTH = 100;
 const BATCH_INTERVAL_MS = 3000;
 const BANNED_CUSTOM_FIELDS = ["metricId"];
 const BAD_REQUEST_ERROR = "BadRequest";
+const REPEAT_FOLDED_EVENTS = ["error", "multicall.timeout", "multicall.error"];
 
 type CachedMetricData = { _metricDataCreated: number; metricId: string };
 type CachedMetricsData = { [key: string]: CachedMetricData };
 type Timers = { [key: string]: number };
+
+function getRepeatKey({ event, isError, time, data }: MetricEventParams) {
+  try {
+    return JSON.stringify([event, isError, time, data], (_, value) =>
+      typeof value === "bigint" ? value.toString() : value
+    );
+  } catch {
+    return undefined;
+  }
+}
 
 class Metrics {
   fetcher?: OracleFetcher;
@@ -54,6 +66,9 @@ class Metrics {
   isGlobalPropsFilled = false;
   initGlobalPropsRetries = 3;
   performanceObserver?: PerformanceObserver;
+  repeatedEventsReporter = createRepeatedEventsReporter<EventPayload>((payload, repeats) => {
+    this.queueEventPayload(repeats ? { ...payload, customFields: { ...payload.customFields, ...repeats } } : payload);
+  });
 
   static _instance: Metrics;
 
@@ -103,26 +118,36 @@ class Metrics {
 
   // Require Generic type to be specified
   pushEvent = <T extends MetricEventParams = never>(params: T) => {
-    const { time, isError, data, event } = params;
+    const payload = this.createEventPayload(params);
+    const repeatKey = REPEAT_FOLDED_EVENTS.includes(params.event) ? getRepeatKey(params) : undefined;
 
-    const payload: EventPayload = {
-      isDev: isDevelopment(),
-      host: window.location.host,
-      url: window.location.href,
-      event: event,
-      version: getAppVersion(),
-      isError: Boolean(isError),
-      time,
-      isMissedGlobalMetricData: !this.getIsGlobalPropsInited(),
-      customFields: {
-        ...(data ? this.serializeCustomFields(data) : {}),
-        ...this.globalMetricData,
-        wallets: this.wallets,
-        sessionId: getRawSessionId(),
-        uiTimestamp: Date.now(),
-      },
-    };
+    if (repeatKey === undefined) {
+      this.queueEventPayload(payload);
+      return;
+    }
 
+    this.repeatedEventsReporter.onEvent(repeatKey, payload);
+  };
+
+  createEventPayload = ({ time, isError, data, event }: MetricEventParams): EventPayload => ({
+    isDev: isDevelopment(),
+    host: window.location.host,
+    url: window.location.href,
+    event: event,
+    version: getAppVersion(),
+    isError: Boolean(isError),
+    time,
+    isMissedGlobalMetricData: !this.getIsGlobalPropsInited(),
+    customFields: {
+      ...(data ? this.serializeCustomFields(data) : {}),
+      ...this.globalMetricData,
+      wallets: this.wallets,
+      sessionId: getRawSessionId(),
+      uiTimestamp: Date.now(),
+    },
+  });
+
+  queueEventPayload = (payload: EventPayload) => {
     _debugMetrics?.logEvent(payload);
 
     this.queue.push({

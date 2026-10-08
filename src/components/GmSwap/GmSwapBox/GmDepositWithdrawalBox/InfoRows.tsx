@@ -58,6 +58,7 @@ export function InfoRows({
         <SyntheticsInfoRow
           qa="network-fee"
           label={<Trans>Network fee</Trans>}
+          labelClassName="whitespace-nowrap"
           value={
             isLoading ? (
               <UsdValueWithSkeleton usd={undefined} />
