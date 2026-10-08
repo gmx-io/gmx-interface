@@ -7,18 +7,29 @@ import { GmxApiSdk } from "../../../clients/v2";
 const ARBITRUM = 42161;
 
 function startServer() {
-  const wss = new WebSocketServer({ port: 0 });
+  const wss = new WebSocketServer({ port: 0, path: "/v1/stream" });
   const received: { op?: string; channels?: string[] }[] = [];
   const connections: WebSocket[] = [];
 
   wss.on("connection", (socket) => {
     connections.push(socket);
+    const channels = new Set<string>();
     socket.on("message", (raw) => {
+      let message: { op?: string; channels?: string[] };
       try {
-        received.push(JSON.parse(raw.toString()));
+        message = JSON.parse(raw.toString());
       } catch {
-        /* ignore non-JSON */
+        return;
       }
+      received.push(message);
+      for (const channel of message.channels ?? []) {
+        if (message.op === "subscribe") {
+          channels.add(channel);
+        } else {
+          channels.delete(channel);
+        }
+      }
+      socket.send(JSON.stringify({ op: "ack", channels: [...channels] }));
     });
   });
 
@@ -53,7 +64,7 @@ const snapshot = (min: string, max: string) => ({
   data: { "0xabc": { minPrice: min, maxPrice: max } },
 });
 
-describe("stream e2e (real client <-> real ws server)", () => {
+describe("stream integration (real client <-> real ws server)", () => {
   let server: ReturnType<typeof startServer>;
   let sdk: GmxApiSdk;
   const open: { close(): void }[] = [];
