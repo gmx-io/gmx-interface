@@ -9,6 +9,7 @@ import type { GlvOrMarketInfo, MarketInfo } from "domain/synthetics/markets/type
 import type { TokenData, TokensData } from "domain/synthetics/tokens/types";
 import type { ShiftAmounts } from "domain/synthetics/trade/utils/shift";
 import { getCommonError, getGmShiftError, takeValidationResult } from "domain/synthetics/trade/utils/validation";
+import type { DirectDepositAccess } from "domain/synthetics/whitelists/utils";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -35,6 +36,7 @@ export function useShiftSubmitState({
   toMarketInfo,
   toToken,
   glvOrMarketInfoData,
+  toMarketDirectDepositAccess,
 }: {
   amounts: ShiftAmounts | undefined;
   executionFee: ExecutionFee | undefined;
@@ -48,6 +50,7 @@ export function useShiftSubmitState({
   toMarketInfo: MarketInfo | undefined;
   toToken: TokenData | undefined;
   glvOrMarketInfoData: { [key: string]: GlvOrMarketInfo } | undefined;
+  toMarketDirectDepositAccess: DirectDepositAccess | undefined;
 }) {
   const chainId = useSelector(selectChainId);
   const account = useSelector(selectAccount);
@@ -138,6 +141,7 @@ export function useShiftSubmitState({
       toTokenAmount: amounts?.toTokenAmount,
       fees,
       priceImpactUsd: amounts?.swapPriceImpactDeltaUsd,
+      toMarketDirectDepositAccess,
     });
 
     const error = takeValidationResult(commonError, multipleWalletExtensionsChainError, shiftError);
@@ -210,6 +214,7 @@ export function useShiftSubmitState({
     amounts?.swapPriceImpactDeltaUsd,
     toMarketInfo,
     toToken,
+    toMarketDirectDepositAccess,
     fees,
     multipleWalletExtensionsChainError,
     isApproving,

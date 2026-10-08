@@ -1,0 +1,518 @@
+import { t } from "@lingui/macro";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import useSWR from "swr";
+
+import { getPaxosTransitConfig } from "config/paxosTransit";
+import {
+  selectPoolsDetailsFirstTokenAmount,
+  selectPoolsDetailsFlags,
+  selectPoolsDetailsGlvOrMarketAddress,
+  selectPoolsDetailsLongTokenAddress,
+  selectPoolsDetailsOperation,
+  selectPoolsDetailsConversionRoutePreference,
+  selectPoolsDetailsSetFirstTokenAddress,
+  selectPoolsDetailsSetIsFirstTokenPinned,
+  selectPoolsDetailsSetFirstTokenInputValue,
+  selectPoolsDetailsSetFocusedInput,
+  selectPoolsDetailsSetIsTransitRoute,
+  selectPoolsDetailsSetMarketOrGlvTokenInputValue,
+  selectPoolsDetailsSetOperation,
+  selectPoolsDetailsSetConversionRoutePreference,
+  selectPoolsDetailsSetTransitAmountOut,
+  selectPoolsDetailsShortTokenAddress,
+} from "context/PoolsDetailsContext/selectors";
+import {
+  selectPoolsDetailsAvailableCollateralSwapToken,
+  selectPoolsDetailsCollateralSwapTokens,
+  selectPoolsDetailsIsDirectDepositBlocked,
+} from "context/PoolsDetailsContext/selectors/poolsDetailsDerivedSelectors";
+import {
+  selectDepositWithdrawalAmounts,
+  selectPoolsDetailsCollateralSwapTotalFeesDeltaUsd,
+} from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { Operation } from "domain/synthetics/markets/types";
+import { getReceivedTokenAmount } from "domain/synthetics/paxosTransit/getReceivedTokenAmount";
+import { getIsTransitOrderFinal } from "domain/synthetics/paxosTransit/transitOrders";
+import {
+  getTransitRouteProgressForMarket,
+  type TransitRouteDirection,
+} from "domain/synthetics/paxosTransit/transitRouteProgress";
+import { usePaxosTransit } from "domain/synthetics/paxosTransit/usePaxosTransit";
+import type { TokenData } from "domain/synthetics/tokens";
+import type { ERC20Address } from "domain/tokens";
+import { helperToast } from "lib/helperToast";
+import { formatAmountFree } from "lib/numbers";
+import { getByKey } from "lib/objects";
+import useWallet from "lib/wallets/useWallet";
+import { getToken } from "sdk/configs/tokens";
+import type { TransitOrder, TransitQuote } from "sdk/utils/paxos/types";
+
+import type { ConversionRoute } from "./types";
+import type { SubmitButtonState } from "./useGmSwapSubmitState";
+
+export type PaxosTransitState = ReturnType<typeof usePaxosTransitState>;
+
+const CONVERSION_ROUTE_SWITCHED_TOAST_ID = "conversion-route-switched";
+
+export function usePaxosTransitState({
+  isWhitelistIgnored,
+  thresholdUsdOverride,
+  isMocked,
+  shouldDisableValidation,
+}: {
+  isWhitelistIgnored: boolean;
+  thresholdUsdOverride: bigint | undefined;
+  isMocked: boolean;
+  shouldDisableValidation: boolean;
+}) {
+  const chainId = useSelector(selectChainId);
+  const { isDeposit, isWithdrawal } = useSelector(selectPoolsDetailsFlags);
+  const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
+  const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
+  const firstTokenAmount = useSelector(selectPoolsDetailsFirstTokenAmount);
+  const amounts = useSelector(selectDepositWithdrawalAmounts);
+  const setFirstTokenAddress = useSelector(selectPoolsDetailsSetFirstTokenAddress);
+  const setIsFirstTokenPinned = useSelector(selectPoolsDetailsSetIsFirstTokenPinned);
+  const setFirstTokenInputValue = useSelector(selectPoolsDetailsSetFirstTokenInputValue);
+  const setMarketOrGlvTokenInputValue = useSelector(selectPoolsDetailsSetMarketOrGlvTokenInputValue);
+  const setFocusedInput = useSelector(selectPoolsDetailsSetFocusedInput);
+  const setIsTransitRoute = useSelector(selectPoolsDetailsSetIsTransitRoute);
+  const setTransitAmountOut = useSelector(selectPoolsDetailsSetTransitAmountOut);
+  const usdcToken = useSelector(selectPoolsDetailsAvailableCollateralSwapToken);
+  const collateralSwapTokens = useSelector(selectPoolsDetailsCollateralSwapTokens);
+  const isDirectDepositBlocked = useSelector(selectPoolsDetailsIsDirectDepositBlocked);
+  const glvOrMarketAddress = useSelector(selectPoolsDetailsGlvOrMarketAddress);
+  const currentOperation = useSelector(selectPoolsDetailsOperation);
+  const setOperation = useSelector(selectPoolsDetailsSetOperation);
+  const tokensData = useSelector(selectTokensData);
+  const collateralSwapTotalFeesDeltaUsd = useSelector(selectPoolsDetailsCollateralSwapTotalFeesDeltaUsd);
+  const conversionRoutePreference = useSelector(selectPoolsDetailsConversionRoutePreference);
+  const setConversionRoutePreference = useSelector(selectPoolsDetailsSetConversionRoutePreference);
+  const { account } = useWallet();
+  const {
+    withdrawalStatuses,
+    transitRouteProgress,
+    paxosTransitOrder,
+    isPaxosTransitOrderStatusUnknown,
+    startTransitRouteProgress,
+    attachTransitRouteConversion,
+    setTransitRouteContinueRequested,
+  } = useSyntheticsEvents();
+
+  const [transitFillCount, setTransitFillCount] = useState(0);
+  const convertedOrderIdRef = useRef<string | undefined>(undefined);
+
+  const paxosTransitConfig = getPaxosTransitConfig(chainId);
+  const usdgToken = getByKey(tokensData, paxosTransitConfig?.usdgAddress);
+  const isUsdcConversionOffered = usdcToken !== undefined;
+  const isConversionNeeded = collateralSwapTokens !== undefined && !isDirectDepositBlocked;
+  const [tokenIn, tokenOut] = isDeposit ? [usdcToken, usdgToken] : [usdgToken, usdcToken];
+
+  const direction: TransitRouteDirection = isDeposit ? "usdcToUsdg" : "usdgToUsdc";
+  const transitRouteProgressForMarket = getTransitRouteProgressForMarket(transitRouteProgress, {
+    account,
+    glvOrMarketAddress,
+  });
+  const transitRouteProgressForDirection =
+    transitRouteProgressForMarket?.direction === direction ? transitRouteProgressForMarket : undefined;
+  const conversionOrder = transitRouteProgressForDirection?.conversion ? paxosTransitOrder : undefined;
+  const isConversionFinal = getIsTransitOrderFinal(conversionOrder);
+  const isConverting = transitRouteProgressForDirection?.conversion !== undefined && !isConversionFinal;
+  const isDepositSent = transitRouteProgressForDirection?.depositTxnHash !== undefined;
+
+  const withdrawalUsdgAmount = isWithdrawal && amounts ? amounts.longTokenAmount + amounts.shortTokenAmount : 0n;
+
+  const transitRouteProgressForWithdrawal =
+    isWithdrawal && !isConversionFinal ? transitRouteProgressForDirection : undefined;
+  const withdrawalTxnHash = transitRouteProgressForWithdrawal?.withdrawalTxnHash;
+  const withdrawalExecutedTxnHash = transitRouteProgressForWithdrawal?.withdrawalExecutedTxnHash;
+  const withdrawalStatus =
+    withdrawalTxnHash === undefined
+      ? undefined
+      : Object.values(withdrawalStatuses).find((status) => status.createdTxnHash === withdrawalTxnHash);
+
+  const { data: receivedUsdg } = useSWR(
+    withdrawalExecutedTxnHash && account && paxosTransitConfig
+      ? ["paxosTransitReceivedUsdg", chainId, withdrawalExecutedTxnHash, account]
+      : null,
+    () =>
+      getReceivedTokenAmount({
+        chainId,
+        txnHash: withdrawalExecutedTxnHash!,
+        tokenAddress: paxosTransitConfig!.usdgAddress,
+        account: account!,
+      }),
+    { refreshInterval: 0, revalidateOnFocus: false, revalidateOnReconnect: false, revalidateIfStale: false }
+  );
+  const isWithdrawalSettled = receivedUsdg !== undefined && receivedUsdg > 0n;
+  const isNoUsdgReceived = receivedUsdg === 0n || withdrawalStatus?.cancelledTxnHash !== undefined;
+  const withdrawalStatusWithUsdg = isNoUsdgReceived ? undefined : withdrawalStatus;
+  const isWithdrawalSent = withdrawalTxnHash !== undefined && !isNoUsdgReceived;
+  const isWithdrawalUsdgPendingConversion = isWithdrawalSettled || withdrawalStatusWithUsdg !== undefined;
+
+  let amountIn = 0n;
+
+  if (receivedUsdg !== undefined && isWithdrawalSettled) {
+    amountIn = receivedUsdg;
+  } else if (withdrawalStatusWithUsdg?.data) {
+    amountIn = withdrawalStatusWithUsdg.data.minLongTokenAmount + withdrawalStatusWithUsdg.data.minShortTokenAmount;
+  } else if (isConversionNeeded) {
+    amountIn = isDeposit ? firstTokenAmount : withdrawalUsdgAmount;
+  }
+
+  const onPendingOrderFound = useCallback(
+    (order: TransitOrder) => {
+      if (!glvOrMarketAddress || !account || transitRouteProgress?.conversion?.orderId === order.id) return;
+
+      startTransitRouteProgress({
+        chainId,
+        account,
+        direction,
+        glvOrMarketAddress,
+        withdrawalTxnHash: undefined,
+        conversion: { orderId: order.id, txnHash: undefined, offerAmount: order.offerAmount, isMocked },
+      });
+    },
+    [account, chainId, direction, glvOrMarketAddress, isMocked, transitRouteProgress, startTransitRouteProgress]
+  );
+
+  const transit = usePaxosTransit({
+    chainId,
+    tokenIn,
+    tokenOut,
+    amount: amountIn,
+    collateralSwapTotalFeesDeltaUsd,
+    isTransitRequired: isWithdrawalSettled,
+    isAmountEstimated: isWithdrawal && !isWithdrawalSettled && !withdrawalStatusWithUsdg?.data,
+    isWhitelistIgnored,
+    thresholdUsdOverride,
+    isMocked,
+    enabled: isUsdcConversionOffered && !isDirectDepositBlocked,
+    onPendingOrderFound,
+  });
+
+  const {
+    step,
+    quote,
+    quoteError,
+    isBelowMinOrderSize,
+    minOrderSize,
+    shouldUseTransit,
+    isLargeConversion,
+    isWhitelisted,
+    isQuoteNeeded,
+    isFeeTierLoaded,
+    feeTierError,
+    submitTransit,
+    amountOut,
+    thresholdUsd,
+    isZeroFeeCapacityShort,
+    zeroFeeCapacity,
+    transitFeesUsd,
+  } = transit;
+
+  const isTransitAvailable = !feeTierError;
+  const isFeeTierLoading = account !== undefined && !isFeeTierLoaded;
+  const isQuoteLoading = isQuoteNeeded && !quote && !quoteError;
+  const isTransitLoading = isTransitAvailable && (isFeeTierLoading || isQuoteLoading);
+
+  const isTransitInProgress = step !== "idle" || isConverting || isWithdrawalUsdgPendingConversion;
+  const hasAmountIn = amountIn > 0n;
+  const canPoolFill = collateralSwapTotalFeesDeltaUsd !== undefined;
+  const isRouteSelectable = isWhitelisted && !isTransitInProgress && hasAmountIn && quote !== undefined && canPoolFill;
+
+  const isTransitAutoRoute = shouldUseTransit || isTransitLoading || !canPoolFill;
+  const autoRoute: ConversionRoute = isTransitAvailable && isTransitAutoRoute ? "transit" : "pool";
+  const isPreferenceApplied = isRouteSelectable && conversionRoutePreference !== "auto";
+  const conversionRoute = isPreferenceApplied ? conversionRoutePreference : autoRoute;
+
+  const isTransitRouteChosen = isConversionNeeded && hasAmountIn && conversionRoute === "transit";
+  const isTransitRoute = isTransitInProgress || isTransitRouteChosen;
+
+  const shouldShowRouteSelector = isConversionNeeded && isFeeTierLoaded;
+  const shouldShowWhitelistNote = shouldShowRouteSelector && !isWhitelisted && isLargeConversion;
+
+  const transitAmountOut = isTransitRoute ? amountOut : undefined;
+
+  useEffect(
+    function syncTransitRoute() {
+      setIsTransitRoute(isTransitRoute);
+      setTransitAmountOut(transitAmountOut);
+    },
+    [isTransitRoute, setIsTransitRoute, setTransitAmountOut, transitAmountOut]
+  );
+
+  useEffect(
+    function switchUnavailableTransitRouteToAuto() {
+      if (conversionRoute !== "transit" || isTransitAvailable) return;
+
+      setConversionRoutePreference("auto");
+      helperToast.info(t`Direct with Paxos is unavailable. Conversion switched to Auto`, {
+        toastId: CONVERSION_ROUTE_SWITCHED_TOAST_ID,
+      });
+    },
+    [conversionRoute, isTransitAvailable, setConversionRoutePreference]
+  );
+
+  const onConvert = useCallback(() => {
+    submitTransit()
+      .then((conversion) => {
+        if (!conversion || !glvOrMarketAddress || !account) return;
+
+        if (
+          transitRouteProgressForDirection?.withdrawalTxnHash &&
+          transitRouteProgressForDirection.conversion === undefined
+        ) {
+          attachTransitRouteConversion(transitRouteProgressForDirection.id, conversion);
+          return;
+        }
+
+        startTransitRouteProgress({
+          chainId,
+          account,
+          direction,
+          glvOrMarketAddress,
+          withdrawalTxnHash: undefined,
+          conversion,
+        });
+      })
+      .catch((error: Error) => {
+        helperToast.error(t`Conversion failed: ${error.message}`);
+      });
+  }, [
+    account,
+    attachTransitRouteConversion,
+    chainId,
+    direction,
+    glvOrMarketAddress,
+    startTransitRouteProgress,
+    submitTransit,
+    transitRouteProgressForDirection,
+  ]);
+
+  const fillUsdgPayInput = useCallback(
+    (amountDue: bigint | undefined) => {
+      if (!paxosTransitConfig) return;
+
+      const usdg = getToken(chainId, paxosTransitConfig.usdgAddress);
+
+      setFirstTokenAddress(paxosTransitConfig.usdgAddress as ERC20Address);
+      setIsFirstTokenPinned(true);
+
+      if (amountDue !== undefined) {
+        setFirstTokenInputValue(formatAmountFree(amountDue, usdg.decimals));
+      }
+
+      setFocusedInput("first");
+    },
+    [chainId, paxosTransitConfig, setFirstTokenAddress, setFirstTokenInputValue, setFocusedInput, setIsFirstTokenPinned]
+  );
+
+  useEffect(
+    function applyConvertedOrder() {
+      if (
+        conversionOrder?.status !== "PROCESSED" ||
+        convertedOrderIdRef.current === conversionOrder.id ||
+        isDepositSent ||
+        !paxosTransitConfig
+      ) {
+        return;
+      }
+
+      convertedOrderIdRef.current = conversionOrder.id;
+
+      if (isWithdrawal) {
+        setMarketOrGlvTokenInputValue("");
+        setFirstTokenInputValue("");
+        return;
+      }
+
+      fillUsdgPayInput(conversionOrder.amountDue);
+    },
+    [
+      conversionOrder,
+      fillUsdgPayInput,
+      isDepositSent,
+      isWithdrawal,
+      paxosTransitConfig,
+      setFirstTokenInputValue,
+      setMarketOrGlvTokenInputValue,
+    ]
+  );
+
+  useEffect(
+    function applyContinueRequest() {
+      if (!transitRouteProgressForMarket?.isContinueRequested || !paxosTransitConfig) {
+        return;
+      }
+
+      const operation =
+        transitRouteProgressForMarket.direction === "usdcToUsdg" ? Operation.Deposit : Operation.Withdrawal;
+
+      if (operation !== currentOperation) {
+        setOperation(operation);
+        return;
+      }
+
+      setTransitRouteContinueRequested(transitRouteProgressForMarket.id, false);
+      setTransitFillCount((count) => count + 1);
+
+      if (transitRouteProgressForMarket.direction === "usdgToUsdc") {
+        setFirstTokenAddress(paxosTransitConfig.usdcAddress as ERC20Address);
+        return;
+      }
+
+      const amountDue = conversionOrder?.status === "PROCESSED" ? conversionOrder.amountDue : undefined;
+
+      fillUsdgPayInput(amountDue);
+    },
+    [
+      conversionOrder,
+      currentOperation,
+      fillUsdgPayInput,
+      paxosTransitConfig,
+      setFirstTokenAddress,
+      setOperation,
+      setTransitRouteContinueRequested,
+      transitRouteProgressForMarket,
+    ]
+  );
+
+  const submitState = useMemo((): SubmitButtonState | undefined => {
+    if (!account || !isTransitRoute) {
+      return undefined;
+    }
+
+    const tokenInSymbol = tokenIn?.symbol;
+    const tokenOutSymbol = tokenOut?.symbol;
+
+    if (step === "approving") return { text: t`Approving ${tokenInSymbol}...`, disabled: true };
+    if (step === "submitting") return { text: t`Sending conversion...`, disabled: true };
+
+    if (isConverting) {
+      if (isPaxosTransitOrderStatusUnknown) return { text: t`Conversion status unavailable`, disabled: true };
+      if (!conversionOrder) return { text: t`Confirming conversion...`, disabled: true };
+      return { text: t`Converting ${tokenInSymbol} to ${tokenOutSymbol}...`, disabled: true };
+    }
+
+    const conversionError = getTransitConversionError({
+      isDeposit,
+      tokenIn,
+      amountIn,
+      feeTierError,
+      isBelowMinOrderSize,
+      minOrderSize,
+      quote,
+      quoteError,
+      isTransitLoading,
+    });
+
+    if (isWithdrawal && !isWithdrawalUsdgPendingConversion) {
+      if (isWithdrawalSent || shouldDisableValidation) return undefined;
+      if (conversionError) return { text: conversionError, disabled: true };
+      if (isTransitLoading) return { text: t`Loading...`, disabled: true };
+      return undefined;
+    }
+
+    if (isWithdrawal && !isWithdrawalSettled) {
+      return { text: t`Waiting for ${tokenInSymbol}...`, disabled: true };
+    }
+
+    if (conversionError) {
+      return { text: conversionError, disabled: !shouldDisableValidation, onSubmit: onConvert };
+    }
+
+    if (isTransitLoading) {
+      return { text: t`Loading...`, disabled: true };
+    }
+
+    return { text: t`Convert ${tokenInSymbol} to ${tokenOutSymbol}`, onSubmit: onConvert };
+  }, [
+    account,
+    amountIn,
+    feeTierError,
+    isDeposit,
+    isWithdrawalSent,
+    isWithdrawalSettled,
+    isTransitLoading,
+    isTransitRoute,
+    isWithdrawal,
+    onConvert,
+    isConverting,
+    isPaxosTransitOrderStatusUnknown,
+    conversionOrder,
+    isBelowMinOrderSize,
+    minOrderSize,
+    quote,
+    quoteError,
+    shouldDisableValidation,
+    isWithdrawalUsdgPendingConversion,
+    step,
+    tokenIn,
+    tokenOut,
+  ]);
+
+  const usdgStepAmount = isDeposit ? quote?.amountOut : amountIn;
+  const hasUsdgCollateral =
+    paxosTransitConfig !== undefined &&
+    (longTokenAddress === paxosTransitConfig.usdgAddress || shortTokenAddress === paxosTransitConfig.usdgAddress);
+
+  return {
+    submitState,
+    isTransitRoute,
+    shouldShowRouteSelector,
+    isRouteSelectable,
+    conversionRoutePreference,
+    setConversionRoutePreference,
+    shouldShowWhitelistNote,
+    hasUsdgCollateral,
+    tokenIn,
+    usdgToken,
+    usdgStepAmount,
+    transitFillCount,
+    thresholdUsd,
+    isWhitelisted,
+    isZeroFeeCapacityShort,
+    zeroFeeCapacity,
+    transitFeesUsd,
+  };
+}
+
+function getTransitConversionError(p: {
+  isDeposit: boolean;
+  tokenIn: TokenData | undefined;
+  amountIn: bigint;
+  feeTierError: Error | undefined;
+  isBelowMinOrderSize: boolean;
+  minOrderSize: bigint | undefined;
+  quote: TransitQuote | undefined;
+  quoteError: Error | undefined;
+  isTransitLoading: boolean;
+}): string | undefined {
+  const tokenInSymbol = p.tokenIn?.symbol;
+
+  if (p.isDeposit && p.tokenIn?.walletBalance !== undefined && p.tokenIn.walletBalance < p.amountIn) {
+    return t`Insufficient ${tokenInSymbol} balance`;
+  }
+
+  if (p.feeTierError) {
+    return t`${tokenInSymbol} conversion is unavailable`;
+  }
+
+  if (p.isBelowMinOrderSize && p.minOrderSize !== undefined && p.tokenIn) {
+    return t`Minimum conversion is ${formatAmountFree(p.minOrderSize, p.tokenIn.decimals)} ${tokenInSymbol}`;
+  }
+
+  if (p.quoteError) {
+    return p.quoteError.message;
+  }
+
+  if (!p.quote && !p.isTransitLoading) {
+    return t`${tokenInSymbol} conversion is unavailable`;
+  }
+
+  return undefined;
+}

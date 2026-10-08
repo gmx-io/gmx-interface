@@ -16,7 +16,7 @@ import { useSafeState } from "lib/useSafeState";
 import { isMarketTokenAddress } from "sdk/configs/markets";
 
 import { getGmSwapBoxAvailableModes } from "components/GmSwap/GmSwapBox/getGmSwapBoxAvailableModes";
-import { FocusedInput } from "components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/types";
+import { ConversionRoutePreference, FocusedInput } from "components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/types";
 import {
   useMultichainMarketTokensBalancesRequest,
   useMultichainTokens,
@@ -71,6 +71,10 @@ export type PoolsDetailsState = {
   secondTokenInputValue: string;
   marketOrGlvTokenInputValue: string;
   isMarketForGlvSelectedManually: boolean;
+  isFirstTokenPinned: boolean;
+  isTransitRoute: boolean;
+  transitAmountOut: bigint | undefined;
+  conversionRoutePreference: ConversionRoutePreference;
   multichainTokensResult: ReturnType<typeof useMultichainTokens>;
 
   setOperation: (operation: Operation) => void;
@@ -85,6 +89,10 @@ export type PoolsDetailsState = {
   setSecondTokenInputValue: (value: string) => void;
   setMarketOrGlvTokenInputValue: (value: string) => void;
   setIsMarketForGlvSelectedManually: (value: boolean) => void;
+  setIsFirstTokenPinned: (value: boolean) => void;
+  setIsTransitRoute: (value: boolean) => void;
+  setTransitAmountOut: (value: bigint | undefined) => void;
+  setConversionRoutePreference: (value: ConversionRoutePreference) => void;
 };
 
 export function usePoolsDetailsState({
@@ -154,6 +162,11 @@ export function usePoolsDetailsState({
     | undefined
   >([chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, glvOrMarketAddress, "inputTokenAddresses"], undefined);
 
+  const [isFirstTokenPinned = false, setIsFirstTokenPinned] = useLocalStorageSerializeKeySafe<boolean>(
+    [chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, glvOrMarketAddress, "isFirstTokenPinned"],
+    false
+  );
+
   const firstTokenAddress = inputTokenAddresses?.first;
   const secondTokenAddress =
     inputTokenAddresses?.second === inputTokenAddresses?.first ? undefined : inputTokenAddresses?.second;
@@ -213,6 +226,9 @@ export function usePoolsDetailsState({
   const [secondTokenInputValue, setSecondTokenInputValue] = useSafeState<string>("");
   const [marketOrGlvTokenInputValue, setMarketOrGlvTokenInputValue] = useSafeState<string>("");
   const [isMarketForGlvSelectedManually, setIsMarketForGlvSelectedManually] = useState(false);
+  const [isTransitRoute, setIsTransitRoute] = useState(false);
+  const [transitAmountOut, setTransitAmountOut] = useState<bigint | undefined>(undefined);
+  const [conversionRoutePreference, setConversionRoutePreference] = useState<ConversionRoutePreference>("auto");
 
   useEffect(
     function syncOperationAndModeFromQueryParams() {
@@ -284,6 +300,10 @@ export function usePoolsDetailsState({
       secondTokenInputValue,
       marketOrGlvTokenInputValue,
       isMarketForGlvSelectedManually,
+      isFirstTokenPinned,
+      isTransitRoute,
+      transitAmountOut,
+      conversionRoutePreference,
       multichainTokensResult,
       // Setters
       setOperation,
@@ -298,6 +318,10 @@ export function usePoolsDetailsState({
       setSecondTokenInputValue,
       setMarketOrGlvTokenInputValue,
       setIsMarketForGlvSelectedManually,
+      setIsFirstTokenPinned,
+      setIsTransitRoute,
+      setTransitAmountOut,
+      setConversionRoutePreference,
     };
   }, [
     enabled,
@@ -314,11 +338,16 @@ export function usePoolsDetailsState({
     secondTokenInputValue,
     marketOrGlvTokenInputValue,
     isMarketForGlvSelectedManually,
+    isFirstTokenPinned,
+    isTransitRoute,
+    transitAmountOut,
+    conversionRoutePreference,
     multichainTokensResult,
     setGlvOrMarketAddress,
     setPaySource,
     setFirstTokenAddress,
     setSecondTokenAddress,
+    setIsFirstTokenPinned,
     setFirstTokenInputValue,
     setSecondTokenInputValue,
     setMarketOrGlvTokenInputValue,
