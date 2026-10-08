@@ -4,6 +4,7 @@ import { decodeFunctionResult, encodeFunctionData, isHex, maxUint256, type Hex, 
 
 import type { AnyChainId, ContractsChainId, SourceChainId } from "config/chains";
 import { isSourceChain } from "config/multichain";
+import { DEFAULT_ONE_CLICK_SESSION_DURATION, DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS } from "config/oneClickTrading";
 import type {
   SignedSubaccountApproval,
   Subaccount,
@@ -23,7 +24,6 @@ import {
   subaccountIntegrationIdKey,
   subaccountListKey,
 } from "sdk/configs/dataStore";
-import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT } from "sdk/configs/express";
 import { bigMath } from "sdk/utils/bigmath";
 import { ZERO_DATA } from "sdk/utils/hash";
 import { nowInSeconds } from "sdk/utils/time";
@@ -317,7 +317,7 @@ export async function getInitialSubaccountApproval({
 }) {
   const onchainData = await getSubaccountOnchainData({ chainId, signer, provider, subaccountAddress });
 
-  const defaultExpiresAt = BigInt(nowInSeconds() + DEFAULT_SUBACCOUNT_EXPIRY_DURATION);
+  const defaultExpiresAt = BigInt(nowInSeconds() + DEFAULT_ONE_CLICK_SESSION_DURATION);
 
   let expiresAt = getSubaccountExpiresAt({
     onchainData,
@@ -328,7 +328,7 @@ export async function getInitialSubaccountApproval({
     expiresAt = defaultExpiresAt;
   }
 
-  const defaultMaxAllowedCount = BigInt(DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT);
+  const defaultMaxAllowedCount = BigInt(DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS);
   const maxAllowedCount = onchainData.currentActionsCount + defaultMaxAllowedCount;
 
   const defaultSubaccountApproval = await createAndSignSubaccountApproval(
