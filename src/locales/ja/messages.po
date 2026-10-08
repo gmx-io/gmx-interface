@@ -662,10 +662,6 @@ msgstr "GM残高不足"
 msgid "Express fees are paid in your Wallet gas payment token. Change it in Settings."
 msgstr "Expressの手数料はウォレットのGas支払いトークンで支払われます。設定で変更できます。"
 
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Slippage exceeded. Expected min: {minOutputAmountText}, actual: {outputAmountText}"
-msgstr "スリッページ超過。最小予想額: {minOutputAmountText}、実際: {outputAmountText}"
-
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Projected yearly return from trading fees only.<0/><1/>Includes: trading fees, borrow fees, liquidations, swaps.<2/>Excludes: backing token price changes, PnL, funding fees.<3/><4/><5>View detailed stats on Dune</5>."
 msgstr "取引手数料のみに基づく年間予想リターンです。<0/><1/>含む：取引手数料、借入手数料、清算、スワップ。<2/>含まない：裏付けトークンの価格変動、PnL、ファンディング手数料。<3/><4/><5>Duneで詳細な統計を見る</5>。"
@@ -1170,6 +1166,10 @@ msgstr "証拠金入金を差し替え"
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Earns MegaETH points"
 msgstr "MegaETHポイントを獲得"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Withdrawal unavailable: selling this amount would raise long traders' PnL-to-pool ratio to {pnlToPoolRatioText}, above the {maxPnlRatioText} limit. Try a smaller amount or try again later."
+msgstr "引き出しできません：この数量を売却すると、ロングトレーダーのPnL対プール比率が{pnlToPoolRatioText}に上昇し、上限の{maxPnlRatioText}を超えます。より少ない数量でお試しいただくか、しばらくしてから再度お試しください。"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
@@ -3995,7 +3995,7 @@ msgstr "トリガー"
 msgid "Mark price changed. Increase allowed slippage"
 msgstr "マーク価格が変更されました。許容スリッページを引き上げてください"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationError.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -4620,7 +4620,6 @@ msgstr "現在の証拠金"
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/keys.ts
-#: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdrawal failed"
@@ -6574,8 +6573,7 @@ msgstr "トリガー注文"
 msgid "GMX uses TradingView for real-time cryptocurrency charts. Track <0>BTCUSD</0> and other pairs with interactive charting tools."
 msgstr "GMXはTradingViewを使用してリアルタイムの暗号通貨チャートを提供しています。<0>BTCUSD</0>やその他のペアをインタラクティブなチャートツールで追跡できます。"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationError.ts
 msgid "Error simulating deposit"
 msgstr "入金シミュレーションエラー"
 
@@ -10183,8 +10181,8 @@ msgstr "<0>紹介プログラムのドキュメント</0>を参照するか、<1
 msgid "Edit order"
 msgstr "注文を編集"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationError.ts
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Error simulating withdrawal"
 msgstr "引き出しシミュレーションエラー"
@@ -10807,10 +10805,6 @@ msgstr "{tokenSymbol}をステーク"
 #: src/components/ShareModal/useShareCardActions.ts
 msgid "Link copied to clipboard"
 msgstr "リンクがクリップボードにコピーされました"
-
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Max pool capacity reached. Current: {poolAmountText}, max: {maxPoolAmountText}"
-msgstr "プール容量の上限に達しました。現在：{poolAmountText}、上限：{maxPoolAmountText}"
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} APR"
@@ -11488,10 +11482,6 @@ msgstr "総合統計"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GLP not withdrawn"
 msgstr "ベスティング済みGLP未引き出し"
-
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Insufficient pool liquidity. Available: {availableAmountText}"
-msgstr "プールの流動性が不足しています。利用可能額: {availableAmountText}"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Become a market maker"
@@ -12334,6 +12324,10 @@ msgstr "{count, plural, one {注文} other {# 注文}}"
 msgid "Avalanche trading incentives"
 msgstr "Avalancheトレーディングインセンティブ"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Withdrawal unavailable: selling this amount would raise short traders' PnL-to-pool ratio to {pnlToPoolRatioText}, above the {maxPnlRatioText} limit. Try a smaller amount or try again later."
+msgstr "引き出しできません：この数量を売却すると、ショートトレーダーのPnL対プール比率が{pnlToPoolRatioText}に上昇し、上限の{maxPnlRatioText}を超えます。より少ない数量でお試しいただくか、しばらくしてから再度お試しください。"
+
 #: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
 msgid "External routes are only used for market swaps."
 msgstr "外部ルートは成行スワップでのみ使用されます。"
@@ -12814,7 +12808,7 @@ msgstr "GLVボーナスインセンティブ（テスト）"
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationError.ts
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx

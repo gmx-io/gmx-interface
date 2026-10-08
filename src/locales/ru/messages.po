@@ -662,10 +662,6 @@ msgstr "Недостаточный баланс GM"
 msgid "Express fees are paid in your Wallet gas payment token. Change it in Settings."
 msgstr "Комиссии Express оплачиваются токеном оплаты Gas из вашего кошелька. Изменить его можно в настройках."
 
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Slippage exceeded. Expected min: {minOutputAmountText}, actual: {outputAmountText}"
-msgstr "Проскальзывание превышено. Ожидаемый минимум: {minOutputAmountText}, фактически: {outputAmountText}"
-
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Projected yearly return from trading fees only.<0/><1/>Includes: trading fees, borrow fees, liquidations, swaps.<2/>Excludes: backing token price changes, PnL, funding fees.<3/><4/><5>View detailed stats on Dune</5>."
 msgstr "Прогнозируемая годовая доходность только от торговых комиссий.<0/><1/>Включает: торговые комиссии, комиссии за заём, ликвидации, свопы.<2/>Исключает: изменения цены базовых токенов, PnL, комиссии за фандинг.<3/><4/><5>Подробная статистика на Dune</5>."
@@ -1170,6 +1166,10 @@ msgstr "Заменить депозит маржи"
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Earns MegaETH points"
 msgstr "Начисляются баллы MegaETH"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Withdrawal unavailable: selling this amount would raise long traders' PnL-to-pool ratio to {pnlToPoolRatioText}, above the {maxPnlRatioText} limit. Try a smaller amount or try again later."
+msgstr "Вывод недоступен: продажа этой суммы подняла бы отношение PnL к пулу у лонг-трейдеров до {pnlToPoolRatioText}, что выше лимита {maxPnlRatioText}. Попробуйте меньшую сумму или повторите попытку позже."
 
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
@@ -3995,7 +3995,7 @@ msgstr "Триггер"
 msgid "Mark price changed. Increase allowed slippage"
 msgstr "Расчётная цена изменилась. Увеличьте допустимое проскальзывание"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationError.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -4620,7 +4620,6 @@ msgstr "Текущая маржа"
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/keys.ts
-#: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdrawal failed"
@@ -6574,8 +6573,7 @@ msgstr "Триггерные ордера"
 msgid "GMX uses TradingView for real-time cryptocurrency charts. Track <0>BTCUSD</0> and other pairs with interactive charting tools."
 msgstr "GMX использует TradingView для отображения криптовалютных графиков в реальном времени. Отслеживайте <0>BTCUSD</0> и другие пары с помощью интерактивных инструментов построения графиков."
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationError.ts
 msgid "Error simulating deposit"
 msgstr "Ошибка симуляции депозита"
 
@@ -10183,8 +10181,8 @@ msgstr "Ознакомьтесь с <0>документацией по рефе�
 msgid "Edit order"
 msgstr "Редактировать ордер"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationError.ts
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Error simulating withdrawal"
 msgstr "Ошибка симуляции вывода"
@@ -10807,10 +10805,6 @@ msgstr "Застейкать {tokenSymbol}"
 #: src/components/ShareModal/useShareCardActions.ts
 msgid "Link copied to clipboard"
 msgstr "Ссылка скопирована в буфер обмена"
-
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Max pool capacity reached. Current: {poolAmountText}, max: {maxPoolAmountText}"
-msgstr "Достигнута максимальная ёмкость пула. Текущее: {poolAmountText}, макс.: {maxPoolAmountText}"
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} APR"
@@ -11488,10 +11482,6 @@ msgstr "Общая статистика"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GLP not withdrawn"
 msgstr "Вестинговый GLP не выведен"
-
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Insufficient pool liquidity. Available: {availableAmountText}"
-msgstr "Недостаточная ликвидность пула. Доступно: {availableAmountText}"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Become a market maker"
@@ -12334,6 +12324,10 @@ msgstr "{count, plural, one {Ордер} other {# Ордеров}}"
 msgid "Avalanche trading incentives"
 msgstr "Торговые поощрения Avalanche"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Withdrawal unavailable: selling this amount would raise short traders' PnL-to-pool ratio to {pnlToPoolRatioText}, above the {maxPnlRatioText} limit. Try a smaller amount or try again later."
+msgstr "Вывод недоступен: продажа этой суммы подняла бы отношение PnL к пулу у шорт-трейдеров до {pnlToPoolRatioText}, что выше лимита {maxPnlRatioText}. Попробуйте меньшую сумму или повторите попытку позже."
+
 #: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
 msgid "External routes are only used for market swaps."
 msgstr "Внешние маршруты используются только для маркет-свопов."
@@ -12814,7 +12808,7 @@ msgstr "Бонусное поощрение GLV (тест)"
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationError.ts
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx

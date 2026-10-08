@@ -51,7 +51,6 @@ import {
   ValidationResult,
 } from "domain/synthetics/trade/utils/validation";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
-import { isCustomError } from "lib/errors";
 import { adjustForDecimals, formatBalanceAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -64,6 +63,7 @@ import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
+import { getGmSwapSimulationError } from "./getGmSwapSimulationError";
 import { useLpTransactions } from "./lpTxn/useLpTransactions";
 import { useTokensToApprove } from "./useTokensToApprove";
 
@@ -263,6 +263,10 @@ export const useGmSwapSubmitState = ({
   });
 
   const formattedEstimationError = useMemo((): ValidationResult | undefined => {
+    if (technicalFeesError) {
+      return undefined;
+    }
+
     if (estimationError instanceof ExpressEstimationInsufficientGasPaymentTokenBalanceError) {
       if (gasPaymentToken) {
         const { symbol, decimals } = gasPaymentToken;
@@ -295,13 +299,17 @@ export const useGmSwapSubmitState = ({
         };
       }
     } else if (estimationError) {
+      const simulationError = getGmSwapSimulationError({ chainId, error: estimationError, isDeposit });
+
       return {
-        buttonErrorMessage: estimationError.name,
+        buttonErrorMessage: simulationError.text,
+        buttonTooltipMessage: simulationError.description,
       };
     }
 
     return undefined;
   }, [
+    chainId,
     estimationError,
     gasPaymentToken,
     longTokenAddress,
@@ -309,6 +317,7 @@ export const useGmSwapSubmitState = ({
     longTokenAmount,
     shortTokenAmount,
     isDeposit,
+    technicalFeesError,
   ]);
 
   const error = takeValidationResult(
@@ -417,7 +426,7 @@ export const useGmSwapSubmitState = ({
       };
     }
 
-    if ((!technicalFees && !technicalFeesError) || isLoading) {
+    if (!technicalFeesError && (!technicalFees || isLoading)) {
       return {
         text: (
           <>
@@ -430,24 +439,11 @@ export const useGmSwapSubmitState = ({
     }
 
     if (technicalFeesError) {
-      let errorText: string;
-
-      if (isCustomError(technicalFeesError)) {
-        const errorName = technicalFeesError.name;
-
-        if (errorName === "InsufficientMultichainBalance") {
-          errorText = t`Insufficient balance`;
-        } else if (errorName === "MaxPoolAmountExceeded" || errorName === "MaxPoolAmountForDepositExceeded") {
-          errorText = t`Maximum pool capacity reached`;
-        } else {
-          errorText = isDeposit ? t`Error simulating deposit` : t`Error simulating withdrawal`;
-        }
-      } else {
-        errorText = isDeposit ? t`Error simulating deposit` : t`Error simulating withdrawal`;
-      }
+      const simulationError = getGmSwapSimulationError({ chainId, error: technicalFeesError, isDeposit });
 
       return {
-        text: errorText,
+        text: simulationError.text,
+        errorDescription: simulationError.description,
         disabled: true,
       };
     }

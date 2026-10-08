@@ -12,7 +12,7 @@ import {
   getMinimumExecutionFeeBufferBps,
 } from "domain/synthetics/fees/utils/executionFee";
 import { ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
-import { ErrorData } from "lib/errors";
+import { ErrorData, ErrorLike, parseError } from "lib/errors";
 import {
   getInsufficientFeeError,
   SMART_WALLET_ACCOUNT_CHANGED_ERROR,
@@ -398,6 +398,12 @@ export function getDebugErrorMessage(errorData: ErrorData | undefined) {
   ].filter(Boolean);
 
   return [message, ...handles].filter(Boolean).join("\n") || undefined;
+}
+
+export function getErrorDebugContent(error: ErrorLike): ReactNode {
+  const debugErrorMessage = getDebugErrorMessage(parseError(error));
+
+  return debugErrorMessage ? <ToastifyDebug error={debugErrorMessage} /> : undefined;
 }
 
 /**

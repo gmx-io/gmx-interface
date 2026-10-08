@@ -344,36 +344,46 @@ export const useDepositTransactions = ({
           transferRequests,
           expressTxnParams,
           params: params as CreateDepositParams,
-        }).then((result) => {
-          if (result?.taskId) {
-            const balanceUpdates: TokensBalancesUpdates = {};
-            transferRequests.tokens.forEach((token, i) => {
-              const amount = transferRequests.amounts[i];
+        })
+          .then((result) => {
+            if (result?.taskId) {
+              const balanceUpdates: TokensBalancesUpdates = {};
+              transferRequests.tokens.forEach((token, i) => {
+                const amount = transferRequests.amounts[i];
 
-              balanceUpdates[token] = {
-                balanceType: TokenBalanceType.GmxAccount,
-                diff: -amount,
-                isPending: true,
-              };
-            });
-            addOptimisticTokensBalancesUpdates(balanceUpdates);
+                balanceUpdates[token] = {
+                  balanceType: TokenBalanceType.GmxAccount,
+                  diff: -amount,
+                  isPending: true,
+                };
+              });
+              addOptimisticTokensBalancesUpdates(balanceUpdates);
 
-            const depositParams = params as CreateDepositParams;
-            setPendingDeposit({
-              account: depositParams.addresses.receiver,
-              marketAddress: depositParams.addresses.market,
-              initialLongTokenAddress: depositParams.addresses.initialLongToken,
-              initialShortTokenAddress: depositParams.addresses.initialShortToken,
-              longTokenSwapPath: depositParams.addresses.longTokenSwapPath,
-              shortTokenSwapPath: depositParams.addresses.shortTokenSwapPath,
-              initialLongTokenAmount: longTokenAmount ?? 0n,
-              initialShortTokenAmount: shortTokenAmount ?? 0n,
-              minMarketTokens: depositParams.minMarketTokens,
-              shouldUnwrapNativeToken: depositParams.shouldUnwrapNativeToken,
-              isGlvDeposit: false,
+              const depositParams = params as CreateDepositParams;
+              setPendingDeposit({
+                account: depositParams.addresses.receiver,
+                marketAddress: depositParams.addresses.market,
+                initialLongTokenAddress: depositParams.addresses.initialLongToken,
+                initialShortTokenAddress: depositParams.addresses.initialShortToken,
+                longTokenSwapPath: depositParams.addresses.longTokenSwapPath,
+                shortTokenSwapPath: depositParams.addresses.shortTokenSwapPath,
+                initialLongTokenAmount: longTokenAmount ?? 0n,
+                initialShortTokenAmount: shortTokenAmount ?? 0n,
+                minMarketTokens: depositParams.minMarketTokens,
+                shouldUnwrapNativeToken: depositParams.shouldUnwrapNativeToken,
+                isGlvDeposit: false,
+              });
+            }
+          })
+          .catch((error) => {
+            toastCustomOrStargateError(chainId, error, {
+              actionName: "GM Deposit",
+              requestId: metricData.requestId,
+              metricId: metricData.metricId,
             });
-          }
-        });
+
+            throw error;
+          });
       } else if (paySource === "settlementChain") {
         const fees = technicalFees?.kind === "settlementChain" ? technicalFees.fees : undefined;
         if (!fees || !tokensData) {
@@ -557,40 +567,50 @@ export const useDepositTransactions = ({
           transferRequests,
           expressTxnParams,
           params: params as CreateGlvDepositParams,
-        }).then((result) => {
-          if (result?.taskId) {
-            const balanceUpdates: TokensBalancesUpdates = {};
-            transferRequests.tokens.forEach((token, i) => {
-              const amount = transferRequests.amounts[i];
+        })
+          .then((result) => {
+            if (result?.taskId) {
+              const balanceUpdates: TokensBalancesUpdates = {};
+              transferRequests.tokens.forEach((token, i) => {
+                const amount = transferRequests.amounts[i];
 
-              balanceUpdates[token] = {
-                balanceType: TokenBalanceType.GmxAccount,
-                diff: -amount,
-                isPending: true,
-              };
-            });
-            addOptimisticTokensBalancesUpdates(balanceUpdates);
+                balanceUpdates[token] = {
+                  balanceType: TokenBalanceType.GmxAccount,
+                  diff: -amount,
+                  isPending: true,
+                };
+              });
+              addOptimisticTokensBalancesUpdates(balanceUpdates);
 
-            const glvDepositParams = params as CreateGlvDepositParams;
-            setPendingDeposit({
-              account: glvDepositParams.addresses.receiver,
-              marketAddress: glvDepositParams.addresses.market,
-              glvAddress: glvDepositParams.addresses.glv,
-              initialLongTokenAddress: glvDepositParams.addresses.initialLongToken,
-              initialShortTokenAddress: glvDepositParams.addresses.initialShortToken,
-              longTokenSwapPath: glvDepositParams.addresses.longTokenSwapPath,
-              shortTokenSwapPath: glvDepositParams.addresses.shortTokenSwapPath,
-              initialLongTokenAmount: longTokenAmount ?? 0n,
-              initialShortTokenAmount: shortTokenAmount ?? 0n,
-              initialMarketTokenAmount: glvDepositParams.isMarketTokenDeposit ? marketTokenAmount ?? 0n : 0n,
-              minMarketTokens: glvDepositParams.minGlvTokens,
-              shouldUnwrapNativeToken: glvDepositParams.shouldUnwrapNativeToken,
-              isGlvDeposit: true,
-              isMarketDeposit: glvDepositParams.isMarketTokenDeposit,
-              marketTokenAmount: glvDepositParams.isMarketTokenDeposit ? marketTokenAmount : undefined,
+              const glvDepositParams = params as CreateGlvDepositParams;
+              setPendingDeposit({
+                account: glvDepositParams.addresses.receiver,
+                marketAddress: glvDepositParams.addresses.market,
+                glvAddress: glvDepositParams.addresses.glv,
+                initialLongTokenAddress: glvDepositParams.addresses.initialLongToken,
+                initialShortTokenAddress: glvDepositParams.addresses.initialShortToken,
+                longTokenSwapPath: glvDepositParams.addresses.longTokenSwapPath,
+                shortTokenSwapPath: glvDepositParams.addresses.shortTokenSwapPath,
+                initialLongTokenAmount: longTokenAmount ?? 0n,
+                initialShortTokenAmount: shortTokenAmount ?? 0n,
+                initialMarketTokenAmount: glvDepositParams.isMarketTokenDeposit ? marketTokenAmount ?? 0n : 0n,
+                minMarketTokens: glvDepositParams.minGlvTokens,
+                shouldUnwrapNativeToken: glvDepositParams.shouldUnwrapNativeToken,
+                isGlvDeposit: true,
+                isMarketDeposit: glvDepositParams.isMarketTokenDeposit,
+                marketTokenAmount: glvDepositParams.isMarketTokenDeposit ? marketTokenAmount : undefined,
+              });
+            }
+          })
+          .catch((error) => {
+            toastCustomOrStargateError(chainId, error, {
+              actionName: "GM Deposit",
+              requestId: metricData.requestId,
+              metricId: metricData.metricId,
             });
-          }
-        });
+
+            throw error;
+          });
       } else if (paySource === "settlementChain") {
         const glvToken = glvInfo?.glvToken;
 
