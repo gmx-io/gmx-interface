@@ -165,3 +165,126 @@
     margin-bottom: 1rem;
   }
 }
+
+// Tooltip standard
+.Tooltip-floating {
+  z-index: 10000;
+}
+
+// Enter and exit motion of animated tooltips (only their panel has data-status). TooltipMotion sets the state and the
+// --tooltip-* timing from config/ui.ts. Only opacity and transform change, so the browser skips layout and paint.
+.Tooltip-popup[data-status] {
+  --tooltip-enter-y: 0px;
+
+  // Hidden before the enter and during the exit
+  opacity: 0;
+  transition-property: opacity, transform;
+  transition-duration: 0ms;
+  transition-timing-function: var(--tooltip-easing);
+
+  // It starts a little smaller and closer to the trigger, then grows into place. With reduced motion it only fades.
+  @media (prefers-reduced-motion: no-preference) {
+    transform: translateY(var(--tooltip-enter-y)) scale(var(--tooltip-enter-scale));
+  }
+
+  // It grows from the pointer, so it looks like it comes out of the trigger
+  &[data-side="top"] {
+    --tooltip-enter-y: var(--tooltip-enter-offset);
+    transform-origin: var(--tooltip-pointer-x) bottom;
+  }
+
+  &[data-side="bottom"] {
+    --tooltip-enter-y: calc(var(--tooltip-enter-offset) * -1);
+    transform-origin: var(--tooltip-pointer-x) top;
+  }
+
+  &[data-side="left"] {
+    transform-origin: right center;
+  }
+
+  &[data-side="right"] {
+    transform-origin: left center;
+  }
+
+  &[data-status="open"] {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition-duration: var(--tooltip-enter-duration);
+  }
+
+  // It leaves the same way back
+  &[data-status="close"] {
+    transition-duration: var(--tooltip-exit-duration);
+  }
+
+  // Opened with the keyboard, or right after another tooltip in the same group
+  &[data-instant] {
+    transition-duration: 0ms;
+  }
+}
+
+.Tooltip-popup--standard {
+  // Dark in both themes (StandardTooltip adds .theme-dark).
+  // DS Fill/SurfaceElevated + Fill/SurfaceHover, flattened into one color so the pointer can share it
+  --tooltip-bg: color-mix(in srgb, var(--color-fill-surfaceElevated), #a0a3c4 10%);
+  // "$" and units have the same color as their number (the base tooltip mutes them)
+  --affix-color: currentColor;
+  --tooltip-padding-x: 12px;
+  --tooltip-padding-y: 8px;
+  --tooltip-radius: 8px;
+  // DS Stroke/Primary (dark value, since the panel is dark in both themes)
+  --tooltip-border: var(--color-slate-600);
+
+  padding: var(--tooltip-padding-y) var(--tooltip-padding-x);
+  border: 1px solid var(--tooltip-border);
+  border-radius: var(--tooltip-radius);
+  background: var(--tooltip-bg);
+  backdrop-filter: none;
+  // One step below the app's primary text: pure white is too strong on the panel
+  color: var(--color-gray-100);
+  // Light theme: a soft shadow tinted with slate-950; the dark theme keeps today's shadow
+  box-shadow: 0 4px 14px 0 rgba(9, 10, 20, 0.08);
+  line-height: var(--line-height-body-medium);
+  letter-spacing: normal;
+  max-width: inherit;
+}
+
+.dark .Tooltip-popup--standard {
+  box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.25);
+}
+
+// Experiment: a see-through panel that blurs what's behind it. The pointer shares the same color.
+.Tooltip-popup--blur {
+  --tooltip-bg: color-mix(in srgb, var(--color-fill-surfaceElevated) 70%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+// Dark in both themes, like the standard. On light cards the glass is denser so it still reads as dark.
+:root:not(.dark) .Tooltip-popup--blur {
+  --tooltip-bg: color-mix(in srgb, var(--color-fill-surfaceElevated) 85%, transparent);
+}
+
+.Tooltip-arrow--standard {
+  fill: var(--tooltip-bg);
+
+  // With a stroke width, FloatingArrow draws the outline first, then the fill with a stroke in the panel color
+  path:nth-of-type(1) {
+    stroke: var(--tooltip-border);
+  }
+
+  path:nth-of-type(2) {
+    stroke: var(--tooltip-bg);
+  }
+}
+
+.Tooltip-handle--standard {
+  cursor: default;
+}
+
+// Standard triggers: a 1px gray dotted line (Stroke/Secondary in the Figma DS library, the same in both themes).
+// The line sits on the top edge of a 1px-tall svg, so it moves down half a pixel to show in full.
+.Tooltip-handle--standard .Tooltip-underline line {
+  stroke: #a0a3c4;
+  stroke-width: 1;
+  transform: translateY(0.5px);
+}

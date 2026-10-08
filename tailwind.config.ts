@@ -23,6 +23,11 @@ function injectColorsPlugin({ addBase }: any) {
   addBase({
     ":root:not(.dark)": cssVariables.light,
   });
+
+  // Elements that stay dark in both themes (e.g. tooltips) re-scope the color variables to dark values
+  addBase({
+    ".theme-dark": cssVariables.dark,
+  });
 }
 
 function textColorNames(tree: object, prefix = ""): string[] {
