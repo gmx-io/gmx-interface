@@ -7989,6 +7989,10 @@ msgstr "現在のレバレッジではポジションを増やせません。証
 msgid "See the perks"
 msgstr "特典を見る"
 
+#: src/components/NetworkFeeRow/NetworkFeeValue.tsx
+msgid "Paid from"
+msgstr "支払い元"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Open fee / discount"
 msgstr "オープン手数料 / 割引"

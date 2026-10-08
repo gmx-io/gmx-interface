@@ -7989,6 +7989,10 @@ msgstr "The position cannot be increased at the current leverage. Increase margi
 msgid "See the perks"
 msgstr "See the perks"
 
+#: src/components/NetworkFeeRow/NetworkFeeValue.tsx
+msgid "Paid from"
+msgstr "Paid from"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Open fee / discount"
 msgstr "Open fee / discount"

@@ -7989,6 +7989,10 @@ msgstr "Позицию нельзя увеличить при текущем п�
 msgid "See the perks"
 msgstr "Посмотреть преимущества"
 
+#: src/components/NetworkFeeRow/NetworkFeeValue.tsx
+msgid "Paid from"
+msgstr "Источник оплаты"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Open fee / discount"
 msgstr "Комиссия за открытие / скидка"

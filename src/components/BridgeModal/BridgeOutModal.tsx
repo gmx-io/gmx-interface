@@ -512,6 +512,7 @@ export function BridgeOutModal({
 
         <SyntheticsInfoRow
           label={t`Bridge fee`}
+          labelClassName="whitespace-nowrap"
           value={
             bridgeFeeDetails ? (
               <NetworkFeeValue

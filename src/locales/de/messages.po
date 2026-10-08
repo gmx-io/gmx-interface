@@ -7989,6 +7989,10 @@ msgstr "Die Position kann beim aktuellen Hebel nicht erhöht werden. Erhöhen Si
 msgid "See the perks"
 msgstr "Vorteile ansehen"
 
+#: src/components/NetworkFeeRow/NetworkFeeValue.tsx
+msgid "Paid from"
+msgstr "Zahlungsquelle"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Open fee / discount"
 msgstr "Eröffnungsgebühr / Rabatt"

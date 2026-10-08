@@ -7989,6 +7989,10 @@ msgstr "현재 레버리지로는 포지션을 늘릴 수 없습니다. 증거�
 msgid "See the perks"
 msgstr "혜택 보기"
 
+#: src/components/NetworkFeeRow/NetworkFeeValue.tsx
+msgid "Paid from"
+msgstr "지불 출처"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Open fee / discount"
 msgstr "개시 수수료 / 할인"
