@@ -24,7 +24,7 @@ const WS_PRICES_STALE_MS = 10_000;
 const WS_PRICES_THROTTLE_MS = 250;
 const WS_FRESH_PRICES_UPDATE_INTERVAL = 10_000;
 
-type WsFrame = { store: WsPriceStore; prices: TokenPricesData; meta: FrameMeta };
+type WsFrame = { store: WsPriceStore; prices: TokenPricesData; meta: FrameMeta; isLive: boolean };
 
 function getWsFrameExpiresAt({ serverTs, originTs, receivedAt }: FrameMeta): number {
   // age at send on the server clock plus time since receipt on the client clock, so clock skew never enters
@@ -87,7 +87,7 @@ export function useTokenRecentPricesRequest(
         const prices = store.getSnapshot();
         const meta = store.getMeta();
         clearTimeout(expiryTimer);
-        setWsFrame(prices && meta ? { store, prices, meta } : undefined);
+        setWsFrame(prices && meta ? { store, prices, meta, isLive: store.isLive() } : undefined);
         if (meta) {
           scheduleExpiry(getWsFrameExpiresAt(meta));
         }
@@ -105,17 +105,17 @@ export function useTokenRecentPricesRequest(
   }, [store]);
 
   const frame = wsFrame?.store === store ? wsFrame : undefined;
-  const freshFrame = frame && Date.now() < getWsFrameExpiresAt(frame.meta) ? frame : undefined;
-  const isWsFreshRef = useRef(false);
-  isWsFreshRef.current = freshFrame !== undefined;
+  const isFrameFresh = frame !== undefined && Date.now() < getWsFrameExpiresAt(frame.meta);
+  const liveFreshFrame = isFrameFresh && frame.isLive ? frame : undefined;
+  const isFrameUsableRef = useRef(false);
 
   // a token the frames lack is priced by REST alone, so REST keeps its cadence until the frames cover every token
   const lastRestPricesRef = useRef<TokenPricesData | undefined>(undefined);
   const lastRestPrices = lastRestPricesRef.current;
   const isRestCoveredByStream =
-    freshFrame !== undefined &&
+    liveFreshFrame !== undefined &&
     lastRestPrices !== undefined &&
-    Object.keys(lastRestPrices).every((address) => address in freshFrame.prices);
+    Object.keys(lastRestPrices).every((address) => address in liveFreshFrame.prices);
 
   const key = enabled ? [chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"] : null;
 
@@ -165,7 +165,7 @@ export function useTokenRecentPricesRequest(
         result[NATIVE_TOKEN_ADDRESS] = result[wrappedToken.address];
       }
 
-      if (isWsFreshRef.current) {
+      if (isFrameUsableRef.current) {
         // the stream serves prices meanwhile, so the slower REST cadence is not a ticker freshness gap
         freshnessMetrics.clear(chainId, FreshnessMetricId.Tickers);
       } else {
@@ -181,7 +181,10 @@ export function useTokenRecentPricesRequest(
 
   const restPricesData = data?.pricesData;
   lastRestPricesRef.current = restPricesData;
-  const wsPricesData = freshFrame?.prices;
+  const isFrameNewerThanRest = frame !== undefined && frame.meta.receivedAt > (data?.updatedAt ?? 0);
+  const usableFrame = isFrameFresh && (frame.isLive || isFrameNewerThanRest) ? frame : undefined;
+  isFrameUsableRef.current = usableFrame !== undefined;
+  const wsPricesData = usableFrame?.prices;
   const pricesData = useMemo(
     () => (wsPricesData ? { ...restPricesData, ...wsPricesData } : restPricesData),
     [restPricesData, wsPricesData]
@@ -192,15 +195,15 @@ export function useTokenRecentPricesRequest(
     chainId,
     apiEnabled: store !== undefined,
     apiData: frame,
-    isApiStale: !freshFrame,
+    isApiStale: !usableFrame,
     apiError: undefined,
   });
 
   return {
     pricesData,
-    updatedAt: freshFrame ? freshFrame.meta.receivedAt : data?.updatedAt,
+    updatedAt: usableFrame ? usableFrame.meta.receivedAt : data?.updatedAt,
     error,
-    isPriceDataLoading: isLoading && !freshFrame,
+    isPriceDataLoading: isLoading && !usableFrame,
   };
 }
 

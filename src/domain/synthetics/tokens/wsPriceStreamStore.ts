@@ -15,6 +15,7 @@ export type WsPriceStore = {
   subscribe: (onChange: () => void) => () => void;
   getSnapshot: () => WsPrices | undefined;
   getMeta: () => FrameMeta | undefined;
+  isLive: () => boolean;
 };
 
 export const HIDDEN_CLOSE_DELAY_MS = 10_000;
@@ -103,6 +104,7 @@ export function getWsPriceStore(sdk: GmxApiSdk): WsPriceStore {
       notify();
     });
     next.subscribeStatus((status) => {
+      notify();
       if (!document.hidden) {
         emitMetricCounter<WsStreamStatusCounter>({ event: "wsPrices.status", data: { chainId, status } });
       }
@@ -161,6 +163,7 @@ export function getWsPriceStore(sdk: GmxApiSdk): WsPriceStore {
     },
     getSnapshot: () => snapshot,
     getMeta: () => meta,
+    isLive: () => subscription?.status === "live",
   };
 
   stores.set(sdk, store);
