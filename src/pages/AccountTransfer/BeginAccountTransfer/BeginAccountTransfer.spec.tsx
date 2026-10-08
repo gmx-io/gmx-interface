@@ -45,7 +45,8 @@ vi.mock("lib/contracts", () => ({
   contractFetcher: () => undefined,
 }));
 
-vi.mock("domain/tokens", () => ({
+vi.mock("domain/tokens", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("domain/tokens")>()),
   approveTokens: vi.fn(),
 }));
 
