@@ -66,8 +66,8 @@ class Metrics {
   isGlobalPropsFilled = false;
   initGlobalPropsRetries = 3;
   performanceObserver?: PerformanceObserver;
-  repeatedEventsReporter = createRepeatedEventsReporter<MetricEventParams>((params, repeats) => {
-    this.queueEvent(repeats ? { ...params, data: { ...params.data, ...repeats } } : params);
+  repeatedEventsReporter = createRepeatedEventsReporter<EventPayload>((payload, repeats) => {
+    this.queueEventPayload(repeats ? { ...payload, customFields: { ...payload.customFields, ...repeats } } : payload);
   });
 
   static _instance: Metrics;
@@ -118,37 +118,36 @@ class Metrics {
 
   // Require Generic type to be specified
   pushEvent = <T extends MetricEventParams = never>(params: T) => {
+    const payload = this.createEventPayload(params);
     const repeatKey = REPEAT_FOLDED_EVENTS.includes(params.event) ? getRepeatKey(params) : undefined;
 
     if (repeatKey === undefined) {
-      this.queueEvent(params);
+      this.queueEventPayload(payload);
       return;
     }
 
-    this.repeatedEventsReporter.onEvent(repeatKey, params);
+    this.repeatedEventsReporter.onEvent(repeatKey, payload);
   };
 
-  queueEvent = (params: MetricEventParams) => {
-    const { time, isError, data, event } = params;
+  createEventPayload = ({ time, isError, data, event }: MetricEventParams): EventPayload => ({
+    isDev: isDevelopment(),
+    host: window.location.host,
+    url: window.location.href,
+    event: event,
+    version: getAppVersion(),
+    isError: Boolean(isError),
+    time,
+    isMissedGlobalMetricData: !this.getIsGlobalPropsInited(),
+    customFields: {
+      ...(data ? this.serializeCustomFields(data) : {}),
+      ...this.globalMetricData,
+      wallets: this.wallets,
+      sessionId: getRawSessionId(),
+      uiTimestamp: Date.now(),
+    },
+  });
 
-    const payload: EventPayload = {
-      isDev: isDevelopment(),
-      host: window.location.host,
-      url: window.location.href,
-      event: event,
-      version: getAppVersion(),
-      isError: Boolean(isError),
-      time,
-      isMissedGlobalMetricData: !this.getIsGlobalPropsInited(),
-      customFields: {
-        ...(data ? this.serializeCustomFields(data) : {}),
-        ...this.globalMetricData,
-        wallets: this.wallets,
-        sessionId: getRawSessionId(),
-        uiTimestamp: Date.now(),
-      },
-    };
-
+  queueEventPayload = (payload: EventPayload) => {
     _debugMetrics?.logEvent(payload);
 
     this.queue.push({

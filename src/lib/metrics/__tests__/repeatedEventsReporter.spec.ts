@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { SOURCE_BASE_MAINNET } from "sdk/configs/chainIds";
+
 import { metrics } from "../Metrics";
 import type { MulticallTimeoutEvent, OpenAppEvent } from "../types";
 
@@ -33,8 +35,10 @@ function readReports() {
       return [];
     }
 
-    const { errorMessage, rpcProvider, repeatCount, firstTs, lastTs } = item.payload.customFields;
-    const name = [item.payload.event, rpcProvider ?? errorMessage].filter(Boolean).join(" ");
+    const { errorMessage, rpcProvider, srcChainId, repeatCount, firstTs, lastTs } = item.payload.customFields;
+    const name = [item.payload.event, rpcProvider ?? errorMessage, srcChainId && `@${srcChainId}`]
+      .filter(Boolean)
+      .join(" ");
 
     return [repeatCount ? `${name} x${repeatCount} ${firstTs}-${lastTs}` : name];
   });
@@ -51,34 +55,39 @@ describe("Metrics repeated events", () => {
   });
 
   it("sends the first of identical events at once and folds its repeats into one summary per minute", () => {
-    const steps: { time: number; push: () => void; isTimerLate?: boolean }[] = [
-      { time: 0, push: pushExtensionError },
-      { time: 1_000, push: pushExtensionError },
-      { time: 2_000, push: pushExtensionError },
+    const steps: { time: number; act: () => void; isTimerLate?: boolean }[] = [
+      { time: 0, act: pushExtensionError },
+      { time: 1_000, act: pushExtensionError },
+      { time: 2_000, act: pushExtensionError },
       // Other events are never folded
-      { time: 3_000, push: pushOpenApp },
-      { time: 3_500, push: pushOpenApp },
+      { time: 3_000, act: pushOpenApp },
+      { time: 3_500, act: pushOpenApp },
       // A new error goes after the repeats folded before it
-      { time: 4_000, push: () => metrics.pushError(fetchError, "useFastMarketsInfoRequest") },
+      { time: 4_000, act: () => metrics.pushError(fetchError, "useFastMarketsInfoRequest") },
       // The summary is due a minute after the first folded repeat
-      { time: 6_000, push: pushExtensionError },
-      { time: 50_000, push: pushExtensionError },
-      { time: 70_000, push: pushExtensionError },
+      { time: 6_000, act: pushExtensionError },
+      { time: 50_000, act: pushExtensionError },
+      // The chain changes before the summary is sent, the summary keeps the chain of its last repeat
+      {
+        time: 55_000,
+        act: () => metrics.setGlobalMetricData({ ...metrics.globalMetricData, srcChainId: SOURCE_BASE_MAINNET }),
+      },
+      { time: 70_000, act: pushExtensionError },
       // The timer did not fire in a background tab, the next event sends the summary first
-      { time: 200_000, push: pushExtensionError, isTimerLate: true },
-      { time: 201_000, push: () => pushMulticallTimeout("arb1.arbitrum.io") },
-      { time: 202_000, push: () => pushMulticallTimeout("arb1.arbitrum.io") },
-      { time: 203_000, push: () => pushMulticallTimeout("arbitrum-one-rpc.publicnode.com") },
+      { time: 200_000, act: pushExtensionError, isTimerLate: true },
+      { time: 201_000, act: () => pushMulticallTimeout("arb1.arbitrum.io") },
+      { time: 202_000, act: () => pushMulticallTimeout("arb1.arbitrum.io") },
+      { time: 203_000, act: () => pushMulticallTimeout("arbitrum-one-rpc.publicnode.com") },
     ];
 
-    for (const { time, push, isTimerLate } of steps) {
+    for (const { time, act, isTimerLate } of steps) {
       if (isTimerLate) {
         vi.setSystemTime(time);
       } else {
         vi.advanceTimersByTime(time - Date.now());
       }
 
-      push();
+      act();
     }
 
     vi.advanceTimersByTime(2 * MINUTE);
@@ -90,11 +99,11 @@ describe("Metrics repeated events", () => {
       `${EXTENSION_ERROR} x2 1000-2000`,
       "error Failed to fetch",
       `${EXTENSION_ERROR} x2 6000-50000`,
-      `${EXTENSION_ERROR} x1 70000-70000`,
-      EXTENSION_ERROR,
-      "multicall.timeout arb1.arbitrum.io",
-      "multicall.timeout arb1.arbitrum.io x1 202000-202000",
-      "multicall.timeout arbitrum-one-rpc.publicnode.com",
+      `${EXTENSION_ERROR} @8453 x1 70000-70000`,
+      `${EXTENSION_ERROR} @8453`,
+      "multicall.timeout arb1.arbitrum.io @8453",
+      "multicall.timeout arb1.arbitrum.io @8453 x1 202000-202000",
+      "multicall.timeout arbitrum-one-rpc.publicnode.com @8453",
     ]);
   });
 });
