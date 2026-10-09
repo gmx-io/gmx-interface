@@ -68,6 +68,7 @@ export function getDecreasePositionAmounts(p: {
   fixedAcceptablePriceImpactBps?: bigint;
   acceptablePriceImpactBuffer?: number;
   userReferralInfo: UserReferralInfo | undefined;
+  proDiscountFactor?: bigint;
   minCollateralUsd: bigint;
   minPositionSizeUsd: bigint;
   uiFeeFactor: bigint;
@@ -91,6 +92,7 @@ export function getDecreasePositionAmounts(p: {
     fixedAcceptablePriceImpactBps,
     acceptablePriceImpactBuffer,
     userReferralInfo,
+    proDiscountFactor,
     minCollateralUsd,
     minPositionSizeUsd,
     uiFeeFactor,
@@ -199,7 +201,9 @@ export function getDecreasePositionAmounts(p: {
       marketInfo,
       values.sizeDeltaUsd,
       values.balanceWasImproved,
-      userReferralInfo
+      userReferralInfo,
+      undefined,
+      proDiscountFactor
     );
 
     values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
@@ -298,7 +302,14 @@ export function getDecreasePositionAmounts(p: {
     : convertToTokenAmount(profitUsd, collateralToken.decimals, values.collateralPrice)!;
 
   // Fees
-  const positionFeeInfo = getPositionFee(marketInfo, values.sizeDeltaUsd, values.balanceWasImproved, userReferralInfo);
+  const positionFeeInfo = getPositionFee(
+    marketInfo,
+    values.sizeDeltaUsd,
+    values.balanceWasImproved,
+    userReferralInfo,
+    undefined,
+    proDiscountFactor
+  );
   const estimatedPositionFeeCost = estimateCollateralCost(
     positionFeeInfo.positionFeeUsd,
     collateralToken,
@@ -1125,6 +1136,7 @@ export function getOptimalDecreaseAndSwapAmounts(p: {
   fixedAcceptablePriceImpactBps?: bigint;
   acceptablePriceImpactBuffer?: number;
   userReferralInfo: UserReferralInfo | undefined;
+  proDiscountFactor?: bigint;
   minCollateralUsd: bigint;
   minPositionSizeUsd: bigint;
   uiFeeFactor: bigint;
@@ -1152,6 +1164,7 @@ export function getOptimalDecreaseAndSwapAmounts(p: {
     fixedAcceptablePriceImpactBps,
     acceptablePriceImpactBuffer,
     userReferralInfo,
+    proDiscountFactor,
     minCollateralUsd,
     minPositionSizeUsd,
     uiFeeFactor,
@@ -1177,6 +1190,7 @@ export function getOptimalDecreaseAndSwapAmounts(p: {
     fixedAcceptablePriceImpactBps,
     acceptablePriceImpactBuffer,
     userReferralInfo,
+    proDiscountFactor,
     minCollateralUsd,
     minPositionSizeUsd,
     uiFeeFactor,

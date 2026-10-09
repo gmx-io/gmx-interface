@@ -88,6 +88,7 @@ function createState(p: {
   isReceiveSeparated?: boolean;
   tokensData?: TokensData;
   positionOverrides?: Partial<PositionInfo>;
+  proDiscountFactor?: bigint;
 }): SyntheticsState {
   const positionMarketInfo = p.marketInfo ?? marketInfo;
   const position = makePosition(p.collateralUsd, p.pnlUsd ?? -LOSS_USD, positionMarketInfo, p.positionOverrides);
@@ -97,6 +98,7 @@ function createState(p: {
     positionsInfoData: { [position.key]: position },
     isPnlInLeverage: p.isPnlInLeverage,
     tokensData: p.tokensData,
+    proDiscountFactor: p.proDiscountFactor ?? 0n,
   });
 
   return {
@@ -375,6 +377,19 @@ describe("position seller — closing costs of a profitable market partial close
     // nothing is withdrawn, so the contract swaps nothing: all 20 of profit arrives in ETH without a swap fee
     expect(amounts.swapProfitFeeUsd).toBe(0n);
     expect(amounts.primaryOutput.usd).toBe(usd(20));
+  });
+
+  it("takes the pro discount off the fee of the close itself PRO-4354", () => {
+    // a 50 % pro discount halves both fees to 5: 42 - 5 of collateral and 20 - 5 of pnl leave 52 against 50
+    const state = createState({
+      ...params,
+      collateralUsd: usd(42),
+      receiveTokenAddress: ETH_ADDRESS,
+      proDiscountFactor: expandDecimals(5, 29),
+    });
+
+    expect(selectPositionSellerRemainingPositionMarginState(state)?.remainingCollateralUsd).toBe(usd(52));
+    expect(selectPositionSellerDecreaseError(state)).toEqual({});
   });
 
   it("charges them to the collateral when the receive is split", () => {
