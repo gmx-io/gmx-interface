@@ -2886,6 +2886,10 @@ msgstr ""
 msgid "Total staked"
 msgstr ""
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min size per part: {0}"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No results found"
@@ -7250,6 +7254,10 @@ msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} and {1} up to the caps below. Remaining tokens are reserved for open positions."
+msgstr ""
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Parts of this order may not execute: the resulting position would exceed the maximum allowed leverage when they trigger. <0>Increase the position's margin</0> or cancel the order."
 msgstr ""
 
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
@@ -13064,6 +13072,10 @@ msgstr ""
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
+msgstr ""
+
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "One or more later TWAP parts may fail because the resulting position would exceed the maximum allowed leverage. Increase margin or reduce the total size."
 msgstr ""
 
 #: src/components/OrderItem/OrderItem.tsx

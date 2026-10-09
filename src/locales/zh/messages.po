@@ -2886,6 +2886,10 @@ msgstr "已达到最大存入限额"
 msgid "Total staked"
 msgstr "总质押量"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min size per part: {0}"
+msgstr "每份最小大小：{0}"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No results found"
@@ -7251,6 +7255,10 @@ msgstr "订单执行失败"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} and {1} up to the caps below. Remaining tokens are reserved for open positions."
 msgstr "卖出 GM 以获取 {0} 和 {1}，上限如下所示。剩余代币为未平仓位预留。"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Parts of this order may not execute: the resulting position would exceed the maximum allowed leverage when they trigger. <0>Increase the position's margin</0> or cancel the order."
+msgstr "此订单的部分可能无法执行：触发时最终仓位将超过允许的最大杠杆。<0>增加仓位保证金</0>或取消订单。"
 
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
@@ -13065,6 +13073,10 @@ msgstr "将触发价格设置为高于标记价格"
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
 msgstr "此链上暂无机会"
+
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "One or more later TWAP parts may fail because the resulting position would exceed the maximum allowed leverage. Increase margin or reduce the total size."
+msgstr "由于最终仓位将超过允许的最大杠杆，一个或多个后续 TWAP 部分可能失败。请增加保证金或减小总规模。"
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"

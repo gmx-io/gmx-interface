@@ -2886,6 +2886,10 @@ msgstr "Límite máximo de depósito alcanzado"
 msgid "Total staked"
 msgstr "Total en staking"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min size per part: {0}"
+msgstr "Tamaño mínimo por parte: {0}"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No results found"
@@ -7251,6 +7255,10 @@ msgstr "Error en la ejecución de la orden"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} and {1} up to the caps below. Remaining tokens are reserved for open positions."
 msgstr "Venda GM por {0} y {1} hasta los límites que se indican a continuación. Los tokens restantes están reservados para posiciones abiertas."
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Parts of this order may not execute: the resulting position would exceed the maximum allowed leverage when they trigger. <0>Increase the position's margin</0> or cancel the order."
+msgstr "Es posible que partes de esta orden no se ejecuten: la posición resultante superaría el apalancamiento máximo permitido cuando se activen. <0>Aumente el margen de la posición</0> o cancele la orden."
 
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
@@ -13065,6 +13073,10 @@ msgstr "Establezca el precio de activación por encima del precio de referencia"
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
 msgstr "Aún no hay oportunidades en esta cadena"
+
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "One or more later TWAP parts may fail because the resulting position would exceed the maximum allowed leverage. Increase margin or reduce the total size."
+msgstr "Una o más partes posteriores del TWAP pueden fallar porque la posición resultante superaría el apalancamiento máximo permitido. Aumente el margen o reduzca el tamaño total."
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"

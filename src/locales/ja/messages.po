@@ -2886,6 +2886,10 @@ msgstr "入金上限に達しました"
 msgid "Total staked"
 msgstr "合計ステーキング額"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min size per part: {0}"
+msgstr "パートあたりの最小サイズ: {0}"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No results found"
@@ -7251,6 +7255,10 @@ msgstr "注文の執行に失敗しました"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} and {1} up to the caps below. Remaining tokens are reserved for open positions."
 msgstr "以下の上限までGMを{0}および{1}で売却できます。残りのトークンはオープンポジション用に確保されています。"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Parts of this order may not execute: the resulting position would exceed the maximum allowed leverage when they trigger. <0>Increase the position's margin</0> or cancel the order."
+msgstr "この注文の一部は実行されない可能性があります：トリガー時に結果として生じるポジションが最大許容レバレッジを超えます。<0>ポジションの証拠金を増やす</0>か、注文をキャンセルしてください。"
 
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
@@ -13065,6 +13073,10 @@ msgstr "トリガー価格をマーク価格より高く設定してください
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
 msgstr "このチェーンにはまだ機会がありません"
+
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "One or more later TWAP parts may fail because the resulting position would exceed the maximum allowed leverage. Increase margin or reduce the total size."
+msgstr "結果として生じるポジションが最大許容レバレッジを超えるため、後続のTWAPパートの一部が失敗する可能性があります。証拠金を増やすか、合計サイズを減らしてください。"
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"

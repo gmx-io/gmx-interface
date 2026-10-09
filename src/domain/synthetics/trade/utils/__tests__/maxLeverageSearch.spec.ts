@@ -120,6 +120,34 @@ const fixtures = [
       );
     })(),
   },
+  {
+    name: "TWAP in four parts on a 25x position of a 20x market, the first part must bring it under",
+    params: (() => {
+      const marketInfo = createMockMarketInfo(ETH_TOKEN, {
+        minCollateralFactor: PRECISION / 20n,
+        minCollateralFactorForLiquidation: PRECISION / 40n,
+      });
+
+      return {
+        ...buildParams(
+          marketInfo,
+          createMockPositionInfo({
+            account: ACCOUNT,
+            marketInfo,
+            sizeInUsd: expandDecimals(10_000, 30),
+            sizeInTokens: expandDecimals(5, 18),
+            collateralUsd: expandDecimals(400, 30),
+          })
+        ),
+        // 1 000 USDC over four parts
+        twap: {
+          numberOfParts: 4,
+          partDelaysSeconds: [0, 12_000, 24_000, 36_000],
+          partGrossCollateralUsds: Array.from({ length: 4 }, () => expandDecimals(250, 30)),
+        },
+      };
+    })(),
+  },
 ];
 
 describe("findMaxLeverageIncrease — agrees with a brute-force sweep of the same evaluation", () => {

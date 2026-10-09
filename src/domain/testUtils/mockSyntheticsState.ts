@@ -9,11 +9,13 @@ import type { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsS
 import type { EditingOrderState } from "domain/synthetics/orders/types";
 import type { PositionsConstants } from "domain/synthetics/positions/usePositionsConstants";
 import type { DeepPartial } from "lib/types";
+import { DEFAULT_TWAP_DURATION, DEFAULT_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 import type { MarketInfo } from "sdk/utils/markets/types";
 import type { OrdersInfoData } from "sdk/utils/orders/types";
 import type { PositionsInfoData } from "sdk/utils/positions/types";
 import type { TokenData } from "sdk/utils/tokens/types";
 import { TradeMode, TradeType } from "sdk/utils/trade/types";
+import type { TwapDuration } from "sdk/utils/twap/types";
 
 import { MOCK_POSITIONS_CONSTANTS } from "./mockChainData";
 import { ETH_ADDRESS, ETH_TOKEN, USDC_ADDRESS, USDC_TOKEN } from "./mockTokens";
@@ -50,6 +52,8 @@ export type MockSyntheticsStateOverrides = {
   };
   isPnlInLeverage?: boolean;
   isSetAcceptablePriceImpactEnabled?: boolean;
+  twapNumberOfParts?: number;
+  twapDuration?: TwapDuration;
 };
 
 /**
@@ -82,6 +86,8 @@ export function createMockSyntheticsState(overrides: MockSyntheticsStateOverride
     orderEditor,
     isPnlInLeverage = false,
     isSetAcceptablePriceImpactEnabled = false,
+    twapNumberOfParts = DEFAULT_TWAP_NUMBER_OF_PARTS,
+    twapDuration = DEFAULT_TWAP_DURATION,
   } = overrides;
 
   const state: DeepPartial<SyntheticsState> = {
@@ -131,7 +137,10 @@ export function createMockSyntheticsState(overrides: MockSyntheticsStateOverride
       triggerPriceInputValue,
       isFromTokenGmxAccount: false,
       leverageOption,
+      setFocusedInput: noop,
       allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
+      numberOfParts: twapNumberOfParts,
+      duration: twapDuration,
       availableTokensOptions: {
         swapTokens: Object.values(tokensData),
         infoTokens: tokensData,

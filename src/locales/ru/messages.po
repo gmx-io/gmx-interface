@@ -2886,6 +2886,10 @@ msgstr "Достигнут максимальный лимит депозита"
 msgid "Total staked"
 msgstr "Всего застейкано"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min size per part: {0}"
+msgstr "Мин размер на часть: {0}"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No results found"
@@ -7251,6 +7255,10 @@ msgstr "Ошибка исполнения ордера"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} and {1} up to the caps below. Remaining tokens are reserved for open positions."
 msgstr "Продайте GM за {0} и {1} в пределах лимитов ниже. Оставшиеся токены зарезервированы для открытых позиций."
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Parts of this order may not execute: the resulting position would exceed the maximum allowed leverage when they trigger. <0>Increase the position's margin</0> or cancel the order."
+msgstr "Части этого ордера могут не исполниться: при срабатывании итоговая позиция превысит максимально допустимое плечо. <0>Увеличьте маржу позиции</0> или отмените ордер."
 
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
@@ -13065,6 +13073,10 @@ msgstr "Установите цену активации выше расчётн
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
 msgstr "На этой сети пока нет возможностей"
+
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "One or more later TWAP parts may fail because the resulting position would exceed the maximum allowed leverage. Increase margin or reduce the total size."
+msgstr "Одна или несколько последующих частей TWAP могут не исполниться: итоговая позиция превысит максимально допустимое плечо. Увеличьте маржу или уменьшите общий размер."
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"

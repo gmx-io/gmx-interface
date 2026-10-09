@@ -44,7 +44,11 @@ import { getPageOutdatedError } from "lib/useHasOutdatedUi";
 import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 import { bigMath } from "sdk/utils/bigmath";
-import { getIsMaxLeverageMarginReason, PositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
+import {
+  getIsMaxLeverageMarginReason,
+  PositionMarginFailureReason,
+  PositionMarginState,
+} from "sdk/utils/trade/increaseMarginCheck";
 import {
   ExternalSwapQuote,
   GmSwapFees,
@@ -423,16 +427,25 @@ export function getIncreaseError(p: {
   const _minCollateralUsd = expandDecimals(2, USD_DECIMALS);
 
   const minTwapPartSize = _minCollateralUsd / 2n;
-  if (
-    !existingPosition &&
+  const twapPartMarginShortfallUsd =
     isTwap &&
-    numberOfParts > 0 &&
-    (collateralUsd === undefined ? undefined : collateralUsd / BigInt(numberOfParts) < minTwapPartSize)
-  ) {
-    const actualMarginPerPart = collateralUsd! / BigInt(numberOfParts);
-    return {
-      buttonErrorMessage: t`Margin per part: ${formatUsd(actualMarginPerPart, { roundMode: "floor" })} (min ${formatUsd(minTwapPartSize)})`,
-    };
+    isResultingPositionCheckBlocking &&
+    resultingPositionMarginState?.reason === PositionMarginFailureReason.MinCollateral
+      ? resultingPositionMarginState.minCollateralUsd - resultingPositionMarginState.remainingCollateralUsd
+      : undefined;
+
+  if (!existingPosition && isTwap && numberOfParts > 0 && collateralUsd !== undefined) {
+    const actualMarginPerPart = collateralUsd / BigInt(numberOfParts);
+
+    if (actualMarginPerPart < minTwapPartSize || twapPartMarginShortfallUsd !== undefined) {
+      const usdCent = expandDecimals(1, USD_DECIMALS - 2);
+      const minMarginPerPart =
+        twapPartMarginShortfallUsd !== undefined ? actualMarginPerPart + twapPartMarginShortfallUsd : minTwapPartSize;
+
+      return {
+        buttonErrorMessage: t`Margin per part: ${formatUsd(actualMarginPerPart, { roundMode: "floor" })} (min ${formatUsd(roundUpMagnitudeDivision(minMarginPerPart, usdCent) * usdCent)})`,
+      };
+    }
   }
 
   if (
@@ -500,14 +513,14 @@ export function getIncreaseError(p: {
     positionFeeFactorForBalanceWasNotImproved: marketInfo?.positionFeeFactorForBalanceWasNotImproved,
   });
 
-  if (nextLeverageWithoutPnl !== undefined && nextLeverageWithoutPnl > maxAllowedLeverage) {
-    return { buttonErrorMessage: t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x` };
-  }
+  const isAggregateLeverageCheckNeeded = !isTwap || resultingPositionMarginState === undefined;
 
-  if (nextLeverageWithoutPnl !== undefined) {
-    const maxLeverageError = getIsMaxLeverageExceeded(nextLeverageWithoutPnl, marketInfo, isLong, sizeDeltaUsd);
+  if (isAggregateLeverageCheckNeeded && nextLeverageWithoutPnl !== undefined) {
+    if (nextLeverageWithoutPnl > maxAllowedLeverage) {
+      return { buttonErrorMessage: t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x` };
+    }
 
-    if (maxLeverageError) {
+    if (getIsMaxLeverageExceeded(nextLeverageWithoutPnl, marketInfo, isLong, sizeDeltaUsd)) {
       return {
         buttonErrorMessage: t`Max leverage exceeded`,
         buttonTooltipName: ValidationButtonTooltipName.maxLeverage,
@@ -523,6 +536,16 @@ export function getIncreaseError(p: {
     return { buttonErrorMessage: t`Min position size: ${formatUsd(minPositionSizeUsd)}` };
   }
 
+  if (
+    isTwap &&
+    !existingPosition &&
+    numberOfParts > 0 &&
+    minPositionSizeUsd !== undefined &&
+    sizeDeltaUsd / BigInt(numberOfParts) < minPositionSizeUsd
+  ) {
+    return { buttonErrorMessage: t`Min size per part: ${formatUsd(minPositionSizeUsd)}` };
+  }
+
   if (isResultingPositionCheckBlocking && getIsMaxLeverageMarginReason(resultingPositionMarginState?.reason)) {
     return {
       buttonErrorMessage: t`Max leverage exceeded`,
@@ -533,6 +556,7 @@ export function getIncreaseError(p: {
   if (
     (isResultingPositionCheckBlocking && resultingPositionMarginState?.isLiquidatable) ||
     (!isLimit &&
+      isAggregateLeverageCheckNeeded &&
       getIsPositionLiquidatableAtPrice({ liqPrice: nextPositionValues?.nextLiqPrice, price: markPrice, isLong }))
   ) {
     return {

@@ -2,6 +2,7 @@ import { t, Trans } from "@lingui/macro";
 
 import { Token } from "domain/tokens";
 import { formatPercentage } from "lib/numbers";
+import { getWrappedToken } from "sdk/configs/tokens";
 import {
   isDecreaseOrderType,
   isIncreaseOrderType,
@@ -22,6 +23,11 @@ import {
   getIsMaxLeverageMarginReason,
   PositionMarginState,
 } from "sdk/utils/trade/increaseMarginCheck";
+import {
+  getTwapIncreasePartsGrossCollateralUsd,
+  getTwapIncreaseSequentialMarginState,
+  TwapIncreaseSequentialMarginState,
+} from "sdk/utils/trade/twapIncreaseMarginCheck";
 
 import {
   DepositMarginNowAction,
@@ -175,6 +181,43 @@ function getMarginDepositOrderErrors(p: {
   return [];
 }
 
+function getMaxLeverageOrderError(positionKey: string | undefined): OrderError {
+  return {
+    msg: (
+      <Trans>
+        This order may fail to execute because the resulting position would exceed the maximum allowed leverage.{" "}
+        <DepositMarginNowAction positionKey={positionKey}>Increase the position's margin</DepositMarginNowAction> or
+        reduce the order size before it triggers.
+      </Trans>
+    ),
+    key: "maxLeverage",
+    level: "error",
+  };
+}
+
+function getTwapMaxLeverageOrderError(positionKey: string | undefined): OrderError {
+  return {
+    msg: (
+      <Trans>
+        Parts of this order may not execute: the resulting position would exceed the maximum allowed leverage when they
+        trigger.{" "}
+        <DepositMarginNowAction positionKey={positionKey}>Increase the position's margin</DepositMarginNowAction> or
+        cancel the order.
+      </Trans>
+    ),
+    key: "maxLeverage",
+    level: "error",
+  };
+}
+
+function getResultingLiquidatableOrderError(positionKey: string | undefined): OrderError {
+  return {
+    key: "resultingLiquidatable",
+    level: "error",
+    msg: <LiquidatableIncreaseMessage positionKey={positionKey} />,
+  };
+}
+
 export function getOrderErrors(p: {
   order: OrderInfo;
   marketsInfoData: MarketsInfoData;
@@ -223,6 +266,16 @@ export function getOrderErrors(p: {
             key: "twap-liquidity2",
           });
         }
+      }
+
+      if (isIncreaseOrderType(order.orderType) && p.resultingPositionMarginState?.isLiquidatable) {
+        const position = Object.values(positionsInfoData || {}).find((pos) => isOrderForPosition(order, pos.key));
+
+        errors.push(
+          getIsMaxLeverageMarginReason(p.resultingPositionMarginState.reason)
+            ? getTwapMaxLeverageOrderError(position?.key)
+            : getResultingLiquidatableOrderError(position?.key)
+        );
       }
     }
   } else if (isPositionOrder(order) && isMarginDepositOrder(order)) {
@@ -458,19 +511,7 @@ export function getOrderErrors(p: {
       const isPreciseMaxLeverage = isPreciseFailure && getIsMaxLeverageMarginReason(marginState?.reason);
 
       if (isPreciseMaxLeverage || (!isPreciseFailure && isMaxLeverageError)) {
-        errors.push({
-          msg: (
-            <Trans>
-              This order may fail to execute because the resulting position would exceed the maximum allowed leverage.{" "}
-              <DepositMarginNowAction positionKey={position?.key}>
-                Increase the position's margin
-              </DepositMarginNowAction>{" "}
-              or reduce the order size before it triggers.
-            </Trans>
-          ),
-          key: "maxLeverage",
-          level: "error",
-        });
+        errors.push(getMaxLeverageOrderError(position?.key));
       } else if (
         isPreciseFailure ||
         (isLimitOrderType(order.orderType) &&
@@ -481,11 +522,7 @@ export function getOrderErrors(p: {
             isLong: positionOrder.isLong,
           }))
       ) {
-        errors.push({
-          key: "resultingLiquidatable",
-          level: "error",
-          msg: <LiquidatableIncreaseMessage positionKey={position?.key} />,
-        });
+        errors.push(getResultingLiquidatableOrderError(position?.key));
       }
     }
   }
@@ -706,5 +743,66 @@ export function getOrderIncreaseResultingPositionMarginState({
       orderType: order.orderType,
       triggerPrice,
     }),
+  });
+}
+
+export function getTwapIncreaseOrderSequentialMarginState({
+  order,
+  position,
+  uiFeeFactor,
+  chainId,
+  marketsInfoData,
+  userReferralInfo,
+  proDiscountFactor,
+  minCollateralUsd,
+}: {
+  order: TwapOrderInfo<PositionOrderInfo>;
+  position: PositionInfo | undefined;
+  uiFeeFactor: bigint;
+  chainId: number;
+  marketsInfoData: MarketsInfoData | undefined;
+  userReferralInfo: UserReferralInfo | undefined;
+  proDiscountFactor: bigint | undefined;
+  minCollateralUsd: bigint;
+}): TwapIncreaseSequentialMarginState | undefined {
+  const { marketInfo } = order;
+  const parts = [...order.orders].sort((a, b) => Number(a.validFromTime) - Number(b.validFromTime));
+  const firstPart = parts[0];
+
+  if (!marketInfo || !marketsInfoData || !isIncreaseOrderType(order.orderType) || !firstPart) {
+    return undefined;
+  }
+
+  const partGrossCollateralUsds = getTwapIncreasePartsGrossCollateralUsd({
+    marketsInfoData,
+    swapPath: order.swapPath,
+    initialCollateralToken: order.initialCollateralToken,
+    collateralToken: order.targetCollateralToken,
+    initialCollateralAmountPerPart: firstPart.initialCollateralDeltaAmount,
+    numberOfParts: parts.length,
+    uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
+    wrappedNativeTokenAddress: getWrappedToken(chainId).address,
+  });
+
+  if (!partGrossCollateralUsds) {
+    return undefined;
+  }
+
+  const nowSeconds = Math.floor(Date.now() / 1000);
+
+  return getTwapIncreaseSequentialMarginState({
+    partSizeDeltaUsd: firstPart.sizeDeltaUsd,
+    pendingFeesUsd: (position?.pendingBorrowingFeesUsd ?? 0n) + (position?.pendingFundingFeesUsd ?? 0n),
+    numberOfParts: parts.length,
+    partDelaysSeconds: parts.map((part) => Math.max(0, Number(part.validFromTime) - nowSeconds)),
+    partGrossCollateralUsds,
+    marketInfo,
+    collateralToken: order.targetCollateralToken,
+    isLong: order.isLong,
+    existingPosition: position,
+    uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
+    minCollateralUsd,
+    userReferralInfo,
+    proDiscountFactor,
   });
 }

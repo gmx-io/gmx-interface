@@ -2886,6 +2886,10 @@ msgstr "최대 입금 한도에 도달했습니다"
 msgid "Total staked"
 msgstr "총 스테이킹 금액"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min size per part: {0}"
+msgstr "파트당 최소 크기: {0}"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No results found"
@@ -7251,6 +7255,10 @@ msgstr "주문 체결 실패"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} and {1} up to the caps below. Remaining tokens are reserved for open positions."
 msgstr "아래 한도까지 GM을 {0} 및 {1}(으)로 매도할 수 있습니다. 나머지 토큰은 미결 포지션을 위해 예약되어 있습니다."
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Parts of this order may not execute: the resulting position would exceed the maximum allowed leverage when they trigger. <0>Increase the position's margin</0> or cancel the order."
+msgstr "이 주문의 일부가 실행되지 않을 수 있습니다: 트리거 시 결과 포지션이 최대 허용 레버리지를 초과하게 됩니다. <0>포지션의 증거금을 늘리거나</0> 주문을 취소하세요."
 
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
@@ -13065,6 +13073,10 @@ msgstr "조건가를 기준가보다 높게 설정하십시오"
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
 msgstr "이 체인에는 아직 기회가 없습니다"
+
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "One or more later TWAP parts may fail because the resulting position would exceed the maximum allowed leverage. Increase margin or reduce the total size."
+msgstr "결과 포지션이 최대 허용 레버리지를 초과하게 되어 이후 TWAP 파트 중 하나 이상이 실패할 수 있습니다. 증거금을 늘리거나 전체 규모를 줄이세요."
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
