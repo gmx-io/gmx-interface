@@ -7,7 +7,12 @@ import { TokensData } from "domain/tokens";
 
 import { InsufficientGmxAccountGasTokenBalanceMessage } from "components/Errors/gasErrors";
 
-import { getNetworkFeeGasPaymentParams, reportMultichainExpressSubmitError } from "../validateMultichainExpressSubmit";
+import {
+  getCanUseTokenPermits,
+  getExpressParamsForSubmit,
+  getNetworkFeeGasPaymentParams,
+  reportMultichainExpressSubmitError,
+} from "../validateMultichainExpressSubmit";
 
 const mocks = vi.hoisted(() => ({
   toastError: vi.fn(),
@@ -45,6 +50,37 @@ function makeExpressParams(overrides: {
     },
   } as unknown as ExpressTxnParams;
 }
+
+describe("getCanUseTokenPermits", () => {
+  it("lets a permit stand in for an approval when the order will be relayed", () => {
+    const expressParams = makeExpressParams({ isGmxAccount: false, isOutGasTokenBalance: false });
+
+    expect(getExpressParamsForSubmit(expressParams)).toBe(expressParams);
+    expect(getCanUseTokenPermits(expressParams)).toBe(true);
+  });
+
+  it("lets a permit cover the missing gas payment token approval that blocks the relay", () => {
+    const expressParams = makeExpressParams({
+      isGmxAccount: false,
+      isOutGasTokenBalance: false,
+      needGasPaymentTokenApproval: true,
+    });
+
+    expect(getCanUseTokenPermits(expressParams)).toBe(true);
+  });
+
+  it("refuses permits when the order falls back to a Classic transaction, which ignores them", () => {
+    const expressParams = makeExpressParams({ isGmxAccount: false, isOutGasTokenBalance: true });
+
+    expect(getExpressParamsForSubmit(expressParams)).toBeUndefined();
+    expect(getCanUseTokenPermits(expressParams)).toBe(false);
+  });
+
+  it("refuses permits without express params and for GMX Account relays", () => {
+    expect(getCanUseTokenPermits(undefined)).toBe(false);
+    expect(getCanUseTokenPermits(makeExpressParams({ isGmxAccount: true, isOutGasTokenBalance: false }))).toBe(false);
+  });
+});
 
 describe("getNetworkFeeGasPaymentParams", () => {
   const walletWithEth = { [zeroAddress]: { walletBalance: 100n } } as unknown as TokensData;

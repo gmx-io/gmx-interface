@@ -1,15 +1,18 @@
 import { ethers } from "ethers";
 import {
   Abi,
+  type Address,
   decodeFunctionResult,
   encodeFunctionData,
   EncodeFunctionDataParameters,
   type Hex,
+  isAddressEqual,
   recoverTypedDataAddress,
 } from "viem";
 
 import { parseError } from "lib/errors";
 import { defined } from "lib/guards";
+import { EMPTY_ARRAY } from "lib/objects";
 import { WalletSigner } from "lib/wallets";
 import { signTypedData, splitSignature } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
@@ -87,6 +90,50 @@ export async function createAndSignTokenPermit(
 
 export function getIsPermitExpired(permit: SignedTokenPermit) {
   return Number(permit.deadline) < nowInSeconds();
+}
+
+export function getIsSameTokenPermit(a: SignedTokenPermit, b: SignedTokenPermit) {
+  return a.token === b.token && a.r === b.r && a.s === b.s;
+}
+
+// setTimeout fires immediately for delays above 2^31-1 ms
+const MAX_TIMEOUT_MS = 2 ** 31 - 1;
+const PERMIT_EXPIRY_BUFFER_MS = 500;
+
+export function getPermitsExpiryTimeoutMs(permits: SignedTokenPermit[], now: number): number {
+  const nearestDeadline = Math.min(...permits.map((p) => Number(p.deadline)));
+  const msUntilExpiry = (nearestDeadline - now + 1) * 1000 + PERMIT_EXPIRY_BUFFER_MS;
+
+  return Math.min(Math.max(0, msUntilExpiry), MAX_TIMEOUT_MS);
+}
+
+/**
+ * Each permit costs relay gas and only Router permits are accepted, so a relay call carries just
+ * the permits for tokens it spends. GMX Account routers reject permits entirely.
+ */
+export function getRelayTokenPermits({
+  chainId,
+  isGmxAccount,
+  tokenPermits,
+  spentTokenAddresses,
+}: {
+  chainId: ContractsChainId;
+  isGmxAccount: boolean;
+  tokenPermits: SignedTokenPermit[];
+  spentTokenAddresses: string[];
+}): SignedTokenPermit[] {
+  if (isGmxAccount || tokenPermits.length === 0) {
+    return EMPTY_ARRAY;
+  }
+
+  const router = getContract(chainId, "SyntheticsRouter");
+
+  return tokenPermits.filter(
+    (permit) =>
+      !getIsPermitExpired(permit) &&
+      isAddressEqual(permit.spender as Address, router) &&
+      spentTokenAddresses.some((address) => isAddressEqual(address as Address, permit.token as Address))
+  );
 }
 
 export async function getTokenPermitParams(
@@ -224,7 +271,7 @@ export async function validateTokenPermitSignature(chainId: number, permit: Sign
     });
 
     // Check if the recovered address matches the expected owner
-    const isValid = recoveredAddress.toLowerCase() === permit.owner.toLowerCase();
+    const isValid = isAddressEqual(recoveredAddress, permit.owner as Address);
 
     return {
       isValid,

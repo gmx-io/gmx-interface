@@ -5614,10 +5614,6 @@ msgstr "익절매 체결"
 msgid "Market Increase"
 msgstr "시장 증가"
 
-#: src/domain/tokens/approveTokens.tsx
-msgid "This token does not support permit approvals."
-msgstr "이 토큰은 퍼밋 승인을 지원하지 않습니다."
-
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Include PnL in leverage display"
@@ -6301,6 +6297,10 @@ msgstr "유효하지 않은 트랜잭션"
 msgid "Insufficient liquidity in {0} pool. Select a different pool."
 msgstr "{0} 풀의 유동성이 부족합니다. 다른 풀을 선택하십시오."
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Enable token permits regardless of UI flags"
+msgstr "UI 플래그와 관계없이 토큰 허가 활성화"
+
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets in your wallet"
 msgstr "지갑에 자산이 없습니다"
@@ -6451,10 +6451,6 @@ msgstr "로딩 중"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "This action is currently disabled"
 msgstr "이 작업은 현재 비활성화되어 있습니다"
-
-#: src/domain/tokens/approveTokens.tsx
-msgid "Permit approvals are currently unavailable."
-msgstr "현재 퍼밋 승인을 사용할 수 없습니다."
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes! You can switch to a different code at any time from the Traders tab. Your new discount will apply to all future trades."
@@ -12036,10 +12032,6 @@ msgstr "연환산 성과"
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Direct smart contract integration"
 msgstr "스마트 컨트랙트 직접 통합"
-
-#: src/domain/tokens/approveTokens.tsx
-msgid "Permit approvals are disabled for this token."
-msgstr "이 토큰의 퍼밋 승인은 비활성화되어 있습니다."
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx

@@ -86,7 +86,9 @@ export const USDG_POOLS_ANNOUNCEMENT_DISMISSED_KEY = "usdg-pools-announcement-di
 export const GMX_ACCOUNT_CONNECTED_BANNER_DISMISSED_KEY = "gmx-account-connected-banner-dismissed";
 
 const DEBUG_MULTICALL_BATCHING_KEY = "debug-multicall-batching";
-export const PERMITS_DISABLED_KEY = "permits-disabled";
+// older builds set it on any permit error and never cleared it
+export const LEGACY_PERMITS_DISABLED_KEY = "permits-disabled";
+export const DEBUG_TOKEN_PERMITS_ENABLED_KEY = "debug-token-permits-enabled";
 
 export const AB_FLAG_STORAGE_KEY = "ab-flags";
 
@@ -114,6 +116,7 @@ const GMX_ACCOUNT_GAS_PAYMENT_TOKEN_ADDRESS_KEY = "gmx-account-gas-payment-token
 
 const SUBACCOUNT_APPROVAL_KEY = "subaccount-approval";
 const TOKEN_PERMITS_KEY = "token-permits";
+const TOKEN_PERMITS_FALLBACK_KEY = "token-permits-fallback";
 
 const HIGH_LEVERAGE_WARNING_DISMISSED_TIMESTAMP_KEY = "high-leverage-warning-dismissed-timestamp";
 
@@ -134,6 +137,11 @@ export function getSubaccountApprovalKey(chainId: number, account: string | unde
 export function getTokenPermitsKey(chainId: number, account: string | undefined) {
   if (!chainId || !account) return null;
   return [chainId, account, TOKEN_PERMITS_KEY];
+}
+
+export function getTokenPermitsFallbackKey(chainId: number, account: string | undefined) {
+  if (!chainId || !account) return null;
+  return [chainId, account, TOKEN_PERMITS_FALLBACK_KEY];
 }
 
 export function getSyntheticsListSectionKey(chainId: number) {

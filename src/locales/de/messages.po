@@ -5614,10 +5614,6 @@ msgstr "Take-Profit ausführen"
 msgid "Market Increase"
 msgstr "Markterhöhung"
 
-#: src/domain/tokens/approveTokens.tsx
-msgid "This token does not support permit approvals."
-msgstr "Dieser Token unterstützt keine Permit-Genehmigungen."
-
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Include PnL in leverage display"
@@ -6301,6 +6297,10 @@ msgstr "Ungültige Transaktion"
 msgid "Insufficient liquidity in {0} pool. Select a different pool."
 msgstr "Unzureichende Liquidität im {0} Pool. Wählen Sie einen anderen Pool."
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Enable token permits regardless of UI flags"
+msgstr "Token-Permits unabhängig von UI-Flags aktivieren"
+
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets in your wallet"
 msgstr "Keine Vermögenswerte in Ihrer Wallet"
@@ -6451,10 +6451,6 @@ msgstr "Ladeanimation"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "This action is currently disabled"
 msgstr "Diese Aktion ist derzeit deaktiviert"
-
-#: src/domain/tokens/approveTokens.tsx
-msgid "Permit approvals are currently unavailable."
-msgstr "Permit-Genehmigungen sind derzeit nicht verfügbar."
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes! You can switch to a different code at any time from the Traders tab. Your new discount will apply to all future trades."
@@ -12036,10 +12032,6 @@ msgstr "Annualisierte Performance"
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Direct smart contract integration"
 msgstr "Direkte Smart-Contract-Integration"
-
-#: src/domain/tokens/approveTokens.tsx
-msgid "Permit approvals are disabled for this token."
-msgstr "Permit-Genehmigungen sind für diesen Token deaktiviert."
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx

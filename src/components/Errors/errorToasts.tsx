@@ -41,7 +41,7 @@ import {
 } from "./gasErrors";
 import { getContractErrorToastContent } from "./getContractErrorToastContent";
 
-export type PermitIssueType = "invalidSignature" | "expiredDeadline";
+export type PermitIssueType = "invalidSignature" | "expiredDeadline" | "failedCheck";
 
 export type AdditionalErrorParams = {
   additionalContent?: ReactNode;
@@ -294,7 +294,7 @@ export function getTxnErrorToast(
     return toastParams;
   }
 
-  if (permitIssueType === "invalidSignature") {
+  if (permitIssueType === "invalidSignature" || permitIssueType === "failedCheck") {
     toastParams.errorContent = getInvalidPermitSignatureToastContent();
     return toastParams;
   } else if (permitIssueType === "expiredDeadline") {

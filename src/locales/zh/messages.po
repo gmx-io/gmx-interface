@@ -5614,10 +5614,6 @@ msgstr "执行止盈"
 msgid "Market Increase"
 msgstr "市场增加"
 
-#: src/domain/tokens/approveTokens.tsx
-msgid "This token does not support permit approvals."
-msgstr "此代币不支持 Permit 授权。"
-
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Include PnL in leverage display"
@@ -6301,6 +6297,10 @@ msgstr "无效交易"
 msgid "Insufficient liquidity in {0} pool. Select a different pool."
 msgstr "{0} 池流动性不足。请选择其他池。"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Enable token permits regardless of UI flags"
+msgstr "忽略 UI 标志启用代币 Permit"
+
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets in your wallet"
 msgstr "您的钱包中没有资产"
@@ -6451,10 +6451,6 @@ msgstr "加载中"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "This action is currently disabled"
 msgstr "此操作当前已禁用"
-
-#: src/domain/tokens/approveTokens.tsx
-msgid "Permit approvals are currently unavailable."
-msgstr "Permit 授权当前不可用。"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes! You can switch to a different code at any time from the Traders tab. Your new discount will apply to all future trades."
@@ -12036,10 +12032,6 @@ msgstr "年化表现"
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Direct smart contract integration"
 msgstr "直接集成智能合约"
-
-#: src/domain/tokens/approveTokens.tsx
-msgid "Permit approvals are disabled for this token."
-msgstr "此代币已禁用 Permit 授权。"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx

@@ -4,9 +4,15 @@ import { ARBITRUM } from "config/chains";
 
 import {
   IS_EXPRESS_AVAILABLE_UI_FLAG,
+  IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG,
+  IS_TOKEN_PERMITS_METAMASK_7702_ENABLED_UI_FLAG,
   UiFlags,
   confirmRelayControlFlags,
   getIsExpressAvailable,
+  getIsTokenPermitsEoaEnabled,
+  getIsTokenPermitsMetaMask7702Enabled,
+  persistApiFlags,
+  readPersistedUiFlags,
 } from "./useUiFlagsRequest";
 
 function flags(enabled: boolean): UiFlags {
@@ -22,6 +28,31 @@ describe("getIsExpressAvailable", () => {
   it("stays available when the flag is missing entirely", () => {
     expect(getIsExpressAvailable(undefined)).toBe(true);
     expect(getIsExpressAvailable({})).toBe(true);
+  });
+});
+
+describe("token permits flags", () => {
+  const flag = (enabled: boolean) => ({ enabled, createdAt: "", updatedAt: "" });
+
+  it("stay off unless the keeper explicitly enables them", () => {
+    expect(getIsTokenPermitsEoaEnabled(undefined)).toBe(false);
+    expect(getIsTokenPermitsEoaEnabled({})).toBe(false);
+    expect(getIsTokenPermitsEoaEnabled({ [IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG]: flag(false) })).toBe(false);
+    expect(getIsTokenPermitsEoaEnabled({ [IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG]: flag(true) })).toBe(true);
+    expect(getIsTokenPermitsMetaMask7702Enabled({ [IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG]: flag(true) })).toBe(false);
+    expect(getIsTokenPermitsMetaMask7702Enabled({ [IS_TOKEN_PERMITS_METAMASK_7702_ENABLED_UI_FLAG]: flag(true) })).toBe(
+      true
+    );
+  });
+
+  it("are not kept across reloads, so an unreachable keeper leaves permits off", () => {
+    persistApiFlags(ARBITRUM, {
+      [IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG]: flag(true),
+      [IS_TOKEN_PERMITS_METAMASK_7702_ENABLED_UI_FLAG]: flag(true),
+    });
+
+    expect(getIsTokenPermitsEoaEnabled(readPersistedUiFlags(ARBITRUM))).toBe(false);
+    expect(getIsTokenPermitsMetaMask7702Enabled(readPersistedUiFlags(ARBITRUM))).toBe(false);
   });
 });
 

@@ -5,11 +5,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { PendingTransaction } from "context/PendingTxnsContext/PendingTxnsContext";
 import type { DecreasePositionAmounts } from "domain/synthetics/trade";
 import { createMockPositionInfo } from "domain/testUtils/mockPositionInfo";
+import { TokenPermitsCheckError } from "domain/tokens/checkTokenPermits";
 import { buildTpSlBatchPayloads } from "domain/tpsl/sidecar";
 import type { PendingTpSlOrderBatch } from "domain/tpsl/types";
 import { expandDecimals } from "lib/numbers";
 import { TxnEventBuilder } from "lib/transactions";
 import { OrderType } from "sdk/utils/orders/types";
+import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 
 import type { BatchOrderTxnCtx } from "../sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "../useOrderTxnCallbacks";
@@ -22,6 +24,9 @@ const state = vi.hoisted(() => ({
   setPendingExpressTxn: vi.fn(),
   updatePendingExpressTxn: vi.fn(),
   errorToast: vi.fn(),
+  removeTokenPermits: vi.fn(),
+  disableTokenPermits: vi.fn(),
+  sendTokenPermitMetric: vi.fn(),
 }));
 
 vi.mock("context/SyntheticsEvents", async (importOriginal) => ({
@@ -45,7 +50,14 @@ vi.mock("context/PendingTxnsContext/PendingTxnsContext", () => ({
 }));
 vi.mock("context/SettingsContext/SettingsContextProvider", () => ({ useSettings: () => ({}) }));
 vi.mock("context/SubaccountContext/SubaccountContextProvider", () => ({ useSubaccountContext: () => ({}) }));
-vi.mock("context/TokenPermitsContext/TokenPermitsContextProvider", () => ({ useTokenPermitsContext: () => ({}) }));
+vi.mock("context/TokenPermitsContext/TokenPermitsContextProvider", () => ({
+  useTokenPermitsContext: () => ({
+    removeTokenPermits: state.removeTokenPermits,
+    disableTokenPermits: state.disableTokenPermits,
+    accountType: "eoa",
+  }),
+}));
+vi.mock("lib/metrics/tokenPermitMetrics", () => ({ sendTokenPermitMetric: state.sendTokenPermitMetric }));
 vi.mock("context/TokensBalancesContext/TokensBalancesContextProvider", () => ({
   useTokensBalancesUpdates: () => ({ addOptimisticTokensBalancesUpdates: vi.fn() }),
 }));
@@ -190,4 +202,33 @@ it("tracks the replacement hash when a wallet TP/SL transaction is sped up", () 
   expect(state.pendingTxns[0].chainId).toBe(42161);
   state.pendingTxns[0].onReplaced?.("replacement");
   expect(state.batches[0].transactionHash).toBe("replacement");
+});
+
+describe("token permits", () => {
+  const permit = { token: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831" } as SignedTokenPermit;
+
+  it("sends tokens whose permit failed the pre-send check back to the approval transaction", () => {
+    const builder = events("express");
+    callback(builder.Error(new TokenPermitsCheckError([permit])));
+
+    expect(state.disableTokenPermits).toHaveBeenCalledWith([permit.token]);
+    expect(state.removeTokenPermits).toHaveBeenCalledWith([permit]);
+    expect(state.sendTokenPermitMetric).toHaveBeenCalledWith({
+      outcome: "failedCheck",
+      chainId: 42161,
+      tokenAddress: permit.token,
+      accountType: "eoa",
+      reason: "preSendCheck",
+    });
+    expect(state.errorToast).toHaveBeenCalledTimes(1);
+  });
+
+  it("forgets stale permits the pre-send check dropped", () => {
+    const builder = events("express");
+    builder.ctx = { ...builder.ctx, stalePermits: [permit] };
+    callback(builder.Submitted());
+
+    expect(state.removeTokenPermits).toHaveBeenCalledWith([permit]);
+    expect(state.disableTokenPermits).not.toHaveBeenCalled();
+  });
 });

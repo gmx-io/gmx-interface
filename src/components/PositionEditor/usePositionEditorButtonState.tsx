@@ -36,6 +36,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExpressTxnParams } from "domain/synthetics/express/types";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
+  getCanUseTokenPermits,
   getExpressParamsForSubmit,
   reportMultichainExpressSubmitError,
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
@@ -337,7 +338,7 @@ export function usePositionEditorButtonState(
     chainId,
     spenderAddress: routerAddress,
     tokens: approvalTokens,
-    allowPermit: Boolean(expressParams),
+    allowPermit: getCanUseTokenPermits(expressParams),
     skip: isCollateralTokenFromGmxAccount,
   });
 

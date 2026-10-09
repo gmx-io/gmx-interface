@@ -132,7 +132,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { hasV2LostFocus, hasPageLostFocus } = useHasLostFocus();
   const { executionFeeBufferBps, setIsSettingsVisible } = useSettings();
 
-  const { resetTokenPermits } = useTokenPermitsContext();
+  const { removeTokenPermits } = useTokenPermitsContext();
   const { refreshSubaccountData, invalidateSubaccountApproval } = useSubaccountContext();
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
@@ -198,10 +198,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       refreshSubaccountData();
 
       if (pendingExpressTxn?.tokenPermits?.length) {
-        resetTokenPermits();
+        removeTokenPermits(pendingExpressTxn.tokenPermits);
       }
     },
-    [refreshSubaccountData, resetTokenPermits]
+    [refreshSubaccountData, removeTokenPermits]
   );
 
   const updateNativeTokenBalance = useCallback(() => {
