@@ -26,6 +26,14 @@ export const CONTRACTS_CHAIN_IDS: readonly ContractsChainId[] = isDevelopment()
 
 export const DEFAULT_SETTLEMENT_CHAIN_ID: SettlementChainId = ARBITRUM;
 
+// Solana has no EVM chain id: this id is app-only and stays out of the SDK's chain lists and types
+export const SOLANA_NETWORK_ID = -1;
+export type SolanaNetworkId = typeof SOLANA_NETWORK_ID;
+
+export function isSolanaNetwork(networkId: number): networkId is SolanaNetworkId {
+  return networkId === SOLANA_NETWORK_ID;
+}
+
 export const DEFAULT_SETTLEMENT_CHAIN_ID_MAP: Record<AnyChainId, SettlementChainId> = {
   [ARBITRUM_SEPOLIA]: ARBITRUM_SEPOLIA,
   [SOURCE_OPTIMISM_SEPOLIA]: ARBITRUM_SEPOLIA,

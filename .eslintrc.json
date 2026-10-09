@@ -112,6 +112,28 @@
         "paths": ["lodash"]
       }
     ],
+    "@typescript-eslint/no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          {
+            "name": "@privy-io/react-auth/solana",
+            "message": "Solana packages are imported only in src/lib/solana and src/domain/gmsol."
+          }
+        ],
+        "patterns": [
+          {
+            "group": ["@solana/*", "@gmsol-labs/*"],
+            "message": "Solana packages are imported only in src/lib/solana and src/domain/gmsol."
+          },
+          {
+            "group": ["lib/solana", "lib/solana/*", "domain/gmsol", "domain/gmsol/*"],
+            "message": "Load Solana modules with a dynamic import() outside src/lib/solana and src/domain/gmsol.",
+            "allowTypeImports": true
+          }
+        ]
+      }
+    ],
     "no-restricted-globals": [
       "error",
       {
@@ -158,6 +180,12 @@
       },
       "parserOptions": {
         "project": ["./tsconfig.json"]
+      }
+    },
+    {
+      "files": ["./src/lib/solana/**", "./src/domain/gmsol/**"],
+      "rules": {
+        "@typescript-eslint/no-restricted-imports": "off"
       }
     },
     {

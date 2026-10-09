@@ -1,1 +1,5 @@
 * @gmx-io/gmx-interface-devs
+
+/src/config/gmsol/ @gmx-io/gmx-interface-devs @gmx-io/gmx-solana-interface-devs
+/src/lib/solana/ @gmx-io/gmx-interface-devs @gmx-io/gmx-solana-interface-devs
+/src/domain/gmsol/ @gmx-io/gmx-interface-devs @gmx-io/gmx-solana-interface-devs
