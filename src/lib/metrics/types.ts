@@ -555,6 +555,21 @@ export type SwapGLVMetricData = {
   isFirstBuy: boolean | undefined;
 };
 
+// Token permits
+export type TokenPermitOutcome = "signed" | "rejected" | "failedCheck" | "fallback";
+
+export type TokenPermitEvent = {
+  event: "tokenPermit";
+  isError: boolean;
+  data: {
+    outcome: TokenPermitOutcome;
+    chainId: number;
+    token: string;
+    accountType: string | undefined;
+    reason?: string;
+  };
+};
+
 // Missed coins
 export type MissedCoinEvent = {
   event: "missedCoin.search" | "missedCoin.popup";

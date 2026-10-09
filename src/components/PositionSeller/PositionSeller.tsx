@@ -46,6 +46,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useInitCollateralCloseDestination } from "domain/synthetics/express/useInitCollateralCloseDestination";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
+  getCanUseTokenPermits,
   getExpressParamsForSubmit,
   getNetworkFeeGasPaymentParams,
   reportMultichainExpressSubmitError,
@@ -499,7 +500,7 @@ export function PositionSeller() {
     chainId,
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokens: approvalTokens,
-    allowPermit: Boolean(expressParams),
+    allowPermit: getCanUseTokenPermits(expressParams),
     skip: srcChainId !== undefined || effectiveIsReceiveToGmxAccount,
   });
 

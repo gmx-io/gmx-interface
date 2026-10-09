@@ -24,6 +24,18 @@ export function getIsExpressAvailable(uiFlags: UiFlags | undefined): boolean {
   return uiFlags?.[IS_EXPRESS_AVAILABLE_UI_FLAG]?.enabled !== false;
 }
 
+export const IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG = "isTokenPermitsEoaEnabled";
+export const IS_TOKEN_PERMITS_METAMASK_7702_ENABLED_UI_FLAG = "isTokenPermitsMetaMask7702Enabled";
+
+/** Fail-closed: permits stay off until the keeper explicitly enables them for the account type. */
+export function getIsTokenPermitsEoaEnabled(uiFlags: UiFlags | undefined): boolean {
+  return uiFlags?.[IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG]?.enabled === true;
+}
+
+export function getIsTokenPermitsMetaMask7702Enabled(uiFlags: UiFlags | undefined): boolean {
+  return uiFlags?.[IS_TOKEN_PERMITS_METAMASK_7702_ENABLED_UI_FLAG]?.enabled === true;
+}
+
 const PERSISTED_API_FLAG_KEYS = [
   "apiMarkets",
   "apiPositions",

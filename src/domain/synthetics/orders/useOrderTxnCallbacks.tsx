@@ -22,6 +22,7 @@ import {
 import { getPositionKey } from "domain/synthetics/positions/utils";
 import { getRemainingSubaccountActions, Subaccount } from "domain/synthetics/subaccount";
 import { TokenBalanceType } from "domain/tokens";
+import { TokenPermitsCheckError } from "domain/tokens/checkTokenPermits";
 import { validateTokenPermitSignature } from "domain/tokens/permitUtils";
 import { sendAddressablePixelEventForOrder } from "lib/addressablePixel";
 import { useChainId } from "lib/chains";
@@ -44,6 +45,7 @@ import {
   sendTxnErrorMetric,
   sendTxnSentMetric,
 } from "lib/metrics";
+import { sendTokenPermitMetric } from "lib/metrics/tokenPermitMetrics";
 import { getByKey } from "lib/objects";
 import { TradingActionName } from "lib/tradingErrorTracker";
 import { TxnEvent, TxnEventName } from "lib/transactions";
@@ -64,6 +66,7 @@ import {
   SwapOrderParams,
   UpdateOrderTxnParams,
 } from "sdk/utils/orderTransactions";
+import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 
 import { getTxnErrorToast, PermitIssueType } from "components/Errors/errorToasts";
 
@@ -101,7 +104,7 @@ export function useOrderTxnCallbacks() {
   const ordersInfoData = useSelector(selectOrdersInfoData);
   const { addOptimisticTokensBalancesUpdates, optimisticTokensBalancesUpdates, websocketTokenBalancesUpdates } =
     useTokensBalancesUpdates();
-  const { setIsPermitsDisabled, resetTokenPermits } = useTokenPermitsContext();
+  const { removeTokenPermits, disableTokenPermits, accountType: tokenPermitAccountType } = useTokenPermitsContext();
   const { invalidateSubaccountApproval } = useSubaccountContext();
   const tokensData = useSelector(selectTokensData);
   const blockNumber = useBlockNumber(chainId);
@@ -115,6 +118,21 @@ export function useOrderTxnCallbacks() {
 
       const { expressParams, batchParams, batchId } = e.data;
       const isSubaccount = Boolean(expressParams?.subaccount);
+      const sentTokenPermits = expressParams?.relayParamsPayload.tokenPermits ?? [];
+
+      const fallbackFromTokenPermits = (permits: SignedTokenPermit[], reason: string) => {
+        disableTokenPermits(permits.map((permit) => permit.token));
+        removeTokenPermits(permits);
+        permits.forEach((permit) => {
+          sendTokenPermitMetric({
+            outcome: "failedCheck",
+            chainId,
+            tokenAddress: permit.token,
+            accountType: tokenPermitAccountType,
+            reason,
+          });
+        });
+      };
 
       const actionsCount = getBatchRequiredActions(batchParams);
 
@@ -241,6 +259,10 @@ export function useOrderTxnCallbacks() {
 
       switch (e.event) {
         case TxnEventName.Submitted: {
+          if (e.data.stalePermits?.length) {
+            removeTokenPermits(e.data.stalePermits);
+          }
+
           const orders = batchParams.createOrderParams
             .filter(
               (cp) => isTriggerDecreaseOrderType(cp.orderPayload.orderType) && !getIsTwapOrderPayload(cp.orderPayload)
@@ -393,7 +415,9 @@ export function useOrderTxnCallbacks() {
 
           let permitIssueType: PermitIssueType | undefined;
 
-          if (expressParams?.relayParamsPayload.tokenPermits?.length) {
+          if (error instanceof TokenPermitsCheckError) {
+            permitIssueType = "failedCheck";
+          } else if (sentTokenPermits.length) {
             if (getIsPermitExpiredDeadlineOnSimulation(error)) {
               permitIssueType = "expiredDeadline";
             } else if (getIsPermitSignatureErrorOnSimulation(error)) {
@@ -449,14 +473,16 @@ export function useOrderTxnCallbacks() {
             fallbackToExternalSwap();
           }
 
-          if (permitIssueType === "expiredDeadline") {
-            expressParams?.relayParamsPayload.tokenPermits.forEach((permit) => {
+          if (error instanceof TokenPermitsCheckError) {
+            fallbackFromTokenPermits(error.failedPermits, "preSendCheck");
+          } else if (permitIssueType === "expiredDeadline") {
+            sentTokenPermits.forEach((permit) => {
               metrics.pushError(getExpiredPermitDeadlineError({ permit }), "simulation.permitExpiredDeadline");
             });
 
-            resetTokenPermits();
+            removeTokenPermits(sentTokenPermits);
           } else if (permitIssueType === "invalidSignature") {
-            expressParams?.relayParamsPayload.tokenPermits.forEach((permit) => {
+            sentTokenPermits.forEach((permit) => {
               validateTokenPermitSignature(chainId, permit).then((validationResult) => {
                 metrics.pushError(
                   getInvalidPermitSignatureError({
@@ -469,8 +495,7 @@ export function useOrderTxnCallbacks() {
               });
             });
 
-            setIsPermitsDisabled(true);
-            resetTokenPermits();
+            fallbackFromTokenPermits(sentTokenPermits, "simulation");
           }
 
           if (isOutdatedSubaccountApproval) {
@@ -503,8 +528,9 @@ export function useOrderTxnCallbacks() {
       ordersInfoData,
       orderStatuses,
       setPendingTpSlOrderBatches,
-      resetTokenPermits,
-      setIsPermitsDisabled,
+      removeTokenPermits,
+      disableTokenPermits,
+      tokenPermitAccountType,
       setIsSettingsVisible,
       setPendingExpressTxn,
       setPendingFundingFeeSettlement,

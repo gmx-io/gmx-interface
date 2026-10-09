@@ -5614,10 +5614,6 @@ msgstr "テイクプロフィットを約定"
 msgid "Market Increase"
 msgstr "マーケット増加"
 
-#: src/domain/tokens/approveTokens.tsx
-msgid "This token does not support permit approvals."
-msgstr "このトークンはパーミット承認に対応していません。"
-
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Include PnL in leverage display"
@@ -6301,6 +6297,10 @@ msgstr "無効なトランザクション"
 msgid "Insufficient liquidity in {0} pool. Select a different pool."
 msgstr "{0} プールの流動性不足です。別のプールを選択してください。"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Enable token permits regardless of UI flags"
+msgstr "UI フラグに関係なくトークン Permit を有効にする"
+
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets in your wallet"
 msgstr "ウォレットに資産がありません"
@@ -6451,10 +6451,6 @@ msgstr "読み込み中"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "This action is currently disabled"
 msgstr "この操作は現在無効です"
-
-#: src/domain/tokens/approveTokens.tsx
-msgid "Permit approvals are currently unavailable."
-msgstr "パーミット承認は現在利用できません。"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes! You can switch to a different code at any time from the Traders tab. Your new discount will apply to all future trades."
@@ -12036,10 +12032,6 @@ msgstr "年間換算パフォーマンス"
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Direct smart contract integration"
 msgstr "スマートコントラクトと直接連携"
-
-#: src/domain/tokens/approveTokens.tsx
-msgid "Permit approvals are disabled for this token."
-msgstr "このトークンではパーミット承認が無効になっています。"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx

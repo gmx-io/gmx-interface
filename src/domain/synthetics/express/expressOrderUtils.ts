@@ -19,6 +19,7 @@ import {
 import type { Subaccount } from "domain/synthetics/subaccount";
 import { getSubaccountValidations } from "domain/synthetics/subaccount/utils";
 import { TokenData, TokensData } from "domain/tokens";
+import { getRelayTokenPermits } from "domain/tokens/permitUtils";
 import { extendError } from "lib/errors";
 import { metrics } from "lib/metrics";
 import { getByKey } from "lib/objects";
@@ -90,11 +91,24 @@ export async function estimateBatchExpressParams({
     return undefined;
   }
 
+  const spentTokenAddresses = [
+    globalExpressParams.gasPaymentTokenAddress,
+    ...Object.keys(getBatchTotalPayCollateralAmount(batchParams)),
+  ];
+
   const expressParams = await estimateExpressParams({
     chainId,
     rpc: createProviderRpc(provider),
     transactionParams,
-    globalExpressParams,
+    globalExpressParams: {
+      ...globalExpressParams,
+      tokenPermits: getRelayTokenPermits({
+        chainId,
+        isGmxAccount,
+        tokenPermits: globalExpressParams.tokenPermits,
+        spentTokenAddresses,
+      }),
+    },
     estimationMethod,
     requireValidations,
     isGmxAccount,

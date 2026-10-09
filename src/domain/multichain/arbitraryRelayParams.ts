@@ -337,7 +337,7 @@ export function getArbitraryRelayParamsAndPayload({
     gasPaymentTokenAmount: relayFeeParams.gasPaymentParams.gasPaymentTokenAmount,
     gasPaymentTokenAsCollateralAmount: 0n,
     gasPaymentAllowanceData: globalExpressParams.gasPaymentAllowanceData ?? EMPTY_OBJECT,
-    tokenPermits: globalExpressParams.tokenPermits,
+    tokenPermits: EMPTY_ARRAY,
     isGmxAccount,
   });
 
@@ -456,7 +456,8 @@ export function useArbitraryRelayParamsAndPayload({
         chainId,
         isGmxAccount: p.isGmxAccount,
         estimationMethod: "estimateGas",
-        globalExpressParams: p.globalExpressParams,
+        // permits are an order-flow feature: only order batches get the pre-send permit check and cleanup
+        globalExpressParams: { ...p.globalExpressParams, tokenPermits: EMPTY_ARRAY },
         rpc,
         stateOverride,
         requireValidations: p.requireValidations,
