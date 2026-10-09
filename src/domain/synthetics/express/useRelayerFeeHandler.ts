@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import {
@@ -11,6 +11,7 @@ import {
   selectRawSubaccountForSettlementChainAction,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import type { TokenData } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { FAST_EXPRESS_PARAMS_TIMEOUT_ERROR } from "lib/errors/customErrors";
 import { throttleLog } from "lib/logging";
@@ -27,11 +28,14 @@ import {
   getBatchIsNativePayment,
   getBatchRequiredActions,
   getBatchTotalExecutionFee,
+  getBatchTotalPayCollateralAmount,
   getIsEmptyBatch,
 } from "sdk/utils/orderTransactions";
 
 import { ExpressTxnParams } from ".";
 import { estimateBatchExpressParams } from "./expressOrderUtils";
+import type { GasPaymentTokenFallback } from "./gasPaymentTokenFallback";
+import { useGasPaymentTokenFallback } from "./useGasPaymentTokenFallback";
 import { useSwitchGasPaymentTokenIfRequiredFromExpressParams } from "./useSwitchGasPaymentTokenIfRequired";
 
 export type ExpressOrdersParamsResult = {
@@ -41,6 +45,8 @@ export type ExpressOrdersParamsResult = {
   expressParamsPromise: Promise<ExpressTxnParams | undefined> | undefined;
   isLoading: boolean;
   isMultichainSubmitDisabled: boolean;
+  // Token the fee is paid with, can differ from the saved gas payment token
+  gasPaymentToken: TokenData | undefined;
 };
 
 export function getMatchingExpressParamsPromise({
@@ -67,19 +73,31 @@ export function useExpressOrdersParams({
   label,
   isGmxAccount,
   canSwitchGasPaymentToken,
+  gasPaymentTokenFallback,
+  payTokenAddress,
 }: {
   orderParams: BatchOrderTxnParams | undefined;
   totalExecutionFee?: bigint;
   label?: string;
   isGmxAccount: boolean;
   canSwitchGasPaymentToken: boolean;
+  gasPaymentTokenFallback?: GasPaymentTokenFallback;
+  payTokenAddress?: string;
 }): ExpressOrdersParamsResult {
   const { chainId } = useChainId();
 
   const showDebugValues = useShowDebugValues();
   const settlementChainGlobalExpressParams = useSelector(selectSettlementChainExpressGlobalParams);
   const gmxAccountGlobalExpressParams = useSelector(selectGmxAccountExpressGlobalParams);
-  const globalExpressParams = isGmxAccount ? gmxAccountGlobalExpressParams : settlementChainGlobalExpressParams;
+  const payAmounts = useMemo(() => (orderParams ? getBatchTotalPayCollateralAmount(orderParams) : {}), [orderParams]);
+  const { globalExpressParams, recordExpressParams } = useGasPaymentTokenFallback({
+    savedGlobalExpressParams: isGmxAccount ? gmxAccountGlobalExpressParams : settlementChainGlobalExpressParams,
+    fallback: gasPaymentTokenFallback,
+    isGmxAccount,
+    payTokenAddress,
+    payAmounts,
+    canNotify: canSwitchGasPaymentToken && orderParams !== undefined && !getIsEmptyBatch(orderParams),
+  });
   const subaccount = useSelector(
     isGmxAccount ? selectRawSubaccountForMultichainAction : selectRawSubaccountForSettlementChainAction
   );
@@ -197,6 +215,8 @@ export function useExpressOrdersParams({
     }
   );
 
+  const gasPaymentToken = globalExpressParams?.gasPaymentToken;
+
   const result = useMemo(() => {
     if (!isAvailable) {
       return {
@@ -207,6 +227,7 @@ export function useExpressOrdersParams({
         isLoading: false,
         isMultichainSubmitDisabled: false,
         expressParamsPromise: undefined,
+        gasPaymentToken,
       };
     }
 
@@ -235,6 +256,7 @@ export function useExpressOrdersParams({
       isLoading,
       isMultichainSubmitDisabled,
       expressParamsPromise,
+      gasPaymentToken,
     };
   }, [
     isAvailable,
@@ -246,11 +268,14 @@ export function useExpressOrdersParams({
     orderParams,
     fastExpressError,
     isGmxAccount,
+    gasPaymentToken,
   ]);
+
+  useEffect(() => recordExpressParams(result.expressParams), [recordExpressParams, result.expressParams]);
 
   useSwitchGasPaymentTokenIfRequiredFromExpressParams({
     expressParams: result.expressParams,
-    orderParams,
+    payAmounts,
     isGmxAccount,
     canSwitchGasPaymentToken,
   });

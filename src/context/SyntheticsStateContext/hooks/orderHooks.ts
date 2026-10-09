@@ -1,7 +1,7 @@
 import uniq from "lodash/uniq";
 import { useCallback, useMemo } from "react";
 
-import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
+import { useEstimateBatchExpressParamsWithApprovedGasToken } from "domain/synthetics/express/useGasPaymentTokenFallback";
 import {
   getExpressParamsForSubmit,
   reportMultichainExpressSubmitError,
@@ -45,6 +45,7 @@ export function useCancelOrder(order: OrderInfo) {
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const estimateExpressParams = useEstimateBatchExpressParamsWithApprovedGasToken();
   const subaccount = useSelector(selectSubaccountForChainAction);
   const hasOutdatedUi = useHasOutdatedUi();
 
@@ -70,7 +71,7 @@ export function useCancelOrder(order: OrderInfo) {
 
       try {
         const expressParams = globalExpressParams
-          ? await estimateBatchExpressParams({
+          ? await estimateExpressParams({
               signer,
               chainId,
               batchParams,
@@ -114,6 +115,7 @@ export function useCancelOrder(order: OrderInfo) {
     },
     [
       chainId,
+      estimateExpressParams,
       globalExpressParams,
       hasOutdatedUi,
       makeOrderTxnCallback,

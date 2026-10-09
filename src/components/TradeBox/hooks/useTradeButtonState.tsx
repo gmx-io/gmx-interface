@@ -132,6 +132,8 @@ type TradeboxButtonState = {
   isExpressLoading: boolean;
   batchParams?: BatchOrderTxnParams;
   totalExecutionFee?: ExecutionFee;
+  // Token the Express fee is paid with, can differ from the saved gas payment token
+  expressGasPaymentToken?: TokenData;
 };
 
 export function useTradeboxButtonState({
@@ -189,6 +191,7 @@ export function useTradeboxButtonState({
     isExpressLoading,
     isMultichainSubmitDisabled,
     totalExecutionFee,
+    gasPaymentToken: expressGasPaymentToken,
   } = useTradeboxTransactions({
     setPendingTxns,
     canSwitchGasPaymentToken,
@@ -633,6 +636,7 @@ export function useTradeboxButtonState({
       batchParams,
       totalExecutionFee,
       isExpressLoading,
+      expressGasPaymentToken,
     };
 
     if (!account && isWalletInitializing) {
@@ -801,6 +805,7 @@ export function useTradeboxButtonState({
     batchParams,
     totalExecutionFee,
     isExpressLoading,
+    expressGasPaymentToken,
     isMultichainSubmitDisabled,
     isWaitingForExternalSwapQuote,
     account,
