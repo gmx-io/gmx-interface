@@ -379,6 +379,48 @@ describe("position seller — closing costs of a profitable market partial close
     expect(amounts.primaryOutput.usd).toBe(usd(20));
   });
 
+  it.each([
+    {
+      pool: "the shorts reserve the whole USDC pool",
+      overrides: { shortInterestUsd: usd(4_000_000) },
+      isReverted: true,
+    },
+    {
+      pool: "the ETH pool is over its cap",
+      overrides: { maxLongPoolAmount: expandDecimals(999, 18) },
+      isReverted: true,
+    },
+    {
+      pool: "the ETH pool is just under its cap",
+      overrides: { maxLongPoolAmount: expandDecimals(1000, 18) + 1n },
+      isReverted: false,
+    },
+  ])(
+    "follows the contract's swap of the profit to the collateral token when $pool PRO-4354",
+    ({ overrides, isReverted }) => {
+      // a reverted swap keeps the ETH profit in ETH and takes the 10 of costs from the collateral, as when the pnl token is
+      // received; the swap only returns to the ETH pool the profit the decrease took out of it, so it cannot pass the cap
+      const state = createState({
+        ...params,
+        marketInfo: createMockMarketInfo(ETH_TOKEN, {
+          positionFeeFactorForBalanceWasImproved: expandDecimals(2, 27),
+          positionFeeFactorForBalanceWasNotImproved: expandDecimals(2, 27),
+          positionImpactFactorPositive: 0n,
+          positionImpactFactorNegative: 0n,
+          ...overrides,
+        }),
+      });
+
+      expect(selectPositionSellerRemainingPositionMarginState(state)?.remainingCollateralUsd).toBe(
+        usd(isReverted ? 45 : 55)
+      );
+      expect(selectPositionSellerDecreaseAmounts(state)?.primaryOutput.usd).toBe(isReverted ? usd(20) : 0n);
+      expect(selectPositionSellerDecreaseError(state)?.buttonErrorMessage).toBe(
+        isReverted ? MAX_LEVERAGE_EXCEEDED.buttonErrorMessage : undefined
+      );
+    }
+  );
+
   it("takes the pro discount off the fee of the close itself PRO-4354", () => {
     // a 50 % pro discount halves both fees to 5: 42 - 5 of collateral and 20 - 5 of pnl leave 52 against 50
     const state = createState({

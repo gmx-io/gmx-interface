@@ -344,6 +344,8 @@ export function getDecreasePositionAmounts(p: {
   const isMarketCollateralToPnlSwap =
     isMarketDecrease && values.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken;
 
+  let isProfitSwapReverted = false;
+
   if (
     profitUsd > 0 &&
     !isMarketCollateralToPnlSwap &&
@@ -361,9 +363,20 @@ export function getDecreasePositionAmounts(p: {
       swapPricingType: SwapPricingType.Swap,
     });
 
-    values.swapProfitFeeUsd = swapProfitStats.swapFeeUsd - swapProfitStats.priceImpactDeltaUsd;
-    values.swapProfitUsdIn = swapProfitStats.usdIn;
-    values.swapUiFeeUsd = applyFactor(swapProfitStats.usdIn, uiFeeFactor);
+    const isPnlTokenPoolOverCap = isLong
+      ? marketInfo.longPoolAmount > marketInfo.maxLongPoolAmount
+      : marketInfo.shortPoolAmount > marketInfo.maxShortPoolAmount;
+
+    isProfitSwapReverted =
+      isMarketDecrease &&
+      isSwapToCollateral &&
+      Boolean(swapProfitStats.isOutLiquidity || swapProfitStats.isOutMaxFactor || isPnlTokenPoolOverCap);
+
+    if (!isProfitSwapReverted) {
+      values.swapProfitFeeUsd = swapProfitStats.swapFeeUsd - swapProfitStats.priceImpactDeltaUsd;
+      values.swapProfitUsdIn = swapProfitStats.usdIn;
+      values.swapUiFeeUsd = applyFactor(swapProfitStats.usdIn, uiFeeFactor);
+    }
   } else {
     values.swapProfitFeeUsd = 0n;
     values.swapProfitUsdIn = 0n;
@@ -383,7 +396,7 @@ export function getDecreasePositionAmounts(p: {
   const isProfitKeptInPnlToken =
     isMarketDecrease &&
     !getIsEquivalentTokens(pnlToken, collateralToken) &&
-    values.decreaseSwapType !== DecreasePositionSwapType.SwapPnlTokenToCollateralToken;
+    (values.decreaseSwapType !== DecreasePositionSwapType.SwapPnlTokenToCollateralToken || isProfitSwapReverted);
 
   const payedInfo = isProfitKeptInPnlToken
     ? payForCollateralCostBeforePnlTokenProfit({
@@ -486,7 +499,7 @@ export function getDecreasePositionAmounts(p: {
     convertToUsd(payedInfo.outputAmount, collateralToken.decimals, values.collateralPrice) ?? 0n;
 
   if (
-    values.decreaseSwapType === DecreasePositionSwapType.NoSwap &&
+    (values.decreaseSwapType === DecreasePositionSwapType.NoSwap || isProfitSwapReverted) &&
     !getIsEquivalentTokens(pnlToken, collateralToken)
   ) {
     values.primaryOutput = {
