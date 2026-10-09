@@ -4,7 +4,7 @@ import cx from "classnames";
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useLatest } from "react-use";
-import { decodeErrorResult, encodeEventTopics, isHex, toHex, zeroAddress } from "viem";
+import { Hex, decodeErrorResult, encodeEventTopics, isHex, toHex, zeroAddress } from "viem";
 import { useAccount, useChains } from "wagmi";
 
 import {
@@ -67,6 +67,7 @@ import { AddressablePixelEventName, sendAddressablePixelEvent } from "lib/addres
 import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
+import { parseError } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedList } from "lib/i18n";
 import {
@@ -669,8 +670,13 @@ export const DepositView = () => {
             });
         }
       } else if (txnEvent.event === TxnEventName.Error) {
-        helperToast.error(t`Deposit failed`, { toastId: "same-chain-gmx-account-deposit" });
         setIsSubmitting(false);
+
+        const toastParams = getTxnErrorToast(settlementChainId, parseError(txnEvent.data.error), {
+          defaultMessage: t`Deposit failed`,
+        });
+
+        helperToast.error(toastParams.errorContent, { autoClose: toastParams.autoCloseToast });
       }
     },
     [
@@ -717,37 +723,27 @@ export const DepositView = () => {
           setIsSubmitting(false);
           let prettyError = txnEvent.data.error;
           const data = txnEvent.data.error.info?.error?.data;
+          const stargateError = isHex(data) ? tryDecodeStargateError(data) : undefined;
 
-          if (isHex(data)) {
-            const error = decodeErrorResult({
-              abi: StargateErrorsAbi,
-              data,
-            });
-
-            prettyError = new Error(JSON.stringify(error, null, 2));
-            prettyError.name = error.errorName;
+          if (stargateError) {
+            prettyError = new Error(JSON.stringify(stargateError, null, 2));
+            prettyError.name = stargateError.errorName;
 
             const toastParams = getTxnErrorToast(
               params.depositViewChain,
               {
-                errorMessage: JSON.stringify(error, null, 2),
+                errorMessage: JSON.stringify(stargateError, null, 2),
               },
               { defaultMessage: t`Deposit failed` }
             );
 
-            helperToast.error(toastParams.errorContent, {
-              autoClose: toastParams.autoCloseToast,
-              toastId: "gmx-account-deposit",
-            });
+            helperToast.error(toastParams.errorContent, { autoClose: toastParams.autoCloseToast });
           } else {
-            const toastParams = getTxnErrorToast(params.depositViewChain, txnEvent.data.error, {
+            const toastParams = getTxnErrorToast(params.depositViewChain, parseError(txnEvent.data.error), {
               defaultMessage: t`Deposit failed`,
             });
 
-            helperToast.error(toastParams.errorContent, {
-              autoClose: toastParams.autoCloseToast,
-              toastId: "gmx-account-deposit",
-            });
+            helperToast.error(toastParams.errorContent, { autoClose: toastParams.autoCloseToast });
           }
 
           sendTxnErrorMetric(params.metricId, prettyError, "unknown");
@@ -1273,7 +1269,6 @@ export const DepositView = () => {
 
       return (
         <NetworkFeeValue
-          className="leading-1"
           amount={sameChainNetworkFeeDetails.amount}
           decimals={sameChainNetworkFeeDetails.decimals}
           usd={sameChainNetworkFeeDetails?.usd}
@@ -1290,7 +1285,6 @@ export const DepositView = () => {
 
     return (
       <NetworkFeeValue
-        className="leading-1"
         amount={networkFee}
         decimals={depositViewViemChain.nativeCurrency.decimals}
         usd={networkFeeUsd}
@@ -1476,6 +1470,7 @@ export const DepositView = () => {
           <SyntheticsInfoRow label={<Trans>Estimated time</Trans>} value={estimatedTimeValue} />
           <SyntheticsInfoRow
             label={<Trans>Network fee</Trans>}
+            labelClassName="whitespace-nowrap"
             value={isNetworkFeeLoading ? valueSkeleton : networkFeeValue}
           />
           <SyntheticsInfoRow
@@ -1539,6 +1534,14 @@ export const DepositView = () => {
     </form>
   );
 };
+
+function tryDecodeStargateError(data: Hex) {
+  try {
+    return decodeErrorResult({ abi: StargateErrorsAbi, data });
+  } catch {
+    return undefined;
+  }
+}
 
 function depositNetworkItemKey(option: { id: number; name: string }) {
   return option.id;

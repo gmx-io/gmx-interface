@@ -589,7 +589,7 @@ function CreateReferralCodeLayout({
         </label>
         {srcChainId !== undefined && networkFee !== undefined && (
           <div className="flex justify-between text-12 text-typography-secondary">
-            <span>
+            <span className="whitespace-nowrap">
               <Trans>Network fee</Trans>
             </span>
             <NetworkFeeValue

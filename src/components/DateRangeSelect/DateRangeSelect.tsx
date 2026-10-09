@@ -17,7 +17,7 @@ import { useCallback, useMemo } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
-import type { DateRange } from "lib/dates";
+import { toCalendarDateByUtcDay, type DateRange } from "lib/dates";
 import { type Locale } from "lib/i18n";
 
 import Button from "components/Button/Button";
@@ -48,6 +48,8 @@ type Props = {
   handleClassName?: string;
   buttonTextClassName?: string;
   renderHandle?: (params: { buttonText: string; open: boolean }) => React.ReactNode;
+  allowFutureDates?: boolean;
+  timezone?: "utc" | "device";
 };
 
 /**
@@ -84,6 +86,11 @@ const PRESET_LABELS: Record<PresetPeriod, MessageDescriptor> = {
 
 const DATE_RANGE_SELECT_PRESETS: PresetPeriod[] = ["days7", "days30", "days90", "days365", "allTime"];
 
+function getToday(timezone: Props["timezone"]) {
+  const now = new Date();
+  return timezone === "utc" ? toCalendarDateByUtcDay(now) : now;
+}
+
 export function DateRangeSelect({
   startDate,
   endDate,
@@ -91,6 +98,8 @@ export function DateRangeSelect({
   handleClassName,
   buttonTextClassName,
   renderHandle,
+  allowFutureDates,
+  timezone,
 }: Props) {
   const { refs, floatingStyles } = useFloating({
     middleware: [offset(10), flip(), shift()],
@@ -153,12 +162,12 @@ export function DateRangeSelect({
         return;
       }
 
-      const end = new Date();
+      const end = getToday(timezone);
       const res = sub(end, duration);
 
       onChange([res, end]);
     },
-    [onChange]
+    [onChange, timezone]
   );
 
   return (
@@ -183,10 +192,11 @@ export function DateRangeSelect({
               <Calendar
                 onChange={onDateRangeChange}
                 value={startDate && endDate ? ([startDate, endDate] as [Date, Date]) : null}
+                defaultActiveStartDate={startDate && endDate ? undefined : getToday(timezone)}
                 selectRange={true}
                 locale={localeStr}
                 minDate={MIN_DATE}
-                maxDate={MAX_DATE}
+                maxDate={allowFutureDates ? MAX_DATE : getToday(timezone)}
                 className="DateRangeSelect-reactCalendar"
                 minDetail="decade"
                 formatMonthYear={(_, date) => format(date, "MMMM, yyyy")}
