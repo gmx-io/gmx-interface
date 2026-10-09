@@ -8542,6 +8542,10 @@ msgstr "Masquer les actifs de faible valeur"
 msgid "TVL (supply)"
 msgstr "TVL (offre)"
 
+#: src/domain/synthetics/express/useGasPaymentTokenFallback.ts
+msgid "{fromSymbol} is not approved for fees. This order pays its network fee in {toSymbol}."
+msgstr "{fromSymbol} n'est pas approuvé pour les frais. Cet ordre paie ses frais de réseau en {toSymbol}."
+
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Insufficient {gasPaymentTokensText} in your GMX Account. Express and One-Click Trading are unavailable."
 msgstr "{gasPaymentTokensText} insuffisant dans votre Compte GMX. Express et One-Click Trading sont indisponibles."
