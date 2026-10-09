@@ -9,6 +9,11 @@ import { ETH_ADDRESS, ETH_TOKEN, USDC_ADDRESS, USDC_TOKEN } from "domain/testUti
 import { expandDecimals, formatUsd, PRECISION } from "lib/numbers";
 import { OrderType, PositionOrderInfo, TwapOrderInfo } from "sdk/utils/orders/types";
 import { PositionMarginFailureReason } from "sdk/utils/trade/increaseMarginCheck";
+import {
+  getTwapIncreaseAggregateAmounts,
+  getTwapIncreasePartAmounts,
+  getTwapIncreaseSequentialMarginState,
+} from "sdk/utils/trade/twapIncreaseMarginCheck";
 import { TradeMode, TradeType } from "sdk/utils/trade/types";
 
 import {
@@ -268,6 +273,53 @@ describe("TWAP increase sequential validation", () => {
       // the failing part holds two parts' deposits, each short of 25 USD by the pool's swap fee and impact
       expect(swapLossUsd).toBeGreaterThan(0n);
       expect(swapLossUsd).toBeLessThan(expandDecimals(1, 30));
+    });
+
+    it("swaps each part's deposit on its own, so the first part is not charged the later parts' impact PRO-4134", () => {
+      // 1 ETH paid in four parts into USDC: every part swaps 0.25 ETH against the imbalance the earlier parts leave,
+      // so the first part keeps 480 USD of collateral and the last one 367; a split of the one-shot swap would give
+      // each part 423 and fail the first part of a 90 ETH TWAP, which only its third part should fail
+      const capOnlyMarket = createMockMarketInfo(ETH_TOKEN, {
+        positionFeeFactorForBalanceWasImproved: 0n,
+        positionFeeFactorForBalanceWasNotImproved: 0n,
+        positionImpactFactorPositive: 0n,
+        positionImpactFactorNegative: 0n,
+        minCollateralFactor: PRECISION / 200n,
+      });
+      const state = createMockSyntheticsState({
+        marketInfo: capOnlyMarket,
+        isLeverageSliderEnabled: false,
+        tradeMode: TradeMode.Twap,
+        fromTokenAddress: ETH_ADDRESS,
+        collateralAddress: USDC_ADDRESS,
+        fromTokenInputValue: "1",
+        toTokenInputValue: "90",
+        twapNumberOfParts: 4,
+        account: MOCK_ACCOUNT,
+      });
+      const { partGrossCollateralUsds, ...sequenceParams } = selectTradeboxTwapIncreaseSequenceParams(state)!;
+      const averageGrossUsd = partGrossCollateralUsds.reduce((sum, part) => sum + part, 0n) / 4n;
+      const averageSplit = getTwapIncreaseSequentialMarginState({
+        ...sequenceParams,
+        ...getTwapIncreasePartAmounts(
+          getTwapIncreaseAggregateAmounts(selectTradeboxIncreasePositionAmounts(state)!),
+          4
+        ),
+        partGrossCollateralUsds: Array.from({ length: 4 }, () => averageGrossUsd),
+        marketInfo: capOnlyMarket,
+        collateralToken: USDC_TOKEN,
+        isLong: true,
+        existingPosition: undefined,
+        uiFeeFactor: 0n,
+        minCollateralUsd: expandDecimals(1, 30),
+        userReferralInfo: undefined,
+      })!;
+
+      expect(partGrossCollateralUsds[0]).toBeGreaterThan(partGrossCollateralUsds[3]);
+      expect(averageSplit.failingPartIndex).toBe(0);
+      expect(selectTradeboxTwapIncreaseSequentialMarginState(state)?.failingPartIndex).toBe(2);
+      expect(selectTradeboxTradeTypeError(state).buttonErrorMessage).toBeUndefined();
+      expect(selectTradeboxIncreaseMaxLeverageAlert(state)).toBe("warning");
     });
   });
 

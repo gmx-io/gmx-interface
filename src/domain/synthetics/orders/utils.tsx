@@ -2,6 +2,7 @@ import { t, Trans } from "@lingui/macro";
 
 import { Token } from "domain/tokens";
 import { formatPercentage } from "lib/numbers";
+import { getWrappedToken } from "sdk/configs/tokens";
 import {
   isDecreaseOrderType,
   isIncreaseOrderType,
@@ -14,7 +15,7 @@ import {
   isTwapOrder,
   isTwapSwapOrder,
 } from "sdk/utils/orders";
-import { getIncreaseEvaluationIndexPrice, getMarkPrice } from "sdk/utils/prices";
+import { getIncreaseEvaluationIndexPrice } from "sdk/utils/prices";
 import type { UserReferralInfo } from "sdk/utils/referrals/types";
 import { getDecreasePositionSizeDeltaInTokens } from "sdk/utils/trade/decrease";
 import {
@@ -23,8 +24,7 @@ import {
   PositionMarginState,
 } from "sdk/utils/trade/increaseMarginCheck";
 import {
-  getTwapIncreaseAggregateAmounts,
-  getTwapIncreasePartAmounts,
+  getTwapIncreasePartsGrossCollateralUsd,
   getTwapIncreaseSequentialMarginState,
   TwapIncreaseSequentialMarginState,
 } from "sdk/utils/trade/twapIncreaseMarginCheck";
@@ -749,22 +749,18 @@ export function getOrderIncreaseResultingPositionMarginState({
 export function getTwapIncreaseOrderSequentialMarginState({
   order,
   position,
-  findSwapPath,
   uiFeeFactor,
   chainId,
   marketsInfoData,
-  isSetAcceptablePriceImpactEnabled,
   userReferralInfo,
   proDiscountFactor,
   minCollateralUsd,
 }: {
   order: TwapOrderInfo<PositionOrderInfo>;
   position: PositionInfo | undefined;
-  findSwapPath: FindSwapPath;
   uiFeeFactor: bigint;
   chainId: number;
   marketsInfoData: MarketsInfoData | undefined;
-  isSetAcceptablePriceImpactEnabled: boolean;
   userReferralInfo: UserReferralInfo | undefined;
   proDiscountFactor: bigint | undefined;
   minCollateralUsd: bigint;
@@ -773,49 +769,33 @@ export function getTwapIncreaseOrderSequentialMarginState({
   const parts = [...order.orders].sort((a, b) => Number(a.validFromTime) - Number(b.validFromTime));
   const firstPart = parts[0];
 
-  if (!marketInfo || !isIncreaseOrderType(order.orderType) || !firstPart) {
+  if (!marketInfo || !marketsInfoData || !isIncreaseOrderType(order.orderType) || !firstPart) {
     return undefined;
   }
 
-  const markPrice = getMarkPrice({ prices: marketInfo.indexToken.prices, isIncrease: true, isLong: order.isLong });
-  const remainingParts = BigInt(parts.length);
-
-  const remainingAmounts = getIncreasePositionAmounts({
-    marketInfo,
-    indexToken: marketInfo.indexToken,
+  const partGrossCollateralUsds = getTwapIncreasePartsGrossCollateralUsd({
+    marketsInfoData,
+    swapPath: order.swapPath,
     initialCollateralToken: order.initialCollateralToken,
     collateralToken: order.targetCollateralToken,
-    isLong: order.isLong,
-    initialCollateralAmount: firstPart.initialCollateralDeltaAmount * remainingParts,
-    indexTokenAmount: convertToTokenAmount(
-      firstPart.sizeDeltaUsd * remainingParts,
-      marketInfo.indexToken.decimals,
-      markPrice
-    ),
-    externalSwapQuote: undefined,
-    position,
-    findSwapPath,
-    userReferralInfo,
-    proDiscountFactor,
+    initialCollateralAmountPerPart: firstPart.initialCollateralDeltaAmount,
+    numberOfParts: parts.length,
     uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
-    strategy: "independent",
-    marketsInfoData,
-    chainId,
-    externalSwapQuoteParams: undefined,
-    isSetAcceptablePriceImpactEnabled,
+    wrappedNativeTokenAddress: getWrappedToken(chainId).address,
   });
 
-  if (firstPart.initialCollateralDeltaAmount > 0n && remainingAmounts.swapStrategy.amountOut <= 0n) {
+  if (!partGrossCollateralUsds) {
     return undefined;
   }
 
   const nowSeconds = Math.floor(Date.now() / 1000);
 
   return getTwapIncreaseSequentialMarginState({
-    ...getTwapIncreasePartAmounts(getTwapIncreaseAggregateAmounts(remainingAmounts), parts.length),
     partSizeDeltaUsd: firstPart.sizeDeltaUsd,
+    pendingFeesUsd: (position?.pendingBorrowingFeesUsd ?? 0n) + (position?.pendingFundingFeesUsd ?? 0n),
     numberOfParts: parts.length,
     partDelaysSeconds: parts.map((part) => Math.max(0, Number(part.validFromTime) - nowSeconds)),
+    partGrossCollateralUsds,
     marketInfo,
     collateralToken: order.targetCollateralToken,
     isLong: order.isLong,

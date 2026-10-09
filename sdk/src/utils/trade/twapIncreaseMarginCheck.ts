@@ -1,12 +1,20 @@
 import { BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
 import { bigMath } from "utils/bigmath";
-import { getBorrowingFeeRateUsd, getFundingFeeRateUsd, getPositionFee, getPriceImpactForPosition } from "utils/fees";
-import { getMaxAllowedLeverage } from "utils/markets";
-import { MarketInfo } from "utils/markets/types";
+import {
+  getBorrowingFeeRateUsd,
+  getFundingFeeRateUsd,
+  getPositionFee,
+  getPriceImpactForPosition,
+  getTotalSwapVolumeFromSwapStats,
+} from "utils/fees";
+import { getMarketInfoWithSwapDelta, getMaxAllowedLeverage } from "utils/markets";
+import { MarketInfo, MarketsInfoData } from "utils/markets/types";
 import { applyFactor } from "utils/numbers";
+import { SwapPricingType } from "utils/orders/types";
 import { getLeverage } from "utils/positions";
 import { getMarkPrice } from "utils/prices";
 import { UserReferralInfo } from "utils/referrals/types";
+import { getSwapPathStats } from "utils/swap/swapStats";
 import { convertToTokenAmount, convertToTokenAmountForIncrease, convertToUsd } from "utils/tokens";
 import { TokenData } from "utils/tokens/types";
 
@@ -21,18 +29,28 @@ import { IncreasePositionAmounts } from "./types";
 export type TwapIncreaseSequenceParams = {
   numberOfParts: number;
   partDelaysSeconds: number[];
+  partGrossCollateralUsds: bigint[];
 };
 
 export type TwapIncreaseAggregateAmounts = {
   sizeDeltaUsd: bigint;
-  grossCollateralUsd: bigint;
   pendingFeesUsd: bigint;
 };
 
 export type TwapIncreasePartAmounts = {
   partSizeDeltaUsd: bigint;
-  partGrossCollateralUsd: bigint;
   pendingFeesUsd: bigint;
+};
+
+export type TwapIncreasePartsCollateralParams = {
+  marketsInfoData: MarketsInfoData;
+  swapPath: string[];
+  initialCollateralToken: TokenData;
+  collateralToken: TokenData;
+  initialCollateralAmountPerPart: bigint;
+  numberOfParts: number;
+  uiFeeFactor: bigint;
+  wrappedNativeTokenAddress: string;
 };
 
 export type TwapIncreaseSequentialMarginStateParams = TwapIncreaseSequenceParams &
@@ -58,31 +76,85 @@ export type TwapIncreaseSequentialMarginState = {
 export function getTwapIncreaseAggregateAmounts(
   increaseAmounts: IncreasePositionAmounts
 ): TwapIncreaseAggregateAmounts {
-  const pendingFeesUsd = increaseAmounts.borrowingFeeUsd + increaseAmounts.fundingFeeUsd;
-
   return {
     sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
-    grossCollateralUsd:
-      increaseAmounts.collateralDeltaUsd + increaseAmounts.positionFeeUsd + increaseAmounts.uiFeeUsd + pendingFeesUsd,
-    pendingFeesUsd,
+    pendingFeesUsd: increaseAmounts.borrowingFeeUsd + increaseAmounts.fundingFeeUsd,
   };
 }
 
 export function getTwapIncreasePartAmounts(
-  { sizeDeltaUsd, grossCollateralUsd, pendingFeesUsd }: TwapIncreaseAggregateAmounts,
+  { sizeDeltaUsd, pendingFeesUsd }: TwapIncreaseAggregateAmounts,
   numberOfParts: number
 ): TwapIncreasePartAmounts {
   if (numberOfParts < 1) {
-    return { partSizeDeltaUsd: 0n, partGrossCollateralUsd: 0n, pendingFeesUsd };
+    return { partSizeDeltaUsd: 0n, pendingFeesUsd };
   }
 
-  const parts = BigInt(numberOfParts);
+  return { partSizeDeltaUsd: sizeDeltaUsd / BigInt(numberOfParts), pendingFeesUsd };
+}
 
-  return {
-    partSizeDeltaUsd: sizeDeltaUsd / parts,
-    partGrossCollateralUsd: grossCollateralUsd / parts,
-    pendingFeesUsd,
-  };
+export function getTwapIncreasePartsGrossCollateralUsd(p: TwapIncreasePartsCollateralParams): bigint[] | undefined {
+  const {
+    swapPath,
+    initialCollateralToken,
+    collateralToken,
+    initialCollateralAmountPerPart,
+    numberOfParts,
+    uiFeeFactor,
+    wrappedNativeTokenAddress,
+  } = p;
+
+  if (numberOfParts < 1) {
+    return [];
+  }
+
+  const usdIn = convertToUsd(
+    initialCollateralAmountPerPart,
+    initialCollateralToken.decimals,
+    initialCollateralToken.prices.minPrice
+  )!;
+
+  if (swapPath.length === 0) {
+    return Array.from({ length: numberOfParts }, () => usdIn);
+  }
+  let marketsInfoData = p.marketsInfoData;
+  const partGrossCollateralUsds: bigint[] = [];
+
+  for (let partIndex = 0; partIndex < numberOfParts; partIndex++) {
+    const swapPathStats = getSwapPathStats({
+      marketsInfoData,
+      swapPath,
+      initialCollateralAddress: initialCollateralToken.address,
+      wrappedNativeTokenAddress,
+      usdIn,
+      shouldUnwrapNativeToken: false,
+      shouldApplyPriceImpact: true,
+      swapPricingType: SwapPricingType.Swap,
+    });
+
+    if (!swapPathStats || swapPathStats.amountOut <= 0n) {
+      return undefined;
+    }
+
+    const grossCollateralUsd = convertToUsd(
+      swapPathStats.amountOut,
+      collateralToken.decimals,
+      collateralToken.prices.minPrice
+    )!;
+    const swapUiFeeUsd = applyFactor(getTotalSwapVolumeFromSwapStats(swapPathStats.swapSteps), uiFeeFactor);
+
+    partGrossCollateralUsds.push(grossCollateralUsd - swapUiFeeUsd);
+
+    marketsInfoData = swapPathStats.swapSteps.reduce(
+      (acc, swapStep) => ({
+        ...acc,
+        [swapStep.marketAddress]: getMarketInfoWithSwapDelta(acc[swapStep.marketAddress], swapStep),
+      }),
+      marketsInfoData
+    );
+  }
+
+  return partGrossCollateralUsds;
 }
 
 function getMaxAllowedLeverageMarginState({
@@ -147,8 +219,8 @@ export function getTwapIncreaseSequentialMarginState(
     isLong,
     numberOfParts,
     partDelaysSeconds,
+    partGrossCollateralUsds,
     partSizeDeltaUsd,
-    partGrossCollateralUsd,
     pendingFeesUsd,
     uiFeeFactor,
     minCollateralUsd,
@@ -156,7 +228,7 @@ export function getTwapIncreaseSequentialMarginState(
     proDiscountFactor,
   } = p;
 
-  if (numberOfParts < 1 || partSizeDeltaUsd <= 0n) {
+  if (numberOfParts < 1 || partSizeDeltaUsd <= 0n || partGrossCollateralUsds.length < numberOfParts) {
     return undefined;
   }
 
@@ -214,7 +286,7 @@ export function getTwapIncreaseSequentialMarginState(
     );
     const uiFeeUsd = applyFactor(partSizeDeltaUsd, uiFeeFactor);
     const settledFeesUsd = (partIndex === 0 ? pendingFeesUsd : 0n) + accruedFeesUsd;
-    const collateralDeltaUsd = partGrossCollateralUsd - positionFeeUsd - uiFeeUsd - settledFeesUsd;
+    const collateralDeltaUsd = partGrossCollateralUsds[partIndex] - positionFeeUsd - uiFeeUsd - settledFeesUsd;
     const collateralDeltaAmount = convertToTokenAmount(collateralDeltaUsd, collateralToken.decimals, collateralPrice)!;
 
     const resultingState = getIncreaseResultingPositionState({

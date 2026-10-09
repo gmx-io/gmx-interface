@@ -760,17 +760,18 @@ describe("calcMaxSizeDeltaInUsdByLeverage — resulting position margin cap", ()
   });
 
   it("caps a TWAP at the size whose every part passes the sequential check PRO-4134", () => {
-    const twap = { numberOfParts: 4, partDelaysSeconds: [0, 12_000, 24_000, 36_000] };
+    const twap = {
+      numberOfParts: 4,
+      partDelaysSeconds: [0, 12_000, 24_000, 36_000],
+      partGrossCollateralUsds: Array.from({ length: 4 }, () => initialCollateralUsd / 4n),
+    };
     const capped = boundUsd({ ...baseParams, twap })!;
 
     const isSequenceAccepted = (sizeDeltaUsd: bigint) =>
       getIsTwapIncreaseSequenceSafe(
         getTwapIncreaseSequentialMarginState({
           ...twap,
-          ...getTwapIncreasePartAmounts(
-            { sizeDeltaUsd, grossCollateralUsd: initialCollateralUsd, pendingFeesUsd: 0n },
-            twap.numberOfParts
-          ),
+          ...getTwapIncreasePartAmounts({ sizeDeltaUsd, pendingFeesUsd: 0n }, twap.numberOfParts),
           marketInfo,
           collateralToken: usdc,
           isLong: true,

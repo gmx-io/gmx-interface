@@ -71,7 +71,10 @@ import { ExternalSwapStrategy } from "sdk/utils/swap/types";
 import { convertToTokenAmount, getIsEquivalentTokens } from "sdk/utils/tokens";
 import { TokenBalanceType } from "sdk/utils/tokens/types";
 import { createTradeFlags } from "sdk/utils/trade";
-import type { TwapIncreaseSequenceParams } from "sdk/utils/trade/twapIncreaseMarginCheck";
+import {
+  getTwapIncreasePartsGrossCollateralUsd,
+  type TwapIncreaseSequenceParams,
+} from "sdk/utils/trade/twapIncreaseMarginCheck";
 import { getIsValidTwapParams, getTwapPartDelaysSeconds } from "sdk/utils/twap";
 
 import {
@@ -576,9 +579,40 @@ export const selectTradeboxTwapIncreaseSequenceParams = createSelector((q): Twap
     return undefined;
   }
 
+  const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
+  const marketsInfoData = q(selectMarketsInfoData);
+  const initialCollateralToken = q(selectTradeboxFromToken);
+  const collateralToken = q(selectTradeboxCollateralToken);
+
+  if (!increaseAmounts || !marketsInfoData || !initialCollateralToken || !collateralToken) {
+    return undefined;
+  }
+
+  const swapPath = increaseAmounts.swapStrategy.swapPathStats?.swapPath ?? [];
+
+  if (swapPath.length === 0 && !getIsEquivalentTokens(initialCollateralToken, collateralToken)) {
+    return undefined;
+  }
+
+  const partGrossCollateralUsds = getTwapIncreasePartsGrossCollateralUsd({
+    marketsInfoData,
+    swapPath,
+    initialCollateralToken,
+    collateralToken,
+    initialCollateralAmountPerPart: increaseAmounts.initialCollateralAmount / BigInt(numberOfParts),
+    numberOfParts,
+    uiFeeFactor: q(selectUiFeeFactor),
+    wrappedNativeTokenAddress: getWrappedToken(q(selectChainId)).address,
+  });
+
+  if (!partGrossCollateralUsds) {
+    return undefined;
+  }
+
   return {
     numberOfParts,
     partDelaysSeconds: getTwapPartDelaysSeconds(duration, numberOfParts),
+    partGrossCollateralUsds,
   };
 });
 const selectTradeboxSetTriggerRatioInputValue = (s: SyntheticsState) => s.tradebox.setTriggerRatioInputValue;

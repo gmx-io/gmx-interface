@@ -160,18 +160,9 @@ export const makeSelectTwapIncreaseOrderSequentialMarginState = createSelectorFa
       return getTwapIncreaseOrderSequentialMarginState({
         order,
         position: q(makeSelectOrderExistingPosition(orderKey)),
-        findSwapPath: q(
-          makeSelectFindSwapPath(
-            order.initialCollateralTokenAddress,
-            order.targetCollateralToken.address,
-            undefined,
-            order.swapPath
-          )
-        ),
         uiFeeFactor: q(selectUiFeeFactor),
         chainId: q(selectChainId),
         marketsInfoData: q(selectMarketsInfoData),
-        isSetAcceptablePriceImpactEnabled: q(selectIsSetAcceptablePriceImpactEnabled),
         userReferralInfo: q(selectUserReferralInfo),
         proDiscountFactor: q(selectProDiscountFactor),
         minCollateralUsd,

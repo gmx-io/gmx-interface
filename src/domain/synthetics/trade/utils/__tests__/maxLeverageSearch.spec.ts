@@ -139,7 +139,12 @@ const fixtures = [
             collateralUsd: expandDecimals(400, 30),
           })
         ),
-        twap: { numberOfParts: 4, partDelaysSeconds: [0, 12_000, 24_000, 36_000] },
+        // 1 000 USDC over four parts
+        twap: {
+          numberOfParts: 4,
+          partDelaysSeconds: [0, 12_000, 24_000, 36_000],
+          partGrossCollateralUsds: Array.from({ length: 4 }, () => expandDecimals(250, 30)),
+        },
       };
     })(),
   },

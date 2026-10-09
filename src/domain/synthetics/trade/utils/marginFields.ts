@@ -132,10 +132,7 @@ function capSizeDeltaByResultingPositionMargin({
       return getIsTwapIncreaseSequenceSafe(
         getTwapIncreaseSequentialMarginState({
           ...params.twap,
-          ...getTwapIncreasePartAmounts(
-            { sizeDeltaUsd, grossCollateralUsd: baseCollateralUsd + pendingFeesUsd, pendingFeesUsd },
-            params.twap.numberOfParts
-          ),
+          ...getTwapIncreasePartAmounts({ sizeDeltaUsd, pendingFeesUsd }, params.twap.numberOfParts),
           marketInfo,
           collateralToken,
           isLong,

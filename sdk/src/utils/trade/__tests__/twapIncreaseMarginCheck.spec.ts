@@ -3,14 +3,22 @@ import { describe, expect, it } from "vitest";
 import { mockMarginCheckMarketInfo, mockTokensData, usdToToken } from "test/mock";
 import { bigMath } from "utils/bigmath";
 import { getBorrowingFeeRateUsd } from "utils/fees";
+import { getMarketInfoWithSwapDelta } from "utils/markets";
 import { USD_DECIMALS, expandDecimals } from "utils/numbers";
+import { SwapPricingType } from "utils/orders/types";
+import { getSwapPathStats } from "utils/swap/swapStats";
+import { convertToUsd } from "utils/tokens";
 import {
   PositionMarginFailureReason,
   getIncreaseResultingPositionMarginState,
   getIncreaseResultingPositionState,
   getIsMaxLeverageMarginReason,
 } from "utils/trade/increaseMarginCheck";
-import { getTwapIncreaseSequentialMarginState } from "utils/trade/twapIncreaseMarginCheck";
+import {
+  getTwapIncreasePartsGrossCollateralUsd,
+  getTwapIncreaseSequentialMarginState,
+} from "utils/trade/twapIncreaseMarginCheck";
+import type { SwapStats } from "utils/trade/types";
 import { getTwapPartDelaysSeconds } from "utils/twap";
 
 const tokensData = mockTokensData();
@@ -39,8 +47,10 @@ function hourlyDelays(numberOfParts: number) {
   return getTwapPartDelaysSeconds({ hours: numberOfParts - 1, minutes: 0 }, numberOfParts);
 }
 
+type ParamOverrides = Partial<Params> & { partGrossCollateralUsd?: bigint };
+
 // a 50x position of 10 000 on 200 of collateral, topped up by four parts of 25 each
-function baseParams(overrides: Partial<Params> = {}): Params {
+function baseParams({ partGrossCollateralUsd = usd(25), ...overrides }: ParamOverrides = {}): Params {
   const numberOfParts = overrides.numberOfParts ?? 4;
 
   return {
@@ -50,8 +60,8 @@ function baseParams(overrides: Partial<Params> = {}): Params {
     existingPosition: position({ sizeUsd: 10_000, valueUsd: 10_000, collateralUsd: 200 }),
     numberOfParts,
     partDelaysSeconds: hourlyDelays(numberOfParts),
+    partGrossCollateralUsds: Array.from({ length: numberOfParts }, () => partGrossCollateralUsd),
     partSizeDeltaUsd: usd(10_000),
-    partGrossCollateralUsd: usd(25),
     pendingFeesUsd: 0n,
     uiFeeFactor: 0n,
     minCollateralUsd: usd(1),
@@ -329,6 +339,125 @@ describe("getTwapIncreaseSequentialMarginState — fees accrued between the part
     expect(remaining(false)).toBe(
       getTwapIncreaseSequentialMarginState(baseParams(parts))!.marginState.remainingCollateralUsd
     );
+  });
+});
+
+describe("getTwapIncreasePartsGrossCollateralUsd — each part swaps its own deposit PRO-4134", () => {
+  const NO_NATIVE = "0x0000000000000000000000000000000000000000";
+  // the mock pools hold 1 000 of each token: four deposits of 100 BTC-worth move them a lot
+  const market = mockMarginCheckMarketInfo(tokensData);
+  const marketsInfoData = { [market.marketTokenAddress]: market };
+  const btc = tokensData.BTC;
+
+  function quote(numberOfParts: number, depositUsd: number, swapPath = [market.marketTokenAddress]) {
+    return getTwapIncreasePartsGrossCollateralUsd({
+      marketsInfoData,
+      swapPath,
+      initialCollateralToken: btc,
+      collateralToken: usdc,
+      initialCollateralAmountPerPart: usdToToken(depositUsd, btc),
+      numberOfParts,
+      uiFeeFactor: 0n,
+      wrappedNativeTokenAddress: NO_NATIVE,
+    })!;
+  }
+
+  it("gives every part its deposit when no swap is needed", () => {
+    expect(quote(4, 25, [])).toEqual([usd(25), usd(25), usd(25), usd(25)]);
+  });
+
+  it("quotes each part against the pool the previous parts leave, so the first part gets the most", () => {
+    const parts = quote(4, 100);
+    const oneShot = getSwapPathStats({
+      marketsInfoData,
+      swapPath: [market.marketTokenAddress],
+      initialCollateralAddress: btc.address,
+      wrappedNativeTokenAddress: NO_NATIVE,
+      usdIn: usd(400),
+      shouldUnwrapNativeToken: false,
+      shouldApplyPriceImpact: true,
+      swapPricingType: SwapPricingType.Swap,
+    })!;
+    const oneShotUsd = convertToUsd(oneShot.amountOut, usdc.decimals, usdc.prices.minPrice)!;
+    const total = parts.reduce((sum, part) => sum + part, 0n);
+
+    expect(parts[0]).toBeGreaterThan(parts[1]);
+    expect(parts[1]).toBeGreaterThan(parts[2]);
+    expect(parts[2]).toBeGreaterThan(parts[3]);
+    // a split of the one-shot output would give every part the average price impact
+    expect(parts[0]).toBeGreaterThan(oneShotUsd / 4n);
+    expect(parts[3]).toBeLessThan(oneShotUsd / 4n);
+    // the impact telescopes: the four swaps together cost about what the one-shot swap does
+    expect(bigMath.abs(total - oneShotUsd)).toBeLessThan(oneShotUsd / 100n);
+  });
+});
+
+describe("getMarketInfoWithSwapDelta — the pools a swap step leaves, as SwapUtils._swap leaves them", () => {
+  const btc = tokensData.BTC;
+
+  function swapStep(overrides: Partial<SwapStats> = {}): SwapStats {
+    return {
+      marketAddress: "",
+      tokenInAddress: btc.address,
+      tokenOutAddress: usdc.address,
+      isWrap: false,
+      isUnwrap: false,
+      swapFeeAmount: usdToToken(1, btc),
+      swapFeeUsd: usd(1),
+      priceImpactDeltaUsd: 0n,
+      amountIn: usdToToken(100, btc),
+      amountInAfterFees: usdToToken(99, btc),
+      usdIn: usd(100),
+      amountOut: usdToToken(99, usdc),
+      usdOut: usd(99),
+      ...overrides,
+    };
+  }
+
+  it("moves the swapped amounts between the pools, and the virtual pools when the market has them", () => {
+    const market = mockMarginCheckMarketInfo(tokensData, {
+      virtualPoolAmountForLongToken: usdToToken(5_000, btc),
+      virtualPoolAmountForShortToken: 0n,
+    });
+    const next = getMarketInfoWithSwapDelta(market, swapStep());
+
+    expect(next.longPoolAmount - market.longPoolAmount).toBe(usdToToken(99, btc));
+    expect(market.shortPoolAmount - next.shortPoolAmount).toBe(usdToToken(99, usdc));
+    expect(next.virtualPoolAmountForLongToken - market.virtualPoolAmountForLongToken).toBe(usdToToken(99, btc));
+    expect(next.virtualPoolAmountForShortToken).toBe(0n);
+    expect(next.swapImpactPoolAmountLong).toBe(market.swapImpactPoolAmountLong);
+    expect(next.swapImpactPoolAmountShort).toBe(market.swapImpactPoolAmountShort);
+  });
+
+  it("keeps a negative impact out of the pool: it goes to the swap impact pool of the token in", () => {
+    const market = mockMarginCheckMarketInfo(tokensData);
+    // of the 99 left after fees, 2 of impact stay in the impact pool and 97 reach the pool; 97 leave the other side
+    const next = getMarketInfoWithSwapDelta(
+      market,
+      swapStep({ priceImpactDeltaUsd: -usd(2), amountOut: usdToToken(97, usdc), usdOut: usd(97) })
+    );
+
+    expect(next.longPoolAmount - market.longPoolAmount).toBe(usdToToken(97, btc));
+    expect(next.swapImpactPoolAmountLong - market.swapImpactPoolAmountLong).toBe(usdToToken(2, btc));
+    expect(market.shortPoolAmount - next.shortPoolAmount).toBe(usdToToken(97, usdc));
+    expect(next.swapImpactPoolAmountShort).toBe(market.swapImpactPoolAmountShort);
+  });
+
+  it("pays a positive impact from the impact pools, the token out first, then the token in", () => {
+    const market = mockMarginCheckMarketInfo(tokensData, {
+      swapImpactPoolAmountShort: usdToToken(3, usdc),
+      swapImpactPoolAmountLong: usdToToken(10, btc),
+    });
+    // 5 of impact on top of the 99 swapped: 3 USDC drain the short impact pool, 2 worth of BTC come from the long one
+    const next = getMarketInfoWithSwapDelta(
+      market,
+      swapStep({ priceImpactDeltaUsd: usd(5), amountOut: usdToToken(104, usdc), usdOut: usd(104) })
+    );
+
+    expect(next.swapImpactPoolAmountShort).toBe(0n);
+    expect(market.swapImpactPoolAmountLong - next.swapImpactPoolAmountLong).toBe(usdToToken(2, btc));
+    expect(market.shortPoolAmount - next.shortPoolAmount).toBe(usdToToken(101, usdc));
+    expect(next.longPoolAmount - market.longPoolAmount).toBe(usdToToken(101, btc));
   });
 });
 
