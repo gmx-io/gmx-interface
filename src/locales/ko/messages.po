@@ -7194,6 +7194,10 @@ msgstr "수수료(펀딩 + 차입)만으로도 포지션이 청산될 수 있으
 msgid "{balanceFormatted} remaining in old 1CT subaccount"
 msgstr "기존 1CT 서브계정에 {balanceFormatted} 잔여"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "One-Click Trading is not available for smart wallets."
+msgstr "One-Click Trading은 스마트 지갑에서 사용할 수 없습니다."
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Stake GMX"
 msgstr "GMX 스테이킹"
@@ -7618,6 +7622,10 @@ msgstr "ParaSwap"
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Loading..."
 msgstr "로딩 중..."
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>One-Click Trading is not available for smart wallets.</0><1/><2>Deactivate One-Click Trading</2>"
+msgstr "<0>One-Click Trading은 스마트 지갑에서 사용할 수 없습니다.</0><1/><2>One-Click Trading 비활성화</2>"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
