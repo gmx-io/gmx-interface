@@ -5,6 +5,7 @@ import useSWR from "swr";
 import { useAccount, type Connector } from "wagmi";
 
 import { AnyChainId, CONTRACTS_CHAIN_IDS, isTestnetChain, SOURCE_CHAIN_IDS } from "config/chains";
+import { useChainId } from "lib/chains";
 import { withFallback } from "lib/withFallback";
 
 import { AccountType, getAccountType } from "./useAccountType";
@@ -107,7 +108,7 @@ function probeAccountType(address: string, chainId: number): Promise<AccountType
 }
 
 /** EOAs exist on every chain, so only a contract account can be missing from one. */
-async function getIsContractAccount(address: string, referenceChainId: number): Promise<boolean> {
+export async function getIsContractAccount(address: string, referenceChainId: number): Promise<boolean> {
   const isTestnet = isTestnetChain(referenceChainId);
   const accountTypes = await Promise.all(
     PROBE_CHAIN_IDS.filter((chainId) => isTestnetChain(chainId) === isTestnet).map((chainId) =>
@@ -116,6 +117,21 @@ async function getIsContractAccount(address: string, referenceChainId: number): 
   );
 
   return accountTypes.some((accountType) => accountType === AccountType.SmartAccount);
+}
+
+export function useIsContractAccount(): { isContractAccount: boolean } {
+  const { address, connector } = useAccount();
+  const { chainId } = useChainId();
+
+  const { data } = useSWR<boolean>(address ? [address, chainId, connector?.uid, "isContractAccount"] : null, {
+    fetcher: () => getIsContractAccount(address!, chainId),
+    refreshInterval: 0,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    revalidateIfStale: false,
+  });
+
+  return { isContractAccount: data ?? false };
 }
 
 // A chain list is all testnet or all mainnet, never mixed, so any of them names the realm to probe.

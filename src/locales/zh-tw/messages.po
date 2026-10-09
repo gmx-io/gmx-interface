@@ -7194,6 +7194,10 @@ msgstr "僅因費用（資金費用與借款費用）隨時間降低保證金，
 msgid "{balanceFormatted} remaining in old 1CT subaccount"
 msgstr "舊版 One-Click Trading 子帳戶中剩餘 {balanceFormatted}"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "One-Click Trading is not available for smart wallets."
+msgstr "One-Click Trading 不適用於智慧合約錢包。"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Stake GMX"
 msgstr "質押 GMX"
@@ -7618,6 +7622,10 @@ msgstr "ParaSwap"
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Loading..."
 msgstr "載入中..."
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>One-Click Trading is not available for smart wallets.</0><1/><2>Deactivate One-Click Trading</2>"
+msgstr "<0>One-Click Trading 不適用於智慧合約錢包。</0><1/><2>停用 One-Click Trading</2>"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx

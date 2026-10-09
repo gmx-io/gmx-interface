@@ -7194,6 +7194,10 @@ msgstr "手数料（資金調達手数料 + 借入手数料）だけでも、時
 msgid "{balanceFormatted} remaining in old 1CT subaccount"
 msgstr "旧1CTサブアカウントに{balanceFormatted}が残っています"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "One-Click Trading is not available for smart wallets."
+msgstr "One-Click Trading はスマートウォレットでは利用できません。"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Stake GMX"
 msgstr "GMXをステーク"
@@ -7618,6 +7622,10 @@ msgstr "ParaSwap"
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Loading..."
 msgstr "ロード中..."
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>One-Click Trading is not available for smart wallets.</0><1/><2>Deactivate One-Click Trading</2>"
+msgstr "<0>One-Click Trading はスマートウォレットでは利用できません。</0><1/><2>One-Click Trading を無効化</2>"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx

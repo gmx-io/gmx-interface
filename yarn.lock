@@ -13108,6 +13108,11 @@ __metadata:
     wagmi: "npm:2.19.5"
     web-vitals: "npm:1.1.2"
     worker-loader: "npm:3.0.8"
+  dependenciesMeta:
+    bufferutil:
+      built: false
+    utf-8-validate:
+      built: false
   languageName: unknown
   linkType: soft
 
