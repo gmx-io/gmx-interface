@@ -21,7 +21,7 @@ import { TokenBalanceType } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { useGasPaymentTokensText } from "lib/gas/useGasPaymentTokensText";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { useWalletCanSignTypedData } from "lib/wallets/useWalletSessionChains";
+import { useIsContractAccount, useWalletCanSignTypedData } from "lib/wallets/useWalletSessionChains";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { getNativeToken } from "sdk/configs/tokens";
 
@@ -69,6 +69,7 @@ export function TradingSettings({
   const subaccountState = useSubaccountContext();
   const { isWalletOutOfGasPaymentBalance, isGmxAccountOutOfGasPaymentBalance } = useIsOutOfGasPaymentBalance();
   const { canSignTypedData } = useWalletCanSignTypedData();
+  const { isContractAccount } = useIsContractAccount();
   const [settlementChainId, setSettlementChainId] = useGmxAccountSettlementChainId();
   const { emptyGmxAccounts } = useEmptyGmxAccounts([AVALANCHE]);
   const isAvalancheEmpty = emptyGmxAccounts?.[AVALANCHE] === true;
@@ -122,6 +123,10 @@ export function TradingSettings({
       )}
     </div>
   ) : undefined;
+
+  const oneClickDisabledTooltip =
+    expressDisabledTooltip ??
+    (isContractAccount ? <Trans>One-Click Trading is not available for smart wallets.</Trans> : undefined);
 
   const handleSelectGasPaymentToken = useCallback(
     (tokenAddress: string) => {
@@ -191,8 +196,8 @@ export function TradingSettings({
               title={<Trans>Express + One-Click</Trans>}
               description={<Trans>Seamless trading with Express reliability</Trans>}
               icon={<OneClickIcon className="size-28" />}
-              disabled={isExpressTradingDisabled}
-              disabledTooltip={expressDisabledTooltip}
+              disabled={isExpressTradingDisabled || isContractAccount}
+              disabledTooltip={oneClickDisabledTooltip}
               info={
                 <Trans>
                   GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for
