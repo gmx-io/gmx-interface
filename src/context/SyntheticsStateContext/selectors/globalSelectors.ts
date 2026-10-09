@@ -63,7 +63,7 @@ const makeSelectEnabledFeature = (feature: keyof FeaturesSettings) => {
 };
 
 export const selectIsRelayRouterEnabled = makeSelectEnabledFeature("relayRouterEnabled");
-const selectIsSubaccountRelayRouterEnabled = makeSelectEnabledFeature("subaccountRelayRouterEnabled");
+export const selectIsSubaccountRelayRouterEnabled = makeSelectEnabledFeature("subaccountRelayRouterEnabled");
 
 export const selectBlockTimestampData = (s: SyntheticsState) => s.globals.blockTimestampData;
 

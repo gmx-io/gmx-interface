@@ -21,19 +21,27 @@ import {
   ExpressEstimationInsufficientGasPaymentTokenBalanceError,
   getIsConfirmedOutOfGasPaymentTokenBalance,
 } from "sdk/utils/express";
+import { createViemRpc } from "sdk/utils/rpc";
 import type { Subaccount } from "sdk/utils/subaccount";
 import { nowInSeconds } from "sdk/utils/time";
 
 import {
   ExpressTransactionBuilder,
+  ExpressTxnParams,
+  GasPaymentParams,
   getExpressContractAddress,
   getGelatoRelayRouterDomain,
   GlobalExpressParams,
   hashRelayParams,
+  RawRelayParamsPayload,
   RelayParamsPayload,
 } from "../express";
-import { SubaccountRemovalResultUnknownError } from "./errors";
-import { getMultichainInfoFromSigner, getOrderRelayRouterAddress } from "../express/expressOrderUtils";
+import { SubaccountRemovalRelayFailedError, SubaccountRemovalResultUnknownError } from "./errors";
+import {
+  estimateExpressParams,
+  getMultichainInfoFromSigner,
+  getOrderRelayRouterAddress,
+} from "../express/expressOrderUtils";
 
 export async function removeSubaccountWalletTxn(
   chainId: ContractsChainId,
@@ -290,6 +298,101 @@ export async function removeSubaccountExpressTxn({
     });
   }
 
+  await signAndSendRemoveSubaccountTxn({
+    chainId,
+    signer,
+    subaccount,
+    relayParamsPayload,
+    gasPaymentParams: relayFeeParams.gasPaymentParams,
+  });
+}
+
+// a signed removal paid from the wallet gas payment token; undefined when the wallet lacks balance
+// or Router allowance for the estimated fee, or the simulated removal reverts
+export async function estimateSettlementChainRemoveSubaccountExpressParams({
+  chainId,
+  account,
+  signer,
+  subaccount,
+  globalExpressParams,
+}: {
+  chainId: ContractsChainId;
+  account: string;
+  signer: WalletSigner;
+  subaccount: Subaccount;
+  globalExpressParams: GlobalExpressParams;
+}): Promise<ExpressTxnParams | undefined> {
+  const expressTransactionBuilder: ExpressTransactionBuilder = async ({ relayParams, gasPaymentParams }) => ({
+    txnData: await buildAndSignRemoveSubaccountTxn({
+      chainId,
+      signer,
+      subaccount,
+      relayParamsPayload: {
+        ...relayParams,
+        deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
+      },
+      relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
+      relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
+      emptySignature: true,
+    }),
+  });
+
+  return estimateExpressParams({
+    chainId,
+    isGmxAccount: false,
+    globalExpressParams,
+    estimationMethod: "estimateGas",
+    requireValidations: true,
+    // signed by the main account, the subaccount is only the one being removed
+    subaccount: undefined,
+    rpc: createViemRpc(getPublicClientWithRpc(chainId)),
+    transactionParams: {
+      account,
+      isValid: true,
+      gasPaymentTokenAsCollateralAmount: 0n,
+      executionFeeAmount: 0n,
+      executionGasLimit: 0n,
+      transactionPayloadGasLimit: 0n,
+      transactionExternalCalls: undefined,
+      subaccountActions: 0,
+      expressTransactionBuilder,
+    },
+  });
+}
+
+export async function removeSubaccountSettlementChainExpressTxn({
+  chainId,
+  signer,
+  subaccount,
+  expressParams,
+}: {
+  chainId: ContractsChainId;
+  signer: WalletSigner;
+  subaccount: Subaccount;
+  expressParams: ExpressTxnParams;
+}) {
+  await signAndSendRemoveSubaccountTxn({
+    chainId,
+    signer,
+    subaccount,
+    relayParamsPayload: expressParams.relayParamsPayload,
+    gasPaymentParams: expressParams.gasPaymentParams,
+  });
+}
+
+async function signAndSendRemoveSubaccountTxn({
+  chainId,
+  signer,
+  subaccount,
+  relayParamsPayload,
+  gasPaymentParams,
+}: {
+  chainId: ContractsChainId;
+  signer: WalletSigner;
+  subaccount: Subaccount;
+  relayParamsPayload: RawRelayParamsPayload;
+  gasPaymentParams: GasPaymentParams;
+}) {
   const txnData = await buildAndSignRemoveSubaccountTxn({
     chainId,
     signer,
@@ -298,8 +401,8 @@ export async function removeSubaccountExpressTxn({
       ...relayParamsPayload,
       deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
     },
-    relayerFeeAmount: relayFeeParams.gasPaymentParams.relayerFeeAmount,
-    relayerFeeTokenAddress: relayFeeParams.gasPaymentParams.relayerFeeTokenAddress,
+    relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
+    relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
     emptySignature: false,
   });
 
@@ -321,6 +424,6 @@ export async function removeSubaccountExpressTxn({
   }
 
   if (receipt.status === "failed") {
-    throw new Error(`Remove subaccount transaction failed: ${receipt.relayStatus?.message ?? "reverted"}`);
+    throw new SubaccountRemovalRelayFailedError(txnResult.taskId, receipt.relayStatus?.message);
   }
 }

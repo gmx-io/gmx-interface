@@ -1,13 +1,22 @@
+import { decodeFunctionData, type Hex } from "viem";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ARBITRUM, SOURCE_BASE_MAINNET } from "config/chains";
-import { ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "sdk/utils/express";
+import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
+import type { ExpressTxnParams, GlobalExpressParams } from "domain/synthetics/express";
+import { MOCK_GAS_LIMITS, MOCK_GAS_PRICE } from "domain/testUtils/mockChainData";
+import { ETH_ADDRESS, ETH_TOKEN } from "domain/testUtils/mockTokens";
+import { abis } from "sdk/abis";
+import { getContract } from "sdk/configs/contracts";
+import { buildGlobalExpressParams, ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "sdk/utils/express";
 
-import { SubaccountRemovalResultUnknownError } from "./errors";
+import { getIsSubaccountRemovalRelayRejected, SubaccountRemovalResultUnknownError } from "./errors";
 import {
+  estimateSettlementChainRemoveSubaccountExpressParams,
   getIsSubaccountActiveOnchain,
   getIsSubaccountRemovalRequired,
   removeSubaccountExpressTxn,
+  removeSubaccountSettlementChainExpressTxn,
   removeSubaccountWalletTxn,
 } from "./removeSubaccount";
 
@@ -20,6 +29,7 @@ const { mocks } = vi.hoisted(() => ({
     estimateArbitraryRelayFee: vi.fn(),
     getArbitraryRelayParamsAndPayload: vi.fn(),
     readContract: vi.fn(),
+    estimateGas: vi.fn(),
   },
 }));
 
@@ -42,7 +52,7 @@ vi.mock("lib/wallets/signing", () => ({
 }));
 
 vi.mock("lib/wallets/walletConfig", () => ({
-  getPublicClientWithRpc: () => ({ readContract: mocks.readContract }),
+  getPublicClientWithRpc: () => ({ readContract: mocks.readContract, estimateGas: mocks.estimateGas }),
 }));
 
 vi.mock("domain/synthetics/express", async (importOriginal) => ({
@@ -50,9 +60,9 @@ vi.mock("domain/synthetics/express", async (importOriginal) => ({
   hashRelayParams: () => "0xhash",
 }));
 
-vi.mock("domain/synthetics/express/expressOrderUtils", () => ({
+vi.mock("domain/synthetics/express/expressOrderUtils", async (importOriginal) => ({
+  ...(await importOriginal<object>()),
   getMultichainInfoFromSigner: async () => undefined,
-  getOrderRelayRouterAddress: () => "0x0000000000000000000000000000000000000001",
 }));
 
 const CHAIN_ID = ARBITRUM;
@@ -355,5 +365,201 @@ describe("removeSubaccountExpressTxn", () => {
         globalExpressParams,
       })
     ).rejects.toThrow("Remove subaccount transaction failed: execution reverted");
+  });
+});
+
+const RELAY_ROUTER_ADDRESS = getContract(CHAIN_ID, "SubaccountGelatoRelayRouter");
+const ONE_ETH = 10n ** 18n;
+
+function makeSettlementChainGlobalExpressParams({
+  walletBalance,
+  allowance,
+}: {
+  walletBalance: bigint;
+  allowance: bigint;
+}): GlobalExpressParams {
+  // WETH is also the relayer fee token, so the fee needs no swap
+  return {
+    ...buildGlobalExpressParams({
+      chainId: CHAIN_ID,
+      gasLimits: MOCK_GAS_LIMITS,
+      gasPrice: MOCK_GAS_PRICE,
+      tokensData: { [ETH_ADDRESS]: { ...ETH_TOKEN, walletBalance } },
+      marketsInfoData: {},
+      gasPaymentTokenAddress: ETH_ADDRESS,
+    }),
+    gasPaymentAllowanceData: { [ETH_ADDRESS]: allowance },
+  };
+}
+
+function estimateSettlementChainRemoval(globalExpressParams: GlobalExpressParams) {
+  return estimateSettlementChainRemoveSubaccountExpressParams({
+    chainId: CHAIN_ID,
+    account: ACCOUNT,
+    signer: makeSigner(undefined),
+    subaccount,
+    globalExpressParams,
+  });
+}
+
+describe("estimateSettlementChainRemoveSubaccountExpressParams", () => {
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("prices the relay fee by simulating the removal through the SubaccountGelatoRelayRouter, without asking for a signature", async () => {
+    mocks.estimateGas.mockResolvedValue(100_000n);
+
+    const expressParams = await estimateSettlementChainRemoval(
+      makeSettlementChainGlobalExpressParams({ walletBalance: ONE_ETH, allowance: ONE_ETH })
+    );
+
+    expect(expressParams).toMatchObject({
+      isGmxAccount: false,
+      estimationMethod: "estimateGas",
+      gasPaymentValidations: { isValid: true },
+      gasPaymentParams: { gasPaymentTokenAddress: ETH_ADDRESS, relayerFeeTokenAddress: ETH_ADDRESS },
+    });
+
+    expect(mocks.estimateGas).toHaveBeenCalledTimes(1);
+    const { account, to, data } = mocks.estimateGas.mock.calls[0][0];
+    expect(account).toBe(GMX_SIMULATION_ORIGIN);
+    expect(to).toBe(RELAY_ROUTER_ADDRESS);
+
+    const { functionName, args } = decodeFunctionData({ abi: abis.SubaccountGelatoRelayRouter, data });
+    expect(functionName).toBe("removeSubaccount");
+    expect(args).toEqual([expect.objectContaining({ signature: "0x" }), ACCOUNT, SUBACCOUNT_ADDRESS]);
+
+    expect(mocks.signTypedData).not.toHaveBeenCalled();
+    expect(mocks.sendExpressTransaction).not.toHaveBeenCalled();
+  });
+
+  it("can't be used when the wallet gas payment token isn't approved to the Router", async () => {
+    await expect(
+      estimateSettlementChainRemoval(makeSettlementChainGlobalExpressParams({ walletBalance: ONE_ETH, allowance: 0n }))
+    ).resolves.toBeUndefined();
+
+    expect(mocks.estimateGas).not.toHaveBeenCalled();
+  });
+
+  it("can't be used when the wallet balance is short of the estimated relay fee", async () => {
+    // covers the pre-simulation estimate, but not the fee for the simulated gas
+    mocks.estimateGas.mockResolvedValue(5_000_000n);
+
+    await expect(
+      estimateSettlementChainRemoval(
+        makeSettlementChainGlobalExpressParams({ walletBalance: 3n * 10n ** 14n, allowance: ONE_ETH })
+      )
+    ).resolves.toBeUndefined();
+
+    expect(mocks.estimateGas).toHaveBeenCalledTimes(1);
+  });
+
+  it("can't be used when the simulated removal reverts", async () => {
+    mocks.estimateGas.mockRejectedValue(new Error("execution reverted"));
+
+    await expect(
+      estimateSettlementChainRemoval(
+        makeSettlementChainGlobalExpressParams({ walletBalance: ONE_ETH, allowance: ONE_ETH })
+      )
+    ).resolves.toBeUndefined();
+  });
+});
+
+describe("removeSubaccountSettlementChainExpressTxn", () => {
+  const relayParamsPayload = {
+    ...RELAY_PARAMS_PAYLOAD,
+    fee: { feeToken: ETH_ADDRESS, feeAmount: 5n, feeSwapPath: [] },
+  };
+
+  const expressParams = {
+    relayParamsPayload,
+    gasPaymentParams: { relayerFeeAmount: 5n, relayerFeeTokenAddress: ETH_ADDRESS },
+  } as unknown as ExpressTxnParams;
+
+  function removeOnSettlementChain() {
+    return removeSubaccountSettlementChainExpressTxn({
+      chainId: CHAIN_ID,
+      signer: makeSigner(undefined),
+      subaccount,
+      expressParams,
+    });
+  }
+
+  beforeEach(() => {
+    mocks.signTypedData.mockResolvedValue(MOCK_SIGNATURE);
+    mocks.sendExpressTransaction.mockResolvedValue({
+      taskId: "task-1",
+      wait: vi.fn(async () => ({ status: "success" })),
+    });
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("signs RemoveSubaccount and relays removeSubaccount(relayParams, account, subaccount) to the SubaccountGelatoRelayRouter", async () => {
+    await removeOnSettlementChain();
+
+    expect(mocks.signTypedData).toHaveBeenCalledTimes(1);
+    expect(mocks.signTypedData).toHaveBeenCalledWith(
+      expect.objectContaining({
+        types: {
+          RemoveSubaccount: [
+            { name: "subaccount", type: "address" },
+            { name: "relayParams", type: "bytes32" },
+          ],
+        },
+        typedData: { subaccount: SUBACCOUNT_ADDRESS, relayParams: "0xhash" },
+        domain: {
+          name: "GmxBaseGelatoRelayRouter",
+          version: "1",
+          chainId: CHAIN_ID,
+          verifyingContract: RELAY_ROUTER_ADDRESS,
+        },
+      })
+    );
+
+    expect(mocks.sendExpressTransaction).toHaveBeenCalledTimes(1);
+    const { chainId, txnData } = mocks.sendExpressTransaction.mock.calls[0][0];
+    expect(chainId).toBe(CHAIN_ID);
+    expect(txnData.to).toBe(RELAY_ROUTER_ADDRESS);
+
+    const { functionName, args } = decodeFunctionData({
+      abi: abis.SubaccountGelatoRelayRouter,
+      data: txnData.callData as Hex,
+    });
+    expect(functionName).toBe("removeSubaccount");
+    expect(args).toEqual([
+      { ...relayParamsPayload, deadline: expect.any(BigInt), signature: MOCK_SIGNATURE },
+      ACCOUNT,
+      SUBACCOUNT_ADDRESS,
+    ]);
+  });
+
+  it("reports a failed relay execution as rejected by the relay", async () => {
+    mocks.sendExpressTransaction.mockResolvedValue({
+      taskId: "task-1",
+      wait: vi.fn(async () => ({ status: "failed", relayStatus: { message: "execution reverted" } })),
+    });
+
+    const rejection = await removeOnSettlementChain().catch((error) => error);
+
+    expect(rejection.message).toBe("Remove subaccount transaction failed: execution reverted");
+    expect(getIsSubaccountRemovalRelayRejected(rejection)).toBe(true);
+  });
+
+  it("reports an unknown result when the relay outcome cannot be read back", async () => {
+    mocks.sendExpressTransaction.mockResolvedValue({
+      taskId: "task-1",
+      wait: vi.fn(async () => {
+        throw new Error("Timeout waiting for terminal status for task-1");
+      }),
+    });
+
+    const rejection = await removeOnSettlementChain().catch((error) => error);
+
+    expect(rejection).toBeInstanceOf(SubaccountRemovalResultUnknownError);
+    expect(getIsSubaccountRemovalRelayRejected(rejection)).toBe(false);
   });
 });
