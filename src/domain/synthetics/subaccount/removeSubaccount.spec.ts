@@ -155,6 +155,15 @@ describe("removeSubaccountWalletTxn", () => {
     expect(wait).toHaveBeenCalledTimes(1);
   });
 
+  it("resolves once the subaccount is gone on-chain even if the receipt never arrives", async () => {
+    mocks.callContract.mockResolvedValue({ wait: () => new Promise(() => undefined) });
+    mocks.readContract.mockResolvedValue(false);
+
+    await removeSubaccountWalletTxn(CHAIN_ID, makeSigner(makeProvider(ENCODED_TRUE)), SUBACCOUNT_ADDRESS);
+
+    expect(mocks.readContract).toHaveBeenCalled();
+  });
+
   it("does not re-check the on-chain state — whether a removal is due is decided by the caller", async () => {
     const provider = makeProvider(ENCODED_FALSE);
 
