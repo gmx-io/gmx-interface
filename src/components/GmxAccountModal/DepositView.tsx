@@ -313,6 +313,7 @@ export const DepositView = () => {
       depositViewChain === undefined ||
       !sourceChainTokenToApproveAddress ||
       sourceChainTokenToApproveAddress === zeroAddress,
+    metric: { flow: "gmxAccountDeposit" },
   });
 
   const handleApproveClick = useCallback(() => {

@@ -15,7 +15,7 @@ vi.mock("lib/tenderly", () => ({ getTenderlyConfig: () => undefined }));
 vi.mock("lib/wallets/walletConfig", () => ({ getPublicClientWithRpc: vi.fn() }));
 vi.mock("lib/helperToast", () => ({ helperToast: { success: vi.fn(), error: vi.fn(), info: vi.fn() } }));
 vi.mock("lib/gas/estimateGasLimit", () => ({ estimateGasLimit: async () => 100000n }));
-vi.mock("lib/metrics", () => ({ metrics: { pushError: vi.fn() } }));
+vi.mock("lib/metrics", () => ({ metrics: { pushError: vi.fn(), pushEvent: vi.fn() } }));
 vi.mock("lib/metrics/utils", () => ({ sendOrderTxnSubmittedMetric: vi.fn() }));
 vi.mock("components/Errors/errorToasts", () => ({ getErrorMessage: () => ({ failMsg: "Failed" }) }));
 vi.mock("lib/errors/additionalValidation", () => ({
@@ -153,6 +153,7 @@ describe("wallet transaction chain propagation", () => {
       permitParams: undefined,
       setIsApproving: vi.fn(),
       onApproveFail,
+      metric: { flow: "trade" },
     });
 
     if (walletChainId === ARBITRUM) {
