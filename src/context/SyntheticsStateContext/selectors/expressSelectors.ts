@@ -10,7 +10,7 @@ import { createFindSwapPath } from "sdk/utils/swap/swapPath";
 import type { FindSwapPath } from "sdk/utils/trade/types";
 
 import type { SyntheticsState } from "../SyntheticsStateContextProvider";
-import { createSelector } from "../utils";
+import { createSelector, createSelectorFactory } from "../utils";
 import {
   selectChainId,
   selectGasLimits,
@@ -159,6 +159,18 @@ export const selectSettlementChainExpressGlobalParams = createSelectExpressGloba
 export const selectGmxAccountExpressGlobalParams = createSelectExpressGlobalParams(
   selectGmxAccountGasPaymentTokenAddress,
   selectGmxAccountExpressFindSwapPath
+);
+
+// Global params for paying wallet fees with a token other than the saved gas payment token
+export const makeSelectSettlementChainExpressGlobalParamsForGasPaymentToken = createSelectorFactory(
+  (gasPaymentTokenAddress: string) => {
+    const selectGasPaymentTokenAddressOverride = () => gasPaymentTokenAddress;
+
+    return createSelectExpressGlobalParams(
+      selectGasPaymentTokenAddressOverride,
+      createSelectExpressFindSwapPath(selectGasPaymentTokenAddressOverride)
+    );
+  }
 );
 
 export const selectExpressGlobalParams = createSelector(function selectExpressGlobalParamsForActions(q) {

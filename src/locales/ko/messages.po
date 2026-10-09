@@ -8542,6 +8542,10 @@ msgstr "가치가 낮은 자산 숨기기"
 msgid "TVL (supply)"
 msgstr "TVL (공급량)"
 
+#: src/domain/synthetics/express/useGasPaymentTokenFallback.ts
+msgid "{fromSymbol} is not approved for fees. This order pays its network fee in {toSymbol}."
+msgstr "{fromSymbol}이(가) 수수료용으로 승인되지 않았습니다. 이 주문의 네트워크 수수료는 {toSymbol}(으)로 지불됩니다."
+
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Insufficient {gasPaymentTokensText} in your GMX Account. Express and One-Click Trading are unavailable."
 msgstr "GMX 계정의 {gasPaymentTokensText}이(가) 부족합니다. Express 및 One-Click Trading을 이용할 수 없습니다."

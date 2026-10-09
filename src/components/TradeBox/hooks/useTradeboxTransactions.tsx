@@ -160,11 +160,14 @@ export function useTradeboxTransactions({ setPendingTxns, canSwitchGasPaymentTok
     expressParamsPromise,
     isLoading: isExpressLoading,
     isMultichainSubmitDisabled,
+    gasPaymentToken,
   } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "TradeBox",
     isGmxAccount: isFromTokenGmxAccount,
     canSwitchGasPaymentToken,
+    gasPaymentTokenFallback: "payToken",
+    payTokenAddress: isSwap || isIncrease ? fromToken?.address : undefined,
   });
 
   const initOrderMetricData = useCallback(() => {
@@ -429,5 +432,6 @@ export function useTradeboxTransactions({ setPendingTxns, canSwitchGasPaymentTok
     isExpressLoading,
     isMultichainSubmitDisabled,
     totalExecutionFee,
+    gasPaymentToken,
   };
 }
