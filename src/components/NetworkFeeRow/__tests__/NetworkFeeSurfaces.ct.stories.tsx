@@ -196,6 +196,11 @@ function useMockPoolsDetailsState({
   const [secondTokenInputValue, setSecondTokenInputValue] = useState("");
   const [marketOrGlvTokenInputValue, setMarketOrGlvTokenInputValue] = useState("");
   const [isMarketForGlvSelectedManually, setIsMarketForGlvSelectedManually] = useState(false);
+  const [isFirstTokenPinned, setIsFirstTokenPinned] = useState(false);
+  const [isTransitRoute, setIsTransitRoute] = useState(false);
+  const [transitAmountOut, setTransitAmountOut] = useState<bigint | undefined>(undefined);
+  const [conversionRoutePreference, setConversionRoutePreference] =
+    useState<PoolsDetailsState["conversionRoutePreference"]>("auto");
 
   return useMemo(
     () => ({
@@ -212,6 +217,10 @@ function useMockPoolsDetailsState({
       secondTokenInputValue,
       marketOrGlvTokenInputValue,
       isMarketForGlvSelectedManually,
+      isFirstTokenPinned,
+      isTransitRoute,
+      transitAmountOut,
+      conversionRoutePreference,
       multichainTokensResult: {
         tokenChainDataArray: [],
         isPriceDataLoading: false,
@@ -229,20 +238,28 @@ function useMockPoolsDetailsState({
       setSecondTokenInputValue,
       setMarketOrGlvTokenInputValue,
       setIsMarketForGlvSelectedManually,
+      setIsFirstTokenPinned,
+      setIsTransitRoute,
+      setTransitAmountOut,
+      setConversionRoutePreference,
     }),
     [
+      conversionRoutePreference,
       paySourceState,
       firstTokenAddress,
       firstTokenInputValue,
       focusedInput,
       glvOrMarketAddress,
       isMarketForGlvSelectedManually,
+      isFirstTokenPinned,
+      isTransitRoute,
       marketOrGlvTokenInputValue,
       marketTokensData,
       mode,
       operation,
       secondTokenAddress,
       secondTokenInputValue,
+      transitAmountOut,
     ]
   );
 }

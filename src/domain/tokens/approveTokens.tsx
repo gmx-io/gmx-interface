@@ -160,7 +160,7 @@ export async function approveTokens({
       value: undefined,
     });
 
-    const res = await contract.approve(spender, finalApproveAmount, { gasLimit });
+    const res = await contract.approve(spender, finalApproveAmount, { chainId, gasLimit });
 
     const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
     helperToast.success(getApproveSubmittedToastContent({ txUrl }));

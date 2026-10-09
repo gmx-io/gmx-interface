@@ -49,11 +49,11 @@ function modeButton(page: PageLike, title: "Classic" | "Express" | "Express + On
 }
 
 function expectModeActive(button: Locator) {
-  return expect(button).toHaveClass(/border-slate-100/);
+  return expect(button).toHaveClass(/(?:^|\s)border-slate-100(?:\s|$)/);
 }
 
 function expectModeInactive(button: Locator) {
-  return expect(button).toHaveClass(/border-slate-600/);
+  return expect(button).toHaveClass(/(?:^|\s)border-slate-600(?:\s|$)/);
 }
 
 function readLocalStorage(page: PageLike, key: unknown): Promise<string | null> {

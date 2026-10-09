@@ -5,7 +5,8 @@ import { getFeeItem, getTotalFeeItem, type FeeItem, type GasLimitsConfig } from 
 import { GlvInfo } from "domain/synthetics/markets";
 import type { TechnicalGmFees } from "domain/synthetics/markets/technicalFees/technical-fees-types";
 import { convertToUsd, getMidPrice, TokenData, TokensData } from "domain/synthetics/tokens";
-import { DepositAmounts, GmSwapFees, WithdrawalAmounts } from "domain/synthetics/trade";
+import { DepositAmounts, GmSwapFees, SwapPathStats, WithdrawalAmounts } from "domain/synthetics/trade";
+import { defined } from "lib/guards";
 import { getByKey } from "lib/objects";
 import { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getWrappedToken } from "sdk/configs/tokens";
@@ -43,34 +44,66 @@ export function calculateLogicalNetworkFeeUsd({
   return 0n;
 }
 
+export type GmLogicalFees = GmSwapFees & { collateralSwapFee?: FeeItem; transitFee?: FeeItem };
+
+function getCollateralSwapPathStats(amounts: DepositAmounts | WithdrawalAmounts, isDeposit: boolean): SwapPathStats[] {
+  if (isDeposit) {
+    const depositAmounts = amounts as DepositAmounts;
+
+    return [depositAmounts.shortTokenSwapPathStats].filter(defined);
+  }
+
+  const withdrawalAmounts = amounts as WithdrawalAmounts;
+
+  return [withdrawalAmounts.longTokenSwapPathStats, withdrawalAmounts.shortTokenSwapPathStats].filter(defined);
+}
+
 function calculateLogicalFees({
   amounts,
   isDeposit,
   logicalNetworkFeeUsd,
+  transitFeesUsd,
 }: {
   amounts: DepositAmounts | WithdrawalAmounts;
   isDeposit: boolean;
   logicalNetworkFeeUsd: bigint;
-}): GmSwapFees {
+  transitFeesUsd: bigint | undefined;
+}): GmLogicalFees {
   const basisUsd = isDeposit
     ? (amounts.longTokenUsd ?? 0n) + (amounts.shortTokenUsd ?? 0n)
     : amounts.marketTokenUsd ?? 0n;
 
+  const collateralSwapPathStats = getCollateralSwapPathStats(amounts, isDeposit);
+  const collateralSwapFeesDeltaUsd = collateralSwapPathStats.reduce(
+    (total, stats) => total - stats.totalSwapFeeUsd,
+    0n
+  );
+  const collateralSwapPriceImpactDeltaUsd = collateralSwapPathStats.reduce(
+    (total, stats) => total + stats.totalSwapPriceImpactDeltaUsd,
+    0n
+  );
+
   const swapFee = getFeeItem(amounts.swapFeeUsd * -1n, basisUsd);
-  const swapPriceImpact = getFeeItem(amounts.swapPriceImpactDeltaUsd, basisUsd);
+  const collateralSwapFee = getFeeItem(collateralSwapFeesDeltaUsd, basisUsd);
+  const transitFee = transitFeesUsd === undefined ? undefined : getFeeItem(transitFeesUsd * -1n, basisUsd);
+  const swapPriceImpact = getFeeItem(amounts.swapPriceImpactDeltaUsd + collateralSwapPriceImpactDeltaUsd, basisUsd);
   const uiFee = getFeeItem(amounts.uiFeeUsd * -1n, basisUsd, {
     shouldRoundUp: true,
   });
 
   const logicalNetworkFee = getFeeItem(logicalNetworkFeeUsd, basisUsd)!;
   // TODO ADD stargate protocol fees
-  const logicalProtocolFee = getTotalFeeItem([swapFee, uiFee].filter(Boolean) as FeeItem[]);
+  const logicalProtocolFee = getTotalFeeItem(
+    [swapFee, collateralSwapFee, transitFee, uiFee].filter(Boolean) as FeeItem[]
+  );
 
-  const logicalFees: GmSwapFees = {
+  const logicalFees: GmLogicalFees = {
     totalFees: logicalProtocolFee,
     swapPriceImpact,
     logicalNetworkFee,
     swapFee,
+    collateralSwapFee,
+    transitFee,
   };
 
   return logicalFees;
@@ -84,6 +117,7 @@ export const useDepositWithdrawalFees = ({
   tokensData,
   technicalFees,
   srcChainId,
+  transitFeesUsd,
 }: {
   amounts: DepositAmounts | WithdrawalAmounts | undefined;
   chainId: ContractsChainId;
@@ -94,7 +128,8 @@ export const useDepositWithdrawalFees = ({
   isMarketTokenDeposit: boolean;
   technicalFees: TechnicalGmFees | undefined;
   srcChainId: SourceChainId | undefined;
-}): GmSwapFees | undefined => {
+  transitFeesUsd: bigint | undefined;
+}): GmLogicalFees | undefined => {
   const sourceChainEstimatedNativeFeeUsd = useNativeTokenMultichainUsd({
     sourceChainTokenAmount:
       technicalFees?.kind === "sourceChain" ? technicalFees.fees.txnEstimatedNativeFee : undefined,
@@ -130,6 +165,7 @@ export const useDepositWithdrawalFees = ({
     return calculateLogicalFees({
       amounts,
       isDeposit,
+      transitFeesUsd,
       logicalNetworkFeeUsd,
     });
   }, [
@@ -141,5 +177,6 @@ export const useDepositWithdrawalFees = ({
     sourceChainTxnEstimatedGasUsd,
     technicalFees,
     tokensData,
+    transitFeesUsd,
   ]);
 };
