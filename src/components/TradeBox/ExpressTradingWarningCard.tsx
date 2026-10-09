@@ -6,6 +6,7 @@ import {
   EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY,
   EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY,
 } from "config/localStorage";
+import { DEFAULT_ONE_CLICK_SESSION_DURATION, DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS } from "config/oneClickTrading";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import {
@@ -36,11 +37,7 @@ import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
-import {
-  DEFAULT_SUBACCOUNT_EXPIRY_DURATION,
-  DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT,
-  getGasPaymentTokens,
-} from "sdk/configs/express";
+import { getGasPaymentTokens } from "sdk/configs/express";
 import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 import { TradeMode } from "sdk/utils/trade/types";
 
@@ -107,8 +104,8 @@ export function ExpressTradingWarningCard({
 
   const handleUpdateSubaccountSettings = useCallback(() => {
     updateSubaccountSettings({
-      nextRemainigActions: BigInt(DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT),
-      nextRemainingSeconds: BigInt(DEFAULT_SUBACCOUNT_EXPIRY_DURATION),
+      nextRemainigActions: BigInt(DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS),
+      nextRemainingSeconds: BigInt(DEFAULT_ONE_CLICK_SESSION_DURATION),
       nextIsGmxAccount: isGmxAccount,
     }).then((success) => {
       if (success) {
