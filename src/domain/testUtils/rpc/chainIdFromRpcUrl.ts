@@ -61,7 +61,7 @@ export const RPC_HOSTS_BY_CHAIN_ID: Record<number, string[]> = {
     "bnb-mainnet.g.alchemy.com",
   ],
   [SOURCE_ETHEREUM_MAINNET]: [
-    "rpc.ankr.com/eth",
+    "eth.api.pocket.network",
     "eth.drpc.org",
     "ethereum.publicnode.com",
     "eth-mainnet.g.alchemy.com",
