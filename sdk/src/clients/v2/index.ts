@@ -119,13 +119,15 @@ import type {
 import { fetchApiPerformanceAnnualized, fetchApiPerformanceSnapshots } from "utils/performance/api";
 import { PerformanceAnnualized, PerformanceParams, PerformanceSnapshots } from "utils/performance/types";
 import { fetchApiPositionsInfo } from "utils/positions/api";
-import { fetchApiOhlcv } from "utils/prices/api";
-import type { OhlcvParams } from "utils/prices/types";
+import { fetchApiOhlcv, fetchApiTokenPrices, parseApiTokenPrices } from "utils/prices/api";
+import type { OhlcvCandle, OhlcvParams } from "utils/prices/types";
 import { fetchApiRates } from "utils/rates/api";
 import { MarketRates, RatesParams } from "utils/rates/types";
 import type { IAbstractSigner } from "utils/signer";
 import { fetchApiStakingPower } from "utils/staking/api";
 import { StakingPowerResponse } from "utils/staking/types";
+import type { StreamCandlePeriod, Subscription, WebSocketCtor } from "utils/stream";
+import { WsStreamClient, createChannelSubscription, toStreamUrl } from "utils/stream";
 import { fetchSubaccountStatus, prepareSubaccountApproval, signSubaccountApproval } from "utils/subaccount/api";
 import type {
   SubaccountStatusRequest,
@@ -148,6 +150,7 @@ import {
 } from "utils/subaccount/sdkClient";
 import type { SdkSubaccountApproval, SdkSubaccountStatus, SubaccountState } from "utils/subaccount/types";
 import { fetchApiTokens } from "utils/tokens/api";
+import type { TokenPricesData } from "utils/tokens/types";
 import { fetchApiTrades, searchApiTrades } from "utils/trades/api";
 import type { FetchTradesParams, SearchTradesParams, TradesListResponse } from "utils/trades/types";
 import { fetchApiUsdgBoostApr } from "utils/usdgBoostApr/api";
@@ -304,6 +307,7 @@ export { PrivateKeySigner } from "utils/signer";
 export { HttpError } from "utils/http/http";
 export { HttpClientWithFallback } from "utils/http/httpFallback";
 export type { IHttp } from "utils/http/types";
+export type { FrameMeta, StreamCandlePeriod, StreamConnectionStatus, Subscription, WebSocketCtor } from "utils/stream";
 export { getGasPaymentTokens } from "configs/express";
 export type {
   SubaccountStatusRequest,
@@ -317,8 +321,34 @@ export class GmxApiSdk {
   ctx: { chainId: ContractsChainId; api: IHttp };
   private _subaccount: SubaccountState | undefined;
   private preparedSubaccountApprovals = new Map<string, SdkSubaccountApproval>();
+  private readonly streamUrlOverride?: string;
+  private readonly webSocketImpl?: WebSocketCtor;
+  private readonly reconnectBaseMs?: number;
+  private readonly reconnectMaxMs?: number;
+  private _streamClient?: WsStreamClient;
 
-  constructor({ chainId, apiUrl, api }: { chainId: ContractsChainId; apiUrl?: string; api?: IHttp }) {
+  constructor({
+    chainId,
+    apiUrl,
+    api,
+    streamUrl,
+    webSocketImpl,
+    reconnectBaseMs,
+    reconnectMaxMs,
+  }: {
+    chainId: ContractsChainId;
+    apiUrl?: string;
+    api?: IHttp;
+    streamUrl?: string;
+    webSocketImpl?: WebSocketCtor;
+    reconnectBaseMs?: number;
+    reconnectMaxMs?: number;
+  }) {
+    this.streamUrlOverride = streamUrl;
+    this.webSocketImpl = webSocketImpl;
+    this.reconnectBaseMs = reconnectBaseMs;
+    this.reconnectMaxMs = reconnectMaxMs;
+
     if (api) {
       this.ctx = { chainId, api };
       return;
@@ -397,6 +427,35 @@ export class GmxApiSdk {
 
   fetchTokens() {
     return fetchApiTokens(this.ctx);
+  }
+
+  private getStreamClient(): WsStreamClient {
+    if (!this._streamClient) {
+      const url = this.streamUrlOverride ?? toStreamUrl(this.ctx.api.url);
+      this._streamClient = new WsStreamClient({
+        url,
+        webSocketImpl: this.webSocketImpl,
+        reconnectBaseMs: this.reconnectBaseMs,
+        reconnectMaxMs: this.reconnectMaxMs,
+      });
+    }
+    return this._streamClient;
+  }
+
+  fetchTokenPrices(): Promise<{ prices: TokenPricesData; originTs: number }> {
+    return fetchApiTokenPrices(this.ctx);
+  }
+
+  watchTokenPrices(): Subscription<TokenPricesData> {
+    return createChannelSubscription(this.getStreamClient(), "prices", parseApiTokenPrices);
+  }
+
+  watchCandles(params: { symbol: string; timeframe: StreamCandlePeriod }): Subscription<OhlcvCandle> {
+    return createChannelSubscription(
+      this.getStreamClient(),
+      `candles:${params.symbol}:${params.timeframe}`,
+      (raw) => raw as OhlcvCandle
+    );
   }
 
   fetchPositionsInfo(params: { address: string; includeRelatedOrders?: boolean }) {

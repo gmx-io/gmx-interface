@@ -173,7 +173,7 @@ export type LoadingFailedEvent = {
 export type ApiDataFallbackCounter = {
   event: "apiData.fallback";
   data: {
-    domain: "markets" | "positions" | "orders";
+    domain: "markets" | "positions" | "orders" | "wsPrices";
     reason: "stale" | "error" | "initial";
     chainId: number;
   };
@@ -200,6 +200,35 @@ export type FreshnessTiming = {
     chainId: number;
     metricId: FreshnessMetricId;
   };
+};
+
+export type WsPriceLatencyTiming = {
+  event: "wsPrices.latency";
+  data: {
+    chainId: number;
+    tokenCount: number;
+    byteLength: number;
+  };
+};
+
+export type WsPriceAgeAtSendTiming = {
+  event: "wsPrices.ageAtSend";
+  data: { chainId: number };
+};
+
+export type WsPriceFirstFrameTiming = {
+  event: "wsPrices.firstFrame";
+  data: { chainId: number };
+};
+
+export type WsPriceInterArrivalTiming = {
+  event: "wsPrices.interArrival";
+  data: { chainId: number };
+};
+
+export type WsStreamStatusCounter = {
+  event: "wsPrices.status";
+  data: { chainId: number; status: string };
 };
 
 // Transactions tracking

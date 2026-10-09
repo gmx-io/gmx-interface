@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import useSWR from "swr";
 
+import type { ContractsChainId } from "config/chains";
 import { useChainId } from "lib/chains";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
@@ -9,8 +10,9 @@ import { UiFlags, confirmRelayControlFlags, persistApiFlags, readPersistedUiFlag
 
 export * from "./uiFlags";
 
-export function useUiFlagsRequest() {
-  const { chainId } = useChainId();
+export function useUiFlagsRequest(overrideChainId?: ContractsChainId) {
+  const { chainId: selectedChainId } = useChainId();
+  const chainId = overrideChainId ?? selectedChainId;
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
 
   const fallbackData = useMemo(() => readPersistedUiFlags(chainId), [chainId]);

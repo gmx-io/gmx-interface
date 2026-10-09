@@ -19,6 +19,7 @@ import {
   formatTimeInBarToMs,
   getCurrentCandleTime,
   multiplyBarValues,
+  ohlcvCandleToBar,
   parseSymbolName,
 } from "domain/tradingview/utils";
 import { parseError } from "lib/errors";
@@ -36,6 +37,8 @@ import { calculateDisplayDecimals } from "lib/numbers";
 import { OracleFetcher } from "lib/oracleKeeperFetcher/types";
 import { PauseableInterval } from "lib/PauseableInterval";
 import { sleep } from "lib/sleep";
+import { watchPageHidden } from "lib/watchPageHidden";
+import type { OhlcvCandle, StreamCandlePeriod, Subscription } from "sdk/clients/v2";
 import {
   getNativeToken,
   getTokenBySymbol,
@@ -51,10 +54,26 @@ const V2_UPDATE_INTERVAL = 1000;
 
 const PREFETCH_CANDLES_COUNT = 300;
 
+const CANDLE_STREAM_ACTIVE_MS = 2000;
+
+const STREAM_CANDLE_PERIODS: Partial<Record<TradingViewResolution, StreamCandlePeriod>> = {
+  1: "1m",
+  5: "5m",
+  15: "15m",
+  60: "1h",
+  240: "4h",
+  "1D": "1d",
+};
+
+type CandleStreamFactory = (symbol: string, timeframe: StreamCandlePeriod) => Subscription<OhlcvCandle> | undefined;
+
 export class DataFeed extends EventTarget implements IBasicDataFeed {
   private subscriptions: Record<string, PauseableInterval<Bar | undefined>> = {};
+  private candleStreams: Record<string, { open: () => void; close: () => void }> = {};
+  private candleStreamFactory?: CandleStreamFactory;
+  private isCandleStreamEnabled = false;
   private prefetchedBarsPromises: Record<string, Promise<FromOldToNewArray<Bar>>> = {};
-  private visibilityHandler: () => void;
+  private stopWatchingPage: () => void;
   private marksGetter?: (
     symbolInfo: LibrarySymbolInfo,
     from: number,
@@ -82,15 +101,11 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     metrics.startTimer("candlesLoad");
     metrics.startTimer("candlesDisplay");
 
-    this.visibilityHandler = () => {
-      if (document.visibilityState === "hidden") {
-        this.pauseAll();
-      } else {
-        this.resumeAll();
-      }
-    };
-
-    document.addEventListener("visibilitychange", this.visibilityHandler);
+    this.stopWatchingPage = watchPageHidden({
+      onHide: () => this.pauseAll(),
+      onHiddenLong: () => this.closeCandleStreams(),
+      onShow: () => this.resumeAll(),
+    });
   }
 
   searchSymbols(): void {
@@ -110,6 +125,15 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 
   setTokenPriceGetter(getter: (symbol: string) => bigint | undefined): void {
     this.tokenPriceGetter = getter;
+  }
+
+  setCandleStreamFactory(factory: CandleStreamFactory | undefined): void {
+    this.candleStreamFactory = factory;
+  }
+
+  setCandleStreamEnabled(enabled: boolean): void {
+    this.isCandleStreamEnabled = enabled;
+    Object.values(this.candleStreams).forEach((stream) => (enabled ? stream.open() : stream.close()));
   }
 
   notifyPricesReady(): void {
@@ -262,6 +286,13 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 
     const res = resolution as TradingViewResolution;
 
+    let chartBar: Bar | undefined;
+    let lastStreamFrameAt = 0;
+    const emit = (bar: Bar) => {
+      chartBar = bar;
+      onTick(multiplyBarValues(formatTimeInBarToMs(bar), visualMultiplier));
+    };
+
     const interval = new PauseableInterval<Bar | undefined>(async ({ lastReturnedValue }) => {
       let candlesToFetch = 1;
 
@@ -292,6 +323,9 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 
       let didPatchPreviousCandle = false;
 
+      // while stream frames keep arriving they own the forming bar; rollovers and backfill stay with the poll
+      const isStreamActive = Date.now() - lastStreamFrameAt < CANDLE_STREAM_ACTIVE_MS;
+
       for (const price of prices) {
         if (lastReturnedValue?.time && price.time < lastReturnedValue.time) {
           continue;
@@ -299,17 +333,20 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 
         if (lastReturnedValue?.time && price.time > lastReturnedValue.time && !didPatchPreviousCandle) {
           didPatchPreviousCandle = true;
+          const previousBar = chartBar ?? lastReturnedValue;
           const previousBarWithNewClose = {
-            ...lastReturnedValue,
+            ...previousBar,
             close: price.open,
-            low: Math.min(lastReturnedValue.low, price.open),
-            high: Math.max(lastReturnedValue.high, price.open),
+            low: Math.min(previousBar.low, price.open),
+            high: Math.max(previousBar.high, price.open),
           };
 
-          onTick(multiplyBarValues(formatTimeInBarToMs(previousBarWithNewClose), visualMultiplier));
+          emit(previousBarWithNewClose);
         }
 
-        onTick(multiplyBarValues(formatTimeInBarToMs(price), visualMultiplier));
+        if (!isStreamActive || price.time !== lastReturnedValue?.time) {
+          emit(price);
+        }
 
         newLastReturnedValue = price;
       }
@@ -330,11 +367,44 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     }, V2_UPDATE_INTERVAL);
 
     this.subscriptions[listenerGuid] = interval;
+    this.candleStreams[listenerGuid]?.close();
+    delete this.candleStreams[listenerGuid];
+
+    const period = STREAM_CANDLE_PERIODS[res];
+    if (isStable || !period) {
+      return;
+    }
+
+    let subscription: Subscription<OhlcvCandle> | undefined;
+    const stream = {
+      open: () => {
+        if (subscription || !this.isCandleStreamEnabled || document.visibilityState === "hidden") {
+          return;
+        }
+        subscription = this.candleStreamFactory?.(symbolInfo.name, period);
+        subscription?.subscribe((candle) => {
+          const bar = ohlcvCandleToBar(candle);
+          if (bar.time === chartBar?.time) {
+            lastStreamFrameAt = Date.now();
+            emit(bar);
+          }
+        });
+      },
+      close: () => {
+        subscription?.close();
+        subscription = undefined;
+        lastStreamFrameAt = 0;
+      },
+    };
+    this.candleStreams[listenerGuid] = stream;
+    stream.open();
   }
 
   unsubscribeBars(listenerGuid: string): void {
     this.subscriptions[listenerGuid].destroy();
     delete this.subscriptions[listenerGuid];
+    this.candleStreams[listenerGuid]?.close();
+    delete this.candleStreams[listenerGuid];
   }
 
   onReady(callback: OnReadyCallback): void {
@@ -389,8 +459,13 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     Object.values(this.subscriptions).forEach((subscription) => subscription.pause());
   }
 
+  private closeCandleStreams() {
+    Object.values(this.candleStreams).forEach((stream) => stream.close());
+  }
+
   private resumeAll() {
     Object.values(this.subscriptions).forEach((subscription) => subscription.resume());
+    Object.values(this.candleStreams).forEach((stream) => stream.open());
   }
 
   private async fetchCandles(
@@ -483,8 +558,10 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
   }
 
   destroy() {
+    this.stopWatchingPage();
     Object.values(this.subscriptions).forEach((subscription) => subscription.destroy());
-    document.removeEventListener("visibilitychange", this.visibilityHandler);
+    this.closeCandleStreams();
+    this.candleStreams = {};
   }
 }
 
