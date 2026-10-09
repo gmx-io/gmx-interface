@@ -1,10 +1,11 @@
 import { useWallets } from "@privy-io/react-auth";
 import { useEffect } from "react";
-import { type Address, isAddressEqual } from "viem";
+import type { Address } from "viem";
 import type { Connector } from "wagmi";
 import { useAccount } from "wagmi";
 
 import { useChainId } from "lib/chains";
+import { getPrivyWagmiConnectorId } from "lib/wallets/privyWagmi";
 import { ACCOUNT_TYPE_LABELS, AccountType, getAccountType } from "lib/wallets/useAccountType";
 import { getConnectedWalletName } from "lib/wallets/useWalletSessionChains";
 import { fetchWalletChainCapabilities, type WalletChainCapabilitiesResult } from "lib/wallets/walletCapabilities";
@@ -14,7 +15,7 @@ import { metrics } from "./Metrics";
 import type { WalletCapabilitiesEvent } from "./types";
 
 // these wallets answer wallet_getCapabilities without a round trip to another device
-const LOCAL_CAPABILITIES_CONNECTOR_TYPES = ["injected", "coinbase_wallet"];
+const LOCAL_CAPABILITIES_CONNECTOR_TYPES = ["injected", "coinbase_wallet", "base_account"];
 
 const reportedKeys = new Set<string>();
 
@@ -24,9 +25,10 @@ export function useWalletCapabilitiesMetric() {
   const { wallets } = useWallets();
   const walletChainId = srcChainId ?? chainId;
 
+  // one address can be connected through several Privy wallets, the active wagmi connector picks the one in use
   const connectorType =
-    address !== undefined
-      ? wallets.find((wallet) => isAddressEqual(wallet.address as Address, address))?.connectorType
+    connector !== undefined
+      ? wallets.find((wallet) => getPrivyWagmiConnectorId(wallet) === connector.id)?.connectorType
       : undefined;
 
   useEffect(() => {

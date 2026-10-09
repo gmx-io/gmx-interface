@@ -8,8 +8,8 @@ import { useWalletCapabilitiesMetric } from "./useWalletCapabilitiesMetric";
 const METAMASK_DELEGATOR = "0x63c0c19a282a1B52b07dD5a65b58948A07DAE32B";
 
 const mocks = vi.hoisted(() => ({
-  account: { address: "", connector: { uid: "" } },
-  wallets: [] as { address: string; connectorType: string }[],
+  account: { address: "", connector: { id: "", uid: "" } },
+  wallets: [] as { address: string; connectorType: string; walletClientType: string; meta: { id: string } }[],
   chainId: 42161,
   srcChainId: undefined as number | undefined,
   pushEvent: vi.fn(),
@@ -39,9 +39,23 @@ function TestComponent() {
   return null;
 }
 
+function getWallet(address: string, connectorType: string) {
+  const isEmbedded = connectorType === "embedded";
+
+  return {
+    address,
+    connectorType,
+    walletClientType: isEmbedded ? "privy" : connectorType,
+    meta: { id: isEmbedded ? "io.privy.wallet" : `wallet.${connectorType}` },
+  };
+}
+
 function connect(address: string, connectorType: string) {
-  mocks.account = { address, connector: { uid: `${connectorType}-${address}` } };
-  mocks.wallets = [{ address, connectorType }];
+  const wallet = getWallet(address, connectorType);
+  const connectorId = connectorType === "embedded" ? `${wallet.meta.id}.${address}` : wallet.meta.id;
+
+  mocks.account = { address, connector: { id: connectorId, uid: `${connectorId}-uid` } };
+  mocks.wallets = [wallet];
 }
 
 function getStatuses() {
@@ -136,5 +150,27 @@ describe("useWalletCapabilitiesMetric", () => {
         data: expect.objectContaining({ accountType: "postEip7702Eoa", delegateAddress: undefined }),
       })
     );
+  });
+
+  it("asks Base Account, which answers from its own storage", async () => {
+    connect("0x0000000000000000000000000000000000000006", "base_account");
+
+    render(<TestComponent />);
+
+    await waitFor(() => expect(mocks.pushEvent).toHaveBeenCalledTimes(1));
+    expect(mocks.fetchWalletChainCapabilities).toHaveBeenCalledTimes(1);
+    expect(getStatuses()).toEqual(["ok"]);
+  });
+
+  it("uses the wallet behind the active connector when an address is connected twice", async () => {
+    const address = "0x0000000000000000000000000000000000000007";
+    connect(address, "wallet_connect_v2");
+    mocks.wallets = [getWallet(address, "injected"), getWallet(address, "wallet_connect_v2")];
+
+    render(<TestComponent />);
+
+    await waitFor(() => expect(mocks.pushEvent).toHaveBeenCalledTimes(1));
+    expect(mocks.fetchWalletChainCapabilities).not.toHaveBeenCalled();
+    expect(getStatuses()).toEqual(["skipped"]);
   });
 });
