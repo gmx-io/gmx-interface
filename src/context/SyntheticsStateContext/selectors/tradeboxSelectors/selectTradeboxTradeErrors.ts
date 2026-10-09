@@ -232,6 +232,7 @@ const selectTradeboxDecreaseTradeError = createSelector((q) => {
     isContractAccount: false,
     receiveToken: selectedPosition?.collateralToken,
     nextPositionValues: nextPositionValues,
+    nextLeverage: nextPositionValues?.nextLeverage,
     isLong,
     isTrigger: stage !== "trade",
     minCollateralUsd,
@@ -240,6 +241,9 @@ const selectTradeboxDecreaseTradeError = createSelector((q) => {
     minPositionSizeUsd,
     isTwap,
     numberOfParts,
+    remainingPositionMarginState: undefined,
+    shouldValidateLeftoverCollateral: true,
+    isInsufficientCollateralForCosts: false,
   });
 });
 

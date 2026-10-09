@@ -33,7 +33,7 @@ import {
   getIsPermitExpiredDeadlineOnSimulation,
   getIsPermitSignatureErrorOnSimulation,
   getIsPossibleExternalSwapError,
-  getIsPriceImpactTooLargeError,
+  getIsSwapPriceImpactTooLargeError,
 } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import {
@@ -67,6 +67,7 @@ import {
 
 import { getTxnErrorToast, PermitIssueType } from "components/Errors/errorToasts";
 
+import { getIsDecreaseBatch } from "./getIsDecreaseBatch";
 import { getIsSizeIncreaseBatch } from "./getIsSizeIncreaseBatch";
 import { BatchOrderTxnCtx } from "./sendBatchOrderTxn";
 import { getPossiblyInsufficientPayTokens } from "../express/insufficientPayTokens";
@@ -387,7 +388,7 @@ export function useOrderTxnCallbacks() {
           const fallbackToExternalSwap =
             !isOutdatedSubaccountApproval &&
             !hasExternalSwap(expressParams, batchParams) &&
-            getIsPriceImpactTooLargeError(error)
+            getIsSwapPriceImpactTooLargeError(error)
               ? ctx.onExternalSwapFallback
               : undefined;
 
@@ -407,6 +408,7 @@ export function useOrderTxnCallbacks() {
             defaultMessage: operationMessage,
             slippageInputId: ctx.slippageInputId,
             isSizeIncrease: getIsSizeIncreaseBatch(batchParams),
+            isDecrease: getIsDecreaseBatch(batchParams),
             additionalContent: ctx.additionalErrorContent,
             isInternalSwapFallback: Boolean(fallbackToInternalSwap),
             isExternalSwapFallback: Boolean(fallbackToExternalSwap),

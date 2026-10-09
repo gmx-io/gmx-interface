@@ -3717,6 +3717,7 @@ msgstr "主题"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
 msgstr "已超过最大杠杆"
 
@@ -7998,6 +7999,10 @@ msgstr "做多储备因子"
 msgid "buy"
 msgstr "买入"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first. Remaining margin: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
+msgstr "剩余仓位将超过允许的最大杠杆。请平掉更大部分、减少提取金额，或先增加保证金。剩余保证金：{remainingCollateralUsdText}，所需：{minCollateralUsdForLeverageText}"
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Capital used"
@@ -8114,6 +8119,10 @@ msgstr "当前无法创建此订单类型"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Win rate"
 msgstr "胜率"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first."
+msgstr "剩余仓位将超过允许的最大杠杆。请平掉更大部分、减少提取金额，或先增加保证金。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading stats"
@@ -9135,6 +9144,10 @@ msgstr "账户类型"
 msgid "Collateral in"
 msgstr "抵押品选择"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, close the position fully, or add margin first."
+msgstr "剩余仓位将超过允许的最大杠杆。请平掉更大部分、完全平仓，或先增加保证金。"
+
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "GMX pools can't fill this swap size, and no external route is currently available. Try reducing the amount or <0>swap on an external aggregator</0>."
 msgstr "GMX 池无法完成此规模的交换，且当前没有可用的外部路由。请尝试减少金额，或<0>在外部聚合器上交换</0>。"
@@ -9616,6 +9629,7 @@ msgid "Max funding factor (long)"
 msgstr "最大资金费率因子（多头）"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient collateral to cover order costs"
 msgstr "抵押品不足以支付订单成本"
 

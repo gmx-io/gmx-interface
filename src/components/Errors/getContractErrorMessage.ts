@@ -50,11 +50,13 @@ export function getContractErrorMessage({
   chainId,
   errorData,
   isSizeIncrease,
+  isDecrease,
   isLpWithdrawal,
 }: {
   chainId?: number;
   errorData: Pick<ErrorData, "contractError" | "contractErrorArgs">;
   isSizeIncrease?: boolean;
+  isDecrease?: boolean;
   isLpWithdrawal?: boolean;
 }): string | undefined {
   if (!errorData.contractError) {
@@ -90,6 +92,12 @@ export function getContractErrorMessage({
           return remainingCollateralUsdText && minCollateralUsdForLeverageText
             ? t`The position cannot be increased at the current leverage. Increase margin or reduce size. Current margin: ${remainingCollateralUsdText}, required: ${minCollateralUsdForLeverageText}`
             : t`The position cannot be increased at the current leverage. Increase margin or reduce size.`;
+        }
+
+        if (isDecrease) {
+          return remainingCollateralUsdText && minCollateralUsdForLeverageText
+            ? t`The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first. Remaining margin: ${remainingCollateralUsdText}, required: ${minCollateralUsdForLeverageText}`
+            : t`The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first.`;
         }
 
         return remainingCollateralUsdText && minCollateralUsdForLeverageText
@@ -300,6 +308,7 @@ export function getContractErrorMessage({
               contractErrorArgs: decodedExternalCallError.args,
             },
             isSizeIncrease,
+            isDecrease,
             isLpWithdrawal,
           });
 

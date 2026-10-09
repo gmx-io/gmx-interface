@@ -17,6 +17,7 @@ import {
   getApprovalGasError,
   getConditionalDepositError,
   getConditionalDepositWarning,
+  getDecreaseError,
   getEditCollateralError,
   getExpressError,
   getGmNativeGasError,
@@ -467,6 +468,142 @@ describe("getEditCollateralError — invalid liquidation price tooltip", () => {
 
     expect(result.buttonErrorMessage).toBe("Invalid liquidation price");
     expect(result.buttonTooltipName).toBe(ValidationButtonTooltipName.liqPriceGtMarkPrice);
+  });
+});
+
+describe("getEditCollateralError — withdrawal above the max", () => {
+  const withdrawParams = {
+    ...baseEditCollateralParams,
+    isDeposit: false,
+    maxWithdrawAmount: expandDecimals(10, 6),
+  };
+
+  it("passes a withdrawal equal to the max", () => {
+    expect(getEditCollateralError(withdrawParams).buttonErrorMessage).toBeUndefined();
+  });
+
+  it("blocks a withdrawal above the max with the max-leverage state", () => {
+    const result = getEditCollateralError({
+      ...withdrawParams,
+      collateralDeltaAmount: expandDecimals(10, 6) + 1n,
+    });
+
+    expect(result.buttonErrorMessage).toBe("Max leverage exceeded");
+    expect(result.buttonTooltipName).toBe(ValidationButtonTooltipName.maxLeverage);
+  });
+
+  it("keeps the max-leverage state when the withdrawal also breaks the leverage cap and the liquidation price", () => {
+    const result = getEditCollateralError({
+      ...withdrawParams,
+      collateralDeltaAmount: expandDecimals(20, 6),
+      nextLeverage: 1_000n * 10_000n,
+      nextLiqPrice: expandDecimals(55_000, 30),
+      position: { isLong: true, markPrice: expandDecimals(50_000, 30) } as any,
+    });
+
+    expect(result.buttonErrorMessage).toBe("Max leverage exceeded");
+    expect(result.buttonTooltipName).toBe(ValidationButtonTooltipName.maxLeverage);
+  });
+
+  it("says the withdrawal is not available when nothing can be withdrawn", () => {
+    expect(getEditCollateralError({ ...withdrawParams, maxWithdrawAmount: 0n }).buttonErrorMessage).toBe(
+      "Withdrawal not available"
+    );
+  });
+
+  it("does not apply the max to deposits", () => {
+    const result = getEditCollateralError({
+      ...baseEditCollateralParams,
+      collateralDeltaAmount: expandDecimals(30, 6),
+      depositAmount: expandDecimals(30, 6),
+      maxWithdrawAmount: expandDecimals(10, 6),
+    });
+
+    expect(result.buttonErrorMessage).toBeUndefined();
+  });
+});
+
+describe("getDecreaseError — remaining-position margin check", () => {
+  const violation = (reason: PositionMarginFailureReason): PositionMarginState => ({
+    isLiquidatable: true,
+    reason,
+    remainingCollateralUsd: 0n,
+    minCollateralUsd: 0n,
+    minCollateralUsdForLeverage: 0n,
+  });
+
+  const baseDecreaseParams = {
+    marketInfo,
+    inputSizeUsd: expandDecimals(250, 30),
+    sizeDeltaUsd: expandDecimals(250, 30),
+    receiveToken: toToken,
+    isTrigger: false,
+    triggerPrice: undefined,
+    markPrice: expandDecimals(50_000, 30),
+    existingPosition: undefined,
+    nextPositionValues: undefined,
+    nextLeverage: undefined,
+    isLong: true,
+    isContractAccount: false,
+    minCollateralUsd: expandDecimals(1, 30),
+    isNotEnoughReceiveTokenLiquidity: false,
+    triggerThresholdType: undefined,
+    minPositionSizeUsd: expandDecimals(1, 30),
+    isTwap: false,
+    numberOfParts: 0,
+    remainingPositionMarginState: undefined,
+    shouldValidateLeftoverCollateral: true,
+    isInsufficientCollateralForCosts: false,
+  };
+
+  it.each([
+    PositionMarginFailureReason.MinCollateralForLeverage,
+    PositionMarginFailureReason.NonPositiveRemainingMargin,
+  ])("blocks a partial close the contract would reject with '%s'", (reason) => {
+    const result = getDecreaseError({ ...baseDecreaseParams, remainingPositionMarginState: violation(reason) });
+
+    expect(result.buttonErrorMessage).toBe("Max leverage exceeded");
+    expect(result.buttonTooltipName).toBe(ValidationButtonTooltipName.remainingPositionMaxLeverage);
+    expect(result.buttonTooltipMessage).toBe(
+      "The remaining position would exceed the maximum allowed leverage. Close a larger part, close the position fully, or add margin first."
+    );
+  });
+
+  it("does not block when the remainder passes or is not validated", () => {
+    expect(getDecreaseError(baseDecreaseParams).buttonErrorMessage).toBeUndefined();
+
+    expect(
+      getDecreaseError({
+        ...baseDecreaseParams,
+        remainingPositionMarginState: {
+          isLiquidatable: false,
+          reason: undefined,
+          remainingCollateralUsd: 1n,
+          minCollateralUsd: 0n,
+          minCollateralUsdForLeverage: 1n,
+        },
+      }).buttonErrorMessage
+    ).toBeUndefined();
+  });
+
+  it("caps the leverage it is given, whatever the displayed next leverage is", () => {
+    const displayedNextValues = { nextLeverage: 10n * 10_000n } as any;
+
+    expect(
+      getDecreaseError({
+        ...baseDecreaseParams,
+        nextPositionValues: displayedNextValues,
+        nextLeverage: 1_000n * 10_000n,
+      }).buttonErrorMessage
+    ).toMatch(/^Max leverage: /);
+
+    expect(
+      getDecreaseError({
+        ...baseDecreaseParams,
+        nextPositionValues: { nextLeverage: 1_000n * 10_000n } as any,
+        nextLeverage: 10n * 10_000n,
+      }).buttonErrorMessage
+    ).toBeUndefined();
   });
 });
 

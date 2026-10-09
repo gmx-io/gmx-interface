@@ -11,7 +11,6 @@ import {
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
-  usePositionEditorMinCollateralFactor,
   usePositionEditorPosition,
   usePositionEditorPositionState,
 } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
@@ -26,6 +25,7 @@ import {
   selectPositionEditorCollateralInputAmountAndUsd,
   selectPositionEditorDepositMode,
   selectPositionEditorIsCollateralTokenFromGmxAccount,
+  selectPositionEditorMaxWithdrawAmount,
   selectPositionEditorReplacingOrderKey,
   selectPositionEditorSelectedCollateralAddress,
   selectPositionEditorSelectedCollateralToken,
@@ -42,14 +42,9 @@ import {
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
-import {
-  addMinDepositSlippage,
-  getIsPositionInfoLoaded,
-  substractMaxLeverageSlippage,
-  willPositionCollateralBeSufficientForPosition,
-} from "domain/synthetics/positions";
+import { addMinDepositSlippage, getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import { convertToTokenAmount } from "domain/synthetics/tokens";
-import { getMarkPrice, getMaxWithdrawAmount, getMinRequiredCollateralUsdForPosition } from "domain/synthetics/trade";
+import { getMarkPrice, getMinRequiredCollateralUsdForPosition } from "domain/synthetics/trade";
 import { Operation } from "domain/synthetics/trade/usePositionEditorState";
 import {
   getCommonError,
@@ -68,7 +63,6 @@ import {
   getIsGasPaymentTokenApproval,
 } from "domain/tokens/gasPaymentTokenApproval";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
-import { bigNumberBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { helperToast } from "lib/helperToast";
@@ -78,7 +72,7 @@ import {
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
-import { expandDecimals, formatAmountFree } from "lib/numbers";
+import { formatAmountFree } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
@@ -157,13 +151,9 @@ export function usePositionEditorButtonState(
     operation,
   });
 
-  const { nextLeverage, nextLiqPrice, receiveUsd } = usePositionEditorData({
+  const { nextLeverage, nextLeverageWithoutPnl, nextLiqPrice, receiveUsd } = usePositionEditorData({
     operation,
   });
-
-  const minCollateralFactor = usePositionEditorMinCollateralFactor();
-
-  const collateralPrice = selectedCollateralToken?.prices.minPrice;
 
   const markPrice = position
     ? getMarkPrice({
@@ -352,37 +342,13 @@ export function usePositionEditorButtonState(
     setEditingPositionKey(undefined);
   }, [setEditingPositionKey]);
 
-  const maxWithdrawAmount = useMemo(() => {
-    if (!getIsPositionInfoLoaded(position)) return 0n;
+  const maxWithdrawAmount = useSelector(selectPositionEditorMaxWithdrawAmount);
 
-    return getMaxWithdrawAmount({
-      position,
-      minCollateralUsd,
-      collateralPrice,
-      collateralDecimals: selectedCollateralToken?.decimals,
-      userReferralInfo,
-    });
-  }, [collateralPrice, selectedCollateralToken?.decimals, minCollateralUsd, position, userReferralInfo]);
-
-  const detectAndSetMaxSize = useCallback(() => {
-    if (maxWithdrawAmount === undefined) return;
+  const setMaxWithdrawal = useCallback(() => {
     if (!selectedCollateralToken) return;
-    if (!position) return;
-    if (minCollateralFactor === undefined) return;
 
-    const { result: safeMaxWithdrawal } = bigNumberBinarySearch(
-      BigInt(1),
-      maxWithdrawAmount,
-      expandDecimals(1, Math.ceil(selectedCollateralToken.decimals / 3)),
-      (x) => {
-        const isValid = willPositionCollateralBeSufficientForPosition(position, x, 0n, minCollateralFactor, 0n);
-        return { isValid, returnValue: null };
-      }
-    );
-    setCollateralInputValue(
-      formatAmountFree(substractMaxLeverageSlippage(safeMaxWithdrawal), selectedCollateralToken.decimals)
-    );
-  }, [selectedCollateralToken, maxWithdrawAmount, minCollateralFactor, position, setCollateralInputValue]);
+    setCollateralInputValue(formatAmountFree(maxWithdrawAmount, selectedCollateralToken.decimals));
+  }, [selectedCollateralToken, maxWithdrawAmount, setCollateralInputValue]);
 
   const minDepositUsd = useMemo(() => {
     if (!isDeposit || !getIsPositionInfoLoaded(position) || minCollateralUsd === undefined) {
@@ -458,7 +424,7 @@ export function usePositionEditorButtonState(
     const editCollateralError = getEditCollateralError({
       collateralDeltaAmount,
       collateralDeltaUsd,
-      nextLeverage,
+      nextLeverage: isDeposit ? nextLeverage : nextLeverageWithoutPnl,
       nextLiqPrice,
       isDeposit,
       position,
@@ -483,6 +449,7 @@ export function usePositionEditorButtonState(
     isAutoCancelLimitReached,
     markPrice,
     nextLeverage,
+    nextLeverageWithoutPnl,
     nextLiqPrice,
     isDeposit,
     position,
@@ -508,7 +475,7 @@ export function usePositionEditorButtonState(
           <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">Read more</ExternalLink>.
           <br />
           <br />
-          <EmbeddedActionButton onClick={detectAndSetMaxSize}>
+          <EmbeddedActionButton onClick={setMaxWithdrawal}>
             <Trans>Set max withdrawal</Trans>
           </EmbeddedActionButton>
         </Trans>
@@ -516,7 +483,7 @@ export function usePositionEditorButtonState(
     }
 
     return null;
-  }, [detectAndSetMaxSize, validationResult.buttonTooltipMessage, validationResult.buttonTooltipName]);
+  }, [setMaxWithdrawal, validationResult.buttonTooltipMessage, validationResult.buttonTooltipName]);
 
   const errorBannerContent = useMemo(() => {
     if (validationResult.buttonTooltipName === ValidationButtonTooltipName.marginDepositAutoCancelLimit) {

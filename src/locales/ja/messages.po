@@ -3717,6 +3717,7 @@ msgstr "テーマ"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
 msgstr "最大レバレッジを超過しています"
 
@@ -7998,6 +7999,10 @@ msgstr "リザーブファクター（ロング）"
 msgid "buy"
 msgstr "購入"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first. Remaining margin: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
+msgstr "残りのポジションが最大許容レバレッジを超えます。より多くクローズするか、出金額を減らすか、先に証拠金を追加してください。残りの証拠金: {remainingCollateralUsdText}、必要: {minCollateralUsdForLeverageText}"
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Capital used"
@@ -8114,6 +8119,10 @@ msgstr "この注文タイプは作成できません"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Win rate"
 msgstr "勝率"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first."
+msgstr "残りのポジションが最大許容レバレッジを超えます。より多くクローズするか、出金額を減らすか、先に証拠金を追加してください。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading stats"
@@ -9135,6 +9144,10 @@ msgstr "アカウントタイプ"
 msgid "Collateral in"
 msgstr "担保トークン"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, close the position fully, or add margin first."
+msgstr "残りのポジションが最大許容レバレッジを超えます。より多くクローズするか、ポジションを全決済するか、先に証拠金を追加してください。"
+
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "GMX pools can't fill this swap size, and no external route is currently available. Try reducing the amount or <0>swap on an external aggregator</0>."
 msgstr "GMXプールではこのスワップサイズを約定できず、現在利用可能な外部ルートもありません。金額を減らすか、<0>外部アグリゲーターでスワップ</0>してください。"
@@ -9616,6 +9629,7 @@ msgid "Max funding factor (long)"
 msgstr "最大ファンディングファクター（ロング）"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient collateral to cover order costs"
 msgstr "注文コストを賄うための担保が不足しています"
 

@@ -440,10 +440,11 @@ export function useTradeboxButtonState({
           break;
         }
 
-        // PositionEditor-only states
+        // PositionEditor-only and PositionSeller-only states
         case ValidationButtonTooltipName.minDeposit:
         case ValidationButtonTooltipName.marginDepositAutoCancelLimit:
         case ValidationButtonTooltipName.marginDepositInsufficient:
+        case ValidationButtonTooltipName.remainingPositionMaxLeverage:
           break;
 
         default:

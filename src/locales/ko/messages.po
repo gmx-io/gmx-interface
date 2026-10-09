@@ -3717,6 +3717,7 @@ msgstr "테마"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
 msgstr "최대 레버리지 초과"
 
@@ -7998,6 +7999,10 @@ msgstr "롱 준비금 비율"
 msgid "buy"
 msgstr "구매"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first. Remaining margin: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
+msgstr "남은 포지션이 최대 허용 레버리지를 초과하게 됩니다. 더 많은 부분을 종료하거나, 인출 금액을 줄이거나, 먼저 증거금을 추가하세요. 잔여 증거금: {remainingCollateralUsdText}, 필요: {minCollateralUsdForLeverageText}"
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Capital used"
@@ -8114,6 +8119,10 @@ msgstr "이 주문 유형은 생성할 수 없습니다"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Win rate"
 msgstr "승률"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first."
+msgstr "남은 포지션이 최대 허용 레버리지를 초과하게 됩니다. 더 많은 부분을 종료하거나, 인출 금액을 줄이거나, 먼저 증거금을 추가하세요."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading stats"
@@ -9135,6 +9144,10 @@ msgstr "계정 유형"
 msgid "Collateral in"
 msgstr "담보 입금"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, close the position fully, or add margin first."
+msgstr "남은 포지션이 최대 허용 레버리지를 초과하게 됩니다. 더 많은 부분을 종료하거나, 포지션을 전량 종료하거나, 먼저 증거금을 추가하세요."
+
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "GMX pools can't fill this swap size, and no external route is currently available. Try reducing the amount or <0>swap on an external aggregator</0>."
 msgstr "GMX 풀에서 이 스왑 규모를 체결할 수 없으며, 현재 사용 가능한 외부 경로가 없습니다. 금액을 줄이거나 <0>외부 애그리게이터에서 스왑</0>해 보세요."
@@ -9616,6 +9629,7 @@ msgid "Max funding factor (long)"
 msgstr "최대 펀딩 계수(롱)"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient collateral to cover order costs"
 msgstr "주문 비용을 충당할 담보가 부족합니다"
 

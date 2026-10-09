@@ -3717,6 +3717,7 @@ msgstr "Thema"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
 msgstr "Maximaler Hebel überschritten"
 
@@ -7998,6 +7999,10 @@ msgstr "Reservefaktor Longs"
 msgid "buy"
 msgstr "kaufen"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first. Remaining margin: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
+msgstr "Die verbleibende Position würde den maximal zulässigen Hebel überschreiten. Schließen Sie einen größeren Teil, heben Sie weniger ab oder fügen Sie zuerst Margin hinzu. Verbleibende Margin: {remainingCollateralUsdText}, erforderlich: {minCollateralUsdForLeverageText}"
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Capital used"
@@ -8114,6 +8119,10 @@ msgstr "Ordertyp kann nicht erstellt werden"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Win rate"
 msgstr "Gewinnrate"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first."
+msgstr "Die verbleibende Position würde den maximal zulässigen Hebel überschreiten. Schließen Sie einen größeren Teil, heben Sie weniger ab oder fügen Sie zuerst Margin hinzu."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading stats"
@@ -9135,6 +9144,10 @@ msgstr "Kontotyp"
 msgid "Collateral in"
 msgstr "Sicherheit in"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, close the position fully, or add margin first."
+msgstr "Die verbleibende Position würde den maximal zulässigen Hebel überschreiten. Schließen Sie einen größeren Teil, schließen Sie die Position vollständig oder fügen Sie zuerst Margin hinzu."
+
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "GMX pools can't fill this swap size, and no external route is currently available. Try reducing the amount or <0>swap on an external aggregator</0>."
 msgstr "Die GMX-Pools können diese Swap-Größe nicht ausführen, und derzeit ist keine externe Route verfügbar. Versuchen Sie, den Betrag zu reduzieren, oder <0>swappen Sie auf einem externen Aggregator</0>."
@@ -9616,6 +9629,7 @@ msgid "Max funding factor (long)"
 msgstr "Maximaler Finanzierungsfaktor (Long)"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient collateral to cover order costs"
 msgstr "Unzureichende Sicherheiten, um die Orderkosten zu decken"
 

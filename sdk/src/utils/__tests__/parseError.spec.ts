@@ -10,7 +10,7 @@ import {
 import { describe, expect, it } from "vitest";
 
 import { abis } from "abis";
-import { decodeSimulationErrorFromViemError, ErrorLike, parseError } from "utils/errors";
+import { CustomError, decodeSimulationErrorFromViemError, ErrorLike, extendError, parseError } from "utils/errors";
 import { TxErrorType } from "utils/errors/transactionsErrors";
 
 describe("parseError", () => {
@@ -406,6 +406,23 @@ describe("parseError", () => {
           isUserError: true,
           isUserRejectedError: false,
           errorGroup: "Txn Error: NOT_ENOUGH_FUNDS",
+        })
+      );
+    });
+  });
+
+  describe("custom errors", () => {
+    it("reads the contract error that the order simulation rethrows as a CustomError", () => {
+      const args = { estimatedRemainingCollateralUsd: 90n };
+      const error = extendError(new CustomError({ name: "UnableToWithdrawCollateral", message: "{}", args }), {
+        errorContext: "simulation",
+      });
+
+      expect(parseError(error)).toEqual(
+        expect.objectContaining({
+          contractError: "UnableToWithdrawCollateral",
+          contractErrorArgs: args,
+          errorContext: "simulation",
         })
       );
     });
