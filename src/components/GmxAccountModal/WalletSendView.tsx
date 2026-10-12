@@ -316,6 +316,7 @@ export function WalletSendView() {
     spenderAddress: stargateAddress,
     tokens: approvalTokens,
     skip: isSameChain || isDestinationUnsupported || selectedToken?.isNative || stargateAddress === undefined,
+    metric: { flow: "gmxAccountSend" },
   });
 
   const gasPrice = useGasPrice(chainId);
