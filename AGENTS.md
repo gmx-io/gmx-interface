@@ -1,15 +1,20 @@
 ## Migration background
 
-This project is migrating functionality from the `source-solana-project` subproject into the main project. The goal is to integrate Solana support while preserving the main project's existing frontend component and interaction system.
+This project is migrating functionality from the `gmx-solana-interface` subproject into the main project. The goal is to integrate Solana support while preserving the main project's existing frontend component and interaction system.
 
 ## Solana migration
 
-1. The migration goal is to integrate the functionality of the `source-solana-project` subproject into the main project.
+1. The migration goal is to integrate the functionality of the `gmx-solana-interface` subproject into the main project.
 2. For each Solana module, if the main project already provides an equivalent frontend component or module, it must be reused together with the main project's applicable page structure, state management, and interaction patterns. If the main project has no equivalent, ask the user for confirmation before introducing a new frontend component or module.
-3. Treat `source-solana-project` as a reference for Solana data access, business logic, interfaces, and behavior when those details are unclear; do not copy its pages or UI components into the main project by default.
+3. Treat `gmx-solana-interface` as a reference for Solana data access, business logic, interfaces, and behavior when those details are unclear; do not copy its pages or UI components into the main project by default.
 4. Adapt the subproject's data and logic to the main project's existing components rather than introducing a separate frontend implementation; any new frontend component or module requires the user's confirmation under rule 2.
 5. Keep migration changes focused on the Solana integration and avoid unrelated refactors or component changes.
 6. When the required behavior, data contract, or integration approach remains unclear after reviewing the relevant source code, ask the user for clarification before implementing.
+
+## Engineering standards
+
+1. Refer to the `gmx-prompts` subproject for coding style, technical standards, development practices, and code review guidance.
+2. When implementing or reviewing changes, apply the relevant guidance from `gmx-prompts` together with the project-specific instructions in this file.
 
 ## General instructions
 
