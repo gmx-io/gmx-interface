@@ -44,7 +44,7 @@ export default function BeginAccountTransfer() {
   const [isAffiliateVesterSkipValidation, setIsAffiliateVesterSkipValidation] = useState(false);
   const [isStakingPowerResetAcknowledged, setIsStakingPowerResetAcknowledged] = useState(false);
   let parsedReceiver: string = zeroAddress;
-  if (isAddress(receiver) || /^0x[0-9A-F]{40}$/.test(receiver)) {
+  if (isAddress(receiver)) {
     parsedReceiver = getAddress(receiver);
   }
   const hasValidReceiver = parsedReceiver !== zeroAddress;
