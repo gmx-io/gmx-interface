@@ -3,12 +3,14 @@ import { useEffect } from "react";
 import { getAbFlags } from "config/ab";
 import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
+import useIsFirstOrder from "domain/synthetics/tradeHistory/useIsFirstOrder";
 import { API_UI_FLAGS, useIsApiSdkEnabled } from "domain/synthetics/uiFlags/useIsApiSdkEnabled";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import { getDisplayMode } from "lib/pwa/getDisplayMode";
 import { getLaunchSource } from "lib/pwa/getLaunchSource";
+import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { useBowser } from "lib/useBowser";
 import useIsWindowVisible from "lib/useIsWindowVisible";
 import useIsMetamaskMobile, { getIsMobileUserAgent } from "lib/wallets/useIsMetamaskMobile";
@@ -18,10 +20,19 @@ import { isHomeSite } from "../legacy";
 import { metrics } from "./Metrics";
 import { setStartupErrorReporter } from "./startupErrors";
 
+// trade actions only accumulate, so once an account has traded there is nothing left to poll for
+export function getHasNoTradesRefreshInterval(hasNoTrades: boolean | undefined) {
+  return hasNoTrades === false ? 0 : CONFIG_UPDATE_INTERVAL;
+}
+
 export function useConfigureMetrics() {
   const { chainId, srcChainId } = useChainId();
   const fetcher = useOracleKeeperFetcher(chainId);
-  const { active } = useWallet();
+  const { active, account } = useWallet();
+  const { isFirstOrder: hasNoTrades } = useIsFirstOrder(chainId, {
+    account,
+    refreshInterval: getHasNoTradesRefreshInterval,
+  });
   const [showDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
   const isMobileMetamask = useIsMetamaskMobile();
   const isWindowVisible = useIsWindowVisible();
@@ -68,9 +79,11 @@ export function useConfigureMetrics() {
       platform: bowser?.platform.type,
       isInited: Boolean(bowser),
       srcChainId,
+      hasNoTrades,
     });
   }, [
     active,
+    hasNoTrades,
     isMobileMetamask,
     isWindowVisible,
     isLargeAccount,
