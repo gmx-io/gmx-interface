@@ -70,7 +70,12 @@ export function resolveGasPaymentTokenAddress({
     }
 
     const payTokenFeeAmount = getFeeTokenAmount(feeUsdByToken[payTokenAddress], payToken);
-    if (payTokenFeeAmount !== undefined && applyMinimalBuffer(payTokenFeeAmount) > payTokenBalance) {
+    // the order and the fee both come out of the pay token; when they don't fit, Express would quietly
+    // fall back to a Classic transaction paid in ETH, so the saved gas payment token stays instead
+    const payTokenRequiredAmount =
+      (payAmounts[payTokenAddress] ?? 0n) +
+      (payTokenFeeAmount !== undefined ? applyMinimalBuffer(payTokenFeeAmount) : 0n);
+    if (payTokenRequiredAmount > payTokenBalance) {
       return gasPaymentTokenAddress;
     }
 
