@@ -7194,6 +7194,10 @@ msgstr "Die Position kann dennoch allein aufgrund von Gebühren (Finanzierung + 
 msgid "{balanceFormatted} remaining in old 1CT subaccount"
 msgstr "{balanceFormatted} verbleibend im alten 1CT-Unterkonto"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "One-Click Trading is not available for smart wallets."
+msgstr "One-Click Trading ist für Smart-Contract-Wallets nicht verfügbar."
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Stake GMX"
 msgstr "GMX staken"
@@ -7618,6 +7622,10 @@ msgstr "ParaSwap"
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Loading..."
 msgstr "Lädt..."
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>One-Click Trading is not available for smart wallets.</0><1/><2>Deactivate One-Click Trading</2>"
+msgstr "<0>One-Click Trading ist für Smart-Contract-Wallets nicht verfügbar.</0><1/><2>One-Click Trading deaktivieren</2>"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
