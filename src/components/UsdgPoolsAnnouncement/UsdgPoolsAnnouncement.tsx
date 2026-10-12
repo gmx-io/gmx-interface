@@ -1,40 +1,39 @@
-import { GMX_PARTNER_TELEGRAM_URL } from "config/links";
+import { useMemo } from "react";
+
+import { ARBITRUM } from "config/chains";
 
 import { AnnouncementBanner } from "components/AnnouncementBanner/AnnouncementBanner";
 
+const DEPOSIT_LINK = { text: "Deposit in GLV [USDG] or GM [USDG]", to: `/pools?chainId=${ARBITRUM}` };
+
 export function UsdgPoolsAnnouncement({ onDismiss }: { onDismiss: () => void }) {
+  const depositLink = useMemo(() => ({ ...DEPOSIT_LINK, onClick: onDismiss }), [onDismiss]);
+
   return (
     <AnnouncementBanner
       className="pointer-events-auto"
       variant="info"
-      headerLabel="Early access: new USDG LP pools on Arbitrum with 8% boost APR at launch"
+      headerLabel="GMX is moving off 50/50 pools: boosted USDG line is live"
       headerIcon="info"
       truncateHeader={false}
       onClose={onDismiss}
+      footerLink={depositLink}
     >
       <div className="flex flex-col gap-8">
         <p>
-          GMX is launching a new LP product line: pools fully denominated in <span className="font-medium">USDG</span>{" "}
-          (Global Dollar: a Paxos-issued, fully-backed stablecoin). Deposit dollars, earn dollars. No crypto exposure,
-          unlike the existing 50/50 pools.
-        </p>
-        <p>This wallet&apos;s GM/GLV liquidity pre-qualifies it for whitelist onboarding, opening in early October.</p>
-        <p>
-          Whitelist terms: a planned <span className="font-medium">8% launch boost APR for the first 8 weeks</span>, on
-          top of the variable base trading-fee yield, plus zero-fee USDC→USDG conversion windows, and reserved capacity
-          ahead of public access.
-        </p>
-        <p className="font-medium">
-          To activate your whitelist spot, message{" "}
-          <a href={GMX_PARTNER_TELEGRAM_URL} target="_blank" rel="noopener noreferrer">
-            @GMXPartners
-          </a>{" "}
-          on Telegram and mention &quot;USDG whitelist.&quot;
+          GMX is shifting LP product focus from 50/50 pools to single-asset pools, with the new USDG line as GMX&apos;s
+          flagship: existing trading will move there and all new markets launch there.
         </p>
         <p>
-          GMX will never DM you first or ask you to sign anything to participate. Nor will GMX Partners ever ask for a
-          seed phrase, signature or token approval.
+          The USDG line comes with a 20-week boost program on top of trading fees. For the first 8 weeks (to Nov 30),
+          GLV [USDG] will have 8%+ additional boosted APR and the GM [USDG] pools 5%. Boost slowly tapers from Week 9 to
+          20.
         </p>
+        <p>
+          This address is whitelisted for direct GM [USDG] deposits and 0-fee USDC-to-USDG conversion. Withdrawals from
+          the main 50/50 pools are fee-free until Oct 31.
+        </p>
+        <p>GMX never DMs first or asks for signatures outside app.gmx.io.</p>
       </div>
     </AnnouncementBanner>
   );
