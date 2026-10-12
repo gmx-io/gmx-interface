@@ -705,6 +705,20 @@ export function getExpiredPermitDeadlineToastContent() {
   );
 }
 
+export const SMART_WALLET_SUBACCOUNT_TOAST_ID = "smart-wallet-subaccount";
+
+export function getSmartWalletSubaccountToastContent(onDeactivate: () => void) {
+  return (
+    <Trans>
+      <div>One-Click Trading is not available for smart wallets.</div>
+      <br />
+      <div className="clickable underline" onClick={onDeactivate}>
+        Deactivate One-Click Trading
+      </div>
+    </Trans>
+  );
+}
+
 export function getOutdatedSubaccountApprovalToastContent() {
   return (
     <Trans>

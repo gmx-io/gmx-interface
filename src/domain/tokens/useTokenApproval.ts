@@ -1,11 +1,13 @@
 import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useLatest } from "react-use";
 import type { Address } from "viem";
 
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { helperToast } from "lib/helperToast";
+import type { TokenApprovalMetricParams } from "lib/metrics";
 import { EMPTY_ARRAY } from "lib/objects";
 import type { WalletSigner } from "lib/wallets";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
@@ -15,6 +17,7 @@ import type { AnyChainId } from "sdk/configs/chains";
 import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 
 import { approveTokens } from "./approveTokens";
+import { getIsGasPaymentTokenApproval } from "./gasPaymentTokenApproval";
 import { getInsufficientApprovalToastContent } from "./insufficientApproval";
 
 interface TokenToApprove {
@@ -29,7 +32,13 @@ interface UseTokenApprovalParams {
   skip?: boolean;
   approveAmount?: bigint;
   allowPermit?: boolean;
+  metric: TokenApprovalMetricContext;
 }
+
+type TokenApprovalMetricContext = Omit<TokenApprovalMetricParams, "isGasPaymentToken"> & {
+  gasPaymentTokenAddress?: string;
+  payTokenAddress?: string;
+};
 
 export interface HandleApproveOptions {
   onApproveFail?: () => void;
@@ -56,11 +65,13 @@ export function useTokenApproval({
   skip,
   approveAmount,
   allowPermit = false,
+  metric,
 }: UseTokenApprovalParams): UseTokenApprovalReturn {
   const [approvingToken, setApprovingToken] = useState<string | undefined>();
   const [minedApproval, setMinedApproval] = useState<MinedApproval | undefined>();
   const { tokenPermits, addTokenPermit, isPermitsDisabled, setIsPermitsDisabled } = useTokenPermitsContext();
   const [, setSettlementChainId] = useGmxAccountSettlementChainId();
+  const latestMetric = useLatest(metric);
 
   const mergedTokens = useMemo(() => {
     const map = new Map<string, bigint>();
@@ -168,6 +179,7 @@ export function useTokenApproval({
       if (!chainId || isApproving || !tokenAddress || !spenderAddress) return;
 
       const permitParams = allowPermit ? { addTokenPermit, setIsPermitsDisabled, isPermitsDisabled } : undefined;
+      const { gasPaymentTokenAddress, payTokenAddress, ...metricParams } = latestMetric.current;
 
       const doApprove = async (signerToUse: WalletSigner) => {
         setApprovingToken(tokenAddress);
@@ -179,6 +191,13 @@ export function useTokenApproval({
           chainId,
           permitParams,
           approveAmount,
+          metric: {
+            ...metricParams,
+            isGasPaymentToken:
+              gasPaymentTokenAddress !== undefined
+                ? getIsGasPaymentTokenApproval({ tokenAddress, gasPaymentTokenAddress, payTokenAddress })
+                : undefined,
+          },
           onApproveFail: () => {
             setApprovingToken(undefined);
             options?.onApproveFail?.();
@@ -204,6 +223,7 @@ export function useTokenApproval({
       chainId,
       isApproving,
       isPermitsDisabled,
+      latestMetric,
       setIsPermitsDisabled,
       setSettlementChainId,
       spenderAddress,

@@ -8,6 +8,7 @@ import {
   getRawBaseRelayerParams,
 } from "domain/multichain/arbitraryRelayParams";
 import { callContract } from "lib/contracts";
+import { sleepWithSignal } from "lib/sleep";
 import { ExpressTxnData, sendExpressTransaction } from "lib/transactions";
 import type { WalletSigner } from "lib/wallets";
 import { signTypedData } from "lib/wallets/signing";
@@ -35,6 +36,8 @@ import {
 import { SubaccountRemovalResultUnknownError } from "./errors";
 import { getMultichainInfoFromSigner, getOrderRelayRouterAddress } from "../express/expressOrderUtils";
 
+const SUBACCOUNT_REMOVAL_POLL_INTERVAL_MS = 2000;
+
 export async function removeSubaccountWalletTxn(
   chainId: ContractsChainId,
   signer: Signer,
@@ -49,7 +52,42 @@ export async function removeSubaccountWalletTxn(
     hideErrorMsg: true,
   });
 
-  await res?.wait();
+  if (!res) {
+    return;
+  }
+
+  const account = await signer.getAddress();
+  const abortController = new AbortController();
+
+  try {
+    await Promise.race([
+      res.wait(),
+      waitForSubaccountRemoval({ chainId, account, subaccountAddress, signal: abortController.signal }),
+    ]);
+  } finally {
+    abortController.abort();
+  }
+}
+
+async function waitForSubaccountRemoval({
+  chainId,
+  account,
+  subaccountAddress,
+  signal,
+}: {
+  chainId: ContractsChainId;
+  account: string;
+  subaccountAddress: string;
+  signal: AbortSignal;
+}): Promise<void> {
+  const getIsDisabled = async () => {
+    const isActive = await getIsSubaccountActiveOnchain({ chainId, account, subaccountAddress });
+    return isActive === false;
+  };
+
+  while (!(await getIsDisabled())) {
+    await sleepWithSignal(SUBACCOUNT_REMOVAL_POLL_INTERVAL_MS, signal);
+  }
 }
 
 export async function getIsSubaccountActiveOnchain({
