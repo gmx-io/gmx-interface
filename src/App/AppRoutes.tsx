@@ -6,6 +6,7 @@ import { zeroHash } from "viem";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSmartWalletSubaccountWarning } from "context/SubaccountContext/useSmartWalletSubaccountWarning";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useMultichainFundingToast } from "domain/multichain/useMultichainFundingToast";
 import { useSupportChat } from "domain/supportChat/useSupportChat";
@@ -15,6 +16,7 @@ import { REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
 import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
 import { useFreshnessMetricsControl } from "lib/metrics/useFreshnessMetricsControl";
+import { useWalletCapabilitiesMetric } from "lib/metrics/useWalletCapabilitiesMetric";
 import { sendEarnPageViewEvent } from "lib/userAnalytics/earnEvents";
 import { useConfigureUserAnalyticsProfile } from "lib/userAnalytics/useConfigureUserAnalyticsProfile";
 import { useWalletConnectedUserAnalyticsEvent } from "lib/userAnalytics/useWalletConnectedEvent";
@@ -46,6 +48,7 @@ export function AppRoutes() {
   useConfigureUserAnalyticsProfile();
   useOpenAppMetric();
   useAccountInitedMetric();
+  useWalletCapabilitiesMetric();
   useSupportChat();
 
   useWalletConnectedUserAnalyticsEvent();
@@ -114,6 +117,7 @@ export function AppRoutes() {
   }, [isEarnPage]);
 
   useRealChainIdWarning();
+  useSmartWalletSubaccountWarning();
 
   return (
     <>

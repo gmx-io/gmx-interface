@@ -206,7 +206,7 @@ export function SyntheticsStateContextProvider({
 
   const marketsInfo = useMarketsInfoRequest(chainId, { tokensData: tokensDataResult.tokensData });
 
-  const { isFirstOrder } = useIsFirstOrder(chainId, { account });
+  const { isFirstOrder = true } = useIsFirstOrder(chainId, { account });
 
   const shouldFetchGlvMarkets =
     isGlvEnabled(chainId) && (pageType === "pools" || pageType === "buy" || pageType === "earn");

@@ -7194,6 +7194,10 @@ msgstr ""
 msgid "{balanceFormatted} remaining in old 1CT subaccount"
 msgstr ""
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "One-Click Trading is not available for smart wallets."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Stake GMX"
 msgstr ""
@@ -7617,6 +7621,10 @@ msgstr ""
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Loading..."
+msgstr ""
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>One-Click Trading is not available for smart wallets.</0><1/><2>Deactivate One-Click Trading</2>"
 msgstr ""
 
 #: landing/src/pages/Home/HeroSection/Features.tsx

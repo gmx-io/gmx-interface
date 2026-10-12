@@ -268,6 +268,12 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     tokens: approvalTokens,
     allowPermit: Boolean(expressParams),
     skip: isGmxAccountFeeSource,
+    metric: {
+      flow: "settleFundingFees",
+      isExpress: Boolean(expressParams),
+      isExpress1CT: Boolean(expressParams?.subaccount),
+      gasPaymentTokenAddress: expressParams?.gasPaymentParams?.gasPaymentTokenAddress,
+    },
   });
 
   const isAllowanceLoaded = Boolean(batchParams) && isAllowanceLoadedRaw;

@@ -9,6 +9,7 @@ import { ARBITRUM, ContractsChainId } from "config/chains";
 import { type ChainIcons, getIcons } from "config/icons";
 import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 import { calculateStakeBonusPercentage } from "domain/stake/calculateStakeBonusPercentage";
+import { sendStakingActionMetric } from "domain/stake/sendStakingActionMetric";
 import {
   getEffectiveHistoricalMax,
   getMaxSafeUnstake,
@@ -246,6 +247,7 @@ export function StakeModal(props: {
         chainId,
         permitParams: undefined,
         approveAmount: undefined,
+        metric: { flow: "stake" },
         onApproveFail: () => {
           setIsApproving(false);
         },
@@ -262,7 +264,12 @@ export function StakeModal(props: {
       setPendingTxns,
     })
       .then(() => {
+        sendStakingActionMetric({ action: "stake", tokenSymbol, chainId });
         setIsVisible(false);
+      })
+      .catch((error) => {
+        sendStakingActionMetric({ action: "stake", tokenSymbol, chainId, error });
+        throw error;
       })
       .finally(() => {
         setIsStaking(false);
@@ -278,6 +285,7 @@ export function StakeModal(props: {
     setPendingTxns,
     setIsVisible,
     rewardRouterAddress,
+    tokenSymbol,
   ]);
 
   const showResetToast = useCallback(() => {
@@ -306,10 +314,15 @@ export function StakeModal(props: {
       setPendingTxns,
     })
       .then(() => {
+        sendStakingActionMetric({ action: "unstake", tokenSymbol, chainId });
         setIsVisible(false);
         if (didReset) {
           showResetToast();
         }
+      })
+      .catch((error) => {
+        sendStakingActionMetric({ action: "unstake", tokenSymbol, chainId, error });
+        throw error;
       })
       .finally(() => {
         setIsUnstaking(false);
@@ -324,6 +337,7 @@ export function StakeModal(props: {
     setIsVisible,
     wouldResetPower,
     showResetToast,
+    tokenSymbol,
   ]);
 
   const handleStakeMax = useCallback(() => {
