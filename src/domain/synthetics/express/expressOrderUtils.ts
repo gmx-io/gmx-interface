@@ -32,7 +32,6 @@ import { abis } from "sdk/abis";
 import { AnyChainId, ContractsChainId, SettlementChainId, SourceChainId } from "sdk/configs/chains";
 import { ContractName } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
-import { bigMath } from "sdk/utils/bigmath";
 import { type ExpressTxnData, estimateExpressParams as sdkEstimateExpressParams } from "sdk/utils/express";
 import { getBatchTypedData, buildBatchOrderCalldata } from "sdk/utils/express";
 import {
@@ -42,6 +41,7 @@ import {
   getBatchRequiredActions,
   getBatchTotalExecutionFee,
   getBatchTotalPayCollateralAmount,
+  getExpressBatchOrderParams,
   getIsEmptyBatch,
 } from "sdk/utils/orderTransactions";
 import type { IRpc, StateOverrideEntry } from "sdk/utils/rpc";
@@ -49,29 +49,6 @@ import { hashSubaccountApproval } from "sdk/utils/subaccount";
 import { nowInSeconds } from "sdk/utils/time";
 
 import { estimateBatchGasLimit, GasLimitsConfig } from "../fees";
-
-export function getPrimaryOrderGasPaymentTokenAmount({
-  expressParams,
-  primaryExecutionFeeAmount,
-}: {
-  expressParams: Pick<ExpressTxnParams, "gasPaymentParams" | "executionFeeAmount">;
-  primaryExecutionFeeAmount: bigint | undefined;
-}): bigint {
-  const { gasPaymentTokenAmount, relayerFeeAmount } = expressParams.gasPaymentParams;
-
-  if (primaryExecutionFeeAmount === undefined) {
-    return gasPaymentTokenAmount;
-  }
-
-  const batchFeeAmount = relayerFeeAmount + expressParams.executionFeeAmount;
-  const primaryFeeAmount = relayerFeeAmount + primaryExecutionFeeAmount;
-
-  if (batchFeeAmount <= 0n || primaryFeeAmount >= batchFeeAmount) {
-    return gasPaymentTokenAmount;
-  }
-
-  return bigMath.mulDiv(gasPaymentTokenAmount, primaryFeeAmount, batchFeeAmount);
-}
 
 export async function estimateBatchExpressParams({
   signer,
@@ -149,7 +126,7 @@ function getBatchExpressEstimatorParams({
   const payAmounts = getBatchTotalPayCollateralAmount(batchParams);
   const gasPaymentTokenAsCollateralAmount = getByKey(payAmounts, gasPaymentToken.address) ?? 0n;
   const executionFeeAmount = getBatchTotalExecutionFee({
-    batchParams,
+    batchParams: getExpressBatchOrderParams(chainId, batchParams),
     chainId,
     tokensData,
     allowEmptyBatch: estimationMethod === "approximate",
@@ -279,6 +256,7 @@ export async function buildAndSignExpressBatchOrderTxn({
   const crossChainId = isGmxAccount ? await getMultichainInfoFromSigner(signer, chainId) : undefined;
   const effectiveSrcChainId = isGmxAccount ? crossChainId ?? chainId : undefined;
   const relayRouterAddress = getOrderRelayRouterAddress(chainId, subaccount !== undefined, isGmxAccount);
+  const expressBatchParams = getExpressBatchOrderParams(chainId, batchParams);
 
   const relayPayload: RelayParamsPayload = {
     ...(relayParamsPayload as RelayParamsPayload),
@@ -293,7 +271,7 @@ export async function buildAndSignExpressBatchOrderTxn({
     const typedData = getBatchTypedData({
       chainId,
       signingChainId: crossChainId ?? chainId,
-      batchParams,
+      batchParams: expressBatchParams,
       relayParams: relayPayload,
       account: signer.address,
       subaccountApprovalHash: subaccount?.signedApproval
@@ -324,7 +302,7 @@ export async function buildAndSignExpressBatchOrderTxn({
 
   const result = buildBatchOrderCalldata({
     chainId,
-    batchParams,
+    batchParams: expressBatchParams,
     relayParamsPayload: relayPayload,
     signature,
     account: signer.address,

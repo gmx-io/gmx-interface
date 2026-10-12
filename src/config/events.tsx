@@ -49,6 +49,82 @@ export type EventData = {
 
 export const appEventsData: EventData[] = [
   {
+    id: "glv-usdg-launch",
+    type: "listing",
+    isActive: true,
+    startDate: "06 Oct 2026, 00:00",
+    endDate: "13 Oct 2026, 00:00",
+    title: "New: GLV [USDG-USDG] is live with an 8%+ launch boost",
+    description: (
+      <>
+        Deposit dollars, earn dollars, with no crypto price exposure on your deposit. USDC works too; the app converts
+        it for you in the same flow. For the first 8 weeks, the GMX Dollar Vault earns a launch boost of 8% APR or
+        higher on top of trading fees, paid into the GLV price every 4 hours. Nothing to claim. Rates for later periods
+        will be published before each one starts.
+      </>
+    ),
+    link: { text: "Read the announcement", href: "https://x.com/GMX_IO/status/2107458863469302101", newTab: true },
+  },
+  {
+    id: "release-127-128-129-highlights",
+    type: "update",
+    isActive: true,
+    startDate: "02 Oct 2026, 00:00",
+    endDate: "09 Oct 2026, 00:00",
+    variant: "info",
+    title: "App Update: Clearer Network Fees, Fewer Failed Orders, Instant TP/SL",
+    summary: (
+      <>
+        Fees show the token you pay with, increases that would fail are blocked before you sign, and TP/SL shows
+        instantly.
+      </>
+    ),
+    description: (
+      <span className="flex flex-col gap-12">
+        <span>
+          <span className="font-medium text-typography-primary">Network fees:</span> every fee row shows the token you
+          pay with and which balance pays it
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Low balance:</span> fee messages now name the missing
+          token and how to top it up
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Max button:</span> it now shows how much it keeps back
+          for the network fee
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Tradebox:</span> a position increase that would fail is
+          now blocked before you sign
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">One-Click Trading:</span> an outdated approval no longer
+          blocks your orders
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">TP/SL:</span> your orders show in the Orders tab the
+          moment you submit them
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Startup:</span> an app update no longer leaves you on a
+          blank screen
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Chart:</span> colors you set in Chart settings now stay
+          after a reload or a theme switch
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Homepage:</span> picking a network now opens the app on
+          that network
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Earn:</span> fees earned on GM no longer show N/A with a
+          tiny GM balance
+        </span>
+      </span>
+    ),
+  },
+  {
     id: "release-124-125-126-highlights",
     type: "update",
     isActive: true,
@@ -219,9 +295,9 @@ export const appEventsData: EventData[] = [
         </span>
         <span>
           <span className="font-medium text-typography-primary">Trader &amp; Affiliate Program:</span>{" "}
-          <ExternalLink href="https://gmx.io/trader-affiliate-program">a new page</ExternalLink> for high-volume
-          traders and affiliates covering the 25% rate, tiers from $10m volume, a dedicated account manager and
-          marketing support. Apply from the page, or reach the team on Telegram or a call.
+          <ExternalLink href="https://gmx.io/trader-affiliate-program">a new page</ExternalLink> for high-volume traders
+          and affiliates covering the 25% rate, tiers from $10m volume, a dedicated account manager and marketing
+          support. Apply from the page, or reach the team on Telegram or a call.
         </span>
         <span>
           <span className="font-medium text-typography-primary">Trader profiles:</span> trader activity and address

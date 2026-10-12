@@ -13,7 +13,6 @@ type Props = {
   entries: ChainsStatsEntries;
   staleEntries?: ChainsStatsStaleEntry[];
   caption?: ReactNode;
-  subtotal?: ReactNode;
   showDollar?: boolean;
   decimalsForConversion?: number;
 };
@@ -25,7 +24,6 @@ export default function ChainsStatsTooltip({
   entries,
   staleEntries = NO_STALE_ENTRIES,
   caption,
-  subtotal,
   showDollar = true,
   decimalsForConversion = USD_DECIMALS,
 }: Props) {
@@ -61,7 +59,6 @@ export default function ChainsStatsTooltip({
           <ChainsStatsTooltipRow
             summary={summary}
             staleEntries={staleEntries}
-            subtotal={subtotal}
             showDollar={showDollar}
             decimalsForConversion={decimalsForConversion}
           />

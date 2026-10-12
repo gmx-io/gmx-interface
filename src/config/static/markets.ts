@@ -145,10 +145,6 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0xD4b737892baB8446Ea1e8Bb901db092fb1EC1791": {
       enabled: true,
     },
-    //  SATS/USD [WBTC-USDC]
-    "0x8ea4Fb801493DaD8724F90Fb2e279534fa591366": {
-      enabled: true,
-    },
     // POL/USD [ETH-USDC]
     "0xD0a1AFDDE31Eb51e8b53bdCE989EB8C2404828a4": {
       enabled: true,
@@ -201,20 +197,8 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0xe55e1A29985488A2c8846a91E925c2B7C6564db1": {
       enabled: true,
     },
-    // BOME/USD [WBTC/USDC]
-    "0x71237F8C3d1484495A136022E16840b70fF84a69": {
-      enabled: true,
-    },
     // FLOKI/USD [WBTC/USDC]
     "0xfD46a5702D4d97cE0164375744c65F0c31A3901b": {
-      enabled: true,
-    },
-    // MEME/USD [WBTC/USDC]
-    "0x6CB901Cc64c024C3Fe4404c940FF9a3Acc229D2C": {
-      enabled: true,
-    },
-    // MEW/USD [WBTC/USDC]
-    "0x71B7fF592a974e2B501D8A7a11f5c42DcD365244": {
       enabled: true,
     },
     // GMX [GMX]
@@ -385,10 +369,6 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0xfaEaE570B07618D3F10360608E43c241181c4614": {
       enabled: true,
     },
-    // BRETT/USD [WETH-USDC]
-    "0x6EeE8098dBC106aEde99763FA5F955A5bBc42C50": {
-      enabled: true,
-    },
     // WLFI/USD [WETH-USDC]
     "0xb3588455858a49D3244237CEe00880CcB84b91Dd": {
       enabled: true,
@@ -521,6 +501,22 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0xE26E7b91143f367445f1c0a5dCf4f4aC8EaDcDb1": {
       enabled: true,
     },
+    // BTC/USD [USDG-USDG]
+    "0xe57B97F2f83F39E74Ec83f3e039FD370884784fF": {
+      enabled: true,
+    },
+    // ETH/USD [USDG-USDG]
+    "0x6f095F58e9Eb2c583A1828202712c03962491d7e": {
+      enabled: true,
+    },
+    // SOL/USD [USDG-USDG]
+    "0xfF63B0f938772e2b4fFD1A1b340Afe49616c95f2": {
+      enabled: true,
+    },
+    // SWAP-ONLY [USDC-USDG]
+    "0x408E8e83d4b8Ac4BDefFDF896B49268A5FE5Ef44": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
@@ -577,10 +573,6 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     },
     // TRUMP/USD [WAVAX-USDC]
     "0xfB626c4e3E153947A6A94041814c25E449064dAD": {
-      enabled: true,
-    },
-    // MELANIA/USD [WAVAX-USDC]
-    "0xe19da27Bf9733c429445E289B662bECDCa6ce10b": {
       enabled: true,
     },
     // PUMP/USD [WAVAX-USDC]
@@ -762,18 +754,7 @@ export function isDepositDisabledMarket(chainId: number, marketTokenAddress: str
   return DEPOSIT_DISABLED_MARKET_ADDRESSES[chainId]?.has(marketTokenAddress) ?? false;
 }
 
-export const DELISTING_MARKET_ADDRESSES: Record<number, Set<string>> = {
-  [ARBITRUM]: new Set([
-    "0x71237F8C3d1484495A136022E16840b70fF84a69", // BOME/USD
-    "0x8ea4Fb801493DaD8724F90Fb2e279534fa591366", // SATS/USD
-    "0x6EeE8098dBC106aEde99763FA5F955A5bBc42C50", // BRETT/USD
-    "0x6CB901Cc64c024C3Fe4404c940FF9a3Acc229D2C", // MEME/USD
-    "0x71B7fF592a974e2B501D8A7a11f5c42DcD365244", // MEW/USD
-  ]),
-  [AVALANCHE]: new Set([
-    "0xe19da27Bf9733c429445E289B662bECDCa6ce10b", // MELANIA/USD
-  ]),
-};
+export const DELISTING_MARKET_ADDRESSES: Record<number, Set<string>> = {};
 
 export function isDelistingMarket(chainId: number, marketTokenAddress: string): boolean {
   return DELISTING_MARKET_ADDRESSES[chainId]?.has(marketTokenAddress) ?? false;

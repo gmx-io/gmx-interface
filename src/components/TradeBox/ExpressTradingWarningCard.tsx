@@ -33,7 +33,6 @@ import {
 } from "domain/synthetics/express/useSwitchGasPaymentTokenIfRequired";
 import { getExternalAggregatorSwapUrl } from "domain/synthetics/externalSwaps/utils";
 import { useChainId } from "lib/chains";
-import { useGasPaymentTokensText } from "lib/gas/useGasPaymentTokensText";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
@@ -316,8 +315,6 @@ export function ExpressTradingWarningCard({
     shouldShowExternalSwapTwapNotSupportedWarning,
   ]);
 
-  const { gasPaymentTokensText, gasPaymentTokenSymbols } = useGasPaymentTokensText(chainId);
-
   let content: ReactNode | undefined = undefined;
   let onCloseClick: undefined | (() => void) = undefined;
   let buttonText: ReactNode | undefined = undefined;
@@ -427,12 +424,23 @@ export function ExpressTradingWarningCard({
     buttonText = <Trans>Switch to market order</Trans>;
     onClick = handleSwitchToMarketOrder;
   } else if (shouldShowOutOfGasPaymentBalanceWarning) {
+    if (!expressParams) {
+      return null;
+    }
+
+    const gasPaymentTokenSymbol = expressParams.gasPaymentParams.gasPaymentToken.symbol;
+
     icon = ExpressIcon;
     color = "yellow";
-    content = <Trans>Express Trading and One-Click Trading are unavailable due to insufficient gas balance</Trans>;
-    buttonText = <Trans>Buy {gasPaymentTokensText}</Trans>;
+    content = (
+      <Trans>
+        Insufficient {gasPaymentTokenSymbol} in your Wallet for Express fees. Express and One-Click Trading are
+        unavailable.
+      </Trans>
+    );
+    buttonText = <Trans>Swap for {gasPaymentTokenSymbol}</Trans>;
     onClick = () => {
-      history.push(`/trade/swap?to=${gasPaymentTokenSymbols[0]}`);
+      history.push(`/trade/swap?to=${gasPaymentTokenSymbol}`);
       onAfterAction?.();
     };
   } else if (shouldShowSubaccountApprovalForAnotherNetworkWarning) {

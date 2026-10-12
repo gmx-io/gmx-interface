@@ -15,7 +15,7 @@ import { expandDecimals } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 import { getMidPrice } from "sdk/utils/tokens";
 
-const MIN_OI_CAP_THRESHOLD_USD = expandDecimals(10000, USD_DECIMALS);
+const MIN_OI_CAP_THRESHOLD_USD = expandDecimals(100, USD_DECIMALS);
 
 export type MarketStat = {
   marketInfo: MarketInfo;

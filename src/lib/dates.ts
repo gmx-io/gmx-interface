@@ -92,6 +92,10 @@ export function toUtcDayEndByCalendarDate(date: Date) {
   return toUtcDayStartByCalendarDate(date) + SECONDS_IN_DAY - 1;
 }
 
+export function toCalendarDateByUtcDay(date: Date) {
+  return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+}
+
 function toSeconds(date: Date) {
   return Math.round(date.getTime() / 1000);
 }

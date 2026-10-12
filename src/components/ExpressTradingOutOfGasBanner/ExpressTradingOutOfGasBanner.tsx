@@ -1,25 +1,26 @@
 import { Trans } from "@lingui/macro";
 import { useCallback } from "react";
-import { useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 
+import { JUMPER_BRIDGE_URL } from "config/links";
 import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useChainId } from "lib/chains";
 import { useGasPaymentTokensText } from "lib/gas/useGasPaymentTokensText";
+import { getToken } from "sdk/configs/tokens";
 
 import { ColorfulBanner, ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import ExpressIcon from "img/ic_express.svg?react";
 
 export function ExpressTradingOutOfGasBanner({ onClose }: { onClose: () => void }) {
   const { chainId, srcChainId } = useChainId();
-  const history = useHistory();
   const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
-  const { gasPaymentTokensText, gasPaymentTokenSymbols } = useGasPaymentTokensText(chainId);
+  const { gasPaymentTokenAddress } = useSettings();
+  const { gasPaymentTokensText } = useGasPaymentTokensText(chainId);
+  const gasPaymentTokenSymbol = getToken(chainId, gasPaymentTokenAddress).symbol;
 
-  const onBuyClick = useCallback(() => {
-    history.push(`/trade/swap?to=${gasPaymentTokenSymbols[0]}`);
-    onClose();
-  }, [history, onClose, gasPaymentTokenSymbols]);
   const onDepositClick = useCallback(() => {
     setGmxAccountModalOpen("deposit");
     onClose();
@@ -30,7 +31,9 @@ export function ExpressTradingOutOfGasBanner({ onClose }: { onClose: () => void 
       <div>
         {srcChainId !== undefined ? (
           <>
-            <Trans>Insufficient gas balance. Deposit more {gasPaymentTokensText}.</Trans>
+            <Trans>
+              Insufficient {gasPaymentTokensText} in your GMX Account. Express and One-Click Trading are unavailable.
+            </Trans>
             <br />
             <ColorfulButtonLink color="blue" onClick={onDepositClick}>
               <Trans>Deposit {gasPaymentTokensText}</Trans>
@@ -38,11 +41,20 @@ export function ExpressTradingOutOfGasBanner({ onClose }: { onClose: () => void 
           </>
         ) : (
           <>
-            <Trans>Insufficient gas balance. Express Trading and One-Click Trading unavailable.</Trans>
+            <Trans>
+              Insufficient {gasPaymentTokensText} in your Wallet. Express and One-Click Trading are unavailable.
+            </Trans>
             <br />
-            <ColorfulButtonLink color="blue" onClick={onBuyClick}>
-              <Trans>Buy {gasPaymentTokensText}</Trans>
-            </ColorfulButtonLink>
+            <Trans>
+              <Link
+                className="underline underline-offset-2"
+                to={`/trade/swap?to=${gasPaymentTokenSymbol}`}
+                onClick={onClose}
+              >
+                Swap
+              </Link>{" "}
+              or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge</ExternalLink> {gasPaymentTokenSymbol}.
+            </Trans>
           </>
         )}
       </div>

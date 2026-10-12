@@ -38,6 +38,7 @@ function makeExistingOrder(overrides: Partial<PositionOrderInfo> = {}): Position
     autoCancel: true,
     indexToken: WETH,
     decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
+    executionFee: 0n,
     ...overrides,
   } as unknown as PositionOrderInfo;
 }
@@ -73,6 +74,31 @@ describe("buildTpSlBatchPayloads", () => {
     expect(result.updateOrderParams[0].updatePayload.sizeDeltaUsd).toBe(MaxUint256);
     expect(result.updateOrderParams[0].updatePayload.executionFeeTopUp).toBe(0n);
   });
+
+  it.each([
+    { storedFee: 1000n, estimatedFee: 1500n, expectedTopUp: 500n },
+    { storedFee: 2000n, estimatedFee: 1500n, expectedTopUp: 0n },
+  ])(
+    "tops up the stored fee $storedFee of the updated order to the estimate $estimatedFee",
+    ({ storedFee, estimatedFee, expectedTopUp }) => {
+      const result = buildTpSlBatchPayloads({
+        ...baseParams,
+        entries: [
+          {
+            amounts: makeAmounts({ isFullClose: true }),
+            executionFeeAmount: estimatedFee,
+            executionGasLimit: 3000000n,
+            existingFullCloseOrder: makeExistingOrder({ executionFee: storedFee }),
+          },
+        ],
+      });
+
+      const [update] = result.updateOrderParams;
+
+      expect(update.updatePayload.executionFeeTopUp).toBe(expectedTopUp);
+      expect(update.params.executionGasLimit).toBe(3000000n);
+    }
+  );
 
   it("emits a create payload when no existing full-close order exists", () => {
     const result = buildTpSlBatchPayloads({

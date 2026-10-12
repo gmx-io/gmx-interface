@@ -11,7 +11,7 @@ import { OrderType } from "domain/synthetics/orders";
 import { definedOrThrow } from "lib/guards";
 import { getSubsquidGraphClient } from "lib/indexers";
 import { EMPTY_ARRAY } from "lib/objects";
-import { TradeAction as SubsquidTradeAction } from "sdk/codegen/subsquid";
+import { Query as SubsquidQuery, TradeAction as SubsquidTradeAction } from "sdk/codegen/subsquid";
 import { GraphQlFilters, buildFiltersBody, queryPaginated } from "sdk/utils/indexers";
 import { TradeAction, TradeActionType } from "sdk/utils/tradeHistory/types";
 
@@ -503,13 +503,15 @@ export async function fetchTwapGroupExecutedActions({
   return actions;
 }
 
-// Resolves a position slot's lifecycle id from its latest indexed action.
+// Unexecuted increases can have their own lifecycle id, so use the position slot's open lifecycle.
 export async function fetchPositionLifecycleId({
   chainId,
   positionKey,
+  increasedAtTime,
 }: {
   chainId: number;
   positionKey: string;
+  increasedAtTime: bigint;
 }): Promise<string | undefined> {
   const client = getSubsquidGraphClient(chainId);
 
@@ -517,14 +519,30 @@ export async function fetchPositionLifecycleId({
     return undefined;
   }
 
-  const query = gql(`{
-        tradeActions(limit: 1, orderBy: [timestamp_DESC, id_DESC], where: { positionKey_eq: "${positionKey}" }) {
-            positionLifecycleId
-        }
-      }`);
+  const query = gql`
+    query PositionLifecycle($positionKey: String!, $chainId: String!) {
+      positionLifecycleById(id: $positionKey) {
+        currentLifecycleId
+        isOpen
+      }
+      processorStatusById(id: $chainId) {
+        lastParsedBlockTimestamp
+      }
+    }
+  `;
 
-  const result = await client.query({ query, fetchPolicy: "no-cache" });
-  const latestAction = ((result.data?.tradeActions ?? []) as SubsquidTradeAction[])[0];
+  const result = await client.query<Pick<SubsquidQuery, "positionLifecycleById" | "processorStatusById">>({
+    query,
+    variables: { positionKey, chainId: String(chainId) },
+    fetchPolicy: "no-cache",
+  });
+  const lifecycle = result.data?.positionLifecycleById;
+  const processorStatus = result.data?.processorStatusById;
 
-  return latestAction?.positionLifecycleId ?? undefined;
+  // A stale open lifecycle may belong to the position before a close and reopen.
+  if (!processorStatus || processorStatus.lastParsedBlockTimestamp < increasedAtTime) {
+    return undefined;
+  }
+
+  return lifecycle?.isOpen ? lifecycle.currentLifecycleId ?? undefined : undefined;
 }

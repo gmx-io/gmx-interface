@@ -7,6 +7,7 @@ import { TBTC_INFORMATION_URL, isTbtcIncentivizedMarket } from "config/tbtc";
 import { LIDO_APR_DECIMALS } from "domain/stake/useLidoStakeApr";
 import { useLiquidityProvidersIncentives } from "domain/synthetics/common/useIncentiveStats";
 import { useLpAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
+import type { UsdgLaunchBoost } from "domain/synthetics/usdgLaunchBoost/utils";
 import { useChainId } from "lib/chains";
 import { formatAmount } from "lib/numbers";
 
@@ -16,21 +17,43 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import sparkleIcon from "img/sparkle.svg";
 
-export function AprInfo({
+import { UsdgLaunchBoostAprInfo } from "./UsdgLaunchBoostAprInfo";
+
+type Props = {
+  apy: bigint | undefined;
+  incentiveApr: bigint | undefined;
+  lidoApr: bigint | undefined;
+  launchBoost?: UsdgLaunchBoost;
+  isApyLoading?: boolean;
+  showTooltip?: boolean;
+  marketAddress: string;
+  className?: string;
+};
+
+export function AprInfo({ launchBoost, isApyLoading, ...props }: Props) {
+  if (launchBoost) {
+    return (
+      <UsdgLaunchBoostAprInfo
+        apy={props.apy}
+        isApyLoading={isApyLoading}
+        launchBoost={launchBoost}
+        showTooltip={props.showTooltip}
+        className={props.className}
+      />
+    );
+  }
+
+  return <DefaultAprInfo {...props} />;
+}
+
+function DefaultAprInfo({
   apy,
   incentiveApr,
   lidoApr,
   showTooltip = true,
   marketAddress,
   className,
-}: {
-  apy: bigint | undefined;
-  incentiveApr: bigint | undefined;
-  lidoApr: bigint | undefined;
-  showTooltip?: boolean;
-  marketAddress: string;
-  className?: string;
-}) {
+}: Omit<Props, "launchBoost" | "isApyLoading">) {
   const { chainId } = useChainId();
 
   let totalApr = (incentiveApr ?? 0n) + (lidoApr ?? 0n) + (apy ?? 0n);

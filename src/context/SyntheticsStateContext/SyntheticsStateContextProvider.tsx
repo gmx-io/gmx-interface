@@ -61,7 +61,12 @@ import {
 import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
 import useIsFirstOrder from "domain/synthetics/tradeHistory/useIsFirstOrder";
 import { UiFlags, useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
+import { UsdgBoostAprResult, useUsdgBoostAprRequest } from "domain/synthetics/usdgLaunchBoost/useUsdgBoostAprRequest";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
+import {
+  AccountWhitelistsResult,
+  useAccountWhitelistsRequest,
+} from "domain/synthetics/whitelists/useAccountWhitelistsRequest";
 import { ProgressiveTokensData } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
@@ -70,6 +75,7 @@ import { BlockTimestampData, useBlockTimestampRequest } from "lib/useBlockTimest
 import { WalletSigner } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
+import { getGasPaymentTokens } from "sdk/configs/express";
 import { convertTokenAddress } from "sdk/configs/tokens";
 
 import { useMultichainMarketTokensBalancesRequest } from "components/GmxAccountModal/hooks";
@@ -139,6 +145,9 @@ export type SyntheticsState = {
     oracleSettings: OracleSettingsData | undefined;
 
     jitLiquidityData: JitLiquidityData;
+
+    accountWhitelistsResult: AccountWhitelistsResult;
+    usdgBoostAprResult: UsdgBoostAprResult;
   };
   claims: {
     accruedPositionPriceImpactFees: RebateInfoItem[];
@@ -197,7 +206,7 @@ export function SyntheticsStateContextProvider({
 
   const marketsInfo = useMarketsInfoRequest(chainId, { tokensData: tokensDataResult.tokensData });
 
-  const { isFirstOrder } = useIsFirstOrder(chainId, { account });
+  const { isFirstOrder = true } = useIsFirstOrder(chainId, { account });
 
   const shouldFetchGlvMarkets =
     isGlvEnabled(chainId) && (pageType === "pools" || pageType === "buy" || pageType === "earn");
@@ -261,6 +270,8 @@ export function SyntheticsStateContextProvider({
   const subaccountState = useSubaccountContext();
   const { features } = useEnabledFeaturesRequest(chainId);
   const { uiFlags } = useUiFlagsRequest();
+  const accountWhitelistsResult = useAccountWhitelistsRequest(chainId, account, { enabled: pageType === "pools" });
+  const usdgBoostAprResult = useUsdgBoostAprRequest(chainId, { enabled: pageType === "pools" });
 
   const {
     isLoading,
@@ -360,6 +371,7 @@ export function SyntheticsStateContextProvider({
     () =>
       Array.from(
         new Set([
+          ...getGasPaymentTokens(chainId),
           convertTokenAddress(chainId, settings.gasPaymentTokenAddress, "wrapped"),
           convertTokenAddress(chainId, settings.gmxAccountGasPaymentTokenAddress, "wrapped"),
         ])
@@ -422,6 +434,9 @@ export function SyntheticsStateContextProvider({
         oracleSettings,
 
         jitLiquidityData,
+
+        accountWhitelistsResult,
+        usdgBoostAprResult,
       },
       claims: { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees },
       leaderboard,
@@ -459,6 +474,8 @@ export function SyntheticsStateContextProvider({
     isCandlesLoaded,
     isFirstOrder,
     jitLiquidityData,
+    accountWhitelistsResult,
+    usdgBoostAprResult,
     isLargeAccount,
     isLoading,
     keepLeverage,

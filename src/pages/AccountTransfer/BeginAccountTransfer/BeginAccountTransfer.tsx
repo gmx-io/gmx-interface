@@ -372,6 +372,7 @@ export default function BeginAccountTransfer() {
         chainId,
         permitParams: undefined,
         approveAmount: undefined,
+        metric: { flow: "accountTransfer" },
       });
       return;
     }
@@ -385,6 +386,7 @@ export default function BeginAccountTransfer() {
         chainId,
         permitParams: undefined,
         approveAmount: feeGmxTrackerStakedAmount,
+        metric: { flow: "accountTransfer", hideSpender: true },
       });
       return;
     }

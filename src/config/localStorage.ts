@@ -30,12 +30,17 @@ export const DEBUG_RPC_ENDPOINTS_KEY = "debug_rpc_endpoints";
 export const ORACLE_KEEPER_DEBUG_STATE_KEY = "oracle_keeper_debug_state";
 export const MULTICALL_DEBUG_STATE_KEY = "multicall_debug_state";
 export const DEBUG_ERROR_BOUNDARY_KEY = "debug-error-boundary";
+export const DEBUG_PAXOS_TRANSIT_IGNORE_WHITELIST_KEY = "debug-paxos-transit-ignore-whitelist";
+export const DEBUG_PAXOS_TRANSIT_MOCK_KEY = "debug-paxos-transit-mock";
+export const DEBUG_PAXOS_TRANSIT_FORCE_BUY_USDG_HINT_KEY = "debug-paxos-transit-force-buy-usdg-hint";
+export const DEBUG_PAXOS_TRANSIT_THRESHOLD_USD_KEY = "debug-paxos-transit-threshold-usd";
+export const PAXOS_TRANSIT_ROUTE_PROGRESS_KEY = "paxos-transit-route-progress";
 export const STATS_API_URL_KEY = "stats-api-url";
 const SORTED_MARKETS_KEY = "sorted-markets-key";
 export const TWAP_NUMBER_OF_PARTS_KEY = "twap-number-of-parts";
 export const TWAP_INFO_CARD_CLOSED_KEY = "twap-info-card-closed";
 // key updated with chart overrides, to update tv chart with new release
-export const WAS_TV_CHART_OVERRIDDEN_KEY = "was-tv-chart-overridden-2";
+export const WAS_TV_CHART_OVERRIDDEN_KEY = "was-tv-chart-overridden-3";
 export const UTM_PARAMS_KEY = "utm_params";
 
 export const BREAKDOWN_NET_PRICE_IMPACT_ENABLED_KEY = "breakdown-net-price-impact-enabled";

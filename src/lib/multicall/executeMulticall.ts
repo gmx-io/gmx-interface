@@ -16,7 +16,7 @@ import { debugLog, getIsMulticallBatchingDisabled } from "./debug";
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
 import { executeMulticallWorker } from "./executeMulticallWorker";
 import type { ContractCallResult, MulticallError, MulticallRequestConfig, MulticallResult } from "./types";
-import { getCallId, getContractAbiKey } from "./utils";
+import { getCallId, getCallsCountBucket, getContractAbiKey } from "./utils";
 
 type CallResultHandler = (
   destination: {
@@ -98,7 +98,7 @@ async function executeChainMulticall(
     data: {
       chainId,
       priority,
-      callsCount: totalCallsCount,
+      callsCountBucket: getCallsCountBucket(totalCallsCount),
     },
   });
 
@@ -133,7 +133,7 @@ async function executeChainMulticall(
         data: {
           chainId,
           priority,
-          callsCount: callCount,
+          callsCountBucket: getCallsCountBucket(callCount),
         },
       });
     } else {
@@ -142,7 +142,7 @@ async function executeChainMulticall(
         data: {
           chainId,
           priority,
-          callsCount: callCount,
+          callsCountBucket: getCallsCountBucket(callCount),
         },
       });
     }
