@@ -81,6 +81,7 @@ export function useShiftSubmitState({
     chainId,
     spenderAddress: routerAddress,
     tokens,
+    metric: { flow: "gmShift" },
   });
 
   return useMemo(() => {

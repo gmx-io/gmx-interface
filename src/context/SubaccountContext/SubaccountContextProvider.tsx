@@ -61,6 +61,7 @@ import { useJsonRpcProvider } from "lib/rpc";
 import type { WalletSigner } from "lib/wallets";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
+import { getIsContractAccount } from "lib/wallets/useWalletSessionChains";
 import { getNativeToken, getToken, isValidTokenSafe } from "sdk/configs/tokens";
 import { ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "sdk/utils/express";
 
@@ -375,7 +376,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
   );
 
   const tryEnableSubaccount = useCallback(async () => {
-    if (!provider || !signer) {
+    if (!provider || !signer || (await getIsContractAccount(signer.address, chainId))) {
       return false;
     }
 

@@ -222,6 +222,13 @@ export function useTradeboxButtonState({
     tokens: approvalTokens,
     allowPermit: Boolean(expressParams),
     skip: isFromTokenGmxAccount,
+    metric: {
+      flow: "trade",
+      isExpress: Boolean(expressParams),
+      isExpress1CT: Boolean(expressParams?.subaccount),
+      gasPaymentTokenAddress: expressParams?.gasPaymentParams?.gasPaymentTokenAddress,
+      payTokenAddress: fromToken?.address,
+    },
   });
 
   const isDataReady = Boolean(fromToken && payAmount !== undefined && gasPaymentToken);
