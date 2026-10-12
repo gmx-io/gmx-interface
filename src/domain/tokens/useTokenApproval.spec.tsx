@@ -8,6 +8,7 @@ const mocks = vi.hoisted(() => ({
   TOKEN: "0x0000000000000000000000000000000000000001",
   SPENDER: "0x0000000000000000000000000000000000000002",
   OWNER: "0x0000000000000000000000000000000000000003",
+  PAY_TOKEN: "0x0000000000000000000000000000000000000004",
   HASH: "0xabc" as `0x${string}`,
   allowanceData: undefined as Record<string, bigint> | undefined,
   approveTokens: vi.fn(),
@@ -90,6 +91,7 @@ function TestComponent({ amount, allowPermit }: { amount: bigint; allowPermit?: 
     spenderAddress: mocks.SPENDER,
     tokens: [{ tokenAddress: mocks.TOKEN, amount }],
     allowPermit,
+    metric: { flow: "trade", isExpress: true, gasPaymentTokenAddress: mocks.TOKEN, payTokenAddress: mocks.PAY_TOKEN },
   });
   return null;
 }
@@ -273,6 +275,17 @@ describe("useTokenApproval", () => {
     expect(view.result.isApproving).toBe(false);
     expect(view.result.needsApproval).toBe(true);
     expect(mocks.toastError).not.toHaveBeenCalled();
+  });
+
+  it("passes the approval flow to the metric and marks the gas payment token", async () => {
+    const view = setup(1000n);
+    await approve(view);
+
+    expect(mocks.approveTokens).toHaveBeenCalledWith(
+      expect.objectContaining({
+        metric: { flow: "trade", isExpress: true, isGasPaymentToken: true },
+      })
+    );
   });
 
   it("releases the button when the mined allowance cannot be read", async () => {
