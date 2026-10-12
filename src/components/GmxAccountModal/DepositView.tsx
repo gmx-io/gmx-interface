@@ -85,6 +85,7 @@ import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendMultichainDepositSuccessEvent } from "lib/userAnalytics/utils";
 import { useThrottledAsync } from "lib/useThrottledAsync";
+import { useIsContractAccount } from "lib/wallets/useWalletSessionChains";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { convertTokenAddress, getNativeToken, getToken } from "sdk/configs/tokens";
@@ -313,6 +314,7 @@ export const DepositView = () => {
       depositViewChain === undefined ||
       !sourceChainTokenToApproveAddress ||
       sourceChainTokenToApproveAddress === zeroAddress,
+    metric: { flow: "gmxAccountDeposit" },
   });
 
   const handleApproveClick = useCallback(() => {
@@ -600,6 +602,7 @@ export const DepositView = () => {
   const latestIsFirstDeposit = useLatest(isFirstDeposit);
 
   const subaccountState = useSubaccountContext();
+  const { isContractAccount } = useIsContractAccount();
 
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
@@ -789,7 +792,7 @@ export const DepositView = () => {
 
           if (submittedDepositGuid) {
             setSelectedTransferGuid(submittedDepositGuid);
-            if (!subaccountState.subaccount) {
+            if (!subaccountState.subaccount && !isContractAccount) {
               setIsVisibleOrView("depositStatus");
             } else {
               setIsVisibleOrView("transferHistory");
@@ -807,6 +810,7 @@ export const DepositView = () => {
       setMultichainSubmittedDeposit,
       setSelectedTransferGuid,
       subaccountState.subaccount,
+      isContractAccount,
       setIsVisibleOrView,
     ]
   );
