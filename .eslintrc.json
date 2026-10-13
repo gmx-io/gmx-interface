@@ -123,11 +123,20 @@
         ],
         "patterns": [
           {
-            "group": ["@solana/*", "@gmsol-labs/*"],
+            "group": ["@solana/*", "@solana-program/*", "@gmsol-labs/*"],
             "message": "Solana packages are imported only in src/lib/solana and src/domain/gmsol."
           },
           {
-            "group": ["lib/solana", "lib/solana/*", "domain/gmsol", "domain/gmsol/*"],
+            "group": [
+              "lib/solana",
+              "lib/solana/*",
+              "domain/gmsol",
+              "domain/gmsol/*",
+              "**/lib/solana",
+              "**/lib/solana/*",
+              "**/domain/gmsol",
+              "**/domain/gmsol/*"
+            ],
             "message": "Load Solana modules with a dynamic import() outside src/lib/solana and src/domain/gmsol.",
             "allowTypeImports": true
           }
