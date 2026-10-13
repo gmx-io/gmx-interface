@@ -6629,10 +6629,6 @@ msgstr "Выполняет {numberOfParts} {0} {type} ордеров по {1} к
 msgid "Docs"
 msgstr "Документация"
 
-#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
-msgid "Last round paid {lastRoundPaidAt}. The boost returns with the next successful round."
-msgstr "Последний раунд выплачен {lastRoundPaidAt}. Бонус возобновится со следующим успешным раундом."
-
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Marketing Kit + Co-marketing"
 msgstr "Маркетинг-кит + совместный маркетинг"
@@ -6780,10 +6776,6 @@ msgstr "GLV (GMX Liquidity Vault) содержит различные GM ток�
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Settlement network changed to Arbitrum, but $12.50 remains in your Base GMX Account"
 msgstr "Сеть расчёта изменена на Arbitrum, но $12.50 остаётся на вашем GMX Account в сети Base"
-
-#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
-msgid "Paused"
-msgstr "Приостановлено"
 
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
