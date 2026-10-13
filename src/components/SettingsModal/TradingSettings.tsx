@@ -126,7 +126,7 @@ export function TradingSettings({
 
   const oneClickDisabledTooltip =
     expressDisabledTooltip ??
-    (isContractAccount ? <Trans>One-Click Trading is not available for smart wallets.</Trans> : undefined);
+    (isContractAccount ? <Trans>One-Click Trading is unavailable for smart wallets</Trans> : undefined);
 
   const handleSelectGasPaymentToken = useCallback(
     (tokenAddress: string) => {

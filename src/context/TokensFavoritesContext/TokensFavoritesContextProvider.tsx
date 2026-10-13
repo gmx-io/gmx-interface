@@ -58,7 +58,7 @@ export const topLevelTabLabels: Record<TopLevelTab, MessageDescriptor> = {
   favorites: msg`Favourites`,
   crypto: msg`Crypto`,
   tradfi: msg`TradFi`,
-  "recently-listed": msg`Recently Listed`,
+  "recently-listed": msg`Recently listed`,
 };
 
 export const subCategoryTabLabels: Record<Exclude<SubCategoryTab, "all">, MessageDescriptor> = {

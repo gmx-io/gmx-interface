@@ -29,7 +29,7 @@ export type ClaimCollateralHistoryRowProps = {
 };
 
 export const claimCollateralEventTitles: Record<ClaimCollateralAction["eventName"], MessageDescriptor> = {
-  [ClaimType.ClaimFunding]: msg`Claim funding fees`,
+  [ClaimType.ClaimFunding]: msg`Claimed funding fees`,
   [ClaimType.ClaimPriceImpact]: msg`Claim price impact rebates`,
 };
 

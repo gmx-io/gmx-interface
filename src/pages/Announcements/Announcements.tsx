@@ -40,11 +40,11 @@ import {
 import { useAnnouncementsUiFlags } from "./useAnnouncementsUiFlags";
 
 const TAB_LABELS: Record<AnnouncementTab, MessageDescriptor> = {
-  all: msg`All Announcements`,
+  all: msg`All announcements`,
   listing: msg`Listings`,
   delisting: msg`Delistings`,
   update: msg`Updates`,
-  maintenance: msg`Maintenances`,
+  maintenance: msg`Maintenance`,
 };
 
 export default function AnnouncementsPage() {

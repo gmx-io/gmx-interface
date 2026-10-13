@@ -69,7 +69,7 @@ export function WalletReceiveView() {
 
       <div className="h-0 w-full border-t-1/2 border-stroke-primary opacity-80" />
 
-      <ColorfulBanner color="blue" className="w-full">
+      <ColorfulBanner color="yellow" className="w-full">
         <div className="flex items-start gap-8">
           <img src={chainIcon} alt={chainName} className="size-20 shrink-0" />
           <span className="text-blue-300">

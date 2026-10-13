@@ -79,7 +79,7 @@ export function UsdgLaunchBoostStatusNote({ launchBoost }: { launchBoost: UsdgLa
       return <Trans>Last round paid {lastRoundPaidAt}. The boost returns with the next successful round.</Trans>;
     }
     case "unavailable":
-      return <Trans>The boost rate can't be loaded right now.</Trans>;
+      return <Trans>The boost rate can't be loaded right now</Trans>;
   }
 }
 

@@ -47,27 +47,27 @@ function useTabContent(tab: TabKey): TabContent {
     if (tab === "trader") {
       return {
         badge: t`You save`,
-        heading: t`Keep more of every trade.`,
+        heading: t`Keep more of every trade`,
         subtext: t`If you're moving serious size on GMX, you shouldn't be paying list price. The desk cuts your fees and gives you a direct line to a person — not a ticket queue.`,
         benefits: [
           {
             icon: icBenefitFee,
             title: t`Fee discounts up to 25%`,
-            description: t`The more you trade, the more you keep.`,
+            description: t`The more you trade, the more you keep`,
           },
           {
             icon: icBenefitManager,
             title: t`A dedicated account manager`,
-            description: t`Your own contact on Telegram.`,
+            description: t`Your own contact on Telegram`,
           },
           {
             icon: icBenefitCustody,
             title: t`Self-custodial, always`,
-            description: t`Trade from your own wallet — no deposits.`,
+            description: t`Trade from your own wallet — no deposits`,
           },
         ],
         calcTitle: t`Estimate your savings`,
-        volumeLabel: t`MONTHLY VOLUME`,
+        volumeLabel: t`Monthly volume`,
         incomeLabel: t`Your savings (at 25%)`,
         disclaimer: (
           <Trans>
@@ -76,7 +76,7 @@ function useTabContent(tab: TabKey): TabContent {
             Illustrative only — your exact rate is confirmed by the desk on signup.
           </Trans>
         ),
-        cta: t`Lock in this rate`,
+        cta: t`Request this rate`,
       };
     }
 
@@ -86,29 +86,29 @@ function useTabContent(tab: TabKey): TabContent {
         <Trans>
           Turn your audience
           <br />
-          into on-chain income.
+          into on-chain income
         </Trans>
       ),
-      subtext: t`Refer traders to GMX with your unique link and earn a share of the fees they generate.`,
+      subtext: t`Refer traders to GMX with your unique link and earn a share of the fees they generate`,
       benefits: [
         {
           icon: icBenefitFee,
           title: t`Up to 25% earnings`,
-          description: t`Earn on every trade they make.`,
+          description: t`Earn on every trade they make`,
         },
         {
           icon: icBenefitDashboard,
           title: t`Real-time referral dashboard`,
-          description: t`Track volume and payouts live.`,
+          description: t`Track volume and payouts live`,
         },
         {
           icon: icBenefitMarketing,
-          title: t`Marketing Kit + Co-marketing`,
-          description: t`Banners, links and a partner manager.`,
+          title: t`Marketing kit + co-marketing`,
+          description: t`Banners, links and a partner manager`,
         },
       ],
       calcTitle: t`Estimate your income`,
-      volumeLabel: t`REFERRED MONTHLY VOLUME`,
+      volumeLabel: t`Referred monthly volume`,
       incomeLabel: t`Your income (at 25%)`,
       disclaimer: (
         <Trans>

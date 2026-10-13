@@ -72,9 +72,7 @@ export function HistoryExportModal({
             </AlertInfo>
           ) : (
             <AlertInfo type="info" noMargin>
-              <Trans>
-                Exports are for record-keeping and tax-software compatibility; they do not constitute tax advice.
-              </Trans>
+              <Trans>Exports are for record-keeping and tax-software compatibility. They are not tax advice.</Trans>
             </AlertInfo>
           )}
         </div>
@@ -98,15 +96,15 @@ export function HistoryExportModal({
 }
 
 export const TRADE_EXPORT_OPTIONS: ExportOption[] = [
-  { format: "gmx-detailed", label: <Trans>GMX Detailed CSV</Trans> },
+  { format: "gmx-detailed", label: <Trans>GMX detailed CSV</Trans> },
   { format: "koinly", label: "Koinly" },
   { format: "cointracker", label: "CoinTracker" },
   { format: "coinledger", label: "CoinLedger" },
 ];
 
 export const CLAIMS_EXPORT_OPTIONS: ExportOption[] = [
-  { format: "gmx-claims", label: <Trans>GMX Claims CSV</Trans> },
+  { format: "gmx-claims", label: <Trans>GMX claims CSV</Trans> },
   { format: "koinly", label: "Koinly" },
   { format: "cointracker", label: "CoinTracker" },
-  { format: "coinledger", label: <Trans>CoinLedger Margin Gain Manual CSV</Trans> },
+  { format: "coinledger", label: <Trans>CoinLedger Margin Gain manual CSV</Trans> },
 ];

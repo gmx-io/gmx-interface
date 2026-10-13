@@ -170,7 +170,7 @@ describe("getLifecycleSettlementView", () => {
       { key: "Lifecycle RPNL", value: { text: `+$${HAIR}20.00`, state: "success" } },
       { key: "Net lifecycle fees / impact", value: { text: `-$${HAIR}27.00`, state: "error" } },
       "",
-      { text: "Excludes claimed funding, price impact rebates and execution fees.", state: "muted" },
+      { text: "Excludes claimed funding, price impact rebates and execution fees", state: "muted" },
     ]);
   });
 
