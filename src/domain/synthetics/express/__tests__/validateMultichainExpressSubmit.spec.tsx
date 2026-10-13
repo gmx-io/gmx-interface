@@ -64,6 +64,14 @@ describe("getNetworkFeeGasPaymentParams", () => {
     expect(getNetworkFeeGasPaymentParams({ expressParams, tokensData: walletWithEth })).toBeUndefined();
   });
 
+  it("keeps the gas payment token when a Classic fallback isn't allowed, matching the insufficient state that names it", () => {
+    const expressParams = makeExpressParams({ isGmxAccount: false, isOutGasTokenBalance: true });
+
+    expect(
+      getNetworkFeeGasPaymentParams({ expressParams, tokensData: walletWithEth, canFallBackToClassic: false })
+    ).toBe(expressParams.gasPaymentParams);
+  });
+
   it("keeps the gas payment token when the wallet has no ETH either, matching the insufficient state that names it", () => {
     const expressParams = makeExpressParams({ isGmxAccount: false, isOutGasTokenBalance: true });
 

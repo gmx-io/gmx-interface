@@ -4,7 +4,7 @@ import type { TokenData, TokensData } from "domain/tokens";
 import { ARBITRUM } from "sdk/configs/chainIds";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
-import { findNextGasPaymentToken } from "../useSwitchGasPaymentTokenIfRequired";
+import { findNextGasPaymentToken, getGasPaymentTokenToSwitchTo } from "../useSwitchGasPaymentTokenIfRequired";
 
 const USDC = getTokenBySymbol(ARBITRUM, "USDC");
 const USDT = getTokenBySymbol(ARBITRUM, "USDT");
@@ -201,5 +201,64 @@ describe("findNextGasPaymentToken — tokensAllowanceData", () => {
     expect(findNextGasPaymentToken({ ...params, tokensAllowanceData: { [USDC.address]: 4_300_000n } })).toBe(
       USDC.address
     );
+  });
+});
+
+describe("getGasPaymentTokenToSwitchTo", () => {
+  const MAX_ALLOWANCE = 2n ** 256n - 1n;
+  const tokensData = buildTokensData({ usdcBalance: 0n, usdtBalance: 100_000_000n, wethBalance: 10n ** 18n });
+  const params = {
+    chainId: ARBITRUM,
+    tokensData,
+    gasPaymentToken: tokensData[USDC.address]!,
+    gasPaymentTokenAmount: ONE_USDC,
+    payAmounts: {},
+    isGmxAccount: false,
+    savedGasPaymentTokenAddress: USDC.address,
+  };
+
+  it("moves to an approved token with enough balance over an unapproved one", () => {
+    expect(
+      getGasPaymentTokenToSwitchTo({
+        ...params,
+        tokensAllowanceData: { [WETH.address]: 0n, [USDT.address]: MAX_ALLOWANCE },
+      })
+    ).toBe(USDT.address);
+  });
+
+  it("falls back to a token with enough balance when none is approved", () => {
+    expect(
+      getGasPaymentTokenToSwitchTo({ ...params, tokensAllowanceData: { [WETH.address]: 0n, [USDT.address]: 0n } })
+    ).toBe(WETH.address);
+  });
+
+  it("only moves to an approved token when the fee is already paid with another token than the saved one", () => {
+    const fallbackParams = {
+      ...params,
+      gasPaymentToken: tokensData[WETH.address]!,
+      gasPaymentTokenAmount: 10n ** 15n,
+    };
+
+    expect(
+      getGasPaymentTokenToSwitchTo({ ...fallbackParams, tokensAllowanceData: { [USDT.address]: 0n } })
+    ).toBeUndefined();
+  });
+
+  it("ignores allowances on GMX Account", () => {
+    const gmxTokensData: TokensData = {
+      [USDC.address]: makeTokenData(USDC, { gmxAccountBalance: 0n, price: STABLE_PRICE }),
+      [USDT.address]: makeTokenData(USDT, { gmxAccountBalance: 100_000_000n, price: STABLE_PRICE }),
+      [WETH.address]: makeTokenData(WETH, { gmxAccountBalance: 0n, price: ETH_PRICE }),
+    };
+
+    expect(
+      getGasPaymentTokenToSwitchTo({
+        ...params,
+        tokensData: gmxTokensData,
+        gasPaymentToken: gmxTokensData[USDC.address]!,
+        isGmxAccount: true,
+        tokensAllowanceData: {},
+      })
+    ).toBe(USDT.address);
   });
 });

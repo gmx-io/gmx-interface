@@ -132,6 +132,9 @@ type TradeboxButtonState = {
   isExpressLoading: boolean;
   batchParams?: BatchOrderTxnParams;
   totalExecutionFee?: ExecutionFee;
+  // Token the Express fee is paid with, can differ from the saved gas payment token
+  expressGasPaymentToken?: TokenData;
+  isFeeInPayToken: boolean;
 };
 
 export function useTradeboxButtonState({
@@ -189,6 +192,7 @@ export function useTradeboxButtonState({
     isExpressLoading,
     isMultichainSubmitDisabled,
     totalExecutionFee,
+    gasPaymentToken: expressGasPaymentToken,
   } = useTradeboxTransactions({
     setPendingTxns,
     canSwitchGasPaymentToken,
@@ -357,6 +361,13 @@ export function useTradeboxButtonState({
     return {};
   }, [isSubmitBlockedByRequiredExternalSwap]);
 
+  // follows the estimate rather than the resolved token, which runs ahead of it while a new estimate loads
+  const isFeeInPayToken =
+    !isFromTokenGmxAccount &&
+    expressParams !== undefined &&
+    gasPaymentToken !== undefined &&
+    expressParams.gasPaymentParams.gasPaymentTokenAddress !== gasPaymentToken.address;
+
   const { buttonErrorText, tooltipContent, bannerErrorContent } = useMemo((): {
     buttonErrorText: string | undefined;
     tooltipContent: ReactNode | null;
@@ -371,6 +382,8 @@ export function useTradeboxButtonState({
     const expressError = getExpressError({
       expressParams,
       tokensData,
+      // the fee moved to the pay token to skip an approval; a Classic transaction would bring the native fee back
+      canFallBackToClassic: !isFeeInPayToken,
     });
 
     const validationResult = takeValidationResult(
@@ -483,6 +496,7 @@ export function useTradeboxButtonState({
     hasOutdatedUi,
     expressParams,
     tokensData,
+    isFeeInPayToken,
     multipleWalletExtensionsChainError,
     tradeError,
     externalSwapBlockedError,
@@ -640,6 +654,8 @@ export function useTradeboxButtonState({
       batchParams,
       totalExecutionFee,
       isExpressLoading,
+      expressGasPaymentToken,
+      isFeeInPayToken,
     };
 
     if (!account && isWalletInitializing) {
@@ -808,6 +824,8 @@ export function useTradeboxButtonState({
     batchParams,
     totalExecutionFee,
     isExpressLoading,
+    expressGasPaymentToken,
+    isFeeInPayToken,
     isMultichainSubmitDisabled,
     isWaitingForExternalSwapQuote,
     account,
