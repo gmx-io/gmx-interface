@@ -36,6 +36,10 @@ msgstr "Pear Protocol"
 msgid "Price impact rebates claimed"
 msgstr "가격 영향 리베이트가 수령되었습니다"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Auto picks the route that returns the most after all fees. Paxos converts {0} to {1} in a separate transaction, and {2} arrives in your wallet in a separate step, usually within 2–10 minutes. GMX pool and external routes are instant."
+msgstr "자동은 모든 수수료 차감 후 가장 많이 돌려받는 경로를 선택합니다. Paxos는 별도 트랜잭션으로 {0}을(를) {1}(으)로 변환하며, {2}은(는) 별도 단계로 지갑에 도착합니다. 보통 2–10분 소요됩니다. GMX 풀과 외부 경로는 즉시 처리됩니다."
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "또는 <0>chainlist.org</0>를 통해 지갑의 RPC를 업데이트하십시오"
@@ -97,6 +101,10 @@ msgstr "GMX 평가하기"
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Order simulation failed"
 msgstr "주문 시뮬레이션 실패"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paxos fee {fee} · ~2–10 min, can be longer"
+msgstr "Paxos 수수료 {fee} · ~2–10분, 더 걸릴 수 있음"
 
 #: src/components/WhatsNewToast/WhatsNewToastContainer.tsx
 msgid "Reload now"
@@ -301,6 +309,10 @@ msgstr "Oracle keeper 이벤트"
 msgid "RabbitHole"
 msgstr "RabbitHole"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Quote is unavailable"
+msgstr "견적을 사용할 수 없습니다"
+
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Your {walletName} is on a different network</0><1/><2>Switch your {walletName} to {0}, then try again</2>"
 msgstr "<0>{walletName}이(가) 다른 네트워크에 있습니다</0><1/><2>{walletName}을(를) {0}(으)로 전환한 후 다시 시도하세요</2>"
@@ -370,6 +382,10 @@ msgstr "설정"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "TWAP swaps use GMX pool liquidity only, which can't fill this order size. Use a market order to enable external routes."
 msgstr "TWAP 스왑은 GMX 풀 유동성만 사용하므로 이 주문 규모를 체결할 수 없습니다. 외부 경로를 활성화하려면 시장가 주문을 사용하세요."
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paxos sends {0} to your wallet in a separate step, usually within 2–10 minutes. Large orders can arrive in parts."
+msgstr "Paxos는 별도 단계로 {0}을(를) 지갑에 보냅니다. 보통 2–10분 소요됩니다. 대규모 주문은 나누어 도착할 수 있습니다."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Est. APR"
@@ -728,6 +744,10 @@ msgstr "판매"
 msgid "Insufficient GMX pool liquidity"
 msgstr "GMX 풀 유동성 부족"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "~2–10 min, separate step"
+msgstr "~2–10분, 별도 단계"
+
 #: src/components/ChartTokenSelector/ArbitrumRecommendation.tsx
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainButtons.tsx
 msgid "Switch to {0}"
@@ -854,6 +874,12 @@ msgstr "아니오"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "/ mo"
 msgstr "/월"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+msgid "Not enough zero-fee capacity"
+msgstr "수수료 무료 한도 부족"
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -1054,6 +1080,7 @@ msgid "GMX Detailed CSV"
 msgstr "GMX Detailed CSV"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
 msgid "Sending conversion..."
 msgstr "변환 전송 중..."
 
@@ -1475,6 +1502,10 @@ msgstr "카드 구매는 현재 회원님의 지역 또는 설정에서 이용�
 msgid "Max {0} buyable amount exceeded"
 msgstr "최대 {0} 구매 가능 금액 초과"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Minimum {0} {1}"
+msgstr "최소 {0} {1}"
+
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing position uses {0} collateral. If executed, this order will create a separate position. <0>Switch to {1} collateral</0>"
 msgstr "기존 포지션은 {0} 담보를 사용합니다. 이 주문이 체결되면 별도의 포지션이 생성됩니다. <0>{1} 담보로 전환</0>"
@@ -1828,6 +1859,10 @@ msgstr "저는 제휴사입니다"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated daily fees"
 msgstr "예상 일일 수수료"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Convert {0} with no fee"
+msgstr "{0} 수수료 없이 변환"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop Market"
@@ -2265,6 +2300,10 @@ msgstr "Express 및 One-Click 수수료에만 사용되며, 작업이 사용하�
 msgid "You have esGMX tokens in the Affiliate vault. Withdraw them to transfer to the new account."
 msgstr "Affiliate 볼트에 esGMX 토큰이 있습니다. 새 계정으로 전송하려면 출금하십시오."
 
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Taking longer than usual. Standard-fee conversions can take up to an hour and arrive in parts."
+msgstr "평소보다 오래 걸리고 있습니다. 표준 수수료 변환은 최대 1시간이 걸리며 나누어 도착할 수 있습니다."
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sending buy request..."
 msgstr "매수 요청을 전송하는 중…"
@@ -2469,6 +2508,10 @@ msgstr "{tokenSymbol}은(는) 지갑의 Gas 결제 토큰입니다. Express 수�
 msgid "Swapped {0} for {1}"
 msgstr "{0}을(를) {1}(으)로 스왑했습니다"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Zero-fee capacity dropped below your amount a moment ago. The new capacity shows here within a minute."
+msgstr "수수료 무료 한도가 방금 입력 금액 아래로 줄었습니다. 새 한도는 1분 이내에 여기에 표시됩니다."
+
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Pick a time"
 msgstr "시간 선택"
@@ -2624,6 +2667,10 @@ msgstr "이 계정에는 활성 추천 코드가 없습니다."
 msgid "Missing parameters. Refresh and retry"
 msgstr "매개변수가 누락되었습니다. 새로고침 후 다시 시도하십시오"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Instant via {instantLabel}"
+msgstr "{instantLabel} 경유 즉시"
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order"
 msgstr "기존 포지션은 WETH-USDC 풀에 있지만 해당 풀에는 이 주문에 필요한 유동성이 부족합니다"
@@ -2761,6 +2808,10 @@ msgstr "마켓"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Max {0}"
 msgstr "최대 {0}"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paxos standard"
+msgstr "Paxos 표준"
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "APRs update weekly on Wednesday based on fees collected"
@@ -3226,9 +3277,17 @@ msgstr "Express 매개변수를 불러오는 중…"
 msgid "RESPONSE TIME"
 msgstr "RESPONSE TIME"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paxos fee {fee} · ~2–10 min, separate step"
+msgstr "Paxos 수수료 {fee} · ~2–10분, 별도 단계"
+
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
 msgstr "선택한 기간 동안 거래 내역이 없습니다"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "No instant route for this amount"
+msgstr "이 금액에 대한 즉시 경로가 없습니다"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Default parts for TWAP orders"
@@ -3284,6 +3343,7 @@ msgstr "높은 슬리피지가 설정되었습니다. 현재 스왑 영향: {0}.
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Instant"
 msgstr "즉시"
 
@@ -3334,6 +3394,10 @@ msgstr "최소 입금 USD 한도"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidated as max leverage of {formattedMaxLeverage} was exceeded when accounting for fees."
 msgstr "수수료를 고려했을 때 최대 레버리지 {formattedMaxLeverage}을(를) 초과하여 청산되었습니다."
+
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+msgid "Approving {0}..."
+msgstr "{0} 승인 중..."
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
@@ -3481,6 +3545,7 @@ msgstr "탈중앙화 금융 대시보드"
 
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "{0} received"
 msgstr "{0}을(를) 수령했습니다"
 
@@ -3601,6 +3666,10 @@ msgstr "포지션"
 msgid "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
 msgstr "<0>입금</0> 또는 <1>구매</1> {wrappedNativeTokenSymbol}."
 
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Converting {offerAmount} to {0}"
+msgstr "{offerAmount}을(를) {0}(으)로 변환 중"
+
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -3701,6 +3770,10 @@ msgstr "수수료, 할인, 가격 영향이 반영되기 전의 실현 PnL."
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."
 msgstr "{typeString} 숏 스톱 마켓: 가격이 조건가보다 낮을 때 숏 포지션 {0}."
+
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+msgid "Minimum conversion is {minOrderSize} {0}"
+msgstr "최소 변환 금액은 {minOrderSize} {0}입니다"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average position size"
@@ -4191,6 +4264,10 @@ msgstr "실현 수수료"
 msgid "Accrued borrow and funding fees are deducted from the deposit before it improves the position's margin, so the deposit must also cover them."
 msgstr "누적된 차입 수수료와 펀딩 수수료는 예치금이 포지션의 마진을 개선하기 전에 차감되므로, 예치 금액은 해당 수수료도 충당해야 합니다."
 
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Receiving {0}: {delivered} of {due}"
+msgstr "{0} 수령 중: {due} 중 {delivered}"
+
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Funds are now in your GMX Account"
 msgstr "자금이 GMX Account에 입금되었습니다"
@@ -4198,6 +4275,10 @@ msgstr "자금이 GMX Account에 입금되었습니다"
 #: src/components/Referrals/traders/faq.tsx
 msgid "Why should I enter a referral code?"
 msgstr "추천 코드를 입력해야 하는 이유는 무엇입니까?"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Auto · {activeLabel}"
+msgstr "자동 · {activeLabel}"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient liquidity. Order will fill when liquidity is available."
@@ -4245,11 +4326,16 @@ msgstr "현실적인 일정, 6개월 미만"
 msgid "Wallet-only"
 msgstr "지갑 전용"
 
+#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
+msgid "The Paxos quote changed. Review the new amount and fee, then confirm again."
+msgstr "Paxos 견적이 변경되었습니다. 새 금액과 수수료를 검토한 후 다시 확인하세요."
+
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Listing"
 msgstr "상장"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "Conversion failed: {0}"
 msgstr "변환 실패: {0}"
 
@@ -4296,6 +4382,10 @@ msgstr "마진이 포지션 규모에 필요한 최소 금액보다 적습니다
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "How much can I earn as an affiliate?"
 msgstr "제휴자로서 얼마나 수익을 얻을 수 있습니까?"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "The Paxos quote is valid for 15 minutes. All signers must sign and the transaction must execute before then, or it fails and needs a new quote."
+msgstr "Paxos 견적은 15분 동안 유효합니다. 그 전에 모든 서명자가 서명하고 트랜잭션이 실행되어야 하며, 그렇지 않으면 실패하여 새 견적이 필요합니다."
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -4741,6 +4831,10 @@ msgstr "GMX를 어떻게 시작하나요?"
 msgid "Acceptable price"
 msgstr "허용 가격"
 
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+msgid "Loading routes…"
+msgstr "경로 로딩 중…"
+
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Instant answers, right on the page"
 msgstr "페이지에서 바로 받는 즉각적인 답변"
@@ -4798,6 +4892,10 @@ msgstr "20초"
 msgid "Virtual market ID"
 msgstr "가상 마켓 ID"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Best"
+msgstr "최적"
+
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Your wallet is not connected to this network"
 msgstr "지갑이 이 네트워크에 연결되어 있지 않습니다"
@@ -4832,6 +4930,10 @@ msgstr "One-Click Trading 작업 한도에 도달했습니다. 이제 Express Tr
 #: src/components/PositionList/PositionList.tsx
 msgid "MARGIN"
 msgstr "증거금"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "No fee · ~2–10 min, separate step"
+msgstr "수수료 없음 · ~2–10분, 별도 단계"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Sign permit"
@@ -5261,6 +5363,10 @@ msgstr "현재 증거금에는 미결제 차입 수수료와 펀딩비가 포함
 msgid "Partial SL"
 msgstr "부분 SL"
 
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+msgid "Convert with Paxos"
+msgstr "Paxos로 변환"
+
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
@@ -5316,6 +5422,10 @@ msgstr "실패한 시도 이후 외부 라우팅이 일시적으로 중지되었
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
 msgstr "<0>{wrappedNativeTokenSymbol} 구매</0>."
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Or pick Paxos standard with a fee or an instant route in Route. No route is picked for you."
+msgstr "또는 경로에서 수수료가 있는 Paxos 표준이나 즉시 경로를 선택하세요. 경로는 자동으로 선택되지 않습니다."
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
@@ -5478,6 +5588,10 @@ msgstr "{0} 업그레이드 대기 중 앱 비활성화"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "v:"
 msgstr "v:"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Picks the route that returns the most after fees"
+msgstr "수수료 차감 후 가장 많이 돌려받는 경로 선택"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
@@ -5886,6 +6000,10 @@ msgstr "최근 180일"
 msgid "Positive funding fees"
 msgstr "양의 펀딩 수수료"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Loading…"
+msgstr "로딩 중…"
+
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Funds will appear in your GMX Account soon"
 msgstr "자금이 곧 GMX Account에 입금됩니다"
@@ -6142,6 +6260,7 @@ msgid "Step 1: Sell"
 msgstr "1단계: 판매"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Auto"
 msgstr "자동"
 
@@ -6268,6 +6387,10 @@ msgstr "스테이킹은 {chainNames}에서만 가능합니다. 계속하려면 �
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Links"
 msgstr "링크"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "You save vs instant"
+msgstr "즉시 대비 절약"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact factor for withdrawals"
@@ -6412,6 +6535,7 @@ msgid "Monthly bought"
 msgstr "월간 매입량"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Zero-fee capacity left"
 msgstr "남은 수수료 무료 한도"
 
@@ -6534,6 +6658,10 @@ msgstr "차이"
 msgid "Stop-Loss price"
 msgstr "손절매 가격"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Or pick Paxos standard with a fee or an instant route in Route."
+msgstr "또는 경로에서 수수료가 있는 Paxos 표준이나 즉시 경로를 선택하세요."
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "swap amount"
 msgstr "스왑 금액"
@@ -6654,6 +6782,10 @@ msgstr "스탑 마켓 실패"
 #: src/components/SideNav/SettingsNavItem.tsx
 msgid "Settings"
 msgstr "설정"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paxos zero-fee"
+msgstr "Paxos 수수료 무료"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Daily"
@@ -7378,6 +7510,10 @@ msgstr "포지션 증가 (Limit)"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "PnL relative to capital used (return on capital)"
 msgstr "사용 자본 대비 PnL (투자 수익률)"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Choose a route"
+msgstr "경로를 선택하세요"
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "No transfer history matching search"
@@ -8145,6 +8281,10 @@ msgstr "최대 대여 가능 영향 계수"
 msgid "BANNED"
 msgstr "BANNED"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paxos sends {0} to your wallet in a separate step. Standard-fee orders are filled from Paxos inventory, so they can take longer and arrive in parts. For instant delivery, pick another route."
+msgstr "Paxos는 별도 단계로 {0}을(를) 지갑에 보냅니다. 표준 수수료 주문은 Paxos 재고로 체결되므로 더 오래 걸리고 나누어 도착할 수 있습니다. 즉시 받으려면 다른 경로를 선택하세요."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dashboard for GMX referral stats"
 msgstr "GMX 추천 시스템 통계 대시보드"
@@ -8212,6 +8352,10 @@ msgstr "개시 수수료 / 할인"
 #: src/components/DepthChart/DepthChart.tsx
 msgid "Size, $"
 msgstr "크기, $"
+
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+msgid "Paxos quote is unavailable"
+msgstr "Paxos 견적을 사용할 수 없습니다"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Wallet received before close"
@@ -8471,6 +8615,10 @@ msgstr "{0}을(를) {1}(으)로 출금하는 것은 지원되지 않습니다"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Wallet esGMX"
 msgstr "지갑 esGMX"
+
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+msgid "Paxos conversion in progress"
+msgstr "Paxos 변환 진행 중"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing position is in {0} pool. Using the selected pool will create a separate position. <0>Switch to {1} pool</0>"
@@ -9291,6 +9439,10 @@ msgstr "롱 차입 이자율"
 msgid "Approve GMX"
 msgstr "GMX 승인"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paxos fee"
+msgstr "Paxos 수수료"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -9431,9 +9583,17 @@ msgstr "라인 값을 USD로 표시"
 msgid "Open interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "미결제약정 (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "The Paxos quote is valid until {0}. All signers must sign and the transaction must execute before then, or it fails and needs a new quote."
+msgstr "Paxos 견적은 {0}까지 유효합니다. 그 전에 모든 서명자가 서명하고 트랜잭션이 실행되어야 하며, 그렇지 않으면 실패하여 새 견적이 필요합니다."
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "{increaseOrDecreaseText}: {0} {longShortText}"
 msgstr "{increaseOrDecreaseText}: {0} {longShortText}"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paxos routes are quoted from the Pay amount."
+msgstr "Paxos 경로는 지불 금액을 기준으로 견적됩니다."
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -9818,6 +9978,10 @@ msgstr "~5분"
 msgid "New tier:"
 msgstr "신규 등급:"
 
+#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
+msgid "Zero-fee capacity changed. Review the route options and confirm again."
+msgstr "수수료 무료 한도가 변경되었습니다. 경로 옵션을 검토한 후 다시 확인하세요."
+
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "Market delistings"
 msgstr "마켓 상장 폐지"
@@ -9872,6 +10036,7 @@ msgstr "AI"
 msgid "Referral code submitted"
 msgstr "추천 코드가 제출되었습니다"
 
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Conversion request sent"
 msgstr "변환 요청 전송됨"
@@ -9958,6 +10123,10 @@ msgstr "수수료"
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Margin ({0})"
 msgstr "증거금({0})"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Not enough zero-fee capacity for this amount. Capacity left now: {0}. Your amount is {1} over."
+msgstr "이 금액에 대한 수수료 무료 한도가 부족합니다. 현재 남은 한도: {0}. 입력 금액이 {1} 초과합니다."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -10192,6 +10361,10 @@ msgstr "볼트"
 msgid "Looping"
 msgstr "루핑"
 
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+msgid "Convert with Paxos · fee {fee}"
+msgstr "Paxos로 변환 · 수수료 {fee}"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max reserved {directionLabel}"
 msgstr "최대 예약 {directionLabel}"
@@ -10321,6 +10494,7 @@ msgstr "이 풀은 최대 용량에 도달했으며 현재 입금을 받지 않�
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -11129,6 +11303,10 @@ msgstr "미결제 차입 수수료"
 msgid "No active management required"
 msgstr "적극적 관리 불필요"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Loading quote…"
+msgstr "견적 로딩 중…"
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "take-profit"
 msgstr "익절매"
@@ -11268,6 +11446,11 @@ msgstr "체인 히스토리 데이터를 빠르게 조회하세요."
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 msgid "Wallet cannot sign messages"
 msgstr "지갑이 메시지에 서명할 수 없습니다"
+
+#: src/components/TradeBox/TradeBox.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "· {0} pending"
+msgstr "· {0} 대기 중"
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "REFERRED MONTHLY VOLUME"
@@ -11499,6 +11682,10 @@ msgstr "일치하는 시장이 없습니다."
 msgid "Stake esGMX"
 msgstr "esGMX 스테이킹"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "GMX pool"
+msgstr "GMX 풀"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe and remain in your wallet."
 msgstr "자금은 안전하며 지갑에 남아 있습니다."
@@ -11585,10 +11772,16 @@ msgstr "APY"
 msgid "What is GM?"
 msgstr "GM이란 무엇인가요?"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Route"
+msgstr "경로"
+
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Delisting"
 msgstr "상장 폐지"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 #: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
 msgid "{0} (external)"
 msgstr "{0} (외부)"
@@ -11625,6 +11818,10 @@ msgstr "Limit Swap: 조건가에 도달하면 토큰을 스왑합니다"
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "GMX에서 알림 및 공지를 받아 거래, 청산 위험 등을 관리하십시오"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Use the Pay amount"
+msgstr "지불 금액 사용"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated off-hours liquidation price"
@@ -11902,6 +12099,10 @@ msgstr "포함되었지만 최신 상태가 아닙니다: {staleList}."
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "TRADERS REFERRED"
 msgstr "TRADERS REFERRED"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Arrives"
+msgstr "도착"
 
 #: src/components/Claims/SettleAccruedCard.tsx
 msgid "Accrued"
@@ -12583,6 +12784,10 @@ msgstr "차입 수수료"
 msgid "Continue"
 msgstr "계속"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "~2–10 min or longer, may arrive in parts"
+msgstr "~2–10분 이상, 나누어 도착할 수 있음"
+
 #: landing/src/pages/Builders/CtaSection/CtaSection.tsx
 #: landing/src/pages/Home/LiqiuditySection/LiqiuditySection.tsx
 msgid "Start earning"
@@ -13073,6 +13278,10 @@ msgstr "조건가를 기준가보다 높게 설정하십시오"
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
 msgstr "이 체인에는 아직 기회가 없습니다"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Large LP or balancer? Ask <0>@GMXPartners</0> about zero-fee access."
+msgstr "대규모 LP 또는 밸런서이신가요? 수수료 무료 이용은 <0>@GMXPartners</0>에 문의하세요."
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"

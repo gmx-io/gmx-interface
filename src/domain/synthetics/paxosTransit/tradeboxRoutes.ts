@@ -1,0 +1,432 @@
+import { t } from "@lingui/macro";
+
+import { formatAmountFree, formatBalanceAmount } from "lib/numbers";
+
+import type { TransitSubmitStep } from "./submitTransitOrder";
+
+export type PaxosSwapRoute = "paxosZeroFee" | "paxosStandard";
+
+export type TradeboxSwapRoute = "instant" | PaxosSwapRoute;
+
+export type TradeboxSwapRoutePreference = "auto" | TradeboxSwapRoute;
+
+export type PaxosRouteState =
+  | { status: "hidden" }
+  | { status: "belowMinOrderSize"; minOrderSize: bigint }
+  | { status: "capacityShort"; capacity: bigint | undefined }
+  | { status: "quote" };
+
+export type TradeboxSwapRouteUnavailableReason =
+  | "loading"
+  | "noRoute"
+  | "belowMinOrderSize"
+  | "capacityShort"
+  | "quoteError";
+
+export type TradeboxSwapRouteOption = {
+  route: TradeboxSwapRoute;
+  amountOut: bigint | undefined;
+  feeAmount: bigint | undefined;
+  unavailableReason: TradeboxSwapRouteUnavailableReason | undefined;
+};
+
+export type PaxosQuoteState = {
+  quote: { amountOut: bigint; totalFees: bigint } | undefined;
+  isError: boolean;
+};
+
+export type TradeboxSwapRoutes = {
+  options: TradeboxSwapRouteOption[];
+  isPaxosOffered: boolean;
+  isAutoPending: boolean;
+  isRouteChoiceRequired: boolean;
+  autoRoute: TradeboxSwapRoute | undefined;
+  activeRoute: TradeboxSwapRoute | undefined;
+};
+
+export function getPaxosRouteStates(p: {
+  isWhitelisted: boolean;
+  isStandardForced: boolean;
+  isUsdcToUsdg: boolean;
+  amountIn: bigint;
+  amountInUsd: bigint;
+  thresholdUsd: bigint;
+  zeroFeeCapacity: bigint | undefined;
+  zeroFeeMinOrderSize: bigint | undefined;
+  standardMinOrderSize: bigint | undefined;
+}): Record<PaxosSwapRoute, PaxosRouteState> {
+  if (p.amountIn <= 0n) {
+    return { paxosZeroFee: { status: "hidden" }, paxosStandard: { status: "hidden" } };
+  }
+
+  return {
+    paxosZeroFee: getZeroFeeRouteState(p),
+    paxosStandard: getStandardRouteState(p),
+  };
+}
+
+function getZeroFeeRouteState(p: {
+  isWhitelisted: boolean;
+  isUsdcToUsdg: boolean;
+  amountIn: bigint;
+  zeroFeeCapacity: bigint | undefined;
+  zeroFeeMinOrderSize: bigint | undefined;
+}): PaxosRouteState {
+  if (!p.isWhitelisted) {
+    return { status: "hidden" };
+  }
+
+  if (p.zeroFeeMinOrderSize !== undefined && p.amountIn < p.zeroFeeMinOrderSize) {
+    return { status: "belowMinOrderSize", minOrderSize: p.zeroFeeMinOrderSize };
+  }
+
+  const capacity = p.zeroFeeCapacity ?? 0n;
+
+  if (p.isUsdcToUsdg && capacity < p.amountIn) {
+    return { status: "capacityShort", capacity };
+  }
+
+  return { status: "quote" };
+}
+
+function getStandardRouteState(p: {
+  isWhitelisted: boolean;
+  isStandardForced: boolean;
+  amountIn: bigint;
+  amountInUsd: bigint;
+  thresholdUsd: bigint;
+  standardMinOrderSize: bigint | undefined;
+}): PaxosRouteState {
+  const isAlwaysOffered = p.isWhitelisted || p.isStandardForced;
+
+  if (!isAlwaysOffered && p.amountInUsd < p.thresholdUsd) {
+    return { status: "hidden" };
+  }
+
+  if (p.standardMinOrderSize !== undefined && p.amountIn < p.standardMinOrderSize) {
+    return isAlwaysOffered
+      ? { status: "belowMinOrderSize", minOrderSize: p.standardMinOrderSize }
+      : { status: "hidden" };
+  }
+
+  return { status: "quote" };
+}
+
+export function getTradeboxSwapRoutes(p: {
+  paxosRouteStates: Record<PaxosSwapRoute, PaxosRouteState>;
+  zeroFee: PaxosQuoteState;
+  standard: PaxosQuoteState;
+  isWhitelisted: boolean;
+  isStandardForced: boolean;
+  instantAmountOut: bigint | undefined;
+  isInstantLoading: boolean;
+  zeroFeeEstimatedAmountOut: bigint;
+  minSavingAmount: bigint;
+  preference: TradeboxSwapRoutePreference;
+}): TradeboxSwapRoutes {
+  const zeroFeeOption = getZeroFeeOption(p);
+  const standardOption = getStandardOption(p);
+  const paxosOptions = [zeroFeeOption, standardOption].filter(
+    (option): option is TradeboxSwapRouteOption => option !== undefined
+  );
+  const isPaxosOffered = paxosOptions.length > 0;
+
+  const isStandardQuoteLoading =
+    p.paxosRouteStates.paxosStandard.status === "quote" && !p.standard.quote && !p.standard.isError;
+  const isAutoPending =
+    zeroFeeOption?.unavailableReason === "loading" ||
+    (!p.isWhitelisted && isStandardQuoteLoading) ||
+    (isPaxosOffered && p.isInstantLoading);
+
+  const instantOption: TradeboxSwapRouteOption = {
+    route: "instant",
+    amountOut: p.instantAmountOut,
+    feeAmount: undefined,
+    unavailableReason: p.instantAmountOut === undefined ? (p.isInstantLoading ? "loading" : "noRoute") : undefined,
+  };
+  const options = isPaxosOffered ? [...paxosOptions, instantOption] : [];
+
+  const autoCandidates = paxosOptions.filter(
+    (option) => option.unavailableReason === undefined && (option.route === "paxosZeroFee" || !p.isWhitelisted)
+  );
+  const bestPaxos = autoCandidates.reduce<TradeboxSwapRouteOption | undefined>(
+    (best, option) => (best === undefined || option.amountOut! > best.amountOut! ? option : best),
+    undefined
+  );
+  const autoRoute = getAutoRoute({
+    bestPaxos,
+    instantAmountOut: p.instantAmountOut,
+    minSavingAmount: p.minSavingAmount,
+  });
+
+  const isRouteChoiceRequired =
+    p.preference === "auto" &&
+    zeroFeeOption?.unavailableReason === "capacityShort" &&
+    getIsSavingWorthWaiting({
+      paxosAmountOut: p.zeroFeeEstimatedAmountOut,
+      instantAmountOut: p.instantAmountOut,
+      minSavingAmount: p.minSavingAmount,
+    });
+
+  const isPreferenceOffered = p.preference !== "auto" && options.some((option) => option.route === p.preference);
+
+  let activeRoute: TradeboxSwapRoute | undefined = autoRoute;
+
+  if (isPreferenceOffered) {
+    activeRoute = p.preference as TradeboxSwapRoute;
+  } else if (isRouteChoiceRequired) {
+    activeRoute = undefined;
+  }
+
+  return {
+    options,
+    isPaxosOffered,
+    isAutoPending,
+    isRouteChoiceRequired,
+    autoRoute,
+    activeRoute,
+  };
+}
+
+function getZeroFeeOption(p: {
+  paxosRouteStates: Record<PaxosSwapRoute, PaxosRouteState>;
+  zeroFee: PaxosQuoteState;
+}): TradeboxSwapRouteOption | undefined {
+  const state = p.paxosRouteStates.paxosZeroFee;
+
+  if (state.status === "hidden") {
+    return undefined;
+  }
+
+  if (state.status !== "quote") {
+    return { route: "paxosZeroFee", amountOut: undefined, feeAmount: undefined, unavailableReason: state.status };
+  }
+
+  return getQuotedOption("paxosZeroFee", p.zeroFee);
+}
+
+function getStandardOption(p: {
+  paxosRouteStates: Record<PaxosSwapRoute, PaxosRouteState>;
+  standard: PaxosQuoteState;
+  isWhitelisted: boolean;
+  isStandardForced: boolean;
+  instantAmountOut: bigint | undefined;
+}): TradeboxSwapRouteOption | undefined {
+  const state = p.paxosRouteStates.paxosStandard;
+
+  if (state.status === "hidden") {
+    return undefined;
+  }
+
+  if (state.status !== "quote") {
+    return { route: "paxosStandard", amountOut: undefined, feeAmount: undefined, unavailableReason: state.status };
+  }
+
+  if (!p.isWhitelisted && !p.isStandardForced) {
+    const quote = p.standard.quote;
+    const isCheaper = quote !== undefined && (p.instantAmountOut === undefined || quote.amountOut > p.instantAmountOut);
+
+    return isCheaper ? getQuotedOption("paxosStandard", p.standard) : undefined;
+  }
+
+  return getQuotedOption("paxosStandard", p.standard);
+}
+
+function getQuotedOption(route: PaxosSwapRoute, state: PaxosQuoteState): TradeboxSwapRouteOption {
+  if (state.quote) {
+    return {
+      route,
+      amountOut: state.quote.amountOut,
+      feeAmount: state.quote.totalFees,
+      unavailableReason: undefined,
+    };
+  }
+
+  return {
+    route,
+    amountOut: undefined,
+    feeAmount: undefined,
+    unavailableReason: state.isError ? "quoteError" : "loading",
+  };
+}
+
+function getAutoRoute(p: {
+  bestPaxos: TradeboxSwapRouteOption | undefined;
+  instantAmountOut: bigint | undefined;
+  minSavingAmount: bigint;
+}): TradeboxSwapRoute | undefined {
+  if (p.bestPaxos === undefined) {
+    return p.instantAmountOut === undefined ? undefined : "instant";
+  }
+
+  const isPaxosBetter = getIsSavingWorthWaiting({
+    paxosAmountOut: p.bestPaxos.amountOut!,
+    instantAmountOut: p.instantAmountOut,
+    minSavingAmount: p.minSavingAmount,
+  });
+
+  return isPaxosBetter ? p.bestPaxos.route : "instant";
+}
+
+function getIsSavingWorthWaiting(p: {
+  paxosAmountOut: bigint;
+  instantAmountOut: bigint | undefined;
+  minSavingAmount: bigint;
+}): boolean {
+  if (p.instantAmountOut === undefined) {
+    return true;
+  }
+
+  const saving = p.paxosAmountOut - p.instantAmountOut;
+
+  return saving > 0n && saving >= p.minSavingAmount;
+}
+
+export type PaxosSubmitStep = "idle" | TransitSubmitStep;
+
+export type TradeboxPaxosButtonState = {
+  text: string;
+  disabled: boolean;
+};
+
+export function getTradeboxPaxosButtonState(p: {
+  routes: TradeboxSwapRoutes;
+  paxosRouteStates: Record<PaxosSwapRoute, PaxosRouteState>;
+  preference: TradeboxSwapRoutePreference;
+  amountIn: bigint;
+  walletBalance: bigint | undefined;
+  tokenIn: { symbol: string; decimals: number };
+  isAmountSettled: boolean;
+  isConversionInProgress: boolean;
+  step: PaxosSubmitStep;
+}): TradeboxPaxosButtonState | undefined {
+  const { routes, tokenIn } = p;
+  const loading = { text: t`Loading routes…`, disabled: true };
+
+  if (p.step === "approving") {
+    return { text: t`Approving ${tokenIn.symbol}...`, disabled: true };
+  }
+
+  if (p.step === "submitting") {
+    return { text: t`Sending conversion...`, disabled: true };
+  }
+
+  const isAutoWaiting = p.preference === "auto" && routes.isAutoPending;
+  const activeRoute = routes.activeRoute;
+
+  if (activeRoute === undefined) {
+    if (routes.isRouteChoiceRequired) {
+      return { text: t`Not enough zero-fee capacity`, disabled: true };
+    }
+
+    return isAutoWaiting ? loading : undefined;
+  }
+
+  if (activeRoute === "instant") {
+    return isAutoWaiting ? loading : undefined;
+  }
+
+  if (isAutoWaiting) {
+    return loading;
+  }
+
+  if (p.isConversionInProgress) {
+    return { text: t`Paxos conversion in progress`, disabled: true };
+  }
+
+  if (p.walletBalance === undefined) {
+    return loading;
+  }
+
+  if (p.walletBalance !== undefined && p.amountIn > p.walletBalance) {
+    return { text: t`Insufficient ${tokenIn.symbol} balance`, disabled: true };
+  }
+
+  const option = routes.options.find((routeOption) => routeOption.route === activeRoute);
+  const routeState = p.paxosRouteStates[activeRoute];
+
+  if (routeState.status === "belowMinOrderSize") {
+    const minOrderSize = formatAmountFree(routeState.minOrderSize, tokenIn.decimals);
+
+    return { text: t`Minimum conversion is ${minOrderSize} ${tokenIn.symbol}`, disabled: true };
+  }
+
+  if (routeState.status === "capacityShort") {
+    return { text: t`Not enough zero-fee capacity`, disabled: true };
+  }
+
+  if (option?.unavailableReason === "quoteError") {
+    return { text: t`Paxos quote is unavailable`, disabled: true };
+  }
+
+  if (!option || option.feeAmount === undefined || !p.isAmountSettled) {
+    return loading;
+  }
+
+  if (option.feeAmount > 0n) {
+    const fee = formatBalanceAmount(option.feeAmount, tokenIn.decimals, tokenIn.symbol, { isStable: true });
+
+    return { text: t`Convert with Paxos · fee ${fee}`, disabled: false };
+  }
+
+  return { text: t`Convert with Paxos`, disabled: false };
+}
+
+export function getTradeboxPaxosDecision(p: {
+  isPaxosAvailable: boolean;
+  isWhitelisted: boolean;
+  isStandardForced: boolean;
+  isUsdcToUsdg: boolean;
+  amountIn: bigint;
+  amountInUsd: bigint;
+  thresholdUsd: bigint;
+  zeroFeeCapacity: bigint | undefined;
+  zeroFeeMinOrderSize: bigint | undefined;
+  standardMinOrderSize: bigint | undefined;
+  zeroFee: PaxosQuoteState & { errorStatus: number | undefined };
+  standard: PaxosQuoteState;
+  instantAmountOut: bigint | undefined;
+  isInstantLoading: boolean;
+  zeroFeeEstimatedAmountOut: bigint;
+  minSavingAmount: bigint;
+  preference: TradeboxSwapRoutePreference;
+  walletBalance: bigint | undefined;
+  tokenIn: { symbol: string; decimals: number };
+  isAmountSettled: boolean;
+  isConversionInProgress: boolean;
+  step: PaxosSubmitStep;
+}) {
+  const quotedRouteStates = getPaxosRouteStates({
+    ...p,
+    amountIn: p.isPaxosAvailable ? p.amountIn : 0n,
+  });
+  const paxosRouteStates: Record<PaxosSwapRoute, PaxosRouteState> =
+    p.zeroFee.errorStatus === 409 && quotedRouteStates.paxosZeroFee.status === "quote"
+      ? { ...quotedRouteStates, paxosZeroFee: { status: "capacityShort", capacity: undefined } }
+      : quotedRouteStates;
+
+  const routes = getTradeboxSwapRoutes({ ...p, paxosRouteStates });
+  const buttonState = getTradeboxPaxosButtonState({ ...p, routes, paxosRouteStates });
+
+  return { paxosRouteStates, routes, buttonState };
+}
+
+export function getIsPaxosQuoteWorseThanShown(p: {
+  shownQuote: { amountOut: bigint; totalFees: bigint };
+  quote: { amountOut: bigint; totalFees: bigint };
+  tokenIn: { decimals: number };
+  tokenOut: { decimals: number };
+}): boolean {
+  const formatFee = (fee: bigint) => formatBalanceAmount(fee, p.tokenIn.decimals, undefined, { isStable: true });
+  const formatAmountOut = (amountOut: bigint) =>
+    formatBalanceAmount(amountOut, p.tokenOut.decimals, undefined, { isStable: true });
+
+  const isFeeHigher =
+    p.quote.totalFees > p.shownQuote.totalFees &&
+    (p.shownQuote.totalFees === 0n || formatFee(p.quote.totalFees) !== formatFee(p.shownQuote.totalFees));
+  const isAmountOutLower =
+    p.quote.amountOut < p.shownQuote.amountOut &&
+    formatAmountOut(p.quote.amountOut) !== formatAmountOut(p.shownQuote.amountOut);
+
+  return isFeeHigher || isAmountOutLower;
+}

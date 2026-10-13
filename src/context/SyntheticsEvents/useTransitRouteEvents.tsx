@@ -57,7 +57,7 @@ export function useTransitRouteEvents(
   const { data: paxosTransitOrder, error: paxosTransitOrderError } = useSWR(
     conversion && api ? ["transitRouteProgressOrder", progressChainId, conversion.orderId] : null,
     () => api!.fetchTransitOrder({ orderId: conversion!.orderId }),
-    { refreshInterval: (order) => (getIsTransitOrderFinal(order) ? 0 : ORDER_REFRESH_INTERVAL) }
+    { refreshInterval: getOrderRefreshInterval }
   );
 
   const orderStatus = paxosTransitOrder?.status;
@@ -99,7 +99,11 @@ export function useTransitRouteEvents(
 
   useEffect(
     function showTransitRouteToast() {
-      if (!transitRouteProgress || !glvOrMarketInfo || transitRouteProgress.isDismissed) {
+      if (!transitRouteProgress || transitRouteProgress.isDismissed) {
+        return;
+      }
+
+      if (transitRouteProgress.glvOrMarketAddress !== undefined && !glvOrMarketInfo) {
         return;
       }
 
@@ -203,4 +207,8 @@ export function useTransitRouteEvents(
       startTransitRouteProgress,
     ]
   );
+}
+
+function getOrderRefreshInterval(order: TransitOrder | undefined) {
+  return getIsTransitOrderFinal(order) ? 0 : ORDER_REFRESH_INTERVAL;
 }

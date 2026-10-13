@@ -18,7 +18,7 @@ export type TransitRouteProgress = {
   chainId: ContractsChainId;
   account: string;
   direction: TransitRouteDirection;
-  glvOrMarketAddress: string;
+  glvOrMarketAddress: string | undefined;
   withdrawalTxnHash: string | undefined;
   withdrawalExecutedTxnHash: string | undefined;
   conversion: PaxosTransitConversion | undefined;
@@ -57,6 +57,8 @@ export function getShouldStoreTransitRouteProgress(p: {
   const isDepositSent = progress.depositTxnHash !== undefined;
   const isWithdrawalExecuted =
     progress.withdrawalTxnHash === undefined || progress.withdrawalExecutedTxnHash !== undefined;
+
+  if (progress.glvOrMarketAddress === undefined) return !isConverted && !isConversionRemoved;
 
   if (progress.isDismissed || isConversionRemoved) return false;
 

@@ -6,10 +6,13 @@ import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { getGlvDisplayName, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { Mode, type GlvOrMarketInfo } from "domain/synthetics/markets/types";
+import { getIsTransitOrderFinal } from "domain/synthetics/paxosTransit/transitOrders";
 import type { TransitRouteProgress } from "domain/synthetics/paxosTransit/transitRouteProgress";
 import { formatBalanceAmount } from "lib/numbers";
 import { getToken } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 import type { TransitOrder } from "sdk/utils/paxos/types";
+import type { Token } from "sdk/utils/tokens/types";
 
 import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
@@ -18,12 +21,14 @@ import { PoolName } from "./GmStatusNotification";
 import { StatusNotification } from "./StatusNotification";
 import { useToastAutoClose } from "./useToastAutoClose";
 
+const LONG_CONVERSION_MS = 15 * 60 * 1000;
+
 export function PaxosTransitStatusNotification({
   toastTimestamp,
   glvOrMarketInfo,
 }: {
   toastTimestamp: number;
-  glvOrMarketInfo: GlvOrMarketInfo;
+  glvOrMarketInfo: GlvOrMarketInfo | undefined;
 }) {
   const { transitRouteProgress } = useSyntheticsEvents();
 
@@ -31,7 +36,74 @@ export function PaxosTransitStatusNotification({
     return null;
   }
 
+  if (transitRouteProgress.glvOrMarketAddress === undefined) {
+    return <TransitConversionProgressContent progress={transitRouteProgress} />;
+  }
+
+  if (!glvOrMarketInfo) {
+    return null;
+  }
+
   return <TransitRouteProgressContent progress={transitRouteProgress} glvOrMarketInfo={glvOrMarketInfo} />;
+}
+
+function TransitConversionProgressContent({ progress }: { progress: TransitRouteProgress }) {
+  const { paxosTransitOrder, isPaxosTransitOrderStatusUnknown } = useSyntheticsEvents();
+  const { conversion } = progress;
+  const order = conversion ? paxosTransitOrder : undefined;
+
+  const paxosTransitConfig = getPaxosTransitConfig(progress.chainId);
+  const usdc = paxosTransitConfig ? getToken(progress.chainId, paxosTransitConfig.usdcAddress) : undefined;
+  const usdg = paxosTransitConfig ? getToken(progress.chainId, paxosTransitConfig.usdgAddress) : undefined;
+  const [tokenIn, tokenOut] = progress.direction === "usdcToUsdg" ? [usdc, usdg] : [usdg, usdc];
+
+  useToastAutoClose(getIsTransitOrderFinal(order), progress.id);
+
+  const offerAmount =
+    conversion && tokenIn
+      ? formatBalanceAmount(conversion.offerAmount, tokenIn.decimals, tokenIn.symbol, { isStable: true })
+      : undefined;
+  const isTakingLong = !getIsTransitOrderFinal(order) && Date.now() - progress.id > LONG_CONVERSION_MS;
+
+  return (
+    <StatusNotification title={<Trans>Converting {offerAmount} to {tokenOut?.symbol}</Trans>}>
+      <div className="flex flex-col gap-8">
+        <TransactionStatus status="success" txnHash={conversion?.txnHash} text={t`Conversion request sent`} />
+        <TransactionStatus
+          status={getConversionStatus(order)}
+          text={getSwapConversionText({ order, isPaxosTransitOrderStatusUnknown, tokenOut })}
+        />
+        {isTakingLong && (
+          <div className="text-body-small text-typography-secondary">
+            <Trans>Taking longer than usual. Standard-fee conversions can take up to an hour and arrive in parts.</Trans>
+          </div>
+        )}
+      </div>
+    </StatusNotification>
+  );
+}
+
+function getSwapConversionText(p: {
+  order: TransitOrder | undefined;
+  isPaxosTransitOrderStatusUnknown: boolean;
+  tokenOut: Token | undefined;
+}): React.ReactNode {
+  const { order, isPaxosTransitOrderStatusUnknown, tokenOut } = p;
+
+  if (order?.status === "PROCESSED" && tokenOut) {
+    return t`${formatBalanceAmount(order.amountDue, tokenOut.decimals, tokenOut.symbol, { isStable: true })} received`;
+  }
+
+  const deliveredAmount = order ? bigMath.max(order.amountDue - order.remainingAmountDue, 0n) : 0n;
+
+  if (order?.status === "PROCESSING" && deliveredAmount > 0n && tokenOut) {
+    const delivered = formatBalanceAmount(deliveredAmount, tokenOut.decimals, undefined, { isStable: true });
+    const due = formatBalanceAmount(order.amountDue, tokenOut.decimals, tokenOut.symbol, { isStable: true });
+
+    return t`Receiving ${tokenOut.symbol}: ${delivered} of ${due}`;
+  }
+
+  return getConversionText({ order, isPaxosTransitOrderStatusUnknown, tokenOutSymbol: tokenOut?.symbol });
 }
 
 function TransitRouteProgressContent({

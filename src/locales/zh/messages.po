@@ -36,6 +36,10 @@ msgstr "Pear Protocol"
 msgid "Price impact rebates claimed"
 msgstr "价格影响返还已领取"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Auto picks the route that returns the most after all fees. Paxos converts {0} to {1} in a separate transaction, and {2} arrives in your wallet in a separate step, usually within 2–10 minutes. GMX pool and external routes are instant."
+msgstr "自动会选择扣除所有费用后到账最多的路由。Paxos 会在单独交易中将 {0} 转换为 {1}，{2} 将在单独步骤中到达您的钱包，通常需 2–10 分钟。GMX 池和外部路由为即时完成。"
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "或通过 <0>chainlist.org</0> 更新您钱包的 RPC"
@@ -97,6 +101,10 @@ msgstr "评估 GMX"
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Order simulation failed"
 msgstr "订单模拟失败"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paxos fee {fee} · ~2–10 min, can be longer"
+msgstr "Paxos 手续费 {fee} · 约 2–10 分钟，可能更久"
 
 #: src/components/WhatsNewToast/WhatsNewToastContainer.tsx
 msgid "Reload now"
@@ -301,6 +309,10 @@ msgstr "Oracle keeper 事件"
 msgid "RabbitHole"
 msgstr "RabbitHole"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Quote is unavailable"
+msgstr "报价不可用"
+
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Your {walletName} is on a different network</0><1/><2>Switch your {walletName} to {0}, then try again</2>"
 msgstr "<0>您的 {walletName} 在不同的网络上</0><1/><2>请将您的 {walletName} 切换到 {0}，然后重试</2>"
@@ -370,6 +382,10 @@ msgstr "设置"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "TWAP swaps use GMX pool liquidity only, which can't fill this order size. Use a market order to enable external routes."
 msgstr "TWAP 交换仅使用 GMX 池流动性，无法完成此订单规模。请使用市价单以启用外部路由。"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paxos sends {0} to your wallet in a separate step, usually within 2–10 minutes. Large orders can arrive in parts."
+msgstr "Paxos 会在单独步骤中将 {0} 发送到您的钱包，通常需 2–10 分钟。大额订单可能分批到账。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Est. APR"
@@ -728,6 +744,10 @@ msgstr "售卖"
 msgid "Insufficient GMX pool liquidity"
 msgstr "GMX 池流动性不足"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "~2–10 min, separate step"
+msgstr "约 2–10 分钟，单独步骤"
+
 #: src/components/ChartTokenSelector/ArbitrumRecommendation.tsx
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainButtons.tsx
 msgid "Switch to {0}"
@@ -854,6 +874,12 @@ msgstr "否"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "/ mo"
 msgstr "/月"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+msgid "Not enough zero-fee capacity"
+msgstr "零费用额度不足"
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -1054,6 +1080,7 @@ msgid "GMX Detailed CSV"
 msgstr "GMX Detailed CSV"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
 msgid "Sending conversion..."
 msgstr "正在发送转换..."
 
@@ -1475,6 +1502,10 @@ msgstr "银行卡购买目前不适用于您的地区或配置。请改用<0>接
 msgid "Max {0} buyable amount exceeded"
 msgstr "超过最大 {0} 可购买金额"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Minimum {0} {1}"
+msgstr "最低 {0} {1}"
+
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing position uses {0} collateral. If executed, this order will create a separate position. <0>Switch to {1} collateral</0>"
 msgstr "现有仓位使用 {0} 作为抵押品。如果执行，此订单将创建一个单独的仓位。<0>切换为 {1} 抵押品</0>"
@@ -1828,6 +1859,10 @@ msgstr "我是联盟伙伴"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated daily fees"
 msgstr "预计每日费用"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Convert {0} with no fee"
+msgstr "免手续费转换 {0}"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop Market"
@@ -2265,6 +2300,10 @@ msgstr "仅用于 Express 和 One-Click 费用，从操作所使用的余额中�
 msgid "You have esGMX tokens in the Affiliate vault. Withdraw them to transfer to the new account."
 msgstr "您在 Affiliate 金库中有 esGMX 代币。请先提取代币，然后再转账至新账户。"
 
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Taking longer than usual. Standard-fee conversions can take up to an hour and arrive in parts."
+msgstr "耗时比平时更长。标准费用的转换最长可能需要一小时，并可能分批到账。"
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sending buy request..."
 msgstr "正在发送买入请求…"
@@ -2469,6 +2508,10 @@ msgstr "{tokenSymbol} 是您钱包的 Gas 支付代币。一次性授权后，Ex
 msgid "Swapped {0} for {1}"
 msgstr "已将 {0} 兑换为 {1}"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Zero-fee capacity dropped below your amount a moment ago. The new capacity shows here within a minute."
+msgstr "零费用额度刚刚降到您的金额以下。新的额度将在一分钟内显示在此处。"
+
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Pick a time"
 msgstr "选择时间"
@@ -2624,6 +2667,10 @@ msgstr "该账户没有使用中的推荐码。"
 msgid "Missing parameters. Refresh and retry"
 msgstr "缺少参数。请刷新页面后重试"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Instant via {instantLabel}"
+msgstr "通过 {instantLabel} 即时"
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order"
 msgstr "现有仓位位于 WETH-USDC 池中，但该池的流动性不足以执行此订单"
@@ -2761,6 +2808,10 @@ msgstr "市场"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Max {0}"
 msgstr "最大 {0}"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paxos standard"
+msgstr "Paxos 标准"
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "APRs update weekly on Wednesday based on fees collected"
@@ -3226,9 +3277,17 @@ msgstr "正在加载 Express 参数…"
 msgid "RESPONSE TIME"
 msgstr "RESPONSE TIME"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paxos fee {fee} · ~2–10 min, separate step"
+msgstr "Paxos 手续费 {fee} · 约 2–10 分钟，单独步骤"
+
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
 msgstr "您在所选时间段内没有交易记录"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "No instant route for this amount"
+msgstr "此金额没有即时路由"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Default parts for TWAP orders"
@@ -3284,6 +3343,7 @@ msgstr "滑点设置过高。当前兑换影响：{0}。"
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Instant"
 msgstr "立即"
 
@@ -3334,6 +3394,10 @@ msgstr "最严格的 USD 存入容量"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidated as max leverage of {formattedMaxLeverage} was exceeded when accounting for fees."
 msgstr "在计入费用后超出最大杠杆 {formattedMaxLeverage}，仓位已被清算。"
+
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+msgid "Approving {0}..."
+msgstr "正在授权 {0}..."
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
@@ -3481,6 +3545,7 @@ msgstr "去中心化金融仪表盘"
 
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "{0} received"
 msgstr "已收到 {0}"
 
@@ -3601,6 +3666,10 @@ msgstr "仓位"
 msgid "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
 msgstr "<0>存入</0>或<1>购买</1> {wrappedNativeTokenSymbol}。"
 
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Converting {offerAmount} to {0}"
+msgstr "正在将 {offerAmount} 转换为 {0}"
+
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -3701,6 +3770,10 @@ msgstr "扣除费用、折扣和价格影响之前的已实现盈亏。"
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."
 msgstr "{typeString} 做空止损市价单：当价格低于触发价格时，{0}做空仓位。"
+
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+msgid "Minimum conversion is {minOrderSize} {0}"
+msgstr "最低转换金额为 {minOrderSize} {0}"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average position size"
@@ -4191,6 +4264,10 @@ msgstr "已实现费用"
 msgid "Accrued borrow and funding fees are deducted from the deposit before it improves the position's margin, so the deposit must also cover them."
 msgstr "累计的借贷费用和资金费用会在存款改善仓位保证金之前从存款中扣除，因此存款还必须覆盖这些费用。"
 
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Receiving {0}: {delivered} of {due}"
+msgstr "正在接收 {0}：{delivered} / {due}"
+
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Funds are now in your GMX Account"
 msgstr "资金已存入您的 GMX Account"
@@ -4198,6 +4275,10 @@ msgstr "资金已存入您的 GMX Account"
 #: src/components/Referrals/traders/faq.tsx
 msgid "Why should I enter a referral code?"
 msgstr "为什么要输入推荐码？"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Auto · {activeLabel}"
+msgstr "自动 · {activeLabel}"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient liquidity. Order will fill when liquidity is available."
@@ -4245,11 +4326,16 @@ msgstr "现实的时间表，6 个月以内"
 msgid "Wallet-only"
 msgstr "仅钱包"
 
+#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
+msgid "The Paxos quote changed. Review the new amount and fee, then confirm again."
+msgstr "Paxos 报价已变更。请查看新的金额和费用，然后再次确认。"
+
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Listing"
 msgstr "上架"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "Conversion failed: {0}"
 msgstr "转换失败：{0}"
 
@@ -4296,6 +4382,10 @@ msgstr "保证金低于该仓位规模所需的最低要求"
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "How much can I earn as an affiliate?"
 msgstr "作为推广者，我能赚取多少收益？"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "The Paxos quote is valid for 15 minutes. All signers must sign and the transaction must execute before then, or it fails and needs a new quote."
+msgstr "Paxos 报价有效期为 15 分钟。所有签名人必须在此之前签名并执行交易，否则交易将失败并需要新的报价。"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -4741,6 +4831,10 @@ msgstr "如何在 GMX 上入门？"
 msgid "Acceptable price"
 msgstr "可接受价格"
 
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+msgid "Loading routes…"
+msgstr "正在加载路由…"
+
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Instant answers, right on the page"
 msgstr "即时解答，就在页面上"
@@ -4798,6 +4892,10 @@ msgstr "20 秒"
 msgid "Virtual market ID"
 msgstr "虚拟市场 ID"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Best"
+msgstr "最佳"
+
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Your wallet is not connected to this network"
 msgstr "您的钱包未连接到此网络"
@@ -4832,6 +4930,10 @@ msgstr "已达到 One-Click Trading 操作限制。您现在正在使用 Express
 #: src/components/PositionList/PositionList.tsx
 msgid "MARGIN"
 msgstr "保证金"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "No fee · ~2–10 min, separate step"
+msgstr "无手续费 · 约 2–10 分钟，单独步骤"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Sign permit"
@@ -5261,6 +5363,10 @@ msgstr "当前保证金不包括待结算的借款费和资金费用。平仓后
 msgid "Partial SL"
 msgstr "部分止损"
 
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+msgid "Convert with Paxos"
+msgstr "通过 Paxos 转换"
+
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
@@ -5316,6 +5422,10 @@ msgstr "外部路由在一次失败的尝试后暂时暂停。<0/><1/><2>重试�
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
 msgstr "<0>购买</0> {wrappedNativeTokenSymbol}。"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Or pick Paxos standard with a fee or an instant route in Route. No route is picked for you."
+msgstr "或在“路由”中选择收取手续费的 Paxos 标准或即时路由。系统不会为您选择路由。"
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
@@ -5478,6 +5588,10 @@ msgstr "应用程序禁用，待 {0} 升级"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "v:"
 msgstr "v:"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Picks the route that returns the most after fees"
+msgstr "选择扣除费用后到账最多的路由"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
@@ -5886,6 +6000,10 @@ msgstr "过去 180 天"
 msgid "Positive funding fees"
 msgstr "正向资金费率"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Loading…"
+msgstr "正在加载…"
+
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Funds will appear in your GMX Account soon"
 msgstr "资金将很快显示在您的 GMX Account 中"
@@ -6142,6 +6260,7 @@ msgid "Step 1: Sell"
 msgstr "第 1 步：卖出"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Auto"
 msgstr "自动"
 
@@ -6268,6 +6387,10 @@ msgstr "质押仅在 {chainNames} 上可用。请切换网络以继续。"
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Links"
 msgstr "链接"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "You save vs instant"
+msgstr "相比即时节省"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact factor for withdrawals"
@@ -6412,6 +6535,7 @@ msgid "Monthly bought"
 msgstr "月度回购量"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Zero-fee capacity left"
 msgstr "剩余零费用额度"
 
@@ -6534,6 +6658,10 @@ msgstr "差额"
 msgid "Stop-Loss price"
 msgstr "止损价格"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Or pick Paxos standard with a fee or an instant route in Route."
+msgstr "或在“路由”中选择收取手续费的 Paxos 标准或即时路由。"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "swap amount"
 msgstr "兑换金额"
@@ -6654,6 +6782,10 @@ msgstr "止损市价失败"
 #: src/components/SideNav/SettingsNavItem.tsx
 msgid "Settings"
 msgstr "设置"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paxos zero-fee"
+msgstr "Paxos 零费用"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Daily"
@@ -7378,6 +7510,10 @@ msgstr "增加仓位（限价）"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "PnL relative to capital used (return on capital)"
 msgstr "PnL 相对于已用资金（资本回报率）"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Choose a route"
+msgstr "选择路由"
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "No transfer history matching search"
@@ -8145,6 +8281,10 @@ msgstr "最大可借出影响因子"
 msgid "BANNED"
 msgstr "BANNED"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paxos sends {0} to your wallet in a separate step. Standard-fee orders are filled from Paxos inventory, so they can take longer and arrive in parts. For instant delivery, pick another route."
+msgstr "Paxos 会在单独步骤中将 {0} 发送到您的钱包。标准费用订单由 Paxos 库存成交，因此可能耗时更长并分批到账。如需即时到账，请选择其他路由。"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dashboard for GMX referral stats"
 msgstr "GMX 推荐统计仪表板"
@@ -8212,6 +8352,10 @@ msgstr "开仓费用 / 折扣"
 #: src/components/DepthChart/DepthChart.tsx
 msgid "Size, $"
 msgstr "大小，$"
+
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+msgid "Paxos quote is unavailable"
+msgstr "Paxos 报价不可用"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Wallet received before close"
@@ -8471,6 +8615,10 @@ msgstr "不支持将 {0} 提取至 {1}"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Wallet esGMX"
 msgstr "钱包中的 esGMX"
+
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+msgid "Paxos conversion in progress"
+msgstr "Paxos 转换进行中"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing position is in {0} pool. Using the selected pool will create a separate position. <0>Switch to {1} pool</0>"
@@ -9291,6 +9439,10 @@ msgstr "做多借款费率"
 msgid "Approve GMX"
 msgstr "授权 GMX"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paxos fee"
+msgstr "Paxos 手续费"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -9431,9 +9583,17 @@ msgstr "以 USD 显示线条数值"
 msgid "Open interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "未平仓量（<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>）"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "The Paxos quote is valid until {0}. All signers must sign and the transaction must execute before then, or it fails and needs a new quote."
+msgstr "Paxos 报价有效期至 {0}。所有签名人必须在此之前签名并执行交易，否则交易将失败并需要新的报价。"
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "{increaseOrDecreaseText}: {0} {longShortText}"
 msgstr "{increaseOrDecreaseText}：{0} {longShortText}"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paxos routes are quoted from the Pay amount."
+msgstr "Paxos 路由按支付金额报价。"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -9818,6 +9978,10 @@ msgstr "约5分钟"
 msgid "New tier:"
 msgstr "新等级："
 
+#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
+msgid "Zero-fee capacity changed. Review the route options and confirm again."
+msgstr "零费用额度已变更。请查看路由选项，然后再次确认。"
+
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "Market delistings"
 msgstr "市场下架"
@@ -9872,6 +10036,7 @@ msgstr "AI"
 msgid "Referral code submitted"
 msgstr "推荐码已提交"
 
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Conversion request sent"
 msgstr "转换请求已发送"
@@ -9958,6 +10123,10 @@ msgstr "费用"
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Margin ({0})"
 msgstr "保证金（{0}）"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Not enough zero-fee capacity for this amount. Capacity left now: {0}. Your amount is {1} over."
+msgstr "此金额的零费用额度不足。当前剩余额度：{0}。您的金额超出 {1}。"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -10192,6 +10361,10 @@ msgstr "金库"
 msgid "Looping"
 msgstr "循环策略"
 
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+msgid "Convert with Paxos · fee {fee}"
+msgstr "通过 Paxos 转换 · 手续费 {fee}"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max reserved {directionLabel}"
 msgstr "最大预留 {directionLabel}"
@@ -10321,6 +10494,7 @@ msgstr "此池已达到最大容量，暂不接受存入。请选择其他池。
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -11129,6 +11303,10 @@ msgstr "待处理借款费用"
 msgid "No active management required"
 msgstr "无需主动管理"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Loading quote…"
+msgstr "正在加载报价…"
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "take-profit"
 msgstr "止盈"
@@ -11268,6 +11446,11 @@ msgstr "快速查询链上历史数据。"
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 msgid "Wallet cannot sign messages"
 msgstr "钱包无法签署消息"
+
+#: src/components/TradeBox/TradeBox.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "· {0} pending"
+msgstr "· {0} 待到账"
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "REFERRED MONTHLY VOLUME"
@@ -11499,6 +11682,10 @@ msgstr "没有匹配的市场。"
 msgid "Stake esGMX"
 msgstr "质押 esGMX"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "GMX pool"
+msgstr "GMX 池"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe and remain in your wallet."
 msgstr "您的资金是安全的，保留在您的钱包中。"
@@ -11585,10 +11772,16 @@ msgstr "APY"
 msgid "What is GM?"
 msgstr "什么是 GM？"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Route"
+msgstr "路由"
+
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Delisting"
 msgstr "下架"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 #: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
 msgid "{0} (external)"
 msgstr "{0}（外部）"
@@ -11625,6 +11818,10 @@ msgstr "Limit Swap：当达到触发价格时兑换代币"
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "获取 GMX 的提醒和公告，随时掌握您的交易、清算风险等信息"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Use the Pay amount"
+msgstr "使用支付金额"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated off-hours liquidation price"
@@ -11902,6 +12099,10 @@ msgstr "已计入但并非最新数据：{staleList}。"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "TRADERS REFERRED"
 msgstr "TRADERS REFERRED"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Arrives"
+msgstr "到账时间"
 
 #: src/components/Claims/SettleAccruedCard.tsx
 msgid "Accrued"
@@ -12583,6 +12784,10 @@ msgstr "借贷费用"
 msgid "Continue"
 msgstr "继续"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "~2–10 min or longer, may arrive in parts"
+msgstr "约 2–10 分钟或更久，可能分批到账"
+
 #: landing/src/pages/Builders/CtaSection/CtaSection.tsx
 #: landing/src/pages/Home/LiqiuditySection/LiqiuditySection.tsx
 msgid "Start earning"
@@ -13073,6 +13278,10 @@ msgstr "将触发价格设置为高于标记价格"
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
 msgstr "此链上暂无机会"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Large LP or balancer? Ask <0>@GMXPartners</0> about zero-fee access."
+msgstr "大型 LP 或平衡者？请向 <0>@GMXPartners</0> 咨询零费用资格。"
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"

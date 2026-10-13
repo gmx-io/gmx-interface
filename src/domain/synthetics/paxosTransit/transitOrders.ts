@@ -1,8 +1,8 @@
-import { isAddressEqual, parseEventLogs } from "viem";
+import { decodeFunctionData, type Hex, isAddressEqual, parseEventLogs } from "viem";
 
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
-import type { TransitOrder } from "sdk/utils/paxos/types";
+import type { TransitOrder, TransitQuote } from "sdk/utils/paxos/types";
 
 function getIsTransitOrderPending(order: TransitOrder) {
   return order.status === "PENDING_BRIDGE" || order.status === "PROCESSING";
@@ -38,4 +38,22 @@ export async function getSubmittedTransitOrderId(p: {
   const orderSubmittedLog = orderSubmittedLogs.find((log) => isAddressEqual(log.address, p.stationAddress));
 
   return orderSubmittedLog?.args.uuid;
+}
+
+export function getTransitQuoteDeadline(quote: TransitQuote | undefined): number | undefined {
+  if (!quote?.transaction.data) {
+    return undefined;
+  }
+
+  try {
+    const { functionName, args } = decodeFunctionData({ abi: abis.TransitStation, data: quote.transaction.data as Hex });
+
+    if (functionName !== "submitOrder" && functionName !== "submitOrderWithPermit") {
+      return undefined;
+    }
+
+    return Number(args[0].deadline);
+  } catch {
+    return undefined;
+  }
 }
