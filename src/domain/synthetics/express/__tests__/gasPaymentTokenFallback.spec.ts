@@ -95,14 +95,10 @@ describe("resolveGasPaymentTokenAddress", () => {
       expect(resolve({ tokensData: buildTokensData({ weth: 0n }) })).toBe(USDC.address);
     });
 
-    it("keeps the saved token when the order and its fee don't both fit in the pay token", () => {
-      // 1 WETH balance, $3 fee = 0.001 WETH, 0.0013 WETH with the buffer
+    it("pays the fee in the pay token whatever the order amount is", () => {
       const feeUsdByToken = { [WETH.address]: 3n * ONE_USD };
 
-      expect(resolve({ feeUsdByToken, payAmounts: { [WETH.address]: ONE_WETH } })).toBe(USDC.address);
-      expect(resolve({ feeUsdByToken, payAmounts: { [WETH.address]: ONE_WETH - 1_300_000_000_000_000n } })).toBe(
-        WETH.address
-      );
+      expect(resolve({ feeUsdByToken, payAmounts: { [WETH.address]: ONE_WETH } })).toBe(WETH.address);
     });
   });
 
