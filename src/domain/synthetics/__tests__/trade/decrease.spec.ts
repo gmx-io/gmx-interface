@@ -339,7 +339,8 @@ describe("getDecreasePositionAmounts", () => {
       position,
       keepLeverage,
       isLong,
-      marketInfo,
+      // the shorts reserve more than the USDC pool here, which leaves no liquidity to swap the profit to
+      marketInfo: { ...marketInfo, shortInterestUsd: 0n },
       minCollateralUsd,
       minPositionSizeUsd,
       uiFeeFactor,

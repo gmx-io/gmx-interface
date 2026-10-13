@@ -1,11 +1,14 @@
 import { gql } from "@apollo/client";
 import { useMemo } from "react";
-import useSWR from "swr";
+import useSWR, { type SWRConfiguration } from "swr";
 
 import { getSubsquidGraphClient } from "lib/indexers/clients";
 
-export default function useIsFirstOrder(chainId: number, p: { account?: string }) {
-  const { account } = p;
+export default function useIsFirstOrder(
+  chainId: number,
+  p: { account?: string; refreshInterval?: SWRConfiguration<boolean>["refreshInterval"] }
+) {
+  const { account, refreshInterval } = p;
 
   const key = account ? ["useIsFirstOrder", chainId, account] : null;
 
@@ -28,9 +31,11 @@ export default function useIsFirstOrder(chainId: number, p: { account?: string }
       const tradesCount = result?.data?.tradeActions?.length;
       return tradesCount !== undefined && tradesCount === 0;
     },
+    // left out when unset, so callers without it keep the global interval
+    ...(refreshInterval !== undefined ? { refreshInterval } : {}),
   });
 
   return useMemo(() => {
-    return { isFirstOrder: isFirstOrder ?? true };
+    return { isFirstOrder };
   }, [isFirstOrder]);
 }

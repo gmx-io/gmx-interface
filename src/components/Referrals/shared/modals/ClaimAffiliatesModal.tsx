@@ -17,6 +17,7 @@ import PercentageInput from "components/PercentageInput/PercentageInput";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import { Table, TableTh, TableTheadTr } from "components/Table/Table";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
@@ -223,6 +224,7 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
 
         <SyntheticsInfoRow
           label={<Trans>Network fee</Trans>}
+          labelClassName="whitespace-nowrap"
           value={
             state.networkFeeInfo.isLoading ? (
               "..."
@@ -264,15 +266,17 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
           <OutOfTokenErrorAlert errors={state.errors} token={state.isOutOfTokenErrorToken} onClose={onClose} />
         )}
 
-        <Button
-          className="w-full"
-          variant="primary-action"
-          onClick={state.handleSubmit}
-          disabled={state.submitButtonState.disabled}
-        >
-          {state.submitButtonState.text}
-          {state.submitButtonState.showSpinner && <SpinnerIcon className="ml-4 animate-spin" />}
-        </Button>
+        <ButtonTooltipWrapper content={state.submitButtonState.errorDescription}>
+          <Button
+            className="w-full"
+            variant="primary-action"
+            onClick={state.handleSubmit}
+            disabled={state.submitButtonState.disabled}
+          >
+            {state.submitButtonState.text}
+            {state.submitButtonState.showSpinner && <SpinnerIcon className="ml-4 animate-spin" />}
+          </Button>
+        </ButtonTooltipWrapper>
       </div>
     </ModalWithPortal>
   );

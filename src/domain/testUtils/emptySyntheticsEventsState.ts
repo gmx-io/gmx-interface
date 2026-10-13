@@ -31,6 +31,14 @@ export const emptySyntheticsEventsState: SyntheticsEventsContextType = {
   setShiftStatusViewed: noop,
   setMultichainTransferProgress: noop,
 
+  transitRouteProgress: undefined,
+  paxosTransitOrder: undefined,
+  isPaxosTransitOrderStatusUnknown: false,
+  startTransitRouteProgress: noop,
+  attachTransitRouteConversion: noop,
+  attachTransitRouteDeposit: noop,
+  setTransitRouteContinueRequested: noop,
+
   multichainSourceChainApprovalStatuses: {},
   setMultichainSourceChainApprovalsActiveListener: noop,
   removeMultichainSourceChainApprovalsActiveListener: noop,

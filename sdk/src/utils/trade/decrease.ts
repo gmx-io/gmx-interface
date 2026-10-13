@@ -68,6 +68,7 @@ export function getDecreasePositionAmounts(p: {
   fixedAcceptablePriceImpactBps?: bigint;
   acceptablePriceImpactBuffer?: number;
   userReferralInfo: UserReferralInfo | undefined;
+  proDiscountFactor?: bigint;
   minCollateralUsd: bigint;
   minPositionSizeUsd: bigint;
   uiFeeFactor: bigint;
@@ -91,6 +92,7 @@ export function getDecreasePositionAmounts(p: {
     fixedAcceptablePriceImpactBps,
     acceptablePriceImpactBuffer,
     userReferralInfo,
+    proDiscountFactor,
     minCollateralUsd,
     minPositionSizeUsd,
     uiFeeFactor,
@@ -199,7 +201,9 @@ export function getDecreasePositionAmounts(p: {
       marketInfo,
       values.sizeDeltaUsd,
       values.balanceWasImproved,
-      userReferralInfo
+      userReferralInfo,
+      undefined,
+      proDiscountFactor
     );
 
     values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
@@ -298,7 +302,14 @@ export function getDecreasePositionAmounts(p: {
     : convertToTokenAmount(profitUsd, collateralToken.decimals, values.collateralPrice)!;
 
   // Fees
-  const positionFeeInfo = getPositionFee(marketInfo, values.sizeDeltaUsd, values.balanceWasImproved, userReferralInfo);
+  const positionFeeInfo = getPositionFee(
+    marketInfo,
+    values.sizeDeltaUsd,
+    values.balanceWasImproved,
+    userReferralInfo,
+    undefined,
+    proDiscountFactor
+  );
   const estimatedPositionFeeCost = estimateCollateralCost(
     positionFeeInfo.positionFeeUsd,
     collateralToken,
@@ -333,6 +344,8 @@ export function getDecreasePositionAmounts(p: {
   const isMarketCollateralToPnlSwap =
     isMarketDecrease && values.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken;
 
+  let isProfitSwapReverted = false;
+
   if (
     profitUsd > 0 &&
     !isMarketCollateralToPnlSwap &&
@@ -350,9 +363,20 @@ export function getDecreasePositionAmounts(p: {
       swapPricingType: SwapPricingType.Swap,
     });
 
-    values.swapProfitFeeUsd = swapProfitStats.swapFeeUsd - swapProfitStats.priceImpactDeltaUsd;
-    values.swapProfitUsdIn = swapProfitStats.usdIn;
-    values.swapUiFeeUsd = applyFactor(swapProfitStats.usdIn, uiFeeFactor);
+    const isPnlTokenPoolOverCap = isLong
+      ? marketInfo.longPoolAmount > marketInfo.maxLongPoolAmount
+      : marketInfo.shortPoolAmount > marketInfo.maxShortPoolAmount;
+
+    isProfitSwapReverted =
+      isMarketDecrease &&
+      isSwapToCollateral &&
+      Boolean(swapProfitStats.isOutLiquidity || swapProfitStats.isOutMaxFactor || isPnlTokenPoolOverCap);
+
+    if (!isProfitSwapReverted) {
+      values.swapProfitFeeUsd = swapProfitStats.swapFeeUsd - swapProfitStats.priceImpactDeltaUsd;
+      values.swapProfitUsdIn = swapProfitStats.usdIn;
+      values.swapUiFeeUsd = applyFactor(swapProfitStats.usdIn, uiFeeFactor);
+    }
   } else {
     values.swapProfitFeeUsd = 0n;
     values.swapProfitUsdIn = 0n;
@@ -371,7 +395,12 @@ export function getDecreasePositionAmounts(p: {
 
   const isProfitKeptInPnlToken =
     isMarketDecrease &&
-    getIsProfitKeptInPnlToken({ pnlToken, collateralToken, decreaseSwapType: values.decreaseSwapType });
+    getIsProfitKeptInPnlToken({
+      pnlToken,
+      collateralToken,
+      decreaseSwapType: values.decreaseSwapType,
+      isProfitSwapReverted,
+    });
 
   const payedInfo = isProfitKeptInPnlToken
     ? payForCollateralCostBeforePnlTokenProfit({
@@ -474,7 +503,7 @@ export function getDecreasePositionAmounts(p: {
     convertToUsd(payedInfo.outputAmount, collateralToken.decimals, values.collateralPrice) ?? 0n;
 
   if (
-    values.decreaseSwapType === DecreasePositionSwapType.NoSwap &&
+    (values.decreaseSwapType === DecreasePositionSwapType.NoSwap || isProfitSwapReverted) &&
     !getIsEquivalentTokens(pnlToken, collateralToken)
   ) {
     values.primaryOutput = {
@@ -728,10 +757,11 @@ export function getIsProfitKeptInPnlToken(p: {
   pnlToken: TokenData;
   collateralToken: TokenData;
   decreaseSwapType: DecreasePositionSwapType;
+  isProfitSwapReverted?: boolean;
 }) {
   return (
     !getIsEquivalentTokens(p.pnlToken, p.collateralToken) &&
-    p.decreaseSwapType !== DecreasePositionSwapType.SwapPnlTokenToCollateralToken
+    (p.decreaseSwapType !== DecreasePositionSwapType.SwapPnlTokenToCollateralToken || Boolean(p.isProfitSwapReverted))
   );
 }
 
@@ -1135,6 +1165,7 @@ export function getOptimalDecreaseAndSwapAmounts(p: {
   fixedAcceptablePriceImpactBps?: bigint;
   acceptablePriceImpactBuffer?: number;
   userReferralInfo: UserReferralInfo | undefined;
+  proDiscountFactor?: bigint;
   minCollateralUsd: bigint;
   minPositionSizeUsd: bigint;
   uiFeeFactor: bigint;
@@ -1162,6 +1193,7 @@ export function getOptimalDecreaseAndSwapAmounts(p: {
     fixedAcceptablePriceImpactBps,
     acceptablePriceImpactBuffer,
     userReferralInfo,
+    proDiscountFactor,
     minCollateralUsd,
     minPositionSizeUsd,
     uiFeeFactor,
@@ -1187,6 +1219,7 @@ export function getOptimalDecreaseAndSwapAmounts(p: {
     fixedAcceptablePriceImpactBps,
     acceptablePriceImpactBuffer,
     userReferralInfo,
+    proDiscountFactor,
     minCollateralUsd,
     minPositionSizeUsd,
     uiFeeFactor,

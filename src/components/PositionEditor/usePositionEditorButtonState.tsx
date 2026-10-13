@@ -329,6 +329,13 @@ export function usePositionEditorButtonState(
     tokens: approvalTokens,
     allowPermit: Boolean(expressParams),
     skip: isCollateralTokenFromGmxAccount,
+    metric: {
+      flow: "editCollateral",
+      isExpress: Boolean(expressParams),
+      isExpress1CT: Boolean(expressParams?.subaccount),
+      gasPaymentTokenAddress: expressParams?.gasPaymentParams?.gasPaymentTokenAddress,
+      payTokenAddress: isDeposit ? selectedCollateralAddress : undefined,
+    },
   });
 
   const isAllowanceLoaded =

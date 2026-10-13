@@ -47,7 +47,7 @@ import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import type { OrderInfo, PositionOrderInfo } from "domain/synthetics/orders/types";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
-import { getPositionKey } from "domain/synthetics/positions";
+import { getPositionKey, type PositionInfo } from "domain/synthetics/positions";
 import { TradeMode } from "domain/synthetics/trade";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
@@ -142,7 +142,8 @@ export function SyntheticsPage(p: Props) {
     ListSection.Positions
   );
 
-  const [viewPositionKeyHistory, setViewPositionKeyHistory] = useState<string | undefined>();
+  const [viewPositionHistory, setViewPositionHistory] =
+    useState<Pick<PositionInfo, "contractKey" | "increasedAtTime">>();
 
   const tabsContentTabletRef = useRef<HTMLDivElement>(null);
 
@@ -210,15 +211,15 @@ export function SyntheticsPage(p: Props) {
   );
 
   const handleViewPositionHistory = useCallback(
-    (positionKey: string) => {
+    (position: Pick<PositionInfo, "contractKey" | "increasedAtTime">) => {
       setListSection(ListSection.Trades);
-      setViewPositionKeyHistory(positionKey);
+      setViewPositionHistory(position);
     },
     [setListSection]
   );
 
-  const handleViewPositionKeyHistoryConsumed = useCallback(() => {
-    setViewPositionKeyHistory(undefined);
+  const handleViewPositionHistoryConsumed = useCallback(() => {
+    setViewPositionHistory(undefined);
   }, []);
 
   const { isSwap, isTwap } = useSelector(selectTradeboxTradeFlags);
@@ -523,8 +524,8 @@ export function SyntheticsPage(p: Props) {
                 <ErrorBoundary id="SyntheticsPage-TradeHistory" variant="block">
                   <TradeHistory
                     account={account}
-                    viewPositionKeyHistory={viewPositionKeyHistory}
-                    onViewPositionKeyHistoryConsumed={handleViewPositionKeyHistoryConsumed}
+                    viewPositionHistory={viewPositionHistory}
+                    onViewPositionHistoryConsumed={handleViewPositionHistoryConsumed}
                   />
                 </ErrorBoundary>
               )}
@@ -619,8 +620,8 @@ export function SyntheticsPage(p: Props) {
               <ErrorBoundary id="SyntheticsPage-TradeHistory-Mobile" variant="block" wrapperClassName="rounded-t-8">
                 <TradeHistory
                   account={account}
-                  viewPositionKeyHistory={viewPositionKeyHistory}
-                  onViewPositionKeyHistoryConsumed={handleViewPositionKeyHistoryConsumed}
+                  viewPositionHistory={viewPositionHistory}
+                  onViewPositionHistoryConsumed={handleViewPositionHistoryConsumed}
                 />
               </ErrorBoundary>
             )}

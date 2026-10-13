@@ -1,7 +1,11 @@
-import { isValidElement } from "react";
-import { describe, expect, it } from "vitest";
+import { i18n } from "@lingui/core";
+import { I18nProvider } from "@lingui/react";
+import { cleanup, render } from "@testing-library/react";
+import { makeError } from "ethers";
+import { ReactNode, createElement, isValidElement } from "react";
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
-import { ARBITRUM, SOURCE_BASE_MAINNET } from "config/chains";
+import { ARBITRUM, SOURCE_BASE_MAINNET, SOURCE_ETHEREUM_MAINNET } from "config/chains";
 import { ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
 import { CustomError, extendError, parseError } from "lib/errors";
 import { expandDecimals } from "lib/numbers";
@@ -242,5 +246,95 @@ describe("getTxnErrorToast", () => {
     expect(errorContent).toMatch(
       /^The remaining position would exceed the maximum allowed leverage\. Close a larger part, withdraw less, or add margin first\. Remaining margin: \$\s?90\.00, required: \$\s?120\.00$/
     );
+  });
+});
+
+describe("getTxnErrorToast wallet errors", () => {
+  const sendTransactionError = (error: { code?: number; message: string }) =>
+    makeError("could not coalesce error", "UNKNOWN_ERROR", {
+      error,
+      payload: { id: 3, jsonrpc: "2.0", method: "eth_sendTransaction", params: [] },
+    });
+
+  const renderText = (content: ReactNode) =>
+    render(createElement(I18nProvider, { i18n }, content)).container.textContent;
+
+  beforeAll(() => {
+    i18n.load("en", {});
+    i18n.activate("en");
+  });
+
+  afterEach(cleanup);
+
+  it("explains a wallet request that expired before it was confirmed PRO-3577", () => {
+    const walletError = sendTransactionError({ message: "Request expired. Please try again." });
+
+    const { errorContent } = getTxnErrorToast(SOURCE_ETHEREUM_MAINNET, parseError(walletError), {
+      defaultMessage: "Deposit failed",
+    });
+
+    expect(errorContent).toBe("Wallet request expired. Try again and confirm in your wallet");
+  });
+
+  it.each([
+    {
+      name: "MetaMask revert on gas estimation",
+      error: makeError("missing revert data", "CALL_EXCEPTION", {
+        action: "estimateGas",
+        data: null,
+        reason: null,
+        transaction: { to: null, data: "0x" },
+        invocation: null,
+        revert: null,
+        info: {
+          error: {
+            code: -32603,
+            message: "Internal JSON-RPC error.",
+            data: { code: 3, message: "execution reverted" },
+          },
+        },
+      }),
+      setIsSettingsVisible: undefined,
+      shows: "Deposit failed",
+      hides: "RPC error",
+    },
+    {
+      name: "node revert in a flow with settings",
+      error: sendTransactionError({ code: -32000, message: "execution reverted" }),
+      setIsSettingsVisible: vi.fn(),
+      shows: "Deposit failed",
+      hides: "RPC error",
+    },
+    {
+      name: "Besu revert, capitalized",
+      error: sendTransactionError({ code: -32000, message: "Execution reverted" }),
+      setIsSettingsVisible: undefined,
+      shows: "Deposit failed",
+      hides: "RPC error",
+    },
+    {
+      name: "wallet RPC failure in a flow without settings",
+      error: sendTransactionError({ code: -32603, message: "Internal JSON-RPC error." }),
+      setIsSettingsVisible: undefined,
+      shows: "Update your wallet's RPC via chainlist.org",
+      hides: "Express Trading",
+    },
+    {
+      name: "wallet RPC failure in a flow with settings",
+      error: sendTransactionError({ code: -32603, message: "Internal JSON-RPC error." }),
+      setIsSettingsVisible: vi.fn(),
+      shows: "Express Trading",
+      hides: "Deposit failed",
+    },
+  ])("tells a contract revert from an RPC failure: $name PRO-3577", ({ error, setIsSettingsVisible, shows, hides }) => {
+    const { errorContent } = getTxnErrorToast(SOURCE_ETHEREUM_MAINNET, parseError(error), {
+      defaultMessage: "Deposit failed",
+      setIsSettingsVisible,
+    });
+
+    const text = renderText(errorContent);
+
+    expect(text).toContain(shows);
+    expect(text).not.toContain(hides);
   });
 });

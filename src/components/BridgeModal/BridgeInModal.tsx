@@ -383,6 +383,7 @@ export function BridgeInModal({
         </ButtonTooltipWrapper>
         <SyntheticsInfoRow
           label={t`Network fee`}
+          labelClassName="whitespace-nowrap"
           value={
             nativeFee !== undefined && bridgeInChain !== undefined ? (
               <NetworkFeeValue

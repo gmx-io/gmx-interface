@@ -353,6 +353,7 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
         selectIsSetAcceptablePriceImpactEnabled,
         selectUserReferralInfo,
         selectUiFeeFactor,
+        selectProDiscountFactor,
       ],
       (
         positionsInfoData,
@@ -362,7 +363,8 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
         savedAcceptablePriceImpactBuffer,
         isSetAcceptablePriceImpactEnabled,
         userReferralInfo,
-        uiFeeFactor
+        uiFeeFactor,
+        proDiscountFactor
       ) => {
         const position = positionKey ? getByKey(positionsInfoData, positionKey) : undefined;
         const tradeFlags = createTradeFlags(tradeType, tradeMode);
@@ -414,6 +416,7 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
           fixedAcceptablePriceImpactBps,
           acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
           userReferralInfo,
+          proDiscountFactor,
           minCollateralUsd,
           minPositionSizeUsd,
           uiFeeFactor,

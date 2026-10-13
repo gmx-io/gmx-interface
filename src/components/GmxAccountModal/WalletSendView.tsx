@@ -317,6 +317,7 @@ export function WalletSendView() {
     tokens: approvalTokens,
     approveAmount: amount,
     skip: isSameChain || isDestinationUnsupported || selectedToken?.isNative || stargateAddress === undefined,
+    metric: { flow: "gmxAccountSend" },
   });
 
   const gasPrice = useGasPrice(chainId);
@@ -572,7 +573,6 @@ export function WalletSendView() {
 
       return (
         <NetworkFeeValue
-          className="leading-1"
           amount={sameChainNetworkFeeDetails.amount}
           decimals={sameChainNetworkFeeDetails.decimals}
           usd={sameChainNetworkFeeDetails.usd}
@@ -597,7 +597,6 @@ export function WalletSendView() {
 
     return (
       <NetworkFeeValue
-        className="leading-1"
         amount={networkFee}
         decimals={nativeToken.decimals}
         usd={networkFeeUsd}
@@ -840,6 +839,7 @@ export function WalletSendView() {
           />
           <SyntheticsInfoRow
             label={<Trans>Network fee</Trans>}
+            labelClassName="whitespace-nowrap"
             value={isNetworkFeeLoading ? valueSkeleton : networkFeeValue}
           />
           <SyntheticsInfoRow label={<Trans>Send fee</Trans>} value={isSendFeeLoading ? valueSkeleton : sendFeeValue} />

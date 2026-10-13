@@ -514,6 +514,7 @@ function getOptimalDecrease(q: QueryFunction<SyntheticsState>, keepLeverage: boo
     fixedAcceptablePriceImpactBps,
     acceptablePriceImpactBuffer,
     userReferralInfo,
+    proDiscountFactor: q(selectProDiscountFactor),
     minCollateralUsd,
     minPositionSizeUsd,
     uiFeeFactor,

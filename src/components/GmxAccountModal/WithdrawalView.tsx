@@ -115,6 +115,7 @@ import Button from "components/Button/Button";
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
+import { getSimulationErrorButtonContent } from "components/Errors/getSimulationErrorButtonContent";
 import { calculateNetworkFeeDetails } from "components/GmxAccountModal/calculateNetworkFeeDetails";
 import { useAvailableToTradeAssetMultichain, useGmxAccountWithdrawNetworks } from "components/GmxAccountModal/hooks";
 import { MaxActions } from "components/MaxActions/MaxActions";
@@ -361,13 +362,12 @@ function useWithdrawViewTransactions({
                   });
               }
             } else if (txnEvent.event === TxnEventName.Error) {
-              helperToast.error(t`Withdrawal failed`, { toastId: "same-chain-gmx-account-withdrawal" });
               setIsSubmitting(false);
             }
           },
         });
       } catch (error) {
-        helperToast.error(t`Withdrawal failed`, { toastId: "same-chain-gmx-account-withdrawal" });
+        toastCustomOrStargateError(chainId, error, { defaultMessage: t`Withdrawal failed` });
       } finally {
         setIsSubmitting(false);
       }
@@ -1336,7 +1336,11 @@ export const WithdrawalView = () => {
       };
     } else if (expressTxnParamsAsyncResult.error) {
       buttonState = {
-        text: expressTxnParamsAsyncResult.error.name.slice(0, 32) ?? t`Error simulating withdrawal`,
+        ...getSimulationErrorButtonContent({
+          chainId,
+          error: expressTxnParamsAsyncResult.error,
+          fallbackText: t`Error simulating withdrawal`,
+        }),
         disabled: true,
       };
     }
@@ -1459,7 +1463,6 @@ export const WithdrawalView = () => {
 
       return (
         <NetworkFeeValue
-          className="leading-1"
           amount={sameChainNetworkFeeDetails.amount}
           decimals={sameChainNetworkFeeDetails.decimals}
           usd={sameChainNetworkFeeDetails.usd}
@@ -1478,7 +1481,6 @@ export const WithdrawalView = () => {
 
     return (
       <NetworkFeeValue
-        className="leading-1"
         amount={someExpressFeeAmount}
         decimals={gasPaymentToken.decimals}
         usd={convertToUsd(someExpressFeeAmount, gasPaymentToken.decimals, getMidPrice(gasPaymentToken.prices))}
@@ -1508,7 +1510,6 @@ export const WithdrawalView = () => {
 
     return (
       <NetworkFeeValue
-        className="leading-1"
         amount={someBridgeNetworkFee}
         decimals={relayerFeeToken.decimals}
         usd={someBridgeNetworkFeeUsd}
@@ -1705,11 +1706,13 @@ export const WithdrawalView = () => {
           />
           <SyntheticsInfoRow
             label={<Trans>Network fee</Trans>}
+            labelClassName="whitespace-nowrap"
             value={isNetworkFeeLoading ? valueSkeleton : networkFeeValue}
           />
           {!isSameChain && (
             <SyntheticsInfoRow
               label={<Trans>Bridge fee</Trans>}
+              labelClassName="whitespace-nowrap"
               value={isNetworkFeeLoading ? valueSkeleton : bridgeFeeValue}
             />
           )}
