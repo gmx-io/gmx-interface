@@ -1,7 +1,7 @@
 import { getTokensMap } from "sdk/configs/tokens";
 
 import { metrics } from "./Metrics";
-import type { TokenPermitEvent, TokenPermitOutcome } from "./types";
+import type { TokenPermitEvent, TokenPermitFlow, TokenPermitOutcome } from "./types";
 
 export function sendTokenPermitMetric({
   outcome,
@@ -9,12 +9,14 @@ export function sendTokenPermitMetric({
   tokenAddress,
   accountType,
   reason,
+  flow,
 }: {
   outcome: TokenPermitOutcome;
   chainId: number;
   tokenAddress: string;
   accountType: string | undefined;
   reason?: string;
+  flow?: TokenPermitFlow;
 }) {
   metrics.pushEvent<TokenPermitEvent>({
     event: "tokenPermit",
@@ -25,6 +27,7 @@ export function sendTokenPermitMetric({
       token: getTokensMap(chainId)?.[tokenAddress]?.symbol ?? tokenAddress,
       accountType,
       reason,
+      flow,
     },
   });
 }

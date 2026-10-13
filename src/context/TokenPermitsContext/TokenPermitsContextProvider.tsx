@@ -1,5 +1,5 @@
 import uniq from "lodash/uniq";
-import React, { createContext, useCallback, useContext, useEffect, useMemo } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef } from "react";
 import useSWR from "swr";
 import { isAddressEqual, type Address } from "viem";
 
@@ -39,7 +39,12 @@ export type TokenPermitsState = {
   disableTokenPermits: (tokenAddresses: string[]) => void;
 };
 
-export type AddTokenPermitFn = (tokenAddress: string, spenderAddress: string, value: bigint) => Promise<void>;
+export type AddTokenPermitFn = (
+  tokenAddress: string,
+  spenderAddress: string,
+  value: bigint,
+  options?: { deadline?: bigint }
+) => Promise<void>;
 
 const TokenPermitsContext = createContext<TokenPermitsState | undefined>(undefined);
 
@@ -114,6 +119,10 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
     }
   );
 
+  // several permits can be signed in one flow (One-Click activation), before a re-render refreshes the closure
+  const latestStoredTokenPermits = useRef(storedTokenPermits);
+  latestStoredTokenPermits.current = storedTokenPermits;
+
   const getIsPermitAvailable = useCallback(
     (tokenAddress: string) =>
       isEnabled && getIsTokenPermitAllowed(chainId, tokenAddress) && !fallbackTokens?.includes(tokenAddress),
@@ -131,12 +140,19 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
   }, [account, getIsPermitAvailable, isEnabled, storedTokenPermits]);
 
   const addTokenPermit = useCallback(
-    async (tokenAddress: string, spenderAddress: string, value: bigint) => {
+    async (tokenAddress: string, spenderAddress: string, value: bigint, options?: { deadline?: bigint }) => {
       if (!signer?.provider) {
         return;
       }
 
-      const { permit } = await createAndSignTokenPermit(chainId, signer, tokenAddress, spenderAddress, value);
+      const { permit } = await createAndSignTokenPermit(
+        chainId,
+        signer,
+        tokenAddress,
+        spenderAddress,
+        value,
+        options?.deadline
+      );
 
       const validationResult = await validateTokenPermitSignature(chainId, permit);
 
@@ -149,13 +165,15 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
       }
 
       // a newer permit reuses the on-chain nonce, so it replaces the older one for the same token and spender
-      const otherPermits = (storedTokenPermits ?? []).filter(
+      const otherPermits = (latestStoredTokenPermits.current ?? []).filter(
         (p) => p.token !== permit.token || p.spender !== permit.spender
       );
+      const nextPermits = [...otherPermits, permit];
 
-      setTokenPermits([...otherPermits, permit]);
+      latestStoredTokenPermits.current = nextPermits;
+      setTokenPermits(nextPermits);
     },
-    [chainId, setTokenPermits, storedTokenPermits, signer]
+    [chainId, setTokenPermits, signer]
   );
 
   const removeTokenPermits = useCallback(

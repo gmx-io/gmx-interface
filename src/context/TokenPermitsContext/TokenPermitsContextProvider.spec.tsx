@@ -203,4 +203,23 @@ describe("TokenPermitsContextProvider", () => {
       [USDC, 500n],
     ]);
   });
+
+  it("keeps every permit signed in one flow and passes the requested deadline through", async () => {
+    await setup();
+
+    const usdc = permit(USDC, { deadline: 2n ** 256n - 1n });
+    const weth = permit(WETH, { deadline: 2n ** 256n - 1n, r: `0x${"55".repeat(32)}` });
+    mocks.createAndSignTokenPermit.mockResolvedValueOnce({ permit: usdc }).mockResolvedValueOnce({ permit: weth });
+
+    const { addTokenPermit } = state;
+
+    await act(async () => {
+      await addTokenPermit(USDC, ROUTER, 100n, { deadline: usdc.deadline });
+      await addTokenPermit(WETH, ROUTER, 100n, { deadline: weth.deadline });
+    });
+
+    expect(mocks.createAndSignTokenPermit.mock.calls.map((call) => call[5])).toEqual([usdc.deadline, weth.deadline]);
+    expect(readStoredTokens()).toEqual([USDC, WETH]);
+    expect(state.tokenPermits.map((p) => p.deadline)).toEqual([usdc.deadline, weth.deadline]);
+  });
 });

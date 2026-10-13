@@ -8,8 +8,10 @@ import {
   selectExpressGlobalParams,
   selectGmxAccountGasPaymentToken,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import { selectGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { selectTradeboxIsFromTokenGmxAccount } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useCalcSelector } from "context/SyntheticsStateContext/utils";
+import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import {
   GMX_ACCOUNT_NETWORK_FEE_SOURCE,
   WALLET_NETWORK_FEE_SOURCE,
@@ -21,6 +23,10 @@ import {
   removeSubaccountWalletTxn,
 } from "domain/synthetics/subaccount";
 import type { SignedSubaccountApproval, Subaccount, SubaccountSerializedConfig } from "domain/synthetics/subaccount";
+import {
+  getActivationPermitTokenAddresses,
+  signActivationTokenPermits,
+} from "domain/synthetics/subaccount/activationTokenPermits";
 import { SubaccountRemovalResultUnknownError } from "domain/synthetics/subaccount/errors";
 import { generateSubaccount } from "domain/synthetics/subaccount/generateSubaccount";
 import {
@@ -53,6 +59,8 @@ import { useJsonRpcProvider } from "lib/rpc";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 import { getIsContractAccount } from "lib/wallets/useWalletSessionChains";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
+import { getContract } from "sdk/configs/contracts";
 import { getNativeToken, getToken, isValidTokenSafe } from "sdk/configs/tokens";
 import { ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "sdk/utils/express";
 
@@ -174,6 +182,13 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
   const signer = useEthersSigner();
   const { account } = useWallet();
   const { provider } = useJsonRpcProvider(chainId);
+  const {
+    tokenPermits,
+    accountType: tokenPermitAccountType,
+    getIsPermitAvailable,
+    addTokenPermit,
+    disableTokenPermits,
+  } = useTokenPermitsContext();
 
   const {
     subaccountConfig,
@@ -383,15 +398,11 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         isGmxAccount,
       });
 
-      setSubaccountActivationState(SubaccountActivationState.Success);
-
       setSignedApproval(defaultSubaccountApproval);
 
       if (!config.isNew) {
         setSubaccountConfig({ ...config, isNew: true });
       }
-
-      return true;
     } catch (error) {
       if (isConfigGeneratedInCurrentFlow) {
         resetStoredConfig();
@@ -404,6 +415,39 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       metrics.pushError(error, "subaccount.signDefaultApproval");
       return false;
     }
+
+    // only wallet-funded orders on the settlement chain spend through the Router
+    if (srcChainId === undefined && !isGmxAccount) {
+      try {
+        const spender = getContract(chainId, "SyntheticsRouter");
+
+        const tokenAddresses = await getActivationPermitTokenAddresses({
+          chainId,
+          client: getPublicClientWithRpc(chainId),
+          account: signer.address,
+          spender,
+          gasPaymentTokenAddress: calcSelector(selectGasPaymentTokenAddress),
+          tokenPermits,
+          getIsPermitAvailable,
+        });
+
+        await signActivationTokenPermits({
+          chainId,
+          spender,
+          tokenAddresses,
+          accountType: tokenPermitAccountType,
+          addTokenPermit,
+          disableTokenPermits,
+        });
+      } catch (error) {
+        // One-Click is already active, the tokens just keep the approval flow
+        metrics.pushError(error, "subaccount.activationTokenPermits");
+      }
+    }
+
+    setSubaccountActivationState(SubaccountActivationState.Success);
+
+    return true;
   }, [
     provider,
     signer,
@@ -412,7 +456,13 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     setSubaccountConfig,
     resetStoredConfig,
     chainId,
+    srcChainId,
     setSignedApproval,
+    tokenPermits,
+    tokenPermitAccountType,
+    getIsPermitAvailable,
+    addTokenPermit,
+    disableTokenPermits,
   ]);
 
   const tryDisableSubaccount = useCallback(async (): Promise<boolean> => {
