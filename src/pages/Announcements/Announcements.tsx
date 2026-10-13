@@ -20,6 +20,7 @@ import { DateRangeSelect } from "components/DateRangeSelect/DateRangeSelect";
 import Loader from "components/Loader/Loader";
 import SearchInput from "components/SearchInput/SearchInput";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
+import { useUsdgPoolsAnnouncementEvent } from "components/UsdgPoolsAnnouncement/useUsdgPoolsAnnouncementEvent";
 
 import CalendarIcon from "img/ic_calendar.svg?react";
 import ChainIcon from "img/ic_chain.svg?react";
@@ -51,6 +52,7 @@ export default function AnnouncementsPage() {
   const { id: deepLinkId } = useSearchParams<{ id?: string }>();
   const history = useHistory();
   const { uiFlags, isLoading, error } = useAnnouncementsUiFlags();
+  const usdgPoolsAnnouncementEvent = useUsdgPoolsAnnouncementEvent();
 
   const [tab, setTab] = useState<AnnouncementTab>("all");
   const [search, setSearch] = useState("");
@@ -82,7 +84,8 @@ export default function AnnouncementsPage() {
 
   const allEligible = useMemo<EventData[]>(() => {
     const now = new Date();
-    return appEventsData
+    const events = usdgPoolsAnnouncementEvent ? [usdgPoolsAnnouncementEvent, ...appEventsData] : appEventsData;
+    return events
       .filter((event) => !event.requiresOpenPosition)
       .filter((event) => isEventActiveByFlag(event, uiFlags))
       .filter((event) => hasEventStarted(event, now))
@@ -92,7 +95,7 @@ export default function AnnouncementsPage() {
         if (aTime !== bTime) return bTime - aTime;
         return a.id.localeCompare(b.id);
       });
-  }, [uiFlags]);
+  }, [uiFlags, usdgPoolsAnnouncementEvent]);
 
   const [fromTimestamp, toTimestamp] = useNormalizeDateRange(startDate, endDate);
 
