@@ -8,13 +8,12 @@ import {
   getIsSolanaSearchParam,
   getSettlementChainIdForSelectedChain,
 } from "lib/chains/chainIdSearchParam";
-import { getIsSolanaNetworkSelected, selectSolanaNetwork } from "lib/chains/solana";
 import { extendError } from "lib/errors";
 import { SMART_WALLET_CHAIN_UNAVAILABLE_ERROR } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import useSearchParams from "lib/useSearchParams";
-import { switchNetwork } from "lib/wallets";
+import { selectSolanaNetworkInApp, switchNetwork } from "lib/wallets";
 import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 
 import { getSmartWalletChainUnavailableToastContent } from "components/Errors/errorToasts";
@@ -56,10 +55,7 @@ export function useChainIdSearchParam({
     if (getIsSolanaSearchParam(chainIdParam)) {
       processedChainIdParamRef.current = chainIdParam;
       deleteChainIdParam();
-
-      if (!getIsSolanaNetworkSelected()) {
-        selectSolanaNetwork();
-      }
+      selectSolanaNetworkInApp();
       return;
     }
 

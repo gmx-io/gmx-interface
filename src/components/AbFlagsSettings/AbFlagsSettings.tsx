@@ -2,7 +2,7 @@ import { t, Trans } from "@lingui/macro";
 import { useCallback, useState } from "react";
 
 import { AB_FLAG_NAMES, getAbStorage, setAbFlagEnabled } from "config/ab";
-import { reloadOnSolanaFlagChange } from "lib/chains/solana";
+import { SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
 
 import { ExpandableRow } from "components/ExpandableRow";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
@@ -37,7 +37,12 @@ export function AbFlagSettings() {
               setIsChecked={(checked) => {
                 setAbFlagEnabled(flag, checked);
                 setAbStorage({ ...getAbStorage() });
-                reloadOnSolanaFlagChange(flag);
+                if (
+                  flag === "solanaNetwork" &&
+                  localStorage.getItem(SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY) === "true"
+                ) {
+                  document.location.reload();
+                }
               }}
             >
               {flag}

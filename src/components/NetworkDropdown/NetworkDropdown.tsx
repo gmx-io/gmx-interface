@@ -6,16 +6,16 @@ import { useMemo, useState, type ReactNode } from "react";
 import { useAccount } from "wagmi";
 
 import { getIsSolanaNetworkEnabled } from "config/ab";
+import { isSolanaNetwork } from "config/chains";
 import { getChainIcon } from "config/icons";
 import { isValidVisualSettlementChain, isValidVisualSourceChain } from "config/multichain";
 import type { NetworkOption } from "config/networkOptions";
 import { useChainId } from "lib/chains";
-import { selectSolanaNetwork } from "lib/chains/solana";
 import { extendError } from "lib/errors";
 import { SMART_WALLET_CHAIN_UNAVAILABLE_ERROR } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
-import { switchNetwork } from "lib/wallets";
+import { selectSolanaNetworkInApp, switchNetwork } from "lib/wallets";
 import { useWalletCanSignTypedData, useWalletUnavailableChains } from "lib/wallets/useWalletSessionChains";
 import { getChainName, isContractsChain } from "sdk/configs/chains";
 
@@ -34,7 +34,7 @@ import { GmTradeModal, SolanaNetworkItem } from "./SolanaNetworkItem";
 import "./NetworkDropdown.scss";
 
 function NavIcons({ chainId, open }: { chainId: number; open: boolean }) {
-  const { isSolana } = useChainId();
+  const isSolana = isSolanaNetwork(useChainId().networkId);
   const icon = isSolana ? solanaIcon : getChainIcon(chainId);
   const chainName = isSolana ? t`Solana` : getChainName(chainId);
 
@@ -55,7 +55,7 @@ export default function NetworkDropdown({
   networkOptions: NetworkOption[];
 }) {
   const [isGmTradeModalVisible, setIsGmTradeModalVisible] = useState(false);
-  const { isSolana } = useChainId();
+  const isSolana = isSolanaNetwork(useChainId().networkId);
 
   const handleSolanaSelect = () => {
     if (isSolana) {
@@ -63,7 +63,7 @@ export default function NetworkDropdown({
     }
 
     if (getIsSolanaNetworkEnabled()) {
-      selectSolanaNetwork();
+      selectSolanaNetworkInApp();
       return;
     }
 
@@ -213,8 +213,7 @@ function NetworkMenuItems({
 
 function NetworkMenuItem({ network, chainId }: { network: DisplayNetworkOption; chainId: number }) {
   const { isConnected } = useAccount();
-  const { isSolana } = useChainId();
-  const isSelected = !isSolana && chainId === network.value;
+  const isSelected = !isSolanaNetwork(useChainId().networkId) && chainId === network.value;
   const disabled = Boolean(network.disabledReason);
   const Wrapper = disabled ? TooltipWithPortal : NoopWrapper;
 

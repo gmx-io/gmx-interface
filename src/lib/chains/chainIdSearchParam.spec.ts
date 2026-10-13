@@ -1,6 +1,5 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
-import { setAbFlagEnabled } from "config/ab";
 import {
   ARBITRUM,
   ARBITRUM_SEPOLIA,
@@ -12,27 +11,7 @@ import {
   SOURCE_SEPOLIA,
 } from "config/chains";
 
-import {
-  getChainIdFromSearchParam,
-  getIsSolanaSearchParam,
-  getSettlementChainIdForSelectedChain,
-} from "./chainIdSearchParam";
-
-describe("getIsSolanaSearchParam", () => {
-  afterEach(() => {
-    setAbFlagEnabled("solanaNetwork", false);
-  });
-
-  it("accepts solana only with the flag on", () => {
-    expect(getIsSolanaSearchParam("solana")).toBe(false);
-
-    setAbFlagEnabled("solanaNetwork", true);
-    expect(getIsSolanaSearchParam("solana")).toBe(true);
-    expect(getIsSolanaSearchParam("Solana")).toBe(false);
-    expect(getIsSolanaSearchParam("-501")).toBe(false);
-    expect(getIsSolanaSearchParam(undefined)).toBe(false);
-  });
-});
+import { getChainIdFromSearchParam, getSettlementChainIdForSelectedChain } from "./chainIdSearchParam";
 
 describe("getChainIdFromSearchParam", () => {
   it("accepts every network the homepage links to", () => {

@@ -3,7 +3,7 @@ import { Suspense, lazy, useEffect } from "react";
 import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 import type { Address } from "viem";
 
-import { ContractsChainId } from "config/chains";
+import { ContractsChainId, isSolanaNetwork } from "config/chains";
 import { isDevelopment } from "config/env";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useChainId } from "lib/chains";
@@ -102,6 +102,10 @@ function SolanaRoutes() {
       <Route exact path="/trade/:tradeType?">
         <SolanaTradePlaceholder />
       </Route>
+      <RedirectWithQuery from="/v2" to="/trade" />
+      <Route exact path="/v1">
+        <RedirectWithQuery to="/trade" />
+      </Route>
       <Route path="*">
         <EvmNetworksOnlyNotice />
       </Route>
@@ -110,7 +114,7 @@ function SolanaRoutes() {
 }
 
 export function MainRoutes({ openSettings }: { openSettings: () => void }) {
-  const { chainId, isSolana } = useChainId();
+  const { chainId, networkId } = useChainId();
 
   const { pathname } = useLocation();
 
@@ -119,7 +123,7 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  if (isSolana) {
+  if (isSolanaNetwork(networkId)) {
     return <SolanaRoutes />;
   }
 

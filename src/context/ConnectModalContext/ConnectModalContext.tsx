@@ -1,14 +1,14 @@
 import { useConnectOrCreateWallet, useConnectWallet, useModalStatus, usePrivy } from "@privy-io/react-auth";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
-import type { SettlementChainId } from "config/chains";
+import { type SettlementChainId, isSolanaNetwork } from "config/chains";
 import {
   SELECTED_NETWORK_LOCAL_STORAGE_KEY,
   SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY,
 } from "config/localStorage";
 import { isSourceChain } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
-import { getIsSolanaNetworkSelected } from "lib/chains/solana";
+import { useChainId } from "lib/chains";
 import { metrics } from "lib/metrics";
 import { useBlockAutoReload } from "lib/pwa/blockAutoReload";
 import { switchNetwork } from "lib/wallets";
@@ -34,6 +34,7 @@ function shouldKeepAppSelectedSourceChain(settlementChainId: SettlementChainId) 
 
 export function ConnectModalProvider({ children }: { children: ReactNode }) {
   const [settlementChainId] = useGmxAccountSettlementChainId();
+  const { networkId } = useChainId();
   const [connectModalOpen, setConnectModalOpen] = useState(false);
   const connectRequestInFlightRef = useRef(false);
   const { isOpen: privyModalOpen } = useModalStatus();
@@ -47,15 +48,14 @@ export function ConnectModalProvider({ children }: { children: ReactNode }) {
 
     // @privy-io/wagmi already handles this callback by setting recentConnectorId
     // and reconnecting wagmi. Calling setActiveWallet here can re-enter wagmi connect.
-    // An EVM wallet connected while Solana is selected must not switch the app away from Solana
-    if (getIsSolanaNetworkSelected() || shouldKeepAppSelectedSourceChain(settlementChainId)) {
+    if (isSolanaNetwork(networkId) || shouldKeepAppSelectedSourceChain(settlementChainId)) {
       return;
     }
 
     void switchNetwork(settlementChainId, true).catch((error) => {
       metrics.pushError(error, "connectModal.switchNetwork");
     });
-  }, [settlementChainId]);
+  }, [networkId, settlementChainId]);
 
   const { connectOrCreateWallet } = useConnectOrCreateWallet({
     onSuccess: handleSuccess,
