@@ -69,13 +69,10 @@ export function resolveGasPaymentTokenAddress({
       return gasPaymentTokenAddress;
     }
 
+    // the order amount is left out on purpose: Max holds the fee back from the pay token, so an amount-based
+    // check would flip back to the saved token right when Max is filled with the whole balance
     const payTokenFeeAmount = getFeeTokenAmount(feeUsdByToken[payTokenAddress], payToken);
-    // the order and the fee both come out of the pay token; when they don't fit, Express would quietly
-    // fall back to a Classic transaction paid in ETH, so the saved gas payment token stays instead
-    const payTokenRequiredAmount =
-      (payAmounts[payTokenAddress] ?? 0n) +
-      (payTokenFeeAmount !== undefined ? applyMinimalBuffer(payTokenFeeAmount) : 0n);
-    if (payTokenRequiredAmount > payTokenBalance) {
+    if (payTokenFeeAmount !== undefined && applyMinimalBuffer(payTokenFeeAmount) > payTokenBalance) {
       return gasPaymentTokenAddress;
     }
 

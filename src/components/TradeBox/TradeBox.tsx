@@ -1413,6 +1413,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
           gasPaymentParams={getNetworkFeeGasPaymentParams({
             expressParams: submitButtonState.expressParams,
             tokensData,
+            canFallBackToClassic: !submitButtonState.isFeeInPayToken,
           })}
           totalExecutionFee={submitButtonState.totalExecutionFee}
           feeSource={getNetworkFeeSource({ isGmxAccount: isFromTokenGmxAccount })}
