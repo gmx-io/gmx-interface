@@ -1,3 +1,4 @@
+import { getIsSolanaNetworkEnabled } from "config/ab";
 import {
   type AnyChainId,
   type ContractsChainId,
@@ -7,6 +8,13 @@ import {
   DEFAULT_SETTLEMENT_CHAIN_ID_MAP,
 } from "config/chains";
 import { MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING } from "config/multichain";
+
+const SOLANA_SEARCH_PARAM = "solana";
+
+/** `?chainId=solana` selects Solana only with the flag on; otherwise it is an unknown value. */
+export function getIsSolanaSearchParam(value: string | undefined): boolean {
+  return value === SOLANA_SEARCH_PARAM && getIsSolanaNetworkEnabled();
+}
 
 export function getChainIdFromSearchParam(value: string | undefined): AnyChainId | undefined {
   const chainId = Number(value);

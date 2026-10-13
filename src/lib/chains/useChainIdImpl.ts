@@ -18,6 +18,7 @@ import {
 } from "config/localStorage";
 import { isSettlementChain, isSourceChain } from "config/multichain";
 import { areChainsRelated } from "domain/multichain/areChainsRelated";
+import { fallBackFromDisabledSolanaNetwork, getIsSolanaNetworkSelected } from "lib/chains/solana";
 import { useLatestValueRef } from "lib/useLatestValueRef";
 import { getWagmiConfig } from "lib/wallets/walletConfig";
 
@@ -98,6 +99,11 @@ function applyWalletNetworkSelection(
   prevAccount: WalletAccountSnapshot,
   settlementChainId: SettlementChainId
 ) {
+  // An EVM wallet stays connected while Solana is selected; its chain must not replace the selection
+  if (getIsSolanaNetworkSelected()) {
+    return;
+  }
+
   const selection = getWalletNetworkSelection({ account, prevAccount, settlementChainId });
 
   if (!selection) {
@@ -126,14 +132,23 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
    */
   srcChainId?: SourceChainId;
   isSolanaNetworkSelected?: boolean;
+  /**
+   * SOLANA_NETWORK_ID is selected; `chainId` then stays the default EVM chain
+   */
+  isSolana: boolean;
 } {
   const { chainId: connectedChainId, isConnected } = useAccount();
   const [, rerenderOnNetworkChange] = useReducer((value: number) => value + 1, 0);
+
+  // Runs before the stored network is read, so a wallet on another chain cannot keep the Solana selection stored
+  fallBackFromDisabledSolanaNetwork();
 
   const rawChainIdFromLocalStorage = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
   const chainIdFromLocalStorage = rawChainIdFromLocalStorage ? parseInt(rawChainIdFromLocalStorage) : undefined;
   const selectedNetworkWasAppSelected =
     localStorage.getItem(SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY) === "true";
+
+  const isSolana = getIsSolanaNetworkSelected();
 
   const srcChainId = getSelectedSourceChainId({
     chainIdFromLocalStorage,
@@ -220,19 +235,23 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
     getIsSolanaNetworkEnabled() && localStorage.getItem(SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY) === "true";
 
   if (isSolanaNetworkSelected) {
-    return { chainId: INITIAL_CHAIN_ID, isSolanaNetworkSelected };
+    return { chainId: INITIAL_CHAIN_ID, isSolanaNetworkSelected, isSolana };
+  }
+
+  if (isSolana) {
+    return { chainId: INITIAL_CHAIN_ID, isConnectedToChainId: false, srcChainId: undefined, isSolana };
   }
 
   if (mustChangeChainId) {
     if (isLocalStorageChainSupported) {
-      return { chainId: chainIdFromLocalStorage as SettlementChainId, srcChainId };
+      return { chainId: chainIdFromLocalStorage as SettlementChainId, srcChainId, isSolana };
     }
 
     if (isLocalStorageChainSource) {
-      return { chainId: settlementChainId, srcChainId };
+      return { chainId: settlementChainId, srcChainId, isSolana };
     }
 
-    return { chainId: INITIAL_CHAIN_ID, srcChainId };
+    return { chainId: INITIAL_CHAIN_ID, srcChainId, isSolana };
   }
 
   if (isCurrentChainSupported) {
@@ -240,6 +259,7 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
       chainId: connectedChainId as ContractsChainId,
       isConnectedToChainId: isConnected,
       srcChainId,
+      isSolana,
     };
   }
 
@@ -248,8 +268,9 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
       chainId: settlementChainId as SettlementChainId,
       isConnectedToChainId: true,
       srcChainId,
+      isSolana,
     };
   }
 
-  return { chainId: INITIAL_CHAIN_ID, isConnectedToChainId: false, srcChainId };
+  return { chainId: INITIAL_CHAIN_ID, isConnectedToChainId: false, srcChainId, isSolana };
 }

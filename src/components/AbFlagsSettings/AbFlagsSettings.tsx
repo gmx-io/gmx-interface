@@ -2,6 +2,7 @@ import { t, Trans } from "@lingui/macro";
 import { useCallback, useState } from "react";
 
 import { AB_FLAG_NAMES, getAbStorage, setAbFlagEnabled } from "config/ab";
+import { reloadOnSolanaFlagChange } from "lib/chains/solana";
 
 import { ExpandableRow } from "components/ExpandableRow";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
@@ -36,6 +37,7 @@ export function AbFlagSettings() {
               setIsChecked={(checked) => {
                 setAbFlagEnabled(flag, checked);
                 setAbStorage({ ...getAbStorage() });
+                reloadOnSolanaFlagChange(flag);
               }}
             >
               {flag}

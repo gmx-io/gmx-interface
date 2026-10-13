@@ -21,6 +21,10 @@ type ChainContext = {
    */
   srcChainId: SourceChainId | undefined;
   isConnectedToChainId: boolean | undefined;
+  /**
+   * SOLANA_NETWORK_ID is selected; `chainId` then stays the default EVM chain
+   */
+  isSolana: boolean;
 };
 
 const initialChainId: ContractsChainId = DEFAULT_SETTLEMENT_CHAIN_ID;
@@ -31,12 +35,13 @@ const context = createContext<ChainContext>({
   networkId: initialChainId,
   srcChainId: isSourceChain(realChainId, initialChainId) ? realChainId : undefined,
   isConnectedToChainId: false,
+  isSolana: false,
 });
 
 export function ChainContextProvider({ children }: PropsWithChildren) {
   const [gmxAccountSettlementChainId, setGmxAccountSettlementChainId] = useGmxAccountSettlementChainId();
 
-  const { chainId, srcChainId, isConnectedToChainId, isSolanaNetworkSelected } =
+  const { chainId, srcChainId, isConnectedToChainId, isSolanaNetworkSelected, isSolana } =
     useChainIdImpl(gmxAccountSettlementChainId);
   const networkId: NetworkId = isSolanaNetworkSelected ? SOLANA_NETWORK_ID : chainId;
 
@@ -63,8 +68,9 @@ export function ChainContextProvider({ children }: PropsWithChildren) {
       networkId,
       srcChainId,
       isConnectedToChainId,
+      isSolana,
     }),
-    [chainId, networkId, srcChainId, isConnectedToChainId]
+    [chainId, networkId, srcChainId, isConnectedToChainId, isSolana]
   );
 
   return <context.Provider value={value}>{children}</context.Provider>;

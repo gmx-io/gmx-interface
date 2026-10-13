@@ -8,6 +8,7 @@ import {
 } from "config/localStorage";
 import { isSourceChain } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
+import { getIsSolanaNetworkSelected } from "lib/chains/solana";
 import { metrics } from "lib/metrics";
 import { useBlockAutoReload } from "lib/pwa/blockAutoReload";
 import { switchNetwork } from "lib/wallets";
@@ -46,7 +47,8 @@ export function ConnectModalProvider({ children }: { children: ReactNode }) {
 
     // @privy-io/wagmi already handles this callback by setting recentConnectorId
     // and reconnecting wagmi. Calling setActiveWallet here can re-enter wagmi connect.
-    if (shouldKeepAppSelectedSourceChain(settlementChainId)) {
+    // An EVM wallet connected while Solana is selected must not switch the app away from Solana
+    if (getIsSolanaNetworkSelected() || shouldKeepAppSelectedSourceChain(settlementChainId)) {
       return;
     }
 

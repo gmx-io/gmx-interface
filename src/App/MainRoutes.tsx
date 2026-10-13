@@ -30,6 +30,7 @@ import { PoolsDetails } from "pages/PoolsDetails/PoolsDetails";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 import { ReferralsRouter } from "pages/Referrals/ReferralsRouter";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
+import { SolanaTradePlaceholder, EvmNetworksOnlyNotice } from "pages/SolanaNetwork/SolanaNetwork";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 
@@ -92,8 +93,24 @@ const DecodeErrorPage = () => (
   </Suspense>
 );
 
+function SolanaRoutes() {
+  return (
+    <Switch>
+      <Route exact path="/">
+        <RedirectWithQuery to="/trade" />
+      </Route>
+      <Route exact path="/trade/:tradeType?">
+        <SolanaTradePlaceholder />
+      </Route>
+      <Route path="*">
+        <EvmNetworksOnlyNotice />
+      </Route>
+    </Switch>
+  );
+}
+
 export function MainRoutes({ openSettings }: { openSettings: () => void }) {
-  const { chainId } = useChainId();
+  const { chainId, isSolana } = useChainId();
 
   const { pathname } = useLocation();
 
@@ -101,6 +118,10 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
+
+  if (isSolana) {
+    return <SolanaRoutes />;
+  }
 
   return (
     <Switch>
