@@ -148,7 +148,15 @@ describe("partial TP/SL that would leave the position above max leverage at its 
       },
       { type: "sl", triggerOffsetBps: 25, closePercent: 50, keepLeverage: false, warning: false },
       { type: "sl", triggerOffsetBps: 25, closePercent: 100, keepLeverage: true, warning: false },
-      // beyond the liquidation price only the existing warnings show
+      // at or beyond the liquidation price only the existing warnings show
+      {
+        type: "sl",
+        triggerOffsetBps: 0,
+        closePercent: 50,
+        keepLeverage: true,
+        warning: false,
+        ordersTabKeys: ["triggerPrice"],
+      },
       {
         type: "sl",
         triggerOffsetBps: -10,
