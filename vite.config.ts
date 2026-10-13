@@ -4,6 +4,7 @@ import { lingui } from "@lingui/vite-plugin";
 import react from "@vitejs/plugin-react";
 import { execFileSync } from "node:child_process";
 import path from "path";
+import type { ModuleInfo, OutputBundle, OutputChunk } from "rollup";
 import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig, loadEnv, type ConfigEnv, type Plugin, type PluginOption, type UserConfig } from "vite";
 import { analyzer } from "vite-bundle-analyzer";
@@ -207,93 +208,126 @@ function sdkDedupe(): PluginOption {
   };
 }
 
-function solanaBuildIsolation(): Plugin {
+function isSolanaModule(id: string) {
   const srcDir = `${normalizePath(APP_SRC_DIR)}/`;
-  const bootstrapId = `${srcDir}App/bootstrap.tsx`;
-  const isSolanaModule = (id: string) => {
-    const normalizedId = normalizePath(id).split("?")[0];
-    return ["lib/solana", "domain/gmsol"].some(
-      (folder) => normalizedId.startsWith(`${srcDir}${folder}/`) || normalizedId === `${srcDir}${folder}`
-    );
-  };
-  const isSolanaPackage = (source: string) =>
+  const normalizedId = normalizePath(id).split("?")[0];
+  return ["lib/solana", "domain/gmsol"].some(
+    (folder) => normalizedId.startsWith(`${srcDir}${folder}/`) || normalizedId === `${srcDir}${folder}`
+  );
+}
+
+function isSolanaPackage(source: string) {
+  return (
     /^@(solana|solana-program|gmsol-labs)\//.test(source) ||
     source === "@privy-io/react-auth/solana" ||
-    source.startsWith("@privy-io/react-auth/solana/");
-  const isWasm = (id: string) => /\.wasm(?:\?|$)/.test(id);
+    source.startsWith("@privy-io/react-auth/solana/")
+  );
+}
 
+function isPrivySolanaModule(id: string) {
+  return normalizePath(id).includes("/@privy-io/react-auth/dist/esm/solana.mjs");
+}
+
+function isWasm(id: string) {
+  return /\.wasm(?:\?|$)/.test(id);
+}
+
+function findSolanaStaticImport(moduleInfo: ModuleInfo) {
+  const srcDir = `${normalizePath(APP_SRC_DIR)}/`;
+  if (!normalizePath(moduleInfo.id).startsWith(srcDir) || isSolanaModule(moduleInfo.id)) {
+    return undefined;
+  }
+
+  // Check package specifiers before resolved IDs, which may point to aliases or virtual stubs.
+  for (const statement of moduleInfo.ast!.body) {
+    if (
+      (statement.type === "ImportDeclaration" ||
+        statement.type === "ExportNamedDeclaration" ||
+        statement.type === "ExportAllDeclaration") &&
+      statement.source &&
+      isSolanaPackage(String(statement.source.value))
+    ) {
+      return String(statement.source.value);
+    }
+  }
+
+  return moduleInfo.importedIds.find(
+    (id) =>
+      isSolanaModule(id) ||
+      id === SOLANA_SYSTEM_STUB_ID ||
+      getPackageNames(normalizePath(id)).some((packageName) => isSolanaPackage(`${packageName}/`)) ||
+      isPrivySolanaModule(id)
+  );
+}
+
+function* getStartupChunks(bundle: OutputBundle) {
+  const bootstrapId = `${normalizePath(APP_SRC_DIR)}/App/bootstrap.tsx`;
+  // bootstrap is dynamically imported but always runs at startup, so it is also a root.
+  const pending = Object.values(bundle)
+    .filter(
+      (output) =>
+        output.type === "chunk" &&
+        (output.isEntry || Object.keys(output.modules).some((id) => normalizePath(id) === bootstrapId))
+    )
+    .map((output) => output.fileName);
+  const visited = new Set<string>();
+
+  while (pending.length) {
+    const fileName = pending.pop()!;
+    if (visited.has(fileName)) {
+      continue;
+    }
+    visited.add(fileName);
+
+    const chunk = bundle[fileName];
+    if (!chunk || chunk.type !== "chunk") {
+      continue;
+    }
+
+    yield chunk;
+    // Follow static dependencies only; feature-gated lazy chunks may contain Solana code.
+    pending.push(...chunk.imports);
+  }
+}
+
+function getStartupChunkViolation(chunk: OutputChunk) {
+  for (const id of Object.keys(chunk.modules)) {
+    // Privy's root entry already includes ordinary @solana/* dependencies in the EVM bundle.
+    if (
+      isSolanaModule(id) ||
+      getPackageNames(normalizePath(id)).includes("@gmsol-labs/gmsol-sdk") ||
+      isPrivySolanaModule(id) ||
+      isWasm(id)
+    ) {
+      return `Solana module in startup chunk ${chunk.fileName}: ${id}`;
+    }
+  }
+
+  for (const asset of [...chunk.referencedFiles, ...(chunk.viteMetadata?.importedAssets ?? [])]) {
+    if (isWasm(asset)) {
+      return `WebAssembly asset in startup chunk ${chunk.fileName}: ${asset}`;
+    }
+  }
+
+  return undefined;
+}
+
+function solanaBuildIsolation(): Plugin {
   return {
     name: "gmx-solana-build-isolation",
     apply: "build",
     moduleParsed(moduleInfo) {
-      if (!normalizePath(moduleInfo.id).startsWith(srcDir) || isSolanaModule(moduleInfo.id)) {
-        return;
-      }
-
-      for (const statement of moduleInfo.ast.body) {
-        if (
-          (statement.type === "ImportDeclaration" ||
-            statement.type === "ExportNamedDeclaration" ||
-            statement.type === "ExportAllDeclaration") &&
-          statement.source &&
-          isSolanaPackage(String(statement.source.value))
-        ) {
-          this.error(`Solana static import is not allowed: ${moduleInfo.id} -> ${statement.source.value}`);
-        }
-      }
-
-      for (const importedId of moduleInfo.importedIds) {
-        if (
-          isSolanaModule(importedId) ||
-          importedId === SOLANA_SYSTEM_STUB_ID ||
-          getPackageNames(normalizePath(importedId)).some((packageName) => isSolanaPackage(`${packageName}/`)) ||
-          normalizePath(importedId).includes("/@privy-io/react-auth/dist/esm/solana.mjs")
-        ) {
-          this.error(`Solana static import is not allowed: ${moduleInfo.id} -> ${importedId}`);
-        }
+      const importedId = findSolanaStaticImport(moduleInfo);
+      if (importedId !== undefined) {
+        this.error(`Solana static import is not allowed: ${moduleInfo.id} -> ${importedId}`);
       }
     },
     generateBundle(_, bundle) {
-      const pending = Object.values(bundle)
-        .filter(
-          (output) =>
-            output.type === "chunk" &&
-            (output.isEntry || Object.keys(output.modules).some((id) => normalizePath(id) === bootstrapId))
-        )
-        .map((output) => output.fileName);
-      const visited = new Set<string>();
-
-      while (pending.length) {
-        const fileName = pending.pop()!;
-        if (visited.has(fileName)) {
-          continue;
+      for (const chunk of getStartupChunks(bundle)) {
+        const violation = getStartupChunkViolation(chunk);
+        if (violation) {
+          this.error(violation);
         }
-        visited.add(fileName);
-
-        const chunk = bundle[fileName];
-        if (!chunk || chunk.type !== "chunk") {
-          continue;
-        }
-
-        for (const id of Object.keys(chunk.modules)) {
-          const normalizedId = normalizePath(id);
-          if (
-            isSolanaModule(id) ||
-            getPackageNames(normalizedId).includes("@gmsol-labs/gmsol-sdk") ||
-            normalizedId.includes("/@privy-io/react-auth/dist/esm/solana.mjs") ||
-            isWasm(id)
-          ) {
-            this.error(`Solana module in startup chunk ${fileName}: ${id}`);
-          }
-        }
-
-        for (const asset of [...chunk.referencedFiles, ...(chunk.viteMetadata?.importedAssets ?? [])]) {
-          if (isWasm(asset)) {
-            this.error(`WebAssembly asset in startup chunk ${fileName}: ${asset}`);
-          }
-        }
-
-        pending.push(...chunk.imports);
       }
     },
   };
