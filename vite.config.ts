@@ -455,6 +455,9 @@ export function createViteConfig(
       },
     },
     build: {
+      minify: "esbuild",
+      target: ["es2020", "edge88", "firefox78", "chrome87", "safari14"],
+      cssTarget: ["es2020", "edge88", "firefox78", "chrome87", "safari14"],
       assetsInlineLimit: 0,
       outDir: "build",
       sourcemap: true,
