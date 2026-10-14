@@ -1,21 +1,30 @@
 name: PR e2e
 
+run-name: "E2E for PR #${{ github.event.pull_request.number || inputs.pr_number }}"
+
 # Non-funded Playwright suites against the PR's Cloudflare previews. Funded checks stay in release-regression.yml.
+# Runs on request only, so concurrent PR pushes don't queue full suites: add the run-e2e label or dispatch it.
 on:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "Open PR number; waits up to 30 minutes for its current app and landing previews"
+        type: string
+        required: true
 
 permissions:
   contents: read
 
 concurrency:
-  group: pr-e2e-${{ github.event.pull_request.number }}
+  group: pr-e2e-${{ github.event.pull_request.number || inputs.pr_number }}-${{ github.event.label.name || 'dispatch' }}
   cancel-in-progress: true
 
 jobs:
   resolve-preview:
     name: Wait for PR previews
-    if: ${{ !github.event.pull_request.draft }}
+    if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'run-e2e'
     runs-on: ubuntu-latest
     # Up to 30 minutes for the app preview, then up to 10 more for the landing preview.
     timeout-minutes: 45
@@ -28,6 +37,7 @@ jobs:
       landing_url: ${{ steps.preview.outputs.landing_url }}
       head_sha: ${{ steps.preview.outputs.head_sha }}
       check_url: ${{ steps.preview.outputs.check_url }}
+      pr_number: ${{ steps.preview.outputs.pr_number }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -36,7 +46,7 @@ jobs:
         id: preview
         uses: actions/github-script@v7
         env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr_number }}
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         with:
           script: |
@@ -44,7 +54,7 @@ jobs:
             const options = { github, repository: context.repo, prNumber: process.env.PR_NUMBER, maxAttempts: 121 };
             const preview = await resolvePreview({
               ...options,
-              expectedHeadSha: process.env.PR_HEAD_SHA,
+              expectedHeadSha: process.env.PR_HEAD_SHA || undefined,
               onWait: ({ attempt }) => core.info(`Waiting for the app preview (${attempt}/120)...`),
             });
             const landing = await resolvePreview({
@@ -58,6 +68,7 @@ jobs:
             core.setOutput('landing_url', landing.url);
             core.setOutput('head_sha', preview.headSha);
             core.setOutput('check_url', preview.checkUrl);
+            core.setOutput('pr_number', preview.prNumber);
 
   e2e:
     # Arbitrum runs in full; the avalanche projects add the small set of tests tagged @avalanche.
@@ -73,7 +84,7 @@ jobs:
       REGRESSION_BASE_URL: ${{ needs.resolve-preview.outputs.preview_url }}
       REGRESSION_LANDING_URL: ${{ needs.resolve-preview.outputs.landing_url }}
       REGRESSION_CHAIN_ID: 42161
-      REGRESSION_PR_NUMBER: ${{ github.event.pull_request.number }}
+      REGRESSION_PR_NUMBER: ${{ needs.resolve-preview.outputs.pr_number }}
       REGRESSION_DEPLOYMENT_SHA: ${{ needs.resolve-preview.outputs.head_sha }}
       REGRESSION_DEPLOYMENT_CHECK_URL: ${{ needs.resolve-preview.outputs.check_url }}
       REGRESSION_CANDIDATE_ROOT: ${{ github.workspace }}/.context/regression-candidate
@@ -169,19 +180,19 @@ jobs:
       - name: Upload merged reports
         uses: actions/upload-artifact@v4
         with:
-          name: e2e-report-pr-${{ github.event.pull_request.number }}-${{ github.run_id }}
+          name: e2e-report-pr-${{ needs.resolve-preview.outputs.pr_number }}-${{ github.run_id }}
           path: merged/
           retention-days: 14
       - name: List changed files
         env:
           GH_TOKEN: ${{ github.token }}
         # The files API lists names without the diff, which GitHub refuses past 20,000 lines.
-        run: gh api --paginate "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --jq '.[].filename' > changed-files.txt || true
+        run: gh api --paginate "repos/${{ github.repository }}/pulls/${{ needs.resolve-preview.outputs.pr_number }}/files" --jq '.[].filename' > changed-files.txt || true
       - name: Write report comment
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           OPENROUTER_MODEL: ${{ vars.OPENROUTER_MODEL }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_NUMBER: ${{ needs.resolve-preview.outputs.pr_number }}
           HEAD_SHA: ${{ needs.resolve-preview.outputs.head_sha }}
           PREVIEW_URL: ${{ needs.resolve-preview.outputs.preview_url }}
           LANDING_URL: ${{ needs.resolve-preview.outputs.landing_url }}
@@ -194,13 +205,15 @@ jobs:
           cat regression-comment.md >> "$GITHUB_STEP_SUMMARY"
       - name: Post or update the PR comment
         # Fork PRs get a read-only token; their summary stays in the job summary.
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
         uses: actions/github-script@v7
+        env:
+          PR_NUMBER: ${{ needs.resolve-preview.outputs.pr_number }}
         with:
           script: |
             const body = require('fs').readFileSync('regression-comment.md', 'utf8');
             const marker = '<!-- regression-ai-report -->';
-            const issue = { ...context.repo, issue_number: context.payload.pull_request.number };
+            const issue = { ...context.repo, issue_number: Number(process.env.PR_NUMBER) };
             const comments = await github.paginate(github.rest.issues.listComments, issue);
             const previous = comments.find((comment) => comment.user?.type === 'Bot' && comment.body?.startsWith(marker));
             if (previous) await github.rest.issues.updateComment({ ...context.repo, comment_id: previous.id, body });
