@@ -132,10 +132,8 @@ export async function getIsSubaccountRemovalRequired({
   subaccount: Subaccount;
   account: string;
 }): Promise<boolean> {
-  if (subaccount.onchainData.active) {
-    return true;
-  }
-
+  // read even when the cached flag is active: right after a removal with an unknown result it can be stale,
+  // and a retry would send a transaction that removes nothing
   const freshOnchainActive = await getIsSubaccountActiveOnchain({
     chainId,
     account,

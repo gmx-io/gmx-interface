@@ -197,7 +197,9 @@ describe("getIsSubaccountRemovalRequired", () => {
     vi.clearAllMocks();
   });
 
-  it("keeps the removal without an on-chain read when the cached data says the subaccount is registered", async () => {
+  it("keeps the removal while the subaccount is still registered on-chain", async () => {
+    mocks.readContract.mockResolvedValue(true);
+
     await expect(
       getIsSubaccountRemovalRequired({
         chainId: CHAIN_ID,
@@ -205,8 +207,18 @@ describe("getIsSubaccountRemovalRequired", () => {
         account: ACCOUNT,
       })
     ).resolves.toBe(true);
+  });
 
-    expect(mocks.readContract).not.toHaveBeenCalled();
+  it("needs no transaction once a removal landed although the cached data still says registered", async () => {
+    mocks.readContract.mockResolvedValue(false);
+
+    await expect(
+      getIsSubaccountRemovalRequired({
+        chainId: CHAIN_ID,
+        subaccount: makeSubaccount(true),
+        account: ACCOUNT,
+      })
+    ).resolves.toBe(false);
   });
 
   it("needs no transaction when One-Click is only enabled by a local approval", async () => {
