@@ -150,27 +150,26 @@ async function expectRowMatchesChain(
   });
 }
 
-test("9.01 22.09 live orders: every pending order is listed with its type, market, side and trigger price, also after refresh", async ({
-  page,
-  liveAccount,
-  liveAccounts,
-  liveWallet,
-}, testInfo) => {
-  await liveWallet.connect(page);
-  await openOrders(page);
-  const row = page.getByTestId(`order-${liveAccount.key}`);
-  await expect(row).toContainText("Limit", { timeout: 45_000 });
-  await expect(row).toContainText(formatUsd(liveAccount.order!.sizeDeltaUsd)!);
-  const before = await expectAllOrders(page, liveAccounts, liveAccount.account);
-  await page.reload({ waitUntil: "domcontentloaded" });
-  await expect(page.getByTestId("user-address")).toBeVisible({ timeout: 45_000 });
-  await expect(row).toContainText(formatUsd(liveAccount.order!.sizeDeltaUsd)!, { timeout: 45_000 });
-  const after = await expectAllOrders(page, liveAccounts, liveAccount.account);
-  await testInfo.attach("live-orders-listed", {
-    body: JSON.stringify({ before, after }),
-    contentType: "application/json",
-  });
-});
+test(
+  "9.01 22.09 live orders: every pending order is listed with its type, market, side and trigger price, also after refresh",
+  { tag: "@avalanche" },
+  async ({ page, liveAccount, liveAccounts, liveWallet }, testInfo) => {
+    await liveWallet.connect(page);
+    await openOrders(page);
+    const row = page.getByTestId(`order-${liveAccount.key}`);
+    await expect(row).toContainText("Limit", { timeout: 45_000 });
+    await expect(row).toContainText(formatUsd(liveAccount.order!.sizeDeltaUsd)!);
+    const before = await expectAllOrders(page, liveAccounts, liveAccount.account);
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await expect(page.getByTestId("user-address")).toBeVisible({ timeout: 45_000 });
+    await expect(row).toContainText(formatUsd(liveAccount.order!.sizeDeltaUsd)!, { timeout: 45_000 });
+    const after = await expectAllOrders(page, liveAccounts, liveAccount.account);
+    await testInfo.attach("live-orders-listed", {
+      body: JSON.stringify({ before, after }),
+      contentType: "application/json",
+    });
+  }
+);
 
 test("live limit order: editor loads the real size and dismissing changes leaves it intact", async ({
   page,

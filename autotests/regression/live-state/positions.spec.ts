@@ -83,56 +83,56 @@ test("8.05 live position: displayed unrealized PnL agrees with size times the si
   await testInfo.attach("live-pnl-calculation", { body: JSON.stringify(evidence), contentType: "application/json" });
 });
 
-test("8.01 22.15 live position: every open position is listed and market, side, size and entry survive refresh", async ({
-  page,
-  liveAccount,
-  liveWallet,
-}, testInfo) => {
-  const snapshots = recordPositions(page, liveAccount.account);
-  const p = liveAccount.position!;
-  const cells = positionRow(page, liveAccount).getByRole("cell");
-  const tab = page.getByTestId("exchange-list-tabs").getByRole("button", { name: /^Positions/ });
-  // Every position in the latest response has a row, and the tab count and row count agree with it.
-  const expectAllListed = () =>
-    expect
-      .poll(
-        async () => {
-          const latest = snapshots.at(-1);
-          if (!latest) return "waiting for a positions response";
-          const rows = await page.locator('[data-qa^="position-item-"]').count();
-          const missing: string[] = [];
-          for (const position of latest)
-            if (!(await positionRow(page, { position }).count())) missing.push(position.contractKey);
-          const count = Number(/\d+/.exec((await tab.textContent()) ?? "")?.[0]);
-          return rows === latest.length && count === latest.length && !missing.length
-            ? true
-            : { rows, count, positions: latest.length, missing };
-        },
-        { timeout: 45_000 }
-      )
-      .toBe(true);
-  await liveWallet.connect(page);
-  await expect(cells.first()).toContainText(p.indexName, { timeout: 45_000 });
-  await expect(cells.first()).toContainText(p.isLong ? "Long" : "Short");
-  await expect(cells.nth(1)).toContainText(formatUsd(p.sizeInUsd)!);
-  await expect(cells.nth(4)).toContainText("$");
-  await expectAllListed();
-  const before = {
-    size: text(await cells.nth(1).locator(".numbers").first().textContent()),
-    entry: text(await cells.nth(4).textContent()),
-  };
-  await page.reload({ waitUntil: "domcontentloaded" });
-  await expect(page.getByTestId("user-address")).toBeVisible({ timeout: 45_000 });
-  await expect(cells.first()).toContainText(p.indexName, { timeout: 45_000 });
-  await expect(cells.first()).toContainText(p.isLong ? "Long" : "Short");
-  await expect.poll(async () => text(await cells.nth(1).locator(".numbers").first().textContent())).toBe(before.size);
-  await expect.poll(async () => text(await cells.nth(4).textContent())).toBe(before.entry);
-  await expectAllListed();
-  await testInfo.attach("live-positions-refresh", {
-    body: JSON.stringify({ before, positions: snapshots.at(-1)?.length }),
-    contentType: "application/json",
-  });
-});
+test(
+  "8.01 22.15 live position: every open position is listed and market, side, size and entry survive refresh",
+  { tag: "@avalanche" },
+  async ({ page, liveAccount, liveWallet }, testInfo) => {
+    const snapshots = recordPositions(page, liveAccount.account);
+    const p = liveAccount.position!;
+    const cells = positionRow(page, liveAccount).getByRole("cell");
+    const tab = page.getByTestId("exchange-list-tabs").getByRole("button", { name: /^Positions/ });
+    // Every position in the latest response has a row, and the tab count and row count agree with it.
+    const expectAllListed = () =>
+      expect
+        .poll(
+          async () => {
+            const latest = snapshots.at(-1);
+            if (!latest) return "waiting for a positions response";
+            const rows = await page.locator('[data-qa^="position-item-"]').count();
+            const missing: string[] = [];
+            for (const position of latest)
+              if (!(await positionRow(page, { position }).count())) missing.push(position.contractKey);
+            const count = Number(/\d+/.exec((await tab.textContent()) ?? "")?.[0]);
+            return rows === latest.length && count === latest.length && !missing.length
+              ? true
+              : { rows, count, positions: latest.length, missing };
+          },
+          { timeout: 45_000 }
+        )
+        .toBe(true);
+    await liveWallet.connect(page);
+    await expect(cells.first()).toContainText(p.indexName, { timeout: 45_000 });
+    await expect(cells.first()).toContainText(p.isLong ? "Long" : "Short");
+    await expect(cells.nth(1)).toContainText(formatUsd(p.sizeInUsd)!);
+    await expect(cells.nth(4)).toContainText("$");
+    await expectAllListed();
+    const before = {
+      size: text(await cells.nth(1).locator(".numbers").first().textContent()),
+      entry: text(await cells.nth(4).textContent()),
+    };
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await expect(page.getByTestId("user-address")).toBeVisible({ timeout: 45_000 });
+    await expect(cells.first()).toContainText(p.indexName, { timeout: 45_000 });
+    await expect(cells.first()).toContainText(p.isLong ? "Long" : "Short");
+    await expect.poll(async () => text(await cells.nth(1).locator(".numbers").first().textContent())).toBe(before.size);
+    await expect.poll(async () => text(await cells.nth(4).textContent())).toBe(before.entry);
+    await expectAllListed();
+    await testInfo.attach("live-positions-refresh", {
+      body: JSON.stringify({ before, positions: snapshots.at(-1)?.length }),
+      contentType: "application/json",
+    });
+  }
+);
 
 test("17.09 live position: public profile and connected trade agree on position identity and size", async ({
   page,
@@ -230,62 +230,61 @@ test("8.10 live position: Close opens the position seller, Max uses the real siz
   ).toBe(liveAccount.position!.sizeInUsd);
 });
 
-test("5.21 8.03 22.13 live position: size, margin, entry, mark, liquidation price and leverage match the positions response", async ({
-  page,
-  liveAccount,
-  liveWallet,
-  chainId,
-}, testInfo) => {
-  const snapshots = recordPositions(page, liveAccount.account);
-  await liveWallet.connect(page);
-  const cells = positionRow(page, liveAccount).getByRole("cell");
-  await expect(cells.nth(5)).toContainText("$", { timeout: 45_000 });
-  const market = MARKETS[chainId as 42161 | 43114][getAddress(liveAccount.position!.marketAddress)];
-  const visualMultiplier = getToken(chainId, market.indexTokenAddress).visualMultiplier;
-  // Default display excludes PnL: size / (collateral - pending borrow and funding fees), shown with 2 decimals.
-  const leverage = (p: ApiPosition) => {
-    const margin = BigInt(p.collateralUsd) - BigInt(p.pendingBorrowingFeesUsd) - BigInt(p.pendingFundingFeesUsd);
-    return margin > 0n ? text(`${formatAmount((BigInt(p.sizeInUsd) * 10_000n) / margin, 4, 2)} x`) : "...";
-  };
-  let evidence: unknown;
-  await expect
-    .poll(
-      async () => {
-        const shown = {
-          size: text(await cells.nth(1).locator(".numbers").first().textContent()),
-          margin: text(await cells.nth(3).locator(".position-list-collateral").textContent()),
-          entry: text(await cells.nth(4).textContent()),
-          mark: text(await cells.nth(5).textContent()),
-          liquidation: text(await cells.nth(6).textContent()),
-          leverage: text(await cells.first().locator(".Exchange-list-info-label .numbers").first().textContent()),
-        };
-        // Entry, mark and liquidation share the market's display precision.
-        const displayDecimals = shown.mark.split(".")[1]?.length ?? 0;
-        const price = (value: string | null | undefined, maxThreshold?: string) =>
-          value ? text(formatUsd(BigInt(value), { displayDecimals, visualMultiplier, maxThreshold })) : "NA";
-        for (const snapshot of [...snapshots].reverse()) {
-          const p = snapshot.find((item) => item.contractKey === liveAccount.key);
-          if (!p) continue;
-          const expected = {
-            size: text(formatUsd(BigInt(p.sizeInUsd))),
-            margin: text(formatUsd(BigInt(p.remainingCollateralUsd))),
-            entry: price(p.entryPrice),
-            mark: price(p.markPrice),
-            liquidation: price(p.liquidationPrice, "1000000"),
-            leverage: leverage(p),
+test(
+  "5.21 8.03 22.13 live position: size, margin, entry, mark, liquidation price and leverage match the positions response",
+  { tag: "@avalanche" },
+  async ({ page, liveAccount, liveWallet, chainId }, testInfo) => {
+    const snapshots = recordPositions(page, liveAccount.account);
+    await liveWallet.connect(page);
+    const cells = positionRow(page, liveAccount).getByRole("cell");
+    await expect(cells.nth(5)).toContainText("$", { timeout: 45_000 });
+    const market = MARKETS[chainId as 42161 | 43114][getAddress(liveAccount.position!.marketAddress)];
+    const visualMultiplier = getToken(chainId, market.indexTokenAddress).visualMultiplier;
+    // Default display excludes PnL: size / (collateral - pending borrow and funding fees), shown with 2 decimals.
+    const leverage = (p: ApiPosition) => {
+      const margin = BigInt(p.collateralUsd) - BigInt(p.pendingBorrowingFeesUsd) - BigInt(p.pendingFundingFeesUsd);
+      return margin > 0n ? text(`${formatAmount((BigInt(p.sizeInUsd) * 10_000n) / margin, 4, 2)} x`) : "...";
+    };
+    let evidence: unknown;
+    await expect
+      .poll(
+        async () => {
+          const shown = {
+            size: text(await cells.nth(1).locator(".numbers").first().textContent()),
+            margin: text(await cells.nth(3).locator(".position-list-collateral").textContent()),
+            entry: text(await cells.nth(4).textContent()),
+            mark: text(await cells.nth(5).textContent()),
+            liquidation: text(await cells.nth(6).textContent()),
+            leverage: text(await cells.first().locator(".Exchange-list-info-label .numbers").first().textContent()),
           };
-          if (JSON.stringify(expected) === JSON.stringify(shown)) {
-            evidence = { shown, position: p, responses: snapshots.length };
-            return true;
+          // Entry, mark and liquidation share the market's display precision.
+          const displayDecimals = shown.mark.split(".")[1]?.length ?? 0;
+          const price = (value: string | null | undefined, maxThreshold?: string) =>
+            value ? text(formatUsd(BigInt(value), { displayDecimals, visualMultiplier, maxThreshold })) : "NA";
+          for (const snapshot of [...snapshots].reverse()) {
+            const p = snapshot.find((item) => item.contractKey === liveAccount.key);
+            if (!p) continue;
+            const expected = {
+              size: text(formatUsd(BigInt(p.sizeInUsd))),
+              margin: text(formatUsd(BigInt(p.remainingCollateralUsd))),
+              entry: price(p.entryPrice),
+              mark: price(p.markPrice),
+              liquidation: price(p.liquidationPrice, "1000000"),
+              leverage: leverage(p),
+            };
+            if (JSON.stringify(expected) === JSON.stringify(shown)) {
+              evidence = { shown, position: p, responses: snapshots.length };
+              return true;
+            }
           }
-        }
-        return shown;
-      },
-      { timeout: 45_000 }
-    )
-    .toBe(true);
-  await testInfo.attach("live-position-row", { body: JSON.stringify(evidence), contentType: "application/json" });
-});
+          return shown;
+        },
+        { timeout: 45_000 }
+      )
+      .toBe(true);
+    await testInfo.attach("live-position-row", { body: JSON.stringify(evidence), contentType: "application/json" });
+  }
+);
 
 test("8.04 live position: PnL in USD and percent follows new position responses without a reload", async ({
   page,

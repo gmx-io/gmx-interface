@@ -57,49 +57,50 @@ function shownPosition(accountState: AccountState, isLong: boolean): ApiPosition
   };
 }
 
-test("8.01 8.02 22.15 mocked long/short rows show each supplied field in its own column and survive refresh", async ({
-  page,
-  accountState,
-}) => {
-  accountState.positions = [shownPosition(accountState, true), shownPosition(accountState, false)];
-  accountState.orders = [
-    { ...accountState.data.order(5, true, 1), triggerPrice: 3000n * 10n ** 12n },
-    { ...accountState.data.order(6, true, 2), triggerPrice: 2100n * 10n ** 12n },
-  ];
-  await accountState.connect(page);
-  const expectRows = async () => {
-    for (const direction of ["Long", "Short"] as const) {
-      const isLong = direction === "Long";
-      const cells = positionRow(page, direction).getByRole("cell");
-      await expect(positionRow(page, direction)).toHaveCount(1);
-      await expect(cells.nth(0)).toContainText(new RegExp(`ETH/USD\\s*5\\.00\\s*x\\s*${direction}`));
-      await expect(cells.nth(1)).toContainText(/\$\s*1,200\.00/);
-      await expect(cells.nth(2)).toContainText(isLong ? /^\$\s*288\.00/ : /^\$\s*192\.00/);
-      await expect(cells.nth(2)).toContainText(
-        isLong ? /\+\$\s*48\.00\s*\(\+20\.00%\)/ : /-\$\s*48\.00\s*\(-20\.00%\)/
-      );
-      await expect(cells.nth(3)).toContainText(/^\$\s*240\.00\s*\(240\.00\sUSDC\)$/);
-      await expect(cells.nth(4)).toHaveText(/^\$\s*2,500\.00$/);
-      await expect(cells.nth(5)).toHaveText(/^\$\s*2,600\.00$/);
-      await expect(cells.nth(6)).toHaveText(isLong ? /^\$\s*1,900\.00$/ : /^\$\s*3,100\.00$/);
-      if (isLong) {
-        await expect(cells.nth(7)).toContainText(/3,000\.00\s*\$?\s*2,100\.00/);
-        await expect(cells.nth(7).getByRole("button", { name: "Set" })).toHaveCount(0);
-      } else {
-        await expect(cells.nth(7)).toContainText(/—\s*—/);
-        await expect(cells.nth(7).getByRole("button", { name: "Set" })).toBeVisible();
+test(
+  "8.01 8.02 22.15 mocked long/short rows show each supplied field in its own column and survive refresh",
+  { tag: "@avalanche" },
+  async ({ page, accountState }) => {
+    accountState.positions = [shownPosition(accountState, true), shownPosition(accountState, false)];
+    accountState.orders = [
+      { ...accountState.data.order(5, true, 1), triggerPrice: 3000n * 10n ** 12n },
+      { ...accountState.data.order(6, true, 2), triggerPrice: 2100n * 10n ** 12n },
+    ];
+    await accountState.connect(page);
+    const expectRows = async () => {
+      for (const direction of ["Long", "Short"] as const) {
+        const isLong = direction === "Long";
+        const cells = positionRow(page, direction).getByRole("cell");
+        await expect(positionRow(page, direction)).toHaveCount(1);
+        await expect(cells.nth(0)).toContainText(new RegExp(`ETH/USD\\s*5\\.00\\s*x\\s*${direction}`));
+        await expect(cells.nth(1)).toContainText(/\$\s*1,200\.00/);
+        await expect(cells.nth(2)).toContainText(isLong ? /^\$\s*288\.00/ : /^\$\s*192\.00/);
+        await expect(cells.nth(2)).toContainText(
+          isLong ? /\+\$\s*48\.00\s*\(\+20\.00%\)/ : /-\$\s*48\.00\s*\(-20\.00%\)/
+        );
+        await expect(cells.nth(3)).toContainText(/^\$\s*240\.00\s*\(240\.00\sUSDC\)$/);
+        await expect(cells.nth(4)).toHaveText(/^\$\s*2,500\.00$/);
+        await expect(cells.nth(5)).toHaveText(/^\$\s*2,600\.00$/);
+        await expect(cells.nth(6)).toHaveText(isLong ? /^\$\s*1,900\.00$/ : /^\$\s*3,100\.00$/);
+        if (isLong) {
+          await expect(cells.nth(7)).toContainText(/3,000\.00\s*\$?\s*2,100\.00/);
+          await expect(cells.nth(7).getByRole("button", { name: "Set" })).toHaveCount(0);
+        } else {
+          await expect(cells.nth(7)).toContainText(/—\s*—/);
+          await expect(cells.nth(7).getByRole("button", { name: "Set" })).toBeVisible();
+        }
+        await expect(positionRow(page, direction)).not.toContainText(/4\.17|6\.25|281\.00|185\.00|41\.00|55\.00/);
       }
-      await expect(positionRow(page, direction)).not.toContainText(/4\.17|6\.25|281\.00|185\.00|41\.00|55\.00/);
-    }
-  };
-  await expectRows();
-  const size = positionRow(page, "Long").getByRole("cell").nth(1).locator(".cursor-pointer").first();
-  await size.click();
-  await expect(size).toHaveText(/^0\.48\d*\sETH$/);
-  await size.click();
-  await accountState.refresh(page);
-  await expectRows();
-});
+    };
+    await expectRows();
+    const size = positionRow(page, "Long").getByRole("cell").nth(1).locator(".cursor-pointer").first();
+    await size.click();
+    await expect(size).toHaveText(/^0\.48\d*\sETH$/);
+    await size.click();
+    await accountState.refresh(page);
+    await expectRows();
+  }
+);
 
 test("8.01 mocked position updates are reflected without reloading", async ({ page, accountState }) => {
   accountState.positions = [accountState.data.position(true)];

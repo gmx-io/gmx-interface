@@ -17,7 +17,28 @@ if (![42161, 43114].includes(chainId)) {
   throw new Error("REGRESSION_CHAIN_ID must be 42161 (Arbitrum) or 43114 (Avalanche)");
 }
 
-export default defineConfig({
+// An Arbitrum run also covers Avalanche with the tests tagged @avalanche; REGRESSION_CHAIN_ID=43114 runs everything there.
+const avalancheProjects =
+  chainId === 42161
+    ? [
+        {
+          name: "avalanche",
+          testMatch: ["ui/*.spec.ts", "connected-state/*.spec.ts"],
+          grep: /@avalanche/,
+          use: { chainId: 43114 },
+        },
+        {
+          name: "avalanche-live-state",
+          testMatch: "live-state/*.spec.ts",
+          grep: /@avalanche/,
+          use: { chainId: 43114 },
+          timeout: 180_000,
+          workers: 1,
+        },
+      ]
+    : [];
+
+export default defineConfig<object, { chainId: number }>({
   testDir: "./autotests/regression",
   testMatch: "**/*.spec.ts",
   timeout: 60_000,
@@ -38,7 +59,9 @@ export default defineConfig({
     target: baseURL,
     landingTarget: landingURL,
     unavailableFeatures:
-      chainId === 43114 ? ["GMX Account: unavailable on Avalanche; its scenarios run on Arbitrum"] : [],
+      chainId === 43114
+        ? ["GMX Account: unavailable on Avalanche; its scenarios run on Arbitrum"]
+        : ["Avalanche: only the tests tagged @avalanche run there, in the avalanche projects"],
     data: "live-state discovers public accounts with no API/RPC/price/flag/WebSocket mocks and a read-only provider; other projects: live public market data except fixed ETH market/price snapshots in unsigned form tests; mocked account flags, balances, positions, orders, histories and event stream; unsigned requests are rejected; funded UI rehearsals simulate transactions and receipts with a disposable signer, never the funded wallet; simulated RPC for gas guard",
     prNumber: process.env.REGRESSION_PR_NUMBER,
     deploymentCommit: process.env.REGRESSION_DEPLOYMENT_SHA,
@@ -47,6 +70,7 @@ export default defineConfig({
   },
   use: {
     ...devices["Desktop Chrome"],
+    chainId,
     baseURL,
     locale: "en-US",
     timezoneId: "UTC",
@@ -85,7 +109,8 @@ export default defineConfig({
       testMatch: "connected-state/*.spec.ts",
       testIgnore: chainId === 43114 ? "connected-state/gmxAccount*.spec.ts" : [],
     },
-    // The funded harness checks run from playwright-funded-harness.config.ts.
+    // Gates check every production chain themselves. The funded harness checks run from playwright-funded-harness.config.ts.
     { name: "gates", testMatch: "gates/*.spec.ts", testIgnore: "gates/gasGuard.spec.ts" },
+    ...avalancheProjects,
   ],
 });

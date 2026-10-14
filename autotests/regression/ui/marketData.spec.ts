@@ -49,24 +49,24 @@ function displayedRates(text: string) {
   return { Long: parse(long), Short: parse(short) };
 }
 
-test("2.25 BTC, ETH (and AVAX on Avalanche) mark prices are within 1% of Coinbase spot", async ({
-  page,
-  request,
-  chainId,
-}, testInfo) => {
-  await openTrade(page);
-  const prices: Record<string, { displayed: number; coinbase: number }> = {};
-  for (const symbol of chainId === 43114 ? ["BTC", "ETH", "AVAX"] : ["BTC", "ETH"]) {
-    await selectMarket(page, symbol);
-    const response = await request.get(`https://api.coinbase.com/v2/prices/${symbol}-USD/spot`);
-    expect(response.ok()).toBe(true);
-    const coinbase = Number((await response.json()).data.amount);
-    expect(coinbase).toBeGreaterThan(0);
-    await expect.poll(async () => Math.abs((await headerPriceValue(page)) / coinbase - 1)).toBeLessThan(0.01);
-    prices[symbol] = { displayed: await headerPriceValue(page), coinbase };
+test(
+  "2.25 BTC, ETH (and AVAX on Avalanche) mark prices are within 1% of Coinbase spot",
+  { tag: "@avalanche" },
+  async ({ page, request, chainId }, testInfo) => {
+    await openTrade(page);
+    const prices: Record<string, { displayed: number; coinbase: number }> = {};
+    for (const symbol of chainId === 43114 ? ["BTC", "ETH", "AVAX"] : ["BTC", "ETH"]) {
+      await selectMarket(page, symbol);
+      const response = await request.get(`https://api.coinbase.com/v2/prices/${symbol}-USD/spot`);
+      expect(response.ok()).toBe(true);
+      const coinbase = Number((await response.json()).data.amount);
+      expect(coinbase).toBeGreaterThan(0);
+      await expect.poll(async () => Math.abs((await headerPriceValue(page)) / coinbase - 1)).toBeLessThan(0.01);
+      prices[symbol] = { displayed: await headerPriceValue(page), coinbase };
+    }
+    await testInfo.attach("external-prices", { body: JSON.stringify(prices), contentType: "application/json" });
   }
-  await testInfo.attach("external-prices", { body: JSON.stringify(prices), contentType: "application/json" });
-});
+);
 
 test("2.26 5.10 BTC and ETH mark prices update without a page reload", async ({ page }) => {
   test.setTimeout(240_000);

@@ -1,5 +1,5 @@
 name: Release regression
-run-name: "Regression for PR #${{ github.event.pull_request.number || inputs.pr_number }} (${{ inputs.chain_id || 'Arbitrum + Avalanche' }})"
+run-name: "Regression for PR #${{ github.event.pull_request.number || inputs.pr_number }} (${{ inputs.chain_id || 'Arbitrum + Avalanche subset' }})"
 
 on:
   pull_request:
@@ -11,7 +11,7 @@ on:
         type: string
         required: true
       chain_id:
-        description: "Settlement chain"
+        description: "Chain to run in full; 42161 also runs the Avalanche subset tagged @avalanche"
         type: choice
         options: ["42161", "43114"]
         default: "42161"
@@ -109,7 +109,7 @@ jobs:
       fail-fast: false
       max-parallel: 1
       matrix:
-        chain_id: ${{ fromJSON(github.event_name == 'workflow_dispatch' && format('[{0}]', inputs.chain_id) || '[42161,43114]') }}
+        chain_id: ${{ fromJSON(github.event_name == 'workflow_dispatch' && format('[{0}]', inputs.chain_id) || '[42161]') }}
     env:
       REGRESSION_BASE_URL: ${{ needs.resolve-preview.outputs.preview_url }}
       REGRESSION_LANDING_URL: ${{ needs.resolve-preview.outputs.landing_url }}

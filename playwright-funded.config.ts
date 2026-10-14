@@ -7,7 +7,7 @@ if (!process.env.REGRESSION_FUNDED_RUN_ID || process.env.REGRESSION_FUNDED_EXECU
   throw new Error("Use the funded runner so the wallet lock, journal and final cleanup are active");
 }
 
-export default defineConfig({
+export default defineConfig<object, { chainId: number }>({
   ...regression,
   tsconfig: "./autotests/regression/funded/tsconfig.json",
   workers: 1,
@@ -24,6 +24,7 @@ export default defineConfig({
   projects: [{ name: "funded", testMatch: "funded/journeys.spec.ts" }],
   use: {
     ...regression.use,
+    chainId: 42161,
     actionTimeout: 15_000,
     navigationTimeout: 30_000,
     trace: "off",

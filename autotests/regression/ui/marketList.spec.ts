@@ -64,34 +64,35 @@ function priceIssue(text: string) {
     return `${fraction.length} decimals, expected ${expected}`;
 }
 
-test("22.01 22.03 23.08 selector lists every tradeable configured market with its index token name and loaded icon", async ({
-  page,
-  chainId,
-}) => {
-  const api = watchMarketsApi(page, chainId);
-  await openTrade(page);
-  await openMarketSelector(page);
-  await expect.poll(() => api.config?.length ?? 0).toBeGreaterThan(0);
-  const expected = selectorIndexTokens(chainId, api.config!).map(({ token }) => ({
-    label: marketLabel(token),
-    icon: tokenIconPattern(token.symbol),
-    symbol: token.symbol,
-  }));
-  await expect
-    .poll(async () => (await selectorRows(page)).map((row) => row.label).sort())
-    .toEqual(expected.map(({ label }) => label).sort());
-  await expect
-    .poll(async () => {
-      const rows = await selectorRows(page);
-      return expected
-        .filter(({ label, icon, symbol }) => {
-          const row = rows.find((candidate) => candidate.label === label);
-          return !row?.icon?.loaded || row.icon.alt !== symbol || !icon.test(row.icon.src);
-        })
-        .map(({ label }) => label);
-    })
-    .toEqual([]);
-});
+test(
+  "22.01 22.03 23.08 selector lists every tradeable configured market with its index token name and loaded icon",
+  { tag: "@avalanche" },
+  async ({ page, chainId }) => {
+    const api = watchMarketsApi(page, chainId);
+    await openTrade(page);
+    await openMarketSelector(page);
+    await expect.poll(() => api.config?.length ?? 0).toBeGreaterThan(0);
+    const expected = selectorIndexTokens(chainId, api.config!).map(({ token }) => ({
+      label: marketLabel(token),
+      icon: tokenIconPattern(token.symbol),
+      symbol: token.symbol,
+    }));
+    await expect
+      .poll(async () => (await selectorRows(page)).map((row) => row.label).sort())
+      .toEqual(expected.map(({ label }) => label).sort());
+    await expect
+      .poll(async () => {
+        const rows = await selectorRows(page);
+        return expected
+          .filter(({ label, icon, symbol }) => {
+            const row = rows.find((candidate) => candidate.label === label);
+            return !row?.icon?.loaded || row.icon.alt !== symbol || !icon.test(row.icon.src);
+          })
+          .map(({ label }) => label);
+      })
+      .toEqual([]);
+  }
+);
 
 test("22.04 23.09 selector defaults to the promoted tokens, then pool value, and sortedMarkets.ts lists every perp market", async ({
   page,

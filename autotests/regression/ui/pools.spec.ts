@@ -177,32 +177,33 @@ test("12.04 pool search filters rows and recovers from no matches", async ({ pag
   await expect(table.getByRole("link", { name: "Details", exact: true }).nth(1)).toBeVisible();
 });
 
-test("12.01 23.12 /pools lists every enabled GM market the API does not disable, across all pages", async ({
-  page,
-  chainId,
-}) => {
-  test.slow();
-  const api = watchMarketsApi(page, chainId);
-  await page.goto("/pools");
-  await expect(poolRows(page, "GM").first()).toBeVisible();
-  await expect.poll(() => api.config?.length ?? 0).toBeGreaterThan(0);
-  const disabled = new Set(api.config!.filter((market) => market.isDisabled).map((m) => m.marketTokenAddress));
-  const sdkMarkets = MARKETS[chainId as keyof typeof MARKETS];
-  const expected = enabledUiMarkets(chainId).filter((address) => sdkMarkets[address] && !disabled.has(address));
-  // Rows re-sort while pool data loads, so a pass that skipped markets between pages is repeated.
-  await expect(async () => {
-    const shown = new Set<string>();
-    await forEachPoolPage(page, "GM", async () => {
-      await expect(poolRows(page, "GM").first()).toBeVisible();
-      for (const href of await poolRows(page, "GM")
-        .getByRole("link", { name: "Details", exact: true })
-        .evaluateAll((links) => links.map((link) => link.getAttribute("href")!))) {
-        shown.add(href.match(/market=(0x[\da-fA-F]{40})/)![1]);
-      }
-    });
-    expect([...shown].sort()).toEqual(expected.sort());
-  }).toPass({ timeout: 120_000 });
-});
+test(
+  "12.01 23.12 /pools lists every enabled GM market the API does not disable, across all pages",
+  { tag: "@avalanche" },
+  async ({ page, chainId }) => {
+    test.slow();
+    const api = watchMarketsApi(page, chainId);
+    await page.goto("/pools");
+    await expect(poolRows(page, "GM").first()).toBeVisible();
+    await expect.poll(() => api.config?.length ?? 0).toBeGreaterThan(0);
+    const disabled = new Set(api.config!.filter((market) => market.isDisabled).map((m) => m.marketTokenAddress));
+    const sdkMarkets = MARKETS[chainId as keyof typeof MARKETS];
+    const expected = enabledUiMarkets(chainId).filter((address) => sdkMarkets[address] && !disabled.has(address));
+    // Rows re-sort while pool data loads, so a pass that skipped markets between pages is repeated.
+    await expect(async () => {
+      const shown = new Set<string>();
+      await forEachPoolPage(page, "GM", async () => {
+        await expect(poolRows(page, "GM").first()).toBeVisible();
+        for (const href of await poolRows(page, "GM")
+          .getByRole("link", { name: "Details", exact: true })
+          .evaluateAll((links) => links.map((link) => link.getAttribute("href")!))) {
+          shown.add(href.match(/market=(0x[\da-fA-F]{40})/)![1]);
+        }
+      });
+      expect([...shown].sort()).toEqual(expected.sort());
+    }).toPass({ timeout: 120_000 });
+  }
+);
 
 for (const type of ["GM", "GLV"] as const) {
   test(`12.05 ${type} details open from the list and expose buy/sell forms`, async ({ page }) => {
@@ -271,20 +272,21 @@ for (const type of ["GM", "GLV"] as const) {
   });
 }
 
-test("12.19 every configured GLV vault's details page loads with its TVL and buy/sell forms", async ({
-  page,
-  chainId,
-}) => {
-  for (const address of readRegressionGlvs(chainId as 42161 | 43114)) {
-    await page.goto(`/pools/details?market=${address}`);
-    const tvl = page.getByText("TVL (supply)", { exact: true }).first().locator("xpath=..");
-    await expect.poll(async () => displayedNumber(await tvl.innerText())).toBeGreaterThan(0);
-    await expect(tvl).toContainText(/\(.+ GLV\)/);
-    await expect(page.getByRole("button", { name: "Buy GLV", exact: true })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Sell GLV", exact: true })).toBeVisible();
-    await expect(page.getByText("Something went wrong", { exact: true }).filter({ visible: true })).toHaveCount(0);
+test(
+  "12.19 every configured GLV vault's details page loads with its TVL and buy/sell forms",
+  { tag: "@avalanche" },
+  async ({ page, chainId }) => {
+    for (const address of readRegressionGlvs(chainId as 42161 | 43114)) {
+      await page.goto(`/pools/details?market=${address}`);
+      const tvl = page.getByText("TVL (supply)", { exact: true }).first().locator("xpath=..");
+      await expect.poll(async () => displayedNumber(await tvl.innerText())).toBeGreaterThan(0);
+      await expect(tvl).toContainText(/\(.+ GLV\)/);
+      await expect(page.getByRole("button", { name: "Buy GLV", exact: true })).toBeVisible();
+      await expect(page.getByRole("button", { name: "Sell GLV", exact: true })).toBeVisible();
+      await expect(page.getByText("Something went wrong", { exact: true }).filter({ visible: true })).toHaveCount(0);
+    }
   }
-});
+);
 
 test("12.22 each GLV composition lists GM markets sharing the vault's collateral, within cap and summing to 100%", async ({
   page,

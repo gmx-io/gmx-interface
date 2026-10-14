@@ -1,9 +1,8 @@
 import { expect, test as base } from "@playwright/test";
 
-export const test = base.extend<{ chainId: number; diagnostics: void }>({
-  chainId: async ({}, use, testInfo) => {
-    await use(testInfo.config.metadata.chainId as number);
-  },
+export const test = base.extend<{ diagnostics: void }, { chainId: number }>({
+  // Settlement chain of the project; Avalanche projects override it for their small tagged set.
+  chainId: [42161, { option: true, scope: "worker" }],
   context: async ({ context, chainId }, use) => {
     await context.addInitScript((network) => {
       if (window.top !== window || !/^https?:$/.test(location.protocol)) return;

@@ -76,46 +76,47 @@ function poolTable(page: Page, type: "GM" | "GLV") {
   });
 }
 
-test("2.30 Pools TVL equals the pool values the app received and the selected network's GM pools on Stats", async ({
-  page,
-  chainId,
-}, testInfo) => {
-  const api = watchMarketsApi(page, chainId);
-  await page.goto("/pools");
-  const tvl = page.getByText("TVL in vaults and pools", { exact: true }).locator("xpath=preceding-sibling::*[1]");
-  await expect(tvl).toHaveText(/\$\s*[\d,]{7,}/, { timeout: 45_000 });
-  let expected = 0;
-  await expect
-    .poll(async () => {
-      if (!api.config || !api.values) return false;
-      // The app sums only enabled markets from its own market config, not every market the API lists.
-      const configured = Object.keys(MARKETS[chainId as 42161]);
-      const enabled = new Set(
-        api.config
-          .filter((m) => !m.isDisabled && configured.includes(m.marketTokenAddress))
-          .map((m) => m.marketTokenAddress)
-      );
-      expected = api.values
-        .filter((v) => enabled.has(v.marketTokenAddress))
-        .reduce((sum, v) => sum + factor(v.poolValueMax), 0);
-      return Math.abs(displayedNumber(await tvl.innerText()) / expected - 1) < 0.001;
-    })
-    .toBe(true);
-  const poolsTvl = displayedNumber(await tvl.innerText());
-  await page.goto("/stats");
-  const network = networks[chainId];
-  const gmPools = await chainsStats(page, "GM pools", [network]);
-  const totalTvl = await chainsStats(page, "TVL", [network]);
-  await testInfo.attach("tvl", {
-    body: JSON.stringify({ poolsTvl, expected, gmPools, totalTvl }),
-    contentType: "application/json",
-  });
-  expect(
-    displayedSumMatches(gmPools.entries[network], [poolsTvl], 0.003),
-    `Stats ${network} GM pools vs Pools TVL`
-  ).toBe(true);
-  expect(totalTvl.entries[network]).toBeGreaterThan(gmPools.entries[network]);
-});
+test(
+  "2.30 Pools TVL equals the pool values the app received and the selected network's GM pools on Stats",
+  { tag: "@avalanche" },
+  async ({ page, chainId }, testInfo) => {
+    const api = watchMarketsApi(page, chainId);
+    await page.goto("/pools");
+    const tvl = page.getByText("TVL in vaults and pools", { exact: true }).locator("xpath=preceding-sibling::*[1]");
+    await expect(tvl).toHaveText(/\$\s*[\d,]{7,}/, { timeout: 45_000 });
+    let expected = 0;
+    await expect
+      .poll(async () => {
+        if (!api.config || !api.values) return false;
+        // The app sums only enabled markets from its own market config, not every market the API lists.
+        const configured = Object.keys(MARKETS[chainId as 42161]);
+        const enabled = new Set(
+          api.config
+            .filter((m) => !m.isDisabled && configured.includes(m.marketTokenAddress))
+            .map((m) => m.marketTokenAddress)
+        );
+        expected = api.values
+          .filter((v) => enabled.has(v.marketTokenAddress))
+          .reduce((sum, v) => sum + factor(v.poolValueMax), 0);
+        return Math.abs(displayedNumber(await tvl.innerText()) / expected - 1) < 0.001;
+      })
+      .toBe(true);
+    const poolsTvl = displayedNumber(await tvl.innerText());
+    await page.goto("/stats");
+    const network = networks[chainId];
+    const gmPools = await chainsStats(page, "GM pools", [network]);
+    const totalTvl = await chainsStats(page, "TVL", [network]);
+    await testInfo.attach("tvl", {
+      body: JSON.stringify({ poolsTvl, expected, gmPools, totalTvl }),
+      contentType: "application/json",
+    });
+    expect(
+      displayedSumMatches(gmPools.entries[network], [poolsTvl], 0.003),
+      `Stats ${network} GM pools vs Pools TVL`
+    ).toBe(true);
+    expect(totalTvl.entries[network]).toBeGreaterThan(gmPools.entries[network]);
+  }
+);
 
 test("2.31 GM and GLV fee APY equal the /apy base APY the app received and APY/performance values are sane", async ({
   page,

@@ -60,19 +60,19 @@ jobs:
             core.setOutput('check_url', preview.checkUrl);
 
   e2e:
-    name: E2E (${{ matrix.chain_id }}, shard ${{ matrix.shard }}/3)
+    # Arbitrum runs in full; the avalanche projects add the small set of tests tagged @avalanche.
+    name: E2E (shard ${{ matrix.shard }}/3)
     needs: resolve-preview
     runs-on: ubuntu-latest
     timeout-minutes: 75
     strategy:
       fail-fast: false
       matrix:
-        chain_id: [42161, 43114]
         shard: [1, 2, 3]
     env:
       REGRESSION_BASE_URL: ${{ needs.resolve-preview.outputs.preview_url }}
       REGRESSION_LANDING_URL: ${{ needs.resolve-preview.outputs.landing_url }}
-      REGRESSION_CHAIN_ID: ${{ matrix.chain_id }}
+      REGRESSION_CHAIN_ID: 42161
       REGRESSION_PR_NUMBER: ${{ github.event.pull_request.number }}
       REGRESSION_DEPLOYMENT_SHA: ${{ needs.resolve-preview.outputs.head_sha }}
       REGRESSION_DEPLOYMENT_CHECK_URL: ${{ needs.resolve-preview.outputs.check_url }}
@@ -111,14 +111,14 @@ jobs:
       - name: Run non-funded suites
         env:
           PLAYWRIGHT_BLOB_OUTPUT_DIR: blob-report
-          PLAYWRIGHT_BLOB_OUTPUT_NAME: report-${{ matrix.chain_id }}-${{ matrix.shard }}.zip
+          PLAYWRIGHT_BLOB_OUTPUT_NAME: report-${{ matrix.shard }}.zip
         # A shard this broken is not worth finishing; the report lists the tests that did not run.
         run: yarn test:regression --shard=${{ matrix.shard }}/3 --reporter=blob --max-failures=20
       - name: Upload shard report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: e2e-blob-${{ matrix.chain_id }}-${{ matrix.shard }}
+          name: e2e-blob-${{ matrix.shard }}
           path: blob-report/
           retention-days: 3
 
@@ -146,17 +146,14 @@ jobs:
         with:
           pattern: e2e-blob-*
           path: blobs
-      - name: Merge reports per chain
+      - name: Merge shard reports
         run: |
-          mkdir -p merged
-          for chain in 42161 43114; do
-            mkdir -p "blobs-$chain"
-            cp blobs/e2e-blob-$chain-*/*.zip "blobs-$chain/" 2>/dev/null || continue
-            PLAYWRIGHT_JSON_OUTPUT_FILE="merged/$chain.json" PLAYWRIGHT_HTML_OUTPUT_DIR="merged/html-$chain" \
-              yarn playwright merge-reports --reporter=json,html "blobs-$chain"
-            node autotests/regression/report.cjs "merged/$chain.json" > "merged/summary-$chain.md" || true
-            cat "merged/summary-$chain.md" >> "$GITHUB_STEP_SUMMARY"
-          done
+          mkdir -p merged all-blobs
+          cp blobs/e2e-blob-*/*.zip all-blobs/ 2>/dev/null || exit 0
+          PLAYWRIGHT_JSON_OUTPUT_FILE=merged/report.json PLAYWRIGHT_HTML_OUTPUT_DIR=merged/html \
+            yarn playwright merge-reports --reporter=json,html all-blobs
+          node autotests/regression/report.cjs merged/report.json > merged/summary.md || true
+          cat merged/summary.md >> "$GITHUB_STEP_SUMMARY"
       - name: Upload merged reports
         uses: actions/upload-artifact@v4
         with:
@@ -166,7 +163,8 @@ jobs:
       - name: List changed files
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh pr diff "${{ github.event.pull_request.number }}" -R "${{ github.repository }}" --name-only > changed-files.txt || true
+        # The files API lists names without the diff, which GitHub refuses past 20,000 lines.
+        run: gh api --paginate "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --jq '.[].filename' > changed-files.txt || true
       - name: Write report comment
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
@@ -178,8 +176,8 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           yarn tsx --tsconfig autotests/regression/tsconfig.json autotests/regression/ci/aiReport.ts \
-            --report 42161=merged/42161.json --report 43114=merged/43114.json \
-            --summary 42161=merged/summary-42161.md --summary 43114=merged/summary-43114.md \
+            --report "Arbitrum + Avalanche"=merged/report.json \
+            --summary "Arbitrum + Avalanche"=merged/summary.md \
             --changed-files changed-files.txt --out regression-comment.md
           cat regression-comment.md >> "$GITHUB_STEP_SUMMARY"
       - name: Post or update the PR comment

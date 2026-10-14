@@ -14,8 +14,8 @@ export const test = browserTest.extend<
 >({
   liveProfile: ["position", { option: true }],
   liveAccounts: [
-    async ({}, use, workerInfo) => {
-      await use(new LiveAccounts(workerInfo.config.metadata.chainId as LiveChain));
+    async ({ chainId }, use) => {
+      await use(new LiveAccounts(chainId as LiveChain));
     },
     { scope: "worker" },
   ],

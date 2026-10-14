@@ -96,30 +96,34 @@ test("6.16 TWAP form calculates size per part and enforces the minimum parts", a
   await expect(box).toContainText(/2 long increase orders of \$\s*500\.00/);
 });
 
-test("5.16 5.17 Long execution details show a positive open fee, zero increase price impact, network fee and a liquidation price below mark", async ({
-  page,
-}) => {
-  await page.getByTestId("margin-input").fill("100");
-  const box = await openExecutionDetails(page);
-  await expect(box).not.toContainText(/NaN|Infinity|undefined/);
-  const fees = infoRowValue(box, /^Fees/);
-  await expect.poll(async () => displayedNumber(await fees.innerText())).toBeLessThan(0);
-  const breakdown = await openTooltip(page, fees.locator(".Tooltip-handle"));
-  const openFee = /Open fee:\s*\(([\d.]+)% of position size\)\s*([^\n]+)/.exec(await breakdown.innerText());
-  expect(Number(openFee?.[1])).toBeGreaterThan(0);
-  expect(displayedNumber(openFee?.[2] ?? "")).toBeLessThan(0);
-  await page.mouse.move(0, 0);
-  // Increases execute at mark price, so the impact half of the row stays at zero.
-  const [impact, totalFee] = (await infoRowValue(box, /^Price impact/).innerText()).split("/").map(displayedNumber);
-  expect(impact).toBe(0);
-  expect(totalFee).toBeLessThan(0);
-  expect(Math.abs(totalFee)).toBeLessThanOrEqual(Number(openFee![1]) + 0.001);
-  const networkFee = displayedNumber(
-    /\$\s*([\d.]+)/.exec(await infoRowValue(box, "Network fee").innerText())?.[1] ?? ""
-  );
-  expect(networkFee).toBeGreaterThan(0);
-  const liquidation = displayedNumber(await infoRowValue(box, "Liquidation price").innerText());
-  expect(liquidation).toBeGreaterThan(0);
-  expect(liquidation).toBeLessThan(await headerPriceValue(page));
-  await expect(page.getByTestId("confirm-trade-button")).toHaveText("Connect wallet");
-});
+test(
+  "5.16 5.17 Long execution details show a positive open fee, zero increase price impact, network fee and a liquidation price below mark",
+  { tag: "@avalanche" },
+  async ({ page }) => {
+    await page.getByTestId("margin-input").fill("100");
+    const box = await openExecutionDetails(page);
+    await expect(box).not.toContainText(/NaN|Infinity|undefined/);
+    const fees = infoRowValue(box, /^Fees/);
+    await expect.poll(async () => displayedNumber(await fees.innerText())).toBeLessThan(0);
+    const breakdown = await openTooltip(page, fees.locator(".Tooltip-handle"));
+    const openFee = /Open fee:\s*\(([\d.]+)% of position size\)\s*([^\n]+)/.exec(await breakdown.innerText());
+    expect(Number(openFee?.[1])).toBeGreaterThan(0);
+    expect(displayedNumber(openFee?.[2] ?? "")).toBeLessThan(0);
+    await page.mouse.move(0, 0);
+    // Increases execute at mark price, so the impact half of the row stays at zero.
+    const [impact, totalFee] = (await infoRowValue(box, /^Price impact/).innerText()).split("/").map(displayedNumber);
+    expect(impact).toBe(0);
+    expect(totalFee).toBeLessThan(0);
+    expect(Math.abs(totalFee)).toBeLessThanOrEqual(Number(openFee![1]) + 0.001);
+    // The network fee row fills in after the gas estimate arrives.
+    await expect
+      .poll(async () =>
+        displayedNumber(/\$\s*([\d.]+)/.exec(await infoRowValue(box, "Network fee").innerText())?.[1] ?? "")
+      )
+      .toBeGreaterThan(0);
+    const liquidation = displayedNumber(await infoRowValue(box, "Liquidation price").innerText());
+    expect(liquidation).toBeGreaterThan(0);
+    expect(liquidation).toBeLessThan(await headerPriceValue(page));
+    await expect(page.getByTestId("confirm-trade-button")).toHaveText("Connect wallet");
+  }
+);
