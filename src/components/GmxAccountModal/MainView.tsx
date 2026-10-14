@@ -554,13 +554,13 @@ export function TransferHistoryView() {
         ))}
 
         {!isLoading && fundingHistory && fundingHistory.length === 0 && (
-          <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-slate-100">
-            <Trans>No funding activity</Trans>
+          <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-center text-slate-100">
+            <Trans>No transfer history</Trans>
           </div>
         )}
         {!isLoading && filteredFundingHistory?.length === 0 && fundingHistory && fundingHistory.length > 0 && (
-          <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-slate-100">
-            <Trans>No funding activity matching search</Trans>
+          <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-center text-slate-100">
+            <Trans>No transfer history matching search</Trans>
           </div>
         )}
         {isLoading && (

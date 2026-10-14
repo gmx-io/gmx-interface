@@ -1,3 +1,4 @@
+import { t } from "@lingui/macro";
 import { ReactNode } from "react";
 
 import {
@@ -9,7 +10,10 @@ import {
 import { useChainId } from "lib/chains";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import { NetworkFeeSourceIcon } from "./NetworkFeeSourceIcon";
 
 export type { NetworkFeeDetails };
 
@@ -22,50 +26,67 @@ type Props = {
   source: NetworkFeeSource | undefined;
   isExpress?: boolean;
   tooltipContent?: ReactNode;
-  className?: string;
 };
 
-export function NetworkFeeSourceLabel({ source }: { source: NetworkFeeSource }) {
-  return <span className="whitespace-nowrap text-typography-secondary"> · {getNetworkFeeSourceLabel(source)}</span>;
-}
-
-export function NetworkFeeValue({
-  amount,
-  usd,
-  decimals,
-  symbol,
-  isStable,
-  source,
-  isExpress,
-  tooltipContent,
-  className,
-}: Props) {
+export function NetworkFeeValue({ amount, usd, decimals, symbol, isStable, source, isExpress, tooltipContent }: Props) {
   const { chainId } = useChainId();
-
-  const value = (
-    <span className={className}>
-      <AmountWithUsdBalance
-        amount={amount === undefined ? undefined : -amount}
-        decimals={decimals}
-        usd={usd === undefined ? undefined : -usd}
-        symbol={symbol}
-        isStable={isStable}
-      />
-      {source && <NetworkFeeSourceLabel source={source} />}
-    </span>
-  );
 
   const content =
     tooltipContent ??
     (source && isExpress !== undefined ? getNetworkFeeSourceExplanation({ source, isExpress, chainId }) : undefined);
 
-  if (!content) {
-    return value;
+  const amountWithUsd = (
+    <AmountWithUsdBalance
+      amount={amount === undefined ? undefined : -amount}
+      decimals={decimals}
+      usd={usd === undefined ? undefined : -usd}
+      symbol={symbol}
+      isStable={isStable}
+      allowWrap
+      underline={Boolean(source || content)}
+      suffix={source && <NetworkFeeSourceIcon source={source} />}
+    />
+  );
+
+  if (!source) {
+    if (!content) {
+      return amountWithUsd;
+    }
+
+    return (
+      <TooltipWithPortal position="left-start" handleClassName="numbers" variant="none" content={content}>
+        {amountWithUsd}
+      </TooltipWithPortal>
+    );
   }
 
   return (
-    <TooltipWithPortal position="left-start" handleClassName="numbers" content={content}>
-      {value}
+    <TooltipWithPortal
+      position="left-start"
+      handleClassName="numbers"
+      variant="none"
+      content={
+        <>
+          <StatsTooltipRow
+            label={t`Paid from`}
+            showDollar={false}
+            value={
+              <span className="inline-flex items-center gap-4">
+                <NetworkFeeSourceIcon source={source} isDecorative />
+                {getNetworkFeeSourceLabel(source)}
+              </span>
+            }
+          />
+          {content && (
+            <>
+              <div className="h-8" />
+              {content}
+            </>
+          )}
+        </>
+      }
+    >
+      {amountWithUsd}
     </TooltipWithPortal>
   );
 }
