@@ -12058,6 +12058,10 @@ msgstr "최종 가격"
 msgid "Cancelling {orderText}..."
 msgstr "{orderText} 취소 중…"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The signed request could not be completed. Retry to deactivate with a wallet transaction."
+msgstr "서명된 요청을 완료할 수 없습니다. 다시 시도하면 지갑 트랜잭션으로 비활성화합니다."
+
 #: src/components/TradeHistory/keys.ts
 msgid "Execute margin deposit"
 msgstr "증거금 입금 실행"

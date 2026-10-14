@@ -12058,6 +12058,10 @@ msgstr "最新價格"
 msgid "Cancelling {orderText}..."
 msgstr "正在取消 {orderText}..."
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The signed request could not be completed. Retry to deactivate with a wallet transaction."
+msgstr "無法完成已簽名的請求。請重試，以透過錢包交易停用。"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Execute margin deposit"
 msgstr "執行保證金存入"

@@ -12058,6 +12058,10 @@ msgstr "LETZTER PREIS"
 msgid "Cancelling {orderText}..."
 msgstr "{orderText} wird storniert…"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The signed request could not be completed. Retry to deactivate with a wallet transaction."
+msgstr "Die signierte Anfrage konnte nicht abgeschlossen werden. Versuchen Sie es erneut, um mit einer Wallet-Transaktion zu deaktivieren."
+
 #: src/components/TradeHistory/keys.ts
 msgid "Execute margin deposit"
 msgstr "Margin-Einzahlung ausführen"

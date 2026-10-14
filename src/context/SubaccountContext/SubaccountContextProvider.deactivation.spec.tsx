@@ -147,8 +147,13 @@ const globalExpressParams = { gasPaymentTokenAddress: "0xGasToken" };
 
 const settlementChainGlobalExpressParams = { chainId: CHAIN_ID, gasPaymentTokenAddress: "0xWalletGasToken" };
 
-// the GMX Account gas payment token is USDC in these tests, so USDT marks the wallet one
-const settlementChainExpressParams = { gasPaymentParams: { gasPaymentToken: { symbol: "USDT" } } };
+const settlementChainExpressParams = { gasPaymentParams: {} };
+
+const insufficientRelayFeeRevertData = encodeErrorResult({
+  abi: abis.CustomErrors as Abi,
+  errorName: "InsufficientRelayFee",
+  args: [2n, 1n],
+});
 
 function seedStoredSubaccount() {
   localStorage.setItem(configKey, storedConfig);
@@ -478,9 +483,14 @@ describe("SubaccountContextProvider.tryDisableSubaccount", () => {
   });
 
   it.each([
-    ["refuses the signed request", new GmxRelayError("GMX Relay /v1/relay/submit failed: invalid signature", 400)],
-    ["fails to execute the signed request", new SubaccountRemovalRelayFailedError("task-1", "execution reverted")],
-  ])("keeps the failure when the relay %s, and the retry sends the transaction", async (_, relayError) => {
+    ["the relay refuses it", new GmxRelayError("GMX Relay /v1/relay/submit failed: invalid signature", 400)],
+    ["the relay is switched off", new GmxRelayError("GMX Relay /v1/relay/submit failed: Service Unavailable", 503)],
+    ["the relay errors", new GmxRelayError("GMX Relay /v1/relay/submit failed: Bad Gateway", 502)],
+    ["the relay rate-limits it", new GmxRelayError("GMX Relay /v1/relay/submit failed: Too Many Requests", 429)],
+    ["the relay can't be reached", new GmxRelayError("GMX Relay request failed: fetch failed")],
+    ["its execution reverts", new SubaccountRemovalRelayFailedError("task-1", "execution reverted")],
+    ["the wallet gas payment token can't pay the relay fee", new Error(`data="${insufficientRelayFeeRevertData}"`)],
+  ])("sends the transaction on retry when the signed request fails because %s", async (_, relayError) => {
     mocks.estimateSettlementChainRemoveSubaccountExpressParams.mockResolvedValue(settlementChainExpressParams);
     mocks.removeSubaccountSettlementChainExpressTxn.mockRejectedValueOnce(relayError);
 
@@ -493,7 +503,9 @@ describe("SubaccountContextProvider.tryDisableSubaccount", () => {
 
     expect(result).toBe(false);
     expect(context.current.subaccountDeactivationState).toBe(SubaccountDeactivationState.Error);
-    expect(context.current.subaccountDeactivationFailureReason).toBe(SubaccountDeactivationFailureReason.Unknown);
+    expect(context.current.subaccountDeactivationFailureReason).toBe(
+      SubaccountDeactivationFailureReason.SignedRequestFailed
+    );
     expect(getIsSubaccountStoredLocally()).toBe(true);
     expect(mocks.removeSubaccountWalletTxn).not.toHaveBeenCalled();
 
@@ -505,6 +517,7 @@ describe("SubaccountContextProvider.tryDisableSubaccount", () => {
     });
 
     expect(retryResult).toBe(true);
+    expect(mocks.getIsSubaccountRemovalRequired).toHaveBeenCalledTimes(2);
     expect(mocks.estimateSettlementChainRemoveSubaccountExpressParams).toHaveBeenCalledTimes(1);
     expect(mocks.removeSubaccountSettlementChainExpressTxn).toHaveBeenCalledTimes(1);
     expect(mocks.removeSubaccountWalletTxn).toHaveBeenCalledWith(CHAIN_ID, expect.anything(), SUBACCOUNT_ADDRESS);
@@ -512,7 +525,37 @@ describe("SubaccountContextProvider.tryDisableSubaccount", () => {
     expect(context.current.subaccountDeactivationState).toBe(SubaccountDeactivationState.Success);
   });
 
-  it("checks the chain and retries with a signature when the relay result could not be confirmed", async () => {
+  it("keeps sending the transaction after the signed request failed, even when the transaction is rejected", async () => {
+    mocks.estimateSettlementChainRemoveSubaccountExpressParams.mockResolvedValue(settlementChainExpressParams);
+    mocks.removeSubaccountSettlementChainExpressTxn.mockRejectedValueOnce(
+      new GmxRelayError("GMX Relay /v1/relay/submit failed: Service Unavailable", 503)
+    );
+    mocks.removeSubaccountWalletTxn
+      .mockRejectedValueOnce(new Error("User rejected the request."))
+      .mockResolvedValueOnce(undefined);
+
+    const context = setup();
+
+    for (let attempt = 0; attempt < 2; attempt++) {
+      await act(async () => {
+        await context.current.tryDisableSubaccount();
+      });
+    }
+
+    expect(context.current.subaccountDeactivationFailureReason).toBe(SubaccountDeactivationFailureReason.Rejected);
+
+    let result: boolean | undefined;
+    await act(async () => {
+      result = await context.current.tryDisableSubaccount();
+    });
+
+    expect(result).toBe(true);
+    expect(mocks.removeSubaccountSettlementChainExpressTxn).toHaveBeenCalledTimes(1);
+    expect(mocks.removeSubaccountWalletTxn).toHaveBeenCalledTimes(2);
+    expect(context.current.subaccountDeactivationState).toBe(SubaccountDeactivationState.Success);
+  });
+
+  it("checks the chain and sends the transaction on retry when the relay result could not be confirmed", async () => {
     mocks.estimateSettlementChainRemoveSubaccountExpressParams.mockResolvedValue(settlementChainExpressParams);
     mocks.removeSubaccountSettlementChainExpressTxn.mockRejectedValueOnce(
       new SubaccountRemovalResultUnknownError("task-1", new Error("Timeout waiting for terminal status"))
@@ -530,7 +573,7 @@ describe("SubaccountContextProvider.tryDisableSubaccount", () => {
     expect(mocks.refreshSubaccountData).toHaveBeenCalled();
     expect(getIsSubaccountStoredLocally()).toBe(true);
 
-    mocks.removeSubaccountSettlementChainExpressTxn.mockResolvedValueOnce(undefined);
+    mocks.removeSubaccountWalletTxn.mockResolvedValueOnce(undefined);
 
     let retryResult: boolean | undefined;
     await act(async () => {
@@ -538,18 +581,41 @@ describe("SubaccountContextProvider.tryDisableSubaccount", () => {
     });
 
     expect(retryResult).toBe(true);
-    expect(mocks.removeSubaccountSettlementChainExpressTxn).toHaveBeenCalledTimes(2);
-    expect(mocks.removeSubaccountWalletTxn).not.toHaveBeenCalled();
+    expect(mocks.getIsSubaccountRemovalRequired).toHaveBeenCalledTimes(2);
+    expect(mocks.removeSubaccountSettlementChainExpressTxn).toHaveBeenCalledTimes(1);
+    expect(mocks.removeSubaccountWalletTxn).toHaveBeenCalledTimes(1);
   });
 
-  it("names the wallet gas payment token when the signed removal can't pay its relay fee", async () => {
+  it("finishes without a transaction when the unconfirmed removal went through", async () => {
     mocks.estimateSettlementChainRemoveSubaccountExpressParams.mockResolvedValue(settlementChainExpressParams);
-    const revertData = encodeErrorResult({
-      abi: abis.CustomErrors as Abi,
-      errorName: "InsufficientRelayFee",
-      args: [2n, 1n],
+    mocks.removeSubaccountSettlementChainExpressTxn.mockRejectedValueOnce(
+      new SubaccountRemovalResultUnknownError("task-1", new Error("Timeout waiting for terminal status"))
+    );
+
+    const context = setup();
+
+    await act(async () => {
+      await context.current.tryDisableSubaccount();
     });
-    mocks.removeSubaccountSettlementChainExpressTxn.mockRejectedValueOnce(new Error(`data="${revertData}"`));
+
+    mocks.getIsSubaccountRemovalRequired.mockResolvedValue(false);
+
+    let retryResult: boolean | undefined;
+    await act(async () => {
+      retryResult = await context.current.tryDisableSubaccount();
+    });
+
+    expect(retryResult).toBe(true);
+    expect(mocks.removeSubaccountSettlementChainExpressTxn).toHaveBeenCalledTimes(1);
+    expect(mocks.removeSubaccountWalletTxn).not.toHaveBeenCalled();
+    expect(getIsSubaccountStoredLocally()).toBe(false);
+  });
+
+  it("asks for the signature again on retry when it was rejected in the wallet", async () => {
+    mocks.estimateSettlementChainRemoveSubaccountExpressParams.mockResolvedValue(settlementChainExpressParams);
+    mocks.removeSubaccountSettlementChainExpressTxn
+      .mockRejectedValueOnce(new Error("User rejected the request."))
+      .mockResolvedValueOnce(undefined);
 
     const context = setup();
 
@@ -559,10 +625,17 @@ describe("SubaccountContextProvider.tryDisableSubaccount", () => {
     });
 
     expect(result).toBe(false);
-    expect(context.current.subaccountDeactivationFailureReason).toBe(
-      SubaccountDeactivationFailureReason.InsufficientWalletGasPaymentTokenBalance
-    );
-    expect(context.current.subaccountDeactivationFailureTokenSymbol).toBe("USDT");
-    expect(mocks.selectGmxAccountGasPaymentToken).not.toHaveBeenCalled();
+    expect(context.current.subaccountDeactivationFailureReason).toBe(SubaccountDeactivationFailureReason.Rejected);
+
+    let retryResult: boolean | undefined;
+    await act(async () => {
+      retryResult = await context.current.tryDisableSubaccount();
+    });
+
+    expect(retryResult).toBe(true);
+    expect(mocks.estimateSettlementChainRemoveSubaccountExpressParams).toHaveBeenCalledTimes(2);
+    expect(mocks.removeSubaccountSettlementChainExpressTxn).toHaveBeenCalledTimes(2);
+    expect(mocks.removeSubaccountWalletTxn).not.toHaveBeenCalled();
+    expect(context.current.subaccountDeactivationState).toBe(SubaccountDeactivationState.Success);
   });
 });

@@ -12058,6 +12058,10 @@ msgstr ""
 msgid "Cancelling {orderText}..."
 msgstr ""
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The signed request could not be completed. Retry to deactivate with a wallet transaction."
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Execute margin deposit"
 msgstr ""

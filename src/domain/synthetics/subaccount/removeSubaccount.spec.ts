@@ -8,9 +8,17 @@ import { MOCK_GAS_LIMITS, MOCK_GAS_PRICE } from "domain/testUtils/mockChainData"
 import { ETH_ADDRESS, ETH_TOKEN } from "domain/testUtils/mockTokens";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
-import { buildGlobalExpressParams, ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "sdk/utils/express";
+import {
+  buildGlobalExpressParams,
+  ExpressEstimationInsufficientGasPaymentTokenBalanceError,
+  GmxRelayError,
+} from "sdk/utils/express";
 
-import { getIsSubaccountRemovalRelayRejected, SubaccountRemovalResultUnknownError } from "./errors";
+import {
+  getShouldRetrySubaccountRemovalWithWalletTxn,
+  SubaccountRemovalRelayFailedError,
+  SubaccountRemovalResultUnknownError,
+} from "./errors";
 import {
   estimateSettlementChainRemoveSubaccountExpressParams,
   getIsSubaccountActiveOnchain,
@@ -546,7 +554,7 @@ describe("removeSubaccountSettlementChainExpressTxn", () => {
     ]);
   });
 
-  it("reports a failed relay execution as rejected by the relay", async () => {
+  it("reports a failed relay execution so the retry sends the transaction", async () => {
     mocks.sendExpressTransaction.mockResolvedValue({
       taskId: "task-1",
       wait: vi.fn(async () => ({ status: "failed", relayStatus: { message: "execution reverted" } })),
@@ -554,11 +562,12 @@ describe("removeSubaccountSettlementChainExpressTxn", () => {
 
     const rejection = await removeOnSettlementChain().catch((error) => error);
 
+    expect(rejection).toBeInstanceOf(SubaccountRemovalRelayFailedError);
     expect(rejection.message).toBe("Remove subaccount transaction failed: execution reverted");
-    expect(getIsSubaccountRemovalRelayRejected(rejection)).toBe(true);
+    expect(getShouldRetrySubaccountRemovalWithWalletTxn(rejection)).toBe(true);
   });
 
-  it("reports an unknown result when the relay outcome cannot be read back", async () => {
+  it("reports an unknown result when the relay outcome cannot be read back, and the retry sends the transaction", async () => {
     mocks.sendExpressTransaction.mockResolvedValue({
       taskId: "task-1",
       wait: vi.fn(async () => {
@@ -569,6 +578,34 @@ describe("removeSubaccountSettlementChainExpressTxn", () => {
     const rejection = await removeOnSettlementChain().catch((error) => error);
 
     expect(rejection).toBeInstanceOf(SubaccountRemovalResultUnknownError);
-    expect(getIsSubaccountRemovalRelayRejected(rejection)).toBe(false);
+    expect(getShouldRetrySubaccountRemovalWithWalletTxn(rejection)).toBe(true);
+  });
+
+  it.each([
+    ["refuses it", new GmxRelayError("GMX Relay /v1/relay/submit failed: invalid signature", 400)],
+    ["is switched off", new GmxRelayError("GMX Relay /v1/relay/submit failed: Service Unavailable", 503)],
+    ["errors", new GmxRelayError("GMX Relay /v1/relay/submit failed: Internal Server Error", 500)],
+    ["rate-limits it", new GmxRelayError("GMX Relay /v1/relay/submit failed: Too Many Requests", 429)],
+    ["can't be reached", new GmxRelayError("GMX Relay request failed: fetch failed")],
+  ])(
+    "passes the error through after signing when the relay %s, and the retry sends the transaction",
+    async (_, error) => {
+      mocks.sendExpressTransaction.mockRejectedValue(error);
+
+      const rejection = await removeOnSettlementChain().catch((e) => e);
+
+      expect(mocks.signTypedData).toHaveBeenCalledTimes(1);
+      expect(rejection).toBe(error);
+      expect(getShouldRetrySubaccountRemovalWithWalletTxn(rejection)).toBe(true);
+    }
+  );
+
+  it("sends nothing when the signature is rejected, and the retry asks for it again", async () => {
+    mocks.signTypedData.mockRejectedValue(new Error("User rejected the request."));
+
+    const rejection = await removeOnSettlementChain().catch((error) => error);
+
+    expect(mocks.sendExpressTransaction).not.toHaveBeenCalled();
+    expect(getShouldRetrySubaccountRemovalWithWalletTxn(rejection)).toBe(false);
   });
 });

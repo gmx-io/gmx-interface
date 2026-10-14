@@ -12058,6 +12058,10 @@ msgstr "最終価格"
 msgid "Cancelling {orderText}..."
 msgstr "{orderText}をキャンセル中…"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The signed request could not be completed. Retry to deactivate with a wallet transaction."
+msgstr "署名済みリクエストを完了できませんでした。再度お試しいただくと、ウォレット取引で無効化します。"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Execute margin deposit"
 msgstr "証拠金入金を執行"
