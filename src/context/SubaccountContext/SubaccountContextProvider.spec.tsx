@@ -318,6 +318,7 @@ describe("SubaccountContextProvider.tryEnableSubaccount token permits", () => {
     );
     expect(mocks.signActivationTokenPermits).toHaveBeenCalledWith({
       chainId: CHAIN_ID,
+      account: ACCOUNT,
       spender: ROUTER,
       tokenAddresses: [WETH, USDC],
       accountType: "eoa",

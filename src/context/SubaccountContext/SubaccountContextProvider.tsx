@@ -439,6 +439,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
             await signActivationTokenPermits({
               chainId,
+              account: signer.address,
               spender,
               tokenAddresses,
               accountType: tokenPermitAccountType,

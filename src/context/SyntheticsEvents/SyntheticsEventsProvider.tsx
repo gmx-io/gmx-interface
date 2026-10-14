@@ -115,6 +115,7 @@ import {
   WithdrawalCreatedEventData,
   WithdrawalStatuses,
 } from "./types";
+import { useExecutedTokenPermits } from "./useExecutedTokenPermits";
 import { useMultichainEvents } from "./useMultichainEvents";
 import { useTransitRouteEvents } from "./useTransitRouteEvents";
 import { extractRelayTaskError, getPendingOrderKey } from "./utils";
@@ -1104,6 +1105,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       })();
     }
   }, [pendingExpressTxnParams, latestRelayTaskStatuses, chainId]);
+
+  useExecutedTokenPermits({ chainId, pendingExpressTxns: pendingExpressTxnParams, relayTaskStatuses });
 
   useEffect(
     function notifyPendingExpressTxn() {

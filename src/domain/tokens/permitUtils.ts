@@ -16,6 +16,7 @@ import { defined } from "lib/guards";
 import { EMPTY_ARRAY } from "lib/objects";
 import { WalletSigner } from "lib/wallets";
 import { signTypedData, splitSignature } from "lib/wallets/signing";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import ERC20PermitInterfaceAbi from "sdk/abis/ERC20PermitInterface";
 import type { ContractsChainId } from "sdk/configs/chains";
@@ -230,6 +231,25 @@ export async function getTokenPermitParams(
     name,
     version,
   };
+}
+
+// a token nonce above the permit's means another call used it first: the permit is stale, not broken
+export async function getIsTokenPermitNonceUsed(
+  chainId: number,
+  permit: SignedTokenPermit
+): Promise<boolean | undefined> {
+  try {
+    const nonce = await getPublicClientWithRpc(chainId).readContract({
+      address: permit.token as Address,
+      abi: ERC20PermitInterfaceAbi,
+      functionName: "nonces",
+      args: [permit.owner as Address],
+    });
+
+    return nonce > BigInt(permit.onchainParams.nonce);
+  } catch (e) {
+    return undefined;
+  }
 }
 
 export async function validateTokenPermitSignature(chainId: number, permit: SignedTokenPermit) {

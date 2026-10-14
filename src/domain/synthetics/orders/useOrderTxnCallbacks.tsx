@@ -23,7 +23,7 @@ import { getPositionKey } from "domain/synthetics/positions/utils";
 import { getRemainingSubaccountActions, Subaccount } from "domain/synthetics/subaccount";
 import { TokenBalanceType } from "domain/tokens";
 import { TokenPermitsCheckError } from "domain/tokens/checkTokenPermits";
-import { validateTokenPermitSignature } from "domain/tokens/permitUtils";
+import { getIsTokenPermitNonceUsed, validateTokenPermitSignature } from "domain/tokens/permitUtils";
 import { sendAddressablePixelEventForOrder } from "lib/addressablePixel";
 import { useChainId } from "lib/chains";
 import { parseError } from "lib/errors";
@@ -482,7 +482,17 @@ export function useOrderTxnCallbacks() {
 
             removeTokenPermits(sentTokenPermits);
           } else if (permitIssueType === "invalidSignature") {
+            // a nonce used by another order in the meantime also reads as an invalid signature, so every sent
+            // permit is dropped now, and only a permit the chain will keep rejecting keeps its token on approvals
+            removeTokenPermits(sentTokenPermits);
             sentTokenPermits.forEach((permit) => {
+              sendTokenPermitMetric({
+                outcome: "failedCheck",
+                chainId,
+                tokenAddress: permit.token,
+                accountType: tokenPermitAccountType,
+                reason: "simulation",
+              });
               validateTokenPermitSignature(chainId, permit).then((validationResult) => {
                 metrics.pushError(
                   getInvalidPermitSignatureError({
@@ -495,7 +505,14 @@ export function useOrderTxnCallbacks() {
               });
             });
 
-            fallbackFromTokenPermits(sentTokenPermits, "simulation");
+            sentTokenPermits.forEach((permit) => {
+              getIsTokenPermitNonceUsed(chainId, permit).then((isNonceUsed) => {
+                // the read can finish after a wallet switch, so the token is disabled for the permit's own account
+                if (isNonceUsed === false) {
+                  disableTokenPermits([permit.token], { chainId, account: permit.owner });
+                }
+              });
+            });
           }
 
           if (isOutdatedSubaccountApproval) {

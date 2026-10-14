@@ -1,5 +1,6 @@
 import uniq from "lodash/uniq";
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef } from "react";
+import { useLatest } from "react-use";
 import useSWR from "swr";
 import { isAddressEqual, type Address } from "viem";
 
@@ -34,9 +35,13 @@ export type TokenPermitsState = {
   accountType: TokenPermitAccountType | undefined;
   getIsPermitAvailable: (tokenAddress: string) => boolean;
   addTokenPermit: AddTokenPermitFn;
-  removeTokenPermits: (permits: SignedTokenPermit[]) => void;
-  /** Sends the tokens back to the approval transaction for this account */
-  disableTokenPermits: (tokenAddresses: string[]) => void;
+  /** permitsChainId: the chain the permits were signed for, when it may no longer be the current one */
+  removeTokenPermits: (permits: SignedTokenPermit[], permitsChainId?: number) => void;
+  /**
+   * Keeps the tokens on the approval transaction for good: only for failures a retry won't fix. `target` is the
+   * chain and account the failed permits belong to, when it may no longer be the current one
+   */
+  disableTokenPermits: (tokenAddresses: string[], target?: { chainId: number; account: string }) => void;
 };
 
 export type AddTokenPermitFn = (
@@ -47,6 +52,34 @@ export type AddTokenPermitFn = (
 ) => Promise<void>;
 
 const TokenPermitsContext = createContext<TokenPermitsState | undefined>(undefined);
+
+function readFallbackTokens(key: NonNullable<ReturnType<typeof getTokenPermitsFallbackKey>>): string[] {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(JSON.stringify(key)) ?? "[]");
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+// permits stored for a chain or account that is not the current one, e.g. used by an order that finished after a switch
+function removeInactiveStoredTokenPermits(chainId: number, owner: string, permits: SignedTokenPermit[]) {
+  const key = JSON.stringify(getTokenPermitsKey(chainId, owner));
+  const stored = localStorage.getItem(key);
+
+  if (!stored) return;
+
+  try {
+    const parsed: SignedTokenPermit[] = JSON.parse(stored);
+    const remaining = parsed.filter((storedPermit) => !permits.some((p) => getIsSameTokenPermit(storedPermit, p)));
+
+    if (remaining.length !== parsed.length) {
+      localStorage.setItem(key, JSON.stringify(remaining));
+    }
+  } catch (e) {
+    // a broken entry is replaced on the next write for that account
+  }
+}
 
 export function useTokenPermitsContext() {
   const context = useContext(TokenPermitsContext);
@@ -190,25 +223,59 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
   );
 
   const removeTokenPermits = useCallback(
-    (permits: SignedTokenPermit[]) => {
-      if (!storedTokenPermits?.length || permits.length === 0) {
+    (permits: SignedTokenPermit[], permitsChainId: number = chainId) => {
+      const isActive = (permit: SignedTokenPermit) =>
+        permitsChainId === chainId &&
+        account !== undefined &&
+        isAddressEqual(permit.owner as Address, account as Address);
+
+      uniq(permits.filter((permit) => !isActive(permit)).map((permit) => permit.owner)).forEach((owner) => {
+        removeInactiveStoredTokenPermits(permitsChainId, owner, permits);
+      });
+
+      const activePermits = permits.filter(isActive);
+
+      if (!storedTokenPermits?.length || activePermits.length === 0) {
         return;
       }
 
-      setTokenPermits(storedTokenPermits.filter((stored) => !permits.some((p) => getIsSameTokenPermit(stored, p))));
+      setTokenPermits(
+        storedTokenPermits.filter((stored) => !activePermits.some((p) => getIsSameTokenPermit(stored, p)))
+      );
     },
-    [setTokenPermits, storedTokenPermits]
+    [account, chainId, setTokenPermits, storedTokenPermits]
   );
 
-  const disableTokenPermits = useCallback(
-    (tokenAddresses: string[]) => {
-      const newTokens = uniq(tokenAddresses).filter((tokenAddress) => !fallbackTokens?.includes(tokenAddress));
+  const latestFallbackContext = useLatest({ chainId, account, setFallbackTokens });
 
-      if (newTokens.length > 0) {
-        setFallbackTokens([...(fallbackTokens ?? []), ...newTokens]);
+  const disableTokenPermits = useCallback(
+    (tokenAddresses: string[], target?: { chainId: number; account: string }) => {
+      const current = latestFallbackContext.current;
+      const targetChainId = target?.chainId ?? current.chainId;
+      const targetAccount = target?.account ?? current.account;
+      const key = getTokenPermitsFallbackKey(targetChainId, targetAccount);
+
+      if (!key || !targetAccount) return;
+
+      // read from storage rather than the render: callers can run after another disable or a wallet switch
+      const storedTokens = readFallbackTokens(key);
+      const newTokens = uniq(tokenAddresses).filter((tokenAddress) => !storedTokens.includes(tokenAddress));
+
+      if (newTokens.length === 0) return;
+
+      const nextTokens = [...storedTokens, ...newTokens];
+      const isCurrent =
+        targetChainId === current.chainId &&
+        current.account !== undefined &&
+        isAddressEqual(targetAccount as Address, current.account as Address);
+
+      if (isCurrent) {
+        current.setFallbackTokens(nextTokens);
+      } else {
+        localStorage.setItem(JSON.stringify(key), JSON.stringify(nextTokens));
       }
     },
-    [fallbackTokens, setFallbackTokens]
+    [latestFallbackContext]
   );
 
   useEffect(

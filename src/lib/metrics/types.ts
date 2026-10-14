@@ -557,7 +557,7 @@ export type SwapGLVMetricData = {
 };
 
 // Token permits
-export type TokenPermitOutcome = "signed" | "rejected" | "failedCheck" | "fallback";
+export type TokenPermitOutcome = "signed" | "rejected" | "failedCheck" | "fallback" | "executed";
 
 /** Unset for permits signed in place of an approval transaction */
 export type TokenPermitFlow = "oneClickActivation";

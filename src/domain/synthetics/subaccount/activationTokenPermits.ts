@@ -83,6 +83,7 @@ export async function getActivationPermitTokenAddresses({
  */
 export async function signActivationTokenPermits({
   chainId,
+  account,
   spender,
   tokenAddresses,
   accountType,
@@ -90,13 +91,14 @@ export async function signActivationTokenPermits({
   disableTokenPermits,
 }: {
   chainId: number;
+  account: string;
   spender: string;
   tokenAddresses: string[];
   accountType: string | undefined;
   addTokenPermit: AddTokenPermitFn;
-  disableTokenPermits: (tokenAddresses: string[]) => void;
+  disableTokenPermits: (tokenAddresses: string[], target?: { chainId: number; account: string }) => void;
 }): Promise<void> {
-  const failedTokenAddresses: string[] = [];
+  const invalidSignatureTokenAddresses: string[] = [];
 
   for (const tokenAddress of tokenAddresses) {
     const metricParams = { chainId, tokenAddress, accountType, flow: "oneClickActivation" as const };
@@ -115,18 +117,23 @@ export async function signActivationTokenPermits({
         break;
       }
 
-      failedTokenAddresses.push(tokenAddress);
+      const isInvalidSignature = Boolean(error?.message?.includes(INVALID_PERMIT_SIGNATURE_ERROR));
+
+      // a wallet timeout or rpc hiccup can pass at the next approval, so only a bad signature keeps the token there
+      if (isInvalidSignature) {
+        invalidSignatureTokenAddresses.push(tokenAddress);
+      }
+
       metrics.pushError(error, "subaccount.activationTokenPermit");
       sendTokenPermitMetric({
         ...metricParams,
         outcome: "fallback",
-        reason: error?.message?.includes(INVALID_PERMIT_SIGNATURE_ERROR) ? "invalidSignature" : "failed",
+        reason: isInvalidSignature ? "invalidSignature" : "failed",
       });
     }
   }
 
-  // one write: the fallback list setter reads its value from the render the flow started in
-  if (failedTokenAddresses.length > 0) {
-    disableTokenPermits(failedTokenAddresses);
+  if (invalidSignatureTokenAddresses.length > 0) {
+    disableTokenPermits(invalidSignatureTokenAddresses, { chainId, account });
   }
 }

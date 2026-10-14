@@ -191,6 +191,7 @@ describe("signActivationTokenPermits", () => {
   function sign(tokenAddresses: string[]) {
     return signActivationTokenPermits({
       chainId: ARBITRUM,
+      account: ACCOUNT,
       spender: ROUTER,
       tokenAddresses,
       accountType: "eoa",
@@ -228,7 +229,7 @@ describe("signActivationTokenPermits", () => {
     expect(disableTokenPermits).not.toHaveBeenCalled();
   });
 
-  it("sends tokens whose permit failed back to approvals and keeps going", async () => {
+  it("keeps only tokens with an invalid signature on approvals and keeps going", async () => {
     addTokenPermit
       .mockRejectedValueOnce(getInvalidPermitSignatureError({ isValid: false, error: undefined, permit: permit(USDC) }))
       .mockResolvedValueOnce(undefined)
@@ -238,7 +239,7 @@ describe("signActivationTokenPermits", () => {
 
     expect(addTokenPermit).toHaveBeenCalledTimes(3);
     expect(disableTokenPermits).toHaveBeenCalledTimes(1);
-    expect(disableTokenPermits).toHaveBeenCalledWith([USDC, USDT]);
+    expect(disableTokenPermits).toHaveBeenCalledWith([USDC], { chainId: ARBITRUM, account: ACCOUNT });
     expect(mocks.sendTokenPermitMetric).toHaveBeenCalledWith(
       expect.objectContaining({ tokenAddress: USDC, outcome: "fallback", reason: "invalidSignature" })
     );
