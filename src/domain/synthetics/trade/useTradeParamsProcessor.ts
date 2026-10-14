@@ -176,7 +176,7 @@ export function useTradeParamsProcessor() {
       if (pool) {
         const marketPool = markets.find((market) => {
           const poolName = getMarketPoolName(market);
-          const isSameMarket = market.indexTokenAddress === tradeOptions.toTokenAddress;
+          const isSameMarket = market.indexToken.address === tradeOptions.toTokenAddress;
           return isSameMarket && poolName.toLowerCase() === pool.toLowerCase();
         });
         if (marketPool) {
