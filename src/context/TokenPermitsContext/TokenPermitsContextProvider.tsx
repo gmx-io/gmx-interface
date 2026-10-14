@@ -1,29 +1,80 @@
+import uniq from "lodash/uniq";
 import React, { createContext, useCallback, useContext, useEffect, useMemo } from "react";
+import { useLatest } from "react-use";
+import useSWR from "swr";
+import { isAddressEqual, type Address } from "viem";
 
-import { getTokenPermitsKey, PERMITS_DISABLED_KEY } from "config/localStorage";
-import { createAndSignTokenPermit, getIsPermitExpired, validateTokenPermitSignature } from "domain/tokens/permitUtils";
+import { getTokenPermitsFallbackKey, getTokenPermitsKey, LEGACY_PERMITS_DISABLED_KEY } from "config/localStorage";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
+import {
+  createAndSignTokenPermit,
+  getIsPermitExpired,
+  getIsSameTokenPermit,
+  getPermitsExpiryTimeoutMs,
+  validateTokenPermitSignature,
+} from "domain/tokens/permitUtils";
+import {
+  getIsTokenPermitAllowed,
+  getIsTokenPermitsEnabled,
+  getTokenPermitAccountType,
+  TokenPermitAccountType,
+} from "domain/tokens/tokenPermitsEligibility";
 import { useChainId } from "lib/chains";
 import { getInvalidPermitSignatureError } from "lib/errors/customErrors";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { EMPTY_ARRAY } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { nowInSeconds } from "sdk/utils/time";
 import { SignedTokenPermit } from "sdk/utils/tokens/types";
 
-const PERMIT_EXPIRY_BUFFER_MS = 500;
-const TOKEN_PERMITS_DISABLED = true;
-const EMPTY_TOKEN_PERMITS: SignedTokenPermit[] = [];
-
 export type TokenPermitsState = {
+  /** Usable permits only: empty while permits are switched off for the account */
   tokenPermits: SignedTokenPermit[];
+  accountType: TokenPermitAccountType | undefined;
+  getIsPermitAvailable: (tokenAddress: string) => boolean;
   addTokenPermit: AddTokenPermitFn;
-  setIsPermitsDisabled: (disabled: boolean) => void;
-  isPermitsDisabled: boolean;
-  resetTokenPermits: () => void;
+  /** permitsChainId: the chain the permits were signed for, when it may no longer be the current one */
+  removeTokenPermits: (permits: SignedTokenPermit[], permitsChainId?: number) => void;
+  /**
+   * Keeps the tokens on the approval transaction for good: only for failures a retry won't fix. `target` is the
+   * chain and account the failed permits belong to, when it may no longer be the current one
+   */
+  disableTokenPermits: (tokenAddresses: string[], target?: { chainId: number; account: string }) => void;
 };
 
 export type AddTokenPermitFn = (tokenAddress: string, spenderAddress: string, value: bigint) => Promise<void>;
 
 const TokenPermitsContext = createContext<TokenPermitsState | undefined>(undefined);
+
+function readFallbackTokens(key: NonNullable<ReturnType<typeof getTokenPermitsFallbackKey>>): string[] {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(JSON.stringify(key)) ?? "[]");
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+// permits stored for a chain or account that is not the current one, e.g. used by an order that finished after a switch
+function removeInactiveStoredTokenPermits(chainId: number, owner: string, permits: SignedTokenPermit[]) {
+  const key = JSON.stringify(getTokenPermitsKey(chainId, owner));
+  const stored = localStorage.getItem(key);
+
+  if (!stored) return;
+
+  try {
+    const parsed: SignedTokenPermit[] = JSON.parse(stored);
+    const remaining = parsed.filter((storedPermit) => !permits.some((p) => getIsSameTokenPermit(storedPermit, p)));
+
+    if (remaining.length !== parsed.length) {
+      localStorage.setItem(key, JSON.stringify(remaining));
+    }
+  } catch (e) {
+    // a broken entry is replaced on the next write for that account
+  }
+}
 
 export function useTokenPermitsContext() {
   const context = useContext(TokenPermitsContext);
@@ -33,14 +84,40 @@ export function useTokenPermitsContext() {
   return context;
 }
 
+function useTokenPermitAccountType(chainId: number, account: string | undefined) {
+  const { data } = useSWR<TokenPermitAccountType>(account ? [account, chainId, "tokenPermitAccountType"] : null, {
+    fetcher: () => getTokenPermitAccountType(account!, getPublicClientWithRpc(chainId)),
+    refreshInterval: 0,
+  });
+
+  return data;
+}
+
 export function TokenPermitsContextProvider({ children }: { children: React.ReactNode }) {
   const { chainId } = useChainId();
   const { signer } = useWallet();
+  const account = signer?.address;
+  const { uiFlags } = useUiFlagsRequest();
+  const { isTokenPermitsQaOverrideEnabled } = useSettings();
+  const accountType = useTokenPermitAccountType(chainId, account);
 
-  const [, setIsPermitsDisabled] = useLocalStorageSerializeKey<boolean>(PERMITS_DISABLED_KEY, true);
+  const isEnabled = getIsTokenPermitsEnabled({
+    uiFlags,
+    accountType,
+    isQaOverrideEnabled: isTokenPermitsQaOverrideEnabled,
+  });
 
-  const [tokenPermits, setTokenPermits] = useLocalStorageSerializeKey<SignedTokenPermit[]>(
-    getTokenPermitsKey(chainId, signer?.address),
+  useEffect(function retireLegacyPermitsDisabledKey() {
+    localStorage.removeItem(JSON.stringify(LEGACY_PERMITS_DISABLED_KEY));
+  }, []);
+
+  const [fallbackTokens, setFallbackTokens] = useLocalStorageSerializeKey<string[]>(
+    getTokenPermitsFallbackKey(chainId, account),
+    []
+  );
+
+  const [storedTokenPermits, setTokenPermits] = useLocalStorageSerializeKey<SignedTokenPermit[]>(
+    getTokenPermitsKey(chainId, account),
     [],
     {
       raw: false,
@@ -70,12 +147,24 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
     }
   );
 
+  const getIsPermitAvailable = useCallback(
+    (tokenAddress: string) =>
+      isEnabled && getIsTokenPermitAllowed(chainId, tokenAddress) && !fallbackTokens?.includes(tokenAddress),
+    [chainId, fallbackTokens, isEnabled]
+  );
+
+  const tokenPermits = useMemo(() => {
+    if (!isEnabled || !account || !storedTokenPermits?.length) {
+      return EMPTY_ARRAY;
+    }
+
+    return storedTokenPermits.filter(
+      (permit) => isAddressEqual(permit.owner as Address, account as Address) && getIsPermitAvailable(permit.token)
+    );
+  }, [account, getIsPermitAvailable, isEnabled, storedTokenPermits]);
+
   const addTokenPermit = useCallback(
     async (tokenAddress: string, spenderAddress: string, value: bigint) => {
-      if (TOKEN_PERMITS_DISABLED) {
-        return;
-      }
-
       if (!signer?.provider) {
         return;
       }
@@ -92,41 +181,94 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
         });
       }
 
-      setTokenPermits(tokenPermits?.concat(permit) ?? [permit]);
+      // a newer permit reuses the on-chain nonce, so it replaces the older one for the same token and spender
+      const otherPermits = (storedTokenPermits ?? []).filter(
+        (p) => p.token !== permit.token || p.spender !== permit.spender
+      );
+
+      setTokenPermits([...otherPermits, permit]);
     },
-    [chainId, setTokenPermits, tokenPermits, signer]
+    [chainId, setTokenPermits, storedTokenPermits, signer]
   );
 
-  const resetTokenPermits = useCallback(() => {
-    setTokenPermits([]);
-  }, [setTokenPermits]);
+  const removeTokenPermits = useCallback(
+    (permits: SignedTokenPermit[], permitsChainId: number = chainId) => {
+      const isActive = (permit: SignedTokenPermit) =>
+        permitsChainId === chainId &&
+        account !== undefined &&
+        isAddressEqual(permit.owner as Address, account as Address);
+
+      uniq(permits.filter((permit) => !isActive(permit)).map((permit) => permit.owner)).forEach((owner) => {
+        removeInactiveStoredTokenPermits(permitsChainId, owner, permits);
+      });
+
+      const activePermits = permits.filter(isActive);
+
+      if (!storedTokenPermits?.length || activePermits.length === 0) {
+        return;
+      }
+
+      setTokenPermits(
+        storedTokenPermits.filter((stored) => !activePermits.some((p) => getIsSameTokenPermit(stored, p)))
+      );
+    },
+    [account, chainId, setTokenPermits, storedTokenPermits]
+  );
+
+  const latestFallbackContext = useLatest({ chainId, account, setFallbackTokens });
+
+  const disableTokenPermits = useCallback(
+    (tokenAddresses: string[], target?: { chainId: number; account: string }) => {
+      const current = latestFallbackContext.current;
+      const targetChainId = target?.chainId ?? current.chainId;
+      const targetAccount = target?.account ?? current.account;
+      const key = getTokenPermitsFallbackKey(targetChainId, targetAccount);
+
+      if (!key || !targetAccount) return;
+
+      // read from storage rather than the render: callers can run after another disable or a wallet switch
+      const storedTokens = readFallbackTokens(key);
+      const newTokens = uniq(tokenAddresses).filter((tokenAddress) => !storedTokens.includes(tokenAddress));
+
+      if (newTokens.length === 0) return;
+
+      const nextTokens = [...storedTokens, ...newTokens];
+      const isCurrent =
+        targetChainId === current.chainId &&
+        current.account !== undefined &&
+        isAddressEqual(targetAccount as Address, current.account as Address);
+
+      if (isCurrent) {
+        current.setFallbackTokens(nextTokens);
+      } else {
+        localStorage.setItem(JSON.stringify(key), JSON.stringify(nextTokens));
+      }
+    },
+    [latestFallbackContext]
+  );
 
   useEffect(
     function revalidatePermits() {
-      if (!tokenPermits?.length) return;
+      if (!storedTokenPermits?.length) return;
 
-      const now = nowInSeconds();
-      const valid = tokenPermits.filter((permit) => !getIsPermitExpired(permit));
+      const valid = storedTokenPermits.filter((permit) => !getIsPermitExpired(permit));
 
-      if (valid.length !== tokenPermits.length) {
+      if (valid.length !== storedTokenPermits.length) {
         setTokenPermits(valid);
         return;
       }
 
-      const nearestDeadline = Math.min(...tokenPermits.map((p) => Number(p.deadline)));
-      const msUntilExpiry = (nearestDeadline - now + 1) * 1000 + PERMIT_EXPIRY_BUFFER_MS;
-
       const timeoutId = setTimeout(
         () => {
-          setTokenPermits(tokenPermits.filter((p) => !getIsPermitExpired(p)));
+          setTokenPermits(storedTokenPermits.filter((p) => !getIsPermitExpired(p)));
         },
-        Math.max(0, msUntilExpiry)
+        getPermitsExpiryTimeoutMs(storedTokenPermits, nowInSeconds())
       );
 
       const onVisibilityChange = () => {
         if (document.visibilityState === "visible") {
-          const stillValid = tokenPermits.filter((permit) => !getIsPermitExpired(permit));
-          if (stillValid.length !== tokenPermits.length) {
+          const stillValid = storedTokenPermits.filter((permit) => !getIsPermitExpired(permit));
+          if (stillValid.length !== storedTokenPermits.length) {
             setTokenPermits(stillValid);
           }
         }
@@ -139,18 +281,19 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
         document.removeEventListener("visibilitychange", onVisibilityChange);
       };
     },
-    [tokenPermits, setTokenPermits]
+    [storedTokenPermits, setTokenPermits]
   );
 
   const state = useMemo(
     () => ({
-      isPermitsDisabled: TOKEN_PERMITS_DISABLED,
-      setIsPermitsDisabled,
-      tokenPermits: EMPTY_TOKEN_PERMITS,
+      tokenPermits,
+      accountType,
+      getIsPermitAvailable,
       addTokenPermit,
-      resetTokenPermits,
+      removeTokenPermits,
+      disableTokenPermits,
     }),
-    [setIsPermitsDisabled, addTokenPermit, resetTokenPermits]
+    [tokenPermits, accountType, getIsPermitAvailable, addTokenPermit, removeTokenPermits, disableTokenPermits]
   );
 
   return <TokenPermitsContext.Provider value={state}>{children}</TokenPermitsContext.Provider>;

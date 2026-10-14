@@ -134,7 +134,7 @@ describe("approveTokens permit metric", () => {
       tokenAddress: USDC,
       spender: SPENDER,
       approveAmount: undefined,
-      permitParams: { addTokenPermit, setIsPermitsDisabled: vi.fn(), isPermitsDisabled: false },
+      permitParams: { addTokenPermit, disableTokenPermits: vi.fn(), accountType: "eoa" },
       setIsApproving: vi.fn(),
       metric: { flow: "trade", isExpress: true },
     });

@@ -5,11 +5,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { PendingTransaction } from "context/PendingTxnsContext/PendingTxnsContext";
 import type { DecreasePositionAmounts } from "domain/synthetics/trade";
 import { createMockPositionInfo } from "domain/testUtils/mockPositionInfo";
+import { TokenPermitsCheckError } from "domain/tokens/checkTokenPermits";
 import { buildTpSlBatchPayloads } from "domain/tpsl/sidecar";
 import type { PendingTpSlOrderBatch } from "domain/tpsl/types";
 import { expandDecimals } from "lib/numbers";
 import { TxnEventBuilder } from "lib/transactions";
 import { OrderType } from "sdk/utils/orders/types";
+import type { BatchOrderTxnParams, UpdateOrderTxnParams } from "sdk/utils/orderTransactions";
+import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 
 import type { BatchOrderTxnCtx } from "../sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "../useOrderTxnCallbacks";
@@ -22,6 +25,11 @@ const state = vi.hoisted(() => ({
   setPendingExpressTxn: vi.fn(),
   updatePendingExpressTxn: vi.fn(),
   errorToast: vi.fn(),
+  removeTokenPermits: vi.fn(),
+  disableTokenPermits: vi.fn(),
+  sendTokenPermitMetric: vi.fn(),
+  isPermitSignatureErrorOnSimulation: false,
+  isPermitNonceUsed: false as boolean | undefined,
 }));
 
 vi.mock("context/SyntheticsEvents", async (importOriginal) => ({
@@ -45,7 +53,23 @@ vi.mock("context/PendingTxnsContext/PendingTxnsContext", () => ({
 }));
 vi.mock("context/SettingsContext/SettingsContextProvider", () => ({ useSettings: () => ({}) }));
 vi.mock("context/SubaccountContext/SubaccountContextProvider", () => ({ useSubaccountContext: () => ({}) }));
-vi.mock("context/TokenPermitsContext/TokenPermitsContextProvider", () => ({ useTokenPermitsContext: () => ({}) }));
+vi.mock("context/TokenPermitsContext/TokenPermitsContextProvider", () => ({
+  useTokenPermitsContext: () => ({
+    removeTokenPermits: state.removeTokenPermits,
+    disableTokenPermits: state.disableTokenPermits,
+    accountType: "eoa",
+  }),
+}));
+vi.mock("lib/metrics/tokenPermitMetrics", () => ({ sendTokenPermitMetric: state.sendTokenPermitMetric }));
+vi.mock("lib/errors/customErrors", async (importOriginal) => ({
+  ...(await importOriginal<object>()),
+  getIsPermitSignatureErrorOnSimulation: () => state.isPermitSignatureErrorOnSimulation,
+}));
+vi.mock("domain/tokens/permitUtils", async (importOriginal) => ({
+  ...(await importOriginal<object>()),
+  validateTokenPermitSignature: async () => ({ isValid: true }),
+  getIsTokenPermitNonceUsed: async () => state.isPermitNonceUsed,
+}));
 vi.mock("context/TokensBalancesContext/TokensBalancesContextProvider", () => ({
   useTokensBalancesUpdates: () => ({ addOptimisticTokensBalancesUpdates: vi.fn() }),
 }));
@@ -97,12 +121,15 @@ function Harness() {
   return null;
 }
 
-function events(mode: "wallet" | "express" | "one-click" | "gmx-account") {
+function events(
+  mode: "wallet" | "express" | "one-click" | "gmx-account",
+  { batch = batchParams, tokenPermits = [] }: { batch?: BatchOrderTxnParams; tokenPermits?: SignedTokenPermit[] } = {}
+) {
   state.srcChainId = mode === "gmx-account" ? 1 : undefined;
   render(<Harness />);
   return new TxnEventBuilder<BatchOrderTxnCtx>({
     batchId: "batch",
-    batchParams,
+    batchParams: batch,
     signer: {} as BatchOrderTxnCtx["signer"],
     expressParams:
       mode === "wallet"
@@ -111,7 +138,7 @@ function events(mode: "wallet" | "express" | "one-click" | "gmx-account") {
             isGmxAccount: mode === "gmx-account",
             gasPaymentParams: { gasPaymentTokenAddress: position.collateralTokenAddress, gasPaymentTokenAmount: 1n },
             gasLimit: 1n,
-            relayParamsPayload: { tokenPermits: [], externalCalls: { externalCallDataList: [] } },
+            relayParamsPayload: { tokenPermits, externalCalls: { externalCallDataList: [] } },
             subaccount: mode === "one-click" ? { signedApproval: {} } : undefined,
           } as unknown as BatchOrderTxnCtx["expressParams"]),
   });
@@ -122,6 +149,7 @@ beforeEach(() => {
   i18n.activate("en");
   state.batches = [];
   state.pendingTxns = [];
+  state.isPermitSignatureErrorOnSimulation = false;
   vi.clearAllMocks();
 });
 afterEach(cleanup);
@@ -190,4 +218,86 @@ it("tracks the replacement hash when a wallet TP/SL transaction is sped up", () 
   expect(state.pendingTxns[0].chainId).toBe(42161);
   state.pendingTxns[0].onReplaced?.("replacement");
   expect(state.batches[0].transactionHash).toBe("replacement");
+});
+
+describe("token permits", () => {
+  const permit = { token: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831" } as SignedTokenPermit;
+
+  it("sends tokens whose permit failed the pre-send check back to the approval transaction", () => {
+    const builder = events("express");
+    callback(builder.Error(new TokenPermitsCheckError([permit])));
+
+    expect(state.disableTokenPermits).toHaveBeenCalledWith([permit.token]);
+    expect(state.removeTokenPermits).toHaveBeenCalledWith([permit]);
+    expect(state.sendTokenPermitMetric).toHaveBeenCalledWith({
+      outcome: "failedCheck",
+      chainId: 42161,
+      tokenAddress: permit.token,
+      accountType: "eoa",
+      reason: "preSendCheck",
+    });
+    expect(state.errorToast).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps a token on approvals when the simulation rejects a permit whose nonce is still unused", async () => {
+    state.isPermitSignatureErrorOnSimulation = true;
+    state.isPermitNonceUsed = false;
+    const signedPermit = { ...permit, onchainParams: { name: "USD Coin", version: "2", nonce: 0n } };
+    const builder = events("express", { tokenPermits: [signedPermit] });
+    callback(builder.Error(new Error("ExternalCallFailed: invalid signature")));
+
+    expect(state.removeTokenPermits).toHaveBeenCalledWith([signedPermit]);
+    expect(state.sendTokenPermitMetric).toHaveBeenCalledWith(
+      expect.objectContaining({ outcome: "failedCheck", reason: "simulation" })
+    );
+    await vi.waitFor(() =>
+      expect(state.disableTokenPermits).toHaveBeenCalledWith([permit.token], { chainId: 42161, account: permit.owner })
+    );
+  });
+
+  it.each([
+    ["another order used its nonce", true],
+    ["the nonce can't be read", undefined],
+  ])("only drops the permit when %s", async (_, isPermitNonceUsed) => {
+    state.isPermitSignatureErrorOnSimulation = true;
+    state.isPermitNonceUsed = isPermitNonceUsed;
+    const signedPermit = { ...permit, onchainParams: { name: "USD Coin", version: "2", nonce: 0n } };
+    const builder = events("express", { tokenPermits: [signedPermit] });
+    callback(builder.Error(new Error("ExternalCallFailed: invalid signature")));
+
+    expect(state.removeTokenPermits).toHaveBeenCalledWith([signedPermit]);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(state.disableTokenPermits).not.toHaveBeenCalled();
+  });
+
+  const updateParams = {
+    params: { orderKey: "0xorder", executionGasLimit: 1n },
+    updatePayload: { orderKey: "0xorder", executionFeeTopUp: 0n },
+  } as unknown as UpdateOrderTxnParams;
+
+  // the relay outcome tracking counts these permits as executed once the relay call succeeds
+  it.each<[string, BatchOrderTxnParams]>([
+    ["create", batchParams],
+    ["update", { createOrderParams: [], updateOrderParams: [updateParams], cancelOrderParams: [] }],
+    ["cancel", { createOrderParams: [], updateOrderParams: [], cancelOrderParams: [{ orderKey: "0xorder" }] }],
+  ])("tracks the permits a relayed %s batch carries until the relay answers", (_, batch) => {
+    const builder = events("express", { batch, tokenPermits: [permit] });
+    callback(builder.Submitted());
+    callback(builder.Sending());
+    callback(builder.Sent({ type: "relay", relayTaskId: "task" }));
+
+    const { key } = state.setPendingExpressTxn.mock.calls[0][0];
+    expect(state.setPendingExpressTxn).toHaveBeenCalledWith(expect.objectContaining({ tokenPermits: [permit] }));
+    expect(state.updatePendingExpressTxn).toHaveBeenCalledWith({ key, taskId: "task" });
+    expect(state.sendTokenPermitMetric).not.toHaveBeenCalled();
+  });
+
+  it("forgets stale permits the pre-send check dropped", () => {
+    const builder = events("express");
+    builder.ctx = { ...builder.ctx, stalePermits: [permit] };
+    callback(builder.Submitted());
+
+    expect(state.removeTokenPermits).toHaveBeenCalledWith([permit]);
+    expect(state.disableTokenPermits).not.toHaveBeenCalled();
+  });
 });
