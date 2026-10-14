@@ -10,7 +10,10 @@ export function loadGmsolSdk(): Promise<GmsolSdk> {
   }
 
   if (!gmsolSdkPromise) {
-    gmsolSdkPromise = import("@gmsol-labs/gmsol-sdk");
+    gmsolSdkPromise = import("@gmsol-labs/gmsol-sdk").catch((error) => {
+      gmsolSdkPromise = undefined;
+      throw error;
+    });
   }
 
   return gmsolSdkPromise;
