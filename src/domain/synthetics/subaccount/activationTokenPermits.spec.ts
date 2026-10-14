@@ -1,7 +1,7 @@
 import { maxUint256 } from "viem";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { getInvalidPermitSignatureError } from "lib/errors/customErrors";
+import { getInvalidPermitSignatureError, PERMIT_WALLET_CHANGED_ERROR } from "lib/errors/customErrors";
 import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 
 import { getActivationPermitTokenAddresses, signActivationTokenPermits } from "./activationTokenPermits";
@@ -245,5 +245,15 @@ describe("signActivationTokenPermits", () => {
     expect(mocks.sendTokenPermitMetric).toHaveBeenCalledWith(
       expect.objectContaining({ tokenAddress: USDT, outcome: "fallback", reason: "failed" })
     );
+  });
+  it("stops without touching approvals once the account or chain changes", async () => {
+    addTokenPermit
+      .mockRejectedValueOnce(new Error("rpc unavailable"))
+      .mockRejectedValueOnce(new Error(PERMIT_WALLET_CHANGED_ERROR));
+
+    await sign([USDC, WETH, USDT]);
+
+    expect(addTokenPermit).toHaveBeenCalledTimes(2);
+    expect(disableTokenPermits).not.toHaveBeenCalled();
   });
 });

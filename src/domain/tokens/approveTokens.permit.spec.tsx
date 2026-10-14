@@ -1,7 +1,7 @@
 import type { Signer } from "ethers";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { INVALID_PERMIT_SIGNATURE_ERROR } from "lib/errors/customErrors";
+import { INVALID_PERMIT_SIGNATURE_ERROR, PERMIT_WALLET_CHANGED_ERROR } from "lib/errors/customErrors";
 
 import { approveTokens } from "./approveTokens";
 
@@ -78,6 +78,15 @@ describe("approveTokens with a permit", () => {
     expect(mocks.approve).not.toHaveBeenCalled();
     expect(mocks.disableTokenPermits).not.toHaveBeenCalled();
     expect(mocks.sendTokenPermitMetric).toHaveBeenCalledWith({ ...metricParams, outcome: "rejected" });
+  });
+
+  it("stops without an approval or a fallback when the account or chain changed during signing", async () => {
+    mocks.addTokenPermit.mockRejectedValue(new Error(PERMIT_WALLET_CHANGED_ERROR));
+
+    await expect(approveWithPermit()).resolves.toBeUndefined();
+
+    expect(mocks.approve).not.toHaveBeenCalled();
+    expect(mocks.disableTokenPermits).not.toHaveBeenCalled();
   });
 
   it.each([

@@ -20,7 +20,7 @@ import {
   TokenPermitAccountType,
 } from "domain/tokens/tokenPermitsEligibility";
 import { useChainId } from "lib/chains";
-import { getInvalidPermitSignatureError } from "lib/errors/customErrors";
+import { getInvalidPermitSignatureError, PERMIT_WALLET_CHANGED_ERROR } from "lib/errors/customErrors";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { EMPTY_ARRAY } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
@@ -119,9 +119,11 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
     }
   );
 
-  // several permits can be signed in one flow (One-Click activation), before a re-render refreshes the closure
-  const latestStoredTokenPermits = useRef(storedTokenPermits);
-  latestStoredTokenPermits.current = storedTokenPermits;
+  // several permits can be signed in one flow (One-Click activation), before a re-render refreshes the closure;
+  // the list is only reused while the account and chain it was read for are still the active ones
+  const walletKey = `${chainId}:${account}`;
+  const latestStoredTokenPermits = useRef({ walletKey, permits: storedTokenPermits });
+  latestStoredTokenPermits.current = { walletKey, permits: storedTokenPermits };
 
   const getIsPermitAvailable = useCallback(
     (tokenAddress: string) =>
@@ -145,6 +147,15 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
         return;
       }
 
+      const signerWalletKey = `${chainId}:${signer.address}`;
+      const assertWalletUnchanged = () => {
+        if (latestStoredTokenPermits.current.walletKey !== signerWalletKey) {
+          throw new Error(PERMIT_WALLET_CHANGED_ERROR);
+        }
+      };
+
+      assertWalletUnchanged();
+
       const { permit } = await createAndSignTokenPermit(
         chainId,
         signer,
@@ -164,13 +175,15 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
         });
       }
 
+      assertWalletUnchanged();
+
       // a newer permit reuses the on-chain nonce, so it replaces the older one for the same token and spender
-      const otherPermits = (latestStoredTokenPermits.current ?? []).filter(
+      const otherPermits = (latestStoredTokenPermits.current.permits ?? []).filter(
         (p) => p.token !== permit.token || p.spender !== permit.spender
       );
       const nextPermits = [...otherPermits, permit];
 
-      latestStoredTokenPermits.current = nextPermits;
+      latestStoredTokenPermits.current = { walletKey: signerWalletKey, permits: nextPermits };
       setTokenPermits(nextPermits);
     },
     [chainId, setTokenPermits, signer]

@@ -8,6 +8,7 @@ import {
   IS_TOKEN_PERMITS_METAMASK_7702_ENABLED_UI_FLAG,
   type UiFlags,
 } from "domain/synthetics/uiFlags/uiFlags";
+import { PERMIT_WALLET_CHANGED_ERROR } from "lib/errors/customErrors";
 import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 
 import { TokenPermitsContextProvider, TokenPermitsState, useTokenPermitsContext } from "./TokenPermitsContextProvider";
@@ -23,12 +24,13 @@ const mocks = vi.hoisted(() => ({
   uiFlags: undefined as UiFlags | undefined,
   isQaOverrideEnabled: false,
   accountType: "eoa" as string,
+  account: "0x0000000000000000000000000000000000000001",
   createAndSignTokenPermit: vi.fn(),
 }));
 
 vi.mock("lib/chains", () => ({ useChainId: () => ({ chainId: CHAIN_ID }) }));
 vi.mock("lib/wallets/useWallet", () => ({
-  default: () => ({ signer: { address: ACCOUNT, provider: {} } }),
+  default: () => ({ signer: { address: mocks.account, provider: {} } }),
 }));
 vi.mock("lib/wallets/walletConfig", () => ({ getPublicClientWithRpc: () => ({}) }));
 vi.mock("domain/synthetics/uiFlags/useUiFlagsRequest", () => ({
@@ -82,16 +84,22 @@ function Harness() {
   return null;
 }
 
-async function setup() {
-  render(
+function Tree() {
+  return (
     <SWRConfig value={SWR_CONFIG}>
       <TokenPermitsContextProvider>
         <Harness />
       </TokenPermitsContextProvider>
     </SWRConfig>
   );
+}
+
+async function setup() {
+  const { rerender } = render(<Tree />);
 
   await waitFor(() => expect(state.accountType).toBe(mocks.accountType));
+
+  return { rerender: () => rerender(<Tree />) };
 }
 
 function flag(name: string, enabled: boolean): UiFlags {
@@ -104,6 +112,7 @@ describe("TokenPermitsContextProvider", () => {
     mocks.uiFlags = flag(IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG, true);
     mocks.isQaOverrideEnabled = false;
     mocks.accountType = "eoa";
+    mocks.account = ACCOUNT;
   });
 
   afterEach(() => {
@@ -221,5 +230,24 @@ describe("TokenPermitsContextProvider", () => {
     expect(mocks.createAndSignTokenPermit.mock.calls.map((call) => call[5])).toEqual([usdc.deadline, weth.deadline]);
     expect(readStoredTokens()).toEqual([USDC, WETH]);
     expect(state.tokenPermits.map((p) => p.deadline)).toEqual([usdc.deadline, weth.deadline]);
+  });
+  it("stores nothing when the account changes while a permit is being signed", async () => {
+    const { rerender } = await setup();
+
+    let resolveSigning: (value: { permit: SignedTokenPermit }) => void = () => undefined;
+    mocks.createAndSignTokenPermit.mockReturnValue(new Promise((resolve) => (resolveSigning = resolve)));
+
+    const { addTokenPermit } = state;
+    const signing = addTokenPermit(USDC, ROUTER, 100n);
+
+    mocks.account = "0x0000000000000000000000000000000000000002";
+    rerender();
+    resolveSigning({ permit: permit(USDC) });
+
+    await expect(signing).rejects.toThrow(PERMIT_WALLET_CHANGED_ERROR);
+    expect(readStoredTokens()).toEqual([]);
+    expect(
+      JSON.parse(localStorage.getItem(JSON.stringify([CHAIN_ID, mocks.account, "token-permits"])) ?? "[]")
+    ).toEqual([]);
   });
 });

@@ -291,12 +291,12 @@ describe("SubaccountContextProvider.tryEnableSubaccount token permits", () => {
     vi.clearAllMocks();
   });
 
-  async function enable() {
+  async function enable(params?: { withTokenPermits?: boolean }) {
     const context = setup();
 
     let result: boolean | undefined;
     await act(async () => {
-      result = await context.current.tryEnableSubaccount();
+      result = await context.current.tryEnableSubaccount(params);
     });
 
     return { context, result };
@@ -327,6 +327,22 @@ describe("SubaccountContextProvider.tryEnableSubaccount token permits", () => {
     expect(mocks.getInitialSubaccountApproval.mock.invocationCallOrder[0]).toBeLessThan(
       mocks.signActivationTokenPermits.mock.invocationCallOrder[0]
     );
+  });
+
+  it("activates without waiting for the permit prompts", async () => {
+    mocks.signActivationTokenPermits.mockReturnValue(new Promise(() => undefined));
+
+    const { result } = await enable();
+
+    expect(result).toBe(true);
+    expect(mocks.signActivationTokenPermits).toHaveBeenCalled();
+  });
+
+  it("asks for no permits when the caller opts out", async () => {
+    const { result } = await enable({ withTokenPermits: false });
+
+    expect(result).toBe(true);
+    expect(mocks.getActivationPermitTokenAddresses).not.toHaveBeenCalled();
   });
 
   it("still activates when the permit step fails", async () => {

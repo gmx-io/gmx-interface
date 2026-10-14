@@ -162,7 +162,8 @@ export type SubaccountState = {
   }) => Promise<boolean>;
   resetSubaccountApproval: () => void;
   invalidateSubaccountApproval: (approval: SignedSubaccountApproval) => boolean;
-  tryEnableSubaccount: () => Promise<boolean>;
+  // withTokenPermits: false for flows that don't trade from the wallet, like GMX Account deposits
+  tryEnableSubaccount: (params?: { withTokenPermits?: boolean }) => Promise<boolean>;
   tryDisableSubaccount: () => Promise<boolean>;
   refreshSubaccountData: () => void;
 };
@@ -337,133 +338,139 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     [refreshSubaccountData, removeStoredApproval]
   );
 
-  const tryEnableSubaccount = useCallback(async () => {
-    if (!provider || !signer || (await getIsContractAccount(signer.address, chainId))) {
-      return false;
-    }
-
-    let config = subaccountConfig;
-
-    setSubaccountActivationError(undefined);
-
-    const toastId = Date.now();
-
-    helperToast.info(<SubaccountActivateNotification toastId={toastId} />, {
-      autoClose: false,
-      toastId,
-    });
-
-    let isConfigGeneratedInCurrentFlow = false;
-
-    if (!config?.address) {
-      try {
-        setSubaccountActivationState(SubaccountActivationState.Generating);
-        config = await generateSubaccount(signer, chainId);
-        isConfigGeneratedInCurrentFlow = true;
-
-        setSubaccountConfig(config);
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error(error);
-
-        setSubaccountActivationState(SubaccountActivationState.GeneratingError);
-        setSubaccountActivationError({ message: error?.message, walletName: error?.data?.walletName });
-        metrics.pushError(error, "subaccount.generateSubaccount");
-
+  const tryEnableSubaccount = useCallback(
+    async ({ withTokenPermits = true }: { withTokenPermits?: boolean } = {}) => {
+      if (!provider || !signer || (await getIsContractAccount(signer.address, chainId))) {
         return false;
       }
-    }
 
-    if (!config?.address) {
-      const error = "Missed subaccount config";
-      // eslint-disable-next-line no-console
-      console.error(error);
-      setSubaccountActivationState(SubaccountActivationState.GeneratingError);
+      let config = subaccountConfig;
 
-      metrics.pushError(error, "subaccount.missedSubaccountConfigAfterGeneration");
-      resetStoredConfig();
-      return false;
-    }
+      setSubaccountActivationError(undefined);
 
-    const isGmxAccount = calcSelector(selectTradeboxIsFromTokenGmxAccount);
+      const toastId = Date.now();
 
-    try {
-      setSubaccountActivationState(SubaccountActivationState.ApprovalSigning);
-
-      const defaultSubaccountApproval = await getInitialSubaccountApproval({
-        chainId,
-        signer,
-        provider,
-        subaccountAddress: config!.address,
-        isGmxAccount,
+      helperToast.info(<SubaccountActivateNotification toastId={toastId} />, {
+        autoClose: false,
+        toastId,
       });
 
-      setSignedApproval(defaultSubaccountApproval);
+      let isConfigGeneratedInCurrentFlow = false;
 
-      if (!config.isNew) {
-        setSubaccountConfig({ ...config, isNew: true });
+      if (!config?.address) {
+        try {
+          setSubaccountActivationState(SubaccountActivationState.Generating);
+          config = await generateSubaccount(signer, chainId);
+          isConfigGeneratedInCurrentFlow = true;
+
+          setSubaccountConfig(config);
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error(error);
+
+          setSubaccountActivationState(SubaccountActivationState.GeneratingError);
+          setSubaccountActivationError({ message: error?.message, walletName: error?.data?.walletName });
+          metrics.pushError(error, "subaccount.generateSubaccount");
+
+          return false;
+        }
       }
-    } catch (error) {
-      if (isConfigGeneratedInCurrentFlow) {
+
+      if (!config?.address) {
+        const error = "Missed subaccount config";
+        // eslint-disable-next-line no-console
+        console.error(error);
+        setSubaccountActivationState(SubaccountActivationState.GeneratingError);
+
+        metrics.pushError(error, "subaccount.missedSubaccountConfigAfterGeneration");
         resetStoredConfig();
+        return false;
       }
 
-      setSubaccountActivationState(SubaccountActivationState.ApprovalSigningError);
-      setSubaccountActivationError({ message: error?.message, walletName: error?.data?.walletName });
-      // eslint-disable-next-line no-console
-      console.error(error);
-      metrics.pushError(error, "subaccount.signDefaultApproval");
-      return false;
-    }
+      const isGmxAccount = calcSelector(selectTradeboxIsFromTokenGmxAccount);
 
-    // only wallet-funded orders on the settlement chain spend through the Router
-    if (srcChainId === undefined && !isGmxAccount) {
       try {
-        const spender = getContract(chainId, "SyntheticsRouter");
+        setSubaccountActivationState(SubaccountActivationState.ApprovalSigning);
 
-        const tokenAddresses = await getActivationPermitTokenAddresses({
+        const defaultSubaccountApproval = await getInitialSubaccountApproval({
           chainId,
-          client: getPublicClientWithRpc(chainId),
-          account: signer.address,
-          spender,
-          gasPaymentTokenAddress: calcSelector(selectGasPaymentTokenAddress),
-          tokenPermits,
-          getIsPermitAvailable,
+          signer,
+          provider,
+          subaccountAddress: config!.address,
+          isGmxAccount,
         });
 
-        await signActivationTokenPermits({
-          chainId,
-          spender,
-          tokenAddresses,
-          accountType: tokenPermitAccountType,
-          addTokenPermit,
-          disableTokenPermits,
-        });
+        setSignedApproval(defaultSubaccountApproval);
+
+        if (!config.isNew) {
+          setSubaccountConfig({ ...config, isNew: true });
+        }
       } catch (error) {
-        // One-Click is already active, the tokens just keep the approval flow
-        metrics.pushError(error, "subaccount.activationTokenPermits");
+        if (isConfigGeneratedInCurrentFlow) {
+          resetStoredConfig();
+        }
+
+        setSubaccountActivationState(SubaccountActivationState.ApprovalSigningError);
+        setSubaccountActivationError({ message: error?.message, walletName: error?.data?.walletName });
+        // eslint-disable-next-line no-console
+        console.error(error);
+        metrics.pushError(error, "subaccount.signDefaultApproval");
+        return false;
       }
-    }
 
-    setSubaccountActivationState(SubaccountActivationState.Success);
+      setSubaccountActivationState(SubaccountActivationState.Success);
 
-    return true;
-  }, [
-    provider,
-    signer,
-    subaccountConfig,
-    calcSelector,
-    setSubaccountConfig,
-    resetStoredConfig,
-    chainId,
-    srcChainId,
-    setSignedApproval,
-    tokenPermits,
-    tokenPermitAccountType,
-    getIsPermitAvailable,
-    addTokenPermit,
-    disableTokenPermits,
-  ]);
+      // only wallet-funded orders on the settlement chain spend through the Router; not awaited, so a wallet
+      // that never answers a permit prompt can't hold the activation
+      if (withTokenPermits && srcChainId === undefined && !isGmxAccount) {
+        void (async () => {
+          try {
+            const spender = getContract(chainId, "SyntheticsRouter");
+
+            const tokenAddresses = await getActivationPermitTokenAddresses({
+              chainId,
+              client: getPublicClientWithRpc(chainId),
+              account: signer.address,
+              spender,
+              gasPaymentTokenAddress: calcSelector(selectGasPaymentTokenAddress),
+              tokenPermits,
+              getIsPermitAvailable,
+            });
+
+            await signActivationTokenPermits({
+              chainId,
+              spender,
+              tokenAddresses,
+              accountType: tokenPermitAccountType,
+              addTokenPermit,
+              disableTokenPermits,
+            });
+          } catch (error) {
+            // One-Click is already active, the tokens just keep the approval flow
+            metrics.pushError(error, "subaccount.activationTokenPermits");
+          }
+        })();
+      }
+
+      return true;
+    },
+    [
+      provider,
+      signer,
+      subaccountConfig,
+      calcSelector,
+      setSubaccountConfig,
+      resetStoredConfig,
+      chainId,
+      srcChainId,
+      setSignedApproval,
+      tokenPermits,
+      tokenPermitAccountType,
+      getIsPermitAvailable,
+      addTokenPermit,
+      disableTokenPermits,
+    ]
+  );
 
   const tryDisableSubaccount = useCallback(async (): Promise<boolean> => {
     if (!signer || !subaccount?.address || !account) {

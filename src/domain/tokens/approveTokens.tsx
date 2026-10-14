@@ -6,7 +6,7 @@ import { maxUint256 } from "viem";
 import { getChainName, getExplorerUrl } from "config/chains";
 import { JUMPER_BRIDGE_URL } from "config/links";
 import { AddTokenPermitFn } from "context/TokenPermitsContext/TokenPermitsContextProvider";
-import { INVALID_PERMIT_SIGNATURE_ERROR } from "lib/errors/customErrors";
+import { INVALID_PERMIT_SIGNATURE_ERROR, PERMIT_WALLET_CHANGED_ERROR } from "lib/errors/customErrors";
 import { estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { helperToast } from "lib/helperToast";
 import { metrics, type TokenApprovalEvent, type TokenApprovalMetricParams } from "lib/metrics";
@@ -125,6 +125,13 @@ export async function approveTokens({
         sendMetric("permit", "rejected", error);
         onApproveFail?.(error, { isPermit: true });
         helperToast.error(t`Permit signing cancelled`);
+        setIsApproving(false);
+        return;
+      }
+
+      // the approval was started for the previous account or chain, so neither a fallback nor a transaction fits
+      if (error.message === PERMIT_WALLET_CHANGED_ERROR) {
+        onApproveFail?.(error, { isPermit: true });
         setIsApproving(false);
         return;
       }

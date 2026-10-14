@@ -4,7 +4,7 @@ import type { AddTokenPermitFn } from "context/TokenPermitsContext/TokenPermitsC
 import { NON_EXPIRING_PERMIT_DEADLINE } from "domain/tokens/permitUtils";
 import { getTokenPermitsAllowlist } from "domain/tokens/tokenPermitsEligibility";
 import { type ErrorLike, parseError } from "lib/errors";
-import { INVALID_PERMIT_SIGNATURE_ERROR } from "lib/errors/customErrors";
+import { INVALID_PERMIT_SIGNATURE_ERROR, PERMIT_WALLET_CHANGED_ERROR } from "lib/errors/customErrors";
 import { metrics } from "lib/metrics";
 import { sendTokenPermitMetric } from "lib/metrics/tokenPermitMetrics";
 import { abis } from "sdk/abis";
@@ -105,6 +105,11 @@ export async function signActivationTokenPermits({
       await addTokenPermit(tokenAddress, spender, maxUint256, { deadline: NON_EXPIRING_PERMIT_DEADLINE });
       sendTokenPermitMetric({ ...metricParams, outcome: "signed" });
     } catch (error) {
+      // the flow belongs to the previous account or chain; its fallback list must not be touched from here
+      if (error?.message === PERMIT_WALLET_CHANGED_ERROR) {
+        return;
+      }
+
       if (parseError(error as ErrorLike)?.isUserRejectedError) {
         sendTokenPermitMetric({ ...metricParams, outcome: "rejected" });
         break;
