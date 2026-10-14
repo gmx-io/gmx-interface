@@ -1,10 +1,10 @@
 import { Trans, t } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { DEFAULT_ONE_CLICK_SESSION_DURATION, DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS } from "config/oneClickTrading";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useBigNumberInput } from "domain/synthetics/common/useBigNumberInput";
 import { getRemainingSubaccountActions, getRemainingSubaccountSeconds } from "domain/synthetics/subaccount";
-import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT } from "sdk/configs/express";
 import { periodToSeconds, secondsToPeriod } from "sdk/utils/time";
 
 import Button from "components/Button/Button";
@@ -50,10 +50,10 @@ export function OneClickAdvancedSettings() {
   const disabled = useMemo(() => {
     const remainingActions = subaccount
       ? getRemainingSubaccountActions(subaccount)
-      : initialSettings?.remainingActions ?? BigInt(DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT);
+      : initialSettings?.remainingActions ?? BigInt(DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS);
     const remainingSeconds = subaccount
       ? getRemainingSubaccountSeconds(subaccount)
-      : initialSettings?.remainingSeconds ?? BigInt(DEFAULT_SUBACCOUNT_EXPIRY_DURATION);
+      : initialSettings?.remainingSeconds ?? BigInt(DEFAULT_ONE_CLICK_SESSION_DURATION);
 
     const nextRemainigActions = BigInt(remainingActionsString);
     const nextRemainingSeconds = BigInt(periodToSeconds(Number(daysLimitString), "1d"));
@@ -86,10 +86,10 @@ export function OneClickAdvancedSettings() {
     function initSettings() {
       const remainingActions = subaccount
         ? getRemainingSubaccountActions(subaccount)
-        : initialSettings?.remainingActions ?? BigInt(DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT);
+        : initialSettings?.remainingActions ?? BigInt(DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS);
       const remainingSeconds = subaccount
         ? getRemainingSubaccountSeconds(subaccount)
-        : initialSettings?.remainingSeconds ?? BigInt(DEFAULT_SUBACCOUNT_EXPIRY_DURATION);
+        : initialSettings?.remainingSeconds ?? BigInt(DEFAULT_ONE_CLICK_SESSION_DURATION);
       const remainingDays = secondsToPeriod(Number(remainingSeconds), "1d", true);
 
       setRemainingActionsString(remainingActions.toString());

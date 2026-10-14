@@ -4,6 +4,7 @@ import { decodeFunctionResult, encodeFunctionData, isHex, maxUint256, type Hex, 
 
 import type { AnyChainId, ContractsChainId, SourceChainId } from "config/chains";
 import { isSourceChain } from "config/multichain";
+import { DEFAULT_ONE_CLICK_SESSION_DURATION, DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS } from "config/oneClickTrading";
 import type {
   SignedSubaccountApproval,
   Subaccount,
@@ -23,7 +24,6 @@ import {
   subaccountIntegrationIdKey,
   subaccountListKey,
 } from "sdk/configs/dataStore";
-import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT } from "sdk/configs/express";
 import { bigMath } from "sdk/utils/bigmath";
 import { ZERO_DATA } from "sdk/utils/hash";
 import { nowInSeconds } from "sdk/utils/time";
@@ -310,7 +310,7 @@ export function getInitialSubaccountLimits(
     throw new Error("One-Click limits must be positive");
   }
   const defaultExpiresAt =
-    BigInt(nowInSeconds()) + (initialSettings?.remainingSeconds ?? BigInt(DEFAULT_SUBACCOUNT_EXPIRY_DURATION));
+    BigInt(nowInSeconds()) + (initialSettings?.remainingSeconds ?? BigInt(DEFAULT_ONE_CLICK_SESSION_DURATION));
 
   let expiresAt = getSubaccountExpiresAt({
     onchainData,
@@ -321,7 +321,7 @@ export function getInitialSubaccountLimits(
     expiresAt = defaultExpiresAt;
   }
 
-  const defaultMaxAllowedCount = initialSettings?.remainingActions ?? BigInt(DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT);
+  const defaultMaxAllowedCount = initialSettings?.remainingActions ?? BigInt(DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS);
   const maxAllowedCount = onchainData.currentActionsCount + defaultMaxAllowedCount;
 
   return { expiresAt, maxAllowedCount };
@@ -431,13 +431,10 @@ export async function signUpdatedSubaccountSettings({
     nextMaxAllowedCount = oldMaxAllowedCount + nextRemainigActions - oldRemainingActions;
   }
 
-  const oldExpiresAt = getSubaccountExpiresAt(subaccount);
-  const oldRemainingSeconds = getRemainingSubaccountSeconds(subaccount);
-
-  let nextExpiresAt = oldExpiresAt;
+  let nextExpiresAt = getSubaccountExpiresAt(subaccount);
 
   if (nextRemainingSeconds !== undefined) {
-    nextExpiresAt = oldExpiresAt + nextRemainingSeconds - oldRemainingSeconds;
+    nextExpiresAt = BigInt(nowInSeconds()) + nextRemainingSeconds;
   }
 
   const signedSubaccountApproval = await createAndSignSubaccountApproval(
