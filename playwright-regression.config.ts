@@ -5,6 +5,12 @@ if (process.env.CI && !process.env.REGRESSION_BASE_URL) {
 }
 
 const baseURL = process.env.REGRESSION_BASE_URL || "https://test.gmx-interface.pages.dev";
+const landingURL = process.env.REGRESSION_LANDING_URL || "https://gmx.io";
+if (process.env.CI && !process.env.REGRESSION_LANDING_URL) {
+  throw new Error(
+    "REGRESSION_LANDING_URL is required in CI; resolve the PR landing deployment preview before running tests"
+  );
+}
 const chainId = Number(process.env.REGRESSION_CHAIN_ID || 42161);
 
 if (![42161, 43114].includes(chainId)) {
@@ -19,7 +25,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: 2,
-  workers: 3,
+  workers: 2,
   outputDir: "test-results/regression",
   reporter: [
     ["list"],
@@ -30,7 +36,10 @@ export default defineConfig({
     chainId,
     checkoutCommit: process.env.REGRESSION_COMMIT || process.env.GITHUB_SHA || "local",
     target: baseURL,
-    data: "live public HTTP; mock wallet and empty event stream for connected-state; simulated RPC for gas guard",
+    landingTarget: landingURL,
+    unavailableFeatures:
+      chainId === 43114 ? ["GMX Account: unavailable on Avalanche; its scenarios run on Arbitrum"] : [],
+    data: "live-state discovers public accounts with no API/RPC/price/flag/WebSocket mocks and a read-only provider; other projects: live public market data except fixed ETH market/price snapshots in unsigned form tests; mocked account flags, balances, positions, orders, histories and event stream; unsigned requests are rejected; funded UI rehearsals simulate transactions and receipts with a disposable signer, never the funded wallet; simulated RPC for gas guard",
     prNumber: process.env.REGRESSION_PR_NUMBER,
     deploymentCommit: process.env.REGRESSION_DEPLOYMENT_SHA,
     deploymentCheckUrl: process.env.REGRESSION_DEPLOYMENT_CHECK_URL,
@@ -43,20 +52,39 @@ export default defineConfig({
     timezoneId: "UTC",
     testIdAttribute: "data-qa",
     serviceWorkers: "block",
+    actionTimeout: 15_000,
+    navigationTimeout: 45_000,
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
     video: "retain-on-failure",
   },
   projects: [
     { name: "ui", testMatch: "ui/*.spec.ts" },
-    { name: "connected-state", testMatch: "connected-state/*.spec.ts" },
-    { name: "gates", testMatch: "gates/*.spec.ts" },
-    { name: "funded-runtime", testMatch: "funded/runtime.spec.ts" },
     {
-      name: "funded-browser",
-      testMatch: "funded/browser.spec.ts",
-      expect: { timeout: 1_000 },
-      use: { actionTimeout: 1_000, navigationTimeout: 1_000 },
+      name: "live-state",
+      testMatch: "live-state/*.spec.ts",
+      testIgnore: chainId === 43114 ? "live-state/gmxAccount*.spec.ts" : [],
+      timeout: 180_000,
+      workers: 1,
     },
+    {
+      name: "landing",
+      testMatch: "landing/*.spec.ts",
+      use: { baseURL: landingURL },
+      ...(process.env.REGRESSION_BASELINE_DIR
+        ? {
+            snapshotPathTemplate: `${process.env.REGRESSION_BASELINE_DIR}/{arg}{ext}`,
+            updateSnapshots: "none" as const,
+          }
+        : {}),
+    },
+    { name: "mobile", testMatch: "mobile/*.spec.ts", use: { ...devices["Pixel 7"] } },
+    {
+      name: "connected-state",
+      testMatch: "connected-state/*.spec.ts",
+      testIgnore: chainId === 43114 ? "connected-state/gmxAccount*.spec.ts" : [],
+    },
+    // The funded harness checks run from playwright-funded-harness.config.ts.
+    { name: "gates", testMatch: "gates/*.spec.ts", testIgnore: "gates/gasGuard.spec.ts" },
   ],
 });

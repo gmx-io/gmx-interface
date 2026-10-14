@@ -1,7 +1,7 @@
 import { expect, type BrowserContext, type Page } from "@playwright/test";
 import { formatBalanceAmount, formatUsd } from "../../../sdk/src/utils/numbers/utils";
 
-import { installInjectedWallet } from "../fixtures/injectedWallet";
+import { connectInjectedWallet, installInjectedWallet } from "../fixtures/injectedWallet";
 import type { FundedSession } from "./session";
 
 export async function connectFundedWallet(
@@ -25,24 +25,20 @@ export async function connectFundedWallet(
       }
     },
   });
-  const response = await page.goto("/trade");
+  await openFundedTradePage(page, session.address);
+}
+
+export async function openFundedTradePage(page: Page, address: string) {
+  const response = await page.goto("/trade", { waitUntil: "domcontentloaded" });
   if (response && !response.ok())
     throw new Error(`Deployment returned status ${response.status()}; check REGRESSION_BASE_URL before retrying`);
   if (await page.getByRole("heading", { name: "Nothing is here yet", exact: true }).isVisible())
     throw new Error("Deployment is not available yet; check REGRESSION_BASE_URL before retrying");
-  await page.getByRole("button", { name: "Connect wallet", exact: true }).first().click();
-  await page
-    .getByRole("button", { name: /MetaMask/i })
-    .first()
-    .click();
-  await expect(page.getByTestId("user-address")).toContainText(
-    new RegExp(`${session.address.slice(0, 6)}.*${session.address.slice(-4)}`),
-    { timeout: 15_000 }
-  );
-  await page.reload();
-  await expect(page.getByTestId("user-address")).toContainText(
-    new RegExp(`${session.address.slice(0, 6)}.*${session.address.slice(-4)}`),
-    { timeout: 15_000 }
+  await connectInjectedWallet(page, address);
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await expect(page.getByTestId("user-address"), "Wallet did not restore after refresh").toContainText(
+    new RegExp(`${address.slice(0, 6)}.*${address.slice(-4)}`),
+    { timeout: 45_000 }
   );
   await expect(page.getByRole("banner").getByRole("button", { name: "Arbitrum", exact: true })).toBeVisible();
   await checkTradeUiReady(page);
@@ -76,7 +72,8 @@ async function waitForPositionTable(page: Page) {
 }
 
 export async function checkPosition(page: Page, size?: bigint, isLong = true) {
-  await page.goto("/trade");
+  await page.goto("/trade", { waitUntil: "domcontentloaded" });
+  await waitForConnectedWallet(page);
   await tradeTab(page, "Positions").click();
   const table = await waitForPositionTable(page);
   if (size === 0n) {
@@ -90,24 +87,26 @@ export async function checkPosition(page: Page, size?: bigint, isLong = true) {
   await expect(row).toHaveCount(1);
   await expect(row).toContainText("ETH");
   if (size !== undefined) await expect(row.getByRole("cell").nth(1)).toContainText(formatUsd(size)!);
-  await page.reload();
+  await page.reload({ waitUntil: "domcontentloaded" });
   await waitForPositionTable(page);
   await expect(row).toHaveCount(1);
   if (size !== undefined) await expect(row.getByRole("cell").nth(1)).toContainText(formatUsd(size)!);
 }
 
-export async function checkOrder(page: Page, key: string, visible = true) {
-  await page.goto("/trade");
+export async function checkOrder(page: Page, key: string, visible = true, twap = false) {
+  await page.goto("/trade", { waitUntil: "domcontentloaded" });
   await waitForConnectedWallet(page);
   await tradeTab(page, "Orders").click();
   const table = page.getByTestId("trade-table-large");
   await expect(table.getByRole("columnheader", { name: "TRIGGER PRICE", exact: true })).toBeVisible();
   await expect(table.getByText("Loading...", { exact: true })).toBeHidden({ timeout: 45_000 });
-  const row = page.getByTestId(`order-${key}`);
+  const row = twap
+    ? table.getByRole("row").filter({ has: page.getByRole("cell", { name: "TWAP", exact: true }) })
+    : page.getByTestId(`order-${key}`);
   if (visible) {
     await expect(row).toBeVisible();
     await expect(row).toContainText("ETH");
-    await page.reload();
+    await page.reload({ waitUntil: "domcontentloaded" });
     await waitForConnectedWallet(page);
     await expect(table.getByText("Loading...", { exact: true })).toBeHidden({ timeout: 45_000 });
     await expect(row).toBeVisible();
@@ -115,7 +114,7 @@ export async function checkOrder(page: Page, key: string, visible = true) {
 }
 
 export async function checkAccount(page: Page, positive: boolean) {
-  await page.goto("/trade");
+  await page.goto("/trade", { waitUntil: "domcontentloaded" });
   await waitForConnectedWallet(page);
   await page.getByTestId("user-address").click();
   const balance = page.getByTestId("gmx-account-balance");
@@ -128,20 +127,24 @@ export async function checkAccount(page: Page, positive: boolean) {
 }
 
 export async function checkLp(page: Page, token: string, kind: "GM" | "GLV", amount: bigint) {
-  await page.goto("/earn/portfolio");
+  await page.goto("/earn/portfolio", { waitUntil: "domcontentloaded" });
+  await waitForConnectedWallet(page);
   const balance = page.getByTestId(`info-row-lp-balance-${token}`);
-  await expect(balance).toBeVisible();
+  await expect(balance).toBeVisible({ timeout: 45_000 });
   await expect(balance).toContainText(kind);
-  await expect(balance).toContainText(formatBalanceAmount(amount, 18, kind, { showZero: true }));
-  await page.reload();
-  await expect(balance).toContainText(formatBalanceAmount(amount, 18, kind, { showZero: true }));
+  await expect(balance).toContainText(formatBalanceAmount(amount, 18, kind, { showZero: true }), { timeout: 45_000 });
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await waitForConnectedWallet(page);
+  await expect(balance).toContainText(formatBalanceAmount(amount, 18, kind, { showZero: true }), { timeout: 45_000 });
 }
 
 export async function checkStake(page: Page, amount: bigint) {
-  await page.goto("/earn/portfolio");
+  await page.goto("/earn/portfolio", { waitUntil: "domcontentloaded" });
+  await waitForConnectedWallet(page);
   const balance = page.getByTestId("info-row-staked-gmx");
   await expect(balance).toContainText("GMX");
-  await expect(balance).toContainText(formatBalanceAmount(amount, 18, "GMX", { showZero: true }));
-  await page.reload();
-  await expect(balance).toContainText(formatBalanceAmount(amount, 18, "GMX", { showZero: true }));
+  await expect(balance).toContainText(formatBalanceAmount(amount, 18, "GMX", { showZero: true }), { timeout: 45_000 });
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await waitForConnectedWallet(page);
+  await expect(balance).toContainText(formatBalanceAmount(amount, 18, "GMX", { showZero: true }), { timeout: 45_000 });
 }

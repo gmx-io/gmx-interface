@@ -79,7 +79,9 @@ test("blocks markets whose minimums cannot fit the small-wallet budget", () => {
 
 test("the opening budget cannot consume cleanup reserves; cleanup shares the same total cap", () => {
   checkFeeBudget(2n * USD, USD, false);
-  assert.throws(() => checkFeeBudget(2n * USD, USD + 1n, false));
+  assert.throws(() => checkFeeBudget(2n * USD, USD + 1n, false), {
+    message: "Action fee exceeds $1 (estimated $1.000000000000000000000000000001)",
+  });
   assert.throws(() => checkFeeBudget(3n * USD, usd("0.01"), false));
   checkFeeBudget(4n * USD, USD, true);
   assert.throws(() => checkFeeBudget(5n * USD, 1n, true));

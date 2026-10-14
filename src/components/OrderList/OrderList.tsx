@@ -214,6 +214,8 @@ export function OrderList({
         }),
         provider,
         isGmxAccount: srcChainId !== undefined,
+      }).catch(() => {
+        // The transaction callback displays the cancellation failure.
       });
     } finally {
       setCancellingOrdersKeys((prev) => prev.filter((k) => !orderKeys.includes(k)));

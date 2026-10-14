@@ -381,9 +381,13 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   });
 
   const wrappedOnSubmit = useCallback(async () => {
-    await submitButtonState.onSubmit();
-    if (isMobile) {
-      setExternalIsCurtainOpen(false);
+    try {
+      await submitButtonState.onSubmit();
+      if (isMobile) {
+        setExternalIsCurtainOpen(false);
+      }
+    } catch {
+      // Transaction callbacks already display the failure; keep the form open.
     }
   }, [submitButtonState, isMobile, setExternalIsCurtainOpen]);
 
@@ -1083,6 +1087,10 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   const buttonContent = (
     <Button
       qa="confirm-trade-button"
+      data-one-click-ready={Boolean(
+        submitButtonState.expressParams?.gasPaymentValidations.isValid &&
+          submitButtonState.expressParams?.subaccountValidations?.isValid
+      )}
       variant="primary-action"
       className="w-full [text-decoration:inherit]"
       onClick={wrappedOnSubmit}

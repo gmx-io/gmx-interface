@@ -38,6 +38,7 @@ function client({
   state = "open",
   updatedState = state,
   updatedHeadSha = headSha,
+  project = "gmx-interface",
 } = {}) {
   let reads = 0;
   let checkReads = 0;
@@ -59,7 +60,7 @@ function client({
       assert.deepEqual(params, {
         ...repository,
         ref: headSha,
-        check_name: "Cloudflare Pages: gmx-interface",
+        check_name: `Cloudflare Pages: ${project}`,
         filter: "all",
         per_page: 100,
       });
@@ -83,6 +84,38 @@ test("uses the immutable application preview for the current PR commit", async (
     ],
   });
   assert.deepEqual(result, { prNumber: 2932, headSha, url: previewUrl, checkUrl });
+});
+
+test("resolves the landing preview from its own successful check at the same commit", async () => {
+  const project = "gmx-interface-home";
+  const url = "https://abcdef12.gmx-interface-home.pages.dev";
+  const github = client({
+    project,
+    checks: [
+      deployedCheck(),
+      deployedCheck({ name: `Cloudflare Pages: ${project}`, output: { summary: summary(url) } }),
+    ],
+  });
+  assert.equal(
+    (await resolvePreview({ github, repository, prNumber: "2932", expectedHeadSha: headSha, project })).url,
+    url
+  );
+});
+
+test("landing resolution rejects an application URL even in a successful landing check", async () => {
+  const project = "gmx-interface-home";
+  const github = client({ project, checks: [deployedCheck({ name: `Cloudflare Pages: ${project}` })] });
+  await assert.rejects(
+    resolvePreview({ github, repository, prNumber: "2932", project }),
+    /immutable gmx-interface-home preview/
+  );
+});
+
+test("rejects unknown deployment projects before querying GitHub", async () => {
+  await assert.rejects(
+    resolvePreview({ github: null, repository, prNumber: "2932", project: "arbitrary-host" }),
+    /Unsupported regression deployment project/
+  );
 });
 
 test("selects the latest deployment when the same commit was deployed again", async () => {

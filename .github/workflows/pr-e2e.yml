@@ -1,0 +1,194 @@
+name: PR e2e
+
+# Non-funded Playwright suites against the PR's Cloudflare previews. Funded checks stay in release-regression.yml.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-e2e-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  resolve-preview:
+    name: Wait for PR previews
+    if: ${{ !github.event.pull_request.draft }}
+    runs-on: ubuntu-latest
+    # Up to 30 minutes for the app preview, then up to 10 more for the landing preview.
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      pull-requests: read
+      checks: read
+    outputs:
+      preview_url: ${{ steps.preview.outputs.preview_url }}
+      landing_url: ${{ steps.preview.outputs.landing_url }}
+      head_sha: ${{ steps.preview.outputs.head_sha }}
+      check_url: ${{ steps.preview.outputs.check_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Resolve Cloudflare previews for the PR head
+        id: preview
+        uses: actions/github-script@v7
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        with:
+          script: |
+            const resolvePreview = require('./autotests/regression/ci/resolvePreview.cjs');
+            const options = { github, repository: context.repo, prNumber: process.env.PR_NUMBER, maxAttempts: 121 };
+            const preview = await resolvePreview({
+              ...options,
+              expectedHeadSha: process.env.PR_HEAD_SHA,
+              onWait: ({ attempt }) => core.info(`Waiting for the app preview (${attempt}/120)...`),
+            });
+            const landing = await resolvePreview({
+              ...options,
+              expectedHeadSha: preview.headSha,
+              project: 'gmx-interface-home',
+              maxAttempts: 41,
+              onWait: ({ attempt }) => core.info(`Waiting for the landing preview (${attempt}/40)...`),
+            });
+            core.setOutput('preview_url', preview.url);
+            core.setOutput('landing_url', landing.url);
+            core.setOutput('head_sha', preview.headSha);
+            core.setOutput('check_url', preview.checkUrl);
+
+  e2e:
+    name: E2E (${{ matrix.chain_id }}, shard ${{ matrix.shard }}/3)
+    needs: resolve-preview
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    strategy:
+      fail-fast: false
+      matrix:
+        chain_id: [42161, 43114]
+        shard: [1, 2, 3]
+    env:
+      REGRESSION_BASE_URL: ${{ needs.resolve-preview.outputs.preview_url }}
+      REGRESSION_LANDING_URL: ${{ needs.resolve-preview.outputs.landing_url }}
+      REGRESSION_CHAIN_ID: ${{ matrix.chain_id }}
+      REGRESSION_PR_NUMBER: ${{ github.event.pull_request.number }}
+      REGRESSION_DEPLOYMENT_SHA: ${{ needs.resolve-preview.outputs.head_sha }}
+      REGRESSION_DEPLOYMENT_CHECK_URL: ${{ needs.resolve-preview.outputs.check_url }}
+      REGRESSION_CANDIDATE_ROOT: ${{ github.workspace }}/.context/regression-candidate
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Read endpoint and market configuration from the deployed PR commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.resolve-preview.outputs.head_sha }}
+          path: .context/regression-candidate
+          sparse-checkout: |
+            src/config/indexers.ts
+            src/config/markets.ts
+            src/config/backend.ts
+            src/config/events.tsx
+            sdk/src/configs/oracleKeeper.ts
+            sdk/src/configs/api.ts
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - run: echo "REGRESSION_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: yarn
+      - name: Install dependencies
+        run: |
+          yarn install --immutable --mode=skip-build
+          yarn --cwd sdk install --immutable --mode=skip-build
+      - name: Install Chromium
+        run: yarn exec playwright install --with-deps chromium
+      - name: Run non-funded suites
+        env:
+          PLAYWRIGHT_BLOB_OUTPUT_DIR: blob-report
+          PLAYWRIGHT_BLOB_OUTPUT_NAME: report-${{ matrix.chain_id }}-${{ matrix.shard }}.zip
+        run: yarn test:regression --shard=${{ matrix.shard }}/3 --reporter=blob
+      - name: Upload shard report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-blob-${{ matrix.chain_id }}-${{ matrix.shard }}
+          path: blob-report/
+          retention-days: 3
+
+  report:
+    name: Report
+    needs: [resolve-preview, e2e]
+    if: ${{ !cancelled() && needs.resolve-preview.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: yarn
+      - name: Install dependencies
+        run: yarn install --immutable --mode=skip-build
+      - name: Download shard reports
+        uses: actions/download-artifact@v4
+        with:
+          pattern: e2e-blob-*
+          path: blobs
+      - name: Merge reports per chain
+        run: |
+          mkdir -p merged
+          for chain in 42161 43114; do
+            mkdir -p "blobs-$chain"
+            cp blobs/e2e-blob-$chain-*/*.zip "blobs-$chain/" 2>/dev/null || continue
+            PLAYWRIGHT_JSON_OUTPUT_FILE="merged/$chain.json" PLAYWRIGHT_HTML_OUTPUT_DIR="merged/html-$chain" \
+              yarn playwright merge-reports --reporter=json,html "blobs-$chain"
+            node autotests/regression/report.cjs "merged/$chain.json" > "merged/summary-$chain.md" || true
+            cat "merged/summary-$chain.md" >> "$GITHUB_STEP_SUMMARY"
+          done
+      - name: Upload merged reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-report-pr-${{ github.event.pull_request.number }}-${{ github.run_id }}
+          path: merged/
+          retention-days: 14
+      - name: List changed files
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh pr diff "${{ github.event.pull_request.number }}" -R "${{ github.repository }}" --name-only > changed-files.txt || true
+      - name: Write report comment
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          OPENROUTER_MODEL: ${{ vars.OPENROUTER_MODEL }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ needs.resolve-preview.outputs.head_sha }}
+          PREVIEW_URL: ${{ needs.resolve-preview.outputs.preview_url }}
+          LANDING_URL: ${{ needs.resolve-preview.outputs.landing_url }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          yarn tsx --tsconfig autotests/regression/tsconfig.json autotests/regression/ci/aiReport.ts \
+            --report 42161=merged/42161.json --report 43114=merged/43114.json \
+            --summary 42161=merged/summary-42161.md --summary 43114=merged/summary-43114.md \
+            --changed-files changed-files.txt --out regression-comment.md
+          cat regression-comment.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Post or update the PR comment
+        # Fork PRs get a read-only token; their summary stays in the job summary.
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = require('fs').readFileSync('regression-comment.md', 'utf8');
+            const marker = '<!-- regression-ai-report -->';
+            const issue = { ...context.repo, issue_number: context.payload.pull_request.number };
+            const comments = await github.paginate(github.rest.issues.listComments, issue);
+            const previous = comments.find((comment) => comment.user?.type === 'Bot' && comment.body?.startsWith(marker));
+            if (previous) await github.rest.issues.updateComment({ ...context.repo, comment_id: previous.id, body });
+            else await github.rest.issues.createComment({ ...issue, body });

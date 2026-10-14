@@ -95,7 +95,8 @@ export function affordablePosition({
 
 export function checkFeeBudget(chargedUsd: bigint, quoteUsd: bigint, cleanup: boolean, policy: FeePolicy = economy) {
   if (chargedUsd < 0n || quoteUsd <= 0n) throw new Error("Invalid fee accounting");
-  if (quoteUsd > policy.actionFeeLimitUsd) throw new Error(`Action fee exceeds $${dollars(policy.actionFeeLimitUsd)}`);
+  if (quoteUsd > policy.actionFeeLimitUsd)
+    throw new Error(`Action fee exceeds $${dollars(policy.actionFeeLimitUsd)} (estimated $${dollars(quoteUsd)})`);
   const ceiling = policy.runFeeLimitUsd - (cleanup ? 0n : policy.cleanupReserveUsd);
   if (chargedUsd + quoteUsd > ceiling) {
     throw new Error(cleanup ? "Run fee budget exhausted" : "Cleanup fee reserve must remain available");

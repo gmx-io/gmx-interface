@@ -2,9 +2,10 @@ import { runFundedPlaywright } from "./playwright";
 
 import { verifyFundedDeployment } from "./deployment";
 import type { FundedCase } from "./catalog";
-import { writeFundedReport } from "./report";
+import { writeFundedPreflightReport, writeFundedReport, type FundedRunDetails } from "./report";
 import type { FundedSession } from "./session";
 import { fundedReadiness, requireFundedReadiness } from "./readiness";
+import { fundedErrorMessage } from "./errors";
 
 export async function runFundedCases(
   session: FundedSession,
@@ -12,11 +13,17 @@ export async function runFundedCases(
   isInterrupted = () => false
 ) {
   if (isInterrupted()) return 130;
+  console.log("Checking prerequisites...");
   const readiness = await fundedReadiness(session, selected, () => session.feeProfile);
-  console.log(JSON.stringify({ preflight: readiness }, null, 2));
-  requireFundedReadiness(readiness);
-  if (isInterrupted()) return 130;
-  await verifyFundedDeployment(session, selected);
+  const details: FundedRunDetails = { preflight: readiness };
+  try {
+    requireFundedReadiness(readiness);
+    if (isInterrupted()) return 130;
+    await verifyFundedDeployment(session, selected);
+  } catch (error) {
+    await writeFundedPreflightReport(session.directory, selected, readiness, error);
+    throw error;
+  }
   if (isInterrupted()) return 130;
   const runId = await session.begin();
   session.active.selectedCases = selected.map((c) => c.id);
@@ -31,9 +38,13 @@ export async function runFundedCases(
   } finally {
     // Runs after assertion failures and retries as well as successful tests.
     try {
-      console.log(JSON.stringify(await session.cleanup(true), null, 2));
+      console.log("Cleaning up...");
+      details.cleanup = await session.cleanup(true);
+    } catch (error) {
+      details.cleanupError = fundedErrorMessage(error);
+      throw error;
     } finally {
-      await writeFundedReport(session, selected);
+      await writeFundedReport(session, selected, details);
     }
   }
 }

@@ -1,14 +1,13 @@
-import { expect, test } from "@playwright/test";
+import { test } from "@playwright/test";
 
-import { depositAccount, withdrawAccount } from "./account";
-import { depositBridge, withdrawBridge } from "./bridge";
-import { checkAccount, checkLp, checkOrder, checkPosition, checkStake, connectFundedWallet } from "./browser";
+import { openFundedTradePage } from "./browser";
+import { configureClassicTrading } from "../fixtures/tradingForms";
+import { UiWallet } from "./uiWallet";
+import { runUiJourney } from "./uiJourneys";
 import { selectedCasesFromEnvironment } from "./catalog";
-import { claimRewards, stake, unstake } from "./earn";
 import { fundedErrorMessage } from "./errors";
-import { depositLiquidity, withdrawLiquidity } from "./liquidity";
 import { FundedSession } from "./session";
-import { cancelOrders, changePosition, createTrigger, editTrigger, swap, twap } from "./trading";
+import { restoreUiBrowserState, saveUiBrowserState } from "./uiBrowserState";
 
 for (const scenario of selectedCasesFromEnvironment()) {
   test(`@${scenario.group} ${scenario.id}: ${scenario.title}`, async ({ page, context }, testInfo) => {
@@ -17,119 +16,36 @@ for (const scenario of selectedCasesFromEnvironment()) {
     await session.resume(process.env.REGRESSION_FUNDED_RUN_ID);
     const scenarios = (session.active.scenarios ??= {});
     const record = (scenarios[scenario.id] ??= { startedAt: new Date().toISOString(), status: "running" });
-    let phase = "connect read-only wallet";
-    const step = <T>(name: string, action: () => Promise<T>) =>
+    const wallet = new UiWallet(session);
+    let phase = "connect guarded UI wallet";
+    const step = <T>(name: string, action: () => Promise<T>, verify?: (result: T) => Promise<void>) =>
       test.step(name, () => {
         phase = name;
-        return session.step(`${scenario.id}:${name}`, action);
+        return session.step(`${scenario.id}:${name}`, async () => {
+          try {
+            const result = await action();
+            await verify?.(result);
+            return result;
+          } finally {
+            await saveUiBrowserState(session, context, process.env.REGRESSION_BASE_URL!);
+          }
+        });
       });
     try {
-      await test.step(phase, () => connectFundedWallet(page, context, session));
-      if (scenario.id === "smoke-refresh" || scenario.group === "trading") {
-        const isLong = scenario.id !== "market-short";
-        await step("open and refresh", async () => {
-          const opened = await session.openSmallPosition(isLong, scenario.group === "trading" ? 2 : 1);
-          await checkPosition(page, opened.sizeUsd, isLong);
-        });
-        if (scenario.group === "trading") {
-          for (const operation of ["increase", "deposit", "withdraw", "partial"] as const) {
-            await step(operation, async () => {
-              const size = await changePosition(session, operation);
-              await checkPosition(page, size, isLong);
-            });
-          }
-        }
-        await step("close", async () => {
-          await changePosition(session, "close");
-          await checkPosition(page, 0n);
-        });
-      } else if (scenario.id === "tp-sl") {
-        await step("open", () => session.openSmallPosition(true));
-        for (const kind of ["take-profit", "stop-loss"] as const) {
-          const key = await step(`create ${kind}`, async () => {
-            const key = await createTrigger(session, true, kind);
-            await checkOrder(page, key);
-            return key;
-          });
-          await step(`edit ${kind}`, async () => {
-            await editTrigger(session, key);
-            await checkOrder(page, key);
-          });
-          await step(`cancel ${kind}`, async () => {
-            await cancelOrders(session, [key]);
-            await checkOrder(page, key, false);
-          });
-        }
-        await step("close", () => changePosition(session, "close"));
-      } else if (scenario.id === "twap") {
-        const key = await step("first TWAP part executes", () => twap(session));
-        await step("cancel remainder", () => cancelOrders(session, [key]));
-        await step("position UI", () => checkPosition(page));
-        await step("close", () => changePosition(session, "close"));
-      } else if (scenario.group === "orders" || scenario.id === "one-click") {
-        const oneClick = scenario.id === "one-click";
-        if (oneClick) {
-          phase = "activate one-click";
-          await session.activateOneClick();
-        }
-        const key = await step("create", async () => {
-          const key = await createTrigger(
-            session,
-            !scenario.id.endsWith("short"),
-            scenario.id.startsWith("stop") ? "stop-market" : "limit"
-          );
-          await checkOrder(page, key);
-          if (oneClick) expect(await session.subaccountActive(session.active.inventory!.subaccount)).toBe(true);
-          return key;
-        });
-        if (!oneClick)
-          await step("edit", async () => {
-            await editTrigger(session, key);
-            await checkOrder(page, key);
-          });
-        await step("cancel", async () => {
-          await cancelOrders(session, [key]);
-          await checkOrder(page, key, false);
-        });
-        if (oneClick) await step("revoke", () => session.revokeOneClick());
-      } else if (scenario.id === "swap") {
-        const amount = await step("USDC to WETH", () => swap(session, false, 1_000_000n));
-        await step("WETH to USDC", () => swap(session, true, amount));
-        await step("wallet still connected after refresh", async () => {
-          await page.reload();
-          await expect(page.getByTestId("user-address")).toBeVisible();
-        });
-      } else if (scenario.id === "account" || scenario.id === "bridge") {
-        await step("deposit and display", async () => {
-          if (scenario.id === "bridge") await depositBridge(session);
-          else await depositAccount(session);
-          await checkAccount(page, true);
-        });
-        await step("withdraw and display", async () => {
-          if (scenario.id === "bridge") await withdrawBridge(session);
-          else await withdrawAccount(session);
-          await checkAccount(page, false);
-        });
-      } else if (scenario.id === "gm" || scenario.id === "glv") {
-        const kind = scenario.id;
-        await step("deposit and display", async () => {
-          const minted = await depositLiquidity(session, kind);
-          await checkLp(page, minted.token, kind === "gm" ? "GM" : "GLV", minted.amount);
-        });
-        await step("withdraw", () => withdrawLiquidity(session, kind));
-      } else if (scenario.id === "staking") {
-        await step("stake and display", async () => {
-          const amount = await stake(session);
-          await checkStake(page, amount);
-        });
-        await step("unstake", () => unstake(session));
-      } else if (scenario.id === "claims") {
-        await step("claim", () => claimRewards(session));
-        await step("portfolio", async () => {
-          await page.goto("/earn/portfolio");
-          await expect(page.getByTestId("user-address")).toBeVisible();
-        });
+      const failedAction = session.active.actions.find(
+        (action) => action.step?.startsWith(`${scenario.id}:`) && action.state === "failed" && action.failureReason
+      );
+      if (failedAction) {
+        phase = "previous funded action";
+        throw new Error(failedAction.failureReason);
       }
+      await test.step(phase, async () => {
+        await wallet.install(context, process.env.REGRESSION_BASE_URL!);
+        const restored = await restoreUiBrowserState(session, page, process.env.REGRESSION_BASE_URL!);
+        await openFundedTradePage(page, session.address);
+        if (!restored) await configureClassicTrading(page);
+      });
+      await runUiJourney(scenario, session, wallet, page, step);
       // The next scenario starts without exposure; the global budget and initial ratio survive.
       await step("cleanup", () => session.cleanup(true, false));
       record.status = "passed";
@@ -145,6 +61,7 @@ for (const scenario of selectedCasesFromEnvironment()) {
         body: Buffer.from(
           JSON.stringify({
             scenario: scenario.id,
+            actionDriver: "browser UI",
             status: record.status,
             phase,
             attempts: testInfo.retry + 1,

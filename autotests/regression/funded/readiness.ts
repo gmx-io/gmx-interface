@@ -5,7 +5,7 @@ import { getContract } from "../../../sdk/src/configs/contracts";
 import { accountBalance } from "./account";
 import { baseStableBalance } from "./bridge";
 import type { FundedCase } from "./catalog";
-import { stakedGmx } from "./earn";
+import { assertEmptyStakingPower, stakedGmx } from "./earn";
 import {
   checkFeeBudget,
   dollars,
@@ -43,7 +43,10 @@ export async function fundedReadiness(
   await check("all", "deployment URL", async () => validateFundedTarget(process.env.REGRESSION_BASE_URL));
   await check("all", "previous run", async () => {
     const previous = await readJournal(session.directory);
-    assert.ok(!previous || previous.completed, "Unfinished funded run; run funded:cleanup --execute before a new run");
+    assert.ok(
+      !previous || previous.completed,
+      "Unfinished funded run; --execute will attempt cleanup before starting new tests"
+    );
   });
   await check("all", "Arbitrum gas", async () => {
     const gas = await checkGasPrice({
@@ -108,7 +111,9 @@ export async function fundedReadiness(
             );
           return `Opening quote validated; fee reservation $${dollars(quote.feeUsd)}`;
         };
-        if (id === "smoke-refresh" || group === "trading" || id === "tp-sl")
+        if (id === "tp-sl")
+          return `${await opening(true)}; TP/SL quotes require an open position and are validated before each creation`;
+        if (id === "smoke-refresh" || group === "trading")
           return opening(id !== "market-short", group === "trading" ? 2 : 1);
         if (id === "twap") {
           const quote = await quoteTwap(session, snapshot);
@@ -180,6 +185,7 @@ export async function fundedReadiness(
           return `Deposit/withdrawal keeper quotes $${quote.depositKeeperFeeUsd} / $${quote.withdrawalKeeperFeeUsd}`;
         }
         if (id === "staking") {
+          await assertEmptyStakingPower(session);
           const [balance, staked, tokens] = await Promise.all([
             session.rpc.readContract({
               abi: erc20Abi,

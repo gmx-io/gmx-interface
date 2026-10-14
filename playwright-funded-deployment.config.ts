@@ -9,7 +9,11 @@ export default defineConfig({
   retries: 2,
   timeout: 180_000,
   outputDir: "test-results/funded-deployment",
-  reporter: [["list"], ["html", { outputFolder: "playwright-report/funded-deployment", open: "never" }]],
+  reporter: [
+    ["./autotests/regression/funded/consoleReporter.ts"],
+    ["html", { outputFolder: "playwright-report/funded-deployment", open: "never" }],
+    ["json", { outputFile: "test-results/funded-deployment/playwright.json" }],
+  ],
   projects: [{ name: "funded-deployment", testMatch: "funded/deployment.spec.ts" }],
   use: {
     ...regression.use,

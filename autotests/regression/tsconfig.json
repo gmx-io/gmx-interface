@@ -1,5 +1,9 @@
 {
+  "extends": "../../sdk/tsconfig.json",
   "compilerOptions": {
+    "composite": false,
+    "declaration": false,
+    "declarationDir": null,
     "target": "ES2022",
     "lib": ["ES2022", "DOM"],
     "module": "ESNext",
@@ -10,6 +14,12 @@
     "noEmit": true,
     "types": ["node"]
   },
-  "include": ["**/*.ts", "../../playwright-regression.config.ts", "../../playwright-funded-preflight.config.ts"],
-  "exclude": ["funded/**", "fixtures/fundedQuote.ts"]
+  "include": [
+    "**/*.ts",
+    "../../playwright-regression.config.ts",
+    "../../playwright-funded-preflight.config.ts",
+    "../../playwright-funded-harness.config.ts",
+    "../../viem-override.d.ts"
+  ],
+  "exclude": ["funded/**", "fixtures/fundedQuote.ts", "fixtures/fundedReceipt.ts"]
 }

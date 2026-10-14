@@ -2,10 +2,14 @@ import { expect, test as base } from "@playwright/test";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { createServer } from "node:http";
+import { once } from "node:events";
+import { createPublicClient, encodeAbiParameters, http, parseAbi } from "viem";
 
 import { USD } from "./economy";
 import { readJournal, writeJournal, type FundedJournal } from "./journal";
 import { FundedSession } from "./session";
+import { readFundedData } from "./read";
 
 const test = base.extend<{ session: FundedSession }>({
   session: async ({}, use) => {
@@ -114,4 +118,57 @@ test("offline runtime: TWAP receipts without order ownership remain unresolved",
   session.rpc.waitForTransactionReceipt = async () => ({ status: "success", logs: [] }) as never;
   await expect(session.reconcile(true)).rejects.toThrow("TWAP receipt must create two orders");
   expect((await readJournal(session.directory))!.actions[0].state).toBe("pending");
+});
+
+test("offline runtime: nested RPC read errors retry twice without sending transactions", async ({ session }) => {
+  const methods: string[] = [];
+  let permanentOutage = false;
+  const server = createServer(async (request, response) => {
+    let body = "";
+    for await (const chunk of request) body += chunk;
+    const rpc = JSON.parse(body);
+    methods.push(rpc.method);
+    response.setHeader("Content-Type", "application/json");
+    response.end(
+      JSON.stringify({
+        jsonrpc: "2.0",
+        id: rpc.id,
+        ...(permanentOutage || methods.length <= 2
+          ? { error: { code: -32603, message: "Temporary backend failure; secret details" } }
+          : { result: encodeAbiParameters([{ type: "bytes32[]" }], [[]]) }),
+      })
+    );
+  });
+  server.listen(0, "127.0.0.1");
+  await once(server, "listening");
+  const address = server.address() as { port: number };
+  const rpc = createPublicClient({ transport: http(`http://127.0.0.1:${address.port}`, { retryCount: 0 }) });
+  try {
+    const result = await readFundedData("On-chain positions", () =>
+      rpc.readContract({
+        address: "0x2222222222222222222222222222222222222222",
+        abi: parseAbi(["function getAccountPositions() view returns (bytes32[])"]),
+        functionName: "getAccountPositions",
+      })
+    );
+    expect(result).toEqual([]);
+    expect(methods).toEqual(["eth_call", "eth_call", "eth_call"]);
+    permanentOutage = true;
+    methods.length = 0;
+    Object.defineProperty(session, "rpcUrl", { value: `http://127.0.0.1:${address.port}` });
+    await expect(
+      FundedSession.prototype.nativeTransaction.call(
+        session,
+        { to: "0x2222222222222222222222222222222222222222", data: "0x", value: 0n },
+        "prepare-only",
+        false
+      )
+    ).rejects.toThrow("Transaction preparation failed after 3 attempt(s): RPC request failed (code -32603)");
+    expect(methods.filter((method) => method === "eth_getTransactionCount")).toHaveLength(3);
+    expect(methods.every((method) => ["eth_fillTransaction", "eth_getTransactionCount"].includes(method))).toBe(true);
+    expect((await readJournal(session.directory))!.actions).toEqual([]);
+  } finally {
+    server.closeAllConnections();
+    await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
+  }
 });

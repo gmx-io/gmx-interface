@@ -4,7 +4,7 @@ export async function runFundedPlaywright(config: string, env: NodeJS.ProcessEnv
   let interrupted = false;
   return new Promise<number>((resolve, reject) => {
     const child = spawn(process.execPath, ["node_modules/@playwright/test/cli.js", "test", "-c", config], {
-      stdio: "inherit",
+      stdio: ["ignore", "inherit", "inherit"],
       detached: process.platform !== "win32",
       env,
     });

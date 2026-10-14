@@ -1,14 +1,25 @@
-import { withdrawAccount } from "./account";
+import { withdrawAccount, withdrawBridgeGas } from "./account";
 import { withdrawBridge } from "./bridge";
+import { removeUiBrowserState } from "./uiBrowserState";
 import { unstake } from "./earn";
 import { liquidityRequestKeys, withdrawLiquidity } from "./liquidity";
 import type { FundedSession } from "./session";
 
 export async function cleanupResources(session: FundedSession) {
   await session.revokeOneClick();
-  if (session.active.actions.some((a) => a.purpose === "bridge-deposit" && a.state !== "failed"))
+  if (session.active.inventory?.uiOneClickAuthorized) {
+    session.active.inventory.uiOneClickRevoked = "true";
+    await session.save();
+    await removeUiBrowserState(session);
+  }
+  if (
+    session.active.actions.some(
+      (a) => ["bridge-deposit", "ui:bridge-deposit"].includes(a.purpose) && a.state !== "failed"
+    )
+  )
     await withdrawBridge(session);
   await withdrawAccount(session);
+  await withdrawBridgeGas(session);
   await withdrawLiquidity(session, "gm", true);
   await withdrawLiquidity(session, "glv", true);
   await unstake(session);

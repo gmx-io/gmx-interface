@@ -3,18 +3,293 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
+import type { Hex } from "viem";
 
-import { hashedPositionKey } from "../../../sdk/src/configs/dataStore";
-import { HttpError } from "../../../sdk/src/utils/http/http";
-import { getPositionKey } from "../../../sdk/src/utils/positions/utils";
+import { fundedOrderReceipt } from "../fixtures/fundedReceipt";
 import { USD, usd, type FeeProfile } from "./economy";
 import { readJournal, writeJournal, type FundedJournal } from "./journal";
 import { FundedSession } from "./session";
-import { depositAccount, withdrawAccount } from "./account";
-import { depositBridge } from "./bridge";
-import { claimRewards, stake, unstake } from "./earn";
+import { withdrawAccount } from "./account";
+import { unstake } from "./earn";
 import { withdrawLiquidity } from "./liquidity";
-import { changePosition } from "./trading";
+import { registerTwapReceipt } from "./trading";
+
+const orderKey = `0x${"2".repeat(64)}` as Hex;
+
+test("relay fee failure survives journal reload and retries cannot submit the order again", async () => {
+  const fixture = await setup();
+  try {
+    const { session, directory } = fixture;
+    session.active.actions = [
+      {
+        id: "trigger",
+        purpose: "trigger",
+        step: "one-click:create",
+        requestId: "request",
+        state: "pending",
+        settlement: "creation",
+        feeUsd: (USD / 2n).toString(),
+      },
+    ];
+    await session.save();
+    session.sdk.fetchOrderStatus = async () => ({
+      requestId: "request",
+      status: "relay_failed",
+      error: { code: "RELAY_FAILED", message: "InsufficientRelayFee(63929528447360,62685121314477)" },
+    });
+    await session.reconcile(true);
+    const saved = (await readJournal(directory))!;
+    assert.equal(saved.actions[0].state, "failed");
+    assert.match(saved.actions[0].failureReason!, /Relay fee quote was insufficient/);
+    assert.deepEqual(saved.ownedOrderKeys, []);
+    session.sdk.prepareOrder = session.sdk.submitOrder = async () => {
+      throw new Error("Must not submit again");
+    };
+    for (let retry = 0; retry < 2; retry++) {
+      await session.resume("run");
+      await assert.rejects(
+        session.step("one-click:create", () => session.previousAction("trigger")),
+        /Relay fee quote was insufficient/
+      );
+    }
+    assert.equal(session.active.actions.length, 1);
+    assert.equal(session.active.actions[0].feeUsd, (USD / 2n).toString());
+  } finally {
+    await fixture.dispose();
+  }
+});
+
+for (const invalid of [
+  "reverted",
+  "missing event",
+  "wrong emitter",
+  "wrong wallet",
+  "wrong market",
+  "different API key",
+  "multiple orders",
+  "duplicate keys",
+] as const) {
+  test(`creation recovery rejects ${invalid} without claiming ownership or releasing the fee reservation`, async () => {
+    const fixture = await setup();
+    try {
+      const { session, directory } = fixture;
+      session.active.actions = [
+        {
+          id: "trigger",
+          purpose: "trigger",
+          requestId: "request",
+          state: "pending",
+          settlement: "creation",
+          feeUsd: "123",
+        },
+      ];
+      await session.save();
+      session.sdk.fetchOrderStatus = async () => ({
+        requestId: "request",
+        status: "created",
+        txHash: `0x${"1".repeat(64)}`,
+        orderKeys: invalid === "different API key" ? [`0x${"3".repeat(64)}`] : undefined,
+      });
+      const receipt = fundedOrderReceipt({
+        account: invalid === "wrong wallet" ? "0x3333333333333333333333333333333333333333" : session.address,
+        market:
+          invalid === "wrong market" ? "0x3333333333333333333333333333333333333333" : session.active.marketAddress,
+        keys:
+          invalid === "multiple orders"
+            ? [orderKey, `0x${"3".repeat(64)}`]
+            : invalid === "duplicate keys"
+              ? [orderKey, orderKey]
+              : [orderKey],
+      });
+      if (invalid === "reverted") receipt.status = "reverted";
+      if (invalid === "missing event") receipt.logs = [];
+      if (invalid === "wrong emitter") receipt.logs[0].address = "0x3333333333333333333333333333333333333333";
+      session.rpc.waitForTransactionReceipt = async () => receipt;
+      await assert.rejects(session.reconcile(true), /Order (?:receipt|creation receipt)/);
+      const saved = (await readJournal(directory))!;
+      assert.deepEqual(saved.ownedOrderKeys, []);
+      assert.equal(saved.actions[0].state, "pending");
+      assert.equal(saved.actions[0].orderKeys, undefined);
+      assert.equal(saved.actions[0].feeUsd, "123");
+      assert.deepEqual(session.active.ownedOrderKeys, []);
+    } finally {
+      await fixture.dispose();
+    }
+  });
+}
+
+test("a created relay response without keys recovers the order from its receipt and reuses it on retry", async () => {
+  const fixture = await setup();
+  try {
+    const { session, directory } = fixture;
+    session.active.actions = [
+      {
+        id: "trigger",
+        purpose: "trigger",
+        requestId: "request",
+        state: "pending",
+        settlement: "creation",
+        step: "limit-long:create",
+        feeUsd: (USD / 2n).toString(),
+      },
+    ];
+    await session.save();
+    let statusReads = 0;
+    session.sdk.fetchOrderStatus = async () => {
+      statusReads++;
+      return { requestId: "request", status: "created", txHash: `0x${"1".repeat(64)}` };
+    };
+    session.rpc.waitForTransactionReceipt = async () =>
+      fundedOrderReceipt({
+        account: session.address,
+        market: session.active.marketAddress,
+        keys: [orderKey],
+      });
+    session.sdk.prepareOrder = session.sdk.submitOrder = async () => {
+      throw new Error("Must not resubmit");
+    };
+    let failUi = true;
+    const run = () =>
+      session.step("limit-long:create", async () => {
+        const key = (await session.previousAction("trigger"))!.orderKeys![0];
+        if (failUi) throw new Error("UI delayed after creation");
+        return key;
+      });
+    await assert.rejects(run(), /UI delayed/);
+    await session.resume("run");
+    failUi = false;
+    assert.equal(await run(), orderKey);
+    const saved = (await readJournal(directory))!;
+    assert.equal(saved.actions.length, 1);
+    assert.equal(saved.actions[0].state, "created");
+    assert.equal(saved.actions[0].feeUsd, (USD / 2n).toString());
+    assert.deepEqual(saved.actions[0].orderKeys, [orderKey]);
+    assert.deepEqual(saved.ownedOrderKeys, [orderKey]);
+    assert.equal(statusReads, 4);
+  } finally {
+    await fixture.dispose();
+  }
+});
+
+test("a confirmed cancellation releases the original request even when its status remains created after restart", async () => {
+  const fixture = await setup();
+  try {
+    const { session } = fixture;
+    session.active.ownedOrderKeys = [orderKey];
+    session.active.actions = [
+      {
+        id: "trigger",
+        purpose: "trigger",
+        requestId: "request",
+        state: "created",
+        settlement: "creation",
+        orderKeys: [orderKey],
+        feeUsd: "1",
+      },
+      {
+        id: "cancel",
+        purpose: "cancel",
+        requestId: "cancel",
+        state: "pending",
+        settlement: "receipt",
+        orderKeys: [orderKey],
+        feeUsd: "1",
+      },
+    ];
+    session.sdk.fetchOrderStatus = async ({ requestId }) => ({
+      requestId: requestId!,
+      status: "created",
+      txHash: `0x${(requestId === "cancel" ? "2" : "1").repeat(64)}`,
+    });
+    session.rpc.waitForTransactionReceipt = async ({ hash }) =>
+      fundedOrderReceipt({
+        account: session.address,
+        market: session.active.marketAddress,
+        keys: [orderKey],
+        eventName: hash === `0x${"2".repeat(64)}` ? "OrderCancelled" : "OrderCreated",
+      });
+    await session.reconcile(true);
+    assert.deepEqual(session.active.actions[1].cancelledOrderKeys, [orderKey]);
+    await session.resume("run");
+    session.sdk.fetchOrderStatus = async () => {
+      throw new Error("Must use the confirmed cancellation");
+    };
+    await session.reconcile();
+    assert.equal(session.active.actions[0].state, "failed");
+    assert.equal(session.active.actions[1].state, "settled");
+    session.snapshot = async () =>
+      ({
+        positions: [],
+        orders: [],
+        onchainPositionCount: 0,
+        onchainOrderCount: 0,
+        wrappedAmount: 0n,
+        nativeUsd: 20n * USD,
+        stableUsd: 80n * USD,
+      }) as never;
+    assert.equal((await session.cleanup(true)).completed, true);
+  } finally {
+    await fixture.dispose();
+  }
+});
+
+for (const invalid of ["missing cancellation event", "different cancelled order"] as const) {
+  test(`${invalid} cannot mark a cancellation settled`, async () => {
+    const fixture = await setup();
+    try {
+      const { session, directory } = fixture;
+      session.active.ownedOrderKeys = [orderKey];
+      session.active.actions = [
+        {
+          id: "cancel",
+          purpose: "cancel",
+          requestId: "request",
+          state: "pending",
+          settlement: "receipt",
+          orderKeys: [orderKey],
+          feeUsd: "1",
+        },
+      ];
+      await session.save();
+      session.sdk.fetchOrderStatus = async () => ({
+        requestId: "request",
+        status: "created",
+        txHash: `0x${"1".repeat(64)}`,
+      });
+      session.rpc.waitForTransactionReceipt = async () =>
+        fundedOrderReceipt({
+          account: session.address,
+          market: session.active.marketAddress,
+          eventName: "OrderCancelled",
+          keys: invalid === "missing cancellation event" ? [] : [`0x${"3".repeat(64)}`],
+        });
+      await assert.rejects(session.reconcile(true), /Cancellation receipt does not match/);
+      const saved = (await readJournal(directory))!;
+      assert.equal(saved.actions[0].state, "pending");
+      assert.equal(saved.actions[0].cancelledOrderKeys, undefined);
+      assert.deepEqual(saved.ownedOrderKeys, [orderKey]);
+    } finally {
+      await fixture.dispose();
+    }
+  });
+}
+
+test("TWAP records both verified creation events and rejects a partial receipt without claiming orders", async () => {
+  const fixture = await setup();
+  try {
+    const { session } = fixture;
+    const action = { id: "twap", purpose: "twap", state: "pending" as const, feeUsd: "1" };
+    const keys = [orderKey, `0x${"3".repeat(64)}` as Hex];
+    const receipt = fundedOrderReceipt({ account: session.address, market: session.active.marketAddress, keys });
+    const partial = { ...receipt, logs: receipt.logs.slice(0, 1) };
+    assert.throws(() => registerTwapReceipt(session, action, partial), /TWAP receipt must create two orders/);
+    assert.deepEqual(session.active.ownedOrderKeys, []);
+    registerTwapReceipt(session, action, receipt);
+    assert.deepEqual(session.active.ownedOrderKeys, keys);
+  } finally {
+    await fixture.dispose();
+  }
+});
 
 for (const profile of ["economy", "glv"] as const) {
   test(`${profile} plan explains a reserve rejection without replacing the completed journal`, async () => {
@@ -175,93 +450,6 @@ for (const buying of [false, true]) {
   });
 }
 
-for (const isLong of [true, false]) {
-  for (const operation of ["deposit", "withdraw"] as const) {
-    test(`collateral ${operation} on ${isLong ? "long" : "short"} uses the contract key and survives a UI retry without resubmission`, async () => {
-      const fixture = await setup();
-      try {
-        const { session } = fixture;
-        const market = session.active.marketAddress;
-        const token = "0x3333333333333333333333333333333333333333";
-        const key = getPositionKey(session.address, market, token, isLong);
-        const contractKey = hashedPositionKey(session.address, market, token, isLong);
-        const current = {
-          key,
-          contractKey,
-          account: session.address,
-          marketAddress: market,
-          collateralTokenAddress: token,
-          isLong,
-          sizeInUsd: 3n * USD,
-          collateralUsd: 3n * USD,
-          collateralAmount: 3_000_000n,
-        };
-        const stepId = `market-${isLong ? "long" : "short"}:${operation}`;
-        session.active.ownedPositionKeys = [key];
-        session.snapshot = async () =>
-          ({
-            positions: [structuredClone(current)],
-            orders: [],
-            onchainPositionCount: 1,
-            onchainOrderCount: 0,
-            market: { marketTokenAddress: market },
-            usdc: { address: token },
-          }) as never;
-        let prepares = 0;
-        let submissions = 0;
-        session.sdk.prepareCollateral = async (request) => {
-          // The API indexes positions by their contract hash, not the UI key.
-          if (request.positionKey !== contractKey)
-            throw new HttpError(400, "HTTP 400: Position not found", {
-              message: `Position not found: ${request.positionKey}`,
-            });
-          prepares++;
-          assert.equal(request.operation, operation);
-          assert.equal(request.amount, 250_000n);
-          return { requestId: "collateral-quote" } as never;
-        };
-        session.execute = async (_prepared, intent, purpose, cleanup) => {
-          submissions++;
-          assert.equal(intent.kind, operation === "deposit" ? "increase" : "close");
-          assert("sizeUsd" in intent && "collateralAmount" in intent);
-          assert.equal(intent.sizeUsd, 0n);
-          assert.equal(intent.collateralAmount, 250_000n);
-          assert.equal(cleanup, false);
-          current.collateralAmount += operation === "deposit" ? 250_000n : -250_000n;
-          const action = {
-            id: "collateral",
-            purpose,
-            step: stepId,
-            state: "settled" as const,
-            feeUsd: (USD / 2n).toString(),
-          };
-          session.active.actions.push(action);
-          await session.save();
-          return action;
-        };
-        let failUi = true;
-        const run = () =>
-          session.step(stepId, async () => {
-            const size = await changePosition(session, operation);
-            if (failUi) {
-              failUi = false;
-              throw new Error("UI assertion failed after settlement");
-            }
-            return size;
-          });
-        await assert.rejects(run(), /UI assertion failed after settlement/);
-        await session.resume("run");
-        assert.equal(await run(), 3n * USD);
-        assert.equal(prepares, 1);
-        assert.equal(submissions, 1);
-        assert.equal(session.active.actions.length, 1);
-      } finally {
-        await fixture.dispose();
-      }
-    });
-  }
-}
-
 test("account withdrawal retries still verify destination funds after the account becomes empty", async () => {
   const fixture = await setup();
   try {
@@ -354,47 +542,6 @@ test("cleanup restores the recorded GLV fee profile after a process restart", as
     assert.equal(fixture.session.feePolicy.runFeeLimitUsd, 8n * USD);
     assert.equal(fixture.session.feePolicy.cleanupReserveUsd, 4n * USD);
     assert.equal(fixture.session.feePolicy.actionFeeLimitUsd, 4n * USD);
-  } finally {
-    await fixture.dispose();
-  }
-});
-
-test("missing GMX, claim entitlements and source-chain funds block without signing or submitting", async () => {
-  const fixture = await setup();
-  try {
-    const session = fixture.session;
-    session.snapshot = async () =>
-      ({
-        usdc: { address: "0x3333333333333333333333333333333333333333" },
-        weth: { prices: { maxPrice: 2_000n * USD } },
-        wrappedAmount: 0n,
-      }) as never;
-    session.rpc.readContract = async () => 0n as never;
-    session.sourceRpc.readContract = async () => 0n as never;
-    session.sdk.fetchTokensData = async () => [];
-    session.nativeTransaction = async () => {
-      throw new Error("Must not send a transaction");
-    };
-    await assert.rejects(stake(session), /BLOCKED: staking requires/);
-    await assert.rejects(claimRewards(session), /BLOCKED: this wallet has no/);
-    await assert.rejects(depositBridge(session), /BLOCKED: bridge requires/);
-    assert.deepEqual(session.active.actions, []);
-  } finally {
-    await fixture.dispose();
-  }
-});
-
-test("same-chain funding refuses pre-existing GMX Account inventory", async () => {
-  const fixture = await setup();
-  try {
-    const session = fixture.session;
-    session.snapshot = async () => ({ usdc: { address: "0x3333333333333333333333333333333333333333" } }) as never;
-    session.rpc.readContract = async () => 1_000_000n as never;
-    session.nativeTransaction = async () => {
-      throw new Error("Must not send a transaction");
-    };
-    await assert.rejects(depositAccount(session), /empty GMX Account/);
-    assert.deepEqual(session.active.actions, []);
   } finally {
     await fixture.dispose();
   }
@@ -741,32 +888,6 @@ async function setup(profile: FeeProfile = "economy") {
   return { session, directory, journal, dispose: () => rm(directory, { recursive: true, force: true }) };
 }
 
-test("retry reuses the recorded open position and does not prepare another trade", async () => {
-  const fixture = await setup();
-  try {
-    const { journal, directory, session } = fixture;
-    journal.ownedPositionKeys = ["position"];
-    journal.actions = [{ id: "open", purpose: "open", feeUsd: USD.toString(), requestId: "request", state: "settled" }];
-    await writeJournal(directory, journal);
-    await session.resume("run");
-    session.snapshot = async () =>
-      ({
-        positions: [{ key: "position", isLong: true, sizeInUsd: 2n * USD, collateralUsd: 3n * USD }],
-        orders: [],
-        onchainPositionCount: 1,
-        onchainOrderCount: 0,
-      }) as unknown as Awaited<ReturnType<FundedSession["snapshot"]>>;
-    session.sdk.prepareOrder = async () => {
-      throw new Error("Must not prepare another paid order");
-    };
-    const result = await session.openSmallPosition(true);
-    assert.equal(result.sizeUsd, 2n * USD);
-    assert.equal((await readJournal(directory))!.actions.length, 1);
-  } finally {
-    await fixture.dispose();
-  }
-});
-
 test("cleanup refuses positions not recorded as belonging to this run", async () => {
   const fixture = await setup();
   try {
@@ -815,17 +936,22 @@ test("cleanup can cancel a mined order still waiting for a keeper, without resub
     fixture.session.sdk.fetchOrderStatus = async () => ({
       requestId: "request",
       status: "created",
-      orderKeys: ["order"],
+      orderKeys: [orderKey],
       txHash: `0x${"1".repeat(64)}`,
     });
-    fixture.session.rpc.waitForTransactionReceipt = async () => ({ status: "success" }) as never;
+    fixture.session.rpc.waitForTransactionReceipt = async () =>
+      fundedOrderReceipt({
+        account: fixture.session.address,
+        market: fixture.session.active.marketAddress,
+        keys: [orderKey],
+      });
     fixture.session.sdk.submitOrder = async () => {
       throw new Error("Must not resubmit");
     };
     await fixture.session.reconcile(true);
     const saved = (await readJournal(fixture.directory))!;
     assert.equal(saved.actions[0].state, "created");
-    assert.deepEqual(saved.ownedOrderKeys, ["order"]);
+    assert.deepEqual(saved.ownedOrderKeys, [orderKey]);
     fixture.session.sdk.fetchOrderStatus = async () => ({ requestId: "request", status: "cancelled" });
     await fixture.session.reconcile();
     assert.equal((await readJournal(fixture.directory))!.actions[0].state, "failed");
@@ -842,12 +968,19 @@ test("a cancel request settles on its successful relay receipt without waiting f
     ];
     await writeJournal(fixture.directory, fixture.journal);
     await fixture.session.resume("run");
+    fixture.session.active.ownedOrderKeys = [orderKey];
     fixture.session.sdk.fetchOrderStatus = async () => ({
       requestId: "request",
       status: "created",
       txHash: `0x${"1".repeat(64)}`,
     });
-    fixture.session.rpc.waitForTransactionReceipt = async () => ({ status: "success" }) as never;
+    fixture.session.rpc.waitForTransactionReceipt = async () =>
+      fundedOrderReceipt({
+        account: fixture.session.address,
+        market: fixture.session.active.marketAddress,
+        keys: [orderKey],
+        eventName: "OrderCancelled",
+      });
     await fixture.session.reconcile();
     assert.equal((await readJournal(fixture.directory))!.actions[0].state, "settled");
   } finally {
@@ -887,16 +1020,17 @@ test("fee transactions and edits settle while a resting limit order remains open
     session.sdk.fetchOrderStatus = async ({ requestId }) => ({
       requestId: requestId!,
       status: "created",
-      orderKeys: ["limit-key"],
+      orderKeys: [orderKey],
       txHash: `0x${"1".repeat(64)}`,
     });
-    session.rpc.waitForTransactionReceipt = async () => ({ status: "success" }) as never;
+    session.rpc.waitForTransactionReceipt = async () =>
+      fundedOrderReceipt({ account: session.address, market: session.active.marketAddress, keys: [orderKey] });
     await session.reconcile(true);
     assert.deepEqual(
       session.active.actions.map((a) => a.state),
       ["created", "settled", "settled"]
     );
-    assert.deepEqual(session.active.ownedOrderKeys, ["limit-key"]);
+    assert.deepEqual(session.active.ownedOrderKeys, [orderKey]);
   } finally {
     await fixture.dispose();
   }
@@ -985,34 +1119,6 @@ test("cleanup cancels orders before closing positions and only then completes th
     assert.deepEqual(calls, ["cancel", "close"]);
     assert.equal((await fixture.session.cleanup(true)).completed, true);
     assert.deepEqual(calls, ["cancel", "close"]);
-  } finally {
-    await fixture.dispose();
-  }
-});
-
-test("1CT retry after cancellation or revocation does not reactivate an exhausted authorization", async () => {
-  const fixture = await setup();
-  try {
-    const { session } = fixture;
-    session.active.inventory = { subaccount: "0x3333333333333333333333333333333333333333" };
-    session.active.actions.push({
-      id: "cancel",
-      purpose: "cancel",
-      step: "one-click:cancel",
-      state: "settled",
-      feeUsd: "1",
-    });
-    session.sdk.generateSubaccount = async () => {
-      throw new Error("Must not sign again");
-    };
-    session.sdk.activateSubaccount = async () => {
-      throw new Error("Must not reactivate");
-    };
-    await session.save();
-    for (let retry = 0; retry < 3; retry++) {
-      await session.resume("run");
-      assert.equal(await session.activateOneClick(), session.active.inventory!.subaccount);
-    }
   } finally {
     await fixture.dispose();
   }

@@ -94,7 +94,7 @@ import "./PositionEditor.scss";
 export function PositionEditor() {
   const { chainId, srcChainId } = useChainId();
   const { expressOrdersEnabled, setExpressOrdersEnabled, setIsSettingsVisible } = useSettings();
-  const [, setEditingPositionKey] = usePositionEditorPositionState();
+  const [editingPositionKey, setEditingPositionKey] = usePositionEditorPositionState();
   const tokensData = useTokensData();
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
   const { minCollateralUsd } = usePositionsConstants();
@@ -106,7 +106,7 @@ export function PositionEditor() {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
   const isVisible = Boolean(position);
-  const prevIsVisible = usePrevious(isVisible);
+  const prevEditingPositionKey = usePrevious(editingPositionKey);
 
   const [operation, setOperation] = usePositionEditorOperation();
   const isDeposit = operation === Operation.Deposit;
@@ -384,7 +384,7 @@ export function PositionEditor() {
 
   useEffect(
     function resetFormAndApplyOpenRequest() {
-      if (isVisible !== prevIsVisible || atPriceOpenRequest) {
+      if (editingPositionKey !== prevEditingPositionKey || atPriceOpenRequest) {
         setCollateralInputValue("");
       }
 
@@ -417,10 +417,10 @@ export function PositionEditor() {
     [
       atPriceOpenRequest,
       clearAtPriceOpenRequest,
-      isVisible,
+      editingPositionKey,
       position?.collateralToken?.decimals,
       position?.indexToken?.visualMultiplier,
-      prevIsVisible,
+      prevEditingPositionKey,
       replacingOrder,
       setCollateralInputValue,
       setTriggerPriceInputValue,

@@ -3,7 +3,6 @@ import { parseAbi } from "viem";
 
 import { getContract } from "../../../sdk/src/configs/contracts";
 import { multichainBalanceKey } from "../../../sdk/src/configs/dataStore";
-import { economy, USD } from "./economy";
 import type { FundedSession } from "./session";
 import { eventually } from "./trading";
 
@@ -14,33 +13,6 @@ export async function accountBalance(session: FundedSession, token: string) {
     functionName: "getUint",
     args: [multichainBalanceKey(session.address, token) as `0x${string}`],
   });
-}
-
-export async function depositAccount(session: FundedSession) {
-  const state = await session.snapshot();
-  const inventory = (session.active.inventory ??= {});
-  if (inventory.accountBaseline === undefined) {
-    const balance = await accountBalance(session, state.usdc.address);
-    assert.equal(balance, 0n, "Use an empty GMX Account; existing account funds are not spent");
-    inventory.accountBaseline = balance.toString();
-    inventory.accountAmount = "1000000";
-    await session.save();
-  }
-  if (state.stableUsd - USD < economy.stableReserveUsd + economy.cleanupReserveUsd)
-    throw new Error("Account deposit would consume stablecoin reserves");
-  const amount = BigInt(inventory.accountAmount);
-  await session.allowance(state.usdc, amount, false);
-  const txn = session.sdk.buildSameChainDepositTxn({
-    tokenAddress: state.usdc.address,
-    amount,
-    account: session.address,
-  });
-  await session.nativeTransaction(txn, "account-deposit", false);
-  await eventually(
-    () => accountBalance(session, state.usdc.address),
-    (value) => value === amount
-  );
-  return amount;
 }
 
 export async function withdrawAccount(session: FundedSession) {
@@ -74,4 +46,23 @@ export async function withdrawAccount(session: FundedSession) {
   );
   const after = await session.snapshot();
   assert.equal(after.stableAmount - before.stableAmount, amount, "Same-chain withdrawal did not reach the wallet");
+}
+
+export async function withdrawBridgeGas(session: FundedSession) {
+  const inventory = session.active.inventory;
+  if (inventory?.bridgeGasBaseline !== "0") return;
+  const token = (await session.snapshot()).weth.address;
+  const current = await accountBalance(session, token);
+  if (!current) return;
+  assert.ok(current <= BigInt(inventory.bridgeGasAmount), "Unexpected GMX Account WETH inventory");
+  const params = session.sdk.buildSameChainWithdrawBridgeOutParams({ tokenAddress: token, amount: current });
+  await session.nativeTransaction(
+    session.sdk.buildSameChainWithdrawTxn({ bridgeOutParams: params }),
+    "bridge-gas-withdraw",
+    true
+  );
+  await eventually(
+    () => accountBalance(session, token),
+    (value) => value === 0n
+  );
 }

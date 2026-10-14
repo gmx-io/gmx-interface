@@ -708,16 +708,20 @@ export function PositionSeller() {
     });
 
     if (expressParams?.subaccount) {
+      // The transaction callback reports failures after this handler returns.
+      void txnPromise.catch(() => undefined);
       onClose();
       setIsSubmitting(false);
       setDefaultReceiveToken(receiveToken.address);
       return;
     }
 
-    txnPromise.then(onClose).finally(() => {
-      setIsSubmitting(false);
-      setDefaultReceiveToken(receiveToken.address);
-    });
+    txnPromise
+      .then(onClose, () => undefined)
+      .finally(() => {
+        setIsSubmitting(false);
+        setDefaultReceiveToken(receiveToken.address);
+      });
   }
 
   const latestOnSubmit = useLatest(onSubmit);

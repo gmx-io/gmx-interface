@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useBigNumberInput } from "domain/synthetics/common/useBigNumberInput";
 import { getRemainingSubaccountActions, getRemainingSubaccountSeconds } from "domain/synthetics/subaccount";
+import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT } from "sdk/configs/express";
 import { periodToSeconds, secondsToPeriod } from "sdk/utils/time";
 
 import Button from "components/Button/Button";
@@ -13,7 +14,7 @@ import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 export function OneClickAdvancedSettings() {
-  const { subaccount, updateSubaccountSettings } = useSubaccountContext();
+  const { subaccount, updateSubaccountSettings, initialSettings, setInitialSettings } = useSubaccountContext();
   const [isExpanded, setIsExpanded] = useState(false);
 
   const { displayValue: remainingActionsString, setDisplayValue: setRemainingActionsString } = useBigNumberInput(
@@ -47,50 +48,54 @@ export function OneClickAdvancedSettings() {
   );
 
   const disabled = useMemo(() => {
-    if (!subaccount) {
-      return true;
-    }
-
-    const remainingActions = getRemainingSubaccountActions(subaccount);
-    const remainingSeconds = getRemainingSubaccountSeconds(subaccount);
+    const remainingActions = subaccount
+      ? getRemainingSubaccountActions(subaccount)
+      : initialSettings?.remainingActions ?? BigInt(DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT);
+    const remainingSeconds = subaccount
+      ? getRemainingSubaccountSeconds(subaccount)
+      : initialSettings?.remainingSeconds ?? BigInt(DEFAULT_SUBACCOUNT_EXPIRY_DURATION);
 
     const nextRemainigActions = BigInt(remainingActionsString);
     const nextRemainingSeconds = BigInt(periodToSeconds(Number(daysLimitString), "1d"));
 
     const notChanged = remainingActions === nextRemainigActions && remainingSeconds === nextRemainingSeconds;
-    const isInvalid = nextRemainigActions < 0n || nextRemainingSeconds < 0n;
+    const isInvalid = subaccount
+      ? nextRemainigActions < 0n || nextRemainingSeconds < 0n
+      : nextRemainigActions <= 0n || nextRemainingSeconds <= 0n;
 
     return notChanged || isInvalid;
-  }, [subaccount, remainingActionsString, daysLimitString]);
+  }, [subaccount, initialSettings, remainingActionsString, daysLimitString]);
 
   const handleSave = useCallback(() => {
-    if (!subaccount) {
-      return;
-    }
-
     const nextRemainigActions = BigInt(remainingActionsString);
     const nextRemainingSeconds = BigInt(periodToSeconds(Number(daysLimitString), "1d"));
+
+    if (!subaccount) {
+      if (nextRemainigActions > 0n && nextRemainingSeconds > 0n)
+        setInitialSettings?.({ remainingActions: nextRemainigActions, remainingSeconds: nextRemainingSeconds });
+      return;
+    }
 
     updateSubaccountSettings({
       nextRemainigActions,
       nextRemainingSeconds,
     });
-  }, [subaccount, remainingActionsString, daysLimitString, updateSubaccountSettings]);
+  }, [subaccount, remainingActionsString, daysLimitString, updateSubaccountSettings, setInitialSettings]);
 
   useEffect(
     function initSettings() {
-      if (!subaccount) {
-        return;
-      }
-
-      const remainingActions = getRemainingSubaccountActions(subaccount);
-      const remainingSeconds = getRemainingSubaccountSeconds(subaccount);
+      const remainingActions = subaccount
+        ? getRemainingSubaccountActions(subaccount)
+        : initialSettings?.remainingActions ?? BigInt(DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT);
+      const remainingSeconds = subaccount
+        ? getRemainingSubaccountSeconds(subaccount)
+        : initialSettings?.remainingSeconds ?? BigInt(DEFAULT_SUBACCOUNT_EXPIRY_DURATION);
       const remainingDays = secondsToPeriod(Number(remainingSeconds), "1d", true);
 
       setRemainingActionsString(remainingActions.toString());
       setDaysLimitString(remainingDays.toString());
     },
-    [setRemainingActionsString, setDaysLimitString, subaccount]
+    [setRemainingActionsString, setDaysLimitString, subaccount, initialSettings]
   );
 
   return (

@@ -1,11 +1,13 @@
 import { withWalletLock } from "./journal";
 import { FundedSession } from "./session";
 import { selectFeeProfile, selectFundedCases } from "./catalog";
-import { writeFundedReport } from "./report";
+import { writeFundedReport, type FundedRunDetails } from "./report";
 import { planLiquidity } from "./liquidity";
 import { fundedErrorMessage } from "./errors";
 import { runFundedCases } from "./runner";
 import { fundedReadiness } from "./readiness";
+import { withFundedRecovery } from "./recovery";
+import { validateFundedTarget } from "./target";
 
 async function main() {
   const command = process.argv[2] || "plan";
@@ -47,17 +49,23 @@ async function main() {
     return;
   }
   if (execute) process.env.REGRESSION_FUNDED_EXECUTE = "1";
-  await withWalletLock(session.directory, async () => {
-    if (command === "cleanup") {
+  if (command === "cleanup") {
+    await withWalletLock(session.directory, async () => {
+      const details: FundedRunDetails = {};
       try {
-        console.log(JSON.stringify(await session.cleanup(execute), null, 2));
+        console.log(execute ? "Cleaning up..." : "Inspecting cleanup (no transactions)...");
+        details.cleanup = await session.cleanup(execute);
+      } catch (error) {
+        details.cleanupError = fundedErrorMessage(error);
+        throw error;
       } finally {
-        await writeFundedReport(session, selected);
+        await writeFundedReport(session, selected, details);
       }
-      return;
-    }
-    process.exitCode = await runFundedCases(session, selected);
-  });
+    });
+    return;
+  }
+  validateFundedTarget(process.env.REGRESSION_BASE_URL);
+  process.exitCode = await withFundedRecovery(new FundedSession(profile), () => runFundedCases(session, selected));
 }
 
 main().catch((error) => {

@@ -1,12 +1,15 @@
 import { selectFundedCases, type FundedCase } from "./catalog";
 import { dollars, feePolicy, usd, type FeeProfile } from "./economy";
 import { fundedErrorMessage } from "./errors";
+import type { FundedRecovery } from "./recovery";
 
 export type BatchCaseResult = {
   exitCode: number;
   cleanupCompleted: boolean;
   reservedFeesUsd: string | null;
+  balanceChangeAtStartPricesUsd?: string | null;
   runId?: string;
+  htmlReport?: string;
   error?: string;
 };
 
@@ -24,8 +27,27 @@ export type FundedBatch = {
   reservedFeesUsd: string;
   accountingComplete: boolean;
   reason?: string;
+  recovery?: FundedRecovery;
   cases: BatchCase[];
 };
+
+export function batchBalanceChange(batch: FundedBatch) {
+  let total = 0n;
+  const missingCases: string[] = [];
+  for (const scenario of batch.cases) {
+    if (!scenario.result && scenario.status !== "running") continue;
+    const amount = scenario.result?.balanceChangeAtStartPricesUsd;
+    if (typeof amount !== "string" || !/^-?\d+(?:\.\d{1,30})?$/.test(amount)) missingCases.push(scenario.id);
+    else total += usd(amount);
+  }
+  return {
+    totalUsd: missingCases.length ? null : dollars(total),
+    knownSubtotalUsd: dollars(total),
+    missingCases,
+    scope:
+      "Sum of Arbitrum ETH/WETH/USDC changes at each case's starting prices; includes fees and PnL, excludes pre-run recovery and Base balances.",
+  };
+}
 
 export function batchOptions(args: string[]) {
   let budget = "5";
@@ -43,17 +65,29 @@ export function batchOptions(args: string[]) {
   const budgetUsd = usd(budget);
   if (budgetUsd <= 0n) throw new Error("--budget-usd must be positive");
   const explicitSelection = selection.includes("--case") || selection.includes("--group");
-  const selected = selectFundedCases(explicitSelection ? selection : [...selection, "--group", "all"]);
-  return { budgetUsd, selected, execute: selection.includes("--execute") };
+  const requested = selectFundedCases(explicitSelection ? selection : [...selection, "--group", "all"]);
+  const excluded = explicitSelection ? [] : requested.filter((c) => c.group === "bridge");
+  const selected = requested.filter((c) => !excluded.includes(c));
+  return { budgetUsd, selected, excluded, execute: selection.includes("--execute") };
 }
 
-export function createBatch(selected: readonly FundedCase[], budgetUsd: bigint): FundedBatch {
+export function createBatch(
+  selected: readonly FundedCase[],
+  budgetUsd: bigint,
+  recovery?: FundedRecovery
+): FundedBatch {
   if (budgetUsd <= 0n) throw new Error("Batch fee budget must be positive");
+  if (
+    recovery &&
+    (!recovery.completed || usd(recovery.reservedFeesUsd) < 0n || usd(recovery.reservedFeesUsd) > budgetUsd)
+  )
+    throw new Error("Recovery must complete within the batch budget before starting tests");
   return {
     status: "running",
     budgetUsd: dollars(budgetUsd),
-    reservedFeesUsd: "0",
+    reservedFeesUsd: recovery?.reservedFeesUsd ?? "0",
     accountingComplete: true,
+    recovery,
     cases: selected.map(({ id }) => ({
       id,
       feeProfile: id === "glv" ? "glv" : "economy",
@@ -67,7 +101,7 @@ export async function runFundedBatch(
   runCase: (scenario: BatchCase) => Promise<BatchCaseResult>,
   save: (batch: FundedBatch) => Promise<void>
 ) {
-  let charged = 0n;
+  let charged = usd(batch.recovery?.reservedFeesUsd ?? "0");
   await save(batch);
   for (const scenario of batch.cases) {
     const allowance = feePolicy(scenario.feeProfile).runFeeLimitUsd;

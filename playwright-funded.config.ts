@@ -17,7 +17,7 @@ export default defineConfig({
   timeout: 180_000,
   outputDir: "test-results/funded",
   reporter: [
-    ["list"],
+    ["./autotests/regression/funded/consoleReporter.ts"],
     ["html", { outputFolder: "playwright-report/funded", open: "never" }],
     ["json", { outputFile: "test-results/funded/playwright.json" }],
   ],
@@ -34,6 +34,6 @@ export default defineConfig({
     ...regression.metadata,
     fundedRunId: process.env.REGRESSION_FUNDED_RUN_ID,
     chainId: 42161,
-    data: "API/contract-assisted funded scenarios; read-only browser wallet; shared budget and final cleanup",
+    data: "17 UI-initiated journeys through a guarded wallet (finite approvals, relay requests re-sent from Node); independent receipt/state checks, shared budget; SDK cleanup after every scenario",
   },
 });

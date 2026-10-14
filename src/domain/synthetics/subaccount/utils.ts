@@ -302,34 +302,49 @@ function getIsEmptySubaccountApproval(subaccountApproval: SignedSubaccountApprov
   );
 }
 
-export async function getInitialSubaccountApproval({
-  chainId,
-  signer,
-  provider,
-  subaccountAddress,
-  isGmxAccount,
-}: {
-  chainId: ContractsChainId;
-  signer: WalletSigner;
-  provider: Provider;
-  subaccountAddress: string;
-  isGmxAccount: boolean;
-}) {
-  const onchainData = await getSubaccountOnchainData({ chainId, signer, provider, subaccountAddress });
-
-  const defaultExpiresAt = BigInt(nowInSeconds() + DEFAULT_SUBACCOUNT_EXPIRY_DURATION);
+export function getInitialSubaccountLimits(
+  onchainData: SubaccountOnchainData,
+  initialSettings?: { remainingActions: bigint; remainingSeconds: bigint }
+) {
+  if (initialSettings && (initialSettings.remainingActions <= 0n || initialSettings.remainingSeconds <= 0n)) {
+    throw new Error("One-Click limits must be positive");
+  }
+  const defaultExpiresAt =
+    BigInt(nowInSeconds()) + (initialSettings?.remainingSeconds ?? BigInt(DEFAULT_SUBACCOUNT_EXPIRY_DURATION));
 
   let expiresAt = getSubaccountExpiresAt({
     onchainData,
     signedApproval: undefined,
   });
 
-  if (expiresAt < defaultExpiresAt) {
+  if (initialSettings || expiresAt < defaultExpiresAt) {
     expiresAt = defaultExpiresAt;
   }
 
-  const defaultMaxAllowedCount = BigInt(DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT);
+  const defaultMaxAllowedCount = initialSettings?.remainingActions ?? BigInt(DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT);
   const maxAllowedCount = onchainData.currentActionsCount + defaultMaxAllowedCount;
+
+  return { expiresAt, maxAllowedCount };
+}
+
+export async function getInitialSubaccountApproval({
+  chainId,
+  signer,
+  provider,
+  subaccountAddress,
+  isGmxAccount,
+  initialSettings,
+}: {
+  chainId: ContractsChainId;
+  signer: WalletSigner;
+  provider: Provider;
+  subaccountAddress: string;
+  isGmxAccount: boolean;
+  initialSettings?: { remainingActions: bigint; remainingSeconds: bigint };
+}) {
+  const onchainData = await getSubaccountOnchainData({ chainId, signer, provider, subaccountAddress });
+
+  const { expiresAt, maxAllowedCount } = getInitialSubaccountLimits(onchainData, initialSettings);
 
   const defaultSubaccountApproval = await createAndSignSubaccountApproval(
     chainId,

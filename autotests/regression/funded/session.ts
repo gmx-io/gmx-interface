@@ -21,6 +21,7 @@ import SyntheticsReader from "../../../sdk/src/abis/SyntheticsReader";
 import { getContract } from "../../../sdk/src/configs/contracts";
 import { subaccountListKey } from "../../../sdk/src/configs/dataStore";
 import { getOracleKeeperUrl } from "../../../sdk/src/configs/oracleKeeper";
+import { HttpError } from "../../../sdk/src/utils/http/http";
 import type { BridgeOutParams } from "../../../sdk/src/utils/multichain/api";
 import type { PrepareOrderRequest, PrepareOrderResponse } from "../../../sdk/src/utils/orderTransactions/api";
 import { PrivateKeySigner } from "../../../sdk/src/utils/signer/privateKeySigner";
@@ -43,6 +44,7 @@ import {
   type FeeProfile,
 } from "./economy";
 import { checkGasPrice } from "./gasGuard";
+import { fundedRelayFailure } from "./errors";
 import {
   chargedFees,
   readJournal,
@@ -52,8 +54,12 @@ import {
   type FundedJournal,
 } from "./journal";
 import { inspectPreparedOrder, type OrderIntent } from "./preparedOrder";
+import { orderEventKeys } from "./orderReceipt";
 import { cleanupResources } from "./resources";
+import { readFundedData } from "./read";
 import { registerTwapReceipt } from "./trading";
+import { reconcileUiRelay, submitUiRelay, type UiRelayPayload, type UiRelayResponse } from "./uiRelay";
+import { registerUiOrderReceipt } from "./uiOrderReceipt";
 
 const symbol = "ETH/USD [WETH-USDC]";
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -102,27 +108,65 @@ export class FundedSession {
 
   async snapshot() {
     const [markets, tokens, positions, orders, chainId, block, tickers] = await Promise.all([
-      this.sdk.fetchMarkets(),
-      this.sdk.fetchTokensData(),
-      this.sdk.fetchPositionsInfo({ address: this.address }),
-      this.sdk.fetchOrders({ address: this.address }),
-      this.rpc.getChainId(),
-      this.rpc.getBlock(),
-      fetch(`${getOracleKeeperUrl(42161)}/prices/tickers`, { signal: AbortSignal.timeout(15_000) }).then(
-        async (response) => {
-          if (!response.ok) throw new Error("Oracle ticker request failed");
-          const tickers: unknown = await response.json();
-          if (!Array.isArray(tickers)) throw new Error("Invalid oracle tickers");
-          return tickers as { tokenAddress: string; timestamp: number; minPrice: string; maxPrice: string }[];
-        }
+      readFundedData("Market data", () => this.sdk.fetchMarkets()),
+      readFundedData("Token data", () => this.sdk.fetchTokensData()),
+      readFundedData("API positions", () => this.sdk.fetchPositionsInfo({ address: this.address })),
+      readFundedData("API orders", () => this.sdk.fetchOrders({ address: this.address })),
+      readFundedData("RPC chain ID", () => this.rpc.getChainId()),
+      readFundedData("RPC latest block", () => this.rpc.getBlock()),
+      readFundedData("Oracle prices", () =>
+        fetch(`${getOracleKeeperUrl(42161)}/prices/tickers`, { signal: AbortSignal.timeout(15_000) }).then(
+          async (response) => {
+            if (!response.ok) throw new HttpError(response.status, "Oracle ticker request failed");
+            const tickers: unknown = await response.json();
+            if (!Array.isArray(tickers)) throw new Error("Invalid oracle tickers");
+            return tickers as { tokenAddress: string; timestamp: number; minPrice: string; maxPrice: string }[];
+          }
+        )
       ),
     ]);
-    const age = Date.now() / 1000 - Number(block.timestamp);
-    if (chainId !== 42161 || age > 120 || age < -30) throw new Error("Wrong-chain or stale RPC");
+    if (chainId !== 42161) throw new Error("Wrong-chain or stale RPC");
     const market = markets.find((m) => m.symbol === symbol && m.isListed);
     const usdc = tokens.find((t) => t.symbol === "USDC");
     const weth = tokens.find((t) => t.symbol === "WETH");
     if (!market || !usdc || !weth) throw new Error("Economy market or tokens unavailable");
+    const [nativeAmount, stableAmount, wrappedAmount, onchainPositions, onchainOrders] = await Promise.all([
+      readFundedData("ETH balance", () => this.rpc.getBalance({ address: this.address })),
+      readFundedData("USDC balance", () =>
+        this.rpc.readContract({
+          abi: erc20Abi,
+          address: usdc.address as Address,
+          functionName: "balanceOf",
+          args: [this.address],
+        })
+      ),
+      readFundedData("WETH balance", () =>
+        this.rpc.readContract({
+          abi: erc20Abi,
+          address: weth.address as Address,
+          functionName: "balanceOf",
+          args: [this.address],
+        })
+      ),
+      readFundedData("On-chain positions", () =>
+        this.rpc.readContract({
+          abi: SyntheticsReader as Abi,
+          address: getContract(42161, "SyntheticsReader"),
+          functionName: "getAccountPositions",
+          args: [getContract(42161, "DataStore"), this.address, 0n, 100n],
+        })
+      ),
+      readFundedData("On-chain orders", () =>
+        this.rpc.readContract({
+          abi: SyntheticsReader as Abi,
+          address: getContract(42161, "SyntheticsReader"),
+          functionName: "getAccountOrders",
+          args: [getContract(42161, "DataStore"), this.address, 0n, 100n],
+        })
+      ),
+    ]);
+    const age = Date.now() / 1000 - Number(block.timestamp);
+    if (age > 120 || age < -30) throw new Error("Wrong-chain or stale RPC");
     for (const token of [usdc, weth]) {
       const ticker = tickers.find((t) => getAddress(t.tokenAddress) === getAddress(token.address));
       const timestamp = Number(ticker?.timestamp);
@@ -137,33 +181,6 @@ export class FundedSession {
       if (token.prices.minPrice <= 0n || token.prices.maxPrice < token.prices.minPrice)
         throw new Error("Invalid oracle price range");
     }
-    const [nativeAmount, stableAmount, wrappedAmount, onchainPositions, onchainOrders] = await Promise.all([
-      this.rpc.getBalance({ address: this.address }),
-      this.rpc.readContract({
-        abi: erc20Abi,
-        address: usdc.address as Address,
-        functionName: "balanceOf",
-        args: [this.address],
-      }),
-      this.rpc.readContract({
-        abi: erc20Abi,
-        address: weth.address as Address,
-        functionName: "balanceOf",
-        args: [this.address],
-      }),
-      this.rpc.readContract({
-        abi: SyntheticsReader as Abi,
-        address: getContract(42161, "SyntheticsReader"),
-        functionName: "getAccountPositions",
-        args: [getContract(42161, "DataStore"), this.address, 0n, 100n],
-      }),
-      this.rpc.readContract({
-        abi: SyntheticsReader as Abi,
-        address: getContract(42161, "SyntheticsReader"),
-        functionName: "getAccountOrders",
-        args: [getContract(42161, "DataStore"), this.address, 0n, 100n],
-      }),
-    ]);
     if (!Array.isArray(onchainPositions) || !Array.isArray(onchainOrders)) throw new Error("Invalid reader inventory");
     return {
       market,
@@ -377,7 +394,7 @@ export class FundedSession {
     if (!previous) return undefined;
     await this.reconcile(true);
     if (previous.state !== "settled" && !(previous.state === "created" && previous.settlement === "creation"))
-      throw new Error("Previous step has not settled; a retry cannot submit it again");
+      throw new Error(previous.failureReason ?? "Previous step has not settled; a retry cannot submit it again");
     return previous;
   }
 
@@ -430,51 +447,6 @@ export class FundedSession {
       costs = quote.feeUsd;
     }
     throw new Error("Unstable opening quote; no order submitted");
-  }
-
-  async openSmallPosition(isLong: boolean, remainingParts = 1) {
-    await this.reconcile();
-    const state = await this.snapshot();
-    const previousOpen = this.active.actions.find((a) => a.purpose === "open" && a.step === this.currentStep);
-    if (previousOpen) {
-      const existing = state.positions.find(
-        (p) => this.active.ownedPositionKeys.includes(p.key) && p.isLong === isLong
-      );
-      if (
-        previousOpen.state === "settled" &&
-        existing &&
-        state.positions.length === 1 &&
-        state.onchainPositionCount === 1 &&
-        !state.orders.length &&
-        !state.onchainOrderCount
-      ) {
-        return { sizeUsd: existing.sizeInUsd, collateralUsd: existing.collateralUsd };
-      }
-      throw new Error("Previous opening cannot be reused; a retry must not create another paid position");
-    }
-    if (state.positions.length || state.orders.length || state.onchainPositionCount || state.onchainOrderCount)
-      throw new Error("Only one funded exposure at a time");
-    const quote = await this.quoteIncrease(state, isLong, remainingParts);
-    // Check the complete lifecycle budget before an approval can spend anything.
-    checkFeeBudget(chargedFees(this.active), quote.feeUsd + USD / 20n, false, this.feePolicy);
-    await this.allowance(
-      state.usdc,
-      ceilDiv(
-        (economy.collateralLimitUsd + this.feePolicy.runFeeLimitUsd) * 10n ** BigInt(state.usdc.decimals),
-        state.usdc.prices.minPrice
-      ),
-      false
-    );
-    const fresh = await this.snapshot();
-    const currentQuote = await this.quoteIncrease(fresh, isLong, remainingParts);
-    if (
-      fresh.stableUsd - currentQuote.collateralUsd - currentQuote.feeUsd <
-      economy.stableReserveUsd + this.feePolicy.cleanupReserveUsd
-    ) {
-      throw new Error("Opening would consume stablecoin and cleanup reserves");
-    }
-    await this.execute(currentQuote.prepared, currentQuote.intent, "open", false);
-    return currentQuote;
   }
 
   async quoteSwap(
@@ -580,10 +552,23 @@ export class FundedSession {
       purpose,
       feeUsd: quote.feeUsd.toString(),
       requestId: prepared.requestId,
+      orderKeys: intent.kind === "cancel" ? intent.keys : intent.kind === "edit" ? [intent.key] : undefined,
       state: "pending",
       step: this.currentStep,
       settlement,
       startedAt: new Date().toISOString(),
+      swap:
+        intent.kind === "swap"
+          ? {
+              tokenIn: intent.tokenIn,
+              amount: intent.amount.toString(),
+              minOutputAmount: BigInt(
+                prepared.payload.batchParams.createOrderParams[0].orderPayload.numbers.minOutputAmount
+              ).toString(),
+              feeAmount: quote.feeAmount.toString(),
+              unwrapNative: intent.unwrapNative,
+            }
+          : undefined,
     };
     this.active.actions.push(action);
     await this.save();
@@ -599,35 +584,8 @@ export class FundedSession {
     });
     await this.reconcile(cleanup || settlement === "creation" || settlement === "receipt");
     if ((action.state as string) !== "settled" && !(action.state === "created" && settlement === "creation"))
-      throw new Error("Funded action did not execute successfully");
+      throw new Error(action.failureReason ?? "Funded action did not execute successfully");
     return action;
-  }
-
-  async activateOneClick() {
-    const inventory = (this.active.inventory ??= {});
-    if (
-      this.active.actions.some((a) => a.step === "one-click:cancel" && a.purpose === "cancel" && a.state === "settled")
-    ) {
-      this.sdk.clearSubaccount();
-      return inventory.subaccount;
-    }
-    const subaccount = await this.sdk.generateSubaccount(this.signer);
-    if (!inventory.subaccount) {
-      if (await this.subaccountActive(subaccount)) throw new Error("Existing 1CT authorization must not be modified");
-      inventory.subaccount = subaccount;
-      await this.save();
-    }
-    if (inventory.subaccount !== subaccount) throw new Error("1CT address changed between attempts");
-    const status = await this.sdk.refreshSubaccountState(this.address);
-    if (!status?.active) {
-      if (this.active.actions.some((a) => a.requestId && a.step?.startsWith("one-click:")))
-        throw new Error("1CT authorization expired after a submitted action; do not reactivate on retry");
-      await this.sdk.activateSubaccount(this.signer, {
-        expiresInSeconds: 600,
-        maxAllowedCount: (status?.currentActionsCount ?? 0n) + 2n,
-      });
-    }
-    return subaccount;
   }
 
   async subaccountActive(subaccount: string) {
@@ -661,14 +619,19 @@ export class FundedSession {
 
   async reconcile(allowCreatedOrders = false) {
     for (const action of this.active.actions.filter((a) => a.state === "pending" || a.state === "created")) {
+      if (action.uiRelay && !action.txHash) {
+        await reconcileUiRelay(this, action);
+        continue;
+      }
       if (action.txHash) {
         const rpc = action.chainId === 8453 ? this.sourceRpc : this.rpc;
         const receipt = await rpc.waitForTransactionReceipt({ hash: action.txHash, timeout: 120_000 });
         if (action.purpose === "twap" && receipt.status === "success") {
           registerTwapReceipt(this, action, receipt);
         }
+        if (action.uiOrder && receipt.status === "success") registerUiOrderReceipt(this.active, action, receipt);
         action.state = receipt.status === "success" ? "settled" : "failed";
-        if (receipt.gasUsed !== undefined && receipt.effectiveGasPrice !== undefined) {
+        if (!action.uiRelay && receipt.gasUsed !== undefined && receipt.effectiveGasPrice !== undefined) {
           const paid =
             receipt.gasUsed * receipt.effectiveGasPrice + ((receipt as unknown as { l1Fee?: bigint }).l1Fee ?? 0n);
           action.gasPaidWei = paid.toString();
@@ -684,9 +647,28 @@ export class FundedSession {
         await reconcileBridge(this, action);
         continue;
       }
+      const createsOrder = action.purpose === "open" || action.settlement === "creation";
+      // A verified cancellation can precede the status API's indexer update.
+      if (
+        createsOrder &&
+        action.orderKeys?.length &&
+        action.orderKeys.every((key) =>
+          this.active.actions.some((a) => a.state === "settled" && a.cancelledOrderKeys?.includes(key))
+        )
+      ) {
+        action.state = "failed";
+        action.finishedAt = new Date().toISOString();
+        await this.save();
+        continue;
+      }
       for (let attempt = 0; attempt < 40; attempt++) {
         const status = await this.sdk.fetchOrderStatus({ requestId: action.requestId });
-        if (status.orderKeys?.length) {
+        if (
+          status.orderKeys?.length &&
+          status.status !== "created" &&
+          action.settlement !== "receipt" &&
+          action.purpose !== "cancel"
+        ) {
           action.orderKeys = status.orderKeys;
           for (const key of status.orderKeys)
             if (!this.active.ownedOrderKeys.includes(key)) this.active.ownedOrderKeys.push(key);
@@ -702,6 +684,17 @@ export class FundedSession {
             if (!hash) throw new Error("Executed response has no receipt evidence");
             const receipt = await this.rpc.waitForTransactionReceipt({ hash: hash as Hex, timeout: 30_000 });
             if (receipt.status !== "success") throw new Error("Execution receipt is not successful");
+            if (action.purpose === "cancel") {
+              const keys = orderEventKeys(receipt, "OrderCancelled", this.address);
+              if (
+                !keys.length ||
+                keys.some((key) => !this.active.ownedOrderKeys.includes(key)) ||
+                (action.orderKeys?.length &&
+                  (keys.length !== action.orderKeys.length || keys.some((key) => !action.orderKeys!.includes(key))))
+              )
+                throw new Error("Cancellation receipt does not match the test-owned orders");
+              action.cancelledOrderKeys = keys;
+            }
           }
           if (action.purpose === "open" && status.status === "executed") {
             let positions = await this.sdk.fetchPositionsInfo({ address: this.address });
@@ -722,20 +715,24 @@ export class FundedSession {
             }
           }
           action.state = status.status === "executed" || cancelled ? "settled" : "failed";
+          if (status.status === "relay_failed" || status.status === "relay_reverted")
+            action.failureReason = fundedRelayFailure(status);
           action.finishedAt = new Date().toISOString();
           await this.save();
           break;
         }
-        if (
-          allowCreatedOrders &&
-          (action.purpose === "open" || action.settlement === "creation") &&
-          status.status === "created" &&
-          action.orderKeys?.length
-        ) {
+        if (allowCreatedOrders && createsOrder && status.status === "created") {
           const hash = status.createdTxnHash || status.txHash;
           if (!hash) throw new Error("Created order has no receipt evidence");
           const receipt = await this.rpc.waitForTransactionReceipt({ hash: hash as Hex, timeout: 30_000 });
-          if (receipt.status !== "success") throw new Error("Order creation receipt is not successful");
+          const keys = orderEventKeys(receipt, "OrderCreated", this.address, this.active.marketAddress);
+          if (keys.length !== 1) throw new Error("Order creation receipt must contain exactly one order");
+          for (const reported of [status.orderKeys, action.orderKeys]) {
+            if (reported?.length && (reported.length !== keys.length || reported.some((key) => !keys.includes(key))))
+              throw new Error("Order creation receipt differs from the recorded order keys");
+          }
+          action.orderKeys = keys;
+          for (const key of keys) if (!this.active.ownedOrderKeys.includes(key)) this.active.ownedOrderKeys.push(key);
           action.state = "created";
           action.finishedAt = new Date().toISOString();
           await this.save();
@@ -754,12 +751,14 @@ export class FundedSession {
     cleanup: boolean,
     spender = getContract(42161, "SyntheticsRouter") as Address
   ) {
-    const current = await this.rpc.readContract({
-      abi: erc20Abi,
-      address: token.address as Address,
-      functionName: "allowance",
-      args: [this.address, spender],
-    });
+    const current = await readFundedData("Token allowance", () =>
+      this.rpc.readContract({
+        abi: erc20Abi,
+        address: token.address as Address,
+        functionName: "allowance",
+        args: [this.address, spender],
+      })
+    );
     if (current >= amount) return;
     await this.nativeTransaction(
       {
@@ -772,12 +771,33 @@ export class FundedSession {
     );
   }
 
+  signUiMessage(message: Hex) {
+    return this.account.signMessage({ message: { raw: message as `0x${string}` } });
+  }
+
+  signUiTypedData(data: Parameters<typeof this.account.signTypedData>[0]) {
+    return this.account.signTypedData(data);
+  }
+
+  relayUiTransaction<T extends UiRelayResponse>(
+    url: string,
+    payload: UiRelayPayload,
+    purpose: string,
+    cleanup: boolean,
+    feeUsd: bigint,
+    send: () => Promise<T>,
+    uiOrder?: FundedAction["uiOrder"]
+  ) {
+    return submitUiRelay(this, url, payload, purpose, cleanup, feeUsd, this.currentStep, send, uiOrder);
+  }
+
   async nativeTransaction(
     tx: { to: Address; data: Hex; value: bigint },
     purpose: string,
     cleanup: boolean,
     extraFeeUsd = 0n,
-    chainId: 42161 | 8453 = 42161
+    chainId: 42161 | 8453 = 42161,
+    uiOrder?: FundedAction["uiOrder"]
   ) {
     const previous = await this.previousAction(purpose);
     if (previous) return previous;
@@ -791,12 +811,14 @@ export class FundedSession {
       chain,
       transport: http(rpcUrl, { timeout: 15_000, retryCount: 0 }),
     });
-    const prepared = await wallet.prepareTransactionRequest({
-      ...tx,
-      account: this.account,
-      chain,
-      type: "eip1559",
-    });
+    const prepared = await readFundedData("Transaction preparation", () =>
+      wallet.prepareTransactionRequest({
+        ...tx,
+        account: this.account,
+        chain,
+        type: "eip1559",
+      })
+    );
     if (!prepared.gas || !prepared.maxFeePerGas) throw new Error("Missing transaction fee estimate");
     const gas = prepared.gas * 2n;
     if (!maxGasGwei) throw new Error("Missing explicit gas ceiling");
@@ -841,6 +863,7 @@ export class FundedSession {
       startedAt: new Date().toISOString(),
       chainId,
       nativePriceUsd: state.weth.prices.maxPrice.toString(),
+      ...(uiOrder ? { uiOrder } : {}),
     };
     this.active.actions.push(action);
     await this.save();

@@ -1,11 +1,37 @@
-import type { BrowserContext } from "@playwright/test";
+import { expect, type BrowserContext, type Page } from "@playwright/test";
 
 export type WalletRequest = { method: string; params?: unknown[] };
 export type WalletHandler = (request: WalletRequest, chainId: number) => Promise<unknown>;
 
+export async function connectInjectedWallet(page: Page, address: string) {
+  // Opening Privy also starts an iframe navigation; wait for wallet UI instead.
+  await page
+    .getByRole("button", { name: "Connect wallet", exact: true })
+    .first()
+    .click({ timeout: 45_000, noWaitAfter: true });
+  const dialog = page.getByRole("dialog").filter({ has: page.getByRole("button", { name: /MetaMask/i }) });
+  await expect(dialog.getByRole("button", { name: /MetaMask/i }).first()).toBeVisible({ timeout: 45_000 });
+  await expect(dialog).not.toHaveAttribute("data-transition", /.*/);
+  await dialog
+    .getByRole("button", { name: /MetaMask/i })
+    .first()
+    .click({ timeout: 45_000, noWaitAfter: true });
+  await expect(page.getByTestId("user-address")).toContainText(
+    new RegExp(`${address.slice(0, 6)}.*${address.slice(-4)}`),
+    { timeout: 45_000 }
+  );
+}
+
 export async function installInjectedWallet(
   context: BrowserContext,
-  options: { address: string; chainId: number; request: WalletHandler }
+  options: {
+    address: string;
+    chainId: number;
+    request: WalletHandler;
+    allowedOrigin?: string;
+    // Throw to reject a chain switch, as a user declining the wallet prompt would.
+    onSwitchChain?: (chainId: number) => void;
+  }
 ) {
   let chainId = options.chainId;
   let connected = false;
@@ -28,9 +54,12 @@ export async function installInjectedWallet(
       case "wallet_revokePermissions":
         connected = false;
         return null;
-      case "wallet_switchEthereumChain":
-        chainId = Number((request.params?.[0] as { chainId: string }).chainId);
+      case "wallet_switchEthereumChain": {
+        const nextChainId = Number((request.params?.[0] as { chainId: string }).chainId);
+        options.onSwitchChain?.(nextChainId);
+        chainId = nextChainId;
         return null;
+      }
       case "wallet_addEthereumChain":
         return null;
       default:
@@ -38,7 +67,13 @@ export async function installInjectedWallet(
     }
   };
   // Route every request through the runner, as an extension would through its transport.
-  await context.exposeBinding("__regressionWalletRequest", async (_source, request: WalletRequest) => {
+  await context.exposeBinding("__regressionWalletRequest", async (source, request: WalletRequest) => {
+    if (
+      options.allowedOrigin &&
+      (source.frame !== source.page.mainFrame() || new URL(source.frame.url()).origin !== options.allowedOrigin)
+    ) {
+      return { error: { code: 4100, message: "Wallet access is restricted to the selected deployment" } };
+    }
     if (requests.length < 100) requests.push(request.method);
     try {
       return { result: await handleRequest(request), chainId, connected };

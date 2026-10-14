@@ -43,21 +43,13 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
     [_setSelectedAllowedSwapSlippageBps]
   );
 
-  useEffect(
-    function resetOrderEditorState() {
-      const reset = () => {
-        setSizeInputValue("");
-        setTriggerPriceInputValue("");
-        setTriggerRatioInputValue("");
-        setShouldCalculateMinOutputAmount(false);
-      };
-
-      if (!editingOrderState?.orderKey) {
-        setTimeout(reset, 100);
-      }
-    },
-    [editingOrderState?.orderKey, setShouldCalculateMinOutputAmount, setTriggerRatioInputValue]
-  );
+  const updateEditingOrderState = useCallback((nextState: EditingOrderState | undefined) => {
+    setSizeInputValue("");
+    setTriggerPriceInputValue("");
+    _setTriggerRatioInputValue("");
+    setShouldCalculateMinOutputAmount(false);
+    setEditingOrderState(nextState);
+  }, []);
 
   const order = getByKey(ordersInfoData, editingOrderState?.orderKey);
 
@@ -90,7 +82,7 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
       cancellingOrdersKeys,
       setCancellingOrdersKeys,
       editingOrderState,
-      setEditingOrderState,
+      setEditingOrderState: updateEditingOrderState,
       isSubmitting,
       setIsSubmitting,
       sizeInputValue,
@@ -118,6 +110,7 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
     acceptablePriceImpactBps,
     cancellingOrdersKeys,
     editingOrderState,
+    updateEditingOrderState,
     initialAcceptablePriceImpactBps,
     isSubmitting,
     setAcceptablePriceImpactBps,

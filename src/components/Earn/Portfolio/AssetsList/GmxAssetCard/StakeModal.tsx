@@ -264,6 +264,7 @@ export function StakeModal(props: {
       .then(() => {
         setIsVisible(false);
       })
+      .catch(noop)
       .finally(() => {
         setIsStaking(false);
       });
@@ -311,6 +312,7 @@ export function StakeModal(props: {
           showResetToast();
         }
       })
+      .catch(noop)
       .finally(() => {
         setIsUnstaking(false);
       });

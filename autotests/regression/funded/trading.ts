@@ -1,20 +1,18 @@
 import assert from "node:assert/strict";
-import { getAddress, parseEventLogs, type Abi, type TransactionReceipt } from "viem";
+import type { TransactionReceipt } from "viem";
 
-import EventEmitter from "../../../sdk/src/abis/EventEmitter";
-import SyntheticsReader from "../../../sdk/src/abis/SyntheticsReader";
 import { getContract } from "../../../sdk/src/configs/contracts";
-import { hashedPositionKey } from "../../../sdk/src/configs/dataStore";
 import { getBatchTypedData } from "../../../sdk/src/utils/express/utils/batchOrderUtils";
 import {
   buildTokenTransfersParamsForIncreaseOrSwap,
   getBatchOrderMulticallPayload,
 } from "../../../sdk/src/utils/orderTransactions/utils";
 import { setOrderDataListMetadataIsExpress } from "../../../sdk/src/utils/twap/uiFeeReceiver";
-import { chargedFees, type FundedAction } from "./journal";
+import type { FundedAction } from "./journal";
 import { getPositionKey } from "../../../sdk/src/utils/positions/utils";
-import { affordablePosition, ceilDiv, checkFeeBudget, economy, USD } from "./economy";
-import { inspectPreparedOrder, type OrderIntent } from "./preparedOrder";
+import { affordablePosition, ceilDiv, economy, USD } from "./economy";
+import { bufferSubaccountRelayFee, inspectPreparedOrder, type OrderIntent } from "./preparedOrder";
+import { orderEventKeys } from "./orderReceipt";
 import type { FundedSession } from "./session";
 
 export async function eventually<T>(read: () => Promise<T>, matches: (value: T) => boolean, timeout = 90_000) {
@@ -41,120 +39,6 @@ export async function ownPlannedPosition(session: FundedSession, isLong: boolean
   const key = getPositionKey(session.address, state.market.marketTokenAddress, state.usdc.address, isLong);
   if (!session.active.ownedPositionKeys.includes(key)) session.active.ownedPositionKeys.push(key);
   await session.save();
-}
-
-export async function changePosition(
-  session: FundedSession,
-  operation: "increase" | "deposit" | "withdraw" | "partial" | "close"
-) {
-  const state = await session.snapshot();
-  const before = await session.remember("position", () => position(session));
-  if (await session.previousAction(operation)) {
-    const expected =
-      operation === "close"
-        ? 0n
-        : operation === "partial"
-          ? before.sizeInUsd - before.sizeInUsd / 2n
-          : operation === "increase"
-            ? before.sizeInUsd + state.market.minPositionSizeUsd
-            : before.sizeInUsd;
-    await eventually(
-      () => session.snapshot(),
-      (s) =>
-        expected === 0n
-          ? !s.positions.length && !s.onchainPositionCount
-          : s.positions[0]?.sizeInUsd === expected &&
-            (operation === "deposit"
-              ? s.positions[0].collateralAmount > before.collateralAmount
-              : operation === "withdraw"
-                ? s.positions[0].collateralAmount < before.collateralAmount
-                : true)
-    );
-    return expected;
-  }
-  if (operation === "deposit" || operation === "withdraw") {
-    const amount = 250_000n;
-    if (operation === "deposit" && before.collateralUsd + USD / 4n > economy.collateralLimitUsd)
-      throw new Error("Collateral addition exceeds the $5 cap");
-    assert.equal(
-      before.contractKey,
-      hashedPositionKey(session.address, state.market.marketTokenAddress, state.usdc.address, before.isLong),
-      "Position contract key does not match the permitted wallet and market"
-    );
-    const prepared = await session.sdk.prepareCollateral({
-      operation,
-      positionKey: before.contractKey,
-      amount,
-      gasPaymentToken: state.usdc.address,
-      slippage: economy.slippageBps,
-      mode: "express",
-      from: session.address,
-    });
-    await session.execute(
-      prepared,
-      {
-        kind: operation === "deposit" ? "increase" : "close",
-        isLong: before.isLong,
-        sizeUsd: 0n,
-        collateralAmount: amount,
-      },
-      operation,
-      false
-    );
-    const after = await eventually(
-      () => position(session),
-      (p) =>
-        operation === "deposit"
-          ? p.collateralAmount > before.collateralAmount
-          : p.collateralAmount < before.collateralAmount
-    );
-    assert.equal(after.sizeInUsd, before.sizeInUsd);
-    return after.sizeInUsd;
-  }
-  const increasing = operation === "increase";
-  const size = increasing
-    ? state.market.minPositionSizeUsd
-    : operation === "partial"
-      ? before.sizeInUsd / 2n
-      : before.sizeInUsd;
-  if (increasing && before.sizeInUsd + size > economy.positionLimitUsd)
-    throw new Error("Increase exceeds the $10 position cap");
-  if (
-    operation === "partial" &&
-    (size < state.market.minPositionSizeUsd || before.sizeInUsd - size < state.market.minPositionSizeUsd)
-  )
-    throw new Error("Partial close would leave a position below the live minimum");
-  const collateral = increasing ? ceilDiv(size * 10n ** 6n, 2n * state.usdc.prices.minPrice) : before.collateralAmount;
-  if (increasing && before.collateralUsd + size / 2n > economy.collateralLimitUsd)
-    throw new Error("Increase exceeds the collateral cap");
-  const prepared = await session.sdk.prepareOrder({
-    kind: increasing ? "increase" : "decrease",
-    symbol: state.market.marketTokenAddress,
-    direction: before.isLong ? "long" : "short",
-    orderType: "market",
-    size,
-    collateralToken: "USDC",
-    ...(increasing
-      ? { collateralToPay: { token: "USDC", amount: collateral } }
-      : { receiveToken: "USDC", keepLeverage: false }),
-    gasPaymentToken: state.usdc.address,
-    mode: "express",
-    from: session.address,
-    slippage: economy.slippageBps,
-  });
-  await session.execute(
-    prepared,
-    { kind: increasing ? "increase" : "close", isLong: before.isLong, sizeUsd: size, collateralAmount: collateral },
-    operation,
-    operation === "close"
-  );
-  const expectedSize = increasing ? before.sizeInUsd + size : before.sizeInUsd - size;
-  await eventually(
-    () => session.snapshot(),
-    (s) =>
-      expectedSize === 0n ? !s.positions.length && !s.onchainPositionCount : s.positions[0]?.sizeInUsd === expectedSize
-  );
-  return expectedSize;
 }
 
 export async function quoteTrigger(
@@ -202,7 +86,7 @@ export async function quoteTrigger(
         orderType: kind === "take-profit" ? 5 : 6,
         triggerPrice: triggerPrice / 10n ** 18n,
       };
-  const quote = inspectPreparedOrder({
+  const buffered = bufferSubaccountRelayFee({
     prepared,
     intent,
     address: session.address,
@@ -210,130 +94,15 @@ export async function quoteTrigger(
     subaccountApproval: session.sdk.subaccountApprovalMessage,
     ...state,
   });
-  return { prepared, intent, feeUsd: quote.feeUsd, amount };
-}
-
-export async function createTrigger(
-  session: FundedSession,
-  isLong: boolean,
-  kind: "limit" | "stop-market" | "take-profit" | "stop-loss"
-) {
-  const previous = await session.previousAction("trigger");
-  if (previous) {
-    assert.equal(previous.orderKeys?.length, 1);
-    return previous.orderKeys[0];
-  }
-  const state = await session.snapshot();
-  const increase = kind === "limit" || kind === "stop-market";
-  const existing = increase ? undefined : await position(session);
-  const quote = await quoteTrigger(session, state, isLong, kind, existing);
-  checkFeeBudget(chargedFees(session.active), quote.feeUsd + USD / 20n, false, session.feePolicy);
-  if (increase) {
-    assert.equal(state.positions.length, 0);
-    assert.equal(state.orders.length, 0);
-    await session.allowance(state.usdc, quote.amount + 1_000_000n, false);
-    await ownPlannedPosition(session, isLong);
-  }
-  const action = await session.execute(quote.prepared, quote.intent, "trigger", false, "creation");
-  assert.equal(action.orderKeys?.length, 1);
-  const key = action.orderKeys[0];
-  await eventually(
-    () => session.snapshot(),
-    (s) => s.orders.some((o) => o.key === key) && s.onchainOrderCount === s.orders.length
-  );
-  return key;
-}
-
-export async function editTrigger(session: FundedSession, key: string) {
-  const state = await session.snapshot();
-  const order = await session.remember("order", async () => state.orders.find((o) => o.key === key));
-  assert.ok(order && session.active.ownedOrderKeys.includes(key));
-  const chainOrder = (await session.remember("onchain-order", () =>
-    session.rpc.readContract({
-      abi: SyntheticsReader as Abi,
-      address: getContract(42161, "SyntheticsReader"),
-      functionName: "getOrder",
-      args: [getContract(42161, "DataStore"), key],
-    })
-  )) as { numbers: { triggerPrice: bigint; acceptablePrice: bigint } };
-  const oldTrigger = chainOrder.numbers.triggerPrice;
-  const scale = order.triggerPrice === oldTrigger ? 1n : 10n ** 18n;
-  assert.equal(order.triggerPrice, oldTrigger * scale, "API and on-chain trigger prices differ");
-  const trigger = (oldTrigger * 101n) / 100n;
-  const buying = [3, 8].includes(order.orderType) ? order.isLong : !order.isLong;
-  const acceptable =
-    (buying ? state.weth.prices.maxPrice * 10_030n : state.weth.prices.minPrice * 9_970n) / 10_000n / 10n ** 18n;
-  if (!(await session.previousAction("edit"))) {
-    const prepared = await session.sdk.prepareEditOrder({
-      orderIds: [key],
-      newTriggerPrice: trigger * 10n ** 18n,
-      newAcceptablePrice: acceptable * 10n ** 18n,
-      newSize: order.sizeDeltaUsd,
-      mode: "express",
-      from: session.address,
-    });
-    await session.execute(
-      prepared,
-      {
-        kind: "edit",
-        key,
-        sizeUsd: order.sizeDeltaUsd,
-        triggerPrice: trigger,
-        acceptablePrice: acceptable,
-        autoCancel: order.autoCancel,
-        minOutputAmount: order.minOutputAmount,
-        validFromTime: order.validFromTime,
-      },
-      "edit",
-      false,
-      "receipt"
-    );
-  }
-  await eventually(
-    () => session.sdk.fetchOrders({ address: session.address }),
-    (orders) => orders.some((o) => o.key === key && o.triggerPrice === trigger * scale)
-  );
-}
-
-export async function cancelOrders(session: FundedSession, keys: string[]) {
-  assert.ok(keys.length > 0 && keys.every((key) => session.active.ownedOrderKeys.includes(key)));
-  if (!(await session.previousAction("cancel"))) {
-    const prepared = await session.sdk.prepareCancelOrder({ orderIds: keys, mode: "express", from: session.address });
-    await session.execute(prepared, { kind: "cancel", keys }, "cancel", true, "receipt");
-  }
-  await eventually(
-    () => session.snapshot(),
-    (s) => keys.every((key) => !s.orders.some((o) => o.key === key)) && s.onchainOrderCount === s.orders.length
-  );
-}
-
-export async function swap(session: FundedSession, reverse: boolean, amount: bigint) {
-  const state = await session.snapshot();
-  const before = await session.remember("balances", async () => ({
-    wrappedAmount: state.wrappedAmount,
-    stableAmount: state.stableAmount,
-  }));
-  const input = reverse ? state.weth : state.usdc;
-  const output = reverse ? state.usdc : state.weth;
-  const valueUsd = (amount * input.prices.minPrice) / 10n ** BigInt(input.decimals);
-  assert.ok(amount > 0n && valueUsd <= 2n * USD, "Swap exceeds $2");
-  if (!reverse && state.stableUsd - valueUsd < economy.stableReserveUsd + economy.cleanupReserveUsd)
-    throw new Error("Swap would consume stablecoin reserves");
-  const minimum = (valueUsd * 9_950n * 10n ** BigInt(output.decimals)) / output.prices.maxPrice / 10_000n;
-  if (!(await session.previousAction("swap"))) {
-    const quote = await session.quoteSwap(state, amount, !reverse, false);
-    checkFeeBudget(chargedFees(session.active), quote.feeUsd + USD / 20n, reverse, session.feePolicy);
-    await session.allowance(input, amount + (reverse ? 0n : 1_000_000n), reverse);
-    await session.execute(quote.prepared, quote.intent, "swap", reverse);
-  }
-  const after = await eventually(
-    () => session.snapshot(),
-    (s) =>
-      reverse
-        ? s.wrappedAmount <= before.wrappedAmount - amount && s.stableAmount > before.stableAmount
-        : s.wrappedAmount >= before.wrappedAmount + minimum
-  );
-  return reverse ? after.stableAmount - before.stableAmount : after.wrappedAmount - before.wrappedAmount;
+  const quote = inspectPreparedOrder({
+    prepared: buffered,
+    intent,
+    address: session.address,
+    marketAddress: state.market.marketTokenAddress,
+    subaccountApproval: session.sdk.subaccountApprovalMessage,
+    ...state,
+  });
+  return { prepared: buffered, intent, feeUsd: quote.feeUsd, amount };
 }
 
 export async function quoteTwap(session: FundedSession, state: Awaited<ReturnType<FundedSession["snapshot"]>>) {
@@ -395,11 +164,13 @@ export async function quoteTwap(session: FundedSession, state: Awaited<ReturnTyp
     });
   }
   const batch = getBatchOrderMulticallPayload({ params: prepared.payload.batchParams });
+  const executionFeeUsd = (batch.value * state.weth.prices.maxPrice) / 10n ** 18n;
   assert.ok(
-    (batch.value * state.weth.prices.maxPrice) / 10n ** 18n <= quote.feeUsd,
+    executionFeeUsd > 0n && executionFeeUsd <= quote.feeUsd,
     "TWAP native execution fees exceed the inspected budget"
   );
-  return { size, collateral, amount, batch, feeUsd: quote.feeUsd };
+  // Classic submission pays native keeper fees; nativeTransaction adds gas, with no relay charge.
+  return { size, collateral, amount, batch, feeUsd: executionFeeUsd + quote.orderCostsUsd };
 }
 
 function twapSizing(state: Awaited<ReturnType<FundedSession["snapshot"]>>) {
@@ -409,58 +180,13 @@ function twapSizing(state: Awaited<ReturnType<FundedSession["snapshot"]>>) {
     size <= economy.positionLimitUsd && collateral <= economy.collateralLimitUsd,
     "TWAP minimums exceed economy caps"
   );
-  const amount = ceilDiv(collateral * 10n ** 6n, state.usdc.prices.minPrice);
+  // The API floors each TWAP part, so collateral must divide evenly into two parts.
+  const amount = ceilDiv(collateral * 10n ** 6n, state.usdc.prices.minPrice * 2n) * 2n;
   return { size, collateral, amount };
 }
 
-export async function twap(session: FundedSession) {
-  const state = await session.snapshot();
-  const { size, collateral, amount } = twapSizing(state);
-  let action = await session.previousAction("twap");
-  if (!action) {
-    const { batch, feeUsd } = await quoteTwap(session, state);
-    checkFeeBudget(chargedFees(session.active), feeUsd + USD / 20n, false, session.feePolicy);
-    if (state.stableUsd - collateral < economy.stableReserveUsd + economy.cleanupReserveUsd)
-      throw new Error("TWAP collateral would consume reserves");
-    await session.allowance(state.usdc, amount, false);
-    await ownPlannedPosition(session, true);
-    action = await session.nativeTransaction(
-      {
-        to: getContract(42161, "ExchangeRouter"),
-        data: batch.callData as `0x${string}`,
-        value: batch.value,
-      },
-      "twap",
-      false,
-      feeUsd
-    );
-  }
-  assert.ok(action.txHash);
-  const receipt = await session.rpc.getTransactionReceipt({ hash: action.txHash });
-  registerTwapReceipt(session, action, receipt);
-  await session.save();
-  const after = await eventually(
-    () => session.snapshot(),
-    (s) =>
-      s.positions.length === 1 &&
-      s.positions[0].sizeInUsd === size / 2n &&
-      s.orders.length === 1 &&
-      s.onchainOrderCount === 1,
-    180_000
-  );
-  assert.ok(session.active.ownedOrderKeys.includes(after.orders[0].key));
-  return after.orders[0].key;
-}
-
 export function registerTwapReceipt(session: FundedSession, action: FundedAction, receipt: TransactionReceipt) {
-  const events = parseEventLogs({
-    abi: EventEmitter as Abi,
-    logs: receipt.logs.filter((log) => getAddress(log.address) === getAddress(getContract(42161, "EventEmitter"))),
-    strict: false,
-  });
-  const keys = events
-    .filter((e) => (e.args as { eventName?: string }).eventName === "OrderCreated")
-    .map((e) => (e.args as { topic1: string }).topic1);
+  const keys = orderEventKeys(receipt, "OrderCreated", session.address, session.active.marketAddress);
   assert.equal(keys.length, 2, "TWAP receipt must create two orders");
   for (const key of keys) if (!session.active.ownedOrderKeys.includes(key)) session.active.ownedOrderKeys.push(key);
   action.orderKeys = keys;

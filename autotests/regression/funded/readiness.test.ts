@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdtemp, readFile, readdir, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
@@ -22,15 +22,15 @@ import { GmxApiSdk } from "../../../sdk/src/clients/v2";
 import { getContract } from "../../../sdk/src/configs/contracts";
 import { address, marketAddress, preparedOrder, rebuildTypedData, usdc, weth } from "../fixtures/fundedQuote";
 import { fundedCases } from "./catalog";
-import { USD } from "./economy";
+import { checkFeeBudget, USD, usd } from "./economy";
 import { readJournal, writeJournal, type FundedAction } from "./journal";
 import { fundedReadiness, requireFundedReadiness } from "./readiness";
 import { FundedSession } from "./session";
 import { runFundedCases } from "./runner";
-import { createTrigger, twap } from "./trading";
-import { depositAccount, withdrawAccount } from "./account";
-import { stake, unstake, claimRewards } from "./earn";
-import { depositLiquidity, withdrawLiquidity } from "./liquidity";
+import { quoteTwap } from "./trading";
+import { withdrawAccount } from "./account";
+import { unstake } from "./earn";
+import { withdrawLiquidity } from "./liquidity";
 
 type RuntimeTestContext = {
   after(callback: () => unknown): void;
@@ -118,6 +118,8 @@ async function fixture(context: unknown) {
   session.sdk.signOrder = forbidden;
   session.sdk.signCrossChainWithdraw = forbidden;
   session.sdk.fetchTokensData = async () => [{ symbol: "GMX", prices: { maxPrice: 10n * USD } }] as never;
+  session.sdk.fetchStakingPower = async () =>
+    ({ currentStaked: 0n, cumulativePower: 0n, projectedRewardShare: 0n }) as never;
   session.sdk.fetchMarkets = async () => [market] as never;
   session.sdk.prepareCrossChainDeposit = async () => ({ composeGas: 1000000n }) as never;
   const readContract = async ({ functionName, address: token }: { functionName: string; address: string }) => {
@@ -158,6 +160,16 @@ async function fixture(context: unknown) {
     o.orderType =
       request.orderType === "limit" || request.orderType === "twap" ? 3 : request.orderType === "stop-market" ? 8 : 2;
     o.numbers.triggerPrice = (request.triggerPrice ?? 0n) / 10n ** 18n;
+    if (request.kind === "decrease") {
+      o.orderType = request.orderType === "stop-loss" ? 6 : request.orderType === "take-profit" ? 5 : 4;
+      o.decreasePositionSwapType = 1;
+      o.numbers.acceptablePrice =
+        request.orderType === "stop-loss"
+          ? o.isLong
+            ? 0n
+            : maxUint256
+          : ((request.triggerPrice ?? 2000n * USD) * (o.isLong ? 9_970n : 10_030n)) / 10_000n / 10n ** 18n;
+    }
     if (request.orderType === "twap") {
       o.numbers.triggerPrice = maxUint256;
       o.numbers.validFromTime = BigInt(Math.floor(Date.now() / 1000));
@@ -196,6 +208,81 @@ for (const scenario of fundedCases) {
   });
 }
 
+for (const [price, expectedAmount] of [
+  [USD, 4_000_000n],
+  [999954311960089850000000000000n, 4_000_184n],
+  [USD + USD / 10_000n, 3_999_602n],
+]) {
+  test(`TWAP preserves collateral in both encoded parts at USDC price ${price}`, async (t) => {
+    const { session, state } = await fixture(t);
+    state.usdc = { ...state.usdc, prices: { minPrice: price, maxPrice: price } };
+    const quote = await quoteTwap(session, await session.snapshot());
+    assert.equal(quote.amount, expectedAmount);
+    assert.ok(quote.amount * price >= quote.collateral * 10n ** 6n);
+    assert.ok((quote.amount - 2n) * price < quote.collateral * 10n ** 6n);
+
+    const abi = ExchangeRouter as Abi;
+    const batch = decodeFunctionData({ abi, data: quote.batch.callData });
+    assert.equal(batch.functionName, "multicall");
+    const calls = (batch.args![0] as `0x${string}`[]).map((data) => decodeFunctionData({ abi, data }));
+    const transfers = calls.filter((call) => call.functionName === "sendTokens");
+    assert.equal(transfers.length, 2);
+    for (const transfer of transfers) {
+      assert.deepEqual(transfer.args, [usdc.address, getContract(42161, "OrderVault"), expectedAmount / 2n]);
+    }
+    const orders = calls.filter((call) => call.functionName === "createOrder");
+    assert.equal(orders.length, 2);
+    for (const order of orders) {
+      const payload = order.args![0] as { numbers: { initialCollateralDeltaAmount: bigint; sizeDeltaUsd: bigint } };
+      assert.equal(payload.numbers.initialCollateralDeltaAmount, expectedAmount / 2n);
+      assert.equal(payload.numbers.sizeDeltaUsd, quote.size / 2n);
+    }
+  });
+}
+
+test("classic TWAP reserves both native keeper fees and trading costs without paying an unused relay quote", async (t) => {
+  const { session } = await fixture(t);
+  const prepare = session.sdk.prepareOrder;
+  session.sdk.prepareOrder = async (request) => {
+    const prepared = await prepare(request);
+    prepared.payload.relayParams.fee.feeAmount = 1_400_000n;
+    Object.assign(prepared.estimates!, {
+      positionFeeUsd: usd("0.005"),
+      borrowingFeeUsd: usd("0.02"),
+      fundingFeeUsd: usd("0.01"),
+      positionPriceImpactDeltaUsd: -usd("0.03"),
+      swapPriceImpactDeltaUsd: usd("0.1"),
+    });
+    rebuildTypedData(prepared);
+    return prepared;
+  };
+  const quote = await quoteTwap(session, await session.snapshot());
+  assert.equal(quote.batch.value, 200_000_000_000_000n);
+  assert.equal(quote.feeUsd, usd("0.475"));
+  assert.doesNotThrow(() => checkFeeBudget(0n, quote.feeUsd + usd("0.1"), false));
+  assert.throws(() => checkFeeBudget(0n, quote.feeUsd + usd("0.6"), false), /estimated \$1\.075/);
+});
+
+test("TWAP still blocks native keeper fees above the action limit before any paid operation", async (t) => {
+  const { session } = await fixture(t);
+  const prepare = session.sdk.prepareOrder;
+  session.sdk.prepareOrder = async (request) => {
+    const prepared = await prepare(request);
+    prepared.payload.relayParams.fee.feeAmount = 2_000_000n;
+    for (const create of prepared.payload.batchParams.createOrderParams)
+      create.orderPayload.numbers.executionFee = 300_000_000_000_000n;
+    rebuildTypedData(prepared);
+    return prepared;
+  };
+  const report = await fundedReadiness(
+    session,
+    fundedCases.filter((c) => c.id === "twap")
+  );
+  assert.equal(report.ready, false);
+  assert.match(report.checks.find((c) => !c.ok)!.detail, /Action fee exceeds \$1 \(estimated \$1\.261\)/);
+  assert.equal(await readJournal(session.directory), undefined);
+});
+
 test("all-case preflight collects every missing asset before the first case can spend", async (t) => {
   const { session, balances } = await fixture(t);
   balances.gmx = balances.baseStable = balances.baseNative = balances.rewards = 0n;
@@ -205,6 +292,48 @@ test("all-case preflight collects every missing asset before the first case can 
     ["bridge", "staking", "claims"]
   );
   assert.throws(() => requireFundedReadiness(report), /before spending/);
+});
+
+test("swap intent and the exact signed minimum are persisted before signing or submission", async (t) => {
+  const { session } = await fixture(t);
+  await writeJournal(session.directory, {
+    version: 1,
+    id: "swap-intent",
+    chainId: 42161,
+    address,
+    marketAddress,
+    createdAt: "now",
+    initialNativeUsd: (50n * USD).toString(),
+    initialStableUsd: (50n * USD).toString(),
+    ownedPositionKeys: [],
+    ownedOrderKeys: [],
+    actions: [],
+    completed: false,
+  });
+  await session.resume("swap-intent");
+  session.save = FundedSession.prototype.save;
+  session.execute = FundedSession.prototype.execute;
+  session.allowance = async () => {};
+  session.gate = async () => {};
+  const quote = await session.quoteSwap(await session.snapshot(), 1_000_000n, true, false);
+  const minimum = quote.intent.minOutputAmount + 1n;
+  quote.prepared.payload.batchParams.createOrderParams[0].orderPayload.numbers.minOutputAmount = minimum;
+  rebuildTypedData(quote.prepared);
+  session.sdk.signOrder = async () => {
+    const saved = await readJournal(session.directory);
+    assert.deepEqual(saved!.actions[0].swap, {
+      tokenIn: usdc.address,
+      amount: "1000000",
+      minOutputAmount: minimum.toString(),
+      feeAmount: quote.prepared.payload.relayParams.fee.feeAmount.toString(),
+      unwrapNative: false,
+    });
+    throw new Error("Stopped before signing");
+  };
+  session.sdk.submitOrder = async () => {
+    throw new Error("Must not submit");
+  };
+  await assert.rejects(session.execute(quote.prepared, quote.intent, "swap", false), /Stopped before signing/);
 });
 
 test("unfinished journal blocks every case and is preserved", async (t) => {
@@ -229,23 +358,20 @@ test("unfinished journal blocks every case and is preserved", async (t) => {
   assert.ok(report.checks.some((c) => c.check === "previous run" && !c.ok));
 });
 
-for (const kind of ["limit", "stop-market", "twap"] as const) {
-  test(`${kind}: an invalid quote is rejected before approval or any native transaction`, async (t) => {
-    const { session } = await fixture(t);
-    session.previousAction = async () => undefined;
-    session.sdk.prepareOrder = async () => {
-      throw new Error("invalid quote");
-    };
-    await assert.rejects(kind === "twap" ? twap(session) : createTrigger(session, true, kind), /invalid quote/);
-  });
-}
-
-function creationLog(name: string, key: `0x${string}`) {
+function creationLog(name: string, key: `0x${string}`, account: string = address) {
   const event = (EventEmitter as Abi).find((e) => e.type === "event" && e.name === "EventLog1") as AbiEvent;
   const data = Object.fromEntries(
     ["addressItems", "uintItems", "intItems", "boolItems", "bytes32Items", "bytesItems", "stringItems"].map((name) => [
       name,
-      { items: [], arrayItems: [] },
+      {
+        items:
+          name === "addressItems"
+            ? [{ key: "account", value: account }]
+            : name === "bytes32Items"
+              ? [{ key: "key", value: key }]
+              : [],
+        arrayItems: [],
+      },
     ])
   );
   return {
@@ -259,7 +385,101 @@ function creationLog(name: string, key: `0x${string}`) {
 }
 
 for (const kind of ["gm", "glv"] as const) {
-  test(`${kind}: deposit/UI failure and withdrawal/UI failure resume without repeating either transaction`, async (t) => {
+  for (const withdrawal of [false, true]) {
+    test(`${kind} ${withdrawal ? "withdrawal" : "deposit"}: a pending request blocks normal withdrawal and a deposit can be recovered without Reader decoding`, async (t) => {
+      const { session } = await fixture(t);
+      const key = `0x${"9".repeat(64)}` as const;
+      const hash = `0x${"8".repeat(64)}` as const;
+      await writeJournal(session.directory, {
+        version: 1,
+        id: "pending-liquidity",
+        chainId: 42161,
+        address,
+        marketAddress,
+        createdAt: "now",
+        initialNativeUsd: (50n * USD).toString(),
+        initialStableUsd: (50n * USD).toString(),
+        ownedOrderKeys: [],
+        ownedPositionKeys: [],
+        completed: false,
+        inventory: { [`${kind}Token`]: kind === "gm" ? marketAddress : address },
+        actions: [
+          {
+            id: "request",
+            purpose: `${kind}-${withdrawal ? "withdraw" : "deposit"}`,
+            txHash: hash,
+            state: "settled",
+            feeUsd: "1",
+          },
+        ],
+      });
+      await session.resume("pending-liquidity");
+      const eventName = `${kind === "glv" ? "Glv" : ""}${withdrawal ? "Withdrawal" : "Deposit"}Created`;
+      const receipt = { status: "success", logs: [creationLog(eventName, key)] };
+      session.rpc.getTransactionReceipt = async () => receipt as never;
+      const read = session.rpc.readContract;
+      let pending = true;
+      session.rpc.readContract = async (args) => {
+        if (args.functionName === "getBytes32ValuesAt") return (pending ? [key] : []) as never;
+        if (args.functionName === "balanceOf") return 0n as never;
+        return read(args);
+      };
+      await assert.rejects(withdrawLiquidity(session, kind), /Liquidity request remains pending/);
+      if (withdrawal) return;
+      let cancellations = 0;
+      session.nativeTransaction = async (tx, purpose, cleanup) => {
+        assert.equal(purpose, `${kind}-cancel:${key}`);
+        assert.equal(cleanup, true);
+        const decoded = decodeFunctionData({ abi: (kind === "gm" ? ExchangeRouter : GlvRouter) as Abi, data: tx.data });
+        assert.equal(decoded.functionName, kind === "gm" ? "cancelDeposit" : "cancelGlvDeposit");
+        assert.deepEqual(decoded.args, [key]);
+        pending = false;
+        cancellations++;
+        return {} as FundedAction;
+      };
+      await withdrawLiquidity(session, kind, true);
+      assert.equal(cancellations, 1);
+    });
+  }
+}
+
+for (const invalid of ["reverted", "wrong wallet", "wrong emitter", "mismatched key", "duplicate events"] as const) {
+  test(`GLV cleanup rejects a ${invalid} creation receipt before any wallet action`, async (t) => {
+    const { session } = await fixture(t);
+    const key = `0x${"9".repeat(64)}` as const;
+    await writeJournal(session.directory, {
+      version: 1,
+      id: "receipt-liquidity",
+      chainId: 42161,
+      address,
+      marketAddress,
+      createdAt: "now",
+      initialNativeUsd: (50n * USD).toString(),
+      initialStableUsd: (50n * USD).toString(),
+      ownedOrderKeys: [],
+      ownedPositionKeys: [],
+      completed: false,
+      inventory: { glvToken: address },
+      actions: [
+        { id: "deposit", purpose: "glv-deposit", txHash: `0x${"8".repeat(64)}`, state: "settled", feeUsd: "1" },
+      ],
+    });
+    await session.resume("receipt-liquidity");
+    const log = creationLog("GlvDepositCreated", key, invalid === "wrong wallet" ? marketAddress : address);
+    if (invalid === "wrong emitter") log.address = marketAddress;
+    if (invalid === "mismatched key") log.topics[2] = `0x${"7".repeat(64)}`;
+    session.rpc.getTransactionReceipt = async () =>
+      ({
+        status: invalid === "reverted" ? "reverted" : "success",
+        logs: invalid === "duplicate events" ? [log, log] : [log],
+      }) as never;
+    await assert.rejects(withdrawLiquidity(session, "glv", true), /Liquidity (?:creation receipt|request belongs)/);
+    assert.equal(session.active.actions.length, 1);
+  });
+}
+
+for (const kind of ["gm", "glv"] as const) {
+  test(`${kind}: withdrawal/UI failure resumes without repeating the transaction`, async (t) => {
     const { session, state } = await fixture(t);
     const token = kind === "gm" ? marketAddress : address;
     const journal = {
@@ -276,17 +496,18 @@ for (const kind of ["gm", "glv"] as const) {
       actions: [],
       completed: false,
       feeProfile: kind === "glv" ? "glv" : "economy",
+      inventory: { [`${kind}Token`]: token },
     } as const;
     await writeJournal(session.directory, structuredClone(journal) as never);
     await session.resume("liquidity");
     session.save = FundedSession.prototype.save;
     session.allowance = async () => {};
-    let lp = 0n;
+    let lp = 10n ** 18n;
     const reader = session.rpc.readContract;
     session.rpc.readContract = async (args) => {
       if (args.functionName === "balanceOf" && args.address === token) return lp as never;
       if (["getDeposit", "getWithdrawal", "getGlvDeposit", "getGlvWithdrawal"].includes(args.functionName))
-        return { addresses: { account: zeroAddress } } as never;
+        throw new Error("Reader struct ABI cannot decode the deployed response");
       if (args.functionName === "getWithdrawalAmountOut") return [250_000_000_000_000n, 500_000n] as never;
       return reader(args);
     };
@@ -300,30 +521,18 @@ for (const kind of ["gm", "glv"] as const) {
       const batch = decodeFunctionData({ abi, data: tx.data });
       assert.equal(batch.functionName, "multicall");
       const calls = (batch.args![0] as `0x${string}`[]).map((data) => decodeFunctionData({ abi, data }));
-      const withdrawal = purpose.endsWith("withdraw");
-      assert.equal(
-        calls[2].functionName,
-        kind === "gm"
-          ? withdrawal
-            ? "createWithdrawal"
-            : "createDeposit"
-          : withdrawal
-            ? "createGlvWithdrawal"
-            : "createGlvDeposit"
-      );
-      assert.equal(calls[1].args![2], withdrawal ? 10n ** 18n : 1_000_000n);
+      assert.equal(purpose, `${kind}-withdraw`);
+      assert.equal(calls[2].functionName, kind === "gm" ? "createWithdrawal" : "createGlvWithdrawal");
+      assert.equal(calls[1].args![2], 10n ** 18n);
       const hash = `0x${String(++submissions).repeat(64)}` as const;
       const key = `0x${"9".repeat(64)}` as const;
-      const event = `${kind === "glv" ? "Glv" : ""}${withdrawal ? "Withdrawal" : "Deposit"}Created`;
-      receipts.set(hash, { logs: [creationLog(event, key)] });
-      if (withdrawal) {
-        lp = 0n;
-        state.wrappedAmount += 250_000_000_000_000n;
-        state.stableAmount += 500_000n;
-      } else {
-        lp = 10n ** 18n;
-        state.stableAmount -= 1_000_000n;
-      }
+      receipts.set(hash, {
+        status: "success",
+        logs: [creationLog(`${kind === "glv" ? "Glv" : ""}WithdrawalCreated`, key)],
+      });
+      lp = 0n;
+      state.wrappedAmount += 250_000_000_000_000n;
+      state.stableAmount += 500_000n;
       const action: FundedAction = {
         id: String(submissions),
         purpose,
@@ -336,28 +545,26 @@ for (const kind of ["gm", "glv"] as const) {
       await session.save();
       return action;
     };
-    for (const phase of ["deposit", "withdraw"] as const) {
-      let failUI = true;
-      const run = () =>
-        session.step(`${kind}:${phase}`, async () => {
-          if (phase === "deposit") await depositLiquidity(session, kind);
-          else await withdrawLiquidity(session, kind);
-          if (failUI) throw new Error("UI delayed after settlement");
-        });
-      await assert.rejects(run(), /UI delayed/);
-      await session.resume("liquidity");
-      failUI = false;
-      await run();
-    }
+    let failUI = true;
+    const run = () =>
+      session.step(`${kind}:withdraw`, async () => {
+        await withdrawLiquidity(session, kind);
+        if (failUI) throw new Error("UI delayed after settlement");
+      });
+    await assert.rejects(run(), /UI delayed/);
+    await session.resume("liquidity");
+    failUI = false;
+    await run();
     assert.equal(lp, 0n);
-    assert.equal(submissions, 2);
-    assert.equal((await readJournal(session.directory))!.actions.length, 2);
+    assert.equal(submissions, 1);
+    assert.equal((await readJournal(session.directory))!.actions.length, 1);
   });
 }
 
-for (const kind of ["account", "staking", "claims"] as const) {
-  test(`${kind}: completed transfers survive a restart and an assertion retry without paying twice`, async (t) => {
+for (const kind of ["account", "staking"] as const) {
+  test(`${kind}: a completed cleanup withdrawal survives a restart and an assertion retry without paying twice`, async (t) => {
     const { session, state, balances } = await fixture(t);
+    const gmxBefore = balances.gmx;
     await writeJournal(session.directory, {
       version: 1,
       id: "roundtrip",
@@ -371,51 +578,38 @@ for (const kind of ["account", "staking", "claims"] as const) {
       ownedOrderKeys: [],
       actions: [],
       completed: false,
+      inventory:
+        kind === "account"
+          ? { accountBaseline: "0", accountAmount: "1000000" }
+          : { stakeAmount: gmxBefore.toString(), stakeWalletBaseline: gmxBefore.toString() },
     });
     await session.resume("roundtrip");
     session.save = FundedSession.prototype.save;
     session.allowance = async () => {};
-    let account = 0n;
-    let staked = 0n;
-    const gmxBefore = balances.gmx;
+    let account = kind === "account" ? 1_000_000n : 0n;
+    let staked = kind === "staking" ? gmxBefore : 0n;
+    if (kind === "staking") balances.gmx = 0n;
     const reader = session.rpc.readContract;
     session.rpc.readContract = async (args) => {
       if (args.functionName === "getUint") return account as never;
       if (args.functionName === "depositBalances") return staked as never;
       return reader(args);
     };
-    const abi = parseAbi([
-      "function stakeGmx(uint256)",
-      "function unstakeGmx(uint256)",
-      "function handleRewards(bool,bool,bool,bool,bool,bool,bool)",
-    ]);
+    const abi = parseAbi(["function unstakeGmx(uint256)"]);
     let submissions = 0;
     session.nativeTransaction = async (tx, purpose) => {
       const previous = await session.previousAction(purpose);
       if (previous) return previous;
-      if (purpose === "account-deposit") {
-        account += 1_000_000n;
-        state.stableAmount -= 1_000_000n;
-      } else if (purpose === "account-withdraw") {
+      assert.equal(purpose, kind === "account" ? "account-withdraw" : "unstake");
+      if (purpose === "account-withdraw") {
         state.stableAmount += account;
         account = 0n;
-      } else if (purpose === "stake" || purpose === "unstake") {
-        const decoded = decodeFunctionData({ abi, data: tx.data });
-        assert.equal(decoded.functionName, purpose === "stake" ? "stakeGmx" : "unstakeGmx");
-        assert.equal(decoded.args[0], gmxBefore);
-        if (purpose === "stake") {
-          staked = gmxBefore;
-          balances.gmx = 0n;
-        } else {
-          staked = 0n;
-          balances.gmx = gmxBefore;
-        }
       } else {
         const decoded = decodeFunctionData({ abi, data: tx.data });
-        assert.equal(decoded.functionName, "handleRewards");
-        assert.deepEqual(decoded.args, [false, false, false, false, false, true, false]);
-        state.wrappedAmount += balances.rewards * 2n;
-        balances.rewards = 0n;
+        assert.equal(decoded.functionName, "unstakeGmx");
+        assert.equal(decoded.args[0], gmxBefore);
+        staked = 0n;
+        balances.gmx = gmxBefore;
       }
       const action: FundedAction = {
         id: String(++submissions),
@@ -428,21 +622,17 @@ for (const kind of ["account", "staking", "claims"] as const) {
       await session.save();
       return action;
     };
-    const operations =
-      kind === "account" ? [depositAccount, withdrawAccount] : kind === "staking" ? [stake, unstake] : [claimRewards];
-    for (let i = 0; i < operations.length; i++) {
-      let failUI = true;
-      const run = () =>
-        session.step(`${kind}:${i}`, async () => {
-          await operations[i](session);
-          if (failUI) throw new Error("UI assertion failed after settlement");
-        });
-      await assert.rejects(run(), /UI assertion failed/);
-      await session.resume("roundtrip");
-      failUI = false;
-      await run();
-    }
-    assert.equal(submissions, operations.length);
+    let failUI = true;
+    const run = () =>
+      session.step(`${kind}:withdraw`, async () => {
+        await (kind === "account" ? withdrawAccount : unstake)(session);
+        if (failUI) throw new Error("UI assertion failed after settlement");
+      });
+    await assert.rejects(run(), /UI assertion failed/);
+    await session.resume("roundtrip");
+    failUI = false;
+    await run();
+    assert.equal(submissions, 1);
     assert.equal(account, 0n);
     assert.equal(staked, 0n);
     assert.equal(balances.gmx, gmxBefore);
@@ -463,4 +653,10 @@ test("runner refuses missing case prerequisites before starting Playwright or cr
     /preflight blocked before spending/
   );
   assert.equal(await readJournal(session.directory), undefined);
+  const files = (await readdir(session.directory)).filter((name) => name.startsWith("preflight-"));
+  assert.equal(files.length, 1);
+  const report = JSON.parse(await readFile(join(session.directory, files[0]), "utf8"));
+  assert.equal(report.preflight.ready, false);
+  assert.ok(report.preflight.checks.some((c: { scope: string; ok: boolean }) => c.scope === "staking" && !c.ok));
+  assert.match(report.error, /preflight blocked before spending/);
 });

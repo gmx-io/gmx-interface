@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
@@ -6,6 +7,39 @@ import { dollars } from "./economy";
 import { chargedFees, readJournal, type FundedJournal } from "./journal";
 import type { FundedSession } from "./session";
 import { fundedErrorMessage } from "./errors";
+import type { fundedReadiness } from "./readiness";
+import type { FundedRecovery } from "./recovery";
+
+export type FundedRunDetails = {
+  preflight?: Awaited<ReturnType<typeof fundedReadiness>>;
+  cleanup?: Awaited<ReturnType<FundedSession["cleanup"]>>;
+  cleanupError?: string;
+  recovery?: FundedRecovery;
+};
+
+export function displayUsd(value: string) {
+  return Number(value).toFixed(4);
+}
+
+export async function writeFundedPreflightReport(
+  directory: string,
+  selected: readonly FundedCase[],
+  preflight: FundedRunDetails["preflight"],
+  error: unknown
+) {
+  const destination = join(directory, `preflight-${randomUUID()}.json`);
+  await mkdir(directory, { recursive: true, mode: 0o700 });
+  await writeFile(
+    destination,
+    JSON.stringify(
+      { reportedAt: new Date().toISOString(), selected, preflight, error: fundedErrorMessage(error) },
+      null,
+      2
+    ),
+    { mode: 0o600 }
+  );
+  console.log(`Preflight report: ${destination}`);
+}
 
 type ReportError = { message?: string };
 type ReportSuite = {
@@ -62,7 +96,11 @@ export function fundedBalanceValues(
   };
 }
 
-export async function writeFundedReport(session: FundedSession, selected: readonly FundedCase[]) {
+export async function writeFundedReport(
+  session: Pick<FundedSession, "directory" | "snapshot">,
+  selected: readonly FundedCase[],
+  details: FundedRunDetails = {}
+) {
   const journal = await readJournal(session.directory);
   if (!journal) return;
   const state = await session.snapshot().catch(() => undefined);
@@ -79,8 +117,24 @@ export async function writeFundedReport(session: FundedSession, selected: readon
         ? Math.round((Date.parse(record.finishedAt) - Date.parse(record.startedAt)) / 1000)
         : undefined,
       actions: actions.length,
+      actionDriver: actions.some((action) => action.purpose.startsWith("ui:"))
+        ? "browser UI"
+        : actions.length
+          ? "SDK/API"
+          : "not-run",
+      uiOrders: actions
+        .filter((action) => action.uiOrder?.createdCount)
+        .map((action) => ({
+          purpose: action.purpose,
+          orderKeys: action.orderKeys,
+          creationTxHash: action.txHash,
+          executionTxHashes: action.uiOrder?.executionTxHashes,
+        })),
       reservedFeesUsd: dollars(actions.reduce((sum, a) => sum + BigInt(a.feeUsd), 0n)),
       nativeReceiptGasUsd: dollars(actions.reduce((sum, a) => sum + BigInt(a.gasPaidUsd ?? "0"), 0n)),
+      failures: actions
+        .filter((action) => action.failureReason)
+        .map(({ purpose, requestId, failureReason }) => ({ purpose, requestId, reason: failureReason })),
     };
   });
   const report = {
@@ -97,19 +151,25 @@ export async function writeFundedReport(session: FundedSession, selected: readon
     positions: state?.positions.length,
     orders: state?.orders.length,
     cases,
+    swapSettlements: Object.fromEntries(
+      Object.entries(journal.inventory ?? {})
+        .filter(([key]) => key.startsWith("swap:") && key.endsWith("/settlement"))
+        .map(([key, value]) => [key, JSON.parse(value)])
+    ),
+    ...details,
   };
   // Persist outside Playwright's output cleanup, including when cleanup itself fails.
   const destination = join(session.directory, `report-${journal.id}.json`);
   await writeFile(destination, JSON.stringify(report, null, 2), { mode: 0o600 });
   await mkdir("test-results/funded", { recursive: true });
   await writeFile("test-results/funded/cost-report.json", JSON.stringify(report, null, 2), { mode: 0o600 });
-  console.table(cases);
   console.log(
-    JSON.stringify(
-      { cleanupCompleted: report.cleanupCompleted, reservedFeesUsd: report.reservedFeesUsd, report: destination },
-      null,
-      2
-    )
+    `Cleanup ${report.cleanupCompleted ? "complete" : "INCOMPLETE"}; ${report.positions ?? "unknown"} positions, ${report.orders ?? "unknown"} orders; fees reserved $${displayUsd(report.reservedFeesUsd)}`
   );
+  if (report.balancesUsd?.changeAtStartPrices !== undefined)
+    console.log(
+      `Run balance change (${cases.length === 1 ? cases[0].id : `${cases.length} cases`}, at starting prices): $${displayUsd(report.balancesUsd.changeAtStartPrices)} (includes fees and PnL)`
+    );
+  console.log(`Report: ${destination}`);
   return report;
 }

@@ -856,9 +856,12 @@ export default function TVChartContainer({
     };
     const widget = new window.TradingView.widget(widgetOptions);
 
+    let disposed = false;
+    let pageHidden = false;
     let didTriggerOnChartReady = { current: false };
 
-    widget.onChartReady(function () {
+    function onChartReady() {
+      if (disposed || pageHidden || didTriggerOnChartReady.current) return;
       didTriggerOnChartReady.current = true;
       tvWidgetRef.current = widget;
       setChartReady(true);
@@ -896,7 +899,7 @@ export default function TVChartContainer({
       });
 
       tvWidgetRef.current?.activeChart().dataReady(() => {
-        setChartDataLoading(false);
+        if (!disposed) setChartDataLoading(false);
       });
 
       tvWidgetRef.current?.onContextMenu((_unixTime, price) => {
@@ -910,7 +913,22 @@ export default function TVChartContainer({
       tvWidgetRef.current?.subscribe("mouse_down", () => {
         closeMenuRef.current();
       });
-    });
+    }
+
+    const onPageHide = () => {
+      pageHidden = true;
+      // The browser can destroy the iframe before React unmounts the chart.
+      if (tvWidgetRef.current === widget) tvWidgetRef.current = null;
+    };
+    const onPageShow = () => {
+      pageHidden = false;
+      if (disposed) return;
+      if (didTriggerOnChartReady.current) tvWidgetRef.current = widget;
+      else widget.onChartReady(onChartReady);
+    };
+    window.addEventListener("pagehide", onPageHide);
+    window.addEventListener("pageshow", onPageShow);
+    widget.onChartReady(onChartReady);
 
     /*
     For some reason on prod TV sometimes does not get initialized properly,
@@ -918,7 +936,7 @@ export default function TVChartContainer({
     */
 
     const forceInitTimeout = setTimeout(() => {
-      if (didTriggerOnChartReady.current || !chartContainerRef.current) {
+      if (disposed || pageHidden || didTriggerOnChartReady.current || !chartContainerRef.current) {
         return;
       }
 
@@ -932,7 +950,7 @@ export default function TVChartContainer({
 
       if (iframeDocument.readyState !== "complete") {
         iframeDocument.addEventListener("readystatechange", () => {
-          if (iframeDocument.readyState === "complete") {
+          if (!disposed && iframeDocument.readyState === "complete") {
             iframeWindow.dispatchEvent(new Event("innerWindowLoad"));
           }
         });
@@ -942,9 +960,12 @@ export default function TVChartContainer({
     }, 800);
 
     return () => {
+      disposed = true;
       clearTimeout(forceInitTimeout);
-      widget.remove();
+      window.removeEventListener("pagehide", onPageHide);
+      window.removeEventListener("pageshow", onPageShow);
       tvWidgetRef.current = null;
+      widget.remove();
       setChartReady(false);
       setChartDataLoading(true);
     };

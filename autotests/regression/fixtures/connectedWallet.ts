@@ -1,12 +1,13 @@
 import { expect } from "@playwright/test";
-import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
+import { getAddress } from "viem";
+import { randomBytes } from "node:crypto";
 
 import { test as browserTest } from "./browser";
 import { installInjectedWallet } from "./injectedWallet";
 
 export const test = browserTest.extend<{ wallet: { address: string } }>({
   wallet: async ({ context, chainId }, use, testInfo) => {
-    const address = privateKeyToAccount(generatePrivateKey()).address;
+    const address = getAddress(`0x${randomBytes(20).toString("hex")}`);
     const forbiddenRequests: string[] = [];
     // Empty-account scenarios have no contract events; public market HTTP data stays live.
     await context.routeWebSocket(/^wss:\/\//, (socket) => {

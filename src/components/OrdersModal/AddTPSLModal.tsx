@@ -868,10 +868,15 @@ export function AddTPSLModal({
         }),
         provider,
         isGmxAccount: srcChainId !== undefined,
-      });
-
-      setIsVisible(false);
-      onSuccess?.();
+      }).then(
+        () => {
+          setIsVisible(false);
+          onSuccess?.();
+        },
+        () => {
+          // The transaction callback displays the failure; keep the form open.
+        }
+      );
     } finally {
       setIsSubmitting(false);
     }

@@ -582,6 +582,8 @@ export function useTradeboxButtonState({
     }
 
     if (expressParams?.subaccount) {
+      // The transaction callback reports failures after this handler returns.
+      void txnPromise.catch(() => undefined);
       /**
        * Wait 2 seconds to prevent double click on button
        * waiting for txnPromise may not be enough because it's sometimes resolves very fast

@@ -254,6 +254,8 @@ export function OrdersModal({
         }),
         provider,
         isGmxAccount: srcChainId !== undefined,
+      }).catch(() => {
+        // The transaction callback displays the cancellation failure.
       });
     } finally {
       setIsCancellingAll(false);

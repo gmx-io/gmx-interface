@@ -4,6 +4,43 @@ import { checkOrder, checkPosition, checkTradeUiReady, connectFundedWallet } fro
 
 const usd = 10n ** 30n;
 
+for (const phase of ["connect", "refresh"] as const) {
+  test(`funded UI: ${phase} can finish after the former 15-second wallet timeout`, async ({ page, context }) => {
+    const address = "0x1111111111111111111111111111111111111111";
+    await page.route("**/*", (route) =>
+      route.fulfill({
+        contentType: "text/html",
+        body: `<!doctype html><html><body>
+        <header><button>Arbitrum</button></header>
+        <button id="connect" onclick="document.getElementById('metamask').hidden=false">Connect wallet</button>
+        <div role="dialog"><button id="metamask" hidden onclick="connect()">MetaMask</button></div>
+        <div id="account"></div>
+        <div data-qa="exchange-list-tabs"><button>Orders</button><button>Positions</button></div>
+        <div data-qa="trade-table-large"><table><thead><tr><th role="columnheader">SIZE</th></tr></thead></table><p>No open positions</p></div>
+        <script>
+          function show() { document.getElementById('account').innerHTML = '<button data-qa="user-address">0x1111...1111</button>'; }
+          async function connect() {
+            await window.ethereum.request({method:'eth_requestAccounts'});
+            sessionStorage.setItem('wallet-ui-connected','true');
+            setTimeout(show, ${phase === "connect" ? 16_000 : 0});
+          }
+          if (sessionStorage.getItem('wallet-ui-connected')) setTimeout(show, ${phase === "refresh" ? 16_000 : 0});
+        </script>
+      </body></html>`,
+      })
+    );
+    await connectFundedWallet(page, context, {
+      address,
+      rpc: {
+        request: async () => {
+          throw new Error("No network or signing allowed in this fixture");
+        },
+      },
+    });
+    await expect(page.getByTestId("user-address")).toBeVisible();
+  });
+}
+
 for (const status of [404, 200]) {
   test(`funded UI: unavailable deployment (${status}) reports the target problem before wallet RPC`, async ({
     page,

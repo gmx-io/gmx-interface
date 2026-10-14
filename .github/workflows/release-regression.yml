@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       pr_number:
-        description: "Open PR number; waits up to 15 minutes for its Cloudflare preview"
+        description: "Open PR number; waits up to 30 minutes for matching app and landing previews"
         type: string
         required: true
       chain_id:
@@ -19,6 +19,14 @@ on:
         description: "Also check live gas prerequisites (read-only; does not execute funded scenarios)"
         type: boolean
         default: false
+      qa_start_sha:
+        description: "Commit the QA pass started on; fails if src/config/indexers.ts changed since (checklist 0.01)"
+        type: string
+        required: false
+      baseline_run_id:
+        description: "Run ID of last release's sign-off regression; compares landing screenshots with it (checklist 2.35)"
+        type: string
+        required: false
 
 permissions:
   contents: read
@@ -32,13 +40,14 @@ jobs:
     name: Resolve PR deployment preview
     if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'run-regression'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 35
     permissions:
       contents: read
       pull-requests: read
       checks: read
     outputs:
       preview_url: ${{ steps.preview.outputs.preview_url }}
+      landing_url: ${{ steps.preview.outputs.landing_url }}
       head_sha: ${{ steps.preview.outputs.head_sha }}
       check_url: ${{ steps.preview.outputs.check_url }}
       pr_number: ${{ steps.preview.outputs.pr_number }}
@@ -63,13 +72,25 @@ jobs:
               maxAttempts: 61,
               onWait: ({ attempt, headSha }) => core.info(`Waiting for Cloudflare preview of ${headSha} (${attempt}/60)...`),
             });
+            const landing = await resolvePreview({
+              github,
+              repository: context.repo,
+              prNumber: process.env.PR_NUMBER,
+              expectedHeadSha: preview.headSha,
+              project: 'gmx-interface-home',
+              maxAttempts: 61,
+              onWait: ({ attempt }) => core.info(`Waiting for landing preview (${attempt}/60)...`),
+            });
             core.setOutput('preview_url', preview.url);
+            core.setOutput('landing_url', landing.url);
             core.setOutput('head_sha', preview.headSha);
             core.setOutput('check_url', preview.checkUrl);
             core.setOutput('pr_number', preview.prNumber);
             await core.summary
               .addHeading(`Regression target: PR #${preview.prNumber}`)
               .addLink('Deployment preview', preview.url)
+              .addEOL()
+              .addLink('Landing preview', landing.url)
               .addEOL()
               .addRaw(`PR commit: ${preview.headSha}`)
               .addEOL()
@@ -80,7 +101,10 @@ jobs:
     name: Regression (${{ matrix.chain_id }})
     needs: resolve-preview
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 150
+    permissions:
+      contents: read
+      actions: read
     strategy:
       fail-fast: false
       max-parallel: 1
@@ -88,27 +112,54 @@ jobs:
         chain_id: ${{ fromJSON(github.event_name == 'workflow_dispatch' && format('[{0}]', inputs.chain_id) || '[42161,43114]') }}
     env:
       REGRESSION_BASE_URL: ${{ needs.resolve-preview.outputs.preview_url }}
+      REGRESSION_LANDING_URL: ${{ needs.resolve-preview.outputs.landing_url }}
       REGRESSION_CHAIN_ID: ${{ matrix.chain_id }}
       REGRESSION_PR_NUMBER: ${{ needs.resolve-preview.outputs.pr_number }}
       REGRESSION_DEPLOYMENT_SHA: ${{ needs.resolve-preview.outputs.head_sha }}
       REGRESSION_DEPLOYMENT_CHECK_URL: ${{ needs.resolve-preview.outputs.check_url }}
-      REGRESSION_INDEXER_CONFIG: ${{ github.workspace }}/.context/regression-candidate/src/config/indexers.ts
+      REGRESSION_CANDIDATE_ROOT: ${{ github.workspace }}/.context/regression-candidate
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Read indexer configuration from the deployed PR commit
+      - name: Read endpoint and market configuration from the deployed PR commit
         uses: actions/checkout@v4
         with:
           ref: ${{ needs.resolve-preview.outputs.head_sha }}
           path: .context/regression-candidate
+          sparse-checkout: |
+            src/config/indexers.ts
+            src/config/markets.ts
+            src/config/backend.ts
+            src/config/events.tsx
+            sdk/src/configs/oracleKeeper.ts
+            sdk/src/configs/api.ts
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Read indexer configuration from the commit the QA pass started on
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.qa_start_sha != '' }}
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.qa_start_sha }}
+          path: .context/regression-qa-start
           sparse-checkout: src/config/indexers.ts
           sparse-checkout-cone-mode: false
           persist-credentials: false
+      - name: Download last release's landing baseline screenshots
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.baseline_run_id != '' }}
+        uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ inputs.baseline_run_id }}
+          github-token: ${{ github.token }}
+          pattern: regression-pr-*-${{ matrix.chain_id }}-${{ inputs.baseline_run_id }}-*
+          merge-multiple: true
+          path: .context/regression-baseline
       - name: Record test suite revision and verify candidate checkout
         run: |
           test "$(git -C .context/regression-candidate rev-parse HEAD)" = "$REGRESSION_DEPLOYMENT_SHA"
           echo "REGRESSION_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+          if [ -d .context/regression-qa-start ]; then echo "REGRESSION_QA_START_ROOT=$PWD/.context/regression-qa-start" >> "$GITHUB_ENV"; fi
+          if [ -d .context/regression-baseline/test-results/baselines ]; then echo "REGRESSION_BASELINE_DIR=$PWD/.context/regression-baseline/test-results/baselines" >> "$GITHUB_ENV"; fi
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
@@ -117,19 +168,23 @@ jobs:
         run: node --test --test-concurrency=3 autotests/regression/ci/resolvePreview.test.cjs
       - name: Install dependencies
         run: yarn install --immutable --mode=skip-build
-      - name: Typecheck regression tests
-        run: yarn test:regression:types
       - name: Install SDK dependencies for funded harness validation
         run: yarn --cwd sdk install --immutable --mode=skip-build
-      - name: Validate funded policies without a wallet or transactions
+      - name: Typecheck regression tests
+        run: yarn test:regression:types
+      - name: Validate fixtures and funded policies without a wallet or transactions
         run: |
           yarn test:regression:funded:types
           yarn test:regression:funded:unit
+          yarn test:regression:fixtures:unit
           REGRESSION_FUNDED_RUN_ID=listing REGRESSION_FUNDED_EXECUTE=1 REGRESSION_FUNDED_CASES=all yarn exec playwright test -c playwright-funded.config.ts --list
       - name: Install Chromium
         run: yarn exec playwright install --with-deps chromium
       - name: Run regression
         run: yarn test:regression
+      - name: Run funded harness checks (no funded wallet)
+        if: ${{ !cancelled() }}
+        run: yarn test:regression:funded-harness
       - name: Upload reports and failure evidence
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
@@ -137,11 +192,14 @@ jobs:
           name: regression-pr-${{ needs.resolve-preview.outputs.pr_number }}-${{ matrix.chain_id }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             playwright-report/regression/
+            playwright-report/funded-harness/
             test-results/
           retention-days: 14
       - name: Summarize coverage
         if: ${{ !cancelled() }}
-        run: node autotests/regression/report.cjs
+        run: |
+          node autotests/regression/report.cjs
+          node autotests/regression/report.cjs test-results/funded-harness-results.json
 
   funded-preflight:
     name: Funded gas preflight (no transactions)

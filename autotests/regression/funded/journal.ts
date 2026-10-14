@@ -10,7 +10,9 @@ export type FundedAction = {
   requestId?: string;
   txHash?: `0x${string}`;
   orderKeys?: string[];
+  cancelledOrderKeys?: string[];
   state: "pending" | "created" | "settled" | "failed";
+  failureReason?: string;
   step?: string;
   settlement?: "execution" | "creation" | "receipt";
   chainId?: 42161 | 8453;
@@ -20,6 +22,21 @@ export type FundedAction = {
   gasPaidUsd?: string;
   nativePriceUsd?: string;
   requestKind?: "bridge";
+  uiRelay?: { apiUrl: string; to: string; calldataHash: string; taskId?: string };
+  uiOrder?: {
+    createdCount: number;
+    marketAddress?: string;
+    cancelledKeys?: string[];
+    sizeDeltaUsd?: string;
+    executionTxHashes?: `0x${string}`[];
+  };
+  swap?: {
+    tokenIn: string;
+    amount: string;
+    minOutputAmount: string;
+    feeAmount: string;
+    unwrapNative: boolean;
+  };
 };
 
 export type FundedCheckpoint = {

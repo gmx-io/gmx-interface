@@ -650,14 +650,18 @@ export function usePositionEditorButtonState(
     });
 
     if (expressParams?.subaccount) {
+      // The transaction callback reports failures after this handler returns.
+      void txnPromise.catch(() => undefined);
       onClose();
       setIsSubmitting(false);
       return;
     }
 
-    txnPromise.then(onClose).finally(() => {
-      setIsSubmitting(false);
-    });
+    txnPromise
+      .then(onClose, () => undefined)
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   }
 
   const commonParams: Pick<

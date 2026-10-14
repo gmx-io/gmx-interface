@@ -6,6 +6,7 @@ import {
   parseEventLogs,
   parseAbi,
   zeroAddress,
+  zeroHash,
   type Abi,
   type Address,
   type Hex,
@@ -23,6 +24,7 @@ import {
   MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY,
 } from "../../../sdk/src/configs/dataStore";
 import { getOracleKeeperUrl } from "../../../sdk/src/configs/oracleKeeper";
+import { HttpError } from "../../../sdk/src/utils/http/http";
 import { hashData, hashString } from "../../../sdk/src/utils/hash";
 import {
   estimateExecuteDepositGasLimit,
@@ -32,27 +34,29 @@ import {
   getExecutionFee,
 } from "../../../sdk/src/utils/fees/executionFee";
 import type { FundedAction } from "./journal";
-import { checkFeeBudget, dollars, economy, USD } from "./economy";
-import { chargedFees } from "./journal";
+import { dollars, USD } from "./economy";
 import type { FundedSession } from "./session";
 import { eventually } from "./trading";
+import { readFundedData } from "./read";
 
 type Kind = "gm" | "glv";
 type GlvInfo = { glv: { glvToken: Address; longToken: Address; shortToken: Address }; markets: Address[] };
 const dataStore = getContract(42161, "DataStore");
 
 export async function lpBalance(session: FundedSession, token: Address) {
-  return session.rpc.readContract({
-    address: token,
-    abi: erc20Abi,
-    functionName: "balanceOf",
-    args: [session.address],
-  });
+  return readFundedData("LP balance", () =>
+    session.rpc.readContract({
+      address: token,
+      abi: erc20Abi,
+      functionName: "balanceOf",
+      args: [session.address],
+    })
+  );
 }
 
 export async function planLiquidity(session: FundedSession, kind: Kind, policy = session.feePolicy) {
-  const quote = await context(session, kind, false);
-  const withdrawal = await context(session, kind, true);
+  const quote = await readLiquidityContext(session, kind, false);
+  const withdrawal = await readLiquidityContext(session, kind, true);
   return {
     kind,
     token: quote.token,
@@ -69,15 +73,17 @@ export async function planLiquidity(session: FundedSession, kind: Kind, policy =
 export async function liquidityRequestKeys(session: FundedSession, kind: Kind, withdrawal: boolean) {
   const label = `ACCOUNT_${kind === "glv" ? "GLV_" : ""}${withdrawal ? "WITHDRAWAL" : "DEPOSIT"}_LIST`;
   const key = hashData(["bytes32", "address"], [hashString(label), session.address]);
-  return session.rpc.readContract({
-    address: dataStore,
-    abi: parseAbi(["function getBytes32ValuesAt(bytes32,uint256,uint256) view returns (bytes32[])"]),
-    functionName: "getBytes32ValuesAt",
-    args: [key as Hex, 0n, 100n],
-  });
+  return readFundedData("Liquidity request keys", () =>
+    session.rpc.readContract({
+      address: dataStore,
+      abi: parseAbi(["function getBytes32ValuesAt(bytes32,uint256,uint256) view returns (bytes32[])"]),
+      functionName: "getBytes32ValuesAt",
+      args: [key as Hex, 0n, 100n],
+    })
+  );
 }
 
-async function context(session: FundedSession, kind: Kind, withdrawal: boolean) {
+export async function readLiquidityContext(session: FundedSession, kind: Kind, withdrawal: boolean) {
   const state = await session.snapshot();
   const market = {
     marketToken: state.market.marketTokenAddress,
@@ -94,30 +100,34 @@ async function context(session: FundedSession, kind: Kind, withdrawal: boolean) 
     longTokenPrice: price(state.weth),
     shortTokenPrice: price(state.usdc),
   };
-  const gmResult = (await session.rpc.readContract({
-    abi: SyntheticsReader as Abi,
-    address: getContract(42161, "SyntheticsReader"),
-    functionName: "getMarketTokenPrice",
-    args: [
-      dataStore,
-      market,
-      prices.indexTokenPrice,
-      prices.longTokenPrice,
-      prices.shortTokenPrice,
-      withdrawal ? MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY : MAX_PNL_FACTOR_FOR_DEPOSITS_KEY,
-      !withdrawal,
-    ],
-  })) as [bigint, unknown];
+  const gmResult = (await readFundedData("GM token price", () =>
+    session.rpc.readContract({
+      abi: SyntheticsReader as Abi,
+      address: getContract(42161, "SyntheticsReader"),
+      functionName: "getMarketTokenPrice",
+      args: [
+        dataStore,
+        market,
+        prices.indexTokenPrice,
+        prices.longTokenPrice,
+        prices.shortTokenPrice,
+        withdrawal ? MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY : MAX_PNL_FACTOR_FOR_DEPOSITS_KEY,
+        !withdrawal,
+      ],
+    })
+  )) as [bigint, unknown];
   let token = getAddress(market.marketToken);
   let tokenPrice = gmResult[0];
   let marketsCount = 0n;
   if (kind === "glv") {
-    const infos = (await session.rpc.readContract({
-      abi: GlvReader as Abi,
-      address: getContract(42161, "GlvReader"),
-      functionName: "getGlvInfoList",
-      args: [dataStore, 0n, 100n],
-    })) as GlvInfo[];
+    const infos = (await readFundedData("GLV markets", () =>
+      session.rpc.readContract({
+        abi: GlvReader as Abi,
+        address: getContract(42161, "GlvReader"),
+        functionName: "getGlvInfoList",
+        args: [dataStore, 0n, 100n],
+      })
+    )) as GlvInfo[];
     const glv = infos.find(
       (g) =>
         getAddress(g.glv.longToken) === getAddress(state.weth.address) &&
@@ -127,17 +137,21 @@ async function context(session: FundedSession, kind: Kind, withdrawal: boolean) 
     assert.ok(glv, "No ETH/USDC GLV supports the selected market");
     token = glv.glv.glvToken;
     marketsCount = BigInt(glv.markets.length);
-    const [markets, response] = await Promise.all([
-      session.sdk.fetchMarkets(),
-      fetch(`${getOracleKeeperUrl(42161)}/prices/tickers`, { signal: AbortSignal.timeout(15_000) }),
+    const [markets, tickers] = await Promise.all([
+      readFundedData("GLV market data", () => session.sdk.fetchMarkets()),
+      readFundedData("GLV oracle prices", async () => {
+        const response = await fetch(`${getOracleKeeperUrl(42161)}/prices/tickers`, {
+          signal: AbortSignal.timeout(15_000),
+        });
+        if (!response.ok) throw new HttpError(response.status, "GLV oracle unavailable");
+        return (await response.json()) as {
+          tokenAddress: string;
+          timestamp: number;
+          minPrice: string;
+          maxPrice: string;
+        }[];
+      }),
     ]);
-    if (!response.ok) throw new Error("GLV oracle unavailable");
-    const tickers = (await response.json()) as {
-      tokenAddress: string;
-      timestamp: number;
-      minPrice: string;
-      maxPrice: string;
-    }[];
     const indexPrices = glv.markets.map((address) => {
       const item = markets.find((m) => getAddress(m.marketTokenAddress) === getAddress(address));
       assert.ok(item, "Missing GLV market");
@@ -148,23 +162,26 @@ async function context(session: FundedSession, kind: Kind, withdrawal: boolean) 
       );
       return { min: BigInt(ticker.minPrice), max: BigInt(ticker.maxPrice) };
     });
-    const result = (await session.rpc.readContract({
-      abi: GlvReader as Abi,
-      address: getContract(42161, "GlvReader"),
-      functionName: "getGlvTokenPrice",
-      args: [dataStore, glv.markets, indexPrices, prices.longTokenPrice, prices.shortTokenPrice, token, !withdrawal],
-    })) as bigint[];
+    const result = (await readFundedData("GLV token price", () =>
+      session.rpc.readContract({
+        abi: GlvReader as Abi,
+        address: getContract(42161, "GlvReader"),
+        functionName: "getGlvTokenPrice",
+        args: [dataStore, glv.markets, indexPrices, prices.longTokenPrice, prices.shortTokenPrice, token, !withdrawal],
+      })
+    )) as bigint[];
     tokenPrice = result[0];
   }
   assert.ok(tokenPrice > 0n && gmResult[0] > 0n);
   const sdk = new GmxSdk({
     chainId: 42161,
     rpcUrl: session.rpcUrl,
+    publicClient: session.rpc,
     account: session.address,
     oracleUrl: getOracleKeeperUrl(42161),
     subsquidUrl: "",
   });
-  const limits = await sdk.utils.getGasLimits();
+  const limits = await readFundedData("Liquidity gas limits", () => sdk.utils.getGasLimits());
   const gasLimit =
     kind === "gm"
       ? withdrawal
@@ -179,7 +196,7 @@ async function context(session: FundedSession, kind: Kind, withdrawal: boolean) 
     limits,
     { [zeroAddress]: native },
     gasLimit,
-    (await session.rpc.getGasPrice()) * 2n,
+    (await readFundedData("Liquidity gas price", () => session.rpc.getGasPrice())) * 2n,
     kind === "gm" ? 3n : marketsCount + 2n
   );
   assert.ok(fee && fee.feeUsd > 0n, "Missing liquidity execution fee quote");
@@ -204,106 +221,47 @@ function multicall(abi: Abi, calls: { functionName: string; args: unknown[] }[])
   });
 }
 
-async function requestKey(session: FundedSession, kind: Kind, withdrawal: boolean, action: FundedAction) {
+export async function liquidityRequestKey(
+  session: FundedSession,
+  kind: Kind,
+  withdrawal: boolean,
+  action: FundedAction
+) {
   const name = `${kind === "glv" ? "Glv" : ""}${withdrawal ? "Withdrawal" : "Deposit"}Created`;
   assert.ok(action.txHash);
-  const receipt = await session.rpc.getTransactionReceipt({ hash: action.txHash });
+  const receipt = await readFundedData("Liquidity creation receipt", () =>
+    session.rpc.getTransactionReceipt({ hash: action.txHash! })
+  );
+  assert.equal(receipt.status, "success", "Liquidity creation receipt is not successful");
   const events = parseEventLogs({
     abi: EventEmitter as Abi,
     logs: receipt.logs.filter((log) => getAddress(log.address) === getAddress(getContract(42161, "EventEmitter"))),
     strict: false,
   });
-  const event = events.find((e) => (e.args as { eventName?: string }).eventName === name);
-  const key = (event?.args as { topic1?: Hex } | undefined)?.topic1;
-  assert.ok(key, "Liquidity creation receipt has no request key");
+  const created = events.filter((e) => (e.args as { eventName?: string }).eventName === name);
+  assert.equal(created.length, 1, "Liquidity creation receipt must contain one request");
+  const { topic1: key, eventData } = created[0].args as {
+    topic1: Hex;
+    eventData: {
+      addressItems: { items: { key: string; value: string }[] };
+      bytes32Items: { items: { key: string; value: string }[] };
+    };
+  };
+  const account = eventData.addressItems.items.find((item) => item.key === "account")?.value;
+  assert.ok(
+    account && getAddress(account) === getAddress(session.address),
+    "Liquidity request belongs to another wallet"
+  );
+  assert.ok(
+    key && key !== zeroHash && eventData.bytes32Items.items.find((item) => item.key === "key")?.value === key,
+    "Liquidity creation receipt has no matching request key"
+  );
   return key;
 }
 
 async function requestPending(session: FundedSession, kind: Kind, withdrawal: boolean, key: Hex) {
-  const request = (await session.rpc.readContract({
-    address: getContract(42161, kind === "gm" ? "SyntheticsReader" : "GlvReader"),
-    abi: (kind === "gm" ? SyntheticsReader : GlvReader) as Abi,
-    functionName: `get${kind === "glv" ? "Glv" : ""}${withdrawal ? "Withdrawal" : "Deposit"}`,
-    args: [dataStore, key],
-  })) as { addresses: { account: string } };
-  if (getAddress(request.addresses.account) === zeroAddress) return false;
-  assert.equal(getAddress(request.addresses.account), session.address);
-  return true;
-}
-
-export async function depositLiquidity(session: FundedSession, kind: Kind) {
-  const ctx = await context(session, kind, false);
-  if (!(await session.previousAction(`${kind}-deposit`))) {
-    const exitQuote = await context(session, kind, true);
-    checkFeeBudget(chargedFees(session.active), ctx.fee.feeUsd + USD / 20n, false, session.feePolicy);
-    checkFeeBudget(
-      chargedFees(session.active) + ctx.fee.feeUsd + USD / 20n,
-      exitQuote.fee.feeUsd + USD / 20n,
-      true,
-      session.feePolicy
-    );
-  }
-  const inventory = (session.active.inventory ??= {});
-  if (!inventory[`${kind}Token`]) {
-    for (const withdrawal of [false, true]) {
-      assert.deepEqual(
-        await liquidityRequestKeys(session, kind, withdrawal),
-        [],
-        "Existing liquidity requests must settle before regression"
-      );
-    }
-    assert.equal(await lpBalance(session, ctx.token), 0n, "Existing LP tokens must not be swept");
-    inventory[`${kind}Token`] = ctx.token;
-    await session.save();
-  }
-  if (ctx.state.stableUsd - USD < economy.stableReserveUsd + economy.cleanupReserveUsd)
-    throw new Error("Liquidity deposit would consume reserves");
-  const amount = 1_000_000n;
-  const minimum = await session.remember(
-    "minimum-mint",
-    async () => (USD * 10n ** 18n * 9_950n) / ctx.tokenPrice / 10_000n
-  );
-  await session.allowance(ctx.state.usdc, amount, false);
-  const vault = getContract(42161, kind === "gm" ? "DepositVault" : "GlvVault");
-  const addresses = {
-    receiver: session.address,
-    callbackContract: zeroAddress,
-    uiFeeReceiver: zeroAddress,
-    market: ctx.market.marketToken,
-    initialLongToken: ctx.state.weth.address,
-    initialShortToken: ctx.state.usdc.address,
-    longTokenSwapPath: [],
-    shortTokenSwapPath: [],
-    ...(kind === "glv" ? { glv: ctx.token } : {}),
-  };
-  const params = {
-    addresses,
-    executionFee: ctx.fee.feeTokenAmount,
-    callbackGasLimit: 0n,
-    shouldUnwrapNativeToken: false,
-    dataList: [],
-    ...(kind === "gm" ? { minMarketTokens: minimum } : { minGlvTokens: minimum, isMarketTokenDeposit: false }),
-  };
-  const data = multicall(ctx.abi, [
-    { functionName: "sendWnt", args: [vault, ctx.fee.feeTokenAmount] },
-    { functionName: "sendTokens", args: [ctx.state.usdc.address, vault, amount] },
-    { functionName: kind === "gm" ? "createDeposit" : "createGlvDeposit", args: [params] },
-  ]);
-  const action = await session.nativeTransaction(
-    { to: ctx.router, data, value: ctx.fee.feeTokenAmount },
-    `${kind}-deposit`,
-    false,
-    (ctx.fee.feeTokenAmount * ctx.state.weth.prices.maxPrice) / 10n ** 18n + USD / 100n
-  );
-  const key = await requestKey(session, kind, false, action);
-  await eventually(
-    () => requestPending(session, kind, false, key),
-    (pending) => !pending,
-    180_000
-  );
-  const balance = await lpBalance(session, ctx.token);
-  assert.ok(balance >= minimum, "Liquidity deposit was cancelled or did not mint the minimum LP tokens");
-  return { token: ctx.token, amount: balance };
+  // Request lists avoid decoding version-dependent Reader structs after execution.
+  return (await liquidityRequestKeys(session, kind, withdrawal)).some((pendingKey) => pendingKey === key);
 }
 
 export async function withdrawLiquidity(session: FundedSession, kind: Kind, recovery = false) {
@@ -311,10 +269,12 @@ export async function withdrawLiquidity(session: FundedSession, kind: Kind, reco
   if (!token) return;
   // A native creation receipt alone does not prove keeper settlement.
   for (const action of session.active.actions.filter(
-    (a) => a.state !== "failed" && (a.purpose === `${kind}-deposit` || a.purpose === `${kind}-withdraw`)
+    (a) =>
+      a.state !== "failed" &&
+      [`${kind}-deposit`, `${kind}-withdraw`, `ui:${kind}-deposit`, `ui:${kind}-withdraw`].includes(a.purpose)
   )) {
     const withdrawal = action.purpose.endsWith("withdraw");
-    const key = await requestKey(session, kind, withdrawal, action);
+    const key = await liquidityRequestKey(session, kind, withdrawal, action);
     if (await requestPending(session, kind, withdrawal, key)) {
       if (!recovery) throw new Error("Liquidity request remains pending");
       const abi = (kind === "gm" ? ExchangeRouter : GlvRouter) as Abi;
@@ -339,16 +299,18 @@ export async function withdrawLiquidity(session: FundedSession, kind: Kind, reco
     if (!recovery) await verifyWithdrawalOutputs(session, kind);
     return;
   }
-  const ctx = await context(session, kind, true);
+  const ctx = await readLiquidityContext(session, kind, true);
   assert.equal(getAddress(ctx.token), getAddress(token));
   assert.ok((amount * ctx.tokenPrice) / 10n ** 18n <= 2n * USD, "Unexpected LP inventory");
   const gmAmount = kind === "gm" ? amount : (amount * ctx.tokenPrice) / ctx.gmPrice;
-  const quote = (await session.rpc.readContract({
-    abi: SyntheticsReader as Abi,
-    address: getContract(42161, "SyntheticsReader"),
-    functionName: "getWithdrawalAmountOut",
-    args: [dataStore, ctx.market, ctx.prices, gmAmount, zeroAddress, 4],
-  })) as [bigint, bigint];
+  const quote = (await readFundedData("Liquidity withdrawal quote", () =>
+    session.rpc.readContract({
+      abi: SyntheticsReader as Abi,
+      address: getContract(42161, "SyntheticsReader"),
+      functionName: "getWithdrawalAmountOut",
+      args: [dataStore, ctx.market, ctx.prices, gmAmount, zeroAddress, 4],
+    })
+  )) as [bigint, bigint];
   const minLongTokenAmount = (quote[0] * 9_950n) / 10_000n;
   const minShortTokenAmount = (quote[1] * 9_950n) / 10_000n;
   assert.ok(minLongTokenAmount + minShortTokenAmount > 0n, "Empty withdrawal quote");
@@ -392,7 +354,7 @@ export async function withdrawLiquidity(session: FundedSession, kind: Kind, reco
     true,
     (ctx.fee.feeTokenAmount * ctx.state.weth.prices.maxPrice) / 10n ** 18n + withdrawalCost + USD / 100n
   );
-  const key = await requestKey(session, kind, true, action);
+  const key = await liquidityRequestKey(session, kind, true, action);
   await eventually(
     () => requestPending(session, kind, true, key),
     (pending) => !pending,
