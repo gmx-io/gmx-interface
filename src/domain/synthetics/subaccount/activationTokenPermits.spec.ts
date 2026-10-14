@@ -247,14 +247,15 @@ describe("signActivationTokenPermits", () => {
       expect.objectContaining({ tokenAddress: USDT, outcome: "fallback", reason: "failed" })
     );
   });
-  it("stops without touching approvals once the account or chain changes", async () => {
+  it("stops asking once the account or chain changes, still keeping earlier invalid signatures on approvals", async () => {
     addTokenPermit
       .mockRejectedValueOnce(new Error("rpc unavailable"))
+      .mockRejectedValueOnce(getInvalidPermitSignatureError({ isValid: false, error: undefined, permit: permit(WETH) }))
       .mockRejectedValueOnce(new Error(PERMIT_WALLET_CHANGED_ERROR));
 
-    await sign([USDC, WETH, USDT]);
+    await sign([USDC, WETH, USDT, USDC]);
 
-    expect(addTokenPermit).toHaveBeenCalledTimes(2);
-    expect(disableTokenPermits).not.toHaveBeenCalled();
+    expect(addTokenPermit).toHaveBeenCalledTimes(3);
+    expect(disableTokenPermits).toHaveBeenCalledWith([WETH], { chainId: ARBITRUM, account: ACCOUNT });
   });
 });

@@ -107,9 +107,9 @@ export async function signActivationTokenPermits({
       await addTokenPermit(tokenAddress, spender, maxUint256, { deadline: NON_EXPIRING_PERMIT_DEADLINE });
       sendTokenPermitMetric({ ...metricParams, outcome: "signed" });
     } catch (error) {
-      // the flow belongs to the previous account or chain; its fallback list must not be touched from here
+      // the wallet moved on: stop asking, the tokens already found invalid are still saved for this account below
       if (error?.message === PERMIT_WALLET_CHANGED_ERROR) {
-        return;
+        break;
       }
 
       if (parseError(error as ErrorLike)?.isUserRejectedError) {

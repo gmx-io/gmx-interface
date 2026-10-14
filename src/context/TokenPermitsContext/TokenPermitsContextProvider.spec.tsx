@@ -26,6 +26,7 @@ const mocks = vi.hoisted(() => ({
   accountType: "eoa" as string,
   account: "0x0000000000000000000000000000000000000001",
   createAndSignTokenPermit: vi.fn(),
+  isPermitSignatureValid: true,
 }));
 
 vi.mock("lib/chains", () => ({ useChainId: () => ({ chainId: CHAIN_ID }) }));
@@ -46,7 +47,7 @@ vi.mock("domain/tokens/tokenPermitsEligibility", async (importOriginal) => ({
 vi.mock("domain/tokens/permitUtils", async (importOriginal) => ({
   ...(await importOriginal<object>()),
   createAndSignTokenPermit: mocks.createAndSignTokenPermit,
-  validateTokenPermitSignature: async () => ({ isValid: true }),
+  validateTokenPermitSignature: async () => ({ isValid: mocks.isPermitSignatureValid }),
 }));
 
 function permit(token: string, overrides: Partial<SignedTokenPermit> = {}): SignedTokenPermit {
@@ -114,6 +115,7 @@ describe("TokenPermitsContextProvider", () => {
     mocks.isQaOverrideEnabled = false;
     mocks.accountType = "eoa";
     mocks.account = ACCOUNT;
+    mocks.isPermitSignatureValid = true;
   });
 
   afterEach(() => {
@@ -271,6 +273,40 @@ describe("TokenPermitsContextProvider", () => {
     expect(readStoredTokens()).toEqual([USDC, WETH]);
     expect(state.tokenPermits.map((p) => p.deadline)).toEqual([usdc.deadline, weth.deadline]);
   });
+  it("reports a wallet switch, not a bad signature, when the wallet signed with the new account", async () => {
+    const { rerender } = await setup();
+
+    let resolveSigning: (value: { permit: SignedTokenPermit }) => void = () => undefined;
+    mocks.createAndSignTokenPermit.mockReturnValue(new Promise((resolve) => (resolveSigning = resolve)));
+    mocks.isPermitSignatureValid = false;
+
+    const { addTokenPermit } = state;
+    const signing = addTokenPermit(USDC, ROUTER, 100n);
+
+    mocks.account = "0x0000000000000000000000000000000000000002";
+    rerender();
+    resolveSigning({ permit: permit(USDC) });
+
+    await expect(signing).rejects.toThrow(PERMIT_WALLET_CHANGED_ERROR);
+  });
+
+  it("keeps a permit signed after an earlier render when a stale callback removes another one", async () => {
+    const usdc = permit(USDC);
+    storePermits([usdc]);
+    await setup();
+
+    const { removeTokenPermits, addTokenPermit } = state;
+    const weth = permit(WETH, { r: `0x${"66".repeat(32)}` });
+    mocks.createAndSignTokenPermit.mockResolvedValue({ permit: weth });
+
+    await act(async () => {
+      await addTokenPermit(WETH, ROUTER, 100n);
+      removeTokenPermits([usdc]);
+    });
+
+    expect(readStoredTokens()).toEqual([WETH]);
+  });
+
   it("stores nothing when the account changes while a permit is being signed", async () => {
     const { rerender } = await setup();
 
