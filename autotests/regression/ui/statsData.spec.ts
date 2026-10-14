@@ -35,7 +35,8 @@ async function expectTooltipSum(page: Page, handle: Locator, parse: (text: strin
         const { value, text } = await readTooltip(page, handle);
         return displayedSumMatches(displayedNumber(value), parse(text));
       },
-      { message }
+      // Treasury and staking values come from several RPC reads and can take over 15 seconds.
+      { message, timeout: 45_000 }
     )
     .toBe(true);
 }
@@ -227,8 +228,9 @@ test("18.10 Stats sections agree: totals equal their network or pool rows, OI is
       `${network} OI is long plus short`
     ).toBe(true);
   }
+  // Solana's TVL falls back to its GM pools when the protocol stats have no store value, so they can be equal.
   for (const network of tvlNetworks) {
-    expect(stats.TVL.entries[network], `${network} TVL includes GM pools`).toBeGreaterThan(
+    expect(stats.TVL.entries[network], `${network} TVL includes GM pools`).toBeGreaterThanOrEqual(
       stats["GM pools"].entries[network]
     );
   }

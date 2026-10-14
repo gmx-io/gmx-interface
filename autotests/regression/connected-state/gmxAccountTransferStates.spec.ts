@@ -1,7 +1,8 @@
 import { expect, type Page } from "@playwright/test";
-import { getAddress, toHex } from "viem";
+import { getAddress, toHex, zeroAddress } from "viem";
 
 import { SOURCE_BASE_MAINNET as BASE } from "../../../sdk/src/configs/chainIds";
+import { getMultichainTokenGroups } from "../../../sdk/src/configs/multichainTokens";
 import { test } from "../fixtures/accountState";
 
 type Transfer = Record<string, unknown> & { id: string };
@@ -80,6 +81,15 @@ test("26.01 26.02 26.06 partial: long-pending, compose-failed and failed GMX Acc
     sentAmount: (30n * 10n ** 6n).toString(),
   });
   await mockFundingHistory(page, accountState.address, [pending, composeFailed, failedWithdrawal]);
+  // Without funds on Base the deposit form is replaced by its empty state, so the repeated deposit needs some.
+  const baseUsdc = getMultichainTokenGroups({ includeTestnets: false }).USDC![BASE]!;
+  accountState.sourceChainBalances.set(
+    BASE,
+    new Map([
+      [baseUsdc.address, 50n * 10n ** 6n],
+      [zeroAddress, 10n ** 16n],
+    ])
+  );
   await accountState.connect(page);
   await page.getByTestId("user-address").click();
   await page.getByRole("button", { name: "Transfer history", exact: true }).click();

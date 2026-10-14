@@ -108,6 +108,18 @@ jobs:
           yarn --cwd sdk install --immutable --mode=skip-build
       - name: Install Chromium
         run: yarn exec playwright install --with-deps chromium
+      - name: Check the Alchemy key for source-chain reads
+        if: ${{ matrix.shard == 1 && env.REGRESSION_ALCHEMY_KEY != '' }}
+        run: |
+          for network in base-mainnet eth-mainnet bnb-mainnet; do
+            result=$(curl -s -m 20 -X POST -H 'content-type: application/json' \
+              -d '{"jsonrpc":"2.0","id":1,"method":"eth_blockNumber","params":[]}' \
+              "https://$network.g.alchemy.com/v2/$REGRESSION_ALCHEMY_KEY" | jq -r '.result // .error.message // "no response"')
+            case "$result" in
+              0x*) echo "$network: block $((result))" ;;
+              *) echo "::warning::Alchemy $network does not answer ($result); connected-state source-chain reads will fail" ;;
+            esac
+          done
       - name: Run non-funded suites
         env:
           PLAYWRIGHT_BLOB_OUTPUT_DIR: blob-report
