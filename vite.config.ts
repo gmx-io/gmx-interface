@@ -303,17 +303,23 @@ function getStartupChunkViolation(chunk: OutputChunk) {
       isPrivySolanaModule(id) ||
       isWasm(id)
     ) {
-      return `Solana module in startup chunk ${chunk.fileName}: ${id}`;
+      return { kind: "module" as const, id };
     }
   }
 
   for (const asset of [...chunk.referencedFiles, ...(chunk.viteMetadata?.importedAssets ?? [])]) {
     if (isWasm(asset)) {
-      return `WebAssembly asset in startup chunk ${chunk.fileName}: ${asset}`;
+      return { kind: "asset" as const, id: asset };
     }
   }
 
   return undefined;
+}
+
+function formatModuleId(id: string) {
+  return id.startsWith("\0")
+    ? id.replace(/\0/g, "\\0")
+    : normalizePath(path.isAbsolute(id) ? path.relative(__dirname, id) : id);
 }
 
 function solanaBuildIsolation({ requireAppBootstrap }: { requireAppBootstrap: boolean }): Plugin {
@@ -330,7 +336,15 @@ function solanaBuildIsolation({ requireAppBootstrap }: { requireAppBootstrap: bo
       for (const chunk of getStartupChunks(bundle, requireAppBootstrap)) {
         const violation = getStartupChunkViolation(chunk);
         if (violation) {
-          this.error(violation);
+          if (violation.kind === "asset") {
+            this.error(`WebAssembly asset in startup chunk ${chunk.fileName}: ${formatModuleId(violation.id)}`);
+          }
+
+          const importer = this.getModuleInfo(violation.id)?.importers[0];
+          this.error(
+            `Solana module in startup chunk ${chunk.fileName}: ${formatModuleId(violation.id)}` +
+              (importer ? `\nImported by: ${formatModuleId(importer)}` : "")
+          );
         }
       }
     },
