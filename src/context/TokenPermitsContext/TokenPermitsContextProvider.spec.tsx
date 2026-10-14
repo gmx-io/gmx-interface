@@ -63,6 +63,7 @@ function permit(token: string, overrides: Partial<SignedTokenPermit> = {}): Sign
 }
 
 const PERMITS_KEY = JSON.stringify([CHAIN_ID, ACCOUNT, "token-permits"]);
+const FALLBACK_KEY = JSON.stringify([CHAIN_ID, ACCOUNT, "token-permits-fallback"]);
 
 function storePermits(permits: SignedTokenPermit[]) {
   localStorage.setItem(PERMITS_KEY, JSON.stringify(permits));
@@ -201,6 +202,31 @@ describe("TokenPermitsContextProvider", () => {
 
     expect(JSON.parse(localStorage.getItem(avalancheKey)!)).toEqual([]);
     expect(readStoredTokens()).toEqual([USDC]);
+  });
+
+  it("keeps every token disabled in a row, even from callbacks of an earlier render", async () => {
+    await setup();
+    const { disableTokenPermits } = state;
+
+    act(() => {
+      disableTokenPermits([USDC]);
+      disableTokenPermits([WETH]);
+    });
+
+    expect(JSON.parse(localStorage.getItem(FALLBACK_KEY)!)).toEqual([USDC, WETH]);
+    expect(state.getIsPermitAvailable(USDC)).toBe(false);
+    expect(state.getIsPermitAvailable(WETH)).toBe(false);
+  });
+
+  it("disables a token for the account the permit belongs to, without touching the current one", async () => {
+    const otherAccount = "0x0000000000000000000000000000000000000002";
+    const otherKey = JSON.stringify([CHAIN_ID, otherAccount, "token-permits-fallback"]);
+    await setup();
+
+    act(() => state.disableTokenPermits([USDC], { chainId: CHAIN_ID, account: otherAccount }));
+
+    expect(JSON.parse(localStorage.getItem(otherKey)!)).toEqual([USDC]);
+    expect(state.getIsPermitAvailable(USDC)).toBe(true);
   });
 
   it("replaces an older permit for the same token and spender", async () => {

@@ -250,7 +250,9 @@ describe("token permits", () => {
     expect(state.sendTokenPermitMetric).toHaveBeenCalledWith(
       expect.objectContaining({ outcome: "failedCheck", reason: "simulation" })
     );
-    await vi.waitFor(() => expect(state.disableTokenPermits).toHaveBeenCalledWith([permit.token]));
+    await vi.waitFor(() =>
+      expect(state.disableTokenPermits).toHaveBeenCalledWith([permit.token], { chainId: 42161, account: permit.owner })
+    );
   });
 
   it.each([

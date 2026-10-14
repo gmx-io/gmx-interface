@@ -505,18 +505,13 @@ export function useOrderTxnCallbacks() {
               });
             });
 
-            Promise.all(
-              sentTokenPermits.map(async (permit) =>
-                (await getIsTokenPermitNonceUsed(chainId, permit)) === false ? permit.token : undefined
-              )
-            ).then((tokenAddresses) => {
-              const rejectedTokenAddresses = tokenAddresses.filter(
-                (address): address is string => address !== undefined
-              );
-
-              if (rejectedTokenAddresses.length > 0) {
-                disableTokenPermits(rejectedTokenAddresses);
-              }
+            sentTokenPermits.forEach((permit) => {
+              getIsTokenPermitNonceUsed(chainId, permit).then((isNonceUsed) => {
+                // the read can finish after a wallet switch, so the token is disabled for the permit's own account
+                if (isNonceUsed === false) {
+                  disableTokenPermits([permit.token], { chainId, account: permit.owner });
+                }
+              });
             });
           }
 
