@@ -155,8 +155,14 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
   // several permits can be signed in one flow (One-Click activation), before a re-render refreshes the closure;
   // the list is only reused while the account and chain it was read for are still the active ones
   const walletKey = `${chainId}:${account}`;
-  const latestStoredTokenPermits = useRef({ walletKey, permits: storedTokenPermits, setTokenPermits });
-  latestStoredTokenPermits.current = { walletKey, permits: storedTokenPermits, setTokenPermits };
+  const latestStoredTokenPermits = useRef({
+    walletKey,
+    chainId,
+    account,
+    permits: storedTokenPermits,
+    setTokenPermits,
+  });
+  latestStoredTokenPermits.current = { walletKey, chainId, account, permits: storedTokenPermits, setTokenPermits };
 
   const getIsPermitAvailable = useCallback(
     (tokenAddress: string) =>
@@ -230,7 +236,9 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
       // the latest render's wallet and list: callers often hold a closure from before a switch or a newer permit
       const latest = latestStoredTokenPermits.current;
       const isActive = (permit: SignedTokenPermit) =>
-        latest.walletKey === `${permitsChainId ?? chainId}:${permit.owner}`;
+        (permitsChainId ?? chainId) === latest.chainId &&
+        latest.account !== undefined &&
+        isAddressEqual(permit.owner as Address, latest.account as Address);
 
       uniq(permits.filter((permit) => !isActive(permit)).map((permit) => permit.owner)).forEach((owner) => {
         removeInactiveStoredTokenPermits(permitsChainId ?? chainId, owner, permits);
