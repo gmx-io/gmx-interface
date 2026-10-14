@@ -28,6 +28,7 @@ import {
   findNextGasPaymentToken,
 } from "domain/synthetics/express/useSwitchGasPaymentTokenIfRequired";
 import { TokensData } from "domain/tokens";
+import { applyMinimalBuffer } from "domain/tokens/useMaxAvailableAmount";
 import { helperToast } from "lib/helperToast";
 import { getByKey } from "lib/objects";
 import { getGasPaymentTokens } from "sdk/configs/express";
@@ -77,7 +78,7 @@ export function getExternalSwapGasTokenToSwitchTo({
   });
 }
 
-// Gas token offered by the gas conflict warning; never the saved token or the token that already pays the fee
+// Gas token offered by the gas conflict warning; never the saved token
 export function getExternalSwapGasTokenCandidate({
   chainId,
   tokensData,
@@ -98,6 +99,24 @@ export function getExternalSwapGasTokenCandidate({
   payAmounts: Record<string, bigint>;
   isGmxAccount: boolean;
 }): string | undefined {
+  const payingToken = gasPaymentParams ? getByKey(tokensData, gasPaymentParams.gasPaymentToken.address) : undefined;
+
+  // the fee already moved off the saved token, so saving the token that pays keeps it there and clears the conflict
+  if (
+    gasPaymentParams &&
+    payingToken &&
+    payingToken.address !== savedGasTokenAddress &&
+    payingToken.address !== conflictTokenAddress
+  ) {
+    const balance = isGmxAccount ? payingToken.gmxAccountBalance : payingToken.walletBalance;
+    const requiredAmount =
+      (payAmounts[payingToken.address] ?? 0n) + applyMinimalBuffer(gasPaymentParams.gasPaymentTokenAmount);
+
+    if (balance !== undefined && balance > requiredAmount) {
+      return payingToken.address;
+    }
+  }
+
   const wrappedTokenAddress = getWrappedToken(chainId).address;
   const excludeTokenAddresses = [
     conflictTokenAddress,
