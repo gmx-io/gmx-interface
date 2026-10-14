@@ -20,8 +20,8 @@ export function useExecutedTokenPermits({
   relayTaskStatuses: { [taskId: string]: RelayTaskStatus };
 }) {
   const { removeTokenPermits, accountType } = useTokenPermitsContext();
-  // the chain a task was sent on, in case the user switches before the relay answers
-  const taskChainIdsRef = useRef(new Map<string, number>());
+  // the chain and account type a task was sent with, in case the user switches before the relay answers
+  const taskContextsRef = useRef(new Map<string, { chainId: number; accountType: typeof accountType }>());
   const handledTaskIdsRef = useRef(new Set<string>());
 
   useEffect(
@@ -31,8 +31,8 @@ export function useExecutedTokenPermits({
           return;
         }
 
-        if (!taskChainIdsRef.current.has(taskId)) {
-          taskChainIdsRef.current.set(taskId, chainId);
+        if (!taskContextsRef.current.has(taskId)) {
+          taskContextsRef.current.set(taskId, { chainId, accountType });
         }
 
         const status = relayTaskStatuses[taskId]?.statusCode;
@@ -42,8 +42,8 @@ export function useExecutedTokenPermits({
         }
 
         handledTaskIdsRef.current.add(taskId);
-        const taskChainId = taskChainIdsRef.current.get(taskId)!;
-        taskChainIdsRef.current.delete(taskId);
+        const taskContext = taskContextsRef.current.get(taskId)!;
+        taskContextsRef.current.delete(taskId);
 
         if (status !== StatusCode.Success) {
           return;
@@ -51,7 +51,12 @@ export function useExecutedTokenPermits({
 
         removeTokenPermits(tokenPermits);
         tokenPermits.forEach((permit) => {
-          sendTokenPermitMetric({ outcome: "executed", chainId: taskChainId, tokenAddress: permit.token, accountType });
+          sendTokenPermitMetric({
+            outcome: "executed",
+            chainId: taskContext.chainId,
+            tokenAddress: permit.token,
+            accountType: taskContext.accountType,
+          });
         });
       });
     },

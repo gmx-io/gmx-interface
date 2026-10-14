@@ -482,8 +482,25 @@ export function useOrderTxnCallbacks() {
 
             removeTokenPermits(sentTokenPermits);
           } else if (permitIssueType === "invalidSignature") {
+            // a nonce used by another order in the meantime also reads as an invalid signature, so every sent
+            // permit is dropped now and only a signature that doesn't verify keeps its token on approvals
+            removeTokenPermits(sentTokenPermits);
             sentTokenPermits.forEach((permit) => {
-              validateTokenPermitSignature(chainId, permit).then((validationResult) => {
+              sendTokenPermitMetric({
+                outcome: "failedCheck",
+                chainId,
+                tokenAddress: permit.token,
+                accountType: tokenPermitAccountType,
+                reason: "simulation",
+              });
+            });
+
+            Promise.all(
+              sentTokenPermits.map(async (permit) => {
+                const validationResult = await validateTokenPermitSignature(chainId, permit).catch(() => undefined);
+
+                if (!validationResult) return undefined;
+
                 metrics.pushError(
                   getInvalidPermitSignatureError({
                     isValid: validationResult.isValid,
@@ -492,10 +509,18 @@ export function useOrderTxnCallbacks() {
                   }),
                   "simulation.permitError"
                 );
-              });
-            });
 
-            fallbackFromTokenPermits(sentTokenPermits, "simulation");
+                return validationResult.isValid ? undefined : permit.token;
+              })
+            ).then((tokenAddresses) => {
+              const invalidTokenAddresses = tokenAddresses.filter(
+                (address): address is string => address !== undefined
+              );
+
+              if (invalidTokenAddresses.length > 0) {
+                disableTokenPermits(invalidTokenAddresses);
+              }
+            });
           }
 
           if (isOutdatedSubaccountApproval) {

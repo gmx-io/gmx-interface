@@ -10,10 +10,11 @@ import { useExecutedTokenPermits } from "./useExecutedTokenPermits";
 const mocks = vi.hoisted(() => ({
   removeTokenPermits: vi.fn(),
   sendTokenPermitMetric: vi.fn(),
+  accountType: "eoa" as string | undefined,
 }));
 
 vi.mock("context/TokenPermitsContext/TokenPermitsContextProvider", () => ({
-  useTokenPermitsContext: () => ({ removeTokenPermits: mocks.removeTokenPermits, accountType: "eoa" }),
+  useTokenPermitsContext: () => ({ removeTokenPermits: mocks.removeTokenPermits, accountType: mocks.accountType }),
 }));
 vi.mock("lib/metrics/tokenPermitMetrics", () => ({ sendTokenPermitMetric: mocks.sendTokenPermitMetric }));
 
@@ -51,6 +52,7 @@ const sentTxn = { key: "txn", taskId: "task", tokenPermits: [usdcPermit, wethPer
 describe("useExecutedTokenPermits", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mocks.accountType = "eoa";
   });
   afterEach(cleanup);
 
@@ -123,19 +125,23 @@ describe("useExecutedTokenPermits", () => {
     expect(mocks.sendTokenPermitMetric).not.toHaveBeenCalled();
   });
 
-  it("reports the chain the relay call was sent on after a chain switch", () => {
+  it("reports the chain and account type the relay call was sent with after a chain switch", () => {
+    mocks.accountType = "metaMask7702";
     const { rerender } = renderExecutedTokenPermits({
       chainId: ARBITRUM,
       pendingExpressTxns: { txn: sentTxn },
       relayTaskStatuses: {},
     });
 
+    mocks.accountType = undefined;
     rerender({
       chainId: AVALANCHE,
       pendingExpressTxns: { txn: sentTxn },
       relayTaskStatuses: relayStatus("task", StatusCode.Success),
     });
 
-    expect(mocks.sendTokenPermitMetric).toHaveBeenCalledWith(expect.objectContaining({ chainId: ARBITRUM }));
+    expect(mocks.sendTokenPermitMetric).toHaveBeenCalledWith(
+      expect.objectContaining({ chainId: ARBITRUM, accountType: "metaMask7702" })
+    );
   });
 });

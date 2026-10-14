@@ -29,6 +29,7 @@ const state = vi.hoisted(() => ({
   disableTokenPermits: vi.fn(),
   sendTokenPermitMetric: vi.fn(),
   isPermitSignatureErrorOnSimulation: false,
+  isPermitSignatureValid: false,
 }));
 
 vi.mock("context/SyntheticsEvents", async (importOriginal) => ({
@@ -66,7 +67,7 @@ vi.mock("lib/errors/customErrors", async (importOriginal) => ({
 }));
 vi.mock("domain/tokens/permitUtils", async (importOriginal) => ({
   ...(await importOriginal<object>()),
-  validateTokenPermitSignature: async () => ({ isValid: false }),
+  validateTokenPermitSignature: async () => ({ isValid: state.isPermitSignatureValid }),
 }));
 vi.mock("context/TokensBalancesContext/TokensBalancesContextProvider", () => ({
   useTokensBalancesUpdates: () => ({ addOptimisticTokensBalancesUpdates: vi.fn() }),
@@ -237,17 +238,30 @@ describe("token permits", () => {
     expect(state.errorToast).toHaveBeenCalledTimes(1);
   });
 
-  it("keeps tokens on approvals when the simulation rejects the permit signature", () => {
+  it("keeps tokens on approvals when the simulation rejects a permit signature that doesn't verify", async () => {
     state.isPermitSignatureErrorOnSimulation = true;
+    state.isPermitSignatureValid = false;
     const signedPermit = { ...permit, onchainParams: { name: "USD Coin", version: "2", nonce: 0n } };
     const builder = events("express", { tokenPermits: [signedPermit] });
     callback(builder.Error(new Error("ExternalCallFailed: invalid signature")));
 
-    expect(state.disableTokenPermits).toHaveBeenCalledWith([permit.token]);
     expect(state.removeTokenPermits).toHaveBeenCalledWith([signedPermit]);
     expect(state.sendTokenPermitMetric).toHaveBeenCalledWith(
       expect.objectContaining({ outcome: "failedCheck", reason: "simulation" })
     );
+    await vi.waitFor(() => expect(state.disableTokenPermits).toHaveBeenCalledWith([permit.token]));
+  });
+
+  it("only drops a permit whose signature verifies, since its nonce may have been used by another order", async () => {
+    state.isPermitSignatureErrorOnSimulation = true;
+    state.isPermitSignatureValid = true;
+    const signedPermit = { ...permit, onchainParams: { name: "USD Coin", version: "2", nonce: 0n } };
+    const builder = events("express", { tokenPermits: [signedPermit] });
+    callback(builder.Error(new Error("ExternalCallFailed: invalid signature")));
+
+    expect(state.removeTokenPermits).toHaveBeenCalledWith([signedPermit]);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(state.disableTokenPermits).not.toHaveBeenCalled();
   });
 
   const updateParams = {
