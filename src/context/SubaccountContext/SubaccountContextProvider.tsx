@@ -307,6 +307,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
   // once a signed removal fails, the next attempts use the wallet transaction
   const walletTxnRemovalKeyRef = useRef<string | undefined>(undefined);
+  const unknownResultRemovalKeyRef = useRef<string | undefined>(undefined);
 
   const updateSubaccountSettings = useCallback(
     async function updateSubaccountSettings({
@@ -442,6 +443,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       setSubaccountActivationState(SubaccountActivationState.Success);
       // a new session starts with the signed removal again, whatever happened to the previous one
       walletTxnRemovalKeyRef.current = undefined;
+      unknownResultRemovalKeyRef.current = undefined;
 
       setSignedApproval(defaultSubaccountApproval);
 
@@ -492,10 +494,13 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     let settlementChainExpressParams: ExpressTxnParams | undefined;
 
     try {
-      if (!(await getIsSubaccountRemovalRequired({ chainId, subaccount, account }))) {
+      const isAfterUnknownResult = unknownResultRemovalKeyRef.current === removalKey;
+
+      if (!(await getIsSubaccountRemovalRequired({ chainId, subaccount, account, isAfterUnknownResult }))) {
         setSubaccountDeactivationState(SubaccountDeactivationState.Success);
 
         walletTxnRemovalKeyRef.current = undefined;
+        unknownResultRemovalKeyRef.current = undefined;
         resetStoredApproval();
         resetStoredConfig();
         refreshSubaccountData();
@@ -549,6 +554,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       setSubaccountDeactivationState(SubaccountDeactivationState.Success);
 
       walletTxnRemovalKeyRef.current = undefined;
+      unknownResultRemovalKeyRef.current = undefined;
       resetStoredApproval();
       resetStoredConfig();
       refreshSubaccountData();
@@ -564,6 +570,10 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
       if (shouldRetryWithWalletTxn) {
         walletTxnRemovalKeyRef.current = removalKey;
+      }
+
+      if (error instanceof SubaccountRemovalResultUnknownError) {
+        unknownResultRemovalKeyRef.current = removalKey;
       }
 
       const failureReason = getSubaccountDeactivationFailureReason(error, { isGmxAccount, shouldRetryWithWalletTxn });

@@ -127,13 +127,19 @@ export async function getIsSubaccountRemovalRequired({
   chainId,
   subaccount,
   account,
+  isAfterUnknownResult = false,
 }: {
   chainId: ContractsChainId;
   subaccount: Subaccount;
   account: string;
+  // after a removal with an unknown result the cached active flag can be stale, so only the chain decides;
+  // otherwise a cached active flag is trusted over a single read that may come from a lagging node
+  isAfterUnknownResult?: boolean;
 }): Promise<boolean> {
-  // read even when the cached flag is active: right after a removal with an unknown result it can be stale,
-  // and a retry would send a transaction that removes nothing
+  if (subaccount.onchainData.active && !isAfterUnknownResult) {
+    return true;
+  }
+
   const freshOnchainActive = await getIsSubaccountActiveOnchain({
     chainId,
     account,

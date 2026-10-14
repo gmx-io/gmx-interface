@@ -613,6 +613,9 @@ describe("SubaccountContextProvider.tryDisableSubaccount", () => {
     });
 
     expect(retryResult).toBe(true);
+    expect(mocks.getIsSubaccountRemovalRequired).toHaveBeenLastCalledWith(
+      expect.objectContaining({ isAfterUnknownResult: true })
+    );
     expect(mocks.removeSubaccountSettlementChainExpressTxn).toHaveBeenCalledTimes(1);
     expect(mocks.removeSubaccountWalletTxn).not.toHaveBeenCalled();
     expect(getIsSubaccountStoredLocally()).toBe(false);
