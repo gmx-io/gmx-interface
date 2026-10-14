@@ -301,7 +301,6 @@ export function useTradeboxButtonState({
     if (
       approvalGasError.bannerErrorName !== ValidationBannerErrorName.insufficientNativeTokenForApproval ||
       !isPendingGasPaymentTokenApproval ||
-      !gasPaymentToken ||
       expressParams?.gasPaymentParams === undefined
     ) {
       return undefined;
@@ -318,7 +317,8 @@ export function useTradeboxButtonState({
     const address = findNextGasPaymentToken({
       chainId,
       tokensData,
-      gasPaymentToken,
+      // the token that pays the fee, can differ from the saved one
+      gasPaymentToken: expressParams.gasPaymentParams.gasPaymentToken,
       gasPaymentTokenAmount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
       payAmounts: fromToken && payAmount !== undefined ? { [fromToken.address]: payAmount } : {},
       isGmxAccount: false,
@@ -330,7 +330,6 @@ export function useTradeboxButtonState({
   }, [
     approvalGasError.bannerErrorName,
     isPendingGasPaymentTokenApproval,
-    gasPaymentToken,
     expressParams?.gasPaymentParams,
     isSwap,
     swapToToken,
