@@ -307,7 +307,7 @@ export function SyntheticsStateContextProvider({
 
   const timePerios = useMemo(() => getTimePeriodsInSeconds(), []);
 
-  const isLargeAccount = useIsLargeAccountTracker(walletAccount);
+  const isLargeAccount = useIsLargeAccountTracker(walletAccount, { chainId: selectedChainId, srcChainId });
 
   const { data: lastWeekAccountStats } = usePeriodAccountStats(chainId, {
     account,
