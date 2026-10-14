@@ -153,7 +153,7 @@ import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
 import TwapRows from "../TwapRows/TwapRows";
 import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
 import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";
-import { useTradeboxPaxosRoute } from "./hooks/useTradeboxPaxosRoute";
+import { type TradeboxPaxosRoute, useTradeboxPaxosRoute } from "./hooks/useTradeboxPaxosRoute";
 import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
 import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
 import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
@@ -389,11 +389,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
 
   const paxosRoute = useTradeboxPaxosRoute({ setFromTokenInputValue, setFocusedInput });
   const isPaxosRouteActive = paxosRoute.activePaxosRoute !== undefined || paxosRoute.routes.isRouteChoiceRequired;
-  const paxosReceiveAmountOut = paxosRoute.routes.isRouteChoiceRequired
-    ? 0n
-    : paxosRoute.activePaxosRoute
-      ? paxosRoute.activeOption?.amountOut
-      : undefined;
+  const paxosReceiveAmountOut = getPaxosReceiveAmountOut(paxosRoute);
 
   const submitButtonState = useMemo(
     () =>
@@ -1479,4 +1475,18 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
       </div>
     </form>
   );
+}
+
+function getPaxosReceiveAmountOut(paxosRoute: TradeboxPaxosRoute): bigint | undefined {
+  if (paxosRoute.routes.isRouteChoiceRequired) {
+    return 0n;
+  }
+
+  if (!paxosRoute.activePaxosRoute) {
+    return undefined;
+  }
+
+  const option = paxosRoute.activeOption;
+
+  return option?.amountOut ?? (option?.unavailableReason === "loading" ? undefined : 0n);
 }

@@ -229,6 +229,11 @@ describe("getTradeboxPaxosDecision", () => {
       { offered: true, route: "paxosZeroFee", button: "Loading routes…" },
     ],
     [
+      "a picked route below its minimum shows the minimum rounded up to cents",
+      { ...sized(100), isStandardForced: true, standardMinOrderSize: amount(189.720445), preference: "paxosStandard" },
+      { offered: true, route: "paxosStandard", button: "Minimum conversion is 189.73 USDC" },
+    ],
+    [
       "no Paxos when the receive amount is typed",
       { ...WHITELISTED_250K, isPaxosAvailable: false },
       { offered: false, route: "instant", button: GMX_FLOW },

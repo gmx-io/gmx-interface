@@ -42,6 +42,7 @@ import type { TransitApi } from "domain/synthetics/paxosTransit/types";
 import { useTransitMinOrderSizes } from "domain/synthetics/paxosTransit/useTransitMinOrderSizes";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { useDebounce } from "lib/debounce/useDebounce";
+import { parseError } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { adjustForDecimals, formatAmountFree, parseValue } from "lib/numbers";
@@ -320,6 +321,8 @@ export function useTradeboxPaxosRoute({
       } else if (error instanceof HttpError && (error.statusCode === 403 || error.statusCode === 409)) {
         refreshFeeTier();
         helperToast.error(t`Zero-fee capacity changed. Review the route options and confirm again.`);
+      } else if (parseError(error as Error)?.isUserRejectedError) {
+        helperToast.error(t`Transaction canceled`);
       } else {
         helperToast.error(t`Conversion failed: ${(error as Error).message}`);
       }

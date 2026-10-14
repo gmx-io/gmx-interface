@@ -12864,6 +12864,7 @@ msgstr "外部路由仅用于市价交换。"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
+#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "Transaction canceled"
 msgstr "交易已取消"
 

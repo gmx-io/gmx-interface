@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 
-import { formatAmountFree, formatBalanceAmount } from "lib/numbers";
+import { expandDecimals, formatAmount, formatBalanceAmount, roundUpDivision } from "lib/numbers";
 
 import type { TransitSubmitStep } from "./submitTransitOrder";
 
@@ -282,6 +282,12 @@ function getIsSavingWorthWaiting(p: {
   return saving > 0n && saving >= p.minSavingAmount;
 }
 
+export function formatPaxosMinOrderSize(minOrderSize: bigint, decimals: number): string {
+  const step = expandDecimals(1, Math.max(decimals - 2, 0));
+
+  return formatAmount(roundUpDivision(minOrderSize, step) * step, decimals, 2, true);
+}
+
 export type PaxosSubmitStep = "idle" | TransitSubmitStep;
 
 export type TradeboxPaxosButtonState = {
@@ -346,7 +352,7 @@ export function getTradeboxPaxosButtonState(p: {
   const routeState = p.paxosRouteStates[activeRoute];
 
   if (routeState.status === "belowMinOrderSize") {
-    const minOrderSize = formatAmountFree(routeState.minOrderSize, tokenIn.decimals);
+    const minOrderSize = formatPaxosMinOrderSize(routeState.minOrderSize, tokenIn.decimals);
 
     return { text: t`Minimum conversion is ${minOrderSize} ${tokenIn.symbol}`, disabled: true };
   }

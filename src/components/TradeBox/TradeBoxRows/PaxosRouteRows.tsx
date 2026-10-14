@@ -5,13 +5,14 @@ import { GMX_PARTNER_TELEGRAM_URL } from "config/links";
 import { selectTradeboxSwapAmounts } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getExternalSwapAggregatorLabel } from "domain/synthetics/externalSwaps/utils";
-import type {
-  TradeboxSwapRoute,
-  TradeboxSwapRouteOption,
-  TradeboxSwapRoutePreference,
+import {
+  formatPaxosMinOrderSize,
+  type TradeboxSwapRoute,
+  type TradeboxSwapRouteOption,
+  type TradeboxSwapRoutePreference,
 } from "domain/synthetics/paxosTransit/tradeboxRoutes";
 import type { TokenData } from "domain/synthetics/tokens";
-import { formatAmountFree, formatBalanceAmount, formatUsd } from "lib/numbers";
+import { formatBalanceAmount, formatUsd } from "lib/numbers";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
@@ -207,9 +208,11 @@ export function PaxosRouteDetailsRows({
         label={t`Paxos fee`}
         valueClassName={cx("numbers", { "text-green-500": feeAmount === 0n })}
         value={
-          feeAmount === undefined
-            ? "..."
-            : formatBalanceAmount(feeAmount, fromToken.decimals, fromToken.symbol, { isStable: true, showZero: true })
+          feeAmount !== undefined
+            ? formatBalanceAmount(feeAmount, fromToken.decimals, fromToken.symbol, { isStable: true, showZero: true })
+            : activeOption?.unavailableReason === "loading"
+              ? "..."
+              : "-"
         }
       />
       <SyntheticsInfoRow
@@ -400,7 +403,7 @@ function getRouteDescription({
       const state = paxosRoute.paxosRouteStates[option.route as Exclude<TradeboxSwapRoute, "instant">];
       const minOrderSize = state.status === "belowMinOrderSize" ? state.minOrderSize : 0n;
 
-      return t`Minimum ${formatAmountFree(minOrderSize, fromToken.decimals)} ${fromToken.symbol}`;
+      return t`Minimum ${formatPaxosMinOrderSize(minOrderSize, fromToken.decimals)} ${fromToken.symbol}`;
     }
   }
 

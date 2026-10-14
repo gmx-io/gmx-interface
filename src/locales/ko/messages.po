@@ -12864,6 +12864,7 @@ msgstr "외부 경로는 시장가 스왑에만 사용됩니다."
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
+#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "Transaction canceled"
 msgstr "거래가 취소되었습니다"
 

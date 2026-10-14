@@ -12864,6 +12864,7 @@ msgstr "外部ルートは成行スワップでのみ使用されます。"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
+#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "Transaction canceled"
 msgstr "トランザクションがキャンセルされました"
 

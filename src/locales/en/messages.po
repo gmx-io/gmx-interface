@@ -12864,6 +12864,7 @@ msgstr "External routes are only used for market swaps."
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
+#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "Transaction canceled"
 msgstr "Transaction canceled"
 
