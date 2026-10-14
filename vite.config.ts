@@ -260,15 +260,19 @@ function findSolanaStaticImport(moduleInfo: ModuleInfo) {
   );
 }
 
-function* getStartupChunks(bundle: OutputBundle) {
+function* getStartupChunks(bundle: OutputBundle, requireAppBootstrap: boolean) {
   const bootstrapId = `${normalizePath(APP_SRC_DIR)}/App/bootstrap.tsx`;
+  const bootstrapChunk = Object.values(bundle).find(
+    (output) => output.type === "chunk" && Object.keys(output.modules).some((id) => normalizePath(id) === bootstrapId)
+  );
+  if (requireAppBootstrap && !bootstrapChunk) {
+    throw new Error(
+      "Solana build isolation: startup module src/App/bootstrap.tsx was not found. If it was renamed or moved, update the bootstrap path in vite.config.ts."
+    );
+  }
   // bootstrap is dynamically imported but always runs at startup, so it is also a root.
   const pending = Object.values(bundle)
-    .filter(
-      (output) =>
-        output.type === "chunk" &&
-        (output.isEntry || Object.keys(output.modules).some((id) => normalizePath(id) === bootstrapId))
-    )
+    .filter((output) => output.type === "chunk" && (output.isEntry || output === bootstrapChunk))
     .map((output) => output.fileName);
   const visited = new Set<string>();
 
@@ -312,7 +316,7 @@ function getStartupChunkViolation(chunk: OutputChunk) {
   return undefined;
 }
 
-function solanaBuildIsolation(): Plugin {
+function solanaBuildIsolation({ requireAppBootstrap }: { requireAppBootstrap: boolean }): Plugin {
   return {
     name: "gmx-solana-build-isolation",
     apply: "build",
@@ -323,7 +327,7 @@ function solanaBuildIsolation(): Plugin {
       }
     },
     generateBundle(_, bundle) {
-      for (const chunk of getStartupChunks(bundle)) {
+      for (const chunk of getStartupChunks(bundle, requireAppBootstrap)) {
         const violation = getStartupChunkViolation(chunk);
         if (violation) {
           this.error(violation);
@@ -360,7 +364,10 @@ function optionalSolanaSystemStub(): PluginOption {
 
 export function createViteConfig(
   { mode }: ConfigEnv,
-  { emitAppRedirects = true }: { emitAppRedirects?: boolean } = {}
+  {
+    emitAppRedirects = true,
+    requireAppBootstrap = true,
+  }: { emitAppRedirects?: boolean; requireAppBootstrap?: boolean } = {}
 ): UserConfig {
   const env = loadEnv(mode, process.cwd(), "");
   const pwaBuildId = getPwaBuildId(env.VITE_APP_PWA_GENERATION);
@@ -398,7 +405,7 @@ export function createViteConfig(
       svgr({
         include: "**/*.svg?react",
       }),
-      solanaBuildIsolation(),
+      solanaBuildIsolation({ requireAppBootstrap }),
       optionalSolanaSystemStub(),
       sdkDedupe(),
       tsconfigPaths(),
