@@ -24,35 +24,11 @@
     "timestamp": 1783345314
   },
   {
-    "tokenAddress": "0x3Eea56A1ccCdbfB70A26aD381C71Ee17E4c8A15F",
-    "tokenSymbol": "BOME",
-    "minPrice": "432090385071025750000",
-    "maxPrice": "432348055213077250000",
-    "updatedAt": 1783345314888,
-    "timestamp": 1783345314
-  },
-  {
-    "tokenAddress": "0xaF770F03518686a365300ab35AD860e99967B2f0",
-    "tokenSymbol": "MEME",
-    "minPrice": "586602668",
-    "maxPrice": "587128946",
-    "updatedAt": 1783345314888,
-    "timestamp": 1783345314
-  },
-  {
     "tokenAddress": "0x6792c5B8962ffbDD020c6b6FD0Be7b182e0e33a3",
     "tokenSymbol": "FLOKI",
     "minPrice": "22783348558928000",
     "maxPrice": "22793966321122000",
     "updatedAt": 1783345314888,
-    "timestamp": 1783345314
-  },
-  {
-    "tokenAddress": "0x5503CF72f54b6d692d36BBCD391516A7dE068687",
-    "tokenSymbol": "MEW",
-    "minPrice": "3783586749507750000000",
-    "maxPrice": "3786285876407250000000",
-    "updatedAt": 1783345314988,
     "timestamp": 1783345314
   },
   {
@@ -365,14 +341,6 @@
     "minPrice": "998562364114",
     "maxPrice": "998562364114",
     "updatedAt": 1783345314988,
-    "timestamp": 1783345314
-  },
-  {
-    "tokenAddress": "0x2cD2eB61D17b78239Fcd19aafF72981B5D5eF319",
-    "tokenSymbol": "SATS",
-    "minPrice": "9371077957250000",
-    "maxPrice": "9373464871750000",
-    "updatedAt": 1783345314888,
     "timestamp": 1783345314
   },
   {
@@ -725,14 +693,6 @@
     "minPrice": "542971831280",
     "maxPrice": "543146871868",
     "updatedAt": 1783345314988,
-    "timestamp": 1783345314
-  },
-  {
-    "tokenAddress": "0x4249F6e0808bEfF7368AaAD3F7A3Fd511F61Ee60",
-    "tokenSymbol": "BRETT",
-    "minPrice": "5478890912",
-    "maxPrice": "5482609279",
-    "updatedAt": 1783345314888,
     "timestamp": 1783345314
   },
   {

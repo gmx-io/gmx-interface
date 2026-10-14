@@ -13,6 +13,7 @@ import { changeTwapNumberOfPartsValue } from "sdk/utils/twap";
 import { TwapDuration } from "sdk/utils/twap/types";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import { ValueInput } from "components/ValueInput/ValueInput";
 
@@ -100,7 +101,7 @@ const TwapRows = ({
       </SyntheticsInfoRow>
       <SyntheticsInfoRow
         label={t`Size per part`}
-        value={formatUsd(typeof sizeUsd === "bigint" && numberOfParts ? sizeUsd / BigInt(numberOfParts) : 0n)}
+        value={<UsdValue usd={typeof sizeUsd === "bigint" && numberOfParts ? sizeUsd / BigInt(numberOfParts) : 0n} />}
         valueClassName="numbers"
       />
 

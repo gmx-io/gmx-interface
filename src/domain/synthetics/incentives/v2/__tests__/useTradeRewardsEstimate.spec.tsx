@@ -186,6 +186,7 @@ describe("useTradeRewardsEstimate", () => {
     >);
     mockUseChainId.mockReturnValue({
       chainId: ARBITRUM,
+      networkId: ARBITRUM,
       srcChainId: undefined,
       isConnectedToChainId: true,
     });

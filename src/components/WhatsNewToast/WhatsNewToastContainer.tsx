@@ -89,12 +89,12 @@ export function WhatsNewToastContainer() {
   return (
     <div
       className={cx(
-        "pointer-events-none fixed right-[calc(23px+var(--safe-area-inset-right))] top-[calc(56px+var(--safe-area-inset-top))] z-[801] transition-transform duration-200 will-change-transform",
+        "pointer-events-none fixed right-[calc(14px+var(--safe-area-inset-right))] top-[calc(56px+var(--safe-area-inset-top))] z-[801] transition-transform duration-200 will-change-transform",
         isScrolled && "-translate-y-[40px]"
       )}
       data-qa="whats-new-toast-container"
     >
-      <div className="flex w-[400px] max-w-[calc(100vw-46px)] flex-col">
+      <div className="flex w-[400px] max-w-[calc(100vw-28px)] flex-col">
         <AnimatePresence initial={false}>
           {delistingAnnouncements.map((item) => (
             <motion.div key={item.id} initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>

@@ -13,7 +13,7 @@ import { useClaimFundsTransactionCallback } from "domain/synthetics/claims/useCl
 import { useRewardsTesterEarnUserClaimableAmounts as useUserClaimableAmounts } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
 import { estimateExecutionGasPrice, getExecutionFeeBufferBps } from "domain/synthetics/fees/utils/executionFee";
 import { useRewardsTesterEarnTokenBalances as useTokenBalances } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
-import { formatBalanceAmount, formatUsd } from "lib/numbers";
+import { formatBalanceAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useRewardsTesterEarnWallet as useWallet } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
@@ -22,6 +22,7 @@ import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
@@ -280,7 +281,7 @@ export default function ClaimableAmounts({ hideEmpty = false }: { hideEmpty?: bo
           <Trans>Total to claim</Trans>
         </span>
         <Tooltip
-          handle={formatUsd(totalFundsToClaimUsd)}
+          handle={<UsdValue usd={totalFundsToClaimUsd} />}
           handleClassName="cursor-help numbers"
           className="whitespace-nowrap"
           renderContent={renderTotalTooltipContent}

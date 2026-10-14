@@ -32,10 +32,21 @@ import {
   updateMarginDeposit,
   withdraw1Usd,
 } from "./mocks";
-import { formatPositionMessage, getSettlementTooltipLines } from "./utils/position";
+import {
+  formatPositionMessage as formatPositionMessageParts,
+  getSettlementTooltipLines as getSettlementTooltipLinesParts,
+} from "./utils/position";
 import { anchorCloseRow, anchorOpenRow } from "./utils/settlementMocks";
 import { INEQUALITY_GT, INEQUALITY_LT, getErrorTooltipTitle } from "./utils/shared";
-import { formatSwapMessage } from "./utils/swap";
+import { formatSwapMessage as formatSwapMessageParts } from "./utils/swap";
+import { withPlainText } from "./utils/testUtils";
+
+const formatPositionMessage = (...args: Parameters<typeof formatPositionMessageParts>) =>
+  withPlainText(formatPositionMessageParts(...args));
+const formatSwapMessage = (...args: Parameters<typeof formatSwapMessageParts>) =>
+  withPlainText(formatSwapMessageParts(...args));
+const getSettlementTooltipLines = (...args: Parameters<typeof getSettlementTooltipLinesParts>) =>
+  withPlainText(getSettlementTooltipLinesParts(...args));
 
 i18n.load({ en: {} });
 i18n.activate("en");
@@ -674,6 +685,20 @@ describe("TradeHistoryRow helpers", () => {
         "timestampUTC": "UTC: 2023-09-18 12:43:18",
       }
     `);
+  });
+
+  it("formatPositionMessage tolerates actions without a trigger price", () => {
+    const withoutTriggerPrice = (action: PositionTradeAction): PositionTradeAction => ({
+      ...action,
+      triggerPrice: undefined,
+    });
+
+    expect(formatPositionMessage(withoutTriggerPrice(requestIncreasePosition), minCollateralUsd).price).toEqual(
+      formatPositionMessage(requestIncreasePosition, minCollateralUsd).price
+    );
+    expect(formatPositionMessage(withoutTriggerPrice(liquidated), minCollateralUsd).action).toBe(
+      formatPositionMessage(liquidated, minCollateralUsd).action
+    );
   });
 
   it("formatSwapMessage", () => {

@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { SUBSQUID_PAGINATION_LIMIT } from "sdk/configs/batch";
 
-import { fetchRawTradeActions, fetchTwapGroupExecutedActions } from "./useTradeHistory";
+import { fetchPositionLifecycleId, fetchRawTradeActions, fetchTwapGroupExecutedActions } from "./useTradeHistory";
 
 const queryMock = vi.fn();
 
@@ -104,5 +104,38 @@ describe("fetchRawTradeActions", () => {
     expect(body).toContain("isFundingFeeSettle_isNull:true");
     expect(body).toContain('orderKey_in:["order-1"]');
     expect(body).toContain('transactionHash_in:["0xTransaction"]');
+  });
+});
+
+describe("fetchPositionLifecycleId", () => {
+  beforeEach(() => queryMock.mockReset());
+
+  it.each([
+    ["unexecuted increase", "open", true, 101, "open"],
+    ["reopen not indexed", "previous", true, 99, undefined],
+    ["reopen indexed at the same timestamp", "reopened", true, 100, "reopened"],
+    ["reopen indexed later", "reopened", true, 101, "reopened"],
+    ["closed lifecycle", "previous", false, 101, undefined],
+    ["missing lifecycle", null, false, 101, undefined],
+    ["missing processor status", "previous", true, null, undefined],
+  ])("PRO-4408 resolves current position history: %s", async (_, currentLifecycleId, isOpen, timestamp, expected) => {
+    queryMock.mockResolvedValue({
+      data: {
+        positionLifecycleById: currentLifecycleId ? { currentLifecycleId, isOpen } : null,
+        processorStatusById: timestamp === null ? null : { lastParsedBlockTimestamp: timestamp },
+        tradeActions: [{ positionLifecycleId: "unexecuted" }],
+      },
+    });
+
+    await expect(
+      fetchPositionLifecycleId({ chainId: 42161, positionKey: "0xPosition", increasedAtTime: 100n })
+    ).resolves.toBe(expected);
+    expect(queryMock).toHaveBeenCalledTimes(1);
+    expect(queryMock.mock.calls[0][0]).toMatchObject({
+      variables: { positionKey: "0xPosition", chainId: "42161" },
+      fetchPolicy: "no-cache",
+    });
+    expect(getQueryBody(0)).toContain("processorStatusById(id: $chainId)");
+    expect(getQueryBody(0)).toContain("lastParsedBlockTimestamp");
   });
 });

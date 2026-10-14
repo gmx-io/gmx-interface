@@ -20,7 +20,7 @@ import { useEsGmxIssuerData } from "domain/vesting/useEsGmxIssuerData";
 import { useChainId } from "lib/chains";
 import { formatDate, formatDateTime, getDaysAgo } from "lib/dates";
 import { GM_DECIMALS, GMX_DECIMALS } from "lib/legacy";
-import { expandDecimals, formatBalanceAmount, formatUsd } from "lib/numbers";
+import { expandDecimals, formatBalanceAmount } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { shortenAddressOrEns } from "lib/wallets";
 import { useRewardsTesterEarnIsWalletInitializing as useIsWalletInitializing } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
@@ -32,6 +32,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import usePagination from "components/Pagination/usePagination";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -323,9 +324,11 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
         <TableTdActionable className="max-xl:text-right" data-label={t`AMOUNT`}>
           <Tooltip
             handle={
-              esGmxIssuance
-                ? `${formatBalanceAmount(tokenIncentiveDetails[0].amount, GMX_DECIMALS)} esGMX`
-                : formatUsd(totalUsd)
+              esGmxIssuance ? (
+                `${formatBalanceAmount(tokenIncentiveDetails[0].amount, GMX_DECIMALS)} esGMX`
+              ) : (
+                <UsdValue usd={totalUsd} />
+              )
             }
             handleClassName="numbers"
             className="whitespace-nowrap"

@@ -13,9 +13,10 @@ import {
 } from "recharts";
 
 import type { BuybackChartPoint } from "domain/buyback/useBuybackChartData";
-import { numberWithCommas } from "lib/numbers";
+import { numberWithCommas, numberWithCommasParts } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 
+import { NumericValue } from "components/NumericValue/NumericValue";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -61,21 +62,37 @@ function ChartTooltip({ active, payload }: TooltipProps<number, string>) {
   const utc = { in: tz("UTC") };
   const monthRange = `${format(point.monthStart * 1000, "MMM d", utc)} - ${format((point.monthEnd - 1) * 1000, "MMM d, yyyy", utc)}`;
   const monthlyUsd =
-    point.monthlyUsd !== undefined ? numberWithCommas(Math.round(point.monthlyUsd), { showDollar: true }) : "—";
+    point.monthlyUsd !== undefined ? (
+      <NumericValue parts={numberWithCommasParts(Math.round(point.monthlyUsd), { showDollar: true })} />
+    ) : (
+      "—"
+    );
   const cumulativeUsd =
-    point.cumulativeUsd !== undefined ? numberWithCommas(Math.round(point.cumulativeUsd), { showDollar: true }) : "—";
+    point.cumulativeUsd !== undefined ? (
+      <NumericValue parts={numberWithCommasParts(Math.round(point.cumulativeUsd), { showDollar: true })} />
+    ) : (
+      "—"
+    );
 
   return (
     <div className="text-body-small z-50 flex flex-col rounded-4 bg-slate-800 px-12 pt-8 shadow-lg backdrop-blur-sm">
       <StatsTooltipRow label={t`Month`} value={monthRange} showDollar={false} />
       <StatsTooltipRow
         label={t`Monthly bought`}
-        value={`${numberWithCommas(Math.round(point.monthlyAccrued))} GMX (${monthlyUsd})`}
+        value={
+          <>
+            {numberWithCommas(Math.round(point.monthlyAccrued))} GMX ({monthlyUsd})
+          </>
+        }
         showDollar={false}
       />
       <StatsTooltipRow
         label={t`Cumulative`}
-        value={`${numberWithCommas(Math.round(point.cumulativeAccrued))} GMX (${cumulativeUsd})`}
+        value={
+          <>
+            {numberWithCommas(Math.round(point.cumulativeAccrued))} GMX ({cumulativeUsd})
+          </>
+        }
         showDollar={false}
       />
     </div>

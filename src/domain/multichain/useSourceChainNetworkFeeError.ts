@@ -1,14 +1,15 @@
 import { useMemo } from "react";
 
-import { ContractsChainId, SourceChainId } from "config/chains";
+import { ContractsChainId, SourceChainId, getViemChain } from "config/chains";
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useUsdToNativeTokenMultichain } from "domain/multichain/useMultichainQuoteFeeUsd";
 import { useNativeTokenBalance } from "domain/multichain/useNativeTokenBalance";
+import { getSourceChainNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import {
   ValidationBannerErrorName,
   ValidationResult,
-  getDefaultInsufficientGasMessage,
+  getInsufficientFeeButtonMessage,
 } from "domain/synthetics/trade/utils/validation";
 
 export function useSourceChainNativeFeeError({
@@ -47,7 +48,10 @@ export function useSourceChainNativeFeeError({
 
     if (sourceChainNativeTokenBalance < requiredAmount) {
       return {
-        buttonErrorMessage: getDefaultInsufficientGasMessage(),
+        buttonErrorMessage: getInsufficientFeeButtonMessage({
+          tokenSymbol: getViemChain(srcChainId).nativeCurrency.symbol,
+          feeSource: getSourceChainNetworkFeeSource(srcChainId),
+        }),
         bannerErrorName: ValidationBannerErrorName.insufficientSourceChainNativeTokenBalance,
       };
     }
