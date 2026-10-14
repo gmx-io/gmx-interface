@@ -373,6 +373,7 @@ export function createViteConfig(
   return {
     worker: {
       format: "es",
+      plugins: () => [solanaBuildIsolation()],
     },
     optimizeDeps: {
       esbuildOptions: {
