@@ -133,8 +133,19 @@ describe("getExternalSwapGasTokenCandidate", () => {
   const usdcFee = expandDecimals(1, 6);
 
   describe("fee moved to the WETH pay token because USDC is not approved", () => {
-    it("reads the fee amount in WETH and offers another token instead of WETH", () => {
+    it("offers WETH, which already pays, so saving it keeps the fee there", () => {
       const tokensData = buildPricedTokensData({ WETH: expandDecimals(2, 18), USDT: expandDecimals(2, 6) });
+      const gasPaymentParams = { gasPaymentToken: tokensData[weth.address], gasPaymentTokenAmount: wethFee };
+
+      for (const desirability of ["optional", "required"] as const) {
+        expect(
+          getExternalSwapGasTokenCandidate({ ...candidateParams, tokensData, desirability, gasPaymentParams })
+        ).toBe(weth.address);
+      }
+    });
+
+    it("reads the fee amount in WETH and offers another token when WETH can't also cover the order", () => {
+      const tokensData = buildPricedTokensData({ WETH: expandDecimals(1, 18), USDT: expandDecimals(2, 6) });
       const gasPaymentParams = { gasPaymentToken: tokensData[weth.address], gasPaymentTokenAmount: wethFee };
 
       expect(
@@ -156,7 +167,7 @@ describe("getExternalSwapGasTokenCandidate", () => {
     });
 
     it("skips a token that can't cover the fee converted from WETH", () => {
-      const tokensData = buildPricedTokensData({ WETH: expandDecimals(2, 18), USDT: expandDecimals(5, 5) });
+      const tokensData = buildPricedTokensData({ WETH: expandDecimals(1, 18), USDT: expandDecimals(5, 5) });
 
       expect(
         getExternalSwapGasTokenCandidate({
@@ -166,21 +177,6 @@ describe("getExternalSwapGasTokenCandidate", () => {
           gasPaymentParams: { gasPaymentToken: tokensData[weth.address], gasPaymentTokenAmount: wethFee },
         })
       ).toBeUndefined();
-    });
-
-    it("never offers WETH, which already pays the fee", () => {
-      const tokensData = buildPricedTokensData({ WETH: expandDecimals(2, 18), USDC: expandDecimals(100, 6) });
-
-      for (const desirability of ["optional", "required"] as const) {
-        expect(
-          getExternalSwapGasTokenCandidate({
-            ...candidateParams,
-            tokensData,
-            desirability,
-            gasPaymentParams: { gasPaymentToken: tokensData[weth.address], gasPaymentTokenAmount: wethFee },
-          })
-        ).toBeUndefined();
-      }
     });
   });
 
