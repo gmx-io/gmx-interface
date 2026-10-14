@@ -37,7 +37,7 @@ import {
   type PaxosSwapRoute,
   type TradeboxSwapRoutePreference,
 } from "domain/synthetics/paxosTransit/tradeboxRoutes";
-import { getIsTransitOrderFinal, getTransitQuoteDeadline } from "domain/synthetics/paxosTransit/transitOrders";
+import { getIsTransitOrderFinal } from "domain/synthetics/paxosTransit/transitOrders";
 import type { TransitApi } from "domain/synthetics/paxosTransit/types";
 import { useTransitMinOrderSizes } from "domain/synthetics/paxosTransit/useTransitMinOrderSizes";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "domain/synthetics/tokens";
@@ -373,8 +373,8 @@ export function useTradeboxPaxosRoute({
     activeRoute,
     activePaxosRoute,
     activeOption,
-    activePaxosQuoteDeadline: getTransitQuoteDeadline(activePaxosQuote),
     instantAmountOut,
+    minSavingUsd: paxosTransitConfig?.autoMinSavingUsd,
     zeroFeeAvailableCapacity: isWhitelisted && direction === "usdcToUsdg" ? feeTierData?.zeroFeeCapacity : undefined,
     isZeroFeeCapacityShort,
     zeroFeeCapacityShortBy: zeroFeeCapacity !== undefined ? fromTokenAmount - zeroFeeCapacity : undefined,

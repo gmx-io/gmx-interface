@@ -36,10 +36,6 @@ msgstr "Pear Protocol"
 msgid "Price impact rebates claimed"
 msgstr "가격 영향 리베이트가 수령되었습니다"
 
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
-msgid "Auto picks the route that returns the most after all fees. Paxos converts {0} to {1} in a separate transaction, and {2} arrives in your wallet in a separate step, usually within 2–10 minutes. GMX pool and external routes are instant."
-msgstr "자동은 모든 수수료 차감 후 가장 많이 돌려받는 경로를 선택합니다. Paxos는 별도 트랜잭션으로 {0}을(를) {1}(으)로 변환하며, {2}은(는) 별도 단계로 지갑에 도착합니다. 보통 2–10분 소요됩니다. GMX 풀과 외부 경로는 즉시 처리됩니다."
-
 #: src/components/Errors/errorToasts.tsx
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "또는 <0>chainlist.org</0>를 통해 지갑의 RPC를 업데이트하십시오"
@@ -766,6 +762,10 @@ msgstr "GMX 커뮤니티에서 개발한 프로젝트입니다. <0/>모든 앱�
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "ADDRESS"
 msgstr "ADDRESS"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Best return"
+msgstr "최대 수령액"
 
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Additional opportunities"
@@ -2937,6 +2937,10 @@ msgstr "최대 입금 한도에 도달했습니다"
 msgid "Total staked"
 msgstr "총 스테이킹 금액"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "The Paxos quote is valid for 15 minutes from when the conversion goes to your wallet for signing. The transaction must execute within that time, or it fails and needs a new quote."
+msgstr "Paxos 견적은 변환이 서명을 위해 지갑으로 전송된 시점부터 15분 동안 유효합니다. 그 시간 안에 트랜잭션이 실행되어야 하며, 그렇지 않으면 실패하여 새 견적이 필요합니다."
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No results found"
@@ -4383,10 +4387,6 @@ msgstr "마진이 포지션 규모에 필요한 최소 금액보다 적습니다
 msgid "How much can I earn as an affiliate?"
 msgstr "제휴자로서 얼마나 수익을 얻을 수 있습니까?"
 
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
-msgid "The Paxos quote is valid for 15 minutes. All signers must sign and the transaction must execute before then, or it fails and needs a new quote."
-msgstr "Paxos 견적은 15분 동안 유효합니다. 그 전에 모든 서명자가 서명하고 트랜잭션이 실행되어야 하며, 그렇지 않으면 실패하여 새 견적이 필요합니다."
-
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -4891,10 +4891,6 @@ msgstr "20초"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual market ID"
 msgstr "가상 마켓 ID"
-
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
-msgid "Best"
-msgstr "최적"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Your wallet is not connected to this network"
@@ -5447,6 +5443,10 @@ msgstr "최소 영향 풀 수량"
 msgid "Generating..."
 msgstr "생성 중..."
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Auto picks the best return after all fees, or the instant route when Paxos saves less than {minSaving}. Paxos converts {0} to {1} in a separate transaction, and {2} arrives in your wallet in a separate step, usually within 2–10 minutes. GMX pool and external routes are instant."
+msgstr "자동은 모든 수수료 차감 후 가장 많이 돌려받는 경로를 선택하며, Paxos 절약액이 {minSaving} 미만이면 즉시 경로를 선택합니다. Paxos는 별도 트랜잭션으로 {0}을(를) {1}(으)로 변환하며, {2}은(는) 별도 단계로 지갑에 도착합니다. 보통 2–10분 소요됩니다. GMX 풀과 외부 경로는 즉시 처리됩니다."
+
 #: src/components/AnnouncementBanner/AnnouncementBanner.tsx
 msgid "Go to slide {0}"
 msgstr "슬라이드 {0}(으)로 이동"
@@ -5588,10 +5588,6 @@ msgstr "{0} 업그레이드 대기 중 앱 비활성화"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "v:"
 msgstr "v:"
-
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
-msgid "Picks the route that returns the most after fees"
-msgstr "수수료 차감 후 가장 많이 돌려받는 경로 선택"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
@@ -9583,10 +9579,6 @@ msgstr "라인 값을 USD로 표시"
 msgid "Open interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "미결제약정 (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
-msgid "The Paxos quote is valid until {0}. All signers must sign and the transaction must execute before then, or it fails and needs a new quote."
-msgstr "Paxos 견적은 {0}까지 유효합니다. 그 전에 모든 서명자가 서명하고 트랜잭션이 실행되어야 하며, 그렇지 않으면 실패하여 새 견적이 필요합니다."
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "{increaseOrDecreaseText}: {0} {longShortText}"
 msgstr "{increaseOrDecreaseText}: {0} {longShortText}"
@@ -9953,6 +9945,10 @@ msgstr "프로토콜 분석"
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Show positions on chart"
 msgstr "차트에 포지션 표시"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Best return after fees, or instant when Paxos saves less than {minSaving}"
+msgstr "수수료 차감 후 최대 수령액, Paxos 절약액이 {minSaving} 미만이면 즉시"
 
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 msgid "Metrics debug"
@@ -11200,6 +11196,7 @@ msgid "Referral link copied to your clipboard"
 msgstr "추천 링크가 클립보드에 복사되었습니다"
 
 #: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Fastest"
 msgstr "가장 빠름"
 
@@ -11447,8 +11444,7 @@ msgstr "체인 히스토리 데이터를 빠르게 조회하세요."
 msgid "Wallet cannot sign messages"
 msgstr "지갑이 메시지에 서명할 수 없습니다"
 
-#: src/components/TradeBox/TradeBox.tsx
-#: src/components/TradeBox/TradeBox.tsx
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "· {0} pending"
 msgstr "· {0} 대기 중"
 
@@ -12462,6 +12458,10 @@ msgstr "롱"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Error signing permit for {0}: {1}"
 msgstr "{0} 허가 서명 오류: {1}"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "{0} on its way from Paxos. It arrives in your wallet in a separate step, sometimes in parts."
+msgstr "Paxos에서 {0} 전송 중입니다. 별도 단계로 지갑에 도착하며, 나누어 도착할 수 있습니다."
 
 #: src/components/HistoryExport/HistoryExportModal.tsx
 msgid "GMX Claims CSV"

@@ -36,10 +36,6 @@ msgstr "Protocolo Pear"
 msgid "Price impact rebates claimed"
 msgstr "Reembolsos por impacto en el precio reclamados"
 
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
-msgid "Auto picks the route that returns the most after all fees. Paxos converts {0} to {1} in a separate transaction, and {2} arrives in your wallet in a separate step, usually within 2–10 minutes. GMX pool and external routes are instant."
-msgstr "Auto elige la ruta que devuelve más después de todas las comisiones. Paxos convierte {0} a {1} en una transacción separada, y {2} llega a tu billetera en un paso separado, normalmente en 2–10 minutos. El pool de GMX y las rutas externas son instantáneos."
-
 #: src/components/Errors/errorToasts.tsx
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "O actualice el RPC de su monedero a través de <0>chainlist.org</0>"
@@ -766,6 +762,10 @@ msgstr "Proyectos desarrollados por la comunidad de GMX. <0/>Tenga precaución a
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "ADDRESS"
 msgstr "DIRECCIÓN"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Best return"
+msgstr "Mejor resultado"
 
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Additional opportunities"
@@ -2937,6 +2937,10 @@ msgstr "Límite máximo de depósito alcanzado"
 msgid "Total staked"
 msgstr "Total en staking"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "The Paxos quote is valid for 15 minutes from when the conversion goes to your wallet for signing. The transaction must execute within that time, or it fails and needs a new quote."
+msgstr "La cotización de Paxos es válida durante 15 minutos desde que la conversión llega a tu billetera para firmarse. La transacción debe ejecutarse en ese tiempo; de lo contrario, fallará y necesitará una nueva cotización."
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No results found"
@@ -4383,10 +4387,6 @@ msgstr "El margen está por debajo del mínimo requerido para el tamaño de la p
 msgid "How much can I earn as an affiliate?"
 msgstr "¿Cuánto puedo ganar como afiliado?"
 
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
-msgid "The Paxos quote is valid for 15 minutes. All signers must sign and the transaction must execute before then, or it fails and needs a new quote."
-msgstr "La cotización de Paxos es válida durante 15 minutos. Todos los firmantes deben firmar y la transacción debe ejecutarse antes; de lo contrario, fallará y necesitará una nueva cotización."
-
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -4891,10 +4891,6 @@ msgstr "20s"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual market ID"
 msgstr "ID de mercado virtual"
-
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
-msgid "Best"
-msgstr "Mejor"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Your wallet is not connected to this network"
@@ -5447,6 +5443,10 @@ msgstr "Cantidad mínima del pool de impacto"
 msgid "Generating..."
 msgstr "Generando..."
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Auto picks the best return after all fees, or the instant route when Paxos saves less than {minSaving}. Paxos converts {0} to {1} in a separate transaction, and {2} arrives in your wallet in a separate step, usually within 2–10 minutes. GMX pool and external routes are instant."
+msgstr "Auto elige el mejor resultado después de todas las comisiones, o la ruta instantánea cuando Paxos ahorra menos de {minSaving}. Paxos convierte {0} a {1} en una transacción separada, y {2} llega a tu billetera en un paso separado, normalmente en 2–10 minutos. El pool de GMX y las rutas externas son instantáneos."
+
 #: src/components/AnnouncementBanner/AnnouncementBanner.tsx
 msgid "Go to slide {0}"
 msgstr "Ir a la diapositiva {0}"
@@ -5588,10 +5588,6 @@ msgstr "App deshabilitada, pendiente actualización de {0}"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "v:"
 msgstr "v:"
-
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
-msgid "Picks the route that returns the most after fees"
-msgstr "Elige la ruta que devuelve más después de comisiones"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
@@ -9583,10 +9579,6 @@ msgstr "Mostrar valores de línea en USD"
 msgid "Open interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "Interés abierto (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
-msgid "The Paxos quote is valid until {0}. All signers must sign and the transaction must execute before then, or it fails and needs a new quote."
-msgstr "La cotización de Paxos es válida hasta las {0}. Todos los firmantes deben firmar y la transacción debe ejecutarse antes; de lo contrario, fallará y necesitará una nueva cotización."
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "{increaseOrDecreaseText}: {0} {longShortText}"
 msgstr "{increaseOrDecreaseText}: {0} {longShortText}"
@@ -9953,6 +9945,10 @@ msgstr "Análisis de datos del protocolo"
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Show positions on chart"
 msgstr "Mostrar posiciones en el gráfico"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Best return after fees, or instant when Paxos saves less than {minSaving}"
+msgstr "Mejor resultado después de comisiones, o instantáneo cuando Paxos ahorra menos de {minSaving}"
 
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 msgid "Metrics debug"
@@ -11200,6 +11196,7 @@ msgid "Referral link copied to your clipboard"
 msgstr "Enlace de referido copiado en el portapapeles"
 
 #: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Fastest"
 msgstr "Más rápido"
 
@@ -11447,8 +11444,7 @@ msgstr "Consulta datos históricos de la cadena rápidamente."
 msgid "Wallet cannot sign messages"
 msgstr "La wallet no puede firmar mensajes"
 
-#: src/components/TradeBox/TradeBox.tsx
-#: src/components/TradeBox/TradeBox.tsx
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "· {0} pending"
 msgstr "· {0} pendiente"
 
@@ -12462,6 +12458,10 @@ msgstr "largo"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Error signing permit for {0}: {1}"
 msgstr "Error al firmar el permiso para {0}: {1}"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "{0} on its way from Paxos. It arrives in your wallet in a separate step, sometimes in parts."
+msgstr "{0} en camino desde Paxos. Llega a tu billetera en un paso separado, a veces en partes."
 
 #: src/components/HistoryExport/HistoryExportModal.tsx
 msgid "GMX Claims CSV"

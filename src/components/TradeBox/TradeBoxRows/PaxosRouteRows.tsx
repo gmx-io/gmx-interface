@@ -11,8 +11,7 @@ import type {
   TradeboxSwapRoutePreference,
 } from "domain/synthetics/paxosTransit/tradeboxRoutes";
 import type { TokenData } from "domain/synthetics/tokens";
-import { formatTVTime } from "lib/dates";
-import { formatAmountFree, formatBalanceAmount } from "lib/numbers";
+import { formatAmountFree, formatBalanceAmount, formatUsd } from "lib/numbers";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
@@ -34,6 +33,7 @@ export function PaxosRouteSelectorRow({
 }) {
   const instantLabel = useInstantRouteLabel();
   const { routes, preference, setPreference } = paxosRoute;
+  const minSaving = formatUsd(paxosRoute.minSavingUsd, { displayDecimals: 0 });
   const bestAmountOut = routes.options.reduce<bigint | undefined>(
     (best, option) =>
       option.amountOut !== undefined && (best === undefined || option.amountOut > best) ? option.amountOut : best,
@@ -57,9 +57,10 @@ export function PaxosRouteSelectorRow({
           content={
             <div className="text-typography-primary">
               <Trans>
-                Auto picks the route that returns the most after all fees. Paxos converts {fromToken.symbol} to{" "}
-                {toToken.symbol} in a separate transaction, and {toToken.symbol} arrives in your wallet in a separate
-                step, usually within 2–10 minutes. GMX pool and external routes are instant.
+                Auto picks the best return after all fees, or the instant route when Paxos saves less than {minSaving}.
+                Paxos converts {fromToken.symbol} to {toToken.symbol} in a separate transaction, and {toToken.symbol}{" "}
+                arrives in your wallet in a separate step, usually within 2–10 minutes. GMX pool and external routes are
+                instant.
               </Trans>
             </div>
           }
@@ -77,7 +78,7 @@ export function PaxosRouteSelectorRow({
             <RouteOptionItem
               preference="auto"
               label={t`Auto`}
-              description={t`Picks the route that returns the most after fees`}
+              description={t`Best return after fees, or instant when Paxos saves less than ${minSaving}`}
               isSelected={preference === "auto"}
               onSelect={setPreference}
             />
@@ -88,7 +89,8 @@ export function PaxosRouteSelectorRow({
                 label={getRouteLabel(option.route, instantLabel)}
                 description={getRouteDescription({ option, fromToken, paxosRoute })}
                 amountOut={option.amountOut}
-                isBest={option.amountOut !== undefined && option.amountOut === bestAmountOut}
+                isBestReturn={option.amountOut !== undefined && option.amountOut === bestAmountOut}
+                isFastest={option.route === "instant" && option.amountOut !== undefined}
                 toToken={toToken}
                 isSelected={preference === option.route}
                 onSelect={setPreference}
@@ -106,7 +108,8 @@ function RouteOptionItem({
   label,
   description,
   amountOut,
-  isBest,
+  isBestReturn,
+  isFastest,
   toToken,
   isSelected,
   onSelect,
@@ -115,7 +118,8 @@ function RouteOptionItem({
   label: string;
   description: string;
   amountOut?: bigint;
-  isBest?: boolean;
+  isBestReturn?: boolean;
+  isFastest?: boolean;
   toToken?: TokenData;
   isSelected: boolean;
   onSelect: (preference: TradeboxSwapRoutePreference) => void;
@@ -136,20 +140,44 @@ function RouteOptionItem({
       <div className="flex items-baseline justify-between gap-8">
         <span className="text-14">{label}</span>
         {amountOut !== undefined && toToken && (
-          <span className="numbers text-14">
+          <span className="text-14 numbers">
             {formatBalanceAmount(amountOut, toToken.decimals, undefined, { isStable: true })}
           </span>
         )}
       </div>
       <div className="flex items-baseline justify-between gap-8">
         <span className="text-body-small text-typography-secondary">{description}</span>
-        {isBest && (
-          <span className="text-body-small text-green-500">
-            <Trans>Best</Trans>
+        {(isBestReturn || isFastest) && (
+          <span className="text-body-small flex shrink-0 gap-6">
+            {isBestReturn && (
+              <span className="text-green-500">
+                <Trans>Best return</Trans>
+              </span>
+            )}
+            {isFastest && (
+              <span className="text-blue-300">
+                <Trans>Fastest</Trans>
+              </span>
+            )}
           </span>
         )}
       </div>
     </div>
+  );
+}
+
+export function PaxosPendingLabel({ amount, token }: { amount: bigint; token: TokenData }) {
+  return (
+    <TooltipWithPortal
+      className="ml-4"
+      handleClassName="text-typography-secondary"
+      handle={<Trans>· {formatBalanceAmount(amount, token.decimals, undefined, { isStable: true })} pending</Trans>}
+      content={
+        <Trans>
+          {token.symbol} on its way from Paxos. It arrives in your wallet in a separate step, sometimes in parts.
+        </Trans>
+      }
+    />
   );
 }
 
@@ -187,7 +215,9 @@ export function PaxosRouteDetailsRows({
       <SyntheticsInfoRow
         label={t`Arrives`}
         value={
-          activePaxosRoute === "paxosZeroFee" ? t`~2–10 min, separate step` : t`~2–10 min or longer, may arrive in parts`
+          activePaxosRoute === "paxosZeroFee"
+            ? t`~2–10 min, separate step`
+            : t`~2–10 min or longer, may arrive in parts`
         }
       />
       {instantAmountOut !== undefined && (
@@ -230,7 +260,6 @@ export function PaxosRouteAlerts({
     isWhitelisted,
     isPayAmountHintShown,
     isSmartWallet,
-    activePaxosQuoteDeadline,
     isZeroFeeCapacityShort,
     zeroFeeCapacity,
     zeroFeeCapacityShortBy,
@@ -274,8 +303,9 @@ export function PaxosRouteAlerts({
             {zeroFeeCapacity !== undefined && zeroFeeCapacity > 0n && (
               <EmbeddedActionButton onClick={onReduceToZeroFeeCapacity}>
                 <Trans>
-                  Convert {formatBalanceAmount(zeroFeeCapacity, fromToken.decimals, fromToken.symbol, { isStable: true })}{" "}
-                  with no fee
+                  Convert{" "}
+                  {formatBalanceAmount(zeroFeeCapacity, fromToken.decimals, fromToken.symbol, { isStable: true })} with
+                  no fee
                 </Trans>
               </EmbeddedActionButton>
             )}
@@ -310,25 +340,18 @@ export function PaxosRouteAlerts({
 
       {activePaxosRoute && isSmartWallet && (
         <AlertInfoCard type="warning" hideClose>
-          {activePaxosQuoteDeadline ? (
-            <Trans>
-              The Paxos quote is valid until {formatTVTime(new Date(activePaxosQuoteDeadline * 1000))}. All signers
-              must sign and the transaction must execute before then, or it fails and needs a new quote.
-            </Trans>
-          ) : (
-            <Trans>
-              The Paxos quote is valid for 15 minutes. All signers must sign and the transaction must execute before
-              then, or it fails and needs a new quote.
-            </Trans>
-          )}
+          <Trans>
+            The Paxos quote is valid for 15 minutes from when the conversion goes to your wallet for signing. The
+            transaction must execute within that time, or it fails and needs a new quote.
+          </Trans>
         </AlertInfoCard>
       )}
 
       {isStandardOfferedToNonWhitelisted && (
         <div className="text-body-small text-typography-secondary">
           <Trans>
-            Large LP or balancer? Ask{" "}
-            <ExternalLink href={GMX_PARTNER_TELEGRAM_URL}>@GMXPartners</ExternalLink> about zero-fee access.
+            Large LP or balancer? Ask <ExternalLink href={GMX_PARTNER_TELEGRAM_URL}>@GMXPartners</ExternalLink> about
+            zero-fee access.
           </Trans>
         </div>
       )}

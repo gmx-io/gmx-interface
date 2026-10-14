@@ -160,7 +160,12 @@ import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
 import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
 import { useCollateralWarnings } from "./TradeBoxRows/CollateralSelectorField";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
-import { PaxosRouteAlerts, PaxosRouteDetailsRows, PaxosRouteSelectorRow } from "./TradeBoxRows/PaxosRouteRows";
+import {
+  PaxosPendingLabel,
+  PaxosRouteAlerts,
+  PaxosRouteDetailsRows,
+  PaxosRouteSelectorRow,
+} from "./TradeBoxRows/PaxosRouteRows";
 import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
 import { TPSLGroup } from "./TradeBoxRows/TPSLRows";
 
@@ -839,14 +844,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
                   showZero: payPendingAmount !== undefined,
                 })}{" "}
                 <span className="text-typography-secondary">{fromToken.symbol}</span>
-                {payPendingAmount !== undefined && (
-                  <span className="ml-4 text-typography-secondary">
-                    <Trans>
-                      · {formatBalanceAmount(payPendingAmount, fromToken.decimals, undefined, { isStable: true })}{" "}
-                      pending
-                    </Trans>
-                  </span>
-                )}
+                {payPendingAmount !== undefined && <PaxosPendingLabel amount={payPendingAmount} token={fromToken} />}
               </>
             ) : undefined
           }
@@ -940,12 +938,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
                         showZero: receivePendingAmount !== undefined,
                       })}
                       {receivePendingAmount !== undefined && (
-                        <span className="ml-4 text-typography-secondary">
-                          <Trans>
-                            · {formatBalanceAmount(receivePendingAmount, toToken.decimals, undefined, { isStable: true })}{" "}
-                            pending
-                          </Trans>
-                        </span>
+                        <PaxosPendingLabel amount={receivePendingAmount} token={toToken} />
                       )}
                     </span>
                   ) : undefined

@@ -36,10 +36,6 @@ msgstr "Pear Protocol"
 msgid "Price impact rebates claimed"
 msgstr "已領取價格影響返還"
 
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
-msgid "Auto picks the route that returns the most after all fees. Paxos converts {0} to {1} in a separate transaction, and {2} arrives in your wallet in a separate step, usually within 2–10 minutes. GMX pool and external routes are instant."
-msgstr "自動會選擇扣除所有費用後到帳最多的路由。Paxos 會在獨立交易中將 {0} 轉換為 {1}，{2} 將在獨立步驟中到達您的錢包，通常需 2–10 分鐘。GMX 池和外部路由為即時完成。"
-
 #: src/components/Errors/errorToasts.tsx
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "或透過 <0>chainlist.org</0> 更新您錢包的 RPC"
@@ -766,6 +762,10 @@ msgstr "由 GMX 社群開發的項目。<0/>與任何應用程式互動時請謹
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "ADDRESS"
 msgstr "地址"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Best return"
+msgstr "到帳最多"
 
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Additional opportunities"
@@ -2937,6 +2937,10 @@ msgstr "已達最大存入限額"
 msgid "Total staked"
 msgstr "總質押量"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "The Paxos quote is valid for 15 minutes from when the conversion goes to your wallet for signing. The transaction must execute within that time, or it fails and needs a new quote."
+msgstr "Paxos 報價自轉換傳送到您的錢包簽署時起 15 分鐘內有效。交易必須在此時間內執行，否則將失敗並需要新的報價。"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No results found"
@@ -4383,10 +4387,6 @@ msgstr "保證金低於該倉位規模所需的最低要求"
 msgid "How much can I earn as an affiliate?"
 msgstr "成為聯盟夥伴可以賺取多少收益？"
 
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
-msgid "The Paxos quote is valid for 15 minutes. All signers must sign and the transaction must execute before then, or it fails and needs a new quote."
-msgstr "Paxos 報價有效期為 15 分鐘。所有簽署人必須在此之前簽署並執行交易，否則交易將失敗並需要新的報價。"
-
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -4891,10 +4891,6 @@ msgstr "20 秒"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual market ID"
 msgstr "虛擬市場 ID"
-
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
-msgid "Best"
-msgstr "最佳"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Your wallet is not connected to this network"
@@ -5447,6 +5443,10 @@ msgstr "最小影響池數量"
 msgid "Generating..."
 msgstr "產生中..."
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Auto picks the best return after all fees, or the instant route when Paxos saves less than {minSaving}. Paxos converts {0} to {1} in a separate transaction, and {2} arrives in your wallet in a separate step, usually within 2–10 minutes. GMX pool and external routes are instant."
+msgstr "自動會選擇扣除所有費用後到帳最多的路由；當 Paxos 節省不足 {minSaving} 時，選擇即時路由。Paxos 會在獨立交易中將 {0} 轉換為 {1}，{2} 將在獨立步驟中到達您的錢包，通常需 2–10 分鐘。GMX 池和外部路由為即時完成。"
+
 #: src/components/AnnouncementBanner/AnnouncementBanner.tsx
 msgid "Go to slide {0}"
 msgstr "前往第 {0} 張"
@@ -5588,10 +5588,6 @@ msgstr "應用程式已停用，等待 {0} 升級"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "v:"
 msgstr "v："
-
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
-msgid "Picks the route that returns the most after fees"
-msgstr "選擇扣除費用後到帳最多的路由"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
@@ -9583,10 +9579,6 @@ msgstr "以 USD 顯示線條數值"
 msgid "Open interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "未平倉量（<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>）"
 
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
-msgid "The Paxos quote is valid until {0}. All signers must sign and the transaction must execute before then, or it fails and needs a new quote."
-msgstr "Paxos 報價有效期至 {0}。所有簽署人必須在此之前簽署並執行交易，否則交易將失敗並需要新的報價。"
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "{increaseOrDecreaseText}: {0} {longShortText}"
 msgstr "{increaseOrDecreaseText}：{0} {longShortText}"
@@ -9953,6 +9945,10 @@ msgstr "協議分析"
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Show positions on chart"
 msgstr "在圖表上顯示倉位"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Best return after fees, or instant when Paxos saves less than {minSaving}"
+msgstr "扣除費用後到帳最多；Paxos 節省不足 {minSaving} 時選擇即時"
 
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 msgid "Metrics debug"
@@ -11200,6 +11196,7 @@ msgid "Referral link copied to your clipboard"
 msgstr "推薦連結已複製到剪貼簿"
 
 #: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Fastest"
 msgstr "最快"
 
@@ -11447,8 +11444,7 @@ msgstr "快速查詢鏈上歷史數據。"
 msgid "Wallet cannot sign messages"
 msgstr "錢包無法簽署訊息"
 
-#: src/components/TradeBox/TradeBox.tsx
-#: src/components/TradeBox/TradeBox.tsx
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "· {0} pending"
 msgstr "· {0} 待到帳"
 
@@ -12462,6 +12458,10 @@ msgstr "做多"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Error signing permit for {0}: {1}"
 msgstr "為 {0} 簽署許可時發生錯誤：{1}"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "{0} on its way from Paxos. It arrives in your wallet in a separate step, sometimes in parts."
+msgstr "{0} 正從 Paxos 發出。它將在獨立步驟中到達您的錢包，有時分批到帳。"
 
 #: src/components/HistoryExport/HistoryExportModal.tsx
 msgid "GMX Claims CSV"
