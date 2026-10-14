@@ -8,8 +8,10 @@ import {
   selectExpressGlobalParams,
   selectGmxAccountGasPaymentToken,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import { selectGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { selectTradeboxIsFromTokenGmxAccount } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useCalcSelector } from "context/SyntheticsStateContext/utils";
+import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import {
   GMX_ACCOUNT_NETWORK_FEE_SOURCE,
   WALLET_NETWORK_FEE_SOURCE,
@@ -21,6 +23,10 @@ import {
   removeSubaccountWalletTxn,
 } from "domain/synthetics/subaccount";
 import type { SignedSubaccountApproval, Subaccount, SubaccountSerializedConfig } from "domain/synthetics/subaccount";
+import {
+  getActivationPermitTokenAddresses,
+  signActivationTokenPermits,
+} from "domain/synthetics/subaccount/activationTokenPermits";
 import { SubaccountRemovalResultUnknownError } from "domain/synthetics/subaccount/errors";
 import { generateSubaccount } from "domain/synthetics/subaccount/generateSubaccount";
 import {
@@ -53,6 +59,8 @@ import { useJsonRpcProvider } from "lib/rpc";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 import { getIsContractAccount } from "lib/wallets/useWalletSessionChains";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
+import { getContract } from "sdk/configs/contracts";
 import { getNativeToken, getToken, isValidTokenSafe } from "sdk/configs/tokens";
 import { ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "sdk/utils/express";
 
@@ -154,7 +162,8 @@ export type SubaccountState = {
   }) => Promise<boolean>;
   resetSubaccountApproval: () => void;
   invalidateSubaccountApproval: (approval: SignedSubaccountApproval) => boolean;
-  tryEnableSubaccount: () => Promise<boolean>;
+  // withTokenPermits: false for flows that don't trade from the wallet, like GMX Account deposits
+  tryEnableSubaccount: (params?: { withTokenPermits?: boolean }) => Promise<boolean>;
   tryDisableSubaccount: () => Promise<boolean>;
   refreshSubaccountData: () => void;
 };
@@ -174,6 +183,13 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
   const signer = useEthersSigner();
   const { account } = useWallet();
   const { provider } = useJsonRpcProvider(chainId);
+  const {
+    tokenPermits,
+    accountType: tokenPermitAccountType,
+    getIsPermitAvailable,
+    addTokenPermit,
+    disableTokenPermits,
+  } = useTokenPermitsContext();
 
   const {
     subaccountConfig,
@@ -322,98 +338,140 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     [refreshSubaccountData, removeStoredApproval]
   );
 
-  const tryEnableSubaccount = useCallback(async () => {
-    if (!provider || !signer || (await getIsContractAccount(signer.address, chainId))) {
-      return false;
-    }
-
-    let config = subaccountConfig;
-
-    setSubaccountActivationError(undefined);
-
-    const toastId = Date.now();
-
-    helperToast.info(<SubaccountActivateNotification toastId={toastId} />, {
-      autoClose: false,
-      toastId,
-    });
-
-    let isConfigGeneratedInCurrentFlow = false;
-
-    if (!config?.address) {
-      try {
-        setSubaccountActivationState(SubaccountActivationState.Generating);
-        config = await generateSubaccount(signer, chainId);
-        isConfigGeneratedInCurrentFlow = true;
-
-        setSubaccountConfig(config);
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error(error);
-
-        setSubaccountActivationState(SubaccountActivationState.GeneratingError);
-        setSubaccountActivationError({ message: error?.message, walletName: error?.data?.walletName });
-        metrics.pushError(error, "subaccount.generateSubaccount");
-
+  const tryEnableSubaccount = useCallback(
+    async ({ withTokenPermits = true }: { withTokenPermits?: boolean } = {}) => {
+      if (!provider || !signer || (await getIsContractAccount(signer.address, chainId))) {
         return false;
       }
-    }
 
-    if (!config?.address) {
-      const error = "Missed subaccount config";
-      // eslint-disable-next-line no-console
-      console.error(error);
-      setSubaccountActivationState(SubaccountActivationState.GeneratingError);
+      let config = subaccountConfig;
 
-      metrics.pushError(error, "subaccount.missedSubaccountConfigAfterGeneration");
-      resetStoredConfig();
-      return false;
-    }
+      setSubaccountActivationError(undefined);
 
-    const isGmxAccount = calcSelector(selectTradeboxIsFromTokenGmxAccount);
+      const toastId = Date.now();
 
-    try {
-      setSubaccountActivationState(SubaccountActivationState.ApprovalSigning);
-
-      const defaultSubaccountApproval = await getInitialSubaccountApproval({
-        chainId,
-        signer,
-        provider,
-        subaccountAddress: config!.address,
-        isGmxAccount,
+      helperToast.info(<SubaccountActivateNotification toastId={toastId} />, {
+        autoClose: false,
+        toastId,
       });
+
+      let isConfigGeneratedInCurrentFlow = false;
+
+      if (!config?.address) {
+        try {
+          setSubaccountActivationState(SubaccountActivationState.Generating);
+          config = await generateSubaccount(signer, chainId);
+          isConfigGeneratedInCurrentFlow = true;
+
+          setSubaccountConfig(config);
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error(error);
+
+          setSubaccountActivationState(SubaccountActivationState.GeneratingError);
+          setSubaccountActivationError({ message: error?.message, walletName: error?.data?.walletName });
+          metrics.pushError(error, "subaccount.generateSubaccount");
+
+          return false;
+        }
+      }
+
+      if (!config?.address) {
+        const error = "Missed subaccount config";
+        // eslint-disable-next-line no-console
+        console.error(error);
+        setSubaccountActivationState(SubaccountActivationState.GeneratingError);
+
+        metrics.pushError(error, "subaccount.missedSubaccountConfigAfterGeneration");
+        resetStoredConfig();
+        return false;
+      }
+
+      const isGmxAccount = calcSelector(selectTradeboxIsFromTokenGmxAccount);
+
+      try {
+        setSubaccountActivationState(SubaccountActivationState.ApprovalSigning);
+
+        const defaultSubaccountApproval = await getInitialSubaccountApproval({
+          chainId,
+          signer,
+          provider,
+          subaccountAddress: config!.address,
+          isGmxAccount,
+        });
+
+        setSignedApproval(defaultSubaccountApproval);
+
+        if (!config.isNew) {
+          setSubaccountConfig({ ...config, isNew: true });
+        }
+      } catch (error) {
+        if (isConfigGeneratedInCurrentFlow) {
+          resetStoredConfig();
+        }
+
+        setSubaccountActivationState(SubaccountActivationState.ApprovalSigningError);
+        setSubaccountActivationError({ message: error?.message, walletName: error?.data?.walletName });
+        // eslint-disable-next-line no-console
+        console.error(error);
+        metrics.pushError(error, "subaccount.signDefaultApproval");
+        return false;
+      }
 
       setSubaccountActivationState(SubaccountActivationState.Success);
 
-      setSignedApproval(defaultSubaccountApproval);
+      // only wallet-funded orders on the settlement chain spend through the Router; not awaited, so a wallet
+      // that never answers a permit prompt can't hold the activation
+      if (withTokenPermits && srcChainId === undefined && !isGmxAccount) {
+        void (async () => {
+          try {
+            const spender = getContract(chainId, "SyntheticsRouter");
 
-      if (!config.isNew) {
-        setSubaccountConfig({ ...config, isNew: true });
+            const tokenAddresses = await getActivationPermitTokenAddresses({
+              chainId,
+              client: getPublicClientWithRpc(chainId),
+              account: signer.address,
+              spender,
+              gasPaymentTokenAddress: calcSelector(selectGasPaymentTokenAddress),
+              tokenPermits,
+              getIsPermitAvailable,
+            });
+
+            await signActivationTokenPermits({
+              chainId,
+              account: signer.address,
+              spender,
+              tokenAddresses,
+              accountType: tokenPermitAccountType,
+              addTokenPermit,
+              disableTokenPermits,
+            });
+          } catch (error) {
+            // One-Click is already active, the tokens just keep the approval flow
+            metrics.pushError(error, "subaccount.activationTokenPermits");
+          }
+        })();
       }
 
       return true;
-    } catch (error) {
-      if (isConfigGeneratedInCurrentFlow) {
-        resetStoredConfig();
-      }
-
-      setSubaccountActivationState(SubaccountActivationState.ApprovalSigningError);
-      setSubaccountActivationError({ message: error?.message, walletName: error?.data?.walletName });
-      // eslint-disable-next-line no-console
-      console.error(error);
-      metrics.pushError(error, "subaccount.signDefaultApproval");
-      return false;
-    }
-  }, [
-    provider,
-    signer,
-    subaccountConfig,
-    calcSelector,
-    setSubaccountConfig,
-    resetStoredConfig,
-    chainId,
-    setSignedApproval,
-  ]);
+    },
+    [
+      provider,
+      signer,
+      subaccountConfig,
+      calcSelector,
+      setSubaccountConfig,
+      resetStoredConfig,
+      chainId,
+      srcChainId,
+      setSignedApproval,
+      tokenPermits,
+      tokenPermitAccountType,
+      getIsPermitAvailable,
+      addTokenPermit,
+      disableTokenPermits,
+    ]
+  );
 
   const tryDisableSubaccount = useCallback(async (): Promise<boolean> => {
     if (!signer || !subaccount?.address || !account) {

@@ -46,6 +46,16 @@ vi.mock("context/SyntheticsStateContext/utils", async (importOriginal) => ({
   useCalcSelector: () => () => false,
 }));
 
+vi.mock("context/TokenPermitsContext/TokenPermitsContextProvider", () => ({
+  useTokenPermitsContext: () => ({
+    tokenPermits: [],
+    accountType: undefined,
+    getIsPermitAvailable: () => false,
+    addTokenPermit: async () => undefined,
+    disableTokenPermits: () => undefined,
+  }),
+}));
+
 vi.mock("domain/synthetics/subaccount", () => ({
   removeSubaccountExpressTxn: vi.fn(),
   removeSubaccountWalletTxn: vi.fn(),

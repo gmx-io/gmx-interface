@@ -1,5 +1,5 @@
 import uniq from "lodash/uniq";
-import React, { createContext, useCallback, useContext, useEffect, useMemo } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef } from "react";
 import { useLatest } from "react-use";
 import useSWR from "swr";
 import { isAddressEqual, type Address } from "viem";
@@ -21,7 +21,7 @@ import {
   TokenPermitAccountType,
 } from "domain/tokens/tokenPermitsEligibility";
 import { useChainId } from "lib/chains";
-import { getInvalidPermitSignatureError } from "lib/errors/customErrors";
+import { getInvalidPermitSignatureError, PERMIT_WALLET_CHANGED_ERROR } from "lib/errors/customErrors";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { EMPTY_ARRAY } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
@@ -44,7 +44,12 @@ export type TokenPermitsState = {
   disableTokenPermits: (tokenAddresses: string[], target?: { chainId: number; account: string }) => void;
 };
 
-export type AddTokenPermitFn = (tokenAddress: string, spenderAddress: string, value: bigint) => Promise<void>;
+export type AddTokenPermitFn = (
+  tokenAddress: string,
+  spenderAddress: string,
+  value: bigint,
+  options?: { deadline?: bigint }
+) => Promise<void>;
 
 const TokenPermitsContext = createContext<TokenPermitsState | undefined>(undefined);
 
@@ -147,6 +152,18 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
     }
   );
 
+  // several permits can be signed in one flow (One-Click activation), before a re-render refreshes the closure;
+  // the list is only reused while the account and chain it was read for are still the active ones
+  const walletKey = `${chainId}:${account}`;
+  const latestStoredTokenPermits = useRef({
+    walletKey,
+    chainId,
+    account,
+    permits: storedTokenPermits,
+    setTokenPermits,
+  });
+  latestStoredTokenPermits.current = { walletKey, chainId, account, permits: storedTokenPermits, setTokenPermits };
+
   const getIsPermitAvailable = useCallback(
     (tokenAddress: string) =>
       isEnabled && getIsTokenPermitAllowed(chainId, tokenAddress) && !fallbackTokens?.includes(tokenAddress),
@@ -164,12 +181,31 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
   }, [account, getIsPermitAvailable, isEnabled, storedTokenPermits]);
 
   const addTokenPermit = useCallback(
-    async (tokenAddress: string, spenderAddress: string, value: bigint) => {
+    async (tokenAddress: string, spenderAddress: string, value: bigint, options?: { deadline?: bigint }) => {
       if (!signer?.provider) {
         return;
       }
 
-      const { permit } = await createAndSignTokenPermit(chainId, signer, tokenAddress, spenderAddress, value);
+      const signerWalletKey = `${chainId}:${signer.address}`;
+      const assertWalletUnchanged = () => {
+        if (latestStoredTokenPermits.current.walletKey !== signerWalletKey) {
+          throw new Error(PERMIT_WALLET_CHANGED_ERROR);
+        }
+      };
+
+      assertWalletUnchanged();
+
+      const { permit } = await createAndSignTokenPermit(
+        chainId,
+        signer,
+        tokenAddress,
+        spenderAddress,
+        value,
+        options?.deadline
+      );
+
+      // before the signature check: a wallet that signs with the newly selected account would read as a bad signature
+      assertWalletUnchanged();
 
       const validationResult = await validateTokenPermitSignature(chainId, permit);
 
@@ -181,38 +217,47 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
         });
       }
 
+      assertWalletUnchanged();
+
       // a newer permit reuses the on-chain nonce, so it replaces the older one for the same token and spender
-      const otherPermits = (storedTokenPermits ?? []).filter(
+      const otherPermits = (latestStoredTokenPermits.current.permits ?? []).filter(
         (p) => p.token !== permit.token || p.spender !== permit.spender
       );
+      const nextPermits = [...otherPermits, permit];
 
-      setTokenPermits([...otherPermits, permit]);
+      latestStoredTokenPermits.current = { ...latestStoredTokenPermits.current, permits: nextPermits };
+      latestStoredTokenPermits.current.setTokenPermits(nextPermits);
     },
-    [chainId, setTokenPermits, storedTokenPermits, signer]
+    [chainId, signer]
   );
 
   const removeTokenPermits = useCallback(
-    (permits: SignedTokenPermit[], permitsChainId: number = chainId) => {
+    (permits: SignedTokenPermit[], permitsChainId?: number) => {
+      // the latest render's wallet and list: callers often hold a closure from before a switch or a newer permit
+      const latest = latestStoredTokenPermits.current;
       const isActive = (permit: SignedTokenPermit) =>
-        permitsChainId === chainId &&
-        account !== undefined &&
-        isAddressEqual(permit.owner as Address, account as Address);
+        (permitsChainId ?? chainId) === latest.chainId &&
+        latest.account !== undefined &&
+        isAddressEqual(permit.owner as Address, latest.account as Address);
 
       uniq(permits.filter((permit) => !isActive(permit)).map((permit) => permit.owner)).forEach((owner) => {
-        removeInactiveStoredTokenPermits(permitsChainId, owner, permits);
+        removeInactiveStoredTokenPermits(permitsChainId ?? chainId, owner, permits);
       });
 
       const activePermits = permits.filter(isActive);
 
-      if (!storedTokenPermits?.length || activePermits.length === 0) {
+      if (!latest.permits?.length || activePermits.length === 0) {
         return;
       }
 
-      setTokenPermits(
-        storedTokenPermits.filter((stored) => !activePermits.some((p) => getIsSameTokenPermit(stored, p)))
+      const nextPermits = latest.permits.filter(
+        (stored) => !activePermits.some((p) => getIsSameTokenPermit(stored, p))
       );
+
+      latestStoredTokenPermits.current = { ...latest, permits: nextPermits };
+      latest.setTokenPermits(nextPermits);
     },
-    [account, chainId, setTokenPermits, storedTokenPermits]
+    [chainId]
   );
 
   const latestFallbackContext = useLatest({ chainId, account, setFallbackTokens });
