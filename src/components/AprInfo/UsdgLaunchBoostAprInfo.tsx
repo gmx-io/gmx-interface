@@ -3,7 +3,7 @@ import cx from "classnames";
 
 import { USDG_LAUNCH_BOOST_PERIOD_1_END, USDG_LAUNCH_BOOST_PERIOD_1_START } from "config/usdgPools";
 import { UsdgLaunchBoost, getIsUsdgLaunchBoostIncluded } from "domain/synthetics/usdgLaunchBoost/utils";
-import { formatDate, formatDateTime } from "lib/dates";
+import { formatDate } from "lib/dates";
 import { formatPercentage } from "lib/numbers";
 
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -37,8 +37,6 @@ export function formatUsdgLaunchBoostValue(launchBoost: UsdgLaunchBoost) {
       const minimumSuffix = getMinimumSuffix(launchBoost);
       return `${boostApr}${minimumSuffix}`;
     }
-    case "paused":
-      return t`Paused`;
     case "unavailable":
       return t`Unavailable`;
   }
@@ -74,10 +72,6 @@ export function UsdgLaunchBoostStatusNote({ launchBoost }: { launchBoost: UsdgLa
       return <Trans>Starts with the first reward round.</Trans>;
     case "live":
       return <Trans>Rate paid in the last round, on average balances.</Trans>;
-    case "paused": {
-      const lastRoundPaidAt = formatDateTime(launchBoost.lastRoundPaidAt);
-      return <Trans>Last round paid {lastRoundPaidAt}. The boost returns with the next successful round.</Trans>;
-    }
     case "unavailable":
       return <Trans>The boost rate can't be loaded right now.</Trans>;
   }

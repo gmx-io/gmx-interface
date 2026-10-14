@@ -6629,10 +6629,6 @@ msgstr "{3} で {2} にわたり、{1} ずつの {0} {type} 注文を {numberOfP
 msgid "Docs"
 msgstr "ドキュメント"
 
-#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
-msgid "Last round paid {lastRoundPaidAt}. The boost returns with the next successful round."
-msgstr "前回のラウンドは{lastRoundPaidAt}に支払われました。次のラウンドが正常に完了するとブーストが再開されます。"
-
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Marketing Kit + Co-marketing"
 msgstr "マーケティングキット + 共同マーケティング"
@@ -6780,10 +6776,6 @@ msgstr "GLV（GMX Liquidity Vault）は様々なGMトークンを保有し、GMX
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Settlement network changed to Arbitrum, but $12.50 remains in your Base GMX Account"
 msgstr "決済ネットワークがArbitrumに変更されましたが、$12.50がBaseのGMX Accountに残っています"
-
-#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
-msgid "Paused"
-msgstr "一時停止中"
 
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx

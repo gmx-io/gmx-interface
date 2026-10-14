@@ -42,9 +42,9 @@ describe("formatApyWithUsdgLaunchBoost", () => {
       expected: "5.00%",
     },
     {
-      case: "leaves a paused boost out",
+      case: "leaves an unavailable boost out",
       apy: percent(6),
-      launchBoost: { isGlv: true, status: "paused", lastRoundPaidAt: 0 },
+      launchBoost: { isGlv: true, status: "unavailable" },
       expected: "6.00%",
     },
     {
