@@ -1,3 +1,4 @@
+import cx from "classnames";
 import { ReactNode } from "react";
 
 export function BaseAssetCard({
@@ -7,6 +8,8 @@ export function BaseAssetCard({
   headerButton,
   children,
   footer,
+  className,
+  stretchContent,
 }: {
   icon: ReactNode | string;
   title: ReactNode;
@@ -14,9 +17,11 @@ export function BaseAssetCard({
   headerButton: ReactNode;
   children: ReactNode;
   footer: ReactNode;
+  className?: string;
+  stretchContent?: boolean;
 }) {
   return (
-    <div className="flex flex-col gap-16 rounded-8 border-1/2 border-slate-600 bg-slate-950/50 p-16">
+    <div className={cx("flex flex-col gap-16 rounded-8 border-1/2 border-slate-600 bg-slate-950/50 p-16", className)}>
       <div className="flex items-start justify-between gap-12">
         <div className="flex items-center gap-12">
           {icon}
@@ -29,7 +34,7 @@ export function BaseAssetCard({
         <div className="flex shrink-0 items-start">{headerButton}</div>
       </div>
 
-      <div className="mt-auto flex flex-col gap-12">
+      <div className={cx("flex flex-col gap-12", stretchContent ? "grow [&>*:last-child]:mt-auto" : "mt-auto")}>
         {children}
         {footer}
       </div>

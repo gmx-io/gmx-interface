@@ -704,6 +704,10 @@ msgstr "감사 내역을 새로고침하지 못했습니다. 최근에 불러온
 msgid "Unrealized fee contribution"
 msgstr "미실현 수수료 기여분"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "History"
+msgstr ""
+
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Funding"
@@ -727,6 +731,10 @@ msgstr "언스테이킹 중..."
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From network"
 msgstr "출발 네트워크"
+
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "Couldn't check if this code is available. Try again."
+msgstr ""
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Re-sign to continue using One-Click Trading."
@@ -1176,6 +1184,10 @@ msgstr ""
 msgid "GMX Detailed CSV"
 msgstr "GMX Detailed CSV"
 
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "As they use GMX on Solana, your GT unlocks to sell in the buyback"
+msgstr ""
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {seconds} seconds"
 msgstr ""
@@ -1296,6 +1308,14 @@ msgstr "금고 및 풀의 TVL"
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX on Solana"
 msgstr "Solana의 GMX"
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Solana address that receives the USDC"
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Not available for smart-contract wallets"
+msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
@@ -1524,9 +1544,17 @@ msgstr ""
 msgid "Swap fee factor (negative PI)"
 msgstr "스왑 수수료 계수 (음의 PI)"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Approve in a Solana wallet"
+msgstr ""
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claimable balance"
 msgstr "청구 가능 잔액"
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "Submitting your request to sell {amount}…"
+msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Current {symbol} pool value / max cap"
@@ -1634,6 +1662,7 @@ msgstr "최대 {0} 구매 가능 금액 초과"
 msgid "Existing position uses {0} collateral. If executed, this order will create a separate position. <0>Switch to {1} collateral</0>"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
@@ -1731,6 +1760,10 @@ msgstr "더 깊은 유동성과 가장 완전한 GMX 거래 경험을 위해 Arb
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "Max {allowedAutoCancelOrdersNumber} auto-cancel TP/SL orders allowed. Extra orders require manual cancellation. Existing orders still close with the position. <0>Read more</0>."
 msgstr "자동 취소 TP/SL 주문은 최대 {allowedAutoCancelOrdersNumber}건까지 허용됩니다. 초과 주문은 수동으로 취소해야 합니다. 기존 주문은 포지션과 함께 청산됩니다. <0>자세히 보기</0>."
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Sell through buyback"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX proposals voting page"
@@ -1883,6 +1916,7 @@ msgstr "트리거 가격 조건이 충족되지 않았습니다"
 msgid "/ year"
 msgstr "/ 년"
 
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "May take a few minutes to reflect. Check back later"
 msgstr "반영까지 몇 분이 소요될 수 있습니다. 나중에 다시 확인하십시오"
@@ -2122,6 +2156,10 @@ msgstr ""
 msgid "Your discount is applied automatically when you execute a trade. You'll see the referral discount in your fee tooltip before opening a trade."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Receive USDC to Solana address"
+msgstr ""
+
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "CSV"
@@ -2264,6 +2302,7 @@ msgstr "재시도"
 msgid "Available liquidity {directionLabel}"
 msgstr "이용 가능한 유동성 {directionLabel}"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "Show less"
 msgstr "적게 표시"
@@ -2681,6 +2720,10 @@ msgstr "EIP-4844"
 msgid "Keep leverage at {0}"
 msgstr "{0}으로 레버리지 유지"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "No past buyback requests yet."
+msgstr ""
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAIL. LIQ."
 msgstr "사용 가능 유동성"
@@ -2944,6 +2987,10 @@ msgstr "경고 아이콘"
 msgid "Leftover margin below {0} USD"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Awaiting payout"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Decrease"
 msgstr "마켓 감소 실패"
@@ -3170,6 +3217,11 @@ msgstr ""
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Account"
 msgstr "계정"
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Season quota"
+msgstr ""
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Position exceeds max allowed leverage. <0>Read more</0>."
@@ -3540,6 +3592,7 @@ msgstr "GMX 기술 공지사항"
 msgid "All Announcements"
 msgstr "전체 공지사항"
 
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
@@ -3555,6 +3608,10 @@ msgstr "수수료 차감 후 PnL 표시"
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No eligible holdings detected"
 msgstr "적격 보유 자산이 감지되지 않았습니다"
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Couldn't get the EVM signature. Nothing was withdrawn. Try again."
+msgstr ""
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
@@ -3796,6 +3853,11 @@ msgstr "최소 입금 USD 한도"
 msgid "Liquidated as max leverage of {formattedMaxLeverage} was exceeded when accounting for fees."
 msgstr "수수료를 고려했을 때 최대 레버리지 {formattedMaxLeverage}을(를) 초과하여 청산되었습니다."
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "Done"
+msgstr ""
+
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
 msgstr "{positionText}에 {0} 예치"
@@ -3953,6 +4015,9 @@ msgstr "공지사항"
 msgid "Trade featured markets to activate this boost and earn a higher multiplier for those trades."
 msgstr "주요 시장에서 거래하여 이 부스트를 활성화하고 해당 거래에 더 높은 배수를 적용받으세요."
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
@@ -4239,6 +4304,10 @@ msgstr "마켓 트레이더 PnL에 대한 노출"
 msgid "Realized PnL before fees, discounts and price impact."
 msgstr "수수료, 할인, 가격 영향이 반영되기 전의 실현 PnL."
 
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "Share it with other traders"
+msgstr ""
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."
 msgstr ""
@@ -4346,6 +4415,10 @@ msgstr "청산 시 지갑 수령액"
 msgid "GLV vaults"
 msgstr "GLV 볼트"
 
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "Use your GMX code: {0}"
+msgstr ""
+
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute: insufficient liquidity at the trigger price. Reduce the order size."
@@ -4372,6 +4445,10 @@ msgstr "esGMX를 청구하거나 베스팅하면 보상 프로그램의 <0>이�
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Commodities"
 msgstr "원자재"
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "You can sell up to your sellable GT. The request counts toward {season} only."
+msgstr ""
 
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "GMX was approved. Reconnect the original wallet to continue."
@@ -4706,9 +4783,18 @@ msgstr "하향 조정 계수"
 msgid "Fees (including swap)"
 msgstr "수수료 (스왑 포함)"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Multisig and other smart-contract wallets can't join the buyback. Connect a regular wallet to sell GT."
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Exponent (positive)"
 msgstr "지수 (양수)"
+
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "The EVM signature was rejected. Your code wasn't created."
+msgstr ""
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
@@ -4942,6 +5028,10 @@ msgstr "거래를 시작하여 보상을 받으세요."
 msgid "esGMX Rewards = Fees × (Multiplier × 10%)"
 msgstr "esGMX 보상 = 수수료 × (멀티플라이어 × 10%)"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "GT you earned on GMX, on Arbitrum and Avalanche combined, minus any GT you sold in the buyback."
+msgstr ""
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker thread"
 msgstr "워커 스레드"
@@ -5017,6 +5107,10 @@ msgstr "네트워크 수수료를 위한 Gas가 부족합니다"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to"
 msgstr "{fromText}에서"
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "You can sell up to your sellable GT. The request counts toward the current season only."
+msgstr ""
 
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "Frontends"
@@ -5146,6 +5240,10 @@ msgstr "트레이드"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "No deposits required"
 msgstr "입금 필요 없음"
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Sell GT"
+msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Trading airdrop"
@@ -5398,6 +5496,12 @@ msgstr "자기 전송은 지원되지 않습니다"
 #: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
 msgid "Are referral Rewards part of my multiplier?"
 msgstr "추천 보상은 배수에 포함되나요?"
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "Copy referral code"
+msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Generating session..."
@@ -5829,6 +5933,10 @@ msgstr "이 지표와 기간에 대한 계정 간 순위입니다."
 msgid "Sepolia vesting uses test GMX, esGMX, and sbfGMX collateral tokens."
 msgstr "Sepolia 베스팅은 테스트용 GMX, esGMX 및 sbfGMX 담보 토큰을 사용합니다."
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "{0} is ready to withdraw."
+msgstr ""
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "No net rate history for this market"
 msgstr ""
@@ -5891,6 +5999,10 @@ msgstr "방향"
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Wallet or network changed. Review your vesting details before stopping."
 msgstr "지갑 또는 네트워크가 변경되었습니다. 중지하기 전에 베스팅 세부 정보를 확인하세요."
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "Not set"
+msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "This position is currently above liquidation risk, but it may become close to liquidation when the market switches to off-hours risk parameters. Add margin or reduce leverage to increase your buffer."
@@ -6100,6 +6212,10 @@ msgstr "가격 영향이 너무 큽니다"
 msgid "{0}h"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "Connect Solana wallet..."
+msgstr ""
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Enter withdrawal amount"
 msgstr "출금 금액 입력"
@@ -6307,6 +6423,10 @@ msgstr ""
 msgid "Looking for a check before committing"
 msgstr "시작 전에 자금부터 바라는 경우"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "Your request to sell {amount} is waiting for your signature."
+msgstr ""
+
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap profit fee"
 msgstr "높은 스왑 이익 수수료"
@@ -6432,6 +6552,9 @@ msgstr "외부 스왑 실패 처리"
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -6477,6 +6600,10 @@ msgstr "보너스 APR"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Accumulating..."
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Signing not connected"
 msgstr ""
 
 #: src/components/InterviewModal/InterviewModal.tsx
@@ -6608,6 +6735,10 @@ msgstr "청산 전 수령액 (GMX 잔액)"
 msgid "Open interest {directionLabel}"
 msgstr "미결제약정 {directionLabel}"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "GT is the GM Trade token. You can sell GT for USDC in the daily buyback on GMTrade, up to your sellable amount."
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
@@ -6649,6 +6780,10 @@ msgstr "슬리피지는 가격 변동성으로 인해 예상 체결 가격과 �
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "Per-epoch diagnostic audit"
 msgstr "에포크별 진단 감사"
+
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "Now share it — your GT unlocks as the people you refer use GMX on Solana."
+msgstr ""
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
@@ -6922,6 +7057,17 @@ msgstr "더 알아보기"
 msgid "GM and GLV include markets you no longer hold."
 msgstr "GM과 GLV에는 더 이상 보유하지 않는 마켓도 포함됩니다."
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "Referral code copied to your clipboard"
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "No sellable GT right now. Share your referral code — your GT unlocks as the people you refer use GMX on Solana."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Earn {0}% more rewards with this action"
 msgstr "이 작업으로 {0}% 더 많은 보상을 받으십시오"
@@ -7056,6 +7202,10 @@ msgstr ""
 msgid "Short"
 msgstr "숏"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "{amount} is in today's buyback. The window ends in {timeLeft}."
+msgstr ""
+
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded on execution. <0>Read more</0>."
 msgstr "최대 네트워크 수수료에는 Gas 급등에 대비한 버퍼가 포함되어 있습니다. 미사용 수수료는 체결 시 환불됩니다. <0>자세히 보기</0>."
@@ -7172,6 +7322,10 @@ msgstr "GLV"
 #: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
 msgid "All-time"
 msgstr "전체 기간"
+
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "Not connected"
+msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "PnL after all fees"
@@ -7295,6 +7449,10 @@ msgstr "롱"
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Affiliate rewards claimed"
 msgstr "제휴 보상이 수령되었습니다"
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "{amount} was bought back. The payout is being confirmed."
+msgstr ""
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "transaction:"
@@ -7688,6 +7846,8 @@ msgstr "GLV (GMX Liquidity Vault)는 다양한 GM 토큰을 보유하여 GMX 마
 msgid "Settlement network changed to Arbitrum, but $12.50 remains in your Base GMX Account"
 msgstr "정산 네트워크가 Arbitrum으로 변경되었으나 $12.50이 Base GMX Account에 남아 있습니다"
 
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -8096,6 +8256,10 @@ msgstr ""
 msgid "No trades match the selected filters"
 msgstr "선택한 필터와 일치하는 거래가 없습니다"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "GM Trade token"
+msgstr ""
+
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Decreased"
 msgstr "감소 완료"
@@ -8155,6 +8319,7 @@ msgstr "펀딩 수수료 정산 요청"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
 msgid "Withdrawn"
 msgstr "출금 완료"
 
@@ -8296,6 +8461,10 @@ msgstr "최대 네트워크 수수료에는 Gas 급등에 대비한 버퍼가 �
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Order execution failed"
 msgstr "주문 체결 실패"
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "Your GT unlocks as the people you refer use GMX on Solana. Create a code to start."
+msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} and {1} up to the caps below. Remaining tokens are reserved for open positions."
@@ -8513,6 +8682,11 @@ msgstr ""
 msgid "If you continue, you will lose {0} in rewards"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "How much of your GT you can sell in the buyback this season. Your referees unlock it as they use GMX on Solana, and it can't be more than your GT balance."
+msgstr ""
+
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/GmxAccountModal/MainView.tsx
@@ -8522,6 +8696,10 @@ msgstr "지갑에서 보내기"
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "{0, plural, one {# day left} other {# days left}}"
 msgstr "{0, plural, one {#일 남음} other {#일 남음}}"
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "In today's buyback"
+msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Can't withdraw collateral. Remaining collateral would be below minimum"
@@ -8655,6 +8833,10 @@ msgstr "TP 가격"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "ParaSwap"
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "{amount} is in today's buyback."
 msgstr ""
 
 #: src/App/MainRoutes.tsx
@@ -8902,6 +9084,14 @@ msgstr "거버넌스 알림"
 msgid "Low {symbol} balance. This amount leaves little for future fees on your GMX Account."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "No Solana wallet connected. Connect one to pay the network fee."
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "The EVM signature was rejected. Nothing was withdrawn."
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8974,6 +9164,10 @@ msgstr "1 esGMX를 1년에 걸쳐 1 GMX로 전환하려면 담보로 5 GMX를 �
 msgid "Symbol (A to Z)"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Enter a Solana address"
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Full lifecycle reconciliation is unavailable because part of this position's history could not be matched reliably."
 msgstr "이 포지션 기록의 일부를 안정적으로 매칭할 수 없어 전체 라이프사이클 대사는 제공되지 않습니다."
@@ -8986,6 +9180,7 @@ msgstr "현재 GT"
 msgid "{orderText} updated"
 msgstr "{orderText} 업데이트 완료"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts
 msgid "Withdrawal sent"
@@ -9261,6 +9456,10 @@ msgstr "승률"
 msgid "Epoch ID"
 msgstr "에포크 ID"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Waiting for signature"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading stats"
 msgstr "GMX trading stats"
@@ -9347,6 +9546,10 @@ msgstr "현재 레버리지로는 포지션을 늘릴 수 없습니다. 증거�
 msgid "See the perks"
 msgstr "혜택 보기"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Sign in your EVM wallet"
+msgstr ""
+
 #: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
 msgid "All-time GT"
 msgstr "전체 기간 GT"
@@ -9387,6 +9590,11 @@ msgstr "GLV 판매"
 msgid "You earn esGMX and GT Rewards based on the fees paid each time you increase or decrease a position."
 msgstr "포지션을 늘리거나 줄일 때마다 지불한 수수료를 기준으로 esGMX 및 GT 보상을 받습니다."
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Total bought back"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "from {BLOCKCHAIN_COUNT} blockchains"
 msgstr "{BLOCKCHAIN_COUNT} 블록체인에서"
@@ -9407,6 +9615,11 @@ msgstr "즉시"
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "30d"
 msgstr "30일"
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "Approve in Solana wallet..."
+msgstr ""
 
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Exit price"
@@ -9472,6 +9685,10 @@ msgstr "기준가"
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "No rewards are currently available to claim."
 msgstr "현재 수령 가능한 리워드가 없습니다."
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "Create a referral code on Solana to participate in the GT buyback."
+msgstr ""
 
 #: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
 msgid "What is vesting?"
@@ -9589,6 +9806,7 @@ msgstr "Version:"
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Available"
 msgstr "사용 가능"
@@ -9690,6 +9908,7 @@ msgstr ""
 msgid "Governance"
 msgstr "거버넌스"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
 #: src/components/HistoryExport/HistoryExportModal.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -9757,6 +9976,10 @@ msgstr ""
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "Do I need to pass KYC?"
 msgstr "KYC를 통과해야 하나요?"
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Withdraw USDC"
+msgstr ""
 
 #: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
 msgid "Your wallet cannot sign messages. Connect a different wallet to trade."
@@ -9944,10 +10167,17 @@ msgstr "활성 Balancer 프로그램 코드"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
 #: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Max amount exceeded"
 msgstr "최대 수량 초과"
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "Sign in your EVM wallet..."
+msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -10111,6 +10341,10 @@ msgstr "전송 중..."
 msgid "Staked GMX:"
 msgstr "스테이킹된 GMX:"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Submitting"
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed."
 msgstr "{gmOrGlvLabel} 판매에 실패했습니다."
@@ -10169,6 +10403,10 @@ msgstr "주문 요청 전송됨"
 #: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
 msgid "Your multiplier will decrease next epoch."
 msgstr "다음 에포크에 회원님의 배수가 감소합니다."
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Confirm in your wallet..."
+msgstr ""
 
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 msgid "Oracle Keeper debug"
@@ -10702,6 +10940,11 @@ msgstr "1분 미만"
 msgid "Ecosystem"
 msgstr "이코시스템"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Sellable GT"
+msgstr ""
+
 #: src/pages/RewardsPage/RewardsPage.tsx
 msgid "The new epoch is being indexed. Account totals will update shortly."
 msgstr "새 에포크를 인덱싱하고 있습니다. 계정 합계가 곧 업데이트됩니다."
@@ -10715,6 +10958,7 @@ msgstr "다음"
 msgid "More info"
 msgstr "더 많은 정보"
 
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -10765,7 +11009,6 @@ msgstr "전송 주소가 유효하지 않습니다. URL을 확인하십시오."
 msgid "Copy"
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -10777,6 +11020,10 @@ msgstr "수량"
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Integrate GMX"
 msgstr "GMX 통합하기"
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Something went wrong. Check your buyback history before trying again."
+msgstr ""
 
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 msgid "Referral reward share"
@@ -10897,6 +11144,10 @@ msgstr "알림"
 msgid "Trading mode"
 msgstr "거래 모드"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Back"
+msgstr ""
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Cross-margin</0><1>Cross-collateral</1>"
 msgstr "<0>교차 증거금</0><1>교차 담보</1>"
@@ -10928,6 +11179,8 @@ msgstr "24시간 거래량"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -11275,6 +11528,10 @@ msgstr "보너스 APR은 {airdropTokenTitle} 에어드롭으로 지급됩니다.
 msgid "Execution price"
 msgstr "체결가"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Invalid Solana address"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake failed"
 msgstr "언스테이킹에 실패했습니다"
@@ -11300,6 +11557,11 @@ msgstr "언어 선택"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Unknown value"
 msgstr "알 수 없는 값"
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Buyback history"
+msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -11986,6 +12248,7 @@ msgstr "현재 인덱싱된 계정 스냅샷"
 msgid "Stake GMX and buy GLV or GM to earn rewards"
 msgstr "GMX를 스테이킹하고 GLV 또는 GM을 구매하여 보상을 받으십시오"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sellable"
 msgstr "판매 가능"
@@ -12202,6 +12465,8 @@ msgstr "거래 전송됨"
 msgid "Perfectswap"
 msgstr "퍼펙트스왑"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
 #: src/components/ShareModal/ShareCardReferralCodeStat.tsx
 msgid "Referral code"
 msgstr "추천 코드"
@@ -12337,6 +12602,10 @@ msgstr "시장가 주문"
 msgid "Stop vesting failed"
 msgstr "베스팅 중지 실패"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "Your total sellable quota this season and how much of it you already used. Recent trades can take a while to show up."
+msgstr ""
+
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
 msgid "Insufficient {0} for gas on {1}<0/><1/><2>Swap</2> or <3>bridge</3> {2} to {3}"
@@ -12410,6 +12679,11 @@ msgstr "누적 거래량"
 msgid "View position history"
 msgstr "포지션 내역 보기"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "We couldn't confirm the Solana transaction. Check your Solana wallet before trying again."
+msgstr ""
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "The more you trade, the more you keep."
 msgstr "거래할수록 더 많이 남습니다."
@@ -12437,6 +12711,10 @@ msgstr "GMX Account 잔액"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX community discussion"
 msgstr "GMX 커뮤니티 토론"
+
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "Couldn't get the EVM signature. Your code wasn't created. Try again."
+msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Sell GM"
@@ -12797,6 +13075,10 @@ msgstr "포지션 영향 금액"
 msgid "Boosts"
 msgstr "부스트"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "No sellable GT"
+msgstr ""
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 msgid "Search opportunities"
 msgstr "기회 검색"
@@ -12989,7 +13271,6 @@ msgstr "수령할 배분을 최소 한 개 이상 선택하십시오"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
-#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
 msgid "Buy"
 msgstr "구매"
 
@@ -13372,6 +13653,10 @@ msgstr ""
 msgid "I understand that staking power does not transfer. The receiving wallet will start with zero staking power and a fresh historical max."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "You'll sign in your EVM wallet, then approve a transaction in a Solana wallet. It needs a little SOL for the network fee."
+msgstr ""
+
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "<0>Positive funding fees accrued from your positions</0>"
 msgstr "<0>포지션에서 발생한 양(+)의 펀딩 수수료</0>"
@@ -13392,6 +13677,10 @@ msgstr "우리와 맞을까요?"
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Gained"
 msgstr "획득"
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Selling {0}"
+msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Updating order..."
@@ -13439,6 +13728,10 @@ msgstr "지갑의 GMX를 스테이킹한 후 베스팅을 시작합니다."
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Your trading volume this epoch exceeds the threshold for the next tier."
 msgstr "이번 에포크의 거래량이 다음 등급 기준값을 초과했습니다."
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Sent to {shortAddress}. It may take a few minutes to arrive."
+msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GLP not withdrawn"
@@ -13620,6 +13913,10 @@ msgstr "유동성은 {chainNames} 또는 {lastChainName}에서만 이용 가능�
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Transfer history"
 msgstr "전송 내역"
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Show all ({0})"
+msgstr ""
 
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Cancel order"
@@ -13900,6 +14197,10 @@ msgstr ""
 msgid "Read details"
 msgstr "상세 내용 보기"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Paid"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading chat"
 msgstr "GMX trading chat"
@@ -14015,10 +14316,6 @@ msgstr "언어"
 msgid "{idleSeconds}s"
 msgstr "{idleSeconds}초"
 
-#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
-msgid "GT is the native token of the GM Trade project. It currently has no utility; additional functionality will become available after the token generation event (TGE)."
-msgstr "GT는 GM Trade 프로젝트의 네이티브 토큰입니다. 현재는 사용처가 없으며, 추가 기능은 토큰 생성 이벤트(TGE) 이후 제공될 예정입니다."
-
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "{0, plural, one {Closing will also cancel your pending margin deposit and return its funds.} other {Closing will also cancel your # pending margin deposits and return their funds.}}"
 msgstr "{0, plural, one {포지션을 종료하면 대기 중인 증거금 예치도 취소되고 자금이 반환됩니다.} other {포지션을 종료하면 대기 중인 #건의 증거금 예치도 취소되고 자금이 반환됩니다.}}"
@@ -14091,6 +14388,11 @@ msgstr "취소됨"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX dashboards and analytics"
 msgstr "GMX 대시보드 및 분석"
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "GT balance"
+msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "{column}"
@@ -14303,6 +14605,11 @@ msgstr "수익률 최적화"
 msgid "Trader & Affiliate Program"
 msgstr "트레이더 및 제휴 프로그램"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "{quotaUsedText} / {quotaTotalText} GT used"
+msgstr ""
+
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Explore the VIP Desk"
 msgstr "VIP Desk 살펴보기"
@@ -14365,7 +14672,8 @@ msgid "How and when do I get paid or credited?"
 msgstr "언제, 어떻게 지급받거나 적립받나요?"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
-#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
 msgid "Sell"
 msgstr "판매"
 
@@ -14555,6 +14863,7 @@ msgstr "{networkName}의 지갑으로 {tokensList}을(를) 받거나 다른 네�
 msgid "Copy link"
 msgstr "링크 복사"
 
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
@@ -14616,6 +14925,11 @@ msgstr "GMX 스테이킹 보상:"
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee"
 msgstr "{longOrShort} 포지션은 시간당 {fundingRate}의 펀딩 수수료를 {fundingAction} 차입 수수료는 부과되지 않습니다"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "Not enough SOL in your Solana wallet for the network fee."
+msgstr ""
+
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Failed to add referral code"
 msgstr "추천 코드 추가에 실패했습니다"
@@ -14670,6 +14984,10 @@ msgstr "TIMEKEY"
 msgid "Min position size"
 msgstr "최소 포지션 규모"
 
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "Create your code"
+msgstr ""
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Hours"
 msgstr "시간"
@@ -14700,6 +15018,10 @@ msgstr "실현 기본 PnL"
 #: src/domain/synthetics/positions/utils.ts
 msgid "limit"
 msgstr "지정가"
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "GT buyback"
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute TWAP Swap part"
@@ -14902,6 +15224,10 @@ msgstr ""
 msgid "No opportunities on this chain yet"
 msgstr "이 체인에는 아직 기회가 없습니다"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "Open buyback"
+msgstr ""
+
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
 msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
@@ -14927,9 +15253,17 @@ msgstr "안정성 향상을 위해 설정에서 <0>Express Trading</0>을 활성
 msgid "Enter a ratio"
 msgstr "비율 입력"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Withdraw not connected"
+msgstr ""
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "OK"
 msgstr "OK"
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "The signature was rejected. Nothing was sent and your GT is unchanged."
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Net total of action-level fees, and price impact. Hover the value to see the breakdown."
