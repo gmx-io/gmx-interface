@@ -268,6 +268,8 @@ export function PaxosRouteAlerts({
     zeroFeeCapacityShortBy,
     onReduceToZeroFeeCapacity,
     onUsePayAmount,
+    isApprovalProposalPending,
+    onProposeNewApproval,
   } = paxosRoute;
   const isStandardOfferedToNonWhitelisted =
     !isWhitelisted && routes.options.some((option) => option.route === "paxosStandard");
@@ -338,6 +340,21 @@ export function PaxosRouteAlerts({
               inventory, so they can take longer and arrive in parts. For instant delivery, pick another route.
             </Trans>
           )}
+        </AlertInfoCard>
+      )}
+
+      {isApprovalProposalPending && (
+        <AlertInfoCard type="info" hideClose>
+          <div className="flex flex-col gap-6">
+            <span>
+              <Trans>
+                An approval is already waiting in your wallet. Convert waits for it and does not propose a new one.
+              </Trans>
+            </span>
+            <EmbeddedActionButton onClick={onProposeNewApproval}>
+              <Trans>Propose a new approval</Trans>
+            </EmbeddedActionButton>
+          </div>
         </AlertInfoCard>
       )}
 

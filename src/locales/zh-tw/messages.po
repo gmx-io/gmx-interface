@@ -1044,6 +1044,11 @@ msgstr "{actionsCount, plural, one {訂單} other {# 筆訂單}}"
 msgid "Invalid collateral token. {tokenSymbol} isn't supported as collateral"
 msgstr "抵押品代幣無效。{tokenSymbol} 不支援作為抵押品"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
+msgid "A conversion is already waiting in your wallet. Try again after it executes."
+msgstr "您的錢包中已有一筆轉換在等待。請在執行後重試。"
+
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -1156,6 +1161,11 @@ msgstr "請僅將<0>與 {chainName} 相容的資產</0>傳送至此地址！"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
 msgid "USDG issuer, separate transaction, usually 2–10 min. No Paxos fee for whitelisted addresses."
 msgstr "USDG 發行方，獨立交易，通常需 2–10 分鐘。白名單地址免 Paxos 手續費。"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
+msgid "The approval has not executed yet. Convert again after it executes."
+msgstr "授權尚未執行。請在執行後再次轉換。"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {hours} hours{0}"
@@ -5214,6 +5224,10 @@ msgstr "此市場沒有淨費率歷史記錄"
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Liquidated"
 msgstr "已清算"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Propose a new approval"
+msgstr "提交新的授權"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update margin deposit"
@@ -12250,6 +12264,10 @@ msgstr "此代幣已停用 Permit 授權。"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "LAST PRICE"
 msgstr "最新價格"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "An approval is already waiting in your wallet. Convert waits for it and does not propose a new one."
+msgstr "您的錢包中已有一筆授權在等待。轉換會等待它執行，不會再提交新的授權。"
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Cancelling {orderText}..."

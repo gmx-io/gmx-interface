@@ -14,7 +14,7 @@ import type { TransitOrder, TransitQuoteParams } from "sdk/utils/paxos/types";
 
 import { mockTransitApi } from "./mockTransitApi";
 import { submitTransitOrder } from "./submitTransitOrder";
-import { findPendingTransitOrder } from "./transitOrders";
+import { findPendingTransitOrder, TRANSIT_RECENT_ORDERS_PAGE_SIZE } from "./transitOrders";
 import type { PaxosTransitConversion } from "./transitRouteProgress";
 import type { TransitApi } from "./types";
 import { useTransitMinOrderSizes } from "./useTransitMinOrderSizes";
@@ -24,7 +24,6 @@ type PaxosTransitSubmitStep = "idle" | "approving" | "submitting";
 
 const FEE_TIER_REFRESH_INTERVAL = 60_000;
 const QUOTE_REFRESH_INTERVAL = 30_000;
-const RECENT_ORDERS_PAGE_SIZE = 10;
 
 export function usePaxosTransit({
   chainId,
@@ -156,7 +155,10 @@ export function usePaxosTransit({
   useSWR(
     isActive ? ["paxosTransitPendingOrder", chainId, account, tokenInAddress] : null,
     async function resumePendingOrder() {
-      const { orders } = await api!.fetchTransitOrders({ userAddress: account!, pageSize: RECENT_ORDERS_PAGE_SIZE });
+      const { orders } = await api!.fetchTransitOrders({
+        userAddress: account!,
+        pageSize: TRANSIT_RECENT_ORDERS_PAGE_SIZE,
+      });
       const pendingOrder = findPendingTransitOrder(orders, {
         offerAsset: tokenInAddress!,
         wantAsset: tokenOutAddress!,

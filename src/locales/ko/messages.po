@@ -1044,6 +1044,11 @@ msgstr "{actionsCount, plural, one {주문} other {# 주문}}"
 msgid "Invalid collateral token. {tokenSymbol} isn't supported as collateral"
 msgstr "유효하지 않은 담보 토큰입니다. {tokenSymbol}은(는) 담보로 지원되지 않습니다"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
+msgid "A conversion is already waiting in your wallet. Try again after it executes."
+msgstr "지갑에서 이미 변환이 대기 중입니다. 실행된 후 다시 시도하세요."
+
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -1156,6 +1161,11 @@ msgstr "이 주소로는 <0>{chainName} 호환 자산</0>만 보내십시오!"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
 msgid "USDG issuer, separate transaction, usually 2–10 min. No Paxos fee for whitelisted addresses."
 msgstr "USDG 발행사, 별도 트랜잭션, 보통 2–10분 소요. 화이트리스트 주소는 Paxos 수수료 없음."
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
+msgid "The approval has not executed yet. Convert again after it executes."
+msgstr "승인이 아직 실행되지 않았습니다. 실행된 후 다시 변환하세요."
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {hours} hours{0}"
@@ -5214,6 +5224,10 @@ msgstr "이 시장의 순이율 내역이 없습니다"
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Liquidated"
 msgstr "청산됨"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Propose a new approval"
+msgstr "새 승인 제안하기"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update margin deposit"
@@ -12250,6 +12264,10 @@ msgstr "이 토큰의 퍼밋 승인은 비활성화되어 있습니다."
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "LAST PRICE"
 msgstr "최종 가격"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "An approval is already waiting in your wallet. Convert waits for it and does not propose a new one."
+msgstr "지갑에서 이미 승인이 대기 중입니다. 변환은 이를 기다리며 새 승인을 제안하지 않습니다."
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Cancelling {orderText}..."

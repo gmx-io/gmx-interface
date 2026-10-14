@@ -1044,6 +1044,11 @@ msgstr "{actionsCount, plural, one {注文} other {# 注文}}"
 msgid "Invalid collateral token. {tokenSymbol} isn't supported as collateral"
 msgstr "無効な担保トークンです。{tokenSymbol}は担保としてサポートされていません"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
+msgid "A conversion is already waiting in your wallet. Try again after it executes."
+msgstr "ウォレットで変換がすでに待機中です。実行された後にもう一度お試しください。"
+
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -1156,6 +1161,11 @@ msgstr "このアドレスには<0>{chainName}対応の資産</0>のみを送信
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
 msgid "USDG issuer, separate transaction, usually 2–10 min. No Paxos fee for whitelisted addresses."
 msgstr "USDG発行体、別トランザクション、通常2–10分。ホワイトリスト登録済みアドレスはPaxos手数料無料。"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
+msgid "The approval has not executed yet. Convert again after it executes."
+msgstr "承認はまだ実行されていません。実行された後にもう一度変換してください。"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {hours} hours{0}"
@@ -5214,6 +5224,10 @@ msgstr "この市場のネットレート履歴はありません"
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Liquidated"
 msgstr "清算済"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Propose a new approval"
+msgstr "新しい承認を提案"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update margin deposit"
@@ -12250,6 +12264,10 @@ msgstr "このトークンではパーミット承認が無効になっていま
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "LAST PRICE"
 msgstr "最終価格"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "An approval is already waiting in your wallet. Convert waits for it and does not propose a new one."
+msgstr "ウォレットで承認がすでに待機中です。変換はその実行を待ち、新しい承認は提案しません。"
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Cancelling {orderText}..."

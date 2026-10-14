@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import useSWR from "swr";
 
 import { USD_DECIMALS } from "config/factors";
@@ -27,7 +27,12 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/tradeboxPaxosSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { mockTransitApi } from "domain/synthetics/paxosTransit/mockTransitApi";
-import { submitTransitOrder } from "domain/synthetics/paxosTransit/submitTransitOrder";
+import {
+  submitTransitOrder,
+  TransitApprovalClaimedError,
+  TransitApprovalPendingError,
+  TransitConversionPendingError,
+} from "domain/synthetics/paxosTransit/submitTransitOrder";
 import {
   getIsPaxosQuoteWorseThanShown,
   getPaxosRouteStates,
@@ -38,6 +43,11 @@ import {
   type TradeboxSwapRoutePreference,
 } from "domain/synthetics/paxosTransit/tradeboxRoutes";
 import { getIsTransitOrderFinal } from "domain/synthetics/paxosTransit/transitOrders";
+import {
+  getIsTransitApprovalProposed,
+  removeTransitApprovalProposal,
+  type TransitApproval,
+} from "domain/synthetics/paxosTransit/transitWalletProposals";
 import type { TransitApi } from "domain/synthetics/paxosTransit/types";
 import { useTransitMinOrderSizes } from "domain/synthetics/paxosTransit/useTransitMinOrderSizes";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "domain/synthetics/tokens";
@@ -83,6 +93,8 @@ export function useTradeboxPaxosRoute({
   const showDebugValues = useSelector(selectShowDebugValues);
   const { account, signer } = useWallet();
   const { accountType } = useAccountType();
+  const isSmartWallet = accountType === AccountType.SmartAccount;
+  const [, refreshApprovalProposal] = useReducer((version: number) => version + 1, 0);
   const { transitRouteProgress, paxosTransitOrder, isPaxosTransitOrderStatusUnknown, startTransitRouteProgress } =
     useSyntheticsEvents();
   const sdk = useGmxSdk(chainId);
@@ -163,7 +175,7 @@ export function useTradeboxPaxosRoute({
 
   const quoteRequest = {
     api,
-    isActive: isPaxosAvailable && feeTierData !== undefined && isAmountSettled && step === "idle",
+    isActive: isPaxosAvailable && feeTierData !== undefined && isAmountSettled,
     paxosRouteStates: quotedRouteStates,
     chainId,
     account,
@@ -265,6 +277,30 @@ export function useTradeboxPaxosRoute({
         : undefined;
   const activeOption = routes.options.find((option) => option.route === activeRoute);
 
+  const fromTokenAddress = fromToken?.address;
+  const pendingApprovalSpender = activePaxosQuote?.transaction.to;
+  const pendingApproval = useMemo((): TransitApproval | undefined => {
+    if (!isSmartWallet || !account || !fromTokenAddress || !pendingApprovalSpender || step !== "idle") {
+      return undefined;
+    }
+
+    return {
+      chainId,
+      account,
+      tokenAddress: fromTokenAddress,
+      spender: pendingApprovalSpender,
+      amount: fromTokenAmount,
+    };
+  }, [account, chainId, fromTokenAddress, fromTokenAmount, isSmartWallet, pendingApprovalSpender, step]);
+  const isApprovalProposalPending = pendingApproval !== undefined && getIsTransitApprovalProposed(pendingApproval);
+
+  const onProposeNewApproval = useCallback(() => {
+    if (pendingApproval) {
+      removeTransitApprovalProposal(pendingApproval);
+      refreshApprovalProposal();
+    }
+  }, [pendingApproval]);
+
   const pendingConversion = useMemo(() => {
     if (
       !isConversionInProgress ||
@@ -321,6 +357,12 @@ export function useTradeboxPaxosRoute({
       } else if (error instanceof HttpError && (error.statusCode === 403 || error.statusCode === 409)) {
         refreshFeeTier();
         helperToast.error(t`Zero-fee capacity changed. Review the route options and confirm again.`);
+      } else if (error instanceof TransitApprovalClaimedError) {
+        return;
+      } else if (error instanceof TransitConversionPendingError) {
+        helperToast.error(t`A conversion is already waiting in your wallet. Try again after it executes.`);
+      } else if (error instanceof TransitApprovalPendingError) {
+        helperToast.error(t`The approval has not executed yet. Convert again after it executes.`);
       } else if (parseError(error as Error)?.isUserRejectedError) {
         helperToast.error(t`Transaction canceled`);
       } else {
@@ -368,7 +410,9 @@ export function useTradeboxPaxosRoute({
     isActive,
     isWhitelisted,
     isByPay,
-    isSmartWallet: accountType === AccountType.SmartAccount,
+    isSmartWallet,
+    isApprovalProposalPending,
+    onProposeNewApproval,
     routes,
     paxosRouteStates,
     preference,

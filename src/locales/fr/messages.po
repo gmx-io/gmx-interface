@@ -1044,6 +1044,11 @@ msgstr "{actionsCount, plural, one {Ordre} other {# Ordres}}"
 msgid "Invalid collateral token. {tokenSymbol} isn't supported as collateral"
 msgstr "Token de garantie invalide. {tokenSymbol} n'est pas pris en charge comme garantie"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
+msgid "A conversion is already waiting in your wallet. Try again after it executes."
+msgstr "Une conversion attend déjà dans votre portefeuille. Réessayez une fois qu'elle est exécutée."
+
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -1156,6 +1161,11 @@ msgstr "Envoyez uniquement des <0>actifs compatibles avec {chainName}</0> à cet
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
 msgid "USDG issuer, separate transaction, usually 2–10 min. No Paxos fee for whitelisted addresses."
 msgstr "Émetteur de l'USDG, transaction séparée, généralement 2–10 min. Sans frais Paxos pour les adresses sur liste blanche."
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
+msgid "The approval has not executed yet. Convert again after it executes."
+msgstr "L'approbation n'est pas encore exécutée. Convertissez à nouveau une fois qu'elle l'est."
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {hours} hours{0}"
@@ -5214,6 +5224,10 @@ msgstr "Aucun historique du taux net pour ce marché"
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Liquidated"
 msgstr "Liquidé"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Propose a new approval"
+msgstr "Proposer une nouvelle approbation"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update margin deposit"
@@ -12250,6 +12264,10 @@ msgstr "Les approbations par permis sont désactivées pour ce token."
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "LAST PRICE"
 msgstr "DERNIER PRIX"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "An approval is already waiting in your wallet. Convert waits for it and does not propose a new one."
+msgstr "Une approbation attend déjà dans votre portefeuille. La conversion l'attend et n'en propose pas de nouvelle."
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Cancelling {orderText}..."

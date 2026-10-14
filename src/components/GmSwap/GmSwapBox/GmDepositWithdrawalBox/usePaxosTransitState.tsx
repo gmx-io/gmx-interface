@@ -35,6 +35,11 @@ import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { Operation } from "domain/synthetics/markets/types";
 import { getReceivedTokenAmount } from "domain/synthetics/paxosTransit/getReceivedTokenAmount";
+import {
+  TransitApprovalClaimedError,
+  TransitApprovalPendingError,
+  TransitConversionPendingError,
+} from "domain/synthetics/paxosTransit/submitTransitOrder";
 import { getIsTransitOrderFinal } from "domain/synthetics/paxosTransit/transitOrders";
 import {
   getTransitRouteProgressForMarket,
@@ -165,7 +170,11 @@ export function usePaxosTransitState({
 
   const onPendingOrderFound = useCallback(
     (order: TransitOrder) => {
-      if (!glvOrMarketAddress || !account || transitRouteProgress?.conversion?.orderId === order.id) return;
+      const trackedConversion = transitRouteProgress?.conversion;
+
+      if (!glvOrMarketAddress || !account || (trackedConversion && trackedConversion.orderId === undefined)) return;
+
+      if (trackedConversion?.orderId === order.id) return;
 
       startTransitRouteProgress({
         chainId,
@@ -280,7 +289,18 @@ export function usePaxosTransitState({
         });
       })
       .catch((error: Error) => {
-        helperToast.error(t`Conversion failed: ${error.message}`);
+        if (error instanceof TransitApprovalClaimedError) return;
+
+        if (error instanceof TransitConversionPendingError) {
+          helperToast.error(t`A conversion is already waiting in your wallet. Try again after it executes.`);
+          return;
+        }
+
+        helperToast.error(
+          error instanceof TransitApprovalPendingError
+            ? t`The approval has not executed yet. Convert again after it executes.`
+            : t`Conversion failed: ${error.message}`
+        );
       });
   }, [
     account,
