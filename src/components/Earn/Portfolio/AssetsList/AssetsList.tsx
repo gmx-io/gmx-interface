@@ -222,7 +222,11 @@ function AssetsList({
               );
             }
             if (asset.type === "gt") {
-              return <GtAssetCard key="gt" gtRewards={asset.gtRewards} gtRewardsUsd={asset.gtRewardsUsd} />;
+              return (
+                <div key="gt" className="flex flex-col md:row-span-2 md:min-h-[420px] md:self-stretch">
+                  <GtAssetCard gtRewards={asset.gtRewards} gtRewardsUsd={asset.gtRewardsUsd} account={account} />
+                </div>
+              );
             }
             return null;
           })}

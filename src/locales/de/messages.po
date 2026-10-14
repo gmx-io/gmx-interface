@@ -704,6 +704,10 @@ msgstr "Der Auditverlauf konnte nicht aktualisiert werden. Der zuletzt geladene 
 msgid "Unrealized fee contribution"
 msgstr "Beitrag nicht realisierter Gebühren"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "History"
+msgstr ""
+
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Funding"
@@ -727,6 +731,10 @@ msgstr "Entstaken..."
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From network"
 msgstr "Quellnetzwerk"
+
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "Couldn't check if this code is available. Try again."
+msgstr ""
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Re-sign to continue using One-Click Trading."
@@ -1176,6 +1184,10 @@ msgstr ""
 msgid "GMX Detailed CSV"
 msgstr "GMX Detailed CSV"
 
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "As they use GMX on Solana, your GT unlocks to sell in the buyback"
+msgstr ""
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {seconds} seconds"
 msgstr ""
@@ -1296,6 +1308,14 @@ msgstr "TVL in Vaults und Pools"
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX on Solana"
 msgstr "GMX auf Solana"
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Solana address that receives the USDC"
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Not available for smart-contract wallets"
+msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
@@ -1524,9 +1544,17 @@ msgstr ""
 msgid "Swap fee factor (negative PI)"
 msgstr "Tauschgebührfaktor (negativer PI)"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Approve in a Solana wallet"
+msgstr ""
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claimable balance"
 msgstr "Einforderbares Guthaben"
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "Submitting your request to sell {amount}…"
+msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Current {symbol} pool value / max cap"
@@ -1634,6 +1662,7 @@ msgstr "Max. {0} kaufbarer Betrag überschritten"
 msgid "Existing position uses {0} collateral. If executed, this order will create a separate position. <0>Switch to {1} collateral</0>"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
@@ -1731,6 +1760,10 @@ msgstr "Für tiefere Liquidität und das vollständigste GMX-Handelserlebnis nut
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "Max {allowedAutoCancelOrdersNumber} auto-cancel TP/SL orders allowed. Extra orders require manual cancellation. Existing orders still close with the position. <0>Read more</0>."
 msgstr "Maximal {allowedAutoCancelOrdersNumber} automatisch stornierbare TP/SL-Orders erlaubt. Zusätzliche Orders müssen manuell storniert werden. Bestehende Orders werden weiterhin mit der Position geschlossen. <0>Mehr erfahren</0>."
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Sell through buyback"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX proposals voting page"
@@ -1883,6 +1916,7 @@ msgstr "Die Bedingung für den Auslösungspreis wurde nicht erfüllt"
 msgid "/ year"
 msgstr "/ Jahr"
 
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "May take a few minutes to reflect. Check back later"
 msgstr "Es kann einige Minuten dauern, bis die Änderung sichtbar ist. Bitte versuchen Sie es später erneut"
@@ -2122,6 +2156,10 @@ msgstr ""
 msgid "Your discount is applied automatically when you execute a trade. You'll see the referral discount in your fee tooltip before opening a trade."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Receive USDC to Solana address"
+msgstr ""
+
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "CSV"
@@ -2264,6 +2302,7 @@ msgstr "Erneut versuchen"
 msgid "Available liquidity {directionLabel}"
 msgstr "Verfügbare Liquidität {directionLabel}"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "Show less"
 msgstr "Weniger anzeigen"
@@ -2681,6 +2720,10 @@ msgstr "EIP-4844"
 msgid "Keep leverage at {0}"
 msgstr "Leverage bei {0} halten"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "No past buyback requests yet."
+msgstr ""
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAIL. LIQ."
 msgstr "VERFÜGB. LIQ."
@@ -2944,6 +2987,10 @@ msgstr "Warnsymbol"
 msgid "Leftover margin below {0} USD"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Awaiting payout"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Decrease"
 msgstr "Marktverringerung fehlgeschlagen"
@@ -3170,6 +3217,11 @@ msgstr ""
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Account"
 msgstr "Konto"
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Season quota"
+msgstr ""
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Position exceeds max allowed leverage. <0>Read more</0>."
@@ -3540,6 +3592,7 @@ msgstr "GMX technische Ankündigungen"
 msgid "All Announcements"
 msgstr "Alle Ankündigungen"
 
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
@@ -3555,6 +3608,10 @@ msgstr "PnL nach Gebühren anzeigen"
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No eligible holdings detected"
 msgstr "Keine berechtigten Bestände erkannt"
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Couldn't get the EVM signature. Nothing was withdrawn. Try again."
+msgstr ""
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
@@ -3796,6 +3853,11 @@ msgstr "Strengste Einzahlungskapazität in USD"
 msgid "Liquidated as max leverage of {formattedMaxLeverage} was exceeded when accounting for fees."
 msgstr "Liquidiert, da der maximale Hebel von {formattedMaxLeverage} unter Berücksichtigung der Gebühren überschritten wurde."
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "Done"
+msgstr ""
+
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
 msgstr "Eingezahlt {0} in {positionText}"
@@ -3953,6 +4015,9 @@ msgstr "Ankündigungen"
 msgid "Trade featured markets to activate this boost and earn a higher multiplier for those trades."
 msgstr "Handle auf ausgewählten Märkten, um diesen Boost zu aktivieren und einen höheren Multiplikator für diese Trades zu erhalten."
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
@@ -4239,6 +4304,10 @@ msgstr "Exposition gegenüber dem PnL der Marktteilnehmer"
 msgid "Realized PnL before fees, discounts and price impact."
 msgstr "Realisierter PnL vor Gebühren, Rabatten und Preiseinfluss."
 
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "Share it with other traders"
+msgstr ""
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."
 msgstr ""
@@ -4346,6 +4415,10 @@ msgstr "Wallet-Eingang beim Schließen"
 msgid "GLV vaults"
 msgstr "GLV Vaults"
 
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "Use your GMX code: {0}"
+msgstr ""
+
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute: insufficient liquidity at the trigger price. Reduce the order size."
@@ -4372,6 +4445,10 @@ msgstr "Indem Sie esGMX beanspruchen oder vesten, stimmen Sie den <0>Allgemeinen
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Commodities"
 msgstr "Rohstoffe"
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "You can sell up to your sellable GT. The request counts toward {season} only."
+msgstr ""
 
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "GMX was approved. Reconnect the original wallet to continue."
@@ -4706,9 +4783,18 @@ msgstr "Herabstufungsfaktoren"
 msgid "Fees (including swap)"
 msgstr "Gebühren (inkl. Tauschen)"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Multisig and other smart-contract wallets can't join the buyback. Connect a regular wallet to sell GT."
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Exponent (positive)"
 msgstr "Exponent (positiv)"
+
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "The EVM signature was rejected. Your code wasn't created."
+msgstr ""
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
@@ -4942,6 +5028,10 @@ msgstr "Starten Sie den Handel, um Ihre Belohnungen einzulösen."
 msgid "esGMX Rewards = Fees × (Multiplier × 10%)"
 msgstr "esGMX-Belohnungen = Gebühren × (Multiplikator × 10 %)"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "GT you earned on GMX, on Arbitrum and Avalanche combined, minus any GT you sold in the buyback."
+msgstr ""
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker thread"
 msgstr "Worker-Thread"
@@ -5017,6 +5107,10 @@ msgstr "Unzureichendes Gas für Netzwerkgebühren"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to"
 msgstr "{fromText} zu"
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "You can sell up to your sellable GT. The request counts toward the current season only."
+msgstr ""
 
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "Frontends"
@@ -5146,6 +5240,10 @@ msgstr "Handeln"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "No deposits required"
 msgstr "Keine Einzahlungen erforderlich"
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Sell GT"
+msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Trading airdrop"
@@ -5398,6 +5496,12 @@ msgstr "Selbstübertragung nicht unterstützt"
 #: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
 msgid "Are referral Rewards part of my multiplier?"
 msgstr "Sind Empfehlungsbelohnungen Teil meines Multiplikators?"
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "Copy referral code"
+msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Generating session..."
@@ -5829,6 +5933,10 @@ msgstr "Rang unter Konten für diese Kennzahl und diesen Zeitraum."
 msgid "Sepolia vesting uses test GMX, esGMX, and sbfGMX collateral tokens."
 msgstr "Beim Vesting auf Sepolia werden Test-GMX, Test-esGMX und sbfGMX als Sicherheit verwendet."
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "{0} is ready to withdraw."
+msgstr ""
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "No net rate history for this market"
 msgstr ""
@@ -5891,6 +5999,10 @@ msgstr "Richtung"
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Wallet or network changed. Review your vesting details before stopping."
 msgstr "Wallet oder Netzwerk wurde geändert. Prüfen Sie Ihre Vesting-Details, bevor Sie das Vesting stoppen."
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "Not set"
+msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "This position is currently above liquidation risk, but it may become close to liquidation when the market switches to off-hours risk parameters. Add margin or reduce leverage to increase your buffer."
@@ -6100,6 +6212,10 @@ msgstr "Preiseinfluss zu hoch"
 msgid "{0}h"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "Connect Solana wallet..."
+msgstr ""
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Enter withdrawal amount"
 msgstr "Abhebungsbetrag eingeben"
@@ -6307,6 +6423,10 @@ msgstr ""
 msgid "Looking for a check before committing"
 msgstr "Sucht einen Scheck vor jeder Verpflichtung"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "Your request to sell {amount} is waiting for your signature."
+msgstr ""
+
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap profit fee"
 msgstr "Hohe Swap-Gewinngebühr"
@@ -6432,6 +6552,9 @@ msgstr "Externe Swaps fehlschlagen lassen"
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -6477,6 +6600,10 @@ msgstr "Bonus-APR"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Accumulating..."
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Signing not connected"
 msgstr ""
 
 #: src/components/InterviewModal/InterviewModal.tsx
@@ -6608,6 +6735,10 @@ msgstr "Eingang vor dem Schließen (GMX-Guthaben)"
 msgid "Open interest {directionLabel}"
 msgstr "Open Interest {directionLabel}"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "GT is the GM Trade token. You can sell GT for USDC in the daily buyback on GMTrade, up to your sellable amount."
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
@@ -6649,6 +6780,10 @@ msgstr "Slippage ist die Differenz zwischen deinem erwarteten und tatsächlichen
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "Per-epoch diagnostic audit"
 msgstr "Diagnostisches Audit pro Epoche"
+
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "Now share it — your GT unlocks as the people you refer use GMX on Solana."
+msgstr ""
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
@@ -6922,6 +7057,17 @@ msgstr "Mehr lesen"
 msgid "GM and GLV include markets you no longer hold."
 msgstr "GM und GLV enthalten auch Märkte, die du nicht mehr hältst."
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "Referral code copied to your clipboard"
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "No sellable GT right now. Share your referral code — your GT unlocks as the people you refer use GMX on Solana."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Earn {0}% more rewards with this action"
 msgstr "Verdienen Sie {0}% mehr Belohnungen mit dieser Aktion"
@@ -7056,6 +7202,10 @@ msgstr ""
 msgid "Short"
 msgstr "Short"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "{amount} is in today's buyback. The window ends in {timeLeft}."
+msgstr ""
+
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded on execution. <0>Read more</0>."
 msgstr "Die maximale Netzwerkgebühr enthält einen Puffer für Gas-Spitzen. Nicht verwendete Gebühren werden bei Ausführung erstattet. <0>Mehr erfahren</0>."
@@ -7172,6 +7322,10 @@ msgstr "GLV"
 #: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
 msgid "All-time"
 msgstr "Gesamtzeitraum"
+
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "Not connected"
+msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "PnL after all fees"
@@ -7295,6 +7449,10 @@ msgstr "Longs"
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Affiliate rewards claimed"
 msgstr "Partnerbelohnungen beansprucht"
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "{amount} was bought back. The payout is being confirmed."
+msgstr ""
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "transaction:"
@@ -7688,6 +7846,8 @@ msgstr "GLV (GMX Liquidity Vault) hält verschiedene GM Token und bietet Ihnen e
 msgid "Settlement network changed to Arbitrum, but $12.50 remains in your Base GMX Account"
 msgstr "Abwicklungsnetzwerk wurde auf Arbitrum geändert, aber 12,50 $ verbleiben in Ihrem Base GMX Account"
 
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -8096,6 +8256,10 @@ msgstr ""
 msgid "No trades match the selected filters"
 msgstr "Keine Trades entsprechen den ausgewählten Filtern"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "GM Trade token"
+msgstr ""
+
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Decreased"
 msgstr "Verringert"
@@ -8155,6 +8319,7 @@ msgstr "Abwicklung der Finanzierungsgebühren anfordern"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
 msgid "Withdrawn"
 msgstr "Abgehoben"
 
@@ -8296,6 +8461,10 @@ msgstr "Die maximale Netzwerkgebühr enthält einen Puffer für Gas-Spitzen. Nic
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Order execution failed"
 msgstr "Orderausführung fehlgeschlagen"
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "Your GT unlocks as the people you refer use GMX on Solana. Create a code to start."
+msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} and {1} up to the caps below. Remaining tokens are reserved for open positions."
@@ -8513,6 +8682,11 @@ msgstr ""
 msgid "If you continue, you will lose {0} in rewards"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "How much of your GT you can sell in the buyback this season. Your referees unlock it as they use GMX on Solana, and it can't be more than your GT balance."
+msgstr ""
+
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/GmxAccountModal/MainView.tsx
@@ -8522,6 +8696,10 @@ msgstr "Von Wallet senden"
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "{0, plural, one {# day left} other {# days left}}"
 msgstr "{0, plural, one {# Tag verbleibend} other {# Tage verbleibend}}"
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "In today's buyback"
+msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Can't withdraw collateral. Remaining collateral would be below minimum"
@@ -8655,6 +8833,10 @@ msgstr "TP-Preis"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "ParaSwap"
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "{amount} is in today's buyback."
 msgstr ""
 
 #: src/App/MainRoutes.tsx
@@ -8902,6 +9084,14 @@ msgstr "Governance-Benachrichtigungen"
 msgid "Low {symbol} balance. This amount leaves little for future fees on your GMX Account."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "No Solana wallet connected. Connect one to pay the network fee."
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "The EVM signature was rejected. Nothing was withdrawn."
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8974,6 +9164,10 @@ msgstr "Um 1 esGMX innerhalb eines Jahres in 1 GMX umzuwandeln, musst du 5 GMX a
 msgid "Symbol (A to Z)"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Enter a Solana address"
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Full lifecycle reconciliation is unavailable because part of this position's history could not be matched reliably."
 msgstr "Die vollständige Abstimmung des Lebenszyklus ist nicht verfügbar, da ein Teil der Historie dieser Position nicht zuverlässig zugeordnet werden konnte."
@@ -8986,6 +9180,7 @@ msgstr "Aktuelles GT"
 msgid "{orderText} updated"
 msgstr "{orderText} aktualisiert"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts
 msgid "Withdrawal sent"
@@ -9261,6 +9456,10 @@ msgstr "Gewinnrate"
 msgid "Epoch ID"
 msgstr "Epochen-ID"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Waiting for signature"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading stats"
 msgstr "GMX trading stats"
@@ -9347,6 +9546,10 @@ msgstr "Die Position kann beim aktuellen Hebel nicht erhöht werden. Erhöhen Si
 msgid "See the perks"
 msgstr "Vorteile ansehen"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Sign in your EVM wallet"
+msgstr ""
+
 #: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
 msgid "All-time GT"
 msgstr "GT insgesamt"
@@ -9387,6 +9590,11 @@ msgstr "GLV verkaufen"
 msgid "You earn esGMX and GT Rewards based on the fees paid each time you increase or decrease a position."
 msgstr "Du verdienst esGMX- und GT-Belohnungen basierend auf den Gebühren, die bei jeder Erhöhung oder Verringerung einer Position gezahlt werden."
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Total bought back"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "from {BLOCKCHAIN_COUNT} blockchains"
 msgstr "von {BLOCKCHAIN_COUNT} Blockchains"
@@ -9407,6 +9615,11 @@ msgstr "Jetzt"
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "30d"
 msgstr "30T"
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "Approve in Solana wallet..."
+msgstr ""
 
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Exit price"
@@ -9472,6 +9685,10 @@ msgstr "Markpreis"
 #: src/pages/RewardsPage/components/RewardsVestingFlow.tsx
 msgid "No rewards are currently available to claim."
 msgstr "Derzeit sind keine Belohnungen zum Beanspruchen verfügbar."
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "Create a referral code on Solana to participate in the GT buyback."
+msgstr ""
 
 #: src/pages/RewardsPage/components/RewardsVestingFaq.tsx
 msgid "What is vesting?"
@@ -9589,6 +9806,7 @@ msgstr "Version:"
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Available"
 msgstr "Verfügbar"
@@ -9690,6 +9908,7 @@ msgstr ""
 msgid "Governance"
 msgstr "Governance"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
 #: src/components/HistoryExport/HistoryExportModal.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -9757,6 +9976,10 @@ msgstr ""
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "Do I need to pass KYC?"
 msgstr "Muss ich eine KYC-Prüfung durchlaufen?"
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Withdraw USDC"
+msgstr ""
 
 #: src/components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner.tsx
 msgid "Your wallet cannot sign messages. Connect a different wallet to trade."
@@ -9944,10 +10167,17 @@ msgstr "Aktiver Balancer-Programm-Code"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
 #: src/pages/RewardsPage/components/RewardsRatioVestingModal.tsx
 #: src/pages/RewardsPage/components/RewardsVestingModals.tsx
 msgid "Max amount exceeded"
 msgstr "Maximalbetrag überschritten"
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "Sign in your EVM wallet..."
+msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -10111,6 +10341,10 @@ msgstr "Übertragung läuft..."
 msgid "Staked GMX:"
 msgstr "Gestaktes GMX:"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Submitting"
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed."
 msgstr "Verkaufen von {gmOrGlvLabel} fehlgeschlagen."
@@ -10169,6 +10403,10 @@ msgstr "Orderanfrage gesendet"
 #: src/pages/RewardsPage/components/RewardsTiersSummary.tsx
 msgid "Your multiplier will decrease next epoch."
 msgstr "Ihr Multiplikator sinkt in der nächsten Epoche."
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Confirm in your wallet..."
+msgstr ""
 
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 msgid "Oracle Keeper debug"
@@ -10702,6 +10940,11 @@ msgstr "weniger als eine Minute"
 msgid "Ecosystem"
 msgstr "Ökosystem"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Sellable GT"
+msgstr ""
+
 #: src/pages/RewardsPage/RewardsPage.tsx
 msgid "The new epoch is being indexed. Account totals will update shortly."
 msgstr "Die neue Epoche wird indexiert. Die Kontosummen werden in Kürze aktualisiert."
@@ -10715,6 +10958,7 @@ msgstr "Weiter"
 msgid "More info"
 msgstr "Mehr Infos"
 
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -10765,7 +11009,6 @@ msgstr "Ungültige Übertragungsadressen. Überprüfen Sie die URL."
 msgid "Copy"
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -10777,6 +11020,10 @@ msgstr "Betrag"
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Integrate GMX"
 msgstr "GMX integrieren"
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Something went wrong. Check your buyback history before trying again."
+msgstr ""
 
 #: src/pages/IncentivesDebug/IncentivesConfigSnapshot.tsx
 msgid "Referral reward share"
@@ -10897,6 +11144,10 @@ msgstr "Benachrichtigungen"
 msgid "Trading mode"
 msgstr "Handelsmodus"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Back"
+msgstr ""
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Cross-margin</0><1>Cross-collateral</1>"
 msgstr "<0>Cross-Margin</0><1>Cross-Collateral</1>"
@@ -10928,6 +11179,8 @@ msgstr "24h Volumen"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/AvalancheVestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -11275,6 +11528,10 @@ msgstr "Bonus APR ausgezahlt als {airdropTokenTitle} Airdrops. <0>Mehr erfahren<
 msgid "Execution price"
 msgstr "Ausführungspreis"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Invalid Solana address"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake failed"
 msgstr "Entstaken fehlgeschlagen"
@@ -11300,6 +11557,11 @@ msgstr "Sprache auswählen"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Unknown value"
 msgstr "Unbekannter Wert"
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Buyback history"
+msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -11986,6 +12248,7 @@ msgstr "Aktueller indexierter Kontosnapshot"
 msgid "Stake GMX and buy GLV or GM to earn rewards"
 msgstr "Staken Sie GMX und kaufen Sie GLV oder GM, um Belohnungen zu erhalten"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sellable"
 msgstr "Verkäuflich"
@@ -12202,6 +12465,8 @@ msgstr "Transaktion gesendet"
 msgid "Perfectswap"
 msgstr "Perfectswap"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
 #: src/components/ShareModal/ShareCardReferralCodeStat.tsx
 msgid "Referral code"
 msgstr "Empfehlungscode"
@@ -12337,6 +12602,10 @@ msgstr "Market Orders"
 msgid "Stop vesting failed"
 msgstr "Vesting-Stopp fehlgeschlagen"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "Your total sellable quota this season and how much of it you already used. Recent trades can take a while to show up."
+msgstr ""
+
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
 msgid "Insufficient {0} for gas on {1}<0/><1/><2>Swap</2> or <3>bridge</3> {2} to {3}"
@@ -12410,6 +12679,11 @@ msgstr "Lebenszeitvolumen"
 msgid "View position history"
 msgstr "Positionsverlauf anzeigen"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "We couldn't confirm the Solana transaction. Check your Solana wallet before trying again."
+msgstr ""
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "The more you trade, the more you keep."
 msgstr "Je mehr Sie handeln, desto mehr behalten Sie."
@@ -12437,6 +12711,10 @@ msgstr "GMX Account Guthaben"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX community discussion"
 msgstr "GMX-Community-Diskussion"
+
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "Couldn't get the EVM signature. Your code wasn't created. Try again."
+msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Sell GM"
@@ -12797,6 +13075,10 @@ msgstr "Positionseinfluss-Betrag"
 msgid "Boosts"
 msgstr "Boosts"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "No sellable GT"
+msgstr ""
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 msgid "Search opportunities"
 msgstr "Möglichkeiten suchen"
@@ -12989,7 +13271,6 @@ msgstr "Wählen Sie mindestens eine Ausschüttung zum Beanspruchen aus"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
-#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
 msgid "Buy"
 msgstr "Kaufen"
 
@@ -13372,6 +13653,10 @@ msgstr ""
 msgid "I understand that staking power does not transfer. The receiving wallet will start with zero staking power and a fresh historical max."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "You'll sign in your EVM wallet, then approve a transaction in a Solana wallet. It needs a little SOL for the network fee."
+msgstr ""
+
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "<0>Positive funding fees accrued from your positions</0>"
 msgstr "<0>Positive Finanzierungsgebühren, die aus Ihren Positionen aufgelaufen sind</0>"
@@ -13392,6 +13677,10 @@ msgstr "Passt das zusammen?"
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Gained"
 msgstr "Gewonnen"
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Selling {0}"
+msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Updating order..."
@@ -13439,6 +13728,10 @@ msgstr "Wir staken die GMX aus Ihrer Wallet und starten anschließend das Vestin
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 msgid "Your trading volume this epoch exceeds the threshold for the next tier."
 msgstr "Ihr Handelsvolumen in dieser Epoche übersteigt den Schwellenwert der nächsten Stufe."
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Sent to {shortAddress}. It may take a few minutes to arrive."
+msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GLP not withdrawn"
@@ -13620,6 +13913,10 @@ msgstr "Liquidität nur verfügbar auf {chainNames} oder {lastChainName}. Wechse
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Transfer history"
 msgstr "Transferverlauf"
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Show all ({0})"
+msgstr ""
 
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Cancel order"
@@ -13900,6 +14197,10 @@ msgstr ""
 msgid "Read details"
 msgstr "Details lesen"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Paid"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading chat"
 msgstr "GMX Trading Chat"
@@ -14015,10 +14316,6 @@ msgstr "Sprache"
 msgid "{idleSeconds}s"
 msgstr "{idleSeconds}s"
 
-#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
-msgid "GT is the native token of the GM Trade project. It currently has no utility; additional functionality will become available after the token generation event (TGE)."
-msgstr "GT ist der native Token des GM-Trade-Projekts. Er hat derzeit keinen Nutzen; zusätzliche Funktionen werden nach dem Token Generation Event (TGE) verfügbar."
-
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "{0, plural, one {Closing will also cancel your pending margin deposit and return its funds.} other {Closing will also cancel your # pending margin deposits and return their funds.}}"
 msgstr "{0, plural, one {Beim Schließen wird auch Ihre ausstehende Margin-Einzahlung abgebrochen und die Mittel zurückerstattet.} other {Beim Schließen werden auch Ihre # ausstehenden Margin-Einzahlungen abgebrochen und die Mittel zurückerstattet.}}"
@@ -14091,6 +14388,11 @@ msgstr "Abgebrochen"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX dashboards and analytics"
 msgstr "GMX Dashboards und Analysen"
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "GT balance"
+msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "{column}"
@@ -14303,6 +14605,11 @@ msgstr "Renditeoptimierungen"
 msgid "Trader & Affiliate Program"
 msgstr "Trader- & Affiliate-Programm"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "{quotaUsedText} / {quotaTotalText} GT used"
+msgstr ""
+
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Explore the VIP Desk"
 msgstr "VIP Desk entdecken"
@@ -14365,7 +14672,8 @@ msgid "How and when do I get paid or credited?"
 msgstr "Wie und wann werde ich bezahlt oder erhalte eine Gutschrift?"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
-#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
 msgid "Sell"
 msgstr "Verkaufen"
 
@@ -14555,6 +14863,7 @@ msgstr "Empfangen Sie {tokensList} in Ihrer Wallet auf {networkName} oder wähle
 msgid "Copy link"
 msgstr "Link kopieren"
 
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
@@ -14616,6 +14925,11 @@ msgstr "GMX Staking-Belohnungen:"
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee"
 msgstr "{longOrShort}-Positionen {fundingAction} eine Finanzierungsgebühr von {fundingRate} pro Stunde und zahlen keine Leihgebühr"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "Not enough SOL in your Solana wallet for the network fee."
+msgstr ""
+
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Failed to add referral code"
 msgstr "Empfehlungscode konnte nicht hinzugefügt werden"
@@ -14670,6 +14984,10 @@ msgstr "TIMEKEY"
 msgid "Min position size"
 msgstr "Mindestpositionsgröße"
 
+#: src/components/Earn/Portfolio/AssetsList/GtReferralCodeModal.tsx
+msgid "Create your code"
+msgstr ""
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Hours"
 msgstr "Stunden"
@@ -14700,6 +15018,10 @@ msgstr "Realisiertes Basis-PnL"
 #: src/domain/synthetics/positions/utils.ts
 msgid "limit"
 msgstr "Limit"
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "GT buyback"
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute TWAP Swap part"
@@ -14902,6 +15224,10 @@ msgstr ""
 msgid "No opportunities on this chain yet"
 msgstr "Noch keine Möglichkeiten auf dieser Chain"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "Open buyback"
+msgstr ""
+
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
 msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> zu </1>{0}{toTokenIcon}{1}"
@@ -14927,9 +15253,17 @@ msgstr "Aktivieren Sie <0>Express Trading</0> in den Einstellungen für bessere 
 msgid "Enter a ratio"
 msgstr "Verhältnis eingeben"
 
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "Withdraw not connected"
+msgstr ""
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "OK"
 msgstr "OK"
+
+#: src/components/Earn/Portfolio/AssetsList/GtBuybackModal.tsx
+msgid "The signature was rejected. Nothing was sent and your GT is unchanged."
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Net total of action-level fees, and price impact. Hover the value to see the breakdown."
