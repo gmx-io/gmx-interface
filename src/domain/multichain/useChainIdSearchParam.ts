@@ -5,8 +5,8 @@ import { useAccount } from "wagmi";
 import type { SettlementChainId } from "config/chains";
 import {
   getChainIdFromSearchParam,
-  getIsSolanaSearchParam,
   getSettlementChainIdForSelectedChain,
+  SOLANA_SEARCH_PARAM,
 } from "lib/chains/chainIdSearchParam";
 import { extendError } from "lib/errors";
 import { SMART_WALLET_CHAIN_UNAVAILABLE_ERROR } from "lib/errors/customErrors";
@@ -52,14 +52,14 @@ export function useChainIdSearchParam({
       history.replace({ pathname: history.location.pathname, search: searchParams.toString() });
     };
 
-    if (getIsSolanaSearchParam(chainIdParam)) {
+    const requestedChainId = getChainIdFromSearchParam(chainIdParam);
+
+    if (requestedChainId === SOLANA_SEARCH_PARAM) {
       processedChainIdParamRef.current = chainIdParam;
       deleteChainIdParam();
       selectSolanaNetworkInApp();
       return;
     }
-
-    const requestedChainId = getChainIdFromSearchParam(chainIdParam);
 
     if (requestedChainId === undefined) {
       processedChainIdParamRef.current = chainIdParam;
