@@ -35,7 +35,7 @@ export type TokenPermitsState = {
   getIsPermitAvailable: (tokenAddress: string) => boolean;
   addTokenPermit: AddTokenPermitFn;
   removeTokenPermits: (permits: SignedTokenPermit[]) => void;
-  /** Sends the tokens back to the approval transaction for this account */
+  /** Keeps the tokens on the approval transaction for this account for good: only for failures a retry won't fix */
   disableTokenPermits: (tokenAddresses: string[]) => void;
 };
 

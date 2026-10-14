@@ -130,7 +130,12 @@ export async function approveTokens({
       }
 
       permitFallbackReason = error.message?.includes(INVALID_PERMIT_SIGNATURE_ERROR) ? "invalidSignature" : "failed";
-      permitParams.disableTokenPermits([tokenAddress]);
+
+      // a wallet timeout or rpc hiccup can pass next time, so only a bad signature keeps the token on approvals
+      if (permitFallbackReason === "invalidSignature") {
+        permitParams.disableTokenPermits([tokenAddress]);
+      }
+
       metrics.pushError(error, "approveTokens.permitError");
       sendTokenPermitMetric({ ...permitMetricParams, outcome: "fallback", reason: permitFallbackReason });
       sendMetric("permit", getTxnErrorOutcome(error), error);

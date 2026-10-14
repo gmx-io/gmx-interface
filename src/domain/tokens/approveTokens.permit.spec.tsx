@@ -80,16 +80,45 @@ describe("approveTokens with a permit", () => {
     expect(mocks.sendTokenPermitMetric).toHaveBeenCalledWith({ ...metricParams, outcome: "rejected" });
   });
 
-  it.each([
-    [new Error("wallet can't sign typed data"), "failed"],
-    [new Error(INVALID_PERMIT_SIGNATURE_ERROR), "invalidSignature"],
-  ])("falls back to the approval transaction when signing fails (%s)", async (error, reason) => {
-    mocks.addTokenPermit.mockRejectedValue(error);
+  it("keeps the token on approvals when the permit signature is invalid", async () => {
+    mocks.addTokenPermit.mockRejectedValue(new Error(INVALID_PERMIT_SIGNATURE_ERROR));
 
     await expect(approveWithPermit()).resolves.toEqual({ hash: "0xabc" });
 
     expect(mocks.disableTokenPermits).toHaveBeenCalledWith([USDC]);
     expect(mocks.approve).toHaveBeenCalledWith(ROUTER, 100n, expect.anything());
-    expect(mocks.sendTokenPermitMetric).toHaveBeenCalledWith({ ...metricParams, outcome: "fallback", reason });
+    expect(mocks.sendTokenPermitMetric).toHaveBeenCalledWith({
+      ...metricParams,
+      outcome: "fallback",
+      reason: "invalidSignature",
+    });
+  });
+
+  it.each([
+    new Error("Request timed out"),
+    new Error("Request of type 'eth_signTypedData_v4' already pending"),
+    new Error('could not coalesce error (error={ "code": -32603, "message": "Internal JSON-RPC error." })'),
+    new Error("wallet can't sign typed data"),
+  ])("falls back to the approval transaction once on a transient error (%s)", async (error) => {
+    mocks.addTokenPermit.mockRejectedValueOnce(error);
+
+    await expect(approveWithPermit()).resolves.toEqual({ hash: "0xabc" });
+
+    expect(mocks.approve).toHaveBeenCalledWith(ROUTER, 100n, expect.anything());
+    expect(mocks.disableTokenPermits).not.toHaveBeenCalled();
+    expect(mocks.sendTokenPermitMetric).toHaveBeenCalledWith({
+      ...metricParams,
+      outcome: "fallback",
+      reason: "failed",
+    });
+
+    mocks.approve.mockClear();
+    mocks.addTokenPermit.mockResolvedValueOnce(undefined);
+
+    await expect(approveWithPermit()).resolves.toBeUndefined();
+
+    expect(mocks.addTokenPermit).toHaveBeenCalledTimes(2);
+    expect(mocks.approve).not.toHaveBeenCalled();
+    expect(mocks.sendTokenPermitMetric).toHaveBeenLastCalledWith({ ...metricParams, outcome: "signed" });
   });
 });
