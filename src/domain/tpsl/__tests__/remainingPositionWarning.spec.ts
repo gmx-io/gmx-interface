@@ -10,7 +10,7 @@ import { ETH_TOKEN, USDC_ADDRESS, USDC_TOKEN } from "domain/testUtils/mockTokens
 import { getTpSlDecreaseAmounts } from "domain/tpsl/sidecar";
 import { FULL_POSITION_CLOSE_SIZE_DELTA_USD, getTpSlRemainingPositionWarning } from "domain/tpsl/utils";
 import { expandDecimals, formatAmountFree, PRECISION, USD_DECIMALS } from "lib/numbers";
-import type { PositionOrderInfo } from "sdk/utils/orders/types";
+import { DecreasePositionSwapType, type PositionOrderInfo } from "sdk/utils/orders/types";
 import { getPositionInfo, getPositionKey } from "sdk/utils/positions";
 import type { PositionInfoLoaded } from "sdk/utils/positions/types";
 import { convertToTokenAmount } from "sdk/utils/tokens";
@@ -24,8 +24,14 @@ const marketInfo = createMockMarketInfo(ETH_TOKEN, {
   minCollateralFactorForLiquidation: PRECISION / 200n,
 });
 
-function openPosition(isLong: boolean, collateralUsd: number): PositionInfoLoaded {
-  const key = getPositionKey(MOCK_ACCOUNT, marketInfo.marketTokenAddress, USDC_ADDRESS, isLong);
+// the market cut its max leverage to 50x under an 80x position: a partial TP can fail too
+const marketInfo50x = createMockMarketInfo(ETH_TOKEN, {
+  minCollateralFactor: PRECISION / 50n,
+  minCollateralFactorForLiquidation: PRECISION / 200n,
+});
+
+function openPosition(isLong: boolean, collateralUsd: number, market = marketInfo): PositionInfoLoaded {
+  const key = getPositionKey(MOCK_ACCOUNT, market.marketTokenAddress, USDC_ADDRESS, isLong);
   const sizeInUsd = expandDecimals(collateralUsd * 80 * 100, 28);
 
   return getPositionInfo({
@@ -33,7 +39,7 @@ function openPosition(isLong: boolean, collateralUsd: number): PositionInfoLoade
       key,
       contractKey: key,
       account: MOCK_ACCOUNT,
-      marketAddress: marketInfo.marketTokenAddress,
+      marketAddress: market.marketTokenAddress,
       collateralTokenAddress: USDC_ADDRESS,
       sizeInUsd,
       sizeInTokens: convertToTokenAmount(sizeInUsd, ETH_TOKEN.decimals, ENTRY_PRICE)!,
@@ -53,13 +59,19 @@ function openPosition(isLong: boolean, collateralUsd: number): PositionInfoLoade
       positionValueInUsd: 0n,
       data: "",
     },
-    marketInfo,
+    marketInfo: market,
     minCollateralUsd: minCollateralUsd!,
     showPnlInLeverage: false,
   }) as PositionInfoLoaded;
 }
 
-function getAmounts(position: PositionInfoLoaded, triggerPrice: bigint, closePercent: number, keepLeverage: boolean) {
+function getAmounts(
+  position: PositionInfoLoaded,
+  triggerPrice: bigint,
+  closePercent: number,
+  keepLeverage: boolean,
+  forceDecreaseSwapType?: DecreasePositionSwapType
+) {
   return getTpSlDecreaseAmounts({
     position,
     closeSizeUsd: (position.sizeInUsd * BigInt(closePercent)) / 100n,
@@ -77,6 +89,7 @@ function getAmounts(position: PositionInfoLoaded, triggerPrice: bigint, closePer
     uiFeeFactor: 0n,
     userReferralInfo: undefined,
     isSetAcceptablePriceImpactEnabled: false,
+    forceDecreaseSwapType,
   })!;
 }
 
@@ -84,13 +97,14 @@ function getAmounts(position: PositionInfoLoaded, triggerPrice: bigint, closePer
 function getState(
   position: PositionInfoLoaded,
   amounts: ReturnType<typeof getAmounts>,
-  editor: { triggerPrice: bigint; sizeDeltaUsd: bigint }
+  editor: { triggerPrice: bigint; sizeDeltaUsd: bigint },
+  orderOverrides: Partial<PositionOrderInfo> = {}
 ) {
   const order = {
     key: "order",
     account: MOCK_ACCOUNT,
-    marketAddress: marketInfo.marketTokenAddress,
-    marketInfo,
+    marketAddress: position.marketInfo.marketTokenAddress,
+    marketInfo: position.marketInfo,
     indexToken: ETH_TOKEN,
     initialCollateralToken: USDC_TOKEN,
     initialCollateralTokenAddress: USDC_ADDRESS,
@@ -107,10 +121,11 @@ function getState(
     orderType: amounts.triggerOrderType,
     decreasePositionSwapType: amounts.decreaseSwapType,
     uiFeeFactor: 0n,
+    ...orderOverrides,
   } as unknown as PositionOrderInfo;
 
   return createMockSyntheticsState({
-    marketInfo,
+    marketInfo: position.marketInfo,
     positionsConstants: MOCK_POSITIONS_CONSTANTS,
     positionsInfoData: { [position.key]: position },
     ordersInfoData: { [order.key]: order },
@@ -227,5 +242,57 @@ describe("partial TP/SL that would leave the position above max leverage at its 
       // trigger; cut to 25% the rest exceeds max leverage even without pnl, so the contract drops the withdrawal
       expect([isFlaggedAt(50), isFlaggedAt(40), isFlaggedAt(25)]).toEqual([false, true, false]);
     }
+  });
+
+  it("charges the closing costs to the collateral when the profit stays in the pnl token PRO-4406", () => {
+    const position = openPosition(true, 10, marketInfo50x);
+    const triggerPrice = ENTRY_PRICE + (ENTRY_PRICE * 34n) / 10_000n;
+
+    const getFlags = (forceDecreaseSwapType: DecreasePositionSwapType | undefined) => {
+      const amounts = getAmounts(position, triggerPrice, 25, true, forceDecreaseSwapType);
+      const state = getState(position, amounts, { triggerPrice, sizeDeltaUsd: amounts.sizeDeltaUsd });
+      const modalWarning = getTpSlRemainingPositionWarning({
+        position,
+        takeProfit: {
+          decreaseAmounts: amounts,
+          getDecreaseAmountsWithoutKeepLeverage: () =>
+            getAmounts(position, triggerPrice, 25, false, forceDecreaseSwapType),
+        },
+        stopLoss: undefined,
+        keepLeverage: true,
+        minCollateralUsd,
+        minPositionSizeUsd,
+        userReferralInfo: undefined,
+      });
+
+      return [
+        modalWarning?.isTakeProfitAboveMaxLeverage === true,
+        makeSelectOrderErrorByOrderKey("order")(state).errors.some(
+          (error) => error.key === "remainingPositionMaxLeverage"
+        ),
+        selectOrderEditorIsRemainingPositionAboveMaxLeverage(state),
+      ];
+    };
+
+    // with a separate receive the ETH profit cannot pay the fees, so they come out of the USDC collateral
+    expect(getFlags(DecreasePositionSwapType.NoSwap)).toEqual([true, true, true]);
+    expect(getFlags(undefined)).toEqual([false, false, false]);
+  });
+
+  it("finds the position of an order that swaps its payout PRO-4406", () => {
+    const position = openPosition(true, 10);
+    const triggerPrice = position.liquidationPrice! + (ENTRY_PRICE * 25n) / 10_000n;
+    const amounts = getAmounts(position, triggerPrice, 50, true);
+    const state = getState(
+      position,
+      amounts,
+      { triggerPrice, sizeDeltaUsd: amounts.sizeDeltaUsd },
+      { swapPath: [marketInfo.marketTokenAddress], targetCollateralToken: ETH_TOKEN }
+    );
+
+    expect(makeSelectOrderErrorByOrderKey("order")(state).errors.map((error) => error.key)).toEqual([
+      "remainingPositionMaxLeverage",
+    ]);
+    expect(selectOrderEditorIsRemainingPositionAboveMaxLeverage(state)).toBe(true);
   });
 });

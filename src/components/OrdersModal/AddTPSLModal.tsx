@@ -310,6 +310,7 @@ export function AddTPSLModal({
         userReferralInfo,
         isSetAcceptablePriceImpactEnabled,
         forceDecreaseSwapType,
+        proDiscountFactor,
       });
     },
     [
@@ -319,6 +320,7 @@ export function AddTPSLModal({
       minCollateralUsd,
       minPositionSizeUsd,
       position,
+      proDiscountFactor,
       uiFeeFactor,
       userReferralInfo,
     ]

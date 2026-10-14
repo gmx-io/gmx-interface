@@ -777,6 +777,7 @@ export function getOrderDecreaseRemainingPositionMarginState({
     uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
     isSetAcceptablePriceImpactEnabled,
     forceDecreaseSwapType: order.decreasePositionSwapType,
+    proDiscountFactor,
   });
 
   return getTriggerDecreaseRemainingPositionMarginState({
