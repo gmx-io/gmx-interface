@@ -34,7 +34,8 @@ export type TokenPermitsState = {
   accountType: TokenPermitAccountType | undefined;
   getIsPermitAvailable: (tokenAddress: string) => boolean;
   addTokenPermit: AddTokenPermitFn;
-  removeTokenPermits: (permits: SignedTokenPermit[]) => void;
+  /** permitsChainId: the chain the permits were signed for, when it may no longer be the current one */
+  removeTokenPermits: (permits: SignedTokenPermit[], permitsChainId?: number) => void;
   /** Keeps the tokens on the approval transaction for this account for good: only for failures a retry won't fix */
   disableTokenPermits: (tokenAddresses: string[]) => void;
 };
@@ -42,6 +43,25 @@ export type TokenPermitsState = {
 export type AddTokenPermitFn = (tokenAddress: string, spenderAddress: string, value: bigint) => Promise<void>;
 
 const TokenPermitsContext = createContext<TokenPermitsState | undefined>(undefined);
+
+// permits stored for a chain or account that is not the current one, e.g. used by an order that finished after a switch
+function removeInactiveStoredTokenPermits(chainId: number, owner: string, permits: SignedTokenPermit[]) {
+  const key = JSON.stringify(getTokenPermitsKey(chainId, owner));
+  const stored = localStorage.getItem(key);
+
+  if (!stored) return;
+
+  try {
+    const parsed: SignedTokenPermit[] = JSON.parse(stored);
+    const remaining = parsed.filter((storedPermit) => !permits.some((p) => getIsSameTokenPermit(storedPermit, p)));
+
+    if (remaining.length !== parsed.length) {
+      localStorage.setItem(key, JSON.stringify(remaining));
+    }
+  } catch (e) {
+    // a broken entry is replaced on the next write for that account
+  }
+}
 
 export function useTokenPermitsContext() {
   const context = useContext(TokenPermitsContext);
@@ -159,14 +179,27 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
   );
 
   const removeTokenPermits = useCallback(
-    (permits: SignedTokenPermit[]) => {
-      if (!storedTokenPermits?.length || permits.length === 0) {
+    (permits: SignedTokenPermit[], permitsChainId: number = chainId) => {
+      const isActive = (permit: SignedTokenPermit) =>
+        permitsChainId === chainId &&
+        account !== undefined &&
+        isAddressEqual(permit.owner as Address, account as Address);
+
+      uniq(permits.filter((permit) => !isActive(permit)).map((permit) => permit.owner)).forEach((owner) => {
+        removeInactiveStoredTokenPermits(permitsChainId, owner, permits);
+      });
+
+      const activePermits = permits.filter(isActive);
+
+      if (!storedTokenPermits?.length || activePermits.length === 0) {
         return;
       }
 
-      setTokenPermits(storedTokenPermits.filter((stored) => !permits.some((p) => getIsSameTokenPermit(stored, p))));
+      setTokenPermits(
+        storedTokenPermits.filter((stored) => !activePermits.some((p) => getIsSameTokenPermit(stored, p)))
+      );
     },
-    [setTokenPermits, storedTokenPermits]
+    [account, chainId, setTokenPermits, storedTokenPermits]
   );
 
   const disableTokenPermits = useCallback(

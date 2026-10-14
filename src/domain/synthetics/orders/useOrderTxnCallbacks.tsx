@@ -23,7 +23,7 @@ import { getPositionKey } from "domain/synthetics/positions/utils";
 import { getRemainingSubaccountActions, Subaccount } from "domain/synthetics/subaccount";
 import { TokenBalanceType } from "domain/tokens";
 import { TokenPermitsCheckError } from "domain/tokens/checkTokenPermits";
-import { validateTokenPermitSignature } from "domain/tokens/permitUtils";
+import { getIsTokenPermitNonceUsed, validateTokenPermitSignature } from "domain/tokens/permitUtils";
 import { sendAddressablePixelEventForOrder } from "lib/addressablePixel";
 import { useChainId } from "lib/chains";
 import { parseError } from "lib/errors";
@@ -483,7 +483,7 @@ export function useOrderTxnCallbacks() {
             removeTokenPermits(sentTokenPermits);
           } else if (permitIssueType === "invalidSignature") {
             // a nonce used by another order in the meantime also reads as an invalid signature, so every sent
-            // permit is dropped now and only a signature that doesn't verify keeps its token on approvals
+            // permit is dropped now, and only a permit the chain will keep rejecting keeps its token on approvals
             removeTokenPermits(sentTokenPermits);
             sentTokenPermits.forEach((permit) => {
               sendTokenPermitMetric({
@@ -493,14 +493,7 @@ export function useOrderTxnCallbacks() {
                 accountType: tokenPermitAccountType,
                 reason: "simulation",
               });
-            });
-
-            Promise.all(
-              sentTokenPermits.map(async (permit) => {
-                const validationResult = await validateTokenPermitSignature(chainId, permit).catch(() => undefined);
-
-                if (!validationResult) return undefined;
-
+              validateTokenPermitSignature(chainId, permit).then((validationResult) => {
                 metrics.pushError(
                   getInvalidPermitSignatureError({
                     isValid: validationResult.isValid,
@@ -509,16 +502,20 @@ export function useOrderTxnCallbacks() {
                   }),
                   "simulation.permitError"
                 );
+              });
+            });
 
-                return validationResult.isValid ? undefined : permit.token;
-              })
+            Promise.all(
+              sentTokenPermits.map(async (permit) =>
+                (await getIsTokenPermitNonceUsed(chainId, permit)) === false ? permit.token : undefined
+              )
             ).then((tokenAddresses) => {
-              const invalidTokenAddresses = tokenAddresses.filter(
+              const rejectedTokenAddresses = tokenAddresses.filter(
                 (address): address is string => address !== undefined
               );
 
-              if (invalidTokenAddresses.length > 0) {
-                disableTokenPermits(invalidTokenAddresses);
+              if (rejectedTokenAddresses.length > 0) {
+                disableTokenPermits(rejectedTokenAddresses);
               }
             });
           }

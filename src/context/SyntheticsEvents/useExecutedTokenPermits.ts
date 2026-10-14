@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { sendTokenPermitMetric } from "lib/metrics/tokenPermitMetrics";
 import { StatusCode } from "sdk/utils/express";
+import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 
 import type { PendingExpressTxnParams, RelayTaskStatus } from "./types";
 
@@ -26,6 +27,9 @@ export function useExecutedTokenPermits({
 
   useEffect(
     function handleExecutedTokenPermits() {
+      // one removal per chain: removals in the same render would overwrite each other
+      const executedPermitsByChainId = new Map<number, SignedTokenPermit[]>();
+
       Object.values(pendingExpressTxns).forEach(({ taskId, tokenPermits }) => {
         if (!taskId || !tokenPermits?.length || handledTaskIdsRef.current.has(taskId)) {
           return;
@@ -49,7 +53,10 @@ export function useExecutedTokenPermits({
           return;
         }
 
-        removeTokenPermits(tokenPermits);
+        executedPermitsByChainId.set(taskContext.chainId, [
+          ...(executedPermitsByChainId.get(taskContext.chainId) ?? []),
+          ...tokenPermits,
+        ]);
         tokenPermits.forEach((permit) => {
           sendTokenPermitMetric({
             outcome: "executed",
@@ -59,6 +66,8 @@ export function useExecutedTokenPermits({
           });
         });
       });
+
+      executedPermitsByChainId.forEach((permits, permitsChainId) => removeTokenPermits(permits, permitsChainId));
     },
     [accountType, chainId, pendingExpressTxns, relayTaskStatuses, removeTokenPermits]
   );

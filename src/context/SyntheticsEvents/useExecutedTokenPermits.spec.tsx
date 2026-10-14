@@ -71,7 +71,7 @@ describe("useExecutedTokenPermits", () => {
       relayTaskStatuses: relayStatus("task", StatusCode.Success),
     });
 
-    expect(mocks.removeTokenPermits).toHaveBeenCalledWith([usdcPermit, wethPermit]);
+    expect(mocks.removeTokenPermits).toHaveBeenCalledWith([usdcPermit, wethPermit], ARBITRUM);
     expect(mocks.sendTokenPermitMetric.mock.calls).toEqual([
       [{ outcome: "executed", chainId: ARBITRUM, tokenAddress: USDC, accountType: "eoa" }],
       [{ outcome: "executed", chainId: ARBITRUM, tokenAddress: WETH, accountType: "eoa" }],
@@ -93,6 +93,19 @@ describe("useExecutedTokenPermits", () => {
 
     expect(mocks.sendTokenPermitMetric).toHaveBeenCalledTimes(2);
     expect(mocks.removeTokenPermits).toHaveBeenCalledTimes(1);
+  });
+
+  it("forgets the permits of tasks that succeed together in one removal", () => {
+    renderExecutedTokenPermits({
+      chainId: ARBITRUM,
+      pendingExpressTxns: {
+        first: { key: "first", taskId: "first", tokenPermits: [usdcPermit] },
+        second: { key: "second", taskId: "second", tokenPermits: [wethPermit] },
+      },
+      relayTaskStatuses: { ...relayStatus("first", StatusCode.Success), ...relayStatus("second", StatusCode.Success) },
+    });
+
+    expect(mocks.removeTokenPermits.mock.calls).toEqual([[[usdcPermit, wethPermit], ARBITRUM]]);
   });
 
   it.each([StatusCode.Reverted, StatusCode.Rejected])("sends nothing when the relay ends with %s", (statusCode) => {
@@ -143,5 +156,6 @@ describe("useExecutedTokenPermits", () => {
     expect(mocks.sendTokenPermitMetric).toHaveBeenCalledWith(
       expect.objectContaining({ chainId: ARBITRUM, accountType: "metaMask7702" })
     );
+    expect(mocks.removeTokenPermits).toHaveBeenCalledWith([usdcPermit, wethPermit], ARBITRUM);
   });
 });

@@ -29,7 +29,7 @@ const state = vi.hoisted(() => ({
   disableTokenPermits: vi.fn(),
   sendTokenPermitMetric: vi.fn(),
   isPermitSignatureErrorOnSimulation: false,
-  isPermitSignatureValid: false,
+  isPermitNonceUsed: false as boolean | undefined,
 }));
 
 vi.mock("context/SyntheticsEvents", async (importOriginal) => ({
@@ -67,7 +67,8 @@ vi.mock("lib/errors/customErrors", async (importOriginal) => ({
 }));
 vi.mock("domain/tokens/permitUtils", async (importOriginal) => ({
   ...(await importOriginal<object>()),
-  validateTokenPermitSignature: async () => ({ isValid: state.isPermitSignatureValid }),
+  validateTokenPermitSignature: async () => ({ isValid: true }),
+  getIsTokenPermitNonceUsed: async () => state.isPermitNonceUsed,
 }));
 vi.mock("context/TokensBalancesContext/TokensBalancesContextProvider", () => ({
   useTokensBalancesUpdates: () => ({ addOptimisticTokensBalancesUpdates: vi.fn() }),
@@ -238,9 +239,9 @@ describe("token permits", () => {
     expect(state.errorToast).toHaveBeenCalledTimes(1);
   });
 
-  it("keeps tokens on approvals when the simulation rejects a permit signature that doesn't verify", async () => {
+  it("keeps a token on approvals when the simulation rejects a permit whose nonce is still unused", async () => {
     state.isPermitSignatureErrorOnSimulation = true;
-    state.isPermitSignatureValid = false;
+    state.isPermitNonceUsed = false;
     const signedPermit = { ...permit, onchainParams: { name: "USD Coin", version: "2", nonce: 0n } };
     const builder = events("express", { tokenPermits: [signedPermit] });
     callback(builder.Error(new Error("ExternalCallFailed: invalid signature")));
@@ -252,9 +253,12 @@ describe("token permits", () => {
     await vi.waitFor(() => expect(state.disableTokenPermits).toHaveBeenCalledWith([permit.token]));
   });
 
-  it("only drops a permit whose signature verifies, since its nonce may have been used by another order", async () => {
+  it.each([
+    ["another order used its nonce", true],
+    ["the nonce can't be read", undefined],
+  ])("only drops the permit when %s", async (_, isPermitNonceUsed) => {
     state.isPermitSignatureErrorOnSimulation = true;
-    state.isPermitSignatureValid = true;
+    state.isPermitNonceUsed = isPermitNonceUsed;
     const signedPermit = { ...permit, onchainParams: { name: "USD Coin", version: "2", nonce: 0n } };
     const builder = events("express", { tokenPermits: [signedPermit] });
     callback(builder.Error(new Error("ExternalCallFailed: invalid signature")));

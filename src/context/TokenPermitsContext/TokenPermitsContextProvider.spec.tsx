@@ -189,6 +189,20 @@ describe("TokenPermitsContextProvider", () => {
     expect(readStoredTokens()).toEqual([WETH]);
   });
 
+  it("removes used permits stored for another chain without touching the current one", async () => {
+    const AVALANCHE = 43114;
+    const avalancheKey = JSON.stringify([AVALANCHE, ACCOUNT, "token-permits"]);
+    const usdc = permit(USDC);
+    localStorage.setItem(avalancheKey, JSON.stringify([usdc]));
+    storePermits([usdc]);
+    await setup();
+
+    act(() => state.removeTokenPermits([usdc], AVALANCHE));
+
+    expect(JSON.parse(localStorage.getItem(avalancheKey)!)).toEqual([]);
+    expect(readStoredTokens()).toEqual([USDC]);
+  });
+
   it("replaces an older permit for the same token and spender", async () => {
     storePermits([permit(USDC), permit(WETH)]);
     await setup();
