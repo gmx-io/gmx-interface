@@ -16,9 +16,10 @@ Each run targets one pull request's deployment preview and is split by settlemen
 - live-state: real public accounts discovered through indexers, read-only, with live API/RPC/indexer data.
 - gates: endpoint configuration, endpoint health and market configuration sanity.
 Tests marked as expected failures document known app gaps and are not failures.
+Each shard stops after a fixed number of failures to save CI time. A chain with stoppedEarly=true did not run notRun.total tests (counted per project in notRun.byProject); their result is unknown, not passed.
 
 Write a pull request comment in GitHub Markdown, under 250 words, with no preamble:
-1. A one-line verdict starting with ✅, ⚠️ or ❌, with pass/fail/flaky counts per chain.
+1. A one-line verdict starting with ✅, ⚠️ or ❌, with pass/fail/flaky counts per chain. If any chain stopped early, say so in the verdict with the number of tests that did not run, and never call such a run green.
 2. "What failed": group the failures by probable cause, choosing from: likely regression from this PR's changes, live data or third-party/infrastructure problem (RPC rate limits, indexer timeouts, CORS, outages), test problem, unclear. For each group, list short test names with a one-line reason grounded in the error text and, for regressions, the changed files. Say "unclear" instead of guessing.
 3. "Flaky": one line naming tests that passed only on retry, or omit when there are none.
 4. "Next": at most two bullets.
@@ -109,6 +110,17 @@ async function main() {
     ? await askModel(`Regression run digest (JSON):\n${JSON.stringify(context, null, 1)}`)
     : fallbackSummary("No test report was produced; check the workflow logs.");
 
+  // Stated outside the model's text so it is visible even when the AI summary is unavailable.
+  const stoppedNotes = digests
+    .filter((digest) => digest.stoppedEarly)
+    .map(
+      (digest) =>
+        `> ⚠️ Chain ${digest.chain} stopped early after reaching the failure limit; ${digest.notRun.total} tests did not run (${Object.entries(
+          digest.notRun.byProject
+        )
+          .map(([project, count]) => `${project}: ${count}`)
+          .join(", ")}).`
+    );
   const details = summaries
     .map(
       ({ chain, path }) =>
@@ -119,6 +131,7 @@ async function main() {
     COMMENT_MARKER,
     `## E2E regression for ${process.env.HEAD_SHA?.slice(0, 7) ?? "this PR"}`,
     "",
+    ...(stoppedNotes.length ? [...stoppedNotes, ""] : []),
     analysis.text,
     "",
     details,

@@ -118,6 +118,8 @@ jobs:
       REGRESSION_DEPLOYMENT_SHA: ${{ needs.resolve-preview.outputs.head_sha }}
       REGRESSION_DEPLOYMENT_CHECK_URL: ${{ needs.resolve-preview.outputs.check_url }}
       REGRESSION_CANDIDATE_ROOT: ${{ github.workspace }}/.context/regression-candidate
+      # Source-chain RPC reads in connected-state fixtures; public RPCs rate-limit CI runners.
+      REGRESSION_ALCHEMY_KEY: ${{ secrets.REGRESSION_ALCHEMY_KEY }}
     steps:
       - uses: actions/checkout@v4
         with:

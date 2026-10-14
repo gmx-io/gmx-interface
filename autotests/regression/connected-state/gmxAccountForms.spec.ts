@@ -185,7 +185,8 @@ test.describe("deposit", () => {
     await expect(form.getByRole("button", { name: "Insufficient balance", exact: true })).toBeDisabled();
     await amount.fill("10");
     const networkFee = infoRow(form, "Network fee");
-    await expect(networkFee).toContainText(/-[\d.]+\s*ETH\s*\(-\$\s*[\d.]+\)\s*·\s*Base wallet/);
+    await expect(networkFee).toContainText(/-[\d.]+\s*ETH\s*\(-\$\s*[\d.]+\)/);
+    await expect(networkFee.getByRole("img", { name: "Base wallet", exact: true })).toBeVisible();
     const [eth, usd] = await feeAmounts(networkFee, "Network fee");
     expect(-usd).toBeGreaterThan(0.001);
     expect(-usd).toBeLessThan(5);
@@ -283,8 +284,10 @@ test.describe("withdrawal", () => {
     accountState.gmxBalances.set(getTokenBySymbol(ARBITRUM, "WETH").address, 10n ** 17n);
     await accountState.connect(page);
     let modal = await openWithdrawal(page, "WETH", "Base", "0.01");
-    await expect(infoRow(modal, "Network fee")).toContainText(/-[\d.]+\s*USDC\s*\(-\$\s*[\d.]+\)\s*·\s*GMX Account/);
-    await expect(infoRow(modal, "Bridge fee")).toContainText(/-[\d.]+\s*WETH\s*\(-\$\s*[\d.]+\)\s*·\s*GMX Account/);
+    await expect(infoRow(modal, "Network fee")).toContainText(/-[\d.]+\s*USDC\s*\(-\$\s*[\d.]+\)/);
+    await expect(infoRow(modal, "Network fee").getByRole("img", { name: "GMX Account", exact: true })).toBeVisible();
+    await expect(infoRow(modal, "Bridge fee")).toContainText(/-[\d.]+\s*WETH\s*\(-\$\s*[\d.]+\)/);
+    await expect(infoRow(modal, "Bridge fee").getByRole("img", { name: "GMX Account", exact: true })).toBeVisible();
     await expect(infoRow(modal, "Withdraw fee")).toContainText(/-[\d.]+\s*WETH/);
     for (const label of ["Network fee", "Bridge fee"]) {
       const [, usd] = await feeAmounts(infoRow(modal, label), label);
@@ -305,7 +308,8 @@ test.describe("withdrawal", () => {
 
     await selectGmxAccountGasToken(page, "WETH");
     modal = await openWithdrawal(page, "WETH", "Base", "0.01");
-    await expect(infoRow(modal, "Network fee")).toContainText(/-[\d.]+\s*WETH\s*\(-\$\s*[\d.]+\)\s*·\s*GMX Account/);
+    await expect(infoRow(modal, "Network fee")).toContainText(/-[\d.]+\s*WETH\s*\(-\$\s*[\d.]+\)/);
+    await expect(infoRow(modal, "Network fee").getByRole("img", { name: "GMX Account", exact: true })).toBeVisible();
     await expect(modal.getByRole("button", { name: "Withdraw", exact: true })).toBeEnabled();
   });
 
@@ -371,11 +375,15 @@ test.describe("GM", () => {
     await accountState.connect(page, `/pools/details?market=${gm}`);
     await expect(page.locator(".Tooltip-handle").filter({ hasText: "5.0000 GM" })).toBeVisible({ timeout: 45_000 });
     await page.getByText("Balance", { exact: true }).first().locator("xpath=..").locator("[aria-haspopup]").click();
-    await page.getByText("Deposit GM", { exact: true }).click();
+    // The balance breakdown tooltip opens on hover and covers the menu items.
+    await page.mouse.move(0, 0);
+    await expect(page.getByText("GMX Account balance:", { exact: true })).toBeHidden();
+    await page.getByRole("menuitem", { name: "Deposit GM", exact: true }).click();
     const modal = overlay(page, "Deposit GM: ETH/USD");
     await modal.getByPlaceholder("0.0", { exact: true }).fill("1");
     const networkFee = infoRow(modal, "Network fee");
-    await expect(networkFee).toContainText(/-[\d.]+\s*ETH\s*\(-\$\s*[\d.]+\)\s*·\s*Base wallet/);
+    await expect(networkFee).toContainText(/-[\d.]+\s*ETH\s*\(-\$\s*[\d.]+\)/);
+    await expect(networkFee.getByRole("img", { name: "Base wallet", exact: true })).toBeVisible();
     const [eth, usd] = await feeAmounts(networkFee, "Network fee");
     expect(-usd).toBeGreaterThan(0.001);
     expect(-usd).toBeLessThan(5);

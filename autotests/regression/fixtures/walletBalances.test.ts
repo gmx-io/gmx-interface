@@ -13,7 +13,7 @@ import {
 import SyntheticsReader from "../../../sdk/src/abis/SyntheticsReader";
 import { getContract } from "../../../sdk/src/configs/contracts";
 import { getTokenBySymbol } from "../../../sdk/src/configs/tokens";
-import { getSourceChainIdByRpcUrl, mockWalletBalances } from "./walletBalances";
+import { getDedicatedRpcUrl, getSourceChainIdByRpcUrl, mockWalletBalances } from "./walletBalances";
 
 const chainId = 42161;
 const account = "0x1111111111111111111111111111111111111111";
@@ -379,6 +379,25 @@ test("source-chain RPC hosts map to their chains and settlement or testnet hosts
     ["https://optimism-sepolia.drpc.org", undefined],
   ];
   for (const [url, chain] of expected) assert.equal(getSourceChainIdByRpcUrl(url), chain, url);
+});
+
+test("source-chain reads use Alchemy only when REGRESSION_ALCHEMY_KEY is set", () => {
+  const previous = process.env.REGRESSION_ALCHEMY_KEY;
+  try {
+    delete process.env.REGRESSION_ALCHEMY_KEY;
+    assert.equal(getDedicatedRpcUrl("https://mainnet.base.org"), undefined);
+    process.env.REGRESSION_ALCHEMY_KEY = "test-key";
+    assert.equal(getDedicatedRpcUrl("https://mainnet.base.org"), "https://base-mainnet.g.alchemy.com/v2/test-key");
+    assert.equal(getDedicatedRpcUrl("https://rpc.ankr.com/eth"), "https://eth-mainnet.g.alchemy.com/v2/test-key");
+    assert.equal(
+      getDedicatedRpcUrl("https://bsc-dataseed.bnbchain.org"),
+      "https://bnb-mainnet.g.alchemy.com/v2/test-key"
+    );
+    assert.equal(getDedicatedRpcUrl("https://arb1.arbitrum.io/rpc"), undefined);
+  } finally {
+    if (previous === undefined) delete process.env.REGRESSION_ALCHEMY_KEY;
+    else process.env.REGRESSION_ALCHEMY_KEY = previous;
+  }
 });
 
 test("a source chain with its own balances reads only them; other chains keep the shared balances", async () => {

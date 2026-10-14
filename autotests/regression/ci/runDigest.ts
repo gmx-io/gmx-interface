@@ -48,6 +48,8 @@ export function buildRunDigest(report: PlaywrightReport) {
   const flaky: { project: string; title: string; firstError: string }[] = [];
   const knownGaps: string[] = [];
   const skipped: { project: string; title: string; reason: string }[] = [];
+  // Tests left unrun when the run stopped at its failure limit are reported as skipped without results.
+  const notRun: Record<string, number> = {};
   const failedRows = new Set<string>();
 
   const visit = (suites: ReportSuite[], parents: string[]) => {
@@ -77,8 +79,12 @@ export function buildRunDigest(report: PlaywrightReport) {
             });
           } else if (test.status === "expected" && test.expectedStatus === "failed") {
             knownGaps.push(`${test.projectName}: ${title}`);
+          } else if (test.status === "skipped" && !test.results.length) {
+            notRun[test.projectName] = (notRun[test.projectName] ?? 0) + 1;
           } else if (test.status === "skipped") {
-            const reason = test.annotations?.find((annotation) => annotation.type === "skip")?.description ?? "";
+            const reason =
+              test.annotations?.find((annotation) => annotation.type === "skip" || annotation.type === "fixme")
+                ?.description ?? "";
             skipped.push({ project: test.projectName, title, reason });
           }
         }
@@ -86,6 +92,8 @@ export function buildRunDigest(report: PlaywrightReport) {
     }
   };
   visit(report.suites, []);
+  const runErrors = (report.errors ?? []).map((error) => cleanError(error.message, 600));
+  const notRunCount = Object.values(notRun).reduce((sum, count) => sum + count, 0);
 
   return {
     metadata: report.config.metadata ?? {},
@@ -99,7 +107,9 @@ export function buildRunDigest(report: PlaywrightReport) {
     omittedFlaky: Math.max(0, flaky.length - MAX_FLAKY),
     knownGaps,
     skipped,
-    runErrors: (report.errors ?? []).map((error) => cleanError(error.message, 600)),
+    stoppedEarly: notRunCount > 0 || runErrors.some((error) => /stopped early/i.test(error)),
+    notRun: { total: notRunCount, byProject: notRun },
+    runErrors,
   };
 }
 

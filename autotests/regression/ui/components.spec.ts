@@ -99,32 +99,48 @@ test("2.22 a long modal dims the page, scrolls inside and closes by Escape, over
     await page.getByTestId("receive-selector").click();
     await expect(modal).toBeVisible();
   };
+  const findScroller = () =>
+    modal.evaluateHandle((element) =>
+      Array.from(element.querySelectorAll<HTMLElement>("*")).find(
+        (child) => child.scrollHeight > child.clientHeight + 20 && getComputedStyle(child).overflowY === "auto"
+      )
+    );
 
-  await open();
-  const overlay = await page.locator(".Modal-backdrop").evaluate((element) => {
-    const rect = element.getBoundingClientRect();
-    const alpha = getComputedStyle(element).backgroundColor.match(/[\d.]+/g)?.[3];
-    return {
-      covers: rect.left <= 0 && rect.top <= 0 && rect.right >= innerWidth && rect.bottom >= innerHeight,
-      alpha: alpha === undefined ? 1 : Number(alpha),
-      onTop: document.elementFromPoint(20, innerHeight / 2) === element,
-    };
-  });
-  expect(overlay).toEqual({ covers: true, alpha: expect.any(Number), onTop: true });
-  expect(overlay.alpha).toBeGreaterThan(0.2);
-
-  const scroller = await modal.evaluateHandle((element) =>
-    Array.from(element.querySelectorAll<HTMLElement>("*")).find(
-      (child) => child.scrollHeight > child.clientHeight + 20 && getComputedStyle(child).overflowY === "auto"
-    )
+  // The swap form picks its default tokens after market data loads, which closes a modal opened earlier.
+  await expect(page.getByText("Available liquidity", { exact: true }).locator("xpath=..")).toContainText(
+    /\$\s*[\d,]+/,
+    {
+      timeout: 30_000,
+    }
   );
-  expect(await scroller.evaluate((element) => Boolean(element)), "scrollable modal content").toBe(true);
+  await expect(async () => {
+    if (!(await modal.isVisible())) await open();
+    expect(await (await findScroller()).evaluate((element) => Boolean(element)), "scrollable modal content").toBe(true);
+  }).toPass({ timeout: 30_000 });
+  const readOverlay = () =>
+    page.locator(".Modal-backdrop").evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      const alpha = getComputedStyle(element).backgroundColor.match(/[\d.]+/g)?.[3];
+      return {
+        covers: rect.left <= 0 && rect.top <= 0 && rect.right >= innerWidth && rect.bottom >= innerHeight,
+        alpha: alpha === undefined ? 1 : Number(alpha),
+        onTop: document.elementFromPoint(20, innerHeight / 2) === element,
+      };
+    });
+  // The backdrop fades in.
+  await expect.poll(readOverlay).toEqual({ covers: true, alpha: expect.any(Number), onTop: true });
+  expect((await readOverlay()).alpha).toBeGreaterThan(0.2);
+
   await expect(modal).toContainText("ETH");
-  const box = (await scroller.asElement()!.boundingBox())!;
   const pageScroll = await page.evaluate(() => document.scrollingElement!.scrollTop);
-  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
-  await page.mouse.wheel(0, 600);
-  await expect.poll(() => scroller.evaluate((element) => (element as HTMLElement).scrollTop)).toBeGreaterThan(0);
+  await expect(async () => {
+    if (!(await modal.isVisible())) await open();
+    const scroller = await findScroller();
+    const box = (await scroller.asElement()!.boundingBox())!;
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.wheel(0, 600);
+    await expect.poll(() => scroller.evaluate((element) => (element as HTMLElement).scrollTop)).toBeGreaterThan(0);
+  }).toPass({ timeout: 30_000 });
   expect(await page.evaluate(() => document.scrollingElement!.scrollTop)).toBe(pageScroll);
 
   await page.keyboard.press("Escape");
@@ -175,7 +191,7 @@ test("2.24 opening Announcements marks the What's new banner as read", async ({ 
     .sort((a, b) => b.start - a.start)[0];
   await page.clock.install({ time: latest.start + 60 * 60 * 1000 });
   await page.goto("/announcements");
-  await expect(page.locator(`article[data-announcement-id="${latest.id}"]`)).toBeVisible();
+  await expect(page.locator(`[data-announcement-id="${latest.id}"]`)).toBeVisible();
   await expect(page.getByTestId("announcement-banner").filter({ hasText: "What's new" })).toHaveCount(0);
   await expect
     .poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("visited-announcements") ?? "[]")))

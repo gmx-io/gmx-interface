@@ -67,7 +67,7 @@ test("5.35 close destination selector switches the margin destination without ch
     const modal = await openPartialClose(page);
     const fee = infoRow(modal, "Network fee");
     const receive = infoRow(modal, "Receive");
-    await expect(fee).toContainText("· Wallet");
+    await expect(fee.getByRole("img", { name: "Wallet", exact: true })).toBeVisible();
     await expect(receive).toContainText(/\d\sUSDC/);
     const amount = await displayedNumbers(receive);
     await receive.click();
@@ -88,7 +88,7 @@ test("5.35 close destination selector switches the margin destination without ch
     await page.locator(".Modal-content").filter({ has: selector }).locator(".Modal-close-button").click();
     await expect(selector).toBeHidden();
     await expect(modal).toBeVisible();
-    await expect(fee).toContainText("· GMX Account");
+    await expect(fee.getByRole("img", { name: "GMX Account", exact: true })).toBeVisible();
     await expect(modal.getByTestId("confirm-button")).toContainText("GMX Account");
     await expect(receive.locator("img[src*='ic_gmx']")).toBeVisible();
     await expect.poll(() => displayedNumbers(receive)).toEqual(amount);
@@ -97,7 +97,7 @@ test("5.35 close destination selector switches the margin destination without ch
     await expect(modal).toBeHidden();
   }
   const modal = await openPartialClose(page);
-  await expect(infoRow(modal, "Network fee")).toContainText("· GMX Account");
+  await expect(infoRow(modal, "Network fee").getByRole("img", { name: "GMX Account", exact: true })).toBeVisible();
 });
 
 test("5.36 partial: Keep leverage on a partial close holds leverage, off keeps margin; the margin editor has no toggle", async ({

@@ -42,6 +42,58 @@ export function getSourceChainIdByRpcUrl(url: string) {
   return SOURCE_CHAIN_RPC_HOSTS.find(([pattern]) => pattern.test(`${host}${pathname}`))?.[1];
 }
 
+const ALCHEMY_NETWORKS: Record<number, string> = { 1: "eth-mainnet", 56: "bnb-mainnet", 8453: "base-mainnet" };
+
+// Public source-chain RPCs rate-limit parallel and CI runs; REGRESSION_ALCHEMY_KEY moves those reads to Alchemy.
+export function getDedicatedRpcUrl(url: string) {
+  const key = process.env.REGRESSION_ALCHEMY_KEY;
+  const chainId = getSourceChainIdByRpcUrl(url);
+  return key && chainId ? `https://${ALCHEMY_NETWORKS[chainId]}.g.alchemy.com/v2/${key}` : undefined;
+}
+
+function dedicatedRpcUrlFor(route: Route) {
+  return process.env.REGRESSION_ALCHEMY_KEY ? getDedicatedRpcUrl(route.request().url()) : undefined;
+}
+
+// Node fetch rather than route.fetch: Playwright traces record route.fetch URLs, which would expose the key.
+async function fetchRpc(route: Route, postData: unknown, timeout: number) {
+  const dedicated = dedicatedRpcUrlFor(route);
+  if (!dedicated) {
+    const response = await route.fetch({ postData, timeout });
+    return { ok: response.ok(), json: () => response.json() };
+  }
+  const response = await fetch(dedicated, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(postData),
+    signal: AbortSignal.timeout(timeout),
+  });
+  return { ok: response.ok, json: () => response.json() };
+}
+
+// Requests the fixture does not change still go to the dedicated RPC when there is one.
+async function passThrough(route: Route, body: RpcRequest | RpcRequest[]) {
+  const isRpc = (Array.isArray(body) ? body : [body]).every((item) => typeof item?.method === "string");
+  const dedicated = isRpc ? dedicatedRpcUrlFor(route) : undefined;
+  if (!dedicated) return route.fallback();
+  try {
+    const response = await fetch(dedicated, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(20_000),
+    });
+    await route.fulfill({
+      status: response.status,
+      contentType: "application/json",
+      headers: { "access-control-allow-origin": "*" },
+      body: await response.text(),
+    });
+  } catch {
+    await route.abort("failed").catch(() => undefined);
+  }
+}
+
 const LIVE_RPC_UNAVAILABLE = { code: -32000, message: "Live RPC data unavailable in account fixture" };
 
 function isRateLimited(item: RpcResponse) {
@@ -62,8 +114,8 @@ async function fetchLiveResults(route: Route, isBatch: boolean, requests: RpcReq
     const timeout = Math.min(10_000, deadline - Date.now());
     if (timeout < 1_000) break;
     try {
-      const response = await route.fetch({ postData: isBatch ? pending : pending[0], timeout });
-      if (!response.ok()) continue;
+      const response = await fetchRpc(route, isBatch ? pending : pending[0], timeout);
+      if (!response.ok) continue;
       const json = await response.json();
       for (const item of Array.isArray(json) ? json : [json]) {
         const isResponse = item && typeof item === "object" && ["number", "string"].includes(typeof item.id);
@@ -251,7 +303,7 @@ export async function mockWalletBalances(
         if (patch) patches.set(request.id, patch);
       }
     }
-    if (!patches.size && ![...reviewed.values()].some(Boolean)) return route.fallback();
+    if (!patches.size && ![...reviewed.values()].some(Boolean)) return passThrough(route, body);
     const remaining = requests.filter((request) => !patches.get(request.id)?.standalone && !reviewed.get(request.id));
     // Mocked reads survive upstream failures; missing public reads remain explicit errors.
     const results = remaining.length ? await fetchLiveResults(route, Array.isArray(body), remaining) : new Map();

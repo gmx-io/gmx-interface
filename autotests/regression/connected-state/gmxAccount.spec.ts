@@ -12,10 +12,10 @@ test.beforeEach(async ({ page, accountState }) => {
   await expect(page.getByTestId("gmx-account-balance")).toBeVisible();
 });
 
-test("4.01 4.02 4.58 empty GMX Account displays zero balance and funding history", async ({ page }) => {
+test("4.01 4.02 4.58 empty GMX Account displays zero balance and an empty transfer history", async ({ page }) => {
   await expect(page.getByTestId("gmx-account-balance")).toContainText(/\$\s*0\.00/);
   await page.getByRole("button", { name: "Transfer history", exact: true }).click();
-  await expect(page.getByText("No funding activity", { exact: true })).toBeVisible();
+  await expect(page.getByText("No transfer history", { exact: true })).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(page.getByTestId("gmx-account-balance")).toBeHidden();
   await expect(page.getByTestId("margin-input")).toBeVisible();

@@ -14,6 +14,7 @@ import {
   recentlyListedIndexTokens,
   selectorIndexTokens,
   sortedMarketAddresses,
+  tokenIconPattern,
   type KeeperMarket,
 } from "../fixtures/marketConfig";
 import { watchMarketsApi } from "../fixtures/marketData";
@@ -73,7 +74,7 @@ test("22.01 22.03 23.08 selector lists every tradeable configured market with it
   await expect.poll(() => api.config?.length ?? 0).toBeGreaterThan(0);
   const expected = selectorIndexTokens(chainId, api.config!).map(({ token }) => ({
     label: marketLabel(token),
-    icon: new RegExp(`/ic_${token.symbol.toLowerCase()}(?:-[^/]*)?\\.(?:svg|png)$`),
+    icon: tokenIconPattern(token.symbol),
     symbol: token.symbol,
   }));
   await expect

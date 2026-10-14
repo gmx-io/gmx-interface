@@ -23,6 +23,8 @@ if (!fs.existsSync(reportPath)) {
     lines.push("External target: deployment SHA has not been verified.", "");
   }
   const counts = { expected: 0, flaky: 0, unexpected: 0, skipped: 0 };
+  // Tests left unrun after the run reached its failure limit are skipped without results.
+  let notRun = 0;
   const projects = new Map();
   const incomplete = [];
   // Worst status of the tests citing each checklist row in their title.
@@ -33,6 +35,7 @@ if (!fs.existsSync(reportPath)) {
       visit(suite.suites || []);
       for (const spec of suite.specs || []) {
         for (const test of spec.tests) {
+          if (test.status === "skipped" && !test.results.length) notRun++;
           counts[test.status] = (counts[test.status] || 0) + 1;
           for (const row of spec.title
             .match(/^(?:\d{1,2}\.\d{2}\s+)+/)?.[0]
@@ -43,7 +46,8 @@ if (!fs.existsSync(reportPath)) {
           const project = projects.get(test.projectName) || { expected: 0, flaky: 0, unexpected: 0, skipped: 0 };
           project[test.status] = (project[test.status] || 0) + 1;
           projects.set(test.projectName, project);
-          if (test.status !== "expected") {
+          // Unrun tests are counted above instead of listed one by one.
+          if (test.status !== "expected" && test.results.length) {
             const reasons = (test.annotations || [])
               .map((entry) => entry.description)
               .filter(Boolean)
@@ -59,6 +63,12 @@ if (!fs.existsSync(reportPath)) {
     `Passed: ${counts.expected}. Flaky: ${counts.flaky}. Failed: ${counts.unexpected}. Skipped: ${counts.skipped}.`,
     ""
   );
+  if (notRun) {
+    lines.push(
+      `Stopped early after reaching the failure limit: ${notRun} of the skipped tests did not run, so their result is unknown.`,
+      ""
+    );
+  }
   lines.push("| Project | Passed | Flaky | Failed | Skipped |", "| --- | ---: | ---: | ---: | ---: |");
   for (const [name, project] of projects) {
     lines.push(`| ${name} | ${project.expected} | ${project.flaky} | ${project.unexpected} | ${project.skipped} |`);

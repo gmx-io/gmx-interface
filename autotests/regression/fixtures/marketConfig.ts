@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import type { BrowserContext } from "@playwright/test";
 import ts from "typescript";
 import { zeroAddress } from "viem";
@@ -50,6 +50,18 @@ export function sortedMarketAddresses(chainId: number) {
 
 export function promotedTokenAddresses(chainId: number) {
   return readAddressList("src/config/promotedTokens.ts", "PROMOTED_TOKENS_ORDER", chainId);
+}
+
+// The bundler emits byte-identical images once under one of their names, so ic_gold.svg may load as ic_xau-<hash>.svg.
+export function tokenIconPattern(symbol: string) {
+  const dir = "src/img/tokens";
+  const files = readdirSync(dir);
+  const own = [`ic_${symbol.toLowerCase()}.svg`, `ic_${symbol.toLowerCase()}.png`].find((name) => files.includes(name));
+  const content = own && readFileSync(`${dir}/${own}`);
+  const names = content
+    ? files.filter((name) => readFileSync(`${dir}/${name}`).equals(content)).map((name) => name.replace(/\.\w+$/, ""))
+    : [`ic_${symbol.toLowerCase()}`];
+  return new RegExp(`/(?:${names.map((name) => name.replace(/[.]/g, "\\.")).join("|")})(?:-[^/]*)?\\.(?:svg|png)$`);
 }
 
 export function marketLabel(token: Token) {
@@ -119,7 +131,9 @@ export function isIndexToken(token: Token, address: string) {
 export async function overrideJson<T>(context: BrowserContext, url: RegExp, transform: (json: T) => T) {
   const served = { count: 0 };
   await context.route(url, async (route) => {
-    const response = await route.fetch();
+    // A request still in flight when the test ends fails once the context closes; the app sees a network error.
+    const response = await route.fetch().catch(() => undefined);
+    if (!response) return route.abort().catch(() => undefined);
     const json = transform(await response.json());
     served.count++;
     await route.fulfill({ response, json });

@@ -54,7 +54,7 @@ test("4.58 4.60 live GMX Account: funding history search opens actual transfer d
   const search = page.getByPlaceholder("Search", { exact: true });
   const modal = page.locator(".Modal-content").filter({ has: search });
   await search.fill("no-such-asset");
-  await expect(modal.getByText("No funding activity matching search", { exact: true })).toBeVisible();
+  await expect(modal.getByText("No transfer history matching search", { exact: true })).toBeVisible();
   await search.fill("USDC");
   // Rows carry no id; the newest row with this transfer's label, amount and date is the transfer itself.
   const token = getToken(transfer.settlementChainId, getAddress(transfer.token));

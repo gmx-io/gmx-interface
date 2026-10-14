@@ -1,4 +1,5 @@
 import { expect } from "@playwright/test";
+import { readFileSync } from "node:fs";
 
 import { test } from "../fixtures/browser";
 import {
@@ -77,9 +78,13 @@ test("2.18 language changes visible UI and persists across refresh", async ({ pa
   await openTrade(page);
   await page.getByRole("button", { name: "Language", exact: true }).click();
   await page.getByText("Русский", { exact: true }).click();
-  await expect(page.getByTestId("confirm-trade-button")).toHaveText("Подключить кошелек");
+  // Weekly translation reviews reword strings, so the expected text comes from the catalog.
+  const connectWallet = /msgid "Connect wallet"\nmsgstr "([^"]+)"/.exec(
+    readFileSync("src/locales/ru/messages.po", "utf8")
+  )![1];
+  await expect(page.getByTestId("confirm-trade-button")).toHaveText(connectWallet);
   await page.reload();
-  await expect(page.getByTestId("confirm-trade-button")).toHaveText("Подключить кошелек");
+  await expect(page.getByTestId("confirm-trade-button")).toHaveText(connectWallet);
   await page.getByRole("button", { name: "Язык", exact: true }).click();
   await page.getByText("English", { exact: true }).click();
   await expect(page.getByTestId("confirm-trade-button")).toHaveText("Connect wallet");

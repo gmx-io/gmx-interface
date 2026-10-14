@@ -1,8 +1,9 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 
 import { test } from "../fixtures/browser";
+import { displayedNumber } from "../fixtures/displayedNumber";
 import { infoRowValue, openTooltip } from "../fixtures/marketData";
-import { feeBreakdown, type Quote, relativeDiff, settledQuote, usdText } from "../fixtures/quoteDetails";
+import { feeBreakdown, impactAndFee, type Quote, relativeDiff, settledQuote, usdText } from "../fixtures/quoteDetails";
 
 type PoolType = "GM" | "GLV";
 
@@ -11,6 +12,9 @@ async function openPoolDetails(page: Page, type: PoolType) {
   await page
     .getByRole("table")
     .filter({ has: page.getByRole("columnheader", { name: type === "GM" ? "POOL" : "VAULT", exact: true }) })
+    .locator("tbody tr")
+    // Pinned USDG pools are whitelist-only, so their forms quote no fee or impact.
+    .filter({ hasNotText: "USDG" })
     .getByRole("link", { name: "Details", exact: true })
     .first()
     .click();
@@ -50,14 +54,22 @@ for (const type of ["GM", "GLV"] as const) {
   test(`12.14 ${type} buy and sell forms show a fee that matches the entered amount`, async ({ page }) => {
     await openPoolDetails(page, type);
     for (const operation of ["Buy", "Sell"] as const) {
-      const { form, parts } = await openForm(page, type, operation);
-      const quote = await settledQuote(parts);
-      expect(quote.fee).toBeLessThan(0);
+      const { form, input, parts, unitUsd } = await openForm(page, type, operation);
+      // Fees on a one-unit stable amount round to "< $0.01", so the checks use about $1,000.
+      await input.fill((1_000 / unitUsd).toFixed(6));
+      const quote = await settledQuote(parts, 1_000);
+      // A deposit or withdrawal that improves the pool balance can be charged a zero fee.
+      expect(quote.fee).toBeLessThanOrEqual(0);
       expect(quote.fee).toBeGreaterThan(-1);
       const items = await feeTooltip(page, form);
       const fee = items.find((item) => item.label === `${operation} fee`);
       expect(fee, JSON.stringify(items)).toBeDefined();
-      expect(Math.abs(fee!.percent - Math.abs(quote.fee))).toBeLessThanOrEqual(0.001);
+      // The row shows every fee combined, e.g. the swap fee of a single-token sell.
+      const fees = items.filter((item) => item.label !== "Price impact");
+      const feePercent = fees.reduce((acc, item) => acc + item.percent, 0);
+      expect(Math.abs(feePercent - Math.abs(quote.fee)), JSON.stringify(items)).toBeLessThanOrEqual(
+        0.001 * fees.length
+      );
       // The fee basis is the paid side: the deposited token on buys, the sold GM/GLV on sells.
       expect(Math.abs(Math.abs(fee!.usd) - (quote.pay * fee!.percent) / 100)).toBeLessThanOrEqual(
         0.01 + quote.pay * 0.00001
@@ -67,7 +79,7 @@ for (const type of ["GM", "GLV"] as const) {
     }
   });
 
-  test(`12.15 12.27 large ${type} deposit shows its impact percentage with the high price impact warning; withdrawal has none`, async ({
+  test(`12.15 12.27 large ${type} deposit shows its impact percentage with the high price impact warning, and a withdrawal of the same size shows its impact`, async ({
     page,
   }) => {
     test.slow();
@@ -95,8 +107,28 @@ for (const type of ["GM", "GLV"] as const) {
 
     const sell = await openForm(page, type, "Sell");
     await sell.input.fill((quote.pay / sell.unitUsd).toFixed(4));
-    const withdrawal = await settledQuote(sell.parts, quote.pay);
-    expect(Math.abs(withdrawal.impact)).toBe(0);
-    await expect(sell.form.getByText("High price impact", { exact: true })).toBeHidden();
+    // A single-token withdrawal can swap the other side, so its impact is not checked against the amounts.
+    await expect
+      .poll(async () => relativeDiff(displayedNumber(await sell.parts.pay.innerText()), quote.pay), { timeout: 30_000 })
+      .toBeLessThan(0.02);
+    const withdrawal = await impactAndFee(sell.parts.row);
+    expect(withdrawal.impact).toBeLessThanOrEqual(0);
+    // The tooltip lists price impact only when there is some.
+    const withdrawalImpact = (await feeTooltip(page, sell.form)).find((item) => item.label === "Price impact");
+    expect(withdrawalImpact?.percent ?? 0).toBeCloseTo(Math.abs(withdrawal.impact), 3);
   });
 }
+
+test("12.15 a large single-token GM withdrawal's Pay and Receive include the price impact it shows", async ({
+  page,
+  chainId,
+}) => {
+  test.fixme(true, "PRO-4468 bug 29: Sell GM (Single) shows the price impact, but Pay and Receive leave it out");
+  test.skip(chainId !== 42161, "Avalanche's first pool shows no impact for a single-token withdrawal");
+  test.slow();
+  await openPoolDetails(page, "GM");
+  const sell = await openForm(page, "GM", "Sell");
+  await sell.input.fill((25_000_000 / sell.unitUsd).toFixed(4));
+  await expect.poll(async () => (await impactAndFee(sell.parts.row)).impact, { timeout: 30_000 }).toBeLessThan(-0.1);
+  await settledQuote(sell.parts);
+});

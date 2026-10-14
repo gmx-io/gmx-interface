@@ -60,13 +60,15 @@ test.describe("funded wallet", () => {
     const row = page
       .getByText("Network fee", { exact: true })
       .locator("xpath=ancestor::div[contains(@class, 'justify-between')][1]");
-    await expect(row).toContainText(/-[\d.]+\s*USDC\s*\(-\$\s*[\d.]+\)\s*·\s*Wallet/);
+    await expect(row).toContainText(/-[\d.]+\s*USDC\s*\(-\$\s*[\d.]+\)/);
+    await expect(row.getByRole("img", { name: "Wallet", exact: true })).toBeVisible();
     const [usdc, usd] = [...(await row.innerText()).matchAll(/-\$?\s*([\d.]+)/g)].map((match) => Number(match[1]));
     expect(usd).toBeGreaterThan(0.001);
     expect(usd).toBeLessThan(5);
     expect(Math.abs(usdc - usd)).toBeLessThanOrEqual(Math.max(0.01, usd * 0.05));
     await row.locator(".Tooltip-handle").last().hover();
     const tooltip = page.locator(".Tooltip-popup");
+    await expect(tooltip).toContainText(/Paid from:?\s*Wallet/);
     await expect(tooltip).toContainText(/Max network fee:?\s*-[\d.]+\s*USDC/);
     await expect(tooltip).toContainText("Estimated fee refund");
     await expect(tooltip).toContainText("Express fees are paid in your Wallet gas payment token.");

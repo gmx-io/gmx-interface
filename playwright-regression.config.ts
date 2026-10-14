@@ -54,9 +54,10 @@ export default defineConfig({
     serviceWorkers: "block",
     actionTimeout: 15_000,
     navigationTimeout: 45_000,
-    trace: "retain-on-failure",
+    // one trace per failing test keeps CI artifacts small; its screencast replaces a video
+    trace: "retain-on-first-failure",
     screenshot: "only-on-failure",
-    video: "retain-on-failure",
+    video: "off",
   },
   projects: [
     { name: "ui", testMatch: "ui/*.spec.ts" },

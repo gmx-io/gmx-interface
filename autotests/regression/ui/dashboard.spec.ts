@@ -57,7 +57,8 @@ test("leaderboard address search recovers from no matching trader", async ({ pag
   const table = page.getByRole("table");
   await expect(table.locator('a[href*="/traders/"]').first()).toBeVisible({ timeout: 30_000 });
   await search.fill(emptyAccount);
-  await expect(table).toContainText(/No (?:traders|accounts|data|results)/i);
+  await expect(page.getByText("No results found", { exact: true })).toBeVisible();
+  await expect(table.locator('a[href*="/traders/"]')).toHaveCount(0);
   await search.clear();
   await expect(table.locator('a[href*="/traders/"]').first()).toBeVisible();
 });

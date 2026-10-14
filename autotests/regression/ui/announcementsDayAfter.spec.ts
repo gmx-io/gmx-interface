@@ -51,7 +51,7 @@ const linksOf = (event: RegressionAnnouncement) => [...event.hrefs, ...(event.li
 
 async function openCard(page: Page, event: RegressionAnnouncement) {
   await page.goto(`/announcements?id=${encodeURIComponent(event.id)}`, { waitUntil: "domcontentloaded" });
-  const card = page.locator(`article[data-announcement-id="${event.id}"]`);
+  const card = page.locator(`[data-announcement-id="${event.id}"]`);
   await expect(card).toBeInViewport();
   return card;
 }
@@ -122,7 +122,7 @@ test("24.04 24.06 partial (latest config release and listing, possibly retired; 
   const { flags } = recordFlags(page);
   await page.goto("/announcements", { waitUntil: "domcontentloaded" });
   // Cards render once every chain's flags have settled.
-  await expect(page.locator("article[data-announcement-id]").first()).toBeVisible();
+  await expect(page.locator("[data-announcement-id]").first()).toBeVisible();
   const listed = announcements.filter(
     (event) =>
       !event.requiresOpenPosition &&

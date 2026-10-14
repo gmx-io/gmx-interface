@@ -33,6 +33,8 @@ async function forEachPoolPage(page: Page, type: "GM" | "GLV", check: () => Prom
     .filter({ has: page.getByText(type === "GM" ? "GM pools" : "GLV vaults", { exact: true }) })
     .filter({ has: poolTable(page, type) })
     .last();
+  const first = card.getByRole("button", { name: "1", exact: true });
+  if (await first.isVisible()) await first.click();
   for (let pageNumber = 1; ; pageNumber++) {
     await check();
     const next = card.getByRole("button", { name: String(pageNumber + 1), exact: true });
@@ -50,6 +52,34 @@ function watchApy(page: Page) {
     if (json?.markets) apys.set(url.searchParams.get("period")!, json);
   });
   return apys;
+}
+
+type UsdgBoostResponse =
+  | { status: "not_started" }
+  | {
+      status: "active";
+      pools: { marketAddress: string; boostApr: number }[];
+      glv: { glvAddress: string; boostApr: number } | null;
+    };
+
+// USDG pools add the launch boost to the shown APY (src/domain/synthetics/usdgLaunchBoost/utils.ts).
+function watchUsdgBoost(page: Page) {
+  const boost: { response?: UsdgBoostResponse } = {};
+  page.on("response", async (response) => {
+    if (!response.url().includes("/v1/incentives/usdg/boost-apr") || !response.ok()) return;
+    boost.response = await response.json().catch(() => undefined);
+  });
+  return (address: string, type: "GM" | "GLV", composition: string) => {
+    const { response } = boost;
+    if (!response) return 0;
+    if (response.status === "not_started") {
+      const isBoosted =
+        composition.includes("USDG") && (type === "GLV" || MARKETS[42161][address]?.indexTokenAddress !== zeroAddress);
+      return isBoosted ? (type === "GLV" ? 0.08 : 0.05) : 0;
+    }
+    if (type === "GLV") return response.glv?.glvAddress === address ? response.glv.boostApr : 0;
+    return response.pools.find((pool) => pool.marketAddress === address)?.boostApr ?? 0;
+  };
 }
 
 // Markets enabled in src/config/static/markets.ts; the app config uses path aliases, so it is parsed.
@@ -159,16 +189,19 @@ test("12.01 23.12 /pools lists every enabled GM market the API does not disable,
   const disabled = new Set(api.config!.filter((market) => market.isDisabled).map((m) => m.marketTokenAddress));
   const sdkMarkets = MARKETS[chainId as keyof typeof MARKETS];
   const expected = enabledUiMarkets(chainId).filter((address) => sdkMarkets[address] && !disabled.has(address));
-  const shown = new Set<string>();
-  await forEachPoolPage(page, "GM", async () => {
-    await expect(poolRows(page, "GM").first()).toBeVisible();
-    for (const href of await poolRows(page, "GM")
-      .getByRole("link", { name: "Details", exact: true })
-      .evaluateAll((links) => links.map((link) => link.getAttribute("href")!))) {
-      shown.add(href.match(/market=(0x[\da-fA-F]{40})/)![1]);
-    }
-  });
-  expect([...shown].sort()).toEqual(expected.sort());
+  // Rows re-sort while pool data loads, so a pass that skipped markets between pages is repeated.
+  await expect(async () => {
+    const shown = new Set<string>();
+    await forEachPoolPage(page, "GM", async () => {
+      await expect(poolRows(page, "GM").first()).toBeVisible();
+      for (const href of await poolRows(page, "GM")
+        .getByRole("link", { name: "Details", exact: true })
+        .evaluateAll((links) => links.map((link) => link.getAttribute("href")!))) {
+        shown.add(href.match(/market=(0x[\da-fA-F]{40})/)![1]);
+      }
+    });
+    expect([...shown].sort()).toEqual(expected.sort());
+  }).toPass({ timeout: 120_000 });
 });
 
 for (const type of ["GM", "GLV"] as const) {
@@ -329,6 +362,7 @@ for (const type of ["GM", "GLV"] as const) {
   }) => {
     test.slow();
     const apys = watchApy(page);
+    const usdgBoost = watchUsdgBoost(page);
     await page.goto("/pools");
     await page.getByRole("button", { name: "Last 30d", exact: true }).click();
     await expect.poll(() => apys.has("30d")).toBe(true);
@@ -347,8 +381,10 @@ for (const type of ["GM", "GLV"] as const) {
             }))
           );
           if (!cells.length) return ["no rows rendered"];
-          return cells.flatMap(({ href, name, tvl, apy: apyText }) => {
+          return cells.flatMap(({ href, name: nameLines, tvl, apy: apyText }) => {
             const address = href.match(/market=(0x[\da-fA-F]{40})/)![1];
+            // USDG pools put a "Whitelist only" or "Launch boost" badge between the name and the composition.
+            const name = nameLines.filter((line) => line !== "Whitelist only" && line !== "Launch boost");
             const compositionIndex = name.findIndex((line) => /^\[.+-.+\]$/.test(line));
             const shown = { name: name[compositionIndex - 1], composition: name[compositionIndex] };
             const labels = type === "GM" ? expectedPoolLabels(chainId, address) : undefined;
@@ -358,18 +394,20 @@ for (const type of ["GM", "GLV"] as const) {
                 : { name: "GLV", composition: shown.composition };
             const tvlUsd = displayedNumber(tvl[0]);
             const supply = displayedNumber(tvl[1] ?? "");
-            const baseApy = apy[address]?.baseApy ?? 0;
+            const expectedApy =
+              (apy[address]?.baseApy ?? 0) +
+              (chainId === 42161 ? usdgBoost(address, type, shown.composition ?? "") : 0);
             const apyOk =
-              baseApy === 0
+              expectedApy === 0
                 ? apyText === "N/A"
                 : labels?.hasLidoApr
                   ? /^[\d,.]+%$/.test(apyText)
-                  : Math.abs(displayedNumber(apyText) - baseApy * 100) <= 0.006;
+                  : Math.abs(displayedNumber(apyText) - expectedApy * 100) <= 0.006;
             const problems = [
               JSON.stringify(shown) !== JSON.stringify(expected) && `label ${JSON.stringify(shown)}`,
               !(tvlUsd > 0) && `tvl ${tvl[0]}`,
               !(supply >= 0 && new RegExp(`${type}\\)$`).test(tvl[1] ?? "")) && `supply ${tvl[1]}`,
-              !apyOk && `apy ${apyText} vs ${baseApy * 100}`,
+              !apyOk && `apy ${apyText} vs ${expectedApy * 100}`,
             ].filter(Boolean);
             return problems.length ? [`${address}: ${problems.join(", ")}`] : [];
           });
@@ -415,6 +453,8 @@ test("13.08 partial (Earn no longer lists pool APRs): only incentivized pools sh
       )![1];
       const apy = row.getByRole("cell").nth(3);
       const badge = apy.getByRole("img", { name: "Sparkle", exact: true });
+      // USDG pools show the launch boost with the same sparkle; 12.02 checks their APY.
+      if (chainId === 42161 && (await row.getByRole("cell").first().innerText()).includes("USDG")) continue;
       if (BigInt(rewards[address] ?? 0) === 0n) {
         await expect(badge).toHaveCount(0);
         continue;

@@ -63,7 +63,7 @@ const report: PlaywrightReport = {
                   status: "skipped",
                   expectedStatus: "skipped",
                   annotations: [{ type: "skip", description: "no competition is running" }],
-                  results: [],
+                  results: [result("skipped")],
                 },
               ],
             },
@@ -93,6 +93,35 @@ test("digest keeps failures, flaky tests, known gaps and skips with cleaned erro
   assert.deepEqual(digest.skipped, [
     { project: "ui", title: "GM › 16.07 active competition", reason: "no competition is running" },
   ]);
+  assert.equal(digest.stoppedEarly, false);
+  assert.deepEqual(digest.notRun, { total: 0, byProject: {} });
+});
+
+test("a run stopped at its failure limit reports the tests it did not run", () => {
+  const stopped: PlaywrightReport = {
+    config: {},
+    errors: [{ message: "Testing stopped early after 20 maximum allowed failures." }],
+    suites: [
+      {
+        title: "live-state/orders.spec.ts",
+        specs: [
+          {
+            title: "9.01 orders",
+            file: "live-state/orders.spec.ts",
+            line: 4,
+            tests: [
+              { projectName: "live-state", status: "skipped", expectedStatus: "passed", results: [] },
+              { projectName: "gates", status: "skipped", expectedStatus: "passed", results: [] },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+  const digest = buildRunDigest(stopped);
+  assert.equal(digest.stoppedEarly, true);
+  assert.deepEqual(digest.notRun, { total: 2, byProject: { "live-state": 1, gates: 1 } });
+  assert.deepEqual(digest.skipped, []);
 });
 
 test("long errors are truncated", () => {

@@ -77,6 +77,8 @@ jobs:
       REGRESSION_DEPLOYMENT_SHA: ${{ needs.resolve-preview.outputs.head_sha }}
       REGRESSION_DEPLOYMENT_CHECK_URL: ${{ needs.resolve-preview.outputs.check_url }}
       REGRESSION_CANDIDATE_ROOT: ${{ github.workspace }}/.context/regression-candidate
+      # Source-chain RPC reads in connected-state fixtures; public RPCs rate-limit CI runners.
+      REGRESSION_ALCHEMY_KEY: ${{ secrets.REGRESSION_ALCHEMY_KEY }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -110,7 +112,8 @@ jobs:
         env:
           PLAYWRIGHT_BLOB_OUTPUT_DIR: blob-report
           PLAYWRIGHT_BLOB_OUTPUT_NAME: report-${{ matrix.chain_id }}-${{ matrix.shard }}.zip
-        run: yarn test:regression --shard=${{ matrix.shard }}/3 --reporter=blob
+        # A shard this broken is not worth finishing; the report lists the tests that did not run.
+        run: yarn test:regression --shard=${{ matrix.shard }}/3 --reporter=blob --max-failures=20
       - name: Upload shard report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4

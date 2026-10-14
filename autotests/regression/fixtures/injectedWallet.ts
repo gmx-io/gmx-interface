@@ -62,6 +62,9 @@ export async function installInjectedWallet(
       }
       case "wallet_addEthereumChain":
         return null;
+      // a wallet without EIP-5792, which the app reports as "unsupported" in its capabilities metric
+      case "wallet_getCapabilities":
+        throw Object.assign(new Error("Method not supported: wallet_getCapabilities"), { code: 4200 });
       default:
         return options.request(request, chainId);
     }

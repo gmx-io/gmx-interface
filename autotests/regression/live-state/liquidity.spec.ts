@@ -30,7 +30,10 @@ for (const profile of ["gm", "glv"] as const) {
     }) => {
       await liveWallet.connect(page, `/pools/details?market=${liveAccount.token}`);
       await page.getByRole("button", { name: `Sell ${symbol}`, exact: true }).click();
-      await page.getByRole("button", { name: "Pair", exact: true }).click();
+      // Pools with a single collateral token, such as GLV [USDG-USDG], have no Single/Pair choice.
+      const pair = page.getByRole("button", { name: "Pair", exact: true });
+      await expect(page.getByTestId("gm-first-token-input")).toBeVisible();
+      if (await pair.isVisible()) await pair.click();
       const form = page.locator("form").filter({ has: page.getByTestId("gm-first-token-input") });
       const input = form.getByRole("textbox").last();
       await form
