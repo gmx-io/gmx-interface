@@ -3747,6 +3747,10 @@ msgstr "KI-Handelsassistent"
 msgid "Allowed slippage"
 msgstr "Erlaubte Slippage"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The request was sent, but its result could not be confirmed. Retry to check: if it didn't go through, deactivation continues with a wallet transaction."
+msgstr "Die Anfrage wurde gesendet, aber ihr Ergebnis konnte nicht bestätigt werden. Versuchen Sie es erneut, um es zu prüfen: Falls sie nicht durchgegangen ist, wird die Deaktivierung mit einer Wallet-Transaktion fortgesetzt."
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Loyalty"
 msgstr "Treue"

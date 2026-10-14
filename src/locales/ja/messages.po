@@ -3747,6 +3747,10 @@ msgstr "AIトレーディングアシスタント"
 msgid "Allowed slippage"
 msgstr "許容スリッページ"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The request was sent, but its result could not be confirmed. Retry to check: if it didn't go through, deactivation continues with a wallet transaction."
+msgstr "リクエストは送信されましたが、結果を確認できませんでした。再度お試しいただくと確認します。完了していない場合は、ウォレット取引で無効化を続行します。"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Loyalty"
 msgstr "ロイヤルティ"

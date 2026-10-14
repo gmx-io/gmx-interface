@@ -8,6 +8,7 @@ import {
   SubaccountRemovalRelayFailedError,
   SubaccountRemovalResultUnknownError,
 } from "domain/synthetics/subaccount/errors";
+import { getInitialSubaccountApproval } from "domain/synthetics/subaccount/utils";
 import { abis } from "sdk/abis";
 import { ExpressEstimationInsufficientGasPaymentTokenBalanceError, GmxRelayError } from "sdk/utils/express";
 
@@ -121,6 +122,10 @@ vi.mock("lib/rpc", () => ({
 
 vi.mock("lib/wallets/useEthersSigner", () => ({
   useEthersSigner: () => ({ address: ACCOUNT, provider: {} }),
+}));
+
+vi.mock("lib/wallets/useWalletSessionChains", () => ({
+  getIsContractAccount: async () => false,
 }));
 
 vi.mock("lib/wallets/useWallet", () => ({
@@ -569,7 +574,9 @@ describe("SubaccountContextProvider.tryDisableSubaccount", () => {
     });
 
     expect(result).toBe(false);
-    expect(context.current.subaccountDeactivationFailureReason).toBe(SubaccountDeactivationFailureReason.ResultUnknown);
+    expect(context.current.subaccountDeactivationFailureReason).toBe(
+      SubaccountDeactivationFailureReason.ResultUnknownWalletTxnNext
+    );
     expect(mocks.refreshSubaccountData).toHaveBeenCalled();
     expect(getIsSubaccountStoredLocally()).toBe(true);
 
@@ -609,6 +616,33 @@ describe("SubaccountContextProvider.tryDisableSubaccount", () => {
     expect(mocks.removeSubaccountSettlementChainExpressTxn).toHaveBeenCalledTimes(1);
     expect(mocks.removeSubaccountWalletTxn).not.toHaveBeenCalled();
     expect(getIsSubaccountStoredLocally()).toBe(false);
+  });
+
+  it("asks for the signature again after One-Click is turned back on", async () => {
+    mocks.estimateSettlementChainRemoveSubaccountExpressParams.mockResolvedValue(settlementChainExpressParams);
+    mocks.removeSubaccountSettlementChainExpressTxn
+      .mockRejectedValueOnce(new GmxRelayError("GMX Relay /v1/relay/submit failed: Service Unavailable", 503))
+      .mockResolvedValueOnce(undefined);
+    vi.mocked(getInitialSubaccountApproval).mockResolvedValue({ signature: "0xsignature" } as never);
+
+    const context = setup();
+
+    await act(async () => {
+      await context.current.tryDisableSubaccount();
+    });
+
+    await act(async () => {
+      await context.current.tryEnableSubaccount();
+    });
+
+    let result: boolean | undefined;
+    await act(async () => {
+      result = await context.current.tryDisableSubaccount();
+    });
+
+    expect(result).toBe(true);
+    expect(mocks.removeSubaccountSettlementChainExpressTxn).toHaveBeenCalledTimes(2);
+    expect(mocks.removeSubaccountWalletTxn).not.toHaveBeenCalled();
   });
 
   it("asks for the signature again on retry when it was rejected in the wallet", async () => {

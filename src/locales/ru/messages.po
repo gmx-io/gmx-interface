@@ -3747,6 +3747,10 @@ msgstr "ИИ-ассистент для трейдинга"
 msgid "Allowed slippage"
 msgstr "Допустимое проскальзывание"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The request was sent, but its result could not be confirmed. Retry to check: if it didn't go through, deactivation continues with a wallet transaction."
+msgstr "Запрос отправлен, но его результат не удалось подтвердить. Повторите попытку для проверки: если запрос не прошёл, отключение продолжится транзакцией из кошелька."
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Loyalty"
 msgstr "Лояльность"

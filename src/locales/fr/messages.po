@@ -3747,6 +3747,10 @@ msgstr "Assistant de trading IA"
 msgid "Allowed slippage"
 msgstr "Glissement autorisé"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The request was sent, but its result could not be confirmed. Retry to check: if it didn't go through, deactivation continues with a wallet transaction."
+msgstr "La requête a été envoyée, mais son résultat n'a pas pu être confirmé. Réessayez pour vérifier : si elle n'a pas abouti, la désactivation se poursuivra avec une transaction du Portefeuille."
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Loyalty"
 msgstr "Fidélité"

@@ -92,6 +92,7 @@ export enum SubaccountDeactivationFailureReason {
   InsufficientNativeTokenBalance = "insufficientNativeTokenBalance",
   ExpressParamsNotReady = "expressParamsNotReady",
   ResultUnknown = "resultUnknown",
+  ResultUnknownWalletTxnNext = "resultUnknownWalletTxnNext",
   SignedRequestFailed = "signedRequestFailed",
   Unknown = "unknown",
 }
@@ -105,7 +106,9 @@ function getSubaccountDeactivationFailureReason(
   }
 
   if (error instanceof SubaccountRemovalResultUnknownError) {
-    return SubaccountDeactivationFailureReason.ResultUnknown;
+    return shouldRetryWithWalletTxn
+      ? SubaccountDeactivationFailureReason.ResultUnknownWalletTxnNext
+      : SubaccountDeactivationFailureReason.ResultUnknown;
   }
 
   if (shouldRetryWithWalletTxn) {
@@ -437,6 +440,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       });
 
       setSubaccountActivationState(SubaccountActivationState.Success);
+      // a new session starts with the signed removal again, whatever happened to the previous one
+      walletTxnRemovalKeyRef.current = undefined;
 
       setSignedApproval(defaultSubaccountApproval);
 
@@ -563,7 +568,10 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
       const failureReason = getSubaccountDeactivationFailureReason(error, { isGmxAccount, shouldRetryWithWalletTxn });
 
-      if (failureReason === SubaccountDeactivationFailureReason.ResultUnknown) {
+      if (
+        failureReason === SubaccountDeactivationFailureReason.ResultUnknown ||
+        failureReason === SubaccountDeactivationFailureReason.ResultUnknownWalletTxnNext
+      ) {
         refreshSubaccountData();
       }
 
@@ -779,6 +787,9 @@ function SubaccountDeactivateNotification({ toastId }: { toastId: number }) {
         break;
       case SubaccountDeactivationFailureReason.ResultUnknown:
         text = t`The request was sent, but its result could not be confirmed. It may have gone through — retry to check and finish the deactivation.`;
+        break;
+      case SubaccountDeactivationFailureReason.ResultUnknownWalletTxnNext:
+        text = t`The request was sent, but its result could not be confirmed. Retry to check: if it didn't go through, deactivation continues with a wallet transaction.`;
         break;
       case SubaccountDeactivationFailureReason.SignedRequestFailed:
         text = t`The signed request could not be completed. Retry to deactivate with a wallet transaction.`;
