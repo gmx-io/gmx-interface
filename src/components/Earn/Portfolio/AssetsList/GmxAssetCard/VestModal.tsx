@@ -6,13 +6,13 @@ import { AVALANCHE } from "config/chains";
 import { getContract } from "config/contracts";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import useVestingData from "domain/vesting/useVestingData";
+import { useRewardsTesterEarnVestingData as useVestingData } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
 import { useChainId } from "lib/chains";
 import { callContract } from "lib/contracts";
 import type { StakingProcessedData } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
-import useWallet from "lib/wallets/useWallet";
+import { useRewardsTesterEarnWallet as useWallet } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
 import { abis } from "sdk/abis";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";

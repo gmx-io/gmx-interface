@@ -3,7 +3,8 @@ import { useMemo, useState } from "react";
 import { useCopyToClipboard } from "react-use";
 
 import { GMTRADE_URL } from "config/links";
-import { type GtBuybackRequest, useGtBuybackSummary } from "domain/gtBuyback/useGtBuybackSummary";
+import { type GtBuybackRequest } from "domain/gtBuyback/useGtBuybackSummary"; // rewards-tester (was: also imported useGtBuybackSummary)
+import { useRewardsTesterEarnGtBuybackSummary as useGtBuybackSummary } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
 import { formatTimeLeft } from "lib/dates";
 import { helperToast } from "lib/helperToast";
 import { formatUsd } from "lib/numbers";

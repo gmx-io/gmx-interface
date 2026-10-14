@@ -12,17 +12,17 @@ import { ARBITRUM } from "config/chains";
 import { getContract } from "config/contracts";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { getRecentAvgWeeklyBuybackGmx } from "domain/buyback/useBuybackChartData";
-import { useBuybackWeeklyStats } from "domain/buyback/useBuybackWeeklyStats";
-import { useGmxPrice } from "domain/legacy";
+import { useRewardsTesterEarnBuybackWeeklyStats as useBuybackWeeklyStats } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
+import { useRewardsTesterEarnGmxPrice as useGmxPrice } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
 import { getUserEstimatedApr, isLoyaltyTrackingActive } from "domain/stake/useStakingPowerData";
-import { useTreasuryProjection } from "domain/stake/useTreasuryProjection";
+import { useRewardsTesterEarnTreasuryProjection as useTreasuryProjection } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { PLACEHOLDER_ACCOUNT, StakingProcessedData } from "lib/legacy";
 import { formatAmount, formatUsd } from "lib/numbers";
 import { sendEarnPortfolioItemClickEvent } from "lib/userAnalytics/earnEvents";
 import useSearchParams from "lib/useSearchParams";
-import useWallet from "lib/wallets/useWallet";
+import { useRewardsTesterEarnWallet as useWallet } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
 import { bigMath } from "sdk/utils/bigmath";
 import type { StakingPowerResponse } from "sdk/utils/staking/types";
 

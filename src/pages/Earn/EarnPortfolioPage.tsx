@@ -1,26 +1,26 @@
 import { useMemo } from "react";
 
-import { useIncentivesV2State } from "context/IncentivesV2Context/IncentivesV2Context";
+import { useRewardsTesterEarnIncentivesV2State as useIncentivesV2State } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import {
   selectGlvAndMarketsInfoData,
   selectMultichainMarketTokensBalancesIsLoading,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useRewardsTesterEarnSelector as useSelector } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
 import { getPlatformTokenBalanceAfterThreshold } from "domain/multichain/getPlatformTokenBalanceAfterThreshold";
-import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
+import { useRewardsTesterEarnStakingProcessedData as useStakingProcessedData } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
 import { GT_DECIMALS } from "domain/synthetics/incentives/v2/constants";
-import { useIncentivesLeaderboard } from "domain/synthetics/incentives/v2/useIncentivesLeaderboard";
-import { useLatestGtPrice } from "domain/synthetics/incentives/v2/useLatestGtPrice";
+import { useRewardsTesterEarnIncentivesLeaderboard as useIncentivesLeaderboard } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
+import { useRewardsTesterEarnLatestGtPrice as useLatestGtPrice } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
 import { useMarketTokensData } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { usePerformanceAnnualized } from "domain/synthetics/markets/usePerformanceAnnualized";
+import { useRewardsTesterEarnPerformanceAnnualized as usePerformanceAnnualized } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
 import { convertToUsd } from "domain/synthetics/tokens";
-import useVestingData from "domain/vesting/useVestingData";
+import { useRewardsTesterEarnVestingData as useVestingData } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
-import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
-import useWallet from "lib/wallets/useWallet";
+import { useRewardsTesterEarnIsWalletInitializing as useIsWalletInitializing } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
+import { useRewardsTesterEarnWallet as useWallet } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
 import { useBuyGmxDeepLink } from "pages/Earn/buyGmxDeepLink";
 import EarnPageLayout from "pages/Earn/EarnPageLayout";
 

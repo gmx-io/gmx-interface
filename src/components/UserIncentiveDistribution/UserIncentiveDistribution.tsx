@@ -11,9 +11,8 @@ import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext
 import { selectGmMarkets } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { INCENTIVE_TOOLTIP_MAP, INCENTIVE_TYPE_MAP } from "domain/synthetics/common/incentivesAirdropMessages";
-import useUserIncentiveData, {
-  type UserIncentiveDistribution as UserIncentiveDistributionData,
-} from "domain/synthetics/common/useUserIncentiveData";
+import { type UserIncentiveDistribution as UserIncentiveDistributionData } from "domain/synthetics/common/useUserIncentiveData"; // rewards-tester (was: also imported the default useUserIncentiveData)
+import { useRewardsTesterEarnUserIncentiveData as useUserIncentiveData } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
 import { MarketsData, useMarketTokensData } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
@@ -24,8 +23,8 @@ import { GM_DECIMALS, GMX_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { shortenAddressOrEns } from "lib/wallets";
-import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
-import useWallet from "lib/wallets/useWallet";
+import { useRewardsTesterEarnIsWalletInitializing as useIsWalletInitializing } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
+import { useRewardsTesterEarnWallet as useWallet } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { getTokens } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";

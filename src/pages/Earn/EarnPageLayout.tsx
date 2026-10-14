@@ -8,6 +8,7 @@ import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Button from "components/Button/Button";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
 import PageTitle from "components/PageTitle/PageTitle";
+import { RewardsTesterPanel } from "pages/RewardsPage/tester/RewardsTesterPanel"; // rewards-tester
 
 export enum EarnTab {
   Discover = "discover",
@@ -60,6 +61,7 @@ export default function EarnPageLayout({ children }: EarnPageLayoutProps) {
 
   return (
     <AppPageLayout title={t`Earn`}>
+      <RewardsTesterPanel /* rewards-tester */ />
       <PageTitle title={t`Earn`} subtitle={t`Stake GMX and buy GLV or GM to earn rewards`} isTop />
 
       <div className="mt-12 flex grow flex-col gap-8">

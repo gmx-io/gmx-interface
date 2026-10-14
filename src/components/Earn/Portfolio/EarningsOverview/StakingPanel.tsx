@@ -2,7 +2,7 @@ import { Trans } from "@lingui/macro";
 import { ReactNode } from "react";
 import Skeleton from "react-loading-skeleton";
 
-import { useTreasuryProjection } from "domain/stake/useTreasuryProjection";
+import { useRewardsTesterEarnTreasuryProjection as useTreasuryProjection } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
 import { useChainId } from "lib/chains";
 import { StakingProcessedData } from "lib/legacy";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";

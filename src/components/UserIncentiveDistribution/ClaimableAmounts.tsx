@@ -10,13 +10,13 @@ import { GLP_DISTRIBUTION_ID } from "domain/synthetics/claims/constants";
 import { createClaimAmountsTransaction } from "domain/synthetics/claims/createClaimTransaction";
 import { useClaimExecutionFee } from "domain/synthetics/claims/useClaimExecutionFee";
 import { useClaimFundsTransactionCallback } from "domain/synthetics/claims/useClaimFundsTransactionCallback";
-import useUserClaimableAmounts from "domain/synthetics/claims/useUserClaimableAmounts";
+import { useRewardsTesterEarnUserClaimableAmounts as useUserClaimableAmounts } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
 import { estimateExecutionGasPrice, getExecutionFeeBufferBps } from "domain/synthetics/fees/utils/executionFee";
-import { useTokenBalances } from "domain/synthetics/tokens";
+import { useRewardsTesterEarnTokenBalances as useTokenBalances } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
-import useWallet from "lib/wallets/useWallet";
+import { useRewardsTesterEarnWallet as useWallet } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
