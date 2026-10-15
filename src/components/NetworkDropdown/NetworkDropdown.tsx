@@ -34,9 +34,9 @@ import { GmTradeModal, SolanaNetworkItem } from "./SolanaNetworkItem";
 import "./NetworkDropdown.scss";
 
 function NavIcons({ chainId, open }: { chainId: number; open: boolean }) {
-  const isSolana = isSolanaNetwork(useChainId().networkId);
-  const icon = isSolana ? solanaIcon : getChainIcon(chainId);
-  const chainName = isSolana ? t`Solana` : getChainName(chainId);
+  const isSolanaNetworkSelected = isSolanaNetwork(useChainId().networkId);
+  const icon = isSolanaNetworkSelected ? solanaIcon : getChainIcon(chainId);
+  const chainName = isSolanaNetworkSelected ? t`Solana` : getChainName(chainId);
 
   return (
     <>
@@ -55,10 +55,10 @@ export default function NetworkDropdown({
   networkOptions: NetworkOption[];
 }) {
   const [isGmTradeModalVisible, setIsGmTradeModalVisible] = useState(false);
-  const isSolana = isSolanaNetwork(useChainId().networkId);
+  const isSolanaNetworkSelected = isSolanaNetwork(useChainId().networkId);
 
   const handleSolanaSelect = () => {
-    if (isSolana) {
+    if (isSolanaNetworkSelected) {
       return;
     }
 

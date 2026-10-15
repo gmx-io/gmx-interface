@@ -6,7 +6,6 @@ import {
   SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY,
   SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY,
 } from "config/localStorage";
-import { getIsSolanaNetworkSelected } from "lib/chains/solana";
 import { extendError } from "lib/errors";
 import { SMART_WALLET_CHAIN_UNAVAILABLE_ERROR } from "lib/errors/customErrors";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
@@ -35,9 +34,6 @@ export async function switchNetwork(
   active: boolean,
   options: { fallbackToAppSelectionOnError?: boolean } = {}
 ): Promise<void> {
-  // Leaving Solana reloads the page, since Solana is fixed for the page lifetime
-  const wasSolanaNetwork = getIsSolanaNetworkSelected();
-
   if (active) {
     const config = getWagmiConfig();
     const address = getAccount(config).address;
@@ -61,9 +57,6 @@ export async function switchNetwork(
     }
 
     selectNetworkInApp(chainId);
-    if (wasSolanaNetwork) {
-      document.location.reload();
-    }
   } else {
     // chainId in localStorage allows to switch network even if wallet is not connected
     // or there is no wallet at all
