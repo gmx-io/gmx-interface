@@ -15,6 +15,7 @@
     "build-sdk": "cd ./sdk && yarn build",
     "test": "vitest",
     "test:ci": "vitest run",
+    "test:eslint-rules": "node --test scripts/test-eslint-solana-imports.cjs",
     "lint": "node node_modules/.bin/eslint src landing --fix --cache --cache-location .eslintcache",
     "lint:ci": "node node_modules/.bin/eslint src landing --max-warnings=0",
     "pre-commit": "yarn run lint",
