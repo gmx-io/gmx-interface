@@ -190,6 +190,30 @@ function withPriceOverride<T extends TokenData>(token: T, indexToken: TokenData,
   return { ...token, prices: { minPrice: price, maxPrice: price } };
 }
 
+export function getMarketInfoAtIndexPrice(p: {
+  marketInfo: MarketInfo;
+  collateralToken: TokenData;
+  indexPrice: bigint | undefined;
+}): { marketInfo: MarketInfo; collateralToken: TokenData } {
+  const { marketInfo, collateralToken, indexPrice } = p;
+
+  if (indexPrice === undefined || indexPrice <= 0n) {
+    return { marketInfo, collateralToken };
+  }
+
+  const { indexToken } = marketInfo;
+
+  return {
+    marketInfo: {
+      ...marketInfo,
+      indexToken: withPriceOverride(indexToken, indexToken, indexPrice),
+      longToken: withPriceOverride(marketInfo.longToken, indexToken, indexPrice),
+      shortToken: withPriceOverride(marketInfo.shortToken, indexToken, indexPrice),
+    },
+    collateralToken: withPriceOverride(collateralToken, indexToken, indexPrice),
+  };
+}
+
 /**
  * Mirrors the post-increase gates of `IncreasePositionUtils.increasePosition` from the gmx-synthetics
  * build deployed on Arbitrum (release_2.2.1 @ 23c9d160: release-v2.2c plus MarketUtils.getPositivePnl
@@ -211,22 +235,15 @@ export function getIncreaseResultingPositionMarginState(
     indexPriceForEvaluation,
   } = p;
 
-  let { marketInfo, collateralToken } = p;
-
   if (sizeDeltaUsd <= 0n || sizeDeltaInTokens <= 0n) {
     return undefined;
   }
 
-  if (indexPriceForEvaluation !== undefined && indexPriceForEvaluation > 0n) {
-    const originalIndexToken = marketInfo.indexToken;
-    marketInfo = {
-      ...marketInfo,
-      indexToken: withPriceOverride(marketInfo.indexToken, originalIndexToken, indexPriceForEvaluation),
-      longToken: withPriceOverride(marketInfo.longToken, originalIndexToken, indexPriceForEvaluation),
-      shortToken: withPriceOverride(marketInfo.shortToken, originalIndexToken, indexPriceForEvaluation),
-    };
-    collateralToken = withPriceOverride(collateralToken, originalIndexToken, indexPriceForEvaluation);
-  }
+  const { marketInfo, collateralToken } = getMarketInfoAtIndexPrice({
+    marketInfo: p.marketInfo,
+    collateralToken: p.collateralToken,
+    indexPrice: indexPriceForEvaluation,
+  });
 
   const { indexToken } = marketInfo;
 

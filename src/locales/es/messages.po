@@ -770,6 +770,10 @@ msgstr "GMX es una plataforma de intercambio de perpetuos descentralizada con m�
 msgid "Incentives, airdrops, and prizes will appear here"
 msgstr "Los incentivos, airdrops y premios aparecerán aquí"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: at the trigger price, the remaining position would exceed max leverage. Edit the order or <0>increase the position's margin</0>."
+msgstr "Es posible que la orden no se ejecute: al precio de activación, la posición restante excedería el apalancamiento máximo. Edite la orden o <0>aumente el margen de la posición</0>."
+
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using funds directly from your connected wallet."
 msgstr "Puede abrir posiciones aisladas en GMX utilizando fondos directamente desde su monedero conectado."
@@ -4698,6 +4702,11 @@ msgstr "numerosos activos"
 msgid "Step 2: Receive"
 msgstr "Paso 2: Recibir"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "Close the full position, change the trigger price, or add margin."
+msgstr "Cierre toda la posición, cambie el precio de activación o añada margen."
+
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Error name:"
 msgstr "Nombre del error:"
@@ -7871,6 +7880,10 @@ msgstr "Símbolo (de A a Z)"
 msgid "Full lifecycle reconciliation is unavailable because part of this position's history could not be matched reliably."
 msgstr "La conciliación completa del ciclo de vida no está disponible porque parte del historial de esta posición no se pudo emparejar de forma fiable."
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "At this trigger price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "A este precio de activación, la posición restante excedería el apalancamiento máximo y es posible que la orden no se ejecute."
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr "{orderText}: actualización completada"
@@ -9435,6 +9448,10 @@ msgstr "Importe"
 msgid "Integrate GMX"
 msgstr "Integrar GMX"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Take-Profit price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "Al precio de Take-Profit, la posición restante excedería el apalancamiento máximo y es posible que la orden no se ejecute."
+
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Show line values in USD"
 msgstr "Mostrar valores de línea en USD"
@@ -10316,6 +10333,10 @@ msgstr "Añadir RPC"
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Market: {0} a long position at the current price."
 msgstr "{typeString} Mercado en largo: {0} una posición larga al precio actual."
+
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "Turn off \"Keep leverage\", close the full position, change the trigger price, or add margin."
+msgstr "Desactive \"Mantener el apalancamiento\", cierre toda la posición, cambie el precio de activación o añada margen."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a collateral"
@@ -11640,9 +11661,17 @@ msgstr "Swap Limit: intercambiar tokens cuando se alcance el precio de activaci�
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "Reciba alertas y anuncios de GMX para estar al día de sus operaciones, riesgo de liquidación y más"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Stop-Loss price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "Al precio de Stop-Loss, la posición restante excedería el apalancamiento máximo y es posible que la orden no se ejecute."
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated off-hours liquidation price"
 msgstr "Precio de liquidación estimado fuera de horario"
+
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Take-Profit and Stop-Loss prices, the remaining position would exceed max leverage and the orders may not execute."
+msgstr "A los precios de Take-Profit y Stop-Loss, la posición restante excedería el apalancamiento máximo y es posible que las órdenes no se ejecuten."
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Repeat transaction"

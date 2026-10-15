@@ -395,8 +395,12 @@ export function getDecreasePositionAmounts(p: {
 
   const isProfitKeptInPnlToken =
     isMarketDecrease &&
-    !getIsEquivalentTokens(pnlToken, collateralToken) &&
-    (values.decreaseSwapType !== DecreasePositionSwapType.SwapPnlTokenToCollateralToken || isProfitSwapReverted);
+    getIsProfitKeptInPnlToken({
+      pnlToken,
+      collateralToken,
+      decreaseSwapType: values.decreaseSwapType,
+      isProfitSwapReverted,
+    });
 
   const payedInfo = isProfitKeptInPnlToken
     ? payForCollateralCostBeforePnlTokenProfit({
@@ -747,6 +751,18 @@ function getPnlTokenProfitValueUsd(profitUsd: bigint, pnlToken: TokenData) {
   const profitInPnlToken = convertToTokenAmount(profitUsd, pnlToken.decimals, pnlToken.prices.maxPrice);
 
   return convertToUsd(profitInPnlToken, pnlToken.decimals, pnlToken.prices.minPrice) ?? 0n;
+}
+
+export function getIsProfitKeptInPnlToken(p: {
+  pnlToken: TokenData;
+  collateralToken: TokenData;
+  decreaseSwapType: DecreasePositionSwapType;
+  isProfitSwapReverted?: boolean;
+}) {
+  return (
+    !getIsEquivalentTokens(p.pnlToken, p.collateralToken) &&
+    (p.decreaseSwapType !== DecreasePositionSwapType.SwapPnlTokenToCollateralToken || Boolean(p.isProfitSwapReverted))
+  );
 }
 
 export function getCollateralDeltaAmountAfterPriceImpactDiff(p: {

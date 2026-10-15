@@ -35,6 +35,7 @@ import {
   selectOrderEditorIncreaseAmounts,
   selectOrderEditorInitialAcceptablePriceImpactBps,
   selectOrderEditorIsRatioInverted,
+  selectOrderEditorIsRemainingPositionAboveMaxLeverage,
   selectOrderEditorMarginDepositProjections,
   selectOrderEditorMarkRatio,
   selectOrderEditorMaxAllowedLeverage,
@@ -192,6 +193,7 @@ export function OrderEditor(p: Props) {
   const positionOrderError = useSelector(selectOrderEditorPositionOrderError);
   const triggerPrice = useSelector(selectOrderEditorTriggerPrice);
   const liqPriceWarning = useSelector(selectOrderEditorTpSlLiqPriceWarning);
+  const isRemainingPositionAboveMaxLeverage = useSelector(selectOrderEditorIsRemainingPositionAboveMaxLeverage);
   const fromToken = useSelector(selectOrderEditorFromToken);
   const markRatio = useSelector(selectOrderEditorMarkRatio);
   const isRatioInverted = useSelector(selectOrderEditorIsRatioInverted);
@@ -1274,6 +1276,22 @@ export function OrderEditor(p: Props) {
           {liqPriceWarning && (
             <AlertInfoCard type="warning" hideClose>
               {liqPriceWarning}
+            </AlertInfoCard>
+          )}
+
+          {isRemainingPositionAboveMaxLeverage && (
+            <AlertInfoCard type="warning" hideClose>
+              <div className="flex flex-col gap-8">
+                <div>
+                  <Trans>
+                    At this trigger price, the remaining position would exceed max leverage and the order may not
+                    execute.
+                  </Trans>
+                </div>
+                <div>
+                  <Trans>Close the full position, change the trigger price, or add margin.</Trans>
+                </div>
+              </div>
             </AlertInfoCard>
           )}
 

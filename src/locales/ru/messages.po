@@ -770,6 +770,10 @@ msgstr "GMX — децентрализованная биржа бессрочн
 msgid "Incentives, airdrops, and prizes will appear here"
 msgstr "Поощрения, аирдропы и призы будут отображаться здесь"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: at the trigger price, the remaining position would exceed max leverage. Edit the order or <0>increase the position's margin</0>."
+msgstr "Ордер может не исполниться: по цене срабатывания оставшаяся позиция превысит максимальное плечо. Измените ордер или <0>увеличьте маржу позиции</0>."
+
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using funds directly from your connected wallet."
 msgstr "Вы можете открывать изолированные позиции на GMX, используя средства напрямую из вашего подключённого кошелька."
@@ -4698,6 +4702,11 @@ msgstr "множества активов"
 msgid "Step 2: Receive"
 msgstr "Шаг 2: Получение"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "Close the full position, change the trigger price, or add margin."
+msgstr "Закройте позицию полностью, измените цену срабатывания или добавьте маржу."
+
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Error name:"
 msgstr "Имя ошибки:"
@@ -7871,6 +7880,10 @@ msgstr "Символ (от A до Z)"
 msgid "Full lifecycle reconciliation is unavailable because part of this position's history could not be matched reliably."
 msgstr "Полная сверка жизненного цикла недоступна, так как часть истории этой позиции не удалось надёжно сопоставить."
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "At this trigger price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "По этой цене срабатывания оставшаяся позиция превысит максимальное плечо, и ордер может не исполниться."
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr "Обновлено: {orderText}"
@@ -9435,6 +9448,10 @@ msgstr "Сумма"
 msgid "Integrate GMX"
 msgstr "Интегрируйте GMX"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Take-Profit price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "По цене тейк-профита оставшаяся позиция превысит максимальное плечо, и ордер может не исполниться."
+
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Show line values in USD"
 msgstr "Показать значения линий в USD"
@@ -10316,6 +10333,10 @@ msgstr "Добавить RPC"
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Market: {0} a long position at the current price."
 msgstr "{typeString} Рыночный лонг: {0} лонг-позицию по текущей цене."
+
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "Turn off \"Keep leverage\", close the full position, change the trigger price, or add margin."
+msgstr "Отключите «Сохранить кредитное плечо», закройте позицию полностью, измените цену срабатывания или добавьте маржу."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a collateral"
@@ -11640,9 +11661,17 @@ msgstr "Swap Limit: обмен токенов при достижении цен
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "Получайте оповещения и уведомления от GMX, чтобы быть в курсе ваших сделок, риска ликвидации и многого другого"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Stop-Loss price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "По цене стоп-лосса оставшаяся позиция превысит максимальное плечо, и ордер может не исполниться."
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated off-hours liquidation price"
 msgstr "Расчётная цена ликвидации в нерабочие часы"
+
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Take-Profit and Stop-Loss prices, the remaining position would exceed max leverage and the orders may not execute."
+msgstr "По ценам тейк-профита и стоп-лосса оставшаяся позиция превысит максимальное плечо, и ордера могут не исполниться."
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Repeat transaction"

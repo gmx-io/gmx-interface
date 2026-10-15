@@ -770,6 +770,10 @@ msgstr "GMX 是一個去中心化永續合約交易所，提供涵蓋加密貨�
 msgid "Incentives, airdrops, and prizes will appear here"
 msgstr "獎勵、空投和獎品將顯示在這裡"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: at the trigger price, the remaining position would exceed max leverage. Edit the order or <0>increase the position's margin</0>."
+msgstr "訂單可能無法執行：在觸發價格下，剩餘倉位將超過最大槓桿。請編輯訂單或<0>增加倉位保證金</0>。"
+
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using funds directly from your connected wallet."
 msgstr "您可以直接使用已連接錢包中的資金，在 GMX 上開立逐倉倉位。"
@@ -4698,6 +4702,11 @@ msgstr "眾多資產"
 msgid "Step 2: Receive"
 msgstr "步驟 2：收到"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "Close the full position, change the trigger price, or add margin."
+msgstr "請完全平倉、變更觸發價格或增加保證金。"
+
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Error name:"
 msgstr "錯誤名稱："
@@ -7871,6 +7880,10 @@ msgstr "代幣符號（A 到 Z）"
 msgid "Full lifecycle reconciliation is unavailable because part of this position's history could not be matched reliably."
 msgstr "由於此倉位的部分歷史記錄無法可靠比對，目前無法提供完整的生命週期對帳。"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "At this trigger price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "在此觸發價格下，剩餘倉位將超過最大槓桿，訂單可能無法執行。"
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr "{orderText} 已更新"
@@ -9435,6 +9448,10 @@ msgstr "金額"
 msgid "Integrate GMX"
 msgstr "整合 GMX"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Take-Profit price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "在止盈價格下，剩餘倉位將超過最大槓桿，訂單可能無法執行。"
+
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Show line values in USD"
 msgstr "以 USD 顯示線條數值"
@@ -10316,6 +10333,10 @@ msgstr "新增 RPC"
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Market: {0} a long position at the current price."
 msgstr "{typeString} 做多市價單：以目前價格{0}做多倉位。"
+
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "Turn off \"Keep leverage\", close the full position, change the trigger price, or add margin."
+msgstr "請關閉「維持槓桿」、完全平倉、變更觸發價格或增加保證金。"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a collateral"
@@ -11640,9 +11661,17 @@ msgstr "限價兌換：當觸發價格達到時兌換代幣"
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "獲取 GMX 的提醒和公告，隨時掌握您的交易、清算風險等資訊"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Stop-Loss price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "在止損價格下，剩餘倉位將超過最大槓桿，訂單可能無法執行。"
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated off-hours liquidation price"
 msgstr "預計非交易時段清算價格"
+
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Take-Profit and Stop-Loss prices, the remaining position would exceed max leverage and the orders may not execute."
+msgstr "在止盈和止損價格下，剩餘倉位將超過最大槓桿，訂單可能無法執行。"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Repeat transaction"
