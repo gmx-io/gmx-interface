@@ -934,6 +934,28 @@ test.describe("TradeBox", () => {
       await expect(submitButton).toBeDisabled();
     });
 
+    test("insufficient allowance shows the approve button for a long", async ({ mount, page }) => {
+      chain.allowance = 0n;
+      await mount(<TradeBoxStory connected />);
+
+      await page.locator(getDataQALocator("margin-input")).fill("100");
+
+      const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
+      await expect(submitButton).toHaveText("Approve USDC");
+      await expect(submitButton).toBeEnabled();
+    });
+
+    test("native ETH pay doesn't wait for an allowance", async ({ mount, page }) => {
+      await page.route(/^https?:\/\/(?!localhost|127\.0\.0\.1)/, (route) => route.abort());
+      await mount(<TradeBoxStory connected seedPayNativeEth />);
+
+      await page.locator(getDataQALocator("margin-input")).fill("1");
+
+      const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
+      await expect(submitButton).toHaveText("Open Long");
+      await expect(submitButton).toBeEnabled();
+    });
+
     test("sufficient allowance keeps the swap button", async ({ mount, page }) => {
       await mount(<TradeBoxStory connected seedSwapPair={swapUsdcToEth} />);
 

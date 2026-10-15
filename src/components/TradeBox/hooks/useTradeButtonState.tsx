@@ -216,6 +216,7 @@ export function useTradeboxButtonState({
   const {
     tokensToApprove,
     isAllowanceLoaded: isAllowanceLoadedRaw,
+    isAllowanceLoading,
     isApproving,
     handleApprove,
   } = useTokenApproval({
@@ -235,8 +236,8 @@ export function useTradeboxButtonState({
 
   const isDataReady = Boolean(fromToken && payAmount !== undefined);
   const isAllowanceLoaded = isDataReady && isAllowanceLoadedRaw;
-  // tokensToApprove lists every spent token until its allowance is known, so don't let the order through before that
-  const isAllowancePending = tokensToApprove.length > 0 && !isAllowanceLoadedRaw && !isApproving;
+  // until allowances are known an order could be sent without the approval it needs
+  const isAllowancePending = isAllowanceLoading && !isApproving;
 
   const pendingApprovalTokenAddress = isAllowanceLoaded && !isApproving ? tokensToApprove[0] : undefined;
   const isPendingGasPaymentTokenApproval =
