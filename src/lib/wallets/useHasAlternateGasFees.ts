@@ -23,5 +23,5 @@ export function useHasAlternateGasFees({ chainId, enabled }: { chainId: number; 
 
   const alternateGasFees = capabilities?.[chainId]?.alternateGasFees ?? capabilities?.[ALL_CHAINS_ID]?.alternateGasFees;
 
-  return alternateGasFees?.supported === true;
+  return alternateGasFees?.supported === true || capabilities?.[chainId]?.atomic?.status === "ready";
 }
