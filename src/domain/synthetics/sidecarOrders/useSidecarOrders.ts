@@ -17,7 +17,6 @@ import {
   selectTradeboxMockPosition,
   selectTradeboxSidecarOrdersExistingSlEntries,
   selectTradeboxSidecarOrdersExistingTpEntries,
-  selectTradeboxSidecarEntriesSetIsUntouched,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxSidecarOrders";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
@@ -35,7 +34,6 @@ export function useSidecarOrders() {
   const userReferralInfo = useUserReferralInfo();
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
   const uiFeeFactor = useUiFeeFactor();
-  const setIsUntouched = useSelector(selectTradeboxSidecarEntriesSetIsUntouched);
   const isSetAcceptablePriceImpactEnabled = useSelector(selectIsSetAcceptablePriceImpactEnabled);
 
   const { isLong, isLimit } = useSelector(selectTradeboxTradeFlags);
@@ -206,20 +204,27 @@ export function useSidecarOrders() {
     takeProfit.reset();
   }, [stopLoss, takeProfit]);
 
+  const carryOver = useCallback(
+    (options: { keepTypedPrice: boolean }) => {
+      stopLoss.carryOver(options);
+      takeProfit.carryOver(options);
+    },
+    [stopLoss, takeProfit]
+  );
+
   const doesEntriesChanged = useSidecarOrdersChanged();
   const prevDoesEntriesChanged = usePrevious(doesEntriesChanged);
 
   useEffect(() => {
     if (prevDoesEntriesChanged === false && doesEntriesChanged) {
-      reset();
-      setIsUntouched("sl", false);
-      setIsUntouched("tp", false);
+      carryOver({ keepTypedPrice: true });
     }
-  }, [doesEntriesChanged, prevDoesEntriesChanged, reset, setIsUntouched]);
+  }, [carryOver, doesEntriesChanged, prevDoesEntriesChanged]);
 
   return {
     stopLoss,
     takeProfit,
     reset,
+    carryOver,
   };
 }

@@ -579,12 +579,12 @@ describe("getMaxActionTooltip", () => {
   it("Max with a holdback only names the holdback", () => {
     expect(
       getMaxActionTooltip({ ...base, action: "max", feeHoldbackAmount: usdc(1.4), reserveAmount: undefined })
-    ).toBe("Reserves ~1.40 USDC for this transaction's fee.");
+    ).toBe("Reserves ~1.40 USDC for this transaction's fee");
   });
 
   it("Max with a reserve context only names the empty reserve", () => {
     expect(getMaxActionTooltip({ ...base, action: "max", feeHoldbackAmount: 0n, reserveAmount: usdc(20) })).toBe(
-      "Leaves no USDC in your GMX Account for future Express fees."
+      "Leaves no USDC in your GMX Account for future Express fees"
     );
   });
 
@@ -597,12 +597,12 @@ describe("getMaxActionTooltip", () => {
   it("Keep gas with a holdback names both amounts", () => {
     expect(
       getMaxActionTooltip({ ...base, action: "keepGas", feeHoldbackAmount: usdc(1.4), reserveAmount: usdc(20) })
-    ).toBe("Keeps 20.00 USDC in your GMX Account for future Express fees and ~1.40 USDC for this transaction's fee.");
+    ).toBe("Keeps 20.00 USDC in your GMX Account for future Express fees and ~1.40 USDC for this transaction's fee");
   });
 
   it("Keep gas without a holdback names the reserve only", () => {
     expect(getMaxActionTooltip({ ...base, action: "keepGas", feeHoldbackAmount: 0n, reserveAmount: usdc(20) })).toBe(
-      "Keeps 20.00 USDC in your GMX Account for future Express fees."
+      "Keeps 20.00 USDC in your GMX Account for future Express fees"
     );
   });
 
@@ -632,7 +632,7 @@ describe("getMaxActionsTooltips", () => {
       maxTooltip:
         "Reserves ~1.40 USDC for this transaction's fee. Leaves no USDC in your Wallet for future Express fees.",
       keepGasTooltip:
-        "Keeps 20.00 USDC in your Wallet for future Express fees and ~1.40 USDC for this transaction's fee.",
+        "Keeps 20.00 USDC in your Wallet for future Express fees and ~1.40 USDC for this transaction's fee",
     });
   });
 
@@ -661,8 +661,8 @@ describe("getMaxActionsTooltips", () => {
     expect(
       getMaxActionsTooltips({ ...base, feeHoldbackAmount: 0n, feeSource: getNetworkFeeSource({ isGmxAccount: true }) })
     ).toEqual({
-      maxTooltip: "Leaves no USDC in your GMX Account for future Express fees.",
-      keepGasTooltip: "Keeps 20.00 USDC in your GMX Account for future Express fees.",
+      maxTooltip: "Leaves no USDC in your GMX Account for future Express fees",
+      keepGasTooltip: "Keeps 20.00 USDC in your GMX Account for future Express fees",
     });
   });
 
@@ -683,6 +683,6 @@ describe("getMaxActionsTooltips", () => {
         decimals: 18,
         isStable: false,
       }).maxTooltip
-    ).toBe("Reserves ~0.0004200 ETH for this transaction's fee.");
+    ).toBe("Reserves ~0.0004200 ETH for this transaction's fee");
   });
 });

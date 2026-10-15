@@ -14,7 +14,13 @@ import { usePrevious } from "lib/usePrevious";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { EntryField, GroupPrefix, InitialEntry, SidecarOrderEntryBase, SidecarOrderEntryGroupBase } from "./types";
-import { MAX_PERCENTAGE, PERCENTAGE_DECIMALS, getDefaultEntry, getDefaultEntryField } from "./utils";
+import {
+  MAX_PERCENTAGE,
+  PERCENTAGE_DECIMALS,
+  getCarriedOverEntries,
+  getDefaultEntry,
+  getDefaultEntryField,
+} from "./utils";
 
 export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
   prefix,
@@ -198,6 +204,18 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
     setIsUntouched(prefix, true);
   }, [initialState, setEntries, setIsUntouched, prefix]);
 
+  const carryOver = useCallback(
+    ({ keepTypedPrice }: { keepTypedPrice: boolean }) => {
+      setEntries((prevEntries) =>
+        getCarriedOverEntries({ entries: prevEntries, initialEntries: initialState, keepTypedPrice }).map((entry) =>
+          errorHandler(recalculateEntryByField(entry, entry.mode === "keepSize" ? "sizeUsd" : "percentage"))
+        )
+      );
+      setIsUntouched(prefix, false);
+    },
+    [errorHandler, initialState, recalculateEntryByField, setEntries, setIsUntouched, prefix]
+  );
+
   const deleteEntry = useCallback(
     (id: string) => {
       setIsUntouched(prefix, false);
@@ -269,6 +287,7 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
     updateEntry,
     deleteEntry,
     reset,
+    carryOver,
     canAddEntry,
     allowAddEntry: canAddEntry && totalPercentage < MAX_PERCENTAGE,
   };
