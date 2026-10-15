@@ -85,22 +85,25 @@ vi.mock("pages/RewardsPage/components/RewardsOnboardingModal", () => ({
 vi.mock("pages/RewardsPage/components/RewardsTiersTab", () => ({
   RewardsTiersTab: ({
     config,
-    summaryUnavailable,
     statusLoading,
     statusUnavailable,
   }: {
     config: { epochTimestamp?: number };
-    summaryUnavailable: boolean;
     statusLoading: boolean;
     statusUnavailable: boolean;
   }) => (
     <div
       data-config-epoch={config.epochTimestamp}
-      data-summary-unavailable={String(summaryUnavailable)}
       data-status-loading={String(statusLoading)}
       data-status-unavailable={String(statusUnavailable)}
       data-testid="tiers-tab"
     />
+  ),
+}));
+
+vi.mock("pages/RewardsPage/components/RewardsSummaryRow", () => ({
+  RewardsSummaryRow: ({ summaryState }: { summaryState: string }) => (
+    <div data-summary-state={summaryState} data-testid="summary-row" />
   ),
 }));
 
@@ -233,7 +236,7 @@ describe("RewardsPage", () => {
     expect(launcher.getAttribute("data-auto-open")).toBe("true");
   });
 
-  it("hides the Rewards tab while disconnected", () => {
+  it("hides the Vesting tab while disconnected", () => {
     mockUseWallet.mockReturnValue({ account: undefined } as ReturnType<typeof useWallet>);
 
     renderPage("/rewards");
@@ -346,6 +349,7 @@ describe("RewardsPage", () => {
       chainId: ARBITRUM,
       account: "0x123",
       loadTierAccountData: false,
+      loadAllTimeSummary: true,
     });
   });
 
@@ -427,7 +431,64 @@ describe("RewardsPage", () => {
 
     renderPage("/rewards");
 
-    expect(screen.getByTestId("tiers-tab").getAttribute("data-summary-unavailable")).toBe("false");
+    expect(screen.getByTestId("summary-row").getAttribute("data-summary-state")).toBe("ready");
+    expect(
+      screen.getByText("Some account rewards could not be refreshed. Public incentive data remains available.")
+    ).toBeDefined();
+  });
+
+  it.each([["/rewards"], ["/rewards/history"], ["/rewards/leaderboard"]])(
+    "shows the summary row above the tabs on %s",
+    (path) => {
+      renderPage(path);
+
+      const summaryRow = screen.getByTestId("summary-row");
+      expect(summaryRow.getAttribute("data-summary-state")).toBe("ready");
+      expect(
+        summaryRow.compareDocumentPosition(screen.getByTestId("tabs")) & Node.DOCUMENT_POSITION_FOLLOWING
+      ).toBeTruthy();
+    }
+  );
+
+  it("hides the summary row while disconnected", () => {
+    mockUseWallet.mockReturnValue({ account: undefined } as ReturnType<typeof useWallet>);
+
+    renderPage("/rewards");
+
+    expect(screen.queryByTestId("summary-row")).toBeNull();
+  });
+
+  it.each([
+    ["error", { status: "error", error: new Error("Unavailable") } as const],
+    ["inactive", { status: "inactive" } as const],
+  ])("hides the summary row while Rewards is %s", (_label, availability) => {
+    mockUseRewardsPageData.mockReturnValue(getPageData(availability));
+
+    renderPage("/rewards");
+
+    expect(screen.queryByTestId("summary-row")).toBeNull();
+  });
+
+  it("shows the summary row as loading while the all-time summary loads", () => {
+    mockUseRewardsPageData.mockReturnValue({
+      ...getPageData({ status: "active", config: mockConfig, isStale: false }),
+      allTimeSummaryLoading: true,
+    });
+
+    renderPage("/rewards/history");
+
+    expect(screen.getByTestId("summary-row").getAttribute("data-summary-state")).toBe("loading");
+  });
+
+  it("shows the refresh warning on the Vesting tab when the all-time summary fails", () => {
+    mockUseRewardsPageData.mockReturnValue({
+      ...getPageData({ status: "active", config: mockConfig, isStale: false }),
+      allTimeSummaryError: new Error("refresh failed"),
+    });
+
+    renderPage("/rewards/history");
+
+    expect(screen.getByTestId("summary-row").getAttribute("data-summary-state")).toBe("unavailable");
     expect(
       screen.getByText("Some account rewards could not be refreshed. Public incentive data remains available.")
     ).toBeDefined();

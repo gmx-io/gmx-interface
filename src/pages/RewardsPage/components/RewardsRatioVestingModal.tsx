@@ -308,7 +308,7 @@ export function RewardsRatioVestingModal({
             <Trans>Max</Trans>
           </Button>
         </div>
-        <SyntheticsInfoRow label={<Trans>Available to Vest</Trans>} value={`${format(preview.availableEsGmx)} esGMX`} />
+        <SyntheticsInfoRow label={<Trans>Available to vest</Trans>} value={`${format(preview.availableEsGmx)} esGMX`} />
         <SyntheticsInfoRow
           label={<Trans>Collateral required for vest</Trans>}
           value={`${format(preview.additionalPairAmount)} ${config.pairTokenSymbol}`}

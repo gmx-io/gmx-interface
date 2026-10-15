@@ -186,7 +186,7 @@ describe("RewardsHistoryTab", () => {
 
     renderHistory();
 
-    expect(screen.getByText("Epoch ends in")).toBeTruthy();
+    expect(screen.getByText(/^Epoch ends in \S/)).toBeTruthy();
     expect(screen.getByText("Finished")).toBeTruthy();
   });
 
@@ -197,7 +197,7 @@ describe("RewardsHistoryTab", () => {
 
     renderHistory();
 
-    const currentEpochRow = screen.getByText("Epoch ends in").closest("tr");
+    const currentEpochRow = screen.getByText(/^Epoch ends in \S/).closest("tr");
 
     expect(currentEpochRow?.textContent?.replace(/\s/g, "")).toContain("$0");
     expect(currentEpochRow?.textContent).toContain("Epoch ends in");
