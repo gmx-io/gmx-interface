@@ -2,6 +2,8 @@ import { getCapabilities, type GetCapabilitiesReturnType } from "@wagmi/core";
 import useSWR from "swr";
 import { useAccount } from "wagmi";
 
+import { isTestnetChain } from "sdk/configs/chains";
+
 import { getWagmiConfig } from "./walletConfig";
 
 const NO_CAPABILITIES: GetCapabilitiesReturnType = {};
@@ -23,5 +25,8 @@ export function useHasAlternateGasFees({ chainId, enabled }: { chainId: number; 
 
   const alternateGasFees = capabilities?.[chainId]?.alternateGasFees ?? capabilities?.[ALL_CHAINS_ID]?.alternateGasFees;
 
-  return alternateGasFees?.supported === true || capabilities?.[chainId]?.atomic?.status === "ready";
+  return (
+    alternateGasFees?.supported === true ||
+    (!isTestnetChain(chainId) && capabilities?.[chainId]?.atomic?.status === "ready")
+  );
 }
