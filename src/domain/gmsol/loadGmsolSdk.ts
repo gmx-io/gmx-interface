@@ -10,10 +10,8 @@ export function loadGmsolSdk(): Promise<GmsolSdk> {
   }
 
   if (!gmsolSdkPromise) {
-    gmsolSdkPromise = import("@gmsol-labs/gmsol-sdk").catch((error) => {
-      gmsolSdkPromise = undefined;
-      throw error;
-    });
+    // WASM initialization failures are cached by the module runtime and require a page reload.
+    gmsolSdkPromise = import("@gmsol-labs/gmsol-sdk");
   }
 
   return gmsolSdkPromise;

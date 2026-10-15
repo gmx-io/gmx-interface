@@ -34,8 +34,8 @@ describe("loadGmsolSdk", () => {
     expect(sdkFactory).toHaveBeenCalledTimes(1);
   });
 
-  it("allows a later call to recover from a shared loading failure FESOL-55", async () => {
-    const loadError = new TypeError("Failed to fetch dynamically imported module");
+  it("preserves a shared loading failure across later calls and flag changes", async () => {
+    const loadError = new TypeError("Failed to initialize WASM");
     vi.doMock("@gmsol-labs/gmsol-sdk", () => {
       throw loadError;
     });
@@ -46,17 +46,15 @@ describe("loadGmsolSdk", () => {
     expect(loadGmsolSdk()).toBe(firstLoad);
     await expect(firstLoad).rejects.toMatchObject({ cause: loadError });
 
-    vi.doMock("@gmsol-labs/gmsol-sdk", () => sdkFactory());
+    expect(loadGmsolSdk()).toBe(firstLoad);
+    await expect(loadGmsolSdk()).rejects.toMatchObject({ cause: loadError });
+
     vi.mocked(getIsSolanaNetworkEnabled).mockReturnValue(false);
     await expect(loadGmsolSdk()).rejects.toThrow("Solana network is disabled");
     expect(sdkFactory).not.toHaveBeenCalled();
 
     vi.mocked(getIsSolanaNetworkEnabled).mockReturnValue(true);
-    const retryLoad = loadGmsolSdk();
-    expect(retryLoad).not.toBe(firstLoad);
-    expect(loadGmsolSdk()).toBe(retryLoad);
-    expect((await retryLoad).create_orders).toBeTypeOf("function");
-    expect(loadGmsolSdk()).toBe(retryLoad);
-    expect(sdkFactory).toHaveBeenCalledTimes(1);
+    expect(loadGmsolSdk()).toBe(firstLoad);
+    await expect(loadGmsolSdk()).rejects.toMatchObject({ cause: loadError });
   });
 });
