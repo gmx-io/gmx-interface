@@ -167,7 +167,7 @@ export function getRewardsPromotionalBannerContent({
     banners.push({
       type: "pair-boosts",
       accent: "boost",
-      title: <Trans>Activate Pair Boosts</Trans>,
+      title: <Trans>Activate pair boosts</Trans>,
       description: <Trans>Trade featured pairs to boost multiplier and rewards</Trans>,
       actions: [{ label: <Trans>Trade</Trans>, type: "trade", to: "/trade" }],
       art: "trade",

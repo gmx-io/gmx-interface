@@ -103,7 +103,7 @@ function SlideContent({ index }: { index: number }) {
   return (
     <div className="flex min-h-[104px] w-full max-w-[360px] flex-col items-center gap-8 text-center">
       <h2 className="text-h2 text-typography-primary">
-        <Trans>Using Your Rewards</Trans>
+        <Trans>Using your rewards</Trans>
       </h2>
       <ul className="text-body-medium w-full list-disc space-y-4 pl-16 text-left text-typography-secondary">
         <li>

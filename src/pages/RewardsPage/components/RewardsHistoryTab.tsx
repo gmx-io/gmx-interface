@@ -154,8 +154,8 @@ export function RewardsHistoryTab({ chainId, account, config }: Props) {
     <div className="flex h-full flex-col rounded-8 bg-slate-900">
       <div className="px-20 pb-12 pt-20">
         <div className="flex items-center justify-between gap-12">
-          <h3 className="text-16 font-medium text-typography-primary">
-            <Trans>Rewards History</Trans>
+          <h3 className="text-body-large font-medium text-typography-primary">
+            <Trans>Rewards history</Trans>
           </h3>
           {isValidating && data ? (
             <div className="text-caption text-typography-secondary">
@@ -216,7 +216,7 @@ export function RewardsHistoryTab({ chainId, account, config }: Props) {
                 </tbody>
               </table>
             ) : (
-              <table className="w-full min-w-[960px] table-fixed">
+              <table className="w-full min-w-[880px] table-fixed">
                 <thead>
                   <TableTheadTr>
                     <TableTh>{t`Epoch`}</TableTh>
@@ -390,10 +390,11 @@ function getStatusContent(epoch: number, epochDuration: number, now: number) {
   const epochEnd = epoch + epochDuration;
 
   if (getRewardsHistoryStatus(epoch, epochDuration, now) === "ongoing") {
+    const timeLeft = formatTimeLeft(epochEnd - now, { alwaysShowDays: true });
+
     return (
       <span className="text-13 text-typography-secondary">
-        <Trans>Epoch ends in</Trans>{" "}
-        <span className="text-typography-primary">{formatTimeLeft(epochEnd - now, { alwaysShowDays: true })}</span>
+        <Trans>Epoch ends in {timeLeft}</Trans>
       </span>
     );
   }
