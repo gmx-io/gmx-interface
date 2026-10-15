@@ -72,7 +72,9 @@ export function HistoryExportModal({
             </AlertInfo>
           ) : (
             <AlertInfo type="info" noMargin>
-              <Trans>Exports are for record-keeping and tax-software compatibility. They are not tax advice.</Trans>
+              <Trans>
+                Exports are for record-keeping and tax-software compatibility; they do not constitute tax advice.
+              </Trans>
             </AlertInfo>
           )}
         </div>

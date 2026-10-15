@@ -573,6 +573,10 @@ msgstr "所有 BTC/USD 池的流動性不足"
 msgid "Unrealized base PnL"
 msgstr "未實現基礎 PnL"
 
+#: src/components/HistoryExport/HistoryExportModal.tsx
+msgid "Exports are for record-keeping and tax-software compatibility; they do not constitute tax advice."
+msgstr "匯出功能僅用於保存記錄及與稅務軟體相容，並不構成稅務建議。"
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/pages/Dashboard/GmCard.tsx
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
@@ -6634,10 +6638,6 @@ msgstr "操作"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Order exceeds max leverage. Reduce the size."
 msgstr "訂單超過最大槓桿。請減小規模。"
-
-#: src/components/HistoryExport/HistoryExportModal.tsx
-msgid "Exports are for record-keeping and tax-software compatibility. They are not tax advice."
-msgstr "匯出內容僅用於保存記錄及與稅務軟體相容。匯出內容不構成稅務建議。"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
