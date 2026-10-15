@@ -32,7 +32,7 @@ vi.mock("domain/multichain/useGmxAccountFundingHistory", () => ({
 }));
 
 vi.mock("lib/chains", () => ({
-  useChainId: () => ({ chainId: 42161 }),
+  useChainId: () => ({ chainId: ARBITRUM }),
 }));
 
 beforeAll(() => {
@@ -83,6 +83,12 @@ describe("TransferDetailsView execution error alert", () => {
 
     expect(view.queryByText("Withdrawal to Base failed")).not.toBeNull();
     expect(view.queryByText(/Deposit from/)).toBeNull();
+  });
+
+  it("names the settlement chain for a failed same-chain withdrawal", () => {
+    const view = renderView(createTransfer({ operation: "withdrawal", sourceChainId: 0 }));
+
+    expect(view.queryByText("Withdrawal to Arbitrum failed")).not.toBeNull();
   });
 
   it("says the deposit failed for a failed deposit", () => {
