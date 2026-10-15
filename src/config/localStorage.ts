@@ -1,5 +1,6 @@
 export const SELECTED_NETWORK_LOCAL_STORAGE_KEY = "SELECTED_NETWORK";
 export const SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY = "SELECTED_NETWORK_WAS_APP_SELECTED";
+export const SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY = "SELECTED_SOLANA_NETWORK";
 export const SELECTED_SETTLEMENT_CHAIN_ID_KEY = "SELECTED_SETTLEMENT_CHAIN_ID";
 export const SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY = "eagerconnect";
 export const CURRENT_PROVIDER_LOCALSTORAGE_KEY = "currentprovider";
@@ -34,7 +35,10 @@ export const DEBUG_PAXOS_TRANSIT_IGNORE_WHITELIST_KEY = "debug-paxos-transit-ign
 export const DEBUG_PAXOS_TRANSIT_MOCK_KEY = "debug-paxos-transit-mock";
 export const DEBUG_PAXOS_TRANSIT_FORCE_BUY_USDG_HINT_KEY = "debug-paxos-transit-force-buy-usdg-hint";
 export const DEBUG_PAXOS_TRANSIT_THRESHOLD_USD_KEY = "debug-paxos-transit-threshold-usd";
+export const DEBUG_PAXOS_TRANSIT_FORCE_STANDARD_KEY = "debug-paxos-transit-force-standard";
 export const PAXOS_TRANSIT_ROUTE_PROGRESS_KEY = "paxos-transit-route-progress";
+export const PAXOS_TRANSIT_APPROVAL_PROPOSALS_KEY = "paxos-transit-approval-proposals";
+export const PAXOS_TRANSIT_CONVERSION_PROPOSALS_KEY = "paxos-transit-conversion-proposals";
 export const STATS_API_URL_KEY = "stats-api-url";
 const SORTED_MARKETS_KEY = "sorted-markets-key";
 export const TWAP_NUMBER_OF_PARTS_KEY = "twap-number-of-parts";

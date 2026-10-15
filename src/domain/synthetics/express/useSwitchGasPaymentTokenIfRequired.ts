@@ -32,8 +32,8 @@ const notifyGasPaymentTokenSwitched = ({
   isGmxAccount: boolean;
 }) => {
   const content = isGmxAccount
-    ? t`Not enough ${fromSymbol} in your GMX Account for fees. Gas payment token switched to ${toSymbol}.`
-    : t`Not enough ${fromSymbol} in your Wallet for fees. Gas payment token switched to ${toSymbol}.`;
+    ? t`Not enough ${fromSymbol} in your GMX Account for fees. Gas payment token switched to ${toSymbol}`
+    : t`Not enough ${fromSymbol} in your wallet for fees. Gas payment token switched to ${toSymbol}`;
 
   if (toast.isActive(GAS_PAYMENT_TOKEN_SWITCHED_TOAST_ID)) {
     toast.update(GAS_PAYMENT_TOKEN_SWITCHED_TOAST_ID, { render: content });

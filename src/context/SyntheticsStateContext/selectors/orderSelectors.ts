@@ -11,9 +11,11 @@ import {
   getOrderIncreaseNextPositionValues,
   getOrderIncreaseProjection,
   getOrderIncreaseResultingPositionMarginState,
+  getTwapIncreaseOrderSequentialMarginState,
 } from "domain/synthetics/orders/utils";
 import { getIsPositionInfoLoaded, getPositionKey } from "domain/synthetics/positions";
 import { getByKey } from "lib/objects";
+import { isTwapPositionOrder } from "sdk/utils/orders";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector, createSelectorFactory, PER_ORDER_SELECTOR_CACHE_SIZE } from "../utils";
@@ -136,6 +138,39 @@ export const makeSelectOrderIncreaseResultingPositionMarginState = createSelecto
   PER_ORDER_SELECTOR_CACHE_SIZE
 );
 
+export const makeSelectTwapIncreaseOrderSequentialMarginState = createSelectorFactory(
+  (orderKey: string) =>
+    createSelector(function selectTwapIncreaseOrderSequentialMarginState(q) {
+      if (q(selectIsPositionsLoading)) {
+        return undefined;
+      }
+
+      const order = q((s) => getByKey(selectOrdersInfoData(s), orderKey));
+
+      if (!order || !isTwapPositionOrder(order) || !isIncreaseOrderType(order.orderType) || !order.marketInfo) {
+        return undefined;
+      }
+
+      const { minCollateralUsd } = q(selectPositionConstants);
+
+      if (minCollateralUsd === undefined) {
+        return undefined;
+      }
+
+      return getTwapIncreaseOrderSequentialMarginState({
+        order,
+        position: q(makeSelectOrderExistingPosition(orderKey)),
+        uiFeeFactor: q(selectUiFeeFactor),
+        chainId: q(selectChainId),
+        marketsInfoData: q(selectMarketsInfoData),
+        userReferralInfo: q(selectUserReferralInfo),
+        proDiscountFactor: q(selectProDiscountFactor),
+        minCollateralUsd,
+      });
+    }),
+  PER_ORDER_SELECTOR_CACHE_SIZE
+);
+
 export const makeSelectOrderErrorByOrderKey = createSelectorFactory(
   (orderId: string | undefined) =>
     createSelector(function selectOrderErrorByOrderId(q): OrderErrors {
@@ -150,15 +185,17 @@ export const makeSelectOrderErrorByOrderKey = createSelectorFactory(
       const jitLiquidityMap = q(selectJitLiquidityMap);
 
       const { triggerPrice, sizeDeltaUsd } = orderInfo as PositionOrderInfo;
-      const isRestingIncrease =
-        isIncreaseOrderType(orderInfo.orderType) && !isTwapOrder(orderInfo) && sizeDeltaUsd > 0n;
+      const isTwapIncrease = isIncreaseOrderType(orderInfo.orderType) && isTwapOrder(orderInfo);
+      const isRestingIncrease = isIncreaseOrderType(orderInfo.orderType) && !isTwapIncrease && sizeDeltaUsd > 0n;
 
       const nextPositionValues = isRestingIncrease
         ? q(makeSelectOrderIncreaseNextPositionValues(orderInfo.key, triggerPrice, sizeDeltaUsd, false))
         : undefined;
       const resultingPositionMarginState = isRestingIncrease
         ? q(makeSelectOrderIncreaseResultingPositionMarginState(orderInfo.key, triggerPrice, sizeDeltaUsd))
-        : undefined;
+        : isTwapIncrease
+          ? q(makeSelectTwapIncreaseOrderSequentialMarginState(orderInfo.key))?.marginState
+          : undefined;
 
       const { minCollateralUsd } = q(selectPositionConstants);
       const userReferralInfo = q(selectUserReferralInfo);

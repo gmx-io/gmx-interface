@@ -42,7 +42,7 @@ describe("fallbackCustomError PRO-4168", () => {
     expect(error.name).toBe(CustomErrorName.ExternalCallFailed);
     expect(error.errorContext).toBe("gasLimit");
     expect(getContractErrorMessageFromError({ chainId: ARBITRUM, error, isLpWithdrawal: true })).toBe(
-      "Withdrawal unavailable: selling this amount would raise short traders' PnL-to-pool ratio to 48.01%, above the 45% limit. Try a smaller amount or try again later."
+      "Withdrawal unavailable: selling this amount would raise short traders' PnL-to-pool ratio to 48.01%, above the 45% limit. Try a smaller amount or try again later"
     );
   });
 

@@ -78,12 +78,34 @@ describe("getShouldStoreTransitRouteProgress", () => {
       expected: false,
     },
   ])("$name", ({ progress, order, expected }) => {
-    expect(getShouldStoreTransitRouteProgress({ progress, order, isWithdrawalCancelled: false })).toBe(expected);
+    expect(
+      getShouldStoreTransitRouteProgress({ progress, order, isWithdrawalCancelled: false, isOrderLookupExpired: false })
+    ).toBe(expected);
   });
 
   it("drops a sell whose sale was cancelled", () => {
     const progress = { ...sellProgress, withdrawalExecutedTxnHash: "0xexecuted" };
 
-    expect(getShouldStoreTransitRouteProgress({ progress, order: undefined, isWithdrawalCancelled: true })).toBe(false);
+    expect(
+      getShouldStoreTransitRouteProgress({
+        progress,
+        order: undefined,
+        isWithdrawalCancelled: true,
+        isOrderLookupExpired: false,
+      })
+    ).toBe(false);
+  });
+
+  it("drops a smart account conversion whose order was not found in time", () => {
+    const progress = makeProgress({ glvOrMarketAddress: undefined });
+
+    expect(
+      getShouldStoreTransitRouteProgress({
+        progress,
+        order: undefined,
+        isWithdrawalCancelled: false,
+        isOrderLookupExpired: true,
+      })
+    ).toBe(false);
   });
 });
