@@ -72,7 +72,7 @@ export function WalletReceiveView() {
       <ColorfulBanner color="yellow" className="w-full">
         <div className="flex items-start gap-8">
           <img src={chainIcon} alt={chainName} className="size-20 shrink-0" />
-          <span className="text-yellow-300">
+          <span>
             <Trans>
               Only send <span className="font-medium">{chainName}-compatible assets</span> to this address!
             </Trans>
