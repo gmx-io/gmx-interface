@@ -86,7 +86,7 @@ export function LifetimeEarningsTooltipContent({
       />
 
       <span className="text-typography-tertiary">
-        <Trans>GM and GLV include markets you no longer hold.</Trans>
+        <Trans>GM and GLV include markets you no longer hold</Trans>
       </span>
 
       {isLpUnavailable && <EarningUnavailableNote />}

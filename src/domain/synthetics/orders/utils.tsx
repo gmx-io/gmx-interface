@@ -165,7 +165,7 @@ function getMarginDepositOrderErrors(p: {
   if (riskLevel === "beyondCurrentLiq") {
     return [
       {
-        msg: t`This margin deposit may not execute before liquidation: its trigger is at or beyond the estimated liquidation price.`,
+        msg: t`This margin deposit may not execute before liquidation: its trigger is at or beyond the estimated liquidation price`,
         level: "warning",
         key: "marginDepositBeyondLiqPrice",
       },
@@ -237,13 +237,13 @@ export function getOrderErrors(p: {
       if (currentLiquidity < order.sizeDeltaUsd) {
         if (orderWithValidFromTimeExceeded) {
           errors.push({
-            msg: t`Parts of this order are waiting for liquidity: they will execute once sufficient liquidity is available.`,
+            msg: t`Parts of this order are waiting for liquidity: they will execute once sufficient liquidity is available`,
             level: "warning",
             key: "twap-liquidity1",
           });
         } else {
           errors.push({
-            msg: t`Parts of this order may not execute: liquidity may be insufficient when they trigger.`,
+            msg: t`Parts of this order may not execute: liquidity may be insufficient when they trigger`,
             level: "warning",
             key: "twap-liquidity2",
           });

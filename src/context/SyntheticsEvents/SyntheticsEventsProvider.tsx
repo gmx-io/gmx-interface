@@ -1094,7 +1094,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             taskId,
             ...(outcome ?? {
               statusCode: StatusCode.Rejected,
-              message: t`The relay did not report an outcome for this operation.`,
+              message: t`The relay did not report an outcome for this operation`,
             }),
           })
         );
