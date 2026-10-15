@@ -501,6 +501,10 @@ msgstr "Подключение кошелька..."
 msgid "No TP orders"
 msgstr "Нет ордеров тейк-профит"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Lock in this rate"
+msgstr "Запросить эту ставку"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "position size"
 msgstr "размера позиции"
@@ -2296,10 +2300,6 @@ msgstr "К ПОЛУЧЕНИЮ"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "VI POSITIONS"
 msgstr "VI ПОЗИЦИИ"
-
-#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
-msgid "Request this rate"
-msgstr "Запросить эту ставку"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx

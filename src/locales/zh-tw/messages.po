@@ -501,6 +501,10 @@ msgstr "正在連接錢包..."
 msgid "No TP orders"
 msgstr "無 TP 訂單"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Lock in this rate"
+msgstr "鎖定此費率"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "position size"
 msgstr "倉位規模"
@@ -2296,10 +2300,6 @@ msgstr "接收"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "VI POSITIONS"
 msgstr "VI 倉位"
-
-#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
-msgid "Request this rate"
-msgstr "申請此費率"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx

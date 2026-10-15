@@ -501,6 +501,10 @@ msgstr "지갑 연결 중..."
 msgid "No TP orders"
 msgstr "익절매 주문 없음"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Lock in this rate"
+msgstr "이 요율 신청하기"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "position size"
 msgstr "포지션 규모"
@@ -2296,10 +2300,6 @@ msgstr "수령"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "VI POSITIONS"
 msgstr "VI 포지션"
-
-#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
-msgid "Request this rate"
-msgstr "이 요율 신청하기"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx

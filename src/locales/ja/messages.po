@@ -501,6 +501,10 @@ msgstr "ウォレットを接続中..."
 msgid "No TP orders"
 msgstr "テイクプロフィット注文はありません"
 
+#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
+msgid "Lock in this rate"
+msgstr "このレートで申し込む"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "position size"
 msgstr "ポジションサイズ"
@@ -2296,10 +2300,6 @@ msgstr "受取額"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "VI POSITIONS"
 msgstr "VI ポジション"
-
-#: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
-msgid "Request this rate"
-msgstr "このレートをリクエスト"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx

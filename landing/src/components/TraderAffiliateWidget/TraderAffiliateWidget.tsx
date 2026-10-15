@@ -76,7 +76,7 @@ function useTabContent(tab: TabKey): TabContent {
             Illustrative only — your exact rate is confirmed by the desk on signup.
           </Trans>
         ),
-        cta: t`Request this rate`,
+        cta: t`Lock in this rate`,
       };
     }
 
