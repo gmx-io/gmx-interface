@@ -52,6 +52,7 @@ import { metrics } from "lib/metrics";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
+import { getIsContractAccount } from "lib/wallets/useWalletSessionChains";
 import { getNativeToken, getToken, isValidTokenSafe } from "sdk/configs/tokens";
 import { ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "sdk/utils/express";
 
@@ -322,7 +323,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
   );
 
   const tryEnableSubaccount = useCallback(async () => {
-    if (!provider || !signer) {
+    if (!provider || !signer || (await getIsContractAccount(signer.address, chainId))) {
       return false;
     }
 
@@ -674,28 +675,28 @@ function SubaccountDeactivateNotification({ toastId }: { toastId: number }) {
 
     switch (subaccountDeactivationFailureReason) {
       case SubaccountDeactivationFailureReason.Rejected:
-        text = t`The signature request was rejected in your wallet. Retry and confirm the request to deactivate.`;
+        text = t`The signature request was rejected in your wallet. Retry and confirm the request to deactivate`;
         break;
       case SubaccountDeactivationFailureReason.InsufficientGasPaymentTokenBalance: {
         const tokenSymbol = subaccountDeactivationFailureTokenSymbol;
         text = tokenSymbol
           ? `${t`Insufficient ${tokenSymbol} in your GMX Account for gas.`} ${getInsufficientFeeAction({ tokenSymbol, feeSource: GMX_ACCOUNT_NETWORK_FEE_SOURCE })}`
-          : t`Insufficient gas payment token balance in your GMX Account to cover network fees. Deposit funds and retry.`;
+          : t`Insufficient gas payment token balance in your GMX Account to cover network fees. Deposit funds and retry`;
         break;
       }
       case SubaccountDeactivationFailureReason.InsufficientNativeTokenBalance: {
         const tokenSymbol = getNativeToken(chainId).symbol;
-        text = `${t`Insufficient ${tokenSymbol} in your Wallet for gas.`} ${getInsufficientFeeAction({ tokenSymbol, feeSource: WALLET_NETWORK_FEE_SOURCE })}`;
+        text = `${t`Insufficient ${tokenSymbol} in your wallet for gas.`} ${getInsufficientFeeAction({ tokenSymbol, feeSource: WALLET_NETWORK_FEE_SOURCE })}`;
         break;
       }
       case SubaccountDeactivationFailureReason.ExpressParamsNotReady:
-        text = t`Express transaction data is still loading. Please retry in a few seconds.`;
+        text = t`Express transaction data is still loading. Retry in a few seconds`;
         break;
       case SubaccountDeactivationFailureReason.ResultUnknown:
-        text = t`The request was sent, but its result could not be confirmed. It may have gone through — retry to check and finish the deactivation.`;
+        text = t`The request was sent, but its result could not be confirmed. It may have gone through — retry to check and finish the deactivation`;
         break;
       default:
-        text = t`An unexpected error occurred. Please retry.`;
+        text = t`An unexpected error occurred. Retry`;
         break;
     }
 

@@ -223,6 +223,13 @@ export function useTradeboxButtonState({
     tokens: approvalTokens,
     allowPermit: Boolean(expressParams),
     skip: isFromTokenGmxAccount,
+    metric: {
+      flow: "trade",
+      isExpress: Boolean(expressParams),
+      isExpress1CT: Boolean(expressParams?.subaccount),
+      gasPaymentTokenAddress: expressParams?.gasPaymentParams?.gasPaymentTokenAddress,
+      payTokenAddress: fromToken?.address,
+    },
   });
 
   const isDataReady = Boolean(fromToken && payAmount !== undefined && gasPaymentToken);
@@ -1020,15 +1027,15 @@ function InsufficientGmxPoolLiquidityTooltipContent() {
       if (!aggregatorSwapUrl) {
         return (
           <Trans>
-            GMX pools can't fill this swap size, and no external route is currently available. Try reducing the amount.
+            GMX pools can't fill this swap size, and no external route is available. Try reducing the amount.
           </Trans>
         );
       }
 
       return (
         <Trans>
-          GMX pools can't fill this swap size, and no external route is currently available. Try reducing the amount or{" "}
-          <ExternalLink href={aggregatorSwapUrl}>swap on an external aggregator</ExternalLink>.
+          GMX pools can't fill this swap size, and no external route is available. Try reducing the amount or{" "}
+          <ExternalLink href={aggregatorSwapUrl}>swapping on an external aggregator</ExternalLink>.
         </Trans>
       );
     }
@@ -1078,7 +1085,7 @@ function NoSwapPathTooltipContent({
       return (
         <Trans>
           No GMX swap route found for {fromToken.assetSymbol ?? fromToken.symbol} to{" "}
-          {toToken?.assetSymbol ?? toToken?.symbol}.
+          {toToken?.assetSymbol ?? toToken?.symbol}
         </Trans>
       );
     }

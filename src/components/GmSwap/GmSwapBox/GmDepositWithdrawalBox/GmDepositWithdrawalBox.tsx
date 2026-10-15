@@ -4,6 +4,13 @@ import mapValues from "lodash/mapValues";
 import { useCallback, useEffect, useMemo } from "react";
 
 import { AVALANCHE } from "config/chains";
+import { USD_DECIMALS } from "config/factors";
+import {
+  DEBUG_PAXOS_TRANSIT_FORCE_BUY_USDG_HINT_KEY,
+  DEBUG_PAXOS_TRANSIT_IGNORE_WHITELIST_KEY,
+  DEBUG_PAXOS_TRANSIT_THRESHOLD_USD_KEY,
+  DEBUG_PAXOS_TRANSIT_MOCK_KEY,
+} from "config/localStorage";
 import { isSourceChain } from "config/multichain";
 import { isDepositDisabledMarket } from "config/static/markets";
 import {
@@ -15,13 +22,17 @@ import {
   usePoolsDetailsSecondTokenInputValue,
 } from "context/PoolsDetailsContext/hooks";
 import {
+  PLATFORM_TOKEN_DECIMALS,
+  selectPoolsDetailsDirectDepositAccess,
   selectPoolsDetailsFirstTokenAmount,
   selectPoolsDetailsFirstTokenData,
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvInfo,
   selectPoolsDetailsGlvOrMarketAddress,
   selectPoolsDetailsGlvTokenData,
+  selectPoolsDetailsHasNeitherUsdcNorUsdg,
   selectPoolsDetailsIsCrossChainMarket,
+  selectPoolsDetailsIsDirectDepositBlocked,
   selectPoolsDetailsIsMarketTokenDeposit,
   selectPoolsDetailsMarketInfo,
   selectPoolsDetailsMarketOrGlvTokenAmount,
@@ -34,6 +45,7 @@ import {
   selectPoolsDetailsSelectedMarketAddressForGlv,
   selectPoolsDetailsSetFocusedInput,
   selectPoolsDetailsSetGlvOrMarketAddress,
+  selectPoolsDetailsSetIsFirstTokenPinned,
   selectPoolsDetailsSetIsMarketForGlvSelectedManually,
   selectPoolsDetailsSetSelectedMarketAddressForGlv,
   selectPoolsDetailsTradeTokensDataWithSourceChainBalances,
@@ -52,6 +64,7 @@ import {
   selectL1ExpressOrderGasReference,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectShowDebugValues } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { paySourceToTokenBalanceType } from "domain/multichain/paySourceToTokenBalanceType";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
@@ -69,8 +82,10 @@ import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPools
 import { ERC20Address, NativeTokenSupportedAddress } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
-import { formatAmountFree } from "lib/numbers";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { formatAmountFree, formatBalanceAmount, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { useAttentionHighlight } from "lib/useAttentionHighlight";
 import { switchNetwork } from "lib/wallets";
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID, type AnyChainId, type GmxAccountPseudoChainId } from "sdk/configs/chains";
 import { getRelayerFeeToken } from "sdk/configs/express";
@@ -100,10 +115,15 @@ import { GmSwapBoxPoolRow } from "../GmSwapBoxPoolRow";
 import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
 import { SelectedPoolLabel } from "../SelectedPool";
 import { useGmWarningState } from "../useGmWarningState";
+import { ConversionRouteSelector } from "./ConversionRouteSelector";
 import { InfoRows } from "./InfoRows";
+import { PaxosMintNote } from "./PaxosMintNote";
+import { PaxosTransitDebugCard } from "./PaxosTransitDebugCard";
+import { PaxosTransitExecutionRows } from "./PaxosTransitExecutionRows";
 import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
 import { useGmNetworkFeeDetails } from "./useGmNetworkFeeDetails";
 import { useGmSwapSubmitState } from "./useGmSwapSubmitState";
+import { usePaxosTransitState } from "./usePaxosTransitState";
 import { useTechnicalFees } from "./useTechnicalFeesAsyncResult";
 import { useUpdateInputAmounts } from "./useUpdateInputAmounts";
 import { useUpdateTokens } from "./useUpdateTokens";
@@ -123,6 +143,7 @@ export function GmSwapBoxDepositWithdrawal() {
   const selectedMarketForGlv = useSelector(selectPoolsDetailsSelectedMarketAddressForGlv);
   const setSelectedMarketAddressForGlv = useSelector(selectPoolsDetailsSetSelectedMarketAddressForGlv);
   const setIsMarketForGlvSelectedManually = useSelector(selectPoolsDetailsSetIsMarketForGlvSelectedManually);
+  const setIsFirstTokenPinned = useSelector(selectPoolsDetailsSetIsFirstTokenPinned);
 
   const [firstTokenAddress, setFirstTokenAddress] = usePoolsDetailsFirstTokenAddress();
   const [secondTokenAddress] = usePoolsDetailsSecondTokenAddress();
@@ -139,6 +160,8 @@ export function GmSwapBoxDepositWithdrawal() {
   const marketTokensData = useSelector(selectPoolsDetailsMarketTokensData);
   const marketInfo = useSelector(selectPoolsDetailsMarketInfo);
   const glvInfo = useSelector(selectPoolsDetailsGlvInfo);
+  const directDepositAccess = useSelector(selectPoolsDetailsDirectDepositAccess);
+  const isDirectDepositBlocked = useSelector(selectPoolsDetailsIsDirectDepositBlocked);
   const glvOrMarketInfo = glvInfo ?? marketInfo;
 
   const tradeTokensData = useSelector(selectPoolsDetailsTradeTokensDataWithSourceChainBalances);
@@ -205,6 +228,36 @@ export function GmSwapBoxDepositWithdrawal() {
 
   const { data: technicalFees, error: technicalFeesError } = useTechnicalFees();
 
+  const showDebugValues = useSelector(selectShowDebugValues);
+  const [isTransitWhitelistIgnored, setIsTransitWhitelistIgnored] = useLocalStorageSerializeKey(
+    DEBUG_PAXOS_TRANSIT_IGNORE_WHITELIST_KEY,
+    false
+  );
+  const [isTransitMocked, setIsTransitMocked] = useLocalStorageSerializeKey(DEBUG_PAXOS_TRANSIT_MOCK_KEY, false);
+  const [isBuyUsdgHintForced, setIsBuyUsdgHintForced] = useLocalStorageSerializeKey(
+    DEBUG_PAXOS_TRANSIT_FORCE_BUY_USDG_HINT_KEY,
+    false
+  );
+  const [transitThresholdUsdInput, setTransitThresholdUsdInput] = useLocalStorageSerializeKey(
+    DEBUG_PAXOS_TRANSIT_THRESHOLD_USD_KEY,
+    ""
+  );
+  const transitState = usePaxosTransitState({
+    isWhitelistIgnored: showDebugValues && Boolean(isTransitWhitelistIgnored),
+    thresholdUsdOverride:
+      showDebugValues && transitThresholdUsdInput ? parseValue(transitThresholdUsdInput, USD_DECIMALS) : undefined,
+    isMocked: showDebugValues && Boolean(isTransitMocked),
+    shouldDisableValidation: shouldDisableValidationForTesting,
+  });
+
+  const hasNeitherUsdcNorUsdg = useSelector(selectPoolsDetailsHasNeitherUsdcNorUsdg);
+  const isBuyUsdgHintForcedForDebug = showDebugValues && transitState.hasUsdgCollateral && Boolean(isBuyUsdgHintForced);
+  const shouldShowWhitelistOnlyHint = directDepositAccess === "denied";
+  const shouldShowBuyUsdgHint =
+    isDeposit &&
+    !isDirectDepositBlocked &&
+    ((account !== undefined && hasNeitherUsdcNorUsdg) || isBuyUsdgHintForcedForDebug);
+
   const logicalFees = useDepositWithdrawalFees({
     amounts,
     chainId,
@@ -215,17 +268,19 @@ export function GmSwapBoxDepositWithdrawal() {
     isMarketTokenDeposit,
     technicalFees,
     srcChainId,
+    transitFeesUsd: transitState.isTransitRoute ? transitState.transitFeesUsd : undefined,
   });
 
   const { shouldShowWarning, shouldShowWarningForExecutionFee, shouldShowWarningForPosition } = useGmWarningState({
     logicalFees,
     isOperationDisabled:
-      isDeposit && marketInfo !== undefined && isDepositDisabledMarket(chainId, marketInfo.marketTokenAddress),
+      isDirectDepositBlocked ||
+      (isDeposit && marketInfo !== undefined && isDepositDisabledMarket(chainId, marketInfo.marketTokenAddress)),
   });
 
   const shouldShowAvalancheGmxAccountWarning = paySource === "gmxAccount" && chainId === AVALANCHE && isDeposit;
 
-  const submitState = useGmSwapSubmitState({
+  const gmSwapSubmitState = useGmSwapSubmitState({
     logicalFees,
     technicalFees,
     technicalFeesError,
@@ -235,6 +290,19 @@ export function GmSwapBoxDepositWithdrawal() {
     marketsInfoData,
     glvAndMarketsInfoData,
   });
+
+  const submitState = transitState.submitState ?? gmSwapSubmitState;
+
+  const transitUsdgStepUsd =
+    transitState.usdgStepAmount !== undefined && transitState.usdgToken
+      ? convertToUsd(
+          transitState.usdgStepAmount,
+          transitState.usdgToken.decimals,
+          getMidPrice(transitState.usdgToken.prices)
+        )
+      : undefined;
+  const isTransitSellStep2 = isWithdrawal && transitState.isTransitRoute;
+  const isTransitBuyStep2 = isDeposit && transitState.isTransitRoute;
 
   const settlementChainGasPaymentToken = useSelector(selectSettlementChainGasPaymentToken);
   const gmxAccountGasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
@@ -351,6 +419,10 @@ export function GmSwapBoxDepositWithdrawal() {
         marketToken?.decimals,
         isDeposit ? marketToken?.prices?.maxPrice : marketToken?.prices?.minPrice
       )!;
+
+  const { ref: formRef, highlightClassName: submitHighlightClassName } = useAttentionHighlight<HTMLFormElement>(
+    transitState.transitFillCount
+  );
 
   // #region Callbacks
   const onFocusedCollateralInputChange = useCallback(
@@ -567,7 +639,12 @@ export function GmSwapBoxDepositWithdrawal() {
   // #region Render
   const submitButton = useMemo(() => {
     const btn = (
-      <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.disabled}>
+      <Button
+        className={cx("w-full", submitHighlightClassName)}
+        variant="primary-action"
+        type="submit"
+        disabled={submitState.disabled}
+      >
         {submitState.text}
       </Button>
     );
@@ -588,21 +665,23 @@ export function GmSwapBoxDepositWithdrawal() {
     }
 
     return btn;
-  }, [submitState]);
+  }, [submitHighlightClassName, submitState]);
 
   const gmOrGlvSymbol = glvInfo ? t`GLV` : t`GM`;
 
   return (
     <>
-      <form className="flex flex-col gap-8" onSubmit={handleSubmit}>
+      <form ref={formRef} className="flex flex-col gap-8" onSubmit={handleSubmit}>
         <div className="flex flex-col rounded-b-8 bg-slate-900">
           <div className="flex flex-col gap-12 p-12">
             <div className={cx("flex gap-4", isWithdrawal ? "flex-col-reverse" : "flex-col")}>
               <div>
                 <BuyInputSection
                   qa="gm-first-token"
-                  topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
+                  topLeftLabel={isDeposit ? t`Pay` : isTransitSellStep2 ? t`Step 2: Receive` : t`Receive`}
                   bottomLeftValue={<UsdValue usd={firstTokenUsd ?? 0n} />}
+                  isBottomLeftValueMuted={isTransitSellStep2}
+                  isDisabled={isTransitSellStep2}
                   bottomRightLabel={t`Balance`}
                   bottomRightValue={firstTokenMaxDetails.formattedBalance}
                   onClickTopRightLabel={isDeposit ? onMaxClickFirstToken : undefined}
@@ -641,6 +720,7 @@ export function GmSwapBoxDepositWithdrawal() {
                               ? "gmxAccount"
                               : "settlementChain"
                         );
+                        setIsFirstTokenPinned(true);
                         handleFirstTokenSelect(tokenAddress as ERC20Address | NativeTokenSupportedAddress);
                       }}
                     />
@@ -700,13 +780,49 @@ export function GmSwapBoxDepositWithdrawal() {
                 )}
               </div>
 
+              {transitState.isTransitRoute && (
+                <BuyInputSection
+                  topLeftLabel={t`Step 1: Receive`}
+                  bottomLeftValue={<UsdValue usd={transitUsdgStepUsd ?? 0n} />}
+                  bottomRightLabel={t`Balance`}
+                  bottomRightValue={
+                    transitState.usdgToken?.walletBalance !== undefined
+                      ? formatBalanceAmount(
+                          transitState.usdgToken.walletBalance,
+                          transitState.usdgToken.decimals,
+                          undefined,
+                          {
+                            isStable: transitState.usdgToken.isStable,
+                          }
+                        )
+                      : undefined
+                  }
+                  inputValue={
+                    transitState.usdgStepAmount !== undefined && transitState.usdgToken
+                      ? formatAmountFree(transitState.usdgStepAmount, transitState.usdgToken.decimals)
+                      : ""
+                  }
+                  isDisabled
+                >
+                  <div className="selected-token">
+                    <TokenWithIcon symbol={transitState.usdgToken?.symbol} displaySize={20} />
+                  </div>
+                </BuyInputSection>
+              )}
+
               <div className={cx("flex", isWithdrawal ? "flex-col-reverse" : "flex-col")}>
                 <BuyInputSection
-                  topLeftLabel={isWithdrawal ? t`Pay` : t`Receive`}
+                  topLeftLabel={isWithdrawal ? t`Pay` : isTransitBuyStep2 ? t`Step 2: Receive` : t`Receive`}
                   bottomLeftValue={<UsdValue usd={receiveTokenUsd ?? 0n} />}
+                  isBottomLeftValueMuted={isTransitBuyStep2}
+                  isDisabled={isTransitBuyStep2}
                   bottomRightLabel={t`Balance`}
                   bottomRightValue={marketTokenMaxDetails.formattedBalance}
-                  inputValue={marketOrGlvTokenInputValue}
+                  inputValue={
+                    isTransitBuyStep2 && marketOrGlvTokenAmount > 0n
+                      ? formatBalanceAmount(marketOrGlvTokenAmount, PLATFORM_TOKEN_DECIMALS)
+                      : marketOrGlvTokenInputValue
+                  }
                   onInputValueChange={marketOrGlvTokenInputValueChange}
                   onClickTopRightLabel={marketTokenInputClickTopRightLabel}
                   onClickMax={
@@ -789,6 +905,10 @@ export function GmSwapBoxDepositWithdrawal() {
                 shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
                 bannerErrorContent={submitState.bannerErrorContent}
                 shouldShowAvalancheGmxAccountWarning={shouldShowAvalancheGmxAccountWarning}
+                shouldShowBuyUsdgHint={shouldShowBuyUsdgHint}
+                shouldShowWhitelistOnlyHint={shouldShowWhitelistOnlyHint}
+                isGlv={glvInfo !== undefined}
+                isSpotOnlyMarket={marketInfo?.isSpotOnly}
                 isSubmitDisabled={submitState.disabled}
                 gasPaymentTokenWarningContent={
                   firstTokenMaxDetails.gasPaymentTokenWarningContent ??
@@ -814,7 +934,28 @@ export function GmSwapBoxDepositWithdrawal() {
           networkFee={networkFee}
           isLoading={(firstTokenAmount ?? 0n) === 0n || technicalFeesError ? false : !technicalFees}
           isDeposit={isDeposit}
+          afterFeesContent={
+            transitState.shouldShowRouteSelector && <ConversionRouteSelector transitState={transitState} />
+          }
+          executionDetails={transitState.isTransitRoute && <PaxosTransitExecutionRows transitState={transitState} />}
         />
+
+        {isDeposit && transitState.hasUsdgCollateral && <PaxosMintNote />}
+
+        {showDebugValues && transitState.hasUsdgCollateral && (
+          <PaxosTransitDebugCard
+            zeroFeeCapacity={transitState.zeroFeeCapacity}
+            usdgToken={transitState.usdgToken}
+            isWhitelistIgnored={Boolean(isTransitWhitelistIgnored)}
+            setIsWhitelistIgnored={setIsTransitWhitelistIgnored}
+            isMocked={Boolean(isTransitMocked)}
+            setIsMocked={setIsTransitMocked}
+            isBuyUsdgHintForced={Boolean(isBuyUsdgHintForced)}
+            setIsBuyUsdgHintForced={setIsBuyUsdgHintForced}
+            thresholdUsdInput={transitThresholdUsdInput ?? ""}
+            setThresholdUsdInput={setTransitThresholdUsdInput}
+          />
+        )}
       </form>
     </>
   );

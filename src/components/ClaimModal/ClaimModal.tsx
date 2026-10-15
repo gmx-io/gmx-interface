@@ -324,7 +324,7 @@ function ClaimModalMultichain(p: Props) {
 
   const onSubmit = useCallback(() => {
     const onMissingParams = () => {
-      helperToast.error(t`Missing claim params. Retry in a few seconds`);
+      helperToast.error(t`Missing claim parameters. Retry in a few seconds`);
       metrics.pushError(new Error("No necessary params to claim"), "expressClaimFundingFees");
     };
 

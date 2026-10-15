@@ -17,7 +17,7 @@ export function FaqSection() {
             <Trans>
               <p>
                 No. There is no GMX-controlled account holding your money at any point. Traders trade directly from
-                their own wallet, or from their funded GMX Account; a contract you control and withdraw from at will.
+                their own wallet, or from their funded GMX Account — a contract you control and withdraw from at will.
               </p>
               <p>
                 Affiliates never deposit anything. Rewards accrue in the contracts, and you claim them yourself,

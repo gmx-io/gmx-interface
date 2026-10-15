@@ -315,8 +315,8 @@ export function WalletSendView() {
     chainId,
     spenderAddress: stargateAddress,
     tokens: approvalTokens,
-    approveAmount: amount,
     skip: isSameChain || isDestinationUnsupported || selectedToken?.isNative || stargateAddress === undefined,
+    metric: { flow: "gmxAccountSend" },
   });
 
   const gasPrice = useGasPrice(chainId);
@@ -572,7 +572,6 @@ export function WalletSendView() {
 
       return (
         <NetworkFeeValue
-          className="leading-1"
           amount={sameChainNetworkFeeDetails.amount}
           decimals={sameChainNetworkFeeDetails.decimals}
           usd={sameChainNetworkFeeDetails.usd}
@@ -597,7 +596,6 @@ export function WalletSendView() {
 
     return (
       <NetworkFeeValue
-        className="leading-1"
         amount={networkFee}
         decimals={nativeToken.decimals}
         usd={networkFeeUsd}
@@ -807,7 +805,7 @@ export function WalletSendView() {
       {!isSameChain && !isInsufficientBalance && (
         <>
           {isAboveLimit && (
-            <AlertInfoCard type="warning" className="my-4" hideClose>
+            <AlertInfoCard type="error" className="my-4" hideClose>
               <div>
                 <Trans>
                   Amount exceeds the transfer limit. Try an amount smaller than{" "}
@@ -817,7 +815,7 @@ export function WalletSendView() {
             </AlertInfoCard>
           )}
           {isBelowLimit && (
-            <AlertInfoCard type="warning" className="my-4" hideClose>
+            <AlertInfoCard type="error" className="my-4" hideClose>
               <div>
                 <Trans>
                   Amount is below the transfer limit. Try an amount larger than{" "}
@@ -840,6 +838,7 @@ export function WalletSendView() {
           />
           <SyntheticsInfoRow
             label={<Trans>Network fee</Trans>}
+            labelClassName="whitespace-nowrap"
             value={isNetworkFeeLoading ? valueSkeleton : networkFeeValue}
           />
           <SyntheticsInfoRow label={<Trans>Send fee</Trans>} value={isSendFeeLoading ? valueSkeleton : sendFeeValue} />

@@ -171,7 +171,7 @@ function getMarginDepositOrderErrors(p: {
   if (riskLevel === "beyondCurrentLiq") {
     return [
       {
-        msg: t`This margin deposit may not execute before liquidation: its trigger is at or beyond the estimated liquidation price.`,
+        msg: t`This margin deposit may not execute before liquidation: its trigger is at or beyond the estimated liquidation price`,
         level: "warning",
         key: "marginDepositBeyondLiqPrice",
       },
@@ -218,6 +218,8 @@ function getResultingLiquidatableOrderError(positionKey: string | undefined): Or
   };
 }
 
+export const FROZEN_ORDER_ERROR_KEY = "frozen";
+
 export function getOrderErrors(p: {
   order: OrderInfo;
   marketsInfoData: MarketsInfoData;
@@ -232,6 +234,29 @@ export function getOrderErrors(p: {
   const { order, positionsInfoData, marketsInfoData, isSetAcceptablePriceImpactEnabled, jitLiquidityMap } = p;
 
   const errors: OrderError[] = [];
+
+  if (order.isFrozen) {
+    errors.push({
+      msg: isTwapOrder(order) ? (
+        <Trans>
+          Some TWAP parts failed to execute and are frozen. They stay open and may still execute later if conditions
+          allow.
+          <br />
+          <br />
+          See the Trades tab for the reason.
+        </Trans>
+      ) : (
+        <Trans>
+          Order failed to execute and is frozen. It stays open and may still execute later if conditions allow.
+          <br />
+          <br />
+          See the Trades tab for the reason.
+        </Trans>
+      ),
+      level: "warning",
+      key: FROZEN_ORDER_ERROR_KEY,
+    });
+  }
 
   if (isTwapOrder(order)) {
     if (isIncreaseOrderType(order.orderType) || isSwapOrderType(order.orderType)) {
@@ -255,13 +280,13 @@ export function getOrderErrors(p: {
       if (currentLiquidity < order.sizeDeltaUsd) {
         if (orderWithValidFromTimeExceeded) {
           errors.push({
-            msg: t`Parts of this order are waiting for liquidity: they will execute once sufficient liquidity is available.`,
+            msg: t`Parts of this order are waiting for liquidity: they will execute once sufficient liquidity is available`,
             level: "warning",
             key: "twap-liquidity1",
           });
         } else {
           errors.push({
-            msg: t`Parts of this order may not execute: liquidity may be insufficient when they trigger.`,
+            msg: t`Parts of this order may not execute: liquidity may be insufficient when they trigger`,
             level: "warning",
             key: "twap-liquidity2",
           });

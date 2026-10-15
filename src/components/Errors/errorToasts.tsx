@@ -12,7 +12,7 @@ import {
   getMinimumExecutionFeeBufferBps,
 } from "domain/synthetics/fees/utils/executionFee";
 import { ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
-import { ErrorData } from "lib/errors";
+import { ErrorData, ErrorLike, parseError } from "lib/errors";
 import {
   getInsufficientFeeError,
   SMART_WALLET_ACCOUNT_CHANGED_ERROR,
@@ -328,11 +328,25 @@ export function getTxnErrorToast(
     case TxErrorType.UserDenied:
       toastParams.errorContent = t`Transaction canceled`;
       break;
+    case TxErrorType.Expired:
+      toastParams.errorContent = t`Wallet request expired. Try again and confirm in your wallet`;
+      break;
     case TxErrorType.Slippage:
       toastParams.errorContent = t`Mark price changed. Increase allowed slippage`;
       break;
     case TxErrorType.RpcError: {
+      const isContractRevert = /execution reverted/i.test(errorData.errorMessage ?? "");
+
+      if (isContractRevert) {
+        break;
+      }
+
       toastParams.autoCloseToast = false;
+
+      if (!setIsSettingsVisible) {
+        toastParams.errorContent = getRpcErrorToastContent(debugErrorMessage);
+        break;
+      }
 
       toastParams.errorContent = (
         <div>
@@ -386,6 +400,12 @@ export function getDebugErrorMessage(errorData: ErrorData | undefined) {
   return [message, ...handles].filter(Boolean).join("\n") || undefined;
 }
 
+export function getErrorDebugContent(error: ErrorLike): ReactNode {
+  const debugErrorMessage = getDebugErrorMessage(parseError(error));
+
+  return debugErrorMessage ? <ToastifyDebug error={debugErrorMessage} /> : undefined;
+}
+
 /**
  * @deprecated Use `parseError` for retrieving error fields or
  */
@@ -418,18 +438,7 @@ export function getErrorMessage(
 
       const originalError = errorData?.error?.message || errorData?.message || message;
 
-      failMsg = (
-        <div>
-          <Trans>
-            RPC error. Update your wallet's RPC via{" "}
-            <ExternalLink href="https://chainlist.org">chainlist.org</ExternalLink>.{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/overview/#rpc-urls">Read more</ExternalLink>.
-          </Trans>
-          <br />
-          <br />
-          {originalError && <ToastifyDebug error={originalError} />}
-        </div>
-      );
+      failMsg = getRpcErrorToastContent(originalError);
       break;
     }
     default:
@@ -447,6 +456,20 @@ export function getErrorMessage(
   }
 
   return { failMsg, autoCloseToast };
+}
+
+function getRpcErrorToastContent(debugErrorMessage: string | undefined) {
+  return (
+    <div>
+      <Trans>
+        RPC error. Update your wallet's RPC via <ExternalLink href="https://chainlist.org">chainlist.org</ExternalLink>.{" "}
+        <ExternalLink href="https://docs.gmx.io/docs/trading/overview/#rpc-urls">Read more</ExternalLink>.
+      </Trans>
+      <br />
+      <br />
+      {debugErrorMessage && <ToastifyDebug error={debugErrorMessage} />}
+    </div>
+  );
 }
 
 export function getSmartWalletChainUnavailableToastContent(chainId: number, walletName = "wallet") {
@@ -552,7 +575,7 @@ export function getMultipleWalletsConnectedToastContent(
       <br />
       <Trans>
         Before confirming a transaction, make sure the wallet prompt is using {desiredChainName}. To avoid this warning,
-        disable other wallet extensions in your browser settings.
+        disable other wallet extensions in your browser settings
       </Trans>
     </div>
   );
@@ -678,6 +701,20 @@ export function getExpiredPermitDeadlineToastContent() {
   return (
     <Trans>
       <div>Permit has expired. Try again</div>
+    </Trans>
+  );
+}
+
+export const SMART_WALLET_SUBACCOUNT_TOAST_ID = "smart-wallet-subaccount";
+
+export function getSmartWalletSubaccountToastContent(onDeactivate: () => void) {
+  return (
+    <Trans>
+      <div>One-Click Trading is not available for smart wallets</div>
+      <br />
+      <div className="clickable underline" onClick={onDeactivate}>
+        Deactivate One-Click Trading
+      </div>
     </Trans>
   );
 }

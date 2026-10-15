@@ -268,6 +268,12 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     tokens: approvalTokens,
     allowPermit: Boolean(expressParams),
     skip: isGmxAccountFeeSource,
+    metric: {
+      flow: "settleFundingFees",
+      isExpress: Boolean(expressParams),
+      isExpress1CT: Boolean(expressParams?.subaccount),
+      gasPaymentTokenAddress: expressParams?.gasPaymentParams?.gasPaymentTokenAddress,
+    },
   });
 
   const isAllowanceLoaded = Boolean(batchParams) && isAllowanceLoadedRaw;
@@ -413,15 +419,15 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
 
     if (isWalletClassicFallback && walletGasTokenSymbol) {
       const nativeTokenSymbol = getNativeToken(chainId).symbol;
-      return t`Paid in ${nativeTokenSymbol} from your Wallet because your Wallet does not have enough ${walletGasTokenSymbol} for Express.`;
+      return t`Paid in ${nativeTokenSymbol} from your Wallet because your Wallet does not have enough ${walletGasTokenSymbol} for Express`;
     }
 
     if (isFeeSourceSwitched && isGmxAccountFeeSource && walletGasTokenSymbol) {
-      return t`Paid from your GMX Account because your Wallet does not have enough ${walletGasTokenSymbol} for the fee.`;
+      return t`Paid from your GMX Account because your Wallet does not have enough ${walletGasTokenSymbol} for the fee`;
     }
 
     if (isFeeSourceSwitched && !isGmxAccountFeeSource && gmxAccountGasTokenSymbol) {
-      return t`Paid from your Wallet because your GMX Account does not have enough ${gmxAccountGasTokenSymbol} for the fee.`;
+      return t`Paid from your Wallet because your GMX Account does not have enough ${gmxAccountGasTokenSymbol} for the fee`;
     }
 
     return undefined;

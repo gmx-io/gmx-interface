@@ -116,6 +116,7 @@ import {
   WithdrawalStatuses,
 } from "./types";
 import { useMultichainEvents } from "./useMultichainEvents";
+import { useTransitRouteEvents } from "./useTransitRouteEvents";
 import { extractRelayTaskError, getPendingOrderKey } from "./utils";
 
 const SyntheticsEventsContext = createContext({});
@@ -1093,7 +1094,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             taskId,
             ...(outcome ?? {
               statusCode: StatusCode.Rejected,
-              message: t`The relay did not report an outcome for this operation.`,
+              message: t`The relay did not report an outcome for this operation`,
             }),
           })
         );
@@ -1295,6 +1296,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const multichainEventsState = useMultichainEvents({
     hasPageLostFocus,
   });
+
+  const transitRouteEventsState = useTransitRouteEvents(chainId, { glvAndGmMarketsData, withdrawalStatuses });
 
   const [multichainTransferProgress, setMultichainTransferProgress] = useState<
     MultichainTransferProgress<string> | undefined
@@ -1505,6 +1508,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       },
 
       ...multichainEventsState,
+      ...transitRouteEventsState,
     };
   }, [
     orderStatuses,
@@ -1520,6 +1524,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     pendingExpressTxnParams,
     relayTaskStatuses,
     multichainEventsState,
+    transitRouteEventsState,
     marketsInfoData,
     tokensData,
     glvAndGmMarketsData,
