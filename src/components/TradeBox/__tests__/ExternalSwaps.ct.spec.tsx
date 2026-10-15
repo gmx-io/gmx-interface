@@ -634,6 +634,7 @@ test.describe("External swaps", () => {
 
       await expect(page.locator(getDataQALocator("swap-receive-input"))).not.toHaveValue("");
       await expect(page.locator(getDataQALocator("confirm-trade-button"))).toHaveText("Connect wallet");
+      await page.waitForTimeout(700); // past the quote debounce
       await expect(
         page.getByText("GMX pools don't have enough liquidity for this swap size", { exact: false })
       ).not.toBeVisible();

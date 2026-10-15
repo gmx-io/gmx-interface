@@ -473,6 +473,7 @@ export function useTradeboxButtonState({
     // external route block reasons already have their own warning card
     const isPoolLiquidityErrorMaskedByConnect =
       !account &&
+      !isWalletInitializing &&
       tradeError.buttonTooltipName === ValidationButtonTooltipName.insufficientGmxPoolLiquidity &&
       externalSwapBlockReason === undefined;
 
@@ -502,6 +503,7 @@ export function useTradeboxButtonState({
     chainId,
     srcChainId,
     account,
+    isWalletInitializing,
     hasOutdatedUi,
     expressParams,
     tokensData,
