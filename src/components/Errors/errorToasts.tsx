@@ -589,7 +589,7 @@ export function getMultipleWalletsConnectedToastContent(
       <br />
       <Trans>
         Before confirming a transaction, make sure the wallet prompt is using {desiredChainName}. To avoid this warning,
-        disable other wallet extensions in your browser settings.
+        disable other wallet extensions in your browser settings
       </Trans>
     </div>
   );
@@ -724,7 +724,7 @@ export const SMART_WALLET_SUBACCOUNT_TOAST_ID = "smart-wallet-subaccount";
 export function getSmartWalletSubaccountToastContent(onDeactivate: () => void) {
   return (
     <Trans>
-      <div>One-Click Trading is not available for smart wallets.</div>
+      <div>One-Click Trading is not available for smart wallets</div>
       <br />
       <div className="clickable underline" onClick={onDeactivate}>
         Deactivate One-Click Trading

@@ -483,7 +483,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                     <Trans>Convert esGMX to GMX tokens. Read the vesting details before using the vaults.</Trans>
 
                     <ColorfulButtonLink color="blue" to="https://docs.gmx.io/docs/tokenomics/rewards/#vesting" newTab>
-                      <Trans>Read details</Trans>
+                      <Trans>Read more</Trans>
                     </ColorfulButtonLink>
                   </div>
                 </AlertInfoCard>
@@ -514,7 +514,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                     <Trans>Convert esGMX to GMX tokens. Read the vesting details before using the vaults.</Trans>
 
                     <ColorfulButtonLink color="blue" to="https://docs.gmx.io/docs/tokenomics/rewards/#vesting" newTab>
-                      <Trans>Read details</Trans>
+                      <Trans>Read more</Trans>
                     </ColorfulButtonLink>
                   </div>
                 </AlertInfoCard>
@@ -545,7 +545,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                     <Trans>Convert esGMX to GMX tokens. Read the vesting details before using the vaults.</Trans>
 
                     <ColorfulButtonLink color="blue" to="https://docs.gmx.io/docs/tokenomics/rewards/#vesting" newTab>
-                      <Trans>Read details</Trans>
+                      <Trans>Read more</Trans>
                     </ColorfulButtonLink>
                   </div>
                 </AlertInfoCard>

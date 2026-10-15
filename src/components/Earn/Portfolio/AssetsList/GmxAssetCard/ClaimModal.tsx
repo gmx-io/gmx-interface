@@ -311,7 +311,7 @@ export function ClaimModal(props: {
         )}
       </div>
       {hasUndelegatedGovToken ? (
-        <AlertInfoCard type="warning" hideClose>
+        <AlertInfoCard type="info" hideClose>
           <Trans>
             Delegating your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO voting power is optional for
             claiming.{" "}

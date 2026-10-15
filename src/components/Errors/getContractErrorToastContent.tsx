@@ -30,7 +30,7 @@ export function getContractErrorToastContent({
     case CustomErrorName.InsufficientSwapOutputAmount:
       return (
         <Trans>
-          Order error. Prices are volatile for this market, try again by{" "}
+          Order error. Prices are volatile for this market. Try again by{" "}
           <span
             onClick={() => {
               if (slippageInputId) {

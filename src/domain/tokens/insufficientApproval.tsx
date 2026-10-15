@@ -69,7 +69,7 @@ export function getInsufficientApprovalToastContent({
   const display = getApprovalTokenDisplay(chainId, tokenAddress);
 
   if (!display) {
-    return <Trans>The approved amount is lower than the required amount. Approve again or reduce the amount.</Trans>;
+    return <Trans>The approved amount is lower than the required amount. Approve again or reduce the amount</Trans>;
   }
 
   const approved = formatApprovalAmount(approvedAmount, display);
@@ -77,7 +77,7 @@ export function getInsufficientApprovalToastContent({
 
   return (
     <Trans>
-      Approved {approved}, but {required} is required. Approve again or reduce the amount.
+      Approved {approved}, but {required} is required. Approve again or reduce the amount
     </Trans>
   );
 }
