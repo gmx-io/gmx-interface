@@ -609,4 +609,50 @@ test.describe("External swaps", () => {
     await page.waitForTimeout(700); // past the quote debounce
     expect(kyber.routes).toBe(0);
   });
+
+  test.describe("Disconnected wallet", () => {
+    test("shows the pool liquidity error next to Connect wallet", async ({ mount, page }) => {
+      await mount(<TradeBoxStory withExternalSwapHandler externalSwapsSettingOff marketScenario="drainedEthPool" />);
+
+      await openSwap(page);
+      await page.locator(getDataQALocator("pay-input")).fill("1000");
+
+      await expect(
+        page.getByText("GMX pools don't have enough liquidity for this swap size", { exact: false })
+      ).toBeVisible({ timeout: 15_000 });
+
+      const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
+      await expect(submitButton).toHaveText("Connect wallet");
+      await expect(submitButton).toBeEnabled();
+    });
+
+    test("no liquidity banner when GMX pools can fill the swap", async ({ mount, page }) => {
+      await mount(<TradeBoxStory withExternalSwapHandler externalSwapsSettingOff />);
+
+      await openSwap(page);
+      await page.locator(getDataQALocator("pay-input")).fill("1000");
+
+      await expect(page.locator(getDataQALocator("swap-receive-input"))).not.toHaveValue("");
+      await expect(page.locator(getDataQALocator("confirm-trade-button"))).toHaveText("Connect wallet");
+      await expect(
+        page.getByText("GMX pools don't have enough liquidity for this swap size", { exact: false })
+      ).not.toBeVisible();
+    });
+
+    test("keeps only the no-route card when the aggregator has no route either", async ({ mount, page }) => {
+      await mockKyberNoRoute(page);
+      await mount(<TradeBoxStory withExternalSwapHandler marketScenario="drainedEthPool" />);
+
+      await openSwap(page);
+      await page.locator(getDataQALocator("pay-input")).fill("1000");
+
+      await expect(
+        page.getByText("GMX pools can't fill this swap, and no external route is available", { exact: false })
+      ).toBeVisible({ timeout: 15_000 });
+      await expect(
+        page.getByText("GMX pools can't fill this swap size, and no external route is available", { exact: false })
+      ).not.toBeVisible();
+      await expect(page.locator(getDataQALocator("confirm-trade-button"))).toHaveText("Connect wallet");
+    });
+  });
 });
