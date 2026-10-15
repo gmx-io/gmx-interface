@@ -20,7 +20,7 @@ import useSearchParams from "lib/useSearchParams";
 import { convertTokenAddress, getTokenBySymbolSafe, isTokenInList } from "sdk/configs/tokens";
 import { TradeMode, TradeSearchParams, TradeType } from "sdk/utils/trade/types";
 
-import { getMarketPoolName } from "../markets";
+import { MarketInfo, getMarketPoolName } from "../markets";
 
 type TradeOptions = {
   fromTokenAddress?: string;
@@ -64,6 +64,21 @@ export function getTradeLinkTradeType(
   }
 
   return currentTradeType;
+}
+
+export function getTradeLinkMarket({
+  markets,
+  toTokenAddress,
+  pool,
+}: {
+  markets: MarketInfo[];
+  toTokenAddress: string | undefined;
+  pool: string;
+}): MarketInfo | undefined {
+  return markets.find(
+    (market) =>
+      market.indexToken.address === toTokenAddress && getMarketPoolName(market).toLowerCase() === pool.toLowerCase()
+  );
 }
 
 export function useTradeParamsProcessor() {
@@ -175,11 +190,7 @@ export function useTradeParamsProcessor() {
       }
 
       if (pool) {
-        const marketPool = markets.find((market) => {
-          const poolName = getMarketPoolName(market);
-          const isSameMarket = market.indexToken.address === tradeOptions.toTokenAddress;
-          return isSameMarket && poolName.toLowerCase() === pool.toLowerCase();
-        });
+        const marketPool = getTradeLinkMarket({ markets, toTokenAddress: tradeOptions.toTokenAddress, pool });
         if (marketPool) {
           tradeOptions.marketAddress = marketPool?.marketTokenAddress;
         }
