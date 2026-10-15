@@ -17,7 +17,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
 import { getMatchingValueFromObject } from "lib/objects";
 import useSearchParams from "lib/useSearchParams";
-import { getTokenBySymbolSafe, isTokenInList } from "sdk/configs/tokens";
+import { convertTokenAddress, getTokenBySymbolSafe, isTokenInList } from "sdk/configs/tokens";
 import { TradeMode, TradeSearchParams, TradeType } from "sdk/utils/trade/types";
 
 import { getMarketPoolName } from "../markets";
@@ -151,9 +151,10 @@ export function useTradeParamsProcessor() {
     if (collateralToken) {
       const collateralTokenInfo = getTokenBySymbolSafe(chainId, collateralToken, {
         version: "v2",
+        isSynthetic: false,
       });
       if (collateralTokenInfo) {
-        tradeOptions.collateralAddress = collateralTokenInfo?.address;
+        tradeOptions.collateralAddress = convertTokenAddress(chainId, collateralTokenInfo.address, "wrapped");
       }
     }
 
