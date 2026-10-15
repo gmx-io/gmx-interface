@@ -2560,6 +2560,10 @@ msgstr "추천한 트레이더의 모든 거래에서 수익이 발생합니다"
 msgid "Total value of tokens in GM pools"
 msgstr "GM 풀 내 토큰 총 가치"
 
+#: src/components/OrderItem/OrderItem.tsx
+msgid "Frozen"
+msgstr "동결됨"
+
 #: src/components/Claims/ClaimableCardUI.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price impact rebates"
@@ -2999,6 +3003,11 @@ msgstr "이 크기에서 롱 증가를 위한 유동성이 없습니다.<0/>최�
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Transfer completed"
 msgstr "전송 완료"
+
+#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+msgctxt "TWAP part status"
+msgid "Frozen"
+msgstr "동결됨"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "GM bridging to..."
@@ -4453,8 +4462,6 @@ msgid "Builder Program"
 msgstr "빌더 프로그램"
 
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
-#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
-#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "{0}"
 msgstr "{0}"
 
@@ -4935,6 +4942,7 @@ msgstr "추천 링크가 클립보드에 복사되었습니다"
 msgid "Insufficient bridge liquidity to {networkName}"
 msgstr "{networkName}(으)로의 브릿지 유동성이 부족합니다"
 
+#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
 msgstr "실행됨"
@@ -5932,6 +5940,10 @@ msgstr "추천 코드가 추가되었습니다"
 msgid "Your {symbol} margin exceeds the {indexName} short position size. Margin value rises with the index, covering any losses—no liquidation price."
 msgstr "{symbol} 증거금이 {indexName} 숏 포지션 규모를 초과합니다. 지수가 상승하면 증거금 가치도 상승하여 모든 손실을 충당하므로 청산가가 없습니다."
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Some TWAP parts failed to execute and are frozen. They stay open and may still execute later if conditions allow.<0/><1/>See the Trades tab for the reason."
+msgstr "일부 TWAP 부분의 체결에 실패하여 동결되었습니다. 해당 부분은 계속 열려 있으며 조건이 충족되면 나중에 체결될 수 있습니다.<0/><1/>사유는 거래 탭에서 확인하세요."
+
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "{positionTitle} orders"
 msgstr "{positionTitle} 주문"
@@ -6785,6 +6797,10 @@ msgstr "Umami DAO"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Staked on Avalanche"
 msgstr "Avalanche에서 스테이킹됨"
+
+#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+msgid "Pending"
+msgstr "대기 중"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "s:"
@@ -7649,6 +7665,10 @@ msgstr "거래가 일시적으로 불가할 수 있습니다. 팀에서 문제 �
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Order acceptable price"
 msgstr "주문 허용 가격"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order failed to execute and is frozen. It stays open and may still execute later if conditions allow.<0/><1/>See the Trades tab for the reason."
+msgstr "주문 체결에 실패하여 동결되었습니다. 주문은 계속 열려 있으며 조건이 충족되면 나중에 체결될 수 있습니다.<0/><1/>사유는 거래 탭에서 확인하세요."
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Updating {updateOrdersCount} TP/SL orders..."

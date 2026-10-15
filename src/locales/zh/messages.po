@@ -2560,6 +2560,10 @@ msgstr "他们每次交易，您都能赚取收益"
 msgid "Total value of tokens in GM pools"
 msgstr "GM 池中代币的总价值"
 
+#: src/components/OrderItem/OrderItem.tsx
+msgid "Frozen"
+msgstr "已冻结"
+
 #: src/components/Claims/ClaimableCardUI.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price impact rebates"
@@ -2999,6 +3003,11 @@ msgstr "在此规模下无可用流动性来增加做多仓位。<0/>最大做�
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Transfer completed"
 msgstr "转账完成"
+
+#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+msgctxt "TWAP part status"
+msgid "Frozen"
+msgstr "已冻结"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "GM bridging to..."
@@ -4453,8 +4462,6 @@ msgid "Builder Program"
 msgstr "开发者计划"
 
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
-#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
-#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "{0}"
 msgstr "{0}"
 
@@ -4935,6 +4942,7 @@ msgstr "推荐链接已复制到剪贴板"
 msgid "Insufficient bridge liquidity to {networkName}"
 msgstr "到 {networkName} 的跨链桥流动性不足"
 
+#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
 msgstr "已执行"
@@ -5932,6 +5940,10 @@ msgstr "推荐码已添加"
 msgid "Your {symbol} margin exceeds the {indexName} short position size. Margin value rises with the index, covering any losses—no liquidation price."
 msgstr "您的 {symbol} 保证金超过 {indexName} 做空仓位规模。保证金价值会随指数上涨，可弥补任何损失——因此没有清算价格。"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Some TWAP parts failed to execute and are frozen. They stay open and may still execute later if conditions allow.<0/><1/>See the Trades tab for the reason."
+msgstr "部分 TWAP 子单执行失败，已被冻结。这些子单仍保持开启，条件允许时仍可能在稍后执行。<0/><1/>请在\"交易\"标签页中查看原因。"
+
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "{positionTitle} orders"
 msgstr "{positionTitle} 订单"
@@ -6785,6 +6797,10 @@ msgstr "Umami DAO"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Staked on Avalanche"
 msgstr "Avalanche 上已质押"
+
+#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+msgid "Pending"
+msgstr "待执行"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "s:"
@@ -7649,6 +7665,10 @@ msgstr "交易可能暂时不可用。我们的团队正在努力解决此问题
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Order acceptable price"
 msgstr "订单可接受价格"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order failed to execute and is frozen. It stays open and may still execute later if conditions allow.<0/><1/>See the Trades tab for the reason."
+msgstr "订单执行失败，已被冻结。订单仍保持开启，条件允许时仍可能在稍后执行。<0/><1/>请在\"交易\"标签页中查看原因。"
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Updating {updateOrdersCount} TP/SL orders..."

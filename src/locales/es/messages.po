@@ -2560,6 +2560,10 @@ msgstr "Gane con cada operación que realicen"
 msgid "Total value of tokens in GM pools"
 msgstr "Valor total de los tokens en los pools de GM"
 
+#: src/components/OrderItem/OrderItem.tsx
+msgid "Frozen"
+msgstr "Congelada"
+
 #: src/components/Claims/ClaimableCardUI.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price impact rebates"
@@ -2999,6 +3003,11 @@ msgstr "No hay liquidez disponible para incrementar largos a<0/>este tamaño. Ta
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Transfer completed"
 msgstr "Transferencia completada"
+
+#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+msgctxt "TWAP part status"
+msgid "Frozen"
+msgstr "Congelada"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "GM bridging to..."
@@ -4453,8 +4462,6 @@ msgid "Builder Program"
 msgstr "Builder Program"
 
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
-#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
-#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "{0}"
 msgstr "{0}"
 
@@ -4935,6 +4942,7 @@ msgstr "Enlace de referido copiado al portapapeles"
 msgid "Insufficient bridge liquidity to {networkName}"
 msgstr "Liquidez del puente insuficiente hacia {networkName}"
 
+#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
 msgstr "Ejecutada"
@@ -5932,6 +5940,10 @@ msgstr "Código de referido añadido"
 msgid "Your {symbol} margin exceeds the {indexName} short position size. Margin value rises with the index, covering any losses—no liquidation price."
 msgstr "Su margen en {symbol} supera el tamaño de la posición corta de {indexName}. El valor del margen aumenta con el índice y cubre cualquier pérdida, por lo que no hay precio de liquidación."
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Some TWAP parts failed to execute and are frozen. They stay open and may still execute later if conditions allow.<0/><1/>See the Trades tab for the reason."
+msgstr "Algunas partes de TWAP no se pudieron ejecutar y están congeladas. Siguen abiertas y aún pueden ejecutarse más adelante si las condiciones lo permiten.<0/><1/>Consulta el motivo en la pestaña Operaciones."
+
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "{positionTitle} orders"
 msgstr "Órdenes de {positionTitle}"
@@ -6785,6 +6797,10 @@ msgstr "Umami DAO"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Staked on Avalanche"
 msgstr "Stakeado en Avalanche"
+
+#: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+msgid "Pending"
+msgstr "Pendiente"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "s:"
@@ -7649,6 +7665,10 @@ msgstr "La negociación puede no estar disponible temporalmente. Nuestro equipo 
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Order acceptable price"
 msgstr "Precio aceptable de la orden"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order failed to execute and is frozen. It stays open and may still execute later if conditions allow.<0/><1/>See the Trades tab for the reason."
+msgstr "La orden no se pudo ejecutar y está congelada. Sigue abierta y aún puede ejecutarse más adelante si las condiciones lo permiten.<0/><1/>Consulta el motivo en la pestaña Operaciones."
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Updating {updateOrdersCount} TP/SL orders..."

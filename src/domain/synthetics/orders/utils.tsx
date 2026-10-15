@@ -175,6 +175,8 @@ function getMarginDepositOrderErrors(p: {
   return [];
 }
 
+export const FROZEN_ORDER_ERROR_KEY = "frozen";
+
 export function getOrderErrors(p: {
   order: OrderInfo;
   marketsInfoData: MarketsInfoData;
@@ -189,6 +191,29 @@ export function getOrderErrors(p: {
   const { order, positionsInfoData, marketsInfoData, isSetAcceptablePriceImpactEnabled, jitLiquidityMap } = p;
 
   const errors: OrderError[] = [];
+
+  if (order.isFrozen) {
+    errors.push({
+      msg: isTwapOrder(order) ? (
+        <Trans>
+          Some TWAP parts failed to execute and are frozen. They stay open and may still execute later if conditions
+          allow.
+          <br />
+          <br />
+          See the Trades tab for the reason.
+        </Trans>
+      ) : (
+        <Trans>
+          Order failed to execute and is frozen. It stays open and may still execute later if conditions allow.
+          <br />
+          <br />
+          See the Trades tab for the reason.
+        </Trans>
+      ),
+      level: "warning",
+      key: FROZEN_ORDER_ERROR_KEY,
+    });
+  }
 
   if (isTwapOrder(order)) {
     if (isIncreaseOrderType(order.orderType) || isSwapOrderType(order.orderType)) {
