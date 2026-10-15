@@ -6,21 +6,25 @@ and `app-build-verification.md`. Those reports are historical, not validation of
 ## Build and load contract
 
 - `yarn build:gmsol-sdk` uses only `vite.gmsol.config.ts`. It writes to
-  `public/gmsol-sdk/0.9.0-test.2-v1/`; the application's normal public-file copy deploys the assets.
+  `public/gmsol-sdk/0.9.0-test.2-v2/`; the application's normal public-file copy deploys the assets.
 - Application and landing build/start scripts prepare this artifact first. When invoking Vite
   directly, run `yarn build:gmsol-sdk` first as well.
 - Vite's native `?init` loader instantiates the pinned WASM with its `./index_bg.js` imports.
   `sdk-entry.js` performs the same binding and start calls as the package's `index.js`, inside an
   explicit asynchronous initializer. No top-level await or third-party WASM/TLA plugin is needed.
-- The main loader imports the artifact URL with `@vite-ignore`, waits for `initialize()`, and
-  shares the initialization promise. Network-disabled calls reject before importing anything.
-  Failed initialization stays rejected until the page is reloaded.
+- The main loader imports the artifact URL with `@vite-ignore` and caches the loaded module.
+  The entry shares its initialization promise. Network-disabled calls reject before importing anything.
+  Module loading and pre-binding WASM failures can be retried on the next call.
+  Binding or start failures stay rejected until the page is reloaded.
 - Both builds use Vite's normal browser target, minification and source-map pipeline.
 - The independent build checks the input WASM SHA-256 against the approved production binary.
   WASM is emitted as a separate asset, not inlined or compiled into a different binary.
 - Increment the artifact revision in `config/gmsol/sdk.ts` whenever the wrapper or SDK build
   configuration changes. Update the SDK version and approved hash together when replacing the SDK.
   Preserve older artifact directories on the host if supporting already-open tabs across releases.
+
+The verification below covers artifact revision v1; v2 adds retry on pre-binding load failures
+and requires a fresh build and browser acceptance.
 
 ## Build verification — 2026-10-15 (Asia/Shanghai)
 

@@ -2,59 +2,59 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { getIsSolanaNetworkEnabled } from "config/ab";
 
-const sdkFactory = vi.hoisted(() => vi.fn(() => ({ create_orders: vi.fn() })));
+const { sdk, initialize, entryFactory } = vi.hoisted(() => {
+  const sdk = { create_orders: vi.fn() };
+  const initialize = vi.fn();
+  return { sdk, initialize, entryFactory: vi.fn() };
+});
 
 vi.mock("config/ab", () => ({ getIsSolanaNetworkEnabled: vi.fn() }));
 
 beforeEach(() => {
   vi.resetModules();
-  sdkFactory.mockClear();
-  vi.doMock("/gmsol-sdk/0.9.0-test.2-v1/entry.js", () => ({ initialize: sdkFactory }));
+  initialize.mockReset().mockResolvedValue(sdk);
+  entryFactory.mockReset().mockReturnValue({ initialize });
+  vi.doMock("/gmsol-sdk/0.9.0-test.2-v2/entry.js", () => entryFactory());
 });
 
 describe("loadGmsolSdk", () => {
-  it("gates every access while reusing a single SDK load across flag changes", async () => {
+  it("gates access and loads the entry once across concurrent calls and flag changes", async () => {
     const { loadGmsolSdk } = await import("./loadGmsolSdk");
     vi.mocked(getIsSolanaNetworkEnabled).mockReturnValue(false);
     await expect(loadGmsolSdk()).rejects.toThrow("Solana network is disabled");
-    expect(sdkFactory).not.toHaveBeenCalled();
+    expect(entryFactory).not.toHaveBeenCalled();
 
     vi.mocked(getIsSolanaNetworkEnabled).mockReturnValue(true);
-    const firstLoad = loadGmsolSdk();
-    const secondLoad = loadGmsolSdk();
-
-    expect(secondLoad).toBe(firstLoad);
-    expect((await firstLoad).create_orders).toBeTypeOf("function");
-
+    expect(await Promise.all([loadGmsolSdk(), loadGmsolSdk()])).toEqual([sdk, sdk]);
     vi.mocked(getIsSolanaNetworkEnabled).mockReturnValue(false);
     await expect(loadGmsolSdk()).rejects.toThrow("Solana network is disabled");
+    expect(initialize).toHaveBeenCalledTimes(2);
 
     vi.mocked(getIsSolanaNetworkEnabled).mockReturnValue(true);
-    expect(loadGmsolSdk()).toBe(firstLoad);
-    expect(sdkFactory).toHaveBeenCalledTimes(1);
+    await expect(loadGmsolSdk()).resolves.toBe(sdk);
+    expect(entryFactory).toHaveBeenCalledTimes(1);
   });
 
-  it("preserves a shared loading failure across later calls and flag changes", async () => {
-    const loadError = new TypeError("Failed to initialize WASM");
-    vi.doMock("/gmsol-sdk/0.9.0-test.2-v1/entry.js", () => ({
-      initialize: () => Promise.reject(loadError),
-    }));
+  it("allows the entry to retry initialization after a WASM loading failure", async () => {
+    const error = new TypeError("Failed to fetch WASM");
+    initialize.mockRejectedValueOnce(error);
     const { loadGmsolSdk } = await import("./loadGmsolSdk");
     vi.mocked(getIsSolanaNetworkEnabled).mockReturnValue(true);
+    await expect(loadGmsolSdk()).rejects.toBe(error);
+    await expect(loadGmsolSdk()).resolves.toBe(sdk);
+    expect(entryFactory).toHaveBeenCalledTimes(1);
+  });
 
-    const firstLoad = loadGmsolSdk();
-    expect(loadGmsolSdk()).toBe(firstLoad);
-    await expect(firstLoad).rejects.toBe(loadError);
-
-    expect(loadGmsolSdk()).toBe(firstLoad);
-    await expect(loadGmsolSdk()).rejects.toBe(loadError);
-
-    vi.mocked(getIsSolanaNetworkEnabled).mockReturnValue(false);
-    await expect(loadGmsolSdk()).rejects.toThrow("Solana network is disabled");
-    expect(sdkFactory).not.toHaveBeenCalled();
-
+  it("allows another module import after an entry loading failure", async () => {
+    entryFactory.mockImplementationOnce(() => {
+      throw new TypeError("Failed to fetch entry");
+    });
+    const { loadGmsolSdk } = await import("./loadGmsolSdk");
     vi.mocked(getIsSolanaNetworkEnabled).mockReturnValue(true);
-    expect(loadGmsolSdk()).toBe(firstLoad);
-    await expect(loadGmsolSdk()).rejects.toBe(loadError);
+    await expect(loadGmsolSdk()).rejects.toThrow();
+    // Model a later successful network import without resetting the loader module.
+    vi.doMock("/gmsol-sdk/0.9.0-test.2-v2/entry.js", () => entryFactory());
+    await expect(loadGmsolSdk()).resolves.toBe(sdk);
+    expect(entryFactory).toHaveBeenCalledTimes(2);
   });
 });
