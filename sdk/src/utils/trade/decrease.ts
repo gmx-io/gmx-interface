@@ -310,28 +310,10 @@ export function getDecreasePositionAmounts(p: {
     undefined,
     proDiscountFactor
   );
-  const estimatedPositionFeeCost = estimateCollateralCost(
-    positionFeeInfo.positionFeeUsd,
-    collateralToken,
-    values.collateralPrice
-  );
-  const estimatedDiscountCost = estimateCollateralCost(
-    positionFeeInfo.discountUsd,
-    collateralToken,
-    values.collateralPrice
-  );
-
-  values.positionFeeUsd = estimatedPositionFeeCost.usd;
-  values.feeDiscountUsd = estimatedDiscountCost.usd;
+  values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
+  values.feeDiscountUsd = positionFeeInfo.discountUsd;
   values.uiFeeUsd = applyFactor(values.sizeDeltaUsd, uiFeeFactor);
-
-  const borrowFeeCost = estimateCollateralCost(
-    position.pendingBorrowingFeesUsd,
-    collateralToken,
-    values.collateralPrice
-  );
-
-  values.borrowingFeeUsd = borrowFeeCost.usd;
+  values.borrowingFeeUsd = position.pendingBorrowingFeesUsd;
 
   const fundingFeeCost = estimateCollateralCost(
     position.pendingFundingFeesUsd,

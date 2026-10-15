@@ -30,9 +30,15 @@ const marketInfo50x = createMockMarketInfo(ETH_TOKEN, {
   minCollateralFactorForLiquidation: PRECISION / 200n,
 });
 
-function openPosition(isLong: boolean, collateralUsd: number, market = marketInfo): PositionInfoLoaded {
-  const key = getPositionKey(MOCK_ACCOUNT, market.marketTokenAddress, USDC_ADDRESS, isLong);
-  const sizeInUsd = expandDecimals(collateralUsd * 80 * 100, 28);
+function openPosition(
+  isLong: boolean,
+  collateralUsd: number,
+  market = marketInfo,
+  { collateralToken = USDC_TOKEN, leverage = 80, pendingBorrowingFeesUsd = 0n } = {}
+): PositionInfoLoaded {
+  const key = getPositionKey(MOCK_ACCOUNT, market.marketTokenAddress, collateralToken.address, isLong);
+  const collateralInUsd = expandDecimals(collateralUsd * 100, 28);
+  const sizeInUsd = collateralInUsd * BigInt(leverage);
 
   return getPositionInfo({
     position: {
@@ -40,11 +46,15 @@ function openPosition(isLong: boolean, collateralUsd: number, market = marketInf
       contractKey: key,
       account: MOCK_ACCOUNT,
       marketAddress: market.marketTokenAddress,
-      collateralTokenAddress: USDC_ADDRESS,
+      collateralTokenAddress: collateralToken.address,
       sizeInUsd,
       sizeInTokens: convertToTokenAmount(sizeInUsd, ETH_TOKEN.decimals, ENTRY_PRICE)!,
-      collateralAmount: expandDecimals(collateralUsd * 100, USDC_TOKEN.decimals - 2),
-      pendingBorrowingFeesUsd: 0n,
+      collateralAmount: convertToTokenAmount(
+        collateralInUsd,
+        collateralToken.decimals,
+        collateralToken.prices.minPrice
+      )!,
+      pendingBorrowingFeesUsd,
       increasedAtTime: 0n,
       decreasedAtTime: 0n,
       isLong,
@@ -290,6 +300,43 @@ describe("partial TP/SL that would leave the position above max leverage at its 
       { swapPath: [marketInfo.marketTokenAddress], targetCollateralToken: ETH_TOKEN }
     );
 
+    expect(makeSelectOrderErrorByOrderKey("order")(state).errors.map((error) => error.key)).toEqual([
+      "remainingPositionMaxLeverage",
+    ]);
+    expect(selectOrderEditorIsRemainingPositionAboveMaxLeverage(state)).toBe(true);
+  });
+
+  it("converts the fees to collateral at the trigger price when the collateral is the index token PRO-4406", () => {
+    // the contract takes the closing and borrowing fees in ETH at the execution price; at the current price
+    // the $2,000 of borrowing would look 2% cheaper and hide the failure of a 10% SL just above the liquidation price
+    const position = openPosition(true, 5000, marketInfo, {
+      collateralToken: ETH_TOKEN,
+      leverage: 20,
+      pendingBorrowingFeesUsd: expandDecimals(2000, USD_DECIMALS),
+    });
+    const triggerPrice = expandDecimals(195970, USD_DECIMALS - 2);
+    const amounts = getAmounts(position, triggerPrice, 10, false);
+    const state = getState(
+      position,
+      amounts,
+      { triggerPrice, sizeDeltaUsd: amounts.sizeDeltaUsd },
+      {
+        initialCollateralToken: ETH_TOKEN,
+        initialCollateralTokenAddress: ETH_TOKEN.address,
+        targetCollateralToken: ETH_TOKEN,
+      }
+    );
+    const modalWarning = getTpSlRemainingPositionWarning({
+      position,
+      takeProfit: undefined,
+      stopLoss: { decreaseAmounts: amounts, getDecreaseAmountsWithoutKeepLeverage: () => amounts },
+      keepLeverage: false,
+      minCollateralUsd,
+      minPositionSizeUsd,
+      userReferralInfo: undefined,
+    });
+
+    expect(modalWarning?.isStopLossAboveMaxLeverage).toBe(true);
     expect(makeSelectOrderErrorByOrderKey("order")(state).errors.map((error) => error.key)).toEqual([
       "remainingPositionMaxLeverage",
     ]);
