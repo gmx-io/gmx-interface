@@ -29,7 +29,7 @@ import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { useCurrentUnixTimestamp } from "lib/useCurrentUnixTimestamp";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendRewardsTransactionResultEvent, sendRewardsVestingModalOpenEvent } from "lib/userAnalytics/rewardsEvents";
-import useWallet from "lib/wallets/useWallet";
+import { useRewardsTesterWallet as useWallet } from "../tester/useRewardsTester"; // rewards-tester
 import { abis } from "sdk/abis";
 import { convertToUsd } from "sdk/utils/tokens";
 
@@ -62,6 +62,8 @@ import {
   simulateRewardsVestingStop,
   simulateRewardsVestingUnlock,
 } from "../rewardsVestingDebug";
+import { RewardsTesterVestingSimulatorSlot } from "../tester/RewardsTesterVestingSimulatorSlot"; // rewards-tester
+import { useRewardsTesterVestingSnapshot, useRewardsTesterVestingSync } from "../tester/useRewardsTester"; // rewards-tester
 import { RewardsDistributeEsGmxModal } from "./RewardsDistributeEsGmxModal";
 import { RewardsMintEsGmxModal } from "./RewardsMintEsGmxModal";
 import { RewardsRatioVestingModal } from "./RewardsRatioVestingModal";
@@ -334,8 +336,9 @@ export function RewardsVestingFlow() {
   const now = useCurrentUnixTimestamp(30_000);
   const vestingResult = useRewardsVestingData(account, chainId);
   const debugMode = getRewardsDebugMode(search);
-  const debugSnapshot = getRewardsVestingDebugSnapshot(debugMode);
+  const debugSnapshot = useRewardsTesterVestingSnapshot(getRewardsVestingDebugSnapshot(debugMode)); // rewards-tester
   const [debugData, setDebugData] = useState(() => debugSnapshot?.data);
+  useRewardsTesterVestingSync(debugData, setDebugData); // rewards-tester
   const previousDebugModeRef = useRef(debugMode);
   const data = debugSnapshot ? debugData : vestingResult.data;
   const isLoading = debugSnapshot ? debugSnapshot.isLoading : vestingResult.isLoading;
@@ -854,7 +857,9 @@ export function RewardsVestingFlow() {
   return (
     <SkeletonTheme baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A">
       {isInteractiveDebug && data ? (
-        <RewardsVestingDebugPanel data={data} onApply={applyDebugData} onReset={resetDebugData} />
+        <RewardsTesterVestingSimulatorSlot /* rewards-tester */>
+          <RewardsVestingDebugPanel data={data} onApply={applyDebugData} onReset={resetDebugData} />
+        </RewardsTesterVestingSimulatorSlot>
       ) : null}
       <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] items-stretch gap-8 max-lg:grid-cols-1 max-lg:grid-rows-[1fr_minmax(0,1fr)_1fr]">
         <section className="flex min-h-[265px] min-w-0 flex-col gap-4 rounded-8 bg-slate-900 p-12">

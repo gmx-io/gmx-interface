@@ -4,7 +4,7 @@ import { PointerEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 
 import { REWARDS_ONBOARDING_DISMISSED_KEY } from "config/localStorage";
-import { useLocalStorageSerializeKeySafe } from "lib/localStorage";
+import { useRewardsTesterLocalStorageSerializeKeySafe as useLocalStorageSerializeKeySafe } from "../tester/useRewardsTester"; // rewards-tester
 
 import Button from "components/Button/Button";
 import ModalWithPortal from "components/Modal/ModalWithPortal";

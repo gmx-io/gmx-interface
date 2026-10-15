@@ -5,14 +5,14 @@ import { Link, useLocation } from "react-router-dom";
 import type { ContractsChainId } from "config/chains";
 import { ES_GMX_DECIMALS, GT_DECIMALS } from "domain/synthetics/incentives/v2/constants";
 import type { LeaderboardEntry } from "domain/synthetics/incentives/v2/types";
-import { useLatestGtPrice } from "domain/synthetics/incentives/v2/useLatestGtPrice";
+import { useRewardsTesterLatestGtPrice as useLatestGtPrice } from "../tester/useRewardsTester"; // rewards-tester
 import { convertToUsd } from "domain/synthetics/tokens";
 import { isRatioVestingDepositDisabled } from "domain/vesting/ratioVesting";
-import { useRewardsVestingData } from "domain/vesting/useRewardsVestingData";
+import { useRewardsTesterRewardsVestingData as useRewardsVestingData } from "../tester/useRewardsTester"; // rewards-tester
 import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { useCurrentUnixTimestamp } from "lib/useCurrentUnixTimestamp";
 import { sendRewardsNavigationEvent } from "lib/userAnalytics/rewardsEvents";
-import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
+import { useRewardsTesterIsWalletInitializing as useIsWalletInitializing } from "../tester/useRewardsTester"; // rewards-tester
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 

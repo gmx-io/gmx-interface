@@ -8,16 +8,14 @@ import { getAddress, isAddress, isAddressEqual } from "viem";
 import "./RewardsLeaderboardTab.scss";
 
 import type { ContractsChainId } from "config/chains";
-import { useGmxPrice } from "domain/legacy";
+import { useRewardsTesterGmxPrice as useGmxPrice } from "../tester/useRewardsTester"; // rewards-tester
 import { ES_GMX_DECIMALS, GT_DECIMALS } from "domain/synthetics/incentives/v2/constants";
 import type { IncentivesConfig, LeaderboardEntry } from "domain/synthetics/incentives/v2/types";
 import { useEpochRolloverRevalidation } from "domain/synthetics/incentives/v2/useEpochRolloverRevalidation";
-import {
-  type IncentivesLeaderboardOrderBy,
-  useIncentivesLeaderboard,
-} from "domain/synthetics/incentives/v2/useIncentivesLeaderboard";
-import { useIncentivesLeaderboardSearch } from "domain/synthetics/incentives/v2/useIncentivesLeaderboardSearch";
-import { useLatestGtPrice } from "domain/synthetics/incentives/v2/useLatestGtPrice";
+import { type IncentivesLeaderboardOrderBy } from "domain/synthetics/incentives/v2/useIncentivesLeaderboard"; // rewards-tester (was: also imported useIncentivesLeaderboard)
+import { useRewardsTesterIncentivesLeaderboard as useIncentivesLeaderboard } from "../tester/useRewardsTester"; // rewards-tester
+import { useRewardsTesterIncentivesLeaderboardSearch as useIncentivesLeaderboardSearch } from "../tester/useRewardsTester"; // rewards-tester
+import { useRewardsTesterLatestGtPrice as useLatestGtPrice } from "../tester/useRewardsTester"; // rewards-tester
 import { useDebounce } from "lib/debounce/useDebounce";
 import { formatUsd } from "lib/numbers";
 import { sendRewardsLeaderboardShareClickEvent } from "lib/userAnalytics/rewardsEvents";

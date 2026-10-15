@@ -394,8 +394,7 @@ function getRewardsTesterAvailability(data: RewardsTesterData): IncentivesAvaila
 export function useRewardsTesterPageData(params: Parameters<typeof useRewardsPageData>[0]) {
   const data = useRewardsTesterData();
   const pageData = useRewardsPageData(data ? { ...params, account: undefined } : params);
-  const { loadTierAccountData } = params;
-  const loadAllTimeSummary = loadTierAccountData;
+  const { loadTierAccountData, loadAllTimeSummary = loadTierAccountData } = params;
 
   return useMemo(() => {
     if (!data || pageData.availability.status === "unsupported-chain") return pageData;

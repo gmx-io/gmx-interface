@@ -6,7 +6,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import { ARBITRUM_SEPOLIA } from "config/chains";
 import { useChainId } from "lib/chains";
 import { sendRewardsPageViewEvent } from "lib/userAnalytics/rewardsEvents";
-import useWallet from "lib/wallets/useWallet";
+import { useRewardsTesterWallet as useWallet } from "./tester/useRewardsTester"; // rewards-tester
 
 import { AppCard } from "components/AppCard/AppCard";
 import Button from "components/Button/Button";
@@ -18,14 +18,15 @@ import { RewardsHistoryTab } from "./components/RewardsHistoryTab";
 import { RewardsLeaderboardTab } from "./components/RewardsLeaderboardTab";
 import { RewardsOnboardingModal } from "./components/RewardsOnboardingModal";
 import { RewardsSummaryRow } from "./components/RewardsSummaryRow";
-import type { AccountDataState } from "./components/rewardsTiersShared";
 import { RewardsTiersTab } from "./components/RewardsTiersTab";
 import { RewardsVestingFaq } from "./components/RewardsVestingFaq";
 import { RewardsVestingFlow } from "./components/RewardsVestingFlow";
+import type { AccountDataState } from "./components/rewardsTiersShared";
 import { getRewardsDebugConfig, getRewardsDebugMode } from "./rewardsDebug";
 import { RewardsPageLayout, RewardsPageLoadingContent } from "./RewardsPageShell";
 import { getRewardsPath, getRewardsTabFromPathname, type RewardsTab } from "./rewardsRoutes";
-import { useRewardsPageData } from "./useRewardsPageData";
+import { RewardsTesterPanel } from "./tester/RewardsTesterPanel"; // rewards-tester
+import { useRewardsTesterPageData as useRewardsPageData } from "./tester/useRewardsTester"; // rewards-tester
 
 export function RewardsPage() {
   const { pathname, search } = useLocation();
@@ -88,6 +89,7 @@ export function RewardsPage() {
 
   const pageContent = (content: React.ReactNode) => (
     <RewardsPageLayout>
+      <RewardsTesterPanel /* rewards-tester */ />
       {showSummaryRow ? (
         <RewardsSummaryRow
           chainId={chainId}

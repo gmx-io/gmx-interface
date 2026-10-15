@@ -5,12 +5,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 
 import type { ContractsChainId } from "config/chains";
-import { useGmxPrice } from "domain/legacy";
+import { useRewardsTesterGmxPrice as useGmxPrice } from "../tester/useRewardsTester"; // rewards-tester
 import { ES_GMX_DECIMALS, GT_DECIMALS } from "domain/synthetics/incentives/v2/constants";
 import type { IncentivesConfig, RewardsHistoryEntry } from "domain/synthetics/incentives/v2/types";
-import { useAccountRewardsHistory } from "domain/synthetics/incentives/v2/useAccountRewardsHistory";
+import { useRewardsTesterAccountRewardsHistory as useAccountRewardsHistory } from "../tester/useRewardsTester"; // rewards-tester
 import { useEpochRolloverRevalidation } from "domain/synthetics/incentives/v2/useEpochRolloverRevalidation";
-import { useLatestGtPrice } from "domain/synthetics/incentives/v2/useLatestGtPrice";
+import { useRewardsTesterLatestGtPrice as useLatestGtPrice } from "../tester/useRewardsTester"; // rewards-tester
 import { formatEpochLabel, getRewardsHistoryStatus } from "domain/synthetics/incentives/v2/utils";
 import { formatTimeLeft } from "lib/dates";
 import { formatUsd } from "lib/numbers";

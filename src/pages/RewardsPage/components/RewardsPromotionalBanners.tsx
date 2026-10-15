@@ -8,7 +8,7 @@ import { ES_GMX_DECIMALS } from "domain/synthetics/incentives/v2/constants";
 import { getRewardsPromoSelection, type RewardsPromoSelection } from "domain/synthetics/incentives/v2/rewardsPromo";
 import type { AccountIncentiveStatus, IncentivesConfig } from "domain/synthetics/incentives/v2/types";
 import { formatMultiplier, formatRewardUsd } from "domain/synthetics/incentives/v2/utils";
-import { useLocalStorageSerializeKeySafe } from "lib/localStorage";
+import { useRewardsTesterLocalStorageSerializeKeySafe as useLocalStorageSerializeKeySafe } from "../tester/useRewardsTester"; // rewards-tester
 import { formatAmount, PRECISION } from "lib/numbers";
 import { sendRewardsBannerEvent, sendRewardsNavigationEvent } from "lib/userAnalytics/rewardsEvents";
 

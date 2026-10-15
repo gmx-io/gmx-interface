@@ -5,10 +5,10 @@ import type { ContractsChainId } from "config/chains";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { useStableRewardsPromoSelection } from "domain/synthetics/incentives/v2/rewardsPromo";
 import type { AccountIncentiveStatus, IncentivesConfig } from "domain/synthetics/incentives/v2/types";
-import { useRewardsPromoActivity } from "domain/synthetics/incentives/v2/useRewardsPromoActivity";
+import { useRewardsTesterPromoActivity as useRewardsPromoActivity } from "../tester/useRewardsTester"; // rewards-tester
 import { formatMultiplier } from "domain/synthetics/incentives/v2/utils";
-import { useRewardsVestingData } from "domain/vesting/useRewardsVestingData";
-import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
+import { useRewardsTesterRewardsVestingData as useRewardsVestingData } from "../tester/useRewardsTester"; // rewards-tester
+import { useRewardsTesterIsWalletInitializing as useIsWalletInitializing } from "../tester/useRewardsTester"; // rewards-tester
 import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
