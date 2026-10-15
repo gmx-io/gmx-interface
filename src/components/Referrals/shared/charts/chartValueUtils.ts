@@ -1,5 +1,5 @@
 import { USD_DECIMALS } from "config/factors";
-import { bigintToNumber, clamp, expandDecimals, formatUsd } from "lib/numbers";
+import { bigintToNumber, clamp, expandDecimals, formatUsdParts } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 
 const USD_TICK_SIGNIFICANT_DIGITS = 3;
@@ -25,8 +25,8 @@ export function integerYAxisTickFormatter(value: number) {
   return formatCompactNumber(value, 0);
 }
 
-export function formatChartTooltipUsd(usd: bigint) {
-  if (usd === 0n || bigMath.abs(usd) >= ONE_CENT_USD) return formatUsd(usd);
+export function formatChartTooltipUsdParts(usd: bigint) {
+  if (usd === 0n || bigMath.abs(usd) >= ONE_CENT_USD) return formatUsdParts(usd)!;
 
   const displayDecimals = clamp(
     getFractionDigitsForSignificantDigits(bigintToNumber(usd, USD_DECIMALS), SUB_CENT_USD_SIGNIFICANT_DIGITS),
@@ -34,7 +34,7 @@ export function formatChartTooltipUsd(usd: bigint) {
     MAX_USD_FRACTION_DIGITS
   );
 
-  return formatUsd(usd, { displayDecimals });
+  return formatUsdParts(usd, { displayDecimals })!;
 }
 
 function getFractionDigitsForSignificantDigits(value: number, significantDigits: number) {

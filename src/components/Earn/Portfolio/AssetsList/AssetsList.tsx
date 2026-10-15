@@ -9,15 +9,15 @@ import { getHasBalanceOutsideWallet } from "domain/multichain/getHasBalanceOutsi
 import { MultichainMarketTokensBalances } from "domain/multichain/types";
 import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { useGlvUserEarnings } from "domain/synthetics/markets/useGlvUserEarnings";
+import { useRewardsTesterEarnGlvUserEarnings as useGlvUserEarnings } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
 import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
-import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
+import { useRewardsTesterEarnUserEarnings as useUserEarnings } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
 import { useChainId } from "lib/chains";
 import { StakingProcessedData } from "lib/legacy";
 import { getByKey } from "lib/objects";
 import { useBreakpoints } from "lib/useBreakpoints";
 import useSearchParams from "lib/useSearchParams";
-import useWallet from "lib/wallets/useWallet";
+import { useRewardsTesterEarnWallet as useWallet } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
 
 import ConnectWalletButton from "components/ConnectWalletButton/ConnectWalletButton";
 

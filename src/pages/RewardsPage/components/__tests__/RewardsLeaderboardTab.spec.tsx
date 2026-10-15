@@ -632,7 +632,7 @@ describe("RewardsLeaderboardTab", () => {
       });
     });
 
-    const rows = container.querySelectorAll("tbody tr");
+    const rows = container.querySelectorAll('tbody tr:not([aria-hidden="true"])');
     expect(screen.queryByTestId("leaderboard-pinned-row")).toBeNull();
     expect(rows).toHaveLength(PAGE_SIZE);
     expect(within(rows[0] as HTMLElement).getByText("No results found")).toBeTruthy();

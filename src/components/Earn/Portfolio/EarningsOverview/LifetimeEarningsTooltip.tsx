@@ -1,17 +1,17 @@
 import { Trans } from "@lingui/macro";
 import { ReactNode } from "react";
 
-import { formatUsd } from "lib/numbers";
-
 import {
   EarningAttributionNote,
   EarningAttributionScope,
   EarningNotAvailable,
   EarningUnavailableNote,
 } from "components/EarningValue/EarningValue";
+import { NumericValue } from "components/NumericValue/NumericValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
-import { formatUsdExpanded } from "./EarningsStat";
+import { formatUsdExpandedParts } from "./EarningsStat";
 
 export type LifetimeEarningsBreakdown = {
   stakingGmxUsd: bigint;
@@ -27,7 +27,13 @@ function LeafRow({ label, usd }: { label: ReactNode; usd: bigint | undefined }) 
     <StatsTooltipRow
       label={label}
       showDollar={false}
-      value={usd === undefined ? <EarningNotAvailable /> : <span className="numbers">{formatUsdExpanded(usd)}</span>}
+      value={
+        usd === undefined ? (
+          <EarningNotAvailable />
+        ) : (
+          <NumericValue parts={formatUsdExpandedParts(usd)} className="numbers" />
+        )
+      }
     />
   );
 }
@@ -74,7 +80,7 @@ export function LifetimeEarningsTooltipContent({
           breakdown.totalUsd === undefined ? (
             <EarningNotAvailable />
           ) : (
-            <span className="numbers">{formatUsd(breakdown.totalUsd)}</span>
+            <UsdValue usd={breakdown.totalUsd} className="numbers" />
           )
         }
       />

@@ -27,7 +27,7 @@ export function RewardsTiersFaq({ config }: { config: IncentivesConfig }) {
             </div>
             <div className="flex flex-col gap-4">
               <div className="font-medium text-typography-primary">
-                <Trans>Receive Rewards</Trans>
+                <Trans>Receive rewards</Trans>
               </div>
               <p>
                 <Trans>

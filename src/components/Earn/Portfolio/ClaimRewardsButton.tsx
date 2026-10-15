@@ -11,7 +11,7 @@ import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts/contractFetcher";
 import { PLACEHOLDER_ACCOUNT, StakingProcessedData } from "lib/legacy";
-import useWallet from "lib/wallets/useWallet";
+import { useRewardsTesterEarnWallet as useWallet } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
 
 import Button from "components/Button/Button";
 import { ClaimModal } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal";

@@ -2,9 +2,11 @@ import cx from "classnames";
 import { ReactNode } from "react";
 
 import { USD_DECIMALS } from "config/factors";
-import { formatUsd, getLimitedDisplay } from "lib/numbers";
+import { formatUsdParts, getLimitedDisplay, NumberPart } from "lib/numbers";
 
 import { EarningValue } from "components/EarningValue/EarningValue";
+import { NumericValue } from "components/NumericValue/NumericValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 const FULL_PRECISION_DISPLAY_DECIMALS = 8;
@@ -30,22 +32,27 @@ export function isAbbreviatedUsd(usd: bigint): boolean {
   return getLimitedDisplay(usd, USD_DECIMALS).symbol !== "";
 }
 
-export function formatFullPrecisionUsd(usd: bigint): string {
-  return formatUsd(usd, { displayDecimals: FULL_PRECISION_DISPLAY_DECIMALS, minThreshold: "0" })!;
+export function formatFullPrecisionUsdParts(usd: bigint): NumberPart[] {
+  return formatUsdParts(usd, { displayDecimals: FULL_PRECISION_DISPLAY_DECIMALS, minThreshold: "0" })!;
 }
 
-export function formatUsdExpanded(usd: bigint): string {
-  return isAbbreviatedUsd(usd) ? formatFullPrecisionUsd(usd) : formatUsd(usd)!;
+export function formatUsdExpandedParts(usd: bigint): NumberPart[] {
+  return isAbbreviatedUsd(usd) ? formatFullPrecisionUsdParts(usd) : formatUsdParts(usd)!;
 }
 
 export function UsdText({ usd, className }: { usd: bigint; className?: string }) {
-  const handle = <span className={className}>{formatUsd(usd)}</span>;
+  const handle = <UsdValue usd={usd} className={className} />;
 
   if (!isAbbreviatedUsd(usd)) {
     return handle;
   }
 
-  return <TooltipWithPortal handle={handle} content={<span className="numbers">{formatFullPrecisionUsd(usd)}</span>} />;
+  return (
+    <TooltipWithPortal
+      handle={handle}
+      content={<NumericValue parts={formatFullPrecisionUsdParts(usd)} className="numbers" />}
+    />
+  );
 }
 
 export function UsdStatValue({

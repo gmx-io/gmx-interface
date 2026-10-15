@@ -284,8 +284,13 @@ export function useGlvMarketsInfo(
 
     const result: GlvInfoData = {};
     glvs.forEach(({ glv, markets }) => {
-      const pricesMax = glvRawData[glv.glvToken + "-prices"].glvTokenPriceMax.returnValues as [bigint, bigint, bigint];
-      const pricesMin = glvRawData[glv.glvToken + "-prices"].glvTokenPriceMin.returnValues as [bigint, bigint, bigint];
+      const glvPrices = glvRawData[glv.glvToken + "-prices"];
+      if (!glvPrices) {
+        return;
+      }
+
+      const pricesMax = glvPrices.glvTokenPriceMax.returnValues as [bigint, bigint, bigint];
+      const pricesMin = glvPrices.glvTokenPriceMin.returnValues as [bigint, bigint, bigint];
       const [valueMax] = glvRawData[glv.glvToken + "-glvValue"].glvValueMax.returnValues as [bigint, bigint, bigint];
       const [valueMin] = glvRawData[glv.glvToken + "-glvValue"].glvValueMin.returnValues as [bigint, bigint, bigint];
       const [priceMin, , totalSupply] = pricesMin;

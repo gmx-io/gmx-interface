@@ -25,6 +25,29 @@ function injectColorsPlugin({ addBase }: any) {
   });
 }
 
+function textColorNames(tree: object, prefix = ""): string[] {
+  return Object.entries(tree).flatMap(([key, value]) => {
+    const name = prefix ? `${prefix}-${key}` : key;
+
+    return value && typeof value === "object" && !("light" in value) ? textColorNames(value, name) : [name];
+  });
+}
+
+const PRIMARY_TEXT_COLOR_NAMES = ["white", "black", "typography-primary"];
+
+function affixColor(textColorName: string) {
+  return PRIMARY_TEXT_COLOR_NAMES.includes(textColorName) ? "var(--color-typography-secondary)" : "currentColor";
+}
+
+function injectAffixColorsPlugin({ addUtilities }: PluginAPI) {
+  addUtilities({
+    ".numeric-affix": {
+      color: "var(--affix-color, var(--color-typography-secondary))",
+    },
+    ...fromPairs(textColorNames(colors).map((name) => [`.text-${name}`, { "--affix-color": affixColor(name) }])),
+  });
+}
+
 function injectAdaptiveVariablesPlugin({ addBase }: PluginAPI) {
   addBase({
     ":root": {
@@ -220,15 +243,33 @@ const config: Config = {
           "0%": { opacity: "0", transform: "translateX(-18px)" },
           "100%": { opacity: "1", transform: "translateX(0)" },
         },
+        "rewards-vest-comet": {
+          "0%": { strokeDashoffset: "var(--comet-from)" },
+          "100%": { strokeDashoffset: "var(--comet-to)" },
+        },
+        "rewards-vest-comet-fade": {
+          "0%": { opacity: "0" },
+          "15%": { opacity: "1" },
+          "50%": { opacity: "1" },
+          "100%": { opacity: "0" },
+        },
       },
       animation: {
         marquee: "marquee 30s linear infinite",
         "rewards-banner-slide-in-right": "rewards-banner-slide-in-right 260ms ease-out",
         "rewards-banner-slide-in-left": "rewards-banner-slide-in-left 260ms ease-out",
+        "rewards-vest-comet": "rewards-vest-comet 1.5s cubic-bezier(0.65, 0, 0.15, 1) 200ms 1",
+        "rewards-vest-comet-fade": "rewards-vest-comet-fade 1.5s ease-in-out 200ms 1 both",
       },
     },
   },
-  plugins: [injectColorsPlugin, customUtilsPlugin, fontComponentsPlugin, injectAdaptiveVariablesPlugin],
+  plugins: [
+    injectColorsPlugin,
+    injectAffixColorsPlugin,
+    customUtilsPlugin,
+    fontComponentsPlugin,
+    injectAdaptiveVariablesPlugin,
+  ],
 };
 
 export default config;

@@ -6,6 +6,7 @@ import {
   EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY,
   EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY,
 } from "config/localStorage";
+import { DEFAULT_ONE_CLICK_SESSION_DURATION, DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS } from "config/oneClickTrading";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import {
@@ -33,15 +34,10 @@ import {
 } from "domain/synthetics/express/useSwitchGasPaymentTokenIfRequired";
 import { getExternalAggregatorSwapUrl } from "domain/synthetics/externalSwaps/utils";
 import { useChainId } from "lib/chains";
-import { useGasPaymentTokensText } from "lib/gas/useGasPaymentTokensText";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
-import {
-  DEFAULT_SUBACCOUNT_EXPIRY_DURATION,
-  DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT,
-  getGasPaymentTokens,
-} from "sdk/configs/express";
+import { getGasPaymentTokens } from "sdk/configs/express";
 import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 import { TradeMode } from "sdk/utils/trade/types";
 
@@ -108,8 +104,8 @@ export function ExpressTradingWarningCard({
 
   const handleUpdateSubaccountSettings = useCallback(() => {
     updateSubaccountSettings({
-      nextRemainigActions: BigInt(DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT),
-      nextRemainingSeconds: BigInt(DEFAULT_SUBACCOUNT_EXPIRY_DURATION),
+      nextRemainigActions: BigInt(DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS),
+      nextRemainingSeconds: BigInt(DEFAULT_ONE_CLICK_SESSION_DURATION),
       nextIsGmxAccount: isGmxAccount,
     }).then((success) => {
       if (success) {
@@ -316,8 +312,6 @@ export function ExpressTradingWarningCard({
     shouldShowExternalSwapTwapNotSupportedWarning,
   ]);
 
-  const { gasPaymentTokensText, gasPaymentTokenSymbols } = useGasPaymentTokensText(chainId);
-
   let content: ReactNode | undefined = undefined;
   let onCloseClick: undefined | (() => void) = undefined;
   let buttonText: ReactNode | undefined = undefined;
@@ -427,12 +421,23 @@ export function ExpressTradingWarningCard({
     buttonText = <Trans>Switch to market order</Trans>;
     onClick = handleSwitchToMarketOrder;
   } else if (shouldShowOutOfGasPaymentBalanceWarning) {
+    if (!expressParams) {
+      return null;
+    }
+
+    const gasPaymentTokenSymbol = expressParams.gasPaymentParams.gasPaymentToken.symbol;
+
     icon = ExpressIcon;
     color = "yellow";
-    content = <Trans>Express Trading and One-Click Trading are unavailable due to insufficient gas balance</Trans>;
-    buttonText = <Trans>Buy {gasPaymentTokensText}</Trans>;
+    content = (
+      <Trans>
+        Insufficient {gasPaymentTokenSymbol} in your Wallet for Express fees. Express and One-Click Trading are
+        unavailable.
+      </Trans>
+    );
+    buttonText = <Trans>Swap for {gasPaymentTokenSymbol}</Trans>;
     onClick = () => {
-      history.push(`/trade/swap?to=${gasPaymentTokenSymbols[0]}`);
+      history.push(`/trade/swap?to=${gasPaymentTokenSymbol}`);
       onAfterAction?.();
     };
   } else if (shouldShowSubaccountApprovalForAnotherNetworkWarning) {

@@ -476,7 +476,7 @@ describe("RewardsPromotionalBanners", () => {
     );
 
     fireEvent.click(dots[5]);
-    expect(screen.getByText("Activate Pair Boosts")).toBeDefined();
+    expect(screen.getByText("Activate pair boosts")).toBeDefined();
     expect(screen.getByText("Trade featured pairs to boost multiplier and rewards")).toBeDefined();
 
     fireEvent.click(dots[6]);

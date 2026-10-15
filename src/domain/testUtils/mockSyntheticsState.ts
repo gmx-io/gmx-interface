@@ -98,6 +98,8 @@ export function createMockSyntheticsState(overrides: MockSyntheticsStateOverride
       uiFeeFactor,
       proDiscountFactor,
       jitLiquidityData: {},
+      accountWhitelistsResult: { accountWhitelists: undefined },
+      usdgBoostAprResult: { usdgBoostAprResponse: undefined },
       isFirstOrder: false,
       account,
       positionsConstants,

@@ -8,12 +8,13 @@ import { convertToUsd } from "domain/synthetics/tokens";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import type { InfoTokens, Token, TokenInfo } from "domain/tokens";
 import { createTokenSortSequenceComparator, stripBlacklistedWords } from "domain/tokens/utils";
-import { expandDecimals, formatBalanceAmount, formatBigUsd } from "lib/numbers";
+import { expandDecimals, formatBalanceAmount, formatBigUsdParts } from "lib/numbers";
 import { searchBy } from "lib/searchBy";
 import { getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { SlideModal } from "components/Modal/SlideModal";
+import { NumericValue } from "components/NumericValue/NumericValue";
 import SearchInput from "components/SearchInput/SearchInput";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -261,10 +262,9 @@ export default function TokenSelector(props: Props) {
                   )) ||
                     null}
                   <span className="text-body-small text-typography-secondary">
-                    {showBalances &&
-                      balanceUsd !== undefined &&
-                      balanceUsd > 0 &&
-                      formatBigUsd(balanceUsd, { displayDecimals: 2 })}
+                    {showBalances && balanceUsd !== undefined && balanceUsd > 0 && (
+                      <NumericValue parts={formatBigUsdParts(balanceUsd, { displayDecimals: 2 })} />
+                    )}
                   </span>
                 </div>
               </div>
