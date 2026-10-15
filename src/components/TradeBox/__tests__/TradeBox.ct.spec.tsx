@@ -930,7 +930,7 @@ test.describe("TradeBox", () => {
       await page.locator(getDataQALocator("pay-input")).fill("100");
 
       const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
-      await expect(submitButton).toHaveText("Loading...");
+      await expect(submitButton).toHaveText("Loading…");
       await expect(submitButton).toBeDisabled();
     });
 

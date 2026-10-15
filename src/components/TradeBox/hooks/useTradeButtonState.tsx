@@ -237,7 +237,7 @@ export function useTradeboxButtonState({
   const isDataReady = Boolean(fromToken && payAmount !== undefined);
   const isAllowanceLoaded = isDataReady && isAllowanceLoadedRaw;
   // until allowances are known an order could be sent without the approval it needs
-  const isAllowancePending = isAllowanceLoading && !isApproving;
+  const isAllowancePending = isDataReady && isAllowanceLoading && !isApproving;
 
   const pendingApprovalTokenAddress = isAllowanceLoaded && !isApproving ? tokensToApprove[0] : undefined;
   const isPendingGasPaymentTokenApproval =
@@ -586,7 +586,7 @@ export function useTradeboxButtonState({
       return;
     }
 
-    if (isAllowancePending) {
+    if (isAllowancePending || isApproving) {
       return;
     }
 
@@ -740,7 +740,7 @@ export function useTradeboxButtonState({
         ...commonState,
         text: (
           <>
-            {t`Loading...`}
+            <Trans>Loading…</Trans>
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
