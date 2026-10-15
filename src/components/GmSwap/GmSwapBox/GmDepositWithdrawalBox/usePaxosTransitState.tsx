@@ -177,7 +177,10 @@ export function usePaxosTransitState({
 
   const onPendingOrderFound = useCallback(
     (order: TransitOrder) => {
-      const trackedConversion = transitRouteProgress?.conversion;
+      const trackedConversion =
+        transitRouteProgress?.account === account && transitRouteProgress?.chainId === chainId
+          ? transitRouteProgress.conversion
+          : undefined;
 
       if (!glvOrMarketAddress || !account || (trackedConversion && trackedConversion.orderId === undefined)) return;
 
