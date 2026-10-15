@@ -131,6 +131,34 @@ test.describe("Tooltip", () => {
     });
   }
 
+  for (const withPortal of [false, true]) {
+    test(`returns focus to a disabled handle on Escape inside its tooltip, portal: ${withPortal}`, async ({
+      mount,
+      page,
+    }) => {
+      await mount(
+        <div style={WRAPPER_STYLE}>
+          <button>Before</button>
+          <Tooltip
+            handle={<button disabled>Submit</button>}
+            content={<button>Set max withdrawal</button>}
+            variant="none"
+            isHandlerDisabled
+            withPortal={withPortal}
+          />
+        </div>
+      );
+
+      await page.getByRole("button", { name: "Before" }).focus();
+      await page.keyboard.press("Tab");
+      await page.keyboard.press("Tab");
+      await expect(page.getByRole("button", { name: "Set max withdrawal" })).toBeFocused();
+
+      await page.keyboard.press("Escape");
+      await expect(page.locator(".Tooltip-handle")).toBeFocused();
+    });
+  }
+
   test("adds no tab stop when the tooltip itself is disabled", async ({ mount, page }) => {
     await mount(
       <div style={WRAPPER_STYLE}>

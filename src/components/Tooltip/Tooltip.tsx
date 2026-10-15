@@ -130,10 +130,20 @@ export default function Tooltip<T extends ElementType>({
   const [visible, setVisible] = useState(false);
   const arrowRef = useRef<SVGSVGElement>(null);
   const referenceRef = useRef<Element | null>(null);
+  const floatingRef = useRef<HTMLElement | null>(null);
 
   const handleOpenChange = useCallback((open: boolean, _event?: Event, reason?: OpenChangeReason) => {
     if (!open && reason === "hover" && hasVisibleFocusWithin(referenceRef.current)) {
       return;
+    }
+
+    if (
+      !open &&
+      reason === "escape-key" &&
+      floatingRef.current?.contains(document.activeElement) &&
+      referenceRef.current instanceof HTMLElement
+    ) {
+      referenceRef.current.focus();
     }
 
     setVisible(open);
@@ -182,6 +192,7 @@ export default function Tooltip<T extends ElementType>({
   });
 
   const setReference = useMergeRefs<Element>([refs.setReference, referenceRef]);
+  const setFloating = useMergeRefs<HTMLElement>([refs.setFloating, floatingRef]);
 
   const previousDisabled = usePrevious(disabled);
 
@@ -268,7 +279,7 @@ export default function Tooltip<T extends ElementType>({
   const tooltipContent = visible ? (
     <FloatingFocusManager context={context} modal={false} initialFocus={-1} returnFocus={false} disabled={!isFocusable}>
       <div
-        ref={refs.setFloating}
+        ref={setFloating}
         style={floatingStyles}
         {...getFloatingProps()}
         className={cx("Tooltip-popup", tooltipClassName)}
