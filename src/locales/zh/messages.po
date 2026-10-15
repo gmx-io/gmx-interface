@@ -2939,6 +2939,10 @@ msgstr "总质押量"
 msgid "The Paxos quote is valid for 15 minutes from when the conversion goes to your wallet for signing. The transaction must execute within that time, or it fails and needs a new quote."
 msgstr "Paxos 报价自转换发送到您的钱包签名时起 15 分钟内有效。交易必须在此时间内执行，否则将失败并需要新的报价。"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min size per part: {0}"
+msgstr "每份最小大小：{0}"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No results found"
@@ -7384,6 +7388,10 @@ msgstr "订单执行失败"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} and {1} up to the caps below. Remaining tokens are reserved for open positions."
 msgstr "卖出 GM 以获取 {0} 和 {1}，上限如下所示。剩余代币为未平仓位预留。"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Parts of this order may not execute: the resulting position would exceed the maximum allowed leverage when they trigger. <0>Increase the position's margin</0> or cancel the order."
+msgstr "此订单的部分可能无法执行：触发时最终仓位将超过允许的最大杠杆。<0>增加仓位保证金</0>或取消订单。"
 
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
@@ -13277,6 +13285,10 @@ msgstr "此链上暂无机会"
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Large LP or balancer? Ask <0>@GMXPartners</0> about zero-fee access."
 msgstr "大型 LP 或平衡者？请向 <0>@GMXPartners</0> 咨询零费用资格。"
+
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "One or more later TWAP parts may fail because the resulting position would exceed the maximum allowed leverage. Increase margin or reduce the total size."
+msgstr "由于最终仓位将超过允许的最大杠杆，一个或多个后续 TWAP 部分可能失败。请增加保证金或减小总规模。"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "You've reached a trading volume threshold, so GMX assigned this protocol referral code. You're receiving a {currentTierDiscount}% discount on opening and closing fees. <0>Read more</0>."
