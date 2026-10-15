@@ -61,8 +61,8 @@ const OVERLAY_MODAL_LABELS: Record<OverlayView, ReactNode> = {
   depositStatus: <Trans>Deposit in progress...</Trans>,
   selectAssetToDeposit: <Trans>Select asset to deposit</Trans>,
   walletReceiveOptions: <Trans>Receive funds</Trans>,
-  walletReceive: <Trans>Receive to Wallet</Trans>,
-  walletSend: <Trans>Send from Wallet</Trans>,
+  walletReceive: <Trans>Receive to wallet</Trans>,
+  walletSend: <Trans>Send from wallet</Trans>,
 };
 
 function OverlayContent({ view }: { view: OverlayView }) {

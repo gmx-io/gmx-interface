@@ -73,7 +73,7 @@ export function UsdgLaunchBoostStatusNote({ launchBoost }: { launchBoost: UsdgLa
     case "live":
       return <Trans>Rate paid in the last round, on average balances.</Trans>;
     case "unavailable":
-      return <Trans>The boost rate can't be loaded right now.</Trans>;
+      return <Trans>The boost rate can't be loaded right now</Trans>;
   }
 }
 

@@ -342,7 +342,7 @@ export default function BeginAccountTransfer() {
               <br />
               Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.
               <br />
-              Transfers are one-way, you will not be able to transfer staked tokens back to the sending account.
+              Transfers are one-way. You cannot transfer staked tokens back to the sending account.
             </Trans>
           }
         />

@@ -33,8 +33,8 @@ export function PaxosTransitExecutionRows({ transitState }: { transitState: Paxo
                   </Trans>
                 ) : (
                   <Trans>
-                    First the pool pays out USDG to your wallet, then you confirm the conversion to USDC. If it fails,
-                    the USDG stays in your wallet.
+                    First the pool pays out USDG to your wallet, then you confirm the conversion to USDC. If the
+                    conversion fails, the USDG stays in your wallet.
                   </Trans>
                 )}
               </div>

@@ -87,7 +87,7 @@ export function getInsufficientFeeButtonMessage({
 }): string {
   switch (feeSource.balanceType) {
     case TokenBalanceType.Wallet:
-      return t`Insufficient ${tokenSymbol} in Wallet`;
+      return t`Insufficient ${tokenSymbol} in wallet`;
     case TokenBalanceType.GmxAccount:
       return t`Insufficient ${tokenSymbol} in GMX Account`;
     case TokenBalanceType.SourceChain: {
@@ -760,7 +760,7 @@ export function getEditCollateralError(p: {
   const minCollateralFactor = marketInfo?.minCollateralFactor;
 
   if (!isDeposit && maxWithdrawAmount === 0n) {
-    return { buttonErrorMessage: t`Withdrawal not available` };
+    return { buttonErrorMessage: t`Withdrawal unavailable` };
   }
 
   const amountError = getCollateralDeltaAmountError({

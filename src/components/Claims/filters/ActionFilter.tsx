@@ -31,7 +31,7 @@ const GROUPS: Groups = [
       },
       {
         data: ClaimType.ClaimFunding,
-        text: msg`Claim funding fees`,
+        text: msg`Claimed funding fees`,
       },
       {
         data: ClaimType.SettleFundingFeeCancelled,
@@ -39,7 +39,7 @@ const GROUPS: Groups = [
       },
       {
         data: ClaimType.SettleFundingFeeCreated,
-        text: msg`Request settlement of funding fees`,
+        text: msg`Requested settlement of funding fees`,
         debug: true,
       },
     ],
@@ -50,7 +50,7 @@ const GROUPS: Groups = [
     items: [
       {
         data: ClaimType.ClaimPriceImpact,
-        text: msg`Claim price impact rebates`,
+        text: msg`Claimed price impact rebates`,
       },
     ],
   },

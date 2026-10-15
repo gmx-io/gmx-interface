@@ -805,7 +805,7 @@ export function WalletSendView() {
       {!isSameChain && !isInsufficientBalance && (
         <>
           {isAboveLimit && (
-            <AlertInfoCard type="warning" className="my-4" hideClose>
+            <AlertInfoCard type="error" className="my-4" hideClose>
               <div>
                 <Trans>
                   Amount exceeds the transfer limit. Try an amount smaller than{" "}
@@ -815,7 +815,7 @@ export function WalletSendView() {
             </AlertInfoCard>
           )}
           {isBelowLimit && (
-            <AlertInfoCard type="warning" className="my-4" hideClose>
+            <AlertInfoCard type="error" className="my-4" hideClose>
               <div>
                 <Trans>
                   Amount is below the transfer limit. Try an amount larger than{" "}
