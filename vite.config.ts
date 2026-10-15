@@ -9,9 +9,7 @@ import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig, loadEnv, type ConfigEnv, type Plugin, type PluginOption, type UserConfig } from "vite";
 import { analyzer } from "vite-bundle-analyzer";
 import svgr from "vite-plugin-svgr";
-import topLevelAwait from "vite-plugin-top-level-await";
 import tsconfigPaths from "vite-tsconfig-paths";
-import wasm from "vite-plugin-wasm";
 import { BREAKPOINTS } from "./src/lib/breakpoints";
 
 const REACT_VENDOR_PACKAGES = new Set([
@@ -421,8 +419,6 @@ export function createViteConfig(
       svgr({
         include: "**/*.svg?react",
       }),
-      wasm(),
-      topLevelAwait(),
       solanaBuildIsolation({ requireAppBootstrap }),
       optionalSolanaSystemStub(),
       sdkDedupe(),
@@ -455,9 +451,6 @@ export function createViteConfig(
       },
     },
     build: {
-      minify: "esbuild",
-      target: ["es2020", "edge88", "firefox78", "chrome87", "safari14"],
-      cssTarget: ["es2020", "edge88", "firefox78", "chrome87", "safari14"],
       assetsInlineLimit: 0,
       outDir: "build",
       sourcemap: true,

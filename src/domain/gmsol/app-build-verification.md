@@ -1,5 +1,8 @@
 # FESOL-55 Application Build with a Real SDK Reference
 
+> Historical verification of the previous global WASM/TLA plugin implementation.
+> Superseded by [the independent SDK build](./independent-sdk-build.md); these results do not validate the current implementation.
+
 Verified on 2026-10-14 (Asia/Shanghai).
 
 Issue: [FESOL-55](https://linear.app/gmx-io/issue/FESOL-55)

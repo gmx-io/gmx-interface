@@ -9,7 +9,7 @@ vi.mock("config/ab", () => ({ getIsSolanaNetworkEnabled: vi.fn() }));
 beforeEach(() => {
   vi.resetModules();
   sdkFactory.mockClear();
-  vi.doMock("@gmsol-labs/gmsol-sdk", () => sdkFactory());
+  vi.doMock("/gmsol-sdk/0.9.0-test.2-v1/entry.js", () => ({ initialize: sdkFactory }));
 });
 
 describe("loadGmsolSdk", () => {
@@ -36,18 +36,18 @@ describe("loadGmsolSdk", () => {
 
   it("preserves a shared loading failure across later calls and flag changes", async () => {
     const loadError = new TypeError("Failed to initialize WASM");
-    vi.doMock("@gmsol-labs/gmsol-sdk", () => {
-      throw loadError;
-    });
+    vi.doMock("/gmsol-sdk/0.9.0-test.2-v1/entry.js", () => ({
+      initialize: () => Promise.reject(loadError),
+    }));
     const { loadGmsolSdk } = await import("./loadGmsolSdk");
     vi.mocked(getIsSolanaNetworkEnabled).mockReturnValue(true);
 
     const firstLoad = loadGmsolSdk();
     expect(loadGmsolSdk()).toBe(firstLoad);
-    await expect(firstLoad).rejects.toMatchObject({ cause: loadError });
+    await expect(firstLoad).rejects.toBe(loadError);
 
     expect(loadGmsolSdk()).toBe(firstLoad);
-    await expect(loadGmsolSdk()).rejects.toMatchObject({ cause: loadError });
+    await expect(loadGmsolSdk()).rejects.toBe(loadError);
 
     vi.mocked(getIsSolanaNetworkEnabled).mockReturnValue(false);
     await expect(loadGmsolSdk()).rejects.toThrow("Solana network is disabled");
@@ -55,6 +55,6 @@ describe("loadGmsolSdk", () => {
 
     vi.mocked(getIsSolanaNetworkEnabled).mockReturnValue(true);
     expect(loadGmsolSdk()).toBe(firstLoad);
-    await expect(loadGmsolSdk()).rejects.toMatchObject({ cause: loadError });
+    await expect(loadGmsolSdk()).rejects.toBe(loadError);
   });
 });
