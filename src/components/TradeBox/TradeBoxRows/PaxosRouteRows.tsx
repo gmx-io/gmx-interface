@@ -1,7 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 
-import { GMX_PARTNER_TELEGRAM_URL } from "config/links";
 import { selectTradeboxSwapAmounts } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getExternalSwapAggregatorLabel } from "domain/synthetics/externalSwaps/utils";
@@ -16,7 +15,6 @@ import { formatBalanceAmount, formatUsd } from "lib/numbers";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { TransitApprovalProposalAlert } from "components/PaxosTransit/TransitApprovalProposalAlert";
 import { SelectorBase, useSelectorClose } from "components/SelectorBase/SelectorBase";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
@@ -261,7 +259,6 @@ export function PaxosRouteAlerts({
   const {
     routes,
     activePaxosRoute,
-    isWhitelisted,
     isPayAmountHintShown,
     isSmartWallet,
     isZeroFeeCapacityShort,
@@ -272,8 +269,6 @@ export function PaxosRouteAlerts({
     isApprovalProposalPending,
     onProposeNewApproval,
   } = paxosRoute;
-  const isStandardOfferedToNonWhitelisted =
-    !isWhitelisted && routes.options.some((option) => option.route === "paxosStandard");
 
   return (
     <>
@@ -353,15 +348,6 @@ export function PaxosRouteAlerts({
             transaction must execute within that time, or it fails and needs a new quote.
           </Trans>
         </AlertInfoCard>
-      )}
-
-      {isStandardOfferedToNonWhitelisted && (
-        <div className="text-body-small text-typography-secondary">
-          <Trans>
-            Large LP or balancer? Ask <ExternalLink href={GMX_PARTNER_TELEGRAM_URL}>@GMXPartners</ExternalLink> about
-            zero-fee access.
-          </Trans>
-        </div>
       )}
     </>
   );
