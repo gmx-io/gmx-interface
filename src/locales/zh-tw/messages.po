@@ -8094,6 +8094,11 @@ msgstr "GMX 交易統計"
 msgid "High leverage increases liquidation risk"
 msgstr "高槓桿會增加清算風險"
 
+#: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
+#: src/components/Claims/filters/ActionFilter.tsx
+msgid "Claimed price impact rebates"
+msgstr "已領取價格影響回饋"
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} cancelled"
 msgstr "{orderText} 已取消"
@@ -11199,11 +11204,6 @@ msgstr "買入 USDG"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Swap price impact"
 msgstr "兌換價格影響"
-
-#: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
-#: src/components/Claims/filters/ActionFilter.tsx
-msgid "Claim price impact rebates"
-msgstr "領取價格影響回饋"
 
 #: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
 msgid "Two revenue streams."

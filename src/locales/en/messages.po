@@ -8094,6 +8094,11 @@ msgstr "GMX trading stats"
 msgid "High leverage increases liquidation risk"
 msgstr "High leverage increases liquidation risk"
 
+#: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
+#: src/components/Claims/filters/ActionFilter.tsx
+msgid "Claimed price impact rebates"
+msgstr "Claimed price impact rebates"
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} cancelled"
 msgstr "{orderText} cancelled"
@@ -11199,11 +11204,6 @@ msgstr "Buy USDG"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Swap price impact"
 msgstr "Swap price impact"
-
-#: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
-#: src/components/Claims/filters/ActionFilter.tsx
-msgid "Claim price impact rebates"
-msgstr "Claim price impact rebates"
 
 #: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
 msgid "Two revenue streams."

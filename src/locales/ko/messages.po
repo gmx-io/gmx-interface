@@ -8094,6 +8094,11 @@ msgstr "GMX 거래 통계"
 msgid "High leverage increases liquidation risk"
 msgstr "높은 레버리지는 청산 위험을 증가시킵니다"
 
+#: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
+#: src/components/Claims/filters/ActionFilter.tsx
+msgid "Claimed price impact rebates"
+msgstr "가격 영향 리베이트 수령 완료"
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} cancelled"
 msgstr "{orderText} 취소됨"
@@ -11199,11 +11204,6 @@ msgstr "USDG 구매"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Swap price impact"
 msgstr "스왑 가격 영향"
-
-#: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
-#: src/components/Claims/filters/ActionFilter.tsx
-msgid "Claim price impact rebates"
-msgstr "가격 영향 리베이트 수령"
 
 #: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
 msgid "Two revenue streams."

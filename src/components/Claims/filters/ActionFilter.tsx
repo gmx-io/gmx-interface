@@ -50,7 +50,7 @@ const GROUPS: Groups = [
     items: [
       {
         data: ClaimType.ClaimPriceImpact,
-        text: msg`Claim price impact rebates`,
+        text: msg`Claimed price impact rebates`,
       },
     ],
   },

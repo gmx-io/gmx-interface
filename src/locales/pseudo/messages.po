@@ -8094,6 +8094,11 @@ msgstr ""
 msgid "High leverage increases liquidation risk"
 msgstr ""
 
+#: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
+#: src/components/Claims/filters/ActionFilter.tsx
+msgid "Claimed price impact rebates"
+msgstr ""
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} cancelled"
 msgstr ""
@@ -11198,11 +11203,6 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Swap price impact"
-msgstr ""
-
-#: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
-#: src/components/Claims/filters/ActionFilter.tsx
-msgid "Claim price impact rebates"
 msgstr ""
 
 #: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx

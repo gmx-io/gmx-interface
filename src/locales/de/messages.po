@@ -8094,6 +8094,11 @@ msgstr "Handelsstatistiken zu GMX"
 msgid "High leverage increases liquidation risk"
 msgstr "Hoher Hebel erhöht das Liquidationsrisiko"
 
+#: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
+#: src/components/Claims/filters/ActionFilter.tsx
+msgid "Claimed price impact rebates"
+msgstr "Beanspruchte Preiseinflussrabatte"
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} cancelled"
 msgstr "{orderText} abgebrochen"
@@ -11199,11 +11204,6 @@ msgstr "USDG kaufen"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Swap price impact"
 msgstr "Preiseinfluss beim Tausch"
-
-#: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
-#: src/components/Claims/filters/ActionFilter.tsx
-msgid "Claim price impact rebates"
-msgstr "Beanspruchung von Preiseinflussrabatten"
 
 #: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
 msgid "Two revenue streams."

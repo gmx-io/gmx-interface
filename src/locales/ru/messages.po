@@ -8094,6 +8094,11 @@ msgstr "Торговая статистика GMX"
 msgid "High leverage increases liquidation risk"
 msgstr "Высокое кредитное плечо увеличивает риск ликвидации"
 
+#: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
+#: src/components/Claims/filters/ActionFilter.tsx
+msgid "Claimed price impact rebates"
+msgstr "Получены компенсации за влияние на цену"
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} cancelled"
 msgstr "Отменено: {orderText}"
@@ -11199,11 +11204,6 @@ msgstr "Купить USDG"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Swap price impact"
 msgstr "Влияние свопа на цену"
-
-#: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
-#: src/components/Claims/filters/ActionFilter.tsx
-msgid "Claim price impact rebates"
-msgstr "Получение компенсаций за влияние на цену"
 
 #: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
 msgid "Two revenue streams."

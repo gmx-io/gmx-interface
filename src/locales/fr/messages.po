@@ -8094,6 +8094,11 @@ msgstr "Statistiques de trading GMX"
 msgid "High leverage increases liquidation risk"
 msgstr "Un effet de levier élevé augmente le risque de liquidation"
 
+#: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
+#: src/components/Claims/filters/ActionFilter.tsx
+msgid "Claimed price impact rebates"
+msgstr "Remises d'impact sur le prix réclamées"
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} cancelled"
 msgstr "{orderText} annulé(s)"
@@ -11199,11 +11204,6 @@ msgstr "Acheter USDG"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Swap price impact"
 msgstr "Impact sur le prix de l'échange"
-
-#: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
-#: src/components/Claims/filters/ActionFilter.tsx
-msgid "Claim price impact rebates"
-msgstr "Récupération des remises d'impact sur le prix"
 
 #: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
 msgid "Two revenue streams."
