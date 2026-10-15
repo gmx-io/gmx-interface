@@ -241,6 +241,7 @@ export const selectPositionSellerLeverageDisabledByCollateral = createSelector((
 
   if (
     q(selectPositionSellerOrderOption) === OrderOption.Market &&
+    decreaseAmountsWithKeepLeverage.sizeDeltaUsd > 0n &&
     decreaseAmountsWithKeepLeverage.collateralDeltaAmount <= 0n
   ) {
     return true;

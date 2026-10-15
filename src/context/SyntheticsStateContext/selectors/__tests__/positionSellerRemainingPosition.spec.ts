@@ -273,6 +273,13 @@ describe("position seller — remaining position after a market partial close", 
     expect(selectPositionSellerDecreaseError(state)).toEqual({});
   });
 
+  it.each(["", "0"])("keeps the leverage on while the close size is %j", (closeUsd) => {
+    const state = createState({ collateralUsd: usd(3_000), closeUsd, keepLeverage: true });
+
+    expect(selectPositionSellerLeverageDisabledByCollateral(state)).toBe(false);
+    expect(selectPositionSellerKeepLeverage(state)).toBe(true);
+  });
+
   it("leaves the TWAP tab untouched", () => {
     const state = createState({
       collateralUsd: OVER_LEVERAGED,
