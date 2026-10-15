@@ -46,11 +46,13 @@ import {
   type TransitRouteDirection,
 } from "domain/synthetics/paxosTransit/transitRouteProgress";
 import { usePaxosTransit } from "domain/synthetics/paxosTransit/usePaxosTransit";
+import { useTransitApprovalProposal } from "domain/synthetics/paxosTransit/useTransitApprovalProposal";
 import type { TokenData } from "domain/synthetics/tokens";
 import type { ERC20Address } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import { formatAmountFree } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { AccountType, useAccountType } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
 import { getToken } from "sdk/configs/tokens";
 import type { TransitOrder, TransitQuote } from "sdk/utils/paxos/types";
@@ -97,11 +99,13 @@ export function usePaxosTransitState({
   const conversionRoutePreference = useSelector(selectPoolsDetailsConversionRoutePreference);
   const setConversionRoutePreference = useSelector(selectPoolsDetailsSetConversionRoutePreference);
   const { account } = useWallet();
+  const { accountType } = useAccountType();
   const {
     withdrawalStatuses,
     transitRouteProgress,
     paxosTransitOrder,
     isPaxosTransitOrderStatusUnknown,
+    isPaxosTransitOrderLookupExpired,
     startTransitRouteProgress,
     attachTransitRouteConversion,
     setTransitRouteContinueRequested,
@@ -125,7 +129,10 @@ export function usePaxosTransitState({
     transitRouteProgressForMarket?.direction === direction ? transitRouteProgressForMarket : undefined;
   const conversionOrder = transitRouteProgressForDirection?.conversion ? paxosTransitOrder : undefined;
   const isConversionFinal = getIsTransitOrderFinal(conversionOrder);
-  const isConverting = transitRouteProgressForDirection?.conversion !== undefined && !isConversionFinal;
+  const isConverting =
+    transitRouteProgressForDirection?.conversion !== undefined &&
+    !isConversionFinal &&
+    !isPaxosTransitOrderLookupExpired;
   const isDepositSent = transitRouteProgressForDirection?.depositTxnHash !== undefined;
 
   const withdrawalUsdgAmount = isWithdrawal && amounts ? amounts.longTokenAmount + amounts.shortTokenAmount : 0n;
@@ -245,6 +252,15 @@ export function usePaxosTransitState({
   const shouldShowWhitelistNote = shouldShowRouteSelector && !isWhitelisted && isLargeConversion;
 
   const transitAmountOut = isTransitRoute ? amountOut : undefined;
+
+  const { isApprovalProposalPending, onProposeNewApproval } = useTransitApprovalProposal({
+    chainId,
+    account,
+    tokenAddress: tokenIn?.address,
+    spender: quote?.transaction.to,
+    amount: amountIn,
+    isEnabled: accountType === AccountType.SmartAccount && step === "idle" && isTransitRoute,
+  });
 
   useEffect(
     function syncTransitRoute() {
@@ -488,6 +504,8 @@ export function usePaxosTransitState({
     conversionRoutePreference,
     setConversionRoutePreference,
     shouldShowWhitelistNote,
+    isApprovalProposalPending,
+    onProposeNewApproval,
     hasUsdgCollateral,
     tokenIn,
     usdgToken,

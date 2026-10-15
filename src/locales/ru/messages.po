@@ -5225,7 +5225,7 @@ msgstr "Для этого рынка нет истории чистой став
 msgid "Liquidated"
 msgstr "Ликвидировано"
 
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+#: src/components/PaxosTransit/TransitApprovalProposalAlert.tsx
 msgid "Propose a new approval"
 msgstr "Предложить новое одобрение"
 
@@ -12265,7 +12265,7 @@ msgstr "Одобрения через permit отключены для этог�
 msgid "LAST PRICE"
 msgstr "ПОСЛЕДНЯЯ ЦЕНА"
 
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+#: src/components/PaxosTransit/TransitApprovalProposalAlert.tsx
 msgid "An approval is already waiting in your wallet. Convert waits for it and does not propose a new one."
 msgstr "Одобрение уже ждёт в вашем кошельке. Конвертация ждёт его исполнения и не предлагает новое."
 

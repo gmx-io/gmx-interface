@@ -97,6 +97,16 @@ describe("getTradeboxPaxosDecision", () => {
       { offered: false, route: "instant", button: "Loading routes…" },
     ],
     [
+      "not whitelisted keeps a picked instant route while the standard quote reloads",
+      { ...NOT_WHITELISTED_300K, standard: { quote: undefined, isError: false }, preference: "instant" },
+      { offered: false, route: undefined, button: "Loading routes…" },
+    ],
+    [
+      "not whitelisted keeps a picked Paxos standard while its quote reloads",
+      { ...NOT_WHITELISTED_300K, standard: { quote: undefined, isError: false }, preference: "paxosStandard" },
+      { offered: false, route: undefined, button: "Loading routes…" },
+    ],
+    [
       "not whitelisted from $250K looks as today when the standard quote fails",
       { ...NOT_WHITELISTED_300K, standard: { quote: undefined, isError: true } },
       { offered: false, route: "instant", button: GMX_FLOW },
@@ -138,6 +148,16 @@ describe("getTradeboxPaxosDecision", () => {
       "short zero-fee capacity picks no route and never falls back to a paid quote",
       WHITELISTED_400K_CAPACITY_SHORT,
       { offered: true, route: undefined, button: "Not enough zero-fee capacity" },
+    ],
+    [
+      "short zero-fee capacity waits for the instant quote before asking to pick a route",
+      { ...WHITELISTED_400K_CAPACITY_SHORT, instantAmountOut: undefined, isInstantLoading: true },
+      { offered: true, route: undefined, button: "Loading routes…" },
+    ],
+    [
+      "short zero-fee capacity still checks the wallet balance",
+      { ...WHITELISTED_400K_CAPACITY_SHORT, walletBalance: amount(100_000) },
+      { offered: true, route: undefined, button: "Insufficient USDC balance" },
     ],
     [
       "short zero-fee capacity allows Paxos standard picked by the user",

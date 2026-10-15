@@ -113,31 +113,15 @@ function makeOrder(id: string, overrides: Partial<TransitOrder> = {}): TransitOr
 }
 
 describe("findSubmittedTransitOrder", () => {
-  const SUBMITTED_AT = Date.parse("2026-10-14T13:00:00Z");
-  const lookup = { offerAsset: USDC, wantAsset: USDG, offerAmount: 1_000_000n, submittedAt: SUBMITTED_AT };
+  const lookup = { offerAsset: USDC, wantAsset: USDG, offerAmount: 1_000_000n, knownOrderIds: ["0xold"] };
 
-  it.each<[string, Partial<TransitOrder>, string | undefined]>([
-    ["finds the order executed after the submit", { createdAt: "2026-10-14T13:04:10Z" }, "0xnew"],
-    ["tolerates a wallet clock a few minutes ahead", { createdAt: "2026-10-14T12:55:00Z" }, "0xnew"],
-    ["ignores an order from before the submit", { createdAt: "2026-10-14T12:40:00Z" }, undefined],
-    ["ignores another amount", { createdAt: "2026-10-14T13:04:10Z", offerAmount: 2_000_000n }, undefined],
-    [
-      "ignores the other direction",
-      { createdAt: "2026-10-14T13:04:10Z", offerAsset: USDG, wantAsset: USDC },
-      undefined,
-    ],
-  ])("%s", (_name, overrides, expectedId) => {
-    expect(findSubmittedTransitOrder([makeOrder("0xnew", overrides)], lookup)?.id).toBe(expectedId);
-  });
-
-  it("with the orders known before the submit, ignores the clocks and only takes a new order", () => {
-    const orders = [
-      makeOrder("0xnew", { createdAt: "2026-10-14T12:30:00Z" }),
-      makeOrder("0xold", { createdAt: "2026-10-14T12:20:00Z" }),
-    ];
-
-    expect(findSubmittedTransitOrder(orders, { ...lookup, knownOrderIds: ["0xold"] })?.id).toBe("0xnew");
-    expect(findSubmittedTransitOrder(orders, { ...lookup, knownOrderIds: ["0xnew", "0xold"] })).toBeUndefined();
+  it.each<[string, TransitOrder, string | undefined]>([
+    ["finds a new order of the same amount", makeOrder("0xnew"), "0xnew"],
+    ["skips an order known before the submit", makeOrder("0xold"), undefined],
+    ["ignores another amount", makeOrder("0xnew", { offerAmount: 2_000_000n }), undefined],
+    ["ignores the other direction", makeOrder("0xnew", { offerAsset: USDG, wantAsset: USDC }), undefined],
+  ])("%s", (_name, order, expectedId) => {
+    expect(findSubmittedTransitOrder([order], lookup)?.id).toBe(expectedId);
   });
 });
 

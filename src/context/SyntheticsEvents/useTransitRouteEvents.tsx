@@ -38,6 +38,7 @@ export type TransitRouteEventsState = {
   transitRouteProgress: TransitRouteProgress | undefined;
   paxosTransitOrder: TransitOrder | undefined;
   isPaxosTransitOrderStatusUnknown: boolean;
+  isPaxosTransitOrderLookupExpired: boolean;
   startTransitRouteProgress: (params: NewTransitRouteProgress) => void;
   attachTransitRouteConversion: (progressId: number, conversion: PaxosTransitConversion) => void;
   attachTransitRouteDeposit: (progressId: number, depositTxnHash: string) => void;
@@ -70,9 +71,10 @@ export function useTransitRouteEvents(
   );
 
   const paxosTransitConfig = getPaxosTransitConfig(progressChainId);
+  const knownOrderIds = conversion?.knownOrderIds;
   const isOrderLookupExpired = getIsTransitOrderLookupExpired(conversion, Date.now());
   const isOrderLookupNeeded =
-    conversion !== undefined && orderId === undefined && !isOrderLookupExpired && paxosTransitConfig !== undefined;
+    orderId === undefined && knownOrderIds !== undefined && !isOrderLookupExpired && paxosTransitConfig !== undefined;
 
   const { data: orderLookup } = useSWR(
     isOrderLookupNeeded && api && transitRouteProgress
@@ -91,8 +93,7 @@ export function useTransitRouteEvents(
         offerAsset,
         wantAsset,
         offerAmount: conversion!.offerAmount,
-        submittedAt: conversion!.submittedAt ?? transitRouteProgress!.id,
-        knownOrderIds: conversion!.knownOrderIds,
+        knownOrderIds: knownOrderIds!,
       });
 
       return { order, checkedAt: Date.now() };
@@ -250,6 +251,7 @@ export function useTransitRouteEvents(
       transitRouteProgress,
       paxosTransitOrder,
       isPaxosTransitOrderStatusUnknown: paxosTransitOrderError !== undefined || isOrderLookupExpired,
+      isPaxosTransitOrderLookupExpired: isOrderLookupExpired,
       startTransitRouteProgress,
       attachTransitRouteConversion,
       attachTransitRouteDeposit,

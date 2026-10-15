@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import { USD_DECIMALS } from "config/factors";
@@ -43,12 +43,8 @@ import {
   type TradeboxSwapRoutePreference,
 } from "domain/synthetics/paxosTransit/tradeboxRoutes";
 import { getIsTransitOrderFinal } from "domain/synthetics/paxosTransit/transitOrders";
-import {
-  getIsTransitApprovalProposed,
-  removeTransitApprovalProposal,
-  type TransitApproval,
-} from "domain/synthetics/paxosTransit/transitWalletProposals";
 import type { TransitApi } from "domain/synthetics/paxosTransit/types";
+import { useTransitApprovalProposal } from "domain/synthetics/paxosTransit/useTransitApprovalProposal";
 import { useTransitMinOrderSizes } from "domain/synthetics/paxosTransit/useTransitMinOrderSizes";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { useDebounce } from "lib/debounce/useDebounce";
@@ -94,9 +90,13 @@ export function useTradeboxPaxosRoute({
   const { account, signer } = useWallet();
   const { accountType } = useAccountType();
   const isSmartWallet = accountType === AccountType.SmartAccount;
-  const [, refreshApprovalProposal] = useReducer((version: number) => version + 1, 0);
-  const { transitRouteProgress, paxosTransitOrder, isPaxosTransitOrderStatusUnknown, startTransitRouteProgress } =
-    useSyntheticsEvents();
+  const {
+    transitRouteProgress,
+    paxosTransitOrder,
+    isPaxosTransitOrderStatusUnknown,
+    isPaxosTransitOrderLookupExpired,
+    startTransitRouteProgress,
+  } = useSyntheticsEvents();
   const sdk = useGmxSdk(chainId);
 
   const [isWhitelistIgnoredSetting] = useLocalStorageSerializeKey(DEBUG_PAXOS_TRANSIT_IGNORE_WHITELIST_KEY, false);
@@ -219,7 +219,8 @@ export function useTradeboxPaxosRoute({
   const isConversionInProgress =
     progressForAccount?.conversion !== undefined &&
     !getIsTransitOrderFinal(paxosTransitOrder) &&
-    !isConversionStatusUnknown;
+    !isConversionStatusUnknown &&
+    !isPaxosTransitOrderLookupExpired;
 
   const { paxosRouteStates, routes, buttonState } = getTradeboxPaxosDecision({
     isPaxosAvailable,
@@ -260,11 +261,11 @@ export function useTradeboxPaxosRoute({
 
   useEffect(
     function resetPreferenceWhenPaxosIsNotOffered() {
-      if (!routes.isPaxosOffered && preference !== "auto") {
+      if (!routes.isPaxosOffered && !routes.isAutoPending && preference !== "auto") {
         setPreference("auto");
       }
     },
-    [preference, routes.isPaxosOffered]
+    [preference, routes.isAutoPending, routes.isPaxosOffered]
   );
 
   const activeRoute = routes.activeRoute;
@@ -277,29 +278,14 @@ export function useTradeboxPaxosRoute({
         : undefined;
   const activeOption = routes.options.find((option) => option.route === activeRoute);
 
-  const fromTokenAddress = fromToken?.address;
-  const pendingApprovalSpender = activePaxosQuote?.transaction.to;
-  const pendingApproval = useMemo((): TransitApproval | undefined => {
-    if (!isSmartWallet || !account || !fromTokenAddress || !pendingApprovalSpender || step !== "idle") {
-      return undefined;
-    }
-
-    return {
-      chainId,
-      account,
-      tokenAddress: fromTokenAddress,
-      spender: pendingApprovalSpender,
-      amount: fromTokenAmount,
-    };
-  }, [account, chainId, fromTokenAddress, fromTokenAmount, isSmartWallet, pendingApprovalSpender, step]);
-  const isApprovalProposalPending = pendingApproval !== undefined && getIsTransitApprovalProposed(pendingApproval);
-
-  const onProposeNewApproval = useCallback(() => {
-    if (pendingApproval) {
-      removeTransitApprovalProposal(pendingApproval);
-      refreshApprovalProposal();
-    }
-  }, [pendingApproval]);
+  const { isApprovalProposalPending, onProposeNewApproval } = useTransitApprovalProposal({
+    chainId,
+    account,
+    tokenAddress: fromToken?.address,
+    spender: activePaxosQuote?.transaction.to,
+    amount: fromTokenAmount,
+    isEnabled: isSmartWallet && step === "idle",
+  });
 
   const pendingConversion = useMemo(() => {
     if (

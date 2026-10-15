@@ -5225,7 +5225,7 @@ msgstr "No hay historial de la tasa neta para este mercado"
 msgid "Liquidated"
 msgstr "Liquidado"
 
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+#: src/components/PaxosTransit/TransitApprovalProposalAlert.tsx
 msgid "Propose a new approval"
 msgstr "Proponer una nueva aprobación"
 
@@ -12265,7 +12265,7 @@ msgstr "Las aprobaciones con permiso están desactivadas para este token."
 msgid "LAST PRICE"
 msgstr "ÚLTIMO PRECIO"
 
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+#: src/components/PaxosTransit/TransitApprovalProposalAlert.tsx
 msgid "An approval is already waiting in your wallet. Convert waits for it and does not propose a new one."
 msgstr "Ya hay una aprobación esperando en tu billetera. La conversión la espera y no propone una nueva."
 

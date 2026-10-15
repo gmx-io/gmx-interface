@@ -1486,7 +1486,5 @@ function getPaxosReceiveAmountOut(paxosRoute: TradeboxPaxosRoute): bigint | unde
     return undefined;
   }
 
-  const option = paxosRoute.activeOption;
-
-  return option?.amountOut ?? (option?.unavailableReason === "loading" ? undefined : 0n);
+  return paxosRoute.activeOption?.amountOut ?? 0n;
 }

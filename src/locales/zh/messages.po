@@ -5225,7 +5225,7 @@ msgstr "此市场暂无净费率历史记录"
 msgid "Liquidated"
 msgstr "已清算"
 
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+#: src/components/PaxosTransit/TransitApprovalProposalAlert.tsx
 msgid "Propose a new approval"
 msgstr "提交新的授权"
 
@@ -12265,7 +12265,7 @@ msgstr "此代币已禁用 Permit 授权。"
 msgid "LAST PRICE"
 msgstr "最新价格"
 
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+#: src/components/PaxosTransit/TransitApprovalProposalAlert.tsx
 msgid "An approval is already waiting in your wallet. Convert waits for it and does not propose a new one."
 msgstr "您的钱包中已有一笔授权在等待。转换会等待它执行，不会再提交新的授权。"
 

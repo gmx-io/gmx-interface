@@ -66,7 +66,13 @@ function TransitConversionProgressContent({ progress }: { progress: TransitRoute
   const isTakingLong = !getIsTransitOrderFinal(order) && Date.now() - progress.id > LONG_CONVERSION_MS;
 
   return (
-    <StatusNotification title={<Trans>Converting {offerAmount} to {tokenOut?.symbol}</Trans>}>
+    <StatusNotification
+      title={
+        <Trans>
+          Converting {offerAmount} to {tokenOut?.symbol}
+        </Trans>
+      }
+    >
       <div className="flex flex-col gap-8">
         <TransactionStatus status="success" txnHash={conversion?.txnHash} text={t`Conversion request sent`} />
         <TransactionStatus
@@ -75,7 +81,9 @@ function TransitConversionProgressContent({ progress }: { progress: TransitRoute
         />
         {isTakingLong && (
           <div className="text-body-small text-typography-secondary">
-            <Trans>Taking longer than usual. Standard-fee conversions can take up to an hour and arrive in parts.</Trans>
+            <Trans>
+              Taking longer than usual. Standard-fee conversions can take up to an hour and arrive in parts.
+            </Trans>
           </div>
         )}
       </div>

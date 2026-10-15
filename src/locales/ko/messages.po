@@ -5225,7 +5225,7 @@ msgstr "이 시장의 순이율 내역이 없습니다"
 msgid "Liquidated"
 msgstr "청산됨"
 
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+#: src/components/PaxosTransit/TransitApprovalProposalAlert.tsx
 msgid "Propose a new approval"
 msgstr "새 승인 제안하기"
 
@@ -12265,7 +12265,7 @@ msgstr "이 토큰의 퍼밋 승인은 비활성화되어 있습니다."
 msgid "LAST PRICE"
 msgstr "최종 가격"
 
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+#: src/components/PaxosTransit/TransitApprovalProposalAlert.tsx
 msgid "An approval is already waiting in your wallet. Convert waits for it and does not propose a new one."
 msgstr "지갑에서 이미 승인이 대기 중입니다. 변환은 이를 기다리며 새 승인을 제안하지 않습니다."
 

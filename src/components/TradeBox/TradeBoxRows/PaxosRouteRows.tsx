@@ -17,6 +17,7 @@ import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { TransitApprovalProposalAlert } from "components/PaxosTransit/TransitApprovalProposalAlert";
 import { SelectorBase, useSelectorClose } from "components/SelectorBase/SelectorBase";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -287,7 +288,7 @@ export function PaxosRouteAlerts({
 
       {isZeroFeeCapacityShort && routes.isPaxosOffered && (
         <AlertInfoCard type="warning" hideClose>
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-6 [overflow-wrap:anywhere]">
             <span>
               {zeroFeeCapacity === undefined ? (
                 <Trans>
@@ -343,20 +344,7 @@ export function PaxosRouteAlerts({
         </AlertInfoCard>
       )}
 
-      {isApprovalProposalPending && (
-        <AlertInfoCard type="info" hideClose>
-          <div className="flex flex-col gap-6">
-            <span>
-              <Trans>
-                An approval is already waiting in your wallet. Convert waits for it and does not propose a new one.
-              </Trans>
-            </span>
-            <EmbeddedActionButton onClick={onProposeNewApproval}>
-              <Trans>Propose a new approval</Trans>
-            </EmbeddedActionButton>
-          </div>
-        </AlertInfoCard>
-      )}
+      {isApprovalProposalPending && <TransitApprovalProposalAlert onProposeNewApproval={onProposeNewApproval} />}
 
       {activePaxosRoute && isSmartWallet && (
         <AlertInfoCard type="warning" hideClose>
@@ -428,7 +416,9 @@ function getRouteDescription({
 
   switch (option.route) {
     case "paxosZeroFee":
-      return option.feeAmount ? t`Paxos fee ${fee} · ~2–10 min, separate step` : t`No fee · ~2–10 min, separate step`;
+      return option.feeAmount !== undefined && option.feeAmount > 0n
+        ? t`Paxos fee ${fee} · ~2–10 min, separate step`
+        : t`No fee · ~2–10 min, separate step`;
     case "paxosStandard":
       return t`Paxos fee ${fee} · ~2–10 min, can be longer`;
     case "instant":

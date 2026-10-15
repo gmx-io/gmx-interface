@@ -5225,7 +5225,7 @@ msgstr "Für diesen Markt ist kein Verlauf der Nettorate verfügbar"
 msgid "Liquidated"
 msgstr "Liquidiert"
 
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+#: src/components/PaxosTransit/TransitApprovalProposalAlert.tsx
 msgid "Propose a new approval"
 msgstr "Neue Genehmigung vorschlagen"
 
@@ -12265,7 +12265,7 @@ msgstr "Permit-Genehmigungen sind für diesen Token deaktiviert."
 msgid "LAST PRICE"
 msgstr "LETZTER PREIS"
 
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+#: src/components/PaxosTransit/TransitApprovalProposalAlert.tsx
 msgid "An approval is already waiting in your wallet. Convert waits for it and does not propose a new one."
 msgstr "Eine Genehmigung wartet bereits in Ihrer Wallet. Die Umwandlung wartet darauf und schlägt keine neue vor."
 

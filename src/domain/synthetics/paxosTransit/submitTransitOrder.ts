@@ -169,8 +169,7 @@ export async function submitTransitOrder({
   } else if (conversionFlow) {
     const knownOrderIds = await api
       .fetchTransitOrders({ userAddress: account, pageSize: TRANSIT_RECENT_ORDERS_PAGE_SIZE })
-      .then(({ orders }) => orders.map((order) => order.id))
-      .catch(() => undefined);
+      .then(({ orders }) => orders.map((order) => order.id));
 
     claimConversionFlow(approval, conversionFlow);
     removeTransitApprovalProposal(approval);

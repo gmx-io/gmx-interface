@@ -26,20 +26,16 @@ export function findPendingTransitOrder(
 
 export const TRANSIT_RECENT_ORDERS_PAGE_SIZE = 10;
 
-const SUBMITTED_ORDER_CLOCK_SKEW_MS = 10 * 60_000;
-
 export function findSubmittedTransitOrder(
   orders: TransitOrder[],
-  p: { offerAsset: string; wantAsset: string; offerAmount: bigint; submittedAt: number; knownOrderIds?: string[] }
+  p: { offerAsset: string; wantAsset: string; offerAmount: bigint; knownOrderIds: string[] }
 ): TransitOrder | undefined {
   return orders.find(
     (order) =>
       isAddressEqual(order.offerAsset, p.offerAsset) &&
       isAddressEqual(order.wantAsset, p.wantAsset) &&
       order.offerAmount === p.offerAmount &&
-      (p.knownOrderIds
-        ? !p.knownOrderIds.includes(order.id)
-        : Date.parse(order.createdAt) >= p.submittedAt - SUBMITTED_ORDER_CLOCK_SKEW_MS)
+      !p.knownOrderIds.includes(order.id)
   );
 }
 
