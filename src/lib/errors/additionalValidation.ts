@@ -171,6 +171,7 @@ export function makeTransactionErrorHandler(
       to,
       from,
       ...txnOpts,
+      chainId,
     };
 
     additionalTxnErrorValidation(error, chainId, provider, txnData);

@@ -1,8 +1,8 @@
 import { errors as _StargateErrorsAbi } from "@stargatefinance/stg-evm-sdk-v2";
 import invert from "lodash/invert";
 import mapValues from "lodash/mapValues";
-import type { Abi } from "viem";
-import { maxUint256 } from "viem";
+import type { Abi, Address } from "viem";
+import { isAddressEqual, maxUint256 } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 
 import {
@@ -160,6 +160,14 @@ export function getMappedTokenId(
   const tokenId = getMultichainTokenId(fromChainId, fromChainTokenAddress);
   if (!tokenId) return undefined;
   return TOKEN_GROUPS[tokenId.symbol]?.[toChainId];
+}
+
+/**
+ * GM and GLV on source chains are their own Stargate OFT: `send` burns from the sender and never
+ * spends the allowance, so they need no approval. Stargate pools and adapters pull with `transferFrom`.
+ */
+export function isSelfOftToken(tokenId: MultichainTokenId): boolean {
+  return isAddressEqual(tokenId.address as Address, tokenId.stargate as Address);
 }
 
 export const MULTICALLS_MAP: Record<AnyChainId, string> = {

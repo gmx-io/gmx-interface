@@ -132,7 +132,9 @@ export function PoolSelector({
       return (b.balanceUsd ?? 0n) > (a.balanceUsd ?? 0n) ? 1 : -1;
     });
 
-    return [...sortedMartketsWithBalance, ...marketsWithoutBalance];
+    return [...sortedMartketsWithBalance, ...marketsWithoutBalance].sort(
+      (a, b) => Number(isGlvInfo(b.glvOrMarketInfo)) - Number(isGlvInfo(a.glvOrMarketInfo))
+    );
   }, [getMarketState, marketTokensData, markets, selectedIndexName, showAllPools]);
 
   const marketInfo = useMemo(
@@ -150,6 +152,8 @@ export function PoolSelector({
             (item) => (isGlvInfo(item.glvOrMarketInfo) ? getGlvDisplayName(item.glvOrMarketInfo) : item.name),
             (item) => stripBlacklistedWords(item.glvOrMarketInfo.longToken.name),
             (item) => stripBlacklistedWords(item.glvOrMarketInfo.shortToken.name),
+            (item) => item.glvOrMarketInfo.longToken.symbol,
+            (item) => item.glvOrMarketInfo.shortToken.symbol,
           ],
           searchKeyword
         )
@@ -246,30 +250,28 @@ export function PoolSelector({
         </VerticalScrollFadeContainer>
       </SlideModal>
 
-      {marketInfo && (
-        <div className="inline-flex items-center">
-          {showIndexIcon && (
-            <TokenIcon
-              className="mr-5"
-              symbol={
-                marketInfo.isSpotOnly
-                  ? getNormalizedTokenSymbol(marketInfo.longToken.symbol) +
-                    getNormalizedTokenSymbol(marketInfo.shortToken.symbol)
-                  : isGlvInfo(marketInfo)
-                    ? marketInfo.glvToken.symbol
-                    : marketInfo?.indexToken.symbol
-              }
-              displaySize={20}
-            />
-          )}
-          <PoolLabel
-            marketInfo={marketInfo}
-            showAllPools={showAllPools}
-            marketsOptions={marketsOptions}
-            onClick={handleClick}
+      <div className="inline-flex items-center">
+        {showIndexIcon && marketInfo && (
+          <TokenIcon
+            className="mr-5"
+            symbol={
+              marketInfo.isSpotOnly
+                ? getNormalizedTokenSymbol(marketInfo.longToken.symbol) +
+                  getNormalizedTokenSymbol(marketInfo.shortToken.symbol)
+                : isGlvInfo(marketInfo)
+                  ? marketInfo.glvToken.symbol
+                  : marketInfo?.indexToken.symbol
+            }
+            displaySize={20}
           />
-        </div>
-      )}
+        )}
+        <PoolLabel
+          marketInfo={marketInfo}
+          showAllPools={showAllPools}
+          marketsOptions={marketsOptions}
+          onClick={handleClick}
+        />
+      </div>
     </div>
   );
 }

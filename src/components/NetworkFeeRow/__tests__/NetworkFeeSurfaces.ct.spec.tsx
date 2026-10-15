@@ -107,11 +107,16 @@ function feeValueHandle(row: Locator): Locator {
   return row.locator(".text-right .Tooltip-handle").first();
 }
 
-/** `-<amount> <TOKEN> (-$<usd>) · <source>`; the formatters use non-breaking spaces */
+function sourceIcon(locator: Locator, source: string): Locator {
+  return locator.getByRole("img", { name: source, exact: true });
+}
+
+/** `-<amount> <TOKEN> (-$<usd>)` and the paying balance's icon; the formatters use non-breaking spaces */
 async function expectFeeValue(row: Locator, token: string, source: string) {
   // fee estimation is throttled and, for GM, asynchronous, so give it room on a loaded machine
   await expect(row).toContainText(new RegExp(`-[\\d.,<]+\\s${token}\\s\\(-\\$\\s?[\\d.,<]+\\)`), { timeout: 40_000 });
-  await expect(row).toContainText(`· ${source}`);
+  await expect(sourceIcon(row, source)).toBeVisible();
+  await expect(row).not.toContainText("·");
 }
 
 async function getUsdValue(locator: Locator) {
@@ -160,7 +165,7 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
       expect(await getUsdValue(row)).toBeLessThan(await getUsdValue(maxFeeLine));
       const refundLine = page.getByText("Estimated fee refund").locator("..");
       await expect(refundLine).toContainText(" ETH (");
-      await expect(refundLine).toContainText("· Wallet");
+      await expect(sourceIcon(refundLine, "Wallet")).toBeVisible();
       await expect(refundLine).not.toContainText("USDC");
     });
 
@@ -172,7 +177,7 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
 
       const row = feeRow(page);
       await expectFeeValue(row, "USDC", "GMX Account");
-      await expect(row).not.toContainText("· Wallet");
+      await expect(sourceIcon(row, "Wallet")).toHaveCount(0);
 
       await feeValueHandle(row).hover();
       await expect(page.getByText(GMX_ACCOUNT_EXPLANATION)).toBeVisible();
@@ -359,7 +364,7 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
 
       const networkFeeLine = page.locator(".Tooltip-row").filter({ hasText: "Network fee:" });
       await expect(networkFeeLine).toContainText(/-[\d.,<]+\sETH\s\(-\$\s?[\d.,<]+\)/, { timeout: 20_000 });
-      await expect(networkFeeLine).toContainText("· Wallet");
+      await expect(sourceIcon(networkFeeLine, "Wallet")).toBeVisible();
     });
 
     test("GMX Account without the gas token: the update is blocked and the banner offers a deposit of that token (FEDEV-3924)", async ({

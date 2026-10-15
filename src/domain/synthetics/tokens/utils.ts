@@ -71,3 +71,7 @@ export function getBalanceByBalanceType(
       return tokenData.sourceChainBalance;
   }
 }
+
+export function getHasNoOnChainBalance(tokenData: TokenData | undefined): boolean {
+  return tokenData?.walletBalance === 0n && (tokenData.gmxAccountBalance ?? 0n) === 0n;
+}

@@ -297,6 +297,8 @@ function useKeysAndPricesParams(p: {
     }
 
     const markets = Object.values(marketsData);
+    // No prices at all means the tickers request is failing, which tickersErrors already counts
+    const hasAnyPrices = Object.keys(tokensData).length > 0;
 
     for (const market of markets) {
       if (market.isSpotOnly) {
@@ -305,13 +307,15 @@ function useKeysAndPricesParams(p: {
 
       const marketPrices = getContractMarketPrices(tokensData, market);
 
-      trackMissedMarketPrices({
-        chainId,
-        marketAddress: market.marketTokenAddress,
-        marketName: market.name,
-        source: "useKeysAndPricesParams",
-        hasPrices: Boolean(marketPrices),
-      });
+      if (hasAnyPrices) {
+        trackMissedMarketPrices({
+          chainId,
+          marketAddress: market.marketTokenAddress,
+          marketName: market.name,
+          source: "useKeysAndPricesParams",
+          hasPrices: Boolean(marketPrices),
+        });
+      }
 
       if (!marketPrices) {
         continue;

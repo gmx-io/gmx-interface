@@ -6,6 +6,7 @@ import { isAddress } from "viem";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import type { PnlSummaryBucketLabel } from "domain/synthetics/accountStats/usePnlSummaryData";
 import { useChainId } from "lib/chains";
+import { toCalendarDateByUtcDay } from "lib/dates";
 
 import AddressView from "components/AddressView/AddressView";
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
@@ -22,7 +23,7 @@ type DashboardDateRange = [Date | undefined, Date | undefined];
 
 function getBucketDateRange(bucketLabel: PnlSummaryBucketLabel): DashboardDateRange {
   const now = new Date();
-  const today = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  const today = toCalendarDateByUtcDay(now);
 
   const getPastDate = (days: number) => {
     const date = new Date(today);
