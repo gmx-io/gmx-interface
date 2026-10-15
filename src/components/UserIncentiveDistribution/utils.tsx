@@ -14,6 +14,7 @@ import { TokensData } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import { GM_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
+import { getByKey } from "lib/objects";
 import { bigMath } from "sdk/utils/bigmath";
 
 export const getDistributionTitle = (distributionId: string) => {
@@ -42,14 +43,15 @@ export function getNormalizedIncentive(
     const marketTokenKey = gmMarkets ? Object.keys(gmMarkets).find((key) => key.toLowerCase() === tokenAddress) : null;
     const marketToken = marketTokenKey ? gmMarkets?.[marketTokenKey] : undefined;
     const tokenInfo = marketToken ? undefined : tokens.find((token) => token.address.toLowerCase() === tokenAddress);
-    const amountInUsd =
-      marketTokensData && marketToken
-        ? bigMath.mulDiv(
-            BigInt(incentive.amounts[index]),
-            marketTokensData[marketToken.marketTokenAddress].prices.maxPrice,
-            expandDecimals(1, GM_DECIMALS)
-          )
-        : BigInt(incentive.amountsInUsd?.[index] ?? 0);
+    // markets whose price request failed are missing from marketTokensData
+    const marketTokenData = marketToken ? getByKey(marketTokensData, marketToken.marketTokenAddress) : undefined;
+    const amountInUsd = marketTokenData
+      ? bigMath.mulDiv(
+          BigInt(incentive.amounts[index]),
+          marketTokenData.prices.maxPrice,
+          expandDecimals(1, GM_DECIMALS)
+        )
+      : BigInt(incentive.amountsInUsd?.[index] ?? 0);
 
     let symbol: string | undefined;
     let iconSymbol: string | undefined;

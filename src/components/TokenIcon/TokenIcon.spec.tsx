@@ -6,6 +6,7 @@ import TokenIcon from "./TokenIcon";
 afterEach(cleanup);
 
 const BADGE_WITH_MISSING_ICON = ["WAVAX", "UNKNOWN-TOKEN"] as const;
+const BADGE = ["WAVAX", "USDC"] as const;
 
 describe("TokenIcon", () => {
   it("renders the token icon for a known symbol", () => {
@@ -26,6 +27,16 @@ describe("TokenIcon", () => {
     expect(Array.from(container.querySelectorAll("img")).map((img) => img.getAttribute("alt"))).toEqual([
       "AVAX",
       "WAVAX",
+    ]);
+  });
+
+  it("labels each badge icon with its own symbol", () => {
+    const { container } = render(<TokenIcon symbol="AVAX" displaySize={40} badge={BADGE} />);
+
+    expect(Array.from(container.querySelectorAll("img")).map((img) => img.getAttribute("alt"))).toEqual([
+      "AVAX",
+      "WAVAX",
+      "USDC",
     ]);
   });
 });

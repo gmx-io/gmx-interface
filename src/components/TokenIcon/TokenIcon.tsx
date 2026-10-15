@@ -64,7 +64,7 @@ function TokenIcon({ className, symbol, displaySize, badge, badgeClassName, chai
             <img
               className="z-10 rounded-[100%] border-2 border-slate-900 bg-slate-900"
               src={bottomIconUrl}
-              alt={badge[0]}
+              alt={badge[1]}
               width={20}
               height={20}
             />

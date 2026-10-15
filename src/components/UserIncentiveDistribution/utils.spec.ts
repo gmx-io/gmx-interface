@@ -3,7 +3,9 @@ import { describe, expect, it } from "vitest";
 import { AVALANCHE } from "config/chains";
 import type { UserIncentiveDistribution } from "domain/synthetics/common/useUserIncentiveData";
 import { MarketsData } from "domain/synthetics/markets";
+import { TokensData } from "domain/synthetics/tokens";
 import { findImage } from "lib/legacy";
+import { expandDecimals } from "lib/numbers";
 import { getTokenBySymbol, getTokens } from "sdk/configs/tokens";
 
 import { getNormalizedIncentive } from "./utils";
@@ -31,15 +33,15 @@ function getIncentive(tokens: string[]): UserIncentiveDistribution {
     typeId: "1001",
     tokens,
     amounts: tokens.map(() => "1000000000000000000"),
-    amountsInUsd: tokens.map(() => "0"),
+    amountsInUsd: tokens.map(() => "5000000000000000000000000000000"),
     receiver: "0x23E597332a5D7ADDaa1d30167A307668c6fD3c70",
     timestamp: 1738713600,
     transactionHash: "0x47418b3ef6c17da4f2ff90234ca3d9ed35235b3af5c383a0d5add47f672478d8",
   };
 }
 
-function normalize(tokens: string[]) {
-  return getNormalizedIncentive(AVALANCHE, getIncentive(tokens), getTokens(AVALANCHE), gmMarkets, undefined)
+function normalize(tokens: string[], marketTokensData?: TokensData) {
+  return getNormalizedIncentive(AVALANCHE, getIncentive(tokens), getTokens(AVALANCHE), gmMarkets, marketTokensData)
     .tokenIncentiveDetails;
 }
 
@@ -74,5 +76,20 @@ describe("getNormalizedIncentive", () => {
 
     expect(details.symbol).toBeUndefined();
     expect(details.iconSymbol).toBeUndefined();
+  });
+
+  it("prices GM amounts with the market token price", () => {
+    const marketTokensData = {
+      [GM_AVAX_ADDRESS]: { prices: { minPrice: expandDecimals(2, 30), maxPrice: expandDecimals(3, 30) } },
+    } as unknown as TokensData;
+    const [details] = normalize([GM_AVAX_ADDRESS.toLowerCase()], marketTokensData);
+
+    expect(details.amountInUsd).toBe(expandDecimals(3, 30));
+  });
+
+  it("falls back to the backend USD amount when the market token price is missing", () => {
+    const [details] = normalize([GM_AVAX_ADDRESS.toLowerCase()], {});
+
+    expect(details.amountInUsd).toBe(expandDecimals(5, 30));
   });
 });
