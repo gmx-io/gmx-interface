@@ -46,6 +46,10 @@ export function getBoostsInDisplayOrder(boosts: BoostConfig[], includeComebackBo
   });
 }
 
+// One style for inline text links on the Rewards page (darker blue in light theme for contrast).
+export const REWARDS_LINK_CLASSNAME =
+  "inline-flex w-fit items-center gap-4 whitespace-nowrap text-13 font-medium leading-[16px] text-blue-400 dark:text-blue-300";
+
 function formatCompactUsd(amount: bigint) {
   return formatAmountHuman(amount, USD_DECIMALS, true, 0).replace(/[kmb]$/i, (suffix) => suffix.toUpperCase());
 }

@@ -2,6 +2,7 @@ export type RewardsTab = "tiers" | "history" | "leaderboard";
 
 export const REWARDS_VESTING_SEARCH_PARAM = "vesting";
 export const REWARDS_VESTING_START_ACTION = "start";
+export const REWARDS_VESTING_HIGHLIGHT_ACTION = "highlight";
 export const REWARDS_ONBOARDING_SEARCH_PARAM = "onboarding";
 export const REWARDS_ONBOARDING_OPEN_ACTION = "open";
 

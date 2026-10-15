@@ -127,7 +127,7 @@ describe("RewardsOnboardingModal", () => {
     fireEvent.click(dots[3]);
     expect(diagramTrack.style.transform).toBe("translate3d(-880px, 0, 0)");
     expect(track.style.transform).toBe("translate3d(-300%, 0, 0)");
-    expect(screen.getByRole("heading", { name: "Using Your Rewards" })).toBeDefined();
+    expect(screen.getByRole("heading", { name: "Using your rewards" })).toBeDefined();
     expect(dots[3].getAttribute("aria-current")).toBe("true");
 
     fireEvent.click(screen.getByRole("button", { name: "Get started" }));

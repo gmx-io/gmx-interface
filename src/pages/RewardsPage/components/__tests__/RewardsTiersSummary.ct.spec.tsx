@@ -3,36 +3,37 @@ import { expect, test } from "@playwright/experimental-ct-react";
 import { RewardsTiersSummaryStory } from "./RewardsTiersSummary.ct.stories";
 
 test.describe("RewardsTiersSummary", () => {
-  test("shows indexed token totals in the all-time tooltip", async ({ mount, page }) => {
+  test("shows the current multiplier with its label and cap tooltip", async ({ mount, page }) => {
     const component = await mount(<RewardsTiersSummaryStory />);
 
+    await expect(component.getByText("Current multiplier")).toBeVisible();
     await expect(component.getByText("1.75x")).toHaveClass(/text-h1/);
-    await expect(component.getByText("1.75x")).toHaveClass(/text-green-300/);
-    await expect(component.getByText("Current Multiplier")).toBeVisible();
+    await expect(component.getByText("1.75x")).toHaveClass(/text-green-500/);
+    await expect(component.getByText("1.75x")).toHaveClass(/dark:text-green-300/);
+    await expect(component.getByTestId("multiplier-transition-arrow")).toHaveCount(0);
 
-    await component.getByRole("button", { name: "All-time Rewards" }).focus();
+    await component.getByText("Current multiplier").hover();
 
-    await expect(page.getByText("All-time esGMX")).toBeVisible();
-    await expect(page.getByText("12 esGMX")).toBeVisible();
-    await expect(page.getByText("($ 240.00)")).toBeVisible();
-    await expect(page.getByText("All-time GT")).toBeVisible();
-    await expect(page.getByText("150 GT")).toBeVisible();
-    await expect(page.getByText("($ 7.50)")).toBeVisible();
+    await expect(
+      page.getByText(
+        "Your reward multiplier combines your volume tier, staking tier, and applicable activity boosts. The total multiplier is capped at 5x."
+      )
+    ).toBeVisible();
   });
 
-  test("hides account totals while disconnected", async ({ mount }) => {
-    const component = await mount(<RewardsTiersSummaryStory summaryState="disconnected" />);
+  test("hides the multiplier while disconnected", async ({ mount }) => {
+    const component = await mount(<RewardsTiersSummaryStory statusState="disconnected" />);
 
-    await expect(component.getByRole("button", { name: "All-time Rewards" })).toHaveCount(0);
-    await expect(component.getByText("Current Multiplier")).toHaveCount(0);
-    await expect(component.getByText("Vestable esGMX")).toHaveCount(0);
+    await expect(component.getByText("Current multiplier")).toHaveCount(0);
+    await expect(component.getByTestId("rewards-current-multiplier")).toHaveCount(0);
   });
 
   test("shows the restored multiplier transition using the summary colors", async ({ mount, page }) => {
     const component = await mount(<RewardsTiersSummaryStory projectedMultiplier={215n} />);
 
-    await expect(component.getByText("1.75x")).toHaveClass(/text-green-300/);
-    await expect(component.getByText("2.15x")).toHaveClass(/text-blue-100/);
+    await expect(component.getByText("1.75x")).toHaveClass(/text-green-500/);
+    await expect(component.getByText("2.15x")).toHaveClass(/text-blue-700/);
+    await expect(component.getByText("2.15x")).toHaveClass(/dark:text-blue-100/);
     await expect(component.getByTestId("multiplier-transition-arrow")).toHaveClass(/size-16/);
     await expect(component.getByTestId("multiplier-transition-arrow")).toHaveClass(/rounded-full/);
 
@@ -42,21 +43,33 @@ test.describe("RewardsTiersSummary", () => {
     await expect(page.getByText("Due to changes in your volume and staking tiers.")).toBeVisible();
   });
 
+  test("explains a projected multiplier decrease", async ({ mount, page }) => {
+    const component = await mount(<RewardsTiersSummaryStory projectedMultiplier={135n} />);
+
+    await expect(component.getByText("1.35x")).toHaveClass(/text-blue-700/);
+
+    await component.getByTestId("multiplier-transition-arrow").hover();
+
+    await expect(page.getByText("Your multiplier will decrease next epoch.")).toBeVisible();
+  });
+
   test("shows an inactive multiplier in blue", async ({ mount }) => {
     const component = await mount(<RewardsTiersSummaryStory currentMultiplier={0n} />);
 
-    await expect(component.getByText("0x")).toHaveClass(/text-blue-100/);
+    await expect(component.getByText("0x")).toHaveClass(/text-blue-700/);
+    await expect(component.getByText("0x")).toHaveClass(/dark:text-blue-100/);
   });
 
-  for (const summaryState of ["loading", "unavailable"] as const) {
-    test(`disables the all-time breakdown while the summary is ${summaryState}`, async ({ mount, page }) => {
-      const component = await mount(<RewardsTiersSummaryStory summaryState={summaryState} />);
+  for (const [statusState, placeholder] of [
+    ["loading", "…"],
+    ["unavailable", "-"],
+  ] as const) {
+    test(`shows a placeholder instead of the multiplier while the status is ${statusState}`, async ({ mount }) => {
+      const component = await mount(<RewardsTiersSummaryStory statusState={statusState} />);
 
-      await expect(component.getByRole("button", { name: "All-time Rewards" })).toBeDisabled();
-
-      await expect(page.getByText("All-time esGMX")).toHaveCount(0);
-      await expect(page.getByText("0 esGMX", { exact: true })).toHaveCount(0);
-      await expect(page.getByText("0 GT", { exact: true })).toHaveCount(0);
+      await expect(component.getByText("Current multiplier")).toBeVisible();
+      await expect(component.getByText(placeholder, { exact: true })).toBeVisible();
+      await expect(component.getByText("1.75x")).toHaveCount(0);
     });
   }
 });

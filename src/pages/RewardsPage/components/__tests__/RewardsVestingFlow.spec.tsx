@@ -355,9 +355,9 @@ describe("RewardsVestingFlow", () => {
   it("renders the idle state from an empty on-chain snapshot", () => {
     renderFlow();
 
-    expect(screen.getByText("Available to Vest")).toBeDefined();
-    expect(screen.getByText("Vesting")).toBeDefined();
-    expect(screen.getByText("Rewards")).toBeDefined();
+    expect(screen.getByText("Available to vest")).toBeDefined();
+    expect(screen.getByText("In vesting")).toBeDefined();
+    expect(screen.getByText("Claimable")).toBeDefined();
     expect(screen.getAllByText("0").length).toBeGreaterThanOrEqual(3);
     expect(screen.getAllByText((text) => text.replace(/\s/g, "") === "$0.00")).toHaveLength(3);
     expect(screen.getByText("Earn esGMX rewards from eligible trading activity.")).toBeDefined();
@@ -426,7 +426,7 @@ describe("RewardsVestingFlow", () => {
     renderFlow();
 
     expect(
-      screen.getByText("Available to Vest").parentElement?.parentElement?.textContent?.replace(/\s/g, "")
+      screen.getByText("Available to vest").parentElement?.parentElement?.textContent?.replace(/\s/g, "")
     ).toContain("10esGMX");
   });
 
@@ -444,7 +444,7 @@ describe("RewardsVestingFlow", () => {
     renderFlow();
 
     expect(
-      screen.getByText("Available to Vest").parentElement?.parentElement?.textContent?.replace(/\s/g, "")
+      screen.getByText("Available to vest").parentElement?.parentElement?.textContent?.replace(/\s/g, "")
     ).toContain("100esGMX");
   });
 
@@ -467,6 +467,35 @@ describe("RewardsVestingFlow", () => {
       expect(screen.getByTestId("vesting-modal")).toBeDefined();
     });
     expect(mockSendRewardsVestingModalOpenEvent).toHaveBeenCalledWith("Start");
+  });
+
+  it("highlights the vest button from the summary row link without opening the modal", async () => {
+    window.history.replaceState({}, "", "/rewards/history?source=summary&vesting=highlight");
+    const scrollIntoView = vi.fn();
+    Object.defineProperty(HTMLElement.prototype, "scrollIntoView", { configurable: true, value: scrollIntoView });
+    setVestingData({
+      ...idleData,
+      claimableEsGmxRewards: 100n * TOKEN_UNIT,
+      freePairAmount: 100n * TOKEN_UNIT,
+      vestingInfo: {
+        ...idleData.vestingInfo,
+        maxVestableAmount: 100n * TOKEN_UNIT,
+        averageStakedAmount: 100n * TOKEN_UNIT,
+      },
+    });
+
+    try {
+      renderFlow();
+
+      const vestButton = screen.getByRole("button", { name: "Start vesting" });
+      await waitFor(() => expect(vestButton.querySelector("rect")).not.toBeNull());
+      expect(scrollIntoView).toHaveBeenCalledWith({ block: "nearest", behavior: "smooth" });
+      expect(screen.queryByTestId("vesting-modal")).toBeNull();
+      expect(mockSendRewardsVestingModalOpenEvent).not.toHaveBeenCalled();
+      expect(screen.getByTestId("location-search").textContent).toBe("?source=summary");
+    } finally {
+      delete (HTMLElement.prototype as Partial<HTMLElement>).scrollIntoView;
+    }
   });
 
   it("opens the claim, stake, and vest sequence in one-click mode", () => {
@@ -608,7 +637,7 @@ describe("RewardsVestingFlow", () => {
     expect(screen.getAllByText("100", { selector: "span.text-typography-primary" }).length).toBeGreaterThan(0);
     expect(screen.queryByText("New esGMX keeps accruing while a vest is active")).toBeNull();
 
-    fireEvent.click(screen.getByRole("button", { name: "Add to Vesting" }));
+    fireEvent.click(screen.getByRole("button", { name: "Add to vesting" }));
     expect(screen.getByTestId("vesting-modal")).toBeDefined();
 
     fireEvent.click(screen.getByRole("button", { name: "Stop vesting" }));
@@ -637,7 +666,7 @@ describe("RewardsVestingFlow", () => {
     expect(screen.getByRole("button", { name: "Nothing to claim" })).toBeDefined();
     expect((screen.getByLabelText("Wallet GMX") as HTMLInputElement).value).toBe("75");
 
-    fireEvent.click(screen.getByRole("button", { name: "Add to Vesting" }));
+    fireEvent.click(screen.getByRole("button", { name: "Add to vesting" }));
     expect(screen.getByTestId("vesting-modal").getAttribute("data-simulated")).toBe("true");
     fireEvent.click(screen.getByRole("button", { name: "Simulate esGMX claim" }));
     expect((screen.getByLabelText("Wallet esGMX") as HTMLInputElement).value).toBe("0");
@@ -762,7 +791,7 @@ describe("RewardsVestingFlow", () => {
     });
     renderFlow();
 
-    const rewardsHeader = screen.getByText("GMX Claimable").parentElement!.parentElement!;
+    const rewardsHeader = screen.getByText("Claimable").parentElement!.parentElement!;
     expect(within(rewardsHeader).getByText("0")).toBeDefined();
     expect(within(rewardsHeader).getByText((text) => text.replace(/\s/g, "") === "$0.00")).toBeDefined();
     expect(screen.getByRole("button", { name: "Nothing to claim" }).hasAttribute("disabled")).toBe(true);
