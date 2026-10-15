@@ -5170,6 +5170,10 @@ msgstr "スワップによる価格への影響（実現済み）"
 msgid "It depends on the volume you route and which revenue streams you turn on. Use the calculator above for a rough estimate, or apply to talk specifics with the team."
 msgstr "ルーティングするボリュームと有効にする収益源によります。上の計算機で概算するか、応募してチームと詳細を相談してください。"
 
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
+msgid "Withdrawal to {sourceChainName} failed"
+msgstr "{sourceChainName}への出金に失敗しました"
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter recipient address"
 msgstr "受取人アドレスを入力"
