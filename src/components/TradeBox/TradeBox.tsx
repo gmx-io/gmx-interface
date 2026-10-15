@@ -1302,7 +1302,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
               </Trans>
             </AlertInfoCard>
           )}
-          {increaseMaxLeverageAlert && <ResultingMarginAlertCard level={increaseMaxLeverageAlert} />}
+          {increaseMaxLeverageAlert && <ResultingMarginAlertCard level={increaseMaxLeverageAlert} isTwap={isTwap} />}
           {!marginDepositSuggestionHidden && (
             <MarginDepositSuggestionCard onClose={() => setMarginDepositSuggestionHidden(true)} />
           )}

@@ -54,6 +54,7 @@ import {
   selectTradeboxTradeFlags,
   selectTradeboxTradeMode,
   selectTradeboxTriggerPrice,
+  selectTradeboxTwapIncreaseSequenceParams,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxHasExistingPosition,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -851,7 +852,7 @@ export function useDetectAndSetAvailableMaxLeverage({
 
   const { minCollateralUsd } = usePositionsConstants();
 
-  const { collateralToken, marketInfo, selectedTriggerAcceptablePriceImpactBps, setLeverageOption } =
+  const { collateralToken, marketInfo, selectedTriggerAcceptablePriceImpactBps, setLeverageOption, setFocusedInput } =
     useSelector(selectTradeboxState);
 
   const { isLeverageSliderEnabled, isSetAcceptablePriceImpactEnabled } = useSettings();
@@ -874,6 +875,7 @@ export function useDetectAndSetAvailableMaxLeverage({
   const externalSwapQuoteParams = useSelector(selectExternalSwapQuoteParams);
   const chainId = useSelector(selectChainId);
   const marketsInfoData = useSelector(selectMarketsInfoData);
+  const twap = useSelector(selectTradeboxTwapIncreaseSequenceParams);
 
   const maxLeverageSearchParams = useMemo((): MaxLeverageIncreaseParams | undefined => {
     if (!enabled || !collateralToken || !toToken || !fromToken || !marketInfo || minCollateralUsd === undefined) {
@@ -881,6 +883,7 @@ export function useDetectAndSetAvailableMaxLeverage({
     }
 
     return {
+      twap,
       collateralToken,
       findSwapPath,
       indexToken: toToken,
@@ -930,6 +933,7 @@ export function useDetectAndSetAvailableMaxLeverage({
     proDiscountFactor,
     isSetAcceptablePriceImpactEnabled,
     tradeMode,
+    twap,
   ]);
 
   const maxLeverageIncrease = useMemo(
@@ -958,6 +962,7 @@ export function useDetectAndSetAvailableMaxLeverage({
 
     const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
 
+    setFocusedInput("from");
     setToTokenInputValue(
       formatAmountFree(
         substractMaxLeverageSlippage(maxLeverageIncrease.increaseAmounts.sizeDeltaInTokens / visualMultiplier),
@@ -966,7 +971,7 @@ export function useDetectAndSetAvailableMaxLeverage({
       ),
       true
     );
-  }, [isLeverageSliderEnabled, maxLeverageIncrease, setLeverageOption, setToTokenInputValue, toToken]);
+  }, [isLeverageSliderEnabled, maxLeverageIncrease, setFocusedInput, setLeverageOption, setToTokenInputValue, toToken]);
 
   return {
     hasAvailableMaxLeverage,
