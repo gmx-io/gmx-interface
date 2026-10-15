@@ -2,14 +2,14 @@ import cx from "classnames";
 
 import { AnyChainId } from "config/chains";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
-import { importImage } from "lib/legacy";
+import { findImage } from "lib/legacy";
 
 import "./TokenIcon.scss";
 
-function getIconUrlPath(symbol: string) {
+function getIconUrl(symbol: string) {
   if (!symbol) return;
 
-  return `ic_${symbol.toLowerCase()}.svg`;
+  return findImage(`ic_${symbol.toLowerCase()}.svg`);
 }
 
 type Props = {
@@ -22,10 +22,10 @@ type Props = {
 };
 
 function TokenIcon({ className, symbol, displaySize, badge, badgeClassName, chainIdBadge }: Props) {
-  const iconPath = getIconUrlPath(symbol);
+  const iconUrl = getIconUrl(symbol);
   const classNames = cx("Token-icon inline rounded-full", className);
 
-  if (!iconPath) return <></>;
+  if (!iconUrl) return <></>;
 
   let sub;
   let containerClassName = "";
@@ -43,6 +43,7 @@ function TokenIcon({ className, symbol, displaySize, badge, badgeClassName, chai
         </span>
       );
     } else {
+      const [topIconUrl, bottomIconUrl] = [getIconUrl(badge[0]), getIconUrl(badge[1])];
       sub = (
         <span
           className={cx(
@@ -50,20 +51,24 @@ function TokenIcon({ className, symbol, displaySize, badge, badgeClassName, chai
             badgeClassName
           )}
         >
-          <img
-            className="z-20 -mr-10 rounded-[100%] border-2 border-slate-900 bg-slate-900"
-            src={importImage(getIconUrlPath(badge[0])!)}
-            alt={badge[0]}
-            width={20}
-            height={20}
-          />
-          <img
-            className="z-10 rounded-[100%] border-2 border-slate-900 bg-slate-900"
-            src={importImage(getIconUrlPath(badge[1])!)}
-            alt={badge[0]}
-            width={20}
-            height={20}
-          />
+          {topIconUrl ? (
+            <img
+              className="z-20 -mr-10 rounded-[100%] border-2 border-slate-900 bg-slate-900"
+              src={topIconUrl}
+              alt={badge[0]}
+              width={20}
+              height={20}
+            />
+          ) : null}
+          {bottomIconUrl ? (
+            <img
+              className="z-10 rounded-[100%] border-2 border-slate-900 bg-slate-900"
+              src={bottomIconUrl}
+              alt={badge[0]}
+              width={20}
+              height={20}
+            />
+          ) : null}
         </span>
       );
     }
@@ -94,7 +99,7 @@ function TokenIcon({ className, symbol, displaySize, badge, badgeClassName, chai
     <img
       data-qa="token-icon"
       className={sub ? containerClassName : classNames}
-      src={importImage(iconPath)}
+      src={iconUrl}
       // TODO Remove alt as it shows during loading
       alt={symbol}
       width={displaySize}
