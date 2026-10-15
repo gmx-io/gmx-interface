@@ -6589,10 +6589,6 @@ msgstr "文件"
 msgid "The request was sent, but its result could not be confirmed. It may have gone through — retry to check and finish the deactivation"
 msgstr "請求已送出，但無法確認其結果。它可能已經完成 — 請重試以檢查並完成停用"
 
-#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
-msgid "Last round paid {lastRoundPaidAt}. The boost returns with the next successful round."
-msgstr "上一輪已於 {lastRoundPaidAt} 發放。加成將在下一輪成功發放後恢復。"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} cannot be sent to smart contract addresses. Select another token"
 msgstr "{0} 無法傳送至智慧合約地址。請選擇其他代幣"
@@ -6744,10 +6740,6 @@ msgstr "結算網路已切換至 Arbitrum，但您的 Base GMX Account 中仍有
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Results are available in Swap"
 msgstr "兌換中有可用結果"
-
-#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
-msgid "Paused"
-msgstr "已暫停"
 
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx

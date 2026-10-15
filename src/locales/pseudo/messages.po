@@ -6589,10 +6589,6 @@ msgstr ""
 msgid "The request was sent, but its result could not be confirmed. It may have gone through — retry to check and finish the deactivation"
 msgstr ""
 
-#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
-msgid "Last round paid {lastRoundPaidAt}. The boost returns with the next successful round."
-msgstr ""
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} cannot be sent to smart contract addresses. Select another token"
 msgstr ""
@@ -6743,10 +6739,6 @@ msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Results are available in Swap"
-msgstr ""
-
-#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
-msgid "Paused"
 msgstr ""
 
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx

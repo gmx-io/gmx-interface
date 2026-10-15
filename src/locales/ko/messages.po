@@ -6589,10 +6589,6 @@ msgstr "문서"
 msgid "The request was sent, but its result could not be confirmed. It may have gone through — retry to check and finish the deactivation"
 msgstr "요청은 전송되었지만 결과를 확인할 수 없습니다. 이미 처리되었을 수 있습니다. 상태를 확인하고 비활성화를 완료하려면 다시 시도하십시오"
 
-#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
-msgid "Last round paid {lastRoundPaidAt}. The boost returns with the next successful round."
-msgstr "마지막 라운드 지급: {lastRoundPaidAt}. 다음 라운드가 성공적으로 완료되면 부스트가 재개됩니다."
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} cannot be sent to smart contract addresses. Select another token"
 msgstr "{0}은(는) 스마트 컨트랙트 주소로 전송할 수 없습니다. 다른 토큰을 선택하십시오"
@@ -6744,10 +6740,6 @@ msgstr "정산 네트워크가 Arbitrum으로 변경되었으나 $12.50이 Base 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Results are available in Swap"
 msgstr "스왑에 검색 결과가 있습니다"
-
-#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
-msgid "Paused"
-msgstr "일시 중지됨"
 
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx

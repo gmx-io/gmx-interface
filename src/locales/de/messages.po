@@ -6589,10 +6589,6 @@ msgstr "Doku"
 msgid "The request was sent, but its result could not be confirmed. It may have gone through — retry to check and finish the deactivation"
 msgstr "Die Anfrage wurde gesendet, aber ihr Ergebnis konnte nicht bestätigt werden. Sie wurde möglicherweise bereits verarbeitet — versuchen Sie es erneut, um den Status zu prüfen und die Deaktivierung abzuschließen"
 
-#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
-msgid "Last round paid {lastRoundPaidAt}. The boost returns with the next successful round."
-msgstr "Letzte Runde ausgezahlt am {lastRoundPaidAt}. Der Boost wird mit der nächsten erfolgreichen Runde fortgesetzt."
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} cannot be sent to smart contract addresses. Select another token"
 msgstr "{0} kann nicht an Smart-Contract-Adressen gesendet werden. Wählen Sie einen anderen Token"
@@ -6744,10 +6740,6 @@ msgstr "Abwicklungsnetzwerk wurde auf Arbitrum geändert, aber 12,50 $ verbleibe
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Results are available in Swap"
 msgstr "Ergebnisse sind unter „Tauschen“ verfügbar"
-
-#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
-msgid "Paused"
-msgstr "Pausiert"
 
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx

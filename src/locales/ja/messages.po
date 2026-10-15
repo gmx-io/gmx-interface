@@ -6589,10 +6589,6 @@ msgstr "ドキュメント"
 msgid "The request was sent, but its result could not be confirmed. It may have gone through — retry to check and finish the deactivation"
 msgstr "リクエストは送信されましたが、結果を確認できませんでした。すでに完了している可能性があります。再度お試しいただくと、状態を確認して無効化を完了できます"
 
-#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
-msgid "Last round paid {lastRoundPaidAt}. The boost returns with the next successful round."
-msgstr "前回のラウンドは{lastRoundPaidAt}に支払われました。次のラウンドが正常に完了するとブーストが再開されます。"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} cannot be sent to smart contract addresses. Select another token"
 msgstr "{0} はスマートコントラクトアドレスに送信できません。別のトークンを選択してください"
@@ -6744,10 +6740,6 @@ msgstr "決済ネットワークがArbitrumに変更されましたが、$12.50�
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Results are available in Swap"
 msgstr "スワップに検索結果があります"
-
-#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
-msgid "Paused"
-msgstr "一時停止中"
 
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
