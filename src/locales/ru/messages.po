@@ -3699,6 +3699,7 @@ msgstr "Тема"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
 msgstr "Превышено максимальное кредитное плечо"
 
@@ -7977,6 +7978,10 @@ msgstr "покупки"
 msgid "Affiliate dashboard"
 msgstr "Панель управления аффилиата"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first. Remaining margin: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
+msgstr "Оставшаяся позиция превысит максимально допустимое плечо. Закройте большую часть, выведите меньше или сначала добавьте маржу. Оставшаяся маржа: {remainingCollateralUsdText}, требуется: {minCollateralUsdForLeverageText}"
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Capital used"
@@ -8097,6 +8102,10 @@ msgstr "Процент побед"
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 msgid "GM and GLV include markets you no longer hold"
 msgstr "GM и GLV включают рынки, которые вы больше не держите"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first."
+msgstr "Оставшаяся позиция превысит максимально допустимое плечо. Закройте большую часть, выведите меньше или сначала добавьте маржу."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading stats"
@@ -9154,6 +9163,10 @@ msgstr "Тип аккаунта"
 msgid "Collateral in"
 msgstr "Обеспечение"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, close the position fully, or add margin first."
+msgstr "Оставшаяся позиция превысит максимально допустимое плечо. Закройте большую часть, закройте позицию полностью или сначала добавьте маржу."
+
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "EVENT NAME"
 msgstr "НАЗВАНИЕ СОБЫТИЯ"
@@ -9640,6 +9653,7 @@ msgid "Max funding factor (long)"
 msgstr "Максимальный фактор финансирования (лонг)"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient collateral to cover order costs"
 msgstr "Недостаточно обеспечения для покрытия затрат ордера"
 

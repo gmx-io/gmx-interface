@@ -3699,6 +3699,7 @@ msgstr "Thème"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
 msgstr "Effet de levier maximum dépassé"
 
@@ -7977,6 +7978,10 @@ msgstr "achat"
 msgid "Affiliate dashboard"
 msgstr "Tableau de bord affilié"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first. Remaining margin: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
+msgstr "La position restante dépasserait l'effet de levier maximal autorisé. Clôturez une plus grande partie, retirez moins ou ajoutez d'abord de la marge. Marge restante : {remainingCollateralUsdText}, requis : {minCollateralUsdForLeverageText}"
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Capital used"
@@ -8097,6 +8102,10 @@ msgstr "Taux de réussite"
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 msgid "GM and GLV include markets you no longer hold"
 msgstr "GM et GLV incluent les marchés que vous ne détenez plus"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first."
+msgstr "La position restante dépasserait l'effet de levier maximal autorisé. Clôturez une plus grande partie, retirez moins ou ajoutez d'abord de la marge."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading stats"
@@ -9154,6 +9163,10 @@ msgstr "Type de compte"
 msgid "Collateral in"
 msgstr "Garantie en"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, close the position fully, or add margin first."
+msgstr "La position restante dépasserait l'effet de levier maximal autorisé. Clôturez une plus grande partie, clôturez entièrement la position ou ajoutez d'abord de la marge."
+
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "EVENT NAME"
 msgstr "NOM DE L'ÉVÉNEMENT"
@@ -9640,6 +9653,7 @@ msgid "Max funding factor (long)"
 msgstr "Facteur de financement maximal (long)"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient collateral to cover order costs"
 msgstr "Garantie insuffisante pour couvrir les coûts de l'ordre"
 
