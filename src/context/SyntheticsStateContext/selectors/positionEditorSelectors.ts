@@ -144,7 +144,7 @@ export const selectPositionEditorCollateralInputAmountAndUsd = createSelector((q
   };
 });
 
-export const selectPositionEditorMaxWithdrawAmount = createSelector((q) => {
+export const selectPositionEditorRawMaxWithdrawAmount = createSelector((q) => {
   const position = q(selectPositionEditorPosition);
 
   if (!getIsPositionInfoLoaded(position)) return 0n;
@@ -152,7 +152,7 @@ export const selectPositionEditorMaxWithdrawAmount = createSelector((q) => {
   const collateralToken = q(selectPositionEditorSelectedCollateralToken);
   const { minCollateralUsd } = q(selectPositionConstants);
 
-  const maxWithdrawAmount = getMaxWithdrawAmount({
+  return getMaxWithdrawAmount({
     position,
     minCollateralUsd,
     collateralPrice: collateralToken?.prices.minPrice,
@@ -160,6 +160,11 @@ export const selectPositionEditorMaxWithdrawAmount = createSelector((q) => {
     userReferralInfo: q(selectUserReferralInfo),
     proDiscountFactor: q(selectProDiscountFactor),
   });
+});
+
+export const selectPositionEditorMaxWithdrawAmount = createSelector((q) => {
+  const maxWithdrawAmount = q(selectPositionEditorRawMaxWithdrawAmount);
+  const collateralToken = q(selectPositionEditorSelectedCollateralToken);
 
   if (!collateralToken) return maxWithdrawAmount;
 

@@ -26,6 +26,7 @@ import {
   selectPositionEditorDepositMode,
   selectPositionEditorIsCollateralTokenFromGmxAccount,
   selectPositionEditorMaxWithdrawAmount,
+  selectPositionEditorRawMaxWithdrawAmount,
   selectPositionEditorReplacingOrderKey,
   selectPositionEditorSelectedCollateralAddress,
   selectPositionEditorSelectedCollateralToken,
@@ -350,6 +351,7 @@ export function usePositionEditorButtonState(
   }, [setEditingPositionKey]);
 
   const maxWithdrawAmount = useSelector(selectPositionEditorMaxWithdrawAmount);
+  const rawMaxWithdrawAmount = useSelector(selectPositionEditorRawMaxWithdrawAmount);
 
   const setMaxWithdrawal = useCallback(() => {
     if (!selectedCollateralToken) return;
@@ -439,7 +441,7 @@ export function usePositionEditorButtonState(
       depositAmount: collateralDeltaAmount,
       minDepositUsd,
       marketInfo: position?.marketInfo,
-      maxWithdrawAmount,
+      maxWithdrawAmount: rawMaxWithdrawAmount,
     });
 
     return takeValidationResult(commonError, multipleWalletExtensionsChainError, editCollateralError, expressError);
@@ -462,7 +464,7 @@ export function usePositionEditorButtonState(
     position,
     selectedCollateralToken,
     minDepositUsd,
-    maxWithdrawAmount,
+    rawMaxWithdrawAmount,
     triggerPrice,
   ]);
 
