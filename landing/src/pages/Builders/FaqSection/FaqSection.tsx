@@ -25,14 +25,14 @@ export function BuildersFaqSection() {
             <BuildersFaqItem title={t`How much could I earn?`}>
               <p>
                 <Trans>
-                  It depends on the volume you route and which revenue streams you turn on — use the calculator above
-                  for a rough estimate, or apply to talk specifics with the team.
+                  It depends on the volume you route and which revenue streams you turn on. Use the calculator above for
+                  a rough estimate, or apply to talk specifics with the team.
                 </Trans>
               </p>
             </BuildersFaqItem>
             <BuildersFaqItem title={t`Is this a grants program? Do I get tokens?`}>
               <p>
-                <Trans>Terms are still being finalized — apply or reach out to the team for the current details.</Trans>
+                <Trans>Terms are still being finalized. Apply or reach out to the team for the current details.</Trans>
               </p>
             </BuildersFaqItem>
             <BuildersFaqItem title={t`Do I need to join the program to integrate?`}>
@@ -67,7 +67,7 @@ export function BuildersFaqSection() {
               <Trans>Timeline</Trans>
             </h4>
             <p className="mt-8 text-14 -tracking-[0.448px] text-slate-400">
-              <Trans>A day for a lightweight integration, 1 to 3 weeks for something deeper.</Trans>
+              <Trans>A day for a lightweight integration, 1 to 3 weeks for something deeper</Trans>
             </p>
           </div>
         </div>

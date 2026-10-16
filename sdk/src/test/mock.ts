@@ -1,4 +1,5 @@
 import { USD_DECIMALS } from "configs/factors";
+import { mockMarketsInfoData } from "utils/markets/__tests__/mockMarkets";
 import { expandDecimals } from "utils/numbers";
 import { convertToTokenAmount } from "utils/tokens";
 import { Token, TokenData, TokensData } from "utils/tokens/types";
@@ -136,6 +137,33 @@ export function mockTokensData(overrides: { [symbol: string]: Partial<TokenData>
  * @param marketKeys - array of market keys in the following format: indexToken-longToken-shortToken
  */
 export { mockMarketsData, mockMarketsInfoData } from "utils/markets/__tests__/mockMarkets";
+
+/**
+ * A BTC market with a 1% min collateral factor (100x) and 0.5% for liquidation.
+ * Fees, price impact and open interest are off unless overridden.
+ */
+export function mockMarginCheckMarketInfo(tokensData: TokensData, overrides: Record<string, bigint | boolean> = {}) {
+  return mockMarketsInfoData(tokensData, ["BTC-BTC-USDC"], {
+    "BTC-BTC-USDC": {
+      minCollateralFactor: expandDecimals(1, 28),
+      minCollateralFactorForLiquidation: expandDecimals(5, 27),
+      minCollateralFactorForOpenInterestLong: 0n,
+      minCollateralFactorForOpenInterestShort: 0n,
+      positionFeeFactorForBalanceWasImproved: 0n,
+      positionFeeFactorForBalanceWasNotImproved: 0n,
+      positionImpactFactorPositive: 0n,
+      positionImpactFactorNegative: 0n,
+      maxPositionImpactFactorPositive: 0n,
+      maxPositionImpactFactorNegative: 0n,
+      maxPositionImpactFactorForLiquidations: 0n,
+      longInterestUsd: 0n,
+      shortInterestUsd: 0n,
+      longInterestInTokens: 0n,
+      shortInterestInTokens: 0n,
+      ...overrides,
+    },
+  })["BTC-BTC-USDC"];
+}
 
 export function mockExternalSwap({
   inToken,

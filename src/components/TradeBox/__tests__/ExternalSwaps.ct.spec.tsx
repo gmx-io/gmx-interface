@@ -138,7 +138,7 @@ test.describe("External swaps", () => {
     await page.locator(getDataQALocator("pay-input")).fill("1000");
 
     await expect(
-      page.getByText("GMX pools can't fill this swap, and no external route is currently available", { exact: false })
+      page.getByText("GMX pools can't fill this swap, and no external route is available", { exact: false })
     ).toBeVisible({ timeout: 15_000 });
     await expect(page.getByText("Swap on an external aggregator")).toBeVisible();
 
@@ -187,7 +187,7 @@ test.describe("External swaps", () => {
     await page.waitForTimeout(800); // give the (losing) external quote a chance to arrive
     await expect(page.getByText("KyberSwap (external)")).not.toBeVisible();
     await expect(
-      page.getByText("GMX pools can't fill this swap, and no external route is currently available", { exact: false })
+      page.getByText("GMX pools can't fill this swap, and no external route is available", { exact: false })
     ).not.toBeVisible();
   });
 
@@ -389,7 +389,7 @@ test.describe("External swaps", () => {
 
     await submitButton.hover({ force: true });
     // getByText would also match the banner's "Swap on an external aggregator" button — target the tooltip's anchor.
-    const aggregatorLink = page.getByRole("link", { name: "swap on an external aggregator" });
+    const aggregatorLink = page.getByRole("link", { name: "swapping on an external aggregator" });
     await expect(aggregatorLink).toBeVisible();
     // The receive side is native ETH, resolved to the "ETH" ticker.
     await expect(aggregatorLink).toHaveAttribute("href", "https://1inch.com/swap?src=42161:USDC&dst=42161:ETH");
@@ -421,7 +421,7 @@ test.describe("External swaps", () => {
       await page.locator(getDataQALocator("margin-input")).fill("1");
 
       await expect(
-        page.getByText("GMX pools can't fill this swap, and no external route is currently available", { exact: false })
+        page.getByText("GMX pools can't fill this swap, and no external route is available", { exact: false })
       ).toBeVisible({ timeout: 15_000 });
 
       const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
@@ -598,7 +598,7 @@ test.describe("External swaps", () => {
     const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
     await expect(submitButton).toHaveText("Insufficient GMX pool liquidity", { timeout: 15_000 });
     await expect(
-      page.getByText("GMX pools can't fill this swap, and no external route is currently available", { exact: false })
+      page.getByText("GMX pools can't fill this swap, and no external route is available", { exact: false })
     ).not.toBeVisible();
 
     await submitButton.hover({ force: true });

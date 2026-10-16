@@ -344,20 +344,20 @@ export function ExpressTradingWarningCard({
     onClick = handleUpdateSubaccountSettings;
     onCloseClick = dismissAllowedActionsWarning;
     icon = OneClickIcon;
-    color = "yellow";
+    color = "blue";
     content = <Trans>One-Click Trading action limit reached. You're now using Express Trading.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
   } else if (shouldShowNonceExpiredWarning) {
     onClick = handleUpdateSubaccountSettings;
     icon = OneClickIcon;
-    color = "yellow";
+    color = "blue";
     content = <Trans>One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading.</Trans>;
     buttonText = <Trans>Re-sign</Trans>;
   } else if (shouldShowExpiredSubaccountWarning) {
     onClick = handleUpdateSubaccountSettings;
     onCloseClick = dismissExpiredSubaccountWarning;
     icon = OneClickIcon;
-    color = "yellow";
+    color = "blue";
     content = <Trans>One-Click Trading time limit expired. You're now using Express Trading.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
   } else if (shouldShowExternalSwapSubaccountBlockedWarning) {
@@ -365,8 +365,8 @@ export function ExpressTradingWarningCard({
     color = "red";
     content = (
       <Trans>
-        This swap requires external routing, which isn't available with One-Click Trading. Disable One-Click to use
-        Express Trading.
+        This swap requires external routing, which isn't available with One-Click Trading. Disable One-Click Trading to
+        use Express Trading.
       </Trans>
     );
     buttonText = <Trans>Disable One-Click Trading</Trans>;
@@ -393,9 +393,7 @@ export function ExpressTradingWarningCard({
     icon = ExpressIcon;
     color = "red";
     content = (
-      <Trans>
-        GMX pools can't fill this swap, and no external route is currently available. Try reducing the amount.
-      </Trans>
+      <Trans>GMX pools can't fill this swap, and no external route is available. Try reducing the amount.</Trans>
     );
     const aggregatorSwapUrl = getExternalAggregatorSwapUrl({
       chainId,
@@ -411,7 +409,7 @@ export function ExpressTradingWarningCard({
     }
   } else if (shouldShowExternalSwapTwapNotSupportedWarning) {
     icon = ExpressIcon;
-    color = "yellow";
+    color = "red";
     content = (
       <Trans>
         TWAP swaps use GMX pool liquidity only, which can't fill this order size. Use a market order to enable external
@@ -428,7 +426,7 @@ export function ExpressTradingWarningCard({
     const gasPaymentTokenSymbol = expressParams.gasPaymentParams.gasPaymentToken.symbol;
 
     icon = ExpressIcon;
-    color = "yellow";
+    color = "blue";
     content = (
       <Trans>
         Insufficient {gasPaymentTokenSymbol} in your Wallet for Express fees. Express and One-Click Trading are
@@ -442,7 +440,7 @@ export function ExpressTradingWarningCard({
     };
   } else if (shouldShowSubaccountApprovalForAnotherNetworkWarning) {
     icon = OneClickIcon;
-    color = "yellow";
+    color = "blue";
     content = (
       <Trans>
         One-Click Trading needs a one-time signature for the current network. Approvals signed for other networks are
@@ -453,7 +451,7 @@ export function ExpressTradingWarningCard({
     onClick = handleUpdateSubaccountSettings;
   } else if (shouldShowSubaccountApprovalInvalidWarning) {
     icon = OneClickIcon;
-    color = "yellow";
+    color = "blue";
     content = (
       <Trans>
         One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Re-sign

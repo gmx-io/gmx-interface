@@ -1,4 +1,4 @@
-import type { SourceChainId } from "config/chains";
+import type { NetworkId, SourceChainId } from "config/chains";
 import type { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import type { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import type { ErrorData } from "lib/errors";
@@ -25,6 +25,7 @@ export type GlobalMetricData = {
   platform?: string;
   isInited?: boolean;
   srcChainId?: SourceChainId;
+  networkId?: NetworkId;
   hasNoTrades?: boolean;
 };
 

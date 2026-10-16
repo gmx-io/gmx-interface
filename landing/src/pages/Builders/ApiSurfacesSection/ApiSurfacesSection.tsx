@@ -10,8 +10,8 @@ import { Eyebrow } from "../Eyebrow";
 export function ApiSurfacesSection() {
   const cards = [
     {
-      title: t`Rest API`,
-      description: t`Prices, markets, positions, orders — one call away.`,
+      title: t`REST API`,
+      description: t`Prices, markets, positions, orders — one call away`,
       href: "https://docs.gmx.io/docs/api/gmx-api/gmx-io-gmx-public-api/",
       highlighted: false,
     },
@@ -23,12 +23,12 @@ export function ApiSurfacesSection() {
     },
     {
       title: t`Squid GraphQL`,
-      description: t`Query historical chain data fast.`,
+      description: t`Query historical chain data fast`,
       href: "https://docs.gmx.io/docs/api/graphql/",
       highlighted: false,
     },
     {
-      title: t`Smart Contracts`,
+      title: t`Smart contracts`,
       description: t`Direct smart contract integration`,
       href: "https://docs.gmx.io/docs/api/contracts/",
       highlighted: false,
@@ -39,10 +39,10 @@ export function ApiSurfacesSection() {
     <section className="bg-light-150 w-full px-16 py-60 text-slate-900 sm:px-40 sm:py-[120px]">
       <div className="mx-auto flex w-full max-w-[1200px] flex-col">
         <Eyebrow>
-          <Trans>API Surfaces</Trans>
+          <Trans>API surfaces</Trans>
         </Eyebrow>
         <h2 className="text-heading-2 mt-20">
-          <Trans>Four ways in.</Trans>
+          <Trans>Four ways in</Trans>
         </h2>
         <p className="text-18 mt-18 text-slate-900">
           <Trans>Pick what fits your stack. Everything's documented.</Trans>

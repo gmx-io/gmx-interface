@@ -473,7 +473,7 @@ function StakingPowerAlerts({ stakingPowerData }: { stakingPowerData: StakingPow
             label={
               <Tooltip
                 variant="iconStroke"
-                handle={<Trans>Staking Power Share</Trans>}
+                handle={<Trans>Staking power share</Trans>}
                 content={
                   <Trans>
                     Your share of the total network staking power. Treasury rewards will be distributed proportionally

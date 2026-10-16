@@ -145,7 +145,7 @@ function WalletBlock({ account }: { account: string }) {
         </button>
         <div className="flex items-center gap-8">
           <TooltipWithPortal
-            content={t`Receive to Wallet`}
+            content={t`Receive to wallet`}
             position="bottom"
             tooltipClassName="!min-w-max"
             variant="none"
@@ -155,7 +155,7 @@ function WalletBlock({ account }: { account: string }) {
             </button>
           </TooltipWithPortal>
           <TooltipWithPortal
-            content={t`Send from Wallet`}
+            content={t`Send from wallet`}
             position="bottom"
             tooltipClassName="!min-w-max"
             variant="none"
@@ -298,7 +298,7 @@ function GmxAccountBlock({ showDisconnectButton }: { showDisconnectButton: boole
       <div className="flex items-start justify-between gap-8">
         <div className="flex flex-col gap-6" data-qa="gmx-account-balance">
           <span className="text-body-small font-medium text-typography-secondary">
-            <Trans>GMX Account Balance</Trans>
+            <Trans>GMX Account balance</Trans>
           </span>
           <BalanceAmount
             usd={gmxAccountUsd}
@@ -414,7 +414,7 @@ function MenuList({ account }: { account: string }) {
     <div className="flex flex-col">
       <MenuRow
         icon={<PnlAnalysisIcon className="size-16" />}
-        label={<Trans>PnL Analysis</Trans>}
+        label={<Trans>PnL analysis</Trans>}
         onClick={handlePnlAnalysisClick}
       />
       <MenuRow

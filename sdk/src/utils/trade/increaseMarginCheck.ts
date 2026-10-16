@@ -12,12 +12,14 @@ export enum PositionMarginFailureReason {
   NonPositiveRemainingMargin = "< 0",
   MinCollateralForLeverage = "min collateral for leverage",
   InsufficientCollateralUsd = "insufficient collateral usd",
+  MaxAllowedLeverage = "max allowed leverage",
 }
 
 export function getIsMaxLeverageMarginReason(reason: PositionMarginFailureReason | undefined): boolean {
   return (
     reason === PositionMarginFailureReason.MinCollateralForLeverage ||
-    reason === PositionMarginFailureReason.InsufficientCollateralUsd
+    reason === PositionMarginFailureReason.InsufficientCollateralUsd ||
+    reason === PositionMarginFailureReason.MaxAllowedLeverage
   );
 }
 
@@ -158,18 +160,18 @@ export function getResultingPositionMarginState(p: PositionMarginStateParams): P
   return { ...state, isLiquidatable: false, reason: undefined };
 }
 
+export type IncreasePositionState = {
+  sizeInUsd: bigint;
+  sizeInTokens: bigint;
+  collateralAmount: bigint;
+  pendingImpactAmount: bigint;
+};
+
 export type IncreaseResultingPositionMarginStateParams = {
   marketInfo: MarketInfo;
   collateralToken: TokenData;
   isLong: boolean;
-  existingPosition:
-    | {
-        sizeInUsd: bigint;
-        sizeInTokens: bigint;
-        collateralAmount: bigint;
-        pendingImpactAmount: bigint;
-      }
-    | undefined;
+  existingPosition: IncreasePositionState | undefined;
   sizeDeltaUsd: bigint;
   sizeDeltaInTokens: bigint;
   collateralDeltaAmount: bigint;
@@ -187,6 +189,12 @@ function withPriceOverride<T extends TokenData>(token: T, indexToken: TokenData,
   return { ...token, prices: { minPrice: price, maxPrice: price } };
 }
 
+export type IncreaseResultingPositionState = {
+  marginState: PositionMarginState;
+  position: IncreasePositionState;
+  marketInfo: MarketInfo;
+};
+
 /**
  * Mirrors the post-increase gates of `IncreasePositionUtils.increasePosition` from the gmx-synthetics
  * build deployed on Arbitrum (release_2.2.1 @ 23c9d160: release-v2.2c plus MarketUtils.getPositivePnl
@@ -196,6 +204,12 @@ function withPriceOverride<T extends TokenData>(token: T, indexToken: TokenData,
 export function getIncreaseResultingPositionMarginState(
   p: IncreaseResultingPositionMarginStateParams
 ): PositionMarginState | undefined {
+  return getIncreaseResultingPositionState(p)?.marginState;
+}
+
+export function getIncreaseResultingPositionState(
+  p: IncreaseResultingPositionMarginStateParams
+): IncreaseResultingPositionState | undefined {
   const {
     isLong,
     existingPosition,
@@ -285,26 +299,36 @@ export function getIncreaseResultingPositionMarginState(
 
   const minCollateralUsdForOpenInterest = applyFactor(nextSizeInUsd, minCollateralFactorForOpenInterest);
 
-  if (remainingCollateralUsdForOpenInterest < minCollateralUsdForOpenInterest) {
-    return {
-      isLiquidatable: true,
-      reason: PositionMarginFailureReason.InsufficientCollateralUsd,
-      remainingCollateralUsd: remainingCollateralUsdForOpenInterest,
-      minCollateralUsd,
-      minCollateralUsdForLeverage: minCollateralUsdForOpenInterest,
-    };
-  }
-
-  return getResultingPositionMarginState({
-    marketInfo: nextMarketInfo,
-    collateralToken,
+  const position: IncreasePositionState = {
     sizeInUsd: nextSizeInUsd,
     sizeInTokens: nextSizeInTokens,
     collateralAmount: nextCollateralAmountClamped,
     pendingImpactAmount: nextPendingImpactAmount,
+  };
+
+  if (remainingCollateralUsdForOpenInterest < minCollateralUsdForOpenInterest) {
+    return {
+      marginState: {
+        isLiquidatable: true,
+        reason: PositionMarginFailureReason.InsufficientCollateralUsd,
+        remainingCollateralUsd: remainingCollateralUsdForOpenInterest,
+        minCollateralUsd,
+        minCollateralUsdForLeverage: minCollateralUsdForOpenInterest,
+      },
+      position,
+      marketInfo: nextMarketInfo,
+    };
+  }
+
+  const marginState = getResultingPositionMarginState({
+    marketInfo: nextMarketInfo,
+    collateralToken,
+    ...position,
     minCollateralUsd,
     isLong,
     userReferralInfo,
     proDiscountFactor,
   });
+
+  return { marginState, position, marketInfo: nextMarketInfo };
 }
