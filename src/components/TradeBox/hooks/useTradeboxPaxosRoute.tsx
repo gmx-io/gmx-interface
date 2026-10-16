@@ -394,7 +394,6 @@ export function useTradeboxPaxosRoute({
   return {
     direction,
     isActive,
-    isWhitelisted,
     isByPay,
     isSmartWallet,
     isApprovalProposalPending,

@@ -13282,10 +13282,6 @@ msgstr "將觸發價格設為高於標記價格"
 msgid "No opportunities on this chain yet"
 msgstr "此鏈上尚無機會"
 
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
-msgid "Large LP or balancer? Ask <0>@GMXPartners</0> about zero-fee access."
-msgstr "大型 LP 或平衡者？請向 <0>@GMXPartners</0> 詢問零費用資格。"
-
 #: src/components/TradeBox/ResultingMarginWarningCard.tsx
 msgid "One or more later TWAP parts may fail because the resulting position would exceed the maximum allowed leverage. Increase margin or reduce the total size."
 msgstr "由於最終倉位將超過允許的最大槓桿，一個或多個後續 TWAP 部分可能失敗。請增加保證金或減小總規模。"
