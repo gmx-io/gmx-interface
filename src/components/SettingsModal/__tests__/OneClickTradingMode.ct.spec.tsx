@@ -325,3 +325,43 @@ test.describe("Trading Settings: enabling One-Click with real signatures (FEDEV-
     expect(recoveredTypedDataSigner).toBe(MOCK_ACCOUNT);
   });
 });
+
+test.describe("Trading Settings: One-Click limits before activation", () => {
+  for (const isContractAccount of [false, true]) {
+    test(`${isContractAccount ? "a smart wallet does not see" : "an EOA can set"} One-Click limits before activating`, async ({
+      mount,
+      page,
+    }) => {
+      const chain = new MockChain({ walletPrivateKey: MOCK_ACCOUNT_PRIVATE_KEY, isContractAccount });
+      await installRpcResponder(page, chain);
+
+      await mount(<OneClickTradingModeStory expressEnabled />);
+
+      const oneClick = modeButton(page, "Express + One-Click");
+      const settings = page.getByRole("button", { name: "One-Click settings" });
+      if (isContractAccount) {
+        // the One-Click mode is disabled once the account check finds contract code
+        await expect(oneClick).toHaveClass(/(?:^|\s)cursor-not-allowed(?:\s|$)/);
+        await expect(settings).toHaveCount(0);
+      } else {
+        await expect(settings).toBeVisible();
+      }
+    });
+  }
+
+  test("very long limits keep the settings usable instead of crashing the modal", async ({ mount, page }) => {
+    await installRpcResponder(page, new MockChain({ walletPrivateKey: MOCK_ACCOUNT_PRIVATE_KEY }));
+    await mount(<OneClickTradingModeStory expressEnabled />);
+
+    await page.getByRole("button", { name: "One-Click settings" }).click();
+    const limitInput = (label: string) =>
+      settingsModal(page).getByText(label, { exact: true }).locator("xpath=..").locator("input");
+    // 22 digits made parseInt return "1.1e+21", which BigInt threw on while rendering
+    await limitInput("Action(s)").fill("1".repeat(22));
+    await limitInput("Day(s)").fill("4".repeat(400));
+
+    await expect(limitInput("Action(s)")).toHaveValue("1".repeat(22));
+    await expect(page.getByRole("button", { name: "Save settings" })).toBeEnabled();
+    await expect(settingsModal(page)).toBeVisible();
+  });
+});

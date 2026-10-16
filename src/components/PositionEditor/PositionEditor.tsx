@@ -94,7 +94,7 @@ import "./PositionEditor.scss";
 export function PositionEditor() {
   const { chainId, srcChainId } = useChainId();
   const { expressOrdersEnabled, setExpressOrdersEnabled, setIsSettingsVisible } = useSettings();
-  const [, setEditingPositionKey] = usePositionEditorPositionState();
+  const [editingPositionKey, setEditingPositionKey] = usePositionEditorPositionState();
   const tokensData = useTokensData();
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
   const { minCollateralUsd } = usePositionsConstants();
@@ -106,7 +106,9 @@ export function PositionEditor() {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
   const isVisible = Boolean(position);
+  const prevEditingPositionKey = usePrevious(editingPositionKey);
   const prevIsVisible = usePrevious(isVisible);
+  const lastVisibleIncreasedAtTimeRef = useRef<bigint | undefined>(undefined);
 
   const [operation, setOperation] = usePositionEditorOperation();
   const isDeposit = operation === Operation.Deposit;
@@ -384,7 +386,16 @@ export function PositionEditor() {
 
   useEffect(
     function resetFormAndApplyOpenRequest() {
-      if (isVisible !== prevIsVisible || atPriceOpenRequest) {
+      // A data gap brings the same position back, but a position closed under the open editor and reopened
+      // later keeps its key with a new increase time.
+      const increasedAtTime = position?.increasedAtTime;
+      const isReopenedPosition =
+        isVisible && !prevIsVisible && increasedAtTime !== lastVisibleIncreasedAtTimeRef.current;
+      if (increasedAtTime !== undefined) {
+        lastVisibleIncreasedAtTimeRef.current = increasedAtTime;
+      }
+
+      if (editingPositionKey !== prevEditingPositionKey || isReopenedPosition || atPriceOpenRequest) {
         setCollateralInputValue("");
       }
 
@@ -417,9 +428,12 @@ export function PositionEditor() {
     [
       atPriceOpenRequest,
       clearAtPriceOpenRequest,
+      editingPositionKey,
       isVisible,
       position?.collateralToken?.decimals,
+      position?.increasedAtTime,
       position?.indexToken?.visualMultiplier,
+      prevEditingPositionKey,
       prevIsVisible,
       replacingOrder,
       setCollateralInputValue,

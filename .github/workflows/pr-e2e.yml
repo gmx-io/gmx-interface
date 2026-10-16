@@ -1,0 +1,230 @@
+name: PR e2e
+
+run-name: "E2E for PR #${{ github.event.pull_request.number || inputs.pr_number }}"
+
+# Non-funded Playwright suites against the PR's Cloudflare previews. Funded checks stay in release-regression.yml.
+# Runs on request only, so concurrent PR pushes don't queue full suites: add the run-e2e label or dispatch it.
+on:
+  pull_request:
+    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "Open PR number; waits up to 30 minutes for its current app and landing previews"
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-e2e-${{ github.event.pull_request.number || inputs.pr_number }}-${{ github.event.label.name || 'dispatch' }}
+  cancel-in-progress: true
+
+jobs:
+  resolve-preview:
+    name: Wait for PR previews
+    if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'run-e2e'
+    runs-on: ubuntu-latest
+    # Up to 30 minutes for the app preview, then up to 10 more for the landing preview.
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      pull-requests: read
+      checks: read
+    outputs:
+      preview_url: ${{ steps.preview.outputs.preview_url }}
+      landing_url: ${{ steps.preview.outputs.landing_url }}
+      head_sha: ${{ steps.preview.outputs.head_sha }}
+      check_url: ${{ steps.preview.outputs.check_url }}
+      pr_number: ${{ steps.preview.outputs.pr_number }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Resolve Cloudflare previews for the PR head
+        id: preview
+        uses: actions/github-script@v7
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr_number }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        with:
+          script: |
+            if (context.eventName === 'workflow_dispatch') {
+              // A dispatch runs the PR's tests with repository secrets, which a fork's code must not get.
+              const { data: pull } = await github.rest.pulls.get({ ...context.repo, pull_number: Number(process.env.PR_NUMBER) });
+              if (pull.head.repo?.full_name !== `${context.repo.owner}/${context.repo.repo}`) {
+                throw new Error('Dispatched runs only test same-repository PRs; add the run-e2e label to a fork PR instead.');
+              }
+            }
+            const resolvePreview = require('./autotests/regression/ci/resolvePreview.cjs');
+            const options = { github, repository: context.repo, prNumber: process.env.PR_NUMBER, maxAttempts: 121 };
+            const preview = await resolvePreview({
+              ...options,
+              expectedHeadSha: process.env.PR_HEAD_SHA || undefined,
+              onWait: ({ attempt }) => core.info(`Waiting for the app preview (${attempt}/120)...`),
+            });
+            const landing = await resolvePreview({
+              ...options,
+              expectedHeadSha: preview.headSha,
+              project: 'gmx-interface-home',
+              maxAttempts: 41,
+              onWait: ({ attempt }) => core.info(`Waiting for the landing preview (${attempt}/40)...`),
+            });
+            core.setOutput('preview_url', preview.url);
+            core.setOutput('landing_url', landing.url);
+            core.setOutput('head_sha', preview.headSha);
+            core.setOutput('check_url', preview.checkUrl);
+            core.setOutput('pr_number', preview.prNumber);
+
+  e2e:
+    # Arbitrum runs in full; the avalanche projects add the small set of tests tagged @avalanche.
+    name: E2E (shard ${{ matrix.shard }}/3)
+    needs: resolve-preview
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
+    env:
+      REGRESSION_BASE_URL: ${{ needs.resolve-preview.outputs.preview_url }}
+      REGRESSION_LANDING_URL: ${{ needs.resolve-preview.outputs.landing_url }}
+      REGRESSION_CHAIN_ID: 42161
+      REGRESSION_PR_NUMBER: ${{ needs.resolve-preview.outputs.pr_number }}
+      REGRESSION_DEPLOYMENT_SHA: ${{ needs.resolve-preview.outputs.head_sha }}
+      REGRESSION_DEPLOYMENT_CHECK_URL: ${{ needs.resolve-preview.outputs.check_url }}
+      REGRESSION_CANDIDATE_ROOT: ${{ github.workspace }}/.context/regression-candidate
+      # Source-chain RPC reads in connected-state fixtures; public RPCs rate-limit CI runners.
+      REGRESSION_ALCHEMY_KEY: ${{ secrets.REGRESSION_ALCHEMY_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # A dispatch starts from the selected branch; test the PR's own suite as a label run does.
+          ref: ${{ github.event_name == 'workflow_dispatch' && format('refs/pull/{0}/merge', needs.resolve-preview.outputs.pr_number) || '' }}
+          persist-credentials: false
+      - name: Read endpoint and market configuration from the deployed PR commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.resolve-preview.outputs.head_sha }}
+          path: .context/regression-candidate
+          sparse-checkout: |
+            src/config/indexers.ts
+            src/config/markets.ts
+            src/config/backend.ts
+            src/config/events.tsx
+            sdk/src/configs/oracleKeeper.ts
+            sdk/src/configs/api.ts
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - run: echo "REGRESSION_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: yarn
+      - name: Install dependencies
+        run: |
+          yarn install --immutable --mode=skip-build
+          yarn --cwd sdk install --immutable --mode=skip-build
+      - name: Install Chromium
+        run: yarn exec playwright install --with-deps chromium
+      - name: Check the Alchemy key for source-chain reads
+        if: ${{ matrix.shard == 1 && env.REGRESSION_ALCHEMY_KEY != '' }}
+        run: |
+          for network in base-mainnet eth-mainnet bnb-mainnet; do
+            result=$(curl -s -m 20 -X POST -H 'content-type: application/json' \
+              -d '{"jsonrpc":"2.0","id":1,"method":"eth_blockNumber","params":[]}' \
+              "https://$network.g.alchemy.com/v2/$REGRESSION_ALCHEMY_KEY" | jq -r '.result // .error.message // "no response"')
+            case "$result" in
+              0x*) echo "$network: block $((result))" ;;
+              *) echo "::warning::Alchemy $network does not answer ($result); connected-state source-chain reads will fail" ;;
+            esac
+          done
+      - name: Run non-funded suites
+        env:
+          PLAYWRIGHT_BLOB_OUTPUT_DIR: blob-report
+          PLAYWRIGHT_BLOB_OUTPUT_NAME: report-${{ matrix.shard }}.zip
+        # A shard this broken is not worth finishing; the report lists the tests that did not run.
+        run: yarn test:regression --shard=${{ matrix.shard }}/3 --reporter=blob --max-failures=20
+      - name: Upload shard report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-blob-${{ matrix.shard }}
+          path: blob-report/
+          retention-days: 3
+
+  report:
+    name: Report
+    needs: [resolve-preview, e2e]
+    if: ${{ !cancelled() && needs.resolve-preview.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && format('refs/pull/{0}/merge', needs.resolve-preview.outputs.pr_number) || '' }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: yarn
+      - name: Install dependencies
+        run: yarn install --immutable --mode=skip-build
+      - name: Download shard reports
+        uses: actions/download-artifact@v4
+        with:
+          pattern: e2e-blob-*
+          path: blobs
+      - name: Merge shard reports
+        run: |
+          mkdir -p merged all-blobs
+          cp blobs/e2e-blob-*/*.zip all-blobs/ 2>/dev/null || exit 0
+          PLAYWRIGHT_JSON_OUTPUT_FILE=merged/report.json PLAYWRIGHT_HTML_OUTPUT_DIR=merged/html \
+            yarn playwright merge-reports --reporter=json,html all-blobs
+          node autotests/regression/report.cjs merged/report.json > merged/summary.md || true
+          cat merged/summary.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload merged reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-report-pr-${{ needs.resolve-preview.outputs.pr_number }}-${{ github.run_id }}
+          path: merged/
+          retention-days: 14
+      - name: List changed files
+        env:
+          GH_TOKEN: ${{ github.token }}
+        # The files API lists names without the diff, which GitHub refuses past 20,000 lines.
+        run: gh api --paginate "repos/${{ github.repository }}/pulls/${{ needs.resolve-preview.outputs.pr_number }}/files" --jq '.[].filename' > changed-files.txt || true
+      - name: Write report comment
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          OPENROUTER_MODEL: ${{ vars.OPENROUTER_MODEL }}
+          PR_NUMBER: ${{ needs.resolve-preview.outputs.pr_number }}
+          HEAD_SHA: ${{ needs.resolve-preview.outputs.head_sha }}
+          PREVIEW_URL: ${{ needs.resolve-preview.outputs.preview_url }}
+          LANDING_URL: ${{ needs.resolve-preview.outputs.landing_url }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          yarn tsx --tsconfig autotests/regression/tsconfig.json autotests/regression/ci/aiReport.ts \
+            --report "Arbitrum + Avalanche"=merged/report.json \
+            --summary "Arbitrum + Avalanche"=merged/summary.md \
+            --changed-files changed-files.txt --out regression-comment.md
+          cat regression-comment.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Post or update the PR comment
+        # Fork PRs get a read-only token; their summary stays in the job summary.
+        if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/github-script@v7
+        env:
+          PR_NUMBER: ${{ needs.resolve-preview.outputs.pr_number }}
+        with:
+          script: |
+            const body = require('fs').readFileSync('regression-comment.md', 'utf8');
+            const marker = '<!-- regression-ai-report -->';
+            const issue = { ...context.repo, issue_number: Number(process.env.PR_NUMBER) };
+            const comments = await github.paginate(github.rest.issues.listComments, issue);
+            const previous = comments.find((comment) => comment.user?.type === 'Bot' && comment.body?.startsWith(marker));
+            if (previous) await github.rest.issues.updateComment({ ...context.repo, comment_id: previous.id, body });
+            else await github.rest.issues.createComment({ ...issue, body });

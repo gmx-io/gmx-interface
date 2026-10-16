@@ -78,6 +78,7 @@ import {
 } from "domain/tpsl/utils";
 import { DUST_USD } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
 import {
   calculateDisplayDecimals,
   formatDeltaUsdParts,
@@ -868,10 +869,14 @@ export function AddTPSLModal({
         }),
         provider,
         isGmxAccount: srcChainId !== undefined,
-      });
-
-      setIsVisible(false);
-      onSuccess?.();
+      }).then(
+        () => {
+          setIsVisible(false);
+          onSuccess?.();
+        },
+        // The transaction callback displays the failure; keep the form open.
+        reportHandledRejection("addTPSLModal.submit")
+      );
     } finally {
       setIsSubmitting(false);
     }

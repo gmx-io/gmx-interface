@@ -90,6 +90,7 @@ import {
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { useLocalizedMap } from "lib/i18n";
+import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
 import { adjustForDecimals, formatAmountFree } from "lib/numbers";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { sleep } from "lib/sleep";
@@ -598,6 +599,8 @@ export function useTradeboxButtonState({
     }
 
     if (expressParams?.subaccount) {
+      // The transaction callback reports failures after this handler returns.
+      void txnPromise.catch(reportHandledRejection("tradebox.submit"));
       /**
        * Wait 2 seconds to prevent double click on button
        * waiting for txnPromise may not be enough because it's sometimes resolves very fast
