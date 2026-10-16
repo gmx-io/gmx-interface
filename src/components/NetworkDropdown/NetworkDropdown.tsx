@@ -1,18 +1,21 @@
 import { Menu } from "@headlessui/react";
-import { Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import partition from "lodash/partition";
 import { useMemo, useState, type ReactNode } from "react";
 import { useAccount } from "wagmi";
 
+import { getIsSolanaNetworkEnabled } from "config/ab";
+import { isSolanaNetwork } from "config/chains";
 import { getChainIcon } from "config/icons";
 import { isValidVisualSettlementChain, isValidVisualSourceChain } from "config/multichain";
 import type { NetworkOption } from "config/networkOptions";
+import { useChainId } from "lib/chains";
 import { extendError } from "lib/errors";
 import { SMART_WALLET_CHAIN_UNAVAILABLE_ERROR } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
-import { switchNetwork } from "lib/wallets";
+import { selectSolanaNetworkInApp, switchNetwork } from "lib/wallets";
 import { useWalletCanSignTypedData, useWalletUnavailableChains } from "lib/wallets/useWalletSessionChains";
 import { getChainName, isContractsChain } from "sdk/configs/chains";
 
@@ -24,14 +27,16 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
 import WalletIcon from "img/ic_wallet.svg?react";
+import solanaIcon from "img/tokens/ic_sol.svg";
 
 import { GmTradeModal, SolanaNetworkItem } from "./SolanaNetworkItem";
 
 import "./NetworkDropdown.scss";
 
 function NavIcons({ chainId, open }: { chainId: number; open: boolean }) {
-  const icon = getChainIcon(chainId);
-  const chainName = getChainName(chainId);
+  const isSolanaNetworkSelected = isSolanaNetwork(useChainId().networkId);
+  const icon = isSolanaNetworkSelected ? solanaIcon : getChainIcon(chainId);
+  const chainName = isSolanaNetworkSelected ? t`Solana` : getChainName(chainId);
 
   return (
     <>
@@ -50,6 +55,20 @@ export default function NetworkDropdown({
   networkOptions: NetworkOption[];
 }) {
   const [isGmTradeModalVisible, setIsGmTradeModalVisible] = useState(false);
+  const isSolanaNetworkSelected = isSolanaNetwork(useChainId().networkId);
+
+  const handleSolanaSelect = () => {
+    if (isSolanaNetworkSelected) {
+      return;
+    }
+
+    if (getIsSolanaNetworkEnabled()) {
+      selectSolanaNetworkInApp();
+      return;
+    }
+
+    setIsGmTradeModalVisible(true);
+  };
 
   return (
     <div className="relative flex items-center gap-8">
@@ -70,7 +89,7 @@ export default function NetworkDropdown({
                 <NetworkMenuItems
                   networkOptions={networkOptions}
                   chainId={chainId}
-                  onSolanaSelect={() => setIsGmTradeModalVisible(true)}
+                  onSolanaSelect={handleSolanaSelect}
                 />
               </div>
             </Menu.Items>
@@ -194,6 +213,7 @@ function NetworkMenuItems({
 
 function NetworkMenuItem({ network, chainId }: { network: DisplayNetworkOption; chainId: number }) {
   const { isConnected } = useAccount();
+  const isSelected = !isSolanaNetwork(useChainId().networkId) && chainId === network.value;
   const disabled = Boolean(network.disabledReason);
   const Wrapper = disabled ? TooltipWithPortal : NoopWrapper;
 
@@ -230,12 +250,12 @@ function NetworkMenuItem({ network, chainId }: { network: DisplayNetworkOption; 
               <span
                 className={cx(
                   "network-dropdown-item-label",
-                  chainId === network.value ? "text-typography-primary" : "text-typography-secondary"
+                  isSelected ? "text-typography-primary" : "text-typography-secondary"
                 )}
               >
                 {network.label}
               </span>
-              {isValidVisualSettlementChain(network.value) && chainId === network.value && (
+              {isValidVisualSettlementChain(network.value) && isSelected && (
                 <TooltipWithPortal
                   handle={<WalletIcon className="size-16 text-typography-secondary" />}
                   position="top"
@@ -245,7 +265,7 @@ function NetworkMenuItem({ network, chainId }: { network: DisplayNetworkOption; 
                 />
               )}
             </div>
-            {chainId === network.value && (
+            {isSelected && (
               <div className="mr-[2.5px] size-[5px] rounded-full bg-green-300 shadow-[0_0_0_2.5px_rgb(var(--color-green-300-raw)/0.2)]" />
             )}
           </div>
