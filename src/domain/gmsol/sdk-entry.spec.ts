@@ -1,10 +1,6 @@
 import { beforeEach, expect, it, vi } from "vitest";
 
-const { initWasm, bind, start } = vi.hoisted(() => ({
-  initWasm: vi.fn(),
-  bind: vi.fn(),
-  start: vi.fn(),
-}));
+const { initWasm, bind, start } = vi.hoisted(() => ({ initWasm: vi.fn(), bind: vi.fn(), start: vi.fn() }));
 
 vi.mock("@gmsol-labs/gmsol-sdk/index_bg.js", () => ({ __wbg_set_wasm: bind }));
 vi.mock("@gmsol-labs/gmsol-sdk/index_bg.wasm?init", () => ({ default: initWasm }));
@@ -16,32 +12,22 @@ beforeEach(() => {
   initWasm.mockReset().mockResolvedValue({ exports: { __wbindgen_start: start } });
 });
 
-it("shares successful initialization across concurrent and later calls", async () => {
+it.each([false, true])("shares initialization, including after a recoverable loading failure: %s", async (retry) => {
   const { initialize } = await import("./sdk-entry.js");
-  const first = initialize();
-  expect(initialize()).toBe(first);
-  await first;
-  expect(initialize()).toBe(first);
-  expect(initWasm).toHaveBeenCalledTimes(1);
-  expect(bind).toHaveBeenCalledTimes(1);
-  expect(start).toHaveBeenCalledTimes(1);
-});
-
-it("retries failed WASM loading on the next call without binding a failed instance", async () => {
-  const error = new TypeError("Failed to fetch WASM");
-  initWasm.mockRejectedValueOnce(error);
-  const { initialize } = await import("./sdk-entry.js");
-  const first = initialize();
-  expect(initialize()).toBe(first);
-  await expect(first).rejects.toBe(error);
-  expect(bind).not.toHaveBeenCalled();
-  expect(start).not.toHaveBeenCalled();
-
-  const retry = initialize();
-  expect(initialize()).toBe(retry);
-  await expect(retry).resolves.toBeDefined();
-  expect(initialize()).toBe(retry);
-  expect(initWasm).toHaveBeenCalledTimes(2);
+  if (retry) {
+    const error = new TypeError("Failed to fetch WASM");
+    initWasm.mockRejectedValueOnce(error);
+    const failed = initialize();
+    expect(initialize()).toBe(failed);
+    await expect(failed).rejects.toBe(error);
+    expect(bind).not.toHaveBeenCalled();
+    expect(start).not.toHaveBeenCalled();
+  }
+  const pending = initialize();
+  expect(initialize()).toBe(pending);
+  await expect(pending).resolves.toMatchObject({ __wbg_set_wasm: bind });
+  expect(initialize()).toBe(pending);
+  expect(initWasm).toHaveBeenCalledTimes(retry ? 2 : 1);
   expect(bind).toHaveBeenCalledTimes(1);
   expect(start).toHaveBeenCalledTimes(1);
 });

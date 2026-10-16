@@ -8,16 +8,17 @@ import { fetchSolanaTradingEnabled } from "./fetchSolanaTradingEnabled";
 afterEach(() => vi.unstubAllGlobals());
 
 it("requires fresh explicit permission from the Arbitrum keeper on every read", async () => {
-  for (const enabled of [true, false, undefined, "true", 1]) {
-    const fetchMock = vi.fn().mockResolvedValue(Response.json({ solanaTrading: { enabled } }));
-    vi.stubGlobal("fetch", fetchMock);
+  const fetchMock = vi.fn();
+  vi.stubGlobal("fetch", fetchMock);
+  for (const enabled of [true, false, undefined, "true", 1, null]) {
+    fetchMock.mockClear().mockResolvedValueOnce(Response.json({ solanaTrading: { enabled } }));
     await expect(fetchSolanaTradingEnabled()).resolves.toBe(enabled === true);
     expect(fetchMock).toHaveBeenCalledWith(`${getOracleKeeperUrl(ARBITRUM)}/ui-flags/v2`, {
       cache: "no-store",
       signal: expect.any(AbortSignal),
     });
   }
-  vi.stubGlobal("fetch", vi.fn().mockResolvedValue(Response.json({})));
+  fetchMock.mockResolvedValueOnce(Response.json({}));
   await expect(fetchSolanaTradingEnabled()).resolves.toBe(false);
 });
 
