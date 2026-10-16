@@ -13282,10 +13282,6 @@ msgstr "Définissez un prix de déclenchement supérieur au prix de référence"
 msgid "No opportunities on this chain yet"
 msgstr "Aucune opportunité sur cette chaîne pour le moment"
 
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
-msgid "Large LP or balancer? Ask <0>@GMXPartners</0> about zero-fee access."
-msgstr "Grand LP ou balancer ? Demandez à <0>@GMXPartners</0> un accès sans frais."
-
 #: src/components/TradeBox/ResultingMarginWarningCard.tsx
 msgid "One or more later TWAP parts may fail because the resulting position would exceed the maximum allowed leverage. Increase margin or reduce the total size."
 msgstr "Une ou plusieurs parties ultérieures du TWAP peuvent échouer, car la position résultante dépasserait l'effet de levier maximal autorisé. Augmentez la marge ou réduisez la taille totale."
