@@ -56,8 +56,10 @@ async function holdQuotes(page: Page, stargate: string) {
   const released = new Promise<void>((resolve) => (release = resolve));
   let held = 0;
   await page.route("**/*", async (route) => {
-    const body = route.request().postData()?.toLowerCase() ?? "";
-    if (!body.includes(stargate.slice(2).toLowerCase()) || !body.includes(QUOTE_OFT.slice(2))) return route.fallback();
+    const body = route.request().postData() ?? "";
+    // calldata hex casing is not fixed, so the address is matched case-insensitively
+    if (!new RegExp(stargate.slice(2), "i").test(body) || !new RegExp(QUOTE_OFT.slice(2), "i").test(body))
+      return route.fallback();
     held++;
     await released;
     await route.fallback();

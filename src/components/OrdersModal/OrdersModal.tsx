@@ -39,6 +39,7 @@ import {
 } from "domain/synthetics/positions";
 import type { TokenData } from "domain/synthetics/tokens";
 import { usePendingTpSlOrders } from "domain/tpsl/usePendingTpSlOrders";
+import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
@@ -254,9 +255,7 @@ export function OrdersModal({
         }),
         provider,
         isGmxAccount: srcChainId !== undefined,
-      }).catch(() => {
-        // The transaction callback displays the cancellation failure.
-      });
+      }).catch(reportHandledRejection("ordersModal.cancelAll"));
     } finally {
       setIsCancellingAll(false);
       setCancellingOrdersKeys((prev) => prev.filter((k) => !orderKeys.includes(k)));

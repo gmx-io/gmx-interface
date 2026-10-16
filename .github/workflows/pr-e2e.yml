@@ -50,6 +50,13 @@ jobs:
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         with:
           script: |
+            if (context.eventName === 'workflow_dispatch') {
+              // A dispatch runs the PR's tests with repository secrets, which a fork's code must not get.
+              const { data: pull } = await github.rest.pulls.get({ ...context.repo, pull_number: Number(process.env.PR_NUMBER) });
+              if (pull.head.repo?.full_name !== `${context.repo.owner}/${context.repo.repo}`) {
+                throw new Error('Dispatched runs only test same-repository PRs; add the run-e2e label to a fork PR instead.');
+              }
+            }
             const resolvePreview = require('./autotests/regression/ci/resolvePreview.cjs');
             const options = { github, repository: context.repo, prNumber: process.env.PR_NUMBER, maxAttempts: 121 };
             const preview = await resolvePreview({
@@ -93,6 +100,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          # A dispatch starts from the selected branch; test the PR's own suite as a label run does.
+          ref: ${{ github.event_name == 'workflow_dispatch' && format('refs/pull/{0}/merge', needs.resolve-preview.outputs.pr_number) || '' }}
           persist-credentials: false
       - name: Read endpoint and market configuration from the deployed PR commit
         uses: actions/checkout@v4
@@ -157,6 +166,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && format('refs/pull/{0}/merge', needs.resolve-preview.outputs.pr_number) || '' }}
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:

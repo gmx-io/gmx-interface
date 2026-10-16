@@ -915,6 +915,38 @@ export default function TVChartContainer({
       });
     }
 
+    /*
+    For some reason on prod TV sometimes does not get initialized properly,
+    for these cases we wait some fixed amount of time and force TV into initialization
+    */
+    let forceInitTimeout: ReturnType<typeof setTimeout> | undefined;
+    const scheduleForceInit = () => {
+      clearTimeout(forceInitTimeout);
+      forceInitTimeout = setTimeout(() => {
+        if (disposed || pageHidden || didTriggerOnChartReady.current || !chartContainerRef.current) {
+          return;
+        }
+
+        const iframe = chartContainerRef.current.querySelector("iframe");
+
+        if (!iframe || !iframe.contentWindow) {
+          return;
+        }
+        const iframeWindow = iframe.contentWindow;
+        const iframeDocument = iframeWindow.document;
+
+        if (iframeDocument.readyState !== "complete") {
+          iframeDocument.addEventListener("readystatechange", () => {
+            if (!disposed && iframeDocument.readyState === "complete") {
+              iframeWindow.dispatchEvent(new Event("innerWindowLoad"));
+            }
+          });
+        } else {
+          iframeWindow.dispatchEvent(new Event("innerWindowLoad"));
+        }
+      }, 800);
+    };
+
     const onPageHide = () => {
       pageHidden = true;
       // The browser can destroy the iframe before React unmounts the chart.
@@ -923,41 +955,18 @@ export default function TVChartContainer({
     const onPageShow = () => {
       pageHidden = false;
       if (disposed) return;
-      if (didTriggerOnChartReady.current) tvWidgetRef.current = widget;
-      else widget.onChartReady(onChartReady);
+      if (didTriggerOnChartReady.current) {
+        tvWidgetRef.current = widget;
+      } else {
+        widget.onChartReady(onChartReady);
+        // a timeout that fired while the page was hidden skipped the forced init
+        scheduleForceInit();
+      }
     };
     window.addEventListener("pagehide", onPageHide);
     window.addEventListener("pageshow", onPageShow);
     widget.onChartReady(onChartReady);
-
-    /*
-    For some reason on prod TV sometimes does not get initialized properly,
-    for these cases we wait some fixed amount of time and force TV into initialization
-    */
-
-    const forceInitTimeout = setTimeout(() => {
-      if (disposed || pageHidden || didTriggerOnChartReady.current || !chartContainerRef.current) {
-        return;
-      }
-
-      const iframe = chartContainerRef.current.querySelector("iframe");
-
-      if (!iframe || !iframe.contentWindow) {
-        return;
-      }
-      const iframeWindow = iframe.contentWindow;
-      const iframeDocument = iframeWindow.document;
-
-      if (iframeDocument.readyState !== "complete") {
-        iframeDocument.addEventListener("readystatechange", () => {
-          if (!disposed && iframeDocument.readyState === "complete") {
-            iframeWindow.dispatchEvent(new Event("innerWindowLoad"));
-          }
-        });
-      } else {
-        iframeWindow.dispatchEvent(new Event("innerWindowLoad"));
-      }
-    }, 800);
+    scheduleForceInit();
 
     return () => {
       disposed = true;

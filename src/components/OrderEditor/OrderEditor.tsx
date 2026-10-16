@@ -113,6 +113,7 @@ import {
 } from "domain/tpsl/utils";
 import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
+import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
 import { calculateDisplayDecimals, formatAmount, formatAmountFree, formatBalanceAmount, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
@@ -669,7 +670,7 @@ export function OrderEditor(p: Props) {
 
     if (expressParams?.subaccount) {
       // The transaction callback reports failures after this handler returns.
-      void txnPromise.catch(() => undefined);
+      void txnPromise.catch(reportHandledRejection("orderEditor.submit"));
       p.onClose();
       setIsSubmitting(false);
       if (market) {
@@ -679,15 +680,12 @@ export function OrderEditor(p: Props) {
     }
 
     txnPromise
-      .then(
-        () => {
-          p.onClose();
-          if (market) {
-            sendEditOrderEvent({ order: p.order, source: p.source, marketInfo: market });
-          }
-        },
-        () => undefined
-      )
+      .then(() => {
+        p.onClose();
+        if (market) {
+          sendEditOrderEvent({ order: p.order, source: p.source, marketInfo: market });
+        }
+      }, reportHandledRejection("orderEditor.submit"))
       .finally(() => {
         setIsSubmitting(false);
       });

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { buildRunDigest, cleanError, type PlaywrightReport } from "./runDigest";
+import { buildRunDigest, cleanError, summarizeChangedFiles, type PlaywrightReport } from "./runDigest";
 
 const result = (status: string, message?: string) => ({
   status,
@@ -126,4 +126,22 @@ test("a run stopped at its failure limit reports the tests it did not run", () =
 
 test("long errors are truncated", () => {
   assert.equal(cleanError("x".repeat(20), 5), "xxxxx…");
+});
+
+test("changed files list app code before tests and CI, with counts past the cap", () => {
+  const files = [
+    ".github/workflows/pr-e2e.yml",
+    "autotests/regression/ui/pools.spec.ts",
+    "src/lib/multicall/Multicall.spec.ts",
+    "src/lib/multicall/Multicall.ts",
+    "src/components/Foo/__tests__/Foo.ct.spec.tsx",
+    "playwright-regression.config.ts",
+    "README.md",
+    "src/components/TradeBox/TradeBox.tsx",
+  ];
+  assert.deepEqual(summarizeChangedFiles(files, 3), {
+    total: 8,
+    appFileCount: 2,
+    files: ["src/lib/multicall/Multicall.ts", "src/components/TradeBox/TradeBox.tsx", ".github/workflows/pr-e2e.yml"],
+  });
 });

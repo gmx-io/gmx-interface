@@ -114,3 +114,17 @@ export function buildRunDigest(report: PlaywrightReport) {
 }
 
 export type RunDigest = ReturnType<typeof buildRunDigest>;
+
+const TEST_OR_CI_FILE =
+  /^(?:autotests\/|\.github\/|playwright[^/]*\.config\.ts$)|(?:^|\/)__tests__\/|\.(?:spec|test|ct\.spec|stories)\.[cm]?[jt]sx?$|\.md$/;
+
+// App files go first so a large PR's source changes survive the cap on what the model reads.
+export function summarizeChangedFiles(files: string[], limit = 150) {
+  const appFiles = files.filter((file) => !TEST_OR_CI_FILE.test(file));
+  const otherFiles = files.filter((file) => TEST_OR_CI_FILE.test(file));
+  return {
+    total: files.length,
+    appFileCount: appFiles.length,
+    files: [...appFiles, ...otherFiles].slice(0, limit),
+  };
+}

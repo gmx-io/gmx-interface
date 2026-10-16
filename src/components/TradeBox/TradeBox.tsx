@@ -83,6 +83,7 @@ import { Token } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useLocalizedMap } from "lib/i18n";
 import { throttleLog } from "lib/logging";
+import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
 import {
   calculateDisplayDecimals,
   formatAmount,
@@ -386,8 +387,9 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
       if (isMobile) {
         setExternalIsCurtainOpen(false);
       }
-    } catch {
+    } catch (error) {
       // Transaction callbacks already display the failure; keep the form open.
+      reportHandledRejection("tradebox.submit")(error);
     }
   }, [submitButtonState, isMobile, setExternalIsCurtainOpen]);
 

@@ -1,4 +1,11 @@
-import { ContractFunctionZeroDataError, HttpRequestError } from "viem";
+import {
+  CallExecutionError,
+  ContractFunctionRevertedError,
+  ContractFunctionZeroDataError,
+  HttpRequestError,
+  InternalRpcError,
+  RpcRequestError,
+} from "viem";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { CurrentRpcEndpoints } from "lib/rpc/RpcTracker";
@@ -51,7 +58,21 @@ describe("multicall result isolation", () => {
     expect(call).toHaveBeenCalledTimes(1);
   });
 
-  for (const failure of ["transport", "all reads", "one chunk's transport"] as const) {
+  // viem turns a chunk's -32603 provider error into a ContractFunctionRevertedError around the failed call.
+  const chunkProviderError = () =>
+    new ContractFunctionRevertedError({
+      abi: [],
+      functionName: "aggregate3",
+      message: "Internal JSON-RPC error.",
+      cause: new CallExecutionError(
+        new InternalRpcError(
+          new RpcRequestError({ body: {}, error: { code: -32603, message: "internal error" }, url: endpoints.primary })
+        ),
+        {}
+      ),
+    });
+
+  for (const failure of ["transport", "all reads", "one chunk's transport", "one chunk's provider error"] as const) {
     it(`still tries the fallback after ${failure} fail`, async () => {
       const call = vi.fn();
       if (failure === "transport") call.mockRejectedValueOnce(new Error("network unavailable"));
@@ -60,10 +81,15 @@ describe("multicall result isolation", () => {
           { status: "failure", error: new Error("RPC failure") },
           { status: "failure", error: new Error("RPC failure") },
         ]);
-      else
+      else if (failure === "one chunk's transport")
         call.mockResolvedValueOnce([
           { status: "success", result: 1n },
           { status: "failure", error: new HttpRequestError({ url: endpoints.primary, status: 429 }) },
+        ]);
+      else
+        call.mockResolvedValueOnce([
+          { status: "success", result: 1n },
+          { status: "failure", error: chunkProviderError() },
         ]);
       call.mockResolvedValueOnce([
         { status: "success", result: 50_000_000n },

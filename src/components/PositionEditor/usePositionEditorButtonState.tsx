@@ -73,6 +73,7 @@ import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
+import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
 import {
   initEditCollateralMetricData,
   sendOrderSubmittedMetric,
@@ -658,17 +659,15 @@ export function usePositionEditorButtonState(
 
     if (expressParams?.subaccount) {
       // The transaction callback reports failures after this handler returns.
-      void txnPromise.catch(() => undefined);
+      void txnPromise.catch(reportHandledRejection("positionEditor.submit"));
       onClose();
       setIsSubmitting(false);
       return;
     }
 
-    txnPromise
-      .then(onClose, () => undefined)
-      .finally(() => {
-        setIsSubmitting(false);
-      });
+    txnPromise.then(onClose, reportHandledRejection("positionEditor.submit")).finally(() => {
+      setIsSubmitting(false);
+    });
   }
 
   const commonParams: Pick<

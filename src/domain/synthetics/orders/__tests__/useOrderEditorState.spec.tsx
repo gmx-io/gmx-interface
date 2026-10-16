@@ -61,6 +61,25 @@ describe("order editor reset", () => {
     expect(state.sizeInputValue).toBe("");
   });
 
+  it("keeps the filled size when the open order's chart line is dragged", () => {
+    render(<Harness />);
+    openEditor();
+    act(() => {
+      state.setEditingOrderState({ orderKey: "order", source: "PriceChart" });
+      state.setTriggerPriceInputValue("2400");
+    });
+    expect(state.sizeInputValue).toBe("1000");
+    expect(state.triggerPriceInputValue).toBe("2400");
+  });
+
+  it("clears inputs when switching straight to another order", () => {
+    render(<Harness />);
+    openEditor();
+    act(() => state.setEditingOrderState({ orderKey: "other", source: "PositionsList" }));
+    expect(state.sizeInputValue).toBe("");
+    expect(state.triggerPriceInputValue).toBe("");
+  });
+
   it("preserves an explicit chart price supplied in the same action as opening", () => {
     render(<Harness />);
     openEditor();

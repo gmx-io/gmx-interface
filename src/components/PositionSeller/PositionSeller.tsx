@@ -83,6 +83,7 @@ import { useDebouncedInputValue } from "lib/debounce/useDebouncedInputValue";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
 import { initDecreaseOrderMetricData, sendOrderSubmittedMetric, sendTxnValidationErrorMetric } from "lib/metrics/utils";
 import { expandDecimals, formatDeltaUsdParts, formatPercentage, formatTokenAmount, parseValue } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
@@ -715,19 +716,17 @@ export function PositionSeller() {
 
     if (expressParams?.subaccount) {
       // The transaction callback reports failures after this handler returns.
-      void txnPromise.catch(() => undefined);
+      void txnPromise.catch(reportHandledRejection("positionSeller.submit"));
       onClose();
       setIsSubmitting(false);
       setDefaultReceiveToken(receiveToken.address);
       return;
     }
 
-    txnPromise
-      .then(onClose, () => undefined)
-      .finally(() => {
-        setIsSubmitting(false);
-        setDefaultReceiveToken(receiveToken.address);
-      });
+    txnPromise.then(onClose, reportHandledRejection("positionSeller.submit")).finally(() => {
+      setIsSubmitting(false);
+      setDefaultReceiveToken(receiveToken.address);
+    });
   }
 
   const latestOnSubmit = useLatest(onSubmit);

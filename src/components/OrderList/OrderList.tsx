@@ -41,6 +41,7 @@ import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { helperToast } from "lib/helperToast";
+import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
 import { EMPTY_ARRAY } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useBreakpoints } from "lib/useBreakpoints";
@@ -214,9 +215,7 @@ export function OrderList({
         }),
         provider,
         isGmxAccount: srcChainId !== undefined,
-      }).catch(() => {
-        // The transaction callback displays the cancellation failure.
-      });
+      }).catch(reportHandledRejection("orderList.cancel"));
     } finally {
       setCancellingOrdersKeys((prev) => prev.filter((k) => !orderKeys.includes(k)));
       setSelectedOrderKeys?.(EMPTY_ARRAY);
