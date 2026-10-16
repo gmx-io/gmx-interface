@@ -10,11 +10,13 @@ const { sdk, initialize, entryFactory } = vi.hoisted(() => {
 
 vi.mock("config/ab", () => ({ getIsSolanaNetworkEnabled: vi.fn() }));
 
+const entryUrl = new URL("/gmsol-sdk/0.9.0-test.2-v2/entry.js", window.location.origin).href;
+
 beforeEach(() => {
   vi.resetModules();
   initialize.mockReset().mockResolvedValue(sdk);
   entryFactory.mockReset().mockReturnValue({ initialize });
-  vi.doMock("/gmsol-sdk/0.9.0-test.2-v2/entry.js", () => entryFactory());
+  vi.doMock(entryUrl, () => entryFactory());
 });
 
 describe("loadGmsolSdk", () => {
@@ -45,16 +47,17 @@ describe("loadGmsolSdk", () => {
     expect(entryFactory).toHaveBeenCalledTimes(1);
   });
 
-  it("allows another module import after an entry loading failure", async () => {
-    entryFactory.mockImplementationOnce(() => {
+  it("bypasses the failed entry URL and shares the retry across callers (FESOL-55)", async () => {
+    entryFactory.mockImplementation(() => {
       throw new TypeError("Failed to fetch entry");
     });
     const { loadGmsolSdk } = await import("./loadGmsolSdk");
     vi.mocked(getIsSolanaNetworkEnabled).mockReturnValue(true);
     await expect(loadGmsolSdk()).rejects.toThrow();
-    // Model a later successful network import without resetting the loader module.
-    vi.doMock("/gmsol-sdk/0.9.0-test.2-v2/entry.js", () => entryFactory());
+    // Leave the original URL failed, as it remains in the browser's module map.
+    vi.doMock(`${entryUrl}?retry=1`, () => ({ initialize }));
+    await expect(Promise.all([loadGmsolSdk(), loadGmsolSdk()])).resolves.toEqual([sdk, sdk]);
     await expect(loadGmsolSdk()).resolves.toBe(sdk);
-    expect(entryFactory).toHaveBeenCalledTimes(2);
+    expect(entryFactory).toHaveBeenCalledTimes(1);
   });
 });
