@@ -81,7 +81,7 @@ test("2.45 VIP calculator retains separate trader and affiliate volume selection
   await expect(page.getByText("$3,125.00", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "I'm a trader", exact: true }).click();
   await expect(page.getByText("$12,500.00", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Request this rate", exact: true }).click();
+  await page.getByRole("button", { name: "Lock in this rate", exact: true }).click();
   await expect(page.locator("#contact")).toBeInViewport();
 });
 
