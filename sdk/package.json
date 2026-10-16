@@ -1,6 +1,6 @@
 {
   "name": "@gmx-io/sdk",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "type": "module",
   "repository": {
     "type": "git",
@@ -155,6 +155,9 @@
       ],
       "utils/gas/*": [
         "./build/types/src/utils/gas/*.d.ts"
+      ],
+      "utils/twap/uiFeeReceiver": [
+        "./build/types/src/utils/twap/uiFeeReceiver.d.ts"
       ]
     }
   },
@@ -488,6 +491,12 @@
       "import": "./build/esm/src/utils/gas/*.js",
       "require": "./build/cjs/src/utils/gas/*.js",
       "default": "./build/cjs/src/utils/gas/*.js"
+    },
+    "./utils/twap/uiFeeReceiver": {
+      "types": "./build/types/src/utils/twap/uiFeeReceiver.d.ts",
+      "import": "./build/esm/src/utils/twap/uiFeeReceiver.js",
+      "require": "./build/cjs/src/utils/twap/uiFeeReceiver.js",
+      "default": "./build/cjs/src/utils/twap/uiFeeReceiver.js"
     }
   },
   "scripts": {
