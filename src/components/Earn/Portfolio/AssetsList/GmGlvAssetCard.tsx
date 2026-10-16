@@ -290,7 +290,7 @@ export function GmGlvAssetCard({
           label={<Trans>Total performance APY</Trans>}
           value={
             totalPerformanceApy !== undefined ? (
-              formatPercentage(totalPerformanceApy, { bps: false })
+              formatPercentage(totalPerformanceApy, { bps: false, signed: true, showPlus: false })
             ) : isPerformanceLoading ? (
               <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={50} className="leading-base" />
             ) : (
@@ -302,7 +302,7 @@ export function GmGlvAssetCard({
           label={<Trans>30d performance APY</Trans>}
           value={
             performanceApy30d !== undefined ? (
-              formatPercentage(performanceApy30d, { bps: false })
+              formatPercentage(performanceApy30d, { bps: false, signed: true, showPlus: false })
             ) : isPerformanceLoading ? (
               <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={50} className="leading-base" />
             ) : (
