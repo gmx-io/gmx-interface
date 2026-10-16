@@ -26,6 +26,6 @@ test("2.12 announcement category filters show only the selected type", async ({ 
   for (const card of await cards.all()) {
     await expect(card.getByText("Listing", { exact: true })).toBeVisible();
   }
-  await page.getByRole("button", { name: /^All Announcements/ }).click();
+  await page.getByRole("button", { name: /^All announcements/ }).click();
   await expect(cards.first()).toBeVisible();
 });

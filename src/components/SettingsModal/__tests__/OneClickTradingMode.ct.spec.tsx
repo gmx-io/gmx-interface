@@ -348,4 +348,20 @@ test.describe("Trading Settings: One-Click limits before activation", () => {
       }
     });
   }
+
+  test("very long limits keep the settings usable instead of crashing the modal", async ({ mount, page }) => {
+    await installRpcResponder(page, new MockChain({ walletPrivateKey: MOCK_ACCOUNT_PRIVATE_KEY }));
+    await mount(<OneClickTradingModeStory expressEnabled />);
+
+    await page.getByRole("button", { name: "One-Click settings" }).click();
+    const limitInput = (label: string) =>
+      settingsModal(page).getByText(label, { exact: true }).locator("xpath=..").locator("input");
+    // 22 digits made parseInt return "1.1e+21", which BigInt threw on while rendering
+    await limitInput("Action(s)").fill("1".repeat(22));
+    await limitInput("Day(s)").fill("4".repeat(400));
+
+    await expect(limitInput("Action(s)")).toHaveValue("1".repeat(22));
+    await expect(page.getByRole("button", { name: "Save settings" })).toBeEnabled();
+    await expect(settingsModal(page)).toBeVisible();
+  });
 });

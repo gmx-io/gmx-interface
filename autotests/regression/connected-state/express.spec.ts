@@ -18,7 +18,7 @@ test("24.02 an empty account sees the Express out-of-gas banner and cannot pick 
   await accountState.connect(page);
   const settings = await openSettings(page);
   await expect(settings).toContainText(
-    `Insufficient USDC, ${wrappedNative(chainId)}, or USDT in your Wallet. Express and One-Click Trading are unavailable.`
+    `Insufficient USDC, ${wrappedNative(chainId)}, or USDT in your wallet. Express Trading and One-Click Trading are unavailable.`
   );
   await expect(settings.getByRole("link", { name: "Swap", exact: true })).toHaveAttribute(
     "href",
@@ -43,7 +43,7 @@ test.describe("funded wallet", () => {
     await accountState.connect(page);
     const settings = await openSettings(page);
     await expect(settings.getByText("One-Click settings", { exact: true })).toBeVisible();
-    await expect(settings.getByText(/Express and One-Click Trading are unavailable/)).toHaveCount(0);
+    await expect(settings.getByText(/Express Trading and One-Click Trading are unavailable/)).toHaveCount(0);
     for (const name of ["Express", "Express + One-Click"]) {
       await expect(tradingMode(settings, name)).toHaveClass(/(?:^|\s)cursor-pointer(?:\s|$)/);
     }

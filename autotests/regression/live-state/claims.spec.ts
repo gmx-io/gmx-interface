@@ -17,7 +17,7 @@ test("10.09 live claims: executed funding claim appears with its explorer link a
     .click();
   const link = page.locator(`.ClaimsHistory-table a[href$="${liveAccount.transactionHash}"]`).first();
   await expect(link).toBeVisible({ timeout: 45_000 });
-  await expect(link.locator("xpath=ancestor::tr")).toContainText("Claim funding fees");
+  await expect(link.locator("xpath=ancestor::tr")).toContainText("Claimed funding fees");
   await expect(link).toHaveAttribute(
     "href",
     `https://${liveAccounts.chainId === 42161 ? "arbiscan.io" : "snowtrace.io"}/tx/${liveAccount.transactionHash}`
@@ -45,7 +45,7 @@ test("10.09 live claims: the history lists the on-chain claim and its CSV export
     .locator(".Modal-content")
     .filter({ has: page.getByText("Export claims history", { exact: true }) });
   const downloadPromise = page.waitForEvent("download");
-  await modal.getByRole("button", { name: "GMX Claims CSV", exact: true }).click();
+  await modal.getByRole("button", { name: "GMX claims CSV", exact: true }).click();
   const download = await downloadPromise;
   expect(await download.failure()).toBeNull();
   const path = testInfo.outputPath("claims.csv");
@@ -66,7 +66,7 @@ test("17.15 live profile: Claims tab lists the account's indexed funding claim w
   await page.getByRole("button", { name: "Claims", exact: true }).click();
   const link = page.locator(`.ClaimsHistory-table a[href$="${liveAccount.transactionHash}"]`).first();
   await expect(link).toBeVisible({ timeout: 45_000 });
-  await expect(link.locator("xpath=ancestor::tr")).toContainText("Claim funding fees");
+  await expect(link.locator("xpath=ancestor::tr")).toContainText("Claimed funding fees");
   await expect(link).toHaveAttribute(
     "href",
     `https://${liveAccounts.chainId === 42161 ? "arbiscan.io" : "snowtrace.io"}/tx/${liveAccount.transactionHash}`

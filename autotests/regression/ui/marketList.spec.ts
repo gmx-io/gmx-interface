@@ -46,7 +46,7 @@ function selectorRows(page: Page) {
 }
 
 function recentlyListedTab(page: Page) {
-  return page.getByRole("button", { name: /^Recently Listed/ });
+  return page.getByRole("button", { name: /^Recently listed/ });
 }
 
 function priceIssue(text: string) {
@@ -242,7 +242,7 @@ test("5.08 Recently listed tab shows only markets listed within 30 days and hide
   await openTrade(page);
   await openMarketSelector(page);
   await recentlyListedTab(page).click();
-  await expect(recentlyListedTab(page)).toHaveText(/^Recently Listed\s*1$/);
+  await expect(recentlyListedTab(page)).toHaveText(/^Recently listed\s*1$/);
   await expect
     .poll(() => selectorRows(page))
     .toEqual([expect.objectContaining({ label: marketLabel(recent.indexToken), isNew: true })]);
@@ -287,7 +287,7 @@ test("5.08 Recently listed tab matches the keeper's live listing dates", async (
     return;
   }
   await recentlyListedTab(page).click();
-  await expect(recentlyListedTab(page)).toHaveText(new RegExp(`^Recently Listed\\s*${expected.length}$`));
+  await expect(recentlyListedTab(page)).toHaveText(new RegExp(`^Recently listed\\s*${expected.length}$`));
   await expect.poll(async () => (await selectorRows(page)).map((row) => row.label).sort()).toEqual(expected.sort());
 });
 

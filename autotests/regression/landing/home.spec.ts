@@ -81,7 +81,7 @@ test("2.45 VIP calculator retains separate trader and affiliate volume selection
   await expect(page.getByText("$3,125.00", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "I'm a trader", exact: true }).click();
   await expect(page.getByText("$12,500.00", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Lock in this rate", exact: true }).click();
+  await page.getByRole("button", { name: "Request this rate", exact: true }).click();
   await expect(page.locator("#contact")).toBeInViewport();
 });
 
@@ -121,7 +121,7 @@ test("2.40 Solana opens the GMTrade domain dialog", async ({ page, context }) =>
   await page.goto("/");
   await page.getByRole("button", { name: "Solana", exact: true }).click();
   await expect(
-    page.getByText("GMX on Solana (GMTrade) is currently served from a separate domain", { exact: true })
+    page.getByText("GMX on Solana (GMTrade) is served from a separate domain", { exact: true })
   ).toBeVisible();
   const opened = context.waitForEvent("page");
   await page.getByRole("button", { name: "Open GMTrade", exact: true }).click();

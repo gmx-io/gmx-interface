@@ -6,12 +6,12 @@ test("15.08 referral tabs navigate between trader and affiliate onboarding", asy
   await page.goto("/referrals");
   const content = page;
   await expect(content.getByRole("heading", { name: /10% fee savings/ })).toBeVisible();
-  await content.getByRole("button", { name: "Create Referral Code", exact: true }).click();
+  await content.getByRole("button", { name: "Create referral code", exact: true }).click();
   await expect(page).toHaveURL(/\/referrals\/affiliates$/);
   await expect(content.getByRole("heading", { name: /Earn.*rebates/ })).toBeVisible();
   await page.reload();
   await expect(page).toHaveURL(/\/referrals\/affiliates$/);
-  await content.getByRole("button", { name: "Trader Benefits", exact: true }).click();
+  await content.getByRole("button", { name: "Trader benefits", exact: true }).click();
   await expect(page).toHaveURL(/\/referrals\/traders$/);
   await expect(content.getByRole("heading", { name: /10% fee savings/ })).toBeVisible();
 });

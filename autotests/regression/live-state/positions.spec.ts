@@ -167,7 +167,7 @@ test("8.09 live position: margin editor rejects empty and oversized withdrawals 
   await modal.getByTestId("operation-tabs").getByRole("button", { name: "Withdraw", exact: true }).click();
   await input.fill("999999999999999999");
   await expect(confirm).toBeDisabled();
-  await expect(confirm).toHaveText(/Max|Insufficient|margin|leverage|Withdrawal not available/i);
+  await expect(confirm).toHaveText(/Max|Insufficient|margin|leverage|Withdrawal unavailable/i);
   await input.fill("0.1");
   await page.keyboard.press("Escape");
   await expect(modal).toBeHidden();

@@ -87,7 +87,7 @@ test("13.19 live staking: loyalty and staking power share match the live API", a
     timeout: 45_000,
   });
   const share = page
-    .getByText("Staking Power Share", { exact: true })
+    .getByText("Staking power share", { exact: true })
     .locator("xpath=ancestor::div[./div[contains(@class, 'text-right')]][1]");
   await expect(share).toContainText(`${Number(power.userSharePercent).toFixed(3)}%`);
 });

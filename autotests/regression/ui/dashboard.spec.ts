@@ -7,7 +7,7 @@ const emptyAccount = "0x1000000000000000000000000000000000000001";
 
 test("17.02 public trader profile loads logged out with empty lists and no wallet controls", async ({ page }) => {
   await page.goto(`/traders/${emptyAccount}`);
-  await expect(page.getByRole("heading", { name: "Trader Profile", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Trader profile", exact: true })).toBeVisible();
   for (const { tab, empty } of [
     { tab: "Positions", empty: "No open positions" },
     { tab: "Orders", empty: "No open orders" },

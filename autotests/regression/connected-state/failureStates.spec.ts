@@ -62,11 +62,7 @@ test.describe("frozen order", () => {
     await expect(row).toBeVisible();
   });
 
-  test("26.07 app gap: the Orders row of a frozen order shows a frozen or failed status", async ({
-    page,
-    accountState,
-  }) => {
-    test.fail(true, "App gap: OrderItem renders isFrozen orders exactly like pending ones");
+  test("26.07 the Orders row of a frozen order shows a frozen or failed status", async ({ page, accountState }) => {
     await accountState.connect(page);
     await page
       .getByTestId("exchange-list-tabs")

@@ -6,7 +6,7 @@ import { test } from "../fixtures/accountState";
 test.beforeEach(async ({ page, accountState }) => {
   await accountState.connect(page);
   await page.getByTestId("user-address").click();
-  await expect(page.getByRole("button", { name: "PnL Analysis", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "PnL analysis", exact: true })).toBeVisible();
 });
 
 test("4.01 account panel exposes only the balance actions supported on the selected network", async ({
@@ -60,12 +60,12 @@ test("4.08 partial: the account panel has no PnL value of its own; its PnL Analy
       },
     });
   });
-  const panel = page.locator(".Modal-content").filter({ has: page.getByRole("button", { name: "PnL Analysis" }) });
+  const panel = page.locator(".Modal-content").filter({ has: page.getByRole("button", { name: "PnL analysis" }) });
   await expect(panel).toBeVisible();
-  await expect(panel).not.toContainText(/PnL(?! Analysis)/);
-  await page.getByRole("button", { name: "PnL Analysis", exact: true }).click();
+  await expect(panel).not.toContainText(/PnL(?! analysis)/);
+  await page.getByRole("button", { name: "PnL analysis", exact: true }).click();
   await expect(page).toHaveURL(new RegExp(`/traders/${accountState.address}`));
-  await expect(page.getByRole("heading", { name: "Trader Profile", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Trader profile", exact: true })).toBeVisible();
   await expect(page.getByTestId("gmx-account-balance")).toBeHidden();
   const allTime = page.getByRole("row").filter({ has: page.getByText("All time", { exact: true }) });
   await expect(allTime).toHaveText(/^All time\s*\$\s*6,000\.00\s*\$\s*666\.00\s*\+\s*6\.00%\s*6 \/ 1$/);
@@ -104,5 +104,5 @@ test("4.09 account panel opens GMX alerts covering trade confirmations, liquidat
     "href",
     "https://gmx.notifi.network"
   );
-  await expect(page.getByRole("button", { name: "PnL Analysis", exact: true })).toBeHidden();
+  await expect(page.getByRole("button", { name: "PnL analysis", exact: true })).toBeHidden();
 });

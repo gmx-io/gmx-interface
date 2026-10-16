@@ -56,7 +56,7 @@ test("2.24 the KLI service-disruption banner shows while its flag is on, dismiss
   await page.clock.install({ time: now });
   await mockUiFlags(context, { showServiceDisruptionBanner: true });
   await page.goto("/pools", { waitUntil: "domcontentloaded" });
-  const disruption = banner(page, "Service Disruption");
+  const disruption = banner(page, "Service disruption");
   await expect(disruption).toBeVisible();
   await expect(disruption).toContainText("Trading may be temporarily unavailable");
   await disruption.getByTestId("announcement-banner-close").click();
@@ -79,7 +79,7 @@ test("2.24 the service-disruption banner stays hidden while its KLI flag is off"
   await page.goto("/pools", { waitUntil: "domcontentloaded" });
   await expect(page.getByText("TVL in vaults and pools", { exact: true })).toBeVisible();
   await expect(page.getByTestId("whats-new-toast-container")).toBeAttached();
-  await expect(banner(page, "Service Disruption")).toHaveCount(0);
+  await expect(banner(page, "Service disruption")).toHaveCount(0);
 });
 
 test("2.24 a KLI flag-gated listing appears in What's new only while its flag is on", async ({

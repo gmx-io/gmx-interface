@@ -73,7 +73,7 @@ for (const profile of ["gm", "glv"] as const) {
       const card = balance.locator("../..");
       const earning = await expectEarnings(received, [
         [card.getByText("Lifetime", { exact: true }).locator(".."), "lifetimeFeeUsd"],
-        [card.getByText("7d Earnings", { exact: true }).locator(".."), "recent7dFeeUsd"],
+        [card.getByText("7d earnings", { exact: true }).locator(".."), "recent7dFeeUsd"],
       ]);
       await testInfo.attach("live-earnings", { body: JSON.stringify(earning), contentType: "application/json" });
     });

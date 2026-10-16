@@ -13,6 +13,13 @@ import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+const SECONDS_IN_DAY = BigInt(periodToSeconds(1, "1d"));
+
+// Keeps the digits as typed: parseInt turns long inputs into "1e+21", which BigInt cannot parse.
+function toWholeNumberString(value: string) {
+  return value.replace(/\D/g, "").replace(/^0+(?=\d)/, "") || "0";
+}
+
 export function OneClickAdvancedSettings() {
   const { subaccount, updateSubaccountSettings, initialSettings, setInitialSettings } = useSubaccountContext();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -26,24 +33,12 @@ export function OneClickAdvancedSettings() {
   const { displayValue: daysLimitString, setDisplayValue: setDaysLimitString } = useBigNumberInput(0n, 0, 0);
 
   const onChangeRemainingActions = useCallback(
-    (value: string) => {
-      if (value === "") {
-        setRemainingActionsString("0");
-      } else {
-        setRemainingActionsString(String(parseInt(value)));
-      }
-    },
+    (value: string) => setRemainingActionsString(toWholeNumberString(value)),
     [setRemainingActionsString]
   );
 
   const onChangeDaysLimit = useCallback(
-    (value: string) => {
-      if (value === "") {
-        setDaysLimitString("0");
-      } else {
-        setDaysLimitString(String(parseInt(value)));
-      }
-    },
+    (value: string) => setDaysLimitString(toWholeNumberString(value)),
     [setDaysLimitString]
   );
 
@@ -56,7 +51,7 @@ export function OneClickAdvancedSettings() {
       : initialSettings?.remainingSeconds ?? BigInt(DEFAULT_ONE_CLICK_SESSION_DURATION);
 
     const nextRemainigActions = BigInt(remainingActionsString);
-    const nextRemainingSeconds = BigInt(periodToSeconds(Number(daysLimitString), "1d"));
+    const nextRemainingSeconds = BigInt(daysLimitString) * SECONDS_IN_DAY;
 
     const notChanged = remainingActions === nextRemainigActions && remainingSeconds === nextRemainingSeconds;
     const isInvalid = subaccount
@@ -68,7 +63,7 @@ export function OneClickAdvancedSettings() {
 
   const handleSave = useCallback(() => {
     const nextRemainigActions = BigInt(remainingActionsString);
-    const nextRemainingSeconds = BigInt(periodToSeconds(Number(daysLimitString), "1d"));
+    const nextRemainingSeconds = BigInt(daysLimitString) * SECONDS_IN_DAY;
 
     if (!subaccount) {
       if (nextRemainigActions > 0n && nextRemainingSeconds > 0n)

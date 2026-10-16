@@ -146,7 +146,7 @@ test("17.01 connected wallet loads /traders and opens its own trader profile fro
   await page.getByTestId("user-address").click();
   await page.getByText(/^PnL analysis$/i).click();
   await expect(page).toHaveURL(new RegExp(`/traders/${accountState.address}(\\?|$)`));
-  await expect(page.getByRole("heading", { name: "Trader Profile" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Trader profile" })).toBeVisible();
   await expect(page.getByText(`You ${accountState.address}`)).toBeVisible();
   await expect(page.locator(".recharts-bar").first()).toBeVisible();
 });

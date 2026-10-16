@@ -24,7 +24,7 @@ test("4.01 4.02 4.58 empty GMX Account displays zero balance and an empty transf
 test("4.63 empty wallet deposit form explains that there are no available funds", async ({ page }) => {
   await page.getByRole("button", { name: "Deposit to GMX Account", exact: true }).click();
   await expect(page.getByText(/No funds available (?:for GMX Account deposit|to deposit from)/)).toBeVisible();
-  await expect(page.getByRole("button", { name: "Receive to Wallet", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Receive to wallet", exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "Change network", exact: true })).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(page.getByTestId("gmx-account-balance")).toBeVisible();

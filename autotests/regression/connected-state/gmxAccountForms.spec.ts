@@ -290,7 +290,7 @@ test.describe("withdrawal", () => {
     await expect(infoRow(modal, "Network fee").getByRole("img", { name: "GMX Account", exact: true })).toBeVisible();
     await expect(infoRow(modal, "Bridge fee")).toContainText(/-[\d.]+\s*WETH\s*\(-\$\s*[\d.]+\)/);
     await expect(infoRow(modal, "Bridge fee").getByRole("img", { name: "GMX Account", exact: true })).toBeVisible();
-    await expect(infoRow(modal, "Withdraw fee")).toContainText(/-[\d.]+\s*WETH/);
+    await expect(infoRow(modal, "Withdrawal fee")).toContainText(/-[\d.]+\s*WETH/);
     for (const label of ["Network fee", "Bridge fee"]) {
       const [, usd] = await feeAmounts(infoRow(modal, label), label);
       expect(-usd).toBeGreaterThan(0.001);

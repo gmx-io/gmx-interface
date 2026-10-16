@@ -108,6 +108,7 @@ export function PositionEditor() {
   const isVisible = Boolean(position);
   const prevEditingPositionKey = usePrevious(editingPositionKey);
   const prevIsVisible = usePrevious(isVisible);
+  const lastVisibleIncreasedAtTimeRef = useRef<bigint | undefined>(undefined);
 
   const [operation, setOperation] = usePositionEditorOperation();
   const isDeposit = operation === Operation.Deposit;
@@ -385,8 +386,16 @@ export function PositionEditor() {
 
   useEffect(
     function resetFormAndApplyOpenRequest() {
-      // a position closed under the open editor and reopened later keeps its key, so showing again also resets
-      if (editingPositionKey !== prevEditingPositionKey || (isVisible && !prevIsVisible) || atPriceOpenRequest) {
+      // A data gap brings the same position back, but a position closed under the open editor and reopened
+      // later keeps its key with a new increase time.
+      const increasedAtTime = position?.increasedAtTime;
+      const isReopenedPosition =
+        isVisible && !prevIsVisible && increasedAtTime !== lastVisibleIncreasedAtTimeRef.current;
+      if (increasedAtTime !== undefined) {
+        lastVisibleIncreasedAtTimeRef.current = increasedAtTime;
+      }
+
+      if (editingPositionKey !== prevEditingPositionKey || isReopenedPosition || atPriceOpenRequest) {
         setCollateralInputValue("");
       }
 
@@ -422,6 +431,7 @@ export function PositionEditor() {
       editingPositionKey,
       isVisible,
       position?.collateralToken?.decimals,
+      position?.increasedAtTime,
       position?.indexToken?.visualMultiplier,
       prevEditingPositionKey,
       prevIsVisible,

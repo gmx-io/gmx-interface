@@ -17,7 +17,14 @@ for (const period of ["Total", "Last 30d", "Last 7d"]) {
   }) => {
     const days = { Total: 0, "Last 30d": 30, "Last 7d": 7 }[period]!;
     const request = page.waitForRequest((request) => {
-      const body = request.method() === "POST" ? request.postDataJSON() : undefined;
+      if (request.method() !== "POST") return false;
+      let body;
+      try {
+        body = request.postDataJSON();
+      } catch {
+        // other POSTs, such as analytics beacons, are not JSON
+        return false;
+      }
       return body?.operationName === "PeriodAccountStats" && (body.variables.from === 0) === (days === 0);
     });
     await page.goto("/leaderboard");
@@ -37,7 +44,7 @@ for (const period of ["Total", "Last 30d", "Last 7d"]) {
     const profile = await popupPromise;
     try {
       await expect(profile).toHaveURL(new RegExp(`/traders/${address}`));
-      await expect(profile.getByRole("heading", { name: "Trader Profile", exact: true })).toBeVisible();
+      await expect(profile.getByRole("heading", { name: "Trader profile", exact: true })).toBeVisible();
     } finally {
       await profile.close();
     }
