@@ -136,8 +136,8 @@ export function RewardsTiersTab({
   const showConnectWallet = !account && !isWalletInitializing;
 
   return (
-    <div className="grid grid-cols-1 items-start gap-8 min-[1600px]:grid-cols-[minmax(0,1fr)_30rem] min-[1760px]:grid-cols-[minmax(0,1fr)_40rem]">
-      <div className="flex min-w-0 flex-col gap-8 max-[1599px]:order-2">
+    <div className="grid grid-cols-[minmax(0,1fr)_40rem] items-start gap-8 max-[1620px]:grid-cols-[minmax(0,1fr)_30rem] max-xl:grid-cols-1">
+      <div className="flex min-w-0 flex-col gap-8 max-xl:order-2">
         <div className="flex flex-col gap-12 rounded-8 bg-slate-900 p-12">
           <RewardsTiersSummary
             currentMultiplier={currentStatus?.multiplier}
@@ -185,8 +185,8 @@ export function RewardsTiersTab({
         />
       </div>
 
-      <div className="sticky top-8 flex min-w-0 flex-col gap-8 max-[1599px]:contents">
-        <div className="min-w-0 max-[1599px]:order-3">
+      <div className="sticky top-8 flex min-w-0 flex-col gap-8 max-xl:contents">
+        <div className="min-w-0 max-xl:order-3">
           <RewardsTiersFaq config={config} />
         </div>
         {!isWalletInitializing ? (
@@ -198,7 +198,7 @@ export function RewardsTiersTab({
             walletGmx={vestingData?.walletGmxBalance}
             walletEsGmx={vestingData?.walletEsGmxBalance}
             isLoading={promoSelectionLoading}
-            className="max-[1599px]:order-1"
+            className="max-xl:order-1"
           />
         ) : null}
       </div>

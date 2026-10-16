@@ -247,12 +247,12 @@ export function RewardsPage() {
           )}
         />
       ) : activeTab === "history" ? (
-        <div className="grid grid-cols-1 items-start gap-8 min-[1600px]:grid-cols-[minmax(0,1fr)_30rem] min-[1760px]:grid-cols-[minmax(0,1fr)_40rem]">
+        <div className="grid grid-cols-[minmax(0,1fr)_40rem] items-start gap-8 max-[1620px]:grid-cols-[minmax(0,1fr)_30rem] max-xl:grid-cols-1">
           <div className="flex min-w-0 flex-col gap-8">
             <RewardsVestingFlow />
             <RewardsHistoryTab chainId={chainId} account={account} config={config} />
           </div>
-          <div className="sticky top-8 min-w-0 max-[1599px]:static">
+          <div className="sticky top-8 min-w-0 max-xl:static">
             <RewardsVestingFaq isTestnet={chainId === ARBITRUM_SEPOLIA} />
           </div>
         </div>
