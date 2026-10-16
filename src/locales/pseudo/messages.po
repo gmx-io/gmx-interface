@@ -11022,10 +11022,6 @@ msgstr ""
 msgid "EVM networks only"
 msgstr ""
 
-#: landing/src/pages/Builders/SupportSection/SupportSection.tsx
-msgid "The Program"
-msgstr ""
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation risk alerts"
 msgstr ""

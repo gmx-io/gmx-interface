@@ -7185,7 +7185,7 @@ msgstr "Hoher Preiseinfluss"
 
 #: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "This page is available on EVM networks only. Switch the network in the header, or go to <0>Trade</0>."
-msgstr ""
+msgstr "Diese Seite ist nur in EVM-Netzwerken verfügbar. Wechseln Sie das Netzwerk in der Kopfzeile, oder gehen Sie zu <0>Trade</0>."
 
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/NetFeeTooltip.tsx
@@ -9218,7 +9218,7 @@ msgstr "{profitTokenSymbol} und {collateralTokenSymbol} separat erhalten"
 
 #: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "Trading on Solana is coming soon."
-msgstr ""
+msgstr "Trading auf Solana ist in Kürze verfügbar."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min deposit: {0}"
@@ -11020,11 +11020,7 @@ msgstr "verschieben"
 
 #: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "EVM networks only"
-msgstr ""
-
-#: landing/src/pages/Builders/SupportSection/SupportSection.tsx
-msgid "The Program"
-msgstr "Das Programm"
+msgstr "Nur EVM-Netzwerke"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation risk alerts"

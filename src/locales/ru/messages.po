@@ -7185,7 +7185,7 @@ msgstr "Высокое влияние на цену"
 
 #: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "This page is available on EVM networks only. Switch the network in the header, or go to <0>Trade</0>."
-msgstr ""
+msgstr "Эта страница доступна только в сетях EVM. Переключите сеть в заголовке или перейдите на страницу <0>Trade</0>."
 
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/NetFeeTooltip.tsx
@@ -9218,7 +9218,7 @@ msgstr "Получать {profitTokenSymbol} и {collateralTokenSymbol} отде
 
 #: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "Trading on Solana is coming soon."
-msgstr ""
+msgstr "Торговля на Solana скоро станет доступна."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min deposit: {0}"
@@ -11020,11 +11020,7 @@ msgstr "сдвига"
 
 #: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "EVM networks only"
-msgstr ""
-
-#: landing/src/pages/Builders/SupportSection/SupportSection.tsx
-msgid "The Program"
-msgstr "Программа"
+msgstr "Только сети EVM"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation risk alerts"
