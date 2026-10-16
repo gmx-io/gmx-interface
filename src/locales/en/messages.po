@@ -3820,6 +3820,10 @@ msgstr "AI trading assistant"
 msgid "Allowed slippage"
 msgstr "Allowed slippage"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The request was sent, but its result could not be confirmed. Retry to check: if it didn't go through, deactivation continues with a wallet transaction."
+msgstr "The request was sent, but its result could not be confirmed. Retry to check: if it didn't go through, deactivation continues with a wallet transaction."
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Loyalty"
 msgstr "Loyalty"
@@ -12248,6 +12252,10 @@ msgstr "An approval is already waiting in your wallet. Convert waits for it and 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Cancelling {orderText}..."
 msgstr "Cancelling {orderText}..."
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The signed request could not be completed. Retry to deactivate with a wallet transaction."
+msgstr "The signed request could not be completed. Retry to deactivate with a wallet transaction."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute margin deposit"

@@ -3820,6 +3820,10 @@ msgstr "AI 트레이딩 어시스턴트"
 msgid "Allowed slippage"
 msgstr "허용 슬리피지"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The request was sent, but its result could not be confirmed. Retry to check: if it didn't go through, deactivation continues with a wallet transaction."
+msgstr "요청은 전송되었지만 결과를 확인할 수 없습니다. 다시 시도하여 확인하세요. 완료되지 않았다면 지갑 트랜잭션으로 비활성화를 계속합니다."
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Loyalty"
 msgstr "충성도"
@@ -12248,6 +12252,10 @@ msgstr "지갑에서 이미 승인이 대기 중입니다. 변환은 이를 기�
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Cancelling {orderText}..."
 msgstr "{orderText} 취소 중…"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The signed request could not be completed. Retry to deactivate with a wallet transaction."
+msgstr "서명된 요청을 완료할 수 없습니다. 다시 시도하면 지갑 트랜잭션으로 비활성화합니다."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute margin deposit"

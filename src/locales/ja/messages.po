@@ -3820,6 +3820,10 @@ msgstr "AIトレーディングアシスタント"
 msgid "Allowed slippage"
 msgstr "許容スリッページ"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The request was sent, but its result could not be confirmed. Retry to check: if it didn't go through, deactivation continues with a wallet transaction."
+msgstr "リクエストは送信されましたが、結果を確認できませんでした。再度お試しいただくと確認します。完了していない場合は、ウォレット取引で無効化を続行します。"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Loyalty"
 msgstr "ロイヤルティ"
@@ -12248,6 +12252,10 @@ msgstr "ウォレットで承認がすでに待機中です。変換はその実
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Cancelling {orderText}..."
 msgstr "{orderText}をキャンセル中…"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The signed request could not be completed. Retry to deactivate with a wallet transaction."
+msgstr "署名済みリクエストを完了できませんでした。再度お試しいただくと、ウォレット取引で無効化します。"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute margin deposit"
