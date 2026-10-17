@@ -5980,6 +5980,7 @@ msgstr "최근 180일"
 msgid "Positive funding fees"
 msgstr "양의 펀딩 수수료"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Loading…"
 msgstr "로딩 중…"

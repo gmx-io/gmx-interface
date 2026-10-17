@@ -5980,6 +5980,7 @@ msgstr "Последние 180 дней"
 msgid "Positive funding fees"
 msgstr "Положительные комиссии за финансирование"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Loading…"
 msgstr "Загрузка…"
