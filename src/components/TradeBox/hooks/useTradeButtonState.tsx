@@ -366,6 +366,8 @@ export function useTradeboxButtonState({
     return {};
   }, [isSubmitBlockedByRequiredExternalSwap]);
 
+  const externalSwapBlockReason = useSelector(selectExternalSwapBlockReason);
+
   const { buttonErrorText, tooltipContent, bannerErrorContent } = useMemo((): {
     buttonErrorText: string | undefined;
     tooltipContent: ReactNode | null;
@@ -467,8 +469,17 @@ export function useTradeboxButtonState({
       }
     }
 
-    const bannerErrorContent =
-      validationResult.bannerErrorName && !shouldShowDepositButton ? (
+    // "Connect wallet" masks the pool liquidity error, so surface it as a banner;
+    // external route block reasons already have their own warning card
+    const isPoolLiquidityErrorMaskedByConnect =
+      !account &&
+      !isWalletInitializing &&
+      tradeError.buttonTooltipName === ValidationButtonTooltipName.insufficientGmxPoolLiquidity &&
+      externalSwapBlockReason === undefined;
+
+    let bannerErrorContent: ReactNode = null;
+    if (validationResult.bannerErrorName && !shouldShowDepositButton) {
+      bannerErrorContent = (
         <ValidationBannerErrorContent
           validationBannerErrorName={validationResult.bannerErrorName}
           chainId={chainId}
@@ -478,7 +489,10 @@ export function useTradeboxButtonState({
           alternativeGasTokenAddress={alternativeGasToken?.address}
           onSwitchGasToken={handleSwitchGasToken}
         />
-      ) : null;
+      );
+    } else if (isPoolLiquidityErrorMaskedByConnect) {
+      bannerErrorContent = <InsufficientGmxPoolLiquidityTooltipContent />;
+    }
 
     return {
       buttonErrorText: validationResult.buttonErrorMessage,
@@ -489,11 +503,13 @@ export function useTradeboxButtonState({
     chainId,
     srcChainId,
     account,
+    isWalletInitializing,
     hasOutdatedUi,
     expressParams,
     tokensData,
     multipleWalletExtensionsChainError,
     tradeError,
+    externalSwapBlockReason,
     externalSwapBlockedError,
     nativeGasError,
     approvalGasError,
