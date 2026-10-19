@@ -1,6 +1,6 @@
 import { plural, t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { type HTMLProps, useMemo, useState } from "react";
+import { type HTMLProps, type ReactNode, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { Link } from "react-router-dom";
 
@@ -43,12 +43,16 @@ import {
 type TierTab = "volume" | "staking" | "boosts";
 
 const tierLevelTableClassName =
-  "w-full table-fixed border-separate border-spacing-x-0 border-spacing-y-4 [&_td:first-child]:!pl-8 [&_td:last-child]:!text-left [&_th:first-child]:!pl-8 [&_th:last-child]:!text-left";
+  "w-full table-fixed border-separate border-spacing-x-0 border-spacing-y-4 [&_th]:!py-12 [&_td:first-child]:!pl-8 [&_td:last-child]:!text-left [&_th:first-child]:!pl-8 [&_th:last-child]:!text-left";
 const tierLevelRowClassName =
-  "[&:nth-child(odd)>td]:bg-slate-800/50 [&>td]:!py-7 [&>td:first-child]:rounded-l-8 [&>td:last-child]:rounded-r-8";
+  "[&:nth-child(odd)>td]:bg-fill-surfaceElevated50 [&>td]:!py-7 [&>td:first-child]:rounded-l-8 [&>td:last-child]:rounded-r-8";
 
 function TierLevelTableTr({ className, ...props }: HTMLProps<HTMLTableRowElement>) {
   return <tr {...props} className={cx(tierLevelRowClassName, className)} />;
+}
+
+function TierIconSlot({ children }: { children: ReactNode }) {
+  return <div className="flex shrink-0 px-1 py-3">{children}</div>;
 }
 
 function formatCompactUsd(threshold: bigint) {
@@ -60,29 +64,33 @@ export function RewardsTierTables({
   config,
   status,
   statusState,
+  showCaption = false,
 }: {
   chainId: number;
   config: IncentivesConfig;
   status?: AccountIncentiveStatus;
   statusState: AccountDataState;
+  showCaption?: boolean;
 }) {
   const [activeTab, setActiveTab] = useState<TierTab>("volume");
   const tabOptions = useMemo(
     () => [
-      { value: "volume" as const, label: <Trans>Volume Tiers</Trans> },
-      { value: "staking" as const, label: <Trans>Staking Tiers</Trans> },
-      { value: "boosts" as const, label: <Trans>Activity Boosts</Trans> },
+      { value: "volume" as const, label: <Trans>Volume tiers</Trans> },
+      { value: "staking" as const, label: <Trans>Staking tiers</Trans> },
+      { value: "boosts" as const, label: <Trans>Activity boosts</Trans> },
     ],
     []
   );
 
   return (
-    <div className="overflow-hidden rounded-8 bg-slate-900">
-      <div className="flex p-20 pb-0">
-        <span className="text-caption text-typography-disabled">
-          <Trans>Tiers</Trans>
-        </span>
-      </div>
+    <div className="flex flex-col overflow-hidden rounded-8 bg-slate-900">
+      {showCaption ? (
+        <div className="flex px-20 pt-20">
+          <span className="text-caption text-typography-disabled">
+            <Trans>Tiers</Trans>
+          </span>
+        </div>
+      ) : null}
 
       <Tabs<TierTab>
         type="block"
@@ -91,24 +99,27 @@ export function RewardsTierTables({
         onChange={setActiveTab}
         className="px-20"
         tabsWrapperClassName="gap-16 lg:gap-24"
-        regularOptionClassname="!px-0 text-16 !pb-14 lg:text-24 lg:!pb-18 !pt-12 leading-[1.1]"
+        regularOptionClassname={cx(
+          "text-body-medium whitespace-nowrap !border-b-2 !px-0 !pb-12",
+          showCaption ? "!pt-12" : "!pt-20"
+        )}
       />
 
       <div>
-        <div className="max-w-[620px] p-20 pb-8 text-14 text-typography-secondary">
+        <div className="text-body-medium max-w-[620px] px-20 pb-8 pt-20 text-typography-secondary">
           {activeTab === "volume" ? (
             <div className="inline-flex items-center gap-4">
-              <Trans>Your epoch trading volume sets your Volume Tier and determines your multiplier.</Trans>
+              <Trans>Your epoch trading volume sets your volume tier and determines your multiplier.</Trans>
               <VolumeTierDescriptionTooltip chainId={chainId} config={config} factors={config.downgradingFactors} />
             </div>
           ) : activeTab === "staking" ? (
             <p>
-              <Trans>Your Staking Tier is based on staked GMX and esGMX and determines your staking multiplier.</Trans>
+              <Trans>Your staking tier is based on staked GMX and esGMX and determines your staking multiplier.</Trans>
             </p>
           ) : (
             <p>
               <Trans>
-                Activity Boosts are multiplier adjustments earned and applied exclusively to qualifying activity.
+                Activity boosts are multiplier adjustments earned and applied exclusively to qualifying activity.
               </Trans>
             </p>
           )}
@@ -151,13 +162,13 @@ function VolumeTiersTable({
     <table className={cx(tierLevelTableClassName, "min-w-[680px]")}>
       <thead>
         <TableTheadTr>
-          <TableTh width="40%" padding="compact">
-            <Trans>Tier Name</Trans>
+          <TableTh padding="compact">
+            <Trans>Tier name</Trans>
           </TableTh>
-          <TableTh width="25%" padding="compact">
+          <TableTh padding="compact">
             <Trans>Volume</Trans>
           </TableTh>
-          <TableTh width="15%" padding="compact">
+          <TableTh padding="compact">
             <Trans>Multiplier</Trans>
           </TableTh>
           <TableTh width="160px" padding="compact">
@@ -177,9 +188,9 @@ function VolumeTiersTable({
               <TierLevelTableTr key={tier.tier}>
                 <TableTd padding="compact">
                   <span className="flex items-center gap-8 font-medium">
-                    <div className="p-1">
+                    <TierIconSlot>
                       <VolumeTierIcon tierId={tier.tier} active={active} />
-                    </div>
+                    </TierIconSlot>
                     <span className="text-typography-primary">{volumeTierLabels[tier.tier]}</span>
                     {active ? <span className="font-medium text-green-500">✓</span> : null}
                   </span>
@@ -219,13 +230,13 @@ function StakingTiersTable({
     <table className={cx(tierLevelTableClassName, "min-w-[680px]")}>
       <thead>
         <TableTheadTr>
-          <TableTh width="40%" padding="compact">
-            <Trans>Tier Name</Trans>
+          <TableTh padding="compact">
+            <Trans>Tier name</Trans>
           </TableTh>
-          <TableTh width="25%" padding="compact">
+          <TableTh padding="compact">
             <Trans>GMX staked</Trans>
           </TableTh>
-          <TableTh width="15%" padding="compact">
+          <TableTh padding="compact">
             <Trans>Multiplier</Trans>
           </TableTh>
           <TableTh width="160px" padding="compact">
@@ -245,9 +256,9 @@ function StakingTiersTable({
               <TierLevelTableTr key={tier.tier}>
                 <TableTd padding="compact">
                   <span className="flex items-center gap-8">
-                    <div className="p-1">
+                    <TierIconSlot>
                       <StakingTierIcon tierId={tier.tier} active={active} />
-                    </div>
+                    </TierIconSlot>
                     <span className="font-medium text-typography-primary">{stakingTierLabels[tier.tier]}</span>
                     {active ? <span className="font-medium text-green-500">✓</span> : null}
                   </span>
@@ -297,9 +308,9 @@ function BoostsTable({
       <TierLevelTableTr key={boost.boost}>
         <TableTd padding="compact" className="text-typography-primary">
           <span className="flex items-center gap-8 font-medium">
-            <div className="p-1">
+            <TierIconSlot>
               <BoostTierIcon boostId={boost.boost} active={isHighlighted} />
-            </div>
+            </TierIconSlot>
             {boostLabels[boost.boost]}
           </span>
         </TableTd>
@@ -325,7 +336,7 @@ function BoostsTable({
       <thead>
         <TableTheadTr>
           <TableTh width="20%" padding="compact">
-            <Trans>Boost Name</Trans>
+            <Trans>Boost name</Trans>
           </TableTh>
           <TableTh width="45%" padding="compact">
             <Trans>About</Trans>
@@ -347,9 +358,9 @@ function BoostsTable({
             <TierLevelTableTr>
               <TableTd padding="compact" className="text-typography-primary">
                 <span className="flex items-center gap-8 font-medium">
-                  <div className="p-1">
+                  <TierIconSlot>
                     <ReferralBoostIcon active={(status?.referralVolume ?? 0n) > 0n} />
-                  </div>
+                  </TierIconSlot>
                   <Trans>Referral Bonus</Trans>
                 </span>
               </TableTd>
@@ -520,7 +531,7 @@ function VolumeTierDescriptionTooltip({
     <TooltipWithPortal
       variant="none"
       handle={
-        <button type="button" aria-label={t`Volume Tier details`} className="flex size-16 items-center justify-center">
+        <button type="button" aria-label={t`Volume tier details`} className="flex size-16 items-center justify-center">
           <InfoIconStroke className="size-16" />
         </button>
       }
@@ -564,7 +575,9 @@ function TierLevelsSkeletonRow({ invisible }: { invisible?: boolean }) {
     <TierLevelTableTr className={invisible ? "[&>td]:!bg-transparent" : undefined}>
       <TableTd padding="compact">
         <div className="flex items-center gap-8">
-          <Skeleton width={20} height={20} borderRadius={6} inline />
+          <TierIconSlot>
+            <Skeleton width={28} height={28} borderRadius={8} inline />
+          </TierIconSlot>
           <Skeleton width={120} inline />
         </div>
       </TableTd>

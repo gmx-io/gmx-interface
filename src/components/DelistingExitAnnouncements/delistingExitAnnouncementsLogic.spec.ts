@@ -1,7 +1,8 @@
 import { i18n } from "@lingui/core";
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ARBITRUM, AVALANCHE } from "config/chains";
+import * as staticMarkets from "config/static/markets";
 import type { MarketInfo } from "domain/synthetics/markets/types";
 
 import {
@@ -80,6 +81,20 @@ const SATS = "0x8ea4Fb801493DaD8724F90Fb2e279534fa591366";
 const BRETT = "0x6EeE8098dBC106aEde99763FA5F955A5bBc42C50";
 const ARBITRUM_MEME = "0x6CB901Cc64c024C3Fe4404c940FF9a3Acc229D2C";
 const AVALANCHE_MELANIA = "0xe19da27Bf9733c429445E289B662bECDCa6ce10b";
+
+beforeEach(() => {
+  const delistingMarkets: Record<number, Set<string>> = {
+    [ARBITRUM]: new Set([BOME, SATS, BRETT, ARBITRUM_MEME]),
+    [AVALANCHE]: new Set([AVALANCHE_MELANIA]),
+  };
+  vi.spyOn(staticMarkets, "isDelistingMarket").mockImplementation(
+    (chainId, address) => delistingMarkets[chainId]?.has(address) ?? false
+  );
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
+});
 
 // isSpotOnly:true keeps labels deterministic via getMarketPoolName.
 const openMarket = (symbol: string) => ({

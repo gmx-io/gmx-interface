@@ -8,11 +8,12 @@ import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { SelectorBase, useSelectorClose } from "components/SelectorBase/SelectorBase";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import { LabelWithTooltip } from "components/Tooltip/LabelWithTooltip";
 
 import CheckIcon from "img/ic_checked.svg?react";
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
-import { SettingLabelWithTooltip, SettingsSection } from "./shared";
+import { SettingsSection } from "./shared";
 import { ThemeSelector } from "./ThemeSelector";
 
 function BuySellIconsOption({
@@ -60,7 +61,7 @@ export function DisplaySettings() {
       <SettingsSection>
         <div className="flex items-center gap-8">
           <ToggleSwitch isChecked={settings.isLeverageSliderEnabled} setIsChecked={settings.setIsLeverageSliderEnabled}>
-            <SettingLabelWithTooltip
+            <LabelWithTooltip
               label={t`Manual leverage`}
               position="top"
               tooltip={
@@ -77,7 +78,7 @@ export function DisplaySettings() {
 
         <div className="flex items-center gap-8">
           <ToggleSwitch isChecked={settings.showPnlAfterFees} setIsChecked={settings.setShowPnlAfterFees}>
-            <SettingLabelWithTooltip
+            <LabelWithTooltip
               label={t`Display net value and PnL after all fees`}
               position="top"
               tooltip={
@@ -98,7 +99,7 @@ export function DisplaySettings() {
         </ToggleSwitch>
 
         <div className="flex items-center justify-between gap-8">
-          <SettingLabelWithTooltip
+          <LabelWithTooltip
             label={t`Show buy/sell icons on chart`}
             position="top"
             tooltip={
@@ -139,7 +140,7 @@ export function DisplaySettings() {
             isChecked={settings.breakdownNetPriceImpactEnabled}
             setIsChecked={settings.setBreakdownNetPriceImpactEnabled}
           >
-            <SettingLabelWithTooltip
+            <LabelWithTooltip
               label={t`Break down net price impact`}
               position="top"
               tooltip={

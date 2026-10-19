@@ -22,7 +22,7 @@ type Fetched<Data> = {
 const UNKNOWN: Freshness = { isStale: false, asOf: undefined };
 
 // swr backs off exponentially after repeated failures, which would hold a recovered source back for minutes
-const retryAtRefreshCadence: NonNullable<SWRConfiguration["onErrorRetry"]> = (
+export const retryAtRefreshCadence: NonNullable<SWRConfiguration["onErrorRetry"]> = (
   _error,
   _key,
   config,

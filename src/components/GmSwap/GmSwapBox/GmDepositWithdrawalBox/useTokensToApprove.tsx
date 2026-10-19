@@ -5,7 +5,7 @@ import { zeroAddress } from "viem";
 
 import { SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
-import { getMappedTokenId, getMultichainTokenId } from "config/multichain";
+import { getMappedTokenId, getMultichainTokenId, isSelfOftToken } from "config/multichain";
 import {
   selectPoolsDetailsFirstTokenAddress,
   selectPoolsDetailsFirstTokenAmount,
@@ -23,6 +23,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isGlvAddress } from "domain/synthetics/markets/glv";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { helperToast } from "lib/helperToast";
+import type { TokenApprovalFlow } from "lib/metrics";
 import { adjustForDecimals } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { userAnalytics } from "lib/userAnalytics";
@@ -37,6 +38,22 @@ type TokensToApproveResult = {
   approve: () => void;
   isApproving: boolean;
 };
+
+function getPoolApprovalFlow({
+  chainId,
+  glvOrMarketAddress,
+  isDeposit,
+}: {
+  chainId: number;
+  glvOrMarketAddress: string | undefined;
+  isDeposit: boolean;
+}): TokenApprovalFlow {
+  if (glvOrMarketAddress !== undefined && isGlvAddress(chainId, glvOrMarketAddress)) {
+    return isDeposit ? "glvBuy" : "glvSell";
+  }
+
+  return isDeposit ? "gmBuy" : "gmSell";
+}
 
 const useSettlementChainTokensToApprove = (): TokensToApproveResult => {
   const chainId = useSelector(selectChainId);
@@ -92,6 +109,7 @@ const useSettlementChainTokensToApprove = (): TokensToApproveResult => {
     spenderAddress: routerAddress,
     tokens,
     skip: paySource !== "settlementChain",
+    metric: { flow: getPoolApprovalFlow({ chainId, glvOrMarketAddress: marketOrGlvTokenAddress, isDeposit }) },
   });
 
   const approve = useCallback(() => {
@@ -175,8 +193,8 @@ const useSourceChainTokensToApprove = (): TokensToApproveResult => {
     chainId: srcChainId,
     spenderAddress: multichainSpenderAddress,
     tokens,
-    approveAmount: sourceChainSpendTokenAmountLD,
-    skip: srcChainId === undefined || sourceChainSpendTokenId === undefined,
+    skip: srcChainId === undefined || sourceChainSpendTokenId === undefined || isSelfOftToken(sourceChainSpendTokenId),
+    metric: { flow: getPoolApprovalFlow({ chainId, glvOrMarketAddress, isDeposit }) },
   });
 
   const multichainTokensToApproveSymbols = useMemo(() => {

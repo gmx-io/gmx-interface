@@ -8,16 +8,14 @@ import { getAddress, isAddress, isAddressEqual } from "viem";
 import "./RewardsLeaderboardTab.scss";
 
 import type { ContractsChainId } from "config/chains";
-import { useGmxPrice } from "domain/legacy";
+import { useRewardsTesterGmxPrice as useGmxPrice } from "../tester/useRewardsTester"; // rewards-tester
 import { ES_GMX_DECIMALS, GT_DECIMALS } from "domain/synthetics/incentives/v2/constants";
 import type { IncentivesConfig, LeaderboardEntry } from "domain/synthetics/incentives/v2/types";
 import { useEpochRolloverRevalidation } from "domain/synthetics/incentives/v2/useEpochRolloverRevalidation";
-import {
-  type IncentivesLeaderboardOrderBy,
-  useIncentivesLeaderboard,
-} from "domain/synthetics/incentives/v2/useIncentivesLeaderboard";
-import { useIncentivesLeaderboardSearch } from "domain/synthetics/incentives/v2/useIncentivesLeaderboardSearch";
-import { useLatestGtPrice } from "domain/synthetics/incentives/v2/useLatestGtPrice";
+import { type IncentivesLeaderboardOrderBy } from "domain/synthetics/incentives/v2/useIncentivesLeaderboard"; // rewards-tester (was: also imported useIncentivesLeaderboard)
+import { useRewardsTesterIncentivesLeaderboard as useIncentivesLeaderboard } from "../tester/useRewardsTester"; // rewards-tester
+import { useRewardsTesterIncentivesLeaderboardSearch as useIncentivesLeaderboardSearch } from "../tester/useRewardsTester"; // rewards-tester
+import { useRewardsTesterLatestGtPrice as useLatestGtPrice } from "../tester/useRewardsTester"; // rewards-tester
 import { useDebounce } from "lib/debounce/useDebounce";
 import { formatUsd } from "lib/numbers";
 import { sendRewardsLeaderboardShareClickEvent } from "lib/userAnalytics/rewardsEvents";
@@ -40,17 +38,17 @@ const PAGE_SIZE = 20;
 const SEARCH_DEBOUNCE_MS = 300;
 
 const COL_RANK: CSSProperties = { width: "7%" };
-const COL_ADDRESS: CSSProperties = { width: "19%" };
-const COL_TRADING_VOLUME: CSSProperties = { width: "14%" };
-const COL_REFERRAL_VOLUME: CSSProperties = { width: "14%" };
-const COL_ES_GMX: CSSProperties = { width: "14%" };
-const COL_GT: CSSProperties = { width: "12%" };
+const COL_ADDRESS: CSSProperties = { width: "17%" };
+const COL_TRADING_VOLUME: CSSProperties = { width: "13%" };
+const COL_REFERRAL_VOLUME: CSSProperties = { width: "13%" };
+const COL_ES_GMX: CSSProperties = { width: "15%" };
+const COL_GT: CSSProperties = { width: "15%" };
 const COL_REWARDS: CSSProperties = { width: "12%" };
 const COL_SHARE: CSSProperties = { width: "8%" };
 const LEADERBOARD_ROW_CLASS_NAME = "h-40";
 const LEADERBOARD_TD_CLASS_NAME = "!py-8";
 const CURRENT_ACCOUNT_ROW_CLASS_NAME =
-  "!bg-cold-blue-900 text-blue-100 [&_.AddressView-trader-id]:!text-typography-primary [&_.AddressView-trader-id_.text-typography-secondary]:!text-blue-100";
+  "!bg-cold-blue-900 text-blue-700 dark:text-blue-100 [&_.AddressView-trader-id]:!text-typography-primary [&_.AddressView-trader-id_.text-typography-secondary]:!text-blue-700 dark:[&_.AddressView-trader-id_.text-typography-secondary]:!text-blue-100";
 
 type LeaderboardPeriod = "current" | "previous" | "all";
 type LeaderboardSortField = "tradingVolume" | "referralVolume" | "esGmxRewards" | "gtRewards" | "rewardsUsd";
@@ -143,11 +141,13 @@ function LeaderboardRow({
       hoverable={!isHighlighted}
       className={cx(LEADERBOARD_ROW_CLASS_NAME, isHighlighted && CURRENT_ACCOUNT_ROW_CLASS_NAME)}
     >
-      <TableTd className={cx(LEADERBOARD_TD_CLASS_NAME, "relative")}>
+      <TableTd className={LEADERBOARD_TD_CLASS_NAME}>
         <span
-          className={cx("font-medium numbers after:!top-7", getRankClassName(entry.rank), {
-            "text-typography-secondary": !isHighlighted,
-          })}
+          className={cx(
+            "text-13 font-medium numbers",
+            getRankClassName(entry.rank),
+            !isHighlighted && "text-typography-secondary"
+          )}
         >
           {entry.rank}
         </span>
@@ -175,7 +175,7 @@ function LeaderboardRow({
           <button
             type="button"
             onClick={() => onShare(entry)}
-            className="inline-flex items-center gap-4 whitespace-nowrap text-13 font-medium text-blue-100"
+            className="inline-flex items-center gap-4 whitespace-nowrap text-13 font-medium text-blue-700 dark:text-blue-100"
           >
             <ShareIcon className="size-12" />
             <Trans>Share</Trans>
@@ -192,8 +192,8 @@ function EmptyPinnedLeaderboardRow({ account }: { account: string }) {
       data-testid="leaderboard-pinned-row"
       className={cx(LEADERBOARD_ROW_CLASS_NAME, CURRENT_ACCOUNT_ROW_CLASS_NAME)}
     >
-      <TableTd className={cx(LEADERBOARD_TD_CLASS_NAME, "relative")}>
-        <span className="numbers">{t`N/A`}</span>
+      <TableTd className={LEADERBOARD_TD_CLASS_NAME}>
+        <span className="text-13 font-medium numbers">{t`N/A`}</span>
       </TableTd>
       <TableTd className={LEADERBOARD_TD_CLASS_NAME} title={account}>
         <AddressView size={20} address={account} breakpoint="XL" />
@@ -419,6 +419,7 @@ export function RewardsLeaderboardTab({
     !showPinnedRow &&
     !showEmptyPinnedRow;
   const visibleMainRowCount = hasNoSearchMatch ? 1 : pageData.length;
+  // Without a pinned row, a hidden spacer keeps rank 1 unstriped so row striping stays consistent.
   const pinnedRow =
     !isSearchActive && account && pinnedEntries === undefined && !pinnedError && !isPinnedEntryVisible ? (
       <TableListSkeleton count={1} Structure={RewardsLeaderboardPinnedSkeletonRow} />
@@ -433,12 +434,14 @@ export function RewardsLeaderboardTab({
       />
     ) : showEmptyPinnedRow && account ? (
       <EmptyPinnedLeaderboardRow account={account} />
-    ) : null;
+    ) : (
+      <tr aria-hidden="true" className="hidden" />
+    );
 
   return (
     <div className="flex flex-col rounded-8 bg-slate-900">
       <div className="border-b-1/2 border-slate-600 p-20">
-        <h3 className="mb-12 text-16 font-medium text-typography-primary">
+        <h3 className="text-body-large mb-12 font-medium text-typography-primary">
           <Trans>Leaderboard</Trans>
         </h3>
 

@@ -23,12 +23,13 @@ import {
 } from "sdk/configs/markets";
 import { getToken } from "sdk/configs/tokens";
 import { getMarketIndexName, getMarketPoolName } from "sdk/utils/markets";
-import { formatTokenAmount, formatUsd } from "sdk/utils/numbers";
+import { formatTokenAmount } from "sdk/utils/numbers";
 
 import Button from "components/Button/Button";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { EXPAND_ANIMATION_VARIANTS } from "components/ExpandableRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
@@ -325,7 +326,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                 <SyntheticsInfoRow
                   label={<Trans>Gas</Trans>}
                   valueClassName="flex items-center"
-                  value={formatUsd(task.estimatedFeeUsd)}
+                  value={<UsdValue usd={task.estimatedFeeUsd} />}
                 />
                 {finishedState !== "completed" && (
                   <>

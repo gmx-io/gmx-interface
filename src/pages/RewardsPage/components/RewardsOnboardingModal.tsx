@@ -4,7 +4,7 @@ import { PointerEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 
 import { REWARDS_ONBOARDING_DISMISSED_KEY } from "config/localStorage";
-import { useLocalStorageSerializeKeySafe } from "lib/localStorage";
+import { useRewardsTesterLocalStorageSerializeKeySafe as useLocalStorageSerializeKeySafe } from "../tester/useRewardsTester"; // rewards-tester
 
 import Button from "components/Button/Button";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
@@ -103,7 +103,7 @@ function SlideContent({ index }: { index: number }) {
   return (
     <div className="flex min-h-[104px] w-full max-w-[360px] flex-col items-center gap-8 text-center">
       <h2 className="text-h2 text-typography-primary">
-        <Trans>Using Your Rewards</Trans>
+        <Trans>Using your rewards</Trans>
       </h2>
       <ul className="text-body-medium w-full list-disc space-y-4 pl-16 text-left text-typography-secondary">
         <li>

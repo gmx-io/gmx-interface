@@ -18,7 +18,7 @@ import { getMarketBadge } from "domain/synthetics/markets/utils";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { TokenBalanceType, Token, TokensData } from "domain/tokens";
 import { createTokenSortSequenceComparator, getMidPrice, stripBlacklistedWords } from "domain/tokens/utils";
-import { formatBalanceAmount, formatUsd } from "lib/numbers";
+import { formatBalanceAmount } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
 import { searchBy } from "lib/searchBy";
 import {
@@ -34,6 +34,7 @@ import { getMarketIndexName, getMarketPoolName } from "sdk/utils/markets";
 import Button from "components/Button/Button";
 import { useOpenWalletReceive } from "components/GmxAccountModal/hooks";
 import { SlideModal } from "components/Modal/SlideModal";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import SearchInput from "components/SearchInput/SearchInput";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import Tabs from "components/Tabs/Tabs";
@@ -508,7 +509,7 @@ export function AvailableToTradeTokenList({
               </div>
 
               <span className="text-body-small text-typography-secondary">
-                {token.balanceUsd > 0n && formatUsd(token.balanceUsd)}
+                {token.balanceUsd > 0n && <UsdValue usd={token.balanceUsd} />}
               </span>
             </div>
           </div>

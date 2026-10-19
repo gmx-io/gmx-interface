@@ -3,10 +3,10 @@ import { useMemo } from "react";
 import { getChainName, getChainNativeTokenSymbol } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
-import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useRewardsTesterEarnSelector as useSelector } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
 import { useMarketTokensData } from "domain/synthetics/markets";
-import { useGlvUserEarnings } from "domain/synthetics/markets/useGlvUserEarnings";
-import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
+import { useRewardsTesterEarnGlvUserEarnings as useGlvUserEarnings } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
+import { useRewardsTesterEarnUserEarnings as useUserEarnings } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
 import { getTotalGlvInfo, getTotalGmInfo } from "domain/synthetics/markets/utils";
 import { useChainId } from "lib/chains";
 import { StakingProcessedData } from "lib/legacy";

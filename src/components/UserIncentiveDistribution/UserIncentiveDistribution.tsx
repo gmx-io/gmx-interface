@@ -11,9 +11,8 @@ import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext
 import { selectGmMarkets } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { INCENTIVE_TOOLTIP_MAP, INCENTIVE_TYPE_MAP } from "domain/synthetics/common/incentivesAirdropMessages";
-import useUserIncentiveData, {
-  type UserIncentiveDistribution as UserIncentiveDistributionData,
-} from "domain/synthetics/common/useUserIncentiveData";
+import { type UserIncentiveDistribution as UserIncentiveDistributionData } from "domain/synthetics/common/useUserIncentiveData"; // rewards-tester (was: also imported the default useUserIncentiveData)
+import { useRewardsTesterEarnUserIncentiveData as useUserIncentiveData } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
 import { MarketsData, useMarketTokensData } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
@@ -21,11 +20,11 @@ import { useEsGmxIssuerData } from "domain/vesting/useEsGmxIssuerData";
 import { useChainId } from "lib/chains";
 import { formatDate, formatDateTime, getDaysAgo } from "lib/dates";
 import { GM_DECIMALS, GMX_DECIMALS } from "lib/legacy";
-import { expandDecimals, formatBalanceAmount, formatUsd } from "lib/numbers";
+import { expandDecimals, formatBalanceAmount } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { shortenAddressOrEns } from "lib/wallets";
-import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
-import useWallet from "lib/wallets/useWallet";
+import { useRewardsTesterEarnIsWalletInitializing as useIsWalletInitializing } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
+import { useRewardsTesterEarnWallet as useWallet } from "pages/RewardsPage/tester/useRewardsTesterEarn"; // rewards-tester
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { getTokens } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
@@ -33,6 +32,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import usePagination from "components/Pagination/usePagination";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -324,9 +324,11 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
         <TableTdActionable className="max-xl:text-right" data-label={t`AMOUNT`}>
           <Tooltip
             handle={
-              esGmxIssuance
-                ? `${formatBalanceAmount(tokenIncentiveDetails[0].amount, GMX_DECIMALS)} esGMX`
-                : formatUsd(totalUsd)
+              esGmxIssuance ? (
+                `${formatBalanceAmount(tokenIncentiveDetails[0].amount, GMX_DECIMALS)} esGMX`
+              ) : (
+                <UsdValue usd={totalUsd} />
+              )
             }
             handleClassName="numbers"
             className="whitespace-nowrap"

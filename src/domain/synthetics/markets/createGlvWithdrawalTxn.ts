@@ -7,6 +7,7 @@ import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { SetPendingWithdrawal } from "context/SyntheticsEvents";
 import { callContract } from "lib/contracts";
 import { OrderMetricId } from "lib/metrics";
+import type { WalletTxnResult } from "lib/transactions/sendWalletTransaction";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";
@@ -45,8 +46,8 @@ export async function createGlvWithdrawalTxn({
   params: CreateGlvWithdrawalParams;
   glvTokenAmount: bigint;
   setPendingTxns: (txns: any) => void;
-  setPendingWithdrawal: SetPendingWithdrawal;
-}) {
+  setPendingWithdrawal?: SetPendingWithdrawal;
+}): Promise<Pick<WalletTxnResult, "transactionHash">> {
   const contract = new ethers.Contract(getContract(chainId, "GlvRouter"), abis.GlvRouter, signer);
   const withdrawalVaultAddress = getContract(chainId, "GlvVault");
 
@@ -129,8 +130,8 @@ export async function createGlvWithdrawalTxn({
       estimatedExecutionFee: params.executionFee,
       estimatedExecutionGasLimit: executionGasLimit,
     },
-  }).then(() => {
-    setPendingWithdrawal({
+  }).then((res) => {
+    setPendingWithdrawal?.({
       account: params.addresses.receiver,
       marketAddress: params.addresses.glv,
       marketTokenAmount: glvTokenAmount,
@@ -138,5 +139,7 @@ export async function createGlvWithdrawalTxn({
       minShortTokenAmount: params.minShortTokenAmount,
       shouldUnwrapNativeToken: params.shouldUnwrapNativeToken,
     });
+
+    return { transactionHash: res?.hash };
   });
 }

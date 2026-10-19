@@ -12,6 +12,7 @@ import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
+import { NumericValue } from "components/NumericValue/NumericValue";
 import { TableTd, TableTr } from "components/Table/Table";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import {
@@ -195,7 +196,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
       <TooltipWithPortal
         tooltipClassName="ClaimHistoryRow-size-tooltip-portal"
         content={amounts}
-        handle={formattedTotalUsd}
+        handle={<NumericValue parts={formattedTotalUsd} />}
         handleClassName="numbers"
       />
     );

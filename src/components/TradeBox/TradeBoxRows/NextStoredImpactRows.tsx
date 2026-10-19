@@ -7,9 +7,10 @@ import {
   selectTradeboxExistingPositionForPreview,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { formatDeltaUsd } from "lib/numbers";
+import { formatDeltaUsdParts } from "lib/numbers";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
@@ -44,11 +45,11 @@ export function NextStoredImpactRows() {
           nextPositionValues?.nextPendingImpactDeltaUsd !== undefined &&
           existingPosition?.pendingImpactUsd !== undefined ? (
             <ValueTransition
-              from={formatDeltaUsd(existingPosition?.pendingImpactUsd)}
-              to={formatDeltaUsd(nextPositionValues?.nextPendingImpactDeltaUsd)}
+              from={formatDeltaUsdParts(existingPosition?.pendingImpactUsd)}
+              to={formatDeltaUsdParts(nextPositionValues?.nextPendingImpactDeltaUsd)}
             />
           ) : (
-            formatDeltaUsd(nextPositionValues?.nextPendingImpactDeltaUsd)
+            <DeltaUsdValue deltaUsd={nextPositionValues?.nextPendingImpactDeltaUsd} />
           )
         }
         valueClassName="numbers"
@@ -57,7 +58,7 @@ export function NextStoredImpactRows() {
         nextPositionValues?.potentialPriceImpactDiffUsd > 0n && (
           <SyntheticsInfoRow
             label={t`Estimated impact rebate`}
-            value={formatDeltaUsd(nextPositionValues?.potentialPriceImpactDiffUsd)}
+            value={<DeltaUsdValue deltaUsd={nextPositionValues?.potentialPriceImpactDiffUsd} />}
             valueClassName="numbers text-green-500"
           />
         )}

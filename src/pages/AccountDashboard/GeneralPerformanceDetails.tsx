@@ -8,9 +8,10 @@ import type { Address } from "viem";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import type { PnlSummaryBucketLabel, PnlSummaryPoint } from "domain/synthetics/accountStats/usePnlSummaryData";
 import { getEmptyPnlSummaryData, usePnlSummaryData } from "domain/synthetics/accountStats/usePnlSummaryData";
-import { formatPercentage, formatUsd } from "lib/numbers";
+import { formatPercentage } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { AccountPnlSummarySkeleton } from "components/Skeleton/Skeleton";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
@@ -137,7 +138,7 @@ function GeneralPerformanceDetailsRow({
       </TableTd>
       <TableTd>
         <MetricWithRank rank={row.volumeRank}>
-          <span className="numbers">{formatUsd(row.volume, { maxThreshold: null })}</span>
+          <UsdValue usd={row.volume} maxThreshold={null} className="numbers" />
         </MetricWithRank>
       </TableTd>
       <TableTd>
@@ -156,7 +157,7 @@ function GeneralPerformanceDetailsRow({
             content={
               showDebugValues ? <GeneralPerformanceDetailsDebugTooltip row={row} /> : <PnlBreakdownTooltip row={row} />
             }
-            handle={<span className="numbers">{formatUsd(row.pnlUsd)}</span>}
+            handle={<UsdValue usd={row.pnlUsd} className="numbers" />}
           />
         </MetricWithRank>
       </TableTd>
@@ -269,7 +270,7 @@ function PnlPercentageTooltip({ row }: { row: PnlSummaryPoint }) {
       <StatsTooltipRow
         label={t`Capital used`}
         showDollar={false}
-        value={formatUsd(row.usedCapitalUsd)}
+        value={<UsdValue usd={row.usedCapitalUsd} />}
         valueClassName="numbers"
         labelClassName="text-typography-primary font-medium"
       />
@@ -286,9 +287,7 @@ function BreakdownTooltipTotalRow({ value }: { value: bigint }) {
   return (
     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-16">
       <span className="min-w-0 break-words font-medium text-typography-primary">{t`PnL`}</span>
-      <span className={cx("whitespace-nowrap text-right numbers", getPositiveOrNegativeClass(value))}>
-        {formatUsd(value)}
-      </span>
+      <UsdValue usd={value} className={cx("whitespace-nowrap text-right numbers", getPositiveOrNegativeClass(value))} />
     </div>
   );
 }
@@ -332,9 +331,10 @@ function BreakdownTooltipRow({ row, labelClassName }: { row: PnlBreakdownRow; la
       <span className={cx("min-w-0 break-words font-medium text-typography-secondary", labelClassName)}>
         {getPnlBreakdownFieldLabel(row.key)}
       </span>
-      <span className={cx("whitespace-nowrap text-right numbers", getPositiveOrNegativeClass(row.value))}>
-        {formatUsd(row.value)}
-      </span>
+      <UsdValue
+        usd={row.value}
+        className={cx("whitespace-nowrap text-right numbers", getPositiveOrNegativeClass(row.value))}
+      />
     </div>
   );
 }

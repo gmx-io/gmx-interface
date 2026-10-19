@@ -29,7 +29,6 @@ import { formatRelativeDateWithComma } from "lib/dates";
 import { useLocalizedMap } from "lib/i18n";
 import { useENS } from "lib/legacy";
 import { useLocalStorageByChainId } from "lib/localStorage";
-import { formatUsd } from "lib/numbers";
 import { useNotifyModalState } from "lib/useNotifyModalState";
 import { shortenAddressOrEns, switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
@@ -41,6 +40,7 @@ import { Amount } from "components/Amount/Amount";
 import Button from "components/Button/Button";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { MODAL_ANIMATION_DURATION_MS } from "components/Modal/Modal";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import SearchInput from "components/SearchInput/SearchInput";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -76,7 +76,7 @@ function BalanceAmount({ usd, onClick }: { usd: bigint | undefined; onClick: () 
   return (
     <button className="flex min-h-32 items-center gap-4" onClick={onClick}>
       {usd !== undefined ? (
-        <span className="text-h2 normal-nums leading-[30px]">{formatUsd(usd)}</span>
+        <UsdValue usd={usd} className="text-h2 normal-nums leading-[30px]" />
       ) : (
         <Skeleton
           baseColor="#B4BBFF1A"
@@ -556,13 +556,13 @@ export function TransferHistoryView() {
         ))}
 
         {!isLoading && fundingHistory && fundingHistory.length === 0 && (
-          <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-slate-100">
-            <Trans>No funding activity</Trans>
+          <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-center text-slate-100">
+            <Trans>No transfer history</Trans>
           </div>
         )}
         {!isLoading && filteredFundingHistory?.length === 0 && fundingHistory && fundingHistory.length > 0 && (
-          <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-slate-100">
-            <Trans>No funding activity matching search</Trans>
+          <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-center text-slate-100">
+            <Trans>No transfer history matching search</Trans>
           </div>
         )}
         {isLoading && (

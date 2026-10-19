@@ -6,18 +6,12 @@ import { ChangeEvent, RefObject, useCallback, useEffect, useMemo, useRef, useSta
 
 import { USD_DECIMALS } from "config/factors";
 import { getCappedTpSlLossUsd } from "domain/tpsl/utils";
-import {
-  calculateDisplayDecimals,
-  expandDecimals,
-  formatAmount,
-  formatDeltaUsd,
-  formatUsdPrice,
-  parseValue,
-  removeTrailingZeros,
-} from "lib/numbers";
+import { calculateDisplayDecimals, expandDecimals, formatAmount, parseValue, removeTrailingZeros } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 
 import NumberInput from "components/NumberInput/NumberInput";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
+import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
 import FloatingPortal from "components/Portal/FloatingPortal";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -398,12 +392,6 @@ export function TPSLInputRow({
     liquidationPrice,
     isLong,
   ]);
-  const estimatedPnlDisplay = estimatedPnl ? formatDeltaUsd(estimatedPnl.pnlUsd, estimatedPnl.pnlPercentage) : "-";
-
-  const formattedMarkPrice = useMemo(() => {
-    if (referencePrice === undefined) return undefined;
-    return formatUsdPrice(referencePrice, { visualMultiplier });
-  }, [referencePrice, visualMultiplier]);
 
   const handleMarkPriceClick = useCallback(() => {
     if (referencePrice === undefined || referencePrice === 0n) return;
@@ -417,14 +405,15 @@ export function TPSLInputRow({
       <span className="shrink-0 text-typography-secondary">
         <Trans>Est. PnL</Trans>
       </span>
-      <span
+      <DeltaUsdValue
+        deltaUsd={estimatedPnl?.pnlUsd}
+        percentage={estimatedPnl?.pnlPercentage}
+        fallback="-"
         className={cx("ml-4 min-w-0 truncate numbers", {
           "text-green-500": estimatedPnl && estimatedPnl.pnlUsd > 0n,
           "text-red-500": estimatedPnl && estimatedPnl.pnlUsd < 0n,
         })}
-      >
-        {estimatedPnlDisplay ?? "-"}
-      </span>
+      />
     </div>
   );
 
@@ -525,12 +514,17 @@ export function TPSLInputRow({
           >
             <div className="flex items-center justify-between">
               <div className="text-body-small text-typography-secondary">{priceLabel}</div>
-              {formattedMarkPrice !== undefined && (
+              {referencePrice !== undefined && (
                 <div
                   className="cursor-pointer text-12 text-typography-secondary numbers"
                   onClick={handleMarkPriceClick}
                 >
-                  <Trans>Mark:</Trans> <span className="text-typography-primary">{formattedMarkPrice}</span>
+                  <Trans>Mark:</Trans>{" "}
+                  <UsdPriceValue
+                    price={referencePrice}
+                    visualMultiplier={visualMultiplier}
+                    className="text-typography-primary"
+                  />
                 </div>
               )}
             </div>

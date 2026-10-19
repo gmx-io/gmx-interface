@@ -1,29 +1,32 @@
 import { Trans } from "@lingui/macro";
+import cx from "classnames";
 import { useCallback, useEffect, useMemo } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 
 import { ARBITRUM_SEPOLIA } from "config/chains";
 import { useChainId } from "lib/chains";
 import { sendRewardsPageViewEvent } from "lib/userAnalytics/rewardsEvents";
-import useWallet from "lib/wallets/useWallet";
+import { useRewardsTesterWallet as useWallet } from "./tester/useRewardsTester"; // rewards-tester
 
 import { AppCard } from "components/AppCard/AppCard";
 import Button from "components/Button/Button";
 import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
 import Tabs from "components/Tabs/Tabs";
-
-import RewardsIcon from "img/ic_rewards.svg?react";
+import type { Option } from "components/Tabs/types";
 
 import { RewardsHistoryTab } from "./components/RewardsHistoryTab";
 import { RewardsLeaderboardTab } from "./components/RewardsLeaderboardTab";
 import { RewardsOnboardingModal } from "./components/RewardsOnboardingModal";
+import { RewardsSummaryRow } from "./components/RewardsSummaryRow";
 import { RewardsTiersTab } from "./components/RewardsTiersTab";
 import { RewardsVestingFaq } from "./components/RewardsVestingFaq";
 import { RewardsVestingFlow } from "./components/RewardsVestingFlow";
+import type { AccountDataState } from "./components/rewardsTiersShared";
 import { getRewardsDebugConfig, getRewardsDebugMode } from "./rewardsDebug";
 import { RewardsPageLayout, RewardsPageLoadingContent } from "./RewardsPageShell";
 import { getRewardsPath, getRewardsTabFromPathname, type RewardsTab } from "./rewardsRoutes";
-import { useRewardsPageData } from "./useRewardsPageData";
+import { RewardsTesterPanel } from "./tester/RewardsTesterPanel"; // rewards-tester
+import { useRewardsTesterPageData as useRewardsPageData } from "./tester/useRewardsTester"; // rewards-tester
 
 export function RewardsPage() {
   const { pathname, search } = useLocation();
@@ -31,15 +34,24 @@ export function RewardsPage() {
   const { chainId } = useChainId();
   const { account } = useWallet();
   const activeTab = getRewardsTabFromPathname(pathname);
-  const pageData = useRewardsPageData({ chainId, account, loadTierAccountData: activeTab === "tiers" });
-  const tabOptions = useMemo(
-    () => [
-      { value: "tiers" as const, label: <Trans>Tiers</Trans> },
-      ...(account
-        ? [{ value: "history" as const, label: <Trans>Rewards</Trans>, icon: <RewardsIcon className="size-16" /> }]
-        : []),
-      { value: "leaderboard" as const, label: <Trans>Leaderboard</Trans> },
-    ],
+  const pageData = useRewardsPageData({
+    chainId,
+    account,
+    loadTierAccountData: activeTab === "tiers",
+    loadAllTimeSummary: true,
+  });
+  const tabOptions = useMemo<Option<RewardsTab>[]>(
+    () =>
+      account
+        ? [
+            { value: "tiers", label: <Trans>Multiplier</Trans> },
+            { value: "history", label: <Trans>Vesting</Trans> },
+            { value: "leaderboard", label: <Trans>Leaderboard</Trans> },
+          ]
+        : [
+            { value: "tiers", label: <Trans>Multiplier</Trans> },
+            { value: "leaderboard", label: <Trans>Leaderboard</Trans> },
+          ],
     [account]
   );
   const debugMode = getRewardsDebugMode(search);
@@ -61,16 +73,39 @@ export function RewardsPage() {
     return <RedirectWithQuery to="/rewards" />;
   }
 
+  const allTimeSummaryState: AccountDataState = !account
+    ? "disconnected"
+    : pageData.availability.status === "loading" || pageData.allTimeSummaryLoading
+      ? "loading"
+      : pageData.availability.status !== "active" || (pageData.allTimeSummaryError && !pageData.allTimeSummaryLoaded)
+        ? "unavailable"
+        : "ready";
+  // Hidden while Rewards is paused or failing: its numbers and links would point at the error card.
+  const showSummaryRow =
+    Boolean(account) &&
+    (debugConfig !== undefined ||
+      pageData.availability.status === "active" ||
+      pageData.availability.status === "loading");
+
   const pageContent = (content: React.ReactNode) => (
     <RewardsPageLayout>
-      <div className="mt-12 flex grow flex-col gap-8">
+      <RewardsTesterPanel /* rewards-tester */ />
+      {showSummaryRow ? (
+        <RewardsSummaryRow
+          chainId={chainId}
+          account={account}
+          allTimeSummary={pageData.allTimeSummary}
+          summaryState={allTimeSummaryState}
+        />
+      ) : null}
+      <div className={cx("flex grow flex-col gap-8", !showSummaryRow && "mt-12")}>
         <div className="min-w-0">
           <Tabs
             options={tabOptions}
             selectedValue={activeTab}
             onChange={handleTabChange}
             type="inline-primary"
-            className="min-w-0 gap-12"
+            className="min-w-0 gap-12 max-md:flex-col max-md:items-start max-md:gap-4"
             tabsWrapperClassName="min-w-0 overflow-x-auto scrollbar-hide"
             rightContent={<RewardsOnboardingModal shouldAutoOpen={Boolean(config)} />}
           />
@@ -196,7 +231,7 @@ export function RewardsPage() {
           <Trans>The new epoch is being indexed. Account totals will update shortly.</Trans>
         </div>
       ) : null}
-      {showTierAccountWarnings && (pageData.accountStatusError || pageData.allTimeSummaryError) ? (
+      {showLiveWarnings && (pageData.allTimeSummaryError || (activeTab === "tiers" && pageData.accountStatusError)) ? (
         <div className="text-body-small rounded-8 border-l-2 border-yellow-300 bg-yellow-300/10 p-12">
           <Trans>Some account rewards could not be refreshed. Public incentive data remains available.</Trans>
         </div>
@@ -208,13 +243,10 @@ export function RewardsPage() {
           config={config}
           account={account}
           status={pageData.accountStatus}
-          allTimeSummary={pageData.allTimeSummary}
           statusLoading={pageData.accountStatusLoading || (pageData.isMixedEpoch && !pageData.isMixedEpochPersistent)}
-          summaryLoading={pageData.allTimeSummaryLoading}
           statusUnavailable={Boolean(
             pageData.isMixedEpochPersistent || (pageData.accountStatusError && !pageData.accountStatus)
           )}
-          summaryUnavailable={Boolean(pageData.allTimeSummaryError && !pageData.allTimeSummaryLoaded)}
         />
       ) : activeTab === "history" ? (
         <div className="grid grid-cols-[minmax(0,1fr)_40rem] items-start gap-8 max-[1620px]:grid-cols-[minmax(0,1fr)_30rem] max-xl:grid-cols-1">
@@ -227,7 +259,9 @@ export function RewardsPage() {
           </div>
         </div>
       ) : (
-        <RewardsLeaderboardTab chainId={chainId} account={account} config={config} />
+        <div className="min-w-0">
+          <RewardsLeaderboardTab chainId={chainId} account={account} config={config} />
+        </div>
       )}
     </>
   );

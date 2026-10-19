@@ -1,8 +1,9 @@
 import { Trans } from "@lingui/macro";
 
 import type { BuybackDerivedMetrics } from "domain/buyback/useBuybackChartData";
-import { numberWithCommas } from "lib/numbers";
+import { numberWithCommas, numberWithCommasParts } from "lib/numbers";
 
+import { NumericValue } from "components/NumericValue/NumericValue";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import InfoIcon from "img/ic_info_circle_stroke.svg?react";
@@ -33,9 +34,11 @@ export function BuybackMetricsHeader({
         }
         value={metrics ? `${numberWithCommas(Math.round(metrics.totalBoughtGmx))} GMX` : "N/A"}
         subtitle={
-          metrics?.totalBoughtUsd !== undefined
-            ? `(${numberWithCommas(Math.round(metrics.totalBoughtUsd), { showDollar: true })})`
-            : undefined
+          metrics?.totalBoughtUsd !== undefined ? (
+            <>
+              (<NumericValue parts={numberWithCommasParts(Math.round(metrics.totalBoughtUsd), { showDollar: true })} />)
+            </>
+          ) : undefined
         }
         isLoading={isLoading}
         isUnavailable={isUnavailable}
@@ -66,8 +69,8 @@ function MetricItem({
 }: {
   label: React.ReactNode;
   tooltip: React.ReactNode;
-  value: string;
-  subtitle?: string;
+  value: React.ReactNode;
+  subtitle?: React.ReactNode;
   isLoading: boolean;
   isUnavailable: boolean;
 }) {
