@@ -144,6 +144,27 @@ export function shouldShowShareCardDiscounts(totalDiscountsUsd: bigint | undefin
   return totalDiscountsUsd !== undefined && totalDiscountsUsd >= SHARE_CARD_DISCOUNTS_THRESHOLD_USD;
 }
 
+/**
+ * `referralCodeLabel` is the display form of the code; the shared link carries the full code.
+ */
+export function getReferralTweetText({
+  traderDiscountPercentageLabel,
+  showDiscountsLine,
+  totalDiscountsFormatted,
+  referralCodeLabel,
+}: {
+  traderDiscountPercentageLabel: string;
+  showDiscountsLine: boolean;
+  totalDiscountsFormatted: string | undefined;
+  referralCodeLabel: string;
+}): string {
+  const discountsText = showDiscountsLine
+    ? `\n\nSo far, my referrals have saved ${totalDiscountsFormatted} total in discounts with my code: ${referralCodeLabel}`
+    : "";
+
+  return `Save up to ${traderDiscountPercentageLabel} on every trade on GMX.${discountsText}`;
+}
+
 export function shouldShowCreateReferralCodeTabLabel({
   hasAddressInUrl,
   hasAccount,

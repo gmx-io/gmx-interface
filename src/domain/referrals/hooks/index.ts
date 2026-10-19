@@ -5,7 +5,6 @@ import { isAddress, type Hash, zeroAddress, zeroHash } from "viem";
 
 import { getContract } from "config/contracts";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
-import { isHash } from "domain/referrals/utils/referralCode";
 import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { getReferralsGraphClient } from "lib/indexers";
@@ -17,7 +16,7 @@ import type { WalletSigner } from "lib/wallets";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { ContractsChainId } from "sdk/configs/chains";
-import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
+import { decodeReferralCode, encodeReferralCode, isReferralCodeHex } from "sdk/utils/referrals";
 
 import { UserReferralInfo } from "../types";
 
@@ -225,7 +224,7 @@ export function useUserReferralCode(
   const referralCodeResult = useMulticall(chainId, "user-referral-code", {
     key: account && referralStorageAddress !== zeroAddress ? [account, localStorageCode] : null,
     request: () => {
-      const localCodeCall = isHash(localStorageCode)
+      const localCodeCall = isReferralCodeHex(localStorageCode)
         ? {
             codeOwners: {
               methodName: "codeOwners",
@@ -269,7 +268,7 @@ export function useUserReferralCode(
       attachedOnChain = true;
       userReferralCode = onChainCode;
       userReferralCodeString = decodeReferralCode(onChainCode);
-    } else if (localStorageCodeOwner && !isAddressZero(localStorageCodeOwner) && isHash(localStorageCode)) {
+    } else if (localStorageCodeOwner && !isAddressZero(localStorageCodeOwner) && isReferralCodeHex(localStorageCode)) {
       attachedOnChain = false;
       userReferralCode = localStorageCode;
       userReferralCodeString = decodeReferralCode(localStorageCode);

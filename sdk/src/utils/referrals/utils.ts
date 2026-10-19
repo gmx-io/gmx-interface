@@ -5,37 +5,35 @@ import { hexToBytes } from "viem/utils";
 
 const BYTES32_HEX_REGEX = /^0x[0-9a-fA-F]{64}$/;
 
-export function isReferralCodeHex(value: string | undefined): boolean {
-  return value !== undefined && BYTES32_HEX_REGEX.test(value);
-}
-
-function isPrintableAscii(byte: number) {
-  return byte >= 0x20 && byte <= 0x7e;
+export function isReferralCodeHex(value: string | null | undefined): value is Hash {
+  return typeof value === "string" && BYTES32_HEX_REGEX.test(value);
 }
 
 /**
- * Codes registered through the UI are printable ASCII right-padded with zeros. The contract accepts any bytes32,
- * so anything else (e.g. left-padded addresses, hashes) is returned as the original hex.
+ * Codes registered through the UI are letters, digits and `_` right-padded with zeros. The contract accepts any
+ * bytes32, so anything else (e.g. left-padded addresses, hashes, other text) is returned as the original hex.
  */
 export function decodeReferralCode(hexCode?: Hash) {
-  if (!hexCode || hexCode === zeroHash || !isReferralCodeHex(hexCode)) {
+  if (!isReferralCodeHex(hexCode) || hexCode === zeroHash) {
     return "";
   }
 
   const bytes = hexToBytes(hexCode);
   const firstZeroIndex = bytes.indexOf(0);
   const textLength = firstZeroIndex === -1 ? bytes.length : firstZeroIndex;
-  const textBytes = bytes.subarray(0, textLength);
+  const text = String.fromCharCode(...bytes.subarray(0, textLength));
 
-  if (!textBytes.every(isPrintableAscii) || bytes.subarray(textLength).some((byte) => byte !== 0)) {
+  // only the characters `encodeReferralCode` keeps, so the text leads back to the same code
+  if (!/^\w+$/.test(text) || bytes.subarray(textLength).some((byte) => byte !== 0)) {
     return hexCode;
   }
 
-  return String.fromCharCode(...textBytes);
+  return text;
 }
 
 export function encodeReferralCode(code: string) {
-  if (isReferralCodeHex(code)) {
+  // not `isReferralCodeHex`: its type guard would narrow `code` to never below
+  if (BYTES32_HEX_REGEX.test(code)) {
     // not an address, so no checksum casing; lowercase matches what chain and subgraph return
     return code.toLowerCase() as Hash;
   }

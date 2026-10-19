@@ -54,6 +54,8 @@ describe("landing referral code PRO-4493", () => {
     captureLandingReferralCode();
     openLanding(`?ref=${HEX_CODE}00`);
     captureLandingReferralCode();
+    openLanding(`?ref=0x${"0".repeat(64)}`);
+    captureLandingReferralCode();
 
     expect(getLandingReferralCode()).toBe("OLD_CODE");
   });
