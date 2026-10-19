@@ -21,7 +21,7 @@ export const TOKEN_PERMITS_EIP7702_DELEGATES: Address[] = [
   "0xcc0c946EecF01A4Bc76Bc333Ea74CEb04756f17b",
 ];
 
-// tokens whose permit to the Router was verified on-chain; the SDK's isPermitSupported list is wider
+// tokens whose permit to the Router was verified on-chain, independent of the SDK's isPermitSupported flags
 const TOKEN_PERMITS_ALLOWLIST: Partial<Record<number, Address[]>> = {
   [ARBITRUM]: [
     "0xaf88d065e77c8cC2239327C5EDb3A432268e5831", // USDC
