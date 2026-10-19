@@ -5174,6 +5174,10 @@ msgstr "Реализованное влияние свопов на цену"
 msgid "It depends on the volume you route and which revenue streams you turn on. Use the calculator above for a rough estimate, or apply to talk specifics with the team."
 msgstr "Зависит от объёма, который вы направляете, и от включённых источников дохода. Используйте калькулятор выше для примерной оценки или подайте заявку, чтобы обсудить детали с командой."
 
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
+msgid "Withdrawal to {sourceChainName} failed"
+msgstr "Вывод в {sourceChainName} не удался"
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter recipient address"
 msgstr "Введите адрес получателя"
