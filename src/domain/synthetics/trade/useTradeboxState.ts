@@ -292,6 +292,8 @@ export function useTradeboxState(
   const [toTokenInputValue, setToTokenInputValue] = useSafeState("");
   const [stage, setStage] = useState<TradeStage>("trade");
   const [focusedInput, setFocusedInput] = useState<"from" | "to">();
+  // the Express fee can be paid with the pay token instead of the saved gas payment token
+  const [expressFeeTokenAddress, setExpressFeeTokenAddress] = useState<string>();
   const [defaultTriggerAcceptablePriceImpactBps, setDefaultTriggerAcceptablePriceImpactBps] = useState<bigint>();
   const [selectedTriggerAcceptablePriceImpactBps, setSelectedTriggerAcceptablePriceImpactBps] = useState<bigint>();
   const [isAcceptablePriceImpactCustomized, setIsAcceptablePriceImpactCustomized] = useState(false);
@@ -788,6 +790,8 @@ export function useTradeboxState(
     setStage,
     focusedInput,
     setFocusedInput,
+    expressFeeTokenAddress,
+    setExpressFeeTokenAddress,
     defaultTriggerAcceptablePriceImpactBps,
     setDefaultTriggerAcceptablePriceImpactBps,
     selectedTriggerAcceptablePriceImpactBps,
