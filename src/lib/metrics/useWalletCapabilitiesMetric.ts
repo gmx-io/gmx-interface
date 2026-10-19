@@ -28,13 +28,13 @@ export function useWalletCapabilitiesMetric() {
   const walletChainId = srcChainId ?? chainId;
 
   // one address can be connected through several Privy wallets, the active wagmi connector picks the one in use
-  const connectorType =
-    connector !== undefined
-      ? wallets.find((wallet) => getPrivyWagmiConnectorId(wallet) === connector.id)?.connectorType
-      : undefined;
+  const wallet =
+    connector !== undefined ? wallets.find((wallet) => getPrivyWagmiConnectorId(wallet) === connector.id) : undefined;
+  const connectorType = wallet?.connectorType;
+  const connectorId = wallet?.meta.id;
 
   useEffect(() => {
-    if (!address || !connector || connectorType === undefined) {
+    if (!address || !connector || connectorType === undefined || connectorId === undefined) {
       return;
     }
 
@@ -45,27 +45,25 @@ export function useWalletCapabilitiesMetric() {
     }
 
     reportedKeys.add(key);
-    sendWalletCapabilitiesMetric({ address, connector, connectorType, chainId: walletChainId });
-  }, [address, connector, connectorType, walletChainId]);
+    sendWalletCapabilitiesMetric({ address, connector, connectorId, connectorType, chainId: walletChainId });
+  }, [address, connector, connectorId, connectorType, walletChainId]);
 }
 
 async function sendWalletCapabilitiesMetric({
   address,
   connector,
+  connectorId,
   connectorType,
   chainId,
 }: {
   address: string;
   connector: Connector;
+  connectorId: string;
   connectorType: string;
   chainId: number;
 }) {
   const [accountInfo, capabilitiesResult, walletName] = await Promise.all([
-    withFallback(
-      getAccountInfo(address, chainId),
-      { accountType: undefined, delegateAddress: undefined },
-      ACCOUNT_INFO_TIMEOUT_MS
-    ),
+    getAccountInfo(address, chainId).catch(() => ({ accountType: undefined, delegateAddress: undefined })),
     getCapabilitiesResult({ address, connector, connectorType, chainId }),
     withFallback(getConnectedWalletName(address), connector.name, ACCOUNT_INFO_TIMEOUT_MS),
   ]);
@@ -76,7 +74,7 @@ async function sendWalletCapabilitiesMetric({
     data: {
       chainId,
       walletName,
-      connectorId: connector.id,
+      connectorId,
       connectorType,
       accountType: accountInfo.accountType !== undefined ? ACCOUNT_TYPE_LABELS[accountInfo.accountType] : undefined,
       delegateAddress: accountInfo.delegateAddress,
@@ -97,10 +95,10 @@ async function sendWalletCapabilitiesMetric({
 async function getAccountInfo(address: string, chainId: number) {
   const client = getPublicClientWithRpc(chainId);
   // shares the cached lookup with useAccountType, the code is read again only to name the 7702 delegate
-  const accountType = await getAccountType(address, client).catch(() => undefined);
+  const accountType = await withFallback(getAccountType(address, client), undefined, ACCOUNT_INFO_TIMEOUT_MS);
   const delegateAddress =
     accountType === AccountType.PostEip7702EOA
-      ? await client.getDelegation({ address: address as Address }).catch(() => undefined)
+      ? await withFallback(client.getDelegation({ address: address as Address }), undefined, ACCOUNT_INFO_TIMEOUT_MS)
       : undefined;
 
   return { accountType, delegateAddress };
