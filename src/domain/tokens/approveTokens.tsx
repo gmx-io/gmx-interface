@@ -51,6 +51,17 @@ export type ApproveTokensResult = {
   hash: `0x${string}`;
 };
 
+// parseError patterns are case-sensitive, so keep the old case-insensitive check for rejections without code 4001
+function getApprovalErrorOutcome(error: unknown): "rejected" | "failed" {
+  if (getTxnErrorOutcome(error) === "rejected") {
+    return "rejected";
+  }
+
+  const lowerMessage = (error as Error | undefined)?.message?.toLowerCase();
+
+  return lowerMessage?.includes("user rejected") || lowerMessage?.includes("user denied") ? "rejected" : "failed";
+}
+
 export function getApproveSubmittedToastContent({ txUrl }: { txUrl: string }) {
   return (
     <div>
@@ -134,7 +145,7 @@ export async function approveTokens({
       return;
     } catch (e) {
       const error = e as Error;
-      const outcome = getTxnErrorOutcome(error);
+      const outcome = getApprovalErrorOutcome(error);
 
       if (outcome === "rejected") {
         sendMetric("permit", "rejected", error);
@@ -197,7 +208,7 @@ export async function approveTokens({
 
     return { hash: res.hash as `0x${string}` };
   } catch (e) {
-    const outcome = getTxnErrorOutcome(e);
+    const outcome = getApprovalErrorOutcome(e);
     sendMetric("transaction", outcome, e);
     onApproveFail?.(e, { isPermit: false });
     // eslint-disable-next-line no-console

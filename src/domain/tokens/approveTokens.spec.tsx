@@ -181,12 +181,12 @@ describe("approveTokens rejection toast", () => {
   });
 
   // the wallet error passes through the viem transport and the ethers signer, as in clientToSigner
-  function approveWithWalletError(walletError: unknown) {
+  function createWalletSigner(walletError: unknown) {
     const transport = custom(
       {
         request: async ({ method }) => {
           if (method === "eth_chainId") return toQuantity(ARBITRUM);
-          if (method === "eth_sendTransaction") throw walletError;
+          if (method === "eth_sendTransaction" || method === "eth_signTypedData_v4") throw walletError;
           throw new Error(`Unexpected request: ${method}`);
         },
       },
@@ -195,13 +195,27 @@ describe("approveTokens rejection toast", () => {
     const provider = new BrowserProvider(transport, ARBITRUM);
     providers.push(provider);
 
+    return new UncheckedJsonRpcSigner(provider, ACCOUNT);
+  }
+
+  function approveWithWalletError(walletError: unknown, { isPermit = false }: { isPermit?: boolean } = {}) {
+    const signer = createWalletSigner(walletError);
+
     return approveTokens({
       chainId: ARBITRUM,
-      signer: new UncheckedJsonRpcSigner(provider, ACCOUNT),
+      signer,
       tokenAddress: USDC,
       spender: SPENDER,
       approveAmount: undefined,
-      permitParams: undefined,
+      permitParams: isPermit
+        ? {
+            addTokenPermit: async () => {
+              await signer.provider.send("eth_signTypedData_v4", [ACCOUNT, "{}"]);
+            },
+            setIsPermitsDisabled: vi.fn(),
+            isPermitsDisabled: false,
+          }
+        : undefined,
       setIsApproving: vi.fn(),
       metric: { flow: "gmBuy" },
     });
@@ -212,21 +226,33 @@ describe("approveTokens rejection toast", () => {
     return renderToStaticMarkup(<I18nProvider i18n={i18n}>{content as ReactNode}</I18nProvider>);
   }
 
-  it.each([
+  function getOutcomes() {
+    return getApprovalEvents().map(({ data }) => `${data.method}:${data.outcome}`);
+  }
+
+  const rejections: [string, object][] = [
     ["Rabby", { code: 4001, message: "User rejected the request." }],
     ["MetaMask", { code: 4001, message: "MetaMask Tx Signature: User denied transaction signature." }],
     ["WalletConnect", { code: 5000, message: "User rejected." }],
     ["a wallet with a custom message", { code: 4001, message: "The user rejected the request" }],
     ["a wallet without an error code", { message: "User denied transaction" }],
-  ])("shows approval cancelled when the user rejects in %s", async (_wallet, walletError) => {
+    ["a wallet with a lowercase message and another code", { code: -32000, message: "user rejected the request" }],
+  ];
+
+  it.each(rejections)("shows approval cancelled when the user rejects in %s", async (_wallet, walletError) => {
     vi.spyOn(console, "error").mockImplementation(() => undefined);
 
     await approveWithWalletError(walletError);
 
     expect(getErrorToastText()).toBe("Approval cancelled");
-    expect(getApprovalEvents()).toEqual([
-      expect.objectContaining({ data: expect.objectContaining({ outcome: "rejected" }) }),
-    ]);
+    expect(getOutcomes()).toEqual(["transaction:rejected"]);
+  });
+
+  it.each(rejections)("shows permit signing cancelled when the user rejects in %s", async (_wallet, walletError) => {
+    await approveWithWalletError(walletError, { isPermit: true });
+
+    expect(getErrorToastText()).toBe("Permit signing cancelled");
+    expect(getOutcomes()).toEqual(["permit:rejected"]);
   });
 
   it.each([
@@ -243,8 +269,6 @@ describe("approveTokens rejection toast", () => {
     const text = getErrorToastText();
     expect(text).toContain("Approval failed");
     expect(text).not.toContain("Approval cancelled");
-    expect(getApprovalEvents()).toEqual([
-      expect.objectContaining({ data: expect.objectContaining({ outcome: "failed" }) }),
-    ]);
+    expect(getOutcomes()).toEqual(["transaction:failed"]);
   });
 });

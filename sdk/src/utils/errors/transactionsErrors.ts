@@ -17,8 +17,6 @@ const TX_ERROR_PATTERNS: { [key in TxErrorType]: ErrorPattern[] } = {
     { msg: "insufficient funds for transfer" },
   ],
   [TxErrorType.UserDenied]: [
-    // EIP-1193 userRejectedRequest, wallets differ only in the message
-    { code: 4001 },
     { msg: "User denied transaction signature" },
     { msg: "User rejected" },
     { msg: "User cancelled" },
@@ -61,6 +59,9 @@ const TX_ERROR_PATTERNS: { [key in TxErrorType]: ErrorPattern[] } = {
     { msg: "couldn't connect to the network" },
   ],
 };
+
+// EIP-1193 userRejectedRequest, checked after the patterns so it only classifies otherwise unknown errors
+const USER_REJECTED_REQUEST_CODE = 4001;
 
 export enum CustomErrorName {
   DisabledMarket = "DisabledMarket",
@@ -163,6 +164,10 @@ export function extractTxnError(ex: TxError): [string, TxErrorType | null, any] 
         return [message, type as TxErrorType, ex.data];
       }
     }
+  }
+
+  if (code === USER_REJECTED_REQUEST_CODE) {
+    return [message, TxErrorType.UserDenied, ex.data];
   }
 
   return [message, null, ex.data];

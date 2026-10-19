@@ -198,6 +198,22 @@ describe("parseError", () => {
       );
     });
 
+    it("should treat a raw EIP-1193 code 4001 with an unknown message as a user rejection", () => {
+      const error: ErrorLike = { code: 4001, message: "Request rejected" };
+
+      expect(parseError(error)).toEqual(
+        expect.objectContaining({ txErrorType: TxErrorType.UserDenied, isUserRejectedError: true })
+      );
+    });
+
+    it("should keep message patterns ahead of code 4001", () => {
+      const error: ErrorLike = { code: 4001, message: "Request expired" };
+
+      expect(parseError(error)).toEqual(
+        expect.objectContaining({ txErrorType: TxErrorType.Expired, isUserRejectedError: false })
+      );
+    });
+
     it("should not treat other EIP-1193 provider codes as a user rejection", () => {
       const error: ErrorLike = {
         code: 4100,
