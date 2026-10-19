@@ -54,6 +54,7 @@ import {
   selectTradeboxTradeFlags,
   selectTradeboxTradeMode,
   selectTradeboxTriggerPrice,
+  selectTradeboxTwapIncreaseSequenceParams,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxHasExistingPosition,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -96,6 +97,7 @@ import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
 import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
+import { useHasAlternateGasFees } from "lib/wallets/useHasAlternateGasFees";
 import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import { getContract } from "sdk/configs/contracts";
 import { getToken, getTokenBySymbol, getWrappedToken } from "sdk/configs/tokens";
@@ -277,7 +279,7 @@ export function useTradeboxButtonState({
     totalExecutionFee?.feeTokenAmount,
   ]);
 
-  const approvalGasError = useMemo((): ValidationResult => {
+  const nativeApprovalGasError = useMemo((): ValidationResult => {
     if (!expressParams) {
       return {};
     }
@@ -288,6 +290,13 @@ export function useTradeboxButtonState({
       gasPrice: expressParams.gasPrice,
     });
   }, [expressParams, pendingApprovalTokenAddress, tokensData]);
+
+  const hasAlternateGasFees = useHasAlternateGasFees({
+    chainId,
+    enabled: nativeApprovalGasError.buttonErrorMessage !== undefined,
+  });
+
+  const approvalGasError: ValidationResult = hasAlternateGasFees ? EMPTY_OBJECT : nativeApprovalGasError;
 
   const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
   const externalSwapDesirability = useSelector(selectExternalSwapDesirability);
@@ -851,7 +860,7 @@ export function useDetectAndSetAvailableMaxLeverage({
 
   const { minCollateralUsd } = usePositionsConstants();
 
-  const { collateralToken, marketInfo, selectedTriggerAcceptablePriceImpactBps, setLeverageOption } =
+  const { collateralToken, marketInfo, selectedTriggerAcceptablePriceImpactBps, setLeverageOption, setFocusedInput } =
     useSelector(selectTradeboxState);
 
   const { isLeverageSliderEnabled, isSetAcceptablePriceImpactEnabled } = useSettings();
@@ -874,6 +883,7 @@ export function useDetectAndSetAvailableMaxLeverage({
   const externalSwapQuoteParams = useSelector(selectExternalSwapQuoteParams);
   const chainId = useSelector(selectChainId);
   const marketsInfoData = useSelector(selectMarketsInfoData);
+  const twap = useSelector(selectTradeboxTwapIncreaseSequenceParams);
 
   const maxLeverageSearchParams = useMemo((): MaxLeverageIncreaseParams | undefined => {
     if (!enabled || !collateralToken || !toToken || !fromToken || !marketInfo || minCollateralUsd === undefined) {
@@ -881,6 +891,7 @@ export function useDetectAndSetAvailableMaxLeverage({
     }
 
     return {
+      twap,
       collateralToken,
       findSwapPath,
       indexToken: toToken,
@@ -930,6 +941,7 @@ export function useDetectAndSetAvailableMaxLeverage({
     proDiscountFactor,
     isSetAcceptablePriceImpactEnabled,
     tradeMode,
+    twap,
   ]);
 
   const maxLeverageIncrease = useMemo(
@@ -958,6 +970,7 @@ export function useDetectAndSetAvailableMaxLeverage({
 
     const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
 
+    setFocusedInput("from");
     setToTokenInputValue(
       formatAmountFree(
         substractMaxLeverageSlippage(maxLeverageIncrease.increaseAmounts.sizeDeltaInTokens / visualMultiplier),
@@ -966,7 +979,7 @@ export function useDetectAndSetAvailableMaxLeverage({
       ),
       true
     );
-  }, [isLeverageSliderEnabled, maxLeverageIncrease, setLeverageOption, setToTokenInputValue, toToken]);
+  }, [isLeverageSliderEnabled, maxLeverageIncrease, setFocusedInput, setLeverageOption, setToTokenInputValue, toToken]);
 
   return {
     hasAvailableMaxLeverage,
@@ -1022,15 +1035,15 @@ function InsufficientGmxPoolLiquidityTooltipContent() {
       if (!aggregatorSwapUrl) {
         return (
           <Trans>
-            GMX pools can't fill this swap size, and no external route is currently available. Try reducing the amount.
+            GMX pools can't fill this swap size, and no external route is available. Try reducing the amount.
           </Trans>
         );
       }
 
       return (
         <Trans>
-          GMX pools can't fill this swap size, and no external route is currently available. Try reducing the amount or{" "}
-          <ExternalLink href={aggregatorSwapUrl}>swap on an external aggregator</ExternalLink>.
+          GMX pools can't fill this swap size, and no external route is available. Try reducing the amount or{" "}
+          <ExternalLink href={aggregatorSwapUrl}>swapping on an external aggregator</ExternalLink>.
         </Trans>
       );
     }
@@ -1080,7 +1093,7 @@ function NoSwapPathTooltipContent({
       return (
         <Trans>
           No GMX swap route found for {fromToken.assetSymbol ?? fromToken.symbol} to{" "}
-          {toToken?.assetSymbol ?? toToken?.symbol}.
+          {toToken?.assetSymbol ?? toToken?.symbol}
         </Trans>
       );
     }

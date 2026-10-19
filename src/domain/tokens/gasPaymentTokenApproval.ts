@@ -23,5 +23,5 @@ export function getApproveButtonText({
 }
 
 export function getGasPaymentTokenApprovalTooltip(tokenSymbol: string): string {
-  return t`${tokenSymbol} is your Wallet gas payment token. One-time approval so Express fees can be paid in ${tokenSymbol}. Change it in Settings.`;
+  return t`${tokenSymbol} is your wallet gas payment token. One-time approval so Express fees can be paid in ${tokenSymbol}. Change it in settings.`;
 }

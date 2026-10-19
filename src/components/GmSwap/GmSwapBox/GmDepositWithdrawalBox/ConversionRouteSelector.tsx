@@ -6,6 +6,7 @@ import { formatUsd } from "lib/numbers";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { TransitApprovalProposalAlert } from "components/PaxosTransit/TransitApprovalProposalAlert";
 import { SelectorBase, useSelectorClose } from "components/SelectorBase/SelectorBase";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -22,6 +23,8 @@ export function ConversionRouteSelector({ transitState }: { transitState: PaxosT
     conversionRoutePreference,
     setConversionRoutePreference,
     shouldShowWhitelistNote,
+    isApprovalProposalPending,
+    onProposeNewApproval,
     thresholdUsd,
   } = transitState;
   const route: ConversionRoute = isTransitRoute ? "transit" : "pool";
@@ -94,6 +97,8 @@ export function ConversionRouteSelector({ transitState }: { transitState: PaxosT
           </Trans>
         </AlertInfoCard>
       )}
+
+      {isApprovalProposalPending && <TransitApprovalProposalAlert onProposeNewApproval={onProposeNewApproval} />}
     </>
   );
 }

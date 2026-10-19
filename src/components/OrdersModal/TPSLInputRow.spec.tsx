@@ -1,7 +1,7 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { cleanup, fireEvent, render } from "@testing-library/react";
-import { ComponentProps } from "react";
+import { ComponentProps, useCallback, useState } from "react";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { expandDecimals } from "lib/numbers";
@@ -183,5 +183,145 @@ describe("TPSLInputRow with a blocking price direction error", () => {
     expect(gainLossInput.value).toBe("100");
     expect(gainLossInput.placeholder).toBe("0");
     expect(estimatedPnlText).toContain("-100.00%");
+  });
+});
+
+type TradeboxRowProps = Omit<
+  ComponentProps<typeof TPSLInputRow>,
+  "priceValue" | "onPriceChange" | "existingOrderKey"
+> & {
+  existingOrder?: { key: string; price: string };
+};
+
+function TradeboxRow({ existingOrder, ...props }: TradeboxRowProps) {
+  const [entry, setEntry] = useState<{ price: string; orderKey?: string }>({ price: "" });
+  const [shownOrder, setShownOrder] = useState(existingOrder);
+  const handlePriceChange = useCallback((price: string) => setEntry({ price }), []);
+
+  if (existingOrder !== shownOrder) {
+    setShownOrder(existingOrder);
+    if (existingOrder) {
+      setEntry({ price: existingOrder.price, orderKey: existingOrder.key });
+    }
+  }
+
+  return (
+    <TPSLInputRow
+      {...props}
+      priceValue={entry.price}
+      onPriceChange={handlePriceChange}
+      existingOrderKey={entry.orderKey}
+    />
+  );
+}
+
+function renderTradeboxRow(props: TradeboxRowProps) {
+  const view = render(
+    <I18nProvider i18n={i18n}>
+      <TradeboxRow {...props} />
+    </I18nProvider>
+  );
+  const getInputs = () => view.getAllByRole("textbox") as HTMLInputElement[];
+
+  return {
+    priceInput: () => getInputs()[0],
+    gainLossInput: () => getInputs()[1],
+    rerender: (nextProps: TradeboxRowProps) =>
+      view.rerender(
+        <I18nProvider i18n={i18n}>
+          <TradeboxRow {...nextProps} />
+        </I18nProvider>
+      ),
+  };
+}
+
+describe("TPSLInputRow after a switch between Long and Short", () => {
+  it.each([
+    {
+      name: "keeps the Gain of a long TP price",
+      type: "takeProfit",
+      from: positionData,
+      to: shortPositionData,
+      typedPrice: "110",
+      gainLossBefore: "100",
+      expected: { price: "90", gainLoss: "100" },
+    },
+    {
+      name: "keeps the Loss of a long SL price",
+      type: "stopLoss",
+      from: positionData,
+      to: shortPositionData,
+      typedPrice: "95",
+      gainLossBefore: "50",
+      expected: { price: "105", gainLoss: "50" },
+    },
+    {
+      name: "keeps the $ Gain of a short TP price",
+      type: "takeProfit",
+      from: shortPositionData,
+      to: positionData,
+      typedPrice: "90",
+      gainLossBefore: "10",
+      defaultDisplayMode: "usd",
+      expected: { price: "110", gainLoss: "10" },
+    },
+    {
+      name: "keeps a TP price with an error as typed",
+      type: "takeProfit",
+      from: positionData,
+      to: shortPositionData,
+      typedPrice: "90",
+      priceErrorBefore: "Set TP price above mark price",
+      gainLossBefore: "",
+      expected: { price: "90", gainLoss: "100" },
+    },
+    {
+      name: "keeps a TP price without a position size as typed",
+      type: "takeProfit",
+      from: { ...positionData, sizeInTokens: 0n },
+      to: { ...shortPositionData, sizeInTokens: 0n },
+      typedPrice: "110",
+      gainLossBefore: "",
+      expected: { price: "110", gainLoss: "" },
+    },
+  ] as const)("$name PRO-4416", ({ type, from, to, typedPrice, gainLossBefore, expected, ...testCase }) => {
+    const defaultDisplayMode = "defaultDisplayMode" in testCase ? testCase.defaultDisplayMode : undefined;
+    const priceErrorBefore = "priceErrorBefore" in testCase ? testCase.priceErrorBefore : undefined;
+    const row = renderTradeboxRow({ type, positionData: from, carryOverKey: "BTC:long", defaultDisplayMode });
+
+    fireEvent.change(row.priceInput(), { target: { value: typedPrice } });
+    row.rerender({
+      type,
+      positionData: from,
+      carryOverKey: "BTC:long",
+      defaultDisplayMode,
+      priceError: priceErrorBefore,
+    });
+    expect(row.gainLossInput().value).toBe(gainLossBefore);
+
+    row.rerender({ type, positionData: to, carryOverKey: "BTC:short", defaultDisplayMode });
+
+    expect({ price: row.priceInput().value, gainLoss: row.gainLossInput().value }).toEqual(expected);
+  });
+
+  it("shows an existing order instead of a typed Gain once the row is filled from it PRO-4416", () => {
+    const row = renderTradeboxRow({ type: "takeProfit", positionData, carryOverKey: "BTC:long" });
+
+    fireEvent.change(row.gainLossInput(), { target: { value: "50" } });
+    expect(row.priceInput().value).toBe("105");
+
+    const existingOrder = { key: "0xorder", price: "120" };
+    row.rerender({ type: "takeProfit", positionData, carryOverKey: "BTC:long", existingOrder });
+    row.rerender({
+      type: "takeProfit",
+      positionData: { ...positionData, entryPrice: expandDecimals(101, 30) },
+      carryOverKey: "BTC:long",
+      existingOrder,
+    });
+
+    expect({ price: row.priceInput().value, gainLoss: row.gainLossInput().value }).toEqual({
+      price: "120",
+      gainLoss: "190",
+    });
   });
 });

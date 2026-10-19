@@ -1,6 +1,11 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo } from "react";
 
-import { DEFAULT_SETTLEMENT_CHAIN_ID, DEFAULT_SETTLEMENT_CHAIN_ID_MAP } from "config/chains";
+import {
+  type NetworkId,
+  DEFAULT_SETTLEMENT_CHAIN_ID,
+  DEFAULT_SETTLEMENT_CHAIN_ID_MAP,
+  SOLANA_NETWORK_ID,
+} from "config/chains";
 import { isSourceChain } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { useChainIdSearchParam } from "domain/multichain/useChainIdSearchParam";
@@ -10,6 +15,7 @@ import { AVALANCHE, ContractsChainId, SourceChainId } from "sdk/configs/chains";
 
 type ChainContext = {
   chainId: ContractsChainId;
+  networkId: NetworkId;
   /**
    * Guaranteed to be related to the settlement chain in `chainId`
    */
@@ -22,6 +28,7 @@ const realChainId = window.ethereum?.chainId ? parseInt(window.ethereum?.chainId
 
 const context = createContext<ChainContext>({
   chainId: initialChainId,
+  networkId: initialChainId,
   srcChainId: isSourceChain(realChainId, initialChainId) ? realChainId : undefined,
   isConnectedToChainId: false,
 });
@@ -29,14 +36,16 @@ const context = createContext<ChainContext>({
 export function ChainContextProvider({ children }: PropsWithChildren) {
   const [gmxAccountSettlementChainId, setGmxAccountSettlementChainId] = useGmxAccountSettlementChainId();
 
-  const { chainId, srcChainId, isConnectedToChainId } = useChainIdImpl(gmxAccountSettlementChainId);
+  const { chainId, srcChainId, isConnectedToChainId, isSolanaNetworkSelected } =
+    useChainIdImpl(gmxAccountSettlementChainId);
+  const networkId: NetworkId = isSolanaNetworkSelected ? SOLANA_NETWORK_ID : chainId;
 
   useChainIdSearchParam({
     settlementChainId: gmxAccountSettlementChainId,
     setSettlementChainId: setGmxAccountSettlementChainId,
   });
 
-  const { emptyGmxAccounts } = useEmptyGmxAccounts([AVALANCHE]);
+  const { emptyGmxAccounts } = useEmptyGmxAccounts(isSolanaNetworkSelected ? undefined : [AVALANCHE]);
   const isAvalancheEmpty = emptyGmxAccounts?.[AVALANCHE] === true;
 
   useEffect(() => {
@@ -51,10 +60,11 @@ export function ChainContextProvider({ children }: PropsWithChildren) {
   const value = useMemo(
     () => ({
       chainId,
+      networkId,
       srcChainId,
       isConnectedToChainId,
     }),
-    [chainId, srcChainId, isConnectedToChainId]
+    [chainId, networkId, srcChainId, isConnectedToChainId]
   );
 
   return <context.Provider value={value}>{children}</context.Provider>;
