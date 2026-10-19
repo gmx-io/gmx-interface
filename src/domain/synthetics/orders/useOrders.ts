@@ -96,10 +96,7 @@ export function useOrders(
     };
   }, [marketsDirectionsFilter]);
 
-  const key = useMemo(
-    () => (!account ? null : ([account, marketsDirectionsFilter, orderTypesFilter] as const)),
-    [account, marketsDirectionsFilter, orderTypesFilter]
-  );
+  const key = useMemo(() => (!account ? null : ([account] as const)), [account]);
 
   // Stale markets ⇒ gmx-api unhealthy ⇒ orders fall back to RPC globally too.
   const isApiHealthy = useIsApiHealthy(chainId);
