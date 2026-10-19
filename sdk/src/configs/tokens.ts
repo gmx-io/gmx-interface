@@ -137,8 +137,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isStable: true,
       imageUrl: "https://coin-images.coingecko.com/coins/images/51281/small/GDN_USDG_Token_200x200.png?1730484111",
       explorerUrl: "https://arbiscan.io/token/0x004B506865409877C9fA29bfb1ebA929984B9bbC",
-      // no version() on the contract; its EIP-712 domain uses "1"
-      contractVersion: "1",
     },
     {
       name: "Tether",

@@ -63,14 +63,8 @@ describe("getIsTokenPermitAllowed", () => {
     expect(getIsTokenPermitAllowed(AVALANCHE, AVALANCHE_USDT)).toBe(true);
   });
 
-  it("allows USDG, WBTC and ARB on Arbitrum", () => {
-    expect(getIsTokenPermitAllowed(ARBITRUM, "0x004B506865409877C9fA29bfb1ebA929984B9bbC")).toBe(true);
-    expect(getIsTokenPermitAllowed(ARBITRUM, "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f")).toBe(true);
-    expect(getIsTokenPermitAllowed(ARBITRUM, ARBITRUM_ARB)).toBe(true);
-  });
-
   it("keeps other tokens the SDK marks as permit-capable on approvals", () => {
-    expect(getIsTokenPermitAllowed(ARBITRUM, "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4")).toBe(false); // LINK
+    expect(getIsTokenPermitAllowed(ARBITRUM, ARBITRUM_ARB)).toBe(false);
     expect(getIsTokenPermitAllowed(AVALANCHE, AVALANCHE_MIM)).toBe(false);
   });
 
