@@ -132,6 +132,7 @@ describe("externalSwapSelectors", () => {
         isLeverageSliderEnabled: true,
       },
       subaccountState: { subaccount: undefined },
+      tokenPermitsState: { tokenPermits: [] },
       features: { relayRouterEnabled: false, subaccountRelayRouterEnabled: false },
     };
 
@@ -313,22 +314,8 @@ describe("externalSwapSelectors", () => {
 
       expect(selectExternalSwapDesirability(state)).toBe("required");
       expect(selectIsExternalSwapDisabledByExpressSchema(state)).toBe(true);
-    });
-
-    it("allows external swap when the fee moved off the conflicting saved gas token", () => {
-      findSwapPathFn = vi.fn().mockReturnValue(undefined);
-
-      const settings = {
-        ...defaultState.settings,
-        expressOrdersEnabled: true,
-        gasPaymentTokenAddress: tokensData.USDC.address,
-      };
-      const features = { relayRouterEnabled: true, subaccountRelayRouterEnabled: true };
-      const tradeboxWithFeeToken = (expressFeeTokenAddress: string) =>
-        createMockState({ settings, features, tradebox: { ...defaultState.tradebox, expressFeeTokenAddress } });
-
-      expect(selectIsExternalSwapDisabledByExpressSchema(tradeboxWithFeeToken(tokensData.BTC.address))).toBe(false);
-      expect(selectIsExternalSwapDisabledByExpressSchema(tradeboxWithFeeToken(tokensData.USDC.address))).toBe(true);
+      // a quote stored before the conflict appeared is not used
+      expect(selectExternalSwapQuote(state)).toBeUndefined();
     });
   });
 
