@@ -22,7 +22,7 @@ import { useConfigureUserAnalyticsProfile } from "lib/userAnalytics/useConfigure
 import { useWalletConnectedUserAnalyticsEvent } from "lib/userAnalytics/useWalletConnectedEvent";
 import useRouteQuery from "lib/useRouteQuery";
 import useSearchParams from "lib/useSearchParams";
-import { encodeReferralCode } from "sdk/utils/referrals";
+import { encodeReferralCode, isReferralCodeHex, MAX_REFERRAL_CODE_LENGTH } from "sdk/utils/referrals";
 
 import { CloseToastButton } from "components/CloseToastButton/CloseToastButton";
 import { GmxAccountModal } from "components/GmxAccountModal/GmxAccountModal";
@@ -60,7 +60,7 @@ export function AppRoutes() {
   useEffect(() => {
     const referralCode = query.get(REFERRAL_CODE_QUERY_PARAM);
 
-    if (referralCode && referralCode.length <= 20) {
+    if (referralCode && (referralCode.length <= MAX_REFERRAL_CODE_LENGTH || isReferralCodeHex(referralCode))) {
       const encodedReferralCode = encodeReferralCode(referralCode);
       if (encodedReferralCode !== zeroHash) {
         localStorage.setItem(REFERRAL_CODE_KEY, encodedReferralCode);

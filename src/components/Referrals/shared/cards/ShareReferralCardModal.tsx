@@ -3,6 +3,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useCopyToClipboard } from "react-use";
 
+import { formatReferralCodeForDisplay } from "domain/referrals/utils/referralCode";
 import { shouldShowShareCardDiscounts } from "domain/referrals/utils/referralsHelper";
 import { shareOrCopyElementAsImage } from "lib/copyElementAsImage";
 import { helperToast } from "lib/helperToast";
@@ -118,7 +119,7 @@ export function ShareReferralCardModal({
         <ScaledReferralCard
           cardRef={cardRef}
           referralLink={referralLink}
-          referralCode={referralCode}
+          referralCode={formatReferralCodeForDisplay(referralCode)}
           traderDiscountPercentageLabel={traderDiscountPercentageLabel}
           totalDiscountsFormatted={totalDiscountsFormatted}
           showDiscountsLine={showDiscountsLine}
