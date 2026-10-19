@@ -177,6 +177,32 @@ describe("useGmxAccountFundingHistoryItem", () => {
     expect(result.current.transfer).toBe(historyItem);
   });
 
+  it("keeps the execution error of a failed transfer from the history list", async () => {
+    const historyItem = makeItem({ operation: "withdrawal", step: "received", isExecutionError: true });
+
+    const { result } = renderItemHook({ cachedHistory: [historyItem] });
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(mocks.graphqlFetcher).not.toHaveBeenCalled();
+    expect(result.current.transfer?.isExecutionError).toBe(true);
+  });
+
+  it("keeps the execution error of a failed transfer from the item request", async () => {
+    mocks.graphqlFetcher.mockResolvedValue({
+      multichainFunding: [
+        {
+          ...makeItem({ operation: "withdrawal", step: "received", isExecutionError: true }),
+          sentAmount: "1000000",
+          receivedAmount: "1000000",
+        },
+      ],
+    });
+
+    const { result } = renderItemHook();
+
+    await waitFor(() => expect(result.current.transfer?.isExecutionError).toBe(true));
+  });
+
   it("prefers a pending item that is further along than the fetched one", async () => {
     const pendingItem = makeItem({ step: "executed", source: "ws" });
     mocks.pendingMultichainFunding = [pendingItem];
