@@ -680,7 +680,7 @@ describe("getExpressError", () => {
         canFallBackToClassic: false,
       })
     ).toEqual({
-      buttonErrorMessage: "Insufficient USDC in Wallet",
+      buttonErrorMessage: "Insufficient USDC in wallet",
       bannerErrorName: ValidationBannerErrorName.insufficientWalletGasTokenBalance,
     });
   });
