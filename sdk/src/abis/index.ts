@@ -8,6 +8,7 @@ import CustomErrors from "./CustomErrors";
 import DataStore from "./DataStore";
 import ERC20PermitInterface from "./ERC20PermitInterface";
 import ERC721 from "./ERC721";
+import EsGmxIssuer from "./EsGmxIssuer";
 import EventEmitter from "./EventEmitter";
 import ExchangeRouter from "./ExchangeRouter";
 import GelatoRelayRouter from "./GelatoRelayRouter";
@@ -27,6 +28,8 @@ import MultichainOrderRouter from "./MultichainOrderRouter";
 import MultichainSubaccountRouter from "./MultichainSubaccountRouter";
 import MultichainTransferRouter from "./MultichainTransferRouter";
 import MultichainVault from "./MultichainVault";
+import RatioVester from "./RatioVester";
+import RatioVesterReader from "./RatioVesterReader";
 import Reader from "./Reader";
 import ReaderV2 from "./ReaderV2";
 import ReferralStorage from "./ReferralStorage";
@@ -34,6 +37,7 @@ import RelayParams from "./RelayParams";
 import RewardReader from "./RewardReader";
 import RewardRouter from "./RewardRouter";
 import RewardTracker from "./RewardTracker";
+import RoleStore from "./RoleStore";
 import SimulationRouter from "./SimulationRouter";
 import SmartAccount from "./SmartAccount";
 import SubaccountGelatoRelayRouter from "./SubaccountGelatoRelayRouter";
@@ -68,6 +72,7 @@ export const abis = {
   ERC20PermitInterface,
   ERC721: ERC721,
   EventEmitter,
+  EsGmxIssuer,
   ExchangeRouter,
   GelatoRelayRouter,
   GlpManager,
@@ -90,6 +95,7 @@ export const abis = {
   RewardReader,
   RewardRouter,
   RewardTracker,
+  RoleStore,
   SimulationRouter,
   SmartAccount,
   SubaccountGelatoRelayRouter,
@@ -98,6 +104,8 @@ export const abis = {
   SyntheticsRouter,
   Timelock,
   Token,
+  RatioVester,
+  RatioVesterReader,
   TransitStation,
   Reader,
   ReaderV2,

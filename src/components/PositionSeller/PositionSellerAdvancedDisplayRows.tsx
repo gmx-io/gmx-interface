@@ -14,6 +14,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GasPaymentParams } from "domain/synthetics/express";
 import type { NetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
+import { useTradeRewardsEstimate } from "domain/synthetics/incentives/v2/useTradeRewardsEstimate";
 import { OrderType } from "domain/synthetics/orders";
 import { formatLeverageParts } from "domain/synthetics/positions";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
@@ -25,12 +26,13 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
+import { ExitPriceRow } from "../ExitPriceRow/ExitPriceRow";
 import { ExpandableRow } from "../ExpandableRow";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
-import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
-import { ExitPriceRow } from "../ExitPriceRow/ExitPriceRow";
+import { RewardsHintRow, shouldShowRewardsHintRow } from "../TradeBox/TradeBoxRows/RewardsHintRow";
+import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 
 export type Props = {
   triggerPriceInputValue: string;
@@ -65,6 +67,15 @@ export function PositionSellerAdvancedRows({
   const nextPositionValues = useSelector(selectPositionSellerNextPositionValuesForDecrease);
 
   const { fees, executionFee } = useSelector(selectPositionSellerFees);
+  const rewardEstimate = useTradeRewardsEstimate({
+    fees,
+    feesType: "decrease",
+    marketInfo: position?.marketInfo,
+    isLong: position?.isLong,
+    sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
+    shouldEstimate: !isTwap,
+  });
+  const showRewardsHint = shouldShowRewardsHintRow(rewardEstimate, true);
 
   const isStopLoss = decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease;
 
@@ -111,7 +122,7 @@ export function PositionSellerAdvancedRows({
     return null;
   }
 
-  return (
+  const executionDetails = (
     <ExpandableRow
       title={t`Execution details`}
       open={open}
@@ -120,7 +131,7 @@ export function PositionSellerAdvancedRows({
       contentClassName="flex flex-col gap-14"
     >
       <ExitPriceRow isSwap={false} fees={fees} price={position.markPrice} isLong={position.isLong} />
-      <TradeFeesRow {...fees} feesType="decrease" />
+      <TradeFeesRow {...fees} feesType="decrease" estimatedRewards={rewardEstimate.estimatedRewards} />
       <NetworkFeeRow executionFee={executionFee} gasPaymentParams={gasPaymentParams} feeSource={feeSource} />
 
       {isTwap ? (
@@ -181,4 +192,20 @@ export function PositionSellerAdvancedRows({
       )}
     </ExpandableRow>
   );
+
+  if (showRewardsHint) {
+    return (
+      <div className="rounded-8 bg-fill-surfaceElevated50">
+        {executionDetails}
+        <RewardsHintRow
+          rewardEstimate={rewardEstimate}
+          marketAddress={position?.marketInfo?.marketTokenAddress}
+          marketName={position?.marketInfo?.name}
+          hideWhenMultiplierIsZero
+        />
+      </div>
+    );
+  }
+
+  return executionDetails;
 }

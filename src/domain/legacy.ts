@@ -17,11 +17,19 @@ export * from "./prices";
 export function useGmxPrice(
   chainId: ContractsChainId,
   libraries: { arbitrum?: WalletSigner | undefined },
-  active: boolean
+  active: boolean,
+  options: { enabled?: boolean; fetchAllChains?: boolean } = {}
 ) {
+  const { enabled = true, fetchAllChains = true } = options;
   const arbitrumLibrary = libraries && libraries.arbitrum ? libraries.arbitrum : undefined;
-  const { data: gmxPriceFromArbitrum, mutate: mutateFromArbitrum } = useGmxPriceFromArbitrum(arbitrumLibrary, active);
-  const { data: gmxPriceFromAvalanche, mutate: mutateFromAvalanche } = useGmxPriceFromAvalanche();
+  const { data: gmxPriceFromArbitrum, mutate: mutateFromArbitrum } = useGmxPriceFromArbitrum(
+    arbitrumLibrary,
+    active,
+    enabled && (fetchAllChains || chainId === ARBITRUM)
+  );
+  const { data: gmxPriceFromAvalanche, mutate: mutateFromAvalanche } = useGmxPriceFromAvalanche(
+    enabled && (fetchAllChains || chainId === AVALANCHE)
+  );
 
   const gmxPrice: bigint | undefined = chainId === ARBITRUM ? gmxPriceFromArbitrum : gmxPriceFromAvalanche;
   const mutate = useCallback(() => {
@@ -222,18 +230,21 @@ export function useTotalGmxInLiquidity() {
   };
 }
 
-function useGmxPriceFromAvalanche() {
+function useGmxPriceFromAvalanche(enabled: boolean) {
   const poolAddress = getContract(AVALANCHE, "TraderJoeGmxAvaxPool");
 
-  const { data, mutate: updateReserves } = useSWR(["TraderJoeGmxAvaxReserves", AVALANCHE, poolAddress, "getReserves"], {
-    fetcher: contractFetcher(undefined, "UniswapV2"),
-  });
+  const { data, mutate: updateReserves } = useSWR(
+    enabled ? ["TraderJoeGmxAvaxReserves", AVALANCHE, poolAddress, "getReserves"] : null,
+    {
+      fetcher: contractFetcher(undefined, "UniswapV2"),
+    }
+  );
   const { _reserve0: gmxReserve, _reserve1: avaxReserve }: any = data || {};
 
   const vaultAddress = getContract(AVALANCHE, "Vault");
   const avaxAddress = getTokenBySymbol(AVALANCHE, "WAVAX").address;
   const { data: avaxPrice, mutate: updateAvaxPrice } = useSWR(
-    [`StakeV2:avaxPrice`, AVALANCHE, vaultAddress, "getMinPrice", avaxAddress],
+    enabled ? [`StakeV2:avaxPrice`, AVALANCHE, vaultAddress, "getMinPrice", avaxAddress] : null,
     {
       fetcher: contractFetcher(undefined, "Vault"),
     }
@@ -246,17 +257,17 @@ function useGmxPriceFromAvalanche() {
   }
 
   const mutate = useCallback(() => {
-    updateReserves(undefined, true);
-    updateAvaxPrice(undefined, true);
+    updateReserves();
+    updateAvaxPrice();
   }, [updateReserves, updateAvaxPrice]);
 
   return { data: gmxPrice, mutate };
 }
 
-function useGmxPriceFromArbitrum(signer: WalletSigner | undefined, active: boolean) {
+function useGmxPriceFromArbitrum(signer: WalletSigner | undefined, active: boolean, enabled: boolean) {
   const poolAddress = getContract(ARBITRUM, "UniswapGmxEthPool");
   const { data: uniPoolSlot0, mutate: updateUniPoolSlot0 } = useSWR<any>(
-    [`StakeV2:uniPoolSlot0:${active}`, ARBITRUM, poolAddress, "slot0"],
+    enabled ? [`StakeV2:uniPoolSlot0:${active}`, ARBITRUM, poolAddress, "slot0"] : null,
     {
       fetcher: contractFetcher(signer, "UniPool"),
     }
@@ -265,7 +276,7 @@ function useGmxPriceFromArbitrum(signer: WalletSigner | undefined, active: boole
   const vaultAddress = getContract(ARBITRUM, "Vault");
   const ethAddress = getTokenBySymbol(ARBITRUM, "WETH").address;
   const { data: ethPrice, mutate: updateEthPrice } = useSWR<bigint>(
-    [`StakeV2:ethPrice:${active}`, ARBITRUM, vaultAddress, "getMinPrice", ethAddress],
+    enabled ? [`StakeV2:ethPrice:${active}`, ARBITRUM, vaultAddress, "getMinPrice", ethAddress] : null,
     {
       fetcher: contractFetcher(signer, "Vault") as any,
     }
@@ -297,8 +308,8 @@ function useGmxPriceFromArbitrum(signer: WalletSigner | undefined, active: boole
   }, [ethPrice, uniPoolSlot0, ethAddress]);
 
   const mutate = useCallback(() => {
-    updateUniPoolSlot0(undefined, true);
-    updateEthPrice(undefined, true);
+    updateUniPoolSlot0();
+    updateEthPrice();
   }, [updateEthPrice, updateUniPoolSlot0]);
 
   return { data: gmxPrice, mutate };

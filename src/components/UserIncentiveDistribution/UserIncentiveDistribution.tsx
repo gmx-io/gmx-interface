@@ -12,8 +12,10 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { INCENTIVE_TOOLTIP_MAP, INCENTIVE_TYPE_MAP } from "domain/synthetics/common/incentivesAirdropMessages";
 import useUserIncentiveData from "domain/synthetics/common/useUserIncentiveData";
 import { useMarketTokensData } from "domain/synthetics/markets";
+import { useEsGmxIssuerData } from "domain/vesting/useEsGmxIssuerData";
 import { useChainId } from "lib/chains";
 import { formatDate, formatDateTime, getDaysAgo } from "lib/dates";
+import { GMX_DECIMALS } from "lib/legacy";
 import { formatBalanceAmount } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { shortenAddressOrEns } from "lib/wallets";
@@ -41,9 +43,18 @@ import CloseIcon from "img/ic_close.svg?react";
 import WalletIcon from "img/ic_wallet.svg?react";
 
 import ClaimableAmounts from "./ClaimableAmounts";
+import { EsGmxIssuerClaimableAmounts } from "./EsGmxIssuerClaimableAmounts";
 import { getNormalizedIncentive } from "./utils";
 
-type NormalizedIncentiveData = ReturnType<typeof getNormalizedIncentive>;
+type NormalizedIncentiveData = {
+  id: string;
+  timestamp: number;
+  transactionHash: Hash;
+  typeId?: bigint;
+  totalUsd?: bigint;
+  esGmxIssuance?: { epochId: bigint; batchIndex: bigint };
+  tokenIncentiveDetails: { id: string; symbol?: string; iconSymbol?: string; decimals: number; amount: bigint }[];
+};
 
 export default function UserIncentiveDistribution() {
   const { account, active } = useWallet();
@@ -54,17 +65,37 @@ export default function UserIncentiveDistribution() {
   const gmMarkets = useSelector(selectGmMarkets);
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false });
   const userIncentiveData = useUserIncentiveData(chainId, account);
+  const issuerData = useEsGmxIssuerData(chainId, account);
 
   const normalizedIncentiveData: NormalizedIncentiveData[] = useMemo(
     () =>
-      userIncentiveData?.data?.map((incentive) =>
-        getNormalizedIncentive(chainId, incentive, tokens, gmMarkets, marketTokensData)
-      ) ?? [],
-    [userIncentiveData?.data, chainId, tokens, gmMarkets, marketTokensData]
+      [
+        ...(userIncentiveData.data?.map((incentive) =>
+          getNormalizedIncentive(chainId, incentive, tokens, gmMarkets, marketTokensData)
+        ) ?? []),
+        ...(issuerData.history.data?.map((distribution) => ({
+          id: distribution.id,
+          timestamp: distribution.timestamp,
+          transactionHash: distribution.transactionHash,
+          esGmxIssuance: { epochId: distribution.epochId, batchIndex: distribution.batchIndex },
+          tokenIncentiveDetails: [
+            {
+              id: distribution.id,
+              symbol: "esGMX",
+              iconSymbol: "esGMX",
+              decimals: GMX_DECIMALS,
+              amount: distribution.amount,
+            },
+          ],
+        })) ?? []),
+      ].sort((a, b) => b.timestamp - a.timestamp),
+    [userIncentiveData.data, issuerData.history.data, chainId, tokens, gmMarkets, marketTokensData]
   );
+  const isHistoryLoading = userIncentiveData.isLoading || (issuerData.enabled && issuerData.history.isLoading);
+  const hasHistoryError = Boolean(userIncentiveData.error || (issuerData.enabled && issuerData.history.error));
 
   const { currentPage, getCurrentData, setCurrentPage, pageCount } = usePagination(
-    "UserIncentiveDistributionList",
+    `UserIncentiveDistributionList-${chainId}-${account}`,
     normalizedIncentiveData,
     15
   );
@@ -77,8 +108,19 @@ export default function UserIncentiveDistribution() {
       <div className="text-body-large font-medium text-typography-primary">
         <Trans>Claimable balance</Trans>
       </div>
+      {issuerData.issuerConfig ? (
+        <EsGmxIssuerClaimableAmounts
+          key={`${chainId}-${account}`}
+          chainId={chainId}
+          config={issuerData.issuerConfig}
+          amount={issuerData.claimable.data}
+          isLoading={issuerData.claimable.isLoading}
+          error={issuerData.claimable.error}
+          mutate={issuerData.claimable.mutate}
+        />
+      ) : null}
       {chainId !== AVALANCHE_FUJI ? (
-        <ClaimableAmounts />
+        <ClaimableAmounts hideEmpty={Boolean(issuerData.issuerConfig)} />
       ) : (
         <p className="p-18 text-gray-500">
           <Trans>Claims unavailable on Avalanche Fuji</Trans>
@@ -92,14 +134,21 @@ export default function UserIncentiveDistribution() {
       <div className="flex grow flex-col gap-8">
         {isTablet && claimableBalance}
         <div className="flex grow flex-col gap-8 overflow-hidden rounded-8 bg-slate-900">
-          {!userIncentiveData?.data?.length ? (
+          {hasHistoryError ? (
+            <div className="px-20 pt-20 text-13 text-yellow-300">
+              <Trans>Some distribution history could not be loaded. Please try again.</Trans>
+            </div>
+          ) : null}
+          {!normalizedIncentiveData.length ? (
             <EmptyTableContent
               emptyText={
                 <div className="flex flex-col items-center">
-                  <TooltipWithPortal
-                    handle={t`No distribution history`}
-                    content={t`Incentives, airdrops, and prizes will appear here`}
-                  />
+                  {!hasHistoryError && (
+                    <TooltipWithPortal
+                      handle={t`No distribution history`}
+                      content={t`Incentives, airdrops, and prizes will appear here`}
+                    />
+                  )}
                   {!active && !isWalletInitializing ? (
                     <div className="mt-15">
                       <Button variant="primary" onClick={openConnectModal}>
@@ -111,14 +160,14 @@ export default function UserIncentiveDistribution() {
                 </div>
               }
               isEmpty={true}
-              isLoading={!userIncentiveData}
+              isLoading={isHistoryLoading}
             />
           ) : (
             <TableScrollFadeContainer className="grow px-8">
               <table className="w-full min-w-max">
                 <thead>
                   <TableTheadTr>
-                    <TableTh className="w-[25%]">
+                    <TableTh className={isMobile ? undefined : "w-[25%]"}>
                       <Trans>DATE</Trans>
                     </TableTh>
                     {!isMobile && (
@@ -151,22 +200,22 @@ export default function UserIncentiveDistribution() {
           />
         </div>
       </div>
-      <div className="min-w-400 flex flex-col gap-8">{!isTablet && claimableBalance}</div>
+      {!isTablet && <div className="flex min-w-0 flex-col gap-8">{claimableBalance}</div>}
     </div>
   );
 }
 
-function getTypeStr(_: ReturnType<typeof useLingui>["_"], typeId: bigint) {
-  const isCompetition = typeId >= 2000n && typeId < 3000n;
+function getTypeStr(_: ReturnType<typeof useLingui>["_"], typeId?: bigint) {
+  const isCompetition = typeId !== undefined && typeId >= 2000n && typeId < 3000n;
   return isCompetition ? t`Competition airdrop` : _(INCENTIVE_TYPE_MAP[String(typeId)] ?? t`Airdrop`);
 }
 
 function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
-  const { tokenIncentiveDetails, totalUsd, transactionHash, timestamp, typeId } = incentive;
+  const { tokenIncentiveDetails, totalUsd, transactionHash, timestamp, typeId, esGmxIssuance } = incentive;
   const { chainId } = useChainId();
   const explorerURL = getExplorerUrl(chainId);
   const { _ } = useLingui();
-  const typeStr = getTypeStr(_, typeId);
+  const typeStr = esGmxIssuance ? t`esGMX incentives` : getTypeStr(_, typeId);
   const tooltipData = INCENTIVE_TOOLTIP_MAP[Number(typeId)];
 
   const renderTotalTooltipContent = useCallback(() => {
@@ -230,7 +279,13 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
         {!isMobile && <TableTdActionable data-label={t`TYPE`}>{type}</TableTdActionable>}
         <TableTdActionable className="max-xl:text-right" data-label={t`AMOUNT`}>
           <Tooltip
-            handle={<UsdValue usd={totalUsd} />}
+            handle={
+              esGmxIssuance ? (
+                `${formatBalanceAmount(tokenIncentiveDetails[0].amount, GMX_DECIMALS)} esGMX`
+              ) : (
+                <UsdValue usd={totalUsd} />
+              )
+            }
             handleClassName="numbers"
             className="whitespace-nowrap"
             renderContent={renderTotalTooltipContent}
@@ -253,7 +308,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
       </TableTrActionable>
       {isExpanded && (
         <tr>
-          <td colSpan={isMobile ? 4 : 1} className="px-4 py-10 pl-20">
+          <td colSpan={isMobile ? 3 : 1} className="px-4 py-10 pl-20">
             <div className="flex flex-col gap-2">
               <div
                 className={cx("flex items-center justify-between font-medium text-typography-secondary", {

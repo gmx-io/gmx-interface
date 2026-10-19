@@ -3,6 +3,7 @@ import { getToken } from "sdk/configs/tokens";
 
 export const PRODUCTION_HOST = "https://app.gmx.io";
 export const JUMPER_EXCHANGE_URL = "https://jumper.exchange/";
+export const GMTRADE_URL = "https://gmtrade.xyz";
 
 const ONE_INCH_SUPPORTED_CHAIN_IDS: number[] = [ARBITRUM, AVALANCHE];
 
@@ -71,6 +72,7 @@ export const GLP_REIMBURSEMENT_TERMS_URL =
 export const GMX_DISCORD_URL = "https://discord.gg/H5PeQru3Aa";
 export const FEE_STRUCTURE_URL = "https://docs.gmx.io/docs/trading/fees-and-pricing/";
 export const REFERRALS_DOCS_URL = "https://docs.gmx.io/docs/referrals/";
+export const REWARDS_TERMS_URL = "https://gmx.io/rewards-terms-and-conditions";
 export const SAFE_MULTICHAIN_DOCS_URL = "https://help.safe.global/articles/9317165368-deploying-a-multi-chain-safe";
 
 export const REFERRALS_DOCS_SECTION_LINKS = {

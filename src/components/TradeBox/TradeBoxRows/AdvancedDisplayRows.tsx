@@ -12,6 +12,7 @@ import {
   selectTradeboxFees,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxMarkPrice,
+  selectTradeboxMarketInfo,
   selectTradeboxNextPositionValues,
   selectTradeboxExistingPositionForPreview,
   selectTradeboxSelectedTriggerAcceptablePriceImpactBps,
@@ -26,6 +27,7 @@ import { selectTradeboxLiquidityInfo } from "context/SyntheticsStateContext/sele
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GasPaymentParams } from "domain/synthetics/express";
 import type { NetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
+import { useTradeRewardsEstimate } from "domain/synthetics/incentives/v2/useTradeRewardsEstimate";
 import { OrderType } from "domain/synthetics/orders";
 import { formatLeverageParts } from "domain/synthetics/positions";
 import { formatUsdParts } from "lib/numbers";
@@ -46,6 +48,7 @@ import { AvailableLiquidityRow } from "./AvailableLiquidityRow";
 import { CollateralSpreadRow } from "./CollateralSpreadRow";
 import { EntryPriceRow } from "./EntryPriceRow";
 import { NextStoredImpactRows } from "./NextStoredImpactRows";
+import { RewardsHintRow } from "./RewardsHintRow";
 import { SwapDebugRow } from "./SwapDebugRow";
 import { SwapRouteRow } from "./SwapRouteRow";
 import { SwapSpreadRow } from "./SwapSpreadRow";
@@ -167,7 +170,16 @@ export function TradeBoxAdvancedGroups({
   const feesType = useSelector(selectTradeboxTradeFeesType);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
+  const marketInfo = useSelector(selectTradeboxMarketInfo);
   const limitPrice = useSelector(selectTradeboxTriggerPrice);
+  const rewardEstimate = useTradeRewardsEstimate({
+    fees,
+    feesType,
+    marketInfo,
+    isLong,
+    sizeDeltaUsd: feesType === "increase" ? increaseAmounts?.sizeDeltaUsd : decreaseAmounts?.sizeDeltaUsd,
+    shouldEstimate: !isTwap,
+  });
 
   const setUserSelectedAcceptablePriceImpactBps = useSelector(selectTradeboxSetUserSelectedAcceptablePriceImpactBps);
   const selectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
@@ -208,7 +220,7 @@ export function TradeBoxAdvancedGroups({
   const isVisible = options.advancedDisplay;
   const markPrice = useSelector(selectTradeboxMarkPrice);
 
-  return (
+  const executionDetails = (
     <ExpandableRow
       open={isVisible}
       title={t`Execution details`}
@@ -240,7 +252,7 @@ export function TradeBoxAdvancedGroups({
         </>
       )}
 
-      <TradeFeesRow {...fees} feesType={feesType} />
+      <TradeFeesRow {...fees} feesType={feesType} estimatedRewards={rewardEstimate.estimatedRewards} />
       {showDebugValues && <SwapDebugRow />}
       <NetworkFeeRow executionFee={totalExecutionFee} gasPaymentParams={gasPaymentParams} feeSource={feeSource} />
 
@@ -265,4 +277,19 @@ export function TradeBoxAdvancedGroups({
       )}
     </ExpandableRow>
   );
+
+  if (rewardEstimate.enabled) {
+    return (
+      <div className="rounded-8 bg-fill-surfaceElevated50">
+        {executionDetails}
+        <RewardsHintRow
+          rewardEstimate={rewardEstimate}
+          marketAddress={marketInfo?.marketTokenAddress}
+          marketName={marketInfo?.name}
+        />
+      </div>
+    );
+  }
+
+  return executionDetails;
 }

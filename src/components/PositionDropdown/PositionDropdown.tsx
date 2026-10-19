@@ -1,8 +1,9 @@
-import { autoUpdate, useFloating, flip, offset, shift, FloatingPortal } from "@floating-ui/react";
+import { autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
 import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
 
 import Button from "components/Button/Button";
+import FloatingPortal from "components/Portal/FloatingPortal";
 
 import EditIcon from "img/ic_edit.svg?react";
 import FilterHistoryIcon from "img/ic_filter_history.svg?react";

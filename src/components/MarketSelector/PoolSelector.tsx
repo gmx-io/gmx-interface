@@ -178,6 +178,8 @@ export function PoolSelector({
         });
       case "recently-listed":
         return textMatched?.filter(() => false);
+      case "incentivized":
+        return textMatched;
     }
   }, [favoriteTokens, marketsOptions, searchKeyword, topLevelTab]);
 
