@@ -12,6 +12,10 @@ import {
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTokenPermits } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
+import {
+  selectTradeboxExpressFeeTokenAddress,
+  selectTradeboxSetExpressFeeUsdByToken,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { convertToUsd, type TokenData } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
@@ -60,23 +64,33 @@ export function useGasPaymentTokenFallback({
   const tokensData = useSelector(selectTokensData);
   const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
   const tokenPermits = useSelector(selectTokenPermits);
-  const [feeUsdByToken, setFeeUsdByToken] = useState<Record<string, bigint>>(EMPTY_OBJECT);
+  const [localFeeUsdByToken, setLocalFeeUsdByToken] = useState<Record<string, bigint>>(EMPTY_OBJECT);
+  // the trade box keeps its fee estimates in state, so selectors see the same fee token as this hook
+  const tradeboxFeeTokenAddress = useSelector(selectTradeboxExpressFeeTokenAddress);
+  const setTradeboxFeeUsdByToken = useSelector(selectTradeboxSetExpressFeeUsdByToken);
+  const isTradeboxFallback = fallback === "payToken";
+  const setFeeUsdByToken = isTradeboxFallback ? setTradeboxFeeUsdByToken : setLocalFeeUsdByToken;
 
   const savedGasPaymentToken = savedGlobalExpressParams?.gasPaymentToken;
 
-  const gasPaymentTokenAddress =
-    fallback && !isGmxAccount && savedGasPaymentToken
-      ? resolveGasPaymentTokenAddress({
+  const resolveFallbackTokenAddress = (gasPaymentToken: TokenData) =>
+    isTradeboxFallback
+      ? tradeboxFeeTokenAddress ?? gasPaymentToken.address
+      : resolveGasPaymentTokenAddress({
           chainId,
-          fallback,
-          gasPaymentToken: savedGasPaymentToken,
+          fallback: fallback!,
+          gasPaymentToken,
           payTokenAddress,
           payAmounts,
-          feeUsdByToken,
+          feeUsdByToken: localFeeUsdByToken,
           tokensData,
           tokensAllowanceData: gasPaymentTokenAllowance?.tokensAllowanceData,
           tokenPermits,
-        })
+        });
+
+  const gasPaymentTokenAddress =
+    fallback && !isGmxAccount && savedGasPaymentToken
+      ? resolveFallbackTokenAddress(savedGasPaymentToken)
       : savedGasPaymentToken?.address;
 
   const isFallbackActive =
@@ -90,17 +104,20 @@ export function useGasPaymentTokenFallback({
 
   const globalExpressParams = isFallbackActive ? fallbackGlobalExpressParams : savedGlobalExpressParams;
 
-  const recordExpressParams = useCallback((expressParams: ExpressTxnParams | undefined) => {
-    if (!expressParams || expressParams.isGmxAccount) return;
+  const recordExpressParams = useCallback(
+    (expressParams: ExpressTxnParams | undefined) => {
+      if (!expressParams || expressParams.isGmxAccount) return;
 
-    const { gasPaymentToken, gasPaymentTokenAmount } = expressParams.gasPaymentParams;
-    const feeUsd = convertToUsd(gasPaymentTokenAmount, gasPaymentToken.decimals, gasPaymentToken.prices.minPrice);
-    if (feeUsd === undefined) return;
+      const { gasPaymentToken, gasPaymentTokenAmount } = expressParams.gasPaymentParams;
+      const feeUsd = convertToUsd(gasPaymentTokenAmount, gasPaymentToken.decimals, gasPaymentToken.prices.minPrice);
+      if (feeUsd === undefined) return;
 
-    setFeeUsdByToken((prev) =>
-      prev[gasPaymentToken.address] === feeUsd ? prev : { ...prev, [gasPaymentToken.address]: feeUsd }
-    );
-  }, []);
+      setFeeUsdByToken((prev) =>
+        prev[gasPaymentToken.address] === feeUsd ? prev : { ...prev, [gasPaymentToken.address]: feeUsd }
+      );
+    },
+    [setFeeUsdByToken]
+  );
 
   useGasPaymentTokenNotApprovedToast({
     fromToken: savedGasPaymentToken,
