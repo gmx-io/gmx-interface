@@ -441,3 +441,12 @@ th {
 #privy-dialog iframe[src*="embedded-wallets/export"] {
   width: 327px !important;
 }
+
+/**
+ * Intercom's notification iframe reserves an empty strip below the cards (our
+ * vertical_padding of 20px + its own 12px gap) that still catches clicks, so it
+ * blocks the footer links and the mobile Long/Short bar. Clip that strip off.
+ */
+iframe[name="intercom-notification-stack-frame"] {
+  clip-path: inset(0 0 32px);
+}

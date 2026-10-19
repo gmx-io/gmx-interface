@@ -111,6 +111,7 @@ export function useSupportChat() {
       app_id: INTERCOM_APP_ID,
       alignment: "left",
       horizontal_padding: 20,
+      // the notification iframe clip in styles/Shared.scss depends on this value
       vertical_padding: 20,
       hide_default_launcher: true,
       hide_notifications: false,
