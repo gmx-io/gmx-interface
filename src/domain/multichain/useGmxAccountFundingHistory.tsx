@@ -4,6 +4,7 @@ import { useAccount } from "wagmi";
 
 import { getIndexerUrl } from "config/indexers";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { isMultichainFundingItemLoading } from "domain/multichain/isMultichainFundingItemLoading";
 import { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { useChainId } from "lib/chains";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
@@ -194,12 +195,18 @@ export function useGmxAccountFundingHistoryItem(
     null
   );
 
-  const { data, isLoading, error } = useSWR(guid ? [chainId, "gmx-account-funding-history-item", guid] : null, {
-    fetcher: () => fetchGmxAccountFundingHistory(chainId, { guid }),
-    refreshInterval: opts?.refetch ? FREQUENT_UPDATE_INTERVAL : 0,
-  });
-
   const historyItem = historyData?.find((item) => item.id === guid);
+  // a finished transfer from the list won't change anymore, so its own request is not needed
+  const isHistoryItemFinal = historyItem !== undefined && !isMultichainFundingItemLoading(historyItem);
+
+  const { data, isLoading, error } = useSWR(
+    guid && !isHistoryItemFinal ? [chainId, "gmx-account-funding-history-item", account, guid] : null,
+    {
+      fetcher: () => fetchGmxAccountFundingHistory(chainId, { account, guid }),
+      refreshInterval: opts?.refetch ? FREQUENT_UPDATE_INTERVAL : 0,
+    }
+  );
+
   const pendingItem = useGmxAccountPendingFundingHistoryItem(guid);
 
   // the furthest step wins, ties go to the polled history list first

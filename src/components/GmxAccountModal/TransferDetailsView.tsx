@@ -14,6 +14,7 @@ import {
   useGmxAccountWithdrawalViewTokenAddress,
   useGmxAccountWithdrawalViewTokenInputValue,
 } from "context/GmxAccountContext/hooks";
+import { isMultichainFundingItemLoading } from "domain/multichain/isMultichainFundingItemLoading";
 import { useGmxAccountFundingHistoryItem } from "domain/multichain/useGmxAccountFundingHistory";
 import { useChainId } from "lib/chains";
 import { CHAIN_ID_TO_EXPLORER_NAME, CHAIN_ID_TO_TX_URL_BUILDER } from "lib/chains/blockExplorers";
@@ -60,7 +61,7 @@ const valueSkeleton = (
 
 function TransferDetailsSkeleton() {
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex grow flex-col gap-8">
       <SyntheticsInfoRow label={<Trans>Date</Trans>} value={valueSkeleton} />
       <SyntheticsInfoRow label={labelSkeleton} value={valueSkeleton} />
       <SyntheticsInfoRow label={labelSkeleton} value={valueSkeleton} />
@@ -110,15 +111,7 @@ export const TransferDetailsView = () => {
       return;
     }
 
-    if (selectedTransfer.operation === "deposit" && selectedTransfer.step !== "received") {
-      setIsTransferPending(true);
-      return;
-    }
-
-    if (selectedTransfer.operation === "withdrawal" && selectedTransfer.step !== "executed") {
-      setIsTransferPending(true);
-      return;
-    }
+    setIsTransferPending(isMultichainFundingItemLoading(selectedTransfer));
   }, [selectedTransfer]);
 
   const token = selectedTransfer ? getToken(chainId, selectedTransfer.token) : undefined;

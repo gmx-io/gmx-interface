@@ -72,6 +72,7 @@ test.describe("GMX Account transfer details loading (PRO-4491)", () => {
     await expect(component.locator(".react-loading-skeleton").first()).toBeVisible();
     await expect(component.getByText("Date")).toBeVisible();
     await expect(component.getByRole("button", { name: "Repeat transaction" })).toBeDisabled();
+    const loadingButtonBox = await component.getByRole("button", { name: "Repeat transaction" }).boundingBox();
 
     item.resolve(await fundingResponse([TRANSFER]));
 
@@ -79,10 +80,21 @@ test.describe("GMX Account transfer details loading (PRO-4491)", () => {
     await expect(component.getByText(/12\.50?/)).toBeVisible();
     await expect(component.locator(".react-loading-skeleton")).toHaveCount(0);
     await expect(component.getByRole("button", { name: "Repeat transaction" })).toBeEnabled();
+    // the button stays at the bottom instead of jumping down once the rows load
+    expect((await component.getByRole("button", { name: "Repeat transaction" }).boundingBox())?.y).toBe(
+      loadingButtonBox?.y
+    );
   });
 
   test("opens a transfer from the loaded history without waiting for its own request", async ({ mount, page }) => {
-    await installSquid(page, { list: () => fundingResponse([TRANSFER]), item: never });
+    let itemRequests = 0;
+    await installSquid(page, {
+      list: () => fundingResponse([TRANSFER]),
+      item: () => {
+        itemRequests++;
+        return never();
+      },
+    });
 
     const component = await mount(<TransferDetailsStory />);
 
@@ -91,6 +103,8 @@ test.describe("GMX Account transfer details loading (PRO-4491)", () => {
     await expect(component.getByText("To", { exact: true })).toBeVisible();
     await expect(component.getByText("Arbiscan")).toBeVisible();
     await expect(component.locator(".react-loading-skeleton")).toHaveCount(0);
+    // a finished transfer from the list doesn't need its own request
+    expect(itemRequests).toBe(0);
   });
 
   test("shows an error when the transfer fails to load", async ({ mount, page }) => {

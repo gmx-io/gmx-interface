@@ -114,10 +114,24 @@ describe("useGmxAccountFundingHistoryItem", () => {
 
   it("renders the already loaded history item right away while the item request is pending", () => {
     mocks.graphqlFetcher.mockImplementation(() => new Promise(() => undefined));
-    const historyItem = makeItem();
+    const historyItem = makeItem({ step: "sent", receivedAmount: undefined });
 
     const { result } = renderItemHook({ cachedHistory: [makeItem({ id: "0xother" }), historyItem] });
 
+    expect(result.current).toEqual({ transfer: historyItem, isLoading: false, error: undefined });
+    expect(mocks.graphqlFetcher).toHaveBeenCalledWith(expect.any(String), expect.any(String), {
+      account: ACCOUNT,
+      guid: GUID,
+    });
+  });
+
+  it("skips the item request when the history list already has the finished transfer", async () => {
+    const historyItem = makeItem({ step: "executed" });
+
+    const { result } = renderItemHook({ cachedHistory: [historyItem] });
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(mocks.graphqlFetcher).not.toHaveBeenCalled();
     expect(result.current).toEqual({ transfer: historyItem, isLoading: false, error: undefined });
   });
 
@@ -133,7 +147,7 @@ describe("useGmxAccountFundingHistoryItem", () => {
 
   it("hides the request error when the history list already has the item", async () => {
     mocks.graphqlFetcher.mockRejectedValue(new Error("squid down"));
-    const historyItem = makeItem();
+    const historyItem = makeItem({ step: "sent", receivedAmount: undefined });
 
     const { result } = renderItemHook({ cachedHistory: [historyItem] });
 
@@ -151,7 +165,7 @@ describe("useGmxAccountFundingHistoryItem", () => {
   });
 
   it("prefers the history item when the item request returns an older step", async () => {
-    const historyItem = makeItem({ step: "executed" });
+    const historyItem = makeItem({ step: "received" });
     mocks.graphqlFetcher.mockResolvedValue({
       multichainFunding: [{ ...makeItem({ step: "sent" }), sentAmount: "1000000", receivedAmount: null }],
     });

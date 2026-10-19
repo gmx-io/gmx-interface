@@ -14,6 +14,7 @@ const mocks = vi.hoisted(() => ({
     isLoading: false,
     error: undefined as Error | undefined,
   },
+  refetch: undefined as boolean | undefined,
 }));
 
 vi.mock("context/GmxAccountContext/hooks", () => {
@@ -32,7 +33,10 @@ vi.mock("context/GmxAccountContext/hooks", () => {
 });
 
 vi.mock("domain/multichain/useGmxAccountFundingHistory", () => ({
-  useGmxAccountFundingHistoryItem: () => mocks.itemState,
+  useGmxAccountFundingHistoryItem: (_guid: string | undefined, opts?: { refetch?: boolean }) => {
+    mocks.refetch = opts?.refetch;
+    return mocks.itemState;
+  },
 }));
 
 vi.mock("lib/chains", () => ({
@@ -76,6 +80,7 @@ describe("TransferDetailsView", () => {
     cleanup();
     mocks.itemState = { transfer: undefined, isLoading: false, error: undefined };
     mocks.selectedGuid = "0xguid";
+    mocks.refetch = undefined;
   });
 
   it("shows skeleton rows instead of empty values while loading", () => {
@@ -136,5 +141,18 @@ describe("TransferDetailsView", () => {
     expect(view.getByText("From")).toBeTruthy();
     expect(view.getByText(/12\.5/)).toBeTruthy();
     expect((view.getByRole("button", { name: "Repeat transaction" }) as HTMLButtonElement).disabled).toBe(false);
+  });
+
+  it.each([
+    ["deposit", "received", true],
+    ["deposit", "executed", false],
+    ["withdrawal", "sent", true],
+    ["withdrawal", "received", false],
+  ] as const)("polls a %s at the %s step: %s", (operation, step, refetch) => {
+    mocks.itemState = { transfer: { ...transfer, operation, step }, isLoading: false, error: undefined };
+
+    renderView();
+
+    expect(mocks.refetch).toBe(refetch);
   });
 });
