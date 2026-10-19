@@ -297,16 +297,19 @@ export const selectIsExternalSwapDisabledByExpressSchema = createSelector((q) =>
   const gasPaymentToken = q(
     isFromTokenGmxAccount ? selectGmxAccountGasPaymentToken : selectSettlementChainGasPaymentToken
   );
-  if (!gasPaymentToken) return false;
+  // the token that actually pays: an unapproved saved token can hand the fee to the pay token
+  const feeTokenAddress =
+    (!isFromTokenGmxAccount && q(selectTradeboxExpressFeeTokenAddress)) || gasPaymentToken?.address;
+  if (!feeTokenAddress) return false;
 
   // When gasPaymentToken = WNT, relay fee goes directly to the relay router
   // (Branch B in _handleRelayFee) without syncing OrderVault balances — no conflict.
   const chainId = q(selectChainId);
-  if (gasPaymentToken.address === getWrappedToken(chainId).address) return false;
+  if (feeTokenAddress === getWrappedToken(chainId).address) return false;
 
   const { isSwap } = q(selectTradeboxTradeFlags);
   const conflictToken = isSwap ? q(selectTradeboxSelectSwapToToken) : q(selectTradeboxCollateralToken);
-  return conflictToken !== undefined && gasPaymentToken.address === conflictToken.address;
+  return conflictToken !== undefined && feeTokenAddress === conflictToken.address;
 });
 
 export const selectRawExternalSwapDesirability = createSelector((q): "not_wanted" | "required" | "optional" => {
@@ -521,6 +524,8 @@ const selectTradeboxSetToTokenInputValue = (s: SyntheticsState) => s.tradebox.se
 export const selectTradeboxStage = (s: SyntheticsState) => s.tradebox.stage;
 export const selectTradeboxFocusedInput = (s: SyntheticsState) => s.tradebox.focusedInput;
 const selectTradeboxSetFocusedInput = (s: SyntheticsState) => s.tradebox.setFocusedInput;
+export const selectTradeboxExpressFeeTokenAddress = (s: SyntheticsState) => s.tradebox.expressFeeTokenAddress;
+export const selectTradeboxSetExpressFeeTokenAddress = (s: SyntheticsState) => s.tradebox.setExpressFeeTokenAddress;
 export const selectTradeboxDefaultTriggerAcceptablePriceImpactBps = (s: SyntheticsState) =>
   s.tradebox.defaultTriggerAcceptablePriceImpactBps;
 export const selectTradeboxSetDefaultTriggerAcceptablePriceImpactBps = (s: SyntheticsState) =>

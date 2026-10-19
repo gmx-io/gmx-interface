@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { useCallback, useId, useMemo } from "react";
+import { useCallback, useEffect, useId, useMemo } from "react";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -25,6 +25,7 @@ import {
   selectTradeboxFromToken,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxIsFromTokenGmxAccount,
+  selectTradeboxSetExpressFeeTokenAddress,
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxMarketInfo,
   selectTradeboxPayTokenAllowance,
@@ -169,6 +170,17 @@ export function useTradeboxTransactions({ setPendingTxns, canSwitchGasPaymentTok
     gasPaymentTokenFallback: "payToken",
     payTokenAddress: isSwap || isIncrease ? fromToken?.address : undefined,
   });
+
+  const setExpressFeeTokenAddress = useSelector(selectTradeboxSetExpressFeeTokenAddress);
+  const expressFeeTokenAddress = gasPaymentToken?.address;
+
+  useEffect(
+    function shareExpressFeeToken() {
+      setExpressFeeTokenAddress(expressFeeTokenAddress);
+      return () => setExpressFeeTokenAddress(undefined);
+    },
+    [expressFeeTokenAddress, setExpressFeeTokenAddress]
+  );
 
   const initOrderMetricData = useCallback(() => {
     const primaryOrder = primaryCreateOrderParams?.[0];
