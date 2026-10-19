@@ -181,6 +181,23 @@ describe("parseError", () => {
       );
     });
 
+    it("should trust the ethers ACTION_REJECTED code when the wallet error has another code", () => {
+      const error: ErrorLike = {
+        code: "ACTION_REJECTED",
+        message: "user rejected action",
+        info: { error: { code: -32603, message: "User denied message signature" } },
+      };
+
+      expect(parseError(error)).toEqual(
+        expect.objectContaining({
+          errorMessage: "User denied message signature",
+          txErrorType: TxErrorType.UserDenied,
+          isUserRejectedError: true,
+          errorGroup: "Txn Error: USER_DENIED",
+        })
+      );
+    });
+
     it("should not treat other EIP-1193 provider codes as a user rejection", () => {
       const error: ErrorLike = {
         code: 4100,

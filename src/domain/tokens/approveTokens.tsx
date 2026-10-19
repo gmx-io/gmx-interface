@@ -6,7 +6,6 @@ import { maxUint256 } from "viem";
 import { getChainName, getExplorerUrl } from "config/chains";
 import { JUMPER_BRIDGE_URL } from "config/links";
 import { AddTokenPermitFn } from "context/TokenPermitsContext/TokenPermitsContextProvider";
-import { parseError } from "lib/errors";
 import { INVALID_PERMIT_SIGNATURE_ERROR } from "lib/errors/customErrors";
 import { estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { helperToast } from "lib/helperToast";
@@ -135,8 +134,9 @@ export async function approveTokens({
       return;
     } catch (e) {
       const error = e as Error;
+      const outcome = getTxnErrorOutcome(error);
 
-      if (parseError(error)?.isUserRejectedError) {
+      if (outcome === "rejected") {
         sendMetric("permit", "rejected", error);
         onApproveFail?.(error, { isPermit: true });
         helperToast.error(t`Permit signing cancelled`);
@@ -144,7 +144,7 @@ export async function approveTokens({
         return;
       }
 
-      sendMetric("permit", getTxnErrorOutcome(error), error);
+      sendMetric("permit", outcome, error);
 
       if (error.message?.includes(INVALID_PERMIT_SIGNATURE_ERROR)) {
         permitParams.setIsPermitsDisabled(true);
@@ -197,7 +197,8 @@ export async function approveTokens({
 
     return { hash: res.hash as `0x${string}` };
   } catch (e) {
-    sendMetric("transaction", getTxnErrorOutcome(e), e);
+    const outcome = getTxnErrorOutcome(e);
+    sendMetric("transaction", outcome, e);
     onApproveFail?.(e, { isPermit: false });
     // eslint-disable-next-line no-console
     console.error(e);
@@ -220,7 +221,7 @@ export async function approveTokens({
           </Trans>
         </div>
       );
-    } else if (parseError(e)?.isUserRejectedError) {
+    } else if (outcome === "rejected") {
       failMsg = t`Approval cancelled`;
     } else {
       failMsg = (

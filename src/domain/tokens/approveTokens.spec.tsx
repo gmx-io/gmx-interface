@@ -217,6 +217,7 @@ describe("approveTokens rejection toast", () => {
     ["MetaMask", { code: 4001, message: "MetaMask Tx Signature: User denied transaction signature." }],
     ["WalletConnect", { code: 5000, message: "User rejected." }],
     ["a wallet with a custom message", { code: 4001, message: "The user rejected the request" }],
+    ["a wallet without an error code", { message: "User denied transaction" }],
   ])("shows approval cancelled when the user rejects in %s", async (_wallet, walletError) => {
     vi.spyOn(console, "error").mockImplementation(() => undefined);
 
