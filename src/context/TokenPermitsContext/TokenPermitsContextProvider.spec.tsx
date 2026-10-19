@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import "lib/monkeyPatching";
 import {
   IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG,
-  IS_TOKEN_PERMITS_METAMASK_7702_ENABLED_UI_FLAG,
+  IS_TOKEN_PERMITS_EIP7702_ENABLED_UI_FLAG,
   type UiFlags,
 } from "domain/synthetics/uiFlags/uiFlags";
 import type { SignedTokenPermit } from "sdk/utils/tokens/types";
@@ -17,7 +17,7 @@ const ACCOUNT = "0x0000000000000000000000000000000000000001";
 const ROUTER = "0x7452c558d45f8afC8c83dAe62C3f8A5BE19c71f6";
 const USDC = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831";
 const WETH = "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1";
-const ARB = "0x912CE59144191C1204E64559FE8253a0e49E6548";
+const LINK = "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4";
 
 const mocks = vi.hoisted(() => ({
   uiFlags: undefined as UiFlags | undefined,
@@ -113,17 +113,17 @@ describe("TokenPermitsContextProvider", () => {
   });
 
   it("exposes stored permits for allowlisted tokens when the account type's flag is on", async () => {
-    storePermits([permit(USDC), permit(ARB)]);
+    storePermits([permit(USDC), permit(LINK)]);
 
     await setup();
 
     expect(state.tokenPermits.map((p) => p.token)).toEqual([USDC]);
     expect(state.getIsPermitAvailable(USDC)).toBe(true);
-    expect(state.getIsPermitAvailable(ARB)).toBe(false);
+    expect(state.getIsPermitAvailable(LINK)).toBe(false);
   });
 
   it("switches permits off when the flag for the account type is off", async () => {
-    mocks.accountType = "metaMask7702";
+    mocks.accountType = "eip7702";
     storePermits([permit(USDC)]);
 
     await setup();
@@ -133,9 +133,9 @@ describe("TokenPermitsContextProvider", () => {
   });
 
   it("lets the QA override turn permits on before the flags are", async () => {
-    mocks.uiFlags = flag(IS_TOKEN_PERMITS_METAMASK_7702_ENABLED_UI_FLAG, false);
+    mocks.uiFlags = flag(IS_TOKEN_PERMITS_EIP7702_ENABLED_UI_FLAG, false);
     mocks.isQaOverrideEnabled = true;
-    mocks.accountType = "metaMask7702";
+    mocks.accountType = "eip7702";
 
     await setup();
 
