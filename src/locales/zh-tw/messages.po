@@ -6008,6 +6008,10 @@ msgstr "未知的買入 GM 訂單"
 msgid "Build on GMX.<0/>Get paid on every trade."
 msgstr "在 GMX 上建構。<0/>每筆交易都有收益。"
 
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
+msgid "Transfer not found"
+msgstr "找不到轉帳"
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 msgid "Insufficient {tokenInSymbol} balance"
 msgstr "{tokenInSymbol} 餘額不足"
@@ -9603,6 +9607,7 @@ msgid "Copy"
 msgstr "複製"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Amount"
@@ -10663,6 +10668,7 @@ msgstr "模擬提取時發生錯誤"
 msgid "Claims"
 msgstr "領取項目"
 
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Date"
@@ -12655,6 +12661,10 @@ msgstr "累計獎勵"
 #: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 msgid "Not enough history yet"
 msgstr "歷史記錄尚不足"
+
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
+msgid "Failed to load transfer details"
+msgstr "無法載入轉帳詳情"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "This trigger is at or beyond the estimated liquidation price. The margin deposit will be attempted before liquidation when eligible, but execution is not guaranteed."

@@ -1,5 +1,6 @@
 import { Trans } from "@lingui/macro";
 import { useEffect, useState } from "react";
+import Skeleton from "react-loading-skeleton";
 
 import { AnyChainId, getChainName, isTestnetChain, SourceChainId } from "config/chains";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
@@ -30,6 +31,57 @@ import ExternalLinkIcon from "img/ic_new_link_20.svg?react";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { formatTradeActionTimestamp } from "../TradeHistory/TradeHistoryRow/utils/shared";
 
+import "react-loading-skeleton/dist/skeleton.css";
+import "components/Skeleton/Skeleton.scss";
+
+const labelSkeleton = (
+  <Skeleton
+    baseColor="#B4BBFF1A"
+    highlightColor="#B4BBFF1A"
+    width={64}
+    height={14}
+    borderRadius={4}
+    className="leading-[14px]"
+    inline
+  />
+);
+
+const valueSkeleton = (
+  <Skeleton
+    baseColor="#B4BBFF1A"
+    highlightColor="#B4BBFF1A"
+    width={96}
+    height={14}
+    borderRadius={4}
+    className="leading-[14px]"
+    inline
+  />
+);
+
+function TransferDetailsSkeleton() {
+  return (
+    <div className="flex flex-col gap-8">
+      <SyntheticsInfoRow label={<Trans>Date</Trans>} value={valueSkeleton} />
+      <SyntheticsInfoRow label={labelSkeleton} value={valueSkeleton} />
+      <SyntheticsInfoRow label={labelSkeleton} value={valueSkeleton} />
+      <SyntheticsInfoRow label={<Trans>Amount</Trans>} value={valueSkeleton} />
+    </div>
+  );
+}
+
+function TransferDetailsPlaceholder({ isLoading, hasError }: { isLoading: boolean; hasError: boolean }) {
+  // error goes first: SWR keeps the error while it retries, and a retry flips isLoading back on
+  if (!hasError && isLoading) {
+    return <TransferDetailsSkeleton />;
+  }
+
+  return (
+    <div className="flex grow items-center justify-center text-center text-typography-secondary">
+      {hasError ? <Trans>Failed to load transfer details</Trans> : <Trans>Transfer not found</Trans>}
+    </div>
+  );
+}
+
 export const TransferDetailsView = () => {
   const { chainId } = useChainId();
 
@@ -45,7 +97,11 @@ export const TransferDetailsView = () => {
 
   const [isTransferPending, setIsTransferPending] = useState(false);
 
-  const selectedTransfer = useGmxAccountFundingHistoryItem(selectedTransferGuid, {
+  const {
+    transfer: selectedTransfer,
+    isLoading,
+    error,
+  } = useGmxAccountFundingHistoryItem(selectedTransferGuid, {
     refetch: isTransferPending,
   });
 
@@ -124,76 +180,62 @@ export const TransferDetailsView = () => {
 
   return (
     <div className="text-body-medium flex grow flex-col gap-8 p-adaptive">
-      <SyntheticsInfoRow
-        label={<Trans>Date</Trans>}
-        value={selectedTransfer ? formatTradeActionTimestamp(selectedTransfer.sentTimestamp) : undefined}
-      />
-      <SyntheticsInfoRow
-        label={selectedTransfer?.operation === "deposit" ? <Trans>From</Trans> : <Trans>To</Trans>}
-        value={
-          <Trans>
-            {addressLabel} on {networkLabel}
-          </Trans>
-        }
-      />
-      {selectedTransfer?.sentTxn && initialChainId && (
-        <SyntheticsInfoRow
-          label={CHAIN_ID_TO_EXPLORER_NAME[initialChainId as AnyChainId]}
-          value={
-            <ExternalLink
-              className="!no-underline"
-              href={CHAIN_ID_TO_TX_URL_BUILDER[initialChainId as AnyChainId](selectedTransfer.sentTxn)}
-            >
-              <div className="flex items-center gap-4">
-                {shortenAddressOrEns(selectedTransfer.sentTxn, 13)}
-                <ExternalLinkIcon className="size-20 text-typography-secondary" />
-              </div>
-            </ExternalLink>
-          }
-        />
-      )}
-      {selectedTransfer?.sentTxn && selectedTransfer.sourceChainId !== 0 && (
-        <SyntheticsInfoRow
-          label={isTestnet ? <Trans>Testnet LayerZero scan</Trans> : <Trans>LayerZero scan</Trans>}
-          value={
-            <ExternalLink
-              className="!no-underline"
-              href={
-                isTestnet
-                  ? CHAIN_ID_TO_TX_URL_BUILDER["layerzero-testnet"](selectedTransfer.sentTxn)
-                  : CHAIN_ID_TO_TX_URL_BUILDER["layerzero"](selectedTransfer.sentTxn)
-              }
-            >
-              <div className="flex items-center gap-4">
-                {shortenAddressOrEns(selectedTransfer.sentTxn, 13)}
-                <ExternalLinkIcon className="size-20 text-typography-secondary" />
-              </div>
-            </ExternalLink>
-          }
-        />
-      )}
-      <SyntheticsInfoRow
-        label={<Trans>Amount</Trans>}
-        value={
-          selectedTransfer && token ? (
-            <Amount
-              amount={selectedTransfer.sentAmount}
-              decimals={token.decimals}
-              isStable={token.isStable}
-              symbol={token.symbol}
-              symbolClassName="text-typography-secondary"
-            />
-          ) : undefined
-        }
-      />
-      {selectedTransfer?.receivedAmount !== undefined && (
+      {selectedTransfer ? (
         <>
           <SyntheticsInfoRow
-            label={<Trans>Fee</Trans>}
+            label={<Trans>Date</Trans>}
+            value={formatTradeActionTimestamp(selectedTransfer.sentTimestamp)}
+          />
+          <SyntheticsInfoRow
+            label={selectedTransfer.operation === "deposit" ? <Trans>From</Trans> : <Trans>To</Trans>}
             value={
-              selectedTransfer && token ? (
+              <Trans>
+                {addressLabel} on {networkLabel}
+              </Trans>
+            }
+          />
+          {selectedTransfer.sentTxn && initialChainId && (
+            <SyntheticsInfoRow
+              label={CHAIN_ID_TO_EXPLORER_NAME[initialChainId as AnyChainId]}
+              value={
+                <ExternalLink
+                  className="!no-underline"
+                  href={CHAIN_ID_TO_TX_URL_BUILDER[initialChainId as AnyChainId](selectedTransfer.sentTxn)}
+                >
+                  <div className="flex items-center gap-4">
+                    {shortenAddressOrEns(selectedTransfer.sentTxn, 13)}
+                    <ExternalLinkIcon className="size-20 text-typography-secondary" />
+                  </div>
+                </ExternalLink>
+              }
+            />
+          )}
+          {selectedTransfer.sentTxn && selectedTransfer.sourceChainId !== 0 && (
+            <SyntheticsInfoRow
+              label={isTestnet ? <Trans>Testnet LayerZero scan</Trans> : <Trans>LayerZero scan</Trans>}
+              value={
+                <ExternalLink
+                  className="!no-underline"
+                  href={
+                    isTestnet
+                      ? CHAIN_ID_TO_TX_URL_BUILDER["layerzero-testnet"](selectedTransfer.sentTxn)
+                      : CHAIN_ID_TO_TX_URL_BUILDER["layerzero"](selectedTransfer.sentTxn)
+                  }
+                >
+                  <div className="flex items-center gap-4">
+                    {shortenAddressOrEns(selectedTransfer.sentTxn, 13)}
+                    <ExternalLinkIcon className="size-20 text-typography-secondary" />
+                  </div>
+                </ExternalLink>
+              }
+            />
+          )}
+          <SyntheticsInfoRow
+            label={<Trans>Amount</Trans>}
+            value={
+              token ? (
                 <Amount
-                  amount={selectedTransfer.sentAmount - selectedTransfer.receivedAmount}
+                  amount={selectedTransfer.sentAmount}
                   decimals={token.decimals}
                   isStable={token.isStable}
                   symbol={token.symbol}
@@ -202,7 +244,27 @@ export const TransferDetailsView = () => {
               ) : undefined
             }
           />
+          {selectedTransfer.receivedAmount !== undefined && (
+            <>
+              <SyntheticsInfoRow
+                label={<Trans>Fee</Trans>}
+                value={
+                  token ? (
+                    <Amount
+                      amount={selectedTransfer.sentAmount - selectedTransfer.receivedAmount}
+                      decimals={token.decimals}
+                      isStable={token.isStable}
+                      symbol={token.symbol}
+                      symbolClassName="text-typography-secondary"
+                    />
+                  ) : undefined
+                }
+              />
+            </>
+          )}
         </>
+      ) : (
+        <TransferDetailsPlaceholder isLoading={isLoading} hasError={error !== undefined} />
       )}
 
       <div className="grow" />
@@ -211,7 +273,7 @@ export const TransferDetailsView = () => {
           <Trans>Deposit from {sourceChainName} failed</Trans>
         </AlertInfoCard>
       ) : null}
-      <Button variant="secondary" onClick={handleRepeatTransaction}>
+      <Button variant="secondary" onClick={handleRepeatTransaction} disabled={!selectedTransfer}>
         <Trans>Repeat transaction</Trans>
       </Button>
     </div>
