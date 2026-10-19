@@ -29,6 +29,7 @@ export const DEFAULT_SETTLEMENT_CHAIN_ID: SettlementChainId = ARBITRUM;
 // Solana has no EVM chain id: this id is app-only and stays out of the SDK's chain lists and types
 export const SOLANA_NETWORK_ID = -501;
 export type SolanaNetworkId = typeof SOLANA_NETWORK_ID;
+export type NetworkId = ContractsChainId | SolanaNetworkId;
 
 export function isSolanaNetwork(networkId: number): networkId is SolanaNetworkId {
   return networkId === SOLANA_NETWORK_ID;

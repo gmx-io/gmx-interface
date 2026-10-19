@@ -505,9 +505,9 @@ describe("getEditCollateralError — withdrawal above the max", () => {
     expect(result.buttonTooltipName).toBe(ValidationButtonTooltipName.maxLeverage);
   });
 
-  it("says the withdrawal is not available when nothing can be withdrawn", () => {
+  it("says the withdrawal is unavailable when nothing can be withdrawn", () => {
     expect(getEditCollateralError({ ...withdrawParams, maxWithdrawAmount: 0n }).buttonErrorMessage).toBe(
-      "Withdrawal not available"
+      "Withdrawal unavailable"
     );
   });
 
@@ -619,7 +619,7 @@ describe("getNativeGasError", () => {
 
   it("names the native token and the wallet when the fee exceeds the balance", () => {
     expect(getNativeGasError({ chainId: ARBITRUM, networkFee: 2n, nativeBalance: 1n })).toEqual({
-      buttonErrorMessage: "Insufficient ETH in Wallet",
+      buttonErrorMessage: "Insufficient ETH in wallet",
       bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
     });
   });
@@ -631,7 +631,7 @@ describe("getGmNativeGasError", () => {
   const FEE = expandDecimals(1, 15);
   const DEPOSIT = expandDecimals(1, 17);
   const INSUFFICIENT = {
-    buttonErrorMessage: "Insufficient ETH in Wallet",
+    buttonErrorMessage: "Insufficient ETH in wallet",
     bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
   };
 
@@ -679,7 +679,7 @@ describe("getApprovalGasError", () => {
         gasPrice: 10n,
       })
     ).toEqual({
-      buttonErrorMessage: "Insufficient ETH in Wallet",
+      buttonErrorMessage: "Insufficient ETH in wallet",
       bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenForApproval,
     });
   });
@@ -691,7 +691,7 @@ describe("getApprovalGasError", () => {
         nativeToken: nativeToken({ symbol: "AVAX", walletBalance: 0n }),
         gasPrice: 10n,
       }).buttonErrorMessage
-    ).toBe("Insufficient AVAX in Wallet");
+    ).toBe("Insufficient AVAX in wallet");
   });
 
   it("allows a balance equal to the approval cost", () => {
@@ -791,7 +791,7 @@ describe("getExpressError", () => {
         tokensData: walletTokensData,
       })
     ).toEqual({
-      buttonErrorMessage: "Insufficient USDC in Wallet",
+      buttonErrorMessage: "Insufficient USDC in wallet",
       bannerErrorName: ValidationBannerErrorName.insufficientWalletGasTokenBalance,
     });
   });

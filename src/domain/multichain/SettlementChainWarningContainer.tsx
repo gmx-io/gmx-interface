@@ -54,7 +54,7 @@ export function SettlementChainWarningContainer() {
         {getChainName(anyNonEmptyGmxAccountChainId)} GMX Account
       </Trans>
 
-      <ColorfulButtonLink color="yellow" onClick={handleNetworkSwitch}>
+      <ColorfulButtonLink color="blue" onClick={handleNetworkSwitch}>
         <Trans>Change to {getChainName(anyNonEmptyGmxAccountChainId)}</Trans>
       </ColorfulButtonLink>
     </ColorfulBanner>
