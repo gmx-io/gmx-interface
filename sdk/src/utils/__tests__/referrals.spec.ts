@@ -61,6 +61,10 @@ describe("utils/referrals", () => {
     expect(encodeReferralCode(decodeReferralCode(HASH_CODE))).toEqual(HASH_CODE);
   });
 
+  it("encodeReferralCode normalizes bytes32 hex case", () => {
+    expect(encodeReferralCode(HASH_CODE.toUpperCase().replace("0X", "0x"))).toEqual(HASH_CODE);
+  });
+
   it("encodeReferralCode defaults", () => {
     expect(encodeReferralCode(new Array(MAX_REFERRAL_CODE_LENGTH + 1).fill("0").join(""))).toEqual(zeroHash);
   });
