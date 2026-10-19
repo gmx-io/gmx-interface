@@ -8,13 +8,14 @@ import { useWalletCapabilitiesMetric } from "./useWalletCapabilitiesMetric";
 const METAMASK_DELEGATOR = "0x63c0c19a282a1B52b07dD5a65b58948A07DAE32B";
 
 const mocks = vi.hoisted(() => ({
-  account: { address: "", connector: { id: "", uid: "" } },
+  account: { address: "", connector: { id: "", uid: "", name: "MetaMask" } },
   wallets: [] as { address: string; connectorType: string; walletClientType: string; meta: { id: string } }[],
   chainId: 42161,
   srcChainId: undefined as number | undefined,
   pushEvent: vi.fn(),
   getAccountType: vi.fn(),
   getDelegation: vi.fn(),
+  getConnectedWalletName: vi.fn(),
   fetchWalletChainCapabilities: vi.fn(),
 }));
 
@@ -32,7 +33,7 @@ vi.mock("lib/wallets/useAccountType", async (importOriginal) => ({
 vi.mock("lib/wallets/walletCapabilities", () => ({
   fetchWalletChainCapabilities: mocks.fetchWalletChainCapabilities,
 }));
-vi.mock("lib/wallets/useWalletSessionChains", () => ({ getConnectedWalletName: async () => "MetaMask" }));
+vi.mock("lib/wallets/useWalletSessionChains", () => ({ getConnectedWalletName: mocks.getConnectedWalletName }));
 
 function TestComponent() {
   useWalletCapabilitiesMetric();
@@ -54,7 +55,7 @@ function connect(address: string, connectorType: string) {
   const wallet = getWallet(address, connectorType);
   const connectorId = connectorType === "embedded" ? `${wallet.meta.id}.${address}` : wallet.meta.id;
 
-  mocks.account = { address, connector: { id: connectorId, uid: `${connectorId}-uid` } };
+  mocks.account = { address, connector: { id: connectorId, uid: `${connectorId}-uid`, name: "MetaMask" } };
   mocks.wallets = [wallet];
 }
 
@@ -66,14 +67,18 @@ beforeEach(() => {
   mocks.chainId = 42161;
   mocks.srcChainId = undefined;
   mocks.getAccountType.mockResolvedValue(AccountType.EOA);
+  mocks.getConnectedWalletName.mockResolvedValue("MetaMask");
   mocks.fetchWalletChainCapabilities.mockResolvedValue({
     status: "ok",
+    durationMs: 8000,
+    timeoutMs: 30_000,
     capabilities: { atomicStatus: "supported", hasAlternateGasFees: true, hasPaymasterService: undefined },
   });
 });
 
 afterEach(() => {
   cleanup();
+  vi.useRealTimers();
   vi.clearAllMocks();
 });
 
@@ -91,9 +96,17 @@ describe("useWalletCapabilitiesMetric", () => {
       data: {
         chainId: 42161,
         walletName: "MetaMask",
+        connectorId: "wallet.injected",
+        connectorType: "injected",
         accountType: "postEip7702Eoa",
         delegateAddress: METAMASK_DELEGATOR,
         capabilitiesStatus: "ok",
+        capabilitiesDurationMs: 8000,
+        capabilitiesTimeoutMs: 30_000,
+        capabilitiesErrorCode: undefined,
+        capabilitiesErrorName: undefined,
+        capabilitiesErrorMessage: undefined,
+        capabilitiesErrorReason: undefined,
         atomicStatus: "supported",
         hasAlternateGasFees: true,
         hasPaymasterService: undefined,
@@ -172,5 +185,59 @@ describe("useWalletCapabilitiesMetric", () => {
     await waitFor(() => expect(mocks.pushEvent).toHaveBeenCalledTimes(1));
     expect(mocks.fetchWalletChainCapabilities).not.toHaveBeenCalled();
     expect(getStatuses()).toEqual(["skipped"]);
+  });
+
+  it("reports the provider diagnostics with the active connector", async () => {
+    connect("0x0000000000000000000000000000000000000008", "injected");
+    mocks.fetchWalletChainCapabilities.mockResolvedValue({
+      status: "error",
+      capabilities: undefined,
+      durationMs: 100,
+      timeoutMs: 30_000,
+      errorCode: -32002,
+      errorName: "ResourceUnavailableRpcError",
+      errorMessage: "Request already pending",
+      errorReason: "requestPending",
+    });
+
+    render(<TestComponent />);
+
+    await waitFor(() => expect(mocks.pushEvent).toHaveBeenCalledTimes(1));
+    expect(mocks.pushEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          connectorId: "wallet.injected",
+          connectorType: "injected",
+          capabilitiesStatus: "error",
+          capabilitiesDurationMs: 100,
+          capabilitiesErrorCode: -32002,
+          capabilitiesErrorName: "ResourceUnavailableRpcError",
+          capabilitiesErrorMessage: "Request already pending",
+          capabilitiesErrorReason: "requestPending",
+        }),
+      })
+    );
+  });
+
+  it("still reports capabilities if account metadata or wallet name lookups stall", async () => {
+    vi.useFakeTimers();
+    connect("0x0000000000000000000000000000000000000009", "injected");
+    mocks.getAccountType.mockReturnValue(new Promise(() => undefined));
+    mocks.getConnectedWalletName.mockReturnValue(new Promise(() => undefined));
+
+    render(<TestComponent />);
+    await vi.advanceTimersByTimeAsync(5000);
+
+    expect(mocks.pushEvent).toHaveBeenCalledTimes(1);
+    expect(mocks.pushEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          walletName: "MetaMask",
+          accountType: undefined,
+          capabilitiesStatus: "ok",
+          atomicStatus: "supported",
+        }),
+      })
+    );
   });
 });

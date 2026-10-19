@@ -10,12 +10,14 @@ import { ACCOUNT_TYPE_LABELS, AccountType, getAccountType } from "lib/wallets/us
 import { getConnectedWalletName } from "lib/wallets/useWalletSessionChains";
 import { fetchWalletChainCapabilities, type WalletChainCapabilitiesResult } from "lib/wallets/walletCapabilities";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
+import { withFallback } from "lib/withFallback";
 
 import { metrics } from "./Metrics";
 import type { WalletCapabilitiesEvent } from "./types";
 
 // these wallets answer wallet_getCapabilities without a round trip to another device
 const LOCAL_CAPABILITIES_CONNECTOR_TYPES = ["injected", "coinbase_wallet", "base_account"];
+const ACCOUNT_INFO_TIMEOUT_MS = 5000;
 
 const reportedKeys = new Set<string>();
 
@@ -59,9 +61,13 @@ async function sendWalletCapabilitiesMetric({
   chainId: number;
 }) {
   const [accountInfo, capabilitiesResult, walletName] = await Promise.all([
-    getAccountInfo(address, chainId),
+    withFallback(
+      getAccountInfo(address, chainId),
+      { accountType: undefined, delegateAddress: undefined },
+      ACCOUNT_INFO_TIMEOUT_MS
+    ),
     getCapabilitiesResult({ address, connector, connectorType, chainId }),
-    getConnectedWalletName(address).catch(() => undefined),
+    withFallback(getConnectedWalletName(address), connector.name, ACCOUNT_INFO_TIMEOUT_MS),
   ]);
 
   metrics.pushEvent<WalletCapabilitiesEvent>({
@@ -70,9 +76,17 @@ async function sendWalletCapabilitiesMetric({
     data: {
       chainId,
       walletName,
+      connectorId: connector.id,
+      connectorType,
       accountType: accountInfo.accountType !== undefined ? ACCOUNT_TYPE_LABELS[accountInfo.accountType] : undefined,
       delegateAddress: accountInfo.delegateAddress,
       capabilitiesStatus: capabilitiesResult.status,
+      capabilitiesDurationMs: capabilitiesResult.durationMs,
+      capabilitiesTimeoutMs: capabilitiesResult.timeoutMs,
+      capabilitiesErrorCode: capabilitiesResult.errorCode,
+      capabilitiesErrorName: capabilitiesResult.errorName,
+      capabilitiesErrorMessage: capabilitiesResult.errorMessage,
+      capabilitiesErrorReason: capabilitiesResult.errorReason,
       atomicStatus: capabilitiesResult.capabilities?.atomicStatus,
       hasAlternateGasFees: capabilitiesResult.capabilities?.hasAlternateGasFees,
       hasPaymasterService: capabilitiesResult.capabilities?.hasPaymasterService,

@@ -165,6 +165,10 @@ export const useWithdrawalTransactions = ({
       glvInfo && selectedMarketForGlv
         ? initGLVSwapMetricData({
             chainId,
+            srcChainId,
+            isExpress: paySource === "gmxAccount",
+            isExpress1CT: false,
+            isCollateralFromMultichain: paySource === "gmxAccount",
             longTokenAddress,
             shortTokenAddress,
             selectedMarketForGlv,
@@ -183,6 +187,10 @@ export const useWithdrawalTransactions = ({
           })
         : initGMSwapMetricData({
             chainId,
+            srcChainId,
+            isExpress: paySource === "gmxAccount",
+            isExpress1CT: false,
+            isCollateralFromMultichain: paySource === "gmxAccount",
             longTokenAddress,
             shortTokenAddress,
             marketToken,
@@ -200,6 +208,8 @@ export const useWithdrawalTransactions = ({
 
     return metricData;
   }, [
+    srcChainId,
+    paySource,
     glvInfo,
     selectedMarketForGlv,
     chainId,
