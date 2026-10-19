@@ -245,35 +245,36 @@ export const TransferDetailsView = () => {
             }
           />
           {selectedTransfer.receivedAmount !== undefined && (
-            <>
-              <SyntheticsInfoRow
-                label={<Trans>Fee</Trans>}
-                value={
-                  token ? (
-                    <Amount
-                      amount={selectedTransfer.sentAmount - selectedTransfer.receivedAmount}
-                      decimals={token.decimals}
-                      isStable={token.isStable}
-                      symbol={token.symbol}
-                      symbolClassName="text-typography-secondary"
-                    />
-                  ) : undefined
-                }
-              />
-            </>
+            <SyntheticsInfoRow
+              label={<Trans>Fee</Trans>}
+              value={
+                token ? (
+                  <Amount
+                    amount={selectedTransfer.sentAmount - selectedTransfer.receivedAmount}
+                    decimals={token.decimals}
+                    isStable={token.isStable}
+                    symbol={token.symbol}
+                    symbolClassName="text-typography-secondary"
+                  />
+                ) : undefined
+              }
+            />
           )}
+          <div className="grow" />
         </>
       ) : (
         <TransferDetailsPlaceholder isLoading={isLoading} hasError={error !== undefined} />
       )}
-
-      <div className="grow" />
       {selectedTransfer?.isExecutionError ? (
         <AlertInfoCard type="error" hideClose>
           <Trans>Deposit from {sourceChainName} failed</Trans>
         </AlertInfoCard>
       ) : null}
-      <Button variant="secondary" onClick={handleRepeatTransaction} disabled={!selectedTransfer}>
+      <Button
+        variant="secondary"
+        onClick={handleRepeatTransaction}
+        disabled={!selectedTransfer || !token || !sourceChainId}
+      >
         <Trans>Repeat transaction</Trans>
       </Button>
     </div>

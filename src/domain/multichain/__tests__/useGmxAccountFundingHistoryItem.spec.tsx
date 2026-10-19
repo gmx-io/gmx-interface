@@ -150,6 +150,19 @@ describe("useGmxAccountFundingHistoryItem", () => {
     expect(result.current).toEqual({ transfer: undefined, isLoading: false, error: undefined });
   });
 
+  it("prefers the history item when the item request returns an older step", async () => {
+    const historyItem = makeItem({ step: "executed" });
+    mocks.graphqlFetcher.mockResolvedValue({
+      multichainFunding: [{ ...makeItem({ step: "sent" }), sentAmount: "1000000", receivedAmount: null }],
+    });
+
+    const { result } = renderItemHook({ cachedHistory: [historyItem] });
+
+    await waitFor(() => expect(mocks.graphqlFetcher).toHaveBeenCalled());
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(result.current.transfer).toBe(historyItem);
+  });
+
   it("prefers a pending item that is further along than the fetched one", async () => {
     const pendingItem = makeItem({ step: "executed", source: "ws" });
     mocks.pendingMultichainFunding = [pendingItem];

@@ -194,21 +194,18 @@ export function useGmxAccountFundingHistoryItem(
     null
   );
 
-  const { data, isLoading, error } = useSWR(guid ? ["gmx-account-funding-history-item", guid] : null, {
+  const { data, isLoading, error } = useSWR(guid ? [chainId, "gmx-account-funding-history-item", guid] : null, {
     fetcher: () => fetchGmxAccountFundingHistory(chainId, { guid }),
     refreshInterval: opts?.refetch ? FREQUENT_UPDATE_INTERVAL : 0,
   });
 
-  const currentItem = data?.[0] ?? historyData?.find((item) => item.id === guid);
-
+  const historyItem = historyData?.find((item) => item.id === guid);
   const pendingItem = useGmxAccountPendingFundingHistoryItem(guid);
 
-  let transfer: MultichainFundingHistoryItem | undefined;
-  if (currentItem && pendingItem) {
-    transfer = isStepGreaterOrEqual(currentItem.step, pendingItem.step) ? currentItem : pendingItem;
-  } else {
-    transfer = currentItem ?? pendingItem;
-  }
+  const transfer = [data?.[0], historyItem, pendingItem].reduce<MultichainFundingHistoryItem | undefined>(
+    (latest, item) => (item && (!latest || isStepGreater(item.step, latest.step)) ? item : latest),
+    undefined
+  );
 
   return {
     transfer,
