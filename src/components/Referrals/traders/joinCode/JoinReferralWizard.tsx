@@ -12,6 +12,7 @@ import {
   useTiers,
   useUserReferralCode,
 } from "domain/referrals";
+import { formatReferralCodeForDisplay } from "domain/referrals/utils/referralCode";
 import { getSharePercentage } from "domain/referrals/utils/referralsHelper";
 import { useChainId } from "lib/chains";
 
@@ -115,7 +116,7 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
               <div className="flex flex-col gap-12">
                 <ReferralCodeEditFormContainer
                   callAfterSuccess={(code: string) => {
-                    setUserReferralCodeString(code);
+                    setUserReferralCodeString(formatReferralCodeForDisplay(code));
                     setJoinReferralWizardStep(JoinReferralWizardStep.Success);
                   }}
                 />

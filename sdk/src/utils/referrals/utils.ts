@@ -36,7 +36,8 @@ export function decodeReferralCode(hexCode?: Hash) {
 
 export function encodeReferralCode(code: string) {
   if (isReferralCodeHex(code)) {
-    return code as Hash;
+    // not an address, so no checksum casing; lowercase matches what chain and subgraph return
+    return code.toLowerCase() as Hash;
   }
 
   let final = code.replace(/[^\w_]/g, ""); // replace everything other than numbers, string  and underscor to ''
