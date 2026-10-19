@@ -1,6 +1,13 @@
+import { i18n } from "@lingui/core";
+import { I18nProvider } from "@lingui/react";
 import { BrowserProvider, toQuantity, type Eip1193Provider } from "ethers";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import type { ReactNode } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { custom } from "viem";
+import { arbitrum } from "viem/chains";
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
+import { helperToast } from "lib/helperToast";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 
 import { approveTokens } from "./approveTokens";
@@ -164,5 +171,79 @@ describe("approveTokens permit metric", () => {
     });
 
     expect(getOutcomes()).toEqual(["permit:failed", "transaction:accepted"]);
+  });
+});
+
+describe("approveTokens rejection toast", () => {
+  beforeAll(() => {
+    i18n.load("en", {});
+    i18n.activate("en");
+  });
+
+  // the wallet error passes through the viem transport and the ethers signer, as in clientToSigner
+  function approveWithWalletError(walletError: unknown) {
+    const transport = custom(
+      {
+        request: async ({ method }) => {
+          if (method === "eth_chainId") return toQuantity(ARBITRUM);
+          if (method === "eth_sendTransaction") throw walletError;
+          throw new Error(`Unexpected request: ${method}`);
+        },
+      },
+      { retryCount: 0 }
+    )({ chain: arbitrum });
+    const provider = new BrowserProvider(transport, ARBITRUM);
+    providers.push(provider);
+
+    return approveTokens({
+      chainId: ARBITRUM,
+      signer: new UncheckedJsonRpcSigner(provider, ACCOUNT),
+      tokenAddress: USDC,
+      spender: SPENDER,
+      approveAmount: undefined,
+      permitParams: undefined,
+      setIsApproving: vi.fn(),
+      metric: { flow: "gmBuy" },
+    });
+  }
+
+  function getErrorToastText() {
+    const [[content]] = vi.mocked(helperToast.error).mock.calls;
+    return renderToStaticMarkup(<I18nProvider i18n={i18n}>{content as ReactNode}</I18nProvider>);
+  }
+
+  it.each([
+    ["Rabby", { code: 4001, message: "User rejected the request." }],
+    ["MetaMask", { code: 4001, message: "MetaMask Tx Signature: User denied transaction signature." }],
+    ["WalletConnect", { code: 5000, message: "User rejected." }],
+    ["a wallet with a custom message", { code: 4001, message: "The user rejected the request" }],
+  ])("shows approval cancelled when the user rejects in %s", async (_wallet, walletError) => {
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+
+    await approveWithWalletError(walletError);
+
+    expect(getErrorToastText()).toBe("Approval cancelled");
+    expect(getApprovalEvents()).toEqual([
+      expect.objectContaining({ data: expect.objectContaining({ outcome: "rejected" }) }),
+    ]);
+  });
+
+  it.each([
+    ["an internal wallet error", { code: -32603, message: "Internal JSON-RPC error." }],
+    [
+      "an unauthorized account",
+      { code: 4100, message: "The requested account and/or method has not been authorized by the user." },
+    ],
+  ])("shows approval failed with error details for %s", async (_reason, walletError) => {
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+
+    await approveWithWalletError(walletError);
+
+    const text = getErrorToastText();
+    expect(text).toContain("Approval failed");
+    expect(text).not.toContain("Approval cancelled");
+    expect(getApprovalEvents()).toEqual([
+      expect.objectContaining({ data: expect.objectContaining({ outcome: "failed" }) }),
+    ]);
   });
 });

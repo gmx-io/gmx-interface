@@ -6,6 +6,7 @@ import { maxUint256 } from "viem";
 import { getChainName, getExplorerUrl } from "config/chains";
 import { JUMPER_BRIDGE_URL } from "config/links";
 import { AddTokenPermitFn } from "context/TokenPermitsContext/TokenPermitsContextProvider";
+import { parseError } from "lib/errors";
 import { INVALID_PERMIT_SIGNATURE_ERROR } from "lib/errors/customErrors";
 import { estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { helperToast } from "lib/helperToast";
@@ -134,10 +135,8 @@ export async function approveTokens({
       return;
     } catch (e) {
       const error = e as Error;
-      const lowerMessage = error.message?.toLowerCase();
-      const isUserRejection = lowerMessage?.includes("user rejected") || lowerMessage?.includes("user denied");
 
-      if (isUserRejection) {
+      if (parseError(error)?.isUserRejectedError) {
         sendMetric("permit", "rejected", error);
         onApproveFail?.(error, { isPermit: true });
         helperToast.error(t`Permit signing cancelled`);
@@ -221,7 +220,7 @@ export async function approveTokens({
           </Trans>
         </div>
       );
-    } else if (e.message?.includes("User denied transaction signature")) {
+    } else if (parseError(e)?.isUserRejectedError) {
       failMsg = t`Approval cancelled`;
     } else {
       failMsg = (

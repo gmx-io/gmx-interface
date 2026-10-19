@@ -160,6 +160,36 @@ describe("parseError", () => {
       );
     });
 
+    it.each([
+      ["The user rejected the request"],
+      ["Request rejected"],
+      ["MetaMask Typed Message Signature: User denied message signature."],
+    ])("should treat EIP-1193 code 4001 as a user rejection: %s", (message) => {
+      // ethers v6 ACTION_REJECTED keeps the wallet error in info.error
+      const error: ErrorLike = {
+        code: "ACTION_REJECTED",
+        message: "user rejected action",
+        info: { error: { code: 4001, message } },
+      };
+
+      expect(parseError(error)).toEqual(
+        expect.objectContaining({
+          txErrorType: TxErrorType.UserDenied,
+          isUserError: true,
+          isUserRejectedError: true,
+        })
+      );
+    });
+
+    it("should not treat other EIP-1193 provider codes as a user rejection", () => {
+      const error: ErrorLike = {
+        code: 4100,
+        message: "The requested account and/or method has not been authorized by the user.",
+      };
+
+      expect(parseError(error)).toEqual(expect.objectContaining({ isUserRejectedError: false }));
+    });
+
     it("should handle ethers v6 insufficient funds error", () => {
       const error: ErrorLike = {
         info: {
