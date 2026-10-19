@@ -96,11 +96,13 @@
 
 .LiqPrice-soft-warning {
   color: var(--color-yellow-300);
+  --affix-color: currentColor;
   text-decoration-color: var(--color-yellow-300);
 }
 
 .LiqPrice-hard-warning {
   color: var(--error-red);
+  --affix-color: currentColor;
   text-decoration-color: var(--error-red);
 }
 

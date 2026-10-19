@@ -12,11 +12,12 @@ import {
 } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { TokenData } from "domain/synthetics/tokens";
-import { formatTokenAmount, formatUsd } from "lib/numbers";
+import { formatTokenAmount } from "lib/numbers";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import { MarketOption, MarketState } from "./types";
@@ -156,7 +157,11 @@ export function PoolListItem(props: {
             )) ||
               null}
             <span className="text-accent">
-              {(showBalances && balanceUsd !== undefined && balanceUsd > 0 && <div>{formatUsd(balanceUsd)}</div>) ||
+              {(showBalances && balanceUsd !== undefined && balanceUsd > 0 && (
+                <div>
+                  <UsdValue usd={balanceUsd} />
+                </div>
+              )) ||
                 null}
             </span>
           </div>

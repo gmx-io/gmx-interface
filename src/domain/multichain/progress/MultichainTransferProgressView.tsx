@@ -23,12 +23,13 @@ import {
 } from "sdk/configs/markets";
 import { getToken } from "sdk/configs/tokens";
 import { getMarketIndexName, getMarketPoolName } from "sdk/utils/markets";
-import { formatTokenAmount, formatUsd } from "sdk/utils/numbers";
+import { formatTokenAmount } from "sdk/utils/numbers";
 
 import Button from "components/Button/Button";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { EXPAND_ANIMATION_VARIANTS } from "components/ExpandableRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
@@ -325,7 +326,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                 <SyntheticsInfoRow
                   label={<Trans>Gas</Trans>}
                   valueClassName="flex items-center"
-                  value={formatUsd(task.estimatedFeeUsd)}
+                  value={<UsdValue usd={task.estimatedFeeUsd} />}
                 />
                 {finishedState !== "completed" && (
                   <>
@@ -456,28 +457,28 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                       {finishedError instanceof MultichainTransferProgress.errors.BridgeOutFailed &&
                         (task.operation === Operation.Deposit ? (
                           <Trans>
-                            {gmOrGlvLabel} bought successfully, but bridge to {getChainName(task.sourceChainId)} failed.
-                            Your funds are safe in your GMX Account. Retry the bridge or go to the {indexName} pool to
-                            withdraw your {gmOrGlvLabel} tokens.
+                            {gmOrGlvLabel} bought successfully, but the bridge to {getChainName(task.sourceChainId)}{" "}
+                            failed. Your funds are safe in your GMX Account. Retry the bridge or go to the {indexName}{" "}
+                            pool to withdraw your {gmOrGlvLabel} tokens.
                           </Trans>
                         ) : (
                           <Trans>
-                            {gmOrGlvLabel} sold successfully, but bridge to {getChainName(task.sourceChainId)} failed.
-                            Your funds are safe in your GMX Account. Retry the bridge or open GMX Account to withdraw
-                            your tokens.
+                            {gmOrGlvLabel} sold successfully, but the bridge to {getChainName(task.sourceChainId)}{" "}
+                            failed. Your funds are safe in your GMX Account. Retry the bridge or open GMX Account to
+                            withdraw your tokens.
                           </Trans>
                         ))}
 
                       {finishedError instanceof MultichainTransferProgress.errors.ConversionFailed &&
                         (task.operation === Operation.Deposit ? (
                           <Trans>
-                            Buy {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to settlement
+                            Buy {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to the settlement
                             chain and go to the {indexName} pool to buy your {gmOrGlvLabel} tokens.
                           </Trans>
                         ) : (
                           <Trans>
-                            Sell {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to settlement
-                            chain and go to the {indexName} pool to sell your {gmOrGlvLabel} tokens.
+                            Sell {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to the
+                            settlement chain and go to the {indexName} pool to sell your {gmOrGlvLabel} tokens.
                           </Trans>
                         ))}
                     </ColorfulBanner>

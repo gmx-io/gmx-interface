@@ -32,10 +32,21 @@ import {
   updateMarginDeposit,
   withdraw1Usd,
 } from "./mocks";
-import { formatPositionMessage, getSettlementTooltipLines } from "./utils/position";
+import {
+  formatPositionMessage as formatPositionMessageParts,
+  getSettlementTooltipLines as getSettlementTooltipLinesParts,
+} from "./utils/position";
 import { anchorCloseRow, anchorOpenRow } from "./utils/settlementMocks";
 import { INEQUALITY_GT, INEQUALITY_LT, getErrorTooltipTitle } from "./utils/shared";
-import { formatSwapMessage } from "./utils/swap";
+import { formatSwapMessage as formatSwapMessageParts } from "./utils/swap";
+import { withPlainText } from "./utils/testUtils";
+
+const formatPositionMessage = (...args: Parameters<typeof formatPositionMessageParts>) =>
+  withPlainText(formatPositionMessageParts(...args));
+const formatSwapMessage = (...args: Parameters<typeof formatSwapMessageParts>) =>
+  withPlainText(formatSwapMessageParts(...args));
+const getSettlementTooltipLines = (...args: Parameters<typeof getSettlementTooltipLinesParts>) =>
+  withPlainText(getSettlementTooltipLinesParts(...args));
 
 i18n.load({ en: {} });
 i18n.activate("en");
@@ -48,7 +59,7 @@ describe("TradeHistoryRow helpers", () => {
   });
 
   it("maps user-facing trade history errors and preserves raw names in the fallback", () => {
-    expect(getErrorTooltipTitle("DisabledFeature", false)).toBe("This action is currently disabled");
+    expect(getErrorTooltipTitle("DisabledFeature", false)).toBe("This action is disabled");
     expect(getErrorTooltipTitle("InsufficientFundsToPayForCosts", false)).toBe(
       "Insufficient collateral to cover order costs"
     );
@@ -61,7 +72,7 @@ describe("TradeHistoryRow helpers", () => {
     expect(getErrorTooltipTitle("MaxPoolAmountForDepositExceeded", false)).toBe(
       "Max deposit capacity reached for this pool"
     );
-    expect(getErrorTooltipTitle("EmptyPosition", false)).toBe("Position not found. It may have been closed");
+    expect(getErrorTooltipTitle("EmptyPosition", false)).toBe("Position not found. It may have been closed.");
     expect(getErrorTooltipTitle("UnexpectedBorrowingFactor", false)).toBe(
       "Order failed due to a protocol validation error: UnexpectedBorrowingFactor"
     );
@@ -676,6 +687,20 @@ describe("TradeHistoryRow helpers", () => {
     `);
   });
 
+  it("formatPositionMessage tolerates actions without a trigger price", () => {
+    const withoutTriggerPrice = (action: PositionTradeAction): PositionTradeAction => ({
+      ...action,
+      triggerPrice: undefined,
+    });
+
+    expect(formatPositionMessage(withoutTriggerPrice(requestIncreasePosition), minCollateralUsd).price).toEqual(
+      formatPositionMessage(requestIncreasePosition, minCollateralUsd).price
+    );
+    expect(formatPositionMessage(withoutTriggerPrice(liquidated), minCollateralUsd).action).toBe(
+      formatPositionMessage(liquidated, minCollateralUsd).action
+    );
+  });
+
   it("formatSwapMessage", () => {
     // MARKET SWAPS
     expect(formatSwapMessage(requestSwap)).toMatchInlineSnapshot(`
@@ -1134,7 +1159,7 @@ describe("TradeHistoryRow helpers", () => {
         { key: "Open fee / discount", value: "-3.79\u00a0USDC" },
         { key: "Margin at close", value: "996.21\u00a0USDC" },
         { key: "RPNL", value: { text: "+$ 294.76", state: "success" } },
-        { key: "Net close fees / impact", value: { text: "+$ 35.58", state: "success" } },
+        { key: "Net close fees / price impact", value: { text: "+$ 35.58", state: "success" } },
         { key: "Wallet received", value: "~1,326.64\u00a0USDC" },
       ]);
     });
@@ -1148,7 +1173,7 @@ describe("TradeHistoryRow helpers", () => {
         "",
         { key: "Margin at close", value: "996.21\u00a0USDC" },
         { key: "RPNL", value: { text: "+$ 294.76", state: "success" } },
-        { key: "Net close fees / impact", value: { text: "+$ 35.58", state: "success" } },
+        { key: "Net close fees / price impact", value: { text: "+$ 35.58", state: "success" } },
         { key: "Wallet received", value: "~1,326.64\u00a0USDC" },
       ]);
     });
@@ -1181,7 +1206,7 @@ describe("TradeHistoryRow helpers", () => {
         { key: "Open fee / discount", value: "-3.79\u00a0USDC" },
         { key: "Margin at close", value: "996.21\u00a0USDC" },
         { key: "RPNL", value: { text: "+$ 294.76", state: "success" } },
-        { key: "Net close fees / impact", value: { text: "+$ 34.58", state: "success" } },
+        { key: "Net close fees / price impact", value: { text: "+$ 34.58", state: "success" } },
         { key: "Wallet received", value: "~1,325.64\u00a0USDC" },
       ]);
     });

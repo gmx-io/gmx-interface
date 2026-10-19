@@ -3,8 +3,7 @@ import { t, Trans } from "@lingui/macro";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-
-import { SettingLabelWithTooltip } from "./shared";
+import { LabelWithTooltip } from "components/Tooltip/LabelWithTooltip";
 
 export function RewardsActionSettings() {
   const settings = useSettings();
@@ -14,7 +13,7 @@ export function RewardsActionSettings() {
       isChecked={settings.rewardsOneClickActionEnabled}
       setIsChecked={settings.setRewardsOneClickActionEnabled}
     >
-      <SettingLabelWithTooltip
+      <LabelWithTooltip
         label={t`Preview one-click rewards action`}
         tooltip={
           <Trans>

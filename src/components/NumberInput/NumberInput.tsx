@@ -5,7 +5,7 @@ import { limitDecimals } from "lib/numbers";
 
 const inputRegex = /^(?:0|[1-9]\d*)(?:\.\d*)?$/;
 
-export function sanitizeNumberInputValue(rawValue: string): string | undefined {
+export function sanitizeNumberInputValue(rawValue: string, stripLeadingZeros = false): string | undefined {
   let newValue = rawValue.replace(/,/g, ".");
 
   if (newValue === "") {
@@ -14,6 +14,10 @@ export function sanitizeNumberInputValue(rawValue: string): string | undefined {
 
   if (newValue.startsWith(".")) {
     newValue = `0${newValue}`;
+  }
+
+  if (stripLeadingZeros) {
+    newValue = newValue.replace(/^0+(?=\d)/, "");
   }
 
   if (!inputRegex.test(newValue)) {
@@ -36,6 +40,7 @@ type Props = {
   isDisabled?: boolean;
   inputId?: string;
   maxDecimals?: number;
+  stripLeadingZeros?: boolean;
 };
 
 function NumberInput({
@@ -51,11 +56,12 @@ function NumberInput({
   inputId,
   isDisabled = false,
   maxDecimals,
+  stripLeadingZeros = false,
 }: Props) {
   function onChange(e: ChangeEvent<HTMLInputElement>) {
     if (!onValueChange) return;
 
-    let newValue = sanitizeNumberInputValue(e.target.value);
+    let newValue = sanitizeNumberInputValue(e.target.value, stripLeadingZeros);
 
     if (newValue === undefined) return;
 

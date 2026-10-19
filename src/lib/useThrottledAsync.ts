@@ -1,3 +1,4 @@
+import noop from "lodash/noop";
 import throttle from "lodash/throttle";
 import { useEffect, useRef, useState } from "react";
 
@@ -89,6 +90,7 @@ export function useThrottledAsync<T, D extends object>(
 
             return result;
           });
+          floatingPromise.catch(noop);
           setState((prev) => ({ ...prev, isLoading: true, promise: floatingPromise }));
         }
 

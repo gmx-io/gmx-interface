@@ -6,6 +6,7 @@ import { isAddress } from "viem";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import type { PnlSummaryBucketLabel } from "domain/synthetics/accountStats/usePnlSummaryData";
 import { useChainId } from "lib/chains";
+import { toCalendarDateByUtcDay } from "lib/dates";
 
 import AddressView from "components/AddressView/AddressView";
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
@@ -22,7 +23,7 @@ type DashboardDateRange = [Date | undefined, Date | undefined];
 
 function getBucketDateRange(bucketLabel: PnlSummaryBucketLabel): DashboardDateRange {
   const now = new Date();
-  const today = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  const today = toCalendarDateByUtcDay(now);
 
   const getPastDate = (days: number) => {
     const date = new Date(today);
@@ -64,9 +65,9 @@ export function AccountDashboard() {
 
   if (!isAddress(account!)) {
     return (
-      <AppPageLayout title={t`Trader Profile`} header={header}>
+      <AppPageLayout title={t`Trader profile`} header={header}>
         <div className="default-container page-layout">
-          <PageTitle title={t`Trader Profile`} className="p-12" />
+          <PageTitle title={t`Trader profile`} className="p-12" />
           <div className="text-center text-red-500">
             <Trans>Invalid Ethereum address</Trans>
           </div>
@@ -76,10 +77,10 @@ export function AccountDashboard() {
   }
 
   return (
-    <AppPageLayout title={t`Trader Profile`} header={header}>
+    <AppPageLayout title={t`Trader profile`} header={header}>
       <div className="default-container page-layout flex flex-col gap-8">
         <PageTitle
-          title={t`Trader Profile`}
+          title={t`Trader profile`}
           subtitle={
             <>
               <div className="text-body-medium mb-20 flex flex-wrap items-center gap-4 font-medium">

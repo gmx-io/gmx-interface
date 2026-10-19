@@ -5,10 +5,12 @@ import type { TooltipProps } from "recharts";
 // @ts-expect-error no declaration file for recharts internal module
 import { useViewBox, useYAxisWithFiniteDomainOrRandom } from "recharts/es6/context/chartLayoutContext";
 
-import { formatPercentage, formatUsd, formatUsdPrice } from "lib/numbers";
+import { formatPercentage, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { getFeeItem } from "sdk/utils/fees";
 
+import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
 import type { DataPoint } from "./DepthChart";
@@ -272,10 +274,10 @@ export const ChartTooltip = forwardRef<
       <p className="mb-8">{tooltip}</p>
       <StatsTooltipRow
         label={t`Execution price`}
-        value={formatUsdPrice(stats.executionPriceBigInt)}
+        value={<UsdPriceValue price={stats.executionPriceBigInt} />}
         showDollar={false}
       />
-      <StatsTooltipRow label={t`Total size`} value={formatUsd(size)} showDollar={false} />
+      <StatsTooltipRow label={t`Total size`} value={<UsdValue usd={size} />} showDollar={false} />
       <StatsTooltipRow
         label={t`Price impact`}
         textClassName={getPositiveOrNegativeClass(stats.priceImpactBigInt)}

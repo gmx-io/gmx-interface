@@ -7,13 +7,13 @@ import { usePerformanceSnapshots } from "domain/synthetics/markets/usePerformanc
 import { usePoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { useChainId } from "lib/chains";
-import { formatUsd } from "lib/numbers";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
 import { GlvList } from "components/GmList/GlvList";
 import { GmList } from "components/GmList/GmList";
+import { UsdValue } from "components/NumericValue/UsdValue";
 
 import PoolsTimeRangeFilter from "./PoolsTimeRangeFilter";
 import { usePoolsIsMobilePage } from "./usePoolsIsMobilePage";
@@ -105,7 +105,7 @@ function PoolsTvl() {
 
   return (
     <div className="flex flex-col gap-8">
-      <span className="text-h1 normal-nums">{formatUsd(tvl, { displayDecimals: 0 })}</span>
+      <UsdValue usd={tvl} displayDecimals={0} className="text-h1 normal-nums" />
       <span className="text-body-medium font-medium text-typography-secondary">
         <Trans>TVL in vaults and pools</Trans>
       </span>

@@ -7,10 +7,12 @@ import type { SignedSubaccountApproval } from "domain/synthetics/subaccount";
 import type { PendingTpSlOrderBatch } from "domain/tpsl/types";
 import type { OrderMetricId } from "lib/metrics/types";
 import type { StatusCode } from "sdk/utils/express";
+import type { ExecutionFeeEstimate } from "sdk/utils/orderTransactions";
 import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 import type { ExternalSwapQuote } from "sdk/utils/trade/types";
 
 import type { MultichainEventsState } from "./useMultichainEvents";
+import type { TransitRouteEventsState } from "./useTransitRouteEvents";
 
 type MultiTransactionStatus<TEventData> = {
   key: string;
@@ -85,13 +87,15 @@ export type PendingExpressTxnParams = {
   key: string;
   taskId: string | undefined;
   isGmxAccount: boolean;
+  gasPaymentTokenAddress?: string;
   subaccountApproval?: SignedSubaccountApproval;
   tokenPermits?: SignedTokenPermit[];
-  payTokenAddresses?: string[];
+  payAmounts?: { [tokenAddress: string]: bigint };
   pendingOrdersKeys?: string[];
   pendingPositionsKeys?: string[];
   estimatedExecutionFee?: bigint;
   estimatedExecutionGasLimit?: bigint;
+  estimatedOrders?: ExecutionFeeEstimate[];
   createdAt: number;
   metricId?: OrderMetricId;
   successMessage?: ReactNode;
@@ -168,35 +172,36 @@ export type EventTxnParams = {
   blockNumber: number;
 };
 
-export type SyntheticsEventsContextType = MultichainEventsState & {
-  orderStatuses: OrderStatuses;
-  depositStatuses: DepositStatuses;
-  withdrawalStatuses: WithdrawalStatuses;
-  shiftStatuses: ShiftStatuses;
-  approvalStatuses: ApprovalStatuses;
-  pendingOrdersUpdates: PendingOrdersUpdates;
-  pendingTpSlOrderBatches: PendingTpSlOrderBatch[];
-  setPendingTpSlOrderBatches: Dispatch<SetStateAction<PendingTpSlOrderBatch[]>>;
-  pendingPositionsUpdates: PendingPositionsUpdates;
-  positionIncreaseEvents: PositionIncreaseEvent[] | undefined;
-  positionDecreaseEvents: PositionDecreaseEvent[] | undefined;
-  pendingExpressTxns: PendingExpressTxns;
-  relayTaskStatuses: { [taskId: string]: RelayTaskStatus };
-  setPendingExpressTxn: (params: PendingExpressTxnParams) => void;
-  updatePendingExpressTxn: (params: Partial<PendingExpressTxnParams>) => void;
-  setPendingOrder: SetPendingOrder;
-  setPendingOrderUpdate: SetPendingOrderUpdate;
-  setPendingFundingFeeSettlement: SetPendingFundingFeeSettlement;
-  setPendingPosition: SetPendingPosition;
-  setPendingDeposit: SetPendingDeposit;
-  setPendingWithdrawal: SetPendingWithdrawal;
-  setPendingShift: SetPendingShift;
-  setOrderStatusViewed: (key: string) => void;
-  setDepositStatusViewed: (key: string) => void;
-  setWithdrawalStatusViewed: (key: string) => void;
-  setShiftStatusViewed: (key: string) => void;
-  setMultichainTransferProgress: (progress: MultichainTransferProgress<string>) => void;
-};
+export type SyntheticsEventsContextType = MultichainEventsState &
+  TransitRouteEventsState & {
+    orderStatuses: OrderStatuses;
+    depositStatuses: DepositStatuses;
+    withdrawalStatuses: WithdrawalStatuses;
+    shiftStatuses: ShiftStatuses;
+    approvalStatuses: ApprovalStatuses;
+    pendingOrdersUpdates: PendingOrdersUpdates;
+    pendingTpSlOrderBatches: PendingTpSlOrderBatch[];
+    setPendingTpSlOrderBatches: Dispatch<SetStateAction<PendingTpSlOrderBatch[]>>;
+    pendingPositionsUpdates: PendingPositionsUpdates;
+    positionIncreaseEvents: PositionIncreaseEvent[] | undefined;
+    positionDecreaseEvents: PositionDecreaseEvent[] | undefined;
+    pendingExpressTxns: PendingExpressTxns;
+    relayTaskStatuses: { [taskId: string]: RelayTaskStatus };
+    setPendingExpressTxn: (params: PendingExpressTxnParams) => void;
+    updatePendingExpressTxn: (params: Partial<PendingExpressTxnParams>) => void;
+    setPendingOrder: SetPendingOrder;
+    setPendingOrderUpdate: SetPendingOrderUpdate;
+    setPendingFundingFeeSettlement: SetPendingFundingFeeSettlement;
+    setPendingPosition: SetPendingPosition;
+    setPendingDeposit: SetPendingDeposit;
+    setPendingWithdrawal: SetPendingWithdrawal;
+    setPendingShift: SetPendingShift;
+    setOrderStatusViewed: (key: string) => void;
+    setDepositStatusViewed: (key: string) => void;
+    setWithdrawalStatusViewed: (key: string) => void;
+    setShiftStatusViewed: (key: string) => void;
+    setMultichainTransferProgress: (progress: MultichainTransferProgress<string>) => void;
+  };
 
 export type SetPendingOrder = (data: PendingOrderData | PendingOrderData[]) => void;
 export type SetPendingOrderUpdate = (data: PendingOrderData, remove?: "remove") => void;

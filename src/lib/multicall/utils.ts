@@ -33,3 +33,19 @@ export function getCallId(contractAddress: string, abiId: AbiId, methodName: str
 export function getContractAbiKey(contractAddress: string, abiId: AbiId) {
   return `${contractAddress}-${abiId}`;
 }
+
+const CALLS_COUNT_BUCKETS: [maxCallsCount: number, bucket: string][] = [
+  [1, "1"],
+  [10, "2-10"],
+  [50, "11-50"],
+  [100, "51-100"],
+  [200, "101-200"],
+  [500, "201-500"],
+  [1000, "501-1000"],
+  [2000, "1001-2000"],
+  [5000, "2001-5000"],
+];
+
+export function getCallsCountBucket(callsCount: number): string {
+  return CALLS_COUNT_BUCKETS.find(([maxCallsCount]) => callsCount <= maxCallsCount)?.[1] ?? ">5000";
+}

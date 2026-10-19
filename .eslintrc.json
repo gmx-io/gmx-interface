@@ -82,6 +82,7 @@
     "react/display-name": "off",
     "local-rules/no-bigint-negation": "off",
     "local-rules/no-logical-bigint": "off",
+    "local-rules/solana-import-boundaries": "error",
 
     "es-x/no-bigint": "off",
     "es-x/no-optional-catch-binding": "off",
@@ -158,6 +159,12 @@
       },
       "parserOptions": {
         "project": ["./tsconfig.json"]
+      }
+    },
+    {
+      "files": ["./src/lib/solana/**", "./src/domain/gmsol/**"],
+      "rules": {
+        "local-rules/solana-import-boundaries": "off"
       }
     },
     {
