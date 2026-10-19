@@ -14,7 +14,6 @@ import {
   initShiftGmMetricData,
   makeTxnErrorMetricsHandler,
   makeTxnSentMetricsHandler,
-  sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
 import useWallet from "lib/wallets/useWallet";
@@ -60,8 +59,6 @@ export function useShiftTransactions({
         executionFee,
       });
 
-      sendOrderSubmittedMetric(metricData.metricId);
-
       if (
         !signer ||
         !account ||
@@ -78,7 +75,6 @@ export function useShiftTransactions({
       }
 
       return createShiftTxn(chainId, signer, {
-        metricId: metricData.metricId,
         account,
         fromMarketTokenAddress: fromMarketToken.address,
         fromMarketTokenAmount: fromMarketTokenAmount,
