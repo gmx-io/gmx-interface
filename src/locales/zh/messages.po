@@ -5174,6 +5174,10 @@ msgstr "已实现兑换影响"
 msgid "It depends on the volume you route and which revenue streams you turn on. Use the calculator above for a rough estimate, or apply to talk specifics with the team."
 msgstr "这取决于您路由的交易量以及启用的收入来源。请使用上方计算器进行粗略估算，或申请后与团队详谈。"
 
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
+msgid "Withdrawal to {sourceChainName} failed"
+msgstr "提取到 {sourceChainName} 失败"
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter recipient address"
 msgstr "输入接收方地址"

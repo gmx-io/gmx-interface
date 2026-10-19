@@ -5174,6 +5174,10 @@ msgstr "Impact d'échange réalisé"
 msgid "It depends on the volume you route and which revenue streams you turn on. Use the calculator above for a rough estimate, or apply to talk specifics with the team."
 msgstr "Cela dépend du volume que vous routez et des sources de revenus activées. Utilisez le calculateur ci-dessus pour une estimation approximative, ou postulez pour en discuter avec l'équipe."
 
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
+msgid "Withdrawal to {sourceChainName} failed"
+msgstr "Le retrait vers {sourceChainName} a échoué"
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter recipient address"
 msgstr "Saisissez l'adresse du destinataire"

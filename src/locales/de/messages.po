@@ -5174,6 +5174,10 @@ msgstr "Realisierter Tauschpreiseinfluss"
 msgid "It depends on the volume you route and which revenue streams you turn on. Use the calculator above for a rough estimate, or apply to talk specifics with the team."
 msgstr "Das hängt vom gerouteten Volumen und den aktivierten Einnahmequellen ab. Nutzen Sie den Rechner oben für eine grobe Schätzung oder bewerben Sie sich, um Details mit dem Team zu besprechen."
 
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
+msgid "Withdrawal to {sourceChainName} failed"
+msgstr "Abhebung nach {sourceChainName} fehlgeschlagen"
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter recipient address"
 msgstr "Empfängeradresse eingeben"
