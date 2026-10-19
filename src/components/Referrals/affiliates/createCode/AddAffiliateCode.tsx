@@ -180,7 +180,7 @@ function AffiliateCodeFormMultichain({
             <Trans>Referral code created</Trans>
             <br />
             <br />
-            <Trans>May take a few minutes to reflect. Check back later</Trans>
+            <Trans>May take a few minutes to appear. Check back later</Trans>
           </>
         );
       } else {

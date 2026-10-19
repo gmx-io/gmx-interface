@@ -30,7 +30,7 @@ export type ClaimFundingFeesHistoryRowProps = {
 
 export const claimFundingFeeEventTitles: Record<ClaimFundingFeeAction["eventName"], MessageDescriptor> = {
   [ClaimType.SettleFundingFeeCancelled]: msg`Failed settlement of funding fees`,
-  [ClaimType.SettleFundingFeeCreated]: msg`Request settlement of funding fees`,
+  [ClaimType.SettleFundingFeeCreated]: msg`Requested settlement of funding fees`,
   [ClaimType.SettleFundingFeeExecuted]: msg`Settled funding fees`,
 };
 

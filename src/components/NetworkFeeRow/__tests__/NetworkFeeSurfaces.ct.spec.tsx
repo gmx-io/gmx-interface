@@ -12,14 +12,14 @@ type PageLike = {
   getByText: (text: string | RegExp, options?: { exact?: boolean }) => Locator;
 };
 
-const WALLET_CLASSIC_EXPLANATION = "Wallet transactions pay gas in ETH from your Wallet.";
+const WALLET_CLASSIC_EXPLANATION = "Wallet transactions pay gas in ETH from your Wallet";
 const WALLET_EXPRESS_EXPLANATION = "Express fees are paid in your Wallet gas payment token. Change it in Settings.";
 const GMX_ACCOUNT_EXPLANATION =
   "This action is paid from your GMX Account, so its fee is paid in your GMX Account gas payment token. Change it in Settings.";
 const SETTLE_GMX_ACCOUNT_SWITCH_EXPLANATION =
-  "Paid from your GMX Account because your Wallet does not have enough USDC for the fee.";
+  "Paid from your GMX Account because your Wallet does not have enough USDC for the fee";
 const SETTLE_CLASSIC_FALLBACK_EXPLANATION =
-  "Paid in ETH from your Wallet because your Wallet does not have enough USDC for Express.";
+  "Paid in ETH from your Wallet because your Wallet does not have enough USDC for Express";
 const GMX_ACCOUNT_ONLY_BALANCES: BalanceShape = { wallet: "zero", gmxAccount: "huge" };
 const WALLET_ETH_ONLY_BALANCES: BalanceShape = { wallet: "nativeOnly", gmxAccount: "zero" };
 

@@ -1,8 +1,14 @@
+import { zeroAddress } from "viem";
 import { describe, expect, it } from "vitest";
 
+import { ARBITRUM, AVALANCHE } from "sdk/configs/chains";
+import { MARKETS } from "sdk/configs/markets";
+import { getTokenBySymbol, getTokensMap } from "sdk/configs/tokens";
+import { MarketInfo, RawMarketInfo, getMarketPoolName, hydrateMarketInfo } from "sdk/utils/markets";
+import { TokensData } from "sdk/utils/tokens/types";
 import { TradeType } from "sdk/utils/trade/types";
 
-import { getCleanedTradeSearch, getTradeLinkTradeType } from "./useTradeParamsProcessor";
+import { getCleanedTradeSearch, getTradeLinkMarket, getTradeLinkTradeType } from "./useTradeParamsProcessor";
 
 describe("getCleanedTradeSearch", () => {
   it("strips consumed trade link params and keeps the rest", () => {
@@ -50,5 +56,26 @@ describe("getTradeLinkTradeType", () => {
 
   it("stays undefined while the tradebox has no trade type yet", () => {
     expect(getTradeLinkTradeType(undefined, undefined)).toBeUndefined();
+  });
+});
+
+describe("getTradeLinkMarket", () => {
+  // Market configs keep the wrapped index token (WETH, WAVAX), while the link resolves ETH and AVAX to the native one.
+  // Swap-only markets (zero index token) are left out, as in the tradebox market list.
+  it.each([
+    { chainId: ARBITRUM, market: "ETH", pool: "WETH-WETH" },
+    { chainId: AVALANCHE, market: "AVAX", pool: "WAVAX-WAVAX" },
+    { chainId: ARBITRUM, market: "BTC", pool: "BTC-BTC" },
+  ] as const)("finds the pool for market=$market&pool=$pool PRO-4470", ({ chainId, market, pool }) => {
+    const tokensData = getTokensMap(chainId) as unknown as TokensData;
+    const markets = Object.values(MARKETS[chainId])
+      .filter((config) => config.indexTokenAddress !== zeroAddress)
+      .map((config) => hydrateMarketInfo({ chainId, rawMarketInfo: config as unknown as RawMarketInfo, tokensData }))
+      .filter((marketInfo): marketInfo is MarketInfo => marketInfo !== undefined);
+    const toTokenAddress = getTokenBySymbol(chainId, market, { version: "v2" }).address;
+
+    const marketInfo = getTradeLinkMarket({ markets, toTokenAddress, pool });
+
+    expect(marketInfo && getMarketPoolName(marketInfo)).toBe(pool);
   });
 });

@@ -3,6 +3,7 @@ import {
   selectIsPositionsLoading,
   selectPositionConstants,
   selectProDiscountFactor,
+  selectUiFeeFactor,
   selectUserReferralInfo,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
@@ -27,6 +28,7 @@ import {
   selectTradeboxSelectedPosition,
   selectTradeboxStage,
   selectTradeboxSwapAmounts,
+  selectTradeboxTwapIncreaseSequenceParams,
   selectTradeboxTwapNumberOfParts,
   selectTradeboxToToken,
   selectTradeboxToTokenAmount,
@@ -50,6 +52,12 @@ import {
   getIsMaxLeverageMarginReason,
   PositionMarginState,
 } from "sdk/utils/trade/increaseMarginCheck";
+import {
+  getTwapIncreaseAggregateAmounts,
+  getTwapIncreasePartAmounts,
+  getTwapIncreaseSequentialMarginState,
+  TwapIncreaseSequentialMarginState,
+} from "sdk/utils/trade/twapIncreaseMarginCheck";
 
 const selectTradeboxSwapTradeError = createSelector((q) => {
   const fromToken = q(selectTradeboxFromToken);
@@ -90,12 +98,48 @@ const selectTradeboxSwapTradeError = createSelector((q) => {
   });
 });
 
+export const selectTradeboxTwapIncreaseSequentialMarginState = createSelector(
+  (q): TwapIncreaseSequentialMarginState | undefined => {
+    const sequenceParams = q(selectTradeboxTwapIncreaseSequenceParams);
+
+    if (!sequenceParams || q(selectIsPositionsLoading)) {
+      return undefined;
+    }
+
+    const marketInfo = q(selectTradeboxMarketInfo);
+    const collateralToken = q(selectTradeboxCollateralToken);
+    const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
+    const { minCollateralUsd } = q(selectPositionConstants);
+
+    if (!marketInfo || !collateralToken || !increaseAmounts || minCollateralUsd === undefined) {
+      return undefined;
+    }
+
+    return getTwapIncreaseSequentialMarginState({
+      ...sequenceParams,
+      ...getTwapIncreasePartAmounts(getTwapIncreaseAggregateAmounts(increaseAmounts), sequenceParams.numberOfParts),
+      marketInfo,
+      collateralToken,
+      isLong: q(selectTradeboxTradeFlags).isLong,
+      existingPosition: q(selectTradeboxExistingPositionForPreview),
+      uiFeeFactor: q(selectUiFeeFactor),
+      minCollateralUsd,
+      userReferralInfo: q(selectUserReferralInfo),
+      proDiscountFactor: q(selectProDiscountFactor),
+    });
+  }
+);
+
 export const selectTradeboxIncreaseResultingPositionMarginState = createSelector(
   (q): PositionMarginState | undefined => {
     const { isIncrease, isLong, isTwap } = q(selectTradeboxTradeFlags);
 
-    if (!isIncrease || isTwap || q(selectIsPositionsLoading)) {
+    if (!isIncrease || q(selectIsPositionsLoading)) {
       return undefined;
+    }
+
+    if (isTwap) {
+      return q(selectTradeboxTwapIncreaseSequentialMarginState)?.marginState;
     }
 
     const marketInfo = q(selectTradeboxMarketInfo);
@@ -152,6 +196,16 @@ export const selectTradeboxIsIncreaseExecutableNow = createSelector((q) => {
   });
 });
 
+export const selectTradeboxIsResultingPositionCheckBlocking = createSelector((q) => {
+  if (q(selectTradeboxTradeFlags).isTwap) {
+    const sequenceState = q(selectTradeboxTwapIncreaseSequentialMarginState);
+
+    return sequenceState?.failingPartIndex !== undefined && sequenceState.isFailingPartEligibleNow;
+  }
+
+  return q(selectTradeboxIsIncreaseExecutableNow);
+});
+
 const selectTradeboxIncreaseTradeError = createSelector((q) => {
   const marketInfo = q(selectTradeboxMarketInfo);
   const toToken = q(selectTradeboxToToken);
@@ -173,7 +227,7 @@ const selectTradeboxIncreaseTradeError = createSelector((q) => {
   const chainId = q(selectChainId);
   const isExternalSwapLoading = q(selectExternalSwapIsLoading);
   const resultingPositionMarginState = q(selectTradeboxIncreaseResultingPositionMarginState);
-  const isResultingPositionCheckBlocking = q(selectTradeboxIsIncreaseExecutableNow);
+  const isResultingPositionCheckBlocking = q(selectTradeboxIsResultingPositionCheckBlocking);
 
   return getIncreaseError({
     marketInfo,
@@ -270,9 +324,7 @@ export const selectTradeboxIncreaseFreshPositionWarning = createSelector((q) => 
 });
 
 export const selectTradeboxIncreaseMaxLeverageAlert = createSelector((q): "error" | "warning" | undefined => {
-  const { isIncrease, isLimit } = q(selectTradeboxTradeFlags);
-
-  if (!isIncrease) {
+  if (!q(selectTradeboxTradeFlags).isIncrease) {
     return undefined;
   }
 
@@ -282,7 +334,7 @@ export const selectTradeboxIncreaseMaxLeverageAlert = createSelector((q): "error
     return undefined;
   }
 
-  if (!isLimit || q(selectTradeboxIsIncreaseExecutableNow)) {
+  if (q(selectTradeboxIsResultingPositionCheckBlocking)) {
     return q(selectTradeboxIncreaseTradeError).buttonTooltipName ===
       ValidationButtonTooltipName.resultingPositionMaxLeverage
       ? "error"
@@ -297,9 +349,9 @@ export const selectTradeboxIncreaseMaxLeverageAlert = createSelector((q): "error
 });
 
 export const selectTradeboxIncreaseLiquidationRiskWarning = createSelector((q) => {
-  const { isIncrease, isLimit, isLong } = q(selectTradeboxTradeFlags);
+  const { isIncrease, isLimit, isLong, isTwap } = q(selectTradeboxTradeFlags);
 
-  if (!isIncrease || !isLimit) {
+  if (!isIncrease || (!isLimit && !isTwap)) {
     return false;
   }
 

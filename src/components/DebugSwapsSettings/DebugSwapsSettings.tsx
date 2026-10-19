@@ -72,6 +72,7 @@ export function DebugSwapsSettings() {
               }}
               placeholder={SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS.toString()}
               maxDecimals={0}
+              stripLeadingZeros
             />
             <div className="absolute right-11 top-1/2 -translate-y-1/2 text-right text-typography-secondary">
               {t`bps`}

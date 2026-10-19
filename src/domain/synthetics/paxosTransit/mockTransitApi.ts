@@ -1,11 +1,17 @@
 import { isAddressEqual } from "viem";
 
-import type { TransitOrder, TransitOrderStatus, TransitQuoteParams } from "sdk/utils/paxos/types";
+import type {
+  TransitOrder,
+  TransitOrderExecution,
+  TransitOrderStatus,
+  TransitQuoteParams,
+} from "sdk/utils/paxos/types";
 
 import type { TransitApi } from "./types";
 
 const MOCK_STATION_ADDRESS = "0x000000000000000000000000000000000000dEaD";
 const PENDING_MS = 3_000;
+const PARTIAL_FILL_MS = 4_000;
 const PROCESSING_MS = 9_000;
 
 export const MOCK_CONVERSION_MS = PROCESSING_MS;
@@ -49,16 +55,53 @@ function getMockStatus(submittedAt: number): TransitOrderStatus {
   return "PROCESSED";
 }
 
+function getMockExecutions(p: {
+  id: string;
+  params: TransitQuoteParams;
+  submittedAt: number;
+  amountDue: bigint;
+}): TransitOrderExecution[] {
+  const elapsed = Date.now() - p.submittedAt;
+  const firstPart = (p.amountDue * 40n) / 100n;
+  const execution = { txHash: "0x", chainId: p.params.destinationChainId };
+  const executions: TransitOrderExecution[] = [];
+
+  if (elapsed >= PARTIAL_FILL_MS) {
+    executions.push({
+      ...execution,
+      id: `${p.id}-1`,
+      amount: firstPart,
+      remaining: p.amountDue - firstPart,
+      timestamp: Math.floor((p.submittedAt + PARTIAL_FILL_MS) / 1000),
+    });
+  }
+
+  if (elapsed >= PROCESSING_MS) {
+    executions.push({
+      ...execution,
+      id: `${p.id}-2`,
+      amount: p.amountDue - firstPart,
+      remaining: 0n,
+      timestamp: Math.floor((p.submittedAt + PROCESSING_MS) / 1000),
+    });
+  }
+
+  return executions;
+}
+
 function toTransitOrder({ params, id, submittedAt }: MockOrder): TransitOrder {
   const status = getMockStatus(submittedAt);
   const createdAt = new Date(submittedAt).toISOString();
+  const amountDue = params.offerAmount - getMockFee(params);
+  const orderExecuteds = getMockExecutions({ id, params, submittedAt, amountDue });
+  const deliveredAmount = orderExecuteds.reduce((sum, execution) => sum + execution.amount, 0n);
 
   return {
     id,
     offerAsset: params.offerAsset,
     wantAsset: params.wantAsset,
-    amountDue: params.offerAmount - getMockFee(params),
-    remainingAmountDue: status === "PROCESSED" ? 0n : params.offerAmount,
+    amountDue,
+    remainingAmountDue: amountDue - deliveredAmount,
     offerAmount: params.offerAmount,
     receiver: params.userAddress,
     distributorCode: "0x",
@@ -70,7 +113,7 @@ function toTransitOrder({ params, id, submittedAt }: MockOrder): TransitOrder {
     createdAt,
     updatedAt: createdAt,
     tokenMetadata: {},
-    orderExecuteds: [],
+    orderExecuteds,
   };
 }
 

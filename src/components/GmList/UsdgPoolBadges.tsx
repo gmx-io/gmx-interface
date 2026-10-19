@@ -44,7 +44,7 @@ export function WhitelistOnlyBadge({
       className={cx("flex", className)}
       content={
         isGlv ? (
-          <Trans>Deposits into this vault are open to whitelisted addresses.</Trans>
+          <Trans>Only whitelisted addresses can deposit into this vault</Trans>
         ) : isSpotOnly ? (
           <Trans>Only GMX adds liquidity to this pool. It serves USDC and USDG swaps.</Trans>
         ) : (

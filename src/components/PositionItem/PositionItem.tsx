@@ -425,8 +425,8 @@ export function PositionItem(p: Props) {
           <div>
             {(liqPriceWarning || estimatedLiquidationHours) && <br />}
             <Trans>
-              This position is currently above liquidation risk, but it may become close to liquidation when the market
-              switches to off-hours risk parameters. Add margin or reduce leverage to increase your buffer.
+              This position is above liquidation risk, but it may become close to liquidation when the market switches
+              to off-hours risk parameters. Add margin or reduce leverage to increase your buffer.
             </Trans>
             <br />
             <br />

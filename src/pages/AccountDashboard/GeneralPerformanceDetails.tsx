@@ -213,7 +213,7 @@ function MetricWithRank({ rank, children }: { rank: number | undefined; children
         <TooltipWithPortal
           variant="none"
           shouldStopPropagation
-          content={t`Rank among accounts for this metric and period.`}
+          content={t`Rank among accounts for this metric and period`}
           handle={
             <span className="cursor-help rounded-full border-1/2 border-stroke-primary px-6 py-1 text-12 font-medium text-typography-secondary numbers">
               #{rank}

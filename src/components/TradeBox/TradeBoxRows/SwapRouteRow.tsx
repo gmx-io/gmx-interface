@@ -54,7 +54,7 @@ export function SwapRouteRow() {
         <Tooltip
           position="bottom-end"
           handle={value}
-          renderContent={() => <Trans>External routes are only used for market swaps.</Trans>}
+          renderContent={() => <Trans>External routes are only used for Market Swaps</Trans>}
         />
       ) : isExternalRoutePausedByFailure ? (
         <Tooltip

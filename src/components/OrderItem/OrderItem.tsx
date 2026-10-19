@@ -33,6 +33,7 @@ import {
 } from "domain/synthetics/orders";
 import { isMarginDepositOrder } from "domain/synthetics/orders/marginDeposit";
 import { useDisabledCancelMarketOrderMessage } from "domain/synthetics/orders/useDisabledCancelMarketOrderMessage";
+import { FROZEN_ORDER_ERROR_KEY } from "domain/synthetics/orders/utils";
 import { PositionsInfoData, getNameByOrderType, getPositionKey } from "domain/synthetics/positions";
 import { convertToTokenAmount, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
@@ -1009,7 +1010,7 @@ function OrderItemTypeLabel({ order, className }: { order: OrderInfo; className?
     return <>{handle}</>;
   }
 
-  return (
+  const typeLabelWithErrors = (
     <TooltipWithPortal
       variant="none"
       handle={
@@ -1041,5 +1042,24 @@ function OrderItemTypeLabel({ order, className }: { order: OrderInfo; className?
         ) : null
       }
     />
+  );
+
+  const frozenError = errors.find((error) => error.key === FROZEN_ORDER_ERROR_KEY);
+
+  if (!frozenError) {
+    return typeLabelWithErrors;
+  }
+
+  return (
+    <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+      {typeLabelWithErrors}
+      <TooltipWithPortal
+        as="span"
+        variant="none"
+        className="min-w-0 cursor-help truncate rounded-4 bg-yellow-300/20 px-4 py-2 text-12 font-medium text-yellow-300"
+        handle={<Trans>Frozen</Trans>}
+        content={frozenError.msg}
+      />
+    </div>
   );
 }

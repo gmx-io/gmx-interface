@@ -34,6 +34,7 @@ export const emptySyntheticsEventsState: SyntheticsEventsContextType = {
   transitRouteProgress: undefined,
   paxosTransitOrder: undefined,
   isPaxosTransitOrderStatusUnknown: false,
+  isPaxosTransitOrderLookupExpired: false,
   startTransitRouteProgress: noop,
   attachTransitRouteConversion: noop,
   attachTransitRouteDeposit: noop,

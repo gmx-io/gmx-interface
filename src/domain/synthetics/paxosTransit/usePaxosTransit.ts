@@ -1,24 +1,20 @@
 import { useCallback, useState } from "react";
 import useSWR from "swr";
-import { decodeFunctionData, erc20Abi, type Hex, maxUint256 } from "viem";
 
 import { getPaxosTransitConfig } from "config/paxosTransit";
 import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { useStableRequestAmountIn } from "domain/synthetics/externalSwaps/useExternalSwapOutputRequest";
 import { convertToTokenAmount, convertToUsd, getMidPrice, type TokenData } from "domain/synthetics/tokens";
-import { sendTokenApprovalMetric } from "domain/tokens/tokenApprovalMetric";
 import { useDebounce } from "lib/debounce/useDebounce";
-import { helperToast } from "lib/helperToast";
-import { getTxnErrorOutcome } from "lib/metrics/txnErrorOutcome";
-import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
 import { retryAtRefreshCadence } from "lib/useSWRWithFreshness";
 import useWallet from "lib/wallets/useWallet";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { HttpError } from "sdk/utils/http/http";
 import type { TransitOrder, TransitQuoteParams } from "sdk/utils/paxos/types";
 
-import { MOCK_CONVERSION_MS, mockTransitApi } from "./mockTransitApi";
-import { findPendingTransitOrder, getSubmittedTransitOrderId } from "./transitOrders";
+import { mockTransitApi } from "./mockTransitApi";
+import { submitTransitOrder } from "./submitTransitOrder";
+import { findPendingTransitOrder, TRANSIT_RECENT_ORDERS_PAGE_SIZE } from "./transitOrders";
 import type { PaxosTransitConversion } from "./transitRouteProgress";
 import type { TransitApi } from "./types";
 import { useTransitMinOrderSizes } from "./useTransitMinOrderSizes";
@@ -28,7 +24,6 @@ type PaxosTransitSubmitStep = "idle" | "approving" | "submitting";
 
 const FEE_TIER_REFRESH_INTERVAL = 60_000;
 const QUOTE_REFRESH_INTERVAL = 30_000;
-const RECENT_ORDERS_PAGE_SIZE = 10;
 
 export function usePaxosTransit({
   chainId,
@@ -160,7 +155,10 @@ export function usePaxosTransit({
   useSWR(
     isActive ? ["paxosTransitPendingOrder", chainId, account, tokenInAddress] : null,
     async function resumePendingOrder() {
-      const { orders } = await api!.fetchTransitOrders({ userAddress: account!, pageSize: RECENT_ORDERS_PAGE_SIZE });
+      const { orders } = await api!.fetchTransitOrders({
+        userAddress: account!,
+        pageSize: TRANSIT_RECENT_ORDERS_PAGE_SIZE,
+      });
       const pendingOrder = findPendingTransitOrder(orders, {
         offerAsset: tokenInAddress!,
         wantAsset: tokenOutAddress!,
@@ -184,94 +182,20 @@ export function usePaxosTransit({
   const submitTransit = useCallback(async (): Promise<PaxosTransitConversion | undefined> => {
     if (!isActive || !signer || amount <= 0n) return undefined;
 
-    const params = getQuoteParams(amount);
-
     try {
-      setStep("approving");
-      const approvalQuote = await api!.fetchTransitQuote(params);
-      const authorization = await api!.fetchTransitAuthorization({
-        userAddress: account!,
-        tokenAddress: params.offerAsset,
-        spenderAddress: approvalQuote.transaction.to,
-        amount,
+      const conversion = await submitTransitOrder({
+        api: api!,
         chainId,
+        signer,
+        account: account!,
+        params: getQuoteParams(amount),
+        isMocked,
+        onStep: setStep,
       });
-
-      if (!authorization.alreadyApproved) {
-        const approveMethod = authorization.methods.find((method) => method.type === "erc20_approve");
-
-        if (approveMethod?.type !== "erc20_approve") {
-          throw new Error("Paxos Transit returned no approval transaction");
-        }
-
-        const approveCall = decodeApproveCall(approveMethod.transaction.encoded);
-        const approvalMetric = {
-          metric: { flow: "paxosTransit" },
-          method: "transaction",
-          chainId,
-          tokenAddress: params.offerAsset,
-          spender: approveCall?.spender ?? approvalQuote.transaction.to,
-          isUnlimited: approveCall ? approveCall.amount === maxUint256 : undefined,
-        } as const;
-
-        const approveTxn = await sendWalletTransaction({
-          chainId,
-          signer,
-          to: params.offerAsset,
-          callData: approveMethod.transaction.encoded,
-        }).catch((error) => {
-          sendTokenApprovalMetric({ ...approvalMetric, outcome: getTxnErrorOutcome(error), error });
-          throw error;
-        });
-        sendTokenApprovalMetric({ ...approvalMetric, outcome: "accepted" });
-        await approveTxn.wait();
-      }
-
-      setStep("submitting");
-      // the fee tier and deadline are fixed at quote time, so quote again right before sending
-      const submitQuote = await api!.fetchTransitQuote(params);
-
-      if (!submitQuote.transaction.data) {
-        throw new Error("Paxos Transit quote has no calldata");
-      }
-
-      let submittedOrderId: string | undefined;
-      let submitTxnHash: string | undefined;
-
-      if (isMocked) {
-        submittedOrderId = mockTransitApi.submitOrder(params);
-        helperToast.info(`Mock conversion, no real transaction. Ready in ~${MOCK_CONVERSION_MS / 1000}s.`);
-      } else {
-        const submitTxn = await sendWalletTransaction({
-          chainId,
-          signer,
-          to: submitQuote.transaction.to,
-          callData: submitQuote.transaction.data,
-          value: submitQuote.transaction.value,
-        });
-
-        const receipt = await submitTxn.wait();
-
-        if (receipt.status !== "success" || !receipt.transactionHash) {
-          throw new Error("Paxos Transit order transaction failed");
-        }
-
-        submitTxnHash = receipt.transactionHash;
-
-        submittedOrderId = await getSubmittedTransitOrderId({
-          chainId,
-          txnHash: receipt.transactionHash,
-          stationAddress: submitQuote.transaction.to,
-        });
-      }
-
-      if (!submittedOrderId) {
-        throw new Error("Paxos Transit order transaction has no OrderSubmitted event");
-      }
 
       setStep("idle");
 
-      return { orderId: submittedOrderId, txnHash: submitTxnHash, offerAmount: amount, isMocked };
+      return conversion;
     } catch (error) {
       setStep("idle");
 
@@ -302,14 +226,4 @@ export function usePaxosTransit({
     step,
     submitTransit,
   };
-}
-
-function decodeApproveCall(callData: string) {
-  try {
-    const { functionName, args } = decodeFunctionData({ abi: erc20Abi, data: callData as Hex });
-
-    return functionName === "approve" ? { spender: args[0], amount: args[1] } : undefined;
-  } catch {
-    return undefined;
-  }
 }

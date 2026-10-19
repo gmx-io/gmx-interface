@@ -144,8 +144,8 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
                 </h2>
                 <p className="text-body-medium text-typography-secondary">
                   <Trans>
-                    You have activated the referral code {userReferralCodeString}. Every position you open or close will
-                    automatically apply your reduced rate — no extra steps needed.
+                    You have activated the referral code {userReferralCodeString}. Your reduced rate applies
+                    automatically to every position you open or close — no extra steps needed.
                   </Trans>
                 </p>
               </div>

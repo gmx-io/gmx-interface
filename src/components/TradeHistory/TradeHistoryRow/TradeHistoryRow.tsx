@@ -302,7 +302,8 @@ export function TradeHistoryRow({
   const shouldDisplayShareButton =
     isDecreaseOrderType(tradeAction.orderType) &&
     tradeAction.eventName === TradeActionType.OrderExecuted &&
-    account === tradeAction.account;
+    account === tradeAction.account &&
+    !tradeAction.twapParams;
 
   const isFullCloseSettlementCandidate = getFullCloseCandidate(tradeAction) !== undefined;
 

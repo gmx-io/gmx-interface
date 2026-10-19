@@ -48,7 +48,7 @@ export function GmTradeModal({
     >
       <div className="flex flex-col gap-16">
         <p className="mb-8 text-15 text-typography-secondary">
-          <Trans>GMX on Solana (known as GMTrade) is currently served from a separate domain.</Trans>
+          <Trans>GMX on Solana (known as GMTrade) is served from a separate domain</Trans>
         </p>
 
         <Button

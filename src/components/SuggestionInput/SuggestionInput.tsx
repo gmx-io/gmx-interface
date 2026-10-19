@@ -33,6 +33,7 @@ type Props = {
   suggestionWithSuffix?: boolean;
   suggestionsPlacement?: Placement;
   disabled?: boolean;
+  stripLeadingZeros?: boolean;
 };
 
 export default function SuggestionInput({
@@ -52,6 +53,7 @@ export default function SuggestionInput({
   suggestionWithSuffix,
   suggestionsPlacement = "bottom-end",
   disabled,
+  stripLeadingZeros,
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isPanelVisible, setIsPanelVisible] = useState(false);
@@ -147,6 +149,7 @@ export default function SuggestionInput({
           onValueChange={handleChange}
           onKeyDown={handleKeyDown}
           isDisabled={disabled}
+          stripLeadingZeros={stripLeadingZeros}
         />
         {suffix && (
           <div className="pr-7 text-typography-secondary">

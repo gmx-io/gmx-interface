@@ -2,11 +2,17 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import useSWR from "swr";
 
+import { getPaxosTransitConfig } from "config/paxosTransit";
 import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import type { GlvAndGmMarketsInfoData } from "domain/synthetics/markets/types";
 import { mockTransitApi } from "domain/synthetics/paxosTransit/mockTransitApi";
-import { getIsTransitOrderFinal } from "domain/synthetics/paxosTransit/transitOrders";
 import {
+  findSubmittedTransitOrder,
+  getIsTransitOrderFinal,
+  TRANSIT_RECENT_ORDERS_PAGE_SIZE,
+} from "domain/synthetics/paxosTransit/transitOrders";
+import {
+  getIsTransitOrderLookupExpired,
   getShouldStoreTransitRouteProgress,
   readStoredTransitRouteProgress,
   removeStoredTransitRouteProgress,
@@ -15,6 +21,7 @@ import {
   type PaxosTransitConversion,
   type TransitRouteProgress,
 } from "domain/synthetics/paxosTransit/transitRouteProgress";
+import { removeTransitConversionProposal } from "domain/synthetics/paxosTransit/transitWalletProposals";
 import { helperToast } from "lib/helperToast";
 import { getByKey } from "lib/objects";
 import type { ContractsChainId } from "sdk/configs/chains";
@@ -31,6 +38,7 @@ export type TransitRouteEventsState = {
   transitRouteProgress: TransitRouteProgress | undefined;
   paxosTransitOrder: TransitOrder | undefined;
   isPaxosTransitOrderStatusUnknown: boolean;
+  isPaxosTransitOrderLookupExpired: boolean;
   startTransitRouteProgress: (params: NewTransitRouteProgress) => void;
   attachTransitRouteConversion: (progressId: number, conversion: PaxosTransitConversion) => void;
   attachTransitRouteDeposit: (progressId: number, depositTxnHash: string) => void;
@@ -54,11 +62,45 @@ export function useTransitRouteEvents(
   const sdk = useGmxSdk(progressChainId);
   const api = conversion?.isMocked ? mockTransitApi : sdk;
 
+  const orderId = conversion?.orderId;
+
   const { data: paxosTransitOrder, error: paxosTransitOrderError } = useSWR(
-    conversion && api ? ["transitRouteProgressOrder", progressChainId, conversion.orderId] : null,
-    () => api!.fetchTransitOrder({ orderId: conversion!.orderId }),
-    { refreshInterval: (order) => (getIsTransitOrderFinal(order) ? 0 : ORDER_REFRESH_INTERVAL) }
+    orderId && api ? ["transitRouteProgressOrder", progressChainId, orderId] : null,
+    () => api!.fetchTransitOrder({ orderId: orderId! }),
+    { refreshInterval: getOrderRefreshInterval }
   );
+
+  const paxosTransitConfig = getPaxosTransitConfig(progressChainId);
+  const knownOrderIds = conversion?.knownOrderIds;
+  const isOrderLookupExpired = getIsTransitOrderLookupExpired(conversion, Date.now());
+  const isOrderLookupNeeded =
+    orderId === undefined && knownOrderIds !== undefined && !isOrderLookupExpired && paxosTransitConfig !== undefined;
+
+  const { data: orderLookup } = useSWR(
+    isOrderLookupNeeded && api && transitRouteProgress
+      ? ["transitRouteProgressOrderLookup", progressChainId, transitRouteProgress.account, transitRouteProgress.id]
+      : null,
+    async () => {
+      const [offerAsset, wantAsset] =
+        transitRouteProgress!.direction === "usdcToUsdg"
+          ? [paxosTransitConfig!.usdcAddress, paxosTransitConfig!.usdgAddress]
+          : [paxosTransitConfig!.usdgAddress, paxosTransitConfig!.usdcAddress];
+      const { orders } = await api!.fetchTransitOrders({
+        userAddress: transitRouteProgress!.account,
+        pageSize: TRANSIT_RECENT_ORDERS_PAGE_SIZE,
+      });
+      const order = findSubmittedTransitOrder(orders, {
+        offerAsset,
+        wantAsset,
+        offerAmount: conversion!.offerAmount,
+        knownOrderIds: knownOrderIds!,
+      });
+
+      return { order, checkedAt: Date.now() };
+    },
+    { refreshInterval: ORDER_REFRESH_INTERVAL }
+  );
+  const lookedUpOrderId = orderLookup?.order?.id;
 
   const orderStatus = paxosTransitOrder?.status;
   const glvOrMarketInfo = getByKey(glvAndGmMarketsData, transitRouteProgress?.glvOrMarketAddress);
@@ -76,6 +118,7 @@ export function useTransitRouteEvents(
       progress: transitRouteProgress,
       order: paxosTransitOrder,
       isWithdrawalCancelled,
+      isOrderLookupExpired,
     });
 
   const updateTransitRouteProgress = useCallback((progressId: number, patch: Partial<TransitRouteProgress>) => {
@@ -99,7 +142,11 @@ export function useTransitRouteEvents(
 
   useEffect(
     function showTransitRouteToast() {
-      if (!transitRouteProgress || !glvOrMarketInfo || transitRouteProgress.isDismissed) {
+      if (!transitRouteProgress || transitRouteProgress.isDismissed) {
+        return;
+      }
+
+      if (transitRouteProgress.glvOrMarketAddress !== undefined && !glvOrMarketInfo) {
         return;
       }
 
@@ -136,6 +183,22 @@ export function useTransitRouteEvents(
       );
     },
     [glvOrMarketInfo, orderStatus, transitRouteProgress, updateTransitRouteProgress]
+  );
+
+  useEffect(
+    function attachLookedUpTransitOrder() {
+      const currentConversion = transitRouteProgress?.conversion;
+
+      if (!transitRouteProgress || !currentConversion || currentConversion.orderId !== undefined || !lookedUpOrderId) {
+        return;
+      }
+
+      updateTransitRouteProgress(transitRouteProgress.id, {
+        conversion: { ...currentConversion, orderId: lookedUpOrderId },
+      });
+      removeTransitConversionProposal(transitRouteProgress);
+    },
+    [lookedUpOrderId, transitRouteProgress, updateTransitRouteProgress]
   );
 
   useEffect(
@@ -187,7 +250,8 @@ export function useTransitRouteEvents(
     () => ({
       transitRouteProgress,
       paxosTransitOrder,
-      isPaxosTransitOrderStatusUnknown: paxosTransitOrderError !== undefined,
+      isPaxosTransitOrderStatusUnknown: paxosTransitOrderError !== undefined || isOrderLookupExpired,
+      isPaxosTransitOrderLookupExpired: isOrderLookupExpired,
       startTransitRouteProgress,
       attachTransitRouteConversion,
       attachTransitRouteDeposit,
@@ -196,6 +260,7 @@ export function useTransitRouteEvents(
     [
       attachTransitRouteDeposit,
       attachTransitRouteConversion,
+      isOrderLookupExpired,
       paxosTransitOrder,
       paxosTransitOrderError,
       transitRouteProgress,
@@ -203,4 +268,8 @@ export function useTransitRouteEvents(
       startTransitRouteProgress,
     ]
   );
+}
+
+function getOrderRefreshInterval(order: TransitOrder | undefined) {
+  return getIsTransitOrderFinal(order) ? 0 : ORDER_REFRESH_INTERVAL;
 }

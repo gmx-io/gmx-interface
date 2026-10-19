@@ -249,7 +249,7 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
             {state.failedSwapTokenSymbols ? (
               <Trans>Swap route unavailable for: {state.failedSwapTokenSymbols}</Trans>
             ) : (
-              <Trans>Unable to fetch swap route. Please try again.</Trans>
+              <Trans>Unable to fetch swap route. Try again.</Trans>
             )}
           </AlertInfoCard>
         )}

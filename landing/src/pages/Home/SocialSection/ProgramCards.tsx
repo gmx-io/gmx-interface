@@ -38,7 +38,7 @@ export function ProgramCards() {
           <Trans>
             Built for those
             <br />
-            who do more.
+            who do more
           </Trans>
         </h2>
         <div className="mt-40 grid w-full grid-cols-1 gap-24 lg:grid-cols-2">
@@ -60,7 +60,7 @@ export function ProgramCards() {
               <Trans>
                 Trade size.
                 <br />
-                Or refer those who do.
+                Or refer those who do
               </Trans>
             </h3>
             <p className="relative mt-4 text-16 leading-[20px] -tracking-[0.512px] text-slate-500">
@@ -91,7 +91,7 @@ export function ProgramCards() {
               <Trans>
                 Build on GMX. Get
                 <br />
-                paid on every trade.
+                paid on every trade
               </Trans>
             </h3>
             <p className="relative mt-4 text-16 leading-[20px] -tracking-[0.512px] text-slate-500">
@@ -100,7 +100,7 @@ export function ProgramCards() {
                 <br />
                 fee plus a cut of GMX's fees, every time someone trades
                 <br />
-                through you.
+                through you
               </Trans>
             </p>
             <CardButton href="/builders">

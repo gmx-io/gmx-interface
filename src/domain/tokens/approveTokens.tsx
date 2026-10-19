@@ -250,7 +250,7 @@ function getPermitFallbackToastContent(reason: PermitFallbackReason) {
       reasonText = t`Permit approvals are disabled for this token.`;
       break;
     case "permitsDisabled":
-      reasonText = t`Permit approvals are currently unavailable.`;
+      reasonText = t`Permit approvals are unavailable.`;
       break;
     case "invalidSignature":
       reasonText = t`The permit signature could not be validated.`;
@@ -265,7 +265,7 @@ function getPermitFallbackToastContent(reason: PermitFallbackReason) {
       {reasonText}
       <br />
       <br />
-      <Trans>A standard approval transaction is required to continue.</Trans>
+      <Trans>A standard approval transaction is required to continue</Trans>
     </div>
   );
 }

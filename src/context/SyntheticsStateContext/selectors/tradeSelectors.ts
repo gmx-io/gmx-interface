@@ -1,4 +1,3 @@
-import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
 import { DecreasePositionSwapType, OrderType, SwapPricingType } from "domain/synthetics/orders";
@@ -15,7 +14,7 @@ import {
 } from "domain/synthetics/trade";
 import { getIsPositionLiquidatedBeforeTrigger } from "domain/synthetics/trade/utils/warnings";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { MARKETS } from "sdk/configs/markets";
+import { getMarketsByChainId } from "sdk/configs/markets";
 import { buildMarketsAdjacencyGraph } from "sdk/utils/swap/buildMarketsAdjacencyGraph";
 import { createFindSwapPath, getWrappedAddress } from "sdk/utils/swap/swapPath";
 import {
@@ -89,7 +88,7 @@ export const selectMarketAdjacencyGraph = isDevelopment()
       const disabledMarketAddresses = debugSwapMarketsConfig.disabledSwapMarkets;
 
       const strippedMarkets = Object.fromEntries(
-        Object.entries(MARKETS[chainId as ContractsChainId]).filter(
+        Object.entries(getMarketsByChainId(chainId)).filter(
           ([marketAddress]) => !disabledMarketAddresses.includes(marketAddress)
         )
       );

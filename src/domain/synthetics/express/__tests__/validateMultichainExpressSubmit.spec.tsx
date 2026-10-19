@@ -191,7 +191,7 @@ describe("reportMultichainExpressSubmitError", () => {
     expect(mocks.toastError).toHaveBeenCalledTimes(1);
     const [content, options] = mocks.toastError.mock.calls[0];
 
-    expect(content).toBe("Express is unavailable right now, so this GMX Account action can't be sent.");
+    expect(content).toBe("Express is unavailable right now, so this GMX Account action can't be sent");
     expect(options.autoClose).not.toBe(false);
     expect(options.tradingErrorInfo.errorData.hasExpressParams).toBe(false);
     expect(mocks.metric).toHaveBeenCalledWith("position:test");

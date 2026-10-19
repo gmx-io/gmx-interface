@@ -21,7 +21,7 @@ export function UsdgLaunchBoostCard({ launchBoost, className }: { launchBoost: U
     <ColorfulBanner className={className} color="blue" icon={SparkleIcon}>
       <Trans>
         Launch boost · {boostValue} APR · Paid into {tokenSymbol} price every 4h, nothing to claim.{" "}
-        <ExternalLink href={USDG_LAUNCH_BOOST_DOCS_URL}>Read more</ExternalLink>
+        <ExternalLink href={USDG_LAUNCH_BOOST_DOCS_URL}>Read more</ExternalLink>.
       </Trans>
     </ColorfulBanner>
   );

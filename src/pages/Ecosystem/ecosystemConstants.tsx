@@ -180,7 +180,7 @@ export const integrations: EcosystemGmxPage[] = [
     chainIds: [ARBITRUM],
   },
   {
-    title: msg`Yield Yak Optimizer`,
+    title: msg`Yield Yak optimizer`,
     link: "https://yieldyak.com/",
     linkLabel: "yieldyak.com",
     about: msg`Yield optimizer on Avalanche`,

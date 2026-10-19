@@ -53,10 +53,10 @@ describe("getNetworkFeeSourceExplanation", () => {
   it("names the native token for wallet transactions per chain", () => {
     expect(
       getNetworkFeeSourceExplanation({ source: WALLET_NETWORK_FEE_SOURCE, isExpress: false, chainId: ARBITRUM })
-    ).toBe("Wallet transactions pay gas in ETH from your Wallet.");
+    ).toBe("Wallet transactions pay gas in ETH from your Wallet");
     expect(
       getNetworkFeeSourceExplanation({ source: WALLET_NETWORK_FEE_SOURCE, isExpress: false, chainId: AVALANCHE })
-    ).toBe("Wallet transactions pay gas in AVAX from your Wallet.");
+    ).toBe("Wallet transactions pay gas in AVAX from your Wallet");
   });
 
   it("explains GMX Account fees regardless of the chain", () => {
@@ -74,6 +74,6 @@ describe("getNetworkFeeSourceExplanation", () => {
         isExpress: false,
         chainId: ARBITRUM,
       })
-    ).toBe("Bridge transactions pay gas in ETH from your Base wallet.");
+    ).toBe("Bridge transactions pay gas in ETH from your Base wallet");
   });
 });

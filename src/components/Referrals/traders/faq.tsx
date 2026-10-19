@@ -28,7 +28,7 @@ export const WIZARD_FAQS: FaqItem[] = [
     title: <Trans>How do I know if a code is good?</Trans>,
     content: (
       <Trans>
-        All valid codes give you at least a 5% discount. Premium affiliates (Tier 2/3) offer 10% discount. You'll see
+        All valid codes give you at least a 5% discount. Premium affiliates (Tier 2/3) offer a 10% discount. You'll see
         the exact discount percentage after the code has been applied.
       </Trans>
     ),

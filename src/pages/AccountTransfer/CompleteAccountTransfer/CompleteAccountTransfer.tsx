@@ -117,7 +117,7 @@ export default function CompleteAccountTransfer() {
             </div>
           ) : (
             <div>
-              <Trans>Switch to account {receiver} to complete this transfer</Trans>
+              <Trans>Switch to account {receiver} to complete this transfer.</Trans>
               <br />
               <br />
               <Trans>

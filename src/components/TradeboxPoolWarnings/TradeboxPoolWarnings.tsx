@@ -349,7 +349,8 @@ const useTradeboxPoolWarnings = () => {
     warning.push(
       <AlertInfoCard key="showHasExistingOrderWarning" type="warning" hideClose>
         <Trans>
-          Existing limit order in {getMarketPoolName(marketWithOrder)} pool but lacks liquidity for this order
+          Existing limit order is in {getMarketPoolName(marketWithOrder)} pool, but that pool lacks liquidity for this
+          order
         </Trans>
       </AlertInfoCard>
     );

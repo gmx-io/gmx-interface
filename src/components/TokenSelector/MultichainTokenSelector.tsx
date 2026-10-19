@@ -191,7 +191,7 @@ export function MultichainTokenSelector({
     ) : (
       <Button variant="secondary" size="medium" className="w-full !text-typography-primary" onClick={handleFooterClick}>
         <ArrowDownIcon className="size-20 text-blue-300" />
-        {activeFilter === "gmxAccount" ? <Trans>Deposit to GMX Account</Trans> : <Trans>Receive to Wallet</Trans>}
+        {activeFilter === "gmxAccount" ? <Trans>Deposit to GMX Account</Trans> : <Trans>Receive to wallet</Trans>}
       </Button>
     );
 

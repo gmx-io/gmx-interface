@@ -7,18 +7,22 @@ import type { TransitOrder } from "sdk/utils/paxos/types";
 export type TransitRouteDirection = "usdcToUsdg" | "usdgToUsdc";
 
 export type PaxosTransitConversion = {
-  orderId: string;
+  orderId: string | undefined;
   txnHash: string | undefined;
   offerAmount: bigint;
   isMocked: boolean;
+  submittedAt?: number;
+  knownOrderIds?: string[];
 };
+
+const TRANSIT_ORDER_LOOKUP_TIMEOUT_MS = 20 * 60_000;
 
 export type TransitRouteProgress = {
   id: number;
   chainId: ContractsChainId;
   account: string;
   direction: TransitRouteDirection;
-  glvOrMarketAddress: string;
+  glvOrMarketAddress: string | undefined;
   withdrawalTxnHash: string | undefined;
   withdrawalExecutedTxnHash: string | undefined;
   conversion: PaxosTransitConversion | undefined;
@@ -45,18 +49,32 @@ export function getTransitRouteProgressForMarket(
   return progress;
 }
 
+export function getIsTransitOrderLookupExpired(conversion: PaxosTransitConversion | undefined, now: number): boolean {
+  return (
+    conversion !== undefined &&
+    conversion.orderId === undefined &&
+    conversion.submittedAt !== undefined &&
+    now - conversion.submittedAt > TRANSIT_ORDER_LOOKUP_TIMEOUT_MS
+  );
+}
+
 export function getShouldStoreTransitRouteProgress(p: {
   progress: TransitRouteProgress;
   order: TransitOrder | undefined;
   isWithdrawalCancelled: boolean;
+  isOrderLookupExpired: boolean;
 }): boolean {
-  const { progress, order, isWithdrawalCancelled } = p;
+  const { progress, order, isWithdrawalCancelled, isOrderLookupExpired } = p;
   const isUsdcToUsdg = progress.direction === "usdcToUsdg";
   const isConverted = order?.status === "PROCESSED";
   const isConversionRemoved = order?.status === "REMOVED";
   const isDepositSent = progress.depositTxnHash !== undefined;
   const isWithdrawalExecuted =
     progress.withdrawalTxnHash === undefined || progress.withdrawalExecutedTxnHash !== undefined;
+
+  if (isOrderLookupExpired) return false;
+
+  if (progress.glvOrMarketAddress === undefined) return !isConverted && !isConversionRemoved;
 
   if (progress.isDismissed || isConversionRemoved) return false;
 

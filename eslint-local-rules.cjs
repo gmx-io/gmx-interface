@@ -1,8 +1,79 @@
 const { ESLintUtils } = require("@typescript-eslint/experimental-utils");
+const path = require("node:path");
 
 const createRule = ESLintUtils.RuleCreator((name) => `https://example.com/rule/${name}`);
 
 module.exports = {
+  "solana-import-boundaries": {
+    meta: {
+      type: "problem",
+      docs: {
+        description: "Enforce package and module boundaries for Solana imports",
+      },
+      schema: [],
+      messages: {
+        restrictedImport:
+          "Import Solana packages only inside src/lib/solana or src/domain/gmsol. Dynamically import an internal Solana module instead.",
+        staticInternalImport:
+          "Load Solana modules with a dynamic import() outside src/lib/solana and src/domain/gmsol. Pure type imports and exports are allowed.",
+      },
+    },
+    create(context) {
+      const srcDir = path.resolve(__dirname, "src");
+      const solanaDirs = [path.join(srcDir, "lib/solana"), path.join(srcDir, "domain/gmsol")];
+
+      function isInternalSolanaModule(specifier) {
+        const target = specifier.startsWith(".")
+          ? path.resolve(path.dirname(context.getFilename()), specifier)
+          : /^(lib|domain)\//.test(specifier)
+            ? path.resolve(srcDir, specifier)
+            : undefined;
+
+        return (
+          target !== undefined && solanaDirs.some((dir) => target === dir || target.startsWith(`${dir}${path.sep}`))
+        );
+      }
+
+      function checkImport(node) {
+        const source = node.source;
+        if (!source) return;
+
+        const specifier =
+          source.type === "Literal"
+            ? source.value
+            : source.type === "TemplateLiteral" && source.expressions.length === 0
+              ? source.quasis[0].value.cooked
+              : undefined;
+        if (typeof specifier !== "string") return;
+
+        if (
+          /^@(solana|solana-program|gmsol-labs)\//.test(specifier) ||
+          specifier === "@privy-io/react-auth/solana" ||
+          specifier.startsWith("@privy-io/react-auth/solana/")
+        ) {
+          context.report({ node: source, messageId: "restrictedImport" });
+          return;
+        }
+
+        const isTypeOnly =
+          node.importKind === "type" ||
+          node.exportKind === "type" ||
+          (node.specifiers?.length > 0 &&
+            node.specifiers.every((specifier) => specifier.importKind === "type" || specifier.exportKind === "type"));
+
+        if (node.type !== "ImportExpression" && !isTypeOnly && isInternalSolanaModule(specifier)) {
+          context.report({ node: source, messageId: "staticInternalImport" });
+        }
+      }
+
+      return {
+        ImportDeclaration: checkImport,
+        ExportNamedDeclaration: checkImport,
+        ExportAllDeclaration: checkImport,
+        ImportExpression: checkImport,
+      };
+    },
+  },
   "no-bigint-negation": createRule({
     name: "no-bigint-negation",
     meta: {

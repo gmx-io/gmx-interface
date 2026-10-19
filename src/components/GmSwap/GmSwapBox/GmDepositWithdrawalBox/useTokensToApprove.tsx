@@ -5,7 +5,7 @@ import { zeroAddress } from "viem";
 
 import { SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
-import { getMappedTokenId, getMultichainTokenId } from "config/multichain";
+import { getMappedTokenId, getMultichainTokenId, isSelfOftToken } from "config/multichain";
 import {
   selectPoolsDetailsFirstTokenAddress,
   selectPoolsDetailsFirstTokenAmount,
@@ -193,8 +193,7 @@ const useSourceChainTokensToApprove = (): TokensToApproveResult => {
     chainId: srcChainId,
     spenderAddress: multichainSpenderAddress,
     tokens,
-    approveAmount: sourceChainSpendTokenAmountLD,
-    skip: srcChainId === undefined || sourceChainSpendTokenId === undefined,
+    skip: srcChainId === undefined || sourceChainSpendTokenId === undefined || isSelfOftToken(sourceChainSpendTokenId),
     metric: { flow: getPoolApprovalFlow({ chainId, glvOrMarketAddress, isDeposit }) },
   });
 

@@ -59,7 +59,7 @@ describe("TradeHistoryRow helpers", () => {
   });
 
   it("maps user-facing trade history errors and preserves raw names in the fallback", () => {
-    expect(getErrorTooltipTitle("DisabledFeature", false)).toBe("This action is currently disabled");
+    expect(getErrorTooltipTitle("DisabledFeature", false)).toBe("This action is disabled");
     expect(getErrorTooltipTitle("InsufficientFundsToPayForCosts", false)).toBe(
       "Insufficient collateral to cover order costs"
     );
@@ -72,7 +72,7 @@ describe("TradeHistoryRow helpers", () => {
     expect(getErrorTooltipTitle("MaxPoolAmountForDepositExceeded", false)).toBe(
       "Max deposit capacity reached for this pool"
     );
-    expect(getErrorTooltipTitle("EmptyPosition", false)).toBe("Position not found. It may have been closed");
+    expect(getErrorTooltipTitle("EmptyPosition", false)).toBe("Position not found. It may have been closed.");
     expect(getErrorTooltipTitle("UnexpectedBorrowingFactor", false)).toBe(
       "Order failed due to a protocol validation error: UnexpectedBorrowingFactor"
     );
@@ -1159,7 +1159,7 @@ describe("TradeHistoryRow helpers", () => {
         { key: "Open fee / discount", value: "-3.79\u00a0USDC" },
         { key: "Margin at close", value: "996.21\u00a0USDC" },
         { key: "RPNL", value: { text: "+$ 294.76", state: "success" } },
-        { key: "Net close fees / impact", value: { text: "+$ 35.58", state: "success" } },
+        { key: "Net close fees / price impact", value: { text: "+$ 35.58", state: "success" } },
         { key: "Wallet received", value: "~1,326.64\u00a0USDC" },
       ]);
     });
@@ -1173,7 +1173,7 @@ describe("TradeHistoryRow helpers", () => {
         "",
         { key: "Margin at close", value: "996.21\u00a0USDC" },
         { key: "RPNL", value: { text: "+$ 294.76", state: "success" } },
-        { key: "Net close fees / impact", value: { text: "+$ 35.58", state: "success" } },
+        { key: "Net close fees / price impact", value: { text: "+$ 35.58", state: "success" } },
         { key: "Wallet received", value: "~1,326.64\u00a0USDC" },
       ]);
     });
@@ -1206,7 +1206,7 @@ describe("TradeHistoryRow helpers", () => {
         { key: "Open fee / discount", value: "-3.79\u00a0USDC" },
         { key: "Margin at close", value: "996.21\u00a0USDC" },
         { key: "RPNL", value: { text: "+$ 294.76", state: "success" } },
-        { key: "Net close fees / impact", value: { text: "+$ 34.58", state: "success" } },
+        { key: "Net close fees / price impact", value: { text: "+$ 34.58", state: "success" } },
         { key: "Wallet received", value: "~1,325.64\u00a0USDC" },
       ]);
     });

@@ -89,7 +89,7 @@ export function ClaimRewardsButton({ processedData, mutateProcessedData, classNa
     <div className={cx("flex justify-end max-md:w-full", className)}>
       <ButtonTooltipWrapper
         content={
-          hasClaimableRewards ? undefined : <Trans>Nothing is claimable on {getChainName(chainId)} right now.</Trans>
+          hasClaimableRewards ? undefined : <Trans>Nothing is claimable on {getChainName(chainId)} right now</Trans>
         }
       >
         {button}

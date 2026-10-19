@@ -693,7 +693,7 @@ const imageStaticMap = mapKeys(
   (_, key) => key.split("/").pop()
 );
 
-export function importImage(name: string) {
+export function findImage(name: string): string | undefined {
   const sizeSuffixRegex = /_(?:24|40)\.svg$/;
   const candidates = sizeSuffixRegex.test(name) ? [name.replace(sizeSuffixRegex, ".svg"), name] : [name];
 
@@ -710,7 +710,17 @@ export function importImage(name: string) {
     }
   }
 
-  throw new Error(`Image ${name} not found`);
+  return undefined;
+}
+
+export function importImage(name: string) {
+  const image = findImage(name);
+
+  if (!image) {
+    throw new Error(`Image ${name} not found`);
+  }
+
+  return image;
 }
 
 export function getTwitterIntentURL(text: string | string[], url = "", hashtag = ""): string {

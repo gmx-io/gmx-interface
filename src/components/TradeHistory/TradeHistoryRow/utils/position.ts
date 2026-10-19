@@ -980,7 +980,7 @@ export function getSettlementTooltipLines(
       text: formatDeltaUsdParts(tradeAction.basePnlUsd),
       state: numberToState(tradeAction.basePnlUsd),
     }),
-    infoRow(t`Net close fees / impact`, {
+    infoRow(t`Net close fees / price impact`, {
       text: formatDeltaUsdParts(breakdown.totalUsd),
       state: numberToState(breakdown.totalUsd),
     }),

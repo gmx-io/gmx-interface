@@ -1515,7 +1515,7 @@ export const WithdrawalView = () => {
         usd={someBridgeNetworkFeeUsd}
         symbol={bridgeFeeTokenSymbol}
         source={GMX_ACCOUNT_NETWORK_FEE_SOURCE}
-        tooltipContent={t`The bridge fee is paid in ${bridgeFeeTokenSymbol} from your GMX Account.`}
+        tooltipContent={t`The bridge fee is paid in ${bridgeFeeTokenSymbol} from your GMX Account`}
       />
     );
   }, [
@@ -1673,7 +1673,7 @@ export const WithdrawalView = () => {
       {!isInsufficientBalance && (
         <>
           {isAboveLimit && (
-            <AlertInfoCard type="warning" className="my-4" hideClose>
+            <AlertInfoCard type="error" className="my-4" hideClose>
               <div>
                 <Trans>
                   GMX Account withdrawals are limited by Stargate bridge liquidity. Try an amount smaller than{" "}
@@ -1683,7 +1683,7 @@ export const WithdrawalView = () => {
             </AlertInfoCard>
           )}
           {isBelowLimit && (
-            <AlertInfoCard type="warning" className="my-4" hideClose>
+            <AlertInfoCard type="error" className="my-4" hideClose>
               <div>
                 <Trans>
                   Amount is below the withdrawal limit. Try an amount larger than{" "}
@@ -1717,7 +1717,7 @@ export const WithdrawalView = () => {
             />
           )}
           <SyntheticsInfoRow
-            label={<Trans>Withdraw fee</Trans>}
+            label={<Trans>Withdrawal fee</Trans>}
             value={isWithdrawFeeLoading ? valueSkeleton : withdrawFeeValue}
           />
           <SyntheticsInfoRow
