@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useCopyToClipboard } from "react-use";
 
 import { formatReferralCodeForDisplay } from "domain/referrals/utils/referralCode";
-import { shouldShowShareCardDiscounts } from "domain/referrals/utils/referralsHelper";
+import { getReferralTweetText, shouldShowShareCardDiscounts } from "domain/referrals/utils/referralsHelper";
 import { shareOrCopyElementAsImage } from "lib/copyElementAsImage";
 import { helperToast } from "lib/helperToast";
 import { getHomeUrl, getTwitterIntentURL } from "lib/legacy";
@@ -43,6 +43,7 @@ export function ShareReferralCardModal({
   const { isMobile } = useBreakpoints();
   const homeURL = getHomeUrl();
   const referralLink = `${homeURL}/trade/?ref=${referralCode}`;
+  const referralCodeLabel = formatReferralCodeForDisplay(referralCode);
   const totalDiscountsFormatted = useMemo(
     () => formatUsd(totalDiscountsUsd, { fallbackToZero: true }),
     [totalDiscountsUsd]
@@ -54,12 +55,16 @@ export function ShareReferralCardModal({
   const [isUploading, setIsUploading] = useState(false);
   const showDiscountsLine = shouldShowShareCardDiscounts(totalDiscountsUsd);
 
-  const getTweetText = useCallback(() => {
-    const discountsText = showDiscountsLine
-      ? `\n\nSo far, my referrals have saved ${totalDiscountsFormatted} total in discounts with my code: ${referralCode}`
-      : "";
-    return `Save up to ${traderDiscountPercentageLabel} on every trade on GMX.${discountsText}`;
-  }, [traderDiscountPercentageLabel, showDiscountsLine, totalDiscountsFormatted, referralCode]);
+  const getTweetText = useCallback(
+    () =>
+      getReferralTweetText({
+        traderDiscountPercentageLabel,
+        showDiscountsLine,
+        totalDiscountsFormatted,
+        referralCodeLabel,
+      }),
+    [traderDiscountPercentageLabel, showDiscountsLine, totalDiscountsFormatted, referralCodeLabel]
+  );
 
   const handleShareOnX = useCallback(async () => {
     const element = cardRef.current;
@@ -119,7 +124,7 @@ export function ShareReferralCardModal({
         <ScaledReferralCard
           cardRef={cardRef}
           referralLink={referralLink}
-          referralCode={formatReferralCodeForDisplay(referralCode)}
+          referralCode={referralCodeLabel}
           traderDiscountPercentageLabel={traderDiscountPercentageLabel}
           totalDiscountsFormatted={totalDiscountsFormatted}
           showDiscountsLine={showDiscountsLine}

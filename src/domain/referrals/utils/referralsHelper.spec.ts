@@ -4,7 +4,13 @@ import { USD_DECIMALS } from "config/factors";
 import { expandDecimals } from "lib/numbers";
 import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
 
-import { getCodeError, shouldShowCreateReferralCodeTabLabel, shouldShowShareCardDiscounts } from "./referralsHelper";
+import { formatReferralCodeForDisplay } from "./referralCode";
+import {
+  getCodeError,
+  getReferralTweetText,
+  shouldShowCreateReferralCodeTabLabel,
+  shouldShowShareCardDiscounts,
+} from "./referralsHelper";
 
 describe("shouldShowShareCardDiscounts", () => {
   it("hides the discounts line when total discounts are unknown", () => {
@@ -19,6 +25,34 @@ describe("shouldShowShareCardDiscounts", () => {
   it("shows the discounts line at $100 and above", () => {
     expect(shouldShowShareCardDiscounts(expandDecimals(100, USD_DECIMALS))).toBe(true);
     expect(shouldShowShareCardDiscounts(expandDecimals(12345, USD_DECIMALS))).toBe(true);
+  });
+});
+
+describe("getReferralTweetText", () => {
+  it("leaves the code out without the discounts line", () => {
+    expect(
+      getReferralTweetText({
+        traderDiscountPercentageLabel: "10%",
+        showDiscountsLine: false,
+        totalDiscountsFormatted: "$50.00",
+        referralCodeLabel: "TheGMXBalancer",
+      })
+    ).toBe("Save up to 10% on every trade on GMX.");
+  });
+
+  it("shows hex codes in their short form PRO-4493", () => {
+    const hexCode = "0x0000000000000000000000006076934cde1fd93bbfada76a555065886a8b159d";
+    const text = getReferralTweetText({
+      traderDiscountPercentageLabel: "10%",
+      showDiscountsLine: true,
+      totalDiscountsFormatted: "$1,234.56",
+      referralCodeLabel: formatReferralCodeForDisplay(hexCode),
+    });
+
+    expect(text).toBe(
+      "Save up to 10% on every trade on GMX.\n\nSo far, my referrals have saved $1,234.56 total in discounts with my code: 0x6076...159d"
+    );
+    expect(text).not.toContain(hexCode);
   });
 });
 

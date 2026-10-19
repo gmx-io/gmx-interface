@@ -24,7 +24,7 @@ describe("utils/referrals", () => {
     expect(decodeReferralCode(`0x${"zz".repeat(32)}`)).toEqual("");
   });
 
-  it("decodeReferralCode decodes printable ASCII right-padded with zeros", () => {
+  it("decodeReferralCode decodes letters, digits and _ right-padded with zeros", () => {
     expect(decodeReferralCode("0x546865474d5842616c616e636572000000000000000000000000000000000000")).toEqual(
       "TheGMXBalancer"
     );
@@ -49,6 +49,11 @@ describe("utils/referrals", () => {
     expect(decodeReferralCode("0x7465737400000000000000000000000000000000000000000000000000000001")).toEqual(
       "0x7465737400000000000000000000000000000000000000000000000000000001"
     );
+    // printable text the UI can't encode back to the same bytes
+    for (const text of ["my-code", "a b", "0x6076...159d", "a&b"]) {
+      const hex = padHex(stringToHex(text), { size: 32, dir: "right" });
+      expect(decodeReferralCode(hex)).toEqual(hex);
+    }
     // UTF-8 "тест"
     expect(decodeReferralCode("0xd182d0b5d181d182000000000000000000000000000000000000000000000000")).toEqual(
       "0xd182d0b5d181d182000000000000000000000000000000000000000000000000"
@@ -75,5 +80,6 @@ describe("utils/referrals", () => {
     expect(isReferralCodeHex("test")).toBe(false);
     expect(isReferralCodeHex("0x1234")).toBe(false);
     expect(isReferralCodeHex(undefined)).toBe(false);
+    expect(isReferralCodeHex(null)).toBe(false);
   });
 });
