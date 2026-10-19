@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import type { TokenData } from "domain/tokens";
 import { ARBITRUM } from "sdk/configs/chainIds";
-import { getTokenBySymbol } from "sdk/configs/tokens";
+import { NATIVE_TOKEN_ADDRESS, getTokenBySymbol } from "sdk/configs/tokens";
 import { TradeMode, TradeType } from "sdk/utils/trade/types";
 
 import {
@@ -80,5 +80,13 @@ describe("selectIsExternalSwapDisabledByExpressSchema", () => {
 
   it("blocks the external route while the saved swap-to token pays the fee", () => {
     expect(selectIsExternalSwapDisabledByExpressSchema(createState({ usdcAllowance: 10n ** 30n }))).toBe(true);
+  });
+
+  it("sees no conflict for a native token payment, which goes Classic with no relay fee", () => {
+    expect(
+      selectIsExternalSwapDisabledByExpressSchema(
+        createState({ usdcAllowance: 10n ** 30n, fromTokenAddress: NATIVE_TOKEN_ADDRESS })
+      )
+    ).toBe(false);
   });
 });

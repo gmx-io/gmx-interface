@@ -134,7 +134,6 @@ type TradeboxButtonState = {
   isExpressLoading: boolean;
   batchParams?: BatchOrderTxnParams;
   totalExecutionFee?: ExecutionFee;
-  // Token the Express fee is paid with, can differ from the saved gas payment token
   expressGasPaymentToken?: TokenData;
   isFeeInPayToken: boolean;
 };
@@ -326,7 +325,6 @@ export function useTradeboxButtonState({
     const address = findNextGasPaymentToken({
       chainId,
       tokensData,
-      // the token that pays the fee, can differ from the saved one
       gasPaymentToken: expressParams.gasPaymentParams.gasPaymentToken,
       gasPaymentTokenAmount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
       payAmounts: fromToken && payAmount !== undefined ? { [fromToken.address]: payAmount } : {},

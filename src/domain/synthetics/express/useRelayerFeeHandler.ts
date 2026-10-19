@@ -45,7 +45,6 @@ export type ExpressOrdersParamsResult = {
   expressParamsPromise: Promise<ExpressTxnParams | undefined> | undefined;
   isLoading: boolean;
   isMultichainSubmitDisabled: boolean;
-  // Token the fee is paid with, can differ from the saved gas payment token
   gasPaymentToken: TokenData | undefined;
 };
 
