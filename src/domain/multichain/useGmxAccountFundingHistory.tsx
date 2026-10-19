@@ -202,7 +202,8 @@ export function useGmxAccountFundingHistoryItem(
   const historyItem = historyData?.find((item) => item.id === guid);
   const pendingItem = useGmxAccountPendingFundingHistoryItem(guid);
 
-  const transfer = [data?.[0], historyItem, pendingItem].reduce<MultichainFundingHistoryItem | undefined>(
+  // the furthest step wins, ties go to the polled history list first
+  const transfer = [historyItem, data?.[0], pendingItem].reduce<MultichainFundingHistoryItem | undefined>(
     (latest, item) => (item && (!latest || isStepGreater(item.step, latest.step)) ? item : latest),
     undefined
   );

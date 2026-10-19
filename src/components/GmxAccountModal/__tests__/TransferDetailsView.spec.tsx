@@ -8,6 +8,7 @@ import type { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { TransferDetailsView } from "../TransferDetailsView";
 
 const mocks = vi.hoisted(() => ({
+  selectedGuid: "0xguid" as string | undefined,
   itemState: {
     transfer: undefined as MultichainFundingHistoryItem | undefined,
     isLoading: false,
@@ -26,7 +27,7 @@ vi.mock("context/GmxAccountContext/hooks", () => {
     useGmxAccountDepositViewTokenInputValue: setter,
     useGmxAccountWithdrawalViewTokenAddress: setter,
     useGmxAccountWithdrawalViewTokenInputValue: setter,
-    useGmxAccountSelectedTransferGuid: () => ["0xguid", vi.fn()] as const,
+    useGmxAccountSelectedTransferGuid: () => [mocks.selectedGuid, vi.fn()] as const,
   };
 });
 
@@ -74,6 +75,7 @@ describe("TransferDetailsView", () => {
   afterEach(() => {
     cleanup();
     mocks.itemState = { transfer: undefined, isLoading: false, error: undefined };
+    mocks.selectedGuid = "0xguid";
   });
 
   it("shows skeleton rows instead of empty values while loading", () => {
@@ -114,6 +116,15 @@ describe("TransferDetailsView", () => {
     expect(view.getByText("Transfer not found")).toBeTruthy();
     expect(view.container.querySelector(".react-loading-skeleton")).toBeNull();
     expect(view.queryByText("Date")).toBeNull();
+  });
+
+  it("keeps the skeleton instead of not found while the selection is cleared on close", () => {
+    mocks.selectedGuid = undefined;
+
+    const view = renderView();
+
+    expect(view.container.querySelectorAll(".react-loading-skeleton").length).toBeGreaterThan(0);
+    expect(view.queryByText("Transfer not found")).toBeNull();
   });
 
   it("shows the transfer details once loaded", () => {

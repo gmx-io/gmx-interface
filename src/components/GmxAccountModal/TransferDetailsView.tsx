@@ -263,7 +263,11 @@ export const TransferDetailsView = () => {
           <div className="grow" />
         </>
       ) : (
-        <TransferDetailsPlaceholder isLoading={isLoading} hasError={error !== undefined} />
+        <TransferDetailsPlaceholder
+          // the guid is cleared while the modal is still closing
+          isLoading={isLoading || selectedTransferGuid === undefined}
+          hasError={error !== undefined}
+        />
       )}
       {selectedTransfer?.isExecutionError ? (
         <AlertInfoCard type="error" hideClose>
