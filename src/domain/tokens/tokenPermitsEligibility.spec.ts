@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
   IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG,
-  IS_TOKEN_PERMITS_METAMASK_7702_ENABLED_UI_FLAG,
+  IS_TOKEN_PERMITS_EIP7702_ENABLED_UI_FLAG,
   type UiFlags,
 } from "domain/synthetics/uiFlags/uiFlags";
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE } from "sdk/configs/chains";
@@ -12,7 +12,7 @@ import {
   getIsTokenPermitAllowed,
   getIsTokenPermitsEnabled,
   getTokenPermitAccountType,
-  METAMASK_EIP7702_DELEGATOR_ADDRESS,
+  TOKEN_PERMITS_EIP7702_DELEGATES,
   TokenPermitAccountType,
 } from "./tokenPermitsEligibility";
 
@@ -33,16 +33,16 @@ const AVALANCHE_USDC = "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E";
 const AVALANCHE_USDT = "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7";
 const AVALANCHE_MIM = "0x130966628846BFd36ff31a822705796e8cb8C18D";
 
-function flags(values: { eoa?: boolean; metaMask7702?: boolean }): UiFlags {
+function flags(values: { eoa?: boolean; eip7702?: boolean }): UiFlags {
   const result: UiFlags = {};
 
   if (values.eoa !== undefined) {
     result[IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG] = { enabled: values.eoa, createdAt: "", updatedAt: "" };
   }
 
-  if (values.metaMask7702 !== undefined) {
-    result[IS_TOKEN_PERMITS_METAMASK_7702_ENABLED_UI_FLAG] = {
-      enabled: values.metaMask7702,
+  if (values.eip7702 !== undefined) {
+    result[IS_TOKEN_PERMITS_EIP7702_ENABLED_UI_FLAG] = {
+      enabled: values.eip7702,
       createdAt: "",
       updatedAt: "",
     };
@@ -90,17 +90,21 @@ describe("getTokenPermitAccountType", () => {
     expect(getDelegation).not.toHaveBeenCalled();
   });
 
-  it("accepts an EIP-7702 account delegated to the MetaMask delegator", async () => {
+  it.each(TOKEN_PERMITS_EIP7702_DELEGATES)("accepts an EIP-7702 account delegated to %s", async (delegate) => {
     mocks.getAccountType.mockResolvedValue(0);
-    getDelegation.mockResolvedValue(METAMASK_EIP7702_DELEGATOR_ADDRESS);
+    getDelegation.mockResolvedValue(delegate);
 
-    await expect(getTokenPermitAccountType(ACCOUNT, client)).resolves.toBe("metaMask7702");
+    await expect(getTokenPermitAccountType(ACCOUNT, client)).resolves.toBe("eip7702");
     expect(getDelegation).toHaveBeenCalledWith({ address: ACCOUNT });
   });
 
-  it("rejects an EIP-7702 account delegated elsewhere", async () => {
+  it.each([
+    "0x36d3CBD83961868398d056EfBf50f5CE15528c0D", // rejects USDC/USDT permits
+    "0xa845C74344Fc9405b1Fcf712f04668979573c1bf", // rejects USDT permits
+    "0x0000000000000000000000000000000000000bad",
+  ])("rejects an EIP-7702 account delegated to %s", async (delegate) => {
     mocks.getAccountType.mockResolvedValue(0);
-    getDelegation.mockResolvedValue("0x0000000000000000000000000000000000000bad");
+    getDelegation.mockResolvedValue(delegate);
 
     await expect(getTokenPermitAccountType(ACCOUNT, client)).resolves.toBe("unsupported");
   });
@@ -123,14 +127,14 @@ describe("getIsTokenPermitsEnabled", () => {
     { accountType: "eoa", uiFlags: flags({}), isQaOverrideEnabled: false, expected: false },
     { accountType: "eoa", uiFlags: flags({ eoa: false }), isQaOverrideEnabled: false, expected: false },
     { accountType: "eoa", uiFlags: flags({ eoa: true }), isQaOverrideEnabled: false, expected: true },
-    { accountType: "eoa", uiFlags: flags({ metaMask7702: true }), isQaOverrideEnabled: false, expected: false },
-    { accountType: "metaMask7702", uiFlags: flags({ eoa: true }), isQaOverrideEnabled: false, expected: false },
-    { accountType: "metaMask7702", uiFlags: flags({ metaMask7702: true }), isQaOverrideEnabled: false, expected: true },
+    { accountType: "eoa", uiFlags: flags({ eip7702: true }), isQaOverrideEnabled: false, expected: false },
+    { accountType: "eip7702", uiFlags: flags({ eoa: true }), isQaOverrideEnabled: false, expected: false },
+    { accountType: "eip7702", uiFlags: flags({ eip7702: true }), isQaOverrideEnabled: false, expected: true },
     { accountType: "eoa", uiFlags: undefined, isQaOverrideEnabled: true, expected: true },
-    { accountType: "metaMask7702", uiFlags: flags({ metaMask7702: false }), isQaOverrideEnabled: true, expected: true },
+    { accountType: "eip7702", uiFlags: flags({ eip7702: false }), isQaOverrideEnabled: true, expected: true },
     {
       accountType: "unsupported",
-      uiFlags: flags({ eoa: true, metaMask7702: true }),
+      uiFlags: flags({ eoa: true, eip7702: true }),
       isQaOverrideEnabled: true,
       expected: false,
     },

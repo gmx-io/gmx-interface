@@ -139,7 +139,7 @@ describe("useExecutedTokenPermits", () => {
   });
 
   it("reports the chain and account type the relay call was sent with after a chain switch", () => {
-    mocks.accountType = "metaMask7702";
+    mocks.accountType = "eip7702";
     const { rerender } = renderExecutedTokenPermits({
       chainId: ARBITRUM,
       pendingExpressTxns: { txn: sentTxn },
@@ -154,7 +154,7 @@ describe("useExecutedTokenPermits", () => {
     });
 
     expect(mocks.sendTokenPermitMetric).toHaveBeenCalledWith(
-      expect.objectContaining({ chainId: ARBITRUM, accountType: "metaMask7702" })
+      expect.objectContaining({ chainId: ARBITRUM, accountType: "eip7702" })
     );
     expect(mocks.removeTokenPermits).toHaveBeenCalledWith([usdcPermit, wethPermit], ARBITRUM);
   });
