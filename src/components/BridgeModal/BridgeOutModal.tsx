@@ -527,7 +527,7 @@ export function BridgeOutModal({
                 decimals={bridgeFeeDetails.decimals}
                 symbol={bridgeFeeDetails.symbol}
                 source={GMX_ACCOUNT_NETWORK_FEE_SOURCE}
-                tooltipContent={t`The bridge fee is paid in ${bridgeFeeTokenSymbol} from your GMX Account.`}
+                tooltipContent={t`The bridge fee is paid in ${bridgeFeeTokenSymbol} from your GMX Account`}
               />
             ) : transferNativeFeeError !== undefined ? (
               "-"

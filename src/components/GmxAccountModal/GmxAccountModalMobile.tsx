@@ -73,7 +73,7 @@ function ReceiveFundsTitle() {
 function ReceiveToWalletTitle() {
   return (
     <TitleWithBack backTo="walletReceiveOptions">
-      <Trans>Receive to Wallet</Trans>
+      <Trans>Receive to wallet</Trans>
     </TitleWithBack>
   );
 }
@@ -81,7 +81,7 @@ function ReceiveToWalletTitle() {
 function SendFromWalletTitle() {
   return (
     <TitleWithBack backTo="main">
-      <Trans>Send from Wallet</Trans>
+      <Trans>Send from wallet</Trans>
     </TitleWithBack>
   );
 }

@@ -32,7 +32,6 @@ import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import PoolsCard from "pages/Pools/PoolsCard";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
-import { nowInSeconds } from "sdk/utils/time";
 
 import { getRecentlyListedTokenAddresses } from "components/ChartTokenSelector/marketFilters";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
@@ -168,14 +167,14 @@ export function GmList({
     [whitelistsResult]
   );
 
-  const marketsTokensLaunchBoostAprData = useMemo(() => {
-    const nowSeconds = nowInSeconds();
-
-    return mapValues(marketsInfo ?? {}, (market) => {
-      const launchBoost = getUsdgLaunchBoost({ chainId, glvOrMarket: market, usdgBoostAprResult, nowSeconds });
-      return getUsdgLaunchBoostApr(launchBoost);
-    });
-  }, [chainId, marketsInfo, usdgBoostAprResult]);
+  const marketsTokensLaunchBoostAprData = useMemo(
+    () =>
+      mapValues(marketsInfo ?? {}, (market) => {
+        const launchBoost = getUsdgLaunchBoost({ chainId, glvOrMarket: market, usdgBoostAprResult });
+        return getUsdgLaunchBoostApr(launchBoost);
+      }),
+    [chainId, marketsInfo, usdgBoostAprResult]
+  );
 
   const filteredGmTokens = useFilterSortPools({
     marketsInfo,

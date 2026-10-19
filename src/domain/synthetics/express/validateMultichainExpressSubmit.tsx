@@ -75,7 +75,7 @@ export function reportMultichainExpressSubmitError({
         gasPaymentTokenAddress={expressParams.gasPaymentParams.gasPaymentTokenAddress}
       />
     ) : (
-      t`Express is unavailable right now, so this GMX Account action can't be sent.`
+      t`Express is unavailable right now, so this GMX Account action can't be sent`
     );
 
   helperToast.error(content, {

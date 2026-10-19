@@ -546,7 +546,7 @@ export function StakeModal(props: {
           )}
 
           {activeTab === "stake" && hasUndelegatedGovToken ? (
-            <AlertInfoCard type="warning" className="!mb-0" hideClose>
+            <AlertInfoCard type="info" className="!mb-0" hideClose>
               <Trans>
                 Delegating your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO voting power is optional
                 for staking.{" "}
@@ -571,7 +571,7 @@ export function StakeModal(props: {
 
           {activeTab === "unstake" && wouldResetPower && (
             <>
-              <ColorfulBanner color="red" icon={AlertIcon}>
+              <ColorfulBanner color="yellow" icon={AlertIcon}>
                 <div>
                   <Trans>
                     Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards
