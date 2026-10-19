@@ -35,7 +35,7 @@ import {
 import { ExpressTxnParams } from ".";
 import { estimateBatchExpressParams } from "./expressOrderUtils";
 import type { GasPaymentTokenFallback } from "./gasPaymentTokenFallback";
-import { useGasPaymentTokenFallback } from "./useGasPaymentTokenFallback";
+import { type PayTokenFeeToken, useGasPaymentTokenFallback } from "./useGasPaymentTokenFallback";
 import { useSwitchGasPaymentTokenIfRequiredFromExpressParams } from "./useSwitchGasPaymentTokenIfRequired";
 
 export type ExpressOrdersParamsResult = {
@@ -74,7 +74,7 @@ export function useExpressOrdersParams({
   isGmxAccount,
   canSwitchGasPaymentToken,
   gasPaymentTokenFallback,
-  payTokenAddress,
+  payTokenFeeToken,
 }: {
   orderParams: BatchOrderTxnParams | undefined;
   totalExecutionFee?: bigint;
@@ -82,7 +82,7 @@ export function useExpressOrdersParams({
   isGmxAccount: boolean;
   canSwitchGasPaymentToken: boolean;
   gasPaymentTokenFallback?: GasPaymentTokenFallback;
-  payTokenAddress?: string;
+  payTokenFeeToken?: PayTokenFeeToken;
 }): ExpressOrdersParamsResult {
   const { chainId } = useChainId();
 
@@ -94,7 +94,7 @@ export function useExpressOrdersParams({
     savedGlobalExpressParams: isGmxAccount ? gmxAccountGlobalExpressParams : settlementChainGlobalExpressParams,
     fallback: gasPaymentTokenFallback,
     isGmxAccount,
-    payTokenAddress,
+    payTokenFeeToken,
     payAmounts,
     canNotify: canSwitchGasPaymentToken && orderParams !== undefined && !getIsEmptyBatch(orderParams),
   });

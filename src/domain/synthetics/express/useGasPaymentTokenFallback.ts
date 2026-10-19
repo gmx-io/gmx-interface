@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { type Dispatch, type SetStateAction, useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
 import {
@@ -12,10 +12,6 @@ import {
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTokenPermits } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
-import {
-  selectTradeboxExpressFeeTokenAddress,
-  selectTradeboxSetExpressFeeUsdByToken,
-} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { convertToUsd, type TokenData } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
@@ -42,18 +38,27 @@ const notifyGasPaymentTokenNotApproved = ({ fromSymbol, toSymbol }: { fromSymbol
   }
 };
 
+/**
+ * The trade box resolves its fee token in a selector (`selectTradeboxExpressFeeTokenAddress`) so other selectors
+ * see the same token; it passes the result here together with the setter for the fee estimates it reads
+ */
+export type PayTokenFeeToken = {
+  address: string | undefined;
+  setFeeUsdByToken: Dispatch<SetStateAction<Record<string, bigint>>>;
+};
+
 export function useGasPaymentTokenFallback({
   savedGlobalExpressParams,
   fallback,
   isGmxAccount,
-  payTokenAddress,
+  payTokenFeeToken,
   payAmounts,
   canNotify,
 }: {
   savedGlobalExpressParams: GlobalExpressParams | undefined;
   fallback: GasPaymentTokenFallback | undefined;
   isGmxAccount: boolean;
-  payTokenAddress: string | undefined;
+  payTokenFeeToken: PayTokenFeeToken | undefined;
   payAmounts: Record<string, bigint>;
   canNotify: boolean;
 }): {
@@ -65,22 +70,19 @@ export function useGasPaymentTokenFallback({
   const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
   const tokenPermits = useSelector(selectTokenPermits);
   const [localFeeUsdByToken, setLocalFeeUsdByToken] = useState<Record<string, bigint>>(EMPTY_OBJECT);
-  // the trade box keeps its fee estimates in state, so selectors see the same fee token as this hook
-  const tradeboxFeeTokenAddress = useSelector(selectTradeboxExpressFeeTokenAddress);
-  const setTradeboxFeeUsdByToken = useSelector(selectTradeboxSetExpressFeeUsdByToken);
-  const isTradeboxFallback = fallback === "payToken";
-  const setFeeUsdByToken = isTradeboxFallback ? setTradeboxFeeUsdByToken : setLocalFeeUsdByToken;
+  const isPayTokenFallback = fallback === "payToken" && payTokenFeeToken !== undefined;
+  const setFeeUsdByToken = isPayTokenFallback ? payTokenFeeToken.setFeeUsdByToken : setLocalFeeUsdByToken;
 
   const savedGasPaymentToken = savedGlobalExpressParams?.gasPaymentToken;
 
   const resolveFallbackTokenAddress = (gasPaymentToken: TokenData) =>
-    isTradeboxFallback
-      ? tradeboxFeeTokenAddress ?? gasPaymentToken.address
+    isPayTokenFallback
+      ? payTokenFeeToken.address ?? gasPaymentToken.address
       : resolveGasPaymentTokenAddress({
           chainId,
           fallback: fallback!,
           gasPaymentToken,
-          payTokenAddress,
+          payTokenAddress: undefined,
           payAmounts,
           feeUsdByToken: localFeeUsdByToken,
           tokensData,
