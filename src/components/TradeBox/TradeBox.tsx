@@ -402,7 +402,6 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
 
   const expressOrdersEnabledForMax = expressOrdersEnabled && fromTokenAddress !== zeroAddress && !isWrapOrUnwrap;
 
-  // Fee can be paid with the pay token instead of the saved gas payment token
   const feeGasPaymentTokenData = submitButtonState.expressGasPaymentToken ?? gasPaymentTokenData;
   const expressGasPaymentParams = submitButtonState.expressParams?.gasPaymentParams;
   const expressGasPaymentTokenAmount =

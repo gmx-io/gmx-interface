@@ -161,7 +161,6 @@ export const selectGmxAccountExpressGlobalParams = createSelectExpressGlobalPara
   selectGmxAccountExpressFindSwapPath
 );
 
-// Global params for paying wallet fees with a token other than the saved gas payment token
 export const makeSelectSettlementChainExpressGlobalParamsForGasPaymentToken = createSelectorFactory(
   (gasPaymentTokenAddress: string) => {
     const selectGasPaymentTokenAddressOverride = () => gasPaymentTokenAddress;

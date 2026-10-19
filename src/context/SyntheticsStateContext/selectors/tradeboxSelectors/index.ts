@@ -320,10 +320,12 @@ export const selectIsExternalSwapDisabledByExpressSchema = createSelector((q) =>
   if (!q(selectIsExpressTransactionAvailable)) return false;
 
   const isFromTokenGmxAccount = q(selectTradeboxIsFromTokenGmxAccount);
+  // native token payments from the wallet are sent as Classic transactions with no relay fee
+  if (!isFromTokenGmxAccount && q(selectTradeboxFromTokenAddress) === NATIVE_TOKEN_ADDRESS) return false;
+
   const gasPaymentToken = q(
     isFromTokenGmxAccount ? selectGmxAccountGasPaymentToken : selectSettlementChainGasPaymentToken
   );
-  // the token that actually pays: an unapproved saved token can hand the fee to the pay token
   const feeTokenAddress = isFromTokenGmxAccount ? gasPaymentToken?.address : q(selectTradeboxExpressFeeTokenAddress);
   if (!feeTokenAddress) return false;
 
