@@ -236,7 +236,6 @@ describe("approveTokens rejection toast", () => {
     ["WalletConnect", { code: 5000, message: "User rejected." }],
     ["a wallet with a custom message", { code: 4001, message: "The user rejected the request" }],
     ["a wallet without an error code", { message: "User denied transaction" }],
-    ["a wallet with a lowercase message and another code", { code: -32000, message: "user rejected the request" }],
   ];
 
   it.each(rejections)("shows approval cancelled when the user rejects in %s", async (_wallet, walletError) => {
@@ -248,7 +247,10 @@ describe("approveTokens rejection toast", () => {
     expect(getOutcomes()).toEqual(["transaction:rejected"]);
   });
 
-  it.each(rejections)("shows permit signing cancelled when the user rejects in %s", async (_wallet, walletError) => {
+  it.each([
+    ...rejections,
+    ["a wallet with a lowercase message and another code", { code: -32000, message: "user rejected the request" }],
+  ])("shows permit signing cancelled when the user rejects in %s", async (_wallet, walletError) => {
     await approveWithWalletError(walletError, { isPermit: true });
 
     expect(getErrorToastText()).toBe("Permit signing cancelled");
