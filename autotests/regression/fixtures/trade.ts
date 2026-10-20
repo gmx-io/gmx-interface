@@ -89,6 +89,14 @@ export async function openSettings(page: Page, tab: "Trading" | "Display" = "Tra
   return modal;
 }
 
+// A single Escape is sometimes missed and left the modal over the trade form, so repeat it until it closes.
+export async function closeSettings(page: Page, settings: Locator) {
+  await expect(async () => {
+    await page.keyboard.press("Escape");
+    await expect(settings).toBeHidden({ timeout: 1_000 });
+  }).toPass({ timeout: 15_000 });
+}
+
 export function tradingMode(settings: Locator, name: string) {
   return settings.getByText(name, { exact: true }).locator("xpath=ancestor::div[contains(@class, 'grid')][1]");
 }
@@ -99,8 +107,7 @@ export async function chooseMode(page: Page, name: "Classic" | "Express" | "Expr
   const settings = await openSettings(page);
   await settings.getByText(name, { exact: true }).click();
   await expect(tradingMode(settings, name)).toHaveClass(SELECTED_TRADING_MODE);
-  await page.keyboard.press("Escape");
-  await expect(settings).toBeHidden();
+  await closeSettings(page, settings);
 }
 
 export async function setSettingsToggle(modal: Locator, label: string, enabled: boolean) {

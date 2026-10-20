@@ -6,7 +6,7 @@ import { getContract } from "../../../sdk/src/configs/contracts";
 import { subaccountActionCountKey, SUBACCOUNT_ORDER_ACTION } from "../../../sdk/src/configs/dataStore";
 import { SUBACCOUNT_MESSAGE } from "../../../sdk/src/configs/express";
 import { getSubaccountApprovalTypedData } from "../../../sdk/src/utils/subaccount/getSubaccountApprovalTypedData";
-import { labelledInput, openSettings } from "../fixtures/trade";
+import { closeSettings, labelledInput, openSettings } from "../fixtures/trade";
 import { USD } from "./economy";
 import type { FundedSession } from "./session";
 import { assertUiInventory } from "./uiOrders";
@@ -95,7 +95,7 @@ export async function activateUiOneClick(session: FundedSession, wallet: UiWalle
   await expect(activate).toHaveClass(/border-slate-100/);
   inventory.uiOneClickAuthorized = "true";
   await session.save();
-  await page.keyboard.press("Escape");
+  await closeSettings(page, settings);
   return inventory.subaccount;
 }
 
@@ -129,5 +129,5 @@ export async function revokeUiOneClick(session: FundedSession, wallet: UiWallet,
   assert.ok(!(await session.subaccountActive(subaccount)));
   session.active.inventory!.uiOneClickRevoked = "true";
   await session.save();
-  await page.keyboard.press("Escape");
+  await closeSettings(page, settings);
 }
