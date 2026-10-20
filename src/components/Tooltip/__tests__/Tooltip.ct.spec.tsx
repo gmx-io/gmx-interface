@@ -132,7 +132,7 @@ test.describe("Tooltip", () => {
   }
 
   for (const withPortal of [false, true]) {
-    test(`returns focus to a disabled handle on Escape inside its tooltip, portal: ${withPortal}`, async ({
+    test(`returns focus to a disabled handle on Escape inside its tooltip and keeps it closed until focus leaves, portal: ${withPortal}`, async ({
       mount,
       page,
     }) => {
@@ -149,13 +149,25 @@ test.describe("Tooltip", () => {
         </div>
       );
 
+      const action = page.getByRole("button", { name: "Set max withdrawal" });
+
       await page.getByRole("button", { name: "Before" }).focus();
       await page.keyboard.press("Tab");
       await page.keyboard.press("Tab");
-      await expect(page.getByRole("button", { name: "Set max withdrawal" })).toBeFocused();
+      await expect(action).toBeFocused();
 
       await page.keyboard.press("Escape");
       await expect(page.locator(".Tooltip-handle")).toBeFocused();
+      await page.waitForTimeout(200);
+      await expect(action).not.toBeVisible();
+
+      await page.keyboard.press("Shift+Tab");
+      await page.keyboard.press("Tab");
+      await expect(action).toBeVisible();
+
+      await page.keyboard.press("Escape");
+      await page.waitForTimeout(200);
+      await expect(action).not.toBeVisible();
     });
   }
 
