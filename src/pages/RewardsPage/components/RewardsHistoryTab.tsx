@@ -5,12 +5,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 
 import type { ContractsChainId } from "config/chains";
-import { useGmxPrice } from "domain/legacy";
 import { ES_GMX_DECIMALS, GT_DECIMALS } from "domain/synthetics/incentives/v2/constants";
 import type { IncentivesConfig, RewardsHistoryEntry } from "domain/synthetics/incentives/v2/types";
-import { useAccountRewardsHistory } from "domain/synthetics/incentives/v2/useAccountRewardsHistory";
 import { useEpochRolloverRevalidation } from "domain/synthetics/incentives/v2/useEpochRolloverRevalidation";
-import { useLatestGtPrice } from "domain/synthetics/incentives/v2/useLatestGtPrice";
 import { formatEpochLabel, getRewardsHistoryStatus } from "domain/synthetics/incentives/v2/utils";
 import { formatTimeLeft } from "lib/dates";
 import { formatUsd } from "lib/numbers";
@@ -25,6 +22,11 @@ import { TableScrollFadeContainer } from "components/TableScrollFade/TableScroll
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 import { RewardsTokenValue } from "./RewardsTokenValue";
+import {
+  useRewardsTesterAccountRewardsHistory,
+  useRewardsTesterGmxPrice,
+  useRewardsTesterLatestGtPrice,
+} from "../tester/useRewardsTester";
 
 const PAGE_SIZE = 10;
 
@@ -81,21 +83,24 @@ type Props = {
 export function RewardsHistoryTab({ chainId, account, config }: Props) {
   const { i18n } = useLingui();
   const { isMobile } = useBreakpoints();
-  const { gmxPrice } = useGmxPrice(chainId, {}, false, {
+  const { gmxPrice } = useRewardsTesterGmxPrice(chainId, {}, false, {
     enabled: Boolean(account),
     fetchAllChains: false,
   });
-  const { data: gtPrice } = useLatestGtPrice(chainId, { enabled: Boolean(account) });
+  const { data: gtPrice } = useRewardsTesterLatestGtPrice(chainId, { enabled: Boolean(account) });
   const [page, setPage] = useState(1);
-  const { data, totalCount, error, loading, isValidating, mutate, endpoint } = useAccountRewardsHistory(chainId, {
-    account,
-    currentEpoch: config.epochTimestamp,
-    programStartTimestamp: config.programStartTimestamp,
-    epochDuration: config.epochDuration,
-    enabled: Boolean(account),
-    limit: PAGE_SIZE,
-    offset: (page - 1) * PAGE_SIZE,
-  });
+  const { data, totalCount, error, loading, isValidating, mutate, endpoint } = useRewardsTesterAccountRewardsHistory(
+    chainId,
+    {
+      account,
+      currentEpoch: config.epochTimestamp,
+      programStartTimestamp: config.programStartTimestamp,
+      epochDuration: config.epochDuration,
+      enabled: Boolean(account),
+      limit: PAGE_SIZE,
+      offset: (page - 1) * PAGE_SIZE,
+    }
+  );
   const epochTimestampRef = useRef(config.epochTimestamp);
   const now = useCurrentUnixTimestamp();
 
@@ -154,8 +159,8 @@ export function RewardsHistoryTab({ chainId, account, config }: Props) {
     <div className="flex h-full flex-col rounded-8 bg-slate-900">
       <div className="px-20 pb-12 pt-20">
         <div className="flex items-center justify-between gap-12">
-          <h3 className="text-16 font-medium text-typography-primary">
-            <Trans>Rewards History</Trans>
+          <h3 className="text-body-large font-medium text-typography-primary">
+            <Trans>Rewards history</Trans>
           </h3>
           {isValidating && data ? (
             <div className="text-caption text-typography-secondary">
@@ -216,7 +221,7 @@ export function RewardsHistoryTab({ chainId, account, config }: Props) {
                 </tbody>
               </table>
             ) : (
-              <table className="w-full min-w-[960px] table-fixed">
+              <table className="w-full min-w-[880px] table-fixed">
                 <thead>
                   <TableTheadTr>
                     <TableTh>{t`Epoch`}</TableTh>
@@ -390,10 +395,11 @@ function getStatusContent(epoch: number, epochDuration: number, now: number) {
   const epochEnd = epoch + epochDuration;
 
   if (getRewardsHistoryStatus(epoch, epochDuration, now) === "ongoing") {
+    const timeLeft = formatTimeLeft(epochEnd - now, { alwaysShowDays: true });
+
     return (
       <span className="text-13 text-typography-secondary">
-        <Trans>Epoch ends in</Trans>{" "}
-        <span className="text-typography-primary">{formatTimeLeft(epochEnd - now, { alwaysShowDays: true })}</span>
+        <Trans>Epoch ends in {timeLeft}</Trans>
       </span>
     );
   }

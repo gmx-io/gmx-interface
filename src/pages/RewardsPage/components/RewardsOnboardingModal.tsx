@@ -4,7 +4,6 @@ import { PointerEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 
 import { REWARDS_ONBOARDING_DISMISSED_KEY } from "config/localStorage";
-import { useLocalStorageSerializeKeySafe } from "lib/localStorage";
 
 import Button from "components/Button/Button";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
@@ -15,6 +14,7 @@ import InfoIcon from "img/ic_info_circle.svg?react";
 import rewardsOnboardingFlowSrc from "img/rewards_onboarding_flow.svg";
 
 import { REWARDS_ONBOARDING_OPEN_ACTION, REWARDS_ONBOARDING_SEARCH_PARAM } from "../rewardsRoutes";
+import { useRewardsTesterLocalStorageSerializeKeySafe } from "../tester/useRewardsTester";
 
 const SLIDE_COUNT = 4;
 const SWIPE_THRESHOLD_PX = 40;
@@ -103,7 +103,7 @@ function SlideContent({ index }: { index: number }) {
   return (
     <div className="flex min-h-[104px] w-full max-w-[360px] flex-col items-center gap-8 text-center">
       <h2 className="text-h2 text-typography-primary">
-        <Trans>Using Your Rewards</Trans>
+        <Trans>Using your rewards</Trans>
       </h2>
       <ul className="text-body-medium w-full list-disc space-y-4 pl-16 text-left text-typography-secondary">
         <li>
@@ -118,7 +118,10 @@ function SlideContent({ index }: { index: number }) {
 }
 
 export function RewardsOnboardingModal({ shouldAutoOpen }: { shouldAutoOpen: boolean }) {
-  const [dismissed, setDismissed] = useLocalStorageSerializeKeySafe<boolean>(REWARDS_ONBOARDING_DISMISSED_KEY, false);
+  const [dismissed, setDismissed] = useRewardsTesterLocalStorageSerializeKeySafe<boolean>(
+    REWARDS_ONBOARDING_DISMISSED_KEY,
+    false
+  );
   const [isVisible, setIsVisible] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const swipeStartRef = useRef<{ pointerId: number; x: number; y: number }>();

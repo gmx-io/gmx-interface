@@ -90,16 +90,6 @@ export function getRewardsPromoSelection({
   };
 }
 
-export function getStakingRewardsPromoSelection(selection: RewardsPromoSelection): RewardsPromoSelection {
-  if (selection.variant !== "manual-reward") return selection;
-
-  return {
-    variant: "new-or-low-fees",
-    isActiveUser: selection.isActiveUser,
-    maxRewardRateFactor: selection.maxRewardRateFactor,
-  };
-}
-
 export function useStableRewardsPromoSelection({
   chainId,
   account,

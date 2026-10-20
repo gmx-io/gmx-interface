@@ -1,7 +1,7 @@
 import { Plural, Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ethers } from "ethers";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { useHistory, useLocation } from "react-router-dom";
 
@@ -18,7 +18,7 @@ import {
   getRewardsVestingEndTimestamp,
   getRewardsVestingProgress,
 } from "domain/vesting/rewardsVesting";
-import { type RewardsVestingData, useRewardsVestingData } from "domain/vesting/useRewardsVestingData";
+import type { RewardsVestingData } from "domain/vesting/useRewardsVestingData";
 import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { callContract } from "lib/contracts";
@@ -28,8 +28,8 @@ import { useLocalStorageSerializeKeySafe } from "lib/localStorage";
 import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { useCurrentUnixTimestamp } from "lib/useCurrentUnixTimestamp";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { usePrefersReducedMotion } from "lib/usePrefersReducedMotion";
 import { sendRewardsTransactionResultEvent, sendRewardsVestingModalOpenEvent } from "lib/userAnalytics/rewardsEvents";
-import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 import { convertToUsd } from "sdk/utils/tokens";
 
@@ -49,6 +49,7 @@ import { getRewardsDebugMode } from "../rewardsDebug";
 import {
   REWARDS_ONBOARDING_OPEN_ACTION,
   REWARDS_ONBOARDING_SEARCH_PARAM,
+  REWARDS_VESTING_HIGHLIGHT_ACTION,
   REWARDS_VESTING_SEARCH_PARAM,
   REWARDS_VESTING_START_ACTION,
 } from "../rewardsRoutes";
@@ -69,6 +70,13 @@ import { RewardsVestingDebugPanel } from "./RewardsVestingDebugPanel";
 import { RewardsStopVestingModal, RewardsVestingModal } from "./RewardsVestingModals";
 import { RewardsVestingSimulatorApprovalModal } from "./RewardsVestingSimulatorApprovalModal";
 import { RewardsVestingStartedModal } from "./RewardsVestingStartedModal";
+import { RewardsTesterVestingSimulatorSlot } from "../tester/RewardsTesterVestingSimulatorSlot";
+import {
+  useRewardsTesterRewardsVestingData,
+  useRewardsTesterVestingSnapshot,
+  useRewardsTesterVestingSync,
+  useRewardsTesterWallet,
+} from "../tester/useRewardsTester";
 
 const SIMULATED_TRANSACTION_DELAY = 1_000;
 const CLAIMABLE_GMX_DISPLAY_DECIMALS = 4;
@@ -113,7 +121,6 @@ function hasWithdrawPreviewChanged(currentData: RewardsVestingData, nextData: Re
 }
 
 function AmountHeader({
-  step,
   label,
   unit,
   amount,
@@ -124,7 +131,6 @@ function AmountHeader({
   unavailable = false,
   action,
 }: {
-  step: number;
   label: React.ReactNode;
   unit: React.ReactNode;
   amount: bigint;
@@ -135,20 +141,15 @@ function AmountHeader({
   unavailable?: boolean;
   action?: React.ReactNode;
 }) {
+  const isHighlighted = active && !unavailable && amount > 0n;
+  const valueColorClassName = isHighlighted ? "text-typography-primary" : "text-typography-secondary";
+
   return (
-    <div className="flex min-h-[105px] w-full flex-col items-start p-8">
-      <div className={cx("flex h-24 w-full items-center", action ? "gap-4" : "gap-8")}>
+    <div className="flex min-h-[105px] w-full flex-col items-start gap-8 p-8">
+      <div className="flex h-24 w-full items-center gap-4">
         <span
           className={cx(
-            "flex size-20 items-center justify-center rounded-full px-4 py-2 text-12 font-medium",
-            active ? "bg-blue-300/20 text-blue-300" : "bg-slate-800 text-typography-disabled"
-          )}
-        >
-          {step}
-        </span>
-        <span
-          className={cx(
-            "whitespace-nowrap text-12 font-medium text-typography-secondary",
+            "text-body-small whitespace-nowrap font-medium text-typography-secondary",
             action ? "min-w-0 truncate" : "shrink-0"
           )}
         >
@@ -156,29 +157,108 @@ function AmountHeader({
         </span>
         {action}
       </div>
-      {loading ? (
-        <div className="flex h-[50px] items-center">
-          <Skeleton width={145} height={34} />
-        </div>
-      ) : (
-        <div className="flex min-w-0 items-end gap-4">
-          <span
-            className={cx(
-              "min-w-0 truncate whitespace-nowrap text-[40px] font-medium leading-[50px] numbers",
-              active && !unavailable && amount > 0n ? "text-typography-primary" : "text-typography-secondary"
-            )}
-          >
-            {unavailable ? "-" : formatTokenAmount(amount, displayDecimals)}
-          </span>
-          <span className="flex h-32 shrink-0 items-center whitespace-nowrap text-16 font-medium text-typography-secondary">
-            {unit}
-          </span>
-        </div>
-      )}
-      <span className="shrink-0 whitespace-nowrap text-12 font-medium leading-[1.25] text-typography-disabled numbers">
-        {loading ? <Skeleton width={72} /> : unavailable ? "-" : formatUsd(usd) ?? "-"}
-      </span>
+      <div className="w-full shrink-0 border-t-1/2 border-slate-600" />
+      <div className="flex w-full min-w-0 flex-col items-start gap-4">
+        {loading ? (
+          <div className="flex h-36 items-center">
+            <Skeleton width={120} height={32} />
+          </div>
+        ) : (
+          <div className="flex min-w-0 max-w-full items-end gap-8">
+            <span className={cx("text-h1 min-w-0 truncate whitespace-nowrap", valueColorClassName)}>
+              {unavailable ? "-" : formatTokenAmount(amount, displayDecimals)}
+            </span>
+            <span
+              className={cx(
+                "flex shrink-0 items-center justify-center whitespace-nowrap py-2 text-16 font-medium leading-[1.25]",
+                valueColorClassName
+              )}
+            >
+              {unit}
+            </span>
+          </div>
+        )}
+        <span className="shrink-0 whitespace-nowrap text-12 font-medium leading-[1.25] text-typography-disabled numbers">
+          {loading ? <Skeleton width={72} /> : unavailable ? "-" : formatUsd(usd) ?? "-"}
+        </span>
+      </div>
     </div>
+  );
+}
+
+// A light running once around the vest button: a comet with soft ends and a faint glow.
+// Positions and lengths are in % of the button outline, measured from the comet's tail.
+const VEST_COMET_LENGTH = 24;
+const VEST_COMET_HEAD_FADE = 4;
+const VEST_COMET_TAIL_FADE = 20;
+// Brightness from the tips towards the core. Each nested layer adds a little light, so both ends fade out smoothly.
+const VEST_COMET_PROFILE = [0.04, 0.09, 0.16, 0.25, 0.36, 0.48, 0.61, 0.74, 0.87, 1];
+const VEST_COMET_LAYERS = [
+  ...VEST_COMET_PROFILE.map((brightness, index) => {
+    const step = index / VEST_COMET_PROFILE.length;
+    const previousBrightness = index === 0 ? 0 : VEST_COMET_PROFILE[index - 1];
+    const start = VEST_COMET_TAIL_FADE * step;
+    const end = VEST_COMET_LENGTH - VEST_COMET_HEAD_FADE * step;
+
+    return {
+      start,
+      length: end - start,
+      opacity: 1 - (1 - brightness) / (1 - previousBrightness),
+      strokeWidth: 0.5,
+      isGlow: false,
+    };
+  }),
+  { start: 12, length: 10, opacity: 0.18, strokeWidth: 3, isGlow: true },
+  { start: 16, length: 5.5, opacity: 0.35, strokeWidth: 2.5, isGlow: true },
+];
+
+function VestButtonComet({ width, height, onDone }: { width: number; height: number; onDone: () => void }) {
+  return (
+    <svg
+      aria-hidden
+      className="pointer-events-none absolute left-0 top-0 overflow-visible text-white"
+      width={width}
+      height={height}
+    >
+      <defs>
+        <filter id="rewards-vest-comet-glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation={1.6} />
+        </filter>
+      </defs>
+      <g
+        className="opacity-0 motion-safe:animate-rewards-vest-comet-fade"
+        onAnimationEnd={(event) => {
+          if (event.target === event.currentTarget) onDone();
+        }}
+      >
+        {VEST_COMET_LAYERS.map(({ start, length, opacity, strokeWidth, isGlow }) => (
+          <rect
+            key={`${start}-${strokeWidth}`}
+            x={0.25}
+            y={0.25}
+            width={width - 0.5}
+            height={height - 0.5}
+            rx={8}
+            pathLength={100}
+            fill="none"
+            stroke="currentColor"
+            strokeOpacity={opacity}
+            strokeWidth={strokeWidth}
+            // The dash pattern repeats exactly once per outline, so the comet loops without a visible start point.
+            strokeDasharray={`${length} ${100 - length}`}
+            strokeDashoffset={VEST_COMET_LENGTH - start}
+            filter={isGlow ? "url(#rewards-vest-comet-glow)" : undefined}
+            className="motion-safe:animate-rewards-vest-comet"
+            style={
+              {
+                "--comet-from": VEST_COMET_LENGTH - start,
+                "--comet-to": VEST_COMET_LENGTH - start - 100,
+              } as CSSProperties
+            }
+          />
+        ))}
+      </g>
+    </svg>
   );
 }
 
@@ -187,7 +267,7 @@ function IdleAction({ children }: { children: React.ReactNode }) {
     <Button
       variant="secondary"
       size="medium"
-      className="h-40 w-full shrink-0 !bg-fill-surfaceElevated50 !text-14 !leading-[1.25] !text-typography-disabled"
+      className="h-40 w-full shrink-0 !bg-fill-surfaceElevated50 !text-14 !font-medium !leading-[1.25] !text-typography-disabled opacity-90"
       disabled
     >
       {children}
@@ -238,9 +318,9 @@ function RewardBalanceRow({
   symbol?: string;
 }) {
   return (
-    <div className="flex h-24 items-center justify-between gap-8 text-14">
-      <span className="font-medium text-typography-secondary">{label}</span>
-      <span className="text-typography-secondary numbers">
+    <div className="flex h-24 items-center justify-between gap-8">
+      <span className="text-body-medium font-medium text-typography-secondary">{label}</span>
+      <span className="text-body-medium text-typography-secondary numbers">
         <span className="text-typography-primary">{formatTokenAmount(amount)}</span> {symbol}
       </span>
     </div>
@@ -252,17 +332,18 @@ export function RewardsVestingFlow() {
   const vestingConfig = getRewardsVestingConfig(chainId);
   const { pathname, search } = useLocation();
   const history = useHistory();
-  const { account, chainId: walletChainId, signer } = useWallet();
+  const { account, chainId: walletChainId, signer } = useRewardsTesterWallet();
   const { openConnectModal } = useConnectModal();
   const { setPendingTxns } = usePendingTxns();
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
   const hasMultipleWalletExtensionsChainError = Boolean(multipleWalletExtensionsChainError.buttonErrorMessage);
   const now = useCurrentUnixTimestamp(30_000);
-  const vestingResult = useRewardsVestingData(account, chainId);
+  const vestingResult = useRewardsTesterRewardsVestingData(account, chainId);
   const debugMode = getRewardsDebugMode(search);
-  const debugSnapshot = getRewardsVestingDebugSnapshot(debugMode);
+  const debugSnapshot = useRewardsTesterVestingSnapshot(getRewardsVestingDebugSnapshot(debugMode));
   const [debugData, setDebugData] = useState(() => debugSnapshot?.data);
+  useRewardsTesterVestingSync(debugData, setDebugData);
   const previousDebugModeRef = useRef(debugMode);
   const data = debugSnapshot ? debugData : vestingResult.data;
   const isLoading = debugSnapshot ? debugSnapshot.isLoading : vestingResult.isLoading;
@@ -444,11 +525,34 @@ export function RewardsVestingFlow() {
     setIsVestingModalVisible(true);
   }, []);
 
+  // Arriving from the "Start vesting" link above the tabs: draw the eye to the vest button.
+  const [isVestActionHighlighted, setIsVestActionHighlighted] = useState(false);
+  const [vestButtonSize, setVestButtonSize] = useState<{ width: number; height: number }>();
+  const vestButtonRef = useRef<HTMLButtonElement>(null);
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  useEffect(() => {
+    if (!isVestActionHighlighted) return;
+
+    const button = vestButtonRef.current;
+    // The comet clears the highlight on animationend, which never fires without motion.
+    if (!button || prefersReducedMotion) {
+      button?.scrollIntoView({ block: "nearest" });
+      setIsVestActionHighlighted(false);
+      return;
+    }
+
+    setVestButtonSize({ width: button.offsetWidth, height: button.offsetHeight });
+    button.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, [isVestActionHighlighted, prefersReducedMotion]);
+
   useEffect(() => {
     const searchParams = new URLSearchParams(search);
-    const shouldStartVesting = searchParams.get(REWARDS_VESTING_SEARCH_PARAM) === REWARDS_VESTING_START_ACTION;
+    const vestingAction = searchParams.get(REWARDS_VESTING_SEARCH_PARAM);
+    const shouldStartVesting = vestingAction === REWARDS_VESTING_START_ACTION;
+    const shouldHighlightVesting = vestingAction === REWARDS_VESTING_HIGHLIGHT_ACTION;
 
-    if (!shouldStartVesting) {
+    if (!shouldStartVesting && !shouldHighlightVesting) {
       hasHandledStartActionRef.current = false;
       return;
     }
@@ -456,7 +560,11 @@ export function RewardsVestingFlow() {
 
     hasHandledStartActionRef.current = true;
     if (vestableAmount > 0n) {
-      startVestingAction();
+      if (shouldStartVesting) {
+        startVestingAction();
+      } else {
+        setIsVestActionHighlighted(true);
+      }
     }
     searchParams.delete(REWARDS_VESTING_SEARCH_PARAM);
     const nextSearch = searchParams.toString();
@@ -763,13 +871,14 @@ export function RewardsVestingFlow() {
   return (
     <SkeletonTheme baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A">
       {isInteractiveDebug && data ? (
-        <RewardsVestingDebugPanel data={data} onApply={applyDebugData} onReset={resetDebugData} />
+        <RewardsTesterVestingSimulatorSlot>
+          <RewardsVestingDebugPanel data={data} onApply={applyDebugData} onReset={resetDebugData} />
+        </RewardsTesterVestingSimulatorSlot>
       ) : null}
       <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] items-stretch gap-8 max-lg:grid-cols-1 max-lg:grid-rows-[1fr_minmax(0,1fr)_1fr]">
         <section className="flex min-h-[265px] min-w-0 flex-col gap-4 rounded-8 bg-slate-900 p-12">
           <AmountHeader
-            step={1}
-            label={<Trans>Available to Vest</Trans>}
+            label={<Trans>Available to vest</Trans>}
             unit="esGMX"
             amount={vestableAmount}
             usd={getUsdValue(vestableAmount, data?.gmxPrice)}
@@ -831,7 +940,7 @@ export function RewardsVestingFlow() {
                 <ColorfulBanner
                   color="blue"
                   icon={InfoIcon}
-                  className="min-h-56 w-full shrink-0 !border-l-[1.5px] !px-12 !py-10 !text-14 !font-medium !leading-[1.25] [&_svg]:!p-0"
+                  className="min-h-56 w-full shrink-0 !border-l !px-12 !py-10 !text-14 !font-medium !leading-[1.25] [&_svg]:!p-0"
                 >
                   <div className="flex min-w-0 flex-col gap-2">
                     <div>
@@ -858,14 +967,22 @@ export function RewardsVestingFlow() {
                 <Button
                   variant="primary"
                   size="medium"
-                  className="h-40 w-full shrink-0 text-14"
+                  className="relative h-40 w-full shrink-0 text-14"
+                  buttonRef={vestButtonRef}
                   onClick={startVestingAction}
                   disabled={depositsDisabled}
                 >
+                  {isVestActionHighlighted && vestButtonSize ? (
+                    <VestButtonComet
+                      width={vestButtonSize.width}
+                      height={vestButtonSize.height}
+                      onDone={() => setIsVestActionHighlighted(false)}
+                    />
+                  ) : null}
                   {depositsDisabled ? (
                     <Trans>Deposits are closed.</Trans>
                   ) : isVestingActive ? (
-                    <Trans>Add to Vesting</Trans>
+                    <Trans>Add to vesting</Trans>
                   ) : (
                     <Trans>Start vesting</Trans>
                   )}
@@ -882,8 +999,7 @@ export function RewardsVestingFlow() {
 
         <section className="flex min-h-[265px] min-w-0 flex-col gap-4 rounded-8 bg-slate-900 p-12">
           <AmountHeader
-            step={2}
-            label={<Trans>Vesting</Trans>}
+            label={<Trans>In vesting</Trans>}
             unit={<Trans>esGMX left</Trans>}
             amount={effectiveRemainingAmount}
             usd={getUsdValue(effectiveRemainingAmount, data?.gmxPrice)}
@@ -908,7 +1024,7 @@ export function RewardsVestingFlow() {
           ) : (
             <div className="flex min-h-[132px] w-full grow flex-col justify-between gap-10 overflow-hidden rounded-12 border-1/2 border-stroke-primary bg-slate-950/50 p-12 backdrop-blur-[50px]">
               <div className="flex grow flex-col gap-6 px-4">
-                <div className="flex items-center justify-between gap-8 text-14">
+                <div className="text-body-medium flex items-center justify-between gap-8">
                   <span className="font-medium text-typography-secondary">
                     <Trans>Collateral locked</Trans>
                   </span>
@@ -917,7 +1033,7 @@ export function RewardsVestingFlow() {
                     {pairTokenSymbol}
                   </span>
                 </div>
-                <div className="flex items-center justify-between gap-8 text-14">
+                <div className="text-body-medium flex items-center justify-between gap-8">
                   <span className="font-medium text-typography-secondary">
                     <Trans>Status</Trans>
                   </span>
@@ -982,9 +1098,8 @@ export function RewardsVestingFlow() {
 
         <section className="flex min-h-[265px] min-w-0 flex-col gap-4 rounded-8 bg-slate-900 p-12">
           <AmountHeader
-            step={3}
-            label={<Trans>Rewards</Trans>}
-            unit={<Trans>GMX Claimable</Trans>}
+            label={<Trans>Claimable</Trans>}
+            unit="GMX"
             amount={displayedClaimableAmount}
             usd={getUsdValue(displayedClaimableAmount, data?.gmxPrice)}
             displayDecimals={CLAIMABLE_GMX_DISPLAY_DECIMALS}

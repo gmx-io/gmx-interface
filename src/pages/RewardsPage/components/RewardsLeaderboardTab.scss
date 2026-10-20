@@ -28,3 +28,23 @@
 .RewardsLeaderboardRank-3::after {
   background-image: url(../../../img/rank3.svg);
 }
+
+// Ranked rows start unstriped, so stripes and their hover colors from Table.scss are swapped by parity.
+.RewardsLeaderboard-rows > tr {
+  &:nth-child(odd) {
+    background-color: transparent;
+  }
+
+  &:nth-child(even):not(.RewardsLeaderboard-fillerRow) {
+    background-color: var(--color-fill-surfaceElevated50);
+  }
+
+  &.TableTr_hoverable:nth-child(odd):hover {
+    background: linear-gradient(0deg, var(--color-fill-surfaceElevated50), var(--color-fill-surfaceElevated50)),
+      linear-gradient(0deg, var(--color-fill-surfaceHover), var(--color-fill-surfaceHover));
+  }
+
+  &.TableTr_hoverable:nth-child(even):hover {
+    background: var(--color-fill-surfaceHover);
+  }
+}

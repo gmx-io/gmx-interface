@@ -8,7 +8,6 @@ import { ES_GMX_DECIMALS } from "domain/synthetics/incentives/v2/constants";
 import { getRewardsPromoSelection, type RewardsPromoSelection } from "domain/synthetics/incentives/v2/rewardsPromo";
 import type { AccountIncentiveStatus, IncentivesConfig } from "domain/synthetics/incentives/v2/types";
 import { formatMultiplier, formatRewardUsd } from "domain/synthetics/incentives/v2/utils";
-import { useLocalStorageSerializeKeySafe } from "lib/localStorage";
 import { formatAmount, PRECISION } from "lib/numbers";
 import { sendRewardsBannerEvent, sendRewardsNavigationEvent } from "lib/userAnalytics/rewardsEvents";
 
@@ -28,6 +27,7 @@ import GmxIcon from "img/ic_gmx_glyph.svg?react";
 import { getRewardsDebugMode } from "../rewardsDebug";
 import { getStartRewardsVestingPath } from "../rewardsRoutes";
 import { volumeTierLabels } from "./rewardsTiersShared";
+import { useRewardsTesterLocalStorageSerializeKeySafe } from "../tester/useRewardsTester";
 
 type RewardsBannerType =
   | "manual-reward"
@@ -167,7 +167,7 @@ function getRewardsPromotionalBannerContent({
     banners.push({
       type: "pair-boosts",
       accent: "boost",
-      title: <Trans>Activate Pair Boosts</Trans>,
+      title: <Trans>Activate pair boosts</Trans>,
       description: <Trans>Trade featured pairs to boost multiplier and rewards</Trans>,
       actions: [{ label: <Trans>Trade</Trans>, type: "trade", to: "/trade" }],
       art: "trade",
@@ -249,7 +249,7 @@ export function RewardsPromotionalBanners({
         : getRewardsPromotionalBannerContent({ config, status, promoSelection, walletGmx, walletEsGmx }),
     [config, promoSelection, showAllBanners, status, walletEsGmx, walletGmx]
   );
-  const [dismissedBanners, setDismissedBanners] = useLocalStorageSerializeKeySafe<DismissedRewardsBanners>(
+  const [dismissedBanners, setDismissedBanners] = useRewardsTesterLocalStorageSerializeKeySafe<DismissedRewardsBanners>(
     [REWARDS_PAGE_BANNERS_DISMISSED_KEY, account ?? "disconnected"],
     {}
   );

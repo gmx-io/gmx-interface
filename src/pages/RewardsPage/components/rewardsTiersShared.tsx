@@ -8,7 +8,7 @@ import type {
   VolumeTierId,
 } from "domain/synthetics/incentives/v2/types";
 import { formatMultiplier } from "domain/synthetics/incentives/v2/utils";
-import { formatAmountHuman, USD_DECIMALS } from "lib/numbers";
+import { expandDecimals, formatAmount, formatAmountHuman, USD_DECIMALS } from "lib/numbers";
 
 export type AccountDataState = "disconnected" | "loading" | "unavailable" | "ready";
 
@@ -44,6 +44,20 @@ export function getBoostsInDisplayOrder(boosts: BoostConfig[], includeComebackBo
     const boost = boosts.find((item) => item.boost === boostId);
     return boost ? [boost] : [];
   });
+}
+
+// One style for inline text links on the Rewards page (darker blue in light theme for contrast).
+export const REWARDS_LINK_CLASSNAME =
+  "inline-flex w-fit items-center gap-4 whitespace-nowrap text-13 font-medium leading-[16px] text-blue-400 dark:text-blue-300";
+
+export function isRewardsTokenAmountShown(amount: bigint, decimals: number) {
+  return amount >= expandDecimals(1, decimals - 2);
+}
+
+export function formatRewardsTokenAmount(amount: bigint, decimals: number) {
+  if (amount > 0n && !isRewardsTokenAmountShown(amount, decimals)) return "< 0.01";
+
+  return formatAmount(amount, decimals, 2, true, { trimTrailingZeros: true });
 }
 
 function formatCompactUsd(amount: bigint) {

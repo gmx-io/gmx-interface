@@ -12,15 +12,22 @@ type RewardsPageDataParams = {
   chainId: number;
   account?: string;
   loadTierAccountData: boolean;
+  loadAllTimeSummary?: boolean;
 };
 
-export function useRewardsPageData({ chainId, account, loadTierAccountData }: RewardsPageDataParams) {
+export function useRewardsPageData({
+  chainId,
+  account,
+  loadTierAccountData,
+  loadAllTimeSummary = loadTierAccountData,
+}: RewardsPageDataParams) {
   const incentivesV2State = useIncentivesV2State();
   const availability = incentivesV2State.availability;
   const mutateConfig = incentivesV2State.refreshConfig;
   const isActive = incentivesV2State.isActive;
   const canLoadAllTimeLeaderboard = availability.status !== "unsupported-chain";
   const shouldLoadAccountData = loadTierAccountData && isActive && Boolean(account);
+  const shouldLoadAllTimeSummary = loadAllTimeSummary && isActive && Boolean(account);
 
   const {
     data: accountStatusData,
@@ -45,7 +52,7 @@ export function useRewardsPageData({ chainId, account, loadTierAccountData }: Re
     isMutable: true,
     limit: 1,
     offset: 0,
-    enabled: shouldLoadAccountData,
+    enabled: shouldLoadAllTimeSummary,
   });
 
   const config = availability.status === "active" ? availability.config : undefined;
@@ -56,8 +63,8 @@ export function useRewardsPageData({ chainId, account, loadTierAccountData }: Re
       accountStatusData.epochTimestamp !== availability.config.epochTimestamp
   );
   const accountStatus = shouldLoadAccountData && !isMixedEpoch ? accountStatusData : undefined;
-  const allTimeSummary = shouldLoadAccountData ? allTimeSummaryData?.[0] : undefined;
-  const allTimeSummaryLoaded = shouldLoadAccountData && allTimeSummaryData !== undefined;
+  const allTimeSummary = shouldLoadAllTimeSummary ? allTimeSummaryData?.[0] : undefined;
+  const allTimeSummaryLoaded = shouldLoadAllTimeSummary && allTimeSummaryData !== undefined;
   // Delay the warning past normal epoch-rollover races
   const [hasMixedEpochPersisted, setHasMixedEpochPersisted] = useState(false);
   const isMixedEpochPersistent = isMixedEpoch && hasMixedEpochPersisted;
@@ -109,7 +116,7 @@ export function useRewardsPageData({ chainId, account, loadTierAccountData }: Re
 
   useEpochRolloverRevalidation({
     epochTimestamp: availability.status === "active" ? availability.config.epochTimestamp : undefined,
-    enabled: shouldLoadAccountData,
+    enabled: shouldLoadAccountData || shouldLoadAllTimeSummary,
     scopeKey: `${chainId}:${account ?? ""}:${accountStatusEndpoint ?? allTimeSummaryEndpoint ?? ""}`,
     revalidate: revalidateAccountData,
   });
@@ -118,11 +125,15 @@ export function useRewardsPageData({ chainId, account, loadTierAccountData }: Re
     const requests: Promise<unknown>[] = [mutateConfig()];
 
     if (shouldLoadAccountData) {
-      requests.push(mutateAccountStatus(), mutateAllTimeSummary());
+      requests.push(mutateAccountStatus());
+    }
+
+    if (shouldLoadAllTimeSummary) {
+      requests.push(mutateAllTimeSummary());
     }
 
     await Promise.allSettled(requests);
-  }, [mutateAccountStatus, mutateAllTimeSummary, mutateConfig, shouldLoadAccountData]);
+  }, [mutateAccountStatus, mutateAllTimeSummary, mutateConfig, shouldLoadAccountData, shouldLoadAllTimeSummary]);
 
   return useMemo(
     () => ({
@@ -135,11 +146,11 @@ export function useRewardsPageData({ chainId, account, loadTierAccountData }: Re
       isMixedEpoch,
       isMixedEpochPersistent,
       accountStatusError: shouldLoadAccountData ? accountStatusError : undefined,
-      allTimeSummaryError: shouldLoadAccountData ? allTimeSummaryError : undefined,
+      allTimeSummaryError: shouldLoadAllTimeSummary ? allTimeSummaryError : undefined,
       accountStatusLoading: shouldLoadAccountData && accountStatusLoading,
-      allTimeSummaryLoading: shouldLoadAccountData && allTimeSummaryLoading,
+      allTimeSummaryLoading: shouldLoadAllTimeSummary && allTimeSummaryLoading,
       accountStatusValidating: shouldLoadAccountData && accountStatusValidating,
-      allTimeSummaryValidating: shouldLoadAccountData && allTimeSummaryValidating,
+      allTimeSummaryValidating: shouldLoadAllTimeSummary && allTimeSummaryValidating,
       retry,
       mutateConfig,
       mutateAccountStatus,
@@ -165,6 +176,7 @@ export function useRewardsPageData({ chainId, account, loadTierAccountData }: Re
       mutateConfig,
       retry,
       shouldLoadAccountData,
+      shouldLoadAllTimeSummary,
     ]
   );
 }

@@ -8,16 +8,10 @@ import { getAddress, isAddress, isAddressEqual } from "viem";
 import "./RewardsLeaderboardTab.scss";
 
 import type { ContractsChainId } from "config/chains";
-import { useGmxPrice } from "domain/legacy";
 import { ES_GMX_DECIMALS, GT_DECIMALS } from "domain/synthetics/incentives/v2/constants";
 import type { IncentivesConfig, LeaderboardEntry } from "domain/synthetics/incentives/v2/types";
 import { useEpochRolloverRevalidation } from "domain/synthetics/incentives/v2/useEpochRolloverRevalidation";
-import {
-  type IncentivesLeaderboardOrderBy,
-  useIncentivesLeaderboard,
-} from "domain/synthetics/incentives/v2/useIncentivesLeaderboard";
-import { useIncentivesLeaderboardSearch } from "domain/synthetics/incentives/v2/useIncentivesLeaderboardSearch";
-import { useLatestGtPrice } from "domain/synthetics/incentives/v2/useLatestGtPrice";
+import type { IncentivesLeaderboardOrderBy } from "domain/synthetics/incentives/v2/useIncentivesLeaderboard";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { formatUsd } from "lib/numbers";
 import { sendRewardsLeaderboardShareClickEvent } from "lib/userAnalytics/rewardsEvents";
@@ -35,22 +29,28 @@ import Tabs from "components/Tabs/Tabs";
 import ShareIcon from "img/ic_share_arrow_filled.svg?react";
 
 import { RewardsTokenValue } from "./RewardsTokenValue";
+import {
+  useRewardsTesterGmxPrice,
+  useRewardsTesterIncentivesLeaderboard,
+  useRewardsTesterIncentivesLeaderboardSearch,
+  useRewardsTesterLatestGtPrice,
+} from "../tester/useRewardsTester";
 
 const PAGE_SIZE = 20;
 const SEARCH_DEBOUNCE_MS = 300;
 
 const COL_RANK: CSSProperties = { width: "7%" };
-const COL_ADDRESS: CSSProperties = { width: "19%" };
-const COL_TRADING_VOLUME: CSSProperties = { width: "14%" };
-const COL_REFERRAL_VOLUME: CSSProperties = { width: "14%" };
-const COL_ES_GMX: CSSProperties = { width: "14%" };
-const COL_GT: CSSProperties = { width: "12%" };
+const COL_ADDRESS: CSSProperties = { width: "17%" };
+const COL_TRADING_VOLUME: CSSProperties = { width: "13%" };
+const COL_REFERRAL_VOLUME: CSSProperties = { width: "13%" };
+const COL_ES_GMX: CSSProperties = { width: "15%" };
+const COL_GT: CSSProperties = { width: "15%" };
 const COL_REWARDS: CSSProperties = { width: "12%" };
 const COL_SHARE: CSSProperties = { width: "8%" };
 const LEADERBOARD_ROW_CLASS_NAME = "h-40";
 const LEADERBOARD_TD_CLASS_NAME = "!py-8";
 const CURRENT_ACCOUNT_ROW_CLASS_NAME =
-  "!bg-cold-blue-900 text-blue-100 [&_.AddressView-trader-id]:!text-typography-primary [&_.AddressView-trader-id_.text-typography-secondary]:!text-blue-100";
+  "!bg-cold-blue-900 text-blue-700 dark:text-blue-100 [&_.AddressView-trader-id]:!text-typography-primary [&_.AddressView-trader-id_.text-typography-secondary]:!text-blue-700 dark:[&_.AddressView-trader-id_.text-typography-secondary]:!text-blue-100";
 
 type LeaderboardPeriod = "current" | "previous" | "all";
 type LeaderboardSortField = "tradingVolume" | "referralVolume" | "esGmxRewards" | "gtRewards" | "rewardsUsd";
@@ -69,7 +69,7 @@ function RewardsLeaderboardSkeletonRow({ invisible, pinned = false }: { invisibl
     <tr
       className={cx(
         LEADERBOARD_ROW_CLASS_NAME,
-        pinned ? "!bg-cold-blue-900" : !invisible && "odd:bg-fill-surfaceElevated50"
+        pinned ? "!bg-cold-blue-900" : invisible ? "RewardsLeaderboard-fillerRow" : "odd:bg-fill-surfaceElevated50"
       )}
     >
       <TableTd className={LEADERBOARD_TD_CLASS_NAME}>
@@ -143,11 +143,13 @@ function LeaderboardRow({
       hoverable={!isHighlighted}
       className={cx(LEADERBOARD_ROW_CLASS_NAME, isHighlighted && CURRENT_ACCOUNT_ROW_CLASS_NAME)}
     >
-      <TableTd className={cx(LEADERBOARD_TD_CLASS_NAME, "relative")}>
+      <TableTd className={LEADERBOARD_TD_CLASS_NAME}>
         <span
-          className={cx("font-medium numbers after:!top-7", getRankClassName(entry.rank), {
-            "text-typography-secondary": !isHighlighted,
-          })}
+          className={cx(
+            "text-13 font-medium numbers",
+            getRankClassName(entry.rank),
+            !isHighlighted && "text-typography-secondary"
+          )}
         >
           {entry.rank}
         </span>
@@ -175,7 +177,7 @@ function LeaderboardRow({
           <button
             type="button"
             onClick={() => onShare(entry)}
-            className="inline-flex items-center gap-4 whitespace-nowrap text-13 font-medium text-blue-100"
+            className="inline-flex items-center gap-4 whitespace-nowrap text-13 font-medium text-blue-700 dark:text-blue-100"
           >
             <ShareIcon className="size-12" />
             <Trans>Share</Trans>
@@ -192,8 +194,8 @@ function EmptyPinnedLeaderboardRow({ account }: { account: string }) {
       data-testid="leaderboard-pinned-row"
       className={cx(LEADERBOARD_ROW_CLASS_NAME, CURRENT_ACCOUNT_ROW_CLASS_NAME)}
     >
-      <TableTd className={cx(LEADERBOARD_TD_CLASS_NAME, "relative")}>
-        <span className="numbers">{t`N/A`}</span>
+      <TableTd className={LEADERBOARD_TD_CLASS_NAME}>
+        <span className="text-13 font-medium numbers">{t`N/A`}</span>
       </TableTd>
       <TableTd className={LEADERBOARD_TD_CLASS_NAME} title={account}>
         <AddressView size={20} address={account} breakpoint="XL" />
@@ -217,8 +219,8 @@ export function RewardsLeaderboardTab({
   account?: string;
   config?: IncentivesConfig;
 }) {
-  const { gmxPrice } = useGmxPrice(chainId, {}, false, { fetchAllChains: false });
-  const { data: gtPrice } = useLatestGtPrice(chainId);
+  const { gmxPrice } = useRewardsTesterGmxPrice(chainId, {}, false, { fetchAllChains: false });
+  const { data: gtPrice } = useRewardsTesterLatestGtPrice(chainId);
   const [period, setPeriod] = useState<LeaderboardPeriod>(() => (config ? "current" : "all"));
   const [orderBy, setOrderBy] = useState<IncentivesLeaderboardOrderBy>("rewardsUsd_DESC");
   const [page, setPage] = useState(1);
@@ -240,15 +242,18 @@ export function RewardsLeaderboardTab({
         ? config.epochTimestamp - config.epochDuration
         : undefined;
 
-  const { data, totalCount, error, loading, isValidating, mutate, endpoint } = useIncentivesLeaderboard(chainId, {
-    epoch,
-    where: searchAccount ? { account: searchAccount } : undefined,
-    orderBy,
-    enabled: !isPartialSearch,
-    isMutable: selectedPeriod !== "previous",
-    limit: PAGE_SIZE,
-    offset: (page - 1) * PAGE_SIZE,
-  });
+  const { data, totalCount, error, loading, isValidating, mutate, endpoint } = useRewardsTesterIncentivesLeaderboard(
+    chainId,
+    {
+      epoch,
+      where: searchAccount ? { account: searchAccount } : undefined,
+      orderBy,
+      enabled: !isPartialSearch,
+      isMutable: selectedPeriod !== "previous",
+      limit: PAGE_SIZE,
+      offset: (page - 1) * PAGE_SIZE,
+    }
+  );
   const {
     data: searchData,
     totalCount: searchTotalCount,
@@ -256,7 +261,7 @@ export function RewardsLeaderboardTab({
     loading: searchLoading,
     isValidating: searchValidating,
     mutate: mutateSearch,
-  } = useIncentivesLeaderboardSearch(chainId, {
+  } = useRewardsTesterIncentivesLeaderboardSearch(chainId, {
     epoch,
     term: debouncedSearchTerm,
     orderBy,
@@ -270,7 +275,7 @@ export function RewardsLeaderboardTab({
     error: pinnedError,
     isValidating: pinnedValidating,
     mutate: mutatePinned,
-  } = useIncentivesLeaderboard(chainId, {
+  } = useRewardsTesterIncentivesLeaderboard(chainId, {
     epoch,
     where: account ? { account } : undefined,
     orderBy,
@@ -438,7 +443,7 @@ export function RewardsLeaderboardTab({
   return (
     <div className="flex flex-col rounded-8 bg-slate-900">
       <div className="border-b-1/2 border-slate-600 p-20">
-        <h3 className="mb-12 text-16 font-medium text-typography-primary">
+        <h3 className="text-body-large mb-12 font-medium text-typography-primary">
           <Trans>Leaderboard</Trans>
         </h3>
 
@@ -540,15 +545,13 @@ export function RewardsLeaderboardTab({
                   <TableTh />
                 </TableTheadTr>
               </thead>
-              <tbody>
+              {/* Its own tbody, so the ranked rows stripe the same with or without the pinned row. */}
+              {pinnedRow ? <tbody>{pinnedRow}</tbody> : null}
+              <tbody className="RewardsLeaderboard-rows">
                 {isInitialLoading ? (
-                  <>
-                    {pinnedRow}
-                    <TableListSkeleton count={PAGE_SIZE} Structure={RewardsLeaderboardSkeletonRow} />
-                  </>
+                  <TableListSkeleton count={PAGE_SIZE} Structure={RewardsLeaderboardSkeletonRow} />
                 ) : (
                   <>
-                    {pinnedRow}
                     {hasNoSearchMatch ? (
                       <TableTr className={LEADERBOARD_ROW_CLASS_NAME}>
                         <TableTd colSpan={8} className={cx(LEADERBOARD_TD_CLASS_NAME, "text-typography-secondary")}>

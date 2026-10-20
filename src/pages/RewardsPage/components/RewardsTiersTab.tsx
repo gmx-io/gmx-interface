@@ -3,18 +3,9 @@ import { isAddressEqual, type Address } from "viem";
 
 import type { ContractsChainId } from "config/chains";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
-import { useGmxPrice } from "domain/legacy";
-import {
-  getStakingRewardsPromoSelection,
-  useStableRewardsPromoSelection,
-} from "domain/synthetics/incentives/v2/rewardsPromo";
-import type { AccountIncentiveStatus, IncentivesConfig, LeaderboardEntry } from "domain/synthetics/incentives/v2/types";
-import { useLatestGtPrice } from "domain/synthetics/incentives/v2/useLatestGtPrice";
-import { useRewardsPromoActivity } from "domain/synthetics/incentives/v2/useRewardsPromoActivity";
+import { useStableRewardsPromoSelection } from "domain/synthetics/incentives/v2/rewardsPromo";
+import type { AccountIncentiveStatus, IncentivesConfig } from "domain/synthetics/incentives/v2/types";
 import { formatMultiplier } from "domain/synthetics/incentives/v2/utils";
-import { useRewardsVestingData } from "domain/vesting/useRewardsVestingData";
-import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
-import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
@@ -27,6 +18,12 @@ import { RewardsTiersFaq } from "./RewardsTiersFaq";
 import type { AccountDataState } from "./rewardsTiersShared";
 import { RewardsTiersSummary } from "./RewardsTiersSummary";
 import { RewardsTierTables } from "./RewardsTierTables";
+import {
+  useRewardsTesterIsWalletInitializing,
+  useRewardsTesterPromoActivity,
+  useRewardsTesterRewardsVestingData,
+  useRewardsTesterWallet,
+} from "../tester/useRewardsTester";
 
 function getTierMultiplier(tiers: { tier: string; multiplier: bigint }[], tier: string | null) {
   return tiers.find((item) => item.tier === tier)?.multiplier ?? 0n;
@@ -82,36 +79,20 @@ export function RewardsTiersTab({
   config,
   account,
   status,
-  allTimeSummary,
   statusLoading,
-  summaryLoading,
   statusUnavailable,
-  summaryUnavailable,
 }: {
   chainId: ContractsChainId;
   config: IncentivesConfig;
   account?: string;
   status?: AccountIncentiveStatus;
-  allTimeSummary?: LeaderboardEntry;
   statusLoading: boolean;
-  summaryLoading: boolean;
   statusUnavailable: boolean;
-  summaryUnavailable: boolean;
 }) {
-  const { status: walletStatus } = useWallet();
-  const isWalletInitializing = useIsWalletInitializing();
+  const { status: walletStatus } = useRewardsTesterWallet();
+  const isWalletInitializing = useRewardsTesterIsWalletInitializing();
   const { openConnectModal } = useConnectModal();
-  const { gmxPrice } = useGmxPrice(chainId, {}, false, {
-    enabled: Boolean(account),
-    fetchAllChains: false,
-  });
-  const { data: gtPrice } = useLatestGtPrice(chainId, { enabled: Boolean(account) });
-  const {
-    data: vestingData,
-    isLoading: vestingLoading,
-    vestableEsGmx,
-    vestableEsGmxUsd,
-  } = useRewardsVestingData(account, chainId);
+  const { data: vestingData, isLoading: vestingLoading } = useRewardsTesterRewardsVestingData(account, chainId);
   const currentStatus =
     status &&
     account &&
@@ -121,7 +102,7 @@ export function RewardsTiersTab({
       : undefined;
   const hasActiveStakingTier = Boolean(currentStatus?.stakingTier ?? currentStatus?.projectedStakingTier);
   const hasManualAllocation = (currentStatus?.manualRewardRemainingUsd ?? 0n) > 0n;
-  const { data: promoActivity, loading: promoActivityLoading } = useRewardsPromoActivity(chainId, {
+  const { data: promoActivity, loading: promoActivityLoading } = useRewardsTesterPromoActivity(chainId, {
     account,
     enabled: Boolean(account && currentStatus && !hasActiveStakingTier && !hasManualAllocation),
   });
@@ -137,7 +118,6 @@ export function RewardsTiersTab({
     activity: promoActivity,
     activityLoading: promoActivityLoading,
   });
-  const stakingPromoSelection = promoSelection ? getStakingRewardsPromoSelection(promoSelection) : undefined;
   const statusState: AccountDataState = !account
     ? "disconnected"
     : statusLoading
@@ -145,39 +125,28 @@ export function RewardsTiersTab({
       : statusUnavailable || !currentStatus
         ? "unavailable"
         : "ready";
-  const summaryState: AccountDataState = !account
-    ? "disconnected"
-    : summaryLoading
-      ? "loading"
-      : summaryUnavailable
-        ? "unavailable"
-        : "ready";
+  // While the wallet restores, keep the staking action as a skeleton instead of flashing "Buy GMX".
   const vestingState: AccountDataState = !account
-    ? "disconnected"
+    ? isWalletInitializing
+      ? "loading"
+      : "disconnected"
     : vestingData
       ? "ready"
       : vestingLoading
         ? "loading"
         : "unavailable";
+  const showConnectWallet = !account && !isWalletInitializing;
 
   return (
     <div className="grid grid-cols-[minmax(0,1fr)_40rem] items-start gap-8 max-[1620px]:grid-cols-[minmax(0,1fr)_30rem] max-xl:grid-cols-1">
       <div className="flex min-w-0 flex-col gap-8 max-xl:order-2">
         <div className="flex flex-col gap-12 rounded-8 bg-slate-900 p-12">
           <RewardsTiersSummary
-            allTimeSummary={allTimeSummary}
             currentMultiplier={currentStatus?.multiplier}
             projectedMultiplier={getProjectedMultiplier(config, currentStatus)}
             maxMultiplier={config.maxMultiplier}
             multiplierDecimals={config.multiplierDecimals}
             statusState={statusState}
-            summaryState={summaryState}
-            vestingState={vestingState}
-            vestableEsGmx={vestableEsGmx}
-            vestableEsGmxUsd={vestableEsGmxUsd}
-            hasVestingPosition={(vestingData?.vestingInfo.vestedAmount ?? 0n) > 0n}
-            gmxPrice={gmxPrice}
-            gtPrice={gtPrice?.priceUsd}
           />
           <RewardsTierCards
             config={config}
@@ -186,17 +155,16 @@ export function RewardsTiersTab({
             account={account}
             walletGmx={vestingData?.walletGmxBalance}
             walletGmxState={vestingState}
-            promoSelection={stakingPromoSelection}
           />
         </div>
 
-        {!account && !isWalletInitializing ? (
+        {showConnectWallet ? (
           <div className="overflow-hidden rounded-8 bg-slate-900">
             <EmptyTableContent
               isEmpty={true}
               isLoading={false}
               emptyText={
-                <div className="flex flex-col items-center p-20 text-center">
+                <div className="flex flex-col items-center p-20 text-center text-13 text-typography-secondary">
                   <Trans>Connect wallet to view your rewards</Trans>
                   <div className="mt-15">
                     <Button variant="primary" onClick={openConnectModal}>
@@ -210,7 +178,13 @@ export function RewardsTiersTab({
           </div>
         ) : null}
 
-        <RewardsTierTables chainId={chainId} config={config} status={currentStatus} statusState={statusState} />
+        <RewardsTierTables
+          chainId={chainId}
+          config={config}
+          status={currentStatus}
+          statusState={statusState}
+          showCaption={showConnectWallet}
+        />
       </div>
 
       <div className="sticky top-8 flex min-w-0 flex-col gap-8 max-xl:contents">

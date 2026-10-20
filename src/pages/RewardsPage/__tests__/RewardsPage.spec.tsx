@@ -52,21 +52,18 @@ vi.mock("pages/RewardsPage/components/RewardsOnboardingModal", () => ({
 }));
 
 vi.mock("pages/RewardsPage/components/RewardsTiersTab", () => ({
-  RewardsTiersTab: ({
-    summaryUnavailable,
-    statusLoading,
-    statusUnavailable,
-  }: {
-    summaryUnavailable: boolean;
-    statusLoading: boolean;
-    statusUnavailable: boolean;
-  }) => (
+  RewardsTiersTab: ({ statusLoading, statusUnavailable }: { statusLoading: boolean; statusUnavailable: boolean }) => (
     <div
-      data-summary-unavailable={String(summaryUnavailable)}
       data-status-loading={String(statusLoading)}
       data-status-unavailable={String(statusUnavailable)}
       data-testid="tiers-tab"
     />
+  ),
+}));
+
+vi.mock("pages/RewardsPage/components/RewardsSummaryRow", () => ({
+  RewardsSummaryRow: ({ summaryState }: { summaryState: string }) => (
+    <div data-summary-state={summaryState} data-testid="summary-row" />
   ),
 }));
 
@@ -186,7 +183,9 @@ describe("RewardsPage", () => {
     const tiersTab = screen.getByTestId("tiers-tab");
     expect(tiersTab.getAttribute("data-status-loading")).toBe(String(statusLoading));
     expect(tiersTab.getAttribute("data-status-unavailable")).toBe(String(statusUnavailable));
-    expect(tiersTab.getAttribute("data-summary-unavailable")).toBe(String(summaryUnavailable));
+    expect(screen.getByTestId("summary-row").getAttribute("data-summary-state")).toBe(
+      summaryUnavailable ? "unavailable" : "ready"
+    );
     for (const warning of [INDEXING_WARNING, REFRESH_WARNING]) {
       expect(screen.queryByText(warning) !== null).toBe(warnings.includes(warning));
     }
