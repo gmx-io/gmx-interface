@@ -872,6 +872,10 @@ msgstr "Nein"
 msgid "/ mo"
 msgstr "/ Monat"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Disconnecting the wallet doesn’t stop notifications."
+msgstr ""
+
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 #: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
 #: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
@@ -2644,6 +2648,10 @@ msgstr "Shift-Order storniert"
 msgid "Secure & permissionless"
 msgstr "Sicher & genehmigungsfrei"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Order executed"
+msgstr ""
+
 #: src/pages/Referrals/Referrals.tsx
 msgid "Register an affiliate code to access distributions"
 msgstr "Registrieren Sie einen Affiliatecode, um auf Ausschüttungen zuzugreifen"
@@ -2745,6 +2753,10 @@ msgstr "Ohne beanspruchte Funding-Gebühren, Preiseinfluss-Rückerstattungen und
 msgid "Auto-cancel order limit reached"
 msgstr "Auto-Cancel-Orderlimit erreicht"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Delivery isn't guaranteed. No web notification can be marked time sensitive, so Do Not Disturb will hold back a margin call. Don't rely on an alert as your only risk control."
+msgstr ""
+
 #: src/components/TVChart/Chart.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Simulated orderbook view of GMX liquidity. Opens execute at mark price with zero price impact. Net price impact applies only on closes (capped, usually at 0.5%). <0>Read more</0>."
@@ -2800,6 +2812,10 @@ msgstr "Stop Market Order für Long bei {0} festlegen"
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your discounts"
 msgstr "Ihre Rabatte"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Receiving as {RECEIVING_WALLET}. Turning off won't affect your other devices."
+msgstr ""
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Can I change my referral code?"
@@ -2862,6 +2878,10 @@ msgstr "TWAP-Tauschvorgänge nutzen nur die Liquidität der GMX-Pools, die für 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "How do I choose?"
 msgstr "Wie wähle ich aus?"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Turning off only affects this device."
+msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
 msgid "This pool holds USDG, so USDC is converted to USDG when you buy and back to USDC when you sell.<0/><1/>Instant swap goes through the GMX USDC/USDG pool within your buy or sell, in one transaction. You pay its swap fee and price impact.<2/><3/>Direct with Paxos converts with Paxos, the issuer of USDG, in a separate transaction that usually settles in 2–10 min. The converted tokens land in your wallet first.<4/><5/>Auto picks the cheaper option. Whitelisted addresses can choose either option and convert USDC to USDG with no Paxos fee. Other addresses always use Auto, and Direct with Paxos is only offered from {minAmount}.<6/><7/>The choice is fixed when only one option can handle the amount or a conversion is in progress."
@@ -4314,6 +4334,10 @@ msgstr "{amountText} wird in {indexTokenText} Long eingezahlt..."
 msgid "Position not found. It may have been closed."
 msgstr "Position nicht gefunden. Sie wurde möglicherweise geschlossen."
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Trading"
+msgstr ""
+
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade confirmations"
 msgstr "Handelsbestätigungen"
@@ -4400,6 +4424,10 @@ msgstr "Die Margin liegt unter dem für die Positionsgröße erforderlichen Mini
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "How much can I earn as an affiliate?"
 msgstr "Wie viel kann ich als Affiliate verdienen?"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "This browser can't show notifications. Open GMX in your computer's browser."
+msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -4806,6 +4834,14 @@ msgstr "Schritt 2: Erhalten"
 #: src/domain/tokens/insufficientApproval.tsx
 msgid "The approved amount is lower than the required amount. Approve again or reduce the amount"
 msgstr "Der genehmigte Betrag ist niedriger als der erforderliche Betrag. Genehmigen Sie erneut oder verringern Sie den Betrag"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Connect a wallet to get liquidation and order alerts on this device."
+msgstr ""
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Try again"
+msgstr ""
 
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Error name:"
@@ -5477,6 +5513,10 @@ msgstr "Preiseinfluss zu hoch"
 msgid "{0}h"
 msgstr "{0} h"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Your position was liquidated."
+msgstr ""
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Enter withdrawal amount"
 msgstr "Abhebungsbetrag eingeben"
@@ -5763,6 +5803,10 @@ msgstr "Ihr Handelsvolumen"
 msgid "Fail external swaps"
 msgstr "Externe Swaps fehlschlagen lassen"
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Debug"
+msgstr ""
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -5841,6 +5885,10 @@ msgstr "Positiver Einflussfaktor"
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "All trades"
 msgstr "Alle Trades"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Notifications aren't saved. There's no history to look back at — only what arrives on your device."
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking more than 20% of your max historical staked GMX or esGMX will reset your accrued rewards."
@@ -6483,6 +6531,10 @@ msgstr "Investieren mit Kontrolle über Risiko und Rendite"
 msgid "Over 100 protocols"
 msgstr "Über 100 Protokolle"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Alerts cover Arbitrum positions and orders only."
+msgstr ""
+
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Funding fees"
 msgstr "Finanzierungsgebühren"
@@ -6627,6 +6679,10 @@ msgstr "Beanspruchen auf Avalanche Fuji nicht verfügbar"
 #: src/components/TradeHistory/PositionLifecycleFilterHeader.tsx
 msgid "Clear position history filter"
 msgstr "Positionsverlaufsfilter löschen"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Click the icon to the left of the address bar → Notifications → Allow"
+msgstr ""
 
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Users"
@@ -7084,6 +7140,7 @@ msgstr "GMX auf Solana (GMTrade) wird über eine separate Domain bereitgestellt"
 #: src/components/Referrals/traders/HowToStartSaving.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+#: src/components/SettingsModal/NotificationsSettings.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
@@ -7420,6 +7477,10 @@ msgstr "Gesamter Zeitraum"
 msgid "Stay safe from <0/> liquidations"
 msgstr "Schützen Sie sich vor <0/> Liquidationen"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Notifications on this device"
+msgstr ""
+
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High net price impact"
 msgstr "Hoher Nettopreiseinfluss"
@@ -7493,6 +7554,10 @@ msgstr "Nettowert und PnL nach allen Gebühren anzeigen"
 #: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
 msgid "GMX cumulative volume"
 msgstr "GMX-Gesamtvolumen"
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Display"
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -7842,6 +7907,10 @@ msgstr "Die Order konnte nicht ausgeführt werden und ist eingefroren. Sie bleib
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Updating {updateOrdersCount} TP/SL orders..."
 msgstr "{updateOrdersCount} TP/SL-Orders werden aktualisiert..."
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Notifications didn't move to your new wallet {NEW_WALLET}. They still go to {RECEIVING_WALLET}."
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execution price didn't meet acceptable price"
@@ -8525,10 +8594,6 @@ msgstr "24H%"
 msgid "Net lifecycle fees / impact"
 msgstr "Nettogebühren / Preiseinfluss über den Lebenszyklus"
 
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Trading settings"
-msgstr "Handelseinstellungen"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Perpie"
 msgstr "Perpie"
@@ -8799,6 +8864,7 @@ msgstr "90T"
 msgid "({0} days ago)"
 msgstr "(vor {0} Tagen)"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
 #: src/components/TradeHistory/filters/ActionFilter.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Liquidation"
@@ -9149,6 +9215,10 @@ msgstr "Maximale Anzahl an Aktionen, bevor eine erneute Autorisierung erforderli
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Minimum capital used of {0} required to qualify for rankings"
 msgstr "Ein Mindestkapitaleinsatz von {0} ist erforderlich, um sich für die Rangliste zu qualifizieren"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Turn them on to get liquidation and order alerts on this device."
+msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
@@ -9735,6 +9805,7 @@ msgid "Leaves no {symbol} in your {source} for future Express fees"
 msgstr "Lässt keine {symbol} in {source} für zukünftige Express-Gebühren übrig"
 
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Notifications"
 msgstr "Benachrichtigungen"
 
@@ -9798,6 +9869,10 @@ msgstr "Volumen und Auszahlungen live verfolgen"
 #: src/lib/tenderly.tsx
 msgid "for {comment}"
 msgstr "für {comment}"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "On a computer, alerts need the browser to be running. No GMX tab has to be open."
+msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL)."
@@ -10382,10 +10457,6 @@ msgstr "Erhalten"
 msgid "ENDPOINT"
 msgstr "ENDPOINT"
 
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Display settings"
-msgstr "Anzeigeeinstellungen"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GM: {0} [{1}] liquidity in GLV. Choose a different pool, reduce the sell size, or split the withdrawal across pools."
 msgstr "Unzureichende Liquidität für GM: {0} [{1}] in GLV. Wählen Sie einen anderen Pool, reduzieren Sie die Verkaufsmenge oder verteilen Sie die Auszahlung auf mehrere Pools."
@@ -10833,6 +10904,10 @@ msgstr "Vermögenswerte mit geringem Wert anzeigen ({0})"
 msgid "Fulfilling order request..."
 msgstr "Orderanfrage wird ausgeführt..."
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Couldn't turn them on: the notification service didn't answer."
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Negative impact factor"
 msgstr "Negativer Einflussfaktor"
@@ -11030,6 +11105,10 @@ msgstr "verschieben"
 #: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "EVM networks only"
 msgstr "Nur EVM-Netzwerke"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Turn them on to get liquidation and order alerts on this device. Your browser will ask you to allow them."
+msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation risk alerts"
@@ -11590,6 +11669,10 @@ msgstr "TRACKER"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution</2><3> Low size caps, but fun to do some degen gambling with</3>"
 msgstr "<0>Hab <1>@GMX_IO</1> zum ersten Mal ausprobiert. </0><2> Ziemlich beeindruckend – keine Slippage, schnelle Ausführung</2><3> Niedrige Limits für Positionsgrößen, aber macht Spaß, damit ein bisschen Degen-Gambling zu betreiben</3>"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Good to know"
+msgstr ""
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
@@ -12536,6 +12619,10 @@ msgstr "Profitieren Sie von bis zu 100-fachem Hebel und garantierter On-Chain-Li
 msgid "Your current staked balance relative to your historical max. Dropping below 80% resets your accumulated staking power to zero."
 msgstr "Ihr aktuelles gestaktes Guthaben im Verhältnis zu Ihrem historischen Höchstwert. Wenn es unter 80 % fällt, wird Ihre angesammelte Stakingkraft auf null zurückgesetzt."
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Notifications stop after 30 days without opening GMX on this device."
+msgstr ""
+
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Oracle keeper monitoring"
 msgstr "Überwachung der Oracle Keeper"
@@ -12603,6 +12690,10 @@ msgstr "Abhebung angefordert"
 msgid "Last 30d"
 msgstr "Letzte 30 Tage"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "You blocked notifications for GMX in this browser, so GMX can't ask again."
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Dashboards"
 msgstr "Dashboards"
@@ -12623,6 +12714,10 @@ msgstr "Unzureichende Liquidität im Pool WETH-USDC. Wählen Sie einen anderen P
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Failed to decode error. Make sure the hex data is valid and starts with \"0x\"."
 msgstr "Fehler beim Decodieren. Stellen Sie sicher, dass die Hex-Daten gültig sind und mit \"0x\" beginnen."
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Limit, Take-Profit, Stop-Loss and Stop Market."
+msgstr ""
 
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
@@ -12966,6 +13061,7 @@ msgid "No distributions to claim"
 msgstr "Keine Ausschüttungen zum Beanspruchen"
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+#: src/components/SettingsModal/NotificationsSettings.tsx
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 msgid "Copy link"
 msgstr "Link kopieren"
@@ -13057,10 +13153,6 @@ msgstr "GMX in der Wallet"
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Period profit"
 msgstr "Gewinn im Zeitraum"
-
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Debug settings"
-msgstr "Debug-Einstellungen"
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX"

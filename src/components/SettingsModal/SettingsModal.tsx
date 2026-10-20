@@ -24,22 +24,24 @@ import Tabs from "components/Tabs/Tabs";
 
 import { DebugSettings } from "./DebugSettings";
 import { DisplaySettings } from "./DisplaySettings";
+import { NotificationsSettings } from "./NotificationsSettings";
 import { TradingMode } from "./shared";
 import { TradingSettings } from "./TradingSettings";
 
-let SETTINGS_TABS: ("trading" | "display" | "debug")[] = [];
+let SETTINGS_TABS: ("trading" | "display" | "notifications" | "debug")[] = [];
 if (isDevelopment()) {
-  SETTINGS_TABS = ["trading", "display", "debug"];
+  SETTINGS_TABS = ["trading", "display", "notifications", "debug"];
 } else {
-  SETTINGS_TABS = ["trading", "display"];
+  SETTINGS_TABS = ["trading", "display", "notifications"];
 }
 
 type SettingsTab = (typeof SETTINGS_TABS)[number];
 
 const TAB_LABELS = {
-  trading: msg`Trading settings`,
-  display: msg`Display settings`,
-  debug: msg`Debug settings`,
+  trading: msg`Trading`,
+  display: msg`Display`,
+  notifications: msg`Notifications`,
+  debug: msg`Debug`,
 };
 
 export function SettingsModal({
@@ -275,7 +277,7 @@ export function SettingsModal({
       desktopZIndex={1002}
     >
       <div className="flex flex-col gap-8">
-        <Tabs options={tabOptions} selectedValue={activeTab} onChange={setActiveTab} type="inline" />
+        <Tabs options={tabOptions} selectedValue={activeTab} onChange={setActiveTab} type="underline" />
         <div className="flex max-w-[380px] flex-row items-start overflow-x-hidden max-md:max-w-none">
           <TabWrapper tab="trading" activeTab={activeTab}>
             <TradingSettings
@@ -291,6 +293,9 @@ export function SettingsModal({
           </TabWrapper>
           <TabWrapper tab="display" activeTab={activeTab}>
             <DisplaySettings />
+          </TabWrapper>
+          <TabWrapper tab="notifications" activeTab={activeTab}>
+            <NotificationsSettings />
           </TabWrapper>
           <TabWrapper tab="debug" activeTab={activeTab}>
             <DebugSettings isSettingsVisible={isSettingsVisible} />
