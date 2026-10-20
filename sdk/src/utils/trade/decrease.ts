@@ -355,7 +355,7 @@ export function getDecreasePositionAmounts(p: {
     const isSwapToCollateral = values.decreaseSwapType === DecreasePositionSwapType.SwapPnlTokenToCollateralToken;
 
     const swapProfitStats = getSwapStats({
-      marketInfo,
+      marketInfo: isSwapToCollateral ? getMarketInfoAfterProfitPayout({ marketInfo, isLong, profitUsd }) : marketInfo,
       tokenInAddress: isSwapToCollateral ? pnlToken.address : collateralToken.address,
       tokenOutAddress: isSwapToCollateral ? collateralToken.address : pnlToken.address,
       usdIn: profitUsd,
@@ -747,6 +747,16 @@ function getPnlTokenProfitValueUsd(profitUsd: bigint, pnlToken: TokenData) {
   const profitInPnlToken = convertToTokenAmount(profitUsd, pnlToken.decimals, pnlToken.prices.maxPrice);
 
   return convertToUsd(profitInPnlToken, pnlToken.decimals, pnlToken.prices.minPrice) ?? 0n;
+}
+
+function getMarketInfoAfterProfitPayout(p: { marketInfo: MarketInfo; isLong: boolean; profitUsd: bigint }): MarketInfo {
+  const { marketInfo, isLong, profitUsd } = p;
+  const pnlToken = isLong ? marketInfo.longToken : marketInfo.shortToken;
+  const payoutAmount = convertToTokenAmount(profitUsd, pnlToken.decimals, pnlToken.prices.maxPrice)!;
+
+  return isLong
+    ? { ...marketInfo, longPoolAmount: marketInfo.longPoolAmount - payoutAmount }
+    : { ...marketInfo, shortPoolAmount: marketInfo.shortPoolAmount - payoutAmount };
 }
 
 export function getCollateralDeltaAmountAfterPriceImpactDiff(p: {
