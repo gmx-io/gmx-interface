@@ -188,7 +188,7 @@ export function AvailableToTradeAssetsTitle() {
 
 export function TransferDetailsTitle() {
   const [selectedTransferGuid] = useGmxAccountSelectedTransferGuid();
-  const selectedTransfer = useGmxAccountFundingHistoryItem(selectedTransferGuid);
+  const { transfer: selectedTransfer } = useGmxAccountFundingHistoryItem(selectedTransferGuid);
 
   return (
     <TitleWithBack backTo="transferHistory">

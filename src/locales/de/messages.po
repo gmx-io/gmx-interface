@@ -6015,6 +6015,10 @@ msgstr "Unbekannte GM-Kauforder"
 msgid "Build on GMX.<0/>Get paid on every trade."
 msgstr "Bauen Sie auf GMX.<0/>Verdienen Sie an jedem Trade."
 
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
+msgid "Transfer not found"
+msgstr "Übertragung nicht gefunden"
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 msgid "Insufficient {tokenInSymbol} balance"
 msgstr "Unzureichendes {tokenInSymbol}-Guthaben"
@@ -9618,6 +9622,7 @@ msgid "Copy"
 msgstr "Kopieren"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Amount"
@@ -10678,6 +10683,7 @@ msgstr "Fehler bei der Simulation der Abhebung"
 msgid "Claims"
 msgstr "Ansprüche"
 
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Date"
@@ -12674,6 +12680,10 @@ msgstr "Gesamte Belohnungen"
 #: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 msgid "Not enough history yet"
 msgstr "Noch nicht genügend Verlaufsdaten"
+
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
+msgid "Failed to load transfer details"
+msgstr "Übertragungsdetails konnten nicht geladen werden"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "This trigger is at or beyond the estimated liquidation price. The margin deposit will be attempted before liquidation when eligible, but execution is not guaranteed."
