@@ -78,20 +78,23 @@ describe("useIncentivesConfig epoch boundary", () => {
       [1, 2, 3, 3, 3, 3],
     ],
     ["a newer epoch is observed", [], newConfig, [1, 1, 1, 1, 1, 1]],
-  ])("retries after 5, 15, 30, and 45 seconds when %s", async (_, failures, result, expectedCalls) => {
-    vi.setSystemTime((epochTimestamp + epochDuration) * 1000);
-    const mutate = vi.fn().mockResolvedValue(result);
-    failures.forEach((error) => mutate.mockRejectedValueOnce(error));
-    setSWRResult(mutate);
-    render(<Harness />);
+  ])(
+    "retries after 5, 15, 30, and 45 seconds until a newer epoch arrives when %s",
+    async (_, failures, result, expectedCalls) => {
+      vi.setSystemTime((epochTimestamp + epochDuration) * 1000);
+      const mutate = vi.fn().mockResolvedValue(result);
+      failures.forEach((error) => mutate.mockRejectedValueOnce(error));
+      setSWRResult(mutate);
+      render(<Harness />);
 
-    const calls: number[] = [];
-    for (const milliseconds of [1_000, 5_000, 15_000, 30_000, 45_000, 60_000]) {
-      await advanceTimers(milliseconds);
-      calls.push(mutate.mock.calls.length);
+      const calls: number[] = [];
+      for (const milliseconds of [1_000, 5_000, 15_000, 30_000, 45_000, 60_000]) {
+        await advanceTimers(milliseconds);
+        calls.push(mutate.mock.calls.length);
+      }
+      expect(calls).toEqual(expectedCalls);
     }
-    expect(calls).toEqual(expectedCalls);
-  });
+  );
 
   it("schedules boundary retries again after the selected endpoint changes", async () => {
     vi.setSystemTime((epochTimestamp + epochDuration) * 1000);
