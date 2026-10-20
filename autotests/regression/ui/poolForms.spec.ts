@@ -1,7 +1,9 @@
 import { expect, type Locator, type Page, type Route } from "@playwright/test";
-import { toFunctionSelector } from "viem";
+import { decodeFunctionData, isAddressEqual, multicall3Abi, toFunctionSelector, type Address, type Hex } from "viem";
 
 import SyntheticsReader from "../../../sdk/src/abis/SyntheticsReader";
+import type { ContractsChainId } from "../../../sdk/src/configs/chains";
+import { getContract } from "../../../sdk/src/configs/contracts";
 import { test } from "../fixtures/browser";
 import { displayedNumber } from "../fixtures/displayedNumber";
 import { infoRowValue, openTooltip } from "../fixtures/marketData";
@@ -143,20 +145,46 @@ for (const type of ["GM", "GLV"] as const) {
   });
 }
 
+// The GLV picks its pool once the GM token prices arrive. The app's batcher merges them with other reads into
+// aggregate3 chunks sent to the primary and fallback RPCs, so match chunks that price GM tokens without market info.
+function isGmTokenPriceMulticall(body: string | null, chainId: ContractsChainId) {
+  try {
+    const requests = JSON.parse(body ?? "") as { method?: string; params?: [{ to?: Address; data?: Hex }] }[];
+    if (!Array.isArray(requests) || requests.length !== 1 || requests[0].method !== "eth_call") return false;
+    const call = requests[0].params?.[0];
+    if (!call?.to || !call.data || !isAddressEqual(call.to, multicall3)) return false;
+    const decoded = decodeFunctionData({ abi: multicall3Abi, data: call.data });
+    if (decoded.functionName !== "aggregate3") return false;
+    const reader = getContract(chainId, "SyntheticsReader");
+    const reads = decoded.args[0].filter(({ target }) => isAddressEqual(target, reader));
+    const selectors = new Set(reads.map(({ callData }) => callData.slice(0, 10)));
+    return selectors.has(readerSelector("getMarketTokenPrice")) && !selectors.has(readerSelector("getMarketInfo"));
+  } catch {
+    return false;
+  }
+}
+
+const multicall3 = "0xcA11bde05977b3631167028862bE2a173976CA11";
+const readerSelector = (name: string) =>
+  toFunctionSelector(SyntheticsReader.find((item) => item.type === "function" && item.name === name)!);
+
 test("12.19 a GLV detail page loaded directly quotes a buy amount typed before the vault picks its pool", async ({
   page,
+  chainId,
 }) => {
   await openPoolDetails(page, "GLV");
-  const selector = (name: string) =>
-    toFunctionSelector(SyntheticsReader.find((item) => item.type === "function" && item.name === name)!).slice(2);
-  const [tokenPrice, marketInfo] = [selector("getMarketTokenPrice"), selector("getMarketInfo")];
-  // The GLV picks its pool once the GM token prices arrive in a multicall of their own; hold it until the amount is typed.
+  const maxHeld = 8;
+  const holdMs = 30_000;
   let held = 0;
+  let timedOut = false;
   let release!: () => void;
   const released = new Promise<void>((resolve) => (release = resolve));
+  const deadline = setTimeout(() => {
+    timedOut = true;
+    release();
+  }, holdMs);
   const hold = async (route: Route) => {
-    const body = route.request().postData()?.toLowerCase() ?? "";
-    if (route.request().method() === "POST" && body.includes(tokenPrice) && !body.includes(marketInfo)) {
+    if (held < maxHeld && isGmTokenPriceMulticall(route.request().postData(), chainId as ContractsChainId)) {
       held++;
       await released;
     }
@@ -168,14 +196,18 @@ test("12.19 a GLV detail page loaded directly quotes a buy amount typed before t
     await page.getByRole("button", { name: "Buy GLV", exact: true }).click();
     const { form, input, parts } = formParts(page);
     await input.fill("1");
-    await expect.poll(() => held).toBeGreaterThan(0);
+    await expect.poll(() => held, { message: "The GM token price multicall was not held" }).toBeGreaterThan(0);
     const pool = form.locator(".Exchange-info-row").filter({ hasText: /^Pool/ });
     await expect(pool).toBeVisible();
     await expect(pool).not.toContainText("/USD");
+    expect(timedOut, `The held GM token prices were released after ${holdMs} ms, before the amount was typed`).toBe(
+      false
+    );
     release();
     await settledQuote(parts);
     await expect(input).toHaveValue("1");
   } finally {
+    clearTimeout(deadline);
     release();
     await page.context().unroute("**/*", hold);
   }
