@@ -1561,8 +1561,10 @@ msgstr "正在创建推荐码..."
 msgid "DATE"
 msgstr "日期"
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "Solana"
 msgstr "Solana"
 
@@ -7190,6 +7192,10 @@ msgstr "24 小时"
 msgid "High price impact"
 msgstr "高价格影响"
 
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
+msgid "This page is available on EVM networks only. Switch the network in the header, or go to <0>Trade</0>."
+msgstr "此页面仅适用于 EVM 网络。请在页面顶部切换网络，或前往<0>交易</0>页面。"
+
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/NetFeeTooltip.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
@@ -9219,6 +9225,10 @@ msgstr "扣除费用后保证金较低。请存入更多资金以降低清算风
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
 msgstr "分别接收 {profitTokenSymbol} 和 {collateralTokenSymbol}"
 
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
+msgid "Trading on Solana is coming soon."
+msgstr "Solana 上的交易功能即将推出。"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min deposit: {0}"
 msgstr "最低存入金额：{0}"
@@ -11016,6 +11026,10 @@ msgstr "买入"
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
 msgstr "转移"
+
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
+msgid "EVM networks only"
+msgstr "仅限 EVM 网络"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation risk alerts"

@@ -1561,8 +1561,10 @@ msgstr "Creating referral code..."
 msgid "DATE"
 msgstr "DATE"
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "Solana"
 msgstr "Solana"
 
@@ -7190,6 +7192,10 @@ msgstr "24h"
 msgid "High price impact"
 msgstr "High price impact"
 
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
+msgid "This page is available on EVM networks only. Switch the network in the header, or go to <0>Trade</0>."
+msgstr "This page is available on EVM networks only. Switch the network in the header, or go to <0>Trade</0>."
+
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/NetFeeTooltip.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
@@ -9219,6 +9225,10 @@ msgstr "Low margin after fees. Deposit more to reduce liquidation risk."
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
 msgstr "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
 
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
+msgid "Trading on Solana is coming soon."
+msgstr "Trading on Solana is coming soon."
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min deposit: {0}"
 msgstr "Min deposit: {0}"
@@ -11016,6 +11026,10 @@ msgstr "Buying"
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
 msgstr "shift"
+
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
+msgid "EVM networks only"
+msgstr "EVM networks only"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation risk alerts"

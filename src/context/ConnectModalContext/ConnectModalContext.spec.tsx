@@ -39,6 +39,10 @@ vi.mock("config/multichain", () => ({
   isSourceChain: () => false,
 }));
 
+vi.mock("lib/chains", () => ({
+  useChainId: () => ({ networkId: 42161 }),
+}));
+
 vi.mock("lib/metrics", () => ({
   metrics: {
     pushError: mocks.pushError,
