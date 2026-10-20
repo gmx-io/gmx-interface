@@ -216,6 +216,7 @@ export function useTradeboxButtonState({
   const {
     tokensToApprove,
     isAllowanceLoaded: isAllowanceLoadedRaw,
+    isAllowanceLoading,
     isApproving,
     handleApprove,
   } = useTokenApproval({
@@ -233,8 +234,10 @@ export function useTradeboxButtonState({
     },
   });
 
-  const isDataReady = Boolean(fromToken && payAmount !== undefined && gasPaymentToken);
+  const isDataReady = Boolean(fromToken && payAmount !== undefined);
   const isAllowanceLoaded = isDataReady && isAllowanceLoadedRaw;
+  // until allowances are known an order could be sent without the approval it needs
+  const isAllowancePending = isDataReady && isAllowanceLoading && !isApproving;
 
   const pendingApprovalTokenAddress = isAllowanceLoaded && !isApproving ? tokensToApprove[0] : undefined;
   const isPendingGasPaymentTokenApproval =
@@ -599,6 +602,10 @@ export function useTradeboxButtonState({
       return;
     }
 
+    if (isAllowancePending || isApproving) {
+      return;
+    }
+
     setStage("processing");
 
     let txnPromise: Promise<any>;
@@ -634,6 +641,7 @@ export function useTradeboxButtonState({
     fromToken,
     handleApprove,
     isAllowanceLoaded,
+    isAllowancePending,
     isApproving,
     isFromTokenGmxAccount,
     isIncrease,
@@ -743,6 +751,19 @@ export function useTradeboxButtonState({
       };
     }
 
+    if (isAllowancePending) {
+      return {
+        ...commonState,
+        text: (
+          <>
+            <Trans>Loading…</Trans>
+            <SpinnerIcon className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
+      };
+    }
+
     if ((isApproving || isAllowanceLoaded) && tokensToApprove.length) {
       const tokenToApprove = tokensToApprove[0];
       const tokenSymbol = getToken(chainId, tokenToApprove).symbol;
@@ -844,6 +865,7 @@ export function useTradeboxButtonState({
     isApproving,
     tokensToApprove,
     isAllowanceLoaded,
+    isAllowancePending,
     stage,
     isIncrease,
     sidecarEntries,

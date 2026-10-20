@@ -5984,6 +5984,7 @@ msgstr "近 180 天"
 msgid "Positive funding fees"
 msgstr "正向資金費用"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Loading…"
 msgstr "載入中…"

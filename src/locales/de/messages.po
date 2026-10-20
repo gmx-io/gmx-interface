@@ -5984,6 +5984,7 @@ msgstr "Letzte 180 Tage"
 msgid "Positive funding fees"
 msgstr "Positive Finanzierungsgebühren"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Loading…"
 msgstr "Lädt…"
