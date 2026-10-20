@@ -10,8 +10,8 @@ import {
 import { useChainId } from "lib/chains";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipFootnote, TooltipRow, TooltipRows } from "components/Tooltip/TooltipBlocks";
 
 import { NetworkFeeSourceIcon } from "./NetworkFeeSourceIcon";
 
@@ -54,39 +54,35 @@ export function NetworkFeeValue({ amount, usd, decimals, symbol, isStable, sourc
     }
 
     return (
-      <TooltipWithPortal position="left-start" handleClassName="numbers" variant="none" content={content}>
+      <StandardTooltip position="bottom-end" handleClassName="numbers" variant="none" content={content}>
         {amountWithUsd}
-      </TooltipWithPortal>
+      </StandardTooltip>
     );
   }
 
   return (
-    <TooltipWithPortal
-      position="left-start"
+    <StandardTooltip
+      position="bottom-end"
       handleClassName="numbers"
       variant="none"
       content={
-        <>
-          <StatsTooltipRow
-            label={t`Paid from`}
-            showDollar={false}
-            value={
-              <span className="inline-flex items-center gap-4">
-                <NetworkFeeSourceIcon source={source} isDecorative />
-                {getNetworkFeeSourceLabel(source)}
-              </span>
-            }
-          />
-          {content && (
-            <>
-              <div className="h-8" />
-              {content}
-            </>
-          )}
-        </>
+        <TooltipContent>
+          <TooltipRows>
+            <TooltipRow
+              label={t`Paid from`}
+              value={
+                <span className="inline-flex items-center gap-4">
+                  <NetworkFeeSourceIcon source={source} isDecorative />
+                  {getNetworkFeeSourceLabel(source)}
+                </span>
+              }
+            />
+          </TooltipRows>
+          {content && (typeof content === "string" ? <TooltipFootnote>{content}</TooltipFootnote> : content)}
+        </TooltipContent>
       }
     >
       {amountWithUsd}
-    </TooltipWithPortal>
+    </StandardTooltip>
   );
 }

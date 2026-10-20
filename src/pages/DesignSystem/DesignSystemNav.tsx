@@ -7,7 +7,6 @@ type Props = {
   activeSlug: string;
 };
 
-// Same look as the app's side menu items (components/SideNav)
 const ITEM_CLASSNAME = `flex items-center rounded-8 px-12 py-10 text-left text-body-large font-medium
   text-typography-secondary hover:bg-blue-400/20 hover:text-blue-400
   dark:hover:bg-slate-700 dark:hover:text-typography-primary`;
@@ -29,9 +28,6 @@ export function DesignSystemNav({ activeSlug }: Props) {
   );
 }
 
-/**
- * On screens narrower than the side menu breakpoint, the pages are shown as a row of links.
- */
 export function DesignSystemMobileNav({ activeSlug }: Props) {
   return (
     <div className="flex gap-8 overflow-x-auto pb-4 lg:hidden">

@@ -28,13 +28,14 @@ import { getNativeToken } from "sdk/configs/tokens";
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import { ExpressTradingCannotSignBanner } from "components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner";
 import { ExpressTradingOutOfGasBanner } from "components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { GasPaymentTokenSelector } from "components/GasPaymentTokenSelector/GasPaymentTokenSelector";
 import { MarginDestinationSelector } from "components/MarginDestinationSelector/MarginDestinationSelector";
+import { MarginDestinationTooltipContent } from "components/MarginDestinationSelector/MarginDestinationTooltipContent";
 import { OldSubaccountWithdraw } from "components/OldSubaccountWithdraw/OldSubaccountWithdraw";
 import { OneClickAdvancedSettings } from "components/OneClickAdvancedSettings/OneClickAdvancedSettings";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import { LabelWithTooltip } from "components/Tooltip/LabelWithTooltip";
+import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import ExpressIcon from "img/ic_express.svg?react";
 import HourGlassIcon from "img/ic_hourglass.svg?react";
@@ -107,26 +108,25 @@ export function TradingSettings({
 
   const expressDisabledTooltip = !canSignTypedData ? (
     srcChainId !== undefined ? (
-      <Trans>Your wallet cannot sign messages. Connect a different wallet to trade.</Trans>
+      t`Your wallet cannot sign messages. Connect a different wallet to trade.`
     ) : (
-      <Trans>Your wallet cannot sign messages. Use Classic mode to trade.</Trans>
+      t`Your wallet cannot sign messages. Use Classic mode to trade.`
     )
   ) : isExpressTradingDisabled ? (
-    <div className="flex flex-col gap-8">
-      <div>
+    <TooltipContent>
+      <TooltipText>
         <Trans>Express needs {gasPaymentTokensText} in your Wallet. Swap or bridge one of them.</Trans>
-      </div>
+      </TooltipText>
       {showGmxAccountGasPaymentTokenSelector && (
-        <div>
+        <TooltipText>
           <Trans>Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them.</Trans>
-        </div>
+        </TooltipText>
       )}
-    </div>
+    </TooltipContent>
   ) : undefined;
 
   const oneClickDisabledTooltip =
-    expressDisabledTooltip ??
-    (isContractAccount ? <Trans>One-Click Trading is unavailable for smart wallets</Trans> : undefined);
+    expressDisabledTooltip ?? (isContractAccount ? t`One-Click Trading is unavailable for smart wallets` : undefined);
 
   const handleSelectGasPaymentToken = useCallback(
     (tokenAddress: string) => {
@@ -274,11 +274,7 @@ export function TradingSettings({
           <div className="flex items-center justify-between">
             <LabelWithTooltip
               className="font-medium"
-              tooltip={
-                <Trans>
-                  Network for your GMX Account and positions. Balances and positions don't transfer between networks.
-                </Trans>
-              }
+              tooltip={t`Network for your GMX Account and positions. Balances and positions don't transfer between networks.`}
               label={t`Settlement chain`}
             />
             <DropdownSelector
@@ -313,19 +309,20 @@ export function TradingSettings({
         <InputSetting
           title={t`Default allowed slippage`}
           description={
-            <div>
-              <Trans>
-                The difference between expected and actual execution price due to volatility. Orders won't execute if
-                slippage exceeds your maximum.
-                <br />
-                <br />
-                Slippage differs from price impact, which is based on open interest imbalances.
-              </Trans>{" "}
-              <ExternalLink href="https://docs.gmx.io/docs/trading/fees/#slippage">
+            <TooltipContent>
+              <TooltipText>
+                <Trans>
+                  The difference between expected and actual execution price due to volatility. Orders won't execute if
+                  slippage exceeds your maximum.
+                  <br />
+                  <br />
+                  Slippage differs from price impact, which is based on open interest imbalances.
+                </Trans>
+              </TooltipText>
+              <TooltipLink href="https://docs.gmx.io/docs/trading/fees/#slippage">
                 <Trans>Read more</Trans>
-              </ExternalLink>
-              .
-            </div>
+              </TooltipLink>
+            </TooltipContent>
           }
           defaultValue={DEFAULT_SLIPPAGE_AMOUNT}
           value={parseFloat(String(settings.savedAllowedSlippage))}
@@ -335,11 +332,7 @@ export function TradingSettings({
 
         <InputSetting
           title={t`TWAP number of parts`}
-          description={
-            <div>
-              <Trans>Default parts for TWAP orders</Trans>
-            </div>
-          }
+          description={t`Default parts for TWAP orders`}
           defaultValue={DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS}
           value={numberOfParts}
           onChange={onChangeTwapNumberOfParts}
@@ -351,13 +344,14 @@ export function TradingSettings({
           <InputSetting
             title={t`Max network fee buffer`}
             description={
-              <div>
-                <Trans>Max network fee includes a buffer for gas spikes. Unused fees refunded.</Trans>{" "}
-                <ExternalLink href="https://docs.gmx.io/docs/trading/fees/#network-fee">
+              <TooltipContent>
+                <TooltipText>
+                  <Trans>Max network fee includes a buffer for gas spikes. Unused fees refunded.</Trans>
+                </TooltipText>
+                <TooltipLink href="https://docs.gmx.io/docs/trading/fees/#network-fee">
                   <Trans>Read more</Trans>
-                </ExternalLink>
-                .
-              </div>
+                </TooltipLink>
+              </TooltipContent>
             }
             defaultValue={30}
             value={parseFloat(String(settings.executionFeeBufferBps))}
@@ -372,24 +366,7 @@ export function TradingSettings({
             <LabelWithTooltip
               className="font-medium"
               label={t`Send remaining margin to`}
-              tooltip={
-                <div>
-                  <Trans>
-                    Because positions on Arbitrum can be funded from both your wallet and your GMX Account, we can't
-                    always determine where to return the margin automatically.
-                    <br />
-                    <br />
-                    Choose:
-                    <br />• <span className="font-bold">Wallet</span> if you mostly trade from your personal wallet on
-                    Arbitrum
-                    <br />• <span className="font-bold">GMX Account</span> if you plan to keep trading or reusing margin
-                    on GMX
-                    <br />
-                    <br />
-                    You can change this preference anytime in settings or when closing a position.
-                  </Trans>
-                </div>
-              }
+              tooltip={<MarginDestinationTooltipContent />}
             />
             <MarginDestinationSelector
               isReceiveToGmxAccount={settings.receiveToGmxAccount ?? false}
@@ -402,15 +379,16 @@ export function TradingSettings({
         <ToggleSwitch isChecked={settings.isAutoCancelTPSL} setIsChecked={settings.setIsAutoCancelTPSL}>
           <LabelWithTooltip
             tooltip={
-              <div>
-                <Trans>
-                  TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling.
-                </Trans>{" "}
-                <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#auto-cancel-tpsl">
+              <TooltipContent>
+                <TooltipText>
+                  <Trans>
+                    TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling.
+                  </Trans>
+                </TooltipText>
+                <TooltipLink href="https://docs.gmx.io/docs/trading/order-types/#auto-cancel-tpsl">
                   <Trans>Read more</Trans>
-                </ExternalLink>
-                .
-              </div>
+                </TooltipLink>
+              </TooltipContent>
             }
             label={t`Auto-cancel TP/SL`}
             className="font-medium"

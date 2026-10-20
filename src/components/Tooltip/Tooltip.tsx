@@ -12,7 +12,6 @@ import {
   shift,
   size,
   useClick,
-  useDelayGroup,
   useDismiss,
   useFloating,
   useHover,
@@ -28,6 +27,7 @@ import {
   ElementType,
   FocusEvent,
   MouseEvent,
+  PointerEvent,
   ReactNode,
   useCallback,
   useContext,
@@ -40,12 +40,14 @@ import {
 } from "react";
 
 import { DEFAULT_TOOLTIP_POSITION, TOOLTIP_CLOSE_DELAY, TOOLTIP_OPEN_DELAY } from "config/ui";
+import { useLatestValueRef } from "lib/useLatestValueRef";
 import { usePrevious } from "lib/usePrevious";
 
 import InfoIcon from "img/ic_info_circle.svg?react";
 import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
 
-import { TooltipGroupContext } from "./TooltipGroup";
+import { subscribeToCloseAllTooltips, wereTooltipsClosedSince } from "./closeAllTooltips";
+import { TooltipGroup, TooltipGroupContext } from "./TooltipGroup";
 import { TooltipMotion, type TooltipMotionProps } from "./TooltipMotion";
 import { getPointerGapX, TooltipPointer } from "./TooltipPointer";
 
@@ -54,7 +56,6 @@ import "./Tooltip.scss";
 export type TooltipPosition = Placement;
 
 export const DEFAULT_TOOLTIP_ARROW_CLASSNAME = "scale-3 fill-slate-700 dark:fill-[#2b2d41]";
-// Gap between the trigger and the panel, in px
 export const TOOLTIP_OFFSET = 10;
 export const DEFAULT_TOOLTIP_MAX_WIDTH = 350;
 
@@ -96,7 +97,6 @@ type InnerTooltipProps<T extends ElementType | undefined> = {
   withPortal?: boolean;
   shouldStopPropagation?: boolean;
   shouldPreventDefault?: boolean;
-  fitHandleWidth?: boolean;
   closeOnDoubleClick?: boolean;
   /**
    * Disables the click toggle behavior that keeps the tooltip open after clicking.
@@ -109,41 +109,13 @@ type InnerTooltipProps<T extends ElementType | undefined> = {
 
   variant?: "icon" | "iconStroke" | "underline" | "none";
   iconClassName?: string;
-  /**
-   * Fades and scales in from the pointer. Instant when opened with the keyboard
-   * or when another tooltip in the same `TooltipGroup` was just open.
-   */
   animated?: boolean;
-  /**
-   * When `false`, the popup ignores the pointer and closes as soon as the cursor leaves the handle.
-   */
   interactive?: boolean;
-  /**
-   * Draws the pointer and an animated panel as one shape (TooltipPointer): the pointer sits outside the panel's
-   * border, which opens under it, so a see-through panel shows no overlaps.
-   */
   seamlessPointer?: boolean;
-  /**
-   * Keeps the popup this many px away from the screen edges and never wider than the screen allows.
-   */
   viewportPadding?: number;
-  /**
-   * Closes the popup when the page scrolls.
-   */
   closeOnScroll?: boolean;
-  /**
-   * Opens on keyboard focus within the handle, and links the popup to its trigger for screen readers
-   * (role="tooltip" and aria-describedby).
-   */
   keyboardAccessible?: boolean;
-  /**
-   * Makes the handle itself focusable, for triggers with nothing focusable inside (text, disabled buttons).
-   */
   handleTabIndex?: number;
-  /**
-   * With `keyboardAccessible`: `false` when the tooltip only repeats the trigger's own name (an icon button with
-   * the same aria-label), so screen readers don't read it twice. Defaults to `true`.
-   */
   describesTrigger?: boolean;
 };
 
@@ -171,7 +143,6 @@ export default function Tooltip<T extends ElementType>({
   withPortal,
   shouldStopPropagation,
   shouldPreventDefault = true,
-  fitHandleWidth,
   closeOnDoubleClick,
   disableClickToggle,
   flipOnlyToOppositeSide,
@@ -182,62 +153,94 @@ export default function Tooltip<T extends ElementType>({
   seamlessPointer = false,
   viewportPadding,
   closeOnScroll = false,
-  keyboardAccessible = false,
+  keyboardAccessible: keyboardAccessibleProp = false,
   handleTabIndex,
   describesTrigger = true,
   ...containerProps
 }: TooltipProps<T>) {
+  const keyboardAccessible = keyboardAccessibleProp || Boolean(isHandlerDisabled);
   const [visible, setVisible] = useState(false);
   const arrowRef = useRef<SVGSVGElement>(null);
   const referenceRef = useRef<Element | null>(null);
   const floatingRef = useRef<HTMLElement | null>(null);
   const disabledHandleLabelId = useId();
   const openedByKeyboardRef = useRef(false);
-  // After Escape the tooltip stays closed while focus stays on the handle
+  const group = useContext(TooltipGroupContext);
+  const instantRef = useRef(false);
+  const openRequestTimeRef = useRef(0);
+  const pointerTypeRef = useRef<string | undefined>(undefined);
+  const openedByTouchRef = useRef(false);
   const escapedRef = useRef(false);
-  // True while keyboard focus is on the trigger or inside the tooltip. Only then does FloatingFocusManager handle
-  // Tab, Escape and returning focus, so a tooltip opened by the pointer never moves focus or adds Tab stops.
   const [keyboardEngaged, setKeyboardEngaged] = useState(false);
-  // The same, for callbacks that can't depend on state
   const keyboardEngagedRef = useRef(false);
   keyboardEngagedRef.current = keyboardEngaged;
 
-  const handleOpenChange = useCallback((open: boolean, _event?: Event, reason?: OpenChangeReason) => {
-    // Keyboard focus inside the tooltip (not a click into the panel), or on the trigger
-    const isKeyboardFocusWithin =
-      hasVisibleFocusWithin(referenceRef.current) || (keyboardEngagedRef.current && containsFocus(floatingRef.current));
+  const handleOpenChange = useCallback(
+    (open: boolean, _event?: Event, reason?: OpenChangeReason) => {
+      if (open && hasExpandedControl(referenceRef.current)) {
+        return;
+      }
 
-    // Keyboard focus keeps it open when the pointer leaves (directly or along the safe path into the panel), or when
-    // another tooltip in the same group opens (that close comes without a reason)
-    if (!open && (reason === "hover" || reason === "safe-polygon" || reason === undefined) && isKeyboardFocusWithin) {
-      return;
-    }
+      const isKeyboardFocusWithin =
+        hasVisibleFocusWithin(referenceRef.current) ||
+        (keyboardEngagedRef.current && containsFocus(floatingRef.current));
 
-    const isFocusWithin = containsFocus(referenceRef.current) || containsFocus(floatingRef.current);
+      if (!open && (reason === "hover" || reason === "safe-polygon" || reason === undefined) && isKeyboardFocusWithin) {
+        return;
+      }
 
-    // Escape keeps it closed until focus leaves, but only when it was pressed with keyboard focus on the trigger or
-    // inside the tooltip (focus then comes back to the trigger)
-    if (
-      !open &&
-      reason === "escape-key" &&
-      (containsFocus(referenceRef.current) || (keyboardEngagedRef.current && containsFocus(floatingRef.current)))
-    ) {
-      escapedRef.current = true;
-    }
+      if (!open && (reason === "hover" || reason === "safe-polygon") && openedByTouchRef.current) {
+        return;
+      }
 
-    if (!open && !isFocusWithin) {
-      setKeyboardEngaged(false);
-    }
+      const isFocusWithin = containsFocus(referenceRef.current) || containsFocus(floatingRef.current);
 
-    if (open) {
-      openedByKeyboardRef.current = false;
-    }
+      if (
+        !open &&
+        reason === "escape-key" &&
+        (containsFocus(referenceRef.current) || (keyboardEngagedRef.current && containsFocus(floatingRef.current)))
+      ) {
+        escapedRef.current = true;
+      }
 
-    setVisible(open);
+      if (!open && !isFocusWithin) {
+        setKeyboardEngaged(false);
+      }
+
+      if (open) {
+        openedByKeyboardRef.current = false;
+        instantRef.current = Boolean(group?.isActive());
+        openRequestTimeRef.current = performance.now();
+      }
+      openedByTouchRef.current = open && pointerTypeRef.current === "touch";
+
+      setVisible(open);
+    },
+    [group]
+  );
+
+  const handlePointer = useCallback((event: PointerEvent) => {
+    pointerTypeRef.current = event.pointerType;
   }, []);
 
-  const { refs, floatingStyles, context } = useFloating({
-    middleware: [
+  const [hasFocusableChild, setHasFocusableChild] = useState(false);
+  const [parentControl, setParentControl] = useState<HTMLElement | null>(null);
+  useLayoutEffect(() => {
+    if (keyboardAccessible) {
+      setParentControl(getParentControl(referenceRef.current));
+    }
+  }, [keyboardAccessible]);
+  useLayoutEffect(() => {
+    if (keyboardAccessible) {
+      setHasFocusableChild(Boolean(getFocusableChild(referenceRef.current)));
+    }
+  }, [keyboardAccessible, handle, children]);
+  const tabIndex =
+    handleTabIndex ??
+    (keyboardAccessible && !disabled && !parentControl && (isHandlerDisabled || !hasFocusableChild) ? 0 : undefined);
+
+  const middleware = useMemo(
+    () => [
       offset(TOOLTIP_OFFSET),
       flip(
         flipOnlyToOppositeSide
@@ -257,7 +260,10 @@ export default function Tooltip<T extends ElementType>({
         padding: viewportPadding ?? 10,
       }),
       size({
+        padding: viewportPadding ?? 10,
         apply: (state) => {
+          state.elements.floating.style.setProperty("--tooltip-available-height", `${state.availableHeight}px`);
+
           const screenWidth = state.elements.floating.ownerDocument.documentElement.clientWidth;
           const maxWidth =
             viewportPadding === undefined
@@ -266,17 +272,15 @@ export default function Tooltip<T extends ElementType>({
           Object.assign(state.elements.floating.style, {
             maxWidth: `${maxWidth}px`,
           });
-
-          if (fitHandleWidth) {
-            Object.assign(state.elements.floating.style, {
-              maxWidth: `${state.rects.reference.width}px`,
-              minWidth: `${state.rects.reference.width}px`,
-            });
-          }
         },
       }),
       arrow({ element: arrowRef, padding: 6 }),
     ],
+    [flipOnlyToOppositeSide, position, viewportPadding, maxAllowedWidth]
+  );
+
+  const { refs, floatingStyles, context } = useFloating({
+    middleware,
     placement: position,
     whileElementsMounted: autoUpdate,
     open: visible,
@@ -286,8 +290,42 @@ export default function Tooltip<T extends ElementType>({
   const setReference = useMergeRefs<Element>([refs.setReference, referenceRef]);
   const setFloating = useMergeRefs<HTMLElement>([refs.setFloating, floatingRef]);
 
-  const inGroup = useContext(TooltipGroupContext);
-  const group = useDelayGroup(context, { id: context.floatingId });
+  const { floatingId, onOpenChange } = context;
+
+  useLayoutEffect(() => {
+    if (!group || !visible) {
+      return;
+    }
+
+    group.open(floatingId, () => {
+      instantRef.current = true;
+      onOpenChange(false);
+    });
+    return () => group.close(floatingId);
+  }, [group, visible, floatingId, onOpenChange]);
+
+  const hoverDelay = useMemo(
+    () =>
+      group
+        ? {
+            get open() {
+              return group.isActive() ? 0 : openDelay;
+            },
+            close: closeDelay,
+          }
+        : { open: openDelay, close: closeDelay },
+    [group, openDelay, closeDelay]
+  );
+
+  const [isMotionMounted, setIsMotionMounted] = useState(false);
+
+  useLayoutEffect(() => {
+    if (visible) {
+      setIsMotionMounted(true);
+    }
+  }, [visible]);
+
+  const handleMotionExited = useCallback(() => setIsMotionMounted(false), []);
 
   const previousDisabled = usePrevious(disabled);
 
@@ -299,13 +337,7 @@ export default function Tooltip<T extends ElementType>({
 
   const hover = useHover(context, {
     enabled: !disabled,
-    delay: inGroup
-      ? group.delay
-      : {
-          open: openDelay,
-          close: closeDelay,
-        },
-    // Standard tooltips stay open while the pointer heads from the trigger into the panel, even in one quick move
+    delay: hoverDelay,
     handleClose: interactive && keyboardAccessible ? safePolygon({ blockPointerEvents: false }) : null,
   });
   const click = useClick(context, {
@@ -315,7 +347,7 @@ export default function Tooltip<T extends ElementType>({
   });
   const dismiss = useDismiss(context, {
     enabled: !disabled,
-    ancestorScroll: closeOnScroll,
+    ancestorScroll: closeOnScroll && !keyboardEngaged,
   });
 
   const isDescription = keyboardAccessible && describesTrigger;
@@ -323,7 +355,6 @@ export default function Tooltip<T extends ElementType>({
 
   const { getReferenceProps, getFloatingProps } = useInteractions([hover, click, dismiss, role]);
 
-  // Keyboard focus on the handle (or on something inside it) opens the tooltip right away, without animation
   const handleFocus = useCallback(
     (event: FocusEvent) => {
       if (!keyboardAccessible || disabled || !matchesFocusVisible(event.target as Element)) {
@@ -332,12 +363,12 @@ export default function Tooltip<T extends ElementType>({
 
       setKeyboardEngaged(true);
 
-      // After Escape, focus comes back to the trigger; it stays closed until focus leaves (handleBlur resets this)
-      if (escapedRef.current) {
+      if (escapedRef.current || hasExpandedControl(referenceRef.current)) {
         return;
       }
 
       openedByKeyboardRef.current = true;
+      openRequestTimeRef.current = performance.now();
       setVisible(true);
     },
     [keyboardAccessible, disabled]
@@ -363,14 +394,84 @@ export default function Tooltip<T extends ElementType>({
 
       // If element was blurred, allow some time so that activeElement is updated
       requestAnimationFrame(() => {
-        if (hasVisibleFocusWithin(referenceRef.current)) {
+        if (hasVisibleFocusWithin(referenceRef.current) && !hasExpandedControl(referenceRef.current)) {
           openedByKeyboardRef.current = true;
+          openRequestTimeRef.current = performance.now();
           setKeyboardEngaged(keyboardAccessible);
           setVisible(true);
         }
       });
     },
     [disabled, visible, keyboardAccessible]
+  );
+
+  useEffect(
+    function closeWhenCovered() {
+      const reference = referenceRef.current;
+      if (!visible || !reference) {
+        return;
+      }
+
+      const close = () => {
+        setKeyboardEngaged(false);
+        setVisible(false);
+      };
+
+      if (hasExpandedControl(reference) || wereTooltipsClosedSince(openRequestTimeRef.current)) {
+        close();
+        return;
+      }
+
+      const observer = new MutationObserver(() => {
+        if (hasExpandedControl(reference)) {
+          close();
+        }
+      });
+      observer.observe(reference, { attributes: true, attributeFilter: ["aria-expanded"], subtree: true });
+      const unsubscribe = subscribeToCloseAllTooltips(close);
+
+      return () => {
+        observer.disconnect();
+        unsubscribe();
+      };
+    },
+    [visible]
+  );
+
+  useEffect(
+    function openOnParentControlFocus() {
+      if (!parentControl || disabled) {
+        return;
+      }
+
+      const handleControlFocus = () => {
+        if (!matchesFocusVisible(parentControl) || escapedRef.current) {
+          return;
+        }
+
+        setKeyboardEngaged(true);
+        openedByKeyboardRef.current = true;
+        openRequestTimeRef.current = performance.now();
+        setVisible(true);
+      };
+
+      const handleControlBlur = () => {
+        escapedRef.current = false;
+        setKeyboardEngaged(false);
+
+        if (!isHovered(referenceRef.current) && !isHovered(floatingRef.current)) {
+          setVisible(false);
+        }
+      };
+
+      parentControl.addEventListener("focus", handleControlFocus);
+      parentControl.addEventListener("blur", handleControlBlur);
+      return () => {
+        parentControl.removeEventListener("focus", handleControlFocus);
+        parentControl.removeEventListener("blur", handleControlBlur);
+      };
+    },
+    [parentControl, disabled]
   );
 
   const handleBlur = useCallback(
@@ -382,7 +483,6 @@ export default function Tooltip<T extends ElementType>({
         return;
       }
 
-      // Tab from the trigger into the tooltip: FloatingFocusManager takes over and closes it when focus leaves both
       if (
         keyboardAccessible &&
         nextFocused &&
@@ -403,8 +503,6 @@ export default function Tooltip<T extends ElementType>({
     [refs.floating, keyboardAccessible]
   );
 
-  // Tab can also reach a link in an open tooltip in page order (after the portal), without passing the trigger.
-  // Keyboard focus there counts like focus on the trigger; leaving both closes it, as on the trigger.
   const handleFloatingFocus = useCallback(
     (event: FocusEvent) => {
       if (keyboardAccessible && !disabled && matchesFocusVisible(event.target as Element)) {
@@ -447,10 +545,8 @@ export default function Tooltip<T extends ElementType>({
     [handleFloatingFocus, handleFloatingBlur]
   );
 
-  // A button or link inside the trigger is what gets focus, so it carries the description too (the wrapper is
-  // described by useRole). Disabled buttons can't take focus; the wrapper speaks for them (see below).
   useLayoutEffect(() => {
-    const target = isDescription && visible ? getFocusableChild(referenceRef.current) : null;
+    const target = isDescription && visible ? getFocusableChild(referenceRef.current) ?? parentControl : null;
     if (!target) {
       return;
     }
@@ -464,32 +560,28 @@ export default function Tooltip<T extends ElementType>({
         target.setAttribute("aria-describedby", previous);
       }
     };
-  }, [isDescription, visible, context.floatingId]);
+  }, [isDescription, visible, context.floatingId, parentControl]);
 
   const arrowX = context.middlewareData.arrow?.x;
   const pointerGapX = seamlessPointer && arrowX !== undefined ? getPointerGapX(arrowX) : undefined;
 
   const outerStyles = useMemo(() => {
     const styles: CSSProperties = interactive ? floatingStyles : { ...floatingStyles, pointerEvents: "none" };
-    // Where the panel's border opens under the pointer (Tooltip.scss)
     return pointerGapX === undefined ? styles : ({ ...styles, "--tooltip-gap-x": `${pointerGapX}px` } as CSSProperties);
   }, [floatingStyles, interactive, pointerGapX]);
 
-  // Builds the popup only while it is on screen, so a closed tooltip renders no portal or focus manager.
-  // Animated tooltips get `motion` from TooltipMotion, which also keeps the popup on screen while it leaves.
   const renderPopup = (motion?: TooltipMotionProps) => {
     const arrowElement = seamlessPointer ? (
       <TooltipPointer ref={arrowRef} side={getSide(context.placement)} arrowX={arrowX} />
     ) : (
       <FloatingArrow ref={arrowRef} context={context} className={DEFAULT_TOOLTIP_ARROW_CLASSNAME} />
     );
-    const finalContent = content ?? renderContent?.();
+    const popupContent = content ?? renderContent?.();
+    const finalContent = group ? <TooltipGroup>{popupContent}</TooltipGroup> : popupContent;
 
     let tooltipContent: JSX.Element;
 
     if (motion) {
-      // Positioning and the enter animation both use `transform`, so they live on separate elements.
-      // The panel is `relative` so floating-ui measures the pointer inside its border, as the CSS draws it.
       tooltipContent = (
         <div
           ref={setFloating}
@@ -497,7 +589,6 @@ export default function Tooltip<T extends ElementType>({
           {...getFloatingProps(floatingFocusProps)}
           className="Tooltip-floating"
         >
-          {/* The panel is cut to its shape with the pointer, which would also cut its shadow, so the shadow is here */}
           {seamlessPointer && <div className="Tooltip-shadow" {...motion} />}
           <div
             className={cx("Tooltip-popup relative", { "Tooltip-surface": seamlessPointer }, tooltipClassName)}
@@ -522,11 +613,14 @@ export default function Tooltip<T extends ElementType>({
       );
     }
 
-    // Keyboard users can Tab from the trigger into the tooltip (to reach a link) and out again; it closes once focus
-    // leaves both. It never takes focus by itself, and Escape puts focus back on the trigger.
     if (keyboardAccessible && interactive) {
       tooltipContent = (
-        <FloatingFocusManager context={context} modal={false} initialFocus={-1} disabled={!keyboardEngaged}>
+        <FloatingFocusManager
+          context={context}
+          modal={false}
+          initialFocus={-1}
+          disabled={!keyboardEngaged || Boolean(parentControl)}
+        >
           {tooltipContent}
         </FloatingFocusManager>
       );
@@ -535,16 +629,55 @@ export default function Tooltip<T extends ElementType>({
     return withPortal ? <FloatingPortal>{tooltipContent}</FloatingPortal> : tooltipContent;
   };
 
-  // Only animated tooltips mount TooltipMotion, so the others run no motion code
-  const popup = animated ? (
-    <TooltipMotion context={context} instant={openedByKeyboardRef.current || (inGroup && group.isInstantPhase)}>
-      {renderPopup}
-    </TooltipMotion>
-  ) : (
-    visible && renderPopup()
+  const popup = animated
+    ? (visible || isMotionMounted) && (
+        <TooltipMotion
+          context={context}
+          instant={openedByKeyboardRef.current || instantRef.current}
+          onExited={handleMotionExited}
+        >
+          {renderPopup}
+        </TooltipMotion>
+      )
+    : visible && renderPopup();
+
+  const containerPropsRef = useLatestValueRef(containerProps);
+  const hasCustomContainer = Boolean(as);
+  const referenceProps = useMemo(
+    () =>
+      getReferenceProps({
+        onClick: (e: MouseEvent) => {
+          preventClick(e);
+          containerPropsRef.current.onClick?.(e);
+        },
+        onFocus: (e: FocusEvent) => {
+          handleFocus(e);
+          if (hasCustomContainer) {
+            containerPropsRef.current.onFocus?.(e);
+          }
+        },
+        onBlur: (e: FocusEvent) => {
+          handleBlur(e);
+          if (hasCustomContainer) {
+            containerPropsRef.current.onBlur?.(e);
+          }
+        },
+        onPointerDown: (e: PointerEvent) => {
+          handlePointer(e);
+          if (hasCustomContainer) {
+            containerPropsRef.current.onPointerDown?.(e);
+          }
+        },
+        onPointerEnter: (e: PointerEvent) => {
+          handlePointer(e);
+          if (hasCustomContainer) {
+            containerPropsRef.current.onPointerEnter?.(e);
+          }
+        },
+      }),
+    [getReferenceProps, preventClick, handleFocus, handleBlur, handlePointer, hasCustomContainer, containerPropsRef]
   );
 
-  // A disabled button can't take focus, so the focusable wrapper stands in for it: an unavailable button with its name
   const disabledHandleProps =
     keyboardAccessible && isHandlerDisabled
       ? { role: "button", "aria-disabled": true, "aria-labelledby": disabledHandleLabelId }
@@ -554,25 +687,11 @@ export default function Tooltip<T extends ElementType>({
     const Container = as as any;
     return (
       <Container
-        // Before the caller's props, so a tabIndex they pass still wins
-        tabIndex={handleTabIndex}
+        tabIndex={tabIndex}
         {...containerProps}
-        className={cx("Tooltip", className)}
+        className={cx("Tooltip", className, handleClassName)}
         ref={setReference}
-        {...getReferenceProps({
-          onClick: (e: MouseEvent) => {
-            preventClick(e);
-            containerProps.onClick?.(e);
-          },
-          onFocus: (e: FocusEvent) => {
-            handleFocus(e);
-            containerProps.onFocus?.(e);
-          },
-          onBlur: (e: FocusEvent) => {
-            handleBlur(e);
-            containerProps.onBlur?.(e);
-          },
-        })}
+        {...referenceProps}
       >
         {handle ?? children}
         {popup}
@@ -586,16 +705,9 @@ export default function Tooltip<T extends ElementType>({
         ref={setReference}
         className={cx("Tooltip-handle group", handleClassName)}
         style={handleStyle}
-        tabIndex={handleTabIndex}
+        tabIndex={tabIndex}
         {...disabledHandleProps}
-        {...getReferenceProps({
-          onClick: (e: MouseEvent) => {
-            preventClick(e);
-            containerProps.onClick?.(e);
-          },
-          onFocus: handleFocus,
-          onBlur: handleBlur,
-        })}
+        {...referenceProps}
       >
         <div className={cx("flex grow items-center gap-2", contentClassName)}>
           {/* For onMouseLeave to work on disabled button https://github.com/react-component/tooltip/issues/18#issuecomment-411476678 */}
@@ -655,7 +767,14 @@ function getFocusableChild(element: Element | null): Element | null {
   return element?.querySelector(FOCUSABLE_SELECTOR) ?? null;
 }
 
-// FloatingFocusManager and FloatingPortal move focus through invisible guard elements
+function getParentControl(element: Element | null): HTMLElement | null {
+  return element?.parentElement?.closest<HTMLElement>('button, a[href], [role="button"]') ?? null;
+}
+
+function hasExpandedControl(element: Element | null): boolean {
+  return !!element && (element.matches('[aria-expanded="true"]') || !!element.querySelector('[aria-expanded="true"]'));
+}
+
 function isFocusGuard(node: Node): boolean {
   return node instanceof Element && node.hasAttribute("data-floating-ui-focus-guard");
 }

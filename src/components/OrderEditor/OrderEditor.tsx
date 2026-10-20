@@ -130,11 +130,9 @@ import { AcceptablePriceImpactInputRow } from "components/AcceptablePriceImpactI
 import { useActiveForm } from "components/ActiveFormScope/ActiveFormScope";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
-import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarginDepositInsufficientMessage } from "components/MarginRemediation/MarginRemediationActions";
 import Modal from "components/Modal/Modal";
 import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
@@ -143,8 +141,8 @@ import { LiquidationPriceValue } from "components/NumericValue/LiquidationPriceV
 import { NumericValue } from "components/NumericValue/NumericValue";
 import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
 import { UsdValue } from "components/NumericValue/UsdValue";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipAction, TooltipContent, TooltipLink, TooltipRow, TooltipText } from "components/Tooltip/TooltipBlocks";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
@@ -708,13 +706,9 @@ export function OrderEditor(p: Props) {
 
   const submitButtonState = useMemo(() => {
     const setMaxLeverageAction = hasAvailableMaxLeverage ? (
-      <>
-        <br />
-        <br />
-        <EmbeddedActionButton onClick={detectAndSetAvailableMaxLeverage}>
-          <Trans>Set max leverage</Trans>
-        </EmbeddedActionButton>
-      </>
+      <TooltipAction onClick={detectAndSetAvailableMaxLeverage}>
+        <Trans>Set max leverage</Trans>
+      </TooltipAction>
     ) : null;
 
     if (hasOutdatedUi) {
@@ -747,17 +741,19 @@ export function OrderEditor(p: Props) {
       return {
         text: t`Max leverage exceeded`,
         tooltip: (
-          <>
-            {hasAvailableMaxLeverage ? (
-              <Trans>Order exceeds max leverage. Click to auto-adjust.</Trans>
-            ) : (
-              <Trans>Order exceeds max leverage. Reduce the size.</Trans>
-            )}{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">
+          <TooltipContent>
+            <TooltipText>
+              {hasAvailableMaxLeverage ? (
+                <Trans>Order exceeds max leverage. Click to auto-adjust.</Trans>
+              ) : (
+                <Trans>Order exceeds max leverage. Reduce the size.</Trans>
+              )}
+            </TooltipText>
+            {setMaxLeverageAction}
+            <TooltipLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">
               <Trans>Read more</Trans>
-            </ExternalLink>
-            .{setMaxLeverageAction}
-          </>
+            </TooltipLink>
+          </TooltipContent>
         ),
         disabled: true,
       };
@@ -767,14 +763,16 @@ export function OrderEditor(p: Props) {
       return {
         text: isResultingPositionMaxLeverageError ? t`Max leverage exceeded` : t`Invalid liquidation price`,
         tooltip: isResultingPositionMaxLeverageError ? (
-          <>
-            <Trans>
-              The resulting position would exceed the maximum allowed leverage. Increase margin or reduce size.
-            </Trans>
+          <TooltipContent>
+            <TooltipText>
+              <Trans>
+                The resulting position would exceed the maximum allowed leverage. Increase margin or reduce size.
+              </Trans>
+            </TooltipText>
             {setMaxLeverageAction}
-          </>
+          </TooltipContent>
         ) : (
-          <Trans>Position would be liquidated immediately upon execution. Reduce the size.</Trans>
+          t`Position would be liquidated immediately upon execution. Reduce the size.`
         ),
         disabled: true,
       };
@@ -916,10 +914,10 @@ export function OrderEditor(p: Props) {
   );
 
   const button = submitButtonState.tooltip ? (
-    <TooltipWithPortal
-      position="top"
+    <StandardTooltip
+      position="bottom"
+      variant="none"
       handleClassName="w-full"
-      tooltipClassName="PositionEditor-tooltip"
       handle={buttonContent}
       isHandlerDisabled
       content={submitButtonState.tooltip}
@@ -1174,16 +1172,20 @@ export function OrderEditor(p: Props) {
             <SyntheticsInfoRow
               label={t`Fees`}
               value={
-                <TooltipWithPortal
-                  position="top-end"
-                  tooltipClassName="PositionEditor-fees-tooltip"
+                <StandardTooltip
+                  position="bottom-end"
                   handle={
                     <DeltaUsdValue deltaUsd={networkFee.feeUsd === undefined ? undefined : networkFee.feeUsd * -1n} />
                   }
                   renderContent={() => (
-                    <>
-                      <StatsTooltipRow
-                        label={<div className="text-typography-primary">{t`Network fee`}:</div>}
+                    <TooltipContent>
+                      {additionalExecutionFee && (
+                        <TooltipText>
+                          <Trans>Network fees increased. Additional fee required.</Trans>
+                        </TooltipText>
+                      )}
+                      <TooltipRow
+                        label={t`Network fee`}
                         value={
                           <NetworkFeeValue
                             amount={networkFee.feeTokenAmount}
@@ -1194,17 +1196,8 @@ export function OrderEditor(p: Props) {
                             source={getNetworkFeeSource({ isGmxAccount: srcChainId !== undefined })}
                           />
                         }
-                        showDollar={false}
                       />
-                      {additionalExecutionFee && (
-                        <>
-                          <br />
-                          <div className="text-typography-primary">
-                            <Trans>Network fees increased. Additional fee required.</Trans>
-                          </div>
-                        </>
-                      )}
-                    </>
+                    </TooltipContent>
                   )}
                 />
               }

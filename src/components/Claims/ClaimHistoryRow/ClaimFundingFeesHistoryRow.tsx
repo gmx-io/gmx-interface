@@ -14,7 +14,8 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
 import { NumericValue } from "components/NumericValue/NumericValue";
 import { TableTd, TableTr } from "components/Table/Table";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipRow, TooltipText, TooltipTitle } from "components/Tooltip/TooltipBlocks";
 import {
   formatTradeActionTimestamp,
   formatTradeActionTimestampUTC,
@@ -43,7 +44,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
   const formattedTimestamp = useMemo(() => formatTradeActionTimestamp(claimAction.timestamp), [claimAction.timestamp]);
 
   const renderIsoTimestamp = useCallback(() => {
-    return formatTradeActionTimestampUTC(claimAction.timestamp);
+    return <TooltipRow label="UTC" value={formatTradeActionTimestampUTC(claimAction.timestamp)} />;
   }, [claimAction.timestamp]);
 
   const marketContent = useMemo(() => {
@@ -54,7 +55,6 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
             <React.Fragment key={index}>
               {index !== 0 && ", "}
               <MarketWithDirectionLabel
-                bordered
                 indexName={getMarketIndexName(market)}
                 tokenSymbol={market.indexToken.symbol}
                 isLong={claimAction.isLongOrders[index]}
@@ -65,25 +65,22 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
       );
 
       return (
-        <TooltipWithPortal
-          variant="none"
-          handleClassName="cursor-help"
+        <StandardTooltip
           handle={formattedMarketNames}
-          renderContent={() => {
-            return claimAction.markets.map((market, index) => {
-              const indexName = getMarketIndexName(market);
-              const poolName = getMarketPoolName(market);
-              const isLong = claimAction.isLongOrders[index];
-              return (
-                <div
-                  className="ClaimHistoryRow-tooltip-row inline-flex items-start text-typography-primary"
-                  key={`${market.name}/${isLong}`}
-                >
-                  {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext leading-1">[{poolName}]</span>
-                </div>
-              );
-            });
-          }}
+          renderContent={() => (
+            <TooltipContent>
+              {claimAction.markets.map((market, index) => {
+                const indexName = getMarketIndexName(market);
+                const poolName = getMarketPoolName(market);
+                const isLong = claimAction.isLongOrders[index];
+                return (
+                  <TooltipText key={`${market.name}/${isLong}`}>
+                    {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext leading-1">[{poolName}]</span>
+                  </TooltipText>
+                );
+              })}
+            </TooltipContent>
+          )}
         />
       );
     }
@@ -91,32 +88,28 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
     if (claimAction.eventName === ClaimType.SettleFundingFeeCancelled) {
       const indexName = getMarketIndexName(claimAction.markets[0]);
       return (
-        <TooltipWithPortal
-          variant="none"
-          handleClassName="cursor-help *:cursor-auto"
+        <StandardTooltip
           handle={
             <MarketWithDirectionLabel
-              bordered
               indexName={indexName}
               tokenSymbol={claimAction.markets[0].indexToken.symbol}
               isLong={claimAction.isLongOrders[0]}
             />
           }
-          renderContent={() => {
-            return claimAction.markets.map((market, index) => {
-              const indexName = getMarketIndexName(market);
-              const poolName = getMarketPoolName(market);
-              const isLong = claimAction.isLongOrders[index];
-              return (
-                <div
-                  className="ClaimHistoryRow-tooltip-row inline-flex items-start text-typography-primary"
-                  key={`${market.name}/${isLong}`}
-                >
-                  {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext leading-1">[{poolName}]</span>
-                </div>
-              );
-            });
-          }}
+          renderContent={() => (
+            <TooltipContent>
+              {claimAction.markets.map((market, index) => {
+                const indexName = getMarketIndexName(market);
+                const poolName = getMarketPoolName(market);
+                const isLong = claimAction.isLongOrders[index];
+                return (
+                  <TooltipText key={`${market.name}/${isLong}`}>
+                    {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext leading-1">[{poolName}]</span>
+                  </TooltipText>
+                );
+              })}
+            </TooltipContent>
+          )}
         />
       );
     }
@@ -147,19 +140,19 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
     }
 
     const amounts = (
-      <div className="flex flex-col gap-16">
+      <TooltipContent>
         {claimAction.claimItems.map(
           ({ marketInfo: market, longTokenAmount, shortTokenAmount, longTokenAmountUsd, shortTokenAmountUsd }) => {
             const indexName = getMarketIndexName(market);
             const poolName = getMarketPoolName(market);
 
             return (
-              <div key={market.indexTokenAddress} className="flex flex-col gap-4">
-                <div className="flex items-baseline text-typography-primary">
-                  <span>{indexName}</span>
+              <div key={market.indexTokenAddress} className="flex flex-col gap-2">
+                <TooltipTitle>
+                  {indexName}
                   <span className="subtext">[{poolName}]</span>
-                </div>
-                <div>
+                </TooltipTitle>
+                <TooltipText>
                   {longTokenAmount > 0 && (
                     <div>
                       <AmountWithUsdBalance
@@ -182,19 +175,18 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
                       />
                     </div>
                   )}
-                </div>
+                </TooltipText>
               </div>
             );
           }
         )}
-      </div>
+      </TooltipContent>
     );
 
     const formattedTotalUsd = getFormattedTotalClaimAction(claimAction);
 
     return (
-      <TooltipWithPortal
-        tooltipClassName="ClaimHistoryRow-size-tooltip-portal"
+      <StandardTooltip
         content={amounts}
         handle={<NumericValue parts={formattedTotalUsd} />}
         handleClassName="numbers"
@@ -214,10 +206,8 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
             <NewLink20ReactComponent />
           </ExternalLink>
         </div>
-        <TooltipWithPortal
-          variant="none"
+        <StandardTooltip
           handle={<span className="ClaimHistoryRow-time muted">{formattedTimestamp}</span>}
-          tooltipClassName="ClaimHistoryRow-tooltip-portal"
           renderContent={renderIsoTimestamp}
         />
       </TableTd>

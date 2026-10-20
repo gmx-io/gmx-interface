@@ -171,9 +171,9 @@ export function formatTradeActionTimestamp(timestamp: number, relativeTimestamp 
 }
 
 export function formatTradeActionTimestampUTC(timestamp: number) {
-  return `UTC: ${format(timestamp * 1000, "yyyy-MM-dd HH:mm:ss", {
+  return format(timestamp * 1000, "yyyy-MM-dd HH:mm:ss", {
     in: tz("UTC"),
-  })}`;
+  });
 }
 
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;

@@ -24,16 +24,11 @@ import {
 import { getPointerGapX, TooltipPointer } from "components/Tooltip/TooltipPointer";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-// Tooltips drawn open on the page, for the docs: the real trigger, panel, pointer and content, no hover needed.
-
 type TriggerVariant = "underline" | "iconStroke";
 
-// How a tooltip family draws its panel and pointer. Required keys, so a renamed key in a look fails to compile.
 export type TooltipLook = {
   popupClassName: string;
-  // The standard pointer (TooltipPointer) instead of the app's default arrow
   seamlessPointer: boolean;
-  // Keeps the panel this far inside the screen edges, like the live tooltip
   viewportPadding?: number;
 };
 
@@ -42,9 +37,7 @@ const LEGACY_LOOK: TooltipLook = {
   seamlessPointer: false,
 };
 
-// Where things are, for drawings on top of the panel
 export type TooltipPreviewGeometry = {
-  // The pointer's x inside the panel's border
   arrowX: number;
   triggerWidth: number;
   triggerHeight: number;
@@ -52,20 +45,17 @@ export type TooltipPreviewGeometry = {
 
 type TriggerSize = { width: number; height: number };
 
-// Shares the trigger's size with the overlay
 const triggerSize: Middleware = {
   name: "triggerSize",
   fn: ({ rects }) => ({ data: { width: rects.reference.width, height: rects.reference.height } satisfies TriggerSize }),
 };
 
-// The trigger and the panel line up at the start, center or end, like the live tooltip
 const ALIGN_CLASSNAMES: Record<string, string> = {
   start: "items-start",
   end: "items-end",
   center: "items-center",
 };
 
-// Nothing in a preview moves on scroll, so it only follows size changes (column width, fonts)
 function followSizeChanges(reference: ReferenceType, floating: HTMLElement, update: () => void) {
   return autoUpdate(reference, floating, update, { ancestorScroll: false, layoutShift: false });
 }
@@ -75,16 +65,10 @@ type TooltipPreviewProps = {
   content: ReactNode;
   look: TooltipLook;
   maxWidth: number;
-  // Below the trigger only; "bottom-start" by default, like the live tooltip
   position?: Extract<TooltipPosition, "bottom-start" | "bottom" | "bottom-end">;
-  // Extra drawing on top of the panel (the anatomy markers), once the pointer is placed
   renderOverlay?: (geometry: TooltipPreviewGeometry) => ReactNode;
 };
 
-/**
- * The trigger with its tooltip open below it. floating-ui places the pointer exactly as in the live tooltip,
- * including the shift it makes for triggers too narrow to center the pointer on; the panel stays in the page flow.
- */
 export function TooltipPreview({
   trigger,
   content,
@@ -107,20 +91,16 @@ export function TooltipPreview({
   const triggerWidth = triggerRect?.width;
   const triggerHeight = triggerRect?.height;
 
-  // The trigger and its panel form a group as wide as the wider of the two, capped by the live width rule
-  // (never wider than the screen allows) and by this column. So an end-aligned pair still starts at the column's start.
   const groupStyle = useMemo<CSSProperties>(() => {
     const screenLimit = look.viewportPadding === undefined ? "" : `, calc(100vw - ${look.viewportPadding * 2}px)`;
     return { gap: TOOLTIP_OFFSET, maxWidth: `min(${maxWidth}px${screenLimit}, 100%)` };
   }, [maxWidth, look.viewportPadding]);
-  // Inline max-width beats the panel classes' own limits. z-index 0: live tooltips and menus open above it.
   const popupStyle = useMemo(
     () =>
       ({
         maxWidth: "100%",
         zIndex: 0,
         transform: alignmentOffset ? `translateX(${alignmentOffset}px)` : undefined,
-        // Where the border opens under the standard pointer, as on the live tooltip
         "--tooltip-gap-x": look.seamlessPointer && arrowX !== undefined ? `${getPointerGapX(arrowX)}px` : undefined,
       }) as CSSProperties,
     [alignmentOffset, look.seamlessPointer, arrowX]
@@ -146,7 +126,6 @@ export function TooltipPreview({
           ref={refs.setFloating}
           className={cx("Tooltip-popup relative", look.popupClassName)}
           style={popupStyle}
-          // Below the trigger, as the live tooltip marks its side
           data-side="bottom"
         >
           {look.seamlessPointer ? (
@@ -169,9 +148,6 @@ type PreviewProps = {
   content: ReactNode;
 };
 
-/**
- * A StandardTooltip, open. The trigger is a turned-off StandardTooltip, so it looks real and doesn't open on hover.
- */
 export function StandardTooltipPreview({
   handle,
   variant,
@@ -190,9 +166,6 @@ export function StandardTooltipPreview({
   );
 }
 
-/**
- * A tooltip as the app draws it before the standard (TooltipWithPortal with its defaults), open.
- */
 export function LegacyTooltipPreview({
   handle,
   variant,

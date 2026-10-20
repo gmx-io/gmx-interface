@@ -227,14 +227,13 @@ export function PoolSelector({
         }
       >
         <VerticalScrollFadeContainer className="flex grow flex-col">
-          {filteredOptions.map((option, marketIndex) => {
+          {filteredOptions.map((option) => {
             return (
               <PoolListItem
                 key={getGlvOrMarketAddress(option.glvOrMarketInfo)}
                 {...option}
                 marketToken={getByKey(marketTokensData, getGlvOrMarketAddress(option.glvOrMarketInfo))}
                 isFavorite={favoriteTokens?.includes(getGlvOrMarketAddress(option.glvOrMarketInfo))}
-                isInFirstHalf={marketIndex < filteredOptions.length / 2}
                 showAllPools={showAllPools}
                 showBalances={showBalances}
                 onFavoriteClick={toggleFavoriteToken}

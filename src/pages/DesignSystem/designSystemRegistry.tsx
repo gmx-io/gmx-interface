@@ -15,7 +15,6 @@ export type DesignSystemGroup = {
   pages: DesignSystemPageEntry[];
 };
 
-// One entry per page: it adds the menu item, the URL (/ui/<slug>) and the tabs.
 export const DESIGN_SYSTEM_GROUPS: DesignSystemGroup[] = [
   {
     title: "Components",
@@ -34,7 +33,6 @@ export const DESIGN_SYSTEM_GROUPS: DesignSystemGroup[] = [
   },
 ];
 
-// The menu lists every page in one alphabetical list
 export const DESIGN_SYSTEM_PAGES = DESIGN_SYSTEM_GROUPS.flatMap((group) => group.pages).sort((a, b) =>
   a.title.localeCompare(b.title)
 );

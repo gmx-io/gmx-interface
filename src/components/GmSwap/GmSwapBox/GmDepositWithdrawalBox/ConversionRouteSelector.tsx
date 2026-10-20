@@ -9,7 +9,8 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { TransitApprovalProposalAlert } from "components/PaxosTransit/TransitApprovalProposalAlert";
 import { SelectorBase, useSelectorClose } from "components/SelectorBase/SelectorBase";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import type { ConversionRoute, ConversionRoutePreference } from "./types";
 import type { PaxosTransitState } from "./usePaxosTransitState";
@@ -36,12 +37,10 @@ export function ConversionRouteSelector({ transitState }: { transitState: PaxosT
     <>
       <SyntheticsInfoRow
         label={
-          <TooltipWithPortal
+          <StandardTooltip
             handle={t`Conversion`}
-            position="left-start"
-            variant="iconStroke"
             content={
-              <div className="text-typography-primary">
+              <TooltipText>
                 <Trans>
                   This pool holds USDG, so USDC is converted to USDG when you buy and back to USDC when you sell.
                   <br />
@@ -61,7 +60,7 @@ export function ConversionRouteSelector({ transitState }: { transitState: PaxosT
                   <br />
                   The choice is fixed when only one option can handle the amount or a conversion is in progress.
                 </Trans>
-              </div>
+              </TooltipText>
             }
           />
         }

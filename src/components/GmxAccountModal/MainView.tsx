@@ -44,7 +44,7 @@ import { UsdValue } from "components/NumericValue/UsdValue";
 import SearchInput from "components/SearchInput/SearchInput";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 import BellIcon from "img/ic_bell.svg?react";
@@ -144,34 +144,19 @@ function WalletBlock({ account }: { account: string }) {
           {isCopied ? <CheckIcon className="size-16 text-green-500" /> : <CopyIcon className="size-16" />}
         </button>
         <div className="flex items-center gap-8">
-          <TooltipWithPortal
-            content={t`Receive to wallet`}
-            position="bottom"
-            tooltipClassName="!min-w-max"
-            variant="none"
-          >
+          <StandardTooltip content={t`Receive to wallet`} position="bottom" variant="none">
             <button className={WALLET_ICON_BUTTON_BLUE} onClick={handleOpenWalletReceive}>
               <ReceiveIcon className="size-16" />
             </button>
-          </TooltipWithPortal>
-          <TooltipWithPortal
-            content={t`Send from wallet`}
-            position="bottom"
-            tooltipClassName="!min-w-max"
-            variant="none"
-          >
+          </StandardTooltip>
+          <StandardTooltip content={t`Send from wallet`} position="bottom" variant="none">
             <button className={WALLET_ICON_BUTTON_BLUE} onClick={() => setIsVisibleOrView("walletSend")}>
               <SendIcon className="size-16" />
             </button>
-          </TooltipWithPortal>
+          </StandardTooltip>
           <div className="h-16 border-l-1/2 border-slate-600" />
           {canExport && (
-            <TooltipWithPortal
-              content={t`Export wallet`}
-              position="bottom"
-              tooltipClassName="!min-w-max"
-              variant="none"
-            >
+            <StandardTooltip content={t`Export wallet`} position="bottom" variant="none">
               <button
                 className={WALLET_ICON_BUTTON_GRAY}
                 onClick={() => {
@@ -182,24 +167,18 @@ function WalletBlock({ account }: { account: string }) {
               >
                 <KeyIcon className="size-16" />
               </button>
-            </TooltipWithPortal>
+            </StandardTooltip>
           )}
-          <TooltipWithPortal
-            shouldPreventDefault={false}
-            content={t`View in explorer`}
-            position="bottom"
-            tooltipClassName="!min-w-max"
-            variant="none"
-          >
+          <StandardTooltip shouldPreventDefault={false} content={t`View in explorer`} position="bottom" variant="none">
             <a href={accountUrl} target="_blank" rel="noopener noreferrer" className={WALLET_ICON_BUTTON_GRAY}>
               <ExplorerIcon className="size-16" />
             </a>
-          </TooltipWithPortal>
-          <TooltipWithPortal content={t`Disconnect`} position="bottom" tooltipClassName="!min-w-max" variant="none">
+          </StandardTooltip>
+          <StandardTooltip content={t`Disconnect`} position="bottom" variant="none" type="label">
             <button aria-label={t`Disconnect`} className={WALLET_ICON_BUTTON_GRAY} onClick={handleDisconnect}>
               <DisconnectIcon className="size-16" />
             </button>
-          </TooltipWithPortal>
+          </StandardTooltip>
         </div>
       </div>
       <BalanceAmount
@@ -309,11 +288,11 @@ function GmxAccountBlock({ showDisconnectButton }: { showDisconnectButton: boole
           />
         </div>
         {showDisconnectButton && (
-          <TooltipWithPortal content={t`Disconnect`} position="bottom" tooltipClassName="!min-w-max" variant="none">
+          <StandardTooltip content={t`Disconnect`} position="bottom" variant="none" type="label">
             <button aria-label={t`Disconnect`} className={WALLET_ICON_BUTTON_GRAY} onClick={handleDisconnect}>
               <DisconnectIcon className="size-16" />
             </button>
-          </TooltipWithPortal>
+          </StandardTooltip>
         )}
       </div>
 

@@ -66,7 +66,7 @@ import { NumericValue } from "components/NumericValue/NumericValue";
 import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
 import { UsdValue } from "components/NumericValue/UsdValue";
 import Tabs from "components/Tabs/Tabs";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { TradeInputBox } from "components/TradeboxMarginFields/TradeInputBox";
 import { TradeInputField } from "components/TradeboxMarginFields/TradeInputField";
@@ -439,13 +439,13 @@ export function PositionEditor() {
   );
 
   const button = submitButtonState.tooltipContent ? (
-    <TooltipWithPortal
+    <StandardTooltip
       className="w-full"
       content={submitButtonState.tooltipContent}
       isHandlerDisabled={submitButtonState.disabled}
       handle={buttonContent}
       handleClassName="w-full"
-      position="top"
+      position="bottom"
       variant="none"
     />
   ) : (

@@ -104,7 +104,7 @@ describe("TradeHistoryRow helpers", () => {
         "priceImpact": undefined,
         "size": "+$ 1,054.88",
         "timestamp": "08 Feb 2024, 10:50",
-        "timestampUTC": "UTC: 2024-02-08 06:50:50",
+        "timestampUTC": "2024-02-08 06:50:50",
       }
     `);
 
@@ -131,7 +131,7 @@ describe("TradeHistoryRow helpers", () => {
         "priceImpact": undefined,
         "size": "12.34 USDC",
         "timestamp": "15 Feb 2024, 18:34",
-        "timestampUTC": "UTC: 2024-02-15 14:34:48",
+        "timestampUTC": "2024-02-15 14:34:48",
       }
     `);
 
@@ -158,7 +158,7 @@ describe("TradeHistoryRow helpers", () => {
         "priceImpact": undefined,
         "size": "0.050 DAI",
         "timestamp": "15 Feb 2024, 21:30",
-        "timestampUTC": "UTC: 2024-02-15 17:30:44",
+        "timestampUTC": "2024-02-15 17:30:44",
       }
     `);
 
@@ -185,7 +185,7 @@ describe("TradeHistoryRow helpers", () => {
         "priceImpact": undefined,
         "size": "-$ 266.23",
         "timestamp": "15 Sep 2023, 13:29",
-        "timestampUTC": "UTC: 2023-09-15 09:29:36",
+        "timestampUTC": "2023-09-15 09:29:36",
         "triggerPrice": ">  $ 30,000.00",
       }
     `);
@@ -213,7 +213,7 @@ describe("TradeHistoryRow helpers", () => {
         "priceImpact": undefined,
         "size": "+$ 4.11",
         "timestamp": "15 Sep 2023, 13:37",
-        "timestampUTC": "UTC: 2023-09-15 09:37:13",
+        "timestampUTC": "2023-09-15 09:37:13",
         "triggerPrice": "<  $ 1,629.40",
       }
     `);
@@ -241,7 +241,7 @@ describe("TradeHistoryRow helpers", () => {
         "priceImpact": undefined,
         "size": "+$ 2.64",
         "timestamp": "15 Sep 2023, 14:54",
-        "timestampUTC": "UTC: 2023-09-15 10:54:04",
+        "timestampUTC": "2023-09-15 10:54:04",
         "triggerPrice": "<  $ 1.00",
       }
     `);
@@ -299,7 +299,7 @@ describe("TradeHistoryRow helpers", () => {
           },
         ],
         "timestamp": "18 Sep 2023, 16:43",
-        "timestampUTC": "UTC: 2023-09-18 12:43:18",
+        "timestampUTC": "2023-09-18 12:43:18",
       }
     `);
 
@@ -352,7 +352,7 @@ describe("TradeHistoryRow helpers", () => {
           },
         ],
         "timestamp": "18 Sep 2023, 16:43",
-        "timestampUTC": "UTC: 2023-09-18 12:43:18",
+        "timestampUTC": "2023-09-18 12:43:18",
       }
     `);
 
@@ -400,7 +400,7 @@ describe("TradeHistoryRow helpers", () => {
         "priceImpact": "-$ 9,488.99",
         "size": "+$ 1,348.83",
         "timestamp": "18 Sep 2023, 15:14",
-        "timestampUTC": "UTC: 2023-09-18 11:14:09",
+        "timestampUTC": "2023-09-18 11:14:09",
       }
     `);
 
@@ -424,7 +424,7 @@ describe("TradeHistoryRow helpers", () => {
         "priceImpact": undefined,
         "size": "-$ 4,954.24",
         "timestamp": "18 Sep 2023, 11:52",
-        "timestampUTC": "UTC: 2023-09-18 07:52:39",
+        "timestampUTC": "2023-09-18 07:52:39",
       }
     `);
 
@@ -532,7 +532,7 @@ describe("TradeHistoryRow helpers", () => {
         "priceImpact": undefined,
         "size": "-$ 6,441.90",
         "timestamp": "04 Sep 2023, 06:38",
-        "timestampUTC": "UTC: 2023-09-04 02:38:49",
+        "timestampUTC": "2023-09-04 02:38:49",
       }
     `);
 
@@ -585,7 +585,7 @@ describe("TradeHistoryRow helpers", () => {
           },
         ],
         "timestamp": "21 Sep 2023, 19:32",
-        "timestampUTC": "UTC: 2023-09-21 15:32:40",
+        "timestampUTC": "2023-09-21 15:32:40",
       }
     `);
 
@@ -612,7 +612,7 @@ describe("TradeHistoryRow helpers", () => {
         "priceImpact": undefined,
         "size": "+$ 3.62",
         "timestamp": "18 Sep 2023, 16:43",
-        "timestampUTC": "UTC: 2023-09-18 12:43:18",
+        "timestampUTC": "2023-09-18 12:43:18",
         "triggerPrice": ">  $ 95,600.00",
       }
     `);
@@ -682,7 +682,7 @@ describe("TradeHistoryRow helpers", () => {
           },
         ],
         "timestamp": "18 Sep 2023, 16:43",
-        "timestampUTC": "UTC: 2023-09-18 12:43:18",
+        "timestampUTC": "2023-09-18 12:43:18",
       }
     `);
   });
@@ -721,7 +721,7 @@ describe("TradeHistoryRow helpers", () => {
         "swapToTokenAmount": "39.88",
         "swapToTokenSymbol": "USDC",
         "timestamp": "02 Oct 2023, 18:35",
-        "timestampUTC": "UTC: 2023-10-02 14:35:16",
+        "timestampUTC": "2023-10-02 14:35:16",
       }
     `);
     expect(formatSwapMessage(executeSwap)).toMatchInlineSnapshot(`
@@ -747,7 +747,7 @@ describe("TradeHistoryRow helpers", () => {
         "swapToTokenAmount": "1.1196",
         "swapToTokenSymbol": "ETH",
         "timestamp": "02 Oct 2023, 06:08",
-        "timestampUTC": "UTC: 2023-10-02 02:08:40",
+        "timestampUTC": "2023-10-02 02:08:40",
       }
     `);
     // LIMIT SWAPS
@@ -774,7 +774,7 @@ describe("TradeHistoryRow helpers", () => {
         "swapToTokenAmount": "0.36987",
         "swapToTokenSymbol": "BTC",
         "timestamp": "29 Sep 2023, 10:46",
-        "timestampUTC": "UTC: 2023-09-29 06:46:39",
+        "timestampUTC": "2023-09-29 06:46:39",
       }
     `);
     expect(formatSwapMessage(failedSwap)).toMatchInlineSnapshot(`
@@ -807,7 +807,7 @@ describe("TradeHistoryRow helpers", () => {
         "swapToTokenAmount": "0.0004863",
         "swapToTokenSymbol": "ETH",
         "timestamp": "14 Feb 2024, 13:33",
-        "timestampUTC": "UTC: 2024-02-14 09:33:19",
+        "timestampUTC": "2024-02-14 09:33:19",
       }
     `);
   });

@@ -9,10 +9,10 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { formatDeltaUsdParts } from "lib/numbers";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 export function NextStoredImpactRows() {
@@ -28,16 +28,17 @@ export function NextStoredImpactRows() {
     <>
       <SyntheticsInfoRow
         label={
-          <TooltipWithPortal
+          <StandardTooltip
             handle={t`Stored price impact`}
             content={
-              <Trans>
-                Price impact is stored when you increase a position and applied when you decrease.{" "}
-                <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
-                  Read more
-                </ExternalLink>
-                .
-              </Trans>
+              <TooltipContent>
+                <TooltipText>
+                  <Trans>Price impact is stored when you increase a position and applied when you decrease.</Trans>
+                </TooltipText>
+                <TooltipLink href={DOCS_LINKS.priceImpact}>
+                  <Trans>Read more</Trans>
+                </TooltipLink>
+              </TooltipContent>
             }
           />
         }

@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-// A section becomes the current one once its top passes this share of the window height
 const ACTIVE_LINE = 0.3;
 const USER_SCROLL_EVENTS = ["wheel", "touchmove", "keydown", "pointerdown"] as const;
 
@@ -15,12 +14,8 @@ function getScrollParent(element: HTMLElement): HTMLElement {
   return document.documentElement;
 }
 
-/**
- * Scroll spy for the "On this page" menu: the section in view and a function that scrolls to a section.
- */
 export function useActiveSection(sections: { id: string }[]) {
   const [activeId, setActiveId] = useState<string>();
-  // After a click in the menu the clicked item stays active until the user scrolls by themselves
   const clickedIdRef = useRef<string>();
 
   useEffect(() => {
@@ -40,7 +35,6 @@ export function useActiveSection(sections: { id: string }[]) {
         return;
       }
 
-      // The top of the page selects the first section; the last sections can't reach the line, so the end selects the last one
       const isAtBottom =
         scroller.scrollHeight > scroller.clientHeight &&
         scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 2;
@@ -57,7 +51,6 @@ export function useActiveSection(sections: { id: string }[]) {
     };
 
     update();
-    // Capture catches the scroll of the page container, which doesn't bubble to window
     window.addEventListener("scroll", update, { capture: true, passive: true });
     window.addEventListener("resize", update);
     USER_SCROLL_EVENTS.forEach((type) => window.addEventListener(type, release, { capture: true, passive: true }));

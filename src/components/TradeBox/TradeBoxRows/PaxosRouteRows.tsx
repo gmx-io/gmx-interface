@@ -18,7 +18,7 @@ import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 import { TransitApprovalProposalAlert } from "components/PaxosTransit/TransitApprovalProposalAlert";
 import { SelectorBase, useSelectorClose } from "components/SelectorBase/SelectorBase";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import type { TradeboxPaxosRoute } from "../hooks/useTradeboxPaxosRoute";
 
@@ -50,20 +50,9 @@ export function PaxosRouteSelectorRow({
   return (
     <SyntheticsInfoRow
       label={
-        <TooltipWithPortal
+        <StandardTooltip
           handle={t`Route`}
-          position="left-start"
-          variant="iconStroke"
-          content={
-            <div className="text-typography-primary">
-              <Trans>
-                Auto picks the best return after all fees, or the instant route when Paxos saves less than {minSaving}.
-                Paxos converts {fromToken.symbol} to {toToken.symbol} in a separate transaction, and {toToken.symbol}{" "}
-                arrives in your wallet in a separate step, usually within 2–10 minutes. GMX pool and external routes are
-                instant.
-              </Trans>
-            </div>
-          }
+          content={t`Auto picks the best return after all fees, or the instant route when Paxos saves less than ${minSaving}. Paxos converts ${fromToken.symbol} to ${toToken.symbol} in a separate transaction, and ${toToken.symbol} arrives in your wallet in a separate step, usually within 2–10 minutes. GMX pool and external routes are instant.`}
         />
       }
       value={
@@ -168,15 +157,11 @@ function RouteOptionItem({
 
 export function PaxosPendingLabel({ amount, token }: { amount: bigint; token: TokenData }) {
   return (
-    <TooltipWithPortal
+    <StandardTooltip
       className="ml-4"
       handleClassName="text-typography-secondary"
       handle={<Trans>· {formatBalanceAmount(amount, token.decimals, undefined, { isStable: true })} pending</Trans>}
-      content={
-        <Trans>
-          {token.symbol} on its way from Paxos. It arrives in your wallet in a separate step, sometimes in parts.
-        </Trans>
-      }
+      content={t`${token.symbol} on its way from Paxos. It arrives in your wallet in a separate step, sometimes in parts.`}
     />
   );
 }

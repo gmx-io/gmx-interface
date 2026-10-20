@@ -18,12 +18,9 @@ import CopyIcon from "img/ic_copy.svg?react";
 
 import { CodeHighlight } from "./CodeHighlight";
 
-// Building blocks for design system documentation pages. Sections look like the cards on /pools.
-
 export type DocsSectionInfo = {
   id: string;
   title: string;
-  // Shown in a small tinted tile next to the title
   icon?: ComponentType<{ className?: string }>;
 };
 
@@ -34,16 +31,13 @@ export function DocsSection({
   children,
 }: {
   section: DocsSectionInfo;
-  // Shown on the title line, after the title (e.g. a version's date)
   titleMeta?: string;
-  // No padding around the content, for DocsCards and rows that draw their own lines edge to edge
   flush?: boolean;
   children: ReactNode;
 }) {
   const Icon = section.icon;
 
   return (
-    // data-docs-section adds the section to the "On this page" menu in the right column
     <section
       id={section.id}
       data-docs-section={section.title}
@@ -65,14 +59,9 @@ export function DocsSection({
   );
 }
 
-// One step smaller and quieter than labels: DS TextIcon/Disabled (#646A8F dark, #9FA3BC light)
 const CODE_ACTION_CLASSNAME =
   "text-body-small flex items-center gap-4 text-slate-400 transition-colors duration-200 ease-out hover:text-typography-primary dark:text-slate-500 dark:hover:text-typography-primary";
 
-/**
- * A code block with a Copy button in its corner. Copying turns the button green with a tick for a moment.
- * With `collapsedHeight`, long code starts folded with a fade, and Expand / Collapse animate its height.
- */
 export function DocsCode({ code, collapsedHeight }: { code: string; collapsedHeight?: number }) {
   const [isCopied, setIsCopied] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -94,7 +83,6 @@ export function DocsCode({ code, collapsedHeight }: { code: string; collapsedHei
     return () => clearTimeout(timeout);
   }, [isCopied]);
 
-  // The full height is measured, so the fold can animate to it
   useLayoutEffect(() => {
     const pre = preRef.current;
     if (!pre || collapsedHeight === undefined) {
@@ -160,9 +148,6 @@ export function DocsCode({ code, collapsedHeight }: { code: string; collapsedHei
   );
 }
 
-/**
- * One example inside DocsCards: an optional small label and the live component. Cells are split by lines, not backgrounds.
- */
 export function DocsCard({
   label,
   children,
@@ -191,13 +176,7 @@ const CARD_COLUMNS = {
   3: "md:grid-cols-3",
 };
 
-/**
- * A grid of DocsCard, for a flush DocsSection. Each card draws its right and bottom line; the grid is 1px larger
- * than the section, which clips the lines on the outer edges.
- */
 export function DocsCards({ children, columns = 3 }: { children: ReactNode; columns?: keyof typeof CARD_COLUMNS }) {
-  // A single-column grid draws no line under its last card, so a block that grows taller (next to a bigger one)
-  // shows no stray line
   return (
     <div
       className={cx("-mb-1 -mr-1 grid grid-cols-1", CARD_COLUMNS[columns], {
@@ -258,15 +237,11 @@ export function DocsPropsTable({ props }: { props: DocsProp[] }) {
   );
 }
 
-// The title is the version, e.g. "v1.1"
 export type DocsChangelogEntry = DocsSectionInfo & {
   date: string;
   changes: string[];
 };
 
-/**
- * Changelog tab: one section per version, newest first.
- */
 export function DocsChangelog({ entries }: { entries: DocsChangelogEntry[] }) {
   return (
     <div className="flex flex-col gap-16">
@@ -274,7 +249,6 @@ export function DocsChangelog({ entries }: { entries: DocsChangelogEntry[] }) {
         <DocsSection key={entry.id} section={entry} titleMeta={entry.date}>
           <ul className="text-body-large flex list-disc flex-col gap-8 pl-20 marker:text-typography-secondary">
             {entry.changes.map((change) => (
-              // pb-0 resets the padding that Shared.scss adds under every li
               <li key={change} className="pb-0">
                 {change}
               </li>

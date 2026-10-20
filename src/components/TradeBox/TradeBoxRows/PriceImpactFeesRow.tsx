@@ -19,10 +19,9 @@ import { BASIS_POINTS_DIVISOR_BIGINT } from "sdk/configs/factors";
 import { bigMath } from "sdk/utils/bigmath";
 import { getCappedPriceImpactPercentageFromFees } from "sdk/utils/fees";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
-import Tooltip from "components/Tooltip/Tooltip";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import sparkleIcon from "img/sparkle.svg";
 
@@ -41,16 +40,15 @@ export function PriceImpactFeesRow() {
   const isMegaethPointsActive = useMegaethPointsActive();
 
   const megaethPointsSparkle = isMegaethPointsActive ? (
-    <TooltipWithPortal
+    <StandardTooltip
       variant="none"
-      maxAllowedWidth={350}
       handle={
         <span className="inline-flex items-center gap-3 rounded-4 bg-blue-300/20 px-6 py-2 text-12 font-medium text-blue-300">
           <img className="h-10" src={sparkleIcon} alt="" />
           <Trans>Earns MegaETH points</Trans>
         </span>
       }
-      content={<Trans>Points are allocated based on your cumulative trading volume on GMX MegaETH</Trans>}
+      content={t`Points are allocated based on your cumulative trading volume on GMX MegaETH`}
     />
   ) : null;
 
@@ -124,16 +122,17 @@ export function PriceImpactFeesRow() {
       <div className="flex flex-col gap-4">
         <SyntheticsInfoRow
           label={
-            <Tooltip
+            <StandardTooltip
               handle={t`Net price impact / fees`}
               content={
-                <Trans>
-                  Net price impact and fees from your trade.{" "}
-                  <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
-                    Read more
-                  </ExternalLink>
-                  .
-                </Trans>
+                <TooltipContent>
+                  <TooltipText>
+                    <Trans>Net price impact and fees from your trade.</Trans>
+                  </TooltipText>
+                  <TooltipLink href={DOCS_LINKS.priceImpact}>
+                    <Trans>Read more</Trans>
+                  </TooltipLink>
+                </TooltipContent>
               }
             />
           }
@@ -197,16 +196,17 @@ export function PriceImpactFeesRow() {
       <SyntheticsInfoRow
         label={
           <span>
-            <Tooltip
+            <StandardTooltip
               handle={t`Price impact`}
               content={
-                <Trans>
-                  No price impact on increases — orders execute at mark price.{" "}
-                  <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
-                    Read more
-                  </ExternalLink>
-                  .
-                </Trans>
+                <TooltipContent>
+                  <TooltipText>
+                    <Trans>No price impact on increases — orders execute at mark price.</Trans>
+                  </TooltipText>
+                  <TooltipLink href={DOCS_LINKS.priceImpact}>
+                    <Trans>Read more</Trans>
+                  </TooltipLink>
+                </TooltipContent>
               }
             />
             {" / "}

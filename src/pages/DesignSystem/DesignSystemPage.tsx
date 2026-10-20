@@ -25,9 +25,6 @@ const TAB_LABELS: Record<DesignSystemTab, string> = {
 
 const TAB_ORDER: DesignSystemTab[] = ["examples", "props", "guidelines", "changelog"];
 
-/**
- * Dev-only design system site: /ui/<slug>?tab=<tab>. Pages are listed in designSystemRegistry.
- */
 export default function DesignSystemPage() {
   const { slug } = useParams<{ slug: string }>();
   const location = useLocation();
@@ -48,7 +45,6 @@ export default function DesignSystemPage() {
     [history]
   );
 
-  // The top bar gets smaller once the page scrolls
   const handleScroll = useCallback(
     (event: UIEvent<HTMLDivElement>) => setIsScrolled(event.currentTarget.scrollTop > 8),
     []
@@ -63,7 +59,6 @@ export default function DesignSystemPage() {
   return (
     <SEO title={getPageTitle(`${page.title} · Design system`)}>
       <div className="flex h-full w-full flex-col">
-        {/* Top bar: the GMX logo on the left, Dark | Light on the right */}
         <header
           className={cx(
             "flex shrink-0 items-center justify-between gap-16 border-b border-slate-600 px-24 transition-[padding] duration-200 ease-out max-md:px-16",
@@ -88,7 +83,6 @@ export default function DesignSystemPage() {
                 <div className="flex min-w-0 flex-1 flex-col gap-16">
                   <DesignSystemMobileNav activeSlug={page.slug} />
                   <h1 className="text-h1 font-medium">{page.title}</h1>
-                  {/* Pages with only the Examples tab skip the tab row and its gap */}
                   {tabs.length > 1 && (
                     <PoolsTabs<DesignSystemTab>
                       tabs={tabs}

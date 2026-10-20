@@ -46,7 +46,7 @@ import { TableTh, TableTheadTr } from "components/Table/Table";
 import { ButtonRowScrollFadeContainer, TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import Tabs from "components/Tabs/Tabs";
 import type { Option as TabOption } from "components/Tabs/types";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import { FeeApyLabel } from "./FeeApyLabel";
 import { GmListItem } from "./GmListItem";
@@ -363,11 +363,11 @@ export function GmList({
                       </Sorter>
                     </TableTh>
                     <TableTh>
-                      <TooltipWithPortal
+                      <StandardTooltip
                         handle={t`SNAPSHOT`}
                         className="normal-case"
                         position="bottom-end"
-                        content={<Trans>Performance vs benchmark over the selected period</Trans>}
+                        content={t`Performance vs benchmark over the selected period`}
                         variant="iconStroke"
                       />
                     </TableTh>

@@ -32,16 +32,23 @@ import { getMarketIndexName } from "sdk/utils/markets";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
 import Button from "components/Button/Button";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
 import { LeverageValue } from "components/NumericValue/LeverageValue";
 import { LiquidationPriceValue } from "components/NumericValue/LiquidationPriceValue";
 import { UsdValue } from "components/NumericValue/UsdValue";
 import PositionDropdown from "components/PositionDropdown/PositionDropdown";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import {
+  TooltipContent,
+  TooltipDivider,
+  TooltipLink,
+  TooltipRow,
+  TooltipRows,
+  TooltipText,
+  TooltipTitle,
+} from "components/Tooltip/TooltipBlocks";
 
 import EditIcon from "img/ic_edit.svg?react";
 import NewLinkThinIcon from "img/ic_new_link_thin.svg?react";
@@ -119,89 +126,77 @@ export function PositionItem(p: Props) {
     const priceImpactBps = formatPriceImpactBps(priceImpactUsd, p.position.sizeInUsd);
 
     return (
-      <StatsTooltipRow
+      <TooltipRow
         label={label}
-        labelClassName="text-balance text-typography-secondary"
         value={
           <>
             <DeltaUsdValue deltaUsd={priceImpactUsd} fallback="..." />
             {priceImpactBps ? ` (${priceImpactBps})` : null}
           </>
         }
-        valueClassName="numbers"
-        showDollar={false}
-        textClassName={getPositiveOrNegativeClass(priceImpactUsd)}
+        valueClassName={getPositiveOrNegativeClass(priceImpactUsd)}
       />
     );
   }
 
   function renderNetValue() {
     return (
-      <TooltipWithPortal
+      <StandardTooltip
         handle={<UsdValue usd={displayedNetValue} />}
         handleClassName="numbers"
-        position={p.isLarge ? "bottom-start" : "bottom-end"}
         renderContent={() => (
-          <div>
-            {savedShowPnlAfterFees ? (
-              <Trans>Position value after PnL and all fees</Trans>
-            ) : (
-              <Trans>Position value after PnL and accrued fees</Trans>
-            )}
-            <br />
-            <br />
-            <StatsTooltipRow
-              label={t`Margin before borrow/funding`}
-              value={<UsdValue usd={p.position.collateralUsd} fallback="..." />}
-              valueClassName="numbers"
-              showDollar={false}
-            />
-            <StatsTooltipRow
-              label={t`PnL`}
-              value={<DeltaUsdValue deltaUsd={p.position?.pnl} fallback="..." />}
-              valueClassName="numbers"
-              showDollar={false}
-              textClassName={getPositiveOrNegativeClass(p.position.pnl)}
-            />
-            <StatsTooltipRow
-              label={t`Borrow fee`}
-              value={<UsdValue usd={-p.position.pendingBorrowingFeesUsd} fallback="..." />}
-              valueClassName="numbers"
-              showDollar={false}
-              textClassName={cx({
-                "text-red-500": p.position.pendingBorrowingFeesUsd !== 0n,
-              })}
-            />
-            <StatsTooltipRow
-              label={t`Negative funding fee`}
-              value={<UsdValue usd={-p.position.pendingFundingFeesUsd} fallback="..." />}
-              valueClassName="numbers"
-              showDollar={false}
-              textClassName={cx({
-                "text-red-500": p.position.pendingFundingFeesUsd !== 0n,
-              })}
-            />
-            {savedShowPnlAfterFees && (
-              <>
-                {breakdownNetPriceImpactEnabled && (
-                  <>
-                    {renderPriceImpactRow(t`Stored price impact`, p.position.pendingImpactUsd)}
-                    {renderPriceImpactRow(t`Close price impact`, p.position.closePriceImpactDeltaUsd)}
-                  </>
-                )}
-                {renderPriceImpactRow(t`Net price impact (open + close)`, p.position.netPriceImapctDeltaUsd)}
-                <StatsTooltipRow
-                  label={t`Close fee`}
-                  value={<UsdValue usd={-p.position.closingFeeUsd} fallback="..." />}
-                  valueClassName="numbers"
-                  showDollar={false}
-                  textClassName={cx({
-                    "text-red-500": p.position.closingFeeUsd !== 0n,
-                  })}
-                />
-              </>
-            )}
-          </div>
+          <TooltipContent>
+            <TooltipText>
+              {savedShowPnlAfterFees ? (
+                <Trans>Position value after PnL and all fees</Trans>
+              ) : (
+                <Trans>Position value after PnL and accrued fees</Trans>
+              )}
+            </TooltipText>
+            <TooltipRows>
+              <TooltipRow
+                label={t`Margin before borrow/funding`}
+                value={<UsdValue usd={p.position.collateralUsd} fallback="..." />}
+              />
+              <TooltipRow
+                label={t`PnL`}
+                value={<DeltaUsdValue deltaUsd={p.position?.pnl} fallback="..." />}
+                valueClassName={getPositiveOrNegativeClass(p.position.pnl)}
+              />
+              <TooltipRow
+                label={t`Borrow fee`}
+                value={<UsdValue usd={-p.position.pendingBorrowingFeesUsd} fallback="..." />}
+                valueClassName={cx({
+                  "text-red-500": p.position.pendingBorrowingFeesUsd !== 0n,
+                })}
+              />
+              <TooltipRow
+                label={t`Negative funding fee`}
+                value={<UsdValue usd={-p.position.pendingFundingFeesUsd} fallback="..." />}
+                valueClassName={cx({
+                  "text-red-500": p.position.pendingFundingFeesUsd !== 0n,
+                })}
+              />
+              {savedShowPnlAfterFees && (
+                <>
+                  {breakdownNetPriceImpactEnabled && (
+                    <>
+                      {renderPriceImpactRow(t`Stored price impact`, p.position.pendingImpactUsd)}
+                      {renderPriceImpactRow(t`Close price impact`, p.position.closePriceImpactDeltaUsd)}
+                    </>
+                  )}
+                  {renderPriceImpactRow(t`Net price impact (open + close)`, p.position.netPriceImapctDeltaUsd)}
+                  <TooltipRow
+                    label={t`Close fee`}
+                    value={<UsdValue usd={-p.position.closingFeeUsd} fallback="..." />}
+                    valueClassName={cx({
+                      "text-red-500": p.position.closingFeeUsd !== 0n,
+                    })}
+                  />
+                </>
+              )}
+            </TooltipRows>
+          </TooltipContent>
         )}
       />
     );
@@ -250,89 +245,80 @@ export function PositionItem(p: Props) {
     return (
       <div className="flex flex-col gap-4">
         <div className={cx("position-list-collateral", { isSmall: !p.isLarge })}>
-          <TooltipWithPortal
+          <StandardTooltip
             handle={<UsdValue usd={p.position.remainingCollateralUsd} />}
             handleClassName={cx("numbers", { negative: p.position.hasLowCollateral })}
-            position={p.isLarge ? "bottom-start" : "bottom-end"}
-            className="PositionItem-collateral-tooltip"
             content={
-              <>
+              <TooltipContent>
                 {p.position.hasLowCollateral && (
-                  <div>
+                  <TooltipText>
                     <Trans>Low margin after fees. Deposit more to reduce liquidation risk.</Trans>
-                    <br />
-                    <br />
-                  </div>
+                  </TooltipText>
                 )}
-                <StatsTooltipRow
+                <TooltipRow
                   label={t`Current margin`}
-                  showDollar={false}
                   value={renderMarginValue(p.position.remainingCollateralAmount, p.position.remainingCollateralUsd)}
-                  valueClassName="numbers"
                 />
-                <br />
-                <StatsTooltipRow
-                  label={t`Margin before borrow/funding`}
-                  showDollar={false}
-                  value={renderMarginValue(p.position.collateralAmount, p.position.collateralUsd)}
-                  valueClassName="numbers"
-                />
-                <StatsTooltipRow
-                  label={t`Borrow fee`}
-                  showDollar={false}
-                  value={<UsdValue usd={-p.position.pendingBorrowingFeesUsd} fallback="..." />}
-                  valueClassName="numbers"
-                  textClassName={cx({
-                    "text-red-500": p.position.pendingBorrowingFeesUsd !== 0n,
-                  })}
-                />
-                <StatsTooltipRow
-                  label={t`Negative funding fee`}
-                  showDollar={false}
-                  value={<DeltaUsdValue deltaUsd={-p.position.pendingFundingFeesUsd} fallback="..." />}
-                  valueClassName="numbers"
-                  textClassName={cx({
-                    "text-red-500": p.position.pendingFundingFeesUsd !== 0n,
-                  })}
-                />
-                <br />
-                <div className="mb-4 text-typography-primary">
-                  <Trans>Claimable</Trans>
-                </div>
-                <StatsTooltipRow
-                  label={t`Positive funding fee`}
-                  showDollar={false}
-                  value={<DeltaUsdValue deltaUsd={p.position.pendingClaimableFundingFeesUsd} fallback="..." />}
-                  valueClassName="numbers"
-                  textClassName={cx({
-                    "text-green-500": p.position.pendingClaimableFundingFeesUsd > 0,
-                  })}
-                />
-                <br />
-                <div className="mb-4 text-typography-primary">
-                  <Trans>Estimated daily fees</Trans>
-                </div>
-                <StatsTooltipRow
-                  showDollar={false}
-                  label={t`Borrow fee / day`}
-                  value={borrowingFeeRateUsd !== undefined ? <UsdValue usd={-borrowingFeeRateUsd} /> : "..."}
-                  valueClassName="numbers"
-                  textClassName={cx({
-                    "text-red-500": borrowingFeeRateUsd !== undefined && borrowingFeeRateUsd > 0,
-                  })}
-                />
-                <StatsTooltipRow
-                  showDollar={false}
-                  label={t`Funding fee / day`}
-                  value={<DeltaUsdValue deltaUsd={fundingFeeRateUsd} />}
-                  valueClassName="numbers"
-                  textClassName={getPositiveOrNegativeClass(fundingFeeRateUsd)}
-                />
-                <br />
-                <Trans>Negative funding fees reduce margin and affect liquidation price.</Trans>
-                <br />
-                <Trans>Positive funding fees are claimable in Claims.</Trans>
-              </>
+                <TooltipDivider />
+                <TooltipRows>
+                  <TooltipRow
+                    label={t`Margin before borrow/funding`}
+                    value={renderMarginValue(p.position.collateralAmount, p.position.collateralUsd)}
+                  />
+                  <TooltipRow
+                    label={t`Borrow fee`}
+                    value={<UsdValue usd={-p.position.pendingBorrowingFeesUsd} fallback="..." />}
+                    valueClassName={cx({
+                      "text-red-500": p.position.pendingBorrowingFeesUsd !== 0n,
+                    })}
+                  />
+                  <TooltipRow
+                    label={t`Negative funding fee`}
+                    value={<DeltaUsdValue deltaUsd={-p.position.pendingFundingFeesUsd} fallback="..." />}
+                    valueClassName={cx({
+                      "text-red-500": p.position.pendingFundingFeesUsd !== 0n,
+                    })}
+                  />
+                </TooltipRows>
+                <TooltipDivider />
+                <TooltipRows>
+                  <TooltipTitle>
+                    <Trans>Claimable</Trans>
+                  </TooltipTitle>
+                  <TooltipRow
+                    label={t`Positive funding fee`}
+                    value={<DeltaUsdValue deltaUsd={p.position.pendingClaimableFundingFeesUsd} fallback="..." />}
+                    valueClassName={cx({
+                      "text-green-500": p.position.pendingClaimableFundingFeesUsd > 0,
+                    })}
+                  />
+                </TooltipRows>
+                <TooltipDivider />
+                <TooltipRows>
+                  <TooltipTitle>
+                    <Trans>Estimated daily fees</Trans>
+                  </TooltipTitle>
+                  <TooltipRow
+                    label={t`Borrow fee / day`}
+                    value={borrowingFeeRateUsd !== undefined ? <UsdValue usd={-borrowingFeeRateUsd} /> : "..."}
+                    valueClassName={cx({
+                      "text-red-500": borrowingFeeRateUsd !== undefined && borrowingFeeRateUsd > 0,
+                    })}
+                  />
+                  <TooltipRow
+                    label={t`Funding fee / day`}
+                    value={<DeltaUsdValue deltaUsd={fundingFeeRateUsd} />}
+                    valueClassName={getPositiveOrNegativeClass(fundingFeeRateUsd)}
+                  />
+                </TooltipRows>
+                <TooltipDivider />
+                <TooltipText>
+                  <Trans>Negative funding fees reduce margin and affect liquidation price.</Trans>
+                </TooltipText>
+                <TooltipText>
+                  <Trans>Positive funding fees are claimable in Claims.</Trans>
+                </TooltipText>
+              </TooltipContent>
             }
           />
 
@@ -391,49 +377,43 @@ export function PositionItem(p: Props) {
     }
 
     const getLiqPriceTooltipContent = () => (
-      <>
-        {liqPriceWarning && <div>{liqPriceWarning}</div>}
+      <TooltipContent>
+        {liqPriceWarning && <TooltipText>{liqPriceWarning}</TooltipText>}
         {estimatedLiquidationHours ? (
-          <div>
+          <>
             {!liqPriceWarning && (
-              <>
+              <TooltipText>
                 <Trans>Liquidation price changes with fees and margin value.</Trans>
-                <br />
-              </>
+              </TooltipText>
             )}
-            <br />
-            {liqPriceWarning ? (
-              <Trans>
-                Position may still liquidate from fees alone (funding + borrowing), reducing margin over time.
-              </Trans>
-            ) : (
-              <Trans>Position may liquidate from fees alone (funding + borrowing), reducing margin over time.</Trans>
-            )}
-            <br />
-            <br />
-            <StatsTooltipRow
+            <TooltipText>
+              {liqPriceWarning ? (
+                <Trans>
+                  Position may still liquidate from fees alone (funding + borrowing), reducing margin over time.
+                </Trans>
+              ) : (
+                <Trans>Position may liquidate from fees alone (funding + borrowing), reducing margin over time.</Trans>
+              )}
+            </TooltipText>
+            <TooltipRow
               label={t`Estimated time to liquidation`}
               value={formatEstimatedLiquidationTime(estimatedLiquidationHours)}
-              valueClassName="numbers"
-              showDollar={false}
             />
-          </div>
-        ) : (
-          ""
-        )}
+          </>
+        ) : null}
         {showOffHoursWarning && (
-          <div>
-            {(liqPriceWarning || estimatedLiquidationHours) && <br />}
-            <Trans>
-              This position is above liquidation risk, but it may become close to liquidation when the market switches
-              to off-hours risk parameters. Add margin or reduce leverage to increase your buffer.
-            </Trans>
-            <br />
-            <br />
-            <Trans>Off-hours: daily 20:45–22:15 UTC (weekends Fri 20:45 → Sun 22:15 UTC).</Trans>
-            <br />
-            <br />
-            <StatsTooltipRow
+          <>
+            {(liqPriceWarning || estimatedLiquidationHours) && <TooltipDivider />}
+            <TooltipText>
+              <Trans>
+                This position is above liquidation risk, but it may become close to liquidation when the market switches
+                to off-hours risk parameters. Add margin or reduce leverage to increase your buffer.
+              </Trans>
+            </TooltipText>
+            <TooltipText>
+              <Trans>Off-hours: daily 20:45–22:15 UTC (weekends Fri 20:45 → Sun 22:15 UTC).</Trans>
+            </TooltipText>
+            <TooltipRow
               label={t`Estimated off-hours liquidation price`}
               value={
                 <LiquidationPriceValue
@@ -443,21 +423,18 @@ export function PositionItem(p: Props) {
                   fallback="..."
                 />
               }
-              valueClassName="numbers"
-              showDollar={false}
             />
-            <br />
-            <ExternalLink href={OFF_HOURS_DOCS_URL}>
+            <TooltipLink href={OFF_HOURS_DOCS_URL}>
               <Trans>Read more</Trans>
-            </ExternalLink>
-          </div>
+            </TooltipLink>
+          </>
         )}
-      </>
+      </TooltipContent>
     );
 
     if (liqPriceWarning || estimatedLiquidationHours || showOffHoursWarning) {
       return (
-        <TooltipWithPortal
+        <StandardTooltip
           handle={
             p.position.liquidationPrice ? (
               <LiquidationPriceValue
@@ -510,49 +487,42 @@ export function PositionItem(p: Props) {
             <div className="Exchange-list-title">
               <div className="inline-flex items-center gap-4">
                 <TokenIcon className="PositionList-token-icon" symbol={p.position.indexToken.symbol} displaySize={20} />
-                <TooltipWithPortal
+                <StandardTooltip
                   handle={
                     <span className="font-medium">
                       {getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false })}
                     </span>
                   }
-                  position="bottom-start"
                   renderContent={() => (
-                    <div>
-                      <StatsTooltipRow
-                        label={t`Pool`}
-                        value={
-                          <div className="flex items-center">
-                            <span>{indexName && indexName}</span>
-                            <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
-                          </div>
-                        }
-                        showDollar={false}
-                      />
-
-                      <br />
-
-                      <div>
+                    <TooltipContent>
+                      <TooltipText>
                         <Trans>Click to select, then use the trade box to increase size.</Trans>
-                        <br />
-                        <br />
+                      </TooltipText>
+                      <TooltipText>
                         <Trans>Use the TP/SL button to set TP/SL orders.</Trans>
-                        <br />
-                        <br />
+                      </TooltipText>
+                      <TooltipText>
                         <Trans>Use the "Close" button to reduce your position via market or TWAP orders.</Trans>
-                      </div>
-
-                      {showDebugValues && (
-                        <>
-                          <br />
-                          <StatsTooltipRow
+                      </TooltipText>
+                      <TooltipRows>
+                        <TooltipRow
+                          label={t`Pool`}
+                          value={
+                            <div className="flex items-center">
+                              <span>{indexName && indexName}</span>
+                              <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
+                            </div>
+                          }
+                        />
+                        {showDebugValues && (
+                          <TooltipRow
                             label={t`Key`}
-                            value={<div className="debug-key muted">{p.position.contractKey}</div>}
-                            showDollar={false}
+                            value={<div className="debug-key">{p.position.contractKey}</div>}
+                            valueClassName="min-w-0 !shrink !whitespace-normal"
                           />
-                        </>
-                      )}
-                    </div>
+                        )}
+                      </TooltipRows>
+                    </TooltipContent>
                   )}
                 />
               </div>

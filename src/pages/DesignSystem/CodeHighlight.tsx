@@ -1,6 +1,5 @@
 import { type ReactNode } from "react";
 
-// A small TSX highlighter for the docs code blocks, colored with the app's tokens so it works in both themes.
 // Groups: 1 comment, 2 string, 3 JSX tag, 4 attribute name, 5 keyword, 6 number.
 const TOKEN =
   /(\{\/\*[\s\S]*?\*\/\}|\/\*[\s\S]*?\*\/|\/\/[^\n]*)|("(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'|`(?:\\.|[^`\\])*`)|(<\/?>|<\/?[A-Za-z][\w.]*)|\b([a-zA-Z][\w-]*)(?==)|\b(const|let|function|return|export|import|from|if|else|true|false|null|undefined|new|typeof|as|satisfies)\b|\b(\d+(?:\.\d+)?)\b/g;

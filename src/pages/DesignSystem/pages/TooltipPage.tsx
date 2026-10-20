@@ -3,8 +3,7 @@ import { Fragment, ReactNode } from "react";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import StandardTooltip from "components/Tooltip/StandardTooltip";
-import type { TooltipPosition } from "components/Tooltip/Tooltip";
+import StandardTooltip, { type StandardTooltipPosition } from "components/Tooltip/StandardTooltip";
 import {
   TooltipContent,
   TooltipDivider,
@@ -54,10 +53,6 @@ import {
 import { TooltipAnatomy } from "./TooltipAnatomy";
 import { LegacyTooltipPreview, StandardTooltipPreview } from "./TooltipPreview";
 import usageSource from "./TooltipUsage.tsx?raw";
-
-// Tooltip page of the design system site (/ui/tooltip).
-// Examples: live tooltips only. Guidelines: the specs and rules behind them.
-// Everything here is sample content; hover any trigger to see the tooltip.
 
 const DOCS_URL = "https://docs.gmx.io/docs/trading/fees/";
 
@@ -208,7 +203,7 @@ const FOOTNOTE_EXAMPLE = (
 
 const MOTION_ROW = ["Open fee", "Close fee", "Borrow fee"];
 
-const PLACEMENTS: [string, TooltipPosition][] = [
+const PLACEMENTS: [string, StandardTooltipPosition][] = [
   ["Below · start", "bottom-start"],
   ["Below · center", "bottom"],
   ["Below · end", "bottom-end"],
@@ -217,7 +212,6 @@ const PLACEMENTS: [string, TooltipPosition][] = [
   ["Above · end", "top-end"],
 ];
 
-// "Before" versions, built the way the app builds them today
 const BEFORE_PRICE_IMPACT = (
   <>
     No price impact on increases — orders execute at mark price. <ExternalLink href={DOCS_URL}>Read more</ExternalLink>.
@@ -267,7 +261,6 @@ const BEFORE_NET_RATE = (
   </div>
 );
 
-// Something behind the tooltip, so the blur has content to work on
 const BACKDROP_ROWS = [
   ["ETH/USD", "$2,431.20", "+1.24%"],
   ["BTC/USD", "$63,912.05", "-0.58%"],
@@ -288,7 +281,6 @@ function BlurBackdrop() {
   );
 }
 
-// The Usage code in the Props tab: TooltipUsage.tsx without its note for maintainers
 const USAGE_CODE = usageSource.replace(/^(\/\/.*\n)+/, "");
 
 const SECTIONS = {
@@ -453,7 +445,6 @@ export function TooltipExamples() {
           </DocsCards>
         </DocsSection>
 
-        {/* Two small blocks share one row */}
         <div className="grid grid-cols-1 gap-16 md:grid-cols-2">
           <DocsSection section={SECTIONS.motion} flush>
             <DocsCards columns={1}>
@@ -622,7 +613,6 @@ export function TooltipChangelog() {
   return (
     <div className="flex flex-col gap-16">
       <DocsChangelog entries={CHANGELOG} />
-      {/* Both versions are drawn open, so the difference shows without hovering */}
       <DocsSection section={SECTIONS.beforeAfter} flush>
         <div className="flex flex-col divide-y divide-fill-surfaceElevated">
           <BeforeAfter

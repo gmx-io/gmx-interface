@@ -26,10 +26,6 @@ const OPTIONS: { label: JSX.Element; value: Theme }[] = [
   },
 ];
 
-/**
- * Dark | Light switch for the design system pages, in the same style as the tabs on /pools.
- * Uses the app theme, so the choice is remembered.
- */
 export function DesignSystemThemeSwitcher() {
   const { theme, setThemeMode } = useTheme();
 

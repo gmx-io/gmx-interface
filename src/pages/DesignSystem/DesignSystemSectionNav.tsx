@@ -10,13 +10,9 @@ type SectionLink = {
 
 type Props = {
   contentRef: RefObject<HTMLElement>;
-  // Changes when another page or tab is shown, so the sections are read again
   contentKey: string;
 };
 
-/**
- * "On this page" menu in the right column: the sections of the open tab, with the one in view highlighted.
- */
 export function DesignSystemSectionNav({ contentRef, contentKey }: Props) {
   const [sections, setSections] = useState<SectionLink[]>([]);
 
@@ -33,7 +29,6 @@ export function DesignSystemSectionNav({ contentRef, contentKey }: Props) {
     };
 
     read();
-    // Sections can also come and go within a tab, so watch the content
     const observer = new MutationObserver(read);
     observer.observe(content, { childList: true, subtree: true });
     return () => observer.disconnect();

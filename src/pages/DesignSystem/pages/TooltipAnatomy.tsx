@@ -17,8 +17,6 @@ import { POINTER_BOX_WIDTH, POINTER_HEIGHT, POINTER_WIDTH } from "components/Too
 import { DocsCard, DocsCards } from "../DocsLayout";
 import { TooltipPreview, type TooltipLook, type TooltipPreviewGeometry } from "./TooltipPreview";
 
-// Anatomy block of the Tooltip page: a standard tooltip drawn open with its parts numbered, and the list of parts.
-
 const PARTS = [
   { id: "trigger", name: "Trigger", description: "Dotted underline, outline info icon, or no marker." },
   { id: "pointer", name: "Pointer", description: "14 × 7px, under the middle of the trigger." },
@@ -32,23 +30,16 @@ const PARTS = [
 
 type PartId = (typeof PARTS)[number]["id"];
 
-// Markers sit in a column this far from the panel, on both sides
 const MARKER_GAP = 24;
 const MARKER_SIZE = 20;
 const PANEL_BORDER = 1;
-// From a block's left edge to the panel's outer edge: 12px padding + the border
 const PANEL_INSET = 12 + PANEL_BORDER;
-// Lines stop this far before the text, so they don't read as dashes
 const TEXT_GAP = 4;
-// A group (the rows) gets a bracket this wide, between the line and the text
 const BRACKET_WIDTH = 4;
-// Middle of the first line: 14/18 text, and 12/16 for the footnote
 const FIRST_LINE_MIDDLE = 9;
 const FOOTNOTE_FIRST_LINE_MIDDLE = 8;
-// The pointer's marker sits this far right of the trigger, at the trigger's height
 const POINTER_MARKER_GAP = 32;
 
-// The markers sit outside the panel, so it must not clip them
 const ANATOMY_LOOK: TooltipLook = {
   ...STANDARD_TOOLTIP_LOOK,
   popupClassName: cx(STANDARD_TOOLTIP_LOOK.popupClassName, "overflow-visible"),
@@ -62,11 +53,6 @@ function Marker({ id }: { id: PartId }) {
   return <span className={MARKER_CLASSNAME}>{PARTS.findIndex((part) => part.id === id) + 1}</span>;
 }
 
-/**
- * Wraps a part and draws its marker in the column left of the panel, with a line to the part's first line.
- * `inset` is how far the part's left edge sits inside the panel's outer edge (0 for the trigger, outside the panel).
- * A `group` (the rows) gets a bracket along its whole height, and the line points at the bracket's middle.
- */
 function LeftCallout({
   id,
   inset = PANEL_INSET,
@@ -114,7 +100,6 @@ function LeftCallout({
   );
 }
 
-// The panel's marker in the column right of the panel, with a line from its right edge
 function PanelCallout() {
   const style = useMemo<CSSProperties>(() => ({ width: PANEL_BORDER + MARKER_GAP + MARKER_SIZE }), []);
 
@@ -126,22 +111,15 @@ function PanelCallout() {
   );
 }
 
-/**
- * The pointer's marker sits right of the trigger, with a slanted line down to the lower part of the pointer's
- * right slope, clear of the trigger's underline. Positions are inside the panel's border: its top edge is y = 0.
- */
 function PointerCallout({ arrowX, triggerWidth, triggerHeight }: TooltipPreviewGeometry) {
   const [lineStyle, markerStyle] = useMemo(() => {
-    // Two thirds of the way down the pointer's right slope. The pointer sits outside the border: its base is at y = -1.
     const slopeX = arrowX + POINTER_BOX_WIDTH / 2 + ((POINTER_WIDTH / 2) * 2) / 3;
     const slopeY = -PANEL_BORDER - POINTER_HEIGHT / 3;
-    // The trigger starts at the panel's outer edge, one border to the left
     const markerX = triggerWidth - PANEL_BORDER + POINTER_MARKER_GAP + MARKER_SIZE / 2;
     const markerY = -(PANEL_BORDER + TOOLTIP_OFFSET + triggerHeight / 2);
     const dx = markerX - slopeX;
     const dy = markerY - slopeY;
     const length = Math.hypot(dx, dy);
-    // Like the other lines, it stops short of what it points at
     const startX = slopeX + (dx / length) * TEXT_GAP;
     const startY = slopeY + (dy / length) * TEXT_GAP;
 
@@ -209,9 +187,7 @@ const CONTENT = (
 export function TooltipAnatomy() {
   return (
     <DocsCards columns={2}>
-      {/* A drawing of the parts; the list next to it says the same in words */}
       <DocsCard>
-        {/* Room for the markers on both sides; the drawing is as wide as its panel, so it centers */}
         <div aria-hidden className="flex w-full justify-center px-48 py-8 max-md:px-44">
           <div className="min-w-0 max-w-[350px]">
             <TooltipPreview
@@ -225,10 +201,8 @@ export function TooltipAnatomy() {
         </div>
       </DocsCard>
       <DocsCard>
-        {/* role="list": Safari drops list semantics from lists without bullets */}
         <ol role="list" className="flex flex-col gap-12">
           {PARTS.map((part) => (
-            // pb-0 resets the padding that Shared.scss adds under every li
             <li key={part.id} className="flex items-start gap-12 pb-0">
               <Marker id={part.id} />
               <div className="flex flex-col gap-2">

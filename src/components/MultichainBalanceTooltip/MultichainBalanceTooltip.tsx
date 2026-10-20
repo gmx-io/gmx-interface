@@ -7,7 +7,7 @@ import { useSortedTokenBalances } from "domain/multichain/useSortedTokenBalances
 import { formatBalanceAmount } from "lib/numbers";
 
 import { UsdValue } from "components/NumericValue/UsdValue";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { TooltipRow, TooltipRows } from "components/Tooltip/TooltipBlocks";
 
 type Props = {
   multichainBalances: MultichainMarketTokenBalances | undefined;
@@ -37,7 +37,7 @@ export function MultichainBalanceTooltip({ multichainBalances, symbol, decimals 
     }
 
     return (
-      <>
+      <TooltipRows>
         {visibleRows.map((tokenBalancesData) => {
           const label =
             tokenBalancesData.chainId === GMX_ACCOUNT_PSEUDO_CHAIN_ID
@@ -50,20 +50,19 @@ export function MultichainBalanceTooltip({ multichainBalances, symbol, decimals 
           const formattedToken = formatBalanceAmount(tokenBalancesData.balance, decimals, symbol);
 
           return (
-            <StatsTooltipRow
+            <TooltipRow
               key={tokenBalancesData.chainId}
               label={label}
               value={
-                <span>
-                  <UsdValue usd={tokenBalancesData.balanceUsd} className="text-typography-primary numbers" />{" "}
-                  <span className="text-typography-secondary numbers">({formattedToken})</span>
-                </span>
+                <>
+                  <UsdValue usd={tokenBalancesData.balanceUsd} />{" "}
+                  <span className="text-typography-secondary">({formattedToken})</span>
+                </>
               }
-              showDollar={false}
             />
           );
         })}
-      </>
+      </TooltipRows>
     );
   }, [sortedTokenBalancesDataArray, symbol, decimals]);
 

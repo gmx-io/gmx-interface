@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback, useMemo, useState } from "react";
+import { ReactNode, useCallback, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import type { Address } from "viem";
 
@@ -27,11 +27,18 @@ import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
 import { NumericText } from "components/NumericValue/NumericValue";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { SwapMarketLabel } from "components/SwapMarketLabel/SwapMarketLabel";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import {
+  TooltipContent,
+  TooltipDivider,
+  TooltipFootnote,
+  TooltipRow,
+  TooltipRows,
+  TooltipText,
+} from "components/Tooltip/TooltipBlocks";
 
 import FilterHistoryIcon from "img/ic_filter_history.svg?react";
 import NewLinkIconThin from "img/ic_new_link_thin.svg?react";
@@ -45,7 +52,7 @@ import {
   getUnreconcilableLifecycleLines,
 } from "./utils/lifecycleSettlement";
 import { formatPositionMessage, getSettlementTooltipLines } from "./utils/position";
-import { TooltipContent, TooltipString } from "./utils/shared";
+import { Line, TooltipString } from "./utils/shared";
 import { formatSwapMessage } from "./utils/swap";
 
 import "./TradeHistoryRow.scss";
@@ -89,49 +96,135 @@ function LineSpans({ spans }: { spans: TooltipString[] }) {
   );
 }
 
-function TooltipContentComponent({ content }: { content: TooltipContent }) {
+type RowLine = Extract<Line, { key: string }>;
+
+function isRowLine(line: Line): line is RowLine {
+  return typeof line === "object" && !Array.isArray(line) && "key" in line;
+}
+
+function isFootnoteLine(line: Line) {
+  return typeof line === "object" && !Array.isArray(line) && "text" in line && line.state === "muted";
+}
+
+function getTooltipBlocks(content: Line[]): ReactNode[] {
+  const blocks: ReactNode[] = [];
+  let rows: RowLine[] = [];
+  let lastBlock: "text" | "rows" | undefined;
+  let hasGap = false;
+
+  const flushRows = () => {
+    if (rows.length === 0) {
+      return;
+    }
+
+    blocks.push(
+      <TooltipRows key={blocks.length}>
+        {rows.map((row, i) => (
+          <TooltipRow
+            key={i}
+            label={row.key}
+            value={Array.isArray(row.value) ? <LineSpans spans={row.value} /> : <LineSpan span={row.value} />}
+            valueClassName={Array.isArray(row.value) ? "min-w-0 !shrink !whitespace-normal" : undefined}
+          />
+        ))}
+      </TooltipRows>
+    );
+    rows = [];
+    lastBlock = "rows";
+  };
+
+  content.forEach((line) => {
+    if (line === undefined) {
+      return;
+    }
+
+    if (line === "") {
+      flushRows();
+      hasGap = lastBlock !== undefined;
+      return;
+    }
+
+    if (!isRowLine(line)) {
+      flushRows();
+    }
+
+    if (hasGap && lastBlock === "rows" && !isFootnoteLine(line)) {
+      blocks.push(<TooltipDivider key={blocks.length} />);
+    }
+
+    hasGap = false;
+
+    if (isRowLine(line)) {
+      rows.push(line);
+      return;
+    }
+
+    if (typeof line === "string") {
+      blocks.push(<TooltipText key={blocks.length}>{line}</TooltipText>);
+    } else if (Array.isArray(line)) {
+      blocks.push(
+        <TooltipText key={blocks.length}>
+          <LineSpans spans={line} />
+        </TooltipText>
+      );
+    } else if (isFootnoteLine(line)) {
+      blocks.push(
+        <TooltipFootnote key={blocks.length}>
+          <NumericText text={line.text} />
+        </TooltipFootnote>
+      );
+    } else {
+      blocks.push(
+        <TooltipText key={blocks.length}>
+          <LineSpan span={line} />
+        </TooltipText>
+      );
+    }
+
+    lastBlock = "text";
+  });
+
+  flushRows();
+
+  return blocks;
+}
+
+function TooltipContentComponent({ content }: { content: Line[] }) {
   return (
-    <div className="TradeHistoryRow-tooltip">
-      {content.map((line, i) => {
-        if (line === undefined) {
-          return null;
-        }
-
-        if (line === "") {
-          return <br key={i} />;
-        }
-
-        if (typeof line === "string") {
-          return <div key={i}>{line}</div>;
-        }
-
-        if (Array.isArray(line)) {
-          return (
-            <div key={i}>
-              <LineSpans spans={line} />
-            </div>
-          );
-        }
-
-        if ("key" in line && "value" in line) {
-          return (
-            <StatsTooltipRow
-              key={i}
-              label={line.key}
-              value={Array.isArray(line.value) ? <LineSpans spans={line.value} /> : <LineSpan span={line.value} />}
-              showDollar={false}
-            />
-          );
-        }
-
-        return (
-          <div key={i}>
-            <LineSpan span={line} />
-          </div>
-        );
-      })}
-    </div>
+    <TooltipContent className="max-h-[min(70vh,calc(var(--tooltip-available-height,70vh)-28px))] overflow-y-auto">
+      {getTooltipBlocks(content)}
+    </TooltipContent>
   );
+}
+
+function getPlainText(content: Line[]): string | undefined {
+  const lines = content.filter((line) => line !== undefined && line !== "");
+
+  if (lines.length !== 1) {
+    return undefined;
+  }
+
+  const [line] = lines;
+
+  if (typeof line === "string") {
+    return line;
+  }
+
+  if (
+    typeof line === "object" &&
+    !Array.isArray(line) &&
+    "text" in line &&
+    typeof line.text === "string" &&
+    (line.state === undefined || line.state === "muted")
+  ) {
+    return line.text;
+  }
+
+  return undefined;
+}
+
+function renderTooltipContent(content: Line[]): ReactNode {
+  return getPlainText(content) ?? <TooltipContentComponent content={content} />;
 }
 
 function getFullCloseCandidate(tradeAction: TradeAction): PositionTradeAction | undefined {
@@ -148,7 +241,7 @@ function getFullCloseCandidate(tradeAction: TradeAction): PositionTradeAction | 
   return isFullCloseCandidate ? tradeAction : undefined;
 }
 
-function FeesTooltipContent({ tradeAction, feesLines }: { tradeAction: TradeAction; feesLines: TooltipContent }) {
+function FeesTooltipContent({ tradeAction, feesLines }: { tradeAction: TradeAction; feesLines: Line[] }) {
   const chainId = useSelector(selectChainId);
 
   const fullCloseCandidate = getFullCloseCandidate(tradeAction);
@@ -197,9 +290,6 @@ function FeesTooltipContent({ tradeAction, feesLines }: { tradeAction: TradeActi
   );
 }
 
-const PRICE_TOOLTIP_WIDTH = 400;
-const FEES_TOOLTIP_WIDTH = 460;
-
 export function TradeHistoryRow({
   minCollateralUsd,
   tradeAction,
@@ -220,12 +310,12 @@ export function TradeHistoryRow({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSwapOrderType(tradeAction.orderType!) && marketsInfoData, minCollateralUsd.toString(), tradeAction.id]);
 
-  const renderTimestamp = useCallback(() => msg.timestampUTC, [msg.timestampUTC]);
+  const renderTimestamp = useCallback(() => <TooltipRow label="UTC" value={msg.timestampUTC} />, [msg.timestampUTC]);
 
   const renderMarketContent = useCallback(() => {
     if (msg.indexName) {
       return (
-        <StatsTooltipRow
+        <TooltipRow
           label={t`Market`}
           value={
             <div className="flex items-center">
@@ -233,13 +323,12 @@ export function TradeHistoryRow({
               <span className="subtext leading-1">[{msg.poolName!}]</span>
             </div>
           }
-          showDollar={false}
         />
       );
     }
 
     return (
-      <>
+      <TooltipText>
         {msg.fullMarketNames?.map((market, index) => (
           <span key={market.indexName}>
             {index > 0 && " → "}
@@ -247,24 +336,18 @@ export function TradeHistoryRow({
             <span className="subtext leading-1">[{market.poolName}]</span>
           </span>
         ))}
-      </>
+      </TooltipText>
     );
   }, [msg.fullMarketNames, msg.indexName, msg.poolName]);
 
   const renderPriceContent = useCallback(
-    () => <TooltipContentComponent content={msg.priceComment ?? EMPTY_ARRAY} />,
+    () => renderTooltipContent(msg.priceComment ?? EMPTY_ARRAY),
     [msg.priceComment]
   );
 
-  const renderSizeContent = useCallback(
-    () => <TooltipContentComponent content={msg.sizeComment ?? EMPTY_ARRAY} />,
-    [msg.sizeComment]
-  );
+  const renderSizeContent = useCallback(() => renderTooltipContent(msg.sizeComment ?? EMPTY_ARRAY), [msg.sizeComment]);
 
-  const renderActionTooltipContent = useCallback(
-    () => <TooltipContentComponent content={msg.actionComment!} />,
-    [msg.actionComment]
-  );
+  const renderActionTooltipContent = useCallback(() => renderTooltipContent(msg.actionComment!), [msg.actionComment]);
 
   const renderFeesTooltipContent = useCallback(
     () => <FeesTooltipContent tradeAction={tradeAction} feesLines={msg.feesTooltip ?? EMPTY_ARRAY} />,
@@ -274,16 +357,11 @@ export function TradeHistoryRow({
   const marketTooltipHandle = useMemo(
     () =>
       msg.swapFromTokenSymbol ? (
-        <SwapMarketLabel bordered fromSymbol={msg.swapFromTokenSymbol!} toSymbol={msg.swapToTokenSymbol!} />
+        <span className="font-medium">
+          <SwapMarketLabel fromSymbol={msg.swapFromTokenSymbol!} toSymbol={msg.swapToTokenSymbol!} />
+        </span>
       ) : (
-        <div className="cursor-help">
-          <MarketWithDirectionLabel
-            bordered
-            indexName={msg.indexName!}
-            isLong={msg.isLong!}
-            tokenSymbol={msg.indexTokenSymbol!}
-          />
-        </div>
+        <MarketWithDirectionLabel indexName={msg.indexName!} isLong={msg.isLong!} tokenSymbol={msg.indexTokenSymbol!} />
       ),
     [msg.indexName, msg.indexTokenSymbol, msg.isLong, msg.swapFromTokenSymbol, msg.swapToTokenSymbol]
   );
@@ -330,10 +408,10 @@ export function TradeHistoryRow({
           <div className="flex">
             <div className="flex items-center gap-4">
               {msg.actionComment ? (
-                <TooltipWithPortal
+                <StandardTooltip
                   className={cx("TradeHistoryRow-action-handle")}
                   handleClassName={cx("TradeHistoryRow-action-handle", {
-                    "text-red-500 !decoration-red-500/50": msg.isActionError,
+                    "text-red-500": msg.isActionError,
                   })}
                   handle={<span className="font-medium">{msg.action}</span>}
                   renderContent={renderActionTooltipContent}
@@ -365,10 +443,8 @@ export function TradeHistoryRow({
               )}
             </div>
           </div>
-          <TooltipWithPortal
-            variant="none"
-            handle={<span className="TradeHistoryRow-time muted cursor-help">{msg.timestamp}</span>}
-            tooltipClassName="TradeHistoryRow-tooltip-portal cursor-help *:cursor-auto"
+          <StandardTooltip
+            handle={<span className="TradeHistoryRow-time muted">{msg.timestamp}</span>}
             renderContent={renderTimestamp}
           />
           {shouldDisplayAccount && (
@@ -381,12 +457,7 @@ export function TradeHistoryRow({
           )}
         </TableTd>
         <TableTd>
-          <TooltipWithPortal
-            variant="none"
-            tooltipClassName="cursor-help *:cursor-auto"
-            handle={marketTooltipHandle}
-            renderContent={renderMarketContent}
-          />
+          <StandardTooltip handle={marketTooltipHandle} renderContent={renderMarketContent} />
         </TableTd>
         <TableTd>
           {msg.swapFromTokenSymbol ? (
@@ -398,8 +469,7 @@ export function TradeHistoryRow({
               </Trans>
             </span>
           ) : msg.sizeComment ? (
-            <TooltipWithPortal
-              variant="none"
+            <StandardTooltip
               handle={<NumericText text={msg.size} className="numbers" />}
               renderContent={renderSizeContent}
             />
@@ -409,13 +479,11 @@ export function TradeHistoryRow({
         </TableTd>
         <TableTd>
           {msg.priceComment ? (
-            <TooltipWithPortal
-              tooltipClassName="TradeHistoryRow-price-tooltip-portal"
+            <StandardTooltip
               handle={<NumericText text={msg.price} />}
               handleClassName="numbers"
               position="bottom-end"
               renderContent={renderPriceContent}
-              maxAllowedWidth={PRICE_TOOLTIP_WIDTH}
             />
           ) : (
             <NumericText text={msg.price} className="numbers" />
@@ -425,7 +493,7 @@ export function TradeHistoryRow({
           {!msg.pnl ? (
             <span className="text-typography-secondary">-</span>
           ) : msg.pnlTooltip ? (
-            <TooltipWithPortal
+            <StandardTooltip
               handle={
                 <NumericText
                   text={msg.pnl}
@@ -449,7 +517,7 @@ export function TradeHistoryRow({
         </TableTd>
         <TableTd>
           {(msg.feesTooltip && msg.feesTooltip.length > 0) || isFullCloseSettlementCandidate ? (
-            <TooltipWithPortal
+            <StandardTooltip
               handle={
                 msg.fees ? (
                   <NumericText text={msg.fees} className="numbers" />
@@ -457,7 +525,6 @@ export function TradeHistoryRow({
                   <span className="text-typography-secondary">-</span>
                 )
               }
-              maxAllowedWidth={FEES_TOOLTIP_WIDTH}
               renderContent={renderFeesTooltipContent}
             />
           ) : !msg.fees ? (
@@ -475,8 +542,9 @@ export function TradeHistoryRow({
               </Button>
             ) : null}
             {shouldDisplayPositionLifecycleButton ? (
-              <TooltipWithPortal
+              <StandardTooltip
                 variant="none"
+                type="label"
                 position="bottom-end"
                 shouldPreventDefault={false}
                 handle={
@@ -489,7 +557,7 @@ export function TradeHistoryRow({
                     <FilterHistoryIcon className="size-14" />
                   </Button>
                 }
-                content={<Trans>View position history</Trans>}
+                content={t`View position history`}
               />
             ) : (
               // Reserve the button's space so the Share button and layout don't shift between rows/states.

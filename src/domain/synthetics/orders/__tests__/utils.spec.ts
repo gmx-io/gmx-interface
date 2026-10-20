@@ -18,12 +18,11 @@ import {
 
 import {
   DepositMarginNowAction,
-  LiquidatableIncreaseMessage,
   ReplaceMarginDepositAction,
 } from "components/MarginRemediation/MarginRemediationActions";
 
 import { NextPositionValues } from "../../trade";
-import { OrderType, PositionOrderInfo } from "../types";
+import { OrderError, OrderType, PositionOrderInfo } from "../types";
 import {
   getOrderErrors,
   getOrderIncreaseNextPositionValues,
@@ -33,18 +32,12 @@ import {
 
 type RemediationActionElement = ReactElement<{ positionKey?: string; orderKey?: string }>;
 
-// Trans compiles an embedded action into props.components["0"]
-function getTransProps(msg: unknown) {
-  const element = msg as ReactElement<{
-    message?: string;
-    components?: Record<string, RemediationActionElement>;
-  }>;
-
-  return { message: element.props.message, action: element.props.components?.["0"] };
+function getMessage(error: OrderError | undefined) {
+  return (error?.msg as ReactElement<{ message?: string }>).props.message;
 }
 
-function getMessageElement(msg: unknown) {
-  return msg as ReactElement<{ positionKey?: string }>;
+function getAction(error: OrderError | undefined) {
+  return error?.action as RemediationActionElement;
 }
 
 const tokensData = mockTokensData();
@@ -112,9 +105,9 @@ describe("getOrderErrors — resulting position liquidatable at trigger price", 
 
     expect(hasLiquidatableError(result)).toBe(true);
 
-    const message = getMessageElement(result.errors.find((error) => error.key === "resultingLiquidatable")?.msg);
-    expect(message.type).toBe(LiquidatableIncreaseMessage);
-    expect(message.props.positionKey).toBeUndefined();
+    const action = getAction(result.errors.find((error) => error.key === "resultingLiquidatable"));
+    expect(action.type).toBe(DepositMarginNowAction);
+    expect(action.props.positionKey).toBeUndefined();
     expect(result.level).toBe("error");
   });
 
@@ -190,8 +183,8 @@ describe("getOrderErrors — resulting position liquidatable at trigger price", 
 
     expect(hasLiquidatableError(result)).toBe(true);
 
-    const message = getMessageElement(result.errors.find((error) => error.key === "resultingLiquidatable")?.msg);
-    expect(message.props.positionKey).toBe(positionKey);
+    const action = getAction(result.errors.find((error) => error.key === "resultingLiquidatable"));
+    expect(action.props.positionKey).toBe(positionKey);
   });
 });
 
@@ -272,13 +265,13 @@ describe("getOrderErrors — margin deposit orders", () => {
     expect(errorKeys(result)).toEqual(["marginDepositInsufficient"]);
     expect(result.level).toBe("error");
 
-    const { message, action } = getTransProps(result.errors[0].msg);
-    expect(message).toBe(
-      "This margin deposit may not execute: it would not leave the position above the liquidation requirement at the trigger price. <0>Increase the deposit amount</0> or move the trigger farther from liquidation."
+    expect(getMessage(result.errors[0])).toBe(
+      "This margin deposit may not execute: it would not leave the position above the liquidation requirement at the trigger price. Increase the deposit amount or move the trigger farther from liquidation."
     );
-    expect(action?.type).toBe(ReplaceMarginDepositAction);
-    expect(action?.props.positionKey).toBe(position.key);
-    expect(action?.props.orderKey).toBe("order-key");
+    const action = getAction(result.errors[0]);
+    expect(action.type).toBe(ReplaceMarginDepositAction);
+    expect(action.props.positionKey).toBe(position.key);
+    expect(action.props.orderKey).toBe("order-key");
   });
 
   it("returns the yellow state when the trigger is at or beyond the current liquidation price", () => {
@@ -718,9 +711,9 @@ describe("getOrderErrors — resulting position margin, end-to-end from order + 
     expect(liquidatableErrors(result)[0].level).toBe("error");
     expect(result.errors.filter((e) => e.level === "error")).toHaveLength(1);
 
-    const message = getMessageElement(liquidatableErrors(result)[0].msg);
-    expect(message.type).toBe(LiquidatableIncreaseMessage);
-    expect(message.props.positionKey).toBe(positionKeyFor(restingBelowMarket));
+    const action = getAction(liquidatableErrors(result)[0]);
+    expect(action.type).toBe(DepositMarginNowAction);
+    expect(action.props.positionKey).toBe(positionKeyFor(restingBelowMarket));
   });
 
   it("offers the max-leverage remedy for a limit below the market that fails on the leverage reason", () => {
@@ -738,12 +731,12 @@ describe("getOrderErrors — resulting position margin, end-to-end from order + 
     expect(maxLeverageErrors(result)).toHaveLength(1);
     expect(maxLeverageErrors(result)[0].level).toBe("error");
 
-    const { message, action } = getTransProps(maxLeverageErrors(result)[0].msg);
-    expect(message).toBe(
-      "This order may fail to execute because the resulting position would exceed the maximum allowed leverage. <0>Increase the position's margin</0> or reduce the order size before it triggers."
+    expect(getMessage(maxLeverageErrors(result)[0])).toBe(
+      "This order may fail to execute because the resulting position would exceed the maximum allowed leverage. Increase the position's margin or reduce the order size before it triggers."
     );
-    expect(action?.type).toBe(DepositMarginNowAction);
-    expect(action?.props.positionKey).toBe(positionKeyFor(order));
+    const action = getAction(maxLeverageErrors(result)[0]);
+    expect(action.type).toBe(DepositMarginNowAction);
+    expect(action.props.positionKey).toBe(positionKeyFor(order));
   });
 
   it("does not flag a stop above the market whose position is healthy at the trigger", () => {

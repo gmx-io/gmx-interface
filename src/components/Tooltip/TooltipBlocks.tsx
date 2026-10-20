@@ -3,10 +3,6 @@ import type { ReactNode } from "react";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
-// Building blocks for StandardTooltip content.
-// They always stack in this order: Title → Text → Rows → Table → Link or Footnote.
-// Main text inherits the tooltip text color (.Tooltip-popup--standard), muted text is set explicitly.
-
 export function TooltipContent({ children, className }: { children: ReactNode; className?: string }) {
   return <div className={cx("flex flex-col gap-8", className)}>{children}</div>;
 }
@@ -32,13 +28,19 @@ export function TooltipText({ children }: { children: ReactNode }) {
   return <div>{children}</div>;
 }
 
+export function TooltipTitledText({ title, children }: { title: ReactNode; children: ReactNode }) {
+  return (
+    <div className="flex flex-col gap-2">
+      <TooltipTitle>{title}</TooltipTitle>
+      <TooltipText>{children}</TooltipText>
+    </div>
+  );
+}
+
 export function TooltipRows({ children }: { children: ReactNode }) {
   return <div className="flex flex-col gap-8">{children}</div>;
 }
 
-/**
- * Label + value. No colon: the muted label sits on the left, the value on the right in the main tooltip text color.
- */
 export function TooltipRow({
   label,
   value,
@@ -90,9 +92,6 @@ const GRID_COLUMNS: Record<number, string> = {
   4: "grid-cols-[1fr_auto_auto_auto]",
 };
 
-/**
- * Multi-column table. Use it only with `size="wide"`.
- */
 export function TooltipTable({ columns, rows }: { columns: TooltipTableColumn[]; rows: ReactNode[][] }) {
   const alignClass = (index: number) => (columns[index]?.align === "right" ? "text-right" : "text-left");
 
@@ -114,10 +113,16 @@ export function TooltipTable({ columns, rows }: { columns: TooltipTableColumn[];
   );
 }
 
-/**
- * A link on its own line, always last. White and underlined, blue on hover.
- * The tooltip needs `interactive` so the link can be clicked.
- */
+export function TooltipAction({ onClick, children }: { onClick: () => void; children: ReactNode }) {
+  return (
+    <div>
+      <button type="button" className="link-underline text-left hover:text-blue-300" onClick={onClick}>
+        {children}
+      </button>
+    </div>
+  );
+}
+
 export function TooltipLink({ href, children }: { href: string; children: ReactNode }) {
   return (
     <div>

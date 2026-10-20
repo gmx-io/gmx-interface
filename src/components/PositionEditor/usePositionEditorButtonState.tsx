@@ -1,4 +1,5 @@
-import { Trans, t } from "@lingui/macro";
+import { Trans, msg, t } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import { ReactNode, useCallback, useMemo, useState } from "react";
 
 import { getContract } from "config/contracts";
@@ -92,8 +93,8 @@ import {
 } from "sdk/utils/orderTransactions";
 
 import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarginDepositInsufficientMessage } from "components/MarginRemediation/MarginRemediationActions";
+import { TooltipAction, TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
@@ -470,31 +471,34 @@ export function usePositionEditorButtonState(
     triggerPrice,
   ]);
 
+  const { _ } = useLingui();
   const errorTooltipContent = useMemo(() => {
     if (validationResult.buttonTooltipMessage) {
       return validationResult.buttonTooltipMessage;
     }
 
     if (validationResult.buttonTooltipName === ValidationButtonTooltipName.liqPriceGtMarkPrice) {
-      return <Trans>Position would be liquidated immediately. Reduce the withdrawal amount.</Trans>;
+      return _(msg`Position would be liquidated immediately. Reduce the withdrawal amount.`);
     }
 
     if (validationResult.buttonTooltipName === ValidationButtonTooltipName.maxLeverage) {
       return (
-        <Trans>
-          Reduce withdrawal to match the max.{" "}
-          <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">Read more</ExternalLink>.
-          <br />
-          <br />
-          <EmbeddedActionButton onClick={setMaxWithdrawal}>
+        <TooltipContent>
+          <TooltipText>
+            <Trans>Reduce withdrawal to match the max.</Trans>
+          </TooltipText>
+          <TooltipAction onClick={setMaxWithdrawal}>
             <Trans>Set max withdrawal</Trans>
-          </EmbeddedActionButton>
-        </Trans>
+          </TooltipAction>
+          <TooltipLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">
+            <Trans>Read more</Trans>
+          </TooltipLink>
+        </TooltipContent>
       );
     }
 
     return null;
-  }, [setMaxWithdrawal, validationResult.buttonTooltipMessage, validationResult.buttonTooltipName]);
+  }, [_, setMaxWithdrawal, validationResult.buttonTooltipMessage, validationResult.buttonTooltipName]);
 
   const errorBannerContent = useMemo(() => {
     if (validationResult.buttonTooltipName === ValidationButtonTooltipName.marginDepositAutoCancelLimit) {

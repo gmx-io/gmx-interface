@@ -22,7 +22,7 @@ import { BridgingInfo } from "components/BridgingInfo/BridgingInfo";
 import { useMarketMintableTokens } from "components/MarketStats/hooks/useMarketMintableTokens";
 import { useMarketSellableToken } from "components/MarketStats/hooks/useMarketSellableToken";
 import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { TooltipContent, TooltipRow, TooltipRows, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import { PoolsDetailsMarketAmount } from "./PoolsDetailsMarketAmount";
 
@@ -100,7 +100,6 @@ export function PoolsDetailsAbout({
           tooltipContent={
             !isGlv ? <BuyableTooltipContent marketInfo={glvOrMarketInfo} mintableInfo={mintableInfo} /> : undefined
           }
-          tooltipMaxAllowedWidth={isMobile ? undefined : 480}
         />
         <PoolsDetailsMarketAmount
           label={<Trans>Sellable</Trans>}
@@ -165,62 +164,61 @@ const SellableTooltipContent = ({
   );
 
   return (
-    <div>
-      {marketInfo?.isSameCollaterals ? (
-        <Trans>
-          Sell GM for {marketInfo?.longToken?.symbol} up to the caps below. Remaining tokens are reserved for open
-          positions.
-        </Trans>
-      ) : (
-        <Trans>
-          Sell GM for {marketInfo?.longToken?.symbol} and {marketInfo?.shortToken?.symbol} up to the caps below.
-          Remaining tokens are reserved for open positions.
-        </Trans>
-      )}
-      <br />
-      <br />
-      {marketInfo?.isSameCollaterals ? (
-        <StatsTooltipRow
-          label={t`Max ${marketInfo?.longToken.symbol}`}
-          value={
-            <AmountWithUsdHuman
-              amount={(maxLongSellableTokenAmount ?? 0n) + (maxShortSellableTokenAmount ?? 0n)}
-              usd={(sellableInfo?.maxLongSellableUsd ?? 0n) + (sellableInfo?.maxShortSellableUsd ?? 0n)}
-              decimals={marketInfo?.longToken?.decimals}
-              symbol={marketInfo?.longToken?.symbol}
-            />
-          }
-          showDollar={false}
-        />
-      ) : (
-        <>
-          <StatsTooltipRow
+    <TooltipContent>
+      <TooltipText>
+        {marketInfo?.isSameCollaterals ? (
+          <Trans>
+            Sell GM for {marketInfo?.longToken?.symbol} up to the caps below. Remaining tokens are reserved for open
+            positions.
+          </Trans>
+        ) : (
+          <Trans>
+            Sell GM for {marketInfo?.longToken?.symbol} and {marketInfo?.shortToken?.symbol} up to the caps below.
+            Remaining tokens are reserved for open positions.
+          </Trans>
+        )}
+      </TooltipText>
+      <TooltipRows>
+        {marketInfo?.isSameCollaterals ? (
+          <TooltipRow
             label={t`Max ${marketInfo?.longToken.symbol}`}
             value={
               <AmountWithUsdHuman
-                amount={maxLongSellableTokenAmount}
-                usd={sellableInfo?.maxLongSellableUsd}
+                amount={(maxLongSellableTokenAmount ?? 0n) + (maxShortSellableTokenAmount ?? 0n)}
+                usd={(sellableInfo?.maxLongSellableUsd ?? 0n) + (sellableInfo?.maxShortSellableUsd ?? 0n)}
                 decimals={marketInfo?.longToken?.decimals}
                 symbol={marketInfo?.longToken?.symbol}
               />
             }
-            showDollar={false}
           />
-          <StatsTooltipRow
-            label={t`Max ${marketInfo?.shortToken.symbol}`}
-            value={
-              <AmountWithUsdHuman
-                amount={maxShortSellableTokenAmount}
-                usd={sellableInfo?.maxShortSellableUsd}
-                decimals={marketInfo?.shortToken?.decimals}
-                symbol={marketInfo?.shortToken?.symbol}
-              />
-            }
-            showDollar={false}
-          />
-        </>
-      )}
-    </div>
+        ) : (
+          <>
+            <TooltipRow
+              label={t`Max ${marketInfo?.longToken.symbol}`}
+              value={
+                <AmountWithUsdHuman
+                  amount={maxLongSellableTokenAmount}
+                  usd={sellableInfo?.maxLongSellableUsd}
+                  decimals={marketInfo?.longToken?.decimals}
+                  symbol={marketInfo?.longToken?.symbol}
+                />
+              }
+            />
+            <TooltipRow
+              label={t`Max ${marketInfo?.shortToken.symbol}`}
+              value={
+                <AmountWithUsdHuman
+                  amount={maxShortSellableTokenAmount}
+                  usd={sellableInfo?.maxShortSellableUsd}
+                  decimals={marketInfo?.shortToken?.decimals}
+                  symbol={marketInfo?.shortToken?.symbol}
+                />
+              }
+            />
+          </>
+        )}
+      </TooltipRows>
+    </TooltipContent>
   );
 };
 
@@ -326,8 +324,8 @@ const BuyableTooltipContent = ({
   }
 
   return (
-    <>
-      <p className="text-typography-primary">
+    <TooltipContent>
+      <TooltipText>
         {marketInfo?.isSameCollaterals ? (
           <Trans>Buy GM with {marketInfo?.longToken?.symbol} up to the caps below</Trans>
         ) : (
@@ -335,39 +333,28 @@ const BuyableTooltipContent = ({
             Buy GM with {marketInfo?.longToken?.symbol} and {marketInfo?.shortToken?.symbol} up to the caps below
           </Trans>
         )}
-      </p>
-      <br />
-      <StatsTooltipRow
-        label={t`Max ${marketInfo?.longToken?.symbol}`}
-        value={longTokenMaxValue?.amount}
-        showDollar={false}
-      />
-      <StatsTooltipRow
-        label={
-          marketInfo.isSameCollaterals
-            ? t`Current pool value / max pool cap`
-            : getTokenPoolCapLabel(marketInfo.longToken.symbol)
-        }
-        value={longTokenMaxValue?.poolCap}
-        valueClassName="numbers"
-        showDollar={false}
-      />
-      {!marketInfo?.isSameCollaterals && (
-        <>
-          <StatsTooltipRow
-            label={t`Max ${marketInfo?.shortToken?.symbol}`}
-            value={shortTokenMaxValue?.amount}
-            showDollar={false}
-          />
-          <StatsTooltipRow
-            label={getTokenPoolCapLabel(marketInfo.shortToken.symbol)}
-            value={shortTokenMaxValue?.poolCap}
-            valueClassName="numbers"
-            showDollar={false}
-          />
-        </>
-      )}
-    </>
+      </TooltipText>
+      <TooltipRows>
+        <TooltipRow label={t`Max ${marketInfo?.longToken?.symbol}`} value={longTokenMaxValue?.amount} />
+        <TooltipRow
+          label={
+            marketInfo.isSameCollaterals
+              ? t`Current pool value / max pool cap`
+              : getTokenPoolCapLabel(marketInfo.longToken.symbol)
+          }
+          value={longTokenMaxValue?.poolCap}
+        />
+        {!marketInfo?.isSameCollaterals && (
+          <>
+            <TooltipRow label={t`Max ${marketInfo?.shortToken?.symbol}`} value={shortTokenMaxValue?.amount} />
+            <TooltipRow
+              label={getTokenPoolCapLabel(marketInfo.shortToken.symbol)}
+              value={shortTokenMaxValue?.poolCap}
+            />
+          </>
+        )}
+      </TooltipRows>
+    </TooltipContent>
   );
 };
 

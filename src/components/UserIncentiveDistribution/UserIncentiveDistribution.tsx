@@ -28,12 +28,11 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { UsdValue } from "components/NumericValue/UsdValue";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import usePagination from "components/Pagination/usePagination";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTdActionable, TableTh, TableTheadTr, TableTrActionable } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import Tooltip from "components/Tooltip/Tooltip";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipRow, TooltipRows } from "components/Tooltip/TooltipBlocks";
 
 import CheckIcon from "img/ic_check.svg?react";
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
@@ -96,7 +95,7 @@ export default function UserIncentiveDistribution() {
             <EmptyTableContent
               emptyText={
                 <div className="flex flex-col items-center">
-                  <TooltipWithPortal
+                  <StandardTooltip
                     handle={t`No distribution history`}
                     content={t`Incentives, airdrops, and prizes will appear here`}
                   />
@@ -170,24 +169,26 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
   const tooltipData = INCENTIVE_TOOLTIP_MAP[Number(typeId)];
 
   const renderTotalTooltipContent = useCallback(() => {
-    return tokenIncentiveDetails.map((tokenInfo) => {
-      const symbol = tokenInfo.symbol;
+    return (
+      <TooltipRows>
+        {tokenIncentiveDetails.map((tokenInfo) => {
+          const symbol = tokenInfo.symbol;
 
-      return (
-        <StatsTooltipRow
-          key={tokenInfo.id}
-          showDollar={false}
-          label={
-            <div className="flex items-center gap-4">
-              {tokenInfo.iconSymbol ? <TokenIcon symbol={tokenInfo.iconSymbol} displaySize={16} /> : null}
-              <span>{symbol}</span>
-            </div>
-          }
-          value={formatBalanceAmount(tokenInfo.amount, tokenInfo.decimals)}
-          valueClassName="numbers"
-        />
-      );
-    });
+          return (
+            <TooltipRow
+              key={tokenInfo.id}
+              label={
+                <div className="flex items-center gap-4">
+                  {tokenInfo.iconSymbol ? <TokenIcon symbol={tokenInfo.iconSymbol} displaySize={16} /> : null}
+                  <span>{symbol}</span>
+                </div>
+              }
+              value={formatBalanceAmount(tokenInfo.amount, tokenInfo.decimals)}
+            />
+          );
+        })}
+      </TooltipRows>
+    );
   }, [tokenIncentiveDetails]);
   const renderTooltipTypeContent = useCallback(
     () =>
@@ -198,7 +199,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
       ) : null,
     [_, tooltipData]
   );
-  const type = tooltipData ? <Tooltip handle={typeStr} renderContent={renderTooltipTypeContent} /> : typeStr;
+  const type = tooltipData ? <StandardTooltip handle={typeStr} renderContent={renderTooltipTypeContent} /> : typeStr;
 
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -229,7 +230,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
         <TableTdActionable data-label={t`DATE`}>{formatDate(timestamp)}</TableTdActionable>
         {!isMobile && <TableTdActionable data-label={t`TYPE`}>{type}</TableTdActionable>}
         <TableTdActionable className="max-xl:text-right" data-label={t`AMOUNT`}>
-          <Tooltip
+          <StandardTooltip
             handle={<UsdValue usd={totalUsd} />}
             handleClassName="numbers"
             className="whitespace-nowrap"

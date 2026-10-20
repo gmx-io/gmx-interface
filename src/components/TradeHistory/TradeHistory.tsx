@@ -29,7 +29,7 @@ import usePagination from "components/Pagination/usePagination";
 import { TradesHistorySkeleton } from "components/Skeleton/Skeleton";
 import { TableTh, TableTheadTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import DownloadIcon from "img/ic_download2.svg?react";
 import PieChartIcon from "img/ic_pie_chart.svg?react";
@@ -315,24 +315,17 @@ export function TradeHistory(p: Props) {
                 <Trans>PRICE</Trans>
               </TableTh>
               <TableTh className="w-[10%]">
-                <TooltipWithPortal
-                  variant="iconStroke"
-                  content={<Trans>Realized PnL before fees, discounts and price impact</Trans>}
-                >
+                <StandardTooltip variant="iconStroke" content={t`Realized PnL before fees, discounts and price impact`}>
                   <Trans>RPNL</Trans>
-                </TooltipWithPortal>
+                </StandardTooltip>
               </TableTh>
               <TableTh className="w-[10%]">
-                <TooltipWithPortal
+                <StandardTooltip
                   variant="iconStroke"
-                  content={
-                    <Trans>
-                      Net total of action-level fees, and price impact. Hover the value to see the breakdown.
-                    </Trans>
-                  }
+                  content={t`Net total of action-level fees, and price impact. Hover the value to see the breakdown.`}
                 >
                   <Trans>FEES</Trans>
-                </TooltipWithPortal>
+                </StandardTooltip>
               </TableTh>
               <TableTh className="w-[132px]" />
             </TableTheadTr>

@@ -5,8 +5,9 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
+import { MarginDestinationTooltipContent } from "components/MarginDestinationSelector/MarginDestinationTooltipContent";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 interface MarginDestinationDialogProps {
   isVisible: boolean;
@@ -59,28 +60,11 @@ export function MarginDestinationDialog({
           </Trans>
         </div>
 
-        <TooltipWithPortal
+        <StandardTooltip
           handle={<Trans>How do I choose?</Trans>}
           handleClassName="text-14 text-typography-secondary"
           variant="iconStroke"
-          content={
-            <div>
-              <Trans>
-                Because positions on Arbitrum can be funded from both your wallet and your GMX Account, we can't always
-                determine where to return the margin automatically.
-                <br />
-                <br />
-                Choose:
-                <br />• <span className="font-bold">Wallet</span> if you mostly trade from your personal wallet on
-                Arbitrum
-                <br />• <span className="font-bold">GMX Account</span> if you plan to keep trading or reusing margin on
-                GMX
-                <br />
-                <br />
-                You can change this preference anytime in settings or when closing a position.
-              </Trans>
-            </div>
-          }
+          content={<MarginDestinationTooltipContent />}
         />
 
         <div className="flex flex-col gap-8">
