@@ -27,7 +27,9 @@ test("1CT retry state is private, deployment-bound, and removed after revocation
     assert.equal((await stat(path)).mode & 0o777, 0o600);
     assert.deepEqual(JSON.parse(await readFile(path, "utf8")), storage);
     assert.ok(await restoreUiBrowserState(session, page, storage.origin));
-    assert.deepEqual(restored, storage);
+    const { restoreId, ...state } = restored as typeof storage & { restoreId: string };
+    assert.deepEqual(state, storage);
+    assert.match(restoreId, /^[\da-f-]{36}$/);
     await assert.rejects(restoreUiBrowserState(session, page, "https://another-preview.example"), /another deployment/);
     await removeUiBrowserState(session);
     assert.deepEqual(await readdir(directory), []);

@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { randomUUID } from "node:crypto";
 import { open, readFile, rename, rm } from "node:fs/promises";
 import { join } from "node:path";
 import type { BrowserContext, Page } from "@playwright/test";
@@ -37,11 +38,18 @@ export async function restoreUiBrowserState(session: FundedSession, page: Page, 
     throw new Error("Saved 1CT browser session is missing; cleanup is required before another activation");
   }
   assert.equal(saved.origin, new URL(origin).origin, "1CT session belongs to another deployment");
-  await page.addInitScript((state) => {
-    if (location.origin !== state.origin || sessionStorage.getItem("funded-session-restored")) return;
-    for (const { name, value } of state.localStorage) localStorage.setItem(name, value);
-    sessionStorage.setItem("funded-session-restored", "1");
-  }, saved);
+  await page.addInitScript(
+    (state) => {
+      if (location.origin !== state.origin || sessionStorage.getItem("funded-session-restored") === state.restoreId)
+        return;
+      // Start from only the saved session: a page that unloaded after the wallet disconnected may have stored that state.
+      localStorage.clear();
+      sessionStorage.clear();
+      for (const { name, value } of state.localStorage) localStorage.setItem(name, value);
+      sessionStorage.setItem("funded-session-restored", state.restoreId);
+    },
+    { ...saved, restoreId: randomUUID() }
+  );
   return true;
 }
 

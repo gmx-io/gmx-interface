@@ -41,6 +41,7 @@ for (const scenario of fundedCases) {
         if (scenario.id === "one-click" && name === "create") {
           const origin = page.url();
           await saveUiBrowserState(session, context, origin);
+          // Revoking can reload the app mid-call; the wallet is disconnected by then and the restore clears storage.
           await page
             .evaluate(() =>
               (window as unknown as { ethereum: { request: (args: unknown) => Promise<unknown> } }).ethereum.request({
@@ -49,17 +50,10 @@ for (const scenario of fundedCases) {
               })
             )
             .catch((error: Error) => {
-              if (!error.message.includes("Execution context was destroyed")) throw error;
+              if (!/Execution context was destroyed|[Ff]rame (?:was|has been) detached/.test(error.message))
+                throw error;
             });
-          // Revoking can reload the app, which then stores its disconnected state; clear storage after that.
-          await page.waitForLoadState();
           await context.clearCookies();
-          await expect(async () => {
-            await page.evaluate(() => {
-              localStorage.clear();
-              sessionStorage.clear();
-            });
-          }).toPass({ timeout: 15_000 });
           await page.goto("about:blank");
           expect(await restoreUiBrowserState(session, page, origin)).toBe(true);
           await openFundedTradePage(page, session.address);
