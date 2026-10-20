@@ -138,7 +138,7 @@ describe("approveTokens permit metric", () => {
       signer: createSigner(sendTransaction),
       tokenAddress: USDC,
       spender: SPENDER,
-      approveAmount: undefined,
+      approveAmount: 100n,
       permitParams: { addTokenPermit, disableTokenPermits, accountType: "eoa" },
       setIsApproving: vi.fn(),
       metric: { flow: "trade", isExpress: true },
@@ -150,8 +150,11 @@ describe("approveTokens permit metric", () => {
   }
 
   it("reports a signed permit without a transaction", async () => {
-    await approveWithPermit(async () => undefined);
+    const addTokenPermit = vi.fn(async () => undefined);
 
+    await approveWithPermit(addTokenPermit);
+
+    expect(addTokenPermit).toHaveBeenCalledWith(USDC, SPENDER, 100n);
     expect(getOutcomes()).toEqual(["permit:accepted"]);
   });
 

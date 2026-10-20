@@ -10,7 +10,7 @@ import { ARBITRUM, AVALANCHE } from "sdk/configs/chains";
 
 // EIP-7702 delegates whose isValidSignature accepts a plain permit signature for every token below
 // (simulated on Arbitrum); other delegates reject USDC/USDT permits and keep the approval transaction
-export const TOKEN_PERMITS_EIP7702_DELEGATES: Address[] = [
+const TOKEN_PERMITS_EIP7702_DELEGATES: Address[] = [
   "0x63c0c19a282a1B52b07dD5a65b58948A07DAE32B", // MetaMask EIP7702StatelessDeleGator
   "0x7702cb554e6bFb442cb743A7dF23154544a7176C",
   "0xe40ccB2D94975c51bff0C004eFDfd9B3a5796fA4",
