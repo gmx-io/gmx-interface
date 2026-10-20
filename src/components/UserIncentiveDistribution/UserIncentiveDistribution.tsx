@@ -5,29 +5,22 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import type { Hash } from "viem";
 
-import { AVALANCHE_FUJI, ContractsChainId, getExplorerUrl } from "config/chains";
-import { getIsGlv } from "config/markets";
+import { AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { selectGmMarkets } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { INCENTIVE_TOOLTIP_MAP, INCENTIVE_TYPE_MAP } from "domain/synthetics/common/incentivesAirdropMessages";
-import useUserIncentiveData, {
-  type UserIncentiveDistribution as UserIncentiveDistributionData,
-} from "domain/synthetics/common/useUserIncentiveData";
-import { MarketsData, useMarketTokensData } from "domain/synthetics/markets";
-import { TokensData } from "domain/synthetics/tokens";
-import { Token } from "domain/tokens";
+import useUserIncentiveData from "domain/synthetics/common/useUserIncentiveData";
+import { useMarketTokensData } from "domain/synthetics/markets";
 import { useChainId } from "lib/chains";
 import { formatDate, formatDateTime, getDaysAgo } from "lib/dates";
-import { GM_DECIMALS } from "lib/legacy";
-import { expandDecimals, formatBalanceAmount } from "lib/numbers";
+import { formatBalanceAmount } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { shortenAddressOrEns } from "lib/wallets";
 import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import useWallet from "lib/wallets/useWallet";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { getTokens } from "sdk/configs/tokens";
-import { bigMath } from "sdk/utils/bigmath";
 
 import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
@@ -48,54 +41,9 @@ import CloseIcon from "img/ic_close.svg?react";
 import WalletIcon from "img/ic_wallet.svg?react";
 
 import ClaimableAmounts from "./ClaimableAmounts";
+import { getNormalizedIncentive } from "./utils";
 
 type NormalizedIncentiveData = ReturnType<typeof getNormalizedIncentive>;
-
-function getNormalizedIncentive(
-  chainId: ContractsChainId,
-  incentive: UserIncentiveDistributionData,
-  tokens: Token[],
-  gmMarkets: MarketsData | undefined,
-  marketTokensData: TokensData | undefined
-) {
-  const tokenIncentiveDetails = incentive.tokens.map((tokenAddressRaw, index) => {
-    // backend should send tokenAddress in lowercase but we double-check here to not break the logic
-    const tokenAddress = tokenAddressRaw.toLowerCase();
-    const marketTokenKey = gmMarkets ? Object.keys(gmMarkets).find((key) => key.toLowerCase() === tokenAddress) : null;
-    const marketToken = marketTokenKey ? gmMarkets?.[marketTokenKey] : undefined;
-    const tokenInfo = marketToken ? undefined : tokens.find((token) => token.address.toLowerCase() === tokenAddress);
-    const amountInUsd =
-      marketTokensData && marketToken
-        ? bigMath.mulDiv(
-            BigInt(incentive.amounts[index]),
-            marketTokensData[marketToken.marketTokenAddress].prices.maxPrice,
-            expandDecimals(1, GM_DECIMALS)
-          )
-        : BigInt(incentive.amountsInUsd?.[index] ?? 0);
-
-    let symbol: string | undefined = tokenInfo ? tokenInfo.symbol : marketToken?.name;
-    if (!symbol) {
-      symbol = getIsGlv(chainId, tokenAddress) ? "GLV" : undefined;
-    }
-
-    return {
-      symbol,
-      decimals: tokenInfo ? tokenInfo.decimals : GM_DECIMALS,
-      amount: BigInt(incentive.amounts[index]),
-      amountInUsd,
-      id: `${incentive.id}-${tokenAddress}`,
-    };
-  });
-
-  const totalUsd = tokenIncentiveDetails.reduce((total, tokenInfo) => total + tokenInfo.amountInUsd, 0n);
-
-  return {
-    ...incentive,
-    tokenIncentiveDetails,
-    totalUsd,
-    typeId: BigInt(incentive.typeId),
-  };
-}
 
 export default function UserIncentiveDistribution() {
   const { account, active } = useWallet();
@@ -231,7 +179,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
           showDollar={false}
           label={
             <div className="flex items-center gap-4">
-              {symbol ? <TokenIcon symbol={symbol} displaySize={16} /> : null}
+              {tokenInfo.iconSymbol ? <TokenIcon symbol={tokenInfo.iconSymbol} displaySize={16} /> : null}
               <span>{symbol}</span>
             </div>
           }

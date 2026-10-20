@@ -102,6 +102,10 @@ msgstr "La simulation d'ordre a échoué"
 msgid "Lock in<0/><1>a better rate</1>"
 msgstr "Bloquez<0/><1>un meilleur taux</1>"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paxos fee {fee} · ~2–10 min, can be longer"
+msgstr "Frais Paxos {fee} · ~2–10 min, parfois plus"
+
 #: src/components/WhatsNewToast/WhatsNewToastContainer.tsx
 msgid "Reload now"
 msgstr "Recharger maintenant"
@@ -297,6 +301,10 @@ msgstr "<0>One-Click Trading n'est pas disponible pour les portefeuilles smart c
 msgid "RabbitHole"
 msgstr "RabbitHole"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Quote is unavailable"
+msgstr "Cotation indisponible"
+
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Your {walletName} is on a different network</0><1/><2>Switch your {walletName} to {0}, then try again</2>"
 msgstr "<0>Votre {walletName} est sur un réseau différent</0><1/><2>Basculez votre {walletName} vers {0}, puis réessayez</2>"
@@ -374,6 +382,10 @@ msgstr "paramètres"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "TWAP swaps use GMX pool liquidity only, which can't fill this order size. Use a market order to enable external routes."
 msgstr "Les swaps TWAP n'utilisent que la liquidité des pools GMX, qui ne peut pas couvrir cette taille d'ordre. Utilisez un ordre au marché pour activer les routes externes."
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paxos sends {0} to your wallet in a separate step, usually within 2–10 minutes. Large orders can arrive in parts."
+msgstr "Paxos envoie les {0} dans votre portefeuille lors d'une étape séparée, généralement en 2–10 minutes. Les ordres importants peuvent arriver en plusieurs fois."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Est. APR"
@@ -721,6 +733,10 @@ msgstr "vendre"
 msgid "Insufficient GMX pool liquidity"
 msgstr "Liquidité insuffisante dans les pools GMX"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "~2–10 min, separate step"
+msgstr "~2–10 min, étape séparée"
+
 #: src/components/ChartTokenSelector/ArbitrumRecommendation.tsx
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainButtons.tsx
 msgid "Switch to {0}"
@@ -739,6 +755,10 @@ msgstr "Projets développés par la communauté GMX. <0/>Faites preuve de pruden
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "ADDRESS"
 msgstr "ADRESSE"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Best return"
+msgstr "Meilleur résultat"
 
 #: src/domain/tokens/useMaxAvailableAmount.ts
 msgid "Keeps {reserve} {symbol} in your {source} for future Express fees and ~{holdback} {symbol} for this transaction's fee"
@@ -851,6 +871,12 @@ msgstr "Non"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "/ mo"
 msgstr "/ mois"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+msgid "Not enough zero-fee capacity"
+msgstr "Capacité sans frais insuffisante"
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -1008,6 +1034,11 @@ msgstr "{actionsCount, plural, one {Ordre} other {# Ordres}}"
 msgid "Invalid collateral token. {tokenSymbol} isn't supported as collateral"
 msgstr "Token de garantie invalide. {tokenSymbol} n'est pas pris en charge comme garantie"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
+msgid "A conversion is already waiting in your wallet. Try again after it executes."
+msgstr "Une conversion attend déjà dans votre portefeuille. Réessayez une fois qu'elle est exécutée."
+
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -1040,6 +1071,7 @@ msgid "Minimum required margin"
 msgstr "Marge minimale requise"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
 msgid "Sending conversion..."
 msgstr "Envoi de la conversion..."
 
@@ -1115,6 +1147,11 @@ msgstr "Envoyez uniquement des <0>actifs compatibles avec {chainName}</0> à cet
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
 msgid "USDG issuer, separate transaction, usually 2–10 min. No Paxos fee for whitelisted addresses."
 msgstr "Émetteur de l'USDG, transaction séparée, généralement 2–10 min. Sans frais Paxos pour les adresses sur liste blanche."
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
+msgid "The approval has not executed yet. Convert again after it executes."
+msgstr "L'approbation n'est pas encore exécutée. Convertissez à nouveau une fois qu'elle l'est."
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {hours} hours{0}"
@@ -1449,6 +1486,10 @@ msgstr "Prix de {0}"
 msgid "Max {0} buyable amount exceeded"
 msgstr "Montant achetable max {0} dépassé"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Minimum {0} {1}"
+msgstr "Minimum {0} {1}"
+
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Smart contracts"
 msgstr "Smart contracts"
@@ -1520,8 +1561,10 @@ msgstr "Création du code de parrainage..."
 msgid "DATE"
 msgstr "DATE"
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "Solana"
 msgstr "Solana"
 
@@ -1801,6 +1844,10 @@ msgstr "Je suis affilié"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated daily fees"
 msgstr "Frais journaliers estimés"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Convert {0} with no fee"
+msgstr "Convertir {0} sans frais"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop Market"
@@ -2247,6 +2294,10 @@ msgstr "Utilisé uniquement pour les frais Express et One-Click, payés depuis l
 msgid "You have esGMX tokens in the Affiliate vault. Withdraw them to transfer to the new account."
 msgstr "Vous avez des jetons esGMX dans le vault Affiliate. Retirez-les pour les transférer vers le nouveau compte."
 
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Taking longer than usual. Standard-fee conversions can take up to an hour and arrive in parts."
+msgstr "Cela prend plus de temps que d'habitude. Les conversions aux frais standard peuvent prendre jusqu'à une heure et arriver en plusieurs fois."
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sending buy request..."
 msgstr "Envoi de la demande d'achat…"
@@ -2439,6 +2490,10 @@ msgstr "Gain"
 msgid "Swapped {0} for {1}"
 msgstr "{0} échangé contre {1}"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Zero-fee capacity dropped below your amount a moment ago. The new capacity shows here within a minute."
+msgstr "La capacité sans frais vient de passer sous votre montant. La nouvelle capacité apparaîtra ici dans la minute."
+
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Pick a time"
 msgstr "Choisir un horaire"
@@ -2606,6 +2661,10 @@ msgstr "Co-marketing, distribution dans l'écosystème et incitations sélective
 msgid "Missing parameters. Refresh and retry"
 msgstr "Paramètres manquants. Actualisez et réessayez"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Instant via {instantLabel}"
+msgstr "Instantané via {instantLabel}"
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order"
 msgstr "La position existante se trouve dans le pool WETH-USDC, mais la liquidité de ce pool est insuffisante pour cet ordre"
@@ -2758,6 +2817,10 @@ msgstr "MARCHÉS"
 msgid "Max {0}"
 msgstr "Max {0}"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paxos standard"
+msgstr "Paxos standard"
+
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "APRs update weekly on Wednesday based on fees collected"
 msgstr "Les APR sont mis à jour chaque mercredi en fonction des frais collectés"
@@ -2873,6 +2936,14 @@ msgstr "Limite maximale de dépôt atteinte"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total staked"
 msgstr "Total mis en staking"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "The Paxos quote is valid for 15 minutes from when the conversion goes to your wallet for signing. The transaction must execute within that time, or it fails and needs a new quote."
+msgstr "La cotation Paxos est valable 15 minutes à partir du moment où la conversion est envoyée à votre portefeuille pour signature. La transaction doit s'exécuter dans ce délai, sinon elle échoue et nécessite une nouvelle cotation."
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min size per part: {0}"
+msgstr "Taille minimale par partie : {0}"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -3219,9 +3290,17 @@ msgstr "TEMPS DE RÉPONSE"
 msgid "Existing limit order is in {0} pool, but that pool lacks liquidity for this order"
 msgstr "L'ordre à cours limité existant se trouve dans le pool {0}, mais ce pool manque de liquidité pour cet ordre"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paxos fee {fee} · ~2–10 min, separate step"
+msgstr "Frais Paxos {fee} · ~2–10 min, étape séparée"
+
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
 msgstr "Vous n'avez pas effectué de transactions durant la période sélectionnée"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "No instant route for this amount"
+msgstr "Aucune route instantanée pour ce montant"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Default parts for TWAP orders"
@@ -3273,6 +3352,7 @@ msgstr "Glissement élevé défini. Impact actuel de l'échange : {0}."
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Instant"
 msgstr "Instantané"
 
@@ -3323,6 +3403,10 @@ msgstr "Capacité de dépôt USD la plus restrictive"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidated as max leverage of {formattedMaxLeverage} was exceeded when accounting for fees."
 msgstr "Liquidé car l'effet de levier maximum de {formattedMaxLeverage} a été dépassé après prise en compte des frais."
+
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+msgid "Approving {0}..."
+msgstr "Approbation de {0}..."
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
@@ -3471,6 +3555,7 @@ msgstr "Tableau de bord de la finance décentralisée"
 
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "{0} received"
 msgstr "{0} reçu"
 
@@ -3587,6 +3672,10 @@ msgstr "POSITION"
 msgid "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
 msgstr "<0>Déposer</0> ou <1>acheter</1> {wrappedNativeTokenSymbol}."
 
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Converting {offerAmount} to {0}"
+msgstr "Conversion de {offerAmount} en {0}"
+
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -3684,6 +3773,10 @@ msgstr "Exposition au PnL des traders du marché"
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."
 msgstr "{typeString} Short Stop Market : {0} une position short lorsque le prix est inférieur au prix de déclenchement."
 
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+msgid "Minimum conversion is {minOrderSize} {0}"
+msgstr "La conversion minimale est de {minOrderSize} {0}"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average position size"
 msgstr "Taille moyenne de position"
@@ -3729,6 +3822,10 @@ msgstr "Assistant de trading IA"
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "Allowed slippage"
 msgstr "Glissement autorisé"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The request was sent, but its result could not be confirmed. Retry to check: if it didn't go through, deactivation continues with a wallet transaction."
+msgstr "La requête a été envoyée, mais son résultat n'a pas pu être confirmé. Réessayez pour vérifier : si elle n'a pas abouti, la désactivation se poursuivra avec une transaction du Portefeuille."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Loyalty"
@@ -4182,6 +4279,10 @@ msgstr "Les frais d'emprunt et de financement accumulés sont déduits du dépô
 msgid "Bridge transactions pay gas in {nativeTokenSymbol} from your {chainName} wallet"
 msgstr "Les transactions de bridge paient le gas en {nativeTokenSymbol} depuis votre portefeuille {chainName}"
 
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Receiving {0}: {delivered} of {due}"
+msgstr "Réception de {0} : {delivered} sur {due}"
+
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Funds are now in your GMX Account"
 msgstr "Les fonds sont maintenant dans votre GMX Account"
@@ -4189,6 +4290,10 @@ msgstr "Les fonds sont maintenant dans votre GMX Account"
 #: src/components/Referrals/traders/faq.tsx
 msgid "Why should I enter a referral code?"
 msgstr "Pourquoi saisir un code de parrainage ?"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Auto · {activeLabel}"
+msgstr "Auto · {activeLabel}"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient liquidity. Order will fill when liquidity is available."
@@ -4240,11 +4345,16 @@ msgstr "Un calendrier réaliste, moins de 6 mois"
 msgid "Wallet-only"
 msgstr "Portefeuille uniquement"
 
+#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
+msgid "The Paxos quote changed. Review the new amount and fee, then confirm again."
+msgstr "La cotation Paxos a changé. Vérifiez le nouveau montant et les frais, puis confirmez à nouveau."
+
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Listing"
 msgstr "Listing"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "Conversion failed: {0}"
 msgstr "Échec de la conversion : {0}"
 
@@ -4742,6 +4852,10 @@ msgstr "Comment commencer sur GMX ?"
 msgid "Acceptable price"
 msgstr "Prix acceptable"
 
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+msgid "Loading routes…"
+msgstr "Chargement des routes…"
+
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Instant answers, right on the page"
 msgstr "Réponses instantanées, directement sur la page"
@@ -4833,6 +4947,10 @@ msgstr "Limite d'actions One-Click Trading atteinte. Vous utilisez maintenant Ex
 #: src/components/PositionList/PositionList.tsx
 msgid "MARGIN"
 msgstr "MARGE"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "No fee · ~2–10 min, separate step"
+msgstr "Sans frais · ~2–10 min, étape séparée"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Sign permit"
@@ -5059,6 +5177,10 @@ msgstr "Impact d'échange réalisé"
 msgid "It depends on the volume you route and which revenue streams you turn on. Use the calculator above for a rough estimate, or apply to talk specifics with the team."
 msgstr "Cela dépend du volume que vous routez et des sources de revenus activées. Utilisez le calculateur ci-dessus pour une estimation approximative, ou postulez pour en discuter avec l'équipe."
 
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
+msgid "Withdrawal to {sourceChainName} failed"
+msgstr "Le retrait vers {sourceChainName} a échoué"
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter recipient address"
 msgstr "Saisissez l'adresse du destinataire"
@@ -5111,6 +5233,10 @@ msgstr "Aucun historique du taux net pour ce marché"
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Liquidated"
 msgstr "Liquidé"
+
+#: src/components/PaxosTransit/TransitApprovalProposalAlert.tsx
+msgid "Propose a new approval"
+msgstr "Proposer une nouvelle approbation"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update margin deposit"
@@ -5252,6 +5378,10 @@ msgstr "Transaction permit envoyée pour {0}"
 msgid "Partial SL"
 msgstr "SL partiel"
 
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+msgid "Convert with Paxos"
+msgstr "Convertir avec Paxos"
+
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
@@ -5308,6 +5438,10 @@ msgstr "Le routage externe est temporairement suspendu après une tentative éch
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
 msgstr "<0>Acheter</0> {wrappedNativeTokenSymbol}."
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Or pick Paxos standard with a fee or an instant route in Route. No route is picked for you."
+msgstr "Ou choisissez Paxos standard avec frais ou une route instantanée dans Route. Aucune route n'est choisie pour vous."
+
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX on Solana (known as GMTrade) is served from a separate domain"
 msgstr "GMX sur Solana (connu sous le nom de GMTrade) est hébergé sur un domaine distinct"
@@ -5327,6 +5461,10 @@ msgstr "Montant minimum du pool d'impact"
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "Generating..."
 msgstr "Génération..."
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Auto picks the best return after all fees, or the instant route when Paxos saves less than {minSaving}. Paxos converts {0} to {1} in a separate transaction, and {2} arrives in your wallet in a separate step, usually within 2–10 minutes. GMX pool and external routes are instant."
+msgstr "Auto choisit le meilleur résultat après tous les frais, ou la route instantanée quand Paxos fait économiser moins de {minSaving}. Paxos convertit {0} en {1} dans une transaction séparée, et les {2} arrivent dans votre portefeuille lors d'une étape séparée, généralement en 2–10 minutes. Le pool GMX et les routes externes sont instantanés."
 
 #: src/components/AnnouncementBanner/AnnouncementBanner.tsx
 msgid "Go to slide {0}"
@@ -5849,6 +5987,11 @@ msgstr "180 derniers jours"
 msgid "Positive funding fees"
 msgstr "Frais de financement positifs"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Loading…"
+msgstr "Chargement…"
+
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Funds will appear in your GMX Account soon"
 msgstr "Les fonds apparaîtront bientôt sur votre GMX Account"
@@ -5872,6 +6015,10 @@ msgstr "Ordre d'achat GM inconnu"
 #: landing/src/pages/Builders/HeroSection/HeroSection.tsx
 msgid "Build on GMX.<0/>Get paid on every trade."
 msgstr "Construisez sur GMX.<0/>Soyez rémunéré à chaque transaction."
+
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
+msgid "Transfer not found"
+msgstr "Transfert introuvable"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 msgid "Insufficient {tokenInSymbol} balance"
@@ -6125,6 +6272,7 @@ msgid "Step 1: Sell"
 msgstr "Étape 1 : Vendre"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Auto"
 msgstr "Auto"
 
@@ -6259,6 +6407,10 @@ msgstr "Le staking est uniquement disponible sur {chainNames}. Changez de résea
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Links"
 msgstr "Liens"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "You save vs instant"
+msgstr "Économie vs instantané"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact factor for withdrawals"
@@ -6400,6 +6552,7 @@ msgid "Monthly bought"
 msgstr "Achats mensuels"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Zero-fee capacity left"
 msgstr "Capacité sans frais restante"
 
@@ -6514,6 +6667,10 @@ msgstr "Différence"
 msgid "Stop-Loss price"
 msgstr "Prix du Stop-Loss"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Or pick Paxos standard with a fee or an instant route in Route."
+msgstr "Ou choisissez Paxos standard avec frais ou une route instantanée dans Route."
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "swap amount"
 msgstr "montant de l'échange"
@@ -6623,6 +6780,10 @@ msgstr "Stop Market échoué"
 #: src/components/SideNav/SettingsNavItem.tsx
 msgid "Settings"
 msgstr "Paramètres"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paxos zero-fee"
+msgstr "Paxos sans frais"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Daily"
@@ -7036,6 +7197,10 @@ msgstr "24h"
 msgid "High price impact"
 msgstr "Impact élevé sur le prix"
 
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
+msgid "This page is available on EVM networks only. Switch the network in the header, or go to <0>Trade</0>."
+msgstr "Cette page est disponible uniquement sur les réseaux EVM. Changez le réseau dans l'en-tête, ou accédez à <0>Trade</0>."
+
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/NetFeeTooltip.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
@@ -7244,6 +7409,10 @@ msgstr "Échec de l'exécution de l'ordre"
 msgid "Sell GM for {0} and {1} up to the caps below. Remaining tokens are reserved for open positions."
 msgstr "Vendez des GM contre {0} et {1} jusqu'aux plafonds ci-dessous. Les jetons restants sont réservés aux positions ouvertes."
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Parts of this order may not execute: the resulting position would exceed the maximum allowed leverage when they trigger. <0>Increase the position's margin</0> or cancel the order."
+msgstr "Certaines parties de cet ordre pourraient ne pas s'exécuter : la position résultante dépasserait l'effet de levier maximal autorisé lors de leur déclenchement. <0>Augmentez la marge de la position</0> ou annulez l'ordre."
+
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
@@ -7362,6 +7531,10 @@ msgstr "PnL relatif au capital utilisé (rendement sur capital)"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Order error. Prices are volatile for this market. Try again by <0>increasing the allowed slippage</0>"
 msgstr "Erreur d'ordre. Les prix sont volatils pour ce marché. Réessayez en <0>augmentant le glissement autorisé</0>"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Choose a route"
+msgstr "Choisissez une route"
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "No transfer history matching search"
@@ -8134,6 +8307,10 @@ msgstr "Facteur d'impact prêtable maximal"
 msgid "BANNED"
 msgstr "BANNI"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paxos sends {0} to your wallet in a separate step. Standard-fee orders are filled from Paxos inventory, so they can take longer and arrive in parts. For instant delivery, pick another route."
+msgstr "Paxos envoie les {0} dans votre portefeuille lors d'une étape séparée. Les ordres aux frais standard sont exécutés à partir de l'inventaire de Paxos : ils peuvent prendre plus de temps et arriver en plusieurs fois. Pour une livraison instantanée, choisissez une autre route."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dashboard for GMX referral stats"
 msgstr "Tableau de bord pour les statistiques de parrainage GMX"
@@ -8205,6 +8382,10 @@ msgstr "Frais d'ouverture / remise"
 #: src/components/DepthChart/DepthChart.tsx
 msgid "Size, $"
 msgstr "Taille, $"
+
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+msgid "Paxos quote is unavailable"
+msgstr "Cotation Paxos indisponible"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Wallet received before close"
@@ -8472,6 +8653,10 @@ msgstr "Le retrait de {0} vers {1} n'est pas pris en charge"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Wallet esGMX"
 msgstr "esGMX du portefeuille"
+
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+msgid "Paxos conversion in progress"
+msgstr "Conversion Paxos en cours"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing position is in {0} pool. Using the selected pool will create a separate position. <0>Switch to {1} pool</0>"
@@ -9053,6 +9238,10 @@ msgstr "Marge faible après déduction des frais. Déposez davantage pour rédui
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
 msgstr "Recevoir {profitTokenSymbol} et {collateralTokenSymbol} séparément"
 
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
+msgid "Trading on Solana is coming soon."
+msgstr "Le trading sur Solana arrive prochainement."
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min deposit: {0}"
 msgstr "Dépôt min : {0}"
@@ -9311,6 +9500,10 @@ msgstr "Taux d’emprunt long"
 msgid "Approve GMX"
 msgstr "Approuver GMX"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paxos fee"
+msgstr "Frais Paxos"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -9442,6 +9635,7 @@ msgid "Copy"
 msgstr "Copier"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Amount"
@@ -9463,6 +9657,10 @@ msgstr "Positions ouvertes (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>
 #: src/domain/synthetics/orders/utils.tsx
 msgid "{increaseOrDecreaseText}: {0} {longShortText}"
 msgstr "{increaseOrDecreaseText} : {0} {longShortText}"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paxos routes are quoted from the Pay amount."
+msgstr "Les routes Paxos sont cotées à partir du montant à payer."
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -9824,6 +10022,10 @@ msgstr "Analyses du protocole"
 msgid "Show positions on chart"
 msgstr "Afficher les positions sur le graphique"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Best return after fees, or instant when Paxos saves less than {minSaving}"
+msgstr "Meilleur résultat après frais, ou instantané quand Paxos fait économiser moins de {minSaving}"
+
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 msgid "Metrics debug"
 msgstr "Débogage des métriques"
@@ -9847,6 +10049,10 @@ msgstr "~5 min"
 #: src/pages/ReferralsTier/ReferralsTier.tsx
 msgid "New tier:"
 msgstr "Nouveau palier :"
+
+#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
+msgid "Zero-fee capacity changed. Review the route options and confirm again."
+msgstr "La capacité sans frais a changé. Vérifiez les options de route, puis confirmez à nouveau."
 
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "Market delistings"
@@ -9902,6 +10108,7 @@ msgstr "IA"
 msgid "Referral code submitted"
 msgstr "Code de parrainage soumis"
 
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Conversion request sent"
 msgstr "Demande de conversion envoyée"
@@ -9992,6 +10199,10 @@ msgstr "FRAIS"
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Margin ({0})"
 msgstr "Marge ({0})"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Not enough zero-fee capacity for this amount. Capacity left now: {0}. Your amount is {1} over."
+msgstr "Capacité sans frais insuffisante pour ce montant. Capacité restante : {0}. Votre montant dépasse de {1}."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -10221,6 +10432,10 @@ msgstr "VAULT"
 msgid "Looping"
 msgstr "Boucle (looping)"
 
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+msgid "Convert with Paxos · fee {fee}"
+msgstr "Convertir avec Paxos · frais {fee}"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max reserved {directionLabel}"
 msgstr "Maximum réservé {directionLabel}"
@@ -10342,6 +10557,7 @@ msgstr "Ce pool a atteint sa capacité maximale et n'accepte pas de dépôts pou
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -10481,6 +10697,7 @@ msgstr "Erreur de simulation de retrait"
 msgid "Claims"
 msgstr "Réclamations"
 
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Date"
@@ -10830,6 +11047,10 @@ msgstr "Achat de"
 msgid "shift"
 msgstr "réallocation"
 
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
+msgid "EVM networks only"
+msgstr "Réseaux EVM uniquement"
+
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation risk alerts"
 msgstr "Alertes de risque de liquidation"
@@ -11043,6 +11264,7 @@ msgid "Referral link copied to your clipboard"
 msgstr "Lien de parrainage copié dans votre presse-papiers"
 
 #: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Fastest"
 msgstr "Le plus rapide"
 
@@ -11144,6 +11366,10 @@ msgstr "Les conditions sont en cours de finalisation. Postulez ou contactez l'é
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "No active management required"
 msgstr "Aucune gestion active requise"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Loading quote…"
+msgstr "Chargement de la cotation…"
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "take-profit"
@@ -11275,6 +11501,10 @@ msgstr "Traders"
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 msgid "Wallet cannot sign messages"
 msgstr "Le portefeuille ne peut pas signer de messages"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "· {0} pending"
+msgstr "· {0} en attente"
 
 #: src/pages/Announcements/Announcements.tsx
 msgid "Updates"
@@ -11490,6 +11720,10 @@ msgstr "Évitez les mèches de prix grâce à des flux de prix Chainlink transpa
 msgid "Stake esGMX"
 msgstr "Staker des esGMX"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "GMX pool"
+msgstr "Pool GMX"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe and remain in your wallet."
 msgstr "Vos fonds sont en sécurité et restent dans votre portefeuille."
@@ -11572,10 +11806,16 @@ msgstr "APY"
 msgid "What is GM?"
 msgstr "Qu’est-ce que GM ?"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Route"
+msgstr "Route"
+
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Delisting"
 msgstr "Délisting"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 #: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
 msgid "{0} (external)"
 msgstr "{0} (externe)"
@@ -11612,6 +11852,10 @@ msgstr "Swap Limit : échanger des jetons lorsque le prix de déclenchement est 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "Recevez des alertes et des annonces de GMX pour suivre vos transactions, le risque de liquidation et bien plus encore"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Use the Pay amount"
+msgstr "Utiliser le montant à payer"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated off-hours liquidation price"
@@ -11890,6 +12134,10 @@ msgstr "Pris en compte, mais non à jour : {staleList}."
 msgid "TRADERS REFERRED"
 msgstr "TRADERS PARRAINÉS"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Arrives"
+msgstr "Arrivée"
+
 #: src/components/Claims/SettleAccruedCard.tsx
 msgid "Accrued"
 msgstr "Accumulé"
@@ -12036,9 +12284,17 @@ msgstr "Les approbations par permis sont désactivées pour ce token."
 msgid "LAST PRICE"
 msgstr "DERNIER PRIX"
 
+#: src/components/PaxosTransit/TransitApprovalProposalAlert.tsx
+msgid "An approval is already waiting in your wallet. Convert waits for it and does not propose a new one."
+msgstr "Une approbation attend déjà dans votre portefeuille. La conversion l'attend et n'en propose pas de nouvelle."
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Cancelling {orderText}..."
 msgstr "Annulation de {orderText}…"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The signed request could not be completed. Retry to deactivate with a wallet transaction."
+msgstr "La requête signée n'a pas pu aboutir. Réessayez pour désactiver avec une transaction du Portefeuille."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute margin deposit"
@@ -12232,6 +12488,10 @@ msgstr "long"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Error signing permit for {0}: {1}"
 msgstr "Erreur lors de la signature du permis pour {0} : {1}"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "{0} on its way from Paxos. It arrives in your wallet in a separate step, sometimes in parts."
+msgstr "{0} en route depuis Paxos. Les fonds arrivent dans votre portefeuille lors d'une étape séparée, parfois en plusieurs fois."
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Longs net rate / 1h"
@@ -12435,6 +12695,10 @@ msgstr "Récompenses cumulées"
 msgid "Not enough history yet"
 msgstr "Pas encore assez d'historique"
 
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
+msgid "Failed to load transfer details"
+msgstr "Impossible de charger les détails du transfert"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "This trigger is at or beyond the estimated liquidation price. The margin deposit will be attempted before liquidation when eligible, but execution is not guaranteed."
 msgstr "Ce déclencheur est au niveau ou au-delà du prix de liquidation estimé. Le dépôt de marge sera tenté avant la liquidation lorsqu'il est éligible, mais l'exécution n'est pas garantie."
@@ -12569,6 +12833,10 @@ msgstr "Frais d'emprunt"
 msgid "Continue"
 msgstr "Continuer"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "~2–10 min or longer, may arrive in parts"
+msgstr "~2–10 min ou plus, peut arriver en plusieurs fois"
+
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Include all fees, including close fees, in net value and PnL display"
 msgstr "Inclure tous les frais, y compris les frais de clôture, dans l'affichage de la valeur nette et du PnL"
@@ -12637,6 +12905,7 @@ msgstr "Direct avec Paxos"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
+#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "Transaction canceled"
 msgstr "Transaction annulée"
 
@@ -13063,6 +13332,14 @@ msgstr "Définissez un prix de déclenchement supérieur au prix de référence"
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
 msgstr "Aucune opportunité sur cette chaîne pour le moment"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Large LP or balancer? Ask <0>@GMXPartners</0> about zero-fee access."
+msgstr "Grand LP ou balancer ? Demandez à <0>@GMXPartners</0> un accès sans frais."
+
+#: src/components/TradeBox/ResultingMarginWarningCard.tsx
+msgid "One or more later TWAP parts may fail because the resulting position would exceed the maximum allowed leverage. Increase margin or reduce the total size."
+msgstr "Une ou plusieurs parties ultérieures du TWAP peuvent échouer, car la position résultante dépasserait l'effet de levier maximal autorisé. Augmentez la marge ou réduisez la taille totale."
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "You've reached a trading volume threshold, so GMX assigned this protocol referral code. You're receiving a {currentTierDiscount}% discount on opening and closing fees. <0>Read more</0>."
