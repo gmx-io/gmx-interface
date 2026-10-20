@@ -38,6 +38,10 @@ describe("getSharePercentage", () => {
     expect(getSharePercentage(0n, 0n, 1000n)).toBe("0");
     expect(getSharePercentage(0n, 5000n, 0n, true)).toBe("0");
   });
+
+  it("keeps a small non-zero discount distinct from zero", () => {
+    expect(getSharePercentage(40n, 5000n, 10n)).toBe("0.000");
+  });
 });
 
 describe("shouldShowCreateReferralCodeTabLabel", () => {
