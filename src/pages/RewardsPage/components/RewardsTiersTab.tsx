@@ -5,11 +5,7 @@ import type { ContractsChainId } from "config/chains";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { useStableRewardsPromoSelection } from "domain/synthetics/incentives/v2/rewardsPromo";
 import type { AccountIncentiveStatus, IncentivesConfig } from "domain/synthetics/incentives/v2/types";
-import { useRewardsPromoActivity } from "domain/synthetics/incentives/v2/useRewardsPromoActivity";
 import { formatMultiplier } from "domain/synthetics/incentives/v2/utils";
-import { useRewardsVestingData } from "domain/vesting/useRewardsVestingData";
-import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
-import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
@@ -22,6 +18,12 @@ import { RewardsTiersFaq } from "./RewardsTiersFaq";
 import type { AccountDataState } from "./rewardsTiersShared";
 import { RewardsTiersSummary } from "./RewardsTiersSummary";
 import { RewardsTierTables } from "./RewardsTierTables";
+import {
+  useRewardsTesterIsWalletInitializing,
+  useRewardsTesterPromoActivity,
+  useRewardsTesterRewardsVestingData,
+  useRewardsTesterWallet,
+} from "../tester/useRewardsTester";
 
 function getTierMultiplier(tiers: { tier: string; multiplier: bigint }[], tier: string | null) {
   return tiers.find((item) => item.tier === tier)?.multiplier ?? 0n;
@@ -87,10 +89,10 @@ export function RewardsTiersTab({
   statusLoading: boolean;
   statusUnavailable: boolean;
 }) {
-  const { status: walletStatus } = useWallet();
-  const isWalletInitializing = useIsWalletInitializing();
+  const { status: walletStatus } = useRewardsTesterWallet();
+  const isWalletInitializing = useRewardsTesterIsWalletInitializing();
   const { openConnectModal } = useConnectModal();
-  const { data: vestingData, isLoading: vestingLoading } = useRewardsVestingData(account, chainId);
+  const { data: vestingData, isLoading: vestingLoading } = useRewardsTesterRewardsVestingData(account, chainId);
   const currentStatus =
     status &&
     account &&
@@ -100,7 +102,7 @@ export function RewardsTiersTab({
       : undefined;
   const hasActiveStakingTier = Boolean(currentStatus?.stakingTier ?? currentStatus?.projectedStakingTier);
   const hasManualAllocation = (currentStatus?.manualRewardRemainingUsd ?? 0n) > 0n;
-  const { data: promoActivity, loading: promoActivityLoading } = useRewardsPromoActivity(chainId, {
+  const { data: promoActivity, loading: promoActivityLoading } = useRewardsTesterPromoActivity(chainId, {
     account,
     enabled: Boolean(account && currentStatus && !hasActiveStakingTier && !hasManualAllocation),
   });

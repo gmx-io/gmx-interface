@@ -13,7 +13,7 @@ import type {
   StakingTierId,
 } from "domain/synthetics/incentives/v2/types";
 import { formatMultiplier } from "domain/synthetics/incentives/v2/utils";
-import { expandDecimals, formatAmount, formatAmountHuman, formatUsd, USD_DECIMALS } from "lib/numbers";
+import { formatAmount, formatAmountHuman, formatUsd, USD_DECIMALS } from "lib/numbers";
 
 import { BuyGmxModal } from "components/BuyGmxModal/BuyGmxModal";
 import { EARN_PORTFOLIO_STAKE_GMX_LINK } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/constants";
@@ -32,6 +32,7 @@ import {
   type AccountDataState,
   boostLabels,
   BoostDescriptionText,
+  formatRewardsTokenAmount,
   getBoostsInDisplayOrder,
   REWARDS_LINK_CLASSNAME,
   stakingTierLabels,
@@ -134,14 +135,6 @@ function formatWholeGmx(amount: bigint | undefined) {
   return formatAmount(amount / 10n ** BigInt(ES_GMX_DECIMALS), 0, 0, true);
 }
 
-function formatStakingShortfall(amount: bigint) {
-  const minimumDisplayAmount = expandDecimals(1, ES_GMX_DECIMALS - 2);
-
-  return amount < minimumDisplayAmount
-    ? "< 0.01"
-    : formatAmount(amount, ES_GMX_DECIMALS, 2, true, { trimTrailingZeros: true });
-}
-
 function MultiplierBadge({
   config,
   currentMultiplier,
@@ -218,12 +211,11 @@ function BannerGlow({ type }: { type: "top-right" | "bottom-right" | "bottom" })
   );
 }
 
-const tierCardBase = "group relative flex min-h-[172px] flex-col overflow-hidden rounded-12 bg-slate-950";
-const tierCardBanner = "gap-12 border-1/2 border-slate-700 px-16 pb-12 pt-16 max-lg:px-12 max-lg:pt-12";
-const tierCardActive = "gap-12 border-1/2 border-slate-700 px-16 pb-12 pt-16 max-lg:px-12 max-lg:pt-12";
+const tierCardBase =
+  "group relative flex min-h-[172px] flex-col overflow-hidden rounded-12 border-1/2 border-slate-700 bg-slate-950";
+const tierCard = cx(tierCardBase, "gap-12 px-16 pb-12 pt-16 max-lg:px-12 max-lg:pt-12");
 const tierCardTitle = "text-body-medium font-medium text-typography-secondary";
 const tierCardTitleRow = "flex h-20 items-center justify-between gap-8";
-const tierCardLink = REWARDS_LINK_CLASSNAME;
 const tierIconLarge =
   "size-48 shrink-0 rounded-12 border border-blue-300/60 bg-blue-300/10 drop-shadow-[0_0_4px_rgba(120,133,255,0.4)] dark:drop-shadow-[0_0_8px_rgba(120,133,255,0.9)]";
 
@@ -330,7 +322,7 @@ function VolumeCard({
 
   if (!active) {
     return (
-      <div className={cx(tierCardBase, tierCardBanner)}>
+      <div className={tierCard}>
         <BannerGlow type="top-right" />
         <TierCardBannerHeader icon={<StatsSvg className="size-16" />}>
           <Trans>Volume tier</Trans>
@@ -340,7 +332,7 @@ function VolumeCard({
             title={<Trans>Trade more, earn more.</Trans>}
             description={<Trans>Higher volume unlocks higher tiers.</Trans>}
           />
-          <Link to="/trade" className={tierCardLink}>
+          <Link to="/trade" className={REWARDS_LINK_CLASSNAME}>
             <Trans>Start trading</Trans>
             <ArrowRight />
           </Link>
@@ -350,7 +342,7 @@ function VolumeCard({
   }
 
   return (
-    <div className={cx(tierCardBase, tierCardActive)}>
+    <div className={tierCard}>
       <div className="flex flex-col gap-12">
         <div className={tierCardTitleRow}>
           <span className={tierCardTitle}>
@@ -494,7 +486,7 @@ function StakingCard({
 
   if (!active) {
     return (
-      <div className={cx(tierCardBase, tierCardBanner)}>
+      <div className={tierCard}>
         <BannerGlow type="bottom-right" />
         <TierCardBannerHeader icon={<BatterySvg className="size-16" />}>
           <Trans>Staking tier</Trans>
@@ -510,7 +502,7 @@ function StakingCard({
   }
 
   return (
-    <div className={cx(tierCardBase, tierCardActive)}>
+    <div className={tierCard}>
       <div className="flex flex-col gap-12">
         <div className={tierCardTitleRow}>
           <span className={tierCardTitle}>
@@ -565,7 +557,7 @@ function StakingCard({
         ) : nextTierConfig && requiredToNextTier > 0n ? (
           <div className="py-2 text-typography-secondary dark:text-typography-inactive">
             <Trans>
-              Stake {formatStakingShortfall(requiredToNextTier)} GMX more to unlock{" "}
+              Stake {formatRewardsTokenAmount(requiredToNextTier, ES_GMX_DECIMALS)} GMX more to unlock{" "}
               {stakingTierLabels[nextTierConfig.tier]} status +
               {formatMultiplier(nextTierConfig.multiplier, config.multiplierDecimals)}
             </Trans>
@@ -603,12 +595,12 @@ function InactiveStakingCardContent({
           <Skeleton width={88} height={16} />
         </SkeletonTheme>
       ) : shouldStakeGmx ? (
-        <Link to={EARN_PORTFOLIO_STAKE_GMX_LINK} className={tierCardLink}>
+        <Link to={EARN_PORTFOLIO_STAKE_GMX_LINK} className={REWARDS_LINK_CLASSNAME}>
           <Trans>Stake GMX</Trans>
           <GmxIcon className="size-12" />
         </Link>
       ) : (
-        <button type="button" onClick={onBuyGmx} className={tierCardLink}>
+        <button type="button" onClick={onBuyGmx} className={REWARDS_LINK_CLASSNAME}>
           <Trans>Buy GMX</Trans>
           <PlusIcon className="size-12" />
         </button>
@@ -790,7 +782,7 @@ function BoostsCard({
 
   if (!hasStatus) {
     return (
-      <div className={cx(tierCardBase, "justify-between gap-12 border-1/2 border-slate-700 pb-12")}>
+      <div className={cx(tierCardBase, "justify-between gap-12 pb-12")}>
         <BannerGlow type="bottom" />
         <div className="relative px-16 pt-16 max-lg:px-12 max-lg:pt-12">
           <TierCardBannerHeader icon={<BoostSvg className="size-16" />}>
@@ -818,7 +810,7 @@ function BoostsCard({
   }
 
   return (
-    <div className={cx(tierCardBase, tierCardActive)}>
+    <div className={tierCard}>
       <div className="flex flex-col gap-12">
         <div className={tierCardTitleRow}>
           <span className={tierCardTitle}>
@@ -977,7 +969,7 @@ function TierCardsSkeleton() {
     <SkeletonTheme baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A">
       <div className="grid grid-cols-3 gap-12 max-lg:grid-cols-1">
         {Array.from({ length: 3 }).map((_, index) => (
-          <div key={index} className={cx(tierCardBase, tierCardActive, "min-h-[172px]")}>
+          <div key={index} className={tierCard}>
             <div className="flex items-center justify-between">
               <Skeleton width={96} height={14} inline />
               <Skeleton width={54} height={20} borderRadius={999} inline />
@@ -1008,7 +1000,7 @@ function TierCardsUnavailable() {
   return (
     <div className="grid grid-cols-3 gap-12 max-lg:grid-cols-1">
       {cards.map((card) => (
-        <div key={card.key} className={cx(tierCardBase, tierCardActive, "min-h-[172px]")}>
+        <div key={card.key} className={tierCard}>
           <div className={tierCardTitle}>{card.label}</div>
           <div className="flex flex-1 items-center text-13 text-yellow-300">
             <Trans>Your current status is temporarily unavailable.</Trans>

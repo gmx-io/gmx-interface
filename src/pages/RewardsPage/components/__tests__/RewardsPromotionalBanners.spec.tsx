@@ -16,7 +16,10 @@ import {
 
 import { getRewardsPromotionalBannerContent, RewardsPromotionalBanners } from "../RewardsPromotionalBanners";
 
-vi.mock("config/env", () => ({ isDevelopment: () => true }));
+vi.mock("config/env", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("config/env")>()),
+  isDevelopment: () => true,
+}));
 vi.mock("lib/userAnalytics/rewardsEvents", () => ({
   sendRewardsBannerEvent: vi.fn(),
   sendRewardsNavigationEvent: vi.fn(),

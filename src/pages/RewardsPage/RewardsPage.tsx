@@ -6,7 +6,6 @@ import { useHistory, useLocation } from "react-router-dom";
 import { ARBITRUM_SEPOLIA } from "config/chains";
 import { useChainId } from "lib/chains";
 import { sendRewardsPageViewEvent } from "lib/userAnalytics/rewardsEvents";
-import useWallet from "lib/wallets/useWallet";
 
 import { AppCard } from "components/AppCard/AppCard";
 import Button from "components/Button/Button";
@@ -25,15 +24,16 @@ import { RewardsVestingFlow } from "./components/RewardsVestingFlow";
 import { getRewardsDebugConfig, getRewardsDebugMode } from "./rewardsDebug";
 import { RewardsPageLayout, RewardsPageLoadingContent } from "./RewardsPageShell";
 import { getRewardsPath, getRewardsTabFromPathname, type RewardsTab } from "./rewardsRoutes";
-import { useRewardsPageData } from "./useRewardsPageData";
+import { RewardsTesterPanel } from "./tester/RewardsTesterPanel";
+import { useRewardsTesterPageData, useRewardsTesterWallet } from "./tester/useRewardsTester";
 
 export function RewardsPage() {
   const { pathname, search } = useLocation();
   const history = useHistory();
   const { chainId } = useChainId();
-  const { account } = useWallet();
+  const { account } = useRewardsTesterWallet();
   const activeTab = getRewardsTabFromPathname(pathname);
-  const pageData = useRewardsPageData({
+  const pageData = useRewardsTesterPageData({
     chainId,
     account,
     loadTierAccountData: activeTab === "tiers",
@@ -88,6 +88,7 @@ export function RewardsPage() {
 
   const pageContent = (content: React.ReactNode) => (
     <RewardsPageLayout>
+      <RewardsTesterPanel />
       {showSummaryRow ? (
         <RewardsSummaryRow
           chainId={chainId}

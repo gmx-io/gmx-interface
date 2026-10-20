@@ -5,32 +5,35 @@ import { Link, useLocation } from "react-router-dom";
 import type { ContractsChainId } from "config/chains";
 import { ES_GMX_DECIMALS, GT_DECIMALS } from "domain/synthetics/incentives/v2/constants";
 import type { LeaderboardEntry } from "domain/synthetics/incentives/v2/types";
-import { useLatestGtPrice } from "domain/synthetics/incentives/v2/useLatestGtPrice";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { isRatioVestingDepositDisabled } from "domain/vesting/ratioVesting";
-import { useRewardsVestingData } from "domain/vesting/useRewardsVestingData";
-import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
+import { formatAmount, formatUsd } from "lib/numbers";
 import { useCurrentUnixTimestamp } from "lib/useCurrentUnixTimestamp";
 import { sendRewardsNavigationEvent } from "lib/userAnalytics/rewardsEvents";
-import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import LinkIcon from "img/ic_increaselimit_16.svg?react";
 import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
 
-import { getRewardsPath, REWARDS_VESTING_HIGHLIGHT_ACTION, REWARDS_VESTING_SEARCH_PARAM } from "../rewardsRoutes";
-import { AccountValue, type AccountDataState, REWARDS_LINK_CLASSNAME } from "./rewardsTiersShared";
-
-function isAtLeastSmallestShown(amount: bigint, decimals: number) {
-  return amount >= expandDecimals(1, decimals - 2);
-}
-
-function formatTokenAmount(amount: bigint, decimals: number) {
-  if (amount > 0n && !isAtLeastSmallestShown(amount, decimals)) return "< 0.01";
-
-  return formatAmount(amount, decimals, 2, true, { trimTrailingZeros: true });
-}
+import {
+  getRewardsPath,
+  getRewardsTabFromPathname,
+  REWARDS_VESTING_HIGHLIGHT_ACTION,
+  REWARDS_VESTING_SEARCH_PARAM,
+} from "../rewardsRoutes";
+import {
+  AccountValue,
+  type AccountDataState,
+  formatRewardsTokenAmount,
+  isRewardsTokenAmountShown,
+  REWARDS_LINK_CLASSNAME,
+} from "./rewardsTiersShared";
+import {
+  useRewardsTesterIsWalletInitializing,
+  useRewardsTesterLatestGtPrice,
+  useRewardsTesterRewardsVestingData,
+} from "../tester/useRewardsTester";
 
 function AllTimeRewardsBreakdown({
   allTimeSummary,
@@ -145,16 +148,16 @@ export function RewardsSummaryRow({
 }) {
   const { pathname, search } = useLocation();
   const now = useCurrentUnixTimestamp();
-  const isWalletInitializing = useIsWalletInitializing();
+  const isWalletInitializing = useRewardsTesterIsWalletInitializing();
   const {
     data: vestingData,
     isLoading: vestingLoading,
     vestableEsGmx,
     vestableEsGmxUsd,
-  } = useRewardsVestingData(account, chainId);
-  // Until the current GT balance is available here, show all GT earned.
+  } = useRewardsTesterRewardsVestingData(account, chainId);
+  // GT can't be sold or transferred yet, so the balance is all GT earned.
   const gtBalance = allTimeSummary?.gtRewards ?? 0n;
-  const { data: gtPrice, loading: gtPriceLoading } = useLatestGtPrice(chainId, {
+  const { data: gtPrice, loading: gtPriceLoading } = useRewardsTesterLatestGtPrice(chainId, {
     enabled: Boolean(account) && gtBalance > 0n,
   });
 
@@ -172,13 +175,13 @@ export function RewardsSummaryRow({
   const vestingState: AccountDataState = vestingData ? "ready" : vestingLoading ? "loading" : "unavailable";
   const vestingUsdState: AccountDataState =
     vestingState === "ready" && vestableEsGmxUsd === undefined ? "unavailable" : vestingState;
-  const hasVestableEsGmx = vestingState === "ready" && isAtLeastSmallestShown(vestableEsGmx ?? 0n, ES_GMX_DECIMALS);
+  const hasVestableEsGmx = vestingState === "ready" && isRewardsTokenAmountShown(vestableEsGmx ?? 0n, ES_GMX_DECIMALS);
   const hasVestingPosition = (vestingData?.vestingInfo.vestedAmount ?? 0n) > 0n;
   const depositsDisabled = vestingData?.ratioVesting
     ? isRatioVestingDepositDisabled(vestingData.ratioVesting, BigInt(now))
     : false;
   // The Vesting tab has its own vest button right below the row.
-  const isVestingTab = pathname.startsWith(getRewardsPath("history"));
+  const isVestingTab = getRewardsTabFromPathname(pathname) === "history";
   const showVestingAction = hasVestableEsGmx && !depositsDisabled && !isVestingTab;
 
   const gtBalanceUsd = gtBalance === 0n ? 0n : convertToUsd(gtBalance, GT_DECIMALS, gtPrice?.priceUsd);
@@ -188,7 +191,6 @@ export function RewardsSummaryRow({
         ? "loading"
         : "unavailable"
       : summaryState;
-  const hasGtBalance = summaryState === "ready" && isAtLeastSmallestShown(gtBalance, GT_DECIMALS);
 
   return (
     <div className="flex py-32 max-md:py-20" data-qa="rewards-summary-row">
@@ -219,7 +221,7 @@ export function RewardsSummaryRow({
           tooltip={<Trans>esGMX available to begin vesting.</Trans>}
           value={
             <AccountValue state={vestingState}>
-              {formatTokenAmount(vestableEsGmx ?? 0n, ES_GMX_DECIMALS)} esGMX
+              {formatRewardsTokenAmount(vestableEsGmx ?? 0n, ES_GMX_DECIMALS)} esGMX
             </AccountValue>
           }
           subValue={
@@ -244,17 +246,17 @@ export function RewardsSummaryRow({
         <SummaryItem
           qa="rewards-summary-gt-balance"
           label={<Trans>GT balance</Trans>}
-          tooltip={<Trans>GT you hold. You can sell it for USDC in the daily GT buyback.</Trans>}
-          value={<AccountValue state={summaryState}>{formatTokenAmount(gtBalance, GT_DECIMALS)} GT</AccountValue>}
-          subValue={<AccountValue state={gtUsdState}>{formatUsd(gtBalanceUsd, { fallbackToZero: true })}</AccountValue>}
-          action={
-            hasGtBalance ? (
-              <Link to="/earn/portfolio" className={REWARDS_LINK_CLASSNAME}>
-                <Trans>Sell through buyback</Trans>
-                <LinkIcon className="size-12 shrink-0" />
-              </Link>
-            ) : null
+          tooltip={
+            <Trans>
+              GT is the native token of GMTrade. It is currently distributed as a reward, while its broader utility is
+              planned for a later stage of the platform’s development. Future GT use cases and benefits will be
+              announced as they become available.
+            </Trans>
           }
+          value={
+            <AccountValue state={summaryState}>{formatRewardsTokenAmount(gtBalance, GT_DECIMALS)} GT</AccountValue>
+          }
+          subValue={<AccountValue state={gtUsdState}>{formatUsd(gtBalanceUsd, { fallbackToZero: true })}</AccountValue>}
         />
       </div>
     </div>

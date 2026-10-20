@@ -296,7 +296,7 @@ describe("RewardsSummaryRow", () => {
     expect(within(getSummaryItem("rewards-summary-vestable-esgmx")).getByText("5 esGMX")).toBeDefined();
   });
 
-  it("shows < 0.01 and hides both links for dust amounts", () => {
+  it("shows < 0.01 and hides the vesting link for dust amounts", () => {
     mockUseRewardsVestingData.mockReturnValue(
       getVestingDataResult({ vestableEsGmx: GMX_UNIT / 100n - 1n, vestableEsGmxUsd: 1n })
     );
@@ -315,25 +315,14 @@ describe("RewardsSummaryRow", () => {
     expect(within(getSummaryItem("rewards-summary-vestable-esgmx")).getByText("0.01 esGMX")).toBeDefined();
     expect(within(getSummaryItem("rewards-summary-gt-balance")).getByText("0.01 GT")).toBeDefined();
     expect(screen.getByRole("link", { name: "Start vesting" })).toBeDefined();
-    expect(screen.getByRole("link", { name: "Sell through buyback" })).toBeDefined();
   });
 
-  it("links the GT balance to the buyback in the portfolio", () => {
-    renderRow();
-
-    const gtBalance = getSummaryItem("rewards-summary-gt-balance");
-    expect(within(gtBalance).getByRole("link", { name: "Sell through buyback" }).getAttribute("href")).toBe(
-      "/earn/portfolio"
-    );
-  });
-
-  it("does not load the GT price or show a GT link without a GT balance", () => {
+  it("does not load the GT price without a GT balance", () => {
     renderRow({ allTimeSummary: { ...allTimeSummary, gtRewards: 0n } });
 
     const gtBalance = getSummaryItem("rewards-summary-gt-balance");
     expect(within(gtBalance).getByText("0 GT")).toBeDefined();
     expect(normalizeText(gtBalance.textContent)).toContain("$0.00");
-    expect(within(gtBalance).queryByRole("link")).toBeNull();
     expect(mockUseLatestGtPrice).toHaveBeenLastCalledWith(ARBITRUM, { enabled: false });
   });
 
@@ -361,7 +350,6 @@ describe("RewardsSummaryRow", () => {
     gtBalance = getSummaryItem("rewards-summary-gt-balance");
     expect(within(gtBalance).getByText("150 GT")).toBeDefined();
     expect(within(gtBalance).getByText("-", { exact: true })).toBeDefined();
-    expect(within(gtBalance).getByRole("link", { name: "Sell through buyback" })).toBeDefined();
   });
 
   it("shows loading placeholders and disables the all-time breakdown while account data loads", () => {

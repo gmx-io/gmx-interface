@@ -8,16 +8,10 @@ import { getAddress, isAddress, isAddressEqual } from "viem";
 import "./RewardsLeaderboardTab.scss";
 
 import type { ContractsChainId } from "config/chains";
-import { useGmxPrice } from "domain/legacy";
 import { ES_GMX_DECIMALS, GT_DECIMALS } from "domain/synthetics/incentives/v2/constants";
 import type { IncentivesConfig, LeaderboardEntry } from "domain/synthetics/incentives/v2/types";
 import { useEpochRolloverRevalidation } from "domain/synthetics/incentives/v2/useEpochRolloverRevalidation";
-import {
-  type IncentivesLeaderboardOrderBy,
-  useIncentivesLeaderboard,
-} from "domain/synthetics/incentives/v2/useIncentivesLeaderboard";
-import { useIncentivesLeaderboardSearch } from "domain/synthetics/incentives/v2/useIncentivesLeaderboardSearch";
-import { useLatestGtPrice } from "domain/synthetics/incentives/v2/useLatestGtPrice";
+import type { IncentivesLeaderboardOrderBy } from "domain/synthetics/incentives/v2/useIncentivesLeaderboard";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { formatUsd } from "lib/numbers";
 import { sendRewardsLeaderboardShareClickEvent } from "lib/userAnalytics/rewardsEvents";
@@ -35,6 +29,12 @@ import Tabs from "components/Tabs/Tabs";
 import ShareIcon from "img/ic_share_arrow_filled.svg?react";
 
 import { RewardsTokenValue } from "./RewardsTokenValue";
+import {
+  useRewardsTesterGmxPrice,
+  useRewardsTesterIncentivesLeaderboard,
+  useRewardsTesterIncentivesLeaderboardSearch,
+  useRewardsTesterLatestGtPrice,
+} from "../tester/useRewardsTester";
 
 const PAGE_SIZE = 20;
 const SEARCH_DEBOUNCE_MS = 300;
@@ -69,7 +69,7 @@ function RewardsLeaderboardSkeletonRow({ invisible, pinned = false }: { invisibl
     <tr
       className={cx(
         LEADERBOARD_ROW_CLASS_NAME,
-        pinned ? "!bg-cold-blue-900" : !invisible && "odd:bg-fill-surfaceElevated50"
+        pinned ? "!bg-cold-blue-900" : invisible ? "RewardsLeaderboard-fillerRow" : "odd:bg-fill-surfaceElevated50"
       )}
     >
       <TableTd className={LEADERBOARD_TD_CLASS_NAME}>
@@ -219,8 +219,8 @@ export function RewardsLeaderboardTab({
   account?: string;
   config?: IncentivesConfig;
 }) {
-  const { gmxPrice } = useGmxPrice(chainId, {}, false, { fetchAllChains: false });
-  const { data: gtPrice } = useLatestGtPrice(chainId);
+  const { gmxPrice } = useRewardsTesterGmxPrice(chainId, {}, false, { fetchAllChains: false });
+  const { data: gtPrice } = useRewardsTesterLatestGtPrice(chainId);
   const [period, setPeriod] = useState<LeaderboardPeriod>(() => (config ? "current" : "all"));
   const [orderBy, setOrderBy] = useState<IncentivesLeaderboardOrderBy>("rewardsUsd_DESC");
   const [page, setPage] = useState(1);
@@ -242,15 +242,18 @@ export function RewardsLeaderboardTab({
         ? config.epochTimestamp - config.epochDuration
         : undefined;
 
-  const { data, totalCount, error, loading, isValidating, mutate, endpoint } = useIncentivesLeaderboard(chainId, {
-    epoch,
-    where: searchAccount ? { account: searchAccount } : undefined,
-    orderBy,
-    enabled: !isPartialSearch,
-    isMutable: selectedPeriod !== "previous",
-    limit: PAGE_SIZE,
-    offset: (page - 1) * PAGE_SIZE,
-  });
+  const { data, totalCount, error, loading, isValidating, mutate, endpoint } = useRewardsTesterIncentivesLeaderboard(
+    chainId,
+    {
+      epoch,
+      where: searchAccount ? { account: searchAccount } : undefined,
+      orderBy,
+      enabled: !isPartialSearch,
+      isMutable: selectedPeriod !== "previous",
+      limit: PAGE_SIZE,
+      offset: (page - 1) * PAGE_SIZE,
+    }
+  );
   const {
     data: searchData,
     totalCount: searchTotalCount,
@@ -258,7 +261,7 @@ export function RewardsLeaderboardTab({
     loading: searchLoading,
     isValidating: searchValidating,
     mutate: mutateSearch,
-  } = useIncentivesLeaderboardSearch(chainId, {
+  } = useRewardsTesterIncentivesLeaderboardSearch(chainId, {
     epoch,
     term: debouncedSearchTerm,
     orderBy,
@@ -272,7 +275,7 @@ export function RewardsLeaderboardTab({
     error: pinnedError,
     isValidating: pinnedValidating,
     mutate: mutatePinned,
-  } = useIncentivesLeaderboard(chainId, {
+  } = useRewardsTesterIncentivesLeaderboard(chainId, {
     epoch,
     where: account ? { account } : undefined,
     orderBy,
@@ -421,7 +424,6 @@ export function RewardsLeaderboardTab({
     !showPinnedRow &&
     !showEmptyPinnedRow;
   const visibleMainRowCount = hasNoSearchMatch ? 1 : pageData.length;
-  // Without a pinned row, a hidden spacer keeps rank 1 unstriped so row striping stays consistent.
   const pinnedRow =
     !isSearchActive && account && pinnedEntries === undefined && !pinnedError && !isPinnedEntryVisible ? (
       <TableListSkeleton count={1} Structure={RewardsLeaderboardPinnedSkeletonRow} />
@@ -436,9 +438,7 @@ export function RewardsLeaderboardTab({
       />
     ) : showEmptyPinnedRow && account ? (
       <EmptyPinnedLeaderboardRow account={account} />
-    ) : (
-      <tr aria-hidden="true" className="hidden" />
-    );
+    ) : null;
 
   return (
     <div className="flex flex-col rounded-8 bg-slate-900">
@@ -545,15 +545,13 @@ export function RewardsLeaderboardTab({
                   <TableTh />
                 </TableTheadTr>
               </thead>
-              <tbody>
+              {/* Its own tbody, so the ranked rows stripe the same with or without the pinned row. */}
+              {pinnedRow ? <tbody>{pinnedRow}</tbody> : null}
+              <tbody className="RewardsLeaderboard-rows">
                 {isInitialLoading ? (
-                  <>
-                    {pinnedRow}
-                    <TableListSkeleton count={PAGE_SIZE} Structure={RewardsLeaderboardSkeletonRow} />
-                  </>
+                  <TableListSkeleton count={PAGE_SIZE} Structure={RewardsLeaderboardSkeletonRow} />
                 ) : (
                   <>
-                    {pinnedRow}
                     {hasNoSearchMatch ? (
                       <TableTr className={LEADERBOARD_ROW_CLASS_NAME}>
                         <TableTd colSpan={8} className={cx(LEADERBOARD_TD_CLASS_NAME, "text-typography-secondary")}>

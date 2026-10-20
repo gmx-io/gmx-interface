@@ -7,7 +7,6 @@ import { PRECISION } from "lib/numbers";
 import {
   getIsActiveRewardsUser,
   getRewardsPromoSelection,
-  getStakingRewardsPromoSelection,
   type StableRewardsPromoSelection,
   useStableRewardsPromoSelection,
 } from "../rewardsPromo";
@@ -69,7 +68,6 @@ describe("rewards promo selection", () => {
       isActiveUser: false,
       manualRewardRemainingUsd: 100n * PRECISION,
     });
-    expect(getStakingRewardsPromoSelection(selection).variant).toBe("new-or-low-fees");
   });
 
   it("selects recent-activity copy only for established activity over the threshold", () => {

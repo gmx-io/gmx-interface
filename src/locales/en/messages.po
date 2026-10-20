@@ -1808,10 +1808,6 @@ msgstr "Max {allowedAutoCancelOrdersNumber} auto-cancel TP/SL orders allowed. Ex
 msgid "Unlock bonuses through trading activity."
 msgstr "Unlock bonuses through trading activity."
 
-#: src/pages/RewardsPage/components/RewardsSummaryRow.tsx
-msgid "Sell through buyback"
-msgstr "Sell through buyback"
-
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Rank among accounts for this metric and period"
 msgstr "Rank among accounts for this metric and period"
@@ -9076,6 +9072,7 @@ msgstr "Sender has withdrawn all tokens from the GMX vesting vault"
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/pages/RewardsPage/components/RewardsLeaderboardTab.tsx
+#: src/pages/RewardsPage/tester/RewardsTesterPanel.tsx
 msgid "Share"
 msgstr "Share"
 
@@ -10450,10 +10447,6 @@ msgstr "Edit"
 msgid "Total supply"
 msgstr "Total supply"
 
-#: src/pages/RewardsPage/components/RewardsSummaryRow.tsx
-msgid "GT you hold. You can sell it for USDC in the daily GT buyback."
-msgstr "GT you hold. You can sell it for USDC in the daily GT buyback."
-
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 msgid "My assets"
 msgstr "My assets"
@@ -10683,6 +10676,7 @@ msgstr "Maximum actions before reauthorization required"
 msgid "Minimum capital used of {0} required to qualify for rankings"
 msgstr "Minimum capital used of {0} required to qualify for rankings"
 
+#: src/pages/RewardsPage/components/RewardsSummaryRow.tsx
 #: src/pages/RewardsPage/components/RewardsTiersFaq.tsx
 msgid "GT is the native token of GMTrade. It is currently distributed as a reward, while its broader utility is planned for a later stage of the platform’s development. Future GT use cases and benefits will be announced as they become available."
 msgstr "GT is the native token of GMTrade. It is currently distributed as a reward, while its broader utility is planned for a later stage of the platform’s development. Future GT use cases and benefits will be announced as they become available."
@@ -12254,6 +12248,7 @@ msgstr "Session generated"
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
 #: src/pages/RewardsPage/components/RewardsTierCards.tsx
+#: src/pages/RewardsPage/tester/RewardsTesterPanel.tsx
 msgid "Buy GMX"
 msgstr "Buy GMX"
 

@@ -18,7 +18,7 @@ import {
   getRewardsVestingEndTimestamp,
   getRewardsVestingProgress,
 } from "domain/vesting/rewardsVesting";
-import { type RewardsVestingData, useRewardsVestingData } from "domain/vesting/useRewardsVestingData";
+import type { RewardsVestingData } from "domain/vesting/useRewardsVestingData";
 import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { callContract } from "lib/contracts";
@@ -28,8 +28,8 @@ import { useLocalStorageSerializeKeySafe } from "lib/localStorage";
 import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { useCurrentUnixTimestamp } from "lib/useCurrentUnixTimestamp";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { usePrefersReducedMotion } from "lib/usePrefersReducedMotion";
 import { sendRewardsTransactionResultEvent, sendRewardsVestingModalOpenEvent } from "lib/userAnalytics/rewardsEvents";
-import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 import { convertToUsd } from "sdk/utils/tokens";
 
@@ -70,6 +70,13 @@ import { RewardsVestingDebugPanel } from "./RewardsVestingDebugPanel";
 import { RewardsStopVestingModal, RewardsVestingModal } from "./RewardsVestingModals";
 import { RewardsVestingSimulatorApprovalModal } from "./RewardsVestingSimulatorApprovalModal";
 import { RewardsVestingStartedModal } from "./RewardsVestingStartedModal";
+import { RewardsTesterVestingSimulatorSlot } from "../tester/RewardsTesterVestingSimulatorSlot";
+import {
+  useRewardsTesterRewardsVestingData,
+  useRewardsTesterVestingSnapshot,
+  useRewardsTesterVestingSync,
+  useRewardsTesterWallet,
+} from "../tester/useRewardsTester";
 
 const SIMULATED_TRANSACTION_DELAY = 1_000;
 const CLAIMABLE_GMX_DISPLAY_DECIMALS = 4;
@@ -325,17 +332,18 @@ export function RewardsVestingFlow() {
   const vestingConfig = getRewardsVestingConfig(chainId);
   const { pathname, search } = useLocation();
   const history = useHistory();
-  const { account, chainId: walletChainId, signer } = useWallet();
+  const { account, chainId: walletChainId, signer } = useRewardsTesterWallet();
   const { openConnectModal } = useConnectModal();
   const { setPendingTxns } = usePendingTxns();
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
   const hasMultipleWalletExtensionsChainError = Boolean(multipleWalletExtensionsChainError.buttonErrorMessage);
   const now = useCurrentUnixTimestamp(30_000);
-  const vestingResult = useRewardsVestingData(account, chainId);
+  const vestingResult = useRewardsTesterRewardsVestingData(account, chainId);
   const debugMode = getRewardsDebugMode(search);
-  const debugSnapshot = getRewardsVestingDebugSnapshot(debugMode);
+  const debugSnapshot = useRewardsTesterVestingSnapshot(getRewardsVestingDebugSnapshot(debugMode));
   const [debugData, setDebugData] = useState(() => debugSnapshot?.data);
+  useRewardsTesterVestingSync(debugData, setDebugData);
   const previousDebugModeRef = useRef(debugMode);
   const data = debugSnapshot ? debugData : vestingResult.data;
   const isLoading = debugSnapshot ? debugSnapshot.isLoading : vestingResult.isLoading;
@@ -521,13 +529,22 @@ export function RewardsVestingFlow() {
   const [isVestActionHighlighted, setIsVestActionHighlighted] = useState(false);
   const [vestButtonSize, setVestButtonSize] = useState<{ width: number; height: number }>();
   const vestButtonRef = useRef<HTMLButtonElement>(null);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
+    if (!isVestActionHighlighted) return;
+
     const button = vestButtonRef.current;
-    if (!isVestActionHighlighted || !button) return;
+    // The comet clears the highlight on animationend, which never fires without motion.
+    if (!button || prefersReducedMotion) {
+      button?.scrollIntoView({ block: "nearest" });
+      setIsVestActionHighlighted(false);
+      return;
+    }
+
     setVestButtonSize({ width: button.offsetWidth, height: button.offsetHeight });
     button.scrollIntoView({ block: "nearest", behavior: "smooth" });
-  }, [isVestActionHighlighted]);
+  }, [isVestActionHighlighted, prefersReducedMotion]);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(search);
@@ -854,7 +871,9 @@ export function RewardsVestingFlow() {
   return (
     <SkeletonTheme baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A">
       {isInteractiveDebug && data ? (
-        <RewardsVestingDebugPanel data={data} onApply={applyDebugData} onReset={resetDebugData} />
+        <RewardsTesterVestingSimulatorSlot>
+          <RewardsVestingDebugPanel data={data} onApply={applyDebugData} onReset={resetDebugData} />
+        </RewardsTesterVestingSimulatorSlot>
       ) : null}
       <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] items-stretch gap-8 max-lg:grid-cols-1 max-lg:grid-rows-[1fr_minmax(0,1fr)_1fr]">
         <section className="flex min-h-[265px] min-w-0 flex-col gap-4 rounded-8 bg-slate-900 p-12">

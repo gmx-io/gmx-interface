@@ -5,12 +5,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 
 import type { ContractsChainId } from "config/chains";
-import { useGmxPrice } from "domain/legacy";
 import { ES_GMX_DECIMALS, GT_DECIMALS } from "domain/synthetics/incentives/v2/constants";
 import type { IncentivesConfig, RewardsHistoryEntry } from "domain/synthetics/incentives/v2/types";
-import { useAccountRewardsHistory } from "domain/synthetics/incentives/v2/useAccountRewardsHistory";
 import { useEpochRolloverRevalidation } from "domain/synthetics/incentives/v2/useEpochRolloverRevalidation";
-import { useLatestGtPrice } from "domain/synthetics/incentives/v2/useLatestGtPrice";
 import { formatEpochLabel, getRewardsHistoryStatus } from "domain/synthetics/incentives/v2/utils";
 import { formatTimeLeft } from "lib/dates";
 import { formatUsd } from "lib/numbers";
@@ -25,6 +22,11 @@ import { TableScrollFadeContainer } from "components/TableScrollFade/TableScroll
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 import { RewardsTokenValue } from "./RewardsTokenValue";
+import {
+  useRewardsTesterAccountRewardsHistory,
+  useRewardsTesterGmxPrice,
+  useRewardsTesterLatestGtPrice,
+} from "../tester/useRewardsTester";
 
 const PAGE_SIZE = 10;
 
@@ -81,21 +83,24 @@ type Props = {
 export function RewardsHistoryTab({ chainId, account, config }: Props) {
   const { i18n } = useLingui();
   const { isMobile } = useBreakpoints();
-  const { gmxPrice } = useGmxPrice(chainId, {}, false, {
+  const { gmxPrice } = useRewardsTesterGmxPrice(chainId, {}, false, {
     enabled: Boolean(account),
     fetchAllChains: false,
   });
-  const { data: gtPrice } = useLatestGtPrice(chainId, { enabled: Boolean(account) });
+  const { data: gtPrice } = useRewardsTesterLatestGtPrice(chainId, { enabled: Boolean(account) });
   const [page, setPage] = useState(1);
-  const { data, totalCount, error, loading, isValidating, mutate, endpoint } = useAccountRewardsHistory(chainId, {
-    account,
-    currentEpoch: config.epochTimestamp,
-    programStartTimestamp: config.programStartTimestamp,
-    epochDuration: config.epochDuration,
-    enabled: Boolean(account),
-    limit: PAGE_SIZE,
-    offset: (page - 1) * PAGE_SIZE,
-  });
+  const { data, totalCount, error, loading, isValidating, mutate, endpoint } = useRewardsTesterAccountRewardsHistory(
+    chainId,
+    {
+      account,
+      currentEpoch: config.epochTimestamp,
+      programStartTimestamp: config.programStartTimestamp,
+      epochDuration: config.epochDuration,
+      enabled: Boolean(account),
+      limit: PAGE_SIZE,
+      offset: (page - 1) * PAGE_SIZE,
+    }
+  );
   const epochTimestampRef = useRef(config.epochTimestamp);
   const now = useCurrentUnixTimestamp();
 
