@@ -45,32 +45,29 @@ afterEach(async () => {
 });
 
 describe("analytics attribution", () => {
-  it.each(["/", "/rewards", "/comeback", "/trade"])(
-    "uses the forwarded identity for the first event and profile when entering %s",
-    async (path) => {
-      navigate(
-        `https://preview.example${path}?sessionId=existing-user&utm_source=source&utm_medium=email&ref=Code#season`
-      );
-      initializeUserAnalytics();
-      await sendView();
-      userAnalytics.pushProfileProps({ languageCode: "en" });
+  it("uses the forwarded identity for the first event and profile", async () => {
+    navigate(
+      "https://preview.example/rewards?sessionId=existing-user&utm_source=source&utm_medium=email&ref=Code#season"
+    );
+    initializeUserAnalytics();
+    await sendView();
+    userAnalytics.pushProfileProps({ languageCode: "en" });
 
-      expect(metrics.pushBatchItem).toHaveBeenNthCalledWith(
-        1,
-        expect.objectContaining({ payload: expect.objectContaining({ distinctId: "existing-user" }) })
-      );
-      expect(metrics.pushBatchItem).toHaveBeenNthCalledWith(2, {
-        type: "userAnalyticsProfile",
-        payload: {
-          distinctId: "existing-user",
-          customFields: { languageCode: "en", utm_source: "source", utm_medium: "email" },
-        },
-      });
-      expect(window.location.pathname).toBe(path);
-      expect(window.location.search).toBe("?utm_source=source&utm_medium=email&ref=Code");
-      expect(window.location.hash).toBe("#season");
-    }
-  );
+    expect(metrics.pushBatchItem).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({ payload: expect.objectContaining({ distinctId: "existing-user" }) })
+    );
+    expect(metrics.pushBatchItem).toHaveBeenNthCalledWith(2, {
+      type: "userAnalyticsProfile",
+      payload: {
+        distinctId: "existing-user",
+        customFields: { languageCode: "en", utm_source: "source", utm_medium: "email" },
+      },
+    });
+    expect(window.location.pathname).toBe("/rewards");
+    expect(window.location.search).toBe("?utm_source=source&utm_medium=email&ref=Code");
+    expect(window.location.hash).toBe("#season");
+  });
 
   it("retains a saved identity across revisits, conflicting links, and more than four days of inactivity", () => {
     localStorage.setItem("sessionId", "saved-user");

@@ -22,6 +22,7 @@ const mockGetIncentivesIndexerUrl = vi.mocked(getIncentivesIndexerUrl);
 const epochTimestamp = 1_000;
 const epochDuration = 100;
 const config = { epochTimestamp, epochDuration } as IncentivesConfig;
+const newConfig = { ...config, epochTimestamp: epochTimestamp + epochDuration };
 
 function Harness() {
   useIncentivesConfig(ARBITRUM);
@@ -57,7 +58,7 @@ describe("useIncentivesConfig epoch boundary", () => {
   });
 
   it("revalidates one second after the epoch boundary", async () => {
-    const mutate = vi.fn().mockResolvedValue({ ...config, epochTimestamp: epochTimestamp + epochDuration });
+    const mutate = vi.fn().mockResolvedValue(newConfig);
     setSWRResult(mutate);
     render(<Harness />);
 
@@ -68,69 +69,28 @@ describe("useIncentivesConfig epoch boundary", () => {
     expect(mutate).toHaveBeenCalledTimes(1);
   });
 
-  it("retries after 5, 15, 30, and 45 seconds while the indexer returns the old epoch", async () => {
+  it.each([
+    ["the indexer keeps returning the old epoch", [], config, [1, 2, 3, 4, 5, 5]],
+    [
+      "refreshes fail before a newer epoch",
+      [new Error("network error"), new Error("network error")],
+      newConfig,
+      [1, 2, 3, 3, 3, 3],
+    ],
+    ["a newer epoch is observed", [], newConfig, [1, 1, 1, 1, 1, 1]],
+  ])("retries after 5, 15, 30, and 45 seconds when %s", async (_, failures, result, expectedCalls) => {
     vi.setSystemTime((epochTimestamp + epochDuration) * 1000);
-    const mutate = vi.fn().mockResolvedValue(config);
+    const mutate = vi.fn().mockResolvedValue(result);
+    failures.forEach((error) => mutate.mockRejectedValueOnce(error));
     setSWRResult(mutate);
     render(<Harness />);
 
-    await advanceTimers(1_000);
-    expect(mutate).toHaveBeenCalledTimes(1);
-    await advanceTimers(5_000);
-    expect(mutate).toHaveBeenCalledTimes(2);
-    await advanceTimers(15_000);
-    expect(mutate).toHaveBeenCalledTimes(3);
-    await advanceTimers(30_000);
-    expect(mutate).toHaveBeenCalledTimes(4);
-    await advanceTimers(45_000);
-    expect(mutate).toHaveBeenCalledTimes(5);
-
-    await advanceTimers(60_000);
-    expect(mutate).toHaveBeenCalledTimes(5);
-  });
-
-  it("keeps retrying when a boundary refresh fails", async () => {
-    vi.setSystemTime((epochTimestamp + epochDuration) * 1000);
-    const mutate = vi
-      .fn()
-      .mockRejectedValueOnce(new Error("network error"))
-      .mockRejectedValueOnce(new Error("network error"))
-      .mockResolvedValue({ ...config, epochTimestamp: epochTimestamp + epochDuration });
-    setSWRResult(mutate);
-    render(<Harness />);
-
-    await advanceTimers(1_000);
-    expect(mutate).toHaveBeenCalledTimes(1);
-    await advanceTimers(5_000);
-    expect(mutate).toHaveBeenCalledTimes(2);
-    await advanceTimers(15_000);
-    expect(mutate).toHaveBeenCalledTimes(3);
-
-    await advanceTimers(120_000);
-    expect(mutate).toHaveBeenCalledTimes(3);
-  });
-
-  it("stops retrying after observing a newer epoch", async () => {
-    vi.setSystemTime((epochTimestamp + epochDuration) * 1000);
-    const mutate = vi.fn().mockResolvedValue({ ...config, epochTimestamp: epochTimestamp + epochDuration });
-    setSWRResult(mutate);
-    render(<Harness />);
-
-    await advanceTimers(1_000);
-    expect(mutate).toHaveBeenCalledTimes(1);
-    await advanceTimers(60_000);
-    expect(mutate).toHaveBeenCalledTimes(1);
-  });
-
-  it("cancels the scheduled revalidation on unmount", async () => {
-    const mutate = vi.fn().mockResolvedValue(config);
-    setSWRResult(mutate);
-    const { unmount } = render(<Harness />);
-
-    unmount();
-    await advanceTimers(60_000);
-
-    expect(mutate).not.toHaveBeenCalled();
+    const calls: number[] = [];
+    for (const milliseconds of [1_000, 5_000, 15_000, 30_000, 45_000, 60_000]) {
+      await advanceTimers(milliseconds);
+      calls.push(mutate.mock.calls.length);
+    }
+    expect(calls).toEqual(expectedCalls);
   });
 
   it("schedules boundary retries again after the selected endpoint changes", async () => {

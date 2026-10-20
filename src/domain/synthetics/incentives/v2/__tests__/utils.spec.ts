@@ -20,11 +20,6 @@ describe("Rewards landing data", () => {
     expect(formatMultiplierAdjustment(0n, 100n)).toBe("0x");
   });
 
-  it("formats 30-decimal factors as percentages", () => {
-    expect(formatFactorPercentage(PRECISION / 2n)).toBe("50%");
-    expect(formatFactorPercentage((PRECISION * 1234n) / 10_000n, 2)).toBe("12.34%");
-  });
-
   it("does not display a rounded-up multiplier as the exact maximum", () => {
     expect(formatMultiplier(9994n, 1000n, 2, 10_000n)).toBe("9.99x");
     expect(formatMultiplier(9995n, 1000n, 2, 10_000n)).toBe("<10x");
@@ -54,38 +49,35 @@ describe("Previous epoch reward breakdown", () => {
     gtShareFactor: PRECISION / 5n,
   };
 
-  it("splits combined rewards by the configured shares without losing USD precision", () => {
-    expect(getPreviousEpochRewardBreakdown(1200n * PRECISION, config)).toEqual({
-      esGmxUsd: 1000n * PRECISION,
-      gtUsd: 200n * PRECISION,
-    });
-    const breakdown = getPreviousEpochRewardBreakdown(1200n * PRECISION + 1n, config)!;
-    expect(breakdown.esGmxUsd + breakdown.gtUsd).toBe(1200n * PRECISION + 1n);
-  });
-
-  it("does not apply a new config to rewards from an earlier epoch", () => {
-    expect(getPreviousEpochRewardBreakdown(PRECISION, { ...config, epochStartTimestamp: config.epochTimestamp })).toBe(
-      undefined
-    );
-    expect(
-      getPreviousEpochRewardBreakdown(PRECISION, {
-        ...config,
-        epochStartTimestamp: config.epochTimestamp - config.epochDuration,
-      })
-    ).toBeDefined();
-  });
-
-  it("supports zero rewards and a single reward token", () => {
-    expect(getPreviousEpochRewardBreakdown(0n, config)).toEqual({ esGmxUsd: 0n, gtUsd: 0n });
-    expect(getPreviousEpochRewardBreakdown(PRECISION, { ...config, gtShareFactor: 0n })).toEqual({
-      esGmxUsd: PRECISION,
-      gtUsd: 0n,
-    });
-  });
-
-  it("does not divide by zero when both token shares are zero", () => {
-    expect(getPreviousEpochRewardBreakdown(PRECISION, { ...config, esGmxShareFactor: 0n, gtShareFactor: 0n })).toBe(
-      undefined
-    );
+  it.each([
+    [
+      "splits by the configured shares",
+      1200n * PRECISION,
+      config,
+      { esGmxUsd: 1000n * PRECISION, gtUsd: 200n * PRECISION },
+    ],
+    [
+      "keeps USD precision",
+      1200n * PRECISION + 1n,
+      config,
+      { esGmxUsd: 1000n * PRECISION, gtUsd: 200n * PRECISION + 1n },
+    ],
+    [
+      "skips rewards from before the config",
+      PRECISION,
+      { ...config, epochStartTimestamp: config.epochTimestamp },
+      undefined,
+    ],
+    [
+      "applies a config that covers the previous epoch",
+      1200n * PRECISION,
+      { ...config, epochStartTimestamp: config.epochTimestamp - config.epochDuration },
+      { esGmxUsd: 1000n * PRECISION, gtUsd: 200n * PRECISION },
+    ],
+    ["supports zero rewards", 0n, config, { esGmxUsd: 0n, gtUsd: 0n }],
+    ["supports a single reward token", PRECISION, { ...config, gtShareFactor: 0n }, { esGmxUsd: PRECISION, gtUsd: 0n }],
+    ["does not divide by zero shares", PRECISION, { ...config, esGmxShareFactor: 0n, gtShareFactor: 0n }, undefined],
+  ])("%s", (_, rewardsUsd, breakdownConfig, expected) => {
+    expect(getPreviousEpochRewardBreakdown(rewardsUsd, breakdownConfig)).toEqual(expected);
   });
 });

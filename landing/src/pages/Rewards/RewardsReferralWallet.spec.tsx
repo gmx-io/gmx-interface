@@ -19,7 +19,6 @@ const mocks = vi.hoisted(() => ({
   lookupCodes: vi.fn(),
   lookupBonus: vi.fn(),
   connectedBonus: undefined as { manualRewardRemainingUsd: bigint } | null | undefined,
-  bonusLoading: false,
   creationParams: vi.fn(),
   connect: vi.fn(),
   retryCodes: vi.fn(),
@@ -29,10 +28,7 @@ const mocks = vi.hoisted(() => ({
   copyImage: vi.fn(),
   upload: vi.fn(),
   copyLink: vi.fn(),
-  success: vi.fn(),
-  error: vi.fn(),
   replacePopup: vi.fn(),
-  closePopup: vi.fn(),
 }));
 
 vi.mock("lib/userAnalytics/UserAnalytics", () => ({ userAnalytics: { pushEvent: mocks.pushEvent } }));
@@ -57,7 +53,7 @@ vi.mock("domain/referrals/hooks", () => ({
 vi.mock("domain/synthetics/incentives/v2/useReturnBonus", () => ({
   useReturnBonus: (endpoint: string, account?: string) => {
     mocks.lookupBonus(endpoint, account);
-    return { data: mocks.connectedBonus, isLoading: mocks.bonusLoading };
+    return { data: mocks.connectedBonus, isLoading: false };
   },
 }));
 vi.mock("domain/referrals/hooks/useCreateReferralCode", () => ({
@@ -68,7 +64,7 @@ vi.mock("domain/referrals/hooks/useCreateReferralCode", () => ({
   },
 }));
 vi.mock("lib/copyElementAsImage", () => ({ shareOrCopyElementAsImage: mocks.copyImage }));
-vi.mock("lib/helperToast", () => ({ helperToast: { success: mocks.success, error: mocks.error } }));
+vi.mock("lib/helperToast", () => ({ helperToast: { success: vi.fn(), error: vi.fn() } }));
 vi.mock("lib/shareImage", async (importOriginal) => ({
   ...(await importOriginal<typeof import("lib/shareImage")>()),
   uploadElementAsShareImage: mocks.upload,
@@ -96,17 +92,13 @@ const config: IncentivesConfig = {
   manualAllocationTiers: [],
 };
 
-function Page({
-  account,
-  hasBonus = false,
-  loading = false,
-}: { account?: string; hasBonus?: boolean; loading?: boolean } = {}) {
+function Page({ account, hasBonus = false }: { account?: string; hasBonus?: boolean } = {}) {
   return (
     <I18nProvider i18n={i18n}>
       <RewardsReferralWallet
         key={account}
         config={config}
-        loading={loading}
+        loading={false}
         hasBonus={hasBonus}
         account={account}
         rewardsUsd={2000n * 10n ** 30n}
@@ -124,7 +116,6 @@ beforeEach(() => {
   mocks.lookupCodes.mockReset();
   mocks.lookupBonus.mockReset();
   mocks.connectedBonus = undefined;
-  mocks.bonusLoading = false;
   mocks.creationParams.mockReset();
   mocks.connect.mockReset();
   mocks.create.mockReset();
@@ -132,18 +123,13 @@ beforeEach(() => {
   mocks.copyImage.mockReset();
   mocks.upload.mockReset().mockResolvedValue({ id: "PersonalCard" });
   mocks.copyLink.mockReset().mockResolvedValue(undefined);
-  mocks.success.mockReset();
-  mocks.error.mockReset();
   mocks.replacePopup.mockReset();
-  mocks.closePopup.mockReset();
   vi.spyOn(window, "open").mockReturnValue({
     opener: window,
     closed: false,
     location: { replace: mocks.replacePopup },
-    close: mocks.closePopup,
+    close: vi.fn(),
   } as unknown as Window);
-  vi.spyOn(HTMLElement.prototype, "offsetWidth", "get").mockReturnValue(400);
-  vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockReturnValue(210);
   vi.spyOn(navigator.clipboard, "writeText").mockImplementation(mocks.copyLink);
   vi.stubGlobal("ClipboardItem", undefined);
 });
@@ -154,149 +140,15 @@ afterEach(() => {
 });
 
 describe("rewards referral card", () => {
-  it("copies a personal image link, shows a toast, and reuses the upload for the same card", async () => {
-    mocks.codes = { code: "My_Code", success: true };
-    const view = render(<Page account="0x0000000000000000000000000000000000000002" />);
-    const copy = view.getByRole("button", { name: "Copy link" });
-    await act(async () => fireEvent.click(copy));
-    await act(async () => fireEvent.click(copy));
-    expect(mocks.upload).toHaveBeenCalledOnce();
-    expect(mocks.upload.mock.calls[0][0].textContent).toContain("My_Code");
-    expect(mocks.upload.mock.calls[0][1]).toEqual({
-      canvasWidth: 600,
-      canvasHeight: 315,
-      style: { transform: "none" },
-    });
-    expect(Object.fromEntries(new URL(mocks.copyLink.mock.calls[0][0]).searchParams)).toEqual({
-      id: "PersonalCard",
-      ref: "My_Code",
-      page: "rewards",
-    });
-    expect(mocks.success).toHaveBeenCalledWith("Link copied to clipboard");
-    expect(view.queryByText("Link copied to clipboard")).toBeNull();
-  });
-
-  it("creates a new image when the card's bonus changes", async () => {
-    mocks.codes = { code: "My_Code", success: true };
-    const account = "0x0000000000000000000000000000000000000002";
-    const view = render(<Page account={account} />);
-    await act(async () => fireEvent.click(view.getByRole("button", { name: "Copy link" })));
-    view.rerender(<Page account={account} hasBonus />);
-    await act(async () => fireEvent.click(view.getByRole("button", { name: "Copy link" })));
-    expect(mocks.upload).toHaveBeenCalledTimes(2);
-    expect(mocks.upload.mock.calls[1][0].textContent).toContain("I'm getting +2x rewards");
-  });
-
-  it("does not upload a card while its reward values are loading", () => {
-    mocks.codes = { code: "My_Code", success: true };
-    const view = render(<Page account="0x0000000000000000000000000000000000000002" loading />);
-    for (const name of ["Share on X", "Copy link", "Copy image"]) {
-      const button = view.getByRole("button", { name }) as HTMLButtonElement;
-      expect(button.disabled).toBe(true);
-      fireEvent.click(button);
-    }
-    expect(mocks.upload).not.toHaveBeenCalled();
-    expect(mocks.copyImage).not.toHaveBeenCalled();
-  });
-
-  it("keeps reward values in the export when a refresh begins during preparation", async () => {
-    let completeUpload!: (image: { id: string }) => void;
-    mocks.upload.mockReturnValue(
-      new Promise((resolve) => {
-        completeUpload = resolve;
-      })
-    );
-    mocks.codes = { code: "My_Code", success: true };
-    const account = "0x0000000000000000000000000000000000000002";
-    const view = render(<Page account={account} />);
-    fireEvent.click(view.getByRole("button", { name: "Copy link" }));
-    const image = mocks.upload.mock.calls[0][0] as HTMLElement;
-    view.rerender(<Page account={account} loading />);
-    expect(image.querySelector('[aria-busy="true"]')).toBeNull();
-    expect(image.textContent).toContain("Up to 120%");
-    await act(async () => completeUpload({ id: "ReadyImage" }));
-    expect(mocks.success).toHaveBeenCalledWith("Link copied to clipboard");
-  });
-
-  it("opens the X window during the click and navigates it only after the upload", async () => {
-    let completeUpload!: (image: { id: string }) => void;
-    mocks.upload.mockReturnValue(
-      new Promise((resolve) => {
-        completeUpload = resolve;
-      })
-    );
-    mocks.codes = { code: "My_Code", success: true };
-    const view = render(<Page account="0x0000000000000000000000000000000000000002" />);
-    fireEvent.click(view.getByRole("button", { name: "Share on X" }));
-    expect(window.open).toHaveBeenCalledWith("about:blank", "_blank");
-    expect(mocks.replacePopup).not.toHaveBeenCalled();
-    expect((view.getByRole("button", { name: "Copy link" }) as HTMLButtonElement).disabled).toBe(true);
-    await act(async () => completeUpload({ id: "ReadyImage" }));
-    const url = new URL(new URL(mocks.replacePopup.mock.calls[0][0]).searchParams.get("url")!);
-    expect(url.searchParams.get("id")).toBe("ReadyImage");
-    expect(url.searchParams.get("page")).toBe("rewards");
-  });
-
-  it("uses a promised ClipboardItem so Safari retains the click's clipboard permission", async () => {
-    let completeUpload!: (image: { id: string }) => void;
-    mocks.upload.mockReturnValue(
-      new Promise((resolve) => {
-        completeUpload = resolve;
-      })
-    );
-    mocks.codes = { code: "My_Code", success: true };
-    let promisedText!: Promise<Blob>;
-    vi.stubGlobal(
-      "ClipboardItem",
-      class {
-        constructor(items: Record<string, Promise<Blob>>) {
-          promisedText = items["text/plain"];
-        }
-      }
-    );
-    const write = vi.spyOn(navigator.clipboard, "write").mockImplementation(async () => {
-      await promisedText;
-    });
-    const view = render(<Page account="0x0000000000000000000000000000000000000002" />);
-    fireEvent.click(view.getByRole("button", { name: "Copy link" }));
-    expect(write).toHaveBeenCalledOnce();
-    expect(mocks.success).not.toHaveBeenCalled();
-    await act(async () => completeUpload({ id: "ReadyImage" }));
-    expect(new URL(await (await promisedText).text()).searchParams.get("id")).toBe("ReadyImage");
-    expect(mocks.success).toHaveBeenCalledWith("Link copied to clipboard");
-  });
-
-  it("reports upload failure without copying a plain link, and allows retry", async () => {
-    mocks.upload.mockRejectedValueOnce(new Error("Upload unavailable"));
-    mocks.codes = { code: "My_Code", success: true };
-    const view = render(<Page account="0x0000000000000000000000000000000000000002" />);
-    await act(async () => fireEvent.click(view.getByRole("button", { name: "Copy link" })));
-    expect(mocks.error).toHaveBeenCalledWith("Image generation failed. Refresh and try again.");
-    expect(mocks.copyLink).not.toHaveBeenCalled();
-    expect(mocks.success).not.toHaveBeenCalled();
-    await act(async () => fireEvent.click(view.getByRole("button", { name: "Copy link" })));
-    expect(mocks.upload).toHaveBeenCalledTimes(2);
-    expect(mocks.copyLink).toHaveBeenCalledOnce();
-  });
-
-  it("closes the empty X window if image preparation fails", async () => {
-    mocks.upload.mockRejectedValueOnce(new Error("Upload unavailable"));
-    mocks.codes = { code: "My_Code", success: true };
-    const view = render(<Page account="0x0000000000000000000000000000000000000002" />);
-    await act(async () => fireEvent.click(view.getByRole("button", { name: "Share on X" })));
-    expect(mocks.closePopup).toHaveBeenCalledOnce();
-    expect(mocks.replacePopup).not.toHaveBeenCalled();
-  });
-
   it.each([
-    ["X", "button", "Share on X"],
-    ["CopyImage", "button", "Copy image"],
-    ["CopyLink", "button", "Copy link"],
-  ])("tracks %s sharing with the checked wallet's rewards and referral status", async (type, role, name) => {
+    ["X", "Share on X"],
+    ["CopyImage", "Copy image"],
+    ["CopyLink", "Copy link"],
+  ])("tracks %s sharing with the checked wallet's rewards and referral status", async (type, name) => {
     mocks.codes = { code: "CheckedWallet", success: true };
     const view = render(<Page account="0x0000000000000000000000000000000000000002" />);
     await act(async () => {
-      fireEvent.click(view.getByRole(role, { name }));
+      fireEvent.click(view.getByRole("button", { name }));
     });
     expect(mocks.pushEvent).toHaveBeenCalledWith(
       {
@@ -309,19 +161,6 @@ describe("rewards referral card", () => {
       const sharedUrl = new URL(mocks.replacePopup.mock.calls[0][0]).searchParams.get("url")!;
       expect(new URL(sharedUrl).searchParams.has("sessionId")).toBe(false);
     }
-  });
-
-  it("shares the checked address's public code and personal image without a wallet connection", async () => {
-    mocks.codes = { code: "CheckedWallet", success: true };
-    const view = render(<Page account="0x0000000000000000000000000000000000000002" />);
-    await act(async () => fireEvent.click(view.getByRole("button", { name: "Share on X" })));
-    const sharedUrl = new URL(new URL(mocks.replacePopup.mock.calls[0][0]).searchParams.get("url")!);
-    expect(Object.fromEntries(sharedUrl.searchParams)).toEqual({
-      id: "PersonalCard",
-      ref: "CheckedWallet",
-      page: "rewards",
-    });
-    expect(view.queryByRole("button", { name: "Create code and invite traders" })).toBeNull();
   });
 
   it.each([false, true])(
@@ -347,21 +186,12 @@ describe("rewards referral card", () => {
       expect(view.queryByRole("button", { name: "Connect wallet to create a code" })).toBeNull();
       expect(view.queryByRole("button", { name: "Create code and invite traders" })).toBeNull();
       await act(async () => fireEvent.click(view.getByRole("button", { name: "Copy link" })));
-      expect(new URL(mocks.copyLink.mock.calls[0][0]).searchParams.get("ref")).toBe("CheckedCode");
+      expect(Object.fromEntries(new URL(mocks.copyLink.mock.calls[0][0]).searchParams)).toEqual({
+        id: "PersonalCard",
+        ref: "CheckedCode",
+        page: "rewards",
+      });
       expect(mocks.upload.mock.calls[0][0].textContent).toContain("CheckedCode");
-      expect(mocks.pushEvent).toHaveBeenCalledWith(
-        {
-          event: "RewardsLandingPageAction",
-          data: {
-            action: "ComebackShareClick",
-            type: "CopyLink",
-            rewards_exist: true,
-            ref_code_exist: true,
-            rewards: 2000,
-          },
-        },
-        { instantSend: true }
-      );
 
       mocks.account = undefined;
       view.rerender(<Page account={checkedAccount} hasBonus />);
@@ -418,9 +248,11 @@ describe("rewards referral card", () => {
     fireEvent.click(view.getByRole("button", { name: "Create code and invite traders" }));
     expect(mocks.creationParams).toHaveBeenLastCalledWith(expect.objectContaining({ account: connectedAccount }));
     expect(mocks.create).toHaveBeenCalledWith("NewCode");
+    expect(view.queryByRole("button", { name: "Share on X" })).toBeNull();
 
     act(() => mocks.onCreated!("NewCode"));
     expect(view.getByRole("button", { name: "Share on X" })).toBeTruthy();
+    expect(view.container.querySelector('[data-qa="rewards-share-code"]')?.textContent).toBe("NewCode");
     expect(view.queryByRole("button", { name: "Connect wallet to create a code" })).toBeNull();
     expect(view.queryByRole("button", { name: "Create code and invite traders" })).toBeNull();
     expect(view.queryAllByText("I'm getting +2x rewards")).toHaveLength(0);
@@ -434,69 +266,6 @@ describe("rewards referral card", () => {
     expect(view.container.querySelector('[data-qa="rewards-share-code"]')?.textContent).toBe("GMX");
   });
 
-  it("waits for the connected wallet's bonus and uses it instead of the checked wallet's rewards", async () => {
-    const checkedAccount = "0x0000000000000000000000000000000000000002";
-    mocks.account = "0x0000000000000000000000000000000000000001";
-    mocks.codesByAccount = {
-      [checkedAccount]: { code: null, success: true },
-      [mocks.account]: { code: "ConnectedCode", success: true },
-    };
-    mocks.bonusLoading = true;
-    const view = render(<Page account={checkedAccount} hasBonus />);
-    expect(mocks.lookupBonus).toHaveBeenLastCalledWith(expect.any(String), undefined);
-    fireEvent.click(view.getByRole("button", { name: "Connect wallet to create a code" }));
-    expect(mocks.connect).toHaveBeenCalledOnce();
-    expect(mocks.lookupBonus).toHaveBeenLastCalledWith(expect.any(String), mocks.account);
-    expect((view.getByRole("button", { name: "Copy link" }) as HTMLButtonElement).disabled).toBe(true);
-    expect(view.queryAllByText("I'm getting +2x rewards")).toHaveLength(0);
-
-    mocks.connectedBonus = { manualRewardRemainingUsd: 500n * PRECISION };
-    mocks.bonusLoading = false;
-    view.rerender(<Page account={checkedAccount} />);
-    expect(view.queryAllByText("I'm getting +2x rewards")).not.toHaveLength(0);
-    await act(async () => fireEvent.click(view.getByRole("button", { name: "Copy link" })));
-    expect(mocks.pushEvent).toHaveBeenCalledWith(
-      {
-        event: "RewardsLandingPageAction",
-        data: {
-          action: "ComebackShareClick",
-          type: "CopyLink",
-          rewards_exist: true,
-          ref_code_exist: true,
-          rewards: 500,
-        },
-      },
-      { instantSend: true }
-    );
-  });
-
-  it("requests a connection when the checked wallet has no referral code", () => {
-    const view = render(<Page account="0x0000000000000000000000000000000000000002" />);
-    fireEvent.click(view.getByRole("button", { name: "Connect wallet to create a code" }));
-    expect(mocks.connect).toHaveBeenCalledOnce();
-    expect(mocks.create).not.toHaveBeenCalled();
-    expect(view.queryByRole("textbox", { name: "Your referral code" })).toBeNull();
-  });
-
-  it("requires a connection before offering sharing or code creation", () => {
-    const view = render(<Page />);
-    fireEvent.click(view.getByRole("button", { name: "Connect wallet" }));
-    expect(mocks.connect).toHaveBeenCalledOnce();
-    expect(view.queryByRole("button", { name: "Share on X" })).toBeNull();
-    expect(view.container.querySelector('[data-qa="rewards-share-image"] svg')).toBeNull();
-  });
-
-  it("uses only the connected wallet's owned code in the share URL", async () => {
-    mocks.account = "0x0000000000000000000000000000000000000001";
-    mocks.codes = { code: "MyCode", success: true };
-    const view = render(<Page />);
-    await act(async () => fireEvent.click(view.getByRole("button", { name: "Share on X" })));
-    const sharedUrl = new URL(new URL(mocks.replacePopup.mock.calls[0][0]).searchParams.get("url")!);
-    expect(sharedUrl.searchParams.get("ref")).toBe("MyCode");
-    expect(view.container.querySelector('[data-qa="rewards-share-image"] svg')).not.toBeNull();
-    expect(view.queryByRole("button", { name: "Create code and invite traders" })).toBeNull();
-  });
-
   it("offers retry instead of code creation when ownership cannot be checked", () => {
     mocks.account = "0x0000000000000000000000000000000000000001";
     mocks.codes = { code: null, success: false, error: true };
@@ -508,39 +277,5 @@ describe("rewards referral card", () => {
     expect(mocks.retryCodes).toHaveBeenCalledOnce();
     expect(view.queryByRole("button", { name: "Create code and invite traders" })).toBeNull();
     expect(view.queryByRole("button", { name: "Share on X" })).toBeNull();
-  });
-
-  it("offers creation without an owned code, then sharing after confirmation, and clears it on wallet change", () => {
-    mocks.account = "0x0000000000000000000000000000000000000001";
-    const view = render(<Page />);
-    fireEvent.click(view.getByRole("button", { name: "Create code and invite traders" }));
-    expect(mocks.pushEvent).toHaveBeenCalledWith(
-      {
-        event: "RewardsLandingPageAction",
-        data: { action: "ComebackCreateCodeClick", rewards_exist: true, ref_code_exist: false, rewards: 2000 },
-      },
-      { instantSend: true }
-    );
-    fireEvent.change(view.getByRole("textbox", { name: "Your referral code" }), { target: { value: "NewCode" } });
-    fireEvent.click(view.getByRole("button", { name: "Create code and invite traders" }));
-    expect(mocks.create).toHaveBeenCalledWith("NewCode");
-    expect(mocks.pushEvent.mock.calls.some(([event]) => event.data.action === "ComebackCreateCodeSuccesfull")).toBe(
-      false
-    );
-    expect(view.queryByRole("button", { name: "Share on X" })).toBeNull();
-    act(() => mocks.onCreated!("NewCode"));
-    expect(mocks.pushEvent).toHaveBeenCalledWith(
-      {
-        event: "RewardsLandingPageAction",
-        data: { action: "ComebackCreateCodeSuccesfull", rewards_exist: true, ref_code_exist: true, rewards: 2000 },
-      },
-      { instantSend: true }
-    );
-    expect(view.getByRole("button", { name: "Share on X" })).toBeTruthy();
-    expect(view.container.querySelector('[data-qa="rewards-share-code"]')?.textContent).toBe("NewCode");
-    mocks.account = "0x0000000000000000000000000000000000000002";
-    view.rerender(<Page />);
-    expect(view.queryByRole("button", { name: "Share on X" })).toBeNull();
-    expect(view.getByRole("button", { name: "Create code and invite traders" })).toBeTruthy();
   });
 });

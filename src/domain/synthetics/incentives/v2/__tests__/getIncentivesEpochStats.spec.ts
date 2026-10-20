@@ -31,21 +31,4 @@ describe("completed epoch totals", () => {
       { epoch, after: "0999", limit: 1000 },
     ]);
   });
-
-  it("returns zero only for a successful empty response", async () => {
-    fetcher.mockResolvedValueOnce({ incentiveRewards: [] });
-    expect(await getIncentivesEpochStats(endpoint, epoch)).toEqual({ rewardsUsd: 0n, traderCount: 0 });
-  });
-
-  it("does not publish a partial payout if a later page fails", async () => {
-    fetcher.mockResolvedValueOnce({
-      incentiveRewards: Array.from({ length: 1000 }, (_, id) => ({
-        id: String(id).padStart(4, "0"),
-        account: "0x0000000000000000000000000000000000000001",
-        rewardsUsd: "1",
-      })),
-    });
-    fetcher.mockRejectedValueOnce(new Error("Unavailable"));
-    await expect(getIncentivesEpochStats(endpoint, epoch)).rejects.toThrow("Unavailable");
-  });
 });

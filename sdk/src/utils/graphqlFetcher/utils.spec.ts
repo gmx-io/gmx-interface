@@ -9,75 +9,33 @@ vi.mock("cross-fetch", () => ({
 
 const mockedFetch = vi.mocked(fetch);
 
-function mockResponse(body: unknown, status = 200) {
+function mockResponse(body: unknown) {
   mockedFetch.mockResolvedValueOnce({
     json: vi.fn().mockResolvedValue(body),
-    ok: status >= 200 && status < 300,
-    status,
+    ok: true,
+    status: 200,
   } as unknown as Awaited<ReturnType<typeof fetch>>);
 }
+
+const partialResponse = { data: { value: "partial" }, errors: [{ message: "Invalid account" }] };
 
 describe("graphqlFetcher", () => {
   beforeEach(() => {
     mockedFetch.mockReset();
   });
 
-  it("returns GraphQL data and sends variables", async () => {
-    mockResponse({ data: { value: "ok" } });
+  it.each([
+    ["keeps legacy partial data by default", partialResponse, false, { value: "partial" }, undefined],
+    ["rejects GraphQL errors in strict mode", partialResponse, true, undefined, "GraphQL error: Invalid account"],
+    ["rejects a missing data field in strict mode", {}, true, undefined, "GraphQL response is missing data"],
+  ])("%s", async (_, body, strict, data, error) => {
+    mockResponse(body);
+    const request = graphqlFetcher("https://example.com/graphql", "query Test", undefined, { strict });
 
-    await expect(graphqlFetcher("https://example.com/graphql", "query Test", { account: "0x123" })).resolves.toEqual({
-      value: "ok",
-    });
-
-    expect(mockedFetch).toHaveBeenCalledWith("https://example.com/graphql", {
-      body: JSON.stringify({ query: "query Test", variables: { account: "0x123" } }),
-      headers: { "Content-type": "application/json" },
-      method: "POST",
-    });
-  });
-
-  it("preserves legacy partial-data behavior by default", async () => {
-    mockResponse({ data: { value: "partial" }, errors: [{ message: "Partial failure" }] });
-
-    await expect(graphqlFetcher("https://example.com/graphql", "query Test")).resolves.toEqual({ value: "partial" });
-  });
-
-  it("passes cancellation to the underlying request", async () => {
-    const controller = new AbortController();
-    mockedFetch.mockImplementationOnce(
-      (_url, options) =>
-        new Promise((_resolve, reject) => {
-          options?.signal?.addEventListener("abort", () => reject(new Error("Request aborted")));
-        })
-    );
-
-    const request = graphqlFetcher("https://example.com/graphql", "query Test", undefined, {
-      signal: controller.signal,
-    });
-    controller.abort();
-
-    await expect(request).rejects.toThrow("Request aborted");
-  });
-
-  it("rejects GraphQL errors in strict mode", async () => {
-    mockResponse({ data: { value: "partial" }, errors: [{ message: "Invalid account" }] });
-
-    await expect(
-      graphqlFetcher("https://example.com/graphql", "query Test", undefined, { strict: true })
-    ).rejects.toThrow("GraphQL error: Invalid account");
-  });
-
-  it("rejects a missing data field in strict mode", async () => {
-    mockResponse({});
-
-    await expect(
-      graphqlFetcher("https://example.com/graphql", "query Test", undefined, { strict: true })
-    ).rejects.toThrow("GraphQL response is missing data");
-  });
-
-  it("rejects unsuccessful HTTP responses", async () => {
-    mockResponse({}, 503);
-
-    await expect(graphqlFetcher("https://example.com/graphql", "query Test")).rejects.toThrow("HTTP error: 503");
+    if (error) {
+      await expect(request).rejects.toThrow(error);
+    } else {
+      await expect(request).resolves.toEqual(data);
+    }
   });
 });

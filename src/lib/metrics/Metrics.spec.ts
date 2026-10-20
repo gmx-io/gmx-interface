@@ -73,6 +73,19 @@ describe("metrics queue delivery", () => {
     expect(metrics.queue).toEqual([]);
   });
 
+  it("delivers a new item promptly after a long idle period", async () => {
+    const send = vi.fn<OracleFetcher["fetchPostBatchReport"]>().mockResolvedValue(new Response(null));
+    metrics.setFetcher({ fetchPostBatchReport: send } as unknown as OracleFetcher);
+    metrics.pushBatchItem(firstItem);
+    await vi.advanceTimersByTimeAsync(60_000);
+    expect(send).toHaveBeenCalledOnce();
+
+    metrics.pushBatchItem(secondItem);
+    await vi.advanceTimersByTimeAsync(3000);
+    expect(send).toHaveBeenCalledTimes(2);
+    expect(send.mock.calls[1][0].items).toEqual([secondItem]);
+  });
+
   it("still waits for wallet metadata in the main app before delivering an early metric", async () => {
     const send = vi.fn<OracleFetcher["fetchPostBatchReport"]>().mockResolvedValue(new Response(null));
     metrics.setGlobalMetricData({ isHomeSite: false });

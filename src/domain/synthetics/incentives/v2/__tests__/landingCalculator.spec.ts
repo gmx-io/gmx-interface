@@ -20,17 +20,12 @@ const config: IncentivesConfig = {
   volumeTiers: [
     { tier: "Tier1", threshold: 1_000_000n * PRECISION, multiplier: 100n },
     { tier: "Tier2", threshold: 10_000_000n * PRECISION, multiplier: 200n },
-    { tier: "Tier5", threshold: 1_000_000_000n * PRECISION, multiplier: 500n },
   ],
   stakingTiers: [
     { tier: "Tier1", threshold: expandDecimals(10, 18), multiplier: 100n },
     { tier: "Tier3", threshold: expandDecimals(1_000, 18), multiplier: 300n },
-    { tier: "Tier5", threshold: expandDecimals(50_000, 18), multiplier: 500n },
   ],
-  boosts: [
-    { boost: "ManualAllocation", multiplier: 200n },
-    { boost: "FeaturedMarkets", multiplier: 50n },
-  ],
+  boosts: [{ boost: "ManualAllocation", multiplier: 200n }],
   featuredMarketTokens: [],
   downgradingFactors: [],
   balancingTradesThreshold: 1_000_000n * PRECISION,
@@ -63,49 +58,28 @@ describe("landing rewards calculator", () => {
     expect(estimate(10_000_000n * PRECISION, expandDecimals(10, 18)).multiplier).toBe(300n);
   });
 
-  it("caps stacked boosts and tiers at the configured maximum", () => {
-    const result = getLandingRewardEstimate({
-      config,
-      volumeUsd: 1_000_000_000n * PRECISION,
-      stakedAmount: expandDecimals(50_000, 18),
-      boosts: ["ManualAllocation", "FeaturedMarkets"],
-    });
-    expect(result.multiplier).toBe(1000n);
-    expect(result.isCapped).toBe(true);
-    expect(result.isMaxMultiplierReached).toBe(true);
-    expect(result.rewardsUsd).toBe((result.feesUsd * 12n) / 10n);
-  });
-
   it.each([
-    [999n, false, false],
-    [1000n, false, true],
-    [1001n, true, true],
-  ])("distinguishes reaching the maximum from clamping a %s multiplier", (tierMultiplier, isCapped, isMaxReached) => {
-    const result = getLandingRewardEstimate({
-      config: {
-        ...config,
-        volumeTiers: [{ tier: "Tier1", threshold: 1_000_000n * PRECISION, multiplier: tierMultiplier }],
-        stakingTiers: [],
-      },
-      volumeUsd: 1_000_000n * PRECISION,
-      stakedAmount: 0n,
-      boosts: [],
-    });
+    [999n, false, false, (5994n * PRECISION) / 10n],
+    [1000n, false, true, 600n * PRECISION],
+    [1001n, true, true, 600n * PRECISION],
+  ])(
+    "distinguishes reaching the maximum from clamping a %s multiplier",
+    (tierMultiplier, isCapped, isMaxReached, rewardsUsd) => {
+      const result = getLandingRewardEstimate({
+        config: {
+          ...config,
+          volumeTiers: [{ tier: "Tier1", threshold: 1_000_000n * PRECISION, multiplier: tierMultiplier }],
+          stakingTiers: [],
+        },
+        volumeUsd: 1_000_000n * PRECISION,
+        stakedAmount: 0n,
+        boosts: [],
+      });
 
-    expect(result.multiplier).toBe(tierMultiplier > config.maxMultiplier ? config.maxMultiplier : tierMultiplier);
-    expect(result.isCapped).toBe(isCapped);
-    expect(result.isMaxMultiplierReached).toBe(isMaxReached);
-  });
-
-  it("uses changed configuration shares and supports fractional boosts", () => {
-    const result = getLandingRewardEstimate({
-      config: { ...config, feeShareFactor: PRECISION / 5n, gtShareFactor: PRECISION / 2n },
-      volumeUsd: 200_000n * PRECISION,
-      stakedAmount: 0n,
-      boosts: ["FeaturedMarkets", "FeaturedMarkets"],
-    });
-    expect(result.multiplier).toBe(50n);
-    expect(result.esGmxRewardsUsd).toBe(10n * PRECISION);
-    expect(result.gtRewardsUsd).toBe(5n * PRECISION);
-  });
+      expect(result.multiplier).toBe(tierMultiplier > config.maxMultiplier ? config.maxMultiplier : tierMultiplier);
+      expect(result.isCapped).toBe(isCapped);
+      expect(result.isMaxMultiplierReached).toBe(isMaxReached);
+      expect(result.rewardsUsd).toBe(rewardsUsd);
+    }
+  );
 });

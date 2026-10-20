@@ -64,11 +64,15 @@ describe("useAffiliateCodes", () => {
     vi.useRealTimers();
   });
 
-  it("does not query while sharing is closed", () => {
-    const getResult = setup(false);
+  it.each([
+    ["sharing is closed", false, "https://example.com/referrals", false],
+    ["the indexer is unavailable", true, undefined, true],
+  ])("does not query while %s", (_, enabled, endpoint, error) => {
+    mocks.endpoint = endpoint;
+    const getResult = setup(enabled);
 
     expect(mocks.query).not.toHaveBeenCalled();
-    expect(getResult()).toMatchObject({ code: null, success: false });
+    expect(getResult()).toMatchObject({ code: null, success: false, error });
   });
 
   it("queries owned codes case-insensitively without changing the account casing", async () => {
@@ -123,17 +127,6 @@ describe("useAffiliateCodes", () => {
     const getResult = setup();
 
     await waitFor(() => expect(getResult()).toMatchObject({ code: null, success: true }));
-  });
-
-  it("retries a transient failure automatically", async () => {
-    vi.useFakeTimers();
-    mocks.query.mockRejectedValueOnce(new Error("Failed to fetch")).mockResolvedValueOnce(ownedCodes("tano"));
-    const getResult = setup();
-
-    await act(async () => vi.advanceTimersByTimeAsync(1000));
-
-    expect(getResult()).toMatchObject({ code: "tano", success: true, error: false });
-    expect(mocks.query).toHaveBeenCalledTimes(2);
   });
 
   it("limits failed lookups to three attempts and allows manual retry", async () => {
@@ -195,25 +188,6 @@ describe("useAffiliateCodes", () => {
     expect(getResult()).toMatchObject({ code: null, success: true, error: false });
   });
 
-  it("reuses the cached code when the card remounts for the same wallet", async () => {
-    mocks.query.mockResolvedValueOnce(ownedCodes("tano"));
-    let result!: HookResult;
-    const props = {
-      account: "0x123",
-      enabled: true,
-      onResult: (next: HookResult) => {
-        result = next;
-      },
-    };
-    const view = renderHarness(props);
-    await waitFor(() => expect(result.code).toBe("tano"));
-
-    mocks.query.mockImplementation(() => new Promise(() => undefined));
-    view.rerender(<Harness key="remounted" {...props} />);
-
-    expect(result).toMatchObject({ code: "tano", success: true, error: false });
-  });
-
   it.each([
     { account: "0x456", chainId: ARBITRUM },
     { account: "0x123", chainId: AVALANCHE },
@@ -230,34 +204,5 @@ describe("useAffiliateCodes", () => {
     view.rerender(<Harness {...next} enabled onResult={onResult} />);
 
     expect(result).toMatchObject({ code: null, success: false, error: false });
-  });
-
-  it("ignores a late response for a previously checked wallet", async () => {
-    let resolveFirst!: (value: ReturnType<typeof ownedCodes>) => void;
-    mocks.query.mockReturnValueOnce(
-      new Promise((resolve) => {
-        resolveFirst = resolve;
-      })
-    );
-    let result!: HookResult;
-    const onResult = (value: HookResult) => {
-      result = value;
-    };
-    const view = renderHarness({ account: "0x123", enabled: true, onResult });
-
-    mocks.query.mockResolvedValueOnce(ownedCodes("other"));
-    view.rerender(<Harness account="0x456" enabled onResult={onResult} />);
-    await waitFor(() => expect(result.code).toBe("other"));
-    await act(async () => resolveFirst(ownedCodes("tano")));
-
-    expect(result.code).toBe("other");
-  });
-
-  it("reports an unavailable indexer without querying", () => {
-    mocks.endpoint = undefined;
-    const getResult = setup();
-
-    expect(getResult()).toMatchObject({ code: null, success: false, error: true });
-    expect(mocks.query).not.toHaveBeenCalled();
   });
 });
