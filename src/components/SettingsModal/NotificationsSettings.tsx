@@ -1,12 +1,13 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import { useState } from "react";
 
 import Button from "components/Button/Button";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
 import BellIcon from "img/ic_bell.svg?react";
 import WarnIcon from "img/ic_warn.svg?react";
+
+import { useNotificationsTesterState } from "./tester/notificationsTester"; // rewards-tester
 
 // UI proposal only: no push subscription, browser permission or wallet logic yet.
 export const NOTIFICATIONS_STATES = [
@@ -40,7 +41,7 @@ const CARD_ICON: Record<NotificationsState, CardIcon> = {
 };
 
 export function NotificationsSettings() {
-  const [state, setState] = useState<NotificationsState>("on");
+  const [state, setState] = useNotificationsTesterState(); // rewards-tester (was: useState<NotificationsState>("on"))
 
   const isReceiving = state === "on" || state === "walletSwitchFailed";
 
