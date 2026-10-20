@@ -1561,8 +1561,10 @@ msgstr ""
 msgid "DATE"
 msgstr ""
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "Solana"
 msgstr ""
 
@@ -5174,6 +5176,10 @@ msgstr ""
 msgid "It depends on the volume you route and which revenue streams you turn on. Use the calculator above for a rough estimate, or apply to talk specifics with the team."
 msgstr ""
 
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
+msgid "Withdrawal to {sourceChainName} failed"
+msgstr ""
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter recipient address"
 msgstr ""
@@ -5980,6 +5986,7 @@ msgstr ""
 msgid "Positive funding fees"
 msgstr ""
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Loading…"
 msgstr ""
@@ -7183,6 +7190,10 @@ msgstr ""
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "High price impact"
+msgstr ""
+
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
+msgid "This page is available on EVM networks only. Switch the network in the header, or go to <0>Trade</0>."
 msgstr ""
 
 #: src/components/GmList/GmList.tsx
@@ -9214,6 +9225,10 @@ msgstr ""
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
 msgstr ""
 
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
+msgid "Trading on Solana is coming soon."
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min deposit: {0}"
 msgstr ""
@@ -11010,6 +11025,10 @@ msgstr ""
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
+msgstr ""
+
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
+msgid "EVM networks only"
 msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx

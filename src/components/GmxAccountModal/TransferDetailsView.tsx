@@ -208,7 +208,11 @@ export const TransferDetailsView = () => {
       <div className="grow" />
       {selectedTransfer?.isExecutionError ? (
         <AlertInfoCard type="error" hideClose>
-          <Trans>Deposit from {sourceChainName} failed</Trans>
+          {selectedTransfer.operation === "withdrawal" ? (
+            <Trans>Withdrawal to {sourceChainName} failed</Trans>
+          ) : (
+            <Trans>Deposit from {sourceChainName} failed</Trans>
+          )}
         </AlertInfoCard>
       ) : null}
       <Button variant="secondary" onClick={handleRepeatTransaction}>

@@ -1561,8 +1561,10 @@ msgstr "추천 코드 생성 중..."
 msgid "DATE"
 msgstr "날짜"
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "Solana"
 msgstr "Solana"
 
@@ -5174,6 +5176,10 @@ msgstr "실현된 스왑 영향"
 msgid "It depends on the volume you route and which revenue streams you turn on. Use the calculator above for a rough estimate, or apply to talk specifics with the team."
 msgstr "라우팅하는 볼륨과 활성화한 수익원에 따라 다릅니다. 위 계산기로 대략적인 추정치를 확인하거나, 지원하여 팀과 구체적으로 상담하십시오."
 
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
+msgid "Withdrawal to {sourceChainName} failed"
+msgstr "{sourceChainName}(으)로의 출금 실패"
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter recipient address"
 msgstr "수신자 주소 입력"
@@ -5980,6 +5986,7 @@ msgstr "최근 180일"
 msgid "Positive funding fees"
 msgstr "양의 펀딩 수수료"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Loading…"
 msgstr "로딩 중…"
@@ -7184,6 +7191,10 @@ msgstr "24시간"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "High price impact"
 msgstr "높은 가격 영향"
+
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
+msgid "This page is available on EVM networks only. Switch the network in the header, or go to <0>Trade</0>."
+msgstr "이 페이지는 EVM 네트워크에서만 사용할 수 있습니다. 헤더에서 네트워크를 전환하거나 <0>거래</0> 페이지로 이동하십시오."
 
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/NetFeeTooltip.tsx
@@ -9214,6 +9225,10 @@ msgstr "수수료 차감 후 증거금이 적습니다. 추가로 입금하여 �
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
 msgstr "{profitTokenSymbol} 및 {collateralTokenSymbol}을(를) 별도로 받기"
 
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
+msgid "Trading on Solana is coming soon."
+msgstr "Solana에서의 거래는 곧 지원될 예정입니다."
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min deposit: {0}"
 msgstr "최소 입금 금액: {0}"
@@ -11011,6 +11026,10 @@ msgstr "매수"
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
 msgstr "시프트"
+
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
+msgid "EVM networks only"
+msgstr "EVM 네트워크 전용"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation risk alerts"
