@@ -10,10 +10,7 @@ import { sendTokenPermitMetric } from "lib/metrics/tokenPermitMetrics";
 import { abis } from "sdk/abis";
 import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 
-/**
- * Wallet-funded One-Click orders pull collateral and the relay fee from the main wallet through the Router,
- * so activation covers the held tokens the Router can't spend yet. The gas payment token goes first.
- */
+// gas payment token first: declining a prompt stops the rest
 export async function getActivationPermitTokenAddresses({
   chainId,
   client,
@@ -77,10 +74,7 @@ export async function getActivationPermitTokenAddresses({
       ];
 }
 
-/**
- * One prompt per token. Declining one stops the rest: the user is opting out of the permit step, while
- * One-Click stays active and the unsigned tokens keep the approval flow.
- */
+/** Declining one stops the rest: the user is opting out of the permit step */
 export async function signActivationTokenPermits({
   chainId,
   account,
@@ -119,7 +113,6 @@ export async function signActivationTokenPermits({
 
       const isInvalidSignature = Boolean(error?.message?.includes(INVALID_PERMIT_SIGNATURE_ERROR));
 
-      // a wallet timeout or rpc hiccup can pass at the next approval, so only a bad signature keeps the token there
       if (isInvalidSignature) {
         invalidSignatureTokenAddresses.push(tokenAddress);
       }

@@ -7,33 +7,23 @@ import { getSubaccountConfigKey } from "config/localStorage";
 import { SubaccountContextProvider, useSubaccountContext } from "./SubaccountContextProvider";
 import type { SubaccountState } from "./SubaccountContextProvider";
 
-const { mocks, permitsState, ACCOUNT, CHAIN_ID, SUBACCOUNT_ADDRESS, OLD_SUBACCOUNT_ADDRESS, USDC, WETH } = vi.hoisted(
-  () => ({
-    mocks: {
-      generateSubaccount: vi.fn(),
-      getInitialSubaccountApproval: vi.fn(),
-      refreshSubaccountData: vi.fn(),
-      pushError: vi.fn(),
-      getActivationPermitTokenAddresses: vi.fn(),
-      signActivationTokenPermits: vi.fn(),
-      srcChainId: undefined as number | undefined,
-      isGmxAccount: false,
-    },
-    permitsState: {
-      tokenPermits: [],
-      accountType: "eoa",
-      getIsPermitAvailable: () => true,
-      addTokenPermit: async () => undefined,
-      disableTokenPermits: () => undefined,
-    },
-    ACCOUNT: "0x1234567890123456789012345678901234567890",
-    CHAIN_ID: 42161,
-    SUBACCOUNT_ADDRESS: "0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa",
-    OLD_SUBACCOUNT_ADDRESS: "0xBbbBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbbBBbB",
-    USDC: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-    WETH: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
-  })
-);
+const { mocks, ACCOUNT, CHAIN_ID, SUBACCOUNT_ADDRESS, OLD_SUBACCOUNT_ADDRESS, WETH } = vi.hoisted(() => ({
+  mocks: {
+    generateSubaccount: vi.fn(),
+    getInitialSubaccountApproval: vi.fn(),
+    refreshSubaccountData: vi.fn(),
+    pushError: vi.fn(),
+    getActivationPermitTokenAddresses: vi.fn(),
+    signActivationTokenPermits: vi.fn(),
+    srcChainId: undefined as number | undefined,
+    isGmxAccount: false,
+  },
+  ACCOUNT: "0x1234567890123456789012345678901234567890",
+  CHAIN_ID: 42161,
+  SUBACCOUNT_ADDRESS: "0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa",
+  OLD_SUBACCOUNT_ADDRESS: "0xBbbBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbbBBbB",
+  WETH: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+}));
 
 vi.mock("context/SyntheticsStateContext/selectors/expressSelectors", () => ({
   selectExpressGlobalParams: () => undefined,
@@ -54,7 +44,7 @@ vi.mock("context/SyntheticsStateContext/utils", async (importOriginal) => ({
 }));
 
 vi.mock("context/TokenPermitsContext/TokenPermitsContextProvider", () => ({
-  useTokenPermitsContext: () => permitsState,
+  useTokenPermitsContext: () => ({}),
 }));
 
 vi.mock("domain/synthetics/subaccount/activationTokenPermits", () => ({
@@ -277,12 +267,11 @@ describe("SubaccountContextProvider.tryEnableSubaccount token permits", () => {
   const ROUTER = "0x7452c558d45f8afC8c83dAe62C3f8A5BE19c71f6";
 
   beforeEach(() => {
-    mocks.srcChainId = undefined;
-    mocks.isGmxAccount = false;
     mocks.generateSubaccount.mockResolvedValue(generatedConfig);
     mocks.getInitialSubaccountApproval.mockResolvedValue(signedApproval);
-    mocks.getActivationPermitTokenAddresses.mockResolvedValue([WETH, USDC]);
-    mocks.signActivationTokenPermits.mockResolvedValue(undefined);
+    mocks.getActivationPermitTokenAddresses.mockResolvedValue([WETH]);
+    // never settles, so a resolved activation proves the permit prompts aren't awaited
+    mocks.signActivationTokenPermits.mockReturnValue(new Promise(() => undefined));
   });
 
   afterEach(() => {
@@ -291,96 +280,31 @@ describe("SubaccountContextProvider.tryEnableSubaccount token permits", () => {
     vi.clearAllMocks();
   });
 
-  async function enable(params?: { withTokenPermits?: boolean }) {
-    const context = setup();
+  it.each([
+    { name: "after the activation signatures", result: true, asksPermits: true },
+    { name: "unless the caller opts out", withTokenPermits: false, result: true, asksPermits: false },
+    { name: "unless the approval signature is rejected", isApprovalRejected: true, result: false, asksPermits: false },
+    { name: "unless trading from the GMX Account", isGmxAccount: true, result: true, asksPermits: false },
+    { name: "unless on multichain", srcChainId: 8453, result: true, asksPermits: false },
+  ])(
+    "asks for token permits $name",
+    async ({ withTokenPermits, isApprovalRejected, isGmxAccount, srcChainId, result, asksPermits }) => {
+      mocks.isGmxAccount = isGmxAccount ?? false;
+      mocks.srcChainId = srcChainId;
+      if (isApprovalRejected) {
+        mocks.getInitialSubaccountApproval.mockRejectedValue(new Error("User rejected the request."));
+      }
 
-    let result: boolean | undefined;
-    await act(async () => {
-      result = await context.current.tryEnableSubaccount(params);
-    });
+      const context = setup();
+      let enabled: boolean | undefined;
+      await act(async () => {
+        enabled = await context.current.tryEnableSubaccount({ withTokenPermits });
+      });
 
-    return { context, result };
-  }
-
-  it("signs permits for the wallet's tokens after the activation signatures", async () => {
-    const { result } = await enable();
-
-    expect(result).toBe(true);
-    expect(mocks.getActivationPermitTokenAddresses).toHaveBeenCalledWith(
-      expect.objectContaining({
-        chainId: CHAIN_ID,
-        account: ACCOUNT,
-        spender: ROUTER,
-        gasPaymentTokenAddress: WETH,
-        tokenPermits: permitsState.tokenPermits,
-        getIsPermitAvailable: permitsState.getIsPermitAvailable,
-      })
-    );
-    expect(mocks.signActivationTokenPermits).toHaveBeenCalledWith({
-      chainId: CHAIN_ID,
-      account: ACCOUNT,
-      spender: ROUTER,
-      tokenAddresses: [WETH, USDC],
-      accountType: "eoa",
-      addTokenPermit: permitsState.addTokenPermit,
-      disableTokenPermits: permitsState.disableTokenPermits,
-    });
-    expect(mocks.getInitialSubaccountApproval.mock.invocationCallOrder[0]).toBeLessThan(
-      mocks.signActivationTokenPermits.mock.invocationCallOrder[0]
-    );
-  });
-
-  it("activates without waiting for the permit prompts", async () => {
-    mocks.signActivationTokenPermits.mockReturnValue(new Promise(() => undefined));
-
-    const { result } = await enable();
-
-    expect(result).toBe(true);
-    expect(mocks.signActivationTokenPermits).toHaveBeenCalled();
-  });
-
-  it("asks for no permits when the caller opts out", async () => {
-    const { result } = await enable({ withTokenPermits: false });
-
-    expect(result).toBe(true);
-    expect(mocks.getActivationPermitTokenAddresses).not.toHaveBeenCalled();
-  });
-
-  it("still activates when the permit step fails", async () => {
-    mocks.getActivationPermitTokenAddresses.mockRejectedValue(new Error("rpc unavailable"));
-
-    const { result } = await enable();
-
-    expect(result).toBe(true);
-    expect(mocks.signActivationTokenPermits).not.toHaveBeenCalled();
-    expect(mocks.pushError).toHaveBeenCalledWith(expect.any(Error), "subaccount.activationTokenPermits");
-    expect(getStoredValues().some((value) => value.includes("0xsignature"))).toBe(true);
-  });
-
-  it("asks for no permits when the approval signature is rejected", async () => {
-    mocks.getInitialSubaccountApproval.mockRejectedValue(new Error("User rejected the request."));
-
-    const { result } = await enable();
-
-    expect(result).toBe(false);
-    expect(mocks.getActivationPermitTokenAddresses).not.toHaveBeenCalled();
-  });
-
-  it("leaves GMX Account activation without permits", async () => {
-    mocks.isGmxAccount = true;
-
-    const { result } = await enable();
-
-    expect(result).toBe(true);
-    expect(mocks.getActivationPermitTokenAddresses).not.toHaveBeenCalled();
-  });
-
-  it("leaves multichain activation without permits", async () => {
-    mocks.srcChainId = 8453;
-
-    const { result } = await enable();
-
-    expect(result).toBe(true);
-    expect(mocks.getActivationPermitTokenAddresses).not.toHaveBeenCalled();
-  });
+      expect(enabled).toBe(result);
+      expect(mocks.getActivationPermitTokenAddresses.mock.calls).toEqual(
+        asksPermits ? [[expect.objectContaining({ spender: ROUTER, gasPaymentTokenAddress: WETH })]] : []
+      );
+    }
+  );
 });

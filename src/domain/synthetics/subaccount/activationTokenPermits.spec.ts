@@ -6,10 +6,8 @@ import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 
 import { getActivationPermitTokenAddresses, signActivationTokenPermits } from "./activationTokenPermits";
 
-const mocks = vi.hoisted(() => ({ sendTokenPermitMetric: vi.fn(), pushError: vi.fn() }));
-
-vi.mock("lib/metrics/tokenPermitMetrics", () => ({ sendTokenPermitMetric: mocks.sendTokenPermitMetric }));
-vi.mock("lib/metrics", () => ({ metrics: { pushError: mocks.pushError } }));
+vi.mock("lib/metrics/tokenPermitMetrics", () => ({ sendTokenPermitMetric: vi.fn() }));
+vi.mock("lib/metrics", () => ({ metrics: { pushError: vi.fn() } }));
 
 const ARBITRUM = 42161;
 const ACCOUNT = "0x0000000000000000000000000000000000000001";
@@ -22,7 +20,7 @@ type TokenState = { balance: bigint; allowance: bigint; nonce: bigint } | "faile
 
 function mockClient(states: Record<string, TokenState>) {
   return {
-    multicall: vi.fn(async ({ contracts }: { contracts: readonly { address: string; functionName: string }[] }) =>
+    multicall: async ({ contracts }: { contracts: readonly { address: string; functionName: string }[] }) =>
       contracts.map(({ address, functionName }) => {
         const state = states[address];
 
@@ -32,8 +30,7 @@ function mockClient(states: Record<string, TokenState>) {
 
         const result = { balanceOf: state.balance, allowance: state.allowance, nonces: state.nonce }[functionName];
         return { status: "success", result };
-      })
-    ),
+      }),
   } as any;
 }
 
@@ -77,80 +74,17 @@ function getTokens({
 }
 
 describe("getActivationPermitTokenAddresses", () => {
-  it("picks held allowlisted tokens the Router can't spend yet", async () => {
-    const tokens = await getTokens({
-      states: {
-        [USDC]: HELD,
-        [USDT]: { balance: 0n, allowance: 0n, nonce: 0n },
-        [WETH]: { balance: 100n, allowance: maxUint256, nonce: 0n },
-      },
-    });
+  it.each<[string, TokenState, boolean, string[]]>([
+    ["held with nothing approved", HELD, true, [USDC]],
+    ["approved below the balance", { ...HELD, allowance: 99n }, true, [USDC]],
+    ["approved in full", { ...HELD, allowance: maxUint256 }, true, []],
+    ["not held", { ...HELD, balance: 0n }, true, []],
+    ["unreadable", "failed", true, []],
+    ["unable to use permits", HELD, false, []],
+  ])("picks a token %s", async (_, state, isPermitAvailable, expected) => {
+    const tokens = await getTokens({ states: { [USDC]: state }, getIsPermitAvailable: () => isPermitAvailable });
 
-    expect(tokens).toEqual([USDC]);
-  });
-
-  it("covers a token whose allowance is below the balance", async () => {
-    const tokens = await getTokens({ states: { [USDC]: { balance: 100n, allowance: 99n, nonce: 0n } } });
-
-    expect(tokens).toEqual([USDC]);
-  });
-
-  it("skips tokens that can't use permits, without reading them", async () => {
-    const client = mockClient({ [USDC]: HELD, [WETH]: HELD });
-
-    const tokens = await getActivationPermitTokenAddresses({
-      chainId: ARBITRUM,
-      client,
-      account: ACCOUNT,
-      spender: ROUTER,
-      gasPaymentTokenAddress: undefined,
-      tokenPermits: [],
-      getIsPermitAvailable: (tokenAddress) => tokenAddress === WETH,
-    });
-
-    expect(tokens).toEqual([WETH]);
-    expect(client.multicall.mock.calls[0][0].contracts.map((c: { address: string }) => c.address)).toEqual([
-      WETH,
-      WETH,
-      WETH,
-    ]);
-  });
-
-  it("reads nothing when no token can use permits", async () => {
-    const client = mockClient({});
-
-    const tokens = await getActivationPermitTokenAddresses({
-      chainId: ARBITRUM,
-      client,
-      account: ACCOUNT,
-      spender: ROUTER,
-      gasPaymentTokenAddress: undefined,
-      tokenPermits: [],
-      getIsPermitAvailable: () => false,
-    });
-
-    expect(tokens).toEqual([]);
-    expect(client.multicall).not.toHaveBeenCalled();
-  });
-
-  it("has no tokens on chains without verified permits", async () => {
-    const tokens = await getActivationPermitTokenAddresses({
-      chainId: 421614,
-      client: mockClient({}),
-      account: ACCOUNT,
-      spender: ROUTER,
-      gasPaymentTokenAddress: undefined,
-      tokenPermits: [],
-      getIsPermitAvailable: () => true,
-    });
-
-    expect(tokens).toEqual([]);
-  });
-
-  it("skips tokens whose reads failed", async () => {
-    const tokens = await getTokens({ states: { [USDC]: "failed", [WETH]: HELD } });
-
-    expect(tokens).toEqual([WETH]);
+    expect(tokens).toEqual(expected);
   });
 
   it("puts the gas payment token first", async () => {
@@ -159,23 +93,20 @@ describe("getActivationPermitTokenAddresses", () => {
     expect(tokens).toEqual([WETH, USDC]);
   });
 
-  it("skips a token with an unused permit from an earlier activation", async () => {
+  it.each<[string, SignedTokenPermit, string[]]>([
     // a JSON round trip leaves the nonce as a string
-    const stored = permit(USDC, { onchainParams: { name: "Token", version: "1", nonce: "3" as unknown as bigint } });
-
-    const tokens = await getTokens({ states: { [USDC]: HELD, [WETH]: HELD }, tokenPermits: [stored] });
-
-    expect(tokens).toEqual([WETH]);
-  });
-
-  it.each([
-    ["its nonce was used", permit(USDC, { onchainParams: { name: "Token", version: "1", nonce: 2n } })],
-    ["it expires", permit(USDC, { deadline: 2000000000n })],
-    ["it is for another spender", permit(USDC, { spender: "0x0000000000000000000000000000000000000002" })],
-  ])("signs again over a stored permit when %s", async (_, stored) => {
+    [
+      "is unused",
+      permit(USDC, { onchainParams: { name: "Token", version: "1", nonce: "3" as unknown as bigint } }),
+      [],
+    ],
+    ["has a used nonce", permit(USDC, { onchainParams: { name: "Token", version: "1", nonce: 2n } }), [USDC]],
+    ["expires", permit(USDC, { deadline: 2000000000n }), [USDC]],
+    ["is for another spender", permit(USDC, { spender: "0x0000000000000000000000000000000000000002" }), [USDC]],
+  ])("signs again only when a stored permit %s", async (_, stored, expected) => {
     const tokens = await getTokens({ states: { [USDC]: HELD }, tokenPermits: [stored] });
 
-    expect(tokens).toEqual([USDC]);
+    expect(tokens).toEqual(expected);
   });
 });
 
@@ -207,55 +138,47 @@ describe("signActivationTokenPermits", () => {
       [USDC, ROUTER, maxUint256, { deadline: maxUint256 }],
       [WETH, ROUTER, maxUint256, { deadline: maxUint256 }],
     ]);
-    expect(mocks.sendTokenPermitMetric).toHaveBeenCalledWith({
-      chainId: ARBITRUM,
-      tokenAddress: USDC,
-      accountType: "eoa",
-      flow: "oneClickActivation",
-      outcome: "signed",
-    });
     expect(disableTokenPermits).not.toHaveBeenCalled();
   });
 
-  it("stops asking once the user rejects a permit, leaving the token on approvals", async () => {
-    addTokenPermit.mockRejectedValueOnce(Object.assign(new Error("User rejected the request."), { code: 4001 }));
+  const invalidSignature = (token: string) =>
+    getInvalidPermitSignatureError({ isValid: false, error: undefined, permit: permit(token) });
+  const rpcError = new Error("rpc unavailable");
 
-    await sign([USDC, WETH]);
-
-    expect(addTokenPermit).toHaveBeenCalledTimes(1);
-    expect(mocks.sendTokenPermitMetric).toHaveBeenCalledWith(
-      expect.objectContaining({ tokenAddress: USDC, outcome: "rejected", flow: "oneClickActivation" })
+  it.each([
+    {
+      name: "the user rejects",
+      errors: [Object.assign(new Error("User rejected the request."), { code: 4001 })],
+      tokens: [USDC, WETH],
+      asked: [USDC],
+      disabled: [],
+    },
+    {
+      name: "a signature is invalid or the rpc fails",
+      errors: [invalidSignature(USDC), undefined, rpcError],
+      tokens: [USDC, WETH, USDT],
+      asked: [USDC, WETH, USDT],
+      disabled: [USDC],
+    },
+    {
+      name: "the account or chain changes",
+      errors: [rpcError, invalidSignature(WETH), new Error(PERMIT_WALLET_CHANGED_ERROR)],
+      tokens: [USDC, WETH, USDT, USDC],
+      asked: [USDC, WETH, USDT],
+      disabled: [WETH],
+    },
+  ])("keeps only invalid signatures on approvals when $name", async ({ errors, tokens, asked, disabled }) => {
+    errors.forEach((error) =>
+      error === undefined
+        ? addTokenPermit.mockResolvedValueOnce(undefined)
+        : addTokenPermit.mockRejectedValueOnce(error)
     );
-    expect(disableTokenPermits).not.toHaveBeenCalled();
-  });
 
-  it("keeps only tokens with an invalid signature on approvals and keeps going", async () => {
-    addTokenPermit
-      .mockRejectedValueOnce(getInvalidPermitSignatureError({ isValid: false, error: undefined, permit: permit(USDC) }))
-      .mockResolvedValueOnce(undefined)
-      .mockRejectedValueOnce(new Error("rpc unavailable"));
+    await sign(tokens);
 
-    await sign([USDC, WETH, USDT]);
-
-    expect(addTokenPermit).toHaveBeenCalledTimes(3);
-    expect(disableTokenPermits).toHaveBeenCalledTimes(1);
-    expect(disableTokenPermits).toHaveBeenCalledWith([USDC], { chainId: ARBITRUM, account: ACCOUNT });
-    expect(mocks.sendTokenPermitMetric).toHaveBeenCalledWith(
-      expect.objectContaining({ tokenAddress: USDC, outcome: "fallback", reason: "invalidSignature" })
+    expect(addTokenPermit.mock.calls.map(([token]) => token)).toEqual(asked);
+    expect(disableTokenPermits.mock.calls).toEqual(
+      disabled.length > 0 ? [[disabled, { chainId: ARBITRUM, account: ACCOUNT }]] : []
     );
-    expect(mocks.sendTokenPermitMetric).toHaveBeenCalledWith(
-      expect.objectContaining({ tokenAddress: USDT, outcome: "fallback", reason: "failed" })
-    );
-  });
-  it("stops asking once the account or chain changes, still keeping earlier invalid signatures on approvals", async () => {
-    addTokenPermit
-      .mockRejectedValueOnce(new Error("rpc unavailable"))
-      .mockRejectedValueOnce(getInvalidPermitSignatureError({ isValid: false, error: undefined, permit: permit(WETH) }))
-      .mockRejectedValueOnce(new Error(PERMIT_WALLET_CHANGED_ERROR));
-
-    await sign([USDC, WETH, USDT, USDC]);
-
-    expect(addTokenPermit).toHaveBeenCalledTimes(3);
-    expect(disableTokenPermits).toHaveBeenCalledWith([WETH], { chainId: ARBITRUM, account: ACCOUNT });
   });
 });

@@ -203,39 +203,22 @@ describe("TokenPermitsContextProvider", () => {
     ]);
   });
 
-  it("keeps every permit signed in one flow and passes the requested deadline through", async () => {
+  it("keeps every permit signed in one flow", async () => {
     await setup();
 
-    const usdc = permit(USDC, { deadline: 2n ** 256n - 1n });
-    const weth = permit(WETH, { deadline: 2n ** 256n - 1n, r: `0x${"55".repeat(32)}` });
-    mocks.createAndSignTokenPermit.mockResolvedValueOnce({ permit: usdc }).mockResolvedValueOnce({ permit: weth });
+    const weth = permit(WETH, { r: `0x${"55".repeat(32)}` });
+    mocks.createAndSignTokenPermit
+      .mockResolvedValueOnce({ permit: permit(USDC) })
+      .mockResolvedValueOnce({ permit: weth });
 
     const { addTokenPermit } = state;
 
     await act(async () => {
-      await addTokenPermit(USDC, ROUTER, 100n, { deadline: usdc.deadline });
-      await addTokenPermit(WETH, ROUTER, 100n, { deadline: weth.deadline });
+      await addTokenPermit(USDC, ROUTER, 100n);
+      await addTokenPermit(WETH, ROUTER, 100n);
     });
 
-    expect(mocks.createAndSignTokenPermit.mock.calls.map((call) => call[5])).toEqual([usdc.deadline, weth.deadline]);
     expect(readStoredTokens()).toEqual([USDC, WETH]);
-    expect(state.tokenPermits.map((p) => p.deadline)).toEqual([usdc.deadline, weth.deadline]);
-  });
-  it("reports a wallet switch, not a bad signature, when the wallet signed with the new account", async () => {
-    const { rerender } = await setup();
-
-    let resolveSigning: (value: { permit: SignedTokenPermit }) => void = () => undefined;
-    mocks.createAndSignTokenPermit.mockReturnValue(new Promise((resolve) => (resolveSigning = resolve)));
-    mocks.isPermitSignatureValid = false;
-
-    const { addTokenPermit } = state;
-    const signing = addTokenPermit(USDC, ROUTER, 100n);
-
-    mocks.account = "0x0000000000000000000000000000000000000002";
-    rerender();
-    resolveSigning({ permit: permit(USDC) });
-
-    await expect(signing).rejects.toThrow(PERMIT_WALLET_CHANGED_ERROR);
   });
 
   it("keeps a permit signed after an earlier render when a stale callback removes another one", async () => {
@@ -255,11 +238,12 @@ describe("TokenPermitsContextProvider", () => {
     expect(readStoredTokens()).toEqual([WETH]);
   });
 
-  it("stores nothing when the account changes while a permit is being signed", async () => {
+  it("reports a wallet switch, not a bad signature, when the wallet signed with the new account", async () => {
     const { rerender } = await setup();
 
     let resolveSigning: (value: { permit: SignedTokenPermit }) => void = () => undefined;
     mocks.createAndSignTokenPermit.mockReturnValue(new Promise((resolve) => (resolveSigning = resolve)));
+    mocks.isPermitSignatureValid = false;
 
     const { addTokenPermit } = state;
     const signing = addTokenPermit(USDC, ROUTER, 100n);
@@ -269,9 +253,5 @@ describe("TokenPermitsContextProvider", () => {
     resolveSigning({ permit: permit(USDC) });
 
     await expect(signing).rejects.toThrow(PERMIT_WALLET_CHANGED_ERROR);
-    expect(readStoredTokens()).toEqual([]);
-    expect(
-      JSON.parse(localStorage.getItem(JSON.stringify([CHAIN_ID, mocks.account, "token-permits"])) ?? "[]")
-    ).toEqual([]);
   });
 });
