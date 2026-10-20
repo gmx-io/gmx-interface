@@ -28,7 +28,7 @@ vi.mock("context/GmxAccountContext/hooks", () => {
 });
 
 vi.mock("domain/multichain/useGmxAccountFundingHistory", () => ({
-  useGmxAccountFundingHistoryItem: () => mocks.selectedTransfer,
+  useGmxAccountFundingHistoryItem: () => ({ transfer: mocks.selectedTransfer, isLoading: false, error: undefined }),
 }));
 
 vi.mock("lib/chains", () => ({
