@@ -39,8 +39,9 @@ describe("getSharePercentage", () => {
     expect(getSharePercentage(0n, 5000n, 0n, true)).toBe("0");
   });
 
-  it("keeps a small non-zero discount distinct from zero", () => {
-    expect(getSharePercentage(40n, 5000n, 10n)).toBe("0.000");
+  it("shows a non-zero discount below the shown precision as <0.001", () => {
+    expect(getSharePercentage(40n, 5000n, 10n)).toBe("<0.001");
+    expect(getSharePercentage(1n, 5000n, 1n)).toBe("<0.001");
   });
 });
 

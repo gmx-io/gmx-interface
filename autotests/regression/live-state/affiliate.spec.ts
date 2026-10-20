@@ -75,7 +75,10 @@ async function readTier(liveAccounts: LiveAccounts, account: LiveAccount["accoun
     args: [tier],
   });
   const share = custom > 0n ? custom : tierShare;
-  const percent = (bps: bigint) => String(Number((Number(totalRebate * bps) / 1e6).toFixed(3)));
+  const percent = (bps: bigint) => {
+    const value = Number((Number(totalRebate * bps) / 1e6).toFixed(3));
+    return value === 0 && totalRebate * bps > 0n ? "<0.001" : String(value);
+  };
   return { tier, totalRebate, share, rebate: percent(10_000n - share), discount: percent(share) };
 }
 
