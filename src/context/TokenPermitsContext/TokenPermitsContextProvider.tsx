@@ -37,10 +37,7 @@ export type TokenPermitsState = {
   addTokenPermit: AddTokenPermitFn;
   /** permitsChainId: the chain the permits were signed for, when it may no longer be the current one */
   removeTokenPermits: (permits: SignedTokenPermit[], permitsChainId?: number) => void;
-  /**
-   * Keeps the tokens on the approval transaction for good: only for failures a retry won't fix. `target` is the
-   * chain and account the failed permits belong to, when it may no longer be the current one
-   */
+  /** Only for failures a retry won't fix; `target` defaults to the current chain and account */
   disableTokenPermits: (tokenAddresses: string[], target?: { chainId: number; account: string }) => void;
 };
 
@@ -57,7 +54,6 @@ function readFallbackTokens(key: NonNullable<ReturnType<typeof getTokenPermitsFa
   }
 }
 
-// permits stored for a chain or account that is not the current one, e.g. used by an order that finished after a switch
 function removeInactiveStoredTokenPermits(chainId: number, owner: string, permits: SignedTokenPermit[]) {
   const key = JSON.stringify(getTokenPermitsKey(chainId, owner));
   const stored = localStorage.getItem(key);

@@ -47,7 +47,6 @@ export type BatchOrderTxnCtx = {
   expressParams: ExpressTxnParams | undefined;
   batchParams: BatchOrderTxnParams;
   signer: WalletSigner;
-  /** Permits the pre-send check dropped because the existing allowance already covers the spend */
   stalePermits?: SignedTokenPermit[];
 };
 

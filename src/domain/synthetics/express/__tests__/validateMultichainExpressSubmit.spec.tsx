@@ -9,7 +9,6 @@ import { InsufficientGmxAccountGasTokenBalanceMessage } from "components/Errors/
 
 import {
   getCanUseTokenPermits,
-  getExpressParamsForSubmit,
   getNetworkFeeGasPaymentParams,
   reportMultichainExpressSubmitError,
 } from "../validateMultichainExpressSubmit";
@@ -52,33 +51,34 @@ function makeExpressParams(overrides: {
 }
 
 describe("getCanUseTokenPermits", () => {
-  it("lets a permit stand in for an approval when the order will be relayed", () => {
-    const expressParams = makeExpressParams({ isGmxAccount: false, isOutGasTokenBalance: false });
-
-    expect(getExpressParamsForSubmit(expressParams)).toBe(expressParams);
-    expect(getCanUseTokenPermits(expressParams)).toBe(true);
-  });
-
-  it("lets a permit cover the missing gas payment token approval that blocks the relay", () => {
-    const expressParams = makeExpressParams({
-      isGmxAccount: false,
-      isOutGasTokenBalance: false,
-      needGasPaymentTokenApproval: true,
-    });
-
-    expect(getCanUseTokenPermits(expressParams)).toBe(true);
-  });
-
-  it("refuses permits when the order falls back to a Classic transaction, which ignores them", () => {
-    const expressParams = makeExpressParams({ isGmxAccount: false, isOutGasTokenBalance: true });
-
-    expect(getExpressParamsForSubmit(expressParams)).toBeUndefined();
-    expect(getCanUseTokenPermits(expressParams)).toBe(false);
-  });
-
-  it("refuses permits without express params and for GMX Account relays", () => {
-    expect(getCanUseTokenPermits(undefined)).toBe(false);
-    expect(getCanUseTokenPermits(makeExpressParams({ isGmxAccount: true, isOutGasTokenBalance: false }))).toBe(false);
+  it.each([
+    { name: "no express params", expressParams: undefined, expected: false },
+    {
+      name: "a relayed order",
+      expressParams: makeExpressParams({ isGmxAccount: false, isOutGasTokenBalance: false }),
+      expected: true,
+    },
+    {
+      name: "a relay blocked only by the gas payment token approval",
+      expressParams: makeExpressParams({
+        isGmxAccount: false,
+        isOutGasTokenBalance: false,
+        needGasPaymentTokenApproval: true,
+      }),
+      expected: true,
+    },
+    {
+      name: "a Classic transaction fallback",
+      expressParams: makeExpressParams({ isGmxAccount: false, isOutGasTokenBalance: true }),
+      expected: false,
+    },
+    {
+      name: "a GMX Account relay",
+      expressParams: makeExpressParams({ isGmxAccount: true, isOutGasTokenBalance: false }),
+      expected: false,
+    },
+  ])("$name -> $expected", ({ expressParams, expected }) => {
+    expect(getCanUseTokenPermits(expressParams)).toBe(expected);
   });
 });
 

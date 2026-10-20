@@ -1,24 +1,26 @@
-import { encodeFunctionResult, erc20Abi } from "viem";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ARBITRUM } from "config/chains";
 import type { ExpressTxnParams } from "domain/synthetics/express";
-import { TokenPermitsCheckError } from "domain/tokens/checkTokenPermits";
+import { TokenPermitsCheckError, type TokenPermitsCheckResult } from "domain/tokens/checkTokenPermits";
 import type { WalletSigner } from "lib/wallets";
-import { abis } from "sdk/abis";
 import type { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
 import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 
 import { sendBatchOrderTxn } from "../sendBatchOrderTxn";
 
 const mocks = vi.hoisted(() => ({
-  call: vi.fn(),
+  checkTokenPermits: vi.fn(),
   buildAndSign: vi.fn(),
   sendExpressTransaction: vi.fn(),
   pushError: vi.fn(),
 }));
 
-vi.mock("lib/wallets/walletConfig", () => ({ getPublicClientWithRpc: () => ({ call: mocks.call }) }));
+vi.mock("lib/wallets/walletConfig", () => ({ getPublicClientWithRpc: () => ({}) }));
+vi.mock("domain/tokens/checkTokenPermits", async (importOriginal) => ({
+  ...(await importOriginal<object>()),
+  checkTokenPermits: mocks.checkTokenPermits,
+}));
 vi.mock("domain/synthetics/express/expressOrderUtils", () => ({
   buildAndSignExpressBatchOrderTxn: mocks.buildAndSign,
 }));
@@ -72,24 +74,8 @@ function makeBatchParams(payAmount?: bigint): BatchOrderTxnParams {
   } as unknown as BatchOrderTxnParams;
 }
 
-function mockCheck(results: { permitOk: boolean; allowance: bigint }[]) {
-  mocks.call.mockResolvedValue({
-    data: encodeFunctionResult({
-      abi: abis.Multicall,
-      functionName: "aggregate3",
-      result: results.flatMap(({ permitOk, allowance }) => [
-        { success: permitOk, returnData: "0x" as `0x${string}` },
-        {
-          success: true,
-          returnData: encodeFunctionResult({
-            abi: erc20Abi,
-            functionName: "allowance",
-            result: allowance,
-          }) as `0x${string}`,
-        },
-      ]),
-    }),
-  });
+function mockCheck(result: Partial<TokenPermitsCheckResult>) {
+  mocks.checkTokenPermits.mockResolvedValue({ validPermits: [], stalePermits: [], failedPermits: [], ...result });
 }
 
 function send(expressParams: ExpressTxnParams, batchParams: BatchOrderTxnParams, callback = vi.fn()) {
@@ -116,31 +102,25 @@ describe("sendBatchOrderTxn pre-send permit check", () => {
     mocks.sendExpressTransaction.mockResolvedValue({ taskId: "task" });
   });
 
-  it("relays a permit that covers the pay amount plus the relay fee", async () => {
+  it.each([
+    { name: "the pay amount plus the relay fee", payAmount: 100n, required: 110n },
+    { name: "the relay fee on update and cancel batches", payAmount: undefined, required: 10n },
+  ])("relays a permit checked against $name", async ({ payAmount, required }) => {
     const usdcPermit = permit(USDC, 110n);
-    mockCheck([{ permitOk: true, allowance: 110n }]);
+    mockCheck({ validPermits: [usdcPermit] });
 
-    await send(makeExpressParams([usdcPermit]), makeBatchParams(100n));
+    await send(makeExpressParams([usdcPermit]), makeBatchParams(payAmount));
 
-    expect(mocks.call).toHaveBeenCalledTimes(1);
+    expect(mocks.checkTokenPermits).toHaveBeenCalledWith(
+      expect.objectContaining({ permits: [usdcPermit], requiredAmounts: { [USDC]: required } })
+    );
     expect(getSentPermits()).toEqual([usdcPermit]);
     expect(mocks.sendExpressTransaction).toHaveBeenCalledTimes(1);
   });
 
-  it("checks permits on update and cancel batches against the relay fee", async () => {
-    const usdcPermit = permit(USDC, 5n);
-    mockCheck([{ permitOk: true, allowance: 5n }]);
-    const callback = vi.fn();
-
-    await expect(send(makeExpressParams([usdcPermit]), makeBatchParams(), callback)).rejects.toBeInstanceOf(
-      TokenPermitsCheckError
-    );
-    expect(mocks.sendExpressTransaction).not.toHaveBeenCalled();
-  });
-
   it("sends nothing and reports the failed permits when the allowance would stay short", async () => {
     const usdcPermit = permit(USDC, 110n);
-    mockCheck([{ permitOk: false, allowance: 0n }]);
+    mockCheck({ failedPermits: [usdcPermit] });
     const callback = vi.fn();
 
     const error = await send(makeExpressParams([usdcPermit]), makeBatchParams(100n), callback).catch((e) => e);
@@ -155,7 +135,7 @@ describe("sendBatchOrderTxn pre-send permit check", () => {
 
   it("drops a stale permit from the relay call when the allowance already covers the spend", async () => {
     const usdcPermit = permit(USDC, 110n);
-    mockCheck([{ permitOk: false, allowance: 1000n }]);
+    mockCheck({ stalePermits: [usdcPermit] });
     const callback = vi.fn();
 
     await send(makeExpressParams([usdcPermit]), makeBatchParams(100n), callback);
@@ -168,18 +148,11 @@ describe("sendBatchOrderTxn pre-send permit check", () => {
 
   it("still sends when the check itself can't reach the rpc", async () => {
     const usdcPermit = permit(USDC, 110n);
-    mocks.call.mockRejectedValue(new Error("rpc down"));
+    mocks.checkTokenPermits.mockRejectedValue(new Error("rpc down"));
 
     await send(makeExpressParams([usdcPermit]), makeBatchParams(100n));
 
     expect(mocks.pushError).toHaveBeenCalledWith(expect.any(Error), "expressOrders.tokenPermitsCheck");
     expect(getSentPermits()).toEqual([usdcPermit]);
-  });
-
-  it("skips the check when the relay call carries no permits", async () => {
-    await send(makeExpressParams([]), makeBatchParams(100n));
-
-    expect(mocks.call).not.toHaveBeenCalled();
-    expect(mocks.sendExpressTransaction).toHaveBeenCalledTimes(1);
   });
 });

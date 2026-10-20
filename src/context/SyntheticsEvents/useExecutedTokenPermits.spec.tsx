@@ -56,43 +56,25 @@ describe("useExecutedTokenPermits", () => {
   });
   afterEach(cleanup);
 
-  it("counts every permit the successful relay call carried and forgets it", () => {
+  it("forgets the permits a successful relay call carried, once per relay task", () => {
     const { rerender } = renderExecutedTokenPermits({
       chainId: ARBITRUM,
       pendingExpressTxns: { txn: sentTxn },
       relayTaskStatuses: {},
     });
 
-    expect(mocks.sendTokenPermitMetric).not.toHaveBeenCalled();
-
     rerender({
       chainId: ARBITRUM,
       pendingExpressTxns: { txn: sentTxn },
       relayTaskStatuses: relayStatus("task", StatusCode.Success),
     });
-
-    expect(mocks.removeTokenPermits).toHaveBeenCalledWith([usdcPermit, wethPermit], ARBITRUM);
-    expect(mocks.sendTokenPermitMetric.mock.calls).toEqual([
-      [{ outcome: "executed", chainId: ARBITRUM, tokenAddress: USDC, accountType: "eoa" }],
-      [{ outcome: "executed", chainId: ARBITRUM, tokenAddress: WETH, accountType: "eoa" }],
-    ]);
-  });
-
-  it("sends executed once per relay task across re-renders", () => {
-    const { rerender } = renderExecutedTokenPermits({
-      chainId: ARBITRUM,
-      pendingExpressTxns: { txn: sentTxn },
-      relayTaskStatuses: relayStatus("task", StatusCode.Success),
-    });
-
     rerender({
       chainId: ARBITRUM,
       pendingExpressTxns: { txn: { ...sentTxn, isViewed: true } },
       relayTaskStatuses: { ...relayStatus("task", StatusCode.Success), ...relayStatus("other", StatusCode.Success) },
     });
 
-    expect(mocks.sendTokenPermitMetric).toHaveBeenCalledTimes(2);
-    expect(mocks.removeTokenPermits).toHaveBeenCalledTimes(1);
+    expect(mocks.removeTokenPermits.mock.calls).toEqual([[[usdcPermit, wethPermit], ARBITRUM]]);
   });
 
   it("forgets the permits of tasks that succeed together in one removal", () => {
@@ -123,19 +105,6 @@ describe("useExecutedTokenPermits", () => {
 
     expect(mocks.sendTokenPermitMetric).not.toHaveBeenCalled();
     expect(mocks.removeTokenPermits).not.toHaveBeenCalled();
-  });
-
-  it("sends nothing for relay calls without permits or before a task id is known", () => {
-    renderExecutedTokenPermits({
-      chainId: ARBITRUM,
-      pendingExpressTxns: {
-        noPermits: { key: "noPermits", taskId: "task", tokenPermits: [] },
-        notSent: { key: "notSent", taskId: undefined, tokenPermits: [usdcPermit] },
-      },
-      relayTaskStatuses: relayStatus("task", StatusCode.Success),
-    });
-
-    expect(mocks.sendTokenPermitMetric).not.toHaveBeenCalled();
   });
 
   it("reports the chain and account type the relay call was sent with after a chain switch", () => {

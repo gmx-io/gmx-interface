@@ -38,57 +38,47 @@ describe("getRelayTokenPermits", () => {
     vi.useRealTimers();
   });
 
-  it("carries only the permits for tokens the relay call spends", () => {
-    const usdc = permit(USDC);
-    const weth = permit(WETH);
+  const usdc = permit(USDC);
+  const weth = permit(WETH);
 
+  it.each([
+    {
+      name: "carries only the permits for tokens the relay call spends",
+      isGmxAccount: false,
+      tokenPermits: [usdc, permit(USDT), weth],
+      expected: [usdc, weth],
+    },
+    {
+      name: "never carries permits into GMX Account relay calls",
+      isGmxAccount: true,
+      tokenPermits: [usdc],
+      expected: [],
+    },
+    {
+      name: "drops permits for another spender and expired permits",
+      isGmxAccount: false,
+      tokenPermits: [permit(USDC, { spender: OTHER_SPENDER }), permit(WETH, { deadline: BigInt(NOW - 1) })],
+      expected: [],
+    },
+  ])("$name", ({ isGmxAccount, tokenPermits, expected }) => {
     expect(
-      getRelayTokenPermits({
-        chainId: ARBITRUM,
-        isGmxAccount: false,
-        tokenPermits: [usdc, permit(USDT), weth],
-        spentTokenAddresses: [USDC, WETH],
-      })
-    ).toEqual([usdc, weth]);
-  });
-
-  it("never carries permits into GMX Account relay calls", () => {
-    expect(
-      getRelayTokenPermits({
-        chainId: ARBITRUM,
-        isGmxAccount: true,
-        tokenPermits: [permit(USDC)],
-        spentTokenAddresses: [USDC],
-      })
-    ).toEqual([]);
-  });
-
-  it("drops permits for another spender and expired permits", () => {
-    expect(
-      getRelayTokenPermits({
-        chainId: ARBITRUM,
-        isGmxAccount: false,
-        tokenPermits: [permit(USDC, { spender: OTHER_SPENDER }), permit(WETH, { deadline: BigInt(NOW - 1) })],
-        spentTokenAddresses: [USDC, WETH],
-      })
-    ).toEqual([]);
+      getRelayTokenPermits({ chainId: ARBITRUM, isGmxAccount, tokenPermits, spentTokenAddresses: [USDC, WETH] })
+    ).toEqual(expected);
   });
 });
 
 describe("getPermitsExpiryTimeoutMs", () => {
-  it("fires shortly after the nearest deadline", () => {
-    const permits = [permit(USDC, { deadline: BigInt(NOW + 10) }), permit(WETH, { deadline: BigInt(NOW + 60) })];
+  it.each([
+    { name: "fires shortly after the nearest deadline", deadlines: [NOW + 10, NOW + 60], expected: 11_500 },
+    { name: "fires immediately for an already expired permit", deadlines: [NOW - 100], expected: 0 },
+    {
+      name: "clamps far deadlines to the largest delay setTimeout honours",
+      deadlines: [NOW + 365 * 24 * 3600],
+      expected: 2 ** 31 - 1,
+    },
+  ])("$name", ({ deadlines, expected }) => {
+    const permits = deadlines.map((deadline) => permit(USDC, { deadline: BigInt(deadline) }));
 
-    expect(getPermitsExpiryTimeoutMs(permits, NOW)).toBe(11_500);
-  });
-
-  it("fires immediately for an already expired permit", () => {
-    expect(getPermitsExpiryTimeoutMs([permit(USDC, { deadline: BigInt(NOW - 100) })], NOW)).toBe(0);
-  });
-
-  it("clamps far deadlines to the largest delay setTimeout honours", () => {
-    const farDeadline = permit(USDC, { deadline: BigInt(NOW + 365 * 24 * 3600) });
-
-    expect(getPermitsExpiryTimeoutMs([farDeadline], NOW)).toBe(2 ** 31 - 1);
+    expect(getPermitsExpiryTimeoutMs(permits, NOW)).toBe(expected);
   });
 });

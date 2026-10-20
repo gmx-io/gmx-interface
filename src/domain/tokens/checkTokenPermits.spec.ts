@@ -41,18 +41,22 @@ function mockClient(results: CallResult[]) {
 
 describe("checkTokenPermits", () => {
   it("runs every permit and its allowance read in a single Multicall3 call", async () => {
+    const usdcPermit = permit(USDC, 100n);
+    const wethPermit = permit(WETH, 5n);
     const client = mockClient([
-      { success: true, returnData: "0x" },
-      { success: true, returnData: allowanceData(100n) },
+      { success: false, returnData: "0x" },
+      { success: true, returnData: allowanceData(1000n) },
       { success: true, returnData: "0x" },
       { success: true, returnData: allowanceData(5n) },
     ]);
 
-    await checkTokenPermits({
-      client,
-      permits: [permit(USDC, 100n), permit(WETH, 5n)],
-      requiredAmounts: { [USDC]: 100n, [WETH]: 5n },
-    });
+    await expect(
+      checkTokenPermits({
+        client,
+        permits: [usdcPermit, wethPermit],
+        requiredAmounts: { [USDC]: 100n, [WETH]: 5n },
+      })
+    ).resolves.toEqual({ validPermits: [wethPermit], stalePermits: [usdcPermit], failedPermits: [] });
 
     expect(client.call).toHaveBeenCalledTimes(1);
 
@@ -71,70 +75,28 @@ describe("checkTokenPermits", () => {
     });
   });
 
-  it("keeps a permit that executes and raises the allowance enough", async () => {
+  it.each([
+    { name: "executes and covers the spend", permitOk: true, allowance: 100n, expected: "validPermits" },
+    { name: "reverts, allowance stays short", permitOk: false, allowance: 0n, expected: "failedPermits" },
+    { name: "executes, allowance below the spend", permitOk: true, allowance: 50n, expected: "failedPermits" },
+    { name: "allowance can't be read", permitOk: true, allowance: undefined, expected: "failedPermits" },
+    {
+      name: "reverts, existing allowance covers the spend",
+      permitOk: false,
+      allowance: 1000n,
+      expected: "stalePermits",
+    },
+  ])("permit $name -> $expected", async ({ permitOk, allowance, expected }) => {
     const usdcPermit = permit(USDC, 100n);
     const client = mockClient([
-      { success: true, returnData: "0x" },
-      { success: true, returnData: allowanceData(100n) },
+      { success: permitOk, returnData: "0x" },
+      allowance === undefined
+        ? { success: false, returnData: "0x" }
+        : { success: true, returnData: allowanceData(allowance) },
     ]);
 
     await expect(
       checkTokenPermits({ client, permits: [usdcPermit], requiredAmounts: { [USDC]: 100n } })
-    ).resolves.toEqual({ validPermits: [usdcPermit], stalePermits: [], failedPermits: [] });
-  });
-
-  it("fails a permit that reverts while the allowance stays short", async () => {
-    const usdcPermit = permit(USDC, 100n);
-    const client = mockClient([
-      { success: false, returnData: "0x" },
-      { success: true, returnData: allowanceData(0n) },
-    ]);
-
-    await expect(
-      checkTokenPermits({ client, permits: [usdcPermit], requiredAmounts: { [USDC]: 100n } })
-    ).resolves.toEqual({ validPermits: [], stalePermits: [], failedPermits: [usdcPermit] });
-  });
-
-  it("fails a permit that executes but leaves the allowance below the spend", async () => {
-    const usdcPermit = permit(USDC, 50n);
-    const client = mockClient([
-      { success: true, returnData: "0x" },
-      { success: true, returnData: allowanceData(50n) },
-    ]);
-
-    await expect(
-      checkTokenPermits({ client, permits: [usdcPermit], requiredAmounts: { [USDC]: 100n } })
-    ).resolves.toEqual({ validPermits: [], stalePermits: [], failedPermits: [usdcPermit] });
-  });
-
-  it("fails a permit whose allowance can't be read", async () => {
-    const usdcPermit = permit(USDC, 100n);
-    const client = mockClient([
-      { success: true, returnData: "0x" },
-      { success: false, returnData: "0x" },
-    ]);
-
-    const result = await checkTokenPermits({ client, permits: [usdcPermit], requiredAmounts: { [USDC]: 100n } });
-
-    expect(result.failedPermits).toEqual([usdcPermit]);
-  });
-
-  it("marks a reverting permit stale when the existing allowance already covers the spend", async () => {
-    const usdcPermit = permit(USDC, 100n);
-    const wethPermit = permit(WETH, 5n);
-    const client = mockClient([
-      { success: false, returnData: "0x" },
-      { success: true, returnData: allowanceData(1000n) },
-      { success: true, returnData: "0x" },
-      { success: true, returnData: allowanceData(5n) },
-    ]);
-
-    await expect(
-      checkTokenPermits({
-        client,
-        permits: [usdcPermit, wethPermit],
-        requiredAmounts: { [USDC]: 100n, [WETH]: 5n },
-      })
-    ).resolves.toEqual({ validPermits: [wethPermit], stalePermits: [usdcPermit], failedPermits: [] });
+    ).resolves.toEqual({ validPermits: [], stalePermits: [], failedPermits: [], [expected]: [usdcPermit] });
   });
 });
