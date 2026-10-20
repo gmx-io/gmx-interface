@@ -89,12 +89,19 @@ export async function openSettings(page: Page, tab: "Trading" | "Display" = "Tra
   return modal;
 }
 
-// A single Escape is sometimes missed and left the modal over the trade form, so repeat it until it closes.
+// A single Escape is sometimes missed and left the modal over the trade form. The close animation takes well under
+// 3s, so Escape is pressed again only when the modal is still shown after that, never into the page behind it.
 export async function closeSettings(page: Page, settings: Locator) {
-  await expect(async () => {
+  for (let attempt = 0; attempt < 3; attempt++) {
     await page.keyboard.press("Escape");
-    await expect(settings).toBeHidden({ timeout: 1_000 });
-  }).toPass({ timeout: 15_000 });
+    try {
+      await expect(settings).toBeHidden({ timeout: 3_000 });
+      return;
+    } catch {
+      if (!(await settings.isVisible())) return;
+    }
+  }
+  await expect(settings, "Settings stayed open after three Escape presses").toBeHidden();
 }
 
 export function tradingMode(settings: Locator, name: string) {
