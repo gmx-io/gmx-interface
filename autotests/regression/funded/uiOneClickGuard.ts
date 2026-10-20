@@ -16,7 +16,7 @@ import { getSubaccountApprovalTypedData } from "../../../sdk/src/utils/subaccoun
 import { getEmptySubaccountApproval } from "../../../sdk/src/utils/subaccount/getEmptySubaccountApproval";
 import { hashSubaccountApproval } from "../../../sdk/src/utils/subaccount/hashSubaccountApproval";
 import { getBatchTypedData } from "../../../sdk/src/utils/express/utils/batchOrderUtils";
-import { getGelatoRelayRouterDomain, hashRelayParams } from "../../../sdk/src/utils/express/utils/relayParamsUtils";
+import { getGelatoRelayRouterDomain } from "../../../sdk/src/utils/express/utils/relayParamsUtils";
 import type { RelayParamsPayload } from "../../../sdk/src/utils/express/types";
 import type { WalletRequest } from "../fixtures/injectedWallet";
 import { USD } from "./economy";
@@ -192,46 +192,30 @@ export async function inspectUiOneClickRelay(
   };
 }
 
-export function inspectUiOneClickRemovalSignature(request: WalletRequest, address: string) {
-  const typed = walletTypedData(request, address);
-  const domain = getGelatoRelayRouterDomain(42161, getContract(42161, "SubaccountGelatoRelayRouter"));
-  assert.equal(typed.domain.name, domain.name);
-  assert.equal(Number(typed.domain.chainId), 42161);
-  assert.equal(getAddress(String(typed.domain.verifyingContract)), getAddress(domain.verifyingContract!));
-  return { typed, signedHash: hashTypedData(typed as never) };
-}
+export const uiOneClickRemovalRefused = "Relayed 1CT removal refused; the app must retry with a wallet transaction";
 
-export async function inspectUiOneClickRemoval(
-  session: FundedSession,
-  payload: UiRelayPayload,
-  state: Awaited<ReturnType<FundedSession["snapshot"]>>,
-  signedHash: Hex | undefined
-) {
-  const subaccount = session.active.inventory?.subaccount;
-  assert.ok(subaccount && signedHash);
-  const router = getContract(42161, "SubaccountGelatoRelayRouter");
-  assert.equal(getAddress(payload.to), getAddress(router));
-  const call = decodeFunctionData({ abi: SubaccountGelatoRelayRouter, data: payload.data });
-  if (call.functionName !== "removeSubaccount") throw new Error("Expected a 1CT removal");
-  const [relay, account, removed] = call.args;
-  assert.equal(getAddress(account), getAddress(session.address));
-  assert.equal(getAddress(removed), getAddress(subaccount));
-  const extraFeeUsd = inspectUiRelayFees(relay as unknown as RelayParamsPayload, state);
-  const td = minifiedUiTypedData({
-    domain: getGelatoRelayRouterDomain(42161, router),
-    types: {
-      RemoveSubaccount: [
-        { name: "subaccount", type: "address" },
-        { name: "relayParams", type: "bytes32" },
-      ],
+// The app's signed removal is a minified digest whose relay fee comes from a live gas estimate, so the harness
+// cannot bind it before signing. Refusing it without a user rejection makes the app retry with a wallet transaction.
+export function refuseUiOneClickRemoval(address: string) {
+  let refused = false;
+  return {
+    get refused() {
+      return refused;
     },
-    primaryType: "RemoveSubaccount",
-    message: { subaccount: removed, relayParams: hashRelayParams(relay as unknown as RelayParamsPayload) },
-  });
-  assert.equal(hashTypedData(td as never), signedHash, "Relay differs from the signed UI removal");
-  assert.equal(
-    getAddress(await recoverTypedDataAddress({ ...td, signature: relay.signature } as never)),
-    getAddress(session.address)
-  );
-  return { extraFeeUsd };
+    sign: async (request: WalletRequest): Promise<Hex> => {
+      assert.ok(!refused, "The app requested a second 1CT removal signature");
+      const typed = walletTypedData(request, address);
+      assert.deepEqual(
+        { ...typed.domain, chainId: Number(typed.domain.chainId) },
+        getGelatoRelayRouterDomain(42161, getContract(42161, "SubaccountGelatoRelayRouter"))
+      );
+      assert.equal(typed.primaryType, "Minified");
+      const { EIP712Domain: _, ...types } = typed.types;
+      assert.deepEqual(types, { Minified: [{ name: "digest", type: "bytes32" }] });
+      assert.deepEqual(Object.keys(typed.message), ["digest"]);
+      assert.match(typed.message.digest, /^0x[\da-fA-F]{64}$/);
+      refused = true;
+      throw new Error(uiOneClickRemovalRefused);
+    },
+  };
 }

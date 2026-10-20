@@ -11,12 +11,12 @@ import { USD } from "./economy";
 import type { FundedSession } from "./session";
 import { assertUiInventory } from "./uiOrders";
 import {
-  inspectUiOneClickRemoval,
-  inspectUiOneClickRemovalSignature,
   minifiedUiTypedData,
+  refuseUiOneClickRemoval,
+  uiOneClickRemovalRefused,
   walletTypedData,
 } from "./uiOneClickGuard";
-import type { UiWallet } from "./uiWallet";
+import type { UiActionPlan, UiWallet } from "./uiWallet";
 
 export async function activateUiOneClick(session: FundedSession, wallet: UiWallet, page: Page) {
   const inventory = (session.active.inventory ??= {});
@@ -104,31 +104,28 @@ export async function revokeUiOneClick(session: FundedSession, wallet: UiWallet,
   const subaccount = session.active.inventory?.subaccount;
   assert.ok(subaccount && (await session.subaccountActive(subaccount)));
   const settings = await openSettings(page);
-  let signedHash: Hex | undefined;
-  await wallet.submit(
-    {
-      purpose: "one-click-revoke",
-      cleanup: true,
-      preflight: (state) => assertUiInventory(session, state, []),
-      // The app signs a relayed removal when the wallet can pay its fee, otherwise it sends a wallet transaction.
-      // The digest hides the fee, so the relay guard checks it before the request leaves the browser.
-      sign: async (request) => {
-        await session.gate(USD, true);
-        const signature = inspectUiOneClickRemovalSignature(request, session.address);
-        signedHash = signature.signedHash;
-        return session.signUiTypedData(signature.typed as never);
-      },
-      inspectRelay: (payload, state) => inspectUiOneClickRemoval(session, payload, state, signedHash),
-      inspect: (tx) => {
-        assert.equal(getAddress(tx.to), getAddress(getContract(42161, "SubaccountRouter")));
-        assert.equal(tx.value, 0n);
-        const call = decodeFunctionData({ abi: parseAbi(["function removeSubaccount(address)"]), data: tx.data });
-        assert.deepEqual(call.args, [getAddress(subaccount)]);
-        return { extraFeeUsd: 0n };
-      },
+  const refusal = refuseUiOneClickRemoval(session.address);
+  const plan: UiActionPlan = {
+    purpose: "one-click-revoke",
+    cleanup: true,
+    preflight: (state) => assertUiInventory(session, state, []),
+    sign: refusal.sign,
+    inspect: (tx) => {
+      assert.equal(getAddress(tx.to), getAddress(getContract(42161, "SubaccountRouter")));
+      assert.equal(tx.value, 0n);
+      const call = decodeFunctionData({ abi: parseAbi(["function removeSubaccount(address)"]), data: tx.data });
+      assert.deepEqual(call.args, [getAddress(subaccount)]);
+      return { extraFeeUsd: 0n };
     },
-    settings.getByText("Classic", { exact: true })
-  );
+  };
+  const classic = settings.getByText("Classic", { exact: true });
+  try {
+    await wallet.submit(plan, classic);
+  } catch (error) {
+    if (!refusal.refused || (error as Error).message !== uiOneClickRemovalRefused) throw error;
+    await expect(page.getByText("Retry to deactivate with a wallet transaction.")).toBeVisible();
+    await wallet.submit(plan, classic);
+  }
   assert.ok(!(await session.subaccountActive(subaccount)));
   session.active.inventory!.uiOneClickRevoked = "true";
   await session.save();

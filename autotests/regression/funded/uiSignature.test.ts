@@ -3,32 +3,14 @@ import { test } from "node:test";
 import { encodeFunctionData, getAddress, hashTypedData } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import MultichainTransferRouter from "../../../sdk/src/abis/MultichainTransferRouter";
-import SubaccountGelatoRelayRouter from "../../../sdk/src/abis/SubaccountGelatoRelayRouter";
 import { getContract } from "../../../sdk/src/configs/contracts";
 import { getBridgeOutTypedData } from "../../../sdk/src/utils/express/utils/bridgeOutUtils";
-import { getGelatoRelayRouterDomain, hashRelayParams } from "../../../sdk/src/utils/express/utils/relayParamsUtils";
+import { getGelatoRelayRouterDomain } from "../../../sdk/src/utils/express/utils/relayParamsUtils";
+import { getSubaccountApprovalTypedData } from "../../../sdk/src/utils/subaccount/getSubaccountApprovalTypedData";
 import { usdc, weth, marketAddress } from "./fundedQuote";
 import { bridgeReturnParams, inspectUiBridgeReturn, inspectUiBridgeSignature } from "./uiBridgeGuard";
-import { inspectUiOneClickRemoval, inspectUiOneClickRemovalSignature, minifiedUiTypedData } from "./uiOneClickGuard";
+import { minifiedUiTypedData, refuseUiOneClickRemoval, uiOneClickRemovalRefused } from "./uiOneClickGuard";
 import type { FundedSession } from "./session";
-
-const relayParams = (fee: bigint) => ({
-  oracleParams: { tokens: [], providers: [], data: [] },
-  desChainId: 42161n,
-  deadline: BigInt(Math.floor(Date.now() / 1000)) + 3590n,
-  tokenPermits: [],
-  externalCalls: {
-    sendTokens: [],
-    sendAmounts: [],
-    externalCallTargets: [],
-    externalCallDataList: [],
-    refundTokens: [],
-    refundReceivers: [],
-  },
-  fee: { feeToken: usdc.address, feeAmount: fee, feeSwapPath: [] },
-  userNonce: 1n,
-  signature: "0x" as `0x${string}`,
-});
 
 test("bridge minified signature binds a decoded bounded UI simulation and the submitted relay", async () => {
   const signer = privateKeyToAccount(generatePrivateKey());
@@ -39,7 +21,23 @@ test("bridge minified signature binds a decoded bounded UI simulation and the su
   const state = { usdc, weth, market: { marketTokenAddress: marketAddress } } as unknown as Awaited<
     ReturnType<FundedSession["snapshot"]>
   >;
-  const relay = relayParams(100_000n);
+  const relay = {
+    oracleParams: { tokens: [], providers: [], data: [] },
+    desChainId: 42161n,
+    deadline: BigInt(Math.floor(Date.now() / 1000)) + 3590n,
+    tokenPermits: [],
+    externalCalls: {
+      sendTokens: [],
+      sendAmounts: [],
+      externalCallTargets: [],
+      externalCallDataList: [],
+      refundTokens: [],
+      refundReceivers: [],
+    },
+    fee: { feeToken: usdc.address, feeAmount: 100_000n, feeSwapPath: [] },
+    userNonce: 1n,
+    signature: "0x" as `0x${string}`,
+  };
   const params = bridgeReturnParams(usdc.address);
   const typed = getBridgeOutTypedData({ chainId: 42161, srcChainId: 8453, params, relayParams: relay as never });
   const minified = minifiedUiTypedData(typed);
@@ -71,52 +69,58 @@ test("bridge minified signature binds a decoded bounded UI simulation and the su
   );
 });
 
-test("signed 1CT removal relays only the signed removal of the run's subaccount within the fee limit", async () => {
+test("1CT removal signatures are refused once without signing, and any other typed data is unexpected", async () => {
   const signer = privateKeyToAccount(generatePrivateKey());
-  const subaccount = privateKeyToAccount(generatePrivateKey()).address;
-  const session = { address: signer.address, active: { inventory: { subaccount } } } as unknown as FundedSession;
-  const state = { usdc, weth, market: { marketTokenAddress: marketAddress } } as unknown as Awaited<
-    ReturnType<FundedSession["snapshot"]>
-  >;
-  const to = getAddress(getContract(42161, "SubaccountGelatoRelayRouter"));
-  const typed = (fee: bigint, removed = subaccount) =>
-    minifiedUiTypedData({
-      domain: getGelatoRelayRouterDomain(42161, to),
-      types: {
-        RemoveSubaccount: [
-          { name: "subaccount", type: "address" },
-          { name: "relayParams", type: "bytes32" },
-        ],
-      },
-      primaryType: "RemoveSubaccount",
-      message: { subaccount: removed, relayParams: hashRelayParams(relayParams(fee) as never) },
-    });
-  const request = (data: unknown) => ({ method: "eth_signTypedData_v4", params: [signer.address, data] });
-  const { signedHash } = inspectUiOneClickRemovalSignature(request(typed(100_000n)), signer.address);
-  assert.throws(() =>
-    inspectUiOneClickRemovalSignature(
-      request({ ...typed(100_000n), domain: getGelatoRelayRouterDomain(42161, usdc.address) }),
-      signer.address
-    )
-  );
-  const payload = async (fee: bigint, removed = subaccount) => ({
-    to,
-    data: encodeFunctionData({
-      abi: SubaccountGelatoRelayRouter,
-      functionName: "removeSubaccount",
-      args: [
-        { ...relayParams(fee), signature: await signer.signTypedData(typed(fee, removed) as never) } as never,
-        signer.address,
-        removed,
+  const router = getContract(42161, "SubaccountGelatoRelayRouter");
+  const domain = getGelatoRelayRouterDomain(42161, router);
+  const digest = `0x${"ab".repeat(32)}`;
+  const minified = {
+    domain,
+    primaryType: "Minified",
+    types: {
+      EIP712Domain: [
+        { name: "name", type: "string" },
+        { name: "version", type: "string" },
+        { name: "chainId", type: "uint256" },
+        { name: "verifyingContract", type: "address" },
       ],
-    }),
+      Minified: [{ name: "digest", type: "bytes32" }],
+    },
+    message: { digest },
+  };
+  const request = (data: unknown, address: string = signer.address) => ({
+    method: "eth_signTypedData_v4",
+    params: [address, JSON.stringify(data)],
   });
-  const checked = await inspectUiOneClickRemoval(session, await payload(100_000n), state, signedHash);
-  assert.ok(checked.extraFeeUsd > 0n);
-  await assert.rejects(inspectUiOneClickRemoval(session, await payload(200_000n), state, signedHash));
-  await assert.rejects(inspectUiOneClickRemoval(session, await payload(100_000n, usdc.address), state, signedHash));
-  const expensive = typed(2_000_000n);
-  await assert.rejects(
-    inspectUiOneClickRemoval(session, await payload(2_000_000n), state, hashTypedData(expensive as never))
-  );
+  const approval = getSubaccountApprovalTypedData({
+    chainId: 42161,
+    subaccountAddress: usdc.address,
+    shouldAdd: true,
+    expiresAt: 1n,
+    maxAllowedCount: 100n,
+    nonce: 0n,
+  });
+  const unexpected = [
+    request(minified, usdc.address),
+    request({ ...minified, domain: { ...domain, version: "2" } }),
+    request({
+      ...minified,
+      domain: { ...domain, verifyingContract: getContract(42161, "MultichainSubaccountRouter") },
+    }),
+    request({ ...minified, domain: { ...domain, chainId: 8453 } }),
+    request({ ...approval, primaryType: "SubaccountApproval" }),
+    request({ ...minified, primaryType: "SubaccountApproval" }),
+    request({ ...minified, types: { ...minified.types, Minified: [{ name: "digest", type: "bytes" }] } }),
+    request({ ...minified, message: { digest, subaccount: usdc.address } }),
+    { method: "personal_sign", params: [digest, signer.address] },
+  ];
+  for (const r of unexpected) {
+    const refusal = refuseUiOneClickRemoval(signer.address);
+    await assert.rejects(refusal.sign(r), (error: Error) => error.message !== uiOneClickRemovalRefused);
+    assert.equal(refusal.refused, false);
+  }
+  const refusal = refuseUiOneClickRemoval(signer.address);
+  await assert.rejects(refusal.sign(request(minified)), new Error(uiOneClickRemovalRefused));
+  assert.equal(refusal.refused, true);
+  await assert.rejects(refusal.sign(request(minified)), /second 1CT removal signature/);
 });

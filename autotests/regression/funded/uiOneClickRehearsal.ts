@@ -54,14 +54,6 @@ export function uiOneClickRehearsal(state: AccountState) {
     if (functionName === "getBytes32" && args[0] === subaccountIntegrationIdKey(state.address, subaccount))
       return zeroHash;
   }
-  function chargeFee(fee: { feeToken: string; feeAmount: bigint }) {
-    const feeToken = getAddress(fee.feeToken);
-    const spender = getAddress(getContract(42161, "SyntheticsRouter"));
-    assert.ok((state.balances.get(feeToken) ?? 0n) >= fee.feeAmount);
-    assert.ok((state.allowances.get(feeToken)?.get(spender) ?? 0n) >= fee.feeAmount);
-    state.balances.set(feeToken, state.balances.get(feeToken)! - fee.feeAmount);
-    state.allowances.get(feeToken)!.set(spender, state.allowances.get(feeToken)!.get(spender)! - fee.feeAmount);
-  }
   return {
     read,
     generated(signature: Hex) {
@@ -90,17 +82,6 @@ export function uiOneClickRehearsal(state: AccountState) {
     },
     relay(payload: UiRelayPayload) {
       const call = decodeFunctionData({ abi: SubaccountGelatoRelayRouter, data: payload.data });
-      if (call.functionName === "removeSubaccount") {
-        const [relay, account, removed] = call.args;
-        assert.equal(getAddress(account), state.address);
-        chargeFee(relay.fee);
-        // Settles through the same simulated SubaccountRouter removal as the wallet transaction.
-        return {
-          to: getAddress(getContract(42161, "SubaccountRouter")),
-          data: encodeFunctionData({ abi: removeAbi, functionName: "removeSubaccount", args: [removed] }),
-          value: 0n,
-        };
-      }
       assert.equal(call.functionName, "batch");
       if (call.functionName !== "batch") throw new Error("Expected simulated 1CT batch");
       const [relay, approval, account, sender, batch] = call.args;
@@ -116,7 +97,12 @@ export function uiOneClickRehearsal(state: AccountState) {
       assert.ok(active && expiresAt > BigInt(Math.floor(Date.now() / 1000)));
       count += BigInt(batch.createOrderParamsList.length + batch.cancelOrderKeys.length);
       assert.ok(count <= maxAllowed);
-      chargeFee(relay.fee);
+      const feeToken = getAddress(relay.fee.feeToken);
+      const spender = getAddress(getContract(42161, "SyntheticsRouter"));
+      assert.ok((state.balances.get(feeToken) ?? 0n) >= relay.fee.feeAmount);
+      assert.ok((state.allowances.get(feeToken)?.get(spender) ?? 0n) >= relay.fee.feeAmount);
+      state.balances.set(feeToken, state.balances.get(feeToken)! - relay.fee.feeAmount);
+      state.allowances.get(feeToken)!.set(spender, state.allowances.get(feeToken)!.get(spender)! - relay.fee.feeAmount);
       const calls: Hex[] = [];
       let value = 0n;
       for (const order of batch.createOrderParamsList) {
