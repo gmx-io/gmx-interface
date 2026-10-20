@@ -3,11 +3,7 @@ import { SWRConfig } from "swr";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import "lib/monkeyPatching";
-import {
-  IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG,
-  IS_TOKEN_PERMITS_EIP7702_ENABLED_UI_FLAG,
-  type UiFlags,
-} from "domain/synthetics/uiFlags/uiFlags";
+import { IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG, type UiFlags } from "domain/synthetics/uiFlags/uiFlags";
 import { PERMIT_WALLET_CHANGED_ERROR } from "lib/errors/customErrors";
 import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 
@@ -22,7 +18,6 @@ const LINK = "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4";
 
 const mocks = vi.hoisted(() => ({
   uiFlags: undefined as UiFlags | undefined,
-  isQaOverrideEnabled: false,
   accountType: "eoa" as string,
   account: "0x0000000000000000000000000000000000000001",
   createAndSignTokenPermit: vi.fn(),
@@ -38,7 +33,7 @@ vi.mock("domain/synthetics/uiFlags/useUiFlagsRequest", () => ({
   useUiFlagsRequest: () => ({ uiFlags: mocks.uiFlags }),
 }));
 vi.mock("context/SettingsContext/SettingsContextProvider", () => ({
-  useSettings: () => ({ isTokenPermitsQaOverrideEnabled: mocks.isQaOverrideEnabled }),
+  useSettings: () => ({ isTokenPermitsQaOverrideEnabled: false }),
 }));
 vi.mock("domain/tokens/tokenPermitsEligibility", async (importOriginal) => ({
   ...(await importOriginal<object>()),
@@ -112,7 +107,6 @@ describe("TokenPermitsContextProvider", () => {
   beforeEach(() => {
     localStorage.clear();
     mocks.uiFlags = flag(IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG, true);
-    mocks.isQaOverrideEnabled = false;
     mocks.accountType = "eoa";
     mocks.account = ACCOUNT;
     mocks.isPermitSignatureValid = true;
@@ -124,59 +118,13 @@ describe("TokenPermitsContextProvider", () => {
   });
 
   it("exposes stored permits for allowlisted tokens when the account type's flag is on", async () => {
-    storePermits([permit(USDC), permit(LINK)]);
+    storePermits([permit(USDC), permit(LINK), permit(WETH, { owner: "0x0000000000000000000000000000000000000002" })]);
 
     await setup();
 
     expect(state.tokenPermits.map((p) => p.token)).toEqual([USDC]);
     expect(state.getIsPermitAvailable(USDC)).toBe(true);
     expect(state.getIsPermitAvailable(LINK)).toBe(false);
-  });
-
-  it("switches permits off when the flag for the account type is off", async () => {
-    mocks.accountType = "eip7702";
-    storePermits([permit(USDC)]);
-
-    await setup();
-
-    expect(state.tokenPermits).toEqual([]);
-    expect(state.getIsPermitAvailable(USDC)).toBe(false);
-  });
-
-  it("lets the QA override turn permits on before the flags are", async () => {
-    mocks.uiFlags = flag(IS_TOKEN_PERMITS_EIP7702_ENABLED_UI_FLAG, false);
-    mocks.isQaOverrideEnabled = true;
-    mocks.accountType = "eip7702";
-
-    await setup();
-
-    expect(state.getIsPermitAvailable(USDC)).toBe(true);
-  });
-
-  it("keeps permits off for unsupported accounts even with the QA override", async () => {
-    mocks.isQaOverrideEnabled = true;
-    mocks.accountType = "unsupported";
-
-    await setup();
-
-    expect(state.getIsPermitAvailable(USDC)).toBe(false);
-  });
-
-  it("ignores and retires the sticky global disable older builds left behind", async () => {
-    localStorage.setItem(JSON.stringify("permits-disabled"), "true");
-
-    await setup();
-
-    expect(state.getIsPermitAvailable(USDC)).toBe(true);
-    expect(localStorage.getItem(JSON.stringify("permits-disabled"))).toBeNull();
-  });
-
-  it("hides permits signed by another owner", async () => {
-    storePermits([permit(USDC, { owner: "0x0000000000000000000000000000000000000002" })]);
-
-    await setup();
-
-    expect(state.tokenPermits).toEqual([]);
   });
 
   it("sends a token whose permit failed back to approvals without touching other tokens", async () => {

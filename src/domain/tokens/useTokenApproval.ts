@@ -31,7 +31,6 @@ interface UseTokenApprovalParams {
   tokens: TokenToApprove[];
   skip?: boolean;
   approveAmount?: bigint;
-  /** Only when the spend is relayed: a permit travels inside the relay call and a wallet transaction ignores it */
   allowPermit?: boolean;
   metric: TokenApprovalMetricContext;
 }

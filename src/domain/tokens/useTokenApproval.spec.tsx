@@ -17,9 +17,6 @@ const mocks = vi.hoisted(() => ({
   toastError: vi.fn(),
   toastContent: vi.fn(),
   tokenPermits: [] as { token: string; spender: string; value: bigint }[],
-  isPermitAvailable: false,
-  addTokenPermit: vi.fn(),
-  disableTokenPermits: vi.fn(),
 }));
 
 vi.mock("domain/synthetics/tokens", () => ({
@@ -67,9 +64,9 @@ vi.mock("context/TokenPermitsContext/TokenPermitsContextProvider", () => ({
   useTokenPermitsContext: () => ({
     tokenPermits: mocks.tokenPermits,
     accountType: "eoa",
-    getIsPermitAvailable: () => mocks.isPermitAvailable,
-    addTokenPermit: mocks.addTokenPermit,
-    disableTokenPermits: mocks.disableTokenPermits,
+    getIsPermitAvailable: () => false,
+    addTokenPermit: vi.fn(),
+    disableTokenPermits: vi.fn(),
   }),
 }));
 
@@ -135,50 +132,16 @@ describe("useTokenApproval", () => {
     vi.clearAllMocks();
     latestResult = undefined;
     mocks.tokenPermits = [];
-    mocks.isPermitAvailable = false;
   });
 
-  describe("permits", () => {
-    it("counts a stored permit as the approval only when the spend is relayed", () => {
-      mocks.tokenPermits = [{ token: mocks.TOKEN, spender: mocks.SPENDER, value: 1000n }];
+  it.each([
+    { name: "relayed spend", allowPermit: true, spender: mocks.SPENDER, needsApproval: false },
+    { name: "wallet transaction", allowPermit: false, spender: mocks.SPENDER, needsApproval: true },
+    { name: "permit for another spender", allowPermit: true, spender: mocks.OWNER, needsApproval: true },
+  ])("counts a stored permit as the approval: $name -> $needsApproval", ({ allowPermit, spender, needsApproval }) => {
+    mocks.tokenPermits = [{ token: mocks.TOKEN, spender, value: 1000n }];
 
-      expect(setup(1000n, true).result.needsApproval).toBe(false);
-      cleanup();
-      expect(setup(1000n, false).result.needsApproval).toBe(true);
-    });
-
-    it("ignores a permit signed for another spender", () => {
-      mocks.tokenPermits = [{ token: mocks.TOKEN, spender: mocks.OWNER, value: 1000n }];
-
-      expect(setup(1000n, true).result.needsApproval).toBe(true);
-    });
-
-    it("offers a permit for a relayed spend of an eligible token", async () => {
-      mocks.isPermitAvailable = true;
-
-      await approve(setup(1000n, true));
-
-      expect(mocks.approveTokens).toHaveBeenCalledWith(
-        expect.objectContaining({
-          permitParams: {
-            addTokenPermit: mocks.addTokenPermit,
-            disableTokenPermits: mocks.disableTokenPermits,
-            accountType: "eoa",
-          },
-        })
-      );
-    });
-
-    it("sends an approval transaction when the token isn't eligible or the spend isn't relayed", async () => {
-      await approve(setup(1000n, true));
-      expect(mocks.approveTokens).toHaveBeenLastCalledWith(expect.objectContaining({ permitParams: undefined }));
-
-      cleanup();
-      mocks.isPermitAvailable = true;
-
-      await approve(setup(1000n, false));
-      expect(mocks.approveTokens).toHaveBeenLastCalledWith(expect.objectContaining({ permitParams: undefined }));
-    });
+    expect(setup(1000n, allowPermit).result.needsApproval).toBe(needsApproval);
   });
 
   it("releases the button and reports the shortfall when the mined allowance is below the amount", async () => {

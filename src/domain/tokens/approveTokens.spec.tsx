@@ -1,6 +1,7 @@
 import { BrowserProvider, toQuantity, type Eip1193Provider } from "ethers";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+import { INVALID_PERMIT_SIGNATURE_ERROR, PERMIT_WALLET_CHANGED_ERROR } from "lib/errors/customErrors";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 
 import { approveTokens } from "./approveTokens";
@@ -127,14 +128,18 @@ describe("approveTokens metric", () => {
 });
 
 describe("approveTokens permit metric", () => {
-  function approveWithPermit(addTokenPermit: () => Promise<void>, sendTransaction = async () => HASH) {
+  function approveWithPermit(
+    addTokenPermit: () => Promise<void>,
+    disableTokenPermits = vi.fn(),
+    sendTransaction = async () => HASH
+  ) {
     return approveTokens({
       chainId: ARBITRUM,
       signer: createSigner(sendTransaction),
       tokenAddress: USDC,
       spender: SPENDER,
       approveAmount: undefined,
-      permitParams: { addTokenPermit, disableTokenPermits: vi.fn(), accountType: "eoa" },
+      permitParams: { addTokenPermit, disableTokenPermits, accountType: "eoa" },
       setIsApproving: vi.fn(),
       metric: { flow: "trade", isExpress: true },
     });
@@ -150,19 +155,26 @@ describe("approveTokens permit metric", () => {
     expect(getOutcomes()).toEqual(["permit:accepted"]);
   });
 
-  it("reports a rejected permit and stops", async () => {
-    await approveWithPermit(async () => {
-      throw new Error("User rejected the request.");
-    });
+  it.each([
+    { error: "User rejected the request.", outcomes: ["permit:rejected"], disableCalls: [] },
+    { error: PERMIT_WALLET_CHANGED_ERROR, outcomes: [], disableCalls: [] },
+    { error: "Unknown connector error", outcomes: ["permit:failed", "transaction:accepted"], disableCalls: [] },
+    {
+      error: INVALID_PERMIT_SIGNATURE_ERROR,
+      outcomes: ["permit:failed", "transaction:accepted"],
+      disableCalls: [[[USDC]]],
+    },
+  ])(
+    "reports a failed permit and any approval transaction that replaces it ($error)",
+    async ({ error, outcomes, disableCalls }) => {
+      const disableTokenPermits = vi.fn();
 
-    expect(getOutcomes()).toEqual(["permit:rejected"]);
-  });
+      await approveWithPermit(async () => {
+        throw new Error(error);
+      }, disableTokenPermits);
 
-  it("reports a failed permit and the approval transaction that replaces it", async () => {
-    await approveWithPermit(async () => {
-      throw new Error("Unknown connector error");
-    });
-
-    expect(getOutcomes()).toEqual(["permit:failed", "transaction:accepted"]);
-  });
+      expect(getOutcomes()).toEqual(outcomes);
+      expect(disableTokenPermits.mock.calls).toEqual(disableCalls);
+    }
+  );
 });
