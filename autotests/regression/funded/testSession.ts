@@ -1,14 +1,14 @@
-import { USD, type FeeProfile } from "./economy";
+import { USD } from "./economy";
 import { marketAddress } from "./fundedQuote";
 import type { FundedJournal } from "./journal";
 import { FundedSession } from "./session";
 
-export function testSession(profile?: FeeProfile) {
+export function testSession() {
   const previous = process.env.REGRESSION_PRIVATE_KEY;
   // Public test key, never loaded from the user's env file.
   process.env.REGRESSION_PRIVATE_KEY = `0x${"1".repeat(64)}`;
   try {
-    return new FundedSession(profile);
+    return new FundedSession();
   } finally {
     if (previous === undefined) delete process.env.REGRESSION_PRIVATE_KEY;
     else process.env.REGRESSION_PRIVATE_KEY = previous;

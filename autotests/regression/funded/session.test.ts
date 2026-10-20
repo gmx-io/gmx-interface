@@ -3,11 +3,11 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
-import type { Hex } from "viem";
+import { decodeFunctionData, parseAbi, type Hex } from "viem";
 
 import { fundedOrderReceipt } from "./fundedReceipt";
 import { USD, usd } from "./economy";
-import { readJournal, writeJournal } from "./journal";
+import { readJournal, writeJournal, type FundedAction, type FundedJournal } from "./journal";
 import type { FundedSession } from "./session";
 import { withdrawAccount } from "./account";
 import { unstake } from "./earn";
@@ -229,6 +229,54 @@ test("an unstake retry verifies returned GMX even if the stake is already empty"
   }
 });
 
+test("a settled unstake survives a failed step and restart without a second submission", async () => {
+  const fixture = await setup();
+  try {
+    const session = fixture.session;
+    session.active.inventory = { stakeAmount: "100", stakeWalletBaseline: "1000" };
+    let staked = 101n;
+    let wallet = 900n;
+    session.rpc.readContract = async (args) =>
+      (args.functionName === "depositBalances" ? staked : args.functionName === "balanceOf" ? wallet : 0n) as never;
+    let submissions = 0;
+    session.nativeTransaction = async (tx, purpose) => {
+      const previous = await session.previousAction(purpose);
+      if (previous) return previous;
+      const decoded = decodeFunctionData({ abi: parseAbi(["function unstakeGmx(uint256)"]), data: tx.data });
+      assert.deepEqual([purpose, decoded.functionName, decoded.args[0]], ["unstake", "unstakeGmx", 100n]);
+      submissions++;
+      staked = 0n;
+      wallet = 1_000n;
+      const action: FundedAction = {
+        id: String(submissions),
+        purpose,
+        state: "settled",
+        feeUsd: "0",
+        step: (session as unknown as { currentStep: string }).currentStep,
+      };
+      session.active.actions.push(action);
+      await session.save();
+      return action;
+    };
+    let failUi = true;
+    const run = () =>
+      session.step("staking:withdraw", async () => {
+        await unstake(session);
+        if (failUi) throw new Error("UI assertion failed after settlement");
+      });
+    await assert.rejects(run(), /Unexpected staked inventory/);
+    staked = 100n;
+    await assert.rejects(run(), /UI assertion failed/);
+    await session.resume("run");
+    failUi = false;
+    await run();
+    assert.equal(submissions, 1);
+    assert.equal(staked, 0n);
+  } finally {
+    await fixture.dispose();
+  }
+});
+
 test("reverted LP creation does not require a nonexistent creation event during cleanup", async () => {
   const fixture = await setup();
   try {
@@ -321,8 +369,13 @@ test("a UI assertion retry recovers the same paid action and original balance sn
   }
 });
 
-async function setupRebalance(nativeUsd = 58n * USD, stableUsd = 42n * USD, wrappedAmount = 0n) {
-  const fixture = await setup();
+async function setupRebalance(
+  nativeUsd = 58n * USD,
+  stableUsd = 42n * USD,
+  wrappedAmount = 0n,
+  overrides: Partial<FundedJournal> = {}
+) {
+  const fixture = await setup(overrides);
   const { session, journal } = fixture;
   const state = {
     nativeUsd,
@@ -357,7 +410,8 @@ async function setupRebalance(nativeUsd = 58n * USD, stableUsd = 42n * USD, wrap
       unwrapNative,
     },
   });
-  session.allowance = async () => {
+  session.allowance = async (_token, _amount, cleanup) => {
+    assert.equal(cleanup, true);
     calls.push("approve");
   };
   const record = async (purpose: string, phase: string, feeUsd: bigint) => {
@@ -372,7 +426,8 @@ async function setupRebalance(nativeUsd = 58n * USD, stableUsd = 42n * USD, wrap
     await session.save();
     return action;
   };
-  session.nativeTransaction = async (request, purpose) => {
+  session.nativeTransaction = async (request, purpose, cleanup) => {
+    assert.equal(cleanup, true);
     calls.push(purpose);
     if (purpose === "wrap") {
       state.nativeUsd -= (request.value * 2_000n * USD) / 10n ** 18n;
@@ -384,7 +439,8 @@ async function setupRebalance(nativeUsd = 58n * USD, stableUsd = 42n * USD, wrap
     }
     return record(purpose, purpose === "wrap" ? "rebalance" : "unwrap", USD / 100n);
   };
-  session.execute = async (_prepared, intent, purpose) => {
+  session.execute = async (_prepared, intent, purpose, cleanup) => {
+    assert.equal(cleanup, true);
     assert.equal(purpose, "rebalance");
     assert.equal(intent.kind, "swap");
     assert("amount" in intent && "tokenIn" in intent);
@@ -404,8 +460,10 @@ async function setupRebalance(nativeUsd = 58n * USD, stableUsd = 42n * USD, wrap
 }
 
 for (const buying of [false, true]) {
-  test(`cleanup ${buying ? "buys" : "sells"} ETH to the persisted 50/50 target`, async () => {
-    const fixture = await setupRebalance(buying ? 42n * USD : 58n * USD, buying ? 58n * USD : 42n * USD);
+  test(`cleanup ${buying ? "buys" : "sells"} ETH to the persisted 40/60 target`, async () => {
+    const fixture = await setupRebalance(buying ? 32n * USD : 48n * USD, buying ? 68n * USD : 52n * USD, 0n, {
+      targetNativeBps: "4000",
+    });
     try {
       const { session } = fixture;
       const amount = buying ? 8_000_000n : 4_000_000_000_000_000n;
@@ -422,7 +480,7 @@ for (const buying of [false, true]) {
       };
       assert.equal((await session.cleanup(true)).completed, true);
       assert.deepEqual(fixture.calls, buying ? ["approve", "swap"] : ["wrap", "approve", "swap"]);
-      assert.equal((await readJournal(fixture.directory))!.targetNativeBps, "5000");
+      assert.equal((await readJournal(fixture.directory))!.targetNativeBps, "4000");
     } finally {
       await fixture.dispose();
     }
@@ -554,11 +612,11 @@ test("nested cleanup steps restore the parent checkpoint scope", async () => {
   }
 });
 
-async function setup() {
+async function setup(overrides: Partial<FundedJournal> = {}) {
   const directory = await mkdtemp(join(tmpdir(), "gmx-funded-session-"));
   const session = testSession();
   Object.defineProperty(session, "directory", { value: directory });
-  const journal = testJournal(session.address);
+  const journal = testJournal(session.address, overrides);
   await writeJournal(directory, journal);
   await session.resume("run");
   return { session, directory, journal, dispose: () => rm(directory, { recursive: true, force: true }) };

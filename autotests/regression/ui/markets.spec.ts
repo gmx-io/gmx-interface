@@ -3,8 +3,7 @@ import { expect, type Page } from "@playwright/test";
 import { test } from "../fixtures/browser";
 import { marketLabel, selectorIndexTokens } from "../fixtures/marketConfig";
 import { watchMarketsApi } from "../fixtures/marketData";
-import { selectorRows } from "../fixtures/marketSelector";
-import { openMarketSelector, openTrade, selectMarket } from "../fixtures/trade";
+import { openMarketSelector, openTrade, selectMarket, selectorRows } from "../fixtures/trade";
 
 // Category filters of the market selector, see src/components/ChartTokenSelector/marketFilters.ts.
 const CATEGORY_TABS = [
@@ -20,7 +19,7 @@ const categoryTab = (page: Page, name: string) =>
     .last()
     .getByRole("button", { name, exact: true });
 
-test("5.06 5.07 selector filters by category, and search recovers from no matches", async ({ page, chainId }) => {
+test("5.07 selector filters by category, and search recovers from no matches", async ({ page, chainId }) => {
   const api = watchMarketsApi(page, chainId);
   await openTrade(page);
   await openMarketSelector(page);

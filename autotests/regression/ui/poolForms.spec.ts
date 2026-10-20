@@ -16,16 +16,19 @@ type PoolType = "GM" | "GLV";
 
 async function openPoolDetails(page: Page, type: PoolType) {
   await page.goto("/pools");
-  await page
+  const details = page
     .getByRole("table")
     .filter({ has: page.getByRole("columnheader", { name: type === "GM" ? "POOL" : "VAULT", exact: true }) })
     .locator("tbody tr")
     // Pinned USDG pools are whitelist-only, so their forms quote no fee or impact.
     .filter({ hasNotText: "USDG" })
     .getByRole("link", { name: "Details", exact: true })
-    .first()
-    .click();
-  await expect(page).toHaveURL(/\/pools\/details\?market=0x/);
+    .first();
+  await expect(details).toHaveAttribute("href", /\/pools\/details\?market=0x[\da-fA-F]{40}/);
+  const market = new URL((await details.getAttribute("href"))!, page.url()).searchParams.get("market")!;
+  await details.click();
+  await expect(page).toHaveURL(new RegExp(`/pools/details\\?market=${market}`));
+  return market;
 }
 
 async function openForm(page: Page, type: PoolType, operation: "Buy" | "Sell") {
@@ -61,7 +64,7 @@ for (const type of ["GM", "GLV"] as const) {
     `12.05 12.14 ${type} details open from the list, and the buy and sell forms show a fee that matches the entered amount`,
     { tag: "@avalanche" },
     async ({ page }) => {
-      await openPoolDetails(page, type);
+      const market = await openPoolDetails(page, type);
       for (const operation of ["Buy", "Sell"] as const) {
         const { form, input, parts, unitUsd } = await openForm(page, type, operation);
         // Fees on a one-unit stable amount round to "< $0.01", so the checks use about $1,000.
@@ -89,6 +92,10 @@ for (const type of ["GM", "GLV"] as const) {
           expect(relativeDiff(quote.receive, quote.pay + sum)).toBeLessThan(0.001);
         }
       }
+      await page.reload();
+      await expect(page).toHaveURL(new RegExp(`market=${market}`));
+      await expect(page.getByRole("button", { name: `Buy ${type}`, exact: true })).toBeVisible();
+      await expect(page.getByText("Something went wrong", { exact: true }).filter({ visible: true })).toHaveCount(0);
     }
   );
 

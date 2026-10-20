@@ -18,8 +18,7 @@ import {
   type KeeperMarket,
 } from "../fixtures/marketConfig";
 import { watchMarketsApi } from "../fixtures/marketData";
-import { selectorRows } from "../fixtures/marketSelector";
-import { openMarketSelector, openTrade, selectMarket } from "../fixtures/trade";
+import { openMarketSelector, openTrade, selectMarket, selectorRows } from "../fixtures/trade";
 
 function recentlyListedTab(page: Page) {
   return page.getByRole("button", { name: /^Recently listed/ });
@@ -41,7 +40,7 @@ function priceIssue(text: string) {
 }
 
 test(
-  "22.01 22.03 23.08 selector lists every tradeable configured market with its index token name and loaded icon",
+  "5.06 22.01 22.03 23.08 selector lists every tradeable configured market with its index token name and loaded icon",
   { tag: "@avalanche" },
   async ({ page, chainId }) => {
     const api = watchMarketsApi(page, chainId);

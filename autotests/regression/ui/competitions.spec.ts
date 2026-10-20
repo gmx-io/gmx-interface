@@ -1,20 +1,18 @@
 import { expect } from "@playwright/test";
-import { readFileSync } from "node:fs";
 import ts from "typescript";
 
 import { test } from "../fixtures/browser";
+import { readObject } from "../fixtures/deploymentConfig";
 import { selectNetwork } from "../fixtures/network";
 
 type Competition = { href: string; chain?: "Arbitrum" | "Avalanche"; enabled: boolean; from: number; to?: number };
 
 function readCompetitions() {
-  const path = "src/domain/synthetics/leaderboard/constants.ts";
-  const file = ts.createSourceFile(path, readFileSync(path, "utf8"), ts.ScriptTarget.Latest, true);
-  const pages = file.statements
-    .filter(ts.isVariableStatement)
-    .flatMap((statement) => statement.declarationList.declarations)
-    .find((declaration) => declaration.name.getText(file) === "LEADERBOARD_PAGES")?.initializer;
-  if (!pages || !ts.isObjectLiteralExpression(pages)) throw new Error(`Missing LEADERBOARD_PAGES in ${path}`);
+  const { file, object: pages } = readObject(
+    "src/domain/synthetics/leaderboard/constants.ts",
+    "LEADERBOARD_PAGES",
+    "."
+  );
   const fields = (node: ts.Node | undefined): Record<string, ts.Expression | undefined> => {
     const properties =
       node && ts.isObjectLiteralExpression(node) ? node.properties.filter(ts.isPropertyAssignment) : [];

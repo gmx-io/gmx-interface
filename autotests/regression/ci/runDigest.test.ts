@@ -28,6 +28,19 @@ const report: PlaywrightReport = {
             },
           ],
         },
+        {
+          title: "12.03 sort",
+          file: "ui/pools.spec.ts",
+          line: 20,
+          tests: [
+            {
+              projectName: "ui",
+              status: "flaky",
+              expectedStatus: "passed",
+              results: [result("timedOut", "page.goto timeout"), result("passed")],
+            },
+          ],
+        },
       ],
       suites: [
         {
@@ -35,7 +48,7 @@ const report: PlaywrightReport = {
           specs: [
             {
               title: "26.07 frozen order shows a status",
-              file: "connected-state/failureStates.spec.ts",
+              file: "connected-state/failureModes.spec.ts",
               line: 5,
               tests: [{ projectName: "connected-state", status: "expected", expectedStatus: "failed", results: [] }],
             },
@@ -60,11 +73,20 @@ const report: PlaywrightReport = {
   ],
 };
 
-test("digest keeps failures with cleaned errors, known gaps and skip reasons", () => {
+test("digest keeps failures, flaky tests, known gaps and skips with cleaned errors", () => {
   const digest = buildRunDigest(report);
-  assert.deepEqual(digest.counts, { expected: 1, unexpected: 1, flaky: 0, skipped: 1 });
+  assert.deepEqual(digest.counts, { expected: 1, unexpected: 1, flaky: 1, skipped: 1 });
   assert.deepEqual(digest.failedChecklistRows, ["12.01", "23.12"]);
-  assert.equal(digest.failures[0].error, "Expected 3");
+  assert.deepEqual(digest.failures, [
+    {
+      project: "ui",
+      location: "ui/pools.spec.ts:10",
+      title: "12.01 23.12 pools list every market",
+      attempts: 2,
+      error: "Expected 3",
+    },
+  ]);
+  assert.deepEqual(digest.flaky, [{ project: "ui", title: "12.03 sort", firstError: "page.goto timeout" }]);
   assert.deepEqual(digest.knownGaps, ["connected-state: GM › 26.07 frozen order shows a status"]);
   assert.equal(digest.skipped[0].reason, "no competition is running");
   assert.equal(digest.stoppedEarly, false);

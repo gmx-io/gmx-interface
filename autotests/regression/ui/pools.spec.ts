@@ -1,12 +1,11 @@
 import { expect, type Page } from "@playwright/test";
-import { readFileSync } from "node:fs";
 import ts from "typescript";
 import { zeroAddress } from "viem";
 
 import { MARKETS } from "../../../sdk/src/configs/markets";
 import { getToken, getTokenBySymbol, getTokenVisualMultiplier } from "../../../sdk/src/configs/tokens";
 import { test } from "../fixtures/browser";
-import { readRegressionGlvs } from "../fixtures/deploymentConfig";
+import { readObject, readRegressionGlvs } from "../fixtures/deploymentConfig";
 import { displayedNumber } from "../fixtures/displayedNumber";
 import { configuredMarkets, marketLabel } from "../fixtures/marketConfig";
 import { watchMarketsApi } from "../fixtures/marketData";
@@ -83,12 +82,7 @@ function watchUsdgBoost(page: Page) {
 // Markets enabled in src/config/static/markets.ts; parsed for the reason in fixtures/marketConfig.ts.
 function enabledUiMarkets(chainId: number) {
   const path = "src/config/static/markets.ts";
-  const file = ts.createSourceFile(path, readFileSync(path, "utf8"), ts.ScriptTarget.Latest, true);
-  const configs = file.statements
-    .filter(ts.isVariableStatement)
-    .flatMap((statement) => statement.declarationList.declarations)
-    .find((declaration) => declaration.name.getText(file) === "MARKETS_UI_CONFIGS")?.initializer;
-  if (!configs || !ts.isObjectLiteralExpression(configs)) throw new Error(`Missing MARKETS_UI_CONFIGS in ${path}`);
+  const { file, object: configs } = readObject(path, "MARKETS_UI_CONFIGS", ".");
   const chain = configs.properties
     .filter(ts.isPropertyAssignment)
     .find((property) => property.name.getText(file) === (chainId === 42161 ? "[ARBITRUM]" : "[AVALANCHE]"));
@@ -310,8 +304,9 @@ for (const type of ["GM", "GLV"] as const) {
     const apys = watchApy(page);
     const usdgBoost = watchUsdgBoost(page);
     await page.goto("/pools");
-    await page.getByRole("button", { name: "Last 30d", exact: true }).click();
-    await expect.poll(() => apys.has("30d")).toBe(true);
+    // The performance bound below is calibrated on 90d; 30d annualizes a new market's swings far past it.
+    await page.getByRole("button", { name: "Last 90d", exact: true }).click();
+    await expect.poll(() => apys.has("90d")).toBe(true);
     const rows = poolRows(page, type);
     await expect(rows.first()).toBeVisible();
     const listed: string[] = [];
@@ -319,7 +314,7 @@ for (const type of ["GM", "GLV"] as const) {
     await forEachPoolPage(page, type, async () => {
       await expect
         .poll(async () => {
-          const apy = apys.get("30d")![type === "GM" ? "markets" : "glvs"];
+          const apy = apys.get("90d")![type === "GM" ? "markets" : "glvs"];
           const cells = await rows.evaluateAll((elements) =>
             elements.map((row) => ({
               href: row.querySelector("a[href*='market=']")!.getAttribute("href")!,
@@ -357,7 +352,10 @@ for (const type of ["GM", "GLV"] as const) {
               !(tvlUsd > 0) && `tvl ${tvl[0]}`,
               !(supply >= 0 && new RegExp(`${type}\\)$`).test(tvl[1] ?? "")) && `supply ${tvl[1]}`,
               !apyOk && `apy ${apyText} vs ${expectedApy * 100}`,
-              performance !== "-" && !(Math.abs(displayedNumber(performance)) < 1000) && `performance ${performance}`,
+              // The app shows N/A for a pool without performance data for the period.
+              !["-", "N/A"].includes(performance) &&
+                !(Math.abs(displayedNumber(performance)) < 1000) &&
+                `performance ${performance}`,
             ].filter(Boolean);
             return problems.length ? [`${address}: ${problems.join(", ")}`] : [];
           });

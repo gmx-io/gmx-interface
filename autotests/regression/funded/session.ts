@@ -475,7 +475,13 @@ export class FundedSession {
     return { prepared, intent, feeUsd: quote.feeUsd };
   }
 
-  async execute(prepared: PrepareOrderResponse, intent: PreparedOrderIntent, purpose: string, cleanup: boolean) {
+  // Increases go through the UI journeys; this path has no collateral reserve guard for them.
+  async execute(
+    prepared: PrepareOrderResponse,
+    intent: Exclude<PreparedOrderIntent, { kind: "increase" }>,
+    purpose: string,
+    cleanup: boolean
+  ) {
     const previous = await this.previousAction(purpose);
     if (previous) return previous;
     let state = await this.snapshot();

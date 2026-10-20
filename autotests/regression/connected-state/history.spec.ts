@@ -60,7 +60,7 @@ test("10.04 17.10 populated history paginates forward and backward without losin
   await expect(page.locator(`a[href$='/tx/${rows[0].transactionHash}']`)).toBeVisible();
 });
 
-test("9.03 trade history labels created, executed, cancelled and failed orders", async ({
+test("9.03 26.07 trade history labels created, executed, cancelled and failed orders", async ({
   page,
   context,
   accountState,
@@ -75,7 +75,7 @@ test("9.03 trade history labels created, executed, cancelled and failed orders",
     { eventName: "OrderCreated", orderType: 3, label: "Create Limit" },
     { eventName: "OrderExecuted", orderType: 3, label: "Execute Limit" },
     { eventName: "OrderCancelled", orderType: 3, label: "Cancel Limit" },
-    { eventName: "OrderFrozen", orderType: 3, label: "Failed Limit", failed: true },
+    { eventName: "OrderFrozen", orderType: 3, label: "Failed Limit", failed: true, reasonBytes },
     { eventName: "OrderExecuted", orderType: 5, label: "Execute Take-Profit" },
     { eventName: "OrderExecuted", orderType: 6, label: "Execute Stop-Loss" },
     { eventName: "OrderCancelled", orderType: 2, label: "Failed Market Increase", failed: true, reasonBytes },
@@ -93,7 +93,7 @@ test("9.03 trade history labels created, executed, cancelled and failed orders",
   await accountState.connect(page);
   const table = page.getByTestId("trade-table-large");
   await table.getByRole("button", { name: "Trades", exact: true }).click();
-  for (const [index, { label, failed }] of cases.entries()) {
+  for (const [index, { label, failed, reasonBytes }] of cases.entries()) {
     const action = table
       .locator(`tr:has(a[href$='/tx/${rows[index].transactionHash}'])`)
       .locator(".TradeHistoryRow-action-handle")
@@ -101,13 +101,13 @@ test("9.03 trade history labels created, executed, cancelled and failed orders",
     await expect(action).toHaveText(label);
     if (failed) await expect(action).toHaveClass(/text-red-500/);
     else await expect(action).not.toHaveClass(/text-red-500/);
+    if (!reasonBytes) continue;
+    await action.hover();
+    const tooltip = page.locator(".Tooltip-popup").filter({ hasText: "Execution price didn't meet acceptable price" });
+    await expect(tooltip).toBeVisible();
+    await page.mouse.move(0, 0);
+    await expect(tooltip).toBeHidden();
   }
-  await table
-    .locator(`tr:has(a[href$='/tx/${rows.at(-1)!.transactionHash}'])`)
-    .locator(".TradeHistoryRow-action-handle")
-    .last()
-    .hover();
-  await expect(page.locator(".Tooltip-popup")).toContainText("Execution price didn't meet acceptable price");
   await expect(table).not.toContainText(/NaN|Infinity|undefined/);
 });
 

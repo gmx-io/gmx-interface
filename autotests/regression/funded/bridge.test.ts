@@ -79,36 +79,55 @@ function rebuild(prepared: CrossChainWithdrawPrepareResponse) {
 test("bridge withdrawal binds destination, minimum, token, relay data and total gas payment", () => {
   assert.equal(inspectBridgeWithdrawal(fixture(), params, state), (52n * USD) / 100n);
   const relay = (prepared: CrossChainWithdrawPrepareResponse) => prepared.payload.relayParams as RelayParamsPayload;
-  for (const tamper of [
-    () => ({ ...params, amount: params.amount + 1n }),
-    () => ({ ...params, minAmountOut: 0n }),
-    () => ({ ...params, data: "0x" as const }),
-    (p) => {
-      relay(p).fee.feeAmount = 900_000n;
-    },
+  const payload = /Bridge payload differs/;
+  for (const [tamper, error] of [
+    [() => ({ ...params, amount: params.amount + 1n }), payload],
+    [() => ({ ...params, minAmountOut: 0n }), payload],
+    [() => ({ ...params, data: "0x" as const }), payload],
+    [
+      (p) => {
+        relay(p).fee.feeAmount = 900_000n;
+      },
+      payload,
+    ],
     // Fee tampering is rejected even when the typed data is recomputed.
-    (p) => {
-      relay(p).fee.feeAmount = 900_000n;
-      rebuild(p);
-    },
-    (p) => {
-      relay(p).deadline = 1n;
-      rebuild(p);
-    },
-    (p) => {
-      relay(p).desChainId = 1n;
-      rebuild(p);
-    },
-    (p) => {
-      relay(p).fee.feeSwapPath = [state.weth.address];
-      rebuild(p);
-    },
-    (p) => {
-      p.payload.gasPaymentParams.relayerFeeAmount = 10n ** 18n;
-    },
-  ] as ((prepared: CrossChainWithdrawPrepareResponse) => typeof params | void)[]) {
+    [
+      (p) => {
+        relay(p).fee.feeAmount = 900_000n;
+        rebuild(p);
+      },
+      /Relay fee differs from the gas payment/,
+    ],
+    [
+      (p) => {
+        relay(p).deadline = 1n;
+        rebuild(p);
+      },
+      /deadline has passed/,
+    ],
+    [
+      (p) => {
+        relay(p).desChainId = 1n;
+        rebuild(p);
+      },
+      /targets another chain/,
+    ],
+    [
+      (p) => {
+        relay(p).fee.feeSwapPath = [state.weth.address];
+        rebuild(p);
+      },
+      /swap path is not permitted/,
+    ],
+    [
+      (p) => {
+        p.payload.gasPaymentParams.relayerFeeAmount = 10n ** 18n;
+      },
+      /Relayer fee exceeds bound gas payment/,
+    ],
+  ] as [(prepared: CrossChainWithdrawPrepareResponse) => typeof params | void, RegExp][]) {
     const prepared = fixture();
     const tampered = tamper(prepared) ?? params;
-    assert.throws(() => inspectBridgeWithdrawal(prepared, tampered, state));
+    assert.throws(() => inspectBridgeWithdrawal(prepared, tampered, state), error);
   }
 });

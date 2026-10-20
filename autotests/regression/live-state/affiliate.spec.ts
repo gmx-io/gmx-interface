@@ -146,10 +146,10 @@ test("15.11 15.13 live affiliate: top code volume, traders, rebates and discount
   await expect(cells.nth(3)).toHaveText(formatBigUsd(rebate(top)));
 
   const tooltipRow = (label: string) => page.getByText(label, { exact: true }).locator("..");
-  await openTooltip(page, cells.nth(1).locator(".numbers").first());
+  await openTooltip(page, cells.nth(1).locator(".numbers").first(), "V1 volume:");
   await expect(tooltipRow("V1 volume:")).toContainText(formatBigUsd(BigInt(top.v1Data.volume)));
   await expect(tooltipRow("V2 volume:")).toContainText(formatBigUsd(BigInt(top.v2Data.volume)));
-  await openTooltip(page, cells.nth(3).locator(".numbers").first());
+  await openTooltip(page, cells.nth(3).locator(".numbers").first(), "V1 rebates:");
   await expect(tooltipRow("V1 rebates:")).toContainText(formatUsd(rebate(top.v1Data), { fallbackToZero: true })!);
   await expect(tooltipRow("V2 rebates:")).toContainText(formatUsd(rebate(top.v2Data), { fallbackToZero: true })!);
 
@@ -224,7 +224,7 @@ test.describe("other chains", () => {
       }
       const notRegistered = page.getByText(/^Code not registered on:/);
       const alreadyTaken = page.getByText(/^Code already taken on:/);
-      await openTooltip(page, icon);
+      await openTooltip(page, icon, /Code (not registered|already taken) on:/);
       if (missing.length) for (const name of missing) await expect(notRegistered).toContainText(name);
       else await expect(notRegistered).toHaveCount(0);
       if (taken.length) for (const name of taken) await expect(alreadyTaken).toContainText(name);

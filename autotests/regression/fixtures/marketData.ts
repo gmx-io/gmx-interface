@@ -77,8 +77,10 @@ export function infoRowValue(scope: Locator, label: string | RegExp) {
     .locator("xpath=ancestor::div[contains(concat(' ', @class, ' '), ' justify-between ')][1]/div[last()]");
 }
 
-export async function openTooltip(page: Page, handle: Locator) {
-  const popup = page.locator(".Tooltip-popup").last();
+// Pass `content` when another popup may still be closing from a previous hover.
+export async function openTooltip(page: Page, handle: Locator, content?: string | RegExp) {
+  const popups = page.locator(".Tooltip-popup");
+  const popup = (content === undefined ? popups : popups.filter({ hasText: content })).last();
   // A late layout shift can move the handle away from the pointer, so hover again until it opens.
   await expect(async () => {
     await handle.hover();

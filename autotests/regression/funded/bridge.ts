@@ -40,8 +40,8 @@ export function inspectBridgeWithdrawal(
     getAddress(prepared.payload.relayRouterAddress),
     getAddress(getContract(42161, "MultichainTransferRouter"))
   );
-  assert.equal(Number(relay.desChainId), 42161);
-  assert.ok(BigInt(relay.deadline) > BigInt(Math.floor(Date.now() / 1000)));
+  assert.equal(Number(relay.desChainId), 42161, "Bridge relay targets another chain");
+  assert.ok(BigInt(relay.deadline) > BigInt(Math.floor(Date.now() / 1000)), "Bridge relay deadline has passed");
   assert.deepEqual(relay.tokenPermits, []);
   for (const field of [
     "sendTokens",
@@ -55,11 +55,12 @@ export function inspectBridgeWithdrawal(
   const gp = prepared.payload.gasPaymentParams;
   assert.equal(getAddress(relay.fee.feeToken), getAddress(state.usdc.address));
   assert.equal(getAddress(gp.gasPaymentTokenAddress), getAddress(state.usdc.address));
-  assert.equal(BigInt(relay.fee.feeAmount), gp.gasPaymentTokenAmount);
+  assert.equal(BigInt(relay.fee.feeAmount), gp.gasPaymentTokenAmount, "Relay fee differs from the gas payment");
   assert.ok(gp.gasPaymentTokenAmount > 0n && gp.gasPaymentTokenAmount <= 1_000_000n);
   assert.ok(
     relay.fee.feeSwapPath.length <= 1 &&
-      relay.fee.feeSwapPath.every((p) => getAddress(p) === getAddress(state.market.marketTokenAddress))
+      relay.fee.feeSwapPath.every((p) => getAddress(p) === getAddress(state.market.marketTokenAddress)),
+    "Relay fee swap path is not permitted"
   );
   const relayerToken = [state.usdc, state.weth].find(
     (t) => getAddress(t.address) === getAddress(gp.relayerFeeTokenAddress)

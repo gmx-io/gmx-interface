@@ -20,6 +20,11 @@ test("batch balance change sums every measured case and stays unknown while a me
   for (const [second, totalUsd, missingCases] of [
     [{}, "-0.4", []],
     [{ status: "passed", result: changes("0.65") }, "0.25", []],
+    [
+      { status: "passed", result: changes("-4.028366002138764640680758170858") },
+      "-4.428366002138764640680758170858",
+      [],
+    ],
     [{ status: "failed", result: { ...changes("0"), exitCode: 1 } }, "-0.4", []],
     [{ status: "running" }, null, ["glv"]],
     ...[undefined, null, "NaN", "Infinity", "1e3", "0.0000000000000000000000000000001"].map((amount) => [
