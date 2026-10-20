@@ -1,5 +1,7 @@
-import { expect, type Locator, type Page } from "@playwright/test";
+import { expect, type Locator, type Page, type Route } from "@playwright/test";
+import { toFunctionSelector } from "viem";
 
+import SyntheticsReader from "../../../sdk/src/abis/SyntheticsReader";
 import { test } from "../fixtures/browser";
 import { displayedNumber } from "../fixtures/displayedNumber";
 import { infoRowValue, openTooltip } from "../fixtures/marketData";
@@ -31,8 +33,7 @@ async function openPoolDetails(page: Page, type: PoolType) {
   return market;
 }
 
-async function openForm(page: Page, type: PoolType, operation: "Buy" | "Sell") {
-  await page.getByRole("button", { name: `${operation} ${type}`, exact: true }).click();
+function formParts(page: Page) {
   const form = page.locator("form").filter({ has: page.getByTestId("gm-first-token") });
   const section = (label: string) =>
     form
@@ -45,7 +46,12 @@ async function openForm(page: Page, type: PoolType, operation: "Buy" | "Sell") {
     receive: usdText(section("Receive")),
     row: infoRowValue(form, "Price impact / fees"),
   };
-  const input = page.getByTestId("gm-first-token-input");
+  return { form, input: page.getByTestId("gm-first-token-input"), parts };
+}
+
+async function openForm(page: Page, type: PoolType, operation: "Buy" | "Sell") {
+  await page.getByRole("button", { name: `${operation} ${type}`, exact: true }).click();
+  const { form, input, parts } = formParts(page);
   await input.fill("1");
   const unitUsd = (await settledQuote(parts))[operation === "Buy" ? "pay" : "receive"];
   return { form, input, parts, unitUsd };
@@ -137,12 +143,42 @@ for (const type of ["GM", "GLV"] as const) {
   });
 }
 
-test("12.14 a GLV buy amount entered right after a reload keeps its quote", async ({ page }) => {
+test("12.19 a GLV detail page loaded directly quotes a buy amount typed before the vault picks its pool", async ({
+  page,
+}) => {
   await openPoolDetails(page, "GLV");
-  // After a reload the amount is typed before the GLV picks its pool, which must not clear it.
-  await page.reload();
-  const { input } = await openForm(page, "GLV", "Buy");
-  await expect(input).toHaveValue("1");
+  const selector = (name: string) =>
+    toFunctionSelector(SyntheticsReader.find((item) => item.type === "function" && item.name === name)!).slice(2);
+  const [tokenPrice, marketInfo] = [selector("getMarketTokenPrice"), selector("getMarketInfo")];
+  // The GLV picks its pool once the GM token prices arrive in a multicall of their own; hold it until the amount is typed.
+  let held = 0;
+  let release!: () => void;
+  const released = new Promise<void>((resolve) => (release = resolve));
+  const hold = async (route: Route) => {
+    const body = route.request().postData()?.toLowerCase() ?? "";
+    if (route.request().method() === "POST" && body.includes(tokenPrice) && !body.includes(marketInfo)) {
+      held++;
+      await released;
+    }
+    await route.fallback();
+  };
+  await page.context().route("**/*", hold);
+  try {
+    await page.reload();
+    await page.getByRole("button", { name: "Buy GLV", exact: true }).click();
+    const { form, input, parts } = formParts(page);
+    await input.fill("1");
+    await expect.poll(() => held).toBeGreaterThan(0);
+    const pool = form.locator(".Exchange-info-row").filter({ hasText: /^Pool/ });
+    await expect(pool).toBeVisible();
+    await expect(pool).not.toContainText("/USD");
+    release();
+    await settledQuote(parts);
+    await expect(input).toHaveValue("1");
+  } finally {
+    release();
+    await page.context().unroute("**/*", hold);
+  }
 });
 
 test("12.15 a large single-token GM withdrawal's Pay and Receive include the price impact it shows", async ({
