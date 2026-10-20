@@ -36,7 +36,6 @@ export async function runFundedCases(
       REGRESSION_FUNDED_CASES: selected.map((c) => c.id).join(","),
     });
   } finally {
-    // Runs after assertion failures and retries as well as successful tests.
     try {
       console.log("Cleaning up...");
       details.cleanup = await session.cleanup(true);

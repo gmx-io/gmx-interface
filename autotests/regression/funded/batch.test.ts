@@ -15,83 +15,51 @@ import { usd } from "./economy";
 const success = (reservedFeesUsd = "1"): BatchCaseResult => ({ exitCode: 0, cleanupCompleted: true, reservedFeesUsd });
 const save = async () => {};
 
-test("a failed zero-spend last case does not hide the prior cases' balance changes", async () => {
-  const batch = createBatch(selectFundedCases(["--case", "market-long,market-short,glv,one-click"]), usd("35"));
-  await runFundedBatch(
-    batch,
-    async ({ id }) => ({
-      ...success(id === "glv" ? "0" : "3"),
-      exitCode: id === "glv" ? 1 : 0,
-      balanceChangeAtStartPricesUsd:
-        id === "market-long"
-          ? "-2.081335585763744144779904517248"
-          : id === "market-short"
-            ? "-2.34703041637502049590085365361"
-            : "0",
-    }),
-    save
-  );
-  assert.equal(batch.status, "failed");
-  assert.equal(batch.cases[3].status, "not-run");
-  assert.equal(batchBalanceChange(batch).totalUsd, "-4.428366002138764640680758170858");
-  assert.deepEqual(batchBalanceChange(batch).missingCases, []);
-  assert.equal(batch.reservedFeesUsd, "6");
-});
-
-test("missing or invalid balance measurements remain unknown instead of becoming zero", () => {
-  for (const amount of [undefined, null, "NaN", "Infinity", "1e3", "0.0000000000000000000000000000001"]) {
+test("batch balance change sums every measured case and stays unknown while a measurement is missing", () => {
+  const changes = (amount: string | null | undefined) => ({ ...success(), balanceChangeAtStartPricesUsd: amount });
+  for (const [second, totalUsd, missingCases] of [
+    [{}, "-0.4", []],
+    [{ status: "passed", result: changes("0.65") }, "0.25", []],
+    [{ status: "failed", result: { ...changes("0"), exitCode: 1 } }, "-0.4", []],
+    [{ status: "running" }, null, ["glv"]],
+    ...[undefined, null, "NaN", "Infinity", "1e3", "0.0000000000000000000000000000001"].map((amount) => [
+      { status: "passed", result: changes(amount) },
+      null,
+      ["glv"],
+    ]),
+  ] as [Partial<FundedBatch["cases"][number]>, string | null, string[]][]) {
     const batch = createBatch(selectFundedCases(["--case", "gm,glv"]), usd("13"));
-    batch.cases[0].result = { ...success(), balanceChangeAtStartPricesUsd: "-0.4" };
-    batch.cases[1].result = { ...success(), balanceChangeAtStartPricesUsd: amount };
+    Object.assign(batch.cases[0], { status: "passed", result: changes("-0.4") });
+    Object.assign(batch.cases[1], second);
     const change = batchBalanceChange(batch);
-    assert.equal(change.totalUsd, null);
-    assert.equal(change.knownSubtotalUsd, "-0.4");
-    assert.deepEqual(change.missingCases, ["glv"]);
+    assert.equal(change.totalUsd, totalUsd);
+    assert.deepEqual(change.missingCases, missingCases);
+    if (missingCases.length) assert.equal(change.knownSubtotalUsd, "-0.4");
   }
 });
 
-test("batch balance changes preserve profits and distinguish running from unstarted cases", () => {
-  const batch = createBatch(selectFundedCases(["--case", "gm,glv"]), usd("13"));
-  batch.cases[0].result = { ...success(), balanceChangeAtStartPricesUsd: "0.25" };
-  assert.equal(batchBalanceChange(batch).totalUsd, "0.25");
-  batch.cases[1].status = "running";
-  assert.equal(batchBalanceChange(batch).totalUsd, null);
-  batch.cases[1].result = { ...success(), balanceChangeAtStartPricesUsd: "-0.10" };
-  assert.equal(batchBalanceChange(batch).totalUsd, "0.15");
-});
-
-test("batch defaults to 16 same-chain cases and a $5 budget; GLV alone receives its existing profile", () => {
+test("batch defaults to same-chain cases and a $5 budget; bridge or all selection opts into multichain", () => {
   const options = batchOptions([]);
-  assert.deepEqual(
-    options.selected,
-    fundedCases.filter((c) => c.id !== "bridge")
-  );
-  assert.equal(options.selected.length, 16);
-  assert.deepEqual(
-    options.excluded.map((c) => c.id),
-    ["bridge"]
-  );
-  assert.ok(options.selected.some((c) => c.id === "account"));
   assert.equal(options.execute, false);
   assert.equal(options.budgetUsd, usd("5"));
-  const batch = createBatch(options.selected, options.budgetUsd);
-  assert.equal(batch.cases.filter((c) => c.feeProfile === "glv").length, 1);
-  assert.equal(batch.cases.find((c) => c.feeProfile === "glv")?.id, "glv");
-});
-
-test("an explicit bridge selection or all group opts into multichain coverage", () => {
-  for (const args of [
-    ["--case", "bridge"],
-    ["--group", "bridge"],
-  ]) {
-    const options = batchOptions(args);
+  const glv = createBatch(options.selected, options.budgetUsd).cases.filter((c) => c.feeProfile === "glv");
+  assert.deepEqual(
+    glv.map((c) => c.id),
+    ["glv"]
+  );
+  for (const [args, selected, excluded] of [
+    [[], fundedCases.filter((c) => c.id !== "bridge"), ["bridge"]],
+    [["--case", "bridge"], fundedCases.filter((c) => c.id === "bridge"), []],
+    [["--group", "bridge"], fundedCases.filter((c) => c.id === "bridge"), []],
+    [["--group", "all"], fundedCases, []],
+  ] as const) {
+    const options = batchOptions([...args]);
+    assert.deepEqual(options.selected, selected);
     assert.deepEqual(
-      options.selected.map((c) => c.id),
-      ["bridge"]
+      options.excluded.map((c) => c.id),
+      excluded
     );
-    assert.deepEqual(options.excluded, []);
   }
-  assert.deepEqual(batchOptions(["--group", "all"]).selected, fundedCases);
 });
 
 test("recovery fees reduce the new batch allowance without charging historical fees again", async () => {
@@ -207,12 +175,14 @@ test("GLV needs its $8 full allowance and uses the same total budget", async () 
   assert.equal(fits.reservedFeesUsd, "7");
 });
 
-test("failure or incomplete cleanup stops later cases and retains that case's full reservations", async () => {
-  for (const result of [
-    { ...success("1.25"), exitCode: 1 },
-    { ...success("1.25"), cleanupCompleted: false },
-    { ...success("1.25"), exitCode: 130 },
-  ]) {
+test("a failed case, incomplete cleanup, bad fee accounting or overspend stops later cases", async () => {
+  for (const [result, reservedFeesUsd, accountingComplete] of [
+    [{ ...success("1.25"), exitCode: 1 }, "1.25", true],
+    [{ ...success("1.25"), cleanupCompleted: false }, "1.25", true],
+    [{ ...success("1.25"), exitCode: 130 }, "1.25", true],
+    [success("5.01"), "5.01", true],
+    ...[null, "NaN", "-1"].map((fees) => [{ ...success(), reservedFeesUsd: fees }, "0", false]),
+  ] as [BatchCaseResult, string, boolean][]) {
     const batch = createBatch(fundedCases, usd("30"));
     let calls = 0;
     await runFundedBatch(
@@ -225,17 +195,8 @@ test("failure or incomplete cleanup stops later cases and retains that case's fu
     );
     assert.equal(calls, 1);
     assert.equal(batch.status, "failed");
-    assert.equal(batch.reservedFeesUsd, "1.25");
-    assert.equal(batch.cases[1].status, "not-run");
-  }
-});
-
-test("unknown or invalid fee accounting fails closed, without claiming a complete cost total", async () => {
-  for (const fees of [null, "NaN", "-1"]) {
-    const batch = createBatch(fundedCases, usd("30"));
-    await runFundedBatch(batch, async () => ({ ...success(), reservedFeesUsd: fees }), save);
-    assert.equal(batch.status, "failed");
-    assert.equal(batch.accountingComplete, false);
+    assert.equal(batch.reservedFeesUsd, reservedFeesUsd);
+    assert.equal(batch.accountingComplete, accountingComplete);
     assert.equal(batch.cases[1].status, "not-run");
   }
 });
@@ -278,12 +239,4 @@ test("a report write failure prevents the next paid case", async () => {
     /Disk full/
   );
   assert.equal(calls, 1);
-});
-
-test("a case reporting more than its own allowance stops the batch", async () => {
-  const batch = createBatch(fundedCases, usd("30"));
-  await runFundedBatch(batch, async () => success("5.01"), save);
-  assert.equal(batch.status, "failed");
-  assert.equal(batch.reservedFeesUsd, "5.01");
-  assert.equal(batch.cases[1].status, "not-run");
 });

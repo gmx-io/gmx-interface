@@ -8,66 +8,31 @@ import { fundedBalanceValues, playwrightFailure, writeFundedReport, type FundedR
 import { USD } from "./economy";
 import type { FundedSession } from "./session";
 import { writeJournal } from "./journal";
+import { testJournal } from "./testSession";
 
-test("batch summaries show the final failed phase instead of the maximum-failures message", () => {
+test("batch summaries show the final failed phase, ignore recovered retries and handle errors outside tests", () => {
   const reason = "deposit: API request failed: POSITION_NOT_FOUND (status 400). Request details omitted.";
-  const report = {
-    errors: [{ message: "Testing stopped early after 1 maximum allowed failures." }],
-    suites: [
+  const results = (...results: { status: string; errors?: { message: string }[] }[]) => ({
+    suites: [{ specs: [{ tests: [{ results }] }] }],
+  });
+  for (const [report, expected] of [
+    [
       {
+        errors: [{ message: "Testing stopped early after 1 maximum allowed failures." }],
         suites: [
-          {
-            specs: [
-              {
-                tests: [
-                  {
-                    results: [
-                      { status: "failed", errors: [{ message: "Error: connect read-only wallet: timeout" }] },
-                      {
-                        status: "failed",
-                        errors: [{ message: `Error: \u001b[31m${reason}\u001b[39m\nStack trace omitted` }],
-                      },
-                    ],
-                  },
-                ],
-              },
-            ],
-          },
+          results(
+            { status: "failed", errors: [{ message: "Error: connect read-only wallet: timeout" }] },
+            { status: "failed", errors: [{ message: `Error: \u001b[31m${reason}\u001b[39m\nStack trace omitted` }] }
+          ),
         ],
       },
+      reason,
     ],
-  };
-  assert.equal(playwrightFailure(report), reason);
-});
-
-test("successful retries do not report a past failure as the final cause", () => {
-  assert.equal(
-    playwrightFailure({
-      suites: [
-        {
-          specs: [
-            {
-              tests: [
-                { results: [{ status: "failed", errors: [{ message: "first attempt" }] }, { status: "passed" }] },
-              ],
-            },
-          ],
-        },
-      ],
-    }),
-    undefined
-  );
-});
-
-test("batch error summaries redact sensitive details and handle errors outside tests", () => {
-  const message = playwrightFailure({ errors: [{ message: "RPC at https://user:secret@example.test failed" }] });
-  assert.ok(message);
-  assert.doesNotMatch(message, /secret|example.test/);
-  assert.equal(
-    playwrightFailure({ errors: [{ message: "Worker stopped unexpectedly" }] }),
-    "Worker stopped unexpectedly"
-  );
-  assert.equal(playwrightFailure({}), undefined);
+    [results({ status: "failed", errors: [{ message: "first attempt" }] }, { status: "passed" }), undefined],
+    [{ errors: [{ message: "Worker stopped unexpectedly" }] }, "Worker stopped unexpectedly"],
+    [{}, undefined],
+  ] as [Parameters<typeof playwrightFailure>[0], string | undefined][])
+    assert.equal(playwrightFailure(report), expected);
 });
 
 for (const higherPrice of [false, true]) {
@@ -93,28 +58,20 @@ for (const higherPrice of [false, true]) {
   });
 }
 
-for (const completed of [true, false]) {
-  test(`cost reports retain preflight details and ${completed ? "cleanup results" : "cleanup errors"}`, async () => {
-    const directory = await mkdtemp(join(tmpdir(), "gmx-funded-report-"));
-    const cwd = process.cwd();
-    try {
-      process.chdir(directory);
-      await writeJournal(directory, {
-        version: 1,
+test("cost reports retain preflight details and cleanup errors", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "gmx-funded-report-"));
+  const cwd = process.cwd();
+  try {
+    process.chdir(directory);
+    await writeJournal(
+      directory,
+      testJournal("0x1111111111111111111111111111111111111111", {
         id: "report-test",
-        chainId: 42161,
-        address: "0x1111111111111111111111111111111111111111",
-        marketAddress: "0x2222222222222222222222222222222222222222",
-        createdAt: "now",
-        initialNativeUsd: (50n * USD).toString(),
-        initialStableUsd: (50n * USD).toString(),
-        ownedPositionKeys: [],
-        ownedOrderKeys: [],
         selectedCases: ["one-click"],
         actions: [
           {
             id: "failed-relay",
-            purpose: "trigger",
+            purpose: "ui:create",
             step: "one-click:create",
             requestId: "request",
             state: "failed",
@@ -122,54 +79,40 @@ for (const completed of [true, false]) {
             failureReason: "Relay fee quote was insufficient",
           },
         ],
-        completed,
-        inventory: {
-          "swap:WETH to USDC/settlement": JSON.stringify({ wrappedRefundAmount: { $bigint: "8842289841293" } }),
-          "other/internal": "not a settlement",
+      })
+    );
+    const details: FundedRunDetails = {
+      preflight: {
+        ready: true,
+        transactionsSubmitted: 0,
+        checks: [{ scope: "all", check: "gas", ok: true, detail: "under the ceiling" }],
+        cases: [],
+        verification: "read-only",
+      },
+      cleanupError: "Gas exceeds ceiling",
+    };
+    await writeFundedReport(
+      {
+        directory,
+        snapshot: async () => {
+          throw new Error("RPC unavailable");
         },
-      });
-      const details: FundedRunDetails = {
-        preflight: {
-          ready: true,
-          transactionsSubmitted: 0,
-          checks: [{ scope: "all", check: "gas", ok: true, detail: "under the ceiling" }],
-          cases: [],
-          verification: "read-only",
-        },
-        cleanup: completed ? { completed: true, alreadyClean: true } : undefined,
-        cleanupError: completed ? undefined : "Gas exceeds ceiling",
-      };
-      await writeFundedReport(
-        {
-          directory,
-          snapshot: async () => {
-            throw new Error("RPC unavailable");
-          },
-        },
-        [],
-        details
-      );
-      for (const path of [join(directory, "report-report-test.json"), "test-results/funded/cost-report.json"]) {
-        const saved = JSON.parse(await readFile(path, "utf8"));
-        assert.deepEqual(saved.preflight, details.preflight);
-        assert.equal(saved.cleanupCompleted, completed);
-        assert.deepEqual(saved.cleanup, details.cleanup);
-        assert.equal(saved.cleanupError, details.cleanupError);
-        assert.equal(saved.positions, undefined);
-        assert.deepEqual(saved.cases[0].failures, [
-          {
-            purpose: "trigger",
-            requestId: "request",
-            reason: "Relay fee quote was insufficient",
-          },
-        ]);
-        assert.deepEqual(saved.swapSettlements, {
-          "swap:WETH to USDC/settlement": { wrappedRefundAmount: { $bigint: "8842289841293" } },
-        });
-      }
-    } finally {
-      process.chdir(cwd);
-      await rm(directory, { recursive: true, force: true });
+      },
+      [],
+      details
+    );
+    for (const path of [join(directory, "report-report-test.json"), "test-results/funded/cost-report.json"]) {
+      const saved = JSON.parse(await readFile(path, "utf8"));
+      assert.deepEqual(saved.preflight, details.preflight);
+      assert.equal(saved.cleanupCompleted, false);
+      assert.equal(saved.cleanupError, details.cleanupError);
+      assert.equal(saved.positions, undefined);
+      assert.deepEqual(saved.cases[0].failures, [
+        { purpose: "ui:create", requestId: "request", reason: "Relay fee quote was insufficient" },
+      ]);
     }
-  });
-}
+  } finally {
+    process.chdir(cwd);
+    await rm(directory, { recursive: true, force: true });
+  }
+});

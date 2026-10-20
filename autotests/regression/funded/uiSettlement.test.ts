@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { fundedOrderReceipt } from "../fixtures/fundedReceipt";
-import { address, marketAddress, weth } from "../fixtures/fundedQuote";
+import { fundedOrderReceipt } from "./fundedReceipt";
+import { address, marketAddress, weth } from "./fundedQuote";
 import { verifyUiExecutionReceipt } from "./uiSettlement";
 
 const key = `0x${"12".repeat(32)}` as const;

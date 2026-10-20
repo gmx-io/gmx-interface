@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import { encodeFunctionData, erc20Abi, getAddress, maxUint256, toHex } from "viem";
 
 import { installInjectedWallet } from "../fixtures/injectedWallet";
-import { address, usdc, weth } from "../fixtures/fundedQuote";
+import { address, usdc, weth } from "./fundedQuote";
 import { economy } from "./economy";
 import type { FundedSession } from "./session";
 import { UiWallet } from "./uiWallet";

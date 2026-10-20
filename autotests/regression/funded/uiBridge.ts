@@ -110,8 +110,6 @@ export async function returnUiBridge(session: FundedSession, wallet: UiWallet, p
     (value) => value >= BigInt(inventory.bridgeSourceBaseline) - bridgeAmount + minimum,
     600_000
   );
-  inventory.bridgeReturned = "true";
-  await session.save();
 }
 
 export async function withdrawUiBridgeDust(session: FundedSession, wallet: UiWallet, page: Page) {

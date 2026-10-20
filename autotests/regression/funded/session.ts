@@ -53,11 +53,10 @@ import {
   type FundedAction,
   type FundedJournal,
 } from "./journal";
-import { inspectPreparedOrder, type OrderIntent } from "./preparedOrder";
+import { inspectPreparedOrder, type OrderIntent, type PreparedOrderIntent } from "./preparedOrder";
 import { orderEventKeys } from "./orderReceipt";
 import { cleanupResources } from "./resources";
 import { readFundedData } from "./read";
-import { registerTwapReceipt } from "./trading";
 import { reconcileUiRelay, submitUiRelay, type UiRelayPayload, type UiRelayResponse } from "./uiRelay";
 import { registerUiOrderReceipt } from "./uiOrderReceipt";
 
@@ -206,12 +205,7 @@ export class FundedSession {
       collateralUsd: sizing.collateralUsd,
       profile: this.requestedFeeProfile,
     });
-    const allocation = rebalanceTarget({
-      ...state,
-      initialNativeUsd: state.nativeUsd,
-      initialStableUsd: state.stableUsd,
-      targetNativeBps: economy.targetNativeBps,
-    });
+    const allocation = rebalanceTarget({ ...state, targetNativeBps: economy.targetNativeBps });
     return {
       chainId: 42161,
       wallet: this.address,
@@ -293,12 +287,7 @@ export class FundedSession {
         `Insufficient starting reserves (USD values rounded conservatively). ${missing.join("; ")}. Run funded:plan for exact values.`
       );
     }
-    const allocation = rebalanceTarget({
-      ...state,
-      initialNativeUsd: state.nativeUsd,
-      initialStableUsd: state.stableUsd,
-      targetNativeBps: economy.targetNativeBps,
-    });
+    const allocation = rebalanceTarget({ ...state, targetNativeBps: economy.targetNativeBps });
     if (allocation.direction !== "none")
       throw new Error(
         "Prepare the Arbitrum wallet at approximately 50/50 ETH/USDC by USD value before starting. Run funded:plan for the adjustment; initial allocation is not performed by cleanup."
@@ -360,7 +349,7 @@ export class FundedSession {
     const previousStep = this.currentStep;
     this.currentStep = id;
     try {
-      await this.reconcile(true);
+      await this.reconcile();
       const result = await operation();
       checkpoints[id].result = JSON.stringify(result ?? null, (_, value) =>
         typeof value === "bigint" ? { $bigint: value.toString() } : value
@@ -392,8 +381,8 @@ export class FundedSession {
     if (!this.currentStep) return undefined;
     const previous = this.active.actions.find((a) => a.step === this.currentStep && a.purpose === purpose);
     if (!previous) return undefined;
-    await this.reconcile(true);
-    if (previous.state !== "settled" && !(previous.state === "created" && previous.settlement === "creation"))
+    await this.reconcile();
+    if (previous.state !== "settled")
       throw new Error(previous.failureReason ?? "Previous step has not settled; a retry cannot submit it again");
     return previous;
   }
@@ -402,8 +391,6 @@ export class FundedSession {
     if (process.env.REGRESSION_FUNDED_EXECUTE !== "1") throw new Error("Funded execution is disabled");
     if (this.active.actions.some((a) => a.state === "pending"))
       throw new Error("Unresolved prior submission; do not resend");
-    if (!cleanup && this.active.actions.some((a) => a.state === "created" && a.settlement !== "creation"))
-      throw new Error("An existing order must settle or be cancelled before another action");
     checkFeeBudget(chargedFees(this.active), feeUsd, cleanup, this.feePolicy);
     const gas = await checkGasPrice({
       chainId,
@@ -421,7 +408,7 @@ export class FundedSession {
         sizing.collateralUsd * 10n ** BigInt(state.usdc.decimals),
         state.usdc.prices.minPrice
       );
-      const intent: OrderIntent = { kind: "increase", isLong, sizeUsd: sizing.sizeUsd, collateralAmount };
+      const intent: PreparedOrderIntent = { kind: "increase", isLong, sizeUsd: sizing.sizeUsd, collateralAmount };
       const prepared = await this.sdk.prepareOrder({
         kind: "increase",
         symbol,
@@ -440,7 +427,6 @@ export class FundedSession {
         intent,
         address: this.address,
         marketAddress: state.market.marketTokenAddress,
-        subaccountApproval: this.sdk.subaccountApprovalMessage,
         ...state,
       });
       if (quote.feeUsd <= costs) return { ...sizing, ...quote, collateralAmount, prepared, intent };
@@ -489,13 +475,7 @@ export class FundedSession {
     return { prepared, intent, feeUsd: quote.feeUsd };
   }
 
-  async execute(
-    prepared: PrepareOrderResponse,
-    intent: OrderIntent,
-    purpose: string,
-    cleanup: boolean,
-    settlement: FundedAction["settlement"] = "execution"
-  ) {
+  async execute(prepared: PrepareOrderResponse, intent: PreparedOrderIntent, purpose: string, cleanup: boolean) {
     const previous = await this.previousAction(purpose);
     if (previous) return previous;
     let state = await this.snapshot();
@@ -504,7 +484,6 @@ export class FundedSession {
       intent,
       address: this.address,
       marketAddress: state.market.marketTokenAddress,
-      subaccountApproval: this.sdk.subaccountApprovalMessage,
       ...state,
     });
     checkFeeBudget(chargedFees(this.active), quote.feeUsd, cleanup, this.feePolicy);
@@ -512,8 +491,7 @@ export class FundedSession {
       getAddress(quote.feeToken.address) === getAddress(state.weth.address) &&
       state.wrappedAmount < quote.feeAmount
     ) {
-      if (intent.kind !== "cancel" && intent.kind !== "edit")
-        throw new Error("Wrapped fees are only permitted for order cancellation and editing");
+      if (intent.kind !== "cancel") throw new Error("Wrapped fees are only permitted for order cancellation");
       await this.nativeTransaction(
         {
           to: state.weth.address as Address,
@@ -531,20 +509,10 @@ export class FundedSession {
       intent,
       address: this.address,
       marketAddress: state.market.marketTokenAddress,
-      subaccountApproval: this.sdk.subaccountApprovalMessage,
       ...state,
     });
     if (state.nativeUsd < economy.nativeReserveUsd || state.stableUsd - quote.feeUsd < economy.stableReserveUsd) {
       throw new Error("Wallet reserves are insufficient for the action");
-    }
-    if (
-      intent.kind === "increase" &&
-      state.stableUsd -
-        quote.feeUsd -
-        (convertToUsd(intent.collateralAmount, state.usdc.decimals, state.usdc.prices.maxPrice) ?? 0n) <
-        economy.stableReserveUsd + this.feePolicy.cleanupReserveUsd
-    ) {
-      throw new Error("Collateral would consume stablecoin and cleanup reserves");
     }
     await this.gate(quote.feeUsd, cleanup);
     const action: FundedAction = {
@@ -552,10 +520,9 @@ export class FundedSession {
       purpose,
       feeUsd: quote.feeUsd.toString(),
       requestId: prepared.requestId,
-      orderKeys: intent.kind === "cancel" ? intent.keys : intent.kind === "edit" ? [intent.key] : undefined,
+      orderKeys: intent.kind === "cancel" ? intent.keys : undefined,
       state: "pending",
       step: this.currentStep,
-      settlement,
       startedAt: new Date().toISOString(),
       swap:
         intent.kind === "swap"
@@ -582,8 +549,8 @@ export class FundedSession {
       from: this.address,
       eip712Data: { batchParams: prepared.payload.batchParams, relayParams: prepared.payload.relayParams },
     });
-    await this.reconcile(cleanup || settlement === "creation" || settlement === "receipt");
-    if ((action.state as string) !== "settled" && !(action.state === "created" && settlement === "creation"))
+    await this.reconcile();
+    if ((action.state as string) !== "settled")
       throw new Error(action.failureReason ?? "Funded action did not execute successfully");
     return action;
   }
@@ -599,7 +566,6 @@ export class FundedSession {
 
   async revokeOneClick() {
     const subaccount = this.active.inventory?.subaccount;
-    this.sdk.clearSubaccount();
     if (!subaccount || !(await this.subaccountActive(subaccount))) return;
     await this.nativeTransaction(
       {
@@ -617,8 +583,8 @@ export class FundedSession {
     if (await this.subaccountActive(subaccount)) throw new Error("1CT authorization remains active after revocation");
   }
 
-  async reconcile(allowCreatedOrders = false) {
-    for (const action of this.active.actions.filter((a) => a.state === "pending" || a.state === "created")) {
+  async reconcile() {
+    for (const action of this.active.actions.filter((a) => a.state === "pending")) {
       if (action.uiRelay && !action.txHash) {
         await reconcileUiRelay(this, action);
         continue;
@@ -626,9 +592,6 @@ export class FundedSession {
       if (action.txHash) {
         const rpc = action.chainId === 8453 ? this.sourceRpc : this.rpc;
         const receipt = await rpc.waitForTransactionReceipt({ hash: action.txHash, timeout: 120_000 });
-        if (action.purpose === "twap" && receipt.status === "success") {
-          registerTwapReceipt(this, action, receipt);
-        }
         if (action.uiOrder && receipt.status === "success") registerUiOrderReceipt(this.active, action, receipt);
         action.state = receipt.status === "success" ? "settled" : "failed";
         if (!action.uiRelay && receipt.gasUsed !== undefined && receipt.effectiveGasPrice !== undefined) {
@@ -647,37 +610,16 @@ export class FundedSession {
         await reconcileBridge(this, action);
         continue;
       }
-      const createsOrder = action.purpose === "open" || action.settlement === "creation";
-      // A verified cancellation can precede the status API's indexer update.
-      if (
-        createsOrder &&
-        action.orderKeys?.length &&
-        action.orderKeys.every((key) =>
-          this.active.actions.some((a) => a.state === "settled" && a.cancelledOrderKeys?.includes(key))
-        )
-      ) {
-        action.state = "failed";
-        action.finishedAt = new Date().toISOString();
-        await this.save();
-        continue;
-      }
       for (let attempt = 0; attempt < 40; attempt++) {
         const status = await this.sdk.fetchOrderStatus({ requestId: action.requestId });
-        if (
-          status.orderKeys?.length &&
-          status.status !== "created" &&
-          action.settlement !== "receipt" &&
-          action.purpose !== "cancel"
-        ) {
+        if (status.orderKeys?.length && status.status !== "created" && action.purpose !== "cancel") {
           action.orderKeys = status.orderKeys;
           for (const key of status.orderKeys)
             if (!this.active.ownedOrderKeys.includes(key)) this.active.ownedOrderKeys.push(key);
           await this.save();
         }
         // Cancellation has no keeper execution; a successful relay receipt is its settlement.
-        const cancelled =
-          (action.purpose === "cancel" || action.settlement === "receipt") &&
-          ["created", "cancelled"].includes(status.status);
+        const cancelled = action.purpose === "cancel" && ["created", "cancelled"].includes(status.status);
         if (cancelled || ["executed", "cancelled", "relay_failed", "relay_reverted"].includes(status.status)) {
           const hash = status.executionTxnHash || status.createdTxnHash || status.txHash;
           if (status.status === "executed" || cancelled) {
@@ -693,25 +635,6 @@ export class FundedSession {
                   (keys.length !== action.orderKeys.length || keys.some((key) => !action.orderKeys!.includes(key))))
               )
                 throw new Error("Cancellation receipt does not match the test-owned orders");
-              action.cancelledOrderKeys = keys;
-            }
-          }
-          if (action.purpose === "open" && status.status === "executed") {
-            let positions = await this.sdk.fetchPositionsInfo({ address: this.address });
-            for (let poll = 0; !positions.length && poll < 20; poll++) {
-              await wait(1_000);
-              positions = await this.sdk.fetchPositionsInfo({ address: this.address });
-            }
-            if (positions.length !== 1) throw new Error("Executed opening is not reflected in account state");
-            for (const position of positions) {
-              if (
-                getAddress(position.marketAddress) !== getAddress(this.active.marketAddress) ||
-                position.sizeInUsd > economy.positionLimitUsd
-              ) {
-                throw new Error("Unexpected position; ownership must be resolved manually");
-              }
-              if (!this.active.ownedPositionKeys.includes(position.key))
-                this.active.ownedPositionKeys.push(position.key);
             }
           }
           action.state = status.status === "executed" || cancelled ? "settled" : "failed";
@@ -721,26 +644,9 @@ export class FundedSession {
           await this.save();
           break;
         }
-        if (allowCreatedOrders && createsOrder && status.status === "created") {
-          const hash = status.createdTxnHash || status.txHash;
-          if (!hash) throw new Error("Created order has no receipt evidence");
-          const receipt = await this.rpc.waitForTransactionReceipt({ hash: hash as Hex, timeout: 30_000 });
-          const keys = orderEventKeys(receipt, "OrderCreated", this.address, this.active.marketAddress);
-          if (keys.length !== 1) throw new Error("Order creation receipt must contain exactly one order");
-          for (const reported of [status.orderKeys, action.orderKeys]) {
-            if (reported?.length && (reported.length !== keys.length || reported.some((key) => !keys.includes(key))))
-              throw new Error("Order creation receipt differs from the recorded order keys");
-          }
-          action.orderKeys = keys;
-          for (const key of keys) if (!this.active.ownedOrderKeys.includes(key)) this.active.ownedOrderKeys.push(key);
-          action.state = "created";
-          action.finishedAt = new Date().toISOString();
-          await this.save();
-          break;
-        }
         await wait(3_000);
       }
-      if (action.state === "pending" || (!allowCreatedOrders && action.state === "created"))
+      if (action.state === "pending")
         throw new Error("Submission remains unresolved; no retry or new exposure is allowed");
     }
   }
@@ -868,7 +774,7 @@ export class FundedSession {
     this.active.actions.push(action);
     await this.save();
     await rpc.sendRawTransaction({ serializedTransaction: signed });
-    await this.reconcile(true);
+    await this.reconcile();
     if ((action.state as string) !== "settled") throw new Error("Native transaction failed");
     return action;
   }
@@ -913,7 +819,7 @@ export class FundedSession {
       relayerFeeTokenAddress: prepared.payload.gasPaymentParams.relayerFeeTokenAddress,
       relayerFeeAmount: prepared.payload.gasPaymentParams.relayerFeeAmount,
     });
-    await this.reconcile(true);
+    await this.reconcile();
     if ((action.state as string) !== "settled") throw new Error("Bridge withdrawal did not settle");
     return action;
   }
@@ -921,7 +827,7 @@ export class FundedSession {
   async cleanup(execute: boolean, finalize = true) {
     const journal = finalize ? await this.resume() : this.active;
     if (journal.completed) return { completed: true, alreadyClean: true };
-    if (execute) await this.reconcile(true);
+    if (execute) await this.reconcile();
     let state = await this.snapshot();
     const unknownPositions = state.positions.filter((p) => !journal.ownedPositionKeys.includes(p.key));
     const unknownOrders = state.orders.filter((o) => !journal.ownedOrderKeys.includes(o.key));
@@ -934,7 +840,6 @@ export class FundedSession {
       completed: false,
     };
     if (!execute) return summary;
-    this.sdk.clearSubaccount();
     if (journal.inventory) {
       await cleanupResources(this);
     }
@@ -1002,9 +907,7 @@ export class FundedSession {
         const plan = rebalancePlan({
           ...state,
           nativeUsd: state.nativeUsd + wrappedUsd,
-          initialNativeUsd: BigInt(journal.initialNativeUsd),
-          initialStableUsd: BigInt(journal.initialStableUsd),
-          targetNativeBps: journal.targetNativeBps === undefined ? undefined : BigInt(journal.targetNativeBps),
+          targetNativeBps: BigInt(journal.targetNativeBps),
         });
         if (plan.direction === "none") return null;
         const buying = plan.direction === "buy-native";
@@ -1051,12 +954,7 @@ export class FundedSession {
       if ((await this.snapshot()).wrappedAmount > 0n) throw new Error("Cleanup unwrap left WETH in the wallet");
     });
     state = await this.snapshot();
-    const finalPlan = rebalancePlan({
-      ...state,
-      initialNativeUsd: BigInt(journal.initialNativeUsd),
-      initialStableUsd: BigInt(journal.initialStableUsd),
-      targetNativeBps: journal.targetNativeBps === undefined ? undefined : BigInt(journal.targetNativeBps),
-    });
+    const finalPlan = rebalancePlan({ ...state, targetNativeBps: BigInt(journal.targetNativeBps) });
     if (
       state.orders.length ||
       state.positions.length ||

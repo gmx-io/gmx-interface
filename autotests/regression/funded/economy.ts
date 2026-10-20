@@ -19,7 +19,7 @@ export const economy = {
 } as const;
 
 export type FeeProfile = "economy" | "glv";
-export type FeePolicy = Pick<typeof economy, "runFeeLimitUsd" | "cleanupReserveUsd" | "actionFeeLimitUsd">;
+type FeePolicy = Pick<typeof economy, "runFeeLimitUsd" | "cleanupReserveUsd" | "actionFeeLimitUsd">;
 
 export function feePolicy(profile: FeeProfile): FeePolicy {
   if (profile === "economy") return economy;
@@ -104,31 +104,17 @@ export function checkFeeBudget(chargedUsd: bigint, quoteUsd: bigint, cleanup: bo
 }
 
 type RebalanceInput = {
-  initialNativeUsd: bigint;
-  initialStableUsd: bigint;
   nativeUsd: bigint;
   stableUsd: bigint;
-  targetNativeBps?: bigint;
+  targetNativeBps: bigint;
 };
 
-export function rebalanceTarget({
-  initialNativeUsd,
-  initialStableUsd,
-  nativeUsd,
-  stableUsd,
-  targetNativeBps,
-}: RebalanceInput) {
-  if ([initialNativeUsd, initialStableUsd, nativeUsd, stableUsd].some((v) => v < 0n)) {
-    throw new Error("Invalid balance snapshot");
-  }
-  const initialTotal = initialNativeUsd + initialStableUsd;
+export function rebalanceTarget({ nativeUsd, stableUsd, targetNativeBps }: RebalanceInput) {
+  if (nativeUsd < 0n || stableUsd < 0n) throw new Error("Invalid balance snapshot");
   const total = nativeUsd + stableUsd;
-  if (initialTotal <= 0n || total <= 0n) throw new Error("Cannot rebalance an empty wallet");
-  if (targetNativeBps !== undefined && (targetNativeBps < 0n || targetNativeBps > 10_000n))
-    throw new Error("Invalid target ETH ratio");
-  // Journals created before explicit targets keep their original allocation.
-  const targetNative =
-    targetNativeBps === undefined ? (total * initialNativeUsd) / initialTotal : (total * targetNativeBps) / 10_000n;
+  if (total <= 0n) throw new Error("Cannot rebalance an empty wallet");
+  if (targetNativeBps < 0n || targetNativeBps > 10_000n) throw new Error("Invalid target ETH ratio");
+  const targetNative = (total * targetNativeBps) / 10_000n;
   const delta = targetNative - nativeUsd;
   const amountUsd = delta < 0n ? -delta : delta;
   const driftBps = (amountUsd * 10_000n) / total;

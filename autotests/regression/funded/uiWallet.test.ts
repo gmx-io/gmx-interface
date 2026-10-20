@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { decodeFunctionData, encodeFunctionData, erc20Abi, getAddress, maxUint256 } from "viem";
 
-import { address, usdc, weth } from "../fixtures/fundedQuote";
+import { address, usdc, weth } from "./fundedQuote";
 import { UiWallet, type UiActionPlan } from "./uiWallet";
 import type { FundedSession } from "./session";
 import type { UiTransaction } from "./uiOrderGuard";
@@ -253,12 +253,4 @@ test("UI relay rejects a refused response without reconciling or answering it as
   assert.deepEqual(fulfilled, [{ status: 400, json: { error: "Funded UI relay guard rejected the request" } }]);
   assert.equal(actions[0].state, "pending");
   assert.match((results[0] as { error: string }).error, /refused/);
-});
-
-test("UI relay leaves the app's status polling to the real relay", async () => {
-  const { routes, route, events } = await relayFixture();
-  const status = "https://arbitrum.gmxapi.io/v1/relay/status";
-  assert.equal((routes[1][0] as RegExp).test(status), false);
-  await routes[0][1](route(status, undefined));
-  assert.deepEqual(events, ["fallback"]);
 });

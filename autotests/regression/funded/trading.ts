@@ -1,18 +1,10 @@
 import assert from "node:assert/strict";
-import type { TransactionReceipt } from "viem";
 
 import { getContract } from "../../../sdk/src/configs/contracts";
 import { getBatchTypedData } from "../../../sdk/src/utils/express/utils/batchOrderUtils";
-import {
-  buildTokenTransfersParamsForIncreaseOrSwap,
-  getBatchOrderMulticallPayload,
-} from "../../../sdk/src/utils/orderTransactions/utils";
-import { setOrderDataListMetadataIsExpress } from "../../../sdk/src/utils/twap/uiFeeReceiver";
-import type { FundedAction } from "./journal";
 import { getPositionKey } from "../../../sdk/src/utils/positions/utils";
 import { affordablePosition, ceilDiv, economy, USD } from "./economy";
-import { bufferSubaccountRelayFee, inspectPreparedOrder, type OrderIntent } from "./preparedOrder";
-import { orderEventKeys } from "./orderReceipt";
+import { inspectPreparedOrder } from "./preparedOrder";
 import type { FundedSession } from "./session";
 
 export async function eventually<T>(read: () => Promise<T>, matches: (value: T) => boolean, timeout = 90_000) {
@@ -45,68 +37,44 @@ export async function quoteTrigger(
   session: FundedSession,
   state: Awaited<ReturnType<FundedSession["snapshot"]>>,
   isLong: boolean,
-  kind: "limit" | "stop-market" | "take-profit" | "stop-loss",
-  existing?: Awaited<ReturnType<typeof position>>
+  kind: "limit" | "stop-market"
 ) {
-  const increase = kind === "limit" || kind === "stop-market";
-  const below =
-    kind === "limit" ? isLong : kind === "stop-market" ? !isLong : kind === "take-profit" ? !isLong : isLong;
+  const below = kind === "limit" ? isLong : !isLong;
   const triggerPrice = (state.weth.prices.minPrice * (below ? 50n : 150n)) / 100n;
   const sizing = affordablePosition({ ...state.market, openingCostsUsd: USD / 2n });
   const amount = ceilDiv(sizing.collateralUsd * 10n ** 6n, state.usdc.prices.minPrice);
-  const sizeUsd = existing?.sizeInUsd ?? sizing.sizeUsd;
   const prepared = await session.sdk.prepareOrder({
-    kind: increase ? "increase" : "decrease",
+    kind: "increase",
     symbol: state.market.marketTokenAddress,
     direction: isLong ? "long" : "short",
     orderType: kind,
-    size: sizeUsd,
+    size: sizing.sizeUsd,
     triggerPrice,
     collateralToken: "USDC",
-    ...(increase ? { collateralToPay: { token: "USDC", amount } } : { receiveToken: "USDC" }),
+    collateralToPay: { token: "USDC", amount },
     gasPaymentToken: state.usdc.address,
     slippage: economy.slippageBps,
     mode: "express",
     from: session.address,
   });
-  const intent: OrderIntent = increase
-    ? {
-        kind: "increase" as const,
-        isLong,
-        sizeUsd,
-        collateralAmount: amount,
-        orderType: kind === "limit" ? 3 : 8,
-        triggerPrice: triggerPrice / 10n ** 18n,
-      }
-    : {
-        kind: "close" as const,
-        isLong,
-        sizeUsd,
-        collateralAmount: existing!.collateralAmount,
-        orderType: kind === "take-profit" ? 5 : 6,
-        triggerPrice: triggerPrice / 10n ** 18n,
-      };
-  const buffered = bufferSubaccountRelayFee({
+  return inspectPreparedOrder({
     prepared,
-    intent,
+    intent: {
+      kind: "increase",
+      isLong,
+      sizeUsd: sizing.sizeUsd,
+      collateralAmount: amount,
+      orderType: kind === "limit" ? 3 : 8,
+      triggerPrice: triggerPrice / 10n ** 18n,
+    },
     address: session.address,
     marketAddress: state.market.marketTokenAddress,
-    subaccountApproval: session.sdk.subaccountApprovalMessage,
     ...state,
   });
-  const quote = inspectPreparedOrder({
-    prepared: buffered,
-    intent,
-    address: session.address,
-    marketAddress: state.market.marketTokenAddress,
-    subaccountApproval: session.sdk.subaccountApprovalMessage,
-    ...state,
-  });
-  return { prepared: buffered, intent, feeUsd: quote.feeUsd, amount };
 }
 
 export async function quoteTwap(session: FundedSession, state: Awaited<ReturnType<FundedSession["snapshot"]>>) {
-  const { size, collateral, amount } = twapSizing(state);
+  const { size, amount } = twapSizing(state);
   const start = Math.floor(Date.now() / 1000) - 5;
   const prepared = await session.sdk.prepareOrder({
     kind: "increase",
@@ -122,10 +90,9 @@ export async function quoteTwap(session: FundedSession, state: Awaited<ReturnTyp
     mode: "express",
     from: session.address,
   });
-  const orders = prepared.payload.batchParams.createOrderParams.map((p) => p.orderPayload);
-  // API TWAP quotes use unlimited acceptable prices; classic calldata enforces a fixed bound.
-  for (const order of orders)
-    order.numbers.acceptablePrice = (state.weth.prices.maxPrice * 10_030n) / 10_000n / 10n ** 18n;
+  // The inspector rejects the API's unlimited TWAP acceptable prices, so bound them before checking the fee.
+  for (const { orderPayload } of prepared.payload.batchParams.createOrderParams)
+    orderPayload.numbers.acceptablePrice = (state.weth.prices.maxPrice * 10_030n) / 10_000n / 10n ** 18n;
   prepared.payload.typedData = getBatchTypedData({
     chainId: 42161,
     account: session.address,
@@ -133,7 +100,7 @@ export async function quoteTwap(session: FundedSession, state: Awaited<ReturnTyp
     relayParams: prepared.payload.relayParams,
     relayRouterAddress: getContract(42161, "GelatoRelayRouter"),
   });
-  const quote = inspectPreparedOrder({
+  return inspectPreparedOrder({
     prepared,
     address: session.address,
     marketAddress: state.market.marketTokenAddress,
@@ -147,30 +114,6 @@ export async function quoteTwap(session: FundedSession, state: Awaited<ReturnTyp
       twap: { start, end: start + 630 },
     },
   });
-  for (const create of prepared.payload.batchParams.createOrderParams) {
-    const order = create.orderPayload;
-    order.addresses.receiver = order.addresses.cancellationReceiver = session.address;
-    order.dataList = setOrderDataListMetadataIsExpress(order.dataList, false);
-    create.tokenTransfersParams = buildTokenTransfersParamsForIncreaseOrSwap({
-      chainId: 42161,
-      receiver: session.address,
-      payTokenAddress: state.usdc.address,
-      payTokenAmount: BigInt(order.numbers.initialCollateralDeltaAmount),
-      receiveTokenAddress: state.usdc.address,
-      executionFeeAmount: BigInt(order.numbers.executionFee),
-      externalSwapQuote: undefined,
-      minOutputAmount: 0n,
-      swapPath: [],
-    });
-  }
-  const batch = getBatchOrderMulticallPayload({ params: prepared.payload.batchParams });
-  const executionFeeUsd = (batch.value * state.weth.prices.maxPrice) / 10n ** 18n;
-  assert.ok(
-    executionFeeUsd > 0n && executionFeeUsd <= quote.feeUsd,
-    "TWAP native execution fees exceed the inspected budget"
-  );
-  // Classic submission pays native keeper fees; nativeTransaction adds gas, with no relay charge.
-  return { size, collateral, amount, batch, feeUsd: executionFeeUsd + quote.orderCostsUsd };
 }
 
 function twapSizing(state: Awaited<ReturnType<FundedSession["snapshot"]>>) {
@@ -182,12 +125,5 @@ function twapSizing(state: Awaited<ReturnType<FundedSession["snapshot"]>>) {
   );
   // The API floors each TWAP part, so collateral must divide evenly into two parts.
   const amount = ceilDiv(collateral * 10n ** 6n, state.usdc.prices.minPrice * 2n) * 2n;
-  return { size, collateral, amount };
-}
-
-export function registerTwapReceipt(session: FundedSession, action: FundedAction, receipt: TransactionReceipt) {
-  const keys = orderEventKeys(receipt, "OrderCreated", session.address, session.active.marketAddress);
-  assert.equal(keys.length, 2, "TWAP receipt must create two orders");
-  for (const key of keys) if (!session.active.ownedOrderKeys.includes(key)) session.active.ownedOrderKeys.push(key);
-  action.orderKeys = keys;
+  return { size, amount };
 }

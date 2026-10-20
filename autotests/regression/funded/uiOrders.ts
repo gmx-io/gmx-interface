@@ -22,7 +22,7 @@ async function chainOrder(session: FundedSession, key: string) {
   })) as { numbers: { triggerPrice: bigint; acceptablePrice: bigint; sizeDeltaUsd: bigint } };
 }
 
-export type UiSnapshot = Awaited<ReturnType<FundedSession["snapshot"]>>;
+type UiSnapshot = Awaited<ReturnType<FundedSession["snapshot"]>>;
 
 export async function submitUiOrderAction(
   session: FundedSession,

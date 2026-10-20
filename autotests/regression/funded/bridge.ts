@@ -141,7 +141,7 @@ export async function withdrawBridge(session: FundedSession) {
     const previous = session.active.actions.find((a) => ["bridge-withdraw", "ui:bridge-withdraw"].includes(a.purpose));
     if (!previous) await session.bridgeWithdrawal(params);
     else {
-      await session.reconcile(true);
+      await session.reconcile();
       assert.equal(previous.state, "settled", "Bridge return failed; do not blindly resubmit");
     }
     await eventually(
@@ -151,6 +151,4 @@ export async function withdrawBridge(session: FundedSession) {
     );
   }
   await withdrawAccount(session);
-  inventory.bridgeReturned = "true";
-  await session.save();
 }

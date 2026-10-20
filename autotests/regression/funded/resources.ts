@@ -12,11 +12,7 @@ export async function cleanupResources(session: FundedSession) {
     await session.save();
     await removeUiBrowserState(session);
   }
-  if (
-    session.active.actions.some(
-      (a) => ["bridge-deposit", "ui:bridge-deposit"].includes(a.purpose) && a.state !== "failed"
-    )
-  )
+  if (session.active.actions.some((a) => a.purpose === "ui:bridge-deposit" && a.state !== "failed"))
     await withdrawBridge(session);
   await withdrawAccount(session);
   await withdrawBridgeGas(session);

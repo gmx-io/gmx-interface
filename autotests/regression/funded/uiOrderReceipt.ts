@@ -18,5 +18,4 @@ export function registerUiOrderReceipt(journal: FundedJournal, action: FundedAct
     cancelled.every((key) => journal.ownedOrderKeys.includes(key)),
     "UI transaction cancelled an unowned order"
   );
-  if (cancelled.length) action.cancelledOrderKeys = cancelled;
 }

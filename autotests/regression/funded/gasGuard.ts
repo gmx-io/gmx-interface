@@ -1,6 +1,6 @@
 import { createPublicClient, http, parseGwei } from "viem";
 
-export type GasCheck = {
+type GasCheck = {
   chainId: number;
   allowed: boolean;
   reason: string;

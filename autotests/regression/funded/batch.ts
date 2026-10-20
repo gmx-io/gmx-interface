@@ -13,7 +13,7 @@ export type BatchCaseResult = {
   error?: string;
 };
 
-export type BatchCase = {
+type BatchCase = {
   id: FundedCase["id"];
   feeProfile: FeeProfile;
   status: "not-run" | "running" | "passed" | "failed" | "blocked";

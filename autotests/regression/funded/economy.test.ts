@@ -15,169 +15,104 @@ import {
   USD,
   usd,
 } from "./economy";
-import { chargedFees, readJournal, withWalletLock, writeJournal, type FundedJournal } from "./journal";
+import { chargedFees, readJournal, withWalletLock, writeJournal } from "./journal";
+import { testJournal } from "./testSession";
 
-test("excess ETH cannot cover the USDC starting reserve", () => {
-  const reserves = startingReserves({
-    stableUsd: usd("16.6356"),
-    nativeUsd: usd("80.6"),
-    collateralUsd: usd("2.5"),
-    profile: "economy",
-  });
-  assert.equal(reserves.sufficient, false);
-  assert.deepEqual(reserves.requiredUsd, { USDC: usd("17.5"), ETH: usd("5") });
-  assert.deepEqual(reserves.shortfallUsd, { USDC: usd("0.8644"), ETH: 0n });
+test("starting reserves are checked per asset at the exact boundary; surplus ETH cannot cover USDC", () => {
+  for (const [profile, stableUsd, nativeUsd, shortfallUsd] of [
+    ["economy", usd("16.6356"), usd("80.6"), { USDC: usd("0.8644"), ETH: 0n }],
+    ["economy", usd("17.5"), usd("5"), { USDC: 0n, ETH: 0n }],
+    ["economy", usd("17.5") - 1n, usd("5"), { USDC: 1n, ETH: 0n }],
+    ["economy", usd("17.5"), usd("5") - 1n, { USDC: 0n, ETH: 1n }],
+    ["glv", usd("15"), usd("13"), { USDC: 0n, ETH: 0n }],
+    ["glv", usd("15") - 1n, usd("13"), { USDC: 1n, ETH: 0n }],
+    ["glv", usd("15"), usd("13") - 1n, { USDC: 0n, ETH: 1n }],
+  ] as const) {
+    const reserves = startingReserves({ stableUsd, nativeUsd, collateralUsd: usd("2.5"), profile });
+    assert.deepEqual(reserves.shortfallUsd, shortfallUsd);
+    assert.equal(reserves.sufficient, shortfallUsd.USDC === 0n && shortfallUsd.ETH === 0n);
+    assert.deepEqual(
+      reserves.requiredUsd,
+      profile === "economy" ? { USDC: usd("17.5"), ETH: usd("5") } : { USDC: usd("15"), ETH: usd("13") }
+    );
+  }
 });
 
-for (const profile of ["economy", "glv"] as const) {
-  test(`${profile} starting reserves accept the exact boundary and reject either asset one unit below`, () => {
-    const stableUsd = usd(profile === "economy" ? "17.5" : "15");
-    const nativeUsd = usd(profile === "economy" ? "5" : "13");
-    const input = { stableUsd, nativeUsd, collateralUsd: usd("2.5"), profile };
-    assert.equal(startingReserves(input).sufficient, true);
-    for (const asset of ["stableUsd", "nativeUsd"] as const) {
-      const reserves = startingReserves({ ...input, [asset]: input[asset] - 1n });
-      assert.equal(reserves.sufficient, false);
-      assert.equal(reserves.shortfallUsd[asset === "stableUsd" ? "USDC" : "ETH"], 1n);
+test("fee budgets keep the cleanup reserve and share one run cap; GLV is a bounded opt-in profile", () => {
+  for (const [chargedUsd, quoteUsd, cleanup, policy, error] of [
+    [2n * USD, USD, false, economy],
+    [2n * USD, USD + 1n, false, economy, "Action fee exceeds $1 (estimated $1.000000000000000000000000000001)"],
+    [3n * USD, usd("0.01"), false, economy, /Cleanup fee reserve/],
+    [4n * USD, USD, true, economy],
+    [5n * USD, 1n, true, economy, /Run fee budget/],
+    [0n, 0n, false, economy, /Invalid fee accounting/],
+    [0n, usd("3.3"), false, economy, /Action fee/],
+    [0n, usd("3.3"), false, feePolicy("glv")],
+    [usd("3.3"), usd("3.3"), true, feePolicy("glv")],
+    [usd("3.3"), USD, false, feePolicy("glv"), /Cleanup fee reserve/],
+    [usd("7"), usd("1.01"), true, feePolicy("glv"), /Run fee budget/],
+  ] as const) {
+    const check = () => checkFeeBudget(chargedUsd, quoteUsd, cleanup, policy);
+    if (error === undefined) assert.doesNotThrow(check);
+    else assert.throws(check, typeof error === "string" ? { message: error } : error);
+  }
+});
+
+test("sizes above market minimums and fees without raising leverage, and blocks unaffordable markets", () => {
+  for (const [minCollateralUsd, minPositionSizeUsd, openingCostsUsd, remainingParts, expected] of [
+    [USD, USD, usd("0.48"), 1, { sizeUsd: 2n * USD, collateralUsd: usd("2.48") }],
+    [USD, 3n * USD, usd("0.1"), 2, { sizeUsd: 6n * USD, collateralUsd: usd("4.1") }],
+    [5n * USD, USD, 0n, 1],
+    [USD, 11n * USD, 0n, 1],
+    [0n, USD, 0n, 1],
+  ] as const) {
+    const size = () => affordablePosition({ minCollateralUsd, minPositionSizeUsd, openingCostsUsd, remainingParts });
+    if (!expected) {
+      assert.throws(size);
+      continue;
     }
-  });
-}
-
-test("GLV has a bounded opt-in profile; the default still rejects its keeper fees", () => {
-  assert.throws(() => checkFeeBudget(0n, usd("3.3"), false), /Action fee/);
-  assert.doesNotThrow(() => checkFeeBudget(0n, usd("3.3"), false, feePolicy("glv")));
-  assert.doesNotThrow(() => checkFeeBudget(usd("3.3"), usd("3.3"), true, feePolicy("glv")));
-  assert.throws(() => checkFeeBudget(usd("3.3"), USD, false, feePolicy("glv")), /Cleanup fee reserve/);
-  assert.throws(() => checkFeeBudget(usd("7"), usd("1.01"), true, feePolicy("glv")), /Run fee budget/);
+    const result = size();
+    assert.deepEqual(result, expected);
+    assert(result.sizeUsd * 10_000n <= result.collateralUsd * economy.maxLeverageBps);
+  }
 });
 
-test("sizes above current collateral minimum and fees, without raising leverage to save collateral", () => {
-  const result = affordablePosition({ minCollateralUsd: USD, minPositionSizeUsd: USD, openingCostsUsd: usd("0.48") });
-  assert.equal(result.sizeUsd, 2n * USD);
-  assert.equal(result.collateralUsd, usd("2.48"));
-  assert(result.sizeUsd * 10_000n <= result.collateralUsd * economy.maxLeverageBps);
-});
-
-test("partial-close sizing respects the minimum of the remaining position", () => {
-  const result = affordablePosition({
-    minCollateralUsd: USD,
-    minPositionSizeUsd: 3n * USD,
-    openingCostsUsd: usd("0.1"),
-    remainingParts: 2,
-  });
-  assert.equal(result.sizeUsd, 6n * USD);
-  assert.equal(result.collateralUsd, usd("4.1"));
-});
-
-test("blocks markets whose minimums cannot fit the small-wallet budget", () => {
-  assert.throws(() => affordablePosition({ minCollateralUsd: 5n * USD, minPositionSizeUsd: USD, openingCostsUsd: 0n }));
-  assert.throws(() =>
-    affordablePosition({ minCollateralUsd: USD, minPositionSizeUsd: 11n * USD, openingCostsUsd: 0n })
-  );
-  assert.throws(() => affordablePosition({ minCollateralUsd: 0n, minPositionSizeUsd: USD, openingCostsUsd: 0n }));
-});
-
-test("the opening budget cannot consume cleanup reserves; cleanup shares the same total cap", () => {
-  checkFeeBudget(2n * USD, USD, false);
-  assert.throws(() => checkFeeBudget(2n * USD, USD + 1n, false), {
-    message: "Action fee exceeds $1 (estimated $1.000000000000000000000000000001)",
-  });
-  assert.throws(() => checkFeeBudget(3n * USD, usd("0.01"), false));
-  checkFeeBudget(4n * USD, USD, true);
-  assert.throws(() => checkFeeBudget(5n * USD, 1n, true));
-  assert.throws(() => checkFeeBudget(0n, 0n, false));
-});
-
-test("does not spend a swap fee on dust or a small ratio drift", () => {
-  assert.equal(
-    rebalancePlan({
-      initialNativeUsd: 20n * USD,
-      initialStableUsd: 80n * USD,
-      nativeUsd: 19n * USD,
-      stableUsd: 79n * USD,
-    }).direction,
-    "none"
-  );
-  assert.equal(
-    rebalancePlan({
-      initialNativeUsd: 20n * USD,
-      initialStableUsd: 80n * USD,
-      nativeUsd: 17n * USD,
-      stableUsd: 83n * USD,
-    }).direction,
-    "none"
-  );
-});
-
-test("restores the initial value ratio using the remaining capital, not the original dollar amounts", () => {
-  const plan = rebalancePlan({
-    initialNativeUsd: 20n * USD,
-    initialStableUsd: 80n * USD,
-    nativeUsd: 10n * USD,
-    stableUsd: 80n * USD,
-  });
-  assert.equal(plan.direction, "buy-native");
-  assert.equal(plan.amountUsd, 8n * USD);
-});
-
-test("an explicit 50/50 target uses remaining capital instead of the initial ratio", () => {
-  const plan = rebalancePlan({
-    initialNativeUsd: 80n * USD,
-    initialStableUsd: 20n * USD,
-    nativeUsd: 55n * USD,
-    stableUsd: 39n * USD,
-    targetNativeBps: 5_000n,
-  });
-  assert.equal(plan.direction, "sell-native");
-  assert.equal(plan.amountUsd, 8n * USD);
-  assert.deepEqual(plan.targetUsd, { ETH: 47n * USD, USDC: 47n * USD });
-});
-
-test("50/50 tolerates five percentage points and dust while retaining the $10 swap cap", () => {
-  const initial = { initialNativeUsd: 50n * USD, initialStableUsd: 50n * USD, targetNativeBps: 5_000n };
-  assert.equal(rebalancePlan({ ...initial, nativeUsd: 55n * USD, stableUsd: 45n * USD }).direction, "none");
-  assert.equal(rebalancePlan({ ...initial, nativeUsd: 56n * USD, stableUsd: 44n * USD }).direction, "sell-native");
-  assert.equal(rebalancePlan({ ...initial, nativeUsd: usd("9.9"), stableUsd: usd("6.1") }).direction, "none");
-  const largeDrift = { ...initial, nativeUsd: 80n * USD, stableUsd: 20n * USD };
+test("50/50 rebalancing skips dust and small drift and stops at the swap cap or reserves", () => {
+  const plan = (nativeUsd: bigint, stableUsd: bigint) =>
+    rebalancePlan({ nativeUsd, stableUsd, targetNativeBps: economy.targetNativeBps });
+  for (const [nativeUsd, stableUsd, expected] of [
+    [55n * USD, 45n * USD, "none"],
+    [usd("9.9"), usd("6.1"), "none"],
+    [56n * USD, 44n * USD, ["sell-native", 6n * USD]],
+    [55n * USD, 39n * USD, ["sell-native", 8n * USD]],
+    [40n * USD, 58n * USD, ["buy-native", 9n * USD]],
+    [80n * USD, 20n * USD, /\$10 rebalance limit/],
+    [8n * USD, usd("0.5"), /native gas reserve/],
+    [8n * USD, 12n * USD, /stablecoin and cleanup reserves/],
+  ] as const) {
+    if (expected instanceof RegExp) {
+      assert.throws(() => plan(nativeUsd, stableUsd), expected);
+      continue;
+    }
+    const result = plan(nativeUsd, stableUsd);
+    assert.equal(result.direction, expected === "none" ? "none" : expected[0]);
+    if (expected !== "none") assert.equal(result.amountUsd, expected[1]);
+  }
+  assert.deepEqual(plan(55n * USD, 39n * USD).targetUsd, { ETH: 47n * USD, USDC: 47n * USD });
+  const largeDrift = { nativeUsd: 80n * USD, stableUsd: 20n * USD, targetNativeBps: economy.targetNativeBps };
   assert.equal(rebalanceTarget(largeDrift).amountUsd, 30n * USD);
-  assert.throws(() => rebalancePlan(largeDrift), /\$10 rebalance limit/);
   assert.throws(() => rebalanceTarget({ ...largeDrift, targetNativeBps: 10_001n }), /Invalid target/);
-});
-
-test("large drift and gas-reserve depletion require intervention instead of extra swaps", () => {
-  assert.throws(() =>
-    rebalancePlan({
-      initialNativeUsd: 20n * USD,
-      initialStableUsd: 80n * USD,
-      nativeUsd: 50n * USD,
-      stableUsd: 50n * USD,
-    })
-  );
-  assert.throws(() =>
-    rebalancePlan({ initialNativeUsd: USD, initialStableUsd: 99n * USD, nativeUsd: 8n * USD, stableUsd: 12n * USD })
-  );
 });
 
 test("fee reservations and unresolved actions survive a fresh journal reader", async () => {
   const directory = await mkdtemp(join(tmpdir(), "gmx-regression-test-"));
   try {
-    const journal: FundedJournal = {
-      version: 1,
-      id: "test-run",
-      chainId: 42161,
-      address: "test-wallet",
-      createdAt: new Date().toISOString(),
-      initialNativeUsd: (20n * USD).toString(),
-      initialStableUsd: (80n * USD).toString(),
-      marketAddress: "market",
-      ownedPositionKeys: [],
-      ownedOrderKeys: [],
-      completed: false,
+    const journal = testJournal("test-wallet", {
       actions: [
-        { id: "sent", purpose: "open", feeUsd: USD.toString(), requestId: "request", state: "pending" },
+        { id: "sent", purpose: "close", feeUsd: USD.toString(), requestId: "request", state: "pending" },
         { id: "failed", purpose: "approve", feeUsd: USD.toString(), state: "failed" },
       ],
-    };
+    });
     await writeJournal(directory, journal);
     const reloaded = (await readJournal(directory))!;
     assert.equal(chargedFees(reloaded), 2n * USD);

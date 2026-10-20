@@ -1,54 +1,63 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
+import { HttpRequestError, TimeoutError } from "viem";
 
 import { HttpError } from "../../../sdk/src/utils/http/http";
 import { fundedErrorMessage, fundedNetworkFailure, fundedRelayFailure } from "./errors";
 
-test("RPC error codes survive contract wrappers without exposing request details", () => {
-  for (const [name, code] of [
-    ["InternalRpcError", -32603],
-    ["LimitExceededRpcError", -32005],
-    ["ResourceUnavailableRpcError", -32002],
-    ["RpcRequestError", 429],
-  ] as const) {
-    const cause = Object.assign(new Error("https://user:password@example.test; signature secret"), { name, code });
-    const error = new Error("secret wrapper", { cause });
-    assert.equal(fundedNetworkFailure(error)?.retryable, true);
-    assert.equal(fundedErrorMessage(error), `RPC request failed (code ${code}). Request details omitted.`);
-  }
-});
+const endpoint = "https://user:password@example.test/secret";
+const named = (name: string, fields: object = {}, message = `${endpoint}; signature secret`) =>
+  Object.assign(new Error(message), { name, ...fields });
+const wrapped = (cause: unknown) => new Error(endpoint, { cause });
+const revertOf = (cause: Error) =>
+  Object.assign(new Error("secret", { cause }), { name: "ContractFunctionRevertedError" });
 
-test("errors from another module instance retain safe status diagnostics", () => {
-  for (const name of ["HttpError", "HttpRequestError"]) {
-    const cause = { name, statusCode: 503, status: 503, message: "https://user:secret@example.test" };
-    assert.equal(fundedNetworkFailure({ cause })?.retryable, true);
-    assert.match(fundedErrorMessage({ cause }), /request failed \(status 503\)/);
-    assert.doesNotMatch(fundedErrorMessage({ cause }), /https|secret/);
+test("network failures are retried only when transient, with safe diagnostics", () => {
+  for (const [error, retryable, message] of [
+    ...[408, 429, 500, 502, 503, 504].flatMap((status) => [
+      [wrapped(new HttpError(status, endpoint)), true, `API request failed (status ${status}).`],
+      [wrapped(new HttpRequestError({ status, url: endpoint })), true, `RPC request failed (status ${status}).`],
+    ]),
+    ...[400, 401, 403, 404].map((status) => [new HttpRequestError({ status, url: endpoint }), false]),
+    [new HttpError(400, "Invalid order", { code: "INVALID_PARAMS" }), false],
+    // Errors from another module instance only keep their class name.
+    [{ cause: { name: "HttpError", statusCode: 503, message: endpoint } }, true, /request failed \(status 503\)/],
+    [{ cause: { name: "HttpRequestError", status: 503, message: endpoint } }, true, /request failed \(status 503\)/],
+    [new TimeoutError({ url: endpoint, body: { signature: "secret" } }), true, "Read request timed out."],
+    [named("Error", { code: "ECONNRESET" }), true, "Network connection failed (ECONNRESET)."],
+    [wrapped(named("Error", { code: "UND_ERR_SOCKET" })), true, "Network connection failed (UND_ERR_SOCKET)."],
+    [new DOMException(endpoint, "AbortError"), true, "Read request timed out."],
+    ...(
+      [
+        ["InternalRpcError", -32603],
+        ["LimitExceededRpcError", -32005],
+        ["ResourceUnavailableRpcError", -32002],
+        ["RpcRequestError", 429],
+      ] as const
+    ).map(([name, code]) => [wrapped(named(name, { code })), true, `RPC request failed (code ${code}).`]),
+    [
+      named("InvalidInputRpcError", { code: -32000 }, `rate limit exceeded: ${endpoint}`),
+      true,
+      "RPC rate limit exceeded.",
+    ],
+    ...[-32600, -32601, -32602, -32000, 3].map((code) => [named("RpcRequestError", { code }), false]),
+    [revertOf(named("InternalRpcError", { code: -32603 })), true],
+    [
+      Object.assign(revertOf(named("InternalRpcError", { code: -32603 })), { raw: `0x${"11".repeat(32)}` }),
+      false,
+      "Contract call reverted.",
+    ],
+    [named("ContractFunctionRevertedError"), false],
+    [named("InternalRpcError", { code: -32603 }, "execution reverted"), false],
+    [new Error("Unowned exposure found"), undefined],
+    [new Error("Missing or stale token prices"), undefined],
+  ] as [unknown, boolean | undefined, (string | RegExp)?][]) {
+    assert.equal(fundedNetworkFailure(error)?.retryable, retryable);
+    if (!message) continue;
+    if (typeof message === "string") assert.equal(fundedErrorMessage(error), `${message} Request details omitted.`);
+    else assert.match(fundedErrorMessage(error), message);
+    assert.doesNotMatch(fundedErrorMessage(error), /password|secret|https/);
   }
-});
-
-test("contract revert data, permanent RPC errors and actual execution reverts are never retried", () => {
-  const internal = Object.assign(new Error("backend unavailable"), { name: "InternalRpcError", code: -32603 });
-  const wrapped = Object.assign(new Error("secret", { cause: internal }), { name: "ContractFunctionRevertedError" });
-  assert.equal(fundedNetworkFailure(wrapped)?.retryable, true);
-  Object.assign(wrapped, { raw: `0x${"11".repeat(32)}` });
-  assert.equal(fundedNetworkFailure(wrapped)?.retryable, false);
-  assert.equal(fundedErrorMessage(wrapped), "Contract call reverted. Request details omitted.");
-  for (const code of [-32600, -32601, -32602, -32000, 3]) {
-    const error = Object.assign(new Error("secret"), { name: "RpcRequestError", code });
-    assert.equal(fundedNetworkFailure(error)?.retryable, false);
-  }
-  internal.message = "execution reverted";
-  assert.equal(fundedNetworkFailure(internal)?.retryable, false);
-});
-
-test("provider rate-limit responses are recognized without echoing the provider message", () => {
-  const error = Object.assign(new Error("rate limit exceeded: https://user:secret@example.test"), {
-    name: "InvalidInputRpcError",
-    code: -32000,
-  });
-  assert.equal(fundedNetworkFailure(error)?.retryable, true);
-  assert.equal(fundedErrorMessage(error), "RPC rate limit exceeded. Request details omitted.");
 });
 
 test("relay failure reports only recognized fee amounts or a fixed explanation", () => {
@@ -71,81 +80,51 @@ test("relay failure reports only recognized fee amounts or a fixed explanation",
   assert.equal(fundedRelayFailure({ status: "relay_reverted" }), "Relay transaction reverted");
 });
 
-test("contract decoding errors retain a useful explanation without RPC credentials or calldata", () => {
-  for (const name of ["PositionOutOfBoundsError", "AbiDecodingDataSizeTooSmallError"]) {
-    const cause = new Error(`private key: secret; calldata 0x${"ab".repeat(32)}`);
-    cause.name = name;
-    const error = new Error("https://user:password@example.test", { cause });
-    assert.equal(
-      fundedErrorMessage(error),
-      "Contract response could not be decoded; check that the ABI matches the deployed contract."
-    );
-  }
-});
-
-test("API preparation errors preserve recognized codes but never response messages or payloads", () => {
-  const error = new HttpError(400, "HTTP 400: secret payload", {
-    code: "INVALID_PARAMS",
-    message: "secret payload",
-    traceId: "secret trace",
-  });
-  assert.equal(fundedErrorMessage(error), "API request failed: INVALID_PARAMS (status 400). Request details omitted.");
-  const missing = new HttpError(400, "HTTP 400: Position not found", {
-    message: `Position not found: 0x${"ab".repeat(32)}`,
-  });
-  assert.equal(
-    fundedErrorMessage(missing),
-    "API request failed: POSITION_NOT_FOUND (status 400). Request details omitted."
-  );
-});
-
-test("unknown API codes and response bodies stay hidden while the status remains visible", () => {
-  const error = new HttpError(503, "https://user:password@example.test failed", {
-    code: "secret-code",
-    message: "secret-payload",
-    traceId: "secret-trace",
-  });
-  assert.equal(fundedErrorMessage(error), "API request failed (status 503). Request details omitted.");
-  assert.equal(
-    fundedErrorMessage(
-      new HttpError(400, "HTTP 400", {
-        code: "secret-code",
-        message: "secret-payload",
-      })
-    ),
-    "API request failed (status 400). Request details omitted."
-  );
-});
-
-test("navigation failures retain their cause without exposing the URL or call log", () => {
-  const error = new Error(
-    "page.goto: net::ERR_CONNECTION_TIMED_OUT at https://user:password@example.test/trade?token=secret\n" +
-      'Call log:\n  - navigating to "https://example.test/trade", waiting until "load"'
-  );
-  assert.equal(
-    fundedErrorMessage(error),
-    "Browser navigation failed: net::ERR_CONNECTION_TIMED_OUT. Check REGRESSION_BASE_URL and network access."
-  );
-});
-
-test("navigation timeout diagnostics omit credentials and only preserve a fixed explanation", () => {
-  assert.equal(
-    fundedErrorMessage(new Error("page.reload: Timeout 30000ms exceeded.\nhttps://user:password@example.test")),
-    "Browser navigation timed out. Check REGRESSION_BASE_URL and network access."
-  );
-});
-
-test("API errors still hide endpoints, payloads, keys and signatures", () => {
-  for (const message of [
-    "RPC request to https://user:password@example.test failed",
-    `Unexpected payload 0x${"ab".repeat(32)}`,
-    "Invalid private key: secret",
-    "Rejected signature: secret",
-  ]) {
-    assert.equal(
-      fundedErrorMessage(new Error(message)),
-      "Funded operation failed; request details omitted. Inspect the retained journal and cleanup result."
-    );
-  }
-  assert.equal(fundedErrorMessage(new Error("Action fee exceeds $1")), "Action fee exceeds $1");
+test("error messages keep a useful cause without credentials, payloads, keys or signatures", () => {
+  const decoding = (name: string) =>
+    wrapped(Object.assign(new Error(`private key: secret; calldata 0x${"ab".repeat(32)}`), { name }));
+  const omitted = "Funded operation failed; request details omitted. Inspect the retained journal and cleanup result.";
+  for (const [error, message] of [
+    ...["PositionOutOfBoundsError", "AbiDecodingDataSizeTooSmallError"].map((name) => [
+      decoding(name),
+      "Contract response could not be decoded; check that the ABI matches the deployed contract.",
+    ]),
+    [
+      new HttpError(400, "HTTP 400: secret payload", {
+        code: "INVALID_PARAMS",
+        message: "secret payload",
+        traceId: "secret trace",
+      }),
+      "API request failed: INVALID_PARAMS (status 400). Request details omitted.",
+    ],
+    [
+      new HttpError(400, "HTTP 400: Position not found", { message: `Position not found: 0x${"ab".repeat(32)}` }),
+      "API request failed: POSITION_NOT_FOUND (status 400). Request details omitted.",
+    ],
+    [
+      new HttpError(503, `${endpoint} failed`, { code: "secret-code", message: "secret-payload", traceId: "secret" }),
+      "API request failed (status 503). Request details omitted.",
+    ],
+    [
+      new HttpError(400, "HTTP 400", { code: "secret-code", message: "secret-payload" }),
+      "API request failed (status 400). Request details omitted.",
+    ],
+    [
+      new Error(
+        `page.goto: net::ERR_CONNECTION_TIMED_OUT at ${endpoint}/trade?token=secret\n` +
+          'Call log:\n  - navigating to "https://example.test/trade", waiting until "load"'
+      ),
+      "Browser navigation failed: net::ERR_CONNECTION_TIMED_OUT. Check REGRESSION_BASE_URL and network access.",
+    ],
+    [
+      new Error(`page.reload: Timeout 30000ms exceeded.\n${endpoint}`),
+      "Browser navigation timed out. Check REGRESSION_BASE_URL and network access.",
+    ],
+    [new Error(`RPC request to ${endpoint} failed`), omitted],
+    [new Error(`Unexpected payload 0x${"ab".repeat(32)}`), omitted],
+    [new Error("Invalid private key: secret"), omitted],
+    [new Error("Rejected signature: secret"), omitted],
+    [new Error("Action fee exceeds $1"), "Action fee exceeds $1"],
+  ] as [unknown, string][])
+    assert.equal(fundedErrorMessage(error), message);
 });

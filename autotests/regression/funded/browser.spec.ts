@@ -143,46 +143,68 @@ for (const phase of ["initial", "reload"] as const) {
   });
 }
 
-test("funded UI: readiness waits for position data before the first paid action", async ({ page }) => {
-  await serveTradePage(page, { empty: true, initialLoadMs: 1_500 });
-  await page.goto("/trade");
-  await checkTradeUiReady(page);
-  await expect(page.getByText("Loading...", { exact: true })).toBeHidden({ timeout: 100 });
-  await expect(page.getByText("No open positions", { exact: true })).toBeVisible();
-});
+for (const { name, options, check } of [
+  {
+    name: "readiness waits for position data before the first paid action",
+    options: { empty: true, initialLoadMs: 1_500 },
+    check: async (page: Page) => {
+      await expect(page.getByText("Loading...", { exact: true })).toBeHidden({ timeout: 100 });
+      await expect(page.getByText("No open positions", { exact: true })).toBeVisible();
+    },
+  },
+  {
+    name: "readiness and order checks use the visible tab buttons",
+    options: {},
+    check: (page: Page) => checkOrder(page, "test-key"),
+  },
+]) {
+  test(`funded UI: ${name}`, async ({ page }) => {
+    await serveTradePage(page, options);
+    await page.goto("/trade");
+    await checkTradeUiReady(page);
+    await check(page);
+  });
+}
 
-test("funded UI: a loaded short position cannot satisfy a long assertion", async ({ page }) => {
-  await serveTradePage(page, { direction: "Short", initialLoadMs: 1_500 });
-  await expect(checkPosition(page, 2n * usd, true)).rejects.toThrow("toHaveCount");
-  await expect(page.getByText("Loading...", { exact: true })).toBeHidden({ timeout: 100 });
-});
+for (const { name, options, isLong, error } of [
+  {
+    name: "a loaded short position cannot satisfy a long assertion",
+    options: { direction: "Short", initialLoadMs: 1_500 },
+    isLong: true,
+    error: "toHaveCount",
+  },
+  { name: "collateral cannot satisfy an incorrect size assertion", options: { size: "3.00" }, error: "toContainText" },
+]) {
+  test(`funded UI: ${name}`, async ({ page }) => {
+    await serveTradePage(page, options);
+    await expect(checkPosition(page, 2n * usd, isLong)).rejects.toThrow(error);
+    await expect(page.getByText("Loading...", { exact: true })).toBeHidden({ timeout: 100 });
+  });
+}
 
-test("funded UI: collateral cannot satisfy an incorrect size assertion", async ({ page }) => {
-  await serveTradePage(page, { size: "3.00" });
-  await expect(checkPosition(page, 2n * usd)).rejects.toThrow("toContainText");
-});
-
-test("funded UI: an empty table during loading does not prove the position is closed", async ({ page }) => {
-  await serveTradePage(page, { empty: true });
-  await checkPosition(page, 0n);
-  await expect(page.locator("body")).toHaveAttribute("data-loaded", "true");
-});
-
-test("funded UI: readiness and order checks use the visible tab buttons", async ({ page }) => {
-  await serveTradePage(page);
-  await page.goto("/trade");
-  await checkTradeUiReady(page);
-  await checkOrder(page, "test-key");
-});
-
-test("funded UI: an empty position table cannot pass while the wallet is reconnecting", async ({ page }) => {
-  await serveTradePage(page, { empty: true, walletLoadMs: 1_500 });
-  await checkPosition(page, 0n);
-  await expect(page.locator("body")).toHaveAttribute("data-wallet-ready", "true", { timeout: 100 });
-});
-
-test("funded UI: a missing order cannot pass cancellation while the wallet is reconnecting", async ({ page }) => {
-  await serveTradePage(page, { ordersEmpty: true, walletLoadMs: 1_500 });
-  await checkOrder(page, "test-key", false);
-  await expect(page.locator("body")).toHaveAttribute("data-wallet-ready", "true", { timeout: 100 });
-});
+for (const { name, options, check, ready } of [
+  {
+    name: "an empty table during loading does not prove the position is closed",
+    options: { empty: true },
+    check: (page: Page) => checkPosition(page, 0n),
+    ready: "data-loaded",
+  },
+  {
+    name: "an empty position table cannot pass while the wallet is reconnecting",
+    options: { empty: true, walletLoadMs: 1_500 },
+    check: (page: Page) => checkPosition(page, 0n),
+    ready: "data-wallet-ready",
+  },
+  {
+    name: "a missing order cannot pass cancellation while the wallet is reconnecting",
+    options: { ordersEmpty: true, walletLoadMs: 1_500 },
+    check: (page: Page) => checkOrder(page, "test-key", false),
+    ready: "data-wallet-ready",
+  },
+]) {
+  test(`funded UI: ${name}`, async ({ page }) => {
+    await serveTradePage(page, options);
+    await check(page);
+    await expect(page.locator("body")).toHaveAttribute(ready, "true", { timeout: 100 });
+  });
+}

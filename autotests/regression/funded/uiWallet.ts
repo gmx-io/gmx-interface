@@ -133,7 +133,7 @@ export class UiWallet {
           // A replayed step is not sent again; the app polls the recorded task instead.
           await route.fulfill(response ? { response } : { json: { taskId: action.uiRelay.taskId } });
           fulfilled = true;
-          // The app polls the real status itself; the journey continues only after the harness verifies execution.
+          // Continue only after the harness verifies execution.
           if (action.state === "pending") await reconcileUiRelay(this.session, action);
           this.results.push({ kind: "action", action });
         })();
@@ -274,7 +274,7 @@ export class UiWallet {
       try {
         approval = decodeFunctionData({ abi: erc20Abi, data: tx.data });
       } catch {
-        /* Inspect the main UI operation below. */
+        /* not an ERC-20 call */
       }
       if (approval?.functionName === "approve") {
         const permitted = plan.approval;

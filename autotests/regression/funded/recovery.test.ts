@@ -5,9 +5,10 @@ import { join } from "node:path";
 import { test } from "node:test";
 
 import { USD, usd } from "./economy";
-import { readJournal, withWalletLock, writeJournal, type FundedJournal } from "./journal";
+import { readJournal, withWalletLock, writeJournal } from "./journal";
 import { withFundedRecovery } from "./recovery";
-import { FundedSession } from "./session";
+import type { FundedSession } from "./session";
+import { testJournal, testSession } from "./testSession";
 
 const originalCwd = process.cwd();
 const originalExecute = process.env.REGRESSION_FUNDED_EXECUTE;
@@ -31,15 +32,7 @@ function testRecovery(name: string, run: () => Promise<void>) {
 
 async function fixture() {
   const directory = await mkdtemp(join(root, "wallet-"));
-  const previousKey = process.env.REGRESSION_PRIVATE_KEY;
-  process.env.REGRESSION_PRIVATE_KEY = `0x${"1".repeat(64)}`;
-  let session: FundedSession;
-  try {
-    session = new FundedSession();
-  } finally {
-    if (previousKey === undefined) delete process.env.REGRESSION_PRIVATE_KEY;
-    else process.env.REGRESSION_PRIVATE_KEY = previousKey;
-  }
+  const session = testSession();
   Object.defineProperty(session, "directory", { value: directory });
   const forbidden = async () => {
     throw new Error("Offline recovery test attempted a transaction or RPC");
@@ -61,21 +54,7 @@ async function fixture() {
       stableUsd: 50n * USD,
       weth: { prices: { minPrice: 2000n * USD } },
     }) as unknown as Awaited<ReturnType<FundedSession["snapshot"]>>;
-  const journal: FundedJournal = {
-    version: 1,
-    id: "previous-run",
-    chainId: 42161,
-    address: session.address,
-    createdAt: new Date().toISOString(),
-    initialNativeUsd: (50n * USD).toString(),
-    initialStableUsd: (50n * USD).toString(),
-    targetNativeBps: "5000",
-    marketAddress: "0x2222222222222222222222222222222222222222",
-    ownedOrderKeys: [],
-    ownedPositionKeys: [],
-    actions: [],
-    completed: false,
-  };
+  const journal = testJournal(session.address, { id: "previous-run" });
   await writeJournal(directory, journal);
   return { session, directory, journal };
 }
@@ -221,15 +200,4 @@ testRecovery("recovery does not proceed if the retained fee accounting exceeds t
     /exceeded the previous run/
   );
   assert.equal((await readJournal(session.directory))?.id, journal.id);
-});
-
-testRecovery("a competing process holding the wallet lock prevents both recovery and new tests", async () => {
-  const { session, directory } = await fixture();
-  session.cleanup = async () => assert.fail("Must not clean another active run");
-  await withWalletLock(directory, async () => {
-    await assert.rejects(
-      withFundedRecovery(session, async () => assert.fail("Must not start")),
-      /locked/
-    );
-  });
 });

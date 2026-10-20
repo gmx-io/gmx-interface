@@ -10,11 +10,9 @@ export type FundedAction = {
   requestId?: string;
   txHash?: `0x${string}`;
   orderKeys?: string[];
-  cancelledOrderKeys?: string[];
-  state: "pending" | "created" | "settled" | "failed";
+  state: "pending" | "settled" | "failed";
   failureReason?: string;
   step?: string;
-  settlement?: "execution" | "creation" | "receipt";
   chainId?: 42161 | 8453;
   startedAt?: string;
   finishedAt?: string;
@@ -39,7 +37,7 @@ export type FundedAction = {
   };
 };
 
-export type FundedCheckpoint = {
+type FundedCheckpoint = {
   startedAt: string;
   finishedAt?: string;
   result?: string;
@@ -53,7 +51,7 @@ export type FundedJournal = {
   createdAt: string;
   initialNativeUsd: string;
   initialStableUsd: string;
-  targetNativeBps?: string;
+  targetNativeBps: string;
   balanceCleanupId?: string;
   marketAddress: string;
   ownedPositionKeys: string[];

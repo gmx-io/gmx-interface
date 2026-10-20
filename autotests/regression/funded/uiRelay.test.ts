@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { getContract } from "../../../sdk/src/configs/contracts";
-import { address } from "../fixtures/fundedQuote";
+import { address } from "./fundedQuote";
 import { USD } from "./economy";
 import type { FundedAction } from "./journal";
 import { submitUiRelay, reconcileUiRelay } from "./uiRelay";
@@ -65,7 +65,6 @@ test("the relay's own response is returned for the app after its task ID is save
   assert.equal(result.response, real);
   assert.equal(result.action, actions[0]);
   assert.equal(actions[0].uiRelay?.taskId, "real-task");
-  // Execution is reconciled separately, after the app has its response.
   assert.equal(actions[0].state, "pending");
   assert.deepEqual(events, ["gate", "saved", "sent", "saved"]);
 });
@@ -102,17 +101,6 @@ test("relay does not write when the gas or fee gate fails", async () => {
   );
   assert.equal(sent, false);
   assert.equal(actions.length, 0);
-});
-
-test("completed relay action is reused before another fee reservation or request", async () => {
-  const { session, actions, events } = fixture();
-  const previous: FundedAction = { id: "done", purpose: "ui:create", feeUsd: "1", state: "settled" };
-  actions.push(previous);
-  const result = await submitUiRelay(session, url, payload, "ui:create", false, USD, "one-click:create", async () => {
-    throw new Error("Unexpected duplicate request");
-  });
-  assert.deepEqual(result, { action: previous });
-  assert.deepEqual(events, []);
 });
 
 test("confirmed relay failure is saved so recovery can continue without repeating the failed operation", async (context) => {

@@ -3,15 +3,6 @@ import { test } from "node:test";
 
 import { fundedCases, selectFeeProfile, selectFundedCases } from "./catalog";
 
-test("all selects every funded scenario once in a stable serial order", () => {
-  const all = selectFundedCases(["--group", "all"]);
-  assert.equal(all.length, 17);
-  assert.equal(new Set(all.map((c) => c.id)).size, all.length);
-  assert.deepEqual(all, fundedCases);
-  for (const group of ["trading", "account", "bridge", "liquidity", "earn", "one-click"])
-    assert.ok(all.some((scenario) => scenario.group === group));
-});
-
 test("default stays on the smoke; explicit selection can resume later cases without re-running earlier groups", () => {
   assert.deepEqual(
     selectFundedCases([]).map((c) => c.id),

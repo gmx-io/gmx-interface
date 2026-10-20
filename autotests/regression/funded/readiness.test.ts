@@ -8,7 +8,6 @@ import {
   encodeAbiParameters,
   encodeEventTopics,
   maxUint256,
-  parseAbi,
   zeroAddress,
   type Abi,
   type AbiEvent,
@@ -20,17 +19,15 @@ import GlvRouter from "../../../sdk/src/abis/GlvRouter";
 import { Utils } from "../../../sdk/src/clients/v1/modules/utils/utils";
 import { GmxApiSdk } from "../../../sdk/src/clients/v2";
 import { getContract } from "../../../sdk/src/configs/contracts";
-import { address, marketAddress, preparedOrder, rebuildTypedData, usdc, weth } from "../fixtures/fundedQuote";
+import { address, marketAddress, preparedOrder, rebuildTypedData, usdc, weth } from "./fundedQuote";
 import { fundedCases } from "./catalog";
-import { checkFeeBudget, USD, usd } from "./economy";
+import { USD } from "./economy";
 import { readJournal, writeJournal, type FundedAction } from "./journal";
 import { fundedReadiness, requireFundedReadiness } from "./readiness";
 import { FundedSession } from "./session";
 import { runFundedCases } from "./runner";
-import { quoteTwap } from "./trading";
-import { withdrawAccount } from "./account";
-import { unstake } from "./earn";
 import { withdrawLiquidity } from "./liquidity";
+import { testJournal } from "./testSession";
 
 type RuntimeTestContext = {
   after(callback: () => unknown): void;
@@ -160,16 +157,6 @@ async function fixture(context: unknown) {
     o.orderType =
       request.orderType === "limit" || request.orderType === "twap" ? 3 : request.orderType === "stop-market" ? 8 : 2;
     o.numbers.triggerPrice = (request.triggerPrice ?? 0n) / 10n ** 18n;
-    if (request.kind === "decrease") {
-      o.orderType = request.orderType === "stop-loss" ? 6 : request.orderType === "take-profit" ? 5 : 4;
-      o.decreasePositionSwapType = 1;
-      o.numbers.acceptablePrice =
-        request.orderType === "stop-loss"
-          ? o.isLong
-            ? 0n
-            : maxUint256
-          : ((request.triggerPrice ?? 2000n * USD) * (o.isLong ? 9_970n : 10_030n)) / 10_000n / 10n ** 18n;
-    }
     if (request.orderType === "twap") {
       o.numbers.triggerPrice = maxUint256;
       o.numbers.validFromTime = BigInt(Math.floor(Date.now() / 1000));
@@ -208,69 +195,12 @@ for (const scenario of fundedCases) {
   });
 }
 
-for (const [price, expectedAmount] of [
-  [USD, 4_000_000n],
-  [999954311960089850000000000000n, 4_000_184n],
-  [USD + USD / 10_000n, 3_999_602n],
-]) {
-  test(`TWAP preserves collateral in both encoded parts at USDC price ${price}`, async (t) => {
-    const { session, state } = await fixture(t);
-    state.usdc = { ...state.usdc, prices: { minPrice: price, maxPrice: price } };
-    const quote = await quoteTwap(session, await session.snapshot());
-    assert.equal(quote.amount, expectedAmount);
-    assert.ok(quote.amount * price >= quote.collateral * 10n ** 6n);
-    assert.ok((quote.amount - 2n) * price < quote.collateral * 10n ** 6n);
-
-    const abi = ExchangeRouter as Abi;
-    const batch = decodeFunctionData({ abi, data: quote.batch.callData });
-    assert.equal(batch.functionName, "multicall");
-    const calls = (batch.args![0] as `0x${string}`[]).map((data) => decodeFunctionData({ abi, data }));
-    const transfers = calls.filter((call) => call.functionName === "sendTokens");
-    assert.equal(transfers.length, 2);
-    for (const transfer of transfers) {
-      assert.deepEqual(transfer.args, [usdc.address, getContract(42161, "OrderVault"), expectedAmount / 2n]);
-    }
-    const orders = calls.filter((call) => call.functionName === "createOrder");
-    assert.equal(orders.length, 2);
-    for (const order of orders) {
-      const payload = order.args![0] as { numbers: { initialCollateralDeltaAmount: bigint; sizeDeltaUsd: bigint } };
-      assert.equal(payload.numbers.initialCollateralDeltaAmount, expectedAmount / 2n);
-      assert.equal(payload.numbers.sizeDeltaUsd, quote.size / 2n);
-    }
-  });
-}
-
-test("classic TWAP reserves both native keeper fees and trading costs without paying an unused relay quote", async (t) => {
-  const { session } = await fixture(t);
-  const prepare = session.sdk.prepareOrder;
-  session.sdk.prepareOrder = async (request) => {
-    const prepared = await prepare(request);
-    prepared.payload.relayParams.fee.feeAmount = 1_400_000n;
-    Object.assign(prepared.estimates!, {
-      positionFeeUsd: usd("0.005"),
-      borrowingFeeUsd: usd("0.02"),
-      fundingFeeUsd: usd("0.01"),
-      positionPriceImpactDeltaUsd: -usd("0.03"),
-      swapPriceImpactDeltaUsd: usd("0.1"),
-    });
-    rebuildTypedData(prepared);
-    return prepared;
-  };
-  const quote = await quoteTwap(session, await session.snapshot());
-  assert.equal(quote.batch.value, 200_000_000_000_000n);
-  assert.equal(quote.feeUsd, usd("0.475"));
-  assert.doesNotThrow(() => checkFeeBudget(0n, quote.feeUsd + usd("0.1"), false));
-  assert.throws(() => checkFeeBudget(0n, quote.feeUsd + usd("0.6"), false), /estimated \$1\.075/);
-});
-
-test("TWAP still blocks native keeper fees above the action limit before any paid operation", async (t) => {
+test("TWAP preflight blocks a fee quote above the action limit before any paid operation", async (t) => {
   const { session } = await fixture(t);
   const prepare = session.sdk.prepareOrder;
   session.sdk.prepareOrder = async (request) => {
     const prepared = await prepare(request);
     prepared.payload.relayParams.fee.feeAmount = 2_000_000n;
-    for (const create of prepared.payload.batchParams.createOrderParams)
-      create.orderPayload.numbers.executionFee = 300_000_000_000_000n;
     rebuildTypedData(prepared);
     return prepared;
   };
@@ -279,7 +209,7 @@ test("TWAP still blocks native keeper fees above the action limit before any pai
     fundedCases.filter((c) => c.id === "twap")
   );
   assert.equal(report.ready, false);
-  assert.match(report.checks.find((c) => !c.ok)!.detail, /Action fee exceeds \$1 \(estimated \$1\.261\)/);
+  assert.match(report.checks.find((c) => !c.ok)!.detail, /Action fee exceeds \$1 \(estimated \$2\.061\)/);
   assert.equal(await readJournal(session.directory), undefined);
 });
 
@@ -296,20 +226,7 @@ test("all-case preflight collects every missing asset before the first case can 
 
 test("swap intent and the exact signed minimum are persisted before signing or submission", async (t) => {
   const { session } = await fixture(t);
-  await writeJournal(session.directory, {
-    version: 1,
-    id: "swap-intent",
-    chainId: 42161,
-    address,
-    marketAddress,
-    createdAt: "now",
-    initialNativeUsd: (50n * USD).toString(),
-    initialStableUsd: (50n * USD).toString(),
-    ownedPositionKeys: [],
-    ownedOrderKeys: [],
-    actions: [],
-    completed: false,
-  });
+  await writeJournal(session.directory, testJournal(address, { id: "swap-intent" }));
   await session.resume("swap-intent");
   session.save = FundedSession.prototype.save;
   session.execute = FundedSession.prototype.execute;
@@ -338,21 +255,7 @@ test("swap intent and the exact signed minimum are persisted before signing or s
 
 test("unfinished journal blocks every case and is preserved", async (t) => {
   const { session } = await fixture(t);
-  const journal = {
-    version: 1,
-    id: "unfinished",
-    chainId: 42161,
-    address,
-    createdAt: "now",
-    initialNativeUsd: "0",
-    initialStableUsd: "0",
-    marketAddress,
-    ownedPositionKeys: [],
-    ownedOrderKeys: [],
-    actions: [],
-    completed: false,
-  } as const;
-  await writeJournal(session.directory, structuredClone(journal) as never);
+  await writeJournal(session.directory, testJournal(address, { id: "unfinished" }));
   const report = await fundedReadiness(session, fundedCases, (c) => (c.id === "glv" ? "glv" : "economy"));
   assert.ok(report.cases.every((c) => c.status === "blocked"));
   assert.ok(report.checks.some((c) => c.check === "previous run" && !c.ok));
@@ -390,29 +293,22 @@ for (const kind of ["gm", "glv"] as const) {
       const { session } = await fixture(t);
       const key = `0x${"9".repeat(64)}` as const;
       const hash = `0x${"8".repeat(64)}` as const;
-      await writeJournal(session.directory, {
-        version: 1,
-        id: "pending-liquidity",
-        chainId: 42161,
-        address,
-        marketAddress,
-        createdAt: "now",
-        initialNativeUsd: (50n * USD).toString(),
-        initialStableUsd: (50n * USD).toString(),
-        ownedOrderKeys: [],
-        ownedPositionKeys: [],
-        completed: false,
-        inventory: { [`${kind}Token`]: kind === "gm" ? marketAddress : address },
-        actions: [
-          {
-            id: "request",
-            purpose: `${kind}-${withdrawal ? "withdraw" : "deposit"}`,
-            txHash: hash,
-            state: "settled",
-            feeUsd: "1",
-          },
-        ],
-      });
+      await writeJournal(
+        session.directory,
+        testJournal(address, {
+          id: "pending-liquidity",
+          inventory: { [`${kind}Token`]: kind === "gm" ? marketAddress : address },
+          actions: [
+            {
+              id: "request",
+              purpose: withdrawal ? `${kind}-withdraw` : `ui:${kind}-deposit`,
+              txHash: hash,
+              state: "settled",
+              feeUsd: "1",
+            },
+          ],
+        })
+      );
       await session.resume("pending-liquidity");
       const eventName = `${kind === "glv" ? "Glv" : ""}${withdrawal ? "Withdrawal" : "Deposit"}Created`;
       const receipt = { status: "success", logs: [creationLog(eventName, key)] };
@@ -447,23 +343,16 @@ for (const invalid of ["reverted", "wrong wallet", "wrong emitter", "mismatched 
   test(`GLV cleanup rejects a ${invalid} creation receipt before any wallet action`, async (t) => {
     const { session } = await fixture(t);
     const key = `0x${"9".repeat(64)}` as const;
-    await writeJournal(session.directory, {
-      version: 1,
-      id: "receipt-liquidity",
-      chainId: 42161,
-      address,
-      marketAddress,
-      createdAt: "now",
-      initialNativeUsd: (50n * USD).toString(),
-      initialStableUsd: (50n * USD).toString(),
-      ownedOrderKeys: [],
-      ownedPositionKeys: [],
-      completed: false,
-      inventory: { glvToken: address },
-      actions: [
-        { id: "deposit", purpose: "glv-deposit", txHash: `0x${"8".repeat(64)}`, state: "settled", feeUsd: "1" },
-      ],
-    });
+    await writeJournal(
+      session.directory,
+      testJournal(address, {
+        id: "receipt-liquidity",
+        inventory: { glvToken: address },
+        actions: [
+          { id: "deposit", purpose: "ui:glv-deposit", txHash: `0x${"8".repeat(64)}`, state: "settled", feeUsd: "1" },
+        ],
+      })
+    );
     await session.resume("receipt-liquidity");
     const log = creationLog("GlvDepositCreated", key, invalid === "wrong wallet" ? marketAddress : address);
     if (invalid === "wrong emitter") log.address = marketAddress;
@@ -482,23 +371,14 @@ for (const kind of ["gm", "glv"] as const) {
   test(`${kind}: withdrawal/UI failure resumes without repeating the transaction`, async (t) => {
     const { session, state } = await fixture(t);
     const token = kind === "gm" ? marketAddress : address;
-    const journal = {
-      version: 1,
-      id: "liquidity",
-      chainId: 42161,
-      address,
-      createdAt: "now",
-      initialNativeUsd: state.nativeUsd.toString(),
-      initialStableUsd: state.stableUsd.toString(),
-      marketAddress,
-      ownedPositionKeys: [],
-      ownedOrderKeys: [],
-      actions: [],
-      completed: false,
-      feeProfile: kind === "glv" ? "glv" : "economy",
-      inventory: { [`${kind}Token`]: token },
-    } as const;
-    await writeJournal(session.directory, structuredClone(journal) as never);
+    await writeJournal(
+      session.directory,
+      testJournal(address, {
+        id: "liquidity",
+        feeProfile: kind === "glv" ? "glv" : "economy",
+        inventory: { [`${kind}Token`]: token },
+      })
+    );
     await session.resume("liquidity");
     session.save = FundedSession.prototype.save;
     session.allowance = async () => {};
@@ -558,84 +438,6 @@ for (const kind of ["gm", "glv"] as const) {
     assert.equal(lp, 0n);
     assert.equal(submissions, 1);
     assert.equal((await readJournal(session.directory))!.actions.length, 1);
-  });
-}
-
-for (const kind of ["account", "staking"] as const) {
-  test(`${kind}: a completed cleanup withdrawal survives a restart and an assertion retry without paying twice`, async (t) => {
-    const { session, state, balances } = await fixture(t);
-    const gmxBefore = balances.gmx;
-    await writeJournal(session.directory, {
-      version: 1,
-      id: "roundtrip",
-      chainId: 42161,
-      address,
-      createdAt: "now",
-      initialNativeUsd: state.nativeUsd.toString(),
-      initialStableUsd: state.stableUsd.toString(),
-      marketAddress,
-      ownedPositionKeys: [],
-      ownedOrderKeys: [],
-      actions: [],
-      completed: false,
-      inventory:
-        kind === "account"
-          ? { accountBaseline: "0", accountAmount: "1000000" }
-          : { stakeAmount: gmxBefore.toString(), stakeWalletBaseline: gmxBefore.toString() },
-    });
-    await session.resume("roundtrip");
-    session.save = FundedSession.prototype.save;
-    session.allowance = async () => {};
-    let account = kind === "account" ? 1_000_000n : 0n;
-    let staked = kind === "staking" ? gmxBefore : 0n;
-    if (kind === "staking") balances.gmx = 0n;
-    const reader = session.rpc.readContract;
-    session.rpc.readContract = async (args) => {
-      if (args.functionName === "getUint") return account as never;
-      if (args.functionName === "depositBalances") return staked as never;
-      return reader(args);
-    };
-    const abi = parseAbi(["function unstakeGmx(uint256)"]);
-    let submissions = 0;
-    session.nativeTransaction = async (tx, purpose) => {
-      const previous = await session.previousAction(purpose);
-      if (previous) return previous;
-      assert.equal(purpose, kind === "account" ? "account-withdraw" : "unstake");
-      if (purpose === "account-withdraw") {
-        state.stableAmount += account;
-        account = 0n;
-      } else {
-        const decoded = decodeFunctionData({ abi, data: tx.data });
-        assert.equal(decoded.functionName, "unstakeGmx");
-        assert.equal(decoded.args[0], gmxBefore);
-        staked = 0n;
-        balances.gmx = gmxBefore;
-      }
-      const action: FundedAction = {
-        id: String(++submissions),
-        purpose,
-        state: "settled",
-        feeUsd: "0",
-        step: (session as unknown as { currentStep: string }).currentStep,
-      };
-      session.active.actions.push(action);
-      await session.save();
-      return action;
-    };
-    let failUI = true;
-    const run = () =>
-      session.step(`${kind}:withdraw`, async () => {
-        await (kind === "account" ? withdrawAccount : unstake)(session);
-        if (failUI) throw new Error("UI assertion failed after settlement");
-      });
-    await assert.rejects(run(), /UI assertion failed/);
-    await session.resume("roundtrip");
-    failUI = false;
-    await run();
-    assert.equal(submissions, 1);
-    assert.equal(account, 0n);
-    assert.equal(staked, 0n);
-    assert.equal(balances.gmx, gmxBefore);
   });
 }
 

@@ -143,7 +143,7 @@ export async function writeFundedReport(
     reportedAt: new Date().toISOString(),
     cleanupCompleted: journal.completed,
     feeProfile: journal.feeProfile ?? "economy",
-    targetNativeBps: journal.targetNativeBps ?? "initial-ratio",
+    targetNativeBps: journal.targetNativeBps,
     reservedFeesUsd: dollars(chargedFees(journal)),
     feeAccounting:
       "Conservative reservations; native receipt gas is a subset. Balance value change includes price movement and PnL.",
@@ -151,11 +151,6 @@ export async function writeFundedReport(
     positions: state?.positions.length,
     orders: state?.orders.length,
     cases,
-    swapSettlements: Object.fromEntries(
-      Object.entries(journal.inventory ?? {})
-        .filter(([key]) => key.startsWith("swap:") && key.endsWith("/settlement"))
-        .map(([key, value]) => [key, JSON.parse(value)])
-    ),
     ...details,
   };
   // Persist outside Playwright's output cleanup, including when cleanup itself fails.

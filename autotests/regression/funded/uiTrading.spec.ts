@@ -5,13 +5,13 @@ import { expect } from "@playwright/test";
 import { test } from "../fixtures/accountState";
 import { configureClassicTrading } from "../fixtures/tradingForms";
 import { fundedCases } from "./catalog";
-import { runUiJourney, uiCaseIds } from "./uiJourneys";
+import { runUiJourney } from "./uiJourneys";
 import { createUiRehearsal } from "./uiRehearsal";
 import { openFundedTradePage } from "./browser";
 import { restoreUiBrowserState, saveUiBrowserState } from "./uiBrowserState";
 
 test.use({ walletReviewMode: true, unsignedReviewMode: true, signableRehearsal: true });
-for (const scenario of fundedCases.filter((item) => uiCaseIds.includes(item.id))) {
+for (const scenario of fundedCases) {
   test(`UI funded rehearsal without funds: ${scenario.id}`, async ({
     page,
     context,

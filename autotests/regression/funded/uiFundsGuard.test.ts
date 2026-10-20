@@ -7,7 +7,7 @@ import IStargate from "../../../sdk/src/abis/IStargate";
 import RewardRouter from "../../../sdk/src/abis/RewardRouter";
 import { getContract } from "../../../sdk/src/configs/contracts";
 import { getMultichainTransferSendParams } from "../../../sdk/src/utils/multichain/sendParams";
-import { address, usdc, weth } from "../fixtures/fundedQuote";
+import { address, usdc, weth } from "./fundedQuote";
 import { inspectUiAccount } from "./uiAccount";
 import { inspectUiEarn } from "./uiEarn";
 import { inspectUiLiquidity, type UiLiquidityIntent } from "./uiLiquidityGuard";

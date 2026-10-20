@@ -13,30 +13,7 @@ import type { FundedSession } from "./session";
 import { changeUiPosition, openUiPosition } from "./uiTrading";
 import type { UiWallet } from "./uiWallet";
 
-export type UiStep = <T>(
-  name: string,
-  operation: () => Promise<T>,
-  verify?: (result: T) => Promise<void>
-) => Promise<T>;
-export const uiCaseIds = [
-  "smoke-refresh",
-  "market-long",
-  "market-short",
-  "limit-long",
-  "limit-short",
-  "stop-long",
-  "stop-short",
-  "tp-sl",
-  "twap",
-  "swap",
-  "account",
-  "staking",
-  "claims",
-  "one-click",
-  "bridge",
-  "gm",
-  "glv",
-] as string[];
+type UiStep = <T>(name: string, operation: () => Promise<T>, verify?: (result: T) => Promise<void>) => Promise<T>;
 
 export async function runUiJourney(
   scenario: FundedCase,

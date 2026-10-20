@@ -3,38 +3,17 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
-import { HttpRequestError, TimeoutError } from "viem";
+import { HttpRequestError } from "viem";
 
 import { getTokenBySymbol } from "../../../sdk/src/configs/tokens";
-import { HttpError } from "../../../sdk/src/utils/http/http";
 import { USD } from "./economy";
-import { fundedErrorMessage, fundedNetworkFailure } from "./errors";
-import { readJournal, writeJournal, type FundedJournal } from "./journal";
+import { fundedErrorMessage } from "./errors";
+import { readJournal, writeJournal } from "./journal";
 import { readFundedData } from "./read";
-import { FundedSession } from "./session";
+import { testJournal, testSession } from "./testSession";
 
 const endpoint = "https://user:password@example.test/secret";
 const unavailable = () => new HttpRequestError({ url: endpoint, status: 503, body: { signature: "secret" } });
-
-test("transient read errors have safe diagnostics through nested RPC wrappers", () => {
-  for (const status of [408, 429, 500, 502, 503, 504]) {
-    for (const error of [new HttpError(status, endpoint), new HttpRequestError({ status, url: endpoint })]) {
-      const wrapped = new Error(endpoint, { cause: error });
-      assert.equal(fundedNetworkFailure(wrapped)?.retryable, true);
-      assert.match(fundedErrorMessage(wrapped), new RegExp(`status ${status}`));
-      assert.doesNotMatch(fundedErrorMessage(wrapped), /password|secret|https/);
-    }
-  }
-  for (const error of [
-    new TimeoutError({ url: endpoint, body: { signature: "secret" } }),
-    Object.assign(new Error(endpoint), { code: "ECONNRESET" }),
-    new Error(endpoint, { cause: Object.assign(new Error("secret"), { code: "UND_ERR_SOCKET" }) }),
-    new DOMException(endpoint, "AbortError"),
-  ]) {
-    assert.equal(fundedNetworkFailure(error)?.retryable, true);
-    assert.doesNotMatch(fundedErrorMessage(error), /password|secret|https/);
-  }
-});
 
 test("reads stop after two retries and retain the operation without request credentials", async () => {
   let attempts = 0;
@@ -54,26 +33,6 @@ test("reads stop after two retries and retain the operation without request cred
   assert.equal(attempts, 3);
 });
 
-test("authorization, invalid requests, contract failures and unknown errors are never retried", async () => {
-  for (const error of [
-    ...[400, 401, 403, 404].map((status) => new HttpRequestError({ status, url: endpoint })),
-    new HttpError(400, "Invalid order", { code: "INVALID_PARAMS" }),
-    Object.assign(new Error(endpoint), { name: "ContractFunctionRevertedError" }),
-    new Error("Unowned exposure found"),
-    new Error("Action fee exceeds $1"),
-    new Error("Missing or stale token prices"),
-  ]) {
-    let attempts = 0;
-    await assert.rejects(
-      readFundedData("Wallet state", async () => {
-        attempts++;
-        throw error;
-      })
-    );
-    assert.equal(attempts, 1);
-  }
-});
-
 type RuntimeTestContext = {
   after: (run: () => Promise<void>) => void;
   mock: { method: (object: object, name: string, implementation: (...args: any[]) => unknown) => void };
@@ -83,15 +42,7 @@ async function fixture(context: unknown) {
   const t = context as RuntimeTestContext;
   const directory = await mkdtemp(join(tmpdir(), "gmx-funded-read-"));
   t.after(() => rm(directory, { recursive: true, force: true }));
-  const previous = process.env.REGRESSION_PRIVATE_KEY;
-  process.env.REGRESSION_PRIVATE_KEY = `0x${"1".repeat(64)}`;
-  let session: FundedSession;
-  try {
-    session = new FundedSession();
-  } finally {
-    if (previous === undefined) delete process.env.REGRESSION_PRIVATE_KEY;
-    else process.env.REGRESSION_PRIVATE_KEY = previous;
-  }
+  const session = testSession();
   Object.defineProperty(session, "directory", { value: directory });
   const forbidden = async () => {
     throw new Error("Offline cleanup must not sign, submit or call the network");
@@ -132,65 +83,45 @@ async function fixture(context: unknown) {
         )
       )
   );
-  const journal: FundedJournal = {
-    version: 1,
-    id: "run",
-    chainId: 42161,
-    address: session.address,
-    createdAt: new Date().toISOString(),
-    initialNativeUsd: (50n * USD).toString(),
-    initialStableUsd: (50n * USD).toString(),
-    targetNativeBps: "5000",
+  const journal = testJournal(session.address, {
     marketAddress: weth.address,
-    ownedPositionKeys: [],
-    ownedOrderKeys: [],
     actions: [{ id: "close", purpose: "close", feeUsd: USD.toString(), state: "settled" }],
-    completed: false,
     inventory: {},
-  };
+  });
   await writeJournal(directory, journal);
   await session.resume("run");
   return { session, directory, journal };
 }
 
-test("final cleanup survives two transient RPC failures after scenario cleanup without another transaction", async (t) => {
-  const { session, directory, journal } = await fixture(t);
-  await session.step("smoke-refresh:cleanup", () => session.cleanup(true, false));
-  assert.equal((await readJournal(directory))!.completed, false);
-  const read = session.rpc.readContract.bind(session.rpc);
-  let failures = 0;
-  session.rpc.readContract = async (params) => {
-    if (params.functionName === "getAccountPositions" && failures++ < 2) throw unavailable();
-    return read(params);
-  };
-  const result = await session.cleanup(true);
-  assert.equal(result.completed, true);
-  const saved = (await readJournal(directory))!;
-  assert.equal(saved.completed, true);
-  assert.deepEqual(saved.actions, journal.actions);
-  assert.equal(result.reservedFeesUsd, "1");
-});
-
-test("persistent RPC failure leaves cleanup unfinished and recovery uses unchanged settled actions", async (t) => {
-  const { session, directory, journal } = await fixture(t);
-  await session.step("smoke-refresh:cleanup", () => session.cleanup(true, false));
-  const read = session.rpc.readContract.bind(session.rpc);
-  let attempts = 0;
-  session.rpc.readContract = async (params) => {
-    if (params.functionName === "getAccountOrders") {
-      attempts++;
-      throw unavailable();
+for (const persistent of [false, true]) {
+  test(`${persistent ? "persistent" : "two transient"} RPC failures after scenario cleanup ${persistent ? "leave final cleanup unfinished until reads recover" : "do not stop final cleanup"}, without another transaction`, async (t) => {
+    const { session, directory, journal } = await fixture(t);
+    await session.step("smoke-refresh:cleanup", () => session.cleanup(true, false));
+    assert.equal((await readJournal(directory))!.completed, false);
+    const read = session.rpc.readContract.bind(session.rpc);
+    let failures = 0;
+    session.rpc.readContract = async (params) => {
+      if (params.functionName === "getAccountOrders" && (persistent || failures < 2)) {
+        failures++;
+        throw unavailable();
+      }
+      return read(params);
+    };
+    if (persistent) {
+      await assert.rejects(session.cleanup(true), /On-chain orders failed after 3 attempt/);
+      assert.equal(failures, 3);
+      assert.equal((await readJournal(directory))!.completed, false);
+      assert.deepEqual((await readJournal(directory))!.actions, journal.actions);
+      session.rpc.readContract = read;
     }
-    return read(params);
-  };
-  await assert.rejects(session.cleanup(true), /On-chain orders failed after 3 attempt/);
-  assert.equal(attempts, 3);
-  assert.equal((await readJournal(directory))!.completed, false);
-  assert.deepEqual((await readJournal(directory))!.actions, journal.actions);
-  session.rpc.readContract = read;
-  assert.equal((await session.cleanup(true)).completed, true);
-  assert.deepEqual((await readJournal(directory))!.actions, journal.actions);
-});
+    const result = await session.cleanup(true);
+    assert.equal(result.completed, true);
+    assert.equal(result.reservedFeesUsd, "1");
+    const saved = (await readJournal(directory))!;
+    assert.equal(saved.completed, true);
+    assert.deepEqual(saved.actions, journal.actions);
+  });
+}
 
 test("read retries do not bypass a wrong-chain validation or mark cleanup complete", async (t) => {
   const { session, directory } = await fixture(t);

@@ -9,7 +9,7 @@ import { getContract } from "../../../sdk/src/configs/contracts";
 import type { TokenData } from "../../../sdk/src/utils/tokens/types";
 import { parseContractPrice } from "../../../sdk/src/utils/tokens/utils";
 import type { AccountState } from "../fixtures/accountState";
-import { fundedOrderReceipt } from "../fixtures/fundedReceipt";
+import { fundedOrderReceipt } from "./fundedReceipt";
 import marketFixture from "../fixtures/markets/arbitrum.json";
 import { USD } from "./economy";
 import { multichainBalanceKey } from "../../../sdk/src/configs/dataStore";
@@ -80,6 +80,7 @@ export async function createUiRehearsal(context: BrowserContext, state: AccountS
     createdAt: new Date().toISOString(),
     initialNativeUsd: (50n * USD).toString(),
     initialStableUsd: (50n * USD).toString(),
+    targetNativeBps: "5000",
     marketAddress: state.data.market.marketTokenAddress,
     ownedPositionKeys: [],
     ownedOrderKeys: [],
@@ -105,7 +106,7 @@ export async function createUiRehearsal(context: BrowserContext, state: AccountS
       purpose: string,
       cleanup: boolean,
       fee: bigint,
-      // Never called: it would reach the real relayer. The app polls the simulated status below.
+      // Never called: it would hit the real relayer.
       _send: unknown,
       uiOrder: FundedAction["uiOrder"]
     ) => {

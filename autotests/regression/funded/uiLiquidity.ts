@@ -13,6 +13,9 @@ import { inspectUiLiquidity, type UiLiquidityIntent } from "./uiLiquidityGuard";
 import { assertUiInventory } from "./uiOrders";
 import type { UiWallet } from "./uiWallet";
 
+// 1% form slippage plus 0.5% for pool fees and impact.
+const minOutputBps = 9_850n;
+
 async function fillLiquidity(page: Page, token: string, kind: "gm" | "glv", withdraw: boolean, amount: bigint) {
   await page.goto(`/pools/details?market=${token}`, { waitUntil: "domcontentloaded" });
   await expect(page.getByTestId("user-address")).toBeVisible({ timeout: 45_000 });
@@ -101,16 +104,15 @@ export async function changeUiLiquidity(
         functionName: "getWithdrawalAmountOut",
         args: [getContract(42161, "DataStore"), ctx.market, ctx.prices, gmAmount, zeroAddress, 4],
       })) as [bigint, bigint];
-      intent.minLong = (outputs[0] * 9_850n) / 10_000n;
-      intent.minShort = (outputs[1] * 9_850n) / 10_000n;
+      intent.minLong = (outputs[0] * minOutputBps) / 10_000n;
+      intent.minShort = (outputs[1] * minOutputBps) / 10_000n;
       assert.ok(intent.minLong + intent.minShort > 0n);
       inventory[`${kind}WithdrawalOutputs`] = JSON.stringify({
         wrappedAmount: (ctx.state.wrappedAmount + intent.minLong).toString(),
         stableAmount: (ctx.state.stableAmount + intent.minShort).toString(),
       });
       await session.save();
-      // Pool forms apply 1% slippage; reserve another 0.5% for pool fees and impact.
-    } else intent.minLp = (USD * 10n ** 18n * 9_850n) / ctx.tokenPrice / 10_000n;
+    } else intent.minLp = (USD * 10n ** 18n * minOutputBps) / ctx.tokenPrice / 10_000n;
     return { intent, stable: ctx.state.stableAmount, wrapped: ctx.state.wrappedAmount };
   });
   let action = await session.previousAction(`ui:${purpose}`);

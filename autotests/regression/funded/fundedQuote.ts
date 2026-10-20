@@ -3,7 +3,7 @@ import { getContract } from "../../../sdk/src/configs/contracts";
 import { getBatchTypedData } from "../../../sdk/src/utils/express/utils/batchOrderUtils";
 import type { PrepareOrderResponse } from "../../../sdk/src/utils/orderTransactions/api";
 import type { TokenData } from "../../../sdk/src/utils/tokens/types";
-import { USD } from "../funded/economy";
+import { USD } from "./economy";
 export const address = "0x1111111111111111111111111111111111111111";
 export const marketAddress = "0x2222222222222222222222222222222222222222";
 export const usdc = {

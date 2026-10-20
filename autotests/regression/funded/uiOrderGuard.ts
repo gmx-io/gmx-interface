@@ -25,7 +25,6 @@ type GuardContext = {
   express?: boolean;
 };
 
-// This inspects calldata produced by the deployed UI. It never constructs or submits an order.
 export function inspectUiOrder(tx: UiTransaction, intent: UiOrderIntent, context: GuardContext) {
   const { address, marketAddress, usdc, weth, ownedOrderKeys } = context;
   const same = (a: string, b: string) => getAddress(a) === getAddress(b);

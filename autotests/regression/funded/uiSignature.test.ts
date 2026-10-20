@@ -5,12 +5,11 @@ import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import MultichainTransferRouter from "../../../sdk/src/abis/MultichainTransferRouter";
 import { getContract } from "../../../sdk/src/configs/contracts";
 import { getBridgeOutTypedData } from "../../../sdk/src/utils/express/utils/bridgeOutUtils";
-import { usdc, weth, marketAddress } from "../fixtures/fundedQuote";
+import { usdc, weth, marketAddress } from "./fundedQuote";
 import { bridgeReturnParams, inspectUiBridgeReturn, inspectUiBridgeSignature } from "./uiBridgeGuard";
 import { minifiedUiTypedData } from "./uiOneClickGuard";
 import type { FundedSession } from "./session";
 
-// Fresh disposable keys; this test cannot load a funded wallet or submit transactions.
 test("bridge minified signature binds a decoded bounded UI simulation and the submitted relay", async () => {
   const signer = privateKeyToAccount(generatePrivateKey());
   const session = {

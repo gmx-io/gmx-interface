@@ -16,7 +16,7 @@ import { getContract } from "../../../sdk/src/configs/contracts";
 import type { TokenData } from "../../../sdk/src/utils/tokens/types";
 import type { AccountState } from "../fixtures/accountState";
 import fixture from "../fixtures/markets/arbitrum.json";
-import { fundedOrderReceipt } from "../fixtures/fundedReceipt";
+import { fundedOrderReceipt } from "./fundedReceipt";
 import { USD } from "./economy";
 import type { UiTransaction } from "./uiOrderGuard";
 

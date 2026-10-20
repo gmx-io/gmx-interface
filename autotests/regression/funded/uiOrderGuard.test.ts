@@ -5,7 +5,7 @@ import { encodeFunctionData, maxUint256, type Hex } from "viem";
 import { encodeOrderDataListMetadata } from "../../../sdk/src/utils/twap/uiFeeReceiver";
 import ExchangeRouter from "../../../sdk/src/abis/ExchangeRouter";
 import { getContract } from "../../../sdk/src/configs/contracts";
-import { address, marketAddress, usdc, weth, intent, preparedOrder } from "../fixtures/fundedQuote";
+import { address, marketAddress, usdc, weth, intent, preparedOrder } from "./fundedQuote";
 import { inspectUiOrder } from "./uiOrderGuard";
 import type { OrderIntent } from "./preparedOrder";
 

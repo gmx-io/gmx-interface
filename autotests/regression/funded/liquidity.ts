@@ -269,9 +269,7 @@ export async function withdrawLiquidity(session: FundedSession, kind: Kind, reco
   if (!token) return;
   // A native creation receipt alone does not prove keeper settlement.
   for (const action of session.active.actions.filter(
-    (a) =>
-      a.state !== "failed" &&
-      [`${kind}-deposit`, `${kind}-withdraw`, `ui:${kind}-deposit`, `ui:${kind}-withdraw`].includes(a.purpose)
+    (a) => a.state !== "failed" && [`${kind}-withdraw`, `ui:${kind}-deposit`, `ui:${kind}-withdraw`].includes(a.purpose)
   )) {
     const withdrawal = action.purpose.endsWith("withdraw");
     const key = await liquidityRequestKey(session, kind, withdrawal, action);

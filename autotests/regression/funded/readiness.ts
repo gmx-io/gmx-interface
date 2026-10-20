@@ -24,7 +24,7 @@ import type { FundedSession } from "./session";
 import { validateFundedTarget } from "./target";
 import { quoteTrigger, quoteTwap } from "./trading";
 
-export type ReadinessCheck = { scope: string; check: string; ok: boolean; detail: string };
+type ReadinessCheck = { scope: string; check: string; ok: boolean; detail: string };
 
 // Reads and unsigned quotes only. Never creates a journal or changes wallet state.
 export async function fundedReadiness(
@@ -74,12 +74,7 @@ export async function fundedReadiness(
       );
     });
     await check("all", "50/50 allocation", async () => {
-      const allocation = rebalanceTarget({
-        ...snapshot,
-        initialNativeUsd: snapshot.nativeUsd,
-        initialStableUsd: snapshot.stableUsd,
-        targetNativeBps: economy.targetNativeBps,
-      });
+      const allocation = rebalanceTarget({ ...snapshot, targetNativeBps: economy.targetNativeBps });
       assert.equal(
         allocation.direction,
         "none",
@@ -112,13 +107,13 @@ export async function fundedReadiness(
           return `Opening quote validated; fee reservation $${dollars(quote.feeUsd)}`;
         };
         if (id === "tp-sl")
-          return `${await opening(true)}; TP/SL quotes require an open position and are validated before each creation`;
+          return `${await opening(true)}; TP/SL orders need an open position and are checked by the UI guard before signing`;
         if (id === "smoke-refresh" || group === "trading")
           return opening(id !== "market-short", group === "trading" ? 2 : 1);
         if (id === "twap") {
           const quote = await quoteTwap(session, snapshot);
           checkFeeBudget(0n, quote.feeUsd + USD / 20n, false, policy);
-          return "Both TWAP parts and bounded classic calldata validated";
+          return "Both TWAP parts validated";
         }
         if (group === "orders" || id === "one-click") {
           const quote = await quoteTrigger(

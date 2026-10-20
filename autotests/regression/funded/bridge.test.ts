@@ -76,43 +76,39 @@ function rebuild(prepared: CrossChainWithdrawPrepareResponse) {
   });
 }
 
-test("bridge withdrawal binds destination, minimum, token and total gas payment", () => {
-  const prepared = fixture();
-  assert.equal(inspectBridgeWithdrawal(prepared, params, state), (52n * USD) / 100n);
-  assert.throws(() => inspectBridgeWithdrawal(prepared, { ...params, amount: params.amount + 1n }, state));
-  assert.throws(() => inspectBridgeWithdrawal(prepared, { ...params, minAmountOut: 0n }, state));
-  assert.throws(() => inspectBridgeWithdrawal(prepared, { ...params, data: "0x" }, state));
-});
-
-test("bridge rejects fee tampering even when the hash is recomputed", () => {
-  const prepared = fixture();
-  (prepared.payload.relayParams as RelayParamsPayload).fee.feeAmount = 900_000n;
-  assert.throws(() => inspectBridgeWithdrawal(prepared, params, state));
-  rebuild(prepared);
-  assert.throws(() => inspectBridgeWithdrawal(prepared, params, state));
-});
-
-test("bridge rejects expired or wrong-chain relay data and unrelated swap markets", () => {
-  for (const change of [
-    (relay: RelayParamsPayload) => {
-      relay.deadline = 1n;
+test("bridge withdrawal binds destination, minimum, token, relay data and total gas payment", () => {
+  assert.equal(inspectBridgeWithdrawal(fixture(), params, state), (52n * USD) / 100n);
+  const relay = (prepared: CrossChainWithdrawPrepareResponse) => prepared.payload.relayParams as RelayParamsPayload;
+  for (const tamper of [
+    () => ({ ...params, amount: params.amount + 1n }),
+    () => ({ ...params, minAmountOut: 0n }),
+    () => ({ ...params, data: "0x" as const }),
+    (p) => {
+      relay(p).fee.feeAmount = 900_000n;
     },
-    (relay: RelayParamsPayload) => {
-      relay.desChainId = 1n;
+    // Fee tampering is rejected even when the typed data is recomputed.
+    (p) => {
+      relay(p).fee.feeAmount = 900_000n;
+      rebuild(p);
     },
-    (relay: RelayParamsPayload) => {
-      relay.fee.feeSwapPath = [state.weth.address];
+    (p) => {
+      relay(p).deadline = 1n;
+      rebuild(p);
     },
-  ]) {
+    (p) => {
+      relay(p).desChainId = 1n;
+      rebuild(p);
+    },
+    (p) => {
+      relay(p).fee.feeSwapPath = [state.weth.address];
+      rebuild(p);
+    },
+    (p) => {
+      p.payload.gasPaymentParams.relayerFeeAmount = 10n ** 18n;
+    },
+  ] as ((prepared: CrossChainWithdrawPrepareResponse) => typeof params | void)[]) {
     const prepared = fixture();
-    change(prepared.payload.relayParams as RelayParamsPayload);
-    rebuild(prepared);
-    assert.throws(() => inspectBridgeWithdrawal(prepared, params, state));
+    const tampered = tamper(prepared) ?? params;
+    assert.throws(() => inspectBridgeWithdrawal(prepared, tampered, state));
   }
-});
-
-test("bridge refuses an unbound relayer fee larger than the approved gas payment", () => {
-  const prepared = fixture();
-  prepared.payload.gasPaymentParams.relayerFeeAmount = 10n ** 18n;
-  assert.throws(() => inspectBridgeWithdrawal(prepared, params, state));
 });
