@@ -10,7 +10,12 @@ import { labelledInput, openSettings } from "../fixtures/trade";
 import { USD } from "./economy";
 import type { FundedSession } from "./session";
 import { assertUiInventory } from "./uiOrders";
-import { walletTypedData, minifiedUiTypedData } from "./uiOneClickGuard";
+import {
+  inspectUiOneClickRemoval,
+  inspectUiOneClickRemovalSignature,
+  minifiedUiTypedData,
+  walletTypedData,
+} from "./uiOneClickGuard";
 import type { UiWallet } from "./uiWallet";
 
 export async function activateUiOneClick(session: FundedSession, wallet: UiWallet, page: Page) {
@@ -99,11 +104,21 @@ export async function revokeUiOneClick(session: FundedSession, wallet: UiWallet,
   const subaccount = session.active.inventory?.subaccount;
   assert.ok(subaccount && (await session.subaccountActive(subaccount)));
   const settings = await openSettings(page);
+  let signedHash: Hex | undefined;
   await wallet.submit(
     {
       purpose: "one-click-revoke",
       cleanup: true,
       preflight: (state) => assertUiInventory(session, state, []),
+      // The app signs a relayed removal when the wallet can pay its fee, otherwise it sends a wallet transaction.
+      // The digest hides the fee, so the relay guard checks it before the request leaves the browser.
+      sign: async (request) => {
+        await session.gate(USD, true);
+        const signature = inspectUiOneClickRemovalSignature(request, session.address);
+        signedHash = signature.signedHash;
+        return session.signUiTypedData(signature.typed as never);
+      },
+      inspectRelay: (payload, state) => inspectUiOneClickRemoval(session, payload, state, signedHash),
       inspect: (tx) => {
         assert.equal(getAddress(tx.to), getAddress(getContract(42161, "SubaccountRouter")));
         assert.equal(tx.value, 0n);
