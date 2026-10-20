@@ -100,7 +100,9 @@ export function getSharePercentage(
   );
 
   const percentage = share / 100n;
-  return removeTrailingZeros(formatAmount(percentage, decimals, 3, true));
+  const formatted = removeTrailingZeros(formatAmount(percentage, decimals, 3, true));
+  // removeTrailingZeros keeps an all-zero amount, which would read as "0.000%"
+  return /^0\.0+$/.test(String(formatted)) ? "0" : formatted;
 }
 
 export function getCodeError(value: string): string {

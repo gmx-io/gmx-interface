@@ -4,7 +4,12 @@ import { USD_DECIMALS } from "config/factors";
 import { expandDecimals } from "lib/numbers";
 import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
 
-import { getCodeError, shouldShowCreateReferralCodeTabLabel, shouldShowShareCardDiscounts } from "./referralsHelper";
+import {
+  getCodeError,
+  getSharePercentage,
+  shouldShowCreateReferralCodeTabLabel,
+  shouldShowShareCardDiscounts,
+} from "./referralsHelper";
 
 describe("shouldShowShareCardDiscounts", () => {
   it("hides the discounts line when total discounts are unknown", () => {
@@ -19,6 +24,19 @@ describe("shouldShowShareCardDiscounts", () => {
   it("shows the discounts line at $100 and above", () => {
     expect(shouldShowShareCardDiscounts(expandDecimals(100, USD_DECIMALS))).toBe(true);
     expect(shouldShowShareCardDiscounts(expandDecimals(12345, USD_DECIMALS))).toBe(true);
+  });
+});
+
+describe("getSharePercentage", () => {
+  it("formats the trader discount and affiliate rebate of a tier", () => {
+    expect(getSharePercentage(0n, 5000n, 1000n)).toBe("5");
+    expect(getSharePercentage(0n, 5000n, 1000n, true)).toBe("5");
+    expect(getSharePercentage(1234n, 5000n, 1000n)).toBe("1.234");
+  });
+
+  it("shows a zero discount as 0 instead of 0.000", () => {
+    expect(getSharePercentage(0n, 0n, 1000n)).toBe("0");
+    expect(getSharePercentage(0n, 5000n, 0n, true)).toBe("0");
   });
 });
 
