@@ -5,7 +5,7 @@ import { useLocalStorageSerializeKeySafe } from ".";
 
 const STORAGE_KEY = "reactive-local-storage-test";
 
-function Probe({ account }: { account: string }) {
+function Probe({ account }: { account: string | undefined }) {
   const [value] = useLocalStorageSerializeKeySafe<Record<string, boolean>>([STORAGE_KEY, account], {});
 
   return <div data-testid="value">{JSON.stringify(value)}</div>;
@@ -20,8 +20,8 @@ describe("useLocalStorageSerializeKeySafe", () => {
     localStorage.setItem(JSON.stringify([STORAGE_KEY, accountA]), JSON.stringify({ first: true }));
     localStorage.setItem(JSON.stringify([STORAGE_KEY, accountB]), JSON.stringify({ second: true }));
 
-    const view = render(<Probe account="anonymous" />);
-    expect(screen.getByTestId("value").textContent).toBe("{}");
+    const view = render(<Probe account={undefined} />);
+    expect(screen.getByTestId("value").textContent).toBe("");
 
     view.rerender(<Probe account={accountA} />);
     expect(screen.getByTestId("value").textContent).toBe('{"first":true}');

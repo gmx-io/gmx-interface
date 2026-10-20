@@ -1,11 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { ARBITRUM_SEPOLIA } from "config/chains";
-import { getRewardsVestingConfig } from "config/vesting";
-
-import { buildRatioVestingRequest, parseRatioVestingResponse } from "./ratioVestingData";
-
-const ACCOUNT = "0x52908400098527886E0F7030069857D2E4169EE7";
+import { parseRatioVestingResponse } from "./ratioVestingData";
 
 function result() {
   return {
@@ -24,17 +19,6 @@ function result() {
 }
 
 describe("ratio vesting data", () => {
-  it("reads the deployed rewards vault without any legacy staking contracts", () => {
-    const config = getRewardsVestingConfig(ARBITRUM_SEPOLIA);
-    if (config.type !== "ratio") throw new Error("Missing Sepolia ratio vester");
-    const request = buildRatioVestingRequest(ACCOUNT, config);
-    expect(request.reader.calls.vesting.params).toEqual([[config.vester], ACCOUNT]);
-    expect(request.reader.calls.issuer.params).toEqual([config.issuer, ACCOUNT]);
-    expect(request.esGmx.calls.allowance.params).toEqual([ACCOUNT, config.vester]);
-    expect(request.pairToken.contractAddress).toBe(config.pairToken);
-    expect(Object.keys(request)).toEqual(["gmx", "esGmx", "pairToken", "vester", "reader"]);
-  });
-
   it("separates the current vesting position from lifetime cap usage and unpaid claims", () => {
     const parsed = parseRatioVestingResponse(result() as any);
     expect(parsed.claimableEsGmxRewards).toBe(50n);

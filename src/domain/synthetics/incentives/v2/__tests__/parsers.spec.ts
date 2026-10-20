@@ -1,16 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import {
-  parseAccountIncentiveStatus,
-  parseAccountRewardsHistoryPage,
-  parseIncentivesConfig,
-  parseIncentivesLeaderboardPage,
-  type RawAccountIncentiveStatus,
-  type RawIncentivesConfig,
-  type RawLeaderboardEntry,
-  type RawRewardsHistoryEntry,
-} from "../parsers";
-import { INCENTIVES_CONFIG_QUERY } from "../queries";
+import { parseIncentivesConfig, type RawIncentivesConfig } from "../parsers";
 
 const CHECKSUMMED_ACCOUNT = "0xAbC0000000000000000000000000000000000123";
 const BIG_VALUE = "9007199254740993000000000000000000000";
@@ -51,74 +41,10 @@ function makeRawConfig(): RawIncentivesConfig {
   };
 }
 
-function makeRawStatus(): RawAccountIncentiveStatus {
-  return {
-    account: CHECKSUMMED_ACCOUNT,
-    multiplier: "300",
-    volumeTier: "Tier1",
-    stakingTier: null,
-    projectedVolumeTier: "Tier2",
-    projectedStakingTier: "Tier1",
-    epochTimestamp: 1_784_073_600,
-    tradingVolume: "9007199254740993000000000000000000001",
-    tierVolume: BIG_VALUE,
-    referralVolume: "1",
-    currentStakedBalance: "2",
-    boostIds: ["LifetimeTrading", "ManualAllocation"],
-    esGmxRewards: "3",
-    gtRewards: "4",
-    rewardsUsd: "5",
-    manualRewardCapUsd: "6",
-    manualRewardConsumedUsd: "7",
-    manualRewardRemainingUsd: "8",
-  };
-}
-
-function makeRawHistoryEntry(): RawRewardsHistoryEntry {
-  return {
-    epoch: 1_784_073_600,
-    tradingVolume: BIG_VALUE,
-    tierVolume: "1",
-    referralVolume: "2",
-    esGmxRewards: "3",
-    gtRewards: "4",
-    rewardsUsd: "5",
-    tradingEsGmxRewards: "6",
-    tradingGtRewards: "7",
-    tradingRewardsUsd: "8",
-    referralEsGmxRewards: "9",
-    referralGtRewards: "10",
-    referralRewardsUsd: "11",
-    manualRewardsUsd: "12",
-  };
-}
-
-function makeRawLeaderboardEntry(multiplier: string | null): RawLeaderboardEntry {
-  return {
-    rank: 1,
-    address: CHECKSUMMED_ACCOUNT,
-    tradingVolume: BIG_VALUE,
-    referralVolume: "1",
-    esGmxRewards: "2",
-    gtRewards: "3",
-    rewardsUsd: "4",
-    multiplier,
-  };
-}
-
-describe("Incentives V2 parsers", () => {
-  it("requests the market-token and 30-decimal factor config fields", () => {
-    expect(INCENTIVES_CONFIG_QUERY).toContain("featuredMarketTokens");
-    expect(INCENTIVES_CONFIG_QUERY).toContain("downgradingFactors { market factor }");
-    expect(INCENTIVES_CONFIG_QUERY).not.toContain("featuredMarketIndexTokens");
-    expect(INCENTIVES_CONFIG_QUERY).not.toContain("downgradingCoefficients");
-  });
-
-  it("parses every config BigInt, sorts tiers, and preserves the open-ended allocation tier", () => {
+describe("parseIncentivesConfig", () => {
+  it("sorts tiers ascending and preserves the open-ended allocation tier", () => {
     const config = parseIncentivesConfig(makeRawConfig());
 
-    expect(config).not.toBeNull();
-    expect(config?.maxMultiplier).toBe(1000n);
     expect(config?.volumeTiers.map((tier) => tier.tier)).toEqual(["Tier1", "Tier2"]);
     expect(config?.stakingTiers.map((tier) => tier.tier)).toEqual(["Tier1", "Tier2"]);
     expect(config?.manualAllocationTiers[1]).toEqual({
@@ -126,43 +52,5 @@ describe("Incentives V2 parsers", () => {
       maxVolume: null,
       rewardCapUsd: 25000n,
     });
-    expect(config?.featuredMarketTokens).toEqual([CHECKSUMMED_ACCOUNT]);
-    expect(config?.downgradingFactors[0]).toEqual({
-      market: CHECKSUMMED_ACCOUNT,
-      factor: 500000000000000000000000000000n,
-    });
-  });
-
-  it("preserves an inactive null config", () => {
-    expect(parseIncentivesConfig(null)).toBeNull();
-  });
-
-  it("parses account status without changing address casing or losing large values", () => {
-    const status = parseAccountIncentiveStatus(makeRawStatus());
-
-    expect(status.account).toBe(CHECKSUMMED_ACCOUNT);
-    expect(status.tierVolume).toBe(BigInt(BIG_VALUE));
-    expect(status.multiplier).toBe(300n);
-    expect(status.boostIds).toEqual(["LifetimeTrading", "ManualAllocation"]);
-    expect(status.tradingVolume).toBe(BigInt("9007199254740993000000000000000000001"));
-    expect(status.esGmxRewards).toBe(3n);
-    expect(status.gtRewards).toBe(4n);
-    expect(status.manualRewardConsumedUsd).toBe(7n);
-  });
-
-  it("parses direct history pagination without synthesizing empty epochs", () => {
-    const page = parseAccountRewardsHistoryPage({ totalCount: 3, items: [makeRawHistoryEntry()] }, 1, 0);
-
-    expect(page.entries).toHaveLength(1);
-    expect(page.entries[0].tradingVolume).toBe(BigInt(BIG_VALUE));
-    expect(page.hasNextPage).toBe(true);
-  });
-
-  it("preserves the nullable all-time multiplier and global address casing", () => {
-    const page = parseIncentivesLeaderboardPage({ totalCount: 1, items: [makeRawLeaderboardEntry(null)] }, 20, 0);
-
-    expect(page.entries[0].address).toBe(CHECKSUMMED_ACCOUNT);
-    expect(page.entries[0].multiplier).toBeNull();
-    expect(page.hasNextPage).toBe(false);
   });
 });

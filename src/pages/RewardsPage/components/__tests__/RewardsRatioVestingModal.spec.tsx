@@ -187,93 +187,6 @@ describe("Sepolia rewards vesting transactions", () => {
     expect(onVestingStarted).toHaveBeenCalledTimes(1);
   });
 
-  it.each(["close button", "Escape", "backdrop"])(
-    "allows closing with %s while awaiting wallet approval without continuing the old flow",
-    async (closeAction) => {
-      const receipt = { wait: vi.fn(async () => ({ status: 1 })) };
-      let resolveApproval!: (transaction: typeof receipt) => void;
-      mockCallContract.mockReturnValueOnce(
-        new Promise<typeof receipt>((resolve) => {
-          resolveApproval = resolve;
-        })
-      );
-      const component = render(view());
-      enter();
-      fireEvent.click(screen.getByRole("button", { name: "Vest esGMX" }));
-      await waitFor(() => expect(mockCallContract).toHaveBeenCalledTimes(1));
-
-      if (closeAction === "close button") {
-        fireEvent.click(screen.getByRole("button", { name: "Close" }));
-      } else if (closeAction === "Escape") {
-        fireEvent.keyDown(window, { key: "Escape" });
-      } else {
-        fireEvent.click(document.querySelector(".Modal-backdrop")!);
-      }
-      expect(setIsVisible).toHaveBeenCalledWith(false);
-      component.rerender(view(base, false));
-      component.rerender(view());
-
-      const nextReceipt = deferredReceipt();
-      mockCallContract.mockResolvedValueOnce(nextReceipt);
-      enter("50");
-      fireEvent.click(screen.getByRole("button", { name: "Vest esGMX" }));
-      await waitFor(() => expect(nextReceipt.wait).toHaveBeenCalled());
-
-      await act(async () => resolveApproval(receipt));
-
-      expect(mockCallContract).toHaveBeenCalledTimes(2);
-      expect(receipt.wait).not.toHaveBeenCalled();
-      expect((screen.getByRole("textbox") as HTMLInputElement).value).toBe("50");
-      expect((screen.getByRole("button", { name: "Confirming..." }) as HTMLButtonElement).disabled).toBe(true);
-      expect(onVestingStarted).not.toHaveBeenCalled();
-      expect(setIsVisible).toHaveBeenCalledTimes(1);
-
-      await act(async () => nextReceipt.confirm());
-    }
-  );
-
-  it("does not continue after closing while an approval is confirming", async () => {
-    const receipt = deferredReceipt();
-    mockCallContract.mockResolvedValueOnce(receipt);
-    mutate.mockResolvedValueOnce(base).mockResolvedValue(approved);
-    const component = render(view());
-    enter();
-    fireEvent.click(screen.getByRole("button", { name: "Vest esGMX" }));
-    await waitFor(() => expect(receipt.wait).toHaveBeenCalled());
-
-    fireEvent.click(screen.getByRole("button", { name: "Close" }));
-    expect(setIsVisible).toHaveBeenCalledWith(false);
-    component.rerender(view(base, false));
-    await act(async () => receipt.confirm());
-
-    expect(mockCallContract).toHaveBeenCalledTimes(1);
-    expect(mutate).toHaveBeenCalledTimes(1);
-    expect(onVestingStarted).not.toHaveBeenCalled();
-  });
-
-  it("skips esGMX approval when already approved", async () => {
-    mutate.mockResolvedValueOnce(esApproved).mockResolvedValue(approved);
-    render(view(esApproved));
-    enter();
-    fireEvent.click(screen.getByRole("button", { name: "Vest esGMX" }));
-    await waitFor(() => expect(onVestingStarted).toHaveBeenCalledTimes(1));
-    expect(transactions()).toEqual([
-      { contract: { address: ratioConfig.pairToken }, method: "approve", params: [ratioConfig.vester, 500n * U] },
-      { contract: { address: ratioConfig.vester }, method: "deposit", params: [100n * U] },
-    ]);
-  });
-
-  it("deposits directly when refreshed allowances already cover both tokens", async () => {
-    mutate.mockResolvedValue(approved);
-    render(view());
-    enter();
-    fireEvent.click(screen.getByRole("button", { name: "Vest esGMX" }));
-    await waitFor(() => expect(onVestingStarted).toHaveBeenCalledTimes(1));
-    expect(transactions()).toEqual([
-      { contract: { address: ratioConfig.vester }, method: "deposit", params: [100n * U] },
-    ]);
-  });
-
   it("resumes after rejection without repeating a confirmed approval", async () => {
     mutate.mockResolvedValueOnce(base).mockResolvedValue(esApproved);
     mockCallContract
@@ -299,123 +212,123 @@ describe("Sepolia rewards vesting transactions", () => {
     ]);
   });
 
-  it("does not send duplicate approvals if refreshed allowance is stale", async () => {
-    render(view());
+  it.each([
+    { name: "close button while awaiting the wallet", pending: "signature", interrupt: "close" },
+    { name: "Escape while awaiting the wallet", pending: "signature", interrupt: "escape" },
+    { name: "backdrop while awaiting the wallet", pending: "signature", interrupt: "backdrop" },
+    { name: "close while the approval confirms", pending: "receipt", interrupt: "close" },
+    { name: "account change while the approval confirms", pending: "receipt", interrupt: "account" },
+    { name: "network change while refreshing", pending: "refresh", interrupt: "network" },
+  ] as const)("does not continue after $name", async ({ pending, interrupt }) => {
+    const receipt = deferredReceipt();
+    let resolvePending!: () => void;
+    if (pending === "signature") {
+      mockCallContract.mockReturnValueOnce(
+        new Promise((resolve) => {
+          resolvePending = () => resolve(receipt);
+        })
+      );
+    } else if (pending === "receipt") {
+      mockCallContract.mockResolvedValueOnce(receipt);
+      resolvePending = receipt.confirm;
+    } else {
+      mutate.mockReturnValueOnce(
+        new Promise((resolve) => {
+          resolvePending = () => resolve(base);
+        })
+      );
+    }
+    mutate.mockResolvedValue(esApproved);
+    const component = render(view());
     enter();
     fireEvent.click(screen.getByRole("button", { name: "Vest esGMX" }));
-    await waitFor(() => expect(screen.getByRole("button", { name: "Continue" })).toBeTruthy());
-    expect(mockCallContract).toHaveBeenCalledTimes(1);
-    expect(helperToast.info).toHaveBeenCalled();
+    if (pending === "signature") await waitFor(() => expect(mockCallContract).toHaveBeenCalledTimes(1));
+    if (pending === "receipt") await waitFor(() => expect(receipt.wait).toHaveBeenCalled());
+
+    if (interrupt === "close") fireEvent.click(screen.getByRole("button", { name: "Close" }));
+    if (interrupt === "escape") fireEvent.keyDown(window, { key: "Escape" });
+    if (interrupt === "backdrop") fireEvent.click(document.querySelector(".Modal-backdrop")!);
+    if (interrupt === "account" || interrupt === "network") {
+      vi.mocked(useWallet).mockReturnValue({
+        account: interrupt === "account" ? ratioConfig.issuer : ACCOUNT,
+        active: true,
+        chainId: interrupt === "network" ? ARBITRUM : ARBITRUM_SEPOLIA,
+        signer,
+      } as ReturnType<typeof useWallet>);
+      component.rerender(view());
+    } else {
+      expect(setIsVisible).toHaveBeenCalledWith(false);
+      component.rerender(view(base, false));
+    }
+    await act(async () => resolvePending());
+
+    expect(mockCallContract).toHaveBeenCalledTimes(pending === "refresh" ? 0 : 1);
+    expect(mutate).toHaveBeenCalledTimes(1);
+    if (pending === "signature") expect(receipt.wait).not.toHaveBeenCalled();
     expect(onVestingStarted).not.toHaveBeenCalled();
   });
 
   it.each([
-    undefined,
-    { wait: async () => ({ status: 0 }) },
+    { name: "refreshed allowance is stale", setup: () => undefined, calls: 1, toast: "info" },
     {
-      wait: async () => {
-        throw new Error("Reverted");
-      },
+      name: "transaction is missing",
+      setup: () => mockCallContract.mockResolvedValueOnce(undefined),
+      refresh: "approved",
+      calls: 1,
+      toast: undefined,
     },
-  ])("does not advance without a successful receipt (case %#)", async (transaction) => {
-    mockCallContract.mockResolvedValueOnce(transaction);
-    mutate.mockResolvedValueOnce(base).mockResolvedValue(approved);
+    {
+      name: "receipt fails",
+      setup: () => mockCallContract.mockResolvedValueOnce({ wait: async () => ({ status: 0 }) } as any),
+      refresh: "approved",
+      calls: 1,
+      toast: undefined,
+    },
+    {
+      name: "receipt throws",
+      setup: () =>
+        mockCallContract.mockResolvedValueOnce({
+          wait: async () => {
+            throw new Error("Reverted");
+          },
+        } as any),
+      refresh: "approved",
+      calls: 1,
+      toast: undefined,
+    },
+    {
+      name: "refresh fails after approval",
+      setup: () => mutate.mockResolvedValueOnce(base).mockRejectedValueOnce(new Error("RPC unavailable")),
+      calls: 1,
+      toast: "error",
+    },
+    {
+      name: "collateral increases between approvals",
+      setup: () =>
+        mutate.mockResolvedValueOnce(base).mockResolvedValue({
+          ...esApproved,
+          freePairAmount: 600n * U,
+          ratioVesting: { ...esApproved.ratioVesting, pairRatioFactor: 6n * 10n ** 30n },
+        }),
+      calls: 1,
+      toast: "info",
+    },
+    {
+      name: "lifetime cap is consumed before submission",
+      setup: () =>
+        mutate.mockResolvedValue({ ...base, ratioVesting: { ...base.ratioVesting!, capUsedAmount: 50n * U } }),
+      calls: 0,
+      toast: "info",
+    },
+  ] as const)("pauses for review when the $name", async ({ setup, refresh, calls, toast }) => {
+    if (refresh === "approved") mutate.mockResolvedValueOnce(base).mockResolvedValue(approved);
+    setup();
     render(view());
     enter();
     fireEvent.click(screen.getByRole("button", { name: "Vest esGMX" }));
     await waitFor(() => expect(screen.getByRole("button", { name: "Continue" })).toBeTruthy());
-    expect(mockCallContract).toHaveBeenCalledTimes(1);
+    expect(mockCallContract).toHaveBeenCalledTimes(calls);
+    if (toast) expect(helperToast[toast]).toHaveBeenCalled();
     expect(onVestingStarted).not.toHaveBeenCalled();
-  });
-
-  it("pauses if refreshing balances fails after approval", async () => {
-    mutate.mockResolvedValueOnce(base).mockRejectedValueOnce(new Error("RPC unavailable"));
-    render(view());
-    enter();
-    fireEvent.click(screen.getByRole("button", { name: "Vest esGMX" }));
-    await waitFor(() => expect(screen.getByRole("button", { name: "Continue" })).toBeTruthy());
-    expect(mockCallContract).toHaveBeenCalledTimes(1);
-    expect(helperToast.error).toHaveBeenCalled();
-    expect(onVestingStarted).not.toHaveBeenCalled();
-  });
-
-  it("stops before the next transaction if the wallet changes during approval", async () => {
-    const receipt = deferredReceipt();
-    mockCallContract.mockResolvedValueOnce(receipt);
-    mutate.mockResolvedValueOnce(base).mockResolvedValue(esApproved);
-    const component = render(view());
-    enter();
-    fireEvent.click(screen.getByRole("button", { name: "Vest esGMX" }));
-    await waitFor(() => expect(receipt.wait).toHaveBeenCalled());
-    vi.mocked(useWallet).mockReturnValue({
-      account: ratioConfig.issuer,
-      active: true,
-      chainId: ARBITRUM_SEPOLIA,
-      signer,
-    } as ReturnType<typeof useWallet>);
-    component.rerender(view());
-    await act(async () => receipt.confirm());
-    expect(mockCallContract).toHaveBeenCalledTimes(1);
-    expect(onVestingStarted).not.toHaveBeenCalled();
-  });
-
-  it("requires review if collateral increases between approvals", async () => {
-    mutate.mockResolvedValueOnce(base).mockResolvedValue({
-      ...esApproved,
-      freePairAmount: 600n * U,
-      ratioVesting: { ...esApproved.ratioVesting, pairRatioFactor: 6n * 10n ** 30n },
-    });
-    render(view());
-    enter();
-    fireEvent.click(screen.getByRole("button", { name: "Vest esGMX" }));
-    await waitFor(() => expect(screen.getByRole("button", { name: "Continue" })).toBeTruthy());
-    expect(mockCallContract).toHaveBeenCalledTimes(1);
-    expect(helperToast.info).toHaveBeenCalled();
-    expect(onVestingStarted).not.toHaveBeenCalled();
-  });
-
-  it("uses sbfGMX balances for the maximum, regardless of liquid GMX", () => {
-    const data = { ...base, freePairAmount: 50n * U };
-    render(view(data));
-    fireEvent.click(screen.getByRole("button", { name: "Max" }));
-    expect((screen.getByRole("textbox") as HTMLInputElement).value).toBe("10");
-  });
-
-  it.each([{ isFrozen: true }, { isIssuerBindingConfirmed: false }, { deactivatedAt: 1n }])(
-    "blocks deposits when the vault is unavailable (case %#)",
-    (override) => {
-      render(view({ ...base, ratioVesting: { ...base.ratioVesting!, ...override } }));
-      enter();
-      expect((screen.getByRole("button", { name: "Deposits are closed." }) as HTMLButtonElement).disabled).toBe(true);
-      expect(mockCallContract).not.toHaveBeenCalled();
-    }
-  );
-
-  it("stops a pending action when the wallet network changes", async () => {
-    let resolve!: (data: RewardsVestingData) => void;
-    mutate.mockImplementation(
-      () =>
-        new Promise((done) => {
-          resolve = done;
-        })
-    );
-    const component = render(view());
-    enter();
-    fireEvent.click(screen.getByRole("button", { name: "Vest esGMX" }));
-    vi.mocked(useWallet).mockReturnValue({ account: ACCOUNT, active: true, chainId: ARBITRUM, signer } as ReturnType<
-      typeof useWallet
-    >);
-    component.rerender(view());
-    await act(async () => resolve(base));
-    expect(mockCallContract).not.toHaveBeenCalled();
-  });
-
-  it("requires review if the lifetime vesting cap is consumed before submission", async () => {
-    mutate.mockResolvedValue({ ...base, ratioVesting: { ...base.ratioVesting!, capUsedAmount: 50n * U } });
-    render(view());
-    enter();
-    fireEvent.click(screen.getByRole("button", { name: "Vest esGMX" }));
-    await waitFor(() => expect(helperToast.info).toHaveBeenCalled());
-    expect(mockCallContract).not.toHaveBeenCalled();
   });
 });

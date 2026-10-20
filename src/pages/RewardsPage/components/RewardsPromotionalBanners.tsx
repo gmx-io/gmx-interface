@@ -64,7 +64,7 @@ function isInteractiveElement(target: EventTarget | null) {
   return target instanceof Element && Boolean(target.closest("a, button"));
 }
 
-export function getRewardsPromotionalBannerContent({
+function getRewardsPromotionalBannerContent({
   config,
   status,
   promoSelection,

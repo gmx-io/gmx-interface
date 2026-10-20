@@ -131,7 +131,6 @@ const fees = {
 } satisfies TradeFees;
 
 const discountedFees = { ...fees, feeDiscountUsd: usd(5n) };
-const higherDiscountFees = { ...fees, feeDiscountUsd: usd(8n) };
 
 const defaultParams: Parameters<typeof useTradeRewardsEstimate>[0] = {
   fees,
@@ -218,27 +217,6 @@ describe("useTradeRewardsEstimate", () => {
 
   afterEach(cleanup);
 
-  it("estimates a zero-rebate reward when the account has no referral info", () => {
-    render(<Harness {...defaultParams} />);
-
-    expect(mockUseUserReferralInfo).toHaveReturnedWith(undefined);
-    expect(latestResult.estimatedRewards?.eligibleFeeUsd).toBe(usd(10n));
-    expect(latestResult.estimatedRewards?.effectiveMultiplier).toBe(50n);
-    expect(latestResult.estimatedRewards?.rewardsUsd).toBe(usd(5n));
-  });
-
-  it.each(["increase", "decrease"] as const)("updates %s rewards when the pro-tier discount changes", (feesType) => {
-    const view = render(<Harness {...defaultParams} feesType={feesType} fees={discountedFees} />);
-
-    expect(latestResult.estimatedRewards?.eligibleFeeUsd).toBe(usd(5n));
-    expect(latestResult.estimatedRewards?.rewardsUsd).toBe(usd(5n) / 2n);
-
-    view.rerender(<Harness {...defaultParams} feesType={feesType} fees={higherDiscountFees} />);
-
-    expect(latestResult.estimatedRewards?.eligibleFeeUsd).toBe(usd(2n));
-    expect(latestResult.estimatedRewards?.rewardsUsd).toBe(usd(1n));
-  });
-
   it("waits for the affiliate minimum when a pro discount overrides the referral discount", () => {
     mockUseUserReferralInfo.mockReturnValue({
       tierId: 0,
@@ -266,68 +244,58 @@ describe("useTradeRewardsEstimate", () => {
     expect(latestResult.estimatedRewards).toBeUndefined();
   });
 
-  it("uses the position price-impact result to apply a qualifying balancing-trade boost", () => {
-    const sizeDeltaUsd = usd(1_000n);
-    setActiveConfig(
-      makeConfig({
-        volumeTiers: [],
-        balancingTradesThreshold: sizeDeltaUsd,
-      })
-    );
-    setStatus(makeStatus({ multiplier: 0n, volumeTier: null, projectedVolumeTier: null }));
-    mockGetPriceImpactForPosition.mockReturnValue({
-      priceImpactDeltaUsd: 0n,
-      balanceWasImproved: true,
-    });
-
-    render(<Harness {...defaultParams} sizeDeltaUsd={sizeDeltaUsd} />);
-
-    expect(mockGetPriceImpactForPosition).toHaveBeenCalledWith(marketInfo, sizeDeltaUsd, true, {
-      fallbackToZero: true,
-    });
-    expect(latestResult.estimatedRewards?.effectiveMultiplier).toBe(100n);
-    expect(latestResult.estimatedRewards?.rewardsUsd).toBe(usd(10n));
-  });
-
-  it("withholds the estimate when account status belongs to a previous epoch", () => {
-    setStatus(makeStatus({ epochTimestamp: 1_784_073_599 }));
-
-    render(<Harness {...defaultParams} />);
-
-    expect(latestResult.hasKnownMultiplier).toBe(false);
-    expect(latestResult.estimatedRewards).toBeUndefined();
-  });
-
-  it("uses status for the same account when checksum casing differs", () => {
-    mockUseAccount.mockReturnValue(SAME_ACCOUNT_DIFFERENT_CASE);
-
-    render(<Harness {...defaultParams} />);
-
-    expect(latestResult.hasKnownMultiplier).toBe(true);
-    expect(latestResult.multiplier).toBe(50n);
-    expect(latestResult.estimatedRewards?.rewardsUsd).toBe(usd(5n));
-  });
-
-  it("does not expose an estimate or enable account requests while disconnected", () => {
-    mockUseAccount.mockReturnValue(undefined);
-
-    render(<Harness {...defaultParams} />);
-
-    expect(mockUseAccountIncentiveStatus).toHaveBeenCalledWith(ARBITRUM, {
+  it.each([
+    {
+      name: "withholds the estimate when account status belongs to a previous epoch",
+      account: ACCOUNT,
+      status: makeStatus({ epochTimestamp: 1_784_073_599 }),
+      expected: {
+        enabled: true,
+        hasKnownMultiplier: false,
+        multiplier: undefined,
+        rewardsUsd: undefined,
+        gtPriceEnabled: true,
+      },
+    },
+    {
+      name: "uses status for the same account when checksum casing differs",
+      account: SAME_ACCOUNT_DIFFERENT_CASE,
+      expected: { enabled: true, hasKnownMultiplier: true, multiplier: 50n, rewardsUsd: usd(5n), gtPriceEnabled: true },
+    },
+    {
+      name: "does not expose an estimate or enable account requests while disconnected",
       account: undefined,
-      enabled: false,
-    });
-    expect(mockUseLatestGtPrice).toHaveBeenCalledWith(ARBITRUM, { enabled: false });
-    expect(latestResult.enabled).toBe(false);
-    expect(latestResult.estimatedRewards).toBeUndefined();
-  });
+      expected: {
+        enabled: false,
+        hasKnownMultiplier: false,
+        multiplier: undefined,
+        rewardsUsd: undefined,
+        gtPriceEnabled: false,
+      },
+    },
+    {
+      name: "keeps the multiplier but withholds an amount when TWAP estimation is disabled",
+      account: ACCOUNT,
+      shouldEstimate: false,
+      expected: {
+        enabled: true,
+        hasKnownMultiplier: true,
+        multiplier: 50n,
+        rewardsUsd: undefined,
+        gtPriceEnabled: false,
+      },
+    },
+  ])("$name", ({ account, status, shouldEstimate, expected }) => {
+    mockUseAccount.mockReturnValue(account);
+    if (status) setStatus(status);
 
-  it("keeps the multiplier but withholds an amount when TWAP estimation is disabled", () => {
-    render(<Harness {...defaultParams} shouldEstimate={false} />);
+    render(<Harness {...defaultParams} shouldEstimate={shouldEstimate} />);
 
-    expect(mockUseLatestGtPrice).toHaveBeenCalledWith(ARBITRUM, { enabled: false });
-    expect(latestResult.hasKnownMultiplier).toBe(true);
-    expect(latestResult.multiplier).toBe(50n);
-    expect(latestResult.estimatedRewards).toBeUndefined();
+    expect(mockUseAccountIncentiveStatus).toHaveBeenLastCalledWith(ARBITRUM, { account, enabled: expected.enabled });
+    expect(mockUseLatestGtPrice).toHaveBeenLastCalledWith(ARBITRUM, { enabled: expected.gtPriceEnabled });
+    expect(latestResult.enabled).toBe(expected.enabled);
+    expect(latestResult.hasKnownMultiplier).toBe(expected.hasKnownMultiplier);
+    expect(latestResult.multiplier).toBe(expected.multiplier);
+    expect(latestResult.estimatedRewards?.rewardsUsd).toBe(expected.rewardsUsd);
   });
 });

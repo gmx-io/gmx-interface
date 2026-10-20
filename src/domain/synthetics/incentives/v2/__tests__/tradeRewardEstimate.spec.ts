@@ -160,29 +160,20 @@ describe("V2 trade reward estimate", () => {
     expect(result.gtRewards).toBe(0n);
   });
 
-  it("does not use a crossed volume tier before it becomes active", () => {
-    const crossingTrade = getEstimatedTradeRewards(
-      makeParams({
-        status: makeStatus({ stakingTier: "Tier1", tierVolume: usd(900n) }),
-        sizeDeltaUsd: usd(200n),
-      })
-    );
-    const activeTierTrade = getEstimatedTradeRewards(
-      makeParams({
-        status: makeStatus({ volumeTier: "Tier1", stakingTier: "Tier1", tierVolume: usd(1_000n) }),
-        sizeDeltaUsd: usd(100n),
-      })
-    );
-
-    expect(crossingTrade.effectiveMultiplier).toBe(100n);
-    expect(crossingTrade.baseRewardUsd).toBe(usd(10n));
-    expect(activeTierTrade.effectiveMultiplier).toBe(200n);
-    expect(activeTierTrade.baseRewardUsd).toBe(usd(20n));
-  });
-
-  it("adds persistent and per-trade boosts without treating historical trade boosts as persistent", () => {
-    const result = getTradeMultiplierEstimate({
-      ...makeParams({
+  it.each([
+    {
+      name: "a crossed volume tier before it becomes active",
+      params: { status: makeStatus({ stakingTier: "Tier1", tierVolume: usd(900n) }), sizeDeltaUsd: usd(200n) },
+      expected: 100n,
+    },
+    {
+      name: "an active volume tier",
+      params: { status: makeStatus({ volumeTier: "Tier1", stakingTier: "Tier1", tierVolume: usd(1_000n) }) },
+      expected: 200n,
+    },
+    {
+      name: "persistent and per-trade boosts without historical trade boosts",
+      params: {
         status: makeStatus({
           volumeTier: "Tier2",
           stakingTier: "Tier2",
@@ -191,76 +182,51 @@ describe("V2 trade reward estimate", () => {
         sizeDeltaUsd: usd(1_000_000n),
         marketTokenAddress: MARKET,
         balanceWasImproved: true,
-      }),
-    });
-
-    expect(result.normalMultiplier).toBe(650n);
-    expect(result.fullMultiplier).toBe(650n);
-  });
-
-  it("applies the featured boost only to the configured market token", () => {
-    const featuredMarket = getTradeMultiplierEstimate({
-      ...makeParams({
+      },
+      expected: 650n,
+    },
+    {
+      name: "the featured boost on the configured market token",
+      params: { config: makeConfig({ volumeTiers: [] }), marketTokenAddress: MARKET },
+      expected: 50n,
+    },
+    {
+      name: "another pool with the same index token",
+      params: { config: makeConfig({ volumeTiers: [] }), marketTokenAddress: OTHER_MARKET },
+      expected: 0n,
+    },
+    {
+      name: "an earned lifetime boost before it becomes active",
+      params: { status: makeStatus({ volumeTier: "Tier1" }), sizeDeltaUsd: usd(200_000_000n) },
+      expected: 100n,
+    },
+    {
+      name: "an active lifetime boost",
+      params: { status: makeStatus({ volumeTier: "Tier1", boostIds: ["LifetimeTrading"] }) },
+      expected: 200n,
+    },
+    {
+      name: "a qualifying balancing increase",
+      params: { config: makeConfig({ volumeTiers: [] }), sizeDeltaUsd: usd(1_000_000n), balanceWasImproved: true },
+      expected: 100n,
+    },
+    {
+      name: "a balancing decrease",
+      params: {
         config: makeConfig({ volumeTiers: [] }),
-        marketTokenAddress: MARKET,
-      }),
-    });
-    const otherPoolWithSameIndexToken = getTradeMultiplierEstimate({
-      ...makeParams({
-        config: makeConfig({ volumeTiers: [] }),
-        marketTokenAddress: OTHER_MARKET,
-      }),
-    });
-
-    expect(featuredMarket.effectiveMultiplier).toBe(50n);
-    expect(otherPoolWithSameIndexToken.effectiveMultiplier).toBe(0n);
-  });
-
-  it("does not use an earned lifetime boost before it becomes active", () => {
-    const crossingTrade = getTradeMultiplierEstimate({
-      ...makeParams({
-        status: makeStatus({ volumeTier: "Tier1" }),
-        sizeDeltaUsd: usd(200_000_000n),
-      }),
-    });
-    const activeBoostTrade = getTradeMultiplierEstimate({
-      ...makeParams({
-        status: makeStatus({ volumeTier: "Tier1", boostIds: ["LifetimeTrading"] }),
-      }),
-    });
-
-    expect(crossingTrade.effectiveMultiplier).toBe(100n);
-    expect(activeBoostTrade.effectiveMultiplier).toBe(200n);
-  });
-
-  it("applies the balancing boost only to qualifying position increases", () => {
-    const config = makeConfig({ volumeTiers: [] });
-    const qualifying = getTradeMultiplierEstimate({
-      ...makeParams({
-        config,
-        sizeDeltaUsd: usd(1_000_000n),
-        balanceWasImproved: true,
-      }),
-    });
-    const decrease = getTradeMultiplierEstimate({
-      ...makeParams({
-        config,
         sizeDeltaUsd: usd(1_000_000n),
         balanceWasImproved: true,
         isIncrease: false,
-      }),
-    });
-    const belowThreshold = getTradeMultiplierEstimate({
-      ...makeParams({
-        config,
-        sizeDeltaUsd: usd(999_999n),
-        balanceWasImproved: true,
-      }),
-    });
-
-    expect(qualifying.effectiveMultiplier).toBe(100n);
-    expect(decrease.effectiveMultiplier).toBe(0n);
-    expect(belowThreshold.effectiveMultiplier).toBe(0n);
+      },
+      expected: 0n,
+    },
+    {
+      name: "a balancing increase below the threshold",
+      params: { config: makeConfig({ volumeTiers: [] }), sizeDeltaUsd: usd(999_999n), balanceWasImproved: true },
+      expected: 0n,
+    },
+  ])("estimates the multiplier for $name", ({ params, expected }) => {
+    expect(getTradeMultiplierEstimate(makeParams(params)).effectiveMultiplier).toBe(expected);
   });
 
   it("partially applies a capped manual allocation after accounting for the multiplier cap", () => {

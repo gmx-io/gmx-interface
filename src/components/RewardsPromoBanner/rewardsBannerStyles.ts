@@ -1,9 +1,6 @@
 import type { CSSProperties } from "react";
 
-/**
- * Glow anchored to the bottom-right corner, behind the coin art. Absolute sizes keep the
- * shape identical on banners of any width.
- */
+// absolute px sizes keep the glow shape identical on any banner width
 const GLOW = "520px 168px at calc(100% - 20px) 90%";
 
 export type RewardsBannerAccent = "stakeGmx" | "stakeEsGmx" | "restake" | "bonus" | "referral" | "boost" | "tier";

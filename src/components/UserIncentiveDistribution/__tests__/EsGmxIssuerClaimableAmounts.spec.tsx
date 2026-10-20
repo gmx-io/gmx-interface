@@ -110,21 +110,24 @@ describe("esGMX incentive claims", () => {
     expect(callContract).not.toHaveBeenCalled();
   });
 
-  it("does not claim a balance that was already claimed elsewhere", async () => {
-    mutate.mockResolvedValue(0n);
+  it.each([
+    {
+      name: "a balance that was already claimed elsewhere",
+      refresh: () => mutate.mockResolvedValue(0n),
+      toast: () => helperToast.info,
+      message: "No rewards are currently available to claim.",
+    },
+    {
+      name: "when the balance cannot be refreshed",
+      refresh: () => mutate.mockRejectedValue(new Error("RPC unavailable")),
+      toast: () => helperToast.error,
+      message: "Unable to refresh claimable rewards. Please try again.",
+    },
+  ])("does not claim $name", async ({ refresh, toast, message }) => {
+    refresh();
     render(getView());
     fireEvent.click(screen.getByRole("button", { name: "Claim esGMX" }));
-    await waitFor(() => expect(helperToast.info).toHaveBeenCalledWith("No rewards are currently available to claim."));
-    expect(callContract).not.toHaveBeenCalled();
-  });
-
-  it("shows an error when the balance cannot be refreshed", async () => {
-    mutate.mockRejectedValue(new Error("RPC unavailable"));
-    render(getView());
-    fireEvent.click(screen.getByRole("button", { name: "Claim esGMX" }));
-    await waitFor(() =>
-      expect(helperToast.error).toHaveBeenCalledWith("Unable to refresh claimable rewards. Please try again.")
-    );
+    await waitFor(() => expect(toast()).toHaveBeenCalledWith(message));
     expect(callContract).not.toHaveBeenCalled();
   });
 

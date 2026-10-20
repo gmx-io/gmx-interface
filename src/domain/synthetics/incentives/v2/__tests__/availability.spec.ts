@@ -4,36 +4,17 @@ import { resolveIncentivesAvailability } from "../availability";
 import type { IncentivesConfig } from "../types";
 
 const config = {} as IncentivesConfig;
+const error = new Error("Unavailable");
 
 describe("resolveIncentivesAvailability", () => {
-  it("returns unsupported without consulting data", () => {
-    expect(resolveIncentivesAvailability({ supported: false, config, error: new Error("Ignored") })).toEqual({
-      status: "unsupported-chain",
-    });
-  });
-
-  it("returns active and marks cached config stale after a revalidation error", () => {
-    expect(resolveIncentivesAvailability({ supported: true, config, error: undefined })).toEqual({
-      status: "active",
-      config,
-      isStale: false,
-    });
-    expect(resolveIncentivesAvailability({ supported: true, config, error: new Error("Unavailable") })).toEqual({
-      status: "active",
-      config,
-      isStale: true,
-    });
-  });
-
-  it("distinguishes inactive, error, and loading", () => {
-    expect(resolveIncentivesAvailability({ supported: true, config: null, error: undefined })).toEqual({
-      status: "inactive",
-    });
-    expect(
-      resolveIncentivesAvailability({ supported: true, config: undefined, error: new Error("Unavailable") })
-    ).toEqual({ status: "error", error: new Error("Unavailable") });
-    expect(resolveIncentivesAvailability({ supported: true, config: undefined, error: undefined })).toEqual({
-      status: "loading",
-    });
+  it.each([
+    { supported: false, config, error, expected: { status: "unsupported-chain" } },
+    { supported: true, config, error: undefined, expected: { status: "active", config, isStale: false } },
+    { supported: true, config, error, expected: { status: "active", config, isStale: true } },
+    { supported: true, config: null, error: undefined, expected: { status: "inactive" } },
+    { supported: true, config: undefined, error, expected: { status: "error", error } },
+    { supported: true, config: undefined, error: undefined, expected: { status: "loading" } },
+  ])("supported=$supported config=$config error=$error -> $expected.status", ({ expected, ...input }) => {
+    expect(resolveIncentivesAvailability(input)).toEqual(expected);
   });
 });

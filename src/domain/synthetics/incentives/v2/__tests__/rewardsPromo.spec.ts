@@ -7,13 +7,14 @@ import { PRECISION } from "lib/numbers";
 import {
   getIsActiveRewardsUser,
   getRewardsPromoSelection,
+  type RewardsPromoVariant,
   type StableRewardsPromoSelection,
   useStableRewardsPromoSelection,
 } from "../rewardsPromo";
 import type { AccountIncentiveStatus, IncentivesConfig } from "../types";
 
 const ACCOUNT = "0x52908400098527886E0F7030069857D2E4169EE7";
-const SAME_ACCOUNT_DIFFERENT_CASE = "0x52908400098527886e0f7030069857d2e4169ee7";
+const OTHER_ACCOUNT = "0x8617E340B3D01FA5F11F306F4090FD50E238070D";
 const config = {
   epochTimestamp: 100,
   feeShareFactor: PRECISION,
@@ -100,35 +101,88 @@ describe("rewards promo selection", () => {
       }).variant
     ).toBe("new-or-low-fees");
   });
+});
 
-  it("accepts status for the same account when checksum casing differs", () => {
-    let latestSelection: StableRewardsPromoSelection | undefined;
-    const status = {
-      ...emptyStatus,
-      boostIds: ["ManualAllocation"],
-      manualRewardRemainingUsd: 100n * PRECISION,
-    } satisfies AccountIncentiveStatus;
+type StableSelectionProps = Parameters<typeof useStableRewardsPromoSelection>[0];
 
-    function Harness() {
-      latestSelection = useStableRewardsPromoSelection({
-        chainId: 42161,
-        account: SAME_ACCOUNT_DIFFERENT_CASE,
-        walletStatus: "connected",
-        isWalletInitializing: false,
-        enabled: true,
-        config,
-        status,
-        statusLoading: false,
-        activityLoading: false,
-      });
+const connectedProps: StableSelectionProps = {
+  chainId: 42161,
+  account: ACCOUNT,
+  walletStatus: "connected",
+  isWalletInitializing: false,
+  enabled: true,
+  config,
+  statusLoading: false,
+  activityLoading: false,
+};
+const manualStatus = { ...emptyStatus, manualRewardRemainingUsd: 500n * PRECISION };
+const nextConfig = { ...config, epochTimestamp: config.epochTimestamp + 1 };
+const restoringWallet = { account: undefined, walletStatus: "disconnected" };
 
+describe("useStableRewardsPromoSelection", () => {
+  it.each<{ name: string; steps: [Partial<StableSelectionProps>, RewardsPromoVariant | undefined][] }>([
+    {
+      name: "hides cached personalization across an epoch rollover until current status arrives",
+      steps: [
+        [{ status: manualStatus }, "manual-reward"],
+        [{ status: manualStatus, config: nextConfig }, undefined],
+        [
+          { status: { ...emptyStatus, epochTimestamp: nextConfig.epochTimestamp }, config: nextConfig },
+          "new-or-low-fees",
+        ],
+      ],
+    },
+    {
+      name: "stays hidden while account status is loading or incentives are inactive",
+      steps: [
+        [{ statusLoading: true }, undefined],
+        [{ status: emptyStatus, enabled: false, config: undefined }, undefined],
+      ],
+    },
+    {
+      name: "retains resolved personalization during same-account revalidation",
+      steps: [
+        [{ status: manualStatus }, "manual-reward"],
+        [{ statusLoading: true }, "manual-reward"],
+      ],
+    },
+    {
+      name: "hides during reconnect and never reuses another account's personalization",
+      steps: [
+        [{ status: manualStatus }, "manual-reward"],
+        [{ account: undefined, walletStatus: "reconnecting", statusLoading: true }, undefined],
+        [{ account: OTHER_ACCOUNT, statusLoading: true }, undefined],
+        [{ account: OTHER_ACCOUNT, status: manualStatus }, undefined],
+        [{ account: OTHER_ACCOUNT, status: { ...emptyStatus, account: OTHER_ACCOUNT } }, "new-or-low-fees"],
+      ],
+    },
+    {
+      name: "stays hidden throughout a slow wallet restoration",
+      steps: [
+        [{ ...restoringWallet, isWalletInitializing: true }, undefined],
+        [restoringWallet, "new-or-low-fees"],
+      ],
+    },
+    {
+      name: "waits for wallet restoration when incentives activate after the config loads",
+      steps: [
+        [{ ...restoringWallet, isWalletInitializing: true, enabled: false, config: undefined }, undefined],
+        [{ ...restoringWallet, isWalletInitializing: true }, undefined],
+        [restoringWallet, "new-or-low-fees"],
+      ],
+    },
+  ])("$name", ({ steps }) => {
+    let latest: StableRewardsPromoSelection | undefined;
+    function Probe(props: StableSelectionProps) {
+      latest = useStableRewardsPromoSelection(props);
       return null;
     }
 
-    const view = render(React.createElement(Harness));
-
-    expect(latestSelection?.isLoading).toBe(false);
-    expect(latestSelection?.selection?.variant).toBe("manual-reward");
+    const view = render(React.createElement(Probe, { ...connectedProps, ...steps[0][0] }));
+    steps.forEach(([props, expectedVariant], index) => {
+      if (index > 0) view.rerender(React.createElement(Probe, { ...connectedProps, ...props }));
+      expect(latest?.selection?.variant).toBe(expectedVariant);
+    });
     view.unmount();
   });
 });
