@@ -6,7 +6,7 @@ import type { AccountIncentiveStatus } from "domain/synthetics/incentives/v2/typ
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/v2/useAccountIncentiveStatus";
 import { useLocalStorageSerializeKeySafe } from "lib/localStorage";
 
-export function getShouldShowHistoricalRewardsAllocationModal({
+function getShouldShowHistoricalRewardsAllocationModal({
   dismissed,
   account,
   status,

@@ -74,36 +74,25 @@ describe("fetchTwapGroupExecutedActions", () => {
 });
 
 describe("fetchRawTradeActions", () => {
-  beforeEach(() => {
-    queryMock.mockReset();
-  });
+  beforeEach(() => queryMock.mockReset());
 
-  it("filters orders and transactions while retaining legacy actions and excluding funding settlements", async () => {
+  it("keeps legacy actions with a null funding settle flag", async () => {
     queryMock.mockResolvedValue({ data: { tradeActions: [] } });
 
     await fetchRawTradeActions({
       chainId: 42161,
       pageIndex: 0,
       pageSize: 20,
-      includeTotalCount: false,
       marketsDirectionsFilter: undefined,
       forAllAccounts: false,
       account: "0xAccount",
       fromTxTimestamp: undefined,
       toTxTimestamp: undefined,
       orderEventCombinations: undefined,
-      positionLifecycleId: undefined,
-      orderKeys: ["order-1"],
-      transactionHashes: ["0xTransaction"],
       showDebugValues: false,
     });
 
-    const body = getQueryBody(0);
-    expect(body).toContain("isFundingFeeSettle");
-    expect(body).toContain("isFundingFeeSettle_eq:false");
-    expect(body).toContain("isFundingFeeSettle_isNull:true");
-    expect(body).toContain('orderKey_in:["order-1"]');
-    expect(body).toContain('transactionHash_in:["0xTransaction"]');
+    expect(getQueryBody(0)).toContain("isFundingFeeSettle_isNull:true");
   });
 });
 

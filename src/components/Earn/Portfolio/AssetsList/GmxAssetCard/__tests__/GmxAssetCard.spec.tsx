@@ -18,7 +18,6 @@ import { useBreakpoints } from "lib/useBreakpoints";
 import useWallet from "lib/wallets/useWallet";
 
 import AssetsList from "../../AssetsList";
-import { GmxAssetCard } from "../GmxAssetCard";
 
 vi.mock("swr", () => ({
   default: vi.fn(() => ({})),
@@ -119,18 +118,6 @@ const mockUseChainId = vi.mocked(useChainId);
 const mockUseBreakpoints = vi.mocked(useBreakpoints);
 const mockUseMedia = vi.mocked(useMedia);
 const mockUseWallet = vi.mocked(useWallet);
-const ROUTE_ENTRIES = {
-  "stake-gmx": ["/earn/portfolio?operation=stake-gmx"],
-  "stake-es-gmx": ["/earn/portfolio?operation=stake-es-gmx"],
-};
-const PRESERVED_ROUTE_ENTRIES = [
-  {
-    pathname: "/earn/portfolio",
-    search: "?operation=stake-gmx&source=rewards",
-    hash: "#staking",
-    state: { from: "rewards" },
-  },
-];
 const EMPTY_GM_GLV_ASSETS: GlvOrMarketInfo[] = [];
 
 i18n.load({ en: {} });
@@ -148,24 +135,21 @@ function LocationProbe() {
   );
 }
 
-function renderCard(
-  operation: "stake-gmx" | "stake-es-gmx",
-  initialEntries: React.ComponentProps<typeof MemoryRouter>["initialEntries"] = ROUTE_ENTRIES[operation]
-) {
-  return render(
-    <I18nProvider i18n={i18n}>
-      <MemoryRouter initialEntries={initialEntries}>
-        <GmxAssetCard processedData={{} as StakingProcessedData} hasEsGmx />
-        <LocationProbe />
-      </MemoryRouter>
-    </I18nProvider>
-  );
+function getRouteEntries(operation: "stake-gmx" | "stake-es-gmx") {
+  return [
+    {
+      pathname: "/earn/portfolio",
+      search: `?operation=${operation}&source=rewards`,
+      hash: "#staking",
+      state: { from: "rewards" },
+    },
+  ];
 }
 
 function renderZeroBalanceAssetsList(operation: "stake-gmx" | "stake-es-gmx") {
   return render(
     <I18nProvider i18n={i18n}>
-      <MemoryRouter initialEntries={ROUTE_ENTRIES[operation]}>
+      <MemoryRouter initialEntries={getRouteEntries(operation)}>
         <AssetsList
           chainId={ARBITRUM}
           processedData={{} as StakingProcessedData}
@@ -223,51 +207,21 @@ describe("GmxAssetCard operation routing", () => {
     ["stake-gmx", "stake-GMX"],
     ["stake-es-gmx", "stake-esGMX"],
   ] as const)(
-    "opens the requested %s modal and consumes the query parameter when closed",
+    "keeps the GMX card mounted, opens %s for a zero-balance wallet and consumes only the operation",
     async (operation, modalTestId) => {
-      renderCard(operation);
+      renderZeroBalanceAssetsList(operation);
 
       await waitFor(() => {
         expect(screen.getByTestId(modalTestId).getAttribute("data-visible")).toBe("true");
-        expect(screen.getByTestId("location-search").textContent).toBe(`?operation=${operation}`);
       });
 
       fireEvent.click(screen.getByTestId(`close-${modalTestId}`));
       await waitFor(() => {
-        expect(screen.getByTestId("location-search").textContent).toBe("");
+        expect(screen.getByTestId("location-search").textContent).toBe("?source=rewards");
+        expect(screen.getByTestId("location-hash").textContent).toBe("#staking");
+        expect(screen.getByTestId("location-state").textContent).toBe("rewards");
+        expect(screen.queryByTestId(modalTestId)).toBeNull();
       });
     }
   );
-
-  it.each([
-    ["stake-gmx", "stake-GMX"],
-    ["stake-es-gmx", "stake-esGMX"],
-  ] as const)("keeps the GMX card mounted and opens %s for a zero-balance wallet", async (operation, modalTestId) => {
-    renderZeroBalanceAssetsList(operation);
-
-    await waitFor(() => {
-      expect(screen.getByTestId(modalTestId).getAttribute("data-visible")).toBe("true");
-    });
-
-    fireEvent.click(screen.getByTestId(`close-${modalTestId}`));
-    await waitFor(() => {
-      expect(screen.getByTestId("location-search").textContent).toBe("");
-      expect(screen.queryByTestId(modalTestId)).toBeNull();
-    });
-  });
-
-  it("preserves unrelated location data when consuming the operation", async () => {
-    renderCard("stake-gmx", PRESERVED_ROUTE_ENTRIES);
-
-    await waitFor(() => {
-      expect(screen.getByTestId("stake-GMX").getAttribute("data-visible")).toBe("true");
-    });
-
-    fireEvent.click(screen.getByTestId("close-stake-GMX"));
-    await waitFor(() => {
-      expect(screen.getByTestId("location-search").textContent).toBe("?source=rewards");
-      expect(screen.getByTestId("location-hash").textContent).toBe("#staking");
-      expect(screen.getByTestId("location-state").textContent).toBe("rewards");
-    });
-  });
 });

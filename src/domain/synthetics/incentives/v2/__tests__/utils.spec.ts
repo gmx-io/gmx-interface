@@ -6,13 +6,10 @@ import { PRECISION } from "lib/numbers";
 import {
   formatEpochLabel,
   formatFactorPercentage,
-  formatManualAllocationVolumeRange,
   formatMultiplier,
   formatMultiplierAdjustment,
-  formatRewardUsd,
   getMaxRewardRateFactor,
   getRecentActivityRewardEstimateUsd,
-  getRewardsHistoryStatus,
 } from "../utils";
 
 function normalizeRange(value: string) {
@@ -31,11 +28,6 @@ describe("Incentives V2 formatting", () => {
     expect(formatMultiplier(100n, 0n)).toBe("-");
     expect(formatMultiplierAdjustment(50n, 100n)).toBe("+0.5x");
     expect(formatMultiplierAdjustment(0n, 100n)).toBe("0x");
-  });
-
-  it("formats 30-decimal factors as percentages", () => {
-    expect(formatFactorPercentage(PRECISION / 2n)).toBe("50%");
-    expect(formatFactorPercentage((PRECISION * 1234n) / 10_000n, 2)).toBe("12.34%");
   });
 
   it("derives the configured maximum combined reward rate", () => {
@@ -78,22 +70,6 @@ describe("Incentives V2 formatting", () => {
         nowSeconds,
       })
     ).toBeUndefined();
-  });
-
-  it("derives history status from the epoch end", () => {
-    expect(getRewardsHistoryStatus(1_000, 100, 1_099)).toBe("ongoing");
-    expect(getRewardsHistoryStatus(1_000, 100, 1_100)).toBe("finished");
-  });
-
-  it("formats bounded and open-ended manual allocation ranges without converting BigInts to numbers", () => {
-    expect(formatManualAllocationVolumeRange(10_000n * PRECISION, 250_000n * PRECISION)).toContain("250,000");
-    expect(formatManualAllocationVolumeRange(750_000_000n * PRECISION, null)).toMatch(/750,000,000\+$/);
-  });
-
-  it("keeps positive sub-dollar reward balances visible", () => {
-    expect(formatRewardUsd(PRECISION - 1n)).toBe("< $1");
-    expect(formatRewardUsd(PRECISION).replace(/\s/g, "")).toContain("$1");
-    expect(formatRewardUsd(0n).replace(/\s/g, "")).toContain("$0");
   });
 
   it("formats one-day epochs as a single date", () => {

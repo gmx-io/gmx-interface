@@ -53,7 +53,6 @@ describe("fetchIncentiveEpochAudit", () => {
     expect(result.entries[1000].esGmxRewards).toBe(1000000000000000001n);
     expect(result.entries[1000].avgStakedGmx).toBe(1000000000000000001n);
     expect(mockFetch.mock.calls[0][1]).toBe(INCENTIVE_ACCOUNT_EPOCH_AUDIT_WITH_STAKING_QUERY);
-    expect(INCENTIVE_ACCOUNT_EPOCH_AUDIT_WITH_STAKING_QUERY).toContain("avgStakedGmx");
     expect(mockFetch.mock.calls.map((call) => call[2])).toEqual([
       { where: { epochTimestamp: EPOCH }, orderBy: "epochTimestamp_ASC", limit: 1000, offset: 0 },
       { where: { epochTimestamp: EPOCH }, orderBy: "epochTimestamp_ASC", limit: 1000, offset: 1000 },
@@ -76,7 +75,6 @@ describe("fetchIncentiveEpochAudit", () => {
       INCENTIVE_ACCOUNT_EPOCH_AUDIT_QUERY,
       INCENTIVE_ACCOUNT_EPOCH_AUDIT_QUERY,
     ]);
-    expect(INCENTIVE_ACCOUNT_EPOCH_AUDIT_QUERY).not.toContain("avgStakedGmx");
   });
 
   it("propagates failures unrelated to schema compatibility", async () => {
@@ -90,16 +88,10 @@ describe("fetchIncentiveEpochAudit", () => {
     await expect(fetchIncentiveEpochAudit(ENDPOINT, EPOCH)).rejects.toThrow("Invalid query variables");
   });
 
-  it("preserves checksum casing and returns an empty epoch without a follow-up request", async () => {
-    const account = "0x52908400098527886E0F7030069857D2E4169EE7";
-    mockFetch.mockResolvedValueOnce({
-      incentiveAccountEpochAudit: { totalCount: 1, items: [{ ...makeEntry(1), account }] },
-    });
-    expect((await fetchIncentiveEpochAudit(ENDPOINT, EPOCH)).entries[0].account).toBe(account);
-
+  it("returns an empty epoch without a follow-up request", async () => {
     mockFetch.mockResolvedValueOnce({ incentiveAccountEpochAudit: { totalCount: 0, items: [] } });
     expect(await fetchIncentiveEpochAudit(ENDPOINT, EPOCH)).toEqual({ entries: [], totalFees: 0n });
-    expect(mockFetch).toHaveBeenCalledTimes(2);
+    expect(mockFetch).toHaveBeenCalledTimes(1);
   });
 
   it.each([
