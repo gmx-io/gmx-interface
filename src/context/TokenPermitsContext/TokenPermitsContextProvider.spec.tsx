@@ -203,21 +203,23 @@ describe("TokenPermitsContextProvider", () => {
     ]);
   });
 
-  it("keeps every permit signed in one flow", async () => {
+  it("keeps every permit signed in one flow and passes the requested deadline through", async () => {
     await setup();
 
-    const weth = permit(WETH, { r: `0x${"55".repeat(32)}` });
+    const deadline = 2n ** 256n - 1n;
+    const weth = permit(WETH, { deadline, r: `0x${"55".repeat(32)}` });
     mocks.createAndSignTokenPermit
-      .mockResolvedValueOnce({ permit: permit(USDC) })
+      .mockResolvedValueOnce({ permit: permit(USDC, { deadline }) })
       .mockResolvedValueOnce({ permit: weth });
 
     const { addTokenPermit } = state;
 
     await act(async () => {
-      await addTokenPermit(USDC, ROUTER, 100n);
-      await addTokenPermit(WETH, ROUTER, 100n);
+      await addTokenPermit(USDC, ROUTER, 100n, { deadline });
+      await addTokenPermit(WETH, ROUTER, 100n, { deadline });
     });
 
+    expect(mocks.createAndSignTokenPermit.mock.calls.map((call) => call[5])).toEqual([deadline, deadline]);
     expect(readStoredTokens()).toEqual([USDC, WETH]);
   });
 
@@ -253,5 +255,9 @@ describe("TokenPermitsContextProvider", () => {
     resolveSigning({ permit: permit(USDC) });
 
     await expect(signing).rejects.toThrow(PERMIT_WALLET_CHANGED_ERROR);
+    expect(readStoredTokens()).toEqual([]);
+    expect(
+      JSON.parse(localStorage.getItem(JSON.stringify([CHAIN_ID, mocks.account, "token-permits"])) ?? "[]")
+    ).toEqual([]);
   });
 });

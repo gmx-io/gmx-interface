@@ -305,6 +305,9 @@ describe("SubaccountContextProvider.tryEnableSubaccount token permits", () => {
       expect(mocks.getActivationPermitTokenAddresses.mock.calls).toEqual(
         asksPermits ? [[expect.objectContaining({ spender: ROUTER, gasPaymentTokenAddress: WETH })]] : []
       );
+      expect(mocks.signActivationTokenPermits.mock.calls).toEqual(
+        asksPermits ? [[expect.objectContaining({ spender: ROUTER, tokenAddresses: [WETH] })]] : []
+      );
     }
   );
 });
