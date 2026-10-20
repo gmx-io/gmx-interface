@@ -400,7 +400,7 @@ export async function signTypedData({
   }
 
   helperToast.info(
-    t`This wallet creates network-specific signatures. Approve the switch to ${getChainName(verificationChainId)} and sign once more.`
+    t`This wallet creates network-specific signatures. Approve the switch to ${getChainName(verificationChainId)} and sign once more`
   );
 
   let retryResult: { signature: string; signingChainId: number };

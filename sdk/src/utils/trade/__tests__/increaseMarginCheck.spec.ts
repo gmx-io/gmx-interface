@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { mockMarketsInfoData, mockTokensData } from "test/mock";
+import { mockMarginCheckMarketInfo, mockMarketsInfoData, mockTokensData } from "test/mock";
 import { getMarketInfoWithOpenInterestDelta } from "utils/markets";
 import { USD_DECIMALS, expandDecimals } from "utils/numbers";
 import { convertToTokenAmount, convertToTokenAmountForIncrease, convertToUsd } from "utils/tokens";
@@ -15,30 +15,6 @@ import {
 const BTC_PRICE = expandDecimals(20000, 30);
 
 const tokensData = mockTokensData();
-
-/** 1% min collateral factor → 100x, 0.5% for liquidation. Fees and impact off unless a test needs them. */
-function buildMarket(overrides: Record<string, bigint | boolean> = {}) {
-  return mockMarketsInfoData(tokensData, ["BTC-BTC-USDC"], {
-    "BTC-BTC-USDC": {
-      minCollateralFactor: expandDecimals(1, 28),
-      minCollateralFactorForLiquidation: expandDecimals(5, 27),
-      minCollateralFactorForOpenInterestLong: 0n,
-      minCollateralFactorForOpenInterestShort: 0n,
-      positionFeeFactorForBalanceWasImproved: 0n,
-      positionFeeFactorForBalanceWasNotImproved: 0n,
-      positionImpactFactorPositive: 0n,
-      positionImpactFactorNegative: 0n,
-      maxPositionImpactFactorPositive: 0n,
-      maxPositionImpactFactorNegative: 0n,
-      maxPositionImpactFactorForLiquidations: 0n,
-      longInterestUsd: 0n,
-      shortInterestUsd: 0n,
-      longInterestInTokens: 0n,
-      shortInterestInTokens: 0n,
-      ...overrides,
-    },
-  })["BTC-BTC-USDC"];
-}
 
 const usdc = tokensData.USDC;
 
@@ -57,7 +33,7 @@ function btcAmount(usd: number) {
 
 function baseParams(overrides: Partial<Parameters<typeof getResultingPositionMarginState>[0]> = {}) {
   return {
-    marketInfo: buildMarket(),
+    marketInfo: mockMarginCheckMarketInfo(tokensData),
     collateralToken: usdc,
     // 10 000 USD of size bought exactly at the oracle price → zero pnl
     sizeInUsd: expandDecimals(10_000, USD_DECIMALS),
@@ -153,7 +129,7 @@ describe("getResultingPositionMarginState", () => {
     // 0.5% closing fee on 10 000 = 50
     const state = getResultingPositionMarginState(
       baseParams({
-        marketInfo: buildMarket({
+        marketInfo: mockMarginCheckMarketInfo(tokensData, {
           positionFeeFactorForBalanceWasImproved: expandDecimals(5, 27),
           positionFeeFactorForBalanceWasNotImproved: expandDecimals(5, 27),
         }),
@@ -168,7 +144,7 @@ describe("getResultingPositionMarginState", () => {
     // 0.5% closing fee on 10 000 = 50; a 50% pro discount returns 25 of it
     const state = getResultingPositionMarginState({
       ...baseParams({
-        marketInfo: buildMarket({
+        marketInfo: mockMarginCheckMarketInfo(tokensData, {
           positionFeeFactorForBalanceWasImproved: expandDecimals(5, 27),
           positionFeeFactorForBalanceWasNotImproved: expandDecimals(5, 27),
         }),
@@ -181,7 +157,7 @@ describe("getResultingPositionMarginState", () => {
 
   it("takes the larger of the pro and referral discounts, not their sum", () => {
     const params = baseParams({
-      marketInfo: buildMarket({
+      marketInfo: mockMarginCheckMarketInfo(tokensData, {
         positionFeeFactorForBalanceWasImproved: expandDecimals(5, 27),
         positionFeeFactorForBalanceWasNotImproved: expandDecimals(5, 27),
       }),
@@ -211,9 +187,11 @@ describe("getResultingPositionMarginState", () => {
 });
 
 describe("getIncreaseResultingPositionMarginState", () => {
-  const marketInfo = buildMarket();
+  const marketInfo = mockMarginCheckMarketInfo(tokensData);
   // the contract clamps negative impact at maxPositionImpactFactorForLiquidations — 1% of size here
-  const marketWithImpactCap = buildMarket({ maxPositionImpactFactorForLiquidations: expandDecimals(1, 28) });
+  const marketWithImpactCap = mockMarginCheckMarketInfo(tokensData, {
+    maxPositionImpactFactorForLiquidations: expandDecimals(1, 28),
+  });
 
   it("returns undefined when there is no size to validate", () => {
     expect(
@@ -303,7 +281,7 @@ describe("getIncreaseResultingPositionMarginState", () => {
     // shorts dominate, so increasing a long is a same-side rebalance towards balance for the
     // close leg (positive close impact, clamped away) while the increase leg pays negative
     // impact that is stored as pending impact on the position
-    const imbalancedMarket = buildMarket({
+    const imbalancedMarket = mockMarginCheckMarketInfo(tokensData, {
       maxPositionImpactFactorForLiquidations: expandDecimals(1, 28),
       positionImpactFactorNegative: expandDecimals(1, 22),
       positionImpactExponentFactorPositive: expandDecimals(2, 30),
@@ -430,7 +408,7 @@ describe("getIncreaseResultingPositionMarginState — open interest projection",
   // linear impact (exponent 1) keeps every leg a round number:
   // a crossover pays factorNegative on the side it lands on and earns factorPositive on the side it leaves
   function impactMarket(useOpenInterestInTokensForBalance: boolean) {
-    return buildMarket({
+    return mockMarginCheckMarketInfo(tokensData, {
       positionImpactFactorPositive: expandDecimals(1, 27), // 0.1%
       positionImpactFactorNegative: expandDecimals(3, 27), // 0.3%
       positionImpactExponentFactorPositive: expandDecimals(1, 30),
@@ -616,7 +594,7 @@ describe("getIncreaseResultingPositionMarginState — open-interest min collater
 
   function gateArgs(collateralUsd: number, marketOverrides: Record<string, bigint | boolean> = {}) {
     return {
-      marketInfo: buildMarket({
+      marketInfo: mockMarginCheckMarketInfo(tokensData, {
         minCollateralFactorForOpenInterestLong: OI_MULTIPLIER,
         longInterestUsd: expandDecimals(990_000, USD_DECIMALS),
         ...marketOverrides,
@@ -669,7 +647,7 @@ describe("getIncreaseResultingPositionMarginState — open-interest min collater
 });
 
 describe("getIncreaseResultingPositionMarginState — evaluation at the trigger price", () => {
-  const marketInfo = buildMarket();
+  const marketInfo = mockMarginCheckMarketInfo(tokensData);
   const minCollateralUsd = expandDecimals(1, USD_DECIMALS);
 
   // existing long opened at the current price (20 000): flat pnl at current prices
@@ -933,7 +911,7 @@ describe("pool pnl cap — profitable position while the cap binds, min < max", 
 });
 
 describe("getIncreaseResultingPositionMarginState — collateral delta and impact clamp", () => {
-  const marketInfo = buildMarket();
+  const marketInfo = mockMarginCheckMarketInfo(tokensData);
   const minCollateralUsd = expandDecimals(1, USD_DECIMALS);
 
   // 10 000 of size opened at the oracle price with 1 000 USDC
@@ -980,7 +958,7 @@ describe("getIncreaseResultingPositionMarginState — collateral delta and impac
     // linear impact, shorts 30 000 vs longs 10 000: closing the 10 000 long widens the gap by 10 000
     // → exit impact −2% × 10 000 = −200
     const impactMarket = (maxPositionImpactFactorForLiquidations: bigint) =>
-      buildMarket({
+      mockMarginCheckMarketInfo(tokensData, {
         positionImpactFactorNegative: expandDecimals(2, 28),
         positionImpactExponentFactorPositive: expandDecimals(1, 30),
         positionImpactExponentFactorNegative: expandDecimals(1, 30),

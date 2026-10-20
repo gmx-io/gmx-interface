@@ -1,8 +1,11 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
 
+import { selectAccountWhitelistsResult } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getGlvOrMarketAddress } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import type { GlvAndGmMarketsInfoData, GlvOrMarketInfo, MarketInfo } from "domain/synthetics/markets/types";
+import { getDirectDepositAccess, getIsDirectDepositBlocked } from "domain/synthetics/whitelists/utils";
 import { getByKey } from "lib/objects";
 
 import { getShiftAvailableRelatedMarkets } from "./getShiftAvailableRelatedMarkets";
@@ -28,6 +31,8 @@ export function useUpdateMarkets({
   selectedMarketInfo: MarketInfo | undefined;
   setToMarketAddress: Dispatch<SetStateAction<string | undefined>>;
 }): void {
+  const whitelistsResult = useSelector(selectAccountWhitelistsResult);
+
   useEffect(
     function updateMarkets() {
       if (!glvAndMarketsInfoData) {
@@ -57,7 +62,12 @@ export function useUpdateMarkets({
         toMarketInfo?.longTokenAddress === selectedMarketInfo?.longTokenAddress &&
         toMarketInfo?.shortTokenAddress === selectedMarketInfo?.shortTokenAddress;
       const isToMarketSameAsSelected = toMarketAddress === newSelectedGlvOrMarketAddress;
-      const isToMarketValid = isToMarketAvailable && isToMarketRelated && !isToMarketSameAsSelected;
+      const toMarketDirectDepositAccess = toMarketInfo
+        ? getDirectDepositAccess({ chainId, glvOrMarket: toMarketInfo, whitelistsResult })
+        : undefined;
+      const isToMarketBlocked = getIsDirectDepositBlocked(toMarketDirectDepositAccess);
+      const isToMarketValid =
+        isToMarketAvailable && isToMarketRelated && !isToMarketSameAsSelected && !isToMarketBlocked;
 
       if (toMarketInfo && isGlvInfo(toMarketInfo)) {
         return;
@@ -69,9 +79,11 @@ export function useUpdateMarkets({
           marketsInfoData: glvAndMarketsInfoData,
           sortedMarketsInfoByIndexToken: shiftAvailableGlvOrMarkets,
           marketTokenAddress: newSelectedGlvOrMarketAddress,
+          whitelistsResult,
         })[0];
 
         if (!someAvailableMarket) {
+          setToMarketAddress(undefined);
           return;
         }
 
@@ -89,6 +101,7 @@ export function useUpdateMarkets({
       shiftAvailableGlvOrMarkets,
       toMarketAddress,
       toMarketInfo,
+      whitelistsResult,
     ]
   );
 }

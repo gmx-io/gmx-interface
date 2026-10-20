@@ -22,7 +22,7 @@ import { MultichainActionType, type MultichainAction } from "./codecs/CodecUiHel
 import { estimateMultichainDepositNetworkComposeGas } from "./estimateMultichainDepositNetworkComposeGas";
 import { getMultichainTransferSendParams } from "./getSendParams";
 import type { SendParam } from "./types";
-import { useGasMultichainUsd, useNativeTokenMultichainUsd } from "./useMultichainQuoteFeeUsd";
+import { useGasMultichainNativeAmount, useNativeTokenMultichainUsd } from "./useMultichainQuoteFeeUsd";
 
 type MultichainReferralQuoteResult = {
   nativeFee: bigint;
@@ -43,6 +43,7 @@ export function useMultichainReferralQuote({
   enabled?: boolean;
 }): AsyncResult<MultichainReferralQuoteResult> & {
   networkFeeUsd: bigint | undefined;
+  networkFee: bigint | undefined;
 } {
   const { chainId, srcChainId } = useChainId();
   const { account } = useWallet();
@@ -216,17 +217,25 @@ export function useMultichainReferralQuote({
     targetChainId: chainId,
   });
 
-  const transferGasLimitUsd = useGasMultichainUsd({
+  const transferGasNativeAmount = useGasMultichainNativeAmount({
     sourceChainId: srcChainId,
     sourceChainGas: result.data?.transferGasLimit,
+  });
+
+  const transferGasLimitUsd = useNativeTokenMultichainUsd({
+    sourceChainId: srcChainId,
+    sourceChainTokenAmount: transferGasNativeAmount,
     targetChainId: chainId,
   });
 
   const totalNetworkFeeUsd = (networkFeeUsd ?? 0n) + (transferGasLimitUsd ?? 0n);
+  const totalNetworkFee =
+    result.data?.nativeFee !== undefined ? result.data.nativeFee + (transferGasNativeAmount ?? 0n) : undefined;
 
   return {
     ...result,
     networkFeeUsd: totalNetworkFeeUsd,
+    networkFee: totalNetworkFee,
   };
 }
 

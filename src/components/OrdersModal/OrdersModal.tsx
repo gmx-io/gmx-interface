@@ -20,6 +20,10 @@ import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/se
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import {
+  getExpressParamsForSubmit,
+  reportMultichainExpressSubmitError,
+} from "domain/synthetics/express/validateMultichainExpressSubmit";
+import {
   isIncreaseOrderType,
   isLimitDecreaseOrderType,
   isStopLossOrderType,
@@ -30,13 +34,11 @@ import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import {
   PositionInfo,
-  formatLiquidationPrice,
   getEstimatedLiquidationTimeInHours,
   getPositionOffHoursLiqRisk,
 } from "domain/synthetics/positions";
 import type { TokenData } from "domain/synthetics/tokens";
 import { usePendingTpSlOrders } from "domain/tpsl/usePendingTpSlOrders";
-import { formatUsd } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
@@ -46,6 +48,8 @@ import { getOrderKeys } from "sdk/utils/orders";
 import Badge from "components/Badge/Badge";
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
+import { LiquidationPriceValue } from "components/NumericValue/LiquidationPriceValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import Tabs from "components/Tabs/Tabs";
 
 import PlusIcon from "img/ic_plus.svg?react";
@@ -218,7 +222,7 @@ export function OrdersModal({
             chainId,
             batchParams,
             globalExpressParams,
-            requireValidations: true,
+            requireValidations: false,
             estimationMethod: "approximate",
             provider,
             isGmxAccount: srcChainId !== undefined,
@@ -226,11 +230,23 @@ export function OrdersModal({
           })
         : undefined;
 
+      if (
+        reportMultichainExpressSubmitError({
+          isGmxAccount: srcChainId !== undefined,
+          expressParams,
+          tokensData: undefined,
+          actionName: "Cancel Order",
+          collateral: position?.collateralToken.symbol,
+        })
+      ) {
+        return;
+      }
+
       await sendBatchOrderTxn({
         chainId,
         signer,
         batchParams,
-        expressParams,
+        expressParams: getExpressParamsForSubmit(expressParams),
         simulationParams: undefined,
         callback: makeOrderTxnCallback({
           actionName: "Cancel Order",
@@ -321,41 +337,39 @@ export function OrdersModal({
               <span className="text-body-small text-typography-secondary">
                 <Trans>Entry price</Trans>
               </span>
-              <span className="text-body-medium numbers">
-                {formatUsd(position.entryPrice, {
-                  displayDecimals: marketDecimals,
-                  visualMultiplier: position.indexToken.visualMultiplier,
-                })}
-              </span>
+              <UsdValue
+                usd={position.entryPrice}
+                displayDecimals={marketDecimals}
+                visualMultiplier={position.indexToken.visualMultiplier}
+                className="text-body-medium numbers"
+              />
             </div>
             <div className="flex flex-col">
               <span className="text-body-small text-typography-secondary">
                 <Trans>Mark price</Trans>
               </span>
-              <span className="text-body-medium numbers">
-                {formatUsd(position.markPrice, {
-                  displayDecimals: marketDecimals,
-                  visualMultiplier: position.indexToken.visualMultiplier,
-                })}
-              </span>
+              <UsdValue
+                usd={position.markPrice}
+                displayDecimals={marketDecimals}
+                visualMultiplier={position.indexToken.visualMultiplier}
+                className="text-body-medium numbers"
+              />
             </div>
             <div className="flex flex-col">
               <span className="text-body-small text-typography-secondary">
                 <Trans>Liquidation price</Trans>
               </span>
-              <span
+              <LiquidationPriceValue
+                liquidationPrice={position.liquidationPrice}
+                displayDecimals={marketDecimals}
+                visualMultiplier={position.indexToken.visualMultiplier}
                 className={cx("text-body-medium numbers", {
                   "text-yellow-300":
                     (estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7) ||
                     (showOffHoursWarning && !(estimatedLiquidationHours && estimatedLiquidationHours < 24)),
                   "text-error-red": estimatedLiquidationHours && estimatedLiquidationHours < 24,
                 })}
-              >
-                {formatLiquidationPrice(position.liquidationPrice, {
-                  displayDecimals: marketDecimals,
-                  visualMultiplier: position.indexToken.visualMultiplier,
-                }) || "..."}
-              </span>
+              />
             </div>
           </div>
         )}

@@ -13,12 +13,14 @@ import {
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GasPaymentParams } from "domain/synthetics/express";
+import type { NetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { OrderType } from "domain/synthetics/orders";
-import { formatLeverage } from "domain/synthetics/positions";
+import { formatLeverageParts } from "domain/synthetics/positions";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatDeltaUsd, formatUsd } from "lib/numbers";
+import { formatDeltaUsdParts, formatUsdParts } from "lib/numbers";
 
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
@@ -34,9 +36,15 @@ export type Props = {
   triggerPriceInputValue: string;
   slippageInputId: string;
   gasPaymentParams?: GasPaymentParams;
+  feeSource: NetworkFeeSource | undefined;
 };
 
-export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInputId, gasPaymentParams }: Props) {
+export function PositionSellerAdvancedRows({
+  triggerPriceInputValue,
+  slippageInputId,
+  gasPaymentParams,
+  feeSource,
+}: Props) {
   const [open, setOpen] = useLocalStorageSerializeKey("position-seller-advanced-display-rows-open", false);
   const position = useSelector(selectPositionSellerPosition);
   const breakdownNetPriceImpactEnabled = useSelector(selectBreakdownNetPriceImpactEnabled);
@@ -73,7 +81,12 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
   const sizeRow = (
     <SyntheticsInfoRow
       label={t`Size`}
-      value={<ValueTransition from={formatUsd(position?.sizeInUsd)!} to={formatUsd(nextPositionValues?.nextSizeUsd)} />}
+      value={
+        <ValueTransition
+          from={formatUsdParts(position?.sizeInUsd)}
+          to={formatUsdParts(nextPositionValues?.nextSizeUsd)}
+        />
+      }
     />
   );
 
@@ -87,8 +100,8 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
     } else {
       leverageValue = (
         <ValueTransition
-          from={formatLeverage(position.leverage)}
-          to={formatLeverage(nextPositionValues?.nextLeverage)}
+          from={formatLeverageParts(position.leverage)}
+          to={formatLeverageParts(nextPositionValues?.nextLeverage)}
         />
       );
     }
@@ -108,7 +121,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
     >
       <ExitPriceRow isSwap={false} fees={fees} price={position.markPrice} isLong={position.isLong} />
       <TradeFeesRow {...fees} feesType="decrease" />
-      <NetworkFeeRow executionFee={executionFee} gasPaymentParams={gasPaymentParams} />
+      <NetworkFeeRow executionFee={executionFee} gasPaymentParams={gasPaymentParams} feeSource={feeSource} />
 
       {isTwap ? (
         isSetAcceptablePriceImpactEnabled ? (
@@ -131,11 +144,11 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
                 nextPositionValues?.nextPendingImpactDeltaUsd !== undefined &&
                 position?.pendingImpactUsd !== undefined ? (
                   <ValueTransition
-                    from={formatDeltaUsd(position?.pendingImpactUsd)}
-                    to={formatDeltaUsd(nextPositionValues?.nextPendingImpactDeltaUsd)}
+                    from={formatDeltaUsdParts(position?.pendingImpactUsd)}
+                    to={formatDeltaUsdParts(nextPositionValues?.nextPendingImpactDeltaUsd)}
                   />
                 ) : (
-                  formatDeltaUsd(nextPositionValues?.nextPendingImpactDeltaUsd)
+                  <DeltaUsdValue deltaUsd={nextPositionValues?.nextPendingImpactDeltaUsd} />
                 )
               }
               valueClassName="numbers"
@@ -159,8 +172,8 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
             }
             value={
               <ValueTransition
-                from={formatUsd(position?.collateralUsd)!}
-                to={formatUsd(nextPositionValues?.nextCollateralUsd)}
+                from={formatUsdParts(position?.collateralUsd)}
+                to={formatUsdParts(nextPositionValues?.nextCollateralUsd)}
               />
             }
           />

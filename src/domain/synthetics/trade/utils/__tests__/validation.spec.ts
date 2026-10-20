@@ -1,16 +1,28 @@
+import { zeroAddress } from "viem";
 import { describe, expect, it } from "vitest";
 
-import { ARBITRUM } from "config/chains";
+import { ARBITRUM, SOURCE_BASE_MAINNET } from "config/chains";
+import { ExpressTxnParams } from "domain/synthetics/express";
+import { getSourceChainNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { mockExternalSwapQuote } from "domain/synthetics/testUtils/mocks";
+import type { TokenData } from "domain/synthetics/tokens";
+import type { DirectDepositAccess } from "domain/synthetics/whitelists/utils";
 import { expandDecimals, formatUsd } from "lib/numbers";
 import { mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
 import { PositionMarginFailureReason, PositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
 import { TriggerThresholdType } from "sdk/utils/trade/types";
 
 import {
+  ERC20_APPROVE_GAS_LIMIT,
+  getApprovalGasError,
   getConditionalDepositError,
   getConditionalDepositWarning,
   getEditCollateralError,
+  getExpressError,
+  getGmNativeGasError,
+  getGmShiftError,
+  getGmSwapError,
+  getInsufficientFeeButtonMessage,
   getIncreaseError,
   getMarginDepositAutoCancelLimitMessage,
   getMarginDepositBeyondLiqPriceMessage,
@@ -460,19 +472,202 @@ describe("getEditCollateralError — invalid liquidation price tooltip", () => {
 
 describe("getNativeGasError", () => {
   it("skips validation while the fee or balance is loading", () => {
-    expect(getNativeGasError({ networkFee: undefined, nativeBalance: 0n })).toEqual({});
-    expect(getNativeGasError({ networkFee: 1n, nativeBalance: undefined })).toEqual({});
+    expect(getNativeGasError({ chainId: ARBITRUM, networkFee: undefined, nativeBalance: 0n })).toEqual({});
+    expect(getNativeGasError({ chainId: ARBITRUM, networkFee: 1n, nativeBalance: undefined })).toEqual({});
   });
 
   it("allows a balance equal to the network fee", () => {
-    expect(getNativeGasError({ networkFee: 1n, nativeBalance: 1n })).toEqual({});
+    expect(getNativeGasError({ chainId: ARBITRUM, networkFee: 1n, nativeBalance: 1n })).toEqual({});
   });
 
-  it("returns the native-token balance error when the fee exceeds the balance", () => {
-    expect(getNativeGasError({ networkFee: 2n, nativeBalance: 1n })).toEqual({
-      buttonErrorMessage: "Insufficient gas balance",
+  it("names the native token and the wallet when the fee exceeds the balance", () => {
+    expect(getNativeGasError({ chainId: ARBITRUM, networkFee: 2n, nativeBalance: 1n })).toEqual({
+      buttonErrorMessage: "Insufficient ETH in wallet",
       bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
     });
+  });
+});
+
+describe("getGmNativeGasError", () => {
+  const ETH = { address: zeroAddress, symbol: "ETH" } as TokenData;
+  const USDC = { address: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831", symbol: "USDC" } as TokenData;
+  const FEE = expandDecimals(1, 15);
+  const DEPOSIT = expandDecimals(1, 17);
+  const INSUFFICIENT = {
+    buttonErrorMessage: "Insufficient ETH in wallet",
+    bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
+  };
+
+  it.each([
+    { name: "token buy, 1.5x the fee", isDeposit: true, payLongToken: USDC, balance: (FEE * 3n) / 2n, error: {} },
+    { name: "token buy, exactly the fee", isDeposit: true, payLongToken: USDC, balance: FEE, error: {} },
+    { name: "token buy, below the fee", isDeposit: true, payLongToken: USDC, balance: FEE - 1n, error: INSUFFICIENT },
+    { name: "ETH buy, deposit + the fee", isDeposit: true, payLongToken: ETH, balance: DEPOSIT + FEE, error: {} },
+    {
+      name: "ETH buy, below deposit + the fee",
+      isDeposit: true,
+      payLongToken: ETH,
+      balance: DEPOSIT + FEE - 1n,
+      error: INSUFFICIENT,
+    },
+    { name: "sell for ETH, 1.5x the fee", isDeposit: false, payLongToken: ETH, balance: (FEE * 3n) / 2n, error: {} },
+  ])(
+    "requires the execution fee once plus the ETH deposit PRO-4389: $name",
+    ({ isDeposit, payLongToken, balance, error }) => {
+      expect(
+        getGmNativeGasError({
+          chainId: ARBITRUM,
+          isDeposit,
+          executionFeeAmount: FEE,
+          payLongToken,
+          payShortToken: undefined,
+          longTokenAmount: DEPOSIT,
+          shortTokenAmount: 0n,
+          nativeBalance: balance,
+        })
+      ).toEqual(error);
+    }
+  );
+});
+
+describe("getApprovalGasError", () => {
+  const nativeToken = (overrides: { symbol?: string; walletBalance?: bigint }) =>
+    ({ symbol: overrides.symbol ?? "ETH", walletBalance: overrides.walletBalance }) as TokenData;
+
+  it("names the native token and the wallet when the balance can't pay for the approval", () => {
+    expect(
+      getApprovalGasError({
+        tokenToApprove: tokensData.USDC.address,
+        nativeToken: nativeToken({ walletBalance: 0n }),
+        gasPrice: 10n,
+      })
+    ).toEqual({
+      buttonErrorMessage: "Insufficient ETH in wallet",
+      bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenForApproval,
+    });
+  });
+
+  it("takes the symbol from the native token", () => {
+    expect(
+      getApprovalGasError({
+        tokenToApprove: tokensData.USDC.address,
+        nativeToken: nativeToken({ symbol: "AVAX", walletBalance: 0n }),
+        gasPrice: 10n,
+      }).buttonErrorMessage
+    ).toBe("Insufficient AVAX in wallet");
+  });
+
+  it("allows a balance equal to the approval cost", () => {
+    expect(
+      getApprovalGasError({
+        tokenToApprove: tokensData.USDC.address,
+        nativeToken: nativeToken({ walletBalance: ERC20_APPROVE_GAS_LIMIT * 10n }),
+        gasPrice: 10n,
+      })
+    ).toEqual({});
+  });
+
+  it("skips validation while there is nothing to approve or data is loading", () => {
+    expect(
+      getApprovalGasError({ tokenToApprove: undefined, nativeToken: nativeToken({ walletBalance: 0n }), gasPrice: 10n })
+    ).toEqual({});
+    expect(
+      getApprovalGasError({
+        tokenToApprove: tokensData.USDC.address,
+        nativeToken: nativeToken({ walletBalance: undefined }),
+        gasPrice: 10n,
+      })
+    ).toEqual({});
+    expect(
+      getApprovalGasError({
+        tokenToApprove: tokensData.USDC.address,
+        nativeToken: undefined,
+        gasPrice: 10n,
+      })
+    ).toEqual({});
+    expect(
+      getApprovalGasError({
+        tokenToApprove: tokensData.USDC.address,
+        nativeToken: nativeToken({ walletBalance: 0n }),
+        gasPrice: undefined,
+      })
+    ).toEqual({});
+  });
+});
+
+describe("getInsufficientFeeButtonMessage", () => {
+  it("names the source chain for a source-chain fee", () => {
+    expect(
+      getInsufficientFeeButtonMessage({
+        tokenSymbol: "ETH",
+        feeSource: getSourceChainNetworkFeeSource(SOURCE_BASE_MAINNET),
+      })
+    ).toBe("Insufficient ETH on Base");
+  });
+});
+
+describe("getExpressError", () => {
+  const makeExpressParams = (overrides: { isGmxAccount: boolean; isOutGasTokenBalance: boolean }) =>
+    ({
+      chainId: ARBITRUM,
+      isGmxAccount: overrides.isGmxAccount,
+      gasPaymentValidations: {
+        isGasPaymentTokenBalanceLoaded: true,
+        isOutGasTokenBalance: overrides.isOutGasTokenBalance,
+        needGasPaymentTokenApproval: false,
+        isValid: !overrides.isOutGasTokenBalance,
+      },
+      gasPaymentParams: {
+        gasPaymentTokenAddress: tokensData.USDC.address,
+        gasPaymentToken: tokensData.USDC,
+        totalRelayerFeeTokenAmount: expandDecimals(1, 18),
+      },
+    }) as unknown as ExpressTxnParams;
+
+  const withNativeWalletBalance = (walletBalance: bigint) => ({
+    ...tokensData,
+    [zeroAddress]: { ...tokensData.ETH, address: zeroAddress, isNative: true, walletBalance },
+  });
+
+  it("returns no error without express params", () => {
+    expect(getExpressError({ expressParams: undefined, tokensData })).toEqual({});
+  });
+
+  it("names the gas token and the GMX Account when its balance is insufficient", () => {
+    expect(
+      getExpressError({
+        expressParams: makeExpressParams({ isGmxAccount: true, isOutGasTokenBalance: true }),
+        tokensData,
+      })
+    ).toEqual({
+      buttonErrorMessage: "Insufficient USDC in GMX Account",
+      bannerErrorName: ValidationBannerErrorName.insufficientGmxAccountCurrentGasTokenBalance,
+    });
+  });
+
+  it("names the gas token and the wallet when the wallet lacks both the gas token and native token", () => {
+    const walletTokensData = withNativeWalletBalance(expandDecimals(1, 17));
+
+    expect(
+      getExpressError({
+        expressParams: makeExpressParams({ isGmxAccount: false, isOutGasTokenBalance: true }),
+        tokensData: walletTokensData,
+      })
+    ).toEqual({
+      buttonErrorMessage: "Insufficient USDC in wallet",
+      bannerErrorName: ValidationBannerErrorName.insufficientWalletGasTokenBalance,
+    });
+  });
+
+  it("returns no error for the wallet when the native token covers the fee", () => {
+    const walletTokensData = withNativeWalletBalance(expandDecimals(10, 18));
+
+    expect(
+      getExpressError({
+        expressParams: makeExpressParams({ isGmxAccount: false, isOutGasTokenBalance: true }),
+        tokensData: walletTokensData,
+      })
+    ).toEqual({});
   });
 });
 
@@ -556,5 +751,156 @@ describe("getIncreaseError — resulting-position margin check", () => {
     });
 
     expect(result.buttonErrorMessage).toBe(undefined);
+  });
+});
+
+const stableTokensData = mockTokensData({
+  USDC: { walletBalance: 0n },
+  DAI: { walletBalance: expandDecimals(100, 30) },
+});
+const sameCollateralMarket = mockMarketsInfoData(stableTokensData, ["ETH-USDC-USDC"], {
+  "ETH-USDC-USDC": {
+    maxLongPoolUsdForDeposit: expandDecimals(10_000, 30),
+    maxShortPoolUsdForDeposit: expandDecimals(10_000, 30),
+  },
+})["ETH-USDC-USDC"];
+const marketToken = {
+  ...stableTokensData.USDC,
+  address: sameCollateralMarket.marketTokenAddress,
+  symbol: "GM",
+  decimals: 18,
+  totalSupply: expandDecimals(2000, 18),
+};
+const baseGmSwapParams: Parameters<typeof getGmSwapError>[0] = {
+  isDeposit: true,
+  marketInfo: sameCollateralMarket,
+  marketToken,
+  payLongToken: stableTokensData.USDC,
+  payShortToken: stableTokensData.DAI,
+  glvToken: undefined,
+  glvTokenAmount: undefined,
+  glvTokenUsd: undefined,
+  longTokenAmount: 0n,
+  shortTokenAmount: expandDecimals(50, 6),
+  initialShortTokenAmount: expandDecimals(50, 30),
+  longTokenUsd: 0n,
+  shortTokenUsd: expandDecimals(50, 30),
+  marketTokenAmount: expandDecimals(50, 18),
+  marketTokenUsd: expandDecimals(50, 30),
+  longTokenLiquidityUsd: expandDecimals(10_000, 30),
+  shortTokenLiquidityUsd: expandDecimals(10_000, 30),
+  fees: undefined,
+  priceImpactUsd: 0n,
+  paySource: "settlementChain",
+  isPair: false,
+  chainId: ARBITRUM,
+};
+
+describe("getGmSwapError — paying a same-collateral pool with another token", () => {
+  it("checks the paid token balance instead of the pool collateral balance", () => {
+    expect(getGmSwapError(baseGmSwapParams).buttonErrorMessage).toBeUndefined();
+  });
+
+  it("reports the paid token when its balance is short", () => {
+    expect(
+      getGmSwapError({ ...baseGmSwapParams, initialShortTokenAmount: expandDecimals(150, 30) }).buttonErrorMessage
+    ).toBe("Insufficient DAI balance");
+  });
+});
+
+describe("getGmSwapError — deposit capacity on a same-collateral pool", () => {
+  const poolWith100UsdcRoomPerSide = {
+    ...sameCollateralMarket,
+    maxLongPoolAmount: sameCollateralMarket.longPoolAmount + expandDecimals(100, 6),
+    maxShortPoolAmount: sameCollateralMarket.shortPoolAmount + expandDecimals(100, 6),
+  };
+  const usdcInWallet = { ...stableTokensData.USDC, walletBalance: expandDecimals(1000, 6) };
+  const capacityParams = { ...baseGmSwapParams, marketInfo: poolWith100UsdcRoomPerSide };
+
+  it.each<{ case: string; params: Partial<Parameters<typeof getGmSwapError>[0]>; expected: string | undefined }>([
+    {
+      case: "a direct USDC deposit of 150, split 75/75, fits",
+      params: {
+        payLongToken: usdcInWallet,
+        payShortToken: usdcInWallet,
+        longTokenAmount: expandDecimals(75, 6),
+        shortTokenAmount: expandDecimals(75, 6),
+        initialShortTokenAmount: undefined,
+      },
+      expected: undefined,
+    },
+    {
+      case: "a DAI deposit converted to 150 USDC fits like the direct one",
+      params: { longTokenAmount: 0n, shortTokenAmount: expandDecimals(150, 6) },
+      expected: undefined,
+    },
+    {
+      case: "a DAI deposit converted to 250 USDC exceeds 100 per side",
+      params: { longTokenAmount: 0n, shortTokenAmount: expandDecimals(250, 6) },
+      expected: "Max USDC amount exceeded",
+    },
+  ])("$case", ({ params, expected }) => {
+    expect(getGmSwapError({ ...capacityParams, ...params }).buttonErrorMessage).toBe(expected);
+  });
+});
+
+describe("getGmSwapError — whitelist-only direct deposits", () => {
+  it.each<{ access: DirectDepositAccess; expected: string | undefined }>([
+    { access: "denied", expected: "Whitelist only" },
+    { access: "loading", expected: "Loading..." },
+    { access: "ungated", expected: undefined },
+    { access: "whitelisted", expected: undefined },
+  ])("direct GM deposit with $access access -> $expected", ({ access, expected }) => {
+    expect(getGmSwapError({ ...baseGmSwapParams, directDepositAccess: access }).buttonErrorMessage).toBe(expected);
+  });
+
+  it("does not block a withdrawal", () => {
+    const withdrawalParams = { ...baseGmSwapParams, isDeposit: false };
+
+    expect(getGmSwapError({ ...withdrawalParams, directDepositAccess: "denied" })).toEqual(
+      getGmSwapError(withdrawalParams)
+    );
+  });
+});
+
+describe("getGmShiftError — whitelist-only target market", () => {
+  const shiftParams: Parameters<typeof getGmShiftError>[0] = {
+    chainId: ARBITRUM,
+    fromMarketInfo: sameCollateralMarket,
+    fromToken: marketToken,
+    fromTokenAmount: expandDecimals(1, 18),
+    fromTokenUsd: expandDecimals(1, 30),
+    fromLongTokenAmount: 0n,
+    fromShortTokenAmount: expandDecimals(1, 6),
+    toMarketInfo: sameCollateralMarket,
+    toToken: marketToken,
+    toTokenAmount: expandDecimals(1, 18),
+    fees: undefined,
+    priceImpactUsd: 0n,
+  };
+
+  it("blocks shifting into a denied market", () => {
+    expect(getGmShiftError({ ...shiftParams, toMarketDirectDepositAccess: "denied" }).buttonErrorMessage).toBe(
+      "Whitelist only"
+    );
+  });
+
+  it("says Whitelist only for a denied market that is not resolved yet", () => {
+    expect(
+      getGmShiftError({ ...shiftParams, toMarketInfo: undefined, toMarketDirectDepositAccess: "denied" })
+        .buttonErrorMessage
+    ).toBe("Whitelist only");
+  });
+
+  it("waits while target access is loading", () => {
+    expect(getGmShiftError({ ...shiftParams, toMarketDirectDepositAccess: "loading" }).buttonErrorMessage).toBe(
+      "Loading..."
+    );
+  });
+
+  it("does not block shifting into a whitelisted market", () => {
+    expect(getGmShiftError({ ...shiftParams, toMarketDirectDepositAccess: "whitelisted" })).toEqual(
+      getGmShiftError(shiftParams)
+    );
   });
 });

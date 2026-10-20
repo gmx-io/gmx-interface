@@ -5,9 +5,10 @@ import { usePositionEditorPosition } from "context/SyntheticsStateContext/hooks/
 import { selectPositionEditorCollateralInputAmountAndUsd } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { selectTradeboxAdvancedOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { formatLeverage } from "domain/synthetics/positions";
-import { formatUsd } from "lib/numbers";
+import { formatLeverageParts } from "domain/synthetics/positions";
+import { formatUsdParts } from "lib/numbers";
 
+import { UsdValue } from "components/NumericValue/UsdValue";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
@@ -18,7 +19,7 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { usePositionEditorData } from "./hooks/usePositionEditorData";
 import { Options, usePositionEditorFees } from "./hooks/usePositionEditorFees";
 
-export function PositionEditorAdvancedRows({ operation, gasPaymentParams }: Options) {
+export function PositionEditorAdvancedRows({ operation, gasPaymentParams, feeSource }: Options) {
   const position = usePositionEditorPosition();
 
   const { collateralDeltaUsd } = useSelector(selectPositionEditorCollateralInputAmountAndUsd);
@@ -47,7 +48,7 @@ export function PositionEditorAdvancedRows({ operation, gasPaymentParams }: Opti
       contentClassName="flex flex-col gap-14"
     >
       <TradeFeesRow {...fees} feesType="edit" shouldShowRebate={false} />
-      <NetworkFeeRow executionFee={executionFee} gasPaymentParams={gasPaymentParams} />
+      <NetworkFeeRow executionFee={executionFee} gasPaymentParams={gasPaymentParams} feeSource={feeSource} />
 
       <SyntheticsInfoRow
         label={
@@ -60,16 +61,20 @@ export function PositionEditorAdvancedRows({ operation, gasPaymentParams }: Opti
         }
         value={
           <ValueTransition
-            from={formatUsd(position?.collateralUsd)!}
-            to={collateralDeltaUsd !== undefined && collateralDeltaUsd > 0 ? formatUsd(nextCollateralUsd) : undefined}
+            from={formatUsdParts(position?.collateralUsd)}
+            to={
+              collateralDeltaUsd !== undefined && collateralDeltaUsd > 0 ? formatUsdParts(nextCollateralUsd) : undefined
+            }
           />
         }
       />
       <SyntheticsInfoRow
         label={t`Leverage`}
-        value={<ValueTransition from={formatLeverage(position?.leverage)} to={formatLeverage(nextLeverage)} />}
+        value={
+          <ValueTransition from={formatLeverageParts(position?.leverage)} to={formatLeverageParts(nextLeverage)} />
+        }
       />
-      <SyntheticsInfoRow label={t`Size`} value={formatUsd(position.sizeInUsd)} />
+      <SyntheticsInfoRow label={t`Size`} value={<UsdValue usd={position.sizeInUsd} />} />
     </ExpandableRow>
   );
 }

@@ -8,6 +8,7 @@ import { getPendingMockPosition } from "domain/synthetics/positions/usePositions
 import type { TokenData } from "domain/synthetics/tokens";
 import { getDecreasePositionAmounts } from "domain/synthetics/trade";
 import type { DecreasePositionAmounts } from "domain/synthetics/trade";
+import { bigMath } from "sdk/utils/bigmath";
 import {
   buildDecreaseOrderPayload,
   buildUpdateOrderPayload,
@@ -330,7 +331,8 @@ export function buildTpSlBatchPayloads(p: {
             minOutputAmount: order.minOutputAmount,
             autoCancel: order.autoCancel,
             validFromTime: 0n,
-            executionFeeTopUp: 0n,
+            executionFeeTopUp: bigMath.max(0n, (entry.executionFeeAmount ?? 0n) - order.executionFee),
+            executionGasLimit: entry.executionGasLimit,
           })
         );
         createEntries.push({ ...entry, amounts: undefined });

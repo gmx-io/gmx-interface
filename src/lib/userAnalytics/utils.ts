@@ -1,6 +1,6 @@
 import debounce from "lodash/debounce";
 
-import { ChainName, getChainName } from "config/chains";
+import { getChainName } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { MarketInfo } from "domain/synthetics/markets";
 import {
@@ -22,7 +22,12 @@ import {
   formatPercentageForMetrics,
   metrics,
 } from "lib/metrics";
-import { OrderMetricData, OrderMetricId } from "lib/metrics/types";
+import {
+  MultichainDepositMetricData,
+  MultichainWithdrawalMetricData,
+  OrderMetricData,
+  OrderMetricId,
+} from "lib/metrics/types";
 import { bigintToNumber, formatRatePercentage, roundToOrder } from "lib/numbers";
 import { userAnalytics } from "lib/userAnalytics";
 import {
@@ -476,54 +481,42 @@ export const sendEditOrderEvent = ({
   });
 };
 
-export function sendMultichainDepositSuccessEvent({
-  settlementChain,
-  sourceChain,
-  sizeInUsd,
-  asset,
-  isFirstTime,
-}: {
-  settlementChain: ChainName;
-  sourceChain: ChainName;
-  sizeInUsd: number;
-  asset: string;
-  isFirstTime: boolean;
-}) {
+export function sendMultichainDepositSuccessEvent(metricId: MultichainDepositMetricData["metricId"]) {
+  const metricData = metrics.getCachedMetricData<MultichainDepositMetricData>(metricId);
+
+  if (!metricData) {
+    return;
+  }
+
   userAnalytics.pushEvent<MultichainActionEvent>({
     event: "MultichainAction",
     data: {
       action: "DepositSuccess",
-      settlementChain,
-      sourceChain,
-      sizeInUsd,
-      asset,
-      isFirstTime,
+      settlementChain: getChainName(metricData.settlementChain),
+      sourceChain: getChainName(metricData.sourceChain),
+      sizeInUsd: metricData.sizeInUsd,
+      asset: metricData.assetSymbol,
+      isFirstTime: metricData.isFirstDeposit,
     },
   });
 }
 
-export function sendMultichainWithdrawalSuccessEvent({
-  settlementChain,
-  sourceChain,
-  sizeInUsd,
-  asset,
-  isFirstTime,
-}: {
-  settlementChain: ChainName;
-  sourceChain: ChainName;
-  sizeInUsd: number;
-  asset: string;
-  isFirstTime: boolean;
-}) {
+export function sendMultichainWithdrawalSuccessEvent(metricId: MultichainWithdrawalMetricData["metricId"]) {
+  const metricData = metrics.getCachedMetricData<MultichainWithdrawalMetricData>(metricId);
+
+  if (!metricData) {
+    return;
+  }
+
   userAnalytics.pushEvent<MultichainActionEvent>({
     event: "MultichainAction",
     data: {
       action: "WithdrawalSuccess",
-      settlementChain,
-      sourceChain,
-      sizeInUsd,
-      asset,
-      isFirstTime,
+      settlementChain: getChainName(metricData.settlementChain),
+      sourceChain: getChainName(metricData.sourceChain),
+      sizeInUsd: metricData.sizeInUsd,
+      asset: metricData.assetSymbol,
+      isFirstTime: metricData.isFirstWithdrawal,
     },
   });
 }

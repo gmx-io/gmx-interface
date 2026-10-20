@@ -97,7 +97,7 @@ export function ContactSection() {
           <Trans>
             Lock in
             <br />
-            <span className={GRADIENT_TEXT_CLASS}>a better rate.</span>
+            <span className={GRADIENT_TEXT_CLASS}>a better rate</span>
           </Trans>
         </h2>
         <p className="mt-14 max-w-[350px] text-16 leading-[20px] -tracking-[0.512px] text-slate-400">
@@ -114,7 +114,7 @@ export function ContactSection() {
             icon={icContactChat}
             title={t`Live chat with the desk`}
             description={t`Instant answers, right on the page`}
-            buttonLabel={t`Open Live-Chat`}
+            buttonLabel={t`Open live chat`}
             primary
             onClick={openLiveChat}
           />

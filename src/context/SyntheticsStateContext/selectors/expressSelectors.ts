@@ -2,6 +2,7 @@ import { isUiApiSupported } from "config/api";
 import { ARBITRUM } from "config/chains";
 import { isDevelopment } from "config/env";
 import type { GlobalExpressParams } from "domain/synthetics/express";
+import { getExpressGasPrice } from "domain/synthetics/fees/utils/executionFee";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { getRelayerFeeToken } from "sdk/configs/express";
 import { SwapPricingType } from "sdk/utils/orders/types";
@@ -140,7 +141,7 @@ function createSelectExpressGlobalParams(
       tokenPermits,
       gasPaymentAllowanceData: gasPaymentAllowance?.tokensAllowanceData ?? EMPTY_OBJECT,
       bufferBps,
-      gasPrice,
+      gasPrice: getExpressGasPrice(chainId, gasPrice),
       gasLimits,
       gasPaymentTokenAddress,
       relayerFeeTokenAddress,

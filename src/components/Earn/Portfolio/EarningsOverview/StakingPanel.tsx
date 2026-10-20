@@ -5,21 +5,23 @@ import Skeleton from "react-loading-skeleton";
 import { useTreasuryProjection } from "domain/stake/useTreasuryProjection";
 import { useChainId } from "lib/chains";
 import { StakingProcessedData } from "lib/legacy";
-import { formatBalanceAmount, formatUsd } from "lib/numbers";
+import { formatBalanceAmount } from "lib/numbers";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Badge from "components/Badge/Badge";
+import { NumericValue } from "components/NumericValue/NumericValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import { EarningsStat, formatFullPrecisionUsd, isAbbreviatedUsd, UsdStatValue } from "./EarningsStat";
+import { EarningsStat, formatFullPrecisionUsdParts, isAbbreviatedUsd, UsdStatValue } from "./EarningsStat";
 
 function RewardsPausedBadge() {
   return (
     <TooltipWithPortal
       variant="none"
       handle={
-        <Badge className="-my-1 !bg-transparent border-1/2 border-dashed border-slate-600">
+        <Badge className="!bg-transparent -my-1 border-1/2 border-dashed border-slate-600">
           <Trans>Rewards paused</Trans>
         </Badge>
       }
@@ -76,7 +78,7 @@ function TreasuryProjectionValue({ skeletonWidth = 65 }: { skeletonWidth?: numbe
       handle={
         <span className="text-blue-100 numbers">
           {isAbbreviated ? "" : "~"}
-          {formatUsd(projectedRewardUsd)}
+          <UsdValue usd={projectedRewardUsd} />
         </span>
       }
       content={<TokenAmountWithUsd amount={projectedRewardGmx} usd={projectedRewardUsd} symbol="GMX" />}
@@ -91,7 +93,8 @@ function TokenAmountWithUsd({ amount, usd, symbol }: { amount: bigint; usd: bigi
 
   return (
     <span className="numbers">
-      {formatBalanceAmount(amount, 18, symbol, { showZero: true })} ({formatFullPrecisionUsd(usd)})
+      {formatBalanceAmount(amount, 18, symbol, { showZero: true })} (
+      <NumericValue parts={formatFullPrecisionUsdParts(usd)} />)
     </span>
   );
 }
@@ -118,10 +121,10 @@ function StakingRewardRow({
         isLoading ? (
           <UsdStatValue usd={undefined} isLoading skeletonWidth={60} />
         ) : isZero ? (
-          <span className="text-slate-500 numbers">{formatUsd(0n)}</span>
+          <UsdValue usd={0n} className="text-slate-500 numbers" />
         ) : (
           <TooltipWithPortal
-            handle={<span className="numbers">{formatUsd(usd)}</span>}
+            handle={<UsdValue usd={usd} className="numbers" />}
             content={<TokenAmountWithUsd amount={amount ?? 0n} usd={usd ?? 0n} symbol={symbol} />}
           />
         )

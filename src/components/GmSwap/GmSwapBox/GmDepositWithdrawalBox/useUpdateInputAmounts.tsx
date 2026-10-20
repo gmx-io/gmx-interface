@@ -2,6 +2,7 @@ import { useCallback, useEffect } from "react";
 
 import {
   PLATFORM_TOKEN_DECIMALS,
+  selectPoolsDetailsCollateralSwapTokens,
   selectPoolsDetailsFirstToken,
   selectPoolsDetailsFlags,
   selectPoolsDetailsFocusedInput,
@@ -15,9 +16,11 @@ import {
   selectPoolsDetailsSetMarketOrGlvTokenInputValue,
   selectPoolsDetailsSetSecondTokenInputValue,
   selectPoolsDetailsShortTokenAddress,
+  selectPoolsDetailsTransitAmountOut,
 } from "context/PoolsDetailsContext/selectors";
 import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { convertToTokenAmount } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import { formatAmountFree } from "lib/numbers";
 import { DepositAmounts, WithdrawalAmounts } from "sdk/utils/trade/types";
@@ -70,6 +73,8 @@ export function useUpdateInputAmounts() {
   const secondToken = useSelector(selectPoolsDetailsSecondToken);
   const secondTokenWrappedAddress = secondToken?.wrappedAddress ?? secondToken?.address;
   const focusedInput = useSelector(selectPoolsDetailsFocusedInput);
+  const collateralSwapTokens = useSelector(selectPoolsDetailsCollateralSwapTokens);
+  const transitAmountOut = useSelector(selectPoolsDetailsTransitAmountOut);
 
   const setFirstTokenInputValue = useSelector(selectPoolsDetailsSetFirstTokenInputValue);
   const setSecondTokenInputValue = useSelector(selectPoolsDetailsSetSecondTokenInputValue);
@@ -115,6 +120,18 @@ export function useUpdateInputAmounts() {
         return;
       }
 
+      // Special case: collateral swap token deposit
+      if (collateralSwapTokens && firstToken) {
+        const { token } = collateralSwapTokens;
+        const { initialShortTokenAmount } = amounts as DepositAmounts;
+        const tokenAmount =
+          initialShortTokenAmount ??
+          convertToTokenAmount(amounts.longTokenUsd + amounts.shortTokenUsd, token.decimals, token.prices.minPrice);
+
+        setFirstTokenInputValue(formatTokenAmount(tokenAmount, firstToken.decimals));
+        return;
+      }
+
       if (isSameCollaterals) {
         if (firstToken) {
           const combinedAmount = amounts.longTokenAmount + amounts.shortTokenAmount;
@@ -151,6 +168,7 @@ export function useUpdateInputAmounts() {
     glvTokenAmount,
     marketTokenAmount,
     firstToken,
+    collateralSwapTokens,
     isSameCollaterals,
     firstTokenWrappedAddress,
     longTokenAddress,
@@ -170,6 +188,28 @@ export function useUpdateInputAmounts() {
       if (amounts.marketTokenAmount <= 0n) {
         setFirstTokenInputValue("");
         setSecondTokenInputValue("");
+        return;
+      }
+
+      // Special case: collateral swap token withdrawal
+      if (collateralSwapTokens && firstToken) {
+        const { token } = collateralSwapTokens;
+        const { longTokenSwapPathStats, shortTokenSwapPathStats } = amounts as WithdrawalAmounts;
+        let tokenAmount: bigint | undefined;
+
+        if (transitAmountOut !== undefined) {
+          tokenAmount = transitAmountOut;
+        } else if (longTokenSwapPathStats && shortTokenSwapPathStats) {
+          tokenAmount = longTokenSwapPathStats.amountOut + shortTokenSwapPathStats.amountOut;
+        } else {
+          tokenAmount = convertToTokenAmount(
+            amounts.longTokenUsd + amounts.shortTokenUsd,
+            token.decimals,
+            token.prices.maxPrice
+          );
+        }
+
+        setFirstTokenInputValue(formatTokenAmount(tokenAmount, firstToken.decimals));
         return;
       }
 
@@ -242,6 +282,8 @@ export function useUpdateInputAmounts() {
     amounts,
     hasMarketInfo,
     focusedInput,
+    collateralSwapTokens,
+    transitAmountOut,
     isSameCollaterals,
     setFirstTokenInputValue,
     setSecondTokenInputValue,

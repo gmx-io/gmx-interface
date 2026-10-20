@@ -6,18 +6,13 @@ import { ChangeEvent, RefObject, useCallback, useEffect, useMemo, useRef, useSta
 
 import { USD_DECIMALS } from "config/factors";
 import { getCappedTpSlLossUsd } from "domain/tpsl/utils";
-import {
-  calculateDisplayDecimals,
-  expandDecimals,
-  formatAmount,
-  formatDeltaUsd,
-  formatUsdPrice,
-  parseValue,
-  removeTrailingZeros,
-} from "lib/numbers";
+import { calculateDisplayDecimals, expandDecimals, formatAmount, parseValue, removeTrailingZeros } from "lib/numbers";
+import { usePrevious } from "lib/usePrevious";
 import { bigMath } from "sdk/utils/bigmath";
 
 import NumberInput from "components/NumberInput/NumberInput";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
+import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
@@ -51,6 +46,8 @@ type Props = {
     pnlUsd: bigint;
     pnlPercentage?: bigint;
   };
+  carryOverKey?: string;
+  existingOrderKey?: string;
 };
 
 export function TPSLInputRow({
@@ -63,6 +60,8 @@ export function TPSLInputRow({
   variant = "compact",
   defaultDisplayMode = "percentage",
   estimatedPnl: estimatedPnlProp,
+  carryOverKey,
+  existingOrderKey,
 }: Props) {
   const priceInputRef = useRef<HTMLInputElement>(null);
   const secondInputRef = useRef<HTMLInputElement>(null);
@@ -261,25 +260,26 @@ export function TPSLInputRow({
     ]
   );
 
-  const calculateAndUpdatePrice = useCallback(
+  const calculatePriceFromGainLoss = useCallback(
     (value: string, mode: TPSLDisplayMode) => {
       const decimals = mode === "percentage" ? 2 : USD_DECIMALS;
       const parsed = parseValue(value, decimals);
-      if (parsed === undefined || parsed <= 0n) return;
+      if (parsed === undefined || parsed <= 0n) return undefined;
 
       const calculateFn = mode === "percentage" ? calculatePriceFromPnlPercentage : calculatePriceFromPnlUsd;
       const price = calculateFn(parsed);
-      if (price !== undefined && price > 0n) {
-        onPriceChange(formatPrice(price));
-      }
+      return price !== undefined && price > 0n ? formatPrice(price) : undefined;
     },
-    [calculatePriceFromPnlPercentage, calculatePriceFromPnlUsd, formatPrice, onPriceChange]
+    [calculatePriceFromPnlPercentage, calculatePriceFromPnlUsd, formatPrice]
   );
 
   useEffect(() => {
     if (lastEditedField !== "gainLoss" || !gainLossInputValue) return;
-    calculateAndUpdatePrice(gainLossInputValue, displayMode);
-  }, [lastEditedField, gainLossInputValue, displayMode, calculateAndUpdatePrice]);
+    const price = calculatePriceFromGainLoss(gainLossInputValue, displayMode);
+    if (price !== undefined && price !== priceValue) {
+      onPriceChange(price);
+    }
+  }, [lastEditedField, gainLossInputValue, displayMode, calculatePriceFromGainLoss, onPriceChange, priceValue]);
 
   const handlePriceChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -295,9 +295,12 @@ export function TPSLInputRow({
       const value = e.target.value;
       setLastEditedField("gainLoss");
       setGainLossInputValue(value);
-      calculateAndUpdatePrice(value, displayMode);
+      const price = calculatePriceFromGainLoss(value, displayMode);
+      if (price !== undefined) {
+        onPriceChange(price);
+      }
     },
-    [displayMode, calculateAndUpdatePrice]
+    [displayMode, calculatePriceFromGainLoss, onPriceChange]
   );
 
   const secondFieldValue = useMemo(() => {
@@ -309,6 +312,30 @@ export function TPSLInputRow({
     }
     return formatGainLossValue(displayMode);
   }, [lastEditedField, gainLossInputValue, priceError, formatGainLossValue, displayMode]);
+
+  const previousSecondFieldValue = usePrevious(secondFieldValue);
+  const [prevCarryOverKey, setPrevCarryOverKey] = useState(carryOverKey);
+  if (carryOverKey !== prevCarryOverKey) {
+    setPrevCarryOverKey(carryOverKey);
+    if (
+      lastEditedField !== "gainLoss" &&
+      !existingOrderKey &&
+      previousSecondFieldValue &&
+      calculatePriceFromGainLoss(previousSecondFieldValue, displayMode) !== undefined
+    ) {
+      setLastEditedField("gainLoss");
+      setGainLossInputValue(previousSecondFieldValue);
+    }
+  }
+
+  const [prevExistingOrderKey, setPrevExistingOrderKey] = useState(existingOrderKey);
+  if (existingOrderKey !== prevExistingOrderKey) {
+    setPrevExistingOrderKey(existingOrderKey);
+    if (existingOrderKey) {
+      setLastEditedField(undefined);
+      setGainLossInputValue("");
+    }
+  }
 
   const derivedEstimatedPnl = useMemo(() => {
     if (currentPriceValue === undefined || currentPriceValue === 0n) return undefined;
@@ -397,12 +424,6 @@ export function TPSLInputRow({
     liquidationPrice,
     isLong,
   ]);
-  const estimatedPnlDisplay = estimatedPnl ? formatDeltaUsd(estimatedPnl.pnlUsd, estimatedPnl.pnlPercentage) : "-";
-
-  const formattedMarkPrice = useMemo(() => {
-    if (referencePrice === undefined) return undefined;
-    return formatUsdPrice(referencePrice, { visualMultiplier });
-  }, [referencePrice, visualMultiplier]);
 
   const handleMarkPriceClick = useCallback(() => {
     if (referencePrice === undefined || referencePrice === 0n) return;
@@ -416,14 +437,15 @@ export function TPSLInputRow({
       <span className="shrink-0 text-typography-secondary">
         <Trans>Est. PnL</Trans>
       </span>
-      <span
+      <DeltaUsdValue
+        deltaUsd={estimatedPnl?.pnlUsd}
+        percentage={estimatedPnl?.pnlPercentage}
+        fallback="-"
         className={cx("ml-4 min-w-0 truncate numbers", {
           "text-green-500": estimatedPnl && estimatedPnl.pnlUsd > 0n,
           "text-red-500": estimatedPnl && estimatedPnl.pnlUsd < 0n,
         })}
-      >
-        {estimatedPnlDisplay ?? "-"}
-      </span>
+      />
     </div>
   );
 
@@ -524,12 +546,17 @@ export function TPSLInputRow({
           >
             <div className="flex items-center justify-between">
               <div className="text-body-small text-typography-secondary">{priceLabel}</div>
-              {formattedMarkPrice !== undefined && (
+              {referencePrice !== undefined && (
                 <div
                   className="cursor-pointer text-12 text-typography-secondary numbers"
                   onClick={handleMarkPriceClick}
                 >
-                  <Trans>Mark:</Trans> <span className="text-typography-primary">{formattedMarkPrice}</span>
+                  <Trans>Mark:</Trans>{" "}
+                  <UsdPriceValue
+                    price={referencePrice}
+                    visualMultiplier={visualMultiplier}
+                    className="text-typography-primary"
+                  />
                 </div>
               )}
             </div>

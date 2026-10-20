@@ -63,7 +63,7 @@ export function HeroSection() {
   };
 
   return (
-    <section className="overflow-hidden bg-slate-900 px-16 sm:px-40">
+    <section className="overflow-x-clip bg-slate-900 px-16 sm:px-40">
       <div className="mx-auto sm:max-w-[1200px]">
         <div className="relative h-[640px] py-60 sm:h-[860px] sm:py-80 ">
           <HeroBackground />

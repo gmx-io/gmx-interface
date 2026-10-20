@@ -73,27 +73,32 @@ code {
   box-sizing: border-box;
 }
 
-@supports (scrollbar-width: auto) {
-  :root {
-    scrollbar-color: var(--color-slate-500) var(--color-slate-900);
-  }
+:root {
+  scrollbar-color: var(--color-slate-500) var(--color-slate-900);
 }
 
 @supports selector(::-webkit-scrollbar) {
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
+  @media (hover: hover) and (pointer: fine) {
+    // Standard scrollbar colors override WebKit's custom scrollbar styling.
+    :root {
+      scrollbar-color: auto;
+    }
 
-  /* Track */
-  ::-webkit-scrollbar-track {
-    background-color: var(--color-slate-900);
-  }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
 
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background-color: var(--color-slate-500);
-    border-radius: 15px;
+    /* Track */
+    ::-webkit-scrollbar-track {
+      background-color: var(--color-slate-900);
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--color-slate-500);
+      border-radius: 15px;
+    }
   }
 }
 

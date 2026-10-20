@@ -235,6 +235,13 @@ export type TradeBoxWarningSwitchPoolClickEvent = {
   };
 };
 
+export type MaxActionClickEvent = {
+  event: "MaxAction";
+  data: {
+    action: "MaxClick" | "KeepGasClick";
+  };
+};
+
 export type PoolsPageBuyConfirmEvent = {
   event: "PoolsPageAction";
   data: {

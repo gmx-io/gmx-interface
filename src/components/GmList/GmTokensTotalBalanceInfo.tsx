@@ -7,7 +7,7 @@ import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { UserEarningsData } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { ProgressiveTokenData } from "domain/tokens";
-import { formatBalanceAmount, formatDeltaUsd, formatUsd } from "lib/numbers";
+import { formatBalanceAmount } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
@@ -16,6 +16,8 @@ import {
   MultichainBalanceTooltip,
   useHasMultichainBreakdown,
 } from "components/MultichainBalanceTooltip/MultichainBalanceTooltip";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -60,7 +62,7 @@ export const GmTokensBalanceInfo = ({
     token && balance !== 0n ? (
       <TokenValuesInfoCell
         value={formatBalanceAmount(balance, token.decimals)}
-        usd={balanceUsd !== 0n ? formatUsd(balanceUsd) : "..."}
+        usd={balanceUsd !== 0n ? <UsdValue usd={balanceUsd} /> : "..."}
         symbol={token.symbol}
         singleLine={singleLine}
         isLoading={isMultichainBalancesLoading}
@@ -118,7 +120,7 @@ export const GmTokensBalanceInfo = ({
                 isLoading={!shouldShowFeesUnattributed && earnedTotal === undefined && shouldShowFeesLoading}
                 isAvailable={!shouldShowFeesUnattributed && (earnedTotal !== undefined || !shouldShowFeesUnavailable)}
               >
-                {(value) => formatDeltaUsd(value, undefined)}
+                {(value) => <DeltaUsdValue deltaUsd={value} />}
               </EarningValue>
             }
             valueClassName="numbers"
@@ -141,7 +143,7 @@ export const GmTokensBalanceInfo = ({
                   !shouldShowFeesUnattributed && (earnedRecently !== undefined || !shouldShowFeesUnavailable)
                 }
               >
-                {(value) => formatDeltaUsd(value, undefined)}
+                {(value) => <DeltaUsdValue deltaUsd={value} />}
               </EarningValue>
             }
             valueClassName="numbers"
@@ -160,7 +162,7 @@ export const GmTokensBalanceInfo = ({
                 isLoading={shouldShowEstimated365dFeesLoading}
                 isAvailable={!shouldShowEstimated365dFeesUnavailable}
               >
-                {(value) => formatDeltaUsd(value, undefined)}
+                {(value) => <DeltaUsdValue deltaUsd={value} />}
               </EarningValue>
             }
             valueClassName="numbers"
@@ -289,7 +291,7 @@ export const GmTokensTotalBalanceInfo = ({
                   isLoading={!hasBalanceOutsideWallet && isEarningsLoading}
                   isAvailable={!hasBalanceOutsideWallet && areEarningsAvailable}
                 >
-                  {(value) => formatDeltaUsd(value, undefined, { showPlusForZero: true })}
+                  {(value) => <DeltaUsdValue deltaUsd={value} showPlusForZero />}
                 </EarningValue>
               }
               valueClassName="numbers"
@@ -308,7 +310,7 @@ export const GmTokensTotalBalanceInfo = ({
                   isLoading={!hasBalanceOutsideWallet && isEarningsLoading}
                   isAvailable={!hasBalanceOutsideWallet && areEarningsAvailable}
                 >
-                  {(value) => formatDeltaUsd(value, undefined, { showPlusForZero: true })}
+                  {(value) => <DeltaUsdValue deltaUsd={value} showPlusForZero />}
                 </EarningValue>
               }
               valueClassName="numbers"
@@ -327,7 +329,7 @@ export const GmTokensTotalBalanceInfo = ({
                       isLoading={isEstimated365dFeesValueLoading}
                       isAvailable={areEstimated365dFeesAvailable}
                     >
-                      {(value) => formatDeltaUsd(value, undefined, { showPlusForZero: true })}
+                      {(value) => <DeltaUsdValue deltaUsd={value} showPlusForZero />}
                     </EarningValue>
                   }
                   valueClassName="numbers"

@@ -14,13 +14,14 @@ import { GlvAndGmMarketsInfoData, GlvOrMarketInfo } from "domain/synthetics/mark
 import { TokenData, TokensData, convertToTokenAmount } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatDateTime } from "lib/dates";
-import { bigintToNumber, formatAmountHuman } from "lib/numbers";
+import { bigintToNumber } from "lib/numbers";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 
 import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import { BridgingInfo } from "components/BridgingInfo/BridgingInfo";
 import { useMarketMintableTokens } from "components/MarketStats/hooks/useMarketMintableTokens";
 import { useMarketSellableToken } from "components/MarketStats/hooks/useMarketSellableToken";
+import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
 import { PoolsDetailsMarketAmount } from "./PoolsDetailsMarketAmount";
@@ -76,27 +77,50 @@ export function PoolsDetailsAbout({
         <PoolsDetailsMarketAmount
           label={<Trans>Buyable</Trans>}
           value={
-            marketToken?.decimals
-              ? `${formatAmountHuman(mintable?.mintableAmount, marketToken?.decimals, false, 2)} ${marketToken?.symbol}`
-              : "..."
+            marketToken?.decimals ? (
+              <>
+                <AmountHumanValue
+                  amount={mintable?.mintableAmount}
+                  decimals={marketToken.decimals}
+                  displayDecimals={2}
+                />{" "}
+                {marketToken.symbol}
+              </>
+            ) : (
+              "..."
+            )
           }
           valueClassName="text-13"
           secondaryValueClassName="text-12"
-          secondaryValue={mintable ? formatAmountHuman(mintable?.mintableUsd, USD_DECIMALS, true, 2) : undefined}
+          secondaryValue={
+            mintable ? (
+              <AmountHumanValue amount={mintable.mintableUsd} decimals={USD_DECIMALS} showDollar displayDecimals={2} />
+            ) : undefined
+          }
           tooltipContent={
             !isGlv ? <BuyableTooltipContent marketInfo={glvOrMarketInfo} mintableInfo={mintableInfo} /> : undefined
           }
+          tooltipMaxAllowedWidth={isMobile ? undefined : 480}
         />
         <PoolsDetailsMarketAmount
           label={<Trans>Sellable</Trans>}
           value={
-            marketToken?.decimals
-              ? `${formatAmountHuman(sellable?.totalAmount, marketToken?.decimals, false, 2)} ${marketToken?.symbol}`
-              : "..."
+            marketToken?.decimals ? (
+              <>
+                <AmountHumanValue amount={sellable?.totalAmount} decimals={marketToken.decimals} displayDecimals={2} />{" "}
+                {marketToken.symbol}
+              </>
+            ) : (
+              "..."
+            )
           }
           valueClassName="text-13"
           secondaryValueClassName="text-12"
-          secondaryValue={sellable ? formatAmountHuman(sellable?.totalUsd, USD_DECIMALS, true, 2) : undefined}
+          secondaryValue={
+            sellable ? (
+              <AmountHumanValue amount={sellable.totalUsd} decimals={USD_DECIMALS} showDollar displayDecimals={2} />
+            ) : undefined
+          }
           tooltipContent={
             !isGlv ? <SellableTooltipContent marketInfo={glvOrMarketInfo} sellableInfo={sellableInfo} /> : undefined
           }
@@ -213,50 +237,47 @@ const BuyableTooltipContent = ({
     }
 
     if (marketInfo?.isSameCollaterals) {
-      const poolUsd = formatAmountHuman(
-        getPoolUsdWithoutPnl(marketInfo, true, "midPrice") + getPoolUsdWithoutPnl(marketInfo, false, "midPrice"),
-        USD_DECIMALS,
-        true,
-        2
-      );
-      const maxPoolUsd = formatAmountHuman(
-        getStrictestMaxPoolUsdForDeposit(marketInfo, true) + getStrictestMaxPoolUsdForDeposit(marketInfo, false),
-        USD_DECIMALS,
-        true,
-        2
-      );
+      const poolUsd =
+        getPoolUsdWithoutPnl(marketInfo, true, "midPrice") + getPoolUsdWithoutPnl(marketInfo, false, "midPrice");
+      const maxPoolUsd =
+        getStrictestMaxPoolUsdForDeposit(marketInfo, true) + getStrictestMaxPoolUsdForDeposit(marketInfo, false);
 
-      return [
-        <AmountWithUsdHuman
-          key="longTokenMaxValue-isSameCollaterals"
-          amount={(mintableInfo?.longDepositCapacityAmount ?? 0n) + (mintableInfo?.shortDepositCapacityAmount ?? 0n)}
-          decimals={marketInfo?.longToken?.decimals}
-          usd={(mintableInfo?.longDepositCapacityUsd ?? 0n) + (mintableInfo?.shortDepositCapacityUsd ?? 0n)}
-        />,
-        <span
-          key="longTokenMaxValue-isSameCollaterals-ratio"
-          className="text-body-small text-typography-secondary numbers"
-        >
-          ({poolUsd} / {maxPoolUsd})
-        </span>,
-      ];
+      return {
+        amount: (
+          <AmountWithUsdHuman
+            amount={(mintableInfo?.longDepositCapacityAmount ?? 0n) + (mintableInfo?.shortDepositCapacityAmount ?? 0n)}
+            decimals={marketInfo?.longToken?.decimals}
+            usd={(mintableInfo?.longDepositCapacityUsd ?? 0n) + (mintableInfo?.shortDepositCapacityUsd ?? 0n)}
+          />
+        ),
+        poolCap: (
+          <>
+            <AmountHumanValue amount={poolUsd} decimals={USD_DECIMALS} showDollar displayDecimals={2} /> /{" "}
+            <AmountHumanValue amount={maxPoolUsd} decimals={USD_DECIMALS} showDollar displayDecimals={2} />
+          </>
+        ),
+      };
     }
 
-    const poolUsd = formatAmountHuman(getPoolUsdWithoutPnl(marketInfo, true, "midPrice"), USD_DECIMALS, true, 2);
-    const maxPoolUsd = formatAmountHuman(getStrictestMaxPoolUsdForDeposit(marketInfo, true), USD_DECIMALS, true, 2);
+    const poolUsd = getPoolUsdWithoutPnl(marketInfo, true, "midPrice");
+    const maxPoolUsd = getStrictestMaxPoolUsdForDeposit(marketInfo, true);
 
-    return [
-      <AmountWithUsdHuman
-        key="longTokenMaxValue"
-        amount={mintableInfo?.longDepositCapacityAmount}
-        decimals={marketInfo?.longToken?.decimals}
-        usd={mintableInfo?.longDepositCapacityUsd}
-        symbol={marketInfo?.longToken?.symbol}
-      />,
-      <span key="longTokenMaxValue-ratio" className="text-body-small text-typography-secondary numbers">
-        ({poolUsd} / {maxPoolUsd})
-      </span>,
-    ];
+    return {
+      amount: (
+        <AmountWithUsdHuman
+          amount={mintableInfo?.longDepositCapacityAmount}
+          decimals={marketInfo?.longToken?.decimals}
+          usd={mintableInfo?.longDepositCapacityUsd}
+          symbol={marketInfo?.longToken?.symbol}
+        />
+      ),
+      poolCap: (
+        <>
+          <AmountHumanValue amount={poolUsd} decimals={USD_DECIMALS} showDollar displayDecimals={2} /> /{" "}
+          <AmountHumanValue amount={maxPoolUsd} decimals={USD_DECIMALS} showDollar displayDecimals={2} />
+        </>
+      ),
+    };
   }, [
     marketInfo,
     mintableInfo?.longDepositCapacityAmount,
@@ -270,21 +291,25 @@ const BuyableTooltipContent = ({
       return undefined;
     }
 
-    const poolUsd = formatAmountHuman(getPoolUsdWithoutPnl(marketInfo, false, "midPrice"), USD_DECIMALS, true, 2);
-    const maxPoolUsd = formatAmountHuman(getStrictestMaxPoolUsdForDeposit(marketInfo, false), USD_DECIMALS, true, 2);
+    const poolUsd = getPoolUsdWithoutPnl(marketInfo, false, "midPrice");
+    const maxPoolUsd = getStrictestMaxPoolUsdForDeposit(marketInfo, false);
 
-    return [
-      <AmountWithUsdHuman
-        key="shortTokenMaxValue"
-        amount={mintableInfo?.shortDepositCapacityAmount}
-        decimals={marketInfo?.shortToken?.decimals}
-        usd={mintableInfo?.shortDepositCapacityUsd}
-        symbol={marketInfo?.shortToken?.symbol}
-      />,
-      <span key="shortTokenMaxValue-ratio" className="text-body-small text-typography-secondary numbers">
-        ({poolUsd} / {maxPoolUsd})
-      </span>,
-    ];
+    return {
+      amount: (
+        <AmountWithUsdHuman
+          amount={mintableInfo?.shortDepositCapacityAmount}
+          decimals={marketInfo?.shortToken?.decimals}
+          usd={mintableInfo?.shortDepositCapacityUsd}
+          symbol={marketInfo?.shortToken?.symbol}
+        />
+      ),
+      poolCap: (
+        <>
+          <AmountHumanValue amount={poolUsd} decimals={USD_DECIMALS} showDollar displayDecimals={2} /> /{" "}
+          <AmountHumanValue amount={maxPoolUsd} decimals={USD_DECIMALS} showDollar displayDecimals={2} />
+        </>
+      ),
+    };
   }, [marketInfo, mintableInfo]);
 
   const content = (
@@ -312,10 +337,40 @@ const BuyableTooltipContent = ({
         )}
       </p>
       <br />
-      <StatsTooltipRow label={t`Max ${marketInfo?.longToken?.symbol}`} value={longTokenMaxValue} />
+      <StatsTooltipRow
+        label={t`Max ${marketInfo?.longToken?.symbol}`}
+        value={longTokenMaxValue?.amount}
+        showDollar={false}
+      />
+      <StatsTooltipRow
+        label={
+          marketInfo.isSameCollaterals
+            ? t`Current pool value / max pool cap`
+            : getTokenPoolCapLabel(marketInfo.longToken.symbol)
+        }
+        value={longTokenMaxValue?.poolCap}
+        valueClassName="numbers"
+        showDollar={false}
+      />
       {!marketInfo?.isSameCollaterals && (
-        <StatsTooltipRow label={t`Max ${marketInfo?.shortToken?.symbol}`} value={shortTokenMaxValue} />
+        <>
+          <StatsTooltipRow
+            label={t`Max ${marketInfo?.shortToken?.symbol}`}
+            value={shortTokenMaxValue?.amount}
+            showDollar={false}
+          />
+          <StatsTooltipRow
+            label={getTokenPoolCapLabel(marketInfo.shortToken.symbol)}
+            value={shortTokenMaxValue?.poolCap}
+            valueClassName="numbers"
+            showDollar={false}
+          />
+        </>
       )}
     </>
   );
 };
+
+function getTokenPoolCapLabel(symbol: string) {
+  return t`Current ${symbol} pool value / max cap`;
+}

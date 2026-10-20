@@ -1,14 +1,16 @@
 import { t } from "@lingui/macro";
 import { Signer, Wallet, ethers } from "ethers";
-import { encodeFunctionData } from "viem";
+import { encodeFunctionData, type Address } from "viem";
 
 import { getContract } from "config/contracts";
 import { callContract } from "lib/contracts";
 import { ExpressTxnData } from "lib/transactions";
 import { WalletSigner } from "lib/wallets";
 import { signTypedData } from "lib/wallets/signing";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { ContractsChainId, SourceChainId } from "sdk/configs/chains";
+import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
@@ -44,6 +46,27 @@ export async function claimFundingFeesTxn(chainId: ContractsChainId, signer: Sig
       setPendingTxns,
     }
   );
+}
+
+export async function estimateClaimFundingFeesGas(
+  chainId: ContractsChainId,
+  { account, marketAddresses, tokenAddresses }: { account: string; marketAddresses: string[]; tokenAddresses: string[] }
+): Promise<bigint> {
+  const client = getPublicClientWithRpc(chainId);
+
+  const callData = encodeFunctionData({
+    abi: abis.ExchangeRouter,
+    functionName: "claimFundingFees",
+    args: [marketAddresses, tokenAddresses, account],
+  });
+
+  return client
+    .estimateGas({
+      account: account as Address,
+      to: getContract(chainId, "ExchangeRouter"),
+      data: callData,
+    })
+    .then(applyGasLimitBuffer);
 }
 
 export async function buildAndSignClaimFundingFeesTxn({

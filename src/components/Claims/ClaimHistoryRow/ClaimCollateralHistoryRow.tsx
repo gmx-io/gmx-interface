@@ -11,6 +11,7 @@ import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { NumericValue } from "components/NumericValue/NumericValue";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -28,8 +29,8 @@ export type ClaimCollateralHistoryRowProps = {
 };
 
 export const claimCollateralEventTitles: Record<ClaimCollateralAction["eventName"], MessageDescriptor> = {
-  [ClaimType.ClaimFunding]: msg`Claim funding fees`,
-  [ClaimType.ClaimPriceImpact]: msg`Claim price impact rebates`,
+  [ClaimType.ClaimFunding]: msg`Claimed funding fees`,
+  [ClaimType.ClaimPriceImpact]: msg`Claimed price impact rebates`,
 };
 
 export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
@@ -68,7 +69,7 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
       <TooltipWithPortal
         tooltipClassName="ClaimHistoryRow-size-tooltip-portal"
         content={<SizeTooltip claimAction={claimAction} />}
-        handle={formattedTotalUsd}
+        handle={<NumericValue parts={formattedTotalUsd} />}
         handleClassName="numbers"
       />
     );

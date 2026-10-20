@@ -5,9 +5,10 @@ import { useMemo } from "react";
 import { isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { Token } from "domain/tokens";
 import { formatDateTime } from "lib/dates";
-import { formatBalanceAmount, formatUsd } from "lib/numbers";
+import { formatBalanceAmount } from "lib/numbers";
 import { OrderType, TwapOrderInfo } from "sdk/utils/orders/types";
 
+import { UsdValue } from "components/NumericValue/UsdValue";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 export default function TwapOrdersList({ order }: { order: TwapOrderInfo }) {
@@ -40,10 +41,10 @@ export default function TwapOrdersList({ order }: { order: TwapOrderInfo }) {
       <div className="text-body-medium">
         <table>
           {executedOrders.map((o) => (
-            <TwapOrderItem key={o.key} order={o} isExecuted={true} />
+            <TwapOrderItem key={o.key} order={o} status="executed" />
           ))}
           {sortedOrders.map((o) => (
-            <TwapOrderItem key={o.key} order={o} isExecuted={false} />
+            <TwapOrderItem key={o.key} order={o} status={o.isFrozen ? "frozen" : "pending"} />
           ))}
         </table>
       </div>
@@ -51,9 +52,11 @@ export default function TwapOrdersList({ order }: { order: TwapOrderInfo }) {
   );
 }
 
+type TwapOrderPartStatus = "executed" | "pending" | "frozen";
+
 function TwapOrderItem({
   order,
-  isExecuted,
+  status,
 }: {
   order: {
     orderType: OrderType;
@@ -64,11 +67,11 @@ function TwapOrderItem({
     initialCollateralToken: Token;
     targetCollateralToken: Token;
   };
-  isExecuted: boolean;
+  status: TwapOrderPartStatus;
 }) {
-  const sizeText = formatUsd(order.sizeDeltaUsd * (isIncreaseOrderType(order.orderType) ? 1n : -1n), {
-    displayPlus: true,
-  });
+  const sizeText = (
+    <UsdValue usd={order.sizeDeltaUsd * (isIncreaseOrderType(order.orderType) ? 1n : -1n)} displayPlus />
+  );
 
   if (isSwapOrderType(order.orderType)) {
     const fromTokenText = formatBalanceAmount(
@@ -95,7 +98,7 @@ function TwapOrderItem({
           </div>
         </td>
         <td className="py-8 text-right">
-          <Trans>{isExecuted ? "Executed" : "Pending"}</Trans>
+          <TwapOrderPartStatusLabel status={status} />
         </td>
       </tr>
     );
@@ -106,8 +109,24 @@ function TwapOrderItem({
       <td className="py-8 pr-8 text-typography-secondary">{formatDateTime(Number(order.validFromTime))}</td>
       <td className="py-8 pr-8">{sizeText}</td>
       <td className="py-8 text-right">
-        <Trans>{isExecuted ? "Executed" : "Pending"}</Trans>
+        <TwapOrderPartStatusLabel status={status} />
       </td>
     </tr>
   );
+}
+
+function TwapOrderPartStatusLabel({ status }: { status: TwapOrderPartStatus }) {
+  if (status === "executed") {
+    return <Trans>Executed</Trans>;
+  }
+
+  if (status === "frozen") {
+    return (
+      <span className="text-yellow-300">
+        <Trans context="TWAP part status">Frozen</Trans>
+      </span>
+    );
+  }
+
+  return <Trans>Pending</Trans>;
 }

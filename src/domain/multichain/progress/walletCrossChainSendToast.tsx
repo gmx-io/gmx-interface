@@ -142,7 +142,7 @@ function WalletCrossChainSendToastContent({
         <div className="flex items-center gap-4">
           <TokenIcon symbol={token.symbol} displaySize={16} className="size-16" />
           <Trans>
-            Sending {formatTokenAmount(amount, token.decimals, token.symbol)} to {getChainName(destinationChainId)}
+            Sending {formatTokenAmount(amount, token.decimals, token.symbol)} to {getChainName(destinationChainId)}...
           </Trans>
         </div>
       }

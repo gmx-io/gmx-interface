@@ -95,3 +95,28 @@ describe("metrics queue delivery", () => {
     ]);
   });
 });
+
+describe("Metrics batch sending", () => {
+  it.each([JSON.stringify({ message: "invalid item" }), "<html><body>400 Bad Request</body></html>"])(
+    "drops a batch rejected with 400 and reports it instead of re-sending it forever PRO-4393: %s",
+    async (body) => {
+      metrics.setFetcher({
+        fetchPostBatchReport: async () => new Response(body, { status: 400 }),
+      } as unknown as OracleFetcher);
+      metrics.pushCounter<{ event: "test.counter" }>("test.counter");
+      await vi.advanceTimersByTimeAsync(3000);
+
+      await vi.waitFor(() =>
+        expect(metrics.queue).toEqual([
+          expect.objectContaining({
+            type: "event",
+            payload: expect.objectContaining({
+              event: "error",
+              customFields: expect.objectContaining({ errorSource: "Metrics" }),
+            }),
+          }),
+        ])
+      );
+    }
+  );
+});
