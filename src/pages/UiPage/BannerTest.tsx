@@ -145,7 +145,7 @@ export function BannerTest() {
           </AlertInfoCard>
 
           <AlertInfoCard type="error" hideClose>
-            <Trans>Existing limit order in WETH-USDC pool but lacks liquidity for this order</Trans>
+            <Trans>Existing limit order is in WETH-USDC pool, but that pool lacks liquidity for this order</Trans>
           </AlertInfoCard>
         </Section>
 
@@ -164,7 +164,7 @@ export function BannerTest() {
             <div>
               <Trans>Convert esGMX to GMX tokens. Read the vesting details before using the vaults.</Trans>
               <ColorfulButtonLink color="blue" to="https://docs.gmx.io/" newTab>
-                <Trans>Read details</Trans>
+                <Trans>Read more</Trans>
               </ColorfulButtonLink>
             </div>
           </AlertInfoCard>
@@ -185,7 +185,7 @@ export function BannerTest() {
           <ColorfulBanner color="blue" onClose={noop}>
             <span>
               <Trans>
-                Simulated orderbook view of GMX liquidity. Opens execute at mark price with zero impact. Net price
+                Simulated orderbook view of GMX liquidity. Opens execute at mark price with zero price impact. Net price
                 impact applies only on closes (capped, usually at 0.5%).{" "}
                 <ExternalLink href="https://docs.gmx.io/" newTab>
                   Read more

@@ -17,8 +17,8 @@ import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { useChainId } from "lib/chains";
 import { arrayURLFetcher } from "lib/fetcher";
 import { GLP_DECIMALS, GMX_DECIMALS } from "lib/legacy";
-import { expandDecimals, formatAmountHuman } from "lib/numbers";
-import { sumBigInts, sumKnownBigInts } from "lib/sumBigInts";
+import { expandDecimals } from "lib/numbers";
+import { sumKnownBigInts } from "lib/sumBigInts";
 import { mergeFreshness, useSWRWithFreshness } from "lib/useSWRWithFreshness";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
@@ -181,23 +181,6 @@ export function OverviewCard({
   const v2MegaethEpochFees = v2MegaethOverview?.epochFees;
   const gmtradeEpochFees = gmtradeFees.data?.epochFees;
 
-  const v1ArbitrumWeeklyFees = v1ArbitrumFees?.weeklyFees;
-  const v1AvalancheWeeklyFees = v1AvalancheFees?.weeklyFees;
-
-  const v2ArbitrumWeeklyFees = v2ArbitrumOverview?.weeklyFees;
-  const v2AvalancheWeeklyFees = v2AvalancheOverview?.weeklyFees;
-  const v2MegaethWeeklyFees = v2MegaethOverview?.weeklyFees;
-  const gmtradeWeeklyFees = gmtradeFees.data?.weeklyFees;
-
-  const totalWeeklyFeesUsd = sumBigInts(
-    v1ArbitrumWeeklyFees,
-    v1AvalancheWeeklyFees,
-    v2ArbitrumWeeklyFees,
-    v2AvalancheWeeklyFees,
-    v2MegaethWeeklyFees,
-    gmtradeWeeklyFees
-  );
-
   // #endregion Fees
 
   const dailyVolumeEntries = useMemo(
@@ -314,42 +297,6 @@ export function OverviewCard({
     return () => clearInterval(interval);
   }, []);
 
-  const feesSubtotal = useMemo(() => {
-    // only GMX-buyback fee allocations feed this: solana fees bought GT historically and nothing since 2026-01-16
-    const v1GmxBuyPressure = (((v1ArbitrumWeeklyFees ?? 0n) + (v1AvalancheWeeklyFees ?? 0n)) * 30n) / 100n;
-    const v2GmxBuyPressure =
-      (((v2ArbitrumWeeklyFees ?? 0n) + (v2AvalancheWeeklyFees ?? 0n) + (v2MegaethWeeklyFees ?? 0n)) * 27n) / 100n;
-    const annualizedTotal = (totalWeeklyFeesUsd * 365n) / 7n;
-    const annualizedGmxBuyPressure = ((v1GmxBuyPressure + v2GmxBuyPressure) * 365n) / 7n;
-
-    return (
-      <>
-        <p className="Tooltip-row !mt-12">
-          <span className="label">
-            <Trans>Annualized fees:</Trans>
-          </span>
-          <span className="numbers">{formatAmountHuman(annualizedTotal, USD_DECIMALS, true, 2)}</span>
-        </p>
-        <p className="Tooltip-row">
-          <span className="label">
-            <Trans>Annualized GMX buy pressure:</Trans>
-          </span>
-          <span className="numbers">{formatAmountHuman(annualizedGmxBuyPressure, USD_DECIMALS, true, 2)}</span>
-        </p>
-        <p className="Tooltip-row !mt-16 max-w-[260px] whitespace-normal">
-          <Trans>Annualized data based on the past 7 days. Solana fees do not contribute to GMX buybacks.</Trans>
-        </p>
-      </>
-    );
-  }, [
-    v1ArbitrumWeeklyFees,
-    v1AvalancheWeeklyFees,
-    v2ArbitrumWeeklyFees,
-    v2AvalancheWeeklyFees,
-    v2MegaethWeeklyFees,
-    totalWeeklyFeesUsd,
-  ]);
-
   return (
     <AppCard>
       <AppCardSection className="text-body-large font-medium">
@@ -365,11 +312,7 @@ export function OverviewCard({
                 <Trans>Fees for the past</Trans> {formattedDuration}
               </div>
               <div>
-                <ChainsStatsTooltip
-                  entries={epochFeesEntries}
-                  subtotal={feesSubtotal}
-                  staleEntries={feesStaleEntries}
-                />
+                <ChainsStatsTooltip entries={epochFeesEntries} staleEntries={feesStaleEntries} />
               </div>
             </div>
             <div className="App-card-row">

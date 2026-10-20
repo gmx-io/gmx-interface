@@ -31,10 +31,9 @@ describe("GtAssetCard", () => {
   afterEach(cleanup);
 
   it("shows the GT amount with its USD value", () => {
-    renderCard(GT_REWARDS_USD);
+    const { container } = renderCard(GT_REWARDS_USD);
 
-    expect(screen.getByText(/0\.79044\s*GT/)).toBeTruthy();
-    expect(screen.getByText(/\(\$\s*1\.29\)/)).toBeTruthy();
+    expect(container.textContent).toMatch(/0\.79044\s*GT\s*\(\$\s*1\.29\)/);
   });
 
   it("shows the GT amount alone while the GT price is unavailable", () => {

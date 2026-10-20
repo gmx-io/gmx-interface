@@ -1,4 +1,4 @@
-import type { SourceChainId } from "config/chains";
+import type { NetworkId, SourceChainId } from "config/chains";
 import type { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import type { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import type { ErrorData } from "lib/errors";
@@ -25,6 +25,8 @@ export type GlobalMetricData = {
   platform?: string;
   isInited?: boolean;
   srcChainId?: SourceChainId;
+  networkId?: NetworkId;
+  hasNoTrades?: boolean;
 };
 
 export enum OrderStage {
@@ -266,6 +268,12 @@ export type OrderCancelledEvent = {
 };
 
 // Fallback tracking
+export type EndpointsPairRepeats = {
+  repeatCount: number;
+  firstTs: number;
+  lastTs: number;
+};
+
 export type RpcTrackerEndpointBannedEvent = {
   event: "rpcTracker.endpoint.banned";
   isError: false;
@@ -288,7 +296,7 @@ export type RpcTrackerUpdateEndpointsEvent = {
     secondary: string;
     primaryBlockGap: number | "unknown";
     secondaryBlockGap: number | "unknown";
-  };
+  } & Partial<EndpointsPairRepeats>;
 };
 
 export type RpcTrackerEndpointTiming = {
@@ -315,7 +323,7 @@ export type OracleKeeperUpdateEndpointsEvent = {
     chainName: string;
     primary: string;
     secondary: string;
-  };
+  } & Partial<EndpointsPairRepeats>;
 };
 
 export type OracleKeeperEndpointBannedEvent = {
@@ -571,7 +579,7 @@ export type MulticallBatchedTiming = {
   data: {
     chainId: number;
     priority: string;
-    callsCount: number;
+    callsCountBucket: string;
   };
 };
 
@@ -624,7 +632,7 @@ export type MulticallBatchedCallCounter = {
   data: {
     chainId: number;
     priority: string;
-    callsCount: number;
+    callsCountBucket: string;
   };
 };
 
@@ -633,7 +641,7 @@ export type MulticallBatchedErrorCounter = {
   data: {
     chainId: number;
     priority: string;
-    callsCount: number;
+    callsCountBucket: string;
   };
 };
 
@@ -691,6 +699,75 @@ export type SignatureProducedEvent = {
     isRetryAfterInvalidSignature: boolean;
     accountTypeOnSigningChain: string | undefined;
     accountTypeOnVerificationChain: string | undefined;
+  };
+};
+
+export type TokenApprovalFlow =
+  | "trade"
+  | "editCollateral"
+  | "closePosition"
+  | "settleFundingFees"
+  | "gmBuy"
+  | "gmSell"
+  | "glvBuy"
+  | "glvSell"
+  | "gmShift"
+  | "gmxAccountDeposit"
+  | "gmxAccountSend"
+  | "referral"
+  | "stake"
+  | "claimRewards"
+  | "accountTransfer"
+  | "paxosTransit";
+
+export type TokenApprovalMetricParams = {
+  flow: TokenApprovalFlow;
+  isGasPaymentToken?: boolean;
+  isExpress?: boolean;
+  isExpress1CT?: boolean;
+  // the spender is a user account rather than a contract, so it stays out of analytics
+  hideSpender?: boolean;
+};
+
+export type TokenApprovalEvent = {
+  event: "tokenApproval";
+  isError: false;
+  data: Omit<TokenApprovalMetricParams, "hideSpender"> & {
+    method: "transaction" | "permit";
+    outcome: "accepted" | "rejected" | "failed";
+    chainId: number;
+    tokenAddress: string;
+    tokenSymbol: string | undefined;
+    spenderAddress: string | undefined;
+    isUnlimited: boolean | undefined;
+    errorContext: string | undefined;
+    txErrorType: string | undefined;
+  };
+};
+
+export type StakingActionEvent = {
+  event: "staking.action";
+  isError: false;
+  data: {
+    action: "stake" | "unstake" | "claim" | "compound";
+    tokenSymbol: string | undefined;
+    outcome: "sent" | "rejected" | "failed";
+    chainId: number;
+  };
+};
+
+export type WalletCapabilitiesEvent = {
+  event: "wallet.capabilities";
+  isError: false;
+  data: {
+    chainId: number;
+    walletName: string | undefined;
+    accountType: string | undefined;
+    delegateAddress: string | undefined;
+    capabilitiesStatus: "ok" | "unsupported" | "skipped" | "error" | "timeout";
+    atomicStatus: string | undefined;
+    hasAlternateGasFees: boolean | undefined;
+    hasPaymasterService: boolean | undefined;
   };
 };
 

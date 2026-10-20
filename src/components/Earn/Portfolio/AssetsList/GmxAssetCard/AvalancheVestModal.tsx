@@ -466,6 +466,7 @@ export function AvalancheVestModal({ isVisible, setIsVisible, processedData, res
                 onClickMax={
                   depositConfig.maxAmount !== undefined && depositConfig.maxAmount > 0n ? onClickMax : undefined
                 }
+                isMaxSelected={depositAmount === depositConfig.maxAmount}
                 inputValue={depositValues[selectedVault]}
                 onInputValueChange={(e) => handleSetDepositValue(e.target.value)}
                 maxDecimals={18}
@@ -482,7 +483,7 @@ export function AvalancheVestModal({ isVisible, setIsVisible, processedData, res
                     <Trans>Convert esGMX to GMX tokens. Read the vesting details before using the vaults.</Trans>
 
                     <ColorfulButtonLink color="blue" to="https://docs.gmx.io/docs/tokenomics/rewards/#vesting" newTab>
-                      <Trans>Read details</Trans>
+                      <Trans>Read more</Trans>
                     </ColorfulButtonLink>
                   </div>
                 </AlertInfoCard>
@@ -513,7 +514,7 @@ export function AvalancheVestModal({ isVisible, setIsVisible, processedData, res
                     <Trans>Convert esGMX to GMX tokens. Read the vesting details before using the vaults.</Trans>
 
                     <ColorfulButtonLink color="blue" to="https://docs.gmx.io/docs/tokenomics/rewards/#vesting" newTab>
-                      <Trans>Read details</Trans>
+                      <Trans>Read more</Trans>
                     </ColorfulButtonLink>
                   </div>
                 </AlertInfoCard>
@@ -544,7 +545,7 @@ export function AvalancheVestModal({ isVisible, setIsVisible, processedData, res
                     <Trans>Convert esGMX to GMX tokens. Read the vesting details before using the vaults.</Trans>
 
                     <ColorfulButtonLink color="blue" to="https://docs.gmx.io/docs/tokenomics/rewards/#vesting" newTab>
-                      <Trans>Read details</Trans>
+                      <Trans>Read more</Trans>
                     </ColorfulButtonLink>
                   </div>
                 </AlertInfoCard>

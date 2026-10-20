@@ -96,7 +96,7 @@ export function MarginDepositInsufficientMessage({
       <ReplaceMarginDepositAction positionKey={positionKey} orderKey={orderKey}>
         Increase the deposit amount
       </ReplaceMarginDepositAction>{" "}
-      or move the trigger farther from liquidation.
+      or move the trigger price farther from the liquidation price.
     </Trans>
   );
 }

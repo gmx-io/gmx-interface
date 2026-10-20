@@ -62,8 +62,12 @@ export type SettlementChainId = (typeof SETTLEMENT_CHAIN_IDS_DEV)[number];
 export type SourceChainId = (typeof SOURCE_CHAIN_IDS)[number];
 export const GMX_ACCOUNT_PSEUDO_CHAIN_ID = 0;
 export type GmxAccountPseudoChainId = typeof GMX_ACCOUNT_PSEUDO_CHAIN_ID;
+// Solana has no EVM chain id: this id stays out of the EVM chain lists and types in this file
+export const SOLANA_NETWORK_ID = -501;
+export type SolanaNetworkId = typeof SOLANA_NETWORK_ID;
 
 export type AnyChainId = ContractsChainId | SettlementChainId | SourceChainId;
+export type NetworkId = ContractsChainId | SolanaNetworkId;
 
 const CONTRACTS_CHAIN_CONFIGS = {
   [ARBITRUM]: {
@@ -248,11 +252,11 @@ const ALL_CHAIN_CONFIGS = {
 
 export type ContractsChainName = (typeof CONTRACTS_CHAIN_CONFIGS)[keyof typeof CONTRACTS_CHAIN_CONFIGS]["name"];
 export type SourceChainName = (typeof SOURCE_CHAIN_CONFIGS)[keyof typeof SOURCE_CHAIN_CONFIGS]["name"];
-export type ChainName = ContractsChainName | SourceChainName | "Unknown";
+export type ChainName = ContractsChainName | SourceChainName | "Solana" | "Unknown";
 
 export type ContractsChainSlug = (typeof CONTRACTS_CHAIN_CONFIGS)[keyof typeof CONTRACTS_CHAIN_CONFIGS]["slug"];
 export type SourceChainSlug = (typeof SOURCE_CHAIN_CONFIGS)[keyof typeof SOURCE_CHAIN_CONFIGS]["slug"];
-export type ChainSlug = ContractsChainSlug | SourceChainSlug | "unknown";
+export type ChainSlug = ContractsChainSlug | SourceChainSlug | "solana" | "unknown";
 
 export const megaeth: Chain = defineChain({
   id: MEGAETH,
@@ -293,11 +297,23 @@ export const VIEM_CHAIN_BY_CHAIN_ID: Record<AnyChainId, Chain> = {
   [SOURCE_BSC_MAINNET]: bsc,
 };
 
+export function isSolanaNetwork(networkId: number): networkId is SolanaNetworkId {
+  return networkId === SOLANA_NETWORK_ID;
+}
+
 export function getChainName(chainId: number): ChainName {
+  if (isSolanaNetwork(chainId)) {
+    return "Solana";
+  }
+
   return ALL_CHAIN_CONFIGS[chainId]?.name ?? "Unknown";
 }
 
 export function getChainSlug(chainId: number): ChainSlug {
+  if (isSolanaNetwork(chainId)) {
+    return "solana";
+  }
+
   return ALL_CHAIN_CONFIGS[chainId]?.slug ?? "unknown";
 }
 
@@ -333,6 +349,15 @@ export function getMaxFeePerGas(chainId: ContractsChainId): bigint | undefined {
 
 export function getGasPricePremium(chainId: ContractsChainId): bigint | undefined {
   return CONTRACTS_CHAIN_CONFIGS[chainId]?.gasPricePremium;
+}
+
+// Priority fee wallets may add, charged on Arbitrum One since 2026-09-23; express is relayed with a zero tip
+const EXECUTION_FEE_PRIORITY_FEE_ALLOWANCE: Partial<Record<ContractsChainId, bigint>> = {
+  [ARBITRUM]: 30000000n, // 0.03 gwei
+};
+
+export function getExecutionFeePriorityFeeAllowance(chainId: ContractsChainId): bigint {
+  return EXECUTION_FEE_PRIORITY_FEE_ALLOWANCE[chainId] ?? 0n;
 }
 
 export function getMaxPriorityFeePerGas(chainId: ContractsChainId) {

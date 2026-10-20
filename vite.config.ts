@@ -4,8 +4,9 @@ import { lingui } from "@lingui/vite-plugin";
 import react from "@vitejs/plugin-react";
 import { execFileSync } from "node:child_process";
 import path from "path";
+import type { ModuleInfo, OutputBundle, OutputChunk } from "rollup";
 import { visualizer } from "rollup-plugin-visualizer";
-import { defineConfig, loadEnv, type ConfigEnv, type PluginOption, type UserConfig } from "vite";
+import { defineConfig, loadEnv, type ConfigEnv, type Plugin, type PluginOption, type UserConfig } from "vite";
 import { analyzer } from "vite-bundle-analyzer";
 import svgr from "vite-plugin-svgr";
 import tsconfigPaths from "vite-tsconfig-paths";
@@ -207,6 +208,149 @@ function sdkDedupe(): PluginOption {
   };
 }
 
+function isSolanaModule(id: string) {
+  const srcDir = `${normalizePath(APP_SRC_DIR)}/`;
+  const normalizedId = normalizePath(id).split("?")[0];
+  return ["lib/solana", "domain/gmsol"].some(
+    (folder) => normalizedId.startsWith(`${srcDir}${folder}/`) || normalizedId === `${srcDir}${folder}`
+  );
+}
+
+function isSolanaPackage(source: string) {
+  return (
+    /^@(solana|solana-program|gmsol-labs)\//.test(source) ||
+    source === "@privy-io/react-auth/solana" ||
+    source.startsWith("@privy-io/react-auth/solana/")
+  );
+}
+
+function isPrivySolanaModule(id: string) {
+  return normalizePath(id).includes("/@privy-io/react-auth/dist/esm/solana.mjs");
+}
+
+function isWasm(id: string) {
+  return /\.wasm(?:\?|$)/.test(id);
+}
+
+function findSolanaStaticImport(moduleInfo: ModuleInfo) {
+  const srcDir = `${normalizePath(APP_SRC_DIR)}/`;
+  if (!normalizePath(moduleInfo.id).startsWith(srcDir) || isSolanaModule(moduleInfo.id)) {
+    return undefined;
+  }
+
+  // Check package specifiers before resolved IDs, which may point to aliases or virtual stubs.
+  for (const statement of moduleInfo.ast!.body) {
+    if (
+      (statement.type === "ImportDeclaration" ||
+        statement.type === "ExportNamedDeclaration" ||
+        statement.type === "ExportAllDeclaration") &&
+      statement.source &&
+      isSolanaPackage(String(statement.source.value))
+    ) {
+      return String(statement.source.value);
+    }
+  }
+
+  return moduleInfo.importedIds.find(
+    (id) =>
+      isSolanaModule(id) ||
+      id === SOLANA_SYSTEM_STUB_ID ||
+      getPackageNames(normalizePath(id)).some((packageName) => isSolanaPackage(`${packageName}/`)) ||
+      isPrivySolanaModule(id)
+  );
+}
+
+function* getStartupChunks(bundle: OutputBundle, requireAppBootstrap: boolean) {
+  const bootstrapId = `${normalizePath(APP_SRC_DIR)}/App/bootstrap.tsx`;
+  const bootstrapChunk = Object.values(bundle).find(
+    (output) => output.type === "chunk" && Object.keys(output.modules).some((id) => normalizePath(id) === bootstrapId)
+  );
+  if (requireAppBootstrap && !bootstrapChunk) {
+    throw new Error(
+      "Solana build isolation: startup module src/App/bootstrap.tsx was not found. If it was renamed or moved, update the bootstrap path in vite.config.ts."
+    );
+  }
+  // bootstrap is dynamically imported but always runs at startup, so it is also a root.
+  const pending = Object.values(bundle)
+    .filter((output) => output.type === "chunk" && (output.isEntry || output === bootstrapChunk))
+    .map((output) => output.fileName);
+  const visited = new Set<string>();
+
+  while (pending.length) {
+    const fileName = pending.pop()!;
+    if (visited.has(fileName)) {
+      continue;
+    }
+    visited.add(fileName);
+
+    const chunk = bundle[fileName];
+    if (!chunk || chunk.type !== "chunk") {
+      continue;
+    }
+
+    yield chunk;
+    // Follow static dependencies only; feature-gated lazy chunks may contain Solana code.
+    pending.push(...chunk.imports);
+  }
+}
+
+function getStartupChunkViolation(chunk: OutputChunk) {
+  for (const id of Object.keys(chunk.modules)) {
+    // Privy's root entry already includes ordinary @solana/* dependencies in the EVM bundle.
+    if (
+      isSolanaModule(id) ||
+      getPackageNames(normalizePath(id)).includes("@gmsol-labs/gmsol-sdk") ||
+      isPrivySolanaModule(id) ||
+      isWasm(id)
+    ) {
+      return { kind: "module" as const, id };
+    }
+  }
+
+  for (const asset of [...chunk.referencedFiles, ...(chunk.viteMetadata?.importedAssets ?? [])]) {
+    if (isWasm(asset)) {
+      return { kind: "asset" as const, id: asset };
+    }
+  }
+
+  return undefined;
+}
+
+function formatModuleId(id: string) {
+  return id.startsWith("\0")
+    ? id.replace(/\0/g, "\\0")
+    : normalizePath(path.isAbsolute(id) ? path.relative(__dirname, id) : id);
+}
+
+function solanaBuildIsolation({ requireAppBootstrap }: { requireAppBootstrap: boolean }): Plugin {
+  return {
+    name: "gmx-solana-build-isolation",
+    apply: "build",
+    moduleParsed(moduleInfo) {
+      const importedId = findSolanaStaticImport(moduleInfo);
+      if (importedId !== undefined) {
+        this.error(`Solana static import is not allowed: ${moduleInfo.id} -> ${importedId}`);
+      }
+    },
+    generateBundle(_, bundle) {
+      for (const chunk of getStartupChunks(bundle, requireAppBootstrap)) {
+        const violation = getStartupChunkViolation(chunk);
+        if (violation) {
+          if (violation.kind === "asset") {
+            this.error(`WebAssembly asset in startup chunk ${chunk.fileName}: ${formatModuleId(violation.id)}`);
+          }
+
+          const importer = this.getModuleInfo(violation.id)?.importers[0];
+          this.error(
+            `Solana module in startup chunk ${chunk.fileName}: ${formatModuleId(violation.id)}` +
+              (importer ? `\nImported by: ${formatModuleId(importer)}` : "")
+          );
+        }
+      }
+    },
+  };
+}
+
 function optionalSolanaSystemStub(): PluginOption {
   return {
     name: "gmx-optional-solana-system-stub",
@@ -234,7 +378,10 @@ function optionalSolanaSystemStub(): PluginOption {
 
 export function createViteConfig(
   { mode }: ConfigEnv,
-  { emitAppRedirects = true }: { emitAppRedirects?: boolean } = {}
+  {
+    emitAppRedirects = true,
+    requireAppBootstrap = true,
+  }: { emitAppRedirects?: boolean; requireAppBootstrap?: boolean } = {}
 ): UserConfig {
   const env = loadEnv(mode, process.cwd(), "");
   const pwaBuildId = getPwaBuildId(env.VITE_APP_PWA_GENERATION);
@@ -247,6 +394,7 @@ export function createViteConfig(
   return {
     worker: {
       format: "es",
+      plugins: () => [solanaBuildIsolation({ requireAppBootstrap: false })],
     },
     optimizeDeps: {
       esbuildOptions: {
@@ -271,6 +419,7 @@ export function createViteConfig(
       svgr({
         include: "**/*.svg?react",
       }),
+      solanaBuildIsolation({ requireAppBootstrap }),
       optionalSolanaSystemStub(),
       sdkDedupe(),
       tsconfigPaths(),

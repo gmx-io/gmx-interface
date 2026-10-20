@@ -13,7 +13,7 @@ import { getKyberSwapTxnData, KyberSwapQuote } from "./kyberSwap";
 import { ExternalSwapRequestKey } from "./types";
 import { getExternalSwapRequestKey, isAbortError, isAmountWithinKeyTolerance } from "./utils";
 
-function useStableRequestAmountIn(
+export function useStableRequestAmountIn(
   amountIn: bigint | undefined,
   resetKey: string,
   stabilizationEnabled: boolean

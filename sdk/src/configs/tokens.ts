@@ -2,7 +2,15 @@ import { zeroAddress } from "viem";
 
 import type { Token, TokenAddressTypesMap, TokenCategory } from "utils/tokens/types";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, MEGAETH } from "./chains";
+import {
+  ARBITRUM,
+  ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  MEGAETH,
+  SOLANA_NETWORK_ID,
+  isSolanaNetwork,
+} from "./chains";
 import { getContract } from "./contracts";
 
 export const NATIVE_TOKEN_ADDRESS = zeroAddress;
@@ -128,6 +136,15 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
       explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       isPermitSupported: true,
+    },
+    {
+      name: "Global Dollar",
+      symbol: "USDG",
+      decimals: 6,
+      address: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+      isStable: true,
+      imageUrl: "https://coin-images.coingecko.com/coins/images/51281/small/GDN_USDG_Token_200x200.png?1730484111",
+      explorerUrl: "https://arbiscan.io/token/0x004B506865409877C9fA29bfb1ebA929984B9bbC",
     },
     {
       name: "Tether",
@@ -382,17 +399,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       contractVersion: "1",
     },
     {
-      name: "Sats",
-      symbol: "SATS",
-      address: "0x2cD2eB61D17b78239Fcd19aafF72981B5D5eF319",
-      decimals: 6,
-      categories: ["meme"],
-      imageUrl: "https://assets.coingecko.com/coins/images/30666/standard/_dD8qr3M_400x400.png?1702913020",
-      isSynthetic: true,
-      visualMultiplier: 1000_000,
-      visualPrefix: "m",
-    },
-    {
       name: "Polygon",
       symbol: "POL",
       decimals: 18,
@@ -484,15 +490,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
     },
     {
-      name: "BOME",
-      symbol: "BOME",
-      address: "0x3Eea56A1ccCdbfB70A26aD381C71Ee17E4c8A15F",
-      decimals: 6,
-      categories: ["meme"],
-      imageUrl: "https://assets.coingecko.com/coins/images/36071/standard/bome.png?1710407255",
-      isSynthetic: true,
-    },
-    {
       name: "FLOKI",
       symbol: "FLOKI",
       address: "0x6792c5B8962ffbDD020c6b6FD0Be7b182e0e33a3",
@@ -502,24 +499,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
       visualMultiplier: 1000,
       visualPrefix: "k",
-    },
-    {
-      name: "MEME",
-      symbol: "MEME",
-      address: "0xaF770F03518686a365300ab35AD860e99967B2f0",
-      decimals: 18,
-      categories: ["meme"],
-      imageUrl: "https://assets.coingecko.com/coins/images/32528/standard/memecoin_%282%29.png?1698912168",
-      isSynthetic: true,
-    },
-    {
-      name: "MEW",
-      symbol: "MEW",
-      address: "0x5503CF72f54b6d692d36BBCD391516A7dE068687",
-      decimals: 5,
-      categories: ["meme"],
-      imageUrl: "https://assets.coingecko.com/coins/images/36440/standard/MEW.png?1711442286",
-      isSynthetic: true,
     },
     {
       name: "PENDLE",
@@ -900,15 +879,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
       categories: ["defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/31745/standard/token.png?1696530564",
-    },
-    {
-      name: "Brett",
-      symbol: "BRETT",
-      address: "0x4249F6e0808bEfF7368AaAD3F7A3Fd511F61Ee60",
-      decimals: 18,
-      isSynthetic: true,
-      categories: ["meme"],
-      imageUrl: "https://assets.coingecko.com/coins/images/54317/standard/AERO.png?1728309870",
     },
     {
       name: "World Liberty Financial",
@@ -1402,15 +1372,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
     },
     {
-      name: "Melania Meme",
-      symbol: "MELANIA",
-      address: "0xd42C991a4FAb293C57a7bf25C2E2ec5aE1dB1714",
-      decimals: 6,
-      categories: ["meme"],
-      imageUrl: "https://assets.coingecko.com/coins/images/53775/standard/melania-meme.png?1737329885",
-      isSynthetic: true,
-    },
-    {
       name: "Pump",
       symbol: "PUMP",
       address: "0xdA598795DfE56388ca3D35e2ccFA96EFf83eC306",
@@ -1898,6 +1859,9 @@ export const TOKENS: { [chainId: number]: Token[] } = {
   ],
 };
 
+// Solana mints stay out of TOKENS: gmx-api checksums every TOKENS address as an EVM address at startup
+export const SOLANA_TOKENS: Token[] = [];
+
 export const TOKEN_COLOR_MAP: { default: string } & Partial<Record<string, string>> = {
   ETH: "#6062a6",
   BTC: "#F7931A",
@@ -1929,7 +1893,6 @@ export const TOKEN_COLOR_MAP: { default: string } & Partial<Record<string, strin
   ORDI: "#000000",
   MATIC: "#6f41d8",
   EIGEN: "#1A0C6D",
-  SATS: "#F7931A",
   XAU: "#D69A00",
   XAG: "#ADABB8",
   GOLD: "#D69A00",
@@ -1950,10 +1913,10 @@ export const TOKENS_BY_SYMBOL_MAP: { [chainId: number]: { [symbol: string]: Toke
 export const WRAPPED_TOKENS_MAP: { [chainId: number]: Token } = {};
 export const NATIVE_TOKENS_MAP: { [chainId: number]: Token } = {};
 
-const CHAIN_IDS = [ARBITRUM, AVALANCHE, AVALANCHE_FUJI, ARBITRUM_SEPOLIA, MEGAETH];
+const NETWORK_IDS = [ARBITRUM, AVALANCHE, AVALANCHE_FUJI, ARBITRUM_SEPOLIA, MEGAETH, SOLANA_NETWORK_ID];
 
-for (let j = 0; j < CHAIN_IDS.length; j++) {
-  const chainId = CHAIN_IDS[j];
+for (let j = 0; j < NETWORK_IDS.length; j++) {
+  const chainId = NETWORK_IDS[j];
 
   TOKENS_MAP[chainId] = {};
   TOKENS_BY_SYMBOL_MAP[chainId] = {};
@@ -1961,7 +1924,7 @@ for (let j = 0; j < CHAIN_IDS.length; j++) {
   V1_TOKENS[chainId] = [];
   V2_TOKENS[chainId] = [];
 
-  let tokens = TOKENS[chainId];
+  let tokens = getTokens(chainId);
   let wrappedTokenAddress: string | undefined;
 
   for (let i = 0; i < tokens.length; i++) {
@@ -1991,7 +1954,9 @@ for (let j = 0; j < CHAIN_IDS.length; j++) {
     }
   }
 
-  NATIVE_TOKENS_MAP[chainId].wrappedAddress = wrappedTokenAddress;
+  if (!isSolanaNetwork(chainId) || tokens.length > 0) {
+    NATIVE_TOKENS_MAP[chainId].wrappedAddress = wrappedTokenAddress;
+  }
 }
 
 export function getSyntheticTokens(chainId: number) {
@@ -2007,7 +1972,7 @@ export function getNativeToken(chainId: number) {
 }
 
 export function getTokens(chainId: number) {
-  return TOKENS[chainId];
+  return isSolanaNetwork(chainId) ? SOLANA_TOKENS : TOKENS[chainId];
 }
 
 export function getV1Tokens(chainId: number) {
@@ -2173,7 +2138,9 @@ export function getStableTokens(chainId: number) {
 }
 
 export function getCategoryTokenAddresses(chainId: number, category: TokenCategory) {
-  return TOKENS[chainId].filter((token) => token.categories?.includes(category)).map((token) => token.address);
+  return getTokens(chainId)
+    .filter((token) => token.categories?.includes(category))
+    .map((token) => token.address);
 }
 
 export const createTokensMap = (tokens: Token[]) => {

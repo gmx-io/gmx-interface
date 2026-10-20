@@ -779,6 +779,7 @@ button.App-button {
 
 .positive {
   color: var(--color-green-500);
+  --affix-color: currentColor;
 }
 
 .positive-background {
@@ -787,6 +788,7 @@ button.App-button {
 
 .negative {
   color: var(--error-red);
+  --affix-color: currentColor;
 }
 
 .negative-background {
@@ -795,6 +797,7 @@ button.App-button {
 
 .warning {
   color: var(--color-yellow-300);
+  --affix-color: currentColor;
 }
 
 .warning-decoration {

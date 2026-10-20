@@ -1,9 +1,17 @@
+import { zeroAddress } from "viem";
+
+import type { ExpressTxnParams, GasPaymentParams } from "domain/synthetics/express";
 import {
   PositionInfo,
   getIsPositionBelowMinCollateralForLeverage,
   getIsPositionInfoLoaded,
 } from "domain/synthetics/positions";
-import { convertToUsd } from "domain/synthetics/tokens";
+import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
+import type { TokensData } from "domain/tokens";
+import { applyMinimalBuffer } from "domain/tokens/useMaxAvailableAmount";
+import { getByKey } from "lib/objects";
+import { getGasPaymentTokens } from "sdk/configs/express";
+import { getIsConfirmedOutOfGasPaymentTokenBalance } from "sdk/utils/express";
 
 const PENDING_FUNDING_FEE_THRESHOLD = 10n * 10n ** 30n; // 10$
 const SETTLE_FEE_RATIO_THRESHOLD = 10n;
@@ -57,4 +65,54 @@ export function shouldPreSelectPosition(
     pendingClaimableFundingFeesUsd > PENDING_FUNDING_FEE_THRESHOLD &&
     pendingClaimableFundingFeesUsd > networkFee * SETTLE_FEE_RATIO_THRESHOLD
   );
+}
+
+export function getCanPayNetworkFeeFromBalance({
+  chainId,
+  tokensData,
+  gasPaymentParams,
+  isGmxAccount,
+}: {
+  chainId: number;
+  tokensData: TokensData | undefined;
+  gasPaymentParams: GasPaymentParams;
+  isGmxAccount: boolean;
+}): boolean {
+  const { gasPaymentToken, gasPaymentTokenAmount } = gasPaymentParams;
+  const feeUsd = convertToUsd(gasPaymentTokenAmount, gasPaymentToken.decimals, gasPaymentToken.prices.minPrice);
+  if (feeUsd === undefined) return false;
+
+  return getGasPaymentTokens(chainId).some((tokenAddress) => {
+    const token = getByKey(tokensData, tokenAddress);
+    if (!token) return false;
+
+    const balance = isGmxAccount ? token.gmxAccountBalance : token.walletBalance;
+    const required = convertToTokenAmount(feeUsd, token.decimals, token.prices.minPrice);
+    if (balance === undefined || required === undefined) return false;
+
+    return balance >= applyMinimalBuffer(required);
+  });
+}
+
+export function getShouldSwitchNetworkFeeSource({
+  chainId,
+  tokensData,
+  expressParams,
+}: {
+  chainId: number;
+  tokensData: TokensData | undefined;
+  expressParams: ExpressTxnParams;
+}): boolean {
+  if (!getIsConfirmedOutOfGasPaymentTokenBalance(expressParams.gasPaymentValidations)) return false;
+
+  const { isGmxAccount, gasPaymentParams } = expressParams;
+  const canPay = (fromGmxAccount: boolean) =>
+    getCanPayNetworkFeeFromBalance({ chainId, tokensData, gasPaymentParams, isGmxAccount: fromGmxAccount });
+
+  if (canPay(isGmxAccount)) return false;
+  if (canPay(!isGmxAccount)) return true;
+  if (!isGmxAccount) return false;
+
+  const nativeBalance = getByKey(tokensData, zeroAddress)?.walletBalance;
+  return nativeBalance !== undefined && nativeBalance >= gasPaymentParams.totalRelayerFeeTokenAmount;
 }

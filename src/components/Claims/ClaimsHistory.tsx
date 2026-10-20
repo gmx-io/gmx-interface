@@ -1,5 +1,6 @@
 import { t, Trans } from "@lingui/macro";
-import { useEffect, useState } from "react";
+import cx from "classnames";
+import { CSSProperties, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import { CLAIMS_HISTORY_PER_PAGE } from "config/ui";
 import { useAccount } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -31,6 +32,13 @@ import "./ClaimsHistory.scss";
 
 const CLAIMS_HISTORY_PREFETCH_SIZE = 100;
 
+type HistoryLayout = {
+  account: string | undefined;
+  chainId: number;
+  height: number;
+  rowHeights: number[];
+};
+
 export function ClaimsHistory() {
   const chainId = useSelector(selectChainId);
   const account = useAccount();
@@ -43,7 +51,7 @@ export function ClaimsHistory() {
 
   const {
     claimActions,
-    pageIndex,
+    hasMorePages,
     setPageIndex,
     isLoading: isHistoryLoading,
   } = useClaimCollateralHistory(chainId, {
@@ -56,26 +64,59 @@ export function ClaimsHistory() {
   const isConnected = Boolean(account);
   const isLoading = isConnected && isHistoryLoading;
 
-  const { currentPage, setCurrentPage, getCurrentData, pageCount } = usePagination(
-    String(account),
-    claimActions || EMPTY_ARRAY,
-    CLAIMS_HISTORY_PER_PAGE
-  );
-  const currentPageData = getCurrentData();
-
+  const {
+    currentPage,
+    setCurrentPage,
+    currentData: currentPageData,
+    pageCount,
+  } = usePagination(String(account), claimActions || EMPTY_ARRAY, CLAIMS_HISTORY_PER_PAGE);
   const isEmpty = !account || claimActions?.length === 0;
   const hasFilters = Boolean(startDate || endDate || eventNameFilter.length || marketAddressesFilter.length);
 
-  useEffect(() => {
-    if (!pageCount || !currentPage) return;
-    const totalPossiblePages = (CLAIMS_HISTORY_PREFETCH_SIZE * pageIndex) / CLAIMS_HISTORY_PER_PAGE;
-    const doesMoreDataExist = pageCount >= totalPossiblePages;
-    const isCloseToEnd = pageCount && pageCount < currentPage + 2;
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const settledLayout = useRef<HistoryLayout>();
+  const loadingLayout =
+    isLoading && settledLayout.current?.account === account && settledLayout.current?.chainId === chainId
+      ? settledLayout.current
+      : undefined;
+  const isLoadingEmpty = isLoading && loadingLayout?.rowHeights.length === 0;
+  const skeletonRowHeights = isLoadingEmpty
+    ? Array<number>(3).fill(loadingLayout.height / 3)
+    : loadingLayout?.rowHeights;
+  const loadingStyle = useMemo<CSSProperties | undefined>(
+    () => (loadingLayout ? { height: loadingLayout.height, overflow: "hidden" } : undefined),
+    [loadingLayout]
+  );
 
-    if (doesMoreDataExist && isCloseToEnd) {
+  useLayoutEffect(() => {
+    const results = resultsRef.current;
+    if (isLoading || !results) return;
+    if (!claimActions) {
+      settledLayout.current = undefined;
+      return;
+    }
+
+    // Keep geometry only, so loading never displays results from another period.
+    const measureLayout = () => {
+      settledLayout.current = {
+        account,
+        chainId,
+        height: results.getBoundingClientRect().height,
+        rowHeights: Array.from(results.querySelectorAll("tbody > tr"), (row) => row.getBoundingClientRect().height),
+      };
+    };
+
+    measureLayout();
+    const observer = new ResizeObserver(measureLayout);
+    observer.observe(results);
+    return () => observer.disconnect();
+  }, [account, chainId, isLoading, claimActions, currentPageData, pageCount]);
+
+  useEffect(() => {
+    if (hasMorePages && pageCount < currentPage + 2) {
       setPageIndex((prevIndex) => prevIndex + 1);
     }
-  }, [currentPage, pageCount, pageIndex, setPageIndex]);
+  }, [currentPage, pageCount, hasMorePages, setPageIndex]);
 
   const historyExport = useClaimsHistoryExport({
     account,
@@ -129,51 +170,63 @@ export function ClaimsHistory() {
 
         {controls}
       </div>
-      <TableScrollFadeContainer disableScrollFade={isEmpty} className="flex grow flex-col">
-        {!isEmpty && (
-          <table className="ClaimsHistory-table table-fixed">
-            <colgroup>
-              <col className="ClaimsHistory-action-column" />
-              <col className="ClaimsHistory-market-column" />
-              <col className="ClaimsHistory-size-column" />
-            </colgroup>
-            <thead>
-              <TableTheadTr>
-                <TableTh className="w-[40%]">
-                  <ActionFilter value={eventNameFilter} onChange={setEventNameFilter} />
-                </TableTh>
-                <TableTh className="w-[40%]">
-                  <MarketFilter excludeSpotOnly value={marketAddressesFilter} onChange={setMarketAddressesFilter} />
-                </TableTh>
-                <TableTh className="ClaimsHistory-price-header w-[20%]">
-                  <Trans>SIZE</Trans>
-                </TableTh>
-              </TableTheadTr>
-            </thead>
-            <tbody>
-              {isLoading ? (
-                <ClaimsHistorySkeleton />
-              ) : (
-                currentPageData.map((claimAction) => <ClaimHistoryRow key={claimAction.id} claimAction={claimAction} />)
+      <div ref={resultsRef} aria-busy={isLoading} className="flex grow flex-col" style={loadingStyle}>
+        <TableScrollFadeContainer disableScrollFade={isEmpty || isLoadingEmpty} className="flex grow flex-col">
+          {(!isEmpty || isLoading) && (
+            <table className={cx("ClaimsHistory-table table-fixed", { "!w-full": isLoadingEmpty })}>
+              <colgroup>
+                <col className="ClaimsHistory-action-column" />
+                <col className="ClaimsHistory-market-column" />
+                <col className="ClaimsHistory-size-column" />
+              </colgroup>
+              {!isLoadingEmpty && (
+                <thead>
+                  <TableTheadTr>
+                    <TableTh className="w-[40%]">
+                      <ActionFilter value={eventNameFilter} onChange={setEventNameFilter} />
+                    </TableTh>
+                    <TableTh className="w-[40%]">
+                      <MarketFilter excludeSpotOnly value={marketAddressesFilter} onChange={setMarketAddressesFilter} />
+                    </TableTh>
+                    <TableTh className="ClaimsHistory-price-header w-[20%]">
+                      <Trans>SIZE</Trans>
+                    </TableTh>
+                  </TableTheadTr>
+                </thead>
               )}
-            </tbody>
-          </table>
-        )}
+              <tbody>
+                {isLoading ? (
+                  skeletonRowHeights ? (
+                    skeletonRowHeights.map((rowHeight, index) => (
+                      <ClaimsHistorySkeleton key={index} count={1} rowHeight={rowHeight} />
+                    ))
+                  ) : (
+                    <ClaimsHistorySkeleton />
+                  )
+                ) : (
+                  currentPageData.map((claimAction) => (
+                    <ClaimHistoryRow key={claimAction.id} claimAction={claimAction} />
+                  ))
+                )}
+              </tbody>
+            </table>
+          )}
 
-        {isEmpty && !hasFilters && (
-          <EmptyTableContent isLoading={false} isEmpty={isEmpty} emptyText={<Trans>No claims yet</Trans>} />
-        )}
+          {!isLoading && isEmpty && !hasFilters && (
+            <EmptyTableContent isLoading={false} isEmpty={isEmpty} emptyText={<Trans>No claims yet</Trans>} />
+          )}
 
-        {isEmpty && hasFilters && (
-          <EmptyTableContent
-            isLoading={false}
-            isEmpty={isEmpty}
-            emptyText={<Trans>No claims match the selected filters</Trans>}
-          />
-        )}
-      </TableScrollFadeContainer>
+          {!isLoading && isEmpty && hasFilters && (
+            <EmptyTableContent
+              isLoading={false}
+              isEmpty={isEmpty}
+              emptyText={<Trans>No claims match the selected filters</Trans>}
+            />
+          )}
+        </TableScrollFadeContainer>
 
-      <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />
+        {!isLoading && <BottomTablePagination page={currentPage} pageCount={pageCount} onPageChange={setCurrentPage} />}
+      </div>
     </div>
   );
 }

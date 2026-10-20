@@ -9,6 +9,7 @@ import { ARBITRUM, ContractsChainId } from "config/chains";
 import { type ChainIcons, getIcons } from "config/icons";
 import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 import { calculateStakeBonusPercentage } from "domain/stake/calculateStakeBonusPercentage";
+import { sendStakingActionMetric } from "domain/stake/sendStakingActionMetric";
 import {
   getEffectiveHistoricalMax,
   getMaxSafeUnstake,
@@ -246,6 +247,7 @@ export function StakeModal(props: {
         chainId,
         permitParams: undefined,
         approveAmount: undefined,
+        metric: { flow: "stake" },
         onApproveFail: () => {
           setIsApproving(false);
         },
@@ -262,7 +264,12 @@ export function StakeModal(props: {
       setPendingTxns,
     })
       .then(() => {
+        sendStakingActionMetric({ action: "stake", tokenSymbol, chainId });
         setIsVisible(false);
+      })
+      .catch((error) => {
+        sendStakingActionMetric({ action: "stake", tokenSymbol, chainId, error });
+        throw error;
       })
       .finally(() => {
         setIsStaking(false);
@@ -278,6 +285,7 @@ export function StakeModal(props: {
     setPendingTxns,
     setIsVisible,
     rewardRouterAddress,
+    tokenSymbol,
   ]);
 
   const showResetToast = useCallback(() => {
@@ -306,10 +314,15 @@ export function StakeModal(props: {
       setPendingTxns,
     })
       .then(() => {
+        sendStakingActionMetric({ action: "unstake", tokenSymbol, chainId });
         setIsVisible(false);
         if (didReset) {
           showResetToast();
         }
+      })
+      .catch((error) => {
+        sendStakingActionMetric({ action: "unstake", tokenSymbol, chainId, error });
+        throw error;
       })
       .finally(() => {
         setIsUnstaking(false);
@@ -324,6 +337,7 @@ export function StakeModal(props: {
     setIsVisible,
     wouldResetPower,
     showResetToast,
+    tokenSymbol,
   ]);
 
   const handleStakeMax = useCallback(() => {
@@ -398,10 +412,8 @@ export function StakeModal(props: {
   const activeTokenSymbol = tokenSymbol;
   const activeTitle = activeTab === "stake" ? stakeTitle : unstakeTitle;
 
-  const stakeCanClickMax = stakeMaxAmount !== undefined && stakeMaxAmount !== 0n && stakeAmount !== stakeMaxAmount;
-  const unstakeCanClickMax =
-    unstakeMaxAmount !== undefined && unstakeMaxAmount !== 0n && unstakeAmount !== unstakeMaxAmount;
-  const canClickMax = activeTab === "stake" ? stakeCanClickMax : unstakeCanClickMax;
+  const hasMax = activeMaxAmount !== undefined && activeMaxAmount !== 0n;
+  const isMaxSelected = (activeTab === "stake" ? stakeAmount : unstakeAmount) === activeMaxAmount;
   const onClickMax = activeTab === "stake" ? handleStakeMax : handleUnstakeMax;
 
   const showStakeBonus =
@@ -448,7 +460,8 @@ export function StakeModal(props: {
             topLeftLabel={activeTab === "stake" ? t`Stake` : t`Unstake`}
             topRightLabel={t`Available`}
             topRightValue={formatAmount(activeMaxAmount, 18, 2, true)}
-            onClickMax={canClickMax ? onClickMax : undefined}
+            onClickMax={hasMax ? onClickMax : undefined}
+            isMaxSelected={isMaxSelected}
             inputValue={activeValue}
             onInputValueChange={(e) =>
               activeTab === "stake" ? setStakeValue(e.target.value) : setUnstakeValue(e.target.value)
@@ -533,7 +546,7 @@ export function StakeModal(props: {
           )}
 
           {activeTab === "stake" && hasUndelegatedGovToken ? (
-            <AlertInfoCard type="warning" className="!mb-0" hideClose>
+            <AlertInfoCard type="info" className="!mb-0" hideClose>
               <Trans>
                 Delegating your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO voting power is optional
                 for staking.{" "}
@@ -558,7 +571,7 @@ export function StakeModal(props: {
 
           {activeTab === "unstake" && wouldResetPower && (
             <>
-              <ColorfulBanner color="red" icon={AlertIcon}>
+              <ColorfulBanner color="yellow" icon={AlertIcon}>
                 <div>
                   <Trans>
                     Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards

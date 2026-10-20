@@ -334,7 +334,7 @@ export function getArbitraryRelayParamsAndPayload({
 
   const gasPaymentValidations = getGasPaymentValidations({
     gasPaymentToken: globalExpressParams.gasPaymentToken,
-    gasPaymentTokenAmount: relayFeeParams.gasPaymentParams.totalRelayerFeeTokenAmount,
+    gasPaymentTokenAmount: relayFeeParams.gasPaymentParams.gasPaymentTokenAmount,
     gasPaymentTokenAsCollateralAmount: 0n,
     gasPaymentAllowanceData: globalExpressParams.gasPaymentAllowanceData ?? EMPTY_OBJECT,
     tokenPermits: globalExpressParams.tokenPermits,

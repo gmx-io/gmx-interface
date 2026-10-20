@@ -119,14 +119,12 @@ export function useUsdToNativeTokenMultichain({
   return nativeTokenAmount;
 }
 
-export function useGasMultichainUsd({
+export function useGasMultichainNativeAmount({
   sourceChainId,
   sourceChainGas,
-  targetChainId,
 }: {
   sourceChainId: AnyChainId | undefined;
   sourceChainGas: bigint | undefined;
-  targetChainId: AnyChainId | undefined;
 }): bigint | undefined {
   const [nativeWeiAmount, setNativeWeiAmount] = useState<bigint | undefined>(undefined);
 
@@ -139,6 +137,20 @@ export function useGasMultichainUsd({
       .getGasPrice()
       .then((price) => setNativeWeiAmount(sourceChainGas * price));
   }, [sourceChainGas, sourceChainId]);
+
+  return nativeWeiAmount;
+}
+
+export function useGasMultichainUsd({
+  sourceChainId,
+  sourceChainGas,
+  targetChainId,
+}: {
+  sourceChainId: AnyChainId | undefined;
+  sourceChainGas: bigint | undefined;
+  targetChainId: AnyChainId | undefined;
+}): bigint | undefined {
+  const nativeWeiAmount = useGasMultichainNativeAmount({ sourceChainId, sourceChainGas });
 
   return useNativeTokenMultichainUsd({
     sourceChainId,

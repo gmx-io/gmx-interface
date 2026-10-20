@@ -33,12 +33,20 @@ import {
 } from "domain/synthetics/orders";
 import { isMarginDepositOrder } from "domain/synthetics/orders/marginDeposit";
 import { useDisabledCancelMarketOrderMessage } from "domain/synthetics/orders/useDisabledCancelMarketOrderMessage";
+import { FROZEN_ORDER_ERROR_KEY } from "domain/synthetics/orders/utils";
 import { PositionsInfoData, getNameByOrderType, getPositionKey } from "domain/synthetics/positions";
 import { convertToTokenAmount, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
 import { TokensRatioAndSlippage } from "domain/tokens";
 import { isFullClosePositionOrder } from "domain/tpsl/utils";
-import { calculateDisplayDecimals, formatAmount, formatBalanceAmount, formatUsd } from "lib/numbers";
+import {
+  calculateDisplayDecimals,
+  formatAmount,
+  formatBalanceAmount,
+  formatUsd,
+  formatUsdParts,
+  numberParts,
+} from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useIsTruncated } from "lib/useIsTruncated";
 import { getWrappedToken } from "sdk/configs/tokens";
@@ -47,6 +55,8 @@ import { AppCard, AppCardSection } from "components/AppCard/AppCard";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
+import { NumericValue } from "components/NumericValue/NumericValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { SwapMarketLabel } from "components/SwapMarketLabel/SwapMarketLabel";
 import { TableTd, TableTr } from "components/Table/Table";
@@ -347,9 +357,7 @@ function SizeWithIcon({
     );
   }
 
-  const sizeText = formatUsd(sizeDeltaUsd * (isIncreaseOrderType(order.orderType) ? 1n : -1n), {
-    displayPlus: true,
-  });
+  const sizeText = <UsdValue usd={sizeDeltaUsd * (isIncreaseOrderType(order.orderType) ? 1n : -1n)} displayPlus />;
 
   return (
     <span className={className}>
@@ -380,8 +388,8 @@ function MarkPrice({ order, className, isTruncated }: { order: OrderInfo; classN
     positionOrder.indexToken?.visualMultiplier
   );
 
-  const markPriceFormatted = useMemo(() => {
-    return formatUsd(markPrice, {
+  const markPriceParts = useMemo(() => {
+    return formatUsdParts(markPrice, {
       displayDecimals: priceDecimals,
       visualMultiplier: positionOrder.indexToken?.visualMultiplier,
     });
@@ -389,7 +397,7 @@ function MarkPrice({ order, className, isTruncated }: { order: OrderInfo; classN
 
   if (isTwapOrder(order) || isMarketOrderType(order.orderType)) {
     const { markSwapRatioText } = getSwapRatioText(order);
-    const text = isSwapOrderType(order.orderType) ? markSwapRatioText : markPriceFormatted;
+    const text = isSwapOrderType(order.orderType) ? markSwapRatioText : <NumericValue parts={markPriceParts} />;
 
     return (
       <TooltipWithPortal
@@ -421,12 +429,16 @@ function MarkPrice({ order, className, isTruncated }: { order: OrderInfo; classN
     return (
       <TooltipWithPortal
         as="span"
-        handle={<span className={cx("numbers", TOOLTIP_HANDLE_CLASSNAME)}>{markPriceFormatted}</span>}
+        handle={<NumericValue parts={markPriceParts} className={cx("numbers", TOOLTIP_HANDLE_CLASSNAME)} />}
         position="bottom-end"
         renderContent={() => {
           return (
             <>
-              {isTruncated && <div className="mb-4">{markPriceFormatted}</div>}
+              {isTruncated && (
+                <div className="mb-4">
+                  <NumericValue parts={markPriceParts} />
+                </div>
+              )}
               <Trans>
                 Executes when oracle price is {positionOrder.triggerThresholdType}{" "}
                 {formatUsd(positionOrder.triggerPrice, {
@@ -488,10 +500,13 @@ function TriggerPrice({
         content={
           <StatsTooltipRow
             label={t`Acceptable price`}
-            value={formatUsd(positionOrder.acceptablePrice, {
-              displayDecimals: priceDecimals,
-              visualMultiplier: positionOrder.indexToken?.visualMultiplier,
-            })}
+            value={
+              <UsdValue
+                usd={positionOrder.acceptablePrice}
+                displayDecimals={priceDecimals}
+                visualMultiplier={positionOrder.indexToken?.visualMultiplier}
+              />
+            }
             showDollar={false}
           />
         }
@@ -548,38 +563,52 @@ function TriggerPrice({
 
     const isBoundary = isBoundaryAcceptablePrice(positionOrder.acceptablePrice);
 
-    const triggerPriceText = `${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.triggerPrice, {
-      displayDecimals: priceDecimals,
-      visualMultiplier: positionOrder.indexToken?.visualMultiplier,
-    })}`;
+    const triggerPriceParts = numberParts(
+      `${positionOrder.triggerThresholdType} `,
+      formatUsdParts(positionOrder.triggerPrice, {
+        displayDecimals: priceDecimals,
+        visualMultiplier: positionOrder.indexToken?.visualMultiplier,
+      })
+    );
 
     return !isSetAcceptablePriceImpactEnabled || isBoundary ? (
       <TooltipWithPortal
         as="span"
         disabled={!isTruncated}
-        handle={triggerPriceText}
-        content={triggerPriceText}
+        handle={<NumericValue parts={triggerPriceParts} />}
+        content={<NumericValue parts={triggerPriceParts} />}
         variant="none"
       />
     ) : (
       <TooltipWithPortal
         as="span"
-        handle={<span className={TOOLTIP_HANDLE_CLASSNAME}>{triggerPriceText}</span>}
+        handle={<NumericValue parts={triggerPriceParts} className={TOOLTIP_HANDLE_CLASSNAME} />}
         position="bottom-end"
         renderContent={() => (
           <>
-            {isTruncated && <div className="mb-4">{triggerPriceText}</div>}
+            {isTruncated && (
+              <div className="mb-4">
+                <NumericValue parts={triggerPriceParts} />
+              </div>
+            )}
             <StatsTooltipRow
               label={t`Acceptable price`}
               value={
                 isStopLossOrderType(positionOrder.orderType) ||
                 isStopIncreaseOrderType(positionOrder.orderType) ||
-                isMarginDepositOrder(positionOrder)
-                  ? "N/A"
-                  : `${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.acceptablePrice, {
-                      displayDecimals: priceDecimals,
-                      visualMultiplier: positionOrder.indexToken?.visualMultiplier,
-                    })}`
+                isMarginDepositOrder(positionOrder) ? (
+                  "N/A"
+                ) : (
+                  <NumericValue
+                    parts={numberParts(
+                      `${positionOrder.triggerThresholdType} `,
+                      formatUsdParts(positionOrder.acceptablePrice, {
+                        displayDecimals: priceDecimals,
+                        visualMultiplier: positionOrder.indexToken?.visualMultiplier,
+                      })
+                    )}
+                  />
+                )
               }
               showDollar={false}
             />
@@ -981,7 +1010,7 @@ function OrderItemTypeLabel({ order, className }: { order: OrderInfo; className?
     return <>{handle}</>;
   }
 
-  return (
+  const typeLabelWithErrors = (
     <TooltipWithPortal
       variant="none"
       handle={
@@ -1013,5 +1042,24 @@ function OrderItemTypeLabel({ order, className }: { order: OrderInfo; className?
         ) : null
       }
     />
+  );
+
+  const frozenError = errors.find((error) => error.key === FROZEN_ORDER_ERROR_KEY);
+
+  if (!frozenError) {
+    return typeLabelWithErrors;
+  }
+
+  return (
+    <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+      {typeLabelWithErrors}
+      <TooltipWithPortal
+        as="span"
+        variant="none"
+        className="min-w-0 cursor-help truncate rounded-4 bg-yellow-300/20 px-4 py-2 text-12 font-medium text-yellow-300"
+        handle={<Trans>Frozen</Trans>}
+        content={frozenError.msg}
+      />
+    </div>
   );
 }
