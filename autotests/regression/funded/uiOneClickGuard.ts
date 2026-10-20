@@ -4,9 +4,11 @@ import {
   encodeFunctionData,
   getAddress,
   hashTypedData,
+  isAddressEqual,
   recoverTypedDataAddress,
   zeroAddress,
   maxUint256,
+  type Address,
   type Hex,
 } from "viem";
 import ExchangeRouter from "../../../sdk/src/abis/ExchangeRouter";
@@ -195,25 +197,38 @@ export async function inspectUiOneClickRelay(
 export const uiOneClickRemovalRefused = "Relayed 1CT removal refused; the app must retry with a wallet transaction";
 
 // The app's signed removal is a minified digest whose relay fee comes from a live gas estimate, so the harness
-// cannot bind it before signing. Refusing it without a user rejection makes the app retry with a wallet transaction.
+// cannot bind it before signing. Every request is refused without signing and without a user rejection, which makes
+// the app retry with a wallet transaction; an unexpected request is reported after that removal, not before it.
 export function refuseUiOneClickRemoval(address: string) {
   let refused = false;
-  return {
-    get refused() {
-      return refused;
-    },
-    sign: async (request: WalletRequest): Promise<Hex> => {
-      assert.ok(!refused, "The app requested a second 1CT removal signature");
+  let problem: string | undefined;
+  const check = (request: WalletRequest) => {
+    try {
       const typed = walletTypedData(request, address);
-      assert.deepEqual(
-        { ...typed.domain, chainId: Number(typed.domain.chainId) },
-        getGelatoRelayRouterDomain(42161, getContract(42161, "SubaccountGelatoRelayRouter"))
-      );
+      const { domain } = typed;
+      const expected = getGelatoRelayRouterDomain(42161, getContract(42161, "SubaccountGelatoRelayRouter"));
+      assert.equal(domain.name, expected.name);
+      assert.equal(domain.version, expected.version);
+      assert.equal(Number(domain.chainId), 42161);
+      assert.ok(isAddressEqual(String(domain.verifyingContract) as Address, expected.verifyingContract as Address));
       assert.equal(typed.primaryType, "Minified");
       const { EIP712Domain: _, ...types } = typed.types;
       assert.deepEqual(types, { Minified: [{ name: "digest", type: "bytes32" }] });
       assert.deepEqual(Object.keys(typed.message), ["digest"]);
       assert.match(typed.message.digest, /^0x[\da-fA-F]{64}$/);
+    } catch {
+      return "The app requested an unexpected signature while turning 1CT off";
+    }
+  };
+  return {
+    get refused() {
+      return refused;
+    },
+    get problem() {
+      return problem;
+    },
+    sign: async (request: WalletRequest): Promise<Hex> => {
+      problem ??= refused ? "The app requested a second 1CT removal signature" : check(request);
       refused = true;
       throw new Error(uiOneClickRemovalRefused);
     },

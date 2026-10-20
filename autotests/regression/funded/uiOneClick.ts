@@ -6,7 +6,7 @@ import { getContract } from "../../../sdk/src/configs/contracts";
 import { subaccountActionCountKey, SUBACCOUNT_ORDER_ACTION } from "../../../sdk/src/configs/dataStore";
 import { SUBACCOUNT_MESSAGE } from "../../../sdk/src/configs/express";
 import { getSubaccountApprovalTypedData } from "../../../sdk/src/utils/subaccount/getSubaccountApprovalTypedData";
-import { closeSettings, labelledInput, openSettings } from "../fixtures/trade";
+import { closeSettings, labelledInput, openSettings, SELECTED_TRADING_MODE, tradingMode } from "../fixtures/trade";
 import { USD } from "./economy";
 import type { FundedSession } from "./session";
 import { assertUiInventory } from "./uiOrders";
@@ -105,10 +105,36 @@ export async function revokeUiOneClick(session: FundedSession, wallet: UiWallet,
   assert.ok(subaccount && (await session.subaccountActive(subaccount)));
   const settings = await openSettings(page);
   const refusal = refuseUiOneClickRemoval(session.address);
+  const classic = settings.getByText("Classic", { exact: true });
+  const deactivationToasts = page.getByText("Deactivate 1CT", { exact: true });
+  let deactivations = 0;
   const plan: UiActionPlan = {
     purpose: "one-click-revoke",
     cleanup: true,
     preflight: (state) => assertUiInventory(session, state, []),
+    // The app ignores a mode click while the previous change is still settling; a taken click opens a new
+    // "Deactivate 1CT" toast, or selects Classic when it finishes without one.
+    beforeClick: async () => {
+      deactivations = await deactivationToasts.count();
+    },
+    afterClick: async () => {
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          await expect
+            .poll(
+              async () =>
+                (await deactivationToasts.count()) > deactivations ||
+                SELECTED_TRADING_MODE.test((await tradingMode(settings, "Classic").getAttribute("class")) ?? ""),
+              { timeout: 5_000 }
+            )
+            .toBe(true);
+          return;
+        } catch {
+          await classic.click();
+        }
+      }
+      throw new Error("Settings ignored the Classic mode click");
+    },
     sign: refusal.sign,
     inspect: (tx) => {
       assert.equal(getAddress(tx.to), getAddress(getContract(42161, "SubaccountRouter")));
@@ -118,16 +144,17 @@ export async function revokeUiOneClick(session: FundedSession, wallet: UiWallet,
       return { extraFeeUsd: 0n };
     },
   };
-  const classic = settings.getByText("Classic", { exact: true });
   try {
     await wallet.submit(plan, classic);
   } catch (error) {
     if (!refusal.refused || (error as Error).message !== uiOneClickRemovalRefused) throw error;
+    // The failure text shows once the failed change has settled; afterClick repeats a click the app still ignored.
     await expect(page.getByText("Retry to deactivate with a wallet transaction.")).toBeVisible();
     await wallet.submit(plan, classic);
   }
   assert.ok(!(await session.subaccountActive(subaccount)));
   session.active.inventory!.uiOneClickRevoked = "true";
   await session.save();
+  if (refusal.problem) throw new Error(refusal.problem);
   await closeSettings(page, settings);
 }

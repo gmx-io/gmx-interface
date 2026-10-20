@@ -14,6 +14,7 @@ import type { UiTransaction } from "./uiOrderGuard";
 export type UiActionPlan = {
   purpose: string;
   beforeClick?: () => Promise<void>;
+  afterClick?: () => Promise<void>;
   cleanup?: boolean;
   chainId?: 42161 | 8453;
   sign?: (request: WalletRequest) => Promise<Hex>;
@@ -184,6 +185,7 @@ export class UiWallet {
         await expect(button).toBeEnabled({ timeout: 45_000 });
         await plan.beforeClick?.();
         await button.click({ timeout: 45_000 });
+        await plan.afterClick?.();
         await expect
           .poll(() => this.results.length, {
             timeout: 180_000,

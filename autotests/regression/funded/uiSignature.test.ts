@@ -69,7 +69,7 @@ test("bridge minified signature binds a decoded bounded UI simulation and the su
   );
 });
 
-test("1CT removal signatures are refused once without signing, and any other typed data is unexpected", async () => {
+test("1CT removal signatures are always refused without signing, and unexpected requests are reported", async () => {
   const signer = privateKeyToAccount(generatePrivateKey());
   const router = getContract(42161, "SubaccountGelatoRelayRouter");
   const domain = getGelatoRelayRouterDomain(42161, router);
@@ -100,6 +100,10 @@ test("1CT removal signatures are refused once without signing, and any other typ
     maxAllowedCount: 100n,
     nonce: 0n,
   });
+  const expected = [
+    request(minified),
+    request({ ...minified, domain: { ...domain, verifyingContract: router.toLowerCase(), chainId: "42161" } }),
+  ];
   const unexpected = [
     request(minified, usdc.address),
     request({ ...minified, domain: { ...domain, version: "2" } }),
@@ -114,13 +118,17 @@ test("1CT removal signatures are refused once without signing, and any other typ
     request({ ...minified, message: { digest, subaccount: usdc.address } }),
     { method: "personal_sign", params: [digest, signer.address] },
   ];
-  for (const r of unexpected) {
+  for (const [r, problem] of [
+    ...expected.map((r) => [r, false] as const),
+    ...unexpected.map((r) => [r, true] as const),
+  ]) {
     const refusal = refuseUiOneClickRemoval(signer.address);
-    await assert.rejects(refusal.sign(r), (error: Error) => error.message !== uiOneClickRemovalRefused);
-    assert.equal(refusal.refused, false);
+    await assert.rejects(refusal.sign(r), new Error(uiOneClickRemovalRefused));
+    assert.equal(refusal.refused, true);
+    assert.equal(refusal.problem !== undefined, problem, JSON.stringify(r));
   }
   const refusal = refuseUiOneClickRemoval(signer.address);
   await assert.rejects(refusal.sign(request(minified)), new Error(uiOneClickRemovalRefused));
-  assert.equal(refusal.refused, true);
-  await assert.rejects(refusal.sign(request(minified)), /second 1CT removal signature/);
+  await assert.rejects(refusal.sign(request(minified)), new Error(uiOneClickRemovalRefused));
+  assert.match(refusal.problem!, /second 1CT removal signature/);
 });
