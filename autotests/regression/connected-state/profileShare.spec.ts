@@ -1,8 +1,7 @@
 import { expect } from "@playwright/test";
-import { getAddress } from "viem";
 
 import { test } from "../fixtures/accountState";
-import { mockPnlHistory } from "../fixtures/pnlHistory";
+import { mockPnlHistory, mockPnlSummary } from "../fixtures/pnlHistory";
 
 const SHARE_ID = "regression-share-card";
 
@@ -14,33 +13,15 @@ test("17.18 own profile Share PnL copies a share link and opens an X intent; the
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await mockPnlHistory(context, accountState.address);
   // The share card needs the summary row of the selected period (all time by default).
-  await page.route("**/*", async (route) => {
-    let body: { query?: string; variables?: { account?: string } } | undefined;
-    try {
-      body = route.request().method() === "POST" ? route.request().postDataJSON() : undefined;
-    } catch {
-      return route.fallback();
-    }
-    if (
-      !body?.query?.includes("accountPnlSummaryStats") ||
-      !body.variables?.account ||
-      getAddress(body.variables.account) !== accountState.address
-    )
-      return route.fallback();
-    const row = (bucketLabel: string) => ({
-      bucketLabel,
-      wins: 7,
-      losses: 3,
-      pnlBps: "1250",
-      pnlUsd: (1234n * 10n ** 30n).toString(),
-      volume: (50_000n * 10n ** 30n).toString(),
-      winsLossesRatioBps: "7000",
-      usedCapitalUsd: (10_000n * 10n ** 30n).toString(),
-    });
-    await route.fulfill({
-      json: { data: { accountPnlSummaryStats: ["today", "yesterday", "week", "month", "year", "all"].map(row) } },
-    });
-  });
+  await mockPnlSummary(context, accountState.address, () => ({
+    wins: 7,
+    losses: 3,
+    pnlBps: "1250",
+    pnlUsd: (1234n * 10n ** 30n).toString(),
+    volume: (50_000n * 10n ** 30n).toString(),
+    winsLossesRatioBps: "7000",
+    usedCapitalUsd: (10_000n * 10n ** 30n).toString(),
+  }));
   // Nothing may be published: uploads get a fake image id and X is never loaded.
   const uploads: number[] = [];
   await page.route(/\/api\/upload$/, async (route) => {

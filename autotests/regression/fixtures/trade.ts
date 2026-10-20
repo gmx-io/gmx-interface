@@ -64,6 +64,20 @@ export async function openSettings(page: Page, tab: "Trading" | "Display" = "Tra
   return modal;
 }
 
+export function tradingMode(settings: Locator, name: string) {
+  return settings.getByText(name, { exact: true }).locator("xpath=ancestor::div[contains(@class, 'grid')][1]");
+}
+
+export const SELECTED_TRADING_MODE = /(?:^|\s)border-slate-100(?:\s|$)/;
+
+export async function chooseMode(page: Page, name: "Classic" | "Express" | "Express + One-Click") {
+  const settings = await openSettings(page);
+  await settings.getByText(name, { exact: true }).click();
+  await expect(tradingMode(settings, name)).toHaveClass(SELECTED_TRADING_MODE);
+  await page.keyboard.press("Escape");
+  await expect(settings).toBeHidden();
+}
+
 export async function setSettingsToggle(modal: Locator, label: string, enabled: boolean) {
   const toggle = modal
     .getByText(label, { exact: true })

@@ -1,7 +1,7 @@
 import { expect, test as base } from "@playwright/test";
 
 export const test = base.extend<{ diagnostics: void }, { chainId: number }>({
-  // Settlement chain of the project; Avalanche projects override it for their small tagged set.
+  // Avalanche projects override this.
   chainId: [42161, { option: true, scope: "worker" }],
   context: async ({ context, chainId }, use) => {
     await context.addInitScript((network) => {
@@ -32,7 +32,7 @@ export const test = base.extend<{ diagnostics: void }, { chainId: number }>({
         body: JSON.stringify({ errors, failedRequests }, null, 2),
         contentType: "application/json",
       });
-      expect(errors, "Unhandled JavaScript errors (RR-25-01)").toEqual([]);
+      expect(errors, "Unhandled JavaScript errors (25.01)").toEqual([]);
     },
     { auto: true },
   ],

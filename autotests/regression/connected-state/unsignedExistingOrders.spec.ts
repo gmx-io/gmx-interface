@@ -9,7 +9,7 @@ test.use({ walletReviewMode: true, unsignedReviewMode: true });
 
 for (const type of [3, 8, 5, 6]) {
   for (const operation of ["edit", "cancel"] as const) {
-    test(`unsigned order ${type} ${operation}: request targets the selected order and rejection preserves it`, async ({
+    test(`${operation === "edit" ? "9.05 " : ""}unsigned order ${type} ${operation}: request targets the selected order and rejection preserves it`, async ({
       page,
       accountState,
       walletReviews,

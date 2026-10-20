@@ -45,7 +45,6 @@ test("20.06 20.07 chart draws entry, liquidation, TP and SL lines for a mocked p
     (await chartTradingLines(page))
       .sort((a, b) => b.price - a.price)
       .map(({ tool, text, price }) => [tool, text.replace(/\s+/g, " "), price]);
-  // Mocked position: 0.4 ETH long at $2,500 with liquidation at $1,900.
   const expected = [
     ["LineToolOrder", "Long ETH/USD · TP · +$ 200.00", 3000],
     ["LineToolPosition", "Long ETH/USD · PnL +$ 0.00 · $ 1,000.00", 2500],

@@ -340,7 +340,6 @@ test.describe("Trading Settings: One-Click limits before activation", () => {
       const oneClick = modeButton(page, "Express + One-Click");
       const settings = page.getByRole("button", { name: "One-Click settings" });
       if (isContractAccount) {
-        // the One-Click mode is disabled once the account check finds contract code
         await expect(oneClick).toHaveClass(/(?:^|\s)cursor-not-allowed(?:\s|$)/);
         await expect(settings).toHaveCount(0);
       } else {
@@ -356,7 +355,6 @@ test.describe("Trading Settings: One-Click limits before activation", () => {
     await page.getByRole("button", { name: "One-Click settings" }).click();
     const limitInput = (label: string) =>
       settingsModal(page).getByText(label, { exact: true }).locator("xpath=..").locator("input");
-    // 22 digits made parseInt return "1.1e+21", which BigInt threw on while rendering
     await limitInput("Action(s)").fill("1".repeat(22));
     await limitInput("Day(s)").fill("4".repeat(400));
 

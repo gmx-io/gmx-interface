@@ -23,7 +23,6 @@ export function watchTickerPrices(page: Page, chainId: number) {
   };
 }
 
-// USD value printed under an amount input.
 export function usdText(section: Locator) {
   return section.getByText(/^\$\s*[\d,]+(\.\d+)?$/).first();
 }
@@ -73,4 +72,22 @@ export async function settledQuote(
     )
     .toBe(true);
   return quote!;
+}
+
+// Impact grows about linearly with size, so each step aims at `stepImpact`% instead of jumping past pool liquidity.
+export async function quoteUntilImpact(
+  search: { startUsd: number; maxUsd: number; untilImpact: number; stepImpact: number; maxStep: number },
+  quoteAt: (usd: number) => Promise<Quote>
+) {
+  let quote: Quote | undefined;
+  for (
+    let usd = search.startUsd;
+    !quote || quote.impact > -search.untilImpact;
+    usd *=
+      quote.impact < 0 ? Math.min(search.maxStep, Math.max(1.1, search.stepImpact / -quote.impact)) : search.maxStep
+  ) {
+    expect(usd, "price impact never reached the warning threshold").toBeLessThan(search.maxUsd);
+    quote = await quoteAt(usd);
+  }
+  return quote;
 }

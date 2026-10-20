@@ -5,7 +5,7 @@ import { test } from "../fixtures/browser";
 import { readRegressionGlvs } from "../fixtures/deploymentConfig";
 import { displayedNumber } from "../fixtures/displayedNumber";
 import { marketLabel, newestPerpMarkets } from "../fixtures/marketConfig";
-import { expectSettled } from "../fixtures/pageState";
+import { BASELINE_PAGES, captureBaseline, expectSettled } from "../fixtures/pageState";
 
 const ACCOUNT = "0x000000000000000000000000000000000000dEaD";
 // Public RPCs the app is configured to fall back across, plus the Addressable pixel and the ad syncs it loads.
@@ -14,36 +14,76 @@ const PUBLIC_RPC_HOSTS = new Set(
 );
 const AD_PIXEL_HOSTS = /(^|\.)(adrsbl\.io|adnxs\.com|adradv\.io|adform\.net)$/;
 
-type Route = { path: string; ids?: string; url?: RegExp; testId?: string; text?: string | RegExp; heading?: string };
+const TITLE_SUFFIX = " | Decentralized perpetual exchange | GMX".replaceAll("|", "\\|");
+const pageTitle = (name: string) => new RegExp(`^${name}${TITLE_SUFFIX}$`);
+// The trade pages show the selected market's live price.
+const TRADE_TITLE = new RegExp(`^\\$\\s?[\\d,.]+ \\| \\S+ USD${TITLE_SUFFIX}$`);
+
+type Route = {
+  path: string;
+  ids?: string;
+  url?: RegExp;
+  title?: RegExp;
+  testId?: string;
+  text?: string | RegExp;
+  heading?: string | RegExp;
+  disabledButton?: string;
+};
 
 const routes: Route[] = [
   { path: "/", url: /\/trade$/, testId: "tradebox" },
   { path: "/v1", url: /\/trade$/, testId: "tradebox" },
-  { path: "/trade", testId: "tradebox" },
+  { path: "/trade", ids: "2.01 2.15", title: TRADE_TITLE, testId: "tradebox" },
   { path: "/trade/long", testId: "tradebox" },
   { path: "/trade/short", testId: "tradebox" },
-  { path: "/trade/swap", testId: "pay-input" },
-  { path: "/stats", testId: "dashboard-page" },
+  { path: "/trade/swap", ids: "2.02 2.15", title: TRADE_TITLE, testId: "pay-input" },
+  { path: "/stats", ids: "2.05 2.15", title: pageTitle("Stats"), testId: "dashboard-page" },
   { path: "/dashboard", url: /\/stats$/, testId: "dashboard-page" },
-  { path: "/monitor", text: "POOL CAP LONG" },
+  { path: "/monitor", ids: "2.06 18.11 2.15", title: pageTitle("Synthetics Stats"), text: "POOL CAP LONG" },
   { path: "/monitor/v2", url: /\/monitor$/, text: "POOL CAP LONG" },
   { path: "/earn", url: /\/earn\/discover$/, text: "What is GMX?" },
   { path: "/stake", url: /\/earn\/discover$/, text: "What is GMX?" },
-  { path: "/earn/discover", text: "What is GMX?" },
+  { path: "/earn/discover", ids: "2.03 2.15", title: pageTitle("Earn"), text: "What is GMX?", heading: "Earn" },
   { path: "/earn/portfolio", text: "Connect wallet to see your assets" },
   { path: "/buy_gmx", url: /\/earn\/portfolio\?buyGmx=1$/, text: "Connect wallet to see your assets" },
-  { path: "/earn/additional_opportunities", url: /\/all$/, text: "Lending and borrowing" },
-  { path: "/earn/distributions", text: "No distribution history" },
-  { path: "/pools", text: "TVL in vaults and pools" },
+  {
+    path: "/earn/additional_opportunities",
+    ids: "13.07 2.15",
+    url: /\/all$/,
+    title: pageTitle("Earn"),
+    text: "Lending and borrowing",
+  },
+  { path: "/earn/distributions", ids: "2.15", title: pageTitle("Earn"), text: "No distribution history" },
+  { path: "/pools", ids: "2.04 2.15", title: pageTitle("Pools"), text: "TVL in vaults and pools" },
   { path: "/jobs", text: "Job openings at GMX" },
-  { path: "/ecosystem", testId: "ecosystem-page" },
-  { path: "/announcements", heading: "Announcements" },
-  { path: "/leaderboard", text: "Top addresses" },
-  { path: "/competitions", url: /\/competitions\/march_13-20_2024$/, text: "Concluded competitions" },
+  { path: "/ecosystem", ids: "2.11 2.15", title: pageTitle("Ecosystem projects"), testId: "ecosystem-page" },
+  { path: "/announcements", ids: "2.12 2.15", title: pageTitle("Announcements"), heading: "Announcements" },
+  { path: "/leaderboard", ids: "2.08 2.15", title: pageTitle("Leaderboard"), text: "Top addresses" },
+  {
+    path: "/competitions",
+    ids: "2.09 2.15",
+    url: /\/competitions\/march_13-20_2024$/,
+    title: pageTitle("Leaderboard"),
+    text: "Concluded competitions",
+  },
   { path: "/competitions/march_20-27_2024", text: "Concluded competitions" },
-  { path: "/referrals", url: /\/referrals\/traders$/, testId: "referrals-page" },
+  {
+    path: "/referrals",
+    ids: "2.07 2.15",
+    url: /\/referrals\/traders$/,
+    title: pageTitle("Referrals"),
+    testId: "referrals-page",
+  },
   { path: "/referrals/affiliates", testId: "referrals-page" },
-  { path: "/referrals/distributions", url: /\/referrals\/affiliates$/, testId: "referrals-page" },
+  // Without a registered code the distributions tab redirects to affiliate onboarding.
+  {
+    path: "/referrals/distributions",
+    ids: "15.08",
+    url: /\/referrals\/affiliates$/,
+    testId: "referrals-page",
+    heading: /Earn.*rebates/,
+    disabledButton: "Distributions",
+  },
   { path: `/referrals/traders/${ACCOUNT}`, testId: "referrals-page" },
   { path: "/traders", url: /\/traders\?network=\w+&v=2$/, text: "Trader activity" },
   { path: "/actions", url: /\/traders\?network=\w+&v=2$/, text: "Trader activity" },
@@ -115,8 +155,9 @@ const detailRoutes = [
 ];
 
 for (const route of [...routes, ...detailRoutes.map(({ path }): Route => ({ path }))]) {
-  const ids = ["2.14 2.16 2.23", route.ids].filter(Boolean).join(" ");
-  test(`${ids} ${route.path} renders, settles its loading states and logs no console errors`, async ({
+  const baseline = BASELINE_PAGES.find(({ path }) => path === route.path);
+  const ids = ["2.14 2.16 2.23", route.ids, baseline && "0.15"].filter(Boolean).join(" ");
+  test(`${ids} ${route.path} renders, settles its loading states and logs no console errors${baseline ? "; attaches a desktop baseline screenshot" : ""}`, async ({
     page,
     chainId,
   }, testInfo) => {
@@ -133,9 +174,16 @@ for (const route of [...routes, ...detailRoutes.map(({ path }): Route => ({ path
       if (route.testId) await expect(page.getByTestId(route.testId).first()).toBeVisible();
       if (route.text) await expect(page.getByText(route.text, { exact: true }).first()).toBeVisible();
       if (route.heading) await expect(page.getByRole("heading", { name: route.heading, exact: true })).toBeVisible();
+      if (route.disabledButton)
+        await expect(page.getByRole("button", { name: route.disabledButton, exact: true })).toBeDisabled();
+      if (route.title) {
+        await expect(page.getByRole("button", { name: "Connect wallet", exact: true }).first()).toBeVisible();
+        await expect(page).toHaveTitle(route.title);
+      }
       await expectSettled(page);
       expect(await page.evaluate(() => document.body.innerText.trim().length)).toBeGreaterThan(100);
       expect(messages.filter((message) => !message.ignored).map((message) => message.text)).toEqual([]);
+      if (baseline) await captureBaseline(page, testInfo, baseline);
     } finally {
       await testInfo.attach("console-errors", {
         body: JSON.stringify(messages, null, 2),
@@ -246,13 +294,8 @@ const numericPages: {
     ids: "22.17 22.18 22.19 22.20 22.21",
     ready: (page) => tableWith(page, "MARKETS").locator("tbody tr").nth(2),
     issues: async (page) => {
-      const cards = page.locator(".DashboardV2-cards .App-card-row");
-      const values = await cards.evaluateAll((rows) =>
-        rows.map((row) => (row.lastElementChild as HTMLElement).innerText.trim()).filter((text) => /\d/.test(text))
-      );
       const table = tableWith(page, "MARKETS");
       return [
-        ...(values.length < 8 ? [`overview values: ${values.join(" | ")}`] : amountIssues(values, { positive: true })),
         ...amountIssues(await column(table, "PRICE"), { positive: true, significant: 3 }),
         ...amountIssues(await column(table, "TVL"), { positive: true, significant: 2 }),
         ...amountIssues(await column(table, "LIQUIDITY"), { nonNegative: true }),
@@ -290,8 +333,14 @@ const numericPages: {
       const table = tableWith(page, "POOL VALUE");
       const split = (texts: string[]) => texts.flatMap((text) => text.split(" / "));
       const caps = split([...(await column(table, "POOL CAP LONG")), ...(await column(table, "POOL CAP SHORT"))]);
+      const poolValues = await column(table, "POOL VALUE");
+      // A drained market can report a slightly negative pool value onchain, so only 90% of rows must be positive.
+      const nonPositive = poolValues.filter((text) => !(displayedNumber(text) > 0));
       return [
-        ...amountIssues(await column(table, "POOL VALUE"), { positive: true }),
+        ...amountIssues(poolValues, {}),
+        ...(nonPositive.length > poolValues.length * 0.1
+          ? [`non-positive pool values: ${nonPositive.join(" | ")}`]
+          : []),
         // Swap-only pools have no open interest and show "...".
         ...amountIssues(split(await column(table, "OPEN INTEREST", /^SWAP-ONLY/)), { nonNegative: true }),
         ...amountIssues(split(await column(table, "LIQUIDITY LONG")), { nonNegative: true }),

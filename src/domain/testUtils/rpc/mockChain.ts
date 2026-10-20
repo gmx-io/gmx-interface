@@ -151,7 +151,6 @@ export type MockChainOptions = {
   walletPrivateKey: string;
   subaccountAddress?: string;
   onchain?: Partial<SubaccountOnchainState>;
-  /** The wallet account has contract code, as a smart wallet does. */
   isContractAccount?: boolean;
 };
 

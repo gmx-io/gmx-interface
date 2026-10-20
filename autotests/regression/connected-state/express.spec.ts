@@ -1,12 +1,8 @@
-import { expect, type Locator } from "@playwright/test";
+import { expect } from "@playwright/test";
 import { zeroAddress } from "viem";
 
 import { test } from "../fixtures/accountState";
-import { openSettings } from "../fixtures/trade";
-
-function tradingMode(settings: Locator, name: string) {
-  return settings.getByText(name, { exact: true }).locator("xpath=ancestor::div[contains(@class, 'grid')][1]");
-}
+import { infoRow, openSettings, SELECTED_TRADING_MODE, tradingMode } from "../fixtures/trade";
 
 const wrappedNative = (chainId: number) => (chainId === 42161 ? "WETH" : "WAVAX");
 
@@ -28,6 +24,21 @@ test("24.02 an empty account sees the Express out-of-gas banner and cannot pick 
     await expect(tradingMode(settings, name)).toHaveClass(/(?:^|\s)cursor-not-allowed(?:\s|$)/);
   }
   await expect(tradingMode(settings, "Classic")).toHaveClass(/(?:^|\s)cursor-pointer(?:\s|$)/);
+});
+
+test("21.06 a fresh account defaults to Express and can select Classic without signing", async ({
+  page,
+  accountState,
+}) => {
+  await accountState.connect(page);
+  const settings = await openSettings(page);
+  await expect(tradingMode(settings, "Express")).toHaveClass(SELECTED_TRADING_MODE);
+  await expect(settings.getByText("Optimal", { exact: true })).toBeVisible();
+  await settings.getByText("Classic", { exact: true }).click();
+  await page.keyboard.press("Escape");
+  await accountState.refresh(page);
+  await openSettings(page);
+  await expect(settings.getByText("Max network fee buffer", { exact: true })).toBeVisible();
 });
 
 test.describe("funded wallet", () => {
@@ -57,9 +68,7 @@ test.describe("funded wallet", () => {
     await page.getByTestId("margin-input").fill("10");
     await page.getByTestId("position-size-input").fill("20");
     await page.getByText("Execution details", { exact: true }).click();
-    const row = page
-      .getByText("Network fee", { exact: true })
-      .locator("xpath=ancestor::div[contains(@class, 'justify-between')][1]");
+    const row = infoRow(page.getByTestId("tradebox"), "Network fee");
     await expect(row).toContainText(/-[\d.]+\s*USDC\s*\(-\$\s*[\d.]+\)/);
     await expect(row.getByRole("img", { name: "Wallet", exact: true })).toBeVisible();
     const [usdc, usd] = [...(await row.innerText()).matchAll(/-\$?\s*([\d.]+)/g)].map((match) => Number(match[1]));

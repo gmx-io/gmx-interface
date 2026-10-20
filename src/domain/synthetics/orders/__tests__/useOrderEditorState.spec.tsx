@@ -42,26 +42,26 @@ describe("order editor reset", () => {
     expect(state.sizeInputValue).toBe("1000");
   });
 
-  it("clears inputs when the editor stays closed", () => {
+  it.each([
+    ["the editor closes", () => state.setEditingOrderState(undefined)],
+    [
+      "the same order is quickly reopened",
+      () => {
+        state.setEditingOrderState(undefined);
+        state.setEditingOrderState({ orderKey: "order", source: "PositionsList" });
+      },
+    ],
+    ["another order opens", () => state.setEditingOrderState({ orderKey: "other", source: "PositionsList" })],
+  ])("clears inputs when %s", (_, change) => {
     render(<Harness />);
     openEditor();
-    act(() => state.setEditingOrderState(undefined));
+    act(change);
     act(() => vi.advanceTimersByTime(100));
     expect(state.triggerPriceInputValue).toBe("");
     expect(state.sizeInputValue).toBe("");
   });
 
-  it("discards unsubmitted values before quickly reopening the same order", () => {
-    render(<Harness />);
-    openEditor();
-    act(() => state.setTriggerPriceInputValue("2200"));
-    act(() => state.setEditingOrderState(undefined));
-    act(() => state.setEditingOrderState({ orderKey: "order", source: "PositionsList" }));
-    expect(state.triggerPriceInputValue).toBe("");
-    expect(state.sizeInputValue).toBe("");
-  });
-
-  it("keeps the filled size when the open order's chart line is dragged", () => {
+  it("keeps chart-supplied prices when dragging the open order or reopening it from the chart", () => {
     render(<Harness />);
     openEditor();
     act(() => {
@@ -70,19 +70,7 @@ describe("order editor reset", () => {
     });
     expect(state.sizeInputValue).toBe("1000");
     expect(state.triggerPriceInputValue).toBe("2400");
-  });
 
-  it("clears inputs when switching straight to another order", () => {
-    render(<Harness />);
-    openEditor();
-    act(() => state.setEditingOrderState({ orderKey: "other", source: "PositionsList" }));
-    expect(state.sizeInputValue).toBe("");
-    expect(state.triggerPriceInputValue).toBe("");
-  });
-
-  it("preserves an explicit chart price supplied in the same action as opening", () => {
-    render(<Harness />);
-    openEditor();
     act(() => state.setEditingOrderState(undefined));
     act(() => {
       state.setEditingOrderState({ orderKey: "order", source: "PriceChart" });

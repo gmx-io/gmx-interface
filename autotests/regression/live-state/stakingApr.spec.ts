@@ -22,7 +22,7 @@ function expectedApr(power: StakingPower, buyback: BuybackWeeks) {
   return (weeklyGmx * 52 * (userPower / networkPower)) / staked;
 }
 
-test("2.31 13.12 Earn GMX card shows the staked balance and the Est. APR derived from the staking power and buyback responses, positive and at most 100% where buybacks accrue", async ({
+test("2.31 13.12 Earn GMX card shows the on-chain staked balance, also after refresh, and the Est. APR derived from the staking power and buyback responses, positive and at most 100% where buybacks accrue", async ({
   page,
   liveAccount,
   liveWallet,
@@ -38,9 +38,8 @@ test("2.31 13.12 Earn GMX card shows the staked balance and the Est. APR derived
   });
   await liveWallet.connect(page, "/earn/portfolio");
   const staked = page.getByTestId("info-row-staked-gmx");
-  await expect(staked).toContainText(formatBalanceAmount(liveAccount.staking!.gmx, 18, "GMX", { showZero: true }), {
-    timeout: 45_000,
-  });
+  const amount = formatBalanceAmount(liveAccount.staking!.gmx, 18, "GMX", { showZero: true });
+  await expect(staked).toContainText(amount, { timeout: 45_000 });
   const card = page.locator("div").filter({ has: staked }).filter({ hasText: "Est. APR" }).last();
   const apr = infoRowValue(card, "Est. APR");
   await expect
@@ -59,4 +58,7 @@ test("2.31 13.12 Earn GMX card shows the staked balance and the Est. APR derived
     const expected = expectedApr(power!, buyback!);
     expect(expected !== undefined && expected > 0 && expected <= 1, `Est. APR ${expected}`).toBe(true);
   }
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await expect(page.getByTestId("user-address")).toBeVisible({ timeout: 45_000 });
+  await expect(staked).toContainText(amount, { timeout: 45_000 });
 });

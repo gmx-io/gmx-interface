@@ -69,7 +69,6 @@ export async function installInjectedWallet(
         return options.request(request, chainId);
     }
   };
-  // Route every request through the runner, as an extension would through its transport.
   await context.exposeBinding("__regressionWalletRequest", async (source, request: WalletRequest) => {
     if (
       options.allowedOrigin &&

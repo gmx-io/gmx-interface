@@ -10,7 +10,7 @@ const baselineDir = process.env.REGRESSION_BASELINE_DIR;
 async function artworkScreenshots(page: Page) {
   await page.goto("/");
   await expect(page.locator(".text-heading-1").filter({ hasText: "from your wallet" })).toBeVisible();
-  // Load lazy artwork before the full-page capture.
+  // Lazy images would be blank in the screenshots.
   await page.evaluate(() =>
     document.querySelectorAll<HTMLImageElement>('img[loading="lazy"]').forEach((image) => (image.loading = "eager"))
   );

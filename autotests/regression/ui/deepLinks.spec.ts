@@ -1,12 +1,11 @@
 import { expect, type Page } from "@playwright/test";
 
 import { test } from "../fixtures/browser";
-import { readRegressionGlvs } from "../fixtures/deploymentConfig";
 import { configuredMarkets, marketLabel, newestPerpMarkets, type ConfiguredMarket } from "../fixtures/marketConfig";
 import { selectedMarketName } from "../fixtures/marketData";
 import { inputNumber } from "../fixtures/trade";
 
-// Removed from the app configs when delisted (PRO-4401, 2026-09-30).
+// Delisted markets, no longer in the app configs.
 const DELISTED: Record<number, { symbol: string; address: string }> = {
   42161: { symbol: "BOME", address: "0x71237F8C3d1484495A136022E16840b70fF84a69" },
   43114: { symbol: "MELANIA", address: "0xe19da27Bf9733c429445E289B662bECDCa6ce10b" },
@@ -89,20 +88,6 @@ for (const kind of ["newest", "second pool"] as const) {
     await expect(page).toHaveURL(new RegExp(`market=${market.marketTokenAddress}`));
   });
 }
-
-test("22.23 a direct pool details URL opens a configured GLV vault", async ({ page, chainId }) => {
-  const [glv] = readRegressionGlvs(chainId as 42161 | 43114);
-  await page.goto(`/pools/details?market=${glv}`);
-  await expect(page.getByRole("button", { name: "Buy GLV", exact: true })).toBeVisible();
-  await expect(page.getByText(/^GLV/).first()).toBeVisible();
-  await expect(
-    page
-      .getByRole("table")
-      .filter({ has: page.getByRole("columnheader", { name: "COMPOSITION", exact: true }) })
-      .first()
-  ).toBeVisible();
-  await expect(page).toHaveURL(new RegExp(`market=${glv}`));
-});
 
 for (const kind of ["malformed", "unknown", "delisted"] as const) {
   test(`22.24 23.21 a ${kind} market address in a pool URL falls back to the Pools list`, async ({ page, chainId }) => {

@@ -19,6 +19,7 @@ export function accountData(chainId: number, account: string, symbol = "ETH") {
   if (!market) throw new Error(`No ${symbol}/USDC market configured for the state fixture`);
   const updatedAt = BigInt(Math.floor(Date.now() / 1000) - 120);
 
+  // 0.4 tokens at $2,500 entry with $250 margin; liquidation at $1,900 long, $3,100 short.
   const position = (isLong: boolean): ApiPositionInfo => ({
     key: getPositionKey(account, market.marketTokenAddress, collateral.address, isLong),
     contractKey: hashedPositionKey(account, market.marketTokenAddress, collateral.address, isLong),

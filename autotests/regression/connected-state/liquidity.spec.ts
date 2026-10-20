@@ -2,7 +2,7 @@ import { expect } from "@playwright/test";
 import { zeroAddress } from "viem";
 
 import { test } from "../fixtures/accountState";
-import { inputNumber, openSettings } from "../fixtures/trade";
+import { chooseMode, inputNumber } from "../fixtures/trade";
 
 for (const type of ["GM", "GLV"] as const) {
   test(`12.24 12.26 ${type} forms reject deposits and withdrawals exceeding mocked balances`, async ({
@@ -12,9 +12,7 @@ for (const type of ["GM", "GLV"] as const) {
     accountState.balances.set(accountState.data.collateral.address, 1000n * 10n ** 6n);
     accountState.balances.set(zeroAddress, 10n ** 18n);
     await accountState.connect(page, "/pools");
-    const settings = await openSettings(page);
-    await settings.getByText("Classic", { exact: true }).click();
-    await page.keyboard.press("Escape");
+    await chooseMode(page, "Classic");
     const table = page.getByRole("table").filter({
       has: page.getByRole("columnheader", { name: type === "GM" ? "POOL" : "VAULT", exact: true }),
     });

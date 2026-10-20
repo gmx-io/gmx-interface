@@ -658,7 +658,6 @@ export function usePositionEditorButtonState(
     });
 
     if (expressParams?.subaccount) {
-      // The transaction callback reports failures after this handler returns.
       void txnPromise.catch(reportHandledRejection("positionEditor.submit"));
       onClose();
       setIsSubmitting(false);

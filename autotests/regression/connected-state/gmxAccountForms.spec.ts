@@ -10,9 +10,9 @@ import {
 } from "../../../sdk/src/configs/chainIds";
 import { getMultichainTokenGroups } from "../../../sdk/src/configs/multichainTokens";
 import { getTokenBySymbol } from "../../../sdk/src/configs/tokens";
-import { test } from "../fixtures/accountState";
+import { RATE_LIMITED_RPC_TIMEOUT, test } from "../fixtures/accountState";
 import { connectInjectedWallet } from "../fixtures/injectedWallet";
-import { inputNumber, openSettings } from "../fixtures/trade";
+import { chooseMode, infoRow, inputNumber, openSettings, SELECTED_TRADING_MODE, tradingMode } from "../fixtures/trade";
 
 const tokenGroups = getMultichainTokenGroups({ includeTestnets: false });
 const tokenOn = (symbol: string, chainId: typeof ARBITRUM | typeof BASE | typeof BNB | typeof ETHEREUM) =>
@@ -29,13 +29,18 @@ function overlay(page: Page, title: string) {
   return page.locator(".Modal-content").filter({ has: page.locator(".Modal-title").getByText(title, { exact: true }) });
 }
 
-function infoRow(scope: Locator, label: string) {
-  return scope.getByText(label, { exact: true }).locator("xpath=ancestor::div[contains(@class, 'justify-between')][1]");
-}
-
 async function feeAmounts(row: Locator, label: string) {
   const value = (await row.innerText()).split(label)[1];
   return [...value.matchAll(/-?\$?\s*[\d,]+\.?\d*/g)].map((match) => Number(match[0].replace(/[$,\s]/g, "")));
+}
+
+async function expectSaneFee(row: Locator, label: string, { native = false } = {}) {
+  const [amount, usd] = await feeAmounts(row, label);
+  expect(-usd).toBeGreaterThan(0.001);
+  expect(-usd).toBeLessThan(5);
+  if (!native) return;
+  expect(usd / amount).toBeGreaterThan(500);
+  expect(usd / amount).toBeLessThan(20_000);
 }
 
 async function openAccount(page: Page) {
@@ -189,11 +194,7 @@ test.describe("deposit", () => {
     const networkFee = infoRow(form, "Network fee");
     await expect(networkFee).toContainText(/-[\d.]+\s*ETH\s*\(-\$\s*[\d.]+\)/);
     await expect(networkFee.getByRole("img", { name: "Base wallet", exact: true })).toBeVisible();
-    const [eth, usd] = await feeAmounts(networkFee, "Network fee");
-    expect(-usd).toBeGreaterThan(0.001);
-    expect(-usd).toBeLessThan(5);
-    expect(usd / eth).toBeGreaterThan(500);
-    expect(usd / eth).toBeLessThan(20_000);
+    await expectSaneFee(networkFee, "Network fee", { native: true });
     const depositFee = infoRow(form, "Deposit fee");
     await expect(depositFee).toContainText(/-[\d.]+\s*USDC/);
     const [usdcFee] = await feeAmounts(depositFee, "Deposit fee");
@@ -291,11 +292,7 @@ test.describe("withdrawal", () => {
     await expect(infoRow(modal, "Bridge fee")).toContainText(/-[\d.]+\s*WETH\s*\(-\$\s*[\d.]+\)/);
     await expect(infoRow(modal, "Bridge fee").getByRole("img", { name: "GMX Account", exact: true })).toBeVisible();
     await expect(infoRow(modal, "Withdrawal fee")).toContainText(/-[\d.]+\s*WETH/);
-    for (const label of ["Network fee", "Bridge fee"]) {
-      const [, usd] = await feeAmounts(infoRow(modal, label), label);
-      expect(-usd).toBeGreaterThan(0.001);
-      expect(-usd).toBeLessThan(5);
-    }
+    for (const label of ["Network fee", "Bridge fee"]) await expectSaneFee(infoRow(modal, label), label);
     const [before, after] = await feeAmounts(infoRow(modal, "GMX Account balance"), "GMX Account balance");
     expect(before - after).toBeGreaterThan(5);
     expect(before - after).toBeLessThan(100);
@@ -357,7 +354,7 @@ test.describe("GM", () => {
     await accountState.connect(page, `/pools/details?market=${gm}`);
     const balance = page.locator(".Tooltip-handle").filter({ hasText: "6.5000 GM" });
     // GM balances wait for market data and every source chain's balance read.
-    await expect(balance).toBeVisible({ timeout: 45_000 });
+    await expect(balance).toBeVisible({ timeout: RATE_LIMITED_RPC_TIMEOUT });
     await balance.hover();
     const tooltip = page.locator(".Tooltip-popup");
     await expect(tooltip).toContainText(
@@ -375,7 +372,9 @@ test.describe("GM", () => {
     const gm = accountState.data.market.marketTokenAddress;
     accountState.sourceChainBalances.set(ETHEREUM, new Map());
     await accountState.connect(page, `/pools/details?market=${gm}`);
-    await expect(page.locator(".Tooltip-handle").filter({ hasText: "5.0000 GM" })).toBeVisible({ timeout: 45_000 });
+    await expect(page.locator(".Tooltip-handle").filter({ hasText: "5.0000 GM" })).toBeVisible({
+      timeout: RATE_LIMITED_RPC_TIMEOUT,
+    });
     await page.getByText("Balance", { exact: true }).first().locator("xpath=..").locator("[aria-haspopup]").click();
     // The balance breakdown tooltip opens on hover and covers the menu items.
     await page.mouse.move(0, 0);
@@ -386,11 +385,7 @@ test.describe("GM", () => {
     const networkFee = infoRow(modal, "Network fee");
     await expect(networkFee).toContainText(/-[\d.]+\s*ETH\s*\(-\$\s*[\d.]+\)/);
     await expect(networkFee.getByRole("img", { name: "Base wallet", exact: true })).toBeVisible();
-    const [eth, usd] = await feeAmounts(networkFee, "Network fee");
-    expect(-usd).toBeGreaterThan(0.001);
-    expect(-usd).toBeLessThan(5);
-    expect(usd / eth).toBeGreaterThan(500);
-    expect(usd / eth).toBeLessThan(20_000);
+    await expectSaneFee(networkFee, "Network fee", { native: true });
     await expect(infoRow(modal, "GMX Account balance")).toContainText(/3\.0000\s*GM.*4\.0000\s*GM/);
     await expect(modal.getByRole("button", { name: "Deposit", exact: true })).toBeEnabled();
   });
@@ -403,24 +398,12 @@ test.describe("trade collateral", () => {
     accountState.gmxBalances.set(accountState.data.collateral.address, 250n * 10n ** 6n);
   });
 
-  function tradingMode(settings: Locator, name: string) {
-    return settings.getByText(name, { exact: true }).locator("xpath=ancestor::div[contains(@class, 'grid')][1]");
-  }
-
   async function payWith(page: Page, source: "GMX Account" | "Wallet", token: string) {
     await page.getByTestId("margin-collateral-selector").click();
     const modal = page.getByTestId("margin-collateral-selector-modal");
     await modal.getByText(source, { exact: true }).click();
     await modal.getByTestId(`available-token-${token}-${source === "Wallet" ? ARBITRUM : 0}`).click();
     await expect(modal).toBeHidden();
-  }
-
-  async function chooseMode(page: Page, name: string) {
-    const settings = await openSettings(page);
-    await settings.getByText(name, { exact: true }).click();
-    await expect(tradingMode(settings, name)).toHaveClass(/(?:^|\s)border-slate-100(?:\s|$)/);
-    await page.keyboard.press("Escape");
-    await expect(settings).toBeHidden();
   }
 
   test("4.55 4.56 paying from the GMX Account forces Express, and Classic applies only to wallet collateral", async ({
@@ -439,7 +422,7 @@ test.describe("trade collateral", () => {
     await expect(page.getByText("Express Trading enabled. Disable in", { exact: false })).toBeVisible();
     await expect(margin).toContainText("250.00");
     const settings = await openSettings(page);
-    await expect(tradingMode(settings, "Express")).toHaveClass(/(?:^|\s)border-slate-100(?:\s|$)/);
+    await expect(tradingMode(settings, "Express")).toHaveClass(SELECTED_TRADING_MODE);
     await settings.getByText("Classic", { exact: true }).click();
     await page.keyboard.press("Escape");
     await expect(margin).toContainText("100.00");
@@ -451,6 +434,6 @@ test.describe("trade collateral", () => {
     await chooseMode(page, "Classic");
     await expect(margin).toContainText("100.00");
     await accountState.refresh(page);
-    await expect(tradingMode(await openSettings(page), "Classic")).toHaveClass(/(?:^|\s)border-slate-100(?:\s|$)/);
+    await expect(tradingMode(await openSettings(page), "Classic")).toHaveClass(SELECTED_TRADING_MODE);
   });
 });

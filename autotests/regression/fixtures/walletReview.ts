@@ -15,3 +15,12 @@ export async function inspectRejectedOrder(button: Locator, requests: WalletRequ
   await expect(button).toBeEnabled();
   return { tx, calls: root.args[0].map((data) => decodeFunctionData({ abi: ExchangeRouter, data })) };
 }
+
+export async function inspectRejectedCreateOrder(button: Locator, requests: WalletRequest[]) {
+  const { tx, calls } = await inspectRejectedOrder(button, requests);
+  const creates = calls.filter((call) => call.functionName === "createOrder");
+  expect(creates).toHaveLength(1);
+  const [create] = creates;
+  if (create.functionName !== "createOrder") throw new Error("Expected createOrder");
+  return { tx, calls, order: create.args[0] };
+}

@@ -16,9 +16,7 @@ test("2.33 2.37 landing shows the headline and positive headline metrics within 
 });
 
 for (const width of [390, 768, 1440, 1920, 2560]) {
-  test(`0.15 2.36 landing has no horizontal page overflow at ${width}px and saves a baseline screenshot`, async ({
-    page,
-  }, testInfo) => {
+  test(`2.36 landing has no horizontal page overflow at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/");
     await expect(page.locator(".text-heading-1").filter({ hasText: "from your wallet" })).toBeVisible();
@@ -29,10 +27,6 @@ for (const width of [390, 768, 1440, 1920, 2560]) {
     await expect
       .poll(() => page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth))
       .toBeLessThanOrEqual(1);
-    await testInfo.attach(`landing-${width}px.png`, {
-      body: await page.screenshot({ fullPage: true }),
-      contentType: "image/png",
-    });
   });
 }
 

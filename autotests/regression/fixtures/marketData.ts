@@ -1,5 +1,6 @@
 import { expect, type APIRequestContext, type Locator, type Page } from "@playwright/test";
 
+import { bigintToNumber } from "../../../sdk/src/utils/numbers/utils";
 import { displayedNumber } from "./displayedNumber";
 
 export type ApiMarket = Record<string, string | boolean> & {
@@ -10,7 +11,6 @@ export type ApiMarket = Record<string, string | boolean> & {
 
 const apiHosts: Record<number, string> = { 42161: "arbitrum", 43114: "avalanche" };
 
-// Latest /v1/markets/config and /v1/markets/values responses the app received for the chain.
 export function watchMarketsApi(page: Page, chainId: number) {
   const api: { origin?: string; config?: ApiMarket[]; values?: ApiMarket[]; valuesResponses: number } = {
     valuesResponses: 0,
@@ -38,7 +38,7 @@ export async function fetchMarketsInfo(request: APIRequestContext, origin: strin
 }
 
 export function factor(value: string | boolean) {
-  return Number(value) / 1e30;
+  return bigintToNumber(BigInt(value), 30);
 }
 
 export function findMarket(markets: ApiMarket[] | undefined, name: string) {

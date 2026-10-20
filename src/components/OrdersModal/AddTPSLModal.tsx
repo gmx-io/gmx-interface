@@ -869,14 +869,10 @@ export function AddTPSLModal({
         }),
         provider,
         isGmxAccount: srcChainId !== undefined,
-      }).then(
-        () => {
-          setIsVisible(false);
-          onSuccess?.();
-        },
-        // The transaction callback displays the failure; keep the form open.
-        reportHandledRejection("addTPSLModal.submit")
-      );
+      }).then(() => {
+        setIsVisible(false);
+        onSuccess?.();
+      }, reportHandledRejection("addTPSLModal.submit"));
     } finally {
       setIsSubmitting(false);
     }

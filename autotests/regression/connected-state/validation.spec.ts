@@ -1,19 +1,10 @@
 import { expect } from "@playwright/test";
-import { getAddress, zeroAddress } from "viem";
 
-import type { ContractsChainId } from "../../../sdk/src/configs/chains";
-import { getContract } from "../../../sdk/src/configs/contracts";
-import { test } from "../fixtures/accountState";
+import { fundTrading, test } from "../fixtures/accountState";
 import { configureClassicTrading, fillPositionOrder } from "../fixtures/tradingForms";
 
-const balance = 1_000_000_000_000n * 10n ** 6n;
 test.beforeEach(async ({ page, accountState, chainId }) => {
-  accountState.balances.set(accountState.data.collateral.address, balance);
-  accountState.balances.set(zeroAddress, 10n ** 18n);
-  accountState.allowances.set(
-    getAddress(accountState.data.collateral.address),
-    new Map([[getAddress(getContract(chainId as ContractsChainId, "SyntheticsRouter")), balance]])
-  );
+  fundTrading(accountState, chainId, 1_000_000_000_000n * 10n ** 6n);
   await accountState.connect(page);
   await configureClassicTrading(page);
 });

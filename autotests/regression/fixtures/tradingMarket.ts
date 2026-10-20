@@ -3,7 +3,6 @@ import type { BrowserContext } from "@playwright/test";
 import arbitrum from "./markets/arbitrum.json";
 import avalanche from "./markets/avalanche.json";
 
-// Unsigned form tests exercise UI calculations against one consistent market snapshot.
 export async function mockTradingMarket(context: BrowserContext, chainId: number) {
   const data = chainId === 42161 ? arbitrum : avalanche;
   const chain = chainId === 42161 ? "arbitrum" : "avalanche";

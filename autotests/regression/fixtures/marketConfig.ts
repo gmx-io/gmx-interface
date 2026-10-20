@@ -11,6 +11,7 @@ import {
   isChartAvailableForToken,
 } from "../../../sdk/src/configs/tokens";
 import type { Token } from "../../../sdk/src/utils/tokens/types";
+import { readObject } from "./deploymentConfig";
 import type { ApiMarket } from "./marketData";
 
 export type KeeperMarket = { marketToken: string; indexToken: string; isListed: boolean; listingDate?: string };
@@ -22,26 +23,19 @@ const RECENTLY_LISTED_MS = 30 * 24 * 60 * 60 * 1000;
 
 // App config modules use path aliases the regression tsconfig cannot resolve, so their address lists are parsed.
 function readAddressList(path: string, name: string, chainId: number) {
-  const file = ts.createSourceFile(path, readFileSync(path, "utf8"), ts.ScriptTarget.Latest, true);
-  for (const statement of file.statements) {
-    if (!ts.isVariableStatement(statement)) continue;
-    for (const declaration of statement.declarationList.declarations) {
-      const object = declaration.initializer;
-      if (declaration.name.getText(file) !== name || !object || !ts.isObjectLiteralExpression(object)) continue;
-      const chain = object.properties.find(
-        (property): property is ts.PropertyAssignment =>
-          ts.isPropertyAssignment(property) && property.name.getText(file) === CHAIN_KEYS[chainId]
-      );
-      if (!chain) return [];
-      if (!ts.isArrayLiteralExpression(chain.initializer)) throw new Error(`${name} is not an address list`);
-      return chain.initializer.elements.map((element) => {
-        if (ts.isStringLiteral(element)) return element.text;
-        if (ts.isIdentifier(element) && element.text === "zeroAddress") return zeroAddress;
-        throw new Error(`Unexpected ${name} entry ${element.getText(file)}`);
-      });
-    }
-  }
-  throw new Error(`Missing ${name} in ${path}`);
+  // This checkout, not the candidate: the CI sparse checkout omits these files.
+  const { file, object } = readObject(path, name, ".");
+  const chain = object.properties.find(
+    (property): property is ts.PropertyAssignment =>
+      ts.isPropertyAssignment(property) && property.name.getText(file) === CHAIN_KEYS[chainId]
+  );
+  if (!chain) return [];
+  if (!ts.isArrayLiteralExpression(chain.initializer)) throw new Error(`${name} is not an address list`);
+  return chain.initializer.elements.map((element) => {
+    if (ts.isStringLiteral(element)) return element.text;
+    if (ts.isIdentifier(element) && element.text === "zeroAddress") return zeroAddress;
+    throw new Error(`Unexpected ${name} entry ${element.getText(file)}`);
+  });
 }
 
 export function sortedMarketAddresses(chainId: number) {
@@ -98,7 +92,7 @@ function isMarketDeprecated(config: ApiMarket) {
   );
 }
 
-// Index tokens the market selector should list: charted tokens of configured perp markets that are tradeable.
+// Mirrors the market selector's filter.
 export function selectorIndexTokens(chainId: number, apiConfigs: ApiMarket[]) {
   const configs = new Map(apiConfigs.map((config) => [config.marketTokenAddress, config]));
   const tokens = new Map<string, { token: Token; markets: ConfiguredMarket[] }>();

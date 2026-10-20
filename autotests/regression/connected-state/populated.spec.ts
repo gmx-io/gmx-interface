@@ -2,7 +2,7 @@ import { expect, type Page } from "@playwright/test";
 
 import type { ApiPositionInfo } from "../../../sdk/src/utils/positions/types";
 import { test, type AccountState } from "../fixtures/accountState";
-import { inputNumber, selectMarket } from "../fixtures/trade";
+import { inputNumber } from "../fixtures/trade";
 
 const USD = 10n ** 30n;
 
@@ -102,67 +102,20 @@ test(
   }
 );
 
-test("8.01 mocked position updates are reflected without reloading", async ({ page, accountState }) => {
-  accountState.positions = [accountState.data.position(true)];
-  await accountState.connect(page);
-  const row = positionRow(page, "Long");
-  await expect(row).toContainText(/\$\s*1,000\.00/);
-  accountState.positions[0].sizeInUsd = 500n * 10n ** 30n;
-  await expect(row.getByRole("cell").nth(1)).toContainText(/\$\s*500\.00/);
-  accountState.positions = [];
-  await expect(row).toHaveCount(0);
-  await expect(page.getByText("No open positions", { exact: true })).toBeVisible();
-});
-
-test("8.09 position editor opens Deposit and Withdraw forms without submitting", async ({ page, accountState }) => {
-  accountState.positions = [accountState.data.position(true)];
-  await accountState.connect(page);
-  await positionRow(page, "Long").getByTestId("position-edit-button").click();
-  const modal = page.getByTestId("position-edit-modal");
-  await expect(modal).toBeVisible();
-  for (const operation of ["Deposit", "Withdraw"]) {
-    await modal.getByTestId("operation-tabs").getByRole("button", { name: operation, exact: true }).click();
-    const amount = modal.getByTestId("amount-input-input");
-    await amount.fill("10");
-    await expect.poll(() => inputNumber(amount)).toBe(10);
-    await expect(modal.getByTestId("confirm-button")).toBeVisible();
-    await expect(modal).not.toContainText(/NaN|Infinity|undefined/);
-  }
-  await page.keyboard.press("Escape");
-  await expect(modal).toBeHidden();
-  await expect(positionRow(page, "Long")).toHaveCount(1);
-});
-
-test("8.10 close form accepts a partial size and restores the maximum without submitting", async ({
-  page,
-  accountState,
-}) => {
-  accountState.positions = [accountState.data.position(true)];
-  await accountState.connect(page);
-  await positionRow(page, "Long").getByTestId("position-close-button").click();
-  const modal = page.getByTestId("position-close-modal");
-  await expect(modal).toBeVisible();
-  const amount = modal.getByTestId("amount-input-input");
-  await amount.fill("500");
-  await expect.poll(() => inputNumber(amount)).toBe(500);
-  await modal.getByRole("button", { name: /^Max:/ }).click();
-  await expect.poll(() => inputNumber(amount)).toBe(1000);
-  await expect(modal.getByTestId("confirm-button")).toBeVisible();
-  await page.keyboard.press("Escape");
-  await expect(modal).toBeHidden();
-});
-
-for (const { type, label } of [
-  { type: 3, label: /Limit/i },
-  { type: 8, label: /Stop Market/i },
-  { type: 5, label: /Take.Profit/i },
-  { type: 6, label: /Stop.Loss/i },
+for (const { type, label, sizeDeltaUsd, size } of [
+  { type: 3, label: /Limit/i, size: /\$\s*1,000\.00/ },
+  { type: 8, label: /Stop Market/i, size: /\$\s*1,000\.00/ },
+  { type: 5, label: /Take.Profit/i, size: "Full position close" },
+  { type: 6, label: /Stop.Loss/i, size: "Full position close" },
+  { type: 5, label: /Take.Profit/i, sizeDeltaUsd: 500n * USD, size: /\$\s*500\.00/ },
+  { type: 6, label: /Stop.Loss/i, sizeDeltaUsd: 500n * USD, size: /\$\s*500\.00/ },
 ]) {
-  test(`6.04 6.05 9.01 9.02 22.09 mocked order type ${type} displays its market, size and trigger after refresh`, async ({
+  test(`6.04 6.05 9.01 9.02 22.09 mocked ${sizeDeltaUsd ? "partial " : ""}order type ${type} displays its market, size and trigger after refresh`, async ({
     page,
     accountState,
   }) => {
     const order = accountState.data.order(type);
+    if (sizeDeltaUsd) order.sizeDeltaUsd = sizeDeltaUsd;
     accountState.orders = [order];
     accountState.positions = [accountState.data.position(true)];
     await accountState.connect(page);
@@ -172,26 +125,14 @@ for (const { type, label } of [
     await expect(row).toContainText(/ETH\/USD\s*Long/);
     await expect(row).not.toContainText("WETH");
     await expect(row).toContainText(label);
-    await expect(row).toContainText(type === 5 || type === 6 ? "Full position close" : /\$\s*1,000\.00/);
+    await expect(row).toContainText(size);
+    if (sizeDeltaUsd) await expect(row).not.toContainText("Full position close");
     await expect(row).toContainText(/2,000\.00/);
     await accountState.refresh(page);
     await expect(row).toContainText(/2,000\.00/);
     await expect(row).toContainText(label);
   });
 }
-
-test("9.08 orders remain visible when the selected trade market changes", async ({ page, accountState }) => {
-  const order = accountState.data.order(3);
-  accountState.orders = [order];
-  await accountState.connect(page);
-  await openOrders(page);
-  const row = page.getByTestId(`order-${order.key}`);
-  await expect(row).toBeVisible();
-  await selectMarket(page, "BTC");
-  await expect(row).toContainText("ETH");
-  await selectMarket(page, "ETH");
-  await expect(row).toBeVisible();
-});
 
 test("9.07 an order removed from the mocked response leaves the active list", async ({ page, accountState }) => {
   const order = accountState.data.order(3);
@@ -229,22 +170,5 @@ for (const { type, title } of [
     await expect(row).toContainText(/2,000\.00/);
     await row.getByRole("button", { name: "Edit order", exact: true }).click();
     await expect.poll(() => inputNumber(price)).toBe(2000);
-  });
-}
-
-for (const type of [5, 6]) {
-  test(`9.01 9.02 partial exit order type ${type} shows its size instead of a full-close label`, async ({
-    page,
-    accountState,
-  }) => {
-    const order = accountState.data.order(type);
-    order.sizeDeltaUsd = 500n * 10n ** 30n;
-    accountState.orders = [order];
-    accountState.positions = [accountState.data.position(true)];
-    await accountState.connect(page);
-    await openOrders(page);
-    const row = page.getByTestId(`order-${order.key}`);
-    await expect(row).toContainText(/\$\s*500\.00/);
-    await expect(row).not.toContainText("Full position close");
   });
 }

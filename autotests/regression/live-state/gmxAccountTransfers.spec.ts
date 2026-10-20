@@ -1,25 +1,12 @@
 import { expect } from "@playwright/test";
 import { getChainName } from "../../../sdk/src/configs/chains";
-import { getToken } from "../../../sdk/src/configs/tokens";
 import { formatBalanceAmount } from "../../../sdk/src/utils/numbers/utils";
 import { test } from "../fixtures/liveWallet";
 import type { FundingTransfer } from "../fixtures/liveAccounts";
+import { transferRow } from "../fixtures/transferHistory";
+import { utcParts } from "../fixtures/utcDates";
 
 test.use({ liveProfile: "transfers" });
-
-// The project runs in UTC, so dates are derived in UTC.
-function utcParts(seconds: number) {
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone: "UTC",
-    year: "numeric",
-    month: "short",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    hourCycle: "h23",
-  }).formatToParts(new Date(seconds * 1000));
-  return Object.fromEntries(parts.map((p) => [p.type, p.value])) as Record<string, string>;
-}
 
 test("0.10 0.11 4.59 4.61 live GMX Account: indexed cross-chain deposit and withdrawal show settled status and dates after refresh", async ({
   page,
@@ -57,23 +44,9 @@ test("0.10 0.11 4.59 4.61 live GMX Account: indexed cross-chain deposit and with
         sentTimestamp: transfer.sentTimestamp,
         sentAmount: transfer.sentAmount,
       });
-      const token = getToken(transfer.settlementChainId, transfer.token);
-      const isDeposit = transfer.operation === "deposit";
-      const label = isDeposit ? "Deposit" : "Withdrawal";
-      const sent = BigInt(transfer.sentAmount);
-      const amount = formatBalanceAmount(isDeposit ? sent : -sent, token.decimals, undefined, {
-        isStable: token.isStable,
-        signed: true,
-      });
+      const { row, token, label, sent, isDeposit } = transferRow(modal, transfer);
       const date = utcParts(transfer.sentTimestamp);
-      const row = modal
-        .getByRole("button")
-        .filter({ has: page.getByText(token.symbol, { exact: true }) })
-        .filter({ has: page.getByText(label, { exact: true }) })
-        .filter({ has: page.getByText(amount, { exact: true }) })
-        .filter({ has: page.getByText(`${date.month} ${date.day}, ${date.year}`, { exact: true }) });
       await expect(row).toHaveCount(1, { timeout: 45_000 });
-      // A settled transfer has no progress spinner and no failure styling.
       await expect(row.locator("svg.animate-spin")).toHaveCount(0);
       await expect(row.getByText(label, { exact: true })).not.toHaveClass(/text-red-500/);
       await row.click();

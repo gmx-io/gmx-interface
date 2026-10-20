@@ -4,12 +4,12 @@ import { test } from "../fixtures/liveWallet";
 
 test.use({ liveProfile: "claims" });
 
-test("10.09 live claims: executed funding claim appears with its explorer link after refresh", async ({
+test("10.09 live claims: executed funding claim appears with its explorer link after refresh and the CSV export includes it", async ({
   page,
   liveAccount,
   liveAccounts,
   liveWallet,
-}) => {
+}, testInfo) => {
   await liveWallet.connect(page);
   await page
     .getByTestId("exchange-list-tabs")
@@ -23,23 +23,6 @@ test("10.09 live claims: executed funding claim appears with its explorer link a
     `https://${liveAccounts.chainId === 42161 ? "arbiscan.io" : "snowtrace.io"}/tx/${liveAccount.transactionHash}`
   );
   await expect(link).toHaveAttribute("target", "_blank");
-  await page.reload({ waitUntil: "domcontentloaded" });
-  await expect(link).toBeVisible({ timeout: 45_000 });
-});
-
-test("10.09 live claims: the history lists the on-chain claim and its CSV export includes it", async ({
-  page,
-  liveAccount,
-  liveWallet,
-}, testInfo) => {
-  await liveWallet.connect(page);
-  await page
-    .getByTestId("exchange-list-tabs")
-    .getByRole("button", { name: /^Claims(?:\s+\d+)?$/ })
-    .click();
-  await expect(page.locator(`.ClaimsHistory-table a[href$="${liveAccount.transactionHash}"]`).first()).toBeVisible({
-    timeout: 45_000,
-  });
   await page.getByRole("button", { name: "CSV", exact: true }).click();
   const modal = page
     .locator(".Modal-content")
@@ -55,6 +38,8 @@ test("10.09 live claims: the history lists the on-chain claim and its CSV export
   expect(csv).toContain("ClaimFunding");
   expect(csv).not.toMatch(/NaN|Infinity|undefined/);
   await testInfo.attach("claims-export", { path, contentType: "text/csv" });
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await expect(link).toBeVisible({ timeout: 45_000 });
 });
 
 test("17.15 live profile: Claims tab lists the account's indexed funding claim without a wallet", async ({

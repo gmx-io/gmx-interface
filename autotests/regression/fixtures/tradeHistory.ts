@@ -8,7 +8,7 @@ const FIELDS =
     " "
   );
 
-export type TradeActionRow = Record<string, unknown> & { transactionHash: string };
+type TradeActionRow = Record<string, unknown> & { transactionHash: string };
 
 // Defaults alternate an executed market increase (even index) and a profitable market decrease (odd index).
 export function tradeAction(

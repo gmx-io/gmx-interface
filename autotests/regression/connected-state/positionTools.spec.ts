@@ -139,18 +139,27 @@ test("5.36 partial: Keep leverage on a partial close holds leverage, off keeps m
   }
 });
 
-test("8.08 partial: position row re-renders API-updated mark and liquidation prices without reload", async ({
+test("8.01 8.08 partial: position row re-renders API-updated size, mark and liquidation prices and removal without reload", async ({
   page,
   accountState,
 }) => {
   accountState.positions = [accountState.data.position(true)];
   await accountState.connect(page);
   const row = fundedPositionRow(page, true);
+  await expect(row.getByRole("cell").nth(1)).toContainText(/\$\s*1,000\.00/);
   await expect(row.getByRole("cell").nth(5)).toContainText(/2,500\.00/);
   await expect(row.getByRole("cell").nth(6)).toContainText(/1,900\.00/);
-  Object.assign(accountState.positions[0], { markPrice: 2300n * USD, liquidationPrice: 1950n * USD });
+  Object.assign(accountState.positions[0], {
+    sizeInUsd: 500n * USD,
+    markPrice: 2300n * USD,
+    liquidationPrice: 1950n * USD,
+  });
+  await expect(row.getByRole("cell").nth(1)).toContainText(/\$\s*500\.00/);
   await expect(row.getByRole("cell").nth(5)).toContainText(/2,300\.00/);
   await expect(row.getByRole("cell").nth(6)).toContainText(/1,950\.00/);
+  accountState.positions = [];
+  await expect(row).toHaveCount(0);
+  await expect(page.getByText("No open positions", { exact: true })).toBeVisible();
 });
 
 test("8.11 share position renders the card and builds the share link from a stubbed upload", async ({

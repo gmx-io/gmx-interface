@@ -6,7 +6,6 @@ import { zeroAddress } from "viem";
 import { MARKETS } from "../../../sdk/src/configs/markets";
 import { getToken, getTokenBySymbol, getTokenVisualMultiplier } from "../../../sdk/src/configs/tokens";
 import { test } from "../fixtures/browser";
-import { inputNumber } from "../fixtures/trade";
 import { readRegressionGlvs } from "../fixtures/deploymentConfig";
 import { displayedNumber } from "../fixtures/displayedNumber";
 import { configuredMarkets, marketLabel } from "../fixtures/marketConfig";
@@ -26,7 +25,6 @@ function poolRows(page: Page, type: "GM" | "GLV") {
     .filter({ has: page.getByRole("link", { name: "Details", exact: true }) });
 }
 
-// Runs check on every page of the pool list, advancing with the numbered pagination buttons.
 async function forEachPoolPage(page: Page, type: "GM" | "GLV", check: () => Promise<void>) {
   const card = page
     .locator("div")
@@ -82,7 +80,7 @@ function watchUsdgBoost(page: Page) {
   };
 }
 
-// Markets enabled in src/config/static/markets.ts; the app config uses path aliases, so it is parsed.
+// Markets enabled in src/config/static/markets.ts; parsed for the reason in fixtures/marketConfig.ts.
 function enabledUiMarkets(chainId: number) {
   const path = "src/config/static/markets.ts";
   const file = ts.createSourceFile(path, readFileSync(path, "utf8"), ts.ScriptTarget.Latest, true);
@@ -146,19 +144,6 @@ for (const metric of [
   });
 }
 
-test("12.18 configured GLV vaults are all listed with distinct details links", async ({ page, chainId }) => {
-  await page.goto("/pools");
-  const addresses = readRegressionGlvs(chainId as 42161 | 43114);
-  expect(addresses.length).toBeGreaterThan(0);
-  const table = poolTable(page, "GLV");
-  await expect(table.getByRole("link", { name: "Details", exact: true })).toHaveCount(addresses.length);
-  for (const address of addresses) {
-    const link = table.locator(`a[href*="market=${address}"]`);
-    await expect(link).toBeVisible();
-    await expect(link.locator("xpath=ancestor::tr")).not.toContainText(/NaN|Infinity|undefined/);
-  }
-});
-
 test("12.04 pool search filters rows and recovers from no matches", async ({ page }) => {
   await page.goto("/pools");
   const table = poolTable(page, "GM");
@@ -206,26 +191,6 @@ test(
 );
 
 for (const type of ["GM", "GLV"] as const) {
-  test(`12.05 ${type} details open from the list and expose buy/sell forms`, async ({ page }) => {
-    await page.goto("/pools");
-    const details = poolTable(page, type).getByRole("link", { name: "Details", exact: true }).first();
-    await expect(details).toHaveAttribute("href", /\/pools\/details\?market=0x[\da-fA-F]{40}/);
-    const href = await details.getAttribute("href");
-    await details.click();
-    await expect(page).toHaveURL(new RegExp(`market=${new URL(href!, page.url()).searchParams.get("market")}`));
-    await expect(page.getByRole("button", { name: `Buy ${type}`, exact: true })).toBeVisible();
-    await expect(page.getByRole("button", { name: `Sell ${type}`, exact: true })).toBeVisible();
-    await page.getByRole("button", { name: `Buy ${type}`, exact: true }).click();
-    const amount = page.getByTestId("gm-first-token-input");
-    await amount.fill("1");
-    await expect.poll(() => inputNumber(amount)).toBe(1);
-    await page.getByRole("button", { name: `Sell ${type}`, exact: true }).click();
-    await expect(page.getByRole("button", { name: "Connect wallet", exact: true }).last()).toBeVisible();
-    await page.reload();
-    await expect(page.getByRole("button", { name: `Buy ${type}`, exact: true })).toBeVisible();
-    await expect(page.getByText("Something went wrong", { exact: true }).filter({ visible: true })).toHaveCount(0);
-  });
-
   test(`12.06 ${type} details show the list's TVL, the fee APR the app received, a zero balance without a wallet and backing composition summing to 100%`, async ({
     page,
   }) => {
@@ -273,9 +238,11 @@ for (const type of ["GM", "GLV"] as const) {
 }
 
 test(
-  "12.19 every configured GLV vault's details page loads with its TVL and buy/sell forms",
+  "12.19 12.22 every configured GLV vault's details page loads with its TVL and buy/sell forms, and its composition lists GM markets sharing the vault's collateral, within cap and summing to 100%",
   { tag: "@avalanche" },
   async ({ page, chainId }) => {
+    test.slow();
+    const markets = configuredMarkets(chainId);
     for (const address of readRegressionGlvs(chainId as 42161 | 43114)) {
       await page.goto(`/pools/details?market=${address}`);
       const tvl = page.getByText("TVL (supply)", { exact: true }).first().locator("xpath=..");
@@ -284,65 +251,42 @@ test(
       await expect(page.getByRole("button", { name: "Buy GLV", exact: true })).toBeVisible();
       await expect(page.getByRole("button", { name: "Sell GLV", exact: true })).toBeVisible();
       await expect(page.getByText("Something went wrong", { exact: true }).filter({ visible: true })).toHaveCount(0);
+      const poolLabel = page.getByText(/^\[[^\]]+-[^\]]+\]$/).first();
+      await expect(poolLabel).toBeVisible({ timeout: 45_000 });
+      const pool = (await poolLabel.innerText()).slice(1, -1);
+      const names = markets
+        .filter((market) => market.indexToken && market.pool === pool)
+        .map((market) => marketLabel(market.indexToken!));
+      const table = page
+        .getByRole("table")
+        .filter({ has: page.getByRole("columnheader", { name: "TVL/CAP", exact: true }) });
+      await expect
+        .poll(
+          async () => {
+            const rows = await table
+              .locator("tbody tr")
+              .evaluateAll((elements) =>
+                elements.map((row) =>
+                  Array.from(row.querySelectorAll("td"), (cell) => (cell as HTMLElement).innerText.trim())
+                )
+              );
+            if (rows.length < 2) return ["fewer than two markets"];
+            const problems = rows.flatMap(([name, tvlCap]) => {
+              const [tvl, cap] = tvlCap.split("/").map(displayedNumber);
+              return [
+                !names.includes(name) && `${name} is not a [${pool}] GM market`,
+                !(tvl >= 0 && tvl <= cap * 1.001) && `${name} TVL ${tvlCap}`,
+              ].filter(Boolean) as string[];
+            });
+            const total = rows.reduce((sum, row) => sum + displayedNumber(row[2]), 0);
+            return Math.abs(total - 100) <= rows.length * 0.01 ? problems : [...problems, `shares sum to ${total}`];
+          },
+          { timeout: 45_000 }
+        )
+        .toEqual([]);
     }
   }
 );
-
-test("12.22 each GLV composition lists GM markets sharing the vault's collateral, within cap and summing to 100%", async ({
-  page,
-  chainId,
-}) => {
-  test.slow();
-  const markets = configuredMarkets(chainId);
-  for (const address of readRegressionGlvs(chainId as 42161 | 43114)) {
-    await page.goto(`/pools/details?market=${address}`);
-    const poolLabel = page.getByText(/^\[[^\]]+-[^\]]+\]$/).first();
-    await expect(poolLabel).toBeVisible({ timeout: 45_000 });
-    const pool = (await poolLabel.innerText()).slice(1, -1);
-    const names = markets
-      .filter((market) => market.indexToken && market.pool === pool)
-      .map((market) => marketLabel(market.indexToken!));
-    const table = page
-      .getByRole("table")
-      .filter({ has: page.getByRole("columnheader", { name: "TVL/CAP", exact: true }) });
-    await expect
-      .poll(
-        async () => {
-          const rows = await table
-            .locator("tbody tr")
-            .evaluateAll((elements) =>
-              elements.map((row) =>
-                Array.from(row.querySelectorAll("td"), (cell) => (cell as HTMLElement).innerText.trim())
-              )
-            );
-          if (rows.length < 2) return ["fewer than two markets"];
-          const problems = rows.flatMap(([name, tvlCap]) => {
-            const [tvl, cap] = tvlCap.split("/").map(displayedNumber);
-            return [
-              !names.includes(name) && `${name} is not a [${pool}] GM market`,
-              !(tvl >= 0 && tvl <= cap * 1.001) && `${name} TVL ${tvlCap}`,
-            ].filter(Boolean) as string[];
-          });
-          const total = rows.reduce((sum, row) => sum + displayedNumber(row[2]), 0);
-          return Math.abs(total - 100) <= rows.length * 0.01 ? problems : [...problems, `shares sum to ${total}`];
-        },
-        { timeout: 45_000 }
-      )
-      .toEqual([]);
-  }
-});
-
-for (const period of ["Last 30d", "Last 90d", "Last 180d"]) {
-  test(`pool performance period ${period} persists on refresh`, async ({ page }) => {
-    await page.goto("/pools");
-    const button = page.getByRole("button", { name: period, exact: true });
-    await button.click();
-    await expect(button).toHaveClass(/!bg-button-secondary/);
-    await page.reload();
-    await expect(button).toHaveClass(/!bg-button-secondary/);
-    await expect(poolTable(page, "GM").getByRole("link", { name: "Details", exact: true }).first()).toBeVisible();
-  });
-}
 
 function expectedPoolLabels(chainId: number, address: string) {
   const market = MARKETS[chainId as keyof typeof MARKETS][address];
@@ -358,7 +302,7 @@ function expectedPoolLabels(chainId: number, address: string) {
 }
 
 for (const type of ["GM", "GLV"] as const) {
-  test(`12.02 ${type === "GM" ? "23.12 " : ""}every ${type} row shows its configured name and composition, TVL with supply, and the fee APY the app received`, async ({
+  test(`12.02 2.31 ${type === "GM" ? "23.12 every GM row" : "12.18 every configured GLV vault is listed once and its row"} shows its configured name and composition, TVL with supply, the fee APY the app received and a sane performance`, async ({
     page,
     chainId,
   }) => {
@@ -370,6 +314,8 @@ for (const type of ["GM", "GLV"] as const) {
     await expect.poll(() => apys.has("30d")).toBe(true);
     const rows = poolRows(page, type);
     await expect(rows.first()).toBeVisible();
+    const listed: string[] = [];
+    const gmFeeApys: number[] = [];
     await forEachPoolPage(page, type, async () => {
       await expect
         .poll(async () => {
@@ -380,10 +326,11 @@ for (const type of ["GM", "GLV"] as const) {
               name: (row.querySelectorAll("td")[0] as HTMLElement).innerText.split("\n").map((line) => line.trim()),
               tvl: (row.querySelectorAll("td")[1] as HTMLElement).innerText.split("\n").map((line) => line.trim()),
               apy: (row.querySelectorAll("td")[3] as HTMLElement).innerText.trim(),
+              performance: (row.querySelectorAll("td")[4] as HTMLElement).innerText.trim(),
             }))
           );
           if (!cells.length) return ["no rows rendered"];
-          return cells.flatMap(({ href, name: nameLines, tvl, apy: apyText }) => {
+          return cells.flatMap(({ href, name: nameLines, tvl, apy: apyText, performance }) => {
             const address = href.match(/market=(0x[\da-fA-F]{40})/)![1];
             // USDG pools put a "Whitelist only" or "Launch boost" badge between the name and the composition.
             const name = nameLines.filter((line) => line !== "Whitelist only" && line !== "Launch boost");
@@ -410,12 +357,30 @@ for (const type of ["GM", "GLV"] as const) {
               !(tvlUsd > 0) && `tvl ${tvl[0]}`,
               !(supply >= 0 && new RegExp(`${type}\\)$`).test(tvl[1] ?? "")) && `supply ${tvl[1]}`,
               !apyOk && `apy ${apyText} vs ${expectedApy * 100}`,
+              performance !== "-" && !(Math.abs(displayedNumber(performance)) < 1000) && `performance ${performance}`,
             ].filter(Boolean);
             return problems.length ? [`${address}: ${problems.join(", ")}`] : [];
           });
         })
         .toEqual([]);
+      if (type === "GM") {
+        gmFeeApys.push(...(await rows.locator("td:nth-child(4)").allInnerTexts()).map(displayedNumber));
+        return;
+      }
+      const hrefs = await rows
+        .getByRole("link", { name: "Details", exact: true })
+        .evaluateAll((links) => links.map((link) => link.getAttribute("href")!));
+      listed.push(...hrefs.map((href) => href.match(/market=(0x[\da-fA-F]{40})/)![1]));
     });
+    if (type === "GLV") {
+      expect(listed.sort()).toEqual([...readRegressionGlvs(chainId as 42161 | 43114)].sort());
+      return;
+    }
+    // Catches an /apy response that is all zeros, which the per-row match above accepts as N/A.
+    const known = gmFeeApys.filter(Number.isFinite).sort((a, b) => a - b);
+    const median = known[Math.floor(known.length / 2)];
+    expect(median).toBeGreaterThan(0.1);
+    expect(median).toBeLessThan(100);
   });
 }
 

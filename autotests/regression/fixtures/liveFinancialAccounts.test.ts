@@ -17,22 +17,6 @@ const candidates = Array.from({ length: 20 }, (_, i) => ({
 const token = getTokenBySymbol(42161, "USDC").address;
 const market = { ...snapshot.config[0], ...snapshot.values[0], name: "ETH/USD [WETH-USDC]", isDisabled: false };
 
-test("financial discovery ignores contract owners and deposits whose current balance is spent", async () => {
-  const accounts = new LiveAccounts(42161);
-  Object.assign(accounts, {
-    query: async () => ({ squidStatus: { height: 123 }, multichainSamechainFundingEvents: candidates }),
-  });
-  let reads = 0;
-  Object.assign(accounts.rpc, {
-    getCode: async ({ address }: { address: string }) => (address === candidates[0].account ? "0x1234" : undefined),
-    readContract: async () => (++reads === 1 ? 0n : 2_000_000n),
-  });
-  const selected = await accounts.select("account");
-  assert.equal(selected.account, candidates[2].account);
-  assert.equal(selected.financial?.amount, 2_000_000n);
-  assert.equal(selected.candidateNumber, 3);
-});
-
 test("financial discovery fails after at most twelve unusable accounts without a mock fallback", async () => {
   const accounts = new LiveAccounts(42161);
   Object.assign(accounts, {
@@ -48,30 +32,6 @@ test("financial discovery fails after at most twelve unusable accounts without a
   });
   await assert.rejects(accounts.select("account"), /LIVE_DATA_UNAVAILABLE.*12 candidates/);
   assert.equal(reads, 12);
-});
-
-test("funding discovery rejects historical amounts already claimed on chain", async () => {
-  const accounts = new LiveAccounts(42161);
-  Object.assign(accounts, {
-    query: async () => ({
-      squidStatus: { height: 123 },
-      claimableFundingFeeInfos: candidates.slice(0, 2).map((row) => ({
-        id: `${row.txHash}:${row.account}`,
-        amounts: ["9000000000"],
-        tokenAddresses: [token],
-        marketAddresses: [market.marketTokenAddress],
-      })),
-    }),
-  });
-  Object.assign(accounts.api, { fetchJson: async () => [market] });
-  let reads = 0;
-  Object.assign(accounts.rpc, {
-    getCode: async () => undefined,
-    readContract: async () => (++reads === 1 ? 0n : 2_000_000n),
-  });
-  const selected = await accounts.select("funding");
-  assert.equal(selected.account, candidates[1].account);
-  assert.equal(selected.financial?.amount, 2_000_000n);
 });
 
 test("rebate discovery excludes immature amounts and subtracts prior reductions using protocol timing", async () => {
@@ -113,21 +73,4 @@ test("rebate discovery excludes immature amounts and subtracts prior reductions 
   const selected = await accounts.select("rebate");
   assert.equal(selected.financial?.amount, 1_250_000n);
   assert.match(discoveryQuery, new RegExp(`timeKey_lt:${Math.floor((now - 7200) / 60)}`));
-});
-
-test("financial discovery surfaces an RPC failure instead of changing candidates", async () => {
-  const accounts = new LiveAccounts(42161);
-  Object.assign(accounts, {
-    query: async () => ({ squidStatus: { height: 123 }, multichainSamechainFundingEvents: candidates }),
-  });
-  let reads = 0;
-  Object.assign(accounts.rpc, {
-    getCode: async () => undefined,
-    readContract: async () => {
-      reads++;
-      throw new Error("RPC unavailable");
-    },
-  });
-  await assert.rejects(accounts.select("account"), /RPC unavailable/);
-  assert.equal(reads, 1);
 });

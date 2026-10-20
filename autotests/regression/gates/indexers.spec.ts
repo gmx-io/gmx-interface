@@ -25,28 +25,24 @@ if (qaStartRoot) {
   });
 }
 
-for (const { configKey } of productionChains) {
-  test(`0.02 0.04 ${configKey} checkout indexer uses the moving production tag`, async ({}, testInfo) => {
-    const endpoint = endpoints.get(configKey);
-    expect(endpoint, `No subsquid endpoint found for ${configKey}`).toBeDefined();
-    const url = new URL(endpoint!);
-    expect(url.protocol).toBe("https:");
-    expect(url.hostname).toBe("gmx.squids.live");
-    expect(url.pathname).toMatch(/:prod\/api\/graphql$/);
-    expect(url.pathname).not.toContain("@");
-    await testInfo.attach("checkout-indexer-config", {
-      body: JSON.stringify({ configKey, endpoint, sha256: sha256(source) }),
-      contentType: "application/json",
-    });
-  });
-}
+test("0.03 every production chain has a subsquid indexer", () => {
+  expect(
+    productionChains.filter(({ configKey }) => !endpoints.has(configKey)).map(({ configKey }) => configKey)
+  ).toEqual([]);
+});
 
 for (const { keys, url } of readProductionEndpoints().filter(({ file }) => file === "src/config/indexers.ts")) {
   const [, configKey, kind] = keys;
-  test(`0.03 ${configKey} ${kind} indexer answers and is within 30 minutes of the chain head`, async ({
+  const isSquid = kind === "subsquid";
+  test(`${isSquid ? "0.02 0.03 0.04" : "0.03"} ${configKey} ${kind} indexer ${isSquid ? "uses the moving production tag, " : ""}answers and is within 30 minutes of the chain head`, async ({
     request,
   }, testInfo) => {
-    const isSquid = kind === "subsquid";
+    if (isSquid) {
+      const { protocol, hostname, pathname } = new URL(url);
+      expect([protocol, hostname]).toEqual(["https:", "gmx.squids.live"]);
+      expect(pathname).toMatch(/:prod\/api\/graphql$/);
+      expect(pathname).not.toContain("@");
+    }
     const response = await request.post(url, {
       data: {
         query: isSquid ? "{ squidStatus { height } }" : "{ _meta { block { number timestamp } hasIndexingErrors } }",

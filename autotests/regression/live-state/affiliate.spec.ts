@@ -5,6 +5,7 @@ import { getContract } from "../../../sdk/src/configs/contracts";
 import { formatBigUsd, formatUsd } from "../../../sdk/src/utils/numbers/utils";
 import { test } from "../fixtures/liveWallet";
 import type { LiveAccount, LiveAccounts } from "../fixtures/liveAccounts";
+import { openTooltip } from "../fixtures/marketData";
 
 test.use({ liveProfile: "affiliate" });
 
@@ -29,7 +30,7 @@ const graphql = (response: Response) => {
 
 const referralsUrl = (chainId: number) => `-${getChainSlug(chainId)}-referrals/`;
 
-// Code rows from the unmodified referrals-indexer response for the current chain, in dashboard order.
+// affiliateStats arrive in dashboard row order.
 async function openDashboard(page: Page, liveAccount: LiveAccount, chainId: number) {
   const responsePromise = page.waitForResponse(
     (response) =>
@@ -52,7 +53,6 @@ async function openDashboard(page: Page, liveAccount: LiveAccount, chainId: numb
   return { stats, table };
 }
 
-// Rebate and discount shares from ReferralStorage, formatted like the dashboard (up to 3 decimals).
 async function readTier(liveAccounts: LiveAccounts, account: LiveAccount["account"]) {
   const storage = {
     address: getAddress(getContract(liveAccounts.chainId, "ReferralStorage")),
@@ -146,20 +146,14 @@ test("15.11 15.13 live affiliate: top code volume, traders, rebates and discount
   await expect(cells.nth(3)).toHaveText(formatBigUsd(rebate(top)));
 
   const tooltipRow = (label: string) => page.getByText(label, { exact: true }).locator("..");
-  // Re-hover if late-loading content moves the cell away from the pointer.
-  const open = (cell: number, label: string) =>
-    expect(async () => {
-      await cells.nth(cell).locator(".numbers").first().hover();
-      await expect(tooltipRow(label)).toBeVisible({ timeout: 2_000 });
-    }).toPass({ timeout: 30_000 });
-  await open(1, "V1 volume:");
+  await openTooltip(page, cells.nth(1).locator(".numbers").first());
   await expect(tooltipRow("V1 volume:")).toContainText(formatBigUsd(BigInt(top.v1Data.volume)));
   await expect(tooltipRow("V2 volume:")).toContainText(formatBigUsd(BigInt(top.v2Data.volume)));
-  await open(3, "V1 rebates:");
+  await openTooltip(page, cells.nth(3).locator(".numbers").first());
   await expect(tooltipRow("V1 rebates:")).toContainText(formatUsd(rebate(top.v1Data), { fallbackToZero: true })!);
   await expect(tooltipRow("V2 rebates:")).toContainText(formatUsd(rebate(top.v2Data), { fallbackToZero: true })!);
 
-  // The share card states the trader discount share and, above $100, the code's indexed discounts.
+  // The discounts line appears only above $100.
   const tier = await readTier(liveAccounts, liveAccount.account);
   await row.getByRole("button", { name: "Share", exact: true }).click();
   const share = page
@@ -230,10 +224,7 @@ test.describe("other chains", () => {
       }
       const notRegistered = page.getByText(/^Code not registered on:/);
       const alreadyTaken = page.getByText(/^Code already taken on:/);
-      await expect(async () => {
-        await icon.hover();
-        await expect(notRegistered.or(alreadyTaken).first()).toBeVisible({ timeout: 2_000 });
-      }).toPass({ timeout: 30_000 });
+      await openTooltip(page, icon);
       if (missing.length) for (const name of missing) await expect(notRegistered).toContainText(name);
       else await expect(notRegistered).toHaveCount(0);
       if (taken.length) for (const name of taken) await expect(alreadyTaken).toContainText(name);

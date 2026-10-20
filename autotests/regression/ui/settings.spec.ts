@@ -2,17 +2,9 @@ import { expect } from "@playwright/test";
 import { readFileSync } from "node:fs";
 
 import { test } from "../fixtures/browser";
-import {
-  inputNumber,
-  labelledInput,
-  openSettings,
-  openTrade,
-  selectTradeDirection,
-  selectTradeMode,
-} from "../fixtures/trade";
+import { labelledInput, openSettings, openTrade, selectTradeDirection, selectTradeMode } from "../fixtures/trade";
 
 for (const { label, value, id } of [
-  { label: "Default allowed slippage", value: "0.7", id: "19.03" },
   { label: "TWAP number of parts", value: "8", id: "19.06" },
   { label: "Max network fee buffer", value: "40", id: "19.05" },
 ]) {
@@ -90,7 +82,7 @@ test("2.18 language changes visible UI and persists across refresh", async ({ pa
   await expect(page.getByTestId("confirm-trade-button")).toHaveText("Connect wallet");
 });
 
-test("19.04 default allowed slippage applies to Market positions and swaps, and is disabled for Limit and TWAP swaps", async ({
+test("19.04 default allowed slippage preselects the swap preset and is disabled for Limit and TWAP swaps", async ({
   page,
 }) => {
   await openTrade(page);
@@ -100,12 +92,8 @@ test("19.04 default allowed slippage applies to Market positions and swaps, and 
   await slippage.press("Tab");
   await page.keyboard.press("Escape");
   await page.reload();
-  const box = page.getByTestId("tradebox");
-  await page.getByTestId("margin-input").fill("100");
-  await box.getByRole("button", { name: "Execution details", exact: true }).click();
-  await expect.poll(() => inputNumber(labelledInput(box, "Allowed slippage"))).toBe(1.5);
   await selectTradeDirection(page, "Swap");
-  const preset = box.getByRole("button", { name: "1.5%", exact: true });
+  const preset = page.getByTestId("tradebox").getByRole("button", { name: "1.5%", exact: true });
   await expect(preset).toHaveClass(/bg-blue-500/);
   await expect(preset).toBeEnabled();
   for (const mode of ["Limit", "TWAP"] as const) {

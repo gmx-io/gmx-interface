@@ -1,45 +1,12 @@
-import { readFileSync } from "node:fs";
 import { expect, type Locator, type Page } from "@playwright/test";
-import ts from "typescript";
 
+import { datedChainAnnouncements } from "../fixtures/announcements";
 import { test } from "../fixtures/browser";
 import { openTooltip } from "../fixtures/marketData";
 
-const EVENTS_PATH = "src/config/events.tsx";
-
-// Announcement events a disconnected wallet sees in the What's new toast, read from the release config.
+// Always-on announcements shown in the What's new toast.
 function toastEvents(chainId: number) {
-  const file = ts.createSourceFile(
-    EVENTS_PATH,
-    readFileSync(EVENTS_PATH, "utf8"),
-    ts.ScriptTarget.Latest,
-    true,
-    ts.ScriptKind.TSX
-  );
-  const list = file.statements
-    .filter(ts.isVariableStatement)
-    .flatMap((statement) => statement.declarationList.declarations)
-    .find((declaration) => declaration.name.getText(file) === "appEventsData")?.initializer;
-  if (!list || !ts.isArrayLiteralExpression(list)) throw new Error(`Missing appEventsData in ${EVENTS_PATH}`);
-  return list.elements.filter(ts.isObjectLiteralExpression).flatMap((event) => {
-    const props = Object.fromEntries(
-      event.properties.filter(ts.isPropertyAssignment).map((prop) => [prop.name.getText(file), prop.initializer])
-    );
-    const text = (name: string) => {
-      const value = props[name];
-      return value && ts.isStringLiteral(value) ? value.text : undefined;
-    };
-    const chains = props.chains?.getText(file);
-    const visible =
-      props.isActive?.kind === ts.SyntaxKind.TrueKeyword &&
-      !props.flagId &&
-      !props.requiresOpenPosition &&
-      (!chains || chains.includes(chainId === 42161 ? "ARBITRUM" : "AVALANCHE"));
-    const [id, title, start, end] = [text("id"), text("title"), text("startDate"), text("endDate")];
-    if (!visible || !id || !start || !end) return [];
-    const date = (raw: string) => new Date(`${raw.replace(",", "")} UTC`).getTime();
-    return [{ id, title, start: date(start), end: date(end) }];
-  });
+  return datedChainAnnouncements(chainId).filter((event) => event.isActive && !event.flagId);
 }
 
 function tooltipPopup(page: Page) {
@@ -161,7 +128,7 @@ test("2.24 the What's new banner shows the current announcement and stays dismis
 }) => {
   const events = toastEvents(chainId);
   const latest = events.filter((event) => event.title).sort((a, b) => b.start - a.start)[0];
-  expect(latest, `a titled, always-on announcement in ${EVENTS_PATH}`).toBeDefined();
+  expect(latest, "a titled, always-on announcement in src/config/events.tsx").toBeDefined();
   const now = latest.start + 60 * 60 * 1000;
   const shown = events.filter((event) => event.start <= now && now < event.end);
   await page.clock.install({ time: now });

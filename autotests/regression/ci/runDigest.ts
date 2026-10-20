@@ -19,7 +19,7 @@ export type PlaywrightReport = {
 const MAX_FAILURES = 50;
 const MAX_FLAKY = 40;
 
-export function cleanError(message = "", limit = 1200) {
+function cleanError(message = "", limit = 1200) {
   const text = message.replace(/\u001b\[[0-9;]*m/g, "").trim();
   return text.length > limit ? `${text.slice(0, limit)}…` : text;
 }
@@ -112,8 +112,6 @@ export function buildRunDigest(report: PlaywrightReport) {
     runErrors,
   };
 }
-
-export type RunDigest = ReturnType<typeof buildRunDigest>;
 
 const TEST_OR_CI_FILE =
   /^(?:autotests\/|\.github\/|playwright[^/]*\.config\.ts$)|(?:^|\/)__tests__\/|\.(?:spec|test|ct\.spec|stories)\.[cm]?[jt]sx?$|\.md$/;

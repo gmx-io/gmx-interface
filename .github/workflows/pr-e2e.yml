@@ -78,7 +78,6 @@ jobs:
             core.setOutput('pr_number', preview.prNumber);
 
   e2e:
-    # Arbitrum runs in full; the avalanche projects add the small set of tests tagged @avalanche.
     name: E2E (shard ${{ matrix.shard }}/3)
     needs: resolve-preview
     runs-on: ubuntu-latest
@@ -95,7 +94,6 @@ jobs:
       REGRESSION_DEPLOYMENT_SHA: ${{ needs.resolve-preview.outputs.head_sha }}
       REGRESSION_DEPLOYMENT_CHECK_URL: ${{ needs.resolve-preview.outputs.check_url }}
       REGRESSION_CANDIDATE_ROOT: ${{ github.workspace }}/.context/regression-candidate
-      # Source-chain RPC reads in connected-state fixtures; public RPCs rate-limit CI runners.
       REGRESSION_ALCHEMY_KEY: ${{ secrets.REGRESSION_ALCHEMY_KEY }}
     steps:
       - uses: actions/checkout@v4
@@ -186,7 +184,6 @@ jobs:
           PLAYWRIGHT_JSON_OUTPUT_FILE=merged/report.json PLAYWRIGHT_HTML_OUTPUT_DIR=merged/html \
             yarn playwright merge-reports --reporter=json,html all-blobs
           node autotests/regression/report.cjs merged/report.json > merged/summary.md || true
-          cat merged/summary.md >> "$GITHUB_STEP_SUMMARY"
       - name: Upload merged reports
         uses: actions/upload-artifact@v4
         with:
@@ -212,7 +209,6 @@ jobs:
             --report "Arbitrum + Avalanche"=merged/report.json \
             --summary "Arbitrum + Avalanche"=merged/summary.md \
             --changed-files changed-files.txt --out regression-comment.md
-          cat regression-comment.md >> "$GITHUB_STEP_SUMMARY"
       - name: Post or update the PR comment
         # Fork PRs get a read-only token; their summary stays in the job summary.
         if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository

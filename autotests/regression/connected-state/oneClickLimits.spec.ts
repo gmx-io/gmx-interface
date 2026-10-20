@@ -13,7 +13,7 @@ import {
   subaccountIntegrationIdKey,
   subaccountListKey,
 } from "../../../sdk/src/configs/dataStore";
-import { test } from "../fixtures/accountState";
+import { RATE_LIMITED_RPC_TIMEOUT, test } from "../fixtures/accountState";
 
 const NONCES = toFunctionSelector("subaccountApprovalNonces(address)");
 
@@ -89,11 +89,10 @@ for (const { rows, name, warning, onchain } of [
     });
     await accountState.connect(page);
     await page.getByTestId("margin-input").fill("10");
-    // Subaccount reads share multicall batches with rate-limited public RPC reads.
-    await expect(page.getByText(warning)).toBeVisible({ timeout: 45_000 });
+    await expect(page.getByText(warning)).toBeVisible({ timeout: RATE_LIMITED_RPC_TIMEOUT });
     await page.getByRole("button", { name: "Re-enable", exact: true }).click();
     // Re-enabling re-reads the subaccount state before the signature request.
-    await expect.poll(() => walletReviews.length, { timeout: 45_000 }).toBe(1);
+    await expect.poll(() => walletReviews.length, { timeout: RATE_LIMITED_RPC_TIMEOUT }).toBe(1);
     const [request] = walletReviews;
     expect(request.method).toBe("eth_signTypedData_v4");
     expect(getAddress(request.params![0] as string)).toBe(account);

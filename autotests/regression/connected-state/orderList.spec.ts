@@ -4,7 +4,11 @@ import { test } from "../fixtures/accountState";
 import { accountData } from "../fixtures/accountData";
 import { selectMarket } from "../fixtures/trade";
 
-test("9.09 orders on two markets all show whichever market is selected", async ({ page, accountState, chainId }) => {
+test("9.08 9.09 orders on two markets all show whichever market is selected", async ({
+  page,
+  accountState,
+  chainId,
+}) => {
   const eth = accountState.data.order(3, true, 1);
   const btc = {
     ...accountData(chainId, accountState.address, "BTC").order(3, false, 2),

@@ -71,7 +71,6 @@ test("1.11 mobile bottom sheet follows a drag, snaps back after a short drag and
   await page.mouse.down();
   await page.mouse.move(start.x, start.y + 150, { steps: 8 });
   await expect.poll(() => sheetTop(page)).toBeGreaterThan(top + 100);
-  // Releasing while moving back up keeps the sheet open.
   await page.mouse.move(start.x, start.y + 50, { steps: 8 });
   await page.mouse.up();
   await expect.poll(() => sheetTop(page)).toBe(top);

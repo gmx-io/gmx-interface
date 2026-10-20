@@ -7,7 +7,6 @@ import { selectNetwork } from "../fixtures/network";
 
 type Competition = { href: string; chain?: "Arbitrum" | "Avalanche"; enabled: boolean; from: number; to?: number };
 
-// Competitions configured in LEADERBOARD_PAGES; the app shows them from this static config.
 function readCompetitions() {
   const path = "src/domain/synthetics/leaderboard/constants.ts";
   const file = ts.createSourceFile(path, readFileSync(path, "utf8"), ts.ScriptTarget.Latest, true);

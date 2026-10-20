@@ -2,7 +2,7 @@ import { expect } from "@playwright/test";
 import { zeroAddress } from "viem";
 
 import { accountData } from "../fixtures/accountData";
-import { test } from "../fixtures/accountState";
+import { RATE_LIMITED_RPC_TIMEOUT, test } from "../fixtures/accountState";
 import { inputNumber } from "../fixtures/trade";
 import { getTokenBySymbol } from "../../../sdk/src/configs/tokens";
 
@@ -15,8 +15,7 @@ test.beforeEach(async ({ page, accountState, chainId }) => {
   accountState.gmxBalances.set(accountState.data.collateral.address, 250n * 10n ** 6n);
   await accountState.connect(page);
   await page.getByTestId("user-address").click();
-  // Rate-limited public RPC reads are retried for up to the app's 20s multicall timeout.
-  await expect(page.getByTestId("gmx-account-balance")).toContainText(/\$\s*\d/, { timeout: 45_000 });
+  await expect(page.getByTestId("gmx-account-balance")).toContainText(/\$\s*\d/, { timeout: RATE_LIMITED_RPC_TIMEOUT });
 });
 
 test("4.02 4.03 4.05 4.06 GMX Account and Wallet asset lists show their own mocked USDC balances", async ({ page }) => {

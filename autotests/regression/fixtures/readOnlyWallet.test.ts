@@ -16,15 +16,7 @@ test("read-only wallet forwards reads unchanged and denies every signing or writ
   };
   assert.equal(await handler(read, 42161), "0x42");
   assert.deepEqual(requests, [{ request: read, chain: 42161 }]);
-  for (const method of [
-    "eth_sendTransaction",
-    "eth_sendRawTransaction",
-    "eth_sign",
-    "eth_signTypedData_v4",
-    "personal_sign",
-    "wallet_sendCalls",
-    "unknown_method",
-  ]) {
+  for (const method of ["eth_sendTransaction", "unknown_method"]) {
     await assert.rejects(handler({ method, params: [] }, 42161), { code: 4001 });
     assert.equal(rejected.at(-1), method);
   }

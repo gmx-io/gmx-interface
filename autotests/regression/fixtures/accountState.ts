@@ -11,6 +11,7 @@ import type { ApiOrderInfo } from "../../../sdk/src/utils/orders/types";
 import { mockWalletBalances, type WalletAllowances } from "./walletBalances";
 import { zeroAddress, toHex, getAddress, type Hex } from "viem";
 import type { ContractsChainId } from "../../../sdk/src/configs/chains";
+import { getContract } from "../../../sdk/src/configs/contracts";
 
 import { unsignedTransactionReview } from "./unsignedTransactions";
 import { mockTradingMarket } from "./tradingMarket";
@@ -31,6 +32,18 @@ export type AccountState = {
   connect: (page: Page, path?: string) => Promise<void>;
   refresh: (page: Page) => Promise<void>;
 };
+
+// Rate-limited public RPC reads are retried for up to the app's 20s multicall timeout.
+export const RATE_LIMITED_RPC_TIMEOUT = 45_000;
+
+export function fundTrading(accountState: AccountState, chainId: number, usdc = 1000n * 10n ** 6n) {
+  accountState.balances.set(accountState.data.collateral.address, usdc);
+  accountState.balances.set(zeroAddress, 10n ** 18n);
+  accountState.allowances.set(
+    getAddress(accountState.data.collateral.address),
+    new Map([[getAddress(getContract(chainId as ContractsChainId, "SyntheticsRouter")), usdc]])
+  );
+}
 
 export const test = browserTest.extend<{
   accountState: AccountState;
@@ -110,7 +123,6 @@ export const test = browserTest.extend<{
       state.gmxBalances,
       state.allowances,
       review,
-      true,
       (target, callData) => state.contractRead?.(target, callData),
       state.sourceChainBalances
     );

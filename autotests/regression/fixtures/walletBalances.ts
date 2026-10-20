@@ -30,14 +30,13 @@ type PatchResult = ((original: Hex | undefined) => Hex) & {
   rejection?: string;
 };
 
-// Source-chain reads are identified by the public/Alchemy RPC host the app sends them to.
 const SOURCE_CHAIN_RPC_HOSTS: [RegExp, number][] = [
   [/(^|[./-])base([./-]|$)/, 8453],
   [/(^|[./-])(bsc|bnb)([./-]|$)/, 56],
   [/(^|[./-])(eth|ethereum)([./-]|$)/, 1],
 ];
 
-export function getSourceChainIdByRpcUrl(url: string) {
+function getSourceChainIdByRpcUrl(url: string) {
   const { host, pathname } = new URL(url);
   return SOURCE_CHAIN_RPC_HOSTS.find(([pattern]) => pattern.test(`${host}${pathname}`))?.[1];
 }
@@ -45,14 +44,10 @@ export function getSourceChainIdByRpcUrl(url: string) {
 const ALCHEMY_NETWORKS: Record<number, string> = { 1: "eth-mainnet", 56: "bnb-mainnet", 8453: "base-mainnet" };
 
 // Public source-chain RPCs rate-limit parallel and CI runs; REGRESSION_ALCHEMY_KEY moves those reads to Alchemy.
-export function getDedicatedRpcUrl(url: string) {
-  const key = process.env.REGRESSION_ALCHEMY_KEY;
-  const chainId = getSourceChainIdByRpcUrl(url);
-  return key && chainId ? `https://${ALCHEMY_NETWORKS[chainId]}.g.alchemy.com/v2/${key}` : undefined;
-}
-
 function dedicatedRpcUrlFor(route: Route) {
-  return process.env.REGRESSION_ALCHEMY_KEY ? getDedicatedRpcUrl(route.request().url()) : undefined;
+  const key = process.env.REGRESSION_ALCHEMY_KEY;
+  const chainId = key ? getSourceChainIdByRpcUrl(route.request().url()) : undefined;
+  return chainId ? `https://${ALCHEMY_NETWORKS[chainId]}.g.alchemy.com/v2/${key}` : undefined;
 }
 
 // Node fetch rather than route.fetch: Playwright traces record route.fetch URLs, which would expose the key.
@@ -91,6 +86,14 @@ async function passThrough(route: Route, body: RpcRequest | RpcRequest[]) {
     });
   } catch {
     await route.abort("failed").catch(() => undefined);
+  }
+}
+
+function tryDecode<T>(decode: () => T) {
+  try {
+    return decode();
+  } catch {
+    return undefined;
   }
 }
 
@@ -136,9 +139,8 @@ export async function mockWalletBalances(
   balances: Map<string, bigint>,
   chainId: ContractsChainId,
   gmxBalances: Map<string, bigint>,
-  allowances: WalletAllowances = new Map(),
+  allowances: WalletAllowances,
   review?: ReturnType<typeof unsignedTransactionReview>,
-  accountStateViaApi = false,
   contractRead?: (target: string, data: Hex) => Hex | undefined,
   // A source chain listed here reads only its own map instead of the shared wallet balances.
   sourceChainBalances?: Map<number, Map<string, bigint>>
@@ -148,127 +150,108 @@ export async function mockWalletBalances(
   function patchCall(target: string, callData: Hex, walletBalances: Map<string, bigint>): PatchResult | undefined {
     const overridden = contractRead?.(getAddress(target), callData);
     if (overridden !== undefined) return Object.assign(() => overridden, { standalone: true });
-    if (accountStateViaApi && getAddress(target) === getAddress(getContract(chainId, "SyntheticsReader"))) {
-      try {
-        const call = decodeFunctionData({ abi: SyntheticsReader, data: callData });
-        if (
-          (call.functionName === "getAccountPositions" || call.functionName === "getAccountOrders") &&
-          getAddress(call.args[1]) === account
-        ) {
-          // A real RPC would erase the API fixture with the random account's empty inventory.
-          return Object.assign((): Hex => "0x", {
-            standalone: true,
-            rejection: "Account-state fixture supplies positions and orders through the API only",
-          });
-        }
-      } catch {
-        /* Public reader calls remain live. */
-      }
-    }
-    if (getAddress(target) === getAddress(getContract(chainId, "Reader"))) {
-      try {
-        const call = decodeFunctionData({ abi: Reader, data: callData });
-        if (call.functionName === "getTokenBalancesWithSupplies" && getAddress(call.args[0]) === account) {
-          return (original) => {
-            if (!original) throw new Error("Cannot mock staking wallet balances without token supplies");
-            const values = decodeFunctionResult({
-              abi: Reader,
-              functionName: "getTokenBalancesWithSupplies",
-              data: original,
-            });
-            return encodeFunctionResult({
-              abi: Reader,
-              functionName: "getTokenBalancesWithSupplies",
-              result: values.map((value, index) =>
-                index % 2 === 0 ? walletBalances.get(getAddress(call.args[1][index / 2])) ?? 0n : value
-              ),
-            });
-          };
-        }
-      } catch {
-        /* Other reader calls remain live. */
-      }
-    }
-    if (getAddress(target) === getAddress(getContract(chainId, "DataStore"))) {
-      try {
-        const call = decodeFunctionData({ abi: DataStore, data: callData });
-        if (call.functionName === "getUint" && accountKeys.has(call.args[0])) {
-          const token = accountKeys.get(call.args[0])!;
-          return Object.assign(
-            () =>
-              encodeFunctionResult({ abi: DataStore, functionName: "getUint", result: gmxBalances.get(token) ?? 0n }),
-            { standalone: true }
-          );
-        }
-      } catch {
-        /* Other storage reads remain live. */
-      }
-    }
-    try {
-      const call = decodeFunctionData({ abi: erc20Abi, data: callData });
-      if (call.functionName === "allowance" && getAddress(call.args[0]) === account) {
-        // The fixture account is new, so an approval it was not given is zero on chain too.
-        const amount = allowances.get(getAddress(target))?.get(getAddress(call.args[1])) ?? 0n;
-        return Object.assign(() => encodeFunctionResult({ abi: erc20Abi, functionName: "allowance", result: amount }), {
+    const isContract = (name: Parameters<typeof getContract>[1]) =>
+      getAddress(target) === getAddress(getContract(chainId, name));
+    if (isContract("SyntheticsReader")) {
+      const call = tryDecode(() => decodeFunctionData({ abi: SyntheticsReader, data: callData }));
+      if (
+        (call?.functionName === "getAccountPositions" || call?.functionName === "getAccountOrders") &&
+        getAddress(call.args[1]) === account
+      ) {
+        // A real RPC would erase the API fixture with the random account's empty inventory.
+        return Object.assign((): Hex => "0x", {
           standalone: true,
+          rejection: "Account-state fixture supplies positions and orders through the API only",
         });
       }
-      if (call.functionName === "balanceOf" && getAddress(call.args[0]) === account) {
-        return Object.assign(
-          () =>
-            encodeFunctionResult({
-              abi: erc20Abi,
-              functionName: "balanceOf",
-              result: walletBalances.get(getAddress(target)) ?? 0n,
-            }),
-          { standalone: true }
-        );
-      }
-    } catch {
-      /* This is not an ERC20 balance read. */
     }
-    try {
-      const call = decodeFunctionData({ abi: multicall3Abi, data: callData });
-      if (call.functionName === "getEthBalance" && getAddress(call.args[0]) === account) {
-        return Object.assign(
-          () =>
-            encodeFunctionResult({
-              abi: multicall3Abi,
-              functionName: "getEthBalance",
-              result: walletBalances.get(zeroAddress) ?? 0n,
-            }),
-          { standalone: true }
-        );
-      }
-      if (call.functionName !== "aggregate3") return;
-      const patches = call.args[0].map((item) => patchCall(item.target, item.callData, walletBalances));
-      if (!patches.some(Boolean)) return;
-      const standalone = patches.every((patch) => patch?.standalone);
-      return Object.assign(
-        (original: Hex | undefined) => {
-          const results = original
-            ? decodeFunctionResult({ abi: multicall3Abi, functionName: "aggregate3", data: original })
-            : patches.map(() => ({ success: false, returnData: "0x" }));
-          return encodeFunctionResult({
-            abi: multicall3Abi,
-            functionName: "aggregate3",
-            result: results.map((result, index) => {
-              const patch = patches[index];
-              if (!patch) return result as { success: boolean; returnData: `0x${string}` };
-              if (!patch.standalone && !patch.recoverable && !result.success)
-                return { success: false, returnData: "0x" as const };
-              return {
-                success: !patch.rejection,
-                returnData: patch(result.success ? result.returnData : undefined) as `0x${string}`,
-              };
-            }),
+    if (isContract("Reader")) {
+      const call = tryDecode(() => decodeFunctionData({ abi: Reader, data: callData }));
+      if (call?.functionName === "getTokenBalancesWithSupplies" && getAddress(call.args[0]) === account) {
+        return (original) => {
+          if (!original) throw new Error("Cannot mock staking wallet balances without token supplies");
+          const values = decodeFunctionResult({
+            abi: Reader,
+            functionName: "getTokenBalancesWithSupplies",
+            data: original,
           });
-        },
-        { standalone, recoverable: true }
-      );
-    } catch {
-      /* Other contract reads use their real response. */
+          return encodeFunctionResult({
+            abi: Reader,
+            functionName: "getTokenBalancesWithSupplies",
+            result: values.map((value, index) =>
+              index % 2 === 0 ? walletBalances.get(getAddress(call.args[1][index / 2])) ?? 0n : value
+            ),
+          });
+        };
+      }
     }
+    if (isContract("DataStore")) {
+      const call = tryDecode(() => decodeFunctionData({ abi: DataStore, data: callData }));
+      if (call?.functionName === "getUint" && accountKeys.has(call.args[0])) {
+        const token = accountKeys.get(call.args[0])!;
+        return Object.assign(
+          () => encodeFunctionResult({ abi: DataStore, functionName: "getUint", result: gmxBalances.get(token) ?? 0n }),
+          { standalone: true }
+        );
+      }
+    }
+    const erc20Call = tryDecode(() => decodeFunctionData({ abi: erc20Abi, data: callData }));
+    if (erc20Call?.functionName === "allowance" && getAddress(erc20Call.args[0]) === account) {
+      // The fixture account is new, so an approval it was not given is zero on chain too.
+      const amount = allowances.get(getAddress(target))?.get(getAddress(erc20Call.args[1])) ?? 0n;
+      return Object.assign(() => encodeFunctionResult({ abi: erc20Abi, functionName: "allowance", result: amount }), {
+        standalone: true,
+      });
+    }
+    if (erc20Call?.functionName === "balanceOf" && getAddress(erc20Call.args[0]) === account) {
+      return Object.assign(
+        () =>
+          encodeFunctionResult({
+            abi: erc20Abi,
+            functionName: "balanceOf",
+            result: walletBalances.get(getAddress(target)) ?? 0n,
+          }),
+        { standalone: true }
+      );
+    }
+    const call = tryDecode(() => decodeFunctionData({ abi: multicall3Abi, data: callData }));
+    if (call?.functionName === "getEthBalance" && getAddress(call.args[0]) === account) {
+      return Object.assign(
+        () =>
+          encodeFunctionResult({
+            abi: multicall3Abi,
+            functionName: "getEthBalance",
+            result: walletBalances.get(zeroAddress) ?? 0n,
+          }),
+        { standalone: true }
+      );
+    }
+    if (call?.functionName !== "aggregate3") return;
+    const patches = call.args[0].map((item) => patchCall(item.target, item.callData, walletBalances));
+    if (!patches.some(Boolean)) return;
+    const standalone = patches.every((patch) => patch?.standalone);
+    return Object.assign(
+      (original: Hex | undefined) => {
+        const results = original
+          ? decodeFunctionResult({ abi: multicall3Abi, functionName: "aggregate3", data: original })
+          : patches.map(() => ({ success: false, returnData: "0x" }));
+        return encodeFunctionResult({
+          abi: multicall3Abi,
+          functionName: "aggregate3",
+          result: results.map((result, index) => {
+            const patch = patches[index];
+            if (!patch) return result as { success: boolean; returnData: `0x${string}` };
+            if (!patch.standalone && !patch.recoverable && !result.success)
+              return { success: false, returnData: "0x" as const };
+            return {
+              success: !patch.rejection,
+              returnData: patch(result.success ? result.returnData : undefined) as `0x${string}`,
+            };
+          }),
+        });
+      },
+      { standalone, recoverable: true }
+    );
   }
 
   await context.route("**/*", async (route) => {

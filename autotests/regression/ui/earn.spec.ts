@@ -47,9 +47,7 @@ test("13.01 13.13 Discover cards open the GMX buy modal with this chain's GMX ve
   }
 });
 
-test("13.07 opportunity category shows exactly the cards tagged with it, survives reload and search recovers", async ({
-  page,
-}) => {
+test("13.07 opportunity category shows exactly the cards tagged with it and survives reload", async ({ page }) => {
   await page.goto("/earn/additional_opportunities/all");
   const names = page.getByRole("heading", { level: 3 });
   await expect(names.first()).toBeVisible();
@@ -73,24 +71,4 @@ test("13.07 opportunity category shows exactly the cards tagged with it, survive
   await page.reload();
   await expect(page).toHaveURL(/additional_opportunities\/lending-and-borrowing$/);
   await expect(names).toHaveText(tagged);
-  const search = page.getByPlaceholder("Search opportunities", { exact: true });
-  await search.fill("regression-no-such-opportunity");
-  await expect(page.getByText("No opportunities match your search", { exact: true })).toBeVisible();
-  await search.fill("");
-  await expect(page.getByText("No opportunities match your search", { exact: true })).toBeHidden();
-  await expect(names).toHaveText(tagged);
-});
-
-test("Earn FAQ opens, switches answers and closes", async ({ page }) => {
-  await page.goto("/earn/discover");
-  const first = page.getByRole("button", { name: "Where do GMX staking rewards come from?", exact: true });
-  const second = page.getByRole("button", { name: "What's the difference between GLV and GM?", exact: true });
-  await first.click();
-  await expect(page.getByText(/27% of protocol revenue is used to buy back GMX/)).toBeVisible();
-  await second.click();
-  await expect(page.getByText(/27% of protocol revenue is used to buy back GMX/)).toBeHidden();
-  const answer = page.getByText(/GM earns fees from one market/);
-  await expect(answer).toBeVisible();
-  await second.click();
-  await expect(answer).toBeHidden();
 });

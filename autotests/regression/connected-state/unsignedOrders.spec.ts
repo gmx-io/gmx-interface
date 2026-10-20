@@ -1,16 +1,16 @@
 import { expect, type Page } from "@playwright/test";
-import { decodeFunctionData, getAddress, maxUint256, zeroAddress } from "viem";
+import { getAddress, maxUint256 } from "viem";
 
-import ExchangeRouter from "../../../sdk/src/abis/ExchangeRouter";
 import { getContract } from "../../../sdk/src/configs/contracts";
 import type { ContractsChainId } from "../../../sdk/src/configs/chains";
-import { test, type AccountState } from "../fixtures/accountState";
+import { fundTrading, test, type AccountState } from "../fixtures/accountState";
 import type { WalletRequest } from "../fixtures/injectedWallet";
 import { infoRowValue, openExecutionDetails } from "../fixtures/marketData";
 import arbitrum from "../fixtures/markets/arbitrum.json";
 import avalanche from "../fixtures/markets/avalanche.json";
 import { inputNumber, labelledInput, openSettings, setSettingsToggle } from "../fixtures/trade";
 import { configureClassicTrading, fillPositionOrder } from "../fixtures/tradingForms";
+import { inspectRejectedCreateOrder } from "../fixtures/walletReview";
 
 const USD = 10n ** 30n;
 const orderTypes = { Market: 2, Limit: 3, "Stop Market": 8 } as const;
@@ -18,12 +18,7 @@ type Mode = keyof typeof orderTypes;
 
 test.use({ walletReviewMode: true, unsignedReviewMode: true });
 test.beforeEach(async ({ page, accountState, chainId }) => {
-  accountState.balances.set(accountState.data.collateral.address, 1000n * 10n ** 6n);
-  accountState.balances.set(zeroAddress, 10n ** 18n);
-  accountState.allowances.set(
-    getAddress(accountState.data.collateral.address),
-    new Map([[getAddress(getContract(chainId as ContractsChainId, "SyntheticsRouter")), 1000n * 10n ** 6n]])
-  );
+  fundTrading(accountState, chainId);
   await accountState.connect(page);
   await configureClassicTrading(page);
 });
@@ -58,20 +53,9 @@ async function submitOrder(
   await beforeSubmit?.();
   await expect(button).not.toHaveText(/Approve|Loading/);
   await expect(button).toBeEnabled({ timeout: 30_000 });
-  await button.click();
-  await expect.poll(() => walletReviews.length).toBe(1);
-  expect(walletReviews[0].method).toBe("eth_sendTransaction");
-  const tx = walletReviews[0].params![0] as { from: string; to: string; data: string; value: string };
+  const { tx, calls, order } = await inspectRejectedCreateOrder(button, walletReviews);
   expect(getAddress(tx.from)).toBe(accountState.address);
   expect(getAddress(tx.to)).toBe(getAddress(getContract(chainId as ContractsChainId, "ExchangeRouter")));
-  const root = decodeFunctionData({ abi: ExchangeRouter, data: tx.data });
-  if (root.functionName !== "multicall") throw new Error("Expected a UI order batch");
-  const calls = root.args[0].map((data) => decodeFunctionData({ abi: ExchangeRouter, data }));
-  const creates = calls.filter((call) => call.functionName === "createOrder");
-  expect(creates).toHaveLength(1);
-  const create = creates[0];
-  if (create.functionName !== "createOrder") throw new Error("Expected createOrder");
-  const order = create.args[0];
   expect(getAddress(order.addresses.receiver)).toBe(accountState.address);
   expect(getAddress(order.addresses.market)).toBe(getAddress(accountState.data.market.marketTokenAddress));
   expect(getAddress(order.addresses.initialCollateralToken)).toBe(getAddress(accountState.data.collateral.address));
@@ -85,9 +69,8 @@ async function submitOrder(
   } else expect(order.numbers.sizeDeltaUsd).toBe((201n * USD) / 100n);
   expect(order.numbers.triggerPrice).toBe(trigger ? BigInt(trigger) * 10n ** 12n : 0n);
   expect(order.numbers.executionFee).toBeGreaterThan(0n);
-  expect(BigInt(tx.value)).toBe(order.numbers.executionFee);
+  expect(BigInt(tx.value ?? "0")).toBe(order.numbers.executionFee);
   expect(calls.filter((call) => !["sendWnt", "sendTokens", "createOrder"].includes(call.functionName))).toEqual([]);
-  await expect(button).toBeEnabled();
   await expect(button).not.toHaveText(/Creating|Loading/);
   await expect(page.getByTestId("trade-table-large")).toContainText("No open positions");
   return order;

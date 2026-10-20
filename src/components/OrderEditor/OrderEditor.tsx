@@ -669,7 +669,6 @@ export function OrderEditor(p: Props) {
     });
 
     if (expressParams?.subaccount) {
-      // The transaction callback reports failures after this handler returns.
       void txnPromise.catch(reportHandledRejection("orderEditor.submit"));
       p.onClose();
       setIsSubmitting(false);

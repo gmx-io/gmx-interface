@@ -56,7 +56,7 @@ async function openTransfer(page: Page, label: string) {
   return page.getByRole("button", { name: "Repeat transaction", exact: true }).locator("xpath=..");
 }
 
-test("26.01 26.02 26.06 partial: long-pending, compose-failed and failed GMX Account transfers show their indexer status", async ({
+test("26.01 26.02 26.06 long-pending, compose-failed and failed GMX Account transfers show their indexer status", async ({
   page,
   accountState,
 }) => {
@@ -96,11 +96,10 @@ test("26.01 26.02 26.06 partial: long-pending, compose-failed and failed GMX Acc
   const rows = page.locator("div[role=button]").filter({ has: page.getByTestId("token-icon") });
   await expect(rows).toHaveCount(3);
 
-  // 26.01: an 11-minute-old deposit still in flight only spins; there is no timeout notice.
+  // An 11-minute-old pending deposit only spins; no timeout notice.
   const pendingRow = rows.filter({ hasText: "+10.00" });
   await expect(pendingRow).toContainText(/USDCDeposit\+10\.00/);
   await expect(pendingRow.locator("svg.animate-spin")).toBeVisible();
-  // 26.02 and 26.06: failures are labelled in red.
   for (const [amount, label] of [
     ["+20.00", "Deposit failed"],
     ["-30.00", "Withdrawal failed"],
@@ -130,20 +129,10 @@ test("26.01 26.02 26.06 partial: long-pending, compose-failed and failed GMX Acc
   await expect(deposit.getByPlaceholder("0.00", { exact: true })).toHaveValue("20");
   await expect(deposit.getByRole("button", { name: /Base/ })).toBeVisible();
   await page.keyboard.press("Escape");
-});
+  await expect(deposit).toBeHidden();
 
-test("26.06 app gap: a failed withdrawal's details describe a failed withdrawal", async ({ page, accountState }) => {
-  test.fail(true, "App gap: TransferDetailsView always says 'Deposit from <chain> failed', even for withdrawals");
-  const failed = transfer(accountState.address, accountState.data.collateral.address, 0, {
-    operation: "withdrawal",
-    step: "sent",
-    isExecutionError: true,
-  });
-  await mockFundingHistory(page, accountState.address, [failed]);
-  await accountState.connect(page);
   await page.getByTestId("user-address").click();
   await page.getByRole("button", { name: "Transfer history", exact: true }).click();
-  const details = await openTransfer(page, "Withdrawal failed");
-  await expect(details.getByRole("button", { name: "Repeat transaction", exact: true })).toBeVisible();
-  await expect(details).toContainText(/Withdrawal to Base failed/, { timeout: 5_000 });
+  details = await openTransfer(page, "-30.00");
+  await expect(details.getByText("Withdrawal to Base failed", { exact: true })).toBeVisible();
 });

@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test";
-import { getAddress } from "viem";
 
 import { test } from "../fixtures/accountState";
+import { mockPnlHistory, mockPnlSummary } from "../fixtures/pnlHistory";
 
 test.beforeEach(async ({ page, accountState }) => {
   await accountState.connect(page);
@@ -24,48 +24,30 @@ test("4.01 account panel exposes only the balance actions supported on the selec
   }
 });
 
-test("4.08 partial: the account panel has no PnL value of its own; its PnL Analysis entry opens the connected address's PnL summary", async ({
+test("4.08 17.01 partial: the account panel has no PnL value of its own; its PnL Analysis entry opens the connected address's trader profile and PnL summary", async ({
   page,
+  context,
   accountState,
 }) => {
   const USD = 10n ** 30n;
-  await page.route("**/*", async (route) => {
-    let body: { query?: string; variables?: { account?: string } } | undefined;
-    try {
-      body = route.request().method() === "POST" ? route.request().postDataJSON() : undefined;
-    } catch {
-      return route.fallback();
-    }
-    if (
-      !body?.query?.includes("accountPnlSummaryStats") ||
-      !body.variables?.account ||
-      getAddress(body.variables.account) !== accountState.address
-    )
-      return route.fallback();
-    const buckets = ["today", "yesterday", "week", "month", "year", "all"];
-    await route.fulfill({
-      json: {
-        data: {
-          accountPnlSummaryStats: buckets.map((bucketLabel, index) => ({
-            bucketLabel,
-            wins: index + 1,
-            losses: 1,
-            pnlBps: String(100 * (index + 1)),
-            pnlUsd: (BigInt(111 * (index + 1)) * USD).toString(),
-            volume: (BigInt(1000 * (index + 1)) * USD).toString(),
-            winsLossesRatioBps: "5000",
-            usedCapitalUsd: (10_000n * USD).toString(),
-          })),
-        },
-      },
-    });
-  });
+  await mockPnlHistory(context, accountState.address);
+  await mockPnlSummary(context, accountState.address, (index) => ({
+    wins: index + 1,
+    losses: 1,
+    pnlBps: String(100 * (index + 1)),
+    pnlUsd: (BigInt(111 * (index + 1)) * USD).toString(),
+    volume: (BigInt(1000 * (index + 1)) * USD).toString(),
+    winsLossesRatioBps: "5000",
+    usedCapitalUsd: (10_000n * USD).toString(),
+  }));
   const panel = page.locator(".Modal-content").filter({ has: page.getByRole("button", { name: "PnL analysis" }) });
   await expect(panel).toBeVisible();
   await expect(panel).not.toContainText(/PnL(?! analysis)/);
   await page.getByRole("button", { name: "PnL analysis", exact: true }).click();
   await expect(page).toHaveURL(new RegExp(`/traders/${accountState.address}`));
   await expect(page.getByRole("heading", { name: "Trader profile", exact: true })).toBeVisible();
+  await expect(page.getByText(`You ${accountState.address}`)).toBeVisible();
+  await expect(page.locator(".recharts-bar").first()).toBeVisible();
   await expect(page.getByTestId("gmx-account-balance")).toBeHidden();
   const allTime = page.getByRole("row").filter({ has: page.getByText("All time", { exact: true }) });
   await expect(allTime).toHaveText(/^All time\s*\$\s*6,000\.00\s*\$\s*666\.00\s*\+\s*6\.00%\s*6 \/ 1$/);

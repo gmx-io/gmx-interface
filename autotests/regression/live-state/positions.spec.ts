@@ -32,7 +32,6 @@ function positionRow(page: Page, account: LiveAccount | { position: ApiPosition 
   return page.getByTestId(`position-item-${p.indexName}-${p.poolName}-${p.isLong ? "Long" : "Short"}`);
 }
 
-// Every positions response the browser receives, in arrival order.
 function recordPositions(page: Page, account: string) {
   const snapshots: ApiPosition[][] = [];
   page.on("response", (response) => {
@@ -91,7 +90,6 @@ test(
     const p = liveAccount.position!;
     const cells = positionRow(page, liveAccount).getByRole("cell");
     const tab = page.getByTestId("exchange-list-tabs").getByRole("button", { name: /^Positions/ });
-    // Every position in the latest response has a row, and the tab count and row count agree with it.
     const expectAllListed = () =>
       expect
         .poll(
@@ -176,18 +174,32 @@ test("8.09 live position: margin editor rejects empty and oversized withdrawals 
   await expect(confirm).toBeDisabled();
 });
 
-test("8.10 live position: partial close keeps its input when leverage retention is toggled and Max disables it", async ({
+test("8.06 8.10 live position: Close opens the position seller, receive-token search and leverage retention keep the partial close size, Max uses the real size and dismissal preserves the position", async ({
   page,
   liveAccount,
   liveWallet,
 }) => {
   await liveWallet.connect(page);
   await configureClassicTrading(page);
-  await positionRow(page, liveAccount).getByTestId("position-close-button").click({ timeout: 45_000 });
+  const row = positionRow(page, liveAccount);
+  await row.getByTestId("position-close-button").click({ timeout: 45_000 });
   const modal = page.getByTestId("position-close-modal");
+  await expect(modal.locator("xpath=ancestor::div[contains(concat(' ', @class, ' '), ' Modal ')][1]")).toHaveCSS(
+    "opacity",
+    "1"
+  );
   const input = modal.getByTestId("amount-input-input");
   const half = (Number(liveAccount.position!.sizeInUsd) / 1e30 / 2).toFixed(2);
   await input.fill(half);
+  for (const symbol of ["ETH", "USDC"]) {
+    await modal.locator(".PositionSelector-selected-receive-token").click();
+    const picker = page.locator(".TokenSelector-modal .Modal-content");
+    await picker.getByPlaceholder("Search", { exact: true }).fill(symbol);
+    await picker.getByText(symbol, { exact: true }).click();
+    await expect(picker).toBeHidden();
+    await expect(modal.locator(".PositionSelector-selected-receive-token")).toContainText(symbol);
+    await expect.poll(() => inputNumber(input)).toBe(Number(half));
+  }
   const toggle = modal
     .getByText(/^Keep leverage at/)
     .locator("xpath=ancestor::div[contains(@class, 'inline-flex')][1]")
@@ -202,32 +214,9 @@ test("8.10 live position: partial close keeps its input when leverage retention 
   await expect(toggle).toHaveClass(/pointer-events-none/);
   await expect.poll(() => inputNumber(input)).toBeCloseTo(Number(liveAccount.position!.sizeInUsd) / 1e30, 2);
   await expect(modal).not.toContainText(/NaN|Infinity|undefined/);
-});
-
-test("8.10 live position: Close opens the position seller, Max uses the real size and dismissal preserves the position", async ({
-  page,
-  liveAccount,
-  liveWallet,
-  liveAccounts,
-}) => {
-  await liveWallet.connect(page);
-  const row = positionRow(page, liveAccount);
-  await row.getByTestId("position-close-button").click({ timeout: 45_000 });
-  const modal = page.getByTestId("position-close-modal");
-  await expect(modal.locator("xpath=ancestor::div[contains(concat(' ', @class, ' '), ' Modal ')][1]")).toHaveCSS(
-    "opacity",
-    "1"
-  );
-  await modal.getByRole("button", { name: /^Max:/ }).click();
-  await expect
-    .poll(() => inputNumber(modal.getByTestId("amount-input-input")))
-    .toBeCloseTo(Number(liveAccount.position!.sizeInUsd) / 1e30, 2);
   await page.keyboard.press("Escape");
   await expect(modal).not.toBeVisible();
   await expect(row).toBeVisible();
-  expect(
-    (await liveAccounts.positions(liveAccount.account)).find((p) => p.contractKey === liveAccount.key)?.sizeInUsd
-  ).toBe(liveAccount.position!.sizeInUsd);
 });
 
 test(
@@ -348,7 +337,6 @@ test("22.16 live position: pending borrow and funding fees in the net value tool
     await expect
       .poll(
         async () => {
-          // Reopen the tooltip if a layout change moved the row away from the pointer.
           if (!(await value("Borrow fee:").isVisible())) await handle.hover();
           const shown = {
             borrow: text(await value("Borrow fee:").textContent()),

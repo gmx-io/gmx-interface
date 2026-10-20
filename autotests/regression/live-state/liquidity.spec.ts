@@ -9,20 +9,6 @@ for (const profile of ["gm", "glv"] as const) {
     const symbol = profile === "gm" ? "GM" : "GLV";
     test.use({ liveProfile: profile });
 
-    test(`13.04 live ${symbol} (balance only; value, PnL and APY not checked): portfolio LP balance matches the token contract after refresh`, async ({
-      page,
-      liveAccount,
-      liveWallet,
-    }) => {
-      await liveWallet.connect(page, "/earn/portfolio");
-      const row = page.getByTestId(`info-row-lp-balance-${liveAccount.token}`);
-      const amount = formatBalanceAmount(liveAccount.balance!, 18, symbol, { showZero: true });
-      await expect(row).toContainText(amount, { timeout: 90_000 });
-      await page.reload({ waitUntil: "domcontentloaded" });
-      await expect(page.getByTestId("user-address")).toBeVisible({ timeout: 90_000 });
-      await expect(row).toContainText(amount, { timeout: 90_000 });
-    });
-
     test(`12.26 live ${symbol}: sell Max uses the real token balance and an excess amount is blocked with an insufficient-balance error`, async ({
       page,
       liveAccount,
@@ -49,7 +35,7 @@ for (const profile of ["gm", "glv"] as const) {
       await expect(submit).toHaveText("Enter an amount");
     });
 
-    test(`12.16 13.05 live ${symbol}: Pools and Portfolio show the same real token balance`, async ({
+    test(`12.16 13.04 13.05 live ${symbol} (balance only; value, PnL and APY not checked): Pools and Portfolio show the same real token balance, also after refresh`, async ({
       page,
       liveAccount,
       liveWallet,
@@ -61,9 +47,11 @@ for (const profile of ["gm", "glv"] as const) {
       const details = row.getByRole("link", { name: "Details", exact: true });
       await expect(details).toHaveAttribute("href", new RegExp(`market=${liveAccount.token}`));
       await page.goto("/earn/portfolio");
-      await expect(page.getByTestId(`info-row-lp-balance-${liveAccount.token}`)).toContainText(amount!, {
-        timeout: 90_000,
-      });
+      const portfolio = page.getByTestId(`info-row-lp-balance-${liveAccount.token}`);
+      await expect(portfolio).toContainText(amount!, { timeout: 90_000 });
+      await page.reload({ waitUntil: "domcontentloaded" });
+      await expect(page.getByTestId("user-address")).toBeVisible({ timeout: 90_000 });
+      await expect(portfolio).toContainText(amount!, { timeout: 90_000 });
     });
   });
 }

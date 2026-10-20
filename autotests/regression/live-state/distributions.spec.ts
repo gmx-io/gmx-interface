@@ -3,17 +3,10 @@ import { formatBalanceAmount, formatUsd } from "../../../sdk/src/utils/numbers/u
 import { distributionToken, type Distribution } from "../fixtures/liveAccounts";
 import { test } from "../fixtures/liveWallet";
 import { openTooltip } from "../fixtures/marketData";
+import { utcDay, utcTime } from "../fixtures/utcDates";
 
 test.use({ liveProfile: "distribution" });
 
-// The browser runs in UTC; these mirror the tab's "dd MMM yyyy" and "dd MMM yyyy, h:mm a" formats.
-const utcDay = (timestamp: number) => {
-  const date = new Date(timestamp * 1000);
-  const month = date.toLocaleString("en-US", { month: "short", timeZone: "UTC" });
-  return `${String(date.getUTCDate()).padStart(2, "0")} ${month} ${date.getUTCFullYear()}`;
-};
-const utcTime = (timestamp: number) =>
-  new Date(timestamp * 1000).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "UTC" });
 const compact = (text: string) => text.replace(/\s+/g, "");
 
 test("13.06 live distributions: first-page rows show the received dates, USD totals and transactions, and the latest row's tooltip and breakdown name each token amount", async ({
@@ -78,7 +71,7 @@ test("13.06 live distributions: first-page rows show the received dates, USD tot
     const token = distributionToken(liveAccounts.chainId, address)!;
     return `${formatBalanceAmount(BigInt(latest.amounts[i]), token.decimals)}${token.symbol}`;
   });
-  // The amount tooltip lists each token with its icon, symbol first.
+  // The tooltip puts the symbol before the amount.
   const tooltip = await openTooltip(page, rows.first().locator("td").nth(2).locator(".Tooltip-handle"));
   await expect
     .poll(async () => {
@@ -94,7 +87,6 @@ test("13.06 live distributions: first-page rows show the received dates, USD tot
   await page.mouse.move(0, 0);
   await rows.first().locator("td").first().click();
   const details = rows.nth(1);
-  // The transaction status is read from the app's public RPC and is not part of this row.
   await expect(details).toContainText("Timestamp");
   await expect
     .poll(async () => {

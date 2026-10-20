@@ -407,7 +407,6 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
         setExternalIsCurtainOpen(false);
       }
     } catch (error) {
-      // Transaction callbacks already display the failure; keep the form open.
       reportHandledRejection("tradebox.submit")(error);
     }
   }, [submitButtonState, isMobile, setExternalIsCurtainOpen]);

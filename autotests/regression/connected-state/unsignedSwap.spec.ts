@@ -1,12 +1,10 @@
 import { expect } from "@playwright/test";
 import { formatUnits, getAddress, parseUnits, zeroAddress } from "viem";
 
-import { getContract } from "../../../sdk/src/configs/contracts";
 import { getNativeToken, getTokenBySymbol } from "../../../sdk/src/configs/tokens";
-import type { ContractsChainId } from "../../../sdk/src/configs/chains";
-import { test } from "../fixtures/accountState";
+import { fundTrading, test } from "../fixtures/accountState";
 import { configureClassicTrading } from "../fixtures/tradingForms";
-import { inspectRejectedOrder } from "../fixtures/walletReview";
+import { inspectRejectedCreateOrder } from "../fixtures/walletReview";
 import { displayedNumbers, infoRow, selectTradeMode } from "../fixtures/trade";
 
 test.use({ walletReviewMode: true, unsignedReviewMode: true });
@@ -17,12 +15,7 @@ for (const mode of ["Market", "Limit"] as const) {
     chainId,
     walletReviews,
   }) => {
-    accountState.balances.set(accountState.data.collateral.address, 100n * 10n ** 6n);
-    accountState.balances.set(zeroAddress, 10n ** 18n);
-    accountState.allowances.set(
-      getAddress(accountState.data.collateral.address),
-      new Map([[getAddress(getContract(chainId as ContractsChainId, "SyntheticsRouter")), 100n * 10n ** 6n]])
-    );
+    fundTrading(accountState, chainId, 100n * 10n ** 6n);
     await accountState.connect(page, "/trade/swap?mode=market&from=USDC&to=ETH");
     await configureClassicTrading(page);
     await selectTradeMode(page, mode);
@@ -42,16 +35,11 @@ for (const mode of ["Market", "Limit"] as const) {
       await page.getByRole("banner").hover();
       return value;
     };
-    // Gas price is live, so the fee may be re-estimated around the click (seen on Avalanche).
+    // Gas price is live, so the fee may be re-estimated around the click.
     const shownFees = [await readMaxNetworkFee()];
 
-    const { calls, tx } = await inspectRejectedOrder(page.getByTestId("confirm-trade-button"), walletReviews);
+    const { order, tx } = await inspectRejectedCreateOrder(page.getByTestId("confirm-trade-button"), walletReviews);
     shownFees.push(await readMaxNetworkFee());
-    const creates = calls.filter((call) => call.functionName === "createOrder");
-    expect(creates).toHaveLength(1);
-    const create = creates[0];
-    if (create.functionName !== "createOrder") throw new Error("Expected swap order");
-    const order = create.args[0];
     expect(order.orderType).toBe(mode === "Market" ? 0 : 1);
     expect(getAddress(order.addresses.initialCollateralToken)).toBe(getAddress(accountState.data.collateral.address));
     expect(getAddress(order.addresses.receiver)).toBe(accountState.address);

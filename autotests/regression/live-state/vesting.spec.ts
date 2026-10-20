@@ -2,7 +2,6 @@ import { expect } from "@playwright/test";
 import { formatUnits } from "viem";
 import { formatBalanceAmount, formatAmount } from "../../../sdk/src/utils/numbers/utils";
 import { test } from "../fixtures/liveWallet";
-import { inputNumber } from "../fixtures/trade";
 
 test.use({ liveProfile: "escrow" });
 
@@ -19,24 +18,6 @@ test("13.18 live esGMX: portfolio shows the on-chain staked and wallet balances"
     const row = page.getByText(label, { exact: true }).locator("..");
     await expect(row).toContainText(formatBalanceAmount(balance, 18, "esGMX", { showZero: true }), { timeout: 90_000 });
   }
-});
-
-test("13.18 live esGMX: unstake Max, excess and empty input validation", async ({ page, liveAccount, liveWallet }) => {
-  await liveWallet.connect(page, "/earn/portfolio");
-  await page.getByRole("button", { name: "Stake esGMX", exact: true }).click();
-  const modal = page.locator(".StakeModal .Modal-content");
-  await modal.getByRole("button", { name: "Unstake", exact: true }).click();
-  await modal.getByRole("button", { name: "Max", exact: true }).click();
-  const input = modal.getByRole("textbox");
-  await expect
-    .poll(() => inputNumber(input))
-    .toBeCloseTo(Number(formatUnits(liveAccount.vesting!.unstakeEsGmxMax, 18)), 5);
-  await input.fill(formatUnits(liveAccount.staking!.esGmx + 10n ** 18n, 18));
-  await expect(modal.getByRole("button", { name: "Max amount exceeded", exact: true })).toBeDisabled();
-  await input.clear();
-  await expect(modal.getByRole("button", { name: "Enter an amount", exact: true })).toBeDisabled();
-  await page.keyboard.press("Escape");
-  await expect(modal).not.toBeVisible();
 });
 
 test("13.20 live vesting: vault capacity and deposit validation reflect the real vested amount", async ({

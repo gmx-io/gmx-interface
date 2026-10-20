@@ -71,12 +71,6 @@ function rowAmounts(text: string) {
   return [...text.matchAll(/:\s+\$?\s*([\d.,]+[kmbt]?)/g)].map(([, value]) => displayedNumber(value));
 }
 
-function poolTable(page: Page, type: "GM" | "GLV") {
-  return page.getByRole("table").filter({
-    has: page.getByRole("columnheader", { name: type === "GM" ? "POOL" : "VAULT", exact: true }),
-  });
-}
-
 test(
   "2.30 Pools TVL equals the pool values the app received and the selected network's GM pools on Stats",
   { tag: "@avalanche" },
@@ -118,52 +112,6 @@ test(
     expect(totalTvl.entries[network]).toBeGreaterThan(gmPools.entries[network]);
   }
 );
-
-test("2.31 GM and GLV fee APY equal the /apy base APY the app received and APY/performance values are sane", async ({
-  page,
-  chainId,
-}) => {
-  const host = chainId === 42161 ? "arbitrum" : "avalanche";
-  const apys: Record<
-    string,
-    { markets: Record<string, { baseApy: number }>; glvs: Record<string, { baseApy: number }> }
-  > = {};
-  page.on("response", async (response) => {
-    const url = new URL(response.url());
-    if (url.pathname !== "/apy" || !url.hostname.startsWith(host) || !response.ok()) return;
-    apys[url.searchParams.get("period") ?? ""] = await response.json().catch(() => undefined);
-  });
-  await page.goto("/pools");
-  const period = await page.evaluate(() => JSON.parse(localStorage.getItem('"pools-time-range"') ?? '"90d"'));
-  const fees: number[] = [];
-  for (const type of ["GLV", "GM"] as const) {
-    const rows = poolTable(page, type)
-      .locator("tbody tr")
-      .filter({ has: page.getByRole("link", { name: "Details", exact: true }) });
-    await expect(rows.first().locator("td").nth(3)).toHaveText(/\d+\.\d{2}%/, { timeout: 45_000 });
-    await expect.poll(() => apys[period]).toBeDefined();
-    for (const row of await rows.all()) {
-      const href = (await row.getByRole("link", { name: "Details", exact: true }).getAttribute("href"))!;
-      const address = new URL(href, page.url()).searchParams.get("market")!;
-      const apyCell = row.locator("td").nth(3);
-      const base = (apys[period][type === "GM" ? "markets" : "glvs"][address]?.baseApy ?? NaN) * 100;
-      const fee = displayedNumber(await apyCell.innerText());
-      const performance = (await row.locator("td").nth(4).innerText()).trim();
-      fees.push(fee);
-      expect(fee, `${type} ${address} fee APY`).toBeGreaterThanOrEqual(0);
-      expect(fee, `${type} ${address} fee APY`).toBeLessThan(1000);
-      // Bonus and wstETH APR are added on top of the base APY; such cells carry a tooltip or sparkle.
-      if (await apyCell.locator(".Tooltip, img").count()) expect(fee).toBeGreaterThanOrEqual(base - 0.011);
-      else expect(Math.abs(fee - base), `${type} ${address} fee APY vs /apy ${base}`).toBeLessThanOrEqual(0.011);
-      if (performance !== "-") {
-        expect(Math.abs(displayedNumber(performance)), `${type} ${address} performance`).toBeLessThan(1000);
-      }
-    }
-  }
-  const median = fees.sort((a, b) => a - b)[Math.floor(fees.length / 2)];
-  expect(median).toBeGreaterThan(0.1);
-  expect(median).toBeLessThan(100);
-});
 
 test("18.09 every Stats tooltip opens with content and no NaN, undefined or Infinity", async ({ page }) => {
   test.setTimeout(300_000);

@@ -58,7 +58,6 @@ describe("multicall result isolation", () => {
     expect(call).toHaveBeenCalledTimes(1);
   });
 
-  // viem turns a chunk's -32603 provider error into a ContractFunctionRevertedError around the failed call.
   const chunkProviderError = () =>
     new ContractFunctionRevertedError({
       abi: [],
@@ -72,36 +71,29 @@ describe("multicall result isolation", () => {
       ),
     });
 
-  for (const failure of ["transport", "all reads", "one chunk's transport", "one chunk's provider error"] as const) {
-    it(`still tries the fallback after ${failure} fail`, async () => {
-      const call = vi.fn();
-      if (failure === "transport") call.mockRejectedValueOnce(new Error("network unavailable"));
-      else if (failure === "all reads")
-        call.mockResolvedValueOnce([
-          { status: "failure", error: new Error("RPC failure") },
-          { status: "failure", error: new Error("RPC failure") },
-        ]);
-      else if (failure === "one chunk's transport")
-        call.mockResolvedValueOnce([
-          { status: "success", result: 1n },
-          { status: "failure", error: new HttpRequestError({ url: endpoints.primary, status: 429 }) },
-        ]);
-      else
-        call.mockResolvedValueOnce([
-          { status: "success", result: 1n },
-          { status: "failure", error: chunkProviderError() },
-        ]);
-      call.mockResolvedValueOnce([
-        { status: "success", result: 50_000_000n },
-        { status: "success", result: 100_000_000n },
-      ]);
-      vi.spyOn(Multicall, "getViemClient").mockReturnValue({ multicall: call } as unknown as ReturnType<
-        typeof Multicall.getViemClient
-      >);
-      const result = await new Multicall(42161, {}).call(endpoints, request, false);
-      expect(result.success).toBe(true);
-      expect(result.data.balance.amount.returnValues).toEqual([50_000_000n]);
-      expect(call).toHaveBeenCalledTimes(2);
-    });
-  }
+  const success = { status: "success", result: 1n };
+  const failure = (error: Error) => ({ status: "failure", error });
+
+  it.each([
+    ["transport", () => Promise.reject(new Error("network unavailable"))],
+    ["all reads", async () => [failure(new Error("RPC failure")), failure(new Error("RPC failure"))]],
+    [
+      "one chunk's transport",
+      async () => [success, failure(new HttpRequestError({ url: endpoints.primary, status: 429 }))],
+    ],
+    ["one chunk's provider error", async () => [success, failure(chunkProviderError())]],
+  ])("still tries the fallback after %s fail", async (_, primary) => {
+    const call = vi.fn().mockImplementationOnce(primary);
+    call.mockResolvedValueOnce([
+      { status: "success", result: 50_000_000n },
+      { status: "success", result: 100_000_000n },
+    ]);
+    vi.spyOn(Multicall, "getViemClient").mockReturnValue({ multicall: call } as unknown as ReturnType<
+      typeof Multicall.getViemClient
+    >);
+    const result = await new Multicall(42161, {}).call(endpoints, request, false);
+    expect(result.success).toBe(true);
+    expect(result.data.balance.amount.returnValues).toEqual([50_000_000n]);
+    expect(call).toHaveBeenCalledTimes(2);
+  });
 });

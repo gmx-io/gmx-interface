@@ -1,23 +1,15 @@
 import { expect, type Page } from "@playwright/test";
-import { getAddress, toHex, zeroAddress } from "viem";
+import { toHex, zeroAddress } from "viem";
 
 import { getContract } from "../../../sdk/src/configs/contracts";
 import type { ContractsChainId } from "../../../sdk/src/configs/chains";
-import { test, type AccountState } from "../fixtures/accountState";
+import { fundTrading, test, type AccountState } from "../fixtures/accountState";
 import type { WalletRequest } from "../fixtures/injectedWallet";
-import { openSettings, setSettingsToggle } from "../fixtures/trade";
+import { infoRow, openSettings, SELECTED_TRADING_MODE, setSettingsToggle, tradingMode } from "../fixtures/trade";
 import { configureClassicTrading, fillPositionOrder } from "../fixtures/tradingForms";
+import { inspectRejectedOrder } from "../fixtures/walletReview";
 
-function fund(accountState: AccountState, chainId: number) {
-  accountState.balances.set(accountState.data.collateral.address, 1000n * 10n ** 6n);
-  accountState.balances.set(zeroAddress, 10n ** 18n);
-  accountState.allowances.set(
-    getAddress(accountState.data.collateral.address),
-    new Map([[getAddress(getContract(chainId as ContractsChainId, "SyntheticsRouter")), 1000n * 10n ** 6n]])
-  );
-}
-
-// Answers the reads a funded wallet would; `onWrite` decides what happens to signatures and transactions.
+// Stands in for a funded wallet's reads.
 function walletWith(accountState: AccountState, onWrite: (request: WalletRequest) => Promise<unknown>) {
   const writes: WalletRequest[] = [];
   accountState.walletRequest = async (request) => {
@@ -59,7 +51,7 @@ test.describe("wallet RPC failure", () => {
     accountState,
     chainId,
   }) => {
-    fund(accountState, chainId);
+    fundTrading(accountState, chainId);
     const writes = walletWith(accountState, async () => {
       throw Object.assign(new Error("Internal JSON-RPC error."), { code: -32603 });
     });
@@ -99,7 +91,7 @@ test.describe("relayer down", () => {
     // With the recorded Avalanche market snapshot the Express fee estimate never settles; live simulation is too flaky to replace it.
     test.skip(chainId !== 42161, "Express relay failure is exercised on Arbitrum");
     test.setTimeout(150_000);
-    fund(accountState, chainId);
+    fundTrading(accountState, chainId);
     const signer = accountState.rehearsalSigner!;
     const writes = walletWith(accountState, async (request) => {
       if (request.method !== "eth_signTypedData_v4") throw Object.assign(new Error("Rejected"), { code: 4001 });
@@ -125,19 +117,14 @@ test.describe("relayer down", () => {
     await accountState.connect(page);
     await expect(page.getByTestId("margin")).toContainText("1,000.00");
     const settings = await openSettings(page);
-    const express = settings
-      .getByText("Express", { exact: true })
-      .locator("xpath=ancestor::div[contains(@class, 'grid')][1]");
     // A funded wallet defaults to Express once the gas payment balance has loaded.
-    await expect(express).toHaveClass(/(?:^|\s)border-slate-100(?:\s|$)/);
+    await expect(tradingMode(settings, "Express")).toHaveClass(SELECTED_TRADING_MODE);
     await settings.getByRole("button", { name: "Display settings", exact: true }).click();
     await setSettingsToggle(settings, "Manual leverage", false);
     await page.keyboard.press("Escape");
     const button = await fillPositionOrder(page, { isLong: true, collateral: "2.5", size: "2.01" });
     await page.getByText("Execution details", { exact: true }).click();
-    const fee = page
-      .getByText("Network fee", { exact: true })
-      .locator("xpath=ancestor::div[contains(@class, 'justify-between')][1]");
+    const fee = infoRow(page.getByTestId("tradebox"), "Network fee");
     // The Express relay fee must be estimated before the order can be signed.
     await expect(fee).toContainText(/-[\d.]+\s*USDC/, { timeout: 60_000 });
     await expect(button).toBeEnabled();
@@ -211,4 +198,34 @@ test("26.05 partial: when the event WebSocket drops, the app reconnects and rest
   expect(connections[1].url).toBe(connections[0].url);
   await expect.poll(() => active(1)).toEqual(expect.arrayContaining(before));
   await expect(page.getByTestId("user-address")).toBeVisible();
+});
+
+test.describe("frozen order", () => {
+  test.use({ walletReviewMode: true, unsignedReviewMode: true });
+
+  test("26.07 partial: a frozen limit order's Orders row shows Frozen and cancels via a cancelOrder request (rejected unsigned; collateral reclaim not verified)", async ({
+    page,
+    accountState,
+    walletReviews,
+  }) => {
+    const order = { ...accountState.data.order(3), isFrozen: true };
+    accountState.orders = [order];
+    accountState.balances.set(zeroAddress, 10n ** 18n);
+    await accountState.connect(page);
+    await configureClassicTrading(page);
+    await page
+      .getByTestId("trade-table-large")
+      .getByRole("button", { name: /^Orders/ })
+      .click();
+    const row = page.getByTestId(`order-${order.key}`);
+    await expect(row).toContainText(/2,000\.00/);
+    await expect(row.getByText("Frozen", { exact: true })).toBeVisible();
+    const { calls } = await inspectRejectedOrder(
+      row.getByRole("button", { name: "", exact: true }).last(),
+      walletReviews
+    );
+    const mutations = calls.filter((call) => call.functionName !== "sendWnt");
+    expect(mutations.map((call) => [call.functionName, call.args])).toEqual([["cancelOrder", [order.key]]]);
+    await expect(row).toBeVisible();
+  });
 });

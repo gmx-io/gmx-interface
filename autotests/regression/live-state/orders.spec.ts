@@ -10,7 +10,7 @@ import { formatUsd } from "../../../sdk/src/utils/numbers/utils";
 import { decodeTwapUiFeeReceiver } from "../../../sdk/src/utils/twap/uiFeeReceiver";
 import { test } from "../fixtures/liveWallet";
 import type { LiveAccount, LiveAccounts } from "../fixtures/liveAccounts";
-import { inputNumber } from "../fixtures/trade";
+import { openTooltip } from "../fixtures/marketData";
 
 test.use({ liveProfile: "order" });
 
@@ -42,7 +42,7 @@ async function expectTrigger(
   return shown;
 }
 
-// Every current API order has a row (TWAP parts share one); trigger orders show type, market, side and price.
+// TWAP parts share one row.
 async function expectAllOrders(page: Page, liveAccounts: LiveAccounts, account: Address) {
   const chainId = liveAccounts.chainId;
   const orders = await liveAccounts.orders(account);
@@ -77,7 +77,6 @@ async function openOrders(page: Page) {
     .click();
 }
 
-// Compares a rendered order row with the order and market read from DataStore through the Reader.
 async function expectRowMatchesChain(
   page: Page,
   row: Locator,
@@ -135,12 +134,8 @@ async function expectRowMatchesChain(
 
   const shown = await expectTrigger(row, orderType, isLong, order.numbers.triggerPrice, indexToken);
 
-  const marketRow = page.getByText("Market:", { exact: true }).locator("..");
-  // Re-hover if late-loading content above the list moves the row away from the pointer.
-  await expect(async () => {
-    await row.getByText(indexName, { exact: true }).hover();
-    await expect(marketRow).toContainText(`${indexName}[${poolName}]`, { timeout: 2_000 });
-  }).toPass({ timeout: 30_000 });
+  await openTooltip(page, row.getByText(indexName, { exact: true }));
+  await expect(page.getByText("Market:", { exact: true }).locator("..")).toContainText(`${indexName}[${poolName}]`);
   await testInfo.attach("live-order-onchain", {
     body: JSON.stringify(
       { key: liveAccount.key, order, market, indexName, poolName, fullClose, shownTrigger: shown },
@@ -171,43 +166,6 @@ test(
   }
 );
 
-test("live limit order: editor loads the real size and dismissing changes leaves it intact", async ({
-  page,
-  liveAccount,
-  liveWallet,
-  liveAccounts,
-}) => {
-  await liveWallet.connect(page);
-  await openOrders(page);
-  const row = page.getByTestId(`order-${liveAccount.key}`);
-  await row.getByRole("button", { name: "Edit order", exact: true }).click({ timeout: 45_000 });
-  const price = page.getByTestId("trigger-price-input-input");
-  await expect
-    .poll(() => inputNumber(page.getByTestId("amount-input-input").last()))
-    .toBeCloseTo(Number(liveAccount.order!.sizeDeltaUsd) / 1e30, 2);
-  await expect(price).not.toHaveValue("");
-  const original = await price.inputValue();
-  await price.fill("1");
-  await page.keyboard.press("Escape");
-  await row.getByRole("button", { name: "Edit order", exact: true }).click();
-  await expect(price).toHaveValue(original);
-  await page.keyboard.press("Escape");
-  expect((await liveAccounts.orders(liveAccount.account)).find((o) => o.key === liveAccount.key)?.sizeDeltaUsd).toBe(
-    liveAccount.order!.sizeDeltaUsd
-  );
-});
-
-test("22.07 live limit order: row matches the on-chain order's market, index token, side, trigger price and size", async ({
-  page,
-  liveAccount,
-  liveAccounts,
-  liveWallet,
-}, testInfo) => {
-  await liveWallet.connect(page);
-  await openOrders(page);
-  await expectRowMatchesChain(page, page.getByTestId(`order-${liveAccount.key}`), liveAccounts, liveAccount, testInfo);
-});
-
 test("17.11 live profile: Orders tab lists the trader's open order as stored on chain", async ({
   page,
   liveAccount,
@@ -223,23 +181,28 @@ test("17.11 live profile: Orders tab lists the trader's open order as stored on 
   await expect(page.getByTestId("user-address")).toHaveCount(0);
 });
 
-test.describe("TP/SL", () => {
-  test.use({ liveProfile: "tpsl" });
+for (const { id, profile, kind } of [
+  { id: "22.07", profile: "order", kind: "limit" },
+  { id: "22.08", profile: "tpsl", kind: "TP/SL" },
+] as const) {
+  test.describe(kind, () => {
+    test.use({ liveProfile: profile });
 
-  test("22.08 live TP/SL order: row matches the on-chain order's market, index token, side, trigger price and size", async ({
-    page,
-    liveAccount,
-    liveAccounts,
-    liveWallet,
-  }, testInfo) => {
-    await liveWallet.connect(page);
-    await openOrders(page);
-    await expectRowMatchesChain(
+    test(`${id} live ${kind} order: row matches the on-chain order's market, index token, side, trigger price and size`, async ({
       page,
-      page.getByTestId(`order-${liveAccount.key}`),
-      liveAccounts,
       liveAccount,
-      testInfo
-    );
+      liveAccounts,
+      liveWallet,
+    }, testInfo) => {
+      await liveWallet.connect(page);
+      await openOrders(page);
+      await expectRowMatchesChain(
+        page,
+        page.getByTestId(`order-${liveAccount.key}`),
+        liveAccounts,
+        liveAccount,
+        testInfo
+      );
+    });
   });
-});
+}

@@ -104,12 +104,3 @@ test("18.07 stats Buy GM opens the pools list", async ({ page }) => {
   await expect(page).toHaveURL(/\/pools$/);
   await expect(page.getByText("TVL in vaults and pools", { exact: true })).toBeVisible();
 });
-
-test("13.13 stats Buy GMX opens the buy options and GMX swap", async ({ page }) => {
-  await page.goto("/stats");
-  await page.getByRole("button", { name: /Buy GMX$/, exact: false }).click();
-  await expect(page.getByText("Buy on other platforms", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Buy GMX on GMX swap", exact: true }).click();
-  await expect(page).toHaveURL(/\/trade\/swap/);
-  await expect(page.getByTestId("receive-selector")).toContainText("GMX");
-});

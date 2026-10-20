@@ -599,7 +599,6 @@ export function useTradeboxButtonState({
     }
 
     if (expressParams?.subaccount) {
-      // The transaction callback reports failures after this handler returns.
       void txnPromise.catch(reportHandledRejection("tradebox.submit"));
       /**
        * Wait 2 seconds to prevent double click on button

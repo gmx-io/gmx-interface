@@ -2,15 +2,13 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import ts from "typescript";
 
-export type ConfigEndpoint = { file: string; keys: string[]; url: string };
+type ConfigEndpoint = { file: string; keys: string[]; url: string };
 
 // CI points this at a sparse checkout of the deployed PR commit.
-function candidateConfigPath(path: string) {
-  return join(process.env.REGRESSION_CANDIDATE_ROOT || ".", path);
-}
+const candidateRoot = () => process.env.REGRESSION_CANDIDATE_ROOT || ".";
 
-function readInitializer(path: string, name: string) {
-  const source = readFileSync(candidateConfigPath(path), "utf8");
+function readInitializer(path: string, name: string, root = candidateRoot()) {
+  const source = readFileSync(join(root, path), "utf8");
   const file = ts.createSourceFile(path, source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
   for (const statement of file.statements) {
     if (!ts.isVariableStatement(statement)) continue;
@@ -20,11 +18,11 @@ function readInitializer(path: string, name: string) {
       }
     }
   }
-  throw new Error(`Missing ${name} in deployment configuration: ${path}`);
+  throw new Error(`Missing ${name} in ${join(root, path)}`);
 }
 
-function readObject(path: string, name: string) {
-  const { source, file, initializer } = readInitializer(path, name);
+export function readObject(path: string, name: string, root = candidateRoot()) {
+  const { source, file, initializer } = readInitializer(path, name, root);
   if (!ts.isObjectLiteralExpression(initializer)) throw new Error(`${name} in ${path} is not an object literal`);
   return { source, file, object: initializer };
 }

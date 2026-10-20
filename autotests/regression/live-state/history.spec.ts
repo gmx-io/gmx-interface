@@ -2,6 +2,7 @@ import { expect } from "@playwright/test";
 import { formatDeltaUsd } from "../../../sdk/src/utils/numbers/utils";
 import { displayedNumber } from "../fixtures/displayedNumber";
 import { test } from "../fixtures/liveWallet";
+import { openTooltip } from "../fixtures/marketData";
 
 test.use({ liveProfile: "history" });
 
@@ -107,11 +108,8 @@ test.describe("fees", () => {
       const fees = row.getByRole("cell").nth(5);
       await expect(fees).toContainText("$", { timeout: 45_000 });
       const tooltip = page.locator(".TradeHistoryRow-tooltip").filter({ has: page.locator(".Tooltip-row") });
-      // Charts above the list can finish loading after the hover and move the row away from the pointer.
-      await expect(async () => {
-        await fees.locator(".numbers").first().hover();
-        await expect(tooltip).toBeVisible({ timeout: 2_000 });
-      }).toPass({ timeout: 30_000 });
+      await openTooltip(page, fees.locator(".numbers").first());
+      await expect(tooltip).toBeVisible();
       const lines = Object.fromEntries(
         await tooltip
           .locator(".Tooltip-row")

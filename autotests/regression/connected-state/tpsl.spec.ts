@@ -60,7 +60,7 @@ test.describe(() => {
       page,
       accountState,
     }) => {
-      // Mocked position: 0.4 ETH at $2,500 entry with $250 margin, so $1 of price is $0.40 of PnL.
+      // $1 of price is $0.40 of PnL.
       accountState.positions = [accountState.data.position(isLong)];
       await accountState.connect(page);
       await fundedPositionRow(page, isLong).getByRole("button", { name: "Set", exact: true }).click();

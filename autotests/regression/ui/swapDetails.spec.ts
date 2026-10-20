@@ -2,12 +2,12 @@ import { expect, type Page } from "@playwright/test";
 
 import { test } from "../fixtures/browser";
 import { displayedNumber } from "../fixtures/displayedNumber";
-import { infoRowValue, openTooltip } from "../fixtures/marketData";
+import { infoRowValue, openExecutionDetails, openTooltip } from "../fixtures/marketData";
 import {
   feeBreakdown,
   impactAndFee,
-  type Quote,
   relativeDiff,
+  quoteUntilImpact,
   settledQuote,
   usdText,
   watchTickerPrices,
@@ -34,15 +34,6 @@ function quoteParts(page: Page) {
     receive: usdText(page.getByTestId("swap-receive")),
     row: infoRowValue(page.getByTestId("tradebox"), "Price impact / fees"),
   };
-}
-
-async function openExecutionDetails(page: Page) {
-  const box = page.getByTestId("tradebox");
-  const networkFee = box.getByText("Network fee", { exact: true });
-  if (!(await networkFee.isVisible()))
-    await box.getByRole("button", { name: "Execution details", exact: true }).click();
-  await expect(networkFee).toBeVisible();
-  return box;
 }
 
 async function swapFeeBreakdown(page: Page) {
@@ -144,7 +135,7 @@ test("11.06 minimum receive equals the receive amount less each allowed slippage
   await expectMinReceive(page, 2.5);
 });
 
-test("11.08 swap slippage defaults to the Settings value, survives reload and drives minimum receive", async ({
+test("11.08 19.03 swap slippage defaults to the Settings value, survives reload and drives minimum receive", async ({
   page,
 }) => {
   await openSwap(page, "USDC", "ETH");
@@ -178,19 +169,16 @@ test("11.07 11.12 large swap shows its negative price impact and the high impact
   const parts = quoteParts(page);
   await pay.fill("1");
   const unitUsd = (await settledQuote(parts)).pay;
-  let quote: Quote | undefined;
-  // Impact grows about linearly with size: aim each step at ~0.75% so it stops before pool liquidity runs out.
-  for (
-    let usd = 250_000;
-    !quote || quote.impact > -0.6;
-    usd *= quote.impact < 0 ? Math.min(1.5, Math.max(1.1, 0.75 / -quote.impact)) : 1.5
-  ) {
-    expect(usd, "price impact never reached the warning threshold").toBeLessThan(50_000_000);
-    await pay.fill((usd / unitUsd).toFixed(4));
-    quote = await settledQuote(parts, usd);
-    expect(quote.fee, `swap of $${usd} exceeds GMX pool liquidity before a high impact warning`).toBeLessThan(0);
-    if (quote.impact > -0.4) await expect(warning).toBeHidden();
-  }
+  const quote = await quoteUntilImpact(
+    { startUsd: 250_000, maxUsd: 50_000_000, untilImpact: 0.6, stepImpact: 0.75, maxStep: 1.5 },
+    async (usd) => {
+      await pay.fill((usd / unitUsd).toFixed(4));
+      const step = await settledQuote(parts, usd);
+      expect(step.fee, `swap of $${usd} exceeds GMX pool liquidity before a high impact warning`).toBeLessThan(0);
+      if (step.impact > -0.4) await expect(warning).toBeHidden();
+      return step;
+    }
+  );
   await expect(warning).toBeVisible();
   await expect(page.getByTestId("confirm-trade-button")).toHaveText("Connect wallet");
   const warningUsd = displayedNumber(await warning.locator("xpath=following-sibling::div[1]").innerText());

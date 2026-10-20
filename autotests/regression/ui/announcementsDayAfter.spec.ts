@@ -1,5 +1,6 @@
 import { expect, type APIRequestContext, type Page, type TestInfo } from "@playwright/test";
 
+import { announcementTime as time } from "../fixtures/announcements";
 import { test } from "../fixtures/browser";
 import { readRegressionAnnouncements, type RegressionAnnouncement } from "../fixtures/deploymentConfig";
 
@@ -10,15 +11,12 @@ const TITLE_SUFFIX = / \| Decentralized perpetual exchange \| GMX$/;
 const SOCIAL_LINK = /^https:\/\/(?:(?:x|twitter)\.com\/\w+\/status\/\d+|t\.me\/\w+\/\d+)$/;
 const MAX_TOAST_CARDS = 4;
 
-// Announcement dates are UTC in the "d MMM yyyy, H:mm" format.
-const time = (date: string) => Date.parse(`${date.replace(",", "")} UTC`);
 // Test registration happens before fixtures exist, so read the chain the same way as the config.
 const chainName = Number(process.env.REGRESSION_CHAIN_ID || 42161) === 43114 ? "AVALANCHE" : "ARBITRUM";
 const announcements = readRegressionAnnouncements();
 const now = Date.now();
 
-// What's new candidates for a disconnected user on this chain. Flags are only known in the browser, so a
-// flag-controlled candidate whose flag is off is skipped there as not live.
+// Candidates for a disconnected user; flag-gated ones are filtered in the browser.
 const current = announcements.filter(
   (event) =>
     !event.requiresOpenPosition &&
@@ -34,7 +32,6 @@ const sortTime = (event: RegressionAnnouncement, flags: UiFlags) =>
       ? Date.parse(flags[event.flagId].createdAt)
       : time(event.endDate);
 
-// Enabled flags from every unmodified flags response the page receives.
 function recordFlags(page: Page) {
   const flags: UiFlags = {};
   const received = { count: 0 };
@@ -56,7 +53,6 @@ async function openCard(page: Page, event: RegressionAnnouncement) {
   return card;
 }
 
-// Every link of the card points where the config says; app links are clicked and must open a real page.
 async function checkLinks(page: Page, request: APIRequestContext, event: RegressionAnnouncement, testInfo: TestInfo) {
   const links = linksOf(event);
   const card = await openCard(page, event);

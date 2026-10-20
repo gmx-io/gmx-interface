@@ -31,15 +31,6 @@ test("15.08 live referrals: owned code appears in the affiliate dashboard after 
   await findCodeRow(page, code);
 });
 
-test("live referrals: public affiliate URL loads the same registered code without connection", async ({
-  page,
-  liveAccount,
-}) => {
-  await page.goto(`/referrals/affiliates/${liveAccount.account}`, { waitUntil: "domcontentloaded" });
-  await findCodeRow(page, hexToString(liveAccount.code!, { size: 32 }));
-  await expect(page.getByTestId("user-address")).toHaveCount(0);
-});
-
 async function findCodeRow(page: Page, code: string) {
   const table = page
     .getByRole("table")

@@ -9,7 +9,6 @@ import { getContract } from "../../../sdk/src/configs/contracts";
 
 export type RpcRequest = { id: number | string; method: string; params?: unknown[] };
 
-// Only for unsigned UI request inspection; this does not demonstrate on-chain simulation or settlement.
 export function unsignedTransactionReview(chainId: ContractsChainId, account: string) {
   const calls: { method: string; to: string }[] = [];
   const exchangeRouter = getAddress(getContract(chainId, "ExchangeRouter"));

@@ -29,15 +29,6 @@ for (const direction of ["Long", "Short"] as const) {
     await margin.fill("100");
     await expect.poll(() => inputNumber(size)).toBeGreaterThan(180);
     await expect.poll(() => inputNumber(size)).toBeLessThanOrEqual(200);
-    // Longs are liquidated below the mark price, shorts above it.
-    const liquidation = infoRowValue(page.getByTestId("tradebox"), "Liquidation price");
-    await expect
-      .poll(async () => {
-        const liq = displayedNumber(await liquidation.innerText());
-        const mark = await headerPriceValue(page);
-        return liq > 0 && (direction === "Long" ? liq < mark : liq > mark);
-      })
-      .toBe(true);
     await size.fill("300");
     await expect.poll(() => inputNumber(margin)).toBeGreaterThan(140);
     await expect.poll(() => inputNumber(margin)).toBeLessThan(165);

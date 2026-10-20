@@ -73,7 +73,7 @@ export type Distribution = {
   transactionHash: Hex;
 };
 // Earn > Distributions query; referral rebates and claims are listed under Referrals instead.
-export const DISTRIBUTIONS_QUERY =
+const DISTRIBUTIONS_QUERY =
   'query RegressionDistributions($account: String!) { distributions(orderBy: timestamp_DESC, where: {receiver_eq: $account, typeId_not_in: ["1", "1000", "2"]}, limit: 1000) { id typeId amounts amountsInUsd tokens timestamp transactionHash } }';
 
 // Same lookup order as the Distributions tab: GM market, then token, then configured GLV.
@@ -307,7 +307,7 @@ export class LiveAccounts {
     let checked = 0;
     for (const row of pool.rows.slice(0, 12)) {
       checked++;
-      // Choose ordinary externally owned accounts; an old indexer entry alone is not a prerequisite.
+      // Choose ordinary externally owned accounts.
       const code = await this.rpc.getCode({ address: row.account });
       if (code && code !== "0x") continue;
       const verified = await this.verify(profile, row);
@@ -379,7 +379,7 @@ export class LiveAccounts {
         { owner: row.account, where: { affiliate: row.account, from: 0 } }
       );
       const codes = result.referralCodeOwners;
-      // Other-chain ownership is read for every code in one indexer page.
+      // The spec walks all codes on one 50-row page.
       if (codes.length < 1 || codes.length > 50 || !(BigInt(result.affiliateStats?.summary.volumeUsd ?? 0) > 0n))
         return;
       const owner = await this.rpc.readContract({

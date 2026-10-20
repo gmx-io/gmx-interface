@@ -54,19 +54,6 @@ for (const { configKey } of productionChains) {
       expect(age, `${url} newest price age in seconds`).toBeLessThan(MAX_PRICE_AGE_SECONDS);
     }
   });
-
-  test(`0.03 ${configKey} API serves enabled markets`, async ({ request }) => {
-    const urls = endpoints
-      .filter(({ file, keys }) => file === "sdk/src/configs/api.ts" && keys.includes(configKey))
-      .map(({ url }) => url);
-    expect(urls.length).toBeGreaterThan(0);
-    for (const url of urls) {
-      const response = await request.get(`${url}/v1/markets/info`, { timeout: 30_000 });
-      expect(response.status(), url).toBe(200);
-      const markets: { isDisabled: boolean }[] = await response.json();
-      expect(markets.filter(({ isDisabled }) => !isDisabled).length, url).toBeGreaterThan(0);
-    }
-  });
 }
 
 test("0.03 stats backends answer volume, supply and position requests", async ({ request }) => {

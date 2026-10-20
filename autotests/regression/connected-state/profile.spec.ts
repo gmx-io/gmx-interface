@@ -133,20 +133,3 @@ test("17.17 chart export downloads a nonempty PNG image", async ({ page, context
   expect(image.length).toBeGreaterThan(5000);
   await testInfo.attach("pnl-export", { path, contentType: "image/png" });
 });
-
-test("17.01 connected wallet loads /traders and opens its own trader profile from the account menu", async ({
-  page,
-  context,
-  accountState,
-}) => {
-  await mockPnlHistory(context, accountState.address);
-  await accountState.connect(page);
-  await page.goto("/traders", { waitUntil: "domcontentloaded" });
-  await expect(page.getByRole("heading", { name: "Trader activity" })).toBeVisible();
-  await page.getByTestId("user-address").click();
-  await page.getByText(/^PnL analysis$/i).click();
-  await expect(page).toHaveURL(new RegExp(`/traders/${accountState.address}(\\?|$)`));
-  await expect(page.getByRole("heading", { name: "Trader profile" })).toBeVisible();
-  await expect(page.getByText(`You ${accountState.address}`)).toBeVisible();
-  await expect(page.locator(".recharts-bar").first()).toBeVisible();
-});

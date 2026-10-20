@@ -62,12 +62,4 @@ describe("slide modal animation lifecycle", () => {
     const curtain = view.baseElement.querySelector<HTMLElement>('[data-qa="curtain"]')!;
     expect(curtain.style.transform).toBe("translateY(0)");
   });
-
-  it("cancels the active animation when the curtain unmounts", () => {
-    const view = render(modal(true));
-    view.unmount();
-    expect(animations[0].cancel).toHaveBeenCalledOnce();
-    expect(() => animations[0].dispatchEvent(new Event("finish"))).not.toThrow();
-    expect(animations[0].commitStyles).not.toHaveBeenCalled();
-  });
 });

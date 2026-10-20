@@ -1,21 +1,11 @@
 import { expect } from "@playwright/test";
 import { formatUnits, getAddress, type Hex } from "viem";
-import { getToken } from "../../../sdk/src/configs/tokens";
-import { formatAmount, formatBalanceAmount } from "../../../sdk/src/utils/numbers/utils";
+import { formatAmount } from "../../../sdk/src/utils/numbers/utils";
 import { test } from "../fixtures/liveWallet";
 import { inputNumber } from "../fixtures/trade";
+import { transferRow } from "../fixtures/transferHistory";
 
 test.use({ liveProfile: "account" });
-
-// Transfer list dates; the project runs in UTC.
-function listDate(seconds: number) {
-  const day = (ms: number) => new Date(ms).toISOString().slice(0, 10);
-  if (day(seconds * 1000) === day(Date.now())) return "Today";
-  if (day(seconds * 1000) === day(Date.now() - 86_400_000)) return "Yesterday";
-  return new Intl.DateTimeFormat("en-US", { timeZone: "UTC", month: "short", day: "2-digit", year: "numeric" }).format(
-    seconds * 1000
-  );
-}
 
 test.beforeEach(async ({ page, liveWallet }) => {
   await liveWallet.connect(page);
@@ -56,23 +46,7 @@ test("4.58 4.60 live GMX Account: funding history search opens actual transfer d
   await search.fill("no-such-asset");
   await expect(modal.getByText("No transfer history matching search", { exact: true })).toBeVisible();
   await search.fill("USDC");
-  // Rows carry no id; the newest row with this transfer's label, amount and date is the transfer itself.
-  const token = getToken(transfer.settlementChainId, getAddress(transfer.token));
-  const sent = BigInt(transfer.sentAmount);
-  const isDeposit = transfer.operation === "deposit";
-  const label = `${isDeposit ? "Deposit" : "Withdrawal"}${transfer.isExecutionError ? " failed" : ""}`;
-  const amount = formatBalanceAmount(isDeposit ? sent : -sent, token.decimals, undefined, {
-    isStable: token.isStable,
-    signed: true,
-  });
-  await modal
-    .getByRole("button")
-    .filter({ has: page.getByText(token.symbol, { exact: true }) })
-    .filter({ has: page.getByText(label, { exact: true }) })
-    .filter({ has: page.getByText(amount, { exact: true }) })
-    .filter({ has: page.getByText(listDate(transfer.sentTimestamp), { exact: true }) })
-    .first()
-    .click();
+  await transferRow(modal, transfer).row.first().click();
   const link = page.locator(`.Modal-content a[href="https://arbiscan.io/tx/${transfer.sentTxn}"]`);
   await expect(link).toBeVisible();
   await expect(link).toHaveAttribute("target", "_blank");
@@ -83,20 +57,13 @@ test("4.58 4.60 live GMX Account: funding history search opens actual transfer d
   await testInfo.attach("live-account-transfer", { body: JSON.stringify(transfer), contentType: "application/json" });
 });
 
-test("4.02 4.06 live GMX Account: USDC asset balance matches DataStore and search recovers", async ({
-  page,
-  liveAccount,
-}) => {
+test("4.02 4.06 live GMX Account: searched USDC asset balance matches DataStore", async ({ page, liveAccount }) => {
   await page.getByTestId("gmx-account-balance").getByRole("button").click();
   const search = page.getByPlaceholder("Search", { exact: true });
   const modal = page.locator(".Modal-content").filter({ has: search });
   await search.fill("USDC");
   await expect(modal.getByText("USDC", { exact: true })).toBeVisible();
   const { amount, decimals } = liveAccount.financial!;
-  await expect(modal.getByText(formatAmount(amount, decimals, 2, true)!, { exact: true })).toBeVisible();
-  await search.fill("no-such-asset");
-  await expect(modal.getByText("No assets found", { exact: true })).toBeVisible();
-  await search.fill("USDC");
   await expect(modal.getByText(formatAmount(amount, decimals, 2, true)!, { exact: true })).toBeVisible();
 });
 

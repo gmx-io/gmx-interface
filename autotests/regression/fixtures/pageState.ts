@@ -3,7 +3,6 @@ import { expect, type Locator, type Page, type TestInfo } from "@playwright/test
 const LOADERS = ".bouncing-loader, .spinning-loader, .react-loading-skeleton";
 const LOADING_BOUND = 45_000;
 
-// Spinners, skeletons and "Loading..." placeholders are gone, and no error or not-found page is shown.
 export async function expectSettled(page: Page) {
   await expect(page.locator(LOADERS).filter({ visible: true })).toHaveCount(0, { timeout: LOADING_BOUND });
   await expect(page.getByText(/^Loading\.*$/).filter({ visible: true })).toHaveCount(0, { timeout: LOADING_BOUND });
@@ -12,7 +11,7 @@ export async function expectSettled(page: Page) {
 }
 
 // The app scrolls inside its page container, so the viewport grows to the content before the capture.
-export async function attachFullPageScreenshot(page: Page, testInfo: TestInfo, name: string) {
+async function attachFullPageScreenshot(page: Page, testInfo: TestInfo, name: string) {
   const viewport = page.viewportSize()!;
   const height = await page.evaluate(() =>
     Math.max(
@@ -41,12 +40,12 @@ export const BASELINE_PAGES: { path: string; ready: (page: Page) => Locator }[] 
   { path: "/referrals", ready: (page) => page.getByTestId("referrals-page") },
 ];
 
+// Expects the page to be open at `path` already.
 export async function captureBaseline(
   page: Page,
   testInfo: TestInfo,
   { path, ready }: (typeof BASELINE_PAGES)[number]
 ) {
-  await page.goto(path);
   await expect(ready(page)).toBeVisible();
   if (path === "/trade")
     await expect(

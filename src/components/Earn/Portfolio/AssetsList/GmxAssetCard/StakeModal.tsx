@@ -267,7 +267,7 @@ export function StakeModal(props: {
         sendStakingActionMetric({ action: "stake", tokenSymbol, chainId });
         setIsVisible(false);
       })
-      // The error toast already reports the failure; rethrowing only leaves an unhandled rejection.
+      // The error toast already reported it.
       .catch((error) => {
         sendStakingActionMetric({ action: "stake", tokenSymbol, chainId, error });
       })
@@ -320,7 +320,6 @@ export function StakeModal(props: {
           showResetToast();
         }
       })
-      // The error toast already reports the failure; rethrowing only leaves an unhandled rejection.
       .catch((error) => {
         sendStakingActionMetric({ action: "unstake", tokenSymbol, chainId, error });
       })

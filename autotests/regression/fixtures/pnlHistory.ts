@@ -49,3 +49,35 @@ export async function mockPnlHistory(
   });
   return { rows, requests, today };
 }
+
+type PnlSummaryRow = {
+  wins: number;
+  losses: number;
+  pnlBps: string;
+  pnlUsd: string;
+  volume: string;
+  winsLossesRatioBps: string;
+  usedCapitalUsd: string;
+};
+
+export async function mockPnlSummary(context: BrowserContext, account: string, row: (index: number) => PnlSummaryRow) {
+  await context.route("**/*", async (route) => {
+    let body: { query?: string; variables?: { account?: string } } | undefined;
+    try {
+      body = route.request().method() === "POST" ? route.request().postDataJSON() : undefined;
+    } catch {
+      return route.fallback();
+    }
+    if (
+      !body?.query?.includes("accountPnlSummaryStats") ||
+      !body.variables?.account ||
+      getAddress(body.variables.account) !== account
+    )
+      return route.fallback();
+    const accountPnlSummaryStats = ["today", "yesterday", "week", "month", "year", "all"].map((bucketLabel, index) => ({
+      bucketLabel,
+      ...row(index),
+    }));
+    await route.fulfill({ json: { data: { accountPnlSummaryStats } } });
+  });
+}

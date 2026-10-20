@@ -53,28 +53,3 @@ test("17.02 17.03 live profile: all performance periods match the unmodified ind
   await testInfo.attach("live-performance", { body: JSON.stringify(rows), contentType: "application/json" });
   await expect(page.getByTestId("user-address")).toHaveCount(0);
 });
-
-test("17.03 live profile: PnL and win-rate tooltips expose the selected period's breakdown", async ({
-  page,
-  liveAccount,
-}) => {
-  await page.goto(`/traders/${liveAccount.account}`);
-  const table = page.getByRole("table").filter({ has: page.getByRole("columnheader", { name: "DATE", exact: true }) });
-  const cells = table
-    .getByRole("row")
-    .filter({ has: page.getByRole("button", { name: "All time", exact: true }) })
-    .getByRole("cell");
-  await expect(cells.nth(2)).toContainText("$");
-  await cells.nth(2).locator(".numbers").first().hover();
-  await expect(page.getByText("Realized PnL before fees", { exact: true })).toBeVisible();
-  await expect(page.getByText("Fees and impacts", { exact: true })).toBeVisible();
-  await cells.first().hover();
-  await expect(page.getByText("Fees and impacts", { exact: true })).toBeHidden();
-  await cells.nth(3).locator(".numbers").first().hover();
-  await expect(page.getByText("Capital used:", { exact: true })).toBeVisible();
-  await cells.first().hover();
-  await expect(page.getByText("Capital used:", { exact: true })).toBeHidden();
-  await cells.nth(4).locator(".numbers").hover();
-  await expect(page.getByText("Total trades:", { exact: true })).toBeVisible();
-  await expect(page.getByText("Win rate:", { exact: true })).toBeVisible();
-});

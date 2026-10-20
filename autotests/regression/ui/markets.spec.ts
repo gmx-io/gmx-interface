@@ -3,6 +3,7 @@ import { expect, type Page } from "@playwright/test";
 import { test } from "../fixtures/browser";
 import { marketLabel, selectorIndexTokens } from "../fixtures/marketConfig";
 import { watchMarketsApi } from "../fixtures/marketData";
+import { selectorRows } from "../fixtures/marketSelector";
 import { openMarketSelector, openTrade, selectMarket } from "../fixtures/trade";
 
 // Category filters of the market selector, see src/components/ChartTokenSelector/marketFilters.ts.
@@ -19,24 +20,13 @@ const categoryTab = (page: Page, name: string) =>
     .last()
     .getByRole("button", { name, exact: true });
 
-test("5.06 5.07 selector lists every enabled market, filters by category, and search recovers from no matches", async ({
-  page,
-  chainId,
-}) => {
+test("5.06 5.07 selector filters by category, and search recovers from no matches", async ({ page, chainId }) => {
   const api = watchMarketsApi(page, chainId);
   await openTrade(page);
   await openMarketSelector(page);
   await expect.poll(() => api.config?.length ?? 0).toBeGreaterThan(0);
   const tokens = selectorIndexTokens(chainId, api.config!).map(({ token }) => token);
-  const rows = page
-    .getByRole("table")
-    .filter({ has: page.getByRole("columnheader", { name: "LAST PRICE", exact: true }) })
-    .locator("tbody tr");
-  const labels = () =>
-    rows.evaluateAll((elements) =>
-      elements.map((row) => (row as HTMLTableRowElement).cells[1].innerText.trim().split(/\s+/)[0]).sort()
-    );
-  await expect.poll(() => rows.count()).toBeGreaterThanOrEqual(tokens.length);
+  const labels = async () => (await selectorRows(page)).map((row) => row.label).sort();
   for (const { tab, categories } of CATEGORY_TABS) {
     await categoryTab(page, tab).click();
     const expected = tokens.filter((token) => token.categories?.some((category) => categories.includes(category)));
@@ -44,7 +34,6 @@ test("5.06 5.07 selector lists every enabled market, filters by category, and se
     await expect.poll(labels).toEqual(expected.map(marketLabel).sort());
   }
   await categoryTab(page, "All").click();
-  await expect.poll(() => rows.count()).toBeGreaterThanOrEqual(tokens.length);
 
   const search = page.getByPlaceholder("Search market", { exact: true });
   await search.fill("BTC");

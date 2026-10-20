@@ -118,7 +118,6 @@ jobs:
       REGRESSION_DEPLOYMENT_SHA: ${{ needs.resolve-preview.outputs.head_sha }}
       REGRESSION_DEPLOYMENT_CHECK_URL: ${{ needs.resolve-preview.outputs.check_url }}
       REGRESSION_CANDIDATE_ROOT: ${{ github.workspace }}/.context/regression-candidate
-      # Source-chain RPC reads in connected-state fixtures; public RPCs rate-limit CI runners.
       REGRESSION_ALCHEMY_KEY: ${{ secrets.REGRESSION_ALCHEMY_KEY }}
     steps:
       - uses: actions/checkout@v4
@@ -166,8 +165,6 @@ jobs:
         with:
           node-version: "22"
           cache: yarn
-      - name: Test preview resolution
-        run: node --test --test-concurrency=3 autotests/regression/ci/resolvePreview.test.cjs
       - name: Install dependencies
         run: yarn install --immutable --mode=skip-build
       - name: Install SDK dependencies for funded harness validation
@@ -179,6 +176,7 @@ jobs:
           yarn test:regression:funded:types
           yarn test:regression:funded:unit
           yarn test:regression:fixtures:unit
+          yarn test:regression:ci:unit
           REGRESSION_FUNDED_RUN_ID=listing REGRESSION_FUNDED_EXECUTE=1 REGRESSION_FUNDED_CASES=all yarn exec playwright test -c playwright-funded.config.ts --list
       - name: Install Chromium
         run: yarn exec playwright install --with-deps chromium

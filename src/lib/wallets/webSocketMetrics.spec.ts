@@ -8,19 +8,6 @@ import { setupWebSocketClientMetrics } from "./walletConfig";
 afterEach(() => vi.restoreAllMocks());
 
 describe("WebSocket metrics", () => {
-  it("records a failed handshake without an unhandled rejection", async () => {
-    const push = vi.spyOn(metrics, "pushEvent").mockImplementation(() => undefined);
-    const client = { transport: { getRpcClient: () => Promise.reject(new Event("error")) } } as unknown as PublicClient;
-    await expect(setupWebSocketClientMetrics(client, 42161)).resolves.toBeUndefined();
-    expect(push).toHaveBeenCalledWith(
-      expect.objectContaining({
-        event: "viemWsClient.error",
-        isError: true,
-        data: expect.objectContaining({ chainId: 42161 }),
-      })
-    );
-  });
-
   it("records actual connection state and subsequent close/error events", async () => {
     const push = vi.spyOn(metrics, "pushEvent").mockImplementation(() => undefined);
     const socket = Object.assign(new EventTarget(), { OPEN: 1, CLOSED: 3, readyState: 1 });

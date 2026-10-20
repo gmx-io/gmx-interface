@@ -1,7 +1,6 @@
-import { readFileSync } from "node:fs";
 import { expect, type BrowserContext, type Page } from "@playwright/test";
-import ts from "typescript";
 
+import { datedChainAnnouncements } from "../fixtures/announcements";
 import { test } from "../fixtures/browser";
 
 const DAY = 24 * 60 * 60 * 1000;
@@ -23,38 +22,13 @@ function banner(page: Page, title: string | RegExp) {
   return page.getByTestId("announcement-banner").filter({ hasText: title });
 }
 
-// KLI flag-gated announcements for this chain, read from the release config.
-function flagEvents(chainId: number) {
-  const path = "src/config/events.tsx";
-  const file = ts.createSourceFile(path, readFileSync(path, "utf8"), ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
-  const list = file.statements
-    .filter(ts.isVariableStatement)
-    .flatMap((statement) => statement.declarationList.declarations)
-    .find((declaration) => declaration.name.getText(file) === "appEventsData")!
-    .initializer as ts.ArrayLiteralExpression;
-  return list.elements.filter(ts.isObjectLiteralExpression).flatMap((event) => {
-    const props = Object.fromEntries(
-      event.properties.filter(ts.isPropertyAssignment).map((prop) => [prop.name.getText(file), prop.initializer])
-    );
-    const text = (name: string) => {
-      const value = props[name];
-      return value && ts.isStringLiteral(value) ? value.text : undefined;
-    };
-    const [id, flagId, title, start, end] = ["id", "flagId", "title", "startDate", "endDate"].map(text);
-    const chain = chainId === 42161 ? "ARBITRUM" : "AVALANCHE";
-    if (!id || !flagId || !title || !start || !end || props.requiresOpenPosition) return [];
-    if (props.chains && !props.chains.getText(file).includes(chain)) return [];
-    return [{ id, flagId, title, start: new Date(`${start.replace(",", "")} UTC`).getTime() }];
-  });
-}
-
-test("2.24 the KLI service-disruption banner shows while its flag is on, dismisses for a day and returns after the cooldown", async ({
+test("2.24 the KLI service-disruption banner shows while its flag is on, dismisses for a day, returns after the cooldown and hides when the flag is off", async ({
   page,
   context,
 }) => {
   const now = Date.now();
   await page.clock.install({ time: now });
-  await mockUiFlags(context, { showServiceDisruptionBanner: true });
+  const flags = await mockUiFlags(context, { showServiceDisruptionBanner: true });
   await page.goto("/pools", { waitUntil: "domcontentloaded" });
   const disruption = banner(page, "Service disruption");
   await expect(disruption).toBeVisible();
@@ -72,14 +46,12 @@ test("2.24 the KLI service-disruption banner shows while its flag is on, dismiss
   await page.clock.setSystemTime(now + DAY + 60_000);
   await page.reload({ waitUntil: "domcontentloaded" });
   await expect(disruption).toBeVisible();
-});
 
-test("2.24 the service-disruption banner stays hidden while its KLI flag is off", async ({ page, context }) => {
-  await mockUiFlags(context, { showServiceDisruptionBanner: false });
-  await page.goto("/pools", { waitUntil: "domcontentloaded" });
+  flags.showServiceDisruptionBanner = false;
+  await page.reload({ waitUntil: "domcontentloaded" });
   await expect(page.getByText("TVL in vaults and pools", { exact: true })).toBeVisible();
   await expect(page.getByTestId("whats-new-toast-container")).toBeAttached();
-  await expect(banner(page, "Service disruption")).toHaveCount(0);
+  await expect(disruption).toHaveCount(0);
 });
 
 test("2.24 a KLI flag-gated listing appears in What's new only while its flag is on", async ({
@@ -87,20 +59,22 @@ test("2.24 a KLI flag-gated listing appears in What's new only while its flag is
   context,
   chainId,
 }) => {
-  const event = flagEvents(chainId).sort((a, b) => b.start - a.start)[0];
+  const event = datedChainAnnouncements(chainId)
+    .filter((candidate) => candidate.flagId && candidate.title)
+    .sort((a, b) => b.start - a.start)[0];
   test.skip(!event, "No flag-gated announcement with a start date targets this chain");
   await page.clock.install({ time: event.start + 60 * 60 * 1000 });
-  const flags = await mockUiFlags(context, { [event.flagId]: true });
+  const flags = await mockUiFlags(context, { [event.flagId!]: true });
   await page.goto("/pools", { waitUntil: "domcontentloaded" });
   const whatsNew = banner(page, "What's new");
-  await expect(whatsNew.getByText(event.title, { exact: true }).last()).toBeAttached();
+  await expect(whatsNew.getByText(event.title!, { exact: true }).last()).toBeAttached();
   await expect(whatsNew.getByRole("link", { name: "See more" })).toBeVisible();
 
-  flags[event.flagId] = false;
+  flags[event.flagId!] = false;
   await page.reload({ waitUntil: "domcontentloaded" });
   await expect(page.getByText("TVL in vaults and pools", { exact: true })).toBeVisible();
   await expect(page.getByTestId("whats-new-toast-container")).toBeAttached();
-  await expect(page.getByTestId("announcement-banner").getByText(event.title, { exact: true })).toHaveCount(0);
+  await expect(page.getByTestId("announcement-banner").getByText(event.title!, { exact: true })).toHaveCount(0);
 });
 
 test("2.24 the Update available banner offers a reload for a newer build and its dismissal snoozes it", async ({

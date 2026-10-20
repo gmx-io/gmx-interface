@@ -716,7 +716,6 @@ export function PositionSeller() {
     });
 
     if (expressParams?.subaccount) {
-      // The transaction callback reports failures after this handler returns.
       void txnPromise.catch(reportHandledRejection("positionSeller.submit"));
       onClose();
       setIsSubmitting(false);

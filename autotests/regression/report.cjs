@@ -23,7 +23,6 @@ if (!fs.existsSync(reportPath)) {
     lines.push("External target: deployment SHA has not been verified.", "");
   }
   const counts = { expected: 0, flaky: 0, unexpected: 0, skipped: 0 };
-  // Tests left unrun after the run reached its failure limit are skipped without results.
   let notRun = 0;
   const projects = new Map();
   const incomplete = [];
@@ -46,7 +45,6 @@ if (!fs.existsSync(reportPath)) {
           const project = projects.get(test.projectName) || { expected: 0, flaky: 0, unexpected: 0, skipped: 0 };
           project[test.status] = (project[test.status] || 0) + 1;
           projects.set(test.projectName, project);
-          // Unrun tests are counted above instead of listed one by one.
           if (test.status !== "expected" && test.results.length) {
             const reasons = (test.annotations || [])
               .map((entry) => entry.description)
