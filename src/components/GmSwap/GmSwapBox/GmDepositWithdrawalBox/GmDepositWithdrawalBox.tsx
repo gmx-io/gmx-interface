@@ -427,22 +427,26 @@ export function GmSwapBoxDepositWithdrawal() {
   // #region Callbacks
   const onFocusedCollateralInputChange = useCallback(
     (tokenAddress: string) => {
-      if (!marketInfo) {
+      // A GLV picks its pool only after its markets load, and the still market-focused form would clear an amount typed
+      // before that. All GLV pools share the GLV's tokens.
+      const pool = marketInfo ?? glvInfo;
+
+      if (!pool) {
         return;
       }
 
-      if (marketInfo.isSameCollaterals) {
+      if (pool.isSameCollaterals) {
         setFocusedInput("first");
         return;
       }
 
-      if (getTokenPoolType(marketInfo, tokenAddress) === "long") {
+      if (getTokenPoolType(pool, tokenAddress) === "long") {
         setFocusedInput("first");
       } else {
         setFocusedInput("second");
       }
     },
-    [marketInfo, setFocusedInput]
+    [marketInfo, glvInfo, setFocusedInput]
   );
 
   const resetInputs = useCallback(() => {

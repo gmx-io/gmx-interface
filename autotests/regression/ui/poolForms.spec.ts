@@ -137,6 +137,14 @@ for (const type of ["GM", "GLV"] as const) {
   });
 }
 
+test("12.14 a GLV buy amount entered right after a reload keeps its quote", async ({ page }) => {
+  await openPoolDetails(page, "GLV");
+  // After a reload the amount is typed before the GLV picks its pool, which must not clear it.
+  await page.reload();
+  const { input } = await openForm(page, "GLV", "Buy");
+  await expect(input).toHaveValue("1");
+});
+
 test("12.15 a large single-token GM withdrawal's Pay and Receive include the price impact it shows", async ({
   page,
   chainId,
