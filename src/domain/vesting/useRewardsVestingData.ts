@@ -233,7 +233,7 @@ function buildRewardsVestingRequest(account: string, addresses: RewardsVestingAd
   } satisfies MulticallRequestConfig<any>;
 }
 
-function parseRewardsVestingResponse(
+export function parseRewardsVestingResponse(
   result: MulticallResult<MulticallRequestConfig<any>>
 ): RewardsVestingContractsData {
   const walletGmxBalance = getFirstReturnValue(result.data.gmx?.balanceOf?.returnValues);

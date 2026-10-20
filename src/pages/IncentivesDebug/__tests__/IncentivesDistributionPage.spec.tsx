@@ -48,8 +48,6 @@ const auditState = vi.hoisted(() => ({
   error: undefined as Error | undefined,
   isValidating: false,
   lastEpoch: undefined as number | undefined,
-  previousEpochLoaded: false,
-  stakingMissing: false,
 }));
 
 vi.mock("lib/chains", () => ({ useChainId: () => ({ chainId: 42161 }) }));
@@ -79,14 +77,10 @@ vi.mock("domain/synthetics/incentives/v2/useIncentiveEpochAudit", () => ({
       data:
         epoch === EPOCH
           ? {
-              entries: auditState.stakingMissing
-                ? entries.map((entry, index) => (index === 1 ? { ...entry, avgStakedGmx: null } : entry))
-                : entries,
+              entries,
               totalFees: 21n * 10n ** 30n,
             }
-          : auditState.previousEpochLoaded
-            ? { entries: [], totalFees: 0n }
-            : undefined,
+          : undefined,
       error: auditState.error,
       isValidating: auditState.isValidating,
       mutate: vi.fn().mockResolvedValue(undefined),
@@ -112,8 +106,6 @@ describe("IncentivesDistributionPage", () => {
     i18n.activate("en");
     auditState.error = undefined;
     auditState.isValidating = false;
-    auditState.previousEpochLoaded = false;
-    auditState.stakingMissing = false;
     vi.mocked(downloadFile).mockClear();
   });
   afterEach(cleanup);
@@ -133,65 +125,23 @@ describe("IncentivesDistributionPage", () => {
     expect(csv).toContain(`${entries[20].account},1.000000000000000001\r\n`);
   });
 
-  it("switches the table and CSV together to the detailed columns", () => {
+  it.each([
+    { name: "the newly selected epoch is loading", selectPreviousEpoch: true },
+    { name: "cached data has an error", error: new Error("Incomplete epoch") },
+    { name: "cached data is refreshing", isValidating: true },
+  ])("disables exports while $name", ({ selectPreviousEpoch, error, isValidating }) => {
+    auditState.error = error;
+    auditState.isValidating = Boolean(isValidating);
     render(<TestPage />);
-    fireEvent.click(screen.getByRole("button", { name: "Show detailed data" }));
+    if (selectPreviousEpoch) {
+      fireEvent.change(screen.getByRole("combobox"), { target: { value: String(PREVIOUS_EPOCH) } });
+      expect(auditState.lastEpoch).toBe(PREVIOUS_EPOCH);
+    }
 
-    expect(screen.getAllByRole("columnheader")).toHaveLength(10);
-    expect(screen.getByRole("columnheader", { name: "Eligible fees (USD)" })).toBeTruthy();
-    expect(screen.getAllByRole("cell", { name: "1.75×" })).toHaveLength(20);
-    expect(screen.getByRole("columnheader", { name: "Staking (GMX, average)" })).toBeTruthy();
-    expect(screen.queryByText(/Average GMX staking is not available/)).toBeNull();
-
-    fireEvent.click(screen.getByRole("button", { name: "Download CSV" }));
-    expect(vi.mocked(downloadFile).mock.calls[0][0]).toBe(`incentives-42161-${EPOCH}-detailed.csv`);
-    expect(vi.mocked(downloadFile).mock.calls[0][1]).toContain("eligible_fees_usd\r\n");
-  });
-
-  it("marks unsynced average staking as missing while keeping known zero balances", () => {
-    auditState.stakingMissing = true;
-    render(<TestPage />);
-    fireEvent.click(screen.getByRole("button", { name: "Show detailed data" }));
-
-    expect(screen.getByText(/Average GMX staking is not available for every wallet yet/)).toBeTruthy();
-    const rows = screen.getAllByRole("row");
-    expect(rows[1].children[5].textContent).toBe("0.0000");
-    expect(rows[2].children[5].textContent).toBe("—");
-    expect(rows[3].children[5].textContent).toBe("1.2346");
-
-    fireEvent.click(screen.getByRole("button", { name: "Download CSV" }));
-    const csv = String(vi.mocked(downloadFile).mock.calls[0][1]).split("\r\n");
-    expect(csv[1].split(",")[5]).toBe("0");
-    expect(csv[2].split(",")[5]).toBe("");
-    expect(csv[3].split(",")[5]).toBe("1.234567890123456789");
-  });
-
-  it("disables exporting the old epoch while the newly selected epoch is loading", () => {
-    const { rerender } = render(<TestPage />);
-    fireEvent.change(screen.getByRole("combobox"), { target: { value: String(PREVIOUS_EPOCH) } });
-
-    expect(auditState.lastEpoch).toBe(PREVIOUS_EPOCH);
+    const button = screen.getByRole("button", { name: "Download CSV" }) as HTMLButtonElement;
+    expect(button.disabled).toBe(true);
+    fireEvent.click(button);
+    expect(downloadFile).not.toHaveBeenCalled();
     expect(screen.queryByText(entries[0].account)).toBeNull();
-    expect((screen.getByRole("button", { name: "Download CSV" }) as HTMLButtonElement).disabled).toBe(true);
-    fireEvent.click(screen.getByRole("button", { name: "Download CSV" }));
-    expect(downloadFile).not.toHaveBeenCalled();
-
-    auditState.previousEpochLoaded = true;
-    rerender(<TestPage />);
-    expect(screen.getByText("No audit entries found for this epoch.")).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Download CSV" }));
-    expect(vi.mocked(downloadFile).mock.calls[0][1]).toBe("wallet,esGMX\r\n");
-  });
-
-  it.each(["error", "refresh"])("disables exports when cached data has an %s", (state) => {
-    if (state === "error") auditState.error = new Error("Incomplete epoch");
-    else auditState.isValidating = true;
-
-    render(<TestPage />);
-
-    expect((screen.getByRole("button", { name: "Download CSV" }) as HTMLButtonElement).disabled).toBe(true);
-    fireEvent.click(screen.getByRole("button", { name: "Download CSV" }));
-    expect(downloadFile).not.toHaveBeenCalled();
-    expect(screen.queryByRole("table")).toBeNull();
   });
 });

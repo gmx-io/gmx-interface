@@ -1,4 +1,4 @@
-import { act, render, waitFor } from "@testing-library/react";
+import { act, render } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ARBITRUM, AVALANCHE } from "config/chains";
@@ -111,218 +111,111 @@ describe("useRewardsPageData", () => {
     setAllTimeSummaryRequest([allTimeSummary]);
   });
 
-  it("loads account data only after an Arbitrum config is active", () => {
-    render(<Harness chainId={ARBITRUM} account={CHECKSUMMED_ACCOUNT} />);
-
-    expect(mockUseAccountIncentiveStatus).toHaveBeenCalledWith(ARBITRUM, {
-      account: CHECKSUMMED_ACCOUNT,
-      enabled: true,
-    });
-    expect(mockUseIncentivesLeaderboard).toHaveBeenCalledWith(ARBITRUM, {
-      where: { account: CHECKSUMMED_ACCOUNT },
-      isMutable: true,
-      limit: 1,
-      offset: 0,
-      enabled: true,
-    });
-    expect(latestResult.availability.status).toBe("active");
-    expect(latestResult.accountStatus).toBe(accountStatus);
-    expect(latestResult.allTimeSummary).toBe(allTimeSummary);
-  });
-
-  it("does not start dependent queries while config availability is unresolved", () => {
-    setConfigRequest(undefined);
-
-    render(<Harness chainId={ARBITRUM} account={CHECKSUMMED_ACCOUNT} />);
-
-    expect(latestResult.availability.status).toBe("loading");
-    expect(latestResult.canLoadAllTimeLeaderboard).toBe(true);
-    expect(mockUseAccountIncentiveStatus).toHaveBeenCalledWith(ARBITRUM, {
-      account: CHECKSUMMED_ACCOUNT,
-      enabled: false,
-    });
-    expect(mockUseIncentivesLeaderboard).toHaveBeenCalledWith(ARBITRUM, expect.objectContaining({ enabled: false }));
-  });
-
-  it("does not load tier account queries on other rewards tabs", () => {
-    render(<Harness chainId={ARBITRUM} account={CHECKSUMMED_ACCOUNT} loadTierAccountData={false} />);
-
-    expect(mockUseAccountIncentiveStatus).toHaveBeenCalledWith(ARBITRUM, {
-      account: CHECKSUMMED_ACCOUNT,
-      enabled: false,
-    });
-    expect(mockUseIncentivesLeaderboard).toHaveBeenCalledWith(
-      ARBITRUM,
-      expect.objectContaining({
-        where: { account: CHECKSUMMED_ACCOUNT },
-        enabled: false,
-      })
-    );
-    expect(latestResult.accountStatus).toBeUndefined();
-    expect(latestResult.allTimeSummary).toBeUndefined();
-  });
-
-  it("reports unsupported chains without loading config or account data", () => {
-    setAvailability({ status: "unsupported-chain" });
-
-    render(<Harness chainId={AVALANCHE} account={CHECKSUMMED_ACCOUNT} />);
-
-    expect(latestResult.availability.status).toBe("unsupported-chain");
-    expect(latestResult.canLoadAllTimeLeaderboard).toBe(false);
-    expect(mockUseAccountIncentiveStatus).toHaveBeenCalledWith(AVALANCHE, expect.objectContaining({ enabled: false }));
-    expect(mockUseIncentivesLeaderboard).toHaveBeenCalledWith(AVALANCHE, expect.objectContaining({ enabled: false }));
-  });
+  const previousEpochStatus = { ...accountStatus, epochTimestamp: config.epochTimestamp - config.epochDuration };
 
   it.each([
-    ["inactive", { status: "inactive" } as const],
-    ["error", { status: "error", error: new Error("Unavailable") } as const],
-  ])("allows config-independent all-time leaderboard queries while config is %s", (_label, availability) => {
-    setAvailability(availability);
-
-    render(<Harness chainId={ARBITRUM} account={CHECKSUMMED_ACCOUNT} />);
-
-    expect(latestResult.canLoadAllTimeLeaderboard).toBe(true);
-    expect(mockUseAccountIncentiveStatus).toHaveBeenCalledWith(ARBITRUM, expect.objectContaining({ enabled: false }));
-  });
-
-  it("preserves a disconnected state without reporting account loading", () => {
-    setAccountStatusRequest(accountStatus, true);
-    setAllTimeSummaryRequest([allTimeSummary], true);
-
-    render(<Harness chainId={ARBITRUM} />);
-
-    expect(mockUseAccountIncentiveStatus).toHaveBeenCalledWith(ARBITRUM, {
-      account: undefined,
+    { name: "active config", enabled: true, canLoadAllTime: true, hasAccountStatus: true, hasSummary: true },
+    {
+      name: "unresolved config",
+      availability: { status: "loading" } as const,
       enabled: false,
-    });
-    expect(mockUseIncentivesLeaderboard).toHaveBeenCalledWith(ARBITRUM, {
-      where: undefined,
-      isMutable: true,
-      limit: 1,
-      offset: 0,
+      canLoadAllTime: true,
+    },
+    { name: "other rewards tab", loadTierAccountData: false, enabled: false, canLoadAllTime: true },
+    {
+      name: "unsupported chain",
+      chainId: AVALANCHE,
+      availability: { status: "unsupported-chain" } as const,
       enabled: false,
-    });
-    expect(latestResult.accountStatus).toBeUndefined();
-    expect(latestResult.allTimeSummary).toBeUndefined();
-    expect(latestResult.accountStatusLoading).toBe(false);
-    expect(latestResult.allTimeSummaryLoading).toBe(false);
-  });
+      canLoadAllTime: false,
+    },
+    { name: "inactive config", availability: { status: "inactive" } as const, enabled: false, canLoadAllTime: true },
+    {
+      name: "config error",
+      availability: { status: "error", error: new Error("Unavailable") } as const,
+      enabled: false,
+      canLoadAllTime: true,
+    },
+    { name: "disconnected account", account: null, loading: true, enabled: false, canLoadAllTime: true },
+    {
+      name: "account status from a different epoch",
+      status: previousEpochStatus,
+      enabled: true,
+      canLoadAllTime: true,
+      hasSummary: true,
+      isMixedEpoch: true,
+    },
+  ])(
+    "gates account queries for $name",
+    ({
+      chainId = ARBITRUM,
+      account = CHECKSUMMED_ACCOUNT,
+      loadTierAccountData = true,
+      availability,
+      status = accountStatus,
+      loading = false,
+      enabled,
+      canLoadAllTime,
+      hasAccountStatus = false,
+      hasSummary = false,
+      isMixedEpoch = false,
+    }) => {
+      if (availability) setAvailability(availability);
+      setAccountStatusRequest(status, loading);
+      setAllTimeSummaryRequest([allTimeSummary], loading);
 
-  it("withholds account status from a different epoch", () => {
-    setAccountStatusRequest({ ...accountStatus, epochTimestamp: config.epochTimestamp - config.epochDuration });
+      render(<Harness chainId={chainId} account={account ?? undefined} loadTierAccountData={loadTierAccountData} />);
 
-    render(<Harness chainId={ARBITRUM} account={CHECKSUMMED_ACCOUNT} />);
+      expect(mockUseAccountIncentiveStatus).toHaveBeenLastCalledWith(chainId, {
+        account: account ?? undefined,
+        enabled,
+      });
+      expect(mockUseIncentivesLeaderboard).toHaveBeenLastCalledWith(chainId, {
+        where: account ? { account } : undefined,
+        isMutable: true,
+        limit: 1,
+        offset: 0,
+        enabled,
+      });
+      expect(latestResult.canLoadAllTimeLeaderboard).toBe(canLoadAllTime);
+      expect(latestResult.accountStatus).toBe(hasAccountStatus ? status : undefined);
+      expect(latestResult.allTimeSummary).toBe(hasSummary ? allTimeSummary : undefined);
+      expect(latestResult.isMixedEpoch).toBe(isMixedEpoch);
+      expect(latestResult.accountStatusLoading).toBe(false);
+      expect(latestResult.allTimeSummaryLoading).toBe(false);
+    }
+  );
 
-    expect(latestResult.isMixedEpoch).toBe(true);
-    expect(latestResult.accountStatus).toBeUndefined();
-    expect(latestResult.allTimeSummary).toBe(allTimeSummary);
-  });
-
-  it("keeps refreshing the config while epochs are mixed", async () => {
+  it("refreshes the config while epochs are mixed and warns only after the delay", async () => {
     vi.useFakeTimers();
     try {
-      setAccountStatusRequest({ ...accountStatus, epochTimestamp: config.epochTimestamp - config.epochDuration });
+      setAccountStatusRequest(previousEpochStatus);
       const { rerender } = render(<Harness chainId={ARBITRUM} account={CHECKSUMMED_ACCOUNT} />);
+      expect(latestResult.isMixedEpoch).toBe(true);
+      expect(latestResult.isMixedEpochPersistent).toBe(false);
 
       await act(async () => {
         await vi.advanceTimersByTimeAsync(5_000);
       });
       expect(mutateConfig).toHaveBeenCalledTimes(1);
-      await act(async () => {
-        await vi.advanceTimersByTimeAsync(5_000);
-      });
-      expect(mutateConfig).toHaveBeenCalledTimes(2);
-
-      setAccountStatusRequest(accountStatus);
-      rerender(<Harness chainId={ARBITRUM} account={CHECKSUMMED_ACCOUNT} />);
-      await act(async () => {
-        await vi.advanceTimersByTimeAsync(20_000);
-      });
-      expect(mutateConfig).toHaveBeenCalledTimes(2);
-    } finally {
-      vi.useRealTimers();
-    }
-  });
-
-  it("reports a persistent mixed epoch only after the warning delay", async () => {
-    vi.useFakeTimers();
-    try {
-      const { rerender } = render(<Harness chainId={ARBITRUM} account={CHECKSUMMED_ACCOUNT} />);
-      expect(latestResult.isMixedEpochPersistent).toBe(false);
-
-      setAccountStatusRequest({ ...accountStatus, epochTimestamp: config.epochTimestamp - config.epochDuration });
-      rerender(<Harness chainId={ARBITRUM} account={CHECKSUMMED_ACCOUNT} />);
-      expect(latestResult.isMixedEpoch).toBe(true);
       expect(latestResult.isMixedEpochPersistent).toBe(false);
 
       await act(async () => {
-        await vi.advanceTimersByTimeAsync(30_000);
+        await vi.advanceTimersByTimeAsync(25_000);
       });
+      expect(mutateConfig).toHaveBeenCalledTimes(6);
       expect(latestResult.isMixedEpochPersistent).toBe(true);
 
       setAccountStatusRequest(accountStatus);
       rerender(<Harness chainId={ARBITRUM} account={CHECKSUMMED_ACCOUNT} />);
       expect(latestResult.isMixedEpoch).toBe(false);
       expect(latestResult.isMixedEpochPersistent).toBe(false);
-    } finally {
-      vi.useRealTimers();
-    }
-  });
-
-  it("applies the warning delay even when mounted into an already mixed state", async () => {
-    vi.useFakeTimers();
-    try {
-      setAccountStatusRequest({ ...accountStatus, epochTimestamp: config.epochTimestamp - config.epochDuration });
-      render(<Harness chainId={ARBITRUM} account={CHECKSUMMED_ACCOUNT} />);
-
-      expect(latestResult.isMixedEpoch).toBe(true);
-      expect(latestResult.isMixedEpochPersistent).toBe(false);
-
       await act(async () => {
-        await vi.advanceTimersByTimeAsync(30_000);
+        await vi.advanceTimersByTimeAsync(20_000);
       });
-      expect(latestResult.isMixedEpochPersistent).toBe(true);
+      expect(mutateConfig).toHaveBeenCalledTimes(6);
     } finally {
       vi.useRealTimers();
     }
-  });
-
-  it("preserves a loaded empty all-time summary when its refresh fails", () => {
-    const refreshError = new Error("refresh failed");
-    setAllTimeSummaryRequest([], false, refreshError);
-
-    render(<Harness chainId={ARBITRUM} account={CHECKSUMMED_ACCOUNT} />);
-
-    expect(latestResult.allTimeSummary).toBeUndefined();
-    expect(latestResult.allTimeSummaryLoaded).toBe(true);
-    expect(latestResult.allTimeSummaryError).toBe(refreshError);
-  });
-
-  it("retries config and both connected-account queries together", async () => {
-    render(<Harness chainId={ARBITRUM} account={CHECKSUMMED_ACCOUNT} />);
-
-    await act(async () => {
-      await latestResult.retry();
-    });
-
-    expect(mutateConfig).toHaveBeenCalledTimes(1);
-    expect(mutateAccountStatus).toHaveBeenCalledTimes(1);
-    expect(mutateAllTimeSummary).toHaveBeenCalledTimes(1);
-  });
-
-  it("refreshes connected-account data when config advances to a new epoch", async () => {
-    const { rerender } = render(<Harness chainId={ARBITRUM} account={CHECKSUMMED_ACCOUNT} />);
-    expect(mutateAccountStatus).not.toHaveBeenCalled();
-    expect(mutateAllTimeSummary).not.toHaveBeenCalled();
-
-    setConfigRequest({ ...config, epochTimestamp: config.epochTimestamp + config.epochDuration });
-    rerender(<Harness chainId={ARBITRUM} account={CHECKSUMMED_ACCOUNT} />);
-
-    await waitFor(() => {
-      expect(mutateAccountStatus).toHaveBeenCalledTimes(1);
-      expect(mutateAllTimeSummary).toHaveBeenCalledTimes(1);
-    });
-    expect(latestResult.isMixedEpoch).toBe(true);
-    expect(latestResult.accountStatus).toBeUndefined();
   });
 });

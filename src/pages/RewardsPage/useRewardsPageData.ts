@@ -58,8 +58,7 @@ export function useRewardsPageData({ chainId, account, loadTierAccountData }: Re
   const accountStatus = shouldLoadAccountData && !isMixedEpoch ? accountStatusData : undefined;
   const allTimeSummary = shouldLoadAccountData ? allTimeSummaryData?.[0] : undefined;
   const allTimeSummaryLoaded = shouldLoadAccountData && allTimeSummaryData !== undefined;
-  // Surface the mixed-epoch warning only when the mismatch outlives the normal rollover races,
-  // counting from when the mismatch is first observed even if the page mounts mid-mismatch.
+  // Delay the warning past normal epoch-rollover races
   const [hasMixedEpochPersisted, setHasMixedEpochPersisted] = useState(false);
   const isMixedEpochPersistent = isMixedEpoch && hasMixedEpochPersisted;
 
@@ -74,8 +73,7 @@ export function useRewardsPageData({ chainId, account, loadTierAccountData }: Re
     return () => window.clearTimeout(timeoutId);
   }, [isMixedEpoch]);
 
-  // The indexer serves the config from a shared response cache, so it can keep returning the
-  // previous epoch right after a boundary; refresh it until it matches the account status again.
+  // The cached config can lag the account status after a boundary, so poll until they match
   useEffect(() => {
     if (!isMixedEpoch) return;
 
