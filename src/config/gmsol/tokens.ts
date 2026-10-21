@@ -1,4 +1,5 @@
 import { SOLANA_TOKEN_2022_PROGRAM_ID, SOLANA_TOKEN_PROGRAM_ID } from "config/gmsol/program";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 export type GmsolTokenConfig = {
   address: string;
@@ -6,13 +7,20 @@ export type GmsolTokenConfig = {
   name: string;
   decimals: number;
   tokenProgram: typeof SOLANA_TOKEN_PROGRAM_ID | typeof SOLANA_TOKEN_2022_PROGRAM_ID;
+  isStable?: boolean;
+  // Never long or short collateral in GMSOL_MARKETS, real mints included.
+  isSynthetic?: boolean;
+  isWrapped?: boolean;
+  baseSymbol?: string;
+  // On an index placeholder this links its collateral twin for getIsEquivalentTokens; only isNative marks native SOL.
+  wrappedAddress?: string;
   visualMultiplier?: number;
   visualPrefix?: string;
 };
 
-// Native SOL is a wallet lamport balance, not an SPL mint. Keep its UI address out of the mint list.
+// Native SOL is a lamport balance, not a mint; only Solana code maps it to the WSOL mint or the System program id.
 export const GMSOL_NATIVE_TOKEN = {
-  address: "11111111111111111111111111111111",
+  address: NATIVE_TOKEN_ADDRESS,
   symbol: "SOL",
   name: "Solana",
   decimals: 9,
@@ -23,7 +31,7 @@ export const GMSOL_NATIVE_TOKEN = {
 // Mainnet mint accounts checked on 2026-10-20.
 // Use mint decimals for token amounts and gmsol unit-price conversions.
 // Parse GMX keeper ticker prices using the mapped Arbitrum token's decimals.
-// Inert until a consumer behind solanaNetwork uses this list; do not register it in the SDK.
+// Do not register this list in the SDK.
 export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
   {
     address: "So1Zu7vPQQxrguzUehKAyVLpjcc769zxgBuDAsxTUMH",
@@ -31,6 +39,8 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Solana",
     decimals: 9,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
+    wrappedAddress: "So11111111111111111111111111111111111111112",
   },
   {
     address: "So11111111111111111111111111111111111111112",
@@ -38,6 +48,8 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Wrapped Solana",
     decimals: 9,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isWrapped: true,
+    baseSymbol: "SOL",
   },
   {
     address: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
@@ -45,6 +57,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "USD Coin",
     decimals: 6,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isStable: true,
   },
   {
     address: "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
@@ -52,6 +65,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Tether",
     decimals: 6,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isStable: true,
   },
   {
     address: "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm",
@@ -59,6 +73,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "dogwifhat",
     decimals: 6,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "2wpTofQ8SkACrkZWrZDjXPitYa8AwWgX8AfxdeBRRVLX",
@@ -66,6 +81,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Chainlink",
     decimals: 8,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "BtcTQYRj7HRRk7MwnWiTFj8rWqN2ALt2QYig4cSWqTbv",
@@ -73,6 +89,8 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Bitcoin",
     decimals: 8,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
+    wrappedAddress: "3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh",
   },
   {
     address: "3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh",
@@ -87,6 +105,8 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Ethereum",
     decimals: 8,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
+    wrappedAddress: "7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs",
   },
   {
     address: "7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs",
@@ -101,6 +121,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "BONK",
     decimals: 5,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
     visualMultiplier: 1000,
     visualPrefix: "k",
   },
@@ -110,6 +131,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Official Trump",
     decimals: 6,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump",
@@ -117,6 +139,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Fartcoin",
     decimals: 6,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "GmxDsqjKYUrwgbvccGrpF1LoyHPUq8FQqT1FJfkvrMfY",
@@ -124,6 +147,8 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "GMX",
     decimals: 9,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
+    wrappedAddress: "9wX6Qz1Y5YQe71dfnFYFfZYXZhKqjYKQwdqfrRkmYUSX",
   },
   {
     address: "9wX6Qz1Y5YQe71dfnFYFfZYXZhKqjYKQwdqfrRkmYUSX",
@@ -138,6 +163,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Dogecoin",
     decimals: 8,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "LtcsFqdfsLyoHZ7cRt9BkijqbFRAN1M4fB8naGaykTF",
@@ -145,6 +171,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Litecoin",
     decimals: 8,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "Unicsoj67GbDzQyWXQEh9vG5jBiVhMREtWBVDAFVpQq",
@@ -152,6 +179,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Uniswap",
     decimals: 8,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "XrpSaeAcbKAGv8P3kWbMbwbq8xcWgR548yvyiKKJUB9",
@@ -159,6 +187,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "XRP",
     decimals: 6,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "BnbuyeSZgnWxXppzkRgiA5TR4t3L9NBRnk6Hbr9m5GsJ",
@@ -166,6 +195,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "BNB",
     decimals: 8,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "AaveaPPwFJx88apsgcpzck7xkohpiZPViKkNndRZJ6pv",
@@ -173,6 +203,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Aave",
     decimals: 8,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "PepeCS5SuDLkUwfnhmBLsPsVdpy9WR5bmXT4dkipR9i",
@@ -180,6 +211,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Pepe",
     decimals: 5,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
     visualMultiplier: 1000,
     visualPrefix: "k",
   },
@@ -189,6 +221,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Sui",
     decimals: 9,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "BchGdYptcKvUDCpHMDAB5h1MfXq2LPzRLcU8b4r8dQiQ",
@@ -196,6 +229,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Bitcoin Cash",
     decimals: 8,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "KgV1GvrHQmRBY8sHQQeUKwTm2r2h8t4C8qt12Cw1HVE",
@@ -203,6 +237,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Avalanche",
     decimals: 8,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "TrxYuLyf3WbYPrQ84cjyWgfcEeKTc7m5cKBNBZhY5MN",
@@ -210,6 +245,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "TRON",
     decimals: 8,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "X1mpyVGnE5VhzwbAqLp1FuAW7oY45WPTDisbcEkbVLq",
@@ -217,6 +253,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Stellar",
     decimals: 8,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "AdamfezT5MsUMv5PtSBDWHwPCpcYVyq2CWAseqNbwU7Q",
@@ -224,6 +261,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Cardano",
     decimals: 8,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "DotB5VDVP2VbfETfRsEsWnPH42tBiQZxHjGNH4iaNGSR",
@@ -231,6 +269,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Polkadot",
     decimals: 8,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "ShibkCetJam99AeDv93Q4KKVkeLCBSLSmBKNLpwt1ik",
@@ -238,6 +277,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Shiba Inu",
     decimals: 6,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
     visualMultiplier: 1000,
     visualPrefix: "k",
   },
@@ -247,6 +287,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Pump",
     decimals: 6,
     tokenProgram: SOLANA_TOKEN_2022_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "WLFinEv6ypjkczcS83FZqFpgFZYwQXutRbxGe7oC16g",
@@ -254,6 +295,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "World Liberty Financial",
     decimals: 6,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "C1MHyoTJpRTeS9AQCyspNVu2EWAYCZwmJ1jNkEArFP1f",
@@ -268,6 +310,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Aster",
     decimals: 8,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "EnaRUVoWPozu58p8FerezM3fP8erLU5pFeXmjikq9qmR",
@@ -275,6 +318,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Ethena Governance Token",
     decimals: 8,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "HypeVcgZWXS1fSuij5R5Kp9JcYjw34ZG6yic1bde9vS5",
@@ -282,6 +326,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Hyperliquid",
     decimals: 9,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "Xp1adJXBj9MhK7hwAbgPN2rhuiK64nfMYTSg9vzgUB2",
@@ -289,6 +334,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Plasma",
     decimals: 8,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "A7bdiYdS5GjqGFtxf17ppRHtDKPkkRqbKtR27dxvQXaS",
@@ -296,6 +342,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Zcash",
     decimals: 8,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "TaouYgVPRRT3TUkfTK7fQWkoSM35cbuMVEFAXifsuAf",
@@ -303,6 +350,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Bittensor",
     decimals: 8,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "Nearqg83ZH4Wbj2DDeN1EE86CUZaPFX2n8vErWNCPov",
@@ -310,6 +358,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Near",
     decimals: 9,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "arb61K9FqhdBzLQdwi4aae6MLn94RzbcMs8varqwUt5",
@@ -317,6 +366,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Arbitrum",
     decimals: 8,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "w1d1cTQ734BFeBdjUAHgH8tBk8EJ52PjcvroUq5Jekw",
@@ -324,6 +374,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Worldcoin",
     decimals: 8,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "LitYCK3XFM7imaCwzutins43WCKfH8iubaEhp9JFPcj",
@@ -331,6 +382,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Lighter",
     decimals: 8,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "ondoq3GfxTjnebAmpJ3mCLeoA2mZBRU8Kqoo6vTiaz1",
@@ -338,6 +390,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Ondo",
     decimals: 8,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "VvvGPgHYN8KiC7H4aUQwJdfze5uB6rxkL63nHymxjZM",
@@ -345,6 +398,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Venice Token",
     decimals: 8,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
   {
     address: "Xmric3gq5zb9bcuUW5o2MePQsnni3FxG2wavk6REm6X",
@@ -352,5 +406,6 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     name: "Monero",
     decimals: 8,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+    isSynthetic: true,
   },
 ];

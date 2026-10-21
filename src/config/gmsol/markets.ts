@@ -7,7 +7,7 @@ export type GmsolMarketConfig = {
 
 // Mainnet market accounts decoded with the gmsol store IDL at finalized slot 459231146 (2026-10-20).
 // Crypto markets only; TON, MELANIA, BOME and stock/FX/commodity markets are excluded.
-// Inert until a consumer behind solanaNetwork uses this list; do not register it in the SDK.
+// Do not register this list in the SDK.
 export const GMSOL_MARKETS: readonly GmsolMarketConfig[] = [
   // ETH/USD[USDC-USDC]
   {
