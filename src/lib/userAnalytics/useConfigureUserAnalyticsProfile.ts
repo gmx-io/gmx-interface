@@ -1,7 +1,6 @@
 import { useLingui } from "@lingui/react";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useEffect, useMemo } from "react";
-import { useHistory } from "react-router-dom";
 
 import { getAbFlags } from "config/ab";
 import { isDevelopment } from "config/env";
@@ -19,16 +18,12 @@ import { formatAmountForMetrics } from "lib/metrics";
 import { getDisplayMode } from "lib/pwa/getDisplayMode";
 import { getLaunchSource } from "lib/pwa/getLaunchSource";
 import { useBowser } from "lib/useBowser";
-import useRouteQuery from "lib/useRouteQuery";
 import useWallet from "lib/wallets/useWallet";
 
-import { SESSION_ID_KEY, setSessionId } from "./sessionId";
 import { userAnalytics } from "./UserAnalytics";
 import { getWalletAnalyticsProvenance } from "./walletProvenance";
 
 export function useConfigureUserAnalyticsProfile() {
-  const history = useHistory();
-  const query = useRouteQuery();
   const currentLanguage = useLingui().i18n.locale;
   const localReferralCode = useLocalReferralCode();
   const utmParams = useUtmParams();
@@ -73,27 +68,6 @@ export function useConfigureUserAnalyticsProfile() {
     [account, user, wallets]
   );
 
-  useEffect(
-    function handleUrlParamsEff() {
-      let isUrlParamsChanged = false;
-
-      const sessionIdParam = query.get(SESSION_ID_KEY);
-
-      if (sessionIdParam) {
-        setSessionId(sessionIdParam);
-        query.delete(SESSION_ID_KEY);
-        isUrlParamsChanged = true;
-      }
-
-      if (isUrlParamsChanged) {
-        history.replace({
-          search: query.toString(),
-        });
-      }
-    },
-    [query, history]
-  );
-
   useEffect(() => {
     userAnalytics.setCommonEventParams({
       platform: bowser?.platform.type,
@@ -117,10 +91,6 @@ export function useConfigureUserAnalyticsProfile() {
       languageCode: currentLanguage,
       isChartPositionsEnabled: shouldShowPositionLines,
       ref: localReferralCode?.userReferralCodeString,
-      utm_source: utmParams?.source,
-      utm_campaign: utmParams?.campaign,
-      utm_term: utmParams?.term,
-      utm_content: utmParams?.content,
       ExpressEnabled: expressOrdersEnabled,
       Express1CTEnabled: Boolean(subaccount),
       showLeverageSlider: isLeverageSliderEnabled,
@@ -142,10 +112,7 @@ export function useConfigureUserAnalyticsProfile() {
     isAutoCancelTPSL,
     externalSwapsEnabled,
     localReferralCode?.userReferralCodeString,
-    utmParams?.source,
-    utmParams?.campaign,
-    utmParams?.term,
-    utmParams?.content,
+    utmParams?.utmString,
     walletAnalyticsProvenance,
   ]);
 
