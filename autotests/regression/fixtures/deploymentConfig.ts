@@ -100,7 +100,6 @@ export function readRegressionIndexers(kind: "subsquid" | "syntheticsStats" = "s
 
 const ENDPOINT_CONFIGS = [
   ["src/config/indexers.ts", "INDEXER_URLS"],
-  ["src/config/indexers.ts", "COMMON_INDEXER_URLS"],
   ["sdk/src/configs/oracleKeeper.ts", "ORACLE_KEEPER_URLS"],
   ["sdk/src/configs/oracleKeeper.ts", "ORACLE_KEEPER_FALLBACK_URLS"],
   ["sdk/src/configs/api.ts", "API_URLS"],

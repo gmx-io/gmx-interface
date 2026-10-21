@@ -14,7 +14,6 @@ const candidateFiles = {
   "src/config/indexers.ts": `
     throw new Error("Candidate code must not execute");
     const INDEXER_URLS = { [ARBITRUM]: { subsquid: "https://example.com/deployed:prod/api/graphql", syntheticsStats: "https://example.com/deployed-gm" } };
-    const COMMON_INDEXER_URLS = { [SOURCE_ETHEREUM_MAINNET]: { chainLink: "https://example.com/chainlink" } };
   `,
   "src/config/markets.ts": `
     export const GLV_MARKETS = {
@@ -61,7 +60,6 @@ test("discovery reads the deployed checkout configuration without executing its 
       [
         ["INDEXER_URLS [ARBITRUM] subsquid", "https://example.com/deployed:prod/api/graphql"],
         ["INDEXER_URLS [ARBITRUM] syntheticsStats", "https://example.com/deployed-gm"],
-        ["COMMON_INDEXER_URLS [SOURCE_ETHEREUM_MAINNET] chainLink", "https://example.com/chainlink"],
         ["ORACLE_KEEPER_URLS [ARBITRUM]", "https://keeper.example.com"],
         ["ORACLE_KEEPER_FALLBACK_URLS [ARBITRUM]", "https://fallback-1.example.com"],
         ["ORACLE_KEEPER_FALLBACK_URLS [ARBITRUM]", "https://fallback-2.example.com"],
