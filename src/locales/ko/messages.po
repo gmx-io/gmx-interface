@@ -10981,6 +10981,7 @@ msgstr "실패 횟수"
 msgid "Min margin: {0}"
 msgstr "최소 증거금: {0}"
 
+#: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TVChartContainer/constants.ts

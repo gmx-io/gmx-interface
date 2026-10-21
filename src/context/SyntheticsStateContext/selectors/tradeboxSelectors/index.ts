@@ -2127,6 +2127,10 @@ export const selectTradeboxCloseSizeUsd = createSelector((q) => {
 const selectTradeboxSwapFeesPercentage = createSelector((q) => {
   const swapAmounts = q(selectTradeboxSwapAmounts);
 
+  if (swapAmounts?.swapStrategy.type === "externalSwap") {
+    return q(selectTradeboxFees)?.externalSwapFee?.precisePercentage ?? 0n;
+  }
+
   if (
     swapAmounts === undefined ||
     swapAmounts.swapStrategy.swapPathStats?.totalSwapFeeUsd === undefined ||

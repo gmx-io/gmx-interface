@@ -4,6 +4,7 @@ import { OrderType } from "./types";
 
 export type OrderTypeFilterValue =
   | "trigger-limit"
+  | "trigger-stop-market"
   | "trigger-take-profit"
   | "trigger-stop-loss"
   | "twap"
@@ -12,28 +13,26 @@ export type OrderTypeFilterValue =
 
 type OrderFilterGroupType = "twap" | "none";
 
-export const convertOrderTypeFilterValues = (
+type OrderTypeFilterCondition = { type: OrderType[]; groupType: OrderFilterGroupType };
+
+// type and group must match within one option, so Take-Profit + Swaps TWAP doesn't let plain limit swaps through
+export const getIsOrderMatchingTypeFilters = (
   orderTypeFilters: OrderTypeFilterValue[]
-): { type: OrderType[]; groupType: OrderFilterGroupType[] } => {
-  return orderTypeFilters.map(convertOrderTypeFilterValue).reduce(
-    (acc, curr) => {
-      return {
-        type: [...acc.type, ...curr.type],
-        groupType: [...acc.groupType, curr.groupType],
-      };
-    },
-    { type: [] as OrderType[], groupType: [] as OrderFilterGroupType[] }
-  );
+): ((orderType: OrderType, groupType: OrderFilterGroupType) => boolean) => {
+  const conditions = orderTypeFilters.map(convertOrderTypeFilterValue);
+
+  return (orderType, groupType) =>
+    conditions.some((condition) => condition.type.includes(orderType) && condition.groupType === groupType);
 };
 
-const convertOrderTypeFilterValue = (
-  orderTypeFilter: OrderTypeFilterValue
-): { type: OrderType[]; groupType: OrderFilterGroupType } => {
+const convertOrderTypeFilterValue = (orderTypeFilter: OrderTypeFilterValue): OrderTypeFilterCondition => {
   switch (orderTypeFilter) {
     case "trigger-limit":
       return { type: [OrderType.LimitIncrease], groupType: "none" };
+    case "trigger-stop-market":
+      return { type: [OrderType.StopIncrease], groupType: "none" };
     case "trigger-take-profit":
-      return { type: [OrderType.LimitIncrease], groupType: "none" };
+      return { type: [OrderType.LimitDecrease], groupType: "none" };
     case "trigger-stop-loss":
       return { type: [OrderType.StopLossDecrease], groupType: "none" };
     case "swaps-twap":

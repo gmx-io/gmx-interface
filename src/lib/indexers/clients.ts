@@ -1,9 +1,7 @@
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, MEGAETH, SOURCE_ETHEREUM_MAINNET } from "config/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, MEGAETH } from "config/chains";
 import { isDevelopment } from "config/env";
 
 import { createClient } from "./utils";
-
-export const chainlinkClient = createClient(SOURCE_ETHEREUM_MAINNET, "chainLink");
 
 const arbitrumGraphClient = createClient(ARBITRUM, "stats");
 const arbitrumReferralsGraphClient = createClient(ARBITRUM, "referrals");

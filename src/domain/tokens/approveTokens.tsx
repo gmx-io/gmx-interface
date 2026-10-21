@@ -51,6 +51,18 @@ export type ApproveTokensResult = {
   hash: `0x${string}`;
 };
 
+// parseError patterns are case-sensitive, so keep the old case-insensitive check for rejections without code 4001
+function getPermitErrorOutcome(error: unknown): "rejected" | "failed" {
+  if (getTxnErrorOutcome(error) === "rejected") {
+    return "rejected";
+  }
+
+  const message = (error as Error | undefined)?.message;
+  const lowerMessage = typeof message === "string" ? message.toLowerCase() : "";
+
+  return lowerMessage.includes("user rejected") || lowerMessage.includes("user denied") ? "rejected" : "failed";
+}
+
 export function getApproveSubmittedToastContent({ txUrl }: { txUrl: string }) {
   return (
     <div>
@@ -134,10 +146,9 @@ export async function approveTokens({
       return;
     } catch (e) {
       const error = e as Error;
-      const lowerMessage = error.message?.toLowerCase();
-      const isUserRejection = lowerMessage?.includes("user rejected") || lowerMessage?.includes("user denied");
+      const outcome = getPermitErrorOutcome(error);
 
-      if (isUserRejection) {
+      if (outcome === "rejected") {
         sendMetric("permit", "rejected", error);
         onApproveFail?.(error, { isPermit: true });
         helperToast.error(t`Permit signing cancelled`);
@@ -145,7 +156,7 @@ export async function approveTokens({
         return;
       }
 
-      sendMetric("permit", getTxnErrorOutcome(error), error);
+      sendMetric("permit", outcome, error);
 
       if (error.message?.includes(INVALID_PERMIT_SIGNATURE_ERROR)) {
         permitParams.setIsPermitsDisabled(true);
@@ -198,7 +209,8 @@ export async function approveTokens({
 
     return { hash: res.hash as `0x${string}` };
   } catch (e) {
-    sendMetric("transaction", getTxnErrorOutcome(e), e);
+    const outcome = getTxnErrorOutcome(e);
+    sendMetric("transaction", outcome, e);
     onApproveFail?.(e, { isPermit: false });
     // eslint-disable-next-line no-console
     console.error(e);
@@ -221,7 +233,7 @@ export async function approveTokens({
           </Trans>
         </div>
       );
-    } else if (e.message?.includes("User denied transaction signature")) {
+    } else if (outcome === "rejected") {
       failMsg = t`Approval cancelled`;
     } else {
       failMsg = (
