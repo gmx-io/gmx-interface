@@ -1,14 +1,15 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
-import { BrowserProvider, toQuantity, type Eip1193Provider } from "ethers";
+import { BrowserProvider, toQuantity, type Eip1193Provider, type JsonRpcApiProvider } from "ethers";
 import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { custom } from "viem";
+import { createClient, custom } from "viem";
 import { arbitrum } from "viem/chains";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { helperToast } from "lib/helperToast";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
+import { clientToSigner } from "lib/wallets/useEthersSigner";
 
 import { approveTokens } from "./approveTokens";
 
@@ -25,7 +26,7 @@ const SPENDER = "0x7452c558d45f8afC8c83dAe62C3f8A5BE19c71f6";
 const USDC = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831";
 const GM_BTC_USD = "0x47c031236e19d024b42f8AE6780E44A573170703";
 const HASH = `0x${"ab".repeat(32)}`;
-const providers: BrowserProvider[] = [];
+const providers: JsonRpcApiProvider[] = [];
 
 function createSigner(sendTransaction: () => Promise<string>) {
   const request = vi.fn<Eip1193Provider["request"]>(async ({ method }) => {
@@ -180,22 +181,21 @@ describe("approveTokens rejection toast", () => {
     i18n.activate("en");
   });
 
-  // the wallet error passes through the viem transport and the ethers signer, as in clientToSigner
   function createWalletSigner(walletError: unknown) {
-    const transport = custom(
-      {
-        request: async ({ method }) => {
-          if (method === "eth_chainId") return toQuantity(ARBITRUM);
-          if (method === "eth_sendTransaction" || method === "eth_signTypedData_v4") throw walletError;
-          throw new Error(`Unexpected request: ${method}`);
-        },
+    const wallet = {
+      request: async ({ method }: { method: string }) => {
+        if (method === "eth_chainId") return toQuantity(ARBITRUM);
+        if (method === "eth_sendTransaction" || method === "eth_signTypedData_v4") throw walletError;
+        throw new Error(`Unexpected request: ${method}`);
       },
-      { retryCount: 0 }
-    )({ chain: arbitrum });
-    const provider = new BrowserProvider(transport, ARBITRUM);
-    providers.push(provider);
+    };
+    const signer = clientToSigner(
+      createClient({ account: ACCOUNT, chain: arbitrum, transport: custom(wallet) }),
+      ACCOUNT
+    );
+    providers.push(signer.provider);
 
-    return new UncheckedJsonRpcSigner(provider, ACCOUNT);
+    return signer;
   }
 
   function approveWithWalletError(walletError: unknown, { isPermit = false }: { isPermit?: boolean } = {}) {
@@ -234,6 +234,7 @@ describe("approveTokens rejection toast", () => {
     ["Rabby", { code: 4001, message: "User rejected the request." }],
     ["MetaMask", { code: 4001, message: "MetaMask Tx Signature: User denied transaction signature." }],
     ["WalletConnect", { code: 5000, message: "User rejected." }],
+    ["WalletConnect with a custom message", { code: 5000, message: "Rejected by user" }],
     ["a wallet with a custom message", { code: 4001, message: "The user rejected the request" }],
     ["a wallet without an error code", { message: "User denied transaction" }],
   ];
