@@ -16,6 +16,10 @@ describe("getFocusedCollateralInput", () => {
     expect(getFocusedCollateralInput(glvWethUsdc, usdc.address)).toBe("second");
   });
 
+  it("focuses the second input for a pay token outside the pool, as a swapped collateral fills that side", () => {
+    expect(getFocusedCollateralInput(glvWethUsdc, getTokenBySymbol(ARBITRUM, "USDT").address)).toBe("second");
+  });
+
   it("focuses the first input of a same-collateral pool", () => {
     expect(
       getFocusedCollateralInput({ isSameCollaterals: true, longToken: weth, shortToken: weth }, weth.address)
