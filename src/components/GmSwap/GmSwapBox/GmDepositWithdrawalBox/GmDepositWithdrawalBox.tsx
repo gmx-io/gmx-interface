@@ -75,7 +75,6 @@ import {
   getGlvOrMarketAddress,
   getGlvOrMarketIconSymbol,
   getMarketIndexName,
-  getTokenPoolType,
 } from "domain/synthetics/markets/utils";
 import { convertToTokenAmount, convertToUsd, getBalanceByBalanceType, getMidPrice } from "domain/synthetics/tokens";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
@@ -116,6 +115,7 @@ import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
 import { SelectedPoolLabel } from "../SelectedPool";
 import { useGmWarningState } from "../useGmWarningState";
 import { ConversionRouteSelector } from "./ConversionRouteSelector";
+import { getFocusedCollateralInput } from "./getFocusedCollateralInput";
 import { InfoRows } from "./InfoRows";
 import { PaxosMintNote } from "./PaxosMintNote";
 import { PaxosTransitDebugCard } from "./PaxosTransitDebugCard";
@@ -427,22 +427,15 @@ export function GmSwapBoxDepositWithdrawal() {
   // #region Callbacks
   const onFocusedCollateralInputChange = useCallback(
     (tokenAddress: string) => {
-      if (!marketInfo) {
-        return;
-      }
+      // A GLV picks its pool only after its markets load, and without a focused side the form would clear an amount
+      // typed before that. All of a GLV's pools share its tokens, so the GLV decides the side meanwhile.
+      const focusedInput = getFocusedCollateralInput(marketInfo ?? glvInfo, tokenAddress);
 
-      if (marketInfo.isSameCollaterals) {
-        setFocusedInput("first");
-        return;
-      }
-
-      if (getTokenPoolType(marketInfo, tokenAddress) === "long") {
-        setFocusedInput("first");
-      } else {
-        setFocusedInput("second");
+      if (focusedInput) {
+        setFocusedInput(focusedInput);
       }
     },
-    [marketInfo, setFocusedInput]
+    [marketInfo, glvInfo, setFocusedInput]
   );
 
   const resetInputs = useCallback(() => {
