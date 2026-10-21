@@ -330,4 +330,32 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     decimals: 8,
     tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
   },
+  {
+    address: "LitYCK3XFM7imaCwzutins43WCKfH8iubaEhp9JFPcj",
+    symbol: "LIT",
+    name: "Lighter",
+    decimals: 8,
+    tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+  },
+  {
+    address: "ondoq3GfxTjnebAmpJ3mCLeoA2mZBRU8Kqoo6vTiaz1",
+    symbol: "ONDO",
+    name: "Ondo",
+    decimals: 8,
+    tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+  },
+  {
+    address: "VvvGPgHYN8KiC7H4aUQwJdfze5uB6rxkL63nHymxjZM",
+    symbol: "VVV",
+    name: "Venice Token",
+    decimals: 8,
+    tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+  },
+  {
+    address: "Xmric3gq5zb9bcuUW5o2MePQsnni3FxG2wavk6REm6X",
+    symbol: "XMR",
+    name: "Monero",
+    decimals: 8,
+    tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
+  },
 ];

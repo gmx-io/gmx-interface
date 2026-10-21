@@ -422,4 +422,32 @@ export const GMSOL_MARKETS: readonly GmsolMarketConfig[] = [
     longTokenAddress: "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
     shortTokenAddress: "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
   },
+  // LIT/USD[WGMX-USDC]
+  {
+    marketTokenAddress: "5MpBQqsNFhuSJL27NAJ8W25TQ8yZVr6PZezjrU74LbMq",
+    indexTokenAddress: "LitYCK3XFM7imaCwzutins43WCKfH8iubaEhp9JFPcj",
+    longTokenAddress: "9wX6Qz1Y5YQe71dfnFYFfZYXZhKqjYKQwdqfrRkmYUSX",
+    shortTokenAddress: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+  },
+  // ONDO/USD[WGMX-USDC]
+  {
+    marketTokenAddress: "31BzkcazjG25MZu9gbm5eezYb3b3ozEuQAvXdyftD7Q1",
+    indexTokenAddress: "ondoq3GfxTjnebAmpJ3mCLeoA2mZBRU8Kqoo6vTiaz1",
+    longTokenAddress: "9wX6Qz1Y5YQe71dfnFYFfZYXZhKqjYKQwdqfrRkmYUSX",
+    shortTokenAddress: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+  },
+  // VVV/USD[WGMX-USDC]
+  {
+    marketTokenAddress: "A5wbRLowPh1T3CtD31KN25i6NqW7wk6Kc5fkED3qCLCn",
+    indexTokenAddress: "VvvGPgHYN8KiC7H4aUQwJdfze5uB6rxkL63nHymxjZM",
+    longTokenAddress: "9wX6Qz1Y5YQe71dfnFYFfZYXZhKqjYKQwdqfrRkmYUSX",
+    shortTokenAddress: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+  },
+  // XMR/USD[WGMX-USDC]
+  {
+    marketTokenAddress: "4X9uP7QX3zqjwQUWJhVznodUYA7RLGquhR2E8WeZeNBk",
+    indexTokenAddress: "Xmric3gq5zb9bcuUW5o2MePQsnni3FxG2wavk6REm6X",
+    longTokenAddress: "9wX6Qz1Y5YQe71dfnFYFfZYXZhKqjYKQwdqfrRkmYUSX",
+    shortTokenAddress: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+  },
 ];
