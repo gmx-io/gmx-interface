@@ -5,6 +5,7 @@ import Button from "components/Button/Button";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
 import BellIcon from "img/ic_bell.svg?react";
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import WarnIcon from "img/ic_warn.svg?react";
 
 import { useNotificationsTesterState } from "./tester/notificationsTester"; // rewards-tester
@@ -43,25 +44,10 @@ const CARD_ICON: Record<NotificationsState, CardIcon> = {
 export function NotificationsSettings() {
   const [state, setState] = useNotificationsTesterState(); // rewards-tester (was: useState<NotificationsState>("on"))
 
-  const isReceiving = state === "on" || state === "walletSwitchFailed";
-
   return (
     <div className="flex flex-col gap-20 pb-20">
       <DeviceSwitchCard state={state} onStateChange={setState} />
-
-      <div className={cx("flex flex-col gap-20", { "opacity-[0.35]": !isReceiving })}>
-        <NotificationType
-          title={<Trans>Liquidation</Trans>}
-          description={<Trans>Your position was liquidated.</Trans>}
-        />
-        <NotificationType
-          title={<Trans>Order executed</Trans>}
-          description={<Trans>Limit, Take-Profit, Stop-Loss and Stop Market.</Trans>}
-        />
-        <div className="border-t-1/2 border-slate-600" />
-      </div>
-
-      <GoodToKnow showTurnOffNote={state === "off"} />
+      <GoodToKnow />
     </div>
   );
 }
@@ -75,6 +61,8 @@ function DeviceSwitchCard({
 }) {
   const hasToggle = state === "on" || state === "off" || state === "notAsked" || state === "walletSwitchFailed";
   const isToggleOn = state === "on" || state === "walletSwitchFailed";
+  // The types are dimmed whenever notifications don't reach this device.
+  const typeClassName = cx({ "opacity-[0.35]": !isToggleOn });
 
   return (
     <div className="flex flex-col gap-12 rounded-8 bg-slate-800 p-16">
@@ -120,6 +108,18 @@ function DeviceSwitchCard({
           <Trans>Try again</Trans>
         </Button>
       )}
+
+      <div className="border-t-1/2 border-slate-600" />
+      <NotificationType
+        className={typeClassName}
+        title={<Trans>Position liquidated</Trans>}
+        description={<Trans>When your position is liquidated</Trans>}
+      />
+      <NotificationType
+        className={typeClassName}
+        title={<Trans>Order executed</Trans>}
+        description={<Trans>When your Limit, Take-Profit, Stop-Loss or Stop Market order executes</Trans>}
+      />
     </div>
   );
 }
@@ -129,15 +129,16 @@ function CardDescription({ state }: { state: NotificationsState }) {
     case "on":
       return <Trans>Receiving as {RECEIVING_WALLET}. Turning off won't affect your other devices.</Trans>;
     case "off":
-      return <Trans>Turn them on to get liquidation and order alerts on this device.</Trans>;
+      return <Trans>Turn them on to get liquidation and order notifications on this device.</Trans>;
     case "notAsked":
       return (
         <Trans>
-          Turn them on to get liquidation and order alerts on this device. Your browser will ask you to allow them.
+          Turn them on to get liquidation and order notifications on this device. Your browser will ask you to allow
+          them.
         </Trans>
       );
     case "noWallet":
-      return <Trans>Connect a wallet to get liquidation and order alerts on this device.</Trans>;
+      return <Trans>Connect a wallet to get liquidation and order notifications on this device.</Trans>;
     case "blocked":
       return <Trans>You blocked notifications for GMX in this browser, so GMX can't ask again.</Trans>;
     case "notSupported":
@@ -167,48 +168,62 @@ function CardIconBox({ icon }: { icon: CardIcon }) {
   );
 }
 
-function NotificationType({ title, description }: { title: React.ReactNode; description: React.ReactNode }) {
+function NotificationType({
+  title,
+  description,
+  className,
+}: {
+  title: React.ReactNode;
+  description: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className={cx("flex flex-col gap-4", className)}>
       <div className="text-body-medium font-medium text-typography-primary">{title}</div>
       <div className="text-13 leading-[1.3] text-typography-secondary">{description}</div>
     </div>
   );
 }
 
-function GoodToKnow({ showTurnOffNote }: { showTurnOffNote: boolean }) {
+function GoodToKnow() {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <div className="flex flex-col gap-12 text-12 leading-[1.25] text-typography-secondary">
-      <div className="font-medium uppercase">
+    <div className="flex flex-col gap-12 text-12 leading-[1.25]">
+      <p className="text-typography-disabled">
+        <Trans>Delivery isn't guaranteed. Don't rely on notifications as your only risk control.</Trans>
+      </p>
+      <div className="border-t-1/2 border-slate-600" />
+      <button
+        type="button"
+        className="flex items-center justify-between gap-8 font-medium text-typography-secondary hover:text-typography-primary"
+        aria-expanded={isOpen}
+        onClick={() => setIsOpen((value) => !value)}
+      >
         <Trans>Good to know</Trans>
-      </div>
-      <p>
-        <Trans>
-          Delivery isn't guaranteed. No web notification can be marked time sensitive, so Do Not Disturb will hold back
-          a margin call. Don't rely on an alert as your only risk control.
-        </Trans>
-      </p>
-      <p>
-        <Trans>Alerts cover Arbitrum positions and orders only.</Trans>
-      </p>
-      <p>
-        <Trans>
-          Notifications aren't saved. There's no history to look back at — only what arrives on your device.
-        </Trans>
-      </p>
-      <p>
-        <Trans>On a computer, alerts need the browser to be running. No GMX tab has to be open.</Trans>
-      </p>
-      <p>
-        <Trans>Notifications stop after 30 days without opening GMX on this device.</Trans>
-      </p>
-      <p>
-        <Trans>Disconnecting the wallet doesn’t stop notifications.</Trans>
-      </p>
-      {showTurnOffNote && (
-        <p>
-          <Trans>Turning off only affects this device.</Trans>
-        </p>
+        <ChevronDownIcon className={cx("size-16 transition-transform", { "rotate-180": isOpen })} />
+      </button>
+      {isOpen && (
+        <div className="flex flex-col gap-12 text-typography-secondary">
+          <p>
+            <Trans>Notifications cover positions and orders on Arbitrum only</Trans>
+          </p>
+          <p>
+            <Trans>Notifications stop after 30 days without opening GMX on this device</Trans>
+          </p>
+          <p>
+            <Trans>On a computer, the browser must be running, but no GMX tab needs to be open</Trans>
+          </p>
+          <p>
+            <Trans>Disconnecting the wallet doesn't stop notifications</Trans>
+          </p>
+          <p>
+            <Trans>Do Not Disturb can silence or delay notifications</Trans>
+          </p>
+          <p>
+            <Trans>Notifications aren't saved, so there's no history</Trans>
+          </p>
+        </div>
       )}
     </div>
   );

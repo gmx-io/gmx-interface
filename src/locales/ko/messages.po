@@ -872,10 +872,6 @@ msgstr "아니요"
 msgid "/ mo"
 msgstr "/월"
 
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "Disconnecting the wallet doesn’t stop notifications."
-msgstr ""
-
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 #: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
 #: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
@@ -983,6 +979,10 @@ msgstr "정산 가능한 미수 펀딩 수수료"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Convert esGMX to GMX tokens. Read the vesting details before using the vaults."
 msgstr "esGMX를 GMX 토큰으로 전환합니다. 볼트를 사용하기 전에 베스팅 세부 정보를 확인하시기 바랍니다."
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "On a computer, the browser must be running, but no GMX tab needs to be open"
+msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from the Affiliate vesting vault"
@@ -1840,6 +1840,10 @@ msgstr "주식"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Staking power share"
 msgstr "스테이킹 파워 지분율"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Disconnecting the wallet doesn't stop notifications"
+msgstr ""
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "I'm an affiliate"
@@ -2753,10 +2757,6 @@ msgstr "청구된 펀딩비, 가격 영향 리베이트 및 실행 수수료는 
 msgid "Auto-cancel order limit reached"
 msgstr "자동 취소 주문 한도 도달"
 
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "Delivery isn't guaranteed. No web notification can be marked time sensitive, so Do Not Disturb will hold back a margin call. Don't rely on an alert as your only risk control."
-msgstr ""
-
 #: src/components/TVChart/Chart.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Simulated orderbook view of GMX liquidity. Opens execute at mark price with zero price impact. Net price impact applies only on closes (capped, usually at 0.5%). <0>Read more</0>."
@@ -2878,10 +2878,6 @@ msgstr "TWAP 스왑은 GMX 풀 유동성만 사용하므로 이 주문 규모를
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "How do I choose?"
 msgstr "어떻게 선택합니까?"
-
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "Turning off only affects this device."
-msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
 msgid "This pool holds USDG, so USDC is converted to USDG when you buy and back to USDC when you sell.<0/><1/>Instant swap goes through the GMX USDC/USDG pool within your buy or sell, in one transaction. You pay its swap fee and price impact.<2/><3/>Direct with Paxos converts with Paxos, the issuer of USDG, in a separate transaction that usually settles in 2–10 min. The converted tokens land in your wallet first.<4/><5/>Auto picks the cheaper option. Whitelisted addresses can choose either option and convert USDC to USDG with no Paxos fee. Other addresses always use Auto, and Direct with Paxos is only offered from {minAmount}.<6/><7/>The choice is fixed when only one option can handle the amount or a conversion is in progress."
@@ -4247,6 +4243,10 @@ msgstr "지수 (양수)"
 msgid "Parts of this order are waiting for liquidity: they will execute once sufficient liquidity is available"
 msgstr "이 주문의 일부가 유동성을 기다리고 있습니다: 충분한 유동성이 확보되면 체결됩니다"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Position liquidated"
+msgstr ""
+
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
@@ -4560,6 +4560,10 @@ msgstr "재인증이 필요하기까지의 최대 일수"
 msgid "Minimum {0} capital required for rankings"
 msgstr "순위 산정에 최소 {0} 자본이 필요합니다"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Notifications stop after 30 days without opening GMX on this device"
+msgstr ""
+
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Request to be contacted"
 msgstr "연락 요청하기"
@@ -4836,10 +4840,6 @@ msgid "The approved amount is lower than the required amount. Approve again or r
 msgstr "승인된 수량이 필요한 수량보다 적습니다. 다시 승인하거나 수량을 줄이십시오"
 
 #: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "Connect a wallet to get liquidation and order alerts on this device."
-msgstr ""
-
-#: src/components/SettingsModal/NotificationsSettings.tsx
 msgid "Try again"
 msgstr ""
 
@@ -4850,6 +4850,10 @@ msgstr "오류명:"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Market composition"
 msgstr "마켓 구성"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "When your Limit, Take-Profit, Stop-Loss or Stop Market order executes"
+msgstr ""
 
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM icon"
@@ -5513,10 +5517,6 @@ msgstr "가격 영향이 너무 큽니다"
 msgid "{0}h"
 msgstr "{0}시간"
 
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "Your position was liquidated."
-msgstr ""
-
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Enter withdrawal amount"
 msgstr "출금 금액 입력"
@@ -5885,10 +5885,6 @@ msgstr "긍정적 영향 계수"
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "All trades"
 msgstr "모든 거래"
-
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "Notifications aren't saved. There's no history to look back at — only what arrives on your device."
-msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking more than 20% of your max historical staked GMX or esGMX will reset your accrued rewards."
@@ -6530,10 +6526,6 @@ msgstr "위험과 보상을 제어하며 투자"
 #: landing/src/pages/Home/SponsorsSection/SponsorsSection.tsx
 msgid "Over 100 protocols"
 msgstr "100개 이상의 프로토콜"
-
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "Alerts cover Arbitrum positions and orders only."
-msgstr ""
 
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Funding fees"
@@ -7355,6 +7347,10 @@ msgstr "<0>One-Click Trading 승인이 오래되어 갱신되었습니다. 다�
 msgid "Points are allocated based on your cumulative trading volume on GMX MegaETH"
 msgstr "포인트는 GMX MegaETH에서의 누적 거래량을 기준으로 배정됩니다"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Delivery isn't guaranteed. Don't rely on notifications as your only risk control."
+msgstr ""
+
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
 msgstr "{0, plural, one {포지션 #개} other {포지션 #개}}에 대한 정산 요청이 전송되었습니다"
@@ -8146,6 +8142,10 @@ msgstr "GMX 로고"
 msgid "Using Safe? Learn how to add a network"
 msgstr "Safe를 사용하시나요? 네트워크 추가 방법 알아보기"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Turn them on to get liquidation and order notifications on this device."
+msgstr ""
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Minutes"
 msgstr "분"
@@ -8864,7 +8864,6 @@ msgstr "90일"
 msgid "({0} days ago)"
 msgstr "({0}일 전)"
 
-#: src/components/SettingsModal/NotificationsSettings.tsx
 #: src/components/TradeHistory/filters/ActionFilter.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Liquidation"
@@ -8964,6 +8963,10 @@ msgstr "활성 Balancer 프로그램 코드"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Max amount exceeded"
 msgstr "최대 수량 초과"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Turn them on to get liquidation and order notifications on this device. Your browser will ask you to allow them."
+msgstr ""
 
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {nativeTokenSymbol} in your Wallet for gas on {chainName}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
@@ -9215,10 +9218,6 @@ msgstr "재승인이 필요하기 전 최대 실행 횟수"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Minimum capital used of {0} required to qualify for rankings"
 msgstr "순위 자격을 얻으려면 최소 {0}의 사용 자본이 필요합니다"
-
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "Turn them on to get liquidation and order alerts on this device."
-msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
@@ -9869,10 +9868,6 @@ msgstr "거래량과 지급액을 실시간으로 추적합니다"
 #: src/lib/tenderly.tsx
 msgid "for {comment}"
 msgstr "{comment}에 대해"
-
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "On a computer, alerts need the browser to be running. No GMX tab has to be open."
-msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL)."
@@ -11082,6 +11077,10 @@ msgstr "거래 내역"
 msgid "Exposure to backing tokens"
 msgstr "기초 담보 토큰에 대한 익스포저"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Notifications cover positions and orders on Arbitrum only"
+msgstr ""
+
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 msgid "Search type"
 msgstr "유형 검색"
@@ -11098,6 +11097,10 @@ msgstr "시장가 주문"
 msgid "Buying"
 msgstr "매수"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Connect a wallet to get liquidation and order notifications on this device."
+msgstr ""
+
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
 msgstr "시프트"
@@ -11105,10 +11108,6 @@ msgstr "시프트"
 #: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "EVM networks only"
 msgstr "EVM 네트워크 전용"
-
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "Turn them on to get liquidation and order alerts on this device. Your browser will ask you to allow them."
-msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation risk alerts"
@@ -12066,6 +12065,10 @@ msgstr "지갑"
 msgid "Enter a trigger price"
 msgstr "조건가 입력"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Do Not Disturb can silence or delay notifications"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total stats"
 msgstr "종합 통계"
@@ -12619,10 +12622,6 @@ msgstr "최대 100배 레버리지와 오더북 깊이에 의존하지 않는 �
 msgid "Your current staked balance relative to your historical max. Dropping below 80% resets your accumulated staking power to zero."
 msgstr "과거 최고치 대비 현재 스테이킹 잔액의 비율입니다. 80% 미만으로 떨어지면 누적된 스테이킹 파워가 0으로 초기화됩니다."
 
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "Notifications stop after 30 days without opening GMX on this device."
-msgstr ""
-
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Oracle keeper monitoring"
 msgstr "Oracle keeper 모니터링"
@@ -12714,10 +12713,6 @@ msgstr "WETH-USDC 풀의 유동성이 부족합니다. 다른 풀을 선택하�
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Failed to decode error. Make sure the hex data is valid and starts with \"0x\"."
 msgstr "오류 디코딩에 실패했습니다. 16진수 데이터가 유효하고 \"0x\"로 시작하는지 확인하십시오."
-
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "Limit, Take-Profit, Stop-Loss and Stop Market."
-msgstr ""
 
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
@@ -12903,6 +12898,10 @@ msgstr "차입 수수료"
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Continue"
 msgstr "계속"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "When your position is liquidated"
+msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "~2–10 min or longer, may arrive in parts"
@@ -13258,6 +13257,10 @@ msgstr "공유하기"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Derivatives portfolio tracker"
 msgstr "파생상품 포트폴리오 트래커"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Notifications aren't saved, so there's no history"
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execution price didn't meet acceptable price. Order will fill when the condition is met."
