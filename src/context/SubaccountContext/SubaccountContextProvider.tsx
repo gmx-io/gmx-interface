@@ -49,6 +49,7 @@ import {
   getSubaccountApprovalContextSrcChainId,
   getSubaccountSigner,
   signUpdatedSubaccountSettings,
+  type SubaccountLimits,
 } from "domain/synthetics/subaccount/utils";
 import type { TokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
@@ -193,8 +194,8 @@ async function getSettlementChainRemovalExpressParams({
 }
 
 export type SubaccountState = {
-  initialSettings?: { remainingActions: bigint; remainingSeconds: bigint };
-  setInitialSettings?: (settings: { remainingActions: bigint; remainingSeconds: bigint }) => void;
+  initialSettings: SubaccountLimits | undefined;
+  setInitialSettings: (settings: SubaccountLimits | undefined) => void;
   subaccountConfig: SubaccountSerializedConfig | undefined;
   subaccount: Subaccount | undefined;
   subaccountActivationState: SubaccountActivationState | undefined;
@@ -225,7 +226,7 @@ export function useSubaccountContext() {
 }
 
 export function SubaccountContextProvider({ children }: { children: React.ReactNode }) {
-  const [initialSettings, setInitialSettings] = useState<SubaccountState["initialSettings"]>();
+  const [initialSettings, setInitialSettings] = useState<SubaccountLimits>();
   const { chainId, srcChainId } = useChainId();
   const signer = useEthersSigner();
   const { account } = useWallet();
@@ -446,6 +447,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       });
 
       setSubaccountActivationState(SubaccountActivationState.Success);
+      // limits typed before activation belong to this session only
+      setInitialSettings(undefined);
       // a new session starts with the signed removal again, whatever happened to the previous one
       walletTxnRemovalKeyRef.current = undefined;
       unknownResultRemovalKeyRef.current = undefined;

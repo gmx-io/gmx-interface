@@ -348,18 +348,63 @@ test.describe("Trading Settings: One-Click limits before activation", () => {
     });
   }
 
-  test("very long limits keep the settings usable instead of crashing the modal", async ({ mount, page }) => {
+  function limitInput(page: PageLike, label: string) {
+    return settingsModal(page).getByText(label, { exact: true }).locator("xpath=..").locator("input");
+  }
+
+  test("limits beyond the bounds keep the modal open and cannot be saved", async ({ mount, page }) => {
     await installRpcResponder(page, new MockChain({ walletPrivateKey: MOCK_ACCOUNT_PRIVATE_KEY }));
     await mount(<OneClickTradingModeStory expressEnabled />);
 
     await page.getByRole("button", { name: "One-Click settings" }).click();
-    const limitInput = (label: string) =>
-      settingsModal(page).getByText(label, { exact: true }).locator("xpath=..").locator("input");
-    await limitInput("Action(s)").fill("1".repeat(22));
-    await limitInput("Day(s)").fill("4".repeat(400));
+    // 22 digits made parseInt return "1.1e+21", which BigInt threw on while rendering
+    await limitInput(page, "Action(s)").fill("1".repeat(22));
+    await limitInput(page, "Day(s)").fill("4".repeat(400));
 
-    await expect(limitInput("Action(s)")).toHaveValue("1".repeat(22));
-    await expect(page.getByRole("button", { name: "Save settings" })).toBeEnabled();
+    await expect(limitInput(page, "Action(s)")).toHaveValue("1".repeat(22));
+    await expect(page.getByRole("button", { name: "Save settings" })).toBeDisabled();
     await expect(settingsModal(page)).toBeVisible();
+  });
+
+  test("a fractional limit keeps its whole part and saved limits show again after saving", async ({ mount, page }) => {
+    await installRpcResponder(page, new MockChain({ walletPrivateKey: MOCK_ACCOUNT_PRIVATE_KEY }));
+    await mount(<OneClickTradingModeStory expressEnabled />);
+
+    await page.getByRole("button", { name: "One-Click settings" }).click();
+    await limitInput(page, "Day(s)").fill("3650.5");
+    await expect(limitInput(page, "Day(s)")).toHaveValue("3650");
+    await limitInput(page, "Action(s)").fill("1000000");
+    await page.getByRole("button", { name: "Save settings" }).click();
+
+    await expect(limitInput(page, "Action(s)")).toHaveValue("1000000");
+    await expect(limitInput(page, "Day(s)")).toHaveValue("3650");
+    await expect(page.getByRole("button", { name: "Save settings" })).toBeDisabled();
+  });
+
+  test("limits saved before activation are signed into the first approval", async ({ mount, page }) => {
+    const generated = await deriveGeneratedSubaccount(MOCK_ACCOUNT_PRIVATE_KEY, SUBACCOUNT_MESSAGE);
+    const chain = new MockChain({
+      walletPrivateKey: MOCK_ACCOUNT_PRIVATE_KEY,
+      subaccountAddress: generated.address,
+      onchain: { active: false },
+    });
+    chain.setBalance(generated.address, 2n * 10n ** 15n);
+    await installRpcResponder(page, chain);
+    await mount(<OneClickTradingModeStory expressEnabled />);
+
+    await page.getByRole("button", { name: "One-Click settings" }).click();
+    await limitInput(page, "Action(s)").fill("2");
+    await limitInput(page, "Day(s)").fill("1");
+    await page.getByRole("button", { name: "Save settings" }).click();
+    const signedAfter = Math.floor(Date.now() / 1000);
+    await modeButton(page, "Express + One-Click").click();
+
+    await expect(page.getByText("Approval signed")).toBeVisible({ timeout: 15_000 });
+    expect(chain.signedTypedData).toHaveLength(1);
+    // the wallet signs a minified digest, so the limits are read from the approval the app stored
+    const { maxAllowedCount, expiresAt } = JSON.parse((await readLocalStorage(page, SETTLEMENT_APPROVAL_KEY))!);
+    expect(BigInt(maxAllowedCount)).toBe(2n);
+    expect(Number(expiresAt) - signedAfter).toBeGreaterThanOrEqual(86_400 - 5);
+    expect(Number(expiresAt) - signedAfter).toBeLessThanOrEqual(86_400 + 60);
   });
 });

@@ -302,10 +302,9 @@ function getIsEmptySubaccountApproval(subaccountApproval: SignedSubaccountApprov
   );
 }
 
-export function getInitialSubaccountLimits(
-  onchainData: SubaccountOnchainData,
-  initialSettings?: { remainingActions: bigint; remainingSeconds: bigint }
-) {
+export type SubaccountLimits = { remainingActions: bigint; remainingSeconds: bigint };
+
+export function getInitialSubaccountLimits(onchainData: SubaccountOnchainData, initialSettings?: SubaccountLimits) {
   if (initialSettings && (initialSettings.remainingActions <= 0n || initialSettings.remainingSeconds <= 0n)) {
     throw new Error("One-Click limits must be positive");
   }
@@ -340,7 +339,7 @@ export async function getInitialSubaccountApproval({
   provider: Provider;
   subaccountAddress: string;
   isGmxAccount: boolean;
-  initialSettings?: { remainingActions: bigint; remainingSeconds: bigint };
+  initialSettings?: SubaccountLimits;
 }) {
   const onchainData = await getSubaccountOnchainData({ chainId, signer, provider, subaccountAddress });
 
