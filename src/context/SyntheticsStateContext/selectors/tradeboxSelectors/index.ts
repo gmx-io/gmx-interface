@@ -685,9 +685,9 @@ export const selectTradeboxFormState = createSelector((q) => {
 
 export const selectTradeboxIsTPSLEnabled = createSelector((q) => {
   const { limitOrTPSL } = q(selectTradeboxAdvancedOptions);
-  const { isSwap, isTrigger } = q(selectTradeboxTradeFlags);
+  const { isSwap, isTrigger, isTwap } = q(selectTradeboxTradeFlags);
 
-  return limitOrTPSL && !isSwap && !isTrigger;
+  return limitOrTPSL && !isSwap && !isTrigger && !isTwap;
 });
 
 export const selectTradeboxIsWrapOrUnwrap = createSelector((q) => {
