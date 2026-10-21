@@ -20,7 +20,9 @@ export const GMSOL_NATIVE_TOKEN = {
   wrappedAddress: "So11111111111111111111111111111111111111112",
 } as const;
 
-// Mainnet mint accounts checked on 2026-10-20. Use mint decimals, never decimals_gmx.
+// Mainnet mint accounts checked on 2026-10-20.
+// Use mint decimals for token amounts and gmsol unit-price conversions.
+// Parse GMX keeper ticker prices using the mapped Arbitrum token's decimals.
 // Inert until a consumer behind solanaNetwork uses this list; do not register it in the SDK.
 export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
   {
