@@ -427,8 +427,7 @@ export function GmSwapBoxDepositWithdrawal() {
   // #region Callbacks
   const onFocusedCollateralInputChange = useCallback(
     (tokenAddress: string) => {
-      // A GLV picks its pool only after its markets load, and without a focused side the form would clear an amount
-      // typed before that. All of a GLV's pools share its tokens, so the GLV decides the side meanwhile.
+      // until a GLV picks its pool, its own tokens decide the side, so an amount typed meanwhile is not cleared
       const focusedInput = getFocusedCollateralInput(marketInfo ?? glvInfo, tokenAddress);
 
       if (focusedInput) {
