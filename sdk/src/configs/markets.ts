@@ -1289,11 +1289,9 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
   },
 };
 
-// Solana markets stay out of MARKETS: SDK prebuild scripts ABI-encode its entries as EVM addresses
-export const SOLANA_MARKETS: MarketsConfigMap = {};
-
 function getMarketsConfigMap(chainId: number): MarketsConfigMap | undefined {
-  return isSolanaNetwork(chainId) ? SOLANA_MARKETS : MARKETS[chainId as ContractsChainId];
+  // Solana markets stay in the app (src/config/gmsol): SDK configs ship in the EVM main bundle
+  return isSolanaNetwork(chainId) ? {} : MARKETS[chainId as ContractsChainId];
 }
 
 export type MarketLabel = `${string}/USD [${string}-${string}]`;
@@ -1368,9 +1366,6 @@ export const fixTokenSymbolFromMarketLabel = (chainId: NetworkId, symbol: string
   }
   if (chainId === ARBITRUM && symbol === "ETH") {
     return "WETH";
-  }
-  if (isSolanaNetwork(chainId) && symbol === "SOL") {
-    return "WSOL";
   }
   return symbol;
 };

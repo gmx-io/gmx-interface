@@ -211,7 +211,7 @@ function sdkDedupe(): PluginOption {
 function isSolanaModule(id: string) {
   const srcDir = `${normalizePath(APP_SRC_DIR)}/`;
   const normalizedId = normalizePath(id).split("?")[0];
-  return ["lib/solana", "domain/gmsol"].some(
+  return ["lib/solana", "domain/gmsol", "config/gmsol"].some(
     (folder) => normalizedId.startsWith(`${srcDir}${folder}/`) || normalizedId === `${srcDir}${folder}`
   );
 }
