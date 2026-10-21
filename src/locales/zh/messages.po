@@ -872,10 +872,6 @@ msgstr "否"
 msgid "/ mo"
 msgstr "/月"
 
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "Disconnecting the wallet doesn’t stop notifications."
-msgstr ""
-
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 #: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
 #: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
@@ -983,6 +979,10 @@ msgstr "可供结算的累计资金费用"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Convert esGMX to GMX tokens. Read the vesting details before using the vaults."
 msgstr "将 esGMX 转换为 GMX 代币。使用金库前请阅读归属期详情。"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "On a computer, the browser must be running, but no GMX tab needs to be open"
+msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from the Affiliate vesting vault"
@@ -1840,6 +1840,10 @@ msgstr "股票"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Staking power share"
 msgstr "质押权重占比"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Disconnecting the wallet doesn't stop notifications"
+msgstr ""
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "I'm an affiliate"
@@ -2753,10 +2757,6 @@ msgstr "不包括已领取的资金费、价格影响返还和执行费"
 msgid "Auto-cancel order limit reached"
 msgstr "已达到自动取消订单上限"
 
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "Delivery isn't guaranteed. No web notification can be marked time sensitive, so Do Not Disturb will hold back a margin call. Don't rely on an alert as your only risk control."
-msgstr ""
-
 #: src/components/TVChart/Chart.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Simulated orderbook view of GMX liquidity. Opens execute at mark price with zero price impact. Net price impact applies only on closes (capped, usually at 0.5%). <0>Read more</0>."
@@ -2878,10 +2878,6 @@ msgstr "TWAP 兑换仅使用 GMX 池流动性，无法满足此规模的订单�
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "How do I choose?"
 msgstr "如何选择？"
-
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "Turning off only affects this device."
-msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
 msgid "This pool holds USDG, so USDC is converted to USDG when you buy and back to USDC when you sell.<0/><1/>Instant swap goes through the GMX USDC/USDG pool within your buy or sell, in one transaction. You pay its swap fee and price impact.<2/><3/>Direct with Paxos converts with Paxos, the issuer of USDG, in a separate transaction that usually settles in 2–10 min. The converted tokens land in your wallet first.<4/><5/>Auto picks the cheaper option. Whitelisted addresses can choose either option and convert USDC to USDG with no Paxos fee. Other addresses always use Auto, and Direct with Paxos is only offered from {minAmount}.<6/><7/>The choice is fixed when only one option can handle the amount or a conversion is in progress."
@@ -4247,6 +4243,10 @@ msgstr "指数（正）"
 msgid "Parts of this order are waiting for liquidity: they will execute once sufficient liquidity is available"
 msgstr "此订单的部分子订单正在等待流动性：流动性充足后将执行"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Position liquidated"
+msgstr ""
+
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
@@ -4560,6 +4560,10 @@ msgstr "需要重新授权前的最大天数"
 msgid "Minimum {0} capital required for rankings"
 msgstr "排名需要最低 {0} 的资金"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Notifications stop after 30 days without opening GMX on this device"
+msgstr ""
+
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Request to be contacted"
 msgstr "申请专人联系"
@@ -4836,10 +4840,6 @@ msgid "The approved amount is lower than the required amount. Approve again or r
 msgstr "已授权数量低于所需数量。请重新授权或减少数量"
 
 #: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "Connect a wallet to get liquidation and order alerts on this device."
-msgstr ""
-
-#: src/components/SettingsModal/NotificationsSettings.tsx
 msgid "Try again"
 msgstr ""
 
@@ -4850,6 +4850,10 @@ msgstr "错误名称："
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Market composition"
 msgstr "市场构成"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "When your Limit, Take-Profit, Stop-Loss or Stop Market order executes"
+msgstr ""
 
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM icon"
@@ -5513,10 +5517,6 @@ msgstr "价格影响过高"
 msgid "{0}h"
 msgstr "{0}小时"
 
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "Your position was liquidated."
-msgstr ""
-
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Enter withdrawal amount"
 msgstr "输入提取金额"
@@ -5885,10 +5885,6 @@ msgstr "正向影响因子"
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "All trades"
 msgstr "所有交易"
-
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "Notifications aren't saved. There's no history to look back at — only what arrives on your device."
-msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking more than 20% of your max historical staked GMX or esGMX will reset your accrued rewards."
@@ -6530,10 +6526,6 @@ msgstr "投资时自主掌控风险与回报"
 #: landing/src/pages/Home/SponsorsSection/SponsorsSection.tsx
 msgid "Over 100 protocols"
 msgstr "超过 100 个协议"
-
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "Alerts cover Arbitrum positions and orders only."
-msgstr ""
 
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Funding fees"
@@ -7355,6 +7347,10 @@ msgstr "<0>One-Click Trading 授权已过时，现已刷新。请重试</0>"
 msgid "Points are allocated based on your cumulative trading volume on GMX MegaETH"
 msgstr "积分根据您在 GMX MegaETH 上的累计交易量分配"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Delivery isn't guaranteed. Don't rely on notifications as your only risk control."
+msgstr ""
+
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
 msgstr "结算 {0, plural, one {# 个仓位} other {# 个仓位}} 的请求已发送"
@@ -8146,6 +8142,10 @@ msgstr "GMX 标志"
 msgid "Using Safe? Learn how to add a network"
 msgstr "使用 Safe？了解如何添加网络"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Turn them on to get liquidation and order notifications on this device."
+msgstr ""
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Minutes"
 msgstr "分钟"
@@ -8864,7 +8864,6 @@ msgstr "90 天"
 msgid "({0} days ago)"
 msgstr "（{0} 天前）"
 
-#: src/components/SettingsModal/NotificationsSettings.tsx
 #: src/components/TradeHistory/filters/ActionFilter.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Liquidation"
@@ -8964,6 +8963,10 @@ msgstr "有效的 Balancer 计划代码"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Max amount exceeded"
 msgstr "超出最大金额"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Turn them on to get liquidation and order notifications on this device. Your browser will ask you to allow them."
+msgstr ""
 
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {nativeTokenSymbol} in your Wallet for gas on {chainName}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
@@ -9215,10 +9218,6 @@ msgstr "需要重新授权前的最大操作次数"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Minimum capital used of {0} required to qualify for rankings"
 msgstr "需要使用至少 {0} 的资金才能参与排名"
-
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "Turn them on to get liquidation and order alerts on this device."
-msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
@@ -9869,10 +9868,6 @@ msgstr "实时追踪交易量和收益"
 #: src/lib/tenderly.tsx
 msgid "for {comment}"
 msgstr "用于 {comment}"
-
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "On a computer, alerts need the browser to be running. No GMX tab has to be open."
-msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL)."
@@ -11082,6 +11077,10 @@ msgstr "交易历史记录"
 msgid "Exposure to backing tokens"
 msgstr "底层支撑代币的敞口"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Notifications cover positions and orders on Arbitrum only"
+msgstr ""
+
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 msgid "Search type"
 msgstr "搜索类型"
@@ -11098,6 +11097,10 @@ msgstr "市价订单"
 msgid "Buying"
 msgstr "买入"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Connect a wallet to get liquidation and order notifications on this device."
+msgstr ""
+
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
 msgstr "转移"
@@ -11105,10 +11108,6 @@ msgstr "转移"
 #: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "EVM networks only"
 msgstr "仅限 EVM 网络"
-
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "Turn them on to get liquidation and order alerts on this device. Your browser will ask you to allow them."
-msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation risk alerts"
@@ -12066,6 +12065,10 @@ msgstr "钱包"
 msgid "Enter a trigger price"
 msgstr "输入触发价格"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Do Not Disturb can silence or delay notifications"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total stats"
 msgstr "总统计"
@@ -12619,10 +12622,6 @@ msgstr "享受高达 100 倍杠杆以及不依赖订单簿深度的链上保证�
 msgid "Your current staked balance relative to your historical max. Dropping below 80% resets your accumulated staking power to zero."
 msgstr "当前质押余额相对于历史最高值的比例。降至 80% 以下会将您累计的质押权重重置为零。"
 
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "Notifications stop after 30 days without opening GMX on this device."
-msgstr ""
-
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Oracle keeper monitoring"
 msgstr "Oracle keeper 监控"
@@ -12714,10 +12713,6 @@ msgstr "WETH-USDC 池流动性不足。请选择其他池。"
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Failed to decode error. Make sure the hex data is valid and starts with \"0x\"."
 msgstr "无法解码错误。请确保十六进制数据有效且以 \"0x\" 开头。"
-
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "Limit, Take-Profit, Stop-Loss and Stop Market."
-msgstr ""
 
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
@@ -12903,6 +12898,10 @@ msgstr "借贷费用"
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Continue"
 msgstr "继续"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "When your position is liquidated"
+msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "~2–10 min or longer, may arrive in parts"
@@ -13258,6 +13257,10 @@ msgstr "分享到"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Derivatives portfolio tracker"
 msgstr "衍生品投资组合追踪器"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Notifications aren't saved, so there's no history"
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execution price didn't meet acceptable price. Order will fill when the condition is met."
