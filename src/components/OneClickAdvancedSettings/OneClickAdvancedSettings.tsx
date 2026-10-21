@@ -32,6 +32,10 @@ function toWholeNumberString(value: string) {
   return integerPart.replace(/\D/g, "").replace(/^0+(?=\d)/, "") || "0";
 }
 
+const MAX_ACTIONS = BigInt(MAX_ONE_CLICK_SESSION_ACTIONS);
+const MAX_SECONDS = BigInt(MAX_ONE_CLICK_SESSION_DAYS) * SECONDS_IN_DAY;
+
+// secondsToPeriod goes through Number, which turns a very long saved limit into Infinity
 function secondsToDays(seconds: bigint) {
   return seconds > 0n ? (seconds + SECONDS_IN_DAY - 1n) / SECONDS_IN_DAY : 0n;
 }
@@ -79,11 +83,11 @@ export function OneClickAdvancedSettings() {
 
   const disabled = useMemo(() => {
     const { remainingActions, remainingSeconds } = nextLimits;
+    // the inputs show whole days, so an active session's exact remaining seconds are compared as days
     const notChanged =
-      currentLimits.remainingActions === remainingActions && currentLimits.remainingSeconds === remainingSeconds;
-    const isTooLarge =
-      remainingActions > BigInt(MAX_ONE_CLICK_SESSION_ACTIONS) ||
-      remainingSeconds > BigInt(MAX_ONE_CLICK_SESSION_DAYS) * SECONDS_IN_DAY;
+      currentLimits.remainingActions === remainingActions &&
+      secondsToDays(currentLimits.remainingSeconds) === secondsToDays(remainingSeconds);
+    const isTooLarge = remainingActions > MAX_ACTIONS || remainingSeconds > MAX_SECONDS;
     const isInvalid = !subaccount && (remainingActions === 0n || remainingSeconds === 0n);
 
     return notChanged || isTooLarge || isInvalid;

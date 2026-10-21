@@ -407,4 +407,36 @@ test.describe("Trading Settings: One-Click limits before activation", () => {
     expect(Number(expiresAt) - signedAfter).toBeGreaterThanOrEqual(86_400 - 5);
     expect(Number(expiresAt) - signedAfter).toBeLessThanOrEqual(86_400 + 60);
   });
+
+  test("an active session's limits open unchanged, so Save stays disabled until they are edited", async ({
+    mount,
+    page,
+  }) => {
+    const chain = new MockChain({
+      walletPrivateKey: MOCK_ACCOUNT_PRIVATE_KEY,
+      subaccountAddress: SEEDED_SUBACCOUNT_ADDRESS,
+      // an expiry that is not a whole number of days away
+      onchain: {
+        active: true,
+        maxAllowedCount: 50n,
+        currentActionsCount: 10n,
+        expiresAt: BigInt(Math.floor(Date.now() / 1000) + 30 * 86_400 - 3_600),
+      },
+    });
+    await installRpcResponder(page, chain);
+    await mount(
+      <OneClickTradingModeStory
+        expressEnabled
+        seedSubaccountAddress={SEEDED_SUBACCOUNT_ADDRESS}
+        seedSubaccountPrivateKey={SEEDED_SUBACCOUNT_PRIVATE_KEY}
+      />
+    );
+
+    await page.getByRole("button", { name: "One-Click settings" }).click();
+    await expect(limitInput(page, "Action(s)")).toHaveValue("40");
+    await expect(limitInput(page, "Day(s)")).toHaveValue("30");
+    await expect(page.getByRole("button", { name: "Save settings" })).toBeDisabled();
+    await limitInput(page, "Action(s)").fill("5");
+    await expect(page.getByRole("button", { name: "Save settings" })).toBeEnabled();
+  });
 });

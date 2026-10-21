@@ -308,6 +308,16 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     subaccountData,
   ]);
 
+  const hasActiveSubaccount = subaccount !== undefined;
+  useEffect(
+    function clearAppliedInitialSettings() {
+      // limits typed before activation are signed into one session; cleared once it is live, not on signing,
+      // so the panel keeps showing them until the session's own limits load
+      if (hasActiveSubaccount) setInitialSettings(undefined);
+    },
+    [hasActiveSubaccount]
+  );
+
   const calcSelector = useCalcSelector();
 
   // once a signed removal fails, the next attempts use the wallet transaction
@@ -447,8 +457,6 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       });
 
       setSubaccountActivationState(SubaccountActivationState.Success);
-      // limits typed before activation belong to this session only
-      setInitialSettings(undefined);
       // a new session starts with the signed removal again, whatever happened to the previous one
       walletTxnRemovalKeyRef.current = undefined;
       unknownResultRemovalKeyRef.current = undefined;

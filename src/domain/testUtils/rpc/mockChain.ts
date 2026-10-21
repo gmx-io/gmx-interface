@@ -271,7 +271,7 @@ export class MockChain implements RpcResponder {
         return "0x" + balance.toString(16);
       }
       case "eth_getCode":
-        return this.isContractAccount && normalizeAddress(params[0] as string) === this.account ? "0x6080604052" : "0x";
+        return this.isContractAccount && isSameAddress(params[0] as string, this.account) ? "0x6080604052" : "0x";
       case "eth_getTransactionCount":
         return "0x0";
       case "eth_estimateGas":
