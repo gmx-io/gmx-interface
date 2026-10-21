@@ -13,19 +13,23 @@ module.exports = {
       schema: [],
       messages: {
         restrictedImport:
-          "Import Solana packages only inside src/lib/solana or src/domain/gmsol. Dynamically import an internal Solana module instead.",
+          "Import Solana packages only inside src/lib/solana, src/domain/gmsol or src/config/gmsol. Dynamically import an internal Solana module instead.",
         staticInternalImport:
-          "Load Solana modules with a dynamic import() outside src/lib/solana and src/domain/gmsol. Pure type imports and exports are allowed.",
+          "Load Solana modules with a dynamic import() outside src/lib/solana, src/domain/gmsol and src/config/gmsol. Pure type imports and exports are allowed.",
       },
     },
     create(context) {
       const srcDir = path.resolve(__dirname, "src");
-      const solanaDirs = [path.join(srcDir, "lib/solana"), path.join(srcDir, "domain/gmsol")];
+      const solanaDirs = [
+        path.join(srcDir, "lib/solana"),
+        path.join(srcDir, "domain/gmsol"),
+        path.join(srcDir, "config/gmsol"),
+      ];
 
       function isInternalSolanaModule(specifier) {
         const target = specifier.startsWith(".")
           ? path.resolve(path.dirname(context.getFilename()), specifier)
-          : /^(lib|domain)\//.test(specifier)
+          : /^(lib|domain|config)\//.test(specifier)
             ? path.resolve(srcDir, specifier)
             : undefined;
 

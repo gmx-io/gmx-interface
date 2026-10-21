@@ -162,7 +162,7 @@
       }
     },
     {
-      "files": ["./src/lib/solana/**", "./src/domain/gmsol/**"],
+      "files": ["./src/lib/solana/**", "./src/domain/gmsol/**", "./src/config/gmsol/**"],
       "rules": {
         "local-rules/solana-import-boundaries": "off"
       }
