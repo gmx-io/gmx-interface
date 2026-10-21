@@ -247,13 +247,6 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     tokenProgram: SOLANA_TOKEN_2022_PROGRAM_ID,
   },
   {
-    address: "HTHR6CbWSqrVCB83onNwKKH1W3qpGoKbpqvs9sgK7PEC",
-    symbol: "WPUMP",
-    name: "Wrapped Pump",
-    decimals: 6,
-    tokenProgram: SOLANA_TOKEN_PROGRAM_ID,
-  },
-  {
     address: "WLFinEv6ypjkczcS83FZqFpgFZYwQXutRbxGe7oC16g",
     symbol: "WLFI",
     name: "World Liberty Financial",
