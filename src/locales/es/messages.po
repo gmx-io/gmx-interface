@@ -10981,6 +10981,7 @@ msgstr "FALLOS"
 msgid "Min margin: {0}"
 msgstr "Margen mín.: {0}"
 
+#: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TVChartContainer/constants.ts

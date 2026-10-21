@@ -10981,6 +10981,7 @@ msgstr "失敗回数"
 msgid "Min margin: {0}"
 msgstr "最小証拠金：{0}"
 
+#: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TVChartContainer/constants.ts
