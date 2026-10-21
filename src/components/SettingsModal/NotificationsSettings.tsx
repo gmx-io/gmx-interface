@@ -1,5 +1,6 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
+import { useState } from "react";
 
 import Button from "components/Button/Button";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
