@@ -9,6 +9,8 @@ import BellIcon from "img/ic_bell.svg?react";
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import WarnIcon from "img/ic_warn.svg?react";
 
+import { useNotificationsTesterState } from "./tester/notificationsTester"; // rewards-tester
+
 // UI proposal only: no push subscription, browser permission or wallet logic yet.
 export const NOTIFICATIONS_STATES = [
   "on",
@@ -41,7 +43,7 @@ const CARD_ICON: Record<NotificationsState, CardIcon> = {
 };
 
 export function NotificationsSettings() {
-  const [state, setState] = useState<NotificationsState>("on");
+  const [state, setState] = useNotificationsTesterState(); // rewards-tester (was: useState<NotificationsState>("on"))
 
   return (
     <div className="flex flex-col gap-20 pb-20">

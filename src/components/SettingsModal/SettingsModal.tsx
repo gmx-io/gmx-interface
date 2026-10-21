@@ -26,6 +26,7 @@ import { DebugSettings } from "./DebugSettings";
 import { DisplaySettings } from "./DisplaySettings";
 import { NotificationsSettings } from "./NotificationsSettings";
 import { TradingMode } from "./shared";
+import { NotificationsTesterPanel } from "./tester/NotificationsTesterPanel"; // rewards-tester
 import { TradingSettings } from "./TradingSettings";
 
 let SETTINGS_TABS: ("trading" | "display" | "notifications" | "debug")[] = [];
@@ -297,6 +298,7 @@ export function SettingsModal({
           <TabWrapper tab="notifications" activeTab={activeTab}>
             <NotificationsSettings />
           </TabWrapper>
+          <NotificationsTesterPanel isOpen={isSettingsVisible && activeTab === "notifications"} /* rewards-tester */ />
           <TabWrapper tab="debug" activeTab={activeTab}>
             <DebugSettings isSettingsVisible={isSettingsVisible} />
           </TabWrapper>
