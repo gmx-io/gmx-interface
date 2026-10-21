@@ -26,8 +26,6 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectExpressOrdersEnabled,
-  selectGasPaymentTokenAddress,
-  selectGmxAccountGasPaymentTokenAddress,
   selectSetExpressOrdersEnabled,
   selectShowDebugValues,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
@@ -152,6 +150,7 @@ import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarnin
 import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
 import TwapRows from "../TwapRows/TwapRows";
 import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
+import { useRefillMaxOnFeeTokenChange } from "./hooks/useRefillMaxOnFeeTokenChange";
 import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";
 import { type TradeboxPaxosRoute, useTradeboxPaxosRoute } from "./hooks/useTradeboxPaxosRoute";
 import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
@@ -301,8 +300,6 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   const setExpressOrdersEnabled = useSelector(selectSetExpressOrdersEnabled);
   const settlementChainGasPaymentTokenData = useSelector(selectSettlementChainGasPaymentToken);
   const gmxAccountGasPaymentTokenData = useSelector(selectGmxAccountGasPaymentToken);
-  const settlementChainGasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
-  const gmxAccountGasPaymentTokenAddress = useSelector(selectGmxAccountGasPaymentTokenAddress);
   const { subaccount } = useSelector(selectSubaccountState);
   const { shouldShowDepositButton } = useGmxAccountShowDepositButton();
   const { setIsSettingsVisible, isLeverageSliderEnabled } = useSettings();
@@ -316,9 +313,6 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   const gasPaymentTokenData = isFromTokenGmxAccount
     ? gmxAccountGasPaymentTokenData
     : settlementChainGasPaymentTokenData;
-  const gasPaymentTokenAddress = isFromTokenGmxAccount
-    ? gmxAccountGasPaymentTokenAddress
-    : settlementChainGasPaymentTokenAddress;
 
   const priceImpactWarningState = usePriceImpactWarningState({
     collateralNetPriceImpact: fees?.collateralNetPriceImpact,
@@ -408,13 +402,16 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
 
   const expressOrdersEnabledForMax = expressOrdersEnabled && fromTokenAddress !== zeroAddress && !isWrapOrUnwrap;
 
+  const feeGasPaymentTokenData = submitButtonState.expressGasPaymentToken ?? gasPaymentTokenData;
   const expressGasPaymentParams = submitButtonState.expressParams?.gasPaymentParams;
   const expressGasPaymentTokenAmount =
-    expressOrdersEnabledForMax && expressGasPaymentParams?.gasPaymentTokenAddress === gasPaymentTokenAddress
+    expressOrdersEnabledForMax &&
+    expressGasPaymentParams !== undefined &&
+    expressGasPaymentParams.gasPaymentTokenAddress === feeGasPaymentTokenData?.address
       ? expressGasPaymentParams.gasPaymentTokenAmount
       : undefined;
 
-  const gasPaymentTokenForMax = expressOrdersEnabledForMax ? gasPaymentTokenData : nativeToken;
+  const gasPaymentTokenForMax = expressOrdersEnabledForMax ? feeGasPaymentTokenData : nativeToken;
   const gasPaymentTokenAmountForMax = expressOrdersEnabledForMax
     ? expressGasPaymentTokenAmount
     : submitButtonState.totalExecutionFee?.feeTokenAmount;
@@ -434,10 +431,10 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
       return executionFee?.feeTokenAmount;
     }
 
-    return executionFee && gasPaymentTokenData && relayerFeeToken
+    return executionFee && feeGasPaymentTokenData && relayerFeeToken
       ? estimateBatchMinGasPaymentTokenAmount({
           chainId,
-          gasPaymentToken: gasPaymentTokenData,
+          gasPaymentToken: feeGasPaymentTokenData,
           relayFeeToken: relayerFeeToken,
           isGmxAccount: isFromTokenGmxAccount,
           gasPrice: getExpressGasPrice(chainId, gasPrice),
@@ -458,7 +455,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
     tokensData,
     chainId,
     expressOrdersEnabledForMax,
-    gasPaymentTokenData,
+    feeGasPaymentTokenData,
     relayerFeeToken,
     isFromTokenGmxAccount,
     l1ExpressOrderGasReference,
@@ -507,6 +504,16 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
       setFromTokenInputValue(formattedKeepGasAmount, true);
     }
   }, [formattedKeepGasAmount, setFocusedInput, setFromTokenInputValue]);
+
+  useRefillMaxOnFeeTokenChange({
+    feeTokenAddress: gasPaymentTokenForMax?.address,
+    payTokenAddress: fromTokenAddress,
+    inputValue: fromTokenInputValue,
+    selected: maxActions.selected,
+    isReady: !maxActions.isLoading && (!expressOrdersEnabledForMax || expressGasPaymentTokenAmount !== undefined),
+    maxAvailableAmount,
+    onMaxClick,
+  });
 
   const payMaxActionsProps =
     fromTokenBalance !== undefined && fromTokenBalance > 0n
@@ -1467,6 +1474,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
             gasPaymentParams={getNetworkFeeGasPaymentParams({
               expressParams: submitButtonState.expressParams,
               tokensData,
+              canFallBackToClassic: !submitButtonState.isFeeInPayToken,
             })}
             totalExecutionFee={submitButtonState.totalExecutionFee}
             feeSource={getNetworkFeeSource({ isGmxAccount: isFromTokenGmxAccount })}

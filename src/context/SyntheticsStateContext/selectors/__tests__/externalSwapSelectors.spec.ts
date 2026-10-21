@@ -132,6 +132,7 @@ describe("externalSwapSelectors", () => {
         isLeverageSliderEnabled: true,
       },
       subaccountState: { subaccount: undefined },
+      tokenPermitsState: { tokenPermits: [] },
       features: { relayRouterEnabled: false, subaccountRelayRouterEnabled: false },
     };
 
@@ -313,6 +314,8 @@ describe("externalSwapSelectors", () => {
 
       expect(selectExternalSwapDesirability(state)).toBe("required");
       expect(selectIsExternalSwapDisabledByExpressSchema(state)).toBe(true);
+      // a quote stored before the conflict appeared is not used
+      expect(selectExternalSwapQuote(state)).toBeUndefined();
     });
   });
 

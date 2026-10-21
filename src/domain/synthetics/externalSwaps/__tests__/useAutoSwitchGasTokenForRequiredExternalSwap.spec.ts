@@ -5,7 +5,10 @@ import { expandDecimals } from "lib/numbers";
 import { ARBITRUM } from "sdk/configs/chains";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
-import { getExternalSwapGasTokenToSwitchTo } from "../useAutoSwitchGasTokenForRequiredExternalSwap";
+import {
+  getExternalSwapGasTokenCandidate,
+  getExternalSwapGasTokenToSwitchTo,
+} from "../useAutoSwitchGasTokenForRequiredExternalSwap";
 
 const usdc = getTokenBySymbol(ARBITRUM, "USDC");
 const weth = getTokenBySymbol(ARBITRUM, "WETH");
@@ -90,5 +93,158 @@ describe("getExternalSwapGasTokenToSwitchTo", () => {
 
     expect(getExternalSwapGasTokenToSwitchTo({ ...baseParams, tokensData, isGmxAccount: true })).toBe(weth.address);
     expect(getExternalSwapGasTokenToSwitchTo({ ...baseParams, tokensData, isGmxAccount: false })).toBeUndefined();
+  });
+});
+
+describe("getExternalSwapGasTokenCandidate", () => {
+  const usdPrices = (usd: number) => ({ minPrice: expandDecimals(usd, 30), maxPrice: expandDecimals(usd, 30) });
+
+  function buildPricedTokensData(walletBalances: { [symbol: string]: bigint }): TokensData {
+    const pricesBySymbol: Record<string, { minPrice: bigint; maxPrice: bigint }> = {
+      USDC: usdPrices(1),
+      WETH: usdPrices(2000),
+      USDT: usdPrices(1),
+    };
+
+    return Object.fromEntries(
+      [usdc, weth, usdt].map((token) => [
+        token.address,
+        {
+          ...token,
+          prices: pricesBySymbol[token.symbol],
+          walletBalance: walletBalances[token.symbol],
+          balance: walletBalances[token.symbol],
+        },
+      ])
+    ) as TokensData;
+  }
+
+  // WETH -> USDC swap with USDC saved for gas
+  const candidateParams = {
+    chainId: ARBITRUM,
+    conflictTokenAddress: usdc.address,
+    savedGasTokenAddress: usdc.address,
+    payAmounts: { [weth.address]: expandDecimals(1, 18) },
+    isGmxAccount: false,
+  };
+
+  // $1 fee
+  const wethFee = expandDecimals(5, 14);
+  const usdcFee = expandDecimals(1, 6);
+
+  describe("fee moved to the WETH pay token because USDC is not approved", () => {
+    it("reads the fee amount in WETH and offers another token instead of WETH", () => {
+      const tokensData = buildPricedTokensData({ WETH: expandDecimals(2, 18), USDT: expandDecimals(2, 6) });
+      const gasPaymentParams = { gasPaymentToken: tokensData[weth.address], gasPaymentTokenAmount: wethFee };
+
+      expect(
+        getExternalSwapGasTokenCandidate({
+          ...candidateParams,
+          tokensData,
+          desirability: "optional",
+          gasPaymentParams,
+        })
+      ).toBe(usdt.address);
+      expect(
+        getExternalSwapGasTokenCandidate({
+          ...candidateParams,
+          tokensData,
+          desirability: "required",
+          gasPaymentParams,
+        })
+      ).toBe(usdt.address);
+    });
+
+    it("skips a token that can't cover the fee converted from WETH", () => {
+      const tokensData = buildPricedTokensData({ WETH: expandDecimals(2, 18), USDT: expandDecimals(5, 5) });
+
+      expect(
+        getExternalSwapGasTokenCandidate({
+          ...candidateParams,
+          tokensData,
+          desirability: "optional",
+          gasPaymentParams: { gasPaymentToken: tokensData[weth.address], gasPaymentTokenAmount: wethFee },
+        })
+      ).toBeUndefined();
+    });
+
+    it("never offers WETH, which already pays the fee", () => {
+      const tokensData = buildPricedTokensData({ WETH: expandDecimals(2, 18), USDC: expandDecimals(100, 6) });
+
+      for (const desirability of ["optional", "required"] as const) {
+        expect(
+          getExternalSwapGasTokenCandidate({
+            ...candidateParams,
+            tokensData,
+            desirability,
+            gasPaymentParams: { gasPaymentToken: tokensData[weth.address], gasPaymentTokenAmount: wethFee },
+          })
+        ).toBeUndefined();
+      }
+    });
+  });
+
+  describe("fee paid with the saved USDC", () => {
+    it("prefers WETH for an optional route", () => {
+      const tokensData = buildPricedTokensData({
+        USDC: expandDecimals(100, 6),
+        WETH: expandDecimals(2, 18),
+        USDT: expandDecimals(100, 6),
+      });
+
+      expect(
+        getExternalSwapGasTokenCandidate({
+          ...candidateParams,
+          tokensData,
+          desirability: "optional",
+          gasPaymentParams: { gasPaymentToken: tokensData[usdc.address], gasPaymentTokenAmount: usdcFee },
+        })
+      ).toBe(weth.address);
+    });
+
+    it("leaves out the WETH already going into the order", () => {
+      const tokensData = buildPricedTokensData({
+        USDC: expandDecimals(100, 6),
+        WETH: expandDecimals(1, 18),
+        USDT: expandDecimals(100, 6),
+      });
+
+      expect(
+        getExternalSwapGasTokenCandidate({
+          ...candidateParams,
+          tokensData,
+          desirability: "optional",
+          gasPaymentParams: { gasPaymentToken: tokensData[usdc.address], gasPaymentTokenAmount: usdcFee },
+        })
+      ).toBe(usdt.address);
+    });
+  });
+
+  describe("without a fee estimate", () => {
+    it("offers WETH with any balance for an optional route", () => {
+      const tokensData = buildPricedTokensData({ WETH: 1n, USDT: expandDecimals(100, 6) });
+
+      expect(
+        getExternalSwapGasTokenCandidate({
+          ...candidateParams,
+          tokensData,
+          desirability: "optional",
+          gasPaymentParams: undefined,
+        })
+      ).toBe(weth.address);
+    });
+
+    it("offers the first other gas token with a balance for a required route", () => {
+      const tokensData = buildPricedTokensData({ USDC: expandDecimals(100, 6), USDT: expandDecimals(100, 6) });
+
+      expect(
+        getExternalSwapGasTokenCandidate({
+          ...candidateParams,
+          tokensData,
+          desirability: "required",
+          gasPaymentParams: undefined,
+        })
+      ).toBe(usdt.address);
+    });
   });
 });

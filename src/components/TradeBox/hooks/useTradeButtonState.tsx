@@ -134,6 +134,8 @@ type TradeboxButtonState = {
   isExpressLoading: boolean;
   batchParams?: BatchOrderTxnParams;
   totalExecutionFee?: ExecutionFee;
+  expressGasPaymentToken?: TokenData;
+  isFeeInPayToken: boolean;
 };
 
 export function useTradeboxButtonState({
@@ -191,6 +193,7 @@ export function useTradeboxButtonState({
     isExpressLoading,
     isMultichainSubmitDisabled,
     totalExecutionFee,
+    gasPaymentToken: expressGasPaymentToken,
   } = useTradeboxTransactions({
     setPendingTxns,
     canSwitchGasPaymentToken,
@@ -309,7 +312,6 @@ export function useTradeboxButtonState({
     if (
       approvalGasError.bannerErrorName !== ValidationBannerErrorName.insufficientNativeTokenForApproval ||
       !isPendingGasPaymentTokenApproval ||
-      !gasPaymentToken ||
       expressParams?.gasPaymentParams === undefined
     ) {
       return undefined;
@@ -326,7 +328,7 @@ export function useTradeboxButtonState({
     const address = findNextGasPaymentToken({
       chainId,
       tokensData,
-      gasPaymentToken,
+      gasPaymentToken: expressParams.gasPaymentParams.gasPaymentToken,
       gasPaymentTokenAmount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
       payAmounts: fromToken && payAmount !== undefined ? { [fromToken.address]: payAmount } : {},
       isGmxAccount: false,
@@ -338,7 +340,6 @@ export function useTradeboxButtonState({
   }, [
     approvalGasError.bannerErrorName,
     isPendingGasPaymentTokenApproval,
-    gasPaymentToken,
     expressParams?.gasPaymentParams,
     isSwap,
     swapToToken,
@@ -371,6 +372,13 @@ export function useTradeboxButtonState({
 
   const externalSwapBlockReason = useSelector(selectExternalSwapBlockReason);
 
+  // follows the estimate rather than the resolved token, which runs ahead of it while a new estimate loads
+  const isFeeInPayToken =
+    !isFromTokenGmxAccount &&
+    expressParams !== undefined &&
+    gasPaymentToken !== undefined &&
+    expressParams.gasPaymentParams.gasPaymentTokenAddress !== gasPaymentToken.address;
+
   const { buttonErrorText, tooltipContent, bannerErrorContent } = useMemo((): {
     buttonErrorText: string | undefined;
     tooltipContent: ReactNode | null;
@@ -385,6 +393,8 @@ export function useTradeboxButtonState({
     const expressError = getExpressError({
       expressParams,
       tokensData,
+      // the fee moved to the pay token to skip an approval; a Classic transaction would bring the native fee back
+      canFallBackToClassic: !isFeeInPayToken,
     });
 
     const validationResult = takeValidationResult(
@@ -510,6 +520,7 @@ export function useTradeboxButtonState({
     hasOutdatedUi,
     expressParams,
     tokensData,
+    isFeeInPayToken,
     multipleWalletExtensionsChainError,
     tradeError,
     externalSwapBlockReason,
@@ -673,6 +684,8 @@ export function useTradeboxButtonState({
       batchParams,
       totalExecutionFee,
       isExpressLoading,
+      expressGasPaymentToken,
+      isFeeInPayToken,
     };
 
     if (!account && isWalletInitializing) {
@@ -854,6 +867,8 @@ export function useTradeboxButtonState({
     batchParams,
     totalExecutionFee,
     isExpressLoading,
+    expressGasPaymentToken,
+    isFeeInPayToken,
     isMultichainSubmitDisabled,
     isWaitingForExternalSwapQuote,
     account,

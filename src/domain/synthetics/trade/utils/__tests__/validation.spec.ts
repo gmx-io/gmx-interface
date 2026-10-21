@@ -669,6 +669,21 @@ describe("getExpressError", () => {
       })
     ).toEqual({});
   });
+
+  it("names the gas token and the wallet when a Classic fallback isn't allowed, even with enough native token", () => {
+    const walletTokensData = withNativeWalletBalance(expandDecimals(10, 18));
+
+    expect(
+      getExpressError({
+        expressParams: makeExpressParams({ isGmxAccount: false, isOutGasTokenBalance: true }),
+        tokensData: walletTokensData,
+        canFallBackToClassic: false,
+      })
+    ).toEqual({
+      buttonErrorMessage: "Insufficient USDC in wallet",
+      bannerErrorName: ValidationBannerErrorName.insufficientWalletGasTokenBalance,
+    });
+  });
 });
 
 describe("getIncreaseError — resulting-position margin check", () => {

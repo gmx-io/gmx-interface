@@ -29,7 +29,7 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
-import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
+import { useEstimateBatchExpressParamsWithApprovedGasToken } from "domain/synthetics/express/useGasPaymentTokenFallback";
 import {
   getExpressParamsForSubmit,
   reportMultichainExpressSubmitError,
@@ -686,6 +686,7 @@ function useOrdersControl() {
   const [orderTypesFilter, setOrderTypesFilter] = useState<OrderTypeFilterValue[]>([]);
   const ordersInfoData = useSelector(selectOrdersInfoData);
   const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const estimateExpressParams = useEstimateBatchExpressParamsWithApprovedGasToken();
   const subaccount = useSelector(selectSubaccountForChainAction);
 
   const selectedOrderKeys = useMemo(
@@ -711,7 +712,7 @@ function useOrdersControl() {
       };
 
       try {
-        const expressParams = await estimateBatchExpressParams({
+        const expressParams = await estimateExpressParams({
           signer,
           chainId,
           batchParams,
@@ -754,6 +755,7 @@ function useOrdersControl() {
     },
     [
       chainId,
+      estimateExpressParams,
       globalExpressParams,
       hasOutdatedUi,
       makeOrderTxnCallback,
@@ -788,7 +790,7 @@ function useOrdersControl() {
       };
 
       try {
-        const expressParams = await estimateBatchExpressParams({
+        const expressParams = await estimateExpressParams({
           signer,
           chainId,
           batchParams,
@@ -832,6 +834,7 @@ function useOrdersControl() {
     },
     [
       chainId,
+      estimateExpressParams,
       globalExpressParams,
       hasOutdatedUi,
       makeOrderTxnCallback,

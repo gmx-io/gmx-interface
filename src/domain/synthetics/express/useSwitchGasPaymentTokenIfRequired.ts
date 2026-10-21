@@ -1,9 +1,13 @@
 import { t } from "@lingui/macro";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { toast } from "react-toastify";
 
-import { selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
+  selectGasPaymentTokenAllowance,
+  selectTokensData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectGasPaymentTokenAddress,
   selectSetGasPaymentTokenAddress,
   selectSetGmxAccountGasPaymentTokenAddress,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
@@ -13,10 +17,9 @@ import { convertToTokenAmount, convertToUsd, TokenData, TokensData } from "domai
 import { applyMinimalBuffer } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
-import { EMPTY_ARRAY, getByKey } from "lib/objects";
+import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { getIsConfirmedOutOfGasPaymentTokenBalance } from "sdk/utils/express";
-import { BatchOrderTxnParams, getBatchTotalPayCollateralAmount } from "sdk/utils/orderTransactions";
 
 import { ExpressTxnParams, GasPaymentValidations } from "./types";
 
@@ -106,19 +109,45 @@ export function findGasPaymentTokenWithPositiveBalance({
   });
 }
 
+// Prefers an already approved token; an unapproved one only when the fee is paid with the saved token,
+// otherwise the fallback to a non-saved token would override it again
+export function getGasPaymentTokenToSwitchTo({
+  savedGasPaymentTokenAddress,
+  tokensAllowanceData,
+  ...params
+}: Parameters<typeof findNextGasPaymentToken>[0] & {
+  savedGasPaymentTokenAddress: string | undefined;
+}): string | undefined {
+  if (params.isGmxAccount) {
+    return findNextGasPaymentToken(params);
+  }
+
+  const isSavedGasPaymentToken = params.gasPaymentToken.address === savedGasPaymentTokenAddress;
+  const excludeTokenAddresses =
+    savedGasPaymentTokenAddress !== undefined
+      ? [...(params.excludeTokenAddresses ?? []), savedGasPaymentTokenAddress]
+      : params.excludeTokenAddresses;
+
+  return (
+    findNextGasPaymentToken({
+      ...params,
+      excludeTokenAddresses,
+      tokensAllowanceData: tokensAllowanceData ?? EMPTY_OBJECT,
+    }) ?? (isSavedGasPaymentToken ? findNextGasPaymentToken({ ...params, excludeTokenAddresses }) : undefined)
+  );
+}
+
 export function useSwitchGasPaymentTokenIfRequiredFromExpressParams({
   expressParams,
-  orderParams,
+  payAmounts,
   isGmxAccount,
   canSwitchGasPaymentToken,
 }: {
   expressParams: Pick<ExpressTxnParams, "gasPaymentValidations" | "gasPaymentParams"> | undefined;
-  orderParams: BatchOrderTxnParams | undefined;
+  payAmounts: Record<string, bigint>;
   isGmxAccount: boolean;
   canSwitchGasPaymentToken: boolean;
 }) {
-  const payAmounts = useMemo(() => (orderParams ? getBatchTotalPayCollateralAmount(orderParams) : {}), [orderParams]);
-
   useSwitchGasPaymentTokenIfRequired({
     gasPaymentValidations: expressParams?.gasPaymentValidations,
     gasPaymentToken: expressParams?.gasPaymentParams.gasPaymentToken,
@@ -148,6 +177,9 @@ function useSwitchGasPaymentTokenIfRequired({
   const setGasPaymentTokenAddress = useSelector(selectSetGasPaymentTokenAddress);
   const setGmxAccountGasPaymentTokenAddress = useSelector(selectSetGmxAccountGasPaymentTokenAddress);
   const tokensData = useSelector(selectTokensData);
+  const savedGasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
+  const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
+  const tokensAllowanceData = gasPaymentTokenAllowance?.tokensAllowanceData;
 
   useEffect(
     function switchGasPaymentToken() {
@@ -159,13 +191,15 @@ function useSwitchGasPaymentTokenIfRequired({
       )
         return;
 
-      const anotherGasToken = findNextGasPaymentToken({
+      const anotherGasToken = getGasPaymentTokenToSwitchTo({
         chainId,
         tokensData,
         gasPaymentToken,
         gasPaymentTokenAmount,
         payAmounts,
         isGmxAccount,
+        savedGasPaymentTokenAddress,
+        tokensAllowanceData,
       });
 
       if (anotherGasToken && anotherGasToken !== gasPaymentToken.address) {
@@ -195,6 +229,8 @@ function useSwitchGasPaymentTokenIfRequired({
       payAmounts,
       setGasPaymentTokenAddress,
       tokensData,
+      savedGasPaymentTokenAddress,
+      tokensAllowanceData,
     ]
   );
 }

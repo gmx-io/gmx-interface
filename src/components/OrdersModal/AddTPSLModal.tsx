@@ -787,6 +787,7 @@ export function AddTPSLModal({
     label: "Add TP/SL",
     isGmxAccount: srcChainId !== undefined,
     canSwitchGasPaymentToken: isActiveForm,
+    gasPaymentTokenFallback: "approvedToken",
   });
 
   const expressError = useMemo(() => getExpressError({ expressParams, tokensData }), [expressParams, tokensData]);

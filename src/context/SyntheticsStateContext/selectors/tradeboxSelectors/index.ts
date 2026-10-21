@@ -9,6 +9,7 @@ import {
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { createSelector } from "context/SyntheticsStateContext/utils";
+import { resolveGasPaymentTokenAddress } from "domain/synthetics/express/gasPaymentTokenFallback";
 import type { ExternalSwapBlockReason } from "domain/synthetics/externalSwaps/types";
 import {
   externalSwapRequestKeysMatch,
@@ -86,6 +87,7 @@ import {
   selectAccount,
   selectChainId,
   selectGasLimits,
+  selectGasPaymentTokenAllowance,
   selectGasPrice,
   selectJitLiquidityMap,
   selectMarketsInfoData,
@@ -105,6 +107,7 @@ import {
   selectShowDebugValues,
 } from "../settingsSelectors";
 import { selectSelectedMarketVisualMultiplier } from "../shared/marketSelectors";
+import { selectTokenPermits } from "../tokenPermitsSelectors";
 import {
   makeSelectDecreasePositionAmounts,
   makeSelectFindSwapPath,
@@ -223,6 +226,8 @@ export const selectExternalSwapQuote = createSelector((q) => {
   const tokenOut = q(selectTradeboxSelectSwapToToken);
 
   if (q(selectIsOneClickActiveByUser)) return undefined;
+  // the fee token can change without a new quote request, so a stored quote must not outlive a new conflict
+  if (q(selectIsExternalSwapDisabledByExpressSchema)) return undefined;
 
   if (!inputs || !tokenIn || !tokenOut) return undefined;
   if (
@@ -290,23 +295,48 @@ export const selectIsOneClickActiveByUser = createSelector((q) => {
   return q(selectIsExpressTransactionAvailable) && Boolean(q(selectSubaccountForChainAction));
 });
 
+// Token that pays a wallet-funded Express fee: the pay token when the saved gas payment token needs an approval
+export const selectTradeboxExpressFeeTokenAddress = createSelector((q) => {
+  const savedGasPaymentToken = q(selectSettlementChainGasPaymentToken);
+  if (!savedGasPaymentToken) return undefined;
+
+  const { isSwap, isIncrease } = q(selectTradeboxTradeFlags);
+
+  return resolveGasPaymentTokenAddress({
+    chainId: q(selectChainId),
+    fallback: "payToken",
+    gasPaymentToken: savedGasPaymentToken,
+    payTokenAddress: isSwap || isIncrease ? q(selectTradeboxFromTokenAddress) : undefined,
+    // the pay token decision doesn't depend on the order amount
+    payAmounts: EMPTY_OBJECT,
+    feeUsdByToken: q(selectTradeboxExpressFeeUsdByToken),
+    tokensData: q(selectTokensData),
+    tokensAllowanceData: q(selectGasPaymentTokenAllowance)?.tokensAllowanceData,
+    tokenPermits: q(selectTokenPermits),
+  });
+});
+
 export const selectIsExternalSwapDisabledByExpressSchema = createSelector((q) => {
   if (!q(selectIsExpressTransactionAvailable)) return false;
 
   const isFromTokenGmxAccount = q(selectTradeboxIsFromTokenGmxAccount);
+  // native token payments from the wallet are sent as Classic transactions with no relay fee
+  if (!isFromTokenGmxAccount && q(selectTradeboxFromTokenAddress) === NATIVE_TOKEN_ADDRESS) return false;
+
   const gasPaymentToken = q(
     isFromTokenGmxAccount ? selectGmxAccountGasPaymentToken : selectSettlementChainGasPaymentToken
   );
-  if (!gasPaymentToken) return false;
+  const feeTokenAddress = isFromTokenGmxAccount ? gasPaymentToken?.address : q(selectTradeboxExpressFeeTokenAddress);
+  if (!feeTokenAddress) return false;
 
   // When gasPaymentToken = WNT, relay fee goes directly to the relay router
   // (Branch B in _handleRelayFee) without syncing OrderVault balances — no conflict.
   const chainId = q(selectChainId);
-  if (gasPaymentToken.address === getWrappedToken(chainId).address) return false;
+  if (feeTokenAddress === getWrappedToken(chainId).address) return false;
 
   const { isSwap } = q(selectTradeboxTradeFlags);
   const conflictToken = isSwap ? q(selectTradeboxSelectSwapToToken) : q(selectTradeboxCollateralToken);
-  return conflictToken !== undefined && gasPaymentToken.address === conflictToken.address;
+  return conflictToken !== undefined && feeTokenAddress === conflictToken.address;
 });
 
 export const selectRawExternalSwapDesirability = createSelector((q): "not_wanted" | "required" | "optional" => {
@@ -521,6 +551,8 @@ const selectTradeboxSetToTokenInputValue = (s: SyntheticsState) => s.tradebox.se
 export const selectTradeboxStage = (s: SyntheticsState) => s.tradebox.stage;
 export const selectTradeboxFocusedInput = (s: SyntheticsState) => s.tradebox.focusedInput;
 const selectTradeboxSetFocusedInput = (s: SyntheticsState) => s.tradebox.setFocusedInput;
+export const selectTradeboxExpressFeeUsdByToken = (s: SyntheticsState) => s.tradebox.expressFeeUsdByToken;
+export const selectTradeboxSetExpressFeeUsdByToken = (s: SyntheticsState) => s.tradebox.setExpressFeeUsdByToken;
 export const selectTradeboxDefaultTriggerAcceptablePriceImpactBps = (s: SyntheticsState) =>
   s.tradebox.defaultTriggerAcceptablePriceImpactBps;
 export const selectTradeboxSetDefaultTriggerAcceptablePriceImpactBps = (s: SyntheticsState) =>

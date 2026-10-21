@@ -8731,6 +8731,10 @@ msgstr "隱藏價值較低的資產"
 msgid "TVL (supply)"
 msgstr "TVL（供給量）"
 
+#: src/domain/synthetics/express/useGasPaymentTokenFallback.ts
+msgid "{fromSymbol} is not approved for fees. This order pays its network fee in {toSymbol}."
+msgstr "{fromSymbol} 未獲批准用於支付費用。此訂單將以 {toSymbol} 支付網路費用。"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"
 msgstr "TokenTerminal"

@@ -136,8 +136,10 @@ export function getCommonError(p: { chainId: number; isConnected: boolean; hasOu
 export function getExpressError(p: {
   expressParams: ExpressTxnParams | undefined;
   tokensData: TokensData | undefined;
+  // when false, a short wallet gas token is an error instead of a quiet Classic transaction paid in the native token
+  canFallBackToClassic?: boolean;
 }): ValidationResult {
-  const { expressParams, tokensData } = p;
+  const { expressParams, tokensData, canFallBackToClassic = true } = p;
 
   if (!expressParams) {
     return {};
@@ -162,7 +164,8 @@ export function getExpressError(p: {
     nativeToken.walletBalance < expressParams.gasPaymentParams.totalRelayerFeeTokenAmount;
 
   const isNativeExpressError =
-    expressParams.gasPaymentValidations.isOutGasTokenBalance && isInsufficientNativeTokenBalance;
+    expressParams.gasPaymentValidations.isOutGasTokenBalance &&
+    (isInsufficientNativeTokenBalance || !canFallBackToClassic);
 
   if (isNativeExpressError) {
     return {

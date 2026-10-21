@@ -24,7 +24,9 @@ import {
   selectTradeboxFees,
   selectTradeboxFromToken,
   selectTradeboxIncreasePositionAmounts,
+  selectTradeboxExpressFeeTokenAddress,
   selectTradeboxIsFromTokenGmxAccount,
+  selectTradeboxSetExpressFeeUsdByToken,
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxMarketInfo,
   selectTradeboxPayTokenAllowance,
@@ -153,6 +155,13 @@ export function useTradeboxTransactions({ setPendingTxns, canSwitchGasPaymentTok
       : undefined;
   }, [batchParams, chainId, isWrapOrUnwrap, tokensData, wrapOrUnwrapExecutionFee]);
 
+  const expressFeeTokenAddress = useSelector(selectTradeboxExpressFeeTokenAddress);
+  const setExpressFeeUsdByToken = useSelector(selectTradeboxSetExpressFeeUsdByToken);
+  const payTokenFeeToken = useMemo(
+    () => ({ address: expressFeeTokenAddress, setFeeUsdByToken: setExpressFeeUsdByToken }),
+    [expressFeeTokenAddress, setExpressFeeUsdByToken]
+  );
+
   const {
     expressParams,
     fastExpressParams,
@@ -160,11 +169,14 @@ export function useTradeboxTransactions({ setPendingTxns, canSwitchGasPaymentTok
     expressParamsPromise,
     isLoading: isExpressLoading,
     isMultichainSubmitDisabled,
+    gasPaymentToken,
   } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "TradeBox",
     isGmxAccount: isFromTokenGmxAccount,
     canSwitchGasPaymentToken,
+    gasPaymentTokenFallback: "payToken",
+    payTokenFeeToken,
   });
 
   const initOrderMetricData = useCallback(() => {
@@ -429,5 +441,6 @@ export function useTradeboxTransactions({ setPendingTxns, canSwitchGasPaymentTok
     isExpressLoading,
     isMultichainSubmitDisabled,
     totalExecutionFee,
+    gasPaymentToken,
   };
 }

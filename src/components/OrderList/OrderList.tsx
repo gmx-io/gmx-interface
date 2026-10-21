@@ -17,7 +17,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
+import { useEstimateBatchExpressParamsWithApprovedGasToken } from "domain/synthetics/express/useGasPaymentTokenFallback";
 import {
   getExpressParamsForSubmit,
   reportMultichainExpressSubmitError,
@@ -100,6 +100,7 @@ export function OrderList({
 
   const account = useSelector(selectAccount);
   const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const estimateExpressParams = useEstimateBatchExpressParamsWithApprovedGasToken();
   const subaccount = useSelector(selectSubaccountForChainAction);
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const hasOutdatedUi = useHasOutdatedUi();
@@ -178,7 +179,7 @@ export function OrderList({
     };
 
     try {
-      const expressParams = await estimateBatchExpressParams({
+      const expressParams = await estimateExpressParams({
         signer,
         chainId,
         batchParams,

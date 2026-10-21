@@ -8731,6 +8731,10 @@ msgstr "Vermögenswerte mit geringem Wert ausblenden"
 msgid "TVL (supply)"
 msgstr "TVL (Umlaufmenge)"
 
+#: src/domain/synthetics/express/useGasPaymentTokenFallback.ts
+msgid "{fromSymbol} is not approved for fees. This order pays its network fee in {toSymbol}."
+msgstr "{fromSymbol} ist nicht für Gebühren freigegeben. Diese Order zahlt ihre Netzwerkgebühr in {toSymbol}."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"
 msgstr "TokenTerminal"
