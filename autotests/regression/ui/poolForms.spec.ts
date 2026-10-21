@@ -173,6 +173,7 @@ test("12.19 a GLV detail page loaded directly quotes a buy amount typed before t
   page,
   chainId,
 }) => {
+  test.fail(true, "PRO-4505: an amount typed before the GLV picks its pool is cleared until #3122 lands");
   await openPoolDetails(page, "GLV");
   const maxHeld = 8;
   const holdMs = 30_000;

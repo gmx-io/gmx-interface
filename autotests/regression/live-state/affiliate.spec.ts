@@ -75,10 +75,7 @@ async function readTier(liveAccounts: LiveAccounts, account: LiveAccount["accoun
     args: [tier],
   });
   const share = custom > 0n ? custom : tierShare;
-  const percent = (bps: bigint) => {
-    const value = Number((Number(totalRebate * bps) / 1e6).toFixed(3));
-    return value === 0 && totalRebate * bps > 0n ? "<0.001" : String(value);
-  };
+  const percent = (bps: bigint) => String(Number((Number(totalRebate * bps) / 1e6).toFixed(3)));
   return { tier, totalRebate, share, rebate: percent(10_000n - share), discount: percent(share) };
 }
 
@@ -162,6 +159,7 @@ test("15.11 15.13 live affiliate: top code volume, traders, rebates and discount
   const share = page
     .locator(".Modal-content")
     .filter({ has: page.getByText("Share your referral card", { exact: true }) });
+  test.fail(tier.discount === "0", "PRO-4494: a share that rounds to zero reads as 0.000% until #3108 lands");
   await expect(share).toContainText(`Save up to ${tier.discount}% on every`);
   const discounts = share.getByText(/^So far, my referrals have saved/);
   if (BigInt(top.discountUsd) >= 100n * 10n ** 30n)

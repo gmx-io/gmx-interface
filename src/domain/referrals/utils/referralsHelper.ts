@@ -99,12 +99,8 @@ export function getSharePercentage(
     BASIS_POINTS_DIVISOR_BIGINT
   );
 
-  if (share === 0n) return "0";
-
   const percentage = share / 100n;
-  const formatted = removeTrailingZeros(formatAmount(percentage, decimals, 3, true));
-  // removeTrailingZeros keeps an all-zero amount, so a share below the shown precision would read as "0.000%"
-  return /^0\.0+$/.test(String(formatted)) ? "<0.001" : formatted;
+  return removeTrailingZeros(formatAmount(percentage, decimals, 3, true));
 }
 
 export function getCodeError(value: string): string {
