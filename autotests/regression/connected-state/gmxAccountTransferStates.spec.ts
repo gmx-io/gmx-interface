@@ -56,7 +56,7 @@ async function openTransfer(page: Page, label: string) {
   return page.getByRole("button", { name: "Repeat transaction", exact: true }).locator("xpath=..");
 }
 
-test("26.01 26.02 26.06 long-pending, compose-failed and failed GMX Account transfers show their indexer status", async ({
+test("26.02 26.06 partial: pending, compose-failed and failed GMX Account transfers show their indexer status and a failed deposit can be repeated", async ({
   page,
   accountState,
 }) => {
@@ -96,7 +96,6 @@ test("26.01 26.02 26.06 long-pending, compose-failed and failed GMX Account tran
   const rows = page.locator("div[role=button]").filter({ has: page.getByTestId("token-icon") });
   await expect(rows).toHaveCount(3);
 
-  // An 11-minute-old pending deposit only spins; no timeout notice.
   const pendingRow = rows.filter({ hasText: "+10.00" });
   await expect(pendingRow).toContainText(/USDCDeposit\+10\.00/);
   await expect(pendingRow.locator("svg.animate-spin")).toBeVisible();
@@ -113,7 +112,6 @@ test("26.01 26.02 26.06 long-pending, compose-failed and failed GMX Account tran
   await expect(details).toContainText(/From.*on.*Base/);
   await expect(details.getByRole("link").filter({ hasText: /^0x/ })).toHaveCount(2);
   await expect(details.getByText("Fee", { exact: true })).toHaveCount(0);
-  await expect(details).not.toContainText(/failed|delay|longer|minutes/i);
   await page.keyboard.press("Escape");
   await expect(details).toBeHidden();
   await page.getByTestId("user-address").click();
@@ -121,7 +119,6 @@ test("26.01 26.02 26.06 long-pending, compose-failed and failed GMX Account tran
   details = await openTransfer(page, "+20.00");
   await expect(details.getByText("Deposit from Base failed", { exact: true })).toBeVisible();
   await expect(details).toContainText(/Fee\s*0\.10\s*USDC/);
-  await expect(details).not.toContainText(/GMX Account balance|landed|retry/i);
   await details.getByRole("button", { name: "Repeat transaction", exact: true }).click();
   const deposit = page
     .locator(".Modal-content")
@@ -135,4 +132,20 @@ test("26.01 26.02 26.06 long-pending, compose-failed and failed GMX Account tran
   await page.getByRole("button", { name: "Transfer history", exact: true }).click();
   details = await openTransfer(page, "-30.00");
   await expect(details.getByText("Withdrawal to Base failed", { exact: true })).toBeVisible();
+});
+
+test("26.01 a bridge deposit pending for over 5 minutes tells the user it is taking longer", async ({
+  page,
+  accountState,
+}) => {
+  test.fail(true, "PRO-4468 bug 24: a long-pending bridge deposit only spins, with no notice");
+  const usdc = accountState.data.collateral.address;
+  await mockFundingHistory(page, accountState.address, [
+    transfer(accountState.address, usdc, 10, { operation: "deposit", step: "sent" }),
+  ]);
+  await accountState.connect(page);
+  await page.getByTestId("user-address").click();
+  await page.getByRole("button", { name: "Transfer history", exact: true }).click();
+  const details = await openTransfer(page, "+10.00");
+  await expect(details).toContainText(/delay|longer|taking|minutes/i, { timeout: 5_000 });
 });

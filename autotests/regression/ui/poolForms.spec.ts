@@ -94,7 +94,8 @@ for (const type of ["GM", "GLV"] as const) {
         expect(Math.abs(Math.abs(fee!.usd) - (quote.pay * fee!.percent) / 100)).toBeLessThanOrEqual(
           0.01 + quote.pay * 0.00001
         );
-        // Known bug: a swapping single-token sell leaves impact and swap fee out of Receive.
+        // A swapping single-token sell leaves impact and swap fee out of Receive (PRO-4468 bug 29); the 12.15
+        // single-token withdrawal test expects that to fail.
         if (!items.some((item) => item.label === "Swap fee")) {
           const sum = items.reduce((acc, item) => acc + item.usd, 0);
           expect(relativeDiff(quote.receive, quote.pay + sum)).toBeLessThan(0.001);
@@ -217,8 +218,8 @@ test("12.15 a large single-token GM withdrawal's Pay and Receive include the pri
   page,
   chainId,
 }) => {
-  test.fixme(true, "PRO-4468 bug 29: Sell GM (Single) shows the price impact, but Pay and Receive leave it out");
   test.skip(chainId !== 42161, "Avalanche's first pool shows no impact for a single-token withdrawal");
+  test.fail(true, "PRO-4468 bug 29: Sell GM (Single) shows the price impact, but Pay and Receive leave it out");
   test.slow();
   await openPoolDetails(page, "GM");
   const sell = await openForm(page, "GM", "Sell");

@@ -16,7 +16,8 @@ Each run targets one pull request's deployment preview. Arbitrum runs in full; t
 - live-state: real public accounts discovered through indexers, read-only, with live API/RPC/indexer data.
 - gates: endpoint configuration, endpoint health and market configuration sanity for every production chain.
 - avalanche, avalanche-live-state: the Avalanche subset of ui, connected-state and live-state.
-Tests marked as expected failures document known app gaps and are not failures.
+Tests marked as expected failures document known app bugs and are not failures; never call them regressions from this PR.
+checklistRows is the run's checklist accounting: only rows of the C (headless) set are counted, and rows checked only partially or with a known app bug are listed apart from passed rows. Report those groups as they are, never as passed.
 Each shard stops after a fixed number of failures to save CI time. A run with stoppedEarly=true did not run notRun.total tests (counted per project in notRun.byProject); their result is unknown, not passed.
 
 Write a pull request comment in GitHub Markdown, under 250 words, with no preamble:
@@ -98,7 +99,15 @@ async function main() {
     ...buildRunDigest(JSON.parse(readFileSync(path, "utf8")) as PlaywrightReport),
   }));
 
+  // the deterministic checklist accounting from report.cjs, so the model reports the same row groups
+  const checklistRows = summaries.map(({ path }) =>
+    readFileSync(path, "utf8")
+      .split("\n")
+      .filter((line) => /^(?:Checklist C rows|- Rows )/.test(line))
+      .join("\n")
+  );
   const context = {
+    checklistRows,
     pullRequest: process.env.PR_NUMBER,
     headSha: process.env.HEAD_SHA,
     preview: process.env.PREVIEW_URL,
