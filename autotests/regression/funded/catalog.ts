@@ -22,6 +22,11 @@ export const fundedCases = [
 
 export type FundedCase = (typeof fundedCases)[number];
 
+// A case that waits on an app change is skipped by groups and refused by name until that change lands.
+export const blockedFundedCases: Partial<Record<FundedCase["id"], string>> = {
+  "one-click": "bounded activation needs One-Click limits set before activation (PRO-4504, #3121)",
+};
+
 export function selectFundedCases(args: string[]) {
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--execute") continue;
@@ -43,8 +48,13 @@ export function selectFundedCases(args: string[]) {
   if (groups?.some((g) => g !== "all" && !fundedCases.some((c) => c.group === g)))
     throw new Error("Unknown funded group");
   if (ids?.some((id) => !fundedCases.some((c) => c.id === id))) throw new Error("Unknown funded case");
-  const selected = fundedCases.filter((c) =>
-    ids ? ids.includes(c.id) : groups ? groups.includes("all") || groups.includes(c.group) : c.group === "smoke"
+  const blocked = ids?.find((id) => blockedFundedCases[id as FundedCase["id"]]);
+  if (blocked)
+    throw new Error(`Funded case ${blocked} is disabled: ${blockedFundedCases[blocked as FundedCase["id"]]}`);
+  const selected = fundedCases.filter(
+    (c) =>
+      !blockedFundedCases[c.id] &&
+      (ids ? ids.includes(c.id) : groups ? groups.includes("all") || groups.includes(c.group) : c.group === "smoke")
   );
   if (!selected.length) throw new Error("No funded cases selected");
   return selected;

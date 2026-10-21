@@ -53,7 +53,6 @@ test.describe("funded wallet", () => {
   }) => {
     await accountState.connect(page);
     const settings = await openSettings(page);
-    await expect(settings.getByText("One-Click settings", { exact: true })).toBeVisible();
     await expect(settings.getByText(/Express Trading and One-Click Trading are unavailable/)).toHaveCount(0);
     for (const name of ["Express", "Express + One-Click"]) {
       await expect(tradingMode(settings, name)).toHaveClass(/(?:^|\s)cursor-pointer(?:\s|$)/);

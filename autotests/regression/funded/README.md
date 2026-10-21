@@ -1,6 +1,6 @@
 # Sequential economy funded regression
 
-This opt-in harness has **17 Playwright scenarios across all funded groups**, selected explicitly and executed with **one worker and up to two retries**. It uses the supplied deployment or already running localhost URL; the runner does not build the application or start a server. `funded` defaults to the original smoke. `funded:all` defaults to **16 same-chain scenarios**, excluding the Base bridge for now; same-chain GMX Account and 1CT remain included. An explicit `--case bridge`, `--group bridge` or `--group all` opts into multichain coverage.
+This opt-in harness has **17 Playwright scenarios across all funded groups**, selected explicitly and executed with **one worker and up to two retries**. It uses the supplied deployment or already running localhost URL; the runner does not build the application or start a server. `funded` defaults to the original smoke. `funded:all` defaults to **15 same-chain scenarios**, excluding the Base bridge for now and the `one-click` case until One-Click limits can be set before activation ([#3121](https://github.com/gmx-io/gmx-interface/pull/3121), PRO-4504); `--case one-click` is refused with that reason. Same-chain GMX Account remains included. An explicit `--case bridge`, `--group bridge` or `--group all` opts into multichain coverage.
 
 **Every paid action in the 17 scenarios starts from the application's forms, settings and transaction buttons.** A guarded injected wallet validates the UI calldata and signatures, checks gas, budgets and reserves, journals before broadcast, and broadcasts classic transactions itself. There is no SDK/API fallback for the tested actions; SDK/RPC reads verify receipts and the resulting inventory. The harness changes or adds to the app's behaviour in three places:
 
@@ -96,7 +96,7 @@ After recovery, the command checks prerequisites for the entire selection and ve
 For a wallet without GMX or existing rewards, explicitly select the other 14 scenarios:
 
 ```sh
-REGRESSION_BASE_URL=https://YOUR-UPDATED-PREVIEW.gmx-interface.pages.dev REGRESSION_MAX_GAS_GWEI=0.03 yarn test:regression:funded:all --group smoke,trading,orders,swap,account,liquidity,one-click --execute --budget-usd 20
+REGRESSION_BASE_URL=https://YOUR-UPDATED-PREVIEW.gmx-interface.pages.dev REGRESSION_MAX_GAS_GWEI=0.03 yarn test:regression:funded:all --group smoke,trading,orders,swap,account,liquidity --execute --budget-usd 20
 ```
 
 This uses the same preview URL and gas environment variables. To include all 17 again, use `--group all` and set `REGRESSION_BASE_MAX_GAS_GWEI` as well as the bridge prerequisites below.

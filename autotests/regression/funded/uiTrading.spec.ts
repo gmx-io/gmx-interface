@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { expect } from "@playwright/test";
 import { test } from "../fixtures/accountState";
 import { configureClassicTrading } from "../fixtures/tradingForms";
-import { fundedCases } from "./catalog";
+import { blockedFundedCases, fundedCases } from "./catalog";
 import { runUiJourney } from "./uiJourneys";
 import { createUiRehearsal } from "./uiRehearsal";
 import { openFundedTradePage } from "./browser";
@@ -19,6 +19,7 @@ for (const scenario of fundedCases) {
     chainId,
   }, testInfo) => {
     test.skip(chainId !== 42161, "Funded UI driver supports Arbitrum");
+    test.fixme(Boolean(blockedFundedCases[scenario.id]), blockedFundedCases[scenario.id]);
     test.setTimeout(600_000);
     const { session, wallet, journal } = await createUiRehearsal(context, accountState);
     await accountState.connect(page);

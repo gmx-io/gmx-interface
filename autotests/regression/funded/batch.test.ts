@@ -9,7 +9,7 @@ import {
   type BatchCaseResult,
   type FundedBatch,
 } from "./batch";
-import { fundedCases, selectFundedCases } from "./catalog";
+import { blockedFundedCases, fundedCases, selectFundedCases } from "./catalog";
 import { usd } from "./economy";
 
 const success = (reservedFeesUsd = "1"): BatchCaseResult => ({ exitCode: 0, cleanupCompleted: true, reservedFeesUsd });
@@ -52,11 +52,12 @@ test("batch defaults to same-chain cases and a $5 budget; bridge or all selectio
     glv.map((c) => c.id),
     ["glv"]
   );
+  const available = fundedCases.filter((c) => !blockedFundedCases[c.id]);
   for (const [args, selected, excluded] of [
-    [[], fundedCases.filter((c) => c.id !== "bridge"), ["bridge"]],
-    [["--case", "bridge"], fundedCases.filter((c) => c.id === "bridge"), []],
-    [["--group", "bridge"], fundedCases.filter((c) => c.id === "bridge"), []],
-    [["--group", "all"], fundedCases, []],
+    [[], available.filter((c) => c.id !== "bridge"), ["bridge"]],
+    [["--case", "bridge"], available.filter((c) => c.id === "bridge"), []],
+    [["--group", "bridge"], available.filter((c) => c.id === "bridge"), []],
+    [["--group", "all"], available, []],
   ] as const) {
     const options = batchOptions([...args]);
     assert.deepEqual(options.selected, selected);
@@ -244,4 +245,10 @@ test("a report write failure prevents the next paid case", async () => {
     /Disk full/
   );
   assert.equal(calls, 1);
+});
+
+test("a blocked funded case is left out of groups and refused by name with its reason", () => {
+  assert.throws(() => batchOptions(["--group", "one-click"]), /No funded cases selected/);
+  assert.throws(() => batchOptions(["--case", "one-click"]), /one-click is disabled: .*PRO-4504/);
+  assert.ok(!batchOptions(["--group", "all"]).selected.some((c) => c.id === "one-click"));
 });

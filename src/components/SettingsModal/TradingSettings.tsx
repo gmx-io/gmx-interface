@@ -224,9 +224,9 @@ export function TradingSettings({
 
             <OldSubaccountWithdraw />
 
-            {/* An active session keeps its limits visible even when express trading is unavailable. */}
-            {(Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount)) ||
-              (canSignTypedData && !isExpressTradingDisabled && !isContractAccount)) && <OneClickAdvancedSettings />}
+            {Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount)) && (
+              <OneClickAdvancedSettings />
+            )}
 
             {settings.expressOrdersEnabled && (
               <div className="flex flex-col gap-8">
