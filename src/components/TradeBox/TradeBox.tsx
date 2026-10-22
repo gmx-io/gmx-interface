@@ -142,7 +142,6 @@ import { TradeboxPoolWarnings } from "components/TradeboxPoolWarnings/TradeboxPo
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import ArrowDownIcon from "img/ic_arrow_down.svg?react";
-import CheckIcon from "img/ic_check.svg?react";
 
 import { useIsCurtainOpen } from "./Curtain";
 import { ExpressTradingWarningCard } from "./ExpressTradingWarningCard";
@@ -1449,12 +1448,6 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
             <AlertInfoCard hideClose type="info">
               {usdgConversion.convertFirstNote}
             </AlertInfoCard>
-          )}
-          {usdgConversion.convertedNote && (
-            <div className="flex items-center gap-8 text-14">
-              <CheckIcon className="size-16 text-green-500" />
-              {usdgConversion.convertedNote}
-            </div>
           )}
 
           <div>{button}</div>

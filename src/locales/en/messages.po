@@ -10848,10 +10848,6 @@ msgstr "Shift fee"
 msgid "Up"
 msgstr "Up"
 
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
-msgid "Converted {convertedInText} to {convertedOutText}"
-msgstr "Converted {convertedInText} to {convertedOutText}"
-
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Swap {0} for {1}"
 msgstr "Swap {0} for {1}"

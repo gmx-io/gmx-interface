@@ -10848,10 +10848,6 @@ msgstr "Comisión de traslado"
 msgid "Up"
 msgstr "Activo"
 
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
-msgid "Converted {convertedInText} to {convertedOutText}"
-msgstr "Convertido {convertedInText} a {convertedOutText}"
-
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Swap {0} for {1}"
 msgstr "Intercambiar {0} por {1}"

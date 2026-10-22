@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useLatest } from "react-use";
 
 import { getOrderAutoSubmitStep } from "domain/synthetics/usdgPools/orderAutoSubmit";
 
@@ -27,9 +28,12 @@ export function useOrderAutoSubmitAfterConversion({
   isDepositButtonShown: boolean;
   onSubmit: () => Promise<void>;
 }) {
-  const isSubmittingRef = useRef(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const requestedApprovalsRef = useRef(new Set<string>());
   const { disabled, isExpressLoading, approvalTokenAddress, isApproving } = buttonState;
+  // price ticks recreate both on every render, which would keep restarting the settle timer
+  const latestOnSubmit = useLatest(onSubmit);
+  const latestStop = useLatest(stop);
 
   useEffect(
     function placeOrderAfterConversion() {
@@ -39,7 +43,7 @@ export function useOrderAutoSubmitAfterConversion({
       }
 
       const step = getOrderAutoSubmitStep({
-        isSubmitting: isSubmittingRef.current,
+        isSubmitting,
         isButtonLoading: isExpressLoading || isApproving,
         isButtonDisabled: disabled,
         isDepositButtonShown,
@@ -56,24 +60,33 @@ export function useOrderAutoSubmitAfterConversion({
         if (step === "approve" && approvalTokenAddress !== undefined) {
           requestedApprovalsRef.current.add(approvalTokenAddress);
         } else {
-          stop();
+          latestStop.current();
         }
 
         if (step === "stop") {
           return;
         }
 
-        isSubmittingRef.current = true;
-        onSubmit()
+        setIsSubmitting(true);
+        latestOnSubmit
+          .current()
           .catch(() => undefined)
-          .finally(() => {
-            isSubmittingRef.current = false;
-          });
+          .finally(() => setIsSubmitting(false));
       }, SETTLE_MS);
 
       return () => clearTimeout(timerId);
     },
-    [approvalTokenAddress, disabled, isApproving, isDepositButtonShown, isExpressLoading, isPending, onSubmit, stop]
+    [
+      approvalTokenAddress,
+      disabled,
+      isApproving,
+      isDepositButtonShown,
+      isExpressLoading,
+      isPending,
+      isSubmitting,
+      latestOnSubmit,
+      latestStop,
+    ]
   );
 
   return useMemo(

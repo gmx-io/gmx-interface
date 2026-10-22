@@ -10848,10 +10848,6 @@ msgstr "轉換費用"
 msgid "Up"
 msgstr "正常"
 
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
-msgid "Converted {convertedInText} to {convertedOutText}"
-msgstr "已將 {convertedInText} 轉換為 {convertedOutText}"
-
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Swap {0} for {1}"
 msgstr "將 {0} 兌換為 {1}"

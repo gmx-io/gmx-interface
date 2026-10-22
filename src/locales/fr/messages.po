@@ -10848,10 +10848,6 @@ msgstr "Frais de réallocation"
 msgid "Up"
 msgstr "Actif"
 
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
-msgid "Converted {convertedInText} to {convertedOutText}"
-msgstr "{convertedInText} converti en {convertedOutText}"
-
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Swap {0} for {1}"
 msgstr "Échanger {0} contre {1}"

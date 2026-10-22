@@ -50,7 +50,7 @@ import { formatMaxInstantAmount } from "domain/synthetics/usdgPools/usdcConversi
 import { getApproveButtonText } from "domain/tokens/gasPaymentTokenApproval";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { helperToast } from "lib/helperToast";
-import { formatAmountFree, formatBalanceAmount } from "lib/numbers";
+import { formatAmountFree } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { TxnEventName } from "lib/transactions";
 import useWallet from "lib/wallets/useWallet";
@@ -257,19 +257,13 @@ export function useTradeboxUsdgConversion({
   ]);
   const [orderAutoSubmitSetupKey, setOrderAutoSubmitSetupKey] = useState<string>();
   const [relayTaskId, setRelayTaskId] = useState<string>();
-  const [lastConversion, setLastConversion] = useState<{
-    marketAddress: string | undefined;
-    tokenInAddress: string;
-    amountIn: bigint;
-    amountOut: bigint;
-  }>();
+  const [lastConversion, setLastConversion] = useState<{ marketAddress: string | undefined; amountOut: bigint }>();
   const pendingConversionRef = useRef<{
     knownOrderStatusKeys: Set<string>;
     marketAddress: string | undefined;
     tokenInAddress: string;
     tokenOutAddress: string;
     tokenOutDecimals: number;
-    amountIn: bigint;
     minAmountOut: bigint;
     swapPath: string[];
     orderSetupKey: string;
@@ -310,7 +304,6 @@ export function useTradeboxUsdgConversion({
         tokenInAddress: usdcAddress,
         tokenOutAddress: usdgToken.address,
         tokenOutDecimals: usdgToken.decimals,
-        amountIn: conversionSwapAmounts.amountIn,
         minAmountOut: batchParams.createOrderParams[0].orderPayload.numbers.minOutputAmount,
         swapPath: conversionSwapAmounts.swapStrategy.swapPathStats?.swapPath ?? [],
         orderSetupKey,
@@ -445,12 +438,7 @@ export function useTradeboxUsdgConversion({
           setFromTokenAddress(pending.tokenOutAddress);
           setFocusedInput("from");
           setFromTokenInputValue(formatAmountFree(amountOut, pending.tokenOutDecimals), true);
-          setLastConversion({
-            marketAddress: pending.marketAddress,
-            tokenInAddress: pending.tokenInAddress,
-            amountIn: pending.amountIn,
-            amountOut,
-          });
+          setLastConversion({ marketAddress: pending.marketAddress, amountOut });
           setOrderAutoSubmitSetupKey(pending.orderSetupKey);
           resetConversion();
         });
@@ -693,24 +681,6 @@ export function useTradeboxUsdgConversion({
     [isOrderAutoSubmitArmed, isOrderAutoSubmitPending, stopOrderAutoSubmit]
   );
 
-  let convertedNote: ReactNode = undefined;
-
-  if (lastConversion && usdgToken && isConvertedMarginInPlace) {
-    const tokenIn = getToken(chainId, lastConversion.tokenInAddress);
-    const convertedInText = formatBalanceAmount(lastConversion.amountIn, tokenIn.decimals, tokenIn.symbol, {
-      isStable: true,
-    });
-    const convertedOutText = formatBalanceAmount(lastConversion.amountOut, usdgToken.decimals, usdgToken.symbol, {
-      isStable: true,
-    });
-
-    convertedNote = (
-      <Trans>
-        Converted {convertedInText} to {convertedOutText}
-      </Trans>
-    );
-  }
-
   return {
     isConvertFirst,
     isBusy,
@@ -722,6 +692,5 @@ export function useTradeboxUsdgConversion({
     executionFee,
     tooLargeAlert,
     convertFirstNote,
-    convertedNote,
   };
 }

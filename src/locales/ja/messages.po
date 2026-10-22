@@ -10848,10 +10848,6 @@ msgstr "シフト手数料"
 msgid "Up"
 msgstr "稼働中"
 
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
-msgid "Converted {convertedInText} to {convertedOutText}"
-msgstr "{convertedInText}を{convertedOutText}に変換しました"
-
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Swap {0} for {1}"
 msgstr "{0} を {1} にスワップ"

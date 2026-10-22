@@ -10848,10 +10848,6 @@ msgstr "Комиссия за перемещение"
 msgid "Up"
 msgstr "Работает"
 
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
-msgid "Converted {convertedInText} to {convertedOutText}"
-msgstr "{convertedInText} конвертировано в {convertedOutText}"
-
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Swap {0} for {1}"
 msgstr "Обмен {0} на {1}"

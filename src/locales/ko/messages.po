@@ -10848,10 +10848,6 @@ msgstr "시프트 수수료"
 msgid "Up"
 msgstr "정상"
 
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
-msgid "Converted {convertedInText} to {convertedOutText}"
-msgstr "{convertedInText}을(를) {convertedOutText}(으)로 변환함"
-
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Swap {0} for {1}"
 msgstr "{0}을(를) {1}(으)로 스왑"
