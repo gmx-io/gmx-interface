@@ -791,6 +791,10 @@ msgstr "Incentives, airdrops, and prizes will appear here"
 msgid "Refer traders to GMX with your unique link and earn a share of the fees they generate"
 msgstr "Refer traders to GMX with your unique link and earn a share of the fees they generate"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: at the trigger price, the remaining position would exceed max leverage. Edit the order or <0>increase the position's margin</0>."
+msgstr "Order may not execute: at the trigger price, the remaining position would exceed max leverage. Edit the order or <0>increase the position's margin</0>."
+
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using funds directly from your connected wallet."
 msgstr "You can open isolated positions on GMX using funds directly from your connected wallet."
@@ -4808,6 +4812,11 @@ msgstr "Step 2: Receive"
 msgid "The approved amount is lower than the required amount. Approve again or reduce the amount"
 msgstr "The approved amount is lower than the required amount. Approve again or reduce the amount"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "Close the full position, change the trigger price, or add margin."
+msgstr "Close the full position, change the trigger price, or add margin."
+
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Error name:"
 msgstr "Error name:"
@@ -8011,6 +8020,10 @@ msgstr "Symbol (A to Z)"
 msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none"
 msgstr "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "At this trigger price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "At this trigger price, the remaining position would exceed max leverage and the order may not execute."
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr "{orderText} updated"
@@ -9645,6 +9658,10 @@ msgstr "Amount"
 msgid "Integrate GMX"
 msgstr "Integrate GMX"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Take-Profit price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "At the Take-Profit price, the remaining position would exceed max leverage and the order may not execute."
+
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Show line values in USD"
 msgstr "Show line values in USD"
@@ -10538,6 +10555,10 @@ msgstr "Saulius GMX analytics"
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Add RPC"
 msgstr "Add RPC"
+
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "Turn off \"Keep leverage\", close the full position, change the trigger price, or add margin."
+msgstr "Turn off \"Keep leverage\", close the full position, change the trigger price, or add margin."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a collateral"
@@ -11857,9 +11878,17 @@ msgstr "Get alerts and announcements from GMX to stay on top of your trades, liq
 msgid "Use the Pay amount"
 msgstr "Use the Pay amount"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Stop-Loss price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "At the Stop-Loss price, the remaining position would exceed max leverage and the order may not execute."
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated off-hours liquidation price"
 msgstr "Estimated off-hours liquidation price"
+
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Take-Profit and Stop-Loss prices, the remaining position would exceed max leverage and the orders may not execute."
+msgstr "At the Take-Profit and Stop-Loss prices, the remaining position would exceed max leverage and the orders may not execute."
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Repeat transaction"

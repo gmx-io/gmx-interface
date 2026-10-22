@@ -791,6 +791,10 @@ msgstr "Anreize, Airdrops und Preise werden hier angezeigt"
 msgid "Refer traders to GMX with your unique link and earn a share of the fees they generate"
 msgstr "Werben Sie Trader für GMX mit Ihrem persönlichen Link und erhalten Sie einen Anteil an den Gebühren, die sie generieren"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: at the trigger price, the remaining position would exceed max leverage. Edit the order or <0>increase the position's margin</0>."
+msgstr "Die Order wird möglicherweise nicht ausgeführt: Beim Auslösepreis würde die verbleibende Position den maximalen Hebel überschreiten. Bearbeiten Sie die Order oder <0>erhöhen Sie die Margin der Position</0>."
+
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using funds directly from your connected wallet."
 msgstr "Sie können auf GMX isolierte Positionen mit Guthaben direkt aus Ihrem verbundenen Wallet eröffnen."
@@ -4808,6 +4812,11 @@ msgstr "Schritt 2: Erhalten"
 msgid "The approved amount is lower than the required amount. Approve again or reduce the amount"
 msgstr "Der genehmigte Betrag ist niedriger als der erforderliche Betrag. Genehmigen Sie erneut oder verringern Sie den Betrag"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "Close the full position, change the trigger price, or add margin."
+msgstr "Schließen Sie die gesamte Position, ändern Sie den Auslösepreis oder fügen Sie Margin hinzu."
+
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Error name:"
 msgstr "Fehlername:"
@@ -8011,6 +8020,10 @@ msgstr "Symbol (A bis Z)"
 msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none"
 msgstr "Wählen Sie, welche Kauf-/Verkaufsmarkierungen im Chart angezeigt werden: alle Ihre vergangenen Trades, nur Ihre aktuell offene Position oder keine"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "At this trigger price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "Bei diesem Auslösepreis würde die verbleibende Position den maximalen Hebel überschreiten, und die Order wird möglicherweise nicht ausgeführt."
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr "{orderText} aktualisiert"
@@ -9645,6 +9658,10 @@ msgstr "Betrag"
 msgid "Integrate GMX"
 msgstr "GMX integrieren"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Take-Profit price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "Beim Take-Profit-Preis würde die verbleibende Position den maximalen Hebel überschreiten, und die Order wird möglicherweise nicht ausgeführt."
+
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Show line values in USD"
 msgstr "Linienwerte in USD anzeigen"
@@ -10538,6 +10555,10 @@ msgstr "Saulius GMX analytics"
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Add RPC"
 msgstr "RPC hinzufügen"
+
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "Turn off \"Keep leverage\", close the full position, change the trigger price, or add margin."
+msgstr "Deaktivieren Sie „Hebel beibehalten“, schließen Sie die gesamte Position, ändern Sie den Auslösepreis oder fügen Sie Margin hinzu."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a collateral"
@@ -11857,9 +11878,17 @@ msgstr "Erhalten Sie Benachrichtigungen und Ankündigungen von GMX, um über Ihr
 msgid "Use the Pay amount"
 msgstr "Bezahlen-Betrag verwenden"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Stop-Loss price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "Beim Stop-Loss-Preis würde die verbleibende Position den maximalen Hebel überschreiten, und die Order wird möglicherweise nicht ausgeführt."
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated off-hours liquidation price"
 msgstr "Geschätzter Liquidationspreis außerhalb der Handelszeiten"
+
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Take-Profit and Stop-Loss prices, the remaining position would exceed max leverage and the orders may not execute."
+msgstr "Bei den Take-Profit- und Stop-Loss-Preisen würde die verbleibende Position den maximalen Hebel überschreiten, und die Orders werden möglicherweise nicht ausgeführt."
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Repeat transaction"
