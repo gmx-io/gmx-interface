@@ -2,6 +2,7 @@ import { erc20Abi, isAddressEqual, parseEventLogs } from "viem";
 
 import type { ContractsChainId } from "config/chains";
 import { parseEventLogData } from "context/WebsocketContext/subscribeToEvents";
+import { getGmxAccountTransferInAmount } from "domain/synthetics/paxosTransit/getReceivedTokenAmount";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
@@ -47,14 +48,7 @@ export async function fetchUsdgCloseReceiptAmounts({
     .filter((transfer) => isAddressEqual(transfer.address, usdgAddress) && isAddressEqual(transfer.args.to, account))
     .reduce((total, transfer) => total + transfer.args.value, 0n);
 
-  const usdgToGmxAccount = events
-    .filter(
-      ({ name, data }) =>
-        name === "MultichainTransferIn" &&
-        isAddressEqual(data.addressItems.items.account, account) &&
-        isAddressEqual(data.addressItems.items.token, usdgAddress)
-    )
-    .reduce((total, { data }) => total + data.uintItems.items.amount, 0n);
+  const usdgToGmxAccount = getGmxAccountTransferInAmount({ chainId, logs, account, tokenAddress: usdgAddress });
 
   return {
     swapOutputAmount: lastSwapLeg?.data.uintItems.items.amountOut,
