@@ -65,6 +65,7 @@ import {
   selectTradeboxIncreaseLiquidationRiskWarning,
   selectTradeboxIncreaseMaxLeverageAlert,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
+import { selectTradeboxIsUsdgConversionTooLarge } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/tradeboxUsdgConversionSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
@@ -395,6 +396,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   const paxosReceiveAmountOut = getPaxosReceiveAmountOut(paxosRoute);
 
   const usdgConversion = useTradeboxUsdgConversion({ setFromTokenInputValue, setFocusedInput });
+  const isUsdgConversionTooLarge = useSelector(selectTradeboxIsUsdgConversionTooLarge);
 
   const submitButtonState = useMemo(
     () =>
@@ -1335,7 +1337,8 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
               isWrapOrUnwrap={!tradeFlags.isTrigger && isWrapOrUnwrap}
               disabled={shouldShowDepositButton}
               isGmxAccount={isFromTokenGmxAccount}
-              showExternalSwapWarnings={tradeFlags.isSwap || tradeFlags.isIncrease}
+              // the instant-limit banner already offers the way out, so a second red card would only compete
+              showExternalSwapWarnings={(tradeFlags.isSwap || tradeFlags.isIncrease) && !isUsdgConversionTooLarge}
             />
           )}
           {twapRecommendation && !twapRecommendationDismissed && (
