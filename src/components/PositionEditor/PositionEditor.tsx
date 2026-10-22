@@ -459,11 +459,17 @@ export function PositionEditor() {
     function applyAddMarginContinueRequest() {
       const positionKey = transitRouteProgress?.addMarginPositionKey;
 
-      if (!transitRouteProgress?.isContinueRequested || positionKey === undefined || !positionsInfoData) {
+      if (
+        !transitRouteProgress?.isContinueRequested ||
+        transitRouteProgress.isDismissed ||
+        positionKey === undefined ||
+        !positionsInfoData
+      ) {
         return;
       }
 
-      // the conversion has done its job once the trader is back at the position
+      // the conversion has done its job once the trader is back at the position;
+      // dismissing replaces the progress object, so without the isDismissed check this would loop
       dismissTransitRouteProgress(transitRouteProgress.id);
       setAddMarginReturnPositionKey(undefined);
 
