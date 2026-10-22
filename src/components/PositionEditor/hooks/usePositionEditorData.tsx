@@ -9,6 +9,7 @@ import {
 } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
 import {
   selectPositionEditorCollateralInputAmountAndUsd,
+  selectPositionEditorDepositSwapAmounts,
   selectPositionEditorSelectedCollateralToken,
 } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -16,6 +17,7 @@ import { getMarginDepositProjections } from "domain/synthetics/orders/marginDepo
 import { getLeverage, getLiquidationPrice } from "domain/synthetics/positions";
 import { convertToTokenAmount, getIsEquivalentTokens } from "domain/synthetics/tokens";
 import { Operation } from "domain/synthetics/trade/usePositionEditorState";
+import { getIsSwapPathFillable } from "domain/synthetics/usdgPools/usdcConversion";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { Options, usePositionEditorFees } from "./usePositionEditorFees";
@@ -36,6 +38,7 @@ export function usePositionEditorData({ operation }: Options) {
 
   const collateralToken = useSelector(selectPositionEditorSelectedCollateralToken);
   const { collateralDeltaAmount, collateralDeltaUsd } = useSelector(selectPositionEditorCollateralInputAmountAndUsd);
+  const depositSwapAmounts = useSelector(selectPositionEditorDepositSwapAmounts);
 
   const collateralPrice = collateralToken?.prices.minPrice;
 
@@ -54,7 +57,15 @@ export function usePositionEditorData({ operation }: Options) {
       return {};
     }
 
-    const totalFeesUsd = bigMath.abs(fees.totalFees.deltaUsd);
+    // swap fees are already taken out of the converted amount
+    const depositSwap = isDeposit ? depositSwapAmounts : undefined;
+
+    if (depositSwap && !getIsSwapPathFillable(depositSwap.swapStrategy.swapPathStats)) {
+      return {};
+    }
+    const totalFeesUsd = depositSwap
+      ? bigMath.abs((fees.borrowFee?.deltaUsd ?? 0n) + (fees.fundingFee?.deltaUsd ?? 0n))
+      : bigMath.abs(fees.totalFees.deltaUsd);
 
     if (isAtPriceDeposit) {
       const isPositionCollateralSelected =
@@ -88,10 +99,14 @@ export function usePositionEditorData({ operation }: Options) {
     }
 
     const nextCollateralUsd = isDeposit
-      ? position.collateralUsd - totalFeesUsd + collateralDeltaUsd
+      ? position.collateralUsd - totalFeesUsd + (depositSwap?.usdOut ?? collateralDeltaUsd)
       : position.collateralUsd - totalFeesUsd - collateralDeltaUsd;
 
-    const nextCollateralAmount = convertToTokenAmount(nextCollateralUsd, collateralToken?.decimals, collateralPrice)!;
+    const nextCollateralAmount = convertToTokenAmount(
+      nextCollateralUsd,
+      position.collateralToken.decimals,
+      position.collateralToken.prices.minPrice
+    )!;
 
     const receiveUsd = isDeposit ? 0n : collateralDeltaUsd;
     const receiveAmount = convertToTokenAmount(receiveUsd, collateralToken?.decimals, collateralPrice)!;
@@ -131,6 +146,7 @@ export function usePositionEditorData({ operation }: Options) {
     collateralDeltaUsd,
     collateralPrice,
     collateralToken,
+    depositSwapAmounts,
     fees,
     isAtPriceDeposit,
     isDeposit,

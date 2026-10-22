@@ -1,12 +1,15 @@
 import { t, Trans } from "@lingui/macro";
 import pickBy from "lodash/pickBy";
 import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useHistory } from "react-router-dom";
 import { useKey } from "react-use";
 import { Address } from "viem";
 
 import { USD_DECIMALS } from "config/factors";
 import { isSettlementChain } from "config/multichain";
+import { getUsdgConversionTokenAddress } from "config/usdgPools";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
   usePositionsConstants,
   useTokensData,
@@ -29,9 +32,15 @@ import {
   selectGmxAccountGasPaymentToken,
   selectSettlementChainGasPaymentToken,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import { selectPositionsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectPositionEditorCollateralInputAmountAndUsd,
+  selectPositionEditorDepositConversionTokenAddress,
+  selectPositionEditorDepositMaxInstantAmount,
+  selectPositionEditorIsDepositSwapUnfillable,
+  selectPositionEditorOpenDepositNow,
   selectPositionEditorSelectedCollateralToken,
+  selectPositionEditorSetAddMarginReturnPositionKey,
 } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -39,11 +48,17 @@ import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { getNetworkFeeGasPaymentParams } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { formatLiquidationPriceParts, getIsPositionInfoLoaded } from "domain/synthetics/positions";
-import { convertToTokenAmount, getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
+import {
+  convertToTokenAmount,
+  getBalanceByBalanceType,
+  TokenBalanceType,
+  type TokenData,
+} from "domain/synthetics/tokens";
 import { getMarkPrice, getMaxWithdrawAmount, getTradeFlagsForCollateralEdit } from "domain/synthetics/trade";
 import { Operation } from "domain/synthetics/trade/usePositionEditorState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getConditionalDepositWarning } from "domain/synthetics/trade/utils/validation";
+import { getIsCloseToLiquidation, getShouldDefaultToUsdc } from "domain/synthetics/usdgPools/usdcConversion";
 import { DEFAULT_MAX_ACTIONS_STATE, MaxActionsState, useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
@@ -61,6 +76,7 @@ import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
 import { useActiveForm } from "components/ActiveFormScope/ActiveFormScope";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
+import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import { MaxActions } from "components/MaxActions/MaxActions";
 import Modal from "components/Modal/Modal";
@@ -144,64 +160,42 @@ export function PositionEditor() {
   );
 
   const collateralToken = useSelector(selectPositionEditorSelectedCollateralToken);
+  const depositConversionTokenAddress = useSelector(selectPositionEditorDepositConversionTokenAddress);
+  const isDepositSwapUnfillable = useSelector(selectPositionEditorIsDepositSwapUnfillable);
+  const depositMaxInstantAmount = useSelector(selectPositionEditorDepositMaxInstantAmount);
+  const setAddMarginReturnPositionKey = useSelector(selectPositionEditorSetAddMarginReturnPositionKey);
+  const history = useHistory();
+
+  // a selected conversion token isn't the position collateral, so collateral options are keyed off the position
+  const collateralOptionsAddress =
+    depositConversionTokenAddress !== undefined ? position?.collateralTokenAddress : selectedCollateralAddress;
 
   const filteredTokensData = useMemo(() => {
     return pickBy(
       tokensData,
       (token) =>
-        token.address === selectedCollateralAddress ||
-        token.wrappedAddress === selectedCollateralAddress ||
-        convertTokenAddress(chainId, token.address, "native") === selectedCollateralAddress
+        token.address === collateralOptionsAddress ||
+        token.wrappedAddress === collateralOptionsAddress ||
+        convertTokenAddress(chainId, token.address, "native") === collateralOptionsAddress
     );
-  }, [chainId, selectedCollateralAddress, tokensData]);
+  }, [chainId, collateralOptionsAddress, tokensData]);
 
-  const options = useMemo(() => {
-    return Object.values(filteredTokensData)
-      .flatMap((tokenData) => {
-        if (tokenData.isNative) {
-          return [
-            {
-              ...tokenData,
-              isGmxAccount: false,
-              balance: tokenData.walletBalance,
-              balanceType: TokenBalanceType.Wallet,
-            },
-          ];
-        }
+  const options = useMemo(
+    () => getCollateralOptions(Object.values(filteredTokensData), srcChainId),
+    [filteredTokensData, srcChainId]
+  );
 
-        return [
-          {
-            ...tokenData,
-            isGmxAccount: true,
-            balance: tokenData.gmxAccountBalance,
-            balanceType: TokenBalanceType.GmxAccount,
-          },
-          {
-            ...tokenData,
-            isGmxAccount: false,
-            balance: tokenData.walletBalance,
-            balanceType: TokenBalanceType.Wallet,
-          },
-        ];
-      })
-      .sort((a, b) => {
-        if (a.balance !== undefined && b.balance === undefined) {
-          return -1;
-        }
-
-        if (a.balance === undefined && b.balance !== undefined) {
-          return 1;
-        }
-
-        if (a.balance !== undefined && b.balance !== undefined) {
-          return b.balance - a.balance > 0n ? 1 : -1;
-        }
-
-        return 0;
-      });
-  }, [filteredTokensData]);
+  const depositConversionToken = getByKey(tokensData, depositConversionTokenAddress);
+  const conversionOptions = useMemo(
+    () => (depositConversionToken ? getCollateralOptions([depositConversionToken], srcChainId) : undefined),
+    [depositConversionToken, srcChainId]
+  );
 
   const hasMultipleTokens = useMemo(() => {
+    if (depositConversionTokenAddress !== undefined) {
+      return true;
+    }
+
     if (srcChainId === undefined) {
       if (selectedCollateralAddress === getWrappedToken(chainId)?.address) {
         return true;
@@ -211,7 +205,7 @@ export function PositionEditor() {
     }
 
     return false;
-  }, [chainId, selectedCollateralAddress, srcChainId]);
+  }, [chainId, depositConversionTokenAddress, selectedCollateralAddress, srcChainId]);
 
   const onClose = useCallback(() => {
     setEditingPositionKey(undefined);
@@ -352,7 +346,64 @@ export function PositionEditor() {
       })
     : undefined;
 
+  const usdcPayTokenAddressForAtPrice =
+    isAtPriceDeposit && position ? getUsdgConversionTokenAddress(chainId, position.collateralTokenAddress) : undefined;
+  const shouldSuggestNowForUsdc =
+    usdcPayTokenAddressForAtPrice !== undefined &&
+    getShouldDefaultToUsdc({
+      usdgBalance: collateralTokenBalance,
+      usdcBalance: getBalanceByBalanceType(getByKey(tokensData, usdcPayTokenAddressForAtPrice), depositBalanceType),
+    });
+
+  const positionCollateralSymbol = position?.collateralToken.symbol;
+  const isConversionTooLarge = isDepositSwapUnfillable && depositMaxInstantAmount !== undefined;
+  const maxInstantAmountText =
+    depositMaxInstantAmount !== undefined && collateralToken
+      ? formatBalanceAmount(depositMaxInstantAmount, collateralToken.decimals, collateralToken.symbol, {
+          isStable: collateralToken.isStable,
+        })
+      : undefined;
+  const isCloseToLiquidation = getIsCloseToLiquidation({
+    markPrice: position?.markPrice,
+    liquidationPrice: position?.liquidationPrice,
+  });
+
+  const handleDepositMaxInstant = useCallback(() => {
+    if (depositMaxInstantAmount === undefined || !collateralToken) return;
+
+    setCollateralInputValue(formatAmountFree(depositMaxInstantAmount, collateralToken.decimals));
+  }, [collateralToken, depositMaxInstantAmount, setCollateralInputValue]);
+
+  const handleConvertRestWithPaxos = useCallback(() => {
+    if (
+      !position ||
+      !collateralToken ||
+      depositMaxInstantAmount === undefined ||
+      collateralDeltaAmount === undefined ||
+      collateralDeltaAmount <= depositMaxInstantAmount
+    ) {
+      return;
+    }
+
+    const restAmount = formatAmountFree(collateralDeltaAmount - depositMaxInstantAmount, collateralToken.decimals);
+
+    setAddMarginReturnPositionKey(position.key);
+    setEditingPositionKey(undefined);
+    history.push(
+      `/trade/swap?mode=market&from=${collateralToken.symbol}&to=${position.collateralToken.symbol}&amount=${restAmount}`
+    );
+  }, [
+    collateralDeltaAmount,
+    collateralToken,
+    depositMaxInstantAmount,
+    history,
+    position,
+    setAddMarginReturnPositionKey,
+    setEditingPositionKey,
+  ]);
+
   const hasNextValues =
+    !isDepositSwapUnfillable &&
     collateralDeltaAmount !== undefined &&
     collateralDeltaAmount > 0n &&
     (!isAtPriceDeposit || triggerPrice !== undefined);
@@ -375,11 +426,50 @@ export function PositionEditor() {
         return;
       }
 
-      if (!selectedCollateralAddress || !filteredTokensData[selectedCollateralAddress]) {
+      if (
+        !selectedCollateralAddress ||
+        (!filteredTokensData[selectedCollateralAddress] && selectedCollateralAddress !== depositConversionTokenAddress)
+      ) {
         handleSetCollateralAddress(position.collateralTokenAddress as Address);
       }
     },
-    [filteredTokensData, handleSetCollateralAddress, position, selectedCollateralAddress, setSelectedCollateralAddress]
+    [
+      depositConversionTokenAddress,
+      filteredTokensData,
+      handleSetCollateralAddress,
+      position,
+      selectedCollateralAddress,
+      setSelectedCollateralAddress,
+    ]
+  );
+
+  const openDepositNow = useSelector(selectPositionEditorOpenDepositNow);
+  const positionsInfoData = useSelector(selectPositionsInfoData);
+  const { transitRouteProgress, dismissTransitRouteProgress } = useSyntheticsEvents();
+
+  useEffect(
+    function applyAddMarginContinueRequest() {
+      const positionKey = transitRouteProgress?.addMarginPositionKey;
+
+      if (!transitRouteProgress?.isContinueRequested || positionKey === undefined || !positionsInfoData) {
+        return;
+      }
+
+      // the conversion has done its job once the trader is back at the position
+      dismissTransitRouteProgress(transitRouteProgress.id);
+      setAddMarginReturnPositionKey(undefined);
+
+      if (positionsInfoData[positionKey]) {
+        openDepositNow(positionKey);
+      }
+    },
+    [
+      openDepositNow,
+      positionsInfoData,
+      dismissTransitRouteProgress,
+      setAddMarginReturnPositionKey,
+      transitRouteProgress,
+    ]
   );
 
   useEffect(
@@ -613,6 +703,7 @@ export function PositionEditor() {
                       selectedTokenSymbol={collateralToken?.symbol}
                       isCollateralTokenFromGmxAccount={isCollateralTokenFromGmxAccount}
                       options={options}
+                      conversionOptions={conversionOptions}
                       onSelect={handleSetCollateralAddress}
                       variant={isDeposit ? "balance" : "destination"}
                     />
@@ -662,6 +753,15 @@ export function PositionEditor() {
                   </p>
                 ))}
 
+              {shouldSuggestNowForUsdc && (
+                <AlertInfoCard type="info" hideClose>
+                  <Trans>
+                    "At price" margin deposits use {positionCollateralSymbol} only. To pay with USDC,{" "}
+                    <EmbeddedActionButton onClick={() => setDepositMode("now")}>use Now</EmbeddedActionButton>.
+                  </Trans>
+                </AlertInfoCard>
+              )}
+
               {!submitButtonState.bannerErrorName &&
                 !submitButtonState.errorBannerContent &&
                 lowGasPaymentTokenWarningContent && (
@@ -678,7 +778,52 @@ export function PositionEditor() {
                 onAfterAction={onClose}
               />
 
-              <div>{button}</div>
+              {isConversionTooLarge ? (
+                <>
+                  <AlertInfoCard type="warning" hideClose>
+                    <div className="font-medium">
+                      <Trans>Too large to convert instantly</Trans>
+                    </div>
+                    {depositMaxInstantAmount !== undefined && depositMaxInstantAmount > 0n ? (
+                      <Trans>Up to {maxInstantAmountText} can be converted now.</Trans>
+                    ) : (
+                      <Trans>Nothing can be converted instantly right now.</Trans>
+                    )}
+                  </AlertInfoCard>
+                  {depositMaxInstantAmount !== undefined && depositMaxInstantAmount > 0n && (
+                    <Button
+                      className="w-full flex-col !items-start"
+                      variant="primary-action"
+                      onClick={handleDepositMaxInstant}
+                      qa="deposit-max-instant"
+                    >
+                      <Trans>Deposit {maxInstantAmountText} now</Trans>
+                      <span className="text-13 font-normal opacity-80">
+                        <Trans>Instant</Trans>
+                      </span>
+                    </Button>
+                  )}
+                  <Button
+                    className="w-full flex-col !items-start"
+                    variant="secondary"
+                    showExternalLinkArrow={false}
+                    onClick={handleConvertRestWithPaxos}
+                    qa="convert-rest-with-paxos"
+                  >
+                    <Trans>Convert the rest with Paxos</Trans>
+                    <span className="text-12 font-normal text-typography-secondary">
+                      <Trans>In the Swap tab · arrives separately</Trans>
+                    </span>
+                  </Button>
+                  {isCloseToLiquidation && (
+                    <AlertInfoCard type="warning" hideClose>
+                      <Trans>Close to liquidation? Deposit the instant amount first. Paxos can take a while.</Trans>
+                    </AlertInfoCard>
+                  )}
+                </>
+              ) : (
+                <div>{button}</div>
+              )}
 
               {!isDeposit && (
                 <SyntheticsInfoRow
@@ -731,4 +876,51 @@ export function PositionEditor() {
       </Modal>
     </div>
   );
+}
+
+function getCollateralOptions(tokens: TokenData[], srcChainId: number | undefined) {
+  return tokens
+    .flatMap((tokenData) => {
+      if (tokenData.isNative) {
+        return [
+          {
+            ...tokenData,
+            isGmxAccount: false,
+            balance: tokenData.walletBalance,
+            balanceType: TokenBalanceType.Wallet,
+          },
+        ];
+      }
+
+      return [
+        {
+          ...tokenData,
+          isGmxAccount: true,
+          balance: tokenData.gmxAccountBalance,
+          balanceType: TokenBalanceType.GmxAccount,
+        },
+        {
+          ...tokenData,
+          isGmxAccount: false,
+          balance: tokenData.walletBalance,
+          balanceType: TokenBalanceType.Wallet,
+        },
+      ];
+    })
+    .filter((option) => srcChainId === undefined || option.isGmxAccount)
+    .sort((a, b) => {
+      if (a.balance !== undefined && b.balance === undefined) {
+        return -1;
+      }
+
+      if (a.balance === undefined && b.balance !== undefined) {
+        return 1;
+      }
+
+      if (a.balance !== undefined && b.balance !== undefined) {
+        return b.balance - a.balance > 0n ? 1 : -1;
+      }
+
+      return 0;
+    });
 }

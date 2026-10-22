@@ -25,7 +25,9 @@ import { makeSelectOrdersByPositionKey } from "context/SyntheticsStateContext/se
 import {
   selectPositionEditorCollateralInputAmountAndUsd,
   selectPositionEditorDepositMode,
+  selectPositionEditorDepositSwapAmounts,
   selectPositionEditorIsCollateralTokenFromGmxAccount,
+  selectPositionEditorIsDepositSwapUnfillable,
   selectPositionEditorReplacingOrderKey,
   selectPositionEditorSelectedCollateralAddress,
   selectPositionEditorSelectedCollateralToken,
@@ -149,6 +151,8 @@ export function usePositionEditorButtonState(
   const replacingOrderKey = useSelector(selectPositionEditorReplacingOrderKey);
   const positionOrders = useSelector(makeSelectOrdersByPositionKey(editingPositionKey));
   const maxAutoCancelOrders = useSelector(selectMaxAutoCancelOrders);
+  const depositSwapAmounts = useSelector(selectPositionEditorDepositSwapAmounts);
+  const isDepositSwapUnfillable = useSelector(selectPositionEditorIsDepositSwapUnfillable);
 
   const isDeposit = operation === Operation.Deposit;
   const isAtPriceDeposit = isDeposit && depositMode === "atPrice";
@@ -214,18 +218,24 @@ export function usePositionEditorButtonState(
     let createOrderParams: CreateOrderTxnParams<IncreasePositionOrderParams | DecreasePositionOrderParams>;
 
     if (isDeposit) {
+      const depositSwapPath = depositSwapAmounts?.swapStrategy.swapPathStats?.swapPath;
+
+      if (depositSwapAmounts && !depositSwapPath) {
+        return undefined;
+      }
+
       createOrderParams = buildIncreaseOrderPayload({
         chainId,
         receiver: account,
         executionFeeAmount: executionFee.feeTokenAmount,
         executionGasLimit: executionFee.gasLimit,
         referralCode: userReferralInfo?.referralCodeForTxn,
-        swapPath: [],
+        swapPath: depositSwapPath ?? [],
         externalSwapQuote: undefined,
         payTokenAddress: selectedCollateralAddress,
         payTokenAmount: collateralDeltaAmount,
-        collateralTokenAddress: selectedCollateralAddress,
-        collateralDeltaAmount: collateralDeltaAmount,
+        collateralTokenAddress: depositSwapAmounts ? position.collateralTokenAddress : selectedCollateralAddress,
+        collateralDeltaAmount: depositSwapAmounts ? depositSwapAmounts.amountOut : collateralDeltaAmount,
         sizeDeltaUsd: 0n,
         sizeDeltaInTokens: 0n,
         acceptablePrice: markPrice,
@@ -281,6 +291,7 @@ export function usePositionEditorButtonState(
     allowedSlippage,
     chainId,
     collateralDeltaAmount,
+    depositSwapAmounts,
     executionFee,
     isAtPriceDeposit,
     isDeposit,
@@ -474,6 +485,7 @@ export function usePositionEditorButtonState(
       minDepositUsd,
       marketInfo: position?.marketInfo,
       maxWithdrawAmount,
+      isDepositSwapUnfillable,
     });
 
     return takeValidationResult(commonError, multipleWalletExtensionsChainError, editCollateralError, expressError);
@@ -497,6 +509,7 @@ export function usePositionEditorButtonState(
     minDepositUsd,
     maxWithdrawAmount,
     triggerPrice,
+    isDepositSwapUnfillable,
   ]);
 
   const errorTooltipContent = useMemo(() => {

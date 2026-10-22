@@ -12,7 +12,8 @@ import {
 import { getPaxosTransitConfig } from "config/paxosTransit";
 import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectChainId, selectPositionsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectPositionEditorAddMarginReturnPositionKey } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { selectShowDebugValues } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectExternalSwapIsLoading,
@@ -87,6 +88,13 @@ export function useTradeboxPaxosRoute({
   const instantAmountOut = useSelector(selectTradeboxInstantSwapAmountOut);
   const isInstantLoading = useSelector(selectExternalSwapIsLoading);
   const showDebugValues = useSelector(selectShowDebugValues);
+  const storedAddMarginPositionKey = useSelector(selectPositionEditorAddMarginReturnPositionKey);
+  const positionsInfoData = useSelector(selectPositionsInfoData);
+  // a key left behind for a position that's gone would tag unrelated conversions
+  const addMarginReturnPositionKey =
+    storedAddMarginPositionKey !== undefined && positionsInfoData?.[storedAddMarginPositionKey]
+      ? storedAddMarginPositionKey
+      : undefined;
   const { account, signer } = useWallet();
   const { accountType } = useAccountType();
   const isSmartWallet = accountType === AccountType.SmartAccount;
@@ -335,6 +343,7 @@ export function useTradeboxPaxosRoute({
         glvOrMarketAddress: undefined,
         withdrawalTxnHash: undefined,
         conversion,
+        addMarginPositionKey: direction === "usdcToUsdg" ? addMarginReturnPositionKey : undefined,
       });
       setFromTokenInputValue("", true);
     } catch (error) {
@@ -361,6 +370,7 @@ export function useTradeboxPaxosRoute({
     account,
     activePaxosQuote,
     activePaxosRoute,
+    addMarginReturnPositionKey,
     api,
     chainId,
     direction,

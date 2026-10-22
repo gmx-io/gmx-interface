@@ -815,6 +815,10 @@ msgstr "Изменить стоп-маркет: {suffix}"
 msgid "GMX {VERSION_NAME} actions across all traders on {networkName}"
 msgstr "Действия GMX {VERSION_NAME} всех трейдеров в сети {networkName}"
 
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Continue to add margin"
+msgstr "Перейти к добавлению маржи"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -1872,6 +1876,10 @@ msgstr "Позиции {longOrShort} {fundingAction} комиссию за фа�
 msgid "TIME"
 msgstr "ВРЕМЯ"
 
+#: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
+msgid "Margin token: {marginTokenSymbol}"
+msgstr "Токен маржи: {marginTokenSymbol}"
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "Oracle endpoints"
 msgstr "Конечные точки Oracle"
@@ -2355,6 +2363,11 @@ msgstr "VI ПОЗИЦИИ"
 #: src/components/TradeboxMarginFields/PriceField.tsx
 msgid "Stop price"
 msgstr "Стоп-цена"
+
+#: src/components/PositionEditor/PositionEditor.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Too large to convert instantly"
+msgstr "Слишком много для мгновенной конвертации"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
@@ -3002,6 +3015,10 @@ msgstr "Сохранить кредитное плечо на уровне {keep
 msgid "Loading network fees..."
 msgstr "Загрузка сетевых комиссий..."
 
+#: src/components/PositionEditor/PositionEditor.tsx
+msgid "\"At price\" margin deposits use {positionCollateralSymbol} only. To pay with USDC, <0>use Now</0>."
+msgstr "Внесение маржи «По цене» возможно только в {positionCollateralSymbol}. Чтобы оплатить в USDC, <0>выберите «Сейчас»</0>."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "VI SWAPS"
 msgstr "VI СВОПЫ"
@@ -3350,6 +3367,7 @@ msgstr "Установлено высокое проскальзывание. Т
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Instant"
 msgstr "Мгновенно"
@@ -3546,6 +3564,10 @@ msgstr "Недопустимый размер уменьшения"
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
 msgstr "Подписаться"
+
+#: src/components/PositionEditor/PositionEditor.tsx
+msgid "Up to {maxInstantAmountText} can be converted now."
+msgstr "Сейчас можно конвертировать до {maxInstantAmountText}."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized finance dashboard"
@@ -4154,6 +4176,10 @@ msgstr "Тёмная тема"
 msgid "The program"
 msgstr "Программа"
 
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Step 2: Add margin"
+msgstr "Шаг 2: Добавление маржи"
+
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
@@ -4350,6 +4376,10 @@ msgstr "Листинг"
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "Conversion failed: {0}"
 msgstr "Ошибка конвертации: {0}"
+
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Adding margin to {positionLabel} with {offerAmount}"
+msgstr "Добавление маржи в {positionLabel} на {offerAmount}"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Signing approval..."
@@ -4642,6 +4672,10 @@ msgstr "Стейкать"
 #: src/components/TradeHistory/keys.ts
 msgid "Update TWAP part"
 msgstr "Обновление части TWAP"
+
+#: src/components/PositionEditor/PositionEditor.tsx
+msgid "Deposit {maxInstantAmountText} now"
+msgstr "Внести {maxInstantAmountText} сейчас"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/ClaimRewardsButton.tsx
@@ -5082,6 +5116,10 @@ msgstr "Исходная сеть поддерживает только один
 #: src/components/Referrals/traders/faq.tsx
 msgid "Referral discounts apply to opening and closing fees for leverage trading. Swap fees are not included."
 msgstr "Реферальные скидки применяются к комиссиям за открытие и закрытие позиций при торговле с кредитным плечом. Комиссии за обмен не включены."
+
+#: src/components/PositionEditor/PositionEditor.tsx
+msgid "Nothing can be converted instantly right now."
+msgstr "Сейчас мгновенно конвертировать ничего нельзя."
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Show rPnL after fees"
@@ -5938,6 +5976,10 @@ msgstr "Проскальзывание — это разница между ож
 msgid "Margin before pending borrow and funding fees"
 msgstr "Маржа без учёта начисленных комиссий за заимствование и финансирование"
 
+#: src/components/PositionEditor/PositionEditor.tsx
+msgid "Convert the rest with Paxos"
+msgstr "Конвертировать остаток через Paxos"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel new orders"
 msgstr "Отменить новые ордера"
@@ -6324,6 +6366,7 @@ msgstr "Вывод не найден. Возможно, он был исполн
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/usdgPools/addMarginReturn.ts
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -7645,6 +7688,10 @@ msgstr "Выполнение запроса на продажу…"
 msgid "Close short"
 msgstr "Закрытие шорта"
 
+#: src/components/TradeBox/UsdgAddMarginReturnBanner.tsx
+msgid "Getting {collateralSymbol} to add margin to {positionLabel}."
+msgstr "Получение {collateralSymbol} для добавления маржи в {positionLabel}."
+
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/TradeHistory/keys.ts
 msgid "Create margin deposit"
@@ -8114,6 +8161,10 @@ msgstr "Выкл."
 #: src/components/TradeBox/TradeBox.tsx
 msgid "per"
 msgstr "за"
+
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Add margin"
+msgstr "Добавить маржу"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Reserve factor longs"
@@ -10072,6 +10123,7 @@ msgstr "Реферальный код отправлен"
 
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Conversion request sent"
 msgstr "Запрос на конвертацию отправлен"
 
@@ -10992,6 +11044,11 @@ msgstr "Экспозиция к обеспечивающим токенам"
 msgid "Search type"
 msgstr "Поиск типа"
 
+#: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
+#: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
+msgid "Converted to {marginTokenSymbol} in the same order"
+msgstr "Конвертируется в {marginTokenSymbol} в том же ордере"
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdrawal fee"
 msgstr "Комиссия за вывод"
@@ -11111,6 +11168,7 @@ msgstr "Ордер не может быть обновлён. Данный ти�
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/usdgPools/addMarginReturn.ts
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -11622,6 +11680,10 @@ msgstr "Нет токенов в исходной сети"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Liquidation fees"
 msgstr "Комиссии за ликвидацию"
+
+#: src/components/TradeBox/UsdgAddMarginReturnBanner.tsx
+msgid "Back to position"
+msgstr "Вернуться к позиции"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Projects integrated with GMX"
@@ -12657,6 +12719,7 @@ msgid "Banners, links and a partner manager"
 msgstr "Баннеры, ссылки и партнёрский менеджер"
 
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Step 1: Convert"
 msgstr "Шаг 1: Конвертация"
 
@@ -12848,6 +12911,10 @@ msgstr "{count, plural, one {Ордер} other {Ордера (#)}}"
 msgid "Avalanche trading incentives"
 msgstr "Торговые поощрения Avalanche"
 
+#: src/components/PositionEditor/PositionEditor.tsx
+msgid "In the Swap tab · arrives separately"
+msgstr "Во вкладке обмена · поступит отдельно"
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
 msgid "Direct with Paxos"
 msgstr "Напрямую с Paxos"
@@ -12874,6 +12941,10 @@ msgstr "Отправка запроса на перемещение…"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Order expired before it could be executed"
 msgstr "Срок действия ордера истёк до его исполнения"
+
+#: src/components/PositionEditor/PositionEditor.tsx
+msgid "Close to liquidation? Deposit the instant amount first. Paxos can take a while."
+msgstr "Близко к ликвидации? Сначала внесите мгновенную сумму. Paxos может занять время."
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 msgid "Confirming conversion..."

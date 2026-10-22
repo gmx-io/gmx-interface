@@ -8,6 +8,7 @@ import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { Mode, type GlvOrMarketInfo } from "domain/synthetics/markets/types";
 import { getIsTransitOrderFinal } from "domain/synthetics/paxosTransit/transitOrders";
 import type { TransitRouteProgress } from "domain/synthetics/paxosTransit/transitRouteProgress";
+import { getAddMarginPositionLabel } from "domain/synthetics/usdgPools/addMarginReturn";
 import { formatBalanceAmount } from "lib/numbers";
 import { getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
@@ -34,6 +35,15 @@ export function PaxosTransitStatusNotification({
 
   if (transitRouteProgress?.id !== toastTimestamp) {
     return null;
+  }
+
+  if (transitRouteProgress.addMarginPositionKey !== undefined) {
+    return (
+      <AddMarginConversionProgressContent
+        progress={transitRouteProgress}
+        positionKey={transitRouteProgress.addMarginPositionKey}
+      />
+    );
   }
 
   if (transitRouteProgress.glvOrMarketAddress === undefined) {
@@ -85,6 +95,70 @@ function TransitConversionProgressContent({ progress }: { progress: TransitRoute
               Taking longer than usual. Standard-fee conversions can take up to an hour and arrive in parts.
             </Trans>
           </div>
+        )}
+      </div>
+    </StatusNotification>
+  );
+}
+
+function AddMarginConversionProgressContent({
+  progress,
+  positionKey,
+}: {
+  progress: TransitRouteProgress;
+  positionKey: string;
+}) {
+  const history = useHistory();
+  const { paxosTransitOrder, isPaxosTransitOrderStatusUnknown, setTransitRouteContinueRequested } =
+    useSyntheticsEvents();
+  const { conversion } = progress;
+  const order = conversion ? paxosTransitOrder : undefined;
+
+  const paxosTransitConfig = getPaxosTransitConfig(progress.chainId);
+  const usdc = paxosTransitConfig ? getToken(progress.chainId, paxosTransitConfig.usdcAddress) : undefined;
+  const usdg = paxosTransitConfig ? getToken(progress.chainId, paxosTransitConfig.usdgAddress) : undefined;
+  const isConverted = order?.status === "PROCESSED";
+
+  // stays open once converted: the continue link is the next step
+  useToastAutoClose(order?.status === "REMOVED", progress.id);
+
+  const offerAmount =
+    conversion && usdc
+      ? formatBalanceAmount(conversion.offerAmount, usdc.decimals, usdc.symbol, { isStable: true })
+      : undefined;
+  const positionLabel = getAddMarginPositionLabel(progress.chainId, positionKey);
+
+  const requestContinue = () => {
+    setTransitRouteContinueRequested(progress.id, true);
+    history.push("/trade");
+  };
+
+  return (
+    <StatusNotification
+      title={
+        <Trans>
+          Adding margin to {positionLabel} with {offerAmount}
+        </Trans>
+      }
+    >
+      <div className="flex flex-col gap-8">
+        <StepLabel>
+          <Trans>Step 1: Convert</Trans>
+        </StepLabel>
+        <TransactionStatus status="success" txnHash={conversion?.txnHash} text={t`Conversion request sent`} />
+        <TransactionStatus
+          status={getConversionStatus(order)}
+          text={getSwapConversionText({ order, isPaxosTransitOrderStatusUnknown, tokenOut: usdg })}
+        />
+        <StepLabel>
+          <Trans>Step 2: Add margin</Trans>
+        </StepLabel>
+        {isConverted ? (
+          <ColorfulButtonLink color="blue" onClick={requestContinue}>
+            <Trans>Continue to add margin</Trans>
+          </ColorfulButtonLink>
+        ) : (
+          <TransactionStatus status="muted" text={t`Add margin`} />
         )}
       </div>
     </StatusNotification>

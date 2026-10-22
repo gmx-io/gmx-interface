@@ -168,6 +168,7 @@ import {
 } from "./TradeBoxRows/PaxosRouteRows";
 import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
 import { TPSLGroup } from "./TradeBoxRows/TPSLRows";
+import { UsdgAddMarginReturnBanner } from "./UsdgAddMarginReturnBanner";
 
 import "./TradeBox.scss";
 
@@ -1216,6 +1217,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
           />
         </div>
         <div className="flex flex-col gap-12 px-12">
+          <UsdgAddMarginReturnBanner isSwap={isSwap} />
           <div className="text-body-medium flex grow flex-col gap-14">
             <div className="flex flex-col gap-4">
               {isSwap && renderTokenInputs()}
