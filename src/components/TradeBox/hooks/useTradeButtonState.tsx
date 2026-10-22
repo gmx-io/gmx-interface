@@ -64,6 +64,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { findNextGasPaymentToken } from "domain/synthetics/express/useSwitchGasPaymentTokenIfRequired";
+import { getCanUseTokenPermits } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { getExternalAggregatorSwapUrl } from "domain/synthetics/externalSwaps/utils";
 import { substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
@@ -220,11 +221,12 @@ export function useTradeboxButtonState({
     isAllowanceLoading,
     isApproving,
     handleApprove,
+    getIsPermitApproval,
   } = useTokenApproval({
     chainId,
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokens: approvalTokens,
-    allowPermit: Boolean(expressParams),
+    allowPermit: getCanUseTokenPermits(expressParams),
     skip: isFromTokenGmxAccount,
     metric: {
       flow: "trade",
@@ -292,8 +294,10 @@ export function useTradeboxButtonState({
       tokenToApprove: pendingApprovalTokenAddress,
       nativeToken: getByKey(tokensData, zeroAddress),
       gasPrice: expressParams.gasPrice,
+      // every remaining approval has to be a permit, or the user would sign one and still be stopped for gas
+      isPermitApproval: tokensToApprove.length > 0 && tokensToApprove.every(getIsPermitApproval),
     });
-  }, [expressParams, pendingApprovalTokenAddress, tokensData]);
+  }, [expressParams, getIsPermitApproval, pendingApprovalTokenAddress, tokensData, tokensToApprove]);
 
   const hasAlternateGasFees = useHasAlternateGasFees({
     chainId,

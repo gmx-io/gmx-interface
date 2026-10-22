@@ -6,15 +6,17 @@ import { maxUint256 } from "viem";
 import { getChainName, getExplorerUrl } from "config/chains";
 import { JUMPER_BRIDGE_URL } from "config/links";
 import { AddTokenPermitFn } from "context/TokenPermitsContext/TokenPermitsContextProvider";
+import { type ErrorLike, parseError, TxErrorType } from "lib/errors";
 import { INVALID_PERMIT_SIGNATURE_ERROR } from "lib/errors/customErrors";
 import { estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { helperToast } from "lib/helperToast";
 import { metrics, type TokenApprovalEvent, type TokenApprovalMetricParams } from "lib/metrics";
+import { sendTokenPermitMetric } from "lib/metrics/tokenPermitMetrics";
 import { getTxnErrorOutcome } from "lib/metrics/txnErrorOutcome";
 import { getProvider } from "lib/rpc";
 import TokenAbi from "sdk/abis/Token";
-import { getNativeToken, getToken } from "sdk/configs/tokens";
-import { InfoTokens, Token, TokenInfo } from "sdk/utils/tokens/types";
+import { getNativeToken } from "sdk/configs/tokens";
+import { InfoTokens, TokenInfo } from "sdk/utils/tokens/types";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
@@ -27,11 +29,12 @@ type Params = {
   tokenAddress: string;
   spender: string;
   chainId: number;
+  /** Set only when a permit can stand in for the approval of this token */
   permitParams:
     | {
         addTokenPermit: AddTokenPermitFn;
-        setIsPermitsDisabled: (disabled: boolean) => void;
-        isPermitsDisabled: boolean;
+        disableTokenPermits: (tokenAddresses: string[]) => void;
+        accountType: string | undefined;
       }
     | undefined;
   onApproveSubmitted?: ({ isPermit }: { isPermit: boolean }) => void;
@@ -45,7 +48,7 @@ type Params = {
   metric: TokenApprovalMetricParams;
 };
 
-type PermitFallbackReason = "unsupported" | "disabled" | "permitsDisabled" | "failed" | "invalidSignature";
+type PermitFallbackReason = "failed" | "invalidSignature";
 
 export type ApproveTokensResult = {
   hash: `0x${string}`;
@@ -99,21 +102,6 @@ export async function approveTokens({
     approveAmount = maxUint256;
   }
 
-  let token: Token | undefined;
-  let permitFallbackReason: PermitFallbackReason | undefined;
-
-  try {
-    token = getToken(chainId, tokenAddress);
-
-    if (!token.isPermitSupported) {
-      permitFallbackReason = "unsupported";
-    } else if (token.isPermitDisabled) {
-      permitFallbackReason = "disabled";
-    }
-  } catch (e) {
-    // ...ignore in case of glv / gm approval
-  }
-
   const isUnlimited = approveAmount === maxUint256;
 
   const sendMetric = (
@@ -122,18 +110,14 @@ export async function approveTokens({
     error?: unknown
   ) => sendTokenApprovalMetric({ metric, method, outcome, chainId, tokenAddress, spender, isUnlimited, error });
 
-  if (permitParams?.isPermitsDisabled && token?.isPermitSupported && !permitFallbackReason) {
-    permitFallbackReason = "permitsDisabled";
-  }
+  let permitFallbackReason: PermitFallbackReason | undefined;
 
-  const addTokenPermit = permitParams?.addTokenPermit;
-  const shouldUsePermit = Boolean(
-    addTokenPermit && token?.isPermitSupported && !token.isPermitDisabled && !permitParams?.isPermitsDisabled
-  );
+  if (permitParams) {
+    const permitMetricParams = { chainId, tokenAddress, accountType: permitParams.accountType };
 
-  if (shouldUsePermit && addTokenPermit && permitParams) {
     try {
-      await addTokenPermit(tokenAddress, spender, approveAmount);
+      await permitParams.addTokenPermit(tokenAddress, spender, approveAmount);
+      sendTokenPermitMetric({ ...permitMetricParams, outcome: "signed" });
       sendMetric("permit", "accepted");
       onApproveSubmitted?.({ isPermit: true });
       helperToast.success(
@@ -145,10 +129,12 @@ export async function approveTokens({
       setIsApproving(false);
       return;
     } catch (e) {
+      // wallets can reject with a nullish value, hence the optional chaining below
       const error = e as Error;
       const outcome = getPermitErrorOutcome(error);
 
       if (outcome === "rejected") {
+        sendTokenPermitMetric({ ...permitMetricParams, outcome: "rejected" });
         sendMetric("permit", "rejected", error);
         onApproveFail?.(error, { isPermit: true });
         helperToast.error(t`Permit signing cancelled`);
@@ -156,21 +142,20 @@ export async function approveTokens({
         return;
       }
 
-      sendMetric("permit", outcome, error);
+      permitFallbackReason = error?.message?.includes(INVALID_PERMIT_SIGNATURE_ERROR) ? "invalidSignature" : "failed";
 
-      if (error.message?.includes(INVALID_PERMIT_SIGNATURE_ERROR)) {
-        permitParams.setIsPermitsDisabled(true);
-        metrics.pushError(error, "approveTokens.permitError");
-        permitFallbackReason = "invalidSignature";
-      } else {
-        permitParams.setIsPermitsDisabled(true);
-        metrics.pushError(error, "approveTokens.permitError");
-        permitFallbackReason = "failed";
+      // a wallet timeout or rpc hiccup can pass next time, so only a bad signature keeps the token on approvals
+      if (permitFallbackReason === "invalidSignature") {
+        permitParams.disableTokenPermits([tokenAddress]);
       }
+
+      metrics.pushError(error, "approveTokens.permitError");
+      sendTokenPermitMetric({ ...permitMetricParams, outcome: "fallback", reason: permitFallbackReason });
+      sendMetric("permit", outcome, error);
     }
   }
 
-  if (permitParams && permitFallbackReason) {
+  if (permitFallbackReason) {
     helperToast.info(getPermitFallbackToastContent(permitFallbackReason));
   }
 
@@ -218,7 +203,8 @@ export async function approveTokens({
     if (
       ["not enough funds for gas", "failed to execute call with revert code InsufficientGasFunds"].includes(
         e.data?.message
-      )
+      ) ||
+      parseError(e as ErrorLike)?.txErrorType === TxErrorType.NotEnoughFunds
     ) {
       failMsg = (
         <div>
@@ -255,15 +241,6 @@ function getPermitFallbackToastContent(reason: PermitFallbackReason) {
   let reasonText: string;
 
   switch (reason) {
-    case "unsupported":
-      reasonText = t`This token does not support permit approvals.`;
-      break;
-    case "disabled":
-      reasonText = t`Permit approvals are disabled for this token.`;
-      break;
-    case "permitsDisabled":
-      reasonText = t`Permit approvals are unavailable.`;
-      break;
     case "invalidSignature":
       reasonText = t`The permit signature could not be validated.`;
       break;

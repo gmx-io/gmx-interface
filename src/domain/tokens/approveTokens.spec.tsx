@@ -3,22 +3,25 @@ import { I18nProvider } from "@lingui/react";
 import { BrowserProvider, toQuantity, type Eip1193Provider, type JsonRpcApiProvider } from "ethers";
 import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
+import { MemoryRouter } from "react-router-dom";
 import { createClient, custom } from "viem";
 import { arbitrum } from "viem/chains";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
+import { INVALID_PERMIT_SIGNATURE_ERROR } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 import { clientToSigner } from "lib/wallets/useEthersSigner";
 
 import { approveTokens } from "./approveTokens";
 
-const mocks = vi.hoisted(() => ({ pushEvent: vi.fn() }));
+const mocks = vi.hoisted(() => ({ pushEvent: vi.fn(), sendTokenPermitMetric: vi.fn(), disableTokenPermits: vi.fn() }));
 
 vi.mock("lib/rpc", () => ({ getProvider: vi.fn() }));
 vi.mock("lib/helperToast", () => ({ helperToast: { success: vi.fn(), error: vi.fn(), info: vi.fn() } }));
 vi.mock("lib/gas/estimateGasLimit", () => ({ estimateGasLimit: async () => 100000n }));
 vi.mock("lib/metrics", () => ({ metrics: { pushError: vi.fn(), pushEvent: mocks.pushEvent } }));
+vi.mock("lib/metrics/tokenPermitMetrics", () => ({ sendTokenPermitMetric: mocks.sendTokenPermitMetric }));
 
 const ARBITRUM = 42161;
 const ACCOUNT = "0x0000000000000000000000000000000000000001";
@@ -135,14 +138,18 @@ describe("approveTokens metric", () => {
 });
 
 describe("approveTokens permit metric", () => {
-  function approveWithPermit(addTokenPermit: () => Promise<void>, sendTransaction = async () => HASH) {
+  function approveWithPermit(
+    addTokenPermit: () => Promise<void>,
+    disableTokenPermits = vi.fn(),
+    sendTransaction = async () => HASH
+  ) {
     return approveTokens({
       chainId: ARBITRUM,
       signer: createSigner(sendTransaction),
       tokenAddress: USDC,
       spender: SPENDER,
-      approveAmount: undefined,
-      permitParams: { addTokenPermit, setIsPermitsDisabled: vi.fn(), isPermitsDisabled: false },
+      approveAmount: 100n,
+      permitParams: { addTokenPermit, disableTokenPermits, accountType: "eoa" },
       setIsApproving: vi.fn(),
       metric: { flow: "trade", isExpress: true },
     });
@@ -153,8 +160,11 @@ describe("approveTokens permit metric", () => {
   }
 
   it("reports a signed permit without a transaction", async () => {
-    await approveWithPermit(async () => undefined);
+    const addTokenPermit = vi.fn(async () => undefined);
 
+    await approveWithPermit(addTokenPermit);
+
+    expect(addTokenPermit).toHaveBeenCalledWith(USDC, SPENDER, 100n);
     expect(getOutcomes()).toEqual(["permit:accepted"]);
   });
 
@@ -166,13 +176,22 @@ describe("approveTokens permit metric", () => {
     expect(getOutcomes()).toEqual(["permit:rejected"]);
   });
 
-  it("reports a failed permit and the approval transaction that replaces it", async () => {
-    await approveWithPermit(async () => {
-      throw new Error("Unknown connector error");
-    });
+  it.each([
+    { error: "Unknown connector error", disableCalls: [] },
+    { error: INVALID_PERMIT_SIGNATURE_ERROR, disableCalls: [[[USDC]]] },
+  ])(
+    "reports a failed permit and the approval transaction that replaces it ($error)",
+    async ({ error, disableCalls }) => {
+      const disableTokenPermits = vi.fn();
 
-    expect(getOutcomes()).toEqual(["permit:failed", "transaction:accepted"]);
-  });
+      await approveWithPermit(async () => {
+        throw new Error(error);
+      }, disableTokenPermits);
+
+      expect(getOutcomes()).toEqual(["permit:failed", "transaction:accepted"]);
+      expect(disableTokenPermits.mock.calls).toEqual(disableCalls);
+    }
+  );
 });
 
 describe("approveTokens rejection toast", () => {
@@ -212,8 +231,8 @@ describe("approveTokens rejection toast", () => {
             addTokenPermit: async () => {
               await signer.provider.send("eth_signTypedData_v4", [ACCOUNT, "{}"]);
             },
-            setIsPermitsDisabled: vi.fn(),
-            isPermitsDisabled: false,
+            disableTokenPermits: mocks.disableTokenPermits,
+            accountType: "eoa",
           }
         : undefined,
       setIsApproving: vi.fn(),
@@ -223,7 +242,11 @@ describe("approveTokens rejection toast", () => {
 
   function getErrorToastText() {
     const [[content]] = vi.mocked(helperToast.error).mock.calls;
-    return renderToStaticMarkup(<I18nProvider i18n={i18n}>{content as ReactNode}</I18nProvider>);
+    return renderToStaticMarkup(
+      <MemoryRouter>
+        <I18nProvider i18n={i18n}>{content as ReactNode}</I18nProvider>
+      </MemoryRouter>
+    );
   }
 
   function getOutcomes() {
@@ -256,6 +279,17 @@ describe("approveTokens rejection toast", () => {
 
     expect(getErrorToastText()).toBe("Permit signing cancelled");
     expect(getOutcomes()).toEqual(["permit:rejected"]);
+    expect(mocks.sendTokenPermitMetric.mock.calls).toEqual([[expect.objectContaining({ outcome: "rejected" })]]);
+    expect(mocks.disableTokenPermits).not.toHaveBeenCalled();
+    expect(helperToast.info).not.toHaveBeenCalled();
+  });
+
+  it("tells the user to get ETH when the approval transaction can't pay for gas", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+
+    await approveWithWalletError({ code: -32000, message: "insufficient funds for gas * price + value" });
+
+    expect(getErrorToastText()).toContain("Insufficient ETH for gas");
   });
 
   it.each([

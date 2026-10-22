@@ -5249,10 +5249,6 @@ msgstr "Ce que les gens construisent."
 msgid "Approval cancelled"
 msgstr "Approbation annulée"
 
-#: src/domain/tokens/approveTokens.tsx
-msgid "Permit approvals are unavailable."
-msgstr "Les approbations par permis sont indisponibles."
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive factor"
@@ -5741,10 +5737,6 @@ msgstr "Exécuter le Take-Profit"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Increase"
 msgstr "Market Increase"
-
-#: src/domain/tokens/approveTokens.tsx
-msgid "This token does not support permit approvals."
-msgstr "Ce token ne prend pas en charge les approbations par signature (permit)."
 
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
@@ -6442,6 +6434,10 @@ msgstr "Transaction invalide"
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in {0} pool. Select a different pool."
 msgstr "Liquidité insuffisante dans le pool {0}. Sélectionnez un pool différent."
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Enable token permits regardless of UI flags"
+msgstr "Activer les permits de token quels que soient les flags UI"
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets in your wallet"
@@ -12261,10 +12257,6 @@ msgstr "Performance annualisée"
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Direct smart contract integration"
 msgstr "Intégration directe des smart contracts"
-
-#: src/domain/tokens/approveTokens.tsx
-msgid "Permit approvals are disabled for this token."
-msgstr "Les approbations par permis sont désactivées pour ce token."
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
