@@ -2,7 +2,8 @@ import { Trans } from "@lingui/macro";
 import { ReactNode, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 
-import { selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { getChainName } from "config/chains";
+import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxCollateralTokenAddress,
   selectTradeboxFromToken,
@@ -35,6 +36,7 @@ export function useTradeboxUsdgConversion({
   setFocusedInput: (input: "from" | "to") => void;
 }) {
   const history = useHistory();
+  const chainId = useSelector(selectChainId);
   const tokensData = useSelector(selectTokensData);
   const collateralTokenAddress = useSelector(selectTradeboxCollateralTokenAddress);
   const fromToken = useSelector(selectTradeboxFromToken);
@@ -65,22 +67,35 @@ export function useTradeboxUsdgConversion({
   const maxInstantText =
     maxInstantAmount !== undefined && fromToken ? formatMaxInstantAmount(fromToken, maxInstantAmount) : undefined;
   const fromTokenUsd =
-    fromToken && fromTokenAmount !== undefined
+    isTooLarge && fromToken && fromTokenAmount !== undefined
       ? convertToUsd(fromTokenAmount, fromToken.decimals, getMidPrice(fromToken.prices))
       : undefined;
-  const { isOffered: isPaxosOffered, minimumText: paxosMinimumText } = useIsSwapTabPaxosOffered({
+  const {
+    isOffered: isPaxosOffered,
+    minimumText: paxosMinimumText,
+    isWalletOnly: isPaxosWalletOnly,
+  } = useIsSwapTabPaxosOffered({
     amount: fromTokenAmount,
     amountUsd: fromTokenUsd,
     isGmxAccount: isFromTokenGmxAccount,
     enabled: isTooLarge,
   });
-  const paxosMinimumHint =
-    !isPaxosOffered && paxosMinimumText ? (
-      <>
-        {" "}
+  const settlementChainName = getChainName(chainId);
+  let paxosHint: ReactNode = null;
+
+  if (isPaxosWalletOnly) {
+    paxosHint = (
+      <div className="mt-4">
+        <Trans>Paxos converts USDC from your wallet on {settlementChainName}.</Trans>
+      </div>
+    );
+  } else if (!isPaxosOffered && paxosMinimumText) {
+    paxosHint = (
+      <div className="mt-4">
         <Trans>Paxos converts amounts from {paxosMinimumText}.</Trans>
-      </>
-    ) : null;
+      </div>
+    );
+  }
 
   let tooLargeAlert: ReactNode = undefined;
 
@@ -108,7 +123,7 @@ export function useTradeboxUsdgConversion({
           </EmbeddedActionButton>
           . Trades paid in USDG need no conversion.
         </Trans>
-        {paxosMinimumHint}
+        {paxosHint}
       </>
     );
   } else if (isTooLarge && maxInstantAmount !== undefined && isPaxosOffered) {
@@ -125,7 +140,7 @@ export function useTradeboxUsdgConversion({
     tooLargeAlert = (
       <>
         <Trans>Nothing can be converted instantly right now. Trades paid in USDG need no conversion.</Trans>
-        {paxosMinimumHint}
+        {paxosHint}
       </>
     );
   }

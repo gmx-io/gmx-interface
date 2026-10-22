@@ -5898,6 +5898,7 @@ msgid "No price impact. Single execution price for<0/>increasing shorts or decre
 msgstr "Kein Preiseinfluss. Einheitlicher Ausführungspreis für<0/>das Erhöhen von Shorts oder Reduzieren von Longs bei<1/>dieser Größe."
 
 #: src/components/PositionEditor/PositionEditor.tsx
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "Paxos converts USDC from your wallet on {settlementChainName}."
 msgstr "Paxos wandelt USDC aus deiner Wallet auf {settlementChainName} um."
 
