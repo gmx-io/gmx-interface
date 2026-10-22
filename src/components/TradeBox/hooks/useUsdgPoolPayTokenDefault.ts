@@ -1,7 +1,11 @@
 import { useEffect, useRef } from "react";
 
 import { getUsdgConversionTokenAddress } from "config/usdgPools";
-import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectAccount,
+  selectChainId,
+  selectTokensData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxCollateralTokenAddress,
   selectTradeboxFormState,
@@ -18,6 +22,7 @@ import { getShouldDefaultToUsdc } from "domain/synthetics/usdgPools/usdcConversi
  */
 export function useUsdgPoolPayTokenDefault() {
   const chainId = useSelector(selectChainId);
+  const account = useSelector(selectAccount);
   const tokensData = useSelector(selectTokensData);
   const { isIncrease } = useSelector(selectTradeboxTradeFlags);
   const marketAddress = useSelector(selectTradeboxMarketAddress);
@@ -34,7 +39,7 @@ export function useUsdgPoolPayTokenDefault() {
         return;
       }
 
-      const checkKey = `${marketAddress}:${isFromTokenGmxAccount}`;
+      const checkKey = `${account}:${marketAddress}:${isFromTokenGmxAccount}`;
 
       if (checkedForRef.current === checkKey) {
         return;
@@ -56,6 +61,7 @@ export function useUsdgPoolPayTokenDefault() {
       }
     },
     [
+      account,
       chainId,
       collateralTokenAddress,
       fromTokenAddress,

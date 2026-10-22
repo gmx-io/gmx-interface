@@ -661,7 +661,7 @@ msgstr ""
 msgid "Min collateral factor for liquidation"
 msgstr ""
 
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max instant margin: {maxInstantText}"
 msgstr ""
 
@@ -2374,7 +2374,7 @@ msgid "Stop price"
 msgstr ""
 
 #: src/components/PositionEditor/PositionEditor.tsx
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Too large to convert instantly"
 msgstr ""

@@ -394,19 +394,15 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   const isPaxosRouteActive = paxosRoute.activePaxosRoute !== undefined || paxosRoute.routes.isRouteChoiceRequired;
   const paxosReceiveAmountOut = getPaxosReceiveAmountOut(paxosRoute);
 
-  const usdgConversion = useTradeboxUsdgConversion();
+  const usdgConversion = useTradeboxUsdgConversion({ setFromTokenInputValue, setFocusedInput });
 
-  const submitButtonState = useMemo(() => {
-    if (paxosRoute.buttonState) {
-      return { ...gmxSubmitButtonState, ...paxosRoute.buttonState, tooltipContent: null, bannerErrorContent: null };
-    }
-
-    if (usdgConversion.buttonState) {
-      return { ...gmxSubmitButtonState, ...usdgConversion.buttonState, tooltipContent: null, bannerErrorContent: null };
-    }
-
-    return gmxSubmitButtonState;
-  }, [gmxSubmitButtonState, paxosRoute.buttonState, usdgConversion.buttonState]);
+  const submitButtonState = useMemo(
+    () =>
+      paxosRoute.buttonState
+        ? { ...gmxSubmitButtonState, ...paxosRoute.buttonState, tooltipContent: null, bannerErrorContent: null }
+        : gmxSubmitButtonState,
+    [gmxSubmitButtonState, paxosRoute.buttonState]
+  );
 
   const wrappedOnSubmit = useCallback(async () => {
     await submitButtonState.onSubmit();

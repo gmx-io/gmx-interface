@@ -661,7 +661,7 @@ msgstr "One-Click Trading 授權無效。這可能在切換鏈或更改支付代
 msgid "Min collateral factor for liquidation"
 msgstr "清算最低抵押品因子"
 
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max instant margin: {maxInstantText}"
 msgstr "最大即時保證金：{maxInstantText}"
 
@@ -2374,7 +2374,7 @@ msgid "Stop price"
 msgstr "停止價格"
 
 #: src/components/PositionEditor/PositionEditor.tsx
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Too large to convert instantly"
 msgstr "金額過大，無法即時轉換"

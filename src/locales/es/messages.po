@@ -661,7 +661,7 @@ msgstr "La aprobación de One-Click Trading no es válida. Esto puede ocurrir al
 msgid "Min collateral factor for liquidation"
 msgstr "Factor mínimo de garantía para liquidación"
 
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max instant margin: {maxInstantText}"
 msgstr "Margen instantáneo máx.: {maxInstantText}"
 
@@ -2374,7 +2374,7 @@ msgid "Stop price"
 msgstr "Precio de stop"
 
 #: src/components/PositionEditor/PositionEditor.tsx
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Too large to convert instantly"
 msgstr "Demasiado grande para convertir al instante"

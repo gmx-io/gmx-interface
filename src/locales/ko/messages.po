@@ -661,7 +661,7 @@ msgstr "One-Click Trading 승인이 유효하지 않습니다. 체인 전환 또
 msgid "Min collateral factor for liquidation"
 msgstr "청산 최소 담보 계수"
 
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max instant margin: {maxInstantText}"
 msgstr "최대 즉시 증거금: {maxInstantText}"
 
@@ -2374,7 +2374,7 @@ msgid "Stop price"
 msgstr "스톱 가격"
 
 #: src/components/PositionEditor/PositionEditor.tsx
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Too large to convert instantly"
 msgstr "즉시 변환하기에는 너무 큼"

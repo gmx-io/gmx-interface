@@ -36,6 +36,7 @@ import {
   selectTradeboxTradeRatios,
   selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { selectTradeboxUsdgMaxInstantAmount } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/tradeboxUsdgConversionSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import {
   ValidationButtonTooltipName,
@@ -260,6 +261,7 @@ const selectTradeboxIncreaseTradeError = createSelector((q) => {
     chainId,
     resultingPositionMarginState,
     isResultingPositionCheckBlocking,
+    instantConversionLimit: q(selectTradeboxUsdgMaxInstantAmount),
   });
 });
 
