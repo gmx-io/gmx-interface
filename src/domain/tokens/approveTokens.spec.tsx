@@ -14,12 +14,13 @@ import { clientToSigner } from "lib/wallets/useEthersSigner";
 
 import { approveTokens } from "./approveTokens";
 
-const mocks = vi.hoisted(() => ({ pushEvent: vi.fn() }));
+const mocks = vi.hoisted(() => ({ pushEvent: vi.fn(), sendTokenPermitMetric: vi.fn(), disableTokenPermits: vi.fn() }));
 
 vi.mock("lib/rpc", () => ({ getProvider: vi.fn() }));
 vi.mock("lib/helperToast", () => ({ helperToast: { success: vi.fn(), error: vi.fn(), info: vi.fn() } }));
 vi.mock("lib/gas/estimateGasLimit", () => ({ estimateGasLimit: async () => 100000n }));
 vi.mock("lib/metrics", () => ({ metrics: { pushError: vi.fn(), pushEvent: mocks.pushEvent } }));
+vi.mock("lib/metrics/tokenPermitMetrics", () => ({ sendTokenPermitMetric: mocks.sendTokenPermitMetric }));
 
 const ARBITRUM = 42161;
 const ACCOUNT = "0x0000000000000000000000000000000000000001";
@@ -229,7 +230,7 @@ describe("approveTokens rejection toast", () => {
             addTokenPermit: async () => {
               await signer.provider.send("eth_signTypedData_v4", [ACCOUNT, "{}"]);
             },
-            disableTokenPermits: vi.fn(),
+            disableTokenPermits: mocks.disableTokenPermits,
             accountType: "eoa",
           }
         : undefined,
@@ -273,6 +274,9 @@ describe("approveTokens rejection toast", () => {
 
     expect(getErrorToastText()).toBe("Permit signing cancelled");
     expect(getOutcomes()).toEqual(["permit:rejected"]);
+    expect(mocks.sendTokenPermitMetric.mock.calls).toEqual([[expect.objectContaining({ outcome: "rejected" })]]);
+    expect(mocks.disableTokenPermits).not.toHaveBeenCalled();
+    expect(helperToast.info).not.toHaveBeenCalled();
   });
 
   it.each([

@@ -18,12 +18,13 @@ const LINK = "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4";
 const mocks = vi.hoisted(() => ({
   uiFlags: undefined as UiFlags | undefined,
   accountType: "eoa" as string,
+  hasProvider: true,
   createAndSignTokenPermit: vi.fn(),
 }));
 
 vi.mock("lib/chains", () => ({ useChainId: () => ({ chainId: CHAIN_ID }) }));
 vi.mock("lib/wallets/useWallet", () => ({
-  default: () => ({ signer: { address: ACCOUNT, provider: {} } }),
+  default: () => ({ signer: { address: ACCOUNT, provider: mocks.hasProvider ? {} : undefined } }),
 }));
 vi.mock("lib/wallets/walletConfig", () => ({ getPublicClientWithRpc: () => ({}) }));
 vi.mock("domain/synthetics/uiFlags/useUiFlagsRequest", () => ({
@@ -99,6 +100,7 @@ describe("TokenPermitsContextProvider", () => {
     localStorage.clear();
     mocks.uiFlags = flag(IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG, true);
     mocks.accountType = "eoa";
+    mocks.hasProvider = true;
   });
 
   afterEach(() => {
@@ -190,5 +192,12 @@ describe("TokenPermitsContextProvider", () => {
       [WETH, 100n],
       [USDC, 500n],
     ]);
+  });
+  it("fails instead of reporting a signed permit when the wallet isn't ready", async () => {
+    mocks.hasProvider = false;
+    await setup();
+
+    await expect(state.addTokenPermit(USDC, ROUTER, 100n)).rejects.toThrow();
+    expect(mocks.createAndSignTokenPermit).not.toHaveBeenCalled();
   });
 });

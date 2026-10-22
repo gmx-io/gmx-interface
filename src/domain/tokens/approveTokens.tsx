@@ -128,7 +128,7 @@ export async function approveTokens({
       setIsApproving(false);
       return;
     } catch (e) {
-      const error = e as Error;
+      const error = e as Error | undefined;
       const outcome = getPermitErrorOutcome(error);
 
       if (outcome === "rejected") {
@@ -140,7 +140,7 @@ export async function approveTokens({
         return;
       }
 
-      permitFallbackReason = error.message?.includes(INVALID_PERMIT_SIGNATURE_ERROR) ? "invalidSignature" : "failed";
+      permitFallbackReason = error?.message?.includes(INVALID_PERMIT_SIGNATURE_ERROR) ? "invalidSignature" : "failed";
 
       // a wallet timeout or rpc hiccup can pass next time, so only a bad signature keeps the token on approvals
       if (permitFallbackReason === "invalidSignature") {

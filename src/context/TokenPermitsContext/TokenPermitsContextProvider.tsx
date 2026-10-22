@@ -161,8 +161,9 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
 
   const addTokenPermit = useCallback(
     async (tokenAddress: string, spenderAddress: string, value: bigint) => {
+      // returning quietly would read as a signed permit to the caller while nothing was stored
       if (!signer?.provider) {
-        return;
+        throw new Error("Wallet is not ready to sign a permit");
       }
 
       const { permit } = await createAndSignTokenPermit(chainId, signer, tokenAddress, spenderAddress, value);
