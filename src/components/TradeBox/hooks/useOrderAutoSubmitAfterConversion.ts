@@ -1,10 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useLatest } from "react-use";
 
 import { getOrderAutoSubmitStep } from "domain/synthetics/usdgPools/orderAutoSubmit";
 
 // the button has to hold its state this long, so a render that hasn't caught up with the new margin is skipped
 const SETTLE_MS = 1000;
+
+const NON_EDITING_KEYS = new Set(["Shift", "Control", "Alt", "Meta", "Tab", "CapsLock"]);
 
 /**
  * After a convert-first swap executes, presses the order button for the trader: approval first when the wallet
@@ -99,5 +101,19 @@ export function useOrderAutoSubmitAfterConversion({
   );
 
   // armed covers the render before the converted margin lands too
-  return useMemo(() => (isArmed ? { onPointerDownCapture: stop, onKeyDownCapture: stop } : undefined), [isArmed, stop]);
+  return useMemo(
+    () =>
+      isArmed
+        ? {
+            onPointerDownCapture: stop,
+            onKeyDownCapture: (event: KeyboardEvent) => {
+              // Cmd+Tab to the wallet or moving focus isn't taking over the trade box
+              if (!NON_EDITING_KEYS.has(event.key)) {
+                stop();
+              }
+            },
+          }
+        : undefined,
+    [isArmed, stop]
+  );
 }

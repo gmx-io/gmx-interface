@@ -258,6 +258,7 @@ export function useTradeboxUsdgConversion({
   ]);
   const [orderAutoSubmitArm, setOrderAutoSubmitArm] = useState<{ setupKey: string; armedAt: number }>();
   const latestMarketAddress = useLatest(marketAddress);
+  const latestOrderSetupKey = useLatest(orderSetupKey);
   const [relayTaskId, setRelayTaskId] = useState<string>();
   const [lastConversion, setLastConversion] = useState<{ marketAddress: string | undefined; amountOut: bigint }>();
   const pendingConversionRef = useRef<{
@@ -447,7 +448,10 @@ export function useTradeboxUsdgConversion({
           setFocusedInput("from");
           setFromTokenInputValue(formatAmountFree(amountOut, pending.tokenOutDecimals), true);
           setLastConversion({ marketAddress: pending.marketAddress, amountOut });
-          setOrderAutoSubmitArm({ setupKey: pending.orderSetupKey, armedAt: Date.now() });
+          // a setup changed during the wait (a Long/Short flip outside the form) would otherwise leave a hidden arm
+          if (latestOrderSetupKey.current === pending.orderSetupKey) {
+            setOrderAutoSubmitArm({ setupKey: pending.orderSetupKey, armedAt: Date.now() });
+          }
           resetConversion();
         });
     },
@@ -455,6 +459,7 @@ export function useTradeboxUsdgConversion({
       account,
       chainId,
       latestMarketAddress,
+      latestOrderSetupKey,
       marketAddress,
       orderStatuses,
       resetConversion,
