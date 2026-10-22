@@ -134,6 +134,7 @@ import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import { MultichainTokenSelector } from "components/TokenSelector/MultichainTokenSelector";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { TradeboxMarginFields } from "components/TradeboxMarginFields";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { TradeInputField, DisplayMode } from "components/TradeboxMarginFields/TradeInputField";
@@ -141,6 +142,7 @@ import { TradeboxPoolWarnings } from "components/TradeboxPoolWarnings/TradeboxPo
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import ArrowDownIcon from "img/ic_arrow_down.svg?react";
+import CheckIcon from "img/ic_check.svg?react";
 
 import { useIsCurtainOpen } from "./Curtain";
 import { ExpressTradingWarningCard } from "./ExpressTradingWarningCard";
@@ -395,16 +397,36 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   const isPaxosRouteActive = paxosRoute.activePaxosRoute !== undefined || paxosRoute.routes.isRouteChoiceRequired;
   const paxosReceiveAmountOut = getPaxosReceiveAmountOut(paxosRoute);
 
-  const usdgConversion = useTradeboxUsdgConversion({ setFromTokenInputValue, setFocusedInput });
+  const usdgConversion = useTradeboxUsdgConversion({
+    canSwitchGasPaymentToken: isActiveForm,
+    setFromTokenInputValue,
+    setFocusedInput,
+  });
   const isUsdgConversionTooLarge = useSelector(selectTradeboxIsUsdgConversionTooLarge);
 
-  const submitButtonState = useMemo(
-    () =>
-      paxosRoute.buttonState
-        ? { ...gmxSubmitButtonState, ...paxosRoute.buttonState, tooltipContent: null, bannerErrorContent: null }
-        : gmxSubmitButtonState,
-    [gmxSubmitButtonState, paxosRoute.buttonState]
-  );
+  const submitButtonState = useMemo(() => {
+    if (paxosRoute.buttonState) {
+      return { ...gmxSubmitButtonState, ...paxosRoute.buttonState, tooltipContent: null, bannerErrorContent: null };
+    }
+
+    // the convert step takes over only a ready order button, but keeps its spinner while the swap is in flight
+    const isConvertStepShown =
+      usdgConversion.buttonState !== undefined &&
+      !shouldShowDepositButton &&
+      (usdgConversion.isBusy || !gmxSubmitButtonState.disabled);
+
+    if (isConvertStepShown) {
+      return { ...gmxSubmitButtonState, ...usdgConversion.buttonState, tooltipContent: null, bannerErrorContent: null };
+    }
+
+    return gmxSubmitButtonState;
+  }, [
+    gmxSubmitButtonState,
+    paxosRoute.buttonState,
+    shouldShowDepositButton,
+    usdgConversion.buttonState,
+    usdgConversion.isBusy,
+  ]);
 
   const wrappedOnSubmit = useCallback(async () => {
     await submitButtonState.onSubmit();
@@ -1403,6 +1425,17 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
               {usdgConversion.tooLargeAlert}
             </AlertInfoCard>
           )}
+          {usdgConversion.convertFirstNote && (
+            <AlertInfoCard hideClose type="info">
+              {usdgConversion.convertFirstNote}
+            </AlertInfoCard>
+          )}
+          {usdgConversion.convertedNote && (
+            <div className="flex items-center gap-8 text-14">
+              <CheckIcon className="size-16 text-green-500" />
+              {usdgConversion.convertedNote}
+            </div>
+          )}
 
           <div>{button}</div>
         </div>
@@ -1417,6 +1450,24 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
           <PaxosRouteDetailsRows paxosRoute={paxosRoute} fromToken={fromToken} toToken={toToken} />
         )}
         {isSwap && !isTwap && !isPaxosRouteActive && <MinReceiveRow allowedSlippage={allowedSlippage} />}
+        {usdgConversion.isConvertFirst && (
+          <SyntheticsInfoRow
+            label={
+              <TooltipWithPortal
+                handle={t`Steps`}
+                position="left-start"
+                variant="iconStroke"
+                content={
+                  <Trans>
+                    First you convert USDC to USDG, then you place the order. If you leave before placing it, the USDG
+                    stays in your account.
+                  </Trans>
+                }
+              />
+            }
+            value={<Trans>Convert, then place order</Trans>}
+          />
+        )}
         {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (
           <SyntheticsInfoRow
             label={t`Receive`}

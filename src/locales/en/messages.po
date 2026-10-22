@@ -2794,6 +2794,7 @@ msgid "Max open interest {directionLabel}"
 msgstr "Max open interest {directionLabel}"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+#: src/components/TradeBox/TradeBox.tsx
 msgid "Steps"
 msgstr "Steps"
 
@@ -3232,6 +3233,10 @@ msgstr "No eligible holdings detected"
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Convert {amountInText} to USDG"
+msgstr "Convert {amountInText} to USDG"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel margin deposit"
 msgstr "Cancel margin deposit"
@@ -3410,6 +3415,10 @@ msgstr "Previous"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {tokenSymbol} on {chainName}"
 msgstr "Insufficient {tokenSymbol} on {chainName}"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Approving USDC..."
+msgstr "Approving USDC..."
 
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "Expected 365d fees"
@@ -3755,6 +3764,10 @@ msgstr "Start building"
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Faster execution with GMX premium RPCs"
 msgstr "Faster execution with GMX premium RPCs"
+
+#: src/components/TradeBox/TradeBox.tsx
+msgid "First you convert USDC to USDG, then you place the order. If you leave before placing it, the USDG stays in your account."
+msgstr "First you convert USDC to USDG, then you place the order. If you leave before placing it, the USDG stays in your account."
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets in your GMX Account"
@@ -4592,6 +4605,10 @@ msgstr "Max capacity:"
 msgid "<0>No. There is no GMX-controlled account holding your money at any point. Traders trade directly from their own wallet, or from their funded GMX Account — a contract you control and withdraw from at will.</0><1>Affiliates never deposit anything. Rewards accrue in the contracts, and you claim them yourself, on-chain, to your address.</1>"
 msgstr "<0>No. There is no GMX-controlled account holding your money at any point. Traders trade directly from their own wallet, or from their funded GMX Account — a contract you control and withdraw from at will.</0><1>Affiliates never deposit anything. Rewards accrue in the contracts, and you claim them yourself, on-chain, to your address.</1>"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Converting USDC to USDG..."
+msgstr "Converting USDC to USDG..."
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw and unreserve GMX"
 msgstr "Withdraw and unreserve GMX"
@@ -5037,6 +5054,10 @@ msgstr "No claims match the selected filters"
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Staking"
 msgstr "Staking"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, Stop Market orders hold USDG. Convert your USDC first, then place the order."
+msgstr "On USDG pools, Stop Market orders hold USDG. Convert your USDC first, then place the order."
 
 #: src/lib/legacy.ts
 msgid "Decentralized perpetual exchange | GMX"
@@ -5691,6 +5712,10 @@ msgstr "Failed to load order data:"
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Network"
 msgstr "Network"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, TWAP orders hold USDG. Convert your USDC first, then place the order."
+msgstr "On USDG pools, TWAP orders hold USDG. Convert your USDC first, then place the order."
 
 #: src/components/OrdersModal/TPSLInputRow.tsx
 msgid "{secondLabel}"
@@ -10724,6 +10749,10 @@ msgstr "Step 2: Buy"
 msgid "0x..."
 msgstr "0x..."
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Conversion failed"
+msgstr "Conversion failed"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Limit"
 msgstr "Update Limit"
@@ -10818,6 +10847,10 @@ msgstr "Shift fee"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Up"
 msgstr "Up"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Converted {convertedInText} to {convertedOutText}"
+msgstr "Converted {convertedInText} to {convertedOutText}"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Swap {0} for {1}"
@@ -11443,6 +11476,10 @@ msgstr "<0>Trader discounts apply automatically to your account once your tier i
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "LP"
 msgstr "LP"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, Limit orders hold USDG. Convert your USDC first, then place the order."
+msgstr "On USDG pools, Limit orders hold USDG. Convert your USDC first, then place the order."
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver address"
@@ -12772,6 +12809,10 @@ msgstr "Banners, links and a partner manager"
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Step 1: Convert"
 msgstr "Step 1: Convert"
+
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Convert, then place order"
+msgstr "Convert, then place order"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Save on costs"

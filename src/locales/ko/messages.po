@@ -2794,6 +2794,7 @@ msgid "Max open interest {directionLabel}"
 msgstr "최대 미결제약정 {directionLabel}"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+#: src/components/TradeBox/TradeBox.tsx
 msgid "Steps"
 msgstr "단계"
 
@@ -3232,6 +3233,10 @@ msgstr "적격 보유 자산이 감지되지 않았습니다"
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr "GMX 개선에 도움을 주십시오. 보안을 위해 당사는 먼저 연락드리지 않습니다. 공식 계정으로 \"I have feedback\"이라고 보내 주십시오:"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Convert {amountInText} to USDG"
+msgstr "{amountInText}을(를) USDG로 변환"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel margin deposit"
 msgstr "증거금 입금 취소"
@@ -3410,6 +3415,10 @@ msgstr "이전"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {tokenSymbol} on {chainName}"
 msgstr "{chainName}의 {tokenSymbol}이(가) 부족합니다"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Approving USDC..."
+msgstr "USDC 승인 중..."
 
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "Expected 365d fees"
@@ -3755,6 +3764,10 @@ msgstr "개발 시작하기"
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Faster execution with GMX premium RPCs"
 msgstr "GMX 프리미엄 RPC로 더 빠른 실행"
+
+#: src/components/TradeBox/TradeBox.tsx
+msgid "First you convert USDC to USDG, then you place the order. If you leave before placing it, the USDG stays in your account."
+msgstr "먼저 USDC를 USDG로 변환한 후 주문을 넣습니다. 주문 전에 나가면 USDG는 계정에 남습니다."
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets in your GMX Account"
@@ -4592,6 +4605,10 @@ msgstr "최대 용량:"
 msgid "<0>No. There is no GMX-controlled account holding your money at any point. Traders trade directly from their own wallet, or from their funded GMX Account — a contract you control and withdraw from at will.</0><1>Affiliates never deposit anything. Rewards accrue in the contracts, and you claim them yourself, on-chain, to your address.</1>"
 msgstr "<0>아닙니다. 고객의 자금이 GMX가 통제하는 계정에 보관되는 일은 없습니다. 트레이더는 본인의 지갑에서 직접, 또는 자금을 입금한 GMX Account에서 거래합니다. GMX Account는 본인이 통제하며 언제든 출금할 수 있는 컨트랙트입니다.</0><1>어필리에이트는 아무것도 입금하지 않습니다. 보상은 컨트랙트에 누적되며, 온체인에서 본인 주소로 직접 수령합니다.</1>"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Converting USDC to USDG..."
+msgstr "USDC를 USDG로 변환 중..."
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw and unreserve GMX"
 msgstr "GMX 출금 및 예약 해제"
@@ -5037,6 +5054,10 @@ msgstr "선택한 필터와 일치하는 수령 내역이 없습니다"
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Staking"
 msgstr "스테이킹"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, Stop Market orders hold USDG. Convert your USDC first, then place the order."
+msgstr "USDG 풀에서는 스탑 마켓 주문이 USDG를 보유합니다. 먼저 USDC를 변환한 후 주문을 넣으세요."
 
 #: src/lib/legacy.ts
 msgid "Decentralized perpetual exchange | GMX"
@@ -5691,6 +5712,10 @@ msgstr "주문 데이터 로드 실패:"
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Network"
 msgstr "네트워크"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, TWAP orders hold USDG. Convert your USDC first, then place the order."
+msgstr "USDG 풀에서는 TWAP 주문이 USDG를 보유합니다. 먼저 USDC를 변환한 후 주문을 넣으세요."
 
 #: src/components/OrdersModal/TPSLInputRow.tsx
 msgid "{secondLabel}"
@@ -10724,6 +10749,10 @@ msgstr "2단계: 구매"
 msgid "0x..."
 msgstr "0x..."
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Conversion failed"
+msgstr "변환 실패"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Limit"
 msgstr "지정가 업데이트"
@@ -10818,6 +10847,10 @@ msgstr "시프트 수수료"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Up"
 msgstr "정상"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Converted {convertedInText} to {convertedOutText}"
+msgstr "{convertedInText}을(를) {convertedOutText}(으)로 변환함"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Swap {0} for {1}"
@@ -11443,6 +11476,10 @@ msgstr "<0>트레이더 할인은 등급이 확정되면 계정에 자동으로 
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "LP"
 msgstr "LP"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, Limit orders hold USDG. Convert your USDC first, then place the order."
+msgstr "USDG 풀에서는 지정가 주문이 USDG를 보유합니다. 먼저 USDC를 변환한 후 주문을 넣으세요."
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver address"
@@ -12772,6 +12809,10 @@ msgstr "배너, 링크, 전담 파트너 매니저"
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Step 1: Convert"
 msgstr "1단계: 변환"
+
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Convert, then place order"
+msgstr "변환 후 주문"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Save on costs"

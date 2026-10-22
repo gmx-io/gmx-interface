@@ -1,50 +1,420 @@
-import { Trans } from "@lingui/macro";
-import { ReactNode, useCallback } from "react";
+import { t, Trans } from "@lingui/macro";
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import { getChainName } from "config/chains";
-import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { getContract } from "config/contracts";
+import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { useSavedAllowedSlippage } from "context/SyntheticsStateContext/hooks/settingsHooks";
+import {
+  selectBlockTimestampData,
+  selectChainId,
+  selectGasLimits,
+  selectGasPrice,
+  selectTokensData,
+  selectUserReferralInfo,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxCollateralTokenAddress,
+  selectTradeboxFormState,
   selectTradeboxFromToken,
   selectTradeboxFromTokenAmount,
-  selectTradeboxIsFromTokenGmxAccount,
+  selectTradeboxMarketAddress,
+  selectTradeboxTradeFlags,
+  selectTradeboxTradeMode,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import {
   selectTradeboxIsUsdgConversionTooLarge,
+  selectTradeboxIsUsdgConvertFirst,
+  selectTradeboxUsdgConvertFirstSwapAmounts,
   selectTradeboxUsdgMaxInstantAmount,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/tradeboxUsdgConversionSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
+import { getExpressParamsForSubmit } from "domain/synthetics/express/validateMultichainExpressSubmit";
+import { estimateExecuteSwapOrderGasLimit, estimateOrderOraclePriceCount } from "domain/synthetics/fees";
+import { OrderType } from "domain/synthetics/orders";
+import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
+import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
+import { getReceivedTokenAmount } from "domain/synthetics/paxosTransit/getReceivedTokenAmount";
 import { useIsSwapTabPaxosOffered } from "domain/synthetics/paxosTransit/useIsSwapTabPaxosOffered";
 import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { formatMaxInstantAmount } from "domain/synthetics/usdgPools/usdcConversion";
-import { formatAmountFree } from "lib/numbers";
+import { getApproveButtonText } from "domain/tokens/gasPaymentTokenApproval";
+import { useTokenApproval } from "domain/tokens/useTokenApproval";
+import { helperToast } from "lib/helperToast";
+import { formatAmountFree, formatBalanceAmount } from "lib/numbers";
+import { useJsonRpcProvider } from "lib/rpc";
+import { TxnEventName } from "lib/transactions";
+import useWallet from "lib/wallets/useWallet";
+import { getToken } from "sdk/configs/tokens";
+import { StatusCode } from "sdk/utils/express";
+import { getExecutionFee } from "sdk/utils/fees/executionFee";
+import { BatchOrderTxnParams, buildSwapOrderPayload } from "sdk/utils/orderTransactions";
+import { TradeMode } from "sdk/utils/trade/types";
 
 import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
+
+import SpinnerIcon from "img/ic_spinner.svg?react";
+
+type ConversionStep = "idle" | "submitting" | "converting";
+
+// a fallback for a missed execution event; known failures release the button right away
+const CONVERSION_TIMEOUT_MS = 3 * 60 * 1000;
+
+type ButtonStateOverride = {
+  text: ReactNode;
+  disabled: boolean;
+  onSubmit: () => Promise<void>;
+};
 
 export type TradeboxUsdgConversion = ReturnType<typeof useTradeboxUsdgConversion>;
 
 /**
- * USDG pools take only USDG: a USDC margin converts inside the order through our pool or the aggregator,
- * and when neither can fill the trader needs the instant limit instead of a bare "No swap path found"
+ * USDG pools take only USDG: a USDC margin converts inside market orders, but limit, stop market and TWAP orders
+ * would convert only at trigger and freeze if our pool is short then, so they convert first.
  */
 export function useTradeboxUsdgConversion({
+  canSwitchGasPaymentToken,
   setFromTokenInputValue,
   setFocusedInput,
 }: {
+  canSwitchGasPaymentToken: boolean;
   setFromTokenInputValue: (value: string, resetPriceImpactAndSwapSlippage?: boolean) => void;
   setFocusedInput: (input: "from" | "to") => void;
 }) {
   const history = useHistory();
   const chainId = useSelector(selectChainId);
   const tokensData = useSelector(selectTokensData);
+  const gasLimits = useSelector(selectGasLimits);
+  const gasPrice = useSelector(selectGasPrice);
+  const blockTimestampData = useSelector(selectBlockTimestampData);
+  const userReferralInfo = useSelector(selectUserReferralInfo);
+  const tradeFlags = useSelector(selectTradeboxTradeFlags);
+  const tradeMode = useSelector(selectTradeboxTradeMode);
+  const marketAddress = useSelector(selectTradeboxMarketAddress);
   const collateralTokenAddress = useSelector(selectTradeboxCollateralTokenAddress);
   const fromToken = useSelector(selectTradeboxFromToken);
   const fromTokenAmount = useSelector(selectTradeboxFromTokenAmount);
-  const isFromTokenGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
   const isTooLarge = useSelector(selectTradeboxIsUsdgConversionTooLarge);
   const maxInstantAmount = useSelector(selectTradeboxUsdgMaxInstantAmount);
+  const isConvertFirst = useSelector(selectTradeboxIsUsdgConvertFirst) && !isTooLarge;
+  const conversionSwapAmounts = useSelector(selectTradeboxUsdgConvertFirstSwapAmounts);
+  const { isFromTokenGmxAccount, setFromTokenAddress } = useSelector(selectTradeboxFormState);
+  const allowedSlippage = useSavedAllowedSlippage();
+  const { shouldDisableValidationForTesting } = useSettings();
+  const { account, signer } = useWallet();
+  const { provider } = useJsonRpcProvider(chainId);
+  const { makeOrderTxnCallback } = useOrderTxnCallbacks();
+  const { orderStatuses, relayTaskStatuses } = useSyntheticsEvents();
+
   const usdgToken = collateralTokenAddress ? tokensData?.[collateralTokenAddress] : undefined;
+  const usdcAddress = fromToken?.address;
+
+  const executionFee = useMemo(() => {
+    const swapsCount = conversionSwapAmounts?.swapStrategy.swapPathStats?.swapPath.length;
+
+    if (!gasLimits || gasPrice === undefined || !tokensData || swapsCount === undefined) {
+      return undefined;
+    }
+
+    const estimatedGas = estimateExecuteSwapOrderGasLimit(gasLimits, { swapsCount, callbackGasLimit: 0n });
+
+    return getExecutionFee(
+      chainId,
+      gasLimits,
+      tokensData,
+      estimatedGas,
+      gasPrice,
+      estimateOrderOraclePriceCount(swapsCount)
+    );
+  }, [chainId, conversionSwapAmounts, gasLimits, gasPrice, tokensData]);
+
+  const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
+    const swapPath = conversionSwapAmounts?.swapStrategy.swapPathStats?.swapPath;
+
+    if (
+      !isConvertFirst ||
+      !account ||
+      !conversionSwapAmounts ||
+      !swapPath ||
+      !executionFee ||
+      !usdcAddress ||
+      !collateralTokenAddress
+    ) {
+      return undefined;
+    }
+
+    return {
+      createOrderParams: [
+        buildSwapOrderPayload({
+          chainId,
+          receiver: account,
+          executionFeeAmount: executionFee.feeTokenAmount,
+          executionGasLimit: executionFee.gasLimit,
+          referralCode: userReferralInfo?.referralCodeForTxn,
+          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT,
+          payTokenAddress: usdcAddress,
+          payTokenAmount: conversionSwapAmounts.amountIn,
+          receiveTokenAddress: collateralTokenAddress,
+          minOutputAmount: conversionSwapAmounts.minOutputAmount,
+          expectedOutputAmount: conversionSwapAmounts.amountOut,
+          swapPath,
+          triggerRatio: undefined,
+          externalSwapQuote: undefined,
+          allowedSlippage,
+          orderType: OrderType.MarketSwap,
+          autoCancel: false,
+          validFromTime: 0n,
+        }),
+      ],
+      updateOrderParams: [],
+      cancelOrderParams: [],
+    };
+  }, [
+    account,
+    allowedSlippage,
+    chainId,
+    collateralTokenAddress,
+    conversionSwapAmounts,
+    executionFee,
+    isConvertFirst,
+    usdcAddress,
+    userReferralInfo?.referralCodeForTxn,
+  ]);
+
+  const {
+    expressParams,
+    expressParamsPromise,
+    isLoading: isExpressLoading,
+    isMultichainSubmitDisabled,
+  } = useExpressOrdersParams({
+    label: "USDG conversion",
+    orderParams: batchParams,
+    isGmxAccount: isFromTokenGmxAccount,
+    canSwitchGasPaymentToken,
+  });
+
+  const approvalTokens = useMemo(() => {
+    const list: { tokenAddress: string; amount: bigint | undefined }[] = [];
+
+    if (isConvertFirst && usdcAddress && fromTokenAmount !== undefined) {
+      list.push({ tokenAddress: usdcAddress, amount: fromTokenAmount });
+    }
+
+    if (expressParams?.gasPaymentParams) {
+      list.push({
+        tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
+        amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
+      });
+    }
+
+    return list;
+  }, [expressParams?.gasPaymentParams, fromTokenAmount, isConvertFirst, usdcAddress]);
+
+  const { tokensToApprove, isAllowanceLoaded, isApproving, handleApprove } = useTokenApproval({
+    chainId,
+    spenderAddress: getContract(chainId, "SyntheticsRouter"),
+    tokens: approvalTokens,
+    allowPermit: Boolean(expressParams),
+    skip: isFromTokenGmxAccount || !isConvertFirst,
+    metric: {
+      flow: "trade",
+      isExpress: Boolean(expressParams),
+      isExpress1CT: Boolean(expressParams?.subaccount),
+      gasPaymentTokenAddress: expressParams?.gasPaymentParams?.gasPaymentTokenAddress,
+      payTokenAddress: usdcAddress,
+    },
+  });
+
+  const [step, setStep] = useState<ConversionStep>("idle");
+  const [relayTaskId, setRelayTaskId] = useState<string>();
+  const [lastConversion, setLastConversion] = useState<{
+    marketAddress: string | undefined;
+    tokenInAddress: string;
+    amountIn: bigint;
+    amountOut: bigint;
+  }>();
+  const pendingConversionRef = useRef<{
+    knownOrderStatusKeys: Set<string>;
+    tokenInAddress: string;
+    amountIn: bigint;
+    minAmountOut: bigint;
+    swapPath: string[];
+  }>();
+
+  const resetConversion = useCallback(() => {
+    pendingConversionRef.current = undefined;
+    setRelayTaskId(undefined);
+    setStep("idle");
+  }, []);
+
+  const onConvert = useCallback(async () => {
+    if (isAllowanceLoaded && tokensToApprove.length > 0) {
+      if (!isApproving) {
+        handleApprove();
+      }
+
+      return;
+    }
+
+    if (!batchParams || !signer || !provider || !tokensData || !conversionSwapAmounts || !usdcAddress) {
+      helperToast.error(t`Conversion failed`);
+      return;
+    }
+
+    setStep("submitting");
+
+    try {
+      const fulfilledExpressParams = await expressParamsPromise;
+
+      pendingConversionRef.current = {
+        knownOrderStatusKeys: new Set(Object.keys(orderStatuses)),
+        tokenInAddress: usdcAddress,
+        amountIn: conversionSwapAmounts.amountIn,
+        minAmountOut: batchParams.createOrderParams[0].orderPayload.numbers.minOutputAmount,
+        swapPath: conversionSwapAmounts.swapStrategy.swapPathStats?.swapPath ?? [],
+      };
+
+      const orderTxnCallback = makeOrderTxnCallback({ actionName: "Swap", collateralSymbol: fromToken?.symbol });
+
+      await sendBatchOrderTxn({
+        chainId,
+        signer,
+        provider,
+        batchParams,
+        isGmxAccount: isFromTokenGmxAccount,
+        expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
+        simulationParams: shouldDisableValidationForTesting ? undefined : { tokensData, blockTimestampData },
+        callback: (event) => {
+          orderTxnCallback(event);
+
+          if (event.event === TxnEventName.Sent && event.data.type !== "wallet") {
+            setRelayTaskId(event.data.relayTaskId);
+          }
+
+          if (event.event === TxnEventName.Error) {
+            resetConversion();
+          }
+        },
+      });
+
+      if (pendingConversionRef.current) {
+        setStep("converting");
+      }
+    } catch {
+      resetConversion();
+    }
+  }, [
+    batchParams,
+    blockTimestampData,
+    chainId,
+    conversionSwapAmounts,
+    expressParamsPromise,
+    fromToken?.symbol,
+    handleApprove,
+    isAllowanceLoaded,
+    isApproving,
+    isFromTokenGmxAccount,
+    makeOrderTxnCallback,
+    orderStatuses,
+    provider,
+    resetConversion,
+    shouldDisableValidationForTesting,
+    signer,
+    tokensData,
+    tokensToApprove.length,
+    usdcAddress,
+  ]);
+
+  const relayTaskStatusCode = relayTaskId ? relayTaskStatuses[relayTaskId]?.statusCode : undefined;
+
+  useEffect(
+    function releaseFailedRelay() {
+      if (relayTaskStatusCode === StatusCode.Rejected || relayTaskStatusCode === StatusCode.Reverted) {
+        resetConversion();
+      }
+    },
+    [relayTaskStatusCode, resetConversion]
+  );
+
+  useEffect(
+    function applyExecutedConversion() {
+      const pending = pendingConversionRef.current;
+
+      if (step !== "converting" || !pending || !account || !collateralTokenAddress || !usdgToken) {
+        return;
+      }
+
+      const orderStatus = Object.values(orderStatuses).find(
+        (status) =>
+          !pending.knownOrderStatusKeys.has(status.key) &&
+          status.data?.orderType === OrderType.MarketSwap &&
+          status.data.account === account &&
+          status.data.initialCollateralTokenAddress === pending.tokenInAddress &&
+          status.data.swapPath.join() === pending.swapPath.join()
+      );
+
+      if (orderStatus?.cancelledTxnHash) {
+        resetConversion();
+        return;
+      }
+
+      const executedTxnHash = orderStatus?.executedTxnHash;
+
+      if (!executedTxnHash) {
+        return;
+      }
+
+      pendingConversionRef.current = undefined;
+
+      // GMX Account payouts land in the multichain vault, so the order's guaranteed minimum stands in for the transfer
+      getReceivedTokenAmount({ chainId, txnHash: executedTxnHash, tokenAddress: collateralTokenAddress, account })
+        .catch(() => 0n)
+        .then((receivedAmount) => {
+          const amountOut = receivedAmount > 0n ? receivedAmount : pending.minAmountOut;
+
+          setFromTokenAddress(collateralTokenAddress);
+          setFocusedInput("from");
+          setFromTokenInputValue(formatAmountFree(amountOut, usdgToken.decimals), true);
+          setLastConversion({
+            marketAddress,
+            tokenInAddress: pending.tokenInAddress,
+            amountIn: pending.amountIn,
+            amountOut,
+          });
+          resetConversion();
+        });
+    },
+    [
+      account,
+      chainId,
+      collateralTokenAddress,
+      marketAddress,
+      orderStatuses,
+      resetConversion,
+      setFocusedInput,
+      setFromTokenAddress,
+      setFromTokenInputValue,
+      step,
+      usdgToken,
+    ]
+  );
+
+  useEffect(
+    function releaseStuckConversion() {
+      if (step !== "converting") {
+        return;
+      }
+
+      const timerId = setTimeout(resetConversion, CONVERSION_TIMEOUT_MS);
+
+      return () => clearTimeout(timerId);
+    },
+    [resetConversion, step]
+  );
 
   const onUseMaxInstant = useCallback(() => {
     if (maxInstantAmount === undefined || !fromToken) return;
@@ -96,6 +466,10 @@ export function useTradeboxUsdgConversion({
       </div>
     );
   }
+  const amountInText =
+    fromTokenAmount !== undefined && fromToken
+      ? formatBalanceAmount(fromTokenAmount, fromToken.decimals, fromToken.symbol, { isStable: fromToken.isStable })
+      : undefined;
 
   let tooLargeAlert: ReactNode = undefined;
 
@@ -145,7 +519,107 @@ export function useTradeboxUsdgConversion({
     );
   }
 
+  let convertFirstNote: ReactNode = undefined;
+
+  if (isConvertFirst) {
+    if (tradeFlags.isTwap) {
+      convertFirstNote = (
+        <Trans>On USDG pools, TWAP orders hold USDG. Convert your USDC first, then place the order.</Trans>
+      );
+    } else if (tradeMode === TradeMode.StopMarket) {
+      convertFirstNote = (
+        <Trans>On USDG pools, Stop Market orders hold USDG. Convert your USDC first, then place the order.</Trans>
+      );
+    } else {
+      convertFirstNote = (
+        <Trans>On USDG pools, Limit orders hold USDG. Convert your USDC first, then place the order.</Trans>
+      );
+    }
+  }
+
+  const isBusy = step !== "idle" || isApproving;
+
+  const buttonState = useMemo((): ButtonStateOverride | undefined => {
+    if (!account || (!isConvertFirst && !isBusy)) {
+      return undefined;
+    }
+
+    if (isBusy) {
+      return {
+        text: (
+          <>
+            {isApproving ? t`Approving USDC...` : t`Converting USDC to USDG...`}
+            <SpinnerIcon className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
+        onSubmit: async () => undefined,
+      };
+    }
+
+    if (isAllowanceLoaded && tokensToApprove.length > 0) {
+      return {
+        text: getApproveButtonText({
+          tokenSymbol: getToken(chainId, tokensToApprove[0]).symbol,
+          isGasPaymentToken: tokensToApprove[0] !== usdcAddress,
+        }),
+        disabled: false,
+        onSubmit: onConvert,
+      };
+    }
+
+    return {
+      text: t`Convert ${amountInText} to USDG`,
+      disabled: !batchParams || isExpressLoading || isMultichainSubmitDisabled,
+      onSubmit: onConvert,
+    };
+  }, [
+    account,
+    amountInText,
+    batchParams,
+    chainId,
+    isAllowanceLoaded,
+    isApproving,
+    isBusy,
+    isConvertFirst,
+    isExpressLoading,
+    isMultichainSubmitDisabled,
+    onConvert,
+    tokensToApprove,
+    usdcAddress,
+  ]);
+
+  let convertedNote: ReactNode = undefined;
+
+  // only while the margin still is the converted amount on the same market
+  if (
+    lastConversion &&
+    usdgToken &&
+    fromToken?.address === collateralTokenAddress &&
+    lastConversion.marketAddress === marketAddress &&
+    fromTokenAmount === lastConversion.amountOut
+  ) {
+    const tokenIn = getToken(chainId, lastConversion.tokenInAddress);
+    const convertedInText = formatBalanceAmount(lastConversion.amountIn, tokenIn.decimals, tokenIn.symbol, {
+      isStable: true,
+    });
+    const convertedOutText = formatBalanceAmount(lastConversion.amountOut, usdgToken.decimals, usdgToken.symbol, {
+      isStable: true,
+    });
+
+    convertedNote = (
+      <Trans>
+        Converted {convertedInText} to {convertedOutText}
+      </Trans>
+    );
+  }
+
   return {
+    isConvertFirst,
+    isBusy,
+    buttonState,
     tooLargeAlert,
+    convertFirstNote,
+    convertedNote,
   };
 }

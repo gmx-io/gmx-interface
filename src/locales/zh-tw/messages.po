@@ -2794,6 +2794,7 @@ msgid "Max open interest {directionLabel}"
 msgstr "最大未平倉量 {directionLabel}"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+#: src/components/TradeBox/TradeBox.tsx
 msgid "Steps"
 msgstr "步驟"
 
@@ -3232,6 +3233,10 @@ msgstr "未偵測到符合條件的持有資產"
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr "幫助我們改善 GMX。為了安全，我們不會主動聯絡您。請發送「I have feedback」至我們的官方帳號："
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Convert {amountInText} to USDG"
+msgstr "將 {amountInText} 轉換為 USDG"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel margin deposit"
 msgstr "取消保證金存入"
@@ -3410,6 +3415,10 @@ msgstr "上一頁"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {tokenSymbol} on {chainName}"
 msgstr "{chainName} 上的 {tokenSymbol} 不足"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Approving USDC..."
+msgstr "正在核准 USDC..."
 
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "Expected 365d fees"
@@ -3755,6 +3764,10 @@ msgstr "開始建構"
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Faster execution with GMX premium RPCs"
 msgstr "透過 GMX 高級 RPC 實現更快執行"
+
+#: src/components/TradeBox/TradeBox.tsx
+msgid "First you convert USDC to USDG, then you place the order. If you leave before placing it, the USDG stays in your account."
+msgstr "先將 USDC 轉換為 USDG，然後下單。如果在下單前離開，USDG 將保留在您的帳戶中。"
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets in your GMX Account"
@@ -4592,6 +4605,10 @@ msgstr "最大容量："
 msgid "<0>No. There is no GMX-controlled account holding your money at any point. Traders trade directly from their own wallet, or from their funded GMX Account — a contract you control and withdraw from at will.</0><1>Affiliates never deposit anything. Rewards accrue in the contracts, and you claim them yourself, on-chain, to your address.</1>"
 msgstr "<0>不會。您的資金在任何時刻都不會存放在由 GMX 控制的帳戶中。交易者直接透過自己的錢包交易，或使用已存入資金的 GMX Account——一個由您掌控、可隨時提取的合約。</0><1>聯盟推廣者無需存入任何資金。獎勵累積在合約中，由您自己在鏈上領取至您的地址。</1>"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Converting USDC to USDG..."
+msgstr "正在將 USDC 轉換為 USDG..."
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw and unreserve GMX"
 msgstr "提取並解除 GMX 預留"
@@ -5037,6 +5054,10 @@ msgstr "沒有符合所選篩選條件的領取記錄"
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Staking"
 msgstr "質押"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, Stop Market orders hold USDG. Convert your USDC first, then place the order."
+msgstr "在 USDG 池中，停損市價單持有 USDG。請先轉換您的 USDC，然後再下單。"
 
 #: src/lib/legacy.ts
 msgid "Decentralized perpetual exchange | GMX"
@@ -5691,6 +5712,10 @@ msgstr "無法載入訂單資料："
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Network"
 msgstr "網路"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, TWAP orders hold USDG. Convert your USDC first, then place the order."
+msgstr "在 USDG 池中，TWAP 訂單持有 USDG。請先轉換您的 USDC，然後再下單。"
 
 #: src/components/OrdersModal/TPSLInputRow.tsx
 msgid "{secondLabel}"
@@ -10724,6 +10749,10 @@ msgstr "步驟 2：買入"
 msgid "0x..."
 msgstr "0x..."
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Conversion failed"
+msgstr "轉換失敗"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Limit"
 msgstr "更新限價單"
@@ -10818,6 +10847,10 @@ msgstr "轉換費用"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Up"
 msgstr "正常"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Converted {convertedInText} to {convertedOutText}"
+msgstr "已將 {convertedInText} 轉換為 {convertedOutText}"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Swap {0} for {1}"
@@ -11443,6 +11476,10 @@ msgstr "<0>一旦您的等級確認後，交易者折扣將自動套用至您的
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "LP"
 msgstr "LP"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, Limit orders hold USDG. Convert your USDC first, then place the order."
+msgstr "在 USDG 池中，限價單持有 USDG。請先轉換您的 USDC，然後再下單。"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver address"
@@ -12772,6 +12809,10 @@ msgstr "橫幅、連結，以及專屬合作夥伴經理"
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Step 1: Convert"
 msgstr "步驟 1：轉換"
+
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Convert, then place order"
+msgstr "先轉換，再下單"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Save on costs"
