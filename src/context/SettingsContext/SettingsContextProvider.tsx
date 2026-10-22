@@ -52,6 +52,12 @@ function getBuySellIconsMode(savedValue: BuySellIconsMode | boolean | undefined)
   return savedValue ?? DEFAULT_BUY_SELL_ICONS_MODE;
 }
 
+type DebugSwapMarketsConfig = {
+  disabledSwapMarkets?: string[];
+  manualPath?: string[];
+  usdcUsdgInstantLimitUsd?: string;
+};
+
 export type SettingsContextType = {
   showDebugValues: boolean;
   setShowDebugValues: (val: boolean) => void;
@@ -110,13 +116,8 @@ export type SettingsContextType = {
   settingsWarningDotVisible: boolean;
   setSettingsWarningDotVisible: (val: boolean) => void;
 
-  debugSwapMarketsConfig:
-    | {
-        disabledSwapMarkets?: string[];
-        manualPath?: string[];
-      }
-    | undefined;
-  setDebugSwapMarketsConfig: (val: { disabledSwapMarkets?: string[]; manualPath?: string[] }) => void;
+  debugSwapMarketsConfig: DebugSwapMarketsConfig | undefined;
+  setDebugSwapMarketsConfig: (val: DebugSwapMarketsConfig) => void;
 
   savedTwapNumberOfParts: number;
   setSavedTWAPNumberOfParts: (val: number) => void;
@@ -211,7 +212,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     true
   );
   const [debugSwapMarketsConfig, setDebugSwapMarketsConfig] = useLocalStorageSerializeKey<
-    undefined | { disabledSwapMarkets?: string[]; manualPath?: string[] }
+    undefined | DebugSwapMarketsConfig
   >([chainId, DEBUG_SWAP_MARKETS_CONFIG_KEY], undefined);
 
   const { canSignTypedData } = useWalletCanSignTypedData();

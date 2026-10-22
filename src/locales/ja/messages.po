@@ -6244,6 +6244,10 @@ msgstr "Express手数料のために{tokenSymbol}を承認"
 msgid "Earn {0}% more rewards with this action"
 msgstr "このアクションで報酬が {0}% 増加します"
 
+#: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
+msgid "USDC-USDG instant conversion limit"
+msgstr "USDC-USDG即時変換の上限"
+
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "Staked esGMX:"
 msgstr "ステーク済みesGMX:"
@@ -8156,6 +8160,7 @@ msgstr "トランザクション"
 msgid "Last year"
 msgstr "過去1年"
 
+#: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Off"
 msgstr "オフ"
@@ -10742,6 +10747,10 @@ msgstr "確保済み {directionLabel}"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Distribution rate per day, USD"
 msgstr "1日あたりの分配レート（USD）"
+
+#: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
+msgid "Caps the USDC-USDG pool in both directions. Amounts shown are slightly lower to keep a safety margin."
+msgstr "USDC-USDGプールを双方向で制限します。安全マージンのため、表示される金額はわずかに少なくなります。"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet trading only on these networks"

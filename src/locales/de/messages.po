@@ -6244,6 +6244,10 @@ msgstr "{tokenSymbol} für Express-Gebühren genehmigen"
 msgid "Earn {0}% more rewards with this action"
 msgstr "Verdienen Sie {0}% mehr Belohnungen mit dieser Aktion"
 
+#: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
+msgid "USDC-USDG instant conversion limit"
+msgstr "Limit für sofortige USDC-USDG-Umwandlung"
+
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "Staked esGMX:"
 msgstr "Gestaktes esGMX:"
@@ -8156,6 +8160,7 @@ msgstr "Transaktion"
 msgid "Last year"
 msgstr "Letzte 365 Tage"
 
+#: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Off"
 msgstr "Aus"
@@ -10742,6 +10747,10 @@ msgstr "Reserviert {directionLabel}"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Distribution rate per day, USD"
 msgstr "Verteilungsrate pro Tag, USD"
+
+#: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
+msgid "Caps the USDC-USDG pool in both directions. Amounts shown are slightly lower to keep a safety margin."
+msgstr "Begrenzt den USDC-USDG-Pool in beide Richtungen. Angezeigte Beträge sind etwas niedriger, um einen Sicherheitspuffer zu lassen."
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet trading only on these networks"
