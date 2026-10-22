@@ -557,6 +557,17 @@ describe("getApprovalGasError", () => {
     ).toBe("Insufficient AVAX in wallet");
   });
 
+  it("needs no native balance when the approval is a signed permit", () => {
+    expect(
+      getApprovalGasError({
+        tokenToApprove: tokensData.USDC.address,
+        nativeToken: nativeToken({ walletBalance: 0n }),
+        gasPrice: 10n,
+        isPermitApproval: true,
+      })
+    ).toEqual({});
+  });
+
   it("allows a balance equal to the approval cost", () => {
     expect(
       getApprovalGasError({

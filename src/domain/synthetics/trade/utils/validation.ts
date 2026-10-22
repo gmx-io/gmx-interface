@@ -1514,10 +1514,17 @@ export function getApprovalGasError(p: {
   tokenToApprove: string | undefined;
   nativeToken: TokenData | undefined;
   gasPrice: bigint | undefined;
+  // a permit is signed rather than sent, so it needs no gas
+  isPermitApproval?: boolean;
 }): ValidationResult {
-  const { tokenToApprove, nativeToken, gasPrice } = p;
+  const { tokenToApprove, nativeToken, gasPrice, isPermitApproval = false } = p;
 
-  if (tokenToApprove === undefined || nativeToken?.walletBalance === undefined || gasPrice === undefined) {
+  if (
+    isPermitApproval ||
+    tokenToApprove === undefined ||
+    nativeToken?.walletBalance === undefined ||
+    gasPrice === undefined
+  ) {
     return {};
   }
 

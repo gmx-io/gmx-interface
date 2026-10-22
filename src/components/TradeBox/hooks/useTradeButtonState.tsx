@@ -61,6 +61,7 @@ import {
 import { selectTradeboxTradeTypeError } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
 import { selectExternalSwapQuoteParams } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { findNextGasPaymentToken } from "domain/synthetics/express/useSwitchGasPaymentTokenIfRequired";
@@ -214,6 +215,9 @@ export function useTradeboxButtonState({
     return list;
   }, [fromToken, payAmount, expressParams?.gasPaymentParams]);
 
+  const canUseTokenPermits = getCanUseTokenPermits(expressParams);
+  const { getIsPermitAvailable } = useTokenPermitsContext();
+
   const {
     tokensToApprove,
     isAllowanceLoaded: isAllowanceLoadedRaw,
@@ -224,7 +228,7 @@ export function useTradeboxButtonState({
     chainId,
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokens: approvalTokens,
-    allowPermit: getCanUseTokenPermits(expressParams),
+    allowPermit: canUseTokenPermits,
     skip: isFromTokenGmxAccount,
     metric: {
       flow: "trade",
@@ -292,8 +296,12 @@ export function useTradeboxButtonState({
       tokenToApprove: pendingApprovalTokenAddress,
       nativeToken: getByKey(tokensData, zeroAddress),
       gasPrice: expressParams.gasPrice,
+      isPermitApproval:
+        canUseTokenPermits &&
+        pendingApprovalTokenAddress !== undefined &&
+        getIsPermitAvailable(pendingApprovalTokenAddress),
     });
-  }, [expressParams, pendingApprovalTokenAddress, tokensData]);
+  }, [canUseTokenPermits, expressParams, getIsPermitAvailable, pendingApprovalTokenAddress, tokensData]);
 
   const hasAlternateGasFees = useHasAlternateGasFees({
     chainId,
