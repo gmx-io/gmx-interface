@@ -53,6 +53,16 @@ export function usePositionEditorState(chainId: ContractsChainId, srcChainId: So
       positionKey === undefined ? removeAddMarginReturnPositionKey() : setStoredAddMarginReturnPositionKey(positionKey),
     [removeAddMarginReturnPositionKey, setStoredAddMarginReturnPositionKey]
   );
+
+  useEffect(
+    // every page mounts its own state, so landing anywhere but the trade page ends the trip to the Swap tab
+    function clearAddMarginReturnOutsideTrade() {
+      if (!/^\/trade(\/|$)/.test(window.location.pathname)) {
+        removeAddMarginReturnPositionKey();
+      }
+    },
+    [removeAddMarginReturnPositionKey]
+  );
   const [storedIsCollateralTokenFromGmxAccount, setStoredIsCollateralTokenFromGmxAccount] =
     useLocalStorageSerializeKey<boolean>(getSyntheticsCollateralEditTokenIsFromGmxAccountMapKey(chainId), false);
 

@@ -211,6 +211,11 @@ function CollateralSelectorMobile(props: Props) {
 
   return (
     <SelectorBaseMobileList>
+      {props.conversionOptions?.length ? (
+        <div className="text-12 text-typography-secondary">
+          <Trans>Margin token: {marginTokenSymbol}</Trans>
+        </div>
+      ) : null}
       {renderOptions(props.options)}
       {props.conversionOptions?.length ? (
         <div className="pt-8 text-12 text-typography-secondary">

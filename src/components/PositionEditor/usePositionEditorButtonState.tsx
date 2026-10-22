@@ -27,6 +27,7 @@ import {
   selectPositionEditorDepositMode,
   selectPositionEditorDepositSwapAmounts,
   selectPositionEditorIsCollateralTokenFromGmxAccount,
+  selectPositionEditorIsDepositSwapPathMissing,
   selectPositionEditorIsDepositSwapUnfillable,
   selectPositionEditorReplacingOrderKey,
   selectPositionEditorSelectedCollateralAddress,
@@ -95,6 +96,7 @@ import {
   buildDecreaseOrderPayload,
   buildIncreaseOrderPayload,
 } from "sdk/utils/orderTransactions";
+import { applySlippageToMinOut } from "sdk/utils/trade/trade";
 
 import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -153,6 +155,7 @@ export function usePositionEditorButtonState(
   const maxAutoCancelOrders = useSelector(selectMaxAutoCancelOrders);
   const depositSwapAmounts = useSelector(selectPositionEditorDepositSwapAmounts);
   const isDepositSwapUnfillable = useSelector(selectPositionEditorIsDepositSwapUnfillable);
+  const isDepositSwapPathMissing = useSelector(selectPositionEditorIsDepositSwapPathMissing);
 
   const isDeposit = operation === Operation.Deposit;
   const isAtPriceDeposit = isDeposit && depositMode === "atPrice";
@@ -249,6 +252,20 @@ export function usePositionEditorButtonState(
         autoCancel: false,
         validFromTime: 0n,
       });
+
+      // the SDK sends increases with no swap floor, and with no size change the acceptable price protects nothing
+      if (depositSwapAmounts) {
+        createOrderParams = {
+          ...createOrderParams,
+          orderPayload: {
+            ...createOrderParams.orderPayload,
+            numbers: {
+              ...createOrderParams.orderPayload.numbers,
+              minOutputAmount: applySlippageToMinOut(allowedSlippage, depositSwapAmounts.minOutputAmount),
+            },
+          },
+        };
+      }
     } else {
       if (receiveUsd === undefined) {
         return;
@@ -486,6 +503,7 @@ export function usePositionEditorButtonState(
       marketInfo: position?.marketInfo,
       maxWithdrawAmount,
       isDepositSwapUnfillable,
+      isDepositSwapPathMissing,
     });
 
     return takeValidationResult(commonError, multipleWalletExtensionsChainError, editCollateralError, expressError);
@@ -510,6 +528,7 @@ export function usePositionEditorButtonState(
     maxWithdrawAmount,
     triggerPrice,
     isDepositSwapUnfillable,
+    isDepositSwapPathMissing,
   ]);
 
   const errorTooltipContent = useMemo(() => {

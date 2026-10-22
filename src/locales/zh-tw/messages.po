@@ -1877,6 +1877,7 @@ msgid "TIME"
 msgstr "時間"
 
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
+#: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 msgid "Margin token: {marginTokenSymbol}"
 msgstr "保證金代幣：{marginTokenSymbol}"
 
@@ -2799,6 +2800,7 @@ msgstr "等級 {0}：{currentRebatePercentage}% 回饋"
 msgid "Annualized rate"
 msgstr "年化率"
 
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"

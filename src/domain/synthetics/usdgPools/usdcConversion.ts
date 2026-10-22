@@ -1,12 +1,13 @@
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { bigNumberBinarySearch } from "lib/binarySearch";
-import { expandDecimals } from "lib/numbers";
+import { expandDecimals, formatTokenAmount } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 import { convertToUsd } from "sdk/utils/tokens";
 import type { TokenData } from "sdk/utils/tokens/types";
 import type { FindSwapPath, SwapPathStats } from "sdk/utils/trade/types";
 
 const CLOSE_TO_LIQUIDATION_BPS = 500n;
+const MAX_INSTANT_MARGIN_BPS = 50n;
 
 export function getIsSwapPathFillable(swapPathStats: SwapPathStats | undefined): boolean {
   return (
@@ -14,6 +15,19 @@ export function getIsSwapPathFillable(swapPathStats: SwapPathStats | undefined):
     swapPathStats.swapPath.length > 0 &&
     swapPathStats.swapSteps.every((step) => !step.isOutLiquidity && !step.isOutCapacity && !step.isOutMaxFactor)
   );
+}
+
+// the route finder has no path for sub-cent amounts, so nothing below one whole token counts as too large
+export function getIsSwapTooLargeToFill({
+  tokenIn,
+  amountIn,
+  swapPathStats,
+}: {
+  tokenIn: TokenData;
+  amountIn: bigint;
+  swapPathStats: SwapPathStats | undefined;
+}): boolean {
+  return amountIn >= expandDecimals(1, tokenIn.decimals) && !getIsSwapPathFillable(swapPathStats);
 }
 
 export function getMaxInstantSwapAmount({
@@ -25,10 +39,11 @@ export function getMaxInstantSwapAmount({
   maxAmountIn: bigint;
   findSwapPath: FindSwapPath;
 }): bigint {
+  const oneToken = expandDecimals(1, tokenIn.decimals);
   const getIsFillable = (amountIn: bigint) =>
     getIsSwapPathFillable(findSwapPath(convertToUsd(amountIn, tokenIn.decimals, tokenIn.prices.minPrice)!));
 
-  if (maxAmountIn <= 0n || !getIsFillable(1n)) {
+  if (maxAmountIn < oneToken || !getIsFillable(oneToken)) {
     return 0n;
   }
 
@@ -36,19 +51,23 @@ export function getMaxInstantSwapAmount({
     return maxAmountIn;
   }
 
-  // a cent of precision keeps the whole-token result exact with half the route calculations of 1 wei
-  const { result } = bigNumberBinarySearch(
-    1n,
-    maxAmountIn,
-    expandDecimals(1, Math.max(tokenIn.decimals - 2, 0)),
-    (amountIn) => ({
-      isValid: getIsFillable(amountIn),
-      returnValue: null,
-    })
+  const { result } = bigNumberBinarySearch(oneToken, maxAmountIn, oneToken, (amountIn) => ({
+    isValid: getIsFillable(amountIn),
+    returnValue: null,
+  }));
+
+  // the limit moves with prices and pool state, so the suggestion stays a margin below it to still fill seconds later
+  const withMargin = bigMath.mulDiv(
+    result,
+    BASIS_POINTS_DIVISOR_BIGINT - MAX_INSTANT_MARGIN_BPS,
+    BASIS_POINTS_DIVISOR_BIGINT
   );
 
-  // whole tokens keep the suggested amount readable and safely under the limit
-  return (result / expandDecimals(1, tokenIn.decimals)) * expandDecimals(1, tokenIn.decimals);
+  return (withMargin / oneToken) * oneToken;
+}
+
+export function formatMaxInstantAmount(tokenIn: TokenData, amount: bigint) {
+  return formatTokenAmount(amount, tokenIn.decimals, tokenIn.symbol, { displayDecimals: 0, useCommas: true });
 }
 
 export function getShouldDefaultToUsdc({

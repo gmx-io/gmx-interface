@@ -1877,6 +1877,7 @@ msgid "TIME"
 msgstr "ZEIT"
 
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
+#: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 msgid "Margin token: {marginTokenSymbol}"
 msgstr "Margin-Token: {marginTokenSymbol}"
 
@@ -2801,6 +2802,7 @@ msgstr "Annualisierte Rate"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
 msgstr "Kein Tauschpfad gefunden"
 
@@ -3017,7 +3019,7 @@ msgstr "Netzwerkgebühren werden geladen..."
 
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "\"At price\" margin deposits use {positionCollateralSymbol} only. To pay with USDC, <0>use Now</0>."
-msgstr "Margin-Einzahlungen „Zum Preis“ nutzen nur {positionCollateralSymbol}. Um mit USDC zu zahlen, <0>nutze Jetzt</0>."
+msgstr "Margin-Einzahlungen „Zum Preis“ nutzen nur {positionCollateralSymbol}. Um mit USDC zu zahlen, <0>verwenden Sie Jetzt</0>."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "VI SWAPS"
@@ -12944,7 +12946,7 @@ msgstr "Die Order ist abgelaufen, bevor sie ausgeführt werden konnte"
 
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "Close to liquidation? Deposit the instant amount first. Paxos can take a while."
-msgstr "Nahe der Liquidation? Zahle zuerst den Sofortbetrag ein. Paxos kann eine Weile dauern."
+msgstr "Nahe der Liquidation? Zahlen Sie zuerst den Sofortbetrag ein. Paxos kann eine Weile dauern."
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 msgid "Confirming conversion..."

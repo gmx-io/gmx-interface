@@ -1877,6 +1877,7 @@ msgid "TIME"
 msgstr "ВРЕМЯ"
 
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
+#: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 msgid "Margin token: {marginTokenSymbol}"
 msgstr "Токен маржи: {marginTokenSymbol}"
 
@@ -2799,6 +2800,7 @@ msgstr "Уровень {0}: возмещение {currentRebatePercentage}%"
 msgid "Annualized rate"
 msgstr "Темп в годовом выражении"
 
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"

@@ -10,7 +10,7 @@ import {
 import { convertToUsd, getBalanceByBalanceType } from "domain/synthetics/tokens";
 import { Operation } from "domain/synthetics/trade/usePositionEditorState";
 import {
-  getIsSwapPathFillable,
+  getIsSwapTooLargeToFill,
   getMaxInstantSwapAmount,
   getShouldDefaultToUsdc,
 } from "domain/synthetics/usdgPools/usdcConversion";
@@ -255,13 +255,31 @@ export const selectPositionEditorDepositSwapAmounts = createSelector((q) => {
 
 export const selectPositionEditorIsDepositSwapUnfillable = createSelector((q) => {
   const swapAmounts = q(selectPositionEditorDepositSwapAmounts);
+  const payToken = q(selectPositionEditorSelectedCollateralToken);
 
   // without market data the route finder returns nothing, which isn't the same as the pool being short
   return (
     q(selectMarketsInfoData) !== undefined &&
     swapAmounts !== undefined &&
+    payToken !== undefined &&
+    getIsSwapTooLargeToFill({
+      tokenIn: payToken,
+      amountIn: swapAmounts.amountIn,
+      swapPathStats: swapAmounts.swapStrategy.swapPathStats,
+    })
+  );
+});
+
+// amounts below what the route finder converts have no path either, but aren't too large
+export const selectPositionEditorIsDepositSwapPathMissing = createSelector((q) => {
+  const swapAmounts = q(selectPositionEditorDepositSwapAmounts);
+
+  return (
+    q(selectMarketsInfoData) !== undefined &&
+    !q(selectPositionEditorIsDepositSwapUnfillable) &&
+    swapAmounts !== undefined &&
     swapAmounts.amountIn > 0n &&
-    !getIsSwapPathFillable(swapAmounts.swapStrategy.swapPathStats)
+    !swapAmounts.swapStrategy.swapPathStats?.swapPath.length
   );
 });
 

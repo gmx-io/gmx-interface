@@ -58,7 +58,11 @@ import { getMarkPrice, getMaxWithdrawAmount, getTradeFlagsForCollateralEdit } fr
 import { Operation } from "domain/synthetics/trade/usePositionEditorState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getConditionalDepositWarning } from "domain/synthetics/trade/utils/validation";
-import { getIsCloseToLiquidation, getShouldDefaultToUsdc } from "domain/synthetics/usdgPools/usdcConversion";
+import {
+  formatMaxInstantAmount,
+  getIsCloseToLiquidation,
+  getShouldDefaultToUsdc,
+} from "domain/synthetics/usdgPools/usdcConversion";
 import { DEFAULT_MAX_ACTIONS_STATE, MaxActionsState, useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
@@ -356,12 +360,16 @@ export function PositionEditor() {
     });
 
   const positionCollateralSymbol = position?.collateralToken.symbol;
-  const isConversionTooLarge = isDepositSwapUnfillable && depositMaxInstantAmount !== undefined;
+  // an amount over the balance keeps its "Insufficient balance" button instead of the conversion choices
+  const isConversionTooLarge =
+    isDepositSwapUnfillable &&
+    depositMaxInstantAmount !== undefined &&
+    collateralDeltaAmount !== undefined &&
+    collateralTokenBalance !== undefined &&
+    collateralDeltaAmount <= collateralTokenBalance;
   const maxInstantAmountText =
     depositMaxInstantAmount !== undefined && collateralToken
-      ? formatBalanceAmount(depositMaxInstantAmount, collateralToken.decimals, collateralToken.symbol, {
-          isStable: collateralToken.isStable,
-        })
+      ? formatMaxInstantAmount(collateralToken, depositMaxInstantAmount)
       : undefined;
   const isCloseToLiquidation = getIsCloseToLiquidation({
     markPrice: position?.markPrice,
