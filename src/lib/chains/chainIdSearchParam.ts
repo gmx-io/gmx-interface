@@ -1,3 +1,4 @@
+import { getIsSolanaNetworkEnabled } from "config/ab";
 import {
   type AnyChainId,
   type ContractsChainId,
@@ -8,7 +9,15 @@ import {
 } from "config/chains";
 import { MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING } from "config/multichain";
 
-export function getChainIdFromSearchParam(value: string | undefined): AnyChainId | undefined {
+export const SOLANA_SEARCH_PARAM = "solana";
+
+export function getChainIdFromSearchParam(
+  value: string | undefined
+): AnyChainId | typeof SOLANA_SEARCH_PARAM | undefined {
+  if (value === SOLANA_SEARCH_PARAM) {
+    return getIsSolanaNetworkEnabled() ? SOLANA_SEARCH_PARAM : undefined;
+  }
+
   const chainId = Number(value);
 
   if (!value || !Number.isSafeInteger(chainId)) {

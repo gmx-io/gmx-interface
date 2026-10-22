@@ -402,6 +402,25 @@ describe("position seller — closing costs of a profitable market partial close
       overrides: { maxLongPoolAmount: expandDecimals(1000, 18) + 1n },
       isReverted: false,
     },
+    {
+      // the profit is paid out of the 2 000 000 ETH pool before the swap returns it, so the pool stays at 2 000 000
+      pool: "the long pnl of 800 004 is over the 40 % deposit cap",
+      overrides: {
+        longInterestUsd: usd(1_199_996),
+        longInterestInTokens: expandDecimals(1000, 18),
+        maxPnlFactorForDepositsLong: expandDecimals(4, 29),
+      },
+      isReverted: true,
+    },
+    {
+      pool: "the long pnl of 799 996 is under the 40 % deposit cap",
+      overrides: {
+        longInterestUsd: usd(1_200_004),
+        longInterestInTokens: expandDecimals(1000, 18),
+        maxPnlFactorForDepositsLong: expandDecimals(4, 29),
+      },
+      isReverted: false,
+    },
   ])(
     "follows the contract's swap of the profit to the collateral token when $pool PRO-4354",
     ({ overrides, isReverted }) => {

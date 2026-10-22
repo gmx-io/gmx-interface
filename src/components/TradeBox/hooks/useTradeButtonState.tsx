@@ -54,6 +54,7 @@ import {
   selectTradeboxTradeFlags,
   selectTradeboxTradeMode,
   selectTradeboxTriggerPrice,
+  selectTradeboxTwapIncreaseSequenceParams,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxHasExistingPosition,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -96,6 +97,7 @@ import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
 import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
+import { useHasAlternateGasFees } from "lib/wallets/useHasAlternateGasFees";
 import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import { getContract } from "sdk/configs/contracts";
 import { getToken, getTokenBySymbol, getWrappedToken } from "sdk/configs/tokens";
@@ -214,6 +216,7 @@ export function useTradeboxButtonState({
   const {
     tokensToApprove,
     isAllowanceLoaded: isAllowanceLoadedRaw,
+    isAllowanceLoading,
     isApproving,
     handleApprove,
   } = useTokenApproval({
@@ -231,8 +234,10 @@ export function useTradeboxButtonState({
     },
   });
 
-  const isDataReady = Boolean(fromToken && payAmount !== undefined && gasPaymentToken);
+  const isDataReady = Boolean(fromToken && payAmount !== undefined);
   const isAllowanceLoaded = isDataReady && isAllowanceLoadedRaw;
+  // until allowances are known an order could be sent without the approval it needs
+  const isAllowancePending = isDataReady && isAllowanceLoading && !isApproving;
 
   const pendingApprovalTokenAddress = isAllowanceLoaded && !isApproving ? tokensToApprove[0] : undefined;
   const isPendingGasPaymentTokenApproval =
@@ -277,7 +282,7 @@ export function useTradeboxButtonState({
     totalExecutionFee?.feeTokenAmount,
   ]);
 
-  const approvalGasError = useMemo((): ValidationResult => {
+  const nativeApprovalGasError = useMemo((): ValidationResult => {
     if (!expressParams) {
       return {};
     }
@@ -288,6 +293,13 @@ export function useTradeboxButtonState({
       gasPrice: expressParams.gasPrice,
     });
   }, [expressParams, pendingApprovalTokenAddress, tokensData]);
+
+  const hasAlternateGasFees = useHasAlternateGasFees({
+    chainId,
+    enabled: nativeApprovalGasError.buttonErrorMessage !== undefined,
+  });
+
+  const approvalGasError: ValidationResult = hasAlternateGasFees ? EMPTY_OBJECT : nativeApprovalGasError;
 
   const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
   const externalSwapDesirability = useSelector(selectExternalSwapDesirability);
@@ -356,6 +368,8 @@ export function useTradeboxButtonState({
     }
     return {};
   }, [isSubmitBlockedByRequiredExternalSwap]);
+
+  const externalSwapBlockReason = useSelector(selectExternalSwapBlockReason);
 
   const { buttonErrorText, tooltipContent, bannerErrorContent } = useMemo((): {
     buttonErrorText: string | undefined;
@@ -459,8 +473,17 @@ export function useTradeboxButtonState({
       }
     }
 
-    const bannerErrorContent =
-      validationResult.bannerErrorName && !shouldShowDepositButton ? (
+    // "Connect wallet" masks the pool liquidity error, so surface it as a banner;
+    // external route block reasons already have their own warning card
+    const isPoolLiquidityErrorMaskedByConnect =
+      !account &&
+      !isWalletInitializing &&
+      tradeError.buttonTooltipName === ValidationButtonTooltipName.insufficientGmxPoolLiquidity &&
+      externalSwapBlockReason === undefined;
+
+    let bannerErrorContent: ReactNode = null;
+    if (validationResult.bannerErrorName && !shouldShowDepositButton) {
+      bannerErrorContent = (
         <ValidationBannerErrorContent
           validationBannerErrorName={validationResult.bannerErrorName}
           chainId={chainId}
@@ -470,7 +493,10 @@ export function useTradeboxButtonState({
           alternativeGasTokenAddress={alternativeGasToken?.address}
           onSwitchGasToken={handleSwitchGasToken}
         />
-      ) : null;
+      );
+    } else if (isPoolLiquidityErrorMaskedByConnect) {
+      bannerErrorContent = <InsufficientGmxPoolLiquidityTooltipContent />;
+    }
 
     return {
       buttonErrorText: validationResult.buttonErrorMessage,
@@ -481,11 +507,13 @@ export function useTradeboxButtonState({
     chainId,
     srcChainId,
     account,
+    isWalletInitializing,
     hasOutdatedUi,
     expressParams,
     tokensData,
     multipleWalletExtensionsChainError,
     tradeError,
+    externalSwapBlockReason,
     externalSwapBlockedError,
     nativeGasError,
     approvalGasError,
@@ -575,6 +603,10 @@ export function useTradeboxButtonState({
       return;
     }
 
+    if (isAllowancePending || isApproving) {
+      return;
+    }
+
     setStage("processing");
 
     let txnPromise: Promise<any>;
@@ -610,6 +642,7 @@ export function useTradeboxButtonState({
     fromToken,
     handleApprove,
     isAllowanceLoaded,
+    isAllowancePending,
     isApproving,
     isFromTokenGmxAccount,
     isIncrease,
@@ -719,6 +752,19 @@ export function useTradeboxButtonState({
       };
     }
 
+    if (isAllowancePending) {
+      return {
+        ...commonState,
+        text: (
+          <>
+            <Trans>Loading…</Trans>
+            <SpinnerIcon className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
+      };
+    }
+
     if ((isApproving || isAllowanceLoaded) && tokensToApprove.length) {
       const tokenToApprove = tokensToApprove[0];
       const tokenSymbol = getToken(chainId, tokenToApprove).symbol;
@@ -820,6 +866,7 @@ export function useTradeboxButtonState({
     isApproving,
     tokensToApprove,
     isAllowanceLoaded,
+    isAllowancePending,
     stage,
     isIncrease,
     sidecarEntries,
@@ -852,7 +899,7 @@ export function useDetectAndSetAvailableMaxLeverage({
 
   const { minCollateralUsd } = usePositionsConstants();
 
-  const { collateralToken, marketInfo, selectedTriggerAcceptablePriceImpactBps, setLeverageOption } =
+  const { collateralToken, marketInfo, selectedTriggerAcceptablePriceImpactBps, setLeverageOption, setFocusedInput } =
     useSelector(selectTradeboxState);
 
   const { isLeverageSliderEnabled, isSetAcceptablePriceImpactEnabled } = useSettings();
@@ -875,6 +922,7 @@ export function useDetectAndSetAvailableMaxLeverage({
   const externalSwapQuoteParams = useSelector(selectExternalSwapQuoteParams);
   const chainId = useSelector(selectChainId);
   const marketsInfoData = useSelector(selectMarketsInfoData);
+  const twap = useSelector(selectTradeboxTwapIncreaseSequenceParams);
 
   const maxLeverageSearchParams = useMemo((): MaxLeverageIncreaseParams | undefined => {
     if (!enabled || !collateralToken || !toToken || !fromToken || !marketInfo || minCollateralUsd === undefined) {
@@ -882,6 +930,7 @@ export function useDetectAndSetAvailableMaxLeverage({
     }
 
     return {
+      twap,
       collateralToken,
       findSwapPath,
       indexToken: toToken,
@@ -931,6 +980,7 @@ export function useDetectAndSetAvailableMaxLeverage({
     proDiscountFactor,
     isSetAcceptablePriceImpactEnabled,
     tradeMode,
+    twap,
   ]);
 
   const maxLeverageIncrease = useMemo(
@@ -959,6 +1009,7 @@ export function useDetectAndSetAvailableMaxLeverage({
 
     const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
 
+    setFocusedInput("from");
     setToTokenInputValue(
       formatAmountFree(
         substractMaxLeverageSlippage(maxLeverageIncrease.increaseAmounts.sizeDeltaInTokens / visualMultiplier),
@@ -967,7 +1018,7 @@ export function useDetectAndSetAvailableMaxLeverage({
       ),
       true
     );
-  }, [isLeverageSliderEnabled, maxLeverageIncrease, setLeverageOption, setToTokenInputValue, toToken]);
+  }, [isLeverageSliderEnabled, maxLeverageIncrease, setFocusedInput, setLeverageOption, setToTokenInputValue, toToken]);
 
   return {
     hasAvailableMaxLeverage,

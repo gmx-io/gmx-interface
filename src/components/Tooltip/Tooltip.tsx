@@ -131,19 +131,20 @@ export default function Tooltip<T extends ElementType>({
   const arrowRef = useRef<SVGSVGElement>(null);
   const referenceRef = useRef<Element | null>(null);
   const floatingRef = useRef<HTMLElement | null>(null);
+  const isDismissedByEscapeRef = useRef(false);
 
   const handleOpenChange = useCallback((open: boolean, _event?: Event, reason?: OpenChangeReason) => {
     if (!open && reason === "hover" && hasVisibleFocusWithin(referenceRef.current)) {
       return;
     }
 
-    if (
-      !open &&
-      reason === "escape-key" &&
-      floatingRef.current?.contains(document.activeElement) &&
-      referenceRef.current instanceof HTMLElement
-    ) {
-      referenceRef.current.focus();
+    if (!open && reason === "escape-key") {
+      if (floatingRef.current?.contains(document.activeElement) && referenceRef.current instanceof HTMLElement) {
+        referenceRef.current.focus();
+      }
+
+      isDismissedByEscapeRef.current =
+        hasVisibleFocusWithin(referenceRef.current) && !floatingRef.current?.contains(document.activeElement);
     }
 
     setVisible(open);
@@ -244,7 +245,7 @@ export default function Tooltip<T extends ElementType>({
 
       // If element was blurred, allow some time so that activeElement is updated
       requestAnimationFrame(() => {
-        if (hasVisibleFocusWithin(referenceRef.current)) {
+        if (!isDismissedByEscapeRef.current && hasVisibleFocusWithin(referenceRef.current)) {
           setVisible(true);
         }
       });
@@ -264,6 +265,8 @@ export default function Tooltip<T extends ElementType>({
       if (nextFocused && (refs.floating.current?.contains(nextFocused) || isFocusGuard(nextFocused))) {
         return;
       }
+
+      isDismissedByEscapeRef.current = false;
 
       if (isHovered(reference) || isHovered(refs.floating.current)) {
         return;
