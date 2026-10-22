@@ -1,7 +1,12 @@
 import { ReactNode, useEffect, useMemo, useState } from "react";
 
 import { ARBITRUM } from "config/chains";
-import { getLeverageKey, getSyntheticsTradeOptionsKey, TRADEBOX_SIZE_DENOMINATION_KEY } from "config/localStorage";
+import {
+  getGasPaymentTokenAddressKey,
+  getLeverageKey,
+  getSyntheticsTradeOptionsKey,
+  TRADEBOX_SIZE_DENOMINATION_KEY,
+} from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { selectSetShouldFallbackToInternalSwap } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -183,6 +188,8 @@ export type TradeBoxStoryProps = {
   seedLeverageOption?: number;
   /** Seed the persisted size display denomination */
   seedSizeDisplayMode?: "token" | "usd";
+  /** Seed the saved wallet gas payment token (e.g. a valid token missing from tokensData) */
+  seedGasPaymentTokenAddress?: string;
 };
 
 /**
@@ -216,6 +223,7 @@ export function TradeBoxStory({
   seedSizeDisplayMode,
   seedTradeMode,
   seedUserSelectedSecondEthPool = false,
+  seedGasPaymentTokenAddress,
 }: TradeBoxStoryProps) {
   const isConnected = connected || withPosition || withWethCollateralPosition;
 
@@ -419,6 +427,13 @@ export function TradeBoxStory({
       entries.push([JSON.stringify(TRADEBOX_SIZE_DENOMINATION_KEY), JSON.stringify(seedSizeDisplayMode)]);
     }
 
+    if (seedGasPaymentTokenAddress !== undefined) {
+      entries.push([
+        JSON.stringify(getGasPaymentTokenAddressKey(ARBITRUM, MOCK_ACCOUNT)),
+        JSON.stringify(seedGasPaymentTokenAddress),
+      ]);
+    }
+
     return entries;
   }, [
     seedSwapPair,
@@ -429,6 +444,7 @@ export function TradeBoxStory({
     seedSizeDisplayMode,
     seedTradeMode,
     seedUserSelectedSecondEthPool,
+    seedGasPaymentTokenAddress,
   ]);
 
   let content = (

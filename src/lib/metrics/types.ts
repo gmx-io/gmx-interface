@@ -1,4 +1,4 @@
-import type { SourceChainId } from "config/chains";
+import type { NetworkId, SourceChainId } from "config/chains";
 import type { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import type { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import type { ErrorData } from "lib/errors";
@@ -25,6 +25,7 @@ export type GlobalMetricData = {
   platform?: string;
   isInited?: boolean;
   srcChainId?: SourceChainId;
+  networkId?: NetworkId;
   hasNoTrades?: boolean;
 };
 
@@ -554,6 +555,25 @@ export type SwapGLVMetricData = {
   glvTokenAmount: number | undefined;
   glvTokenUsd: number | undefined;
   isFirstBuy: boolean | undefined;
+};
+
+// Token permits
+export type TokenPermitOutcome = "signed" | "rejected" | "failedCheck" | "fallback" | "executed";
+
+/** Unset for permits signed in place of an approval transaction */
+export type TokenPermitFlow = "oneClickActivation";
+
+export type TokenPermitEvent = {
+  event: "tokenPermit";
+  isError: boolean;
+  data: {
+    outcome: TokenPermitOutcome;
+    chainId: number;
+    token: string;
+    accountType: string | undefined;
+    reason?: string;
+    flow?: TokenPermitFlow;
+  };
 };
 
 // Missed coins

@@ -799,6 +799,10 @@ msgstr "Les incitations, airdrops et récompenses apparaîtront ici"
 msgid "Refer traders to GMX with your unique link and earn a share of the fees they generate"
 msgstr "Parrainez des traders sur GMX avec votre lien unique et gagnez une part des frais qu'ils génèrent"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: at the trigger price, the remaining position would exceed max leverage. Edit the order or <0>increase the position's margin</0>."
+msgstr "L'ordre peut ne pas s'exécuter : au prix de déclenchement, la position restante dépasserait l'effet de levier maximal. Modifiez l'ordre ou <0>augmentez la marge de la position</0>."
+
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using funds directly from your connected wallet."
 msgstr "Vous pouvez ouvrir des positions isolées sur GMX en utilisant directement les fonds de votre portefeuille connecté."
@@ -1564,8 +1568,10 @@ msgstr "Création du code de parrainage..."
 msgid "DATE"
 msgstr "DATE"
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "Solana"
 msgstr "Solana"
 
@@ -3801,6 +3807,7 @@ msgstr "Thème"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
 msgstr "Effet de levier maximum dépassé"
 
@@ -3830,6 +3837,10 @@ msgstr "Assistant de trading IA"
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "Allowed slippage"
 msgstr "Glissement autorisé"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The request was sent, but its result could not be confirmed. Retry to check: if it didn't go through, deactivation continues with a wallet transaction."
+msgstr "La requête a été envoyée, mais son résultat n'a pas pu être confirmé. Réessayez pour vérifier : si elle n'a pas abouti, la désactivation se poursuivra avec une transaction du Portefeuille."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Loyalty"
@@ -4820,6 +4831,11 @@ msgstr "Étape 2 : Recevoir"
 msgid "The approved amount is lower than the required amount. Approve again or reduce the amount"
 msgstr "Le montant approuvé est inférieur au montant requis. Approuvez à nouveau ou réduisez le montant"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "Close the full position, change the trigger price, or add margin."
+msgstr "Clôturez toute la position, modifiez le prix de déclenchement ou ajoutez de la marge."
+
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Error name:"
 msgstr "Nom de l'erreur :"
@@ -5189,6 +5205,10 @@ msgstr "Impact d'échange réalisé"
 msgid "It depends on the volume you route and which revenue streams you turn on. Use the calculator above for a rough estimate, or apply to talk specifics with the team."
 msgstr "Cela dépend du volume que vous routez et des sources de revenus activées. Utilisez le calculateur ci-dessus pour une estimation approximative, ou postulez pour en discuter avec l'équipe."
 
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
+msgid "Withdrawal to {sourceChainName} failed"
+msgstr "Le retrait vers {sourceChainName} a échoué"
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter recipient address"
 msgstr "Saisissez l'adresse du destinataire"
@@ -5257,10 +5277,6 @@ msgstr "Ce que les gens construisent."
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval cancelled"
 msgstr "Approbation annulée"
-
-#: src/domain/tokens/approveTokens.tsx
-msgid "Permit approvals are unavailable."
-msgstr "Les approbations par permis sont indisponibles."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -5747,10 +5763,6 @@ msgstr "Exécuter le Take-Profit"
 msgid "Market Increase"
 msgstr "Market Increase"
 
-#: src/domain/tokens/approveTokens.tsx
-msgid "This token does not support permit approvals."
-msgstr "Ce token ne prend pas en charge les approbations par signature (permit)."
-
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Include PnL in leverage display"
@@ -5999,6 +6011,7 @@ msgstr "180 derniers jours"
 msgid "Positive funding fees"
 msgstr "Frais de financement positifs"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Loading…"
 msgstr "Chargement…"
@@ -6026,6 +6039,10 @@ msgstr "Ordre d'achat GM inconnu"
 #: landing/src/pages/Builders/HeroSection/HeroSection.tsx
 msgid "Build on GMX.<0/>Get paid on every trade."
 msgstr "Construisez sur GMX.<0/>Soyez rémunéré à chaque transaction."
+
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
+msgid "Transfer not found"
+msgstr "Transfert introuvable"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 msgid "Insufficient {tokenInSymbol} balance"
@@ -6450,6 +6467,10 @@ msgstr "Transaction invalide"
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in {0} pool. Select a different pool."
 msgstr "Liquidité insuffisante dans le pool {0}. Sélectionnez un pool différent."
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Enable token permits regardless of UI flags"
+msgstr "Activer les permits de token quels que soient les flags UI"
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets in your wallet"
@@ -7129,10 +7150,6 @@ msgstr "Afficher les icônes d'achat/vente sur le graphique"
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
 msgstr "Cet échange nécessite un routage externe. Payez le Gas en {0} pour l'activer."
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX (Portuguese)"
-msgstr "GMX (portugais)"
-
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No eligible trades during the competition window"
@@ -7203,6 +7220,10 @@ msgstr "24h"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "High price impact"
 msgstr "Impact élevé sur le prix"
+
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
+msgid "This page is available on EVM networks only. Switch the network in the header, or go to <0>Trade</0>."
+msgstr "Cette page est disponible uniquement sur les réseaux EVM. Changez le réseau dans l'en-tête, ou accédez à <0>Trade</0>."
 
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/NetFeeTooltip.tsx
@@ -8010,6 +8031,10 @@ msgstr "Symbole (A à Z)"
 msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none"
 msgstr "Choisissez quelles marques d'achat/vente apparaissent sur le graphique : toutes vos transactions passées, uniquement votre position ouverte actuelle, ou aucune"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "At this trigger price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "À ce prix de déclenchement, la position restante dépasserait l'effet de levier maximal et l'ordre pourrait ne pas s'exécuter."
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr "{orderText} mis à jour"
@@ -8150,6 +8175,10 @@ msgstr "achat"
 msgid "Affiliate dashboard"
 msgstr "Tableau de bord affilié"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first. Remaining margin: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
+msgstr "La position restante dépasserait l'effet de levier maximal autorisé. Clôturez une plus grande partie, retirez moins ou ajoutez d'abord de la marge. Marge restante : {remainingCollateralUsdText}, requis : {minCollateralUsdForLeverageText}"
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Capital used"
@@ -8270,6 +8299,10 @@ msgstr "Taux de réussite"
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 msgid "GM and GLV include markets you no longer hold"
 msgstr "GM et GLV incluent les marchés que vous ne détenez plus"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first."
+msgstr "La position restante dépasserait l'effet de levier maximal autorisé. Clôturez une plus grande partie, retirez moins ou ajoutez d'abord de la marge."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading stats"
@@ -9237,6 +9270,10 @@ msgstr "Marge faible après déduction des frais. Déposez davantage pour rédui
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
 msgstr "Recevoir {profitTokenSymbol} et {collateralTokenSymbol} séparément"
 
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
+msgid "Trading on Solana is coming soon."
+msgstr "Le trading sur Solana arrive prochainement."
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min deposit: {0}"
 msgstr "Dépôt min : {0}"
@@ -9346,6 +9383,10 @@ msgstr "Type de compte"
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 msgid "Collateral in"
 msgstr "Garantie en"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, close the position fully, or add margin first."
+msgstr "La position restante dépasserait l'effet de levier maximal autorisé. Clôturez une plus grande partie, clôturez entièrement la position ou ajoutez d'abord de la marge."
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "EVENT NAME"
@@ -9626,6 +9667,7 @@ msgid "Copy"
 msgstr "Copier"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Amount"
@@ -9634,6 +9676,10 @@ msgstr "Montant"
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Integrate GMX"
 msgstr "Intégrez GMX"
+
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Take-Profit price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "Au prix de Take-Profit, la position restante dépasserait l'effet de levier maximal et l'ordre pourrait ne pas s'exécuter."
 
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Show line values in USD"
@@ -9841,6 +9887,7 @@ msgid "Max funding factor (long)"
 msgstr "Facteur de financement maximal (long)"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient collateral to cover order costs"
 msgstr "Garantie insuffisante pour couvrir les coûts de l'ordre"
 
@@ -10524,6 +10571,10 @@ msgstr "Saulius GMX analytics"
 msgid "Add RPC"
 msgstr "Ajouter RPC"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "Turn off \"Keep leverage\", close the full position, change the trigger price, or add margin."
+msgstr "Désactivez « Maintenir l'effet de levier », clôturez toute la position, modifiez le prix de déclenchement ou ajoutez de la marge."
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a collateral"
 msgstr "Sélectionner une garantie"
@@ -10682,6 +10733,7 @@ msgstr "Erreur de simulation de retrait"
 msgid "Claims"
 msgstr "Réclamations"
 
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Date"
@@ -10979,6 +11031,7 @@ msgstr "ÉCHECS"
 msgid "Min margin: {0}"
 msgstr "Marge min. : {0}"
 
+#: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TVChartContainer/constants.ts
@@ -11030,6 +11083,10 @@ msgstr "Achat de"
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
 msgstr "réallocation"
+
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
+msgid "EVM networks only"
+msgstr "Réseaux EVM uniquement"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation risk alerts"
@@ -11510,10 +11567,6 @@ msgstr "Contactez-nous comme il vous convient et nous reviendrons vers vous avec
 msgid "Change network"
 msgstr "Changer de réseau"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Telegram group (Portuguese)"
-msgstr "Groupe Telegram (portugais)"
-
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM is the liquidity provider token for GMX V2 markets. It accrues 63% of the fees generated by V2 markets."
 msgstr "GM est le jeton de fournisseur de liquidité pour les marchés GMX V2. Il accumule 63 % des frais générés par les marchés V2."
@@ -11837,9 +11890,17 @@ msgstr "Recevez des alertes et des annonces de GMX pour suivre vos transactions,
 msgid "Use the Pay amount"
 msgstr "Utiliser le montant à payer"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Stop-Loss price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "Au prix du Stop-Loss, la position restante dépasserait l'effet de levier maximal et l'ordre pourrait ne pas s'exécuter."
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated off-hours liquidation price"
 msgstr "Prix de liquidation estimé hors heures de marché"
+
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Take-Profit and Stop-Loss prices, the remaining position would exceed max leverage and the orders may not execute."
+msgstr "Aux prix de Take-Profit et de Stop-Loss, la position restante dépasserait l'effet de levier maximal et les ordres pourraient ne pas s'exécuter."
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Repeat transaction"
@@ -12259,10 +12320,6 @@ msgstr "Performance annualisée"
 msgid "Direct smart contract integration"
 msgstr "Intégration directe des smart contracts"
 
-#: src/domain/tokens/approveTokens.tsx
-msgid "Permit approvals are disabled for this token."
-msgstr "Les approbations par permis sont désactivées pour ce token."
-
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "LAST PRICE"
@@ -12275,6 +12332,10 @@ msgstr "Une approbation attend déjà dans votre portefeuille. La conversion l'a
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Cancelling {orderText}..."
 msgstr "Annulation de {orderText}…"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The signed request could not be completed. Retry to deactivate with a wallet transaction."
+msgstr "La requête signée n'a pas pu aboutir. Réessayez pour désactiver avec une transaction du Portefeuille."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute margin deposit"
@@ -12670,6 +12731,10 @@ msgstr "Récompenses cumulées"
 #: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 msgid "Not enough history yet"
 msgstr "Pas encore assez d'historique"
+
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
+msgid "Failed to load transfer details"
+msgstr "Impossible de charger les détails du transfert"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "This trigger is at or beyond the estimated liquidation price. The margin deposit will be attempted before liquidation when eligible, but execution is not guaranteed."

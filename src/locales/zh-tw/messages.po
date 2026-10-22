@@ -799,6 +799,10 @@ msgstr "獎勵、空投和獎品將顯示在這裡"
 msgid "Refer traders to GMX with your unique link and earn a share of the fees they generate"
 msgstr "透過您的專屬連結將交易者推薦給 GMX，並從他們產生的費用中賺取分潤"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: at the trigger price, the remaining position would exceed max leverage. Edit the order or <0>increase the position's margin</0>."
+msgstr "訂單可能無法執行：在觸發價格下，剩餘倉位將超過最大槓桿。請編輯訂單或<0>增加倉位保證金</0>。"
+
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using funds directly from your connected wallet."
 msgstr "您可以直接使用已連接錢包中的資金，在 GMX 上開立逐倉倉位。"
@@ -1564,8 +1568,10 @@ msgstr "正在建立推薦碼..."
 msgid "DATE"
 msgstr "日期"
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "Solana"
 msgstr "Solana"
 
@@ -3801,6 +3807,7 @@ msgstr "主題"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
 msgstr "超過最大槓桿"
 
@@ -3830,6 +3837,10 @@ msgstr "AI 交易助手"
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "Allowed slippage"
 msgstr "允許滑點"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The request was sent, but its result could not be confirmed. Retry to check: if it didn't go through, deactivation continues with a wallet transaction."
+msgstr "請求已送出，但無法確認其結果。請重試以進行檢查：如果未成功，將透過錢包交易繼續停用。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Loyalty"
@@ -4820,6 +4831,11 @@ msgstr "步驟 2：收到"
 msgid "The approved amount is lower than the required amount. Approve again or reduce the amount"
 msgstr "已授權的數量低於所需數量。請重新授權或減少數量"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "Close the full position, change the trigger price, or add margin."
+msgstr "請完全平倉、變更觸發價格或增加保證金。"
+
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Error name:"
 msgstr "錯誤名稱："
@@ -5189,6 +5205,10 @@ msgstr "已實現兌換影響"
 msgid "It depends on the volume you route and which revenue streams you turn on. Use the calculator above for a rough estimate, or apply to talk specifics with the team."
 msgstr "這取決於您路由的交易量以及啟用的收入來源。請使用上方計算器進行粗略估算，或提出申請，與團隊詳談。"
 
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
+msgid "Withdrawal to {sourceChainName} failed"
+msgstr "提取到 {sourceChainName} 失敗"
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter recipient address"
 msgstr "請輸入接收地址"
@@ -5257,10 +5277,6 @@ msgstr "大家正在打造的專案。"
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval cancelled"
 msgstr "授權已取消"
-
-#: src/domain/tokens/approveTokens.tsx
-msgid "Permit approvals are unavailable."
-msgstr "Permit 授權無法使用。"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -5747,10 +5763,6 @@ msgstr "執行止盈"
 msgid "Market Increase"
 msgstr "Market Increase"
 
-#: src/domain/tokens/approveTokens.tsx
-msgid "This token does not support permit approvals."
-msgstr "此代幣不支援 Permit 授權。"
-
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Include PnL in leverage display"
@@ -5999,6 +6011,7 @@ msgstr "近 180 天"
 msgid "Positive funding fees"
 msgstr "正向資金費用"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Loading…"
 msgstr "載入中…"
@@ -6026,6 +6039,10 @@ msgstr "未知的買入 GM 訂單"
 #: landing/src/pages/Builders/HeroSection/HeroSection.tsx
 msgid "Build on GMX.<0/>Get paid on every trade."
 msgstr "在 GMX 上建構。<0/>每筆交易都有收益。"
+
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
+msgid "Transfer not found"
+msgstr "找不到轉帳"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 msgid "Insufficient {tokenInSymbol} balance"
@@ -6450,6 +6467,10 @@ msgstr "無效交易"
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in {0} pool. Select a different pool."
 msgstr "{0} 池流動性不足。請選擇其他池。"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Enable token permits regardless of UI flags"
+msgstr "忽略 UI 旗標啟用代幣許可"
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets in your wallet"
@@ -7129,10 +7150,6 @@ msgstr "在圖表上顯示買入/賣出圖示"
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
 msgstr "此兌換需要外部路由。請用 {0} 支付 Gas 以啟用。"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX (Portuguese)"
-msgstr "GMX（葡萄牙語）"
-
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No eligible trades during the competition window"
@@ -7203,6 +7220,10 @@ msgstr "24小時"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "High price impact"
 msgstr "價格影響過高"
+
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
+msgid "This page is available on EVM networks only. Switch the network in the header, or go to <0>Trade</0>."
+msgstr "此頁面僅適用於 EVM 網路。請在頁首切換網路，或前往<0>交易</0>。"
 
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/NetFeeTooltip.tsx
@@ -8010,6 +8031,10 @@ msgstr "代幣符號（A 到 Z）"
 msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none"
 msgstr "選擇圖表上顯示哪些買入/賣出標記：您的所有歷史交易、僅您目前的開倉，或不顯示"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "At this trigger price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "在此觸發價格下，剩餘倉位將超過最大槓桿，訂單可能無法執行。"
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr "{orderText} 已更新"
@@ -8150,6 +8175,10 @@ msgstr "買入"
 msgid "Affiliate dashboard"
 msgstr "推廣夥伴儀表板"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first. Remaining margin: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
+msgstr "剩餘倉位將超過允許的最大槓桿。請平掉更大部分、減少提取金額，或先增加保證金。剩餘保證金：{remainingCollateralUsdText}，要求：{minCollateralUsdForLeverageText}"
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Capital used"
@@ -8270,6 +8299,10 @@ msgstr "勝率"
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 msgid "GM and GLV include markets you no longer hold"
 msgstr "GM 與 GLV 包含您已不再持有的市場"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first."
+msgstr "剩餘倉位將超過允許的最大槓桿。請平掉更大部分、減少提取金額，或先增加保證金。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading stats"
@@ -9237,6 +9270,10 @@ msgstr "扣除費用後保證金偏低。請存入更多資金以降低清算風
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
 msgstr "分開接收 {profitTokenSymbol} 和 {collateralTokenSymbol}"
 
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
+msgid "Trading on Solana is coming soon."
+msgstr "Solana 上的交易功能即將推出。"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min deposit: {0}"
 msgstr "最低存入金額：{0}"
@@ -9346,6 +9383,10 @@ msgstr "帳戶類型"
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 msgid "Collateral in"
 msgstr "抵押品代幣"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, close the position fully, or add margin first."
+msgstr "剩餘倉位將超過允許的最大槓桿。請平掉更大部分、完全平倉，或先增加保證金。"
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "EVENT NAME"
@@ -9626,6 +9667,7 @@ msgid "Copy"
 msgstr "複製"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Amount"
@@ -9634,6 +9676,10 @@ msgstr "金額"
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Integrate GMX"
 msgstr "整合 GMX"
+
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Take-Profit price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "在止盈價格下，剩餘倉位將超過最大槓桿，訂單可能無法執行。"
 
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Show line values in USD"
@@ -9841,6 +9887,7 @@ msgid "Max funding factor (long)"
 msgstr "最大資金因子（做多）"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient collateral to cover order costs"
 msgstr "抵押品不足以支付訂單成本"
 
@@ -10524,6 +10571,10 @@ msgstr "Saulius GMX 分析"
 msgid "Add RPC"
 msgstr "新增 RPC"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "Turn off \"Keep leverage\", close the full position, change the trigger price, or add margin."
+msgstr "請關閉「維持槓桿」、完全平倉、變更觸發價格或增加保證金。"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a collateral"
 msgstr "選擇抵押品"
@@ -10682,6 +10733,7 @@ msgstr "模擬提取時發生錯誤"
 msgid "Claims"
 msgstr "領取項目"
 
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Date"
@@ -10979,6 +11031,7 @@ msgstr "失敗次數"
 msgid "Min margin: {0}"
 msgstr "最低保證金：{0}"
 
+#: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TVChartContainer/constants.ts
@@ -11030,6 +11083,10 @@ msgstr "買入"
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
 msgstr "轉換"
+
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
+msgid "EVM networks only"
+msgstr "僅限 EVM 網路"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation risk alerts"
@@ -11510,10 +11567,6 @@ msgstr "以您方便的方式聯繫我們，我們會回覆您的確切等級—
 msgid "Change network"
 msgstr "更換網路"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Telegram group (Portuguese)"
-msgstr "Telegram 群組（葡萄牙語）"
-
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM is the liquidity provider token for GMX V2 markets. It accrues 63% of the fees generated by V2 markets."
 msgstr "GM 是 GMX V2 市場的流動性提供者代幣。它可累積 V2 市場所產生費用的 63%。"
@@ -11837,9 +11890,17 @@ msgstr "獲取 GMX 的提醒和公告，隨時掌握您的交易、清算風險�
 msgid "Use the Pay amount"
 msgstr "使用支付金額"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Stop-Loss price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "在止損價格下，剩餘倉位將超過最大槓桿，訂單可能無法執行。"
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated off-hours liquidation price"
 msgstr "預計非交易時段清算價格"
+
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Take-Profit and Stop-Loss prices, the remaining position would exceed max leverage and the orders may not execute."
+msgstr "在止盈和止損價格下，剩餘倉位將超過最大槓桿，訂單可能無法執行。"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Repeat transaction"
@@ -12259,10 +12320,6 @@ msgstr "年化績效"
 msgid "Direct smart contract integration"
 msgstr "直接整合智慧合約"
 
-#: src/domain/tokens/approveTokens.tsx
-msgid "Permit approvals are disabled for this token."
-msgstr "此代幣已停用 Permit 授權。"
-
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "LAST PRICE"
@@ -12275,6 +12332,10 @@ msgstr "您的錢包中已有一筆授權在等待。轉換會等待它執行，
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Cancelling {orderText}..."
 msgstr "正在取消 {orderText}..."
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The signed request could not be completed. Retry to deactivate with a wallet transaction."
+msgstr "無法完成已簽名的請求。請重試，以透過錢包交易停用。"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute margin deposit"
@@ -12670,6 +12731,10 @@ msgstr "累計獎勵"
 #: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 msgid "Not enough history yet"
 msgstr "歷史記錄尚不足"
+
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
+msgid "Failed to load transfer details"
+msgstr "無法載入轉帳詳情"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "This trigger is at or beyond the estimated liquidation price. The margin deposit will be attempted before liquidation when eligible, but execution is not guaranteed."
