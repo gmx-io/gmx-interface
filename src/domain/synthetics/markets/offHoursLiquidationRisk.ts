@@ -1,7 +1,7 @@
 import { ARBITRUM } from "sdk/configs/chainIds";
 import type { MarketInfo } from "sdk/utils/markets/types";
 
-export const OFF_HOURS_DOCS_URL = "https://docs.gmx.io/docs/trading/overview/#off-hours-behavior";
+export const OFF_HOURS_DOCS_URL = "https://docs.gmx.io/docs/trading/tradfi-markets#off-hours-behavior";
 
 const GOLD = "0x0Df2BE76F517BCF0000AbfFcB6344B3b2aC4Cc4f";
 const SILVER = "0x448Fa722717df299ee197E2F6d8EB7911EFF6cEc";

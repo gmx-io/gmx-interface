@@ -430,7 +430,7 @@ export function PositionItem(p: Props) {
             </Trans>
             <br />
             <br />
-            <Trans>Off-hours: daily 20:45–22:15 UTC (weekends Fri 20:45 → Sun 22:15 UTC).</Trans>
+            <Trans>Off-hours: daily 17:00–18:15 New York time (weekends Fri 17:00 → Sun 18:15 New York time).</Trans>
             <br />
             <br />
             <StatsTooltipRow
