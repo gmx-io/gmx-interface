@@ -1453,13 +1453,13 @@ export const DepositView = () => {
           <div className="text-body-medium text-typography-secondary">
             {isGlobalEmpty ? (
               <Trans>
-                Receive supported assets into your wallet on {networksList}, then deposit them to GMX Account.
+                Receive supported assets into your wallet on {networksList}, then deposit them to GMX Account
               </Trans>
             ) : depositViewChain === (settlementChainId as number) ? (
-              <Trans>Receive supported assets into your wallet on {networkName}, or choose another network.</Trans>
+              <Trans>Receive supported assets into your wallet on {networkName}, or choose another network</Trans>
             ) : (
               <Trans>
-                Receive {tokensList} into your wallet on {networkName}, or choose another network.
+                Receive {tokensList} into your wallet on {networkName}, or choose another network
               </Trans>
             )}
           </div>
@@ -1497,7 +1497,7 @@ export const DepositView = () => {
         {showEmptyState ? (
           <>
             <Button variant="primary-action" className="w-full shrink-0" type="button" onClick={handleReceiveToWallet}>
-              <Trans>Receive to Wallet</Trans>
+              <Trans>Receive to wallet</Trans>
             </Button>
             <Button
               variant="secondary"

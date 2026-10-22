@@ -71,24 +71,29 @@ describe("getContractErrorMessage — InsufficientCollateralUsd", () => {
   it("reports the remaining margin the contract returns, not a shortfall", () => {
     // 169976087486576063057841450000000n / 1e30 = 169.976… → $169.98; formatUsd puts a hair space after $
     expect(call({ remainingCollateralUsd: 169976087486576063057841450000000n }, true)).toMatch(
-      /^Max leverage exceeded\. Remaining margin \$\s?169\.98 is below the minimum for the position size\. Increase margin or reduce size$/
+      /^Max leverage exceeded\. Remaining margin \$\s?169\.98 is below the minimum for the position size\. Increase margin or reduce size\.$/
     );
   });
 
   it("keeps the sign of a negative remaining margin", () => {
     // -5e30 / 1e30 = -5 → -$5.00
     expect(call({ remainingCollateralUsd: -expandDecimals(5, 30) })).toMatch(
-      /^Max leverage exceeded\. Remaining margin -\$\s?5\.00 is below the minimum for the position size\. Increase margin or reduce size$/
+      /^Max leverage exceeded\. Remaining margin -\$\s?5\.00 is below the minimum for the position size\. Increase margin or reduce size\.$/
     );
   });
 
   it("falls back to the copy without numbers", () => {
-    expect(call({})).toBe("Max leverage exceeded. Increase margin or reduce size");
+    expect(call({})).toBe("Max leverage exceeded. Increase margin or reduce size.");
   });
 });
 
 describe("getContractErrorMessage — LiquidatablePosition", () => {
-  const call = (reason: string, extraArgs: Record<string, bigint> = {}, isSizeIncrease?: boolean) =>
+  const call = (
+    reason: string,
+    extraArgs: Record<string, bigint> = {},
+    isSizeIncrease?: boolean,
+    isDecrease?: boolean
+  ) =>
     getContractErrorMessage({
       errorData: {
         contractError: CustomErrorName.LiquidatablePosition,
@@ -100,6 +105,7 @@ describe("getContractErrorMessage — LiquidatablePosition", () => {
         },
       },
       isSizeIncrease,
+      isDecrease,
     });
 
   it("routes the leverage reason to the increase-specific copy for a size increase", () => {
@@ -111,7 +117,7 @@ describe("getContractErrorMessage — LiquidatablePosition", () => {
   it("adds the margin figures to the increase copy when the contract reports them", () => {
     // formatUsd separates the sign with a non-breaking space, so match on the shape
     expect(call("min collateral for leverage", { minCollateralUsdForLeverage: expandDecimals(120, 30) }, true)).toMatch(
-      /^The position cannot be increased at the current leverage\. Increase margin or reduce size\. Current margin: \$\s?90\.00, required: \$\s?120\.00$/
+      /^The position cannot be increased at the current leverage\. Increase margin or reduce size\. Current margin: \$\s?90\.00, required: \$\s?120\.00\.$/
     );
   });
 
@@ -128,13 +134,47 @@ describe("getContractErrorMessage — LiquidatablePosition", () => {
     expect(
       call("min collateral for leverage", { minCollateralUsdForLeverage: expandDecimals(120, 30) }, false)
     ).toMatch(
-      /^Margin is below the minimum required for the position size\. Current: \$\s?90\.00, required: \$\s?120\.00$/
+      /^Margin is below the minimum required for the position size\. Current: \$\s?90\.00, required: \$\s?120\.00\.$/
     );
   });
 
   it.each(["min collateral", "< 0"])("keeps the generic copy for reason '%s'", (reason) => {
     // formatUsd separates the sign with a non-breaking space, so match on the shape
     expect(call(reason)).toMatch(/^Position would be liquidatable\. Current: \$\s?90\.00, required: \$\s?100\.00$/);
+  });
+
+  it("routes the leverage reason to the remaining-position copy for a decrease or a withdrawal", () => {
+    expect(call("min collateral for leverage", {}, false, true)).toBe(
+      "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first."
+    );
+  });
+
+  it("shows the leverage-based minimum in the remaining-position copy, never the fixed minimum", () => {
+    expect(
+      call("min collateral for leverage", { minCollateralUsdForLeverage: expandDecimals(120, 30) }, false, true)
+    ).toMatch(
+      /^The remaining position would exceed the maximum allowed leverage\. Close a larger part, withdraw less, or add margin first\. Remaining margin: \$\s?90\.00, required: \$\s?120\.00$/
+    );
+  });
+
+  it.each(["min collateral", "< 0"])("keeps the generic copy for reason '%s' on a decrease", (reason) => {
+    expect(call(reason, {}, false, true)).toMatch(
+      /^Position would be liquidatable\. Current: \$\s?90\.00, required: \$\s?100\.00$/
+    );
+  });
+});
+
+describe("getContractErrorMessage — UnableToWithdrawCollateral", () => {
+  it("keeps its copy on a withdrawal", () => {
+    expect(
+      getContractErrorMessage({
+        errorData: {
+          contractError: CustomErrorName.UnableToWithdrawCollateral,
+          contractErrorArgs: { estimatedRemainingCollateralUsd: expandDecimals(90, 30) },
+        },
+        isDecrease: true,
+      })
+    ).toMatch(/^Can't withdraw collateral\. Remaining would be \$\s?90\.00, below minimum$/);
   });
 });
 
@@ -176,7 +216,7 @@ describe("getContractErrorMessage — GM/GLV and multichain flows PRO-4168", () 
     );
 
   const shortsWithdrawalMessage =
-    "Withdrawal unavailable: selling this amount would raise short traders' PnL-to-pool ratio to 48.01%, above the 45% limit. Try a smaller amount or try again later.";
+    "Withdrawal unavailable: selling this amount would raise short traders' PnL-to-pool ratio to 48.01%, above the 45% limit. Try a smaller amount or try again later";
 
   it.each([
     ["a simulation revert", viemRevert(wrapInExternalCall(pnlFactorExceededForShorts))],
@@ -233,7 +273,7 @@ describe("getContractErrorMessage — GM/GLV and multichain flows PRO-4168", () 
         contractErrorArgs: { pnlToPoolFactor: 623100000000000000000000000000n, maxPnlFactor: expandDecimals(6, 29) },
       },
       true,
-      "Withdrawal unavailable: selling this amount would raise long traders' PnL-to-pool ratio to 62.31%, above the 60% limit. Try a smaller amount or try again later.",
+      "Withdrawal unavailable: selling this amount would raise long traders' PnL-to-pool ratio to 62.31%, above the 60% limit. Try a smaller amount or try again later",
     ],
     [
       "PnL factor outside a withdrawal",
@@ -251,7 +291,7 @@ describe("getContractErrorMessage — GM/GLV and multichain flows PRO-4168", () 
         contractErrorArgs: { pnlToPoolFactor: 450040000000000000000000000000n, maxPnlFactor: expandDecimals(45, 28) },
       },
       true,
-      "Withdrawal unavailable: selling this amount would raise short traders' PnL-to-pool ratio to 45.01%, above the 45% limit. Try a smaller amount or try again later.",
+      "Withdrawal unavailable: selling this amount would raise short traders' PnL-to-pool ratio to 45.01%, above the 45% limit. Try a smaller amount or try again later",
     ],
     [
       "PnL factor that rounds to its limit outside a withdrawal",

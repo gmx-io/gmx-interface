@@ -29,6 +29,10 @@ const GROUPS: Groups = [
         text: msg`Limit`,
       },
       {
+        data: "trigger-stop-market",
+        text: msg`Stop Market`,
+      },
+      {
         data: "trigger-take-profit",
         text: msg`Take-Profit`,
       },

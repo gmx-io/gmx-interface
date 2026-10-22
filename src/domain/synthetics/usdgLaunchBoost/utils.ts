@@ -1,12 +1,6 @@
 import { parseUnits } from "viem";
 
-import {
-  USDG_LAUNCH_BOOST_PAUSED_AFTER_SECONDS,
-  USDG_LAUNCH_BOOST_ROUND_SECONDS,
-  USDG_LAUNCH_BOOST_TARGET_GLV_APR,
-  USDG_LAUNCH_BOOST_TARGET_GM_APR,
-  getIsUsdgPool,
-} from "config/usdgPools";
+import { USDG_LAUNCH_BOOST_TARGET_GLV_APR, USDG_LAUNCH_BOOST_TARGET_GM_APR, getIsUsdgPool } from "config/usdgPools";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import type { GlvOrMarketInfo } from "domain/synthetics/markets/types";
 import { getGlvOrMarketAddress } from "domain/synthetics/markets/utils";
@@ -18,7 +12,6 @@ export type UsdgLaunchBoost = { isGlv: boolean } & (
   | { status: "loading" }
   | { status: "target"; apr: bigint }
   | { status: "live"; apr: bigint }
-  | { status: "paused"; lastRoundPaidAt: number }
   | { status: "unavailable" }
 );
 
@@ -26,7 +19,6 @@ export function getUsdgLaunchBoost(p: {
   chainId: number;
   glvOrMarket: GlvOrMarketInfo;
   usdgBoostAprResult: UsdgBoostAprResult;
-  nowSeconds: number;
 }): UsdgLaunchBoost | undefined {
   const { glvOrMarket } = p;
 
@@ -71,12 +63,6 @@ export function getUsdgLaunchBoost(p: {
 
   if (!entry) {
     return { isGlv, status: "unavailable" };
-  }
-
-  const lastRoundPaidAt = entry.lastRoundTimestamp + USDG_LAUNCH_BOOST_ROUND_SECONDS;
-
-  if (p.nowSeconds - lastRoundPaidAt > USDG_LAUNCH_BOOST_PAUSED_AFTER_SECONDS) {
-    return { isGlv, status: "paused", lastRoundPaidAt };
   }
 
   return { isGlv, status: "live", apr: parseUnits(String(entry.boostApr), 30) };

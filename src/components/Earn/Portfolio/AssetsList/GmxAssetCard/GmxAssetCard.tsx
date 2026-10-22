@@ -285,6 +285,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
         <div className="mt-12 flex grow flex-col gap-8">
           <SyntheticsInfoRow
             label={<Trans>Staked GMX</Trans>}
+            qa="staked-gmx"
             value={
               <AmountWithUsdBalance
                 amount={processedData?.gmxInStakedGmx}
@@ -472,7 +473,7 @@ function StakingPowerAlerts({ stakingPowerData }: { stakingPowerData: StakingPow
             label={
               <Tooltip
                 variant="iconStroke"
-                handle={<Trans>Staking Power Share</Trans>}
+                handle={<Trans>Staking power share</Trans>}
                 content={
                   <Trans>
                     Your share of the total network staking power. Treasury rewards will be distributed proportionally

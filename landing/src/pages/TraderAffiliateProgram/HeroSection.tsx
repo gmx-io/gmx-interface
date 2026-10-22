@@ -60,7 +60,7 @@ export function HeroSection() {
           <Trans>
             Trade more, pay less.
             <br />
-            Refer, and earn.
+            Refer, and earn
           </Trans>
         </h1>
         <p className="leading-body-sm mt-12 text-14 -tracking-[0.448px] text-slate-400">

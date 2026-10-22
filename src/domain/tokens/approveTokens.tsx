@@ -6,6 +6,7 @@ import { maxUint256 } from "viem";
 import { getChainName, getExplorerUrl } from "config/chains";
 import { JUMPER_BRIDGE_URL } from "config/links";
 import { AddTokenPermitFn } from "context/TokenPermitsContext/TokenPermitsContextProvider";
+import { type ErrorLike, parseError, TxErrorType } from "lib/errors";
 import { INVALID_PERMIT_SIGNATURE_ERROR, PERMIT_WALLET_CHANGED_ERROR } from "lib/errors/customErrors";
 import { estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { helperToast } from "lib/helperToast";
@@ -52,6 +53,18 @@ type PermitFallbackReason = "failed" | "invalidSignature";
 export type ApproveTokensResult = {
   hash: `0x${string}`;
 };
+
+// parseError patterns are case-sensitive, so keep the old case-insensitive check for rejections without code 4001
+function getPermitErrorOutcome(error: unknown): "rejected" | "failed" {
+  if (getTxnErrorOutcome(error) === "rejected") {
+    return "rejected";
+  }
+
+  const message = (error as Error | undefined)?.message;
+  const lowerMessage = typeof message === "string" ? message.toLowerCase() : "";
+
+  return lowerMessage.includes("user rejected") || lowerMessage.includes("user denied") ? "rejected" : "failed";
+}
 
 export function getApproveSubmittedToastContent({ txUrl }: { txUrl: string }) {
   return (
@@ -116,11 +129,11 @@ export async function approveTokens({
       setIsApproving(false);
       return;
     } catch (e) {
+      // wallets can reject with a nullish value, hence the optional chaining below
       const error = e as Error;
-      const lowerMessage = error.message?.toLowerCase();
-      const isUserRejection = lowerMessage?.includes("user rejected") || lowerMessage?.includes("user denied");
+      const outcome = getPermitErrorOutcome(error);
 
-      if (isUserRejection) {
+      if (outcome === "rejected") {
         sendTokenPermitMetric({ ...permitMetricParams, outcome: "rejected" });
         sendMetric("permit", "rejected", error);
         onApproveFail?.(error, { isPermit: true });
@@ -130,13 +143,13 @@ export async function approveTokens({
       }
 
       // the approval was started for the previous account or chain, so neither a fallback nor a transaction fits
-      if (error.message === PERMIT_WALLET_CHANGED_ERROR) {
+      if (error?.message === PERMIT_WALLET_CHANGED_ERROR) {
         onApproveFail?.(error, { isPermit: true });
         setIsApproving(false);
         return;
       }
 
-      permitFallbackReason = error.message?.includes(INVALID_PERMIT_SIGNATURE_ERROR) ? "invalidSignature" : "failed";
+      permitFallbackReason = error?.message?.includes(INVALID_PERMIT_SIGNATURE_ERROR) ? "invalidSignature" : "failed";
 
       // a wallet timeout or rpc hiccup can pass next time, so only a bad signature keeps the token on approvals
       if (permitFallbackReason === "invalidSignature") {
@@ -145,7 +158,7 @@ export async function approveTokens({
 
       metrics.pushError(error, "approveTokens.permitError");
       sendTokenPermitMetric({ ...permitMetricParams, outcome: "fallback", reason: permitFallbackReason });
-      sendMetric("permit", getTxnErrorOutcome(error), error);
+      sendMetric("permit", outcome, error);
     }
   }
 
@@ -188,7 +201,8 @@ export async function approveTokens({
 
     return { hash: res.hash as `0x${string}` };
   } catch (e) {
-    sendMetric("transaction", getTxnErrorOutcome(e), e);
+    const outcome = getTxnErrorOutcome(e);
+    sendMetric("transaction", outcome, e);
     onApproveFail?.(e, { isPermit: false });
     // eslint-disable-next-line no-console
     console.error(e);
@@ -196,7 +210,8 @@ export async function approveTokens({
     if (
       ["not enough funds for gas", "failed to execute call with revert code InsufficientGasFunds"].includes(
         e.data?.message
-      )
+      ) ||
+      parseError(e as ErrorLike)?.txErrorType === TxErrorType.NotEnoughFunds
     ) {
       failMsg = (
         <div>
@@ -211,7 +226,7 @@ export async function approveTokens({
           </Trans>
         </div>
       );
-    } else if (e.message?.includes("User denied transaction signature")) {
+    } else if (outcome === "rejected") {
       failMsg = t`Approval cancelled`;
     } else {
       failMsg = (
@@ -246,7 +261,7 @@ function getPermitFallbackToastContent(reason: PermitFallbackReason) {
       {reasonText}
       <br />
       <br />
-      <Trans>A standard approval transaction is required to continue.</Trans>
+      <Trans>A standard approval transaction is required to continue</Trans>
     </div>
   );
 }

@@ -181,14 +181,14 @@ export function AvailableToTradeAssetsTitle() {
 
   return (
     <TitleWithBack backTo="main">
-      {srcChainId !== undefined ? <Trans>GMX Account balance</Trans> : <Trans>Available Assets</Trans>}
+      {srcChainId !== undefined ? <Trans>GMX Account balance</Trans> : <Trans>Available assets</Trans>}
     </TitleWithBack>
   );
 }
 
 export function TransferDetailsTitle() {
   const [selectedTransferGuid] = useGmxAccountSelectedTransferGuid();
-  const selectedTransfer = useGmxAccountFundingHistoryItem(selectedTransferGuid);
+  const { transfer: selectedTransfer } = useGmxAccountFundingHistoryItem(selectedTransferGuid);
 
   return (
     <TitleWithBack backTo="transferHistory">

@@ -36,8 +36,8 @@ export enum ReferralsTab {
 
 export const TAB_OPTIONS = [ReferralsTab.Traders, ReferralsTab.Affiliates, ReferralsTab.Distributions];
 const TAB_OPTION_LABELS = {
-  [ReferralsTab.Traders]: msg`Trader Benefits`,
-  [ReferralsTab.Affiliates]: msg`Affiliate Dashboard`,
+  [ReferralsTab.Traders]: msg`Trader benefits`,
+  [ReferralsTab.Affiliates]: msg`Affiliate dashboard`,
   [ReferralsTab.Distributions]: msg`Distributions`,
 };
 
@@ -84,7 +84,7 @@ function Referrals({ account, activeTab, hasAddressInUrl }: Props) {
 
       const baseLabel =
         option === ReferralsTab.Affiliates && isCreateReferralCodeTabLabel
-          ? t`Create Referral Code`
+          ? t`Create referral code`
           : localizedTabOptionLabels[option];
       const labelNode =
         isMegaethPointsActive && option === ReferralsTab.Affiliates ? (

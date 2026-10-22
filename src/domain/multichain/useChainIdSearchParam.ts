@@ -3,13 +3,17 @@ import { useHistory } from "react-router-dom";
 import { useAccount } from "wagmi";
 
 import type { SettlementChainId } from "config/chains";
-import { getChainIdFromSearchParam, getSettlementChainIdForSelectedChain } from "lib/chains/chainIdSearchParam";
+import {
+  getChainIdFromSearchParam,
+  getSettlementChainIdForSelectedChain,
+  SOLANA_SEARCH_PARAM,
+} from "lib/chains/chainIdSearchParam";
 import { extendError } from "lib/errors";
 import { SMART_WALLET_CHAIN_UNAVAILABLE_ERROR } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import useSearchParams from "lib/useSearchParams";
-import { switchNetwork } from "lib/wallets";
+import { selectSolanaNetworkInApp, switchNetwork } from "lib/wallets";
 import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 
 import { getSmartWalletChainUnavailableToastContent } from "components/Errors/errorToasts";
@@ -49,6 +53,13 @@ export function useChainIdSearchParam({
     };
 
     const requestedChainId = getChainIdFromSearchParam(chainIdParam);
+
+    if (requestedChainId === SOLANA_SEARCH_PARAM) {
+      processedChainIdParamRef.current = chainIdParam;
+      deleteChainIdParam();
+      selectSolanaNetworkInApp();
+      return;
+    }
 
     if (requestedChainId === undefined) {
       processedChainIdParamRef.current = chainIdParam;

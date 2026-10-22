@@ -7,19 +7,24 @@ import { getSubaccountApprovalKey, getSubaccountConfigKey } from "config/localSt
 import {
   selectExpressGlobalParams,
   selectGmxAccountGasPaymentToken,
+  selectSettlementChainExpressGlobalParams,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import { selectIsSubaccountRelayRouterEnabled } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { selectTradeboxIsFromTokenGmxAccount } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useCalcSelector } from "context/SyntheticsStateContext/utils";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
+import type { ExpressTxnParams } from "domain/synthetics/express";
 import {
   GMX_ACCOUNT_NETWORK_FEE_SOURCE,
   WALLET_NETWORK_FEE_SOURCE,
   getInsufficientFeeAction,
 } from "domain/synthetics/fees/networkFeeSource";
 import {
+  estimateSettlementChainRemoveSubaccountExpressParams,
   getIsSubaccountRemovalRequired,
   removeSubaccountExpressTxn,
+  removeSubaccountSettlementChainExpressTxn,
   removeSubaccountWalletTxn,
 } from "domain/synthetics/subaccount";
 import type { SignedSubaccountApproval, Subaccount, SubaccountSerializedConfig } from "domain/synthetics/subaccount";
@@ -27,7 +32,10 @@ import {
   getActivationPermitTokenAddresses,
   signActivationTokenPermits,
 } from "domain/synthetics/subaccount/activationTokenPermits";
-import { SubaccountRemovalResultUnknownError } from "domain/synthetics/subaccount/errors";
+import {
+  getShouldRetrySubaccountRemovalWithWalletTxn,
+  SubaccountRemovalResultUnknownError,
+} from "domain/synthetics/subaccount/errors";
 import { generateSubaccount } from "domain/synthetics/subaccount/generateSubaccount";
 import {
   deserializeSubaccountApproval,
@@ -56,6 +64,7 @@ import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { metrics } from "lib/metrics";
 import { useJsonRpcProvider } from "lib/rpc";
+import type { WalletSigner } from "lib/wallets";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 import { getIsContractAccount } from "lib/wallets/useWalletSessionChains";
@@ -91,19 +100,27 @@ export enum SubaccountDeactivationFailureReason {
   InsufficientNativeTokenBalance = "insufficientNativeTokenBalance",
   ExpressParamsNotReady = "expressParamsNotReady",
   ResultUnknown = "resultUnknown",
+  ResultUnknownWalletTxnNext = "resultUnknownWalletTxnNext",
+  SignedRequestFailed = "signedRequestFailed",
   Unknown = "unknown",
 }
 
 function getSubaccountDeactivationFailureReason(
   error: unknown,
-  isExpressPath: boolean
+  { isGmxAccount, shouldRetryWithWalletTxn }: { isGmxAccount: boolean; shouldRetryWithWalletTxn: boolean }
 ): SubaccountDeactivationFailureReason {
-  if (error instanceof ExpressEstimationInsufficientGasPaymentTokenBalanceError) {
+  if (isGmxAccount && error instanceof ExpressEstimationInsufficientGasPaymentTokenBalanceError) {
     return SubaccountDeactivationFailureReason.InsufficientGasPaymentTokenBalance;
   }
 
   if (error instanceof SubaccountRemovalResultUnknownError) {
-    return SubaccountDeactivationFailureReason.ResultUnknown;
+    return shouldRetryWithWalletTxn
+      ? SubaccountDeactivationFailureReason.ResultUnknownWalletTxnNext
+      : SubaccountDeactivationFailureReason.ResultUnknown;
+  }
+
+  if (shouldRetryWithWalletTxn) {
+    return SubaccountDeactivationFailureReason.SignedRequestFailed;
   }
 
   const errorData = parseError(error as ErrorLike);
@@ -113,15 +130,16 @@ function getSubaccountDeactivationFailureReason(
   }
 
   if (
-    errorData?.contractError === "InsufficientMultichainBalance" ||
-    errorData?.contractError === "InsufficientRelayFee" ||
-    errorData?.contractError === "InsufficientFunds"
+    isGmxAccount &&
+    (errorData?.contractError === "InsufficientMultichainBalance" ||
+      errorData?.contractError === "InsufficientRelayFee" ||
+      errorData?.contractError === "InsufficientFunds")
   ) {
     return SubaccountDeactivationFailureReason.InsufficientGasPaymentTokenBalance;
   }
 
   if (errorData?.txErrorType === TxErrorType.NotEnoughFunds) {
-    return isExpressPath
+    return isGmxAccount
       ? SubaccountDeactivationFailureReason.InsufficientGasPaymentTokenBalance
       : SubaccountDeactivationFailureReason.InsufficientNativeTokenBalance;
   }
@@ -145,6 +163,41 @@ function getSubaccountDeactivationFailureTokenSymbol({
   }
 
   return gasPaymentToken?.symbol;
+}
+
+// undefined means the removal goes through the wallet transaction, without asking for a signature first
+async function getSettlementChainRemovalExpressParams({
+  chainId,
+  account,
+  signer,
+  subaccount,
+  calcSelector,
+}: {
+  chainId: ContractsChainId;
+  account: string;
+  signer: WalletSigner;
+  subaccount: Subaccount;
+  calcSelector: ReturnType<typeof useCalcSelector>;
+}): Promise<ExpressTxnParams | undefined> {
+  try {
+    const globalExpressParams = calcSelector(selectSettlementChainExpressGlobalParams);
+
+    // the latest synthetics state can belong to another chain, e.g. on an account page
+    if (globalExpressParams?.chainId !== chainId || !calcSelector(selectIsSubaccountRelayRouterEnabled)) {
+      return undefined;
+    }
+
+    return await estimateSettlementChainRemoveSubaccountExpressParams({
+      chainId,
+      account,
+      signer,
+      subaccount,
+      globalExpressParams,
+    });
+  } catch (error) {
+    metrics.pushError(error, "subaccount.getSettlementChainRemovalExpressParams");
+    return undefined;
+  }
 }
 
 export type SubaccountState = {
@@ -267,6 +320,10 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
   ]);
 
   const calcSelector = useCalcSelector();
+
+  // once a signed removal fails, the next attempts use the wallet transaction
+  const walletTxnRemovalKeyRef = useRef<string | undefined>(undefined);
+  const unknownResultRemovalKeyRef = useRef<string | undefined>(undefined);
 
   const updateSubaccountSettings = useCallback(
     async function updateSubaccountSettings({
@@ -419,6 +476,9 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       }
 
       setSubaccountActivationState(SubaccountActivationState.Success);
+      // a new session starts with the signed removal again, whatever happened to the previous one
+      walletTxnRemovalKeyRef.current = undefined;
+      unknownResultRemovalKeyRef.current = undefined;
 
       // only wallet-funded orders on the settlement chain spend through the Router; not awaited, so a wallet
       // that never answers a permit prompt can't hold the activation
@@ -488,10 +548,17 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     setSubaccountDeactivationFailureReason(undefined);
     setSubaccountDeactivationState(SubaccountDeactivationState.Deactivating);
 
+    const removalKey = `${chainId}:${subaccount.address}`;
+    let settlementChainExpressParams: ExpressTxnParams | undefined;
+
     try {
-      if (!(await getIsSubaccountRemovalRequired({ chainId, subaccount, account }))) {
+      const isAfterUnknownResult = unknownResultRemovalKeyRef.current === removalKey;
+
+      if (!(await getIsSubaccountRemovalRequired({ chainId, subaccount, account, isAfterUnknownResult }))) {
         setSubaccountDeactivationState(SubaccountDeactivationState.Success);
 
+        walletTxnRemovalKeyRef.current = undefined;
+        unknownResultRemovalKeyRef.current = undefined;
         resetStoredApproval();
         resetStoredConfig();
         refreshSubaccountData();
@@ -520,11 +587,32 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
           globalExpressParams,
         });
       } else {
-        await removeSubaccountWalletTxn(chainId, signer, subaccount.address);
+        if (walletTxnRemovalKeyRef.current !== removalKey) {
+          settlementChainExpressParams = await getSettlementChainRemovalExpressParams({
+            chainId,
+            account,
+            signer,
+            subaccount,
+            calcSelector,
+          });
+        }
+
+        if (settlementChainExpressParams) {
+          await removeSubaccountSettlementChainExpressTxn({
+            chainId,
+            signer,
+            subaccount,
+            expressParams: settlementChainExpressParams,
+          });
+        } else {
+          await removeSubaccountWalletTxn(chainId, signer, subaccount.address);
+        }
       }
 
       setSubaccountDeactivationState(SubaccountDeactivationState.Success);
 
+      walletTxnRemovalKeyRef.current = undefined;
+      unknownResultRemovalKeyRef.current = undefined;
       resetStoredApproval();
       resetStoredConfig();
       refreshSubaccountData();
@@ -534,9 +622,24 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       console.error(error);
       metrics.pushError(error, "subaccount.tryDisableSubaccount");
 
-      const failureReason = getSubaccountDeactivationFailureReason(error, srcChainId !== undefined);
+      const isGmxAccount = srcChainId !== undefined;
+      const shouldRetryWithWalletTxn =
+        settlementChainExpressParams !== undefined && getShouldRetrySubaccountRemovalWithWalletTxn(error);
 
-      if (failureReason === SubaccountDeactivationFailureReason.ResultUnknown) {
+      if (shouldRetryWithWalletTxn) {
+        walletTxnRemovalKeyRef.current = removalKey;
+      }
+
+      if (error instanceof SubaccountRemovalResultUnknownError) {
+        unknownResultRemovalKeyRef.current = removalKey;
+      }
+
+      const failureReason = getSubaccountDeactivationFailureReason(error, { isGmxAccount, shouldRetryWithWalletTxn });
+
+      if (
+        failureReason === SubaccountDeactivationFailureReason.ResultUnknown ||
+        failureReason === SubaccountDeactivationFailureReason.ResultUnknownWalletTxnNext
+      ) {
         refreshSubaccountData();
       }
 
@@ -733,28 +836,34 @@ function SubaccountDeactivateNotification({ toastId }: { toastId: number }) {
 
     switch (subaccountDeactivationFailureReason) {
       case SubaccountDeactivationFailureReason.Rejected:
-        text = t`The signature request was rejected in your wallet. Retry and confirm the request to deactivate.`;
+        text = t`The signature request was rejected in your wallet. Retry and confirm the request to deactivate`;
         break;
       case SubaccountDeactivationFailureReason.InsufficientGasPaymentTokenBalance: {
         const tokenSymbol = subaccountDeactivationFailureTokenSymbol;
         text = tokenSymbol
           ? `${t`Insufficient ${tokenSymbol} in your GMX Account for gas.`} ${getInsufficientFeeAction({ tokenSymbol, feeSource: GMX_ACCOUNT_NETWORK_FEE_SOURCE })}`
-          : t`Insufficient gas payment token balance in your GMX Account to cover network fees. Deposit funds and retry.`;
+          : t`Insufficient gas payment token balance in your GMX Account to cover network fees. Deposit funds and retry`;
         break;
       }
       case SubaccountDeactivationFailureReason.InsufficientNativeTokenBalance: {
         const tokenSymbol = getNativeToken(chainId).symbol;
-        text = `${t`Insufficient ${tokenSymbol} in your Wallet for gas.`} ${getInsufficientFeeAction({ tokenSymbol, feeSource: WALLET_NETWORK_FEE_SOURCE })}`;
+        text = `${t`Insufficient ${tokenSymbol} in your wallet for gas.`} ${getInsufficientFeeAction({ tokenSymbol, feeSource: WALLET_NETWORK_FEE_SOURCE })}`;
         break;
       }
       case SubaccountDeactivationFailureReason.ExpressParamsNotReady:
-        text = t`Express transaction data is still loading. Please retry in a few seconds.`;
+        text = t`Express transaction data is still loading. Retry in a few seconds`;
         break;
       case SubaccountDeactivationFailureReason.ResultUnknown:
-        text = t`The request was sent, but its result could not be confirmed. It may have gone through — retry to check and finish the deactivation.`;
+        text = t`The request was sent, but its result could not be confirmed. It may have gone through — retry to check and finish the deactivation`;
+        break;
+      case SubaccountDeactivationFailureReason.ResultUnknownWalletTxnNext:
+        text = t`The request was sent, but its result could not be confirmed. Retry to check: if it didn't go through, deactivation continues with a wallet transaction.`;
+        break;
+      case SubaccountDeactivationFailureReason.SignedRequestFailed:
+        text = t`The signed request could not be completed. Retry to deactivate with a wallet transaction.`;
         break;
       default:
-        text = t`An unexpected error occurred. Please retry.`;
+        text = t`An unexpected error occurred. Retry`;
         break;
     }
 

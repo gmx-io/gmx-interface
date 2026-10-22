@@ -99,7 +99,7 @@ function EarningsStrip({
 
   return (
     <div className="grid grid-cols-3 divide-x-1/2 divide-dashed divide-slate-600 rounded-8 border-1/2 border-dashed border-slate-600 bg-slate-900/[0.88] px-12 py-6">
-      <EarningsStripCell label={<Trans>7d Earnings</Trans>}>
+      <EarningsStripCell label={<Trans>7d earnings</Trans>}>
         <EarningValue
           value={earnings?.recent}
           isLoading={isAttributable && isLoading}
@@ -257,6 +257,7 @@ export function GmGlvAssetCard({
         )}
         <SyntheticsInfoRow
           label={<Trans>Balance</Trans>}
+          qa={`lp-balance-${marketAddress}`}
           value={
             balance !== 0n ? (
               tooltipContent ? (
@@ -289,7 +290,7 @@ export function GmGlvAssetCard({
           label={<Trans>Total performance APY</Trans>}
           value={
             totalPerformanceApy !== undefined ? (
-              formatPercentage(totalPerformanceApy, { bps: false })
+              formatPercentage(totalPerformanceApy, { bps: false, signed: true, showPlus: false })
             ) : isPerformanceLoading ? (
               <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={50} className="leading-base" />
             ) : (
@@ -301,7 +302,7 @@ export function GmGlvAssetCard({
           label={<Trans>30d performance APY</Trans>}
           value={
             performanceApy30d !== undefined ? (
-              formatPercentage(performanceApy30d, { bps: false })
+              formatPercentage(performanceApy30d, { bps: false, signed: true, showPlus: false })
             ) : isPerformanceLoading ? (
               <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={50} className="leading-base" />
             ) : (

@@ -60,6 +60,10 @@ const TX_ERROR_PATTERNS: { [key in TxErrorType]: ErrorPattern[] } = {
   ],
 };
 
+// EIP-1193 and WalletConnect (CAIP-25) user rejection codes, as viem maps them; ethers' BrowserProvider maps only 4001.
+// Checked after the patterns so they only classify otherwise unknown errors
+const USER_REJECTED_REQUEST_CODES = [4001, 5000];
+
 export enum CustomErrorName {
   DisabledMarket = "DisabledMarket",
   EndOfOracleSimulation = "EndOfOracleSimulation",
@@ -161,6 +165,10 @@ export function extractTxnError(ex: TxError): [string, TxErrorType | null, any] 
         return [message, type as TxErrorType, ex.data];
       }
     }
+  }
+
+  if (typeof code === "number" && USER_REJECTED_REQUEST_CODES.includes(code)) {
+    return [message, TxErrorType.UserDenied, ex.data];
   }
 
   return [message, null, ex.data];

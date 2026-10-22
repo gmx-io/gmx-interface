@@ -44,6 +44,21 @@ describe("FallbackTracker - endpoint selection and logic", () => {
       expect(stats?.endpoint).toBe(config.primary);
     });
 
+    it("returns the newest check result first PRO-4457", () => {
+      const config = createMockConfig();
+      const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
+
+      const older = createMockCheckResult({ endpoint: config.primary, success: false, stats: undefined });
+      const newer = createMockCheckResult({ endpoint: config.primary });
+      tracker.state.checkStats.push(
+        { timestamp: Date.now() - 1000, results: { [config.primary]: older } },
+        { timestamp: Date.now(), results: { [config.primary]: newer } }
+      );
+
+      expect(tracker.getEndpointStats(config.primary)?.checkResults).toEqual([newer, older]);
+    });
+
     it("should return endpoint stats without checkResult when no check results exist", () => {
       const config = createMockConfig();
       const tracker = new FallbackTracker(config);

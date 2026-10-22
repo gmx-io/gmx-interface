@@ -83,7 +83,7 @@ function SplitReceiveSwapProfitFeeWarning({
       Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (
       <span className="font-medium text-yellow-300">{swapProfitFeeUsd}</span>). Receive {profitTokenSymbol} and{" "}
       {collateralTokenSymbol} separately to skip the swap.{" "}
-      <ExternalLink href={RECEIVE_TOKEN_DOCS_URL}>Read more</ExternalLink>
+      <ExternalLink href={RECEIVE_TOKEN_DOCS_URL}>Read more</ExternalLink>.
     </Trans>
   );
 }

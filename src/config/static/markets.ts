@@ -4,8 +4,16 @@
 
   However, this files can be a dependency for the client code.
 */
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, MEGAETH, ContractsChainId } from "sdk/configs/chains";
-import { MARKETS as SDK_MARKETS } from "sdk/configs/markets";
+import {
+  ARBITRUM,
+  ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  MEGAETH,
+  NetworkId,
+  SOLANA_NETWORK_ID,
+} from "sdk/configs/chains";
+import { getMarketsByChainId } from "sdk/configs/markets";
 
 type MarketUiConfig = {
   enabled: boolean;
@@ -15,7 +23,8 @@ type MarketUiConfig = {
   ATTENTION
   When adding new markets, please add them also to the end of the list in ./sortedMarkets.ts
 */
-const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig>> = {
+const MARKETS_UI_CONFIGS: Record<NetworkId, Record<string, MarketUiConfig>> = {
+  [SOLANA_NETWORK_ID]: {},
   [ARBITRUM]: {
     // BTC/USD [WBTC.e-USDC]
     "0x47c031236e19d024b42f8AE6780E44A573170703": {
@@ -517,6 +526,22 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0x408E8e83d4b8Ac4BDefFDF896B49268A5FE5Ef44": {
       enabled: true,
     },
+    // NEAR/USD [USDG-USDG]
+    "0x54bc430A788DFFD4ae35e751E10899489f5a953f": {
+      enabled: true,
+    },
+    // XRP/USD [USDG-USDG]
+    "0xc9ED746D613eEfC0F196658f6030e90482593004": {
+      enabled: true,
+    },
+    // ZEC/USD [USDG-USDG]
+    "0x2CeEafcA180B07C9d1d2f1086f8f59AAFd282832": {
+      enabled: true,
+    },
+    // HYPE/USD [USDG-USDG]
+    "0x162C091263fBb3dfAf1D55DCC979533EB341DA5f": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
@@ -782,10 +807,10 @@ export function isShiftIntoDisabledMarket(chainId: number, marketTokenAddress: s
   return SHIFT_INTO_DISABLED_MARKET_ADDRESSES[chainId]?.has(marketTokenAddress) ?? false;
 }
 
-export const MARKETS = (Object.keys(MARKETS_UI_CONFIGS) as unknown as ContractsChainId[]).reduce(
+export const MARKETS = (Object.keys(MARKETS_UI_CONFIGS).map(Number) as NetworkId[]).reduce(
   (acc, network) => {
     const uiConfigs = MARKETS_UI_CONFIGS[network];
-    const sdkMarkets = SDK_MARKETS[network];
+    const sdkMarkets = getMarketsByChainId(network);
     return {
       ...acc,
       [network]: Object.keys(uiConfigs).reduce((acc, address) => {
