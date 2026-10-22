@@ -5880,6 +5880,10 @@ msgstr "Unstaking more than 20% of your max historical staked GMX or esGMX will 
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 
+#: src/components/PositionEditor/PositionEditor.tsx
+msgid "Paxos converts USDC from your wallet on {settlementChainName}."
+msgstr "Paxos converts USDC from your wallet on {settlementChainName}."
+
 #: src/pages/ReferralsTier/ReferralsTier.tsx
 msgid "Current tier:"
 msgstr "Current tier:"

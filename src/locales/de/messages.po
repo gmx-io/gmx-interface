@@ -5880,6 +5880,10 @@ msgstr "Wenn Sie mehr als 20 % Ihres historischen Maximums an gestaktem GMX oder
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "Kein Preiseinfluss. Einheitlicher Ausführungspreis für<0/>das Erhöhen von Shorts oder Reduzieren von Longs bei<1/>dieser Größe."
 
+#: src/components/PositionEditor/PositionEditor.tsx
+msgid "Paxos converts USDC from your wallet on {settlementChainName}."
+msgstr "Paxos wandelt USDC aus deiner Wallet auf {settlementChainName} um."
+
 #: src/pages/ReferralsTier/ReferralsTier.tsx
 msgid "Current tier:"
 msgstr "Aktuelle Stufe:"

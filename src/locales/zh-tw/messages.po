@@ -5880,6 +5880,10 @@ msgstr "解除質押超過您歷史最高質押 GMX 或 esGMX 數量的 20%，�
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "無價格影響。以此規模<0/>加倉做空或減倉做多時<1/>採用單一成交價格。"
 
+#: src/components/PositionEditor/PositionEditor.tsx
+msgid "Paxos converts USDC from your wallet on {settlementChainName}."
+msgstr "Paxos 轉換的是您在 {settlementChainName} 上錢包中的 USDC。"
+
 #: src/pages/ReferralsTier/ReferralsTier.tsx
 msgid "Current tier:"
 msgstr "目前等級："

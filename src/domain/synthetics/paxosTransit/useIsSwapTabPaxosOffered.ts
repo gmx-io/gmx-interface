@@ -41,9 +41,9 @@ export function useIsSwapTabPaxosOffered({
   const { isWhitelistIgnored, isStandardForced, isMocked, thresholdUsdOverride } = usePaxosTransitDebugSettings();
   const api: TransitApi | undefined = isMocked ? mockTransitApi : sdk;
   const paxosTransitConfig = getPaxosTransitConfig(chainId);
+  const isActive = enabled && paxosTransitConfig !== undefined && api !== undefined;
   // the Swap tab runs Paxos only from the wallet on the settlement chain
-  const isActive =
-    enabled && srcChainId === undefined && !isGmxAccount && paxosTransitConfig !== undefined && api !== undefined;
+  const isPaidOutsideWallet = srcChainId !== undefined || isGmxAccount;
 
   const { data: feeTierData, error: feeTierError } = useSWR(
     isActive && account !== undefined ? getTradeboxPaxosFeeTierKey(chainId, account, isMocked) : null,
@@ -63,17 +63,18 @@ export function useIsSwapTabPaxosOffered({
 
   const thresholdUsd = thresholdUsdOverride ?? paxosTransitConfig?.thresholdUsd;
 
-  // until the fee tier answers, or when it fails, the Swap tab's choice is unknown, so Paxos copy is held back;
-  // a minimum order size that hasn't loaded counts as none, as on the Swap tab
+  // until the fee tier and minimum order sizes answer, or when the fee tier fails, the Swap tab's choice is unknown,
+  // so Paxos copy is held back; a minimum order size that failed to load counts as none, as on the Swap tab
   if (
     !isActive ||
     feeTierError ||
     feeTierData === undefined ||
+    minOrderSizes.isLoading ||
     amount === undefined ||
     amountUsd === undefined ||
     thresholdUsd === undefined
   ) {
-    return { isOffered: false, minimumText: undefined };
+    return { isOffered: false, minimumText: undefined, isWalletOnly: false };
   }
 
   const routeStates = getPaxosRouteStates({
@@ -88,13 +89,13 @@ export function useIsSwapTabPaxosOffered({
     standardMinOrderSize: minOrderSizes.standardFee,
   });
   // a zero-fee route short on capacity is still offered, with the capacity choice on the Swap tab
-  const isOffered =
+  const isRouteOffered =
     routeStates.paxosZeroFee.status === "quote" ||
     routeStates.paxosZeroFee.status === "capacityShort" ||
     routeStates.paxosStandard.status === "quote";
 
-  if (isOffered) {
-    return { isOffered, minimumText: undefined };
+  if (isRouteOffered) {
+    return { isOffered: !isPaidOutsideWallet, minimumText: undefined, isWalletOnly: isPaidOutsideWallet };
   }
 
   const usdc = getToken(chainId, paxosTransitConfig!.usdcAddress);
@@ -124,5 +125,5 @@ export function useIsSwapTabPaxosOffered({
     minimumText = formatMinOrderSize(minOrderSizes.standardFee);
   }
 
-  return { isOffered, minimumText };
+  return { isOffered: false, minimumText, isWalletOnly: false };
 }

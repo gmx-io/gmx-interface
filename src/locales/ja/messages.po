@@ -5880,6 +5880,10 @@ msgstr "過去最大のステーク済みGMXまたはesGMXの20%を超えてア�
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "価格への影響はありません。このサイズでの<0/>ショートの増加またはロングの減少に対して<1/>単一の約定価格が適用されます。"
 
+#: src/components/PositionEditor/PositionEditor.tsx
+msgid "Paxos converts USDC from your wallet on {settlementChainName}."
+msgstr "Paxosは{settlementChainName}上のウォレットにあるUSDCを変換します。"
+
 #: src/pages/ReferralsTier/ReferralsTier.tsx
 msgid "Current tier:"
 msgstr "現在のティア:"

@@ -5880,6 +5880,10 @@ msgstr ""
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr ""
 
+#: src/components/PositionEditor/PositionEditor.tsx
+msgid "Paxos converts USDC from your wallet on {settlementChainName}."
+msgstr ""
+
 #: src/pages/ReferralsTier/ReferralsTier.tsx
 msgid "Current tier:"
 msgstr ""

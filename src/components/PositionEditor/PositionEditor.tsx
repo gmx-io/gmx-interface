@@ -5,6 +5,7 @@ import { useHistory } from "react-router-dom";
 import { useKey } from "react-use";
 import { Address } from "viem";
 
+import { getChainName } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { isSettlementChain } from "config/multichain";
 import { getUsdgConversionTokenAddress } from "config/usdgPools";
@@ -378,12 +379,17 @@ export function PositionEditor() {
     collateralToken && restAmount !== undefined
       ? convertToUsd(restAmount, collateralToken.decimals, getMidPrice(collateralToken.prices))
       : undefined;
-  const { isOffered: isPaxosOfferedForRest, minimumText: paxosMinimumText } = useIsSwapTabPaxosOffered({
+  const {
+    isOffered: isPaxosOfferedForRest,
+    minimumText: paxosMinimumText,
+    isWalletOnly: isPaxosWalletOnly,
+  } = useIsSwapTabPaxosOffered({
     amount: restAmount,
     amountUsd: restUsd,
     isGmxAccount: isCollateralTokenFromGmxAccount,
     enabled: isConversionTooLarge,
   });
+  const settlementChainName = getChainName(chainId);
   const maxInstantAmountText =
     depositMaxInstantAmount !== undefined && collateralToken
       ? formatMaxInstantAmount(collateralToken, depositMaxInstantAmount)
@@ -847,6 +853,10 @@ export function PositionEditor() {
                         <Trans>In the Swap tab · arrives separately</Trans>
                       </span>
                     </Button>
+                  ) : isPaxosWalletOnly ? (
+                    <div className="text-12 text-typography-secondary">
+                      <Trans>Paxos converts USDC from your wallet on {settlementChainName}.</Trans>
+                    </div>
                   ) : (
                     paxosMinimumText && (
                       <div className="text-12 text-typography-secondary">
