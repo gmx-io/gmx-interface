@@ -642,10 +642,21 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
 
   const isUsdgConversionActiveRef = useLatest(usdgConversion.isBusy || usdgConversion.isOrderAutoSubmitArmed);
 
+  const triggerPriceResetKeyRef = useRef<string>();
+
   useEffect(
     function resetTriggerPrice() {
+      const resetKey = `${toTokenAddress}:${tradeMode}`;
+      const isMount = triggerPriceResetKeyRef.current === undefined;
+
+      if (triggerPriceResetKeyRef.current === resetKey) {
+        return;
+      }
+
+      triggerPriceResetKeyRef.current = resetKey;
+
       // a remount mid-conversion would otherwise wipe the price the order is about to be sent with
-      if (isUsdgConversionActiveRef.current) {
+      if (isMount && isUsdgConversionActiveRef.current) {
         return;
       }
 

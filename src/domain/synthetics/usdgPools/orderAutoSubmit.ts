@@ -20,8 +20,9 @@ export function getOrderAutoSubmitStep(p: {
   }
 
   if (p.approvalTokenAddress !== undefined) {
-    // the same token asking again means its approval was rejected
-    return p.isApprovalRequested ? "stop" : "approve";
+    // an approval already asked for is either still in the wallet (a remount drops the approving state) or was
+    // rejected; either way it isn't asked again, and the arm's expiry or a tap on the trade box ends the wait
+    return p.isApprovalRequested ? "wait" : "approve";
   }
 
   return "submit";

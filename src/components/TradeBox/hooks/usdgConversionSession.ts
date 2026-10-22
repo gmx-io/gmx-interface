@@ -23,21 +23,23 @@ export type UsdgConversionSession = {
   // bumped on every reset, so a receipt that lands after a reset is ignored
   generation: number;
   lastConversion: { marketAddress: string | undefined; amountOut: bigint } | undefined;
-  orderAutoSubmitArm:
-    | { setupKey: string; armedAt: number; hasMarginLanded: boolean; requestedApprovalTokens: string[] }
-    | undefined;
+  orderAutoSubmitArm: { setupKey: string; armedAt: number; requestedApprovalTokens: string[] } | undefined;
 };
+
+export const IDLE_USDG_CONVERSION_STEP = {
+  step: "idle",
+  convertingSince: undefined,
+  relayTaskId: undefined,
+  pending: undefined,
+} satisfies Partial<UsdgConversionSession>;
 
 /**
  * The convert step outlives the trade box: a layout change across the tablet breakpoint remounts it while the
  * swap is in flight, and the order step has to carry on afterwards.
  */
 let session: UsdgConversionSession = {
+  ...IDLE_USDG_CONVERSION_STEP,
   owner: undefined,
-  step: "idle",
-  convertingSince: undefined,
-  relayTaskId: undefined,
-  pending: undefined,
   generation: 0,
   lastConversion: undefined,
   orderAutoSubmitArm: undefined,

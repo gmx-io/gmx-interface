@@ -1,5 +1,5 @@
 import { t, Trans } from "@lingui/macro";
-import { ReactNode, useCallback, useEffect, useMemo } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { useLatest } from "react-use";
 
@@ -68,6 +68,7 @@ import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import {
   getUsdgConversionSession,
+  IDLE_USDG_CONVERSION_STEP,
   type PendingUsdgConversion,
   updateUsdgConversionSession,
   useUsdgConversionSession,
@@ -77,6 +78,7 @@ import {
 const CONVERSION_TIMEOUT_MS = 3 * 60 * 1000;
 // covers loading the order's network fees and signing an approval; after it the trader uses the regular button
 const ORDER_AUTO_SUBMIT_TIMEOUT_MS = 2 * 60 * 1000;
+const BALANCE_WAIT_TIMEOUT_MS = 30 * 1000;
 
 type ButtonStateOverride = {
   text: ReactNode;
@@ -251,7 +253,14 @@ export function useTradeboxUsdgConversion({
   });
 
   const conversionSession = useUsdgConversionSession();
-  const { step, convertingSince, relayTaskId, lastConversion, orderAutoSubmitArm } = conversionSession;
+  const {
+    step,
+    convertingSince,
+    relayTaskId,
+    pending: pendingConversion,
+    lastConversion,
+    orderAutoSubmitArm,
+  } = conversionSession;
   // the order the trader set up when converting; the auto submit only sends that one
   const orderSetupKey = JSON.stringify([
     tradeType,
@@ -269,11 +278,8 @@ export function useTradeboxUsdgConversion({
   const resetConversion = useCallback(() => {
     updateUsdgConversionSession((current) => ({
       ...current,
+      ...IDLE_USDG_CONVERSION_STEP,
       generation: current.generation + 1,
-      pending: undefined,
-      relayTaskId: undefined,
-      step: "idle",
-      convertingSince: undefined,
     }));
   }, []);
 
@@ -389,7 +395,7 @@ export function useTradeboxUsdgConversion({
 
   useEffect(
     function applyExecutedConversion() {
-      const { pending } = conversionSession;
+      const pending = pendingConversion;
 
       if (step !== "converting" || !pending || !account) {
         return;
@@ -457,12 +463,7 @@ export function useTradeboxUsdgConversion({
             ...current,
             lastConversion: { marketAddress: pending.marketAddress, amountOut },
             orderAutoSubmitArm: isOrderSetupUnchanged
-              ? {
-                  setupKey: pending.orderSetupKey,
-                  armedAt: Date.now(),
-                  hasMarginLanded: false,
-                  requestedApprovalTokens: [],
-                }
+              ? { setupKey: pending.orderSetupKey, armedAt: Date.now(), requestedApprovalTokens: [] }
               : current.orderAutoSubmitArm,
           }));
           resetConversion();
@@ -472,10 +473,10 @@ export function useTradeboxUsdgConversion({
       account,
       chainId,
       latestMarketAddress,
-      conversionSession,
       latestOrderSetupKey,
       marketAddress,
       orderStatuses,
+      pendingConversion,
       resetConversion,
       setFocusedInput,
       setFromTokenAddress,
@@ -496,12 +497,9 @@ export function useTradeboxUsdgConversion({
       // the executed swap is matched by account and chain, so after a switch it would only clear on the timeout
       updateUsdgConversionSession((current) => ({
         ...current,
+        ...IDLE_USDG_CONVERSION_STEP,
         owner: { account, chainId },
         generation: current.generation + 1,
-        pending: undefined,
-        relayTaskId: undefined,
-        step: "idle",
-        convertingSince: undefined,
         lastConversion: undefined,
         orderAutoSubmitArm: undefined,
       }));
@@ -737,24 +735,37 @@ export function useTradeboxUsdgConversion({
     []
   );
 
+  // per mount: a remount gets a fresh grace render before a changed margin counts as a change
+  const landedArmedAtRef = useRef<number>();
+
   useEffect(
     function disarmOrderAutoSubmit() {
-      if (orderAutoSubmitArm === undefined) {
+      if (orderAutoSubmitArmedAt === undefined) {
         return;
       }
 
       // the pay token switches a render after the arm, so only a change after the margin landed disarms
-      if (isOrderAutoSubmitPending && !orderAutoSubmitArm.hasMarginLanded) {
-        updateUsdgConversionSession((current) =>
-          current.orderAutoSubmitArm
-            ? { ...current, orderAutoSubmitArm: { ...current.orderAutoSubmitArm, hasMarginLanded: true } }
-            : current
-        );
-      } else if (!isOrderAutoSubmitPending && orderAutoSubmitArm.hasMarginLanded) {
+      if (isOrderAutoSubmitPending) {
+        landedArmedAtRef.current = orderAutoSubmitArmedAt;
+      } else if (landedArmedAtRef.current === orderAutoSubmitArmedAt) {
         stopOrderAutoSubmit();
       }
     },
-    [isOrderAutoSubmitPending, orderAutoSubmitArm, stopOrderAutoSubmit]
+    [isOrderAutoSubmitPending, orderAutoSubmitArmedAt, stopOrderAutoSubmit]
+  );
+
+  useEffect(
+    function stopWaitingForBalance() {
+      if (!isOrderAutoSubmitAwaitingBalance) {
+        return;
+      }
+
+      // a balance that never catches up must not leave an arm that a later deposit could fire
+      const timerId = setTimeout(stopOrderAutoSubmit, BALANCE_WAIT_TIMEOUT_MS);
+
+      return () => clearTimeout(timerId);
+    },
+    [isOrderAutoSubmitAwaitingBalance, stopOrderAutoSubmit]
   );
 
   useEffect(

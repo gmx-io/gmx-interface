@@ -27,7 +27,7 @@ describe("getOrderAutoSubmitStep", () => {
     ["stops on a validation error instead of sending once it clears", { isButtonDisabled: true }, "stop"],
     ["stops instead of opening the GMX Account deposit", { isDepositButtonShown: true }, "stop"],
     ["requests an approval", { approvalTokenAddress: USDG }, "approve"],
-    ["stops when the same approval is asked again", { approvalTokenAddress: USDG, isApprovalRequested: true }, "stop"],
+    ["doesn't ask for the same approval twice", { approvalTokenAddress: USDG, isApprovalRequested: true }, "wait"],
   ] as const)("%s", (_, overrides, expected) => {
     expect(getOrderAutoSubmitStep({ ...ready, ...overrides })).toBe(expected);
   });
