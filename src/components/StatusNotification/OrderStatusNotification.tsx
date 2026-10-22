@@ -4,6 +4,7 @@ import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 
 import { getExplorerUrl } from "config/chains";
+import { getIsUsdgToken } from "config/usdgPools";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { PendingOrderData, getPendingOrderKey, useSyntheticsEvents } from "context/SyntheticsEvents";
 import { findOrderStatusForAllocation } from "context/SyntheticsEvents/utils";
@@ -35,6 +36,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 
+import { UsdgClosePayoutStatus } from "./UsdgClosePayoutStatus";
 import { useToastAutoClose } from "./useToastAutoClose";
 
 // eslint-disable-next-line import/order
@@ -47,12 +49,14 @@ type Props = {
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
   hideTxLink?: "creation" | "execution" | "none";
+  onKeepOpen?: () => void;
 };
 
 function OrderStatusNotification({
   pendingOrderData,
   marketsInfoData,
   tokensData,
+  onKeepOpen,
   toastTimestamp,
   hideTxLink = "none",
 }: Props) {
@@ -421,6 +425,13 @@ function OrderStatusNotification({
     }
   }, [hasError, toastTimestamp]);
 
+  const isUsdgMarketDecrease =
+    pendingOrderData.txnType === "create" &&
+    isMarketOrderType(pendingOrderData.orderType) &&
+    !isIncreaseOrderType(pendingOrderData.orderType) &&
+    !isSwapOrderType(pendingOrderData.orderType) &&
+    getIsUsdgToken(chainId, pendingOrderData.initialCollateralTokenAddress);
+
   return (
     <div className={cx("StatusNotification")}>
       <div className="relative z-[1]">
@@ -430,6 +441,14 @@ function OrderStatusNotification({
           {externalSwapStatus}
           {sendingStatus}
           {executionStatus}
+          {isUsdgMarketDecrease && orderStatus?.executedTxnHash && (
+            <UsdgClosePayoutStatus
+              chainId={chainId}
+              pendingOrderData={pendingOrderData}
+              executedTxnHash={orderStatus.executedTxnHash}
+              onConvertLinkShown={onKeepOpen}
+            />
+          )}
         </div>
       </div>
     </div>
@@ -596,7 +615,11 @@ export function OrdersStatusNotificiation({
     }
   }, [getMatchedOrderStatus, pendingOrders]);
 
-  useToastAutoClose(isCompleted, toastTimestamp);
+  // the convert link is the only prompt to swap a USDG payout back, so it waits for the trader
+  const [isKeptOpen, setIsKeptOpen] = useState(false);
+  const keepOpen = useCallback(() => setIsKeptOpen(true), []);
+
+  useToastAutoClose(isCompleted && !isKeptOpen, toastTimestamp);
 
   return (
     <div className="StatusNotification-wrapper">
@@ -610,6 +633,7 @@ export function OrdersStatusNotificiation({
               tokensData={tokensData}
               toastTimestamp={toastTimestamp}
               hideTxLink={pendingOrders.length > 1 ? "creation" : "none"}
+              onKeepOpen={keepOpen}
             />
           );
         })}

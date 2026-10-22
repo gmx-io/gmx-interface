@@ -2762,6 +2762,10 @@ msgstr "Dépôt échoué"
 msgid "2nd place"
 msgstr "2e place"
 
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Convert to {usdcSymbol}"
+msgstr "Convertir en {usdcSymbol}"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Excludes claimed funding, price impact rebates and execution fees"
 msgstr "Hors frais de financement récupérés, remises liées à l'impact sur le prix et frais d'exécution"
@@ -6624,6 +6628,10 @@ msgstr "Achats mensuels"
 msgid "Zero-fee capacity left"
 msgstr "Capacité sans frais restante"
 
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Received {receivedText}"
+msgstr "Reçu : {receivedText}"
+
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
 msgstr "Transfert d’un code de parrainage"
@@ -9816,6 +9824,10 @@ msgstr "APY de performance totale"
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "No tokens on {0} for deposit"
 msgstr "Aucun jeton sur {0} pour le dépôt"
+
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Paid in {receivedSymbol}: the conversion to {usdcSymbol} couldn't fill"
+msgstr "Payé en {receivedSymbol} : la conversion en {usdcSymbol} n'a pas pu être exécutée"
 
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Total to claim"

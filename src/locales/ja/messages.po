@@ -2762,6 +2762,10 @@ msgstr "入金失敗"
 msgid "2nd place"
 msgstr "2位"
 
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Convert to {usdcSymbol}"
+msgstr "{usdcSymbol}に変換"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Excludes claimed funding, price impact rebates and execution fees"
 msgstr "受け取り済みのファンディング、価格への影響のリベート、執行手数料は含まれません"
@@ -6624,6 +6628,10 @@ msgstr "月間購入量"
 msgid "Zero-fee capacity left"
 msgstr "残りの手数料無料枠"
 
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Received {receivedText}"
+msgstr "{receivedText}を受け取りました"
+
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
 msgstr "紹介コードの移管"
@@ -9816,6 +9824,10 @@ msgstr "トータルパフォーマンス APY"
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "No tokens on {0} for deposit"
 msgstr "{0}に入金可能なトークンがありません"
+
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Paid in {receivedSymbol}: the conversion to {usdcSymbol} couldn't fill"
+msgstr "{receivedSymbol}で支払われました: {usdcSymbol}への変換を約定できませんでした"
 
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Total to claim"

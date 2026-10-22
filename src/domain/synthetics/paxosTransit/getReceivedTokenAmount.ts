@@ -38,6 +38,17 @@ export async function getReceivedTokenAmount(p: {
   account: string;
   isGmxAccount?: boolean;
 }): Promise<bigint> {
+  const amounts = await getReceivedTokenAmounts({ ...p, tokenAddresses: [p.tokenAddress] });
+
+  return amounts[p.tokenAddress];
+}
+
+export async function getReceivedTokenAmounts(p: {
+  chainId: number;
+  txnHash: string;
+  tokenAddresses: string[];
+  account: string;
+}): Promise<Record<string, bigint>> {
   // right after execution the first RPC can still miss the receipt, which would read as nothing received
   const receipt = await getPublicClientWithRpc(p.chainId).waitForTransactionReceipt({ hash: p.txnHash });
 
@@ -48,9 +59,14 @@ export async function getReceivedTokenAmount(p: {
 
   const transfers = parseEventLogs({ abi: erc20Abi, eventName: "Transfer", logs: receipt.logs });
 
-  return transfers
-    .filter(
-      (transfer) => isAddressEqual(transfer.address, p.tokenAddress) && isAddressEqual(transfer.args.to, p.account)
-    )
-    .reduce((total, transfer) => total + transfer.args.value, 0n);
+  return Object.fromEntries(
+    p.tokenAddresses.map((tokenAddress) => [
+      tokenAddress,
+      transfers
+        .filter(
+          (transfer) => isAddressEqual(transfer.address, tokenAddress) && isAddressEqual(transfer.args.to, p.account)
+        )
+        .reduce((total, transfer) => total + transfer.args.value, 0n),
+    ])
+  );
 }

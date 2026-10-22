@@ -253,10 +253,14 @@ export function PositionSeller() {
 
   const closePercentage = closeSize.closePercentage;
 
+  // remembered for the close toast: the trader still wanted USDC and gets a convert link
+  const [isUsdgChosenInsteadOfUsdc, setIsUsdgChosenInsteadOfUsdc] = useState(false);
+
   const setReceiveTokenManually = useCallback(
     (token: Token) => {
       setIsReceiveTokenChanged(true);
       setReceiveTokenAddress(token.address);
+      setIsUsdgChosenInsteadOfUsdc(false);
     },
     [setReceiveTokenAddress, setIsReceiveTokenChanged]
   );
@@ -278,6 +282,7 @@ export function PositionSeller() {
       setTimeout(() => {
         resetPositionSeller();
         closeSizeReset();
+        setIsUsdgChosenInsteadOfUsdc(false);
       }, 200);
     }
   }, [isVisible, resetPositionSeller, closeSizeReset]);
@@ -369,6 +374,7 @@ export function PositionSeller() {
 
     setIsReceiveTokenChanged(true);
     setReceiveTokenAddress(position.collateralTokenAddress);
+    setIsUsdgChosenInsteadOfUsdc(true);
   }, [position, setIsReceiveTokenChanged, setReceiveTokenAddress]);
   const setIsDismissedLatestRef = useLatest(priceImpactWarningState.setIsDismissed);
 
@@ -746,6 +752,7 @@ export function PositionSeller() {
         slippageInputId,
         actionName: "Close Position",
         collateralSymbol: position?.collateralToken?.symbol,
+        requestedReceiveTokenAddress: isUsdgChosenInsteadOfUsdc ? usdgConversionTokenAddress : receiveToken.address,
       }),
     });
 

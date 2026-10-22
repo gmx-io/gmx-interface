@@ -264,6 +264,8 @@ export type PendingOrderData = {
   referralCode?: string;
   createdAt: number;
   txnType: OrderTxnType;
+  // the token the trader asked for on a close, even if they then switched to receiving the collateral
+  requestedReceiveTokenAddress?: string;
 };
 
 export type DepositCreatedEventData = {

@@ -167,7 +167,13 @@ function FeesTooltipContent({ tradeAction, feesLines }: { tradeAction: TradeActi
         ? getLifecycleSettlementLines(view.aggregate)
         : view.mode === "compact"
           ? [
-              ...getSettlementTooltipLines(fullCloseCandidate, view.openRow, view.isMultichain),
+              ...getSettlementTooltipLines(
+                fullCloseCandidate,
+                view.openRow,
+                view.isMultichain,
+                // swap legs are only complete for a matched lifecycle
+                settlement.isTruncated ? undefined : { chainId, swapLegsById: settlement.swapLegsById }
+              ),
               "",
               ...getSettlementNotes(view.isMultichain),
             ]
@@ -183,7 +189,7 @@ function FeesTooltipContent({ tradeAction, feesLines }: { tradeAction: TradeActi
     }
 
     return [...feesLines, ...settlementLines];
-  }, [feesLines, fullCloseCandidate, settlement]);
+  }, [chainId, feesLines, fullCloseCandidate, settlement]);
 
   return (
     <>

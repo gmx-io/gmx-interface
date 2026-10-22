@@ -1,6 +1,7 @@
 import { i18n } from "@lingui/core";
 import { t } from "@lingui/macro";
 
+import { getIsUsdgToken } from "config/usdgPools";
 import { isBoundaryAcceptablePrice } from "domain/prices";
 import { getMarketFullName, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import {
@@ -14,6 +15,7 @@ import {
 import { isMarginDepositOrder } from "domain/synthetics/orders/marginDeposit";
 import { convertToTokenAmount, convertToUsd, parseContractPrice } from "domain/synthetics/tokens";
 import { getShouldUseMaxPrice } from "domain/synthetics/trade";
+import { getSwapLegId, type LifecycleSwapLeg } from "domain/synthetics/tradeHistory/useLifecycleSettlement";
 import { isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
 import { tryDecodeCustomError } from "lib/errors";
 import {
@@ -935,7 +937,8 @@ export function getFeesBreakdown(tradeAction: PositionTradeAction): { totalUsd: 
 export function getSettlementTooltipLines(
   tradeAction: PositionTradeAction,
   openRow: PositionTradeAction | undefined,
-  isMultichain = false
+  isMultichain = false,
+  usdgPayoutCtx?: { chainId: number; swapLegsById: Record<string, LifecycleSwapLeg> }
 ): Line[] {
   const collateralToken = tradeAction.initialCollateralToken;
   const collateralPrice = tradeAction.collateralTokenPriceMin;
@@ -955,9 +958,17 @@ export function getSettlementTooltipLines(
   if (receivedUsd !== undefined) {
     const isSingleCollateralPayout = tradeAction.swapPath.length === 0 && !hasSecondaryOutputRisk(tradeAction);
 
-    const formatted = isSingleCollateralPayout
-      ? formatCollateralAmount(convertToTokenAmount(receivedUsd, collateralToken.decimals, collateralPrice)!)
-      : formatUsdParts(receivedUsd);
+    const usdgSwapPayout = usdgPayoutCtx ? getUsdgSwapPayout(tradeAction, usdgPayoutCtx) : undefined;
+
+    const formatted = usdgSwapPayout
+      ? formatTokenAmount(usdgSwapPayout.amount, usdgSwapPayout.token.decimals, usdgSwapPayout.token.symbol, {
+          useCommas: true,
+          isStable: usdgSwapPayout.token.isStable,
+        })
+      : isSingleCollateralPayout ||
+          (usdgPayoutCtx !== undefined && getIsUsdgToken(usdgPayoutCtx.chainId, collateralToken.address))
+        ? formatCollateralAmount(convertToTokenAmount(receivedUsd, collateralToken.decimals, collateralPrice)!)
+        : formatUsdParts(receivedUsd);
 
     walletReceived = formatted === undefined ? undefined : numericText("~", formatted);
   }
@@ -988,6 +999,21 @@ export function getSettlementTooltipLines(
       ? undefined
       : infoRow(isMultichain ? t`Received at close (GMX balance)` : t`Wallet received`, walletReceived)
   );
+}
+
+// USDG closes either convert in full or pay USDG, so a missing last swap leg means the payout stayed in USDG
+function getUsdgSwapPayout(
+  tradeAction: PositionTradeAction,
+  { chainId, swapLegsById }: { chainId: number; swapLegsById: Record<string, LifecycleSwapLeg> }
+) {
+  if (!getIsUsdgToken(chainId, tradeAction.initialCollateralToken.address) || tradeAction.swapPath.length === 0) {
+    return undefined;
+  }
+
+  const swapLeg =
+    swapLegsById[getSwapLegId(tradeAction.orderKey, tradeAction.swapPath[tradeAction.swapPath.length - 1])];
+
+  return swapLeg ? { token: tradeAction.targetCollateralToken, amount: swapLeg.amountOut } : undefined;
 }
 
 function getPriceImpactLines(tradeAction: PositionTradeAction) {

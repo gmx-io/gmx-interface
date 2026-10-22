@@ -2762,6 +2762,10 @@ msgstr ""
 msgid "2nd place"
 msgstr ""
 
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Convert to {usdcSymbol}"
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Excludes claimed funding, price impact rebates and execution fees"
 msgstr ""
@@ -6624,6 +6628,10 @@ msgstr ""
 msgid "Zero-fee capacity left"
 msgstr ""
 
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Received {receivedText}"
+msgstr ""
+
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
 msgstr ""
@@ -9815,6 +9823,10 @@ msgstr ""
 
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "No tokens on {0} for deposit"
+msgstr ""
+
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Paid in {receivedSymbol}: the conversion to {usdcSymbol} couldn't fill"
 msgstr ""
 
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx

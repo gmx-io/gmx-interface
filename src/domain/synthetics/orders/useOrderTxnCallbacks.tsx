@@ -82,6 +82,7 @@ export type CallbackUiCtx = {
   onExternalSwapFallback?: () => void;
   actionName?: TradingActionName;
   collateralSymbol?: string;
+  requestedReceiveTokenAddress?: string;
 };
 
 export function useOrderTxnCallbacks() {
@@ -134,7 +135,11 @@ export function useOrderTxnCallbacks() {
       const handleTxnSubmitted = async () => {
         const createdAt = Date.now();
 
-        const pendingOrders = getBatchPendingOrders(e.data.batchParams, ordersInfoData, createdAt);
+        const pendingOrders = getBatchPendingOrders(e.data.batchParams, ordersInfoData, createdAt).map((order) =>
+          ctx.requestedReceiveTokenAddress !== undefined && order.txnType === "create"
+            ? { ...order, requestedReceiveTokenAddress: ctx.requestedReceiveTokenAddress }
+            : order
+        );
 
         const optimisticBatchPayAmounts = getOptimisticBatchPayAmounts(e.data);
 
