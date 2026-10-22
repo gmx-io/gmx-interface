@@ -914,6 +914,34 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
       longTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       shortTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
     },
+    // NEAR/USD [USDG-USDG]
+    "0x54bc430A788DFFD4ae35e751E10899489f5a953f": {
+      marketTokenAddress: "0x54bc430A788DFFD4ae35e751E10899489f5a953f",
+      indexTokenAddress: "0x1FF7F3EFBb9481Cbd7db4F932cBCD4467144237C",
+      longTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+      shortTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+    },
+    // XRP/USD [USDG-USDG]
+    "0xc9ED746D613eEfC0F196658f6030e90482593004": {
+      marketTokenAddress: "0xc9ED746D613eEfC0F196658f6030e90482593004",
+      indexTokenAddress: "0xc14e065b0067dE91534e032868f5Ac6ecf2c6868",
+      longTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+      shortTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+    },
+    // ZEC/USD [USDG-USDG]
+    "0x2CeEafcA180B07C9d1d2f1086f8f59AAFd282832": {
+      marketTokenAddress: "0x2CeEafcA180B07C9d1d2f1086f8f59AAFd282832",
+      indexTokenAddress: "0x6eAbbaA3278556Dc5b19c034dc26c0eaB60d65B5",
+      longTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+      shortTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+    },
+    // HYPE/USD [USDG-USDG]
+    "0x162C091263fBb3dfAf1D55DCC979533EB341DA5f": {
+      marketTokenAddress: "0x162C091263fBb3dfAf1D55DCC979533EB341DA5f",
+      indexTokenAddress: "0xfDFA0A749dA3bCcee20aE0B4AD50E39B26F58f7C",
+      longTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+      shortTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

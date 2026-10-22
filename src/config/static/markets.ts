@@ -526,6 +526,22 @@ const MARKETS_UI_CONFIGS: Record<NetworkId, Record<string, MarketUiConfig>> = {
     "0x408E8e83d4b8Ac4BDefFDF896B49268A5FE5Ef44": {
       enabled: true,
     },
+    // NEAR/USD [USDG-USDG]
+    "0x54bc430A788DFFD4ae35e751E10899489f5a953f": {
+      enabled: true,
+    },
+    // XRP/USD [USDG-USDG]
+    "0xc9ED746D613eEfC0F196658f6030e90482593004": {
+      enabled: true,
+    },
+    // ZEC/USD [USDG-USDG]
+    "0x2CeEafcA180B07C9d1d2f1086f8f59AAFd282832": {
+      enabled: true,
+    },
+    // HYPE/USD [USDG-USDG]
+    "0x162C091263fBb3dfAf1D55DCC979533EB341DA5f": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
