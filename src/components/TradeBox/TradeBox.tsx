@@ -389,7 +389,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   });
 
   const paxosRoute = useTradeboxPaxosRoute({ setFromTokenInputValue, setFocusedInput });
-  const isPaxosRouteActive = paxosRoute.activePaxosRoute !== undefined || paxosRoute.routes.isRouteChoiceRequired;
+  const isPaxosRouteActive = paxosRoute.activePaxosRoute !== undefined;
   const paxosReceiveAmountOut = getPaxosReceiveAmountOut(paxosRoute);
 
   const submitButtonState = useMemo(
@@ -1401,11 +1401,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
         </div>
       </div>
 
-      <div
-        className={cx("flex flex-col gap-14 rounded-8 bg-slate-900", isTwap ? "p-4" : "p-12 pb-16", {
-          hidden: isPaxosRouteActive && !paxosRoute.activePaxosRoute,
-        })}
-      >
+      <div className={cx("flex flex-col gap-14 rounded-8 bg-slate-900", isTwap ? "p-4" : "p-12 pb-16")}>
         {isPaxosRouteActive && fromToken && toToken && (
           <PaxosRouteDetailsRows paxosRoute={paxosRoute} fromToken={fromToken} toToken={toToken} />
         )}
@@ -1487,10 +1483,6 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
 }
 
 function getPaxosReceiveAmountOut(paxosRoute: TradeboxPaxosRoute): bigint | undefined {
-  if (paxosRoute.routes.isRouteChoiceRequired) {
-    return 0n;
-  }
-
   if (!paxosRoute.activePaxosRoute) {
     return undefined;
   }

@@ -30,9 +30,16 @@ export async function fetchApiTransitFeeTier(
   const raw: any = await ctx.api.fetchJson("/v1/paxos/transit/fee-tier", {
     query: { userAddress: params.userAddress },
   });
+  const zeroFeeExpectedReopenAtMs = Date.parse(raw.zeroFeeExpectedReopenAt);
+  const zeroFeeExpectedReopenAt = Number.isFinite(zeroFeeExpectedReopenAtMs)
+    ? Math.floor(zeroFeeExpectedReopenAtMs / 1000)
+    : undefined;
+
   return {
     feeTier: raw.feeTier,
     zeroFeeCapacity: BigInt(raw.zeroFeeCapacity),
+    isZeroFeeAvailable: raw.isZeroFeeAvailable,
+    zeroFeeExpectedReopenAt,
   };
 }
 
