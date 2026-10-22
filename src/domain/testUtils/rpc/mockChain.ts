@@ -151,6 +151,7 @@ export type MockChainOptions = {
   walletPrivateKey: string;
   subaccountAddress?: string;
   onchain?: Partial<SubaccountOnchainState>;
+  isContractAccount?: boolean;
 };
 
 /** Synthetic, stateful chain: the test sets the state it wants and the mock derives every answer. */
@@ -158,6 +159,7 @@ export class MockChain implements RpcResponder {
   wallet: ethers.Wallet;
   account: string;
   subaccountAddress: string | undefined;
+  isContractAccount: boolean;
 
   onchain: SubaccountOnchainState = {
     active: false,
@@ -201,6 +203,7 @@ export class MockChain implements RpcResponder {
     this.wallet = new ethers.Wallet(options.walletPrivateKey);
     this.account = this.wallet.address;
     this.subaccountAddress = options.subaccountAddress;
+    this.isContractAccount = options.isContractAccount ?? false;
     Object.assign(this.onchain, options.onchain);
   }
 
@@ -268,7 +271,7 @@ export class MockChain implements RpcResponder {
         return "0x" + balance.toString(16);
       }
       case "eth_getCode":
-        return "0x";
+        return this.isContractAccount && isSameAddress(params[0] as string, this.account) ? "0x6080604052" : "0x";
       case "eth_getTransactionCount":
         return "0x0";
       case "eth_estimateGas":

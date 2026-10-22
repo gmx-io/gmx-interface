@@ -49,6 +49,7 @@ import {
   getSubaccountApprovalContextSrcChainId,
   getSubaccountSigner,
   signUpdatedSubaccountSettings,
+  type SubaccountLimits,
 } from "domain/synthetics/subaccount/utils";
 import type { TokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
@@ -193,6 +194,8 @@ async function getSettlementChainRemovalExpressParams({
 }
 
 export type SubaccountState = {
+  initialSettings: SubaccountLimits | undefined;
+  setInitialSettings: (settings: SubaccountLimits | undefined) => void;
   subaccountConfig: SubaccountSerializedConfig | undefined;
   subaccount: Subaccount | undefined;
   subaccountActivationState: SubaccountActivationState | undefined;
@@ -223,10 +226,12 @@ export function useSubaccountContext() {
 }
 
 export function SubaccountContextProvider({ children }: { children: React.ReactNode }) {
+  const [initialSettings, setInitialSettings] = useState<SubaccountLimits>();
   const { chainId, srcChainId } = useChainId();
   const signer = useEthersSigner();
   const { account } = useWallet();
   const { provider } = useJsonRpcProvider(chainId);
+  useEffect(() => setInitialSettings(undefined), [account, chainId, srcChainId]);
 
   const {
     subaccountConfig,
@@ -302,6 +307,16 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     subaccountConfig,
     subaccountData,
   ]);
+
+  const hasActiveSubaccount = subaccount !== undefined;
+  useEffect(
+    function clearAppliedInitialSettings() {
+      // limits typed before activation are signed into one session; cleared once it is live, not on signing,
+      // so the panel keeps showing them until the session's own limits load
+      if (hasActiveSubaccount) setInitialSettings(undefined);
+    },
+    [hasActiveSubaccount]
+  );
 
   const calcSelector = useCalcSelector();
 
@@ -438,6 +453,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         provider,
         subaccountAddress: config!.address,
         isGmxAccount,
+        initialSettings,
       });
 
       setSubaccountActivationState(SubaccountActivationState.Success);
@@ -465,6 +481,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       return false;
     }
   }, [
+    initialSettings,
     provider,
     signer,
     subaccountConfig,
@@ -619,6 +636,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
   const state: SubaccountState = useMemo(() => {
     return {
+      initialSettings,
+      setInitialSettings,
       subaccountConfig,
       subaccount,
       subaccountActivationState,
@@ -634,6 +653,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       refreshSubaccountData,
     };
   }, [
+    initialSettings,
     subaccountConfig,
     subaccount,
     subaccountActivationState,

@@ -21,6 +21,7 @@ import { periodToSeconds } from "sdk/utils/time";
 import {
   getActualApproval,
   getInitialSubaccountApproval,
+  getInitialSubaccountLimits,
   getIsSubaccountApprovalInvalid,
   getIsSubaccountNonceExpired,
   getSubaccountApprovalContextSrcChainId,
@@ -362,6 +363,38 @@ describe("getActualApproval", () => {
     });
 
     expect(actual.signature).toBe(ZERO_DATA);
+  });
+});
+
+describe("initial One-Click limits", () => {
+  it("preserves an existing longer expiry and default action allowance without custom settings", () => {
+    const expiresAt = BigInt(Math.floor(Date.now() / 1000)) + 60n * 86400n;
+    const result = getInitialSubaccountLimits(createOnchainData({ currentActionsCount: 12n, expiresAt }));
+    expect(result.expiresAt).toBe(expiresAt);
+    expect(result.maxAllowedCount).toBe(12n + BigInt(DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS));
+  });
+  it("uses two additional actions and one day even after an older authorization", () => {
+    const before = BigInt(Math.floor(Date.now() / 1000));
+    const result = getInitialSubaccountLimits(
+      createOnchainData({ currentActionsCount: 12n, expiresAt: before + 30n * 86400n }),
+      { remainingActions: 2n, remainingSeconds: 86400n }
+    );
+    expect(result.maxAllowedCount).toBe(14n);
+    expect(result.expiresAt).toBeGreaterThanOrEqual(before + 86400n);
+    expect(result.expiresAt).toBeLessThanOrEqual(before + 86401n);
+  });
+
+  it("rejects zero or negative permission limits", () => {
+    for (const [remainingActions, remainingSeconds] of [
+      [0n, 86400n],
+      [-1n, 86400n],
+      [2n, 0n],
+      [2n, -1n],
+    ]) {
+      expect(() => getInitialSubaccountLimits(createOnchainData(), { remainingActions, remainingSeconds })).toThrow(
+        "positive"
+      );
+    }
   });
 });
 

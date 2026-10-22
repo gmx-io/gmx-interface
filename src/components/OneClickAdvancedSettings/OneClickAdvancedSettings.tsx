@@ -1,10 +1,17 @@
 import { Trans, t } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import {
+  DEFAULT_ONE_CLICK_SESSION_DURATION,
+  DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS,
+  MAX_ONE_CLICK_SESSION_ACTIONS,
+  MAX_ONE_CLICK_SESSION_DAYS,
+} from "config/oneClickTrading";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useBigNumberInput } from "domain/synthetics/common/useBigNumberInput";
 import { getRemainingSubaccountActions, getRemainingSubaccountSeconds } from "domain/synthetics/subaccount";
-import { periodToSeconds, secondsToPeriod } from "sdk/utils/time";
+import type { SubaccountLimits } from "domain/synthetics/subaccount/utils";
+import { periodToSeconds } from "sdk/utils/time";
 
 import Button from "components/Button/Button";
 import { ExpandableRow } from "components/ExpandableRow";
@@ -12,8 +19,29 @@ import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+const SECONDS_IN_DAY = BigInt(periodToSeconds(1, "1d"));
+
+const DEFAULT_LIMITS: SubaccountLimits = {
+  remainingActions: BigInt(DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS),
+  remainingSeconds: BigInt(DEFAULT_ONE_CLICK_SESSION_DURATION),
+};
+
+// Whole numbers are kept as digit strings: parseInt turns long inputs into "1e+21", which BigInt cannot parse.
+function toWholeNumberString(value: string) {
+  const [integerPart] = value.split(".");
+  return integerPart.replace(/\D/g, "").replace(/^0+(?=\d)/, "") || "0";
+}
+
+const MAX_ACTIONS = BigInt(MAX_ONE_CLICK_SESSION_ACTIONS);
+const MAX_SECONDS = BigInt(MAX_ONE_CLICK_SESSION_DAYS) * SECONDS_IN_DAY;
+
+// secondsToPeriod goes through Number, which turns a very long saved limit into Infinity
+function secondsToDays(seconds: bigint) {
+  return seconds > 0n ? (seconds + SECONDS_IN_DAY - 1n) / SECONDS_IN_DAY : 0n;
+}
+
 export function OneClickAdvancedSettings() {
-  const { subaccount, updateSubaccountSettings } = useSubaccountContext();
+  const { subaccount, updateSubaccountSettings, initialSettings, setInitialSettings } = useSubaccountContext();
   const [isExpanded, setIsExpanded] = useState(false);
 
   const { displayValue: remainingActionsString, setDisplayValue: setRemainingActionsString } = useBigNumberInput(
@@ -25,72 +53,64 @@ export function OneClickAdvancedSettings() {
   const { displayValue: daysLimitString, setDisplayValue: setDaysLimitString } = useBigNumberInput(0n, 0, 0);
 
   const onChangeRemainingActions = useCallback(
-    (value: string) => {
-      if (value === "") {
-        setRemainingActionsString("0");
-      } else {
-        setRemainingActionsString(String(parseInt(value)));
-      }
-    },
+    (value: string) => setRemainingActionsString(toWholeNumberString(value)),
     [setRemainingActionsString]
   );
 
   const onChangeDaysLimit = useCallback(
-    (value: string) => {
-      if (value === "") {
-        setDaysLimitString("0");
-      } else {
-        setDaysLimitString(String(parseInt(value)));
-      }
-    },
+    (value: string) => setDaysLimitString(toWholeNumberString(value)),
     [setDaysLimitString]
   );
 
+  const currentLimits: SubaccountLimits = useMemo(
+    () =>
+      subaccount
+        ? {
+            remainingActions: getRemainingSubaccountActions(subaccount),
+            remainingSeconds: getRemainingSubaccountSeconds(subaccount),
+          }
+        : initialSettings ?? DEFAULT_LIMITS,
+    [subaccount, initialSettings]
+  );
+
+  const nextLimits: SubaccountLimits = useMemo(
+    () => ({
+      remainingActions: BigInt(remainingActionsString),
+      remainingSeconds: BigInt(daysLimitString) * SECONDS_IN_DAY,
+    }),
+    [remainingActionsString, daysLimitString]
+  );
+
   const disabled = useMemo(() => {
-    if (!subaccount) {
-      return true;
-    }
+    const { remainingActions, remainingSeconds } = nextLimits;
+    // the inputs show whole days, so an active session's exact remaining seconds are compared as days
+    const notChanged =
+      currentLimits.remainingActions === remainingActions &&
+      secondsToDays(currentLimits.remainingSeconds) === secondsToDays(remainingSeconds);
+    const isTooLarge = remainingActions > MAX_ACTIONS || remainingSeconds > MAX_SECONDS;
+    const isInvalid = !subaccount && (remainingActions === 0n || remainingSeconds === 0n);
 
-    const remainingActions = getRemainingSubaccountActions(subaccount);
-    const remainingSeconds = getRemainingSubaccountSeconds(subaccount);
-
-    const nextRemainigActions = BigInt(remainingActionsString);
-    const nextRemainingSeconds = BigInt(periodToSeconds(Number(daysLimitString), "1d"));
-
-    const notChanged = remainingActions === nextRemainigActions && remainingSeconds === nextRemainingSeconds;
-    const isInvalid = nextRemainigActions < 0n || nextRemainingSeconds < 0n;
-
-    return notChanged || isInvalid;
-  }, [subaccount, remainingActionsString, daysLimitString]);
+    return notChanged || isTooLarge || isInvalid;
+  }, [subaccount, currentLimits, nextLimits]);
 
   const handleSave = useCallback(() => {
     if (!subaccount) {
+      setInitialSettings(nextLimits);
       return;
     }
 
-    const nextRemainigActions = BigInt(remainingActionsString);
-    const nextRemainingSeconds = BigInt(periodToSeconds(Number(daysLimitString), "1d"));
-
     updateSubaccountSettings({
-      nextRemainigActions,
-      nextRemainingSeconds,
+      nextRemainigActions: nextLimits.remainingActions,
+      nextRemainingSeconds: nextLimits.remainingSeconds,
     });
-  }, [subaccount, remainingActionsString, daysLimitString, updateSubaccountSettings]);
+  }, [subaccount, nextLimits, updateSubaccountSettings, setInitialSettings]);
 
   useEffect(
     function initSettings() {
-      if (!subaccount) {
-        return;
-      }
-
-      const remainingActions = getRemainingSubaccountActions(subaccount);
-      const remainingSeconds = getRemainingSubaccountSeconds(subaccount);
-      const remainingDays = secondsToPeriod(Number(remainingSeconds), "1d", true);
-
-      setRemainingActionsString(remainingActions.toString());
-      setDaysLimitString(remainingDays.toString());
+      setRemainingActionsString(currentLimits.remainingActions.toString());
+      setDaysLimitString(secondsToDays(currentLimits.remainingSeconds).toString());
     },
-    [setRemainingActionsString, setDaysLimitString, subaccount]
+    [setRemainingActionsString, setDaysLimitString, currentLimits]
   );
 
   return (
