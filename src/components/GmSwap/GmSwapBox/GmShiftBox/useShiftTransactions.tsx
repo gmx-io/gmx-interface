@@ -49,6 +49,10 @@ export function useShiftTransactions({
   const onCreateShift = useCallback(
     function onCreateShift() {
       const metricData = initShiftGmMetricData({
+        chainId,
+        isExpress: false,
+        isExpress1CT: false,
+        isCollateralFromMultichain: false,
         fromMarketToken,
         toMarketToken: marketToken,
         minMarketTokenAmount: marketTokenAmount,

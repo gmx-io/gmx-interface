@@ -1,12 +1,23 @@
 import { getCapabilities } from "@wagmi/core";
-import { type Address, MethodNotFoundRpcError, MethodNotSupportedRpcError, UnsupportedProviderMethodError } from "viem";
+import {
+  type Address,
+  ChainDisconnectedError,
+  MethodNotFoundRpcError,
+  MethodNotSupportedRpcError,
+  ProviderDisconnectedError,
+  ResourceUnavailableRpcError,
+  UnauthorizedProviderError,
+  UnsupportedProviderMethodError,
+  UserRejectedRequestError,
+} from "viem";
 import type { Connector } from "wagmi";
 
 import { withFallback } from "lib/withFallback";
 
 import { getWagmiConfig } from "./walletConfig";
 
-const CAPABILITIES_TIMEOUT_MS = 5000;
+// This background probe does not block any user action.
+const CAPABILITIES_TIMEOUT_MS = 30_000;
 // EIP-5792 wallets may report capabilities shared by all chains under 0x0
 const ALL_CHAINS_ID = 0;
 
@@ -23,15 +34,32 @@ export type WalletChainCapabilities = {
   hasPaymasterService: boolean | undefined;
 };
 
-export type WalletChainCapabilitiesResult =
+export type WalletChainCapabilitiesResult = (
   | { status: "ok"; capabilities: WalletChainCapabilities }
-  | { status: "unsupported" | "skipped" | "error" | "timeout"; capabilities: undefined };
+  | { status: "unsupported" | "skipped" | "error" | "timeout"; capabilities: undefined }
+) & {
+  durationMs?: number;
+  timeoutMs?: number;
+  errorCode?: number;
+  errorName?: string;
+  errorMessage?: string;
+  errorReason?:
+    | "unsupportedMethod"
+    | "requestPending"
+    | "userRejected"
+    | "unauthorized"
+    | "disconnected"
+    | "timeout"
+    | "unknown";
+};
 
-const UNSUPPORTED_RESULT: WalletChainCapabilitiesResult = { status: "unsupported", capabilities: undefined };
-const ERROR_RESULT: WalletChainCapabilitiesResult = { status: "error", capabilities: undefined };
-const TIMEOUT_RESULT: WalletChainCapabilitiesResult = { status: "timeout", capabilities: undefined };
+const TIMEOUT_RESULT: WalletChainCapabilitiesResult = {
+  status: "timeout",
+  capabilities: undefined,
+  errorReason: "timeout",
+};
 
-export function fetchWalletChainCapabilities({
+export async function fetchWalletChainCapabilities({
   account,
   connector,
   chainId,
@@ -40,7 +68,9 @@ export function fetchWalletChainCapabilities({
   connector: Connector;
   chainId: number;
 }): Promise<WalletChainCapabilitiesResult> {
-  const request = getCapabilities(getWagmiConfig(), { account, connector })
+  const startedAt = Date.now();
+  const request = Promise.resolve()
+    .then(() => getCapabilities(getWagmiConfig(), { account, connector }))
     .then((result): WalletChainCapabilitiesResult => {
       const capabilitiesByChain = result as Record<number, ChainCapabilities | undefined>;
 
@@ -49,19 +79,70 @@ export function fetchWalletChainCapabilities({
         capabilities: getChainCapabilities(capabilitiesByChain[chainId], capabilitiesByChain[ALL_CHAINS_ID]),
       };
     })
-    .catch((error) => (getIsUnsupportedMethodError(error) ? UNSUPPORTED_RESULT : ERROR_RESULT));
+    .catch((error): WalletChainCapabilitiesResult => {
+      const diagnostics = getCapabilitiesError(error);
 
-  return withFallback(request, TIMEOUT_RESULT, CAPABILITIES_TIMEOUT_MS);
+      return {
+        status: diagnostics.errorReason === "unsupportedMethod" ? "unsupported" : "error",
+        capabilities: undefined,
+        ...diagnostics,
+      };
+    });
+
+  const result = await withFallback(request, TIMEOUT_RESULT, CAPABILITIES_TIMEOUT_MS);
+
+  return { ...result, durationMs: Date.now() - startedAt, timeoutMs: CAPABILITIES_TIMEOUT_MS };
 }
 
-function getIsUnsupportedMethodError(error: unknown) {
-  const code = (error as { code?: unknown } | undefined)?.code;
+function getCapabilitiesError(error: unknown) {
+  let errorCode: number | undefined;
+  let errorName: string | undefined;
+  let errorMessage = typeof error === "string" ? error.slice(0, 200) : undefined;
+  const seen = new Set<unknown>();
 
-  return (
-    code === MethodNotFoundRpcError.code ||
-    code === MethodNotSupportedRpcError.code ||
-    code === UnsupportedProviderMethodError.code
-  );
+  // Viem wraps provider errors; the actionable RPC code may be in the cause.
+  while (error && typeof error === "object" && !seen.has(error)) {
+    seen.add(error);
+
+    if ("name" in error && typeof error.name === "string") {
+      errorName = error.name;
+    }
+
+    if ("shortMessage" in error && typeof error.shortMessage === "string") {
+      errorMessage = error.shortMessage.slice(0, 200);
+    } else if ("message" in error && typeof error.message === "string") {
+      errorMessage = error.message.slice(0, 200);
+    }
+
+    if ("code" in error && (typeof error.code === "number" || typeof error.code === "string")) {
+      const code = Number(error.code);
+      if (Number.isFinite(code) && error.code !== "") {
+        errorCode = code;
+      }
+    }
+
+    error = "cause" in error ? error.cause : undefined;
+  }
+
+  let errorReason: WalletChainCapabilitiesResult["errorReason"] = "unknown";
+
+  if (
+    errorCode === MethodNotFoundRpcError.code ||
+    errorCode === MethodNotSupportedRpcError.code ||
+    errorCode === UnsupportedProviderMethodError.code
+  ) {
+    errorReason = "unsupportedMethod";
+  } else if (errorCode === ResourceUnavailableRpcError.code) {
+    errorReason = "requestPending";
+  } else if (errorCode === UserRejectedRequestError.code) {
+    errorReason = "userRejected";
+  } else if (errorCode === UnauthorizedProviderError.code) {
+    errorReason = "unauthorized";
+  } else if (errorCode === ProviderDisconnectedError.code || errorCode === ChainDisconnectedError.code) {
+    errorReason = "disconnected";
+  }
+
+  return { errorCode, errorName, errorMessage, errorReason };
 }
 
 function getChainCapabilities(
