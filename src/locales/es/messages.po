@@ -1034,6 +1034,10 @@ msgstr "Global"
 msgid "{actionsCount, plural, one {Order} other {# Orders}}"
 msgstr "{actionsCount, plural, one {Orden} other {# Órdenes}}"
 
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "Too large to receive as USDC"
+msgstr "Demasiado grande para recibir en USDC"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid collateral token. {tokenSymbol} isn't supported as collateral"
 msgstr "Token de garantía no válido. {tokenSymbol} no es compatible como garantía"
@@ -7592,6 +7596,10 @@ msgstr "Apalancamiento máximo"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAILABLE LIQUIDITY"
 msgstr "LIQUIDEZ DISPONIBLE"
+
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "Too large to receive as USDC instantly. <0>Receive {positionCollateralSymbol} instead</0> and convert it in the Swap tab after closing."
+msgstr "Demasiado grande para recibir en USDC al instante. <0>Recibe {positionCollateralSymbol} en su lugar</0> y conviértelo en la pestaña Swap después de cerrar."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Elfa AI"

@@ -1034,6 +1034,10 @@ msgstr "Global"
 msgid "{actionsCount, plural, one {Order} other {# Orders}}"
 msgstr "{actionsCount, plural, one {Ordre} other {# Ordres}}"
 
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "Too large to receive as USDC"
+msgstr "Trop élevé pour recevoir en USDC"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid collateral token. {tokenSymbol} isn't supported as collateral"
 msgstr "Token de garantie invalide. {tokenSymbol} n'est pas pris en charge comme garantie"
@@ -7592,6 +7596,10 @@ msgstr "Effet de levier maximum"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAILABLE LIQUIDITY"
 msgstr "LIQUIDITÉ DISPONIBLE"
+
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "Too large to receive as USDC instantly. <0>Receive {positionCollateralSymbol} instead</0> and convert it in the Swap tab after closing."
+msgstr "Trop élevé pour recevoir en USDC instantanément. <0>Recevez plutôt des {positionCollateralSymbol}</0> et convertissez-les dans l'onglet Swap après la clôture."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Elfa AI"

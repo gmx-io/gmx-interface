@@ -1034,6 +1034,10 @@ msgstr "全球"
 msgid "{actionsCount, plural, one {Order} other {# Orders}}"
 msgstr "{actionsCount, plural, one {订单} other {# 个订单}}"
 
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "Too large to receive as USDC"
+msgstr "金额过大，无法以 USDC 接收"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid collateral token. {tokenSymbol} isn't supported as collateral"
 msgstr "抵押品代币无效。{tokenSymbol} 不支持作为抵押品"
@@ -7592,6 +7596,10 @@ msgstr "最大杠杆"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAILABLE LIQUIDITY"
 msgstr "可用流动性"
+
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "Too large to receive as USDC instantly. <0>Receive {positionCollateralSymbol} instead</0> and convert it in the Swap tab after closing."
+msgstr "金额过大，无法即时以 USDC 接收。<0>改为接收 {positionCollateralSymbol}</0>，平仓后在兑换标签页进行转换。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Elfa AI"

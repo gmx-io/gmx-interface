@@ -7,6 +7,7 @@ import { ARBITRUM, GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { getCollateralCloseDestinationDialogHiddenKey } from "config/localStorage";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
+import { getUsdgConversionTokenAddress } from "config/usdgPools";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
@@ -74,6 +75,7 @@ import {
   takeValidationResult,
 } from "domain/synthetics/trade/utils/validation";
 import { getIsHighSwapProfitFee } from "domain/synthetics/trade/utils/warnings";
+import { getIsSwapPathFillable } from "domain/synthetics/usdgPools/usdcConversion";
 import { Token } from "domain/tokens";
 import { getApproveButtonText, getGasPaymentTokenApprovalTooltip } from "domain/tokens/gasPaymentTokenApproval";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
@@ -110,6 +112,7 @@ import { useActiveForm } from "components/ActiveFormScope/ActiveFormScope";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
+import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import {
   DecreaseReceiveOutputDisplay,
@@ -343,7 +346,26 @@ export function PositionSeller() {
     payUsd: closeSizeUsd,
   });
 
-  const isNotEnoughReceiveTokenLiquidity = shouldSwap ? maxSwapLiquidity < (receiveUsd ?? 0n) : false;
+  const usdgConversionTokenAddress = getUsdgConversionTokenAddress(chainId, position?.collateralTokenAddress);
+  const isUsdcReceiveOnUsdgPosition =
+    usdgConversionTokenAddress !== undefined && receiveToken?.address === usdgConversionTokenAddress;
+  const isUsdcReceiveUnfillable =
+    isUsdcReceiveOnUsdgPosition &&
+    shouldSwap &&
+    swapAmounts !== undefined &&
+    swapAmounts.amountIn > 0n &&
+    !getIsSwapPathFillable(swapAmounts.swapStrategy.swapPathStats);
+  const isNotEnoughReceiveTokenLiquidity =
+    !isUsdcReceiveOnUsdgPosition && shouldSwap ? maxSwapLiquidity < (receiveUsd ?? 0n) : false;
+
+  const positionCollateralSymbol = position?.collateralToken.symbol;
+
+  const handleReceiveUsdgInstead = useCallback(() => {
+    if (!position) return;
+
+    setIsReceiveTokenChanged(true);
+    setReceiveTokenAddress(position.collateralTokenAddress);
+  }, [position, setIsReceiveTokenChanged, setReceiveTokenAddress]);
   const setIsDismissedLatestRef = useLatest(priceImpactWarningState.setIsDismissed);
 
   const slippageInputId = useId();
@@ -563,6 +585,10 @@ export function PositionSeller() {
       };
     }
 
+    if (isUsdcReceiveUnfillable) {
+      return { error: t`Too large to receive as USDC` };
+    }
+
     if (isSubmitting) {
       return { error: t`Creating order...` };
     }
@@ -576,6 +602,7 @@ export function PositionSeller() {
     expressParams,
     hasOutdatedUi,
     isNotEnoughReceiveTokenLiquidity,
+    isUsdcReceiveUnfillable,
     isSubmitting,
     markPrice,
     minCollateralUsd,
@@ -592,6 +619,11 @@ export function PositionSeller() {
   async function onSubmit() {
     if (!account || !signer) {
       openConnectModal?.();
+      return;
+    }
+
+    // an empty swap path would still execute and silently pay out USDG
+    if (isUsdcReceiveOnUsdgPosition && shouldSwap && !getIsSwapPathFillable(swapAmounts?.swapStrategy.swapPathStats)) {
       return;
     }
 
@@ -825,7 +857,8 @@ export function PositionSeller() {
             <TokenSelector
               label={t`Receive`}
               className={cx({
-                "*:!text-yellow-300 hover:!text-yellow-300": isNotEnoughReceiveTokenLiquidity,
+                "*:!text-yellow-300 hover:!text-yellow-300":
+                  isNotEnoughReceiveTokenLiquidity || isUsdcReceiveUnfillable,
               })}
               chainId={chainId}
               showBalances={false}
@@ -846,9 +879,10 @@ export function PositionSeller() {
                   )}
                   <AmountWithUsdBalance
                     className={cx({
-                      "*:!text-yellow-300 hover:!text-yellow-300": isNotEnoughReceiveTokenLiquidity,
+                      "*:!text-yellow-300 hover:!text-yellow-300":
+                        isNotEnoughReceiveTokenLiquidity || isUsdcReceiveUnfillable,
                     })}
-                    amount={receiveTokenAmount}
+                    amount={isUsdcReceiveUnfillable ? decreaseAmounts?.receiveTokenAmount : receiveTokenAmount}
                     decimals={receiveToken.decimals}
                     symbol={receiveToken.symbol}
                     usd={receiveUsd}
@@ -1222,6 +1256,21 @@ export function PositionSeller() {
                       one="Closing will also cancel your pending margin deposit and return its funds."
                       other="Closing will also cancel your # pending margin deposits and return their funds."
                     />
+                  </AlertInfoCard>
+                )}
+
+                {isUsdcReceiveUnfillable && (
+                  <AlertInfoCard type="error" hideClose>
+                    <Trans>
+                      Too large to receive as USDC instantly.{" "}
+                      <EmbeddedActionButton
+                        className="text-blue-300 decoration-blue-300 hover:text-blue-300"
+                        onClick={handleReceiveUsdgInstead}
+                      >
+                        Receive {positionCollateralSymbol} instead
+                      </EmbeddedActionButton>{" "}
+                      and convert it in the Swap tab after closing.
+                    </Trans>
                   </AlertInfoCard>
                 )}
 

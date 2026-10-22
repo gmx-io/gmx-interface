@@ -1,4 +1,5 @@
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
+import { getIsUsdgToken } from "config/usdgPools";
 import { estimateExecuteDecreaseOrderGasLimit, estimateOrderOraclePriceCount } from "domain/synthetics/fees";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import {
@@ -288,7 +289,9 @@ export const selectPositionSellerReceiveToken = createSelector((q) => {
   }
 
   const isChanged = q(selectPositionSellerReceiveTokenAddressChanged);
-  const defaultReceiveTokenAddress = q(selectPositionSellerDefaultReceiveToken);
+  // USDG positions start on USDG every time: most traders should stay in USDG
+  const isUsdgCollateral = getIsUsdgToken(q(selectChainId), q(selectPositionSellerPosition)?.collateralTokenAddress);
+  const defaultReceiveTokenAddress = isUsdgCollateral ? undefined : q(selectPositionSellerDefaultReceiveToken);
   const receiveTokenAddress = isChanged
     ? q(selectPositionSellerReceiveTokenAddress)
     : defaultReceiveTokenAddress ?? q(selectPositionSellerReceiveTokenAddress);

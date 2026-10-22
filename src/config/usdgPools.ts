@@ -21,6 +21,10 @@ export function getUsdgConversionTokenAddress(chainId: number, collateralTokenAd
   return chainId === ARBITRUM && collateralTokenAddress === ARBITRUM_USDG_ADDRESS ? ARBITRUM_USDC_ADDRESS : undefined;
 }
 
+export function getIsUsdgToken(chainId: number, tokenAddress: string | undefined): boolean {
+  return chainId === ARBITRUM && tokenAddress === ARBITRUM_USDG_ADDRESS;
+}
+
 export const USDG_LAUNCH_BOOST_TARGET_GLV_APR = expandDecimals(8, 28);
 export const USDG_LAUNCH_BOOST_TARGET_GM_APR = expandDecimals(5, 28);
 
