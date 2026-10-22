@@ -7,6 +7,7 @@ import { Address } from "viem";
 
 import { USD_DECIMALS } from "config/factors";
 import { isSettlementChain } from "config/multichain";
+import { getPaxosTransitConfig } from "config/paxosTransit";
 import { getUsdgConversionTokenAddress } from "config/usdgPools";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
@@ -47,10 +48,13 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { getNetworkFeeGasPaymentParams } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
+import { useIsTransitWhitelisted } from "domain/synthetics/paxosTransit/usePaxosTransit";
 import { formatLiquidationPriceParts, getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import {
   convertToTokenAmount,
+  convertToUsd,
   getBalanceByBalanceType,
+  getMidPrice,
   TokenBalanceType,
   type TokenData,
 } from "domain/synthetics/tokens";
@@ -66,7 +70,7 @@ import {
 import { DEFAULT_MAX_ACTIONS_STATE, MaxActionsState, useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
-import { formatAmountFree, formatBalanceAmount, formatTokenAmountWithUsdParts } from "lib/numbers";
+import { formatAmountFree, formatBalanceAmount, formatTokenAmountWithUsdParts, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import {
@@ -367,6 +371,26 @@ export function PositionEditor() {
     collateralDeltaAmount !== undefined &&
     collateralTokenBalance !== undefined &&
     collateralDeltaAmount <= collateralTokenBalance;
+  const paxosTransitConfig = getPaxosTransitConfig(chainId);
+  const isTransitWhitelisted = useIsTransitWhitelisted({ chainId, enabled: isConversionTooLarge });
+  const restUsd =
+    collateralToken && collateralDeltaAmount !== undefined && depositMaxInstantAmount !== undefined
+      ? convertToUsd(
+          collateralDeltaAmount - depositMaxInstantAmount,
+          collateralToken.decimals,
+          getMidPrice(collateralToken.prices)
+        )
+      : undefined;
+  // the Swap tab runs Paxos only from the wallet on the settlement chain, and below the threshold only for
+  // whitelisted traders, so anything else would land on a Swap tab without a Paxos route
+  const isPaxosOfferedForRest =
+    srcChainId === undefined &&
+    !isCollateralTokenFromGmxAccount &&
+    paxosTransitConfig !== undefined &&
+    (isTransitWhitelisted || (restUsd !== undefined && restUsd >= paxosTransitConfig.thresholdUsd));
+  const paxosThresholdText = paxosTransitConfig
+    ? formatUsd(paxosTransitConfig.thresholdUsd, { displayDecimals: 0 })
+    : undefined;
   const maxInstantAmountText =
     depositMaxInstantAmount !== undefined && collateralToken
       ? formatMaxInstantAmount(collateralToken, depositMaxInstantAmount)
@@ -817,18 +841,28 @@ export function PositionEditor() {
                       </span>
                     </Button>
                   )}
-                  <Button
-                    className="w-full flex-col !items-start"
-                    variant="secondary"
-                    showExternalLinkArrow={false}
-                    onClick={handleConvertRestWithPaxos}
-                    qa="convert-rest-with-paxos"
-                  >
-                    <Trans>Convert the rest with Paxos</Trans>
-                    <span className="text-12 font-normal text-typography-secondary">
-                      <Trans>In the Swap tab · arrives separately</Trans>
-                    </span>
-                  </Button>
+                  {isPaxosOfferedForRest ? (
+                    <Button
+                      className="w-full flex-col !items-start"
+                      variant="secondary"
+                      showExternalLinkArrow={false}
+                      onClick={handleConvertRestWithPaxos}
+                      qa="convert-rest-with-paxos"
+                    >
+                      <Trans>Convert the rest with Paxos</Trans>
+                      <span className="text-12 font-normal text-typography-secondary">
+                        <Trans>In the Swap tab · arrives separately</Trans>
+                      </span>
+                    </Button>
+                  ) : (
+                    paxosThresholdText &&
+                    srcChainId === undefined &&
+                    !isCollateralTokenFromGmxAccount && (
+                      <div className="text-12 text-typography-secondary">
+                        <Trans>Paxos converts amounts from {paxosThresholdText}.</Trans>
+                      </div>
+                    )
+                  )}
                   {isCloseToLiquidation && (
                     <AlertInfoCard type="warning" hideClose>
                       <Trans>Close to liquidation? Deposit the instant amount first. Paxos can take a while.</Trans>

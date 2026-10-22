@@ -23,6 +23,21 @@ import { getIsTransitQuoteNeeded, getShouldUseTransit, getTransitFeeTier } from 
 type PaxosTransitSubmitStep = "idle" | "approving" | "submitting";
 
 const FEE_TIER_REFRESH_INTERVAL = 60_000;
+
+// shares the fee tier request with usePaxosTransit through the same SWR key
+export function useIsTransitWhitelisted({ chainId, enabled }: { chainId: ContractsChainId; enabled: boolean }) {
+  const sdk = useGmxSdk(chainId);
+  const { account } = useWallet();
+  const isActive = Boolean(enabled && getPaxosTransitConfig(chainId) && sdk && account);
+
+  const { data: feeTierData } = useSWR(
+    isActive ? ["paxosTransitFeeTier", chainId, account] : null,
+    () => sdk!.fetchTransitFeeTier({ userAddress: account! }),
+    { refreshInterval: FEE_TIER_REFRESH_INTERVAL, onErrorRetry: retryAtRefreshCadence }
+  );
+
+  return feeTierData?.feeTier === "zeroFee";
+}
 const QUOTE_REFRESH_INTERVAL = 30_000;
 
 export function usePaxosTransit({

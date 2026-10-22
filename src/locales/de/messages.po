@@ -7935,6 +7935,10 @@ msgstr "wstETH APR"
 msgid "GMX Account withdrawals are limited by Stargate bridge liquidity. Try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "Auszahlungen aus dem GMX Account sind durch die Liquidität der Stargate-Bridge begrenzt. Versuchen Sie es mit einem Betrag unter <0>{upperLimitFormatted}</0>."
 
+#: src/components/PositionEditor/PositionEditor.tsx
+msgid "Paxos converts amounts from {paxosThresholdText}."
+msgstr "Paxos wandelt Beträge ab {paxosThresholdText} um."
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated time to liquidation"
 msgstr "Geschätzte Zeit bis zur Liquidation"
