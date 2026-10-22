@@ -90,6 +90,16 @@ function getZeroFeeRouteState(p: {
   return { status: "quote" };
 }
 
+/** Below the threshold only whitelisted traders, or a forced debug run, see the standard route */
+export function getIsStandardPaxosRouteShown(p: {
+  isWhitelisted: boolean;
+  isStandardForced: boolean;
+  amountInUsd: bigint;
+  thresholdUsd: bigint;
+}): boolean {
+  return p.isWhitelisted || p.isStandardForced || p.amountInUsd >= p.thresholdUsd;
+}
+
 function getStandardRouteState(p: {
   isWhitelisted: boolean;
   isStandardForced: boolean;
@@ -100,7 +110,7 @@ function getStandardRouteState(p: {
 }): PaxosRouteState {
   const isAlwaysOffered = p.isWhitelisted || p.isStandardForced;
 
-  if (!isAlwaysOffered && p.amountInUsd < p.thresholdUsd) {
+  if (!getIsStandardPaxosRouteShown(p)) {
     return { status: "hidden" };
   }
 

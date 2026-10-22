@@ -7,7 +7,6 @@ import { Address } from "viem";
 
 import { USD_DECIMALS } from "config/factors";
 import { isSettlementChain } from "config/multichain";
-import { getPaxosTransitConfig } from "config/paxosTransit";
 import { getUsdgConversionTokenAddress } from "config/usdgPools";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
@@ -48,7 +47,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { getNetworkFeeGasPaymentParams } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
-import { useIsTransitWhitelisted } from "domain/synthetics/paxosTransit/usePaxosTransit";
+import { useIsSwapTabPaxosOffered } from "domain/synthetics/paxosTransit/useIsSwapTabPaxosOffered";
 import { formatLiquidationPriceParts, getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import {
   convertToTokenAmount,
@@ -371,8 +370,6 @@ export function PositionEditor() {
     collateralDeltaAmount !== undefined &&
     collateralTokenBalance !== undefined &&
     collateralDeltaAmount <= collateralTokenBalance;
-  const paxosTransitConfig = getPaxosTransitConfig(chainId);
-  const isTransitWhitelisted = useIsTransitWhitelisted({ chainId, enabled: isConversionTooLarge });
   const restUsd =
     collateralToken && collateralDeltaAmount !== undefined && depositMaxInstantAmount !== undefined
       ? convertToUsd(
@@ -381,16 +378,17 @@ export function PositionEditor() {
           getMidPrice(collateralToken.prices)
         )
       : undefined;
-  // the Swap tab runs Paxos only from the wallet on the settlement chain, and below the threshold only for
-  // whitelisted traders, so anything else would land on a Swap tab without a Paxos route
-  const isPaxosOfferedForRest =
-    srcChainId === undefined &&
-    !isCollateralTokenFromGmxAccount &&
-    paxosTransitConfig !== undefined &&
-    (isTransitWhitelisted || (restUsd !== undefined && restUsd >= paxosTransitConfig.thresholdUsd));
-  const paxosThresholdText = paxosTransitConfig
-    ? formatUsd(paxosTransitConfig.thresholdUsd, { displayDecimals: 0 })
-    : undefined;
+  const {
+    isOffered: isPaxosOfferedForRest,
+    isPayingFromWallet: isPaxosPayingFromWallet,
+    thresholdUsd: paxosThresholdUsd,
+  } = useIsSwapTabPaxosOffered({
+    amountUsd: restUsd,
+    isGmxAccount: isCollateralTokenFromGmxAccount,
+    enabled: isConversionTooLarge,
+  });
+  const paxosThresholdText =
+    paxosThresholdUsd !== undefined ? formatUsd(paxosThresholdUsd, { displayDecimals: 0 }) : undefined;
   const maxInstantAmountText =
     depositMaxInstantAmount !== undefined && collateralToken
       ? formatMaxInstantAmount(collateralToken, depositMaxInstantAmount)
@@ -856,8 +854,7 @@ export function PositionEditor() {
                     </Button>
                   ) : (
                     paxosThresholdText &&
-                    srcChainId === undefined &&
-                    !isCollateralTokenFromGmxAccount && (
+                    isPaxosPayingFromWallet && (
                       <div className="text-12 text-typography-secondary">
                         <Trans>Paxos converts amounts from {paxosThresholdText}.</Trans>
                       </div>
