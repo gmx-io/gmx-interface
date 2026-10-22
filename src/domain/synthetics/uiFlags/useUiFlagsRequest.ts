@@ -28,5 +28,8 @@ export function useUiFlagsRequest() {
     }
   );
 
-  return { uiFlags };
+  // fail-closed flags (permits) are never persisted, so they are unknown until the keeper answers
+  const isUiFlagsFetched = uiFlags !== fallbackData;
+
+  return { uiFlags, isUiFlagsFetched };
 }

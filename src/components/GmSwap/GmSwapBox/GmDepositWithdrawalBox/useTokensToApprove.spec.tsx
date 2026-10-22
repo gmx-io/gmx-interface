@@ -80,6 +80,7 @@ vi.mock("context/TokenPermitsContext/TokenPermitsContextProvider", () => ({
     tokenPermits: [],
     accountType: undefined,
     getIsPermitAvailable: () => false,
+    getIsPermitAvailabilityPending: () => false,
     addTokenPermit: vi.fn(),
     removeTokenPermits: vi.fn(),
     disableTokenPermits: vi.fn(),

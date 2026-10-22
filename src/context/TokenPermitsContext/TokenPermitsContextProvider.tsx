@@ -6,6 +6,7 @@ import { isAddressEqual, type Address } from "viem";
 
 import { getTokenPermitsFallbackKey, getTokenPermitsKey, LEGACY_PERMITS_DISABLED_KEY } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { getIsTokenPermitsEip7702Enabled, getIsTokenPermitsEoaEnabled } from "domain/synthetics/uiFlags/uiFlags";
 import { useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 import {
   createAndSignTokenPermit,
@@ -34,6 +35,8 @@ export type TokenPermitsState = {
   tokenPermits: SignedTokenPermit[];
   accountType: TokenPermitAccountType | undefined;
   getIsPermitAvailable: (tokenAddress: string) => boolean;
+  /** True while the keeper flags or the account type that decide permits are still loading */
+  getIsPermitAvailabilityPending: (tokenAddress: string) => boolean;
   addTokenPermit: AddTokenPermitFn;
   /** permitsChainId: the chain the permits were signed for, when it may no longer be the current one */
   removeTokenPermits: (permits: SignedTokenPermit[], permitsChainId?: number) => void;
@@ -81,21 +84,31 @@ export function useTokenPermitsContext() {
 }
 
 function useTokenPermitAccountType(chainId: number, account: string | undefined) {
-  const { data } = useSWR<TokenPermitAccountType>(account ? [account, chainId, "tokenPermitAccountType"] : null, {
-    fetcher: () => getTokenPermitAccountType(account!, getPublicClientWithRpc(chainId)),
-    refreshInterval: 0,
-  });
+  const { data, isLoading } = useSWR<TokenPermitAccountType>(
+    account ? [account, chainId, "tokenPermitAccountType"] : null,
+    {
+      fetcher: () => getTokenPermitAccountType(account!, getPublicClientWithRpc(chainId)),
+      refreshInterval: 0,
+    }
+  );
 
-  return data;
+  return { accountType: data, isAccountTypeLoading: isLoading };
 }
 
 export function TokenPermitsContextProvider({ children }: { children: React.ReactNode }) {
   const { chainId } = useChainId();
   const { signer } = useWallet();
   const account = signer?.address;
-  const { uiFlags } = useUiFlagsRequest();
+  const { uiFlags, isUiFlagsFetched } = useUiFlagsRequest();
   const { isTokenPermitsQaOverrideEnabled } = useSettings();
-  const accountType = useTokenPermitAccountType(chainId, account);
+  const { accountType, isAccountTypeLoading } = useTokenPermitAccountType(chainId, account);
+
+  const couldEnablePermits =
+    isTokenPermitsQaOverrideEnabled || getIsTokenPermitsEoaEnabled(uiFlags) || getIsTokenPermitsEip7702Enabled(uiFlags);
+  // a failed account type read ends loading and leaves permits off, so the approval transaction takes over
+  const isEligibilityPending =
+    account !== undefined &&
+    ((!isUiFlagsFetched && !isTokenPermitsQaOverrideEnabled) || (couldEnablePermits && isAccountTypeLoading));
 
   const isEnabled = getIsTokenPermitsEnabled({
     uiFlags,
@@ -147,6 +160,12 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
     (tokenAddress: string) =>
       isEnabled && getIsTokenPermitAllowed(chainId, tokenAddress) && !fallbackTokens?.includes(tokenAddress),
     [chainId, fallbackTokens, isEnabled]
+  );
+
+  const getIsPermitAvailabilityPending = useCallback(
+    (tokenAddress: string) =>
+      isEligibilityPending && getIsTokenPermitAllowed(chainId, tokenAddress) && !fallbackTokens?.includes(tokenAddress),
+    [chainId, fallbackTokens, isEligibilityPending]
   );
 
   const tokenPermits = useMemo(() => {
@@ -286,11 +305,20 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
       tokenPermits,
       accountType,
       getIsPermitAvailable,
+      getIsPermitAvailabilityPending,
       addTokenPermit,
       removeTokenPermits,
       disableTokenPermits,
     }),
-    [tokenPermits, accountType, getIsPermitAvailable, addTokenPermit, removeTokenPermits, disableTokenPermits]
+    [
+      tokenPermits,
+      accountType,
+      getIsPermitAvailable,
+      getIsPermitAvailabilityPending,
+      addTokenPermit,
+      removeTokenPermits,
+      disableTokenPermits,
+    ]
   );
 
   return <TokenPermitsContext.Provider value={state}>{children}</TokenPermitsContext.Provider>;

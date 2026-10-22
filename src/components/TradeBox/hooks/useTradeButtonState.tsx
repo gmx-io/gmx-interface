@@ -293,8 +293,10 @@ export function useTradeboxButtonState({
       tokenToApprove: pendingApprovalTokenAddress,
       nativeToken: getByKey(tokensData, zeroAddress),
       gasPrice: expressParams.gasPrice,
-      // every remaining approval has to be a permit, or the user would sign one and still be stopped for gas
-      isPermitApproval: tokensToApprove.length > 0 && tokensToApprove.every(getIsPermitApproval),
+      // every remaining approval has to be a permit, or the user would sign one and still be stopped for gas;
+      // while that is still unknown the gas error would only flash, so it waits
+      isPermitApproval:
+        tokensToApprove.length > 0 && tokensToApprove.every((token) => getIsPermitApproval(token) !== false),
     });
   }, [expressParams, getIsPermitApproval, pendingApprovalTokenAddress, tokensData, tokensToApprove]);
 
@@ -336,10 +338,12 @@ export function useTradeboxButtonState({
       isGmxAccount: false,
       excludeTokenAddresses,
       tokensAllowanceData: gasPaymentTokenAllowance?.tokensAllowanceData ?? EMPTY_OBJECT,
+      getCanApproveWithPermit: (tokenAddress) => getIsPermitApproval(tokenAddress) === true,
     });
 
     return getByKey(tokensData, address);
   }, [
+    getIsPermitApproval,
     approvalGasError.bannerErrorName,
     isPendingGasPaymentTokenApproval,
     gasPaymentToken,
