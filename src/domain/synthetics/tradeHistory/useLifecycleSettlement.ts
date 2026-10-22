@@ -17,6 +17,8 @@ const LIFECYCLE_MAX_PAGES = 10;
 export const LIFECYCLE_MAX_ROWS = LIFECYCLE_PAGE_SIZE * LIFECYCLE_MAX_PAGES;
 /** A window with more settles than this is treated as unreconcilable rather than silently sampled. */
 const CLAIM_PROBE_LIMIT = 200;
+// the orders and swapInfos queries below return at most this many items
+const LIFECYCLE_ID_IN_LIMIT = 1000;
 
 export type LifecycleOrder = {
   orderKey: string;
@@ -254,7 +256,8 @@ export async function fetchLifecycleSettlementData({
       amountOut: BigInt(swapInfo.amountOut),
     })),
     hasFundingSettlement,
-    isTruncated,
+    // a capped query would leave legs missing, and a missing leg reads as a reverted swap
+    isTruncated: isTruncated || orderKeys.length > LIFECYCLE_ID_IN_LIMIT || swapInfoIds.length > LIFECYCLE_ID_IN_LIMIT,
   };
 }
 

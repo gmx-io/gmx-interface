@@ -5,16 +5,16 @@ import type { TokenData } from "domain/synthetics/tokens";
 import { convertToTokenAmount, convertToUsd, parseContractPrice } from "domain/synthetics/tokens";
 import type { LifecycleSettlementData } from "domain/synthetics/tradeHistory/useLifecycleSettlement";
 import { getSwapLegId } from "domain/synthetics/tradeHistory/useLifecycleSettlement";
-import {
-  calculateDisplayDecimals,
-  formatDeltaUsdParts,
-  formatTokenAmount,
-  formatUsdParts,
-  numberParts,
-} from "lib/numbers";
+import { formatDeltaUsdParts, formatUsdParts, numberParts } from "lib/numbers";
 import type { PositionTradeAction } from "sdk/utils/tradeHistory/types";
 
-import { getDecreasePayoutUsd, getFeesBreakdown, hasSecondaryOutputRisk } from "./position";
+import {
+  formatSettlementTokenAmount,
+  getDecreasePayoutUsd,
+  getDecreaseSwapPayout,
+  getFeesBreakdown,
+  hasSecondaryOutputRisk,
+} from "./position";
 import { Line, TooltipString, TooltipValue, infoRow, lines, numberToState, numericText } from "./shared";
 
 export type LifecycleTokenLeg = {
@@ -88,7 +88,8 @@ function subtractLegs(received: LifecycleTokenLeg[], funded: LifecycleTokenLeg[]
 
 export function getLifecycleSettlementView(
   closeRow: PositionTradeAction,
-  data: LifecycleSettlementData
+  data: LifecycleSettlementData,
+  chainId: number
 ): LifecycleSettlementView {
   const { rows, ordersByKey, hasFundingSettlement, isTruncated } = data;
 
@@ -142,14 +143,15 @@ export function getLifecycleSettlementView(
     return { mode: "compact", openRow, isMultichain };
   }
 
-  const aggregate = aggregateLifecycleSettlement(rows, data);
+  const aggregate = aggregateLifecycleSettlement(rows, data, chainId);
 
   return aggregate ? { mode: "extended", aggregate } : closeSideOnly;
 }
 
 export function aggregateLifecycleSettlement(
   rows: PositionTradeAction[],
-  { ordersByKey, swapLegsById }: Pick<LifecycleSettlementData, "ordersByKey" | "swapLegsById">
+  { ordersByKey, swapLegsById }: Pick<LifecycleSettlementData, "ordersByKey" | "swapLegsById">,
+  chainId: number
 ): LifecycleAggregate | undefined {
   const fundedLegs: LifecycleTokenLeg[] = [];
   const receivedBeforeCloseLegs: LifecycleTokenLeg[] = [];
@@ -217,11 +219,11 @@ export function aggregateLifecycleSettlement(
     let payoutAmount: bigint | undefined;
 
     if (swapPath.length > 0) {
-      const swapLeg = swapLegsById[getSwapLegId(row.orderKey, swapPath[swapPath.length - 1])];
+      const swapPayout = getDecreaseSwapPayout({ tradeAction: row, payoutUsd, swapLegsById, chainId });
 
-      if (swapLeg) {
-        payoutToken = row.targetCollateralToken;
-        payoutAmount = swapLeg.amountOut;
+      if (swapPayout) {
+        payoutToken = swapPayout.token;
+        payoutAmount = swapPayout.amount;
       } else {
         hasSecondaryOutput = true;
       }
@@ -284,11 +286,7 @@ export function aggregateLifecycleSettlement(
 }
 
 function formatLegAmount(leg: LifecycleTokenLeg): string | undefined {
-  return formatTokenAmount(leg.amount, leg.token.decimals, leg.token.symbol, {
-    useCommas: true,
-    displayDecimals: calculateDisplayDecimals(leg.amount, leg.token.decimals, undefined, leg.token.isStable),
-    isStable: leg.token.isStable,
-  });
+  return formatSettlementTokenAmount(leg.token, leg.amount);
 }
 
 function getCashflowValue(cashflow: LifecycleCashflow, tier: LifecycleTier): TooltipValue {

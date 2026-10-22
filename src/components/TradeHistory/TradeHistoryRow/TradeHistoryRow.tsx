@@ -160,25 +160,22 @@ function FeesTooltipContent({ tradeAction, feesLines }: { tradeAction: TradeActi
       return feesLines;
     }
 
-    const view = getLifecycleSettlementView(fullCloseCandidate, settlement);
+    const view = getLifecycleSettlementView(fullCloseCandidate, settlement, chainId);
+    // an unmatched lifecycle has no swap legs, which would read as every swap having reverted
+    const hasCloseSwapLegs = !settlement.isTruncated && settlement.rows.some((row) => row.id === fullCloseCandidate.id);
+    const usdgPayoutCtx = hasCloseSwapLegs ? { chainId, swapLegsById: settlement.swapLegsById } : undefined;
 
     const settlementLines =
       view.mode === "extended"
         ? getLifecycleSettlementLines(view.aggregate)
         : view.mode === "compact"
           ? [
-              ...getSettlementTooltipLines(
-                fullCloseCandidate,
-                view.openRow,
-                view.isMultichain,
-                // swap legs are only complete for a matched lifecycle
-                settlement.isTruncated ? undefined : { chainId, swapLegsById: settlement.swapLegsById }
-              ),
+              ...getSettlementTooltipLines(fullCloseCandidate, view.openRow, view.isMultichain, usdgPayoutCtx),
               "",
               ...getSettlementNotes(view.isMultichain),
             ]
           : [
-              ...getSettlementTooltipLines(fullCloseCandidate, undefined, view.isMultichain),
+              ...getSettlementTooltipLines(fullCloseCandidate, undefined, view.isMultichain, usdgPayoutCtx),
               "",
               ...getSettlementNotes(view.isMultichain),
               ...getUnreconcilableLifecycleLines(),

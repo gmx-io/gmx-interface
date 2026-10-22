@@ -1,11 +1,13 @@
 import { Trans } from "@lingui/macro";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import useSWR from "swr";
 
 import { getUsdgConversionTokenAddress } from "config/usdgPools";
 import type { PendingOrderData } from "context/SyntheticsEvents";
 import { getReceivedTokenAmounts } from "domain/synthetics/paxosTransit/getReceivedTokenAmount";
+import { getUsdgClosePayout } from "domain/synthetics/usdgPools/closePayout";
 import { formatAmountFree, formatBalanceAmount } from "lib/numbers";
 import { getToken } from "sdk/configs/tokens";
 
@@ -13,12 +15,14 @@ export function UsdgClosePayoutStatus({
   chainId,
   pendingOrderData,
   executedTxnHash,
-  onConvertLinkShown,
+  toastId,
+  onKeepOpenChange,
 }: {
   chainId: number;
   pendingOrderData: PendingOrderData;
   executedTxnHash: string;
-  onConvertLinkShown?: () => void;
+  toastId: number;
+  onKeepOpenChange?: (key: string, isKeptOpen: boolean) => void;
 }) {
   const usdgAddress = pendingOrderData.initialCollateralTokenAddress;
   const usdcAddress = getUsdgConversionTokenAddress(chainId, usdgAddress);
@@ -35,39 +39,43 @@ export function UsdgClosePayoutStatus({
     { refreshInterval: 0, revalidateOnFocus: false, revalidateOnReconnect: false, revalidateIfStale: false }
   );
 
-  const receivedTokenAddress =
-    usdcAddress && receivedAmounts ? (receivedAmounts[usdcAddress] > 0n ? usdcAddress : usdgAddress) : undefined;
-  const receivedAmount = receivedTokenAddress && receivedAmounts ? receivedAmounts[receivedTokenAddress] : 0n;
   const isUsdcRequested = usdcAddress !== undefined && pendingOrderData.requestedReceiveTokenAddress === usdcAddress;
-  const isPaidInUsdg = receivedTokenAddress === usdgAddress;
-  const isConvertLinkShown = isUsdcRequested && isPaidInUsdg && receivedAmount > 0n;
+  const payout =
+    usdcAddress && receivedAmounts
+      ? getUsdgClosePayout({
+          receivedAmounts,
+          usdgAddress,
+          usdcAddress,
+          isUsdcRequested,
+          swapPathLength: pendingOrderData.swapPath.length,
+        })
+      : undefined;
+  // the convert link is the only prompt to swap a USDG payout back, so the toast waits for it,
+  // including while a receipt the RPC doesn't have yet is retried
+  const isKeptOpen = isUsdcRequested && (receivedAmounts === undefined || Boolean(payout?.isConvertLinkShown));
 
   useEffect(
-    function keepToastWithConvertLink() {
-      if (isConvertLinkShown) {
-        onConvertLinkShown?.();
-      }
+    function keepToastOpenForConvertLink() {
+      onKeepOpenChange?.(executedTxnHash, isKeptOpen);
     },
-    [isConvertLinkShown, onConvertLinkShown]
+    [executedTxnHash, isKeptOpen, onKeepOpenChange]
   );
 
-  // payouts to the GMX Account go to the multichain vault, not to the account
-  if (!usdcAddress || !receivedTokenAddress || receivedAmount === 0n) {
+  if (!usdcAddress || !payout) {
     return null;
   }
 
-  const receivedToken = getToken(chainId, receivedTokenAddress);
+  const receivedToken = getToken(chainId, payout.receivedTokenAddress);
   const usdc = getToken(chainId, usdcAddress);
-  const isConversionFailed = isUsdcRequested && isPaidInUsdg && pendingOrderData.swapPath.length > 0;
   const receivedSymbol = receivedToken.symbol;
   const usdcSymbol = usdc.symbol;
-  const receivedText = formatBalanceAmount(receivedAmount, receivedToken.decimals, receivedToken.symbol, {
+  const receivedText = formatBalanceAmount(payout.receivedAmount, receivedToken.decimals, receivedToken.symbol, {
     isStable: receivedToken.isStable,
   });
 
   return (
     <div className="mt-8 flex flex-col gap-4">
-      {isConversionFailed && (
+      {payout.isConversionFailed && (
         <div className="text-yellow-300">
           <Trans>
             Paid in {receivedSymbol}: the conversion to {usdcSymbol} couldn't fill
@@ -77,13 +85,14 @@ export function UsdgClosePayoutStatus({
       <div>
         <Trans>Received {receivedText}</Trans>
       </div>
-      {isConvertLinkShown && (
+      {payout.isConvertLinkShown && (
         <Link
           className="text-blue-300 underline"
           to={`/trade/swap?mode=market&from=${receivedToken.symbol}&to=${usdc.symbol}&amount=${formatAmountFree(
-            receivedAmount,
+            payout.receivedAmount,
             receivedToken.decimals
           )}`}
+          onClick={() => toast.dismiss(toastId)}
         >
           <Trans>Convert to {usdcSymbol}</Trans>
         </Link>

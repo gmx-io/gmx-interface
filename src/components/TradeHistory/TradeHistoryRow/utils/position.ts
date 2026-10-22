@@ -13,7 +13,7 @@ import {
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
 import { isMarginDepositOrder } from "domain/synthetics/orders/marginDeposit";
-import { convertToTokenAmount, convertToUsd, parseContractPrice } from "domain/synthetics/tokens";
+import { convertToTokenAmount, convertToUsd, parseContractPrice, type TokenData } from "domain/synthetics/tokens";
 import { getShouldUseMaxPrice } from "domain/synthetics/trade";
 import { getSwapLegId, type LifecycleSwapLeg } from "domain/synthetics/tradeHistory/useLifecycleSettlement";
 import { isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
@@ -944,12 +944,7 @@ export function getSettlementTooltipLines(
   const collateralPrice = tradeAction.collateralTokenPriceMin;
   const breakdown = getFeesBreakdown(tradeAction);
 
-  const formatCollateralAmount = (amount: bigint) =>
-    formatTokenAmount(amount, collateralToken.decimals, collateralToken.symbol, {
-      useCommas: true,
-      displayDecimals: calculateDisplayDecimals(amount, collateralToken.decimals, undefined, collateralToken.isStable),
-      isStable: collateralToken.isStable,
-    });
+  const formatCollateralAmount = (amount: bigint) => formatSettlementTokenAmount(collateralToken, amount);
 
   const marginAtCloseAmount = tradeAction.initialCollateralDeltaAmount;
   const receivedUsd = getDecreasePayoutUsd(tradeAction);
@@ -958,15 +953,19 @@ export function getSettlementTooltipLines(
   if (receivedUsd !== undefined) {
     const isSingleCollateralPayout = tradeAction.swapPath.length === 0 && !hasSecondaryOutputRisk(tradeAction);
 
-    const usdgSwapPayout = usdgPayoutCtx ? getUsdgSwapPayout(tradeAction, usdgPayoutCtx) : undefined;
+    const usdgSwapPayout =
+      usdgPayoutCtx && getIsUsdgToken(usdgPayoutCtx.chainId, collateralToken.address)
+        ? getDecreaseSwapPayout({
+            tradeAction,
+            payoutUsd: receivedUsd,
+            swapLegsById: usdgPayoutCtx.swapLegsById,
+            chainId: usdgPayoutCtx.chainId,
+          })
+        : undefined;
 
     const formatted = usdgSwapPayout
-      ? formatTokenAmount(usdgSwapPayout.amount, usdgSwapPayout.token.decimals, usdgSwapPayout.token.symbol, {
-          useCommas: true,
-          isStable: usdgSwapPayout.token.isStable,
-        })
-      : isSingleCollateralPayout ||
-          (usdgPayoutCtx !== undefined && getIsUsdgToken(usdgPayoutCtx.chainId, collateralToken.address))
+      ? formatSettlementTokenAmount(usdgSwapPayout.token, usdgSwapPayout.amount)
+      : isSingleCollateralPayout
         ? formatCollateralAmount(convertToTokenAmount(receivedUsd, collateralToken.decimals, collateralPrice)!)
         : formatUsdParts(receivedUsd);
 
@@ -1001,19 +1000,50 @@ export function getSettlementTooltipLines(
   );
 }
 
-// USDG closes either convert in full or pay USDG, so a missing last swap leg means the payout stayed in USDG
-function getUsdgSwapPayout(
-  tradeAction: PositionTradeAction,
-  { chainId, swapLegsById }: { chainId: number; swapLegsById: Record<string, LifecycleSwapLeg> }
-) {
-  if (!getIsUsdgToken(chainId, tradeAction.initialCollateralToken.address) || tradeAction.swapPath.length === 0) {
+export function formatSettlementTokenAmount(token: TokenData, amount: bigint) {
+  return formatTokenAmount(amount, token.decimals, token.symbol, {
+    useCommas: true,
+    displayDecimals: calculateDisplayDecimals(amount, token.decimals, undefined, token.isStable),
+    isStable: token.isStable,
+  });
+}
+
+/** What a decrease that swaps paid out, from its last swap leg; undefined when that can't be told */
+export function getDecreaseSwapPayout({
+  tradeAction,
+  payoutUsd,
+  swapLegsById,
+  chainId,
+}: {
+  tradeAction: PositionTradeAction;
+  payoutUsd: bigint;
+  swapLegsById: Record<string, LifecycleSwapLeg>;
+  chainId: number;
+}): { token: TokenData; amount: bigint } | undefined {
+  const { swapPath } = tradeAction;
+
+  if (swapPath.length === 0) {
     return undefined;
   }
 
-  const swapLeg =
-    swapLegsById[getSwapLegId(tradeAction.orderKey, tradeAction.swapPath[tradeAction.swapPath.length - 1])];
+  const swapLeg = swapLegsById[getSwapLegId(tradeAction.orderKey, swapPath[swapPath.length - 1])];
 
-  return swapLeg ? { token: tradeAction.targetCollateralToken, amount: swapLeg.amountOut } : undefined;
+  if (swapLeg) {
+    return { token: tradeAction.targetCollateralToken, amount: swapLeg.amountOut };
+  }
+
+  // USDG closes either convert in full or pay USDG, so a missing last leg means the payout stayed in USDG
+  if (!getIsUsdgToken(chainId, tradeAction.initialCollateralToken.address)) {
+    return undefined;
+  }
+
+  const amount = convertToTokenAmount(
+    payoutUsd,
+    tradeAction.initialCollateralToken.decimals,
+    tradeAction.collateralTokenPriceMin
+  );
+
+  return amount === undefined ? undefined : { token: tradeAction.initialCollateralToken, amount };
 }
 
 function getPriceImpactLines(tradeAction: PositionTradeAction) {

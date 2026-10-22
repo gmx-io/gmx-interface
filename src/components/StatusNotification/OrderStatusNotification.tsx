@@ -49,14 +49,14 @@ type Props = {
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
   hideTxLink?: "creation" | "execution" | "none";
-  onKeepOpen?: () => void;
+  onKeepOpenChange?: (key: string, isKeptOpen: boolean) => void;
 };
 
 function OrderStatusNotification({
   pendingOrderData,
   marketsInfoData,
   tokensData,
-  onKeepOpen,
+  onKeepOpenChange,
   toastTimestamp,
   hideTxLink = "none",
 }: Props) {
@@ -446,7 +446,8 @@ function OrderStatusNotification({
               chainId={chainId}
               pendingOrderData={pendingOrderData}
               executedTxnHash={orderStatus.executedTxnHash}
-              onConvertLinkShown={onKeepOpen}
+              toastId={toastTimestamp}
+              onKeepOpenChange={onKeepOpenChange}
             />
           )}
         </div>
@@ -615,11 +616,26 @@ export function OrdersStatusNotificiation({
     }
   }, [getMatchedOrderStatus, pendingOrders]);
 
-  // the convert link is the only prompt to swap a USDG payout back, so it waits for the trader
-  const [isKeptOpen, setIsKeptOpen] = useState(false);
-  const keepOpen = useCallback(() => setIsKeptOpen(true), []);
+  const [keptOpenKeys, setKeptOpenKeys] = useState<ReadonlySet<string>>(new Set());
+  const setIsKeptOpen = useCallback((key: string, isKeptOpen: boolean) => {
+    setKeptOpenKeys((prev) => {
+      if (prev.has(key) === isKeptOpen) {
+        return prev;
+      }
 
-  useToastAutoClose(isCompleted && !isKeptOpen, toastTimestamp);
+      const next = new Set(prev);
+
+      if (isKeptOpen) {
+        next.add(key);
+      } else {
+        next.delete(key);
+      }
+
+      return next;
+    });
+  }, []);
+
+  useToastAutoClose(isCompleted && keptOpenKeys.size === 0, toastTimestamp);
 
   return (
     <div className="StatusNotification-wrapper">
@@ -633,7 +649,7 @@ export function OrdersStatusNotificiation({
               tokensData={tokensData}
               toastTimestamp={toastTimestamp}
               hideTxLink={pendingOrders.length > 1 ? "creation" : "none"}
-              onKeepOpen={keepOpen}
+              onKeepOpenChange={setIsKeptOpen}
             />
           );
         })}
