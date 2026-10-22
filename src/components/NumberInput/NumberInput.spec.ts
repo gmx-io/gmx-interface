@@ -38,6 +38,14 @@ describe("sanitizeNumberInputValue", () => {
     expect(sanitizeNumberInputValue("00.5")).toBe(undefined);
   });
 
+  it("replaces leading zeros in whole-number fields PRO-4445", () => {
+    expect(sanitizeNumberInputValue("02", true)).toBe("2");
+    expect(sanitizeNumberInputValue("00", true)).toBe("0");
+    expect(sanitizeNumberInputValue("0005", true)).toBe("5");
+    expect(sanitizeNumberInputValue("0", true)).toBe("0");
+    expect(sanitizeNumberInputValue("20", true)).toBe("20");
+  });
+
   it("rejects non-numeric input", () => {
     expect(sanitizeNumberInputValue("abc")).toBe(undefined);
     expect(sanitizeNumberInputValue("1a")).toBe(undefined);

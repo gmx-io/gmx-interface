@@ -150,7 +150,7 @@ test.describe("Trading Settings: Express+1CT -> Express deactivation (FEDEV-2133
 
     await expect(page.getByText("Deactivation failed")).toBeVisible({ timeout: 20_000 });
     await expect(
-      page.getByText("The signature request was rejected in your wallet. Retry and confirm the request to deactivate.")
+      page.getByText("The signature request was rejected in your wallet. Retry and confirm the request to deactivate")
     ).toBeVisible();
 
     const sendRequests = chain.rpcLog.filter((e) => e.method === "eth_sendTransaction");

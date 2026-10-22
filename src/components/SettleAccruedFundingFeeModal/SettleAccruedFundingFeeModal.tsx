@@ -420,15 +420,15 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
 
     if (isWalletClassicFallback && walletGasTokenSymbol) {
       const nativeTokenSymbol = getNativeToken(chainId).symbol;
-      return t`Paid in ${nativeTokenSymbol} from your Wallet because your Wallet does not have enough ${walletGasTokenSymbol} for Express.`;
+      return t`Paid in ${nativeTokenSymbol} from your Wallet because your Wallet does not have enough ${walletGasTokenSymbol} for Express`;
     }
 
     if (isFeeSourceSwitched && isGmxAccountFeeSource && walletGasTokenSymbol) {
-      return t`Paid from your GMX Account because your Wallet does not have enough ${walletGasTokenSymbol} for the fee.`;
+      return t`Paid from your GMX Account because your Wallet does not have enough ${walletGasTokenSymbol} for the fee`;
     }
 
     if (isFeeSourceSwitched && !isGmxAccountFeeSource && gmxAccountGasTokenSymbol) {
-      return t`Paid from your Wallet because your GMX Account does not have enough ${gmxAccountGasTokenSymbol} for the fee.`;
+      return t`Paid from your Wallet because your GMX Account does not have enough ${gmxAccountGasTokenSymbol} for the fee`;
     }
 
     return undefined;

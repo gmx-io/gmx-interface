@@ -6,7 +6,16 @@ import { zeroAddress } from "viem";
 
 import type { ERC20Address, NativeTokenSupportedAddress, Token } from "utils/tokens/types";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, MEGAETH, ContractsChainId } from "./chains";
+import {
+  ARBITRUM,
+  ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  MEGAETH,
+  ContractsChainId,
+  NetworkId,
+  isSolanaNetwork,
+} from "./chains";
 import { convertTokenAddress, getToken, getTokenBySymbol } from "./tokens";
 
 export const SWAP_GRAPH_MAX_MARKETS_PER_TOKEN = 5;
@@ -1280,18 +1289,25 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
   },
 };
 
+function getMarketsConfigMap(chainId: number): MarketsConfigMap | undefined {
+  // Solana markets stay in the app (src/config/gmsol): SDK configs ship in the EVM main bundle
+  return isSolanaNetwork(chainId) ? {} : MARKETS[chainId as ContractsChainId];
+}
+
 export type MarketLabel = `${string}/USD [${string}-${string}]`;
 
-export function getMarketsByChainId(chainId: ContractsChainId): Record<string, MarketConfig> {
-  if (!MARKETS[chainId]) {
+export function getMarketsByChainId(chainId: NetworkId): Record<string, MarketConfig> {
+  const markets = getMarketsConfigMap(chainId);
+
+  if (!markets) {
     throw new Error(`Markets not found for chainId ${chainId}`);
   }
 
-  return MARKETS[chainId];
+  return markets;
 }
 
-export function getMarketByLabel(chainId: ContractsChainId, label: MarketLabel): MarketConfig {
-  const marketsByAddress = MARKETS[chainId];
+export function getMarketByLabel(chainId: NetworkId, label: MarketLabel): MarketConfig {
+  const marketsByAddress = getMarketsConfigMap(chainId);
 
   if (!marketsByAddress) {
     throw new Error(`Markets not found for chainId ${chainId}`);
@@ -1344,7 +1360,7 @@ export function getMarketByLabel(chainId: ContractsChainId, label: MarketLabel):
   return market;
 }
 
-export const fixTokenSymbolFromMarketLabel = (chainId: ContractsChainId, symbol: string) => {
+export const fixTokenSymbolFromMarketLabel = (chainId: NetworkId, symbol: string) => {
   if (chainId === ARBITRUM && symbol === "WBTC") {
     return "BTC";
   }
@@ -1355,7 +1371,7 @@ export const fixTokenSymbolFromMarketLabel = (chainId: ContractsChainId, symbol:
 };
 
 export function isMarketTokenAddress(chainId: number, marketTokenAddress: string): boolean {
-  return Boolean(MARKETS[chainId]?.[marketTokenAddress]);
+  return Boolean(getMarketsConfigMap(chainId)?.[marketTokenAddress]);
 }
 
 export function getTokenAddressByMarket<T extends "long" | "short" | "index">(
@@ -1363,7 +1379,7 @@ export function getTokenAddressByMarket<T extends "long" | "short" | "index">(
   marketTokenAddress: string,
   tokenType: T
 ): T extends "index" ? NativeTokenSupportedAddress | ERC20Address : ERC20Address {
-  const market = MARKETS[chainId as ContractsChainId][marketTokenAddress];
+  const market = getMarketsConfigMap(chainId)![marketTokenAddress];
 
   if (tokenType === "index") {
     return convertTokenAddress(chainId, market.indexTokenAddress, "native")! as T extends "index"
@@ -1394,11 +1410,11 @@ export function getTokenSymbolByMarket(
 }
 
 export function getIsSpotOnlyMarket(chainId: number, marketTokenAddress: string): boolean {
-  return MARKETS[chainId as ContractsChainId][marketTokenAddress].indexTokenAddress === zeroAddress;
+  return getMarketsConfigMap(chainId)![marketTokenAddress].indexTokenAddress === zeroAddress;
 }
 
 export function getMarketIsSameCollaterals(chainId: number, marketTokenAddress: string): boolean {
-  const market = MARKETS[chainId][marketTokenAddress];
+  const market = getMarketsConfigMap(chainId)![marketTokenAddress];
   if (!market) {
     return false;
   }

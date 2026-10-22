@@ -183,6 +183,13 @@ export function parseError(error: ErrorLike | string | undefined, errorDepth = 0
         isUserError = type ? getIsUserError(type) : false;
         isUserRejectedError = type ? getIsUserRejectedError(type) : false;
       }
+
+      // ethers already classified it as a user rejection, whatever the wallet error looks like
+      if (typeof error === "object" && error?.code === "ACTION_REJECTED") {
+        txErrorType = TxErrorType.UserDenied;
+        isUserError = true;
+        isUserRejectedError = true;
+      }
     } catch (e) {
       //
     }
