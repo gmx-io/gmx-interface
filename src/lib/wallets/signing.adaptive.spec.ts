@@ -87,7 +87,7 @@ import { DAY_MS } from "lib/dates";
 import { sleep } from "lib/sleep";
 import { ARBITRUM, SOURCE_BASE_MAINNET as BASE } from "sdk/configs/chainIds";
 
-import { signMessage, signTypedData } from "./signing";
+import { signTypedData } from "./signing";
 import { AccountType } from "./useAccountType";
 import { getChainBindingState } from "./verificationChainSigning";
 
@@ -272,17 +272,6 @@ describe("adaptive EIP-7702 signing", () => {
 
     expect(switchedChainIds()).toEqual([ARBITRUM, BASE]);
     expect(verificationClient.verifyHash).not.toHaveBeenCalled();
-  });
-
-  it("keeps signMessage on the current chain, because its signature becomes a subaccount private key", async () => {
-    await learnThatWalletNeedsArbitrum();
-
-    await expect(
-      signMessage({ signer: walletOnBase, message: "subaccount", verificationChainId: ARBITRUM })
-    ).resolves.toBe(SIGNATURE_FROM_BASE);
-
-    // Switching would change the signature, and with it the subaccount address the user already approved.
-    expect(switchNetworkMock).not.toHaveBeenCalled();
   });
 
   it("keeps the first signature when the verification RPC call fails, instead of asking to sign again", async () => {

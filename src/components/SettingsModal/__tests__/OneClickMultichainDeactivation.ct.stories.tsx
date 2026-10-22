@@ -76,7 +76,7 @@ export function OneClickMultichainDeactivationStory({
     const encryptedPrivateKey = AES.encrypt(seedSubaccountPrivateKey, MOCK_ACCOUNT).toString();
     localStorage.setItem(
       JSON.stringify(getSubaccountConfigKey(ARBITRUM, MOCK_ACCOUNT)),
-      JSON.stringify({ address: seedSubaccountAddress, privateKey: encryptedPrivateKey, isNew: true })
+      JSON.stringify({ version: 2, address: seedSubaccountAddress, privateKey: encryptedPrivateKey, isNew: true })
     );
 
     localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, String(SOURCE_BASE_MAINNET));
