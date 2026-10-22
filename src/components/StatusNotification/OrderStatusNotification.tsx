@@ -441,11 +441,13 @@ function OrderStatusNotification({
           {externalSwapStatus}
           {sendingStatus}
           {executionStatus}
-          {isUsdgMarketDecrease && orderStatus?.executedTxnHash && (
+          {isUsdgMarketDecrease && orderStatus?.executedTxnHash && orderData?.targetCollateralToken && (
             <UsdgClosePayoutStatus
               chainId={chainId}
               pendingOrderData={pendingOrderData}
+              orderKey={orderStatus.key}
               executedTxnHash={orderStatus.executedTxnHash}
+              outTokenAddress={orderData.targetCollateralToken.address}
               toastId={toastTimestamp}
               onKeepOpenChange={onKeepOpenChange}
             />

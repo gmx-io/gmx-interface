@@ -3,7 +3,7 @@ import { t } from "@lingui/macro";
 import { isDecreaseOrderType, isIncreaseOrderType, isLiquidationOrderType } from "domain/synthetics/orders";
 import type { TokenData } from "domain/synthetics/tokens";
 import { convertToTokenAmount, convertToUsd, parseContractPrice } from "domain/synthetics/tokens";
-import type { LifecycleSettlementData } from "domain/synthetics/tradeHistory/useLifecycleSettlement";
+import type { LifecycleSettlementData, LifecycleSwapLeg } from "domain/synthetics/tradeHistory/useLifecycleSettlement";
 import { getSwapLegId } from "domain/synthetics/tradeHistory/useLifecycleSettlement";
 import { formatDeltaUsdParts, formatUsdParts, numberParts } from "lib/numbers";
 import type { PositionTradeAction } from "sdk/utils/tradeHistory/types";
@@ -86,11 +86,15 @@ function subtractLegs(received: LifecycleTokenLeg[], funded: LifecycleTokenLeg[]
   return netLegs;
 }
 
-export function getLifecycleSettlementView(
-  closeRow: PositionTradeAction,
-  data: LifecycleSettlementData,
-  chainId: number
-): LifecycleSettlementView {
+export function getLifecycleSettlementView({
+  closeRow,
+  data,
+  chainId,
+}: {
+  closeRow: PositionTradeAction;
+  data: LifecycleSettlementData;
+  chainId: number;
+}): LifecycleSettlementView {
   const { rows, ordersByKey, hasFundingSettlement, isTruncated } = data;
 
   // A mixed lifecycle stays labelled even when the close row itself is same-chain.
@@ -143,16 +147,20 @@ export function getLifecycleSettlementView(
     return { mode: "compact", openRow, isMultichain };
   }
 
-  const aggregate = aggregateLifecycleSettlement(rows, data, chainId);
+  const aggregate = aggregateLifecycleSettlement({ rows, data, chainId });
 
   return aggregate ? { mode: "extended", aggregate } : closeSideOnly;
 }
 
-export function aggregateLifecycleSettlement(
-  rows: PositionTradeAction[],
-  { ordersByKey, swapLegsById }: Pick<LifecycleSettlementData, "ordersByKey" | "swapLegsById">,
-  chainId: number
-): LifecycleAggregate | undefined {
+export function aggregateLifecycleSettlement({
+  rows,
+  data: { ordersByKey, swapLegsById },
+  chainId,
+}: {
+  rows: PositionTradeAction[];
+  data: Pick<LifecycleSettlementData, "ordersByKey" | "swapLegsById">;
+  chainId: number;
+}): LifecycleAggregate | undefined {
   const fundedLegs: LifecycleTokenLeg[] = [];
   const receivedBeforeCloseLegs: LifecycleTokenLeg[] = [];
   const receivedAtCloseLegs: LifecycleTokenLeg[] = [];
@@ -367,6 +375,34 @@ export function getSettlementNotes(isMultichain: boolean): Line[] {
   }
 
   return notes;
+}
+
+/** Partial closes have no settlement block, so a USDG one that swapped gets just the received line */
+export function getUsdgPartialClosePayoutLines({
+  tradeAction,
+  swapLegsById,
+  chainId,
+}: {
+  tradeAction: PositionTradeAction;
+  swapLegsById: Record<string, LifecycleSwapLeg>;
+  chainId: number;
+}): Line[] {
+  const payoutUsd = getDecreasePayoutUsd(tradeAction);
+  const payout =
+    payoutUsd === undefined ? undefined : getDecreaseSwapPayout({ tradeAction, payoutUsd, swapLegsById, chainId });
+  const formatted = payout && formatSettlementTokenAmount(payout.token, payout.amount);
+
+  if (formatted === undefined) {
+    return [];
+  }
+
+  return lines(
+    "",
+    infoRow(
+      isMultichainRow(tradeAction) ? t`Received at close (GMX balance)` : t`Wallet received`,
+      numericText("~", formatted)
+    )
+  );
 }
 
 export function getUnreconcilableLifecycleLines(): Line[] {

@@ -2200,6 +2200,7 @@ msgid "Canceling {ordersText}..."
 msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Received at close (GMX balance)"
 msgstr ""
@@ -2762,10 +2763,6 @@ msgstr ""
 msgid "2nd place"
 msgstr ""
 
-#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
-msgid "Convert to {usdcSymbol}"
-msgstr ""
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Excludes claimed funding, price impact rebates and execution fees"
 msgstr ""
@@ -3311,6 +3308,10 @@ msgstr ""
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/components/TradeboxMarginFields/SizeField.tsx
 msgid "Size"
+msgstr ""
+
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Convert to {convertToSymbol}"
 msgstr ""
 
 #: src/components/PositionSeller/PositionSeller.tsx
@@ -4906,6 +4907,10 @@ msgstr ""
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "How do I get started on GMX?"
+msgstr ""
+
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Paid in {receivedSymbol}: the conversion to {convertToSymbol} couldn't fill"
 msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
@@ -7332,6 +7337,7 @@ msgstr ""
 msgid "Yield"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Wallet received"
 msgstr ""
@@ -9823,10 +9829,6 @@ msgstr ""
 
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "No tokens on {0} for deposit"
-msgstr ""
-
-#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
-msgid "Paid in {receivedSymbol}: the conversion to {usdcSymbol} couldn't fill"
 msgstr ""
 
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx

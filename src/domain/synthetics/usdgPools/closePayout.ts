@@ -1,40 +1,56 @@
+export type UsdgCloseReceiptAmounts = {
+  /** amountOut of the order's last swap leg; undefined when there was no swap or it couldn't fill */
+  swapOutputAmount: bigint | undefined;
+  /** USDG paid to the wallet or credited to the GMX Account */
+  usdgAmount: bigint;
+};
+
 export type UsdgClosePayout = {
   receivedTokenAddress: string;
   receivedAmount: bigint;
   isConversionFailed: boolean;
-  isConvertLinkShown: boolean;
+  /** set when the trader asked for another token but was paid USDG */
+  convertToTokenAddress: string | undefined;
 };
 
 /**
- * Reads a USDG close payout from the transfers to the trader: a close either converts in full to USDC or pays USDG
- * Undefined when nothing reached the account, e.g. a payout to the GMX Account lands in the multichain vault
+ * A USDG close either pays the swap output in full or pays USDG, never a mix
+ * Undefined when the receipt shows no payout, e.g. a close that returned nothing
  */
 export function getUsdgClosePayout({
-  receivedAmounts,
+  receiptAmounts,
   usdgAddress,
-  usdcAddress,
-  isUsdcRequested,
+  outTokenAddress,
+  requestedTokenAddress,
   swapPathLength,
 }: {
-  receivedAmounts: Record<string, bigint>;
+  receiptAmounts: UsdgCloseReceiptAmounts;
   usdgAddress: string;
-  usdcAddress: string;
-  isUsdcRequested: boolean;
+  outTokenAddress: string;
+  requestedTokenAddress: string;
   swapPathLength: number;
 }): UsdgClosePayout | undefined {
-  const receivedTokenAddress = (receivedAmounts[usdcAddress] ?? 0n) > 0n ? usdcAddress : usdgAddress;
-  const receivedAmount = receivedAmounts[receivedTokenAddress] ?? 0n;
+  const { swapOutputAmount, usdgAmount } = receiptAmounts;
 
-  if (receivedAmount === 0n) {
+  if (swapOutputAmount !== undefined && swapOutputAmount > 0n) {
+    return {
+      receivedTokenAddress: outTokenAddress,
+      receivedAmount: swapOutputAmount,
+      isConversionFailed: false,
+      convertToTokenAddress: undefined,
+    };
+  }
+
+  if (usdgAmount === 0n) {
     return undefined;
   }
 
-  const isPaidInUsdg = receivedTokenAddress === usdgAddress;
+  const isOtherTokenRequested = requestedTokenAddress !== usdgAddress;
 
   return {
-    receivedTokenAddress,
-    receivedAmount,
-    isConversionFailed: isUsdcRequested && isPaidInUsdg && swapPathLength > 0,
-    isConvertLinkShown: isUsdcRequested && isPaidInUsdg,
+    receivedTokenAddress: usdgAddress,
+    receivedAmount: usdgAmount,
+    isConversionFailed: isOtherTokenRequested && swapPathLength > 0,
+    convertToTokenAddress: isOtherTokenRequested ? requestedTokenAddress : undefined,
   };
 }

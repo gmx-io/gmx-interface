@@ -934,12 +934,17 @@ export function getFeesBreakdown(tradeAction: PositionTradeAction): { totalUsd: 
   return { totalUsd, lines: breakdownLines };
 }
 
-export function getSettlementTooltipLines(
-  tradeAction: PositionTradeAction,
-  openRow: PositionTradeAction | undefined,
+export function getSettlementTooltipLines({
+  tradeAction,
+  openRow,
   isMultichain = false,
-  usdgPayoutCtx?: { chainId: number; swapLegsById: Record<string, LifecycleSwapLeg> }
-): Line[] {
+  usdgPayoutCtx,
+}: {
+  tradeAction: PositionTradeAction;
+  openRow: PositionTradeAction | undefined;
+  isMultichain?: boolean;
+  usdgPayoutCtx?: { chainId: number; swapLegsById: Record<string, LifecycleSwapLeg> };
+}): Line[] {
   const collateralToken = tradeAction.initialCollateralToken;
   const collateralPrice = tradeAction.collateralTokenPriceMin;
   const breakdown = getFeesBreakdown(tradeAction);

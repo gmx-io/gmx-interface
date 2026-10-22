@@ -2200,6 +2200,7 @@ msgid "Canceling {ordersText}..."
 msgstr "Annulation de {ordersText}..."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Received at close (GMX balance)"
 msgstr "Reçu à la clôture (solde GMX)"
@@ -2762,10 +2763,6 @@ msgstr "Dépôt échoué"
 msgid "2nd place"
 msgstr "2e place"
 
-#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
-msgid "Convert to {usdcSymbol}"
-msgstr "Convertir en {usdcSymbol}"
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Excludes claimed funding, price impact rebates and execution fees"
 msgstr "Hors frais de financement récupérés, remises liées à l'impact sur le prix et frais d'exécution"
@@ -3312,6 +3309,10 @@ msgstr "Mise à jour disponible"
 #: src/components/TradeboxMarginFields/SizeField.tsx
 msgid "Size"
 msgstr "Taille"
+
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Convert to {convertToSymbol}"
+msgstr "Convertir en {convertToSymbol}"
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Loading Express params..."
@@ -4907,6 +4908,10 @@ msgstr "Restez informé des derniers listings, mises à jour et avis de maintena
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "How do I get started on GMX?"
 msgstr "Comment commencer sur GMX ?"
+
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Paid in {receivedSymbol}: the conversion to {convertToSymbol} couldn't fill"
+msgstr "Payé en {receivedSymbol} : la conversion en {convertToSymbol} n'a pas pu être exécutée"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -7332,6 +7337,7 @@ msgstr "Diminuer"
 msgid "Yield"
 msgstr "Rendement"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Wallet received"
 msgstr "Reçu sur le portefeuille"
@@ -9824,10 +9830,6 @@ msgstr "APY de performance totale"
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "No tokens on {0} for deposit"
 msgstr "Aucun jeton sur {0} pour le dépôt"
-
-#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
-msgid "Paid in {receivedSymbol}: the conversion to {usdcSymbol} couldn't fill"
-msgstr "Payé en {receivedSymbol} : la conversion en {usdcSymbol} n'a pas pu être exécutée"
 
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Total to claim"

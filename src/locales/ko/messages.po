@@ -2200,6 +2200,7 @@ msgid "Canceling {ordersText}..."
 msgstr "{ordersText} 취소 중..."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Received at close (GMX balance)"
 msgstr "청산 시 수령액 (GMX 잔액)"
@@ -2762,10 +2763,6 @@ msgstr "입금 실패"
 msgid "2nd place"
 msgstr "2위"
 
-#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
-msgid "Convert to {usdcSymbol}"
-msgstr "{usdcSymbol}(으)로 변환"
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Excludes claimed funding, price impact rebates and execution fees"
 msgstr "청구된 펀딩비, 가격 영향 리베이트 및 실행 수수료는 제외됩니다"
@@ -3312,6 +3309,10 @@ msgstr "업데이트 사용 가능"
 #: src/components/TradeboxMarginFields/SizeField.tsx
 msgid "Size"
 msgstr "크기"
+
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Convert to {convertToSymbol}"
+msgstr "{convertToSymbol}(으)로 변환"
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Loading Express params..."
@@ -4907,6 +4908,10 @@ msgstr "최신 상장, 업데이트 및 점검 안내를 확인하십시오."
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "How do I get started on GMX?"
 msgstr "GMX를 시작하려면 어떻게 해야 합니까?"
+
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Paid in {receivedSymbol}: the conversion to {convertToSymbol} couldn't fill"
+msgstr "{receivedSymbol}(으)로 지급됨: {convertToSymbol}(으)로의 변환을 체결할 수 없었습니다"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -7332,6 +7337,7 @@ msgstr "감소"
 msgid "Yield"
 msgstr "수익률"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Wallet received"
 msgstr "지갑 수령액"
@@ -9824,10 +9830,6 @@ msgstr "총 성과 APY"
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "No tokens on {0} for deposit"
 msgstr "{0}에 입금 가능한 토큰이 없습니다"
-
-#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
-msgid "Paid in {receivedSymbol}: the conversion to {usdcSymbol} couldn't fill"
-msgstr "{receivedSymbol}(으)로 지급됨: {usdcSymbol}(으)로의 변환을 체결할 수 없었습니다"
 
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Total to claim"
