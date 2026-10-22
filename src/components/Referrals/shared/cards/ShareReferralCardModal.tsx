@@ -3,6 +3,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useCopyToClipboard } from "react-use";
 
+import { formatReferralCodeForDisplay } from "domain/referrals/utils/referralCode";
 import { shouldShowShareCardDiscounts } from "domain/referrals/utils/referralsHelper";
 import { shareOrCopyElementAsImage } from "lib/copyElementAsImage";
 import { helperToast } from "lib/helperToast";
@@ -42,6 +43,7 @@ export function ShareReferralCardModal({
   const { isMobile } = useBreakpoints();
   const homeURL = getHomeUrl();
   const referralLink = `${homeURL}/trade/?ref=${referralCode}`;
+  const referralCodeLabel = formatReferralCodeForDisplay(referralCode);
   const totalDiscountsFormatted = useMemo(
     () => formatUsd(totalDiscountsUsd, { fallbackToZero: true }),
     [totalDiscountsUsd]
@@ -55,10 +57,10 @@ export function ShareReferralCardModal({
 
   const getTweetText = useCallback(() => {
     const discountsText = showDiscountsLine
-      ? `\n\nSo far, my referrals have saved ${totalDiscountsFormatted} total in discounts with my code: ${referralCode}`
+      ? `\n\nSo far, my referrals have saved ${totalDiscountsFormatted} total in discounts with my code: ${referralCodeLabel}`
       : "";
     return `Save up to ${traderDiscountPercentageLabel} on every trade on GMX.${discountsText}`;
-  }, [traderDiscountPercentageLabel, showDiscountsLine, totalDiscountsFormatted, referralCode]);
+  }, [traderDiscountPercentageLabel, showDiscountsLine, totalDiscountsFormatted, referralCodeLabel]);
 
   const handleShareOnX = useCallback(async () => {
     const element = cardRef.current;
@@ -118,7 +120,7 @@ export function ShareReferralCardModal({
         <ScaledReferralCard
           cardRef={cardRef}
           referralLink={referralLink}
-          referralCode={referralCode}
+          referralCode={referralCodeLabel}
           traderDiscountPercentageLabel={traderDiscountPercentageLabel}
           totalDiscountsFormatted={totalDiscountsFormatted}
           showDiscountsLine={showDiscountsLine}

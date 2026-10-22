@@ -12,8 +12,10 @@ import {
   useTiers,
   useUserReferralCode,
 } from "domain/referrals";
+import { formatReferralCodeForDisplay } from "domain/referrals/utils/referralCode";
 import { getSharePercentage } from "domain/referrals/utils/referralsHelper";
 import { useChainId } from "lib/chains";
+import { encodeReferralCode } from "sdk/utils/referrals";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -66,7 +68,7 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
   const currentTierDiscount = getSharePercentage(discountShare, tierDiscountShare, totalRebate);
 
   const [joinReferralWizardStep, setJoinReferralWizardStep] = useState(JoinReferralWizardStep.ConnectWallet);
-  const [userReferralCodeString, setUserReferralCodeString] = useState("");
+  const [activatedReferralCodeLabel, setActivatedReferralCodeLabel] = useState("");
 
   useEffect(
     function advanceStep() {
@@ -115,7 +117,8 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
               <div className="flex flex-col gap-12">
                 <ReferralCodeEditFormContainer
                   callAfterSuccess={(code: string) => {
-                    setUserReferralCodeString(code);
+                    // normalizes pasted hex, e.g. its letter case
+                    setActivatedReferralCodeLabel(formatReferralCodeForDisplay(encodeReferralCode(code)));
                     setJoinReferralWizardStep(JoinReferralWizardStep.Success);
                   }}
                 />
@@ -144,7 +147,7 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
                 </h2>
                 <p className="text-body-medium text-typography-secondary">
                   <Trans>
-                    You have activated the referral code {userReferralCodeString}. Your reduced rate applies
+                    You have activated the referral code {activatedReferralCodeLabel}. Your reduced rate applies
                     automatically to every position you open or close — no extra steps needed.
                   </Trans>
                 </p>
