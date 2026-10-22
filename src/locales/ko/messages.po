@@ -7345,6 +7345,10 @@ msgstr "손절매 가격은 기준가보다 높게 설정해야 합니다"
 msgid "TYPE"
 msgstr "유형"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Convert and create order"
+msgstr "변환 후 주문 생성"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdrawn"
 msgstr "출금 완료"
@@ -10807,10 +10811,6 @@ msgstr "일일 분배율, USD"
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Caps the USDC-USDG pool in both directions. Amounts shown are slightly lower to keep a safety margin."
 msgstr "USDC-USDG 풀을 양방향으로 제한합니다. 안전 마진을 위해 표시되는 금액은 약간 적습니다."
-
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
-msgid "Convert and place order"
-msgstr "변환 후 주문"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet trading only on these networks"

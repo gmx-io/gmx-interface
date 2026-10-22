@@ -7345,6 +7345,10 @@ msgstr "將 SL 價格設為高於標記價格"
 msgid "TYPE"
 msgstr "類型"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Convert and create order"
+msgstr "轉換並建立訂單"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdrawn"
 msgstr "已提取"
@@ -10807,10 +10811,6 @@ msgstr "每日分配率，USD"
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Caps the USDC-USDG pool in both directions. Amounts shown are slightly lower to keep a safety margin."
 msgstr "在兩個方向上限制 USDC-USDG 池。為保留安全餘量，顯示的金額會略低。"
-
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
-msgid "Convert and place order"
-msgstr "轉換並下單"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet trading only on these networks"

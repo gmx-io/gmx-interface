@@ -7345,6 +7345,10 @@ msgstr "Установите цену SL выше расчётной цены"
 msgid "TYPE"
 msgstr "ТИП"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Convert and create order"
+msgstr "Конвертировать и создать ордер"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdrawn"
 msgstr "Выведено"
@@ -10807,10 +10811,6 @@ msgstr "Скорость распределения в день, USD"
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Caps the USDC-USDG pool in both directions. Amounts shown are slightly lower to keep a safety margin."
 msgstr "Ограничивает пул USDC-USDG в обе стороны. Показанные суммы чуть меньше, чтобы оставить запас."
-
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
-msgid "Convert and place order"
-msgstr "Конвертировать и разместить ордер"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet trading only on these networks"

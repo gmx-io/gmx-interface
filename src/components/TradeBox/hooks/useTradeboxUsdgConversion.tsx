@@ -646,7 +646,7 @@ export function useTradeboxUsdgConversion({
     }
 
     return {
-      text: t`Convert and place order`,
+      text: t`Convert and create order`,
       disabled: !batchParams || !isAllowanceLoaded || isExpressLoading || isMultichainSubmitDisabled,
       onSubmit: onConvert,
     };
