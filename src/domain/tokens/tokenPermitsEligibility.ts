@@ -8,17 +8,10 @@ import {
 import { AccountType, getAccountType } from "lib/wallets/useAccountType";
 import { ARBITRUM, AVALANCHE } from "sdk/configs/chains";
 
-// EIP-7702 delegates whose isValidSignature accepts a plain permit signature for every token below
-// (simulated on Arbitrum); other delegates reject USDC/USDT permits and keep the approval transaction
+// EIP-7702 delegates whose isValidSignature accepts a plain permit signature; some delegates reject USDC/USDT
+// permits, so a new one is added only after a real-wallet check on mainnet, not on simulation alone
 const TOKEN_PERMITS_EIP7702_DELEGATES: Address[] = [
   "0x63c0c19a282a1B52b07dD5a65b58948A07DAE32B", // MetaMask EIP7702StatelessDeleGator
-  "0x7702cb554e6bFb442cb743A7dF23154544a7176C",
-  "0xe40ccB2D94975c51bff0C004eFDfd9B3a5796fA4",
-  "0x000000005c84F8Fd50b21CAC312528A64437030e",
-  "0x612373D7003d694220f7800EeaF8E3924c0951D3",
-  "0x000000009B1D0aF20D8C6d0A44e162d11F9b8f00", // Uniswap Calibur
-  "0x64fc23203FCC4BCF09Fc4b30669131333Ba7936B",
-  "0xcc0c946EecF01A4Bc76Bc333Ea74CEb04756f17b",
 ];
 
 // tokens whose permit to the Router was verified on-chain; the SDK's isPermitSupported list is wider

@@ -55,6 +55,13 @@ describe("getTokenPermitAccountType", () => {
       delegation: "0x36d3CBD83961868398d056EfBf50f5CE15528c0D",
       expected: "unsupported",
     },
+    {
+      // accepts permits in simulation, but no real wallet has been checked with it yet
+      name: "EIP-7702 with a delegate verified only by simulation",
+      accountType: 0,
+      delegation: "0x7702cb554e6bFb442cb743A7dF23154544a7176C",
+      expected: "unsupported",
+    },
     { name: "smart account", accountType: 1, delegation: undefined, expected: "unsupported" },
   ])("$name -> $expected", async ({ accountType, delegation, expected }) => {
     mocks.getAccountType.mockResolvedValue(accountType);
