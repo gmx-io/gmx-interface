@@ -16,6 +16,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
+import { limitDecimals } from "lib/numbers";
 import { getMatchingValueFromObject } from "lib/objects";
 import useSearchParams from "lib/useSearchParams";
 import { getTokenBySymbolSafe, isTokenInList } from "sdk/configs/tokens";
@@ -135,6 +136,7 @@ export function useTradeParamsProcessor() {
     }
 
     const linkTradeType = getTradeLinkTradeType(tradeType, latestTradeOptions.current.tradeType);
+    let fromTokenDecimals: number | undefined;
 
     const tradeOptions: TradeOptions = {};
 
@@ -159,6 +161,7 @@ export function useTradeParamsProcessor() {
       });
       if (fromTokenInfo) {
         tradeOptions.fromTokenAddress = fromTokenInfo?.address;
+        fromTokenDecimals = fromTokenInfo.decimals;
       }
     }
 
@@ -209,7 +212,10 @@ export function useTradeParamsProcessor() {
       armedAmountSearchRef.current !== history.location.search
     ) {
       armedAmountSearchRef.current = history.location.search;
-      pendingSwapAmountRef.current = { amount, fromTokenAddress: tradeOptions.fromTokenAddress };
+      pendingSwapAmountRef.current = {
+        amount: limitDecimals(amount, fromTokenDecimals),
+        fromTokenAddress: tradeOptions.fromTokenAddress,
+      };
     }
 
     if (!isMatch(latestTradeOptions.current, tradeOptions)) {
@@ -243,7 +249,8 @@ export function useTradeParamsProcessor() {
 
       pendingSwapAmountRef.current = undefined;
       setFocusedInput("from");
-      setFromTokenInputValue(pending.amount);
+      // the switch clears the input in this same commit, and the setter would skip a value equal to the stale one
+      setFromTokenInputValue(() => pending.amount);
     },
     [currentFromTokenAddress, currentTradeType, searchParams, setFocusedInput, setFromTokenInputValue]
   );
