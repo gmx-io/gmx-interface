@@ -3391,6 +3391,14 @@ msgstr "オープンポジション"
 msgid "Blockchain gas fee (not GMX-specific). Doesn't impact your margin."
 msgstr "ブロックチェーンのGas手数料です（GMX固有ではありません）。証拠金には影響しません。"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Up to {maxInstantText} can be converted instantly. <0>Use max instant</0>. Trades paid in USDG need no conversion."
+msgstr "最大{maxInstantText}まで即時変換できます。<0>即時上限を使用</0>してください。USDGで支払う取引は変換不要です。"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Nothing can be converted instantly right now. Trades paid in USDG need no conversion."
+msgstr "現在、即時変換できる金額はありません。USDGで支払う取引は変換不要です。"
+
 #: src/components/PositionShare/PositionShareCard.tsx
 msgid "Coin"
 msgstr "コイン"
@@ -7514,6 +7522,7 @@ msgid "Tier upgrades are reviewed manually by the GMX team based on your weekly 
 msgstr "ティアのアップグレードは、毎週の実績に基づいてGMXチームが手動で審査します。要件を継続的に満たしている場合は、<0>GMX Partner Account: Telegram</0>からアップグレードを申請できます。"
 
 #: src/components/PositionEditor/PositionEditor.tsx
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "Paxos converts amounts from {paxosMinimumText}."
 msgstr "Paxosは{paxosMinimumText}以上の金額を変換します。"
 

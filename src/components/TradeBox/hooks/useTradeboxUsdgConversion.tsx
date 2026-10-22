@@ -7,12 +7,15 @@ import {
   selectTradeboxCollateralTokenAddress,
   selectTradeboxFromToken,
   selectTradeboxFromTokenAmount,
+  selectTradeboxIsFromTokenGmxAccount,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import {
   selectTradeboxIsUsdgConversionTooLarge,
   selectTradeboxUsdgMaxInstantAmount,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/tradeboxUsdgConversionSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useIsSwapTabPaxosOffered } from "domain/synthetics/paxosTransit/useIsSwapTabPaxosOffered";
+import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { formatMaxInstantAmount } from "domain/synthetics/usdgPools/usdcConversion";
 import { formatAmountFree } from "lib/numbers";
 
@@ -36,6 +39,7 @@ export function useTradeboxUsdgConversion({
   const collateralTokenAddress = useSelector(selectTradeboxCollateralTokenAddress);
   const fromToken = useSelector(selectTradeboxFromToken);
   const fromTokenAmount = useSelector(selectTradeboxFromTokenAmount);
+  const isFromTokenGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
   const isTooLarge = useSelector(selectTradeboxIsUsdgConversionTooLarge);
   const maxInstantAmount = useSelector(selectTradeboxUsdgMaxInstantAmount);
   const usdgToken = collateralTokenAddress ? tokensData?.[collateralTokenAddress] : undefined;
@@ -60,10 +64,27 @@ export function useTradeboxUsdgConversion({
 
   const maxInstantText =
     maxInstantAmount !== undefined && fromToken ? formatMaxInstantAmount(fromToken, maxInstantAmount) : undefined;
+  const fromTokenUsd =
+    fromToken && fromTokenAmount !== undefined
+      ? convertToUsd(fromTokenAmount, fromToken.decimals, getMidPrice(fromToken.prices))
+      : undefined;
+  const { isOffered: isPaxosOffered, minimumText: paxosMinimumText } = useIsSwapTabPaxosOffered({
+    amount: fromTokenAmount,
+    amountUsd: fromTokenUsd,
+    isGmxAccount: isFromTokenGmxAccount,
+    enabled: isTooLarge,
+  });
+  const paxosMinimumHint =
+    !isPaxosOffered && paxosMinimumText ? (
+      <>
+        {" "}
+        <Trans>Paxos converts amounts from {paxosMinimumText}.</Trans>
+      </>
+    ) : null;
 
   let tooLargeAlert: ReactNode = undefined;
 
-  if (isTooLarge && maxInstantAmount !== undefined && maxInstantAmount > 0n) {
+  if (isTooLarge && maxInstantAmount !== undefined && maxInstantAmount > 0n && isPaxosOffered) {
     tooLargeAlert = (
       <Trans>
         Up to {maxInstantText} can be converted instantly.{" "}
@@ -77,7 +98,20 @@ export function useTradeboxUsdgConversion({
         in the Swap tab: a one-time conversion, 2 to 10 min or longer. Trades paid in USDG need no conversion.
       </Trans>
     );
-  } else if (isTooLarge && maxInstantAmount !== undefined) {
+  } else if (isTooLarge && maxInstantAmount !== undefined && maxInstantAmount > 0n) {
+    tooLargeAlert = (
+      <>
+        <Trans>
+          Up to {maxInstantText} can be converted instantly.{" "}
+          <EmbeddedActionButton tone="link" onClick={onUseMaxInstant}>
+            Use max instant
+          </EmbeddedActionButton>
+          . Trades paid in USDG need no conversion.
+        </Trans>
+        {paxosMinimumHint}
+      </>
+    );
+  } else if (isTooLarge && maxInstantAmount !== undefined && isPaxosOffered) {
     tooLargeAlert = (
       <Trans>
         Nothing can be converted instantly right now.{" "}
@@ -86,6 +120,13 @@ export function useTradeboxUsdgConversion({
         </EmbeddedActionButton>{" "}
         in the Swap tab: a one-time conversion, 2 to 10 min or longer. Trades paid in USDG need no conversion.
       </Trans>
+    );
+  } else if (isTooLarge && maxInstantAmount !== undefined) {
+    tooLargeAlert = (
+      <>
+        <Trans>Nothing can be converted instantly right now. Trades paid in USDG need no conversion.</Trans>
+        {paxosMinimumHint}
+      </>
     );
   }
 
