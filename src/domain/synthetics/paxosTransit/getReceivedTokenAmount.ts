@@ -9,7 +9,8 @@ export async function getReceivedTokenAmount(p: {
   tokenAddress: string;
   account: string;
 }): Promise<bigint> {
-  const receipt = await getPublicClientWithRpc(p.chainId).getTransactionReceipt({ hash: p.txnHash });
+  // right after execution the first RPC can still miss the receipt, which would read as nothing received
+  const receipt = await getPublicClientWithRpc(p.chainId).waitForTransactionReceipt({ hash: p.txnHash });
   const transfers = parseEventLogs({ abi: erc20Abi, eventName: "Transfer", logs: receipt.logs });
 
   return transfers

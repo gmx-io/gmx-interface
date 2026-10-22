@@ -13,7 +13,7 @@ const receiptLogs = vi.hoisted(() => ({ logs: [] as unknown[] }));
 
 vi.mock("lib/wallets/walletConfig", () => ({
   getPublicClientWithRpc: () => ({
-    getTransactionReceipt: async () => ({ logs: receiptLogs.logs }),
+    waitForTransactionReceipt: async () => ({ logs: receiptLogs.logs }),
   }),
 }));
 

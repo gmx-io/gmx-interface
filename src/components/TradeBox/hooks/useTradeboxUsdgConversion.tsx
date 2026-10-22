@@ -248,7 +248,11 @@ export function useTradeboxUsdgConversion({
     swapPath: string[];
   }>();
 
+  // bumped on every reset, so a receipt that lands after a reset is ignored
+  const conversionGenerationRef = useRef(0);
+
   const resetConversion = useCallback(() => {
+    conversionGenerationRef.current += 1;
     pendingConversionRef.current = undefined;
     setRelayTaskId(undefined);
     setStep("idle");
@@ -397,10 +401,16 @@ export function useTradeboxUsdgConversion({
         return;
       }
 
+      const generation = conversionGenerationRef.current;
+
       // GMX Account payouts land in the multichain vault, so the order's guaranteed minimum stands in for the transfer
       getReceivedTokenAmount({ chainId, txnHash: executedTxnHash, tokenAddress: pending.tokenOutAddress, account })
         .catch(() => 0n)
         .then((receivedAmount) => {
+          if (generation !== conversionGenerationRef.current) {
+            return;
+          }
+
           const amountOut = receivedAmount > 0n ? receivedAmount : pending.minAmountOut;
 
           setFromTokenAddress(pending.tokenOutAddress);
