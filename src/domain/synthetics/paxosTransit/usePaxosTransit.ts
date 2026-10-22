@@ -124,7 +124,7 @@ export function usePaxosTransit({
     [account, chainId, feeTier, tokenInAddress, tokenOutAddress]
   );
 
-  const { data: quoteResult, error: quoteError } = useSWR(
+  const { data: quoteResult, error: quoteResultError } = useSWR(
     isQuoteNeeded && step === "idle"
       ? ["paxosTransitQuote", chainId, account, tokenInAddress, debouncedAmount.toString(), feeTier]
       : null,
@@ -135,7 +135,9 @@ export function usePaxosTransit({
       keepPreviousData: !isBelowMinOrderSize,
     }
   );
-  const quote = quoteResult?.feeTier === feeTier ? quoteResult.quote : undefined;
+  const isZeroFeeQuoteRejected = feeTier === "zeroFee" && getIsZeroFeeRejection(quoteResultError);
+  const quote = quoteResult?.feeTier === feeTier && !isZeroFeeQuoteRejected ? quoteResult.quote : undefined;
+  const shownQuoteError = isZeroFeeQuoteRejected ? undefined : quoteResultError;
 
   useEffect(
     function allowZeroFeeAgainAfterFeeTierChange() {
@@ -143,8 +145,6 @@ export function usePaxosTransit({
     },
     [feeTierData]
   );
-
-  const isZeroFeeQuoteRejected = feeTier === "zeroFee" && getIsZeroFeeRejection(quoteError);
 
   useEffect(
     function refreshFeeTierAfterZeroFeeRejection() {
@@ -244,7 +244,7 @@ export function usePaxosTransit({
     isBelowMinOrderSize,
     minOrderSize,
     quote,
-    quoteError,
+    quoteError: shownQuoteError,
     transitFeesUsd,
     amountOut,
     step,

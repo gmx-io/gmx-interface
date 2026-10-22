@@ -189,10 +189,9 @@ export function useTradeboxPaxosRoute({
   };
   const zeroFeeQuoteResult = useTradeboxPaxosQuote({ ...quoteRequest, route: "paxosZeroFee" });
   const standardQuoteResult = useTradeboxPaxosQuote({ ...quoteRequest, route: "paxosStandard" });
-  const zeroFeeQuote = zeroFeeQuoteResult.data;
-  const standardQuote = standardQuoteResult.data;
-
   const isZeroFeeQuoteRejected = getIsZeroFeeRejection(zeroFeeQuoteResult.error);
+  const zeroFeeQuote = isZeroFeeQuoteRejected ? undefined : zeroFeeQuoteResult.data;
+  const standardQuote = standardQuoteResult.data;
 
   useEffect(
     function refreshFeeTierAfterZeroFeeRejection() {
