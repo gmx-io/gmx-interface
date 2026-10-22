@@ -84,7 +84,7 @@ export function useTokenPermitsContext() {
 }
 
 function useTokenPermitAccountType(chainId: number, account: string | undefined) {
-  const { data, isLoading } = useSWR<TokenPermitAccountType>(
+  const { data, error } = useSWR<TokenPermitAccountType>(
     account ? [account, chainId, "tokenPermitAccountType"] : null,
     {
       fetcher: () => getTokenPermitAccountType(account!, getPublicClientWithRpc(chainId)),
@@ -92,23 +92,26 @@ function useTokenPermitAccountType(chainId: number, account: string | undefined)
     }
   );
 
-  return { accountType: data, isAccountTypeLoading: isLoading };
+  // only the first read counts as loading: once it fails, retries don't bring the pending state back
+  return {
+    accountType: data,
+    isAccountTypeLoading: account !== undefined && data === undefined && error === undefined,
+  };
 }
 
 export function TokenPermitsContextProvider({ children }: { children: React.ReactNode }) {
   const { chainId } = useChainId();
   const { signer } = useWallet();
   const account = signer?.address;
-  const { uiFlags, isUiFlagsFetched } = useUiFlagsRequest();
+  const { uiFlags, isUiFlagsSettled } = useUiFlagsRequest();
   const { isTokenPermitsQaOverrideEnabled } = useSettings();
   const { accountType, isAccountTypeLoading } = useTokenPermitAccountType(chainId, account);
 
   const couldEnablePermits =
     isTokenPermitsQaOverrideEnabled || getIsTokenPermitsEoaEnabled(uiFlags) || getIsTokenPermitsEip7702Enabled(uiFlags);
-  // a failed account type read ends loading and leaves permits off, so the approval transaction takes over
   const isEligibilityPending =
     account !== undefined &&
-    ((!isUiFlagsFetched && !isTokenPermitsQaOverrideEnabled) || (couldEnablePermits && isAccountTypeLoading));
+    ((!isUiFlagsSettled && !isTokenPermitsQaOverrideEnabled) || (couldEnablePermits && isAccountTypeLoading));
 
   const isEnabled = getIsTokenPermitsEnabled({
     uiFlags,

@@ -239,7 +239,13 @@ export function useTradeboxButtonState({
   const isDataReady = Boolean(fromToken && payAmount !== undefined);
   const isAllowanceLoaded = isDataReady && isAllowanceLoadedRaw;
   // until allowances are known an order could be sent without the approval it needs
-  const isAllowancePending = isDataReady && isAllowanceLoading && !isApproving;
+  // while it's unknown whether an approval will be a free permit or a paid transaction, approving waits
+  const isApprovalMethodPending =
+    isDataReady &&
+    isAllowanceLoaded &&
+    !isApproving &&
+    tokensToApprove.some((token) => getIsPermitApproval(token) === undefined);
+  const isAllowancePending = (isDataReady && isAllowanceLoading && !isApproving) || isApprovalMethodPending;
 
   const pendingApprovalTokenAddress = isAllowanceLoaded && !isApproving ? tokensToApprove[0] : undefined;
   const isPendingGasPaymentTokenApproval =
@@ -294,7 +300,7 @@ export function useTradeboxButtonState({
       nativeToken: getByKey(tokensData, zeroAddress),
       gasPrice: expressParams.gasPrice,
       // every remaining approval has to be a permit, or the user would sign one and still be stopped for gas;
-      // while that is still unknown the gas error would only flash, so it waits
+      // while that is still unknown the button waits (isApprovalMethodPending) instead of flashing the gas error
       isPermitApproval:
         tokensToApprove.length > 0 && tokensToApprove.every((token) => getIsPermitApproval(token) !== false),
     });
