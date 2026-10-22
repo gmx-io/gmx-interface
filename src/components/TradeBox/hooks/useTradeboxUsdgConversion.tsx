@@ -22,8 +22,13 @@ import {
   selectTradeboxFromToken,
   selectTradeboxFromTokenAmount,
   selectTradeboxMarketAddress,
+  selectTradeboxLeverageOption,
   selectTradeboxTradeFlags,
   selectTradeboxTradeMode,
+  selectTradeboxTradeType,
+  selectTradeboxTriggerPriceInputValue,
+  selectTradeboxTwapDuration,
+  selectTradeboxTwapNumberOfParts,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import {
   selectTradeboxIsUsdgConversionTooLarge,
@@ -63,6 +68,8 @@ type ConversionStep = "idle" | "submitting" | "converting";
 
 // a fallback for a missed execution event; known failures release the button right away
 const CONVERSION_TIMEOUT_MS = 3 * 60 * 1000;
+// covers loading the order's network fees and signing an approval; after it the trader uses the regular button
+const ORDER_AUTO_SUBMIT_TIMEOUT_MS = 2 * 60 * 1000;
 
 type ButtonStateOverride = {
   text: ReactNode;
@@ -75,6 +82,8 @@ export type TradeboxUsdgConversion = ReturnType<typeof useTradeboxUsdgConversion
 /**
  * USDG pools take only USDG: a USDC margin converts inside market orders, but limit, stop market and TWAP orders
  * would convert only at trigger and freeze if our pool is short then, so they convert first.
+ * A pool swap needs a keeper, so it can't share a transaction with the order: once it executes, the order is
+ * submitted for a second signature.
  */
 export function useTradeboxUsdgConversion({
   canSwitchGasPaymentToken,
@@ -94,6 +103,11 @@ export function useTradeboxUsdgConversion({
   const userReferralInfo = useSelector(selectUserReferralInfo);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const tradeMode = useSelector(selectTradeboxTradeMode);
+  const tradeType = useSelector(selectTradeboxTradeType);
+  const leverageOption = useSelector(selectTradeboxLeverageOption);
+  const triggerPriceInputValue = useSelector(selectTradeboxTriggerPriceInputValue);
+  const twapDuration = useSelector(selectTradeboxTwapDuration);
+  const twapNumberOfParts = useSelector(selectTradeboxTwapNumberOfParts);
   const marketAddress = useSelector(selectTradeboxMarketAddress);
   const collateralTokenAddress = useSelector(selectTradeboxCollateralTokenAddress);
   const fromToken = useSelector(selectTradeboxFromToken);
@@ -230,6 +244,18 @@ export function useTradeboxUsdgConversion({
   });
 
   const [step, setStep] = useState<ConversionStep>("idle");
+  // the order the trader set up when converting; the auto submit only sends that one
+  const orderSetupKey = JSON.stringify([
+    tradeType,
+    tradeMode,
+    marketAddress,
+    collateralTokenAddress,
+    leverageOption,
+    triggerPriceInputValue,
+    twapDuration,
+    twapNumberOfParts,
+  ]);
+  const [orderAutoSubmitSetupKey, setOrderAutoSubmitSetupKey] = useState<string>();
   const [relayTaskId, setRelayTaskId] = useState<string>();
   const [lastConversion, setLastConversion] = useState<{
     marketAddress: string | undefined;
@@ -246,6 +272,7 @@ export function useTradeboxUsdgConversion({
     amountIn: bigint;
     minAmountOut: bigint;
     swapPath: string[];
+    orderSetupKey: string;
   }>();
 
   // bumped on every reset, so a receipt that lands after a reset is ignored
@@ -286,6 +313,7 @@ export function useTradeboxUsdgConversion({
         amountIn: conversionSwapAmounts.amountIn,
         minAmountOut: batchParams.createOrderParams[0].orderPayload.numbers.minOutputAmount,
         swapPath: conversionSwapAmounts.swapStrategy.swapPathStats?.swapPath ?? [],
+        orderSetupKey,
       };
 
       const orderTxnCallback = makeOrderTxnCallback({ actionName: "Swap", collateralSymbol: fromToken?.symbol });
@@ -343,6 +371,7 @@ export function useTradeboxUsdgConversion({
     isFromTokenGmxAccount,
     makeOrderTxnCallback,
     marketAddress,
+    orderSetupKey,
     orderStatuses,
     provider,
     resetConversion,
@@ -422,6 +451,7 @@ export function useTradeboxUsdgConversion({
             amountIn: pending.amountIn,
             amountOut,
           });
+          setOrderAutoSubmitSetupKey(pending.orderSetupKey);
           resetConversion();
         });
     },
@@ -442,6 +472,7 @@ export function useTradeboxUsdgConversion({
     function releaseConversionOnAccountOrChainSwitch() {
       // the executed swap is matched by account and chain, so after a switch it would only clear on the timeout
       resetConversion();
+      setOrderAutoSubmitSetupKey(undefined);
     },
     [account, chainId, resetConversion]
   );
@@ -509,10 +540,6 @@ export function useTradeboxUsdgConversion({
       </div>
     );
   }
-  const amountInText =
-    fromTokenAmount !== undefined && fromToken
-      ? formatBalanceAmount(fromTokenAmount, fromToken.decimals, fromToken.symbol, { isStable: fromToken.isStable })
-      : undefined;
 
   let tooLargeAlert: ReactNode = undefined;
 
@@ -567,15 +594,15 @@ export function useTradeboxUsdgConversion({
   if (isConvertFirst) {
     if (tradeFlags.isTwap) {
       convertFirstNote = (
-        <Trans>On USDG pools, TWAP orders hold USDG. Convert your USDC first, then place the order.</Trans>
+        <Trans>On USDG pools, TWAP orders hold USDG. Your USDC converts first, then you sign the order.</Trans>
       );
     } else if (tradeMode === TradeMode.StopMarket) {
       convertFirstNote = (
-        <Trans>On USDG pools, Stop Market orders hold USDG. Convert your USDC first, then place the order.</Trans>
+        <Trans>On USDG pools, Stop Market orders hold USDG. Your USDC converts first, then you sign the order.</Trans>
       );
     } else {
       convertFirstNote = (
-        <Trans>On USDG pools, Limit orders hold USDG. Convert your USDC first, then place the order.</Trans>
+        <Trans>On USDG pools, Limit orders hold USDG. Your USDC converts first, then you sign the order.</Trans>
       );
     }
   }
@@ -617,13 +644,12 @@ export function useTradeboxUsdgConversion({
     }
 
     return {
-      text: t`Convert ${amountInText} to USDG`,
+      text: t`Convert and place order`,
       disabled: !batchParams || isExpressLoading || isMultichainSubmitDisabled,
       onSubmit: onConvert,
     };
   }, [
     account,
-    amountInText,
     batchParams,
     chainId,
     isAllowanceLoaded,
@@ -637,16 +663,39 @@ export function useTradeboxUsdgConversion({
     usdcAddress,
   ]);
 
-  let convertedNote: ReactNode = undefined;
-
   // only while the margin still is the converted amount on the same market
-  if (
-    lastConversion &&
-    usdgToken &&
+  const isConvertedMarginInPlace =
+    lastConversion !== undefined &&
     fromToken?.address === collateralTokenAddress &&
     lastConversion.marketAddress === marketAddress &&
-    fromTokenAmount === lastConversion.amountOut
-  ) {
+    fromTokenAmount === lastConversion.amountOut;
+
+  const isOrderAutoSubmitArmed = orderAutoSubmitSetupKey !== undefined;
+  const isOrderAutoSubmitPending =
+    isOrderAutoSubmitArmed && isConvertedMarginInPlace && orderAutoSubmitSetupKey === orderSetupKey;
+  const stopOrderAutoSubmit = useCallback(() => setOrderAutoSubmitSetupKey(undefined), []);
+
+  useEffect(
+    function disarmOrderAutoSubmit() {
+      if (!isOrderAutoSubmitArmed) {
+        return;
+      }
+
+      if (!isOrderAutoSubmitPending) {
+        stopOrderAutoSubmit();
+        return;
+      }
+
+      const timerId = setTimeout(stopOrderAutoSubmit, ORDER_AUTO_SUBMIT_TIMEOUT_MS);
+
+      return () => clearTimeout(timerId);
+    },
+    [isOrderAutoSubmitArmed, isOrderAutoSubmitPending, stopOrderAutoSubmit]
+  );
+
+  let convertedNote: ReactNode = undefined;
+
+  if (lastConversion && usdgToken && isConvertedMarginInPlace) {
     const tokenIn = getToken(chainId, lastConversion.tokenInAddress);
     const convertedInText = formatBalanceAmount(lastConversion.amountIn, tokenIn.decimals, tokenIn.symbol, {
       isStable: true,
@@ -665,6 +714,8 @@ export function useTradeboxUsdgConversion({
   return {
     isConvertFirst,
     isBusy,
+    isOrderAutoSubmitPending,
+    stopOrderAutoSubmit,
     buttonState,
     expressParams,
     isExpressLoading,

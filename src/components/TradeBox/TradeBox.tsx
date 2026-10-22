@@ -155,6 +155,7 @@ import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarnin
 import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
 import TwapRows from "../TwapRows/TwapRows";
 import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
+import { useOrderAutoSubmitAfterConversion } from "./hooks/useOrderAutoSubmitAfterConversion";
 import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";
 import { type TradeboxPaxosRoute, useTradeboxPaxosRoute } from "./hooks/useTradeboxPaxosRoute";
 import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
@@ -445,6 +446,14 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
       setExternalIsCurtainOpen(false);
     }
   }, [submitButtonState, isMobile, isConvertStepShown, setExternalIsCurtainOpen]);
+
+  const orderAutoSubmitHandlers = useOrderAutoSubmitAfterConversion({
+    isPending: usdgConversion.isOrderAutoSubmitPending,
+    stop: usdgConversion.stopOrderAutoSubmit,
+    buttonState: submitButtonState,
+    isDepositButtonShown: shouldShowDepositButton,
+    onSubmit: wrappedOnSubmit,
+  });
 
   const expressOrdersEnabledForMax = expressOrdersEnabled && fromTokenAddress !== zeroAddress && !isWrapOrUnwrap;
 
@@ -1242,7 +1251,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   const [twapRecommendationDismissed, setTwapRecommendationDismissed] = useState(false);
 
   return (
-    <form className="flex flex-col gap-8" onSubmit={handleFormSubmit} ref={formRef}>
+    <form className="flex flex-col gap-8" onSubmit={handleFormSubmit} ref={formRef} {...orderAutoSubmitHandlers}>
       <div className="flex flex-col gap-12 rounded-b-8 bg-slate-900 pb-16">
         <div className="flex items-center justify-between">
           <Tabs
@@ -1470,8 +1479,8 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
                 variant="iconStroke"
                 content={
                   <Trans>
-                    First you convert USDC to USDG, then you place the order. If you leave before placing it, the USDG
-                    stays in your account.
+                    Your USDC converts to USDG first, then the order asks for a second signature. If you reject it or
+                    leave, the USDG stays in your account.
                   </Trans>
                 }
               />

@@ -241,6 +241,10 @@ msgstr "平仓时的价格影响。正值对您有利。<0>了解更多</0>。"
 msgid "Network fee unavailable"
 msgstr "网络费用不可用"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, TWAP orders hold USDG. Your USDC converts first, then you sign the order."
+msgstr "在 USDG 池中，TWAP 订单持有 USDG。系统会先转换您的 USDC，然后您再签署订单。"
+
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -3233,10 +3237,6 @@ msgstr "未检测到符合条件的持仓"
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr "帮助我们改进 GMX。出于安全考虑，我们不会主动联系您。请向我们的官方帐号发送\"I have feedback\"："
 
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
-msgid "Convert {amountInText} to USDG"
-msgstr "将 {amountInText} 转换为 USDG"
-
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel margin deposit"
 msgstr "取消保证金存入"
@@ -3764,10 +3764,6 @@ msgstr "开始构建"
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Faster execution with GMX premium RPCs"
 msgstr "使用 GMX 高级 RPC 实现更快执行"
-
-#: src/components/TradeBox/TradeBox.tsx
-msgid "First you convert USDC to USDG, then you place the order. If you leave before placing it, the USDG stays in your account."
-msgstr "先将 USDC 转换为 USDG，然后下单。如果在下单前离开，USDG 将保留在您的账户中。"
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets in your GMX Account"
@@ -5055,10 +5051,6 @@ msgstr "没有符合所选筛选条件的领取记录"
 msgid "Staking"
 msgstr "质押"
 
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
-msgid "On USDG pools, Stop Market orders hold USDG. Convert your USDC first, then place the order."
-msgstr "在 USDG 池中，触发市价单持有 USDG。请先转换您的 USDC，然后再下单。"
-
 #: src/lib/legacy.ts
 msgid "Decentralized perpetual exchange | GMX"
 msgstr "去中心化永续合约交易所 | GMX"
@@ -5712,10 +5704,6 @@ msgstr "加载订单数据失败："
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Network"
 msgstr "网络"
-
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
-msgid "On USDG pools, TWAP orders hold USDG. Convert your USDC first, then place the order."
-msgstr "在 USDG 池中，TWAP 订单持有 USDG。请先转换您的 USDC，然后再下单。"
 
 #: src/components/OrdersModal/TPSLInputRow.tsx
 msgid "{secondLabel}"
@@ -8012,6 +8000,10 @@ msgstr "正在结算仓位费用..."
 msgid "GMX announcements and updates"
 msgstr "GMX 公告和更新"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, Stop Market orders hold USDG. Your USDC converts first, then you sign the order."
+msgstr "在 USDG 池中，触发市价单持有 USDG。系统会先转换您的 USDC，然后您再签署订单。"
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "Edit TP/SL size"
 msgstr "编辑 TP/SL 规模"
@@ -9522,6 +9514,10 @@ msgstr "您将获得如下格式的分享链接：{PRODUCTION_HOST}/trade/?ref=Y
 msgid "TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling."
 msgstr "仓位关闭时 TP/SL 订单将自动取消。仅适用于启用后创建的订单。"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, Limit orders hold USDG. Your USDC converts first, then you sign the order."
+msgstr "在 USDG 池中，限价单持有 USDG。系统会先转换您的 USDC，然后您再签署订单。"
+
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "fees"
@@ -10812,6 +10808,10 @@ msgstr "每日分配率，USD"
 msgid "Caps the USDC-USDG pool in both directions. Amounts shown are slightly lower to keep a safety margin."
 msgstr "在两个方向上限制 USDC-USDG 池。为保留安全余量，显示的金额会略低。"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Convert and place order"
+msgstr "转换并下单"
+
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet trading only on these networks"
 msgstr "这些网络仅支持钱包交易"
@@ -11476,10 +11476,6 @@ msgstr "<0>交易者折扣会在您的等级确认后自动应用到您的账户
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "LP"
 msgstr "LP"
-
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
-msgid "On USDG pools, Limit orders hold USDG. Convert your USDC first, then place the order."
-msgstr "在 USDG 池中，限价单持有 USDG。请先转换您的 USDC，然后再下单。"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver address"
@@ -12985,6 +12981,10 @@ msgstr "交易哈希已复制到剪贴板"
 #: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 msgid "This year"
 msgstr "今年"
+
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Your USDC converts to USDG first, then the order asks for a second signature. If you reject it or leave, the USDG stays in your account."
+msgstr "系统会先将 USDC 转换为 USDG，然后订单会请求第二次签名。如果您拒绝或离开，USDG 将保留在您的账户中。"
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "Withdraw {glvOrGm}: {0}"

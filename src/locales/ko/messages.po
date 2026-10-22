@@ -241,6 +241,10 @@ msgstr "포지션 종료 시 가격 영향입니다. 양수 값은 유리합니�
 msgid "Network fee unavailable"
 msgstr "네트워크 수수료를 불러올 수 없습니다"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, TWAP orders hold USDG. Your USDC converts first, then you sign the order."
+msgstr "USDG 풀에서는 TWAP 주문이 USDG를 보유합니다. 먼저 USDC가 변환된 후 주문에 서명합니다."
+
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -3233,10 +3237,6 @@ msgstr "적격 보유 자산이 감지되지 않았습니다"
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr "GMX 개선에 도움을 주십시오. 보안을 위해 당사는 먼저 연락드리지 않습니다. 공식 계정으로 \"I have feedback\"이라고 보내 주십시오:"
 
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
-msgid "Convert {amountInText} to USDG"
-msgstr "{amountInText}을(를) USDG로 변환"
-
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel margin deposit"
 msgstr "증거금 입금 취소"
@@ -3764,10 +3764,6 @@ msgstr "개발 시작하기"
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Faster execution with GMX premium RPCs"
 msgstr "GMX 프리미엄 RPC로 더 빠른 실행"
-
-#: src/components/TradeBox/TradeBox.tsx
-msgid "First you convert USDC to USDG, then you place the order. If you leave before placing it, the USDG stays in your account."
-msgstr "먼저 USDC를 USDG로 변환한 후 주문을 넣습니다. 주문 전에 나가면 USDG는 계정에 남습니다."
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets in your GMX Account"
@@ -5055,10 +5051,6 @@ msgstr "선택한 필터와 일치하는 수령 내역이 없습니다"
 msgid "Staking"
 msgstr "스테이킹"
 
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
-msgid "On USDG pools, Stop Market orders hold USDG. Convert your USDC first, then place the order."
-msgstr "USDG 풀에서는 스탑 마켓 주문이 USDG를 보유합니다. 먼저 USDC를 변환한 후 주문을 넣으세요."
-
 #: src/lib/legacy.ts
 msgid "Decentralized perpetual exchange | GMX"
 msgstr "탈중앙화 무기한 거래소 | GMX"
@@ -5712,10 +5704,6 @@ msgstr "주문 데이터 로드 실패:"
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Network"
 msgstr "네트워크"
-
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
-msgid "On USDG pools, TWAP orders hold USDG. Convert your USDC first, then place the order."
-msgstr "USDG 풀에서는 TWAP 주문이 USDG를 보유합니다. 먼저 USDC를 변환한 후 주문을 넣으세요."
 
 #: src/components/OrdersModal/TPSLInputRow.tsx
 msgid "{secondLabel}"
@@ -8012,6 +8000,10 @@ msgstr "포지션 수수료 정산 중..."
 msgid "GMX announcements and updates"
 msgstr "GMX 공지사항 및 업데이트"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, Stop Market orders hold USDG. Your USDC converts first, then you sign the order."
+msgstr "USDG 풀에서는 스탑 마켓 주문이 USDG를 보유합니다. 먼저 USDC가 변환된 후 주문에 서명합니다."
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "Edit TP/SL size"
 msgstr "TP/SL 규모 편집"
@@ -9522,6 +9514,10 @@ msgstr "다음과 같은 공유 링크가 제공됩니다: {PRODUCTION_HOST}/tra
 msgid "TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling."
 msgstr "포지션 종료 시 TP/SL 주문이 자동 취소됩니다. 활성화 이후 생성된 주문에만 적용됩니다."
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, Limit orders hold USDG. Your USDC converts first, then you sign the order."
+msgstr "USDG 풀에서는 지정가 주문이 USDG를 보유합니다. 먼저 USDC가 변환된 후 주문에 서명합니다."
+
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "fees"
@@ -10812,6 +10808,10 @@ msgstr "일일 분배율, USD"
 msgid "Caps the USDC-USDG pool in both directions. Amounts shown are slightly lower to keep a safety margin."
 msgstr "USDC-USDG 풀을 양방향으로 제한합니다. 안전 마진을 위해 표시되는 금액은 약간 적습니다."
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Convert and place order"
+msgstr "변환 후 주문"
+
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet trading only on these networks"
 msgstr "해당 네트워크에서는 지갑 거래만 가능합니다"
@@ -11476,10 +11476,6 @@ msgstr "<0>트레이더 할인은 등급이 확정되면 계정에 자동으로 
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "LP"
 msgstr "LP"
-
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
-msgid "On USDG pools, Limit orders hold USDG. Convert your USDC first, then place the order."
-msgstr "USDG 풀에서는 지정가 주문이 USDG를 보유합니다. 먼저 USDC를 변환한 후 주문을 넣으세요."
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver address"
@@ -12985,6 +12981,10 @@ msgstr "트랜잭션 해시가 클립보드에 복사되었습니다"
 #: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 msgid "This year"
 msgstr "올해"
+
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Your USDC converts to USDG first, then the order asks for a second signature. If you reject it or leave, the USDG stays in your account."
+msgstr "먼저 USDC가 USDG로 변환된 후 주문에서 두 번째 서명을 요청합니다. 거부하거나 나가면 USDG는 계정에 남습니다."
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "Withdraw {glvOrGm}: {0}"

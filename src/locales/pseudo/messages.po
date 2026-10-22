@@ -241,6 +241,10 @@ msgstr ""
 msgid "Network fee unavailable"
 msgstr ""
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, TWAP orders hold USDG. Your USDC converts first, then you sign the order."
+msgstr ""
+
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -3233,10 +3237,6 @@ msgstr ""
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr ""
 
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
-msgid "Convert {amountInText} to USDG"
-msgstr ""
-
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel margin deposit"
 msgstr ""
@@ -3763,10 +3763,6 @@ msgstr ""
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Faster execution with GMX premium RPCs"
-msgstr ""
-
-#: src/components/TradeBox/TradeBox.tsx
-msgid "First you convert USDC to USDG, then you place the order. If you leave before placing it, the USDG stays in your account."
 msgstr ""
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
@@ -5055,10 +5051,6 @@ msgstr ""
 msgid "Staking"
 msgstr ""
 
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
-msgid "On USDG pools, Stop Market orders hold USDG. Convert your USDC first, then place the order."
-msgstr ""
-
 #: src/lib/legacy.ts
 msgid "Decentralized perpetual exchange | GMX"
 msgstr ""
@@ -5711,10 +5703,6 @@ msgstr ""
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Network"
-msgstr ""
-
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
-msgid "On USDG pools, TWAP orders hold USDG. Convert your USDC first, then place the order."
 msgstr ""
 
 #: src/components/OrdersModal/TPSLInputRow.tsx
@@ -8012,6 +8000,10 @@ msgstr ""
 msgid "GMX announcements and updates"
 msgstr ""
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, Stop Market orders hold USDG. Your USDC converts first, then you sign the order."
+msgstr ""
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "Edit TP/SL size"
 msgstr ""
@@ -9522,6 +9514,10 @@ msgstr ""
 msgid "TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling."
 msgstr ""
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, Limit orders hold USDG. Your USDC converts first, then you sign the order."
+msgstr ""
+
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "fees"
@@ -10812,6 +10808,10 @@ msgstr ""
 msgid "Caps the USDC-USDG pool in both directions. Amounts shown are slightly lower to keep a safety margin."
 msgstr ""
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Convert and place order"
+msgstr ""
+
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet trading only on these networks"
 msgstr ""
@@ -11475,10 +11475,6 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "LP"
-msgstr ""
-
-#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
-msgid "On USDG pools, Limit orders hold USDG. Convert your USDC first, then place the order."
 msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -12984,6 +12980,10 @@ msgstr ""
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 msgid "This year"
+msgstr ""
+
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Your USDC converts to USDG first, then the order asks for a second signature. If you reject it or leave, the USDG stays in your account."
 msgstr ""
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
