@@ -56,6 +56,8 @@ interface UseTokenApprovalReturn {
   isAllowanceLoaded: boolean;
   isApproving: boolean;
   handleApprove: (options?: HandleApproveOptions) => void;
+  /** Whether approving the token would sign a permit instead of sending a transaction */
+  getIsPermitApproval: (tokenAddress: string) => boolean;
 }
 
 export function useTokenApproval({
@@ -180,15 +182,20 @@ export function useTokenApproval({
     []
   );
 
+  // the same choice handleApprove makes, so callers can tell a free signature from a paid transaction
+  const getIsPermitApproval = useCallback(
+    (tokenAddress: string) => allowPermit && getIsPermitAvailable(tokenAddress),
+    [allowPermit, getIsPermitAvailable]
+  );
+
   const handleApprove = useCallback(
     async (options?: HandleApproveOptions) => {
       const tokenAddress = tokensToApprove[0];
       if (!chainId || isApproving || !tokenAddress || !spenderAddress) return;
 
-      const permitParams =
-        allowPermit && getIsPermitAvailable(tokenAddress)
-          ? { addTokenPermit, disableTokenPermits, accountType }
-          : undefined;
+      const permitParams = getIsPermitApproval(tokenAddress)
+        ? { addTokenPermit, disableTokenPermits, accountType }
+        : undefined;
       const { gasPaymentTokenAddress, payTokenAddress, ...metricParams } = latestMetric.current;
 
       const doApprove = async (signerToUse: WalletSigner) => {
@@ -229,11 +236,10 @@ export function useTokenApproval({
     [
       accountType,
       addTokenPermit,
-      allowPermit,
       approveAmount,
       chainId,
       disableTokenPermits,
-      getIsPermitAvailable,
+      getIsPermitApproval,
       isApproving,
       latestMetric,
       setSettlementChainId,
@@ -250,5 +256,6 @@ export function useTokenApproval({
     isAllowanceLoaded,
     isApproving,
     handleApprove,
+    getIsPermitApproval,
   };
 }

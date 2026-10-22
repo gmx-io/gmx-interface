@@ -3,6 +3,7 @@ import { I18nProvider } from "@lingui/react";
 import { BrowserProvider, toQuantity, type Eip1193Provider, type JsonRpcApiProvider } from "ethers";
 import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
+import { MemoryRouter } from "react-router-dom";
 import { createClient, custom } from "viem";
 import { arbitrum } from "viem/chains";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
@@ -241,7 +242,11 @@ describe("approveTokens rejection toast", () => {
 
   function getErrorToastText() {
     const [[content]] = vi.mocked(helperToast.error).mock.calls;
-    return renderToStaticMarkup(<I18nProvider i18n={i18n}>{content as ReactNode}</I18nProvider>);
+    return renderToStaticMarkup(
+      <MemoryRouter>
+        <I18nProvider i18n={i18n}>{content as ReactNode}</I18nProvider>
+      </MemoryRouter>
+    );
   }
 
   function getOutcomes() {
@@ -277,6 +282,14 @@ describe("approveTokens rejection toast", () => {
     expect(mocks.sendTokenPermitMetric.mock.calls).toEqual([[expect.objectContaining({ outcome: "rejected" })]]);
     expect(mocks.disableTokenPermits).not.toHaveBeenCalled();
     expect(helperToast.info).not.toHaveBeenCalled();
+  });
+
+  it("tells the user to get ETH when the approval transaction can't pay for gas", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+
+    await approveWithWalletError({ code: -32000, message: "insufficient funds for gas * price + value" });
+
+    expect(getErrorToastText()).toContain("Insufficient ETH for gas");
   });
 
   it.each([

@@ -17,6 +17,7 @@ const mocks = vi.hoisted(() => ({
   toastError: vi.fn(),
   toastContent: vi.fn(),
   tokenPermits: [] as { token: string; spender: string; value: bigint }[],
+  isPermitAvailable: false,
 }));
 
 vi.mock("domain/synthetics/tokens", () => ({
@@ -64,7 +65,7 @@ vi.mock("context/TokenPermitsContext/TokenPermitsContextProvider", () => ({
   useTokenPermitsContext: () => ({
     tokenPermits: mocks.tokenPermits,
     accountType: "eoa",
-    getIsPermitAvailable: () => false,
+    getIsPermitAvailable: () => mocks.isPermitAvailable,
     addTokenPermit: vi.fn(),
     disableTokenPermits: vi.fn(),
   }),
@@ -120,6 +121,7 @@ async function approve(view: ReturnType<typeof setup>) {
 
 describe("useTokenApproval", () => {
   beforeEach(() => {
+    mocks.isPermitAvailable = false;
     mocks.allowanceData = { [mocks.TOKEN]: 0n };
     mocks.approveTokens.mockResolvedValue({ hash: mocks.HASH });
     mocks.waitForTransactionReceipt.mockResolvedValue({ status: "success", blockNumber: 105n, from: mocks.OWNER });
@@ -143,6 +145,19 @@ describe("useTokenApproval", () => {
 
     expect(setup(1000n, allowPermit).result.needsApproval).toBe(needsApproval);
   });
+
+  it.each([
+    { allowPermit: true, isPermitAvailable: true, expected: true },
+    { allowPermit: false, isPermitAvailable: true, expected: false },
+    { allowPermit: true, isPermitAvailable: false, expected: false },
+  ])(
+    "tells a permit from a transaction: allowPermit $allowPermit, permit available $isPermitAvailable -> $expected",
+    ({ allowPermit, isPermitAvailable, expected }) => {
+      mocks.isPermitAvailable = isPermitAvailable;
+
+      expect(setup(1000n, allowPermit).result.getIsPermitApproval(mocks.TOKEN)).toBe(expected);
+    }
+  );
 
   it("releases the button and reports the shortfall when the mined allowance is below the amount", async () => {
     const view = setup(1000n);

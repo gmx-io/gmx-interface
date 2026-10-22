@@ -6,6 +6,7 @@ import { maxUint256 } from "viem";
 import { getChainName, getExplorerUrl } from "config/chains";
 import { JUMPER_BRIDGE_URL } from "config/links";
 import { AddTokenPermitFn } from "context/TokenPermitsContext/TokenPermitsContextProvider";
+import { type ErrorLike, parseError, TxErrorType } from "lib/errors";
 import { INVALID_PERMIT_SIGNATURE_ERROR } from "lib/errors/customErrors";
 import { estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { helperToast } from "lib/helperToast";
@@ -202,7 +203,8 @@ export async function approveTokens({
     if (
       ["not enough funds for gas", "failed to execute call with revert code InsufficientGasFunds"].includes(
         e.data?.message
-      )
+      ) ||
+      parseError(e as ErrorLike)?.txErrorType === TxErrorType.NotEnoughFunds
     ) {
       failMsg = (
         <div>
