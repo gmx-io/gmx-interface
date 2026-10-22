@@ -429,6 +429,14 @@ export function useTradeboxUsdgConversion({
   );
 
   useEffect(
+    function releaseConversionOnAccountOrChainSwitch() {
+      // the executed swap is matched by account and chain, so after a switch it would only clear on the timeout
+      resetConversion();
+    },
+    [account, chainId, resetConversion]
+  );
+
+  useEffect(
     function releaseStuckConversion() {
       if (step !== "converting") {
         return;
@@ -569,11 +577,19 @@ export function useTradeboxUsdgConversion({
       return undefined;
     }
 
+    const approveButtonText =
+      tokensToApprove.length > 0
+        ? getApproveButtonText({
+            tokenSymbol: getToken(chainId, tokensToApprove[0]).symbol,
+            isGasPaymentToken: tokensToApprove[0] !== usdcAddress,
+          })
+        : undefined;
+
     if (isBusy) {
       return {
         text: (
           <>
-            {isApproving ? t`Approving USDC...` : t`Converting USDC to USDG...`}
+            {isApproving ? approveButtonText ?? t`Approving USDC...` : t`Converting USDC to USDG...`}
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
@@ -582,12 +598,9 @@ export function useTradeboxUsdgConversion({
       };
     }
 
-    if (isAllowanceLoaded && tokensToApprove.length > 0) {
+    if (isAllowanceLoaded && approveButtonText !== undefined) {
       return {
-        text: getApproveButtonText({
-          tokenSymbol: getToken(chainId, tokensToApprove[0]).symbol,
-          isGasPaymentToken: tokensToApprove[0] !== usdcAddress,
-        }),
+        text: approveButtonText,
         disabled: false,
         onSubmit: onConvert,
       };

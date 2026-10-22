@@ -404,15 +404,16 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   });
   const isUsdgConversionTooLarge = useSelector(selectTradeboxIsUsdgConversionTooLarge);
 
+  // the convert step takes over only a ready order button, but keeps its spinner while the swap is in flight
+  const isConvertStepShown =
+    !paxosRoute.buttonState &&
+    usdgConversion.buttonState !== undefined &&
+    (usdgConversion.isBusy || (!shouldShowDepositButton && !gmxSubmitButtonState.disabled));
+
   const submitButtonState = useMemo(() => {
     if (paxosRoute.buttonState) {
       return { ...gmxSubmitButtonState, ...paxosRoute.buttonState, tooltipContent: null, bannerErrorContent: null };
     }
-
-    // the convert step takes over only a ready order button, but keeps its spinner while the swap is in flight
-    const isConvertStepShown =
-      usdgConversion.buttonState !== undefined &&
-      (usdgConversion.isBusy || (!shouldShowDepositButton && !gmxSubmitButtonState.disabled));
 
     if (isConvertStepShown) {
       return {
@@ -429,21 +430,21 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
     return gmxSubmitButtonState;
   }, [
     gmxSubmitButtonState,
+    isConvertStepShown,
     paxosRoute.buttonState,
-    shouldShowDepositButton,
     usdgConversion.buttonState,
     usdgConversion.executionFee,
     usdgConversion.expressParams,
-    usdgConversion.isBusy,
     usdgConversion.isExpressLoading,
   ]);
 
   const wrappedOnSubmit = useCallback(async () => {
     await submitButtonState.onSubmit();
-    if (isMobile) {
+    // the order step still follows the conversion, so keep the curtain open for it
+    if (isMobile && !isConvertStepShown) {
       setExternalIsCurtainOpen(false);
     }
-  }, [submitButtonState, isMobile, setExternalIsCurtainOpen]);
+  }, [submitButtonState, isMobile, isConvertStepShown, setExternalIsCurtainOpen]);
 
   const expressOrdersEnabledForMax = expressOrdersEnabled && fromTokenAddress !== zeroAddress && !isWrapOrUnwrap;
 
