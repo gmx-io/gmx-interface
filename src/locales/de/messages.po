@@ -459,6 +459,10 @@ msgstr "Genehmigungsdetails"
 msgid "Network fees increased. Additional fee required."
 msgstr "Netzwerkgebühren gestiegen. Zusätzliche Gebühr erforderlich."
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "USDG issuer, separate transaction, usually 2–10 min. No Paxos fee."
+msgstr "USDG-Emittent, separate Transaktion, meist 2–10 Min. Keine Paxos-Gebühr."
+
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Insufficient pool balance to claim this funding fee"
 msgstr "Das Poolguthaben reicht nicht aus, um diese Finanzierungsgebühr zu beanspruchen"
@@ -482,6 +486,10 @@ msgstr "Kaufbar"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Missing required parameters"
 msgstr "Erforderliche Parameter fehlen"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paused for now"
+msgstr "Vorerst pausiert"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GLV?"
@@ -874,7 +882,6 @@ msgstr "/ Monat"
 
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 #: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
-#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
 msgid "Not enough zero-fee capacity"
 msgstr "Nicht genug gebührenfreie Kapazität"
 
@@ -1143,10 +1150,6 @@ msgstr "Preise sind volatil. <0>Erlaubte Slippage erhöhen</0>"
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Only send <0>{chainName}-compatible assets</0> to this address!"
 msgstr "Senden Sie nur <0>{chainName}-kompatible Assets</0> an diese Adresse!"
-
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
-msgid "USDG issuer, separate transaction, usually 2–10 min. No Paxos fee for whitelisted addresses."
-msgstr "USDG-Emittent, separate Transaktion, meist 2–10 Min. Keine Paxos-Gebühr für Whitelist-Adressen."
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
@@ -1625,6 +1628,10 @@ msgstr "Insgesamt eingezahlte Margin"
 msgid "Insufficient gas payment token balance in your GMX Account to cover network fees. Deposit funds and retry"
 msgstr "Unzureichendes Guthaben des Tokens für Gasgebühren in Ihrem GMX Account, um die Netzwerkgebühren zu decken. Zahlen Sie Gelder ein und versuchen Sie es erneut"
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paused until {reopenTime}"
+msgstr "Pausiert bis {reopenTime}"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposited"
 msgstr "Eingezahlt"
@@ -2054,6 +2061,14 @@ msgstr "Vesten"
 #: src/components/GmList/UsdgPoolBadges.tsx
 msgid "Extra yield for GLV [USDG] liquidity providers during the launch, targeting 8% or more on top of trading fees. Paid into the GLV price every 4 hours, so there's nothing to claim."
 msgstr "Zusätzliche Rendite für GLV [USDG]-Liquiditätsanbieter während des Launchs, mit einem Ziel von 8 % oder mehr zusätzlich zu den Handelsgebühren. Fließt alle 4 Stunden in den GLV-Preis ein, Sie müssen also nichts beanspruchen."
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Auto picks the cheaper option. You can choose either option."
+msgstr "Auto wählt die günstigere Option. Sie können beide Optionen wählen."
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "This pool holds USDG, so USDC is converted to USDG when you buy and back to USDC when you sell.<0/><1/>Instant swap goes through the GMX USDC/USDG pool within your buy or sell, in one transaction. You pay its swap fee and price impact.<2/><3/>Direct with Paxos converts with Paxos, the issuer of USDG, in a separate transaction that usually settles in 2–10 min. The converted tokens land in your wallet first."
+msgstr "Dieser Pool hält USDG, daher wird USDC beim Kauf in USDG und beim Verkauf zurück in USDC umgewandelt.<0/><1/>Sofortiger Tausch läuft innerhalb Ihres Kaufs oder Verkaufs in einer Transaktion über den GMX-USDC/USDG-Pool. Sie zahlen dessen Tauschgebühr und Preiseinfluss.<2/><3/>Direkt mit Paxos wandelt über Paxos, den Emittenten von USDG, in einer separaten Transaktion um, die meist in 2–10 Min. abgewickelt wird. Die umgewandelten Token landen zuerst in Ihrer Wallet."
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max leverage exceeded. Remaining margin {remainingCollateralUsdText} is below the minimum for the position size. Increase margin or reduce size."
@@ -2488,10 +2503,6 @@ msgstr "Gewinn"
 msgid "Swapped {0} for {1}"
 msgstr "{0} gegen {1} getauscht"
 
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
-msgid "Zero-fee capacity dropped below your amount a moment ago. The new capacity shows here within a minute."
-msgstr "Die gebührenfreie Kapazität ist gerade unter Ihren Betrag gefallen. Die neue Kapazität wird hier innerhalb einer Minute angezeigt."
-
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Pick a time"
 msgstr "Zeit auswählen"
@@ -2533,6 +2544,10 @@ msgstr "Der Kauf mit Karte ist für Ihre Region oder Konfiguration nicht verfüg
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Claiming price impact rebates..."
 msgstr "Rückerstattungen für Preiseinfluss werden beansprucht..."
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Auto picks the cheaper option. Direct with Paxos is only offered from {minAmount}."
+msgstr "Auto wählt die günstigere Option. Direkt mit Paxos wird erst ab {minAmount} angeboten."
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 #: src/components/Earn/AdditionalOpportunities/OpportunityCard.tsx
@@ -2860,10 +2875,6 @@ msgstr "TWAP-Tauschvorgänge nutzen nur die Liquidität der GMX-Pools, die für 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "How do I choose?"
 msgstr "Wie wähle ich aus?"
-
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
-msgid "This pool holds USDG, so USDC is converted to USDG when you buy and back to USDC when you sell.<0/><1/>Instant swap goes through the GMX USDC/USDG pool within your buy or sell, in one transaction. You pay its swap fee and price impact.<2/><3/>Direct with Paxos converts with Paxos, the issuer of USDG, in a separate transaction that usually settles in 2–10 min. The converted tokens land in your wallet first.<4/><5/>Auto picks the cheaper option. Whitelisted addresses can choose either option and convert USDC to USDG with no Paxos fee. Other addresses always use Auto, and Direct with Paxos is only offered from {minAmount}.<6/><7/>The choice is fixed when only one option can handle the amount or a conversion is in progress."
-msgstr "Dieser Pool hält USDG, daher wird USDC beim Kauf in USDG und beim Verkauf zurück in USDC umgewandelt.<0/><1/>Sofortiger Tausch läuft innerhalb Ihres Kaufs oder Verkaufs in einer Transaktion über den GMX-USDC/USDG-Pool. Sie zahlen dessen Tauschgebühr und Preiseinfluss.<2/><3/>Direkt mit Paxos wandelt über Paxos, den Emittenten von USDG, in einer separaten Transaktion um, die meist in 2–10 Min. abgewickelt wird. Die umgewandelten Token landen zuerst in Ihrer Wallet.<4/><5/>Auto wählt die günstigere Option. Whitelist-Adressen können beide Optionen wählen und USDC ohne Paxos-Gebühr in USDG umwandeln. Andere Adressen nutzen immer Auto, und Direkt mit Paxos wird erst ab {minAmount} angeboten.<6/><7/>Die Auswahl ist festgelegt, wenn nur eine Option den Betrag abwickeln kann oder eine Umwandlung läuft."
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Grouping"
@@ -4422,6 +4433,10 @@ msgstr "Fehlgeschlagener TWAP-Teil"
 msgid "Min collateral factor OI short"
 msgstr "Min. Sicherheitsfaktor OI Short"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "USDG issuer, separate transaction, usually 2–10 min"
+msgstr "USDG-Emittent, separate Transaktion, meist 2–10 Min."
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed TWAP Swap part"
 msgstr "Fehlgeschlagener TWAP-Tauschteil"
@@ -4538,6 +4553,10 @@ msgstr "Wird gesendet..."
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Max capacity:"
 msgstr "Max. Kapazität:"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Zero-fee conversion is no longer available. Review the conversion and confirm again."
+msgstr "Die gebührenfreie Umwandlung ist nicht mehr verfügbar. Prüfen Sie die Umwandlung und bestätigen Sie erneut."
 
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "<0>No. There is no GMX-controlled account holding your money at any point. Traders trade directly from their own wallet, or from their funded GMX Account — a contract you control and withdraw from at will.</0><1>Affiliates never deposit anything. Rewards accrue in the contracts, and you claim them yourself, on-chain, to your address.</1>"
@@ -5427,10 +5446,6 @@ msgstr "Das externe Routing ist nach einem fehlgeschlagenen Versuch vorübergehe
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
 msgstr "<0>Kaufen</0> Sie {wrappedNativeTokenSymbol}."
 
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
-msgid "Or pick Paxos standard with a fee or an instant route in Route. No route is picked for you."
-msgstr "Oder wählen Sie unter Route Paxos Standard mit Gebühr oder eine Sofort-Route. Es wird keine Route für Sie gewählt."
-
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX on Solana (known as GMTrade) is served from a separate domain"
 msgstr "GMX auf Solana (bekannt als GMTrade) wird über eine separate Domain bereitgestellt"
@@ -5840,6 +5855,10 @@ msgstr "Wenn Sie mehr als 20 % Ihres historischen Maximums an gestaktem GMX oder
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "Kein Preiseinfluss. Einheitlicher Ausführungspreis für<0/>das Erhöhen von Shorts oder Reduzieren von Longs bei<1/>dieser Größe."
 
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+msgid "Paxos zero-fee is paused"
+msgstr "Paxos gebührenfrei ist pausiert"
+
 #: src/pages/ReferralsTier/ReferralsTier.tsx
 msgid "Current tier:"
 msgstr "Aktuelle Stufe:"
@@ -5941,6 +5960,10 @@ msgstr "Margin vor ausstehenden Kreditaufnahme- und Finanzierungsgebühren"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel new orders"
 msgstr "Neue Orders abbrechen"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Zero-fee conversion is paused."
+msgstr "Die gebührenfreie Umwandlung ist pausiert."
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Net price impact (open + close)"
@@ -7512,10 +7535,6 @@ msgstr "PnL relativ zum eingesetzten Kapital (Kapitalrendite)"
 msgid "Order error. Prices are volatile for this market. Try again by <0>increasing the allowed slippage</0>"
 msgstr "Orderfehler. Die Preise in diesem Markt sind volatil. Versuchen Sie es erneut, indem Sie <0>die zulässige Slippage erhöhen</0>"
 
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
-msgid "Choose a route"
-msgstr "Route wählen"
-
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "No transfer history matching search"
 msgstr "Kein Übertragungsverlauf entspricht der Suche"
@@ -8888,6 +8907,10 @@ msgstr "Maximalbetrag überschritten"
 msgid "Insufficient {nativeTokenSymbol} in your Wallet for gas on {chainName}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
 msgstr "Nicht genügend {nativeTokenSymbol} in Ihrer Wallet für Gas auf {chainName}. <0>Tauschen</0> oder <1>bridgen</1> Sie {nativeTokenSymbol}."
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "The choice is fixed when only one option can handle the amount or a conversion is in progress."
+msgstr "Die Auswahl ist festgelegt, wenn nur eine Option den Betrag abwickeln kann oder eine Umwandlung läuft."
+
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -8941,6 +8964,10 @@ msgstr "Bearbeiten"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total supply"
 msgstr "Gesamtangebot"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Zero-fee conversion is paused until {reopenTime}."
+msgstr "Die gebührenfreie Umwandlung ist bis {reopenTime} pausiert."
 
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 msgid "My assets"
@@ -10011,10 +10038,6 @@ msgstr "~5 Min."
 #: src/pages/ReferralsTier/ReferralsTier.tsx
 msgid "New tier:"
 msgstr "Neue Stufe:"
-
-#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
-msgid "Zero-fee capacity changed. Review the route options and confirm again."
-msgstr "Die gebührenfreie Kapazität hat sich geändert. Prüfen Sie die Routenoptionen und bestätigen Sie erneut."
 
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "Market delistings"
@@ -11838,6 +11861,10 @@ msgstr "Nur zur Veranschaulichung, basierend auf einer effektiven Gebühr von ~0
 msgid "Starts with the first reward round."
 msgstr "Beginnt mit der ersten Belohnungsrunde."
 
+#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
+msgid "Paxos zero-fee is no longer available. Review the route options and confirm again."
+msgstr "Paxos gebührenfrei ist nicht mehr verfügbar. Prüfen Sie die Routenoptionen und bestätigen Sie erneut."
+
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "Receive to this wallet"
 msgstr "Auf diese Wallet empfangen"
@@ -12311,10 +12338,6 @@ msgstr "Erhöhen Sie den maximalen Netzwerkgebührenpuffer in den {settingsLink}
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM airdrop"
 msgstr "Airdrop von GLP zu GM"
-
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
-msgid "Whitelisted addresses convert USDC to USDG with no Paxos fee. To get whitelisted, message <0>@GMXPartners</0> on Telegram and mention \"USDG whitelist\"."
-msgstr "Whitelist-Adressen wandeln USDC ohne Paxos-Gebühr in USDG um. Um auf die Whitelist zu kommen, schreiben Sie <0>@GMXPartners</0> auf Telegram und erwähnen Sie \"USDG whitelist\"."
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
