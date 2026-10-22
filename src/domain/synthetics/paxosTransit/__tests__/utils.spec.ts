@@ -2,9 +2,16 @@ import { describe, expect, it } from "vitest";
 
 import { USD_DECIMALS } from "config/factors";
 import { expandDecimals } from "lib/numbers";
+import { HttpError } from "sdk/utils/http/http";
 import type { TransitFeeTierResponse } from "sdk/utils/paxos/types";
 
-import { getIsTransitQuoteNeeded, getShouldUseTransit, getTransitFeeTier, getTransitMinOrderSize } from "../utils";
+import {
+  getIsTransitQuoteNeeded,
+  getIsZeroFeeRejection,
+  getShouldUseTransit,
+  getTransitFeeTier,
+  getTransitMinOrderSize,
+} from "../utils";
 
 const usd = (value: number) => expandDecimals(value, USD_DECIMALS);
 const ZERO_FEE: TransitFeeTierResponse = {
@@ -12,6 +19,12 @@ const ZERO_FEE: TransitFeeTierResponse = {
   zeroFeeCapacity: 1_000_000n,
   isZeroFeeAvailable: true,
   zeroFeeExpectedReopenAt: undefined,
+};
+const ZERO_FEE_PAUSED: TransitFeeTierResponse = {
+  ...ZERO_FEE,
+  zeroFeeCapacity: 0n,
+  isZeroFeeAvailable: false,
+  zeroFeeExpectedReopenAt: Date.UTC(2026, 9, 26, 13) / 1000,
 };
 const STANDARD_FEE: TransitFeeTierResponse = {
   feeTier: "standardFee",
@@ -33,6 +46,7 @@ describe("getTransitFeeTier", () => {
   it("uses zero fee for a whitelisted address with enough capacity", () => {
     expect(getTransitFeeTier(params)).toEqual({
       isWhitelisted: true,
+      isZeroFeePaused: false,
       isZeroFeeCapacityShort: false,
       feeTier: "zeroFee",
     });
@@ -41,6 +55,7 @@ describe("getTransitFeeTier", () => {
   it("falls back to standard fee when USDC to USDG capacity is short", () => {
     expect(getTransitFeeTier({ ...params, amount: 2_000_000n })).toEqual({
       isWhitelisted: true,
+      isZeroFeePaused: false,
       isZeroFeeCapacityShort: true,
       feeTier: "standardFee",
     });
@@ -49,6 +64,7 @@ describe("getTransitFeeTier", () => {
   it("falls back to standard fee below the zero fee minimum order size", () => {
     expect(getTransitFeeTier({ ...params, zeroFeeMinOrderSize: 600_000n })).toEqual({
       isWhitelisted: true,
+      isZeroFeePaused: false,
       isZeroFeeCapacityShort: false,
       feeTier: "standardFee",
     });
@@ -63,15 +79,57 @@ describe("getTransitFeeTier", () => {
     expect(getTransitFeeTier({ ...params, zeroFeeMinOrderSize: params.amount }).feeTier).toBe("zeroFee");
   });
 
-  it("ignores capacity from USDG to USDC", () => {
-    expect(getTransitFeeTier({ ...params, isUsdcToUsdg: false, amount: 2_000_000n }).feeTier).toBe("zeroFee");
+  it("uses standard fee while zero fee is paused", () => {
+    expect(getTransitFeeTier({ ...params, feeTierData: ZERO_FEE_PAUSED })).toEqual({
+      isWhitelisted: true,
+      isZeroFeePaused: true,
+      isZeroFeeCapacityShort: false,
+      feeTier: "standardFee",
+    });
   });
 
-  it("uses standard fee when forced, ignored or not whitelisted", () => {
+  it.each([
+    ["from USDG to USDC", { isUsdcToUsdg: false }],
+    ["from USDG to USDC while paused", { isUsdcToUsdg: false, feeTierData: ZERO_FEE_PAUSED }],
+  ])("never uses or pauses zero fee %s", (_name, overrides) => {
+    expect(getTransitFeeTier({ ...params, ...overrides })).toEqual({
+      isWhitelisted: true,
+      isZeroFeePaused: false,
+      isZeroFeeCapacityShort: false,
+      feeTier: "standardFee",
+    });
+  });
+
+  it("uses standard fee when forced", () => {
     expect(getTransitFeeTier({ ...params, isStandardFeeForced: true }).feeTier).toBe("standardFee");
-    expect(getTransitFeeTier({ ...params, isWhitelistIgnored: true }).isWhitelisted).toBe(false);
-    expect(getTransitFeeTier({ ...params, feeTierData: STANDARD_FEE }).feeTier).toBe("standardFee");
-    expect(getTransitFeeTier({ ...params, feeTierData: undefined }).feeTier).toBe("standardFee");
+  });
+
+  it.each([
+    ["ignored", { isWhitelistIgnored: true }],
+    ["not whitelisted", { feeTierData: STANDARD_FEE }],
+    ["not loaded", { feeTierData: undefined }],
+  ])("uses standard fee without zero fee notices when the whitelist is %s", (_name, overrides) => {
+    expect(getTransitFeeTier({ ...params, ...overrides })).toEqual({
+      isWhitelisted: false,
+      isZeroFeePaused: false,
+      isZeroFeeCapacityShort: false,
+      feeTier: "standardFee",
+    });
+  });
+});
+
+describe("getIsZeroFeeRejection", () => {
+  it.each([
+    [403, true],
+    [409, true],
+    [400, false],
+    [502, false],
+  ])("treats HTTP %i as a rejection: %s", (statusCode, expected) => {
+    expect(getIsZeroFeeRejection(new HttpError(statusCode, "error"))).toBe(expected);
+  });
+
+  it("ignores errors without an HTTP status", () => {
+    expect(getIsZeroFeeRejection(new Error("network"))).toBe(false);
   });
 });
 
