@@ -1,6 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { useLatest } from "react-use";
 
 import { getChainName } from "config/chains";
 import { getContract } from "config/contracts";
@@ -255,7 +256,8 @@ export function useTradeboxUsdgConversion({
     twapDuration,
     twapNumberOfParts,
   ]);
-  const [orderAutoSubmitSetupKey, setOrderAutoSubmitSetupKey] = useState<string>();
+  const [orderAutoSubmitArm, setOrderAutoSubmitArm] = useState<{ setupKey: string; armedAt: number }>();
+  const latestMarketAddress = useLatest(marketAddress);
   const [relayTaskId, setRelayTaskId] = useState<string>();
   const [lastConversion, setLastConversion] = useState<{ marketAddress: string | undefined; amountOut: bigint }>();
   const pendingConversionRef = useRef<{
@@ -433,19 +435,26 @@ export function useTradeboxUsdgConversion({
             return;
           }
 
+          // the trader can switch markets while the receipt loads
+          if (latestMarketAddress.current !== pending.marketAddress) {
+            resetConversion();
+            return;
+          }
+
           const amountOut = receivedAmount > 0n ? receivedAmount : pending.minAmountOut;
 
           setFromTokenAddress(pending.tokenOutAddress);
           setFocusedInput("from");
           setFromTokenInputValue(formatAmountFree(amountOut, pending.tokenOutDecimals), true);
           setLastConversion({ marketAddress: pending.marketAddress, amountOut });
-          setOrderAutoSubmitSetupKey(pending.orderSetupKey);
+          setOrderAutoSubmitArm({ setupKey: pending.orderSetupKey, armedAt: Date.now() });
           resetConversion();
         });
     },
     [
       account,
       chainId,
+      latestMarketAddress,
       marketAddress,
       orderStatuses,
       resetConversion,
@@ -460,7 +469,7 @@ export function useTradeboxUsdgConversion({
     function releaseConversionOnAccountOrChainSwitch() {
       // the executed swap is matched by account and chain, so after a switch it would only clear on the timeout
       resetConversion();
-      setOrderAutoSubmitSetupKey(undefined);
+      setOrderAutoSubmitArm(undefined);
     },
     [account, chainId, resetConversion]
   );
@@ -658,33 +667,33 @@ export function useTradeboxUsdgConversion({
     lastConversion.marketAddress === marketAddress &&
     fromTokenAmount === lastConversion.amountOut;
 
-  const isOrderAutoSubmitArmed = orderAutoSubmitSetupKey !== undefined;
+  const orderAutoSubmitArmedAt = orderAutoSubmitArm?.armedAt;
+  const isOrderAutoSubmitArmed = orderAutoSubmitArmedAt !== undefined;
   const isOrderAutoSubmitPending =
-    isOrderAutoSubmitArmed && isConvertedMarginInPlace && orderAutoSubmitSetupKey === orderSetupKey;
-  const stopOrderAutoSubmit = useCallback(() => setOrderAutoSubmitSetupKey(undefined), []);
+    isOrderAutoSubmitArmed && isConvertedMarginInPlace && orderAutoSubmitArm?.setupKey === orderSetupKey;
+  const stopOrderAutoSubmit = useCallback(() => setOrderAutoSubmitArm(undefined), []);
 
-  const hasConvertedMarginLandedRef = useRef(false);
+  const landedArmedAtRef = useRef<number>();
 
   useEffect(
     function disarmOrderAutoSubmit() {
-      if (!isOrderAutoSubmitArmed) {
-        hasConvertedMarginLandedRef.current = false;
+      if (orderAutoSubmitArmedAt === undefined) {
         return;
       }
 
       // the pay token switches a render after the arm, so only a change after the margin landed disarms
       if (isOrderAutoSubmitPending) {
-        hasConvertedMarginLandedRef.current = true;
-      } else if (hasConvertedMarginLandedRef.current) {
+        landedArmedAtRef.current = orderAutoSubmitArmedAt;
+      } else if (landedArmedAtRef.current === orderAutoSubmitArmedAt) {
         stopOrderAutoSubmit();
       }
     },
-    [isOrderAutoSubmitArmed, isOrderAutoSubmitPending, stopOrderAutoSubmit]
+    [isOrderAutoSubmitPending, orderAutoSubmitArmedAt, stopOrderAutoSubmit]
   );
 
   useEffect(
     function expireOrderAutoSubmit() {
-      if (!isOrderAutoSubmitArmed) {
+      if (orderAutoSubmitArmedAt === undefined) {
         return;
       }
 
@@ -692,12 +701,13 @@ export function useTradeboxUsdgConversion({
 
       return () => clearTimeout(timerId);
     },
-    [isOrderAutoSubmitArmed, stopOrderAutoSubmit]
+    [orderAutoSubmitArmedAt, stopOrderAutoSubmit]
   );
 
   return {
     isConvertFirst,
     isBusy,
+    isOrderAutoSubmitArmed,
     isOrderAutoSubmitPending,
     stopOrderAutoSubmit,
     buttonState,

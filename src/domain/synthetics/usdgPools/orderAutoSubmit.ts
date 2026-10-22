@@ -3,12 +3,14 @@ export type OrderAutoSubmitStep = "wait" | "approve" | "submit" | "stop";
 export function getOrderAutoSubmitStep(p: {
   isSubmitting: boolean;
   isButtonLoading: boolean;
+  isAllowanceLoaded: boolean;
   isButtonDisabled: boolean;
   isDepositButtonShown: boolean;
   approvalTokenAddress: string | undefined;
   isApprovalRequested: boolean;
 }): OrderAutoSubmitStep {
-  if (p.isSubmitting || p.isButtonLoading) {
+  // before the allowance loads the button can't tell that it needs an approval
+  if (p.isSubmitting || p.isButtonLoading || !p.isAllowanceLoaded) {
     return "wait";
   }
 

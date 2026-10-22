@@ -11,12 +11,15 @@ const SETTLE_MS = 1000;
  * needs it, then the order. Any interaction with the trade box hands the button back.
  */
 export function useOrderAutoSubmitAfterConversion({
+  isArmed,
   isPending,
   stop,
   buttonState,
   isDepositButtonShown,
+  onApprove,
   onSubmit,
 }: {
+  isArmed: boolean;
   isPending: boolean;
   stop: () => void;
   buttonState: {
@@ -27,12 +30,14 @@ export function useOrderAutoSubmitAfterConversion({
     isAllowanceLoaded: boolean;
   };
   isDepositButtonShown: boolean;
+  onApprove: () => Promise<void>;
   onSubmit: () => Promise<void>;
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const requestedApprovalsRef = useRef(new Set<string>());
   const { disabled, isExpressLoading, approvalTokenAddress, isApproving, isAllowanceLoaded } = buttonState;
-  // price ticks recreate both on every render, which would keep restarting the settle timer
+  // price ticks recreate these on every render, which would keep restarting the settle timer
+  const latestOnApprove = useLatest(onApprove);
   const latestOnSubmit = useLatest(onSubmit);
   const latestStop = useLatest(stop);
 
@@ -45,8 +50,8 @@ export function useOrderAutoSubmitAfterConversion({
 
       const step = getOrderAutoSubmitStep({
         isSubmitting,
-        // before the allowance loads the button can't know it needs an approval yet
-        isButtonLoading: isExpressLoading || isApproving || !isAllowanceLoaded,
+        isButtonLoading: isExpressLoading || isApproving,
+        isAllowanceLoaded,
         isButtonDisabled: disabled,
         isDepositButtonShown,
         approvalTokenAddress,
@@ -70,7 +75,7 @@ export function useOrderAutoSubmitAfterConversion({
         }
 
         setIsSubmitting(true);
-        latestOnSubmit
+        (step === "approve" ? latestOnApprove : latestOnSubmit)
           .current()
           .catch(() => undefined)
           .finally(() => setIsSubmitting(false));
@@ -87,13 +92,12 @@ export function useOrderAutoSubmitAfterConversion({
       isExpressLoading,
       isPending,
       isSubmitting,
+      latestOnApprove,
       latestOnSubmit,
       latestStop,
     ]
   );
 
-  return useMemo(
-    () => (isPending ? { onPointerDownCapture: stop, onKeyDownCapture: stop } : undefined),
-    [isPending, stop]
-  );
+  // armed covers the render before the converted margin lands too
+  return useMemo(() => (isArmed ? { onPointerDownCapture: stop, onKeyDownCapture: stop } : undefined), [isArmed, stop]);
 }

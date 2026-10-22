@@ -447,10 +447,13 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   }, [submitButtonState, isMobile, isConvertStepShown, setExternalIsCurtainOpen]);
 
   const orderAutoSubmitHandlers = useOrderAutoSubmitAfterConversion({
+    isArmed: usdgConversion.isOrderAutoSubmitArmed,
     isPending: usdgConversion.isOrderAutoSubmitPending,
     stop: usdgConversion.stopOrderAutoSubmit,
     buttonState: submitButtonState,
     isDepositButtonShown: shouldShowDepositButton,
+    // the order still follows the approval, so the mobile curtain stays open for it
+    onApprove: submitButtonState.onSubmit,
     onSubmit: wrappedOnSubmit,
   });
 
