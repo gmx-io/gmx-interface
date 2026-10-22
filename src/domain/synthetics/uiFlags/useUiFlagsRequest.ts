@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useMemo } from "react";
 import useSWR from "swr";
 
 import { useChainId } from "lib/chains";
@@ -15,7 +15,7 @@ export function useUiFlagsRequest() {
 
   const fallbackData = useMemo(() => readPersistedUiFlags(chainId), [chainId]);
 
-  const { data: uiFlags, isValidating } = useSWR<UiFlags>(
+  const { data: uiFlags } = useSWR<UiFlags>(
     ["uiFlags", chainId],
     async () => {
       const result = await confirmRelayControlFlags(chainId, await oracleKeeperFetcher.fetchUiFlags());
@@ -28,13 +28,5 @@ export function useUiFlagsRequest() {
     }
   );
 
-  // fail-closed flags (permits) are never persisted, so they are unknown until the first request for the chain
-  // settles; a failed request settles too and leaves them off
-  const settledChainIdRef = useRef<number>();
-  if (!isValidating) {
-    settledChainIdRef.current = chainId;
-  }
-  const isUiFlagsSettled = settledChainIdRef.current === chainId;
-
-  return { uiFlags, isUiFlagsSettled };
+  return { uiFlags };
 }

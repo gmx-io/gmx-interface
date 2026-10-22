@@ -239,13 +239,7 @@ export function useTradeboxButtonState({
   const isDataReady = Boolean(fromToken && payAmount !== undefined);
   const isAllowanceLoaded = isDataReady && isAllowanceLoadedRaw;
   // until allowances are known an order could be sent without the approval it needs
-  // while it's unknown whether an approval will be a free permit or a paid transaction, approving waits
-  const isApprovalMethodPending =
-    isDataReady &&
-    isAllowanceLoaded &&
-    !isApproving &&
-    tokensToApprove.some((token) => getIsPermitApproval(token) === undefined);
-  const isAllowancePending = (isDataReady && isAllowanceLoading && !isApproving) || isApprovalMethodPending;
+  const isAllowancePending = isDataReady && isAllowanceLoading && !isApproving;
 
   const pendingApprovalTokenAddress = isAllowanceLoaded && !isApproving ? tokensToApprove[0] : undefined;
   const isPendingGasPaymentTokenApproval =
@@ -299,10 +293,8 @@ export function useTradeboxButtonState({
       tokenToApprove: pendingApprovalTokenAddress,
       nativeToken: getByKey(tokensData, zeroAddress),
       gasPrice: expressParams.gasPrice,
-      // every remaining approval has to be a permit, or the user would sign one and still be stopped for gas;
-      // while that is still unknown the button waits (isApprovalMethodPending) instead of flashing the gas error
-      isPermitApproval:
-        tokensToApprove.length > 0 && tokensToApprove.every((token) => getIsPermitApproval(token) !== false),
+      // every remaining approval has to be a permit, or the user would sign one and still be stopped for gas
+      isPermitApproval: tokensToApprove.length > 0 && tokensToApprove.every(getIsPermitApproval),
     });
   }, [expressParams, getIsPermitApproval, pendingApprovalTokenAddress, tokensData, tokensToApprove]);
 
@@ -344,7 +336,7 @@ export function useTradeboxButtonState({
       isGmxAccount: false,
       excludeTokenAddresses,
       tokensAllowanceData: gasPaymentTokenAllowance?.tokensAllowanceData ?? EMPTY_OBJECT,
-      getCanApproveWithPermit: (tokenAddress) => getIsPermitApproval(tokenAddress) === true,
+      getCanApproveWithPermit: getIsPermitApproval,
     });
 
     return getByKey(tokensData, address);

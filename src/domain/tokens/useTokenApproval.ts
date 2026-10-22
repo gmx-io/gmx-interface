@@ -56,8 +56,8 @@ interface UseTokenApprovalReturn {
   isAllowanceLoaded: boolean;
   isApproving: boolean;
   handleApprove: (options?: HandleApproveOptions) => void;
-  /** Whether approving the token signs a permit instead of sending a transaction; undefined while still unknown */
-  getIsPermitApproval: (tokenAddress: string) => boolean | undefined;
+  /** Whether approving the token would sign a permit instead of sending a transaction */
+  getIsPermitApproval: (tokenAddress: string) => boolean;
 }
 
 export function useTokenApproval({
@@ -71,14 +71,8 @@ export function useTokenApproval({
 }: UseTokenApprovalParams): UseTokenApprovalReturn {
   const [approvingToken, setApprovingToken] = useState<string | undefined>();
   const [minedApproval, setMinedApproval] = useState<MinedApproval | undefined>();
-  const {
-    tokenPermits,
-    addTokenPermit,
-    disableTokenPermits,
-    getIsPermitAvailable,
-    getIsPermitAvailabilityPending,
-    accountType,
-  } = useTokenPermitsContext();
+  const { tokenPermits, addTokenPermit, disableTokenPermits, getIsPermitAvailable, accountType } =
+    useTokenPermitsContext();
   const [, setSettlementChainId] = useGmxAccountSettlementChainId();
   const latestMetric = useLatest(metric);
 
@@ -190,12 +184,8 @@ export function useTokenApproval({
 
   // the same choice handleApprove makes, so callers can tell a free signature from a paid transaction
   const getIsPermitApproval = useCallback(
-    (tokenAddress: string): boolean | undefined => {
-      if (!allowPermit) return false;
-      if (getIsPermitAvailable(tokenAddress)) return true;
-      return getIsPermitAvailabilityPending(tokenAddress) ? undefined : false;
-    },
-    [allowPermit, getIsPermitAvailable, getIsPermitAvailabilityPending]
+    (tokenAddress: string) => allowPermit && getIsPermitAvailable(tokenAddress),
+    [allowPermit, getIsPermitAvailable]
   );
 
   const handleApprove = useCallback(
@@ -203,8 +193,9 @@ export function useTokenApproval({
       const tokenAddress = tokensToApprove[0];
       if (!chainId || isApproving || !tokenAddress || !spenderAddress) return;
 
-      const permitParams =
-        getIsPermitApproval(tokenAddress) === true ? { addTokenPermit, disableTokenPermits, accountType } : undefined;
+      const permitParams = getIsPermitApproval(tokenAddress)
+        ? { addTokenPermit, disableTokenPermits, accountType }
+        : undefined;
       const { gasPaymentTokenAddress, payTokenAddress, ...metricParams } = latestMetric.current;
 
       const doApprove = async (signerToUse: WalletSigner) => {

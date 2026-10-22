@@ -18,7 +18,6 @@ const mocks = vi.hoisted(() => ({
   toastContent: vi.fn(),
   tokenPermits: [] as { token: string; spender: string; value: bigint }[],
   isPermitAvailable: false,
-  isPermitAvailabilityPending: false,
 }));
 
 vi.mock("domain/synthetics/tokens", () => ({
@@ -67,7 +66,6 @@ vi.mock("context/TokenPermitsContext/TokenPermitsContextProvider", () => ({
     tokenPermits: mocks.tokenPermits,
     accountType: "eoa",
     getIsPermitAvailable: () => mocks.isPermitAvailable,
-    getIsPermitAvailabilityPending: () => mocks.isPermitAvailabilityPending,
     addTokenPermit: vi.fn(),
     disableTokenPermits: vi.fn(),
   }),
@@ -124,7 +122,6 @@ async function approve(view: ReturnType<typeof setup>) {
 describe("useTokenApproval", () => {
   beforeEach(() => {
     mocks.isPermitAvailable = false;
-    mocks.isPermitAvailabilityPending = false;
     mocks.allowanceData = { [mocks.TOKEN]: 0n };
     mocks.approveTokens.mockResolvedValue({ hash: mocks.HASH });
     mocks.waitForTransactionReceipt.mockResolvedValue({ status: "success", blockNumber: 105n, from: mocks.OWNER });
@@ -150,16 +147,13 @@ describe("useTokenApproval", () => {
   });
 
   it.each([
-    { allowPermit: true, isPermitAvailable: true, isPending: false, expected: true },
-    { allowPermit: false, isPermitAvailable: true, isPending: false, expected: false },
-    { allowPermit: true, isPermitAvailable: false, isPending: false, expected: false },
-    { allowPermit: true, isPermitAvailable: false, isPending: true, expected: undefined },
-    { allowPermit: false, isPermitAvailable: false, isPending: true, expected: false },
+    { allowPermit: true, isPermitAvailable: true, expected: true },
+    { allowPermit: false, isPermitAvailable: true, expected: false },
+    { allowPermit: true, isPermitAvailable: false, expected: false },
   ])(
-    "tells a permit from a transaction: allowPermit $allowPermit, available $isPermitAvailable, pending $isPending -> $expected",
-    ({ allowPermit, isPermitAvailable, isPending, expected }) => {
+    "tells a permit from a transaction: allowPermit $allowPermit, permit available $isPermitAvailable -> $expected",
+    ({ allowPermit, isPermitAvailable, expected }) => {
       mocks.isPermitAvailable = isPermitAvailable;
-      mocks.isPermitAvailabilityPending = isPending;
 
       expect(setup(1000n, allowPermit).result.getIsPermitApproval(mocks.TOKEN)).toBe(expected);
     }

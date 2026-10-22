@@ -19,8 +19,6 @@ const mocks = vi.hoisted(() => ({
   uiFlags: undefined as UiFlags | undefined,
   accountType: "eoa" as string,
   hasProvider: true,
-  isUiFlagsSettled: true,
-  accountTypeRead: undefined as Promise<string> | undefined,
   createAndSignTokenPermit: vi.fn(),
 }));
 
@@ -30,14 +28,14 @@ vi.mock("lib/wallets/useWallet", () => ({
 }));
 vi.mock("lib/wallets/walletConfig", () => ({ getPublicClientWithRpc: () => ({}) }));
 vi.mock("domain/synthetics/uiFlags/useUiFlagsRequest", () => ({
-  useUiFlagsRequest: () => ({ uiFlags: mocks.uiFlags, isUiFlagsSettled: mocks.isUiFlagsSettled }),
+  useUiFlagsRequest: () => ({ uiFlags: mocks.uiFlags }),
 }));
 vi.mock("context/SettingsContext/SettingsContextProvider", () => ({
   useSettings: () => ({ isTokenPermitsQaOverrideEnabled: false }),
 }));
 vi.mock("domain/tokens/tokenPermitsEligibility", async (importOriginal) => ({
   ...(await importOriginal<object>()),
-  getTokenPermitAccountType: () => mocks.accountTypeRead ?? Promise.resolve(mocks.accountType),
+  getTokenPermitAccountType: async () => mocks.accountType,
 }));
 vi.mock("domain/tokens/permitUtils", async (importOriginal) => ({
   ...(await importOriginal<object>()),
@@ -81,18 +79,14 @@ function Harness() {
   return null;
 }
 
-function Tree() {
-  return (
+async function setup() {
+  render(
     <SWRConfig value={SWR_CONFIG}>
       <TokenPermitsContextProvider>
         <Harness />
       </TokenPermitsContextProvider>
     </SWRConfig>
   );
-}
-
-async function setup() {
-  render(<Tree />);
 
   await waitFor(() => expect(state.accountType).toBe(mocks.accountType));
 }
@@ -107,8 +101,6 @@ describe("TokenPermitsContextProvider", () => {
     mocks.uiFlags = flag(IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG, true);
     mocks.accountType = "eoa";
     mocks.hasProvider = true;
-    mocks.isUiFlagsSettled = true;
-    mocks.accountTypeRead = undefined;
   });
 
   afterEach(() => {
@@ -207,32 +199,5 @@ describe("TokenPermitsContextProvider", () => {
 
     await expect(state.addTokenPermit(USDC, ROUTER, 100n)).rejects.toThrow();
     expect(mocks.createAndSignTokenPermit).not.toHaveBeenCalled();
-  });
-  it("treats permits as unknown until the keeper flags settle, then as off when they stay off", async () => {
-    mocks.isUiFlagsSettled = false;
-    mocks.uiFlags = undefined;
-    const { rerender } = render(<Tree />);
-
-    expect(state.getIsPermitAvailabilityPending(USDC)).toBe(true);
-    expect(state.getIsPermitAvailabilityPending(LINK)).toBe(false);
-
-    mocks.isUiFlagsSettled = true;
-    rerender(<Tree />);
-
-    await waitFor(() => expect(state.getIsPermitAvailabilityPending(USDC)).toBe(false));
-    expect(state.getIsPermitAvailable(USDC)).toBe(false);
-  });
-
-  it("waits for the first account type read when a flag is on, and stops waiting once it fails", async () => {
-    let rejectRead: (error: Error) => void = () => undefined;
-    mocks.accountTypeRead = new Promise((_, reject) => (rejectRead = reject));
-    render(<Tree />);
-
-    expect(state.getIsPermitAvailabilityPending(USDC)).toBe(true);
-
-    await act(async () => rejectRead(new Error("rpc error")));
-
-    await waitFor(() => expect(state.getIsPermitAvailabilityPending(USDC)).toBe(false));
-    expect(state.getIsPermitAvailable(USDC)).toBe(false);
   });
 });
