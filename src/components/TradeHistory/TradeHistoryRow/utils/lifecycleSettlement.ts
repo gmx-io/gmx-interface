@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 
 import { isDecreaseOrderType, isIncreaseOrderType, isLiquidationOrderType } from "domain/synthetics/orders";
 import type { TokenData } from "domain/synthetics/tokens";
-import { convertToTokenAmount, convertToUsd, parseContractPrice } from "domain/synthetics/tokens";
+import { convertToUsd, parseContractPrice } from "domain/synthetics/tokens";
 import type { LifecycleSettlementData, LifecycleSwapLeg } from "domain/synthetics/tradeHistory/useLifecycleSettlement";
 import { getSwapLegId } from "domain/synthetics/tradeHistory/useLifecycleSettlement";
 import { formatDeltaUsdParts, formatUsdParts, numberParts } from "lib/numbers";
@@ -237,7 +237,7 @@ export function aggregateLifecycleSettlement({
         hasSecondaryOutput = true;
       }
     } else {
-      payoutAmount = convertToTokenAmount(payoutUsd, payoutToken.decimals, row.collateralTokenPriceMin);
+      payoutAmount = getCollateralTokenPayout(row, payoutUsd)?.amount;
     }
 
     if (hasSecondaryOutputRisk(row)) {

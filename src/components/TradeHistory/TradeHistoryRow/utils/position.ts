@@ -946,7 +946,6 @@ export function getSettlementTooltipLines({
   usdgPayoutCtx?: { chainId: number; swapLegsById: Record<string, LifecycleSwapLeg> };
 }): Line[] {
   const collateralToken = tradeAction.initialCollateralToken;
-  const collateralPrice = tradeAction.collateralTokenPriceMin;
   const breakdown = getFeesBreakdown(tradeAction);
 
   const formatCollateralAmount = (amount: bigint) => formatSettlementTokenAmount(collateralToken, amount);
@@ -968,11 +967,9 @@ export function getSettlementTooltipLines({
           })
         : undefined;
 
-    const formatted = usdgSwapPayout
-      ? formatSettlementTokenAmount(usdgSwapPayout.token, usdgSwapPayout.amount)
-      : isSingleCollateralPayout
-        ? formatCollateralAmount(convertToTokenAmount(receivedUsd, collateralToken.decimals, collateralPrice)!)
-        : formatUsdParts(receivedUsd);
+    const payout =
+      usdgSwapPayout ?? (isSingleCollateralPayout ? getCollateralTokenPayout(tradeAction, receivedUsd) : undefined);
+    const formatted = payout ? formatSettlementTokenAmount(payout.token, payout.amount) : formatUsdParts(receivedUsd);
 
     walletReceived = formatted === undefined ? undefined : numericText("~", formatted);
   }

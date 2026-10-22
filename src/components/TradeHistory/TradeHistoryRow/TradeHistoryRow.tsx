@@ -293,7 +293,6 @@ export function TradeHistoryRow({
       return breakdownLines;
     }
 
-    // only a loaded result tells a reverted swap (no leg) from a pending fetch
     const isSwapLegPending =
       getUsdgPartialCloseSwapLegId(chainId, tradeAction) !== undefined && !usdgPartialCloseSwapLegsById;
 
