@@ -336,12 +336,10 @@ export function useTradeboxButtonState({
       isGmxAccount: false,
       excludeTokenAddresses,
       tokensAllowanceData: gasPaymentTokenAllowance?.tokensAllowanceData ?? EMPTY_OBJECT,
-      getCanApproveWithPermit: getIsPermitApproval,
     });
 
     return getByKey(tokensData, address);
   }, [
-    getIsPermitApproval,
     approvalGasError.bannerErrorName,
     isPendingGasPaymentTokenApproval,
     gasPaymentToken,

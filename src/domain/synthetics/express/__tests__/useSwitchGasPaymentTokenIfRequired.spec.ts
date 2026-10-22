@@ -143,21 +143,6 @@ describe("findNextGasPaymentToken — tokensAllowanceData", () => {
     expect(next).toBeUndefined();
   });
 
-  it("accepts a funded, unapproved candidate that can be approved with a permit", () => {
-    const tokensData = buildTokensData({ usdcBalance: 100_000_000n, usdtBalance: ONE_USDT, wethBalance: 0n });
-    const next = findNextGasPaymentToken({
-      chainId: ARBITRUM,
-      tokensData,
-      gasPaymentToken: tokensData[USDT.address]!,
-      gasPaymentTokenAmount: ONE_USDT,
-      payAmounts: {},
-      isGmxAccount: false,
-      tokensAllowanceData: { [USDC.address]: 0n, [WETH.address]: 0n },
-      getCanApproveWithPermit: (tokenAddress) => tokenAddress === USDC.address,
-    });
-    expect(next).toBe(USDC.address);
-  });
-
   it("rejects a candidate whose allowance is not loaded yet", () => {
     const tokensData = buildTokensData({ usdcBalance: 100_000_000n, usdtBalance: ONE_USDT, wethBalance: 0n });
     const next = findNextGasPaymentToken({

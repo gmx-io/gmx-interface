@@ -51,7 +51,6 @@ export function findNextGasPaymentToken({
   isGmxAccount,
   excludeTokenAddresses,
   tokensAllowanceData,
-  getCanApproveWithPermit,
 }: {
   chainId: number;
   tokensData: TokensData | undefined;
@@ -61,8 +60,6 @@ export function findNextGasPaymentToken({
   isGmxAccount: boolean;
   excludeTokenAddresses?: string[];
   tokensAllowanceData?: TokensAllowanceData;
-  // a token approvable with a free permit counts as approved when looking for a token that needs no gas
-  getCanApproveWithPermit?: (tokenAddress: string) => boolean;
 }): string | undefined {
   const usdValue = convertToUsd(gasPaymentTokenAmount, gasPaymentToken.decimals, gasPaymentToken.prices.minPrice);
   if (usdValue === undefined) return undefined;
@@ -83,11 +80,7 @@ export function findNextGasPaymentToken({
     const requiredAmount = candidatePayOverlap + applyMinimalBuffer(requiredGasAmount);
     if (balance <= requiredAmount) return false;
 
-    return (
-      !tokensAllowanceData ||
-      !getNeedTokenApprove(tokensAllowanceData, tokenAddress, requiredAmount, EMPTY_ARRAY) ||
-      getCanApproveWithPermit?.(tokenAddress) === true
-    );
+    return !tokensAllowanceData || !getNeedTokenApprove(tokensAllowanceData, tokenAddress, requiredAmount, EMPTY_ARRAY);
   });
 }
 
