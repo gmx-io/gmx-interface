@@ -7500,6 +7500,10 @@ msgstr "Harmonix"
 msgid "Tier upgrades are reviewed manually by the GMX team based on your weekly performance. If you meet the requirements consistently, you can apply for an upgrade via the <0>GMX Partner Account: Telegram</0>."
 msgstr "Tier upgrades are reviewed manually by the GMX team based on your weekly performance. If you meet the requirements consistently, you can apply for an upgrade via the <0>GMX Partner Account: Telegram</0>."
 
+#: src/components/PositionEditor/PositionEditor.tsx
+msgid "Paxos converts amounts from {paxosMinimumText}."
+msgstr "Paxos converts amounts from {paxosMinimumText}."
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Less info"
 msgstr "Less info"
@@ -7934,10 +7938,6 @@ msgstr "wstETH APR"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "GMX Account withdrawals are limited by Stargate bridge liquidity. Try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "GMX Account withdrawals are limited by Stargate bridge liquidity. Try an amount smaller than <0>{upperLimitFormatted}</0>."
-
-#: src/components/PositionEditor/PositionEditor.tsx
-msgid "Paxos converts amounts from {paxosThresholdText}."
-msgstr "Paxos converts amounts from {paxosThresholdText}."
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated time to liquidation"

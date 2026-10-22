@@ -69,7 +69,7 @@ import {
 import { DEFAULT_MAX_ACTIONS_STATE, MaxActionsState, useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
-import { formatAmountFree, formatBalanceAmount, formatTokenAmountWithUsdParts, formatUsd } from "lib/numbers";
+import { formatAmountFree, formatBalanceAmount, formatTokenAmountWithUsdParts } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import {
@@ -370,25 +370,20 @@ export function PositionEditor() {
     collateralDeltaAmount !== undefined &&
     collateralTokenBalance !== undefined &&
     collateralDeltaAmount <= collateralTokenBalance;
-  const restUsd =
-    collateralToken && collateralDeltaAmount !== undefined && depositMaxInstantAmount !== undefined
-      ? convertToUsd(
-          collateralDeltaAmount - depositMaxInstantAmount,
-          collateralToken.decimals,
-          getMidPrice(collateralToken.prices)
-        )
+  const restAmount =
+    collateralDeltaAmount !== undefined && depositMaxInstantAmount !== undefined
+      ? collateralDeltaAmount - depositMaxInstantAmount
       : undefined;
-  const {
-    isOffered: isPaxosOfferedForRest,
-    isResolved: isPaxosOfferResolved,
-    thresholdUsd: paxosThresholdUsd,
-  } = useIsSwapTabPaxosOffered({
+  const restUsd =
+    collateralToken && restAmount !== undefined
+      ? convertToUsd(restAmount, collateralToken.decimals, getMidPrice(collateralToken.prices))
+      : undefined;
+  const { isOffered: isPaxosOfferedForRest, minimumText: paxosMinimumText } = useIsSwapTabPaxosOffered({
+    amount: restAmount,
     amountUsd: restUsd,
     isGmxAccount: isCollateralTokenFromGmxAccount,
     enabled: isConversionTooLarge,
   });
-  const paxosThresholdText =
-    paxosThresholdUsd !== undefined ? formatUsd(paxosThresholdUsd, { displayDecimals: 0 }) : undefined;
   const maxInstantAmountText =
     depositMaxInstantAmount !== undefined && collateralToken
       ? formatMaxInstantAmount(collateralToken, depositMaxInstantAmount)
@@ -853,10 +848,9 @@ export function PositionEditor() {
                       </span>
                     </Button>
                   ) : (
-                    paxosThresholdText &&
-                    isPaxosOfferResolved && (
+                    paxosMinimumText && (
                       <div className="text-12 text-typography-secondary">
-                        <Trans>Paxos converts amounts from {paxosThresholdText}.</Trans>
+                        <Trans>Paxos converts amounts from {paxosMinimumText}.</Trans>
                       </div>
                     )
                   )}

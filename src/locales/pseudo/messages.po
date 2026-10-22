@@ -7500,6 +7500,10 @@ msgstr ""
 msgid "Tier upgrades are reviewed manually by the GMX team based on your weekly performance. If you meet the requirements consistently, you can apply for an upgrade via the <0>GMX Partner Account: Telegram</0>."
 msgstr ""
 
+#: src/components/PositionEditor/PositionEditor.tsx
+msgid "Paxos converts amounts from {paxosMinimumText}."
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Less info"
 msgstr ""
@@ -7933,10 +7937,6 @@ msgstr ""
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "GMX Account withdrawals are limited by Stargate bridge liquidity. Try an amount smaller than <0>{upperLimitFormatted}</0>."
-msgstr ""
-
-#: src/components/PositionEditor/PositionEditor.tsx
-msgid "Paxos converts amounts from {paxosThresholdText}."
 msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
