@@ -7,8 +7,18 @@ import type { TransitFeeTierResponse } from "sdk/utils/paxos/types";
 import { getIsTransitQuoteNeeded, getShouldUseTransit, getTransitFeeTier, getTransitMinOrderSize } from "../utils";
 
 const usd = (value: number) => expandDecimals(value, USD_DECIMALS);
-const ZERO_FEE: TransitFeeTierResponse = { feeTier: "zeroFee", zeroFeeCapacity: 1_000_000n };
-const STANDARD_FEE: TransitFeeTierResponse = { feeTier: "standardFee", zeroFeeCapacity: 0n };
+const ZERO_FEE: TransitFeeTierResponse = {
+  feeTier: "zeroFee",
+  zeroFeeCapacity: 1_000_000n,
+  isZeroFeeAvailable: true,
+  zeroFeeExpectedReopenAt: undefined,
+};
+const STANDARD_FEE: TransitFeeTierResponse = {
+  feeTier: "standardFee",
+  zeroFeeCapacity: 0n,
+  isZeroFeeAvailable: false,
+  zeroFeeExpectedReopenAt: undefined,
+};
 
 describe("getTransitFeeTier", () => {
   const params = {
