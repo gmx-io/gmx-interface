@@ -29,8 +29,12 @@ const TOKEN_PERMITS_ALLOWLIST: Partial<Record<number, Address[]>> = {
 
 export type TokenPermitAccountType = "eoa" | "eip7702" | "unsupported";
 
+export function getTokenPermitsAllowlist(chainId: number): Address[] {
+  return TOKEN_PERMITS_ALLOWLIST[chainId] ?? [];
+}
+
 export function getIsTokenPermitAllowed(chainId: number, tokenAddress: string): boolean {
-  return (TOKEN_PERMITS_ALLOWLIST[chainId] ?? []).some((address) => isAddressEqual(address, tokenAddress as Address));
+  return getTokenPermitsAllowlist(chainId).some((address) => isAddressEqual(address, tokenAddress as Address));
 }
 
 export async function getTokenPermitAccountType(

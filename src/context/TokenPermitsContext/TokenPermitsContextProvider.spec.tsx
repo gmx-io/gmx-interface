@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import "lib/monkeyPatching";
 import { IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG, type UiFlags } from "domain/synthetics/uiFlags/uiFlags";
+import { PERMIT_WALLET_CHANGED_ERROR } from "lib/errors/customErrors";
 import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 
 import { TokenPermitsContextProvider, TokenPermitsState, useTokenPermitsContext } from "./TokenPermitsContextProvider";
@@ -18,13 +19,15 @@ const LINK = "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4";
 const mocks = vi.hoisted(() => ({
   uiFlags: undefined as UiFlags | undefined,
   accountType: "eoa" as string,
+  account: "0x0000000000000000000000000000000000000001",
   hasProvider: true,
   createAndSignTokenPermit: vi.fn(),
+  isPermitSignatureValid: true,
 }));
 
 vi.mock("lib/chains", () => ({ useChainId: () => ({ chainId: CHAIN_ID }) }));
 vi.mock("lib/wallets/useWallet", () => ({
-  default: () => ({ signer: { address: ACCOUNT, provider: mocks.hasProvider ? {} : undefined } }),
+  default: () => ({ signer: { address: mocks.account, provider: mocks.hasProvider ? {} : undefined } }),
 }));
 vi.mock("lib/wallets/walletConfig", () => ({ getPublicClientWithRpc: () => ({}) }));
 vi.mock("domain/synthetics/uiFlags/useUiFlagsRequest", () => ({
@@ -40,7 +43,7 @@ vi.mock("domain/tokens/tokenPermitsEligibility", async (importOriginal) => ({
 vi.mock("domain/tokens/permitUtils", async (importOriginal) => ({
   ...(await importOriginal<object>()),
   createAndSignTokenPermit: mocks.createAndSignTokenPermit,
-  validateTokenPermitSignature: async () => ({ isValid: true }),
+  validateTokenPermitSignature: async () => ({ isValid: mocks.isPermitSignatureValid }),
 }));
 
 function permit(token: string, overrides: Partial<SignedTokenPermit> = {}): SignedTokenPermit {
@@ -79,16 +82,22 @@ function Harness() {
   return null;
 }
 
-async function setup() {
-  render(
+function Tree() {
+  return (
     <SWRConfig value={SWR_CONFIG}>
       <TokenPermitsContextProvider>
         <Harness />
       </TokenPermitsContextProvider>
     </SWRConfig>
   );
+}
+
+async function setup() {
+  const { rerender } = render(<Tree />);
 
   await waitFor(() => expect(state.accountType).toBe(mocks.accountType));
+
+  return { rerender: () => rerender(<Tree />) };
 }
 
 function flag(name: string, enabled: boolean): UiFlags {
@@ -100,6 +109,8 @@ describe("TokenPermitsContextProvider", () => {
     localStorage.clear();
     mocks.uiFlags = flag(IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG, true);
     mocks.accountType = "eoa";
+    mocks.account = ACCOUNT;
+    mocks.isPermitSignatureValid = true;
     mocks.hasProvider = true;
   });
 
@@ -193,6 +204,65 @@ describe("TokenPermitsContextProvider", () => {
       [USDC, 500n],
     ]);
   });
+
+  it("keeps every permit signed in one flow and passes the requested deadline through", async () => {
+    await setup();
+
+    const deadline = 2n ** 256n - 1n;
+    const weth = permit(WETH, { deadline, r: `0x${"55".repeat(32)}` });
+    mocks.createAndSignTokenPermit
+      .mockResolvedValueOnce({ permit: permit(USDC, { deadline }) })
+      .mockResolvedValueOnce({ permit: weth });
+
+    const { addTokenPermit } = state;
+
+    await act(async () => {
+      await addTokenPermit(USDC, ROUTER, 100n, { deadline });
+      await addTokenPermit(WETH, ROUTER, 100n, { deadline });
+    });
+
+    expect(mocks.createAndSignTokenPermit.mock.calls.map((call) => call[5])).toEqual([deadline, deadline]);
+    expect(readStoredTokens()).toEqual([USDC, WETH]);
+  });
+
+  it("keeps a permit signed after an earlier render when a stale callback removes another one", async () => {
+    const usdc = permit(USDC);
+    storePermits([usdc]);
+    await setup();
+
+    const { removeTokenPermits, addTokenPermit } = state;
+    const weth = permit(WETH, { r: `0x${"66".repeat(32)}` });
+    mocks.createAndSignTokenPermit.mockResolvedValue({ permit: weth });
+
+    await act(async () => {
+      await addTokenPermit(WETH, ROUTER, 100n);
+      removeTokenPermits([usdc]);
+    });
+
+    expect(readStoredTokens()).toEqual([WETH]);
+  });
+
+  it("reports a wallet switch, not a bad signature, when the wallet signed with the new account", async () => {
+    const { rerender } = await setup();
+
+    let resolveSigning: (value: { permit: SignedTokenPermit }) => void = () => undefined;
+    mocks.createAndSignTokenPermit.mockReturnValue(new Promise((resolve) => (resolveSigning = resolve)));
+    mocks.isPermitSignatureValid = false;
+
+    const { addTokenPermit } = state;
+    const signing = addTokenPermit(USDC, ROUTER, 100n);
+
+    mocks.account = "0x0000000000000000000000000000000000000002";
+    rerender();
+    resolveSigning({ permit: permit(USDC) });
+
+    await expect(signing).rejects.toThrow(PERMIT_WALLET_CHANGED_ERROR);
+    expect(readStoredTokens()).toEqual([]);
+    expect(
+      JSON.parse(localStorage.getItem(JSON.stringify([CHAIN_ID, mocks.account, "token-permits"])) ?? "[]")
+    ).toEqual([]);
+  });
+
   it("fails instead of reporting a signed permit when the wallet isn't ready", async () => {
     mocks.hasProvider = false;
     await setup();

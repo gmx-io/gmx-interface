@@ -560,6 +560,9 @@ export type SwapGLVMetricData = {
 // Token permits
 export type TokenPermitOutcome = "signed" | "rejected" | "failedCheck" | "fallback" | "executed";
 
+/** Unset for permits signed in place of an approval transaction */
+export type TokenPermitFlow = "oneClickActivation";
+
 export type TokenPermitEvent = {
   event: "tokenPermit";
   isError: boolean;
@@ -569,6 +572,7 @@ export type TokenPermitEvent = {
     token: string;
     accountType: string | undefined;
     reason?: string;
+    flow?: TokenPermitFlow;
   };
 };
 

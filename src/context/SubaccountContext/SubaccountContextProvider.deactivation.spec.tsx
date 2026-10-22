@@ -61,6 +61,8 @@ vi.mock("context/SyntheticsStateContext/utils", async (importOriginal) => ({
   useCalcSelector: () => (selector: () => unknown) => selector(),
 }));
 
+vi.mock("context/TokenPermitsContext/TokenPermitsContextProvider", () => ({ useTokenPermitsContext: () => ({}) }));
+
 vi.mock("domain/synthetics/subaccount", async (importOriginal) => ({
   ...(await importOriginal<object>()),
   getIsSubaccountRemovalRequired: mocks.getIsSubaccountRemovalRequired,

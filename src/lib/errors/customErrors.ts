@@ -17,6 +17,7 @@ import {
 } from ".";
 
 export const INVALID_PERMIT_SIGNATURE_ERROR = "Invalid permit signature";
+export const PERMIT_WALLET_CHANGED_ERROR = "Account or network changed while signing a permit";
 export const EXPIRED_PERMIT_DEADLINE_ERROR = "Expired permit deadline";
 export const FAST_EXPRESS_PARAMS_TIMEOUT_ERROR = "fastExpressParams timeout";
 export const SMART_WALLET_CHAIN_UNAVAILABLE_ERROR = "Smart wallet unavailable on verification chain";

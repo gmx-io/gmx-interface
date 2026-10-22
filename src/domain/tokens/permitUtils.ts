@@ -7,6 +7,7 @@ import {
   EncodeFunctionDataParameters,
   type Hex,
   isAddressEqual,
+  maxUint256,
   recoverTypedDataAddress,
 } from "viem";
 
@@ -25,12 +26,16 @@ import { getToken } from "sdk/configs/tokens";
 import { nowInSeconds } from "sdk/utils/time";
 import { SignedTokenPermit } from "sdk/utils/tokens/types";
 
+// a permit that grants the same unlimited Router allowance as an approval transaction never expires either
+export const NON_EXPIRING_PERMIT_DEADLINE = maxUint256;
+
 export async function createAndSignTokenPermit(
   chainId: ContractsChainId,
   signer: WalletSigner,
   tokenAddress: string,
   spender: string,
-  value: bigint
+  value: bigint,
+  deadline = BigInt(nowInSeconds() + DEFAULT_PERMIT_DEADLINE_DURATION)
 ) {
   const onchainParams = await getTokenPermitParams(chainId, signer.address, tokenAddress, signer.provider);
 
@@ -58,7 +63,7 @@ export async function createAndSignTokenPermit(
     spender,
     value,
     nonce: onchainParams.nonce,
-    deadline: BigInt(nowInSeconds() + DEFAULT_PERMIT_DEADLINE_DURATION),
+    deadline,
   };
 
   const signature = await signTypedData({

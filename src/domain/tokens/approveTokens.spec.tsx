@@ -8,7 +8,7 @@ import { createClient, custom } from "viem";
 import { arbitrum } from "viem/chains";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
-import { INVALID_PERMIT_SIGNATURE_ERROR } from "lib/errors/customErrors";
+import { INVALID_PERMIT_SIGNATURE_ERROR, PERMIT_WALLET_CHANGED_ERROR } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 import { clientToSigner } from "lib/wallets/useEthersSigner";
@@ -168,27 +168,25 @@ describe("approveTokens permit metric", () => {
     expect(getOutcomes()).toEqual(["permit:accepted"]);
   });
 
-  it("reports a rejected permit and stops", async () => {
-    await approveWithPermit(async () => {
-      throw new Error("User rejected the request.");
-    });
-
-    expect(getOutcomes()).toEqual(["permit:rejected"]);
-  });
-
   it.each([
-    { error: "Unknown connector error", disableCalls: [] },
-    { error: INVALID_PERMIT_SIGNATURE_ERROR, disableCalls: [[[USDC]]] },
+    { error: "User rejected the request.", outcomes: ["permit:rejected"], disableCalls: [] },
+    { error: PERMIT_WALLET_CHANGED_ERROR, outcomes: [], disableCalls: [] },
+    { error: "Unknown connector error", outcomes: ["permit:failed", "transaction:accepted"], disableCalls: [] },
+    {
+      error: INVALID_PERMIT_SIGNATURE_ERROR,
+      outcomes: ["permit:failed", "transaction:accepted"],
+      disableCalls: [[[USDC]]],
+    },
   ])(
-    "reports a failed permit and the approval transaction that replaces it ($error)",
-    async ({ error, disableCalls }) => {
+    "reports a failed permit and any approval transaction that replaces it ($error)",
+    async ({ error, outcomes, disableCalls }) => {
       const disableTokenPermits = vi.fn();
 
       await approveWithPermit(async () => {
         throw new Error(error);
       }, disableTokenPermits);
 
-      expect(getOutcomes()).toEqual(["permit:failed", "transaction:accepted"]);
+      expect(getOutcomes()).toEqual(outcomes);
       expect(disableTokenPermits.mock.calls).toEqual(disableCalls);
     }
   );
