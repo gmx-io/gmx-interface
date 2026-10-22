@@ -128,7 +128,8 @@ export async function approveTokens({
       setIsApproving(false);
       return;
     } catch (e) {
-      const error = e as Error | undefined;
+      // wallets can reject with a nullish value, hence the optional chaining below
+      const error = e as Error;
       const outcome = getPermitErrorOutcome(error);
 
       if (outcome === "rejected") {
