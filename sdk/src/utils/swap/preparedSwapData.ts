@@ -1,16 +1,19 @@
-import { MARKETS } from "configs/markets";
+import { SOLANA_NETWORK_ID } from "configs/chains";
+import { MARKETS, MarketsConfigMap } from "configs/markets";
 import { SwapPaths } from "utils/trade/types";
 
 import { MarketsGraph, buildMarketsAdjacencyGraph } from "./buildMarketsAdjacencyGraph";
 import { findReachableTokens } from "./findReachableTokens";
 import { findSwapPathsBetweenTokens } from "./findSwapPathsBetweenTokens";
 
+const SWAP_MARKETS: Record<number, MarketsConfigMap> = { ...MARKETS, [SOLANA_NETWORK_ID]: {} };
+
 const MARKETS_ADJACENCY_GRAPH: {
   [chainId: number]: MarketsGraph;
 } = {};
 
-for (const chainId in MARKETS) {
-  const markets = MARKETS[chainId];
+for (const chainId in SWAP_MARKETS) {
+  const markets = SWAP_MARKETS[chainId];
   const chainGraph = buildMarketsAdjacencyGraph(markets);
 
   MARKETS_ADJACENCY_GRAPH[chainId] = chainGraph;
@@ -20,7 +23,7 @@ const TOKEN_SWAP_PATHS: {
   [chainId: number]: SwapPaths;
 } = {};
 
-for (const chainId in MARKETS) {
+for (const chainId in SWAP_MARKETS) {
   const chainGraph = MARKETS_ADJACENCY_GRAPH[chainId];
   const chainSwapPaths = findSwapPathsBetweenTokens(chainGraph);
 
@@ -33,7 +36,7 @@ const REACHABLE_TOKENS: {
   };
 } = {};
 
-for (const chainId in MARKETS) {
+for (const chainId in SWAP_MARKETS) {
   const chainGraph = MARKETS_ADJACENCY_GRAPH[chainId];
   const chainReachableTokens = findReachableTokens(chainGraph);
 

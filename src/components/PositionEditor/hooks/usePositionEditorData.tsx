@@ -96,13 +96,17 @@ export function usePositionEditorData({ operation }: Options) {
     const receiveUsd = isDeposit ? 0n : collateralDeltaUsd;
     const receiveAmount = convertToTokenAmount(receiveUsd, collateralToken?.decimals, collateralPrice)!;
 
-    const nextLeverage = getLeverage({
+    const nextLeverageParams = {
       sizeInUsd: position.sizeInUsd,
       collateralUsd: nextCollateralUsd,
       pendingBorrowingFeesUsd: 0n,
       pendingFundingFeesUsd: 0n,
-      pnl: isPnlInLeverage ? position.pnl : 0n,
-    });
+    };
+
+    const nextLeverageWithoutPnl = getLeverage({ ...nextLeverageParams, pnl: undefined });
+    const nextLeverage = isPnlInLeverage
+      ? getLeverage({ ...nextLeverageParams, pnl: position.pnl })
+      : nextLeverageWithoutPnl;
 
     const nextLiqPrice = getLiquidationPrice({
       sizeInUsd: position.sizeInUsd,
@@ -122,6 +126,7 @@ export function usePositionEditorData({ operation }: Options) {
     return {
       nextCollateralUsd,
       nextLeverage,
+      nextLeverageWithoutPnl,
       nextLiqPrice,
       receiveUsd,
       receiveAmount,

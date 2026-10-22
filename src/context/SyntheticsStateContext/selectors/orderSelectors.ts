@@ -2,18 +2,21 @@ import {
   OrderErrors,
   PositionOrderInfo,
   getOrderErrors,
+  getOrderPositionKey,
   isIncreaseOrderType,
   isOrderForPosition,
+  isTriggerDecreaseOrderType,
   isTwapOrder,
   sortPositionOrders,
 } from "domain/synthetics/orders";
 import {
+  getOrderDecreaseRemainingPositionMarginState,
   getOrderIncreaseNextPositionValues,
   getOrderIncreaseProjection,
   getOrderIncreaseResultingPositionMarginState,
   getTwapIncreaseOrderSequentialMarginState,
 } from "domain/synthetics/orders/utils";
-import { getIsPositionInfoLoaded, getPositionKey } from "domain/synthetics/positions";
+import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import { getByKey } from "lib/objects";
 import { isTwapPositionOrder } from "sdk/utils/orders";
 
@@ -42,13 +45,7 @@ export const makeSelectOrderExistingPosition = createSelectorFactory(
 
       if (!order) return undefined;
 
-      const positionKey = getPositionKey(
-        order.account,
-        order.marketAddress,
-        order.targetCollateralToken.address,
-        order.isLong
-      );
-      const position = q((s) => getByKey(selectPositionsInfoData(s), positionKey));
+      const position = q((s) => getByKey(selectPositionsInfoData(s), getOrderPositionKey(order)));
 
       return getIsPositionInfoLoaded(position) ? position : undefined;
     }),
@@ -138,6 +135,41 @@ export const makeSelectOrderIncreaseResultingPositionMarginState = createSelecto
   PER_ORDER_SELECTOR_CACHE_SIZE
 );
 
+export const makeSelectOrderDecreaseRemainingPositionMarginState = createSelectorFactory(
+  (orderKey: string, triggerPrice: bigint | undefined, sizeDeltaUsd: bigint | undefined) =>
+    createSelector(function selectOrderDecreaseRemainingPositionMarginState(q) {
+      if (q(selectIsPositionsLoading)) {
+        return undefined;
+      }
+
+      const order = q((s) => getByKey(selectOrdersInfoData(s), orderKey));
+
+      if (!order || !isTriggerDecreaseOrderType(order.orderType) || isTwapOrder(order) || sizeDeltaUsd === undefined) {
+        return undefined;
+      }
+
+      const { minCollateralUsd, minPositionSizeUsd } = q(selectPositionConstants);
+
+      if (minCollateralUsd === undefined || minPositionSizeUsd === undefined) {
+        return undefined;
+      }
+
+      return getOrderDecreaseRemainingPositionMarginState({
+        order: order as PositionOrderInfo,
+        position: q(makeSelectOrderExistingPosition(orderKey)),
+        triggerPrice,
+        sizeDeltaUsd,
+        minCollateralUsd,
+        minPositionSizeUsd,
+        uiFeeFactor: q(selectUiFeeFactor),
+        userReferralInfo: q(selectUserReferralInfo),
+        proDiscountFactor: q(selectProDiscountFactor),
+        isSetAcceptablePriceImpactEnabled: q(selectIsSetAcceptablePriceImpactEnabled),
+      });
+    }),
+  PER_ORDER_SELECTOR_CACHE_SIZE
+);
+
 export const makeSelectTwapIncreaseOrderSequentialMarginState = createSelectorFactory(
   (orderKey: string) =>
     createSelector(function selectTwapIncreaseOrderSequentialMarginState(q) {
@@ -187,6 +219,7 @@ export const makeSelectOrderErrorByOrderKey = createSelectorFactory(
       const { triggerPrice, sizeDeltaUsd } = orderInfo as PositionOrderInfo;
       const isTwapIncrease = isIncreaseOrderType(orderInfo.orderType) && isTwapOrder(orderInfo);
       const isRestingIncrease = isIncreaseOrderType(orderInfo.orderType) && !isTwapIncrease && sizeDeltaUsd > 0n;
+      const isRestingTriggerDecrease = isTriggerDecreaseOrderType(orderInfo.orderType) && !isTwapOrder(orderInfo);
 
       const nextPositionValues = isRestingIncrease
         ? q(makeSelectOrderIncreaseNextPositionValues(orderInfo.key, triggerPrice, sizeDeltaUsd, false))
@@ -195,7 +228,9 @@ export const makeSelectOrderErrorByOrderKey = createSelectorFactory(
         ? q(makeSelectOrderIncreaseResultingPositionMarginState(orderInfo.key, triggerPrice, sizeDeltaUsd))
         : isTwapIncrease
           ? q(makeSelectTwapIncreaseOrderSequentialMarginState(orderInfo.key))?.marginState
-          : undefined;
+          : isRestingTriggerDecrease
+            ? q(makeSelectOrderDecreaseRemainingPositionMarginState(orderInfo.key, triggerPrice, sizeDeltaUsd))
+            : undefined;
 
       const { minCollateralUsd } = q(selectPositionConstants);
       const userReferralInfo = q(selectUserReferralInfo);

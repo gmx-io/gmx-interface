@@ -91,4 +91,36 @@ describe("Curtain", () => {
     expect(curtain?.className).toContain("after:h-[var(--safe-area-inset-bottom)]");
     expect(curtain?.className).toContain("after:bg-slate-900");
   });
+
+  it("finishes its animation after the curtain is hidden", () => {
+    let finish: EventListener = () => undefined;
+    const animation = {
+      addEventListener: (_event: string, listener: EventListener) => (finish = listener),
+      cancel: vi.fn(),
+      commitStyles: vi.fn(() => {
+        throw new DOMException("Target element is not rendered", "InvalidStateError");
+      }),
+    };
+    Object.defineProperty(HTMLElement.prototype, "animate", {
+      configurable: true,
+      value: () => animation as unknown as Animation,
+    });
+    const { container, getByText, getByRole } = render(
+      <Curtain header={<span>Header</span>} dataQa="curtain">
+        <span>Content</span>
+      </Curtain>
+    );
+    fireEvent.click(getByText("Header"));
+    const curtain = container.querySelector<HTMLElement>('[data-qa="curtain"]')!;
+    curtain.style.display = "none";
+
+    try {
+      expect(() => finish(new Event("finish"))).not.toThrow();
+      expect(curtain.style.transform).toBe("translateY(0)");
+      expect(animation.cancel).toHaveBeenCalledOnce();
+      expect(animation.commitStyles).not.toHaveBeenCalled();
+    } finally {
+      fireEvent.click(getByRole("button", { hidden: true }));
+    }
+  });
 });
