@@ -633,7 +633,7 @@ export function useTradeboxUsdgConversion({
 
     return {
       text: t`Convert and place order`,
-      disabled: !batchParams || isExpressLoading || isMultichainSubmitDisabled,
+      disabled: !batchParams || !isAllowanceLoaded || isExpressLoading || isMultichainSubmitDisabled,
       onSubmit: onConvert,
     };
   }, [
