@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useSWR from "swr";
 
 import { getPaxosTransitConfig } from "config/paxosTransit";
@@ -9,7 +9,6 @@ import { useDebounce } from "lib/debounce/useDebounce";
 import { retryAtRefreshCadence } from "lib/useSWRWithFreshness";
 import useWallet from "lib/wallets/useWallet";
 import type { ContractsChainId } from "sdk/configs/chains";
-import { HttpError } from "sdk/utils/http/http";
 import type { TransitOrder, TransitQuoteParams } from "sdk/utils/paxos/types";
 
 import { mockTransitApi } from "./mockTransitApi";
@@ -18,7 +17,7 @@ import { findPendingTransitOrder, TRANSIT_RECENT_ORDERS_PAGE_SIZE } from "./tran
 import type { PaxosTransitConversion } from "./transitRouteProgress";
 import type { TransitApi } from "./types";
 import { useTransitMinOrderSizes } from "./useTransitMinOrderSizes";
-import { getIsTransitQuoteNeeded, getShouldUseTransit, getTransitFeeTier } from "./utils";
+import { getIsTransitQuoteNeeded, getIsZeroFeeRejection, getShouldUseTransit, getTransitFeeTier } from "./utils";
 
 type PaxosTransitSubmitStep = "idle" | "approving" | "submitting";
 
@@ -68,7 +67,11 @@ export function usePaxosTransit({
     useStableRequestAmountIn(amount, `${tokenInAddress}:${tokenOutAddress}`, isAmountEstimated) ?? 0n;
   const debouncedAmount: bigint = useDebounce(requestAmount, 500);
 
-  const { data: feeTierData, error: feeTierError } = useSWR(
+  const {
+    data: feeTierData,
+    error: feeTierError,
+    mutate: refreshFeeTier,
+  } = useSWR(
     isActive ? ["paxosTransitFeeTier", chainId, account] : null,
     () => api!.fetchTransitFeeTier({ userAddress: account! }),
     { refreshInterval: FEE_TIER_REFRESH_INTERVAL, onErrorRetry: retryAtRefreshCadence }
@@ -83,7 +86,7 @@ export function usePaxosTransit({
     isZeroFeeEligible: feeTierData?.feeTier === "zeroFee",
   });
 
-  const { isWhitelisted, isZeroFeeCapacityShort, feeTier } = getTransitFeeTier({
+  const { isWhitelisted, isZeroFeePaused, isZeroFeeCapacityShort, feeTier } = getTransitFeeTier({
     feeTierData,
     isWhitelistIgnored,
     isUsdcToUsdg: tokenInAddress === paxosTransitConfig?.usdcAddress,
@@ -93,7 +96,6 @@ export function usePaxosTransit({
   });
 
   const amountUsd = tokenIn ? convertToUsd(debouncedAmount, tokenIn.decimals, getMidPrice(tokenIn.prices)) : 0n;
-  const isLargeConversion = thresholdUsd !== undefined && amountUsd !== undefined && amountUsd >= thresholdUsd;
   const minOrderSize = feeTier === "zeroFee" ? minOrderSizes.zeroFee : minOrderSizes.standardFee;
   const isBelowMinOrderSize = minOrderSize !== undefined && debouncedAmount > 0n && debouncedAmount < minOrderSize;
   const isQuoteNeeded =
@@ -122,16 +124,35 @@ export function usePaxosTransit({
     [account, chainId, feeTier, tokenInAddress, tokenOutAddress]
   );
 
-  const { data: quote, error: quoteError } = useSWR(
+  const { data: quoteResult, error: quoteError } = useSWR(
     isQuoteNeeded && step === "idle"
       ? ["paxosTransitQuote", chainId, account, tokenInAddress, debouncedAmount.toString(), feeTier]
       : null,
-    () => api!.fetchTransitQuote(getQuoteParams(debouncedAmount)),
+    async () => ({ feeTier, quote: await api!.fetchTransitQuote(getQuoteParams(debouncedAmount)) }),
     {
       refreshInterval: QUOTE_REFRESH_INTERVAL,
       onErrorRetry: retryAtRefreshCadence,
       keepPreviousData: !isBelowMinOrderSize,
     }
+  );
+  const quote = quoteResult?.feeTier === feeTier ? quoteResult.quote : undefined;
+
+  useEffect(
+    function allowZeroFeeAgainAfterFeeTierChange() {
+      setIsStandardFeeForced(false);
+    },
+    [feeTierData]
+  );
+
+  const isZeroFeeQuoteRejected = feeTier === "zeroFee" && getIsZeroFeeRejection(quoteError);
+
+  useEffect(
+    function refreshFeeTierAfterZeroFeeRejection() {
+      if (isZeroFeeQuoteRejected) {
+        refreshFeeTier();
+      }
+    },
+    [isZeroFeeQuoteRejected, refreshFeeTier]
   );
 
   const transitFeesUsd =
@@ -199,23 +220,26 @@ export function usePaxosTransit({
     } catch (error) {
       setStep("idle");
 
-      if (error instanceof HttpError && (error.statusCode === 403 || error.statusCode === 409)) {
+      if (feeTier === "zeroFee" && getIsZeroFeeRejection(error)) {
         setIsStandardFeeForced(true);
+        refreshFeeTier();
       }
 
       throw error;
     }
-  }, [account, amount, api, chainId, getQuoteParams, isActive, isMocked, signer]);
+  }, [account, amount, api, chainId, feeTier, getQuoteParams, isActive, isMocked, refreshFeeTier, signer]);
 
   return {
     shouldUseTransit,
-    isLargeConversion,
     thresholdUsd,
     isQuoteNeeded,
     isFeeTierLoaded: feeTierData !== undefined,
     isWhitelisted,
+    feeTier,
     zeroFeeCapacity: feeTierData?.zeroFeeCapacity,
+    zeroFeeExpectedReopenAt: feeTierData?.zeroFeeExpectedReopenAt,
     feeTierError,
+    isZeroFeePaused,
     isZeroFeeCapacityShort,
     isBelowMinOrderSize,
     minOrderSize,
