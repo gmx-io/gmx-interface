@@ -791,6 +791,10 @@ msgstr "インセンティブ、エアドロップ、賞品はこちらに表示
 msgid "Refer traders to GMX with your unique link and earn a share of the fees they generate"
 msgstr "専用リンクでGMXにトレーダーを紹介し、その取引手数料の一部を報酬として受け取れます"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: at the trigger price, the remaining position would exceed max leverage. Edit the order or <0>increase the position's margin</0>."
+msgstr "注文は約定しない可能性があります：トリガー価格では、残りのポジションが最大レバレッジを超えます。注文を編集するか、<0>ポジションの証拠金を増やして</0>ください。"
+
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using funds directly from your connected wallet."
 msgstr "接続されたウォレットの資金を直接使用して、GMXで個別ポジションを開くことができます。"
@@ -3792,6 +3796,7 @@ msgstr "テーマ"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
 msgstr "最大レバレッジを超過しています"
 
@@ -4806,6 +4811,11 @@ msgstr "ステップ2: 受取"
 #: src/domain/tokens/insufficientApproval.tsx
 msgid "The approved amount is lower than the required amount. Approve again or reduce the amount"
 msgstr "承認された数量が必要な数量を下回っています。再度承認するか、数量を減らしてください"
+
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "Close the full position, change the trigger price, or add margin."
+msgstr "ポジションを全決済するか、トリガー価格を変更するか、証拠金を追加してください。"
 
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Error name:"
@@ -8002,6 +8012,10 @@ msgstr "シンボル（AからZ）"
 msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none"
 msgstr "チャートに表示する購入/売却マークを選択します：過去のすべての取引、現在保有中のポジションのみ、または表示しない"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "At this trigger price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "このトリガー価格では残りのポジションが最大レバレッジを超えるため、注文が約定しない可能性があります。"
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr "{orderText}が更新されました"
@@ -8142,6 +8156,10 @@ msgstr "購入"
 msgid "Affiliate dashboard"
 msgstr "アフィリエイトダッシュボード"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first. Remaining margin: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
+msgstr "残りのポジションが最大許容レバレッジを超えます。より多くクローズするか、出金額を減らすか、先に証拠金を追加してください。残りの証拠金: {remainingCollateralUsdText}、必要: {minCollateralUsdForLeverageText}"
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Capital used"
@@ -8262,6 +8280,10 @@ msgstr "勝率"
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 msgid "GM and GLV include markets you no longer hold"
 msgstr "GMとGLVには、現在保有していないマーケットも含まれます"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first."
+msgstr "残りのポジションが最大許容レバレッジを超えます。より多くクローズするか、出金額を減らすか、先に証拠金を追加してください。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading stats"
@@ -9335,6 +9357,10 @@ msgstr "アカウントタイプ"
 msgid "Collateral in"
 msgstr "担保トークン"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, close the position fully, or add margin first."
+msgstr "残りのポジションが最大許容レバレッジを超えます。より多くクローズするか、ポジションを全決済するか、先に証拠金を追加してください。"
+
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "EVENT NAME"
 msgstr "イベント名"
@@ -9624,6 +9650,10 @@ msgstr "金額"
 msgid "Integrate GMX"
 msgstr "GMXを統合"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Take-Profit price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "テイクプロフィット価格では残りのポジションが最大レバレッジを超えるため、注文が約定しない可能性があります。"
+
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Show line values in USD"
 msgstr "ラインの値をUSDで表示"
@@ -9830,6 +9860,7 @@ msgid "Max funding factor (long)"
 msgstr "最大ファンディングファクター（ロング）"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient collateral to cover order costs"
 msgstr "注文コストを賄うための担保が不足しています"
 
@@ -10516,6 +10547,10 @@ msgstr "Saulius GMX analytics"
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Add RPC"
 msgstr "RPCを追加"
+
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "Turn off \"Keep leverage\", close the full position, change the trigger price, or add margin."
+msgstr "「レバレッジを維持」をオフにするか、ポジションを全決済するか、トリガー価格を変更するか、証拠金を追加してください。"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a collateral"
@@ -11832,9 +11867,17 @@ msgstr "GMXからのアラートとお知らせを受け取り、取引や清算
 msgid "Use the Pay amount"
 msgstr "支払い金額を使用"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Stop-Loss price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "ストップロス価格では残りのポジションが最大レバレッジを超えるため、注文が約定しない可能性があります。"
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated off-hours liquidation price"
 msgstr "時間外の推定清算価格"
+
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Take-Profit and Stop-Loss prices, the remaining position would exceed max leverage and the orders may not execute."
+msgstr "テイクプロフィット価格とストップロス価格では残りのポジションが最大レバレッジを超えるため、注文が約定しない可能性があります。"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Repeat transaction"
