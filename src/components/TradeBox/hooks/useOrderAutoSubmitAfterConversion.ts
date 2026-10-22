@@ -24,13 +24,14 @@ export function useOrderAutoSubmitAfterConversion({
     isExpressLoading: boolean;
     approvalTokenAddress: string | undefined;
     isApproving: boolean;
+    isAllowanceLoaded: boolean;
   };
   isDepositButtonShown: boolean;
   onSubmit: () => Promise<void>;
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const requestedApprovalsRef = useRef(new Set<string>());
-  const { disabled, isExpressLoading, approvalTokenAddress, isApproving } = buttonState;
+  const { disabled, isExpressLoading, approvalTokenAddress, isApproving, isAllowanceLoaded } = buttonState;
   // price ticks recreate both on every render, which would keep restarting the settle timer
   const latestOnSubmit = useLatest(onSubmit);
   const latestStop = useLatest(stop);
@@ -44,7 +45,8 @@ export function useOrderAutoSubmitAfterConversion({
 
       const step = getOrderAutoSubmitStep({
         isSubmitting,
-        isButtonLoading: isExpressLoading || isApproving,
+        // before the allowance loads the button can't know it needs an approval yet
+        isButtonLoading: isExpressLoading || isApproving || !isAllowanceLoaded,
         isButtonDisabled: disabled,
         isDepositButtonShown,
         approvalTokenAddress,
@@ -79,6 +81,7 @@ export function useOrderAutoSubmitAfterConversion({
     [
       approvalTokenAddress,
       disabled,
+      isAllowanceLoaded,
       isApproving,
       isDepositButtonShown,
       isExpressLoading,

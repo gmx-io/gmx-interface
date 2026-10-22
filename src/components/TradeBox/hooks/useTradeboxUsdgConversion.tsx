@@ -663,14 +663,28 @@ export function useTradeboxUsdgConversion({
     isOrderAutoSubmitArmed && isConvertedMarginInPlace && orderAutoSubmitSetupKey === orderSetupKey;
   const stopOrderAutoSubmit = useCallback(() => setOrderAutoSubmitSetupKey(undefined), []);
 
+  const hasConvertedMarginLandedRef = useRef(false);
+
   useEffect(
     function disarmOrderAutoSubmit() {
       if (!isOrderAutoSubmitArmed) {
+        hasConvertedMarginLandedRef.current = false;
         return;
       }
 
-      if (!isOrderAutoSubmitPending) {
+      // the pay token switches a render after the arm, so only a change after the margin landed disarms
+      if (isOrderAutoSubmitPending) {
+        hasConvertedMarginLandedRef.current = true;
+      } else if (hasConvertedMarginLandedRef.current) {
         stopOrderAutoSubmit();
+      }
+    },
+    [isOrderAutoSubmitArmed, isOrderAutoSubmitPending, stopOrderAutoSubmit]
+  );
+
+  useEffect(
+    function expireOrderAutoSubmit() {
+      if (!isOrderAutoSubmitArmed) {
         return;
       }
 
@@ -678,7 +692,7 @@ export function useTradeboxUsdgConversion({
 
       return () => clearTimeout(timerId);
     },
-    [isOrderAutoSubmitArmed, isOrderAutoSubmitPending, stopOrderAutoSubmit]
+    [isOrderAutoSubmitArmed, stopOrderAutoSubmit]
   );
 
   return {

@@ -134,6 +134,7 @@ type TradeboxButtonState = {
   isExpressLoading: boolean;
   approvalTokenAddress: string | undefined;
   isApproving: boolean;
+  isAllowanceLoaded: boolean;
   batchParams?: BatchOrderTxnParams;
   totalExecutionFee?: ExecutionFee;
 };
@@ -653,6 +654,7 @@ export function useTradeboxButtonState({
       isExpressLoading,
       approvalTokenAddress: isApprovalRequired ? tokensToApprove[0] : undefined,
       isApproving,
+      isAllowanceLoaded,
     };
 
     if (!account && isWalletInitializing) {

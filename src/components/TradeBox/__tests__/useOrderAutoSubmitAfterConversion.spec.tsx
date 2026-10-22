@@ -3,10 +3,17 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useOrderAutoSubmitAfterConversion } from "../hooks/useOrderAutoSubmitAfterConversion";
 
-const readyButton = { disabled: false, isExpressLoading: false, approvalTokenAddress: undefined, isApproving: false };
+const readyButton = {
+  disabled: false,
+  isExpressLoading: false,
+  approvalTokenAddress: undefined,
+  isApproving: false,
+  isAllowanceLoaded: true,
+};
 
 const USDG = "0x004B506865409877C9fA29bfb1ebA929984B9bbC";
-const approvalButton = { disabled: false, isExpressLoading: false, approvalTokenAddress: USDG, isApproving: false };
+const approvalButton = { ...readyButton, approvalTokenAddress: USDG };
+const allowanceLoadingButton = { ...readyButton, isAllowanceLoaded: false };
 const approvingButton = { ...approvalButton, disabled: true, isApproving: true };
 
 function Harness({
@@ -18,7 +25,13 @@ function Harness({
   stop?: () => void;
   buttonState?:
     | typeof readyButton
-    | { disabled: boolean; isExpressLoading: boolean; approvalTokenAddress: string; isApproving: boolean };
+    | {
+        disabled: boolean;
+        isExpressLoading: boolean;
+        approvalTokenAddress: string;
+        isApproving: boolean;
+        isAllowanceLoaded: boolean;
+      };
 }) {
   useOrderAutoSubmitAfterConversion({ isPending: true, stop, buttonState, isDepositButtonShown: false, onSubmit });
 
@@ -76,5 +89,16 @@ describe("useOrderAutoSubmitAfterConversion", () => {
     });
     expect(onSubmit).toHaveBeenCalledTimes(2);
     expect(stop).toHaveBeenCalledTimes(1);
+  });
+
+  it("waits for the allowance before deciding between the approval and the order", () => {
+    const onSubmit = vi.fn(() => Promise.resolve());
+    render(<Harness onSubmit={onSubmit} buttonState={allowanceLoadingButton} />);
+
+    act(() => {
+      vi.advanceTimersByTime(5000);
+    });
+
+    expect(onSubmit).not.toHaveBeenCalled();
   });
 });
