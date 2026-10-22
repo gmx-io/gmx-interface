@@ -1042,6 +1042,14 @@ export function getDecreaseSwapPayout({
     return undefined;
   }
 
+  return getCollateralTokenPayout(tradeAction, payoutUsd);
+}
+
+/** A payout that stayed in the collateral token, at the price the decrease settled at */
+export function getCollateralTokenPayout(
+  tradeAction: PositionTradeAction,
+  payoutUsd: bigint
+): { token: TokenData; amount: bigint } | undefined {
   const amount = convertToTokenAmount(
     payoutUsd,
     tradeAction.initialCollateralToken.decimals,

@@ -8,17 +8,21 @@ import { isPositionTradeAction, TradeActionType, type TradeAction } from "sdk/ut
 
 import { fetchSwapLegs, getSwapLegId, type LifecycleSwapLeg } from "./useLifecycleSettlement";
 
-/** Full closes get their legs from the lifecycle settlement, so only partial USDG closes that swap need one */
+/** Full closes get their payout from the lifecycle settlement, so partial USDG closes name it on their own row */
+export function getIsUsdgPartialClose(chainId: number, tradeAction: TradeAction): boolean {
+  return (
+    isPositionTradeAction(tradeAction) &&
+    tradeAction.eventName === TradeActionType.OrderExecuted &&
+    isDecreaseOrderType(tradeAction.orderType) &&
+    tradeAction.sizeDeltaUsd !== 0n &&
+    tradeAction.positionSizeInUsd !== 0n &&
+    getIsUsdgToken(chainId, tradeAction.initialCollateralToken.address)
+  );
+}
+
+/** Only partial USDG closes that swap need a leg to tell what they paid */
 export function getUsdgPartialCloseSwapLegId(chainId: number, tradeAction: TradeAction): string | undefined {
-  if (
-    !isPositionTradeAction(tradeAction) ||
-    tradeAction.eventName !== TradeActionType.OrderExecuted ||
-    !isDecreaseOrderType(tradeAction.orderType) ||
-    tradeAction.sizeDeltaUsd === 0n ||
-    tradeAction.positionSizeInUsd === 0n ||
-    tradeAction.swapPath.length === 0 ||
-    !getIsUsdgToken(chainId, tradeAction.initialCollateralToken.address)
-  ) {
+  if (!getIsUsdgPartialClose(chainId, tradeAction) || tradeAction.swapPath.length === 0) {
     return undefined;
   }
 

@@ -10,6 +10,7 @@ import type { PositionTradeAction } from "sdk/utils/tradeHistory/types";
 
 import {
   formatSettlementTokenAmount,
+  getCollateralTokenPayout,
   getDecreasePayoutUsd,
   getDecreaseSwapPayout,
   getFeesBreakdown,
@@ -389,7 +390,11 @@ export function getUsdgPartialClosePayoutLines({
 }): Line[] {
   const payoutUsd = getDecreasePayoutUsd(tradeAction);
   const payout =
-    payoutUsd === undefined ? undefined : getDecreaseSwapPayout({ tradeAction, payoutUsd, swapLegsById, chainId });
+    payoutUsd === undefined
+      ? undefined
+      : tradeAction.swapPath.length === 0
+        ? getCollateralTokenPayout(tradeAction, payoutUsd)
+        : getDecreaseSwapPayout({ tradeAction, payoutUsd, swapLegsById, chainId });
   const formatted = payout && formatSettlementTokenAmount(payout.token, payout.amount);
 
   if (formatted === undefined) {

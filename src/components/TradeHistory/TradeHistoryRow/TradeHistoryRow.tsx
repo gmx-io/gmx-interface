@@ -17,7 +17,10 @@ import {
   TradeActionType,
 } from "domain/synthetics/tradeHistory";
 import { useLifecycleSettlement, type LifecycleSwapLeg } from "domain/synthetics/tradeHistory/useLifecycleSettlement";
-import { getUsdgPartialCloseSwapLegId } from "domain/synthetics/tradeHistory/useUsdgPartialCloseSwapLegs";
+import {
+  getIsUsdgPartialClose,
+  getUsdgPartialCloseSwapLegId,
+} from "domain/synthetics/tradeHistory/useUsdgPartialCloseSwapLegs";
 import { EMPTY_ARRAY } from "lib/objects";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionClickEvent } from "lib/userAnalytics/types";
@@ -286,17 +289,21 @@ export function TradeHistoryRow({
   const feesLines = useMemo(() => {
     const breakdownLines = msg.feesTooltip ?? EMPTY_ARRAY;
 
-    if (
-      !usdgPartialCloseSwapLegsById ||
-      !isPositionTradeAction(tradeAction) ||
-      getUsdgPartialCloseSwapLegId(chainId, tradeAction) === undefined
-    ) {
+    if (!isPositionTradeAction(tradeAction) || !getIsUsdgPartialClose(chainId, tradeAction)) {
+      return breakdownLines;
+    }
+
+    // only a loaded result tells a reverted swap (no leg) from a pending fetch
+    const isSwapLegPending =
+      getUsdgPartialCloseSwapLegId(chainId, tradeAction) !== undefined && !usdgPartialCloseSwapLegsById;
+
+    if (isSwapLegPending) {
       return breakdownLines;
     }
 
     const payoutLines = getUsdgPartialClosePayoutLines({
       tradeAction,
-      swapLegsById: usdgPartialCloseSwapLegsById,
+      swapLegsById: usdgPartialCloseSwapLegsById ?? {},
       chainId,
     });
 

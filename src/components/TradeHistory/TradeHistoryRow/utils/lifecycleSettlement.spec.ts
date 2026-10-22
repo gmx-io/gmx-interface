@@ -466,13 +466,31 @@ describe("getUsdgPartialClosePayoutLines", () => {
     amountOut: 499_800_000n,
   };
 
+  const usdgPartialCloseWithoutSwap = { ...usdgPartialClose, swapPath: [], targetCollateralToken: USDG };
+
   it.each([
-    { name: "the swap leg's output in the target token", swapLegs: [usdcLeg], expected: `~499.80${NBSP}USDC` },
-    { name: "USDG when the swap leg is missing", swapLegs: [], expected: `~500.00${NBSP}USDG` },
-  ])("names $name PRO-4512", ({ swapLegs, expected }) => {
+    {
+      name: "the swap leg's output in the target token",
+      tradeAction: usdgPartialClose,
+      swapLegs: [usdcLeg],
+      expected: `~499.80${NBSP}USDC`,
+    },
+    {
+      name: "USDG when the swap leg is missing",
+      tradeAction: usdgPartialClose,
+      swapLegs: [],
+      expected: `~500.00${NBSP}USDG`,
+    },
+    {
+      name: "USDG when the close didn't swap",
+      tradeAction: usdgPartialCloseWithoutSwap,
+      swapLegs: [],
+      expected: `~500.00${NBSP}USDG`,
+    },
+  ])("names $name PRO-4512", ({ tradeAction, swapLegs, expected }) => {
     const lines = withPlainText(
       getUsdgPartialClosePayoutLines({
-        tradeAction: usdgPartialClose,
+        tradeAction,
         swapLegsById: buildLifecycleData({ rows: [], swapLegs }).swapLegsById,
         chainId: ARBITRUM,
       })
