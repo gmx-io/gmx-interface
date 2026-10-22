@@ -1,4 +1,4 @@
-import { KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
+import { KeyboardEvent, useEffect, useMemo, useState } from "react";
 import { useLatest } from "react-use";
 
 import { getOrderAutoSubmitStep } from "domain/synthetics/usdgPools/orderAutoSubmit";
@@ -15,6 +15,9 @@ const NON_EDITING_KEYS = new Set(["Shift", "Control", "Alt", "Meta", "Tab", "Cap
 export function useOrderAutoSubmitAfterConversion({
   isArmed,
   isPending,
+  isAwaitingBalance,
+  requestedApprovals,
+  markApprovalRequested,
   stop,
   buttonState,
   isDepositButtonShown,
@@ -23,6 +26,9 @@ export function useOrderAutoSubmitAfterConversion({
 }: {
   isArmed: boolean;
   isPending: boolean;
+  isAwaitingBalance: boolean;
+  requestedApprovals: string[];
+  markApprovalRequested: (tokenAddress: string) => void;
   stop: () => void;
   buttonState: {
     disabled: boolean;
@@ -36,29 +42,27 @@ export function useOrderAutoSubmitAfterConversion({
   onSubmit: () => Promise<void>;
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const requestedApprovalsRef = useRef(new Set<string>());
   const { disabled, isExpressLoading, approvalTokenAddress, isApproving, isAllowanceLoaded } = buttonState;
   // price ticks recreate these on every render, which would keep restarting the settle timer
   const latestOnApprove = useLatest(onApprove);
   const latestOnSubmit = useLatest(onSubmit);
   const latestStop = useLatest(stop);
+  const latestMarkApprovalRequested = useLatest(markApprovalRequested);
 
   useEffect(
     function placeOrderAfterConversion() {
       if (!isPending) {
-        requestedApprovalsRef.current = new Set();
         return;
       }
 
       const step = getOrderAutoSubmitStep({
         isSubmitting,
-        isButtonLoading: isExpressLoading || isApproving,
+        isButtonLoading: isExpressLoading || isApproving || isAwaitingBalance,
         isAllowanceLoaded,
         isButtonDisabled: disabled,
         isDepositButtonShown,
         approvalTokenAddress,
-        isApprovalRequested:
-          approvalTokenAddress !== undefined && requestedApprovalsRef.current.has(approvalTokenAddress),
+        isApprovalRequested: approvalTokenAddress !== undefined && requestedApprovals.includes(approvalTokenAddress),
       });
 
       if (step === "wait") {
@@ -67,7 +71,7 @@ export function useOrderAutoSubmitAfterConversion({
 
       const timerId = setTimeout(() => {
         if (step === "approve" && approvalTokenAddress !== undefined) {
-          requestedApprovalsRef.current.add(approvalTokenAddress);
+          latestMarkApprovalRequested.current(approvalTokenAddress);
         } else {
           latestStop.current();
         }
@@ -90,13 +94,16 @@ export function useOrderAutoSubmitAfterConversion({
       disabled,
       isAllowanceLoaded,
       isApproving,
+      isAwaitingBalance,
       isDepositButtonShown,
       isExpressLoading,
       isPending,
       isSubmitting,
+      latestMarkApprovalRequested,
       latestOnApprove,
       latestOnSubmit,
       latestStop,
+      requestedApprovals,
     ]
   );
 

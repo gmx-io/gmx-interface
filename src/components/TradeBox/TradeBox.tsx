@@ -449,6 +449,9 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   const orderAutoSubmitHandlers = useOrderAutoSubmitAfterConversion({
     isArmed: usdgConversion.isOrderAutoSubmitArmed,
     isPending: usdgConversion.isOrderAutoSubmitPending,
+    isAwaitingBalance: usdgConversion.isOrderAutoSubmitAwaitingBalance,
+    requestedApprovals: usdgConversion.orderAutoSubmitRequestedApprovals,
+    markApprovalRequested: usdgConversion.markOrderAutoSubmitApprovalRequested,
     stop: usdgConversion.stopOrderAutoSubmit,
     buttonState: submitButtonState,
     isDepositButtonShown: shouldShowDepositButton,
@@ -637,11 +640,18 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
     ]
   );
 
+  const isUsdgConversionActiveRef = useLatest(usdgConversion.isBusy || usdgConversion.isOrderAutoSubmitArmed);
+
   useEffect(
     function resetTriggerPrice() {
+      // a remount mid-conversion would otherwise wipe the price the order is about to be sent with
+      if (isUsdgConversionActiveRef.current) {
+        return;
+      }
+
       setTriggerPriceInputValue("");
     },
-    [setTriggerPriceInputValue, toTokenAddress, tradeMode]
+    [isUsdgConversionActiveRef, setTriggerPriceInputValue, toTokenAddress, tradeMode]
   );
 
   useEffect(

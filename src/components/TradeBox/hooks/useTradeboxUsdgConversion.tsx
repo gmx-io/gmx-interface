@@ -1,5 +1,5 @@
 import { t, Trans } from "@lingui/macro";
-import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 import { useLatest } from "react-use";
 
@@ -46,12 +46,13 @@ import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { getReceivedTokenAmount } from "domain/synthetics/paxosTransit/getReceivedTokenAmount";
 import { useIsSwapTabPaxosOffered } from "domain/synthetics/paxosTransit/useIsSwapTabPaxosOffered";
-import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
+import { convertToUsd, getBalanceByBalanceType, getMidPrice, TokenBalanceType } from "domain/synthetics/tokens";
 import { formatMaxInstantAmount } from "domain/synthetics/usdgPools/usdcConversion";
 import { getApproveButtonText } from "domain/tokens/gasPaymentTokenApproval";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { helperToast } from "lib/helperToast";
 import { formatAmountFree } from "lib/numbers";
+import { EMPTY_ARRAY } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { TxnEventName } from "lib/transactions";
 import useWallet from "lib/wallets/useWallet";
@@ -65,7 +66,12 @@ import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
-type ConversionStep = "idle" | "submitting" | "converting";
+import {
+  getUsdgConversionSession,
+  type PendingUsdgConversion,
+  updateUsdgConversionSession,
+  useUsdgConversionSession,
+} from "./usdgConversionSession";
 
 // a fallback for a missed execution event; known failures release the button right away
 const CONVERSION_TIMEOUT_MS = 3 * 60 * 1000;
@@ -244,7 +250,8 @@ export function useTradeboxUsdgConversion({
     },
   });
 
-  const [step, setStep] = useState<ConversionStep>("idle");
+  const conversionSession = useUsdgConversionSession();
+  const { step, convertingSince, relayTaskId, lastConversion, orderAutoSubmitArm } = conversionSession;
   // the order the trader set up when converting; the auto submit only sends that one
   const orderSetupKey = JSON.stringify([
     tradeType,
@@ -256,30 +263,18 @@ export function useTradeboxUsdgConversion({
     twapDuration,
     twapNumberOfParts,
   ]);
-  const [orderAutoSubmitArm, setOrderAutoSubmitArm] = useState<{ setupKey: string; armedAt: number }>();
   const latestMarketAddress = useLatest(marketAddress);
   const latestOrderSetupKey = useLatest(orderSetupKey);
-  const [relayTaskId, setRelayTaskId] = useState<string>();
-  const [lastConversion, setLastConversion] = useState<{ marketAddress: string | undefined; amountOut: bigint }>();
-  const pendingConversionRef = useRef<{
-    knownOrderStatusKeys: Set<string>;
-    marketAddress: string | undefined;
-    tokenInAddress: string;
-    tokenOutAddress: string;
-    tokenOutDecimals: number;
-    minAmountOut: bigint;
-    swapPath: string[];
-    orderSetupKey: string;
-  }>();
-
-  // bumped on every reset, so a receipt that lands after a reset is ignored
-  const conversionGenerationRef = useRef(0);
 
   const resetConversion = useCallback(() => {
-    conversionGenerationRef.current += 1;
-    pendingConversionRef.current = undefined;
-    setRelayTaskId(undefined);
-    setStep("idle");
+    updateUsdgConversionSession((current) => ({
+      ...current,
+      generation: current.generation + 1,
+      pending: undefined,
+      relayTaskId: undefined,
+      step: "idle",
+      convertingSince: undefined,
+    }));
   }, []);
 
   const onConvert = useCallback(async () => {
@@ -296,12 +291,12 @@ export function useTradeboxUsdgConversion({
       return;
     }
 
-    setStep("submitting");
+    updateUsdgConversionSession((current) => ({ ...current, step: "submitting" }));
 
     try {
       const fulfilledExpressParams = await expressParamsPromise;
 
-      pendingConversionRef.current = {
+      const pending: PendingUsdgConversion = {
         knownOrderStatusKeys: new Set(Object.keys(orderStatuses)),
         marketAddress,
         tokenInAddress: usdcAddress,
@@ -310,11 +305,12 @@ export function useTradeboxUsdgConversion({
         minAmountOut: batchParams.createOrderParams[0].orderPayload.numbers.minOutputAmount,
         swapPath: conversionSwapAmounts.swapStrategy.swapPathStats?.swapPath ?? [],
         orderSetupKey,
+        isGmxAccount: isFromTokenGmxAccount,
       };
+      updateUsdgConversionSession((current) => ({ ...current, pending }));
 
       const orderTxnCallback = makeOrderTxnCallback({ actionName: "Swap", collateralSymbol: fromToken?.symbol });
 
-      const pending = pendingConversionRef.current;
       const result = await sendBatchOrderTxn({
         chainId,
         signer,
@@ -327,7 +323,8 @@ export function useTradeboxUsdgConversion({
           orderTxnCallback(event);
 
           if (event.event === TxnEventName.Sent && event.data.type !== "wallet") {
-            setRelayTaskId(event.data.relayTaskId);
+            const sentRelayTaskId = event.data.relayTaskId;
+            updateUsdgConversionSession((current) => ({ ...current, relayTaskId: sentRelayTaskId }));
           }
 
           if (event.event === TxnEventName.Error) {
@@ -336,15 +333,15 @@ export function useTradeboxUsdgConversion({
         },
       });
 
-      if (pendingConversionRef.current === pending) {
-        setStep("converting");
+      if (getUsdgConversionSession().pending === pending) {
+        updateUsdgConversionSession((current) => ({ ...current, step: "converting", convertingSince: Date.now() }));
 
         // a wallet transaction that reverts on chain never creates the order, so its receipt releases the button
         if (result && "wait" in result) {
           result
             .wait()
             .then(({ status }) => {
-              if (status === "failed" && pendingConversionRef.current === pending) {
+              if (status === "failed" && getUsdgConversionSession().pending === pending) {
                 resetConversion();
               }
             })
@@ -392,7 +389,7 @@ export function useTradeboxUsdgConversion({
 
   useEffect(
     function applyExecutedConversion() {
-      const pending = pendingConversionRef.current;
+      const { pending } = conversionSession;
 
       if (step !== "converting" || !pending || !account) {
         return;
@@ -418,7 +415,7 @@ export function useTradeboxUsdgConversion({
         return;
       }
 
-      pendingConversionRef.current = undefined;
+      updateUsdgConversionSession((current) => ({ ...current, pending: undefined }));
 
       // the USDG stays in the account either way; the margin only follows it on the market it was converted for
       if (marketAddress !== pending.marketAddress) {
@@ -426,13 +423,19 @@ export function useTradeboxUsdgConversion({
         return;
       }
 
-      const generation = conversionGenerationRef.current;
+      const { generation } = getUsdgConversionSession();
 
-      // GMX Account payouts land in the multichain vault, so the order's guaranteed minimum stands in for the transfer
-      getReceivedTokenAmount({ chainId, txnHash: executedTxnHash, tokenAddress: pending.tokenOutAddress, account })
+      // the order's guaranteed minimum stands in when the receipt can't be read
+      getReceivedTokenAmount({
+        chainId,
+        txnHash: executedTxnHash,
+        tokenAddress: pending.tokenOutAddress,
+        account,
+        isGmxAccount: pending.isGmxAccount,
+      })
         .catch(() => 0n)
         .then((receivedAmount) => {
-          if (generation !== conversionGenerationRef.current) {
+          if (generation !== getUsdgConversionSession().generation) {
             return;
           }
 
@@ -447,11 +450,21 @@ export function useTradeboxUsdgConversion({
           setFromTokenAddress(pending.tokenOutAddress);
           setFocusedInput("from");
           setFromTokenInputValue(formatAmountFree(amountOut, pending.tokenOutDecimals), true);
-          setLastConversion({ marketAddress: pending.marketAddress, amountOut });
           // a setup changed during the wait (a Long/Short flip outside the form) would otherwise leave a hidden arm
-          if (latestOrderSetupKey.current === pending.orderSetupKey) {
-            setOrderAutoSubmitArm({ setupKey: pending.orderSetupKey, armedAt: Date.now() });
-          }
+          const isOrderSetupUnchanged = latestOrderSetupKey.current === pending.orderSetupKey;
+
+          updateUsdgConversionSession((current) => ({
+            ...current,
+            lastConversion: { marketAddress: pending.marketAddress, amountOut },
+            orderAutoSubmitArm: isOrderSetupUnchanged
+              ? {
+                  setupKey: pending.orderSetupKey,
+                  armedAt: Date.now(),
+                  hasMarginLanded: false,
+                  requestedApprovalTokens: [],
+                }
+              : current.orderAutoSubmitArm,
+          }));
           resetConversion();
         });
     },
@@ -459,6 +472,7 @@ export function useTradeboxUsdgConversion({
       account,
       chainId,
       latestMarketAddress,
+      conversionSession,
       latestOrderSetupKey,
       marketAddress,
       orderStatuses,
@@ -472,24 +486,40 @@ export function useTradeboxUsdgConversion({
 
   useEffect(
     function releaseConversionOnAccountOrChainSwitch() {
+      const { owner } = getUsdgConversionSession();
+
+      // a remount keeps the session; only another account or chain drops it
+      if (owner?.account === account && owner?.chainId === chainId) {
+        return;
+      }
+
       // the executed swap is matched by account and chain, so after a switch it would only clear on the timeout
-      resetConversion();
-      setOrderAutoSubmitArm(undefined);
+      updateUsdgConversionSession((current) => ({
+        ...current,
+        owner: { account, chainId },
+        generation: current.generation + 1,
+        pending: undefined,
+        relayTaskId: undefined,
+        step: "idle",
+        convertingSince: undefined,
+        lastConversion: undefined,
+        orderAutoSubmitArm: undefined,
+      }));
     },
-    [account, chainId, resetConversion]
+    [account, chainId]
   );
 
   useEffect(
     function releaseStuckConversion() {
-      if (step !== "converting") {
+      if (step !== "converting" || convertingSince === undefined) {
         return;
       }
 
-      const timerId = setTimeout(resetConversion, CONVERSION_TIMEOUT_MS);
+      const timerId = setTimeout(resetConversion, Math.max(0, convertingSince + CONVERSION_TIMEOUT_MS - Date.now()));
 
       return () => clearTimeout(timerId);
     },
-    [resetConversion, step]
+    [convertingSince, resetConversion, step]
   );
 
   const onUseMaxInstant = useCallback(() => {
@@ -676,24 +706,55 @@ export function useTradeboxUsdgConversion({
   const isOrderAutoSubmitArmed = orderAutoSubmitArmedAt !== undefined;
   const isOrderAutoSubmitPending =
     isOrderAutoSubmitArmed && isConvertedMarginInPlace && orderAutoSubmitArm?.setupKey === orderSetupKey;
-  const stopOrderAutoSubmit = useCallback(() => setOrderAutoSubmitArm(undefined), []);
+  // a GMX Account credit reaches the balance a few seconds after the swap, and its "insufficient balance" isn't final
+  const payBalance = getBalanceByBalanceType(
+    fromToken,
+    isFromTokenGmxAccount ? TokenBalanceType.GmxAccount : TokenBalanceType.Wallet
+  );
+  const isOrderAutoSubmitAwaitingBalance =
+    isOrderAutoSubmitPending &&
+    lastConversion !== undefined &&
+    (payBalance === undefined || payBalance < lastConversion.amountOut);
 
-  const landedArmedAtRef = useRef<number>();
+  const stopOrderAutoSubmit = useCallback(
+    () => updateUsdgConversionSession((current) => ({ ...current, orderAutoSubmitArm: undefined })),
+    []
+  );
+
+  const markOrderAutoSubmitApprovalRequested = useCallback(
+    (tokenAddress: string) =>
+      updateUsdgConversionSession((current) =>
+        current.orderAutoSubmitArm
+          ? {
+              ...current,
+              orderAutoSubmitArm: {
+                ...current.orderAutoSubmitArm,
+                requestedApprovalTokens: [...current.orderAutoSubmitArm.requestedApprovalTokens, tokenAddress],
+              },
+            }
+          : current
+      ),
+    []
+  );
 
   useEffect(
     function disarmOrderAutoSubmit() {
-      if (orderAutoSubmitArmedAt === undefined) {
+      if (orderAutoSubmitArm === undefined) {
         return;
       }
 
       // the pay token switches a render after the arm, so only a change after the margin landed disarms
-      if (isOrderAutoSubmitPending) {
-        landedArmedAtRef.current = orderAutoSubmitArmedAt;
-      } else if (landedArmedAtRef.current === orderAutoSubmitArmedAt) {
+      if (isOrderAutoSubmitPending && !orderAutoSubmitArm.hasMarginLanded) {
+        updateUsdgConversionSession((current) =>
+          current.orderAutoSubmitArm
+            ? { ...current, orderAutoSubmitArm: { ...current.orderAutoSubmitArm, hasMarginLanded: true } }
+            : current
+        );
+      } else if (!isOrderAutoSubmitPending && orderAutoSubmitArm.hasMarginLanded) {
         stopOrderAutoSubmit();
       }
     },
-    [isOrderAutoSubmitPending, orderAutoSubmitArmedAt, stopOrderAutoSubmit]
+    [isOrderAutoSubmitPending, orderAutoSubmitArm, stopOrderAutoSubmit]
   );
 
   useEffect(
@@ -702,7 +763,10 @@ export function useTradeboxUsdgConversion({
         return;
       }
 
-      const timerId = setTimeout(stopOrderAutoSubmit, ORDER_AUTO_SUBMIT_TIMEOUT_MS);
+      const timerId = setTimeout(
+        stopOrderAutoSubmit,
+        Math.max(0, orderAutoSubmitArmedAt + ORDER_AUTO_SUBMIT_TIMEOUT_MS - Date.now())
+      );
 
       return () => clearTimeout(timerId);
     },
@@ -714,6 +778,9 @@ export function useTradeboxUsdgConversion({
     isBusy,
     isOrderAutoSubmitArmed,
     isOrderAutoSubmitPending,
+    isOrderAutoSubmitAwaitingBalance,
+    orderAutoSubmitRequestedApprovals: orderAutoSubmitArm?.requestedApprovalTokens ?? EMPTY_ARRAY,
+    markOrderAutoSubmitApprovalRequested,
     stopOrderAutoSubmit,
     buttonState,
     expressParams,

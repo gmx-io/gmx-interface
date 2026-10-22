@@ -6,6 +6,7 @@ import { useOrderAutoSubmitAfterConversion } from "../hooks/useOrderAutoSubmitAf
 type ButtonState = Parameters<typeof useOrderAutoSubmitAfterConversion>[0]["buttonState"];
 
 const USDG = "0x004B506865409877C9fA29bfb1ebA929984B9bbC";
+const NO_REQUESTED_APPROVALS: string[] = [];
 const readyButton: ButtonState = {
   disabled: false,
   isExpressLoading: false,
@@ -30,6 +31,9 @@ function Harness({
   useOrderAutoSubmitAfterConversion({
     isArmed: true,
     isPending: true,
+    isAwaitingBalance: false,
+    requestedApprovals: NO_REQUESTED_APPROVALS,
+    markApprovalRequested: () => undefined,
     stop,
     buttonState,
     isDepositButtonShown: false,
