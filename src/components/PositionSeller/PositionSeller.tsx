@@ -75,7 +75,7 @@ import {
   takeValidationResult,
 } from "domain/synthetics/trade/utils/validation";
 import { getIsHighSwapProfitFee } from "domain/synthetics/trade/utils/warnings";
-import { getIsSwapPathFillable } from "domain/synthetics/usdgPools/usdcConversion";
+import { getIsSwapTooLargeToFill } from "domain/synthetics/usdgPools/usdcConversion";
 import { Token } from "domain/tokens";
 import { getApproveButtonText, getGasPaymentTokenApprovalTooltip } from "domain/tokens/gasPaymentTokenApproval";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
@@ -349,12 +349,16 @@ export function PositionSeller() {
   const usdgConversionTokenAddress = getUsdgConversionTokenAddress(chainId, position?.collateralTokenAddress);
   const isUsdcReceiveOnUsdgPosition =
     usdgConversionTokenAddress !== undefined && receiveToken?.address === usdgConversionTokenAddress;
+  // one flag for the banner, the button and submit: an empty swap path would still execute and silently pay USDG
   const isUsdcReceiveUnfillable =
     isUsdcReceiveOnUsdgPosition &&
     shouldSwap &&
-    swapAmounts !== undefined &&
-    swapAmounts.amountIn > 0n &&
-    !getIsSwapPathFillable(swapAmounts.swapStrategy.swapPathStats);
+    position !== undefined &&
+    getIsSwapTooLargeToFill({
+      tokenIn: position.collateralToken,
+      amountIn: decreaseAmounts?.receiveTokenAmount ?? 0n,
+      swapPathStats: swapAmounts?.swapStrategy.swapPathStats,
+    });
   const isNotEnoughReceiveTokenLiquidity =
     !isUsdcReceiveOnUsdgPosition && shouldSwap ? maxSwapLiquidity < (receiveUsd ?? 0n) : false;
 
@@ -622,11 +626,6 @@ export function PositionSeller() {
       return;
     }
 
-    // an empty swap path would still execute and silently pay out USDG
-    if (isUsdcReceiveOnUsdgPosition && shouldSwap && !getIsSwapPathFillable(swapAmounts?.swapStrategy.swapPathStats)) {
-      return;
-    }
-
     if (isAllowanceLoaded && tokensToApprove.length) {
       if (!chainId || isApproving) return;
 
@@ -642,6 +641,10 @@ export function PositionSeller() {
           }),
       });
 
+      return;
+    }
+
+    if (isUsdcReceiveUnfillable) {
       return;
     }
 
@@ -746,16 +749,23 @@ export function PositionSeller() {
       }),
     });
 
+    // USDG positions always open on USDG, so a remembered USDC choice would only be dead state
+    const rememberReceiveToken = () => {
+      if (usdgConversionTokenAddress === undefined) {
+        setDefaultReceiveToken(receiveToken.address);
+      }
+    };
+
     if (expressParams?.subaccount) {
       onClose();
       setIsSubmitting(false);
-      setDefaultReceiveToken(receiveToken.address);
+      rememberReceiveToken();
       return;
     }
 
     txnPromise.then(onClose).finally(() => {
       setIsSubmitting(false);
-      setDefaultReceiveToken(receiveToken.address);
+      rememberReceiveToken();
     });
   }
 
@@ -1263,10 +1273,7 @@ export function PositionSeller() {
                   <AlertInfoCard type="error" hideClose>
                     <Trans>
                       Too large to receive as USDC instantly.{" "}
-                      <EmbeddedActionButton
-                        className="text-blue-300 decoration-blue-300 hover:text-blue-300"
-                        onClick={handleReceiveUsdgInstead}
-                      >
+                      <EmbeddedActionButton tone="link" onClick={handleReceiveUsdgInstead}>
                         Receive {positionCollateralSymbol} instead
                       </EmbeddedActionButton>{" "}
                       and convert it in the Swap tab after closing.
