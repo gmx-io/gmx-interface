@@ -3,13 +3,13 @@ import useSWR from "swr";
 import { getPaxosTransitConfig } from "config/paxosTransit";
 import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { useChainId } from "lib/chains";
-import { formatBalanceAmount, formatUsd } from "lib/numbers";
+import { formatUsd } from "lib/numbers";
 import { retryAtRefreshCadence } from "lib/useSWRWithFreshness";
 import useWallet from "lib/wallets/useWallet";
 import { getToken } from "sdk/configs/tokens";
 
 import { mockTransitApi } from "./mockTransitApi";
-import { getPaxosRouteStates } from "./tradeboxRoutes";
+import { formatPaxosMinOrderSize, getIsStandardPaxosRouteShown, getPaxosRouteStates } from "./tradeboxRoutes";
 import type { TransitApi } from "./types";
 import { usePaxosTransitDebugSettings } from "./usePaxosTransitDebugSettings";
 import { useTransitMinOrderSizes } from "./useTransitMinOrderSizes";
@@ -43,15 +43,10 @@ export function useIsSwapTabPaxosOffered({
   const paxosTransitConfig = getPaxosTransitConfig(chainId);
   // the Swap tab runs Paxos only from the wallet on the settlement chain
   const isActive =
-    enabled &&
-    srcChainId === undefined &&
-    !isGmxAccount &&
-    paxosTransitConfig !== undefined &&
-    api !== undefined &&
-    account !== undefined;
+    enabled && srcChainId === undefined && !isGmxAccount && paxosTransitConfig !== undefined && api !== undefined;
 
   const { data: feeTierData, error: feeTierError } = useSWR(
-    isActive ? getTradeboxPaxosFeeTierKey(chainId, account!, isMocked) : null,
+    isActive && account !== undefined ? getTradeboxPaxosFeeTierKey(chainId, account, isMocked) : null,
     () => api!.fetchTransitFeeTier({ userAddress: account! }),
     { refreshInterval: FEE_TIER_REFRESH_INTERVAL, onErrorRetry: retryAtRefreshCadence }
   );
@@ -68,19 +63,17 @@ export function useIsSwapTabPaxosOffered({
 
   const thresholdUsd = thresholdUsdOverride ?? paxosTransitConfig?.thresholdUsd;
 
-  // until these answer, or when the fee tier fails, the Swap tab's choice is unknown, so callers hold Paxos copy back
-  const isResolved =
-    isActive &&
-    !feeTierError &&
-    feeTierData !== undefined &&
-    minOrderSizes.standardFee !== undefined &&
-    (!isWhitelisted || minOrderSizes.zeroFee !== undefined) &&
-    amount !== undefined &&
-    amountUsd !== undefined &&
-    thresholdUsd !== undefined;
-
-  if (!isResolved) {
-    return { isOffered: false, isResolved: false, minimumText: undefined };
+  // until the fee tier answers, or when it fails, the Swap tab's choice is unknown, so Paxos copy is held back;
+  // a minimum order size that hasn't loaded counts as none, as on the Swap tab
+  if (
+    !isActive ||
+    feeTierError ||
+    feeTierData === undefined ||
+    amount === undefined ||
+    amountUsd === undefined ||
+    thresholdUsd === undefined
+  ) {
+    return { isOffered: false, minimumText: undefined };
   }
 
   const routeStates = getPaxosRouteStates({
@@ -94,34 +87,42 @@ export function useIsSwapTabPaxosOffered({
     zeroFeeMinOrderSize: minOrderSizes.zeroFee,
     standardMinOrderSize: minOrderSizes.standardFee,
   });
-  const isOffered = routeStates.paxosZeroFee.status === "quote" || routeStates.paxosStandard.status === "quote";
+  // a zero-fee route short on capacity is still offered, with the capacity choice on the Swap tab
+  const isOffered =
+    routeStates.paxosZeroFee.status === "quote" ||
+    routeStates.paxosZeroFee.status === "capacityShort" ||
+    routeStates.paxosStandard.status === "quote";
 
   if (isOffered) {
-    return { isOffered, isResolved, minimumText: undefined };
+    return { isOffered, minimumText: undefined };
   }
 
   const usdc = getToken(chainId, paxosTransitConfig!.usdcAddress);
   const formatMinOrderSize = (minOrderSize: bigint) =>
-    formatBalanceAmount(minOrderSize, usdc.decimals, usdc.symbol, { isStable: true });
-  const isStandardAlwaysOffered = isWhitelisted || isStandardForced;
+    `${formatPaxosMinOrderSize(minOrderSize, usdc.decimals)} ${usdc.symbol}`;
+  const isStandardShown = getIsStandardPaxosRouteShown({
+    isWhitelisted,
+    isStandardForced,
+    amountInUsd: amountUsd,
+    thresholdUsd,
+  });
+  const minOrderSizesAbove = [routeStates.paxosZeroFee, routeStates.paxosStandard].flatMap((state) =>
+    state.status === "belowMinOrderSize" ? [state.minOrderSize] : []
+  );
+  const smallestMinOrderSize = minOrderSizesAbove.reduce<bigint | undefined>(
+    (smallest, size) => (smallest === undefined || size < smallest ? size : smallest),
+    undefined
+  );
   let minimumText: string | undefined;
 
-  if (!isStandardAlwaysOffered && amountUsd < thresholdUsd) {
+  if (!isStandardShown) {
     minimumText = formatUsd(thresholdUsd, { displayDecimals: 0 });
-  } else if (!isStandardAlwaysOffered && amount < minOrderSizes.standardFee!) {
-    minimumText = formatMinOrderSize(minOrderSizes.standardFee!);
-  } else {
-    const minOrderSizesAbove = [routeStates.paxosZeroFee, routeStates.paxosStandard].flatMap((state) =>
-      state.status === "belowMinOrderSize" ? [state.minOrderSize] : []
-    );
-
-    const smallestMinOrderSize = minOrderSizesAbove.reduce<bigint | undefined>(
-      (smallest, size) => (smallest === undefined || size < smallest ? size : smallest),
-      undefined
-    );
-
-    minimumText = smallestMinOrderSize !== undefined ? formatMinOrderSize(smallestMinOrderSize) : undefined;
+  } else if (smallestMinOrderSize !== undefined) {
+    minimumText = formatMinOrderSize(smallestMinOrderSize);
+  } else if (minOrderSizes.standardFee !== undefined && amount < minOrderSizes.standardFee) {
+    // a non-whitelisted standard route under its minimum is hidden rather than shown below it
+    minimumText = formatMinOrderSize(minOrderSizes.standardFee);
   }
 
-  return { isOffered, isResolved, minimumText };
+  return { isOffered, minimumText };
 }
