@@ -1264,14 +1264,17 @@ describe("TradeHistoryRow helpers", () => {
       expect(result.value).toBe("~0.00\u00a0USDC");
     });
 
-    it("relabels the received row as a GMX balance movement for multichain closes", () => {
+    it.each([
+      ["gmxAccount", "Received at close (GMX balance)"],
+      ["mixed", "Received at close"],
+    ] as const)("labels the received row of a %s position as %s PRO-4520", (source, label) => {
       const result = getSettlementTooltipLines({
         tradeAction: anchorCloseRow,
         openRow: anchorOpenRow,
-        isMultichain: true,
+        source,
       }).filter((line) => line !== undefined);
 
-      expect(result.at(-1)).toEqual({ key: "Received at close (GMX balance)", value: "~1,326.64\u00a0USDC" });
+      expect(result.at(-1)).toEqual({ key: label, value: "~1,326.64\u00a0USDC" });
     });
   });
 });

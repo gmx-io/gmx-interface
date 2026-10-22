@@ -179,21 +179,21 @@ function FeesTooltipContent({ tradeAction, feesLines }: { tradeAction: TradeActi
               ...getSettlementTooltipLines({
                 tradeAction: fullCloseCandidate,
                 openRow: view.openRow,
-                isMultichain: view.isMultichain,
+                source: view.source,
                 usdgPayoutCtx,
               }),
               "",
-              ...getSettlementNotes(view.isMultichain),
+              ...getSettlementNotes(view.source),
             ]
           : [
               ...getSettlementTooltipLines({
                 tradeAction: fullCloseCandidate,
                 openRow: undefined,
-                isMultichain: view.isMultichain,
+                source: view.source,
                 usdgPayoutCtx,
               }),
               "",
-              ...getSettlementNotes(view.isMultichain),
+              ...getSettlementNotes(view.source),
               ...getUnreconcilableLifecycleLines(),
             ];
 

@@ -6,9 +6,11 @@ import { convertToUsd, parseContractPrice } from "domain/synthetics/tokens";
 import type { LifecycleSettlementData, LifecycleSwapLeg } from "domain/synthetics/tradeHistory/useLifecycleSettlement";
 import { getSwapLegId } from "domain/synthetics/tradeHistory/useLifecycleSettlement";
 import { formatDeltaUsdParts, formatUsdParts, numberParts } from "lib/numbers";
+import { bigMath } from "sdk/utils/bigmath";
 import type { PositionTradeAction } from "sdk/utils/tradeHistory/types";
 
 import {
+  SettlementSource,
   formatSettlementTokenAmount,
   getCollateralTokenPayout,
   getDecreasePayoutUsd,
@@ -40,17 +42,27 @@ export type LifecycleAggregate = {
   netResult: LifecycleCashflow;
   lifecycleRpnlUsd: bigint;
   netFeesUsd: bigint;
-  isMultichain: boolean;
+  source: SettlementSource;
 };
 
 export type LifecycleSettlementView =
-  | { mode: "closeSideOnly"; isMultichain: boolean }
-  | { mode: "compact"; openRow: PositionTradeAction; isMultichain: boolean }
+  | { mode: "closeSideOnly"; source: SettlementSource }
+  | { mode: "compact"; openRow: PositionTradeAction; source: SettlementSource }
   | { mode: "extended"; aggregate: LifecycleAggregate };
 
 /** `srcChainId` is `0` for same-chain v2.2 orders and absent on pre-v2.2 ones. */
 export function isMultichainRow(row: PositionTradeAction): boolean {
   return row.srcChainId !== undefined && row.srcChainId !== 0;
+}
+
+export function getSettlementSource(rows: PositionTradeAction[]): SettlementSource {
+  const gmxAccountRowsCount = rows.filter(isMultichainRow).length;
+
+  if (gmxAccountRowsCount === 0) {
+    return "wallet";
+  }
+
+  return gmxAccountRowsCount === rows.length ? "gmxAccount" : "mixed";
 }
 
 function getOpeningOrderKey(positionLifecycleId: string): string {
@@ -98,9 +110,8 @@ export function getLifecycleSettlementView({
 }): LifecycleSettlementView {
   const { rows, ordersByKey, hasFundingSettlement, isTruncated } = data;
 
-  // A mixed lifecycle stays labelled even when the close row itself is same-chain.
-  const isMultichain = rows.some(isMultichainRow) || isMultichainRow(closeRow);
-  const closeSideOnly: LifecycleSettlementView = { mode: "closeSideOnly", isMultichain };
+  const source = getSettlementSource([...rows, closeRow]);
+  const closeSideOnly: LifecycleSettlementView = { mode: "closeSideOnly", source };
 
   if (isTruncated || hasFundingSettlement || !closeRow.positionLifecycleId || rows.length === 0) {
     return closeSideOnly;
@@ -145,7 +156,7 @@ export function getLifecycleSettlementView({
 
   // A settle drains collateral between the two rows without leaving a lifecycle row behind.
   if (rows.length === 2 && closeRow.initialCollateralDeltaAmount === openRow.initialCollateralDeltaAmount) {
-    return { mode: "compact", openRow, isMultichain };
+    return { mode: "compact", openRow, source };
   }
 
   const aggregate = aggregateLifecycleSettlement({ rows, data, chainId });
@@ -290,7 +301,7 @@ export function aggregateLifecycleSettlement({
     ),
     lifecycleRpnlUsd,
     netFeesUsd,
-    isMultichain: rows.some(isMultichainRow),
+    source: getSettlementSource(rows),
   };
 }
 
@@ -308,11 +319,13 @@ function getCashflowValue(cashflow: LifecycleCashflow, tier: LifecycleTier): Too
   const spans: TooltipString[] = [];
 
   cashflow.legs.forEach((leg, index) => {
-    if (index > 0) {
-      spans.push(" + ");
+    if (index === 0) {
+      spans.push(`~${formatLegAmount(leg)}`);
+
+      return;
     }
 
-    spans.push(`~${formatLegAmount(leg)}`);
+    spans.push(leg.amount < 0n ? " - " : " + ", `~${formatLegAmount({ ...leg, amount: bigMath.abs(leg.amount) })}`);
   });
 
   if (tier === "tokenLegs") {
@@ -322,33 +335,49 @@ function getCashflowValue(cashflow: LifecycleCashflow, tier: LifecycleTier): Too
   return spans.length === 1 ? spans[0] : spans;
 }
 
+function getLifecycleCashflowLabels(source: SettlementSource) {
+  if (source === "gmxAccount") {
+    return {
+      funded: t`Total margin funded (GMX balance)`,
+      receivedBeforeClose: t`Received before close (GMX balance)`,
+      receivedAtClose: t`Received at close (GMX balance)`,
+      totalReceived: t`Total received (GMX balance)`,
+      netResult: t`Net result (GMX balance)`,
+    };
+  }
+
+  if (source === "mixed") {
+    return {
+      funded: t`Total margin funded`,
+      receivedBeforeClose: t`Received before close`,
+      receivedAtClose: t`Received at close`,
+      totalReceived: t`Total received`,
+      netResult: t`Net result`,
+    };
+  }
+
+  return {
+    funded: t`Total margin funded`,
+    receivedBeforeClose: t`Wallet received before close`,
+    receivedAtClose: t`Wallet received at close`,
+    totalReceived: t`Total wallet received`,
+    netResult: t`Net wallet result`,
+  };
+}
+
 export function getLifecycleSettlementLines(aggregate: LifecycleAggregate): Line[] {
-  const { tier, isMultichain } = aggregate;
+  const { tier, source } = aggregate;
+  const labels = getLifecycleCashflowLabels(source);
 
   return lines(
     "",
     t`Lifecycle settlement`,
     "",
-    infoRow(
-      isMultichain ? t`Total margin funded (GMX balance)` : t`Total margin funded`,
-      getCashflowValue(aggregate.funded, tier)
-    ),
-    infoRow(
-      isMultichain ? t`Received before close (GMX balance)` : t`Wallet received before close`,
-      getCashflowValue(aggregate.receivedBeforeClose, tier)
-    ),
-    infoRow(
-      isMultichain ? t`Received at close (GMX balance)` : t`Wallet received at close`,
-      getCashflowValue(aggregate.receivedAtClose, tier)
-    ),
-    infoRow(
-      isMultichain ? t`Total received (GMX balance)` : t`Total wallet received`,
-      getCashflowValue(aggregate.totalReceived, tier)
-    ),
-    infoRow(
-      isMultichain ? t`Net result (GMX balance)` : t`Net wallet result`,
-      getCashflowValue(aggregate.netResult, tier)
-    ),
+    infoRow(labels.funded, getCashflowValue(aggregate.funded, tier)),
+    infoRow(labels.receivedBeforeClose, getCashflowValue(aggregate.receivedBeforeClose, tier)),
+    infoRow(labels.receivedAtClose, getCashflowValue(aggregate.receivedAtClose, tier)),
+    infoRow(labels.totalReceived, getCashflowValue(aggregate.totalReceived, tier)),
+    infoRow(labels.netResult, getCashflowValue(aggregate.netResult, tier)),
     "",
     infoRow(t`Lifecycle RPNL`, {
       text: formatDeltaUsdParts(aggregate.lifecycleRpnlUsd),
@@ -359,16 +388,16 @@ export function getLifecycleSettlementLines(aggregate: LifecycleAggregate): Line
       state: numberToState(aggregate.netFeesUsd),
     }),
     "",
-    ...getSettlementNotes(isMultichain)
+    ...getSettlementNotes(source)
   );
 }
 
-export function getSettlementNotes(isMultichain: boolean): Line[] {
+export function getSettlementNotes(source: SettlementSource): Line[] {
   const notes: Line[] = [
     { text: t`Excludes claimed funding, price impact rebates and execution fees`, state: "muted" as const },
   ];
 
-  if (isMultichain) {
+  if (source === "gmxAccount") {
     notes.push({
       text: t`This position was funded from your GMX multichain balance; amounts are balance movements, not wallet transfers.`,
       state: "muted" as const,
