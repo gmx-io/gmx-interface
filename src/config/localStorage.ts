@@ -206,6 +206,11 @@ export function getSubaccountConfigKey(chainId: number | undefined, account: str
   return [chainId, account, "one-click-trading-config"];
 }
 
+export function getLegacySubaccountConfigKey(chainId: number | undefined, account: string | undefined) {
+  if (!chainId || !account) return null;
+  return [chainId, account, "one-click-trading-legacy-config"];
+}
+
 export function getSyntheticsReceiveMoneyTokenKey(
   chainId: number,
   marketName: string | undefined,

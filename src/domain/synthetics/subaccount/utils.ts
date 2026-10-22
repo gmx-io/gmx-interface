@@ -308,16 +308,20 @@ export async function getInitialSubaccountApproval({
   provider,
   subaccountAddress,
   isGmxAccount,
+  remainingSeconds = BigInt(DEFAULT_ONE_CLICK_SESSION_DURATION),
+  remainingActions = BigInt(DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS),
 }: {
   chainId: ContractsChainId;
   signer: WalletSigner;
   provider: Provider;
   subaccountAddress: string;
   isGmxAccount: boolean;
+  remainingSeconds?: bigint;
+  remainingActions?: bigint;
 }) {
   const onchainData = await getSubaccountOnchainData({ chainId, signer, provider, subaccountAddress });
 
-  const defaultExpiresAt = BigInt(nowInSeconds() + DEFAULT_ONE_CLICK_SESSION_DURATION);
+  const defaultExpiresAt = BigInt(nowInSeconds()) + remainingSeconds;
 
   let expiresAt = getSubaccountExpiresAt({
     onchainData,
@@ -328,8 +332,7 @@ export async function getInitialSubaccountApproval({
     expiresAt = defaultExpiresAt;
   }
 
-  const defaultMaxAllowedCount = BigInt(DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS);
-  const maxAllowedCount = onchainData.currentActionsCount + defaultMaxAllowedCount;
+  const maxAllowedCount = onchainData.currentActionsCount + remainingActions;
 
   const defaultSubaccountApproval = await createAndSignSubaccountApproval(
     chainId,
@@ -518,7 +521,7 @@ async function getSubaccountApprovalNonceForProvider(
   });
 }
 
-async function getSubaccountOnchainData({
+export async function getSubaccountOnchainData({
   chainId,
   signer,
   provider,

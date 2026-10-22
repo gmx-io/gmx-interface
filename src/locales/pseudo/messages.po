@@ -44,6 +44,10 @@ msgstr ""
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr ""
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "This browser"
+msgstr ""
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Monthly"
 msgstr ""
@@ -82,6 +86,8 @@ msgid "Automatically compounds your GMX rewards without manual claiming"
 msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
+#: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Disconnect"
@@ -632,6 +638,10 @@ msgstr ""
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Unrealized fee contribution"
 msgstr "[!! Unrealized fee contribution !!]"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Old session removed"
+msgstr ""
 
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
@@ -1391,6 +1401,10 @@ msgstr ""
 msgid "Swap fee factor (negative PI)"
 msgstr ""
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "No actions left"
+msgstr ""
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claimable balance"
 msgstr ""
@@ -1451,6 +1465,10 @@ msgstr ""
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Receive amount below minimum"
+msgstr ""
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Remove all other sessions"
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
@@ -1925,10 +1943,6 @@ msgstr ""
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "How is my fee discount applied?"
-msgstr ""
-
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Session generation failed"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -3163,6 +3177,10 @@ msgstr ""
 msgid "GM:"
 msgstr ""
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "One-Click sessions ({0})"
+msgstr ""
+
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Confirm settle"
 msgstr ""
@@ -3731,6 +3749,10 @@ msgstr ""
 
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {symbol} in your GMX Account for this transaction. <0>Deposit {symbol}</0>"
+msgstr ""
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removing old session..."
 msgstr ""
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
@@ -5229,13 +5251,26 @@ msgstr ""
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Slippage differs from price impact, which is based on open interest imbalances. <4>Read more</4>."
 msgstr ""
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Expired"
+msgstr ""
+
 #: src/components/ChainDataImage.tsx
 #: src/components/ChainDataImage.tsx
 msgid "{chainName} data"
 msgstr ""
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removing..."
+msgstr ""
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "No net rate history for this market"
+msgstr ""
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Old session is still active. Remove it in One-Click sessions"
 msgstr ""
 
 #: src/components/TradeHistory/keys.ts
@@ -5925,6 +5960,10 @@ msgstr ""
 msgid "Approval failed"
 msgstr ""
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Old session"
+msgstr ""
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Updating settings..."
 msgstr ""
@@ -5943,6 +5982,10 @@ msgstr ""
 
 #: src/components/TradeBox/SwapSlippageField.tsx
 msgid "Slippage is the difference between your expected and actual execution price due to price volatility. Orders won't execute if slippage exceeds your allowed maximum. The default can be adjusted in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Note: slippage is different from price impact, which is based on open interest imbalances. <4>Read more</4>."
+msgstr ""
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active, no expiry, {actionsText}"
 msgstr ""
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -6563,6 +6606,10 @@ msgstr ""
 
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
+msgstr ""
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Each browser where you turn on One-Click Trading has its own session. Bots and apps that trade for you also appear here."
 msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
@@ -7294,6 +7341,10 @@ msgstr ""
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set stop price below mark price"
+msgstr ""
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "unlimited actions"
 msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
@@ -9059,6 +9110,10 @@ msgstr ""
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Disable One-Click Trading"
+msgstr ""
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removed"
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
@@ -11232,6 +11287,10 @@ msgstr ""
 msgid "Deposit submitted"
 msgstr ""
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removal failed"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -11387,6 +11446,10 @@ msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "take-profit"
+msgstr ""
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{0, plural, one {# action left} other {# actions left}}"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
@@ -11771,6 +11834,10 @@ msgstr ""
 msgid "{txnTypeText} margin deposit: {amountText} to {indexTokenText} {longShortText}"
 msgstr ""
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active until {0}, {actionsText}"
+msgstr ""
+
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Price you'll receive when closing, adjusted for capped price impact. <0>Read more</0>."
 msgstr ""
@@ -12080,6 +12147,10 @@ msgstr ""
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "A dedicated account manager"
+msgstr ""
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Remove"
 msgstr ""
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
@@ -13386,6 +13457,12 @@ msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Enter a ratio"
+msgstr ""
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Remove 1CT sessions"
 msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx

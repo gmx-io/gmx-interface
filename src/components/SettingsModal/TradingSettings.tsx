@@ -33,6 +33,7 @@ import { GasPaymentTokenSelector } from "components/GasPaymentTokenSelector/GasP
 import { MarginDestinationSelector } from "components/MarginDestinationSelector/MarginDestinationSelector";
 import { OldSubaccountWithdraw } from "components/OldSubaccountWithdraw/OldSubaccountWithdraw";
 import { OneClickAdvancedSettings } from "components/OneClickAdvancedSettings/OneClickAdvancedSettings";
+import { OneClickSessions } from "components/OneClickSessions/OneClickSessions";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import { LabelWithTooltip } from "components/Tooltip/LabelWithTooltip";
 
@@ -227,6 +228,8 @@ export function TradingSettings({
             {Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount)) && (
               <OneClickAdvancedSettings />
             )}
+
+            <OneClickSessions />
 
             {settings.expressOrdersEnabled && (
               <div className="flex flex-col gap-8">
