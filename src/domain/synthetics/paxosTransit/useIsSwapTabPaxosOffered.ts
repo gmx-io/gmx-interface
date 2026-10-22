@@ -57,5 +57,8 @@ export function useIsSwapTabPaxosOffered({
       thresholdUsd,
     });
 
-  return { isOffered, isPayingFromWallet, thresholdUsd };
+  // until the fee tier answers, or when it fails, the Swap tab's choice is unknown, so callers hold Paxos copy back
+  const isResolved = isActive && !feeTierError && feeTierData !== undefined;
+
+  return { isOffered, isResolved, thresholdUsd };
 }

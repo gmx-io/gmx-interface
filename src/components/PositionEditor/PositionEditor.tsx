@@ -380,7 +380,7 @@ export function PositionEditor() {
       : undefined;
   const {
     isOffered: isPaxosOfferedForRest,
-    isPayingFromWallet: isPaxosPayingFromWallet,
+    isResolved: isPaxosOfferResolved,
     thresholdUsd: paxosThresholdUsd,
   } = useIsSwapTabPaxosOffered({
     amountUsd: restUsd,
@@ -854,7 +854,7 @@ export function PositionEditor() {
                     </Button>
                   ) : (
                     paxosThresholdText &&
-                    isPaxosPayingFromWallet && (
+                    isPaxosOfferResolved && (
                       <div className="text-12 text-typography-secondary">
                         <Trans>Paxos converts amounts from {paxosThresholdText}.</Trans>
                       </div>
