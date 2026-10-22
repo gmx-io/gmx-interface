@@ -155,7 +155,9 @@ import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersTh
 import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";
 import { type TradeboxPaxosRoute, useTradeboxPaxosRoute } from "./hooks/useTradeboxPaxosRoute";
 import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
+import { useTradeboxUsdgConversion } from "./hooks/useTradeboxUsdgConversion";
 import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
+import { useUsdgPoolPayTokenDefault } from "./hooks/useUsdgPoolPayTokenDefault";
 import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
 import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
 import { useCollateralWarnings } from "./TradeBoxRows/CollateralSelectorField";
@@ -392,13 +394,19 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   const isPaxosRouteActive = paxosRoute.activePaxosRoute !== undefined || paxosRoute.routes.isRouteChoiceRequired;
   const paxosReceiveAmountOut = getPaxosReceiveAmountOut(paxosRoute);
 
-  const submitButtonState = useMemo(
-    () =>
-      paxosRoute.buttonState
-        ? { ...gmxSubmitButtonState, ...paxosRoute.buttonState, tooltipContent: null, bannerErrorContent: null }
-        : gmxSubmitButtonState,
-    [gmxSubmitButtonState, paxosRoute.buttonState]
-  );
+  const usdgConversion = useTradeboxUsdgConversion();
+
+  const submitButtonState = useMemo(() => {
+    if (paxosRoute.buttonState) {
+      return { ...gmxSubmitButtonState, ...paxosRoute.buttonState, tooltipContent: null, bannerErrorContent: null };
+    }
+
+    if (usdgConversion.buttonState) {
+      return { ...gmxSubmitButtonState, ...usdgConversion.buttonState, tooltipContent: null, bannerErrorContent: null };
+    }
+
+    return gmxSubmitButtonState;
+  }, [gmxSubmitButtonState, paxosRoute.buttonState, usdgConversion.buttonState]);
 
   const wrappedOnSubmit = useCallback(async () => {
     await submitButtonState.onSubmit();
@@ -516,6 +524,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
 
   useTradeboxAcceptablePriceImpactValues();
   useTradeboxTPSLReset(priceImpactWarningState.setIsDismissed);
+  useUsdgPoolPayTokenDefault();
 
   const prevIsISwap = usePrevious(isSwap);
 
@@ -1387,6 +1396,12 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
                   <Trans>Read more</Trans>
                 </ExternalLink>
               </div>
+            </AlertInfoCard>
+          )}
+
+          {usdgConversion.tooLargeAlert && (
+            <AlertInfoCard hideClose type="error">
+              {usdgConversion.tooLargeAlert}
             </AlertInfoCard>
           )}
 

@@ -661,6 +661,10 @@ msgstr "L'approbation One-Click Trading n'est plus valide. Cela peut se produire
 msgid "Min collateral factor for liquidation"
 msgstr "Facteur de garantie minimum pour la liquidation"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Max instant margin: {maxInstantText}"
+msgstr "Marge instantanée max. : {maxInstantText}"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} short exceeded"
 msgstr "Short {0} maximal dépassé"
@@ -2370,6 +2374,7 @@ msgid "Stop price"
 msgstr "Prix stop"
 
 #: src/components/PositionEditor/PositionEditor.tsx
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Too large to convert instantly"
 msgstr "Trop élevé pour une conversion instantanée"
@@ -11532,6 +11537,10 @@ msgstr "Échec de l’exportation de l’image"
 msgid "Staked"
 msgstr "Staké"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Up to {maxInstantText} can be converted instantly. <0>Use max instant</0>, or <1>convert with Paxos first</1> in the Swap tab: a one-time conversion, 2 to 10 min or longer. Trades paid in USDG need no conversion."
+msgstr "Jusqu'à {maxInstantText} peuvent être convertis instantanément. <0>Utilisez le max instantané</0> ou <1>convertissez d'abord avec Paxos</1> dans l'onglet Swap : une conversion unique, de 2 à 10 min ou plus. Les trades payés en USDG ne nécessitent aucune conversion."
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "This margin deposit may not execute before liquidation: its trigger is at or beyond the estimated liquidation price"
 msgstr "Ce dépôt de marge pourrait ne pas être exécuté avant la liquidation : son déclencheur est au niveau ou au-delà du prix de liquidation estimé"
@@ -12471,6 +12480,10 @@ msgstr "Paramètres de récupération indisponibles. Réessayez dans quelques se
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards"
 msgstr "Le retrait de plus de 20 % de votre montant maximal historique de GMX stakés réinitialisera vos récompenses accumulées"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Nothing can be converted instantly right now. <0>Convert with Paxos first</0> in the Swap tab: a one-time conversion, 2 to 10 min or longer. Trades paid in USDG need no conversion."
+msgstr "Rien ne peut être converti instantanément pour le moment. <0>Convertissez d'abord avec Paxos</0> dans l'onglet Swap : une conversion unique, de 2 à 10 min ou plus. Les trades payés en USDG ne nécessitent aucune conversion."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading chat"
