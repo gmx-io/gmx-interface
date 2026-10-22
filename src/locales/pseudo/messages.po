@@ -7117,10 +7117,6 @@ msgstr ""
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
 msgstr ""
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX (Portuguese)"
-msgstr ""
-
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No eligible trades during the competition window"
@@ -11511,10 +11507,6 @@ msgstr ""
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Change network"
-msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Telegram group (Portuguese)"
 msgstr ""
 
 #: src/pages/Dashboard/GmCard.tsx
