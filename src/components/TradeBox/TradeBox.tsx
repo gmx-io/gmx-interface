@@ -412,11 +412,18 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
     // the convert step takes over only a ready order button, but keeps its spinner while the swap is in flight
     const isConvertStepShown =
       usdgConversion.buttonState !== undefined &&
-      !shouldShowDepositButton &&
-      (usdgConversion.isBusy || !gmxSubmitButtonState.disabled);
+      (usdgConversion.isBusy || (!shouldShowDepositButton && !gmxSubmitButtonState.disabled));
 
     if (isConvertStepShown) {
-      return { ...gmxSubmitButtonState, ...usdgConversion.buttonState, tooltipContent: null, bannerErrorContent: null };
+      return {
+        ...gmxSubmitButtonState,
+        ...usdgConversion.buttonState,
+        expressParams: usdgConversion.expressParams,
+        isExpressLoading: usdgConversion.isExpressLoading,
+        totalExecutionFee: usdgConversion.executionFee,
+        tooltipContent: null,
+        bannerErrorContent: null,
+      };
     }
 
     return gmxSubmitButtonState;
@@ -425,7 +432,10 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
     paxosRoute.buttonState,
     shouldShowDepositButton,
     usdgConversion.buttonState,
+    usdgConversion.executionFee,
+    usdgConversion.expressParams,
     usdgConversion.isBusy,
+    usdgConversion.isExpressLoading,
   ]);
 
   const wrappedOnSubmit = useCallback(async () => {

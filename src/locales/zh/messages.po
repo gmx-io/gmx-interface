@@ -5057,7 +5057,7 @@ msgstr "质押"
 
 #: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "On USDG pools, Stop Market orders hold USDG. Convert your USDC first, then place the order."
-msgstr "在 USDG 池中，止损市价单持有 USDG。请先转换您的 USDC，然后再下单。"
+msgstr "在 USDG 池中，触发市价单持有 USDG。请先转换您的 USDC，然后再下单。"
 
 #: src/lib/legacy.ts
 msgid "Decentralized perpetual exchange | GMX"

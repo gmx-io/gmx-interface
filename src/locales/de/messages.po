@@ -3767,7 +3767,7 @@ msgstr "Schnellere Ausführung mit GMX Premium-RPCs"
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "First you convert USDC to USDG, then you place the order. If you leave before placing it, the USDG stays in your account."
-msgstr "Zuerst wandelst du USDC in USDG um, dann platzierst du die Order. Wenn du vorher gehst, bleiben die USDG in deinem Konto."
+msgstr "Zuerst wandeln Sie USDC in USDG um, dann platzieren Sie die Order. Wenn Sie vorher gehen, bleiben die USDG in Ihrem Konto."
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets in your GMX Account"
@@ -5057,7 +5057,7 @@ msgstr "Staking"
 
 #: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "On USDG pools, Stop Market orders hold USDG. Convert your USDC first, then place the order."
-msgstr "In USDG-Pools halten Stop-Market-Orders USDG. Wandle zuerst deine USDC um und platziere dann die Order."
+msgstr "In USDG-Pools halten Stop-Market-Orders USDG. Wandeln Sie zuerst Ihre USDC um und platzieren Sie dann die Order."
 
 #: src/lib/legacy.ts
 msgid "Decentralized perpetual exchange | GMX"
@@ -5715,7 +5715,7 @@ msgstr "Netzwerk"
 
 #: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "On USDG pools, TWAP orders hold USDG. Convert your USDC first, then place the order."
-msgstr "In USDG-Pools halten TWAP-Orders USDG. Wandle zuerst deine USDC um und platziere dann die Order."
+msgstr "In USDG-Pools halten TWAP-Orders USDG. Wandeln Sie zuerst Ihre USDC um und platzieren Sie dann die Order."
 
 #: src/components/OrdersModal/TPSLInputRow.tsx
 msgid "{secondLabel}"
@@ -11479,7 +11479,7 @@ msgstr "LP"
 
 #: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "On USDG pools, Limit orders hold USDG. Convert your USDC first, then place the order."
-msgstr "In USDG-Pools halten Limit-Orders USDG. Wandle zuerst deine USDC um und platziere dann die Order."
+msgstr "In USDG-Pools halten Limit-Orders USDG. Wandeln Sie zuerst Ihre USDC um und platzieren Sie dann die Order."
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver address"

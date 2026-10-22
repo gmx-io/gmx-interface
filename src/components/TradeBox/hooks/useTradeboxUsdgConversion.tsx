@@ -239,7 +239,10 @@ export function useTradeboxUsdgConversion({
   }>();
   const pendingConversionRef = useRef<{
     knownOrderStatusKeys: Set<string>;
+    marketAddress: string | undefined;
     tokenInAddress: string;
+    tokenOutAddress: string;
+    tokenOutDecimals: number;
     amountIn: bigint;
     minAmountOut: bigint;
     swapPath: string[];
@@ -260,7 +263,7 @@ export function useTradeboxUsdgConversion({
       return;
     }
 
-    if (!batchParams || !signer || !provider || !tokensData || !conversionSwapAmounts || !usdcAddress) {
+    if (!batchParams || !signer || !provider || !tokensData || !conversionSwapAmounts || !usdcAddress || !usdgToken) {
       helperToast.error(t`Conversion failed`);
       return;
     }
@@ -272,7 +275,10 @@ export function useTradeboxUsdgConversion({
 
       pendingConversionRef.current = {
         knownOrderStatusKeys: new Set(Object.keys(orderStatuses)),
+        marketAddress,
         tokenInAddress: usdcAddress,
+        tokenOutAddress: usdgToken.address,
+        tokenOutDecimals: usdgToken.decimals,
         amountIn: conversionSwapAmounts.amountIn,
         minAmountOut: batchParams.createOrderParams[0].orderPayload.numbers.minOutputAmount,
         swapPath: conversionSwapAmounts.swapStrategy.swapPathStats?.swapPath ?? [],
@@ -280,7 +286,8 @@ export function useTradeboxUsdgConversion({
 
       const orderTxnCallback = makeOrderTxnCallback({ actionName: "Swap", collateralSymbol: fromToken?.symbol });
 
-      await sendBatchOrderTxn({
+      const pending = pendingConversionRef.current;
+      const result = await sendBatchOrderTxn({
         chainId,
         signer,
         provider,
@@ -301,8 +308,20 @@ export function useTradeboxUsdgConversion({
         },
       });
 
-      if (pendingConversionRef.current) {
+      if (pendingConversionRef.current === pending) {
         setStep("converting");
+
+        // a wallet transaction that reverts on chain never creates the order, so its receipt releases the button
+        if (result && "wait" in result) {
+          result
+            .wait()
+            .then(({ status }) => {
+              if (status === "failed" && pendingConversionRef.current === pending) {
+                resetConversion();
+              }
+            })
+            .catch(() => undefined);
+        }
       }
     } catch {
       resetConversion();
@@ -319,6 +338,7 @@ export function useTradeboxUsdgConversion({
     isApproving,
     isFromTokenGmxAccount,
     makeOrderTxnCallback,
+    marketAddress,
     orderStatuses,
     provider,
     resetConversion,
@@ -327,6 +347,7 @@ export function useTradeboxUsdgConversion({
     tokensData,
     tokensToApprove.length,
     usdcAddress,
+    usdgToken,
   ]);
 
   const relayTaskStatusCode = relayTaskId ? relayTaskStatuses[relayTaskId]?.statusCode : undefined;
@@ -344,7 +365,7 @@ export function useTradeboxUsdgConversion({
     function applyExecutedConversion() {
       const pending = pendingConversionRef.current;
 
-      if (step !== "converting" || !pending || !account || !collateralTokenAddress || !usdgToken) {
+      if (step !== "converting" || !pending || !account) {
         return;
       }
 
@@ -370,17 +391,23 @@ export function useTradeboxUsdgConversion({
 
       pendingConversionRef.current = undefined;
 
+      // the USDG stays in the account either way; the margin only follows it on the market it was converted for
+      if (marketAddress !== pending.marketAddress) {
+        resetConversion();
+        return;
+      }
+
       // GMX Account payouts land in the multichain vault, so the order's guaranteed minimum stands in for the transfer
-      getReceivedTokenAmount({ chainId, txnHash: executedTxnHash, tokenAddress: collateralTokenAddress, account })
+      getReceivedTokenAmount({ chainId, txnHash: executedTxnHash, tokenAddress: pending.tokenOutAddress, account })
         .catch(() => 0n)
         .then((receivedAmount) => {
           const amountOut = receivedAmount > 0n ? receivedAmount : pending.minAmountOut;
 
-          setFromTokenAddress(collateralTokenAddress);
+          setFromTokenAddress(pending.tokenOutAddress);
           setFocusedInput("from");
-          setFromTokenInputValue(formatAmountFree(amountOut, usdgToken.decimals), true);
+          setFromTokenInputValue(formatAmountFree(amountOut, pending.tokenOutDecimals), true);
           setLastConversion({
-            marketAddress,
+            marketAddress: pending.marketAddress,
             tokenInAddress: pending.tokenInAddress,
             amountIn: pending.amountIn,
             amountOut,
@@ -391,7 +418,6 @@ export function useTradeboxUsdgConversion({
     [
       account,
       chainId,
-      collateralTokenAddress,
       marketAddress,
       orderStatuses,
       resetConversion,
@@ -399,7 +425,6 @@ export function useTradeboxUsdgConversion({
       setFromTokenAddress,
       setFromTokenInputValue,
       step,
-      usdgToken,
     ]
   );
 
@@ -618,6 +643,9 @@ export function useTradeboxUsdgConversion({
     isConvertFirst,
     isBusy,
     buttonState,
+    expressParams,
+    isExpressLoading,
+    executionFee,
     tooLargeAlert,
     convertFirstNote,
     convertedNote,
