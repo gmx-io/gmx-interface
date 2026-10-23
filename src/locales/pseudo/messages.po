@@ -12124,6 +12124,7 @@ msgstr ""
 msgid "Alerts"
 msgstr ""
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Loading swap path…"
 msgstr ""

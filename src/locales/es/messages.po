@@ -12124,6 +12124,7 @@ msgstr "Tasa máxima corto"
 msgid "Alerts"
 msgstr "Alertas"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Loading swap path…"
 msgstr "Cargando ruta de intercambio…"

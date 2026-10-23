@@ -43,7 +43,7 @@ describe("getOrderAutoSubmitStep", () => {
 const USDC_ADDRESS = getTokenBySymbol(ARBITRUM, "USDC").address;
 const USDT_ADDRESS = getTokenBySymbol(ARBITRUM, "USDT").address;
 const usd = (value: number) => expandDecimals(value, 30);
-const usdc = (value: number) => expandDecimals(value, 6);
+const usdc = (value: number) => BigInt(Math.round(value * 1e6));
 
 function token(address: string, decimals: number, price: bigint, balances: { wallet?: bigint; gmxAccount?: bigint }) {
   return {
@@ -66,10 +66,10 @@ function tokensData(p: { usdc?: number; usdt?: number; eth?: bigint; isGmxAccoun
   };
 }
 
-function gasParams(data: TokensData, amount: bigint): GasPaymentParams {
+function gasParams(data: TokensData, amount: bigint, tokenAddress = USDC_ADDRESS): GasPaymentParams {
   return {
-    gasPaymentToken: data[USDC_ADDRESS],
-    gasPaymentTokenAddress: USDC_ADDRESS,
+    gasPaymentToken: data[tokenAddress],
+    gasPaymentTokenAddress: tokenAddress,
     gasPaymentTokenAmount: amount,
     totalRelayerFeeTokenAmount: expandDecimals(1, 15),
   } as GasPaymentParams;
@@ -105,6 +105,22 @@ describe("getIsOrderStepGasCovered", () => {
 
   it("doesn't count wallet ETH for a GMX Account order", () => {
     expect(check(tokensData({ usdc: 100, eth: expandDecimals(1, 16), isGmxAccount: true }), 99, true)).toBe(false);
+  });
+
+  it("doesn't switch the order's fee to the USDC the conversion spends", () => {
+    const data = tokensData({ usdc: 100, usdt: 1.5 });
+
+    expect(
+      getIsOrderStepGasCovered({
+        chainId: ARBITRUM,
+        tokensData: data,
+        orderGasPaymentParams: gasParams(data, usdc(1), USDT_ADDRESS),
+        conversionGasPaymentParams: gasParams(data, usdc(1), USDT_ADDRESS),
+        payTokenAddress: USDC_ADDRESS,
+        payAmount: usdc(100),
+        isGmxAccount: false,
+      })
+    ).toBe(false);
   });
 
   it("doesn't judge a classic order, which pays in ETH", () => {

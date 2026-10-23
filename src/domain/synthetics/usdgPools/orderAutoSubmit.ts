@@ -75,7 +75,8 @@ export function getIsOrderStepGasCovered(p: {
         tokensData: p.tokensData,
         gasPaymentToken,
         gasPaymentTokenAmount: orderGasPaymentParams.gasPaymentTokenAmount,
-        payAmounts: {},
+        // the conversion spends the pay token first, so it can't stand in for the order's fee
+        payAmounts: { [p.payTokenAddress]: p.payAmount },
         isGmxAccount: p.isGmxAccount,
       })
     : undefined;

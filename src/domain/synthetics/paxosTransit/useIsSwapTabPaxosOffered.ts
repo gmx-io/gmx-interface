@@ -3,6 +3,7 @@ import useSWR from "swr";
 import { getPaxosTransitConfig } from "config/paxosTransit";
 import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { useChainId } from "lib/chains";
+import { useDebounce } from "lib/debounce/useDebounce";
 import { formatUsd } from "lib/numbers";
 import { retryAtRefreshCadence } from "lib/useSWRWithFreshness";
 import useWallet from "lib/wallets/useWallet";
@@ -17,6 +18,7 @@ import { useTransitMinOrderSizes } from "./useTransitMinOrderSizes";
 
 const FEE_TIER_REFRESH_INTERVAL = 60_000;
 const QUOTE_REFRESH_INTERVAL = 30_000;
+const AMOUNT_DEBOUNCE_MS = 500;
 
 export function getTradeboxPaxosFeeTierKey(chainId: number, account: string, isMocked: boolean) {
   return ["tradeboxPaxosFeeTier", chainId, account, isMocked];
@@ -117,15 +119,17 @@ export function useIsSwapTabPaxosOffered({
 
   // the Swap tab offers the standard route to non-whitelisted traders only when it pays out more than instant
   const isStandardQuoteCompared = routeStates?.paxosStandard.status === "quote" && !isWhitelisted && !isStandardForced;
+  // quotes follow the amount once typing stops, as on the Swap tab, so both share the cached quote
+  const quoteAmount: bigint | undefined = useDebounce(amount, AMOUNT_DEBOUNCE_MS);
   const { data: standardQuote, error: standardQuoteError } = useSWR(
-    isStandardQuoteCompared
+    isStandardQuoteCompared && quoteAmount !== undefined
       ? getTradeboxPaxosQuoteKey({
           route: "paxosStandard",
           chainId,
           account,
           tokenInAddress: paxosTransitConfig?.usdcAddress,
           tokenOutAddress: paxosTransitConfig?.usdgAddress,
-          amount: amount!,
+          amount: quoteAmount,
           isMocked,
         })
       : null,
@@ -134,12 +138,12 @@ export function useIsSwapTabPaxosOffered({
         userAddress: account!,
         offerAsset: paxosTransitConfig!.usdcAddress,
         wantAsset: paxosTransitConfig!.usdgAddress,
-        offerAmount: amount!,
+        offerAmount: quoteAmount!,
         sourceChainId: chainId,
         destinationChainId: chainId,
         feeTier: "standardFee",
       }),
-    { refreshInterval: QUOTE_REFRESH_INTERVAL, onErrorRetry: retryAtRefreshCadence }
+    { refreshInterval: QUOTE_REFRESH_INTERVAL, onErrorRetry: retryAtRefreshCadence, keepPreviousData: true }
   );
 
   if (
