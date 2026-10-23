@@ -2223,6 +2223,7 @@ msgid "Canceling {ordersText}..."
 msgstr "Stornierung von {ordersText}..."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Received at close (GMX balance)"
 msgstr "Eingang beim Schließen (GMX-Guthaben)"
@@ -3327,6 +3328,10 @@ msgstr "Update verfügbar"
 #: src/components/TradeboxMarginFields/SizeField.tsx
 msgid "Size"
 msgstr "Größe"
+
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Convert to {convertToSymbol}"
+msgstr "In {convertToSymbol} umwandeln"
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Loading Express params..."
@@ -4940,6 +4945,10 @@ msgstr "Bleiben Sie über die neuesten Listings, Updates und Wartungshinweise au
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "How do I get started on GMX?"
 msgstr "Wie starte ich auf GMX?"
+
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Paid in {receivedSymbol}: the conversion to {convertToSymbol} couldn't fill"
+msgstr "In {receivedSymbol} ausgezahlt: Die Umwandlung in {convertToSymbol} konnte nicht ausgeführt werden"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -6670,6 +6679,10 @@ msgstr "Monatlich gekauft"
 msgid "Zero-fee capacity left"
 msgstr "Verbleibende gebührenfreie Kapazität"
 
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Received {receivedText}"
+msgstr "Erhalten: {receivedText}"
+
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
 msgstr "Übertragen eines Empfehlungscodes"
@@ -7370,6 +7383,7 @@ msgstr "Verringern"
 msgid "Yield"
 msgstr "Rendite"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Wallet received"
 msgstr "Auf Wallet erhalten"

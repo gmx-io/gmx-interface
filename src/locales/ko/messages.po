@@ -2223,6 +2223,7 @@ msgid "Canceling {ordersText}..."
 msgstr "{ordersText} 취소 중..."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Received at close (GMX balance)"
 msgstr "청산 시 수령액 (GMX 잔액)"
@@ -3327,6 +3328,10 @@ msgstr "업데이트 사용 가능"
 #: src/components/TradeboxMarginFields/SizeField.tsx
 msgid "Size"
 msgstr "크기"
+
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Convert to {convertToSymbol}"
+msgstr "{convertToSymbol}(으)로 변환"
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Loading Express params..."
@@ -4940,6 +4945,10 @@ msgstr "최신 상장, 업데이트 및 점검 안내를 확인하십시오."
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "How do I get started on GMX?"
 msgstr "GMX를 시작하려면 어떻게 해야 합니까?"
+
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Paid in {receivedSymbol}: the conversion to {convertToSymbol} couldn't fill"
+msgstr "{receivedSymbol}(으)로 지급됨: {convertToSymbol}(으)로의 변환을 체결할 수 없었습니다"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -6670,6 +6679,10 @@ msgstr "월간 매입량"
 msgid "Zero-fee capacity left"
 msgstr "남은 수수료 무료 한도"
 
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Received {receivedText}"
+msgstr "{receivedText} 수령"
+
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
 msgstr "추천 코드 이전"
@@ -7370,6 +7383,7 @@ msgstr "감소"
 msgid "Yield"
 msgstr "수익률"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Wallet received"
 msgstr "지갑 수령액"

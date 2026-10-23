@@ -2223,6 +2223,7 @@ msgid "Canceling {ordersText}..."
 msgstr "Canceling {ordersText}..."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Received at close (GMX balance)"
 msgstr "Received at close (GMX balance)"
@@ -3327,6 +3328,10 @@ msgstr "Update available"
 #: src/components/TradeboxMarginFields/SizeField.tsx
 msgid "Size"
 msgstr "Size"
+
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Convert to {convertToSymbol}"
+msgstr "Convert to {convertToSymbol}"
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Loading Express params..."
@@ -4940,6 +4945,10 @@ msgstr "Stay up to date with the latest listings, updates and maintenance notice
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "How do I get started on GMX?"
 msgstr "How do I get started on GMX?"
+
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Paid in {receivedSymbol}: the conversion to {convertToSymbol} couldn't fill"
+msgstr "Paid in {receivedSymbol}: the conversion to {convertToSymbol} couldn't fill"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -6670,6 +6679,10 @@ msgstr "Monthly bought"
 msgid "Zero-fee capacity left"
 msgstr "Zero-fee capacity left"
 
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Received {receivedText}"
+msgstr "Received {receivedText}"
+
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
 msgstr "Transferring a referral code"
@@ -7370,6 +7383,7 @@ msgstr "Decrease"
 msgid "Yield"
 msgstr "Yield"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Wallet received"
 msgstr "Wallet received"

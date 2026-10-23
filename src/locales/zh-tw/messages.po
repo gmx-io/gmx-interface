@@ -2223,6 +2223,7 @@ msgid "Canceling {ordersText}..."
 msgstr "正在取消 {ordersText}..."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Received at close (GMX balance)"
 msgstr "平倉時收到（GMX 餘額）"
@@ -3327,6 +3328,10 @@ msgstr "有可用更新"
 #: src/components/TradeboxMarginFields/SizeField.tsx
 msgid "Size"
 msgstr "規模"
+
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Convert to {convertToSymbol}"
+msgstr "轉換為 {convertToSymbol}"
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Loading Express params..."
@@ -4940,6 +4945,10 @@ msgstr "即時掌握最新的上架、更新與維護通知。"
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "How do I get started on GMX?"
 msgstr "如何在 GMX 上開始使用？"
+
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Paid in {receivedSymbol}: the conversion to {convertToSymbol} couldn't fill"
+msgstr "已以 {receivedSymbol} 支付：無法完成到 {convertToSymbol} 的轉換"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -6670,6 +6679,10 @@ msgstr "月度回購量"
 msgid "Zero-fee capacity left"
 msgstr "剩餘零費用額度"
 
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Received {receivedText}"
+msgstr "已收到 {receivedText}"
+
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
 msgstr "轉移推薦代碼"
@@ -7370,6 +7383,7 @@ msgstr "減倉"
 msgid "Yield"
 msgstr "收益"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Wallet received"
 msgstr "錢包收到金額"

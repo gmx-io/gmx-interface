@@ -16,7 +16,11 @@ import {
   TradeAction,
   TradeActionType,
 } from "domain/synthetics/tradeHistory";
-import { useLifecycleSettlement } from "domain/synthetics/tradeHistory/useLifecycleSettlement";
+import { useLifecycleSettlement, type LifecycleSwapLeg } from "domain/synthetics/tradeHistory/useLifecycleSettlement";
+import {
+  getIsUsdgPartialClose,
+  getUsdgPartialCloseSwapLegId,
+} from "domain/synthetics/tradeHistory/useUsdgPartialCloseSwapLegs";
 import { EMPTY_ARRAY } from "lib/objects";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionClickEvent } from "lib/userAnalytics/types";
@@ -43,6 +47,7 @@ import {
   getLifecycleSettlementView,
   getSettlementNotes,
   getUnreconcilableLifecycleLines,
+  getUsdgPartialClosePayoutLines,
 } from "./utils/lifecycleSettlement";
 import { formatPositionMessage, getSettlementTooltipLines } from "./utils/position";
 import { TooltipContent, TooltipString } from "./utils/shared";
@@ -56,6 +61,7 @@ type Props = {
   shouldDisplayAccount?: boolean;
   showDebugValues?: boolean;
   onSelectPositionLifecycle?: (tradeAction: PositionTradeAction) => void;
+  usdgPartialCloseSwapLegsById?: Record<string, LifecycleSwapLeg>;
 };
 
 function LineSpan({ span }: { span: TooltipString }) {
@@ -160,19 +166,32 @@ function FeesTooltipContent({ tradeAction, feesLines }: { tradeAction: TradeActi
       return feesLines;
     }
 
-    const view = getLifecycleSettlementView(fullCloseCandidate, settlement);
+    const view = getLifecycleSettlementView({ closeRow: fullCloseCandidate, data: settlement, chainId });
+    // an unmatched lifecycle has no swap legs, which would read as every swap having reverted
+    const hasCloseSwapLegs = !settlement.isTruncated && settlement.rows.some((row) => row.id === fullCloseCandidate.id);
+    const usdgPayoutCtx = hasCloseSwapLegs ? { chainId, swapLegsById: settlement.swapLegsById } : undefined;
 
     const settlementLines =
       view.mode === "extended"
         ? getLifecycleSettlementLines(view.aggregate)
         : view.mode === "compact"
           ? [
-              ...getSettlementTooltipLines(fullCloseCandidate, view.openRow, view.isMultichain),
+              ...getSettlementTooltipLines({
+                tradeAction: fullCloseCandidate,
+                openRow: view.openRow,
+                isMultichain: view.isMultichain,
+                usdgPayoutCtx,
+              }),
               "",
               ...getSettlementNotes(view.isMultichain),
             ]
           : [
-              ...getSettlementTooltipLines(fullCloseCandidate, undefined, view.isMultichain),
+              ...getSettlementTooltipLines({
+                tradeAction: fullCloseCandidate,
+                openRow: undefined,
+                isMultichain: view.isMultichain,
+                usdgPayoutCtx,
+              }),
               "",
               ...getSettlementNotes(view.isMultichain),
               ...getUnreconcilableLifecycleLines(),
@@ -183,7 +202,7 @@ function FeesTooltipContent({ tradeAction, feesLines }: { tradeAction: TradeActi
     }
 
     return [...feesLines, ...settlementLines];
-  }, [feesLines, fullCloseCandidate, settlement]);
+  }, [chainId, feesLines, fullCloseCandidate, settlement]);
 
   return (
     <>
@@ -206,6 +225,7 @@ export function TradeHistoryRow({
   shouldDisplayAccount,
   showDebugValues,
   onSelectPositionLifecycle,
+  usdgPartialCloseSwapLegsById,
 }: Props) {
   const chainId = useSelector(selectChainId);
   const { account } = useWallet();
@@ -266,9 +286,32 @@ export function TradeHistoryRow({
     [msg.actionComment]
   );
 
+  const feesLines = useMemo(() => {
+    const breakdownLines = msg.feesTooltip ?? EMPTY_ARRAY;
+
+    if (!isPositionTradeAction(tradeAction) || !getIsUsdgPartialClose(chainId, tradeAction)) {
+      return breakdownLines;
+    }
+
+    const isSwapLegPending =
+      getUsdgPartialCloseSwapLegId(chainId, tradeAction) !== undefined && !usdgPartialCloseSwapLegsById;
+
+    if (isSwapLegPending) {
+      return breakdownLines;
+    }
+
+    const payoutLines = getUsdgPartialClosePayoutLines({
+      tradeAction,
+      swapLegsById: usdgPartialCloseSwapLegsById ?? {},
+      chainId,
+    });
+
+    return breakdownLines.length === 0 ? payoutLines.slice(1) : [...breakdownLines, ...payoutLines];
+  }, [chainId, msg.feesTooltip, tradeAction, usdgPartialCloseSwapLegsById]);
+
   const renderFeesTooltipContent = useCallback(
-    () => <FeesTooltipContent tradeAction={tradeAction} feesLines={msg.feesTooltip ?? EMPTY_ARRAY} />,
-    [msg.feesTooltip, tradeAction]
+    () => <FeesTooltipContent tradeAction={tradeAction} feesLines={feesLines} />,
+    [feesLines, tradeAction]
   );
 
   const marketTooltipHandle = useMemo(
@@ -448,7 +491,7 @@ export function TradeHistoryRow({
           )}
         </TableTd>
         <TableTd>
-          {(msg.feesTooltip && msg.feesTooltip.length > 0) || isFullCloseSettlementCandidate ? (
+          {feesLines.length > 0 || isFullCloseSettlementCandidate ? (
             <TooltipWithPortal
               handle={
                 msg.fees ? (

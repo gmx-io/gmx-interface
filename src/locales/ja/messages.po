@@ -2223,6 +2223,7 @@ msgid "Canceling {ordersText}..."
 msgstr "{ordersText} をキャンセル中..."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Received at close (GMX balance)"
 msgstr "クローズ時の受取額（GMX残高）"
@@ -3327,6 +3328,10 @@ msgstr "アップデートがあります"
 #: src/components/TradeboxMarginFields/SizeField.tsx
 msgid "Size"
 msgstr "サイズ"
+
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Convert to {convertToSymbol}"
+msgstr "{convertToSymbol}に変換"
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Loading Express params..."
@@ -4940,6 +4945,10 @@ msgstr "最新の上場、アップデート、メンテナンス情報をご確
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "How do I get started on GMX?"
 msgstr "GMXを始めるにはどうしたらいいですか？"
+
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Paid in {receivedSymbol}: the conversion to {convertToSymbol} couldn't fill"
+msgstr "{receivedSymbol}で支払われました: {convertToSymbol}への変換を約定できませんでした"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -6670,6 +6679,10 @@ msgstr "月間購入量"
 msgid "Zero-fee capacity left"
 msgstr "残りの手数料無料枠"
 
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Received {receivedText}"
+msgstr "{receivedText}を受け取りました"
+
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
 msgstr "紹介コードの移管"
@@ -7370,6 +7383,7 @@ msgstr "減少"
 msgid "Yield"
 msgstr "利回り"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Wallet received"
 msgstr "ウォレット受取額"

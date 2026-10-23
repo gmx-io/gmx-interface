@@ -2223,6 +2223,7 @@ msgid "Canceling {ordersText}..."
 msgstr "Отмена: {ordersText}..."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Received at close (GMX balance)"
 msgstr "Получено при закрытии (баланс GMX)"
@@ -3327,6 +3328,10 @@ msgstr "Доступно обновление"
 #: src/components/TradeboxMarginFields/SizeField.tsx
 msgid "Size"
 msgstr "Размер"
+
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Convert to {convertToSymbol}"
+msgstr "Конвертировать в {convertToSymbol}"
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Loading Express params..."
@@ -4940,6 +4945,10 @@ msgstr "Будьте в курсе последних листингов, обн
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "How do I get started on GMX?"
 msgstr "Как начать работу на GMX?"
+
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Paid in {receivedSymbol}: the conversion to {convertToSymbol} couldn't fill"
+msgstr "Выплачено в {receivedSymbol}: конвертацию в {convertToSymbol} не удалось исполнить"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -6670,6 +6679,10 @@ msgstr "Куплено за месяц"
 msgid "Zero-fee capacity left"
 msgstr "Остаток лимита без комиссии"
 
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Received {receivedText}"
+msgstr "Получено: {receivedText}"
+
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
 msgstr "Передача реферального кода"
@@ -7370,6 +7383,7 @@ msgstr "Уменьшить"
 msgid "Yield"
 msgstr "Доходность"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Wallet received"
 msgstr "Получено на кошелёк"
