@@ -3,8 +3,10 @@ import { ReactNode, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 
 import { getChainName } from "config/chains";
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
+  selectExternalSwapBlockReason,
   selectTradeboxCollateralTokenAddress,
   selectTradeboxFromToken,
   selectTradeboxFromTokenAmount,
@@ -77,6 +79,8 @@ export function useTradeboxUsdgConversion({
   } = useIsSwapTabPaxosOffered({
     amount: fromTokenAmount,
     amountUsd: fromTokenUsd,
+    // the banner shows only when no instant route can fill the amount
+    instantAmountOut: undefined,
     isGmxAccount: isFromTokenGmxAccount,
     enabled: isTooLarge,
   });
@@ -96,6 +100,25 @@ export function useTradeboxUsdgConversion({
       </div>
     );
   }
+
+  const externalSwapBlockReason = useSelector(selectExternalSwapBlockReason);
+  const subaccountContext = useSubaccountContext();
+  const onDisableOneClickTrading = useCallback(() => {
+    void subaccountContext.tryDisableSubaccount();
+  }, [subaccountContext]);
+  // the too-large check can't ask the aggregator while One-Click Trading is on, and its own card is hidden here
+  const oneClickTradingHint =
+    externalSwapBlockReason === "oneClickTrading" ? (
+      <div className="mt-4">
+        <Trans>
+          One-Click Trading skips external routes, which may convert the full amount.{" "}
+          <EmbeddedActionButton tone="link" onClick={onDisableOneClickTrading}>
+            Disable One-Click Trading
+          </EmbeddedActionButton>
+          .
+        </Trans>
+      </div>
+    ) : null;
 
   let tooLargeAlert: ReactNode = undefined;
 
@@ -141,6 +164,15 @@ export function useTradeboxUsdgConversion({
       <>
         <Trans>Nothing can be converted instantly right now. Trades paid in USDG need no conversion.</Trans>
         {paxosHint}
+      </>
+    );
+  }
+
+  if (tooLargeAlert !== undefined && oneClickTradingHint !== null) {
+    tooLargeAlert = (
+      <>
+        {tooLargeAlert}
+        {oneClickTradingHint}
       </>
     );
   }

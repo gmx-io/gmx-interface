@@ -8640,6 +8640,10 @@ msgstr "現在ブーストレートを読み込めません"
 msgid "Order submission failed"
 msgstr "注文の送信に失敗しました"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "One-Click Trading skips external routes, which may convert the full amount. <0>Disable One-Click Trading</0>."
+msgstr "One-Click Tradingでは外部ルートを使用しません。外部ルートなら全額を変換できる可能性があります。<0>One-Click Tradingを無効にする</0>。"
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Realized PnL before fees"
 msgstr "手数料控除前の確定損益（PnL）"
