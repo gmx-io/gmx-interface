@@ -1,5 +1,6 @@
 import { isAddressEqual } from "viem";
 
+import { HttpError } from "sdk/utils/http/http";
 import type { TransitFeeTier, TransitFeeTierResponse, TransitRoute } from "sdk/utils/paxos/types";
 
 export function getTransitMinOrderSize(
@@ -32,21 +33,29 @@ export function getTransitFeeTier(p: {
   isStandardFeeForced: boolean;
 }): {
   isWhitelisted: boolean;
+  isZeroFeePaused: boolean;
   isZeroFeeCapacityShort: boolean;
   feeTier: TransitFeeTier;
 } {
   const isWhitelisted = p.feeTierData?.feeTier === "zeroFee" && !p.isWhitelistIgnored;
+  const isZeroFeeOffered = isWhitelisted && p.isUsdcToUsdg;
+  const isZeroFeePaused = isZeroFeeOffered && !p.feeTierData?.isZeroFeeAvailable;
   const zeroFeeCapacity = p.feeTierData?.zeroFeeCapacity ?? 0n;
-  const isZeroFeeCapacityShort = isWhitelisted && p.isUsdcToUsdg && zeroFeeCapacity < p.amount;
-  const isBelowZeroFeeMinimum =
-    isWhitelisted && p.zeroFeeMinOrderSize !== undefined && p.amount < p.zeroFeeMinOrderSize;
-  const isZeroFee = isWhitelisted && !isZeroFeeCapacityShort && !isBelowZeroFeeMinimum && !p.isStandardFeeForced;
+  const isZeroFeeCapacityShort = isZeroFeeOffered && !isZeroFeePaused && zeroFeeCapacity < p.amount;
+  const isBelowZeroFeeMinimum = p.zeroFeeMinOrderSize !== undefined && p.amount < p.zeroFeeMinOrderSize;
+  const isZeroFee =
+    isZeroFeeOffered && !isZeroFeePaused && !isZeroFeeCapacityShort && !isBelowZeroFeeMinimum && !p.isStandardFeeForced;
 
   return {
     isWhitelisted,
+    isZeroFeePaused,
     isZeroFeeCapacityShort,
     feeTier: isZeroFee ? "zeroFee" : "standardFee",
   };
+}
+
+export function getIsZeroFeeRejection(error: unknown): boolean {
+  return error instanceof HttpError && (error.statusCode === 403 || error.statusCode === 409);
 }
 
 export function getShouldUseTransit(p: {

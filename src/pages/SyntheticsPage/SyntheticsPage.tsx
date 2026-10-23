@@ -675,7 +675,7 @@ function useOrdersControl() {
   const signer = useEthersSigner();
   const { provider } = useJsonRpcProvider(chainId);
   const [cancellingOrdersKeys, setCanellingOrdersKeys] = useCancellingOrdersKeysState();
-  const [selectedOrderKeys, setSelectedOrderKeys] = useState<string[]>(EMPTY_ARRAY);
+  const [selectedOrderKeysRaw, setSelectedOrderKeysRaw] = useState<string[]>(EMPTY_ARRAY);
   const hasOutdatedUi = useHasOutdatedUi();
 
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
@@ -687,6 +687,11 @@ function useOrdersControl() {
   const ordersInfoData = useSelector(selectOrdersInfoData);
   const globalExpressParams = useSelector(selectExpressGlobalParams);
   const subaccount = useSelector(selectSubaccountForChainAction);
+
+  const selectedOrderKeys = useMemo(
+    () => selectedOrderKeysRaw.filter((key) => getByKey(ordersInfoData, key)),
+    [ordersInfoData, selectedOrderKeysRaw]
+  );
 
   const onCancelSelectedOrders = useCallback(
     async function cancelSelectedOrders() {
@@ -741,7 +746,7 @@ function useOrdersControl() {
         });
         const txnResult = await tx.wait();
         if (txnResult?.status === "success") {
-          setSelectedOrderKeys(EMPTY_ARRAY);
+          setSelectedOrderKeysRaw(EMPTY_ARRAY);
         }
       } finally {
         setCanellingOrdersKeys((p) => p.filter((e) => !orderKeys.includes(e)));
@@ -822,7 +827,7 @@ function useOrdersControl() {
         });
       } finally {
         setCanellingOrdersKeys((prev) => prev.filter((k) => k !== key));
-        setSelectedOrderKeys((prev) => prev.filter((k) => k !== key));
+        setSelectedOrderKeysRaw((prev) => prev.filter((k) => k !== key));
       }
     },
     [
@@ -844,7 +849,7 @@ function useOrdersControl() {
     onCancelSelectedOrders,
     onCancelOrder,
     selectedOrderKeys,
-    setSelectedOrderKeys,
+    setSelectedOrderKeys: setSelectedOrderKeysRaw,
     marketsDirectionsFilter,
     setMarketsDirectionsFilter,
     orderTypesFilter,

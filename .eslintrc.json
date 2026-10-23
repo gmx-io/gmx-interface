@@ -82,6 +82,7 @@
     "react/display-name": "off",
     "local-rules/no-bigint-negation": "off",
     "local-rules/no-logical-bigint": "off",
+    "local-rules/solana-import-boundaries": "error",
 
     "es-x/no-bigint": "off",
     "es-x/no-optional-catch-binding": "off",
@@ -110,28 +111,6 @@
       "error",
       {
         "paths": ["lodash"]
-      }
-    ],
-    "@typescript-eslint/no-restricted-imports": [
-      "error",
-      {
-        "paths": [
-          {
-            "name": "@privy-io/react-auth/solana",
-            "message": "Solana packages are imported only in src/lib/solana and src/domain/gmsol."
-          }
-        ],
-        "patterns": [
-          {
-            "group": ["@solana/*", "@gmsol-labs/*"],
-            "message": "Solana packages are imported only in src/lib/solana and src/domain/gmsol."
-          },
-          {
-            "group": ["lib/solana", "lib/solana/*", "domain/gmsol", "domain/gmsol/*"],
-            "message": "Load Solana modules with a dynamic import() outside src/lib/solana and src/domain/gmsol.",
-            "allowTypeImports": true
-          }
-        ]
       }
     ],
     "no-restricted-globals": [
@@ -183,9 +162,9 @@
       }
     },
     {
-      "files": ["./src/lib/solana/**", "./src/domain/gmsol/**"],
+      "files": ["./src/lib/solana/**", "./src/domain/gmsol/**", "./src/config/gmsol/**"],
       "rules": {
-        "@typescript-eslint/no-restricted-imports": "off"
+        "local-rules/solana-import-boundaries": "off"
       }
     },
     {

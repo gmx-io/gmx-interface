@@ -15,6 +15,7 @@ import { AccountType, useAccountType } from "lib/wallets/useAccountType";
 
 import { useAvailableToTradeAssetMultichain } from "components/GmxAccountModal/hooks";
 
+import { clipNotificationFrame } from "./clipNotificationFrame";
 import { INTERCOM_APP_ID } from "./constants";
 import { getTraderTier } from "./getTraderTier";
 import { useShowSupportChat } from "./useShowSupportChat";
@@ -138,7 +139,10 @@ export function useSupportChat() {
       show();
     }
 
+    const stopClippingNotificationFrame = clipNotificationFrame();
+
     return () => {
+      stopClippingNotificationFrame();
       shutdown();
       initializedAddress.current = undefined;
     };

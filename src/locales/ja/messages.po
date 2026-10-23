@@ -84,6 +84,8 @@ msgstr "GMXの報酬を手動で受け取ることなく自動的に複利運用
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/MainView.tsx
 msgid "Disconnect"
 msgstr "切断"
 
@@ -459,6 +461,10 @@ msgstr "パーミットの詳細"
 msgid "Network fees increased. Additional fee required."
 msgstr "ネットワーク手数料が増加しました。追加の手数料が必要です。"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "USDG issuer, separate transaction, usually 2–10 min. No Paxos fee."
+msgstr "USDG発行体、別トランザクション、通常2–10分。Paxos手数料なし。"
+
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Insufficient pool balance to claim this funding fee"
 msgstr "この資金調達料を受け取るためのプール残高が不足しています"
@@ -482,6 +488,10 @@ msgstr "購入可能"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Missing required parameters"
 msgstr "必要なパラメータが不足しています"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paused for now"
+msgstr "現在一時停止中"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GLV?"
@@ -795,6 +805,10 @@ msgstr "インセンティブ、エアドロップ、賞品はこちらに表示
 msgid "Refer traders to GMX with your unique link and earn a share of the fees they generate"
 msgstr "専用リンクでGMXにトレーダーを紹介し、その取引手数料の一部を報酬として受け取れます"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: at the trigger price, the remaining position would exceed max leverage. Edit the order or <0>increase the position's margin</0>."
+msgstr "注文は約定しない可能性があります：トリガー価格では、残りのポジションが最大レバレッジを超えます。注文を編集するか、<0>ポジションの証拠金を増やして</0>ください。"
+
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using funds directly from your connected wallet."
 msgstr "接続されたウォレットの資金を直接使用して、GMXで個別ポジションを開くことができます。"
@@ -881,7 +895,6 @@ msgid "/ mo"
 msgstr "/月"
 
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
-#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
 #: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
 msgid "Not enough zero-fee capacity"
 msgstr "手数料無料枠が不足しています"
@@ -1155,10 +1168,6 @@ msgstr "価格が不安定です。<0>許容スリッページを増やしてく
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Only send <0>{chainName}-compatible assets</0> to this address!"
 msgstr "このアドレスには<0>{chainName}対応の資産</0>のみを送信してください！"
-
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
-msgid "USDG issuer, separate transaction, usually 2–10 min. No Paxos fee for whitelisted addresses."
-msgstr "USDG発行体、別トランザクション、通常2–10分。ホワイトリスト登録済みアドレスはPaxos手数料無料。"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
@@ -1573,8 +1582,10 @@ msgstr "リファラルコードを作成中..."
 msgid "DATE"
 msgstr "日付"
 
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "Solana"
 msgstr "Solana"
 
@@ -1636,6 +1647,10 @@ msgstr "拠出証拠金の合計"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Insufficient gas payment token balance in your GMX Account to cover network fees. Deposit funds and retry"
 msgstr "ネットワーク手数料を支払うためのGas支払いトークンの残高がGMX Accountに不足しています。資金を入金してから再度お試しください"
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paused until {reopenTime}"
+msgstr "{reopenTime}まで一時停止中"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposited"
@@ -2071,6 +2086,14 @@ msgstr "ベスティング"
 #: src/components/GmList/UsdgPoolBadges.tsx
 msgid "Extra yield for GLV [USDG] liquidity providers during the launch, targeting 8% or more on top of trading fees. Paid into the GLV price every 4 hours, so there's nothing to claim."
 msgstr "ローンチ期間中のGLV [USDG]流動性提供者向けの追加利回りで、取引手数料に加えて8%以上を目標としています。4時間ごとにGLV価格に反映されるため、受け取る操作は不要です。"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Auto picks the cheaper option. You can choose either option."
+msgstr "自動は安い方のオプションを選択します。どちらのオプションも選択できます。"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "This pool holds USDG, so USDC is converted to USDG when you buy and back to USDC when you sell.<0/><1/>Instant swap goes through the GMX USDC/USDG pool within your buy or sell, in one transaction. You pay its swap fee and price impact.<2/><3/>Direct with Paxos converts with Paxos, the issuer of USDG, in a separate transaction that usually settles in 2–10 min. The converted tokens land in your wallet first."
+msgstr "このプールはUSDGを保有しているため、購入時にUSDCはUSDGに変換され、売却時にUSDCに戻されます。<0/><1/>即時スワップは、購入または売却の中でGMX USDC/USDGプールを経由し、1つのトランザクションで完了します。そのプールのスワップ手数料と価格への影響を支払います。<2/><3/>Paxosで直接変換は、USDGの発行体であるPaxosと別のトランザクションで変換し、通常2–10分で決済されます。変換されたトークンはまずウォレットに届きます。"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max leverage exceeded. Remaining margin {remainingCollateralUsdText} is below the minimum for the position size. Increase margin or reduce size."
@@ -2511,10 +2534,6 @@ msgstr "利益"
 msgid "Swapped {0} for {1}"
 msgstr "{0} を {1} にスワップしました"
 
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
-msgid "Zero-fee capacity dropped below your amount a moment ago. The new capacity shows here within a minute."
-msgstr "手数料無料枠がたった今、入力額を下回りました。新しい枠は1分以内にここに表示されます。"
-
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Pick a time"
 msgstr "日時を選択"
@@ -2556,6 +2575,10 @@ msgstr "カードでの購入は、お住まいの地域または設定ではご
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Claiming price impact rebates..."
 msgstr "価格への影響のリベートを受け取り中…"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Auto picks the cheaper option. Direct with Paxos is only offered from {minAmount}."
+msgstr "自動は安い方のオプションを選択します。Paxosで直接変換は{minAmount}以上でのみ提供されます。"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 #: src/components/Earn/AdditionalOpportunities/OpportunityCard.tsx
@@ -2884,10 +2907,6 @@ msgstr "TWAPスワップはGMXプールの流動性のみを使用するため�
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "How do I choose?"
 msgstr "どのように選べばよいですか？"
-
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
-msgid "This pool holds USDG, so USDC is converted to USDG when you buy and back to USDC when you sell.<0/><1/>Instant swap goes through the GMX USDC/USDG pool within your buy or sell, in one transaction. You pay its swap fee and price impact.<2/><3/>Direct with Paxos converts with Paxos, the issuer of USDG, in a separate transaction that usually settles in 2–10 min. The converted tokens land in your wallet first.<4/><5/>Auto picks the cheaper option. Whitelisted addresses can choose either option and convert USDC to USDG with no Paxos fee. Other addresses always use Auto, and Direct with Paxos is only offered from {minAmount}.<6/><7/>The choice is fixed when only one option can handle the amount or a conversion is in progress."
-msgstr "このプールはUSDGを保有しているため、購入時にUSDCはUSDGに変換され、売却時にUSDCに戻されます。<0/><1/>即時スワップは、購入または売却の中でGMX USDC/USDGプールを経由し、1つのトランザクションで完了します。そのプールのスワップ手数料と価格への影響を支払います。<2/><3/>Paxosで直接変換は、USDGの発行体であるPaxosと別のトランザクションで変換し、通常2–10分で決済されます。変換されたトークンはまずウォレットに届きます。<4/><5/>自動は安い方のオプションを選択します。ホワイトリスト登録済みアドレスはどちらのオプションも選択でき、Paxos手数料なしでUSDCをUSDGに変換できます。その他のアドレスは常に自動を使用し、Paxosで直接変換は{minAmount}以上でのみ提供されます。<6/><7/>その金額に対応できるオプションが1つしかない場合、または変換が進行中の場合、選択は固定されます。"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Grouping"
@@ -3831,6 +3850,7 @@ msgstr "テーマ"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
 msgstr "最大レバレッジを超過しています"
 
@@ -3860,6 +3880,10 @@ msgstr "AIトレーディングアシスタント"
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "Allowed slippage"
 msgstr "許容スリッページ"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The request was sent, but its result could not be confirmed. Retry to check: if it didn't go through, deactivation continues with a wallet transaction."
+msgstr "リクエストは送信されましたが、結果を確認できませんでした。再度お試しいただくと確認します。完了していない場合は、ウォレット取引で無効化を続行します。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Loyalty"
@@ -4471,6 +4495,10 @@ msgstr "TWAP パート失敗"
 msgid "Min collateral factor OI short"
 msgstr "最小担保係数 OI ショート"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "USDG issuer, separate transaction, usually 2–10 min"
+msgstr "USDG発行体、別トランザクション、通常2–10分"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed TWAP Swap part"
 msgstr "TWAP スワップパート失敗"
@@ -4587,6 +4615,10 @@ msgstr "送信中..."
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Max capacity:"
 msgstr "最大容量:"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Zero-fee conversion is no longer available. Review the conversion and confirm again."
+msgstr "手数料無料の変換は利用できなくなりました。変換内容を確認し、もう一度承認してください。"
 
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "<0>No. There is no GMX-controlled account holding your money at any point. Traders trade directly from their own wallet, or from their funded GMX Account — a contract you control and withdraw from at will.</0><1>Affiliates never deposit anything. Rewards accrue in the contracts, and you claim them yourself, on-chain, to your address.</1>"
@@ -4853,6 +4885,11 @@ msgstr "ステップ2: 受取"
 #: src/domain/tokens/insufficientApproval.tsx
 msgid "The approved amount is lower than the required amount. Approve again or reduce the amount"
 msgstr "承認された数量が必要な数量を下回っています。再度承認するか、数量を減らしてください"
+
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "Close the full position, change the trigger price, or add margin."
+msgstr "ポジションを全決済するか、トリガー価格を変更するか、証拠金を追加してください。"
 
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Error name:"
@@ -5227,6 +5264,10 @@ msgstr "スワップによる価格への影響（実現済み）"
 msgid "It depends on the volume you route and which revenue streams you turn on. Use the calculator above for a rough estimate, or apply to talk specifics with the team."
 msgstr "ルーティングするボリュームと有効にする収益源によります。上の計算機で概算するか、応募してチームと詳細を相談してください。"
 
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
+msgid "Withdrawal to {sourceChainName} failed"
+msgstr "{sourceChainName}への出金に失敗しました"
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter recipient address"
 msgstr "受取人アドレスを入力"
@@ -5295,10 +5336,6 @@ msgstr "GMX上で構築されているプロジェクト。"
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval cancelled"
 msgstr "承認がキャンセルされました"
-
-#: src/domain/tokens/approveTokens.tsx
-msgid "Permit approvals are unavailable."
-msgstr "パーミット承認は利用できません。"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -5483,10 +5520,6 @@ msgstr "外部ルーティングは失敗した試行の後、一時的に停止
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
 msgstr "{wrappedNativeTokenSymbol}を<0>購入</0>してください。"
-
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
-msgid "Or pick Paxos standard with a fee or an instant route in Route. No route is picked for you."
-msgstr "または、ルートで手数料ありのPaxos標準か即時ルートを選んでください。ルートは自動では選ばれません。"
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX on Solana (known as GMTrade) is served from a separate domain"
@@ -5789,10 +5822,6 @@ msgstr "テイクプロフィットを約定"
 msgid "Market Increase"
 msgstr "Market Increase"
 
-#: src/domain/tokens/approveTokens.tsx
-msgid "This token does not support permit approvals."
-msgstr "このトークンはパーミット承認に対応していません。"
-
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Include PnL in leverage display"
@@ -5902,6 +5931,10 @@ msgstr "価格への影響はありません。このサイズでの<0/>ショ�
 msgid "Paxos converts USDC from your wallet on {settlementChainName}."
 msgstr "Paxosは{settlementChainName}上のウォレットにあるUSDCを変換します。"
 
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+msgid "Paxos zero-fee is paused"
+msgstr "Paxos手数料無料は一時停止中です"
+
 #: src/pages/ReferralsTier/ReferralsTier.tsx
 msgid "Current tier:"
 msgstr "現在のティア:"
@@ -6008,6 +6041,10 @@ msgstr "残りをPaxosで変換"
 msgid "Cancel new orders"
 msgstr "新規注文をキャンセル"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Zero-fee conversion is paused."
+msgstr "手数料無料の変換は一時停止中です。"
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Net price impact (open + close)"
 msgstr "正味の価格への影響（オープン + 決済）"
@@ -6042,6 +6079,7 @@ msgstr "過去180日"
 msgid "Positive funding fees"
 msgstr "正のファンディング手数料"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Loading…"
 msgstr "ロード中…"
@@ -6069,6 +6107,10 @@ msgstr "不明なGM購入注文"
 #: landing/src/pages/Builders/HeroSection/HeroSection.tsx
 msgid "Build on GMX.<0/>Get paid on every trade."
 msgstr "GMXで開発。<0/>すべての取引で報酬を。"
+
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
+msgid "Transfer not found"
+msgstr "送金が見つかりません"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 msgid "Insufficient {tokenInSymbol} balance"
@@ -6498,6 +6540,10 @@ msgstr "無効なトランザクション"
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in {0} pool. Select a different pool."
 msgstr "{0} プールの流動性不足です。別のプールを選択してください。"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Enable token permits regardless of UI flags"
+msgstr "UI フラグに関係なくトークン Permit を有効にする"
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets in your wallet"
@@ -7177,10 +7223,6 @@ msgstr "チャートに購入/売却アイコンを表示"
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
 msgstr "このスワップには外部ルーティングが必要です。有効にするには{0}でGasを支払ってください。"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX (Portuguese)"
-msgstr "GMX (ポルトガル語)"
-
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No eligible trades during the competition window"
@@ -7251,6 +7293,10 @@ msgstr "24時間"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "High price impact"
 msgstr "価格への影響が大きい"
+
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
+msgid "This page is available on EVM networks only. Switch the network in the header, or go to <0>Trade</0>."
+msgstr "このページはEVMネットワークのみで利用可能です。ヘッダーでネットワークを切り替えるか、<0>取引</0>ページにアクセスしてください。"
 
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/NetFeeTooltip.tsx
@@ -7587,10 +7633,6 @@ msgstr "使用資本に対するPnL（資本利益率）"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Order error. Prices are volatile for this market. Try again by <0>increasing the allowed slippage</0>"
 msgstr "注文エラー。この市場の価格は不安定です。<0>許容スリッページを引き上げて</0>再度お試しください"
-
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
-msgid "Choose a route"
-msgstr "ルートを選択"
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "No transfer history matching search"
@@ -8075,6 +8117,10 @@ msgstr "シンボル（AからZ）"
 msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none"
 msgstr "チャートに表示する購入/売却マークを選択します：過去のすべての取引、現在保有中のポジションのみ、または表示しない"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "At this trigger price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "このトリガー価格では残りのポジションが最大レバレッジを超えるため、注文が約定しない可能性があります。"
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr "{orderText}が更新されました"
@@ -8220,6 +8266,10 @@ msgstr "購入"
 msgid "Affiliate dashboard"
 msgstr "アフィリエイトダッシュボード"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first. Remaining margin: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
+msgstr "残りのポジションが最大許容レバレッジを超えます。より多くクローズするか、出金額を減らすか、先に証拠金を追加してください。残りの証拠金: {remainingCollateralUsdText}、必要: {minCollateralUsdForLeverageText}"
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Capital used"
@@ -8340,6 +8390,10 @@ msgstr "勝率"
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 msgid "GM and GLV include markets you no longer hold"
 msgstr "GMとGLVには、現在保有していないマーケットも含まれます"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first."
+msgstr "残りのポジションが最大許容レバレッジを超えます。より多くクローズするか、出金額を減らすか、先に証拠金を追加してください。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading stats"
@@ -8977,6 +9031,10 @@ msgstr "最大値超過"
 msgid "Insufficient {nativeTokenSymbol} in your Wallet for gas on {chainName}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
 msgstr "{chainName}のGas用{nativeTokenSymbol}がウォレットに不足しています。{nativeTokenSymbol}を<0>スワップ</0>または<1>ブリッジ</1>してください。"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "The choice is fixed when only one option can handle the amount or a conversion is in progress."
+msgstr "その金額に対応できるオプションが1つしかない場合、または変換が進行中の場合、選択は固定されます。"
+
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -9030,6 +9088,10 @@ msgstr "編集"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total supply"
 msgstr "総供給量"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Zero-fee conversion is paused until {reopenTime}."
+msgstr "手数料無料の変換は{reopenTime}まで一時停止中です。"
 
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 msgid "My assets"
@@ -9299,6 +9361,10 @@ msgstr "手数料控除後の証拠金が少なくなっています。清算リ
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
 msgstr "{profitTokenSymbol} と {collateralTokenSymbol} を別々に受け取る"
 
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
+msgid "Trading on Solana is coming soon."
+msgstr "Solanaでの取引は近日公開予定です。"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min deposit: {0}"
 msgstr "最小入金額: {0}"
@@ -9408,6 +9474,10 @@ msgstr "アカウントタイプ"
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 msgid "Collateral in"
 msgstr "担保トークン"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, close the position fully, or add margin first."
+msgstr "残りのポジションが最大許容レバレッジを超えます。より多くクローズするか、ポジションを全決済するか、先に証拠金を追加してください。"
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "EVENT NAME"
@@ -9688,6 +9758,7 @@ msgid "Copy"
 msgstr "コピー"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Amount"
@@ -9696,6 +9767,10 @@ msgstr "金額"
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Integrate GMX"
 msgstr "GMXを統合"
+
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Take-Profit price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "テイクプロフィット価格では残りのポジションが最大レバレッジを超えるため、注文が約定しない可能性があります。"
 
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Show line values in USD"
@@ -9903,6 +9978,7 @@ msgid "Max funding factor (long)"
 msgstr "最大ファンディングファクター（ロング）"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient collateral to cover order costs"
 msgstr "注文コストを賄うための担保が不足しています"
 
@@ -10100,10 +10176,6 @@ msgstr "約5分"
 #: src/pages/ReferralsTier/ReferralsTier.tsx
 msgid "New tier:"
 msgstr "新しいティア:"
-
-#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
-msgid "Zero-fee capacity changed. Review the route options and confirm again."
-msgstr "手数料無料枠が変わりました。ルートの選択肢を確認し、もう一度承認してください。"
 
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "Market delistings"
@@ -10591,6 +10663,10 @@ msgstr "Saulius GMX analytics"
 msgid "Add RPC"
 msgstr "RPCを追加"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "Turn off \"Keep leverage\", close the full position, change the trigger price, or add margin."
+msgstr "「レバレッジを維持」をオフにするか、ポジションを全決済するか、トリガー価格を変更するか、証拠金を追加してください。"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a collateral"
 msgstr "担保を選択"
@@ -10749,6 +10825,7 @@ msgstr "引き出しシミュレーションエラー"
 msgid "Claims"
 msgstr "請求"
 
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Date"
@@ -11050,6 +11127,7 @@ msgstr "失敗回数"
 msgid "Min margin: {0}"
 msgstr "最小証拠金：{0}"
 
+#: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TVChartContainer/constants.ts
@@ -11106,6 +11184,10 @@ msgstr "購入中"
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
 msgstr "シフト"
+
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
+msgid "EVM networks only"
+msgstr "EVMネットワーク専用"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation risk alerts"
@@ -11591,10 +11673,6 @@ msgstr "お好きな方法でご連絡ください — 通常数時間以内に�
 msgid "Change network"
 msgstr "ネットワークを変更"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Telegram group (Portuguese)"
-msgstr "Telegramグループ（ポルトガル語）"
-
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM is the liquidity provider token for GMX V2 markets. It accrues 63% of the fees generated by V2 markets."
 msgstr "GM は GMX V2 マーケットの流動性提供者トークンです。V2 マーケットで発生する手数料の 63% が蓄積されます。"
@@ -11922,9 +12000,17 @@ msgstr "GMXからのアラートとお知らせを受け取り、取引や清算
 msgid "Use the Pay amount"
 msgstr "支払い金額を使用"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Stop-Loss price, the remaining position would exceed max leverage and the order may not execute."
+msgstr "ストップロス価格では残りのポジションが最大レバレッジを超えるため、注文が約定しない可能性があります。"
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated off-hours liquidation price"
 msgstr "時間外の推定清算価格"
+
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Take-Profit and Stop-Loss prices, the remaining position would exceed max leverage and the orders may not execute."
+msgstr "テイクプロフィット価格とストップロス価格では残りのポジションが最大レバレッジを超えるため、注文が約定しない可能性があります。"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Repeat transaction"
@@ -11945,6 +12031,10 @@ msgstr "実効手数料約0.05%に基づく参考値です。<0/>実際の収益
 #: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 msgid "Starts with the first reward round."
 msgstr "最初の報酬ラウンドから開始されます。"
+
+#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
+msgid "Paxos zero-fee is no longer available. Review the route options and confirm again."
+msgstr "Paxos手数料無料は利用できなくなりました。ルートの選択肢を確認し、もう一度承認してください。"
 
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "Receive to this wallet"
@@ -12340,10 +12430,6 @@ msgstr "年間換算パフォーマンス"
 msgid "Direct smart contract integration"
 msgstr "スマートコントラクトと直接連携"
 
-#: src/domain/tokens/approveTokens.tsx
-msgid "Permit approvals are disabled for this token."
-msgstr "このトークンではパーミット承認が無効になっています。"
-
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "LAST PRICE"
@@ -12356,6 +12442,10 @@ msgstr "ウォレットで承認がすでに待機中です。変換はその実
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Cancelling {orderText}..."
 msgstr "{orderText}をキャンセル中…"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "The signed request could not be completed. Retry to deactivate with a wallet transaction."
+msgstr "署名済みリクエストを完了できませんでした。再度お試しいただくと、ウォレット取引で無効化します。"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute margin deposit"
@@ -12419,10 +12509,6 @@ msgstr "{settingsLink} で最大ネットワーク手数料バッファを {0} �
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM airdrop"
 msgstr "GLP から GM へのエアドロップ"
-
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
-msgid "Whitelisted addresses convert USDC to USDG with no Paxos fee. To get whitelisted, message <0>@GMXPartners</0> on Telegram and mention \"USDG whitelist\"."
-msgstr "ホワイトリスト登録済みアドレスはPaxos手数料なしでUSDCをUSDGに変換できます。ホワイトリストに登録するには、Telegramで<0>@GMXPartners</0>にメッセージを送り、\"USDG whitelist\"とお伝えください。"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
@@ -12759,6 +12845,10 @@ msgstr "累計報酬"
 #: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 msgid "Not enough history yet"
 msgstr "まだ十分な履歴がありません"
+
+#: src/components/GmxAccountModal/TransferDetailsView.tsx
+msgid "Failed to load transfer details"
+msgstr "送金の詳細を読み込めませんでした"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "This trigger is at or beyond the estimated liquidation price. The margin deposit will be attempted before liquidation when eligible, but execution is not guaranteed."
