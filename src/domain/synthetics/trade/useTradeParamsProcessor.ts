@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { useLatest } from "react-use";
 
+import { getNetworkFeatures } from "config/features";
 import {
   selectTradeboxAvailableTokensOptions,
   selectTradeboxCollateralTokenAddress,
@@ -85,7 +86,7 @@ export function useTradeParamsProcessor() {
   const setTradeConfig = useSelector(selectTradeboxSetTradeConfig);
   const availableTokensOptions = useSelector(selectTradeboxAvailableTokensOptions);
   const markets = availableTokensOptions.sortedAllMarkets;
-  const { chainId } = useChainId();
+  const { chainId, networkId } = useChainId();
   const history = useHistory();
   const params = useParams<{ tradeType?: string }>();
   const searchParams = useSearchParams<TradeSearchParams>();
@@ -135,7 +136,12 @@ export function useTradeParamsProcessor() {
 
     const toToken = to ?? market;
 
-    const linkTradeType = getTradeLinkTradeType(tradeType, latestTradeOptions.current.tradeType);
+    const features = getNetworkFeatures(networkId);
+    let linkTradeType = getTradeLinkTradeType(tradeType, latestTradeOptions.current.tradeType);
+
+    if (linkTradeType === TradeType.Swap && !features.swap) {
+      linkTradeType = TradeType.Long;
+    }
 
     const tradeOptions: TradeOptions = {};
 
@@ -148,8 +154,13 @@ export function useTradeParamsProcessor() {
         tradeOptions.tradeMode = TradeMode.Trigger;
       } else {
         const validTradeMode = getMatchingValueFromObject(TradeMode, tradeMode);
-        if (validTradeMode) {
-          tradeOptions.tradeMode = validTradeMode as TradeMode;
+        const mode = validTradeMode as TradeMode | undefined;
+        const modeAllowed =
+          mode !== undefined &&
+          (mode !== TradeMode.Twap || features.twap) &&
+          (mode !== TradeMode.StopMarket || features.stopMarket);
+        if (modeAllowed) {
+          tradeOptions.tradeMode = mode;
         }
       }
     }
@@ -210,6 +221,7 @@ export function useTradeParamsProcessor() {
     searchParams,
     markets,
     chainId,
+    networkId,
     history,
     setTradeConfig,
     swapTokens,

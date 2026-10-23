@@ -1,7 +1,6 @@
 import { gql } from "@apollo/client";
 import { useMemo } from "react";
 import useSWRInfinite, { SWRInfiniteResponse } from "swr/infinite";
-import { getAddress } from "viem";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -12,6 +11,7 @@ import { getSubsquidGraphClient } from "lib/indexers";
 import { BN_ZERO, toBigInt } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getToken } from "sdk/configs/tokens";
+import { normalizeAddress } from "sdk/utils/address";
 import { buildFiltersBody } from "sdk/utils/indexers";
 
 import { ClaimAction, ClaimCollateralAction, ClaimFundingFeeAction, ClaimMarketItem, ClaimType } from "./types";
@@ -116,7 +116,7 @@ export function useClaimCollateralHistory(
         let tokens: ClaimAction["tokens"];
         try {
           // getToken also supports legacy token addresses.
-          tokens = rawAction.tokenAddresses.map((address) => getToken(chainId, getAddress(address)));
+          tokens = rawAction.tokenAddresses.map((address) => getToken(chainId, normalizeAddress(address)));
         } catch {
           return acc;
         }
@@ -321,7 +321,7 @@ function createSettleFundingFeeAction(
   if (!marketsInfoData) return null;
 
   const markets = rawAction.marketAddresses
-    .map((address) => getByKey(marketsInfoData, getAddress(address))!)
+    .map((address) => getByKey(marketsInfoData, normalizeAddress(address))!)
     .filter(Boolean);
 
   if (!markets.length) return null;

@@ -51,6 +51,10 @@ export class OracleKeeperFallbackTracker {
     this.fallbackTracker.startTracking();
   }
 
+  public stopTracking() {
+    this.fallbackTracker.stopTracking();
+  }
+
   checkEndpoint = async (endpoint: string, signal: AbortSignal): Promise<OracleCheckResult> => {
     const startTime = Date.now();
 

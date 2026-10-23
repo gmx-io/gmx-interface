@@ -3,8 +3,9 @@ import { Suspense, lazy, useEffect } from "react";
 import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 import type { Address } from "viem";
 
-import { ContractsChainId, isSolanaNetwork } from "config/chains";
+import { ContractsChainId } from "config/chains";
 import { isDevelopment } from "config/env";
+import { getNetworkFeatures } from "config/features";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useChainId } from "lib/chains";
 import { AccountDashboard } from "pages/AccountDashboard/AccountDashboard";
@@ -93,6 +94,32 @@ const DecodeErrorPage = () => (
   </Suspense>
 );
 
+const EVM_ONLY_PAGE_PATHS = [
+  "/dashboard",
+  "/monitor",
+  "/stake",
+  "/buy_gmx",
+  "/price_impact_rebates_stats",
+  "/stats",
+  "/earn",
+  "/pools",
+  "/leaderboard",
+  "/competitions",
+  "/referrals",
+  "/traders",
+  "/accounts",
+  "/actions",
+  "/referrals-tier",
+  "/begin_account_transfer",
+  "/complete_account_transfer",
+  "/rpc-debug",
+  "/oracle-keeper-debug",
+  "/jobs",
+  "/ecosystem",
+  "/announcements",
+  "/parsetx",
+];
+
 function SolanaRoutes() {
   return (
     <Switch>
@@ -106,8 +133,11 @@ function SolanaRoutes() {
       <Route exact path="/v1">
         <RedirectWithQuery to="/trade" />
       </Route>
-      <Route path="*">
+      <Route path={EVM_ONLY_PAGE_PATHS}>
         <EvmNetworksOnlyNotice />
+      </Route>
+      <Route path="*">
+        <PageNotFound />
       </Route>
     </Switch>
   );
@@ -123,7 +153,7 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  if (isSolanaNetwork(networkId)) {
+  if (!getNetworkFeatures(networkId).evmOnlyPages) {
     return <SolanaRoutes />;
   }
 

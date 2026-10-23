@@ -46,6 +46,7 @@ import { EMPTY_ARRAY } from "lib/objects";
 import { searchBy } from "lib/searchBy";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { convertTokenAddress, getTokenVisualMultiplier, isChartAvailableForToken } from "sdk/configs/tokens";
+import { getAddressKey } from "sdk/utils/address";
 
 import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
@@ -255,7 +256,7 @@ function MarketsList() {
 
   const recentlyListedCount = useMemo(() => {
     if (!options || recentlyListedAddressesSet.size === 0) return 0;
-    return options.filter((t) => recentlyListedAddressesSet.has(t.address.toLowerCase())).length;
+    return options.filter((t) => recentlyListedAddressesSet.has(getAddressKey(t.address))).length;
   }, [options, recentlyListedAddressesSet]);
 
   const hasAvailableFavorites = useMemo(() => {
