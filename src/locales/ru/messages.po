@@ -8675,6 +8675,10 @@ msgstr "Ставку бонуса сейчас не удаётся загруз�
 msgid "Order submission failed"
 msgstr "Отправка ордера не удалась"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "One-Click Trading skips external routes, which may convert the full amount. <0>Disable One-Click Trading</0>."
+msgstr "One-Click Trading не использует внешние маршруты, которые могут конвертировать всю сумму. <0>Отключить One-Click Trading</0>."
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Realized PnL before fees"
 msgstr "Реализованный PnL до комиссий"

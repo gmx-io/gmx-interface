@@ -8675,6 +8675,10 @@ msgstr "현재 부스트 비율을 불러올 수 없습니다"
 msgid "Order submission failed"
 msgstr "주문 제출 실패"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "One-Click Trading skips external routes, which may convert the full amount. <0>Disable One-Click Trading</0>."
+msgstr "One-Click Trading은 외부 경로를 사용하지 않으며, 외부 경로로는 전체 금액을 변환할 수 있습니다. <0>One-Click Trading 비활성화</0>."
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Realized PnL before fees"
 msgstr "수수료 차감 전 실현 손익(PnL)"

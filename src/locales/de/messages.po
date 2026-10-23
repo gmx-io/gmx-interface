@@ -8675,6 +8675,10 @@ msgstr "Die Boost-Rate kann derzeit nicht geladen werden"
 msgid "Order submission failed"
 msgstr "Ordereinreichung fehlgeschlagen"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "One-Click Trading skips external routes, which may convert the full amount. <0>Disable One-Click Trading</0>."
+msgstr "One-Click Trading überspringt externe Routen, die den vollen Betrag umwandeln könnten. <0>One-Click Trading deaktivieren</0>."
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Realized PnL before fees"
 msgstr "Realisierter PnL vor Gebühren"

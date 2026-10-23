@@ -37,7 +37,10 @@ import {
 } from "domain/synthetics/paxosTransit/tradeboxRoutes";
 import { getIsTransitOrderFinal } from "domain/synthetics/paxosTransit/transitOrders";
 import type { TransitApi } from "domain/synthetics/paxosTransit/types";
-import { getTradeboxPaxosFeeTierKey } from "domain/synthetics/paxosTransit/useIsSwapTabPaxosOffered";
+import {
+  getTradeboxPaxosFeeTierKey,
+  getTradeboxPaxosQuoteKey,
+} from "domain/synthetics/paxosTransit/useIsSwapTabPaxosOffered";
 import { usePaxosTransitDebugSettings } from "domain/synthetics/paxosTransit/usePaxosTransitDebugSettings";
 import { useTransitApprovalProposal } from "domain/synthetics/paxosTransit/useTransitApprovalProposal";
 import { useTransitMinOrderSizes } from "domain/synthetics/paxosTransit/useTransitMinOrderSizes";
@@ -430,18 +433,7 @@ function useTradeboxPaxosQuote(p: {
   const isNeeded = p.isActive && p.paxosRouteStates[p.route].status === "quote";
 
   return useSWR(
-    isNeeded
-      ? [
-          "tradeboxPaxosQuote",
-          p.route,
-          p.chainId,
-          p.account,
-          p.tokenInAddress,
-          p.tokenOutAddress,
-          p.amount.toString(),
-          p.isMocked,
-        ]
-      : null,
+    isNeeded ? getTradeboxPaxosQuoteKey(p) : null,
     () => p.api!.fetchTransitQuote(p.getQuoteParams(p.amount, PAXOS_ROUTE_FEE_TIERS[p.route])),
     { refreshInterval: QUOTE_REFRESH_INTERVAL, onErrorRetry: retryAtRefreshCadence }
   );

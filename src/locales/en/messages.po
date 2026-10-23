@@ -8675,6 +8675,10 @@ msgstr "The boost rate can't be loaded right now"
 msgid "Order submission failed"
 msgstr "Order submission failed"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "One-Click Trading skips external routes, which may convert the full amount. <0>Disable One-Click Trading</0>."
+msgstr "One-Click Trading skips external routes, which may convert the full amount. <0>Disable One-Click Trading</0>."
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Realized PnL before fees"
 msgstr "Realized PnL before fees"

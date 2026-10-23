@@ -39,7 +39,12 @@ export const selectTradeboxIsPayingUsdcForUsdg = createSelector((q) => {
 export const selectTradeboxIsUsdgConvertFirst = createSelector((q) => {
   const { isLimit, isTwap } = q(selectTradeboxTradeFlags);
 
-  return q(selectTradeboxIsPayingUsdcForUsdg) && (isLimit || isTwap);
+  if (!q(selectTradeboxIsPayingUsdcForUsdg) || (!isLimit && !isTwap)) {
+    return false;
+  }
+
+  // the aggregator swaps a limit open when it's created, so that order already holds USDG
+  return q(selectTradeboxIncreasePositionAmounts)?.swapStrategy.type !== "externalSwap";
 });
 
 export const selectTradeboxUsdgConversionFindSwapPath = createSelector((q) => {
@@ -72,7 +77,7 @@ export const selectTradeboxUsdgConvertFirstSwapAmounts = createSelector((q) => {
   });
 });
 
-// market opens fall back to the aggregator; the convert-first swap goes through our pool only
+// opens the aggregator can take fall back to it; the convert-first swap goes through our pool only
 export const selectTradeboxIsUsdgConversionTooLarge = createSelector((q) => {
   const fromToken = q(selectTradeboxFromToken);
   const fromTokenAmount = q(selectTradeboxFromTokenAmount);
@@ -90,11 +95,14 @@ export const selectTradeboxIsUsdgConversionTooLarge = createSelector((q) => {
   if (q(selectTradeboxIsUsdgConvertFirst)) {
     const swapAmounts = q(selectTradeboxUsdgConvertFirstSwapAmounts);
 
-    return getIsSwapTooLargeToFill({
-      tokenIn: fromToken,
-      amountIn: fromTokenAmount,
-      swapPathStats: swapAmounts?.swapStrategy.swapPathStats,
-    });
+    return (
+      !q(selectExternalSwapIsLoading) &&
+      getIsSwapTooLargeToFill({
+        tokenIn: fromToken,
+        amountIn: fromTokenAmount,
+        swapPathStats: swapAmounts?.swapStrategy.swapPathStats,
+      })
+    );
   }
 
   const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
