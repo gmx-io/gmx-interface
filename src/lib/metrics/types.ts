@@ -505,7 +505,7 @@ export type EditCollateralMetricData = {
   initialCollateralTokenAddress: string | undefined;
   initialCollateralSymbol: string | undefined;
   initialCollateralDeltaAmount: number | undefined;
-  swapPath: [];
+  swapPath: string[];
   isLong: boolean | undefined;
   orderType: OrderType | undefined;
   executionFee: number | undefined;
