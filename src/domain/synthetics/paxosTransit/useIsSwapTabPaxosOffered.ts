@@ -1,7 +1,9 @@
+import { useRef } from "react";
 import useSWR from "swr";
 
 import { getPaxosTransitConfig } from "config/paxosTransit";
 import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
+import type { Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { formatUsd } from "lib/numbers";
@@ -11,7 +13,7 @@ import { getToken } from "sdk/configs/tokens";
 
 import { mockTransitApi } from "./mockTransitApi";
 import { formatPaxosMinOrderSize, getIsStandardPaxosRouteShown, getPaxosRouteStates } from "./tradeboxRoutes";
-import type { PaxosSwapRoute } from "./tradeboxRoutes";
+import type { PaxosRouteState, PaxosSwapRoute } from "./tradeboxRoutes";
 import type { TransitApi } from "./types";
 import { usePaxosTransitDebugSettings } from "./usePaxosTransitDebugSettings";
 import { useTransitMinOrderSizes } from "./useTransitMinOrderSizes";
@@ -19,6 +21,10 @@ import { useTransitMinOrderSizes } from "./useTransitMinOrderSizes";
 const FEE_TIER_REFRESH_INTERVAL = 60_000;
 const QUOTE_REFRESH_INTERVAL = 30_000;
 const AMOUNT_DEBOUNCE_MS = 500;
+
+type SwapTabPaxosOffer = { isOffered: boolean; minimumText: string | undefined; isWalletOnly: boolean };
+
+const UNRESOLVED_OFFER: SwapTabPaxosOffer = { isOffered: false, minimumText: undefined, isWalletOnly: false };
 
 export function getTradeboxPaxosFeeTierKey(chainId: number, account: string, isMocked: boolean) {
   return ["tradeboxPaxosFeeTier", chainId, account, isMocked];
@@ -120,8 +126,13 @@ export function useIsSwapTabPaxosOffered({
   // the Swap tab offers the standard route to non-whitelisted traders only when it pays out more than instant
   const isStandardQuoteCompared = routeStates?.paxosStandard.status === "quote" && !isWhitelisted && !isStandardForced;
   // quotes follow the amount once typing stops, as on the Swap tab, so both share the cached quote
+  const lastSettledOfferRef = useRef<SwapTabPaxosOffer>(UNRESOLVED_OFFER);
   const quoteAmount: bigint | undefined = useDebounce(amount, AMOUNT_DEBOUNCE_MS);
-  const { data: standardQuote, error: standardQuoteError } = useSWR(
+  const {
+    data: standardQuote,
+    error: standardQuoteError,
+    isLoading: isStandardQuoteLoading,
+  } = useSWR(
     isStandardQuoteCompared && quoteAmount !== undefined
       ? getTradeboxPaxosQuoteKey({
           route: "paxosStandard",
@@ -143,23 +154,62 @@ export function useIsSwapTabPaxosOffered({
         destinationChainId: chainId,
         feeTier: "standardFee",
       }),
-    { refreshInterval: QUOTE_REFRESH_INTERVAL, onErrorRetry: retryAtRefreshCadence, keepPreviousData: true }
+    { refreshInterval: QUOTE_REFRESH_INTERVAL, onErrorRetry: retryAtRefreshCadence }
   );
 
-  if (
-    !routeStates ||
-    amount === undefined ||
-    amountUsd === undefined ||
-    thresholdUsd === undefined ||
-    (isStandardQuoteCompared && standardQuote === undefined && standardQuoteError === undefined)
-  ) {
-    return { isOffered: false, minimumText: undefined, isWalletOnly: false };
+  if (!routeStates || amount === undefined || amountUsd === undefined || thresholdUsd === undefined) {
+    lastSettledOfferRef.current = UNRESOLVED_OFFER;
+    return UNRESOLVED_OFFER;
   }
 
+  // a quote for another amount, or one still loading, can't tell whether the Swap tab offers this amount yet,
+  // so the last settled answer holds and the link doesn't blink while the trader types
+  if (isStandardQuoteCompared && (quoteAmount !== amount || isStandardQuoteLoading)) {
+    return lastSettledOfferRef.current;
+  }
+
+  const offer = getSwapTabPaxosOffer({
+    routeStates,
+    // the Swap tab shows no standard route when its quote fails
+    standardQuoteAmountOut: isStandardQuoteCompared && !standardQuoteError ? standardQuote?.amountOut : undefined,
+    isStandardQuoteCompared,
+    instantAmountOut,
+    isPaidOutsideWallet,
+    isWhitelisted,
+    isStandardForced,
+    amount,
+    amountUsd,
+    thresholdUsd,
+    zeroFeeMinOrderSize: minOrderSizes.zeroFee,
+    standardMinOrderSize: minOrderSizes.standardFee,
+    usdcToken: getToken(chainId, paxosTransitConfig!.usdcAddress),
+  });
+  lastSettledOfferRef.current = offer;
+
+  return offer;
+}
+
+export function getSwapTabPaxosOffer(p: {
+  routeStates: Record<PaxosSwapRoute, PaxosRouteState>;
+  standardQuoteAmountOut: bigint | undefined;
+  isStandardQuoteCompared: boolean;
+  instantAmountOut: bigint | undefined;
+  isPaidOutsideWallet: boolean;
+  isWhitelisted: boolean;
+  isStandardForced: boolean;
+  amount: bigint;
+  amountUsd: bigint;
+  thresholdUsd: bigint;
+  zeroFeeMinOrderSize: bigint | undefined;
+  standardMinOrderSize: bigint | undefined;
+  usdcToken: Token;
+}): SwapTabPaxosOffer {
+  const { routeStates } = p;
   const isStandardOffered =
     routeStates.paxosStandard.status === "quote" &&
-    (!isStandardQuoteCompared ||
-      (standardQuote !== undefined && (instantAmountOut === undefined || standardQuote.amountOut > instantAmountOut)));
+    (!p.isStandardQuoteCompared ||
+      (p.standardQuoteAmountOut !== undefined &&
+        (p.instantAmountOut === undefined || p.standardQuoteAmountOut > p.instantAmountOut)));
   // a zero-fee route short on capacity is still offered, with the capacity choice on the Swap tab
   const isRouteOffered =
     routeStates.paxosZeroFee.status === "quote" ||
@@ -167,17 +217,16 @@ export function useIsSwapTabPaxosOffered({
     isStandardOffered;
 
   if (isRouteOffered) {
-    return { isOffered: !isPaidOutsideWallet, minimumText: undefined, isWalletOnly: isPaidOutsideWallet };
+    return { isOffered: !p.isPaidOutsideWallet, minimumText: undefined, isWalletOnly: p.isPaidOutsideWallet };
   }
 
-  const usdc = getToken(chainId, paxosTransitConfig!.usdcAddress);
   const formatMinOrderSize = (minOrderSize: bigint) =>
-    `${formatPaxosMinOrderSize(minOrderSize, usdc.decimals)} ${usdc.symbol}`;
+    `${formatPaxosMinOrderSize(minOrderSize, p.usdcToken.decimals)} ${p.usdcToken.symbol}`;
   const isStandardShown = getIsStandardPaxosRouteShown({
-    isWhitelisted,
-    isStandardForced,
-    amountInUsd: amountUsd,
-    thresholdUsd,
+    isWhitelisted: p.isWhitelisted,
+    isStandardForced: p.isStandardForced,
+    amountInUsd: p.amountUsd,
+    thresholdUsd: p.thresholdUsd,
   });
   const minOrderSizesAbove = [routeStates.paxosZeroFee, routeStates.paxosStandard].flatMap((state) =>
     state.status === "belowMinOrderSize" ? [state.minOrderSize] : []
@@ -189,12 +238,12 @@ export function useIsSwapTabPaxosOffered({
   let minimumText: string | undefined;
 
   if (!isStandardShown) {
-    minimumText = formatUsd(thresholdUsd, { displayDecimals: 0 });
+    minimumText = formatUsd(p.thresholdUsd, { displayDecimals: 0 });
   } else if (smallestMinOrderSize !== undefined) {
     minimumText = formatMinOrderSize(smallestMinOrderSize);
-  } else if (minOrderSizes.standardFee !== undefined && amount < minOrderSizes.standardFee) {
+  } else if (p.standardMinOrderSize !== undefined && p.amount < p.standardMinOrderSize) {
     // a non-whitelisted standard route under its minimum is hidden rather than shown below it
-    minimumText = formatMinOrderSize(minOrderSizes.standardFee);
+    minimumText = formatMinOrderSize(p.standardMinOrderSize);
   }
 
   return { isOffered: false, minimumText, isWalletOnly: false };
