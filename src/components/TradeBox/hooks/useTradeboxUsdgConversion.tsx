@@ -20,6 +20,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectExternalSwapBlockReason,
+  selectExternalSwapIsLoading,
   selectTradeboxCollateralTokenAddress,
   selectTradeboxFormState,
   selectTradeboxFromToken,
@@ -670,6 +671,7 @@ export function useTradeboxUsdgConversion({
   }
 
   const isBusy = step !== "idle" || isApproving;
+  const isExternalSwapLoading = useSelector(selectExternalSwapIsLoading);
 
   const buttonState = useMemo((): ButtonStateOverride | undefined => {
     if (!account || (!isConvertFirst && !isBusy)) {
@@ -689,6 +691,20 @@ export function useTradeboxUsdgConversion({
         text: (
           <>
             {isApproving ? approveButtonText ?? t`Approving USDC...` : t`Converting USDC to USDG...`}
+            <SpinnerIcon className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
+        onSubmit: async () => undefined,
+      };
+    }
+
+    // a limit open may still move to the aggregator, which converts it at creation instead
+    if (isExternalSwapLoading) {
+      return {
+        text: (
+          <>
+            {t`Loading swap path…`}
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
@@ -719,6 +735,7 @@ export function useTradeboxUsdgConversion({
     isBusy,
     isConvertFirst,
     isExpressLoading,
+    isExternalSwapLoading,
     isMultichainSubmitDisabled,
     onConvert,
     tokensToApprove,

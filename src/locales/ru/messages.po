@@ -12110,6 +12110,7 @@ msgstr "Макс. ставка для шортов"
 msgid "Alerts"
 msgstr "Оповещения"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Loading swap path…"
 msgstr "Загрузка маршрута обмена…"

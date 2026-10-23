@@ -12110,6 +12110,7 @@ msgstr "ショート最大レート"
 msgid "Alerts"
 msgstr "アラート"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Loading swap path…"
 msgstr "スワップルートを読み込み中…"

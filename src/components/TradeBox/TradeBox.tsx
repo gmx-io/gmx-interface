@@ -65,7 +65,10 @@ import {
   selectTradeboxIncreaseLiquidationRiskWarning,
   selectTradeboxIncreaseMaxLeverageAlert,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
-import { selectTradeboxIsUsdgConversionTooLarge } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/tradeboxUsdgConversionSelectors";
+import {
+  selectTradeboxIsUsdgConversionTooLarge,
+  selectTradeboxIsUsdgConvertFirstSetup,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors/tradeboxUsdgConversionSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
@@ -410,6 +413,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
     setFocusedInput,
   });
   const isUsdgConversionTooLarge = useSelector(selectTradeboxIsUsdgConversionTooLarge);
+  const isUsdgConvertFirstSetup = useSelector(selectTradeboxIsUsdgConvertFirstSetup);
 
   // the convert step takes over only a ready order button, but keeps its spinner while the swap is in flight
   const isConvertStepShown =
@@ -505,10 +509,14 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   const expressOrdersEnabledForMax = expressOrdersEnabled && fromTokenAddress !== zeroAddress && !isWrapOrUnwrap;
 
   const expressGasPaymentParams = submitButtonState.expressParams?.gasPaymentParams;
-  // the order still follows the conversion and pays its own fee, so Max keeps both
-  const orderStepGasPaymentTokenAmount =
-    isConvertStepShown && orderStepGasPaymentParams?.gasPaymentTokenAddress === gasPaymentTokenAddress
+  // a convert-first order pays the conversion's fee and then its own, so Max keeps both; until the convert step is
+  // shown only the order's estimate exists, and it stands in for the conversion's too
+  const orderStepGasPaymentTokenAmount = isConvertStepShown
+    ? orderStepGasPaymentParams?.gasPaymentTokenAddress === gasPaymentTokenAddress
       ? orderStepGasPaymentParams.gasPaymentTokenAmount
+      : 0n
+    : isUsdgConvertFirstSetup
+      ? expressGasPaymentParams?.gasPaymentTokenAmount ?? 0n
       : 0n;
   const expressGasPaymentTokenAmount =
     expressOrdersEnabledForMax && expressGasPaymentParams?.gasPaymentTokenAddress === gasPaymentTokenAddress
@@ -535,22 +543,28 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
       return executionFee?.feeTokenAmount;
     }
 
-    return executionFee && gasPaymentTokenData && relayerFeeToken
-      ? estimateBatchMinGasPaymentTokenAmount({
-          chainId,
-          gasPaymentToken: gasPaymentTokenData,
-          relayFeeToken: relayerFeeToken,
-          isGmxAccount: isFromTokenGmxAccount,
-          gasPrice: getExpressGasPrice(chainId, gasPrice),
-          gasLimits,
-          l1Reference: l1ExpressOrderGasReference,
-          tokensData,
-          createOrdersCount: 1,
-          updateOrdersCount: 0,
-          cancelOrdersCount: 0,
-          executionFeeAmount: getExpressExecutionFeeAmount(chainId, executionFee),
-        })
-      : undefined;
+    const gasPaymentTokenAmount =
+      executionFee && gasPaymentTokenData && relayerFeeToken
+        ? estimateBatchMinGasPaymentTokenAmount({
+            chainId,
+            gasPaymentToken: gasPaymentTokenData,
+            relayFeeToken: relayerFeeToken,
+            isGmxAccount: isFromTokenGmxAccount,
+            gasPrice: getExpressGasPrice(chainId, gasPrice),
+            gasLimits,
+            l1Reference: l1ExpressOrderGasReference,
+            tokensData,
+            createOrdersCount: 1,
+            updateOrdersCount: 0,
+            cancelOrdersCount: 0,
+            executionFeeAmount: getExpressExecutionFeeAmount(chainId, executionFee),
+          })
+        : undefined;
+
+    // a convert-first order also pays the conversion's fee
+    return gasPaymentTokenAmount !== undefined && isUsdgConvertFirstSetup
+      ? gasPaymentTokenAmount * 2n
+      : gasPaymentTokenAmount;
   }, [
     isSwap,
     isIncrease,
@@ -562,6 +576,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
     gasPaymentTokenData,
     relayerFeeToken,
     isFromTokenGmxAccount,
+    isUsdgConvertFirstSetup,
     l1ExpressOrderGasReference,
   ]);
 

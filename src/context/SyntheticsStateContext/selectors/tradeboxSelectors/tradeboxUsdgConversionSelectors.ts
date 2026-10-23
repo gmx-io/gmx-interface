@@ -36,10 +36,20 @@ export const selectTradeboxIsPayingUsdcForUsdg = createSelector((q) => {
 });
 
 // limit, stop market and TWAP orders would convert only at trigger and freeze if our pool is short then
-export const selectTradeboxIsUsdgConvertFirst = createSelector((q) => {
-  const { isLimit, isTwap } = q(selectTradeboxTradeFlags);
+export const selectTradeboxIsUsdgConvertFirstSetup = createSelector((q) => {
+  const { isIncrease, isLimit, isTwap } = q(selectTradeboxTradeFlags);
+  const usdcAddress = q(selectTradeboxUsdgConversionTokenAddress);
 
-  if (!q(selectTradeboxIsPayingUsdcForUsdg) || (!isLimit && !isTwap)) {
+  return (
+    isIncrease &&
+    (isLimit || isTwap) &&
+    usdcAddress !== undefined &&
+    q(selectTradeboxFromToken)?.address === usdcAddress
+  );
+});
+
+export const selectTradeboxIsUsdgConvertFirst = createSelector((q) => {
+  if (!q(selectTradeboxIsPayingUsdcForUsdg) || !q(selectTradeboxIsUsdgConvertFirstSetup)) {
     return false;
   }
 

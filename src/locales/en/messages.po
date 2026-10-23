@@ -12110,6 +12110,7 @@ msgstr "Max rate short"
 msgid "Alerts"
 msgstr "Alerts"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Loading swap path…"
 msgstr "Loading swap path…"

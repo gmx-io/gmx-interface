@@ -12110,6 +12110,7 @@ msgstr "최대 숏 이율"
 msgid "Alerts"
 msgstr "알림"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Loading swap path…"
 msgstr "스왑 경로 불러오는 중…"
