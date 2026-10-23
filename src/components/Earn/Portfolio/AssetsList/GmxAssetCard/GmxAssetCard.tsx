@@ -285,6 +285,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
         <div className="mt-12 flex grow flex-col gap-8">
           <SyntheticsInfoRow
             label={<Trans>Staked GMX</Trans>}
+            qa="staked-gmx"
             value={
               <AmountWithUsdBalance
                 amount={processedData?.gmxInStakedGmx}

@@ -1,0 +1,1039 @@
+{
+  "note": "Unsigned form fixture, captured from public responses on 2026-10-08. Not a live availability or settlement check. Timestamps advance at replay; amounts and prices stay fixed.",
+  "config": [
+    {
+      "data": "",
+      "name": "ETH/USD [WETH-USDC]",
+      "marketTokenAddress": "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336",
+      "indexTokenAddress": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "longTokenAddress": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "shortTokenAddress": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isDisabled": false,
+      "isSameCollaterals": false,
+      "isSpotOnly": false,
+      "reserveFactorLong": "2750000000000000000000000000000",
+      "reserveFactorShort": "2750000000000000000000000000000",
+      "openInterestReserveFactorLong": "2700000000000000000000000000000",
+      "openInterestReserveFactorShort": "2700000000000000000000000000000",
+      "maxOpenInterestLong": "93630999999999996402375947784403550208",
+      "maxOpenInterestShort": "93630999999999996402375947784403550208",
+      "maxCollateralSumLongTokenLong": "5000000000000000000000000000000",
+      "maxCollateralSumLongTokenShort": "5000000000000000000000000000000",
+      "maxCollateralSumShortTokenLong": "5000000000000000000000000000000",
+      "maxCollateralSumShortTokenShort": "5000000000000000000000000000000",
+      "minPositionImpactPoolAmount": "1627000000000000000000",
+      "positionImpactPoolDistributionRate": "0",
+      "minCollateralFactor": "5000000000000000000000000000",
+      "minCollateralFactorForLiquidation": "5000000000000000000000000000",
+      "minCollateralFactorForOpenInterestLong": "60000000000000000000",
+      "minCollateralFactorForOpenInterestShort": "60000000000000000000",
+      "maxPnlFactorForTradersLong": "900000000000000000000000000000",
+      "maxPnlFactorForTradersShort": "900000000000000000000000000000",
+      "maxPnlFactorForDepositsLong": "900000000000000000000000000000",
+      "maxPnlFactorForDepositsShort": "900000000000000000000000000000",
+      "maxPnlFactorForWithdrawalsLong": "700000000000000000000000000000",
+      "maxPnlFactorForWithdrawalsShort": "700000000000000000000000000000",
+      "positionFeeFactorForBalanceWasImproved": "400000000000000000000000000",
+      "positionFeeFactorForBalanceWasNotImproved": "600000000000000000000000000",
+      "positionImpactFactorPositive": "15761531530071884431360",
+      "positionImpactFactorNegative": "18913837836086257123328",
+      "maxPositionImpactFactorPositive": "4000000000000000000000000000",
+      "maxPositionImpactFactorNegative": "5000000000000000000000000000",
+      "maxPositionImpactFactorForLiquidations": "0",
+      "borrowingFactorLong": "6250000000000000000000",
+      "borrowingFactorShort": "6250000000000000000000",
+      "borrowingExponentFactorLong": "1000000000000000000000000000000",
+      "borrowingExponentFactorShort": "1000000000000000000000000000000",
+      "fundingFactor": "20000000000000000000000",
+      "fundingExponentFactor": "1000000000000000000000000000000",
+      "fundingIncreaseFactorPerSecond": "714308673862268055",
+      "minFundingIncreaseRatePerSecond": "0",
+      "fundingDecreaseFactorPerSecond": "29762861410927838",
+      "thresholdForStableFunding": "40000000000000000000000000000",
+      "thresholdForDecreaseFunding": "0",
+      "minFundingFactorPerSecondLong": "317097919837645865043",
+      "minFundingFactorPerSecondShort": "317097919837645865043",
+      "maxFundingFactorPerSecondLong": "5143022451808330555555",
+      "maxFundingFactorPerSecondShort": "5143022451808330555555",
+      "maxLendableImpactFactor": "0",
+      "maxLendableImpactFactorForWithdrawals": "0",
+      "maxLendableImpactUsd": "0",
+      "lentPositionImpactPoolAmount": "0",
+      "positionImpactExponentFactorPositive": "1675601995626681640307155533824",
+      "positionImpactExponentFactorNegative": "1675601995626681640307155533824",
+      "swapFeeFactorForBalanceWasImproved": "500000000000000000000000000",
+      "swapFeeFactorForBalanceWasNotImproved": "700000000000000000000000000",
+      "atomicSwapFeeFactor": "22500000000000000000000000000",
+      "withdrawalFeeFactorBalanceWasImproved": "0",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0",
+      "swapImpactFactorPositive": "200000000000000000000",
+      "swapImpactFactorNegative": "300000000000000000000",
+      "swapImpactExponentFactor": "2000000000000000000000000000000",
+      "maxLongPoolAmount": "32000000000000000000000",
+      "maxShortPoolAmount": "100000000000000",
+      "maxLongPoolUsdForDeposit": "90000000000000000000000000000000000000",
+      "maxShortPoolUsdForDeposit": "90000000000000000000000000000000000000",
+      "virtualMarketId": "0xf5134a0a1379cd7f246d7a04d2463c57aa177bf09a34e93dafc5e768c05cea63",
+      "virtualIndexTokenId": "0x3c48977e4fc47fa4616e13af7ceb68b0d545dce7b1fb9ec7b85bb6e00870a051",
+      "virtualLongTokenId": "0x3c48977e4fc47fa4616e13af7ceb68b0d545dce7b1fb9ec7b85bb6e00870a051",
+      "virtualShortTokenId": "0x0000000000000000000000000000000000000000",
+      "useOpenInterestInTokensForBalance": true
+    }
+  ],
+  "values": [
+    {
+      "marketTokenAddress": "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336",
+      "longPoolAmount": "9308140039306246331244",
+      "shortPoolAmount": "23381581327158",
+      "poolValueMax": "45422365265002154446273839288185824254",
+      "poolValueMin": "45422365265002154446273839288185824254",
+      "positionImpactPoolAmount": "432339100657400164522",
+      "swapImpactPoolAmountLong": "1357669023857271833",
+      "swapImpactPoolAmountShort": "1333922972",
+      "longInterestUsd": "5442147776435744740642146497241828174",
+      "shortInterestUsd": "5900205297732650438078632519830782541",
+      "longInterestInTokens": "2238342044067405432342",
+      "shortInterestInTokens": "2128970076181558557444",
+      "longInterestUsdUsingLongToken": "1253816588586129873770085589268437136",
+      "longInterestUsdUsingShortToken": "4188331187849614866872060907973391038",
+      "shortInterestUsdUsingLongToken": "4136858581377674412855717096266365711",
+      "shortInterestUsdUsingShortToken": "1763346716354976025222915423564416830",
+      "longInterestInTokensUsingLongToken": "512900251474923768807",
+      "longInterestInTokensUsingShortToken": "1725441792592481663535",
+      "shortInterestInTokensUsingLongToken": "1391498588451285275914",
+      "shortInterestInTokensUsingShortToken": "737471487730273281530",
+      "longsPayShorts": true,
+      "virtualPoolAmountForLongToken": "10656614113072636788236",
+      "virtualPoolAmountForShortToken": "26978347958957",
+      "virtualInventoryForPositions": "9735872051486376747890181326983828446",
+      "virtualInventoryForPositionsInTokens": "-158826047648816703296",
+      "totalBorrowingFees": "116772756870050071210218288669641673",
+      "fundingFactorPerSecond": "1774253654758875440417",
+      "borrowingFactorPerSecondForLongs": "1270883339853968854528",
+      "borrowingFactorPerSecondForShorts": "0",
+      "updatedAt": 1791448784689
+    }
+  ],
+  "tickers": [
+    {
+      "tokenAddress": "0x7f9FBf9bDd3F4105C478b996B648FE6e828a1e98",
+      "tokenSymbol": "APE",
+      "minPrice": "147782382721",
+      "maxPrice": "147838828165",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x74885b4D524d497261259B38900f54e6dbAd2210",
+      "tokenSymbol": "APE_deprecated",
+      "minPrice": "147754160000",
+      "maxPrice": "147867050886",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x3f8f0dCE4dCE4d0D1d0871941e79CDA82cA50d0B",
+      "tokenSymbol": "APT",
+      "minPrice": "7691093406202254500000",
+      "maxPrice": "7692857638425323500000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x6792c5B8962ffbDD020c6b6FD0Be7b182e0e33a3",
+      "tokenSymbol": "FLOKI",
+      "minPrice": "27380324236006000",
+      "maxPrice": "27392823431200000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "tokenSymbol": "ETH",
+      "minPrice": "2558617272442929",
+      "maxPrice": "2558617272442929",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x938aef36CAaFbcB37815251B602168087eC14648",
+      "tokenSymbol": "TAO",
+      "minPrice": "283620445222308372500000",
+      "maxPrice": "283672880660769457500000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x1FD10E767187A92f0AB2ABDEEF4505e319cA06B2",
+      "tokenSymbol": "BONK",
+      "minPrice": "34294387746750000000",
+      "maxPrice": "34325585240250000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x75B9AdD873641b253718810E6c65dB6d72311FD0",
+      "tokenSymbol": "WLD",
+      "minPrice": "525014738046",
+      "maxPrice": "525106017130",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x47904963fc8b2340414262125aF798B9655E58Cd",
+      "tokenSymbol": "BTC",
+      "minPrice": "827657678491437025000000000",
+      "maxPrice": "827657678491437025000000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x6c84a8f1c29108F47a79964b5Fe888D4f4D0dE40",
+      "tokenSymbol": "tBTC",
+      "minPrice": "82765418535513256",
+      "maxPrice": "82766117162774149",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "tokenSymbol": "WBTC.b",
+      "minPrice": "827657678491437025000000000",
+      "maxPrice": "827657678491437025000000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xC4da4c24fd591125c3F47b340b6f4f76111883d8",
+      "tokenSymbol": "DOGE",
+      "minPrice": "876991710108053525000",
+      "maxPrice": "877092530324160575000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x606C3e5075e5555e79Aa15F1E9FACB776F96C248",
+      "tokenSymbol": "EIGEN",
+      "minPrice": "237047402543",
+      "maxPrice": "237142525914",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xB46A094Bc4B0adBD801E14b9DB95e05E28962764",
+      "tokenSymbol": "LTC",
+      "minPrice": "644300657828306375000000",
+      "maxPrice": "644388539276102125000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x3E57D02f9d196873e55727382974b02EdebE6bfd",
+      "tokenSymbol": "SHIB",
+      "minPrice": "5392570",
+      "maxPrice": "5395269",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x2bcC6D6CdBbDC0a4071e48bb3B969b06B3330c07",
+      "tokenSymbol": "SOL",
+      "minPrice": "114813821797421145000000",
+      "maxPrice": "114821012102473715000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x197aa2DE1313c7AD50184234490E12409B2a1f95",
+      "tokenSymbol": "SUI",
+      "minPrice": "1127116277517347800000",
+      "maxPrice": "1127219292505782600000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x55e85A147a1029b985384822c0B2262dF8023452",
+      "tokenSymbol": "SEI",
+      "minPrice": "68541293132",
+      "maxPrice": "68551879399",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xBaf07cF91D413C0aCB2b7444B9Bf13b4e03c9D71",
+      "tokenSymbol": "STX",
+      "minPrice": "374386396127878752500000",
+      "maxPrice": "374639423259862317500000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xFa7F8980b0f1E64A2062791cc3b0871572f1F7f0",
+      "tokenSymbol": "UNI",
+      "minPrice": "7772737964967",
+      "maxPrice": "7773943121656",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4",
+      "tokenSymbol": "LINK",
+      "minPrice": "13072159814076",
+      "maxPrice": "13073620935868",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x912CE59144191C1204E64559FE8253a0e49E6548",
+      "tokenSymbol": "ARB",
+      "minPrice": "185181231949",
+      "maxPrice": "185230066489",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xc14e065b0067dE91534e032868f5Ac6ecf2c6868",
+      "tokenSymbol": "XRP",
+      "minPrice": "1408321891482426800000000",
+      "maxPrice": "1408400958219921600000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "tokenSymbol": "USDC",
+      "minPrice": "999784622197471500000000",
+      "maxPrice": "999784622197471500000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
+      "tokenSymbol": "USDC.e",
+      "minPrice": "999769809619320850000000",
+      "maxPrice": "999799434775622150000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
+      "tokenSymbol": "USDT",
+      "minPrice": "999290194547857125000000",
+      "maxPrice": "999336731515952375000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xa9004A5421372E1D83fB1f85b0fc986c912f91f3",
+      "tokenSymbol": "BNB",
+      "minPrice": "766888341926487",
+      "maxPrice": "766910080642163",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x7D7F1765aCbaF847b9A1f7137FE8Ed4931FbfEbA",
+      "tokenSymbol": "ATOM",
+      "minPrice": "1766297845970389000000000",
+      "maxPrice": "1766953537911167000000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x1FF7F3EFBb9481Cbd7db4F932cBCD4467144237C",
+      "tokenSymbol": "NEAR",
+      "minPrice": "5320935",
+      "maxPrice": "5322050",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xba5DdD1f9d7F570dc94a51479a000E3BCE967196",
+      "tokenSymbol": "AAVE",
+      "minPrice": "172109683182428",
+      "maxPrice": "172132647727477",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x565609fAF65B92F7be02468acF86f8979423e514",
+      "tokenSymbol": "AVAX",
+      "minPrice": "10793436059809",
+      "maxPrice": "10794729779056",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xaC800FD6159c2a2CB8fC31EF74621eB430287a5A",
+      "tokenSymbol": "OP",
+      "minPrice": "122126500791",
+      "maxPrice": "122172583598",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x1E15d08f3CA46853B692EE28AE9C7a0b88a9c994",
+      "tokenSymbol": "ORDI",
+      "minPrice": "4405325669896",
+      "maxPrice": "4406185889966",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x38676f62d166f5CE7De8433F51c6B3D6D9d66C19",
+      "tokenSymbol": "TIA",
+      "minPrice": "476635755953612770000000",
+      "maxPrice": "476750988283038390000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xb06aa7E4af937C130dDade66f6ed7642716fe07A",
+      "tokenSymbol": "TRX",
+      "minPrice": "334811466008277650000000",
+      "maxPrice": "334866630834029950000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a",
+      "tokenSymbol": "GMX",
+      "minPrice": "8285592274720",
+      "maxPrice": "8291477083488",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xA1b91fe9FD52141Ff8cac388Ce3F10BFDc1dE79d",
+      "tokenSymbol": "WIF",
+      "minPrice": "224664165795682250000000",
+      "maxPrice": "224724017142166950000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x25d887Ce7a35172C62FeBFD67a1856F20FaEbB00",
+      "tokenSymbol": "PEPE",
+      "minPrice": "4030665",
+      "maxPrice": "4034366",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x0c880f6761F1af8d9Aa9C466984b80DAb9a8c9e8",
+      "tokenSymbol": "PENDLE",
+      "minPrice": "2276749151173",
+      "maxPrice": "2277599450391",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x5979D7b546E38E414F7E9822514be443A4800529",
+      "tokenSymbol": "wstETH",
+      "minPrice": "3186911913281132",
+      "maxPrice": "3187329272520189",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
+      "tokenSymbol": "USDe",
+      "minPrice": "999637371651",
+      "maxPrice": "999637371651",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x9c74772b713a1B032aEB173E28683D937E51921c",
+      "tokenSymbol": "POL",
+      "minPrice": "102063273851",
+      "maxPrice": "102077727774",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x53186c8419BEB83fE4Da74F7875041a1287337ED",
+      "tokenSymbol": "ADA",
+      "minPrice": "252104350000000000000000",
+      "maxPrice": "252173810000000000000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xc5dbD52Ae5a927Cf585B884011d0C7631C9974c6",
+      "tokenSymbol": "XLM",
+      "minPrice": "19905883445878565000000",
+      "maxPrice": "19910782262023415000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xc33D9C096e74aa4f571E9417b69a19C4A1e72ef2",
+      "tokenSymbol": "BCH",
+      "minPrice": "2965529267000000000000000",
+      "maxPrice": "2966710733000000000000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xE958f107b467d5172573F761d26931D658C1b436",
+      "tokenSymbol": "DOT",
+      "minPrice": "109884715353260262500",
+      "maxPrice": "109922146059780787500",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xdaf0A71608938F762e37eC5F72F670Cc44703454",
+      "tokenSymbol": "ICP",
+      "minPrice": "31693202771795836750000",
+      "maxPrice": "31701756248750840250000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x82BB89fcc64c5d4016C5Ed1AB016bB0D1C20D6C3",
+      "tokenSymbol": "RENDER",
+      "minPrice": "2031554635403",
+      "maxPrice": "2032346797254",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x3AeBb98f57081DcBEb0B8EA823Cf84900A31e5D8",
+      "tokenSymbol": "FIL",
+      "minPrice": "1058477898121",
+      "maxPrice": "1058649121300",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xfdE73EddbE6c5712A12B72c470F8FE5c77A7fF17",
+      "tokenSymbol": "INJ",
+      "minPrice": "7360902461859",
+      "maxPrice": "7363018640620",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x0739Ad7AeA69aD36EdEb91b0e55cAC140427c632",
+      "tokenSymbol": "DYDX",
+      "minPrice": "133628204984",
+      "maxPrice": "133692514995",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x30021aFA4767Ad66aA52A06dF8a5AB3acA9371fD",
+      "tokenSymbol": "TRUMP",
+      "minPrice": "1857601204924591950000000",
+      "maxPrice": "1858142041641530650000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xfe1Aac2CD9C5cC77b58EeCfE75981866ed0c8b7a",
+      "tokenSymbol": "ENA",
+      "minPrice": "219851552932",
+      "maxPrice": "219911372366",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xaca341E61aB6177B0b0Df46a612e4311F8a7605f",
+      "tokenSymbol": "FARTCOIN",
+      "minPrice": "159908252359593275000000",
+      "maxPrice": "159973997078779825000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x37a645648dF29205C6261289983FB04ECD70b4B3",
+      "tokenSymbol": "ANIME",
+      "minPrice": "3109204245",
+      "maxPrice": "3113492736",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x9D678B4Dd38a6E01df8090aEB7974aD71142b05f",
+      "tokenSymbol": "LDO",
+      "minPrice": "447223787307",
+      "maxPrice": "447406481921",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x67ADABbAd211eA9b3B4E2fd0FD165E593De1e983",
+      "tokenSymbol": "BERA",
+      "minPrice": "218838421040",
+      "maxPrice": "218916513574",
+      "updatedAt": 1791448789741,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xB6672496214C90134A9223894e709F26A5eED362",
+      "tokenSymbol": "VIRTUAL",
+      "minPrice": "759951960677",
+      "maxPrice": "760149302033",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x4C1dac9b6eAf122Fe3DE824c1C2220413F3aC197",
+      "tokenSymbol": "PENGU",
+      "minPrice": "8637284829101142500000",
+      "maxPrice": "8639733366106207500000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xEcFB4718aD19b626A77491895a2f99ea0cedEd08",
+      "tokenSymbol": "ONDO",
+      "minPrice": "472479897630",
+      "maxPrice": "472580619210",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x83D5944E7f5EF1d8432002d3cb062e1012f6F8e6",
+      "tokenSymbol": "FET",
+      "minPrice": "229995573151",
+      "maxPrice": "230072119456",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xcA543Cb8bCC76e4E0A034F56EB40a1029bDFd70E",
+      "tokenSymbol": "AIXBT",
+      "minPrice": "20754094033",
+      "maxPrice": "20767140760",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x580b373Ac16803BB0133356F470f3c7EEF54151B",
+      "tokenSymbol": "CAKE",
+      "minPrice": "2250330370681",
+      "maxPrice": "2251191483806",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x8F6cCb99d4Fd0B4095915147b5ae3bbDb8075394",
+      "tokenSymbol": "S",
+      "minPrice": "40211730215",
+      "maxPrice": "40227615558",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xfEd500Df379427Fbc48BDaf3b511b519c7eCCD26",
+      "tokenSymbol": "JUP",
+      "minPrice": "375077158203433950000000",
+      "maxPrice": "375168000146617850000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xfDFA0A749dA3bCcee20aE0B4AD50E39B26F58f7C",
+      "tokenSymbol": "HYPE",
+      "minPrice": "868783683409243550000000",
+      "maxPrice": "868820633536376050000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x97Ce1F309B949f7FBC4f58c5cb6aa417A5ff8964",
+      "tokenSymbol": "DOLO",
+      "minPrice": "28499328614",
+      "maxPrice": "28519383538",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xa8193C55C34Ed22e1Dbe73FD5Adc668E51578a67",
+      "tokenSymbol": "ZRO",
+      "minPrice": "2076429939675",
+      "maxPrice": "2077039019028",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xe5f01aeAcc8288E9838A60016AB00d7b6675900b",
+      "tokenSymbol": "CRV",
+      "minPrice": "391552975033",
+      "maxPrice": "391694670732",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xd3898c6570974AEca38a8ACf22fd60739e528A99",
+      "tokenSymbol": "MOODENG",
+      "minPrice": "42466561605454625000000",
+      "maxPrice": "42488384379535275000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x13674172E6E44D31d4bE489d5184f3457c40153A",
+      "tokenSymbol": "XMR",
+      "minPrice": "559760965289784537500",
+      "maxPrice": "559895805869353612500",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x9c060B2fA953b5f69879a8B7B81f62BFfEF360be",
+      "tokenSymbol": "PUMP",
+      "minPrice": "6008730945",
+      "maxPrice": "6009713940",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x955cd91eEaE618F5a7b49E1e3c7482833B10DAb4",
+      "tokenSymbol": "MNT",
+      "minPrice": "575920330348",
+      "maxPrice": "576045605985",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xb736be525A65326513351058427d1f47B0CfB045",
+      "tokenSymbol": "SPX6900",
+      "minPrice": "3840119152739745500000",
+      "maxPrice": "3841506951136168500000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x72Cd3a21aA7A898028d9501868Fbe6dED0020434",
+      "tokenSymbol": "ALGO",
+      "minPrice": "127758277020485900000000",
+      "maxPrice": "127827457665232300000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xEb2A83b973f4dbB9511D92dd40d2ba4C683f0971",
+      "tokenSymbol": "HBAR",
+      "minPrice": "939307015603365925000",
+      "maxPrice": "939404034972762375000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xB7EfE7c7f059E84Ab87A83A169c583Fb4A54fAc3",
+      "tokenSymbol": "CRO",
+      "minPrice": "629385702983323850000",
+      "maxPrice": "629708516696356750000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xd37F01A3379f052FEF70F63c0Be27931891aa2B9",
+      "tokenSymbol": "OKB",
+      "minPrice": "127527906694479",
+      "maxPrice": "127549049942161",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x3B6f801C0052Dfe0Ac80287D611F31B7c47B9A6b",
+      "tokenSymbol": "CVX",
+      "minPrice": "2292919563681",
+      "maxPrice": "2294371456606",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x91c6a8F6aFAC036F4ABf1bA55f4E76892E865E4a",
+      "tokenSymbol": "KAS",
+      "minPrice": "397070662524652100000",
+      "maxPrice": "397216527573956300000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xEcc5eb985Ddbb8335b175b0A2A1144E4c978F1f6",
+      "tokenSymbol": "AERO",
+      "minPrice": "775933761149",
+      "maxPrice": "776127215300",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xC5799ab6E2818fD8d0788dB8D156B0c5db1Bf97b",
+      "tokenSymbol": "WLFI",
+      "minPrice": "55384446897",
+      "maxPrice": "55417389692",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xB79Eb5BA64A167676694bB41bc1640F95d309a2F",
+      "tokenSymbol": "VVV",
+      "minPrice": "24779521649548",
+      "maxPrice": "24787313726806",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xF67b2a901D674B443Fa9f6DB2A689B37c07fD4fE",
+      "tokenSymbol": "MORPHO",
+      "minPrice": "2524533830145",
+      "maxPrice": "2525241778200",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xc5ff0eB026dB972F95DF3dfF04e697d8b660092a",
+      "tokenSymbol": "ZORA",
+      "minPrice": "7193684845",
+      "maxPrice": "7196302185",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x2e73bDBee83D91623736D514b0BB41f2afd9C7Fd",
+      "tokenSymbol": "XPL",
+      "minPrice": "86903871329",
+      "maxPrice": "86919967044",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x2aAB60E62f05d17e58dEc982870bfAdc7F4e7ADF",
+      "tokenSymbol": "ASTER",
+      "minPrice": "714985354200",
+      "maxPrice": "715113575920",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x95c317066CF214b2E6588B2685D949384504F51e",
+      "tokenSymbol": "0G",
+      "minPrice": "308394791202",
+      "maxPrice": "308572348536",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xdB58EB7f408EbA2176eCb44A4696292605cCEB39",
+      "tokenSymbol": "AVNT",
+      "minPrice": "127746108555",
+      "maxPrice": "127806576493",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xc4017CFe7D7eaBDE63d3252caBF26A286fE2B1E0",
+      "tokenSymbol": "LINEA",
+      "minPrice": "2709797167",
+      "maxPrice": "2711201469",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9",
+      "tokenSymbol": "GLV [ETH-USDC]",
+      "minPrice": "1390882969742",
+      "maxPrice": "1391057799610",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xdF03EEd325b82bC1d4Db8b49c30ecc9E05104b96",
+      "tokenSymbol": "GLV [WBTC.b-USDC]",
+      "minPrice": "1567661358945",
+      "maxPrice": "1567813423770",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xeeA41ceA2204D1156De1BDF2CF4ab6184d17f90B",
+      "tokenSymbol": "SKY",
+      "minPrice": "78971011720",
+      "maxPrice": "78995512911",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x6eAbbaA3278556Dc5b19c034dc26c0eaB60d65B5",
+      "tokenSymbol": "ZEC",
+      "minPrice": "12375274148928571750000000",
+      "maxPrice": "12376162935418507250000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xB96e60CA3a7677b29f1e10dd109E952B275038Be",
+      "tokenSymbol": "MON",
+      "minPrice": "25802715170",
+      "maxPrice": "25815322448",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x4b9a2b862E1a30e6E844c991D31Dc6387c9d65D5",
+      "tokenSymbol": "AR",
+      "minPrice": "4178444231992622250",
+      "maxPrice": "4180551308423330750",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x426FE015a5F4E6Ad4E6497ad79265D07EA9F121e",
+      "tokenSymbol": "DASH",
+      "minPrice": "542064621523994350000000",
+      "maxPrice": "542178323759616650000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x9759C297fb6C91e252c7292cECa30a509558E5De",
+      "tokenSymbol": "SYRUP",
+      "minPrice": "231964990896",
+      "maxPrice": "232086152925",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xF01D2AA2f3f903A93D57c4Bf672C8096DE485FA7",
+      "tokenSymbol": "JTO",
+      "minPrice": "576622462715912550000",
+      "maxPrice": "576910740020055050000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x5dB4692926C8ceebF6Da0995358Bbc438F3fd80C",
+      "tokenSymbol": "CHZ",
+      "minPrice": "15559190840",
+      "maxPrice": "15566408280",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xcF558864c6B130Ce76d20641D008ebd4871eDED0",
+      "tokenSymbol": "XAUT",
+      "minPrice": "4122745784923650000000000000",
+      "maxPrice": "4122873746264550000000000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x7624cccCc59361D583F28BEC40D37e7771d2ef5D",
+      "tokenSymbol": "XAUT.v2",
+      "minPrice": "4122745784923650",
+      "maxPrice": "4122873746264550",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xE6172EecBB07F197F52bb73d74daa0e19C31c4Db",
+      "tokenSymbol": "LIT",
+      "minPrice": "3590232204515",
+      "maxPrice": "3591311375466",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x7F2A3967bd0999A860E13Ab8DC34aF98675CC208",
+      "tokenSymbol": "CC",
+      "minPrice": "117033478380",
+      "maxPrice": "117061380953",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x84D523493Aac127025AC770981a54C9601326A41",
+      "tokenSymbol": "MET",
+      "minPrice": "508017293141",
+      "maxPrice": "508226701166",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xc48d782c5C54157d37d2Fa4E6BA27E8cf57Da956",
+      "tokenSymbol": "GOLD",
+      "minPrice": "4128572500000000",
+      "maxPrice": "4128577500000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xE41902f9aD379A8CC34A34efa00F5c3EE5112bC8",
+      "tokenSymbol": "SILVER",
+      "minPrice": "58982500000000",
+      "maxPrice": "58987500000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xa8Ffb545d5cBF1F44E3eBA123D60372cD267D73c",
+      "tokenSymbol": "WTIOIL",
+      "minPrice": "91492500000000",
+      "maxPrice": "91497500000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x9C5C4b9BA1fEBA72186f50d8Ae7C58b1D7f0B12F",
+      "tokenSymbol": "BRENTOIL",
+      "minPrice": "103452500000000",
+      "maxPrice": "103457500000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x620aC65BE29066Bb9D1E92C65b35B9fD321Fb963",
+      "tokenSymbol": "NATGAS",
+      "minPrice": "3343250000000",
+      "maxPrice": "3343750000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x13983f27Ce9365055a6a553233c49fE28e70103e",
+      "tokenSymbol": "MEGA",
+      "minPrice": "43636485464",
+      "maxPrice": "43646442144",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x8CBd0d5d81e7957123E6D8fFaE657a40bDC5691b",
+      "tokenSymbol": "SPCX",
+      "minPrice": "167245000000000",
+      "maxPrice": "167255000000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0xfe71D55D0080b6995Ec2C3f48b7702c86e200766",
+      "tokenSymbol": "QQQ",
+      "minPrice": "755102500000000",
+      "maxPrice": "755107500000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x0315441076FF6d3eA09814a2F90a1f980cF03e9e",
+      "tokenSymbol": "SPY",
+      "minPrice": "775762500000000",
+      "maxPrice": "775767500000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    },
+    {
+      "tokenAddress": "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+      "tokenSymbol": "USDG",
+      "minPrice": "999914443609841700000000",
+      "maxPrice": "999914443609841700000000",
+      "updatedAt": 1791448789843,
+      "timestamp": 1791448788
+    }
+  ]
+}

@@ -12,9 +12,9 @@ import type { PaxosTransitState } from "./usePaxosTransitState";
 
 export function PaxosTransitExecutionRows({ transitState }: { transitState: PaxosTransitState }) {
   const { isDeposit } = useSelector(selectPoolsDetailsFlags);
-  const { isZeroFeeCapacityShort, isWhitelisted, zeroFeeCapacity, tokenIn } = transitState;
+  const { isZeroFeeCapacityShort, isZeroFeePaused, isWhitelisted, zeroFeeCapacity, tokenIn } = transitState;
   const shouldShowZeroFeeCapacity =
-    isWhitelisted && isDeposit && zeroFeeCapacity !== undefined && tokenIn !== undefined;
+    isWhitelisted && isDeposit && !isZeroFeePaused && zeroFeeCapacity !== undefined && tokenIn !== undefined;
 
   return (
     <>

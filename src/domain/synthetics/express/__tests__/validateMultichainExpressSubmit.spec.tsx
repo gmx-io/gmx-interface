@@ -7,7 +7,11 @@ import { TokensData } from "domain/tokens";
 
 import { InsufficientGmxAccountGasTokenBalanceMessage } from "components/Errors/gasErrors";
 
-import { getNetworkFeeGasPaymentParams, reportMultichainExpressSubmitError } from "../validateMultichainExpressSubmit";
+import {
+  getCanUseTokenPermits,
+  getNetworkFeeGasPaymentParams,
+  reportMultichainExpressSubmitError,
+} from "../validateMultichainExpressSubmit";
 
 const mocks = vi.hoisted(() => ({
   toastError: vi.fn(),
@@ -45,6 +49,38 @@ function makeExpressParams(overrides: {
     },
   } as unknown as ExpressTxnParams;
 }
+
+describe("getCanUseTokenPermits", () => {
+  it.each([
+    { name: "no express params", expressParams: undefined, expected: false },
+    {
+      name: "a relayed order",
+      expressParams: makeExpressParams({ isGmxAccount: false, isOutGasTokenBalance: false }),
+      expected: true,
+    },
+    {
+      name: "a relay blocked only by the gas payment token approval",
+      expressParams: makeExpressParams({
+        isGmxAccount: false,
+        isOutGasTokenBalance: false,
+        needGasPaymentTokenApproval: true,
+      }),
+      expected: true,
+    },
+    {
+      name: "a Classic transaction fallback",
+      expressParams: makeExpressParams({ isGmxAccount: false, isOutGasTokenBalance: true }),
+      expected: false,
+    },
+    {
+      name: "a GMX Account relay",
+      expressParams: makeExpressParams({ isGmxAccount: true, isOutGasTokenBalance: false }),
+      expected: false,
+    },
+  ])("$name -> $expected", ({ expressParams, expected }) => {
+    expect(getCanUseTokenPermits(expressParams)).toBe(expected);
+  });
+});
 
 describe("getNetworkFeeGasPaymentParams", () => {
   const walletWithEth = { [zeroAddress]: { walletBalance: 100n } } as unknown as TokensData;

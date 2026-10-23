@@ -41,15 +41,15 @@ import { getTradeboxPaxosFeeTierKey } from "domain/synthetics/paxosTransit/useIs
 import { usePaxosTransitDebugSettings } from "domain/synthetics/paxosTransit/usePaxosTransitDebugSettings";
 import { useTransitApprovalProposal } from "domain/synthetics/paxosTransit/useTransitApprovalProposal";
 import { useTransitMinOrderSizes } from "domain/synthetics/paxosTransit/useTransitMinOrderSizes";
+import { getIsZeroFeeRejection } from "domain/synthetics/paxosTransit/utils";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { parseError } from "lib/errors";
 import { helperToast } from "lib/helperToast";
-import { adjustForDecimals, formatAmountFree } from "lib/numbers";
+import { formatAmountFree } from "lib/numbers";
 import { retryAtRefreshCadence } from "lib/useSWRWithFreshness";
 import { AccountType, useAccountType } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
-import { HttpError } from "sdk/utils/http/http";
 import type { TransitFeeTier, TransitQuote, TransitQuoteParams } from "sdk/utils/paxos/types";
 
 const FEE_TIER_REFRESH_INTERVAL = 60_000;
@@ -147,6 +147,8 @@ export function useTradeboxPaxosRoute({
     amountIn: isPaxosAvailable ? fromTokenAmount : 0n,
     amountInUsd,
     thresholdUsd,
+    isZeroFeeAvailable: feeTierData?.isZeroFeeAvailable,
+    zeroFeeExpectedReopenAt: feeTierData?.zeroFeeExpectedReopenAt,
     zeroFeeCapacity: feeTierData?.zeroFeeCapacity,
     zeroFeeMinOrderSize: minOrderSizes.zeroFee,
     standardMinOrderSize: minOrderSizes.standardFee,
@@ -179,20 +181,17 @@ export function useTradeboxPaxosRoute({
   };
   const zeroFeeQuoteResult = useTradeboxPaxosQuote({ ...quoteRequest, route: "paxosZeroFee" });
   const standardQuoteResult = useTradeboxPaxosQuote({ ...quoteRequest, route: "paxosStandard" });
-  const zeroFeeQuote = zeroFeeQuoteResult.data;
+  const isZeroFeeQuoteRejected = getIsZeroFeeRejection(zeroFeeQuoteResult.error);
+  const zeroFeeQuote = isZeroFeeQuoteRejected ? undefined : zeroFeeQuoteResult.data;
   const standardQuote = standardQuoteResult.data;
-
-  const zeroFeeQuoteErrorStatus =
-    zeroFeeQuoteResult.error instanceof HttpError ? zeroFeeQuoteResult.error.statusCode : undefined;
-  const isZeroFeeAccessChanged = zeroFeeQuoteErrorStatus === 403 || zeroFeeQuoteErrorStatus === 409;
 
   useEffect(
     function refreshFeeTierAfterZeroFeeRejection() {
-      if (isZeroFeeAccessChanged) {
+      if (isZeroFeeQuoteRejected) {
         refreshFeeTier();
       }
     },
-    [isZeroFeeAccessChanged, refreshFeeTier]
+    [isZeroFeeQuoteRejected, refreshFeeTier]
   );
 
   const minSavingAmount =
@@ -222,19 +221,15 @@ export function useTradeboxPaxosRoute({
     amountIn: fromTokenAmount,
     amountInUsd,
     thresholdUsd,
+    isZeroFeeAvailable: feeTierData?.isZeroFeeAvailable,
+    zeroFeeExpectedReopenAt: feeTierData?.zeroFeeExpectedReopenAt,
     zeroFeeCapacity: feeTierData?.zeroFeeCapacity,
     zeroFeeMinOrderSize: minOrderSizes.zeroFee,
     standardMinOrderSize: minOrderSizes.standardFee,
-    zeroFee: {
-      quote: zeroFeeQuote,
-      isError: zeroFeeQuoteResult.error !== undefined,
-      errorStatus: zeroFeeQuoteErrorStatus,
-    },
+    zeroFee: { quote: zeroFeeQuote, isError: zeroFeeQuoteResult.error !== undefined },
     standard: { quote: standardQuote, isError: standardQuoteResult.error !== undefined },
     instantAmountOut,
     isInstantLoading,
-    zeroFeeEstimatedAmountOut:
-      fromToken && toToken ? adjustForDecimals(fromTokenAmount, fromToken.decimals, toToken.decimals) : 0n,
     minSavingAmount,
     preference,
     walletBalance: fromToken?.walletBalance,
@@ -333,9 +328,9 @@ export function useTradeboxPaxosRoute({
     } catch (error) {
       if (error instanceof PaxosQuoteChangedError) {
         helperToast.error(t`The Paxos quote changed. Review the new amount and fee, then confirm again.`);
-      } else if (error instanceof HttpError && (error.statusCode === 403 || error.statusCode === 409)) {
+      } else if (activePaxosRoute === "paxosZeroFee" && getIsZeroFeeRejection(error)) {
         refreshFeeTier();
-        helperToast.error(t`Zero-fee capacity changed. Review the route options and confirm again.`);
+        helperToast.error(t`Paxos zero-fee is no longer available. Review the route options and confirm again.`);
       } else if (error instanceof TransitApprovalClaimedError) {
         return;
       } else if (error instanceof TransitConversionPendingError) {
@@ -370,7 +365,6 @@ export function useTradeboxPaxosRoute({
   ]);
 
   const zeroFeeState = paxosRouteStates.paxosZeroFee;
-  const isZeroFeeCapacityShort = zeroFeeState.status === "capacityShort";
   const zeroFeeCapacity = zeroFeeState.status === "capacityShort" ? zeroFeeState.capacity : undefined;
 
   const onReduceToZeroFeeCapacity = useCallback(() => {
@@ -401,8 +395,10 @@ export function useTradeboxPaxosRoute({
     activeOption,
     instantAmountOut,
     minSavingUsd: paxosTransitConfig?.autoMinSavingUsd,
-    zeroFeeAvailableCapacity: isWhitelisted && direction === "usdcToUsdg" ? feeTierData?.zeroFeeCapacity : undefined,
-    isZeroFeeCapacityShort,
+    zeroFeeAvailableCapacity:
+      isWhitelisted && direction === "usdcToUsdg" && feeTierData?.isZeroFeeAvailable
+        ? feeTierData.zeroFeeCapacity
+        : undefined,
     zeroFeeCapacityShortBy: zeroFeeCapacity !== undefined ? fromTokenAmount - zeroFeeCapacity : undefined,
     zeroFeeCapacity,
     isPayAmountHintShown:
