@@ -1,3 +1,10 @@
+import { zeroAddress } from "viem";
+
+import type { GasPaymentParams } from "domain/synthetics/express/types";
+import { findNextGasPaymentToken } from "domain/synthetics/express/useSwitchGasPaymentTokenIfRequired";
+import type { TokensData } from "domain/tokens";
+import { getByKey } from "lib/objects";
+
 export type OrderAutoSubmitStep = "wait" | "approve" | "submit" | "stop";
 
 export function getOrderAutoSubmitStep(p: {
@@ -26,4 +33,62 @@ export function getOrderAutoSubmitStep(p: {
   }
 
   return "submit";
+}
+
+/**
+ * The order follows the conversion and pays its own network fee, so the conversion must leave something to pay it:
+ * the gas token left after the conversion, another gas token the order switches to, or wallet ETH for a classic
+ * transaction
+ */
+export function getIsOrderStepGasCovered(p: {
+  chainId: number;
+  tokensData: TokensData | undefined;
+  orderGasPaymentParams: GasPaymentParams | undefined;
+  conversionGasPaymentParams: GasPaymentParams | undefined;
+  payTokenAddress: string;
+  payAmount: bigint;
+  isGmxAccount: boolean;
+}): boolean {
+  const { orderGasPaymentParams, conversionGasPaymentParams } = p;
+
+  // a classic order pays in ETH, which the conversion doesn't spend from the pay balance
+  if (!orderGasPaymentParams) {
+    return true;
+  }
+
+  const gasPaymentTokenAddress = orderGasPaymentParams.gasPaymentTokenAddress;
+  const gasPaymentToken = getByKey(p.tokensData, gasPaymentTokenAddress);
+  const balance = p.isGmxAccount ? gasPaymentToken?.gmxAccountBalance : gasPaymentToken?.walletBalance;
+  const spentByConversion =
+    (gasPaymentTokenAddress === p.payTokenAddress ? p.payAmount : 0n) +
+    (conversionGasPaymentParams?.gasPaymentTokenAddress === gasPaymentTokenAddress
+      ? conversionGasPaymentParams.gasPaymentTokenAmount
+      : 0n);
+
+  if (balance !== undefined && balance - spentByConversion >= orderGasPaymentParams.gasPaymentTokenAmount) {
+    return true;
+  }
+
+  const nextGasPaymentTokenAddress = gasPaymentToken
+    ? findNextGasPaymentToken({
+        chainId: p.chainId,
+        tokensData: p.tokensData,
+        gasPaymentToken,
+        gasPaymentTokenAmount: orderGasPaymentParams.gasPaymentTokenAmount,
+        payAmounts: {},
+        isGmxAccount: p.isGmxAccount,
+      })
+    : undefined;
+
+  if (nextGasPaymentTokenAddress !== undefined) {
+    return true;
+  }
+
+  const nativeWalletBalance = getByKey(p.tokensData, zeroAddress)?.walletBalance;
+
+  return (
+    !p.isGmxAccount &&
+    nativeWalletBalance !== undefined &&
+    nativeWalletBalance >= orderGasPaymentParams.totalRelayerFeeTokenAmount
+  );
 }

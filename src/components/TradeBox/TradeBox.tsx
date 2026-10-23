@@ -70,7 +70,11 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { getNetworkFeeGasPaymentParams } from "domain/synthetics/express/validateMultichainExpressSubmit";
-import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
+import {
+  getNetworkFeeSource,
+  GMX_ACCOUNT_NETWORK_FEE_SOURCE,
+  WALLET_NETWORK_FEE_SOURCE,
+} from "domain/synthetics/fees/networkFeeSource";
 import { getExpressExecutionFeeAmount, getExpressGasPrice } from "domain/synthetics/fees/utils/executionFee";
 import { getMarketIndexName, MarketInfo, OFF_HOURS_DOCS_URL } from "domain/synthetics/markets";
 import { formatLeverage, formatLiquidationPriceParts } from "domain/synthetics/positions";
@@ -79,6 +83,8 @@ import { getTwapRecommendation } from "domain/synthetics/trade/twapRecommendatio
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
+import { getInsufficientFeeButtonMessage } from "domain/synthetics/trade/utils/validation";
+import { getIsOrderStepGasCovered } from "domain/synthetics/usdgPools/orderAutoSubmit";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { Token } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
@@ -411,15 +417,43 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
     usdgConversion.buttonState !== undefined &&
     (usdgConversion.isBusy || (!shouldShowDepositButton && !gmxSubmitButtonState.disabled));
 
+  const orderStepGasPaymentParams = gmxSubmitButtonState.expressParams?.gasPaymentParams;
+  const isOrderStepGasMissing =
+    isConvertStepShown &&
+    !usdgConversion.isBusy &&
+    fromTokenAddress !== undefined &&
+    fromTokenAmount !== undefined &&
+    !getIsOrderStepGasCovered({
+      chainId,
+      tokensData,
+      orderGasPaymentParams: orderStepGasPaymentParams,
+      conversionGasPaymentParams: usdgConversion.expressParams?.gasPaymentParams,
+      payTokenAddress: fromTokenAddress,
+      payAmount: fromTokenAmount,
+      isGmxAccount: isFromTokenGmxAccount,
+    });
+
   const submitButtonState = useMemo(() => {
     if (paxosRoute.buttonState) {
       return { ...gmxSubmitButtonState, ...paxosRoute.buttonState, tooltipContent: null, bannerErrorContent: null };
     }
 
     if (isConvertStepShown) {
+      const orderStepGasError =
+        isOrderStepGasMissing && orderStepGasPaymentParams
+          ? {
+              text: getInsufficientFeeButtonMessage({
+                tokenSymbol: orderStepGasPaymentParams.gasPaymentToken.symbol,
+                feeSource: isFromTokenGmxAccount ? GMX_ACCOUNT_NETWORK_FEE_SOURCE : WALLET_NETWORK_FEE_SOURCE,
+              }),
+              disabled: true,
+            }
+          : undefined;
+
       return {
         ...gmxSubmitButtonState,
         ...usdgConversion.buttonState,
+        ...orderStepGasError,
         expressParams: usdgConversion.expressParams,
         isExpressLoading: usdgConversion.isExpressLoading,
         totalExecutionFee: usdgConversion.executionFee,
@@ -432,6 +466,9 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   }, [
     gmxSubmitButtonState,
     isConvertStepShown,
+    isFromTokenGmxAccount,
+    isOrderStepGasMissing,
+    orderStepGasPaymentParams,
     paxosRoute.buttonState,
     usdgConversion.buttonState,
     usdgConversion.executionFee,
@@ -468,9 +505,14 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   const expressOrdersEnabledForMax = expressOrdersEnabled && fromTokenAddress !== zeroAddress && !isWrapOrUnwrap;
 
   const expressGasPaymentParams = submitButtonState.expressParams?.gasPaymentParams;
+  // the order still follows the conversion and pays its own fee, so Max keeps both
+  const orderStepGasPaymentTokenAmount =
+    isConvertStepShown && orderStepGasPaymentParams?.gasPaymentTokenAddress === gasPaymentTokenAddress
+      ? orderStepGasPaymentParams.gasPaymentTokenAmount
+      : 0n;
   const expressGasPaymentTokenAmount =
     expressOrdersEnabledForMax && expressGasPaymentParams?.gasPaymentTokenAddress === gasPaymentTokenAddress
-      ? expressGasPaymentParams.gasPaymentTokenAmount
+      ? expressGasPaymentParams.gasPaymentTokenAmount + orderStepGasPaymentTokenAmount
       : undefined;
 
   const gasPaymentTokenForMax = expressOrdersEnabledForMax ? gasPaymentTokenData : nativeToken;
