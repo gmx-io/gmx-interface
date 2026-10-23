@@ -243,6 +243,10 @@ msgstr "平倉時的價格影響。正值對您有利。<0>了解更多</0>。"
 msgid "Network fee unavailable"
 msgstr "網路費用不可用"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, TWAP orders hold USDG. Your USDC converts first, then you sign the order."
+msgstr "在 USDG 池中，TWAP 訂單持有 USDG。系統會先轉換您的 USDC，然後您再簽署訂單。"
+
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -2817,6 +2821,7 @@ msgid "Max open interest {directionLabel}"
 msgstr "最大未平倉量 {directionLabel}"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+#: src/components/TradeBox/TradeBox.tsx
 msgid "Steps"
 msgstr "步驟"
 
@@ -3429,6 +3434,10 @@ msgstr "上一頁"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {tokenSymbol} on {chainName}"
 msgstr "{chainName} 上的 {tokenSymbol} 不足"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Approving USDC..."
+msgstr "正在核准 USDC..."
 
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "Expected 365d fees"
@@ -4623,6 +4632,10 @@ msgstr "零費用轉換已無法使用。請查看轉換詳情並再次確認。
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "<0>No. There is no GMX-controlled account holding your money at any point. Traders trade directly from their own wallet, or from their funded GMX Account — a contract you control and withdraw from at will.</0><1>Affiliates never deposit anything. Rewards accrue in the contracts, and you claim them yourself, on-chain, to your address.</1>"
 msgstr "<0>不會。您的資金在任何時刻都不會存放在由 GMX 控制的帳戶中。交易者直接透過自己的錢包交易，或使用已存入資金的 GMX Account——一個由您掌控、可隨時提取的合約。</0><1>聯盟推廣者無需存入任何資金。獎勵累積在合約中，由您自己在鏈上領取至您的地址。</1>"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Converting USDC to USDG..."
+msgstr "正在將 USDC 轉換為 USDG..."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw and unreserve GMX"
@@ -7378,6 +7391,10 @@ msgstr "將 SL 價格設為高於標記價格"
 msgid "TYPE"
 msgstr "類型"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Convert and create order"
+msgstr "轉換並建立訂單"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdrawn"
 msgstr "已提取"
@@ -8028,6 +8045,10 @@ msgstr "正在結算倉位費用..."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX announcements and updates"
 msgstr "GMX 公告與更新"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, Stop Market orders hold USDG. Your USDC converts first, then you sign the order."
+msgstr "在 USDG 池中，Stop Market 訂單持有 USDG。系統會先轉換您的 USDC，然後您再簽署訂單。"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "Edit TP/SL size"
@@ -9571,6 +9592,10 @@ msgstr "您會取得格式如下的可分享連結：{PRODUCTION_HOST}/trade/?re
 msgid "TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling."
 msgstr "倉位平倉時，止盈/止損訂單會自動取消。僅適用於啟用後建立的訂單。"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, Limit orders hold USDG. Your USDC converts first, then you sign the order."
+msgstr "在 USDG 池中，限價單持有 USDG。系統會先轉換您的 USDC，然後您再簽署訂單。"
+
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "fees"
@@ -10803,6 +10828,10 @@ msgstr "步驟 2：買入"
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "0x..."
 msgstr "0x..."
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Conversion failed"
+msgstr "轉換失敗"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update Limit"
@@ -12081,6 +12110,7 @@ msgstr "最大做空費率"
 msgid "Alerts"
 msgstr "提醒"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Loading swap path…"
 msgstr "正在載入兌換路徑…"
@@ -12867,6 +12897,10 @@ msgstr "橫幅、連結，以及專屬合作夥伴經理"
 msgid "Step 1: Convert"
 msgstr "步驟 1：轉換"
 
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Convert, then place order"
+msgstr "先轉換，再下單"
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Save on costs"
 msgstr "節省費用"
@@ -13038,6 +13072,10 @@ msgstr "交易雜湊已複製到剪貼簿"
 #: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 msgid "This year"
 msgstr "今年"
+
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Your USDC converts to USDG first, then the order asks for a second signature. If you reject it or leave, the USDG stays in your account."
+msgstr "系統會先將 USDC 轉換為 USDG，然後訂單會請求第二次簽名。如果您拒絕或離開，USDG 將保留在您的帳戶中。"
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "Withdraw {glvOrGm}: {0}"

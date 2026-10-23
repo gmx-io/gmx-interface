@@ -243,6 +243,10 @@ msgstr "포지션 종료 시 가격 영향입니다. 양수 값은 유리합니�
 msgid "Network fee unavailable"
 msgstr "네트워크 수수료를 불러올 수 없습니다"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, TWAP orders hold USDG. Your USDC converts first, then you sign the order."
+msgstr "USDG 풀에서는 TWAP 주문이 USDG를 보유합니다. 먼저 USDC가 변환된 후 주문에 서명합니다."
+
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -2817,6 +2821,7 @@ msgid "Max open interest {directionLabel}"
 msgstr "최대 미결제약정 {directionLabel}"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+#: src/components/TradeBox/TradeBox.tsx
 msgid "Steps"
 msgstr "단계"
 
@@ -3429,6 +3434,10 @@ msgstr "이전"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {tokenSymbol} on {chainName}"
 msgstr "{chainName}의 {tokenSymbol}이(가) 부족합니다"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Approving USDC..."
+msgstr "USDC 승인 중..."
 
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "Expected 365d fees"
@@ -4623,6 +4632,10 @@ msgstr "수수료 무료 변환을 더 이상 사용할 수 없습니다. 변환
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "<0>No. There is no GMX-controlled account holding your money at any point. Traders trade directly from their own wallet, or from their funded GMX Account — a contract you control and withdraw from at will.</0><1>Affiliates never deposit anything. Rewards accrue in the contracts, and you claim them yourself, on-chain, to your address.</1>"
 msgstr "<0>아닙니다. 고객의 자금이 GMX가 통제하는 계정에 보관되는 일은 없습니다. 트레이더는 본인의 지갑에서 직접, 또는 자금을 입금한 GMX Account에서 거래합니다. GMX Account는 본인이 통제하며 언제든 출금할 수 있는 컨트랙트입니다.</0><1>어필리에이트는 아무것도 입금하지 않습니다. 보상은 컨트랙트에 누적되며, 온체인에서 본인 주소로 직접 수령합니다.</1>"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Converting USDC to USDG..."
+msgstr "USDC를 USDG로 변환 중..."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw and unreserve GMX"
@@ -7378,6 +7391,10 @@ msgstr "손절매 가격은 기준가보다 높게 설정해야 합니다"
 msgid "TYPE"
 msgstr "유형"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Convert and create order"
+msgstr "변환 후 주문 생성"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdrawn"
 msgstr "출금 완료"
@@ -8028,6 +8045,10 @@ msgstr "포지션 수수료 정산 중..."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX announcements and updates"
 msgstr "GMX 공지사항 및 업데이트"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, Stop Market orders hold USDG. Your USDC converts first, then you sign the order."
+msgstr "USDG 풀에서는 스탑 마켓 주문이 USDG를 보유합니다. 먼저 USDC가 변환된 후 주문에 서명합니다."
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "Edit TP/SL size"
@@ -9571,6 +9592,10 @@ msgstr "다음과 같은 공유 링크가 제공됩니다: {PRODUCTION_HOST}/tra
 msgid "TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling."
 msgstr "포지션 종료 시 TP/SL 주문이 자동 취소됩니다. 활성화 이후 생성된 주문에만 적용됩니다."
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, Limit orders hold USDG. Your USDC converts first, then you sign the order."
+msgstr "USDG 풀에서는 지정가 주문이 USDG를 보유합니다. 먼저 USDC가 변환된 후 주문에 서명합니다."
+
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "fees"
@@ -10803,6 +10828,10 @@ msgstr "2단계: 구매"
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "0x..."
 msgstr "0x..."
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Conversion failed"
+msgstr "변환 실패"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update Limit"
@@ -12081,6 +12110,7 @@ msgstr "최대 숏 이율"
 msgid "Alerts"
 msgstr "알림"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Loading swap path…"
 msgstr "스왑 경로 불러오는 중…"
@@ -12867,6 +12897,10 @@ msgstr "배너, 링크, 전담 파트너 매니저"
 msgid "Step 1: Convert"
 msgstr "1단계: 변환"
 
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Convert, then place order"
+msgstr "변환 후 주문"
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Save on costs"
 msgstr "비용 절감"
@@ -13038,6 +13072,10 @@ msgstr "트랜잭션 해시가 클립보드에 복사되었습니다"
 #: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 msgid "This year"
 msgstr "올해"
+
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Your USDC converts to USDG first, then the order asks for a second signature. If you reject it or leave, the USDG stays in your account."
+msgstr "먼저 USDC가 USDG로 변환된 후 주문에서 두 번째 서명을 요청합니다. 거부하거나 나가면 USDG는 계정에 남습니다."
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "Withdraw {glvOrGm}: {0}"

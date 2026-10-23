@@ -243,6 +243,10 @@ msgstr "クローズ時の価格への影響です。正の値はお客様に有
 msgid "Network fee unavailable"
 msgstr "ネットワーク手数料を取得できません"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, TWAP orders hold USDG. Your USDC converts first, then you sign the order."
+msgstr "USDGプールでは、TWAP注文はUSDGを保有します。まずUSDCが変換され、その後注文に署名します。"
+
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -2817,6 +2821,7 @@ msgid "Max open interest {directionLabel}"
 msgstr "最大建玉 {directionLabel}"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+#: src/components/TradeBox/TradeBox.tsx
 msgid "Steps"
 msgstr "ステップ"
 
@@ -3429,6 +3434,10 @@ msgstr "前へ"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {tokenSymbol} on {chainName}"
 msgstr "{chainName}の{tokenSymbol}が不足しています"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Approving USDC..."
+msgstr "USDCを承認中..."
 
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "Expected 365d fees"
@@ -4623,6 +4632,10 @@ msgstr "手数料無料の変換は利用できなくなりました。変換内
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "<0>No. There is no GMX-controlled account holding your money at any point. Traders trade directly from their own wallet, or from their funded GMX Account — a contract you control and withdraw from at will.</0><1>Affiliates never deposit anything. Rewards accrue in the contracts, and you claim them yourself, on-chain, to your address.</1>"
 msgstr "<0>いいえ。お客様の資金がGMX管理の口座に置かれることは一切ありません。トレーダーはご自身のウォレットから直接、または入金済みのGMX Accountから取引します。GMX Accountはお客様自身が管理し、いつでも出金できるコントラクトです。</0><1>アフィリエイトは何も入金する必要がありません。報酬はコントラクトに蓄積され、お客様ご自身がオンチェーンでご自身のアドレスに受け取ります。</1>"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Converting USDC to USDG..."
+msgstr "USDCをUSDGに変換中..."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw and unreserve GMX"
@@ -7378,6 +7391,10 @@ msgstr "SL価格をマーク価格より上に設定してください"
 msgid "TYPE"
 msgstr "タイプ"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Convert and create order"
+msgstr "変換して注文を作成"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdrawn"
 msgstr "出金完了"
@@ -8028,6 +8045,10 @@ msgstr "ポジション手数料を精算中..."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX announcements and updates"
 msgstr "GMXのお知らせとアップデート"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, Stop Market orders hold USDG. Your USDC converts first, then you sign the order."
+msgstr "USDGプールでは、ストップマーケット注文はUSDGを保有します。まずUSDCが変換され、その後注文に署名します。"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "Edit TP/SL size"
@@ -9571,6 +9592,10 @@ msgstr "次のような共有可能なリンクを取得できます：{PRODUCTI
 msgid "TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling."
 msgstr "TP/SL注文はポジションの決済時に自動キャンセルされます。有効化後に作成された注文にのみ適用されます。"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, Limit orders hold USDG. Your USDC converts first, then you sign the order."
+msgstr "USDGプールでは、指値注文はUSDGを保有します。まずUSDCが変換され、その後注文に署名します。"
+
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "fees"
@@ -10803,6 +10828,10 @@ msgstr "ステップ2: 購入"
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "0x..."
 msgstr "0x..."
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Conversion failed"
+msgstr "変換に失敗しました"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update Limit"
@@ -12081,6 +12110,7 @@ msgstr "ショート最大レート"
 msgid "Alerts"
 msgstr "アラート"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Loading swap path…"
 msgstr "スワップルートを読み込み中…"
@@ -12867,6 +12897,10 @@ msgstr "バナー、リンク、パートナーマネージャー"
 msgid "Step 1: Convert"
 msgstr "ステップ1: 変換"
 
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Convert, then place order"
+msgstr "変換してから注文"
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Save on costs"
 msgstr "コストを節約"
@@ -13038,6 +13072,10 @@ msgstr "トランザクションハッシュをクリップボードにコピー
 #: src/pages/AccountDashboard/pnlSummaryBuckets.ts
 msgid "This year"
 msgstr "今年"
+
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Your USDC converts to USDG first, then the order asks for a second signature. If you reject it or leave, the USDG stays in your account."
+msgstr "まずUSDCがUSDGに変換され、その後注文で2回目の署名が求められます。拒否するか離れた場合、USDGはアカウントに残ります。"
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "Withdraw {glvOrGm}: {0}"
