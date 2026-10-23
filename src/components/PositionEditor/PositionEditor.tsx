@@ -34,6 +34,7 @@ import {
   selectPositionEditorCollateralInputAmountAndUsd,
   selectPositionEditorDepositConversionTokenAddress,
   selectPositionEditorDepositMaxInstantAmount,
+  selectPositionEditorDepositRestInstantAmountOut,
   selectPositionEditorIsDepositSwapUnfillable,
   selectPositionEditorMaxWithdrawAmount,
   selectPositionEditorOpenDepositNow,
@@ -41,6 +42,7 @@ import {
   selectPositionEditorSetAddMarginReturnPositionKey,
 } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
+import { selectTradeboxSetIsFromTokenGmxAccount } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { getNetworkFeeGasPaymentParams } from "domain/synthetics/express/validateMultichainExpressSubmit";
@@ -169,6 +171,7 @@ export function PositionEditor() {
   const isDepositSwapUnfillable = useSelector(selectPositionEditorIsDepositSwapUnfillable);
   const depositMaxInstantAmount = useSelector(selectPositionEditorDepositMaxInstantAmount);
   const setAddMarginReturnPositionKey = useSelector(selectPositionEditorSetAddMarginReturnPositionKey);
+  const setTradeboxIsFromTokenGmxAccount = useSelector(selectTradeboxSetIsFromTokenGmxAccount);
   const history = useHistory();
 
   // a selected conversion token isn't the position collateral, so collateral options are keyed off the position
@@ -364,6 +367,7 @@ export function PositionEditor() {
     collateralToken && restAmount !== undefined
       ? convertToUsd(restAmount, collateralToken.decimals, getMidPrice(collateralToken.prices))
       : undefined;
+  const restInstantAmountOut = useSelector(selectPositionEditorDepositRestInstantAmountOut);
   const {
     isOffered: isPaxosOfferedForRest,
     minimumText: paxosMinimumText,
@@ -371,6 +375,7 @@ export function PositionEditor() {
   } = useIsSwapTabPaxosOffered({
     amount: restAmount,
     amountUsd: restUsd,
+    instantAmountOut: restInstantAmountOut,
     isGmxAccount: isCollateralTokenFromGmxAccount,
     enabled: isConversionTooLarge,
   });
@@ -404,6 +409,8 @@ export function PositionEditor() {
     const restAmount = formatAmountFree(collateralDeltaAmount - depositMaxInstantAmount, collateralToken.decimals);
 
     setAddMarginReturnPositionKey(position.key);
+    // the Swap tab runs Paxos only from the wallet, and a stored GMX Account pay source would hide it
+    setTradeboxIsFromTokenGmxAccount(false);
     setEditingPositionKey(undefined);
     history.push(
       `/trade/swap?mode=market&from=${collateralToken.symbol}&to=${position.collateralToken.symbol}&amount=${restAmount}`
@@ -416,6 +423,7 @@ export function PositionEditor() {
     position,
     setAddMarginReturnPositionKey,
     setEditingPositionKey,
+    setTradeboxIsFromTokenGmxAccount,
   ]);
 
   const hasNextValues =

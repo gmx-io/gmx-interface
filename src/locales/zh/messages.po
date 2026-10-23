@@ -8661,6 +8661,10 @@ msgstr "目前无法加载加成收益率"
 msgid "Order submission failed"
 msgstr "订单提交失败"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "One-Click Trading skips external routes, which may convert the full amount. <0>Disable One-Click Trading</0>."
+msgstr "One-Click Trading 不使用外部路由，而外部路由可能可以转换全部金额。<0>禁用 One-Click Trading</0>。"
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Realized PnL before fees"
 msgstr "扣除费用前的已实现盈亏（PnL）"

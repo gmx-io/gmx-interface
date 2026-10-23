@@ -8661,6 +8661,10 @@ msgstr "Le taux du boost ne peut pas être chargé pour le moment"
 msgid "Order submission failed"
 msgstr "Échec de la soumission de l'ordre"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "One-Click Trading skips external routes, which may convert the full amount. <0>Disable One-Click Trading</0>."
+msgstr "One-Click Trading ignore les routes externes, qui pourraient convertir le montant total. <0>Désactiver One-Click Trading</0>."
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Realized PnL before fees"
 msgstr "PnL réalisé avant frais"
