@@ -8,6 +8,8 @@ export type TransitOrderStatus = "PENDING_BRIDGE" | "PROCESSING" | "PROCESSED" |
 export type TransitFeeTierResponse = {
   feeTier: TransitFeeTier;
   zeroFeeCapacity: bigint;
+  isZeroFeeAvailable: boolean;
+  zeroFeeExpectedReopenAt: number | undefined;
 };
 
 export type TransitTokenMetadata = {

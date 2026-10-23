@@ -83,6 +83,7 @@ import { Token } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useLocalizedMap } from "lib/i18n";
 import { throttleLog } from "lib/logging";
+import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
 import {
   calculateDisplayDecimals,
   formatAmount,
@@ -389,7 +390,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   });
 
   const paxosRoute = useTradeboxPaxosRoute({ setFromTokenInputValue, setFocusedInput });
-  const isPaxosRouteActive = paxosRoute.activePaxosRoute !== undefined || paxosRoute.routes.isRouteChoiceRequired;
+  const isPaxosRouteActive = paxosRoute.activePaxosRoute !== undefined;
   const paxosReceiveAmountOut = getPaxosReceiveAmountOut(paxosRoute);
 
   const submitButtonState = useMemo(
@@ -401,9 +402,13 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   );
 
   const wrappedOnSubmit = useCallback(async () => {
-    await submitButtonState.onSubmit();
-    if (isMobile) {
-      setExternalIsCurtainOpen(false);
+    try {
+      await submitButtonState.onSubmit();
+      if (isMobile) {
+        setExternalIsCurtainOpen(false);
+      }
+    } catch (error) {
+      reportHandledRejection("tradebox.submit")(error);
     }
   }, [submitButtonState, isMobile, setExternalIsCurtainOpen]);
 
@@ -1128,6 +1133,10 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   const buttonContent = (
     <Button
       qa="confirm-trade-button"
+      data-one-click-ready={Boolean(
+        submitButtonState.expressParams?.gasPaymentValidations.isValid &&
+          submitButtonState.expressParams?.subaccountValidations?.isValid
+      )}
       variant="primary-action"
       className="w-full [text-decoration:inherit]"
       onClick={wrappedOnSubmit}
@@ -1394,11 +1403,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
         </div>
       </div>
 
-      <div
-        className={cx("flex flex-col gap-14 rounded-8 bg-slate-900", isTwap ? "p-4" : "p-12 pb-16", {
-          hidden: isPaxosRouteActive && !paxosRoute.activePaxosRoute,
-        })}
-      >
+      <div className={cx("flex flex-col gap-14 rounded-8 bg-slate-900", isTwap ? "p-4" : "p-12 pb-16")}>
         {isPaxosRouteActive && fromToken && toToken && (
           <PaxosRouteDetailsRows paxosRoute={paxosRoute} fromToken={fromToken} toToken={toToken} />
         )}
@@ -1480,10 +1485,6 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
 }
 
 function getPaxosReceiveAmountOut(paxosRoute: TradeboxPaxosRoute): bigint | undefined {
-  if (paxosRoute.routes.isRouteChoiceRequired) {
-    return 0n;
-  }
-
   if (!paxosRoute.activePaxosRoute) {
     return undefined;
   }

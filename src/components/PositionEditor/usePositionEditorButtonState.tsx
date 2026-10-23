@@ -11,7 +11,6 @@ import {
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
-  usePositionEditorMinCollateralFactor,
   usePositionEditorPosition,
   usePositionEditorPositionState,
 } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
@@ -29,6 +28,8 @@ import {
   selectPositionEditorIsCollateralTokenFromGmxAccount,
   selectPositionEditorIsDepositSwapPathMissing,
   selectPositionEditorIsDepositSwapUnfillable,
+  selectPositionEditorMaxWithdrawAmount,
+  selectPositionEditorRawMaxWithdrawAmount,
   selectPositionEditorReplacingOrderKey,
   selectPositionEditorSelectedCollateralAddress,
   selectPositionEditorSelectedCollateralToken,
@@ -39,20 +40,16 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExpressTxnParams } from "domain/synthetics/express/types";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
+  getCanUseTokenPermits,
   getExpressParamsForSubmit,
   reportMultichainExpressSubmitError,
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
-import {
-  addMinDepositSlippage,
-  getIsPositionInfoLoaded,
-  substractMaxLeverageSlippage,
-  willPositionCollateralBeSufficientForPosition,
-} from "domain/synthetics/positions";
+import { addMinDepositSlippage, getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import { convertToTokenAmount } from "domain/synthetics/tokens";
-import { getMarkPrice, getMaxWithdrawAmount, getMinRequiredCollateralUsdForPosition } from "domain/synthetics/trade";
+import { getMarkPrice, getMinRequiredCollateralUsdForPosition } from "domain/synthetics/trade";
 import { Operation } from "domain/synthetics/trade/usePositionEditorState";
 import {
   getCommonError,
@@ -71,17 +68,17 @@ import {
   getIsGasPaymentTokenApproval,
 } from "domain/tokens/gasPaymentTokenApproval";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
-import { bigNumberBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
+import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
 import {
   initEditCollateralMetricData,
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
-import { expandDecimals, formatAmountFree } from "lib/numbers";
+import { formatAmountFree } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
@@ -164,13 +161,9 @@ export function usePositionEditorButtonState(
     operation,
   });
 
-  const { nextLeverage, nextLiqPrice, receiveUsd } = usePositionEditorData({
+  const { nextLeverage, nextLeverageWithoutPnl, nextLiqPrice, receiveUsd } = usePositionEditorData({
     operation,
   });
-
-  const minCollateralFactor = usePositionEditorMinCollateralFactor();
-
-  const collateralPrice = selectedCollateralToken?.prices.minPrice;
 
   const markPrice = position
     ? getMarkPrice({
@@ -365,7 +358,7 @@ export function usePositionEditorButtonState(
     chainId,
     spenderAddress: routerAddress,
     tokens: approvalTokens,
-    allowPermit: Boolean(expressParams),
+    allowPermit: getCanUseTokenPermits(expressParams),
     skip: isCollateralTokenFromGmxAccount,
     metric: {
       flow: "editCollateral",
@@ -387,37 +380,14 @@ export function usePositionEditorButtonState(
     setEditingPositionKey(undefined);
   }, [setEditingPositionKey]);
 
-  const maxWithdrawAmount = useMemo(() => {
-    if (!getIsPositionInfoLoaded(position)) return 0n;
+  const maxWithdrawAmount = useSelector(selectPositionEditorMaxWithdrawAmount);
+  const rawMaxWithdrawAmount = useSelector(selectPositionEditorRawMaxWithdrawAmount);
 
-    return getMaxWithdrawAmount({
-      position,
-      minCollateralUsd,
-      collateralPrice,
-      collateralDecimals: selectedCollateralToken?.decimals,
-      userReferralInfo,
-    });
-  }, [collateralPrice, selectedCollateralToken?.decimals, minCollateralUsd, position, userReferralInfo]);
-
-  const detectAndSetMaxSize = useCallback(() => {
-    if (maxWithdrawAmount === undefined) return;
+  const setMaxWithdrawal = useCallback(() => {
     if (!selectedCollateralToken) return;
-    if (!position) return;
-    if (minCollateralFactor === undefined) return;
 
-    const { result: safeMaxWithdrawal } = bigNumberBinarySearch(
-      BigInt(1),
-      maxWithdrawAmount,
-      expandDecimals(1, Math.ceil(selectedCollateralToken.decimals / 3)),
-      (x) => {
-        const isValid = willPositionCollateralBeSufficientForPosition(position, x, 0n, minCollateralFactor, 0n);
-        return { isValid, returnValue: null };
-      }
-    );
-    setCollateralInputValue(
-      formatAmountFree(substractMaxLeverageSlippage(safeMaxWithdrawal), selectedCollateralToken.decimals)
-    );
-  }, [selectedCollateralToken, maxWithdrawAmount, minCollateralFactor, position, setCollateralInputValue]);
+    setCollateralInputValue(formatAmountFree(maxWithdrawAmount, selectedCollateralToken.decimals));
+  }, [selectedCollateralToken, maxWithdrawAmount, setCollateralInputValue]);
 
   const minDepositUsd = useMemo(() => {
     if (!isDeposit || !getIsPositionInfoLoaded(position) || minCollateralUsd === undefined) {
@@ -493,7 +463,7 @@ export function usePositionEditorButtonState(
     const editCollateralError = getEditCollateralError({
       collateralDeltaAmount,
       collateralDeltaUsd,
-      nextLeverage,
+      nextLeverage: isDeposit ? nextLeverage : nextLeverageWithoutPnl,
       nextLiqPrice,
       isDeposit,
       position,
@@ -501,7 +471,7 @@ export function usePositionEditorButtonState(
       depositAmount: collateralDeltaAmount,
       minDepositUsd,
       marketInfo: position?.marketInfo,
-      maxWithdrawAmount,
+      maxWithdrawAmount: rawMaxWithdrawAmount,
       isDepositSwapUnfillable,
       isDepositSwapPathMissing,
     });
@@ -520,12 +490,13 @@ export function usePositionEditorButtonState(
     isAutoCancelLimitReached,
     markPrice,
     nextLeverage,
+    nextLeverageWithoutPnl,
     nextLiqPrice,
     isDeposit,
     position,
     selectedCollateralToken,
     minDepositUsd,
-    maxWithdrawAmount,
+    rawMaxWithdrawAmount,
     triggerPrice,
     isDepositSwapUnfillable,
     isDepositSwapPathMissing,
@@ -547,7 +518,7 @@ export function usePositionEditorButtonState(
           <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">Read more</ExternalLink>.
           <br />
           <br />
-          <EmbeddedActionButton onClick={detectAndSetMaxSize}>
+          <EmbeddedActionButton onClick={setMaxWithdrawal}>
             <Trans>Set max withdrawal</Trans>
           </EmbeddedActionButton>
         </Trans>
@@ -555,7 +526,7 @@ export function usePositionEditorButtonState(
     }
 
     return null;
-  }, [detectAndSetMaxSize, validationResult.buttonTooltipMessage, validationResult.buttonTooltipName]);
+  }, [setMaxWithdrawal, validationResult.buttonTooltipMessage, validationResult.buttonTooltipName]);
 
   const errorBannerContent = useMemo(() => {
     if (validationResult.buttonTooltipName === ValidationButtonTooltipName.marginDepositAutoCancelLimit) {
@@ -689,12 +660,13 @@ export function usePositionEditorButtonState(
     });
 
     if (expressParams?.subaccount) {
+      void txnPromise.catch(reportHandledRejection("positionEditor.submit"));
       onClose();
       setIsSubmitting(false);
       return;
     }
 
-    txnPromise.then(onClose).finally(() => {
+    txnPromise.then(onClose, reportHandledRejection("positionEditor.submit")).finally(() => {
       setIsSubmitting(false);
     });
   }

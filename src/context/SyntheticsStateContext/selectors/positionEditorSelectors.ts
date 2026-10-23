@@ -2,19 +2,16 @@ import type { Address } from "viem";
 
 import { USD_DECIMALS } from "config/factors";
 import { getUsdgConversionTokenAddress } from "config/usdgPools";
-import {
-  getIsPositionInfoLoaded,
-  getMinCollateralFactorForPosition,
-  parsePositionKey,
-} from "domain/synthetics/positions";
+import { getIsPositionInfoLoaded, parsePositionKey, substractMaxLeverageSlippage } from "domain/synthetics/positions";
 import { convertToUsd, getBalanceByBalanceType } from "domain/synthetics/tokens";
+import { getMaxWithdrawAmount } from "domain/synthetics/trade";
 import { Operation } from "domain/synthetics/trade/usePositionEditorState";
 import {
   getIsSwapTooLargeToFill,
   getMaxInstantSwapAmount,
   getShouldDefaultToUsdc,
 } from "domain/synthetics/usdgPools/usdcConversion";
-import { parseValue } from "lib/numbers";
+import { parseValue, truncateToBalanceDisplayDecimals } from "lib/numbers";
 import { getSwapAmountsByFromValue } from "sdk/utils/swap/swapValues";
 import { TokenBalanceType } from "sdk/utils/tokens/types";
 
@@ -24,9 +21,12 @@ import {
   selectChainId,
   selectMarketsInfoData,
   selectOrdersInfoData,
+  selectPositionConstants,
   selectPositionsInfoData,
+  selectProDiscountFactor,
   selectTokensData,
   selectUiFeeFactor,
+  selectUserReferralInfo,
 } from "./globalSelectors";
 import { makeSelectFindSwapPath } from "./tradeSelectors";
 
@@ -39,14 +39,6 @@ export const selectPositionEditorPosition = createSelector((q) => {
   const positionKey = q(selectPositionEditorEditingPositionKey);
   if (!positionKey) return undefined;
   return q((s) => selectPositionsInfoData(s)?.[positionKey]);
-});
-
-export const selectPositionEditorMinCollateralFactor = createSelector((q) => {
-  const position = q(selectPositionEditorPosition);
-
-  if (!getIsPositionInfoLoaded(position)) return undefined;
-
-  return getMinCollateralFactorForPosition(position, 0n);
 });
 
 export const selectPositionEditorCollateralInputValue = (state: SyntheticsState) =>
@@ -297,4 +289,35 @@ export const selectPositionEditorDepositMaxInstantAmount = createSelector((q) =>
   }
 
   return getMaxInstantSwapAmount({ tokenIn: payToken, maxAmountIn: collateralDeltaAmount, findSwapPath });
+});
+
+export const selectPositionEditorRawMaxWithdrawAmount = createSelector((q) => {
+  const position = q(selectPositionEditorPosition);
+
+  if (!getIsPositionInfoLoaded(position)) return 0n;
+
+  const collateralToken = q(selectPositionEditorSelectedCollateralToken);
+  const { minCollateralUsd } = q(selectPositionConstants);
+
+  return getMaxWithdrawAmount({
+    position,
+    minCollateralUsd,
+    collateralPrice: collateralToken?.prices.minPrice,
+    collateralDecimals: collateralToken?.decimals,
+    userReferralInfo: q(selectUserReferralInfo),
+    proDiscountFactor: q(selectProDiscountFactor),
+  });
+});
+
+export const selectPositionEditorMaxWithdrawAmount = createSelector((q) => {
+  const maxWithdrawAmount = q(selectPositionEditorRawMaxWithdrawAmount);
+  const collateralToken = q(selectPositionEditorSelectedCollateralToken);
+
+  if (!collateralToken) return maxWithdrawAmount;
+
+  return truncateToBalanceDisplayDecimals(
+    substractMaxLeverageSlippage(maxWithdrawAmount),
+    collateralToken.decimals,
+    collateralToken.isStable
+  );
 });

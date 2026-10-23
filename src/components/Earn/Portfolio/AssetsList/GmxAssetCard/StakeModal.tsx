@@ -267,9 +267,9 @@ export function StakeModal(props: {
         sendStakingActionMetric({ action: "stake", tokenSymbol, chainId });
         setIsVisible(false);
       })
+      // The error toast already reported it.
       .catch((error) => {
         sendStakingActionMetric({ action: "stake", tokenSymbol, chainId, error });
-        throw error;
       })
       .finally(() => {
         setIsStaking(false);
@@ -322,7 +322,6 @@ export function StakeModal(props: {
       })
       .catch((error) => {
         sendStakingActionMetric({ action: "unstake", tokenSymbol, chainId, error });
-        throw error;
       })
       .finally(() => {
         setIsUnstaking(false);

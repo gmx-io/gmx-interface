@@ -1,17 +1,22 @@
 import { ethers } from "ethers";
 import {
   Abi,
+  type Address,
   decodeFunctionResult,
   encodeFunctionData,
   EncodeFunctionDataParameters,
   type Hex,
+  isAddressEqual,
+  maxUint256,
   recoverTypedDataAddress,
 } from "viem";
 
 import { parseError } from "lib/errors";
 import { defined } from "lib/guards";
+import { EMPTY_ARRAY } from "lib/objects";
 import { WalletSigner } from "lib/wallets";
 import { signTypedData, splitSignature } from "lib/wallets/signing";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import ERC20PermitInterfaceAbi from "sdk/abis/ERC20PermitInterface";
 import type { ContractsChainId } from "sdk/configs/chains";
@@ -21,12 +26,16 @@ import { getToken } from "sdk/configs/tokens";
 import { nowInSeconds } from "sdk/utils/time";
 import { SignedTokenPermit } from "sdk/utils/tokens/types";
 
+// a permit that grants the same unlimited Router allowance as an approval transaction never expires either
+export const NON_EXPIRING_PERMIT_DEADLINE = maxUint256;
+
 export async function createAndSignTokenPermit(
   chainId: ContractsChainId,
   signer: WalletSigner,
   tokenAddress: string,
   spender: string,
-  value: bigint
+  value: bigint,
+  deadline = BigInt(nowInSeconds() + DEFAULT_PERMIT_DEADLINE_DURATION)
 ) {
   const onchainParams = await getTokenPermitParams(chainId, signer.address, tokenAddress, signer.provider);
 
@@ -54,7 +63,7 @@ export async function createAndSignTokenPermit(
     spender,
     value,
     nonce: onchainParams.nonce,
-    deadline: BigInt(nowInSeconds() + DEFAULT_PERMIT_DEADLINE_DURATION),
+    deadline,
   };
 
   const signature = await signTypedData({
@@ -87,6 +96,50 @@ export async function createAndSignTokenPermit(
 
 export function getIsPermitExpired(permit: SignedTokenPermit) {
   return Number(permit.deadline) < nowInSeconds();
+}
+
+export function getIsSameTokenPermit(a: SignedTokenPermit, b: SignedTokenPermit) {
+  return a.token === b.token && a.r === b.r && a.s === b.s;
+}
+
+// setTimeout fires immediately for delays above 2^31-1 ms
+const MAX_TIMEOUT_MS = 2 ** 31 - 1;
+const PERMIT_EXPIRY_BUFFER_MS = 500;
+
+export function getPermitsExpiryTimeoutMs(permits: SignedTokenPermit[], now: number): number {
+  const nearestDeadline = Math.min(...permits.map((p) => Number(p.deadline)));
+  const msUntilExpiry = (nearestDeadline - now + 1) * 1000 + PERMIT_EXPIRY_BUFFER_MS;
+
+  return Math.min(Math.max(0, msUntilExpiry), MAX_TIMEOUT_MS);
+}
+
+/**
+ * Each permit costs relay gas and only Router permits are accepted, so a relay call carries just
+ * the permits for tokens it spends. GMX Account routers reject permits entirely.
+ */
+export function getRelayTokenPermits({
+  chainId,
+  isGmxAccount,
+  tokenPermits,
+  spentTokenAddresses,
+}: {
+  chainId: ContractsChainId;
+  isGmxAccount: boolean;
+  tokenPermits: SignedTokenPermit[];
+  spentTokenAddresses: string[];
+}): SignedTokenPermit[] {
+  if (isGmxAccount || tokenPermits.length === 0) {
+    return EMPTY_ARRAY;
+  }
+
+  const router = getContract(chainId, "SyntheticsRouter");
+
+  return tokenPermits.filter(
+    (permit) =>
+      !getIsPermitExpired(permit) &&
+      isAddressEqual(permit.spender as Address, router) &&
+      spentTokenAddresses.some((address) => isAddressEqual(address as Address, permit.token as Address))
+  );
 }
 
 export async function getTokenPermitParams(
@@ -180,6 +233,25 @@ export async function getTokenPermitParams(
   };
 }
 
+// a token nonce above the permit's means another call used it first: the permit is stale, not broken
+export async function getIsTokenPermitNonceUsed(
+  chainId: number,
+  permit: SignedTokenPermit
+): Promise<boolean | undefined> {
+  try {
+    const nonce = await getPublicClientWithRpc(chainId).readContract({
+      address: permit.token as Address,
+      abi: ERC20PermitInterfaceAbi,
+      functionName: "nonces",
+      args: [permit.owner as Address],
+    });
+
+    return nonce > BigInt(permit.onchainParams.nonce);
+  } catch (e) {
+    return undefined;
+  }
+}
+
 export async function validateTokenPermitSignature(chainId: number, permit: SignedTokenPermit) {
   try {
     const domain = {
@@ -224,7 +296,7 @@ export async function validateTokenPermitSignature(chainId: number, permit: Sign
     });
 
     // Check if the recovered address matches the expected owner
-    const isValid = recoveredAddress.toLowerCase() === permit.owner.toLowerCase();
+    const isValid = isAddressEqual(recoveredAddress, permit.owner as Address);
 
     return {
       isValid,

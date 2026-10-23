@@ -17,7 +17,7 @@ export function useTradeboxTPSLReset(setIsDismissed: (isDismissed: boolean) => v
   const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
   const marketAddress = useSelector(selectTradeboxMarketAddress);
   const collateralToken = useSelector(selectTradeboxCollateralTokenAddress);
-  const { isLong, isIncrease, isTwap } = useSelector(selectTradeboxTradeFlags);
+  const { isLong, isIncrease } = useSelector(selectTradeboxTradeFlags);
   const isTpSlEnabled = useSelector(selectTradeboxIsTPSLEnabled);
 
   const previouseFromTokenAddress = usePrevious(fromTokenAddress);
@@ -32,7 +32,7 @@ export function useTradeboxTPSLReset(setIsDismissed: (isDismissed: boolean) => v
   const isMarketChanged = toTokenAddress !== previousToTokenAddress;
   const shouldResetTPSL = isIncrease !== previousIsIncrease;
   const shouldCarryOverTPSL = isMarketChanged || isLong !== previousIsLong;
-  const shouldKeepTypedTPSLPrices = isTpSlEnabled && !isTwap && !isMarketChanged;
+  const shouldKeepTypedTPSLPrices = isTpSlEnabled && !isMarketChanged;
 
   const shouldResetPriceImpactWarning =
     shouldResetTPSL ||
