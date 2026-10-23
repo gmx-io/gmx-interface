@@ -450,7 +450,7 @@ export function initEditCollateralMetricData({
     initialCollateralTokenAddress: selectedCollateralAddress,
     initialCollateralSymbol: collateralToken?.symbol,
     initialCollateralDeltaAmount: formatAmountForMetrics(collateralDeltaAmount, collateralToken?.decimals),
-    swapPath: [],
+    swapPath: swapPath ?? [],
     isLong,
     orderType,
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
