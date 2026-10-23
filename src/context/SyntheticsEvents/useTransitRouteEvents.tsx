@@ -43,6 +43,7 @@ export type TransitRouteEventsState = {
   attachTransitRouteConversion: (progressId: number, conversion: PaxosTransitConversion) => void;
   attachTransitRouteDeposit: (progressId: number, depositTxnHash: string) => void;
   setTransitRouteContinueRequested: (progressId: number, isContinueRequested: boolean) => void;
+  dismissTransitRouteProgress: (progressId: number) => void;
 };
 
 export function useTransitRouteEvents(
@@ -246,6 +247,14 @@ export function useTransitRouteEvents(
     [updateTransitRouteProgress]
   );
 
+  const dismissTransitRouteProgress = useCallback(
+    (progressId: number) => {
+      updateTransitRouteProgress(progressId, { isDismissed: true });
+      toast.dismiss(progressId);
+    },
+    [updateTransitRouteProgress]
+  );
+
   return useMemo(
     () => ({
       transitRouteProgress,
@@ -256,6 +265,7 @@ export function useTransitRouteEvents(
       attachTransitRouteConversion,
       attachTransitRouteDeposit,
       setTransitRouteContinueRequested,
+      dismissTransitRouteProgress,
     }),
     [
       attachTransitRouteDeposit,
@@ -266,6 +276,7 @@ export function useTransitRouteEvents(
       transitRouteProgress,
       setTransitRouteContinueRequested,
       startTransitRouteProgress,
+      dismissTransitRouteProgress,
     ]
   );
 }

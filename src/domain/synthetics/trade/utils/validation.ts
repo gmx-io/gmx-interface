@@ -788,6 +788,8 @@ export function getEditCollateralError(p: {
   minDepositUsd: bigint | undefined;
   marketInfo: MarketInfo | undefined;
   maxWithdrawAmount: bigint | undefined;
+  isDepositSwapUnfillable?: boolean;
+  isDepositSwapPathMissing?: boolean;
 }): ValidationResult {
   const {
     collateralDeltaAmount,
@@ -801,6 +803,8 @@ export function getEditCollateralError(p: {
     minDepositUsd,
     marketInfo,
     maxWithdrawAmount,
+    isDepositSwapUnfillable,
+    isDepositSwapPathMissing,
   } = p;
 
   const minCollateralFactor = marketInfo?.minCollateralFactor;
@@ -820,6 +824,14 @@ export function getEditCollateralError(p: {
 
   if (collateralDeltaAmount === undefined || collateralDeltaUsd === undefined || amountError.buttonErrorMessage) {
     return amountError;
+  }
+
+  if (isDeposit && isDepositSwapUnfillable) {
+    return { buttonErrorMessage: t`Too large to convert instantly` };
+  }
+
+  if (isDeposit && isDepositSwapPathMissing) {
+    return { buttonErrorMessage: t`No swap path found` };
   }
 
   if (!isDeposit && maxWithdrawAmount !== undefined && collateralDeltaAmount > maxWithdrawAmount) {

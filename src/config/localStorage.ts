@@ -37,6 +37,7 @@ export const DEBUG_PAXOS_TRANSIT_FORCE_BUY_USDG_HINT_KEY = "debug-paxos-transit-
 export const DEBUG_PAXOS_TRANSIT_THRESHOLD_USD_KEY = "debug-paxos-transit-threshold-usd";
 export const DEBUG_PAXOS_TRANSIT_FORCE_STANDARD_KEY = "debug-paxos-transit-force-standard";
 export const PAXOS_TRANSIT_ROUTE_PROGRESS_KEY = "paxos-transit-route-progress";
+const USDG_ADD_MARGIN_RETURN_POSITION_KEY = "usdg-add-margin-return-position";
 export const PAXOS_TRANSIT_APPROVAL_PROPOSALS_KEY = "paxos-transit-approval-proposals";
 export const PAXOS_TRANSIT_CONVERSION_PROPOSALS_KEY = "paxos-transit-conversion-proposals";
 export const STATS_API_URL_KEY = "stats-api-url";
@@ -166,6 +167,10 @@ export function getSyntheticsTradeOptionsKey(chainId: number) {
 
 export function getSyntheticsCollateralEditAddressMapKey(chainId: number) {
   return [chainId, SYNTHETICS_COLLATERAL_EDIT_TOKEN_MAP_KEY];
+}
+
+export function getUsdgAddMarginReturnPositionKey(chainId: number) {
+  return [chainId, USDG_ADD_MARGIN_RETURN_POSITION_KEY];
 }
 
 export function getSyntheticsCollateralEditTokenIsFromGmxAccountMapKey(chainId: number) {

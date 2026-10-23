@@ -2,18 +2,11 @@ import { t } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 
-import { USD_DECIMALS } from "config/factors";
-import {
-  DEBUG_PAXOS_TRANSIT_FORCE_STANDARD_KEY,
-  DEBUG_PAXOS_TRANSIT_IGNORE_WHITELIST_KEY,
-  DEBUG_PAXOS_TRANSIT_MOCK_KEY,
-  DEBUG_PAXOS_TRANSIT_THRESHOLD_USD_KEY,
-} from "config/localStorage";
 import { getPaxosTransitConfig } from "config/paxosTransit";
 import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectShowDebugValues } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import { selectChainId, selectPositionsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectPositionEditorAddMarginReturnPositionKey } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import {
   selectExternalSwapIsLoading,
   selectTradeboxFocusedInput,
@@ -44,6 +37,11 @@ import {
 } from "domain/synthetics/paxosTransit/tradeboxRoutes";
 import { getIsTransitOrderFinal } from "domain/synthetics/paxosTransit/transitOrders";
 import type { TransitApi } from "domain/synthetics/paxosTransit/types";
+import {
+  getTradeboxPaxosFeeTierKey,
+  getTradeboxPaxosQuoteKey,
+} from "domain/synthetics/paxosTransit/useIsSwapTabPaxosOffered";
+import { usePaxosTransitDebugSettings } from "domain/synthetics/paxosTransit/usePaxosTransitDebugSettings";
 import { useTransitApprovalProposal } from "domain/synthetics/paxosTransit/useTransitApprovalProposal";
 import { useTransitMinOrderSizes } from "domain/synthetics/paxosTransit/useTransitMinOrderSizes";
 import { getIsZeroFeeRejection } from "domain/synthetics/paxosTransit/utils";
@@ -51,8 +49,7 @@ import { convertToTokenAmount, convertToUsd, getMidPrice } from "domain/syntheti
 import { useDebounce } from "lib/debounce/useDebounce";
 import { parseError } from "lib/errors";
 import { helperToast } from "lib/helperToast";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatAmountFree, parseValue } from "lib/numbers";
+import { formatAmountFree } from "lib/numbers";
 import { retryAtRefreshCadence } from "lib/useSWRWithFreshness";
 import { AccountType, useAccountType } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
@@ -86,7 +83,13 @@ export function useTradeboxPaxosRoute({
   const focusedInput = useSelector(selectTradeboxFocusedInput);
   const instantAmountOut = useSelector(selectTradeboxInstantSwapAmountOut);
   const isInstantLoading = useSelector(selectExternalSwapIsLoading);
-  const showDebugValues = useSelector(selectShowDebugValues);
+  const storedAddMarginPositionKey = useSelector(selectPositionEditorAddMarginReturnPositionKey);
+  const positionsInfoData = useSelector(selectPositionsInfoData);
+  // a key left behind for a position that's gone would tag unrelated conversions
+  const addMarginReturnPositionKey =
+    storedAddMarginPositionKey !== undefined && positionsInfoData?.[storedAddMarginPositionKey]
+      ? storedAddMarginPositionKey
+      : undefined;
   const { account, signer } = useWallet();
   const { accountType } = useAccountType();
   const isSmartWallet = accountType === AccountType.SmartAccount;
@@ -99,15 +102,7 @@ export function useTradeboxPaxosRoute({
   } = useSyntheticsEvents();
   const sdk = useGmxSdk(chainId);
 
-  const [isWhitelistIgnoredSetting] = useLocalStorageSerializeKey(DEBUG_PAXOS_TRANSIT_IGNORE_WHITELIST_KEY, false);
-  const [isMockedSetting] = useLocalStorageSerializeKey(DEBUG_PAXOS_TRANSIT_MOCK_KEY, false);
-  const [thresholdUsdInput] = useLocalStorageSerializeKey(DEBUG_PAXOS_TRANSIT_THRESHOLD_USD_KEY, "");
-  const [isStandardForcedSetting] = useLocalStorageSerializeKey(DEBUG_PAXOS_TRANSIT_FORCE_STANDARD_KEY, false);
-  const isWhitelistIgnored = showDebugValues && Boolean(isWhitelistIgnoredSetting);
-  const isStandardForced = showDebugValues && Boolean(isStandardForcedSetting);
-  const isMocked = showDebugValues && Boolean(isMockedSetting);
-  const thresholdUsdOverride =
-    showDebugValues && thresholdUsdInput ? parseValue(thresholdUsdInput, USD_DECIMALS) : undefined;
+  const { isWhitelistIgnored, isStandardForced, isMocked, thresholdUsdOverride } = usePaxosTransitDebugSettings();
 
   const [preference, setPreference] = useState<TradeboxSwapRoutePreference>("auto");
   const [step, setStep] = useState<PaxosSubmitStep>("idle");
@@ -128,7 +123,7 @@ export function useTradeboxPaxosRoute({
     error: feeTierError,
     mutate: refreshFeeTier,
   } = useSWR(
-    isActive ? ["tradeboxPaxosFeeTier", chainId, account, isMocked] : null,
+    isActive ? getTradeboxPaxosFeeTierKey(chainId, account!, isMocked) : null,
     () => api!.fetchTransitFeeTier({ userAddress: account! }),
     { refreshInterval: FEE_TIER_REFRESH_INTERVAL, onErrorRetry: retryAtRefreshCadence }
   );
@@ -330,6 +325,7 @@ export function useTradeboxPaxosRoute({
         glvOrMarketAddress: undefined,
         withdrawalTxnHash: undefined,
         conversion,
+        addMarginPositionKey: direction === "usdcToUsdg" ? addMarginReturnPositionKey : undefined,
       });
       setFromTokenInputValue("", true);
     } catch (error) {
@@ -356,6 +352,7 @@ export function useTradeboxPaxosRoute({
     account,
     activePaxosQuote,
     activePaxosRoute,
+    addMarginReturnPositionKey,
     api,
     chainId,
     direction,
@@ -436,18 +433,7 @@ function useTradeboxPaxosQuote(p: {
   const isNeeded = p.isActive && p.paxosRouteStates[p.route].status === "quote";
 
   return useSWR(
-    isNeeded
-      ? [
-          "tradeboxPaxosQuote",
-          p.route,
-          p.chainId,
-          p.account,
-          p.tokenInAddress,
-          p.tokenOutAddress,
-          p.amount.toString(),
-          p.isMocked,
-        ]
-      : null,
+    isNeeded ? getTradeboxPaxosQuoteKey(p) : null,
     () => p.api!.fetchTransitQuote(p.getQuoteParams(p.amount, PAXOS_ROUTE_FEE_TIERS[p.route])),
     { refreshInterval: QUOTE_REFRESH_INTERVAL, onErrorRetry: retryAtRefreshCadence }
   );
