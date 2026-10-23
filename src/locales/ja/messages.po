@@ -672,6 +672,10 @@ msgid "Min collateral factor for liquidation"
 msgstr "清算の最小担保ファクター"
 
 #: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max instant margin: {maxInstantText}"
+msgstr "即時証拠金の上限: {maxInstantText}"
+
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} short exceeded"
 msgstr "{0}の最大ショート値を超過しています"
 
@@ -2394,6 +2398,7 @@ msgstr "ストップ価格"
 
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Too large to convert instantly"
 msgstr "即時変換するには大きすぎます"
 
@@ -3404,6 +3409,14 @@ msgstr "オープンポジション"
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Blockchain gas fee (not GMX-specific). Doesn't impact your margin."
 msgstr "ブロックチェーンのGas手数料です（GMX固有ではありません）。証拠金には影響しません。"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Up to {maxInstantText} can be converted instantly. <0>Use max instant</0>. Trades paid in USDG need no conversion."
+msgstr "最大{maxInstantText}まで即時変換できます。<0>即時上限を使用</0>してください。USDGで支払う取引は変換不要です。"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Nothing can be converted instantly right now. Trades paid in USDG need no conversion."
+msgstr "現在、即時変換できる金額はありません。USDGで支払う取引は変換不要です。"
 
 #: src/components/PositionShare/PositionShareCard.tsx
 msgid "Coin"
@@ -5914,6 +5927,7 @@ msgid "No price impact. Single execution price for<0/>increasing shorts or decre
 msgstr "価格への影響はありません。このサイズでの<0/>ショートの増加またはロングの減少に対して<1/>単一の約定価格が適用されます。"
 
 #: src/components/PositionEditor/PositionEditor.tsx
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "Paxos converts USDC from your wallet on {settlementChainName}."
 msgstr "Paxosは{settlementChainName}上のウォレットにあるUSDCを変換します。"
 
@@ -7555,6 +7569,7 @@ msgid "Tier upgrades are reviewed manually by the GMX team based on your weekly 
 msgstr "ティアのアップグレードは、毎週の実績に基づいてGMXチームが手動で審査します。要件を継続的に満たしている場合は、<0>GMX Partner Account: Telegram</0>からアップグレードを申請できます。"
 
 #: src/components/PositionEditor/PositionEditor.tsx
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "Paxos converts amounts from {paxosMinimumText}."
 msgstr "Paxosは{paxosMinimumText}以上の金額を変換します。"
 
@@ -8624,6 +8639,10 @@ msgstr "現在ブーストレートを読み込めません"
 #: src/components/TradeBox/hooks/useTradeboxTransactions.tsx
 msgid "Order submission failed"
 msgstr "注文の送信に失敗しました"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "One-Click Trading skips external routes, which may convert the full amount. <0>Disable One-Click Trading</0>."
+msgstr "One-Click Tradingでは外部ルートを使用しません。外部ルートなら全額を変換できる可能性があります。<0>One-Click Tradingを無効にする</0>。"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Realized PnL before fees"
@@ -11614,6 +11633,10 @@ msgstr "画像のエクスポートに失敗しました"
 msgid "Staked"
 msgstr "ステーク済"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Up to {maxInstantText} can be converted instantly. <0>Use max instant</0>, or <1>convert with Paxos first</1> in the Swap tab: a one-time conversion, 2 to 10 min or longer. Trades paid in USDG need no conversion."
+msgstr "最大{maxInstantText}まで即時変換できます。<0>即時上限を使用</0>するか、スワップタブで<1>先にPaxosで変換</1>してください。1回限りの変換で、2〜10分以上かかります。USDGで支払う取引は変換不要です。"
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "This margin deposit may not execute before liquidation: its trigger is at or beyond the estimated liquidation price"
 msgstr "この証拠金入金は清算前に執行されない可能性があります：トリガーが推定清算価格かそれを超えた水準にあります"
@@ -12557,6 +12580,10 @@ msgstr "受け取りパラメータが利用できません。数秒後に再試
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards"
 msgstr "過去最大のGMXステーキング数量の20%を超えてステーキングを解除すると、累積報酬がリセットされます"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Nothing can be converted instantly right now. <0>Convert with Paxos first</0> in the Swap tab: a one-time conversion, 2 to 10 min or longer. Trades paid in USDG need no conversion."
+msgstr "現在、即時変換できる金額はありません。スワップタブで<0>先にPaxosで変換</0>してください。1回限りの変換で、2〜10分以上かかります。USDGで支払う取引は変換不要です。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading chat"

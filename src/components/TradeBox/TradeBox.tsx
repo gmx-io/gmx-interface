@@ -65,6 +65,7 @@ import {
   selectTradeboxIncreaseLiquidationRiskWarning,
   selectTradeboxIncreaseMaxLeverageAlert,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
+import { selectTradeboxIsUsdgConversionTooLarge } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/tradeboxUsdgConversionSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
@@ -156,7 +157,9 @@ import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersTh
 import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";
 import { type TradeboxPaxosRoute, useTradeboxPaxosRoute } from "./hooks/useTradeboxPaxosRoute";
 import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
+import { useTradeboxUsdgConversion } from "./hooks/useTradeboxUsdgConversion";
 import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
+import { useUsdgPoolPayTokenDefault } from "./hooks/useUsdgPoolPayTokenDefault";
 import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
 import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
 import { useCollateralWarnings } from "./TradeBoxRows/CollateralSelectorField";
@@ -393,6 +396,9 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   const isPaxosRouteActive = paxosRoute.activePaxosRoute !== undefined;
   const paxosReceiveAmountOut = getPaxosReceiveAmountOut(paxosRoute);
 
+  const usdgConversion = useTradeboxUsdgConversion({ setFromTokenInputValue, setFocusedInput });
+  const isUsdgConversionTooLarge = useSelector(selectTradeboxIsUsdgConversionTooLarge);
+
   const submitButtonState = useMemo(
     () =>
       paxosRoute.buttonState
@@ -521,6 +527,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
 
   useTradeboxAcceptablePriceImpactValues();
   useTradeboxTPSLReset(priceImpactWarningState.setIsDismissed);
+  useUsdgPoolPayTokenDefault();
 
   const prevIsISwap = usePrevious(isSwap);
 
@@ -1339,7 +1346,8 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
               isWrapOrUnwrap={!tradeFlags.isTrigger && isWrapOrUnwrap}
               disabled={shouldShowDepositButton}
               isGmxAccount={isFromTokenGmxAccount}
-              showExternalSwapWarnings={tradeFlags.isSwap || tradeFlags.isIncrease}
+              // the instant-limit banner already offers the way out, so a second red card would only compete
+              showExternalSwapWarnings={(tradeFlags.isSwap || tradeFlags.isIncrease) && !isUsdgConversionTooLarge}
             />
           )}
           {twapRecommendation && !twapRecommendationDismissed && (
@@ -1396,6 +1404,12 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
                   <Trans>Read more</Trans>
                 </ExternalLink>
               </div>
+            </AlertInfoCard>
+          )}
+
+          {usdgConversion.tooLargeAlert && (
+            <AlertInfoCard hideClose type="error">
+              {usdgConversion.tooLargeAlert}
             </AlertInfoCard>
           )}
 

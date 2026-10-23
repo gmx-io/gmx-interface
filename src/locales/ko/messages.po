@@ -672,6 +672,10 @@ msgid "Min collateral factor for liquidation"
 msgstr "청산 최소 담보 계수"
 
 #: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max instant margin: {maxInstantText}"
+msgstr "최대 즉시 증거금: {maxInstantText}"
+
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} short exceeded"
 msgstr "{0} 숏 최대치 초과"
 
@@ -2394,6 +2398,7 @@ msgstr "스톱 가격"
 
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Too large to convert instantly"
 msgstr "즉시 변환하기에는 너무 큼"
 
@@ -3404,6 +3409,14 @@ msgstr "오픈 포지션"
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Blockchain gas fee (not GMX-specific). Doesn't impact your margin."
 msgstr "블록체인 Gas 수수료입니다(GMX 전용 아님). 증거금에 영향을 주지 않습니다."
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Up to {maxInstantText} can be converted instantly. <0>Use max instant</0>. Trades paid in USDG need no conversion."
+msgstr "최대 {maxInstantText}까지 즉시 변환할 수 있습니다. <0>최대 즉시 금액을 사용</0>하세요. USDG로 지불하는 거래는 변환이 필요 없습니다."
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Nothing can be converted instantly right now. Trades paid in USDG need no conversion."
+msgstr "지금은 즉시 변환할 수 있는 금액이 없습니다. USDG로 지불하는 거래는 변환이 필요 없습니다."
 
 #: src/components/PositionShare/PositionShareCard.tsx
 msgid "Coin"
@@ -5914,6 +5927,7 @@ msgid "No price impact. Single execution price for<0/>increasing shorts or decre
 msgstr "가격 영향 없음. 이 규모에서<0/>숏 증가 또는 롱 감소 시<1/>단일 체결가가 적용됩니다."
 
 #: src/components/PositionEditor/PositionEditor.tsx
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "Paxos converts USDC from your wallet on {settlementChainName}."
 msgstr "Paxos는 {settlementChainName}의 지갑에 있는 USDC를 변환합니다."
 
@@ -7555,6 +7569,7 @@ msgid "Tier upgrades are reviewed manually by the GMX team based on your weekly 
 msgstr "등급 승급은 주간 실적을 기준으로 GMX 팀이 직접 심사합니다. 요건을 지속적으로 충족하면 <0>GMX Partner Account: Telegram</0>을 통해 승급을 신청할 수 있습니다."
 
 #: src/components/PositionEditor/PositionEditor.tsx
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "Paxos converts amounts from {paxosMinimumText}."
 msgstr "Paxos는 {paxosMinimumText} 이상의 금액을 변환합니다."
 
@@ -8624,6 +8639,10 @@ msgstr "현재 부스트 비율을 불러올 수 없습니다"
 #: src/components/TradeBox/hooks/useTradeboxTransactions.tsx
 msgid "Order submission failed"
 msgstr "주문 제출 실패"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "One-Click Trading skips external routes, which may convert the full amount. <0>Disable One-Click Trading</0>."
+msgstr "One-Click Trading은 외부 경로를 사용하지 않으며, 외부 경로로는 전체 금액을 변환할 수 있습니다. <0>One-Click Trading 비활성화</0>."
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Realized PnL before fees"
@@ -11614,6 +11633,10 @@ msgstr "이미지 내보내기에 실패했습니다"
 msgid "Staked"
 msgstr "스테이킹됨"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Up to {maxInstantText} can be converted instantly. <0>Use max instant</0>, or <1>convert with Paxos first</1> in the Swap tab: a one-time conversion, 2 to 10 min or longer. Trades paid in USDG need no conversion."
+msgstr "최대 {maxInstantText}까지 즉시 변환할 수 있습니다. <0>최대 즉시 금액을 사용</0>하거나 스왑 탭에서 <1>먼저 Paxos로 변환</1>하세요. 1회성 변환으로 2~10분 이상 걸립니다. USDG로 지불하는 거래는 변환이 필요 없습니다."
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "This margin deposit may not execute before liquidation: its trigger is at or beyond the estimated liquidation price"
 msgstr "이 증거금 입금은 청산 전에 실행되지 않을 수 있습니다: 조건가가 예상 청산가와 같거나 이를 넘어섰습니다"
@@ -12557,6 +12580,10 @@ msgstr "수령 매개변수를 사용할 수 없습니다. 몇 초 후 다시 �
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards"
 msgstr "역대 최대 GMX 스테이킹 수량의 20%를 초과하여 스테이킹을 해제하면 누적 보상이 초기화됩니다"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Nothing can be converted instantly right now. <0>Convert with Paxos first</0> in the Swap tab: a one-time conversion, 2 to 10 min or longer. Trades paid in USDG need no conversion."
+msgstr "지금은 즉시 변환할 수 있는 금액이 없습니다. 스왑 탭에서 <0>먼저 Paxos로 변환</0>하세요. 1회성 변환으로 2~10분 이상 걸립니다. USDG로 지불하는 거래는 변환이 필요 없습니다."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading chat"

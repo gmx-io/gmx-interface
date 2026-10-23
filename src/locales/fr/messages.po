@@ -672,6 +672,10 @@ msgid "Min collateral factor for liquidation"
 msgstr "Facteur de garantie minimum pour la liquidation"
 
 #: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max instant margin: {maxInstantText}"
+msgstr "Marge instantanée max. : {maxInstantText}"
+
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} short exceeded"
 msgstr "Short {0} maximal dépassé"
 
@@ -2394,6 +2398,7 @@ msgstr "Prix stop"
 
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Too large to convert instantly"
 msgstr "Trop élevé pour une conversion instantanée"
 
@@ -3404,6 +3409,14 @@ msgstr "Positions ouvertes"
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Blockchain gas fee (not GMX-specific). Doesn't impact your margin."
 msgstr "Frais de Gas de la blockchain (non spécifiques à GMX). Ils n’ont aucune incidence sur votre marge."
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Up to {maxInstantText} can be converted instantly. <0>Use max instant</0>. Trades paid in USDG need no conversion."
+msgstr "Jusqu'à {maxInstantText} peuvent être convertis instantanément. <0>Utilisez le max instantané</0>. Les trades payés en USDG ne nécessitent aucune conversion."
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Nothing can be converted instantly right now. Trades paid in USDG need no conversion."
+msgstr "Rien ne peut être converti instantanément pour le moment. Les trades payés en USDG ne nécessitent aucune conversion."
 
 #: src/components/PositionShare/PositionShareCard.tsx
 msgid "Coin"
@@ -5914,6 +5927,7 @@ msgid "No price impact. Single execution price for<0/>increasing shorts or decre
 msgstr "Aucun impact sur le prix. Prix d'exécution unique pour<0/>l'augmentation des shorts ou la réduction des longs à<1/>cette taille."
 
 #: src/components/PositionEditor/PositionEditor.tsx
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "Paxos converts USDC from your wallet on {settlementChainName}."
 msgstr "Paxos convertit les USDC depuis votre portefeuille sur {settlementChainName}."
 
@@ -7555,6 +7569,7 @@ msgid "Tier upgrades are reviewed manually by the GMX team based on your weekly 
 msgstr "Les passages à un niveau supérieur sont examinés manuellement par l’équipe GMX en fonction de vos performances hebdomadaires. Si vous remplissez régulièrement les conditions, vous pouvez demander à passer au niveau supérieur via le <0>GMX Partner Account: Telegram</0>."
 
 #: src/components/PositionEditor/PositionEditor.tsx
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "Paxos converts amounts from {paxosMinimumText}."
 msgstr "Paxos convertit les montants à partir de {paxosMinimumText}."
 
@@ -8624,6 +8639,10 @@ msgstr "Le taux du boost ne peut pas être chargé pour le moment"
 #: src/components/TradeBox/hooks/useTradeboxTransactions.tsx
 msgid "Order submission failed"
 msgstr "Échec de la soumission de l'ordre"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "One-Click Trading skips external routes, which may convert the full amount. <0>Disable One-Click Trading</0>."
+msgstr "One-Click Trading ignore les routes externes, qui pourraient convertir le montant total. <0>Désactiver One-Click Trading</0>."
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Realized PnL before fees"
@@ -11614,6 +11633,10 @@ msgstr "Échec de l’exportation de l’image"
 msgid "Staked"
 msgstr "Staké"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Up to {maxInstantText} can be converted instantly. <0>Use max instant</0>, or <1>convert with Paxos first</1> in the Swap tab: a one-time conversion, 2 to 10 min or longer. Trades paid in USDG need no conversion."
+msgstr "Jusqu'à {maxInstantText} peuvent être convertis instantanément. <0>Utilisez le max instantané</0> ou <1>convertissez d'abord avec Paxos</1> dans l'onglet Swap : une conversion unique, de 2 à 10 min ou plus. Les trades payés en USDG ne nécessitent aucune conversion."
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "This margin deposit may not execute before liquidation: its trigger is at or beyond the estimated liquidation price"
 msgstr "Ce dépôt de marge pourrait ne pas être exécuté avant la liquidation : son déclencheur est au niveau ou au-delà du prix de liquidation estimé"
@@ -12557,6 +12580,10 @@ msgstr "Paramètres de récupération indisponibles. Réessayez dans quelques se
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards"
 msgstr "Le retrait de plus de 20 % de votre montant maximal historique de GMX stakés réinitialisera vos récompenses accumulées"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Nothing can be converted instantly right now. <0>Convert with Paxos first</0> in the Swap tab: a one-time conversion, 2 to 10 min or longer. Trades paid in USDG need no conversion."
+msgstr "Rien ne peut être converti instantanément pour le moment. <0>Convertissez d'abord avec Paxos</0> dans l'onglet Swap : une conversion unique, de 2 à 10 min ou plus. Les trades payés en USDG ne nécessitent aucune conversion."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading chat"

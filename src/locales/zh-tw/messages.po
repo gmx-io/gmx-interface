@@ -672,6 +672,10 @@ msgid "Min collateral factor for liquidation"
 msgstr "清算最低抵押品因子"
 
 #: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max instant margin: {maxInstantText}"
+msgstr "最大即時保證金：{maxInstantText}"
+
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} short exceeded"
 msgstr "超過 {0} 做空上限"
 
@@ -2394,6 +2398,7 @@ msgstr "停止價格"
 
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Too large to convert instantly"
 msgstr "金額過大，無法即時轉換"
 
@@ -3404,6 +3409,14 @@ msgstr "未平倉位"
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Blockchain gas fee (not GMX-specific). Doesn't impact your margin."
 msgstr "區塊鏈 Gas 費用（非 GMX 特有）。不影響您的保證金。"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Up to {maxInstantText} can be converted instantly. <0>Use max instant</0>. Trades paid in USDG need no conversion."
+msgstr "最多可即時轉換 {maxInstantText}。<0>使用最大即時金額</0>。使用 USDG 支付的交易無需轉換。"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Nothing can be converted instantly right now. Trades paid in USDG need no conversion."
+msgstr "目前無法即時轉換任何金額。使用 USDG 支付的交易無需轉換。"
 
 #: src/components/PositionShare/PositionShareCard.tsx
 msgid "Coin"
@@ -5914,6 +5927,7 @@ msgid "No price impact. Single execution price for<0/>increasing shorts or decre
 msgstr "無價格影響。以此規模<0/>加倉做空或減倉做多時<1/>採用單一成交價格。"
 
 #: src/components/PositionEditor/PositionEditor.tsx
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "Paxos converts USDC from your wallet on {settlementChainName}."
 msgstr "Paxos 轉換的是您在 {settlementChainName} 上錢包中的 USDC。"
 
@@ -7555,6 +7569,7 @@ msgid "Tier upgrades are reviewed manually by the GMX team based on your weekly 
 msgstr "GMX 團隊會根據您每週的績效，以人工方式審核等級升級。如果您持續符合要求，可以透過 <0>GMX Partner Account: Telegram</0> 申請升級。"
 
 #: src/components/PositionEditor/PositionEditor.tsx
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "Paxos converts amounts from {paxosMinimumText}."
 msgstr "Paxos 可轉換 {paxosMinimumText} 以上的金額。"
 
@@ -8624,6 +8639,10 @@ msgstr "目前無法載入加成費率"
 #: src/components/TradeBox/hooks/useTradeboxTransactions.tsx
 msgid "Order submission failed"
 msgstr "訂單提交失敗"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "One-Click Trading skips external routes, which may convert the full amount. <0>Disable One-Click Trading</0>."
+msgstr "One-Click Trading 不使用外部路由，而外部路由可能可以轉換全部金額。<0>停用 One-Click Trading</0>。"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Realized PnL before fees"
@@ -11614,6 +11633,10 @@ msgstr "無法匯出圖片"
 msgid "Staked"
 msgstr "已質押"
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Up to {maxInstantText} can be converted instantly. <0>Use max instant</0>, or <1>convert with Paxos first</1> in the Swap tab: a one-time conversion, 2 to 10 min or longer. Trades paid in USDG need no conversion."
+msgstr "最多可即時轉換 {maxInstantText}。<0>使用最大即時金額</0>，或在兌換分頁<1>先透過 Paxos 轉換</1>：一次性轉換，需要 2 到 10 分鐘或更久。使用 USDG 支付的交易無需轉換。"
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "This margin deposit may not execute before liquidation: its trigger is at or beyond the estimated liquidation price"
 msgstr "該保證金存入可能無法在清算前執行：其觸發價格已達到或超出預估清算價格"
@@ -12557,6 +12580,10 @@ msgstr "領取參數不可用。請幾秒後重試"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards"
 msgstr "解除質押的數量若超過您 GMX 歷史最高質押量的 20%，將重設您已累積的獎勵"
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Nothing can be converted instantly right now. <0>Convert with Paxos first</0> in the Swap tab: a one-time conversion, 2 to 10 min or longer. Trades paid in USDG need no conversion."
+msgstr "目前無法即時轉換任何金額。請在兌換分頁<0>先透過 Paxos 轉換</0>：一次性轉換，需要 2 到 10 分鐘或更久。使用 USDG 支付的交易無需轉換。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading chat"
