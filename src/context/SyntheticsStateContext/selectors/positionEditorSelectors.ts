@@ -291,6 +291,47 @@ export const selectPositionEditorDepositMaxInstantAmount = createSelector((q) =>
   return getMaxInstantSwapAmount({ tokenIn: payToken, maxAmountIn: collateralDeltaAmount, findSwapPath });
 });
 
+// what the Swap tab's instant route pays out for the rest, which decides whether it offers the standard Paxos route
+export const selectPositionEditorDepositRestInstantAmountOut = createSelector((q) => {
+  const maxInstantAmount = q(selectPositionEditorDepositMaxInstantAmount);
+  const position = q(selectPositionEditorPosition);
+  const payToken = q(selectPositionEditorSelectedCollateralToken);
+  const findSwapPath = q(selectPositionEditorDepositSwapFindSwapPath);
+  const { collateralDeltaAmount } = q(selectPositionEditorCollateralInputAmountAndUsd);
+
+  if (
+    maxInstantAmount === undefined ||
+    !position ||
+    !payToken ||
+    !findSwapPath ||
+    collateralDeltaAmount === undefined ||
+    collateralDeltaAmount <= maxInstantAmount
+  ) {
+    return undefined;
+  }
+
+  const swapAmounts = getSwapAmountsByFromValue({
+    tokenIn: payToken,
+    tokenOut: position.collateralToken,
+    amountIn: collateralDeltaAmount - maxInstantAmount,
+    isLimit: false,
+    uiFeeFactor: q(selectUiFeeFactor),
+    marketsInfoData: q(selectMarketsInfoData),
+    chainId: q(selectChainId),
+    externalSwapQuoteParams: undefined,
+    findSwapPath,
+    allowSameTokenSwap: false,
+  });
+
+  const isUnfillable = getIsSwapTooLargeToFill({
+    tokenIn: payToken,
+    amountIn: swapAmounts.amountIn,
+    swapPathStats: swapAmounts.swapStrategy.swapPathStats,
+  });
+
+  return !isUnfillable && swapAmounts.amountOut > 0n ? swapAmounts.amountOut : undefined;
+});
+
 export const selectPositionEditorRawMaxWithdrawAmount = createSelector((q) => {
   const position = q(selectPositionEditorPosition);
 

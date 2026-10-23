@@ -405,6 +405,7 @@ export function initEditCollateralMetricData({
   marketInfo,
   collateralToken,
   collateralDeltaAmount,
+  swapPath,
   selectedCollateralAddress,
   isLong,
   isExpress,
@@ -420,6 +421,7 @@ export function initEditCollateralMetricData({
   executionFee: ExecutionFee | undefined;
   selectedCollateralAddress: string | undefined;
   collateralDeltaAmount: bigint | undefined;
+  swapPath: string[] | undefined;
   orderType: OrderType | undefined;
   marketInfo: MarketInfo | undefined;
   subaccount: Subaccount | undefined;
@@ -435,7 +437,7 @@ export function initEditCollateralMetricData({
     metricId: getPositionOrderMetricId({
       marketAddress: marketInfo?.marketTokenAddress,
       initialCollateralTokenAddress: collateralToken?.wrappedAddress || collateralToken?.address,
-      swapPath: [],
+      swapPath,
       isLong,
       orderType,
       sizeDeltaUsd: 0n,
