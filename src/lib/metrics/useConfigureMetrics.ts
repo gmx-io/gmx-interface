@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 
 import { getAbFlags } from "config/ab";
+import { isSolanaNetwork } from "config/chains";
 import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 import useIsFirstOrder from "domain/synthetics/tradeHistory/useIsFirstOrder";
@@ -27,10 +28,11 @@ export function getHasNoTradesRefreshInterval(hasNoTrades: boolean | undefined) 
 
 export function useConfigureMetrics() {
   const { chainId, srcChainId, networkId } = useChainId();
+  const isSolana = isSolanaNetwork(networkId);
   const fetcher = useOracleKeeperFetcher(chainId);
   const { active, account } = useWallet();
   const { isFirstOrder: hasNoTrades } = useIsFirstOrder(chainId, {
-    account,
+    account: isSolana ? undefined : account,
     refreshInterval: getHasNoTradesRefreshInterval,
   });
   const [showDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);

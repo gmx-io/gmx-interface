@@ -14,7 +14,7 @@ import {
 import { useLatest, useMountedState } from "react-use";
 import type { ReplacementReturnType } from "viem";
 
-import { getExplorerUrl } from "config/chains";
+import { getExplorerUrl, isSolanaNetwork } from "config/chains";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useChainId } from "lib/chains";
 import { parseError } from "lib/errors";
@@ -106,11 +106,33 @@ export function getPendingTxnSuccessToastContent({
 }
 
 export function PendingTxnsContextProvider({ children }: { children: ReactNode }) {
+  const { networkId } = useChainId();
+  const isSolana = isSolanaNetwork(networkId);
+  const [pendingTxns, setPendingTxns] = useState<PendingTransaction[]>([]);
+
+  // Solana does not poll EVM receipts, so pending EVM txns left from before the switch must not block reloads there
+  useBlockAutoReload(pendingTxns.length > 0 && !isSolana);
+
+  const state = useMemo(() => ({ pendingTxns, setPendingTxns }), [pendingTxns, setPendingTxns]);
+
+  return (
+    <PendingTxnsContext.Provider value={state}>
+      {!isSolana && <PendingTxnsPoller pendingTxns={pendingTxns} setPendingTxns={setPendingTxns} />}
+      {children}
+    </PendingTxnsContext.Provider>
+  );
+}
+
+function PendingTxnsPoller({
+  pendingTxns,
+  setPendingTxns,
+}: {
+  pendingTxns: PendingTransaction[];
+  setPendingTxns: SetPendingTransactions;
+}) {
   const { chainId } = useChainId();
   const { provider } = useJsonRpcProvider(chainId);
   const { setIsSettingsVisible, executionFeeBufferBps } = useSettings();
-
-  const [pendingTxns, setPendingTxns] = useState<PendingTransaction[]>([]);
   const latestPendingTxns = useLatest(pendingTxns);
   const isMounted = useMountedState();
   const isPolling = useRef(false);
@@ -131,10 +153,8 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
         );
       }
     },
-    [chainId, isMounted, latestPendingTxns]
+    [chainId, isMounted, latestPendingTxns, setPendingTxns]
   );
-
-  useBlockAutoReload(pendingTxns.length > 0);
 
   useEffect(() => {
     const checkPendingTxns = async () => {
@@ -234,12 +254,19 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
       checkPendingTxns();
     }, 2 * 1000);
     return () => clearInterval(interval);
-  }, [provider, pendingTxns, chainId, setIsSettingsVisible, executionFeeBufferBps, isMounted, latestPendingTxns]);
-
-  const state = useMemo(() => ({ pendingTxns, setPendingTxns }), [pendingTxns, setPendingTxns]);
+  }, [
+    provider,
+    pendingTxns,
+    chainId,
+    setIsSettingsVisible,
+    executionFeeBufferBps,
+    isMounted,
+    latestPendingTxns,
+    setPendingTxns,
+  ]);
 
   return (
-    <PendingTxnsContext.Provider value={state}>
+    <>
       {pendingTxns.map((transaction) =>
         transaction.onReplaced && transaction.chainId !== undefined ? (
           <PendingTxnReplacementTracker
@@ -250,7 +277,6 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
           />
         ) : null
       )}
-      {children}
-    </PendingTxnsContext.Provider>
+    </>
   );
 }

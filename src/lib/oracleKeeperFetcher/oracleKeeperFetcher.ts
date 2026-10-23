@@ -49,8 +49,10 @@ export class OracleKeeperFetcher implements OracleFetcher {
   mainUrl: string;
   oracleTracker: OracleKeeperFallbackTracker;
   expectedTickerAddresses = new Set<string>();
+  private isTracking = false;
+  private didSubscribe = false;
 
-  constructor(p: { chainId: ContractsChainId }) {
+  constructor(p: { chainId: ContractsChainId; track?: boolean }) {
     this.chainId = p.chainId;
     this.mainUrl = getOracleKeeperUrl(this.chainId);
 
@@ -62,8 +64,32 @@ export class OracleKeeperFetcher implements OracleFetcher {
       networkStatusObserver: NetworkStatusObserver.getInstance(),
     });
 
+    if (p.track !== false) {
+      this.ensureTracking();
+    }
+  }
+
+  ensureTracking() {
+    if (this.isTracking) {
+      return;
+    }
+
+    this.isTracking = true;
     this.oracleTracker.startTracking();
-    subscribeForOracleTrackerMetrics(this.oracleTracker);
+
+    if (!this.didSubscribe) {
+      subscribeForOracleTrackerMetrics(this.oracleTracker);
+      this.didSubscribe = true;
+    }
+  }
+
+  pauseTracking() {
+    if (!this.isTracking) {
+      return;
+    }
+
+    this.isTracking = false;
+    this.oracleTracker.stopTracking();
   }
 
   get url() {

@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { Address, ContractFunctionReturnType, getAddress, isAddressEqual } from "viem";
+import { Address, ContractFunctionReturnType } from "viem";
 
 import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
@@ -20,6 +20,7 @@ import { EMPTY_ARRAY } from "lib/objects";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import { abis } from "sdk/abis";
 import { getWrappedToken } from "sdk/configs/tokens";
+import { getAddressKey, isSameAddress, normalizeAddress } from "sdk/utils/address";
 import {
   isIncreaseOrderType,
   isLimitOrderType,
@@ -68,9 +69,9 @@ export function useOrders(
     const nonSwapRelevantDefinedFiltersLowercased: MarketFilterLongShortItemData[] = marketsDirectionsFilter
       .filter((filter) => filter.direction !== "swap" && filter.marketAddress !== "any")
       .map((filter) => ({
-        marketAddress: filter.marketAddress.toLowerCase() as Address,
+        marketAddress: getAddressKey(filter.marketAddress) as Address,
         direction: filter.direction,
-        collateralAddress: filter.collateralAddress?.toLowerCase() as Address,
+        collateralAddress: filter.collateralAddress ? (getAddressKey(filter.collateralAddress) as Address) : undefined,
       }));
 
     const hasNonSwapRelevantDefinedMarkets = nonSwapRelevantDefinedFiltersLowercased.length > 0;
@@ -82,7 +83,7 @@ export function useOrders(
 
     const swapRelevantDefinedMarketsLowercased = marketsDirectionsFilter
       .filter((filter) => (filter.direction === "any" || filter.direction === "swap") && filter.marketAddress !== "any")
-      .map((filter) => filter.marketAddress.toLowerCase() as Address);
+      .map((filter) => getAddressKey(filter.marketAddress) as Address);
 
     const hasSwapRelevantDefinedMarkets = swapRelevantDefinedMarketsLowercased.length > 0;
 
@@ -238,9 +239,9 @@ function convertApiOrderToOrder({
     decreasePositionSwapType: rest.decreasePositionSwapType as DecreasePositionSwapType,
     contractTriggerPrice: triggerPrice,
     contractAcceptablePrice: acceptablePrice,
-    marketAddress: getAddress(rest.marketAddress),
-    initialCollateralTokenAddress: getAddress(rest.initialCollateralTokenAddress),
-    swapPath: rest.swapPath.map((addr) => getAddress(addr)),
+    marketAddress: normalizeAddress(rest.marketAddress),
+    initialCollateralTokenAddress: normalizeAddress(rest.initialCollateralTokenAddress),
+    swapPath: rest.swapPath.map((addr) => normalizeAddress(addr)),
     data: dataList,
   };
 }
@@ -369,17 +370,17 @@ function matchByMarket({
 
   if (isSwapOrder) {
     const sourceMarketInSwapPath = swapRelevantDefinedMarketsLowercased.includes(
-      order.swapPath.at(0)!.toLowerCase() as Address
+      getAddressKey(order.swapPath.at(0)!) as Address
     );
 
     const destinationMarketInSwapPath = swapRelevantDefinedMarketsLowercased.includes(
-      order.swapPath.at(-1)!.toLowerCase() as Address
+      getAddressKey(order.swapPath.at(-1)!) as Address
     );
 
     return sourceMarketInSwapPath || destinationMarketInSwapPath;
   } else if (!isSwapOrder) {
     return nonSwapRelevantDefinedFiltersLowercased.some((filter) => {
-      const marketMatch = filter.marketAddress === "any" || filter.marketAddress === order.marketAddress.toLowerCase();
+      const marketMatch = filter.marketAddress === "any" || filter.marketAddress === getAddressKey(order.marketAddress);
       const directionMath = filter.direction === "any" || filter.direction === (order.isLong ? "long" : "short");
       const initialCollateralAddress = order.initialCollateralTokenAddress;
 
@@ -401,11 +402,10 @@ function matchByMarket({
             wrappedNativeTokenAddress: wrappedToken.address,
           });
 
-          collateralMatch =
-            outTokenAddress !== undefined && isAddressEqual(outTokenAddress as Address, filter.collateralAddress);
+          collateralMatch = outTokenAddress !== undefined && isSameAddress(outTokenAddress, filter.collateralAddress);
         }
       } else if (isTriggerDecreaseOrderType(order.orderType)) {
-        collateralMatch = isAddressEqual(order.initialCollateralTokenAddress, filter.collateralAddress);
+        collateralMatch = isSameAddress(order.initialCollateralTokenAddress, filter.collateralAddress);
       }
 
       return marketMatch && directionMath && collateralMatch;

@@ -12,6 +12,7 @@ import "styles/DeprecatedExchageStyles.scss";
 import "components/Card/Card.css";
 import "./App.scss";
 
+import { isSolanaNetwork } from "config/chains";
 import { ChainContextProvider } from "context/ChainContext/ChainContext";
 import { ConnectModalProvider } from "context/ConnectModalContext/ConnectModalContext";
 import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider";
@@ -20,8 +21,11 @@ import { GmxSdkProvider } from "context/GmxSdkContext/GmxSdkContext";
 import { PendingTxnsContextProvider } from "context/PendingTxnsContext/PendingTxnsContext";
 import { SettingsContextProvider } from "context/SettingsContext/SettingsContextProvider";
 import { SorterContextProvider } from "context/SorterContext/SorterContextProvider";
-import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContextProvider";
-import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
+import {
+  DisabledSubaccountContextProvider,
+  SubaccountContextProvider,
+} from "context/SubaccountContext/SubaccountContextProvider";
+import { DisabledSyntheticsEventsProvider, SyntheticsEventsProvider } from "context/SyntheticsEvents";
 import { TokenPermitsContextProvider } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { TokensBalancesContextProvider } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { TokensFavoritesContextProvider } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
@@ -49,6 +53,26 @@ function SWRConfigWithKey({ children }: { children: React.ReactNode }) {
   );
 }
 
+function EvmProviders({ children }: { children: React.ReactNode }) {
+  const { networkId } = useChainId();
+
+  // useSubaccountContext throws outside a provider. ToastContainer remounts empty, so these
+  // stubs only cover toasts that EVM code still in flight creates after the switch.
+  if (isSolanaNetwork(networkId)) {
+    return (
+      <DisabledSubaccountContextProvider>
+        <DisabledSyntheticsEventsProvider>{children}</DisabledSyntheticsEventsProvider>
+      </DisabledSubaccountContextProvider>
+    );
+  }
+
+  return (
+    <SubaccountContextProvider>
+      <SyntheticsEventsProvider>{children}</SyntheticsEventsProvider>
+    </SubaccountContextProvider>
+  );
+}
+
 function App() {
   useEffect(completeAppStartup, []);
 
@@ -60,8 +84,7 @@ function App() {
   );
   app = <SorterContextProvider>{app}</SorterContextProvider>;
   app = <TokensFavoritesContextProvider>{app}</TokensFavoritesContextProvider>;
-  app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;
-  app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;
+  app = <EvmProviders>{app}</EvmProviders>;
   app = <TokenPermitsContextProvider>{app}</TokenPermitsContextProvider>;
   app = <TokensBalancesContextProvider>{app}</TokensBalancesContextProvider>;
   app = <SEO>{app}</SEO>;

@@ -1,10 +1,10 @@
 import noop from "lodash/noop";
 import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
 
-import { ARBITRUM, getExecutionFeeConfig } from "config/chains";
+import { ARBITRUM, getExecutionFeeConfig, isSolanaNetwork } from "config/chains";
 import { isDevelopment } from "config/env";
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
-import { getIsExpressSupported } from "config/features";
+import { getNetworkFeatures } from "config/features";
 import {
   BREAKDOWN_NET_PRICE_IMPACT_ENABLED_KEY,
   BUY_SELL_ICONS_MODE_KEY,
@@ -141,7 +141,8 @@ export function useSettings() {
 }
 
 export function SettingsContextProvider({ children }: { children: ReactNode }) {
-  const { chainId, srcChainId } = useChainId();
+  const { chainId, srcChainId, networkId } = useChainId();
+  const expressSupported = getNetworkFeatures(networkId).express;
   const { account } = useWallet();
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
@@ -328,7 +329,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       if (
         !account ||
         expressOrdersEnabled ||
-        !getIsExpressSupported(chainId) ||
+        !expressSupported ||
         hasStoredLocalStorageValue(expressOrdersEnabledKey)
       ) {
         return;
@@ -336,16 +337,16 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
       setExpressOrdersEnabled(true);
     },
-    [account, chainId, expressOrdersEnabled, expressOrdersEnabledKey, setExpressOrdersEnabled]
+    [account, expressOrdersEnabled, expressOrdersEnabledKey, expressSupported, setExpressOrdersEnabled]
   );
 
   useEffect(
     function fallbackMultichain() {
-      if (srcChainId && !expressOrdersEnabled) {
+      if (srcChainId && !expressOrdersEnabled && (!isSolanaNetwork(networkId) || expressSupported)) {
         setExpressOrdersEnabled(true);
       }
     },
-    [expressOrdersEnabled, setExpressOrdersEnabled, srcChainId]
+    [expressOrdersEnabled, expressSupported, networkId, setExpressOrdersEnabled, srcChainId]
   );
 
   const contextState: SettingsContextType = useMemo(() => {
@@ -396,7 +397,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       isSettingsVisible,
       setIsSettingsVisible,
 
-      expressOrdersEnabled: expressOrdersEnabled! && canSignTypedData,
+      expressOrdersEnabled:
+        expressOrdersEnabled! && canSignTypedData && (!isSolanaNetwork(networkId) || expressSupported),
       setExpressOrdersEnabled,
       gasPaymentTokenAddress: gasPaymentTokenAddress!,
       setGasPaymentTokenAddress,
@@ -465,6 +467,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     tenderlyProjectSlug,
     tenderlySimulationEnabled,
     isSettingsVisible,
+    networkId,
+    expressSupported,
     expressOrdersEnabled,
     canSignTypedData,
     setExpressOrdersEnabled,

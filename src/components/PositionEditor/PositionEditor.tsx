@@ -5,6 +5,7 @@ import { useKey } from "react-use";
 import { Address } from "viem";
 
 import { USD_DECIMALS } from "config/factors";
+import { getNetworkFeatures } from "config/features";
 import { isSettlementChain } from "config/multichain";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
@@ -92,7 +93,8 @@ import { usePositionEditorButtonState } from "./usePositionEditorButtonState";
 import "./PositionEditor.scss";
 
 export function PositionEditor() {
-  const { chainId, srcChainId } = useChainId();
+  const { chainId, srcChainId, networkId } = useChainId();
+  const features = getNetworkFeatures(networkId);
   const { expressOrdersEnabled, setExpressOrdersEnabled, setIsSettingsVisible } = useSettings();
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const tokensData = useTokensData();
@@ -109,6 +111,23 @@ export function PositionEditor() {
   const prevIsVisible = usePrevious(isVisible);
 
   const [operation, setOperation] = usePositionEditorOperation();
+  const canDeposit = features.collateralDeposit;
+  const canWithdraw = features.collateralWithdrawal;
+
+  useEffect(() => {
+    if (position && !canDeposit && !canWithdraw) {
+      setEditingPositionKey(undefined);
+    }
+  }, [canDeposit, canWithdraw, position, setEditingPositionKey]);
+
+  useEffect(() => {
+    if (operation === Operation.Deposit && !canDeposit && canWithdraw) {
+      setOperation(Operation.Withdraw);
+    } else if (operation === Operation.Withdraw && !canWithdraw && canDeposit) {
+      setOperation(Operation.Deposit);
+    }
+  }, [canDeposit, canWithdraw, operation, setOperation]);
+
   const isDeposit = operation === Operation.Deposit;
 
   const [depositMode, setDepositMode] = usePositionEditorDepositMode();
@@ -169,6 +188,17 @@ export function PositionEditor() {
           ];
         }
 
+        const walletRow = {
+          ...tokenData,
+          isGmxAccount: false,
+          balance: tokenData.walletBalance,
+          balanceType: TokenBalanceType.Wallet,
+        };
+
+        if (!features.gmxAccount) {
+          return [walletRow];
+        }
+
         return [
           {
             ...tokenData,
@@ -176,12 +206,7 @@ export function PositionEditor() {
             balance: tokenData.gmxAccountBalance,
             balanceType: TokenBalanceType.GmxAccount,
           },
-          {
-            ...tokenData,
-            isGmxAccount: false,
-            balance: tokenData.walletBalance,
-            balanceType: TokenBalanceType.Wallet,
-          },
+          walletRow,
         ];
       })
       .sort((a, b) => {
@@ -199,7 +224,7 @@ export function PositionEditor() {
 
         return 0;
       });
-  }, [filteredTokensData]);
+  }, [features.gmxAccount, filteredTokensData]);
 
   const hasMultipleTokens = useMemo(() => {
     if (srcChainId === undefined) {
@@ -456,11 +481,17 @@ export function PositionEditor() {
   );
 
   const tabsOptions = useMemo(() => {
-    return Object.values(Operation).map((option) => ({
-      value: option,
-      label: localizedOperationLabels[option],
-    }));
-  }, [localizedOperationLabels]);
+    return Object.values(Operation)
+      .filter((option) => {
+        if (option === Operation.Deposit) return features.collateralDeposit;
+        if (option === Operation.Withdraw) return features.collateralWithdrawal;
+        return true;
+      })
+      .map((option) => ({
+        value: option,
+        label: localizedOperationLabels[option],
+      }));
+  }, [features.collateralDeposit, features.collateralWithdrawal, localizedOperationLabels]);
 
   const depositModeTabsOptions = useMemo(() => {
     return DEPOSIT_MODES.map((mode) => ({
@@ -474,7 +505,7 @@ export function PositionEditor() {
       <Modal
         activeFormId={formId}
         className="PositionEditor-modal"
-        isVisible={!!position}
+        isVisible={Boolean(position) && (canDeposit || canWithdraw)}
         setIsVisible={onClose}
         label={
           <Trans>
