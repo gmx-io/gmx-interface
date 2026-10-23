@@ -84,6 +84,8 @@ export function useIsSwapTabPaxosOffered({
     amountIn: amount,
     amountInUsd: amountUsd,
     thresholdUsd,
+    isZeroFeeAvailable: feeTierData.isZeroFeeAvailable,
+    zeroFeeExpectedReopenAt: feeTierData.zeroFeeExpectedReopenAt,
     zeroFeeCapacity: isWhitelisted ? feeTierData.zeroFeeCapacity : undefined,
     zeroFeeMinOrderSize: minOrderSizes.zeroFee,
     standardMinOrderSize: minOrderSizes.standardFee,
