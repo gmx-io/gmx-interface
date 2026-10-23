@@ -7,6 +7,7 @@ import { ARBITRUM, GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { getCollateralCloseDestinationDialogHiddenKey } from "config/localStorage";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
+import { getUsdgConversionTokenAddress } from "config/usdgPools";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
@@ -34,6 +35,7 @@ import {
   selectPositionSellerPosition,
   selectPositionSellerReceiveToken,
   selectPositionSellerSetDefaultReceiveToken,
+  selectPositionSellerShouldSwap,
   selectPositionSellerSplitReceiveDecreaseAmounts,
   selectPositionSellerSwapAmounts,
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
@@ -68,6 +70,7 @@ import { ORDER_OPTION_TO_TRADE_MODE, OrderOption } from "domain/synthetics/trade
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getCommonError, getExpressError, takeValidationResult } from "domain/synthetics/trade/utils/validation";
 import { getIsHighSwapProfitFee } from "domain/synthetics/trade/utils/warnings";
+import { getIsSwapTooLargeToFill } from "domain/synthetics/usdgPools/usdcConversion";
 import { Token } from "domain/tokens";
 import { getApproveButtonText, getGasPaymentTokenApprovalTooltip } from "domain/tokens/gasPaymentTokenApproval";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
@@ -105,6 +108,7 @@ import { useActiveForm } from "components/ActiveFormScope/ActiveFormScope";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
+import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import {
   DecreaseReceiveOutputDisplay,
@@ -335,7 +339,30 @@ export function PositionSeller() {
     payUsd: closeSizeUsd,
   });
 
+  const shouldSwap = useSelector(selectPositionSellerShouldSwap);
+  const usdgConversionTokenAddress = getUsdgConversionTokenAddress(chainId, position?.collateralTokenAddress);
+  const isUsdcReceiveOnUsdgPosition =
+    usdgConversionTokenAddress !== undefined && receiveToken?.address === usdgConversionTokenAddress;
+  // one flag for the banner, the button and submit: an empty swap path would still execute and silently pay USDG
+  const isUsdcReceiveUnfillable =
+    isUsdcReceiveOnUsdgPosition &&
+    shouldSwap &&
+    position !== undefined &&
+    getIsSwapTooLargeToFill({
+      tokenIn: position.collateralToken,
+      amountIn: decreaseAmounts?.receiveTokenAmount ?? 0n,
+      swapPathStats: swapAmounts?.swapStrategy.swapPathStats,
+    });
   const isNotEnoughReceiveTokenLiquidity = useSelector(selectPositionSellerIsNotEnoughReceiveTokenLiquidity);
+
+  const positionCollateralSymbol = position?.collateralToken.symbol;
+
+  const handleReceiveUsdgInstead = useCallback(() => {
+    if (!position) return;
+
+    setIsReceiveTokenChanged(true);
+    setReceiveTokenAddress(position.collateralTokenAddress);
+  }, [position, setIsReceiveTokenChanged, setReceiveTokenAddress]);
   const setIsDismissedLatestRef = useLatest(priceImpactWarningState.setIsDismissed);
 
   const slippageInputId = useId();
@@ -535,6 +562,10 @@ export function PositionSeller() {
       };
     }
 
+    if (isUsdcReceiveUnfillable) {
+      return { error: t`Too large to receive as USDC` };
+    }
+
     if (isSubmitting) {
       return { error: t`Creating order...` };
     }
@@ -546,6 +577,7 @@ export function PositionSeller() {
     decreaseError,
     expressParams,
     hasOutdatedUi,
+    isUsdcReceiveUnfillable,
     isSubmitting,
     position,
     tokensData,
@@ -573,6 +605,10 @@ export function PositionSeller() {
           }),
       });
 
+      return;
+    }
+
+    if (isUsdcReceiveUnfillable) {
       return;
     }
 
@@ -677,17 +713,24 @@ export function PositionSeller() {
       }),
     });
 
+    // USDG positions always open on USDG, so a remembered USDC choice would only be dead state
+    const rememberReceiveToken = () => {
+      if (usdgConversionTokenAddress === undefined) {
+        setDefaultReceiveToken(receiveToken.address);
+      }
+    };
+
     if (expressParams?.subaccount) {
       void txnPromise.catch(reportHandledRejection("positionSeller.submit"));
       onClose();
       setIsSubmitting(false);
-      setDefaultReceiveToken(receiveToken.address);
+      rememberReceiveToken();
       return;
     }
 
     txnPromise.then(onClose, reportHandledRejection("positionSeller.submit")).finally(() => {
       setIsSubmitting(false);
-      setDefaultReceiveToken(receiveToken.address);
+      rememberReceiveToken();
     });
   }
 
@@ -789,7 +832,8 @@ export function PositionSeller() {
             <TokenSelector
               label={t`Receive`}
               className={cx({
-                "*:!text-yellow-300 hover:!text-yellow-300": isNotEnoughReceiveTokenLiquidity,
+                "*:!text-yellow-300 hover:!text-yellow-300":
+                  isNotEnoughReceiveTokenLiquidity || isUsdcReceiveUnfillable,
               })}
               chainId={chainId}
               showBalances={false}
@@ -810,9 +854,10 @@ export function PositionSeller() {
                   )}
                   <AmountWithUsdBalance
                     className={cx({
-                      "*:!text-yellow-300 hover:!text-yellow-300": isNotEnoughReceiveTokenLiquidity,
+                      "*:!text-yellow-300 hover:!text-yellow-300":
+                        isNotEnoughReceiveTokenLiquidity || isUsdcReceiveUnfillable,
                     })}
-                    amount={receiveTokenAmount}
+                    amount={isUsdcReceiveUnfillable ? decreaseAmounts?.receiveTokenAmount : receiveTokenAmount}
                     decimals={receiveToken.decimals}
                     symbol={receiveToken.symbol}
                     usd={receiveUsd}
@@ -1186,6 +1231,18 @@ export function PositionSeller() {
                       one="Closing will also cancel your pending margin deposit and return its funds."
                       other="Closing will also cancel your # pending margin deposits and return their funds."
                     />
+                  </AlertInfoCard>
+                )}
+
+                {isUsdcReceiveUnfillable && (
+                  <AlertInfoCard type="error" hideClose>
+                    <Trans>
+                      Too large to receive as USDC instantly.{" "}
+                      <EmbeddedActionButton tone="link" onClick={handleReceiveUsdgInstead}>
+                        Receive {positionCollateralSymbol} instead
+                      </EmbeddedActionButton>{" "}
+                      and convert it in the Swap tab after closing.
+                    </Trans>
                   </AlertInfoCard>
                 )}
 
