@@ -128,11 +128,7 @@ export function useIsSwapTabPaxosOffered({
   // quotes follow the amount once typing stops, as on the Swap tab, so both share the cached quote
   const lastSettledOfferRef = useRef<SwapTabPaxosOffer>(UNRESOLVED_OFFER);
   const quoteAmount: bigint | undefined = useDebounce(amount, AMOUNT_DEBOUNCE_MS);
-  const {
-    data: standardQuote,
-    error: standardQuoteError,
-    isLoading: isStandardQuoteLoading,
-  } = useSWR(
+  const { data: standardQuote, isLoading: isStandardQuoteLoading } = useSWR(
     isStandardQuoteCompared && quoteAmount !== undefined
       ? getTradeboxPaxosQuoteKey({
           route: "paxosStandard",
@@ -170,8 +166,8 @@ export function useIsSwapTabPaxosOffered({
 
   const offer = getSwapTabPaxosOffer({
     routeStates,
-    // the Swap tab shows no standard route when its quote fails
-    standardQuoteAmountOut: isStandardQuoteCompared && !standardQuoteError ? standardQuote?.amountOut : undefined,
+    // like the Swap tab, a refresh that fails keeps the last quote, and a first fetch that fails leaves none
+    standardQuoteAmountOut: isStandardQuoteCompared ? standardQuote?.amountOut : undefined,
     isStandardQuoteCompared,
     instantAmountOut,
     isPaidOutsideWallet,
