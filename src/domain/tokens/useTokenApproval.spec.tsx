@@ -16,15 +16,22 @@ const mocks = vi.hoisted(() => ({
   readContract: vi.fn(),
   toastError: vi.fn(),
   toastContent: vi.fn(),
+  tokenPermits: [] as { token: string; spender: string; value: bigint }[],
+  isPermitAvailable: false,
 }));
 
 vi.mock("domain/synthetics/tokens", () => ({
   getNeedTokenApprove: (
     allowanceData: Record<string, bigint> | undefined,
     tokenAddress: string,
-    amount: bigint | undefined
+    amount: bigint | undefined,
+    permits: { token: string; value: bigint }[]
   ) => {
     if (amount === undefined || amount <= 0n) {
+      return false;
+    }
+
+    if (permits.some((permit) => permit.token === tokenAddress && permit.value >= amount)) {
       return false;
     }
 
@@ -56,10 +63,11 @@ vi.mock("lib/wallets/walletConfig", () => ({
 
 vi.mock("context/TokenPermitsContext/TokenPermitsContextProvider", () => ({
   useTokenPermitsContext: () => ({
-    tokenPermits: [],
+    tokenPermits: mocks.tokenPermits,
+    accountType: "eoa",
+    getIsPermitAvailable: () => mocks.isPermitAvailable,
     addTokenPermit: vi.fn(),
-    isPermitsDisabled: true,
-    setIsPermitsDisabled: vi.fn(),
+    disableTokenPermits: vi.fn(),
   }),
 }));
 
@@ -75,24 +83,26 @@ type HookResult = ReturnType<typeof useTokenApproval>;
 
 let latestResult: HookResult | undefined;
 
-function TestComponent({ amount }: { amount: bigint }) {
+function TestComponent({ amount, allowPermit }: { amount: bigint; allowPermit?: boolean }) {
   latestResult = useTokenApproval({
     chainId: mocks.CHAIN_ID as 42161,
     spenderAddress: mocks.SPENDER,
     tokens: [{ tokenAddress: mocks.TOKEN, amount }],
+    allowPermit,
     metric: { flow: "trade", isExpress: true, gasPaymentTokenAddress: mocks.TOKEN, payTokenAddress: mocks.PAY_TOKEN },
   });
   return null;
 }
 
-function setup(amount: bigint) {
-  const view = render(<TestComponent amount={amount} />);
+function setup(amount: bigint, allowPermit?: boolean) {
+  const view = render(<TestComponent amount={amount} allowPermit={allowPermit} />);
 
   return {
     get result() {
       return latestResult!;
     },
-    rerender: (nextAmount: bigint = amount) => view.rerender(<TestComponent amount={nextAmount} />),
+    rerender: (nextAmount: bigint = amount) =>
+      view.rerender(<TestComponent amount={nextAmount} allowPermit={allowPermit} />),
   };
 }
 
@@ -111,6 +121,7 @@ async function approve(view: ReturnType<typeof setup>) {
 
 describe("useTokenApproval", () => {
   beforeEach(() => {
+    mocks.isPermitAvailable = false;
     mocks.allowanceData = { [mocks.TOKEN]: 0n };
     mocks.approveTokens.mockResolvedValue({ hash: mocks.HASH });
     mocks.waitForTransactionReceipt.mockResolvedValue({ status: "success", blockNumber: 105n, from: mocks.OWNER });
@@ -122,7 +133,31 @@ describe("useTokenApproval", () => {
     cleanup();
     vi.clearAllMocks();
     latestResult = undefined;
+    mocks.tokenPermits = [];
   });
+
+  it.each([
+    { name: "relayed spend", allowPermit: true, spender: mocks.SPENDER, needsApproval: false },
+    { name: "wallet transaction", allowPermit: false, spender: mocks.SPENDER, needsApproval: true },
+    { name: "permit for another spender", allowPermit: true, spender: mocks.OWNER, needsApproval: true },
+  ])("counts a stored permit as the approval: $name -> $needsApproval", ({ allowPermit, spender, needsApproval }) => {
+    mocks.tokenPermits = [{ token: mocks.TOKEN, spender, value: 1000n }];
+
+    expect(setup(1000n, allowPermit).result.needsApproval).toBe(needsApproval);
+  });
+
+  it.each([
+    { allowPermit: true, isPermitAvailable: true, expected: true },
+    { allowPermit: false, isPermitAvailable: true, expected: false },
+    { allowPermit: true, isPermitAvailable: false, expected: false },
+  ])(
+    "tells a permit from a transaction: allowPermit $allowPermit, permit available $isPermitAvailable -> $expected",
+    ({ allowPermit, isPermitAvailable, expected }) => {
+      mocks.isPermitAvailable = isPermitAvailable;
+
+      expect(setup(1000n, allowPermit).result.getIsPermitApproval(mocks.TOKEN)).toBe(expected);
+    }
+  );
 
   it("releases the button and reports the shortfall when the mined allowance is below the amount", async () => {
     const view = setup(1000n);

@@ -120,7 +120,12 @@ function toTransitOrder({ params, id, submittedAt }: MockOrder): TransitOrder {
 // TODO: remove once the gateway has Paxos keys; mocks every Transit call and never sends a wallet transaction
 export const mockTransitApi: TransitApi & { submitOrder: (params: TransitQuoteParams) => string } = {
   fetchTransitRoutes: async () => [],
-  fetchTransitFeeTier: async () => ({ feeTier: "zeroFee", zeroFeeCapacity: MOCK_ZERO_FEE_CAPACITY }),
+  fetchTransitFeeTier: async () => ({
+    feeTier: "zeroFee",
+    zeroFeeCapacity: MOCK_ZERO_FEE_CAPACITY,
+    isZeroFeeAvailable: true,
+    zeroFeeExpectedReopenAt: undefined,
+  }),
 
   fetchTransitQuote: async (params) => ({
     transaction: { to: MOCK_STATION_ADDRESS, data: "0x", value: 0n, functionName: "submitOrder" },

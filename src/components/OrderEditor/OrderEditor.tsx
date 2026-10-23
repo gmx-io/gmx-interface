@@ -35,6 +35,7 @@ import {
   selectOrderEditorIncreaseAmounts,
   selectOrderEditorInitialAcceptablePriceImpactBps,
   selectOrderEditorIsRatioInverted,
+  selectOrderEditorIsRemainingPositionAboveMaxLeverage,
   selectOrderEditorMarginDepositProjections,
   selectOrderEditorMarkRatio,
   selectOrderEditorMaxAllowedLeverage,
@@ -113,13 +114,8 @@ import {
 } from "domain/tpsl/utils";
 import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
-import {
-  calculateDisplayDecimals,
-  formatAmount,
-  formatAmountFree,
-  formatBalanceAmount,
-  parseValue,
-} from "lib/numbers";
+import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
+import { calculateDisplayDecimals, formatAmount, formatAmountFree, formatBalanceAmount, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -192,6 +188,7 @@ export function OrderEditor(p: Props) {
   const positionOrderError = useSelector(selectOrderEditorPositionOrderError);
   const triggerPrice = useSelector(selectOrderEditorTriggerPrice);
   const liqPriceWarning = useSelector(selectOrderEditorTpSlLiqPriceWarning);
+  const isRemainingPositionAboveMaxLeverage = useSelector(selectOrderEditorIsRemainingPositionAboveMaxLeverage);
   const fromToken = useSelector(selectOrderEditorFromToken);
   const markRatio = useSelector(selectOrderEditorMarkRatio);
   const isRatioInverted = useSelector(selectOrderEditorIsRatioInverted);
@@ -674,6 +671,7 @@ export function OrderEditor(p: Props) {
     });
 
     if (expressParams?.subaccount) {
+      void txnPromise.catch(reportHandledRejection("orderEditor.submit"));
       p.onClose();
       setIsSubmitting(false);
       if (market) {
@@ -688,7 +686,7 @@ export function OrderEditor(p: Props) {
         if (market) {
           sendEditOrderEvent({ order: p.order, source: p.source, marketInfo: market });
         }
-      })
+      }, reportHandledRejection("orderEditor.submit"))
       .finally(() => {
         setIsSubmitting(false);
       });
@@ -1274,6 +1272,22 @@ export function OrderEditor(p: Props) {
           {liqPriceWarning && (
             <AlertInfoCard type="warning" hideClose>
               {liqPriceWarning}
+            </AlertInfoCard>
+          )}
+
+          {isRemainingPositionAboveMaxLeverage && (
+            <AlertInfoCard type="warning" hideClose>
+              <div className="flex flex-col gap-8">
+                <div>
+                  <Trans>
+                    At this trigger price, the remaining position would exceed max leverage and the order may not
+                    execute.
+                  </Trans>
+                </div>
+                <div>
+                  <Trans>Close the full position, change the trigger price, or add margin.</Trans>
+                </div>
+              </div>
             </AlertInfoCard>
           )}
 

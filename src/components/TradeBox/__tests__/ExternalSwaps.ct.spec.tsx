@@ -1,6 +1,8 @@
 import { test, expect } from "@playwright/experimental-ct-react";
 import type { Locator, Page, Route } from "playwright-core";
 
+import { MOCK_ACCOUNT_PRIVATE_KEY, MockChain } from "domain/testUtils/rpc/mockChain";
+import { installRpcResponder } from "domain/testUtils/rpc/playwrightAdapter";
 import { getDataQALocator } from "lib/__tests__/testUtils";
 
 import { TradeBoxStory } from "./TradeBox.ct.stories";
@@ -97,9 +99,9 @@ type PageLike = {
 };
 
 test.beforeEach(async ({ page }) => {
-  // Hermetic: fixtures provide all data, requests to real backends are dropped.
+  // Hermetic: fixtures provide all data, the mock chain answers RPC (unlimited allowance), other requests are dropped.
   // Kyber mocks are registered per-test after this and take precedence (later routes win).
-  await page.route(/^https?:\/\/(?!localhost|127\.0\.0\.1)/, (route) => route.abort());
+  await installRpcResponder(page, new MockChain({ walletPrivateKey: MOCK_ACCOUNT_PRIVATE_KEY }));
 });
 
 async function openSwap(page: PageLike) {
@@ -608,5 +610,52 @@ test.describe("External swaps", () => {
 
     await page.waitForTimeout(700); // past the quote debounce
     expect(kyber.routes).toBe(0);
+  });
+
+  test.describe("Disconnected wallet", () => {
+    test("shows the pool liquidity error next to Connect wallet", async ({ mount, page }) => {
+      await mount(<TradeBoxStory withExternalSwapHandler externalSwapsSettingOff marketScenario="drainedEthPool" />);
+
+      await openSwap(page);
+      await page.locator(getDataQALocator("pay-input")).fill("1000");
+
+      await expect(
+        page.getByText("GMX pools don't have enough liquidity for this swap size", { exact: false })
+      ).toBeVisible({ timeout: 15_000 });
+
+      const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
+      await expect(submitButton).toHaveText("Connect wallet");
+      await expect(submitButton).toBeEnabled();
+    });
+
+    test("no liquidity banner when GMX pools can fill the swap", async ({ mount, page }) => {
+      await mount(<TradeBoxStory withExternalSwapHandler externalSwapsSettingOff />);
+
+      await openSwap(page);
+      await page.locator(getDataQALocator("pay-input")).fill("1000");
+
+      await expect(page.locator(getDataQALocator("swap-receive-input"))).not.toHaveValue("");
+      await expect(page.locator(getDataQALocator("confirm-trade-button"))).toHaveText("Connect wallet");
+      await page.waitForTimeout(700); // past the quote debounce
+      await expect(
+        page.getByText("GMX pools don't have enough liquidity for this swap size", { exact: false })
+      ).not.toBeVisible();
+    });
+
+    test("keeps only the no-route card when the aggregator has no route either", async ({ mount, page }) => {
+      await mockKyberNoRoute(page);
+      await mount(<TradeBoxStory withExternalSwapHandler marketScenario="drainedEthPool" />);
+
+      await openSwap(page);
+      await page.locator(getDataQALocator("pay-input")).fill("1000");
+
+      await expect(
+        page.getByText("GMX pools can't fill this swap, and no external route is available", { exact: false })
+      ).toBeVisible({ timeout: 15_000 });
+      await expect(
+        page.getByText("GMX pools can't fill this swap size, and no external route is available", { exact: false })
+      ).not.toBeVisible();
+      await expect(page.locator(getDataQALocator("confirm-trade-button"))).toHaveText("Connect wallet");
+    });
   });
 });

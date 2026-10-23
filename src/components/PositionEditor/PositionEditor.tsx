@@ -11,11 +11,7 @@ import { isSettlementChain } from "config/multichain";
 import { getUsdgConversionTokenAddress } from "config/usdgPools";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import {
-  usePositionsConstants,
-  useTokensData,
-  useUserReferralInfo,
-} from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   usePositionEditorAtPriceOpenRequest,
   usePositionEditorCollateralInputValue,
@@ -39,6 +35,7 @@ import {
   selectPositionEditorDepositConversionTokenAddress,
   selectPositionEditorDepositMaxInstantAmount,
   selectPositionEditorIsDepositSwapUnfillable,
+  selectPositionEditorMaxWithdrawAmount,
   selectPositionEditorOpenDepositNow,
   selectPositionEditorSelectedCollateralToken,
   selectPositionEditorSetAddMarginReturnPositionKey,
@@ -49,7 +46,7 @@ import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { getNetworkFeeGasPaymentParams } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { useIsSwapTabPaxosOffered } from "domain/synthetics/paxosTransit/useIsSwapTabPaxosOffered";
-import { formatLiquidationPriceParts, getIsPositionInfoLoaded } from "domain/synthetics/positions";
+import { formatLiquidationPriceParts } from "domain/synthetics/positions";
 import {
   convertToTokenAmount,
   convertToUsd,
@@ -58,7 +55,7 @@ import {
   TokenBalanceType,
   type TokenData,
 } from "domain/synthetics/tokens";
-import { getMarkPrice, getMaxWithdrawAmount, getTradeFlagsForCollateralEdit } from "domain/synthetics/trade";
+import { getMarkPrice, getTradeFlagsForCollateralEdit } from "domain/synthetics/trade";
 import { Operation } from "domain/synthetics/trade/usePositionEditorState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getConditionalDepositWarning } from "domain/synthetics/trade/utils/validation";
@@ -118,11 +115,9 @@ import "./PositionEditor.scss";
 export function PositionEditor() {
   const { chainId, srcChainId } = useChainId();
   const { expressOrdersEnabled, setExpressOrdersEnabled, setIsSettingsVisible } = useSettings();
-  const [, setEditingPositionKey] = usePositionEditorPositionState();
+  const [editingPositionKey, setEditingPositionKey] = usePositionEditorPositionState();
   const tokensData = useTokensData();
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
-  const { minCollateralUsd } = usePositionsConstants();
-  const userReferralInfo = useUserReferralInfo();
   const position = usePositionEditorPosition();
   const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
   const localizedDepositModeLabels = useLocalizedMap(DEPOSIT_MODE_LABELS);
@@ -130,7 +125,9 @@ export function PositionEditor() {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
   const isVisible = Boolean(position);
+  const prevEditingPositionKey = usePrevious(editingPositionKey);
   const prevIsVisible = usePrevious(isVisible);
+  const lastVisibleIncreasedAtTimeRef = useRef<bigint | undefined>(undefined);
 
   const [operation, setOperation] = usePositionEditorOperation();
   const isDeposit = operation === Operation.Deposit;
@@ -219,8 +216,6 @@ export function PositionEditor() {
     setEditingPositionKey(undefined);
   }, [setEditingPositionKey]);
 
-  const collateralPrice = collateralToken?.prices.minPrice;
-
   const [collateralInputValue, setCollateralInputValue] = usePositionEditorCollateralInputValue();
   const { collateralDeltaAmount, collateralDeltaUsd } = useSelector(selectPositionEditorCollateralInputAmountAndUsd);
 
@@ -234,17 +229,7 @@ export function PositionEditor() {
     return getMarkPrice({ prices: position.indexToken.prices, isLong: position.isLong, isIncrease: true });
   }, [position]);
 
-  const maxWithdrawAmount = useMemo(() => {
-    if (!getIsPositionInfoLoaded(position)) return 0n;
-
-    return getMaxWithdrawAmount({
-      position,
-      minCollateralUsd,
-      collateralPrice,
-      collateralDecimals: collateralToken?.decimals,
-      userReferralInfo,
-    });
-  }, [collateralPrice, collateralToken?.decimals, minCollateralUsd, position, userReferralInfo]);
+  const maxWithdrawAmount = useSelector(selectPositionEditorMaxWithdrawAmount);
 
   const { fees, executionFee } = usePositionEditorFees({
     operation,
@@ -511,7 +496,16 @@ export function PositionEditor() {
 
   useEffect(
     function resetFormAndApplyOpenRequest() {
-      if (isVisible !== prevIsVisible || atPriceOpenRequest) {
+      // A data gap brings the same position back, but a position closed under the open editor and reopened
+      // later keeps its key with a new increase time.
+      const increasedAtTime = position?.increasedAtTime;
+      const isReopenedPosition =
+        isVisible && !prevIsVisible && increasedAtTime !== lastVisibleIncreasedAtTimeRef.current;
+      if (increasedAtTime !== undefined) {
+        lastVisibleIncreasedAtTimeRef.current = increasedAtTime;
+      }
+
+      if (editingPositionKey !== prevEditingPositionKey || isReopenedPosition || atPriceOpenRequest) {
         setCollateralInputValue("");
       }
 
@@ -544,9 +538,12 @@ export function PositionEditor() {
     [
       atPriceOpenRequest,
       clearAtPriceOpenRequest,
+      editingPositionKey,
       isVisible,
       position?.collateralToken?.decimals,
+      position?.increasedAtTime,
       position?.indexToken?.visualMultiplier,
+      prevEditingPositionKey,
       prevIsVisible,
       replacingOrder,
       setCollateralInputValue,
