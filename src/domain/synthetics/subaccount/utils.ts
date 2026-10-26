@@ -12,10 +12,10 @@ import type {
   SubaccountValidations,
 } from "domain/synthetics/subaccount";
 import { WalletSigner } from "lib/wallets";
-import { SignatureTypes, signTypedData } from "lib/wallets/signing";
+import { signTypedData } from "lib/wallets/signing";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
-import { getContract } from "sdk/configs/contracts";
+import { getContract, isContractsV2_2_1 } from "sdk/configs/contracts";
 import {
   maxAllowedSubaccountActionCountKey,
   SUBACCOUNT_ORDER_ACTION,
@@ -27,6 +27,7 @@ import {
 } from "sdk/configs/dataStore";
 import { bigMath } from "sdk/utils/bigmath";
 import { ZERO_DATA } from "sdk/utils/hash";
+import { SUBACCOUNT_APPROVAL_TYPES, SUBACCOUNT_APPROVAL_TYPES_V2_2_1 } from "sdk/utils/subaccount";
 import { nowInSeconds } from "sdk/utils/time";
 
 import { getGelatoRelayRouterDomain } from "../express";
@@ -287,6 +288,8 @@ function getEmptySubaccountApproval(chainId: ContractsChainId, subaccountAddress
     signature: ZERO_DATA,
     signedAt: 0,
     integrationId: zeroHash,
+    revocationCounter: 0n,
+    eip6492SignatureWrapperHash: zeroHash,
     subaccountRouterAddress: zeroAddress,
     signatureChainId: chainId,
   };
@@ -341,6 +344,7 @@ export async function getInitialSubaccountApproval({
       shouldAdd: !onchainData.active,
       expiresAt,
       maxAllowedCount,
+      revocationCounter: onchainData.revocationCounter,
     },
     isGmxAccount
   );
@@ -432,6 +436,7 @@ export async function signUpdatedSubaccountSettings({
       expiresAt: nextExpiresAt,
       maxAllowedCount: nextMaxAllowedCount,
       shouldAdd: !subaccount.onchainData.active,
+      revocationCounter: subaccount.onchainData.revocationCounter,
     },
     isGmxAccount
   );
@@ -448,28 +453,18 @@ async function createAndSignSubaccountApproval(
     shouldAdd: boolean;
     expiresAt: bigint;
     maxAllowedCount: bigint;
+    revocationCounter: bigint;
   },
   isGmxAccount: boolean
 ): Promise<SignedSubaccountApproval> {
+  const isV2_2_1 = isContractsV2_2_1(chainId);
   const srcChainId = await getMultichainInfoFromSigner(mainAccountSigner, chainId);
 
   const nonce = await getSubaccountApprovalNonceForProvider(chainId, mainAccountSigner, isGmxAccount);
 
   const subaccountRouterAddress = getOrderRelayRouterAddress(chainId, true, isGmxAccount);
 
-  const types: SignatureTypes = {
-    SubaccountApproval: [
-      { name: "subaccount", type: "address" },
-      { name: "shouldAdd", type: "bool" },
-      { name: "expiresAt", type: "uint256" },
-      { name: "maxAllowedCount", type: "uint256" },
-      { name: "actionType", type: "bytes32" },
-      { name: "nonce", type: "uint256" },
-      { name: "desChainId", type: "uint256" },
-      { name: "deadline", type: "uint256" },
-      { name: "integrationId", type: "bytes32" },
-    ],
-  };
+  const types = isV2_2_1 ? SUBACCOUNT_APPROVAL_TYPES_V2_2_1 : SUBACCOUNT_APPROVAL_TYPES;
 
   const domain = getGelatoRelayRouterDomain(srcChainId ?? chainId, subaccountRouterAddress);
 
@@ -483,13 +478,14 @@ async function createAndSignSubaccountApproval(
     nonce,
     integrationId: zeroHash,
     deadline: params.expiresAt,
+    ...(isV2_2_1 ? { revocationCounter: params.revocationCounter, eip6492SignatureWrapperHash: zeroHash } : {}),
   };
 
   const signature = await signTypedData({
     signer: mainAccountSigner,
     domain,
     types,
-    typedData,
+    typedData: { ...typedData, ...(isV2_2_1 ? { account: mainAccountSigner.address } : {}) },
     verificationChainId: chainId,
   });
 

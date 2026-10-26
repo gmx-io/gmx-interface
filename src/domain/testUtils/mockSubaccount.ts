@@ -31,6 +31,8 @@ export function createMockSubaccount(): Subaccount {
       signature: ZERO_DATA,
       signedAt: 0,
       integrationId: zeroHash,
+      revocationCounter: 0n,
+      eip6492SignatureWrapperHash: zeroHash,
       subaccountRouterAddress: zeroAddress,
       signatureChainId: ARBITRUM,
     },
