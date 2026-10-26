@@ -84,6 +84,8 @@ msgstr "自動將您的 GMX 獎勵以複利方式再投入，無需手動領取"
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/MainView.tsx
 msgid "Disconnect"
 msgstr "斷開連接"
 
@@ -628,6 +630,10 @@ msgstr "加密貨幣"
 #: src/components/ShareModal/useShareCardActions.ts
 msgid "Image generation failed. Refresh and try again."
 msgstr "圖片生成失敗。請重新整理後再試一次。"
+
+#: src/components/ClosingPoolsLpNotice/closingPoolsLpNoticeLogic.ts
+msgid "{0, plural, one {We're actively moving {markets} trading to the new USDG pools, so fees in your current pool will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.} other {We're actively moving {markets} trading to the new USDG pools, so fees in your current pools will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.}}"
+msgstr "{0, plural, other {我們正在積極將 {markets} 的交易遷移至新的 USDG 池，因此您目前池中的手續費將會下降。請將您的流動性轉入 {gmPools} 或 GLV [USDG] 以繼續賺取收益。}}"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Unrealized fee contribution"
@@ -4187,6 +4193,10 @@ msgstr "無法提取抵押品。剩餘將為 {estimatedRemainingCollateralUsdTex
 msgid "Funds claimed"
 msgstr "資金已領取"
 
+#: src/components/ClosingPoolsLpNotice/ClosingPoolsLpNoticeBanner.tsx
+msgid "View pools"
+msgstr "查看池"
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "Trigger"
 msgstr "觸發"
@@ -4361,6 +4371,10 @@ msgstr "上架"
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "Conversion failed: {0}"
 msgstr "轉換失敗：{0}"
+
+#: src/lib/i18n.ts
+msgid "{first}, {second} +{restCount} more"
+msgstr "{first}、{second} 及另外 {restCount} 個"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Signing approval..."
@@ -7109,6 +7123,10 @@ msgstr "無需重複確認錢包"
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "存入 {gasPaymentTokensText}"
+
+#: src/components/ClosingPoolsLpNotice/closingPoolsLpNoticeLogic.ts
+msgid "{0, plural, one {Trading in your {markets} pool is moving to USDG pools} other {Trading in your {markets} pools is moving to USDG pools}}"
+msgstr "{0, plural, other {您的 {markets} 池的交易正在遷移至 USDG 池}}"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."

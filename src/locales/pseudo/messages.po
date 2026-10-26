@@ -84,6 +84,8 @@ msgstr ""
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/MainView.tsx
 msgid "Disconnect"
 msgstr ""
 
@@ -627,6 +629,10 @@ msgstr "[!! Crypto !!]"
 
 #: src/components/ShareModal/useShareCardActions.ts
 msgid "Image generation failed. Refresh and try again."
+msgstr ""
+
+#: src/components/ClosingPoolsLpNotice/closingPoolsLpNoticeLogic.ts
+msgid "{0, plural, one {We're actively moving {markets} trading to the new USDG pools, so fees in your current pool will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.} other {We're actively moving {markets} trading to the new USDG pools, so fees in your current pools will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.}}"
 msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -4187,6 +4193,10 @@ msgstr ""
 msgid "Funds claimed"
 msgstr ""
 
+#: src/components/ClosingPoolsLpNotice/ClosingPoolsLpNoticeBanner.tsx
+msgid "View pools"
+msgstr ""
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "Trigger"
 msgstr ""
@@ -4360,6 +4370,10 @@ msgstr ""
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "Conversion failed: {0}"
+msgstr ""
+
+#: src/lib/i18n.ts
+msgid "{first}, {second} +{restCount} more"
 msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
@@ -7108,6 +7122,10 @@ msgstr ""
 
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Deposit {gasPaymentTokensText}"
+msgstr ""
+
+#: src/components/ClosingPoolsLpNotice/closingPoolsLpNoticeLogic.ts
+msgid "{0, plural, one {Trading in your {markets} pool is moving to USDG pools} other {Trading in your {markets} pools is moving to USDG pools}}"
 msgstr ""
 
 #: src/components/Referrals/affiliates/faq.tsx

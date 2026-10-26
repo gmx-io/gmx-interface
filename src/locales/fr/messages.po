@@ -84,6 +84,8 @@ msgstr "Réinvestit automatiquement vos récompenses GMX sans récupération man
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/MainView.tsx
 msgid "Disconnect"
 msgstr "Déconnecter"
 
@@ -628,6 +630,10 @@ msgstr "Crypto"
 #: src/components/ShareModal/useShareCardActions.ts
 msgid "Image generation failed. Refresh and try again."
 msgstr "La génération d'image a échoué. Actualisez et réessayez."
+
+#: src/components/ClosingPoolsLpNotice/closingPoolsLpNoticeLogic.ts
+msgid "{0, plural, one {We're actively moving {markets} trading to the new USDG pools, so fees in your current pool will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.} other {We're actively moving {markets} trading to the new USDG pools, so fees in your current pools will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.}}"
+msgstr "{0, plural, one {Nous transférons activement le trading de {markets} vers les nouveaux pools USDG, les frais de votre pool actuel vont donc baisser. Déplacez votre liquidité vers {gmPools} ou GLV [USDG] pour continuer à générer des gains.} other {Nous transférons activement le trading de {markets} vers les nouveaux pools USDG, les frais de vos pools actuels vont donc baisser. Déplacez votre liquidité vers {gmPools} ou GLV [USDG] pour continuer à générer des gains.}}"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Unrealized fee contribution"
@@ -4187,6 +4193,10 @@ msgstr "Impossible de retirer la garantie. Le montant restant serait de {estimat
 msgid "Funds claimed"
 msgstr "Fonds récupérés"
 
+#: src/components/ClosingPoolsLpNotice/ClosingPoolsLpNoticeBanner.tsx
+msgid "View pools"
+msgstr "Voir les pools"
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "Trigger"
 msgstr "Déclencheur"
@@ -4361,6 +4371,10 @@ msgstr "Listing"
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "Conversion failed: {0}"
 msgstr "Échec de la conversion : {0}"
+
+#: src/lib/i18n.ts
+msgid "{first}, {second} +{restCount} more"
+msgstr "{first}, {second} et {restCount} de plus"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Signing approval..."
@@ -7109,6 +7123,10 @@ msgstr "Aucune confirmation répétée dans le portefeuille"
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "Déposer {gasPaymentTokensText}"
+
+#: src/components/ClosingPoolsLpNotice/closingPoolsLpNoticeLogic.ts
+msgid "{0, plural, one {Trading in your {markets} pool is moving to USDG pools} other {Trading in your {markets} pools is moving to USDG pools}}"
+msgstr "{0, plural, one {Le trading de votre pool {markets} est transféré vers les pools USDG} other {Le trading de vos pools {markets} est transféré vers les pools USDG}}"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."

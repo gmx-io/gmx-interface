@@ -84,6 +84,8 @@ msgstr "수동 수령 없이 GMX 보상을 자동으로 재투자합니다"
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/MainView.tsx
 msgid "Disconnect"
 msgstr "연결 해제"
 
@@ -628,6 +630,10 @@ msgstr "암호화폐"
 #: src/components/ShareModal/useShareCardActions.ts
 msgid "Image generation failed. Refresh and try again."
 msgstr "이미지 생성에 실패했습니다. 새로고침 후 다시 시도하십시오."
+
+#: src/components/ClosingPoolsLpNotice/closingPoolsLpNoticeLogic.ts
+msgid "{0, plural, one {We're actively moving {markets} trading to the new USDG pools, so fees in your current pool will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.} other {We're actively moving {markets} trading to the new USDG pools, so fees in your current pools will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.}}"
+msgstr "{0, plural, other {{markets} 거래를 새로운 USDG 풀로 적극적으로 이전하고 있어 현재 풀의 수수료가 줄어듭니다. 계속 수익을 얻으려면 유동성을 {gmPools} 또는 GLV [USDG]로 옮기십시오.}}"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Unrealized fee contribution"
@@ -4187,6 +4193,10 @@ msgstr "담보를 출금할 수 없습니다. 출금 후 잔여 담보가 {estim
 msgid "Funds claimed"
 msgstr "자금 수령 완료"
 
+#: src/components/ClosingPoolsLpNotice/ClosingPoolsLpNoticeBanner.tsx
+msgid "View pools"
+msgstr "풀 보기"
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "Trigger"
 msgstr "트리거"
@@ -4361,6 +4371,10 @@ msgstr "상장"
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "Conversion failed: {0}"
 msgstr "변환 실패: {0}"
+
+#: src/lib/i18n.ts
+msgid "{first}, {second} +{restCount} more"
+msgstr "{first}, {second} 외 {restCount}개"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Signing approval..."
@@ -7109,6 +7123,10 @@ msgstr "반복적인 지갑 확인 없음"
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "{gasPaymentTokensText} 입금"
+
+#: src/components/ClosingPoolsLpNotice/closingPoolsLpNoticeLogic.ts
+msgid "{0, plural, one {Trading in your {markets} pool is moving to USDG pools} other {Trading in your {markets} pools is moving to USDG pools}}"
+msgstr "{0, plural, other {보유하신 {markets} 풀의 거래가 USDG 풀로 이전되고 있습니다}}"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."
