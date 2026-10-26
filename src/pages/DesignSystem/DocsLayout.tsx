@@ -30,12 +30,15 @@ export type DocsSectionInfo = {
 export function DocsSection({
   section,
   titleMeta,
+  titleAction,
   flush,
   children,
 }: {
   section: DocsSectionInfo;
   // Shown on the title line, after the title (e.g. a version's date)
   titleMeta?: string;
+  // A control at the right end of the title line (e.g. a Dark | Light switch)
+  titleAction?: ReactNode;
   // No padding around the content, for DocsCards and rows that draw their own lines edge to edge
   flush?: boolean;
   children: ReactNode;
@@ -59,6 +62,7 @@ export function DocsSection({
           <h2 className="text-h3 font-medium">{section.title}</h2>
           {titleMeta && <span className="text-body-large text-typography-secondary">{titleMeta}</span>}
         </div>
+        {titleAction && <div className="ml-auto">{titleAction}</div>}
       </div>
       <div className={cx({ "p-24 max-md:p-16": !flush })}>{children}</div>
     </section>

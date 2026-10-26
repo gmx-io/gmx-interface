@@ -1,5 +1,6 @@
 import { type ComponentType } from "react";
 
+import { ColorsChangelog, ColorsExamples } from "./pages/ColorsPage";
 import { TooltipChangelog, TooltipExamples, TooltipGuidelines, TooltipPropsReference } from "./pages/TooltipPage";
 
 export type DesignSystemTab = "examples" | "props" | "guidelines" | "changelog";
@@ -17,6 +18,19 @@ export type DesignSystemGroup = {
 
 // One entry per page: it adds the menu item, the URL (/ui/<slug>) and the tabs.
 export const DESIGN_SYSTEM_GROUPS: DesignSystemGroup[] = [
+  {
+    title: "Foundations",
+    pages: [
+      {
+        slug: "colors",
+        title: "Colors",
+        tabs: {
+          examples: ColorsExamples,
+          changelog: ColorsChangelog,
+        },
+      },
+    ],
+  },
   {
     title: "Components",
     pages: [
