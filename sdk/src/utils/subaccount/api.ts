@@ -17,6 +17,7 @@ export type SubaccountStatusResponse = {
   approvalNonce: string;
   multichainApprovalNonce: string;
   integrationId: string | null;
+  revocationCounter?: string;
 };
 
 export type SubaccountApprovalPrepareRequest = {

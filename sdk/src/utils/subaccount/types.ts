@@ -9,6 +9,7 @@ export type SubaccountOnchainData = {
   approvalNonce: bigint;
   multichainApprovalNonce: bigint;
   integrationId: string | undefined;
+  revocationCounter: bigint;
 };
 
 export type SubaccountSerializedConfig = {

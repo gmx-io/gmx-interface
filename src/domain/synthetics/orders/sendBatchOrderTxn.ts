@@ -293,6 +293,7 @@ const makeBatchOrderSimulation = async ({
             nonce: onchainData.approvalNonce,
             multichainNonce: onchainData.multichainApprovalNonce,
             integrationId: onchainData.integrationId,
+            revocationCounter: onchainData.revocationCounter,
           },
           signedData: {
             maxAllowedCount: signedApproval.maxAllowedCount,

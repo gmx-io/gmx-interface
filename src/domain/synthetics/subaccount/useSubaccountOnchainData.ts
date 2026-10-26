@@ -12,6 +12,7 @@ import {
   subaccountExpiresAtKey,
   subaccountIntegrationIdKey,
   subaccountListKey,
+  subaccountRevocationCounterKey,
 } from "sdk/configs/dataStore";
 import type { SubaccountOnchainData } from "sdk/utils/subaccount";
 
@@ -89,6 +90,10 @@ export function useSubaccountOnchainData(
               methodName: "getBytes32",
               params: [subaccountIntegrationIdKey(account!, subaccountAddress)],
             },
+            revocationCounter: {
+              methodName: "getUint",
+              params: [subaccountRevocationCounterKey(account!, subaccountAddress)],
+            },
           },
         },
       } satisfies MulticallRequestConfig<any>;
@@ -102,6 +107,7 @@ export function useSubaccountOnchainData(
       const multichainApprovalNonce = BigInt(
         res.data.multichainSubaccountRelayRouter.subaccountApproval.returnValues[0]
       );
+      const revocationCounter = BigInt(res.data.dataStore.revocationCounter.returnValues[0]);
 
       const integrationId = res.data.dataStore.integrationId.returnValues[0];
 
@@ -113,6 +119,7 @@ export function useSubaccountOnchainData(
         approvalNonce,
         multichainApprovalNonce,
         integrationId,
+        revocationCounter,
       };
     },
   });

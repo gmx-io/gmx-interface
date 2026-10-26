@@ -86,6 +86,7 @@ vi.mock("domain/synthetics/subaccount/useSubaccountOnchainData", () => ({
       approvalNonce: 0n,
       multichainApprovalNonce: 0n,
       integrationId: "0x0",
+      revocationCounter: 0n,
     },
     refreshSubaccountData: mocks.refreshSubaccountData,
   }),

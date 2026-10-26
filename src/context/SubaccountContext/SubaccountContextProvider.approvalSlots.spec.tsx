@@ -136,6 +136,7 @@ function createOnchainData(overrides: Partial<SubaccountOnchainData> = {}): Suba
     approvalNonce: 5n,
     multichainApprovalNonce: MULTICHAIN_APPROVAL_NONCE,
     integrationId: zeroHash,
+    revocationCounter: 0n,
     ...overrides,
   };
 }
