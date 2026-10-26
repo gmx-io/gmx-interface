@@ -154,6 +154,8 @@ function createApproval(overrides: Partial<SignedSubaccountApproval> = {}): Sign
     signature: "0x01",
     signedAt: 1000,
     integrationId: zeroHash,
+    revocationCounter: 0n,
+    eip6492SignatureWrapperHash: zeroHash,
     subaccountRouterAddress: multichainRouterAddress,
     signatureChainId: SOURCE_BASE_MAINNET,
     ...overrides,

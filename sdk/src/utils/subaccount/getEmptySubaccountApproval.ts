@@ -23,6 +23,8 @@ export function getEmptySubaccountApproval(
     desChainId: BigInt(chainId),
     deadline: 0n,
     integrationId: zeroHash,
+    revocationCounter: 0n,
+    eip6492SignatureWrapperHash: zeroHash,
     signature: "0x",
   };
 }

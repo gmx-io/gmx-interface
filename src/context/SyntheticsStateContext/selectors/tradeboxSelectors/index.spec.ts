@@ -49,6 +49,8 @@ function createSubaccount(overrides: SubaccountOverrides = {}): Subaccount {
     signature: "0x01",
     signedAt: 0,
     integrationId: zeroHash,
+    revocationCounter: 0n,
+    eip6492SignatureWrapperHash: zeroHash,
     subaccountRouterAddress,
     signatureChainId: AVALANCHE as Subaccount["signedApproval"]["signatureChainId"],
   };

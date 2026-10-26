@@ -301,6 +301,7 @@ const makeBatchOrderSimulation = async ({
             shouldAdd: signedApproval.shouldAdd,
             nonce: signedApproval.nonce,
             integrationId: signedApproval.integrationId,
+            revocationCounter: signedApproval.revocationCounter,
           },
         },
       });

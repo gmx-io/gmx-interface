@@ -289,7 +289,7 @@ export async function buildAndSignExpressBatchOrderTxn({
       relayParams: relayPayload,
       account: signer.address,
       subaccountApprovalHash: subaccount?.signedApproval
-        ? hashSubaccountApproval(subaccount.signedApproval)
+        ? hashSubaccountApproval(chainId, subaccount.signedApproval)
         : undefined,
       relayRouterAddress,
     });
