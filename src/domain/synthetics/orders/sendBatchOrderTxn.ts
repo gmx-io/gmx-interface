@@ -172,7 +172,7 @@ export async function sendBatchOrderTxn({
       return await res;
     }
 
-    const { callData, value } = getBatchOrderMulticallPayload({ params: encodedBatchParams });
+    const { callData, value } = getBatchOrderMulticallPayload({ chainId, params: encodedBatchParams });
 
     return sendWalletTransaction({
       chainId,
@@ -359,6 +359,7 @@ const makeBatchOrderSimulation = async ({
       });
     } else {
       const { encodedMulticall, value } = getBatchOrderMulticallPayload({
+        chainId,
         params: {
           ...batchParams,
           createOrderParams: [batchParams.createOrderParams[0]],
