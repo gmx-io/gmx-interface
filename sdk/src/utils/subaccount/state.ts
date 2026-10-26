@@ -20,6 +20,7 @@ export function parseSubaccountStatus(status: SubaccountStatusResponse): SdkSuba
     approvalNonce: toBigInt(status.approvalNonce) ?? 0n,
     multichainApprovalNonce: toBigInt(status.multichainApprovalNonce) ?? 0n,
     integrationId: status.integrationId ?? undefined,
+    revocationCounter: toBigInt(status.revocationCounter) ?? 0n,
   };
 }
 

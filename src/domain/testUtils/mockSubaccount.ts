@@ -43,6 +43,7 @@ export function createMockSubaccount(): Subaccount {
       approvalNonce: 0n,
       multichainApprovalNonce: 0n,
       integrationId: undefined,
+      revocationCounter: 0n,
     },
   };
 }

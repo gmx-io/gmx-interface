@@ -23,6 +23,7 @@ import {
   subaccountExpiresAtKey,
   subaccountIntegrationIdKey,
   subaccountListKey,
+  subaccountRevocationCounterKey,
 } from "sdk/configs/dataStore";
 import { bigMath } from "sdk/utils/bigmath";
 import { ZERO_DATA } from "sdk/utils/hash";
@@ -582,6 +583,12 @@ async function getSubaccountOnchainData({
       abi: abis.DataStore,
       functionName: "getBytes32",
       args: [subaccountIntegrationIdKey(account, subaccountAddress)],
+    },
+    revocationCounter: {
+      contractAddress: getContract(chainId, "DataStore"),
+      abi: abis.DataStore,
+      functionName: "getUint",
+      args: [subaccountRevocationCounterKey(account, subaccountAddress)],
     },
   };
 

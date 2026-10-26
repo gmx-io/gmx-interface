@@ -34,6 +34,7 @@ function createSubaccount(overrides: SubaccountOverrides = {}): Subaccount {
     approvalNonce: 0n,
     multichainApprovalNonce: 0n,
     integrationId: zeroHash,
+    revocationCounter: 0n,
   };
 
   const signedApproval: Subaccount["signedApproval"] = {
