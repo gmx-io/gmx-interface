@@ -7,9 +7,10 @@ import type { ISigner } from "lib/transactions/iSigner";
 import { signTypedData } from "lib/wallets/signing";
 
 import type { CreateGlvDepositParams } from ".";
+import { getTransferRequestsTypedDataParts } from "./getTransferRequestsTypedDataParts";
 import { getGelatoRelayRouterDomain, hashRelayParams, RelayParamsPayload } from "../express";
 
-export function signCreateGlvDeposit({
+export async function signCreateGlvDeposit({
   chainId,
   srcChainId,
   signer,
@@ -26,11 +27,11 @@ export function signCreateGlvDeposit({
   params: CreateGlvDepositParams;
   shouldUseSignerMethod?: boolean;
 }) {
+  const account = await signer.getAddress();
+  const transferRequestsTypedDataParts = getTransferRequestsTypedDataParts({ chainId, account, transferRequests });
   const types = {
     CreateGlvDeposit: [
-      { name: "transferTokens", type: "address[]" },
-      { name: "transferReceivers", type: "address[]" },
-      { name: "transferAmounts", type: "uint256[]" },
+      ...transferRequestsTypedDataParts.fields,
       { name: "addresses", type: "CreateGlvDepositAddresses" },
       { name: "minGlvTokens", type: "uint256" },
       { name: "executionFee", type: "uint256" },
@@ -51,13 +52,12 @@ export function signCreateGlvDeposit({
       { name: "longTokenSwapPath", type: "address[]" },
       { name: "shortTokenSwapPath", type: "address[]" },
     ],
+    ...transferRequestsTypedDataParts.types,
   };
 
   const domain = getGelatoRelayRouterDomain(srcChainId ?? chainId, getContract(chainId, "MultichainGlvRouter"));
   const typedData = {
-    transferTokens: transferRequests.tokens,
-    transferReceivers: transferRequests.receivers,
-    transferAmounts: transferRequests.amounts,
+    ...transferRequestsTypedDataParts.message,
     addresses: params.addresses,
     minGlvTokens: params.minGlvTokens,
     executionFee: params.executionFee,
