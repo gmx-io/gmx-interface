@@ -1,11 +1,18 @@
 import { encodeAbiParameters, encodeFunctionData, type Hex, zeroAddress } from "viem";
 
-import { abis } from "abis";
+import { getAbi } from "abis/getAbi";
 import type { AnyChainId, SettlementChainId } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { getLayerZeroEndpointId } from "configs/multichain";
 import { getToken } from "configs/tokens";
 import type { IAbstractSigner } from "utils/signer";
+
+export type BridgeFeeParams = {
+  feeToken: string;
+  feeAmount: bigint;
+  feeSwapPath: string[];
+  minOutputAmount: bigint;
+};
 
 export type BridgeOutParams = {
   token: string;
@@ -13,6 +20,7 @@ export type BridgeOutParams = {
   minAmountOut: bigint;
   provider: string;
   data: string;
+  bridgeFee: BridgeFeeParams;
 };
 
 export type BuildTxnResult = {
@@ -51,26 +59,26 @@ export function buildSameChainDepositTxn(request: SameChainDepositRequest): Buil
     }
     depositTokenAddress = wrappedAddress;
     sendCall = encodeFunctionData({
-      abi: abis.MultichainTransferRouter,
+      abi: getAbi(chainId, "MultichainTransferRouter"),
       functionName: "sendWnt",
       args: [multichainVault, amount],
     });
   } else {
     sendCall = encodeFunctionData({
-      abi: abis.MultichainTransferRouter,
+      abi: getAbi(chainId, "MultichainTransferRouter"),
       functionName: "sendTokens",
       args: [tokenAddress, multichainVault, amount],
     });
   }
 
   const bridgeInCall = encodeFunctionData({
-    abi: abis.MultichainTransferRouter,
+    abi: getAbi(chainId, "MultichainTransferRouter"),
     functionName: "bridgeIn",
     args: [account, depositTokenAddress],
   });
 
   const data = encodeFunctionData({
-    abi: abis.MultichainTransferRouter,
+    abi: getAbi(chainId, "MultichainTransferRouter"),
     functionName: "multicall",
     args: [[sendCall, bridgeInCall]],
   });
@@ -79,6 +87,15 @@ export function buildSameChainDepositTxn(request: SameChainDepositRequest): Buil
     to: router,
     data,
     value: isNative ? amount : 0n,
+  };
+}
+
+export function getEmptyBridgeFeeParams(): BridgeFeeParams {
+  return {
+    feeToken: zeroAddress,
+    feeAmount: 0n,
+    feeSwapPath: [],
+    minOutputAmount: 0n,
   };
 }
 
@@ -92,6 +109,7 @@ export function buildSameChainWithdrawBridgeOutParams(params: {
     minAmountOut: params.amount,
     data: "0x",
     provider: zeroAddress,
+    bridgeFee: getEmptyBridgeFeeParams(),
   };
 }
 
@@ -108,7 +126,7 @@ export function buildSameChainWithdrawTxn(request: SameChainWithdrawRequest): Bu
   const router = getContract(chainId, "MultichainTransferRouter");
 
   const data = encodeFunctionData({
-    abi: abis.MultichainTransferRouter,
+    abi: getAbi(chainId, "MultichainTransferRouter"),
     functionName: "transferOut",
     args: [bridgeOutParams],
   });
@@ -153,6 +171,7 @@ export function buildCrossChainWithdrawBridgeOutParams(params: {
     minAmountOut,
     provider: stargateAddress,
     data: encodeAbiParameters([{ type: "uint32", name: "dstEid" }], [dstEid]),
+    bridgeFee: getEmptyBridgeFeeParams(),
   };
 }
 
