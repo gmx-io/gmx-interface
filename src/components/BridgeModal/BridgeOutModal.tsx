@@ -41,6 +41,7 @@ import { helperToast } from "lib/helperToast";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { getToken, getWrappedToken } from "sdk/configs/tokens";
 import { getMarketIndexName } from "sdk/utils/markets";
+import { getEmptyBridgeFeeParams } from "sdk/utils/multichain/api";
 import { formatBalanceAmount, parseValue } from "sdk/utils/numbers";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
@@ -616,6 +617,7 @@ function useBridgeOutParams({
         [dstEid]
       ),
       provider: stargateAddress,
+      bridgeFee: getEmptyBridgeFeeParams(),
     };
   }, [bridgeOutChain, glvOrMarketAddress, bridgeOutAmount, chainId]);
 }

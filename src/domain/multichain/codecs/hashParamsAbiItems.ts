@@ -232,3 +232,33 @@ export const CREATE_GLV_WITHDRAWAL_PARAMS_TYPE = {
     { type: "bytes32[]", name: "dataList" },
   ],
 } as const;
+
+const BRIDGE_FEE_PARAMS_COMPONENTS = [
+  { type: "address", name: "feeToken" },
+  { type: "uint256", name: "feeAmount" },
+  { type: "address[]", name: "feeSwapPath" },
+  { type: "uint256", name: "minOutputAmount" },
+] as const;
+
+export const BRIDGE_FEE_PARAMS_TYPE = {
+  type: "tuple",
+  name: "",
+  components: BRIDGE_FEE_PARAMS_COMPONENTS,
+} as const;
+
+export const BRIDGE_OUT_PARAMS_V2_2_1 = {
+  type: "tuple",
+  name: "",
+  components: [
+    { type: "uint256", name: "desChainId" },
+    { type: "uint256", name: "deadline" },
+    { type: "address", name: "provider" },
+    { type: "bytes", name: "providerData" },
+    { type: "uint256", name: "minAmountOut" },
+    { type: "tuple", name: "bridgeFee", components: BRIDGE_FEE_PARAMS_COMPONENTS },
+    { type: "address", name: "secondaryProvider" },
+    { type: "bytes", name: "secondaryProviderData" },
+    { type: "uint256", name: "secondaryMinAmountOut" },
+    { type: "tuple", name: "secondaryBridgeFee", components: BRIDGE_FEE_PARAMS_COMPONENTS },
+  ],
+} as const;

@@ -29,12 +29,12 @@ import { WalletSigner } from "lib/wallets";
 import { getSignatureKind } from "lib/wallets/signatureDiagnostics";
 import { hashSignedTypedData, signTypedData, SignTypedDataParams } from "lib/wallets/signing";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
-import { abis } from "sdk/abis";
+import { getAbi } from "sdk/abis/getAbi";
 import { AnyChainId, ContractsChainId, SettlementChainId, SourceChainId } from "sdk/configs/chains";
 import { ContractName, isContractsV2_2_1 } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { type ExpressTxnData, estimateExpressParams as sdkEstimateExpressParams } from "sdk/utils/express";
-import { getBatchTypedData, buildBatchOrderCalldata } from "sdk/utils/express";
+import { getBatchTypedData, buildBatchOrderCalldata, getBridgeOutTypedData } from "sdk/utils/express";
 import {
   BatchOrderTxnParams,
   getBatchExternalCalls,
@@ -422,7 +422,7 @@ export async function buildAndSignBridgeOutTxn({
   }
 
   const bridgeOutCallData = encodeFunctionData({
-    abi: abis.MultichainTransferRouter,
+    abi: getAbi(chainId, "MultichainTransferRouter"),
     functionName: "bridgeOut",
     args: [
       {
@@ -456,29 +456,15 @@ async function signBridgeOutPayload({
   chainId: SettlementChainId;
   srcChainId: SourceChainId;
 }): Promise<string> {
-  const types = {
-    BridgeOut: [
-      { name: "token", type: "address" },
-      { name: "amount", type: "uint256" },
-      { name: "minAmountOut", type: "uint256" },
-      { name: "provider", type: "address" },
-      { name: "data", type: "bytes" },
-      { name: "relayParams", type: "bytes32" },
-    ],
-  };
+  const { domain, types, message } = getBridgeOutTypedData({
+    chainId,
+    srcChainId,
+    params,
+    relayParams,
+    account: signer.address,
+  });
 
-  const typedData = {
-    token: params.token,
-    amount: params.amount,
-    minAmountOut: params.minAmountOut,
-    provider: params.provider,
-    data: params.data,
-    relayParams: hashRelayParams(relayParams),
-  };
-
-  const domain = getGelatoRelayRouterDomain(srcChainId, getContract(chainId, "MultichainTransferRouter"));
-
-  return signTypedData({ signer, domain, types, typedData, verificationChainId: chainId });
+  return signTypedData({ signer, domain, types, typedData: message, verificationChainId: chainId });
 }
 
 export async function signSetTraderReferralCode({

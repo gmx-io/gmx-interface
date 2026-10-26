@@ -96,6 +96,7 @@ describe("multichain api: same-chain withdraw helpers", () => {
       minAmountOut: 500_000n,
       data: "0x",
       provider: zeroAddress,
+      bridgeFee: { feeToken: zeroAddress, feeAmount: 0n, feeSwapPath: [], minOutputAmount: 0n },
     });
   });
 
