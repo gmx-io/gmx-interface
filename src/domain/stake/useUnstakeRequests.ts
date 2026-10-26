@@ -102,6 +102,7 @@ function parseUnstakeRequestsResponse(result: MulticallResult<MulticallRequestCo
         requestedAt: Number(request.requestedAt),
       };
     })
+    .filter((request) => request.amount > 0n)
     .sort((a, b) => a.requestedAt - b.requestedAt);
 
   return {
