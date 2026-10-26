@@ -11,13 +11,15 @@ export function getContractErrorToastContent({
   errorData,
   slippageInputId,
   isSizeIncrease,
-  decodeDepth = 0,
+  isDecrease,
+  isLpWithdrawal,
 }: {
   chainId: number;
   errorData: Pick<ErrorData, "contractError" | "contractErrorArgs">;
   slippageInputId?: string;
   isSizeIncrease?: boolean;
-  decodeDepth?: number;
+  isDecrease?: boolean;
+  isLpWithdrawal?: boolean;
 }): ReactNode | undefined {
   if (!errorData.contractError) {
     return undefined;
@@ -28,7 +30,7 @@ export function getContractErrorToastContent({
     case CustomErrorName.InsufficientSwapOutputAmount:
       return (
         <Trans>
-          Order error. Prices are volatile for this market, try again by{" "}
+          Order error. Prices are volatile for this market. Try again by{" "}
           <span
             onClick={() => {
               if (slippageInputId) {
@@ -43,34 +45,33 @@ export function getContractErrorToastContent({
       );
 
     case CustomErrorName.ExternalCallFailed: {
-      if (decodeDepth < 1) {
-        const nestedErrorData = getStringContractErrorArg(errorData.contractErrorArgs, 0, "data");
-        if (nestedErrorData) {
-          const decodedExternalCallError = tryDecodeCustomError(nestedErrorData);
+      const nestedErrorData = getStringContractErrorArg(errorData.contractErrorArgs, 0, "data");
+      if (nestedErrorData) {
+        const decodedExternalCallError = tryDecodeCustomError(nestedErrorData);
 
-          if (decodedExternalCallError) {
-            const nestedContractErrorMessage = getContractErrorToastContent({
-              chainId,
-              errorData: {
-                contractError: decodedExternalCallError.name,
-                contractErrorArgs: decodedExternalCallError.args,
-              },
-              slippageInputId,
-              isSizeIncrease,
-              decodeDepth: decodeDepth + 1,
-            });
+        if (decodedExternalCallError) {
+          const nestedContractErrorMessage = getContractErrorToastContent({
+            chainId,
+            errorData: {
+              contractError: decodedExternalCallError.name,
+              contractErrorArgs: decodedExternalCallError.args,
+            },
+            slippageInputId,
+            isSizeIncrease,
+            isDecrease,
+            isLpWithdrawal,
+          });
 
-            if (nestedContractErrorMessage) {
-              return nestedContractErrorMessage;
-            }
+          if (nestedContractErrorMessage) {
+            return nestedContractErrorMessage;
           }
         }
       }
 
-      return getContractErrorMessage({ chainId, errorData, isSizeIncrease, decodeDepth });
+      return getContractErrorMessage({ chainId, errorData, isSizeIncrease, isDecrease, isLpWithdrawal });
     }
 
     default:
-      return getContractErrorMessage({ chainId, errorData, isSizeIncrease, decodeDepth });
+      return getContractErrorMessage({ chainId, errorData, isSizeIncrease, isDecrease, isLpWithdrawal });
   }
 }

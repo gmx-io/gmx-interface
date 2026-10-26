@@ -59,6 +59,7 @@ function MobileSlideModal({
     [fitContent]
   );
   const curtainRef = useRef<HTMLDivElement | null>(null);
+  const animationRef = useRef<Animation | null>(null);
 
   const isPointerDownRef = useRef(false);
   const isDraggingRef = useRef(false);
@@ -76,25 +77,23 @@ function MobileSlideModal({
   const [isHideTransitionFinished, setIsHideTransitionFinished] = useState(!isOpen);
 
   const handleAnimate = useCallback((newIsOpen: boolean) => {
-    if (!curtainRef.current) return;
+    const curtain = curtainRef.current;
+    if (!curtain) return;
 
-    const oldTransition = curtainRef.current.style.transition;
-    const animation = curtainRef.current.animate(
-      {
-        transform: `translateY(${newIsOpen ? `-100%` : 0})`,
-      },
-      {
-        duration: 150,
-        easing: "ease-out",
-        fill: "both",
-      }
-    );
+    const from = getComputedStyle(curtain).transform;
+    animationRef.current?.cancel();
+    const transform = `translateY(${newIsOpen ? "-100%" : 0})`;
+    const animation = curtain.animate([{ transform: from }, { transform }], {
+      duration: 150,
+      easing: "ease-out",
+      fill: "both",
+    });
+    animationRef.current = animation;
     animation.addEventListener("finish", () => {
-      animation.commitStyles();
+      if (animationRef.current !== animation) return;
+      curtain.style.transform = transform;
       animation.cancel();
-      if (curtainRef.current) {
-        curtainRef.current.style.transition = oldTransition;
-      }
+      animationRef.current = null;
     });
   }, []);
 
@@ -221,6 +220,8 @@ function MobileSlideModal({
 
   const setCurtainRef = useCallback(
     (el: HTMLDivElement | null) => {
+      animationRef.current?.cancel();
+      animationRef.current = null;
       curtainRef.current = el;
       if (el) {
         handleAnimate(true);

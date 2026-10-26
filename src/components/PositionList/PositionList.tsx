@@ -30,7 +30,7 @@ type Props = {
   onSelectPositionClick: (key: string, tradeMode?: TradeMode, showCurtain?: boolean) => void;
   onClosePositionClick: (key: string) => void;
   onOrdersClick: (positionKey: string, orderKey: string | undefined) => void;
-  onViewPositionHistory?: (positionKey: string) => void;
+  onViewPositionHistory?: (position: Pick<PositionInfo, "contractKey" | "increasedAtTime">) => void;
   onCancelOrder: (key: string) => void;
   openSettings: () => void;
   hideActions?: boolean;
@@ -227,7 +227,7 @@ const PositionItemWrapper = memo(
     onEditCollateralClick: (positionKey: string) => void;
     onClosePositionClick: (positionKey: string) => void;
     onOrdersClick: (positionKey: string, orderKey: string | undefined) => void;
-    onViewPositionHistory?: (positionKey: string) => void;
+    onViewPositionHistory?: Props["onViewPositionHistory"];
     onSelectPositionClick: (positionKey: string, tradeMode: TradeMode | undefined, showCurtain?: boolean) => void;
     isLarge: boolean;
     onShareClick: (positionKey: string) => void;
@@ -259,8 +259,8 @@ const PositionItemWrapper = memo(
       [onOrdersClick, position.key]
     );
     const handleViewPositionHistory = useCallback(
-      () => onViewPositionHistory?.(position.contractKey),
-      [onViewPositionHistory, position.contractKey]
+      () => onViewPositionHistory?.({ contractKey: position.contractKey, increasedAtTime: position.increasedAtTime }),
+      [onViewPositionHistory, position.contractKey, position.increasedAtTime]
     );
 
     const isPositionOwner = account === position.account;

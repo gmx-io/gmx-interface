@@ -3269,6 +3269,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@gmsol-labs/gmsol-sdk@npm:0.9.0-test.2":
+  version: 0.9.0-test.2
+  resolution: "@gmsol-labs/gmsol-sdk@npm:0.9.0-test.2"
+  checksum: 10/ffc92eda21e1d50de3c5ade006ec8611471bff05cd340b58c0ba71959a45b0d15caef07575b81593bb05c66cc003cec49e1eac8747ffd61c9d4ae07146834d1f
+  languageName: node
+  linkType: hard
+
 "@graphql-typed-document-node/core@npm:^3.0.0":
   version: 3.2.0
   resolution: "@graphql-typed-document-node/core@npm:3.2.0"
@@ -4461,6 +4468,17 @@ __metadata:
   bin:
     playwright: cli.js
   checksum: 10/e37236bfc98fb905874bc9bb7ecf6939307e76fa1da8ab0c46922bab9aa51692d305028138b3f2e019b3915167201cf0bed48632891e5864ec9b49f42b12db91
+  languageName: node
+  linkType: hard
+
+"@playwright/test@npm:1.58.2":
+  version: 1.58.2
+  resolution: "@playwright/test@npm:1.58.2"
+  dependencies:
+    playwright: "npm:1.58.2"
+  bin:
+    playwright: cli.js
+  checksum: 10/58bf90139280a0235eeeb6049e9fb4db6425e98be1bf0cc17913b068eef616cf67be57bfb36dc4cb56bcf116f498ffd0225c4916e85db404b343ea6c5efdae13
   languageName: node
   linkType: hard
 
@@ -12998,6 +13016,7 @@ __metadata:
     "@davatar/react": "npm:1.8.1"
     "@floating-ui/dom": "npm:1.6.7"
     "@floating-ui/react": "npm:0.26.19"
+    "@gmsol-labs/gmsol-sdk": "npm:0.9.0-test.2"
     "@headlessui/react": "npm:1.7.19"
     "@intercom/messenger-js-sdk": "npm:0.0.18"
     "@layerzerolabs/lz-v2-utilities": "npm:3.0.85"
@@ -13008,6 +13027,7 @@ __metadata:
     "@lingui/react": "npm:4.10.0"
     "@lingui/vite-plugin": "npm:4.11.3"
     "@playwright/experimental-ct-react": "npm:1.58.2"
+    "@playwright/test": "npm:1.58.2"
     "@privy-io/react-auth": "npm:3.35.0"
     "@privy-io/wagmi": "npm:4.0.8"
     "@stargatefinance/stg-evm-sdk-v2": "npm:1.1.12"
@@ -13108,6 +13128,11 @@ __metadata:
     wagmi: "npm:2.19.5"
     web-vitals: "npm:1.1.2"
     worker-loader: "npm:3.0.8"
+  dependenciesMeta:
+    bufferutil:
+      built: false
+    utf-8-validate:
+      built: false
   languageName: unknown
   linkType: soft
 

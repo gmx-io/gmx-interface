@@ -17,6 +17,7 @@ export const selectMarketsInfoData = (s: SyntheticsState) => s.globals.marketsIn
 export const selectTokensData = (s: SyntheticsState) => s.globals.tokensDataResult.tokensData;
 export const selectIsGmxAccountBalancesLoaded = (s: SyntheticsState) =>
   s.globals.tokensDataResult.isGmxAccountBalancesLoaded;
+export const selectIsWalletBalancesLoaded = (s: SyntheticsState) => s.globals.tokensDataResult.isWalletBalancesLoaded;
 export const selectGmMarkets = (s: SyntheticsState) => s.globals.markets.marketsData;
 export const selectUiFeeFactor = (s: SyntheticsState) => s.globals.uiFeeFactor;
 export const selectUserReferralInfo = (s: SyntheticsState) => s.globals.userReferralInfo;
@@ -62,7 +63,7 @@ const makeSelectEnabledFeature = (feature: keyof FeaturesSettings) => {
 };
 
 export const selectIsRelayRouterEnabled = makeSelectEnabledFeature("relayRouterEnabled");
-const selectIsSubaccountRelayRouterEnabled = makeSelectEnabledFeature("subaccountRelayRouterEnabled");
+export const selectIsSubaccountRelayRouterEnabled = makeSelectEnabledFeature("subaccountRelayRouterEnabled");
 
 export const selectBlockTimestampData = (s: SyntheticsState) => s.globals.blockTimestampData;
 
@@ -220,3 +221,7 @@ export const selectMultichainMarketTokensBalancesIsLoading = (s: SyntheticsState
   s.globals.multichainMarketTokensBalancesResult?.isLoading ?? false;
 
 export const selectJitLiquidityMap = (s: SyntheticsState) => s.globals.jitLiquidityData.jitLiquidityMap;
+
+export const selectAccountWhitelistsResult = (s: SyntheticsState) => s.globals.accountWhitelistsResult;
+
+export const selectUsdgBoostAprResult = (s: SyntheticsState) => s.globals.usdgBoostAprResult;

@@ -33,8 +33,9 @@ import {
 } from "domain/synthetics/markets";
 import type { GmPaySource } from "domain/synthetics/markets/types";
 import { getMarginDepositRiskLevel } from "domain/synthetics/orders/marginDeposit";
-import { PositionInfo, willPositionCollateralBeSufficientForPosition } from "domain/synthetics/positions";
+import { PositionInfo } from "domain/synthetics/positions";
 import { TokenData, TokensData, TokensRatio, getIsEquivalentTokens } from "domain/synthetics/tokens";
+import type { DirectDepositAccess } from "domain/synthetics/whitelists/utils";
 import { TokenBalanceType } from "domain/tokens";
 import { DUST_USD, isAddressZero } from "lib/legacy";
 import { PRECISION, adjustForDecimals, expandDecimals, formatAmount, formatUsd, roundWithDecimals } from "lib/numbers";
@@ -43,7 +44,11 @@ import { getPageOutdatedError } from "lib/useHasOutdatedUi";
 import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 import { bigMath } from "sdk/utils/bigmath";
-import { getIsMaxLeverageMarginReason, PositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
+import {
+  getIsMaxLeverageMarginReason,
+  PositionMarginFailureReason,
+  PositionMarginState,
+} from "sdk/utils/trade/increaseMarginCheck";
 import {
   ExternalSwapQuote,
   GmSwapFees,
@@ -59,6 +64,7 @@ import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlvInMarket, isGlv
 export enum ValidationButtonTooltipName {
   maxLeverage = "maxLeverage",
   resultingPositionMaxLeverage = "resultingPositionMaxLeverage",
+  remainingPositionMaxLeverage = "remainingPositionMaxLeverage",
   liqPriceGtMarkPrice = "liqPrice > markPrice",
   noSwapPath = "noSwapPath",
   minDeposit = "minDeposit",
@@ -86,7 +92,7 @@ export function getInsufficientFeeButtonMessage({
 }): string {
   switch (feeSource.balanceType) {
     case TokenBalanceType.Wallet:
-      return t`Insufficient ${tokenSymbol} in Wallet`;
+      return t`Insufficient ${tokenSymbol} in wallet`;
     case TokenBalanceType.GmxAccount:
       return t`Insufficient ${tokenSymbol} in GMX Account`;
     case TokenBalanceType.SourceChain: {
@@ -422,16 +428,25 @@ export function getIncreaseError(p: {
   const _minCollateralUsd = expandDecimals(2, USD_DECIMALS);
 
   const minTwapPartSize = _minCollateralUsd / 2n;
-  if (
-    !existingPosition &&
+  const twapPartMarginShortfallUsd =
     isTwap &&
-    numberOfParts > 0 &&
-    (collateralUsd === undefined ? undefined : collateralUsd / BigInt(numberOfParts) < minTwapPartSize)
-  ) {
-    const actualMarginPerPart = collateralUsd! / BigInt(numberOfParts);
-    return {
-      buttonErrorMessage: t`Margin per part: ${formatUsd(actualMarginPerPart, { roundMode: "floor" })} (min ${formatUsd(minTwapPartSize)})`,
-    };
+    isResultingPositionCheckBlocking &&
+    resultingPositionMarginState?.reason === PositionMarginFailureReason.MinCollateral
+      ? resultingPositionMarginState.minCollateralUsd - resultingPositionMarginState.remainingCollateralUsd
+      : undefined;
+
+  if (!existingPosition && isTwap && numberOfParts > 0 && collateralUsd !== undefined) {
+    const actualMarginPerPart = collateralUsd / BigInt(numberOfParts);
+
+    if (actualMarginPerPart < minTwapPartSize || twapPartMarginShortfallUsd !== undefined) {
+      const usdCent = expandDecimals(1, USD_DECIMALS - 2);
+      const minMarginPerPart =
+        twapPartMarginShortfallUsd !== undefined ? actualMarginPerPart + twapPartMarginShortfallUsd : minTwapPartSize;
+
+      return {
+        buttonErrorMessage: t`Margin per part: ${formatUsd(actualMarginPerPart, { roundMode: "floor" })} (min ${formatUsd(roundUpMagnitudeDivision(minMarginPerPart, usdCent) * usdCent)})`,
+      };
+    }
   }
 
   if (
@@ -499,14 +514,14 @@ export function getIncreaseError(p: {
     positionFeeFactorForBalanceWasNotImproved: marketInfo?.positionFeeFactorForBalanceWasNotImproved,
   });
 
-  if (nextLeverageWithoutPnl !== undefined && nextLeverageWithoutPnl > maxAllowedLeverage) {
-    return { buttonErrorMessage: t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x` };
-  }
+  const isAggregateLeverageCheckNeeded = !isTwap || resultingPositionMarginState === undefined;
 
-  if (nextLeverageWithoutPnl !== undefined) {
-    const maxLeverageError = getIsMaxLeverageExceeded(nextLeverageWithoutPnl, marketInfo, isLong, sizeDeltaUsd);
+  if (isAggregateLeverageCheckNeeded && nextLeverageWithoutPnl !== undefined) {
+    if (nextLeverageWithoutPnl > maxAllowedLeverage) {
+      return { buttonErrorMessage: t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x` };
+    }
 
-    if (maxLeverageError) {
+    if (getIsMaxLeverageExceeded(nextLeverageWithoutPnl, marketInfo, isLong, sizeDeltaUsd)) {
       return {
         buttonErrorMessage: t`Max leverage exceeded`,
         buttonTooltipName: ValidationButtonTooltipName.maxLeverage,
@@ -522,6 +537,16 @@ export function getIncreaseError(p: {
     return { buttonErrorMessage: t`Min position size: ${formatUsd(minPositionSizeUsd)}` };
   }
 
+  if (
+    isTwap &&
+    !existingPosition &&
+    numberOfParts > 0 &&
+    minPositionSizeUsd !== undefined &&
+    sizeDeltaUsd / BigInt(numberOfParts) < minPositionSizeUsd
+  ) {
+    return { buttonErrorMessage: t`Min size per part: ${formatUsd(minPositionSizeUsd)}` };
+  }
+
   if (isResultingPositionCheckBlocking && getIsMaxLeverageMarginReason(resultingPositionMarginState?.reason)) {
     return {
       buttonErrorMessage: t`Max leverage exceeded`,
@@ -532,6 +557,7 @@ export function getIncreaseError(p: {
   if (
     (isResultingPositionCheckBlocking && resultingPositionMarginState?.isLiquidatable) ||
     (!isLimit &&
+      isAggregateLeverageCheckNeeded &&
       getIsPositionLiquidatableAtPrice({ liqPrice: nextPositionValues?.nextLiqPrice, price: markPrice, isLong }))
   ) {
     return {
@@ -587,6 +613,7 @@ export function getDecreaseError(p: {
   markPrice: bigint | undefined;
   existingPosition: PositionInfo | undefined;
   nextPositionValues: NextPositionValues | undefined;
+  nextLeverage: bigint | undefined;
   isLong: boolean;
   isContractAccount: boolean;
   minCollateralUsd: bigint | undefined;
@@ -595,6 +622,9 @@ export function getDecreaseError(p: {
   minPositionSizeUsd: bigint | undefined;
   isTwap: boolean;
   numberOfParts: number;
+  remainingPositionMarginState: PositionMarginState | undefined;
+  shouldValidateLeftoverCollateral: boolean;
+  isInsufficientCollateralForCosts: boolean;
 }): ValidationResult {
   const {
     marketInfo,
@@ -607,12 +637,16 @@ export function getDecreaseError(p: {
     isContractAccount,
     receiveToken,
     nextPositionValues,
+    nextLeverage,
     isLong,
     minCollateralUsd,
     isNotEnoughReceiveTokenLiquidity,
     triggerThresholdType,
     isTwap,
     numberOfParts,
+    remainingPositionMarginState,
+    shouldValidateLeftoverCollateral,
+    isInsufficientCollateralForCosts,
   } = p;
 
   if (isContractAccount && isAddressZero(receiveToken?.address)) {
@@ -660,7 +694,7 @@ export function getDecreaseError(p: {
     positionFeeFactorForBalanceWasNotImproved: marketInfo?.positionFeeFactorForBalanceWasNotImproved,
   });
 
-  if (nextPositionValues?.nextLeverage !== undefined && nextPositionValues?.nextLeverage > maxAllowedLeverage) {
+  if (nextLeverage !== undefined && nextLeverage > maxAllowedLeverage) {
     return { buttonErrorMessage: t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x` };
   }
 
@@ -670,6 +704,7 @@ export function getDecreaseError(p: {
     }
 
     if (
+      shouldValidateLeftoverCollateral &&
       existingPosition.sizeInUsd - sizeDeltaUsd > DUST_USD &&
       (nextPositionValues?.nextCollateralUsd === undefined
         ? undefined
@@ -679,6 +714,18 @@ export function getDecreaseError(p: {
         buttonErrorMessage: t`Leftover margin below ${formatAmount(minCollateralUsd, USD_DECIMALS, 2)} USD`,
       };
     }
+
+    if (isInsufficientCollateralForCosts && existingPosition.sizeInUsd - sizeDeltaUsd > DUST_USD) {
+      return { buttonErrorMessage: t`Insufficient collateral to cover order costs` };
+    }
+  }
+
+  if (remainingPositionMarginState?.isLiquidatable) {
+    return {
+      buttonErrorMessage: t`Max leverage exceeded`,
+      buttonTooltipName: ValidationButtonTooltipName.remainingPositionMaxLeverage,
+      buttonTooltipMessage: t`The remaining position would exceed the maximum allowed leverage. Close a larger part, close the position fully, or add margin first.`,
+    };
   }
 
   if (isNotEnoughReceiveTokenLiquidity) {
@@ -759,7 +806,7 @@ export function getEditCollateralError(p: {
   const minCollateralFactor = marketInfo?.minCollateralFactor;
 
   if (!isDeposit && maxWithdrawAmount === 0n) {
-    return { buttonErrorMessage: t`Withdrawal not available` };
+    return { buttonErrorMessage: t`Withdrawal unavailable` };
   }
 
   const amountError = getCollateralDeltaAmountError({
@@ -773,6 +820,13 @@ export function getEditCollateralError(p: {
 
   if (collateralDeltaAmount === undefined || collateralDeltaUsd === undefined || amountError.buttonErrorMessage) {
     return amountError;
+  }
+
+  if (!isDeposit && maxWithdrawAmount !== undefined && collateralDeltaAmount > maxWithdrawAmount) {
+    return {
+      buttonErrorMessage: t`Max leverage exceeded`,
+      buttonTooltipName: ValidationButtonTooltipName.maxLeverage,
+    };
   }
 
   if (nextLiqPrice !== undefined && position?.markPrice !== undefined) {
@@ -802,23 +856,6 @@ export function getEditCollateralError(p: {
 
   if (nextLeverage !== undefined && nextLeverage > maxAllowedLeverage) {
     return { buttonErrorMessage: t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x` };
-  }
-
-  if (position && minCollateralFactor !== undefined && !isDeposit) {
-    const isPositionCollateralSufficient = willPositionCollateralBeSufficientForPosition(
-      position,
-      collateralDeltaAmount,
-      0n,
-      minCollateralFactor,
-      0n
-    );
-
-    if (!isPositionCollateralSufficient) {
-      return {
-        buttonErrorMessage: t`Max leverage exceeded`,
-        buttonTooltipName: ValidationButtonTooltipName.maxLeverage,
-      };
-    }
   }
 
   return {};
@@ -957,13 +994,14 @@ export function getGmSwapError(p: {
   isDeposit: boolean;
   marketInfo: MarketInfo | undefined;
   marketToken: TokenData | undefined;
-  longToken: TokenData | undefined;
-  shortToken: TokenData | undefined;
+  payLongToken: TokenData | undefined;
+  payShortToken: TokenData | undefined;
   glvToken: TokenData | undefined;
   glvTokenAmount: bigint | undefined;
   glvTokenUsd: bigint | undefined;
   longTokenAmount: bigint | undefined;
   shortTokenAmount: bigint | undefined;
+  initialShortTokenAmount: bigint | undefined;
   longTokenUsd: bigint | undefined;
   shortTokenUsd: bigint | undefined;
   marketTokenAmount: bigint | undefined;
@@ -979,17 +1017,19 @@ export function getGmSwapError(p: {
   isPair: boolean;
   chainId: ContractsChainId;
   srcChainId?: SourceChainId | undefined;
+  directDepositAccess?: DirectDepositAccess;
 }): ValidationResult {
   const {
     isDeposit,
     marketInfo,
     marketToken,
-    longToken,
-    shortToken,
+    payLongToken,
+    payShortToken,
     glvToken,
     glvTokenAmount,
     longTokenAmount,
     shortTokenAmount,
+    initialShortTokenAmount,
     longTokenUsd,
     shortTokenUsd,
     marketTokenAmount,
@@ -1005,6 +1045,7 @@ export function getGmSwapError(p: {
     isPair,
     chainId,
     srcChainId,
+    directDepositAccess,
   } = p;
 
   if (!marketInfo || !marketToken) {
@@ -1013,6 +1054,14 @@ export function getGmSwapError(p: {
 
   if (isDeposit && isDepositDisabledMarket(chainId, marketInfo.marketTokenAddress)) {
     return { buttonErrorMessage: t`Buying GM unavailable` };
+  }
+
+  if (isDeposit && directDepositAccess === "loading") {
+    return { buttonErrorMessage: t`Loading...` };
+  }
+
+  if (isDeposit && directDepositAccess === "denied") {
+    return { buttonErrorMessage: t`Whitelist only` };
   }
 
   const glvTooltipMessage = glvInfo
@@ -1047,6 +1096,16 @@ export function getGmSwapError(p: {
 
     const totalCollateralUsd = (longTokenUsd ?? 0n) + (shortTokenUsd ?? 0n);
 
+    let adjustedLongTokenAmount = longTokenAmount;
+    let adjustedShortTokenAmount = shortTokenAmount;
+
+    if (marketInfo.isSameCollaterals) {
+      const combinedAmount = (longTokenAmount ?? 0n) + (shortTokenAmount ?? 0n);
+
+      adjustedLongTokenAmount = combinedAmount / 2n;
+      adjustedShortTokenAmount = combinedAmount - adjustedLongTokenAmount;
+    }
+
     if (
       (fees?.totalFees?.deltaUsd === undefined ? undefined : fees?.totalFees?.deltaUsd < 0) &&
       bigMath.abs(fees?.totalFees?.deltaUsd ?? 0n) > totalCollateralUsd
@@ -1065,31 +1124,35 @@ export function getGmSwapError(p: {
       }
 
       const mintableInfo = getMintableMarketTokens(marketInfo, marketToken);
-      const maxLongExceeded = longTokenAmount !== undefined && longTokenAmount > mintableInfo.longDepositCapacityAmount;
+      const maxLongExceeded =
+        adjustedLongTokenAmount !== undefined && adjustedLongTokenAmount > mintableInfo.longDepositCapacityAmount;
       const maxShortExceeded =
-        shortTokenAmount !== undefined && shortTokenAmount > mintableInfo.shortDepositCapacityAmount;
+        adjustedShortTokenAmount !== undefined && adjustedShortTokenAmount > mintableInfo.shortDepositCapacityAmount;
 
       if (maxLongExceeded) {
         return {
-          buttonErrorMessage: t`Max ${longToken?.symbol} amount exceeded`,
+          buttonErrorMessage: t`Max ${marketInfo.longToken.symbol} amount exceeded`,
           buttonTooltipMessage: glvTooltipMessage,
         };
       }
 
       if (maxShortExceeded) {
         return {
-          buttonErrorMessage: t`Max ${shortToken?.symbol} amount exceeded`,
+          buttonErrorMessage: t`Max ${marketInfo.shortToken.symbol} amount exceeded`,
           buttonTooltipMessage: glvTooltipMessage,
         };
       }
     } else {
       const mintableInfo = getMintableMarketTokens(marketInfo, marketToken);
-      if (longTokenAmount !== undefined && longTokenAmount > mintableInfo.longDepositCapacityAmount) {
-        return { buttonErrorMessage: t`Max ${longToken?.symbol} amount exceeded` };
+      if (adjustedLongTokenAmount !== undefined && adjustedLongTokenAmount > mintableInfo.longDepositCapacityAmount) {
+        return { buttonErrorMessage: t`Max ${marketInfo.longToken.symbol} amount exceeded` };
       }
 
-      if (shortTokenAmount !== undefined && shortTokenAmount > mintableInfo.shortDepositCapacityAmount) {
-        return { buttonErrorMessage: t`Max ${shortToken?.symbol} amount exceeded` };
+      if (
+        adjustedShortTokenAmount !== undefined &&
+        adjustedShortTokenAmount > mintableInfo.shortDepositCapacityAmount
+      ) {
+        return { buttonErrorMessage: t`Max ${marketInfo.shortToken.symbol} amount exceeded` };
       }
     }
   } else if (
@@ -1114,20 +1177,21 @@ export function getGmSwapError(p: {
   const marketTokenBalance = getTokenBalanceByPaySource(marketToken, paySource, chainId, srcChainId);
 
   if (isDeposit) {
-    const longTokenBalance = getTokenBalanceByPaySource(longToken, paySource, chainId, srcChainId);
-    const shortTokenBalance = getTokenBalanceByPaySource(shortToken, paySource, chainId, srcChainId);
+    const payLongTokenBalance = getTokenBalanceByPaySource(payLongToken, paySource, chainId, srcChainId);
+    const payShortTokenBalance = getTokenBalanceByPaySource(payShortToken, paySource, chainId, srcChainId);
+    const payShortTokenAmount = initialShortTokenAmount ?? shortTokenAmount ?? 0n;
 
-    if (marketInfo.isSameCollaterals) {
-      if ((longTokenAmount ?? 0n) + (shortTokenAmount ?? 0n) > longTokenBalance) {
-        return { buttonErrorMessage: t`Insufficient ${longToken?.symbol} balance` };
+    if (marketInfo.isSameCollaterals && payLongToken?.address === payShortToken?.address) {
+      if ((longTokenAmount ?? 0n) + (shortTokenAmount ?? 0n) > payLongTokenBalance) {
+        return { buttonErrorMessage: t`Insufficient ${payLongToken?.symbol} balance` };
       }
     } else {
-      if ((longTokenAmount ?? 0n) > longTokenBalance) {
-        return { buttonErrorMessage: t`Insufficient ${longToken?.symbol} balance` };
+      if ((longTokenAmount ?? 0n) > payLongTokenBalance) {
+        return { buttonErrorMessage: t`Insufficient ${payLongToken?.symbol} balance` };
       }
 
-      if ((shortTokenAmount ?? 0n) > shortTokenBalance) {
-        return { buttonErrorMessage: t`Insufficient ${shortToken?.symbol} balance` };
+      if (payShortTokenAmount > payShortTokenBalance) {
+        return { buttonErrorMessage: t`Insufficient ${payShortToken?.symbol} balance` };
       }
     }
 
@@ -1188,11 +1252,11 @@ export function getGmSwapError(p: {
     }
 
     if ((longTokenUsd ?? 0n) > (longTokenLiquidityUsd ?? 0n)) {
-      return { buttonErrorMessage: t`Insufficient ${longToken?.symbol} liquidity` };
+      return { buttonErrorMessage: t`Insufficient ${marketInfo.longToken.symbol} liquidity` };
     }
 
     if ((shortTokenUsd ?? 0n) > (shortTokenLiquidityUsd ?? 0n)) {
-      return { buttonErrorMessage: t`Insufficient ${shortToken?.symbol} liquidity` };
+      return { buttonErrorMessage: t`Insufficient ${marketInfo.shortToken.symbol} liquidity` };
     }
   }
 
@@ -1212,6 +1276,7 @@ export function getGmShiftError({
   toTokenAmount,
   fees,
   priceImpactUsd,
+  toMarketDirectDepositAccess,
 }: {
   chainId: number;
   fromMarketInfo: MarketInfo | undefined;
@@ -1225,8 +1290,17 @@ export function getGmShiftError({
   toTokenAmount: bigint | undefined;
   fees: GmSwapFees | undefined;
   priceImpactUsd: bigint | undefined;
+  toMarketDirectDepositAccess?: DirectDepositAccess;
 }) {
   const isGlv = isGlvInfo(toMarketInfo);
+
+  if (toMarketDirectDepositAccess === "denied") {
+    return { buttonErrorMessage: t`Whitelist only` };
+  }
+
+  if (toMarketDirectDepositAccess === "loading") {
+    return { buttonErrorMessage: t`Loading...` };
+  }
 
   if (!fromMarketInfo || !fromToken || !toMarketInfo || !toToken) {
     return { buttonErrorMessage: t`Loading...` };
@@ -1452,10 +1526,17 @@ export function getApprovalGasError(p: {
   tokenToApprove: string | undefined;
   nativeToken: TokenData | undefined;
   gasPrice: bigint | undefined;
+  // a permit is signed rather than sent, so it needs no gas
+  isPermitApproval?: boolean;
 }): ValidationResult {
-  const { tokenToApprove, nativeToken, gasPrice } = p;
+  const { tokenToApprove, nativeToken, gasPrice, isPermitApproval = false } = p;
 
-  if (tokenToApprove === undefined || nativeToken?.walletBalance === undefined || gasPrice === undefined) {
+  if (
+    isPermitApproval ||
+    tokenToApprove === undefined ||
+    nativeToken?.walletBalance === undefined ||
+    gasPrice === undefined
+  ) {
     return {};
   }
 

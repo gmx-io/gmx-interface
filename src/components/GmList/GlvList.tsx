@@ -1,8 +1,11 @@
 import { Trans, t } from "@lingui/macro";
 import { useMemo } from "react";
 
+import { ARBITRUM } from "config/chains";
+import { ARBITRUM_USDG_GLV_ADDRESS } from "config/usdgPools";
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import {
+  selectChainId,
   selectGlvInfo,
   selectGlvInfoLoading,
   selectProgressiveDepositMarketTokensData,
@@ -37,6 +40,7 @@ export function GlvList({
   performanceLoading,
   performanceSnapshots,
 }: Props) {
+  const chainId = useSelector(selectChainId);
   const glvsInfo = useSelector(selectGlvInfo);
   const glvsLoading = useSelector(selectGlvInfoLoading);
   const progressiveMarketTokensData = useSelector(selectProgressiveDepositMarketTokensData);
@@ -53,8 +57,9 @@ export function GlvList({
       marketsInfoData: glvsInfo,
       marketTokensData: progressiveMarketTokensData,
       multichainMarketTokensBalances,
+      pinnedAddresses: chainId === ARBITRUM ? [ARBITRUM_USDG_GLV_ADDRESS] : [],
     });
-  }, [glvsInfo, progressiveMarketTokensData, multichainMarketTokensBalances]);
+  }, [chainId, glvsInfo, progressiveMarketTokensData, multichainMarketTokensBalances]);
 
   const rows =
     sortedGlvTokens.length > 0 &&

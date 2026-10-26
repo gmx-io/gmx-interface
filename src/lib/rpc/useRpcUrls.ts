@@ -1,13 +1,21 @@
+import uniq from "lodash/uniq";
 import { useEffect, useState } from "react";
 
-import { CONTRACTS_CHAIN_IDS, ContractsChainId, isContractsChain, SOURCE_CHAIN_IDS } from "config/chains";
+import {
+  CONTRACTS_CHAIN_IDS,
+  ContractsChainId,
+  isContractsChain,
+  isTestnetChain,
+  SOURCE_CHAIN_IDS,
+} from "config/chains";
+import { isDevelopment } from "config/env";
 import {
   getExpressRpcUrl,
   getRpcProviders,
   RPC_TRACKER_CONFIG_FOR_CONTRACTS_CHAINS,
   RPC_TRACKER_CONFIG_FOR_SOURCE_CHAINS,
 } from "config/rpc";
-import { getIsLargeAccount } from "domain/stats/isLargeAccount";
+import { getIsLargeAccountChain } from "domain/stats/isLargeAccount";
 import { addFallbackTrackerListener } from "lib/FallbackTracker/events";
 import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
 import { subscribeForRpcTrackerMetrics } from "lib/metrics/rpcTrackerMetrics";
@@ -36,7 +44,9 @@ class RpcTrackersRegistry {
     }
 
     const networkStatusObserver = NetworkStatusObserver.getInstance();
-    const chainIds = [...CONTRACTS_CHAIN_IDS, ...SOURCE_CHAIN_IDS];
+    const chainIds = uniq([...CONTRACTS_CHAIN_IDS, ...SOURCE_CHAIN_IDS]).filter(
+      (chainId) => isDevelopment() || !isTestnetChain(chainId)
+    );
 
     for (const chainId of chainIds) {
       const config = isContractsChain(chainId)
@@ -83,7 +93,7 @@ class RpcTrackersRegistry {
 
     // Check rpc providers existence to throw an error if no providers are configured for chainId
     const defaultRpcProviders = getRpcProviders(chainId, "default")?.map((p) => p.url);
-    const privateRpcProviders = getIsLargeAccount()
+    const privateRpcProviders = getIsLargeAccountChain(chainId)
       ? getRpcProviders(chainId, "largeAccount")?.map((p) => p.url)
       : getRpcProviders(chainId, "fallback")?.map((p) => p.url);
 

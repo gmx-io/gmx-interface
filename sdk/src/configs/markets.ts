@@ -6,7 +6,16 @@ import { zeroAddress } from "viem";
 
 import type { ERC20Address, NativeTokenSupportedAddress, Token } from "utils/tokens/types";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, MEGAETH, ContractsChainId } from "./chains";
+import {
+  ARBITRUM,
+  ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  MEGAETH,
+  ContractsChainId,
+  NetworkId,
+  isSolanaNetwork,
+} from "./chains";
 import { convertTokenAddress, getToken, getTokenBySymbol } from "./tokens";
 
 export const SWAP_GRAPH_MAX_MARKETS_PER_TOKEN = 5;
@@ -877,6 +886,62 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
       longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // BTC/USD [USDG-USDG]
+    "0xe57B97F2f83F39E74Ec83f3e039FD370884784fF": {
+      marketTokenAddress: "0xe57B97F2f83F39E74Ec83f3e039FD370884784fF",
+      indexTokenAddress: "0x47904963fc8b2340414262125aF798B9655E58Cd",
+      longTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+      shortTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+    },
+    // ETH/USD [USDG-USDG]
+    "0x6f095F58e9Eb2c583A1828202712c03962491d7e": {
+      marketTokenAddress: "0x6f095F58e9Eb2c583A1828202712c03962491d7e",
+      indexTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      longTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+      shortTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+    },
+    // SOL/USD [USDG-USDG]
+    "0xfF63B0f938772e2b4fFD1A1b340Afe49616c95f2": {
+      marketTokenAddress: "0xfF63B0f938772e2b4fFD1A1b340Afe49616c95f2",
+      indexTokenAddress: "0x2bcC6D6CdBbDC0a4071e48bb3B969b06B3330c07",
+      longTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+      shortTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+    },
+    // SWAP-ONLY [USDC-USDG]
+    "0x408E8e83d4b8Ac4BDefFDF896B49268A5FE5Ef44": {
+      marketTokenAddress: "0x408E8e83d4b8Ac4BDefFDF896B49268A5FE5Ef44",
+      indexTokenAddress: zeroAddress,
+      longTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      shortTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+    },
+    // NEAR/USD [USDG-USDG]
+    "0x54bc430A788DFFD4ae35e751E10899489f5a953f": {
+      marketTokenAddress: "0x54bc430A788DFFD4ae35e751E10899489f5a953f",
+      indexTokenAddress: "0x1FF7F3EFBb9481Cbd7db4F932cBCD4467144237C",
+      longTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+      shortTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+    },
+    // XRP/USD [USDG-USDG]
+    "0xc9ED746D613eEfC0F196658f6030e90482593004": {
+      marketTokenAddress: "0xc9ED746D613eEfC0F196658f6030e90482593004",
+      indexTokenAddress: "0xc14e065b0067dE91534e032868f5Ac6ecf2c6868",
+      longTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+      shortTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+    },
+    // ZEC/USD [USDG-USDG]
+    "0x2CeEafcA180B07C9d1d2f1086f8f59AAFd282832": {
+      marketTokenAddress: "0x2CeEafcA180B07C9d1d2f1086f8f59AAFd282832",
+      indexTokenAddress: "0x6eAbbaA3278556Dc5b19c034dc26c0eaB60d65B5",
+      longTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+      shortTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+    },
+    // HYPE/USD [USDG-USDG]
+    "0x162C091263fBb3dfAf1D55DCC979533EB341DA5f": {
+      marketTokenAddress: "0x162C091263fBb3dfAf1D55DCC979533EB341DA5f",
+      indexTokenAddress: "0xfDFA0A749dA3bCcee20aE0B4AD50E39B26F58f7C",
+      longTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+      shortTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
@@ -1252,18 +1317,25 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
   },
 };
 
+function getMarketsConfigMap(chainId: number): MarketsConfigMap | undefined {
+  // Solana markets stay in the app (src/config/gmsol): SDK configs ship in the EVM main bundle
+  return isSolanaNetwork(chainId) ? {} : MARKETS[chainId as ContractsChainId];
+}
+
 export type MarketLabel = `${string}/USD [${string}-${string}]`;
 
-export function getMarketsByChainId(chainId: ContractsChainId): Record<string, MarketConfig> {
-  if (!MARKETS[chainId]) {
+export function getMarketsByChainId(chainId: NetworkId): Record<string, MarketConfig> {
+  const markets = getMarketsConfigMap(chainId);
+
+  if (!markets) {
     throw new Error(`Markets not found for chainId ${chainId}`);
   }
 
-  return MARKETS[chainId];
+  return markets;
 }
 
-export function getMarketByLabel(chainId: ContractsChainId, label: MarketLabel): MarketConfig {
-  const marketsByAddress = MARKETS[chainId];
+export function getMarketByLabel(chainId: NetworkId, label: MarketLabel): MarketConfig {
+  const marketsByAddress = getMarketsConfigMap(chainId);
 
   if (!marketsByAddress) {
     throw new Error(`Markets not found for chainId ${chainId}`);
@@ -1316,7 +1388,7 @@ export function getMarketByLabel(chainId: ContractsChainId, label: MarketLabel):
   return market;
 }
 
-export const fixTokenSymbolFromMarketLabel = (chainId: ContractsChainId, symbol: string) => {
+export const fixTokenSymbolFromMarketLabel = (chainId: NetworkId, symbol: string) => {
   if (chainId === ARBITRUM && symbol === "WBTC") {
     return "BTC";
   }
@@ -1327,7 +1399,7 @@ export const fixTokenSymbolFromMarketLabel = (chainId: ContractsChainId, symbol:
 };
 
 export function isMarketTokenAddress(chainId: number, marketTokenAddress: string): boolean {
-  return Boolean(MARKETS[chainId]?.[marketTokenAddress]);
+  return Boolean(getMarketsConfigMap(chainId)?.[marketTokenAddress]);
 }
 
 export function getTokenAddressByMarket<T extends "long" | "short" | "index">(
@@ -1335,7 +1407,7 @@ export function getTokenAddressByMarket<T extends "long" | "short" | "index">(
   marketTokenAddress: string,
   tokenType: T
 ): T extends "index" ? NativeTokenSupportedAddress | ERC20Address : ERC20Address {
-  const market = MARKETS[chainId as ContractsChainId][marketTokenAddress];
+  const market = getMarketsConfigMap(chainId)![marketTokenAddress];
 
   if (tokenType === "index") {
     return convertTokenAddress(chainId, market.indexTokenAddress, "native")! as T extends "index"
@@ -1366,11 +1438,11 @@ export function getTokenSymbolByMarket(
 }
 
 export function getIsSpotOnlyMarket(chainId: number, marketTokenAddress: string): boolean {
-  return MARKETS[chainId as ContractsChainId][marketTokenAddress].indexTokenAddress === zeroAddress;
+  return getMarketsConfigMap(chainId)![marketTokenAddress].indexTokenAddress === zeroAddress;
 }
 
 export function getMarketIsSameCollaterals(chainId: number, marketTokenAddress: string): boolean {
-  const market = MARKETS[chainId][marketTokenAddress];
+  const market = getMarketsConfigMap(chainId)![marketTokenAddress];
   if (!market) {
     return false;
   }

@@ -9,7 +9,6 @@ import {
   selectPositionEditorDepositMode,
   selectPositionEditorEditingPositionKey,
   selectPositionEditorIsCollateralTokenFromGmxAccount,
-  selectPositionEditorMinCollateralFactor,
   selectPositionEditorOpenAtPrice,
   selectPositionEditorOpenDepositNow,
   selectPositionEditorOperation,
@@ -38,8 +37,6 @@ export const usePositionEditorPositionState = () => {
 };
 
 export const usePositionEditorPosition = () => useSelector(selectPositionEditorPosition);
-
-export const usePositionEditorMinCollateralFactor = () => useSelector(selectPositionEditorMinCollateralFactor);
 
 export const usePositionEditorSelectedCollateralAddress = (): [Address | undefined, (address: Address) => void] => {
   const selectedCollateralAddress = useSelector(selectPositionEditorSelectedCollateralAddress);

@@ -26,6 +26,7 @@ export function useFilterSortPools({
   marketsTokensApyData,
   marketsTokensIncentiveAprData,
   marketsTokensLidoAprData,
+  marketsTokensLaunchBoostAprData,
   searchText,
   topLevelTab,
   subCategoryTab,
@@ -33,6 +34,7 @@ export function useFilterSortPools({
   favoriteTokens,
   performance,
   multichainMarketTokensBalances,
+  pinnedAddresses,
 }: {
   performance: PerformanceData | undefined;
   marketsInfo: MarketsInfoData | undefined;
@@ -42,21 +44,26 @@ export function useFilterSortPools({
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
+  marketsTokensLaunchBoostAprData: MarketTokensAPRData | undefined;
   searchText: string;
   topLevelTab: TopLevelTab;
   subCategoryTab: SubCategoryTab;
   recentlyListedAddresses?: Set<string>;
   favoriteTokens: string[];
   multichainMarketTokensBalances: MultichainMarketTokensBalances | undefined;
+  pinnedAddresses: string[];
 }) {
   const sortedTokens = useMemo(() => {
     if (!marketsInfo || !marketTokensData) {
       return [];
     }
 
-    if (searchText.trim()) {
-      return searchBy(
-        values(marketTokensData),
+    const trimmedSearchText = searchText.trim();
+
+    if (trimmedSearchText) {
+      const tokens = values(marketTokensData);
+      const matchingTokens = searchBy(
+        tokens,
         [
           (marketToken) => {
             const market = getByKey(marketsInfo, marketToken?.address);
@@ -82,12 +89,39 @@ export function useFilterSortPools({
             return (market.indexToken.searchAliases ?? []).join(" ");
           },
         ],
-        searchText
+        trimmedSearchText
       );
+
+      const hasMatchingMarket = matchingTokens.some((marketToken) => {
+        const market = getByKey(marketsInfo, marketToken?.address);
+        return market && !market.isSpotOnly && !market.isDisabled;
+      });
+
+      if (hasMatchingMarket) {
+        return matchingTokens;
+      }
+
+      const collateralMatches = searchBy(
+        tokens,
+        [
+          (marketToken) => {
+            const market = getByKey(marketsInfo, marketToken?.address);
+            return market ? getMarketPoolName(market) : "";
+          },
+        ],
+        trimmedSearchText
+      );
+
+      return Array.from(new Set([...matchingTokens, ...collateralMatches]));
     }
 
     if (orderBy === "unspecified" || direction === "unspecified") {
-      return sortGmTokensDefault({ marketsInfoData: marketsInfo, marketTokensData, multichainMarketTokensBalances });
+      return sortGmTokensDefault({
+        marketsInfoData: marketsInfo,
+        marketTokensData,
+        multichainMarketTokensBalances,
+        pinnedAddresses,
+      });
     }
 
     return sortGmTokensByField({
@@ -98,6 +132,7 @@ export function useFilterSortPools({
       marketsTokensApyData,
       marketsTokensIncentiveAprData,
       marketsTokensLidoAprData,
+      marketsTokensLaunchBoostAprData,
       multichainMarketTokensBalances,
       performance,
     });
@@ -110,8 +145,10 @@ export function useFilterSortPools({
     marketsTokensApyData,
     marketsTokensIncentiveAprData,
     marketsTokensLidoAprData,
+    marketsTokensLaunchBoostAprData,
     multichainMarketTokensBalances,
     performance,
+    pinnedAddresses,
   ]);
 
   const filteredTokens = useMemo(() => {

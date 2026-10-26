@@ -11,7 +11,6 @@ import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   useClosingPositionKeyState,
-  usePositionsConstants,
   useTokensData,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -28,14 +27,13 @@ import { makeSelectOrdersByPositionKey } from "context/SyntheticsStateContext/se
 import {
   selectPositionSellerAvailableReceiveTokens,
   selectPositionSellerDecreaseAmounts,
+  selectPositionSellerDecreaseError,
   selectPositionSellerFees,
-  selectPositionSellerMarkPrice,
-  selectPositionSellerMaxLiquidityPath,
+  selectPositionSellerIsNotEnoughReceiveTokenLiquidity,
   selectPositionSellerNextPositionValuesForDecrease,
   selectPositionSellerPosition,
   selectPositionSellerReceiveToken,
   selectPositionSellerSetDefaultReceiveToken,
-  selectPositionSellerShouldSwap,
   selectPositionSellerSplitReceiveDecreaseAmounts,
   selectPositionSellerSwapAmounts,
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
@@ -46,6 +44,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useInitCollateralCloseDestination } from "domain/synthetics/express/useInitCollateralCloseDestination";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
+  getCanUseTokenPermits,
   getExpressParamsForSubmit,
   getNetworkFeeGasPaymentParams,
   reportMultichainExpressSubmitError,
@@ -67,12 +66,7 @@ import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import { ORDER_OPTION_TO_TRADE_MODE, OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
-import {
-  getCommonError,
-  getDecreaseError,
-  getExpressError,
-  takeValidationResult,
-} from "domain/synthetics/trade/utils/validation";
+import { getCommonError, getExpressError, takeValidationResult } from "domain/synthetics/trade/utils/validation";
 import { getIsHighSwapProfitFee } from "domain/synthetics/trade/utils/warnings";
 import { Token } from "domain/tokens";
 import { getApproveButtonText, getGasPaymentTokenApprovalTooltip } from "domain/tokens/gasPaymentTokenApproval";
@@ -83,6 +77,7 @@ import { useDebouncedInputValue } from "lib/debounce/useDebouncedInputValue";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
 import { initDecreaseOrderMetricData, sendOrderSubmittedMetric, sendTxnValidationErrorMetric } from "lib/metrics/utils";
 import { expandDecimals, formatDeltaUsdParts, formatPercentage, formatTokenAmount, parseValue } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
@@ -162,7 +157,6 @@ export function PositionSeller() {
   const { signer, account } = useWallet();
   const { provider } = useJsonRpcProvider(chainId);
   const { openConnectModal } = useConnectModal();
-  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
@@ -279,8 +273,6 @@ export function PositionSeller() {
     }
   }, [isVisible, resetPositionSeller, closeSizeReset]);
 
-  const markPrice = useSelector(selectPositionSellerMarkPrice);
-  const { maxLiquidity: maxSwapLiquidity } = useSelector(selectPositionSellerMaxLiquidityPath);
   const decreaseAmounts = useSelector(selectPositionSellerDecreaseAmounts);
   const positionOrders = useSelector(makeSelectOrdersByPositionKey(position?.key));
 
@@ -299,7 +291,6 @@ export function PositionSeller() {
     isLong: position?.isLong,
   });
 
-  const shouldSwap = useSelector(selectPositionSellerShouldSwap);
   const swapAmounts = useSelector(selectPositionSellerSwapAmounts);
 
   const receiveUsd = swapAmounts?.usdOut || decreaseAmounts?.receiveUsd;
@@ -325,6 +316,7 @@ export function PositionSeller() {
   }, [swapAmounts, decreaseAmounts]);
 
   const nextPositionValues = useSelector(selectPositionSellerNextPositionValuesForDecrease);
+  const decreaseError = useSelector(selectPositionSellerDecreaseError);
 
   const { fees, executionFee } = useSelector(selectPositionSellerFees);
 
@@ -343,7 +335,7 @@ export function PositionSeller() {
     payUsd: closeSizeUsd,
   });
 
-  const isNotEnoughReceiveTokenLiquidity = shouldSwap ? maxSwapLiquidity < (receiveUsd ?? 0n) : false;
+  const isNotEnoughReceiveTokenLiquidity = useSelector(selectPositionSellerIsNotEnoughReceiveTokenLiquidity);
   const setIsDismissedLatestRef = useLatest(priceImpactWarningState.setIsDismissed);
 
   const slippageInputId = useId();
@@ -411,7 +403,7 @@ export function PositionSeller() {
       marketAddress: position.marketAddress,
       indexTokenAddress: position.indexToken.address,
       collateralTokenAddress: position.collateralTokenAddress,
-      collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount ?? 0n,
+      collateralDeltaAmount: isTwap && decreaseAmounts.isFullClose ? 0n : decreaseAmounts.collateralDeltaAmount ?? 0n,
       receiveTokenAddress: receiveToken.address,
       swapPath,
       sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
@@ -445,6 +437,7 @@ export function PositionSeller() {
     decreaseAmounts?.acceptablePrice,
     decreaseAmounts?.collateralDeltaAmount,
     decreaseAmounts?.decreaseSwapType,
+    decreaseAmounts?.isFullClose,
     decreaseAmounts?.sizeDeltaInTokens,
     decreaseAmounts?.sizeDeltaUsd,
     duration,
@@ -499,8 +492,14 @@ export function PositionSeller() {
     chainId,
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokens: approvalTokens,
-    allowPermit: Boolean(expressParams),
+    allowPermit: getCanUseTokenPermits(expressParams),
     skip: srcChainId !== undefined || effectiveIsReceiveToGmxAccount,
+    metric: {
+      flow: "closePosition",
+      isExpress: Boolean(expressParams),
+      isExpress1CT: Boolean(expressParams?.subaccount),
+      gasPaymentTokenAddress: expressParams?.gasPaymentParams?.gasPaymentTokenAddress,
+    },
   });
 
   const isAllowanceLoaded = Boolean(batchParams) && isAllowanceLoadedRaw;
@@ -519,26 +518,6 @@ export function PositionSeller() {
     const expressError = getExpressError({
       expressParams,
       tokensData,
-    });
-
-    const decreaseError = getDecreaseError({
-      marketInfo: position.marketInfo,
-      inputSizeUsd: closeSizeUsd,
-      sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
-      receiveToken,
-      isTrigger: false,
-      triggerPrice: undefined,
-      triggerThresholdType: undefined,
-      existingPosition: position,
-      markPrice,
-      nextPositionValues,
-      isLong: position.isLong,
-      isContractAccount: false,
-      minCollateralUsd,
-      isNotEnoughReceiveTokenLiquidity,
-      minPositionSizeUsd,
-      isTwap,
-      numberOfParts,
     });
 
     const validationResult = takeValidationResult(
@@ -564,21 +543,12 @@ export function PositionSeller() {
   }, [
     account,
     chainId,
-    closeSizeUsd,
-    decreaseAmounts?.sizeDeltaUsd,
+    decreaseError,
     expressParams,
     hasOutdatedUi,
-    isNotEnoughReceiveTokenLiquidity,
     isSubmitting,
-    markPrice,
-    minCollateralUsd,
-    nextPositionValues,
     position,
-    receiveToken,
     tokensData,
-    minPositionSizeUsd,
-    isTwap,
-    numberOfParts,
     multipleWalletExtensionsChainError,
   ]);
 
@@ -708,13 +678,14 @@ export function PositionSeller() {
     });
 
     if (expressParams?.subaccount) {
+      void txnPromise.catch(reportHandledRejection("positionSeller.submit"));
       onClose();
       setIsSubmitting(false);
       setDefaultReceiveToken(receiveToken.address);
       return;
     }
 
-    txnPromise.then(onClose).finally(() => {
+    txnPromise.then(onClose, reportHandledRejection("positionSeller.submit")).finally(() => {
       setIsSubmitting(false);
       setDefaultReceiveToken(receiveToken.address);
     });

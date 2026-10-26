@@ -6,12 +6,13 @@ import { UI_MAX_LEVERAGE_BY_MARKET, type MarketConfig as ConfigMarketConfig } fr
 import { convertTokenAddress, getTokenVisualMultiplier, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import type { DayPriceCandle } from "utils/24h/types";
 import { bigMath } from "utils/bigmath";
-import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "utils/fees";
+import { applySwapImpactWithCap, getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "utils/fees";
 import { applyFactor, expandDecimals, PRECISION } from "utils/numbers";
 import { getByKey } from "utils/objects";
 import { periodToSeconds } from "utils/time";
 import { convertToContractTokenPrices, convertToUsd, getIsEquivalentTokens, getMidPrice } from "utils/tokens";
 import type { Token, TokenPrices, TokensData } from "utils/tokens/types";
+import type { SwapStats } from "utils/trade/types";
 
 import type {
   ClaimableFundingData,
@@ -486,6 +487,61 @@ export function getMarketInfoWithOpenInterestDelta({
       next.virtualInventoryForPositions =
         marketInfo.virtualInventoryForPositions + (isLong ? -sizeDeltaUsd : sizeDeltaUsd);
     }
+  }
+
+  return next;
+}
+
+/** The market a swap step leaves: the pools and the swap impact pools move as in `SwapUtils._swap`. */
+export function getMarketInfoWithSwapDelta(marketInfo: MarketInfo, swapStep: SwapStats): MarketInfo {
+  const isLongTokenIn = getTokenPoolType(marketInfo, swapStep.tokenInAddress) === "long";
+  const tokenIn = isLongTokenIn ? marketInfo.longToken : marketInfo.shortToken;
+  const tokenOut = isLongTokenIn ? marketInfo.shortToken : marketInfo.longToken;
+
+  let poolAmountIn = swapStep.amountInAfterFees;
+  let poolAmountOut = swapStep.amountOut;
+  let impactPoolDeltaIn = 0n;
+  let impactPoolDeltaOut = 0n;
+
+  if (swapStep.priceImpactDeltaUsd > 0n) {
+    const { impactDeltaAmount, cappedDiffUsd } = applySwapImpactWithCap(
+      marketInfo,
+      tokenOut,
+      swapStep.priceImpactDeltaUsd
+    );
+    poolAmountOut -= impactDeltaAmount;
+    impactPoolDeltaOut = -impactDeltaAmount;
+
+    if (cappedDiffUsd > 0n) {
+      const tokenInImpactAmount = applySwapImpactWithCap(marketInfo, tokenIn, cappedDiffUsd).impactDeltaAmount;
+      poolAmountIn += tokenInImpactAmount;
+      impactPoolDeltaIn = -tokenInImpactAmount;
+    }
+  } else if (swapStep.priceImpactDeltaUsd < 0n) {
+    const { impactDeltaAmount } = applySwapImpactWithCap(marketInfo, tokenIn, swapStep.priceImpactDeltaUsd);
+    poolAmountIn += impactDeltaAmount;
+    impactPoolDeltaIn = -impactDeltaAmount;
+  }
+
+  const [longDelta, shortDelta] = isLongTokenIn ? [poolAmountIn, -poolAmountOut] : [-poolAmountOut, poolAmountIn];
+  const [longImpactDelta, shortImpactDelta] = isLongTokenIn
+    ? [impactPoolDeltaIn, impactPoolDeltaOut]
+    : [impactPoolDeltaOut, impactPoolDeltaIn];
+
+  const next: MarketInfo = {
+    ...marketInfo,
+    longPoolAmount: marketInfo.longPoolAmount + longDelta,
+    shortPoolAmount: marketInfo.shortPoolAmount + shortDelta,
+    swapImpactPoolAmountLong: marketInfo.swapImpactPoolAmountLong + longImpactDelta,
+    swapImpactPoolAmountShort: marketInfo.swapImpactPoolAmountShort + shortImpactDelta,
+  };
+
+  if (marketInfo.virtualPoolAmountForLongToken > 0n) {
+    next.virtualPoolAmountForLongToken = marketInfo.virtualPoolAmountForLongToken + longDelta;
+  }
+
+  if (marketInfo.virtualPoolAmountForShortToken > 0n) {
+    next.virtualPoolAmountForShortToken = marketInfo.virtualPoolAmountForShortToken + shortDelta;
   }
 
   return next;

@@ -115,7 +115,9 @@ import {
   WithdrawalCreatedEventData,
   WithdrawalStatuses,
 } from "./types";
+import { useExecutedTokenPermits } from "./useExecutedTokenPermits";
 import { useMultichainEvents } from "./useMultichainEvents";
+import { useTransitRouteEvents } from "./useTransitRouteEvents";
 import { extractRelayTaskError, getPendingOrderKey } from "./utils";
 
 const SyntheticsEventsContext = createContext({});
@@ -131,7 +133,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { hasV2LostFocus, hasPageLostFocus } = useHasLostFocus();
   const { executionFeeBufferBps, setIsSettingsVisible } = useSettings();
 
-  const { resetTokenPermits } = useTokenPermitsContext();
+  const { removeTokenPermits } = useTokenPermitsContext();
   const { refreshSubaccountData, invalidateSubaccountApproval } = useSubaccountContext();
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
@@ -197,10 +199,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       refreshSubaccountData();
 
       if (pendingExpressTxn?.tokenPermits?.length) {
-        resetTokenPermits();
+        removeTokenPermits(pendingExpressTxn.tokenPermits);
       }
     },
-    [refreshSubaccountData, resetTokenPermits]
+    [refreshSubaccountData, removeTokenPermits]
   );
 
   const updateNativeTokenBalance = useCallback(() => {
@@ -1093,7 +1095,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             taskId,
             ...(outcome ?? {
               statusCode: StatusCode.Rejected,
-              message: t`The relay did not report an outcome for this operation.`,
+              message: t`The relay did not report an outcome for this operation`,
             }),
           })
         );
@@ -1103,6 +1105,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       })();
     }
   }, [pendingExpressTxnParams, latestRelayTaskStatuses, chainId]);
+
+  useExecutedTokenPermits({ chainId, pendingExpressTxns: pendingExpressTxnParams, relayTaskStatuses });
 
   useEffect(
     function notifyPendingExpressTxn() {
@@ -1295,6 +1299,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const multichainEventsState = useMultichainEvents({
     hasPageLostFocus,
   });
+
+  const transitRouteEventsState = useTransitRouteEvents(chainId, { glvAndGmMarketsData, withdrawalStatuses });
 
   const [multichainTransferProgress, setMultichainTransferProgress] = useState<
     MultichainTransferProgress<string> | undefined
@@ -1505,6 +1511,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       },
 
       ...multichainEventsState,
+      ...transitRouteEventsState,
     };
   }, [
     orderStatuses,
@@ -1520,6 +1527,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     pendingExpressTxnParams,
     relayTaskStatuses,
     multichainEventsState,
+    transitRouteEventsState,
     marketsInfoData,
     tokensData,
     glvAndGmMarketsData,

@@ -4,6 +4,7 @@ import { useAccount } from "wagmi";
 
 import { getIndexerUrl } from "config/indexers";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { isMultichainFundingItemLoading } from "domain/multichain/isMultichainFundingItemLoading";
 import { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { useChainId } from "lib/chains";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
@@ -88,6 +89,10 @@ export function isStepGreater(
   return STEP_ORDER[step] - STEP_ORDER[than] > 0;
 }
 
+function getFundingHistoryKey(chainId: number, account: string | undefined) {
+  return account ? [chainId, "gmx-account-funding-history", account] : null;
+}
+
 export function useGmxAccountFundingHistory(opts?: { enabled?: boolean }): {
   fundingHistory: MultichainFundingHistoryItem[] | undefined;
   isLoading: boolean;
@@ -97,7 +102,7 @@ export function useGmxAccountFundingHistory(opts?: { enabled?: boolean }): {
   const { pendingMultichainFunding, updatePendingMultichainFunding } = useSyntheticsEvents();
 
   const { data, isLoading } = useSWR<MultichainFundingHistoryItem[]>(
-    account && opts?.enabled !== false ? [chainId, "gmx-account-funding-history", account] : null,
+    opts?.enabled !== false ? getFundingHistoryKey(chainId, account) : null,
     {
       fetcher: () => fetchGmxAccountFundingHistory(chainId, { account }),
       refreshInterval: FREQUENT_UPDATE_INTERVAL,
@@ -176,29 +181,43 @@ function useGmxAccountPendingFundingHistoryItem(guid: string | undefined): Multi
 export function useGmxAccountFundingHistoryItem(
   guid: string | undefined,
   opts?: { refetch?: boolean }
-): MultichainFundingHistoryItem | undefined {
+): {
+  transfer: MultichainFundingHistoryItem | undefined;
+  isLoading: boolean;
+  error: Error | undefined;
+} {
   const { chainId } = useChainId();
+  const { address: account } = useAccount();
 
-  const { data } = useSWR(guid ? ["gmx-account-funding-history-item", guid] : null, {
-    fetcher: () => fetchGmxAccountFundingHistory(chainId, { guid }),
-    refreshInterval: opts?.refetch ? FREQUENT_UPDATE_INTERVAL : 0,
-  });
+  // read-only subscription to the already loaded history list, so the item renders without waiting for its own request
+  const { data: historyData } = useSWR<MultichainFundingHistoryItem[]>(
+    guid ? getFundingHistoryKey(chainId, account) : null,
+    null
+  );
 
-  const currentItem = data?.[0];
+  const historyItem = historyData?.find((item) => item.id === guid);
+  // a finished transfer from the list won't change anymore, so its own request is not needed
+  const isHistoryItemFinal = historyItem !== undefined && !isMultichainFundingItemLoading(historyItem);
+
+  const { data, isLoading, error } = useSWR(
+    guid && !isHistoryItemFinal ? [chainId, "gmx-account-funding-history-item", account, guid] : null,
+    {
+      fetcher: () => fetchGmxAccountFundingHistory(chainId, { account, guid }),
+      refreshInterval: opts?.refetch ? FREQUENT_UPDATE_INTERVAL : 0,
+    }
+  );
 
   const pendingItem = useGmxAccountPendingFundingHistoryItem(guid);
 
-  if (!currentItem && !pendingItem) {
-    return undefined;
-  }
+  // the furthest step wins, ties go to the polled history list first
+  const transfer = [historyItem, data?.[0], pendingItem].reduce<MultichainFundingHistoryItem | undefined>(
+    (latest, item) => (item && (!latest || isStepGreater(item.step, latest.step)) ? item : latest),
+    undefined
+  );
 
-  if (!currentItem && pendingItem) {
-    return pendingItem;
-  }
-
-  if (currentItem && !pendingItem) {
-    return currentItem;
-  }
-
-  return isStepGreaterOrEqual(currentItem!.step, pendingItem!.step) ? currentItem : pendingItem;
+  return {
+    transfer,
+    isLoading: transfer === undefined && isLoading,
+    error: transfer === undefined ? error : undefined,
+  };
 }
