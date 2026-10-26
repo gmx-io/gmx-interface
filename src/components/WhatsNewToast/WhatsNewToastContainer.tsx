@@ -10,6 +10,8 @@ import { AnnouncementBanner } from "components/AnnouncementBanner/AnnouncementBa
 import { useAppUpdateBanner } from "components/AppUpdateBanner/useAppUpdateBanner";
 import { BalancerProgramAnnouncement } from "components/BalancerProgramAnnouncement/BalancerProgramAnnouncement";
 import { BALANCER_PROGRAM_ANNOUNCEMENT_CAMPAIGN } from "components/BalancerProgramAnnouncement/balancerProgramAnnouncementCampaign";
+import { ClosingPoolsNotice } from "components/ClosingPoolsNotice/ClosingPoolsNotice";
+import { useClosingPoolsNotices } from "components/ClosingPoolsNotice/useClosingPoolsNotices";
 import { DelistingBanner } from "components/DelistingExitAnnouncements/DelistingBanner";
 import { useDelistingExitAnnouncements } from "components/DelistingExitAnnouncements/useDelistingExitAnnouncements";
 import { useTargetedAnnouncement } from "components/TargetedAnnouncement/useTargetedAnnouncement";
@@ -42,6 +44,7 @@ export function WhatsNewToastContainer() {
   const activeUiFlagEvents = useUiFlagEvents();
   const { cards, dismiss } = useWhatsNewAnnouncements();
   const { announcements: delistingAnnouncements, dismiss: dismissDelisting } = useDelistingExitAnnouncements();
+  const { notices: closingPoolsNotices, markSeen: markClosingPoolsNoticeSeen } = useClosingPoolsNotices();
   const { isVisible: isUsdgPoolsAnnouncementVisible, dismiss: dismissUsdgPoolsAnnouncement } = useTargetedAnnouncement(
     USDG_POOLS_ANNOUNCEMENT_CAMPAIGN
   );
@@ -103,6 +106,19 @@ export function WhatsNewToastContainer() {
               </div>
             </motion.div>
           ))}
+          {delistingAnnouncements.length === 0 &&
+            closingPoolsNotices.map((notice) => (
+              <motion.div
+                key={notice.isClosed ? "closing-pools-closed" : "closing-pools"}
+                initial={MOTION_INITIAL}
+                animate={MOTION_ANIMATE}
+                exit={MOTION_EXIT}
+              >
+                <div className="pb-12">
+                  <ClosingPoolsNotice notice={notice} onClose={() => markClosingPoolsNoticeSeen(notice)} />
+                </div>
+              </motion.div>
+            ))}
           {warningUiFlagEvents.map((event) => (
             <motion.div key={event.data.id} initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
               <div className="pb-12">

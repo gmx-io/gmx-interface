@@ -84,6 +84,8 @@ msgstr "Reinvierte automáticamente sus recompensas de GMX sin necesidad de recl
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/MainView.tsx
 msgid "Disconnect"
 msgstr "Desconectar"
 
@@ -178,6 +180,10 @@ msgstr "Puede abrir posiciones aisladas en GMX utilizando su GMX Account."
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Do I need to create codes on each network?"
 msgstr "¿Tengo que crear códigos en cada red?"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Your {token} long is in the {poolName} pool, which is closed to new size. This order opens a separate position."
+msgstr "Su posición larga en {token} está en el pool {poolName}, que está cerrado a nuevo tamaño. Esta orden abre una posición independiente."
 
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Multichain</0><1>MegaETH support</1><2>Just-in-time liquidity</2>"
@@ -499,6 +505,10 @@ msgstr "Market Increase vencido"
 msgid "Percentage"
 msgstr "Porcentaje"
 
+#: src/components/ClosingPoolsNotice/ClosingPoolsNotice.tsx
+msgid "View orders"
+msgstr "Ver órdenes"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap UI fee"
 msgstr "Comisión de interfaz de intercambio"
@@ -580,6 +590,10 @@ msgstr "Error al reclamar las recompensas de afiliado"
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "decrease"
 msgstr "reducción"
+
+#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+msgid "{ordersCount, plural, one {# pending order can't fill.} other {# pending orders can't fill.}}"
+msgstr "{ordersCount, plural, one {# orden pendiente no puede ejecutarse.} other {# órdenes pendientes no pueden ejecutarse.}}"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in any BTC/USD pool"
@@ -1116,6 +1130,10 @@ msgstr "Tokens stakeados insuficientes"
 msgid "Creating code..."
 msgstr "Creando código..."
 
+#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+msgid "The new USDG pools have more room. Your current positions stay open: hold, add margin, reduce or close any time. Adding size is limited now and stops soon."
+msgstr "Los nuevos pools USDG tienen más capacidad. Sus posiciones actuales siguen abiertas: puede mantenerlas, añadir margen, reducirlas o cerrarlas en cualquier momento. Aumentar el tamaño ya está limitado y terminará pronto."
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Conversion creation failed"
 msgstr "Error en la creación de la conversión"
@@ -1204,6 +1222,10 @@ msgstr "Worker"
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max network fee buffer precision is 0.01%"
 msgstr "La precisión máxima del buffer de comisión de red es 0,01 %"
+
+#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+msgid "{ordersCount, plural, one {# pending order will stop filling soon.} other {# pending orders will stop filling soon.}}"
+msgstr "{ordersCount, plural, one {# orden pendiente dejará de ejecutarse pronto.} other {# órdenes pendientes dejarán de ejecutarse pronto.}}"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeltaPrime"
@@ -2849,6 +2871,10 @@ msgstr "{orderTypeText} {0} por {1}"
 msgid "Job openings at GMX"
 msgstr "Ofertas de empleo en GMX"
 
+#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+msgid "{ordersCount, plural, one {Cancel and re-place it in the USDG pools.} other {Cancel and re-place them in the USDG pools.}}"
+msgstr "{ordersCount, plural, one {Cancélela y vuelva a colocarla en los pools USDG.} other {Cancélelas y vuelva a colocarlas en los pools USDG.}}"
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
@@ -3520,6 +3546,10 @@ msgstr "Copiar dirección"
 #: src/pages/Announcements/Announcements.tsx
 msgid "Announcements"
 msgstr "Anuncios"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing limit order in {0} pool"
+msgstr "Orden limitada existente en el pool {0}"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
@@ -4295,6 +4325,10 @@ msgstr "Los fondos están ahora en su GMX Account"
 msgid "Why should I enter a referral code?"
 msgstr "¿Por qué debería introducir un código de referido?"
 
+#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+msgid "Your current positions stay open: hold, add margin, reduce or close any time. New positions open in the USDG pools."
+msgstr "Sus posiciones actuales siguen abiertas: puede mantenerlas, añadir margen, reducirlas o cerrarlas en cualquier momento. Las nuevas posiciones se abren en los pools USDG."
+
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Auto · {activeLabel}"
 msgstr "Auto · {activeLabel}"
@@ -4361,6 +4395,10 @@ msgstr "Listado"
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "Conversion failed: {0}"
 msgstr "Conversión fallida: {0}"
+
+#: src/lib/i18n.ts
+msgid "{first}, {second} +{restCount} more"
+msgstr "{first}, {second} +{restCount} más"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Signing approval..."
@@ -4516,6 +4554,10 @@ msgstr "Gas insuficiente para las comisiones de red"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to"
 msgstr "{fromText} a"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "{poolName} pool is closing and isn't taking new stop market orders."
+msgstr "El pool {poolName} está cerrando y no acepta nuevas órdenes stop de mercado."
 
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "Frontends"
@@ -5454,6 +5496,7 @@ msgstr "GMX en Solana (conocido como GMTrade) se ofrece desde un dominio indepen
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
+#: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "TWAP"
@@ -6029,6 +6072,10 @@ msgstr "Saldo de {tokenInSymbol} insuficiente"
 msgid "Page outdated. Refresh"
 msgstr "Página desactualizada. Actualizar"
 
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxClosingPool.ts
+msgid "Closed to new TWAP orders"
+msgstr "Cerrado a nuevas órdenes TWAP"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Buy GLV"
@@ -6228,6 +6275,10 @@ msgstr "Los datos de comisiones no están disponibles temporalmente"
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Sell fee"
 msgstr "Comisión de venta"
+
+#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+msgid "{markets} trading is moving to USDG pools"
+msgstr "El trading de {markets} se traslada a los pools USDG"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid oracle price"
@@ -6704,6 +6755,10 @@ msgstr "Compatibilidad con"
 msgid "No liquidation price. Margin covers any losses."
 msgstr "No hay precio de liquidación. El margen cubre cualquier pérdida."
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Can't fill: {poolName} pool is closed to new size. Cancel and re-place it in the {targetPoolName} pool."
+msgstr "No puede ejecutarse: el pool {poolName} está cerrado a nuevo tamaño. Cancélela y vuelva a colocarla en el pool {targetPoolName}."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Toros"
 msgstr "Toros"
@@ -6968,6 +7023,10 @@ msgstr "Stakeado en Avalanche"
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "Pending"
 msgstr "Pendiente"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "{poolName} pool is closing and isn't taking new limit orders."
+msgstr "El pool {poolName} está cerrando y no acepta nuevas órdenes limitadas."
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "s:"
@@ -7844,6 +7903,10 @@ msgstr "Precio aceptable de la orden"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order failed to execute and is frozen. It stays open and may still execute later if conditions allow.<0/><1/>See the Trades tab for the reason."
 msgstr "La orden no se pudo ejecutar y está congelada. Sigue abierta y aún puede ejecutarse más adelante si las condiciones lo permiten.<0/><1/>Consulta el motivo en la pestaña Operaciones."
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Too big for the room left in the {poolName} pool. Cancel and re-place it in the {targetPoolName} pool."
+msgstr "Demasiado grande para la capacidad restante del pool {poolName}. Cancélela y vuelva a colocarla en el pool {targetPoolName}."
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Updating {updateOrdersCount} TP/SL orders..."
@@ -9007,6 +9070,10 @@ msgstr "Hoy"
 msgid "Link copied"
 msgstr "Enlace copiado"
 
+#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+msgid "The new USDG pools have more room. Your current positions stay open: hold, add margin, reduce or close any time. Adding size is limited now and stops on {date}."
+msgstr "Los nuevos pools USDG tienen más capacidad. Sus posiciones actuales siguen abiertas: puede mantenerlas, añadir margen, reducirlas o cerrarlas en cualquier momento. Aumentar el tamaño ya está limitado y terminará el {date}."
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Total wallet received"
 msgstr "Total recibido en el monedero"
@@ -9168,6 +9235,10 @@ msgstr "Número máximo de acciones antes de requerir reautorización"
 msgid "Minimum capital used of {0} required to qualify for rankings"
 msgstr "Se requiere un capital utilizado mínimo de {0} para clasificarse en el ranking"
 
+#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+msgid "{markets} trading has moved to USDG pools"
+msgstr "El trading de {markets} se ha trasladado a los pools USDG"
+
 #: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Proof of reserves"
@@ -9176,6 +9247,10 @@ msgstr "Prueba de reservas"
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "When will I start earning?"
 msgstr "¿Cuándo empezaré a obtener ganancias?"
+
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxClosingPool.ts
+msgid "Closed to new limit orders"
+msgstr "Cerrado a nuevas órdenes limitadas"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No topics"
@@ -9650,6 +9725,10 @@ msgstr "Importe"
 msgid "Integrate GMX"
 msgstr "Integrar GMX"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing position is in {0} pool. Using the selected pool will create a separate position."
+msgstr "La posición existente está en el pool {0}. Si usa el pool seleccionado, se creará una posición independiente."
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "At the Take-Profit price, the remaining position would exceed max leverage and the order may not execute."
 msgstr "Al precio de Take-Profit, la posición restante excedería el apalancamiento máximo y es posible que la orden no se ejecute."
@@ -9953,6 +10032,10 @@ msgid "Solo, anonymous account"
 msgstr "Cuenta individual y anónima"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Your {token} short is in the {poolName} pool, which is closed to new size. This order opens a separate position."
+msgstr "Su posición corta en {token} está en el pool {poolName}, que está cerrado a nuevo tamaño. Esta orden abre una posición independiente."
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Switch to {0} pool"
 msgstr "Cambiar al pool {0}"
@@ -10248,6 +10331,10 @@ msgstr "Se acumula para el propietario del código ({0})."
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Retry external route"
 msgstr "Reintentar ruta externa"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "{poolName} pool: won't fill after {closingDate}. Cancel and re-place it in the {targetPoolName} pool."
+msgstr "Pool {poolName}: no se ejecutará después del {closingDate}. Cancélela y vuelva a colocarla en el pool {targetPoolName}."
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Total realized and unrealized PnL for the period. Includes price impact and fees."
@@ -10889,6 +10976,10 @@ msgstr "Liquidez para cortos"
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "Quick hits"
 msgstr "Datos rápidos"
+
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxClosingPool.ts
+msgid "Closed to new stop market orders"
+msgstr "Cerrado a nuevas órdenes stop de mercado"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -11605,6 +11696,10 @@ msgstr "Seleccione al menos una distribución para reclamar"
 msgid "Buy"
 msgstr "Comprar"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "{poolName} pool is closing and isn't taking new TWAP orders."
+msgstr "El pool {poolName} está cerrando y no acepta nuevas órdenes TWAP."
+
 #: src/components/MarginRemediation/MarginRemediationActions.tsx
 msgid "Order may not execute: the resulting position would be liquidatable at the trigger price. <0>Deposit margin</0> or reduce the order size."
 msgstr "Es posible que la orden no se ejecute: la posición resultante sería liquidable al precio de activación. <0>Deposite margen</0> o reduzca el tamaño de la orden."
@@ -11998,6 +12093,10 @@ msgstr "Intercambio enrutado a través de varios pools de GM para obtener las co
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting only available on {chainNames}. Switch networks to continue."
 msgstr "El periodo de consolidación solo está disponible en {chainNames}. Cambie de red para continuar."
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Move order to {targetPoolName} pool"
+msgstr "Mover la orden al pool {targetPoolName}"
 
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "esGMX rewards:"
@@ -13315,6 +13414,10 @@ msgstr "Cargando parámetros de Express Trading..."
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted<0/><1/><2>View</2>"
 msgstr "Aprobación enviada<0/><1/><2>Ver</2>"
+
+#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+msgid "{ordersCount, plural, one {# pending order won't fill after {date}.} other {# pending orders won't fill after {date}.}}"
+msgstr "{ordersCount, plural, one {# orden pendiente no se ejecutará después del {date}.} other {# órdenes pendientes no se ejecutarán después del {date}.}}"
 
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Insufficient {gasPaymentTokensText} in your wallet. Express Trading and One-Click Trading are unavailable."
