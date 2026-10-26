@@ -1,3 +1,7 @@
+@use "sass:list";
+@use "sass:math";
+@use "sass:string";
+
 .Tooltip {
   position: relative;
 }
@@ -24,11 +28,6 @@
   a {
     text-decoration: underline;
   }
-}
-
-.Tooltip.nowrap .Tooltip-popup {
-  min-width: auto;
-  white-space: nowrap;
 }
 
 .Tooltip-popup :first-child {
@@ -164,4 +163,310 @@
   .Tooltip-row {
     margin-bottom: 1rem;
   }
+}
+
+.Tooltip-floating {
+  z-index: 10000;
+}
+
+.Tooltip-popup[data-status],
+.Tooltip-shadow[data-status] {
+  --tooltip-enter-y: 0px;
+
+  opacity: 0;
+  transition-property: opacity, transform;
+  transition-duration: 0ms;
+  transition-timing-function: var(--tooltip-easing);
+
+  @media (prefers-reduced-motion: no-preference) {
+    transform: translateY(var(--tooltip-enter-y)) scale(var(--tooltip-enter-scale));
+  }
+
+  &[data-side="top"] {
+    --tooltip-enter-y: var(--tooltip-enter-offset);
+    transform-origin: var(--tooltip-pointer-x) bottom;
+  }
+
+  &[data-side="bottom"] {
+    --tooltip-enter-y: calc(var(--tooltip-enter-offset) * -1);
+    transform-origin: var(--tooltip-pointer-x) top;
+  }
+
+  &[data-side="left"] {
+    transform-origin: right center;
+  }
+
+  &[data-side="right"] {
+    transform-origin: left center;
+  }
+
+  &[data-status="open"] {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition-duration: var(--tooltip-enter-duration);
+  }
+
+  &[data-status="close"] {
+    transition-duration: var(--tooltip-exit-duration);
+  }
+
+  &[data-instant] {
+    transition-duration: 0ms;
+  }
+}
+
+$pointer-width: 14px;
+$pointer-overhang: 1.4142px;
+$pointer-box-height: 7px + $pointer-overhang;
+$tooltip-radius: 8px;
+$gap-x: var(--tooltip-gap-x, -100px);
+$tooltip-shadow-light: 0 4px 14px 0 rgba(9, 10, 20, 0.08);
+$tooltip-shadow-dark: 0 4px 14px 0 rgba(0, 0, 0, 0.25);
+
+@function round3($value) {
+  @return math.div(math.round($value * 1000), 1000);
+}
+
+@function corner($cx, $cy, $from, $to) {
+  $points: ();
+  @for $step from 0 through 6 {
+    $angle: ($from + math.div(($to - $from) * $step, 6)) * 1deg;
+    $x: string.unquote("calc(#{$cx} + #{round3($tooltip-radius * math.cos($angle))})");
+    $y: string.unquote("calc(#{$cy} + #{round3($tooltip-radius * math.sin($angle))})");
+    $points: list.append($points, $x $y, $separator: comma);
+  }
+  @return $points;
+}
+
+@function pointer-points($base-y, $tip-y, $reverse: false) {
+  $left: calc(#{$gap-x} - #{$pointer-overhang}) $base-y;
+  $tip: calc(#{$gap-x} + #{math.div($pointer-width, 2)}) $tip-y;
+  $right: calc(#{$gap-x} + #{$pointer-width + $pointer-overhang}) $base-y;
+  @if $reverse {
+    @return ($right, $tip, $left);
+  }
+  @return ($left, $tip, $right);
+}
+
+$surface-shape-top: polygon(
+  corner($tooltip-radius, $pointer-box-height + $tooltip-radius, 180, 270),
+  pointer-points($pointer-box-height, 0px),
+  corner("100% - #{$tooltip-radius}", $pointer-box-height + $tooltip-radius, 270, 360),
+  corner("100% - #{$tooltip-radius}", "100% - #{$tooltip-radius}", 0, 90),
+  corner($tooltip-radius, "100% - #{$tooltip-radius}", 90, 180)
+);
+$surface-shape-bottom: polygon(
+  corner($tooltip-radius, $tooltip-radius, 180, 270),
+  corner("100% - #{$tooltip-radius}", $tooltip-radius, 270, 360),
+  corner("100% - #{$tooltip-radius}", "100% - #{$pointer-box-height + $tooltip-radius}", 0, 90),
+  pointer-points(calc(100% - #{$pointer-box-height}), 100%, $reverse: true),
+  corner($tooltip-radius, "100% - #{$pointer-box-height + $tooltip-radius}", 90, 180)
+);
+
+@function shadow-shape($base-y, $tip-y) {
+  $pointer: pointer-points($base-y, $tip-y);
+  @return polygon(
+    evenodd,
+    -40px -40px,
+    calc(100% + 40px) -40px,
+    calc(100% + 40px) calc(100% + 40px),
+    -40px calc(100% + 40px),
+    -40px -40px,
+    $pointer,
+    list.nth($pointer, 1),
+    -40px -40px
+  );
+}
+
+$shadow-shape-top: shadow-shape(0px, -$pointer-box-height);
+$shadow-shape-bottom: shadow-shape(100%, calc(100% + #{$pointer-box-height}));
+
+.Tooltip-popup--standard {
+  --tooltip-solid: var(--color-fill-surfaceElevated);
+  --tooltip-opacity: 80%;
+  --tooltip-bg: color-mix(in srgb, var(--tooltip-solid) var(--tooltip-opacity), transparent);
+  --affix-color: currentColor;
+  --tooltip-padding-x: 12px;
+  --tooltip-padding-y: 8px;
+  --tooltip-radius: 8px;
+  --tooltip-border: var(--color-slate-600);
+
+  padding: var(--tooltip-padding-y) var(--tooltip-padding-x);
+  border: 1px solid transparent;
+  border-radius: var(--tooltip-radius);
+  background: var(--tooltip-bg);
+  backdrop-filter: blur(12px);
+  color: var(--color-typography-primary);
+  --tooltip-shadow: #{$tooltip-shadow-light};
+  line-height: var(--line-height-body-medium);
+  letter-spacing: normal;
+  max-width: inherit;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    box-shadow: var(--tooltip-shadow);
+    pointer-events: none;
+  }
+
+  &[data-side="bottom"]::after {
+    clip-path: $shadow-shape-top;
+  }
+
+  &[data-side="top"]::after {
+    clip-path: $shadow-shape-bottom;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border: 1px solid var(--tooltip-border);
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  &[data-side="bottom"]::before,
+  &[data-side="top"]::before {
+    -webkit-mask-image: linear-gradient(#000 0 0), linear-gradient(#000 0 0);
+    -webkit-mask-size:
+      14px 1px,
+      100% 100%;
+    -webkit-mask-position:
+      var(--tooltip-gap-x, -100px) var(--tooltip-gap-y),
+      0 0;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-composite: xor;
+    mask-image: linear-gradient(#000 0 0), linear-gradient(#000 0 0);
+    mask-size:
+      14px 1px,
+      100% 100%;
+    mask-position:
+      var(--tooltip-gap-x, -100px) var(--tooltip-gap-y),
+      0 0;
+    mask-repeat: no-repeat;
+    mask-composite: exclude;
+  }
+
+  &[data-side="bottom"]::before {
+    --tooltip-gap-y: 0;
+  }
+
+  &[data-side="top"]::before {
+    --tooltip-gap-y: 100%;
+  }
+}
+
+.Tooltip-popup--standard.Tooltip-surface {
+  &::after {
+    content: none;
+  }
+
+  .Tooltip-pointer-fill {
+    display: none;
+  }
+
+  &[data-side="bottom"] {
+    margin-top: -$pointer-box-height;
+    padding-top: calc(var(--tooltip-padding-y) + #{$pointer-box-height});
+    clip-path: $surface-shape-top;
+
+    &::before {
+      top: calc(#{$pointer-box-height} - 1px);
+    }
+
+    .Tooltip-pointer {
+      top: -1px;
+      bottom: auto;
+    }
+  }
+
+  &[data-side="top"] {
+    margin-bottom: -$pointer-box-height;
+    padding-bottom: calc(var(--tooltip-padding-y) + #{$pointer-box-height});
+    clip-path: $surface-shape-bottom;
+
+    &::before {
+      bottom: calc(#{$pointer-box-height} - 1px);
+    }
+
+    .Tooltip-pointer {
+      top: auto;
+      bottom: -1px;
+    }
+  }
+}
+
+.Tooltip-shadow {
+  position: absolute;
+  inset: 0;
+  border-radius: $tooltip-radius;
+  box-shadow: $tooltip-shadow-light;
+  pointer-events: none;
+
+  &[data-side="bottom"] {
+    clip-path: $shadow-shape-top;
+  }
+
+  &[data-side="top"] {
+    clip-path: $shadow-shape-bottom;
+  }
+}
+
+.dark .Tooltip-shadow {
+  box-shadow: $tooltip-shadow-dark;
+}
+
+.Tooltip-pointer {
+  position: absolute;
+  pointer-events: none;
+
+  &[data-edge="top"] {
+    bottom: calc(100% + 1px);
+  }
+
+  &[data-edge="bottom"] {
+    top: calc(100% + 1px);
+    transform: rotate(180deg);
+  }
+}
+
+.Tooltip-pointer-fill {
+  fill: var(--tooltip-bg);
+}
+
+.Tooltip-pointer-outline {
+  fill: var(--tooltip-border);
+}
+
+.dark .Tooltip-popup--standard {
+  --tooltip-solid: color-mix(in srgb, var(--color-fill-surfaceElevated), var(--color-slate-100) 10%);
+  --tooltip-opacity: 70%;
+  --tooltip-shadow: #{$tooltip-shadow-dark};
+  color: var(--color-gray-100);
+}
+
+.Tooltip-handle--standard {
+  cursor: default;
+}
+
+.Tooltip-handle--standard .Tooltip-underline line {
+  stroke: #a0a3c4;
+  stroke-width: 1;
+  transform: translateY(0.5px);
+}
+
+.Tooltip-popup--standard a {
+  color: inherit;
+  text-decoration: underline;
+
+  &:hover {
+    color: var(--color-blue-300);
+  }
+}
+
+:is(button, a[href], [role="button"], .cursor-pointer) .Tooltip-handle--standard {
+  cursor: inherit;
 }

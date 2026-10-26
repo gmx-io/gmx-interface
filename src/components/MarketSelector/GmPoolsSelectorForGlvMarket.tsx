@@ -241,13 +241,12 @@ export function GmPoolsSelectorForGlvMarket({
         }
       >
         <VerticalScrollFadeContainer className="flex flex-col gap-8">
-          {filteredOptions.map((option, marketIndex) => (
+          {filteredOptions.map((option) => (
             <PoolListItem
               key={getGlvOrMarketAddress(option.glvOrMarketInfo)}
               {...option}
               marketToken={getByKey(marketTokensData, getGlvOrMarketAddress(option.glvOrMarketInfo))}
               isFavorite={favoriteTokens?.includes(getGlvOrMarketAddress(option.glvOrMarketInfo))}
-              isInFirstHalf={marketIndex < filteredOptions.length / 2}
               showAllPools={showAllPools}
               showBalances={showBalances}
               onFavoriteClick={toggleFavoriteToken}

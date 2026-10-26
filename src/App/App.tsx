@@ -30,6 +30,7 @@ import { useChainId } from "lib/chains";
 
 import ErrorBoundary from "components/Errors/ErrorBoundary";
 import SEO from "components/Seo/SEO";
+import { TooltipGroup } from "components/Tooltip/TooltipGroup";
 
 import { AppRoutes } from "./AppRoutes";
 import { SWRConfigProp } from "./swrConfig";
@@ -58,6 +59,7 @@ function App() {
       {app}
     </ErrorBoundary>
   );
+  app = <TooltipGroup>{app}</TooltipGroup>;
   app = <SorterContextProvider>{app}</SorterContextProvider>;
   app = <TokensFavoritesContextProvider>{app}</TokensFavoritesContextProvider>;
   app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;

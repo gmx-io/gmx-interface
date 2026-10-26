@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { cssTransition, ToastContainer } from "react-toastify";
 import { zeroHash } from "viem";
 
@@ -28,6 +28,7 @@ import { CloseToastButton } from "components/CloseToastButton/CloseToastButton";
 import { GmxAccountModal } from "components/GmxAccountModal/GmxAccountModal";
 import { NotifyModal } from "components/NotifyModal/NotifyModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
+import { closeAllTooltips } from "components/Tooltip/closeAllTooltips";
 import { WhatsNewToastContainer } from "components/WhatsNewToast/WhatsNewToastContainer";
 
 import { MainRoutes } from "./MainRoutes";
@@ -56,6 +57,15 @@ export function AppRoutes() {
   useFreshnessMetricsControl();
 
   const query = useRouteQuery();
+
+  const { pathname } = useLocation();
+
+  useEffect(
+    function closeTooltipsOnPageChange() {
+      closeAllTooltips();
+    },
+    [pathname]
+  );
 
   useEffect(() => {
     const referralCode = query.get(REFERRAL_CODE_QUERY_PARAM);

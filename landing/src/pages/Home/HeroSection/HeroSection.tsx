@@ -1,11 +1,11 @@
 import { Trans } from "@lingui/macro";
-import cx from "classnames";
 import { useHeroStats, type HeroStat } from "landing/pages/Home/hooks/useHeroStats";
 import { shortFormat, shortFormatUsd } from "landing/pages/Home/utils/formatters";
 
 import { ChainsStatsNotices } from "components/StatsTooltip/ChainsStatsNotices";
 import { useSettled } from "components/StatsTooltip/useSettled";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent } from "components/Tooltip/TooltipBlocks";
 
 import IcLinkArrow from "img/ic_link_arrow.svg?react";
 import IcMidChevron from "img/ic_mid_chevron.svg?react";
@@ -38,16 +38,12 @@ function StatValue({
   }
 
   return (
-    <TooltipWithPortal
-      variant="none"
-      tooltipClassName="!rounded-16 !p-20 !text-14 !font-medium !leading-[1.36] !text-white ![background:#3C4067] [&>svg]:!fill-[#3C4067]"
-      handle={
-        <div className={cx(className, "underline decoration-dotted decoration-[4%] underline-offset-8")}>{text}</div>
-      }
+    <StandardTooltip
+      handle={<div className={className}>{text}</div>}
       content={
-        <div className="flex max-w-[260px] flex-col gap-8">
+        <TooltipContent>
           <ChainsStatsNotices missingTitles={summary.missingTitles} staleEntries={staleEntries} />
-        </div>
+        </TooltipContent>
       }
     />
   );

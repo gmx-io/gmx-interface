@@ -11,9 +11,9 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { formatPercentage } from "lib/numbers";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MAX_PERCENTAGE_INPUT_VALUE, NUMBER_WITH_TWO_DECIMALS } from "components/PercentageInput/PercentageInput";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import { useTradeboxChanges } from "./hooks/useTradeboxChanges";
 
@@ -103,9 +103,8 @@ export function SwapSlippageField({ disabled }: { disabled?: boolean }) {
 
   return (
     <div className="flex h-full items-center justify-between gap-8">
-      <TooltipWithPortal
+      <StandardTooltip
         handle={<Trans>Allowed slippage</Trans>}
-        position="bottom-start"
         variant="iconStroke"
         disabled={disabled}
         handleClassName={cx(
@@ -113,17 +112,24 @@ export function SwapSlippageField({ disabled }: { disabled?: boolean }) {
           disabled ? "text-slate-500" : "text-typography-secondary"
         )}
         content={
-          <Trans>
-            Slippage is the difference between your expected and actual execution price due to price volatility. Orders
-            won't execute if slippage exceeds your allowed maximum. The default can be adjusted in settings.
-            <br />
-            <br />A low value (e.g. less than -{formatPercentage(BigInt(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })})
-            may cause failed orders during volatility.
-            <br />
-            <br />
-            Note: slippage is different from price impact, which is based on open interest imbalances.{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/fees/#slippage">Read more</ExternalLink>.
-          </Trans>
+          <TooltipContent>
+            <TooltipText>
+              <Trans>
+                Slippage is the difference between your expected and actual execution price due to price volatility.
+                Orders won't execute if slippage exceeds your allowed maximum. The default can be adjusted in settings.
+                <br />
+                <br />A low value (e.g. less than -
+                {formatPercentage(BigInt(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}) may cause failed orders during
+                volatility.
+                <br />
+                <br />
+                Note: slippage is different from price impact, which is based on open interest imbalances.
+              </Trans>
+            </TooltipText>
+            <TooltipLink href="https://docs.gmx.io/docs/trading/fees/#slippage">
+              <Trans>Read more</Trans>
+            </TooltipLink>
+          </TooltipContent>
         }
       />
 

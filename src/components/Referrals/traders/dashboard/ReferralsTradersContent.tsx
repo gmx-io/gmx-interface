@@ -37,7 +37,8 @@ import { TraderReferralChartContainer } from "components/Referrals/shared/charts
 import { REFERRALS_TIME_RANGE_INFOS, TimeRangeFilter } from "components/Referrals/shared/TimeRangeFilter";
 import { POST_WIZARD_FAQS } from "components/Referrals/traders/faq";
 import { ReferralCodeEditFormContainer } from "components/Referrals/traders/joinCode/ReferralCodeEditFormContainer";
-import Tooltip from "components/Tooltip/Tooltip";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import CopyStrokeIcon from "img/ic_copy_stroke.svg?react";
 import EditIcon from "img/ic_edit.svg?react";
@@ -139,9 +140,9 @@ export function ReferralsTradersContent({ account, hasAddressInUrl = false }: Re
         <div className="rounded-8 bg-slate-900 p-adaptive">
           <div className="text-body-medium mb-8 font-medium text-typography-secondary">
             {isBalancerProgramCode ? (
-              <Tooltip variant="iconStroke" position="right" content={<BalancerProgramTooltipContent />}>
+              <StandardTooltip variant="iconStroke" content={<BalancerProgramTooltipContent />}>
                 <Trans>Active Balancer Program code</Trans>
-              </Tooltip>
+              </StandardTooltip>
             ) : (
               <Trans>Active referral code</Trans>
             )}
@@ -300,15 +301,18 @@ function ActiveCodeExplanation({
 
 function BalancerProgramTooltipContent() {
   return (
-    <Trans>
-      The Balancer Program rewards traders who consistently take the underweight side of GMX markets. These codes
-      replace the trader fee discount with a higher rebate, which accrues to the code owner's affiliate account and can
-      be claimed anytime.{" "}
-      <ExternalLink href={BALANCER_PROGRAM_URL} className="text-blue-300">
-        Read more
-      </ExternalLink>
-      .
-    </Trans>
+    <TooltipContent>
+      <TooltipText>
+        <Trans>
+          The Balancer Program rewards traders who consistently take the underweight side of GMX markets. These codes
+          replace the trader fee discount with a higher rebate, which accrues to the code owner's affiliate account and
+          can be claimed anytime.
+        </Trans>
+      </TooltipText>
+      <TooltipLink href={BALANCER_PROGRAM_URL}>
+        <Trans>Read more</Trans>
+      </TooltipLink>
+    </TooltipContent>
   );
 }
 

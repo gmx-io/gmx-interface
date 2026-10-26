@@ -5,8 +5,8 @@ import { StakingProcessedData } from "lib/legacy";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import type { EarningAttributionScope } from "components/EarningValue/EarningValue";
 import { NumericValue } from "components/NumericValue/NumericValue";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipFootnote, TooltipRow, TooltipRows } from "components/Tooltip/TooltipBlocks";
 
 import { ClaimRewardsButton } from "../ClaimRewardsButton";
 import { EarningsStat, formatUsdExpandedParts, UsdStatValue } from "./EarningsStat";
@@ -38,37 +38,35 @@ function TotalValue({
   }
 
   return (
-    <TooltipWithPortal
+    <StandardTooltip
       handle={valueElement}
       content={
-        <div className="flex flex-col">
-          <StatsTooltipRow
-            label={<Trans>Staked GMX:</Trans>}
-            showDollar={false}
-            value={<NumericValue parts={formatUsdExpandedParts(breakdown.stakedGmxUsd)} className="numbers" />}
-          />
-          <StatsTooltipRow
-            label={<Trans>Staked esGMX:</Trans>}
-            showDollar={false}
-            value={<NumericValue parts={formatUsdExpandedParts(breakdown.stakedEsGmxUsd)} className="numbers" />}
-          />
-          <StatsTooltipRow
-            label={<Trans>GM:</Trans>}
-            showDollar={false}
-            value={<NumericValue parts={formatUsdExpandedParts(breakdown.gmUsd)} className="numbers" />}
-          />
-          <StatsTooltipRow
-            label={<Trans>GLV:</Trans>}
-            showDollar={false}
-            value={<NumericValue parts={formatUsdExpandedParts(breakdown.glvUsd)} className="numbers" />}
-          />
-          <span className="text-typography-tertiary mt-8">
+        <TooltipContent>
+          <TooltipRows>
+            <TooltipRow
+              label={<Trans>Staked GMX</Trans>}
+              value={<NumericValue parts={formatUsdExpandedParts(breakdown.stakedGmxUsd)} className="numbers" />}
+            />
+            <TooltipRow
+              label={<Trans>Staked esGMX</Trans>}
+              value={<NumericValue parts={formatUsdExpandedParts(breakdown.stakedEsGmxUsd)} className="numbers" />}
+            />
+            <TooltipRow
+              label={<Trans>GM</Trans>}
+              value={<NumericValue parts={formatUsdExpandedParts(breakdown.gmUsd)} className="numbers" />}
+            />
+            <TooltipRow
+              label={<Trans>GLV</Trans>}
+              value={<NumericValue parts={formatUsdExpandedParts(breakdown.glvUsd)} className="numbers" />}
+            />
+          </TooltipRows>
+          <TooltipFootnote>
             <Trans>
               Staked GMX and esGMX are counted on {chainName} only. GM and GLV are counted across your wallet, GMX
               Account and source chains.
             </Trans>
-          </span>
-        </div>
+          </TooltipFootnote>
+        </TooltipContent>
       }
     />
   );
@@ -94,7 +92,7 @@ function LifetimeEarnedValue({
   }
 
   return (
-    <TooltipWithPortal
+    <StandardTooltip
       handle={valueElement}
       content={
         <LifetimeEarningsTooltipContent
@@ -129,13 +127,12 @@ function PendingClaimableValue({
   const hasEsGmxRewards = (processedData?.totalEsGmxRewards ?? 0n) > 0n;
 
   return (
-    <TooltipWithPortal
+    <StandardTooltip
       handle={valueElement}
       content={
-        <div className="flex flex-col">
-          <StatsTooltipRow
-            label={<Trans>GMX staked rewards:</Trans>}
-            showDollar={false}
+        <TooltipRows>
+          <TooltipRow
+            label={<Trans>GMX staked rewards</Trans>}
             value={
               <AmountWithUsdBalance
                 amount={processedData?.extendedGmxTrackerRewards ?? 0n}
@@ -145,9 +142,8 @@ function PendingClaimableValue({
               />
             }
           />
-          <StatsTooltipRow
-            label={<Trans>Vested claimable GMX:</Trans>}
-            showDollar={false}
+          <TooltipRow
+            label={<Trans>Vested claimable GMX</Trans>}
             value={
               <AmountWithUsdBalance
                 amount={processedData?.totalVesterRewards ?? 0n}
@@ -158,9 +154,8 @@ function PendingClaimableValue({
             }
           />
           {hasEsGmxRewards && (
-            <StatsTooltipRow
-              label={<Trans>esGMX rewards:</Trans>}
-              showDollar={false}
+            <TooltipRow
+              label={<Trans>esGMX rewards</Trans>}
               value={
                 <AmountWithUsdBalance
                   amount={processedData?.totalEsGmxRewards ?? 0n}
@@ -172,9 +167,8 @@ function PendingClaimableValue({
             />
           )}
           {hasNativeRewards && (
-            <StatsTooltipRow
-              label={<Trans>{nativeTokenSymbol} rewards:</Trans>}
-              showDollar={false}
+            <TooltipRow
+              label={<Trans>{nativeTokenSymbol} rewards</Trans>}
               value={
                 <AmountWithUsdBalance
                   amount={processedData?.totalNativeTokenRewards ?? 0n}
@@ -185,7 +179,7 @@ function PendingClaimableValue({
               }
             />
           )}
-        </div>
+        </TooltipRows>
       }
     />
   );

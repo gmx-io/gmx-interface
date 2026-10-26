@@ -8,9 +8,9 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { formatPercentage } from "lib/numbers";
 import { getCappedPriceImpactPercentageFromFees } from "sdk/utils/fees";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
-import Tooltip from "components/Tooltip/Tooltip";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 export function PositionSellerPriceImpactFeesRow() {
   const { fees } = useSelector(selectPositionSellerFees);
@@ -54,16 +54,17 @@ export function PositionSellerPriceImpactFeesRow() {
     <SyntheticsInfoRow
       label={
         <>
-          <Tooltip
+          <StandardTooltip
             handle={t`Net price impact`}
             content={
-              <Trans>
-                Price impact from closing. Positive values benefit you.{" "}
-                <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
-                  Read more
-                </ExternalLink>
-                .
-              </Trans>
+              <TooltipContent>
+                <TooltipText>
+                  <Trans>Price impact from closing. Positive values benefit you.</Trans>
+                </TooltipText>
+                <TooltipLink href={DOCS_LINKS.priceImpact}>
+                  <Trans>Read more</Trans>
+                </TooltipLink>
+              </TooltipContent>
             }
           />{" "}
           / {t`fees`}

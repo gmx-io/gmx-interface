@@ -43,7 +43,8 @@ import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementCha
 import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 import Tabs from "components/Tabs/Tabs";
 import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import AlertIcon from "img/ic_alert.svg?react";
 
@@ -490,7 +491,7 @@ export function StakeModal(props: {
                 />
               </div>
               <div className="flex justify-between text-12">
-                <TooltipWithPortal
+                <StandardTooltip
                   handleClassName={cx(
                     "font-medium",
                     exceedsLimit ? "text-red-500" : isApproachingLimit ? "text-yellow-300" : "text-typography-secondary"
@@ -501,23 +502,23 @@ export function StakeModal(props: {
                     </Trans>
                   }
                   content={
-                    <div className="flex flex-col gap-8">
-                      <div>
+                    <TooltipContent>
+                      <TooltipText>
                         <Trans>
                           Unstaking more than 20% of your max historical staked GMX or esGMX will reset your accrued
                           rewards.
                         </Trans>
-                      </div>
-                      <div>
+                      </TooltipText>
+                      <TooltipText>
                         <Trans>
                           Current safe limit:{" "}
-                          <span className="text-typography-primary numbers">
+                          <span className="numbers">
                             {numberWithCommas(formatAmountFree(safeUnstakeLimit!, 18, 5))}
                           </span>{" "}
                           combined.
                         </Trans>
-                      </div>
-                    </div>
+                      </TooltipText>
+                    </TooltipContent>
                   }
                 />
                 <span

@@ -4,7 +4,7 @@ import { CSSProperties, ReactNode, useCallback } from "react";
 
 import Button from "components/Button/Button";
 import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
-import Tooltip from "components/Tooltip/Tooltip";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 type Section = {
   buttonText: ReactNode;
@@ -47,10 +47,9 @@ function Section({ buttonText, onButtonClick, tooltipText, title, usd }: Section
       <div className="flex flex-col gap-4">
         <span className={cx("font-medium", { positive: usd > 0n })}>
           {tooltipText ? (
-            <Tooltip
+            <StandardTooltip
               handle={<DeltaUsdValue deltaUsd={usd} />}
               handleClassName="numbers"
-              position="bottom-start"
               renderContent={renderTooltipContent}
             />
           ) : (

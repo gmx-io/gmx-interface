@@ -7,6 +7,7 @@ import { useBreakpoints } from "lib/useBreakpoints";
 import { PRIVY_DIALOG_SCROLL_SHARDS } from "lib/wallets/privyUiCompat";
 
 import Portal from "components/Portal/Portal";
+import { closeAllTooltips } from "components/Tooltip/closeAllTooltips";
 
 import CloseIcon from "img/ic_close.svg?react";
 
@@ -239,6 +240,15 @@ function MobileSlideModal({
   const stopPropagation = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
   }, []);
+
+  useEffect(
+    function closeTooltipsOnVisible() {
+      if (isOpen) {
+        closeAllTooltips();
+      }
+    },
+    [isOpen]
+  );
 
   useEffect(
     function blurOutsideOnVisible() {

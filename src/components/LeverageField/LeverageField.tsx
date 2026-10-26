@@ -18,7 +18,7 @@ import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import { HAIR_SPACE, NumericValue } from "components/NumericValue/NumericValue";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import CloseIcon from "img/ic_close.svg?react";
 import InfoIcon from "img/ic_info.svg?react";
@@ -157,6 +157,18 @@ export function LeverageField({ value, onChange, marks, disabled, tooltipContent
     return numberParts(formatLeverage(clampedValue), multiplierPart("x"));
   }, [value, disabled, minMark, maxMark]);
 
+  const leverageValue = (
+    <NumericValue
+      parts={displayParts}
+      className={cx("text-13", isOpen ? "text-blue-300" : "text-typography-primary", {
+        "group-hover:text-blue-300": !disabled && !isOpen,
+      })}
+      affixClassName={cx(isOpen ? "text-blue-300" : "text-typography-secondary", {
+        "group-hover:text-blue-300": !disabled && !isOpen,
+      })}
+    />
+  );
+
   return (
     <>
       <div
@@ -173,17 +185,13 @@ export function LeverageField({ value, onChange, marks, disabled, tooltipContent
         onClick={handleFieldClick}
         {...getReferenceProps()}
       >
-        <TooltipWithPortal disabled={!tooltipContent} content={tooltipContent} as="span" variant="none">
-          <NumericValue
-            parts={displayParts}
-            className={cx("text-13", isOpen ? "text-blue-300" : "text-typography-primary", {
-              "group-hover:text-blue-300": !disabled && !isOpen,
-            })}
-            affixClassName={cx(isOpen ? "text-blue-300" : "text-typography-secondary", {
-              "group-hover:text-blue-300": !disabled && !isOpen,
-            })}
-          />
-        </TooltipWithPortal>
+        {tooltipContent ? (
+          <StandardTooltip content={tooltipContent} variant="none" disabled={isOpen}>
+            {leverageValue}
+          </StandardTooltip>
+        ) : (
+          leverageValue
+        )}
       </div>
 
       {isOpen && (

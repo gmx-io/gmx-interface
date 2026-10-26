@@ -10,6 +10,7 @@ import { parsePositionKey } from "domain/synthetics/positions";
 import useWallet from "lib/wallets/useWallet";
 
 import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
+import { TooltipAction } from "components/Tooltip/TooltipBlocks";
 
 const remediationActionStyle = {
   color: "var(--colorful-banner-accent-color, inherit)",
@@ -30,44 +31,57 @@ function useRemediablePositionKey(positionKey: string | undefined): string | und
 
 export function DepositMarginNowAction({
   positionKey,
+  isTooltipLine,
   children,
-}: PropsWithChildren<{ positionKey: string | undefined }>) {
+}: PropsWithChildren<{ positionKey: string | undefined; isTooltipLine?: boolean }>) {
   const openDepositNow = usePositionEditorOpenDepositNow();
   const remediablePositionKey = useRemediablePositionKey(positionKey);
 
   if (remediablePositionKey === undefined) {
-    return <>{children}</>;
+    return isTooltipLine ? null : <>{children}</>;
   }
 
   return (
-    <EmbeddedActionButton
-      className="font-medium"
-      style={remediationActionStyle}
-      onClick={() => openDepositNow(remediablePositionKey)}
-    >
+    <RemediationAction isTooltipLine={isTooltipLine} onClick={() => openDepositNow(remediablePositionKey)}>
       {children}
-    </EmbeddedActionButton>
+    </RemediationAction>
   );
 }
 
 export function ReplaceMarginDepositAction({
   positionKey,
   orderKey,
+  isTooltipLine,
   children,
-}: PropsWithChildren<{ positionKey: string | undefined; orderKey: string | undefined }>) {
+}: PropsWithChildren<{ positionKey: string | undefined; orderKey: string | undefined; isTooltipLine?: boolean }>) {
   const openAtPrice = usePositionEditorOpenAtPrice();
   const remediablePositionKey = useRemediablePositionKey(positionKey);
 
   if (remediablePositionKey === undefined || orderKey === undefined) {
-    return <>{children}</>;
+    return isTooltipLine ? null : <>{children}</>;
   }
 
   return (
-    <EmbeddedActionButton
-      className="font-medium"
-      style={remediationActionStyle}
+    <RemediationAction
+      isTooltipLine={isTooltipLine}
       onClick={() => openAtPrice({ positionKey: remediablePositionKey, replacingOrderKey: orderKey })}
     >
+      {children}
+    </RemediationAction>
+  );
+}
+
+function RemediationAction({
+  isTooltipLine,
+  onClick,
+  children,
+}: PropsWithChildren<{ isTooltipLine: boolean | undefined; onClick: () => void }>) {
+  if (isTooltipLine) {
+    return <TooltipAction onClick={onClick}>{children}</TooltipAction>;
+  }
+
+  return (
+    <EmbeddedActionButton className="font-medium" style={remediationActionStyle} onClick={onClick}>
       {children}
     </EmbeddedActionButton>
   );

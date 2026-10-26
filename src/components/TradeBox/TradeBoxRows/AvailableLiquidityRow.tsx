@@ -12,7 +12,7 @@ import { formatTokenAmount } from "lib/numbers";
 
 import { UsdValue } from "components/NumericValue/UsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
-import Tooltip from "components/Tooltip/Tooltip";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 export function AvailableLiquidityRow() {
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
@@ -43,7 +43,7 @@ export function AvailableLiquidityRow() {
 
   return (
     <SyntheticsInfoRow label={t`Available liquidity`}>
-      <Tooltip
+      <StandardTooltip
         position="bottom-end"
         handleClassName={isLiquidityRisk ? "negative numbers" : "numbers"}
         handle={

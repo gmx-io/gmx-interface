@@ -1,4 +1,5 @@
-import { Trans } from "@lingui/macro";
+import { Trans, msg, t } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import { useCallback, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 
@@ -23,10 +24,9 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { UsdValue } from "components/NumericValue/UsdValue";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import Tooltip from "components/Tooltip/Tooltip";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipRow, TooltipRows } from "components/Tooltip/TooltipBlocks";
 
 import EarnIcon from "img/ic_earn.svg?react";
 
@@ -144,30 +144,33 @@ export default function ClaimableAmounts() {
       }
     });
 
-    return allAmounts.map((tokenInfo, index) => (
-      <StatsTooltipRow
-        key={`${tokenInfo.symbol}-${index}`}
-        showDollar={false}
-        label={
-          tokenInfo.symbol ? (
-            <div className="flex items-center gap-4">
-              <TokenIcon symbol={tokenInfo.symbol} displaySize={16} />
-              <span>{tokenInfo.symbol}</span>
-            </div>
-          ) : (
-            "Unknown"
-          )
-        }
-        value={formatBalanceAmount(tokenInfo.amount, tokenInfo.decimals)}
-        valueClassName="numbers"
-      />
-    ));
+    return (
+      <TooltipRows>
+        {allAmounts.map((tokenInfo, index) => (
+          <TooltipRow
+            key={`${tokenInfo.symbol}-${index}`}
+            label={
+              tokenInfo.symbol ? (
+                <div className="flex items-center gap-4">
+                  <TokenIcon symbol={tokenInfo.symbol} displaySize={16} />
+                  <span>{tokenInfo.symbol}</span>
+                </div>
+              ) : (
+                t`Unknown`
+              )
+            }
+            value={formatBalanceAmount(tokenInfo.amount, tokenInfo.decimals)}
+          />
+        ))}
+      </TooltipRows>
+    );
   }, [selectedClaimableDistributionIds, claimableAmountsDataByDistributionId]);
 
   const hasGlpReimbursementSelected = useMemo(() => {
     return selectedClaimableDistributionIds.includes(GLP_DISTRIBUTION_ID.toString());
   }, [selectedClaimableDistributionIds]);
 
+  const { _ } = useLingui();
   const { isButtonDisabled, buttonText, buttonTooltipText, hasAvailableFundsToCoverExecutionFee } = useMemo(() => {
     let isButtonDisabled = false;
 
@@ -196,7 +199,7 @@ export default function ClaimableAmounts() {
     let buttonTooltipText: React.ReactNode | null = null;
 
     if (selectedClaimableDistributionIds.length === 0) {
-      buttonTooltipText = <Trans>Select at least one distribution to claim</Trans>;
+      buttonTooltipText = _(msg`Select at least one distribution to claim`);
       isButtonDisabled = true;
     }
 
@@ -211,6 +214,7 @@ export default function ClaimableAmounts() {
       hasAvailableFundsToCoverExecutionFee,
     };
   }, [
+    _,
     chainId,
     settings.executionFeeBufferBps,
     userNativeTokenBalance,
@@ -236,9 +240,15 @@ export default function ClaimableAmounts() {
   );
 
   const buttonElement = buttonTooltipText ? (
-    <TooltipWithPortal content={buttonTooltipText} variant="none" handleClassName="w-full" contentClassName="w-full">
+    <StandardTooltip
+      content={buttonTooltipText}
+      variant="none"
+      isHandlerDisabled={isButtonDisabled}
+      handleClassName="w-full"
+      contentClassName="w-full"
+    >
       {buttonContent}
-    </TooltipWithPortal>
+    </StandardTooltip>
   ) : (
     buttonContent
   );
@@ -279,9 +289,9 @@ export default function ClaimableAmounts() {
         <span className="text-body-medium font-medium text-typography-secondary">
           <Trans>Total to claim</Trans>
         </span>
-        <Tooltip
+        <StandardTooltip
           handle={<UsdValue usd={totalFundsToClaimUsd} />}
-          handleClassName="cursor-help numbers"
+          handleClassName="numbers"
           className="whitespace-nowrap"
           renderContent={renderTotalTooltipContent}
         />

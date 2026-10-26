@@ -1,6 +1,6 @@
 import { autoUpdate, flip, FloatingPortal, offset, shift, useFloating } from "@floating-ui/react";
 import { Menu } from "@headlessui/react";
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
@@ -32,7 +32,8 @@ import { BuyGmxModal } from "components/BuyGmxModal/BuyGmxModal";
 import { VestModal } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal";
 import { UsdValue } from "components/NumericValue/UsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
-import Tooltip from "components/Tooltip/Tooltip";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipFootnote, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 import DownloadIcon from "img/ic_download2.svg?react";
@@ -190,24 +191,24 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
 
         <div className="mt-12">
           <span className="text-body-small text-typography-secondary">
-            <Tooltip
+            <StandardTooltip
               variant="iconStroke"
               handle={<Trans>Accumulated rewards</Trans>}
               content={
-                <>
-                  <Trans>
-                    27% of protocol fees are accumulating in the Treasury and will be distributed proportionally to
-                    staking power when GMX reaches $90.
-                  </Trans>
-                  <br />
-                  <br />
-                  <span className="text-typography-tertiary">
+                <TooltipContent>
+                  <TooltipText>
+                    <Trans>
+                      27% of protocol fees are accumulating in the Treasury and will be distributed proportionally to
+                      staking power when GMX reaches $90.
+                    </Trans>
+                  </TooltipText>
+                  <TooltipFootnote>
                     <Trans>
                       All projected rewards and estimated distributions are best-effort estimations only. Actual
                       distribution is subject to DAO governance.
                     </Trans>
-                  </span>
-                </>
+                  </TooltipFootnote>
+                </TooltipContent>
               }
             />
           </span>
@@ -242,15 +243,9 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
           <div className="mt-8">
             <SyntheticsInfoRow
               label={
-                <Tooltip
-                  variant="iconStroke"
+                <StandardTooltip
                   handle={<Trans>Est. APR</Trans>}
-                  content={
-                    <Trans>
-                      Estimated wallet-specific annualized rate based on the recent GMX buyback pace, your staking power
-                      share, and your current staked GMX + esGMX. Actual distribution is subject to DAO governance.
-                    </Trans>
-                  }
+                  content={t`Estimated wallet-specific annualized rate based on the recent GMX buyback pace, your staking power share, and your current staked GMX + esGMX. Actual distribution is subject to DAO governance.`}
                 />
               }
               value={
@@ -434,15 +429,9 @@ function StakingPowerAlerts({ stakingPowerData }: { stakingPowerData: StakingPow
       {showLoyalty && (
         <SyntheticsInfoRow
           label={
-            <Tooltip
-              variant="iconStroke"
+            <StandardTooltip
               handle={<Trans>Loyalty</Trans>}
-              content={
-                <Trans>
-                  Your current staked balance relative to your historical max. Dropping below 80% resets your
-                  accumulated staking power to zero.
-                </Trans>
-              }
+              content={t`Your current staked balance relative to your historical max. Dropping below 80% resets your accumulated staking power to zero.`}
             />
           }
           value={
@@ -456,31 +445,18 @@ function StakingPowerAlerts({ stakingPowerData }: { stakingPowerData: StakingPow
         <>
           <SyntheticsInfoRow
             label={
-              <Tooltip
-                variant="iconStroke"
+              <StandardTooltip
                 handle={<Trans>Staking power</Trans>}
-                content={
-                  <Trans>
-                    Staking power accrues over time based on your staked GMX balance and determines your share of
-                    buyback rewards
-                  </Trans>
-                }
+                content={t`Staking power accrues over time based on your staked GMX balance and determines your share of buyback rewards`}
               />
             }
             value={<span className="numbers">{formatAmount(stakingPowerData.cumulativePower, 18, 0, true)}</span>}
           />
           <SyntheticsInfoRow
             label={
-              <Tooltip
-                variant="iconStroke"
+              <StandardTooltip
                 handle={<Trans>Staking power share</Trans>}
-                content={
-                  <Trans>
-                    Your share of the total network staking power. Treasury rewards will be distributed proportionally
-                    to staking power when GMX reaches $90. All projected rewards are best-effort estimations. Actual
-                    distribution is subject to DAO governance.
-                  </Trans>
-                }
+                content={t`Your share of the total network staking power. Treasury rewards will be distributed proportionally to staking power when GMX reaches $90. All projected rewards are best-effort estimations. Actual distribution is subject to DAO governance.`}
               />
             }
             value={<span className="numbers">{stakingPowerData.userSharePercent.toFixed(3)}%</span>}

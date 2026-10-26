@@ -19,12 +19,6 @@
   }
 }
 
-.PositionItem-collateral-tooltip {
-  .Tooltip-popup {
-    min-width: 32rem;
-  }
-}
-
 .position-list-collateral {
   display: flex;
   align-items: flex-end;
@@ -75,12 +69,4 @@ tbody > tr:nth-child(odd) > .PositionItem-actions-cell {
 
 .TableTr_hoverable:nth-child(odd):hover > .PositionItem-actions-cell {
   background: linear-gradient(var(--color-fill-surfaceHover), var(--color-fill-surfaceHover)), var(--color-slate-900);
-}
-
-@media (max-width: 800px) {
-  .PositionItem-collateral-tooltip {
-    .Tooltip-popup {
-      min-width: 22rem;
-    }
-  }
 }

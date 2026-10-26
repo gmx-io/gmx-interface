@@ -22,9 +22,15 @@ import { bigMath } from "sdk/utils/bigmath";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import ExchangeInfoRow from "components/ExchangeInfoRow/ExchangeInfoRow";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { LabelWithTooltip } from "components/Tooltip/LabelWithTooltip";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import {
+  TooltipContent,
+  TooltipFootnote,
+  TooltipLink,
+  TooltipRow,
+  TooltipRows,
+  TooltipText,
+} from "components/Tooltip/TooltipBlocks";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { NetworkFeeSourceIcon } from "./NetworkFeeSourceIcon";
@@ -65,8 +71,7 @@ export function NetworkFeeRow({
     () =>
       isAdditionOrdersMsg && (
         <Trans>
-          Max network fee includes fees for additional orders. Refunded in full if they don't trigger and are canceled.{" "}
-          <ExternalLink href="https://docs.gmx.io/docs/trading/fees/#network-fee">Read more</ExternalLink>.
+          Max network fee includes fees for additional orders. Refunded in full if they don't trigger and are canceled.
         </Trans>
       ),
     [isAdditionOrdersMsg]
@@ -185,62 +190,54 @@ export function NetworkFeeRow({
         isStable={networkFee.feeToken.isStable}
         source={feeSource}
         tooltipContent={
-          <>
-            <StatsTooltipRow
-              label={t`Max network fee`}
-              showDollar={false}
-              value={
-                <AmountWithUsdBalance
-                  amount={-networkFee.feeAmount}
-                  decimals={networkFee.feeToken.decimals}
-                  usd={-networkFee.feeUsd}
-                  symbol={networkFee.feeToken.symbol}
-                  isStable={networkFee.feeToken.isStable}
-                  allowWrap
-                />
-              }
-              valueClassName="numbers"
-            />
-            <div className="h-8" />
-            <p>
-              <Trans>
-                Max network fee includes a buffer for gas spikes. Unused fees refunded on execution.{" "}
-                <ExternalLink className="inline" href="https://docs.gmx.io/docs/trading/fees/#network-fee">
-                  Read more
-                </ExternalLink>
-                .
-              </Trans>
-            </p>
-            <br />
-            <StatsTooltipRow
-              label={t`Estimated fee refund`}
-              showDollar={false}
-              value={
-                refundToken && estimatedRefundTokenAmount !== undefined && estimatedRefundUsd !== undefined ? (
-                  <AmountWithUsdBalance
-                    amount={estimatedRefundTokenAmount}
-                    decimals={refundToken.decimals}
-                    usd={estimatedRefundUsd}
-                    symbol={refundToken.symbol}
-                    isStable={refundToken.isStable}
-                    signed
-                    allowWrap
-                    suffix={<NetworkFeeSourceIcon source={refundSource} />}
-                  />
-                ) : undefined
-              }
-              valueClassName="numbers"
-              textClassName="text-green-500"
-            />
-            {sourceExplanation && (
-              <>
-                <br />
-                <p>{sourceExplanation}</p>
-              </>
+          <TooltipContent>
+            {warning && (
+              <TooltipText>
+                <span className="text-yellow-300">{warning}</span>
+              </TooltipText>
             )}
-            {warning && <p className="text-yellow-300">{warning}</p>}
-            {additionalOrdersMsg && <p>{additionalOrdersMsg}</p>}
-          </>
+            <TooltipRows>
+              <TooltipRow
+                label={t`Max network fee`}
+                value={
+                  <AmountWithUsdBalance
+                    amount={-networkFee.feeAmount}
+                    decimals={networkFee.feeToken.decimals}
+                    usd={-networkFee.feeUsd}
+                    symbol={networkFee.feeToken.symbol}
+                    isStable={networkFee.feeToken.isStable}
+                    allowWrap
+                  />
+                }
+              />
+              <TooltipRow
+                label={t`Estimated fee refund`}
+                value={
+                  refundToken && estimatedRefundTokenAmount !== undefined && estimatedRefundUsd !== undefined ? (
+                    <AmountWithUsdBalance
+                      amount={estimatedRefundTokenAmount}
+                      decimals={refundToken.decimals}
+                      usd={estimatedRefundUsd}
+                      symbol={refundToken.symbol}
+                      isStable={refundToken.isStable}
+                      signed
+                      allowWrap
+                      suffix={<NetworkFeeSourceIcon source={refundSource} />}
+                    />
+                  ) : undefined
+                }
+                valueClassName="text-green-500"
+              />
+            </TooltipRows>
+            <TooltipFootnote>
+              <Trans>Max network fee includes a buffer for gas spikes. Unused fees refunded on execution.</Trans>
+            </TooltipFootnote>
+            {sourceExplanation && <TooltipFootnote>{sourceExplanation}</TooltipFootnote>}
+            {additionalOrdersMsg && <TooltipFootnote>{additionalOrdersMsg}</TooltipFootnote>}
+            <TooltipLink href="https://docs.gmx.io/docs/trading/fees/#network-fee">
+              <Trans>Read more</Trans>
+            </TooltipLink>
+          </TooltipContent>
         }
       />
     );
@@ -258,12 +255,10 @@ export function NetworkFeeRow({
   ]);
 
   const label = (
-    <LabelWithTooltip
-      label={t`Network fee`}
-      tooltip={<Trans>Blockchain gas fee (not GMX-specific). Doesn't impact your margin.</Trans>}
-      position="left-start"
-      variant="iconStroke"
-      labelClassName="whitespace-nowrap"
+    <StandardTooltip
+      handle={t`Network fee`}
+      handleClassName="whitespace-nowrap"
+      content={t`Blockchain gas fee (not GMX-specific). Doesn't impact your margin.`}
     />
   );
 

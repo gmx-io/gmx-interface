@@ -18,7 +18,7 @@ import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import { Table, TableTh, TableTheadTr } from "components/Table/Table";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
@@ -175,16 +175,9 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
                   />
                   <SyntheticsInfoRow
                     label={
-                      <TooltipWithPortal
+                      <StandardTooltip
                         handle={t`Allowed slippage`}
-                        position="top-start"
-                        variant="iconStroke"
-                        content={
-                          <Trans>
-                            This is an external swap routed through KyberSwap. Allowed slippage includes price impact
-                            and fees, unlike GMX native swaps where these are separate.
-                          </Trans>
-                        }
+                        content={t`This is an external swap routed through KyberSwap. Allowed slippage includes price impact and fees, unlike GMX native swaps where these are separate.`}
                       />
                     }
                     valueClassName="-my-5"

@@ -25,10 +25,10 @@ import { UsdValue } from "components/NumericValue/UsdValue";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import usePagination from "components/Pagination/usePagination";
 import { GridCell, GridHeaderCell, GridRow } from "components/Referrals/distributions/table/Grid";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
-import Tooltip from "components/Tooltip/Tooltip";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipRow, TooltipRows } from "components/Tooltip/TooltipBlocks";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import CopyIcon from "img/ic_copy.svg?react";
@@ -199,51 +199,41 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
                             </div>
                           </TableTd>
                           <TableTd>
-                            <Tooltip
+                            <StandardTooltip
                               handle={<NumericValue parts={formatBigUsdParts(stat.volume)} />}
                               handleClassName="numbers"
-                              position="bottom-start"
                               className="whitespace-nowrap"
                               content={
-                                <>
-                                  <StatsTooltipRow
+                                <TooltipRows>
+                                  <TooltipRow
                                     label={t`V1 volume`}
                                     value={<NumericValue parts={formatBigUsdParts(stat?.v1Data.volume ?? 0n)} />}
-                                    valueClassName="numbers"
-                                    showDollar={false}
                                   />
-                                  <StatsTooltipRow
+                                  <TooltipRow
                                     label={t`V2 volume`}
                                     value={<NumericValue parts={formatBigUsdParts(stat?.v2Data.volume ?? 0n)} />}
-                                    valueClassName="numbers"
-                                    showDollar={false}
                                   />
-                                </>
+                                </TooltipRows>
                               }
                             />
                           </TableTd>
                           <TableTd className="numbers">{stat.registeredReferralsCount}</TableTd>
                           <TableTd>
-                            <Tooltip
+                            <StandardTooltip
                               handle={<NumericValue parts={formatBigUsdParts(stat.affiliateRebateUsd)} />}
                               handleClassName="numbers"
-                              position="bottom-start"
                               className="whitespace-nowrap"
                               content={
-                                <>
-                                  <StatsTooltipRow
+                                <TooltipRows>
+                                  <TooltipRow
                                     label={t`V1 rebates`}
                                     value={<UsdValue usd={stat.v1Data.affiliateRebateUsd} fallbackToZero />}
-                                    valueClassName="numbers"
-                                    showDollar={false}
                                   />
-                                  <StatsTooltipRow
+                                  <TooltipRow
                                     label={t`V2 rebates`}
                                     value={<UsdValue usd={stat.v2Data.affiliateRebateUsd} fallbackToZero />}
-                                    valueClassName="numbers"
-                                    showDollar={false}
                                   />
-                                </>
+                                </TooltipRows>
                               }
                             />
                           </TableTd>
