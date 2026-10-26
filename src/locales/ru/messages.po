@@ -84,6 +84,8 @@ msgstr "Автоматически реинвестирует ваши возн�
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/MainView.tsx
 msgid "Disconnect"
 msgstr "Отключить"
 
@@ -426,6 +428,10 @@ msgstr "Telegram-бот"
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Limit Swap"
 msgstr "Limit Swap отменён"
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Waiting ({0, plural, one {# day left} other {# days left}})"
+msgstr "Ожидание (осталось {0, plural, one {# день} few {# дня} many {# дней} other {# дня}})"
 
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 msgid "Roadmap"
@@ -1043,6 +1049,10 @@ msgstr "Некорректный токен обеспечения. {tokenSymbol
 msgid "A conversion is already waiting in your wallet. Try again after it executes."
 msgstr "Конвертация уже ждёт в вашем кошельке. Попробуйте снова, когда она исполнится."
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Available from"
+msgstr "Доступно с"
+
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -1168,6 +1178,10 @@ msgstr "Ордер не исполнится: цена активации нах
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "Don't ask again"
 msgstr "Больше не спрашивать"
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Cancel submitted"
+msgstr "Отмена отправлена"
 
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values calculated when earned. Excludes incentives."
@@ -1700,9 +1714,17 @@ msgstr "Условие цены активации не выполнено"
 msgid "/ year"
 msgstr "/ год"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Withdraw all tokens from the GMX and GLP vesting vaults before the transfer"
+msgstr "Перед переводом выведите все токены из хранилищ вестинга GMX и GLP"
+
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Go to affiliate dashboard"
 msgstr "Перейти на партнёрскую панель управления"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "This amount is not ready to withdraw yet. Ready now: {executableAmountText} GMX / esGMX"
+msgstr "Эту сумму пока нельзя вывести. Доступно сейчас: {executableAmountText} GMX / esGMX"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Estimated wallet-specific annualized rate based on the recent GMX buyback pace, your staking power share, and your current staked GMX + esGMX. Actual distribution is subject to DAO governance."
@@ -2057,6 +2079,10 @@ msgstr "Показать меньше"
 msgid "Vest"
 msgstr "Вестинг"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "You have {maxRequests} unstake requests, the maximum. Withdraw or cancel one to make a new request."
+msgstr "У вас {maxRequests} заявок на вывод из стейкинга — это максимум. Выведите средства по одной заявке или отмените её, чтобы создать новую."
+
 #: src/components/GmList/UsdgPoolBadges.tsx
 msgid "Extra yield for GLV [USDG] liquidity providers during the launch, targeting 8% or more on top of trading fees. Paid into the GLV price every 4 hours, so there's nothing to claim."
 msgstr "Дополнительная доходность для поставщиков ликвидности GLV [USDG] на период запуска — цель 8% или больше сверх торговых комиссий. Начисляется в цену GLV каждые 4 часа, поэтому получать ничего не нужно."
@@ -2084,6 +2110,10 @@ msgstr "Выбрать пул"
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "This market has been disabled. Contact support to claim your remaining funding fees."
 msgstr "Этот рынок отключён. Обратитесь в службу поддержки, чтобы получить оставшиеся комиссии за финансирование."
+
+#: src/components/Errors/stakingToasts.ts
+msgid "Staking moved to a new contract. Review and try again."
+msgstr "Стейкинг перешёл на новый контракт. Проверьте данные и повторите попытку."
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Log index:"
@@ -2355,6 +2385,10 @@ msgstr "К ПОЛУЧЕНИЮ"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "VI POSITIONS"
 msgstr "VI ПОЗИЦИИ"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Requesting to unstake more than 20% of your max historical staked GMX will reset your accrued rewards. Cancelling the request does not restore them."
+msgstr "Заявка на вывод из стейкинга более 20% от максимального количества GMX, которое вы когда-либо размещали в стейкинге, приведёт к сбросу накопленных вознаграждений. Отмена заявки их не вернёт."
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -3036,6 +3070,10 @@ msgstr "Отладка обмена"
 msgid "The more you trade, the more you keep"
 msgstr "Чем больше вы торгуете, тем больше оставляете себе"
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Unstake requests"
+msgstr "Заявки на вывод из стейкинга"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/pages/Dashboard/GmCard.tsx
@@ -3461,6 +3499,10 @@ msgstr "Комиссия за покупку"
 msgid "Claimable collateral reduction factor"
 msgstr "Коэффициент уменьшения обеспечения, доступного для получения"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "This account is frozen in the esGMX vesting vault"
+msgstr "Этот аккаунт заморожен в хранилище вестинга esGMX"
+
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Slippage too low"
 msgstr "Допуск проскальзывания слишком низкий"
@@ -3650,6 +3692,7 @@ msgstr "Обмены"
 msgid "Creating order..."
 msgstr "Создание ордера…"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Stake submitted"
 msgstr "Запрос на стейкинг отправлен"
@@ -4179,9 +4222,17 @@ msgstr "Установить тейк-профит для лонга @ {0}"
 msgid "Uploading..."
 msgstr "Загрузка..."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake requested"
+msgstr "Заявка на вывод из стейкинга создана"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Can't withdraw collateral. Remaining would be {estimatedRemainingCollateralUsdText}, below minimum"
 msgstr "Невозможно вывести обеспечение. Остаток составит {estimatedRemainingCollateralUsdText}, что ниже минимума"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The esGMX vesting vaults changed after the transfer started. The sender has to start the transfer again."
+msgstr "После начала перевода хранилища вестинга esGMX изменились. Отправитель должен начать перевод заново."
 
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "Funds claimed"
@@ -4203,6 +4254,10 @@ msgstr "Расчётная цена изменилась. Увеличьте д�
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Maximum pool capacity reached"
 msgstr "Достигнута максимальная ёмкость пула"
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Cancelling..."
+msgstr "Отмена..."
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit signed"
@@ -4440,6 +4495,10 @@ msgstr "Ошибка части TWAP Swap"
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "No events in the past {DAYS_BACK} days"
 msgstr "За последние {DAYS_BACK} дней событий не было"
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Ready to withdraw"
+msgstr "Готово к выводу"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker thread"
@@ -4783,6 +4842,8 @@ msgid "Share GMX feedback"
 msgstr "Поделиться отзывом о GMX"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "Withdraw failed"
 msgstr "Вывод не удался"
 
@@ -4838,6 +4899,7 @@ msgstr "Иконка GM"
 msgid "Execution details"
 msgstr "Детали исполнения"
 
+#: src/components/Errors/getContractErrorMessage.ts
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Self-transfer not supported"
 msgstr "Перевод на свой адрес не поддерживается"
@@ -4988,6 +5050,7 @@ msgid "WIN/LOSS"
 msgstr "ВЫИГР./ПРОИГР."
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing..."
@@ -5012,6 +5075,10 @@ msgstr "бессрочные рынки"
 #: src/components/Footer/constants.tsx
 msgid "V1"
 msgstr "V1"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Unstake requests are paused. Try again later."
+msgstr "Заявки на вывод из стейкинга приостановлены. Повторите попытку позже."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Staked tokens reserved for vesting"
@@ -5769,6 +5836,10 @@ msgstr "Принудительный сбой внешних свопов"
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -6418,12 +6489,18 @@ msgid "Max lendable impact factor for withdrawals"
 msgstr "Макс. фактор влияния, доступного для займа, при выводах"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Claim completed"
 msgstr "Получение завершено"
 
 #: src/components/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Open in explorer"
 msgstr "Открыть в обозревателе"
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Cancel failed"
+msgstr "Не удалось отменить"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "{0} tokens converted to GMX from the {1} esGMX deposited for vesting"
@@ -6981,6 +7058,8 @@ msgstr "Ошибка RPC.<0/><1/>Включите <2>Express Trading</2> в на
 msgid "High execution reliability using premium RPCs"
 msgstr "Высокая надёжность исполнения с использованием премиальных RPC"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Stake failed"
 msgstr "Ошибка стейкинга"
@@ -7126,6 +7205,10 @@ msgstr "Показывать иконки покупки/продажи на г�
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
 msgstr "Для этого свопа требуется внешняя маршрутизация. Оплатите газ в {0}, чтобы включить её."
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The amount is more than your staked GMX and esGMX that is not already requested"
+msgstr "Сумма больше ваших GMX и esGMX в стейкинге, по которым ещё нет заявки"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -7283,6 +7366,7 @@ msgid "TYPE"
 msgstr "ТИП"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "Withdrawn"
 msgstr "Выведено"
 
@@ -7367,6 +7451,10 @@ msgstr "{typeString} Лонг TWAP: {0} лонг-позицию равными �
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claim & swap"
 msgstr "Получить и обменять"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Withdraw all tokens from the esGMX vesting vault before the transfer"
+msgstr "Перед переводом выведите все токены из хранилища вестинга esGMX"
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
@@ -7683,6 +7771,10 @@ msgstr "При исполнении вы получите не менее {toAmo
 msgid "Increasing {indexTokenText} Short: +{sizeDeltaUsdText}"
 msgstr "Увеличение шорта {indexTokenText}: +{sizeDeltaUsdText}"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "You have the maximum number of unstake requests. Withdraw or cancel one to make a new request."
+msgstr "У вас максимальное число заявок на вывод из стейкинга. Выведите средства по одной заявке или отмените её, чтобы создать новую."
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed"
 msgstr "Ордер на продажу исполнен"
@@ -7711,6 +7803,10 @@ msgstr "В старом субаккаунте 1CT осталось 0.0045 WETH"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral"
 msgstr "Мин. обеспечение"
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Requested"
+msgstr "Создана"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCards.tsx
 msgid "Steady returns without management"
@@ -7868,6 +7964,10 @@ msgstr "Заработанные комиссии учитываются тол�
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set long Limit @ {0}"
 msgstr "Установить лимитный ордер в лонг @ {0}"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The receiving account has staked or vested before. Choose a new account."
+msgstr "Аккаунт получателя уже участвовал в стейкинге или вестинге. Выберите новый аккаунт."
 
 #: src/components/GmList/UsdgPoolBadges.tsx
 msgid "Direct deposits into this pool are open to whitelisted addresses. GLV [USDG] gives you the same markets in one deposit."
@@ -8434,6 +8534,8 @@ msgid "Exit price"
 msgstr "Цена выхода"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Transfer failed"
 msgstr "Перевод не выполнен"
@@ -8589,6 +8691,7 @@ msgstr "Версия:"
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Available"
 msgstr "Доступно"
@@ -8605,6 +8708,7 @@ msgstr "Комиссия на прибыль от обмена"
 msgid "Solv Finance"
 msgstr "Solv Finance"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claim submitted"
@@ -8680,6 +8784,7 @@ msgstr "Governance"
 msgid "Keep more of every trade"
 msgstr "Оставляйте себе больше с каждой сделки"
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/HistoryExport/HistoryExportModal.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -8914,12 +9019,17 @@ msgstr "Активный код программы Balancer"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "Max amount exceeded"
 msgstr "Максимальная сумма превышена"
 
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {nativeTokenSymbol} in your Wallet for gas on {chainName}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
 msgstr "Недостаточно {nativeTokenSymbol} в вашем Кошельке для оплаты Gas в сети {chainName}. <0>Обменяйте</0> или <1>переведите через мост</1> {nativeTokenSymbol}."
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstaking takes {0} days. You can withdraw this amount from {1}. Until then it stays staked but stops counting toward Staking Power. You can cancel the request at any time."
+msgstr "Вывод из стейкинга занимает {0} дн. Эту сумму можно будет вывести с {1}. До этого она остаётся в стейкинге, но не учитывается в силе стейкинга. Заявку можно отменить в любой момент."
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -9104,6 +9214,10 @@ msgstr "Установите цену стоп-лосса ниже лимитн�
 msgid "({0} of {1})"
 msgstr "({0} от {1})"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Request unstake"
+msgstr "Подать заявку на вывод"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Total realized and unrealized PnL including fees and price impact"
 msgstr "Общий реализованный и нереализованный PnL, включая комиссии и влияние на цену"
@@ -9287,6 +9401,10 @@ msgstr "Я не хочу переводить партнёрские токен�
 msgid "Order exceeds max leverage. Click to auto-adjust."
 msgstr "Ордер превышает максимальное кредитное плечо. Нажмите для автоматической корректировки."
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "After the transfer, the receiving account would have {count} unstake requests, more than the maximum"
+msgstr "После перевода у аккаунта получателя будет {count} заявок на вывод из стейкинга — больше максимума"
+
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available"
 msgstr "Нет доступного маршрута обмена"
@@ -9370,6 +9488,7 @@ msgstr "НАЗВАНИЕ СОБЫТИЯ"
 msgid "OPEN INTEREST"
 msgstr "ОТКРЫТЫЙ ИНТЕРЕС"
 
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Begin transfer"
 msgstr "Начать перевод"
@@ -9639,6 +9758,7 @@ msgstr "Оплачивается из вашего GMX Account, потому ч�
 msgid "Copy"
 msgstr "Копировать"
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -9757,6 +9877,10 @@ msgstr "Итого к получению"
 msgid "Min receive"
 msgstr "Минимум к получению"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "After the transfer, the receiving account would have more unstake requests than the maximum"
+msgstr "После перевода у аккаунта получателя будет больше заявок на вывод из стейкинга, чем допускается"
+
 #: src/domain/tokens/useMaxAvailableAmount.ts
 msgid "Leaves no {symbol} in your {source} for future Express fees"
 msgstr "Не оставляет {symbol} на балансе «{source}» для будущих комиссий Express"
@@ -9792,6 +9916,8 @@ msgstr "Объём за 24ч"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -9986,6 +10112,10 @@ msgstr "Jones DAO"
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set short Stop Market @ {0}"
 msgstr "Установить рыночный стоп-ордер для шорта @ {0}"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Account transfers are paused during the staking upgrade. They will reopen when the new esGMX vesting vault opens."
+msgstr "Переводы аккаунтов приостановлены на время обновления стейкинга. Они снова станут доступны, когда откроется новое хранилище вестинга esGMX."
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -10938,6 +11068,10 @@ msgstr "Если параметр включён, кредитное плечо 
 msgid "Transaction sent"
 msgstr "Транзакция отправлена"
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Unstake request cancelled"
+msgstr "Заявка на вывод из стейкинга отменена"
+
 #: src/components/ShareModal/ShareCardReferralCodeStat.tsx
 msgid "Referral code"
 msgstr "Реферальный код"
@@ -10962,6 +11096,7 @@ msgid "Pending transfer from {sender}"
 msgstr "Ожидается перевод от {sender}"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "{0} tokens reserved for vesting"
 msgstr "Токенов зарезервировано для вестинга: {0}"
 
@@ -11056,6 +11191,10 @@ msgstr "Рыночные ордера"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buying"
 msgstr "Покупка"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake request submitted"
+msgstr "Заявка на вывод из стейкинга отправлена"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
@@ -11199,6 +11338,10 @@ msgstr "TVL включает GMX в стейкинге, пулы GM и обес�
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Venus"
 msgstr "Venus"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "This amount is not ready to withdraw yet"
+msgstr "Эту сумму пока нельзя вывести"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap route available"
@@ -11409,6 +11552,7 @@ msgstr "Адрес получателя"
 msgid "Received on {0}"
 msgstr "Получено в {0}"
 
+#: src/components/Errors/getContractErrorMessage.ts
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Allow all tokens to transfer to the new account"
 msgstr "Разрешить перевод всех токенов на новый аккаунт"
@@ -11543,6 +11687,10 @@ msgstr "Напишите нам любым удобным способом — �
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Change network"
 msgstr "Сменить сеть"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Requesting unstake..."
+msgstr "Отправка заявки..."
 
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM is the liquidity provider token for GMX V2 markets. It accrues 63% of the fees generated by V2 markets."
@@ -12110,6 +12258,10 @@ msgstr "Зарабатывайте на комиссиях от торговли
 msgid "Time elapsed"
 msgstr "Прошло времени"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "No pending transfer from the sender to this account. The sender has to start the transfer again."
+msgstr "Нет ожидающего перевода от отправителя на этот аккаунт. Отправитель должен начать перевод заново."
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "External routing is temporarily paused after a failed attempt. Retry to check for a better rate."
 msgstr "Внешняя маршрутизация временно приостановлена после неудачной попытки. Повторите попытку, чтобы проверить наличие более выгодного курса."
@@ -12275,6 +12427,7 @@ msgstr "Внесение средств…"
 msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
 msgstr "{pools} {verb} из листинга. Выведите ликвидность, так как депозиты больше недоступны, или переведите её в GLV, чтобы продолжать зарабатывать."
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
@@ -12443,6 +12596,10 @@ msgstr "Параметры получения недоступны. Повтор
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards"
 msgstr "Вывод из стейкинга более 20% от максимального количества GMX, которое вы когда-либо размещали в стейкинге, приведёт к сбросу накопленных вознаграждений"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake request failed"
+msgstr "Не удалось создать заявку на вывод из стейкинга"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading chat"
@@ -13147,6 +13304,7 @@ msgid "Invalid receiver address"
 msgstr "Недействительный адрес получателя"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "Withdraw submitted"
 msgstr "Вывод отправлен"
 

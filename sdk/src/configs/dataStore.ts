@@ -113,6 +113,7 @@ export const SUBACCOUNT_EXPIRES_AT = hashString("SUBACCOUNT_EXPIRES_AT");
 export const MULTICHAIN_BALANCE = hashString("MULTICHAIN_BALANCE");
 export const PRICE_FEED_KEY = hashString("PRICE_FEED");
 export const GASLESS_FEATURE_DISABLED_KEY = hashString("GASLESS_FEATURE_DISABLED");
+export const SIGNAL_UNSTAKE_FEATURE_DISABLED_KEY = hashString("SIGNAL_UNSTAKE_FEATURE_DISABLED");
 export const GELATO_RELAY_FEE_MULTIPLIER_FACTOR_KEY = hashString("GELATO_RELAY_FEE_MULTIPLIER_FACTOR");
 export const REQUEST_EXPIRATION_TIME_KEY = hashString("REQUEST_EXPIRATION_TIME");
 
@@ -445,6 +446,10 @@ export function priceFeedKey(token: string) {
 
 export function gaslessFeatureDisabledKey(module: string) {
   return hashData(["bytes32", "address"], [GASLESS_FEATURE_DISABLED_KEY, module]);
+}
+
+export function signalUnstakeFeatureDisabledKey(rewardRouter: string) {
+  return hashData(["bytes32", "address"], [SIGNAL_UNSTAKE_FEATURE_DISABLED_KEY, rewardRouter]);
 }
 
 export function claimTermsKey(distributionId: bigint) {
