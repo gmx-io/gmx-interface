@@ -333,6 +333,7 @@ export function buildTpSlBatchPayloads(p: {
             minOutputAmount: order.minOutputAmount,
             autoCancel: order.autoCancel,
             validFromTime: 0n,
+            decreasePositionSwapType: order.decreasePositionSwapType,
             executionFeeTopUp: bigMath.max(0n, (entry.executionFeeAmount ?? 0n) - order.executionFee),
             executionGasLimit: entry.executionGasLimit,
           })
