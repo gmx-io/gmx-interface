@@ -394,6 +394,16 @@ export default [
                     name: "decreasedAtTime",
                     type: "uint256",
                   },
+                  {
+                    internalType: "int256",
+                    name: "cappedPnlReferencePoolPnlUsd",
+                    type: "int256",
+                  },
+                  {
+                    internalType: "uint256",
+                    name: "cappedPnlAllowancePerPrice",
+                    type: "uint256",
+                  },
                 ],
                 internalType: "struct Position.Numbers",
                 name: "numbers",
@@ -867,6 +877,16 @@ export default [
               {
                 internalType: "uint256",
                 name: "decreasedAtTime",
+                type: "uint256",
+              },
+              {
+                internalType: "int256",
+                name: "cappedPnlReferencePoolPnlUsd",
+                type: "int256",
+              },
+              {
+                internalType: "uint256",
+                name: "cappedPnlAllowancePerPrice",
                 type: "uint256",
               },
             ],
@@ -3223,6 +3243,16 @@ export default [
                 name: "decreasedAtTime",
                 type: "uint256",
               },
+              {
+                internalType: "int256",
+                name: "cappedPnlReferencePoolPnlUsd",
+                type: "int256",
+              },
+              {
+                internalType: "uint256",
+                name: "cappedPnlAllowancePerPrice",
+                type: "uint256",
+              },
             ],
             internalType: "struct Position.Numbers",
             name: "numbers",
@@ -3438,6 +3468,16 @@ export default [
                   {
                     internalType: "uint256",
                     name: "decreasedAtTime",
+                    type: "uint256",
+                  },
+                  {
+                    internalType: "int256",
+                    name: "cappedPnlReferencePoolPnlUsd",
+                    type: "int256",
+                  },
+                  {
+                    internalType: "uint256",
+                    name: "cappedPnlAllowancePerPrice",
                     type: "uint256",
                   },
                 ],
@@ -3978,6 +4018,16 @@ export default [
                   {
                     internalType: "uint256",
                     name: "decreasedAtTime",
+                    type: "uint256",
+                  },
+                  {
+                    internalType: "int256",
+                    name: "cappedPnlReferencePoolPnlUsd",
+                    type: "int256",
+                  },
+                  {
+                    internalType: "uint256",
+                    name: "cappedPnlAllowancePerPrice",
                     type: "uint256",
                   },
                 ],
