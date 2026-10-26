@@ -101,7 +101,7 @@ export function OneClickAdvancedSettings() {
         title={<Trans>One-Click settings</Trans>}
         className="mb-4"
       >
-        <div className="mt-12 flex flex-col gap-14">
+        <div className="flex flex-col gap-14">
           <SyntheticsInfoRow
             label={
               <TooltipWithPortal

@@ -102,7 +102,7 @@ export function OneClickSessions() {
       title={<Trans>One-Click sessions ({sortedSessions.length})</Trans>}
       className="mb-4"
     >
-      <div className="mt-12 flex flex-col gap-12" data-qa="one-click-sessions">
+      <div className="flex flex-col gap-12" data-qa="one-click-sessions">
         <div className="text-12 text-typography-secondary">
           <Trans>
             Each browser where you turn on One-Click Trading has its own session. Bots and apps that trade for you also
