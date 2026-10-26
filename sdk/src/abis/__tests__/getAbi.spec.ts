@@ -96,9 +96,22 @@ describe("Arbitrum Sepolia reader responses", () => {
     }
   );
 
-  it.each([ARBITRUM, AVALANCHE, MEGAETH, AVALANCHE_FUJI])("keeps the existing readers on chain %s", (chainId) => {
-    expect(getAbi(chainId, "SyntheticsReader")).toBe(abis.SyntheticsReader);
-    expect(getAbi(chainId, "GlvReader")).toBe(abis.GlvReader);
+  it.each([ARBITRUM, AVALANCHE, MEGAETH, AVALANCHE_FUJI])("keeps the shared ABIs on chain %s", (chainId) => {
+    for (const abiId of [
+      "ExchangeRouter",
+      "GelatoRelayRouter",
+      "GlvReader",
+      "MultichainClaimsRouter",
+      "MultichainGlvRouter",
+      "MultichainGmRouter",
+      "MultichainOrderRouter",
+      "MultichainSubaccountRouter",
+      "MultichainTransferRouter",
+      "SubaccountGelatoRelayRouter",
+      "SyntheticsReader",
+    ] as const) {
+      expect(getAbi(chainId, abiId)).toBe(abis[abiId]);
+    }
   });
 
   it("keeps other Sepolia contract ABIs unchanged", () => {
