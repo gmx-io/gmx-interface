@@ -44,6 +44,12 @@ import { getMarginDepositProjections, getMarginDepositRiskLevel, isMarginDeposit
 import { getFeeItem, getIsHighPriceImpact, getPriceImpactByAcceptablePrice } from "../fees";
 import { JitLiquidityInfo, getJitMaxReservedUsd } from "../jit/utils";
 import { MarketsInfoData, getAvailableUsdLiquidityForPosition } from "../markets";
+import {
+  ClosingPool,
+  formatMarketClosingDate,
+  getClosingPoolTargetName,
+  getIsSizeIncreasePendingOrder,
+} from "../markets/closingMarkets";
 import { PositionInfo, PositionInfoLoaded, PositionsInfoData } from "../positions";
 import { convertToTokenAmount, convertToUsd } from "../tokens";
 import {
@@ -226,6 +232,49 @@ function getResultingLiquidatableOrderError(positionKey: string | undefined): Or
 
 export const FROZEN_ORDER_ERROR_KEY = "frozen";
 
+function getClosingPoolOrderError(
+  order: OrderInfo,
+  closingPool: ClosingPool | undefined,
+  jitLiquidityMap: Record<string, JitLiquidityInfo> | undefined
+): OrderError | undefined {
+  if (!closingPool || !isPositionOrder(order) || !getIsSizeIncreasePendingOrder(order)) {
+    return undefined;
+  }
+
+  const { poolName } = closingPool;
+  const targetPoolName = getClosingPoolTargetName(closingPool);
+
+  if (closingPool.isClosed) {
+    return {
+      msg: t`Can't fill: ${poolName} pool is closed to new size. Cancel and re-place it in the ${targetPoolName} pool.`,
+      level: "error",
+      key: "closingPoolClosed",
+    };
+  }
+
+  const roomLeftUsd = getAvailableUsdLiquidityForPosition(
+    order.marketInfo,
+    order.isLong,
+    getJitMaxReservedUsd(jitLiquidityMap, order.marketInfo.marketTokenAddress, order.isLong)
+  );
+
+  if (roomLeftUsd < order.sizeDeltaUsd) {
+    return {
+      msg: t`Too big for the room left in the ${poolName} pool. Cancel and re-place it in the ${targetPoolName} pool.`,
+      level: "warning",
+      key: "closingPoolNoRoom",
+    };
+  }
+
+  const closingDate = formatMarketClosingDate(closingPool.closingDate);
+
+  return {
+    msg: t`${poolName} pool: won't fill after ${closingDate}. Cancel and re-place it in the ${targetPoolName} pool.`,
+    level: "warning",
+    key: "closingPoolClosing",
+  };
+}
+
 export function getOrderErrors(p: {
   order: OrderInfo;
   marketsInfoData: MarketsInfoData;
@@ -236,10 +285,20 @@ export function getOrderErrors(p: {
   minCollateralUsd?: bigint;
   userReferralInfo?: UserReferralInfo;
   resultingPositionMarginState?: PositionMarginState;
+  closingPool?: ClosingPool;
 }): { errors: OrderError[]; level: "error" | "warning" | undefined } {
   const { order, positionsInfoData, marketsInfoData, isSetAcceptablePriceImpactEnabled, jitLiquidityMap } = p;
 
-  const errors: OrderError[] = [];
+  const closingPoolError = getClosingPoolOrderError(order, p.closingPool, jitLiquidityMap);
+
+  if (closingPoolError && p.closingPool?.isClosed) {
+    return {
+      errors: [order.isFrozen ? { ...closingPoolError, key: FROZEN_ORDER_ERROR_KEY } : closingPoolError],
+      level: "error",
+    };
+  }
+
+  const errors: OrderError[] = closingPoolError ? [closingPoolError] : [];
 
   if (order.isFrozen) {
     errors.push({
@@ -283,7 +342,7 @@ export function getOrderErrors(p: {
         (order) => order.validFromTime < BigInt(Math.floor(Date.now() / 1000))
       );
 
-      if (currentLiquidity < order.sizeDeltaUsd) {
+      if (!closingPoolError && currentLiquidity < order.sizeDeltaUsd) {
         if (orderWithValidFromTimeExceeded) {
           errors.push({
             msg: t`Parts of this order are waiting for liquidity: they will execute once sufficient liquidity is available`,
@@ -420,7 +479,7 @@ export function getOrderErrors(p: {
         getJitMaxReservedUsd(jitLiquidityMap, positionOrder.marketInfo.marketTokenAddress, positionOrder.isLong)
       );
 
-      if (currentLiquidity < positionOrder.sizeDeltaUsd) {
+      if (!closingPoolError && currentLiquidity < positionOrder.sizeDeltaUsd) {
         errors.push({
           msg: t`Order may not execute: insufficient liquidity at the trigger price. Reduce the order size.`,
           level: "error",

@@ -181,6 +181,10 @@ msgstr "GMX Account를 사용하여 GMX에서 격리 포지션을 개설할 수 
 msgid "Do I need to create codes on each network?"
 msgstr "각 네트워크에서 코드를 생성해야 합니까?"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Your {token} long is in the {poolName} pool, which is closed to new size. This order opens a separate position."
+msgstr "{token} 롱 포지션은 {poolName} 풀에 있으며, 이 풀은 새로운 크기를 받지 않습니다. 이 주문은 별도의 포지션을 엽니다."
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Multichain</0><1>MegaETH support</1><2>Just-in-time liquidity</2>"
 msgstr "<0>멀티체인</0><1>MegaETH 지원</1><2>적시 유동성 공급</2>"
@@ -513,6 +517,10 @@ msgstr "Market Increase 만료됨"
 msgid "Percentage"
 msgstr "비율"
 
+#: src/components/ClosingPoolsNotice/ClosingPoolsNotice.tsx
+msgid "View orders"
+msgstr "주문 보기"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap UI fee"
 msgstr "스왑 UI 수수료"
@@ -594,6 +602,10 @@ msgstr "제휴 보상 수령에 실패했습니다"
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "decrease"
 msgstr "축소"
+
+#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+msgid "{ordersCount, plural, one {# pending order can't fill.} other {# pending orders can't fill.}}"
+msgstr "{ordersCount, plural, other {대기 중인 주문 #개는 체결될 수 없습니다.}}"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in any BTC/USD pool"
@@ -1141,6 +1153,10 @@ msgstr "스테이킹된 토큰 부족"
 msgid "Creating code..."
 msgstr "코드 생성 중..."
 
+#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+msgid "The new USDG pools have more room. Your current positions stay open: hold, add margin, reduce or close any time. Adding size is limited now and stops soon."
+msgstr "새 USDG 풀은 여유가 더 많습니다. 현재 포지션은 그대로 유지됩니다: 언제든지 보유, 마진 추가, 축소 또는 종료할 수 있습니다. 크기 추가는 현재 제한되어 있으며 곧 중단됩니다."
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Conversion creation failed"
 msgstr "전환 생성 실패"
@@ -1225,6 +1241,10 @@ msgstr "Worker"
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max network fee buffer precision is 0.01%"
 msgstr "최대 네트워크 수수료 버퍼 정밀도는 0.01%입니다"
+
+#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+msgid "{ordersCount, plural, one {# pending order will stop filling soon.} other {# pending orders will stop filling soon.}}"
+msgstr "{ordersCount, plural, other {대기 중인 주문 #개가 곧 체결되지 않게 됩니다.}}"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeltaPrime"
@@ -2896,6 +2916,10 @@ msgstr "{orderTypeText} {0} → {1}"
 msgid "Job openings at GMX"
 msgstr "GMX 채용 공고"
 
+#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+msgid "{ordersCount, plural, one {Cancel and re-place it in the USDG pools.} other {Cancel and re-place them in the USDG pools.}}"
+msgstr "{ordersCount, plural, other {취소한 후 USDG 풀에서 다시 주문하세요.}}"
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
@@ -3584,6 +3608,10 @@ msgstr "주소 복사"
 #: src/pages/Announcements/Announcements.tsx
 msgid "Announcements"
 msgstr "공지사항"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing limit order in {0} pool"
+msgstr "{0} 풀에 기존 지정가 주문이 있습니다"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
@@ -4367,6 +4395,10 @@ msgstr "자금이 GMX Account에 입금되었습니다"
 msgid "Why should I enter a referral code?"
 msgstr "추천 코드를 입력해야 하는 이유는 무엇입니까?"
 
+#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+msgid "Your current positions stay open: hold, add margin, reduce or close any time. New positions open in the USDG pools."
+msgstr "현재 포지션은 그대로 유지됩니다: 언제든지 보유, 마진 추가, 축소 또는 종료할 수 있습니다. 새 포지션은 USDG 풀에서 열립니다."
+
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Auto · {activeLabel}"
 msgstr "자동 · {activeLabel}"
@@ -4437,6 +4469,10 @@ msgstr "변환 실패: {0}"
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Adding margin to {positionLabel} with {offerAmount}"
 msgstr "{offerAmount}(으)로 {positionLabel}에 증거금 추가 중"
+
+#: src/lib/i18n.ts
+msgid "{first}, {second} +{restCount} more"
+msgstr "{first}, {second} 외 {restCount}개"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Signing approval..."
@@ -4596,6 +4632,10 @@ msgstr "네트워크 수수료를 위한 Gas가 부족합니다"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to"
 msgstr "{fromText}에서"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "{poolName} pool is closing and isn't taking new stop market orders."
+msgstr "{poolName} 풀이 종료 중이며 새로운 스탑 마켓 주문을 받지 않습니다."
 
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "Frontends"
@@ -5550,6 +5590,7 @@ msgstr "Solana의 GMX(GMTrade로 알려짐)는 별도의 도메인에서 제공�
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
+#: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "TWAP"
@@ -6142,6 +6183,10 @@ msgstr "{tokenInSymbol} 잔액 부족"
 msgid "Page outdated. Refresh"
 msgstr "페이지가 오래되었습니다. 새로고침"
 
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxClosingPool.ts
+msgid "Closed to new TWAP orders"
+msgstr "새 TWAP 주문 마감"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Buy GLV"
@@ -6345,6 +6390,10 @@ msgstr "수수료 데이터를 일시적으로 사용할 수 없습니다"
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Sell fee"
 msgstr "판매 수수료"
+
+#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+msgid "{markets} trading is moving to USDG pools"
+msgstr "{markets} 거래가 USDG 풀로 이전 중입니다"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid oracle price"
@@ -6826,6 +6875,10 @@ msgstr "지원하는"
 msgid "No liquidation price. Margin covers any losses."
 msgstr "청산가가 없습니다. 증거금으로 모든 손실을 충당합니다."
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Can't fill: {poolName} pool is closed to new size. Cancel and re-place it in the {targetPoolName} pool."
+msgstr "체결 불가: {poolName} 풀은 새로운 크기를 받지 않습니다. 취소한 후 {targetPoolName} 풀에서 다시 주문하세요."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Toros"
 msgstr "Toros"
@@ -7090,6 +7143,10 @@ msgstr "Avalanche에서 스테이킹됨"
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "Pending"
 msgstr "대기 중"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "{poolName} pool is closing and isn't taking new limit orders."
+msgstr "{poolName} 풀이 종료 중이며 새로운 지정가 주문을 받지 않습니다."
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "s:"
@@ -7980,6 +8037,10 @@ msgstr "주문 허용 가격"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order failed to execute and is frozen. It stays open and may still execute later if conditions allow.<0/><1/>See the Trades tab for the reason."
 msgstr "주문 체결에 실패하여 동결되었습니다. 주문은 계속 열려 있으며 조건이 충족되면 나중에 체결될 수 있습니다.<0/><1/>사유는 거래 탭에서 확인하세요."
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Too big for the room left in the {poolName} pool. Cancel and re-place it in the {targetPoolName} pool."
+msgstr "{poolName} 풀의 남은 여유에 비해 너무 큽니다. 취소한 후 {targetPoolName} 풀에서 다시 주문하세요."
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Updating {updateOrdersCount} TP/SL orders..."
@@ -9164,6 +9225,10 @@ msgstr "오늘"
 msgid "Link copied"
 msgstr "링크 복사됨"
 
+#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+msgid "The new USDG pools have more room. Your current positions stay open: hold, add margin, reduce or close any time. Adding size is limited now and stops on {date}."
+msgstr "새 USDG 풀은 여유가 더 많습니다. 현재 포지션은 그대로 유지됩니다: 언제든지 보유, 마진 추가, 축소 또는 종료할 수 있습니다. 크기 추가는 현재 제한되어 있으며 {date}에 중단됩니다."
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Total wallet received"
 msgstr "지갑 총 수령액"
@@ -9325,6 +9390,10 @@ msgstr "재승인이 필요하기 전 최대 실행 횟수"
 msgid "Minimum capital used of {0} required to qualify for rankings"
 msgstr "순위 자격을 얻으려면 최소 {0}의 사용 자본이 필요합니다"
 
+#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+msgid "{markets} trading has moved to USDG pools"
+msgstr "{markets} 거래가 USDG 풀로 이전되었습니다"
+
 #: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Proof of reserves"
@@ -9333,6 +9402,10 @@ msgstr "지급준비금 증명"
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "When will I start earning?"
 msgstr "언제부터 수익이 발생합니까?"
+
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxClosingPool.ts
+msgid "Closed to new limit orders"
+msgstr "새 지정가 주문 마감"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No topics"
@@ -9811,6 +9884,10 @@ msgstr "수량"
 msgid "Integrate GMX"
 msgstr "GMX 통합하기"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing position is in {0} pool. Using the selected pool will create a separate position."
+msgstr "기존 포지션은 {0} 풀에 있습니다. 선택한 풀을 사용하면 별도의 포지션이 생성됩니다."
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "At the Take-Profit price, the remaining position would exceed max leverage and the order may not execute."
 msgstr "익절매 가격에서는 남은 포지션이 최대 레버리지를 초과하여 주문이 체결되지 않을 수 있습니다."
@@ -10114,6 +10191,10 @@ msgid "Solo, anonymous account"
 msgstr "1인 익명 계정"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Your {token} short is in the {poolName} pool, which is closed to new size. This order opens a separate position."
+msgstr "{token} 숏 포지션은 {poolName} 풀에 있으며, 이 풀은 새로운 크기를 받지 않습니다. 이 주문은 별도의 포지션을 엽니다."
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Switch to {0} pool"
 msgstr "{0} 풀로 전환"
@@ -10406,6 +10487,10 @@ msgstr "코드 소유자({0})에게 적립됩니다."
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Retry external route"
 msgstr "외부 경로 재시도"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "{poolName} pool: won't fill after {closingDate}. Cancel and re-place it in the {targetPoolName} pool."
+msgstr "{poolName} 풀: {closingDate} 이후에는 체결되지 않습니다. 취소한 후 {targetPoolName} 풀에서 다시 주문하세요."
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Total realized and unrealized PnL for the period. Includes price impact and fees."
@@ -11055,6 +11140,10 @@ msgstr "숏 유동성"
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "Quick hits"
 msgstr "핵심 요약"
+
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxClosingPool.ts
+msgid "Closed to new stop market orders"
+msgstr "새 스탑 마켓 주문 마감"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -11781,6 +11870,10 @@ msgstr "수령할 배분을 하나 이상 선택하십시오"
 msgid "Buy"
 msgstr "구매"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "{poolName} pool is closing and isn't taking new TWAP orders."
+msgstr "{poolName} 풀이 종료 중이며 새로운 TWAP 주문을 받지 않습니다."
+
 #: src/components/MarginRemediation/MarginRemediationActions.tsx
 msgid "Order may not execute: the resulting position would be liquidatable at the trigger price. <0>Deposit margin</0> or reduce the order size."
 msgstr "주문이 체결되지 않을 수 있습니다: 주문 체결 후 포지션이 조건가에서 청산될 수 있는 상태가 됩니다. <0>증거금을 입금</0>하거나 주문 크기를 줄이십시오."
@@ -12183,6 +12276,10 @@ msgstr "수수료와 가격 영향을 최소화하기 위해 여러 GM 풀을 �
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting only available on {chainNames}. Switch networks to continue."
 msgstr "베스팅은 {chainNames}에서만 이용 가능합니다. 계속하려면 네트워크를 전환하십시오."
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Move order to {targetPoolName} pool"
+msgstr "주문을 {targetPoolName} 풀로 이동"
 
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "esGMX rewards:"
@@ -13517,6 +13614,10 @@ msgstr "Express Trading 매개변수 로딩 중..."
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted<0/><1/><2>View</2>"
 msgstr "승인이 제출되었습니다<0/><1/><2>보기</2>"
+
+#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+msgid "{ordersCount, plural, one {# pending order won't fill after {date}.} other {# pending orders won't fill after {date}.}}"
+msgstr "{ordersCount, plural, other {대기 중인 주문 #개는 {date} 이후 체결되지 않습니다.}}"
 
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Insufficient {gasPaymentTokensText} in your wallet. Express Trading and One-Click Trading are unavailable."

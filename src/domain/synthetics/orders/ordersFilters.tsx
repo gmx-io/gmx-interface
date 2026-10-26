@@ -8,6 +8,7 @@ export type OrderTypeFilterValue =
   | "trigger-take-profit"
   | "trigger-stop-loss"
   | "twap"
+  | "twap-increase"
   | "swaps-twap"
   | "swaps-limit";
 
@@ -41,6 +42,8 @@ const convertOrderTypeFilterValue = (orderTypeFilter: OrderTypeFilterValue): Ord
       return { type: [OrderType.LimitSwap], groupType: "none" };
     case "twap":
       return { type: [OrderType.LimitIncrease, OrderType.LimitDecrease], groupType: "twap" };
+    case "twap-increase":
+      return { type: [OrderType.LimitIncrease], groupType: "twap" };
     default:
       return mustNeverExist(orderTypeFilter);
   }
