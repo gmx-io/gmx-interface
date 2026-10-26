@@ -1,5 +1,5 @@
 import type { ContractsChainId, SourceChainId } from "configs/chains";
-import { getContract } from "configs/contracts";
+import { getContract, isContractsV2_2_1 } from "configs/contracts";
 import type { IAbstractSigner } from "utils/signer";
 
 import { getGelatoRelayRouterDomain, hashRelayParams } from "./relayParamsUtils";
@@ -18,8 +18,10 @@ export async function signSetTraderReferralCode({
   chainId: ContractsChainId;
   srcChainId: SourceChainId;
 }) {
+  const isV2_2_1 = isContractsV2_2_1(chainId);
   const types = {
     SetTraderReferralCode: [
+      ...(isV2_2_1 ? [{ name: "account", type: "address" }] : []),
       { name: "referralCode", type: "bytes32" },
       { name: "relayParams", type: "bytes32" },
     ],
@@ -27,6 +29,7 @@ export async function signSetTraderReferralCode({
 
   const domain = getGelatoRelayRouterDomain(srcChainId ?? chainId, getContract(chainId, "MultichainOrderRouter"));
   const typedData = {
+    ...(isV2_2_1 ? { account: signer.address } : {}),
     referralCode: referralCode,
     relayParams: hashRelayParams(relayParams),
   };
@@ -47,8 +50,10 @@ export async function signRegisterCode({
   chainId: ContractsChainId;
   srcChainId: SourceChainId;
 }) {
+  const isV2_2_1 = isContractsV2_2_1(chainId);
   const types = {
     RegisterCode: [
+      ...(isV2_2_1 ? [{ name: "account", type: "address" }] : []),
       { name: "referralCode", type: "bytes32" },
       { name: "relayParams", type: "bytes32" },
     ],
@@ -56,6 +61,7 @@ export async function signRegisterCode({
 
   const domain = getGelatoRelayRouterDomain(srcChainId ?? chainId, getContract(chainId, "MultichainOrderRouter"));
   const typedData = {
+    ...(isV2_2_1 ? { account: signer.address } : {}),
     referralCode: referralCode,
     relayParams: hashRelayParams(relayParams),
   };

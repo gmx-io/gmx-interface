@@ -31,7 +31,7 @@ import { hashSignedTypedData, signTypedData, SignTypedDataParams } from "lib/wal
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { AnyChainId, ContractsChainId, SettlementChainId, SourceChainId } from "sdk/configs/chains";
-import { ContractName } from "sdk/configs/contracts";
+import { ContractName, isContractsV2_2_1 } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { type ExpressTxnData, estimateExpressParams as sdkEstimateExpressParams } from "sdk/utils/express";
 import { getBatchTypedData, buildBatchOrderCalldata } from "sdk/utils/express";
@@ -496,8 +496,11 @@ export async function signSetTraderReferralCode({
   srcChainId: SourceChainId;
   shouldUseSignerMethod?: boolean;
 }) {
+  const isV2_2_1 = isContractsV2_2_1(chainId);
+  const account = await signer.getAddress();
   const types = {
     SetTraderReferralCode: [
+      ...(isV2_2_1 ? [{ name: "account", type: "address" }] : []),
       { name: "referralCode", type: "bytes32" },
       { name: "relayParams", type: "bytes32" },
     ],
@@ -505,6 +508,7 @@ export async function signSetTraderReferralCode({
 
   const domain = getGelatoRelayRouterDomain(srcChainId ?? chainId, getContract(chainId, "MultichainOrderRouter"));
   const typedData = {
+    ...(isV2_2_1 ? { account } : {}),
     referralCode: referralCode,
     relayParams: hashRelayParams(relayParams),
   };
@@ -527,8 +531,11 @@ export async function signRegisterCode({
   srcChainId: SourceChainId;
   shouldUseSignerMethod?: boolean;
 }) {
+  const isV2_2_1 = isContractsV2_2_1(chainId);
+  const account = await signer.getAddress();
   const types = {
     RegisterCode: [
+      ...(isV2_2_1 ? [{ name: "account", type: "address" }] : []),
       { name: "referralCode", type: "bytes32" },
       { name: "relayParams", type: "bytes32" },
     ],
@@ -536,6 +543,7 @@ export async function signRegisterCode({
 
   const domain = getGelatoRelayRouterDomain(srcChainId ?? chainId, getContract(chainId, "MultichainOrderRouter"));
   const typedData = {
+    ...(isV2_2_1 ? { account } : {}),
     referralCode: referralCode,
     relayParams: hashRelayParams(relayParams),
   };
