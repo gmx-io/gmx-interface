@@ -32,6 +32,8 @@ describe("Arbitrum Sepolia reader responses", () => {
           cappedPnlPoolTokenAmount: 11n,
           increasedAtTime: 1789995567n,
           decreasedAtTime: 0n,
+          cappedPnlReferencePoolPnlUsd: -13n,
+          cappedPnlAllowancePerPrice: 17n,
         },
         flags: { isLong: false },
       },
