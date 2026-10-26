@@ -217,6 +217,7 @@ export function ReferralCodeFormMultichain({
       {srcChainId && (
         <SyntheticsInfoRow
           label={t`Network fee`}
+          labelClassName="whitespace-nowrap"
           value={
             quoteResult.networkFee !== undefined ? (
               <NetworkFeeValue

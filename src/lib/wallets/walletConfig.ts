@@ -178,8 +178,8 @@ export function getPublicClientWithRpc(
   return publicClient;
 }
 
-function setupWebSocketClientMetrics(publicClient: PublicClient, chainId: number) {
-  (
+export function setupWebSocketClientMetrics(publicClient: PublicClient, chainId: number) {
+  return (
     publicClient.transport as unknown as ReturnType<WebSocketTransport>["config"] &
       ReturnType<WebSocketTransport>["value"]
   )
@@ -219,18 +219,25 @@ function setupWebSocketClientMetrics(publicClient: PublicClient, chainId: number
         });
       };
 
-      if (client.socket.OPEN) {
+      if (client.socket.readyState === client.socket.OPEN) {
         pushConnectedEvent();
       } else {
         client.socket.addEventListener("open", pushConnectedEvent, { once: true });
       }
 
-      if (client.socket.CLOSED) {
+      if (client.socket.readyState === client.socket.CLOSED) {
         pushDisconnectedEvent();
       } else {
         client.socket.addEventListener("close", pushDisconnectedEvent, { once: true });
       }
 
       client.socket.addEventListener("error", pushErrorEvent);
+    })
+    .catch(() => {
+      metrics.pushEvent<ViemWsClientError>({
+        event: "viemWsClient.error",
+        isError: true,
+        data: { chainId, rpcUrl: getWsUrl(chainId as AnyChainId) ?? "" },
+      });
     });
 }

@@ -1,5 +1,6 @@
 export const SELECTED_NETWORK_LOCAL_STORAGE_KEY = "SELECTED_NETWORK";
 export const SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY = "SELECTED_NETWORK_WAS_APP_SELECTED";
+export const SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY = "SELECTED_SOLANA_NETWORK";
 export const SELECTED_SETTLEMENT_CHAIN_ID_KEY = "SELECTED_SETTLEMENT_CHAIN_ID";
 export const SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY = "eagerconnect";
 export const CURRENT_PROVIDER_LOCALSTORAGE_KEY = "currentprovider";
@@ -30,6 +31,14 @@ export const DEBUG_RPC_ENDPOINTS_KEY = "debug_rpc_endpoints";
 export const ORACLE_KEEPER_DEBUG_STATE_KEY = "oracle_keeper_debug_state";
 export const MULTICALL_DEBUG_STATE_KEY = "multicall_debug_state";
 export const DEBUG_ERROR_BOUNDARY_KEY = "debug-error-boundary";
+export const DEBUG_PAXOS_TRANSIT_IGNORE_WHITELIST_KEY = "debug-paxos-transit-ignore-whitelist";
+export const DEBUG_PAXOS_TRANSIT_MOCK_KEY = "debug-paxos-transit-mock";
+export const DEBUG_PAXOS_TRANSIT_FORCE_BUY_USDG_HINT_KEY = "debug-paxos-transit-force-buy-usdg-hint";
+export const DEBUG_PAXOS_TRANSIT_THRESHOLD_USD_KEY = "debug-paxos-transit-threshold-usd";
+export const DEBUG_PAXOS_TRANSIT_FORCE_STANDARD_KEY = "debug-paxos-transit-force-standard";
+export const PAXOS_TRANSIT_ROUTE_PROGRESS_KEY = "paxos-transit-route-progress";
+export const PAXOS_TRANSIT_APPROVAL_PROPOSALS_KEY = "paxos-transit-approval-proposals";
+export const PAXOS_TRANSIT_CONVERSION_PROPOSALS_KEY = "paxos-transit-conversion-proposals";
 export const STATS_API_URL_KEY = "stats-api-url";
 const SORTED_MARKETS_KEY = "sorted-markets-key";
 export const TWAP_NUMBER_OF_PARTS_KEY = "twap-number-of-parts";
@@ -76,12 +85,14 @@ export const METRICS_TIMERS_KEY = "metrics-timers-key";
 export const UI_FLAG_EVENTS_DISMISSED_KEY_PREFIX = "ui-flag-event-dismissed";
 export const DELISTING_ANNOUNCEMENT_DISMISSED_KEY_PREFIX = "delisting-announcement-dismissed";
 export const BALANCER_PROGRAM_ANNOUNCEMENT_DISMISSED_KEY = "balancer-program-announcement-dismissed";
-export const USDG_POOLS_ANNOUNCEMENT_DISMISSED_KEY = "usdg-pools-announcement-dismissed";
+export const USDG_POOLS_ANNOUNCEMENT_DISMISSED_KEY = "usdg-pools-announcement-v2-dismissed";
 
 export const GMX_ACCOUNT_CONNECTED_BANNER_DISMISSED_KEY = "gmx-account-connected-banner-dismissed";
 
 const DEBUG_MULTICALL_BATCHING_KEY = "debug-multicall-batching";
-export const PERMITS_DISABLED_KEY = "permits-disabled";
+// older builds set it on any permit error and never cleared it
+export const LEGACY_PERMITS_DISABLED_KEY = "permits-disabled";
+export const DEBUG_TOKEN_PERMITS_ENABLED_KEY = "debug-token-permits-enabled";
 
 export const AB_FLAG_STORAGE_KEY = "ab-flags";
 
@@ -109,6 +120,7 @@ const GMX_ACCOUNT_GAS_PAYMENT_TOKEN_ADDRESS_KEY = "gmx-account-gas-payment-token
 
 const SUBACCOUNT_APPROVAL_KEY = "subaccount-approval";
 const TOKEN_PERMITS_KEY = "token-permits";
+const TOKEN_PERMITS_FALLBACK_KEY = "token-permits-fallback";
 
 const HIGH_LEVERAGE_WARNING_DISMISSED_TIMESTAMP_KEY = "high-leverage-warning-dismissed-timestamp";
 
@@ -129,6 +141,11 @@ export function getSubaccountApprovalKey(chainId: number, account: string | unde
 export function getTokenPermitsKey(chainId: number, account: string | undefined) {
   if (!chainId || !account) return null;
   return [chainId, account, TOKEN_PERMITS_KEY];
+}
+
+export function getTokenPermitsFallbackKey(chainId: number, account: string | undefined) {
+  if (!chainId || !account) return null;
+  return [chainId, account, TOKEN_PERMITS_FALLBACK_KEY];
 }
 
 export function getSyntheticsListSectionKey(chainId: number) {

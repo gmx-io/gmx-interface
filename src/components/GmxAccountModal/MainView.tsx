@@ -145,7 +145,7 @@ function WalletBlock({ account }: { account: string }) {
         </button>
         <div className="flex items-center gap-8">
           <TooltipWithPortal
-            content={t`Receive to Wallet`}
+            content={t`Receive to wallet`}
             position="bottom"
             tooltipClassName="!min-w-max"
             variant="none"
@@ -155,7 +155,7 @@ function WalletBlock({ account }: { account: string }) {
             </button>
           </TooltipWithPortal>
           <TooltipWithPortal
-            content={t`Send from Wallet`}
+            content={t`Send from wallet`}
             position="bottom"
             tooltipClassName="!min-w-max"
             variant="none"
@@ -196,7 +196,7 @@ function WalletBlock({ account }: { account: string }) {
             </a>
           </TooltipWithPortal>
           <TooltipWithPortal content={t`Disconnect`} position="bottom" tooltipClassName="!min-w-max" variant="none">
-            <button className={WALLET_ICON_BUTTON_GRAY} onClick={handleDisconnect}>
+            <button aria-label={t`Disconnect`} className={WALLET_ICON_BUTTON_GRAY} onClick={handleDisconnect}>
               <DisconnectIcon className="size-16" />
             </button>
           </TooltipWithPortal>
@@ -296,9 +296,9 @@ function GmxAccountBlock({ showDisconnectButton }: { showDisconnectButton: boole
   return (
     <div className="flex flex-col gap-12 rounded-12 border-1/2 border-stroke-primary bg-slate-950/50 p-12">
       <div className="flex items-start justify-between gap-8">
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6" data-qa="gmx-account-balance">
           <span className="text-body-small font-medium text-typography-secondary">
-            <Trans>GMX Account Balance</Trans>
+            <Trans>GMX Account balance</Trans>
           </span>
           <BalanceAmount
             usd={gmxAccountUsd}
@@ -310,7 +310,7 @@ function GmxAccountBlock({ showDisconnectButton }: { showDisconnectButton: boole
         </div>
         {showDisconnectButton && (
           <TooltipWithPortal content={t`Disconnect`} position="bottom" tooltipClassName="!min-w-max" variant="none">
-            <button className={WALLET_ICON_BUTTON_GRAY} onClick={handleDisconnect}>
+            <button aria-label={t`Disconnect`} className={WALLET_ICON_BUTTON_GRAY} onClick={handleDisconnect}>
               <DisconnectIcon className="size-16" />
             </button>
           </TooltipWithPortal>
@@ -414,7 +414,7 @@ function MenuList({ account }: { account: string }) {
     <div className="flex flex-col">
       <MenuRow
         icon={<PnlAnalysisIcon className="size-16" />}
-        label={<Trans>PnL Analysis</Trans>}
+        label={<Trans>PnL analysis</Trans>}
         onClick={handlePnlAnalysisClick}
       />
       <MenuRow
@@ -554,13 +554,13 @@ export function TransferHistoryView() {
         ))}
 
         {!isLoading && fundingHistory && fundingHistory.length === 0 && (
-          <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-slate-100">
-            <Trans>No funding activity</Trans>
+          <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-center text-slate-100">
+            <Trans>No transfer history</Trans>
           </div>
         )}
         {!isLoading && filteredFundingHistory?.length === 0 && fundingHistory && fundingHistory.length > 0 && (
-          <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-slate-100">
-            <Trans>No funding activity matching search</Trans>
+          <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-center text-slate-100">
+            <Trans>No transfer history matching search</Trans>
           </div>
         )}
         {isLoading && (

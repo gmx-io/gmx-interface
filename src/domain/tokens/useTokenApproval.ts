@@ -1,11 +1,13 @@
 import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { Address } from "viem";
+import { useLatest } from "react-use";
+import { isAddressEqual, type Address } from "viem";
 
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { helperToast } from "lib/helperToast";
+import type { TokenApprovalMetricParams } from "lib/metrics";
 import { EMPTY_ARRAY } from "lib/objects";
 import type { WalletSigner } from "lib/wallets";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
@@ -15,6 +17,7 @@ import type { AnyChainId } from "sdk/configs/chains";
 import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 
 import { approveTokens } from "./approveTokens";
+import { getIsGasPaymentTokenApproval } from "./gasPaymentTokenApproval";
 import { getInsufficientApprovalToastContent } from "./insufficientApproval";
 
 interface TokenToApprove {
@@ -29,7 +32,13 @@ interface UseTokenApprovalParams {
   skip?: boolean;
   approveAmount?: bigint;
   allowPermit?: boolean;
+  metric: TokenApprovalMetricContext;
 }
+
+type TokenApprovalMetricContext = Omit<TokenApprovalMetricParams, "isGasPaymentToken"> & {
+  gasPaymentTokenAddress?: string;
+  payTokenAddress?: string;
+};
 
 export interface HandleApproveOptions {
   onApproveFail?: () => void;
@@ -47,6 +56,8 @@ interface UseTokenApprovalReturn {
   isAllowanceLoaded: boolean;
   isApproving: boolean;
   handleApprove: (options?: HandleApproveOptions) => void;
+  /** Whether approving the token would sign a permit instead of sending a transaction */
+  getIsPermitApproval: (tokenAddress: string) => boolean;
 }
 
 export function useTokenApproval({
@@ -56,11 +67,14 @@ export function useTokenApproval({
   skip,
   approveAmount,
   allowPermit = false,
+  metric,
 }: UseTokenApprovalParams): UseTokenApprovalReturn {
   const [approvingToken, setApprovingToken] = useState<string | undefined>();
   const [minedApproval, setMinedApproval] = useState<MinedApproval | undefined>();
-  const { tokenPermits, addTokenPermit, isPermitsDisabled, setIsPermitsDisabled } = useTokenPermitsContext();
+  const { tokenPermits, addTokenPermit, disableTokenPermits, getIsPermitAvailable, accountType } =
+    useTokenPermitsContext();
   const [, setSettlementChainId] = useGmxAccountSettlementChainId();
+  const latestMetric = useLatest(metric);
 
   const mergedTokens = useMemo(() => {
     const map = new Map<string, bigint>();
@@ -89,7 +103,13 @@ export function useTokenApproval({
   const isAllowanceLoading = nothingToCheck ? false : isAllowanceLoadingRaw;
   const isAllowanceLoaded = nothingToCheck ? true : isAllowanceLoadedRaw;
 
-  const permitsOrEmpty = allowPermit && !isPermitsDisabled && tokenPermits ? tokenPermits : EMPTY_ARRAY;
+  const permitsOrEmpty = useMemo(
+    () =>
+      allowPermit && spenderAddress && tokenPermits.length > 0
+        ? tokenPermits.filter((permit) => isAddressEqual(permit.spender as Address, spenderAddress as Address))
+        : EMPTY_ARRAY,
+    [allowPermit, spenderAddress, tokenPermits]
+  );
 
   const tokensToApprove = useMemo(
     () =>
@@ -162,12 +182,21 @@ export function useTokenApproval({
     []
   );
 
+  // the same choice handleApprove makes, so callers can tell a free signature from a paid transaction
+  const getIsPermitApproval = useCallback(
+    (tokenAddress: string) => allowPermit && getIsPermitAvailable(tokenAddress),
+    [allowPermit, getIsPermitAvailable]
+  );
+
   const handleApprove = useCallback(
     async (options?: HandleApproveOptions) => {
       const tokenAddress = tokensToApprove[0];
       if (!chainId || isApproving || !tokenAddress || !spenderAddress) return;
 
-      const permitParams = allowPermit ? { addTokenPermit, setIsPermitsDisabled, isPermitsDisabled } : undefined;
+      const permitParams = getIsPermitApproval(tokenAddress)
+        ? { addTokenPermit, disableTokenPermits, accountType }
+        : undefined;
+      const { gasPaymentTokenAddress, payTokenAddress, ...metricParams } = latestMetric.current;
 
       const doApprove = async (signerToUse: WalletSigner) => {
         setApprovingToken(tokenAddress);
@@ -179,6 +208,13 @@ export function useTokenApproval({
           chainId,
           permitParams,
           approveAmount,
+          metric: {
+            ...metricParams,
+            isGasPaymentToken:
+              gasPaymentTokenAddress !== undefined
+                ? getIsGasPaymentTokenApproval({ tokenAddress, gasPaymentTokenAddress, payTokenAddress })
+                : undefined,
+          },
           onApproveFail: () => {
             setApprovingToken(undefined);
             options?.onApproveFail?.();
@@ -198,13 +234,14 @@ export function useTokenApproval({
       }
     },
     [
+      accountType,
       addTokenPermit,
-      allowPermit,
       approveAmount,
       chainId,
+      disableTokenPermits,
+      getIsPermitApproval,
       isApproving,
-      isPermitsDisabled,
-      setIsPermitsDisabled,
+      latestMetric,
       setSettlementChainId,
       spenderAddress,
       tokensToApprove,
@@ -219,5 +256,6 @@ export function useTokenApproval({
     isAllowanceLoaded,
     isApproving,
     handleApprove,
+    getIsPermitApproval,
   };
 }

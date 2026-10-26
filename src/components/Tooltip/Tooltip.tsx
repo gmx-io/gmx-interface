@@ -187,6 +187,9 @@ export default function Tooltip<T extends ElementType>({
   describesTrigger = true,
   ...containerProps
 }: TooltipProps<T>) {
+  // A disabled button can't take focus, so its handle does: keyboard focus opens the tooltip, like keyboardAccessible
+  const focusesDisabledHandle = Boolean(isHandlerDisabled) && !disabled;
+  const isKeyboardAccessible = keyboardAccessible || focusesDisabledHandle;
   const [visible, setVisible] = useState(false);
   const arrowRef = useRef<SVGSVGElement>(null);
   const referenceRef = useRef<Element | null>(null);
@@ -318,7 +321,7 @@ export default function Tooltip<T extends ElementType>({
     ancestorScroll: closeOnScroll,
   });
 
-  const isDescription = keyboardAccessible && describesTrigger;
+  const isDescription = isKeyboardAccessible && describesTrigger;
   const role = useRole(context, { role: "tooltip", enabled: isDescription });
 
   const { getReferenceProps, getFloatingProps } = useInteractions([hover, click, dismiss, role]);
@@ -326,7 +329,7 @@ export default function Tooltip<T extends ElementType>({
   // Keyboard focus on the handle (or on something inside it) opens the tooltip right away, without animation
   const handleFocus = useCallback(
     (event: FocusEvent) => {
-      if (!keyboardAccessible || disabled || !matchesFocusVisible(event.target as Element)) {
+      if (!isKeyboardAccessible || disabled || !matchesFocusVisible(event.target as Element)) {
         return;
       }
 
@@ -340,7 +343,7 @@ export default function Tooltip<T extends ElementType>({
       openedByKeyboardRef.current = true;
       setVisible(true);
     },
-    [keyboardAccessible, disabled]
+    [isKeyboardAccessible, disabled]
   );
 
   const preventClick = useCallback(
@@ -365,12 +368,12 @@ export default function Tooltip<T extends ElementType>({
       requestAnimationFrame(() => {
         if (hasVisibleFocusWithin(referenceRef.current)) {
           openedByKeyboardRef.current = true;
-          setKeyboardEngaged(keyboardAccessible);
+          setKeyboardEngaged(isKeyboardAccessible);
           setVisible(true);
         }
       });
     },
-    [disabled, visible, keyboardAccessible]
+    [disabled, visible, isKeyboardAccessible]
   );
 
   const handleBlur = useCallback(
@@ -384,7 +387,7 @@ export default function Tooltip<T extends ElementType>({
 
       // Tab from the trigger into the tooltip: FloatingFocusManager takes over and closes it when focus leaves both
       if (
-        keyboardAccessible &&
+        isKeyboardAccessible &&
         nextFocused &&
         (floatingRef.current?.contains(nextFocused) || isFocusGuard(nextFocused))
       ) {
@@ -400,23 +403,23 @@ export default function Tooltip<T extends ElementType>({
 
       setVisible(false);
     },
-    [refs.floating, keyboardAccessible]
+    [refs.floating, isKeyboardAccessible]
   );
 
   // Tab can also reach a link in an open tooltip in page order (after the portal), without passing the trigger.
   // Keyboard focus there counts like focus on the trigger; leaving both closes it, as on the trigger.
   const handleFloatingFocus = useCallback(
     (event: FocusEvent) => {
-      if (keyboardAccessible && !disabled && matchesFocusVisible(event.target as Element)) {
+      if (isKeyboardAccessible && !disabled && matchesFocusVisible(event.target as Element)) {
         setKeyboardEngaged(true);
       }
     },
-    [keyboardAccessible, disabled]
+    [isKeyboardAccessible, disabled]
   );
 
   const handleFloatingBlur = useCallback(
     (event: FocusEvent) => {
-      if (!keyboardAccessible) {
+      if (!isKeyboardAccessible) {
         return;
       }
 
@@ -439,7 +442,7 @@ export default function Tooltip<T extends ElementType>({
 
       setVisible(false);
     },
-    [keyboardAccessible, refs.floating]
+    [isKeyboardAccessible, refs.floating]
   );
 
   const floatingFocusProps = useMemo(
@@ -524,7 +527,7 @@ export default function Tooltip<T extends ElementType>({
 
     // Keyboard users can Tab from the trigger into the tooltip (to reach a link) and out again; it closes once focus
     // leaves both. It never takes focus by itself, and Escape puts focus back on the trigger.
-    if (keyboardAccessible && interactive) {
+    if (isKeyboardAccessible && interactive) {
       tooltipContent = (
         <FloatingFocusManager context={context} modal={false} initialFocus={-1} disabled={!keyboardEngaged}>
           {tooltipContent}
@@ -546,7 +549,7 @@ export default function Tooltip<T extends ElementType>({
 
   // A disabled button can't take focus, so the focusable wrapper stands in for it: an unavailable button with its name
   const disabledHandleProps =
-    keyboardAccessible && isHandlerDisabled
+    isKeyboardAccessible && isHandlerDisabled
       ? { role: "button", "aria-disabled": true, "aria-labelledby": disabledHandleLabelId }
       : undefined;
 
@@ -586,7 +589,7 @@ export default function Tooltip<T extends ElementType>({
         ref={setReference}
         className={cx("Tooltip-handle group", handleClassName)}
         style={handleStyle}
-        tabIndex={handleTabIndex}
+        tabIndex={handleTabIndex ?? (focusesDisabledHandle ? 0 : undefined)}
         {...disabledHandleProps}
         {...getReferenceProps({
           onClick: (e: MouseEvent) => {
@@ -612,23 +615,19 @@ export default function Tooltip<T extends ElementType>({
           )}
           {variant === "icon" && <InfoIcon className={cx("h-16 w-16", iconClassName)} />}
           {variant === "iconStroke" && <InfoIconStroke className={cx("h-16 w-16", iconClassName)} />}
-          {variant === "underline" && (
-            <svg className="Tooltip-underline absolute -bottom-0 left-0 h-1 w-full overflow-hidden">
-              <line
-                stroke="currentColor"
-                x1="0"
-                y1="0"
-                x2="100%"
-                y2="0"
-                strokeWidth="0.75"
-                strokeDasharray="1.25,2.25"
-              />
-            </svg>
-          )}
+          {variant === "underline" && <TooltipUnderline />}
         </div>
       </span>
       {popup}
     </span>
+  );
+}
+
+export function TooltipUnderline() {
+  return (
+    <svg className="Tooltip-underline absolute -bottom-0 left-0 h-1 w-full overflow-hidden">
+      <line stroke="currentColor" x1="0" y1="0" x2="100%" y2="0" strokeWidth="0.75" strokeDasharray="1.25,2.25" />
+    </svg>
   );
 }
 

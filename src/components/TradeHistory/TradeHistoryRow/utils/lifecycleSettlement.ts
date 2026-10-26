@@ -358,7 +358,7 @@ export function getLifecycleSettlementLines(aggregate: LifecycleAggregate): Line
 
 export function getSettlementNotes(isMultichain: boolean): Line[] {
   const notes: Line[] = [
-    { text: t`Excludes claimed funding, price impact rebates and execution fees.`, state: "muted" as const },
+    { text: t`Excludes claimed funding, price impact rebates and execution fees`, state: "muted" as const },
   ];
 
   if (isMultichain) {
@@ -373,7 +373,7 @@ export function getSettlementNotes(isMultichain: boolean): Line[] {
 
 export function getUnreconcilableLifecycleLines(): Line[] {
   return lines({
-    text: t`Full lifecycle reconciliation is unavailable because part of this position's history could not be matched reliably.`,
+    text: t`Full lifecycle reconciliation is unavailable because part of this position's history could not be matched reliably`,
     state: "muted" as const,
   });
 }

@@ -218,20 +218,20 @@ const MIN_COLLATERAL_FOR_LEVERAGE_REASON = "min collateral for leverage";
 function getTradeHistoryErrorMessage(errorName: string, errorArgs?: unknown) {
   switch (errorName) {
     case CustomErrorName.DisabledFeature:
-      return t`This action is currently disabled`;
+      return t`This action is disabled`;
     case CustomErrorName.InsufficientExecutionFee:
       return t`Execution fee is too low for current network costs`;
     case CustomErrorName.InsufficientMarketTokens:
       return t`Insufficient GM tokens for withdrawal`;
     case CustomErrorName.InsufficientWntAmount:
     case CustomErrorName.InsufficientWntAmountForExecutionFee:
-      return t`Not enough native token was provided for the execution fee`;
+      return t`Insufficient native token provided for the execution fee`;
     case CustomErrorName.InvalidKeeperForFrozenOrder:
       return t`Frozen order can only be executed by an authorized keeper`;
     case CustomErrorName.InvalidOrderPrices:
       return t`Trigger price condition has not been met`;
     case CustomErrorName.InvalidSignature:
-      return t`Invalid signature. Try signing the request again`;
+      return t`Invalid signature. Try signing the request again.`;
     case CustomErrorName.MaxPoolAmountForDepositExceeded:
     case "MaxPoolUsdForDepositExceeded":
       return t`Max deposit capacity reached for this pool`;
@@ -239,15 +239,15 @@ function getTradeHistoryErrorMessage(errorName: string, errorArgs?: unknown) {
       return t`Order is already frozen`;
     case CustomErrorName.EmptyPosition:
     case CustomErrorName.PositionNotFound:
-      return t`Position not found. It may have been closed`;
+      return t`Position not found. It may have been closed.`;
     case CustomErrorName.RequestNotYetCancellable:
-      return t`Request cannot be canceled yet. Try again after the cancellation delay`;
+      return t`Request cannot be canceled yet. Try again after the cancellation delay.`;
     case CustomErrorName.UnsupportedOrderType:
       return t`This order type is not supported`;
     case CustomErrorName.DepositNotFound:
-      return t`Deposit not found. It may have been executed or canceled`;
+      return t`Deposit not found. It may have been executed or canceled.`;
     case CustomErrorName.WithdrawalNotFound:
-      return t`Withdrawal not found. It may have been executed or canceled`;
+      return t`Withdrawal not found. It may have been executed or canceled.`;
     case CustomErrorName.InsufficientFundsToPayForCosts:
       return t`Insufficient collateral to cover order costs`;
     case CustomErrorName.LiquidatablePosition:

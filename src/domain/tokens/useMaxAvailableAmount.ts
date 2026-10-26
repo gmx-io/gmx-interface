@@ -230,10 +230,10 @@ export function getMaxActionTooltip({
       return t`Reserves ~${holdback} ${symbol} for this transaction's fee. Leaves no ${symbol} in your ${source} for future Express fees.`;
     }
     if (hasHoldback) {
-      return t`Reserves ~${holdback} ${symbol} for this transaction's fee.`;
+      return t`Reserves ~${holdback} ${symbol} for this transaction's fee`;
     }
     if (hasReserve) {
-      return t`Leaves no ${symbol} in your ${source} for future Express fees.`;
+      return t`Leaves no ${symbol} in your ${source} for future Express fees`;
     }
     return undefined;
   }
@@ -245,10 +245,10 @@ export function getMaxActionTooltip({
   const reserve = formatBalanceAmount(reserveAmount, decimals, undefined, { isStable });
 
   if (hasHoldback) {
-    return t`Keeps ${reserve} ${symbol} in your ${source} for future Express fees and ~${holdback} ${symbol} for this transaction's fee.`;
+    return t`Keeps ${reserve} ${symbol} in your ${source} for future Express fees and ~${holdback} ${symbol} for this transaction's fee`;
   }
 
-  return t`Keeps ${reserve} ${symbol} in your ${source} for future Express fees.`;
+  return t`Keeps ${reserve} ${symbol} in your ${source} for future Express fees`;
 }
 
 export function getInsufficientFeeTooltip({

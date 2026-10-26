@@ -6,6 +6,7 @@ import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   usePositionsConstants,
+  useProDiscountFactor,
   useTokensData,
   useUiFeeFactor,
   useUserReferralInfo,
@@ -73,11 +74,14 @@ import { getIsHighSwapProfitFee } from "domain/synthetics/trade/utils/warnings";
 import { buildTpSlBatchPayloads, buildTpSlInputPositionData, getTpSlDecreaseAmounts } from "domain/tpsl/sidecar";
 import {
   FULL_POSITION_CLOSE_SIZE_DELTA_USD,
+  getTpSlRemainingPositionWarning,
   isFullClosePositionOrder,
   isTriggerBeyondLiquidation,
+  TpSlRemainingPositionWarning,
 } from "domain/tpsl/utils";
 import { DUST_USD } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
 import {
   calculateDisplayDecimals,
   formatDeltaUsdParts,
@@ -165,6 +169,7 @@ export function AddTPSLModal({
   const { provider } = useJsonRpcProvider(chainId);
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const userReferralInfo = useUserReferralInfo();
+  const proDiscountFactor = useProDiscountFactor();
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
   const uiFeeFactor = useUiFeeFactor();
   const { autoCancelOrdersLimit } = useMaxAutoCancelOrdersState({ positionKey: position.key });
@@ -278,11 +283,17 @@ export function AddTPSLModal({
   }, [slTriggerPrice, markPrice, isLong]);
 
   const getDecreaseAmountsForTrigger = useCallback(
-    (
-      triggerPrice: bigint | undefined,
-      triggerOrderType: OrderType.LimitDecrease | OrderType.StopLossDecrease | undefined,
-      forceDecreaseSwapType: DecreasePositionSwapType | undefined
-    ): DecreasePositionAmounts | undefined => {
+    ({
+      triggerPrice,
+      triggerOrderType,
+      forceDecreaseSwapType,
+      isKeepLeverage = keepLeverage,
+    }: {
+      triggerPrice: bigint | undefined;
+      triggerOrderType: OrderType.LimitDecrease | OrderType.StopLossDecrease | undefined;
+      forceDecreaseSwapType: DecreasePositionSwapType | undefined;
+      isKeepLeverage?: boolean;
+    }): DecreasePositionAmounts | undefined => {
       if (triggerPrice === undefined || !getIsPositionInfoLoaded(position)) {
         return undefined;
       }
@@ -291,7 +302,7 @@ export function AddTPSLModal({
         closeSizeUsd,
         triggerPrice,
         triggerOrderType,
-        keepLeverage,
+        keepLeverage: isKeepLeverage,
         isLimit: false,
         limitPrice: undefined,
         minCollateralUsd,
@@ -300,6 +311,7 @@ export function AddTPSLModal({
         userReferralInfo,
         isSetAcceptablePriceImpactEnabled,
         forceDecreaseSwapType,
+        proDiscountFactor,
       });
     },
     [
@@ -309,6 +321,7 @@ export function AddTPSLModal({
       minCollateralUsd,
       minPositionSizeUsd,
       position,
+      proDiscountFactor,
       uiFeeFactor,
       userReferralInfo,
     ]
@@ -317,19 +330,39 @@ export function AddTPSLModal({
   const receiveSwapType = isReceiveSeparated ? DecreasePositionSwapType.NoSwap : undefined;
 
   const tpDecreaseAmounts = useMemo(
-    () => getDecreaseAmountsForTrigger(tpTriggerPrice, tpTriggerOrderType, receiveSwapType),
+    () =>
+      getDecreaseAmountsForTrigger({
+        triggerPrice: tpTriggerPrice,
+        triggerOrderType: tpTriggerOrderType,
+        forceDecreaseSwapType: receiveSwapType,
+      }),
     [getDecreaseAmountsForTrigger, receiveSwapType, tpTriggerOrderType, tpTriggerPrice]
   );
   const slDecreaseAmounts = useMemo(
-    () => getDecreaseAmountsForTrigger(slTriggerPrice, slTriggerOrderType, receiveSwapType),
+    () =>
+      getDecreaseAmountsForTrigger({
+        triggerPrice: slTriggerPrice,
+        triggerOrderType: slTriggerOrderType,
+        forceDecreaseSwapType: receiveSwapType,
+      }),
     [getDecreaseAmountsForTrigger, receiveSwapType, slTriggerOrderType, slTriggerPrice]
   );
   const tpSplitReceiveDecreaseAmounts = useMemo(
-    () => getDecreaseAmountsForTrigger(tpTriggerPrice, tpTriggerOrderType, DecreasePositionSwapType.NoSwap),
+    () =>
+      getDecreaseAmountsForTrigger({
+        triggerPrice: tpTriggerPrice,
+        triggerOrderType: tpTriggerOrderType,
+        forceDecreaseSwapType: DecreasePositionSwapType.NoSwap,
+      }),
     [getDecreaseAmountsForTrigger, tpTriggerOrderType, tpTriggerPrice]
   );
   const slSplitReceiveDecreaseAmounts = useMemo(
-    () => getDecreaseAmountsForTrigger(slTriggerPrice, slTriggerOrderType, DecreasePositionSwapType.NoSwap),
+    () =>
+      getDecreaseAmountsForTrigger({
+        triggerPrice: slTriggerPrice,
+        triggerOrderType: slTriggerOrderType,
+        forceDecreaseSwapType: DecreasePositionSwapType.NoSwap,
+      }),
     [getDecreaseAmountsForTrigger, slTriggerOrderType, slTriggerPrice]
   );
 
@@ -674,6 +707,60 @@ export function AddTPSLModal({
   const slPriceError = slPriceField?.error ?? undefined;
   const slPriceWarning = slPriceField?.warning ?? undefined;
 
+  const remainingPositionWarning = useMemo(
+    () =>
+      getTpSlRemainingPositionWarning({
+        position,
+        takeProfit: tpPriceError
+          ? undefined
+          : {
+              decreaseAmounts: tpDecreaseAmounts,
+              getDecreaseAmountsWithoutKeepLeverage: () =>
+                getDecreaseAmountsForTrigger({
+                  triggerPrice: tpTriggerPrice,
+                  triggerOrderType: tpTriggerOrderType,
+                  forceDecreaseSwapType: receiveSwapType,
+                  isKeepLeverage: false,
+                }),
+            },
+        stopLoss: slPriceError
+          ? undefined
+          : {
+              decreaseAmounts: slDecreaseAmounts,
+              getDecreaseAmountsWithoutKeepLeverage: () =>
+                getDecreaseAmountsForTrigger({
+                  triggerPrice: slTriggerPrice,
+                  triggerOrderType: slTriggerOrderType,
+                  forceDecreaseSwapType: receiveSwapType,
+                  isKeepLeverage: false,
+                }),
+            },
+        keepLeverage,
+        minCollateralUsd,
+        minPositionSizeUsd,
+        userReferralInfo,
+        proDiscountFactor,
+      }),
+    [
+      getDecreaseAmountsForTrigger,
+      keepLeverage,
+      minCollateralUsd,
+      minPositionSizeUsd,
+      position,
+      proDiscountFactor,
+      receiveSwapType,
+      slDecreaseAmounts,
+      slPriceError,
+      slTriggerOrderType,
+      slTriggerPrice,
+      tpDecreaseAmounts,
+      tpPriceError,
+      tpTriggerOrderType,
+      tpTriggerPrice,
+      userReferralInfo,
+    ]
+  );
+
   const positionOrders = useSelector(makeSelectOrdersByPositionKey(position.key));
 
   const existingFullCloseTp = useMemo(() => {
@@ -868,10 +955,10 @@ export function AddTPSLModal({
         }),
         provider,
         isGmxAccount: srcChainId !== undefined,
-      });
-
-      setIsVisible(false);
-      onSuccess?.();
+      }).then(() => {
+        setIsVisible(false);
+        onSuccess?.();
+      }, reportHandledRejection("addTPSLModal.submit"));
     } finally {
       setIsSubmitting(false);
     }
@@ -1154,6 +1241,8 @@ export function AddTPSLModal({
           onAfterAction={() => setIsVisible(false)}
         />
 
+        {remainingPositionWarning && <RemainingPositionWarningCard warning={remainingPositionWarning} />}
+
         <Button
           variant="primary-action"
           className="w-full"
@@ -1307,5 +1396,39 @@ export function AddTPSLModal({
         </ExpandableRow>
       </div>
     </Modal>
+  );
+}
+
+function RemainingPositionWarningCard({ warning }: { warning: TpSlRemainingPositionWarning }) {
+  const { isTakeProfitAboveMaxLeverage, isStopLossAboveMaxLeverage, isKeepLeverageFix } = warning;
+
+  return (
+    <AlertInfoCard type="warning" hideClose>
+      <div className="flex flex-col gap-8">
+        <div>
+          {isTakeProfitAboveMaxLeverage && isStopLossAboveMaxLeverage ? (
+            <Trans>
+              At the Take-Profit and Stop-Loss prices, the remaining position would exceed max leverage and the orders
+              may not execute.
+            </Trans>
+          ) : isTakeProfitAboveMaxLeverage ? (
+            <Trans>
+              At the Take-Profit price, the remaining position would exceed max leverage and the order may not execute.
+            </Trans>
+          ) : (
+            <Trans>
+              At the Stop-Loss price, the remaining position would exceed max leverage and the order may not execute.
+            </Trans>
+          )}
+        </div>
+        <div>
+          {isKeepLeverageFix ? (
+            <Trans>Turn off "Keep leverage", close the full position, change the trigger price, or add margin.</Trans>
+          ) : (
+            <Trans>Close the full position, change the trigger price, or add margin.</Trans>
+          )}
+        </div>
+      </div>
+    </AlertInfoCard>
   );
 }

@@ -128,6 +128,7 @@ export type DecreasePositionAmounts = {
 
   payedOutputUsd: bigint;
   payedRemainingCollateralUsd: bigint;
+  unpaidCostUsd: bigint;
 
   receiveTokenAmount: bigint;
   receiveUsd: bigint;
@@ -149,6 +150,8 @@ export type DepositAmounts = {
   glvTokenUsd: bigint;
   shortTokenAmount: bigint;
   shortTokenUsd: bigint;
+  initialShortTokenAmount?: bigint;
+  shortTokenSwapPathStats?: SwapPathStats;
   swapFeeUsd: bigint;
   uiFeeUsd: bigint;
   swapPriceImpactDeltaUsd: bigint;

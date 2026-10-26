@@ -3,14 +3,59 @@ import { decodeErrorResult } from "viem";
 import { SignedTokenPermit } from "domain/tokens";
 import { abis } from "sdk/abis";
 
-import { ErrorData, ErrorLike, extendError, parseError } from ".";
+import {
+  CustomError,
+  CustomErrorName,
+  ErrorData,
+  ErrorLike,
+  extendError,
+  extractErrorDataFromViemError,
+  isCustomError,
+  ParsedCustomError,
+  parseError,
+  tryDecodeCustomError,
+} from ".";
 
 export const INVALID_PERMIT_SIGNATURE_ERROR = "Invalid permit signature";
+export const PERMIT_WALLET_CHANGED_ERROR = "Account or network changed while signing a permit";
 export const EXPIRED_PERMIT_DEADLINE_ERROR = "Expired permit deadline";
 export const FAST_EXPRESS_PARAMS_TIMEOUT_ERROR = "fastExpressParams timeout";
 export const SMART_WALLET_CHAIN_UNAVAILABLE_ERROR = "Smart wallet unavailable on verification chain";
 export const SMART_WALLET_WRONG_CHAIN_ERROR = "Smart wallet connected to another chain";
 export const SMART_WALLET_ACCOUNT_CHANGED_ERROR = "Account changed during chain swap";
+
+export function extractErrorRevertData(error: ErrorLike): string | undefined {
+  const data = extractErrorDataFromViemError(error) ?? error.info?.error?.data ?? error.error?.data ?? error.data;
+
+  return typeof data === "string" ? data : undefined;
+}
+
+export function decodeCustomErrorFromError(error: ErrorLike | undefined): ParsedCustomError | undefined {
+  if (!error || typeof error !== "object") {
+    return undefined;
+  }
+
+  const customError = error as CustomError;
+
+  if (isCustomError(customError)) {
+    return { name: customError.name, args: customError.args };
+  }
+
+  const revertData = extractErrorRevertData(error);
+
+  return revertData ? tryDecodeCustomError(revertData) : undefined;
+}
+
+export function decodeInnermostCustomErrorFromError(error: ErrorLike | undefined): ParsedCustomError | undefined {
+  let customError = decodeCustomErrorFromError(error);
+
+  while (customError?.name === CustomErrorName.ExternalCallFailed) {
+    const nestedErrorData = customError.args?.data;
+    customError = typeof nestedErrorData === "string" ? tryDecodeCustomError(nestedErrorData) : undefined;
+  }
+
+  return customError;
+}
 
 export function getIsInsufficientExecutionFeeError(
   error: ErrorLike
@@ -177,11 +222,6 @@ export function getIsPossibleExternalSwapError(error: ErrorLike) {
   return isExternalCallError || isPayloadRelatedError;
 }
 
-export function getIsPriceImpactTooLargeError(error: ErrorLike) {
-  const parsedError = parseError(error);
-
-  return (
-    parsedError?.contractError === "PriceImpactLargerThanOrderSize" ||
-    parsedError?.contractError === "SwapPriceImpactExceedsAmountIn"
-  );
+export function getIsSwapPriceImpactTooLargeError(error: ErrorLike) {
+  return parseError(error)?.contractError === "SwapPriceImpactExceedsAmountIn";
 }

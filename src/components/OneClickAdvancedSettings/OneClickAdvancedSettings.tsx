@@ -119,6 +119,7 @@ export function OneClickAdvancedSettings() {
               label={t`Action(s)`}
               placeholder="0"
               className="w-[112px]"
+              stripLeadingZeros
             />
           </SyntheticsInfoRow>
 
@@ -139,6 +140,7 @@ export function OneClickAdvancedSettings() {
               label={t`Day(s)`}
               placeholder="0"
               className="w-[112px]"
+              stripLeadingZeros
             />
           </SyntheticsInfoRow>
 

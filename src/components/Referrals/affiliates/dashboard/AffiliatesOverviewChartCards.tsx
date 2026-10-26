@@ -144,6 +144,7 @@ export function TradersReferredChartCard({ stats, isLoading, timeRangeInfo }: Ba
           <ExternalLink href={REFERRALS_DOCS_URL} className="text-blue-300">
             Read more
           </ExternalLink>
+          .
         </Trans>
       }
       value={stats?.summary.tradersNet ?? 0}

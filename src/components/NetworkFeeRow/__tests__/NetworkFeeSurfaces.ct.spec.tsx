@@ -12,14 +12,14 @@ type PageLike = {
   getByText: (text: string | RegExp, options?: { exact?: boolean }) => Locator;
 };
 
-const WALLET_CLASSIC_EXPLANATION = "Wallet transactions pay gas in ETH from your Wallet.";
+const WALLET_CLASSIC_EXPLANATION = "Wallet transactions pay gas in ETH from your Wallet";
 const WALLET_EXPRESS_EXPLANATION = "Express fees are paid in your Wallet gas payment token. Change it in Settings.";
 const GMX_ACCOUNT_EXPLANATION =
   "This action is paid from your GMX Account, so its fee is paid in your GMX Account gas payment token. Change it in Settings.";
 const SETTLE_GMX_ACCOUNT_SWITCH_EXPLANATION =
-  "Paid from your GMX Account because your Wallet does not have enough USDC for the fee.";
+  "Paid from your GMX Account because your Wallet does not have enough USDC for the fee";
 const SETTLE_CLASSIC_FALLBACK_EXPLANATION =
-  "Paid in ETH from your Wallet because your Wallet does not have enough USDC for Express.";
+  "Paid in ETH from your Wallet because your Wallet does not have enough USDC for Express";
 const GMX_ACCOUNT_ONLY_BALANCES: BalanceShape = { wallet: "zero", gmxAccount: "huge" };
 const WALLET_ETH_ONLY_BALANCES: BalanceShape = { wallet: "nativeOnly", gmxAccount: "zero" };
 
@@ -107,11 +107,16 @@ function feeValueHandle(row: Locator): Locator {
   return row.locator(".text-right .Tooltip-handle").first();
 }
 
-/** `-<amount> <TOKEN> (-$<usd>) · <source>`; the formatters use non-breaking spaces */
+function sourceIcon(locator: Locator, source: string): Locator {
+  return locator.getByRole("img", { name: source, exact: true });
+}
+
+/** `-<amount> <TOKEN> (-$<usd>)` and the paying balance's icon; the formatters use non-breaking spaces */
 async function expectFeeValue(row: Locator, token: string, source: string) {
   // fee estimation is throttled and, for GM, asynchronous, so give it room on a loaded machine
   await expect(row).toContainText(new RegExp(`-[\\d.,<]+\\s${token}\\s\\(-\\$\\s?[\\d.,<]+\\)`), { timeout: 40_000 });
-  await expect(row).toContainText(`· ${source}`);
+  await expect(sourceIcon(row, source)).toBeVisible();
+  await expect(row).not.toContainText("·");
 }
 
 async function getUsdValue(locator: Locator) {
@@ -160,7 +165,7 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
       expect(await getUsdValue(row)).toBeLessThan(await getUsdValue(maxFeeLine));
       const refundLine = page.getByText("Estimated fee refund").locator("..");
       await expect(refundLine).toContainText(" ETH (");
-      await expect(refundLine).toContainText("· Wallet");
+      await expect(sourceIcon(refundLine, "Wallet")).toBeVisible();
       await expect(refundLine).not.toContainText("USDC");
     });
 
@@ -172,7 +177,7 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
 
       const row = feeRow(page);
       await expectFeeValue(row, "USDC", "GMX Account");
-      await expect(row).not.toContainText("· Wallet");
+      await expect(sourceIcon(row, "Wallet")).toHaveCount(0);
 
       await feeValueHandle(row).hover();
       await expect(page.getByText(GMX_ACCOUNT_EXPLANATION)).toBeVisible();
@@ -359,7 +364,7 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
 
       const networkFeeLine = page.locator(".Tooltip-row").filter({ hasText: "Network fee:" });
       await expect(networkFeeLine).toContainText(/-[\d.,<]+\sETH\s\(-\$\s?[\d.,<]+\)/, { timeout: 20_000 });
-      await expect(networkFeeLine).toContainText("· Wallet");
+      await expect(sourceIcon(networkFeeLine, "Wallet")).toBeVisible();
     });
 
     test("GMX Account without the gas token: the update is blocked and the banner offers a deposit of that token (FEDEV-3924)", async ({
