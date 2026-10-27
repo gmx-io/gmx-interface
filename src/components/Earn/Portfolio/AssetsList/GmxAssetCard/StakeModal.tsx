@@ -159,6 +159,12 @@ export function StakeModal(props: {
     setIsResetAcknowledged(false);
   }, [unstakeValue]);
 
+  useEffect(() => {
+    if (isUnstakePaused) {
+      setUnstakeValue("");
+    }
+  }, [isUnstakePaused, setUnstakeValue]);
+
   const needApproval =
     stakeFarmAddress !== zeroAddress &&
     tokenAllowance !== undefined &&

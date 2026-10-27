@@ -4083,7 +4083,7 @@ msgstr "외부 경로는 Market Swap에만 사용됩니다"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking is paused until the staking upgrade"
-msgstr "스테이킹 업그레이드 전까지 언스테이킹이 일시 중지됩니다"
+msgstr "스테이킹 업그레이드 전까지 언스테이킹이 일시 중지되었습니다"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them."
