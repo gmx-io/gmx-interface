@@ -6736,7 +6736,7 @@ msgstr "{1} [{2}] 内の GM: {0} の購入上限に達しました。別のプ�
 msgid "Turn your audience<0/>into on-chain income"
 msgstr "あなたのオーディエンスを<0/>オンチェーン収入に"
 
-#: src/components/ClosingPoolsLpNotice/closingPoolsLpNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsLpNotice.ts
 msgid "{0, plural, one {We're moving {markets} trading to the new USDG pools, so fees in your current pool will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.} other {We're moving {markets} trading to the new USDG pools, so fees in your current pools will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.}}"
 msgstr "{0, plural, other {{markets} の取引を新しい USDG プールへ移行しているため、現在のプールの手数料は減少します。収益を得続けるには、流動性を {gmPools} または GLV [USDG] に移動してください。}}"
 
@@ -7244,7 +7244,7 @@ msgstr "繰り返しのウォレット確認不要"
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "{gasPaymentTokensText}を入金"
 
-#: src/components/ClosingPoolsLpNotice/closingPoolsLpNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsLpNotice.ts
 msgid "{0, plural, one {Trading in your {markets} pool is moving to USDG pools} other {Trading in your {markets} pools is moving to USDG pools}}"
 msgstr "{0, plural, other {お持ちの {markets} プールの取引は USDG プールへ移行しています}}"
 

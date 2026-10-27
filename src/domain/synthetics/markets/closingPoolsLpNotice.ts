@@ -2,13 +2,14 @@ import { plural } from "@lingui/macro";
 
 import { USD_DECIMALS } from "config/factors";
 import { MARKET_CLOSING_DATES, isDelistingMarket } from "config/static/markets";
-import { getMarketBaseName } from "domain/synthetics/markets";
 import { TokensData, convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { formatConjunctionList, formatShortList } from "lib/i18n";
 import { expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getTokenAddressByMarket } from "sdk/configs/markets";
 import { getToken } from "sdk/configs/tokens";
+
+import { getMarketBaseName } from "./utils";
 
 const CLOSING_POOLS_LP_NOTICE_MIN_USD = expandDecimals(10_000, USD_DECIMALS);
 

@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 
+import { useClosingPoolsLpNotice } from "domain/synthetics/markets/useClosingPoolsLpNotice";
 import { useUiFlagEvents } from "domain/synthetics/uiFlags/useUiFlagEvents";
 
 import { AnnouncementBanner } from "components/AnnouncementBanner/AnnouncementBanner";
@@ -11,7 +12,6 @@ import { useAppUpdateBanner } from "components/AppUpdateBanner/useAppUpdateBanne
 import { BalancerProgramAnnouncement } from "components/BalancerProgramAnnouncement/BalancerProgramAnnouncement";
 import { BALANCER_PROGRAM_ANNOUNCEMENT_CAMPAIGN } from "components/BalancerProgramAnnouncement/balancerProgramAnnouncementCampaign";
 import { ClosingPoolsLpNoticeBanner } from "components/ClosingPoolsLpNotice/ClosingPoolsLpNoticeBanner";
-import { useClosingPoolsLpNotice } from "components/ClosingPoolsLpNotice/useClosingPoolsLpNotice";
 import { DelistingBanner } from "components/DelistingExitAnnouncements/DelistingBanner";
 import { useDelistingExitAnnouncements } from "components/DelistingExitAnnouncements/useDelistingExitAnnouncements";
 import { useTargetedAnnouncement } from "components/TargetedAnnouncement/useTargetedAnnouncement";

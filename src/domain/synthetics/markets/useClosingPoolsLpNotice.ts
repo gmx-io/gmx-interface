@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useReducer } from "react";
 
 import { CLOSING_POOLS_LP_NOTICE_DISMISSED_KEY } from "config/localStorage";
-import { useMarketTokensDataRequest } from "domain/synthetics/markets";
 import { useChainId } from "lib/chains";
 import { readLocalStorageItem, writeLocalStorageItem } from "lib/localStorage";
 import useWallet from "lib/wallets/useWallet";
@@ -13,7 +12,8 @@ import {
   getNotifiableClosingMarkets,
   getUndismissedClosingMarkets,
   parseDismissedMarkets,
-} from "./closingPoolsLpNoticeLogic";
+} from "./closingPoolsLpNotice";
+import { useMarketTokensDataRequest } from "./useMarketTokensData";
 
 export function useClosingPoolsLpNotice(): {
   notice: ClosingPoolsLpNotice | undefined;

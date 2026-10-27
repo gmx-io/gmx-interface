@@ -1,9 +1,10 @@
 import { Trans } from "@lingui/macro";
 import { Link } from "react-router-dom";
 
+import { ClosingPoolsLpNotice } from "domain/synthetics/markets/closingPoolsLpNotice";
+
 import { AnnouncementBanner } from "components/AnnouncementBanner/AnnouncementBanner";
 
-import { ClosingPoolsLpNotice } from "./closingPoolsLpNoticeLogic";
 
 export function ClosingPoolsLpNoticeBanner({
   notice,

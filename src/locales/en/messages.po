@@ -6736,7 +6736,7 @@ msgstr "GM: {0} buyable cap reached in {1} [{2}]. Choose a different pool, reduc
 msgid "Turn your audience<0/>into on-chain income"
 msgstr "Turn your audience<0/>into on-chain income"
 
-#: src/components/ClosingPoolsLpNotice/closingPoolsLpNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsLpNotice.ts
 msgid "{0, plural, one {We're moving {markets} trading to the new USDG pools, so fees in your current pool will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.} other {We're moving {markets} trading to the new USDG pools, so fees in your current pools will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.}}"
 msgstr "{0, plural, one {We're moving {markets} trading to the new USDG pools, so fees in your current pool will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.} other {We're moving {markets} trading to the new USDG pools, so fees in your current pools will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.}}"
 
@@ -7244,7 +7244,7 @@ msgstr "No repeated wallet confirmations"
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "Deposit {gasPaymentTokensText}"
 
-#: src/components/ClosingPoolsLpNotice/closingPoolsLpNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsLpNotice.ts
 msgid "{0, plural, one {Trading in your {markets} pool is moving to USDG pools} other {Trading in your {markets} pools is moving to USDG pools}}"
 msgstr "{0, plural, one {Trading in your {markets} pool is moving to USDG pools} other {Trading in your {markets} pools is moving to USDG pools}}"
 

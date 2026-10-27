@@ -11,7 +11,7 @@ import {
   getClosingPoolLpHoldings,
   getClosingPoolsLpNotice,
   getUndismissedClosingMarkets,
-} from "./closingPoolsLpNoticeLogic";
+} from "./closingPoolsLpNotice";
 
 i18n.load({ en: {} });
 i18n.activate("en");
