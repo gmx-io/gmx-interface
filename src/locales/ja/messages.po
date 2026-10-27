@@ -4287,6 +4287,10 @@ msgstr "担保を出金できません。残額は{estimatedRemainingCollateralU
 msgid "Funds claimed"
 msgstr "資金を受け取りました"
 
+#: src/components/ClosingPoolsLpNotice/ClosingPoolsLpNoticeBanner.tsx
+msgid "View pools"
+msgstr "プールを見る"
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "Trigger"
 msgstr "トリガー"
@@ -6777,6 +6781,10 @@ msgstr "{1} [{2}] 内の GM: {0} の購入上限に達しました。別のプ�
 msgid "Turn your audience<0/>into on-chain income"
 msgstr "あなたのオーディエンスを<0/>オンチェーン収入に"
 
+#: src/domain/synthetics/markets/closingPoolsLpNotice.ts
+msgid "{0, plural, one {We're moving {markets} trading to the new USDG pools, so fees in your current pool will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.} other {We're moving {markets} trading to the new USDG pools, so fees in your current pools will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.}}"
+msgstr "{0, plural, other {{markets} の取引を新しい USDG プールへ移行しているため、現在のプールの手数料は減少します。収益を得続けるには、流動性を {gmPools} または GLV [USDG] に移動してください。}}"
+
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Permit approval failed. A standard approval transaction is required. Approve the token and try again</0>"
 msgstr "<0>パーミット承認に失敗しました。標準の承認トランザクションが必要です。トークンを承認して再度お試しください</0>"
@@ -7288,6 +7296,10 @@ msgstr "繰り返しのウォレット確認不要"
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "{gasPaymentTokensText}を入金"
+
+#: src/domain/synthetics/markets/closingPoolsLpNotice.ts
+msgid "{0, plural, one {Trading in your {markets} pool is moving to USDG pools} other {Trading in your {markets} pools is moving to USDG pools}}"
+msgstr "{0, plural, other {お持ちの {markets} プールの取引は USDG プールへ移行しています}}"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."

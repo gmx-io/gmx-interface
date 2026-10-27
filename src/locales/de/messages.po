@@ -4287,6 +4287,10 @@ msgstr "Abheben der Sicherheit nicht möglich. Verbleibende Sicherheit von {esti
 msgid "Funds claimed"
 msgstr "Mittel eingelöst"
 
+#: src/components/ClosingPoolsLpNotice/ClosingPoolsLpNoticeBanner.tsx
+msgid "View pools"
+msgstr "Pools anzeigen"
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "Trigger"
 msgstr "Trigger"
@@ -6777,6 +6781,10 @@ msgstr "Kaufobergrenze für GM: {0} in {1} [{2}] erreicht. Wählen Sie einen and
 msgid "Turn your audience<0/>into on-chain income"
 msgstr "Verwandeln Sie Ihr Publikum<0/>in On-Chain-Einkommen"
 
+#: src/domain/synthetics/markets/closingPoolsLpNotice.ts
+msgid "{0, plural, one {We're moving {markets} trading to the new USDG pools, so fees in your current pool will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.} other {We're moving {markets} trading to the new USDG pools, so fees in your current pools will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.}}"
+msgstr "{0, plural, one {Wir verlagern den Handel mit {markets} in die neuen USDG-Pools, daher werden die Gebühren in Ihrem aktuellen Pool sinken. Verschieben Sie Ihre Liquidität in {gmPools} oder GLV [USDG], um weiterhin Erträge zu erzielen.} other {Wir verlagern den Handel mit {markets} in die neuen USDG-Pools, daher werden die Gebühren in Ihren aktuellen Pools sinken. Verschieben Sie Ihre Liquidität in {gmPools} oder GLV [USDG], um weiterhin Erträge zu erzielen.}}"
+
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Permit approval failed. A standard approval transaction is required. Approve the token and try again</0>"
 msgstr "<0>Permit-Genehmigung fehlgeschlagen. Eine Standard-Genehmigungstransaktion ist erforderlich. Genehmigen Sie den Token und versuchen Sie es erneut</0>"
@@ -7288,6 +7296,10 @@ msgstr "Keine wiederholten Wallet-Bestätigungen"
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "{gasPaymentTokensText} einzahlen"
+
+#: src/domain/synthetics/markets/closingPoolsLpNotice.ts
+msgid "{0, plural, one {Trading in your {markets} pool is moving to USDG pools} other {Trading in your {markets} pools is moving to USDG pools}}"
+msgstr "{0, plural, one {Der Handel in Ihrem Pool für {markets} wechselt zu den USDG-Pools} other {Der Handel in Ihren Pools für {markets} wechselt zu den USDG-Pools}}"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."

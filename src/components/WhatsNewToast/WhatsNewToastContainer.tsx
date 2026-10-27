@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 
+import { useClosingPoolsLpNotice } from "domain/synthetics/markets/useClosingPoolsLpNotice";
 import { useClosingPoolsNotices } from "domain/synthetics/markets/useClosingPoolsNotices";
 import { useUiFlagEvents } from "domain/synthetics/uiFlags/useUiFlagEvents";
 
@@ -11,6 +12,7 @@ import { AnnouncementBanner } from "components/AnnouncementBanner/AnnouncementBa
 import { useAppUpdateBanner } from "components/AppUpdateBanner/useAppUpdateBanner";
 import { BalancerProgramAnnouncement } from "components/BalancerProgramAnnouncement/BalancerProgramAnnouncement";
 import { BALANCER_PROGRAM_ANNOUNCEMENT_CAMPAIGN } from "components/BalancerProgramAnnouncement/balancerProgramAnnouncementCampaign";
+import { ClosingPoolsLpNoticeBanner } from "components/ClosingPoolsLpNotice/ClosingPoolsLpNoticeBanner";
 import { ClosingPoolsNotice } from "components/ClosingPoolsNotice/ClosingPoolsNotice";
 import { DelistingBanner } from "components/DelistingExitAnnouncements/DelistingBanner";
 import { useDelistingExitAnnouncements } from "components/DelistingExitAnnouncements/useDelistingExitAnnouncements";
@@ -55,6 +57,7 @@ export function WhatsNewToastContainer() {
   const isAnnouncementsPage = pathname === "/announcements";
   const { isVisible: isWalletExtensionBannerVisible, dismiss: dismissWalletExtensionBanner } =
     useWalletExtensionConnectionBanner(pathname);
+  const { notice: closingPoolsLpNotice, dismiss: dismissClosingPoolsLpNotice } = useClosingPoolsLpNotice();
   const { isVisible: isAppUpdateVisible, dismiss: dismissAppUpdate, applyUpdate } = useAppUpdateBanner();
   const appUpdateFooterLink = useMemo(() => ({ text: APP_UPDATE_RELOAD_LABEL, onClick: applyUpdate }), [applyUpdate]);
 
@@ -134,6 +137,13 @@ export function WhatsNewToastContainer() {
               </div>
             </motion.div>
           ))}
+          {closingPoolsLpNotice && (
+            <motion.div key="closing-pools-lp" initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
+              <div className="pb-12">
+                <ClosingPoolsLpNoticeBanner notice={closingPoolsLpNotice} onDismiss={dismissClosingPoolsLpNotice} />
+              </div>
+            </motion.div>
+          )}
           {isAppUpdateVisible && (
             <motion.div key="app-update" initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
               <div className="pb-12">
