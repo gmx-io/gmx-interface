@@ -7556,6 +7556,10 @@ msgstr "委托"
 msgid "Harmonix"
 msgstr "Harmonix"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstaking takes {0} days. You can withdraw this amount as GMX or esGMX from {1}. Until then it stays staked but stops counting toward Staking Power. You can cancel the request at any time."
+msgstr "解除质押需要 {0} 天。您可以从 {1} 起以 GMX 或 esGMX 提取该数量。在此之前它仍处于质押状态，但不再计入质押权重。您可以随时取消该请求。"
+
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Tier upgrades are reviewed manually by the GMX team based on your weekly performance. If you meet the requirements consistently, you can apply for an upgrade via the <0>GMX Partner Account: Telegram</0>."
 msgstr "GMX 团队会根据您的每周表现人工审核等级升级。如果您持续满足要求，可以通过 <0>GMX Partner Account: Telegram</0> 申请升级。"
@@ -9026,10 +9030,6 @@ msgstr "超出最大金额"
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {nativeTokenSymbol} in your Wallet for gas on {chainName}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
 msgstr "您钱包中用于支付 {chainName} 上 Gas 的 {nativeTokenSymbol} 不足。请<0>兑换</0>或<1>通过跨链桥转入</1> {nativeTokenSymbol}。"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking takes {0} days. You can withdraw this amount from {1}. Until then it stays staked but stops counting toward Staking Power. You can cancel the request at any time."
-msgstr "解除质押需要 {0} 天。您可以从 {1} 起提取该数量。在此之前它仍处于质押状态，但不再计入质押权重。您可以随时取消该请求。"
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx

@@ -7556,6 +7556,10 @@ msgstr "Delegar"
 msgid "Harmonix"
 msgstr "Harmonix"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstaking takes {0} days. You can withdraw this amount as GMX or esGMX from {1}. Until then it stays staked but stops counting toward Staking Power. You can cancel the request at any time."
+msgstr "Unstakear tarda {0} días. Puede retirar este importe como GMX o esGMX a partir del {1}. Hasta entonces, permanece en staking pero deja de contar para el poder de staking. Puede cancelar la solicitud en cualquier momento."
+
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Tier upgrades are reviewed manually by the GMX team based on your weekly performance. If you meet the requirements consistently, you can apply for an upgrade via the <0>GMX Partner Account: Telegram</0>."
 msgstr "El equipo de GMX revisa manualmente las subidas de nivel en función de su rendimiento semanal. Si cumple los requisitos de forma constante, puede solicitar una subida de nivel a través de <0>GMX Partner Account: Telegram</0>."
@@ -9026,10 +9030,6 @@ msgstr "Superado el importe máximo"
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {nativeTokenSymbol} in your Wallet for gas on {chainName}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
 msgstr "{nativeTokenSymbol} insuficiente en su Monedero para Gas en {chainName}. <0>Intercambie</0> o <1>transfiera por puente</1> {nativeTokenSymbol}."
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking takes {0} days. You can withdraw this amount from {1}. Until then it stays staked but stops counting toward Staking Power. You can cancel the request at any time."
-msgstr "Unstakear tarda {0} días. Puede retirar este importe a partir del {1}. Hasta entonces, permanece en staking pero deja de contar para el poder de staking. Puede cancelar la solicitud en cualquier momento."
 
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx

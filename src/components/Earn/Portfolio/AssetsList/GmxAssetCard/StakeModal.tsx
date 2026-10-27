@@ -648,9 +648,9 @@ export function StakeModal(props: {
           {isUnstakeRequestTab && unstakeDelay !== undefined && (
             <AlertInfoCard type="info" hideClose>
               <Trans>
-                Unstaking takes {getUnstakeDelayDays(unstakeDelay)} days. You can withdraw this amount from{" "}
-                {formatDateTime(Math.floor(Date.now() / 1000) + unstakeDelay)}. Until then it stays staked but stops
-                counting toward Staking Power. You can cancel the request at any time.
+                Unstaking takes {getUnstakeDelayDays(unstakeDelay)} days. You can withdraw this amount as GMX or esGMX
+                from {formatDateTime(Math.floor(Date.now() / 1000) + unstakeDelay)}. Until then it stays staked but
+                stops counting toward Staking Power. You can cancel the request at any time.
               </Trans>
             </AlertInfoCard>
           )}
