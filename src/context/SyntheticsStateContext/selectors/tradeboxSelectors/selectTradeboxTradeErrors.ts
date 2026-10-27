@@ -36,6 +36,8 @@ import {
   selectTradeboxTradeRatios,
   selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { selectTradeboxClosingPoolTradeError } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxClosingPool";
+import { selectTradeboxUsdgMaxInstantAmount } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/tradeboxUsdgConversionSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import {
   ValidationButtonTooltipName,
@@ -207,6 +209,12 @@ export const selectTradeboxIsResultingPositionCheckBlocking = createSelector((q)
 });
 
 const selectTradeboxIncreaseTradeError = createSelector((q) => {
+  const closingPoolTradeError = q(selectTradeboxClosingPoolTradeError);
+
+  if (closingPoolTradeError) {
+    return closingPoolTradeError;
+  }
+
   const marketInfo = q(selectTradeboxMarketInfo);
   const toToken = q(selectTradeboxToToken);
   const fromToken = q(selectTradeboxFromToken);
@@ -260,6 +268,7 @@ const selectTradeboxIncreaseTradeError = createSelector((q) => {
     chainId,
     resultingPositionMarginState,
     isResultingPositionCheckBlocking,
+    instantConversionLimit: q(selectTradeboxUsdgMaxInstantAmount),
   });
 });
 

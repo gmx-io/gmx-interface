@@ -1,11 +1,10 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 
-import { GMX_PARTNER_TELEGRAM_URL } from "config/links";
+import { formatDateTime } from "lib/dates";
 import { formatUsd } from "lib/numbers";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { TransitApprovalProposalAlert } from "components/PaxosTransit/TransitApprovalProposalAlert";
 import { SelectorBase, useSelectorClose } from "components/SelectorBase/SelectorBase";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
@@ -22,15 +21,19 @@ export function ConversionRouteSelector({ transitState }: { transitState: PaxosT
     isRouteSelectable,
     conversionRoutePreference,
     setConversionRoutePreference,
-    shouldShowWhitelistNote,
     isApprovalProposalPending,
     onProposeNewApproval,
     thresholdUsd,
+    isWhitelisted,
+    isZeroFee,
+    isZeroFeePaused,
+    zeroFeeExpectedReopenAt,
   } = transitState;
   const route: ConversionRoute = isTransitRoute ? "transit" : "pool";
   const routeLabel = getRoutePreferenceLabel(route);
   const preference = isRouteSelectable ? conversionRoutePreference : "auto";
   const minAmount = formatUsd(thresholdUsd, { displayDecimals: 0 });
+  const reopenTime = zeroFeeExpectedReopenAt !== undefined ? formatDateTime(zeroFeeExpectedReopenAt) : undefined;
 
   return (
     <>
@@ -52,13 +55,17 @@ export function ConversionRouteSelector({ transitState }: { transitState: PaxosT
                   <br />
                   Direct with Paxos converts with Paxos, the issuer of USDG, in a separate transaction that usually
                   settles in 2–10 min. The converted tokens land in your wallet first.
-                  <br />
-                  <br />
-                  Auto picks the cheaper option. Whitelisted addresses can choose either option and convert USDC to USDG
-                  with no Paxos fee. Other addresses always use Auto, and Direct with Paxos is only offered from{" "}
-                  {minAmount}.
-                  <br />
-                  <br />
+                </Trans>
+                <br />
+                <br />
+                {isWhitelisted ? (
+                  <Trans>Auto picks the cheaper option. You can choose either option.</Trans>
+                ) : (
+                  <Trans>Auto picks the cheaper option. Direct with Paxos is only offered from {minAmount}.</Trans>
+                )}
+                <br />
+                <br />
+                <Trans>
                   The choice is fixed when only one option can handle the amount or a conversion is in progress.
                 </Trans>
               </div>
@@ -80,6 +87,7 @@ export function ConversionRouteSelector({ transitState }: { transitState: PaxosT
                   option={option}
                   isSelected={option === preference}
                   isDisabled={!isRouteSelectable && option !== "auto"}
+                  isZeroFee={isZeroFee}
                   onSelect={setConversionRoutePreference}
                 />
               ))}
@@ -88,13 +96,13 @@ export function ConversionRouteSelector({ transitState }: { transitState: PaxosT
         }
       />
 
-      {shouldShowWhitelistNote && (
+      {isZeroFeePaused && (
         <AlertInfoCard type="info" hideClose>
-          <Trans>
-            Whitelisted addresses convert USDC to USDG with no Paxos fee. To get whitelisted, message{" "}
-            <ExternalLink href={GMX_PARTNER_TELEGRAM_URL}>@GMXPartners</ExternalLink> on Telegram and mention "USDG
-            whitelist".
-          </Trans>
+          {reopenTime ? (
+            <Trans>Zero-fee conversion is paused until {reopenTime}.</Trans>
+          ) : (
+            <Trans>Zero-fee conversion is paused.</Trans>
+          )}
         </AlertInfoCard>
       )}
 
@@ -107,11 +115,13 @@ function RoutePreferenceOption({
   option,
   isSelected,
   isDisabled,
+  isZeroFee,
   onSelect,
 }: {
   option: ConversionRoutePreference;
   isSelected: boolean;
   isDisabled: boolean;
+  isZeroFee: boolean;
   onSelect: (option: ConversionRoutePreference) => void;
 }) {
   const close = useSelectorClose();
@@ -130,7 +140,9 @@ function RoutePreferenceOption({
       }}
     >
       <span className="text-14">{getRoutePreferenceLabel(option)}</span>
-      <span className="text-body-small text-typography-secondary">{getRoutePreferenceDescription(option)}</span>
+      <span className="text-body-small text-typography-secondary">
+        {getRoutePreferenceDescription(option, isZeroFee)}
+      </span>
     </div>
   );
 }
@@ -146,13 +158,15 @@ function getRoutePreferenceLabel(preference: ConversionRoutePreference): string 
   }
 }
 
-function getRoutePreferenceDescription(preference: ConversionRoutePreference): string {
+function getRoutePreferenceDescription(preference: ConversionRoutePreference, isZeroFee: boolean): string {
   switch (preference) {
     case "auto":
       return t`Cheaper option for your amount`;
     case "pool":
       return t`GMX USDC/USDG pool, same transaction`;
     case "transit":
-      return t`USDG issuer, separate transaction, usually 2–10 min. No Paxos fee for whitelisted addresses.`;
+      return isZeroFee
+        ? t`USDG issuer, separate transaction, usually 2–10 min. No Paxos fee.`
+        : t`USDG issuer, separate transaction, usually 2–10 min`;
   }
 }
