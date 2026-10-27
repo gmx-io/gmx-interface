@@ -12,13 +12,15 @@ export type TradeboxSwapRoutePreference = "auto" | TradeboxSwapRoute;
 
 export type PaxosRouteState =
   | { status: "hidden" }
+  | { status: "paused"; expectedReopenAt: number | undefined }
   | { status: "belowMinOrderSize"; minOrderSize: bigint }
-  | { status: "capacityShort"; capacity: bigint | undefined }
+  | { status: "capacityShort"; capacity: bigint }
   | { status: "quote" };
 
 export type TradeboxSwapRouteUnavailableReason =
   | "loading"
   | "noRoute"
+  | "paused"
   | "belowMinOrderSize"
   | "capacityShort"
   | "quoteError";
@@ -40,7 +42,6 @@ export type TradeboxSwapRoutes = {
   isPaxosOffered: boolean;
   isAutoPending: boolean;
   isPreferencePending: boolean;
-  isRouteChoiceRequired: boolean;
   autoRoute: TradeboxSwapRoute | undefined;
   activeRoute: TradeboxSwapRoute | undefined;
 };
@@ -52,6 +53,8 @@ export function getPaxosRouteStates(p: {
   amountIn: bigint;
   amountInUsd: bigint;
   thresholdUsd: bigint;
+  isZeroFeeAvailable: boolean | undefined;
+  zeroFeeExpectedReopenAt: number | undefined;
   zeroFeeCapacity: bigint | undefined;
   zeroFeeMinOrderSize: bigint | undefined;
   standardMinOrderSize: bigint | undefined;
@@ -70,11 +73,17 @@ function getZeroFeeRouteState(p: {
   isWhitelisted: boolean;
   isUsdcToUsdg: boolean;
   amountIn: bigint;
+  isZeroFeeAvailable: boolean | undefined;
+  zeroFeeExpectedReopenAt: number | undefined;
   zeroFeeCapacity: bigint | undefined;
   zeroFeeMinOrderSize: bigint | undefined;
 }): PaxosRouteState {
-  if (!p.isWhitelisted) {
+  if (!p.isWhitelisted || !p.isUsdcToUsdg) {
     return { status: "hidden" };
+  }
+
+  if (!p.isZeroFeeAvailable) {
+    return { status: "paused", expectedReopenAt: p.zeroFeeExpectedReopenAt };
   }
 
   if (p.zeroFeeMinOrderSize !== undefined && p.amountIn < p.zeroFeeMinOrderSize) {
@@ -83,11 +92,21 @@ function getZeroFeeRouteState(p: {
 
   const capacity = p.zeroFeeCapacity ?? 0n;
 
-  if (p.isUsdcToUsdg && capacity < p.amountIn) {
+  if (capacity < p.amountIn) {
     return { status: "capacityShort", capacity };
   }
 
   return { status: "quote" };
+}
+
+/** Below the threshold only whitelisted traders, or a forced debug run, see the standard route */
+export function getIsStandardPaxosRouteShown(p: {
+  isWhitelisted: boolean;
+  isStandardForced: boolean;
+  amountInUsd: bigint;
+  thresholdUsd: bigint;
+}): boolean {
+  return p.isWhitelisted || p.isStandardForced || p.amountInUsd >= p.thresholdUsd;
 }
 
 function getStandardRouteState(p: {
@@ -100,7 +119,7 @@ function getStandardRouteState(p: {
 }): PaxosRouteState {
   const isAlwaysOffered = p.isWhitelisted || p.isStandardForced;
 
-  if (!isAlwaysOffered && p.amountInUsd < p.thresholdUsd) {
+  if (!getIsStandardPaxosRouteShown(p)) {
     return { status: "hidden" };
   }
 
@@ -121,7 +140,6 @@ export function getTradeboxSwapRoutes(p: {
   isStandardForced: boolean;
   instantAmountOut: bigint | undefined;
   isInstantLoading: boolean;
-  zeroFeeEstimatedAmountOut: bigint;
   minSavingAmount: bigint;
   preference: TradeboxSwapRoutePreference;
 }): TradeboxSwapRoutes {
@@ -135,9 +153,7 @@ export function getTradeboxSwapRoutes(p: {
   const isStandardQuoteLoading =
     p.paxosRouteStates.paxosStandard.status === "quote" && !p.standard.quote && !p.standard.isError;
   const isAutoPending =
-    zeroFeeOption?.unavailableReason === "loading" ||
-    (!p.isWhitelisted && isStandardQuoteLoading) ||
-    (isPaxosOffered && p.isInstantLoading);
+    zeroFeeOption?.unavailableReason === "loading" || isStandardQuoteLoading || (isPaxosOffered && p.isInstantLoading);
 
   const instantOption: TradeboxSwapRouteOption = {
     route: "instant",
@@ -147,9 +163,7 @@ export function getTradeboxSwapRoutes(p: {
   };
   const options = isPaxosOffered ? [...paxosOptions, instantOption] : [];
 
-  const autoCandidates = paxosOptions.filter(
-    (option) => option.unavailableReason === undefined && (option.route === "paxosZeroFee" || !p.isWhitelisted)
-  );
+  const autoCandidates = paxosOptions.filter((option) => option.unavailableReason === undefined);
   const bestPaxos = autoCandidates.reduce<TradeboxSwapRouteOption | undefined>(
     (best, option) => (best === undefined || option.amountOut! > best.amountOut! ? option : best),
     undefined
@@ -160,16 +174,6 @@ export function getTradeboxSwapRoutes(p: {
     minSavingAmount: p.minSavingAmount,
   });
 
-  const isRouteChoiceRequired =
-    p.preference === "auto" &&
-    zeroFeeOption?.unavailableReason === "capacityShort" &&
-    (p.instantAmountOut !== undefined || !p.isInstantLoading) &&
-    getIsSavingWorthWaiting({
-      paxosAmountOut: p.zeroFeeEstimatedAmountOut,
-      instantAmountOut: p.instantAmountOut,
-      minSavingAmount: p.minSavingAmount,
-    });
-
   const isPreferenceOffered = p.preference !== "auto" && options.some((option) => option.route === p.preference);
   const isPreferencePending = p.preference !== "auto" && !isPreferenceOffered && isAutoPending;
 
@@ -177,7 +181,7 @@ export function getTradeboxSwapRoutes(p: {
 
   if (isPreferenceOffered) {
     activeRoute = p.preference as TradeboxSwapRoute;
-  } else if (isRouteChoiceRequired || isPreferencePending) {
+  } else if (isPreferencePending) {
     activeRoute = undefined;
   }
 
@@ -186,7 +190,6 @@ export function getTradeboxSwapRoutes(p: {
     isPaxosOffered,
     isAutoPending,
     isPreferencePending,
-    isRouteChoiceRequired,
     autoRoute,
     activeRoute,
   };
@@ -323,20 +326,8 @@ export function getTradeboxPaxosButtonState(p: {
 
   const isRouteWaiting = (p.preference === "auto" && routes.isAutoPending) || routes.isPreferencePending;
   const activeRoute = routes.activeRoute;
-  const insufficientBalanceState =
-    p.walletBalance !== undefined && p.amountIn > p.walletBalance
-      ? { text: t`Insufficient ${tokenIn.symbol} balance`, disabled: true }
-      : undefined;
 
-  if (activeRoute === undefined) {
-    if (routes.isRouteChoiceRequired) {
-      return insufficientBalanceState ?? { text: t`Not enough zero-fee capacity`, disabled: true };
-    }
-
-    return isRouteWaiting ? loading : undefined;
-  }
-
-  if (activeRoute === "instant") {
+  if (activeRoute === undefined || activeRoute === "instant") {
     return isRouteWaiting ? loading : undefined;
   }
 
@@ -352,12 +343,16 @@ export function getTradeboxPaxosButtonState(p: {
     return loading;
   }
 
-  if (insufficientBalanceState) {
-    return insufficientBalanceState;
+  if (p.amountIn > p.walletBalance) {
+    return { text: t`Insufficient ${tokenIn.symbol} balance`, disabled: true };
   }
 
   const option = routes.options.find((routeOption) => routeOption.route === activeRoute);
   const routeState = p.paxosRouteStates[activeRoute];
+
+  if (routeState.status === "paused") {
+    return { text: t`Paxos zero-fee is paused`, disabled: true };
+  }
 
   if (routeState.status === "belowMinOrderSize") {
     const minOrderSize = formatPaxosMinOrderSize(routeState.minOrderSize, tokenIn.decimals);
@@ -394,14 +389,15 @@ export function getTradeboxPaxosDecision(p: {
   amountIn: bigint;
   amountInUsd: bigint;
   thresholdUsd: bigint;
+  isZeroFeeAvailable: boolean | undefined;
+  zeroFeeExpectedReopenAt: number | undefined;
   zeroFeeCapacity: bigint | undefined;
   zeroFeeMinOrderSize: bigint | undefined;
   standardMinOrderSize: bigint | undefined;
-  zeroFee: PaxosQuoteState & { errorStatus: number | undefined };
+  zeroFee: PaxosQuoteState;
   standard: PaxosQuoteState;
   instantAmountOut: bigint | undefined;
   isInstantLoading: boolean;
-  zeroFeeEstimatedAmountOut: bigint;
   minSavingAmount: bigint;
   preference: TradeboxSwapRoutePreference;
   walletBalance: bigint | undefined;
@@ -410,14 +406,10 @@ export function getTradeboxPaxosDecision(p: {
   isConversionInProgress: boolean;
   step: PaxosSubmitStep;
 }) {
-  const quotedRouteStates = getPaxosRouteStates({
+  const paxosRouteStates = getPaxosRouteStates({
     ...p,
     amountIn: p.isPaxosAvailable ? p.amountIn : 0n,
   });
-  const paxosRouteStates: Record<PaxosSwapRoute, PaxosRouteState> =
-    p.zeroFee.errorStatus === 409 && quotedRouteStates.paxosZeroFee.status === "quote"
-      ? { ...quotedRouteStates, paxosZeroFee: { status: "capacityShort", capacity: undefined } }
-      : quotedRouteStates;
 
   const routes = getTradeboxSwapRoutes({ ...p, paxosRouteStates });
   const buttonState = getTradeboxPaxosButtonState({ ...p, routes, paxosRouteStates });

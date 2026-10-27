@@ -39,14 +39,16 @@ vi.mock("context/SyntheticsStateContext/hooks/positionEditorHooks", () => ({
 vi.mock("context/SyntheticsStateContext/selectors/positionEditorSelectors", () => ({
   selectPositionEditorSelectedCollateralToken: "collateralToken",
   selectPositionEditorCollateralInputAmountAndUsd: "collateralInput",
+  selectPositionEditorDepositSwapAmounts: "depositSwapAmounts",
 }));
 
 vi.mock("context/SyntheticsStateContext/utils", async (importOriginal) => ({
   ...(await importOriginal<object>()),
-  useSelector: (key: string) =>
-    key === "collateralToken"
-      ? state.collateralToken
-      : { collateralDeltaAmount: state.collateralDeltaAmount, collateralDeltaUsd: state.collateralDeltaUsd },
+  useSelector: (key: string) => {
+    if (key === "collateralToken") return state.collateralToken;
+    if (key === "depositSwapAmounts") return undefined;
+    return { collateralDeltaAmount: state.collateralDeltaAmount, collateralDeltaUsd: state.collateralDeltaUsd };
+  },
 }));
 
 vi.mock("../hooks/usePositionEditorFees", () => ({

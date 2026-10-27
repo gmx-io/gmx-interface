@@ -1149,7 +1149,9 @@ describe("TradeHistoryRow helpers", () => {
 
   describe("getSettlementTooltipLines", () => {
     it("reconciles against the original margin when the opening row is matched", () => {
-      const result = getSettlementTooltipLines(anchorCloseRow, anchorOpenRow).filter((line) => line !== undefined);
+      const result = getSettlementTooltipLines({ tradeAction: anchorCloseRow, openRow: anchorOpenRow }).filter(
+        (line) => line !== undefined
+      );
 
       expect(result).toEqual([
         "",
@@ -1165,7 +1167,9 @@ describe("TradeHistoryRow helpers", () => {
     });
 
     it("falls back to close-side-only settlement when the opening row is not matched", () => {
-      const result = getSettlementTooltipLines(anchorCloseRow, undefined).filter((line) => line !== undefined);
+      const result = getSettlementTooltipLines({ tradeAction: anchorCloseRow, openRow: undefined }).filter(
+        (line) => line !== undefined
+      );
 
       expect(result).toEqual([
         "",
@@ -1184,7 +1188,9 @@ describe("TradeHistoryRow helpers", () => {
         swapPath: ["0x0000000000000000000000000000000000000001"],
       } as unknown as PositionTradeAction;
 
-      const result = getSettlementTooltipLines(swappedAction, anchorOpenRow).filter((line) => line !== undefined);
+      const result = getSettlementTooltipLines({ tradeAction: swappedAction, openRow: anchorOpenRow }).filter(
+        (line) => line !== undefined
+      );
 
       expect(result.at(-1)).toEqual({ key: "Wallet received", value: "~$ 1,326.31" });
     });
@@ -1196,7 +1202,9 @@ describe("TradeHistoryRow helpers", () => {
         liquidationFeeAmount: 1000000n,
       } as unknown as PositionTradeAction;
 
-      const result = getSettlementTooltipLines(liquidationAction, anchorOpenRow).filter((line) => line !== undefined);
+      const result = getSettlementTooltipLines({ tradeAction: liquidationAction, openRow: anchorOpenRow }).filter(
+        (line) => line !== undefined
+      );
 
       expect(result).toEqual([
         "",
@@ -1217,7 +1225,9 @@ describe("TradeHistoryRow helpers", () => {
         isLong: true,
       } as unknown as PositionTradeAction;
 
-      const result = getSettlementTooltipLines(splitPayoutAction, anchorOpenRow).filter((line) => line !== undefined);
+      const result = getSettlementTooltipLines({ tradeAction: splitPayoutAction, openRow: anchorOpenRow }).filter(
+        (line) => line !== undefined
+      );
 
       expect(result.at(-1)).toEqual({ key: "Wallet received", value: "~$\u200a1,326.31" });
     });
@@ -1228,8 +1238,12 @@ describe("TradeHistoryRow helpers", () => {
         priceImpactDiffUsd: 100n * 10n ** 30n,
       } as unknown as PositionTradeAction;
 
-      const withoutDiff = getSettlementTooltipLines(anchorCloseRow, anchorOpenRow).at(-1) as { value: string };
-      const withDiff = getSettlementTooltipLines(withDiffAction, anchorOpenRow).at(-1) as { value: string };
+      const withoutDiff = getSettlementTooltipLines({ tradeAction: anchorCloseRow, openRow: anchorOpenRow }).at(-1) as {
+        value: string;
+      };
+      const withDiff = getSettlementTooltipLines({ tradeAction: withDiffAction, openRow: anchorOpenRow }).at(-1) as {
+        value: string;
+      };
 
       expect(withoutDiff.value).toBe("~1,326.64\u00a0USDC");
       expect(withDiff.value).toBe("~1,226.61\u00a0USDC");
@@ -1243,15 +1257,19 @@ describe("TradeHistoryRow helpers", () => {
         liquidationFeeAmount: 1_000_000n,
       } as unknown as PositionTradeAction;
 
-      const result = getSettlementTooltipLines(wipedOutAction, anchorOpenRow).at(-1) as { value: string };
+      const result = getSettlementTooltipLines({ tradeAction: wipedOutAction, openRow: anchorOpenRow }).at(-1) as {
+        value: string;
+      };
 
       expect(result.value).toBe("~0.00\u00a0USDC");
     });
 
     it("relabels the received row as a GMX balance movement for multichain closes", () => {
-      const result = getSettlementTooltipLines(anchorCloseRow, anchorOpenRow, true).filter(
-        (line) => line !== undefined
-      );
+      const result = getSettlementTooltipLines({
+        tradeAction: anchorCloseRow,
+        openRow: anchorOpenRow,
+        isMultichain: true,
+      }).filter((line) => line !== undefined);
 
       expect(result.at(-1)).toEqual({ key: "Received at close (GMX balance)", value: "~1,326.64\u00a0USDC" });
     });
