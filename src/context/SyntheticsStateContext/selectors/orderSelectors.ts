@@ -1,3 +1,4 @@
+import { getClosingPool, getIsSizeIncreasePendingOrder } from "domain/synthetics/markets/closingMarkets";
 import {
   OrderErrors,
   PositionOrderInfo,
@@ -5,6 +6,7 @@ import {
   getOrderPositionKey,
   isIncreaseOrderType,
   isOrderForPosition,
+  isPositionOrder,
   isTriggerDecreaseOrderType,
   isTwapOrder,
   sortPositionOrders,
@@ -203,6 +205,32 @@ export const makeSelectTwapIncreaseOrderSequentialMarginState = createSelectorFa
   PER_ORDER_SELECTOR_CACHE_SIZE
 );
 
+export const makeSelectOrderClosingPool = createSelectorFactory(
+  (orderKey: string | undefined) =>
+    createSelector(function selectOrderClosingPool(q) {
+      const order = q((s) => (orderKey ? getByKey(selectOrdersInfoData(s), orderKey) : undefined));
+
+      if (!order || !isPositionOrder(order)) {
+        return undefined;
+      }
+
+      return getClosingPool(q(selectChainId), q(selectMarketsInfoData), order.marketInfo, Date.now());
+    }),
+  PER_ORDER_SELECTOR_CACHE_SIZE
+);
+
+export const makeSelectIsSizeOrderInClosedPool = createSelectorFactory(
+  (orderKey: string) =>
+    createSelector(function selectIsSizeOrderInClosedPool(q) {
+      const order = q((s) => getByKey(selectOrdersInfoData(s), orderKey));
+
+      return Boolean(
+        order && q(makeSelectOrderClosingPool(orderKey))?.isClosed && getIsSizeIncreasePendingOrder(order)
+      );
+    }),
+  PER_ORDER_SELECTOR_CACHE_SIZE
+);
+
 export const makeSelectOrderErrorByOrderKey = createSelectorFactory(
   (orderId: string | undefined) =>
     createSelector(function selectOrderErrorByOrderId(q): OrderErrors {
@@ -245,6 +273,7 @@ export const makeSelectOrderErrorByOrderKey = createSelectorFactory(
         minCollateralUsd,
         userReferralInfo,
         resultingPositionMarginState,
+        closingPool: q(makeSelectOrderClosingPool(orderId)),
       });
 
       return { errors, level };

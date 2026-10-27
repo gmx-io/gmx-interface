@@ -11,6 +11,7 @@ import { calculateStakeBonusPercentage } from "domain/stake/calculateStakeBonusP
 import { getIsRewardRouterChanged, getRewardRouterContract, RewardRouter } from "domain/stake/rewardRouter";
 import { sendStakingActionMetric } from "domain/stake/sendStakingActionMetric";
 import { getRequestableUnstakeAmount, getUnstakeDelayDays } from "domain/stake/unstakeRequests";
+import { useIsUnstakePaused } from "domain/stake/useIsUnstakePaused";
 import {
   getEffectiveHistoricalMax,
   getMaxSafeUnstake,
@@ -142,8 +143,10 @@ export function StakeModal(props: {
   const icons = getIcons(chainId);
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
+  const hasUnstakePauseStarted = useIsUnstakePaused();
 
   const isUnstakeRequest = rewardRouter?.version === "v3";
+  const isUnstakePaused = hasUnstakePauseStarted && rewardRouter?.version === "v2";
 
   const stakeAmount = useMemo(() => parseValue(stakeValue, 18), [stakeValue]);
   const unstakeAmount = useMemo(() => parseValue(unstakeValue, 18), [unstakeValue]);
@@ -169,6 +172,12 @@ export function StakeModal(props: {
   useEffect(() => {
     setIsResetAcknowledged(false);
   }, [unstakeValue]);
+
+  useEffect(() => {
+    if (isUnstakePaused) {
+      setUnstakeValue("");
+    }
+  }, [isUnstakePaused, setUnstakeValue]);
 
   const needApproval =
     stakeFarmAddress !== zeroAddress &&
@@ -251,6 +260,7 @@ export function StakeModal(props: {
     !multipleWalletExtensionsChainError.buttonErrorMessage;
 
   const isUnstakePrimaryEnabled =
+    !isUnstakePaused &&
     !unstakeError &&
     !isUnstaking &&
     rewardRouter !== undefined &&
@@ -441,6 +451,9 @@ export function StakeModal(props: {
       return <Trans>Stake</Trans>;
     }
 
+    if (isUnstakePaused) {
+      return <Trans>Unstake</Trans>;
+    }
     if (unstakeError) {
       return unstakeError;
     }
@@ -461,6 +474,7 @@ export function StakeModal(props: {
     isStaking,
     isUnstaking,
     isUnstakeRequest,
+    isUnstakePaused,
     needApproval,
     tokenSymbol,
     stakeError,
@@ -482,8 +496,9 @@ export function StakeModal(props: {
   const activeMaxAmount = activeTab === "stake" ? stakeMaxAmount : unstakeMaxAmount;
   const activeTokenSymbol = tokenSymbol;
   const activeTitle = activeTab === "stake" ? stakeTitle : unstakeTitle;
+  const isUnstakeTabPaused = activeTab === "unstake" && isUnstakePaused;
 
-  const hasMax = activeMaxAmount !== undefined && activeMaxAmount !== 0n;
+  const hasMax = activeMaxAmount !== undefined && activeMaxAmount !== 0n && !isUnstakeTabPaused;
   const isMaxSelected = (activeTab === "stake" ? stakeAmount : unstakeAmount) === activeMaxAmount;
   const onClickMax = activeTab === "stake" ? handleStakeMax : handleUnstakeMax;
 
@@ -541,6 +556,7 @@ export function StakeModal(props: {
               activeTab === "stake" ? setStakeValue(e.target.value) : setUnstakeValue(e.target.value)
             }
             maxDecimals={18}
+            isDisabled={isUnstakeTabPaused}
           >
             {isUnstakeRequestTab ? (
               <div className="flex items-center gap-4 whitespace-nowrap py-8">
@@ -560,6 +576,12 @@ export function StakeModal(props: {
               </div>
             )}
           </BuyInputSection>
+
+          {isUnstakeTabPaused && (
+            <ColorfulBanner color="yellow" icon={AlertIcon}>
+              <Trans>Unstaking is paused until the staking upgrade</Trans>
+            </ColorfulBanner>
+          )}
 
           {showSafeUnstakeBar && (
             <div className="flex flex-col gap-6">

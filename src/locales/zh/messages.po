@@ -181,6 +181,10 @@ msgstr "您可以使用 GMX Account 在 GMX 上开立独立仓位。"
 msgid "Do I need to create codes on each network?"
 msgstr "我是否需要在每个网络上创建推荐码？"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Your {token} long is in the {poolName} pool, which is closed to new size. This order opens a separate position."
+msgstr "您的 {token} 多头仓位位于 {poolName} 池，该池已不再接受新增规模。此订单将开立一个单独的仓位。"
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Multichain</0><1>MegaETH support</1><2>Just-in-time liquidity</2>"
 msgstr "<0>多链</0><1>MegaETH 支持</1><2>即时流动性</2>"
@@ -517,6 +521,10 @@ msgstr "Market Increase 已过期"
 msgid "Percentage"
 msgstr "百分比"
 
+#: src/components/ClosingPoolsNotice/ClosingPoolsNotice.tsx
+msgid "View orders"
+msgstr "查看订单"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap UI fee"
 msgstr "兑换界面费用"
@@ -598,6 +606,10 @@ msgstr "领取推广奖励失败"
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "decrease"
 msgstr "减仓"
+
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{ordersCount, plural, one {# pending order can't fill.} other {# pending orders can't fill.}}"
+msgstr "{ordersCount, plural, other {# 个挂单无法成交。}}"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in any BTC/USD pool"
@@ -1149,6 +1161,10 @@ msgstr "质押代币不足"
 msgid "Creating code..."
 msgstr "正在创建代码..."
 
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "The new USDG pools have more room. Your current positions stay open: hold, add margin, reduce or close any time. Adding size is limited now and stops soon."
+msgstr "新的 USDG 池容量更大。您当前的仓位保持开立：可随时持有、追加保证金、减仓或平仓。增加规模现已受限，并将很快停止。"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Conversion creation failed"
 msgstr "转换创建失败"
@@ -1237,6 +1253,10 @@ msgstr "Worker"
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max network fee buffer precision is 0.01%"
 msgstr "最大网络费用缓冲精度为 0.01%"
+
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{ordersCount, plural, one {# pending order will stop filling soon.} other {# pending orders will stop filling soon.}}"
+msgstr "{ordersCount, plural, other {# 个挂单即将无法成交。}}"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeltaPrime"
@@ -2928,6 +2948,10 @@ msgstr "{orderTypeText} {0} 换取 {1}"
 msgid "Job openings at GMX"
 msgstr "GMX 招聘职位"
 
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{ordersCount, plural, one {Cancel and re-place it in the USDG pools.} other {Cancel and re-place them in the USDG pools.}}"
+msgstr "{ordersCount, plural, other {请取消并在 USDG 池中重新下单。}}"
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
@@ -3625,6 +3649,10 @@ msgstr "复制地址"
 msgid "Announcements"
 msgstr "公告"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing limit order in {0} pool"
+msgstr "{0} 池中已有一个限价单"
+
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
@@ -4094,6 +4122,10 @@ msgstr "GMX 的 Dune Analytics"
 msgid "External routes are only used for Market Swaps"
 msgstr "外部路由仅用于 Market Swap"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstaking is paused until the staking upgrade"
+msgstr "解除质押已暂停，直至质押升级完成"
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them."
 msgstr "Express 需要您的 GMX Account 中有 {gasPaymentTokensText}。请存入其中一种。"
@@ -4308,6 +4340,10 @@ msgstr "转账开始后 esGMX 归属期金库已变更。发送方需要重新�
 msgid "Funds claimed"
 msgstr "资金已申领"
 
+#: src/components/ClosingPoolsLpNotice/ClosingPoolsLpNoticeBanner.tsx
+msgid "View pools"
+msgstr "查看池"
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "Trigger"
 msgstr "触发"
@@ -4420,6 +4456,10 @@ msgstr "资金已存入您的 GMX Account"
 msgid "Why should I enter a referral code?"
 msgstr "为什么要输入推荐码？"
 
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "Your current positions stay open: hold, add margin, reduce or close any time. New positions open in the USDG pools."
+msgstr "您当前的仓位保持开立：可随时持有、追加保证金、减仓或平仓。新仓位将在 USDG 池中开立。"
+
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Auto · {activeLabel}"
 msgstr "自动 · {activeLabel}"
@@ -4490,6 +4530,10 @@ msgstr "转换失败：{0}"
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Adding margin to {positionLabel} with {offerAmount}"
 msgstr "使用 {offerAmount} 为 {positionLabel} 添加保证金"
+
+#: src/lib/i18n.ts
+msgid "{first}, {second} +{restCount} more"
+msgstr "{first}、{second} 及另外 {restCount} 个"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Signing approval..."
@@ -4653,6 +4697,10 @@ msgstr "Gas 不足，无法支付网络费用"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to"
 msgstr "{fromText} 到"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "{poolName} pool is closing and isn't taking new stop market orders."
+msgstr "{poolName} 池即将关闭，不再接受新的触发市价单。"
 
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "Frontends"
@@ -5619,6 +5667,7 @@ msgstr "Solana 上的 GMX（又称 GMTrade）由独立域名提供服务"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
+#: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "TWAP"
@@ -5786,6 +5835,7 @@ msgstr "应用已禁用，等待 {0} 升级"
 msgid "v:"
 msgstr "v:"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
@@ -6215,6 +6265,10 @@ msgstr "{tokenInSymbol} 余额不足"
 msgid "Page outdated. Refresh"
 msgstr "页面已过期，请刷新"
 
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxClosingPool.ts
+msgid "Closed to new TWAP orders"
+msgstr "不再接受新的 TWAP 订单"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Buy GLV"
@@ -6418,6 +6472,10 @@ msgstr "费用数据暂时不可用"
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Sell fee"
 msgstr "卖出费用"
+
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{markets} trading is moving to USDG pools"
+msgstr "{markets} 交易正在迁移至 USDG 池"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid oracle price"
@@ -6807,6 +6865,10 @@ msgstr "GM：{0} 在 {1} [{2}] 中已达到可买入上限。请选择其他池�
 msgid "Turn your audience<0/>into on-chain income"
 msgstr "把您的受众<0/>变成链上收入"
 
+#: src/domain/synthetics/markets/closingPoolsLpNotice.ts
+msgid "{0, plural, one {We're moving {markets} trading to the new USDG pools, so fees in your current pool will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.} other {We're moving {markets} trading to the new USDG pools, so fees in your current pools will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.}}"
+msgstr "{0, plural, other {我们正在将 {markets} 的交易迁移至新的 USDG 池，因此您当前池中的手续费将会下降。请将您的流动性转入 {gmPools} 或 GLV [USDG] 以继续赚取收益。}}"
+
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Permit approval failed. A standard approval transaction is required. Approve the token and try again</0>"
 msgstr "<0>Permit 授权失败。需要标准授权交易。请授权该代币后重试</0>"
@@ -6904,6 +6966,10 @@ msgstr "支持"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No liquidation price. Margin covers any losses."
 msgstr "无清算价格。保证金足以弥补任何损失。"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Can't fill: {poolName} pool is closed to new size. Cancel and re-place it in the {targetPoolName} pool."
+msgstr "无法成交：{poolName} 池已不再接受新增规模。请取消并在 {targetPoolName} 池中重新下单。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Toros"
@@ -7170,6 +7236,10 @@ msgstr "Avalanche 上已质押"
 msgid "Pending"
 msgstr "待执行"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "{poolName} pool is closing and isn't taking new limit orders."
+msgstr "{poolName} 池即将关闭，不再接受新的限价单。"
+
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "s:"
 msgstr "s："
@@ -7312,6 +7382,10 @@ msgstr "无需重复钱包确认"
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "存入 {gasPaymentTokensText}"
+
+#: src/domain/synthetics/markets/closingPoolsLpNotice.ts
+msgid "{0, plural, one {Trading in your {markets} pool is moving to USDG pools} other {Trading in your {markets} pools is moving to USDG pools}}"
+msgstr "{0, plural, other {您的 {markets} 池的交易正在迁移至 USDG 池}}"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."
@@ -8082,6 +8156,10 @@ msgstr "订单可接受价格"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order failed to execute and is frozen. It stays open and may still execute later if conditions allow.<0/><1/>See the Trades tab for the reason."
 msgstr "订单执行失败，已被冻结。订单仍保持开启，条件允许时仍可能在稍后执行。<0/><1/>请在\"交易\"标签页中查看原因。"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Too big for the room left in the {poolName} pool. Cancel and re-place it in the {targetPoolName} pool."
+msgstr "超出 {poolName} 池的剩余容量。请取消并在 {targetPoolName} 池中重新下单。"
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Updating {updateOrdersCount} TP/SL orders..."
@@ -9276,6 +9354,10 @@ msgstr "今天"
 msgid "Link copied"
 msgstr "链接已复制"
 
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "The new USDG pools have more room. Your current positions stay open: hold, add margin, reduce or close any time. Adding size is limited now and stops on {date}."
+msgstr "新的 USDG 池容量更大。您当前的仓位保持开立：可随时持有、追加保证金、减仓或平仓。增加规模现已受限，并将于 {date} 停止。"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Total wallet received"
 msgstr "钱包累计收到"
@@ -9441,6 +9523,10 @@ msgstr "需要重新授权前的最大操作次数"
 msgid "Minimum capital used of {0} required to qualify for rankings"
 msgstr "需要使用至少 {0} 的资金才能参与排名"
 
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{markets} trading has moved to USDG pools"
+msgstr "{markets} 交易已迁移至 USDG 池"
+
 #: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Proof of reserves"
@@ -9449,6 +9535,10 @@ msgstr "储备证明"
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "When will I start earning?"
 msgstr "我何时开始获得收益？"
+
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxClosingPool.ts
+msgid "Closed to new limit orders"
+msgstr "不再接受新的限价单"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No topics"
@@ -9933,6 +10023,10 @@ msgstr "金额"
 msgid "Integrate GMX"
 msgstr "集成 GMX"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing position is in {0} pool. Using the selected pool will create a separate position."
+msgstr "现有仓位位于 {0} 池。使用所选池将创建单独的仓位。"
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "At the Take-Profit price, the remaining position would exceed max leverage and the order may not execute."
 msgstr "在止盈价格下，剩余仓位将超过最大杠杆，订单可能无法执行。"
@@ -10242,6 +10336,10 @@ msgid "Solo, anonymous account"
 msgstr "单人且匿名账号"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Your {token} short is in the {poolName} pool, which is closed to new size. This order opens a separate position."
+msgstr "您的 {token} 空头仓位位于 {poolName} 池，该池已不再接受新增规模。此订单将开立一个单独的仓位。"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Switch to {0} pool"
 msgstr "切换至 {0} 池"
@@ -10534,6 +10632,10 @@ msgstr "返佣累积给代码所有者（{0}）。"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Retry external route"
 msgstr "重试外部路由"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "{poolName} pool: won't fill after {closingDate}. Cancel and re-place it in the {targetPoolName} pool."
+msgstr "{poolName} 池：{closingDate} 之后将无法成交。请取消并在 {targetPoolName} 池中重新下单。"
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Total realized and unrealized PnL for the period. Includes price impact and fees."
@@ -11183,6 +11285,10 @@ msgstr "做空流动性"
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "Quick hits"
 msgstr "快速要点"
+
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxClosingPool.ts
+msgid "Closed to new stop market orders"
+msgstr "不再接受新的触发市价单"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -11927,6 +12033,10 @@ msgstr "请至少选择一项分发以领取"
 msgid "Buy"
 msgstr "买入"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "{poolName} pool is closing and isn't taking new TWAP orders."
+msgstr "{poolName} 池即将关闭，不再接受新的 TWAP 订单。"
+
 #: src/components/MarginRemediation/MarginRemediationActions.tsx
 msgid "Order may not execute: the resulting position would be liquidatable at the trigger price. <0>Deposit margin</0> or reduce the order size."
 msgstr "订单可能无法执行：生成的仓位在触发价格下将面临清算。请<0>存入保证金</0>或减小订单规模。"
@@ -12329,6 +12439,10 @@ msgstr "为尽可能降低费用和价格影响，兑换通过多个 GM 池进�
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting only available on {chainNames}. Switch networks to continue."
 msgstr "归属期仅在 {chainNames} 上可用。请切换网络以继续。"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Move order to {targetPoolName} pool"
+msgstr "将订单移至 {targetPoolName} 池"
 
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "esGMX rewards:"
@@ -13673,6 +13787,10 @@ msgstr "正在加载 Express Trading 参数..."
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted<0/><1/><2>View</2>"
 msgstr "已提交批准<0/><1/><2>查看</2>"
+
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{ordersCount, plural, one {# pending order won't fill after {date}.} other {# pending orders won't fill after {date}.}}"
+msgstr "{ordersCount, plural, other {# 个挂单在 {date} 之后将无法成交。}}"
 
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Insufficient {gasPaymentTokensText} in your wallet. Express Trading and One-Click Trading are unavailable."
