@@ -4259,6 +4259,10 @@ msgstr "Невозможно вывести обеспечение. Остато
 msgid "Funds claimed"
 msgstr "Средства получены"
 
+#: src/components/ClosingPoolsLpNotice/ClosingPoolsLpNoticeBanner.tsx
+msgid "View pools"
+msgstr "Посмотреть пулы"
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "Trigger"
 msgstr "Триггер"
@@ -4437,6 +4441,10 @@ msgstr "Ошибка конвертации: {0}"
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Adding margin to {positionLabel} with {offerAmount}"
 msgstr "Добавление маржи в {positionLabel} на {offerAmount}"
+
+#: src/lib/i18n.ts
+msgid "{first}, {second} +{restCount} more"
+msgstr "{first}, {second} и ещё {restCount}"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Signing approval..."
@@ -6728,6 +6736,10 @@ msgstr "GM: достигнут лимит покупки {0} в {1} [{2}]. Вы�
 msgid "Turn your audience<0/>into on-chain income"
 msgstr "Превратите свою аудиторию<0/>в ончейн-доход"
 
+#: src/domain/synthetics/markets/closingPoolsLpNotice.ts
+msgid "{0, plural, one {We're moving {markets} trading to the new USDG pools, so fees in your current pool will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.} other {We're moving {markets} trading to the new USDG pools, so fees in your current pools will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.}}"
+msgstr "{0, plural, one {Мы переводим торговлю {markets} в новые пулы USDG, поэтому комиссии в вашем текущем пуле снизятся. Переведите ликвидность в {gmPools} или GLV [USDG], чтобы продолжать зарабатывать.} few {Мы переводим торговлю {markets} в новые пулы USDG, поэтому комиссии в ваших текущих пулах снизятся. Переведите ликвидность в {gmPools} или GLV [USDG], чтобы продолжать зарабатывать.} many {Мы переводим торговлю {markets} в новые пулы USDG, поэтому комиссии в ваших текущих пулах снизятся. Переведите ликвидность в {gmPools} или GLV [USDG], чтобы продолжать зарабатывать.} other {Мы переводим торговлю {markets} в новые пулы USDG, поэтому комиссии в ваших текущих пулах снизятся. Переведите ликвидность в {gmPools} или GLV [USDG], чтобы продолжать зарабатывать.}}"
+
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Permit approval failed. A standard approval transaction is required. Approve the token and try again</0>"
 msgstr "<0>Не удалось выполнить одобрение через permit. Требуется стандартная транзакция одобрения. Одобрите токен и попробуйте снова</0>"
@@ -7231,6 +7243,10 @@ msgstr "Без повторных подтверждений кошелька"
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "Внести {gasPaymentTokensText}"
+
+#: src/domain/synthetics/markets/closingPoolsLpNotice.ts
+msgid "{0, plural, one {Trading in your {markets} pool is moving to USDG pools} other {Trading in your {markets} pools is moving to USDG pools}}"
+msgstr "{0, plural, one {Торговля в вашем пуле {markets} переходит в пулы USDG} few {Торговля в ваших пулах {markets} переходит в пулы USDG} many {Торговля в ваших пулах {markets} переходит в пулы USDG} other {Торговля в ваших пулах {markets} переходит в пулы USDG}}"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."
