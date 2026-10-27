@@ -40,6 +40,13 @@ vi.mock("lib/chains", () => ({
   useChainId: () => ({ chainId: ARBITRUM }),
 }));
 
+vi.mock("domain/stake/useRewardRouter", () => ({
+  useRewardRouter: () => ({
+    rewardRouter: { address: getContract(ARBITRUM, "RewardRouter"), version: "v2" },
+    mutateRewardRouter: vi.fn(),
+  }),
+}));
+
 vi.mock("lib/contracts", () => ({
   callContract: vi.fn(),
   contractFetcher: () => undefined,
