@@ -2,6 +2,7 @@ import { type ComponentType } from "react";
 
 import { ColorsChangelog, ColorsExamples } from "./pages/ColorsPage";
 import { TooltipChangelog, TooltipExamples, TooltipGuidelines, TooltipPropsReference } from "./pages/TooltipPage";
+import { TypographyChangelog, TypographyExamples } from "./pages/TypographyPage";
 
 export type DesignSystemTab = "examples" | "props" | "guidelines" | "changelog";
 
@@ -27,6 +28,14 @@ export const DESIGN_SYSTEM_GROUPS: DesignSystemGroup[] = [
         tabs: {
           examples: ColorsExamples,
           changelog: ColorsChangelog,
+        },
+      },
+      {
+        slug: "typography",
+        title: "Typography",
+        tabs: {
+          examples: TypographyExamples,
+          changelog: TypographyChangelog,
         },
       },
     ],
