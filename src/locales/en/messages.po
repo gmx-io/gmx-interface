@@ -181,6 +181,10 @@ msgstr "You can open isolated positions on GMX using your GMX Account."
 msgid "Do I need to create codes on each network?"
 msgstr "Do I need to create codes on each network?"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Your {token} long is in the {poolName} pool, which is closed to new size. This order opens a separate position."
+msgstr "Your {token} long is in the {poolName} pool, which is closed to new size. This order opens a separate position."
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Multichain</0><1>MegaETH support</1><2>Just-in-time liquidity</2>"
 msgstr "<0>Multichain</0><1>MegaETH support</1><2>Just-in-time liquidity</2>"
@@ -513,6 +517,10 @@ msgstr "Expired Market Increase"
 msgid "Percentage"
 msgstr "Percentage"
 
+#: src/components/ClosingPoolsNotice/ClosingPoolsNotice.tsx
+msgid "View orders"
+msgstr "View orders"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap UI fee"
 msgstr "Swap UI fee"
@@ -594,6 +602,10 @@ msgstr "Failed to claim affiliate rewards"
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "decrease"
 msgstr "decrease"
+
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{ordersCount, plural, one {# pending order can't fill.} other {# pending orders can't fill.}}"
+msgstr "{ordersCount, plural, one {# pending order can't fill.} other {# pending orders can't fill.}}"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in any BTC/USD pool"
@@ -1141,6 +1153,10 @@ msgstr "Insufficient staked tokens"
 msgid "Creating code..."
 msgstr "Creating code..."
 
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "The new USDG pools have more room. Your current positions stay open: hold, add margin, reduce or close any time. Adding size is limited now and stops soon."
+msgstr "The new USDG pools have more room. Your current positions stay open: hold, add margin, reduce or close any time. Adding size is limited now and stops soon."
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Conversion creation failed"
 msgstr "Conversion creation failed"
@@ -1225,6 +1241,10 @@ msgstr "Worker"
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max network fee buffer precision is 0.01%"
 msgstr "Max network fee buffer precision is 0.01%"
+
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{ordersCount, plural, one {# pending order will stop filling soon.} other {# pending orders will stop filling soon.}}"
+msgstr "{ordersCount, plural, one {# pending order will stop filling soon.} other {# pending orders will stop filling soon.}}"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeltaPrime"
@@ -2896,6 +2916,10 @@ msgstr "{orderTypeText} {0} for {1}"
 msgid "Job openings at GMX"
 msgstr "Job openings at GMX"
 
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{ordersCount, plural, one {Cancel and re-place it in the USDG pools.} other {Cancel and re-place them in the USDG pools.}}"
+msgstr "{ordersCount, plural, one {Cancel and re-place it in the USDG pools.} other {Cancel and re-place them in the USDG pools.}}"
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
@@ -3584,6 +3608,10 @@ msgstr "Copy address"
 #: src/pages/Announcements/Announcements.tsx
 msgid "Announcements"
 msgstr "Announcements"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing limit order in {0} pool"
+msgstr "Existing limit order in {0} pool"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
@@ -4371,6 +4399,10 @@ msgstr "Funds are now in your GMX Account"
 msgid "Why should I enter a referral code?"
 msgstr "Why should I enter a referral code?"
 
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "Your current positions stay open: hold, add margin, reduce or close any time. New positions open in the USDG pools."
+msgstr "Your current positions stay open: hold, add margin, reduce or close any time. New positions open in the USDG pools."
+
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Auto · {activeLabel}"
 msgstr "Auto · {activeLabel}"
@@ -4604,6 +4636,10 @@ msgstr "Insufficient gas for network fees"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to"
 msgstr "{fromText} to"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "{poolName} pool is closing and isn't taking new stop market orders."
+msgstr "{poolName} pool is closing and isn't taking new stop market orders."
 
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "Frontends"
@@ -5558,6 +5594,7 @@ msgstr "GMX on Solana (known as GMTrade) is served from a separate domain"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
+#: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "TWAP"
@@ -6150,6 +6187,10 @@ msgstr "Insufficient {tokenInSymbol} balance"
 msgid "Page outdated. Refresh"
 msgstr "Page outdated. Refresh"
 
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxClosingPool.ts
+msgid "Closed to new TWAP orders"
+msgstr "Closed to new TWAP orders"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Buy GLV"
@@ -6353,6 +6394,10 @@ msgstr "Fee data is temporarily unavailable"
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Sell fee"
 msgstr "Sell fee"
+
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{markets} trading is moving to USDG pools"
+msgstr "{markets} trading is moving to USDG pools"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid oracle price"
@@ -6838,6 +6883,10 @@ msgstr "Support for"
 msgid "No liquidation price. Margin covers any losses."
 msgstr "No liquidation price. Margin covers any losses."
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Can't fill: {poolName} pool is closed to new size. Cancel and re-place it in the {targetPoolName} pool."
+msgstr "Can't fill: {poolName} pool is closed to new size. Cancel and re-place it in the {targetPoolName} pool."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Toros"
 msgstr "Toros"
@@ -7102,6 +7151,10 @@ msgstr "Staked on Avalanche"
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "Pending"
 msgstr "Pending"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "{poolName} pool is closing and isn't taking new limit orders."
+msgstr "{poolName} pool is closing and isn't taking new limit orders."
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "s:"
@@ -7996,6 +8049,10 @@ msgstr "Order acceptable price"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order failed to execute and is frozen. It stays open and may still execute later if conditions allow.<0/><1/>See the Trades tab for the reason."
 msgstr "Order failed to execute and is frozen. It stays open and may still execute later if conditions allow.<0/><1/>See the Trades tab for the reason."
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Too big for the room left in the {poolName} pool. Cancel and re-place it in the {targetPoolName} pool."
+msgstr "Too big for the room left in the {poolName} pool. Cancel and re-place it in the {targetPoolName} pool."
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Updating {updateOrdersCount} TP/SL orders..."
@@ -9180,6 +9237,10 @@ msgstr "Today"
 msgid "Link copied"
 msgstr "Link copied"
 
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "The new USDG pools have more room. Your current positions stay open: hold, add margin, reduce or close any time. Adding size is limited now and stops on {date}."
+msgstr "The new USDG pools have more room. Your current positions stay open: hold, add margin, reduce or close any time. Adding size is limited now and stops on {date}."
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Total wallet received"
 msgstr "Total wallet received"
@@ -9341,6 +9402,10 @@ msgstr "Maximum actions before reauthorization required"
 msgid "Minimum capital used of {0} required to qualify for rankings"
 msgstr "Minimum capital used of {0} required to qualify for rankings"
 
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{markets} trading has moved to USDG pools"
+msgstr "{markets} trading has moved to USDG pools"
+
 #: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Proof of reserves"
@@ -9349,6 +9414,10 @@ msgstr "Proof of reserves"
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "When will I start earning?"
 msgstr "When will I start earning?"
+
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxClosingPool.ts
+msgid "Closed to new limit orders"
+msgstr "Closed to new limit orders"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No topics"
@@ -9827,6 +9896,10 @@ msgstr "Amount"
 msgid "Integrate GMX"
 msgstr "Integrate GMX"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing position is in {0} pool. Using the selected pool will create a separate position."
+msgstr "Existing position is in {0} pool. Using the selected pool will create a separate position."
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "At the Take-Profit price, the remaining position would exceed max leverage and the order may not execute."
 msgstr "At the Take-Profit price, the remaining position would exceed max leverage and the order may not execute."
@@ -10130,6 +10203,10 @@ msgid "Solo, anonymous account"
 msgstr "Solo, anonymous account"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Your {token} short is in the {poolName} pool, which is closed to new size. This order opens a separate position."
+msgstr "Your {token} short is in the {poolName} pool, which is closed to new size. This order opens a separate position."
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Switch to {0} pool"
 msgstr "Switch to {0} pool"
@@ -10422,6 +10499,10 @@ msgstr "It accrues to the code owner ({0})."
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Retry external route"
 msgstr "Retry external route"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "{poolName} pool: won't fill after {closingDate}. Cancel and re-place it in the {targetPoolName} pool."
+msgstr "{poolName} pool: won't fill after {closingDate}. Cancel and re-place it in the {targetPoolName} pool."
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Total realized and unrealized PnL for the period. Includes price impact and fees."
@@ -11071,6 +11152,10 @@ msgstr "Short liquidity"
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "Quick hits"
 msgstr "Quick hits"
+
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxClosingPool.ts
+msgid "Closed to new stop market orders"
+msgstr "Closed to new stop market orders"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -11797,6 +11882,10 @@ msgstr "Select at least one distribution to claim"
 msgid "Buy"
 msgstr "Buy"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "{poolName} pool is closing and isn't taking new TWAP orders."
+msgstr "{poolName} pool is closing and isn't taking new TWAP orders."
+
 #: src/components/MarginRemediation/MarginRemediationActions.tsx
 msgid "Order may not execute: the resulting position would be liquidatable at the trigger price. <0>Deposit margin</0> or reduce the order size."
 msgstr "Order may not execute: the resulting position would be liquidatable at the trigger price. <0>Deposit margin</0> or reduce the order size."
@@ -12199,6 +12288,10 @@ msgstr "Swap routed through multiple GM pools for the lowest fees and price impa
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting only available on {chainNames}. Switch networks to continue."
 msgstr "Vesting only available on {chainNames}. Switch networks to continue."
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Move order to {targetPoolName} pool"
+msgstr "Move order to {targetPoolName} pool"
 
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "esGMX rewards:"
@@ -13533,6 +13626,10 @@ msgstr "Loading Express Trading params..."
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted<0/><1/><2>View</2>"
 msgstr "Approval submitted<0/><1/><2>View</2>"
+
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{ordersCount, plural, one {# pending order won't fill after {date}.} other {# pending orders won't fill after {date}.}}"
+msgstr "{ordersCount, plural, one {# pending order won't fill after {date}.} other {# pending orders won't fill after {date}.}}"
 
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Insufficient {gasPaymentTokensText} in your wallet. Express Trading and One-Click Trading are unavailable."
