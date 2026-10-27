@@ -27,13 +27,27 @@ const OPTIONS: { label: JSX.Element; value: Theme }[] = [
 ];
 
 /**
- * Dark | Light switch for the design system pages, in the same style as the tabs on /pools.
- * Uses the app theme, so the choice is remembered.
+ * Dark | Light tabs, in the same style as the tabs on /pools.
+ */
+export function ThemeTabs({
+  selected,
+  setSelected,
+  itemClassName,
+}: {
+  selected: Theme;
+  setSelected: (theme: Theme) => void;
+  itemClassName?: string;
+}) {
+  return (
+    <PoolsTabs<Theme> tabs={OPTIONS} selected={selected} setSelected={setSelected} itemClassName={itemClassName} />
+  );
+}
+
+/**
+ * Dark | Light switch for the design system pages. Uses the app theme, so the choice is remembered.
  */
 export function DesignSystemThemeSwitcher() {
   const { theme, setThemeMode } = useTheme();
 
-  return (
-    <PoolsTabs<Theme> tabs={OPTIONS} selected={theme} setSelected={setThemeMode} itemClassName="!text-body-large" />
-  );
+  return <ThemeTabs selected={theme} setSelected={setThemeMode} itemClassName="!text-body-large" />;
 }
