@@ -4081,6 +4081,10 @@ msgstr "GMX 的 Dune Analytics"
 msgid "External routes are only used for Market Swaps"
 msgstr "外部路由仅用于 Market Swap"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstaking is paused until the staking upgrade"
+msgstr "解除质押已暂停，直至质押升级完成"
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them."
 msgstr "Express 需要您的 GMX Account 中有 {gasPaymentTokensText}。请存入其中一种。"
@@ -5762,6 +5766,7 @@ msgstr "应用已禁用，等待 {0} 升级"
 msgid "v:"
 msgstr "v:"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx

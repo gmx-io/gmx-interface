@@ -4081,6 +4081,10 @@ msgstr "Dune Analytics pour GMX"
 msgid "External routes are only used for Market Swaps"
 msgstr "Les routes externes ne sont utilisées que pour les Market Swaps"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstaking is paused until the staking upgrade"
+msgstr "Le retrait du staking est en pause jusqu'à la mise à niveau du staking"
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them."
 msgstr "Express nécessite {gasPaymentTokensText} dans votre GMX Account. Déposez l'un d'eux."
@@ -5762,6 +5766,7 @@ msgstr "Application désactivée, en attente de la mise à niveau de {0}"
 msgid "v:"
 msgstr "v :"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
