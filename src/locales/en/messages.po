@@ -4259,6 +4259,10 @@ msgstr "Can't withdraw collateral. Remaining would be {estimatedRemainingCollate
 msgid "Funds claimed"
 msgstr "Funds claimed"
 
+#: src/components/ClosingPoolsLpNotice/ClosingPoolsLpNoticeBanner.tsx
+msgid "View pools"
+msgstr "View pools"
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "Trigger"
 msgstr "Trigger"
@@ -4437,6 +4441,10 @@ msgstr "Conversion failed: {0}"
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Adding margin to {positionLabel} with {offerAmount}"
 msgstr "Adding margin to {positionLabel} with {offerAmount}"
+
+#: src/lib/i18n.ts
+msgid "{first}, {second} +{restCount} more"
+msgstr "{first}, {second} +{restCount} more"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Signing approval..."
@@ -6728,6 +6736,10 @@ msgstr "GM: {0} buyable cap reached in {1} [{2}]. Choose a different pool, reduc
 msgid "Turn your audience<0/>into on-chain income"
 msgstr "Turn your audience<0/>into on-chain income"
 
+#: src/components/ClosingPoolsLpNotice/closingPoolsLpNoticeLogic.ts
+msgid "{0, plural, one {We're moving {markets} trading to the new USDG pools, so fees in your current pool will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.} other {We're moving {markets} trading to the new USDG pools, so fees in your current pools will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.}}"
+msgstr "{0, plural, one {We're moving {markets} trading to the new USDG pools, so fees in your current pool will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.} other {We're moving {markets} trading to the new USDG pools, so fees in your current pools will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.}}"
+
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Permit approval failed. A standard approval transaction is required. Approve the token and try again</0>"
 msgstr "<0>Permit approval failed. A standard approval transaction is required. Approve the token and try again</0>"
@@ -7231,6 +7243,10 @@ msgstr "No repeated wallet confirmations"
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "Deposit {gasPaymentTokensText}"
+
+#: src/components/ClosingPoolsLpNotice/closingPoolsLpNoticeLogic.ts
+msgid "{0, plural, one {Trading in your {markets} pool is moving to USDG pools} other {Trading in your {markets} pools is moving to USDG pools}}"
+msgstr "{0, plural, one {Trading in your {markets} pool is moving to USDG pools} other {Trading in your {markets} pools is moving to USDG pools}}"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."
