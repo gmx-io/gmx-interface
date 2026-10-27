@@ -1,12 +1,11 @@
 import { Trans } from "@lingui/macro";
 import { Link } from "react-router-dom";
 
+import type { ClosingPoolsNotice as ClosingPoolsNoticeData } from "domain/synthetics/markets/closingPoolsNotices";
 import { getClosingPoolOrdersUrl } from "domain/synthetics/orders/useViewClosingPoolOrdersByQueryParams";
 
 import { AnnouncementBanner } from "components/AnnouncementBanner/AnnouncementBanner";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
-
-import type { ClosingPoolsNotice as ClosingPoolsNoticeData } from "./closingPoolsNoticeLogic";
 
 export function ClosingPoolsNotice({ notice, onClose }: { notice: ClosingPoolsNoticeData; onClose: () => void }) {
   return (

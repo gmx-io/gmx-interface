@@ -16,7 +16,7 @@ import {
   ClosingPoolsNotice,
   getClosingMarketsExposure,
   getClosingPoolsNotices,
-} from "./closingPoolsNoticeLogic";
+} from "./closingPoolsNotices";
 
 export function useClosingPoolsNotices(): {
   notices: ClosingPoolsNotice[];

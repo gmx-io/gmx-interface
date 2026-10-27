@@ -603,7 +603,7 @@ msgstr "领取推广奖励失败"
 msgid "decrease"
 msgstr "减仓"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "{ordersCount, plural, one {# pending order can't fill.} other {# pending orders can't fill.}}"
 msgstr "{ordersCount, plural, other {# 个挂单无法成交。}}"
 
@@ -1153,7 +1153,7 @@ msgstr "质押代币不足"
 msgid "Creating code..."
 msgstr "正在创建代码..."
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "The new USDG pools have more room. Your current positions stay open: hold, add margin, reduce or close any time. Adding size is limited now and stops soon."
 msgstr "新的 USDG 池容量更大。您当前的仓位保持开立：可随时持有、追加保证金、减仓或平仓。增加规模现已受限，并将很快停止。"
 
@@ -1242,7 +1242,7 @@ msgstr "Worker"
 msgid "Max network fee buffer precision is 0.01%"
 msgstr "最大网络费用缓冲精度为 0.01%"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "{ordersCount, plural, one {# pending order will stop filling soon.} other {# pending orders will stop filling soon.}}"
 msgstr "{ordersCount, plural, other {# 个挂单即将无法成交。}}"
 
@@ -2916,7 +2916,7 @@ msgstr "{orderTypeText} {0} 换取 {1}"
 msgid "Job openings at GMX"
 msgstr "GMX 招聘职位"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "{ordersCount, plural, one {Cancel and re-place it in the USDG pools.} other {Cancel and re-place them in the USDG pools.}}"
 msgstr "{ordersCount, plural, other {请取消并在 USDG 池中重新下单。}}"
 
@@ -4395,7 +4395,7 @@ msgstr "资金已存入您的 GMX Account"
 msgid "Why should I enter a referral code?"
 msgstr "为什么要输入推荐码？"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "Your current positions stay open: hold, add margin, reduce or close any time. New positions open in the USDG pools."
 msgstr "您当前的仓位保持开立：可随时持有、追加保证金、减仓或平仓。新仓位将在 USDG 池中开立。"
 
@@ -6391,7 +6391,7 @@ msgstr "费用数据暂时不可用"
 msgid "Sell fee"
 msgstr "卖出费用"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "{markets} trading is moving to USDG pools"
 msgstr "{markets} 交易正在迁移至 USDG 池"
 
@@ -9225,7 +9225,7 @@ msgstr "今天"
 msgid "Link copied"
 msgstr "链接已复制"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "The new USDG pools have more room. Your current positions stay open: hold, add margin, reduce or close any time. Adding size is limited now and stops on {date}."
 msgstr "新的 USDG 池容量更大。您当前的仓位保持开立：可随时持有、追加保证金、减仓或平仓。增加规模现已受限，并将于 {date} 停止。"
 
@@ -9390,7 +9390,7 @@ msgstr "需要重新授权前的最大操作次数"
 msgid "Minimum capital used of {0} required to qualify for rankings"
 msgstr "需要使用至少 {0} 的资金才能参与排名"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "{markets} trading has moved to USDG pools"
 msgstr "{markets} 交易已迁移至 USDG 池"
 
@@ -13615,7 +13615,7 @@ msgstr "正在加载 Express Trading 参数..."
 msgid "Approval submitted<0/><1/><2>View</2>"
 msgstr "已提交批准<0/><1/><2>查看</2>"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "{ordersCount, plural, one {# pending order won't fill after {date}.} other {# pending orders won't fill after {date}.}}"
 msgstr "{ordersCount, plural, other {# 个挂单在 {date} 之后将无法成交。}}"
 

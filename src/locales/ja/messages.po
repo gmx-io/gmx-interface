@@ -603,7 +603,7 @@ msgstr "アフィリエイト報酬の受け取りに失敗しました"
 msgid "decrease"
 msgstr "縮小"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "{ordersCount, plural, one {# pending order can't fill.} other {# pending orders can't fill.}}"
 msgstr "{ordersCount, plural, other {#件の待機中の注文は約定できません。}}"
 
@@ -1153,7 +1153,7 @@ msgstr "ステークされたトークン不足"
 msgid "Creating code..."
 msgstr "コードを作成中..."
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "The new USDG pools have more room. Your current positions stay open: hold, add margin, reduce or close any time. Adding size is limited now and stops soon."
 msgstr "新しいUSDGプールには十分な余力があります。現在のポジションはそのまま維持されます。保有、証拠金の追加、縮小、決済はいつでも可能です。サイズの追加は現在制限されており、まもなく停止します。"
 
@@ -1242,7 +1242,7 @@ msgstr "Worker"
 msgid "Max network fee buffer precision is 0.01%"
 msgstr "最大ネットワーク手数料バッファの精度は0.01%単位までです"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "{ordersCount, plural, one {# pending order will stop filling soon.} other {# pending orders will stop filling soon.}}"
 msgstr "{ordersCount, plural, other {#件の待機中の注文はまもなく約定できなくなります。}}"
 
@@ -2916,7 +2916,7 @@ msgstr "{orderTypeText} {0} を {1}に"
 msgid "Job openings at GMX"
 msgstr "GMXの求人情報"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "{ordersCount, plural, one {Cancel and re-place it in the USDG pools.} other {Cancel and re-place them in the USDG pools.}}"
 msgstr "{ordersCount, plural, other {キャンセルしてUSDGプールで再発注してください。}}"
 
@@ -4395,7 +4395,7 @@ msgstr "資金が GMX Account に入金されました"
 msgid "Why should I enter a referral code?"
 msgstr "紹介コードを入力する理由は何ですか？"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "Your current positions stay open: hold, add margin, reduce or close any time. New positions open in the USDG pools."
 msgstr "現在のポジションはそのまま維持されます。保有、証拠金の追加、縮小、決済はいつでも可能です。新規ポジションはUSDGプールで開かれます。"
 
@@ -6391,7 +6391,7 @@ msgstr "手数料データは一時的に利用できません"
 msgid "Sell fee"
 msgstr "売却手数料"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "{markets} trading is moving to USDG pools"
 msgstr "{markets}の取引はUSDGプールへ移行中です"
 
@@ -9225,7 +9225,7 @@ msgstr "今日"
 msgid "Link copied"
 msgstr "リンクをコピーしました"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "The new USDG pools have more room. Your current positions stay open: hold, add margin, reduce or close any time. Adding size is limited now and stops on {date}."
 msgstr "新しいUSDGプールには十分な余力があります。現在のポジションはそのまま維持されます。保有、証拠金の追加、縮小、決済はいつでも可能です。サイズの追加は現在制限されており、{date}に停止します。"
 
@@ -9390,7 +9390,7 @@ msgstr "再認証が必要になるまでの最大アクション数"
 msgid "Minimum capital used of {0} required to qualify for rankings"
 msgstr "ランキングに参加するには、最低{0}の使用資金が必要です"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "{markets} trading has moved to USDG pools"
 msgstr "{markets}の取引はUSDGプールへ移行しました"
 
@@ -13615,7 +13615,7 @@ msgstr "Express Tradingパラメータを読み込み中..."
 msgid "Approval submitted<0/><1/><2>View</2>"
 msgstr "承認が送信されました<0/><1/><2>見る</2>"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "{ordersCount, plural, one {# pending order won't fill after {date}.} other {# pending orders won't fill after {date}.}}"
 msgstr "{ordersCount, plural, other {#件の待機中の注文は{date}以降約定しません。}}"
 

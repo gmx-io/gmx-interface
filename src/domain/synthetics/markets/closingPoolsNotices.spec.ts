@@ -8,7 +8,7 @@ import { OrderType, type OrdersInfoData } from "domain/synthetics/orders/types";
 import type { PositionsData } from "domain/synthetics/positions/types";
 import { expandDecimals } from "lib/numbers";
 
-import { ClosingNoticeSeenStages, getClosingMarketsExposure, getClosingPoolsNotices } from "./closingPoolsNoticeLogic";
+import { ClosingNoticeSeenStages, getClosingMarketsExposure, getClosingPoolsNotices } from "./closingPoolsNotices";
 
 i18n.load({ en: {} });
 i18n.activate("en");

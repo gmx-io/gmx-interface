@@ -603,7 +603,7 @@ msgstr "Error al reclamar las recompensas de afiliado"
 msgid "decrease"
 msgstr "reducción"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "{ordersCount, plural, one {# pending order can't fill.} other {# pending orders can't fill.}}"
 msgstr "{ordersCount, plural, one {# orden pendiente no puede ejecutarse.} other {# órdenes pendientes no pueden ejecutarse.}}"
 
@@ -1153,7 +1153,7 @@ msgstr "Tokens stakeados insuficientes"
 msgid "Creating code..."
 msgstr "Creando código..."
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "The new USDG pools have more room. Your current positions stay open: hold, add margin, reduce or close any time. Adding size is limited now and stops soon."
 msgstr "Los nuevos pools USDG tienen más capacidad. Sus posiciones actuales siguen abiertas: puede mantenerlas, añadir margen, reducirlas o cerrarlas en cualquier momento. Aumentar el tamaño ya está limitado y terminará pronto."
 
@@ -1242,7 +1242,7 @@ msgstr "Worker"
 msgid "Max network fee buffer precision is 0.01%"
 msgstr "La precisión máxima del buffer de comisión de red es 0,01 %"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "{ordersCount, plural, one {# pending order will stop filling soon.} other {# pending orders will stop filling soon.}}"
 msgstr "{ordersCount, plural, one {# orden pendiente dejará de ejecutarse pronto.} other {# órdenes pendientes dejarán de ejecutarse pronto.}}"
 
@@ -2916,7 +2916,7 @@ msgstr "{orderTypeText} {0} por {1}"
 msgid "Job openings at GMX"
 msgstr "Ofertas de empleo en GMX"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "{ordersCount, plural, one {Cancel and re-place it in the USDG pools.} other {Cancel and re-place them in the USDG pools.}}"
 msgstr "{ordersCount, plural, one {Cancélela y vuelva a colocarla en los pools USDG.} other {Cancélelas y vuelva a colocarlas en los pools USDG.}}"
 
@@ -4395,7 +4395,7 @@ msgstr "Los fondos están ahora en su GMX Account"
 msgid "Why should I enter a referral code?"
 msgstr "¿Por qué debería introducir un código de referido?"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "Your current positions stay open: hold, add margin, reduce or close any time. New positions open in the USDG pools."
 msgstr "Sus posiciones actuales siguen abiertas: puede mantenerlas, añadir margen, reducirlas o cerrarlas en cualquier momento. Las nuevas posiciones se abren en los pools USDG."
 
@@ -6391,7 +6391,7 @@ msgstr "Los datos de comisiones no están disponibles temporalmente"
 msgid "Sell fee"
 msgstr "Comisión de venta"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "{markets} trading is moving to USDG pools"
 msgstr "El trading de {markets} se traslada a los pools USDG"
 
@@ -9225,7 +9225,7 @@ msgstr "Hoy"
 msgid "Link copied"
 msgstr "Enlace copiado"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "The new USDG pools have more room. Your current positions stay open: hold, add margin, reduce or close any time. Adding size is limited now and stops on {date}."
 msgstr "Los nuevos pools USDG tienen más capacidad. Sus posiciones actuales siguen abiertas: puede mantenerlas, añadir margen, reducirlas o cerrarlas en cualquier momento. Aumentar el tamaño ya está limitado y terminará el {date}."
 
@@ -9390,7 +9390,7 @@ msgstr "Número máximo de acciones antes de requerir reautorización"
 msgid "Minimum capital used of {0} required to qualify for rankings"
 msgstr "Se requiere un capital utilizado mínimo de {0} para clasificarse en el ranking"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "{markets} trading has moved to USDG pools"
 msgstr "El trading de {markets} se ha trasladado a los pools USDG"
 
@@ -13615,7 +13615,7 @@ msgstr "Cargando parámetros de Express Trading..."
 msgid "Approval submitted<0/><1/><2>View</2>"
 msgstr "Aprobación enviada<0/><1/><2>Ver</2>"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "{ordersCount, plural, one {# pending order won't fill after {date}.} other {# pending orders won't fill after {date}.}}"
 msgstr "{ordersCount, plural, one {# orden pendiente no se ejecutará después del {date}.} other {# órdenes pendientes no se ejecutarán después del {date}.}}"
 

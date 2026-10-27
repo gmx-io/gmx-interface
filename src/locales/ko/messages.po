@@ -603,7 +603,7 @@ msgstr "제휴 보상 수령에 실패했습니다"
 msgid "decrease"
 msgstr "축소"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "{ordersCount, plural, one {# pending order can't fill.} other {# pending orders can't fill.}}"
 msgstr "{ordersCount, plural, other {대기 중인 주문 #개는 체결될 수 없습니다.}}"
 
@@ -1153,7 +1153,7 @@ msgstr "스테이킹된 토큰 부족"
 msgid "Creating code..."
 msgstr "코드 생성 중..."
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "The new USDG pools have more room. Your current positions stay open: hold, add margin, reduce or close any time. Adding size is limited now and stops soon."
 msgstr "새 USDG 풀은 여유가 더 많습니다. 현재 포지션은 그대로 유지됩니다: 언제든지 보유, 마진 추가, 축소 또는 종료할 수 있습니다. 크기 추가는 현재 제한되어 있으며 곧 중단됩니다."
 
@@ -1242,7 +1242,7 @@ msgstr "Worker"
 msgid "Max network fee buffer precision is 0.01%"
 msgstr "최대 네트워크 수수료 버퍼 정밀도는 0.01%입니다"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "{ordersCount, plural, one {# pending order will stop filling soon.} other {# pending orders will stop filling soon.}}"
 msgstr "{ordersCount, plural, other {대기 중인 주문 #개가 곧 체결되지 않게 됩니다.}}"
 
@@ -2916,7 +2916,7 @@ msgstr "{orderTypeText} {0} → {1}"
 msgid "Job openings at GMX"
 msgstr "GMX 채용 공고"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "{ordersCount, plural, one {Cancel and re-place it in the USDG pools.} other {Cancel and re-place them in the USDG pools.}}"
 msgstr "{ordersCount, plural, other {취소한 후 USDG 풀에서 다시 주문하세요.}}"
 
@@ -4395,7 +4395,7 @@ msgstr "자금이 GMX Account에 입금되었습니다"
 msgid "Why should I enter a referral code?"
 msgstr "추천 코드를 입력해야 하는 이유는 무엇입니까?"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "Your current positions stay open: hold, add margin, reduce or close any time. New positions open in the USDG pools."
 msgstr "현재 포지션은 그대로 유지됩니다: 언제든지 보유, 마진 추가, 축소 또는 종료할 수 있습니다. 새 포지션은 USDG 풀에서 열립니다."
 
@@ -6391,7 +6391,7 @@ msgstr "수수료 데이터를 일시적으로 사용할 수 없습니다"
 msgid "Sell fee"
 msgstr "판매 수수료"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "{markets} trading is moving to USDG pools"
 msgstr "{markets} 거래가 USDG 풀로 이전 중입니다"
 
@@ -9225,7 +9225,7 @@ msgstr "오늘"
 msgid "Link copied"
 msgstr "링크 복사됨"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "The new USDG pools have more room. Your current positions stay open: hold, add margin, reduce or close any time. Adding size is limited now and stops on {date}."
 msgstr "새 USDG 풀은 여유가 더 많습니다. 현재 포지션은 그대로 유지됩니다: 언제든지 보유, 마진 추가, 축소 또는 종료할 수 있습니다. 크기 추가는 현재 제한되어 있으며 {date}에 중단됩니다."
 
@@ -9390,7 +9390,7 @@ msgstr "재승인이 필요하기 전 최대 실행 횟수"
 msgid "Minimum capital used of {0} required to qualify for rankings"
 msgstr "순위 자격을 얻으려면 최소 {0}의 사용 자본이 필요합니다"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "{markets} trading has moved to USDG pools"
 msgstr "{markets} 거래가 USDG 풀로 이전되었습니다"
 
@@ -13615,7 +13615,7 @@ msgstr "Express Trading 매개변수 로딩 중..."
 msgid "Approval submitted<0/><1/><2>View</2>"
 msgstr "승인이 제출되었습니다<0/><1/><2>보기</2>"
 
-#: src/components/ClosingPoolsNotice/closingPoolsNoticeLogic.ts
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "{ordersCount, plural, one {# pending order won't fill after {date}.} other {# pending orders won't fill after {date}.}}"
 msgstr "{ordersCount, plural, other {대기 중인 주문 #개는 {date} 이후 체결되지 않습니다.}}"
 
