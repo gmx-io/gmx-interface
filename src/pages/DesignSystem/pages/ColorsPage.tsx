@@ -39,7 +39,7 @@ const SEMANTIC_COLORS: SemanticColorGroup[] = [
     title: "Button",
     colors: [
       { code: "button-primary", dark: "#2D42FC", light: "#2D42FC" },
-      { code: "button-primaryHover", dark: "#7885FF", light: "#7885FF" },
+      { code: "button-primaryHover", dark: "#2A3DE5", light: "#293CE4" },
       { code: "button-primaryActive", dark: "#2536CD", light: "#2536CD" },
       { code: "button-secondary", dark: "#1E2033", light: "#E0E0EB" },
       { code: "button-secondaryHover", dark: "#282D46", light: "#DADCE8" },
@@ -138,8 +138,6 @@ const VALUE_CHANGES: ValueChange[] = [
   { token: "fill-surfaceHover", theme: "Light", before: "#696D961A", after: "#A0A3C41A" },
   { token: "blue-300", theme: "Light", before: "#7885FF", after: "#2D42FC" },
   { token: "blue-100", theme: "Light", before: "#A4C3F9", after: "#2D42FC" },
-  { token: "button-primaryHover", theme: "Dark", before: "#2A3DE5", after: "#7885FF" },
-  { token: "button-primaryHover", theme: "Light", before: "#293CE4", after: "#7885FF" },
   { token: "button-primaryActive", theme: "Light", before: "#2637CE", after: "#2536CD" },
   { token: "button-secondary", theme: "Dark", before: "#23263B", after: "#1E2033" },
   { token: "button-secondary", theme: "Light", before: "#E0E0E8", after: "#E0E0EB" },
