@@ -4937,6 +4937,10 @@ msgstr ""
 msgid "Withdraw failed"
 msgstr ""
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Account transfers are paused during the staking upgrade."
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 msgid "Only GMX adds liquidity to this pool. To provide USDG liquidity, use GLV [USDG]."
 msgstr ""
@@ -10270,10 +10274,6 @@ msgstr ""
 
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set short Stop Market @ {0}"
-msgstr ""
-
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Account transfers are paused during the staking upgrade. They will reopen when the new esGMX vesting vault opens."
 msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx

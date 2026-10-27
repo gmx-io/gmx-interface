@@ -4937,6 +4937,10 @@ msgstr "分享 GMX 意見回饋"
 msgid "Withdraw failed"
 msgstr "提取失敗"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Account transfers are paused during the staking upgrade."
+msgstr "質押升級期間，帳戶轉移已暫停。"
+
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 msgid "Only GMX adds liquidity to this pool. To provide USDG liquidity, use GLV [USDG]."
 msgstr "只有 GMX 向此池提供流動性。如需提供 USDG 流動性，請使用 GLV [USDG]。"
@@ -10271,10 +10275,6 @@ msgstr "Jones DAO"
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set short Stop Market @ {0}"
 msgstr "在 {0} 設定做空觸發市價單"
-
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Account transfers are paused during the staking upgrade. They will reopen when the new esGMX vesting vault opens."
-msgstr "質押升級期間，帳戶轉移已暫停。新的 esGMX 歸屬期金庫開放後將恢復。"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx

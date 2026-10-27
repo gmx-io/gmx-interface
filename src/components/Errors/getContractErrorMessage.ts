@@ -37,7 +37,7 @@ export function getUnstakeRequestsPausedMessage() {
 }
 
 export function getAccountTransfersPausedMessage() {
-  return t`Account transfers are paused during the staking upgrade. They will reopen when the new esGMX vesting vault opens.`;
+  return t`Account transfers are paused during the staking upgrade.`;
 }
 
 export function getContractErrorMessageFromError({

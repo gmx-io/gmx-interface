@@ -4937,6 +4937,10 @@ msgstr "GMX のフィードバックを共有する"
 msgid "Withdraw failed"
 msgstr "出金に失敗しました"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Account transfers are paused during the staking upgrade."
+msgstr "ステーキングのアップグレード中はアカウント送金が一時停止されています。"
+
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 msgid "Only GMX adds liquidity to this pool. To provide USDG liquidity, use GLV [USDG]."
 msgstr "このプールに流動性を提供するのはGMXのみです。USDGの流動性を提供するには、GLV [USDG]をご利用ください。"
@@ -10271,10 +10275,6 @@ msgstr "Jones DAO"
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set short Stop Market @ {0}"
 msgstr "ショートのストップ成行注文を設定 @ {0}"
-
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Account transfers are paused during the staking upgrade. They will reopen when the new esGMX vesting vault opens."
-msgstr "ステーキングのアップグレード中はアカウント送金が一時停止されています。新しいesGMXベスティングボールトが開くと再開されます。"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx

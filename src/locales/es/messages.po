@@ -4937,6 +4937,10 @@ msgstr "Compartir opinión sobre GMX"
 msgid "Withdraw failed"
 msgstr "Error en el retiro"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Account transfers are paused during the staking upgrade."
+msgstr "Las transferencias de cuenta están en pausa durante la actualización del staking."
+
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 msgid "Only GMX adds liquidity to this pool. To provide USDG liquidity, use GLV [USDG]."
 msgstr "Solo GMX aporta liquidez a este pool. Para proporcionar liquidez en USDG, use GLV [USDG]."
@@ -10271,10 +10275,6 @@ msgstr "Jones DAO"
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set short Stop Market @ {0}"
 msgstr "Configurar orden stop a mercado en corto @ {0}"
-
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Account transfers are paused during the staking upgrade. They will reopen when the new esGMX vesting vault opens."
-msgstr "Las transferencias de cuenta están en pausa durante la actualización del staking. Se reanudarán cuando abra el nuevo vault de periodo de consolidación de esGMX."
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
