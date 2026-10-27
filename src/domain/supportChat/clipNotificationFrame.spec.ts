@@ -7,6 +7,8 @@ const FRAME_WIDTH = 400;
 function createFrame({ height = 110, viewportHeight = 110 } = {}) {
   const frame = document.createElement("iframe");
   frame.name = "intercom-notification-stack-frame";
+  // happy-dom 21 leaves contentWindow null for an iframe with neither src nor srcdoc
+  frame.srcdoc = "";
   frame.getBoundingClientRect = () => new DOMRect(15, 780, FRAME_WIDTH, height);
   document.body.appendChild(frame);
   Object.defineProperty(frame.contentWindow, "innerHeight", { value: viewportHeight });
