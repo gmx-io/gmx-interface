@@ -1,5 +1,6 @@
 import { type ComponentType } from "react";
 
+import { CheckboxChangelog, CheckboxExamples, CheckboxPropsReference } from "./pages/CheckboxPage";
 import { ColorsChangelog, ColorsExamples } from "./pages/ColorsPage";
 import { TooltipChangelog, TooltipExamples, TooltipGuidelines, TooltipPropsReference } from "./pages/TooltipPage";
 import { TypographyChangelog, TypographyExamples } from "./pages/TypographyPage";
@@ -43,6 +44,15 @@ export const DESIGN_SYSTEM_GROUPS: DesignSystemGroup[] = [
   {
     title: "Components",
     pages: [
+      {
+        slug: "checkbox",
+        title: "Checkbox",
+        tabs: {
+          examples: CheckboxExamples,
+          props: CheckboxPropsReference,
+          changelog: CheckboxChangelog,
+        },
+      },
       {
         slug: "tooltip",
         title: "Tooltip",
