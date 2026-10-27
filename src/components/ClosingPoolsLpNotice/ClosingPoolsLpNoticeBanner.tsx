@@ -5,7 +5,6 @@ import { ClosingPoolsLpNotice } from "domain/synthetics/markets/closingPoolsLpNo
 
 import { AnnouncementBanner } from "components/AnnouncementBanner/AnnouncementBanner";
 
-
 export function ClosingPoolsLpNoticeBanner({
   notice,
   onDismiss,
