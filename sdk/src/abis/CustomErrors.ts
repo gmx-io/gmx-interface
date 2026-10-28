@@ -190,6 +190,7 @@ export default [
   { inputs: [], name: "EmptyDeposit", type: "error" },
   { inputs: [], name: "EmptyDepositAmounts", type: "error" },
   { inputs: [], name: "EmptyDepositAmountsAfterSwap", type: "error" },
+  { inputs: [], name: "EmptyDesignatedVesters", type: "error" },
   { inputs: [], name: "EmptyFundingAccount", type: "error" },
   { inputs: [{ internalType: "address", name: "glv", type: "address" }], name: "EmptyGlv", type: "error" },
   { inputs: [], name: "EmptyGlvDeposit", type: "error" },
@@ -229,6 +230,7 @@ export default [
   { inputs: [], name: "EmptyShift", type: "error" },
   { inputs: [], name: "EmptyShiftAmount", type: "error" },
   { inputs: [], name: "EmptySizeDeltaInTokens", type: "error" },
+  { inputs: [], name: "EmptyStakeAmount", type: "error" },
   { inputs: [], name: "EmptyTarget", type: "error" },
   { inputs: [], name: "EmptyToken", type: "error" },
   {
@@ -577,6 +579,14 @@ export default [
       { internalType: "uint256", name: "maxReservedUsd", type: "uint256" },
     ],
     name: "InsufficientReserveForOpenInterest",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "allowance", type: "uint256" },
+      { internalType: "uint256", name: "balance", type: "uint256" },
+    ],
+    name: "InsufficientStrictTransferAllowance",
     type: "error",
   },
   {
@@ -1468,6 +1478,23 @@ export default [
   },
   {
     inputs: [
+      { internalType: "uint256", name: "count", type: "uint256" },
+      { internalType: "uint256", name: "maxCount", type: "uint256" },
+    ],
+    name: "MaxUnstakeRequestsExceeded",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "sender", type: "address" },
+      { internalType: "address", name: "receiver", type: "address" },
+      { internalType: "uint256", name: "count", type: "uint256" },
+    ],
+    name: "MaxUnstakeRequestsOnTransfer",
+    type: "error",
+  },
+  {
+    inputs: [
       { internalType: "uint256", name: "maxWntFromTreasury", type: "uint256" },
       { internalType: "uint256", name: "additionalWntFromTreasury", type: "uint256" },
     ],
@@ -1733,6 +1760,11 @@ export default [
     type: "error",
   },
   {
+    inputs: [{ internalType: "address", name: "account", type: "address" }],
+    name: "SelfVestingTransfer",
+    type: "error",
+  },
+  {
     inputs: [
       { internalType: "address", name: "keeper", type: "address" },
       { internalType: "uint256", name: "sendAmount", type: "uint256" },
@@ -1767,6 +1799,24 @@ export default [
   {
     inputs: [{ internalType: "uint256", name: "signalTime", type: "uint256" }],
     name: "SignalTimeNotYetPassed",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "receiver", type: "address" },
+      { internalType: "address", name: "module", type: "address" },
+    ],
+    name: "StakingReceiverNotFresh",
+    type: "error",
+  },
+  {
+    inputs: [{ internalType: "address", name: "sender", type: "address" }],
+    name: "StakingSenderHasPairAmounts",
+    type: "error",
+  },
+  {
+    inputs: [{ internalType: "address", name: "sender", type: "address" }],
+    name: "StakingSenderHasVestedTokens",
     type: "error",
   },
   { inputs: [{ internalType: "address", name: "token", type: "address" }], name: "StaticPriceNotSet", type: "error" },
@@ -1864,6 +1914,22 @@ export default [
     type: "error",
   },
   {
+    inputs: [
+      { internalType: "address", name: "sender", type: "address" },
+      { internalType: "address", name: "receiver", type: "address" },
+    ],
+    name: "TransferNotSignalled",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "signalledVersion", type: "uint256" },
+      { internalType: "uint256", name: "currentVersion", type: "uint256" },
+    ],
+    name: "TransferVesterConfigChanged",
+    type: "error",
+  },
+  {
     inputs: [{ internalType: "uint256", name: "length", type: "uint256" }],
     name: "Uint256AsBytesLengthExceeds32Bytes",
     type: "error",
@@ -1946,6 +2012,22 @@ export default [
     type: "error",
   },
   {
+    inputs: [
+      { internalType: "uint256", name: "totalRequested", type: "uint256" },
+      { internalType: "uint256", name: "stakedAmount", type: "uint256" },
+    ],
+    name: "UnstakeAmountExceedsStake",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "amount", type: "uint256" },
+      { internalType: "uint256", name: "executableAmount", type: "uint256" },
+    ],
+    name: "UnstakeNotSignalled",
+    type: "error",
+  },
+  {
     inputs: [{ internalType: "uint256", name: "orderType", type: "uint256" }],
     name: "UnsupportedOrderType",
     type: "error",
@@ -1985,6 +2067,22 @@ export default [
       { internalType: "uint256", name: "shortOpenInterest", type: "uint256" },
     ],
     name: "UsdDeltaExceedsShortOpenInterest",
+    type: "error",
+  },
+  {
+    inputs: [{ internalType: "address", name: "account", type: "address" }],
+    name: "VesterAccountFrozen",
+    type: "error",
+  },
+  { inputs: [], name: "VesterProvisioningNotComplete", type: "error" },
+  {
+    inputs: [{ internalType: "address", name: "account", type: "address" }],
+    name: "VestingReceiverNotFresh",
+    type: "error",
+  },
+  {
+    inputs: [{ internalType: "address", name: "account", type: "address" }],
+    name: "VestingSenderHasOpenSession",
     type: "error",
   },
   { inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }], name: "WithdrawalNotFound", type: "error" },

@@ -437,6 +437,10 @@ msgstr "Telegram-Bot"
 msgid "Cancel Limit Swap"
 msgstr "Abbrechen des Limit Swap"
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Waiting ({0, plural, one {# day left} other {# days left}})"
+msgstr "Wartet (noch {0, plural, one {# Tag} other {# Tage}})"
+
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 msgid "Roadmap"
 msgstr "Roadmap"
@@ -1080,6 +1084,10 @@ msgstr "Ungültiger Sicherheitstoken. {tokenSymbol} wird nicht als Sicherheit un
 msgid "A conversion is already waiting in your wallet. Try again after it executes."
 msgstr "Eine Umwandlung wartet bereits in Ihrer Wallet. Versuchen Sie es erneut, sobald sie ausgeführt ist."
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Available from"
+msgstr "Verfügbar ab"
+
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -1205,6 +1213,10 @@ msgstr "Die Order wird nicht ausgeführt: Der Auslösepreis liegt jenseits des L
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "Don't ask again"
 msgstr "Nicht erneut fragen"
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Cancel submitted"
+msgstr "Abbruch eingereicht"
 
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values calculated when earned. Excludes incentives."
@@ -1745,9 +1757,17 @@ msgstr "Die Bedingung für den Auslösepreis wurde nicht erfüllt"
 msgid "/ year"
 msgstr "/ Jahr"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Withdraw all tokens from the GMX and GLP vesting vaults before the transfer"
+msgstr "Heben Sie vor der Übertragung alle Token aus den GMX- und GLP-Vesting-Vaults ab"
+
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Go to affiliate dashboard"
 msgstr "Zum Affiliate Dashboard"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "This amount is not ready to withdraw yet. Ready now: {executableAmountText} GMX / esGMX"
+msgstr "Dieser Betrag kann noch nicht abgehoben werden. Jetzt verfügbar: {executableAmountText} GMX / esGMX"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Estimated wallet-specific annualized rate based on the recent GMX buyback pace, your staking power share, and your current staked GMX + esGMX. Actual distribution is subject to DAO governance."
@@ -2107,6 +2127,10 @@ msgstr "Weniger anzeigen"
 msgid "Vest"
 msgstr "Vesten"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "You have {maxRequests} unstake requests, the maximum. Withdraw or cancel one to make a new request."
+msgstr "Sie haben {maxRequests} Entstaking-Anfragen, das Maximum. Heben Sie eine ab oder brechen Sie eine ab, um eine neue Anfrage zu stellen."
+
 #: src/components/GmList/UsdgPoolBadges.tsx
 msgid "Extra yield for GLV [USDG] liquidity providers during the launch, targeting 8% or more on top of trading fees. Paid into the GLV price every 4 hours, so there's nothing to claim."
 msgstr "Zusätzliche Rendite für GLV [USDG]-Liquiditätsanbieter während des Launchs, mit einem Ziel von 8 % oder mehr zusätzlich zu den Handelsgebühren. Fließt alle 4 Stunden in den GLV-Preis ein, Sie müssen also nichts beanspruchen."
@@ -2142,6 +2166,10 @@ msgstr "Pool wählen"
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "This market has been disabled. Contact support to claim your remaining funding fees."
 msgstr "Dieser Markt wurde deaktiviert. Wenden Sie sich an den Support, um Ihre verbleibenden Finanzierungsgebühren zu beanspruchen."
+
+#: src/components/Errors/stakingToasts.ts
+msgid "Staking moved to a new contract. Review and try again."
+msgstr "Das Staking wurde auf einen neuen Vertrag umgestellt. Prüfen Sie die Angaben und versuchen Sie es erneut."
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Log index:"
@@ -2414,6 +2442,10 @@ msgstr "ERHALTEN"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "VI POSITIONS"
 msgstr "VI-POSITIONEN"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Requesting to unstake more than 20% of your max historical staked GMX will reset your accrued rewards. Cancelling the request does not restore them."
+msgstr "Wenn Sie beantragen, mehr als 20 % Ihres historischen Höchstbestands an gestaktem GMX zu entstaken, werden Ihre aufgelaufenen Belohnungen zurückgesetzt. Ein Abbruch der Anfrage stellt sie nicht wieder her."
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -3107,6 +3139,10 @@ msgstr "Tauschdiagnose"
 msgid "The more you trade, the more you keep"
 msgstr "Je mehr Sie handeln, desto mehr behalten Sie"
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Unstake requests"
+msgstr "Entstaking-Anfragen"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/pages/Dashboard/GmCard.tsx
@@ -3549,6 +3585,10 @@ msgstr "Kaufgebühr"
 msgid "Claimable collateral reduction factor"
 msgstr "Reduktionsfaktor für beanspruchbare Sicherheit"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "This account is frozen in the esGMX vesting vault"
+msgstr "Dieses Konto ist im esGMX-Vesting-Vault eingefroren"
+
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Slippage too low"
 msgstr "Slippage zu niedrig"
@@ -3746,6 +3786,7 @@ msgstr "Swaps"
 msgid "Creating order..."
 msgstr "Order wird erstellt…"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Stake submitted"
 msgstr "Staken gesendet"
@@ -4081,6 +4122,10 @@ msgstr "Dune Analytics für GMX"
 msgid "External routes are only used for Market Swaps"
 msgstr "Externe Routen werden nur für Market Swaps verwendet"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstaking is paused until the staking upgrade"
+msgstr "Das Entstaken ist bis zum Staking-Upgrade pausiert"
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them."
 msgstr "Express benötigt {gasPaymentTokensText} in Ihrem GMX Account. Zahlen Sie einen davon ein."
@@ -4279,9 +4324,17 @@ msgstr "Take-Profit für Longposition @ {0} festlegen"
 msgid "Uploading..."
 msgstr "Wird hochgeladen..."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake requested"
+msgstr "Entstaking beantragt"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Can't withdraw collateral. Remaining would be {estimatedRemainingCollateralUsdText}, below minimum"
 msgstr "Abheben der Sicherheit nicht möglich. Verbleibende Sicherheit von {estimatedRemainingCollateralUsdText} läge unter dem Minimum"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The esGMX vesting vaults changed after the transfer started. The sender has to start the transfer again."
+msgstr "Die esGMX-Vesting-Vaults haben sich nach Beginn der Übertragung geändert. Der Absender muss die Übertragung erneut starten."
 
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "Funds claimed"
@@ -4307,6 +4360,10 @@ msgstr "Markpreis hat sich geändert. Erhöhen Sie die erlaubte Slippage"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Maximum pool capacity reached"
 msgstr "Maximale Poolkapazität erreicht"
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Cancelling..."
+msgstr "Wird abgebrochen..."
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit signed"
@@ -4560,6 +4617,10 @@ msgstr "Fehlgeschlagener TWAP-Tauschteil"
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "No events in the past {DAYS_BACK} days"
 msgstr "Keine Ereignisse in den vergangenen {DAYS_BACK} Tagen"
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Ready to withdraw"
+msgstr "Bereit zum Abheben"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker thread"
@@ -4919,8 +4980,14 @@ msgid "Share GMX feedback"
 msgstr "GMX-Feedback teilen"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "Withdraw failed"
 msgstr "Abhebung fehlgeschlagen"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Account transfers are paused during the staking upgrade."
+msgstr "Kontoübertragungen sind während des Staking-Upgrades pausiert."
 
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 msgid "Only GMX adds liquidity to this pool. To provide USDG liquidity, use GLV [USDG]."
@@ -4974,6 +5041,7 @@ msgstr "GM-Symbol"
 msgid "Execution details"
 msgstr "Ausführungsdetails"
 
+#: src/components/Errors/getContractErrorMessage.ts
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Self-transfer not supported"
 msgstr "Selbstübertragung nicht unterstützt"
@@ -5128,6 +5196,7 @@ msgid "WIN/LOSS"
 msgstr "GEWINN/VERLUST"
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing..."
@@ -5152,6 +5221,10 @@ msgstr "Perpetual-Märkte"
 #: src/components/Footer/constants.tsx
 msgid "V1"
 msgstr "V1"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Unstake requests are paused. Try again later."
+msgstr "Entstaking-Anfragen sind pausiert. Versuchen Sie es später erneut."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Staked tokens reserved for vesting"
@@ -5765,6 +5838,7 @@ msgstr "v:"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake"
 msgstr "Entstaken"
 
@@ -5910,6 +5984,10 @@ msgstr "Externe Swaps fehlschlagen lassen"
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -6589,12 +6667,18 @@ msgid "Max lendable impact factor for withdrawals"
 msgstr "Maximaler verleihbarer Einflussfaktor für Abhebungen"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Claim completed"
 msgstr "Beanspruchung abgeschlossen"
 
 #: src/components/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Open in explorer"
 msgstr "Im Explorer öffnen"
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Cancel failed"
+msgstr "Abbruch fehlgeschlagen"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "{0} tokens converted to GMX from the {1} esGMX deposited for vesting"
@@ -7168,6 +7252,8 @@ msgstr "RPC-Fehler.<0/><1/>Aktivieren Sie <2>Express Trading</2> in den Einstell
 msgid "High execution reliability using premium RPCs"
 msgstr "Hohe Ausführungszuverlässigkeit durch Premium-RPCs"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Stake failed"
 msgstr "Staken fehlgeschlagen"
@@ -7317,6 +7403,10 @@ msgstr "Kauf-/Verkaufssymbole im Chart anzeigen"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
 msgstr "Dieser Tausch erfordert externes Routing. Zahlen Sie Gas in {0}, um ihn zu aktivieren."
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The amount is more than your staked GMX and esGMX that is not already requested"
+msgstr "Der Betrag übersteigt Ihr gestaktes GMX und esGMX, für das noch keine Anfrage besteht"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -7479,6 +7569,7 @@ msgid "Convert and create order"
 msgstr "Umwandeln und Order erstellen"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "Withdrawn"
 msgstr "Abgehoben"
 
@@ -7563,6 +7654,10 @@ msgstr "{typeString} Long TWAP: {0} eine Long-Position in gleichmäßig verteilt
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claim & swap"
 msgstr "Beanspruchen & tauschen"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Withdraw all tokens from the esGMX vesting vault before the transfer"
+msgstr "Heben Sie vor der Übertragung alle Token aus dem esGMX-Vesting-Vault ab"
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
@@ -7663,6 +7758,10 @@ msgstr "Delegieren"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Harmonix"
 msgstr "Harmonix"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstaking takes {0} days. You can withdraw this amount as GMX or esGMX from {1}. Until then it stays staked but stops counting toward Staking Power. You can cancel the request at any time."
+msgstr "Das Entstaken dauert {0} Tage. Sie können diesen Betrag ab {1} als GMX oder esGMX abheben. Bis dahin bleibt er gestaked, zählt aber nicht mehr zur Stakingkraft. Sie können die Anfrage jederzeit abbrechen."
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Tier upgrades are reviewed manually by the GMX team based on your weekly performance. If you meet the requirements consistently, you can apply for an upgrade via the <0>GMX Partner Account: Telegram</0>."
@@ -7888,6 +7987,10 @@ msgstr "Bei Ausführung erhalten Sie mindestens {toAmountText}. Der Preis wird a
 msgid "Increasing {indexTokenText} Short: +{sizeDeltaUsdText}"
 msgstr "Short für {indexTokenText} wird erhöht: +{sizeDeltaUsdText}"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "You have the maximum number of unstake requests. Withdraw or cancel one to make a new request."
+msgstr "Sie haben die maximale Anzahl an Entstaking-Anfragen. Heben Sie eine ab oder brechen Sie eine ab, um eine neue Anfrage zu stellen."
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed"
 msgstr "Verkaufsorder ausgeführt"
@@ -7916,6 +8019,10 @@ msgstr "0.0045 WETH verbleiben im alten 1CT-Unterkonto"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral"
 msgstr "Mindestsicherheit"
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Requested"
+msgstr "Beantragt"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCards.tsx
 msgid "Steady returns without management"
@@ -8077,6 +8184,10 @@ msgstr "Verdiente Gebühren werden nur für GM und GLV in Ihrer Wallet auf {chai
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set long Limit @ {0}"
 msgstr "Long Limit @ {0} setzen"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The receiving account has staked or vested before. Choose a new account."
+msgstr "Das empfangende Konto hat bereits gestaked oder gevestet. Wählen Sie ein neues Konto."
 
 #: src/components/GmList/UsdgPoolBadges.tsx
 msgid "Direct deposits into this pool are open to whitelisted addresses. GLV [USDG] gives you the same markets in one deposit."
@@ -8652,6 +8763,8 @@ msgid "Exit price"
 msgstr "Ausstiegspreis"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Transfer failed"
 msgstr "Übertragung fehlgeschlagen"
@@ -8811,6 +8924,7 @@ msgstr "Version:"
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Available"
 msgstr "Verfügbar"
@@ -8827,6 +8941,7 @@ msgstr "Tauschgewinngebühr"
 msgid "Solv Finance"
 msgstr "Solv Finance"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claim submitted"
@@ -8902,6 +9017,7 @@ msgstr "Governance"
 msgid "Keep more of every trade"
 msgstr "Mehr von jedem Trade behalten"
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/HistoryExport/HistoryExportModal.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -9136,6 +9252,7 @@ msgstr "Aktiver Balancer-Programm-Code"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "Max amount exceeded"
 msgstr "Maximalbetrag überschritten"
 
@@ -9338,6 +9455,10 @@ msgstr "SL-Preis unter dem Limitpreis festlegen"
 msgid "({0} of {1})"
 msgstr "({0} von {1})"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Request unstake"
+msgstr "Entstaken beantragen"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Total realized and unrealized PnL including fees and price impact"
 msgstr "Gesamter realisierter und unrealisierter PnL einschließlich Gebühren und Preiseinfluss"
@@ -9529,6 +9650,10 @@ msgstr "Ich möchte die Affiliate-esGMX-Token nicht übertragen"
 msgid "Order exceeds max leverage. Click to auto-adjust."
 msgstr "Die Order überschreitet den maximalen Hebel. Klicken Sie zur automatischen Anpassung."
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "After the transfer, the receiving account would have {count} unstake requests, more than the maximum"
+msgstr "Nach der Übertragung hätte das empfangende Konto {count} Entstaking-Anfragen, mehr als das Maximum"
+
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available"
 msgstr "Kein Tauschpfad verfügbar"
@@ -9612,6 +9737,7 @@ msgstr "EREIGNISNAME"
 msgid "OPEN INTEREST"
 msgstr "OPEN INTEREST"
 
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Begin transfer"
 msgstr "Übertragung starten"
@@ -9885,6 +10011,7 @@ msgstr "Wird aus Ihrem GMX Account bezahlt, weil Ihre Wallet nicht genügend {wa
 msgid "Copy"
 msgstr "Kopieren"
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -10007,6 +10134,10 @@ msgstr "Gesamtbetrag zum Beanspruchen"
 msgid "Min receive"
 msgstr "Mindesterhalt"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "After the transfer, the receiving account would have more unstake requests than the maximum"
+msgstr "Nach der Übertragung hätte das empfangende Konto mehr Entstaking-Anfragen als das Maximum"
+
 #: src/domain/tokens/useMaxAvailableAmount.ts
 msgid "Leaves no {symbol} in your {source} for future Express fees"
 msgstr "Lässt keine {symbol} in {source} für zukünftige Express-Gebühren übrig"
@@ -10042,6 +10173,8 @@ msgstr "24h Volumen"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -11205,6 +11338,10 @@ msgstr "Wenn aktiviert, wird der Hebel manuell festgelegt und bestimmt Margin un
 msgid "Transaction sent"
 msgstr "Transaktion gesendet"
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Unstake request cancelled"
+msgstr "Entstaking-Anfrage abgebrochen"
+
 #: src/components/ShareModal/ShareCardReferralCodeStat.tsx
 msgid "Referral code"
 msgstr "Empfehlungscode"
@@ -11229,6 +11366,7 @@ msgid "Pending transfer from {sender}"
 msgstr "Ausstehende Übertragung von {sender}"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "{0} tokens reserved for vesting"
 msgstr "{0} Token für Vesting reserviert"
 
@@ -11328,6 +11466,10 @@ msgstr "Market Orders"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buying"
 msgstr "Kauf von"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake request submitted"
+msgstr "Entstaking-Anfrage eingereicht"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
@@ -11472,6 +11614,10 @@ msgstr "TVL umfasst gestaktes GMX, GM Pools und Positionssicherheiten"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Venus"
 msgstr "Venus"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "This amount is not ready to withdraw yet"
+msgstr "Dieser Betrag kann noch nicht abgehoben werden"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap route available"
@@ -11682,6 +11828,7 @@ msgstr "Empfängeradresse"
 msgid "Received on {0}"
 msgstr "Empfangen auf {0}"
 
+#: src/components/Errors/getContractErrorMessage.ts
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Allow all tokens to transfer to the new account"
 msgstr "Übertragung aller Token auf das neue Konto erlauben"
@@ -11820,6 +11967,10 @@ msgstr "Kontaktieren Sie uns, wie es Ihnen am besten passt, und wir melden uns m
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Change network"
 msgstr "Netzwerk wechseln"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Requesting unstake..."
+msgstr "Entstaken wird beantragt..."
 
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM is the liquidity provider token for GMX V2 markets. It accrues 63% of the fees generated by V2 markets."
@@ -12404,6 +12555,10 @@ msgstr "Verdienen Sie Gebühren aus Hebelhandel, Swaps und Spreads"
 msgid "Time elapsed"
 msgstr "Verstrichene Zeit"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "No pending transfer from the sender to this account. The sender has to start the transfer again."
+msgstr "Es gibt keine ausstehende Übertragung vom Absender auf dieses Konto. Der Absender muss die Übertragung erneut starten."
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "External routing is temporarily paused after a failed attempt. Retry to check for a better rate."
 msgstr "Das externe Routing ist nach einem fehlgeschlagenen Versuch vorübergehend pausiert. Versuchen Sie es erneut, um einen besseren Kurs zu prüfen."
@@ -12569,6 +12724,7 @@ msgstr "Wird eingezahlt…"
 msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
 msgstr "{pools} {verb} ausgelistet. Führen Sie das Abheben Ihrer Liquidität durch, da Einzahlungen nicht mehr verfügbar sind, oder verschieben Sie sie in GLV, um weiterhin Erträge zu erzielen."
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
@@ -12737,6 +12893,10 @@ msgstr "Wenn Sie mehr als 20 % Ihres historischen Höchstbestands an gestaktem G
 #: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "Nothing can be converted instantly right now. <0>Convert with Paxos first</0> in the Swap tab: a one-time conversion, 2 to 10 min or longer. Trades paid in USDG need no conversion."
 msgstr "Derzeit kann nichts sofort umgewandelt werden. <0>Zuerst mit Paxos umwandeln</0> im Swap-Tab: eine einmalige Umwandlung, 2 bis 10 Min. oder länger. Trades, die in USDG bezahlt werden, brauchen keine Umwandlung."
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake request failed"
+msgstr "Entstaking-Anfrage fehlgeschlagen"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading chat"
@@ -13458,6 +13618,7 @@ msgid "Invalid receiver address"
 msgstr "Ungültige Empfängeradresse"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "Withdraw submitted"
 msgstr "Abhebung eingereicht"
 
