@@ -187,15 +187,7 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
   //#region GLV Deposit
   if (isDeposit && isGlv) {
     // Raw GLV Deposit Params
-    // selectedMarketForGlv is shared with the Sell tab, so a GM-paid buy must name the GM it actually moves
-    const depositMarketAddress = isMarketTokenDeposit ? firstTokenAddress : selectedMarketForGlv;
-
-    if (
-      !glvTokenAddress ||
-      !depositMarketAddress ||
-      !glvInfo!.markets.some((market) => market.address === depositMarketAddress) ||
-      marketOrGlvTokenAmount === undefined
-    ) {
+    if (!glvTokenAddress || !selectedMarketForGlv || marketOrGlvTokenAmount === undefined) {
       return undefined;
     }
 
@@ -234,19 +226,19 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
       dataList = [GMX_DATA_ACTION_HASH, ...bytes32array];
     }
 
-    const marketShortToken = getTokenAddressByMarket(chainId, depositMarketAddress, "short");
+    const marketShortToken = getTokenAddressByMarket(chainId, selectedMarketForGlv, "short");
     const initialShortToken = isMarketTokenDeposit ? zeroAddress : depositSwapTokenInAddress ?? marketShortToken;
 
     return {
       addresses: {
         glv: glvInfo!.glvTokenAddress,
-        market: depositMarketAddress,
+        market: selectedMarketForGlv,
         receiver: glvInfo!.glvToken.totalSupply === 0n ? numberToHex(1, { size: 20 }) : account,
         callbackContract: zeroAddress,
         uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? zeroAddress,
         initialLongToken: isMarketTokenDeposit
           ? zeroAddress
-          : getTokenAddressByMarket(chainId, depositMarketAddress, "long"),
+          : getTokenAddressByMarket(chainId, selectedMarketForGlv, "long"),
         initialShortToken,
         longTokenSwapPath: [],
         shortTokenSwapPath: depositSwapPath,

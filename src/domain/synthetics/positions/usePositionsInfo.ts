@@ -9,7 +9,6 @@ import { useApiDataFallbackCounter } from "lib/metrics/useApiDataFallbackCounter
 import { getByKey } from "lib/objects";
 import { ContractsChainId } from "sdk/configs/chains";
 import { ApiPositionInfo, getPositionInfo, PositionInfo } from "sdk/utils/positions";
-import { getIsTokenTrackingPrice } from "sdk/utils/tokens";
 
 import useUiFeeFactorRequest from "../fees/utils/useUiFeeFactor";
 import { MarketsData, MarketsInfoData } from "../markets";
@@ -24,10 +23,7 @@ import { usePositionsConstantsRequest } from "./usePositionsConstants";
 // cold RPC detour is slower than waiting, so we give API a grace window before paying RPC load.
 const RPC_WARMUP_DELAY_MS = 5_000;
 
-export function composeApiPositionInfo(
-  apiPosition: ApiPositionInfo,
-  marketsInfoData: MarketsInfoData
-): PositionInfo | null {
+function composeApiPositionInfo(apiPosition: ApiPositionInfo, marketsInfoData: MarketsInfoData): PositionInfo | null {
   const marketInfo = getByKey(marketsInfoData, apiPosition.marketAddress);
 
   if (!marketInfo) {
@@ -188,7 +184,7 @@ export function usePositionsInfoRequest(
         original.collateralAmount !== position.collateralAmount ||
         original.sizeInTokens !== position.sizeInTokens;
 
-      if (wasModifiedByEvent || getIsTokenTrackingPrice(position.collateralToken, position.indexToken)) {
+      if (wasModifiedByEvent) {
         const marketInfo = getByKey(marketsInfoData, position.marketAddress);
 
         if (marketInfo) {

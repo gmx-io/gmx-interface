@@ -21,8 +21,6 @@ export type AggregatedOrdersDataResult = {
   ordersInfoData?: OrdersInfoData;
   count?: number;
   isLoading: boolean;
-  // Set when the Solana orders read failed. Cached orders may still be present; they are not a confirmed fresh read.
-  error?: Error;
 };
 
 export function useOrdersInfoRequest(
