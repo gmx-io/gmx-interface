@@ -1,6 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { type JSX } from "react";
 
+import { getIsSolanaNetworkEnabled } from "config/ab";
 import { type NetworkId, isSolanaNetwork } from "config/chains";
 import { AnnouncementVariant } from "config/events";
 import { DAY_MS } from "lib/dates";
@@ -44,6 +45,11 @@ export function getUiFlagEventDismissCooldown(event: UiFlagEventData): number {
   return event.dismissCooldownMs ?? DEFAULT_DISMISS_COOLDOWN_MS;
 }
 
+// Solana events need the solanaNetwork AB flag (Settings > Debug settings > AB flags) on top of the Solana network.
 export function getIsUiFlagEventOnNetwork(event: UiFlagEventData, networkId: NetworkId): boolean {
+  if (event.network === "solana" && !getIsSolanaNetworkEnabled()) {
+    return false;
+  }
+
   return (event.network ?? "evm") === (isSolanaNetwork(networkId) ? "solana" : "evm");
 }

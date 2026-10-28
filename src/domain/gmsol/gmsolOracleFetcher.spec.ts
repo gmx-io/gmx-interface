@@ -1,9 +1,19 @@
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { getIsSolanaNetworkEnabled } from "config/ab";
 import { GMSOL_NATIVE_TOKEN, GMSOL_TOKENS } from "config/gmsol/tokens";
 import type { OracleFetcher, TickersResponse } from "lib/oracleKeeperFetcher";
 
 import { GmsolOracleFetcher } from "./gmsolOracleFetcher";
+
+vi.mock("config/ab", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("config/ab")>()),
+  getIsSolanaNetworkEnabled: vi.fn(),
+}));
+
+beforeEach(() => {
+  vi.mocked(getIsSolanaNetworkEnabled).mockReturnValue(true);
+});
 
 const mint = (symbol: string) => GMSOL_TOKENS.find((token) => token.symbol === symbol)!.address;
 
@@ -108,5 +118,20 @@ describe("GmsolOracleFetcher candles and 24h change", () => {
     expect(deltas[mint("WBTC")]?.deltaPercentageStr).toBe("+10.00%");
     expect(deltas[mint("WETH")]?.deltaPercentageStr).toBe("-5.00%");
     expect(deltas[mint("NEAR")]).toBeUndefined();
+  });
+});
+
+describe("GmsolOracleFetcher with the solanaNetwork flag off", () => {
+  it("rejects without calling the Arbitrum keeper", async () => {
+    vi.mocked(getIsSolanaNetworkEnabled).mockReturnValue(false);
+    const keeper = { fetchTickers: vi.fn(), fetchOracleCandles: vi.fn(), fetch24hPrices: vi.fn() };
+    const fetcher = new GmsolOracleFetcher(keeper as unknown as OracleFetcher);
+
+    await expect(fetcher.fetchPrices([mint("SOL")])).rejects.toThrow("Solana network is disabled");
+    await expect(fetcher.fetchCandles(mint("SOL"), "1h", 1)).rejects.toThrow("Solana network is disabled");
+    await expect(fetcher.fetch24hPriceDeltas([mint("SOL")])).rejects.toThrow("Solana network is disabled");
+    expect(
+      [keeper.fetchTickers, keeper.fetchOracleCandles, keeper.fetch24hPrices].map((fn) => fn.mock.calls.length)
+    ).toEqual([0, 0, 0]);
   });
 });
