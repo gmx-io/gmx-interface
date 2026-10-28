@@ -1,10 +1,8 @@
-import { Trans, msg, t } from "@lingui/macro";
-import { useLingui } from "@lingui/react";
+import { t, Trans } from "@lingui/macro";
 import { ReactNode, useCallback, useMemo } from "react";
 import { zeroAddress } from "viem";
 
 import { AVALANCHE, SettlementChainId } from "config/chains";
-import { getNetworkFeatures } from "config/features";
 import { JUMPER_BRIDGE_URL } from "config/links";
 import { MULTI_CHAIN_DEPOSIT_TRADE_TOKENS } from "config/multichain";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
@@ -23,14 +21,12 @@ import {
 import {
   selectGmxAccountGasPaymentToken,
   selectSettlementChainGasPaymentToken,
-  selectUnavailableGasPaymentTokenAddresses,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
   selectGasPaymentTokenAllowance,
   selectMarketsInfoData,
   selectProDiscountFactor,
-  selectFeeDiscountFactor,
   selectSrcChainId,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -68,10 +64,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { findNextGasPaymentToken } from "domain/synthetics/express/useSwitchGasPaymentTokenIfRequired";
-import {
-  getExpressTokenPermitBlockReason,
-  getGasPaymentTokenToApprove,
-} from "domain/synthetics/express/validateMultichainExpressSubmit";
+import { getCanUseTokenPermits } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { getExternalAggregatorSwapUrl } from "domain/synthetics/externalSwaps/utils";
 import { substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
@@ -96,7 +89,6 @@ import {
   getIsGasPaymentTokenApproval,
 } from "domain/tokens/gasPaymentTokenApproval";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
-import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { useLocalizedMap } from "lib/i18n";
 import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
@@ -117,16 +109,10 @@ import { TokenData } from "sdk/utils/tokens/types";
 import { getLimitOrderTypeByTradeMode, TradeMode, TradeType } from "sdk/utils/trade";
 import { mustNeverExist } from "sdk/utils/types";
 
+import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { useMultichainTokens } from "components/GmxAccountModal/hooks";
-import {
-  TooltipAction,
-  TooltipContent,
-  TooltipLink,
-  TooltipReadMore,
-  TooltipText,
-} from "components/Tooltip/TooltipBlocks";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
@@ -144,8 +130,7 @@ type TradeboxButtonState = {
   tooltipContent: ReactNode | null;
   bannerErrorContent: ReactNode | null;
   disabled: boolean;
-  /** Resolves to true once a trade is sent, false for steps like connect, deposit or approve */
-  onSubmit: () => Promise<boolean>;
+  onSubmit: () => Promise<void>;
   slippageInputId: string;
   expressParams?: ExpressTxnParams;
   isExpressLoading: boolean;
@@ -154,8 +139,6 @@ type TradeboxButtonState = {
   isAllowanceLoaded: boolean;
   batchParams?: BatchOrderTxnParams;
   totalExecutionFee?: ExecutionFee;
-  expressGasPaymentToken?: TokenData;
-  isFeeInPayToken: boolean;
 };
 
 export function useTradeboxButtonState({
@@ -213,7 +196,6 @@ export function useTradeboxButtonState({
     isExpressLoading,
     isMultichainSubmitDisabled,
     totalExecutionFee,
-    gasPaymentToken: expressGasPaymentToken,
   } = useTradeboxTransactions({
     setPendingTxns,
     canSwitchGasPaymentToken,
@@ -226,15 +208,15 @@ export function useTradeboxButtonState({
       list.push({ tokenAddress: fromToken.address, amount: payAmount });
     }
 
-    const gasPaymentTokenToApprove = getGasPaymentTokenToApprove(expressParams);
-    if (gasPaymentTokenToApprove) {
-      list.push(gasPaymentTokenToApprove);
+    if (expressParams?.gasPaymentParams) {
+      list.push({
+        tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
+        amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
+      });
     }
 
     return list;
-  }, [fromToken, payAmount, expressParams]);
-
-  const permitBlockReason = getExpressTokenPermitBlockReason(expressParams);
+  }, [fromToken, payAmount, expressParams?.gasPaymentParams]);
 
   const {
     tokensToApprove,
@@ -247,7 +229,7 @@ export function useTradeboxButtonState({
     chainId,
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokens: approvalTokens,
-    allowPermit: permitBlockReason === undefined,
+    allowPermit: getCanUseTokenPermits(expressParams),
     skip: isFromTokenGmxAccount,
     metric: {
       flow: "trade",
@@ -255,7 +237,6 @@ export function useTradeboxButtonState({
       isExpress1CT: Boolean(expressParams?.subaccount),
       gasPaymentTokenAddress: expressParams?.gasPaymentParams?.gasPaymentTokenAddress,
       payTokenAddress: fromToken?.address,
-      permitBlockReason,
     },
   });
 
@@ -332,12 +313,12 @@ export function useTradeboxButtonState({
   const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
   const externalSwapDesirability = useSelector(selectExternalSwapDesirability);
   const swapToToken = useSelector(selectTradeboxSelectSwapToToken);
-  const unavailableTokenAddresses = useSelector(selectUnavailableGasPaymentTokenAddresses);
 
   const alternativeGasToken = useMemo((): TokenData | undefined => {
     if (
       approvalGasError.bannerErrorName !== ValidationBannerErrorName.insufficientNativeTokenForApproval ||
       !isPendingGasPaymentTokenApproval ||
+      !gasPaymentToken ||
       expressParams?.gasPaymentParams === undefined
     ) {
       return undefined;
@@ -348,13 +329,13 @@ export function useTradeboxButtonState({
       externalSwapDesirability === "required" &&
       externalSwapConflictToken &&
       externalSwapConflictToken.address !== getWrappedToken(chainId).address
-        ? [...unavailableTokenAddresses, externalSwapConflictToken.address]
-        : unavailableTokenAddresses;
+        ? [externalSwapConflictToken.address]
+        : undefined;
 
     const address = findNextGasPaymentToken({
       chainId,
       tokensData,
-      gasPaymentToken: expressParams.gasPaymentParams.gasPaymentToken,
+      gasPaymentToken,
       gasPaymentTokenAmount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
       payAmounts: fromToken && payAmount !== undefined ? { [fromToken.address]: payAmount } : {},
       isGmxAccount: false,
@@ -366,6 +347,7 @@ export function useTradeboxButtonState({
   }, [
     approvalGasError.bannerErrorName,
     isPendingGasPaymentTokenApproval,
+    gasPaymentToken,
     expressParams?.gasPaymentParams,
     isSwap,
     swapToToken,
@@ -376,7 +358,6 @@ export function useTradeboxButtonState({
     fromToken,
     payAmount,
     gasPaymentTokenAllowance?.tokensAllowanceData,
-    unavailableTokenAddresses,
   ]);
 
   const handleSwitchGasToken = useCallback(() => {
@@ -399,16 +380,6 @@ export function useTradeboxButtonState({
 
   const externalSwapBlockReason = useSelector(selectExternalSwapBlockReason);
 
-  // follows the estimate rather than the resolved token, which runs ahead of it while a new estimate loads
-  const isFeeInPayToken =
-    !isFromTokenGmxAccount &&
-    (isSwap || isIncrease) &&
-    expressParams !== undefined &&
-    gasPaymentToken !== undefined &&
-    expressParams.gasPaymentParams.gasPaymentTokenAddress !== gasPaymentToken.address &&
-    expressParams.gasPaymentParams.gasPaymentTokenAddress === fromToken?.address;
-
-  const { _ } = useLingui();
   const { buttonErrorText, tooltipContent, bannerErrorContent } = useMemo((): {
     buttonErrorText: string | undefined;
     tooltipContent: ReactNode | null;
@@ -423,8 +394,6 @@ export function useTradeboxButtonState({
     const expressError = getExpressError({
       expressParams,
       tokensData,
-      // the fee moved to the pay token to skip an approval; a Classic transaction would bring the native fee back
-      canFallBackToClassic: !isFeeInPayToken,
     });
 
     const validationResult = takeValidationResult(
@@ -438,9 +407,13 @@ export function useTradeboxButtonState({
     );
 
     const setMaxLeverageAction = hasAvailableMaxLeverage ? (
-      <TooltipAction onClick={detectAndSetAvailableMaxLeverage}>
-        <Trans>Set max leverage</Trans>
-      </TooltipAction>
+      <>
+        <br />
+        <br />
+        <EmbeddedActionButton onClick={detectAndSetAvailableMaxLeverage}>
+          <Trans>Set max leverage</Trans>
+        </EmbeddedActionButton>
+      </>
     ) : null;
 
     let tooltipContent: ReactNode = null;
@@ -450,36 +423,34 @@ export function useTradeboxButtonState({
       switch (validationResult.buttonTooltipName) {
         case ValidationButtonTooltipName.maxLeverage: {
           tooltipContent = (
-            <TooltipContent>
-              <TooltipText>
-                {isLeverageSliderEnabled ? (
-                  <Trans>Decrease leverage to match the max allowed leverage.</Trans>
-                ) : (
-                  <Trans>Decrease size to match the max allowed leverage.</Trans>
-                )}
-              </TooltipText>
-              {setMaxLeverageAction}
-              <TooltipReadMore href="https://docs.gmx.io/docs/trading/order-types/#max-leverage" />
-            </TooltipContent>
+            <>
+              {isLeverageSliderEnabled ? (
+                <Trans>Decrease leverage to match the max allowed leverage.</Trans>
+              ) : (
+                <Trans>Decrease size to match the max allowed leverage.</Trans>
+              )}{" "}
+              <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">
+                <Trans>Read more</Trans>
+              </ExternalLink>
+              .{setMaxLeverageAction}
+            </>
           );
 
           break;
         }
         case ValidationButtonTooltipName.resultingPositionMaxLeverage: {
           tooltipContent = (
-            <TooltipContent>
-              <TooltipText>
-                <Trans>
-                  The resulting position would exceed the maximum allowed leverage. Increase margin or reduce size.
-                </Trans>
-              </TooltipText>
+            <>
+              <Trans>
+                The resulting position would exceed the maximum allowed leverage. Increase margin or reduce size.
+              </Trans>
               {setMaxLeverageAction}
-            </TooltipContent>
+            </>
           );
           break;
         }
         case ValidationButtonTooltipName.liqPriceGtMarkPrice: {
-          tooltipContent = _(msg`Position would be liquidated immediately upon execution. Reduce the size.`);
+          tooltipContent = <Trans>Position would be liquidated immediately upon execution. Reduce the size.</Trans>;
           break;
         }
         case ValidationButtonTooltipName.noSwapPath: {
@@ -542,7 +513,6 @@ export function useTradeboxButtonState({
       bannerErrorContent,
     };
   }, [
-    _,
     chainId,
     srcChainId,
     account,
@@ -550,7 +520,6 @@ export function useTradeboxButtonState({
     hasOutdatedUi,
     expressParams,
     tokensData,
-    isFeeInPayToken,
     multipleWalletExtensionsChainError,
     tradeError,
     externalSwapBlockReason,
@@ -589,11 +558,15 @@ export function useTradeboxButtonState({
     );
   }, [tokenChainDataArray, fromToken, srcChainId]);
 
-  const onSubmit = useCallback(async (): Promise<boolean> => {
+  const onSubmit = useCallback(async () => {
     if (!account || !signer) {
       sendUserAnalyticsConnectWalletClickEvent("ActionButton");
       openConnectModal?.();
-      return false;
+      return;
+    }
+
+    if (!signer) {
+      return;
     }
 
     if (shouldShowDepositButton) {
@@ -618,11 +591,11 @@ export function useTradeboxButtonState({
 
       setGmxAccountModalOpen("deposit");
 
-      return false;
+      return;
     }
 
     if (isApprovalRequired) {
-      if (!chainId || isApproving || !tokensToApprove[0]) return false;
+      if (!chainId || isApproving || !tokensToApprove[0]) return;
 
       userAnalytics.pushEvent<TokenApproveClickEvent>({
         event: "TokenApproveAction",
@@ -636,11 +609,11 @@ export function useTradeboxButtonState({
           }),
       });
 
-      return false;
+      return;
     }
 
     if (isAllowancePending || isApproving) {
-      return false;
+      return;
     }
 
     setStage("processing");
@@ -666,14 +639,12 @@ export function useTradeboxButtonState({
       await sleep(2000);
       setStage("trade");
 
-      return true;
+      return;
     }
 
-    await txnPromise.finally(() => {
+    return txnPromise.finally(() => {
       setStage("trade");
     });
-
-    return true;
   }, [
     account,
     chainId,
@@ -712,8 +683,6 @@ export function useTradeboxButtonState({
       batchParams,
       totalExecutionFee,
       isExpressLoading,
-      expressGasPaymentToken,
-      isFeeInPayToken,
       approvalTokenAddress: isApprovalRequired ? tokensToApprove[0] : undefined,
       isApproving,
       isAllowanceLoaded,
@@ -898,8 +867,6 @@ export function useTradeboxButtonState({
     batchParams,
     totalExecutionFee,
     isExpressLoading,
-    expressGasPaymentToken,
-    isFeeInPayToken,
     isMultichainSubmitDisabled,
     isWaitingForExternalSwapQuote,
     account,
@@ -943,9 +910,10 @@ export function useDetectAndSetAvailableMaxLeverage({
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
   const tradeMode = useSelector(selectTradeboxTradeMode);
 
+  const { minCollateralUsd } = usePositionsConstants();
+
   const { collateralToken, marketInfo, selectedTriggerAcceptablePriceImpactBps, setLeverageOption, setFocusedInput } =
     useSelector(selectTradeboxState);
-  const { minCollateralUsd } = usePositionsConstants(marketInfo?.marketTokenAddress);
 
   const { isLeverageSliderEnabled, isSetAcceptablePriceImpactEnabled } = useSettings();
 
@@ -962,7 +930,6 @@ export function useDetectAndSetAvailableMaxLeverage({
   const uiFeeFactor = useUiFeeFactor();
   const userReferralInfo = useUserReferralInfo();
   const proDiscountFactor = useSelector(selectProDiscountFactor);
-  const feeDiscountFactor = useSelector(selectFeeDiscountFactor);
   const acceptablePriceImpactBuffer = useSelector(selectSavedAcceptablePriceImpactBuffer);
   const externalSwapQuote = useSelector(selectExternalSwapQuote);
   const externalSwapQuoteParams = useSelector(selectExternalSwapQuoteParams);
@@ -990,7 +957,6 @@ export function useDetectAndSetAvailableMaxLeverage({
       uiFeeFactor,
       userReferralInfo,
       proDiscountFactor,
-      feeDiscountFactor,
       acceptablePriceImpactBuffer,
       fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
       triggerPrice,
@@ -1025,7 +991,6 @@ export function useDetectAndSetAvailableMaxLeverage({
     uiFeeFactor,
     userReferralInfo,
     proDiscountFactor,
-    feeDiscountFactor,
     isSetAcceptablePriceImpactEnabled,
     tradeMode,
     twap,
@@ -1103,17 +1068,13 @@ function InsufficientGmxPoolLiquidityTooltipContent() {
       );
     case "orderTypeNotSupported":
       return (
-        <TooltipContent>
-          <TooltipText>
-            <Trans>TWAP swaps use GMX pool liquidity only, which can't fill this order size.</Trans>
-          </TooltipText>
-          <TooltipText>
-            <Trans>Switch to a market order to enable external routes.</Trans>
-          </TooltipText>
-          <TooltipAction onClick={handleSwitchToMarketOrder}>
-            <Trans>Switch to a market order</Trans>
-          </TooltipAction>
-        </TooltipContent>
+        <Trans>
+          TWAP swaps use GMX pool liquidity only, which can't fill this order size.
+          <br />
+          <br />
+          <EmbeddedActionButton onClick={handleSwitchToMarketOrder}>Switch to a market order</EmbeddedActionButton> to
+          enable external routes.
+        </Trans>
       );
     case "noRouteFound": {
       const aggregatorSwapUrl = getExternalAggregatorSwapUrl({
@@ -1157,8 +1118,6 @@ function NoSwapPathTooltipContent({
   const { setFromTokenAddress, setToTokenAddress, setTradeType, setTradeMode } = useSelector(selectTradeboxState);
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
   const isFromTokenGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
-  const { networkId } = useChainId();
-  const isSwapAvailable = getNetworkFeatures(networkId).swap;
 
   const makeHandleSwapClick = useCallback(
     (fromTokenSymbol: string, toTokenSymbol: string) => () => {
@@ -1203,23 +1162,17 @@ function NoSwapPathTooltipContent({
   const collateralSymbol = collateralToken?.assetSymbol ?? collateralToken?.symbol;
 
   return (
-    <TooltipContent>
-      <TooltipText>
-        <Trans>{collateralSymbol} is required for collateral.</Trans>
-      </TooltipText>
-      <TooltipText>
-        <Trans>
-          No swap path found for {fromToken?.assetSymbol ?? fromToken?.symbol} to {collateralSymbol} within GMX.
-        </Trans>
-      </TooltipText>
-      {isSwapAvailable && (
-        <TooltipAction onClick={makeHandleSwapClick(fromToken.symbol, collateralToken?.symbol ?? "")}>
-          <Trans>Swap {collateralSymbol}</Trans>
-        </TooltipAction>
-      )}
-      <TooltipLink href={JUMPER_BRIDGE_URL}>
-        <Trans>Bridge {collateralSymbol}</Trans>
-      </TooltipLink>
-    </TooltipContent>
+    <Trans>
+      {collateralSymbol} is required for collateral.
+      <br />
+      <br />
+      No swap path found for {fromToken?.assetSymbol ?? fromToken?.symbol} to {collateralSymbol} within GMX.
+      <br />
+      <br />
+      <EmbeddedActionButton onClick={makeHandleSwapClick(fromToken.symbol, collateralToken?.symbol ?? "")}>
+        Swap {collateralSymbol}
+      </EmbeddedActionButton>{" "}
+      or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge {collateralSymbol}</ExternalLink>.
+    </Trans>
   );
 }

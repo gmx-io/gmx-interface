@@ -1,4 +1,3 @@
-import type { GmsolMarketConfig } from "utils/gmsol/types";
 import type { TokenData } from "utils/tokens/types";
 
 export type PnlFactorType = "FOR_DEPOSITS" | "FOR_WITHDRAWALS" | "FOR_TRADERS";
@@ -28,8 +27,7 @@ export type MarketPoolTokens = {
   indexToken: TokenData;
 };
 
-export type MarketInfo = GmsolMarketConfig &
-  Market &
+export type MarketInfo = Market &
   MarketPoolTokens & {
     isDisabled: boolean;
 
@@ -205,7 +203,6 @@ export type MarketValues = Pick<MarketInfo, (typeof MARKET_VALUES_KEYS)[number]>
  */
 export type MarketConfig = Pick<
   MarketInfo,
-  | keyof GmsolMarketConfig
   | "isDisabled"
   | "maxLongPoolUsdForDeposit"
   | "maxShortPoolUsdForDeposit"

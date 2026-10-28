@@ -6,7 +6,6 @@ import { RpcConfig } from "lib/rpc/types";
 import { mustNeverExist } from "lib/types";
 import {
   AnyChainId,
-  SOLANA_NETWORK_ID,
   ARBITRUM,
   ARBITRUM_SEPOLIA,
   AVALANCHE,
@@ -76,7 +75,6 @@ export const RPC_TRACKER_CONFIG_FOR_SOURCE_CHAINS: RpcTrackerConfig = {
 };
 
 const RPC_CONFIGS: Record<number, RpcConfig[]> = {
-  [SOLANA_NETWORK_ID]: [{ ...getAlchemyProvider(SOLANA_NETWORK_ID, "fallback"), purpose: "default" }],
   [ARBITRUM]: [
     ...[
       "https://arb1.arbitrum.io/rpc",
@@ -331,14 +329,6 @@ export function getRpcProviders(chainId: number, purpose: RpcPurpose): RpcConfig
   return config.filter((rpc) => rpc.purpose === purpose);
 }
 
-export function getSolanaRpcUrl(): string {
-  const provider = getRpcProviders(SOLANA_NETWORK_ID, "default")[0];
-  if (!provider) {
-    throw new Error("No default Solana RPC provider configured");
-  }
-  return provider.url;
-}
-
 export function getWsRpcProviders(chainId: number, purpose: RpcPurpose): RpcConfig[] | [undefined] {
   const config = WS_RPC_CONFIGS[chainId];
 
@@ -361,7 +351,7 @@ export function getExpressRpcUrl(chainId: number): string | undefined {
 export type RpcPurpose = "fallback" | "largeAccount" | "express" | "default";
 
 function getAlchemyProvider(
-  chainId: Exclude<AnyChainId, typeof AVALANCHE_FUJI> | typeof SOLANA_NETWORK_ID,
+  chainId: Exclude<AnyChainId, typeof AVALANCHE_FUJI>,
   purpose: RpcPurpose,
   type: "http" | "ws" = "http"
 ): RpcConfig {
@@ -394,9 +384,6 @@ function getAlchemyProvider(
 
   let baseUrl: string;
   switch (chainId) {
-    case SOLANA_NETWORK_ID:
-      baseUrl = `solana-mainnet.g.alchemy.com/v2`;
-      break;
     case ARBITRUM:
       baseUrl = `arb-mainnet.g.alchemy.com/v2`;
       break;
