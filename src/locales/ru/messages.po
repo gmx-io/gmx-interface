@@ -1187,6 +1187,10 @@ msgstr "Значения комиссий рассчитываются на мо
 msgid "Enter the referral code and save up to 10% on fees"
 msgstr "Введите реферальный код и сэкономьте до 10% на комиссиях"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Create passkey"
+msgstr "Создать ключ доступа"
+
 #: src/pages/Pools/Pools.tsx
 msgid "TVL in vaults and pools"
 msgstr "TVL в хранилищах и пулах"
@@ -1198,6 +1202,10 @@ msgstr "GMX в сети Solana"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
 msgstr "Объём торгов привлечённых вами трейдеров"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Passkey confirmed"
+msgstr "Ключ доступа подтверждён"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Can I unstake or withdraw anytime?"
@@ -2723,6 +2731,11 @@ msgstr "Сумма ниже лимита перевода. Попробуйте 
 msgid "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour"
 msgstr "Позиции {longOrShort} не платят комиссию за финансирование и платят комиссию за заимствование {borrowRate} в час"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "Passkeys are not available in this browser"
+msgstr "Ключи доступа недоступны в этом браузере"
+
 #: src/components/GmList/GmList.tsx
 msgid "Search pools"
 msgstr "Поиск пулов"
@@ -3033,6 +3046,10 @@ msgstr "Резервный фактор открытого интереса дл
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Layer 2"
 msgstr "Layer 2"
+
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "This passkey belongs to another account"
+msgstr "Этот ключ доступа принадлежит другому аккаунту"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "GMX pools can't fill this swap size. It needs an external route, which isn't available with One-Click Trading. Disable One-Click Trading to proceed."
@@ -3571,6 +3588,10 @@ msgstr "Недопустимый размер уменьшения"
 msgid "Subscribe"
 msgstr "Подписаться"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Passkey failed"
+msgstr "Ошибка ключа доступа"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized finance dashboard"
 msgstr "Панель управления децентрализованными финансами"
@@ -3722,6 +3743,10 @@ msgstr "Токен GMX служит governance-токеном протокола
 msgid "Max lendable impact USD"
 msgstr "Макс. сумма заимствования из пула влияния (USD)"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Passkey (experimental)"
+msgstr "Ключ доступа (эксперимент)"
+
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {offerAmount}</2>"
 msgstr "<0>Покупка {0}{1}<1>{poolName}</1></0> <2>за {offerAmount}</2>"
@@ -3821,6 +3846,10 @@ msgstr "Тема"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
 msgstr "Превышено максимальное кредитное плечо"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Passkey"
+msgstr "Ключ доступа"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claiming funding fees failed"
@@ -5194,6 +5223,10 @@ msgstr "Комиссии за финансирование получены"
 msgid "Copy users"
 msgstr "Копировать пользователей"
 
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "Passkey created. Press Use passkey to finish"
+msgstr "Ключ доступа создан. Нажмите «Использовать ключ доступа», чтобы закончить"
+
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "How do I actually make money?"
 msgstr "Как я буду зарабатывать?"
@@ -5886,6 +5919,10 @@ msgstr "Анстейкинг более 20% от вашего историчес
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "Нет влияния на цену. Единая цена исполнения для<0/>увеличения шортов или уменьшения лонгов при<1/>данном размере."
+
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "This passkey can't create a session key: its provider doesn't support PRF"
+msgstr "Этот ключ доступа не может создать ключ сессии: его провайдер не поддерживает PRF"
 
 #: src/pages/ReferralsTier/ReferralsTier.tsx
 msgid "Current tier:"
@@ -6765,6 +6802,10 @@ msgstr "Выбрать рынок"
 msgid "Referral code creation failed"
 msgstr "Не удалось создать реферальный код"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "This browser uses the passkey session"
+msgstr "Этот браузер использует сессию ключа доступа"
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "The bridge fee is paid in {bridgeFeeTokenSymbol} from your GMX Account"
@@ -6977,6 +7018,7 @@ msgid "Enter a code"
 msgstr "Введите код"
 
 #: src/components/GmList/GmListItem.tsx
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
 msgid "Details"
 msgstr "Детали"
 
@@ -9555,6 +9597,10 @@ msgstr "Чистое влияние на цену"
 msgid "Long borrowing rate"
 msgstr "Ставка заимствования для лонгов"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Use passkey"
+msgstr "Использовать ключ доступа"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approve GMX"
@@ -10876,6 +10922,10 @@ msgstr "Текущий безопасный лимит: <0>{0}</0> суммар�
 msgid "Staking..."
 msgstr "Стейкинг..."
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Turn off One-Click to switch this browser to a passkey"
+msgstr "Выключите One-Click, чтобы перевести этот браузер на ключ доступа"
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Buy request sent"
@@ -11405,6 +11455,10 @@ msgstr "Опционные хранилища"
 msgid "Time limit"
 msgstr "Ограничение по времени"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Confirm with your passkey..."
+msgstr "Подтвердите ключом доступа..."
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Live unrealized PnL before fees"
 msgstr "Текущий нереализованный PnL до комиссий"
@@ -11930,6 +11984,10 @@ msgstr "Swap Limit: обмен токенов при достижении цен
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "Получайте оповещения и уведомления от GMX, чтобы быть в курсе ваших сделок, риска ликвидации и многого другого"
 
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "The passkey request was cancelled or timed out"
+msgstr "Запрос ключа доступа отменён или истёк"
+
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Use the Pay amount"
 msgstr "Взять сумму из «Оплатить»"
@@ -11993,6 +12051,10 @@ msgstr "Партнёрское хранилище"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} up to the caps below. Remaining tokens are reserved for open positions."
 msgstr "Продать GM за {0} в пределах лимитов ниже. Оставшиеся токены зарезервированы для открытых позиций."
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Session is already active, no approval needed"
+msgstr "Сессия уже активна, одобрение не нужно"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Reserved positive impact"
@@ -12350,6 +12412,10 @@ msgstr "{pools} {verb} из листинга. Выведите ликвидно�
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
 msgstr "Статус"
+
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "One passkey keeps one One-Click session on all your devices, also after site data is cleared. Turning One-Click off removes this session on all devices."
+msgstr "Один ключ доступа держит одну сессию One-Click на всех ваших устройствах, в том числе после очистки данных сайта. Если выключить One-Click, эта сессия удалится на всех устройствах."
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "30s"

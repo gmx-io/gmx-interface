@@ -1187,6 +1187,10 @@ msgstr "Valores de comisiones calculados en el momento en que se obtienen. No in
 msgid "Enter the referral code and save up to 10% on fees"
 msgstr "Introduzca el código de referido y ahorre hasta un 10 % en comisiones"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Create passkey"
+msgstr "Crear llave de acceso"
+
 #: src/pages/Pools/Pools.tsx
 msgid "TVL in vaults and pools"
 msgstr "TVL en vaults y pools"
@@ -1198,6 +1202,10 @@ msgstr "GMX en Solana"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
 msgstr "Volumen negociado por los operadores que ha referido"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Passkey confirmed"
+msgstr "Llave de acceso confirmada"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Can I unstake or withdraw anytime?"
@@ -2723,6 +2731,11 @@ msgstr "El importe está por debajo del límite de transferencia. Pruebe con un 
 msgid "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour"
 msgstr "Las posiciones {longOrShort} no pagan comisión de financiación y pagan una comisión de préstamo del {borrowRate} por hora"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "Passkeys are not available in this browser"
+msgstr "Las llaves de acceso no están disponibles en este navegador"
+
 #: src/components/GmList/GmList.tsx
 msgid "Search pools"
 msgstr "Buscar pools"
@@ -3033,6 +3046,10 @@ msgstr "Factor de reserva de interés abierto para largos"
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Layer 2"
 msgstr "Capa 2"
+
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "This passkey belongs to another account"
+msgstr "Esta llave de acceso pertenece a otra cuenta"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "GMX pools can't fill this swap size. It needs an external route, which isn't available with One-Click Trading. Disable One-Click Trading to proceed."
@@ -3571,6 +3588,10 @@ msgstr "Tamaño de reducción no válido"
 msgid "Subscribe"
 msgstr "Suscribirse"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Passkey failed"
+msgstr "Error de la llave de acceso"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized finance dashboard"
 msgstr "Panel de finanzas descentralizadas"
@@ -3722,6 +3743,10 @@ msgstr "El token GMX sirve como token de gobernanza del protocolo GMX. El 27 % d
 msgid "Max lendable impact USD"
 msgstr "Impacto máximo prestable en USD"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Passkey (experimental)"
+msgstr "Llave de acceso (experimental)"
+
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {offerAmount}</2>"
 msgstr "<0>Comprando {0}{1}<1>{poolName}</1></0> <2>con {offerAmount}</2>"
@@ -3821,6 +3846,10 @@ msgstr "Tema"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
 msgstr "Apalancamiento máximo superado"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Passkey"
+msgstr "Llave de acceso"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claiming funding fees failed"
@@ -5194,6 +5223,10 @@ msgstr "Comisiones de financiación reclamadas"
 msgid "Copy users"
 msgstr "Copiar usuarios"
 
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "Passkey created. Press Use passkey to finish"
+msgstr "Llave de acceso creada. Pulse Usar llave de acceso para terminar"
+
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "How do I actually make money?"
 msgstr "¿Cómo gano dinero realmente?"
@@ -5886,6 +5919,10 @@ msgstr "Retirar del staking más del 20% de su máximo histórico de GMX o esGMX
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "Sin impacto en el precio. Precio de ejecución único para<0/>aumentar posiciones cortas o reducir posiciones largas a<1/>este tamaño."
+
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "This passkey can't create a session key: its provider doesn't support PRF"
+msgstr "Esta llave de acceso no puede crear una clave de sesión: su proveedor no admite PRF"
 
 #: src/pages/ReferralsTier/ReferralsTier.tsx
 msgid "Current tier:"
@@ -6765,6 +6802,10 @@ msgstr "Seleccionar mercado"
 msgid "Referral code creation failed"
 msgstr "Error al crear el código de referido"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "This browser uses the passkey session"
+msgstr "Este navegador usa la sesión de la llave de acceso"
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "The bridge fee is paid in {bridgeFeeTokenSymbol} from your GMX Account"
@@ -6977,6 +7018,7 @@ msgid "Enter a code"
 msgstr "Introduzca un código"
 
 #: src/components/GmList/GmListItem.tsx
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
 msgid "Details"
 msgstr "Detalles"
 
@@ -9555,6 +9597,10 @@ msgstr "Impacto neto en el precio"
 msgid "Long borrowing rate"
 msgstr "Tasa de préstamo de posiciones largas"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Use passkey"
+msgstr "Usar llave de acceso"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approve GMX"
@@ -10876,6 +10922,10 @@ msgstr "Límite seguro actual: <0>{0}</0> combinado."
 msgid "Staking..."
 msgstr "Haciendo staking..."
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Turn off One-Click to switch this browser to a passkey"
+msgstr "Desactive One-Click para cambiar este navegador a una llave de acceso"
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Buy request sent"
@@ -11405,6 +11455,10 @@ msgstr "Vaults basados en opciones"
 msgid "Time limit"
 msgstr "Límite de tiempo"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Confirm with your passkey..."
+msgstr "Confirme con su llave de acceso..."
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Live unrealized PnL before fees"
 msgstr "PnL no realizado actual antes de comisiones"
@@ -11930,6 +11984,10 @@ msgstr "Swap Limit: intercambiar tokens cuando se alcance el precio de activaci�
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "Reciba alertas y anuncios de GMX para estar al día de sus operaciones, riesgo de liquidación y más"
 
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "The passkey request was cancelled or timed out"
+msgstr "La solicitud de la llave de acceso se canceló o caducó"
+
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Use the Pay amount"
 msgstr "Usar el importe de Pagar"
@@ -11993,6 +12051,10 @@ msgstr "Vault de afiliado"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} up to the caps below. Remaining tokens are reserved for open positions."
 msgstr "Vender GM por {0} hasta los límites indicados a continuación. Los tokens restantes están reservados para posiciones abiertas."
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Session is already active, no approval needed"
+msgstr "La sesión ya está activa, no se necesita aprobación"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Reserved positive impact"
@@ -12350,6 +12412,10 @@ msgstr "{pools} {verb} en proceso de baja. Retire su liquidez, ya que los depós
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
 msgstr "Estado"
+
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "One passkey keeps one One-Click session on all your devices, also after site data is cleared. Turning One-Click off removes this session on all devices."
+msgstr "Una llave de acceso mantiene una sola sesión de One-Click en todos sus dispositivos, incluso después de borrar los datos del sitio. Al desactivar One-Click, esta sesión se elimina en todos los dispositivos."
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "30s"

@@ -1187,6 +1187,10 @@ msgstr "费用值在获得时计算。不包含激励。"
 msgid "Enter the referral code and save up to 10% on fees"
 msgstr "输入推荐码，手续费最高可节省 10%"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Create passkey"
+msgstr "创建通行密钥"
+
 #: src/pages/Pools/Pools.tsx
 msgid "TVL in vaults and pools"
 msgstr "金库和池中的 TVL"
@@ -1198,6 +1202,10 @@ msgstr "Solana 上的 GMX"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
 msgstr "您邀请的交易者产生的交易量"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Passkey confirmed"
+msgstr "通行密钥已确认"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Can I unstake or withdraw anytime?"
@@ -2723,6 +2731,11 @@ msgstr "金额低于转账限额。请尝试大于 <0>{lowerLimitFormatted}</0> 
 msgid "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour"
 msgstr "{longOrShort} 仓位无需支付资金费用，每小时支付 {borrowRate} 的借贷费用"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "Passkeys are not available in this browser"
+msgstr "此浏览器不支持通行密钥"
+
 #: src/components/GmList/GmList.tsx
 msgid "Search pools"
 msgstr "搜索池"
@@ -3033,6 +3046,10 @@ msgstr "做多未平仓量储备因子"
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Layer 2"
 msgstr "Layer 2"
+
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "This passkey belongs to another account"
+msgstr "此通行密钥属于另一个账户"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "GMX pools can't fill this swap size. It needs an external route, which isn't available with One-Click Trading. Disable One-Click Trading to proceed."
@@ -3571,6 +3588,10 @@ msgstr "无效的减仓规模"
 msgid "Subscribe"
 msgstr "订阅"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Passkey failed"
+msgstr "通行密钥失败"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized finance dashboard"
 msgstr "去中心化金融仪表盘"
@@ -3722,6 +3743,10 @@ msgstr "GMX 代币是 GMX 协议的治理代币。平台收入的 27% 累积到�
 msgid "Max lendable impact USD"
 msgstr "最大可借出影响 USD"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Passkey (experimental)"
+msgstr "通行密钥（实验性）"
+
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {offerAmount}</2>"
 msgstr "<0>买入 {0}{1}<1>{poolName}</1></0> <2>使用 {offerAmount}</2>"
@@ -3821,6 +3846,10 @@ msgstr "主题"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
 msgstr "已超过最大杠杆"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Passkey"
+msgstr "通行密钥"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claiming funding fees failed"
@@ -5194,6 +5223,10 @@ msgstr "资金费用已领取"
 msgid "Copy users"
 msgstr "复制用户"
 
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "Passkey created. Press Use passkey to finish"
+msgstr "通行密钥已创建。请点击“使用通行密钥”完成"
+
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "How do I actually make money?"
 msgstr "我到底怎么赚钱？"
@@ -5886,6 +5919,10 @@ msgstr "解除质押超过历史最高质押 GMX 或 esGMX 数量的 20%，将�
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "无价格影响。在此规模下<0/>增加做空或减少做多仓位的<1/>单一成交价格。"
+
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "This passkey can't create a session key: its provider doesn't support PRF"
+msgstr "此通行密钥无法创建会话密钥：其提供方不支持 PRF"
 
 #: src/pages/ReferralsTier/ReferralsTier.tsx
 msgid "Current tier:"
@@ -6765,6 +6802,10 @@ msgstr "选择市场"
 msgid "Referral code creation failed"
 msgstr "推荐码创建失败"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "This browser uses the passkey session"
+msgstr "此浏览器正在使用通行密钥会话"
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "The bridge fee is paid in {bridgeFeeTokenSymbol} from your GMX Account"
@@ -6977,6 +7018,7 @@ msgid "Enter a code"
 msgstr "输入代码"
 
 #: src/components/GmList/GmListItem.tsx
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
 msgid "Details"
 msgstr "详情"
 
@@ -9555,6 +9597,10 @@ msgstr "净价格影响"
 msgid "Long borrowing rate"
 msgstr "做多借款费率"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Use passkey"
+msgstr "使用通行密钥"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approve GMX"
@@ -10876,6 +10922,10 @@ msgstr "当前安全上限：<0>{0}</0>（合计）。"
 msgid "Staking..."
 msgstr "质押中..."
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Turn off One-Click to switch this browser to a passkey"
+msgstr "关闭 One-Click 后可将此浏览器切换为通行密钥"
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Buy request sent"
@@ -11405,6 +11455,10 @@ msgstr "基于期权的金库"
 msgid "Time limit"
 msgstr "时间限制"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Confirm with your passkey..."
+msgstr "请使用通行密钥确认..."
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Live unrealized PnL before fees"
 msgstr "扣除费用前的当前未实现盈亏（PnL）"
@@ -11930,6 +11984,10 @@ msgstr "Swap Limit：达到触发价格时兑换代币"
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "获取 GMX 的提醒和公告，随时掌握您的交易、清算风险等信息"
 
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "The passkey request was cancelled or timed out"
+msgstr "通行密钥请求已取消或超时"
+
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Use the Pay amount"
 msgstr "使用支付金额"
@@ -11993,6 +12051,10 @@ msgstr "推荐人金库"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} up to the caps below. Remaining tokens are reserved for open positions."
 msgstr "卖出 GM 以获取 {0}，上限如下所示。剩余代币为未平仓仓位保留。"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Session is already active, no approval needed"
+msgstr "会话已激活，无需批准"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Reserved positive impact"
@@ -12350,6 +12412,10 @@ msgstr "{pools} {verb}下架。存入已不可用，请提取您的流动性，�
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
 msgstr "状态"
+
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "One passkey keeps one One-Click session on all your devices, also after site data is cleared. Turning One-Click off removes this session on all devices."
+msgstr "一个通行密钥可在您的所有设备上保持同一个 One-Click 会话，清除网站数据后也不例外。关闭 One-Click 会在所有设备上移除此会话。"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "30s"

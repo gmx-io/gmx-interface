@@ -1187,6 +1187,10 @@ msgstr ""
 msgid "Enter the referral code and save up to 10% on fees"
 msgstr ""
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Create passkey"
+msgstr ""
+
 #: src/pages/Pools/Pools.tsx
 msgid "TVL in vaults and pools"
 msgstr ""
@@ -1197,6 +1201,10 @@ msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
+msgstr ""
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Passkey confirmed"
 msgstr ""
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
@@ -2723,6 +2731,11 @@ msgstr ""
 msgid "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour"
 msgstr ""
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "Passkeys are not available in this browser"
+msgstr ""
+
 #: src/components/GmList/GmList.tsx
 msgid "Search pools"
 msgstr ""
@@ -3032,6 +3045,10 @@ msgstr ""
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Layer 2"
+msgstr ""
+
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "This passkey belongs to another account"
 msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
@@ -3571,6 +3588,10 @@ msgstr ""
 msgid "Subscribe"
 msgstr ""
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Passkey failed"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized finance dashboard"
 msgstr ""
@@ -3722,6 +3743,10 @@ msgstr ""
 msgid "Max lendable impact USD"
 msgstr ""
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Passkey (experimental)"
+msgstr ""
+
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {offerAmount}</2>"
 msgstr ""
@@ -3820,6 +3845,10 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
+msgstr ""
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Passkey"
 msgstr ""
 
 #: src/components/ClaimModal/ClaimModal.tsx
@@ -5194,6 +5223,10 @@ msgstr ""
 msgid "Copy users"
 msgstr ""
 
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "Passkey created. Press Use passkey to finish"
+msgstr ""
+
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "How do I actually make money?"
 msgstr ""
@@ -5885,6 +5918,10 @@ msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
+msgstr ""
+
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "This passkey can't create a session key: its provider doesn't support PRF"
 msgstr ""
 
 #: src/pages/ReferralsTier/ReferralsTier.tsx
@@ -6765,6 +6802,10 @@ msgstr ""
 msgid "Referral code creation failed"
 msgstr ""
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "This browser uses the passkey session"
+msgstr ""
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "The bridge fee is paid in {bridgeFeeTokenSymbol} from your GMX Account"
@@ -6977,6 +7018,7 @@ msgid "Enter a code"
 msgstr ""
 
 #: src/components/GmList/GmListItem.tsx
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
 msgid "Details"
 msgstr ""
 
@@ -9555,6 +9597,10 @@ msgstr ""
 msgid "Long borrowing rate"
 msgstr ""
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Use passkey"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approve GMX"
@@ -10876,6 +10922,10 @@ msgstr ""
 msgid "Staking..."
 msgstr ""
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Turn off One-Click to switch this browser to a passkey"
+msgstr ""
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Buy request sent"
@@ -11405,6 +11455,10 @@ msgstr ""
 msgid "Time limit"
 msgstr ""
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Confirm with your passkey..."
+msgstr ""
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Live unrealized PnL before fees"
 msgstr "[!! Live unrealized PnL before fees !!]"
@@ -11930,6 +11984,10 @@ msgstr ""
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr ""
 
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "The passkey request was cancelled or timed out"
+msgstr ""
+
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Use the Pay amount"
 msgstr ""
@@ -11992,6 +12050,10 @@ msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} up to the caps below. Remaining tokens are reserved for open positions."
+msgstr ""
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Session is already active, no approval needed"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -12349,6 +12411,10 @@ msgstr ""
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
+msgstr ""
+
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "One passkey keeps one One-Click session on all your devices, also after site data is cleared. Turning One-Click off removes this session on all devices."
 msgstr ""
 
 #: src/components/GmxAccountModal/DepositView.tsx
