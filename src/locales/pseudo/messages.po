@@ -437,6 +437,10 @@ msgstr ""
 msgid "Cancel Limit Swap"
 msgstr ""
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Waiting ({0, plural, one {# day left} other {# days left}})"
+msgstr ""
+
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 msgid "Roadmap"
 msgstr ""
@@ -1080,6 +1084,10 @@ msgstr ""
 msgid "A conversion is already waiting in your wallet. Try again after it executes."
 msgstr ""
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Available from"
+msgstr ""
+
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -1204,6 +1212,10 @@ msgstr ""
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "Don't ask again"
+msgstr ""
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Cancel submitted"
 msgstr ""
 
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
@@ -1745,8 +1757,16 @@ msgstr ""
 msgid "/ year"
 msgstr ""
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Withdraw all tokens from the GMX and GLP vesting vaults before the transfer"
+msgstr ""
+
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Go to affiliate dashboard"
+msgstr ""
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "This amount is not ready to withdraw yet. Ready now: {executableAmountText} GMX / esGMX"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
@@ -2107,6 +2127,10 @@ msgstr ""
 msgid "Vest"
 msgstr ""
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "You have {maxRequests} unstake requests, the maximum. Withdraw or cancel one to make a new request."
+msgstr ""
+
 #: src/components/GmList/UsdgPoolBadges.tsx
 msgid "Extra yield for GLV [USDG] liquidity providers during the launch, targeting 8% or more on top of trading fees. Paid into the GLV price every 4 hours, so there's nothing to claim."
 msgstr ""
@@ -2141,6 +2165,10 @@ msgstr ""
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "This market has been disabled. Contact support to claim your remaining funding fees."
+msgstr ""
+
+#: src/components/Errors/stakingToasts.ts
+msgid "Staking moved to a new contract. Review and try again."
 msgstr ""
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
@@ -2413,6 +2441,10 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "VI POSITIONS"
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Requesting to unstake more than 20% of your max historical staked GMX will reset your accrued rewards. Cancelling the request does not restore them."
 msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
@@ -3107,6 +3139,10 @@ msgstr ""
 msgid "The more you trade, the more you keep"
 msgstr ""
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Unstake requests"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/pages/Dashboard/GmCard.tsx
@@ -3549,6 +3585,10 @@ msgstr ""
 msgid "Claimable collateral reduction factor"
 msgstr ""
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "This account is frozen in the esGMX vesting vault"
+msgstr ""
+
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Slippage too low"
 msgstr ""
@@ -3746,6 +3786,7 @@ msgstr ""
 msgid "Creating order..."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Stake submitted"
 msgstr ""
@@ -4081,6 +4122,10 @@ msgstr ""
 msgid "External routes are only used for Market Swaps"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstaking is paused until the staking upgrade"
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them."
 msgstr ""
@@ -4279,8 +4324,16 @@ msgstr ""
 msgid "Uploading..."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake requested"
+msgstr ""
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Can't withdraw collateral. Remaining would be {estimatedRemainingCollateralUsdText}, below minimum"
+msgstr ""
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The esGMX vesting vaults changed after the transfer started. The sender has to start the transfer again."
 msgstr ""
 
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
@@ -4306,6 +4359,10 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Maximum pool capacity reached"
+msgstr ""
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Cancelling..."
 msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
@@ -4559,6 +4616,10 @@ msgstr ""
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "No events in the past {DAYS_BACK} days"
+msgstr ""
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Ready to withdraw"
 msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
@@ -4919,7 +4980,13 @@ msgid "Share GMX feedback"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "Withdraw failed"
+msgstr ""
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Account transfers are paused during the staking upgrade."
 msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
@@ -4974,6 +5041,7 @@ msgstr ""
 msgid "Execution details"
 msgstr ""
 
+#: src/components/Errors/getContractErrorMessage.ts
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Self-transfer not supported"
 msgstr ""
@@ -5128,6 +5196,7 @@ msgid "WIN/LOSS"
 msgstr ""
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing..."
@@ -5151,6 +5220,10 @@ msgstr "[!! perpetual markets !!]"
 
 #: src/components/Footer/constants.tsx
 msgid "V1"
+msgstr ""
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Unstake requests are paused. Try again later."
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -5765,6 +5838,7 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake"
 msgstr ""
 
@@ -5910,6 +5984,10 @@ msgstr ""
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -6589,11 +6667,17 @@ msgid "Max lendable impact factor for withdrawals"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Claim completed"
 msgstr ""
 
 #: src/components/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Open in explorer"
+msgstr ""
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Cancel failed"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -7168,6 +7252,8 @@ msgstr ""
 msgid "High execution reliability using premium RPCs"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Stake failed"
 msgstr ""
@@ -7316,6 +7402,10 @@ msgstr ""
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
+msgstr ""
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The amount is more than your staked GMX and esGMX that is not already requested"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -7479,6 +7569,7 @@ msgid "Convert and create order"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "Withdrawn"
 msgstr ""
 
@@ -7562,6 +7653,10 @@ msgstr ""
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claim & swap"
+msgstr ""
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Withdraw all tokens from the esGMX vesting vault before the transfer"
 msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx
@@ -7662,6 +7757,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Harmonix"
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstaking takes {0} days. You can withdraw this amount as GMX or esGMX from {1}. Until then it stays staked but stops counting toward Staking Power. You can cancel the request at any time."
 msgstr ""
 
 #: src/components/Referrals/affiliates/faq.tsx
@@ -7888,6 +7987,10 @@ msgstr ""
 msgid "Increasing {indexTokenText} Short: +{sizeDeltaUsdText}"
 msgstr ""
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "You have the maximum number of unstake requests. Withdraw or cancel one to make a new request."
+msgstr ""
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed"
 msgstr ""
@@ -7915,6 +8018,10 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral"
+msgstr ""
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Requested"
 msgstr ""
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCards.tsx
@@ -8076,6 +8183,10 @@ msgstr ""
 
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set long Limit @ {0}"
+msgstr ""
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The receiving account has staked or vested before. Choose a new account."
 msgstr ""
 
 #: src/components/GmList/UsdgPoolBadges.tsx
@@ -8652,6 +8763,8 @@ msgid "Exit price"
 msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Transfer failed"
 msgstr ""
@@ -8811,6 +8924,7 @@ msgstr ""
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Available"
 msgstr ""
@@ -8827,6 +8941,7 @@ msgstr ""
 msgid "Solv Finance"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claim submitted"
@@ -8902,6 +9017,7 @@ msgstr ""
 msgid "Keep more of every trade"
 msgstr ""
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/HistoryExport/HistoryExportModal.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -9136,6 +9252,7 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "Max amount exceeded"
 msgstr ""
 
@@ -9338,6 +9455,10 @@ msgstr ""
 msgid "({0} of {1})"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Request unstake"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Total realized and unrealized PnL including fees and price impact"
 msgstr ""
@@ -9529,6 +9650,10 @@ msgstr ""
 msgid "Order exceeds max leverage. Click to auto-adjust."
 msgstr ""
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "After the transfer, the receiving account would have {count} unstake requests, more than the maximum"
+msgstr ""
+
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available"
 msgstr ""
@@ -9612,6 +9737,7 @@ msgstr ""
 msgid "OPEN INTEREST"
 msgstr ""
 
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Begin transfer"
 msgstr ""
@@ -9885,6 +10011,7 @@ msgstr ""
 msgid "Copy"
 msgstr ""
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -10007,6 +10134,10 @@ msgstr ""
 msgid "Min receive"
 msgstr ""
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "After the transfer, the receiving account would have more unstake requests than the maximum"
+msgstr ""
+
 #: src/domain/tokens/useMaxAvailableAmount.ts
 msgid "Leaves no {symbol} in your {source} for future Express fees"
 msgstr ""
@@ -10042,6 +10173,8 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -11205,6 +11338,10 @@ msgstr ""
 msgid "Transaction sent"
 msgstr ""
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Unstake request cancelled"
+msgstr ""
+
 #: src/components/ShareModal/ShareCardReferralCodeStat.tsx
 msgid "Referral code"
 msgstr ""
@@ -11229,6 +11366,7 @@ msgid "Pending transfer from {sender}"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "{0} tokens reserved for vesting"
 msgstr ""
 
@@ -11327,6 +11465,10 @@ msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buying"
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake request submitted"
 msgstr ""
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
@@ -11471,6 +11613,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Venus"
+msgstr ""
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "This amount is not ready to withdraw yet"
 msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
@@ -11682,6 +11828,7 @@ msgstr ""
 msgid "Received on {0}"
 msgstr ""
 
+#: src/components/Errors/getContractErrorMessage.ts
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Allow all tokens to transfer to the new account"
 msgstr ""
@@ -11819,6 +11966,10 @@ msgstr ""
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Change network"
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Requesting unstake..."
 msgstr ""
 
 #: src/pages/Dashboard/GmCard.tsx
@@ -12404,6 +12555,10 @@ msgstr ""
 msgid "Time elapsed"
 msgstr ""
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "No pending transfer from the sender to this account. The sender has to start the transfer again."
+msgstr ""
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "External routing is temporarily paused after a failed attempt. Retry to check for a better rate."
 msgstr ""
@@ -12569,6 +12724,7 @@ msgstr ""
 msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
 msgstr ""
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
@@ -12736,6 +12892,10 @@ msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "Nothing can be converted instantly right now. <0>Convert with Paxos first</0> in the Swap tab: a one-time conversion, 2 to 10 min or longer. Trades paid in USDG need no conversion."
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake request failed"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -13458,6 +13618,7 @@ msgid "Invalid receiver address"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "Withdraw submitted"
 msgstr ""
 

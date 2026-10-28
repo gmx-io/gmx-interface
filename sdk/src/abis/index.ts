@@ -33,6 +33,7 @@ import ReferralStorage from "./ReferralStorage";
 import RelayParams from "./RelayParams";
 import RewardReader from "./RewardReader";
 import RewardRouter from "./RewardRouter";
+import RewardRouterV3 from "./RewardRouterV3";
 import RewardTracker from "./RewardTracker";
 import SimulationRouter from "./SimulationRouter";
 import SmartAccount from "./SmartAccount";
@@ -89,6 +90,7 @@ export const abis = {
   RelayParams,
   RewardReader,
   RewardRouter,
+  RewardRouterV3,
   RewardTracker,
   SimulationRouter,
   SmartAccount,
