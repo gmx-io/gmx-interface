@@ -7,7 +7,6 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   usePositionsConstants,
   useProDiscountFactor,
-  useFeeDiscountFactor,
   useTokensData,
   useUiFeeFactor,
   useUserReferralInfo,
@@ -98,6 +97,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import { getCappedPriceImpactPercentageFromFees } from "sdk/utils/fees";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { getBatchTotalExecutionFee } from "sdk/utils/orderTransactions";
+import { getIsEquivalentTokens } from "sdk/utils/tokens";
 
 import { useActiveForm } from "components/ActiveFormScope/ActiveFormScope";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
@@ -118,7 +118,7 @@ import { getSplitReceiveSwapProfitFeeWarning } from "components/PositionSeller/S
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import StandardTooltip from "components/Tooltip/StandardTooltip";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ExpressTradingWarningCard } from "components/TradeBox/ExpressTradingWarningCard";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { TradeInputField, DisplayMode } from "components/TradeboxMarginFields/TradeInputField";
@@ -170,8 +170,7 @@ export function AddTPSLModal({
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const userReferralInfo = useUserReferralInfo();
   const proDiscountFactor = useProDiscountFactor();
-  const feeDiscountFactor = useFeeDiscountFactor();
-  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(position.marketAddress);
+  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
   const uiFeeFactor = useUiFeeFactor();
   const { autoCancelOrdersLimit } = useMaxAutoCancelOrdersState({ positionKey: position.key });
   const tokensData = useTokensData();
@@ -188,6 +187,10 @@ export function AddTPSLModal({
   const collateralToken = position.collateralToken;
   const indexToken = position.indexToken;
   const isLong = position.isLong;
+  const isCollateralTokenEquivalentToIndex = useMemo(
+    () => getIsEquivalentTokens(position.collateralToken, position.indexToken),
+    [position.collateralToken, position.indexToken]
+  );
 
   const visualMultiplier = indexToken?.visualMultiplier ?? 1;
   const priceDecimals = calculateDisplayDecimals(position.markPrice, USD_DECIMALS, visualMultiplier);
@@ -201,13 +204,20 @@ export function AddTPSLModal({
       buildTpSlInputPositionData({
         position,
         collateralUsd: position.collateralUsd,
-        collateralToken,
-        indexToken,
         indexTokenDecimals: indexToken?.decimals ?? 18,
+        collateralTokenDecimals: collateralToken.decimals,
+        isCollateralTokenEquivalentToIndex,
         visualMultiplier,
         referencePrice: markPrice,
       })!,
-    [position, collateralToken, indexToken, visualMultiplier, markPrice]
+    [
+      position,
+      indexToken?.decimals,
+      collateralToken.decimals,
+      isCollateralTokenEquivalentToIndex,
+      visualMultiplier,
+      markPrice,
+    ]
   );
 
   const tpPriceEntry = useMemo(
@@ -302,7 +312,6 @@ export function AddTPSLModal({
         isSetAcceptablePriceImpactEnabled,
         forceDecreaseSwapType,
         proDiscountFactor,
-        feeDiscountFactor,
       });
     },
     [
@@ -313,7 +322,6 @@ export function AddTPSLModal({
       minPositionSizeUsd,
       position,
       proDiscountFactor,
-      feeDiscountFactor,
       uiFeeFactor,
       userReferralInfo,
     ]
@@ -416,7 +424,6 @@ export function AddTPSLModal({
       const collateralDeltaUsd = bigMath.mulDiv(position.collateralUsd, sizeReductionBps, BASIS_POINTS_DIVISOR_BIGINT);
 
       return getTradeFees({
-        tradeMath: position.marketInfo?.tradeMath,
         initialCollateralUsd: position.collateralUsd,
         sizeInUsd: position.sizeInUsd,
         collateralDeltaUsd,
@@ -479,19 +486,9 @@ export function AddTPSLModal({
         isLong,
         minCollateralUsd,
         userReferralInfo,
-        feeDiscountFactor,
       });
     },
-    [
-      marketInfo,
-      collateralToken,
-      isLong,
-      minCollateralUsd,
-      position,
-      userReferralInfo,
-      feeDiscountFactor,
-      isPnlInLeverage,
-    ]
+    [marketInfo, collateralToken, isLong, minCollateralUsd, position, userReferralInfo, isPnlInLeverage]
   );
 
   const tpNextPositionValues = useMemo(
@@ -743,7 +740,6 @@ export function AddTPSLModal({
         minPositionSizeUsd,
         userReferralInfo,
         proDiscountFactor,
-        feeDiscountFactor,
       }),
     [
       getDecreaseAmountsForTrigger,
@@ -752,7 +748,6 @@ export function AddTPSLModal({
       minPositionSizeUsd,
       position,
       proDiscountFactor,
-      feeDiscountFactor,
       receiveSwapType,
       slDecreaseAmounts,
       slPriceError,
@@ -874,17 +869,11 @@ export function AddTPSLModal({
 
   const { formId, isActiveForm } = useActiveForm();
 
-  const {
-    expressParams,
-    expressParamsPromise,
-    isLoading: isExpressLoading,
-    isMultichainSubmitDisabled,
-  } = useExpressOrdersParams({
+  const { expressParams, expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Add TP/SL",
     isGmxAccount: srcChainId !== undefined,
     canSwitchGasPaymentToken: isActiveForm,
-    gasPaymentTokenFallback: "approvedToken",
   });
 
   const expressError = useMemo(() => getExpressError({ expressParams, tokensData }), [expressParams, tokensData]);
@@ -1024,7 +1013,7 @@ export function AddTPSLModal({
   const modePrefix = hasTP && hasSL ? "TP/SL" : hasTP ? "TP" : hasSL ? "SL" : "TP/SL";
 
   const submitButtonState = useMemo(() => {
-    if (isExpressLoading || isMultichainSubmitDisabled) {
+    if (isMultichainSubmitDisabled) {
       return {
         text: (
           <>
@@ -1065,7 +1054,6 @@ export function AddTPSLModal({
     actionLabel,
     directionLabel,
     expressError.buttonErrorMessage,
-    isExpressLoading,
     isMultichainSubmitDisabled,
     isSubmitting,
     isCreationPending,
@@ -1392,9 +1380,10 @@ export function AddTPSLModal({
           />
           <SyntheticsInfoRow
             label={
-              <StandardTooltip
+              <TooltipWithPortal
                 handle={<Trans>Margin ({collateralToken.symbol})</Trans>}
-                content={t`Margin before pending borrow and funding fees`}
+                content={<Trans>Margin before pending borrow and funding fees</Trans>}
+                variant="icon"
               />
             }
             value={

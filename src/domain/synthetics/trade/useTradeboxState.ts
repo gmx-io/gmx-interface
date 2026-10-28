@@ -9,17 +9,23 @@ import { SetStateAction, useCallback, useEffect, useMemo, useState } from "react
 import { useHistory } from "react-router-dom";
 import { useLatest } from "react-use";
 
-import { AVALANCHE, ContractsChainId, isSolanaNetwork, type NetworkId, SourceChainId } from "config/chains";
+import { AVALANCHE, ContractsChainId, SourceChainId } from "config/chains";
 import { getNetworkFeatures } from "config/features";
-import { getKeepLeverageKey, getLeverageKey, MARGIN_DEPOSIT_SUGGESTION_HIDDEN_KEY } from "config/localStorage";
+import {
+  getKeepLeverageKey,
+  getLeverageKey,
+  getSyntheticsTradeOptionsKey,
+  MARGIN_DEPOSIT_SUGGESTION_HIDDEN_KEY,
+} from "config/localStorage";
 import { isSettlementChain } from "config/multichain";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useEmptyGmxAccounts } from "domain/multichain/useEmptyGmxAccounts";
 import { JitLiquidityInfo } from "domain/synthetics/jit/utils";
 import { MarketInfo } from "domain/synthetics/markets";
+import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
+import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { useSafeState } from "lib/useSafeState";
 import { getContract } from "sdk/configs/contracts";
 import { getToken, isSimilarToken } from "sdk/configs/tokens";
@@ -28,7 +34,7 @@ import { TradeMode, TradeType } from "sdk/utils/trade/types";
 import { TwapDuration } from "sdk/utils/twap/types";
 
 import { MarketsData, MarketsInfoData } from "../markets";
-import { chooseSuitableMarket } from "../markets/chooseSuitableMarket";
+import { chooseSuitableMarket, UserSelectedMarkets } from "../markets/chooseSuitableMarket";
 import {
   isLimitOrderType,
   isStopIncreaseOrderType,
@@ -42,21 +48,9 @@ import {
 } from "../orders";
 import { PositionInfo, PositionsInfoData } from "../positions";
 import { TokensData, useTokensAllowanceData } from "../tokens";
-import {
-  buildResetTradeOptions,
-  INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE,
-  normalizeTradeOptions,
-  readStoredTradeOptions,
-  resolveStoredTradeOptionsSync,
-  type StoredTradeOptions,
-  type TradeboxAdvancedOptions,
-  writeStoredTradeOptions,
-} from "./tradeboxStorage";
 import { useAvailableTokenOptions } from "./useAvailableTokenOptions";
 import { useSidecarOrdersState } from "./useSidecarOrdersState";
 import { getAvailableTradeModes } from "./utils/availableTradeModes";
-
-export type { StoredTradeOptions } from "./tradeboxStorage";
 
 export type TradeStage = "trade" | "processing";
 
@@ -71,11 +65,55 @@ type TradeOptions = {
 
 export type TradeboxState = ReturnType<typeof useTradeboxState>;
 
+export interface TradeboxAdvancedOptions {
+  advancedDisplay: boolean;
+  limitOrTPSL: boolean;
+}
+
+export type StoredTradeOptions = {
+  tradeType: TradeType;
+  tradeMode: TradeMode;
+  tokens: {
+    fromTokenAddress?: string;
+    swapToTokenAddress?: string;
+    indexTokenAddress?: string;
+  };
+  markets: {
+    [indexTokenAddress: string]: {
+      long: string;
+      short: string;
+    };
+  };
+  userSelectedMarkets?: {
+    [indexTokenAddress: string]: UserSelectedMarkets;
+  };
+  collaterals?: {
+    [marketAddress: string]: {
+      long?: string;
+      short?: string;
+    };
+  };
+  advanced?: TradeboxAdvancedOptions;
+  isFromTokenGmxAccount: boolean;
+};
+
+const INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE: StoredTradeOptions = {
+  tradeType: TradeType.Long,
+  tradeMode: TradeMode.Market,
+  tokens: {},
+  markets: {},
+  collaterals: {},
+  advanced: {
+    advancedDisplay: false,
+    limitOrTPSL: false,
+  },
+  isFromTokenGmxAccount: false,
+};
+
 export function useTradeboxState(
   chainId: ContractsChainId,
   enabled: boolean,
   p: {
-    networkId: NetworkId;
     marketsData?: MarketsData;
     marketsInfoData?: MarketsInfoData;
     positionsInfoData?: PositionsInfoData;
@@ -85,27 +123,19 @@ export function useTradeboxState(
     jitLiquidityMap?: Record<string, JitLiquidityInfo>;
   }
 ) {
+  const { networkId } = useChainId();
   const history = useHistory();
   const latestHistory = useLatest(history);
   const latestEnabled = useLatest(enabled);
 
-  const {
-    networkId,
-    marketsInfoData,
-    marketsData,
-    tokensData,
-    positionsInfoData,
-    ordersInfoData,
-    srcChainId,
-    jitLiquidityMap,
-  } = p;
+  const { marketsInfoData, marketsData, tokensData, positionsInfoData, ordersInfoData, srcChainId, jitLiquidityMap } =
+    p;
 
   const availableTokensOptions = useAvailableTokenOptions(chainId, {
     marketsInfoData,
     tokensData,
     marketsData,
     srcChainId,
-    networkId,
   });
 
   const availableSwapTokenAddresses = useMemo(
@@ -131,26 +161,29 @@ export function useTradeboxState(
 
   // eslint-disable-next-line react/hook-use-state
   const [storedOptions, setStoredOptionsWithoutFallbacks] = useState<StoredTradeOptions>(() => {
-    const saved = readStoredTradeOptions(networkId);
+    const raw = localStorage.getItem(JSON.stringify(getSyntheticsTradeOptionsKey(chainId)));
 
-    if (!saved) {
-      writeStoredTradeOptions(networkId, INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE);
+    if (!raw) {
+      localStorage.setItem(
+        JSON.stringify(getSyntheticsTradeOptionsKey(chainId)),
+        JSON.stringify(INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE)
+      );
       return INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE;
     }
 
-    return saved;
+    return JSON.parse(raw) as StoredTradeOptions;
   });
 
   const setStoredOptionsOnChain = useCallback(
     (args: SetStateAction<StoredTradeOptions>) => {
       setStoredOptionsWithoutFallbacks((oldState) => {
-        const newState = normalizeTradeOptions(networkId, typeof args === "function" ? args(oldState) : args, oldState);
+        const newState = typeof args === "function" ? args(oldState) : args;
 
         if (isEqual(oldState, newState)) {
           return oldState;
         }
 
-        writeStoredTradeOptions(networkId, newState);
+        localStorage.setItem(JSON.stringify(getSyntheticsTradeOptionsKey(chainId)), JSON.stringify(newState));
 
         if (latestEnabled.current && newState.tradeType !== oldState.tradeType) {
           latestHistory.current.replace({
@@ -162,50 +195,69 @@ export function useTradeboxState(
         return newState;
       });
     },
-    [latestEnabled, latestHistory, networkId]
+    [chainId, latestEnabled, latestHistory]
   );
 
   const { savedAllowedSlippage, savedTwapNumberOfParts, expressOrdersEnabled } = useSettings();
-  const [syncedNetworkId, setSyncedNetworkId] = useState<NetworkId | undefined>(undefined);
+  const [syncedChainId, setSyncedChainId] = useState<number | undefined>(undefined);
   const [allowedSlippage, setAllowedSlippage] = useState<number>(savedAllowedSlippage);
 
   useEffect(
-    function handleNetworkChange() {
-      const firstMarket = availableTokensOptions.sortedAllMarkets?.at(0);
-      const decision = resolveStoredTradeOptionsSync({
-        networkId,
-        syncedNetworkId,
-        enabled,
-        availableIndexTokenAddresses: availableIndexTokensAddresses,
-        firstMarket: firstMarket
-          ? {
-              indexTokenAddress: firstMarket.indexTokenAddress,
-              marketTokenAddress: firstMarket.marketTokenAddress,
-              shortTokenAddress: firstMarket.shortTokenAddress,
-            }
-          : undefined,
-      });
-
-      if (decision.action === "noop" || decision.action === "wait") {
+    function handleChainChange() {
+      if (syncedChainId === chainId) {
         return;
       }
 
-      if (decision.action === "restore") {
-        setStoredOptionsOnChain(decision.options);
-      } else if (decision.action === "reset") {
-        // A `/trade/short` link is applied before the chain defaults resolve, so keep its trade type.
-        setStoredOptionsOnChain((oldState) => buildResetTradeOptions(oldState.tradeType, decision.market));
+      if (!enabled) return;
+
+      const raw = localStorage.getItem(JSON.stringify(getSyntheticsTradeOptionsKey(chainId)));
+
+      if (raw) {
+        if (availableIndexTokensAddresses.length === 0) {
+          return;
+        }
+
+        const saved = JSON.parse(raw) as StoredTradeOptions;
+
+        if (saved.tokens.indexTokenAddress && availableIndexTokensAddresses.includes(saved.tokens.indexTokenAddress)) {
+          if (syncedChainId !== undefined) {
+            setStoredOptionsOnChain(saved);
+          }
+          setSyncedChainId(chainId);
+          return;
+        }
       }
 
-      setSyncedNetworkId(networkId);
+      const market = availableTokensOptions.sortedAllMarkets?.at(0);
+
+      if (!market) {
+        return;
+      }
+
+      setStoredOptionsOnChain((oldState) => ({
+        ...INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE,
+        // A `/trade/short` link is applied before the chain defaults resolve, so keep its trade type.
+        tradeType: oldState.tradeType ?? INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE.tradeType,
+        markets: {
+          [market.indexTokenAddress]: {
+            long: market.marketTokenAddress,
+            short: market.marketTokenAddress,
+          },
+        },
+        tokens: {
+          indexTokenAddress: market.indexTokenAddress,
+          fromTokenAddress: market.shortTokenAddress,
+        },
+      }));
+      setSyncedChainId(chainId);
     },
     [
       availableIndexTokensAddresses,
       availableTokensOptions.sortedAllMarkets,
+      chainId,
       enabled,
-      networkId,
       setStoredOptionsOnChain,
-      syncedNetworkId,
+      syncedChainId,
     ]
   );
 
@@ -214,16 +266,9 @@ export function useTradeboxState(
       setStoredOptionsOnChain((oldState) => {
         let newState = typeof args === "function" ? args(oldState) : args;
 
-        // Ignore unsupported Swap requests, but let identity updates initialize position tokens and collateral.
-        if (newState.tradeType === TradeType.Swap && !getNetworkFeatures(networkId).swap) {
-          return oldState;
-        }
-
         if (newState && (newState.tradeType === TradeType.Long || newState.tradeType === TradeType.Short)) {
           newState = fallbackPositionTokens({
             chainId,
-            networkId,
-            tokensData,
             srcChainId,
             prevState: oldState,
             nextState: newState,
@@ -239,8 +284,6 @@ export function useTradeboxState(
     [
       setStoredOptionsOnChain,
       chainId,
-      networkId,
-      tokensData,
       srcChainId,
       availableSwapTokenAddresses,
       availableTokensOptions.sortedAllMarkets,
@@ -252,7 +295,6 @@ export function useTradeboxState(
   const [toTokenInputValue, setToTokenInputValue] = useSafeState("");
   const [stage, setStage] = useState<TradeStage>("trade");
   const [focusedInput, setFocusedInput] = useState<"from" | "to">();
-  const [expressFeeUsdByToken, setExpressFeeUsdByToken] = useState<Record<string, bigint>>(EMPTY_OBJECT);
   const [defaultTriggerAcceptablePriceImpactBps, setDefaultTriggerAcceptablePriceImpactBps] = useState<bigint>();
   const [selectedTriggerAcceptablePriceImpactBps, setSelectedTriggerAcceptablePriceImpactBps] = useState<bigint>();
   const [isAcceptablePriceImpactCustomized, setIsAcceptablePriceImpactCustomized] = useState(false);
@@ -283,8 +325,8 @@ export function useTradeboxState(
   const tradeType = storedOptions?.tradeType;
   const tradeMode = storedOptions?.tradeMode;
 
-  const [leverageOption, setLeverageOption] = useLocalStorageSerializeKey(getLeverageKey(networkId), 2);
-  const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(networkId), true);
+  const [leverageOption, setLeverageOption] = useLocalStorageSerializeKey(getLeverageKey(chainId), 2);
+  const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
   const [limitPriceWarningHidden, setLimitPriceWarningHidden] = useLocalStorageSerializeKey(
     "limit-price-warning-hidden",
     false
@@ -311,10 +353,9 @@ export function useTradeboxState(
   const collateralAddress = marketAddress && get(storedOptions, ["collaterals", marketAddress, longOrShort]);
   const collateralToken = getByKey(tokensData, collateralAddress);
 
-  // Solana has no ERC-20 allowance; its mints must never reach the EVM multicall.
   const tokensAllowance = useTokensAllowanceData(chainId, {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
-    tokenAddresses: fromTokenAddress && !isSolanaNetwork(networkId) ? [fromTokenAddress] : EMPTY_ARRAY,
+    tokenAddresses: fromTokenAddress ? [fromTokenAddress] : [],
   });
   const availableTradeModes = useMemo(() => {
     if (!tradeType) {
@@ -756,8 +797,6 @@ export function useTradeboxState(
     setStage,
     focusedInput,
     setFocusedInput,
-    expressFeeUsdByToken,
-    setExpressFeeUsdByToken,
     defaultTriggerAcceptablePriceImpactBps,
     setDefaultTriggerAcceptablePriceImpactBps,
     selectedTriggerAcceptablePriceImpactBps,
@@ -836,8 +875,6 @@ function setToTokenAddressUpdaterBuilder(
  */
 function fallbackPositionTokens({
   chainId,
-  networkId,
-  tokensData,
   srcChainId,
   prevState,
   nextState,
@@ -845,8 +882,6 @@ function fallbackPositionTokens({
   allowedMarkets,
 }: {
   chainId: number;
-  networkId: NetworkId;
-  tokensData: TokensData | undefined;
   srcChainId: SourceChainId | undefined;
   prevState: StoredTradeOptions;
   nextState: StoredTradeOptions;
@@ -854,9 +889,6 @@ function fallbackPositionTokens({
   allowedMarkets: MarketInfo[];
 }) {
   const longOrShort = nextState.tradeType === TradeType.Long ? "long" : "short";
-  // The SDK token config has no Solana mints; Solana tokens come from the network's TokensData.
-  const findToken = (address: string) =>
-    isSolanaNetwork(networkId) ? getByKey(tokensData, address) : getToken(chainId, address);
 
   const allowedPayTokensSet = new Set(allowedPayTokens);
   const allowedIndexTokens = new Set(allowedMarkets.map((m) => m.indexToken.address));
@@ -913,13 +945,13 @@ function fallbackPositionTokens({
     let fallbackPayTokenAddress = prevState.tokens.fromTokenAddress;
 
     if (nextPayTokenAddress) {
-      const desirablePayToken = findToken(nextPayTokenAddress);
+      const desirablePayToken = getToken(chainId, nextPayTokenAddress);
 
       if (desirablePayToken) {
         const similarPayTokenAddress = Array.from(allowedPayTokensSet).find((m) => {
-          const indexToken = findToken(m);
+          const indexToken = getToken(chainId, m);
 
-          return indexToken !== undefined && isSimilarToken(indexToken, desirablePayToken);
+          return isSimilarToken(indexToken, desirablePayToken);
         });
 
         if (similarPayTokenAddress) {
@@ -935,13 +967,13 @@ function fallbackPositionTokens({
     let fallbackIndexTokenAddress = prevState.tokens.indexTokenAddress;
 
     if (nextIndexTokenAddress) {
-      const desirableIndexToken = findToken(nextIndexTokenAddress);
+      const desirableIndexToken = getToken(chainId, nextIndexTokenAddress);
 
       if (desirableIndexToken) {
         const similarMarket = allowedMarkets.find((m) => {
-          const indexToken = findToken(m.indexTokenAddress);
+          const indexToken = getToken(chainId, m.indexTokenAddress);
 
-          return indexToken !== undefined && isSimilarToken(indexToken, desirableIndexToken);
+          return isSimilarToken(indexToken, desirableIndexToken);
         });
 
         if (similarMarket) {

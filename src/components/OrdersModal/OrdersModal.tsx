@@ -9,10 +9,7 @@ import {
   useEditingOrderState,
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { usePositionOrdersWithErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
-import {
-  selectExpressGlobalParams,
-  selectUnavailableExpressFeeToken,
-} from "context/SyntheticsStateContext/selectors/expressSelectors";
+import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
   selectSrcChainId,
@@ -21,7 +18,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useEstimateBatchExpressParamsWithApprovedGasToken } from "domain/synthetics/express/useGasPaymentTokenFallback";
+import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import {
   getExpressParamsForSubmit,
   reportMultichainExpressSubmitError,
@@ -107,8 +104,6 @@ export function OrdersModal({
   const [editingOrderState, setEditingOrderState] = useEditingOrderState();
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
-  const unavailableGasPaymentToken = useSelector(selectUnavailableExpressFeeToken);
-  const estimateExpressParams = useEstimateBatchExpressParamsWithApprovedGasToken();
   const subaccount = useSelector(selectSubaccountForChainAction);
 
   const effectivePositionKey = position?.key ?? positionKeyProp;
@@ -133,7 +128,7 @@ export function OrdersModal({
   const marketDecimals = useSelector(
     makeSelectMarketPriceDecimals(position?.market.indexTokenAddress ?? indexTokenProp?.address)
   );
-  const { minCollateralUsd } = usePositionsConstants(position?.marketAddress);
+  const { minCollateralUsd } = usePositionsConstants();
   const estimatedLiquidationHours = useMemo(
     () => (position ? getEstimatedLiquidationTimeInHours(position, minCollateralUsd) : undefined),
     [position, minCollateralUsd]
@@ -223,7 +218,7 @@ export function OrdersModal({
 
     try {
       const expressParams = globalExpressParams
-        ? await estimateExpressParams({
+        ? await estimateBatchExpressParams({
             signer,
             chainId,
             batchParams,
@@ -241,7 +236,6 @@ export function OrdersModal({
           isGmxAccount: srcChainId !== undefined,
           expressParams,
           tokensData: undefined,
-          unavailableGasPaymentToken,
           actionName: "Cancel Order",
           collateral: position?.collateralToken.symbol,
         })
@@ -271,9 +265,7 @@ export function OrdersModal({
     provider,
     displayedOrders,
     setCancellingOrdersKeys,
-    estimateExpressParams,
     globalExpressParams,
-    unavailableGasPaymentToken,
     chainId,
     srcChainId,
     subaccount,
