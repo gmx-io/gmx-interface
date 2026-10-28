@@ -2,7 +2,6 @@ import { t, Trans } from "@lingui/macro";
 import { useCallback, useState } from "react";
 
 import { AB_FLAG_NAMES, getAbStorage, setAbFlagEnabled } from "config/ab";
-import { SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
 
 import { ExpandableRow } from "components/ExpandableRow";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
@@ -37,10 +36,8 @@ export function AbFlagSettings() {
               setIsChecked={(checked) => {
                 setAbFlagEnabled(flag, checked);
                 setAbStorage({ ...getAbStorage() });
-                if (
-                  flag === "solanaNetwork" &&
-                  localStorage.getItem(SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY) === "true"
-                ) {
+                // Privy and the Solana wallet connectors are set up once, when the app mounts.
+                if (flag === "solanaNetwork") {
                   document.location.reload();
                 }
               }}

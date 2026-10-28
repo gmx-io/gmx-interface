@@ -4,7 +4,7 @@ import { Address, zeroAddress, zeroHash } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { useEnsName } from "wagmi";
 
-import { SOURCE_ETHEREUM_MAINNET, getExplorerUrl } from "config/chains";
+import { SOURCE_ETHEREUM_MAINNET, getExplorerUrl, isSolanaNetwork } from "config/chains";
 import { isLocal } from "config/env";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { PRODUCTION_HOST } from "config/links";
@@ -139,7 +139,8 @@ export function getAccountUrl(chainId: number, account: string) {
   if (!account) {
     return getExplorerUrl(chainId);
   }
-  return getExplorerUrl(chainId) + "address/" + account;
+  // Solscan puts accounts under account/, not address/.
+  return getExplorerUrl(chainId) + (isSolanaNetwork(chainId) ? "account/" : "address/") + account;
 }
 
 // Removed: isMobileDevice (unused)

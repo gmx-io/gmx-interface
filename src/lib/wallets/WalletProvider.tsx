@@ -6,11 +6,13 @@ import { StyleSheetManager } from "styled-components";
 
 import { colors } from "config/colors";
 import { useTheme } from "context/ThemeContext/ThemeContext";
+import type { startSolanaWallet } from "lib/solana/solanaWalletBootstrap";
 
 import gmxLogo from "img/logo-icon.svg";
 
 import { watchInjectedProviderAnnouncements } from "./announceInjectedProviders";
 import { PRIVY_STYLIS_PLUGINS } from "./privyUiCompat";
+import { SolanaWalletSessionProvider } from "./solanaWalletSession";
 import {
   getWagmiConfig,
   getWagmiInitialState,
@@ -27,7 +29,13 @@ const supportedChains = getSupportedChains();
 const defaultChain = supportedChains[0];
 const gmxLogoElement = <img src={gmxLogo} alt="GMX" width={100} />;
 
-export default function WalletProvider({ children }: { children: React.ReactNode }) {
+export default function WalletProvider({
+  children,
+  solanaWallet,
+}: {
+  children: React.ReactNode;
+  solanaWallet?: ReturnType<typeof startSolanaWallet>;
+}) {
   const { theme } = useTheme();
 
   useEffect(() => watchInjectedProviderAnnouncements(), []);
@@ -47,6 +55,7 @@ export default function WalletProvider({ children }: { children: React.ReactNode
       supportedChains: [...supportedChains],
       externalWallets: {
         signatureRequestTimeouts: PRIVY_SIGNATURE_REQUEST_TIMEOUTS,
+        ...(solanaWallet ? { solana: { connectors: solanaWallet.connectors } } : {}),
       },
       embeddedWallets: {
         ethereum: {
@@ -54,7 +63,7 @@ export default function WalletProvider({ children }: { children: React.ReactNode
         },
       },
     }),
-    [theme]
+    [theme, solanaWallet]
   );
 
   return (
@@ -62,7 +71,12 @@ export default function WalletProvider({ children }: { children: React.ReactNode
       <PrivyProvider appId={PRIVY_APP_ID} config={privyConfig}>
         <QueryClientProvider client={queryClient}>
           <WagmiProvider config={getWagmiConfig()} initialState={getWagmiInitialState()}>
-            {children}
+            <SolanaWalletSessionProvider
+              enabled={solanaWallet !== undefined}
+              rememberedWalletId={solanaWallet?.rememberedWalletId}
+            >
+              {children}
+            </SolanaWalletSessionProvider>
           </WagmiProvider>
         </QueryClientProvider>
       </PrivyProvider>
