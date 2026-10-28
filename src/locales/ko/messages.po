@@ -715,6 +715,10 @@ msgstr "GM 잔액 부족"
 msgid "Express fees are paid in your Wallet gas payment token. Change it in Settings."
 msgstr "Express 수수료는 지갑의 Gas 결제 토큰으로 지불됩니다. 설정에서 변경할 수 있습니다."
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Saved a One-Click session to a passkey on another device? Restore it here."
+msgstr "다른 기기에서 One-Click 세션을 패스키에 저장했나요? 여기에서 복원하세요."
+
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Projected yearly return from trading fees only.<0/><1/>Includes: trading fees, borrow fees, liquidations, swaps.<2/>Excludes: backing token price changes, PnL, funding fees.<3/><4/><5>View detailed stats on Dune</5>."
 msgstr "거래 수수료만으로 산출한 연간 예상 수익률입니다.<0/><1/>포함: 거래 수수료, 차입 수수료, 청산, 스왑.<2/>제외: 기초 토큰 가격 변동, PnL, 펀딩 수수료.<3/><4/><5>Dune에서 상세 통계 보기</5>."
@@ -1233,10 +1237,6 @@ msgstr "수수료 값은 수익 발생 시점에 계산됩니다. 인센티브�
 #: src/components/Referrals/affiliates/dashboard/AffiliatesPromoCard.tsx
 msgid "Enter the referral code and save up to 10% on fees"
 msgstr "추천 코드를 입력하여 수수료를 최대 10% 절감"
-
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-msgid "Create passkey"
-msgstr "패스키 만들기"
 
 #: src/pages/Pools/Pools.tsx
 msgid "TVL in vaults and pools"
@@ -3302,6 +3302,10 @@ msgstr "GM:"
 #: src/components/OneClickSessions/OneClickSessions.tsx
 msgid "One-Click sessions ({0})"
 msgstr "One-Click 세션 ({0})"
+
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Restore from passkey"
+msgstr "패스키에서 복원"
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Confirm settle"
@@ -5438,10 +5442,6 @@ msgstr "펀딩 수수료 수령 완료"
 msgid "Copy users"
 msgstr "사용자 복사"
 
-#: src/domain/synthetics/subaccount/passkey.ts
-msgid "Passkey created. Press Use passkey to finish"
-msgstr "패스키가 생성되었습니다. 완료하려면 패스키 사용을 누르세요"
-
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "How do I actually make money?"
 msgstr "실제로 어떻게 수익을 얻습니까?"
@@ -5911,6 +5911,10 @@ msgstr "언스테이킹"
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Max action count reached. <0>Click here</0> to update"
 msgstr "최대 실행 횟수에 도달했습니다. 업데이트하려면 <0>여기를 클릭</0>하십시오"
+
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "This session is saved to your passkey. Use Restore from passkey on your other devices. Turning One-Click off removes the session on all devices."
+msgstr "이 세션은 패스키에 저장되어 있습니다. 다른 기기에서는 패스키에서 복원을 사용하세요. One-Click을 끄면 모든 기기에서 세션이 삭제됩니다."
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Signature:"
@@ -7067,10 +7071,6 @@ msgstr "마켓 선택"
 msgid "Referral code creation failed"
 msgstr "추천 코드 생성에 실패했습니다"
 
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-msgid "This browser uses the passkey session"
-msgstr "이 브라우저는 패스키 세션을 사용합니다"
-
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "The bridge fee is paid in {bridgeFeeTokenSymbol} from your GMX Account"
@@ -7490,6 +7490,10 @@ msgstr "차트에 구매/판매 아이콘 표시"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
 msgstr "이 스왑에는 외부 라우팅이 필요합니다. 활성화하려면 {0}(으)로 가스를 결제하세요."
+
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Save this session to a passkey to use it on your other devices and after site data is cleared. Saved it on another device already? Restore it instead."
+msgstr "이 세션을 패스키에 저장하면 다른 기기와 사이트 데이터 삭제 후에도 사용할 수 있습니다. 이미 다른 기기에서 저장했나요? 대신 복원하세요."
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "The amount is more than your staked GMX and esGMX that is not already requested"
@@ -9967,10 +9971,6 @@ msgstr "순 가격 영향"
 msgid "Long borrowing rate"
 msgstr "롱 차입 이자율"
 
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-msgid "Use passkey"
-msgstr "패스키 사용"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approve GMX"
@@ -11189,6 +11189,10 @@ msgstr "<0>추천 프로그램 문서</0>를 확인하시거나 <1>GMX Telegram<
 msgid "Edit order"
 msgstr "주문 수정"
 
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "Passkey created. Press Restore from passkey to finish"
+msgstr "패스키가 생성되었습니다. 완료하려면 패스키에서 복원을 누르세요"
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationError.ts
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -11315,10 +11319,6 @@ msgstr "현재 안전 한도: <0>{0}</0> (합산)."
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Staking..."
 msgstr "스테이킹 중..."
-
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-msgid "Turn off One-Click to switch this browser to a passkey"
-msgstr "이 브라우저를 패스키로 전환하려면 One-Click을 끄세요"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
@@ -11552,6 +11552,10 @@ msgstr "기초 담보 토큰에 대한 익스포저"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 msgid "Search type"
 msgstr "유형 검색"
+
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Save to passkey"
+msgstr "패스키에 저장"
 
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
@@ -12860,10 +12864,6 @@ msgstr "{pools} {verb} 상장 폐지됩니다. 더 이상 입금할 수 없으�
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
 msgstr "상태"
-
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-msgid "One passkey keeps one One-Click session on all your devices, also after site data is cleared. Turning One-Click off removes this session on all devices."
-msgstr "하나의 패스키로 모든 기기에서 하나의 One-Click 세션을 유지하며, 사이트 데이터를 삭제한 후에도 유지됩니다. One-Click을 끄면 모든 기기에서 이 세션이 삭제됩니다."
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "30s"

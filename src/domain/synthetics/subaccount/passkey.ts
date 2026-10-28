@@ -96,7 +96,7 @@ export function getPasskeyErrorText(reason: PasskeyErrorReason | undefined): str
     case PasskeyErrorReason.AccountMismatch:
       return t`This passkey belongs to another account`;
     case PasskeyErrorReason.CreatedNeedsUse:
-      return t`Passkey created. Press Use passkey to finish`;
+      return t`Passkey created. Press Restore from passkey to finish`;
     default:
       return undefined;
   }

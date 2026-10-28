@@ -715,6 +715,10 @@ msgstr "Недостаточный баланс GM"
 msgid "Express fees are paid in your Wallet gas payment token. Change it in Settings."
 msgstr "Комиссии Express оплачиваются токеном оплаты Gas из вашего кошелька. Изменить его можно в настройках."
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Saved a One-Click session to a passkey on another device? Restore it here."
+msgstr "Сохранили сессию One-Click в ключ доступа на другом устройстве? Восстановите её здесь."
+
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Projected yearly return from trading fees only.<0/><1/>Includes: trading fees, borrow fees, liquidations, swaps.<2/>Excludes: backing token price changes, PnL, funding fees.<3/><4/><5>View detailed stats on Dune</5>."
 msgstr "Прогнозируемая годовая доходность только от торговых комиссий.<0/><1/>Включает: торговые комиссии, комиссии за заём, ликвидации, свопы.<2/>Исключает: изменения цены базовых токенов, PnL, комиссии за фандинг.<3/><4/><5>Подробная статистика на Dune</5>."
@@ -1233,10 +1237,6 @@ msgstr "Значения комиссий рассчитываются на мо
 #: src/components/Referrals/affiliates/dashboard/AffiliatesPromoCard.tsx
 msgid "Enter the referral code and save up to 10% on fees"
 msgstr "Введите реферальный код и сэкономьте до 10% на комиссиях"
-
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-msgid "Create passkey"
-msgstr "Создать ключ доступа"
 
 #: src/pages/Pools/Pools.tsx
 msgid "TVL in vaults and pools"
@@ -3302,6 +3302,10 @@ msgstr "GM:"
 #: src/components/OneClickSessions/OneClickSessions.tsx
 msgid "One-Click sessions ({0})"
 msgstr "Сессии One-Click ({0})"
+
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Restore from passkey"
+msgstr "Восстановить из ключа доступа"
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Confirm settle"
@@ -5438,10 +5442,6 @@ msgstr "Комиссии за финансирование получены"
 msgid "Copy users"
 msgstr "Копировать пользователей"
 
-#: src/domain/synthetics/subaccount/passkey.ts
-msgid "Passkey created. Press Use passkey to finish"
-msgstr "Ключ доступа создан. Нажмите «Использовать ключ доступа», чтобы закончить"
-
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "How do I actually make money?"
 msgstr "Как я буду зарабатывать?"
@@ -5911,6 +5911,10 @@ msgstr "Вывести из стейкинга"
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Max action count reached. <0>Click here</0> to update"
 msgstr "Достигнут максимальный лимит действий. <0>Нажмите здесь</0> для обновления"
+
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "This session is saved to your passkey. Use Restore from passkey on your other devices. Turning One-Click off removes the session on all devices."
+msgstr "Эта сессия сохранена в ключе доступа. На других устройствах нажмите «Восстановить из ключа доступа». Если выключить One-Click, сессия удалится на всех устройствах."
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Signature:"
@@ -7067,10 +7071,6 @@ msgstr "Выбрать рынок"
 msgid "Referral code creation failed"
 msgstr "Не удалось создать реферальный код"
 
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-msgid "This browser uses the passkey session"
-msgstr "Этот браузер использует сессию ключа доступа"
-
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "The bridge fee is paid in {bridgeFeeTokenSymbol} from your GMX Account"
@@ -7490,6 +7490,10 @@ msgstr "Показывать иконки покупки/продажи на г�
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
 msgstr "Для этого свопа требуется внешняя маршрутизация. Оплатите газ в {0}, чтобы включить её."
+
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Save this session to a passkey to use it on your other devices and after site data is cleared. Saved it on another device already? Restore it instead."
+msgstr "Сохраните эту сессию в ключ доступа, чтобы пользоваться ей на других устройствах и после очистки данных сайта. Уже сохранили на другом устройстве? Тогда восстановите её."
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "The amount is more than your staked GMX and esGMX that is not already requested"
@@ -9967,10 +9971,6 @@ msgstr "Чистое влияние на цену"
 msgid "Long borrowing rate"
 msgstr "Ставка заимствования для лонгов"
 
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-msgid "Use passkey"
-msgstr "Использовать ключ доступа"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approve GMX"
@@ -11189,6 +11189,10 @@ msgstr "Ознакомьтесь с <0>документацией по рефе�
 msgid "Edit order"
 msgstr "Редактировать ордер"
 
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "Passkey created. Press Restore from passkey to finish"
+msgstr "Ключ доступа создан. Нажмите «Восстановить из ключа доступа», чтобы закончить"
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationError.ts
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -11315,10 +11319,6 @@ msgstr "Текущий безопасный лимит: <0>{0}</0> суммар�
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Staking..."
 msgstr "Стейкинг..."
-
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-msgid "Turn off One-Click to switch this browser to a passkey"
-msgstr "Выключите One-Click, чтобы перевести этот браузер на ключ доступа"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
@@ -11552,6 +11552,10 @@ msgstr "Экспозиция к обеспечивающим токенам"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 msgid "Search type"
 msgstr "Поиск типа"
+
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Save to passkey"
+msgstr "Сохранить в ключ доступа"
 
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
@@ -12860,10 +12864,6 @@ msgstr "{pools} {verb} из листинга. Выведите ликвидно�
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
 msgstr "Статус"
-
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-msgid "One passkey keeps one One-Click session on all your devices, also after site data is cleared. Turning One-Click off removes this session on all devices."
-msgstr "Один ключ доступа держит одну сессию One-Click на всех ваших устройствах, в том числе после очистки данных сайта. Если выключить One-Click, эта сессия удалится на всех устройствах."
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "30s"

@@ -715,6 +715,10 @@ msgstr "Unzureichendes GM-Guthaben"
 msgid "Express fees are paid in your Wallet gas payment token. Change it in Settings."
 msgstr "Express-Gebühren werden mit dem Token für Gasgebühren Ihrer Wallet bezahlt. Ändern Sie ihn in den Einstellungen."
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Saved a One-Click session to a passkey on another device? Restore it here."
+msgstr "Haben Sie auf einem anderen Gerät eine One-Click-Sitzung in einem Passkey gespeichert? Stellen Sie sie hier wieder her."
+
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Projected yearly return from trading fees only.<0/><1/>Includes: trading fees, borrow fees, liquidations, swaps.<2/>Excludes: backing token price changes, PnL, funding fees.<3/><4/><5>View detailed stats on Dune</5>."
 msgstr "Prognostizierte jährliche Rendite ausschließlich aus Handelsgebühren.<0/><1/>Enthält: Handelsgebühren, Leihgebühren, Liquidationen, Swaps.<2/>Enthält nicht: Preisänderungen der Backing-Token, PnL, Fundinggebühren.<3/><4/><5>Detaillierte Statistiken auf Dune ansehen</5>."
@@ -1233,10 +1237,6 @@ msgstr "Gebührenwerte werden bei Erhalt berechnet. Ohne Anreize."
 #: src/components/Referrals/affiliates/dashboard/AffiliatesPromoCard.tsx
 msgid "Enter the referral code and save up to 10% on fees"
 msgstr "Geben Sie den Empfehlungscode ein und sparen Sie bis zu 10 % der Gebühren"
-
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-msgid "Create passkey"
-msgstr "Passkey erstellen"
 
 #: src/pages/Pools/Pools.tsx
 msgid "TVL in vaults and pools"
@@ -3302,6 +3302,10 @@ msgstr "GM:"
 #: src/components/OneClickSessions/OneClickSessions.tsx
 msgid "One-Click sessions ({0})"
 msgstr "One-Click-Sitzungen ({0})"
+
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Restore from passkey"
+msgstr "Aus Passkey wiederherstellen"
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Confirm settle"
@@ -5438,10 +5442,6 @@ msgstr "Finanzierungsgebühren beansprucht"
 msgid "Copy users"
 msgstr "Benutzer kopieren"
 
-#: src/domain/synthetics/subaccount/passkey.ts
-msgid "Passkey created. Press Use passkey to finish"
-msgstr "Passkey erstellt. Drücken Sie „Passkey verwenden“, um abzuschließen"
-
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "How do I actually make money?"
 msgstr "Wie verdiene ich tatsächlich Geld?"
@@ -5911,6 +5911,10 @@ msgstr "Entstaken"
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Max action count reached. <0>Click here</0> to update"
 msgstr "Maximale Aktionsanzahl erreicht. <0>Klicken Sie hier</0>, um zu aktualisieren"
+
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "This session is saved to your passkey. Use Restore from passkey on your other devices. Turning One-Click off removes the session on all devices."
+msgstr "Diese Sitzung ist in Ihrem Passkey gespeichert. Nutzen Sie „Aus Passkey wiederherstellen“ auf Ihren anderen Geräten. Wenn Sie One-Click deaktivieren, wird die Sitzung auf allen Geräten entfernt."
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Signature:"
@@ -7067,10 +7071,6 @@ msgstr "Markt auswählen"
 msgid "Referral code creation failed"
 msgstr "Erstellung des Empfehlungscodes fehlgeschlagen"
 
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-msgid "This browser uses the passkey session"
-msgstr "Dieser Browser nutzt die Passkey-Sitzung"
-
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "The bridge fee is paid in {bridgeFeeTokenSymbol} from your GMX Account"
@@ -7490,6 +7490,10 @@ msgstr "Kauf-/Verkaufssymbole im Chart anzeigen"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
 msgstr "Dieser Tausch erfordert externes Routing. Zahlen Sie Gas in {0}, um ihn zu aktivieren."
+
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Save this session to a passkey to use it on your other devices and after site data is cleared. Saved it on another device already? Restore it instead."
+msgstr "Speichern Sie diese Sitzung in einem Passkey, um sie auf Ihren anderen Geräten und nach dem Löschen der Websitedaten zu nutzen. Schon auf einem anderen Gerät gespeichert? Stellen Sie sie stattdessen wieder her."
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "The amount is more than your staked GMX and esGMX that is not already requested"
@@ -9967,10 +9971,6 @@ msgstr "Nettopreiseinfluss"
 msgid "Long borrowing rate"
 msgstr "Leihrate für Longpositionen"
 
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-msgid "Use passkey"
-msgstr "Passkey verwenden"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approve GMX"
@@ -11189,6 +11189,10 @@ msgstr "Besuchen Sie die <0>Dokumentation zum Empfehlungsprogramm</0> oder stell
 msgid "Edit order"
 msgstr "Order bearbeiten"
 
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "Passkey created. Press Restore from passkey to finish"
+msgstr "Passkey erstellt. Drücken Sie „Aus Passkey wiederherstellen“, um abzuschließen"
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationError.ts
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -11315,10 +11319,6 @@ msgstr "Aktuelles sicheres Limit: <0>{0}</0> insgesamt."
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Staking..."
 msgstr "Staken..."
-
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-msgid "Turn off One-Click to switch this browser to a passkey"
-msgstr "Deaktivieren Sie One-Click, um diesen Browser auf einen Passkey umzustellen"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
@@ -11552,6 +11552,10 @@ msgstr "Engagement in Deckungstoken"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 msgid "Search type"
 msgstr "Typ suchen"
+
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Save to passkey"
+msgstr "In Passkey speichern"
 
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
@@ -12860,10 +12864,6 @@ msgstr "{pools} {verb} ausgelistet. Führen Sie das Abheben Ihrer Liquidität du
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
 msgstr "Status"
-
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-msgid "One passkey keeps one One-Click session on all your devices, also after site data is cleared. Turning One-Click off removes this session on all devices."
-msgstr "Ein Passkey hält eine One-Click-Sitzung auf all Ihren Geräten, auch nachdem Websitedaten gelöscht wurden. Wenn Sie One-Click deaktivieren, wird diese Sitzung auf allen Geräten entfernt."
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "30s"

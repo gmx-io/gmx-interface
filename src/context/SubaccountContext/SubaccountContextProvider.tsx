@@ -595,7 +595,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
       const currentSubaccount = await getCurrentSubaccount();
 
-      if (currentSubaccount && getIsSubaccountUsable(currentSubaccount)) {
+      if (!passkeyMode && currentSubaccount && getIsSubaccountUsable(currentSubaccount)) {
         return true;
       }
 

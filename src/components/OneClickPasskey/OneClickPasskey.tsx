@@ -32,36 +32,54 @@ export function OneClickPasskey({ disabled, onEnable }: { disabled: boolean; onE
     [lastAttempt, support]
   );
 
-  let status: ReactNode;
+  const restoreButton = (
+    <Button variant="secondary" size="small" disabled={isButtonDisabled} onClick={() => onEnable("use")}>
+      <Trans>Restore from passkey</Trans>
+    </Button>
+  );
+
+  let content: ReactNode;
 
   if (isPasskeySession) {
-    status = (
+    content = (
       <div className="text-12 text-green-500">
-        <Trans>This browser uses the passkey session</Trans>
-      </div>
-    );
-  } else if (isSessionUsable) {
-    status = (
-      <div className="text-12 text-typography-secondary">
-        <Trans>Turn off One-Click to switch this browser to a passkey</Trans>
+        <Trans>
+          This session is saved to your passkey. Use Restore from passkey on your other devices. Turning One-Click off
+          removes the session on all devices.
+        </Trans>
       </div>
     );
   } else if (isUnavailable) {
-    status = (
+    content = (
       <div className="text-12 text-yellow-300">
         <Trans>Passkeys are not available in this browser</Trans>
       </div>
     );
+  } else if (isSessionUsable) {
+    content = (
+      <>
+        <div className="text-12 text-typography-secondary">
+          <Trans>
+            Save this session to a passkey to use it on your other devices and after site data is cleared. Saved it on
+            another device already? Restore it instead.
+          </Trans>
+        </div>
+        <div className="flex flex-wrap gap-8">
+          <Button variant="secondary" size="small" disabled={isButtonDisabled} onClick={() => onEnable("create")}>
+            <Trans>Save to passkey</Trans>
+          </Button>
+          {restoreButton}
+        </div>
+      </>
+    );
   } else {
-    status = (
-      <div className="flex flex-wrap gap-8">
-        <Button variant="secondary" size="small" disabled={isButtonDisabled} onClick={() => onEnable("create")}>
-          <Trans>Create passkey</Trans>
-        </Button>
-        <Button variant="secondary" size="small" disabled={isButtonDisabled} onClick={() => onEnable("use")}>
-          <Trans>Use passkey</Trans>
-        </Button>
-      </div>
+    content = (
+      <>
+        <div className="text-12 text-typography-secondary">
+          <Trans>Saved a One-Click session to a passkey on another device? Restore it here.</Trans>
+        </div>
+        <div className="flex flex-wrap gap-8">{restoreButton}</div>
+      </>
     );
   }
 
@@ -70,13 +88,7 @@ export function OneClickPasskey({ disabled, onEnable }: { disabled: boolean; onE
       <div className="text-14 font-medium text-typography-primary">
         <Trans>Passkey (experimental)</Trans>
       </div>
-      <div className="text-12 text-typography-secondary">
-        <Trans>
-          One passkey keeps one One-Click session on all your devices, also after site data is cleared. Turning
-          One-Click off removes this session on all devices.
-        </Trans>
-      </div>
-      {status}
+      {content}
       <ExpandableRow open={isDetailsOpen} onToggle={setIsDetailsOpen} title={<Trans>Details</Trans>}>
         <pre className="whitespace-pre-wrap break-all text-12 text-typography-secondary">{details}</pre>
       </ExpandableRow>
