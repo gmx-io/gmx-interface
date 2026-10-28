@@ -50,6 +50,11 @@ const GROUPS: Groups = [
         text: msg`TWAP`,
         hidden: true,
       },
+      {
+        data: "twap-increase",
+        text: msg`TWAP`,
+        hidden: true,
+      },
     ],
   },
   {

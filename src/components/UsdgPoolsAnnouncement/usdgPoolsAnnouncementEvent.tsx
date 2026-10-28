@@ -26,7 +26,7 @@ export function getUsdgPoolsAnnouncementText(now: number, className: string) {
           " Until 30 November, 8%+ additional APR on GLV [USDG-USDG] and 5% on the underlying GM [USDG-USDG] pools."}{" "}
         This boost gradually tapers off from Week 9 to 20.
       </span>
-      <span>Your address is whitelisted for direct GM [USDG-USDG] deposits and zero-fee USDC-to-USDG conversion.</span>
+      <span>Your address is whitelisted for direct GM [USDG-USDG] deposits.</span>
       {now < FEE_FREE_WITHDRAWALS_END && (
         <span>
           Withdrawals on the main 50/50 pools and the existing GLV vaults are fee-free until Oct 31, rolling out pool by

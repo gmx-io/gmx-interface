@@ -1,6 +1,7 @@
 import { useConnectOrCreateWallet, useConnectWallet, useModalStatus, usePrivy } from "@privy-io/react-auth";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
+import { getIsSolanaNetworkEnabled } from "config/ab";
 import { type SettlementChainId, isSolanaNetwork } from "config/chains";
 import {
   SELECTED_NETWORK_LOCAL_STORAGE_KEY,
@@ -12,6 +13,15 @@ import { useChainId } from "lib/chains";
 import { metrics } from "lib/metrics";
 import { useBlockAutoReload } from "lib/pwa/blockAutoReload";
 import { switchNetwork } from "lib/wallets";
+import {
+  captureEvmSession,
+  type EvmSessionSnapshot,
+  getPrivyWagmiConnectorId,
+  restoreEvmSessionAfterSolanaConnect,
+  shouldUpdateSolanaLinkedEvmConnectors,
+} from "lib/wallets/privyWagmi";
+import { useSolanaWalletSession } from "lib/wallets/solanaWalletSession";
+import { getWagmiConfig, PRIVY_SOLANA_WALLET_LIST } from "lib/wallets/walletConfig";
 
 export type ConnectModalContextValue = {
   openConnectModal: (() => void) | undefined;
@@ -32,6 +42,23 @@ function shouldKeepAppSelectedSourceChain(settlementChainId: SettlementChainId) 
   return selectedNetworkWasAppSelected && isSourceChain(chainIdFromLocalStorage, settlementChainId);
 }
 
+async function keepEvmSession(snapshot: EvmSessionSnapshot | undefined, walletName: string) {
+  if (snapshot) {
+    await restoreEvmSessionAfterSolanaConnect(snapshot);
+  }
+
+  if (!getIsSolanaNetworkEnabled()) {
+    return;
+  }
+
+  const { detachSolanaLinkedEvmConnectors } = await import("lib/wallets/solanaLinkedEvmConnectors");
+  await detachSolanaLinkedEvmConnectors(walletName, getWagmiConfig(), snapshot?.connectedConnectorIds ?? []);
+}
+
+type ConnectWalletSuccess = Parameters<
+  NonNullable<NonNullable<Parameters<typeof useConnectWallet>[0]>["onSuccess"]>
+>[0];
+
 export function ConnectModalProvider({ children }: { children: ReactNode }) {
   const [settlementChainId] = useGmxAccountSettlementChainId();
   const { networkId } = useChainId();
@@ -39,23 +66,39 @@ export function ConnectModalProvider({ children }: { children: ReactNode }) {
   const connectRequestInFlightRef = useRef(false);
   const { isOpen: privyModalOpen } = useModalStatus();
   const { authenticated } = usePrivy();
+  const { rememberConnectedWallet } = useSolanaWalletSession();
+  const evmSessionRef = useRef<EvmSessionSnapshot>();
 
   useBlockAutoReload(connectModalOpen || privyModalOpen);
 
-  const handleSuccess = useCallback(() => {
-    connectRequestInFlightRef.current = false;
-    setConnectModalOpen(false);
+  const handleSuccess = useCallback(
+    ({ wallet }: ConnectWalletSuccess) => {
+      connectRequestInFlightRef.current = false;
+      setConnectModalOpen(false);
 
-    // @privy-io/wagmi already handles this callback by setting recentConnectorId
-    // and reconnecting wagmi. Calling setActiveWallet here can re-enter wagmi connect.
-    if (isSolanaNetwork(networkId) || shouldKeepAppSelectedSourceChain(settlementChainId)) {
-      return;
-    }
+      // A Solana connect leaves the EVM session and the selected network as they are.
+      if (wallet.type === "solana") {
+        rememberConnectedWallet(wallet.meta.id);
+        const snapshot = evmSessionRef.current;
+        evmSessionRef.current = undefined;
+        void keepEvmSession(snapshot, wallet.meta.name).catch((error) => {
+          metrics.pushError(error, "connectModal.keepEvmSession");
+        });
+        return;
+      }
 
-    void switchNetwork(settlementChainId, true).catch((error) => {
-      metrics.pushError(error, "connectModal.switchNetwork");
-    });
-  }, [networkId, settlementChainId]);
+      // @privy-io/wagmi already handles this callback by setting recentConnectorId
+      // and reconnecting wagmi. Calling setActiveWallet here can re-enter wagmi connect.
+      if (isSolanaNetwork(networkId) || shouldKeepAppSelectedSourceChain(settlementChainId)) {
+        return;
+      }
+
+      void switchNetwork(settlementChainId, true).catch((error) => {
+        metrics.pushError(error, "connectModal.switchNetwork");
+      });
+    },
+    [networkId, rememberConnectedWallet, settlementChainId]
+  );
 
   const { connectOrCreateWallet } = useConnectOrCreateWallet({
     onSuccess: handleSuccess,
@@ -65,8 +108,26 @@ export function ConnectModalProvider({ children }: { children: ReactNode }) {
       metrics.pushError(error, "connectModal.connectOrCreateWallet");
     },
   });
+  const handleConnectWalletSuccess = useCallback(
+    ({ wallet }: ConnectWalletSuccess) => {
+      // Only connectWallet's onSuccess means the user picked this wallet. connectOrCreateWallet's onSuccess
+      // also fires when the modal closes, with whichever wallet Privy lists first.
+      if (wallet.type !== "solana" && shouldUpdateSolanaLinkedEvmConnectors()) {
+        const connectorId = getPrivyWagmiConnectorId(wallet);
+        void import("lib/wallets/solanaLinkedEvmConnectors")
+          .then(({ rememberPickedEvmConnector }) => rememberPickedEvmConnector(connectorId))
+          .catch((error) => {
+            metrics.pushError(error, "connectModal.rememberPickedEvmConnector");
+          });
+      }
+
+      handleSuccess({ wallet });
+    },
+    [handleSuccess]
+  );
+
   const { connectWallet } = useConnectWallet({
-    onSuccess: handleSuccess,
+    onSuccess: handleConnectWalletSuccess,
     onError: (error) => {
       connectRequestInFlightRef.current = false;
       setConnectModalOpen(false);
@@ -87,11 +148,17 @@ export function ConnectModalProvider({ children }: { children: ReactNode }) {
       return;
     }
 
+    const isSolanaSelected = isSolanaNetwork(networkId);
+
     connectRequestInFlightRef.current = true;
     setConnectModalOpen(true);
     try {
-      // Privy rejects connectOrCreateWallet for already-authenticated sessions.
-      if (authenticated) {
+      if (isSolanaSelected) {
+        evmSessionRef.current = captureEvmSession();
+        // connectOrCreateWallet() takes no options and login() asks for a SIWS signature.
+        connectWallet({ walletChainType: "solana-only", walletList: PRIVY_SOLANA_WALLET_LIST });
+      } else if (authenticated) {
+        // Privy rejects connectOrCreateWallet for already-authenticated sessions.
         connectWallet();
       } else {
         connectOrCreateWallet();
@@ -101,7 +168,7 @@ export function ConnectModalProvider({ children }: { children: ReactNode }) {
       setConnectModalOpen(false);
       metrics.pushError(error, "connectModal.open");
     }
-  }, [authenticated, connectOrCreateWallet, connectWallet]);
+  }, [authenticated, connectOrCreateWallet, connectWallet, networkId]);
 
   const value = useMemo(() => ({ openConnectModal, connectModalOpen }), [openConnectModal, connectModalOpen]);
 

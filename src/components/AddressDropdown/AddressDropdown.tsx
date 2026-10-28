@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 
+import { isSolanaNetwork } from "config/chains";
 import { isSettlementChain, isValidVisualSettlementChain, MULTI_CHAIN_TOKEN_MAPPING } from "config/multichain";
 import { useEmptyAvalancheGmxAccount } from "domain/multichain/useEmptyGmxAccounts";
 import { useChainId } from "lib/chains";
@@ -14,6 +15,17 @@ type Props = {
 };
 
 export function AddressDropdown({ account }: Props) {
+  const { networkId } = useChainId();
+
+  // Solana uses the same wallet modal as a wallet-only network, not the EVM menu.
+  if (isSolanaNetwork(networkId)) {
+    return <AddressDropdownWithMultichain account={account} />;
+  }
+
+  return <EvmAddressDropdown account={account} />;
+}
+
+function EvmAddressDropdown({ account }: { account: string }) {
   const { chainId } = useChainId();
 
   const { isEmptyAvalancheGmxAccountOrNotConnected } = useEmptyAvalancheGmxAccount();

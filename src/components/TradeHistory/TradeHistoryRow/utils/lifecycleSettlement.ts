@@ -2,19 +2,20 @@ import { t } from "@lingui/macro";
 
 import { isDecreaseOrderType, isIncreaseOrderType, isLiquidationOrderType } from "domain/synthetics/orders";
 import type { TokenData } from "domain/synthetics/tokens";
-import { convertToTokenAmount, convertToUsd, parseContractPrice } from "domain/synthetics/tokens";
-import type { LifecycleSettlementData } from "domain/synthetics/tradeHistory/useLifecycleSettlement";
+import { convertToUsd, parseContractPrice } from "domain/synthetics/tokens";
+import type { LifecycleSettlementData, LifecycleSwapLeg } from "domain/synthetics/tradeHistory/useLifecycleSettlement";
 import { getSwapLegId } from "domain/synthetics/tradeHistory/useLifecycleSettlement";
-import {
-  calculateDisplayDecimals,
-  formatDeltaUsdParts,
-  formatTokenAmount,
-  formatUsdParts,
-  numberParts,
-} from "lib/numbers";
+import { formatDeltaUsdParts, formatUsdParts, numberParts } from "lib/numbers";
 import type { PositionTradeAction } from "sdk/utils/tradeHistory/types";
 
-import { getDecreasePayoutUsd, getFeesBreakdown, hasSecondaryOutputRisk } from "./position";
+import {
+  formatSettlementTokenAmount,
+  getCollateralTokenPayout,
+  getDecreasePayoutUsd,
+  getDecreaseSwapPayout,
+  getFeesBreakdown,
+  hasSecondaryOutputRisk,
+} from "./position";
 import { Line, TooltipString, TooltipValue, infoRow, lines, numberToState, numericText } from "./shared";
 
 export type LifecycleTokenLeg = {
@@ -86,10 +87,15 @@ function subtractLegs(received: LifecycleTokenLeg[], funded: LifecycleTokenLeg[]
   return netLegs;
 }
 
-export function getLifecycleSettlementView(
-  closeRow: PositionTradeAction,
-  data: LifecycleSettlementData
-): LifecycleSettlementView {
+export function getLifecycleSettlementView({
+  closeRow,
+  data,
+  chainId,
+}: {
+  closeRow: PositionTradeAction;
+  data: LifecycleSettlementData;
+  chainId: number;
+}): LifecycleSettlementView {
   const { rows, ordersByKey, hasFundingSettlement, isTruncated } = data;
 
   // A mixed lifecycle stays labelled even when the close row itself is same-chain.
@@ -142,15 +148,20 @@ export function getLifecycleSettlementView(
     return { mode: "compact", openRow, isMultichain };
   }
 
-  const aggregate = aggregateLifecycleSettlement(rows, data);
+  const aggregate = aggregateLifecycleSettlement({ rows, data, chainId });
 
   return aggregate ? { mode: "extended", aggregate } : closeSideOnly;
 }
 
-export function aggregateLifecycleSettlement(
-  rows: PositionTradeAction[],
-  { ordersByKey, swapLegsById }: Pick<LifecycleSettlementData, "ordersByKey" | "swapLegsById">
-): LifecycleAggregate | undefined {
+export function aggregateLifecycleSettlement({
+  rows,
+  data: { ordersByKey, swapLegsById },
+  chainId,
+}: {
+  rows: PositionTradeAction[];
+  data: Pick<LifecycleSettlementData, "ordersByKey" | "swapLegsById">;
+  chainId: number;
+}): LifecycleAggregate | undefined {
   const fundedLegs: LifecycleTokenLeg[] = [];
   const receivedBeforeCloseLegs: LifecycleTokenLeg[] = [];
   const receivedAtCloseLegs: LifecycleTokenLeg[] = [];
@@ -217,16 +228,16 @@ export function aggregateLifecycleSettlement(
     let payoutAmount: bigint | undefined;
 
     if (swapPath.length > 0) {
-      const swapLeg = swapLegsById[getSwapLegId(row.orderKey, swapPath[swapPath.length - 1])];
+      const swapPayout = getDecreaseSwapPayout({ tradeAction: row, payoutUsd, swapLegsById, chainId });
 
-      if (swapLeg) {
-        payoutToken = row.targetCollateralToken;
-        payoutAmount = swapLeg.amountOut;
+      if (swapPayout) {
+        payoutToken = swapPayout.token;
+        payoutAmount = swapPayout.amount;
       } else {
         hasSecondaryOutput = true;
       }
     } else {
-      payoutAmount = convertToTokenAmount(payoutUsd, payoutToken.decimals, row.collateralTokenPriceMin);
+      payoutAmount = getCollateralTokenPayout(row, payoutUsd)?.amount;
     }
 
     if (hasSecondaryOutputRisk(row)) {
@@ -284,11 +295,7 @@ export function aggregateLifecycleSettlement(
 }
 
 function formatLegAmount(leg: LifecycleTokenLeg): string | undefined {
-  return formatTokenAmount(leg.amount, leg.token.decimals, leg.token.symbol, {
-    useCommas: true,
-    displayDecimals: calculateDisplayDecimals(leg.amount, leg.token.decimals, undefined, leg.token.isStable),
-    isStable: leg.token.isStable,
-  });
+  return formatSettlementTokenAmount(leg.token, leg.amount);
 }
 
 function getCashflowValue(cashflow: LifecycleCashflow, tier: LifecycleTier): TooltipValue {
@@ -369,6 +376,38 @@ export function getSettlementNotes(isMultichain: boolean): Line[] {
   }
 
   return notes;
+}
+
+/** Partial closes have no settlement block, so a USDG one that swapped gets just the received line */
+export function getUsdgPartialClosePayoutLines({
+  tradeAction,
+  swapLegsById,
+  chainId,
+}: {
+  tradeAction: PositionTradeAction;
+  swapLegsById: Record<string, LifecycleSwapLeg>;
+  chainId: number;
+}): Line[] {
+  const payoutUsd = getDecreasePayoutUsd(tradeAction);
+  const payout =
+    payoutUsd === undefined
+      ? undefined
+      : tradeAction.swapPath.length === 0
+        ? getCollateralTokenPayout(tradeAction, payoutUsd)
+        : getDecreaseSwapPayout({ tradeAction, payoutUsd, swapLegsById, chainId });
+  const formatted = payout && formatSettlementTokenAmount(payout.token, payout.amount);
+
+  if (formatted === undefined) {
+    return [];
+  }
+
+  return lines(
+    "",
+    infoRow(
+      isMultichainRow(tradeAction) ? t`Received at close (GMX balance)` : t`Wallet received`,
+      numericText("~", formatted)
+    )
+  );
 }
 
 export function getUnreconcilableLifecycleLines(): Line[] {
