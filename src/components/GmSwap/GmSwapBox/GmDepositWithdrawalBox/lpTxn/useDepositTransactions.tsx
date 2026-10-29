@@ -203,6 +203,10 @@ export const useDepositTransactions = ({
     if (isGlv) {
       return initGLVSwapMetricData({
         chainId,
+        srcChainId,
+        isExpress: paySource === "gmxAccount",
+        isExpress1CT: false,
+        isCollateralFromMultichain: paySource === "gmxAccount",
         longTokenAddress,
         shortTokenAddress,
         selectedMarketForGlv,
@@ -223,6 +227,10 @@ export const useDepositTransactions = ({
 
     return initGMSwapMetricData({
       chainId,
+      srcChainId,
+      isExpress: paySource === "gmxAccount",
+      isExpress1CT: false,
+      isCollateralFromMultichain: paySource === "gmxAccount",
       longTokenAddress,
       shortTokenAddress,
       marketToken,
@@ -237,6 +245,8 @@ export const useDepositTransactions = ({
       isFirstBuy,
     });
   }, [
+    srcChainId,
+    paySource,
     chainId,
     glvInfo,
     params?.executionFee,
