@@ -20,7 +20,7 @@ export type BridgeOutParams = {
   minAmountOut: bigint;
   provider: string;
   data: string;
-  bridgeFee: BridgeFeeParams;
+  bridgeFee?: BridgeFeeParams;
 };
 
 export type BuildTxnResult = {
@@ -109,7 +109,6 @@ export function buildSameChainWithdrawBridgeOutParams(params: {
     minAmountOut: params.amount,
     data: "0x",
     provider: zeroAddress,
-    bridgeFee: getEmptyBridgeFeeParams(),
   };
 }
 
@@ -128,7 +127,7 @@ export function buildSameChainWithdrawTxn(request: SameChainWithdrawRequest): Bu
   const data = encodeFunctionData({
     abi: getAbi(chainId, "MultichainTransferRouter"),
     functionName: "transferOut",
-    args: [bridgeOutParams],
+    args: [{ ...bridgeOutParams, bridgeFee: bridgeOutParams.bridgeFee ?? getEmptyBridgeFeeParams() }],
   });
 
   return { to: router, data, value: 0n };
@@ -171,7 +170,6 @@ export function buildCrossChainWithdrawBridgeOutParams(params: {
     minAmountOut,
     provider: stargateAddress,
     data: encodeAbiParameters([{ type: "uint32", name: "dstEid" }], [dstEid]),
-    bridgeFee: getEmptyBridgeFeeParams(),
   };
 }
 
