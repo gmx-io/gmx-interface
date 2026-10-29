@@ -1,11 +1,82 @@
 import { zeroAddress } from "viem";
 
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import type { GasPaymentParams } from "domain/synthetics/express/types";
 import { findNextGasPaymentToken } from "domain/synthetics/express/useSwitchGasPaymentTokenIfRequired";
+import type { SidecarOrderEntryBase } from "domain/synthetics/sidecarOrders/types";
+import type { IncreasePositionAmounts } from "domain/synthetics/trade";
 import type { TokensData } from "domain/tokens";
 import { getByKey } from "lib/objects";
+import { bigMath } from "sdk/utils/bigmath";
+
+const SIZE_FIT_MARGIN_BPS = 10n;
 
 export type OrderAutoSubmitStep = "wait" | "approve" | "submit" | "stop";
+
+export type ConfirmedUsdgOrder = {
+  setupKey: string;
+  sizeDeltaUsd: bigint;
+  sizeInputValue: string | undefined;
+};
+
+export type ConvertedOrderStatus = "confirmed" | "marginShort" | "changed";
+
+export function getTpSlSetupKey(entries: SidecarOrderEntryBase[]) {
+  return entries
+    .filter((entry) => entry.txnType !== null)
+    .map((entry) => [
+      entry.txnType,
+      String(entry.price.value),
+      String(entry.mode === "keepSize" ? entry.sizeUsd.value : entry.percentage.value),
+    ]);
+}
+
+export function getConvertedOrderStatus(p: {
+  confirmedOrder: ConfirmedUsdgOrder;
+  setupKey: string;
+  sizeDeltaUsd: bigint;
+  sizeInputValue: string;
+  payAmount: bigint;
+  convertedAmount: bigint;
+}): ConvertedOrderStatus {
+  const { confirmedOrder } = p;
+
+  if (p.setupKey !== confirmedOrder.setupKey || p.sizeDeltaUsd > confirmedOrder.sizeDeltaUsd) {
+    return "changed";
+  }
+
+  if (confirmedOrder.sizeInputValue === undefined) {
+    return "confirmed";
+  }
+
+  if (p.sizeInputValue !== confirmedOrder.sizeInputValue) {
+    return "changed";
+  }
+
+  return p.payAmount <= p.convertedAmount ? "confirmed" : "marginShort";
+}
+
+export function getConvertedSizeFit(p: {
+  increaseAmounts: IncreasePositionAmounts;
+  convertedUsd: bigint;
+}): bigint | undefined {
+  const { increaseAmounts } = p;
+  const sizeDependentUsd =
+    increaseAmounts.collateralDeltaUsd +
+    increaseAmounts.positionFeeUsd +
+    increaseAmounts.uiFeeUsd +
+    increaseAmounts.swapUiFeeUsd;
+  const availableUsd =
+    bigMath.mulDiv(p.convertedUsd, BASIS_POINTS_DIVISOR_BIGINT - SIZE_FIT_MARGIN_BPS, BASIS_POINTS_DIVISOR_BIGINT) -
+    increaseAmounts.borrowingFeeUsd -
+    increaseAmounts.fundingFeeUsd;
+
+  if (sizeDependentUsd <= 0n || availableUsd <= 0n) {
+    return undefined;
+  }
+
+  return bigMath.mulDiv(increaseAmounts.indexTokenAmount, availableUsd, sizeDependentUsd);
+}
 
 export function getOrderAutoSubmitStep(p: {
   isSubmitting: boolean;

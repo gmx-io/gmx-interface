@@ -410,8 +410,10 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   const usdgConversion = useTradeboxUsdgConversion({
     canSwitchGasPaymentToken: isActiveForm,
     setFromTokenInputValue,
+    setToTokenInputValue,
     setFocusedInput,
   });
+  const isUsdgConversionActive = usdgConversion.isBusy || usdgConversion.isOrderAutoSubmitArmed;
   const isUsdgConversionTooLarge = useSelector(selectTradeboxIsUsdgConversionTooLarge);
   const isUsdgConvertFirstSetup = useSelector(selectTradeboxIsUsdgConvertFirstSetup);
 
@@ -629,8 +631,11 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
       ? { state: maxActions, onMax: onMaxClick, onKeepGas: onKeepGasClick }
       : undefined;
 
-  useTradeboxAcceptablePriceImpactValues();
-  useTradeboxTPSLReset(priceImpactWarningState.setIsDismissed);
+  useTradeboxAcceptablePriceImpactValues({
+    isUsdgConversionActive,
+    isUsdgOrderAutoSubmitArmed: usdgConversion.isOrderAutoSubmitArmed,
+  });
+  useTradeboxTPSLReset(priceImpactWarningState.setIsDismissed, isUsdgConversionActive);
   useUsdgPoolPayTokenDefault();
 
   const prevIsISwap = usePrevious(isSwap);
@@ -702,7 +707,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
     ]
   );
 
-  const isUsdgConversionActiveRef = useLatest(usdgConversion.isBusy || usdgConversion.isOrderAutoSubmitArmed);
+  const isUsdgConversionActiveRef = useLatest(isUsdgConversionActive);
 
   const triggerPriceResetKeyRef = useRef<string>();
 
