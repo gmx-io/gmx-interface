@@ -149,6 +149,8 @@ const signedApproval = {
   signature: "0xsignature",
   signedAt: 1700000000000,
   integrationId: "0x0",
+  revocationCounter: 0n,
+  eip6492SignatureWrapperHash: "0x0",
   subaccountRouterAddress: "0x0000000000000000000000000000000000000001",
   signatureChainId: 42161,
 };

@@ -9,6 +9,7 @@ export type SubaccountOnchainData = {
   approvalNonce: bigint;
   multichainApprovalNonce: bigint;
   integrationId: string | undefined;
+  revocationCounter: bigint;
 };
 
 export type SubaccountSerializedConfig = {
@@ -27,6 +28,8 @@ export type SubaccountApproval = {
   desChainId: bigint;
   deadline: bigint;
   integrationId: string;
+  revocationCounter?: bigint;
+  eip6492SignatureWrapperHash?: string;
 };
 
 export type SignedSubaccountApproval = SubaccountApproval & {

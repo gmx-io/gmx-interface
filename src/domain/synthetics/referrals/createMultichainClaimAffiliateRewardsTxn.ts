@@ -6,7 +6,7 @@ import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
 import { ExpressTxnData, ExpressTxnResult, sendExpressTransaction } from "lib/transactions";
 import { WalletSigner } from "lib/wallets";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
-import { abis } from "sdk/abis";
+import { getAbi } from "sdk/abis/getAbi";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { nowInSeconds } from "sdk/utils/time";
 
@@ -63,7 +63,7 @@ export async function buildAndSignMultichainClaimAffiliateRewardsTxn({
   }
 
   const claimAffiliateRewardsData = encodeFunctionData({
-    abi: abis.MultichainClaimsRouter,
+    abi: getAbi(chainId, "MultichainClaimsRouter"),
     functionName: "claimAffiliateRewards",
     args: [
       {

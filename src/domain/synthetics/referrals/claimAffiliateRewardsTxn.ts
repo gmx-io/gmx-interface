@@ -4,7 +4,7 @@ import { ISigner } from "lib/transactions/iSigner";
 import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
 import { WalletSigner } from "lib/wallets";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
-import { abis } from "sdk/abis";
+import { getAbi } from "sdk/abis/getAbi";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
 import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
@@ -42,7 +42,7 @@ function getClaimAffiliateRewardsAndSwapCallData({
 }) {
   const externalHandlerAddress = getContract(chainId, "ExternalHandler");
 
-  return encodeExchangeRouterMulticall([
+  return encodeExchangeRouterMulticall(chainId, [
     {
       method: "claimAffiliateRewards",
       params: [rewardsParams.marketAddresses, rewardsParams.tokenAddresses, externalHandlerAddress],
@@ -60,14 +60,16 @@ function getClaimAffiliateRewardsAndSwapCallData({
 }
 
 function getClaimAffiliateRewardsCallData({
+  chainId,
   rewardsParams,
   receiver,
 }: {
+  chainId: ContractsChainId;
   rewardsParams: Params["rewardsParams"];
   receiver: string;
 }) {
   return encodeFunctionData({
-    abi: abis.ExchangeRouter,
+    abi: getAbi(chainId, "ExchangeRouter"),
     functionName: "claimAffiliateRewards",
     args: [rewardsParams.marketAddresses, rewardsParams.tokenAddresses, receiver],
   });
@@ -88,6 +90,7 @@ export async function estimateClaimAffiliateRewardsGas(
         externalCalls,
       }).callData
     : getClaimAffiliateRewardsCallData({
+        chainId,
         rewardsParams,
         receiver: account,
       });
@@ -109,6 +112,7 @@ export async function claimAffiliateRewardsTxn(chainId: ContractsChainId, signer
     signer,
     to: getContract(chainId, "ExchangeRouter"),
     callData: getClaimAffiliateRewardsCallData({
+      chainId,
       rewardsParams,
       receiver: account,
     }),

@@ -172,7 +172,7 @@ export async function sendBatchOrderTxn({
       return await res;
     }
 
-    const { callData, value } = getBatchOrderMulticallPayload({ params: encodedBatchParams });
+    const { callData, value } = getBatchOrderMulticallPayload({ chainId, params: encodedBatchParams });
 
     return sendWalletTransaction({
       chainId,
@@ -293,6 +293,7 @@ const makeBatchOrderSimulation = async ({
             nonce: onchainData.approvalNonce,
             multichainNonce: onchainData.multichainApprovalNonce,
             integrationId: onchainData.integrationId,
+            revocationCounter: onchainData.revocationCounter,
           },
           signedData: {
             maxAllowedCount: signedApproval.maxAllowedCount,
@@ -300,6 +301,7 @@ const makeBatchOrderSimulation = async ({
             shouldAdd: signedApproval.shouldAdd,
             nonce: signedApproval.nonce,
             integrationId: signedApproval.integrationId,
+            revocationCounter: signedApproval.revocationCounter,
           },
         },
       });
@@ -359,6 +361,7 @@ const makeBatchOrderSimulation = async ({
       });
     } else {
       const { encodedMulticall, value } = getBatchOrderMulticallPayload({
+        chainId,
         params: {
           ...batchParams,
           createOrderParams: [batchParams.createOrderParams[0]],

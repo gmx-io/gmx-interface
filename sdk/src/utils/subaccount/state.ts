@@ -1,3 +1,5 @@
+import { zeroHash } from "viem";
+
 import type { AnyChainId } from "configs/chains";
 import { toBigInt } from "utils/numbers";
 import { nowInSeconds } from "utils/time";
@@ -20,6 +22,7 @@ export function parseSubaccountStatus(status: SubaccountStatusResponse): SdkSuba
     approvalNonce: toBigInt(status.approvalNonce) ?? 0n,
     multichainApprovalNonce: toBigInt(status.multichainApprovalNonce) ?? 0n,
     integrationId: status.integrationId ?? undefined,
+    revocationCounter: toBigInt(status.revocationCounter) ?? 0n,
   };
 }
 
@@ -92,6 +95,8 @@ export function toSignedSubaccountApproval(
     desChainId: toBigInt(prepared.message.desChainId) ?? 0n,
     deadline: toBigInt(prepared.message.deadline) ?? 0n,
     integrationId: prepared.message.integrationId,
+    revocationCounter: toBigInt(prepared.message.revocationCounter) ?? 0n,
+    eip6492SignatureWrapperHash: prepared.message.eip6492SignatureWrapperHash ?? zeroHash,
     signature,
     signedAt: Date.now(),
     signatureChainId: prepared.domain.chainId as AnyChainId,

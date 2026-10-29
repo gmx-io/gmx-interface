@@ -50,6 +50,59 @@ export const RELAY_PARAMS_TYPE = {
   ],
 } as const;
 
+export const RELAY_PARAMS_TYPE_V2_2_1 = {
+  type: "tuple",
+  name: "",
+  components: [
+    {
+      type: "tuple",
+      name: "oracleParams",
+      components: [
+        { type: "address[]", name: "tokens" },
+        { type: "address[]", name: "providers" },
+        { type: "bytes[]", name: "data" },
+      ],
+    },
+    {
+      type: "tuple",
+      name: "externalCalls",
+      components: [
+        { type: "address[]", name: "sendTokens" },
+        { type: "uint256[]", name: "sendAmounts" },
+        { type: "address[]", name: "externalCallTargets" },
+        { type: "bytes[]", name: "externalCallDataList" },
+        { type: "address[]", name: "refundTokens" },
+        { type: "address[]", name: "refundReceivers" },
+      ],
+    },
+    {
+      type: "tuple[]",
+      name: "tokenPermits",
+      components: [
+        { type: "address", name: "owner" },
+        { type: "address", name: "spender" },
+        { type: "uint256", name: "value" },
+        { type: "uint256", name: "deadline" },
+        { type: "address", name: "token" },
+      ],
+    },
+    {
+      type: "tuple",
+      name: "fee",
+      components: [
+        { type: "address", name: "feeToken" },
+        { type: "uint256", name: "feeAmount" },
+        { type: "address[]", name: "feeSwapPath" },
+      ],
+    },
+    { type: "uint256", name: "userNonce" },
+    { type: "uint256", name: "deadline" },
+    { type: "bytes", name: "signature" },
+    { type: "uint256", name: "desChainId" },
+    { type: "bytes32", name: "eip6492SignatureWrapperHash" },
+  ],
+} as const;
+
 export const TRANSFER_REQUESTS_TYPE = {
   type: "tuple",
   name: "",
@@ -177,5 +230,35 @@ export const CREATE_GLV_WITHDRAWAL_PARAMS_TYPE = {
     { type: "uint256", name: "executionFee" },
     { type: "uint256", name: "callbackGasLimit" },
     { type: "bytes32[]", name: "dataList" },
+  ],
+} as const;
+
+const BRIDGE_FEE_PARAMS_COMPONENTS = [
+  { type: "address", name: "feeToken" },
+  { type: "uint256", name: "feeAmount" },
+  { type: "address[]", name: "feeSwapPath" },
+  { type: "uint256", name: "minOutputAmount" },
+] as const;
+
+export const BRIDGE_FEE_PARAMS_TYPE = {
+  type: "tuple",
+  name: "",
+  components: BRIDGE_FEE_PARAMS_COMPONENTS,
+} as const;
+
+export const BRIDGE_OUT_PARAMS_V2_2_1 = {
+  type: "tuple",
+  name: "",
+  components: [
+    { type: "uint256", name: "desChainId" },
+    { type: "uint256", name: "deadline" },
+    { type: "address", name: "provider" },
+    { type: "bytes", name: "providerData" },
+    { type: "uint256", name: "minAmountOut" },
+    { type: "tuple", name: "bridgeFee", components: BRIDGE_FEE_PARAMS_COMPONENTS },
+    { type: "address", name: "secondaryProvider" },
+    { type: "bytes", name: "secondaryProviderData" },
+    { type: "uint256", name: "secondaryMinAmountOut" },
+    { type: "tuple", name: "secondaryBridgeFee", components: BRIDGE_FEE_PARAMS_COMPONENTS },
   ],
 } as const;
