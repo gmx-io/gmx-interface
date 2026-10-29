@@ -925,6 +925,10 @@ msgstr ""
 msgid "..."
 msgstr ""
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Since position opened"
+msgstr ""
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Swap on an external aggregator"
 msgstr ""
@@ -1117,6 +1121,11 @@ msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Minimum required margin"
+msgstr ""
+
+#: src/components/PositionItem/PositionItem.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Off-hours: daily 17:00–18:15 New York time (weekends Fri 17:00 → Sun 18:15 New York time)."
 msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
@@ -1676,6 +1685,7 @@ msgstr ""
 msgid "Use {0} for gas"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Total margin funded"
 msgstr ""
@@ -4243,6 +4253,10 @@ msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Withdrawal unavailable: selling this amount would raise long traders' PnL-to-pool ratio to {pnlToPoolRatioText}, above the {maxPnlRatioText} limit. Try a smaller amount or try again later"
+msgstr ""
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Total borrow fee"
 msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
@@ -6985,6 +6999,10 @@ msgstr ""
 msgid "Referral code creation failed"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Net result"
+msgstr ""
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "The bridge fee is paid in {bridgeFeeTokenSymbol} from your GMX Account"
@@ -7277,6 +7295,10 @@ msgstr ""
 #: src/components/OrderList/OrderList.tsx
 #: src/components/OrderList/OrderList.tsx
 msgid "No open orders"
+msgstr ""
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Full history unavailable for this position"
 msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
@@ -7581,6 +7603,10 @@ msgstr ""
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set stop price below mark price"
+msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Total received"
 msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
@@ -8258,6 +8284,10 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pool max long amount"
+msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Received before close"
 msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
@@ -9216,6 +9246,10 @@ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average leverage used"
+msgstr ""
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Total funding paid"
 msgstr ""
 
 #: src/components/TradeHistory/keys.ts
@@ -10187,11 +10221,6 @@ msgstr ""
 msgid "Enter an amount"
 msgstr ""
 
-#: src/components/PositionItem/PositionItem.tsx
-#: src/components/TradeBox/TradeBox.tsx
-msgid "Off-hours: daily 20:45–22:15 UTC (weekends Fri 20:45 → Sun 22:15 UTC)."
-msgstr ""
-
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "You must be on this page to accept the transfer. <0>Copy link</0>."
 msgstr ""
@@ -10270,6 +10299,10 @@ msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Shifting {symbol}..."
+msgstr ""
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Total funding received"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -12646,6 +12679,11 @@ msgstr ""
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 msgid "This market is disabled. Contact support to claim your remaining funding fees."
+msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Received at close"
 msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx

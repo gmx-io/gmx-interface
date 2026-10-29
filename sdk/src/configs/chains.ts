@@ -396,6 +396,10 @@ export function getChainDefaultCollateralSymbol(chainId: ContractsChainId) {
 }
 
 export function getExplorerUrl(chainId: number | "layerzero" | "layerzero-testnet"): string {
+  if (typeof chainId === "number" && isSolanaNetwork(chainId)) {
+    return "https://solscan.io/";
+  }
+
   switch (chainId as AnyChainId | "layerzero" | "layerzero-testnet") {
     case "layerzero":
       return "https://layerzeroscan.com/";
