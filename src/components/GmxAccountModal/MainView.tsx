@@ -19,6 +19,11 @@ import {
   useGmxAccountSelectedTransferGuid,
 } from "context/GmxAccountContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import {
+  getMultichainFundingToken,
+  getMultichainFundingTokenLabel,
+  MultichainFundingToken,
+} from "domain/multichain/getMultichainFundingToken";
 import { isMultichainFundingItemLoading } from "domain/multichain/isMultichainFundingItemLoading";
 import type { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { useDisconnectAndClose } from "domain/multichain/useDisconnectAndClose";
@@ -36,8 +41,6 @@ import { shortenAddressOrEns, switchNetwork } from "lib/wallets";
 import { useSolanaWalletSession } from "lib/wallets/solanaWalletSession";
 import useWallet from "lib/wallets/useWallet";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
-import { getToken } from "sdk/configs/tokens";
-import { Token } from "sdk/utils/tokens/types";
 
 import { Amount } from "components/Amount/Amount";
 import Button from "components/Button/Button";
@@ -512,7 +515,7 @@ function FundingHistoryItemLabel({
 }
 
 type DisplayFundingHistoryItem = Omit<MultichainFundingHistoryItem, "token"> & {
-  token: Token;
+  token: MultichainFundingToken;
 };
 
 export function TransferHistoryView() {
@@ -524,7 +527,7 @@ export function TransferHistoryView() {
 
   const filteredFundingHistory: DisplayFundingHistoryItem[] | undefined = fundingHistory
     ?.map((transfer): DisplayFundingHistoryItem | undefined => {
-      const token = getToken(transfer.settlementChainId, transfer.token);
+      const token = getMultichainFundingToken(transfer.settlementChainId, transfer.token);
 
       if (!token) {
         return undefined;
@@ -537,7 +540,9 @@ export function TransferHistoryView() {
         return false;
       }
 
-      const matchesSearch = transfer.token.symbol.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = getMultichainFundingTokenLabel(transfer.token)
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
       return matchesSearch;
     });
 
@@ -564,12 +569,15 @@ export function TransferHistoryView() {
           >
             <div className="flex items-center gap-16">
               <TokenIcon
-                symbol={transfer.token.symbol}
+                symbol={transfer.token.iconSymbol}
                 displaySize={40}
                 chainIdBadge={transfer.sourceChainId === 0 ? transfer.settlementChainId : transfer.sourceChainId}
               />
               <div>
-                <div className="text-body-large">{transfer.token.symbol}</div>
+                <div className="text-body-large">
+                  {transfer.token.name}
+                  {transfer.token.poolName && <span className="subtext">[{transfer.token.poolName}]</span>}
+                </div>
                 <FundingHistoryItemLabel
                   step={transfer.step}
                   operation={transfer.operation}
