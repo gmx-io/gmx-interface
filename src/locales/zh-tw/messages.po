@@ -925,6 +925,10 @@ msgstr "零費用額度不足"
 msgid "..."
 msgstr "..."
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Since position opened"
+msgstr "自開倉以來"
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Swap on an external aggregator"
 msgstr "在外部聚合器上兌換"
@@ -4250,6 +4254,10 @@ msgstr "繼續買入"
 msgid "Withdrawal unavailable: selling this amount would raise long traders' PnL-to-pool ratio to {pnlToPoolRatioText}, above the {maxPnlRatioText} limit. Try a smaller amount or try again later"
 msgstr "暫時無法提取：賣出此數量將使做多交易者的 PnL 佔池比率升至 {pnlToPoolRatioText}，超過 {maxPnlRatioText} 的上限。請減少數量或稍後再試"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Total borrow fee"
+msgstr "借貸費用總計"
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
 msgid "Zero-fee capacity is used up for this amount. Convert now at the standard fee, convert a smaller amount, or wait for the next zero-fee window."
 msgstr "此金額的零費用額度已用盡。可依標準費用立即轉換、轉換較小的金額，或等待下一個零費用時段。"
@@ -7284,6 +7292,10 @@ msgstr "編輯 Limit Increase：{suffix}"
 msgid "No open orders"
 msgstr "沒有未結訂單"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Full history unavailable for this position"
+msgstr "此倉位的完整歷史不可用"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient liquidity. Available: {availableLiquidityText}"
 msgstr "流動性不足。可用：{availableLiquidityText}"
@@ -9223,6 +9235,10 @@ msgstr "24小時最低價"
 msgid "Average leverage used"
 msgstr "平均使用槓桿"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Total funding paid"
+msgstr "已付資金費用總計"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop-Loss"
 msgstr "取消止損"
@@ -10271,6 +10287,10 @@ msgstr "您 GMX Account 中的 {gasPaymentTokensText} 不足。Express Trading �
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Shifting {symbol}..."
 msgstr "正在轉換 {symbol}..."
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Total funding received"
+msgstr "已收資金費用總計"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max reserved + JIT {directionLabel}"
