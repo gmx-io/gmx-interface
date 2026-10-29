@@ -49,6 +49,64 @@ export type EventData = {
 
 export const appEventsData: EventData[] = [
   {
+    id: "release-130-131-132-133-highlights",
+    type: "update",
+    isActive: true,
+    startDate: "29 Oct 2026, 00:00",
+    endDate: "05 Nov 2026, 00:00",
+    variant: "info",
+    title: "App Update: Safer Closes, Clearer Swap Costs, Longer One-Click Sessions",
+    summary: (
+      <>
+        Closes that would be rejected are now blocked, swaps show their real cost, and One-Click sessions last 30 days
+      </>
+    ),
+    description: (
+      <span className="flex flex-col gap-12">
+        <span>
+          <span className="font-medium text-typography-primary">Partial closes:</span> a close that would be rejected is
+          now blocked before you submit
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Edit margin:</span> Withdraw Max now matches what the
+          position can really release
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">TP/SL:</span> a warning now shows when a partial TP/SL
+          may fail at its trigger
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">TWAP:</span> orders no longer add hidden TP/SL orders
+          from the Market tab
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Swaps:</span> external routes now show their real cost
+          in Price impact / fees
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Approvals:</span> swaps now ask for a token approval
+          instead of failing
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">One-Click:</span> new sessions last 30 days or 400
+          actions, up from 7 days or 90
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Errors:</span> GM, GLV, bridge and GMX Account screens
+          now explain what went wrong
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Commodities:</span> the off-hours warning now shows the
+          current hours in New York time
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Positions:</span> the margin tooltip now shows total
+          borrow and funding fees since opening
+        </span>
+      </span>
+    ),
+  },
+  {
     id: "gmlabs-003-staking-changes",
     type: "update",
     isActive: true,
