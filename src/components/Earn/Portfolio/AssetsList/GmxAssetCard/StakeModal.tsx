@@ -1,6 +1,5 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { ethers } from "ethers";
 import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { zeroAddress } from "viem";
@@ -9,7 +8,10 @@ import { ARBITRUM, ContractsChainId } from "config/chains";
 import { type ChainIcons, getIcons } from "config/icons";
 import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 import { calculateStakeBonusPercentage } from "domain/stake/calculateStakeBonusPercentage";
+import { getIsRewardRouterChanged, getRewardRouterContract, RewardRouter } from "domain/stake/rewardRouter";
 import { sendStakingActionMetric } from "domain/stake/sendStakingActionMetric";
+import { getRequestableUnstakeAmount, getUnstakeDelayDays } from "domain/stake/unstakeRequests";
+import { useIsUnstakePaused } from "domain/stake/useIsUnstakePaused";
 import {
   getEffectiveHistoricalMax,
   getMaxSafeUnstake,
@@ -17,18 +19,19 @@ import {
   isLoyaltyTrackingActive,
   wouldTriggerReset,
 } from "domain/stake/useStakingPowerData";
+import type { UnstakeRequestsData } from "domain/stake/useUnstakeRequests";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { callContract } from "lib/contracts";
+import { formatDateTime } from "lib/dates";
 import { helperToast } from "lib/helperToast";
 import { StakingProcessedData } from "lib/legacy";
 import { formatAmount, formatAmountFree, formatUsd, numberWithCommas, parseValue } from "lib/numbers";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
-import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import type { StakingPowerResponse } from "sdk/utils/staking/types";
 
@@ -37,6 +40,11 @@ import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Checkbox from "components/Checkbox/Checkbox";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
+import {
+  getUnstakeRequestsLimitMessage,
+  getUnstakeRequestsPausedMessage,
+} from "components/Errors/getContractErrorMessage";
+import { showRewardRouterChangedToast, showStakingErrorToast } from "components/Errors/stakingToasts";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
 import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
@@ -78,7 +86,9 @@ export function StakeModal(props: {
   chainId: ContractsChainId;
   signer: UncheckedJsonRpcSigner | undefined;
   tokenSymbol: string;
-  rewardRouterAddress: string;
+  rewardRouter: RewardRouter | undefined;
+  mutateRewardRouter: () => void;
+  unstakeRequestsData: UnstakeRequestsData | undefined;
   stake: StakeModalTabConfig;
   unstake: StakeModalTabConfig;
   setPendingTxns: SetPendingTransactions;
@@ -95,7 +105,9 @@ export function StakeModal(props: {
     chainId,
     signer,
     tokenSymbol,
-    rewardRouterAddress,
+    rewardRouter,
+    mutateRewardRouter,
+    unstakeRequestsData,
     stake,
     unstake,
     setPendingTxns,
@@ -131,6 +143,10 @@ export function StakeModal(props: {
   const icons = getIcons(chainId);
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
+  const hasUnstakePauseStarted = useIsUnstakePaused();
+
+  const isUnstakeRequest = rewardRouter?.version === "v3";
+  const isUnstakePaused = hasUnstakePauseStarted && rewardRouter?.version === "v2";
 
   const stakeAmount = useMemo(() => parseValue(stakeValue, 18), [stakeValue]);
   const unstakeAmount = useMemo(() => parseValue(unstakeValue, 18), [unstakeValue]);
@@ -157,6 +173,12 @@ export function StakeModal(props: {
     setIsResetAcknowledged(false);
   }, [unstakeValue]);
 
+  useEffect(() => {
+    if (isUnstakePaused) {
+      setUnstakeValue("");
+    }
+  }, [isUnstakePaused, setUnstakeValue]);
+
   const needApproval =
     stakeFarmAddress !== zeroAddress &&
     tokenAllowance !== undefined &&
@@ -170,6 +192,12 @@ export function StakeModal(props: {
       stakeAmount,
     });
   }, [stakeAmount, processedData]);
+
+  const isUnstakeRequestsLimitReached =
+    isUnstakeRequest &&
+    unstakeRequestsData !== undefined &&
+    unstakeRequestsData.requests.length >= unstakeRequestsData.maxRequests;
+  const isUnstakeRequestPaused = isUnstakeRequest && unstakeRequestsData?.isSignalPaused === true;
 
   const stakeError = useMemo(() => {
     if (stakeAmount === undefined || stakeAmount === 0n) {
@@ -197,16 +225,23 @@ export function StakeModal(props: {
     stakingPowerData?.loyaltyTrackingStart !== undefined &&
     isLoyaltyTrackingActive(stakingPowerData.loyaltyTrackingStart);
 
+  const currentStakedForResetCheck = isUnstakeRequest
+    ? getRequestableUnstakeAmount({
+        stakedAmount: (processedData?.gmxInStakedGmx ?? 0n) + (processedData?.esGmxInStakedGmx ?? 0n),
+        pendingAmount: unstakeRequestsData?.pendingAmount ?? 0n,
+      })
+    : stakingPowerData?.currentStaked;
+
   const wouldResetPower =
     isLoyaltyActive &&
-    stakingPowerData !== undefined &&
+    currentStakedForResetCheck !== undefined &&
     unstakeAmount !== undefined &&
     unstakeAmount > 0n &&
-    wouldTriggerReset(stakingPowerData.currentStaked, unstakeAmount, effectiveHistoricalMax);
+    wouldTriggerReset(currentStakedForResetCheck, unstakeAmount, effectiveHistoricalMax);
 
   const safeUnstakeLimit =
-    stakingPowerData && isLoyaltyActive
-      ? getMaxSafeUnstake(stakingPowerData.currentStaked, effectiveHistoricalMax)
+    currentStakedForResetCheck !== undefined && isLoyaltyActive
+      ? getMaxSafeUnstake(currentStakedForResetCheck, effectiveHistoricalMax)
       : null;
 
   const rewardsLossUsd = useMemo(() => {
@@ -220,12 +255,17 @@ export function StakeModal(props: {
     !stakeError &&
     !isApproving &&
     !isStaking &&
+    rewardRouter !== undefined &&
     !hasOutdatedUi &&
     !multipleWalletExtensionsChainError.buttonErrorMessage;
 
   const isUnstakePrimaryEnabled =
+    !isUnstakePaused &&
     !unstakeError &&
     !isUnstaking &&
+    rewardRouter !== undefined &&
+    (!isUnstakeRequest ||
+      (unstakeRequestsData !== undefined && !isUnstakeRequestsLimitReached && !isUnstakeRequestPaused)) &&
     !hasOutdatedUi &&
     !multipleWalletExtensionsChainError.buttonErrorMessage &&
     (!wouldResetPower || isResetAcknowledged);
@@ -236,7 +276,7 @@ export function StakeModal(props: {
     }
   }, [isApproving, needApproval]);
 
-  const handleStake = useCallback(() => {
+  const handleStake = useCallback(async () => {
     if (needApproval) {
       setIsApproving(true);
       approveTokens({
@@ -255,36 +295,45 @@ export function StakeModal(props: {
       return;
     }
 
-    setIsStaking(true);
-    const contract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
+    if (!rewardRouter) {
+      return;
+    }
 
-    callContract(chainId, contract, stakeMethodName, [stakeAmount], {
-      sentMsg: t`Stake submitted`,
-      failMsg: t`Stake failed`,
-      setPendingTxns,
-    })
-      .then(() => {
-        sendStakingActionMetric({ action: "stake", tokenSymbol, chainId });
-        setIsVisible(false);
-      })
-      // The error toast already reported it.
-      .catch((error) => {
-        sendStakingActionMetric({ action: "stake", tokenSymbol, chainId, error });
-      })
-      .finally(() => {
-        setIsStaking(false);
+    setIsStaking(true);
+
+    try {
+      if (await getIsRewardRouterChanged(chainId, rewardRouter)) {
+        mutateRewardRouter();
+        showRewardRouterChangedToast();
+        return;
+      }
+
+      await callContract(chainId, getRewardRouterContract(rewardRouter, signer), stakeMethodName, [stakeAmount], {
+        sentMsg: t`Stake submitted`,
+        failMsg: t`Stake failed`,
+        setPendingTxns,
+        hideErrorMsg: true,
       });
+      sendStakingActionMetric({ action: "stake", tokenSymbol, chainId });
+      setIsVisible(false);
+    } catch (error) {
+      showStakingErrorToast({ chainId, error, failMsg: t`Stake failed` });
+      sendStakingActionMetric({ action: "stake", tokenSymbol, chainId, error });
+    } finally {
+      setIsStaking(false);
+    }
   }, [
     needApproval,
     signer,
     stakeTokenAddress,
     stakeFarmAddress,
     chainId,
+    rewardRouter,
+    mutateRewardRouter,
     stakeMethodName,
     stakeAmount,
     setPendingTxns,
     setIsVisible,
-    rewardRouterAddress,
     tokenSymbol,
   ]);
 
@@ -301,36 +350,63 @@ export function StakeModal(props: {
     );
   }, []);
 
-  const handleUnstake = useCallback(() => {
+  const handleUnstake = useCallback(async () => {
+    if (!rewardRouter) {
+      return;
+    }
+
     const didReset = wouldResetPower;
+    const action = isUnstakeRequest ? "unstakeRequest" : "unstake";
+    const metricTokenSymbol = isUnstakeRequest ? undefined : tokenSymbol;
+    const failMsg = isUnstakeRequest ? t`Unstake request failed` : t`Unstake failed`;
 
     setIsUnstaking(true);
-    const contract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
 
-    callContract(chainId, contract, unstakeMethodName, [unstakeAmount], {
-      sentMsg: t`Unstake submitted`,
-      failMsg: t`Unstake failed`,
-      successMsg: didReset ? undefined : t`Unstake completed`,
-      setPendingTxns,
-    })
-      .then(() => {
-        sendStakingActionMetric({ action: "unstake", tokenSymbol, chainId });
-        setIsVisible(false);
-        if (didReset) {
-          showResetToast();
-        }
-      })
-      .catch((error) => {
-        sendStakingActionMetric({ action: "unstake", tokenSymbol, chainId, error });
-      })
-      .finally(() => {
-        setIsUnstaking(false);
-      });
+    try {
+      if (await getIsRewardRouterChanged(chainId, rewardRouter)) {
+        mutateRewardRouter();
+        showRewardRouterChangedToast();
+        return;
+      }
+
+      const contract = getRewardRouterContract(rewardRouter, signer);
+
+      if (isUnstakeRequest) {
+        await callContract(chainId, contract, "signalUnstake", [unstakeAmount], {
+          sentMsg: t`Unstake request submitted`,
+          failMsg,
+          successMsg: didReset ? undefined : t`Unstake requested`,
+          setPendingTxns,
+          hideErrorMsg: true,
+        });
+      } else {
+        await callContract(chainId, contract, unstakeMethodName, [unstakeAmount], {
+          sentMsg: t`Unstake submitted`,
+          failMsg,
+          successMsg: didReset ? undefined : t`Unstake completed`,
+          setPendingTxns,
+          hideErrorMsg: true,
+        });
+      }
+
+      sendStakingActionMetric({ action, tokenSymbol: metricTokenSymbol, chainId });
+      setIsVisible(false);
+      if (didReset) {
+        showResetToast();
+      }
+    } catch (error) {
+      showStakingErrorToast({ chainId, error, failMsg, action: isUnstakeRequest ? "unstakeRequest" : "default" });
+      sendStakingActionMetric({ action, tokenSymbol: metricTokenSymbol, chainId, error });
+    } finally {
+      setIsUnstaking(false);
+    }
   }, [
     chainId,
     signer,
+    rewardRouter,
+    mutateRewardRouter,
+    isUnstakeRequest,
     unstakeMethodName,
-    rewardRouterAddress,
     unstakeAmount,
     setPendingTxns,
     setIsVisible,
@@ -375,9 +451,17 @@ export function StakeModal(props: {
       return <Trans>Stake</Trans>;
     }
 
+    if (isUnstakePaused) {
+      return <Trans>Unstake</Trans>;
+    }
     if (unstakeError) {
       return unstakeError;
     }
+
+    if (isUnstakeRequest) {
+      return isUnstaking ? <Trans>Requesting unstake...</Trans> : <Trans>Request unstake</Trans>;
+    }
+
     if (isUnstaking) {
       return <Trans>Unstaking...</Trans>;
     }
@@ -389,6 +473,8 @@ export function StakeModal(props: {
     isApproving,
     isStaking,
     isUnstaking,
+    isUnstakeRequest,
+    isUnstakePaused,
     needApproval,
     tokenSymbol,
     stakeError,
@@ -410,8 +496,9 @@ export function StakeModal(props: {
   const activeMaxAmount = activeTab === "stake" ? stakeMaxAmount : unstakeMaxAmount;
   const activeTokenSymbol = tokenSymbol;
   const activeTitle = activeTab === "stake" ? stakeTitle : unstakeTitle;
+  const isUnstakeTabPaused = activeTab === "unstake" && isUnstakePaused;
 
-  const hasMax = activeMaxAmount !== undefined && activeMaxAmount !== 0n;
+  const hasMax = activeMaxAmount !== undefined && activeMaxAmount !== 0n && !isUnstakeTabPaused;
   const isMaxSelected = (activeTab === "stake" ? stakeAmount : unstakeAmount) === activeMaxAmount;
   const onClickMax = activeTab === "stake" ? handleStakeMax : handleUnstakeMax;
 
@@ -437,6 +524,9 @@ export function StakeModal(props: {
   const exceedsLimit = wouldResetPower;
   const isApproachingLimit = !exceedsLimit && unstakeLimitPercent >= 75;
   const unstakeBarStyle = useMemo(() => ({ width: `${Math.min(unstakeLimitPercent, 100)}%` }), [unstakeLimitPercent]);
+
+  const isUnstakeRequestTab = activeTab === "unstake" && isUnstakeRequest;
+  const unstakeDelay = unstakeRequestsData?.unstakeDelay;
 
   return (
     <div className="StakeModal">
@@ -466,17 +556,32 @@ export function StakeModal(props: {
               activeTab === "stake" ? setStakeValue(e.target.value) : setUnstakeValue(e.target.value)
             }
             maxDecimals={18}
+            isDisabled={isUnstakeTabPaused}
           >
-            <div className="flex items-center gap-4 py-8">
-              <img
-                className="icon h-24"
-                height="24"
-                src={icons?.[activeTokenSymbol.toLowerCase() as keyof ChainIcons]}
-                alt={activeTokenSymbol}
-              />
-              {activeTokenSymbol}
-            </div>
+            {isUnstakeRequestTab ? (
+              <div className="flex items-center gap-4 whitespace-nowrap py-8">
+                <img className="icon h-24" height="24" src={icons?.gmx} alt="GMX" />
+                <img className="icon -ml-12 h-24" height="24" src={icons?.esgmx} alt="esGMX" />
+                GMX / esGMX
+              </div>
+            ) : (
+              <div className="flex items-center gap-4 py-8">
+                <img
+                  className="icon h-24"
+                  height="24"
+                  src={icons?.[activeTokenSymbol.toLowerCase() as keyof ChainIcons]}
+                  alt={activeTokenSymbol}
+                />
+                {activeTokenSymbol}
+              </div>
+            )}
           </BuyInputSection>
+
+          {isUnstakeTabPaused && (
+            <ColorfulBanner color="yellow" icon={AlertIcon}>
+              <Trans>Unstaking is paused until the staking upgrade</Trans>
+            </ColorfulBanner>
+          )}
 
           {showSafeUnstakeBar && (
             <div className="flex flex-col gap-6">
@@ -562,6 +667,28 @@ export function StakeModal(props: {
             </AlertInfoCard>
           )}
 
+          {isUnstakeRequestTab && unstakeDelay !== undefined && (
+            <AlertInfoCard type="info" hideClose>
+              <Trans>
+                Unstaking takes {getUnstakeDelayDays(unstakeDelay)} days. You can withdraw this amount as GMX or esGMX
+                from {formatDateTime(Math.floor(Date.now() / 1000) + unstakeDelay)}. Until then it stays staked but
+                stops counting toward Staking Power. You can cancel the request at any time.
+              </Trans>
+            </AlertInfoCard>
+          )}
+
+          {isUnstakeRequestTab && isUnstakeRequestsLimitReached && unstakeRequestsData && (
+            <ColorfulBanner color="yellow" icon={AlertIcon}>
+              {getUnstakeRequestsLimitMessage(unstakeRequestsData.maxRequests)}
+            </ColorfulBanner>
+          )}
+
+          {isUnstakeRequestTab && isUnstakeRequestPaused && (
+            <ColorfulBanner color="yellow" icon={AlertIcon}>
+              {getUnstakeRequestsPausedMessage()}
+            </ColorfulBanner>
+          )}
+
           {isApproachingLimit && !wouldResetPower && showSafeUnstakeBar && (
             <ColorfulBanner color="yellow" icon={AlertIcon}>
               <Trans>Unstaking this amount will bring you close to the 20% reset threshold</Trans>
@@ -572,9 +699,16 @@ export function StakeModal(props: {
             <>
               <ColorfulBanner color="yellow" icon={AlertIcon}>
                 <div>
-                  <Trans>
-                    Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards
-                  </Trans>
+                  {isUnstakeRequest ? (
+                    <Trans>
+                      Requesting to unstake more than 20% of your max historical staked GMX will reset your accrued
+                      rewards. Cancelling the request does not restore them.
+                    </Trans>
+                  ) : (
+                    <Trans>
+                      Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards
+                    </Trans>
+                  )}
                   {rewardsLossUsd !== null && (
                     <div className="mt-4 font-medium text-red-500">
                       <Trans>If you continue, you will lose {formatUsd(rewardsLossUsd)} in rewards</Trans>

@@ -768,7 +768,7 @@ export type StakingActionEvent = {
   event: "staking.action";
   isError: false;
   data: {
-    action: "stake" | "unstake" | "claim" | "compound";
+    action: "stake" | "unstake" | "unstakeRequest" | "unstakeCancel" | "unstakeWithdraw" | "claim" | "compound";
     tokenSymbol: string | undefined;
     outcome: "sent" | "rejected" | "failed";
     chainId: number;

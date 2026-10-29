@@ -181,6 +181,10 @@ msgstr "GMX Account를 사용하여 GMX에서 격리 포지션을 개설할 수 
 msgid "Do I need to create codes on each network?"
 msgstr "각 네트워크에서 코드를 생성해야 합니까?"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Your {token} long is in the {poolName} pool, which is closed to new size. This order opens a separate position."
+msgstr "{token} 롱 포지션은 {poolName} 풀에 있으며, 이 풀은 새로운 크기를 받지 않습니다. 이 주문은 별도의 포지션을 엽니다."
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Multichain</0><1>MegaETH support</1><2>Just-in-time liquidity</2>"
 msgstr "<0>멀티체인</0><1>MegaETH 지원</1><2>적시 유동성 공급</2>"
@@ -433,6 +437,10 @@ msgstr "Telegram 봇"
 msgid "Cancel Limit Swap"
 msgstr "Limit Swap 취소됨"
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Waiting ({0, plural, one {# day left} other {# days left}})"
+msgstr "대기 중 ({0, plural, other {#일 남음}})"
+
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 msgid "Roadmap"
 msgstr "로드맵"
@@ -512,6 +520,10 @@ msgstr "Market Increase 만료됨"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Percentage"
 msgstr "비율"
+
+#: src/components/ClosingPoolsNotice/ClosingPoolsNotice.tsx
+msgid "View orders"
+msgstr "주문 보기"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap UI fee"
@@ -594,6 +606,10 @@ msgstr "제휴 보상 수령에 실패했습니다"
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "decrease"
 msgstr "축소"
+
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{ordersCount, plural, one {# pending order can't fill.} other {# pending orders can't fill.}}"
+msgstr "{ordersCount, plural, other {대기 중인 주문 #개는 체결될 수 없습니다.}}"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in any BTC/USD pool"
@@ -909,6 +925,10 @@ msgstr "수수료 무료 한도 부족"
 msgid "..."
 msgstr "..."
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Since position opened"
+msgstr "포지션 개설 이후"
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Swap on an external aggregator"
 msgstr "외부 애그리게이터에서 스왑"
@@ -1068,6 +1088,10 @@ msgstr "유효하지 않은 담보 토큰입니다. {tokenSymbol}은(는) 담보
 msgid "A conversion is already waiting in your wallet. Try again after it executes."
 msgstr "지갑에서 이미 변환이 대기 중입니다. 실행된 후 다시 시도하세요."
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Available from"
+msgstr "이용 가능 시점"
+
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -1098,6 +1122,11 @@ msgstr "규모의 유동성"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Minimum required margin"
 msgstr "최소 필요 증거금"
+
+#: src/components/PositionItem/PositionItem.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Off-hours: daily 17:00–18:15 New York time (weekends Fri 17:00 → Sun 18:15 New York time)."
+msgstr "장외 시간: 매일 뉴욕 시간 17:00–18:15 (주말 뉴욕 시간 금 17:00 → 일 18:15)."
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 #: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
@@ -1140,6 +1169,10 @@ msgstr "스테이킹된 토큰 부족"
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Creating code..."
 msgstr "코드 생성 중..."
+
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "The new USDG pools have more room. Your current positions stay open: hold, add margin, reduce or close any time. Adding size is limited now and stops soon."
+msgstr "새 USDG 풀은 여유가 더 많습니다. 현재 포지션은 그대로 유지됩니다: 언제든지 보유, 마진 추가, 축소 또는 종료할 수 있습니다. 크기 추가는 현재 제한되어 있으며 곧 중단됩니다."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Conversion creation failed"
@@ -1190,6 +1223,10 @@ msgstr "주문이 체결되지 않습니다: 조건가가 청산가를 벗어났
 msgid "Don't ask again"
 msgstr "다시 묻지 않기"
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Cancel submitted"
+msgstr "취소가 제출되었습니다"
+
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values calculated when earned. Excludes incentives."
 msgstr "수수료 값은 수익 발생 시점에 계산됩니다. 인센티브는 제외됩니다."
@@ -1225,6 +1262,10 @@ msgstr "Worker"
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max network fee buffer precision is 0.01%"
 msgstr "최대 네트워크 수수료 버퍼 정밀도는 0.01%입니다"
+
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{ordersCount, plural, one {# pending order will stop filling soon.} other {# pending orders will stop filling soon.}}"
+msgstr "{ordersCount, plural, other {대기 중인 주문 #개가 곧 체결되지 않게 됩니다.}}"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeltaPrime"
@@ -1725,9 +1766,17 @@ msgstr "조건가 도달 조건이 충족되지 않았습니다"
 msgid "/ year"
 msgstr "/ 년"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Withdraw all tokens from the GMX and GLP vesting vaults before the transfer"
+msgstr "전송 전에 GMX 및 GLP 베스팅 볼트에서 모든 토큰을 출금하세요"
+
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Go to affiliate dashboard"
 msgstr "제휴 대시보드로 이동"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "This amount is not ready to withdraw yet. Ready now: {executableAmountText} GMX / esGMX"
+msgstr "이 수량은 아직 출금할 수 없습니다. 현재 출금 가능: {executableAmountText} GMX / esGMX"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Estimated wallet-specific annualized rate based on the recent GMX buyback pace, your staking power share, and your current staked GMX + esGMX. Actual distribution is subject to DAO governance."
@@ -2087,6 +2136,10 @@ msgstr "간략히 보기"
 msgid "Vest"
 msgstr "베스팅"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "You have {maxRequests} unstake requests, the maximum. Withdraw or cancel one to make a new request."
+msgstr "언스테이킹 요청이 최대치인 {maxRequests}건입니다. 새 요청을 하려면 한 건을 출금하거나 취소하세요."
+
 #: src/components/GmList/UsdgPoolBadges.tsx
 msgid "Extra yield for GLV [USDG] liquidity providers during the launch, targeting 8% or more on top of trading fees. Paid into the GLV price every 4 hours, so there's nothing to claim."
 msgstr "출시 기간 동안 GLV [USDG] 유동성 공급자에게 제공되는 추가 수익률로, 거래 수수료 외에 8% 이상을 목표로 합니다. 4시간마다 GLV 가격에 반영되므로 별도로 수령할 필요가 없습니다."
@@ -2122,6 +2175,10 @@ msgstr "풀 선택"
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "This market has been disabled. Contact support to claim your remaining funding fees."
 msgstr "이 시장은 비활성화되었습니다. 남은 펀딩 수수료를 수령하려면 지원팀에 문의하십시오."
+
+#: src/components/Errors/stakingToasts.ts
+msgid "Staking moved to a new contract. Review and try again."
+msgstr "스테이킹이 새 컨트랙트로 이전되었습니다. 내용을 확인하고 다시 시도하세요."
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Log index:"
@@ -2394,6 +2451,10 @@ msgstr "수령"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "VI POSITIONS"
 msgstr "VI 포지션"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Requesting to unstake more than 20% of your max historical staked GMX will reset your accrued rewards. Cancelling the request does not restore them."
+msgstr "역대 최대 GMX 스테이킹 수량의 20%를 초과하여 언스테이킹을 요청하면 누적 보상이 초기화됩니다. 요청을 취소해도 보상은 복구되지 않습니다."
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -2896,6 +2957,10 @@ msgstr "{orderTypeText} {0} → {1}"
 msgid "Job openings at GMX"
 msgstr "GMX 채용 공고"
 
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{ordersCount, plural, one {Cancel and re-place it in the USDG pools.} other {Cancel and re-place them in the USDG pools.}}"
+msgstr "{ordersCount, plural, other {취소한 후 USDG 풀에서 다시 주문하세요.}}"
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
@@ -3082,6 +3147,10 @@ msgstr "스왑 디버그"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "The more you trade, the more you keep"
 msgstr "거래할수록 더 많이 남습니다"
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Unstake requests"
+msgstr "언스테이킹 요청"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
@@ -3525,6 +3594,10 @@ msgstr "구매 수수료"
 msgid "Claimable collateral reduction factor"
 msgstr "청구 가능 담보 감소 비율"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "This account is frozen in the esGMX vesting vault"
+msgstr "이 계정은 esGMX 베스팅 볼트에서 동결되었습니다"
+
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Slippage too low"
 msgstr "슬리피지가 너무 낮습니다"
@@ -3584,6 +3657,10 @@ msgstr "주소 복사"
 #: src/pages/Announcements/Announcements.tsx
 msgid "Announcements"
 msgstr "공지사항"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing limit order in {0} pool"
+msgstr "{0} 풀에 기존 지정가 주문이 있습니다"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
@@ -3718,6 +3795,7 @@ msgstr "스왑"
 msgid "Creating order..."
 msgstr "주문 생성 중…"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Stake submitted"
 msgstr "스테이킹이 제출되었습니다"
@@ -4053,6 +4131,10 @@ msgstr "GMX용 Dune Analytics"
 msgid "External routes are only used for Market Swaps"
 msgstr "외부 경로는 Market Swap에만 사용됩니다"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstaking is paused until the staking upgrade"
+msgstr "스테이킹 업그레이드 전까지 언스테이킹이 일시 중지되었습니다"
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them."
 msgstr "Express를 사용하려면 GMX Account에 {gasPaymentTokensText}이(가) 필요합니다. 그중 하나를 입금하십시오."
@@ -4172,6 +4254,10 @@ msgstr "구매 계속하기"
 msgid "Withdrawal unavailable: selling this amount would raise long traders' PnL-to-pool ratio to {pnlToPoolRatioText}, above the {maxPnlRatioText} limit. Try a smaller amount or try again later"
 msgstr "출금 불가: 이 수량을 매도하면 롱 트레이더의 풀 대비 PnL 비율이 {pnlToPoolRatioText}(으)로 상승하여 {maxPnlRatioText} 한도를 초과하게 됩니다. 더 적은 수량으로 시도하거나 나중에 다시 시도하십시오"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Total borrow fee"
+msgstr "총 차입 수수료"
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
 msgid "Zero-fee capacity is used up for this amount. Convert now at the standard fee, convert a smaller amount, or wait for the next zero-fee window."
 msgstr "이 금액에 대한 수수료 무료 한도가 모두 소진되었습니다. 표준 수수료로 지금 변환하거나, 더 적은 금액을 변환하거나, 다음 수수료 무료 기간을 기다리십시오."
@@ -4251,13 +4337,25 @@ msgstr "롱 익절매 설정 @ {0}"
 msgid "Uploading..."
 msgstr "업로드 중..."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake requested"
+msgstr "언스테이킹 요청 완료"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Can't withdraw collateral. Remaining would be {estimatedRemainingCollateralUsdText}, below minimum"
 msgstr "담보를 출금할 수 없습니다. 출금 후 잔여 담보가 {estimatedRemainingCollateralUsdText}로 최소 기준에 미달합니다"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The esGMX vesting vaults changed after the transfer started. The sender has to start the transfer again."
+msgstr "전송 시작 후 esGMX 베스팅 볼트가 변경되었습니다. 발신자가 전송을 다시 시작해야 합니다."
+
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "Funds claimed"
 msgstr "자금 수령 완료"
+
+#: src/components/ClosingPoolsLpNotice/ClosingPoolsLpNoticeBanner.tsx
+msgid "View pools"
+msgstr "풀 보기"
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "Trigger"
@@ -4275,6 +4373,10 @@ msgstr "기준가가 변경되었습니다. 허용 슬리피지를 높여 주십
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Maximum pool capacity reached"
 msgstr "최대 풀 용량 도달"
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Cancelling..."
+msgstr "취소 중..."
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit signed"
@@ -4367,6 +4469,10 @@ msgstr "자금이 GMX Account에 입금되었습니다"
 msgid "Why should I enter a referral code?"
 msgstr "추천 코드를 입력해야 하는 이유는 무엇입니까?"
 
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "Your current positions stay open: hold, add margin, reduce or close any time. New positions open in the USDG pools."
+msgstr "현재 포지션은 그대로 유지됩니다: 언제든지 보유, 마진 추가, 축소 또는 종료할 수 있습니다. 새 포지션은 USDG 풀에서 열립니다."
+
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Auto · {activeLabel}"
 msgstr "자동 · {activeLabel}"
@@ -4437,6 +4543,10 @@ msgstr "변환 실패: {0}"
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Adding margin to {positionLabel} with {offerAmount}"
 msgstr "{offerAmount}(으)로 {positionLabel}에 증거금 추가 중"
+
+#: src/lib/i18n.ts
+msgid "{first}, {second} +{restCount} more"
+msgstr "{first}, {second} 외 {restCount}개"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Signing approval..."
@@ -4521,6 +4631,10 @@ msgstr "TWAP 스왑 부분 실패"
 msgid "No events in the past {DAYS_BACK} days"
 msgstr "최근 {DAYS_BACK}일 동안 이벤트가 없습니다"
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Ready to withdraw"
+msgstr "출금 가능"
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker thread"
 msgstr "워커 스레드"
@@ -4596,6 +4710,10 @@ msgstr "네트워크 수수료를 위한 Gas가 부족합니다"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to"
 msgstr "{fromText}에서"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "{poolName} pool is closing and isn't taking new stop market orders."
+msgstr "{poolName} 풀이 종료 중이며 새로운 스탑 마켓 주문을 받지 않습니다."
 
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "Frontends"
@@ -4875,8 +4993,14 @@ msgid "Share GMX feedback"
 msgstr "GMX 피드백 공유"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "Withdraw failed"
 msgstr "출금에 실패했습니다"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Account transfers are paused during the staking upgrade."
+msgstr "스테이킹 업그레이드 중에는 계정 전송이 일시 중지됩니다."
 
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 msgid "Only GMX adds liquidity to this pool. To provide USDG liquidity, use GLV [USDG]."
@@ -4930,6 +5054,7 @@ msgstr "GM 아이콘"
 msgid "Execution details"
 msgstr "체결 상세"
 
+#: src/components/Errors/getContractErrorMessage.ts
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Self-transfer not supported"
 msgstr "자기 전송은 지원되지 않습니다"
@@ -5084,6 +5209,7 @@ msgid "WIN/LOSS"
 msgstr "승/패"
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing..."
@@ -5108,6 +5234,10 @@ msgstr "무기한 시장"
 #: src/components/Footer/constants.tsx
 msgid "V1"
 msgstr "V1"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Unstake requests are paused. Try again later."
+msgstr "언스테이킹 요청이 일시 중지되었습니다. 나중에 다시 시도하세요."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Staked tokens reserved for vesting"
@@ -5550,6 +5680,7 @@ msgstr "Solana의 GMX(GMTrade로 알려짐)는 별도의 도메인에서 제공�
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
+#: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "TWAP"
@@ -5720,6 +5851,7 @@ msgstr "v:"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake"
 msgstr "언스테이킹"
 
@@ -5865,6 +5997,10 @@ msgstr "외부 스왑 실패 처리"
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -6142,6 +6278,10 @@ msgstr "{tokenInSymbol} 잔액 부족"
 msgid "Page outdated. Refresh"
 msgstr "페이지가 오래되었습니다. 새로고침"
 
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxClosingPool.ts
+msgid "Closed to new TWAP orders"
+msgstr "새 TWAP 주문 마감"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Buy GLV"
@@ -6346,6 +6486,10 @@ msgstr "수수료 데이터를 일시적으로 사용할 수 없습니다"
 msgid "Sell fee"
 msgstr "판매 수수료"
 
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{markets} trading is moving to USDG pools"
+msgstr "{markets} 거래가 USDG 풀로 이전 중입니다"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid oracle price"
 msgstr "유효하지 않은 Oracle 가격"
@@ -6536,12 +6680,18 @@ msgid "Max lendable impact factor for withdrawals"
 msgstr "출금 시 최대 대출 가능 영향 계수"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Claim completed"
 msgstr "수령이 완료되었습니다"
 
 #: src/components/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Open in explorer"
 msgstr "탐색기에서 열기"
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Cancel failed"
+msgstr "취소에 실패했습니다"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "{0} tokens converted to GMX from the {1} esGMX deposited for vesting"
@@ -6728,6 +6878,10 @@ msgstr "GM: {1} [{2}]에서 {0}의 구매 한도에 도달했습니다. 다른 �
 msgid "Turn your audience<0/>into on-chain income"
 msgstr "오디언스를<0/>온체인 수익으로 바꾸십시오"
 
+#: src/domain/synthetics/markets/closingPoolsLpNotice.ts
+msgid "{0, plural, one {We're moving {markets} trading to the new USDG pools, so fees in your current pool will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.} other {We're moving {markets} trading to the new USDG pools, so fees in your current pools will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.}}"
+msgstr "{0, plural, other {{markets} 거래를 새로운 USDG 풀로 이전하고 있어 현재 풀의 수수료가 줄어듭니다. 계속 수익을 얻으려면 유동성을 {gmPools} 또는 GLV [USDG]로 옮기십시오.}}"
+
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Permit approval failed. A standard approval transaction is required. Approve the token and try again</0>"
 msgstr "<0>퍼밋 승인에 실패했습니다. 표준 승인 트랜잭션이 필요합니다. 토큰을 승인한 후 다시 시도하십시오</0>"
@@ -6825,6 +6979,10 @@ msgstr "지원하는"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No liquidation price. Margin covers any losses."
 msgstr "청산가가 없습니다. 증거금으로 모든 손실을 충당합니다."
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Can't fill: {poolName} pool is closed to new size. Cancel and re-place it in the {targetPoolName} pool."
+msgstr "체결 불가: {poolName} 풀은 새로운 크기를 받지 않습니다. 취소한 후 {targetPoolName} 풀에서 다시 주문하세요."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Toros"
@@ -7091,6 +7249,10 @@ msgstr "Avalanche에서 스테이킹됨"
 msgid "Pending"
 msgstr "대기 중"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "{poolName} pool is closing and isn't taking new limit orders."
+msgstr "{poolName} 풀이 종료 중이며 새로운 지정가 주문을 받지 않습니다."
+
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "s:"
 msgstr "s:"
@@ -7103,6 +7265,8 @@ msgstr "RPC 오류.<0/><1/>안정성 향상을 위해 설정에서 <2>Express Tr
 msgid "High execution reliability using premium RPCs"
 msgstr "프리미엄 RPC를 통한 높은 체결 안정성"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Stake failed"
 msgstr "스테이킹 실패"
@@ -7127,6 +7291,10 @@ msgstr "Limit Increase 수정: {suffix}"
 #: src/components/OrderList/OrderList.tsx
 msgid "No open orders"
 msgstr "열려 있는 주문이 없습니다"
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Full history unavailable for this position"
+msgstr "이 포지션의 전체 내역을 확인할 수 없습니다"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient liquidity. Available: {availableLiquidityText}"
@@ -7232,6 +7400,10 @@ msgstr "반복적인 지갑 확인 없음"
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "{gasPaymentTokensText} 입금"
 
+#: src/domain/synthetics/markets/closingPoolsLpNotice.ts
+msgid "{0, plural, one {Trading in your {markets} pool is moving to USDG pools} other {Trading in your {markets} pools is moving to USDG pools}}"
+msgstr "{0, plural, other {보유하신 {markets} 풀의 거래가 USDG 풀로 이전되고 있습니다}}"
+
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."
 msgstr "리베이트는 등급에 따라 달라지며, <0>여기</0>에서 등급을 확인할 수 있습니다. 등급이 높아지면 더 많은 보상을 받고 트레이더에게 더 큰 할인이 적용됩니다."
@@ -7248,6 +7420,10 @@ msgstr "차트에 구매/판매 아이콘 표시"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
 msgstr "이 스왑에는 외부 라우팅이 필요합니다. 활성화하려면 {0}(으)로 가스를 결제하세요."
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The amount is more than your staked GMX and esGMX that is not already requested"
+msgstr "수량이 아직 요청되지 않은 스테이킹된 GMX 및 esGMX보다 많습니다"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -7410,6 +7586,7 @@ msgid "Convert and create order"
 msgstr "변환 후 주문 생성"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "Withdrawn"
 msgstr "출금 완료"
 
@@ -7494,6 +7671,10 @@ msgstr "{typeString} 롱 TWAP: 지정된 시간 동안 균등하게 나누어 �
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claim & swap"
 msgstr "수령 및 스왑"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Withdraw all tokens from the esGMX vesting vault before the transfer"
+msgstr "전송 전에 esGMX 베스팅 볼트에서 모든 토큰을 출금하세요"
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
@@ -7594,6 +7775,10 @@ msgstr "위임"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Harmonix"
 msgstr "Harmonix"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstaking takes {0} days. You can withdraw this amount as GMX or esGMX from {1}. Until then it stays staked but stops counting toward Staking Power. You can cancel the request at any time."
+msgstr "언스테이킹에는 {0}일이 걸립니다. 이 수량은 {1}부터 GMX 또는 esGMX로 출금할 수 있습니다. 그때까지 스테이킹 상태로 유지되지만 스테이킹 파워에는 반영되지 않습니다. 요청은 언제든지 취소할 수 있습니다."
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Tier upgrades are reviewed manually by the GMX team based on your weekly performance. If you meet the requirements consistently, you can apply for an upgrade via the <0>GMX Partner Account: Telegram</0>."
@@ -7819,6 +8004,10 @@ msgstr "체결 시 최소 {toAmountText}을(를) 수령합니다. 가격은 수�
 msgid "Increasing {indexTokenText} Short: +{sizeDeltaUsdText}"
 msgstr "{indexTokenText} 숏 포지션 증가 중: +{sizeDeltaUsdText}"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "You have the maximum number of unstake requests. Withdraw or cancel one to make a new request."
+msgstr "언스테이킹 요청이 최대치입니다. 새 요청을 하려면 한 건을 출금하거나 취소하세요."
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed"
 msgstr "판매 주문이 체결되었습니다"
@@ -7847,6 +8036,10 @@ msgstr "기존 1CT 하위 계정에 0.0045 WETH가 남아 있습니다"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral"
 msgstr "최소 담보"
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Requested"
+msgstr "요청 시점"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCards.tsx
 msgid "Steady returns without management"
@@ -7981,6 +8174,10 @@ msgstr "주문 허용 가격"
 msgid "Order failed to execute and is frozen. It stays open and may still execute later if conditions allow.<0/><1/>See the Trades tab for the reason."
 msgstr "주문 체결에 실패하여 동결되었습니다. 주문은 계속 열려 있으며 조건이 충족되면 나중에 체결될 수 있습니다.<0/><1/>사유는 거래 탭에서 확인하세요."
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Too big for the room left in the {poolName} pool. Cancel and re-place it in the {targetPoolName} pool."
+msgstr "{poolName} 풀의 남은 여유에 비해 너무 큽니다. 취소한 후 {targetPoolName} 풀에서 다시 주문하세요."
+
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Updating {updateOrdersCount} TP/SL orders..."
 msgstr "{updateOrdersCount}개 TP/SL 주문 업데이트 중..."
@@ -8004,6 +8201,10 @@ msgstr "획득한 수수료는 {chainName}의 지갑에 보유한 GM과 GLV에 �
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set long Limit @ {0}"
 msgstr "롱 지정가 설정 @ {0}"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The receiving account has staked or vested before. Choose a new account."
+msgstr "수신 계정은 이전에 스테이킹 또는 베스팅을 한 적이 있습니다. 새 계정을 선택하세요."
 
 #: src/components/GmList/UsdgPoolBadges.tsx
 msgid "Direct deposits into this pool are open to whitelisted addresses. GLV [USDG] gives you the same markets in one deposit."
@@ -8579,6 +8780,8 @@ msgid "Exit price"
 msgstr "종료가"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Transfer failed"
 msgstr "전송 실패"
@@ -8738,6 +8941,7 @@ msgstr "버전:"
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Available"
 msgstr "사용 가능"
@@ -8754,6 +8958,7 @@ msgstr "스왑 수익 수수료"
 msgid "Solv Finance"
 msgstr "Solv Finance"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claim submitted"
@@ -8829,6 +9034,7 @@ msgstr "거버넌스"
 msgid "Keep more of every trade"
 msgstr "모든 거래에서 더 많이 가져가십시오"
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/HistoryExport/HistoryExportModal.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -9029,6 +9235,10 @@ msgstr "24시간 최저"
 msgid "Average leverage used"
 msgstr "평균 사용 레버리지"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Total funding paid"
+msgstr "총 지급 펀딩"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop-Loss"
 msgstr "손절매 취소"
@@ -9063,6 +9273,7 @@ msgstr "활성 Balancer 프로그램 코드"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "Max amount exceeded"
 msgstr "최대 수량 초과"
 
@@ -9164,6 +9375,10 @@ msgstr "오늘"
 msgid "Link copied"
 msgstr "링크 복사됨"
 
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "The new USDG pools have more room. Your current positions stay open: hold, add margin, reduce or close any time. Adding size is limited now and stops on {date}."
+msgstr "새 USDG 풀은 여유가 더 많습니다. 현재 포지션은 그대로 유지됩니다: 언제든지 보유, 마진 추가, 축소 또는 종료할 수 있습니다. 크기 추가는 현재 제한되어 있으며 {date}에 중단됩니다."
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Total wallet received"
 msgstr "지갑 총 수령액"
@@ -9261,6 +9476,10 @@ msgstr "SL 가격을 지정가보다 낮게 설정하십시오"
 msgid "({0} of {1})"
 msgstr "({1}의 {0})"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Request unstake"
+msgstr "언스테이킹 요청"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Total realized and unrealized PnL including fees and price impact"
 msgstr "수수료 및 가격 영향을 포함한 총 실현 및 미실현 손익(PnL)"
@@ -9325,6 +9544,10 @@ msgstr "재승인이 필요하기 전 최대 실행 횟수"
 msgid "Minimum capital used of {0} required to qualify for rankings"
 msgstr "순위 자격을 얻으려면 최소 {0}의 사용 자본이 필요합니다"
 
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{markets} trading has moved to USDG pools"
+msgstr "{markets} 거래가 USDG 풀로 이전되었습니다"
+
 #: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Proof of reserves"
@@ -9333,6 +9556,10 @@ msgstr "지급준비금 증명"
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "When will I start earning?"
 msgstr "언제부터 수익이 발생합니까?"
+
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxClosingPool.ts
+msgid "Closed to new limit orders"
+msgstr "새 지정가 주문 마감"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No topics"
@@ -9444,6 +9671,10 @@ msgstr "제휴 esGMX 토큰을 전송하지 않겠습니다"
 msgid "Order exceeds max leverage. Click to auto-adjust."
 msgstr "주문이 최대 레버리지를 초과합니다. 클릭하여 자동 조정하십시오."
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "After the transfer, the receiving account would have {count} unstake requests, more than the maximum"
+msgstr "전송 후 수신 계정의 언스테이킹 요청이 {count}건이 되어 최대치를 초과합니다"
+
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available"
 msgstr "사용 가능한 스왑 경로 없음"
@@ -9527,6 +9758,7 @@ msgstr "이벤트명"
 msgid "OPEN INTEREST"
 msgstr "미결제약정"
 
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Begin transfer"
 msgstr "전송 시작"
@@ -9800,6 +10032,7 @@ msgstr "지갑에 수수료에 필요한 {walletGasTokenSymbol}이(가) 부족�
 msgid "Copy"
 msgstr "복사"
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -9810,6 +10043,10 @@ msgstr "수량"
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Integrate GMX"
 msgstr "GMX 통합하기"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing position is in {0} pool. Using the selected pool will create a separate position."
+msgstr "기존 포지션은 {0} 풀에 있습니다. 선택한 풀을 사용하면 별도의 포지션이 생성됩니다."
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "At the Take-Profit price, the remaining position would exceed max leverage and the order may not execute."
@@ -9918,6 +10155,10 @@ msgstr "총 수령 금액"
 msgid "Min receive"
 msgstr "최소 수령량"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "After the transfer, the receiving account would have more unstake requests than the maximum"
+msgstr "전송 후 수신 계정의 언스테이킹 요청이 최대치를 초과합니다"
+
 #: src/domain/tokens/useMaxAvailableAmount.ts
 msgid "Leaves no {symbol} in your {source} for future Express fees"
 msgstr "향후 Express 수수료를 위한 {symbol}은(는) {source}에 남지 않습니다"
@@ -9953,6 +10194,8 @@ msgstr "24시간 거래량"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -9964,11 +10207,6 @@ msgstr "24시간 거래량"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter an amount"
 msgstr "금액 입력"
-
-#: src/components/PositionItem/PositionItem.tsx
-#: src/components/TradeBox/TradeBox.tsx
-msgid "Off-hours: daily 20:45–22:15 UTC (weekends Fri 20:45 → Sun 22:15 UTC)."
-msgstr "장외 시간: 매일 20:45–22:15 UTC (주말 금 20:45 → 일 22:15 UTC)."
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "You must be on this page to accept the transfer. <0>Copy link</0>."
@@ -10050,6 +10288,10 @@ msgstr "GMX Account의 {gasPaymentTokensText}이(가) 부족합니다. Express T
 msgid "Shifting {symbol}..."
 msgstr "{symbol} 이전 중..."
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Total funding received"
+msgstr "총 수령 펀딩"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max reserved + JIT {directionLabel}"
 msgstr "최대 예약량 + JIT {directionLabel}"
@@ -10112,6 +10354,10 @@ msgstr "획득한 수수료는 {chainName}의 지갑에 보유한 GLV에 대해�
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Solo, anonymous account"
 msgstr "1인 익명 계정"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Your {token} short is in the {poolName} pool, which is closed to new size. This order opens a separate position."
+msgstr "{token} 숏 포지션은 {poolName} 풀에 있으며, 이 풀은 새로운 크기를 받지 않습니다. 이 주문은 별도의 포지션을 엽니다."
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
@@ -10406,6 +10652,10 @@ msgstr "코드 소유자({0})에게 적립됩니다."
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Retry external route"
 msgstr "외부 경로 재시도"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "{poolName} pool: won't fill after {closingDate}. Cancel and re-place it in the {targetPoolName} pool."
+msgstr "{poolName} 풀: {closingDate} 이후에는 체결되지 않습니다. 취소한 후 {targetPoolName} 풀에서 다시 주문하세요."
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Total realized and unrealized PnL for the period. Includes price impact and fees."
@@ -11056,6 +11306,10 @@ msgstr "숏 유동성"
 msgid "Quick hits"
 msgstr "핵심 요약"
 
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxClosingPool.ts
+msgid "Closed to new stop market orders"
+msgstr "새 스탑 마켓 주문 마감"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Referral discount"
@@ -11104,6 +11358,10 @@ msgstr "활성화하면 레버리지를 직접 설정하며, 이 값에 따라 �
 msgid "Transaction sent"
 msgstr "트랜잭션 전송됨"
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Unstake request cancelled"
+msgstr "언스테이킹 요청이 취소되었습니다"
+
 #: src/components/ShareModal/ShareCardReferralCodeStat.tsx
 msgid "Referral code"
 msgstr "추천 코드"
@@ -11128,6 +11386,7 @@ msgid "Pending transfer from {sender}"
 msgstr "{sender}로부터의 대기 중인 전송"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "{0} tokens reserved for vesting"
 msgstr "베스팅을 위해 {0} 토큰이 예약되어 있습니다"
 
@@ -11227,6 +11486,10 @@ msgstr "시장가 주문"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buying"
 msgstr "매수"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake request submitted"
+msgstr "언스테이킹 요청이 제출되었습니다"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
@@ -11371,6 +11634,10 @@ msgstr "TVL에는 스테이킹된 GMX, GM 풀 및 포지션 담보가 포함됩�
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Venus"
 msgstr "Venus"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "This amount is not ready to withdraw yet"
+msgstr "이 수량은 아직 출금할 수 없습니다"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap route available"
@@ -11581,6 +11848,7 @@ msgstr "수신자 주소"
 msgid "Received on {0}"
 msgstr "{0}에서 수신됨"
 
+#: src/components/Errors/getContractErrorMessage.ts
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Allow all tokens to transfer to the new account"
 msgstr "새 계정으로 모든 토큰을 전송하도록 허용"
@@ -11720,6 +11988,10 @@ msgstr "편하신 방법으로 문의해 주시면 정확한 등급을 안내해
 msgid "Change network"
 msgstr "네트워크 변경"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Requesting unstake..."
+msgstr "언스테이킹 요청 중..."
+
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM is the liquidity provider token for GMX V2 markets. It accrues 63% of the fees generated by V2 markets."
 msgstr "GM은 GMX V2 마켓의 유동성 공급자 토큰입니다. V2 마켓에서 발생하는 수수료의 63%가 적립됩니다."
@@ -11780,6 +12052,10 @@ msgstr "수령할 배분을 하나 이상 선택하십시오"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Buy"
 msgstr "구매"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "{poolName} pool is closing and isn't taking new TWAP orders."
+msgstr "{poolName} 풀이 종료 중이며 새로운 TWAP 주문을 받지 않습니다."
 
 #: src/components/MarginRemediation/MarginRemediationActions.tsx
 msgid "Order may not execute: the resulting position would be liquidatable at the trigger price. <0>Deposit margin</0> or reduce the order size."
@@ -12184,6 +12460,10 @@ msgstr "수수료와 가격 영향을 최소화하기 위해 여러 GM 풀을 �
 msgid "Vesting only available on {chainNames}. Switch networks to continue."
 msgstr "베스팅은 {chainNames}에서만 이용 가능합니다. 계속하려면 네트워크를 전환하십시오."
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Move order to {targetPoolName} pool"
+msgstr "주문을 {targetPoolName} 풀로 이동"
+
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "esGMX rewards:"
 msgstr "esGMX 보상:"
@@ -12294,6 +12574,10 @@ msgstr "레버리지 거래, 스왑, 스프레드에서 수수료 수익"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Time elapsed"
 msgstr "경과 시간"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "No pending transfer from the sender to this account. The sender has to start the transfer again."
+msgstr "발신자로부터 이 계정으로의 대기 중인 전송이 없습니다. 발신자가 전송을 다시 시작해야 합니다."
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "External routing is temporarily paused after a failed attempt. Retry to check for a better rate."
@@ -12460,6 +12744,7 @@ msgstr "입금 중…"
 msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
 msgstr "{pools} {verb} 상장 폐지됩니다. 더 이상 입금할 수 없으므로 유동성을 출금하거나 GLV로 옮겨 계속 수익을 얻으십시오."
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
@@ -12628,6 +12913,10 @@ msgstr "역대 최대 GMX 스테이킹 수량의 20%를 초과하여 스테이�
 #: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "Nothing can be converted instantly right now. <0>Convert with Paxos first</0> in the Swap tab: a one-time conversion, 2 to 10 min or longer. Trades paid in USDG need no conversion."
 msgstr "지금은 즉시 변환할 수 있는 금액이 없습니다. 스왑 탭에서 <0>먼저 Paxos로 변환</0>하세요. 1회성 변환으로 2~10분 이상 걸립니다. USDG로 지불하는 거래는 변환이 필요 없습니다."
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake request failed"
+msgstr "언스테이킹 요청에 실패했습니다"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading chat"
@@ -13349,6 +13638,7 @@ msgid "Invalid receiver address"
 msgstr "유효하지 않은 수신자 주소"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "Withdraw submitted"
 msgstr "출금이 제출되었습니다"
 
@@ -13517,6 +13807,10 @@ msgstr "Express Trading 매개변수 로딩 중..."
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted<0/><1/><2>View</2>"
 msgstr "승인이 제출되었습니다<0/><1/><2>보기</2>"
+
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{ordersCount, plural, one {# pending order won't fill after {date}.} other {# pending orders won't fill after {date}.}}"
+msgstr "{ordersCount, plural, other {대기 중인 주문 #개는 {date} 이후 체결되지 않습니다.}}"
 
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Insufficient {gasPaymentTokensText} in your wallet. Express Trading and One-Click Trading are unavailable."

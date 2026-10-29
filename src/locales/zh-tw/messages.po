@@ -181,6 +181,10 @@ msgstr "您可以使用 GMX Account 在 GMX 上開立逐倉倉位。"
 msgid "Do I need to create codes on each network?"
 msgstr "我需要在每個網路建立推薦碼嗎？"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Your {token} long is in the {poolName} pool, which is closed to new size. This order opens a separate position."
+msgstr "您的 {token} 多頭倉位位於 {poolName} 池，該池已不再接受新增規模。此訂單將建立另一個倉位。"
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Multichain</0><1>MegaETH support</1><2>Just-in-time liquidity</2>"
 msgstr "<0>多鏈</0><1>MegaETH 支援</1><2>即時流動性</2>"
@@ -433,6 +437,10 @@ msgstr "Telegram 機器人"
 msgid "Cancel Limit Swap"
 msgstr "Limit Swap 已取消"
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Waiting ({0, plural, one {# day left} other {# days left}})"
+msgstr "等待中（剩餘 {0, plural, other {# 天}}）"
+
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 msgid "Roadmap"
 msgstr "路線圖"
@@ -512,6 +520,10 @@ msgstr "已過期的 Market Increase"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Percentage"
 msgstr "百分比"
+
+#: src/components/ClosingPoolsNotice/ClosingPoolsNotice.tsx
+msgid "View orders"
+msgstr "查看訂單"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap UI fee"
@@ -594,6 +606,10 @@ msgstr "領取聯盟獎勵失敗"
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "decrease"
 msgstr "減倉"
+
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{ordersCount, plural, one {# pending order can't fill.} other {# pending orders can't fill.}}"
+msgstr "{ordersCount, plural, other {# 筆掛單無法成交。}}"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in any BTC/USD pool"
@@ -909,6 +925,10 @@ msgstr "零費用額度不足"
 msgid "..."
 msgstr "..."
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Since position opened"
+msgstr "自開倉以來"
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Swap on an external aggregator"
 msgstr "在外部聚合器上兌換"
@@ -1068,6 +1088,10 @@ msgstr "抵押品代幣無效。{tokenSymbol} 不支援作為抵押品"
 msgid "A conversion is already waiting in your wallet. Try again after it executes."
 msgstr "您的錢包中已有一筆轉換在等待。請在執行後重試。"
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Available from"
+msgstr "可用時間"
+
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -1098,6 +1122,11 @@ msgstr "流動性"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Minimum required margin"
 msgstr "最低必要保證金"
+
+#: src/components/PositionItem/PositionItem.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Off-hours: daily 17:00–18:15 New York time (weekends Fri 17:00 → Sun 18:15 New York time)."
+msgstr "非交易時段：每日紐約時間 17:00–18:15（週末：紐約時間週五 17:00 → 週日 18:15）。"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 #: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
@@ -1140,6 +1169,10 @@ msgstr "質押代幣不足"
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Creating code..."
 msgstr "建立代碼中..."
+
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "The new USDG pools have more room. Your current positions stay open: hold, add margin, reduce or close any time. Adding size is limited now and stops soon."
+msgstr "新的 USDG 池容量更大。您目前的倉位保持開立：可隨時持有、追加保證金、減倉或平倉。增加規模現已受限，並將很快停止。"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Conversion creation failed"
@@ -1190,6 +1223,10 @@ msgstr "訂單將無法執行：觸發價格已越過清算價格。請編輯觸
 msgid "Don't ask again"
 msgstr "不要再詢問"
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Cancel submitted"
+msgstr "取消已提交"
+
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values calculated when earned. Excludes incentives."
 msgstr "費用數值在賺取時計算。不包含獎勵。"
@@ -1225,6 +1262,10 @@ msgstr "Worker"
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max network fee buffer precision is 0.01%"
 msgstr "網路費用緩衝精度上限為 0.01%"
+
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{ordersCount, plural, one {# pending order will stop filling soon.} other {# pending orders will stop filling soon.}}"
+msgstr "{ordersCount, plural, other {# 筆掛單即將無法成交。}}"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeltaPrime"
@@ -1725,9 +1766,17 @@ msgstr "未滿足觸發價格條件"
 msgid "/ year"
 msgstr "/ 年"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Withdraw all tokens from the GMX and GLP vesting vaults before the transfer"
+msgstr "轉帳前請從 GMX 和 GLP 歸屬期金庫提取所有代幣"
+
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Go to affiliate dashboard"
 msgstr "前往聯盟夥伴儀表板"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "This amount is not ready to withdraw yet. Ready now: {executableAmountText} GMX / esGMX"
+msgstr "此數量尚不可提取。目前可提取：{executableAmountText} GMX / esGMX"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Estimated wallet-specific annualized rate based on the recent GMX buyback pace, your staking power share, and your current staked GMX + esGMX. Actual distribution is subject to DAO governance."
@@ -2087,6 +2136,10 @@ msgstr "收起"
 msgid "Vest"
 msgstr "歸屬"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "You have {maxRequests} unstake requests, the maximum. Withdraw or cancel one to make a new request."
+msgstr "您已有 {maxRequests} 個解除質押請求，已達上限。請提取或取消其中一個後再建立新請求。"
+
 #: src/components/GmList/UsdgPoolBadges.tsx
 msgid "Extra yield for GLV [USDG] liquidity providers during the launch, targeting 8% or more on top of trading fees. Paid into the GLV price every 4 hours, so there's nothing to claim."
 msgstr "上線期間為 GLV [USDG] 流動性提供者提供的額外收益，目標是在交易手續費之外再獲得 8% 或更高收益。每 4 小時計入 GLV 價格，因此無需領取。"
@@ -2122,6 +2175,10 @@ msgstr "選擇池"
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "This market has been disabled. Contact support to claim your remaining funding fees."
 msgstr "此市場已停用。請聯絡客服以領取剩餘的資金費用。"
+
+#: src/components/Errors/stakingToasts.ts
+msgid "Staking moved to a new contract. Review and try again."
+msgstr "質押已遷移至新合約。請檢查後重試。"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Log index:"
@@ -2394,6 +2451,10 @@ msgstr "接收"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "VI POSITIONS"
 msgstr "VI 倉位"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Requesting to unstake more than 20% of your max historical staked GMX will reset your accrued rewards. Cancelling the request does not restore them."
+msgstr "申請解除質押的數量若超過您 GMX 歷史最高質押量的 20%，將重設您已累積的獎勵。取消該請求不會恢復獎勵。"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -2896,6 +2957,10 @@ msgstr "{orderTypeText} {0} 換取 {1}"
 msgid "Job openings at GMX"
 msgstr "GMX 職缺"
 
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{ordersCount, plural, one {Cancel and re-place it in the USDG pools.} other {Cancel and re-place them in the USDG pools.}}"
+msgstr "{ordersCount, plural, other {請取消並在 USDG 池中重新下單。}}"
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
@@ -3082,6 +3147,10 @@ msgstr "兌換偵錯"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "The more you trade, the more you keep"
 msgstr "交易越多，留下越多"
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Unstake requests"
+msgstr "解除質押請求"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
@@ -3525,6 +3594,10 @@ msgstr "買入手續費"
 msgid "Claimable collateral reduction factor"
 msgstr "可領取抵押品削減因子"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "This account is frozen in the esGMX vesting vault"
+msgstr "此帳戶在 esGMX 歸屬期金庫中已被凍結"
+
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Slippage too low"
 msgstr "滑點過低"
@@ -3584,6 +3657,10 @@ msgstr "複製地址"
 #: src/pages/Announcements/Announcements.tsx
 msgid "Announcements"
 msgstr "公告"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing limit order in {0} pool"
+msgstr "{0} 池中已有一筆限價單"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
@@ -3718,6 +3795,7 @@ msgstr "兌換"
 msgid "Creating order..."
 msgstr "正在建立訂單..."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Stake submitted"
 msgstr "質押已提交"
@@ -4053,6 +4131,10 @@ msgstr "GMX 的 Dune Analytics"
 msgid "External routes are only used for Market Swaps"
 msgstr "外部路由僅用於 Market Swap"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstaking is paused until the staking upgrade"
+msgstr "解除質押已暫停，直到質押升級完成"
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them."
 msgstr "Express 需要您的 GMX Account 中有 {gasPaymentTokensText}。請存入其中一種。"
@@ -4172,6 +4254,10 @@ msgstr "繼續買入"
 msgid "Withdrawal unavailable: selling this amount would raise long traders' PnL-to-pool ratio to {pnlToPoolRatioText}, above the {maxPnlRatioText} limit. Try a smaller amount or try again later"
 msgstr "暫時無法提取：賣出此數量將使做多交易者的 PnL 佔池比率升至 {pnlToPoolRatioText}，超過 {maxPnlRatioText} 的上限。請減少數量或稍後再試"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Total borrow fee"
+msgstr "借貸費用總計"
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
 msgid "Zero-fee capacity is used up for this amount. Convert now at the standard fee, convert a smaller amount, or wait for the next zero-fee window."
 msgstr "此金額的零費用額度已用盡。可依標準費用立即轉換、轉換較小的金額，或等待下一個零費用時段。"
@@ -4251,13 +4337,25 @@ msgstr "在 {0} 設定做多止盈"
 msgid "Uploading..."
 msgstr "正在上傳..."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake requested"
+msgstr "已申請解除質押"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Can't withdraw collateral. Remaining would be {estimatedRemainingCollateralUsdText}, below minimum"
 msgstr "無法提取抵押品。剩餘將為 {estimatedRemainingCollateralUsdText}，低於最低要求"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The esGMX vesting vaults changed after the transfer started. The sender has to start the transfer again."
+msgstr "轉帳開始後 esGMX 歸屬期金庫已變更。傳送方需要重新發起轉帳。"
+
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "Funds claimed"
 msgstr "資金已領取"
+
+#: src/components/ClosingPoolsLpNotice/ClosingPoolsLpNoticeBanner.tsx
+msgid "View pools"
+msgstr "查看池"
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "Trigger"
@@ -4275,6 +4373,10 @@ msgstr "標記價格已變動，請提高允許的滑點"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Maximum pool capacity reached"
 msgstr "已達池最大容量"
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Cancelling..."
+msgstr "取消中..."
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit signed"
@@ -4367,6 +4469,10 @@ msgstr "資金已存入您的 GMX Account"
 msgid "Why should I enter a referral code?"
 msgstr "為什麼要輸入推薦碼？"
 
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "Your current positions stay open: hold, add margin, reduce or close any time. New positions open in the USDG pools."
+msgstr "您目前的倉位保持開立：可隨時持有、追加保證金、減倉或平倉。新倉位將在 USDG 池中建立。"
+
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Auto · {activeLabel}"
 msgstr "自動 · {activeLabel}"
@@ -4437,6 +4543,10 @@ msgstr "轉換失敗：{0}"
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Adding margin to {positionLabel} with {offerAmount}"
 msgstr "使用 {offerAmount} 為 {positionLabel} 新增保證金"
+
+#: src/lib/i18n.ts
+msgid "{first}, {second} +{restCount} more"
+msgstr "{first}、{second} 及另外 {restCount} 個"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Signing approval..."
@@ -4521,6 +4631,10 @@ msgstr "TWAP 兌換部分失敗"
 msgid "No events in the past {DAYS_BACK} days"
 msgstr "過去 {DAYS_BACK} 天內沒有事件"
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Ready to withdraw"
+msgstr "可提取"
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker thread"
 msgstr "工作執行緒"
@@ -4596,6 +4710,10 @@ msgstr "Gas 不足以支付網路費用"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to"
 msgstr "{fromText} 至"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "{poolName} pool is closing and isn't taking new stop market orders."
+msgstr "{poolName} 池即將關閉，不再接受新的 Stop Market 訂單。"
 
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "Frontends"
@@ -4875,8 +4993,14 @@ msgid "Share GMX feedback"
 msgstr "分享 GMX 意見回饋"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "Withdraw failed"
 msgstr "提取失敗"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Account transfers are paused during the staking upgrade."
+msgstr "質押升級期間，帳戶轉移已暫停。"
 
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 msgid "Only GMX adds liquidity to this pool. To provide USDG liquidity, use GLV [USDG]."
@@ -4930,6 +5054,7 @@ msgstr "GM 圖示"
 msgid "Execution details"
 msgstr "執行詳情"
 
+#: src/components/Errors/getContractErrorMessage.ts
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Self-transfer not supported"
 msgstr "不支援自行轉帳"
@@ -5084,6 +5209,7 @@ msgid "WIN/LOSS"
 msgstr "勝/負"
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing..."
@@ -5108,6 +5234,10 @@ msgstr "永續合約市場"
 #: src/components/Footer/constants.tsx
 msgid "V1"
 msgstr "V1"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Unstake requests are paused. Try again later."
+msgstr "解除質押請求已暫停。請稍後再試。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Staked tokens reserved for vesting"
@@ -5550,6 +5680,7 @@ msgstr "Solana 上的 GMX（又稱 GMTrade）由獨立網域提供服務"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
+#: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "TWAP"
@@ -5720,6 +5851,7 @@ msgstr "v："
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake"
 msgstr "解除質押"
 
@@ -5865,6 +5997,10 @@ msgstr "強制外部兌換失敗"
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -6142,6 +6278,10 @@ msgstr "{tokenInSymbol} 餘額不足"
 msgid "Page outdated. Refresh"
 msgstr "頁面已過期，請重新整理"
 
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxClosingPool.ts
+msgid "Closed to new TWAP orders"
+msgstr "不再接受新的 TWAP 訂單"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Buy GLV"
@@ -6346,6 +6486,10 @@ msgstr "費用資料暫時無法使用"
 msgid "Sell fee"
 msgstr "賣出手續費"
 
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{markets} trading is moving to USDG pools"
+msgstr "{markets} 交易正在遷移至 USDG 池"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid oracle price"
 msgstr "無效的預言機價格"
@@ -6536,12 +6680,18 @@ msgid "Max lendable impact factor for withdrawals"
 msgstr "提領時的最大可借出影響因子"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Claim completed"
 msgstr "領取完成"
 
 #: src/components/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Open in explorer"
 msgstr "在瀏覽器中查看"
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Cancel failed"
+msgstr "取消失敗"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "{0} tokens converted to GMX from the {1} esGMX deposited for vesting"
@@ -6728,6 +6878,10 @@ msgstr "GM: {0} 在 {1} [{2}] 中已達到可購買上限。請選擇其他池�
 msgid "Turn your audience<0/>into on-chain income"
 msgstr "把您的受眾<0/>變成鏈上收入"
 
+#: src/domain/synthetics/markets/closingPoolsLpNotice.ts
+msgid "{0, plural, one {We're moving {markets} trading to the new USDG pools, so fees in your current pool will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.} other {We're moving {markets} trading to the new USDG pools, so fees in your current pools will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.}}"
+msgstr "{0, plural, other {我們正在將 {markets} 的交易遷移至新的 USDG 池，因此您目前池中的手續費將會下降。請將您的流動性轉入 {gmPools} 或 GLV [USDG] 以繼續賺取收益。}}"
+
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Permit approval failed. A standard approval transaction is required. Approve the token and try again</0>"
 msgstr "<0>Permit 授權失敗。需要標準授權交易。請授權該代幣後重試</0>"
@@ -6825,6 +6979,10 @@ msgstr "支援"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No liquidation price. Margin covers any losses."
 msgstr "無清算價格。保證金足以承擔任何損失。"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Can't fill: {poolName} pool is closed to new size. Cancel and re-place it in the {targetPoolName} pool."
+msgstr "無法成交：{poolName} 池已不再接受新增規模。請取消並在 {targetPoolName} 池中重新下單。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Toros"
@@ -7091,6 +7249,10 @@ msgstr "已在 Avalanche 上質押"
 msgid "Pending"
 msgstr "待執行"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "{poolName} pool is closing and isn't taking new limit orders."
+msgstr "{poolName} 池即將關閉，不再接受新的限價單。"
+
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "s:"
 msgstr "s："
@@ -7103,6 +7265,8 @@ msgstr "RPC 錯誤。<0/><1/>在設定中啟用 <2>Express Trading</2> 以獲得
 msgid "High execution reliability using premium RPCs"
 msgstr "使用優質 RPC 實現高執行可靠性"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Stake failed"
 msgstr "質押失敗"
@@ -7127,6 +7291,10 @@ msgstr "編輯 Limit Increase：{suffix}"
 #: src/components/OrderList/OrderList.tsx
 msgid "No open orders"
 msgstr "沒有未結訂單"
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Full history unavailable for this position"
+msgstr "此倉位的完整歷史不可用"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient liquidity. Available: {availableLiquidityText}"
@@ -7232,6 +7400,10 @@ msgstr "無需重複確認錢包"
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "存入 {gasPaymentTokensText}"
 
+#: src/domain/synthetics/markets/closingPoolsLpNotice.ts
+msgid "{0, plural, one {Trading in your {markets} pool is moving to USDG pools} other {Trading in your {markets} pools is moving to USDG pools}}"
+msgstr "{0, plural, other {您的 {markets} 池的交易正在遷移至 USDG 池}}"
+
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."
 msgstr "您的回饋金取決於所屬等級，您可以在<0>此處</0>查看。升級至更高等級可獲得更多獎勵，您的交易者也可享有更高折扣。"
@@ -7248,6 +7420,10 @@ msgstr "在圖表上顯示買入/賣出圖示"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
 msgstr "此兌換需要外部路由。請用 {0} 支付 Gas 以啟用。"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The amount is more than your staked GMX and esGMX that is not already requested"
+msgstr "數量超過了您尚未申請的已質押 GMX 和 esGMX"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -7410,6 +7586,7 @@ msgid "Convert and create order"
 msgstr "轉換並建立訂單"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "Withdrawn"
 msgstr "已提取"
 
@@ -7494,6 +7671,10 @@ msgstr "{typeString} 做多 TWAP：{0}做多倉位，並在指定期間內以均
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claim & swap"
 msgstr "領取並兌換"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Withdraw all tokens from the esGMX vesting vault before the transfer"
+msgstr "轉帳前請從 esGMX 歸屬期金庫提取所有代幣"
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
@@ -7594,6 +7775,10 @@ msgstr "委託"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Harmonix"
 msgstr "Harmonix"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstaking takes {0} days. You can withdraw this amount as GMX or esGMX from {1}. Until then it stays staked but stops counting toward Staking Power. You can cancel the request at any time."
+msgstr "解除質押需要 {0} 天。您可以從 {1} 起以 GMX 或 esGMX 提取該數量。在此之前它仍處於質押狀態，但不再計入質押權重。您可以隨時取消該請求。"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Tier upgrades are reviewed manually by the GMX team based on your weekly performance. If you meet the requirements consistently, you can apply for an upgrade via the <0>GMX Partner Account: Telegram</0>."
@@ -7819,6 +8004,10 @@ msgstr "若執行，將至少收到 {toAmountText}。價格會根據費用和價
 msgid "Increasing {indexTokenText} Short: +{sizeDeltaUsdText}"
 msgstr "正在增加 {indexTokenText} 做空部位：+{sizeDeltaUsdText}"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "You have the maximum number of unstake requests. Withdraw or cancel one to make a new request."
+msgstr "您的解除質押請求已達上限。請提取或取消其中一個後再建立新請求。"
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed"
 msgstr "賣出訂單已成交"
@@ -7847,6 +8036,10 @@ msgstr "舊 1CT 子帳戶中尚有 0.0045 WETH"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral"
 msgstr "最低抵押品"
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Requested"
+msgstr "申請時間"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCards.tsx
 msgid "Steady returns without management"
@@ -7981,6 +8174,10 @@ msgstr "訂單可接受價格"
 msgid "Order failed to execute and is frozen. It stays open and may still execute later if conditions allow.<0/><1/>See the Trades tab for the reason."
 msgstr "訂單執行失敗，已被凍結。訂單仍保持開啟，條件允許時仍可能在稍後執行。<0/><1/>請在「交易」分頁中查看原因。"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Too big for the room left in the {poolName} pool. Cancel and re-place it in the {targetPoolName} pool."
+msgstr "超出 {poolName} 池的剩餘容量。請取消並在 {targetPoolName} 池中重新下單。"
+
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Updating {updateOrdersCount} TP/SL orders..."
 msgstr "正在更新 {updateOrdersCount} 個 TP/SL 訂單..."
@@ -8004,6 +8201,10 @@ msgstr "已賺取的費用僅針對您在 {chainName} 錢包中持有的 GM 與 
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set long Limit @ {0}"
 msgstr "設定做多限價單 @ {0}"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The receiving account has staked or vested before. Choose a new account."
+msgstr "接收帳戶之前已質押或歸屬過。請選擇新帳戶。"
 
 #: src/components/GmList/UsdgPoolBadges.tsx
 msgid "Direct deposits into this pool are open to whitelisted addresses. GLV [USDG] gives you the same markets in one deposit."
@@ -8579,6 +8780,8 @@ msgid "Exit price"
 msgstr "出場價格"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Transfer failed"
 msgstr "轉帳失敗"
@@ -8738,6 +8941,7 @@ msgstr "版本："
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Available"
 msgstr "可用"
@@ -8754,6 +8958,7 @@ msgstr "兌換利潤費用"
 msgid "Solv Finance"
 msgstr "Solv Finance"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claim submitted"
@@ -8829,6 +9034,7 @@ msgstr "治理"
 msgid "Keep more of every trade"
 msgstr "每筆交易，留住更多"
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/HistoryExport/HistoryExportModal.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -9029,6 +9235,10 @@ msgstr "24小時最低價"
 msgid "Average leverage used"
 msgstr "平均使用槓桿"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Total funding paid"
+msgstr "已付資金費用總計"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop-Loss"
 msgstr "取消止損"
@@ -9063,6 +9273,7 @@ msgstr "有效的 Balancer 計劃代碼"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "Max amount exceeded"
 msgstr "超過最大數量"
 
@@ -9164,6 +9375,10 @@ msgstr "今天"
 msgid "Link copied"
 msgstr "連結已複製"
 
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "The new USDG pools have more room. Your current positions stay open: hold, add margin, reduce or close any time. Adding size is limited now and stops on {date}."
+msgstr "新的 USDG 池容量更大。您目前的倉位保持開立：可隨時持有、追加保證金、減倉或平倉。增加規模現已受限，並將於 {date} 停止。"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Total wallet received"
 msgstr "錢包累計收到"
@@ -9261,6 +9476,10 @@ msgstr "將 SL 價格設為低於限價"
 msgid "({0} of {1})"
 msgstr "（{1}的 {0}）"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Request unstake"
+msgstr "申請解除質押"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Total realized and unrealized PnL including fees and price impact"
 msgstr "包含費用和價格影響的已實現與未實現盈虧（PnL）總和"
@@ -9325,6 +9544,10 @@ msgstr "需要重新授權前的最大操作次數"
 msgid "Minimum capital used of {0} required to qualify for rankings"
 msgstr "需要使用最低 {0} 的資金才能參與排名"
 
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{markets} trading has moved to USDG pools"
+msgstr "{markets} 交易已遷移至 USDG 池"
+
 #: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Proof of reserves"
@@ -9333,6 +9556,10 @@ msgstr "儲備金證明"
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "When will I start earning?"
 msgstr "我何時會開始獲得回饋金？"
+
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxClosingPool.ts
+msgid "Closed to new limit orders"
+msgstr "不再接受新的限價單"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No topics"
@@ -9444,6 +9671,10 @@ msgstr "我不想轉帳推薦人的 esGMX 代幣"
 msgid "Order exceeds max leverage. Click to auto-adjust."
 msgstr "訂單超過最大槓桿。點擊以自動調整。"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "After the transfer, the receiving account would have {count} unstake requests, more than the maximum"
+msgstr "轉帳後，接收帳戶將有 {count} 個解除質押請求，超過上限"
+
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available"
 msgstr "無可用的兌換路徑"
@@ -9527,6 +9758,7 @@ msgstr "事件名稱"
 msgid "OPEN INTEREST"
 msgstr "未平倉量"
 
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Begin transfer"
 msgstr "開始轉帳"
@@ -9800,6 +10032,7 @@ msgstr "由於您的錢包中沒有足夠的 {walletGasTokenSymbol} 支付費用
 msgid "Copy"
 msgstr "複製"
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -9810,6 +10043,10 @@ msgstr "金額"
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Integrate GMX"
 msgstr "整合 GMX"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing position is in {0} pool. Using the selected pool will create a separate position."
+msgstr "現有倉位位於 {0} 池。使用所選的池將建立另一個倉位。"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "At the Take-Profit price, the remaining position would exceed max leverage and the order may not execute."
@@ -9918,6 +10155,10 @@ msgstr "可領取總額"
 msgid "Min receive"
 msgstr "最低可收取數量"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "After the transfer, the receiving account would have more unstake requests than the maximum"
+msgstr "轉帳後，接收帳戶的解除質押請求將超過上限"
+
 #: src/domain/tokens/useMaxAvailableAmount.ts
 msgid "Leaves no {symbol} in your {source} for future Express fees"
 msgstr "您的 {source} 中將不會留下任何 {symbol} 用於支付未來的 Express 費用"
@@ -9953,6 +10194,8 @@ msgstr "24 小時交易量"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -9964,11 +10207,6 @@ msgstr "24 小時交易量"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter an amount"
 msgstr "請輸入數量"
-
-#: src/components/PositionItem/PositionItem.tsx
-#: src/components/TradeBox/TradeBox.tsx
-msgid "Off-hours: daily 20:45–22:15 UTC (weekends Fri 20:45 → Sun 22:15 UTC)."
-msgstr "非交易時段：每日 20:45–22:15 UTC（週末：週五 20:45 → 週日 22:15 UTC）。"
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "You must be on this page to accept the transfer. <0>Copy link</0>."
@@ -10050,6 +10288,10 @@ msgstr "您 GMX Account 中的 {gasPaymentTokensText} 不足。Express Trading �
 msgid "Shifting {symbol}..."
 msgstr "正在轉換 {symbol}..."
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Total funding received"
+msgstr "已收資金費用總計"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max reserved + JIT {directionLabel}"
 msgstr "{directionLabel} 最大預留量 + JIT"
@@ -10112,6 +10354,10 @@ msgstr "已賺取的費用僅針對您在 {chainName} 錢包中持有的 GLV 進
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Solo, anonymous account"
 msgstr "單人且匿名帳號"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Your {token} short is in the {poolName} pool, which is closed to new size. This order opens a separate position."
+msgstr "您的 {token} 空頭倉位位於 {poolName} 池，該池已不再接受新增規模。此訂單將建立另一個倉位。"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
@@ -10406,6 +10652,10 @@ msgstr "返佣累積給代碼擁有者（{0}）。"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Retry external route"
 msgstr "重試外部路由"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "{poolName} pool: won't fill after {closingDate}. Cancel and re-place it in the {targetPoolName} pool."
+msgstr "{poolName} 池：{closingDate} 之後將無法成交。請取消並在 {targetPoolName} 池中重新下單。"
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Total realized and unrealized PnL for the period. Includes price impact and fees."
@@ -11056,6 +11306,10 @@ msgstr "做空流動性"
 msgid "Quick hits"
 msgstr "快速要點"
 
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxClosingPool.ts
+msgid "Closed to new stop market orders"
+msgstr "不再接受新的 Stop Market 訂單"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Referral discount"
@@ -11104,6 +11358,10 @@ msgstr "開啟時，槓桿由您手動設定，並決定保證金和倉位規模
 msgid "Transaction sent"
 msgstr "交易已發送"
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Unstake request cancelled"
+msgstr "解除質押請求已取消"
+
 #: src/components/ShareModal/ShareCardReferralCodeStat.tsx
 msgid "Referral code"
 msgstr "推薦碼"
@@ -11128,6 +11386,7 @@ msgid "Pending transfer from {sender}"
 msgstr "來自 {sender} 的待處理轉帳"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "{0} tokens reserved for vesting"
 msgstr "{0} 枚代幣已預留用於歸屬期"
 
@@ -11227,6 +11486,10 @@ msgstr "市價單"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buying"
 msgstr "買入"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake request submitted"
+msgstr "解除質押請求已提交"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
@@ -11371,6 +11634,10 @@ msgstr "TVL 包含已質押的 GMX、GM 池及倉位抵押品"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Venus"
 msgstr "Venus"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "This amount is not ready to withdraw yet"
+msgstr "此數量尚不可提取"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap route available"
@@ -11581,6 +11848,7 @@ msgstr "接收地址"
 msgid "Received on {0}"
 msgstr "已在 {0} 接收"
 
+#: src/components/Errors/getContractErrorMessage.ts
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Allow all tokens to transfer to the new account"
 msgstr "允許將所有代幣轉帳至新帳戶"
@@ -11720,6 +11988,10 @@ msgstr "以您方便的方式聯繫我們，我們會回覆您的確切等級—
 msgid "Change network"
 msgstr "更換網路"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Requesting unstake..."
+msgstr "正在申請解除質押..."
+
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM is the liquidity provider token for GMX V2 markets. It accrues 63% of the fees generated by V2 markets."
 msgstr "GM 是 GMX V2 市場的流動性提供者代幣。它可累積 V2 市場所產生費用的 63%。"
@@ -11780,6 +12052,10 @@ msgstr "請至少選擇一項分配進行領取"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Buy"
 msgstr "買入"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "{poolName} pool is closing and isn't taking new TWAP orders."
+msgstr "{poolName} 池即將關閉，不再接受新的 TWAP 訂單。"
 
 #: src/components/MarginRemediation/MarginRemediationActions.tsx
 msgid "Order may not execute: the resulting position would be liquidatable at the trigger price. <0>Deposit margin</0> or reduce the order size."
@@ -12184,6 +12460,10 @@ msgstr "透過多個 GM 池路由兌換，將費用與價格影響降至最低"
 msgid "Vesting only available on {chainNames}. Switch networks to continue."
 msgstr "歸屬期功能僅在 {chainNames} 上可用。請切換網路以繼續。"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Move order to {targetPoolName} pool"
+msgstr "將訂單移至 {targetPoolName} 池"
+
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "esGMX rewards:"
 msgstr "esGMX 獎勵："
@@ -12294,6 +12574,10 @@ msgstr "從槓桿交易、兌換和價差中賺取手續費"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Time elapsed"
 msgstr "已經過時間"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "No pending transfer from the sender to this account. The sender has to start the transfer again."
+msgstr "沒有從傳送方到此帳戶的待處理轉帳。傳送方需要重新發起轉帳。"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "External routing is temporarily paused after a failed attempt. Retry to check for a better rate."
@@ -12460,6 +12744,7 @@ msgstr "存入中..."
 msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
 msgstr "{pools} {verb} 正在下架。由於已無法存入，請提取您的流動性，或將其轉入 GLV 以繼續賺取收益。"
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
@@ -12628,6 +12913,10 @@ msgstr "解除質押的數量若超過您 GMX 歷史最高質押量的 20%，將
 #: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "Nothing can be converted instantly right now. <0>Convert with Paxos first</0> in the Swap tab: a one-time conversion, 2 to 10 min or longer. Trades paid in USDG need no conversion."
 msgstr "目前無法即時轉換任何金額。請在兌換分頁<0>先透過 Paxos 轉換</0>：一次性轉換，需要 2 到 10 分鐘或更久。使用 USDG 支付的交易無需轉換。"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake request failed"
+msgstr "解除質押請求失敗"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading chat"
@@ -13349,6 +13638,7 @@ msgid "Invalid receiver address"
 msgstr "接收地址無效"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "Withdraw submitted"
 msgstr "提取已提交"
 
@@ -13517,6 +13807,10 @@ msgstr "正在載入 Express Trading 參數..."
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted<0/><1/><2>View</2>"
 msgstr "已提交批准<0/><1/><2>查看</2>"
+
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{ordersCount, plural, one {# pending order won't fill after {date}.} other {# pending orders won't fill after {date}.}}"
+msgstr "{ordersCount, plural, other {# 筆掛單在 {date} 之後將無法成交。}}"
 
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Insufficient {gasPaymentTokensText} in your wallet. Express Trading and One-Click Trading are unavailable."
