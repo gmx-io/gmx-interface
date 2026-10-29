@@ -1119,6 +1119,11 @@ msgstr "の流動性"
 msgid "Minimum required margin"
 msgstr "最低必要証拠金"
 
+#: src/components/PositionItem/PositionItem.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Off-hours: daily 17:00–18:15 New York time (weekends Fri 17:00 → Sun 18:15 New York time)."
+msgstr "時間外：毎日ニューヨーク時間 17:00–18:15（週末はニューヨーク時間 金 17:00 → 日 18:15）。"
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 #: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
 msgid "Sending conversion..."
@@ -10186,11 +10191,6 @@ msgstr "24時間取引高"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter an amount"
 msgstr "額を入力"
-
-#: src/components/PositionItem/PositionItem.tsx
-#: src/components/TradeBox/TradeBox.tsx
-msgid "Off-hours: daily 20:45–22:15 UTC (weekends Fri 20:45 → Sun 22:15 UTC)."
-msgstr "時間外：毎日 20:45–22:15 UTC（週末は金 20:45 → 日 22:15 UTC）。"
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "You must be on this page to accept the transfer. <0>Copy link</0>."

@@ -1119,6 +1119,11 @@ msgstr "en liquidez"
 msgid "Minimum required margin"
 msgstr "Margen mínimo requerido"
 
+#: src/components/PositionItem/PositionItem.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Off-hours: daily 17:00–18:15 New York time (weekends Fri 17:00 → Sun 18:15 New York time)."
+msgstr "Fuera de horario: a diario 17:00–18:15 hora de Nueva York (fines de semana vie. 17:00 → dom. 18:15 hora de Nueva York)."
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 #: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
 msgid "Sending conversion..."
@@ -10186,11 +10191,6 @@ msgstr "Volumen 24h"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter an amount"
 msgstr "Introduzca una cantidad"
-
-#: src/components/PositionItem/PositionItem.tsx
-#: src/components/TradeBox/TradeBox.tsx
-msgid "Off-hours: daily 20:45–22:15 UTC (weekends Fri 20:45 → Sun 22:15 UTC)."
-msgstr "Fuera de horario: a diario 20:45–22:15 UTC (fines de semana vie. 20:45 → dom. 22:15 UTC)."
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "You must be on this page to accept the transfer. <0>Copy link</0>."

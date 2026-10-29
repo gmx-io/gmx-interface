@@ -1119,6 +1119,11 @@ msgstr "流動性"
 msgid "Minimum required margin"
 msgstr "最低必要保證金"
 
+#: src/components/PositionItem/PositionItem.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Off-hours: daily 17:00–18:15 New York time (weekends Fri 17:00 → Sun 18:15 New York time)."
+msgstr "非交易時段：每日紐約時間 17:00–18:15（週末：紐約時間週五 17:00 → 週日 18:15）。"
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 #: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
 msgid "Sending conversion..."
@@ -10186,11 +10191,6 @@ msgstr "24 小時交易量"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter an amount"
 msgstr "請輸入數量"
-
-#: src/components/PositionItem/PositionItem.tsx
-#: src/components/TradeBox/TradeBox.tsx
-msgid "Off-hours: daily 20:45–22:15 UTC (weekends Fri 20:45 → Sun 22:15 UTC)."
-msgstr "非交易時段：每日 20:45–22:15 UTC（週末：週五 20:45 → 週日 22:15 UTC）。"
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "You must be on this page to accept the transfer. <0>Copy link</0>."
