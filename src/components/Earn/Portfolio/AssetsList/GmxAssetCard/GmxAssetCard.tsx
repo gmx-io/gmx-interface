@@ -119,6 +119,13 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
     return bigMath.min(stakedAmount, sbfGmxBalance);
   }, [rewardRouter?.version, requestableUnstakeAmount, sbfGmxBalance, processedData?.esGmxInStakedGmx]);
 
+  const stakedAmountEarningPower =
+    rewardRouter === undefined
+      ? undefined
+      : rewardRouter.version === "v3"
+        ? requestableUnstakeAmount
+        : stakingPowerData?.currentStaked;
+
   const priceRowValue = gmxPrice === undefined ? "..." : <UsdValue usd={gmxPrice} />;
 
   const avgWeeklyBuybackGmx = useMemo(
@@ -316,7 +323,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
             }
           />
           <div className="grow" />
-          {stakingPowerData && stakingPowerData.powerResetCount > 0 && (
+          {stakingPowerData && stakingPowerData.powerResetCount > 0 && (stakedAmountEarningPower ?? 0n) > 0n && (
             <AlertInfoCard type="info">
               <Trans>
                 Your staking power was reset{" "}
