@@ -4,7 +4,7 @@ import { getAbi } from "abis/getAbi";
 import type { ContractsChainId, SourceChainId } from "configs/chains";
 import { getContract, isContractsV2_2_1 } from "configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "configs/express";
-import type { BridgeOutParams } from "utils/multichain/api";
+import { type BridgeOutParams, getEmptyBridgeFeeParams } from "utils/multichain/api";
 import type { IAbstractSigner } from "utils/signer";
 import { nowInSeconds } from "utils/time";
 
@@ -67,7 +67,7 @@ export async function buildAndSignBridgeOutTxn({
       },
       account,
       BigInt(srcChainId),
-      params,
+      { ...params, bridgeFee: params.bridgeFee ?? getEmptyBridgeFeeParams() },
     ],
   });
 
@@ -153,6 +153,8 @@ export function getBridgeOutTypedData({
   };
 
   if (isContractsV2_2_1(chainId)) {
+    const bridgeFee = params.bridgeFee ?? getEmptyBridgeFeeParams();
+
     return {
       domain,
       types: BRIDGE_OUT_TYPES_V2_2_1,
@@ -160,10 +162,10 @@ export function getBridgeOutTypedData({
       message: {
         ...message,
         account,
-        bridgeFeeToken: params.bridgeFee.feeToken,
-        bridgeFeeAmount: params.bridgeFee.feeAmount,
-        bridgeFeeSwapPath: params.bridgeFee.feeSwapPath,
-        bridgeFeeMinOutputAmount: params.bridgeFee.minOutputAmount,
+        bridgeFeeToken: bridgeFee.feeToken,
+        bridgeFeeAmount: bridgeFee.feeAmount,
+        bridgeFeeSwapPath: bridgeFee.feeSwapPath,
+        bridgeFeeMinOutputAmount: bridgeFee.minOutputAmount,
       },
     };
   }
