@@ -1247,10 +1247,6 @@ msgstr ""
 msgid "Can I unstake or withdraw anytime?"
 msgstr ""
 
-#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
-msgid "You have activated the referral code {userReferralCodeString}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
-msgstr ""
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker"
 msgstr ""
@@ -1443,6 +1439,10 @@ msgstr ""
 
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Tiers"
+msgstr ""
+
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+msgid "You have activated the referral code {activatedReferralCodeLabel}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx

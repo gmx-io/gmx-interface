@@ -1247,10 +1247,6 @@ msgstr "紹介したトレーダーによる取引高"
 msgid "Can I unstake or withdraw anytime?"
 msgstr "いつでもアンステークまたは出金できますか？"
 
-#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
-msgid "You have activated the referral code {userReferralCodeString}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
-msgstr "紹介コード{userReferralCodeString}が有効になりました。開く、または決済するすべてのポジションに、割引後の手数料率が自動的に適用されます。追加の操作は不要です。"
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker"
 msgstr "Worker"
@@ -1444,6 +1440,10 @@ msgstr "実行手数料が現在のネットワークコストに対して低す
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Tiers"
 msgstr "ティア"
+
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+msgid "You have activated the referral code {activatedReferralCodeLabel}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
+msgstr "紹介コード{activatedReferralCodeLabel}が有効になりました。開く、または決済するすべてのポジションに、割引後の手数料率が自動的に適用されます。追加の操作は不要です。"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (negative PI)"

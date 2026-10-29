@@ -1247,10 +1247,6 @@ msgstr "Volume négocié par les traders que vous avez parrainés"
 msgid "Can I unstake or withdraw anytime?"
 msgstr "Puis-je unstaker ou retirer à tout moment ?"
 
-#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
-msgid "You have activated the referral code {userReferralCodeString}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
-msgstr "Vous avez activé le code de parrainage {userReferralCodeString}. Votre taux réduit s’applique automatiquement à chaque position que vous ouvrez ou fermez — aucune étape supplémentaire n’est nécessaire."
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker"
 msgstr "Worker"
@@ -1444,6 +1440,10 @@ msgstr "Les frais d'exécution sont trop faibles pour les coûts réseau actuels
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Tiers"
 msgstr "Niveaux"
+
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+msgid "You have activated the referral code {activatedReferralCodeLabel}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
+msgstr "Vous avez activé le code de parrainage {activatedReferralCodeLabel}. Votre taux réduit s’applique automatiquement à chaque position que vous ouvrez ou fermez — aucune étape supplémentaire n’est nécessaire."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (negative PI)"

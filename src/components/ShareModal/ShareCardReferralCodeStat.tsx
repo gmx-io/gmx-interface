@@ -1,5 +1,7 @@
 import { Trans } from "@lingui/macro";
 
+import { formatReferralCodeForDisplay } from "domain/referrals/utils/referralCode";
+
 import { ShareCardStat } from "./ShareCardStat";
 
 type Props = {
@@ -16,7 +18,7 @@ export function ShareCardReferralCodeStat({ referralCodeOwnerKind, code }: Props
     <ShareCardStat
       label={referralCodeOwnerKind === "created" ? <Trans>Referral code</Trans> : <Trans>Used referral code</Trans>}
     >
-      {code}
+      {formatReferralCodeForDisplay(code)}
     </ShareCardStat>
   );
 }
