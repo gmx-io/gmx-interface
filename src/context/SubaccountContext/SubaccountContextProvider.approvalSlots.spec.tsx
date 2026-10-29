@@ -53,10 +53,6 @@ vi.mock("domain/synthetics/subaccount", () => ({
   removeSubaccountWalletTxn: vi.fn(),
 }));
 
-vi.mock("domain/synthetics/subaccount/generateSubaccount", () => ({
-  generateSubaccount: vi.fn(),
-}));
-
 vi.mock("domain/synthetics/subaccount/useSubaccountOnchainData", () => ({
   useSubaccountOnchainData: () => ({
     subaccountData: onchainState.current,
@@ -123,7 +119,7 @@ function approvalSlotKey(srcChainId: SourceChainId | undefined): string {
 function seedConfig() {
   localStorage.setItem(
     configKey,
-    JSON.stringify({ address: SUBACCOUNT_ADDRESS, privateKey: "encrypted-private-key", isNew: true })
+    JSON.stringify({ version: 2, address: SUBACCOUNT_ADDRESS, privateKey: "encrypted-private-key", isNew: true })
   );
 }
 

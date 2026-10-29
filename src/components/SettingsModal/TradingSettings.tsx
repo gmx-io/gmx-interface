@@ -10,7 +10,10 @@ import { MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING } from "config/multichain";
 import { DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS } from "config/twap";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import {
+  type SubaccountActivationParams,
+  useSubaccountContext,
+} from "context/SubaccountContext/SubaccountContextProvider";
 import { SettlementChainWarningContainer } from "domain/multichain/SettlementChainWarningContainer";
 import { useEmptyGmxAccounts } from "domain/multichain/useEmptyGmxAccounts";
 import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
@@ -33,6 +36,8 @@ import { GasPaymentTokenSelector } from "components/GasPaymentTokenSelector/GasP
 import { MarginDestinationSelector } from "components/MarginDestinationSelector/MarginDestinationSelector";
 import { OldSubaccountWithdraw } from "components/OldSubaccountWithdraw/OldSubaccountWithdraw";
 import { OneClickAdvancedSettings } from "components/OneClickAdvancedSettings/OneClickAdvancedSettings";
+import { OneClickPasskey } from "components/OneClickPasskey/OneClickPasskey";
+import { OneClickSessions } from "components/OneClickSessions/OneClickSessions";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import { LabelWithTooltip } from "components/Tooltip/LabelWithTooltip";
 
@@ -44,7 +49,7 @@ import { Chip, InputSetting, SettingButton, SettingsSection, TradingMode } from 
 
 interface TradingSettingsProps {
   tradingMode: TradingMode | undefined;
-  handleTradingModeChange: (mode: TradingMode) => void;
+  handleTradingModeChange: (mode: TradingMode, activation?: SubaccountActivationParams) => void;
   onChangeSlippage: (value: number) => void;
   onChangeExecutionFeeBufferBps: (value: number) => void;
   onChangeTwapNumberOfParts: (value: number) => void;
@@ -227,6 +232,13 @@ export function TradingSettings({
             {Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount)) && (
               <OneClickAdvancedSettings />
             )}
+
+            <OneClickSessions />
+
+            <OneClickPasskey
+              disabled={isExpressTradingDisabled || isContractAccount}
+              onEnable={(passkeyMode) => handleTradingModeChange(TradingMode.Express1CT, { passkeyMode })}
+            />
 
             {settings.expressOrdersEnabled && (
               <div className="flex flex-col gap-8">

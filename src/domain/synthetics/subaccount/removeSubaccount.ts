@@ -46,6 +46,8 @@ import {
 
 const SUBACCOUNT_REMOVAL_POLL_INTERVAL_MS = 2000;
 
+export type SubaccountRemovalTarget = Pick<Subaccount, "address">;
+
 export async function removeSubaccountWalletTxn(
   chainId: ContractsChainId,
   signer: Signer,
@@ -71,6 +73,49 @@ export async function removeSubaccountWalletTxn(
     await Promise.race([
       res.wait(),
       waitForSubaccountRemoval({ chainId, account, subaccountAddress, signal: abortController.signal }),
+    ]);
+  } finally {
+    abortController.abort();
+  }
+}
+
+export async function removeSubaccountsWalletTxn(
+  chainId: ContractsChainId,
+  signer: Signer,
+  subaccountAddresses: string[]
+): Promise<void> {
+  if (subaccountAddresses.length === 1) {
+    return removeSubaccountWalletTxn(chainId, signer, subaccountAddresses[0]);
+  }
+
+  const subaccountRouter = new ethers.Contract(getContract(chainId, "SubaccountRouter"), SubaccountRouterAbi, signer);
+
+  const calls = subaccountAddresses.map((subaccountAddress) =>
+    encodeFunctionData({ abi: SubaccountRouterAbi, functionName: "removeSubaccount", args: [subaccountAddress] })
+  );
+
+  const res = await callContract(chainId, subaccountRouter, "multicall", [calls], {
+    value: 0n,
+    hideSuccessMsg: true,
+    hideSentMsg: true,
+    hideErrorMsg: true,
+  });
+
+  if (!res) {
+    return;
+  }
+
+  const account = await signer.getAddress();
+  const abortController = new AbortController();
+
+  try {
+    await Promise.race([
+      res.wait(),
+      Promise.all(
+        subaccountAddresses.map((subaccountAddress) =>
+          waitForSubaccountRemoval({ chainId, account, subaccountAddress, signal: abortController.signal })
+        )
+      ),
     ]);
   } finally {
     abortController.abort();
@@ -130,7 +175,7 @@ export async function getIsSubaccountRemovalRequired({
   isAfterUnknownResult = false,
 }: {
   chainId: ContractsChainId;
-  subaccount: Subaccount;
+  subaccount: SubaccountRemovalTarget & { onchainData: Pick<Subaccount["onchainData"], "active"> };
   account: string;
   // after a removal with an unknown result the cached active flag can be stale, so only the chain decides;
   // otherwise a cached active flag is trusted over a single read that may come from a lagging node
@@ -160,7 +205,7 @@ async function buildAndSignRemoveSubaccountTxn({
 }: {
   chainId: ContractsChainId;
   relayParamsPayload: RelayParamsPayload;
-  subaccount: Subaccount;
+  subaccount: SubaccountRemovalTarget;
   signer: WalletSigner;
   relayerFeeTokenAddress: string;
   relayerFeeAmount: bigint;
@@ -262,7 +307,7 @@ export async function removeSubaccountExpressTxn({
   account: string;
   srcChainId: SourceChainId | undefined;
   signer: WalletSigner;
-  subaccount: Subaccount;
+  subaccount: SubaccountRemovalTarget;
   globalExpressParams: GlobalExpressParams;
 }) {
   if (!account) {
@@ -279,11 +324,7 @@ export async function removeSubaccountExpressTxn({
     throw new Error("No base express params");
   }
 
-  const getTxnData: ExpressTransactionBuilder = async ({ relayParams, gasPaymentParams, subaccount }) => {
-    if (!subaccount) {
-      throw new Error("No subaccount");
-    }
-
+  const getTxnData: ExpressTransactionBuilder = async ({ relayParams, gasPaymentParams }) => {
     const txnData = await buildAndSignRemoveSubaccountTxn({
       chainId,
       signer,
@@ -309,7 +350,7 @@ export async function removeSubaccountExpressTxn({
     rawRelayParamsPayload: rawBaseRelayParamsPayload,
     expressTransactionBuilder: getTxnData,
     gasPaymentParams: baseRelayFeeSwapParams.gasPaymentParams,
-    subaccount: subaccount,
+    subaccount: undefined,
     globalExpressParams: globalExpressParams,
   });
 
@@ -323,7 +364,7 @@ export async function removeSubaccountExpressTxn({
     isGmxAccount: srcChainId !== undefined,
     relayerFeeAmount,
     globalExpressParams: globalExpressParams,
-    subaccount,
+    subaccount: undefined,
   });
 
   if (!relayFeeParams || !relayParamsPayload) {
@@ -361,7 +402,7 @@ export async function estimateSettlementChainRemoveSubaccountExpressParams({
   chainId: ContractsChainId;
   account: string;
   signer: WalletSigner;
-  subaccount: Subaccount;
+  subaccount: SubaccountRemovalTarget;
   globalExpressParams: GlobalExpressParams;
 }): Promise<ExpressTxnParams | undefined> {
   const expressTransactionBuilder: ExpressTransactionBuilder = async ({ relayParams, gasPaymentParams }) => ({
@@ -410,7 +451,7 @@ export async function removeSubaccountSettlementChainExpressTxn({
 }: {
   chainId: ContractsChainId;
   signer: WalletSigner;
-  subaccount: Subaccount;
+  subaccount: SubaccountRemovalTarget;
   expressParams: ExpressTxnParams;
 }) {
   await signAndSendRemoveSubaccountTxn({
@@ -431,7 +472,7 @@ async function signAndSendRemoveSubaccountTxn({
 }: {
   chainId: ContractsChainId;
   signer: WalletSigner;
-  subaccount: Subaccount;
+  subaccount: SubaccountRemovalTarget;
   relayParamsPayload: RawRelayParamsPayload;
   gasPaymentParams: GasPaymentParams;
 }) {

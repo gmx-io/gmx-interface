@@ -44,6 +44,10 @@ msgstr "价格影响返还已领取"
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "或通过 <0>chainlist.org</0> 更新您钱包的 RPC"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "This browser"
+msgstr "此浏览器"
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Monthly"
 msgstr "每月"
@@ -663,6 +667,10 @@ msgstr "图片生成失败。请刷新后重试。"
 msgid "Unrealized fee contribution"
 msgstr "未实现费用贡献"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Old session removed"
+msgstr "旧会话已移除"
+
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Funding"
@@ -706,6 +714,10 @@ msgstr "GM 余额不足"
 #: src/domain/synthetics/fees/networkFeeSource.ts
 msgid "Express fees are paid in your Wallet gas payment token. Change it in Settings."
 msgstr "Express 费用以您钱包中的 Gas 支付代币支付。可在设置中更改。"
+
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Saved a One-Click session to a passkey on another device? Restore it here."
+msgstr "已在其他设备上将 One-Click 会话保存到通行密钥？在这里恢复。"
 
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Projected yearly return from trading fees only.<0/><1/>Includes: trading fees, borrow fees, liquidations, swaps.<2/>Excludes: backing token price changes, PnL, funding fees.<3/><4/><5>View detailed stats on Dune</5>."
@@ -1243,6 +1255,10 @@ msgstr "Solana 上的 GMX"
 msgid "Volume traded by your referred traders"
 msgstr "您邀请的交易者产生的交易量"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Passkey confirmed"
+msgstr "通行密钥已确认"
+
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Can I unstake or withdraw anytime?"
 msgstr "我可以随时解除质押或提取吗？"
@@ -1449,6 +1465,10 @@ msgstr "等级"
 msgid "Swap fee factor (negative PI)"
 msgstr "兑换手续费因子（负 PI）"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "No actions left"
+msgstr "无剩余操作"
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claimable balance"
 msgstr "可领取余额"
@@ -1510,6 +1530,10 @@ msgstr "质押奖励已暂停。27% 的协议费用转而累积至国库，待 G
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Receive amount below minimum"
 msgstr "接收金额低于最低值"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Remove all other sessions"
+msgstr "移除所有其他会话"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid slippage value"
@@ -2001,10 +2025,6 @@ msgstr "CSV"
 #: src/components/Referrals/traders/faq.tsx
 msgid "How is my fee discount applied?"
 msgstr "我的手续费折扣如何应用？"
-
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Session generation failed"
-msgstr "会话生成失败"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Onchain quests and rewards"
@@ -2811,6 +2831,11 @@ msgstr "金额低于转账限额。请尝试大于 <0>{lowerLimitFormatted}</0> 
 msgid "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour"
 msgstr "{longOrShort} 仓位无需支付资金费用，每小时支付 {borrowRate} 的借贷费用"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "Passkeys are not available in this browser"
+msgstr "此浏览器不支持通行密钥"
+
 #: src/components/GmList/GmList.tsx
 msgid "Search pools"
 msgstr "搜索池"
@@ -3128,6 +3153,10 @@ msgstr "做多未平仓量储备因子"
 msgid "Layer 2"
 msgstr "Layer 2"
 
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "This passkey belongs to another account"
+msgstr "此通行密钥属于另一个账户"
+
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "GMX pools can't fill this swap size. It needs an external route, which isn't available with One-Click Trading. Disable One-Click Trading to proceed."
 msgstr "GMX 池无法完成此规模的兑换。需要外部路由，但 One-Click Trading 不支持。请禁用 One-Click Trading 以继续。"
@@ -3274,6 +3303,14 @@ msgstr "{0, plural, one {取消订单} other {取消 # 个订单}}"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "GM:"
 msgstr "GM:"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "One-Click sessions ({0})"
+msgstr "One-Click 会话（{0}）"
+
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Restore from passkey"
+msgstr "从通行密钥恢复"
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Confirm settle"
@@ -3690,6 +3727,10 @@ msgstr "无效的减仓规模"
 msgid "Subscribe"
 msgstr "订阅"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Passkey failed"
+msgstr "通行密钥失败"
+
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "Up to {maxInstantAmountText} can be converted now."
 msgstr "目前最多可转换 {maxInstantAmountText}。"
@@ -3846,6 +3887,10 @@ msgstr "GMX 代币是 GMX 协议的治理代币。平台收入的 27% 累积到�
 msgid "Max lendable impact USD"
 msgstr "最大可借出影响 USD"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Passkey (experimental)"
+msgstr "通行密钥（实验性）"
+
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {offerAmount}</2>"
 msgstr "<0>买入 {0}{1}<1>{poolName}</1></0> <2>使用 {offerAmount}</2>"
@@ -3874,6 +3919,10 @@ msgstr "订单类型"
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {symbol} in your GMX Account for this transaction. <0>Deposit {symbol}</0>"
 msgstr "您的 GMX Account 中的 {symbol} 不足以完成此交易。<0>存入 {symbol}</0>"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removing old session..."
+msgstr "正在移除旧会话..."
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
@@ -3941,6 +3990,10 @@ msgstr "主题"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
 msgstr "已超过最大杠杆"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Passkey"
+msgstr "通行密钥"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claiming funding fees failed"
@@ -5451,14 +5504,27 @@ msgstr "兑换已提交"
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Slippage differs from price impact, which is based on open interest imbalances. <4>Read more</4>."
 msgstr "由于波动性导致的预期成交价格与实际成交价格之间的差异。如果滑点超过您设置的最大值，订单将不会执行。请在设置中调整默认值。<0/><1/>较低的值（例如低于 -{0}）可能导致在波动期间订单失败。<2/><3/>滑点与价格影响不同，价格影响基于未平仓量的不平衡。<4>了解更多</4>。"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Expired"
+msgstr "已过期"
+
 #: src/components/ChainDataImage.tsx
 #: src/components/ChainDataImage.tsx
 msgid "{chainName} data"
 msgstr "{chainName} 数据"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removing..."
+msgstr "移除中..."
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "No net rate history for this market"
 msgstr "此市场暂无净费率历史记录"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Old session is still active. Remove it in One-Click sessions"
+msgstr "旧会话仍处于活动状态。请在 One-Click 会话中将其移除"
 
 #: src/components/TradeHistory/keys.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -5851,6 +5917,10 @@ msgstr "解除质押"
 msgid "Max action count reached. <0>Click here</0> to update"
 msgstr "已达到最大操作次数。<0>点击此处</0>更新"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "This session is saved to your passkey. Use Restore from passkey on your other devices. Turning One-Click off removes the session on all devices."
+msgstr "此会话已保存到您的通行密钥。在其他设备上请使用“从通行密钥恢复”。关闭 One-Click 会在所有设备上移除此会话。"
+
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Signature:"
 msgstr "签名："
@@ -6076,6 +6146,10 @@ msgstr "解除质押超过历史最高质押 GMX 或 esGMX 数量的 20%，将�
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "无价格影响。在此规模下<0/>增加做空或减少做多仓位的<1/>单一成交价格。"
 
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "This passkey can't create a session key: its provider doesn't support PRF"
+msgstr "此通行密钥无法创建会话密钥：其提供方不支持 PRF"
+
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "Paxos converts USDC from your wallet on {settlementChainName}."
@@ -6158,6 +6232,10 @@ msgstr "未平仓量 {directionLabel}"
 msgid "Approval failed"
 msgstr "批准失败"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Old session"
+msgstr "旧会话"
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Updating settings..."
 msgstr "更新设置中..."
@@ -6177,6 +6255,10 @@ msgstr "创建 TWAP"
 #: src/components/TradeBox/SwapSlippageField.tsx
 msgid "Slippage is the difference between your expected and actual execution price due to price volatility. Orders won't execute if slippage exceeds your allowed maximum. The default can be adjusted in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Note: slippage is different from price impact, which is based on open interest imbalances. <4>Read more</4>."
 msgstr "滑点是由于价格波动导致的预期成交价格与实际成交价格之间的差异。如果滑点超过您允许的最大值，订单将不会执行。默认值可以在设置中调整。<0/><1/>较低的值（例如小于 -{0}）可能会在价格波动期间导致订单失败。<2/><3/>注意：滑点与价格影响不同，价格影响基于未平仓量的不平衡。<4>了解更多</4>。"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active, no expiry, {actionsText}"
+msgstr "活动中，无到期时间，{actionsText}"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
@@ -6829,6 +6911,10 @@ msgstr "已收到 {receivedText}"
 msgid "Transferring a referral code"
 msgstr "转让推荐码"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Each browser where you turn on One-Click Trading has its own session. Bots and apps that trade for you also appear here."
+msgstr "每个开启 One-Click Trading 的浏览器都有自己的会话。代您交易的机器人和应用也会显示在这里。"
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
 msgid "2–10 min"
 msgstr "2–10 分钟"
@@ -7202,6 +7288,7 @@ msgid "Enter a code"
 msgstr "输入代码"
 
 #: src/components/GmList/GmListItem.tsx
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
 msgid "Details"
 msgstr "详情"
 
@@ -7409,6 +7496,10 @@ msgstr "在图表上显示买入/卖出图标"
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
 msgstr "此兑换需要外部路由。请用 {0} 支付 Gas 以启用。"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Save this session to a passkey to use it on your other devices and after site data is cleared. Saved it on another device already? Restore it instead."
+msgstr "将此会话保存到通行密钥，即可在其他设备上以及清除网站数据后继续使用。已在其他设备上保存？请改为恢复。"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "The amount is more than your staked GMX and esGMX that is not already requested"
 msgstr "数量超过了您尚未申请的已质押 GMX 和 esGMX"
@@ -7587,6 +7678,10 @@ msgstr "毕业"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set stop price below mark price"
 msgstr "将停止单触发价格设为低于标记价格"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "unlimited actions"
+msgstr "无限操作"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>One-Click Trading approval was outdated and has been refreshed. Try again</0>"
@@ -9417,6 +9512,10 @@ msgstr "GM 买入成功，但跨链桥至 Base 失败。您的资金在 GMX Acco
 msgid "Disable One-Click Trading"
 msgstr "禁用 One-Click Trading"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removed"
+msgstr "已移除"
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
 msgstr "Limit Increase"
@@ -11090,6 +11189,10 @@ msgstr "访问<0>推荐计划文档</0>或前往 <1>GMX Telegram</1> 咨询"
 msgid "Edit order"
 msgstr "编辑订单"
 
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "Passkey created. Press Restore from passkey to finish"
+msgstr "通行密钥已创建。请点击“从通行密钥恢复”完成"
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationError.ts
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -11450,6 +11553,10 @@ msgstr "底层支撑代币的敞口"
 msgid "Search type"
 msgstr "搜索类型"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Save to passkey"
+msgstr "保存到通行密钥"
+
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 msgid "Converted to {marginTokenSymbol} in the same order"
@@ -11651,6 +11758,10 @@ msgstr "什么是 GMX？"
 msgid "Deposit submitted"
 msgstr "存入已提交"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removal failed"
+msgstr "移除失败"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -11765,6 +11876,10 @@ msgstr "基于期权的金库"
 msgid "Time limit"
 msgstr "时间限制"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Confirm with your passkey..."
+msgstr "请使用通行密钥确认..."
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Live unrealized PnL before fees"
 msgstr "扣除费用前的当前未实现盈亏（PnL）"
@@ -11807,6 +11922,10 @@ msgstr "正在加载报价…"
 #: src/domain/synthetics/positions/utils.ts
 msgid "take-profit"
 msgstr "止盈"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{0, plural, one {# action left} other {# actions left}}"
+msgstr "{0, plural, one {剩余 # 次操作} other {剩余 # 次操作}}"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL ($)"
@@ -12207,6 +12326,10 @@ msgstr "Nonce："
 msgid "{txnTypeText} margin deposit: {amountText} to {indexTokenText} {longShortText}"
 msgstr "{txnTypeText}保证金存入：{amountText} 至 {indexTokenText} {longShortText}"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active until {0}, {actionsText}"
+msgstr "活动至 {0}，{actionsText}"
+
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Price you'll receive when closing, adjusted for capped price impact. <0>Read more</0>."
 msgstr "平仓时您将获得的价格，已根据设有上限的价格影响进行调整。<0>了解更多</0>。"
@@ -12299,6 +12422,10 @@ msgstr "Swap Limit：达到触发价格时兑换代币"
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "获取 GMX 的提醒和公告，随时掌握您的交易、清算风险等信息"
 
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "The passkey request was cancelled or timed out"
+msgstr "通行密钥请求已取消或超时"
+
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Use the Pay amount"
 msgstr "使用支付金额"
@@ -12366,6 +12493,10 @@ msgstr "推荐人金库"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} up to the caps below. Remaining tokens are reserved for open positions."
 msgstr "卖出 GM 以获取 {0}，上限如下所示。剩余代币为未平仓仓位保留。"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Session is already active, no approval needed"
+msgstr "会话已激活，无需批准"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Reserved positive impact"
@@ -12526,6 +12657,10 @@ msgstr "做空 PnL"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "A dedicated account manager"
 msgstr "专属客户经理"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Remove"
+msgstr "移除"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "The Balancer Program rewards traders who consistently take the underweight side of GMX markets. These codes replace the trader fee discount with a higher rebate, which accrues to the code owner's affiliate account and can be claimed anytime. <0>Read more</0>."
@@ -13863,6 +13998,12 @@ msgstr "在设置中启用 <0>Express Trading</0> 以获得更高可靠性。<1/
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Enter a ratio"
 msgstr "输入比率"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Remove 1CT sessions"
+msgstr "移除 1CT 会话"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "OK"

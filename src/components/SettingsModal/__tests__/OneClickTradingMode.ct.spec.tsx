@@ -5,12 +5,10 @@ import { ethers } from "ethers";
 import { getSubaccountApprovalKey, getSubaccountConfigKey } from "config/localStorage";
 import {
   ARBITRUM_CONTRACTS,
-  deriveGeneratedSubaccount,
   MOCK_ACCOUNT_PRIVATE_KEY,
   MockChain,
   SEEDED_SUBACCOUNT_ADDRESS,
   SEEDED_SUBACCOUNT_PRIVATE_KEY,
-  SUBACCOUNT_MESSAGE,
 } from "domain/testUtils/rpc/mockChain";
 import { assertNoRpcHoles, installRpcResponder } from "domain/testUtils/rpc/playwrightAdapter";
 import { ARBITRUM } from "sdk/configs/chainIds";
@@ -112,7 +110,7 @@ test.describe("Trading Settings: Express+1CT -> Express deactivation (FEDEV-2133
     await expectModeActive(modeButton(page, "Express"));
     await expectModeInactive(modeButton(page, "Express + One-Click"));
 
-    expect(await readLocalStorage(page, CONFIG_KEY)).not.toContain(SEEDED_SUBACCOUNT_ADDRESS);
+    expect(await readLocalStorage(page, CONFIG_KEY)).toBeFalsy();
     expect(await readLocalStorage(page, SETTLEMENT_APPROVAL_KEY)).toBeFalsy();
   });
 
@@ -176,7 +174,7 @@ test.describe("Trading Settings: Express+1CT -> Express deactivation (FEDEV-2133
     await expectModeActive(modeButton(page, "Express"));
     await expectModeInactive(modeButton(page, "Express + One-Click"));
 
-    expect(await readLocalStorage(page, CONFIG_KEY)).not.toContain(SEEDED_SUBACCOUNT_ADDRESS);
+    expect(await readLocalStorage(page, CONFIG_KEY)).toBeFalsy();
     expect(await readLocalStorage(page, SETTLEMENT_APPROVAL_KEY)).toBeFalsy();
   });
 
@@ -211,7 +209,7 @@ test.describe("Trading Settings: Express+1CT -> Express deactivation (FEDEV-2133
     await expectModeActive(modeButton(page, "Express"));
 
     expect(chain.sentTransactions).toHaveLength(0);
-    await expect.poll(() => readLocalStorage(page, CONFIG_KEY)).not.toContain(SEEDED_SUBACCOUNT_ADDRESS);
+    await expect.poll(() => readLocalStorage(page, CONFIG_KEY)).toBeFalsy();
     await expect.poll(() => readLocalStorage(page, SETTLEMENT_APPROVAL_KEY)).toBeFalsy();
   });
 });
@@ -262,18 +260,14 @@ test.describe("Trading Settings: enabling One-Click with real signatures (FEDEV-
     expect(await readLocalStorage(page, CONFIG_KEY)).toBe(configBefore);
   });
 
-  test("rejecting the approval signature leaves no partial state; retry with real signatures activates One-Click", async ({
+  test("rejecting the approval signature leaves no partial state; retry activates One-Click without a message signature PRO-4458", async ({
     mount,
     page,
   }) => {
-    const generated = await deriveGeneratedSubaccount(MOCK_ACCOUNT_PRIVATE_KEY, SUBACCOUNT_MESSAGE);
-
     const chain = new MockChain({
       walletPrivateKey: MOCK_ACCOUNT_PRIVATE_KEY,
-      subaccountAddress: generated.address,
       onchain: { active: false },
     });
-    chain.setBalance(generated.address, 2n * 10n ** 15n);
     chain.rejectTypedDataSign = true;
     await installRpcResponder(page, chain);
 
@@ -283,12 +277,7 @@ test.describe("Trading Settings: enabling One-Click with real signatures (FEDEV-
 
     await modeButton(page, "Express + One-Click").click();
 
-    await expect(page.getByText("Session generated")).toBeVisible();
     await expect(page.getByText("Approval signing failed")).toBeVisible();
-
-    expect(chain.signedMessages).toHaveLength(1);
-    const recoveredSigner = ethers.verifyMessage(SUBACCOUNT_MESSAGE, chain.signedMessages[0].signature);
-    expect(recoveredSigner).toBe(MOCK_ACCOUNT);
 
     await expectModeActive(modeButton(page, "Express"));
     await expectModeInactive(modeButton(page, "Express + One-Click"));
@@ -303,14 +292,16 @@ test.describe("Trading Settings: enabling One-Click with real signatures (FEDEV-
     await expect(page.getByText("Approval signed")).toBeVisible({ timeout: 15_000 });
     await expectModeActive(modeButton(page, "Express + One-Click"));
 
-    expect(chain.signedMessages).toHaveLength(2);
-
-    expect(await readLocalStorage(page, CONFIG_KEY)).toContain(generated.address);
+    const storedConfig = JSON.parse((await readLocalStorage(page, CONFIG_KEY))!);
+    expect(storedConfig.version).toBe(2);
 
     const storedApprovalRaw = await readLocalStorage(page, SETTLEMENT_APPROVAL_KEY);
     expect(storedApprovalRaw).toBeTruthy();
     const storedApproval = JSON.parse(storedApprovalRaw!);
-    expect(storedApproval.subaccount).toBe(generated.address);
+    expect(storedApproval.subaccount).toBe(storedConfig.address);
+
+    expect(chain.signedMessages).toHaveLength(0);
+    expect(chain.rpcLog.filter((e) => e.method === "eth_sign" || e.method === "personal_sign")).toHaveLength(0);
 
     expect(chain.signedTypedData).toHaveLength(1);
     const typedDataRecord = chain.signedTypedData[0];
@@ -323,5 +314,37 @@ test.describe("Trading Settings: enabling One-Click with real signatures (FEDEV-
       storedApproval.signature
     );
     expect(recoveredTypedDataSigner).toBe(MOCK_ACCOUNT);
+  });
+
+  test("turning One-Click off and on again approves a new address PRO-4458", async ({ mount, page }) => {
+    const chain = new MockChain({
+      walletPrivateKey: MOCK_ACCOUNT_PRIVATE_KEY,
+      onchain: { active: false },
+    });
+    await installRpcResponder(page, chain);
+
+    await mount(<OneClickTradingModeStory expressEnabled />);
+
+    await modeButton(page, "Express + One-Click").click();
+    await expect.poll(() => chain.signedTypedData.length, { timeout: 15_000 }).toBe(1);
+    await expectModeActive(modeButton(page, "Express + One-Click"));
+
+    const firstAddress = JSON.parse((await readLocalStorage(page, CONFIG_KEY))!).address;
+    expect(JSON.parse((await readLocalStorage(page, SETTLEMENT_APPROVAL_KEY))!).subaccount).toBe(firstAddress);
+
+    await modeButton(page, "Express").click();
+    await expect(page.getByText("Deactivated")).toBeVisible({ timeout: 20_000 });
+    await expectModeActive(modeButton(page, "Express"));
+    expect(await readLocalStorage(page, CONFIG_KEY)).toBeFalsy();
+
+    await modeButton(page, "Express + One-Click").click();
+    await expect.poll(() => chain.signedTypedData.length, { timeout: 15_000 }).toBe(2);
+    await expectModeActive(modeButton(page, "Express + One-Click"));
+
+    const secondAddress = JSON.parse((await readLocalStorage(page, CONFIG_KEY))!).address;
+    expect(JSON.parse((await readLocalStorage(page, SETTLEMENT_APPROVAL_KEY))!).subaccount).toBe(secondAddress);
+    expect(secondAddress).not.toBe(firstAddress);
+    expect(chain.signedMessages).toHaveLength(0);
+    expect(chain.sentTransactions).toHaveLength(0);
   });
 });

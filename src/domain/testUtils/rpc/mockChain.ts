@@ -61,6 +61,8 @@ export const ARBITRUM_CONTRACTS = {
 
 const IFACE = new ethers.Interface([
   "function containsAddress(bytes32 setKey, address value) view returns (bool)",
+  "function getAddressCount(bytes32 setKey) view returns (uint256)",
+  "function getAddressValuesAt(bytes32 setKey, uint256 start, uint256 end) view returns (address[])",
   "function getUint(bytes32 key) view returns (uint256)",
   "function getBytes32(bytes32 key) view returns (bytes32)",
   "function getAddress(bytes32 key) view returns (address)",
@@ -82,6 +84,8 @@ const IFACE = new ethers.Interface([
 
 const SELECTORS = {
   containsAddress: IFACE.getFunction("containsAddress")!.selector,
+  getAddressCount: IFACE.getFunction("getAddressCount")!.selector,
+  getAddressValuesAt: IFACE.getFunction("getAddressValuesAt")!.selector,
   getUint: IFACE.getFunction("getUint")!.selector,
   getBytes32: IFACE.getFunction("getBytes32")!.selector,
   getAddress: IFACE.getFunction("getAddress")!.selector,
@@ -479,6 +483,20 @@ export class MockChain implements RpcResponder {
           this.onchain.active;
         return IFACE.encodeFunctionResult("containsAddress", [isActive]);
       }
+      case SELECTORS.getAddressCount: {
+        const [setKey] = IFACE.decodeFunctionData("getAddressCount", data) as unknown as [string];
+        return IFACE.encodeFunctionResult("getAddressCount", [BigInt(this.getListedSubaccounts(setKey).length)]);
+      }
+      case SELECTORS.getAddressValuesAt: {
+        const [setKey, start, end] = IFACE.decodeFunctionData("getAddressValuesAt", data) as unknown as [
+          string,
+          bigint,
+          bigint,
+        ];
+        return IFACE.encodeFunctionResult("getAddressValuesAt", [
+          this.getListedSubaccounts(setKey).slice(Number(start), Number(end)),
+        ]);
+      }
       case SELECTORS.getUint: {
         const [key] = IFACE.decodeFunctionData("getUint", data) as unknown as [string];
         return IFACE.encodeFunctionResult("getUint", [this.resolveUintKey(key)]);
@@ -544,6 +562,14 @@ export class MockChain implements RpcResponder {
         this.unknownCallSelectors.add(selector);
         return "0x";
     }
+  }
+
+  private getListedSubaccounts(setKey: string): string[] {
+    if (setKey !== subaccountListKey(this.account) || !this.subaccountAddress || !this.onchain.active) {
+      return [];
+    }
+
+    return [this.subaccountAddress];
   }
 
   private resolveUintKey(key: string): bigint {
@@ -636,17 +662,6 @@ export class MockGmxRelay {
 
 export const MOCK_ACCOUNT_PRIVATE_KEY = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
 
-export const SUBACCOUNT_MESSAGE =
-  "Generate a GMX 1CT (One-Click Trading) session. Only sign this message on a trusted website.";
-
 export const SEEDED_SUBACCOUNT_PRIVATE_KEY = "0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d";
 
 export const SEEDED_SUBACCOUNT_ADDRESS = new ethers.Wallet(SEEDED_SUBACCOUNT_PRIVATE_KEY).address;
-
-export async function deriveGeneratedSubaccount(walletPrivateKey: string, subaccountMessage: string) {
-  const wallet = new ethers.Wallet(walletPrivateKey);
-  const signature = await wallet.signMessage(subaccountMessage);
-  const privateKey = ethers.keccak256(signature);
-  const address = ethers.computeAddress(privateKey);
-  return { privateKey, address, signature };
-}

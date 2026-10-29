@@ -44,6 +44,10 @@ msgstr "Price impact rebates claimed"
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "Or update your wallet's RPC via <0>chainlist.org</0>"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "This browser"
+msgstr "This browser"
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Monthly"
 msgstr "Monthly"
@@ -663,6 +667,10 @@ msgstr "Image generation failed. Refresh and try again."
 msgid "Unrealized fee contribution"
 msgstr "Unrealized fee contribution"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Old session removed"
+msgstr "Old session removed"
+
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Funding"
@@ -706,6 +714,10 @@ msgstr "Insufficient GM balance"
 #: src/domain/synthetics/fees/networkFeeSource.ts
 msgid "Express fees are paid in your Wallet gas payment token. Change it in Settings."
 msgstr "Express fees are paid in your Wallet gas payment token. Change it in Settings."
+
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Saved a One-Click session to a passkey on another device? Restore it here."
+msgstr "Saved a One-Click session to a passkey on another device? Restore it here."
 
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Projected yearly return from trading fees only.<0/><1/>Includes: trading fees, borrow fees, liquidations, swaps.<2/>Excludes: backing token price changes, PnL, funding fees.<3/><4/><5>View detailed stats on Dune</5>."
@@ -1243,6 +1255,10 @@ msgstr "GMX on Solana"
 msgid "Volume traded by your referred traders"
 msgstr "Volume traded by your referred traders"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Passkey confirmed"
+msgstr "Passkey confirmed"
+
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Can I unstake or withdraw anytime?"
 msgstr "Can I unstake or withdraw anytime?"
@@ -1449,6 +1465,10 @@ msgstr "Tiers"
 msgid "Swap fee factor (negative PI)"
 msgstr "Swap fee factor (negative PI)"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "No actions left"
+msgstr "No actions left"
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claimable balance"
 msgstr "Claimable balance"
@@ -1510,6 +1530,10 @@ msgstr "Staking rewards are paused. 27% of protocol fees are accumulating in the
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Receive amount below minimum"
 msgstr "Receive amount below minimum"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Remove all other sessions"
+msgstr "Remove all other sessions"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid slippage value"
@@ -2001,10 +2025,6 @@ msgstr "CSV"
 #: src/components/Referrals/traders/faq.tsx
 msgid "How is my fee discount applied?"
 msgstr "How is my fee discount applied?"
-
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Session generation failed"
-msgstr "Session generation failed"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Onchain quests and rewards"
@@ -2811,6 +2831,11 @@ msgstr "Amount is below the transfer limit. Try an amount larger than <0>{lowerL
 msgid "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour"
 msgstr "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "Passkeys are not available in this browser"
+msgstr "Passkeys are not available in this browser"
+
 #: src/components/GmList/GmList.tsx
 msgid "Search pools"
 msgstr "Search pools"
@@ -3128,6 +3153,10 @@ msgstr "Open interest reserve factor longs"
 msgid "Layer 2"
 msgstr "Layer 2"
 
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "This passkey belongs to another account"
+msgstr "This passkey belongs to another account"
+
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "GMX pools can't fill this swap size. It needs an external route, which isn't available with One-Click Trading. Disable One-Click Trading to proceed."
 msgstr "GMX pools can't fill this swap size. It needs an external route, which isn't available with One-Click Trading. Disable One-Click Trading to proceed."
@@ -3274,6 +3303,14 @@ msgstr "{0, plural, one {Cancel order} other {Cancel # orders}}"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "GM:"
 msgstr "GM:"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "One-Click sessions ({0})"
+msgstr "One-Click sessions ({0})"
+
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Restore from passkey"
+msgstr "Restore from passkey"
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Confirm settle"
@@ -3690,6 +3727,10 @@ msgstr "Invalid decrease size"
 msgid "Subscribe"
 msgstr "Subscribe"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Passkey failed"
+msgstr "Passkey failed"
+
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "Up to {maxInstantAmountText} can be converted now."
 msgstr "Up to {maxInstantAmountText} can be converted now."
@@ -3846,6 +3887,10 @@ msgstr "The GMX token serves as the governance token of the GMX protocol. 27% of
 msgid "Max lendable impact USD"
 msgstr "Max lendable impact USD"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Passkey (experimental)"
+msgstr "Passkey (experimental)"
+
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {offerAmount}</2>"
 msgstr "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {offerAmount}</2>"
@@ -3874,6 +3919,10 @@ msgstr "Order type"
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {symbol} in your GMX Account for this transaction. <0>Deposit {symbol}</0>"
 msgstr "Insufficient {symbol} in your GMX Account for this transaction. <0>Deposit {symbol}</0>"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removing old session..."
+msgstr "Removing old session..."
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
@@ -3941,6 +3990,10 @@ msgstr "Theme"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
 msgstr "Max leverage exceeded"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Passkey"
+msgstr "Passkey"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claiming funding fees failed"
@@ -5451,14 +5504,27 @@ msgstr "Swap submitted"
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Slippage differs from price impact, which is based on open interest imbalances. <4>Read more</4>."
 msgstr "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Slippage differs from price impact, which is based on open interest imbalances. <4>Read more</4>."
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Expired"
+msgstr "Expired"
+
 #: src/components/ChainDataImage.tsx
 #: src/components/ChainDataImage.tsx
 msgid "{chainName} data"
 msgstr "{chainName} data"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removing..."
+msgstr "Removing..."
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "No net rate history for this market"
 msgstr "No net rate history for this market"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Old session is still active. Remove it in One-Click sessions"
+msgstr "Old session is still active. Remove it in One-Click sessions"
 
 #: src/components/TradeHistory/keys.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -5851,6 +5917,10 @@ msgstr "Unstake"
 msgid "Max action count reached. <0>Click here</0> to update"
 msgstr "Max action count reached. <0>Click here</0> to update"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "This session is saved to your passkey. Use Restore from passkey on your other devices. Turning One-Click off removes the session on all devices."
+msgstr "This session is saved to your passkey. Use Restore from passkey on your other devices. Turning One-Click off removes the session on all devices."
+
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Signature:"
 msgstr "Signature:"
@@ -6076,6 +6146,10 @@ msgstr "Unstaking more than 20% of your max historical staked GMX or esGMX will 
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "This passkey can't create a session key: its provider doesn't support PRF"
+msgstr "This passkey can't create a session key: its provider doesn't support PRF"
+
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "Paxos converts USDC from your wallet on {settlementChainName}."
@@ -6158,6 +6232,10 @@ msgstr "Open interest {directionLabel}"
 msgid "Approval failed"
 msgstr "Approval failed"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Old session"
+msgstr "Old session"
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Updating settings..."
 msgstr "Updating settings..."
@@ -6177,6 +6255,10 @@ msgstr "Create TWAP"
 #: src/components/TradeBox/SwapSlippageField.tsx
 msgid "Slippage is the difference between your expected and actual execution price due to price volatility. Orders won't execute if slippage exceeds your allowed maximum. The default can be adjusted in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Note: slippage is different from price impact, which is based on open interest imbalances. <4>Read more</4>."
 msgstr "Slippage is the difference between your expected and actual execution price due to price volatility. Orders won't execute if slippage exceeds your allowed maximum. The default can be adjusted in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Note: slippage is different from price impact, which is based on open interest imbalances. <4>Read more</4>."
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active, no expiry, {actionsText}"
+msgstr "Active, no expiry, {actionsText}"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
@@ -6829,6 +6911,10 @@ msgstr "Received {receivedText}"
 msgid "Transferring a referral code"
 msgstr "Transferring a referral code"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Each browser where you turn on One-Click Trading has its own session. Bots and apps that trade for you also appear here."
+msgstr "Each browser where you turn on One-Click Trading has its own session. Bots and apps that trade for you also appear here."
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
 msgid "2–10 min"
 msgstr "2–10 min"
@@ -7202,6 +7288,7 @@ msgid "Enter a code"
 msgstr "Enter a code"
 
 #: src/components/GmList/GmListItem.tsx
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
 msgid "Details"
 msgstr "Details"
 
@@ -7409,6 +7496,10 @@ msgstr "Show buy/sell icons on chart"
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
 msgstr "This swap requires external routing. Pay gas in {0} to enable it."
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Save this session to a passkey to use it on your other devices and after site data is cleared. Saved it on another device already? Restore it instead."
+msgstr "Save this session to a passkey to use it on your other devices and after site data is cleared. Saved it on another device already? Restore it instead."
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "The amount is more than your staked GMX and esGMX that is not already requested"
 msgstr "The amount is more than your staked GMX and esGMX that is not already requested"
@@ -7587,6 +7678,10 @@ msgstr "Graduated"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set stop price below mark price"
 msgstr "Set stop price below mark price"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "unlimited actions"
+msgstr "unlimited actions"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>One-Click Trading approval was outdated and has been refreshed. Try again</0>"
@@ -9417,6 +9512,10 @@ msgstr "GM bought successfully, but bridge to Base failed. Your funds are safe i
 msgid "Disable One-Click Trading"
 msgstr "Disable One-Click Trading"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removed"
+msgstr "Removed"
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
 msgstr "Limit Increase"
@@ -11090,6 +11189,10 @@ msgstr "Visit the <0>Referrals Documentation</0> or ask in the <1>GMX Telegram</
 msgid "Edit order"
 msgstr "Edit order"
 
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "Passkey created. Press Restore from passkey to finish"
+msgstr "Passkey created. Press Restore from passkey to finish"
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationError.ts
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -11450,6 +11553,10 @@ msgstr "Exposure to backing tokens"
 msgid "Search type"
 msgstr "Search type"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Save to passkey"
+msgstr "Save to passkey"
+
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 msgid "Converted to {marginTokenSymbol} in the same order"
@@ -11651,6 +11758,10 @@ msgstr "What is GMX?"
 msgid "Deposit submitted"
 msgstr "Deposit submitted"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removal failed"
+msgstr "Removal failed"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -11765,6 +11876,10 @@ msgstr "Option-based vaults"
 msgid "Time limit"
 msgstr "Time limit"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Confirm with your passkey..."
+msgstr "Confirm with your passkey..."
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Live unrealized PnL before fees"
 msgstr "Live unrealized PnL before fees"
@@ -11807,6 +11922,10 @@ msgstr "Loading quote…"
 #: src/domain/synthetics/positions/utils.ts
 msgid "take-profit"
 msgstr "take-profit"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{0, plural, one {# action left} other {# actions left}}"
+msgstr "{0, plural, one {# action left} other {# actions left}}"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL ($)"
@@ -12207,6 +12326,10 @@ msgstr "Nonce:"
 msgid "{txnTypeText} margin deposit: {amountText} to {indexTokenText} {longShortText}"
 msgstr "{txnTypeText} margin deposit: {amountText} to {indexTokenText} {longShortText}"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active until {0}, {actionsText}"
+msgstr "Active until {0}, {actionsText}"
+
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Price you'll receive when closing, adjusted for capped price impact. <0>Read more</0>."
 msgstr "Price you'll receive when closing, adjusted for capped price impact. <0>Read more</0>."
@@ -12299,6 +12422,10 @@ msgstr "Swap Limit: Swap tokens when the trigger price is reached"
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "The passkey request was cancelled or timed out"
+msgstr "The passkey request was cancelled or timed out"
+
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Use the Pay amount"
 msgstr "Use the Pay amount"
@@ -12366,6 +12493,10 @@ msgstr "Affiliate vault"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} up to the caps below. Remaining tokens are reserved for open positions."
 msgstr "Sell GM for {0} up to the caps below. Remaining tokens are reserved for open positions."
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Session is already active, no approval needed"
+msgstr "Session is already active, no approval needed"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Reserved positive impact"
@@ -12526,6 +12657,10 @@ msgstr "PnL short"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "A dedicated account manager"
 msgstr "A dedicated account manager"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Remove"
+msgstr "Remove"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "The Balancer Program rewards traders who consistently take the underweight side of GMX markets. These codes replace the trader fee discount with a higher rebate, which accrues to the code owner's affiliate account and can be claimed anytime. <0>Read more</0>."
@@ -13863,6 +13998,12 @@ msgstr "Enable <0>Express Trading</0> in settings for better reliability.<1/><2/
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Enter a ratio"
 msgstr "Enter a ratio"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Remove 1CT sessions"
+msgstr "Remove 1CT sessions"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "OK"

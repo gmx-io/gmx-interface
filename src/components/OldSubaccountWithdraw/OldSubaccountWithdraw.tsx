@@ -26,13 +26,13 @@ export function OldSubaccountWithdraw() {
   const { chainId } = useChainId();
   const nativeToken = getNativeToken(chainId);
   const [isVisible, setIsVisible] = useState(true);
-  const { subaccountConfig } = useSubaccountContext();
+  const { legacySubaccountConfig } = useSubaccountContext();
   const gasPrice = useGasPrice(chainId);
   const { provider } = useJsonRpcProvider(chainId);
 
   const [isWithdrawing, setIsWithdrawing] = useState(false);
 
-  const estimatedWithdrawalAmounts = useSubaccountWithdrawalAmount(chainId, subaccountConfig?.address, gasPrice);
+  const estimatedWithdrawalAmounts = useSubaccountWithdrawalAmount(chainId, legacySubaccountConfig?.address, gasPrice);
 
   const balanceFormatted = formatTokenAmount(
     estimatedWithdrawalAmounts?.amountToSend ?? 0n,
@@ -44,7 +44,7 @@ export function OldSubaccountWithdraw() {
   );
 
   const withdrawWeth = useCallback(async () => {
-    if (!account || !subaccountConfig?.address || gasPrice === undefined || !provider) {
+    if (!account || !legacySubaccountConfig?.address || gasPrice === undefined || !provider) {
       return;
     }
 
@@ -62,7 +62,7 @@ export function OldSubaccountWithdraw() {
 
       await withdrawFromSubaccount({
         mainAccountAddress: account,
-        subaccountConfig,
+        subaccountConfig: legacySubaccountConfig,
         gasPrice,
         provider,
       });
@@ -84,7 +84,7 @@ export function OldSubaccountWithdraw() {
     } finally {
       setIsWithdrawing(false);
     }
-  }, [account, subaccountConfig, gasPrice, provider, balanceFormatted]);
+  }, [account, legacySubaccountConfig, gasPrice, provider, balanceFormatted]);
 
   if (
     !isVisible ||

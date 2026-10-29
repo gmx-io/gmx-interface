@@ -4,7 +4,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { isDevelopment } from "config/env";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import {
+  type SubaccountActivationParams,
+  useSubaccountContext,
+} from "context/SubaccountContext/SubaccountContextProvider";
 import { getOrderRelayRouterAddress } from "domain/synthetics/express/expressOrderUtils";
 import {
   getIsSubaccountActionsExceeded,
@@ -144,7 +147,7 @@ export function SettingsModal({
   }, [setIsSettingsVisible]);
 
   const handleTradingModeChange = useCallback(
-    async (mode: TradingMode) => {
+    async (mode: TradingMode, activation?: SubaccountActivationParams) => {
       if (isTradingModeChanging) {
         return;
       }
@@ -188,7 +191,7 @@ export function SettingsModal({
             break;
           }
           case TradingMode.Express1CT: {
-            const isSubaccountActivated = await subaccountState.tryEnableSubaccount();
+            const isSubaccountActivated = await subaccountState.tryEnableSubaccount(activation);
 
             if (!isSubaccountActivated) {
               setTradingMode(prevMode);

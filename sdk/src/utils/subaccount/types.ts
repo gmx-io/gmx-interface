@@ -15,6 +15,7 @@ export type SubaccountSerializedConfig = {
   privateKey: string;
   address: string;
   isNew?: boolean;
+  version?: number;
 };
 
 export type SubaccountApproval = {

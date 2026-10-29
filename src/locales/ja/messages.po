@@ -44,6 +44,10 @@ msgstr "価格への影響リベートを受け取りました"
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "または<0>chainlist.org</0>からウォレットのRPCを更新してください"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "This browser"
+msgstr "このブラウザ"
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Monthly"
 msgstr "月次"
@@ -663,6 +667,10 @@ msgstr "画像の生成に失敗しました。更新して再度お試しくだ
 msgid "Unrealized fee contribution"
 msgstr "未実現手数料の寄与"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Old session removed"
+msgstr "古いセッションを削除しました"
+
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Funding"
@@ -706,6 +714,10 @@ msgstr "GM残高不足"
 #: src/domain/synthetics/fees/networkFeeSource.ts
 msgid "Express fees are paid in your Wallet gas payment token. Change it in Settings."
 msgstr "Expressの手数料はウォレットのGas支払いトークンで支払われます。設定で変更できます。"
+
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Saved a One-Click session to a passkey on another device? Restore it here."
+msgstr "別のデバイスでOne-Clickセッションをパスキーに保存しましたか？ここで復元できます。"
 
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Projected yearly return from trading fees only.<0/><1/>Includes: trading fees, borrow fees, liquidations, swaps.<2/>Excludes: backing token price changes, PnL, funding fees.<3/><4/><5>View detailed stats on Dune</5>."
@@ -1243,6 +1255,10 @@ msgstr "Solana上のGMX"
 msgid "Volume traded by your referred traders"
 msgstr "紹介したトレーダーによる取引高"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Passkey confirmed"
+msgstr "パスキー確認済"
+
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Can I unstake or withdraw anytime?"
 msgstr "いつでもアンステークまたは出金できますか？"
@@ -1449,6 +1465,10 @@ msgstr "ティア"
 msgid "Swap fee factor (negative PI)"
 msgstr "スワップ手数料係数（マイナスPI）"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "No actions left"
+msgstr "残りアクションなし"
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claimable balance"
 msgstr "請求可能な残高"
@@ -1510,6 +1530,10 @@ msgstr "ステーキング報酬は一時停止中です。代わりにプロト
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Receive amount below minimum"
 msgstr "受取額が最小額を下回っています"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Remove all other sessions"
+msgstr "他のセッションをすべて削除"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid slippage value"
@@ -2001,10 +2025,6 @@ msgstr "CSV"
 #: src/components/Referrals/traders/faq.tsx
 msgid "How is my fee discount applied?"
 msgstr "手数料割引はどのように適用されますか？"
-
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Session generation failed"
-msgstr "セッションの生成に失敗しました"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Onchain quests and rewards"
@@ -2811,6 +2831,11 @@ msgstr "金額が送金下限を下回っています。<0>{lowerLimitFormatted}
 msgid "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour"
 msgstr "{longOrShort} ポジションはファンディング手数料を支払わず、1時間あたり {borrowRate} の借入手数料を支払います"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "Passkeys are not available in this browser"
+msgstr "このブラウザではパスキーを利用できません"
+
 #: src/components/GmList/GmList.tsx
 msgid "Search pools"
 msgstr "プールを検索"
@@ -3128,6 +3153,10 @@ msgstr "建玉リザーブファクター（ロング）"
 msgid "Layer 2"
 msgstr "レイヤー2"
 
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "This passkey belongs to another account"
+msgstr "このパスキーは別のアカウントのものです"
+
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "GMX pools can't fill this swap size. It needs an external route, which isn't available with One-Click Trading. Disable One-Click Trading to proceed."
 msgstr "GMXプールではこのスワップサイズを約定できません。外部ルートが必要ですが、One-Click Trading では利用できません。続行するには One-Click Trading を無効にしてください。"
@@ -3274,6 +3303,14 @@ msgstr "{0, plural, one {注文をキャンセル} other {# 件の注文をキ�
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "GM:"
 msgstr "GM:"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "One-Click sessions ({0})"
+msgstr "One-Clickセッション（{0}）"
+
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Restore from passkey"
+msgstr "パスキーから復元"
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Confirm settle"
@@ -3690,6 +3727,10 @@ msgstr "無効な減少サイズ"
 msgid "Subscribe"
 msgstr "購読"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Passkey failed"
+msgstr "パスキー失敗"
+
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "Up to {maxInstantAmountText} can be converted now."
 msgstr "現在、最大{maxInstantAmountText}まで変換できます。"
@@ -3846,6 +3887,10 @@ msgstr "GMXトークンは、GMXプロトコルのガバナンストークンで
 msgid "Max lendable impact USD"
 msgstr "最大貸出可能インパクトUSD"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Passkey (experimental)"
+msgstr "パスキー（試験的）"
+
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {offerAmount}</2>"
 msgstr "<0>{0}{1}<1>{poolName}</1>を購入中</0> <2>（支払い: {offerAmount}）</2>"
@@ -3874,6 +3919,10 @@ msgstr "注文タイプ"
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {symbol} in your GMX Account for this transaction. <0>Deposit {symbol}</0>"
 msgstr "このトランザクションに必要な{symbol}がGMX Accountに不足しています。<0>{symbol}を入金</0>"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removing old session..."
+msgstr "古いセッションを削除中..."
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
@@ -3941,6 +3990,10 @@ msgstr "テーマ"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
 msgstr "最大レバレッジを超過しています"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Passkey"
+msgstr "パスキー"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claiming funding fees failed"
@@ -5451,14 +5504,27 @@ msgstr "スワップを送信しました"
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Slippage differs from price impact, which is based on open interest imbalances. <4>Read more</4>."
 msgstr "ボラティリティによる予想約定価格と実際の約定価格の差です。スリッページが最大値を超えると注文は約定されません。デフォルト値は設定で調整できます。<0/><1/>低い値（例: -{0} 未満）を設定すると、ボラティリティが高い時に注文が失敗する可能性があります。<2/><3/>スリッページは建玉の偏りに基づく価格への影響とは異なります。<4>詳細はこちら</4>。"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Expired"
+msgstr "期限切れ"
+
 #: src/components/ChainDataImage.tsx
 #: src/components/ChainDataImage.tsx
 msgid "{chainName} data"
 msgstr "{chainName} データ"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removing..."
+msgstr "削除中..."
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "No net rate history for this market"
 msgstr "この市場のネットレート履歴はありません"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Old session is still active. Remove it in One-Click sessions"
+msgstr "古いセッションはまだ有効です。One-Clickセッションで削除してください"
 
 #: src/components/TradeHistory/keys.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -5851,6 +5917,10 @@ msgstr "アンステーク"
 msgid "Max action count reached. <0>Click here</0> to update"
 msgstr "アクション上限に達しました。<0>こちらをクリック</0>して更新してください"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "This session is saved to your passkey. Use Restore from passkey on your other devices. Turning One-Click off removes the session on all devices."
+msgstr "このセッションはパスキーに保存されています。他のデバイスでは「パスキーから復元」を使用してください。One-Clickをオフにすると、すべてのデバイスでセッションが削除されます。"
+
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Signature:"
 msgstr "署名:"
@@ -6076,6 +6146,10 @@ msgstr "過去最大のステーク済みGMXまたはesGMXの20%を超えてア�
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "価格への影響はありません。このサイズでの<0/>ショートの増加またはロングの減少に対して<1/>単一の約定価格が適用されます。"
 
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "This passkey can't create a session key: its provider doesn't support PRF"
+msgstr "このパスキーではセッションキーを作成できません：プロバイダーがPRFに対応していません"
+
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "Paxos converts USDC from your wallet on {settlementChainName}."
@@ -6158,6 +6232,10 @@ msgstr "建玉 {directionLabel}"
 msgid "Approval failed"
 msgstr "承認に失敗しました"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Old session"
+msgstr "古いセッション"
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Updating settings..."
 msgstr "設定更新中..."
@@ -6177,6 +6255,10 @@ msgstr "TWAPを作成"
 #: src/components/TradeBox/SwapSlippageField.tsx
 msgid "Slippage is the difference between your expected and actual execution price due to price volatility. Orders won't execute if slippage exceeds your allowed maximum. The default can be adjusted in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Note: slippage is different from price impact, which is based on open interest imbalances. <4>Read more</4>."
 msgstr "スリッページとは、価格変動によって生じる予想約定価格と実際の約定価格の差です。スリッページが許容最大値を超えると、注文は約定しません。デフォルト値は設定で変更できます。<0/><1/>低い値（例：-{0}未満）を設定すると、価格変動が大きい時に注文が失敗する場合があります。<2/><3/>注：スリッページは、建玉の不均衡に基づく価格への影響とは異なります。<4>詳細はこちら</4>。"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active, no expiry, {actionsText}"
+msgstr "有効、期限なし、{actionsText}"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
@@ -6829,6 +6911,10 @@ msgstr "{receivedText}を受け取りました"
 msgid "Transferring a referral code"
 msgstr "紹介コードの移管"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Each browser where you turn on One-Click Trading has its own session. Bots and apps that trade for you also appear here."
+msgstr "One-Click Tradingを有効にしたブラウザごとに個別のセッションがあります。あなたの代わりに取引するボットやアプリもここに表示されます。"
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
 msgid "2–10 min"
 msgstr "2–10分"
@@ -7202,6 +7288,7 @@ msgid "Enter a code"
 msgstr "コードを入力"
 
 #: src/components/GmList/GmListItem.tsx
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
 msgid "Details"
 msgstr "詳細"
 
@@ -7409,6 +7496,10 @@ msgstr "チャートに購入/売却アイコンを表示"
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
 msgstr "このスワップには外部ルーティングが必要です。有効にするには{0}でGasを支払ってください。"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Save this session to a passkey to use it on your other devices and after site data is cleared. Saved it on another device already? Restore it instead."
+msgstr "このセッションをパスキーに保存すると、他のデバイスやサイトデータの削除後にも使用できます。別のデバイスで既に保存済みですか？その場合は復元してください。"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "The amount is more than your staked GMX and esGMX that is not already requested"
 msgstr "金額が、まだ申請されていないステーク中のGMXとesGMXを超えています"
@@ -7587,6 +7678,10 @@ msgstr "卒業"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set stop price below mark price"
 msgstr "ストップ価格をマーク価格より下に設定してください"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "unlimited actions"
+msgstr "アクション無制限"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>One-Click Trading approval was outdated and has been refreshed. Try again</0>"
@@ -9417,6 +9512,10 @@ msgstr "GMの購入は成功しましたが、Baseへのブリッジに失敗し
 msgid "Disable One-Click Trading"
 msgstr "One-Click Tradingを無効にする"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removed"
+msgstr "削除しました"
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
 msgstr "Limit Increase"
@@ -11090,6 +11189,10 @@ msgstr "<0>紹介プログラムのドキュメント</0>を参照するか、<1
 msgid "Edit order"
 msgstr "注文を編集"
 
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "Passkey created. Press Restore from passkey to finish"
+msgstr "パスキーを作成しました。完了するには「パスキーから復元」を押してください"
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationError.ts
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -11450,6 +11553,10 @@ msgstr "裏付けトークンへのエクスポージャー"
 msgid "Search type"
 msgstr "タイプを検索"
 
+#: src/components/OneClickPasskey/OneClickPasskey.tsx
+msgid "Save to passkey"
+msgstr "パスキーに保存"
+
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 msgid "Converted to {marginTokenSymbol} in the same order"
@@ -11651,6 +11758,10 @@ msgstr "GMXとは？"
 msgid "Deposit submitted"
 msgstr "入金が送信されました"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removal failed"
+msgstr "削除に失敗しました"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -11765,6 +11876,10 @@ msgstr "オプションベースのボールト"
 msgid "Time limit"
 msgstr "期間制限"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Confirm with your passkey..."
+msgstr "パスキーで確認してください..."
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Live unrealized PnL before fees"
 msgstr "手数料控除前の現在の含み損益（PnL）"
@@ -11807,6 +11922,10 @@ msgstr "見積もりをロード中…"
 #: src/domain/synthetics/positions/utils.ts
 msgid "take-profit"
 msgstr "テイクプロフィット"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{0, plural, one {# action left} other {# actions left}}"
+msgstr "{0, plural, one {残り#アクション} other {残り#アクション}}"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL ($)"
@@ -12207,6 +12326,10 @@ msgstr "Nonce:"
 msgid "{txnTypeText} margin deposit: {amountText} to {indexTokenText} {longShortText}"
 msgstr "{txnTypeText} 証拠金入金: {amountText}（{indexTokenText} {longShortText}）"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active until {0}, {actionsText}"
+msgstr "{0}まで有効、{actionsText}"
+
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Price you'll receive when closing, adjusted for capped price impact. <0>Read more</0>."
 msgstr "決済時に受け取る価格です。上限が適用された価格への影響を反映しています。<0>詳細を見る</0>。"
@@ -12299,6 +12422,10 @@ msgstr "Swap Limit: トリガー価格に達したときにトークンをスワ
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "GMXからのアラートとお知らせを受け取り、取引や清算リスクなどを常に把握しましょう"
 
+#: src/domain/synthetics/subaccount/passkey.ts
+msgid "The passkey request was cancelled or timed out"
+msgstr "パスキーのリクエストがキャンセルされたか、タイムアウトしました"
+
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Use the Pay amount"
 msgstr "支払い金額を使用"
@@ -12366,6 +12493,10 @@ msgstr "アフィリエイトボールト"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} up to the caps below. Remaining tokens are reserved for open positions."
 msgstr "GMを売却して、下記の上限まで{0}を受け取れます。残りのトークンはオープンポジション用に確保されています。"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Session is already active, no approval needed"
+msgstr "セッションは既に有効です。承認は不要です"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Reserved positive impact"
@@ -12526,6 +12657,10 @@ msgstr "PnLショート"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "A dedicated account manager"
 msgstr "専任のアカウントマネージャー"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Remove"
+msgstr "削除"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "The Balancer Program rewards traders who consistently take the underweight side of GMX markets. These codes replace the trader fee discount with a higher rebate, which accrues to the code owner's affiliate account and can be claimed anytime. <0>Read more</0>."
@@ -13863,6 +13998,12 @@ msgstr "信頼性を向上させるには設定で<0>Express Trading</0>を有�
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Enter a ratio"
 msgstr "比率を入力"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Remove 1CT sessions"
+msgstr "1CTセッションを削除"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "OK"

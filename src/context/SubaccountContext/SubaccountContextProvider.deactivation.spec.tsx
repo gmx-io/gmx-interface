@@ -20,27 +20,30 @@ import {
 } from "./SubaccountContextProvider";
 import type { SubaccountState } from "./SubaccountContextProvider";
 
-const { mocks, chainState, ACCOUNT, CHAIN_ID, SRC_CHAIN_ID, SUBACCOUNT_ADDRESS, WETH } = vi.hoisted(() => ({
-  mocks: {
-    getIsSubaccountRemovalRequired: vi.fn(),
-    removeSubaccountExpressTxn: vi.fn(),
-    removeSubaccountWalletTxn: vi.fn(),
-    estimateSettlementChainRemoveSubaccountExpressParams: vi.fn(),
-    removeSubaccountSettlementChainExpressTxn: vi.fn(),
-    selectExpressGlobalParams: vi.fn(),
-    selectSettlementChainExpressGlobalParams: vi.fn(),
-    selectIsSubaccountRelayRouterEnabled: vi.fn(),
-    selectGmxAccountGasPaymentToken: vi.fn(),
-    refreshSubaccountData: vi.fn(),
-    pushError: vi.fn(),
-  },
-  chainState: { chainId: 42161, srcChainId: undefined as number | undefined },
-  ACCOUNT: "0x1234567890123456789012345678901234567890",
-  CHAIN_ID: 42161,
-  SRC_CHAIN_ID: 8453,
-  SUBACCOUNT_ADDRESS: "0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa",
-  WETH: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
-}));
+const { mocks, chainState, onchainState, ACCOUNT, CHAIN_ID, SRC_CHAIN_ID, SUBACCOUNT_ADDRESS, WETH } = vi.hoisted(
+  () => ({
+    mocks: {
+      getIsSubaccountRemovalRequired: vi.fn(),
+      removeSubaccountExpressTxn: vi.fn(),
+      removeSubaccountWalletTxn: vi.fn(),
+      estimateSettlementChainRemoveSubaccountExpressParams: vi.fn(),
+      removeSubaccountSettlementChainExpressTxn: vi.fn(),
+      selectExpressGlobalParams: vi.fn(),
+      selectSettlementChainExpressGlobalParams: vi.fn(),
+      selectIsSubaccountRelayRouterEnabled: vi.fn(),
+      selectGmxAccountGasPaymentToken: vi.fn(),
+      refreshSubaccountData: vi.fn(),
+      pushError: vi.fn(),
+    },
+    chainState: { chainId: 42161, srcChainId: undefined as number | undefined },
+    onchainState: { expiresAt: 9999999999n },
+    ACCOUNT: "0x1234567890123456789012345678901234567890",
+    CHAIN_ID: 42161,
+    SRC_CHAIN_ID: 8453,
+    SUBACCOUNT_ADDRESS: "0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa",
+    WETH: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+  })
+);
 
 vi.mock("context/SyntheticsStateContext/selectors/expressSelectors", () => ({
   selectExpressGlobalParams: mocks.selectExpressGlobalParams,
@@ -72,17 +75,13 @@ vi.mock("domain/synthetics/subaccount", async (importOriginal) => ({
   removeSubaccountSettlementChainExpressTxn: mocks.removeSubaccountSettlementChainExpressTxn,
 }));
 
-vi.mock("domain/synthetics/subaccount/generateSubaccount", () => ({
-  generateSubaccount: vi.fn(),
-}));
-
 vi.mock("domain/synthetics/subaccount/useSubaccountOnchainData", () => ({
   useSubaccountOnchainData: () => ({
     subaccountData: {
       active: true,
       maxAllowedCount: 10n,
       currentActionsCount: 0n,
-      expiresAt: 9999999999n,
+      expiresAt: onchainState.expiresAt,
       approvalNonce: 0n,
       multichainApprovalNonce: 0n,
       integrationId: "0x0",
@@ -93,7 +92,6 @@ vi.mock("domain/synthetics/subaccount/useSubaccountOnchainData", () => ({
 
 vi.mock("domain/synthetics/subaccount/utils", async (importOriginal) => ({
   ...(await importOriginal<object>()),
-  getActualApproval: vi.fn(() => ({ signature: "0xsignature" })),
   getInitialSubaccountApproval: vi.fn(),
   getIsSubaccountActive: vi.fn(() => true),
   getSubaccountSigner: vi.fn(() => ({})),
@@ -148,6 +146,7 @@ const storedConfig = JSON.stringify({
   address: SUBACCOUNT_ADDRESS,
   privateKey: "encrypted-private-key",
   isNew: true,
+  version: 2,
 });
 
 const globalExpressParams = { gasPaymentTokenAddress: "0xGasToken" };
@@ -184,13 +183,20 @@ function setup() {
     return null;
   }
 
-  render(
+  const { rerender } = render(
     <SubaccountContextProvider>
       <TestComponent />
     </SubaccountContextProvider>
   );
 
-  return captured;
+  return Object.assign(captured, {
+    rerender: () =>
+      rerender(
+        <SubaccountContextProvider>
+          <TestComponent />
+        </SubaccountContextProvider>
+      ),
+  });
 }
 
 describe("SubaccountContextProvider.tryDisableSubaccount", () => {
@@ -211,6 +217,7 @@ describe("SubaccountContextProvider.tryDisableSubaccount", () => {
     cleanup();
     localStorage.clear();
     vi.clearAllMocks();
+    onchainState.expiresAt = 9999999999n;
   });
 
   it("keeps the local subaccount state on failure so the deactivation can be retried, and completes on retry", async () => {
@@ -628,7 +635,24 @@ describe("SubaccountContextProvider.tryDisableSubaccount", () => {
     mocks.removeSubaccountSettlementChainExpressTxn
       .mockRejectedValueOnce(new GmxRelayError("GMX Relay /v1/relay/submit failed: Service Unavailable", 503))
       .mockResolvedValueOnce(undefined);
-    vi.mocked(getInitialSubaccountApproval).mockResolvedValue({ signature: "0xsignature" } as never);
+    vi.mocked(getInitialSubaccountApproval).mockImplementation(
+      async ({ subaccountAddress }) =>
+        ({
+          subaccount: subaccountAddress,
+          shouldAdd: true,
+          expiresAt: 9999999999n,
+          maxAllowedCount: 10n,
+          actionType: "0xaction",
+          nonce: 0n,
+          deadline: 9999999999n,
+          desChainId: 42161n,
+          signature: "0xsignature",
+          signedAt: 1700000000000,
+          integrationId: "0x0000000000000000000000000000000000000000000000000000000000000000",
+          subaccountRouterAddress: "0x0000000000000000000000000000000000000001",
+          signatureChainId: 42161,
+        }) as never
+    );
 
     const context = setup();
 
@@ -636,9 +660,15 @@ describe("SubaccountContextProvider.tryDisableSubaccount", () => {
       await context.current.tryDisableSubaccount();
     });
 
+    onchainState.expiresAt = 1n;
+    context.rerender();
+
     await act(async () => {
       await context.current.tryEnableSubaccount();
     });
+
+    onchainState.expiresAt = 9999999999n;
+    context.rerender();
 
     let result: boolean | undefined;
     await act(async () => {
