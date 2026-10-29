@@ -10,6 +10,7 @@ import { getByKey } from "lib/objects";
 import { bigMath } from "sdk/utils/bigmath";
 
 const SIZE_FIT_MARGIN_BPS = 10n;
+const CONVERSION_DRIFT_BPS = 10n;
 
 export type OrderAutoSubmitStep = "wait" | "approve" | "submit" | "stop";
 
@@ -31,6 +32,14 @@ export function getTpSlSetupKey(entries: SidecarOrderEntryBase[]) {
     ]);
 }
 
+function addConversionDrift(amount: bigint) {
+  return bigMath.mulDiv(amount, BASIS_POINTS_DIVISOR_BIGINT + CONVERSION_DRIFT_BPS, BASIS_POINTS_DIVISOR_BIGINT);
+}
+
+export function getConvertFirstPayAmount(p: { payAmount: bigint; maxAvailableAmount: bigint }) {
+  return bigMath.max(p.payAmount, bigMath.min(addConversionDrift(p.payAmount), p.maxAvailableAmount));
+}
+
 export function getConvertedOrderStatus(p: {
   confirmedOrder: ConfirmedUsdgOrder;
   setupKey: string;
@@ -41,7 +50,7 @@ export function getConvertedOrderStatus(p: {
 }): ConvertedOrderStatus {
   const { confirmedOrder } = p;
 
-  if (p.setupKey !== confirmedOrder.setupKey || p.sizeDeltaUsd > confirmedOrder.sizeDeltaUsd) {
+  if (p.setupKey !== confirmedOrder.setupKey || p.sizeDeltaUsd > addConversionDrift(confirmedOrder.sizeDeltaUsd)) {
     return "changed";
   }
 

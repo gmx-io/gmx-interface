@@ -49,13 +49,8 @@ export function useOrderAutoSubmitAfterConversion({
   const latestStop = useLatest(stop);
   const latestMarkApprovalRequested = useLatest(markApprovalRequested);
 
-  useEffect(
-    function placeOrderAfterConversion() {
-      if (!isPending) {
-        return;
-      }
-
-      const step = getOrderAutoSubmitStep({
+  const step = isPending
+    ? getOrderAutoSubmitStep({
         isSubmitting,
         isButtonLoading: isExpressLoading || isApproving || isAwaitingBalance,
         isAllowanceLoaded,
@@ -63,13 +58,21 @@ export function useOrderAutoSubmitAfterConversion({
         isDepositButtonShown,
         approvalTokenAddress,
         isApprovalRequested: approvalTokenAddress !== undefined && requestedApprovals.includes(approvalTokenAddress),
-      });
+      })
+    : undefined;
+  const latestStep = useLatest(step);
 
-      if (step === "wait") {
+  useEffect(
+    function placeOrderAfterConversion() {
+      if (step === undefined || step === "wait") {
         return;
       }
 
       const timerId = setTimeout(() => {
+        if (latestStep.current !== step) {
+          return;
+        }
+
         if (step === "approve" && approvalTokenAddress !== undefined) {
           latestMarkApprovalRequested.current(approvalTokenAddress);
         } else {
@@ -102,8 +105,10 @@ export function useOrderAutoSubmitAfterConversion({
       latestMarkApprovalRequested,
       latestOnApprove,
       latestOnSubmit,
+      latestStep,
       latestStop,
       requestedApprovals,
+      step,
     ]
   );
 

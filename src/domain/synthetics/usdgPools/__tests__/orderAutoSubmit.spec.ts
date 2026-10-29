@@ -16,6 +16,7 @@ import {
   type ConfirmedUsdgOrder,
   getConvertedOrderStatus,
   getConvertedSizeFit,
+  getConvertFirstPayAmount,
   getIsOrderStepGasCovered,
   getOrderAutoSubmitStep,
 } from "../orderAutoSubmit";
@@ -165,6 +166,8 @@ describe("getConvertedOrderStatus", () => {
     ["fits a typed size that needs more USDG than converted", typedSize, { payAmount: usdc(1_137.31) }, "marginShort"],
     ["holds a changed size input", typedSize, { sizeInputValue: "4.8853" }, "changed"],
     ["sends a size from the pay amount when it isn't larger", typedPay, { sizeDeltaUsd: usd(10_999) }, "confirmed"],
+    ["sends a size from the pay amount a better fill moved up", typedPay, { sizeDeltaUsd: usd(11_010) }, "confirmed"],
+    ["holds a size more than 0.1% above the confirmed one", typedPay, { sizeDeltaUsd: usd(11_012) }, "changed"],
     ["holds a size grown by the position's pending fees", typedPay, { sizeDeltaUsd: usd(11_327) }, "changed"],
     ["holds a changed price, impact, leverage or TP/SL", typedSize, { setupKey: "changed" }, "changed"],
   ] as const)("%s PRO-4531", (_, confirmedOrder, overrides, expected) => {
@@ -172,8 +175,18 @@ describe("getConvertedOrderStatus", () => {
   });
 });
 
+describe("getConvertFirstPayAmount", () => {
+  it.each([
+    ["converts 0.1% more than a typed size needs", usdc(2_000), usdc(1_001)],
+    ["keeps the extra within the available amount", usdc(1_000.4), usdc(1_000.4)],
+    ["leaves an amount over the available one as it is", usdc(900), usdc(1_000)],
+  ] as const)("%s PRO-4531", (_, maxAvailableAmount, expected) => {
+    expect(getConvertFirstPayAmount({ payAmount: usdc(1_000), maxAvailableAmount })).toBe(expected);
+  });
+});
+
 describe("getConvertedSizeFit", () => {
-  it("fits a typed size to the converted USDG with a 0.1% margin, leaving the position's pending fees out of the scaling PRO-4531", () => {
+  it("fits a typed size to the converted USDG PRO-4531", () => {
     const tokensData = mockTokensData();
     const marketsInfoData = mockMarketsInfoData(tokensData, ["ETH-USDC-USDC"]);
     const marketInfo = marketsInfoData["ETH-USDC-USDC"];

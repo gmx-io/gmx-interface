@@ -45,6 +45,7 @@ import {
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxKeepLeverage,
   selectTradeboxLeverage,
+  selectTradeboxLeverageStrategy,
   selectTradeboxMarkPrice,
   selectTradeboxMaxAllowedLeverage,
   selectTradeboxNextPositionValues,
@@ -87,7 +88,7 @@ import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getInsufficientFeeButtonMessage } from "domain/synthetics/trade/utils/validation";
-import { getIsOrderStepGasCovered } from "domain/synthetics/usdgPools/orderAutoSubmit";
+import { getConvertFirstPayAmount, getIsOrderStepGasCovered } from "domain/synthetics/usdgPools/orderAutoSubmit";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { Token } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
@@ -416,6 +417,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   const isUsdgConversionActive = usdgConversion.isBusy || usdgConversion.isOrderAutoSubmitArmed;
   const isUsdgConversionTooLarge = useSelector(selectTradeboxIsUsdgConversionTooLarge);
   const isUsdgConvertFirstSetup = useSelector(selectTradeboxIsUsdgConvertFirstSetup);
+  const leverageStrategy = useSelector(selectTradeboxLeverageStrategy);
 
   // the convert step takes over only a ready order button, but keeps its spinner while the swap is in flight
   const isConvertStepShown =
@@ -681,12 +683,14 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
             false
           );
         } else {
-          setFromTokenInputValue(
-            increaseAmounts.initialCollateralAmount > 0
-              ? formatAmountFree(increaseAmounts.initialCollateralAmount, fromToken.decimals)
-              : "",
-            false
-          );
+          const payAmount =
+            isUsdgConvertFirstSetup &&
+            leverageStrategy === "leverageBySize" &&
+            increaseAmounts.swapStrategy.type !== "externalSwap"
+              ? getConvertFirstPayAmount({ payAmount: increaseAmounts.initialCollateralAmount, maxAvailableAmount })
+              : increaseAmounts.initialCollateralAmount;
+
+          setFromTokenInputValue(payAmount > 0 ? formatAmountFree(payAmount, fromToken.decimals) : "", false);
         }
       }
     },
@@ -697,6 +701,9 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
       increaseAmounts,
       isIncrease,
       isSwap,
+      isUsdgConvertFirstSetup,
+      leverageStrategy,
+      maxAvailableAmount,
       paxosReceiveAmountOut,
       prevIsISwap,
       setFocusedInput,
