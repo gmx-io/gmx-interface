@@ -17,6 +17,7 @@ import { calcMarginAmountByPercentage, calcMarginPercentage } from "domain/synth
 import { MaxActionsState } from "domain/tokens/useMaxAvailableAmount";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
+import { usePrevious } from "lib/usePrevious";
 
 import { MarginField } from "./MarginField";
 import { MarginPercentageSlider } from "./MarginPercentageSlider";
@@ -69,6 +70,8 @@ export function TradeboxMarginFields({
   const prevSizeSyncContextRef = useRef<string>();
   const prevTriggerPriceRef = useRef<bigint | undefined | null>(null);
   const shouldForceSizeUsdSyncRef = useRef(false);
+  const tokensInputValueFromUsdRef = useRef<string | undefined>(toTokenInputValue === "" ? "" : undefined);
+  const previousToTokenInputValue = usePrevious(toTokenInputValue);
 
   const toToken = getByKey(tokensData, toTokenAddress);
 
@@ -154,13 +157,17 @@ export function TradeboxMarginFields({
     if (shouldForceSizeUsdSyncRef.current) {
       shouldForceSizeUsdSyncRef.current = false;
       const tokensValue = usdToTokens(sizeInputValue);
+      tokensInputValueFromUsdRef.current = tokensValue;
       if (tokensValue !== toTokenInputValue) {
         setToTokenInputValue(tokensValue, false);
       }
       return;
     }
 
-    if (focusedInput === "to") return;
+    const isTokensInputValueSetElsewhere =
+      toTokenInputValue !== previousToTokenInputValue && toTokenInputValue !== tokensInputValueFromUsdRef.current;
+
+    if (focusedInput === "to" && !isTokensInputValueSetElsewhere) return;
 
     const usdValue = tokensToUsd(toTokenInputValue);
     if (usdValue !== sizeInputValue) {
@@ -171,6 +178,7 @@ export function TradeboxMarginFields({
     sizeDisplayMode,
     sizeInputValue,
     toTokenInputValue,
+    previousToTokenInputValue,
     canConvert,
     tokensToUsd,
     usdToTokens,
@@ -234,6 +242,7 @@ export function TradeboxMarginFields({
         setSizeInputValue(nextValue);
         if (canConvert) {
           const tokensValue = usdToTokens(nextValue);
+          tokensInputValueFromUsdRef.current = tokensValue;
           if (tokensValue !== toTokenInputValue) {
             setToTokenInputValue(tokensValue, false);
           }
