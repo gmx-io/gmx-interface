@@ -1686,6 +1686,7 @@ msgid "Use {0} for gas"
 msgstr "使用 {0} 支付 Gas"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Total margin funded"
 msgstr "累計投入保證金"
 
@@ -6998,6 +6999,10 @@ msgstr "選擇市場"
 msgid "Referral code creation failed"
 msgstr "推薦碼建立失敗"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Net result"
+msgstr "淨結果"
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "The bridge fee is paid in {bridgeFeeTokenSymbol} from your GMX Account"
@@ -7599,6 +7604,10 @@ msgstr "畢業"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set stop price below mark price"
 msgstr "將停止單價格設為低於標記價格"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Total received"
+msgstr "累計收到"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>One-Click Trading approval was outdated and has been refreshed. Try again</0>"
@@ -8276,6 +8285,10 @@ msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> 至 </1>{toTokenIcon}"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pool max long amount"
 msgstr "池做多最大數量"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Received before close"
+msgstr "平倉前收到"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Requires more active management than GLV"
@@ -12667,6 +12680,11 @@ msgstr "目前影響：{0}。使用 -0.30% 或更高以獲得更好的訂單執�
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 msgid "This market is disabled. Contact support to claim your remaining funding fees."
 msgstr "此市場已停用。請聯絡支援團隊以領取剩餘的資金費用。"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Received at close"
+msgstr "平倉時收到"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Token permit testing"

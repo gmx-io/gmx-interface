@@ -1686,6 +1686,7 @@ msgid "Use {0} for gas"
 msgstr "Use {0} for gas"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Total margin funded"
 msgstr "Total margin funded"
 
@@ -6998,6 +6999,10 @@ msgstr "Select market"
 msgid "Referral code creation failed"
 msgstr "Referral code creation failed"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Net result"
+msgstr "Net result"
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "The bridge fee is paid in {bridgeFeeTokenSymbol} from your GMX Account"
@@ -7599,6 +7604,10 @@ msgstr "Graduated"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set stop price below mark price"
 msgstr "Set stop price below mark price"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Total received"
+msgstr "Total received"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>One-Click Trading approval was outdated and has been refreshed. Try again</0>"
@@ -8276,6 +8285,10 @@ msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{toTokenIcon}"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pool max long amount"
 msgstr "Pool max long amount"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Received before close"
+msgstr "Received before close"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Requires more active management than GLV"
@@ -12667,6 +12680,11 @@ msgstr "Current impact: {0}. Use -0.30% or more for better order execution."
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 msgid "This market is disabled. Contact support to claim your remaining funding fees."
 msgstr "This market is disabled. Contact support to claim your remaining funding fees."
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Received at close"
+msgstr "Received at close"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Token permit testing"

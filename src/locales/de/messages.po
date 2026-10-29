@@ -1686,6 +1686,7 @@ msgid "Use {0} for gas"
 msgstr "{0} für Gas verwenden"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Total margin funded"
 msgstr "Insgesamt eingezahlte Margin"
 
@@ -6998,6 +6999,10 @@ msgstr "Markt auswählen"
 msgid "Referral code creation failed"
 msgstr "Erstellung des Empfehlungscodes fehlgeschlagen"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Net result"
+msgstr "Nettoergebnis"
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "The bridge fee is paid in {bridgeFeeTokenSymbol} from your GMX Account"
@@ -7599,6 +7604,10 @@ msgstr "Abgeschlossen"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set stop price below mark price"
 msgstr "Stoppreis unter dem Markpreis festlegen"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Total received"
+msgstr "Eingang insgesamt"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>One-Click Trading approval was outdated and has been refreshed. Try again</0>"
@@ -8276,6 +8285,10 @@ msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> zu </1>{toTokenIcon}"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pool max long amount"
 msgstr "Maximaler Long-Betrag des Pools"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Received before close"
+msgstr "Eingang vor dem Schließen"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Requires more active management than GLV"
@@ -12667,6 +12680,11 @@ msgstr "Aktueller Impact: {0}. Verwenden Sie -0,30 % oder mehr für eine bessere
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 msgid "This market is disabled. Contact support to claim your remaining funding fees."
 msgstr "Dieser Markt ist deaktiviert. Wenden Sie sich an den Support, um Ihre verbleibenden Finanzierungsgebühren zu beanspruchen."
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Received at close"
+msgstr "Eingang beim Schließen"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Token permit testing"

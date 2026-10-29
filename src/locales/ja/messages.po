@@ -1686,6 +1686,7 @@ msgid "Use {0} for gas"
 msgstr "ガスに {0} を使用"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Total margin funded"
 msgstr "拠出証拠金の合計"
 
@@ -6998,6 +6999,10 @@ msgstr "マーケットを選択"
 msgid "Referral code creation failed"
 msgstr "リファラルコードの作成に失敗しました"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Net result"
+msgstr "純収支"
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "The bridge fee is paid in {bridgeFeeTokenSymbol} from your GMX Account"
@@ -7599,6 +7604,10 @@ msgstr "卒業"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set stop price below mark price"
 msgstr "ストップ価格をマーク価格より下に設定してください"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Total received"
+msgstr "受取額の合計"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>One-Click Trading approval was outdated and has been refreshed. Try again</0>"
@@ -8276,6 +8285,10 @@ msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> から </1>{toTokenIcon}"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pool max long amount"
 msgstr "プール最大ロング数量"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Received before close"
+msgstr "クローズ前の受取額"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Requires more active management than GLV"
@@ -12667,6 +12680,11 @@ msgstr "現在のインパクト: {0}。より良い注文執行のため、-0.3
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 msgid "This market is disabled. Contact support to claim your remaining funding fees."
 msgstr "この市場は無効です。残りのファンディング手数料を受け取るには、サポートにお問い合わせください。"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Received at close"
+msgstr "クローズ時の受取額"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Token permit testing"

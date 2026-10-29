@@ -1686,6 +1686,7 @@ msgid "Use {0} for gas"
 msgstr "Использовать {0} для оплаты Gas"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Total margin funded"
 msgstr "Всего внесено маржи"
 
@@ -6998,6 +6999,10 @@ msgstr "Выбрать рынок"
 msgid "Referral code creation failed"
 msgstr "Не удалось создать реферальный код"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Net result"
+msgstr "Чистый результат"
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "The bridge fee is paid in {bridgeFeeTokenSymbol} from your GMX Account"
@@ -7599,6 +7604,10 @@ msgstr "Завершившие"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set stop price below mark price"
 msgstr "Установите стоп-цену ниже расчётной цены"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Total received"
+msgstr "Всего получено"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>One-Click Trading approval was outdated and has been refreshed. Try again</0>"
@@ -8276,6 +8285,10 @@ msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> в </1>{toTokenIcon}"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pool max long amount"
 msgstr "Макс. количество лонг-токена в пуле"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Received before close"
+msgstr "Получено до закрытия"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Requires more active management than GLV"
@@ -12667,6 +12680,11 @@ msgstr "Текущее влияние: {0}. Используйте -0.30% или
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 msgid "This market is disabled. Contact support to claim your remaining funding fees."
 msgstr "Этот рынок отключён. Обратитесь в службу поддержки, чтобы получить оставшиеся комиссии за финансирование."
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Received at close"
+msgstr "Получено при закрытии"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Token permit testing"
