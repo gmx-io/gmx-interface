@@ -115,7 +115,7 @@ describe("getLifecycleSettlementView", () => {
       chainId: ARBITRUM,
     });
 
-    expect(view).toEqual({ mode: "compact", openRow: anchorOpenRow, isMultichain: false });
+    expect(view).toEqual({ mode: "compact", openRow: anchorOpenRow, source: "wallet" });
   });
 
   it("falls back when collateral left the position between the only two rows", () => {
@@ -257,6 +257,10 @@ describe("getLifecycleSettlementView", () => {
       key: "Total margin funded",
       value: [`~1.0000${NBSP}WETH`, " + ", `~500.00${NBSP}USDC`, " ", { text: `(~$${HAIR}2,500.00)`, state: "muted" }],
     });
+    expect(lines[7]).toEqual({
+      key: "Net wallet result",
+      value: [`~798.00${NBSP}USDC`, " - ", `~1.0000${NBSP}WETH`, " ", { text: `(~-$${HAIR}1,202.00)`, state: "muted" }],
+    });
   });
 
   it.each([
@@ -286,14 +290,13 @@ describe("getLifecycleSettlementView", () => {
   });
 
   it("labels cashflows as GMX balance movements for multichain lifecycles", () => {
+    const gmxAccountRows = EXTENDED_ROWS.map((row) => ({ ...row, srcChainId: 8453 }) as PositionTradeAction);
     const aggregate = getExtendedAggregate(
-      buildLifecycleData({
-        rows: [{ ...openRow, srcChainId: 8453 } as PositionTradeAction, depositRow, partialCloseRow, finalCloseRow],
-        requestedByOrderKey: EXTENDED_REQUESTED,
-      })
+      buildLifecycleData({ rows: gmxAccountRows, requestedByOrderKey: EXTENDED_REQUESTED }),
+      gmxAccountRows[gmxAccountRows.length - 1]
     );
 
-    expect(aggregate.isMultichain).toBe(true);
+    expect(aggregate.source).toBe("gmxAccount");
 
     const result = getLifecycleSettlementLines(aggregate).filter((line) => line !== undefined);
 
@@ -426,16 +429,36 @@ describe("getLifecycleSettlementView", () => {
   });
 
   it("labels an unreconcilable multichain lifecycle as a balance movement", () => {
+    const gmxAccountRows = EXTENDED_ROWS.map((row) => ({ ...row, srcChainId: 8453 }) as PositionTradeAction);
     const view = getLifecycleSettlementView({
-      closeRow: finalCloseRow,
-      data: buildExtendedData({
-        rows: [{ ...openRow, srcChainId: 8453 } as PositionTradeAction, depositRow, partialCloseRow, finalCloseRow],
-        hasFundingSettlement: true,
-      }),
+      closeRow: gmxAccountRows[gmxAccountRows.length - 1],
+      data: buildExtendedData({ rows: gmxAccountRows, hasFundingSettlement: true }),
       chainId: ARBITRUM,
     });
 
-    expect(view).toEqual({ mode: "closeSideOnly", isMultichain: true });
+    expect(view).toEqual({ mode: "closeSideOnly", source: "gmxAccount" });
+  });
+
+  it.each([
+    ["a margin deposit from the GMX Account", [0, 8453, 0, 0]],
+    ["a wallet position paid out to the GMX Account", [0, 0, 0, 8453]],
+  ])("labels a lifecycle with %s as mixed PRO-4520", (_label, srcChainIds) => {
+    const rows = EXTENDED_ROWS.map((row, index) => ({ ...row, srcChainId: srcChainIds[index] }) as PositionTradeAction);
+    const result = getLifecycleSettlementLines(
+      getExtendedAggregate(buildLifecycleData({ rows, requestedByOrderKey: EXTENDED_REQUESTED }), rows[rows.length - 1])
+    ).filter((line) => line !== undefined);
+
+    expect(result.slice(3, 8).map((line) => (line as { key: string }).key)).toEqual([
+      "Total margin funded",
+      "Received before close",
+      "Received at close",
+      "Total received",
+      "Net result",
+    ]);
+    expect(result.at(-1)).toEqual({
+      text: "Excludes claimed funding, price impact rebates and execution fees",
+      state: "muted",
+    });
   });
 });
 

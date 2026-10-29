@@ -25,8 +25,13 @@ import {
   selectTradeboxFormState,
   selectTradeboxFromToken,
   selectTradeboxFromTokenAmount,
+  selectTradeboxIncreasePositionAmounts,
+  selectTradeboxIsTPSLEnabled,
+  selectTradeboxLeverageStrategy,
   selectTradeboxMarketAddress,
   selectTradeboxLeverageOption,
+  selectTradeboxToToken,
+  selectTradeboxToTokenInputValue,
   selectTradeboxTradeFlags,
   selectTradeboxTradeMode,
   selectTradeboxTradeType,
@@ -34,6 +39,7 @@ import {
   selectTradeboxTwapDuration,
   selectTradeboxTwapNumberOfParts,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { makeSelectTradeboxSidecarOrdersState } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxSidecarOrders";
 import {
   selectTradeboxIsUsdgConversionTooLarge,
   selectTradeboxIsUsdgConvertFirst,
@@ -50,6 +56,12 @@ import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallba
 import { getReceivedTokenAmount } from "domain/synthetics/paxosTransit/getReceivedTokenAmount";
 import { useIsSwapTabPaxosOffered } from "domain/synthetics/paxosTransit/useIsSwapTabPaxosOffered";
 import { convertToUsd, getBalanceByBalanceType, getMidPrice, TokenBalanceType } from "domain/synthetics/tokens";
+import {
+  type ConfirmedUsdgOrder,
+  getConvertedOrderStatus,
+  getConvertedSizeFit,
+  getTpSlSetupKey,
+} from "domain/synthetics/usdgPools/orderAutoSubmit";
 import { formatMaxInstantAmount } from "domain/synthetics/usdgPools/usdcConversion";
 import { getApproveButtonText } from "domain/tokens/gasPaymentTokenApproval";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
@@ -66,6 +78,7 @@ import { BatchOrderTxnParams, buildSwapOrderPayload } from "sdk/utils/orderTrans
 import { TradeMode } from "sdk/utils/trade/types";
 
 import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
+import { TOKEN_INPUT_DISPLAY_DECIMALS } from "components/TradeboxMarginFields/useSizeConversion";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
@@ -100,10 +113,12 @@ export type TradeboxUsdgConversion = ReturnType<typeof useTradeboxUsdgConversion
 export function useTradeboxUsdgConversion({
   canSwitchGasPaymentToken,
   setFromTokenInputValue,
+  setToTokenInputValue,
   setFocusedInput,
 }: {
   canSwitchGasPaymentToken: boolean;
   setFromTokenInputValue: (value: string, resetPriceImpactAndSwapSlippage?: boolean) => void;
+  setToTokenInputValue: (value: string, resetPriceImpactAndSwapSlippage: boolean) => void;
   setFocusedInput: (input: "from" | "to") => void;
 }) {
   const history = useHistory();
@@ -124,6 +139,13 @@ export function useTradeboxUsdgConversion({
   const collateralTokenAddress = useSelector(selectTradeboxCollateralTokenAddress);
   const fromToken = useSelector(selectTradeboxFromToken);
   const fromTokenAmount = useSelector(selectTradeboxFromTokenAmount);
+  const toToken = useSelector(selectTradeboxToToken);
+  const toTokenInputValue = useSelector(selectTradeboxToTokenInputValue);
+  const leverageStrategy = useSelector(selectTradeboxLeverageStrategy);
+  const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
+  const isTpSlEnabled = useSelector(selectTradeboxIsTPSLEnabled);
+  const [tpEntries] = useSelector(makeSelectTradeboxSidecarOrdersState("tp"));
+  const [slEntries] = useSelector(makeSelectTradeboxSidecarOrdersState("sl"));
   const isTooLarge = useSelector(selectTradeboxIsUsdgConversionTooLarge);
   const maxInstantAmount = useSelector(selectTradeboxUsdgMaxInstantAmount);
   const isConvertFirst = useSelector(selectTradeboxIsUsdgConvertFirst) && !isTooLarge;
@@ -271,12 +293,16 @@ export function useTradeboxUsdgConversion({
     marketAddress,
     collateralTokenAddress,
     leverageOption,
+    leverageStrategy,
     triggerPriceInputValue,
     twapDuration,
     twapNumberOfParts,
+    tradeFlags.isTwap ? undefined : String(increaseAmounts?.acceptablePrice),
+    isTpSlEnabled ? getTpSlSetupKey([...tpEntries, ...slEntries]) : undefined,
   ]);
   const latestMarketAddress = useLatest(marketAddress);
   const latestOrderSetupKey = useLatest(orderSetupKey);
+  const latestToTokenInputValue = useLatest(toTokenInputValue);
 
   const resetConversion = useCallback(() => {
     updateUsdgConversionSession((current) => ({
@@ -295,10 +321,25 @@ export function useTradeboxUsdgConversion({
       return;
     }
 
-    if (!batchParams || !signer || !provider || !tokensData || !conversionSwapAmounts || !usdcAddress || !usdgToken) {
+    if (
+      !batchParams ||
+      !signer ||
+      !provider ||
+      !tokensData ||
+      !conversionSwapAmounts ||
+      !usdcAddress ||
+      !usdgToken ||
+      !increaseAmounts
+    ) {
       helperToast.error(t`Conversion failed`);
       return;
     }
+
+    const confirmedOrder: ConfirmedUsdgOrder = {
+      setupKey: orderSetupKey,
+      sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+      sizeInputValue: leverageStrategy === "leverageBySize" ? toTokenInputValue : undefined,
+    };
 
     updateUsdgConversionSession((current) => ({ ...current, step: "submitting" }));
 
@@ -313,7 +354,7 @@ export function useTradeboxUsdgConversion({
         tokenOutDecimals: usdgToken.decimals,
         minAmountOut: batchParams.createOrderParams[0].orderPayload.numbers.minOutputAmount,
         swapPath: conversionSwapAmounts.swapStrategy.swapPathStats?.swapPath ?? [],
-        orderSetupKey,
+        confirmedOrder,
         isGmxAccount: isFromTokenGmxAccount,
       };
       updateUsdgConversionSession((current) => ({ ...current, pending }));
@@ -368,9 +409,11 @@ export function useTradeboxUsdgConversion({
     expressParamsPromise,
     fromToken?.symbol,
     handleApprove,
+    increaseAmounts,
     isAllowanceLoaded,
     isApproving,
     isFromTokenGmxAccount,
+    leverageStrategy,
     makeOrderTxnCallback,
     marketAddress,
     orderSetupKey,
@@ -379,6 +422,7 @@ export function useTradeboxUsdgConversion({
     resetConversion,
     shouldDisableValidationForTesting,
     signer,
+    toTokenInputValue,
     tokensData,
     tokensToApprove.length,
     usdcAddress,
@@ -455,20 +499,28 @@ export function useTradeboxUsdgConversion({
           }
 
           const amountOut = receivedAmount > 0n ? receivedAmount : pending.minAmountOut;
-
-          setFromTokenAddress(pending.tokenOutAddress);
-          setFocusedInput("from");
-          setFromTokenInputValue(formatAmountFree(amountOut, pending.tokenOutDecimals), true);
+          const { confirmedOrder } = pending;
           // a setup changed during the wait (a Long/Short flip outside the form) would otherwise leave a hidden arm
-          const isOrderSetupUnchanged = latestOrderSetupKey.current === pending.orderSetupKey;
+          const isOrderSetupUnchanged =
+            latestOrderSetupKey.current === confirmedOrder.setupKey &&
+            (confirmedOrder.sizeInputValue === undefined ||
+              latestToTokenInputValue.current === confirmedOrder.sizeInputValue);
 
           updateUsdgConversionSession((current) => ({
             ...current,
             lastConversion: { marketAddress: pending.marketAddress, amountOut },
             orderAutoSubmitArm: isOrderSetupUnchanged
-              ? { setupKey: pending.orderSetupKey, armedAt: Date.now(), requestedApprovalTokens: [] }
+              ? { confirmedOrder, armedAt: Date.now(), requestedApprovalTokens: [] }
               : current.orderAutoSubmitArm,
           }));
+
+          setFromTokenAddress(pending.tokenOutAddress);
+
+          if (confirmedOrder.sizeInputValue === undefined) {
+            setFocusedInput("from");
+            setFromTokenInputValue(formatAmountFree(amountOut, pending.tokenOutDecimals), true);
+          }
+
           resetConversion();
         });
     },
@@ -477,6 +529,7 @@ export function useTradeboxUsdgConversion({
       chainId,
       latestMarketAddress,
       latestOrderSetupKey,
+      latestToTokenInputValue,
       marketAddress,
       orderStatuses,
       pendingConversion,
@@ -742,17 +795,45 @@ export function useTradeboxUsdgConversion({
     usdcAddress,
   ]);
 
-  // only while the margin still is the converted amount on the same market
+  const confirmedOrder = orderAutoSubmitArm?.confirmedOrder;
+  const isTypedSizeKept = confirmedOrder?.sizeInputValue !== undefined;
   const isConvertedMarginInPlace =
     lastConversion !== undefined &&
+    increaseAmounts !== undefined &&
     fromToken?.address === collateralTokenAddress &&
     lastConversion.marketAddress === marketAddress &&
-    fromTokenAmount === lastConversion.amountOut;
+    (isTypedSizeKept
+      ? toTokenInputValue === confirmedOrder?.sizeInputValue
+      : fromTokenAmount === lastConversion.amountOut);
 
   const orderAutoSubmitArmedAt = orderAutoSubmitArm?.armedAt;
   const isOrderAutoSubmitArmed = orderAutoSubmitArmedAt !== undefined;
-  const isOrderAutoSubmitPending =
-    isOrderAutoSubmitArmed && isConvertedMarginInPlace && orderAutoSubmitArm?.setupKey === orderSetupKey;
+  const convertedOrderStatus =
+    confirmedOrder && lastConversion && increaseAmounts && isConvertedMarginInPlace
+      ? getConvertedOrderStatus({
+          confirmedOrder,
+          setupKey: orderSetupKey,
+          sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+          sizeInputValue: toTokenInputValue,
+          payAmount: increaseAmounts.initialCollateralAmount,
+          convertedAmount: lastConversion.amountOut,
+        })
+      : undefined;
+  const isOrderAutoSubmitPending = convertedOrderStatus === "confirmed";
+
+  let convertedSizeFitInputValue: string | undefined;
+
+  if (convertedOrderStatus === "marginShort" && lastConversion && increaseAmounts && fromToken && toToken) {
+    const sizeFit = getConvertedSizeFit({
+      increaseAmounts,
+      convertedUsd: convertToUsd(lastConversion.amountOut, fromToken.decimals, increaseAmounts.initialCollateralPrice)!,
+    });
+
+    convertedSizeFitInputValue =
+      sizeFit !== undefined
+        ? formatAmountFree(sizeFit, toToken.decimals, TOKEN_INPUT_DISPLAY_DECIMALS, toToken.visualMultiplier)
+        : undefined;
+  }
   // a GMX Account credit reaches the balance a few seconds after the swap, and its "insufficient balance" isn't final
   const payBalance = getBalanceByBalanceType(
     fromToken,
@@ -788,19 +869,34 @@ export function useTradeboxUsdgConversion({
   const landedArmedAtRef = useRef<number>();
 
   useEffect(
-    function disarmOrderAutoSubmit() {
+    function disarmChangedOrder() {
       if (orderAutoSubmitArmedAt === undefined) {
         return;
       }
 
       // the pay token switches a render after the arm, so only a change after the margin landed disarms
-      if (isOrderAutoSubmitPending) {
+      if (isConvertedMarginInPlace) {
         landedArmedAtRef.current = orderAutoSubmitArmedAt;
-      } else if (landedArmedAtRef.current === orderAutoSubmitArmedAt) {
-        stopOrderAutoSubmit();
+      }
+
+      if (landedArmedAtRef.current !== orderAutoSubmitArmedAt || isOrderAutoSubmitPending) {
+        return;
+      }
+
+      stopOrderAutoSubmit();
+
+      if (convertedSizeFitInputValue !== undefined) {
+        setToTokenInputValue(convertedSizeFitInputValue, false);
       }
     },
-    [isOrderAutoSubmitPending, orderAutoSubmitArmedAt, stopOrderAutoSubmit]
+    [
+      convertedSizeFitInputValue,
+      isConvertedMarginInPlace,
+      isOrderAutoSubmitPending,
+      orderAutoSubmitArmedAt,
+      setToTokenInputValue,
+      stopOrderAutoSubmit,
+    ]
   );
 
   useEffect(

@@ -35,13 +35,10 @@ vi.mock("context/GmxAccountContext/hooks", () => ({
   useGmxAccountSettlementChainId: () => [42161],
 }));
 
-vi.mock("config/multichain", () => ({
-  isSourceChain: () => false,
-}));
-
-vi.mock("lib/chains", () => ({
-  useChainId: () => ({ networkId: 42161 }),
-}));
+vi.mock("config/multichain", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("config/multichain")>();
+  return { ...actual, isSourceChain: () => false };
+});
 
 vi.mock("lib/metrics", () => ({
   metrics: {

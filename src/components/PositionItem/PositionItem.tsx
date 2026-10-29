@@ -22,6 +22,7 @@ import {
   getEstimatedLiquidationTimeInHours,
   getPositionOffHoursLiqRisk,
 } from "domain/synthetics/positions";
+import { getPositionLifetimeFees, type PositionsLifecycleFees } from "domain/synthetics/positions/lifetimeFees";
 import { TradeMode } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
 import { formatBalanceAmount, formatPriceImpactBps } from "lib/numbers";
@@ -55,6 +56,7 @@ import "./PositionItem.scss";
 
 export type Props = {
   position: PositionInfo;
+  lifecycleFees: PositionsLifecycleFees | undefined;
   hideActions?: boolean;
   showPnlAfterFees: boolean;
   onClosePositionClick?: () => void;
@@ -231,6 +233,52 @@ export function PositionItem(p: Props) {
     };
   }, [p.position.marketInfo, p.position.isLong, p.position.sizeInUsd]);
 
+  function renderLifetimeFees() {
+    const lifetimeFees = getPositionLifetimeFees(p.position, p.lifecycleFees);
+    const totals = lifetimeFees.status === "loaded" ? lifetimeFees : undefined;
+    const fallback = lifetimeFees.status === "unavailable" ? "-" : "...";
+
+    return (
+      <>
+        <div className="mb-4 text-typography-primary">
+          <Trans>Since position opened</Trans>
+        </div>
+        <StatsTooltipRow
+          label={t`Total borrow fee`}
+          showDollar={false}
+          value={<UsdValue usd={totals && -totals.borrowingFeeUsd} fallback={fallback} />}
+          valueClassName="numbers"
+          textClassName={cx({
+            "text-red-500": totals !== undefined && totals.borrowingFeeUsd !== 0n,
+          })}
+        />
+        <StatsTooltipRow
+          label={t`Total funding paid`}
+          showDollar={false}
+          value={<DeltaUsdValue deltaUsd={totals && -totals.fundingFeePaidUsd} fallback={fallback} />}
+          valueClassName="numbers"
+          textClassName={cx({
+            "text-red-500": totals !== undefined && totals.fundingFeePaidUsd !== 0n,
+          })}
+        />
+        <StatsTooltipRow
+          label={t`Total funding received`}
+          showDollar={false}
+          value={<DeltaUsdValue deltaUsd={totals?.fundingFeeReceivedUsd} fallback={fallback} />}
+          valueClassName="numbers"
+          textClassName={cx({
+            "text-green-500": totals !== undefined && totals.fundingFeeReceivedUsd > 0,
+          })}
+        />
+        {lifetimeFees.status === "unavailable" && (
+          <div className="text-typography-secondary">
+            <Trans>Full history unavailable for this position</Trans>
+          </div>
+        )}
+      </>
+    );
+  }
+
   function renderCollateral() {
     const isStableCollateral = p.position.collateralToken.isStable;
     const renderMarginValue = (amount: bigint, usd: bigint) =>
@@ -308,6 +356,8 @@ export function PositionItem(p: Props) {
                     "text-green-500": p.position.pendingClaimableFundingFeesUsd > 0,
                   })}
                 />
+                <br />
+                {renderLifetimeFees()}
                 <br />
                 <div className="mb-4 text-typography-primary">
                   <Trans>Estimated daily fees</Trans>
@@ -430,7 +480,7 @@ export function PositionItem(p: Props) {
             </Trans>
             <br />
             <br />
-            <Trans>Off-hours: daily 20:45–22:15 UTC (weekends Fri 20:45 → Sun 22:15 UTC).</Trans>
+            <Trans>Off-hours: daily 17:00–18:15 New York time (weekends Fri 17:00 → Sun 18:15 New York time).</Trans>
             <br />
             <br />
             <StatsTooltipRow

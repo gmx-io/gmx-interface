@@ -1,5 +1,7 @@
 import { useSyncExternalStore } from "react";
 
+import type { ConfirmedUsdgOrder } from "domain/synthetics/usdgPools/orderAutoSubmit";
+
 export type UsdgConversionStep = "idle" | "submitting" | "converting";
 
 export type PendingUsdgConversion = {
@@ -10,7 +12,7 @@ export type PendingUsdgConversion = {
   tokenOutDecimals: number;
   minAmountOut: bigint;
   swapPath: string[];
-  orderSetupKey: string;
+  confirmedOrder: ConfirmedUsdgOrder;
   isGmxAccount: boolean;
 };
 
@@ -23,7 +25,9 @@ export type UsdgConversionSession = {
   // bumped on every reset, so a receipt that lands after a reset is ignored
   generation: number;
   lastConversion: { marketAddress: string | undefined; amountOut: bigint } | undefined;
-  orderAutoSubmitArm: { setupKey: string; armedAt: number; requestedApprovalTokens: string[] } | undefined;
+  orderAutoSubmitArm:
+    | { confirmedOrder: ConfirmedUsdgOrder; armedAt: number; requestedApprovalTokens: string[] }
+    | undefined;
 };
 
 export const IDLE_USDG_CONVERSION_STEP = {

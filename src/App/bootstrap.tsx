@@ -8,6 +8,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter as Router } from "react-router-dom";
 
+import { getIsSolanaNetworkEnabled } from "config/ab";
 import { ThemeProvider } from "context/ThemeContext/ThemeContext";
 import { initializeI18n } from "lib/i18n";
 import { configureInstalledApp } from "lib/pwa/getIsInstalledApp";
@@ -23,14 +24,18 @@ import App from "./App";
 export async function bootstrap() {
   initializeLaunchSource();
   configureInstalledApp();
+  const solanaWalletPromise = getIsSolanaNetworkEnabled()
+    ? import("lib/solana/solanaWalletBootstrap").then(({ startSolanaWallet }) => startSolanaWallet())
+    : undefined;
   await initializeI18n();
+  const solanaWallet = await solanaWalletPromise;
 
   createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
       <StartupErrorBoundary>
         <Router>
           <ThemeProvider>
-            <WalletProvider>
+            <WalletProvider solanaWallet={solanaWallet}>
               <App />
             </WalletProvider>
           </ThemeProvider>

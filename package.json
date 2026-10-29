@@ -67,6 +67,8 @@
     "@lingui/react": "4.10.0",
     "@privy-io/react-auth": "3.35.0",
     "@privy-io/wagmi": "4.0.8",
+    "@solana-program/memo": "0.10.0",
+    "@solana/kit": "5.5.1",
     "@stargatefinance/stg-evm-sdk-v2": "1.1.12",
     "@stripe/crypto": "1.1.2",
     "@stripe/stripe-js": "1.54.2",
