@@ -129,7 +129,6 @@ describe("GmxApiSdk — subaccount (1CT) live flow", () => {
           requestId: prepared.requestId,
           signature: cancelSignature,
           from: account,
-          idempotencyKey: prepared.idempotencyKey,
           eip712Data: {
             batchParams: prepared.payload.batchParams,
             relayParams: prepared.payload.relayParams,

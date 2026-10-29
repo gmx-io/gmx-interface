@@ -26,7 +26,6 @@ async function signAndSubmit(sdk: ReturnType<typeof getTestSdk>, prepared: any) 
     requestId: prepared.requestId,
     signature: sig,
     from: account,
-    idempotencyKey: prepared.idempotencyKey,
     eip712Data: {
       batchParams: prepared.payload.batchParams,
       relayParams: prepared.payload.relayParams,
@@ -231,7 +230,6 @@ describe("edit & cancel orders", () => {
         requestId: prepared.requestId,
         signature,
         from: account,
-        idempotencyKey: prepared.idempotencyKey,
         eip712Data: {
           batchParams: prepared.payload.batchParams,
           relayParams: prepared.payload.relayParams,
@@ -285,7 +283,6 @@ describe("edit & cancel orders", () => {
         requestId: prepared.requestId,
         signature,
         from: account,
-        idempotencyKey: prepared.idempotencyKey,
         eip712Data: {
           batchParams: prepared.payload.batchParams,
           relayParams: prepared.payload.relayParams,
