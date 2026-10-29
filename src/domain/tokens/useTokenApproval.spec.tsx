@@ -1,6 +1,8 @@
 import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+
 import { useTokenApproval } from "./useTokenApproval";
 
 const mocks = vi.hoisted(() => ({
@@ -83,11 +85,19 @@ type HookResult = ReturnType<typeof useTokenApproval>;
 
 let latestResult: HookResult | undefined;
 
-function TestComponent({ amount, allowPermit }: { amount: bigint; allowPermit?: boolean }) {
+function TestComponent({
+  amount,
+  allowPermit,
+  tokenAddress = mocks.TOKEN,
+}: {
+  amount: bigint;
+  allowPermit?: boolean;
+  tokenAddress?: string;
+}) {
   latestResult = useTokenApproval({
     chainId: mocks.CHAIN_ID as 42161,
     spenderAddress: mocks.SPENDER,
-    tokens: [{ tokenAddress: mocks.TOKEN, amount }],
+    tokens: [{ tokenAddress, amount }],
     allowPermit,
     metric: { flow: "trade", isExpress: true, gasPaymentTokenAddress: mocks.TOKEN, payTokenAddress: mocks.PAY_TOKEN },
   });
@@ -158,6 +168,14 @@ describe("useTokenApproval", () => {
       expect(setup(1000n, allowPermit).result.getIsPermitApproval(mocks.TOKEN)).toBe(expected);
     }
   );
+
+  it("reports allowances as loaded when only the native token is spent PRO-4527", () => {
+    mocks.allowanceData = undefined;
+
+    render(<TestComponent amount={1000n} tokenAddress={NATIVE_TOKEN_ADDRESS} />);
+
+    expect(latestResult).toMatchObject({ isAllowanceLoaded: true, isAllowanceLoading: false });
+  });
 
   it("releases the button and reports the shortfall when the mined allowance is below the amount", async () => {
     const view = setup(1000n);

@@ -9,6 +9,7 @@ import {
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useEditingOrderState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { useCancelOrder } from "context/SyntheticsStateContext/hooks/orderHooks";
+import { makeSelectIsSizeOrderInClosedPool } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import { selectIsSetAcceptablePriceImpactEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
@@ -194,6 +195,7 @@ function useTPSLOrderViewModel({
   const userReferralInfo = useUserReferralInfo();
   const isSetAcceptablePriceImpactEnabled = useSelector(selectIsSetAcceptablePriceImpactEnabled);
   const [isCancelling, cancelOrder] = useCancelOrder(order);
+  const isEditable = !useSelector(makeSelectIsSizeOrderInClosedPool(order.key));
 
   const isIncrease = isIncreaseOrderType(order.orderType);
   const isMarginDeposit = isMarginDepositOrder(order);
@@ -374,6 +376,7 @@ function useTPSLOrderViewModel({
     handleEdit,
     handleCancel,
     isCancelling,
+    isEditable,
   };
 }
 
@@ -397,6 +400,7 @@ function TPSLOrderCard({
     handleEdit,
     handleCancel,
     isCancelling,
+    isEditable,
   } = useTPSLOrderViewModel({ order, position, marketDecimals, onEdit });
 
   return (
@@ -445,9 +449,11 @@ function TPSLOrderCard({
       )}
 
       <div className="mt-4 flex gap-8">
-        <Button variant="secondary" className="flex-1" onClick={handleEdit}>
-          <Trans>Edit</Trans>
-        </Button>
+        {isEditable && (
+          <Button variant="secondary" className="flex-1" onClick={handleEdit}>
+            <Trans>Edit</Trans>
+          </Button>
+        )}
         <Button
           variant="secondary"
           className="hover:!text-red-300 flex-1 !bg-red-900 !text-red-400 hover:!bg-red-700/25"
@@ -482,6 +488,7 @@ export function TPSLOrderRow({
     handleEdit,
     handleCancel,
     isCancelling,
+    isEditable,
   } = useTPSLOrderViewModel({ order, position, marketDecimals, onEdit });
 
   return (
@@ -511,9 +518,11 @@ export function TPSLOrderRow({
       </TableTd>
       <TableTd>
         <div className="flex items-center justify-end gap-4">
-          <Button variant="ghost" className="!p-8" onClick={handleEdit}>
-            <EditIcon className="size-16" />
-          </Button>
+          {isEditable && (
+            <Button variant="ghost" className="!p-8" onClick={handleEdit}>
+              <EditIcon className="size-16" />
+            </Button>
+          )}
           <Button variant="ghost" className="!p-8" onClick={handleCancel} disabled={isCancelling}>
             <CloseIcon className="size-16" />
           </Button>

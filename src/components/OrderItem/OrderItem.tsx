@@ -12,6 +12,7 @@ import {
   selectOracleSettings,
   selectPositionsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { makeSelectIsSizeOrderInClosedPool } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import { selectTradeboxSelectedOrderKey } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isBoundaryAcceptablePrice } from "domain/prices";
@@ -95,6 +96,8 @@ export function OrderItem(p: Props) {
     setEditingOrderState({ orderKey: p.order.key, source: "PositionsList" });
   }, [p.order.key, setEditingOrderState]);
 
+  const isEditable = !useSelector(makeSelectIsSizeOrderInClosedPool(p.order.key));
+
   const isCurrentMarket = useSelector(selectTradeboxSelectedOrderKey) === getOrderTradeboxKey(p.order);
 
   return p.isLarge ? (
@@ -104,7 +107,7 @@ export function OrderItem(p: Props) {
       showDebugValues={showDebugValues}
       isSetAcceptablePriceImpactEnabled={isSetAcceptablePriceImpactEnabled}
       onToggleOrder={p.onToggleOrder}
-      setEditingOrderKey={setEditingOrderKey}
+      setEditingOrderKey={isEditable ? setEditingOrderKey : undefined}
       onCancelOrder={p.onCancelOrder}
       isCanceling={p.isCanceling}
       isSelected={p.isSelected}
@@ -119,7 +122,7 @@ export function OrderItem(p: Props) {
       showDebugValues={showDebugValues}
       hideActions={p.hideActions}
       onCancelOrder={p.onCancelOrder}
-      setEditingOrderKey={setEditingOrderKey}
+      setEditingOrderKey={isEditable ? setEditingOrderKey : undefined}
       isSelected={p.isSelected}
       onToggleOrder={p.onToggleOrder}
       setRef={p.setRef}
@@ -782,7 +785,7 @@ function OrderItemLarge({
       {!hideActions && (
         <TableTd>
           <div className="inline-flex w-full items-center justify-end">
-            {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
+            {setEditingOrderKey && !isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
               <Button variant="ghost" onClick={setEditingOrderKey} className="max-2xl:px-4">
                 <EditIcon title={t`Edit order`} className="size-16" />
               </Button>
@@ -941,7 +944,7 @@ function OrderItemSmall({
       {!hideActions && (
         <AppCardSection>
           <div className="flex items-center gap-8">
-            {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
+            {setEditingOrderKey && !isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
               <Button variant="secondary" onClick={setEditingOrderKey}>
                 <Trans>Edit</Trans>
               </Button>
@@ -1059,7 +1062,7 @@ function OrderItemTypeLabel({ order, className }: { order: OrderInfo; className?
         variant="none"
         className="min-w-0 cursor-help truncate rounded-4 bg-yellow-300/20 px-4 py-2 text-12 font-medium text-yellow-300"
         handle={<Trans>Frozen</Trans>}
-        content={frozenError.msg}
+        content={<span className={cx({ "text-red-500": frozenError.level === "error" })}>{frozenError.msg}</span>}
       />
     </div>
   );

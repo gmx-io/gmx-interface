@@ -9,6 +9,8 @@ import { selectPositionsInfoDataSortedByMarket } from "context/SyntheticsStateCo
 import { selectShowPnlAfterFees } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { PositionInfo } from "domain/synthetics/positions";
+import type { PositionsLifecycleFees } from "domain/synthetics/positions/lifetimeFees";
+import { usePositionsLifecycleFees } from "domain/synthetics/positions/usePositionsLifecycleFees";
 import { TradeMode } from "domain/synthetics/trade";
 import { getByKey } from "lib/objects";
 import { userAnalytics } from "lib/userAnalytics";
@@ -60,6 +62,7 @@ export function PositionList(p: Props) {
     () => sortPositionsByField(defaultPositions, orderBy, direction, showPnlAfterFees),
     [defaultPositions, orderBy, direction, showPnlAfterFees]
   );
+  const lifecycleFees = usePositionsLifecycleFees(chainId, positions);
 
   const handleSharePositionClick = useCallback((positionKey: string) => {
     userAnalytics.pushEvent<SharePositionClickEvent>({
@@ -90,6 +93,7 @@ export function PositionList(p: Props) {
                 <PositionItemWrapper
                   key={position.key}
                   position={position}
+                  lifecycleFees={lifecycleFees}
                   onEditCollateralClick={setEditingPositionKey}
                   onClosePositionClick={onClosePositionClick}
                   onOrdersClick={onOrdersClick}
@@ -162,6 +166,7 @@ export function PositionList(p: Props) {
                   <PositionItemWrapper
                     key={position.key}
                     position={position}
+                    lifecycleFees={lifecycleFees}
                     onEditCollateralClick={setEditingPositionKey}
                     onClosePositionClick={onClosePositionClick}
                     onOrdersClick={onOrdersClick}
@@ -212,6 +217,7 @@ export function PositionList(p: Props) {
 const PositionItemWrapper = memo(
   ({
     position,
+    lifecycleFees,
     hideActions,
     isLarge,
     onClosePositionClick,
@@ -224,6 +230,7 @@ const PositionItemWrapper = memo(
     hideOrderActions,
   }: {
     position: PositionInfo;
+    lifecycleFees: PositionsLifecycleFees | undefined;
     onEditCollateralClick: (positionKey: string) => void;
     onClosePositionClick: (positionKey: string) => void;
     onOrdersClick: (positionKey: string, orderKey: string | undefined) => void;
@@ -268,6 +275,7 @@ const PositionItemWrapper = memo(
     return (
       <PositionItem
         position={position}
+        lifecycleFees={lifecycleFees}
         onEditCollateralClick={handleEditCollateralClick}
         onClosePositionClick={handleClosePositionClick}
         onOrdersClick={handleOrdersClick}

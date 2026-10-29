@@ -1,12 +1,14 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { ethers } from "ethers";
+import { ethers, TransactionReceipt } from "ethers";
 import noop from "lodash/noop";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { ARBITRUM, type ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
+import { getIsRewardRouterChanged, getRewardRouterContract, RewardRouter } from "domain/stake/rewardRouter";
+import { getIsRewardRouterClaimNeeded, getVesterClaimedAmount, getVesterClaims } from "domain/stake/rewardsClaim";
 import { getRewardsClaimAction, sendStakingActionMetric } from "domain/stake/sendStakingActionMetric";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
@@ -23,6 +25,7 @@ import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
+import { showRewardRouterChangedToast, showStakingErrorToast } from "components/Errors/stakingToasts";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
@@ -34,11 +37,15 @@ import { GMX_DAO_LINKS } from "./constants";
 export function ClaimModal(props: {
   isVisible: boolean;
   setIsVisible: (isVisible: boolean) => void;
-  rewardRouterAddress: string;
+  rewardRouter: RewardRouter | undefined;
+  mutateRewardRouter: () => void;
   signer: UncheckedJsonRpcSigner | undefined;
   chainId: ContractsChainId;
   setPendingTxns: SetPendingTransactions;
   totalGmxRewards: bigint | undefined;
+  stakingGmxRewards: bigint | undefined;
+  gmxVesterRewards: bigint | undefined;
+  glpVesterRewards: bigint | undefined;
   totalEsGmxRewards: bigint | undefined;
   totalNativeTokenRewards: bigint | undefined;
   nativeTokenSymbol: string;
@@ -50,11 +57,15 @@ export function ClaimModal(props: {
   const {
     isVisible,
     setIsVisible,
-    rewardRouterAddress,
+    rewardRouter,
+    mutateRewardRouter,
     signer,
     chainId,
     setPendingTxns,
     totalGmxRewards,
+    stakingGmxRewards,
+    gmxVesterRewards,
+    glpVesterRewards,
     totalEsGmxRewards,
     totalNativeTokenRewards,
     nativeTokenSymbol,
@@ -100,6 +111,8 @@ export function ClaimModal(props: {
 
   const gmxAddress = getContract(chainId, "GMX");
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
+  const gmxVesterAddress = getContract(chainId, "GmxVester");
+  const glpVesterAddress = getContract(chainId, "GlpVester");
 
   const [isApproving, setIsApproving] = useState(false);
 
@@ -130,7 +143,12 @@ export function ClaimModal(props: {
     (totalNativeTokenRewards !== undefined && totalNativeTokenRewards > 0n);
 
   const isPrimaryEnabled =
-    !isClaiming && !isApproving && hasAnyPendingRewards && isAnySelectedToClaim && !hasOutdatedUi;
+    !isClaiming &&
+    !isApproving &&
+    rewardRouter !== undefined &&
+    hasAnyPendingRewards &&
+    isAnySelectedToClaim &&
+    !hasOutdatedUi;
 
   const primaryText = useMemo(() => {
     if (hasOutdatedUi) {
@@ -154,7 +172,7 @@ export function ClaimModal(props: {
     return <Trans>Claim</Trans>;
   }, [hasOutdatedUi, hasAnyPendingRewards, isAnySelectedToClaim, needApproval, isApproving, isClaiming]);
 
-  const onClickPrimary = useCallback(() => {
+  const onClickPrimary = useCallback(async () => {
     if (needApproval) {
       setIsApproving(true);
       approveTokens({
@@ -173,6 +191,10 @@ export function ClaimModal(props: {
       return;
     }
 
+    if (!rewardRouter) {
+      return;
+    }
+
     setIsClaiming(true);
 
     const stakingAction = getRewardsClaimAction({
@@ -181,47 +203,115 @@ export function ClaimModal(props: {
       shouldStakeEsGmx,
       totalEsGmxRewards,
     });
-    const contract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
-    callContract(
-      chainId,
-      contract,
-      "handleRewards",
-      [
-        shouldClaimGmx || shouldStakeGmx,
-        shouldStakeGmx,
-        shouldClaimEsGmx || shouldStakeEsGmx,
-        shouldStakeEsGmx,
-        true,
-        isNativeTokenToClaim ? shouldClaimWeth || shouldConvertWeth : false,
-        isNativeTokenToClaim ? shouldConvertWeth : false,
-      ],
-      {
-        sentMsg: t`Claim submitted`,
-        failMsg: t`Claim failed`,
-        successMsg: t`Claim completed`,
-        successDetailsMsg: !shouldStakeGmx ? gmxUsageOptionsMsg : undefined,
-        setPendingTxns,
+    const shouldClaimGmxRewards = Boolean(shouldClaimGmx || shouldStakeGmx);
+    const shouldClaimEsGmxRewards = Boolean(shouldClaimEsGmx || shouldStakeEsGmx);
+    const shouldClaimNativeToken = isNativeTokenToClaim ? Boolean(shouldClaimWeth || shouldConvertWeth) : false;
+    let failMsg = t`Claim failed`;
+
+    try {
+      if (await getIsRewardRouterChanged(chainId, rewardRouter)) {
+        mutateRewardRouter();
+        showRewardRouterChangedToast();
+        return;
       }
-    )
-      .then(() => {
-        sendStakingActionMetric({ action: stakingAction, tokenSymbol: undefined, chainId });
-        setIsVisible(false);
-        onClaimSuccess?.();
-      })
-      .catch((error) => {
-        sendStakingActionMetric({ action: stakingAction, tokenSymbol: undefined, chainId, error });
-        throw error;
-      })
-      .finally(() => {
-        setIsClaiming(false);
-      });
+
+      const rewardRouterContract = getRewardRouterContract(rewardRouter, signer);
+      const vesterClaims =
+        rewardRouter.version === "v3" && shouldClaimGmxRewards
+          ? getVesterClaims([
+              { vesterAddress: gmxVesterAddress, claimableAmount: gmxVesterRewards ?? 0n },
+              { vesterAddress: glpVesterAddress, claimableAmount: glpVesterRewards ?? 0n },
+            ])
+          : [];
+      const isRewardRouterClaimNeeded =
+        rewardRouter.version === "v2" ||
+        vesterClaims.length === 0 ||
+        getIsRewardRouterClaimNeeded({
+          shouldClaimGmx: shouldClaimGmxRewards,
+          stakingGmxRewards: stakingGmxRewards ?? 0n,
+          shouldClaimEsGmx: shouldClaimEsGmxRewards,
+          esGmxRewards: totalEsGmxRewards ?? 0n,
+          shouldClaimNativeToken,
+          nativeTokenRewards: totalNativeTokenRewards ?? 0n,
+        });
+
+      if (isRewardRouterClaimNeeded) {
+        await callContract(
+          chainId,
+          rewardRouterContract,
+          "handleRewards",
+          [
+            shouldClaimGmxRewards,
+            shouldStakeGmx,
+            shouldClaimEsGmxRewards,
+            shouldStakeEsGmx,
+            true,
+            shouldClaimNativeToken,
+            isNativeTokenToClaim ? shouldConvertWeth : false,
+          ],
+          {
+            sentMsg: t`Claim submitted`,
+            failMsg,
+            successMsg: t`Claim completed`,
+            successDetailsMsg: !shouldStakeGmx ? gmxUsageOptionsMsg : undefined,
+            setPendingTxns,
+            hideErrorMsg: true,
+          }
+        );
+      }
+
+      const vesterClaimReceipts: { vesterAddress: string; receipt: Promise<TransactionReceipt | null> }[] = [];
+
+      for (const { vesterAddress } of vesterClaims) {
+        const vesterContract = new ethers.Contract(vesterAddress, abis.Vester, signer);
+        const txn = await callContract(chainId, vesterContract, "claim", [], {
+          sentMsg: t`Claim submitted`,
+          failMsg,
+          successMsg: t`Claim completed`,
+          successDetailsMsg: !shouldStakeGmx ? gmxUsageOptionsMsg : undefined,
+          setPendingTxns,
+          hideErrorMsg: true,
+        });
+        vesterClaimReceipts.push({ vesterAddress, receipt: txn ? txn.wait() : Promise.resolve(null) });
+      }
+
+      if (shouldStakeGmx && vesterClaimReceipts.length > 0) {
+        let vestedGmxAmount = 0n;
+
+        for (const { vesterAddress, receipt } of vesterClaimReceipts) {
+          vestedGmxAmount += getVesterClaimedAmount(await receipt, vesterAddress);
+        }
+
+        if (vestedGmxAmount > 0n) {
+          failMsg = t`Stake failed`;
+          await callContract(chainId, rewardRouterContract, "stakeGmx", [vestedGmxAmount], {
+            sentMsg: t`Stake submitted`,
+            failMsg,
+            setPendingTxns,
+            hideErrorMsg: true,
+          });
+        }
+      }
+
+      sendStakingActionMetric({ action: stakingAction, tokenSymbol: undefined, chainId });
+      setIsVisible(false);
+      onClaimSuccess?.();
+    } catch (error) {
+      showStakingErrorToast({ chainId, error, failMsg });
+      sendStakingActionMetric({ action: stakingAction, tokenSymbol: undefined, chainId, error });
+    } finally {
+      setIsClaiming(false);
+    }
   }, [
     needApproval,
     signer,
     gmxAddress,
     stakedGmxTrackerAddress,
+    gmxVesterAddress,
+    glpVesterAddress,
     chainId,
-    rewardRouterAddress,
+    rewardRouter,
+    mutateRewardRouter,
     shouldClaimGmx,
     shouldStakeGmx,
     shouldClaimEsGmx,
@@ -234,7 +324,11 @@ export function ClaimModal(props: {
     setIsVisible,
     onClaimSuccess,
     totalGmxRewards,
+    stakingGmxRewards,
+    gmxVesterRewards,
+    glpVesterRewards,
     totalEsGmxRewards,
+    totalNativeTokenRewards,
   ]);
 
   const toggleShouldStakeGmx = useCallback(

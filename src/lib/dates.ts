@@ -33,6 +33,10 @@ export function formatDateCompact(time: number, options?: DateFormatOptions) {
   return formatDateFn(time * 1000, "dd/MM", getDateFormatOptions(options));
 }
 
+export function formatMonthDay(time: number, options?: DateFormatOptions) {
+  return formatDateFn(time * 1000, "MMM\u00a0d", getDateFormatOptions(options));
+}
+
 function formatDateWithComma(time: number) {
   return formatDateFn(time * 1000, "MMM dd, yyyy");
 }

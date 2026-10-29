@@ -22,9 +22,11 @@ import {
   ReplaceMarginDepositAction,
 } from "components/MarginRemediation/MarginRemediationActions";
 
+import { getAvailableUsdLiquidityForPosition } from "../../markets/utils";
 import { NextPositionValues } from "../../trade";
 import { OrderType, PositionOrderInfo } from "../types";
 import {
+  FROZEN_ORDER_ERROR_KEY,
   getOrderErrors,
   getOrderIncreaseNextPositionValues,
   getOrderIncreaseProjection,
@@ -516,6 +518,95 @@ describe("getOrderErrors — margin deposit orders", () => {
     });
 
     expect(errorKeys(regularIncrease)).toContain("resultingLiquidatable");
+  });
+});
+
+describe("getOrderErrors — orders that add size on a closing pool", () => {
+  const closingMarkets = mockMarketsInfoData(tokensData, ["BTC-BTC-USDC", "ETH-ETH-USDC"], {
+    "BTC-BTC-USDC": { longInterestUsd: 0n, longInterestInTokens: 0n, maxOpenInterestLong: expandDecimals(10_000, 30) },
+  });
+  const oldPool = closingMarkets["BTC-BTC-USDC"];
+  const roomLeftUsd = getAvailableUsdLiquidityForPosition(oldPool, true);
+  const closingPool = {
+    closingDate: Date.UTC(2026, 10, 2),
+    isClosed: false,
+    poolName: "WETH-USDC",
+    targetMarket: closingMarkets["ETH-ETH-USDC"],
+  };
+
+  function errorsOf(order: PositionOrderInfo, isClosed: boolean | undefined) {
+    return getOrderErrors({
+      ...baseParams,
+      marketsInfoData: closingMarkets,
+      order,
+      closingPool: isClosed === undefined ? undefined : { ...closingPool, isClosed },
+    });
+  }
+
+  function order(orderType: OrderType, overrides: Partial<PositionOrderInfo> = {}) {
+    return makeIncreaseOrder(orderType, {
+      marketInfo: oldPool,
+      marketAddress: oldPool.marketTokenAddress,
+      sizeDeltaUsd: expandDecimals(100, 30),
+      ...overrides,
+    });
+  }
+
+  it.each([
+    ["a limit that fits", order(OrderType.LimitIncrease), false, "closingPoolClosing", "warning"],
+    ["a stop market that fits", order(OrderType.StopIncrease), false, "closingPoolClosing", "warning"],
+    [
+      "a TWAP that fits",
+      order(OrderType.LimitIncrease, { isTwap: true, orders: [] } as never),
+      false,
+      "closingPoolClosing",
+      "warning",
+    ],
+    [
+      "a limit that takes exactly the room",
+      order(OrderType.LimitIncrease, { sizeDeltaUsd: roomLeftUsd }),
+      false,
+      "closingPoolClosing",
+      "warning",
+    ],
+    [
+      "a limit bigger than the room",
+      order(OrderType.LimitIncrease, { sizeDeltaUsd: roomLeftUsd + 1n }),
+      false,
+      "closingPoolNoRoom",
+      "warning",
+    ],
+    [
+      "a stop market bigger than the room",
+      order(OrderType.StopIncrease, { sizeDeltaUsd: roomLeftUsd + 1n }),
+      false,
+      "closingPoolNoRoom",
+      "warning",
+    ],
+    ["any size after the cut-off", order(OrderType.LimitIncrease), true, "closingPoolClosed", "error"],
+    [
+      "a frozen order after the cut-off",
+      order(OrderType.StopIncrease, { isFrozen: true }),
+      true,
+      FROZEN_ORDER_ERROR_KEY,
+      "error",
+    ],
+  ])("gives one line for %s", (_, closingOrder, isClosed, key, level) => {
+    expect(errorsOf(closingOrder, isClosed).errors.map((error) => [error.key, error.level])).toEqual([[key, level]]);
+  });
+
+  it("names the pools in the closed-pool line", () => {
+    expect(errorsOf(order(OrderType.LimitIncrease), true).errors[0].msg).toBe(
+      "Can't fill: WETH-USDC pool is closed to new size. Cancel and re-place it in the ETH-USDC pool."
+    );
+  });
+
+  it.each([
+    ["a take-profit", order(OrderType.LimitDecrease)],
+    ["a stop-loss", order(OrderType.StopLossDecrease)],
+    ["a margin deposit", order(OrderType.LimitIncrease, { sizeDeltaUsd: 0n })],
+  ])("leaves %s as it was", (_, otherOrder) => {
+    expect(errorsOf(otherOrder, true)).toEqual(errorsOf(otherOrder, undefined));
   });
 });
 

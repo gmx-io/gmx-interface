@@ -1,4 +1,5 @@
 import { MessageDescriptor, i18n } from "@lingui/core";
+import { t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import mapValues from "lodash/mapValues";
 import { useMemo } from "react";
@@ -132,4 +133,21 @@ export function useLocalizedList(items: string[]) {
   }
 
   return formatList(items);
+}
+
+export function formatConjunctionList(items: string[]): string {
+  const locale = i18n.locale || defaultLocale;
+
+  return new Intl.ListFormat(locale === "en" ? "en-GB" : locale, { style: "long", type: "conjunction" }).format(items);
+}
+
+export function formatShortList(items: string[]): string {
+  if (items.length <= 3) {
+    return formatConjunctionList(items);
+  }
+
+  const [first, second] = items;
+  const restCount = items.length - 2;
+
+  return t`${first}, ${second} +${restCount} more`;
 }
