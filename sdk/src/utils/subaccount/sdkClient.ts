@@ -1,5 +1,6 @@
 import type { ContractsChainId } from "configs/chains";
 import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT } from "configs/express";
+import { SIGNED_ORDER_SUBMIT, submitSigned } from "utils/http/signedSubmit";
 import type { IHttp } from "utils/http/types";
 import {
   prepareOrder as prepareOrderRaw,
@@ -545,18 +546,24 @@ export async function executeExpressOrderWithSubaccount(
 ): Promise<SubmitOrderResponse> {
   const prepared = await prepareWithSubaccount(client, request, prepareOrderRaw, signer);
   const signature = await signOrderWithSubaccount(client, prepared, signer);
-  const isSubaccountOrder = client.preparedSubaccountApprovals.has(prepared.requestId);
-
-  return submitOrderWithSubaccount(client, {
+  const subaccountApproval = client.preparedSubaccountApprovals.get(prepared.requestId);
+  const submitRequest: SubmitOrderRequest = {
     mode: prepared.mode,
     requestId: prepared.requestId,
     signature,
-    from: isSubaccountOrder ? request.from : signer.address,
+    from: subaccountApproval ? request.from : signer.address,
     eip712Data: {
       batchParams: prepared.payload.batchParams,
       relayParams: prepared.payload.relayParams,
+      subaccountApproval,
     },
-  });
+  };
+
+  return submitSigned(
+    SIGNED_ORDER_SUBMIT,
+    { requestId: prepared.requestId, prepared, signature, submitRequest },
+    (body) => submitOrderWithSubaccount(client, body)
+  );
 }
 
 export function clearSdkSubaccount(client: SdkSubaccountClientContext): void {
