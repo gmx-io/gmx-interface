@@ -19,7 +19,6 @@ async function sweep(label: string): Promise<void> {
         requestId: prepared.requestId,
         signature,
         from: account,
-        idempotencyKey: prepared.idempotencyKey,
         eip712Data: {
           batchParams: prepared.payload.batchParams,
           relayParams: prepared.payload.relayParams,

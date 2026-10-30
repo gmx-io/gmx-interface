@@ -550,7 +550,6 @@ export class FundedSession {
     await this.sdk.submitOrder({
       mode: "express",
       requestId: prepared.requestId,
-      idempotencyKey: prepared.idempotencyKey,
       signature,
       from: this.address,
       eip712Data: { batchParams: prepared.payload.batchParams, relayParams: prepared.payload.relayParams },

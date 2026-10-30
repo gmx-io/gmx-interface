@@ -199,11 +199,7 @@ export function hasRpcUrl(): boolean {
 }
 
 /** For limit and conditional orders: resolves as soon as the order is on the book. */
-export function waitForOrderPlaced(
-  sdk: GmxApiSdk,
-  requestId: string,
-  timeoutMs = 60000
-): Promise<OrderStatusResponse> {
+export function waitForOrderPlaced(sdk: GmxApiSdk, requestId: string, timeoutMs = 60000): Promise<OrderStatusResponse> {
   return waitForOrderStatus(sdk, requestId, timeoutMs, PLACED_STATUSES);
 }
 
@@ -269,7 +265,6 @@ export async function expressFlow(
     requestId: prepared.requestId,
     signature,
     from: signer.address,
-    idempotencyKey: prepared.idempotencyKey,
     eip712Data: {
       batchParams: prepared.payload.batchParams,
       relayParams: prepared.payload.relayParams,
