@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { expect, type Page } from "@playwright/test";
 import { decodeFunctionData, erc20Abi, formatUnits, getAddress, parseAbi } from "viem";
 
-import RewardRouter from "../../../sdk/src/abis/RewardRouter";
+import RewardRouterV3 from "../../../sdk/src/abis/RewardRouterV3";
 import { getContract } from "../../../sdk/src/configs/contracts";
 import { assertEmptyStakingPower, stakedGmx } from "./earn";
 import { USD } from "./economy";
@@ -17,9 +17,9 @@ export function inspectUiEarn(
   operation: "stakeGmx" | "unstakeGmx" | "handleRewards",
   amount?: bigint
 ) {
-  assert.equal(getAddress(tx.to), getAddress(getContract(42161, "RewardRouter")));
+  assert.equal(getAddress(tx.to), getAddress(getContract(42161, "RewardRouterV3")));
   assert.equal(tx.value, 0n);
-  const call = decodeFunctionData({ abi: RewardRouter, data: tx.data });
+  const call = decodeFunctionData({ abi: RewardRouterV3, data: tx.data });
   assert.equal(call.functionName, operation);
   if (operation === "handleRewards") assert.deepEqual(call.args, [false, false, false, false, true, true, false]);
   else {
