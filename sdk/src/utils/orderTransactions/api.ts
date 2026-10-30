@@ -1,6 +1,7 @@
 import type { ContractsChainId } from "configs/chains";
 import { postJsonPinned, postJsonPinning } from "utils/http/chainPins";
 import { HttpError } from "utils/http/http";
+import { getSignedSubmit, SIGNED_ORDER_SUBMIT, submitSigned, type SignedSubmit } from "utils/http/signedSubmit";
 import { IHttp } from "utils/http/types";
 import { parseTradingCapacity } from "utils/markets/api";
 import type { TradingCapacity } from "utils/markets/types";
@@ -133,6 +134,7 @@ export type SubmitOrderResponse = {
     | "relay_accepted"
     | "relay_pending"
     | "relay_submitted"
+    | "relay_unknown"
     | "created"
     | "executed"
     | "cancelled"
@@ -143,6 +145,8 @@ export type SubmitOrderResponse = {
   error?: { code: string; message: string };
   traceId?: string;
 };
+
+export type SignedOrderSubmit = SignedSubmit<PrepareOrderResponse, SubmitOrderRequest>;
 
 export type OrderStatusRequest = {
   requestId?: string;
@@ -155,6 +159,7 @@ export type OrderStatusResponse = {
     | "relay_accepted"
     | "relay_pending"
     | "relay_submitted"
+    | "relay_unknown"
     | "created"
     | "executed"
     | "cancelled"
@@ -495,6 +500,10 @@ export async function signPreparedOrder(
   return signer.signTypedData(domain, types, message);
 }
 
+export function getSignedOrderSubmit(error: unknown): SignedOrderSubmit | undefined {
+  return getSignedSubmit(error, SIGNED_ORDER_SUBMIT);
+}
+
 export async function executeExpressOrder(
   ctx: { api: IHttp; chainId?: ContractsChainId },
   request: PrepareOrderRequest,
@@ -505,7 +514,7 @@ export async function executeExpressOrder(
 
   const signature = await signPreparedOrder(prepared, signer, ctx.chainId, accountAddress);
 
-  return submitOrder(ctx, {
+  const submitRequest: SubmitOrderRequest = {
     mode: prepared.mode,
     requestId: prepared.requestId,
     signature,
@@ -515,5 +524,11 @@ export async function executeExpressOrder(
       relayParams: prepared.payload.relayParams,
       subaccountApproval: request.subaccountApproval,
     },
-  });
+  };
+
+  return submitSigned(
+    SIGNED_ORDER_SUBMIT,
+    { requestId: prepared.requestId, prepared, signature, submitRequest },
+    (body) => submitOrder(ctx, body)
+  );
 }
