@@ -4,6 +4,7 @@ import { useLatest } from "react-use";
 import useSWR from "swr";
 import { isAddressEqual, type Address } from "viem";
 
+import { isSolanaNetwork } from "config/chains";
 import { getTokenPermitsFallbackKey, getTokenPermitsKey, LEGACY_PERMITS_DISABLED_KEY } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
@@ -95,12 +96,12 @@ function useTokenPermitAccountType(chainId: number, account: string | undefined)
 }
 
 export function TokenPermitsContextProvider({ children }: { children: React.ReactNode }) {
-  const { chainId } = useChainId();
+  const { chainId, networkId } = useChainId();
   const { signer } = useWallet();
   const account = signer?.address;
   const { uiFlags } = useUiFlagsRequest();
   const { isTokenPermitsQaOverrideEnabled } = useSettings();
-  const accountType = useTokenPermitAccountType(chainId, account);
+  const accountType = useTokenPermitAccountType(chainId, isSolanaNetwork(networkId) ? undefined : account);
 
   const isEnabled = getIsTokenPermitsEnabled({
     uiFlags,

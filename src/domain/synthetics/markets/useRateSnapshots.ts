@@ -3,6 +3,7 @@ import useSWR from "swr";
 import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { isSameAddress } from "sdk/utils/address";
 import { ApiParameterPeriod, MarketRates, RatesSnapshot } from "sdk/utils/rates/types";
 
 export type RateTimeframe = "1d" | "7d" | "30d";
@@ -34,7 +35,7 @@ export function useRateSnapshots({
         address: marketAddress,
       });
 
-      const marketData = result.find((r) => r.marketAddress.toLowerCase() === marketAddress!.toLowerCase());
+      const marketData = result.find((r) => isSameAddress(r.marketAddress, marketAddress));
 
       if (!marketData) {
         return [];

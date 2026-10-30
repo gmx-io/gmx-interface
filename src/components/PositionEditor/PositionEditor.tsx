@@ -7,6 +7,7 @@ import { Address } from "viem";
 
 import { getChainName } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
+import { getNetworkFeatures } from "config/features";
 import { isSettlementChain } from "config/multichain";
 import { getUsdgConversionTokenAddress } from "config/usdgPools";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -115,7 +116,8 @@ import { usePositionEditorButtonState } from "./usePositionEditorButtonState";
 import "./PositionEditor.scss";
 
 export function PositionEditor() {
-  const { chainId, srcChainId } = useChainId();
+  const { chainId, srcChainId, networkId } = useChainId();
+  const features = getNetworkFeatures(networkId);
   const { expressOrdersEnabled, setExpressOrdersEnabled, setIsSettingsVisible } = useSettings();
   const [editingPositionKey, setEditingPositionKey] = usePositionEditorPositionState();
   const tokensData = useTokensData();
@@ -132,6 +134,23 @@ export function PositionEditor() {
   const lastVisibleIncreasedAtTimeRef = useRef<bigint | undefined>(undefined);
 
   const [operation, setOperation] = usePositionEditorOperation();
+  const canDeposit = features.collateralDeposit;
+  const canWithdraw = features.collateralWithdrawal;
+
+  useEffect(() => {
+    if (position && !canDeposit && !canWithdraw) {
+      setEditingPositionKey(undefined);
+    }
+  }, [canDeposit, canWithdraw, position, setEditingPositionKey]);
+
+  useEffect(() => {
+    if (operation === Operation.Deposit && !canDeposit && canWithdraw) {
+      setOperation(Operation.Withdraw);
+    } else if (operation === Operation.Withdraw && !canWithdraw && canDeposit) {
+      setOperation(Operation.Deposit);
+    }
+  }, [canDeposit, canWithdraw, operation, setOperation]);
+
   const isDeposit = operation === Operation.Deposit;
 
   const [depositMode, setDepositMode] = usePositionEditorDepositMode();
@@ -189,14 +208,17 @@ export function PositionEditor() {
   }, [chainId, collateralOptionsAddress, tokensData]);
 
   const options = useMemo(
-    () => getCollateralOptions(Object.values(filteredTokensData), srcChainId),
-    [filteredTokensData, srcChainId]
+    () => getCollateralOptions(Object.values(filteredTokensData), srcChainId, features.gmxAccount),
+    [features.gmxAccount, filteredTokensData, srcChainId]
   );
 
   const depositConversionToken = getByKey(tokensData, depositConversionTokenAddress);
   const conversionOptions = useMemo(
-    () => (depositConversionToken ? getCollateralOptions([depositConversionToken], srcChainId) : undefined),
-    [depositConversionToken, srcChainId]
+    () =>
+      depositConversionToken
+        ? getCollateralOptions([depositConversionToken], srcChainId, features.gmxAccount)
+        : undefined,
+    [depositConversionToken, features.gmxAccount, srcChainId]
   );
 
   const hasMultipleTokens = useMemo(() => {
@@ -588,11 +610,17 @@ export function PositionEditor() {
   );
 
   const tabsOptions = useMemo(() => {
-    return Object.values(Operation).map((option) => ({
-      value: option,
-      label: localizedOperationLabels[option],
-    }));
-  }, [localizedOperationLabels]);
+    return Object.values(Operation)
+      .filter((option) => {
+        if (option === Operation.Deposit) return features.collateralDeposit;
+        if (option === Operation.Withdraw) return features.collateralWithdrawal;
+        return true;
+      })
+      .map((option) => ({
+        value: option,
+        label: localizedOperationLabels[option],
+      }));
+  }, [features.collateralDeposit, features.collateralWithdrawal, localizedOperationLabels]);
 
   const depositModeTabsOptions = useMemo(() => {
     return DEPOSIT_MODES.map((mode) => ({
@@ -606,7 +634,7 @@ export function PositionEditor() {
       <Modal
         activeFormId={formId}
         className="PositionEditor-modal"
-        isVisible={!!position}
+        isVisible={Boolean(position) && (canDeposit || canWithdraw)}
         setIsVisible={onClose}
         label={
           <Trans>
@@ -932,7 +960,7 @@ export function PositionEditor() {
   );
 }
 
-function getCollateralOptions(tokens: TokenData[], srcChainId: number | undefined) {
+function getCollateralOptions(tokens: TokenData[], srcChainId: number | undefined, isGmxAccountEnabled: boolean) {
   return tokens
     .flatMap((tokenData) => {
       if (tokenData.isNative) {
@@ -946,6 +974,17 @@ function getCollateralOptions(tokens: TokenData[], srcChainId: number | undefine
         ];
       }
 
+      const walletRow = {
+        ...tokenData,
+        isGmxAccount: false,
+        balance: tokenData.walletBalance,
+        balanceType: TokenBalanceType.Wallet,
+      };
+
+      if (!isGmxAccountEnabled) {
+        return [walletRow];
+      }
+
       return [
         {
           ...tokenData,
@@ -953,12 +992,7 @@ function getCollateralOptions(tokens: TokenData[], srcChainId: number | undefine
           balance: tokenData.gmxAccountBalance,
           balanceType: TokenBalanceType.GmxAccount,
         },
-        {
-          ...tokenData,
-          isGmxAccount: false,
-          balance: tokenData.walletBalance,
-          balanceType: TokenBalanceType.Wallet,
-        },
+        walletRow,
       ];
     })
     .filter((option) => srcChainId === undefined || option.isGmxAccount)

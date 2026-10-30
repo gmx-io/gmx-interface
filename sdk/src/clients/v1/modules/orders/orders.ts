@@ -3,6 +3,7 @@ import { Address } from "viem";
 import { Module } from "clients/v1/modules/base";
 import { MarketFilterLongShortItemData } from "clients/v1/modules/trades/trades";
 import { getWrappedToken } from "configs/tokens";
+import { getAddressKey } from "utils/address";
 import { MarketInfo, MarketsInfoData } from "utils/markets/types";
 import { getByKey } from "utils/objects";
 import { getOrderInfo, isOrderForPositionByData, isVisibleOrder } from "utils/orders";
@@ -45,9 +46,9 @@ export class Orders extends Module {
     const nonSwapRelevantDefinedFiltersLowercased: MarketFilterLongShortItemData[] = marketsDirectionsFilter
       .filter((filter) => filter.direction !== "swap" && filter.marketAddress !== "any")
       .map((filter) => ({
-        marketAddress: filter.marketAddress.toLowerCase() as Address,
+        marketAddress: getAddressKey(filter.marketAddress) as Address,
         direction: filter.direction,
-        collateralAddress: filter.collateralAddress?.toLowerCase() as Address,
+        collateralAddress: filter.collateralAddress ? (getAddressKey(filter.collateralAddress) as Address) : undefined,
       }));
 
     const hasNonSwapRelevantDefinedMarkets = nonSwapRelevantDefinedFiltersLowercased.length > 0;
@@ -59,7 +60,7 @@ export class Orders extends Module {
 
     const swapRelevantDefinedMarketsLowercased = marketsDirectionsFilter
       .filter((filter) => (filter.direction === "any" || filter.direction === "swap") && filter.marketAddress !== "any")
-      .map((filter) => filter.marketAddress.toLowerCase() as Address);
+      .map((filter) => getAddressKey(filter.marketAddress) as Address);
 
     const hasSwapRelevantDefinedMarkets = swapRelevantDefinedMarketsLowercased.length > 0;
 

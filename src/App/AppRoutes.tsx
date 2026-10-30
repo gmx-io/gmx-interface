@@ -3,13 +3,15 @@ import { useHistory } from "react-router-dom";
 import { cssTransition, ToastContainer } from "react-toastify";
 import { zeroHash } from "viem";
 
+import { isSolanaNetwork } from "config/chains";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSmartWalletSubaccountWarning } from "context/SubaccountContext/useSmartWalletSubaccountWarning";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useMultichainFundingToast } from "domain/multichain/useMultichainFundingToast";
-import { useSupportChat } from "domain/supportChat/useSupportChat";
+import { SupportChatEvmAttributes, useSupportChat } from "domain/supportChat/useSupportChat";
+import { useChainId } from "lib/chains";
 import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
 import { dynamicActivate, locales } from "lib/i18n";
 import { REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
@@ -40,19 +42,29 @@ const Zoom = cssTransition({
   collapseDuration: 200,
 });
 
+/**
+ * Hooks that read EVM chains. Solana does not render them, so none of their requests run there.
+ * Metrics, the support chat, the update banner and the GMX Account modal stay mounted on both networks.
+ */
+function EvmGlobalEffects() {
+  useWalletCapabilitiesMetric();
+  useWalletConnectedUserAnalyticsEvent();
+  useMultichainFundingToast();
+  useSmartWalletSubaccountWarning();
+
+  return <SupportChatEvmAttributes />;
+}
+
 export function AppRoutes() {
   const { theme } = useTheme();
   const history = useHistory();
+  const { networkId } = useChainId();
 
   useConfigureMetrics();
   useConfigureUserAnalyticsProfile();
   useOpenAppMetric();
   useAccountInitedMetric();
-  useWalletCapabilitiesMetric();
   useSupportChat();
-
-  useWalletConnectedUserAnalyticsEvent();
-  useMultichainFundingToast();
   useFreshnessMetricsControl();
 
   const query = useRouteQuery();
@@ -117,7 +129,6 @@ export function AppRoutes() {
   }, [isEarnPage]);
 
   useRealChainIdWarning();
-  useSmartWalletSubaccountWarning();
 
   return (
     <>
@@ -139,6 +150,7 @@ export function AppRoutes() {
         closeButton={CloseToastButton}
       />
       <WhatsNewToastContainer />
+      {!isSolanaNetwork(networkId) && <EvmGlobalEffects />}
       <GmxAccountModal />
       <SettingsModal isSettingsVisible={isSettingsVisible} setIsSettingsVisible={setIsSettingsVisible} />
       <NotifyModal />

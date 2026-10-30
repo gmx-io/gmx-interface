@@ -4,8 +4,10 @@ import cx from "classnames";
 import { ReactNode, useCallback, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
+import { getNetworkFeatures } from "config/features";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useMegaethPointsActive } from "domain/synthetics/common/useMegaethPointsActive";
+import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -181,6 +183,8 @@ export function MenuSection({
   isCollapsed: boolean | undefined;
   onMenuItemClick?: () => void;
 }) {
+  const { networkId } = useChainId();
+  const showEvmPages = getNetworkFeatures(networkId).evmOnlyPages;
   const isMegaethPointsActive = useMegaethPointsActive();
 
   const withMegaethSparkle = (label: string) =>
@@ -228,17 +232,19 @@ export function MenuSection({
 
   return (
     <ul className="flex list-none flex-col px-0">
-      {mainNavItems.map((item) => (
-        <NavItem
-          key={item.key}
-          icon={item.icon}
-          label={item.label}
-          isActive={pathname === item.to || pathname.startsWith(`${item.to}/`)}
-          isCollapsed={isCollapsed}
-          to={item.to}
-          onClick={onMenuItemClick}
-        />
-      ))}
+      {mainNavItems
+        .filter((item) => showEvmPages || item.key === "trade")
+        .map((item) => (
+          <NavItem
+            key={item.key}
+            icon={item.icon}
+            label={item.label}
+            isActive={pathname === item.to || pathname.startsWith(`${item.to}/`)}
+            isCollapsed={isCollapsed}
+            to={item.to}
+            onClick={onMenuItemClick}
+          />
+        ))}
     </ul>
   );
 }

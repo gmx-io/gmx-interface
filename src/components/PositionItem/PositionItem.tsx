@@ -4,6 +4,7 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useIntersection } from "react-use";
 
+import { getNetworkFeatures } from "config/features";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePositionsConstants } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId, selectUserReferralInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -24,6 +25,7 @@ import {
 } from "domain/synthetics/positions";
 import { getPositionLifetimeFees, type PositionsLifecycleFees } from "domain/synthetics/positions/lifetimeFees";
 import { TradeMode } from "domain/synthetics/trade";
+import { useChainId } from "lib/chains";
 import { CHART_PERIODS } from "lib/legacy";
 import { formatBalanceAmount, formatPriceImpactBps } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
@@ -71,6 +73,11 @@ export type Props = {
 };
 
 export function PositionItem(p: Props) {
+  const { networkId } = useChainId();
+  const features = getNetworkFeatures(networkId);
+  const canEditMargin = Boolean(
+    p.onEditCollateralClick && (features.collateralDeposit || features.collateralWithdrawal)
+  );
   const { showDebugValues } = useSettings();
   const savedShowPnlAfterFees = useSelector(selectShowPnlAfterFees);
   const breakdownNetPriceImpactEnabled = useSelector(selectBreakdownNetPriceImpactEnabled);
@@ -386,7 +393,7 @@ export function PositionItem(p: Props) {
             }
           />
 
-          {!p.position.isOpening && !p.hideActions && p.onEditCollateralClick && (
+          {!p.position.isOpening && !p.hideActions && canEditMargin && (
             <span className="edit-icon" onClick={p.onEditCollateralClick} data-qa="position-edit-button">
               <EditIcon className="text-typography-secondary" width={16} height={16} />
             </span>
@@ -722,13 +729,15 @@ export function PositionItem(p: Props) {
               </Button>
 
               <PositionDropdown
-                handleEditCollateral={p.onEditCollateralClick}
+                handleEditCollateral={canEditMargin ? p.onEditCollateralClick : undefined}
                 handleMarketSelect={() => p.onSelectPositionClick?.()}
                 handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market)}
                 handleShare={p.onShareClick}
                 handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit)}
-                handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket)}
-                handleTwapIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Twap)}
+                handleStopMarketIncreaseSize={
+                  features.stopMarket ? () => p.onSelectPositionClick?.(TradeMode.StopMarket) : undefined
+                }
+                handleTwapIncreaseSize={features.twap ? () => p.onSelectPositionClick?.(TradeMode.Twap) : undefined}
                 handleTriggerClose={handleOpenAddTPSLModal}
                 handleViewPositionHistory={p.onViewPositionHistory}
                 disabled={isActionsDisabled}
@@ -922,13 +931,17 @@ export function PositionItem(p: Props) {
                 </Button>
                 <div>
                   <PositionDropdown
-                    handleEditCollateral={p.onEditCollateralClick}
+                    handleEditCollateral={canEditMargin ? p.onEditCollateralClick : undefined}
                     handleMarketSelect={() => p.onSelectPositionClick?.()}
                     handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market, true)}
                     handleShare={p.onShareClick}
                     handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit, true)}
-                    handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket, true)}
-                    handleTwapIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Twap, true)}
+                    handleStopMarketIncreaseSize={
+                      features.stopMarket ? () => p.onSelectPositionClick?.(TradeMode.StopMarket, true) : undefined
+                    }
+                    handleTwapIncreaseSize={
+                      features.twap ? () => p.onSelectPositionClick?.(TradeMode.Twap, true) : undefined
+                    }
                     handleTriggerClose={handleOpenAddTPSLModal}
                     handleViewPositionHistory={p.onViewPositionHistory}
                     disabled={isActionsDisabled}

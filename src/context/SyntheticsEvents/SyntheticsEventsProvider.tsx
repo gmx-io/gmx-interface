@@ -1,4 +1,5 @@
 import { t } from "@lingui/macro";
+import noop from "lodash/noop";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useLatest } from "react-use";
@@ -1534,6 +1535,69 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   ]);
 
   return <SyntheticsEventsContext.Provider value={contextState}>{children}</SyntheticsEventsContext.Provider>;
+}
+
+const DISABLED_SYNTHETICS_EVENTS_STATE: SyntheticsEventsContextType = {
+  multichainSourceChainApprovalStatuses: {},
+  setMultichainSourceChainApprovalsActiveListener: noop,
+  removeMultichainSourceChainApprovalsActiveListener: noop,
+  pendingMultichainFunding: [],
+  setMultichainSubmittedDeposit: () => undefined,
+  setMultichainSubmittedWithdrawal: () => undefined,
+  setMultichainWithdrawalSentTxnHash: noop,
+  setMultichainWithdrawalSentError: noop,
+  updatePendingMultichainFunding: noop,
+  multichainFundingPendingIds: {},
+  removeMultichainFundingPendingIds: noop,
+  setMultichainFundingPendingId: noop,
+  transitRouteProgress: undefined,
+  paxosTransitOrder: undefined,
+  isPaxosTransitOrderStatusUnknown: false,
+  isPaxosTransitOrderLookupExpired: false,
+  startTransitRouteProgress: noop,
+  attachTransitRouteConversion: noop,
+  attachTransitRouteDeposit: noop,
+  setTransitRouteContinueRequested: noop,
+  dismissTransitRouteProgress: noop,
+  orderStatuses: {},
+  depositStatuses: {},
+  withdrawalStatuses: {},
+  shiftStatuses: {},
+  approvalStatuses: {},
+  pendingOrdersUpdates: {},
+  pendingTpSlOrderBatches: [],
+  setPendingTpSlOrderBatches: noop,
+  pendingPositionsUpdates: {},
+  positionIncreaseEvents: undefined,
+  positionDecreaseEvents: undefined,
+  pendingExpressTxns: {},
+  relayTaskStatuses: {},
+  setPendingExpressTxn: noop,
+  updatePendingExpressTxn: noop,
+  setPendingOrder: noop,
+  setPendingOrderUpdate: noop,
+  setPendingFundingFeeSettlement: noop,
+  setPendingPosition: noop,
+  setPendingDeposit: noop,
+  setPendingWithdrawal: noop,
+  setPendingShift: noop,
+  setOrderStatusViewed: noop,
+  setDepositStatusViewed: noop,
+  setWithdrawalStatusViewed: noop,
+  setShiftStatusViewed: noop,
+  setMultichainTransferProgress: noop,
+};
+
+/**
+ * For networks without EVM events. ToastContainer remounts empty on a network switch, so this only
+ * covers toasts that EVM code still in flight creates after the switch.
+ */
+export function DisabledSyntheticsEventsProvider({ children }: { children: ReactNode }) {
+  return (
+    <SyntheticsEventsContext.Provider value={DISABLED_SYNTHETICS_EVENTS_STATE}>
+      {children}
+    </SyntheticsEventsContext.Provider>
+  );
 }
 
 function getPendingPositionKeyFromOrder(

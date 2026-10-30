@@ -1,14 +1,16 @@
 import { useMemo } from "react";
 import { useLocation } from "react-router-dom";
 
-import { ContractsChainId } from "config/chains";
+import { ContractsChainId, isSolanaNetwork } from "config/chains";
 import { GLV_MARKETS } from "config/markets";
 import { parseContractPrice, TokenPricesData } from "domain/synthetics/tokens";
+import { useChainId } from "lib/chains";
 import { FreshnessMetricId, metrics, TickersErrorsCounter } from "lib/metrics";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
 import { LEADERBOARD_PRICES_UPDATE_INTERVAL, PRICES_CACHE_TTL, PRICES_UPDATE_INTERVAL } from "lib/timeConstants";
 import { getToken, getTokenBySymbol, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { isSameAddress } from "sdk/utils/address";
 import type { Token } from "sdk/utils/tokens/types";
 
 import { useSequentialTimedSWR } from "./useSequentialTimedSWR";
@@ -28,6 +30,8 @@ export function useTokenRecentPricesRequest(
   params?: { enabled?: boolean }
 ): TokenPricesDataResult {
   const { enabled = true } = params ?? {};
+  const { networkId } = useChainId();
+  const pricesEnabled = enabled && !isSolanaNetwork(networkId);
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
   const pathname = useLocation().pathname;
 
@@ -41,7 +45,7 @@ export function useTokenRecentPricesRequest(
   PRICES_CACHE[chainId] = PRICES_CACHE[chainId] || {};
   PRICES_CACHE_UPDATED[chainId] = PRICES_CACHE_UPDATED[chainId] || {};
 
-  const key = enabled ? [chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"] : null;
+  const key = pricesEnabled ? [chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"] : null;
 
   const { data, error, isLoading } = useSequentialTimedSWR(key, {
     refreshInterval: refreshPricesInterval,
@@ -109,8 +113,8 @@ export function getPriceTokenConfig(chainId: ContractsChainId, tokenAddress: str
   try {
     return getToken(chainId, tokenAddress);
   } catch (e) {
-    const glvConfig = Object.values(GLV_MARKETS[chainId] ?? {}).find(
-      (glv) => glv.glvTokenAddress.toLowerCase() === tokenAddress.toLowerCase()
+    const glvConfig = Object.values(GLV_MARKETS[chainId] ?? {}).find((glv) =>
+      isSameAddress(glv.glvTokenAddress, tokenAddress)
     );
 
     if (!glvConfig) {

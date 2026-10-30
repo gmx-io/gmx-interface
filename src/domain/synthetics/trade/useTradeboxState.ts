@@ -10,6 +10,7 @@ import { useHistory } from "react-router-dom";
 import { useLatest } from "react-use";
 
 import { AVALANCHE, ContractsChainId, SourceChainId } from "config/chains";
+import { getNetworkFeatures } from "config/features";
 import {
   getKeepLeverageKey,
   getLeverageKey,
@@ -22,6 +23,7 @@ import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateConte
 import { useEmptyGmxAccounts } from "domain/multichain/useEmptyGmxAccounts";
 import { JitLiquidityInfo } from "domain/synthetics/jit/utils";
 import { MarketInfo } from "domain/synthetics/markets";
+import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { useSafeState } from "lib/useSafeState";
@@ -121,6 +123,7 @@ export function useTradeboxState(
     jitLiquidityMap?: Record<string, JitLiquidityInfo>;
   }
 ) {
+  const { networkId } = useChainId();
   const history = useHistory();
   const latestHistory = useLatest(history);
   const latestEnabled = useLatest(enabled);
@@ -359,8 +362,14 @@ export function useTradeboxState(
       return [];
     }
 
-    return getAvailableTradeModes({ chainId, tradeType, fromTokenAddress, toTokenAddress });
-  }, [chainId, tradeType, fromTokenAddress, toTokenAddress]);
+    return getAvailableTradeModes({
+      chainId,
+      networkId,
+      tradeType,
+      fromTokenAddress,
+      toTokenAddress,
+    });
+  }, [chainId, networkId, tradeType, fromTokenAddress, toTokenAddress]);
 
   const getMaxLongShortLiquidityPool = useMemo(
     () => createGetMaxLongShortLiquidityPool(availableTokensOptions.sortedAllMarkets || [], jitLiquidityMap),
@@ -741,7 +750,7 @@ export function useTradeboxState(
     });
   }, [advancedOptions, setStoredOptionsOnChain, storedOptions.advanced]);
 
-  const { emptyGmxAccounts } = useEmptyGmxAccounts([AVALANCHE]);
+  const { emptyGmxAccounts } = useEmptyGmxAccounts(getNetworkFeatures(networkId).gmxAccount ? [AVALANCHE] : undefined);
   const isAvalancheSettlement = chainId === AVALANCHE;
   const isAvalancheEmpty = emptyGmxAccounts?.[AVALANCHE] === true;
   const isEmptyAvalancheGmxAccount = isAvalancheSettlement && isAvalancheEmpty;
