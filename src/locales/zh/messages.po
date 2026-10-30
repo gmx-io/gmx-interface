@@ -675,10 +675,6 @@ msgstr "资金费"
 msgid "Deposit margin"
 msgstr "存入保证金"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking..."
-msgstr "取消质押中..."
-
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From network"
 msgstr "来源网络"
@@ -2176,10 +2172,6 @@ msgstr "选择池"
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "This market has been disabled. Contact support to claim your remaining funding fees."
 msgstr "该市场已停用。请联系支持团队领取剩余的资金费。"
-
-#: src/components/Errors/stakingToasts.ts
-msgid "Staking moved to a new contract. Review and try again."
-msgstr "质押已迁移至新合约。请检查后重试。"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Log index:"
@@ -4132,10 +4124,6 @@ msgstr "GMX 的 Dune Analytics"
 msgid "External routes are only used for Market Swaps"
 msgstr "外部路由仅用于 Market Swap"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking is paused until the staking upgrade"
-msgstr "解除质押已暂停，直至质押升级完成"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them."
 msgstr "Express 需要您的 GMX Account 中有 {gasPaymentTokensText}。请存入其中一种。"
@@ -5127,10 +5115,6 @@ msgstr "累计投入保证金（GMX 余额）"
 msgid "POOL VALUE"
 msgstr "池价值"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake completed"
-msgstr "解除质押完成"
-
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Export wallet"
 msgstr "导出钱包"
@@ -5849,8 +5833,6 @@ msgstr "应用已禁用，等待 {0} 升级"
 msgid "v:"
 msgstr "v:"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake"
@@ -7304,10 +7286,6 @@ msgstr "此仓位的完整历史不可用"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient liquidity. Available: {availableLiquidityText}"
 msgstr "流动性不足。可用：{availableLiquidityText}"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake submitted"
-msgstr "解除质押已提交"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Stop-Loss: {suffix}"
@@ -10555,10 +10533,6 @@ msgstr "可用资产"
 msgid "Conversion cancelled"
 msgstr "转换已取消"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake failed"
-msgstr "解除质押失败"
-
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "[{0}]"
 msgstr "[{0}]"
@@ -12923,10 +12897,6 @@ msgstr "系数"
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claim parameters unavailable. Retry in a few seconds"
 msgstr "领取参数不可用。请在几秒后重试"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards"
-msgstr "解除质押数量超过您历史最高 GMX 质押量的 20% 将重置您已累计的奖励"
 
 #: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "Nothing can be converted instantly right now. <0>Convert with Paxos first</0> in the Swap tab: a one-time conversion, 2 to 10 min or longer. Trades paid in USDG need no conversion."

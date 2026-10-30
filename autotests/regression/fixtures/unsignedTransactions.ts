@@ -3,7 +3,7 @@ import { decodeFunctionData, encodeErrorResult, getAddress, toHex } from "viem";
 import CustomErrors from "../../../sdk/src/abis/CustomErrors";
 import ExchangeRouter from "../../../sdk/src/abis/ExchangeRouter";
 import GlvRouter from "../../../sdk/src/abis/GlvRouter";
-import RewardRouter from "../../../sdk/src/abis/RewardRouter";
+import RewardRouterV3 from "../../../sdk/src/abis/RewardRouterV3";
 import type { ContractsChainId } from "../../../sdk/src/configs/chains";
 import { getContract } from "../../../sdk/src/configs/contracts";
 
@@ -19,8 +19,8 @@ export function unsignedTransactionReview(chainId: ContractsChainId, account: st
       const tx = request.params?.[0] as { from?: string; to?: string; data?: string } | undefined;
       if (!tx?.from || !tx.to || !tx.data || getAddress(tx.from) !== account) return;
       const to = getAddress(tx.to);
-      if (to === getAddress(getContract(chainId, "RewardRouter")) && request.method === "eth_estimateGas") {
-        const call = decodeFunctionData({ abi: RewardRouter, data: tx.data });
+      if (to === getAddress(getContract(chainId, "RewardRouterV3")) && request.method === "eth_estimateGas") {
+        const call = decodeFunctionData({ abi: RewardRouterV3, data: tx.data });
         if (!["stakeGmx", "unstakeGmx", "handleRewards"].includes(call.functionName)) return;
         calls.push({ method: request.method, to });
         return { jsonrpc: "2.0", id: request.id, result: toHex(3_000_000n) };

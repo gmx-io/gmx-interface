@@ -675,10 +675,6 @@ msgstr "ファンディング"
 msgid "Deposit margin"
 msgstr "証拠金を入金"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking..."
-msgstr "ステーキング解除中..."
-
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From network"
 msgstr "送信元ネットワーク"
@@ -2176,10 +2172,6 @@ msgstr "プールを選択"
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "This market has been disabled. Contact support to claim your remaining funding fees."
 msgstr "この市場は無効になっています。残りの資金調達料を受け取るには、サポートにお問い合わせください。"
-
-#: src/components/Errors/stakingToasts.ts
-msgid "Staking moved to a new contract. Review and try again."
-msgstr "ステーキングは新しいコントラクトに移行しました。内容を確認して再試行してください。"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Log index:"
@@ -4132,10 +4124,6 @@ msgstr "GMX向けDune Analytics"
 msgid "External routes are only used for Market Swaps"
 msgstr "外部ルートはMarket Swapにのみ使用されます"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking is paused until the staking upgrade"
-msgstr "ステーキングのアップグレードまで、ステーキング解除は一時停止中です"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them."
 msgstr "ExpressにはGMX Accountに{gasPaymentTokensText}が必要です。いずれかを入金してください。"
@@ -5127,10 +5115,6 @@ msgstr "拠出証拠金の合計（GMX残高）"
 msgid "POOL VALUE"
 msgstr "プール価値"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake completed"
-msgstr "アンステーク完了"
-
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Export wallet"
 msgstr "ウォレットをエクスポート"
@@ -5849,8 +5833,6 @@ msgstr "{0}アップグレード待ちのためアプリ無効"
 msgid "v:"
 msgstr "v:"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake"
@@ -7304,10 +7286,6 @@ msgstr "このポジションの全履歴は利用できません"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient liquidity. Available: {availableLiquidityText}"
 msgstr "流動性不足。利用可能: {availableLiquidityText}"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake submitted"
-msgstr "アンステーク送信済み"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Stop-Loss: {suffix}"
@@ -10555,10 +10533,6 @@ msgstr "利用可能な資産"
 msgid "Conversion cancelled"
 msgstr "変換はキャンセルされました"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake failed"
-msgstr "アンステークに失敗しました"
-
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "[{0}]"
 msgstr "[{0}]"
@@ -12923,10 +12897,6 @@ msgstr "ファクター"
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claim parameters unavailable. Retry in a few seconds"
 msgstr "受け取りパラメータが利用できません。数秒後に再試行してください"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards"
-msgstr "過去最大のGMXステーキング数量の20%を超えてステーキングを解除すると、累積報酬がリセットされます"
 
 #: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "Nothing can be converted instantly right now. <0>Convert with Paxos first</0> in the Swap tab: a one-time conversion, 2 to 10 min or longer. Trades paid in USDG need no conversion."

@@ -237,7 +237,7 @@ export async function createUiRehearsal(context: BrowserContext, state: AccountS
         bridge.deposit(tx);
       } else if (getAddress(tx.to) === getAddress(getContract(42161, "SubaccountRouter"))) {
         oneClick.remove(tx.data);
-      } else if (getAddress(tx.to) === getAddress(getContract(42161, "RewardRouter"))) {
+      } else if (getAddress(tx.to) === getAddress(getContract(42161, "RewardRouterV3"))) {
         earn.transact(tx.data);
       } else if (getAddress(tx.to) === getAddress(getContract(42161, "MultichainTransferRouter"))) {
         const root = decodeFunctionData({ abi: MultichainTransferRouter, data: tx.data });
