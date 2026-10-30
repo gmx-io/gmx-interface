@@ -1,6 +1,5 @@
-import { getAddress } from "viem";
-
 import type { TradeAction as SubsquidTradeAction } from "codegen/subsquid";
+import { normalizeAddress } from "utils/address";
 import type { MarketsInfoData } from "utils/markets/types";
 import { toBigInt } from "utils/numbers";
 import { getByKey } from "utils/objects";
@@ -26,8 +25,8 @@ export function createRawTradeActionTransformer(
     const orderType = Number(rawAction.orderType);
 
     if (isSwapOrderType(orderType)) {
-      const initialCollateralTokenAddress = getAddress(rawAction.initialCollateralTokenAddress!);
-      const swapPath = rawAction.swapPath!.map((address) => getAddress(address));
+      const initialCollateralTokenAddress = normalizeAddress(rawAction.initialCollateralTokenAddress!);
+      const swapPath = rawAction.swapPath!.map((address) => normalizeAddress(address));
 
       const swapPathOutputAddresses = getSwapPathOutputAddresses({
         marketsInfoData,
@@ -78,11 +77,11 @@ export function createRawTradeActionTransformer(
 
       return tradeAction;
     } else {
-      const marketAddress = getAddress(rawAction.marketAddress!);
+      const marketAddress = normalizeAddress(rawAction.marketAddress!);
       const marketInfo = getByKey(marketsInfoData, marketAddress);
       const indexToken = marketInfo?.indexToken;
-      const initialCollateralTokenAddress = getAddress(rawAction.initialCollateralTokenAddress!);
-      const swapPath = rawAction.swapPath!.map((address) => getAddress(address));
+      const initialCollateralTokenAddress = normalizeAddress(rawAction.initialCollateralTokenAddress!);
+      const swapPath = rawAction.swapPath!.map((address) => normalizeAddress(address));
       const swapPathOutputAddresses = getSwapPathOutputAddresses({
         marketsInfoData,
         swapPath,

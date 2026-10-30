@@ -1,4 +1,4 @@
-import { createContext, PropsWithChildren, useContext, useEffect, useMemo } from "react";
+import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useRef } from "react";
 
 import {
   type NetworkId,
@@ -7,7 +7,8 @@ import {
   SOLANA_NETWORK_ID,
 } from "config/chains";
 import { isSourceChain } from "config/multichain";
-import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
+import { useGmxAccountSelector, useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
+import { selectGmxAccountSetModalOpen } from "context/GmxAccountContext/selectors";
 import { useChainIdSearchParam } from "domain/multichain/useChainIdSearchParam";
 import { useEmptyGmxAccounts } from "domain/multichain/useEmptyGmxAccounts";
 import { useChainIdImpl } from "lib/chains/useChainIdImpl";
@@ -35,10 +36,21 @@ const context = createContext<ChainContext>({
 
 export function ChainContextProvider({ children }: PropsWithChildren) {
   const [gmxAccountSettlementChainId, setGmxAccountSettlementChainId] = useGmxAccountSettlementChainId();
+  const setGmxAccountModalOpen = useGmxAccountSelector(selectGmxAccountSetModalOpen);
 
   const { chainId, srcChainId, isConnectedToChainId, isSolanaNetworkSelected } =
     useChainIdImpl(gmxAccountSettlementChainId);
   const networkId: NetworkId = isSolanaNetworkSelected ? SOLANA_NETWORK_ID : chainId;
+
+  // GmxAccountModal remounts with EvmProviders, so it never sees this change. The modal state lives above that swap.
+  const prevIsSolanaSelectedRef = useRef(isSolanaNetworkSelected);
+  useEffect(() => {
+    if (prevIsSolanaSelectedRef.current === isSolanaNetworkSelected) {
+      return;
+    }
+    prevIsSolanaSelectedRef.current = isSolanaNetworkSelected;
+    setGmxAccountModalOpen(false);
+  }, [isSolanaNetworkSelected, setGmxAccountModalOpen]);
 
   useChainIdSearchParam({
     settlementChainId: gmxAccountSettlementChainId,

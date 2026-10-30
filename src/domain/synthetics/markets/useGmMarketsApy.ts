@@ -13,6 +13,7 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { ApyPeriod, useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getTokenBySymbolSafe } from "sdk/configs/tokens";
+import { isSameAddress } from "sdk/utils/address";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { isGlvEnabled, isGlvInfo } from "./glv";
@@ -142,16 +143,14 @@ function useIncentivesBonusApr(
   const regularToken = useMemo(() => {
     if (!tokenAddress || !tokensData) return undefined;
 
-    const lowerCased = tokenAddress.toLowerCase();
-    const key = Object.keys(tokensData).find((key) => key.toLowerCase() === lowerCased);
+    const key = Object.keys(tokensData).find((key) => isSameAddress(key, tokenAddress));
     return key ? tokensData[key] : undefined;
   }, [tokenAddress, tokensData]);
 
   const marketToken = useMemo(() => {
     if (!tokenAddress || !marketTokensData) return undefined;
 
-    const lowerCased = tokenAddress.toLowerCase();
-    const key = Object.keys(marketTokensData).find((key) => key.toLowerCase() === lowerCased);
+    const key = Object.keys(marketTokensData).find((key) => isSameAddress(key, tokenAddress));
     return key ? marketTokensData[key] : undefined;
   }, [marketTokensData, tokenAddress]);
 

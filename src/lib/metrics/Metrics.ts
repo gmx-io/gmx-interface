@@ -83,7 +83,8 @@ class Metrics {
   setFetcher = (fetcher: OracleFetcher) => {
     this.fetcher = fetcher;
 
-    if (this.queue.length > 0 && !this.isProcessing) {
+    // A fresh session queues nothing before this runs, so the loop has to start while the queue is empty
+    if (!this.isProcessing) {
       this._processQueue();
     }
   };

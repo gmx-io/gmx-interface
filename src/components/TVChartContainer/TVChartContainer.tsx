@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import { t } from "@lingui/macro";
 import { CSSProperties, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useLatest, useLocalStorage, useMedia } from "react-use";
-import { isAddressEqual, type Address } from "viem";
+import { type Address } from "viem";
 
 import { colors } from "config/colors";
 import { WAS_TV_CHART_OVERRIDDEN_KEY } from "config/localStorage";
@@ -33,6 +33,7 @@ import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
 import { isChartAvailableForToken, getTokenBySymbolSafe } from "sdk/configs/tokens";
 import { convertTokenAddress } from "sdk/configs/tokens";
+import { getAddressKey, isSameAddress } from "sdk/utils/address";
 import { TradeActionType, isPositionTradeAction, type TradeAction } from "sdk/utils/tradeHistory/types";
 
 import Loader from "components/Loader/Loader";
@@ -70,7 +71,7 @@ const MARKS_PAGE_SIZE = 100;
 const MARKS_CACHE_TTL_MS = 60_000;
 
 function getNormalizedPositionKey(account: string, market: string, collateral: string, isLong: boolean) {
-  return getPositionKey(account.toLowerCase(), market.toLowerCase(), collateral.toLowerCase(), isLong);
+  return getPositionKey(getAddressKey(account), getAddressKey(market), getAddressKey(collateral), isLong);
 }
 
 const OPENED_AT_QUERY_LIMIT = 500;
@@ -97,7 +98,7 @@ async function fetchOpenPositionsOpenedAt(chainId: number, contractKeys: string[
 
   for (const position of res.data?.positions || []) {
     if (position.positionKey && typeof position.openedAt === "number") {
-      result.set(position.positionKey.toLowerCase(), position.openedAt);
+      result.set(getAddressKey(position.positionKey), position.openedAt);
     }
   }
 
@@ -169,7 +170,7 @@ export default function TVChartContainer({
     if (!positionsInfoData) return keys;
     for (const pos of Object.values(positionsInfoData)) {
       if (!pos || pos.sizeInUsd === 0n || !pos.contractKey) continue;
-      keys.push(pos.contractKey.toLowerCase());
+      keys.push(getAddressKey(pos.contractKey));
     }
     return keys;
   }, [positionsInfoData]);
@@ -202,7 +203,7 @@ export default function TVChartContainer({
     if (!positionsInfoData) return map;
     for (const pos of Object.values(positionsInfoData)) {
       if (!pos || pos.sizeInUsd === 0n || !pos.contractKey) continue;
-      const openedAt = openedAtByContractKey.get(pos.contractKey.toLowerCase());
+      const openedAt = openedAtByContractKey.get(getAddressKey(pos.contractKey));
       if (openedAt === undefined) continue;
       map.set(
         getNormalizedPositionKey(pos.account, pos.marketAddress, pos.collateralTokenAddress, pos.isLong),
@@ -313,7 +314,7 @@ export default function TVChartContainer({
           return null;
         }
         const marketIndexWrapped = convertTokenAddress(cid as ContractsChainId, market.indexTokenAddress, "wrapped");
-        if (!isAddressEqual(marketIndexWrapped as Address, wrappedSelected as Address)) {
+        if (!isSameAddress(marketIndexWrapped, wrappedSelected)) {
           return null;
         }
 
@@ -383,10 +384,7 @@ export default function TVChartContainer({
 
         marketAddresses = Object.values(markets)
           .filter((m) =>
-            isAddressEqual(
-              convertTokenAddress(cid as ContractsChainId, m.indexTokenAddress, "wrapped") as Address,
-              wrappedSelected as Address
-            )
+            isSameAddress(convertTokenAddress(cid as ContractsChainId, m.indexTokenAddress, "wrapped"), wrappedSelected)
           )
           .map((m) => m.marketTokenAddress);
 
@@ -456,7 +454,7 @@ export default function TVChartContainer({
       if (mode === "current") {
         (inc || []).forEach((e) => {
           if (e.sizeDeltaUsd === 0n || e.sizeInUsd !== e.sizeDeltaUsd) return;
-          if (acc && e.account && !isAddressEqual(e.account as Address, acc as Address)) return;
+          if (acc && e.account && !isSameAddress(e.account, acc)) return;
           const key = getNormalizedPositionKey(e.account, e.marketAddress, e.collateralTokenAddress, e.isLong);
           const ts = Number(e.increasedAtTime);
           const prev = liveGenesisByKey.get(key);
@@ -510,7 +508,7 @@ export default function TVChartContainer({
 
       (inc || []).forEach((e) => {
         if (e.sizeDeltaUsd === 0n) return;
-        if (acc && e.account && !isAddressEqual(e.account as Address, acc as Address)) return;
+        if (acc && e.account && !isSameAddress(e.account, acc)) return;
         const ts = Number(e.increasedAtTime);
         if (!isOpenPositionMark(e.account, e.marketAddress, e.collateralTokenAddress, e.isLong, ts)) return;
         const marketForEvent = markets?.[e.marketAddress];
@@ -534,7 +532,7 @@ export default function TVChartContainer({
 
       (dec || []).forEach((e) => {
         if (e.sizeDeltaUsd === 0n) return;
-        if (acc && e.account && !isAddressEqual(e.account as Address, acc as Address)) return;
+        if (acc && e.account && !isSameAddress(e.account, acc)) return;
         const ts = Number(e.decreasedAtTime);
         if (!isOpenPositionMark(e.account, e.marketAddress, e.collateralTokenAddress, e.isLong, ts)) return;
         const marketForEvent = markets?.[e.marketAddress];
@@ -566,12 +564,12 @@ export default function TVChartContainer({
         }
       });
     }
-    setDatafeed((prev) => {
-      if (prev) {
-        prev.destroy();
-      }
-      return newDatafeed;
-    });
+    setDatafeed(newDatafeed);
+
+    // TradingView unsubscribes bars when its iframe unloads. destroy() removes the visibilitychange listener the datafeed adds.
+    return () => {
+      newDatafeed.destroy();
+    };
   }, [chainId, oracleKeeperFetcher, setIsCandlesLoaded, marksStateRef]);
 
   const isMobile = useMedia("(max-width: 550px)");
