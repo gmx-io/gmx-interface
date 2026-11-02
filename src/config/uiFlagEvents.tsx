@@ -25,6 +25,13 @@ export const uiFlagEventsData: UiFlagEventData[] = [
     content: <Trans>Trading may be temporarily unavailable. Our team is working to resolve the issue.</Trans>,
     variant: "error",
   },
+  {
+    id: "qa-info-hint",
+    flagName: "qaInfoHint",
+    title: "Test · Scheduled maintenance",
+    content: "Charts may load slowly on Thursday from 10:00 to 10:30 UTC.",
+    variant: "info",
+  },
 ];
 
 export function getUiFlagEventDismissCooldown(event: UiFlagEventData): number {

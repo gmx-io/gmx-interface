@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useReducer } from "react";
+import { keccak256, stringToHex } from "viem";
 
+import { QA_ACCOUNT, isQaMockOn } from "config/qaMocks";
 import { useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 import { readLocalStorageItem, writeLocalStorageItem } from "lib/localStorage";
 import useWallet from "lib/wallets/useWallet";
@@ -11,20 +13,26 @@ import {
 } from "./targetedAnnouncementLogic";
 
 const MAX_TIMEOUT_MS = 2_147_483_647;
+const QA_HASH = keccak256(stringToHex(QA_ACCOUNT));
 
 export function useTargetedAnnouncement(campaign: TargetedAnnouncementCampaign) {
   const { account } = useWallet();
   const { uiFlags } = useUiFlagsRequest();
   const [stateVersion, bumpStateVersion] = useReducer((version: number) => version + 1, 0);
 
-  const accountHash = useMemo(() => getTargetedAnnouncementAddressHash(account), [account]);
+  const isQa = isQaMockOn("targeted");
+  const accountHash = useMemo(() => (isQa ? QA_HASH : getTargetedAnnouncementAddressHash(account)), [account, isQa]);
+  const shownCampaign = useMemo(
+    () => (isQa ? { ...campaign, addressHashes: new Set([QA_HASH]) } : campaign),
+    [campaign, isQa]
+  );
   const isDismissed =
     readLocalStorageItem([campaign.dismissedKey, accountHash], {
       deserializer: (value) => value === "true",
     }) ?? false;
 
   const isVisible = shouldShowTargetedAnnouncement({
-    campaign,
+    campaign: shownCampaign,
     accountHash,
     flagEnabled: uiFlags?.[campaign.flag]?.enabled === true,
     isDismissed,

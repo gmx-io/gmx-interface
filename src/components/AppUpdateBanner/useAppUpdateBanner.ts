@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { isQaMockOn } from "config/qaMocks";
 import { metrics } from "lib/metrics";
 import { AppUpdateCounter } from "lib/metrics/types";
 import { APP_UPDATE_DEBUG, getIsAppUpdateDebug } from "lib/pwa/appUpdateDebug";
@@ -61,7 +62,7 @@ export function useAppUpdateBanner() {
   }
   const [updateBuildId, setUpdateBuildId] = useState<string>();
   const [snoozedUntil, setSnoozedUntil] = useState<number>();
-  const [isOffered, setIsOffered] = useState(false);
+  const [isOffered, setIsOffered] = useState(isQaMockOn("hints"));
 
   const hiddenSince = useRef(document.visibilityState === "hidden" ? Date.now() : undefined);
   const hasInteracted = useRef(false);

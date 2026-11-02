@@ -1,11 +1,22 @@
 import { useCallback, useReducer } from "react";
 
+import { isQaMockOn } from "config/qaMocks";
+
 import {
+  DelistingExposure,
   DelistingToast,
   getActiveDelistingAnnouncementsForExposure,
   writeDismissal,
 } from "./delistingExitAnnouncementsLogic";
 import { useDelistingExposure } from "./useDelistingExposure";
+
+const QA_EXPOSURE: DelistingExposure = {
+  positionMarkets: ["qa-delisting-market"],
+  positionNames: ["DOGE/USD"],
+  positionCount: 2,
+  liquidityMarkets: ["qa-delisting-pool"],
+  liquidityNames: ["DOGE/USD [WETH-USDC]"],
+};
 
 type Result = {
   announcements: DelistingToast[];
@@ -26,16 +37,13 @@ export function useDelistingExitAnnouncements(): Result {
     forceRerender();
   }, []);
 
-  const announcements = account
-    ? getActiveDelistingAnnouncementsForExposure({
-        positionMarkets,
-        positionNames,
-        positionCount,
-        liquidityMarkets,
-        liquidityNames,
-        now: Date.now(),
-      })
-    : [];
+  const isQa = isQaMockOn("funds");
+  const exposure = isQa
+    ? QA_EXPOSURE
+    : { positionMarkets, positionNames, positionCount, liquidityMarkets, liquidityNames };
 
-  return { announcements, isLoading, dismiss };
+  const announcements =
+    account || isQa ? getActiveDelistingAnnouncementsForExposure({ ...exposure, now: Date.now() }) : [];
+
+  return { announcements, isLoading: isLoading && !isQa, dismiss };
 }
