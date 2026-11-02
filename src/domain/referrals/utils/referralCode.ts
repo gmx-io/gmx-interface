@@ -97,7 +97,8 @@ export function formatReferralCodeForDisplay(code: string): string {
     return decoded;
   }
 
-  const hex = code.slice(2);
+  // pasted hex can come in any letter case
+  const hex = code.slice(2).toLowerCase();
   let displayHex = hex;
 
   if (hex.startsWith("00")) {

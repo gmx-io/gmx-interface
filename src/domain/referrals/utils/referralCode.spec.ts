@@ -25,6 +25,7 @@ describe("referralCode", () => {
   it.each([
     [ADDRESS_CODE, "0x6076...159d"],
     [HASH_CODE, "0x3542...6747"],
+    [`0x${HASH_CODE.slice(2).toUpperCase()}`, "0x3542...6747"],
     [leftPadded("01"), "0x0000...0001"],
     [`0x${"01".padEnd(64, "0")}`, "0x0100...0000"],
     // UTF-8 "тест"
