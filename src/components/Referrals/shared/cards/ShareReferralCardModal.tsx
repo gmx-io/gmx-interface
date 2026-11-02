@@ -3,7 +3,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useCopyToClipboard } from "react-use";
 
-import { formatReferralCodeForDisplay } from "domain/referrals/utils/referralCode";
+import { formatReferralCodeForDisplay, getReferralCodeLinkParam } from "domain/referrals/utils/referralCode";
 import { shouldShowShareCardDiscounts } from "domain/referrals/utils/referralsHelper";
 import { shareOrCopyElementAsImage } from "lib/copyElementAsImage";
 import { helperToast } from "lib/helperToast";
@@ -42,7 +42,8 @@ export function ShareReferralCardModal({
   const [, copyToClipboard] = useCopyToClipboard();
   const { isMobile } = useBreakpoints();
   const homeURL = getHomeUrl();
-  const referralLink = `${homeURL}/trade/?ref=${referralCode}`;
+  const referralCodeLinkParam = getReferralCodeLinkParam(referralCode);
+  const referralLink = `${homeURL}/trade/?ref=${referralCodeLinkParam}`;
   const referralCodeLabel = formatReferralCodeForDisplay(referralCode);
   const totalDiscountsFormatted = useMemo(
     () => formatUsd(totalDiscountsUsd, { fallbackToZero: true }),
@@ -72,7 +73,7 @@ export function ShareReferralCardModal({
     let shareUrl = referralLink;
     try {
       const imageInfo = await uploadElementAsShareImage(element);
-      shareUrl = getShareURL(imageInfo.id, referralCode);
+      shareUrl = getShareURL(imageInfo.id, referralCodeLinkParam);
     } catch {
       // Upload failed — fall back to text-only tweet
     } finally {
@@ -82,7 +83,7 @@ export function ShareReferralCardModal({
 
     const tweetLink = getTwitterIntentURL(getTweetText(), shareUrl);
     window.open(tweetLink, "_blank", "noopener,noreferrer");
-  }, [referralLink, referralCode, getTweetText]);
+  }, [referralLink, referralCodeLinkParam, getTweetText]);
 
   const handleCopyLink = useCallback(() => {
     copyToClipboard(referralLink);

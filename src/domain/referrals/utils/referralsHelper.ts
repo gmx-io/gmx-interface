@@ -4,13 +4,13 @@ import identity from "lodash/identity";
 import { CONTRACTS_CHAIN_IDS, ContractsChainId } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { getReferralCodeOwner } from "domain/referrals";
-import { isAddressZero, MAX_REFERRAL_CODE_LENGTH, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
+import { isAddressZero, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 import { expandDecimals, formatAmount, removeTrailingZeros } from "lib/numbers";
 import { getRootUrl } from "lib/url";
 import { bigMath } from "sdk/utils/bigmath";
-import { encodeReferralCode } from "sdk/utils/referrals";
+import { encodeReferralCode, MAX_REFERRAL_CODE_LENGTH, REFERRAL_CODE_REGEX } from "sdk/utils/referrals";
 
-import { REFERRAL_CODE_REGEX } from "./referralCode";
+import { getReferralCodeLinkParam } from "./referralCode";
 
 export const CREATE_REFERRAL_CODE_QUERY_PARAM = "createReferralCode";
 
@@ -118,24 +118,7 @@ export function getCodeError(value: string): string {
 }
 
 export function getReferralCodeTradeUrl(referralCode: string): string {
-  return `${getRootUrl()}/trade/?${REFERRAL_CODE_QUERY_PARAM}=${referralCode}`;
-}
-
-export type ProtocolReferralCodeType = "organic" | "graduated";
-
-const PROTOCOL_REFERRAL_CODES: Record<string, ProtocolReferralCodeType> = {
-  EARNED_TRADER_DISCOUNT_5: "organic",
-  EARNED_TRADER_DISCOUNT_10: "organic",
-  DIRECT_GMX_DISCOUNT_5: "graduated",
-  DIRECT_GMX_DISCOUNT_10: "graduated",
-};
-
-export function getProtocolReferralCodeType(codeString: string | undefined): ProtocolReferralCodeType | undefined {
-  if (!codeString) {
-    return undefined;
-  }
-
-  return PROTOCOL_REFERRAL_CODES[codeString];
+  return `${getRootUrl()}/trade/?${REFERRAL_CODE_QUERY_PARAM}=${getReferralCodeLinkParam(referralCode)}`;
 }
 
 const SHARE_CARD_DISCOUNTS_THRESHOLD_USD = expandDecimals(100, USD_DECIMALS);

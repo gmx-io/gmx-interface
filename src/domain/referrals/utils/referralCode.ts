@@ -1,4 +1,4 @@
-import { zeroHash } from "viem";
+import { type Hash, padHex, stringToHex, zeroHash } from "viem";
 
 import { shortenAddress } from "lib/legacy";
 import {
@@ -6,24 +6,62 @@ import {
   encodeReferralCode,
   isReferralCodeHex,
   MAX_REFERRAL_CODE_LENGTH,
+  REFERRAL_CODE_REGEX,
 } from "sdk/utils/referrals";
 
-export const REFERRAL_CODE_REGEX = /^\w+$/;
+export type ProtocolReferralCodeType = "organic" | "graduated";
 
+const PROTOCOL_REFERRAL_CODES: Record<string, ProtocolReferralCodeType> = {
+  EARNED_TRADER_DISCOUNT_5: "organic",
+  EARNED_TRADER_DISCOUNT_10: "organic",
+  DIRECT_GMX_DISCOUNT_5: "graduated",
+  DIRECT_GMX_DISCOUNT_10: "graduated",
+};
+
+const BYTES32_LENGTH = 32;
 // 6 bytes is the shortest hex that `shortenAddress(_, 13)` still ellipsizes
 const MIN_DISPLAY_HEX_LENGTH = 12;
 const ADDRESS_HEX_LENGTH = 40;
+
+export function getProtocolReferralCodeType(codeString: string | undefined): ProtocolReferralCodeType | undefined {
+  if (!codeString) {
+    return undefined;
+  }
+
+  return PROTOCOL_REFERRAL_CODES[codeString];
+}
+
+// GMX assigns protocol codes, so traders can't pick one by pasting or linking its hex
+export function isProtocolReferralCode(code: string): boolean {
+  return getProtocolReferralCodeType(decodeReferralCode(encodeReferralCode(code))) !== undefined;
+}
 
 export function isReferralCodeQueryParam(value: string | null | undefined): value is string {
   if (!value) {
     return false;
   }
 
-  return value.length <= MAX_REFERRAL_CODE_LENGTH || (isReferralCodeHex(value) && value !== zeroHash);
+  if (!isReferralCodeHex(value)) {
+    return value.length <= MAX_REFERRAL_CODE_LENGTH;
+  }
+
+  return value !== zeroHash && !isProtocolReferralCode(value);
 }
 
-function isEncodedLosslessly(code: string) {
-  return (code.length <= MAX_REFERRAL_CODE_LENGTH && REFERRAL_CODE_REGEX.test(code)) || isReferralCodeHex(code);
+/**
+ * Unlike `encodeReferralCode`, keeps text codes past the UI limit (any registered code decodes to at most 32 chars)
+ * and returns `undefined` instead of stripping characters, so "my-code" can't turn into "mycode".
+ */
+function encodeReferralCodeLosslessly(code: string): Hash | undefined {
+  if (isReferralCodeHex(code)) {
+    return encodeReferralCode(code);
+  }
+
+  if (code.length > BYTES32_LENGTH || !REFERRAL_CODE_REGEX.test(code)) {
+    return undefined;
+  }
+
+  return padHex(stringToHex(code), { size: BYTES32_LENGTH, dir: "right" });
 }
 
 /**
@@ -34,12 +72,18 @@ export function isSameReferralCode(a: string, b: string): boolean {
     return true;
   }
 
-  // encoding strips other characters, so "my-code" would match "mycode"
-  if (!isEncodedLosslessly(a) || !isEncodedLosslessly(b)) {
-    return false;
+  const encoded = encodeReferralCodeLosslessly(a);
+
+  return encoded !== undefined && encoded === encodeReferralCodeLosslessly(b);
+}
+
+// `?ref=` drops text past the UI limit, so those codes link by their bytes32 hex
+export function getReferralCodeLinkParam(code: string): string {
+  if (code.length <= MAX_REFERRAL_CODE_LENGTH) {
+    return code;
   }
 
-  return encodeReferralCode(a) === encodeReferralCode(b);
+  return encodeReferralCodeLosslessly(code) ?? code;
 }
 
 // hex codes always keep the ellipsis, so they can't be mistaken for a text code like `0x01`

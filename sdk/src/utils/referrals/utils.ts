@@ -3,9 +3,11 @@ export const MAX_REFERRAL_CODE_LENGTH = 20;
 import { Hash, padHex, stringToHex, zeroHash } from "viem";
 import { hexToBytes } from "viem/utils";
 
+export const REFERRAL_CODE_REGEX = /^\w+$/;
+
 const BYTES32_HEX_REGEX = /^0x[0-9a-fA-F]{64}$/;
 
-export function isReferralCodeHex(value: string | null | undefined): value is Hash {
+export function isReferralCodeHex(value: string | null | undefined): boolean {
   return typeof value === "string" && BYTES32_HEX_REGEX.test(value);
 }
 
@@ -14,7 +16,7 @@ export function isReferralCodeHex(value: string | null | undefined): value is Ha
  * bytes32, so anything else (e.g. left-padded addresses, hashes, other text) is returned as the original hex.
  */
 export function decodeReferralCode(hexCode?: Hash) {
-  if (!isReferralCodeHex(hexCode) || hexCode === zeroHash) {
+  if (!hexCode || !isReferralCodeHex(hexCode) || hexCode === zeroHash) {
     return "";
   }
 
@@ -23,8 +25,8 @@ export function decodeReferralCode(hexCode?: Hash) {
   const textLength = firstZeroIndex === -1 ? bytes.length : firstZeroIndex;
   const text = String.fromCharCode(...bytes.subarray(0, textLength));
 
-  // only the characters `encodeReferralCode` keeps, so the text leads back to the same code
-  if (!/^\w+$/.test(text) || bytes.subarray(textLength).some((byte) => byte !== 0)) {
+  // only the characters `encodeReferralCode` keeps, so the text never points to a different code
+  if (!REFERRAL_CODE_REGEX.test(text) || bytes.subarray(textLength).some((byte) => byte !== 0)) {
     return hexCode;
   }
 
@@ -32,8 +34,7 @@ export function decodeReferralCode(hexCode?: Hash) {
 }
 
 export function encodeReferralCode(code: string) {
-  // not `isReferralCodeHex`: its type guard would narrow `code` to never below
-  if (BYTES32_HEX_REGEX.test(code)) {
+  if (isReferralCodeHex(code)) {
     // not an address, so no checksum casing; lowercase matches what chain and subgraph return
     return code.toLowerCase() as Hash;
   }

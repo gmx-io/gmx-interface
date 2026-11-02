@@ -195,7 +195,7 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
                         <TableTr key={index}>
                           <TableTd>
                             <div className="flex items-center gap-4">
-                              <span className="font-mono">{formatReferralCodeForDisplay(stat.referralCode)}</span>
+                              <ReferralCodeLabel code={stat.referralCode} />
                               <ReferralCodeWarnings allOwnersOnOtherChains={stat?.allOwnersOnOtherChains} />
                             </div>
                           </TableTd>
@@ -418,7 +418,7 @@ function ReferralCodesMobileTable({
           <GridRow className="text-typography-primary" onClick={() => toggleSelectedCode(stat.referralCode)}>
             <GridCell>
               <div className="flex items-center gap-4">
-                <span className="font-mono">{formatReferralCodeForDisplay(stat.referralCode)}</span>
+                <ReferralCodeLabel code={stat.referralCode} />
                 <ReferralCodeWarnings allOwnersOnOtherChains={stat?.allOwnersOnOtherChains} />
               </div>
             </GridCell>
@@ -495,5 +495,16 @@ function ReferralCodesMobileTable({
         </Fragment>
       ))}
     </div>
+  );
+}
+
+function ReferralCodeLabel({ code }: { code: string }) {
+  const label = formatReferralCodeForDisplay(code);
+
+  // different hex codes can shorten to the same label
+  return (
+    <span className="font-mono" title={label === code ? undefined : code}>
+      {label}
+    </span>
   );
 }
