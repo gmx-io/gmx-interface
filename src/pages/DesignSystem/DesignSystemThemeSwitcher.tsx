@@ -49,5 +49,5 @@ export function ThemeTabs({
 export function DesignSystemThemeSwitcher() {
   const { theme, setThemeMode } = useTheme();
 
-  return <ThemeTabs selected={theme} setSelected={setThemeMode} itemClassName="!text-body-large" />;
+  return <ThemeTabs selected={theme} setSelected={setThemeMode} itemClassName="!text-body-medium" />;
 }

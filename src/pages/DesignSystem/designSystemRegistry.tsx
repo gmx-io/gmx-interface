@@ -11,7 +11,12 @@ export type DesignSystemTab = "examples" | "props" | "guidelines" | "changelog";
 export type DesignSystemPageEntry = {
   slug: string;
   title: string;
-  tabs: Partial<Record<DesignSystemTab, ComponentType>> & { examples: ComponentType };
+  // One sentence under the title
+  description?: string;
+  // The first tab in the tab order opens by default
+  tabs: Partial<Record<DesignSystemTab, ComponentType>>;
+  // Hides the "On this page" menu in the right column, so the content gets its width
+  hideSectionNav?: boolean;
 };
 
 export type DesignSystemGroup = {

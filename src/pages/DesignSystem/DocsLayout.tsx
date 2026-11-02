@@ -18,7 +18,12 @@ import CopyIcon from "img/ic_copy.svg?react";
 
 import { CodeHighlight } from "./CodeHighlight";
 
-// Building blocks for design system documentation pages. Sections look like the cards on /pools.
+// Building blocks for design system documentation pages. Sections are quiet cards: a hairline frame, a compact title
+// bar and the content.
+
+// Keyboard focus ring for links and small buttons, the same as EmbeddedActionButton's
+export const DOCS_FOCUS_CLASSNAME =
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-blue-300";
 
 export type DocsSectionInfo = {
   id: string;
@@ -50,17 +55,17 @@ export function DocsSection({
     <section
       id={section.id}
       data-docs-section={section.title}
-      className="scroll-mt-16 overflow-hidden rounded-6 bg-slate-900"
+      className="scroll-mt-16 overflow-hidden rounded-8 border border-slate-700 bg-slate-900"
     >
-      <div className="flex items-center gap-12 border-b border-fill-surfaceElevated p-24 max-md:p-16">
+      <div className="flex min-h-56 items-center gap-10 border-b border-fill-surfaceElevated px-24 py-12 max-md:px-16">
         {Icon && (
-          <span className="flex size-32 shrink-0 items-center justify-center rounded-8 bg-blue-400/10 text-blue-400 dark:bg-blue-300/10 dark:text-blue-300">
-            <Icon className="size-18" />
+          <span className="flex size-28 shrink-0 items-center justify-center rounded-6 bg-blue-400/10 text-blue-400 dark:bg-blue-300/10 dark:text-blue-300">
+            <Icon className="size-16" />
           </span>
         )}
         <div className="flex flex-wrap items-baseline gap-8">
           <h2 className="text-h3 font-medium">{section.title}</h2>
-          {titleMeta && <span className="text-body-large text-typography-secondary">{titleMeta}</span>}
+          {titleMeta && <span className="text-body-medium text-typography-secondary">{titleMeta}</span>}
         </div>
         {titleAction && <div className="ml-auto">{titleAction}</div>}
       </div>
@@ -70,8 +75,10 @@ export function DocsSection({
 }
 
 // One step smaller and quieter than labels: DS TextIcon/Disabled (#646A8F dark, #9FA3BC light)
-const CODE_ACTION_CLASSNAME =
-  "text-body-small flex items-center gap-4 text-slate-400 transition-colors duration-200 ease-out hover:text-typography-primary dark:text-slate-500 dark:hover:text-typography-primary";
+const CODE_ACTION_CLASSNAME = cx(
+  "text-body-small flex items-center gap-4 rounded-4 text-slate-400 transition-colors duration-200 ease-out hover:text-typography-primary dark:text-slate-500 dark:hover:text-typography-primary",
+  DOCS_FOCUS_CLASSNAME
+);
 
 /**
  * A code block with a Copy button in its corner. Copying turns the button green with a tick for a moment.
@@ -165,6 +172,86 @@ export function DocsCode({ code, collapsedHeight }: { code: string; collapsedHei
 }
 
 /**
+ * A Copy button for code or text, in the same quiet style as DocsCode's. Copying turns it green with a tick for a
+ * moment.
+ */
+export function DocsCopyButton({
+  code,
+  label = "Copy",
+  className,
+}: {
+  code: string;
+  label?: string;
+  className?: string;
+}) {
+  const [isCopied, setIsCopied] = useState(false);
+  const [, copyToClipboard] = useCopyToClipboard();
+
+  const copy = useCallback(() => {
+    copyToClipboard(code);
+    setIsCopied(true);
+  }, [code, copyToClipboard]);
+
+  useEffect(() => {
+    if (!isCopied) {
+      return;
+    }
+    const timeout = setTimeout(() => setIsCopied(false), 1500);
+    return () => clearTimeout(timeout);
+  }, [isCopied]);
+
+  return (
+    <button
+      type="button"
+      onClick={copy}
+      className={cx(CODE_ACTION_CLASSNAME, className, { "!text-green-500": isCopied })}
+    >
+      {isCopied ? <CheckIcon className="size-14" /> : <CopyIcon className="size-14" />}
+      {isCopied ? "Copied" : label}
+    </button>
+  );
+}
+
+/**
+ * A live example on its own canvas. Children sit centered in a row unless previewClassName sets another layout.
+ */
+export function DocsPreview({ previewClassName, children }: { previewClassName?: string; children: ReactNode }) {
+  return (
+    <div className="overflow-hidden rounded-12 border border-slate-700">
+      <div
+        className={cx(
+          "flex min-h-[200px] bg-slate-900 p-40 max-md:p-24",
+          previewClassName ?? "flex-wrap items-center justify-center gap-16"
+        )}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * One example section: a heading (also listed in "On this page"), an optional sentence and the example.
+ */
+export function DocsExample({
+  section,
+  description,
+  children,
+}: {
+  section: DocsSectionInfo;
+  description?: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <section id={section.id} data-docs-section={section.title} className="flex scroll-mt-16 flex-col gap-12">
+      <h2 className="text-h3 font-medium">{section.title}</h2>
+      {description && <p className="text-body-large text-typography-secondary">{description}</p>}
+      <div className="mt-4">{children}</div>
+    </section>
+  );
+}
+
+/**
  * One example inside DocsCards: an optional small label and the live component. Cells are split by lines, not backgrounds.
  */
 export function DocsCard({
@@ -240,11 +327,11 @@ export function DocsPropsTable({ props }: { props: DocsProp[] }) {
     <div className="overflow-x-auto">
       <table className="text-body-large w-full min-w-[640px] border-collapse text-left">
         <thead>
-          <tr className="text-body-medium uppercase text-typography-secondary">
-            <th className="w-[180px] pb-8 pr-16 font-normal">Prop</th>
-            <th className="w-[260px] pb-8 pr-16 font-normal">Type</th>
-            <th className="w-[120px] pb-8 pr-16 font-normal">Default</th>
-            <th className="pb-8 font-normal">Description</th>
+          <tr className="text-caption">
+            <th className="w-[180px] pb-8 pr-16 font-medium">Prop</th>
+            <th className="w-[260px] pb-8 pr-16 font-medium">Type</th>
+            <th className="w-[120px] pb-8 pr-16 font-medium">Default</th>
+            <th className="pb-8 font-medium">Description</th>
           </tr>
         </thead>
         <tbody>

@@ -20,7 +20,7 @@ function getScrollParent(element: HTMLElement): HTMLElement {
  */
 export function useActiveSection(sections: { id: string }[]) {
   const [activeId, setActiveId] = useState<string>();
-  // After a click in the menu the clicked item stays active until the user scrolls by themselves
+  // After a click in the menu the clicked item stays active until the page is scrolled by hand
   const clickedIdRef = useRef<string>();
 
   useEffect(() => {

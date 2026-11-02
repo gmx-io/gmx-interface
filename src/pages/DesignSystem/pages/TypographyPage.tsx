@@ -190,8 +190,7 @@ export function TypographyExamples() {
   return (
     <DocsSection section={EXAMPLES_SECTION} flush>
       <p className="text-body-large px-24 pt-24 text-typography-secondary max-md:px-16 max-md:pt-16">
-        These are the names and values after the Changelog steps. Until then, H2 to H4 are named text-h1 to text-h3 in
-        the code, and the 40px text-h1 and text-body-xlarge don't exist yet. All text uses equal-width digits.
+        Names and values after the Changelog steps.
       </p>
       {TEXT_STYLES.map((group, index) => (
         // data-docs-section also lists each group in the "On this page" menu
@@ -279,7 +278,7 @@ const REPLACEMENTS: Replacement[] = [
     from: "text-13, text-[13px]",
     to: "text-body-small",
     places:
-      "79 places in the app, including the 2 button-label places in Button.tsx. In .button (Button.scss), change line-height: 1 to var(--line-height-body-small). Buttons keep their height: min-h-32 and min-h-40, and the fixed heights on controlled buttons, set it.",
+      "80 places in the app, including the 2 button-label places in Button.tsx. In .button (Button.scss), change line-height: 1 to var(--line-height-body-small). Buttons keep their height: min-h-32 and min-h-40, and the fixed heights on controlled buttons, set it.",
   },
   {
     from: "font-size: 13px, 1.3rem (style files)",
@@ -319,7 +318,8 @@ const SIZE_CLASS_MOVES: Replacement[] = [
   {
     from: "text-14",
     to: "text-body-medium",
-    places: "65 places. In TransactionStatus.tsx (line 27) also delete text-body-small, so the text stays 14px.",
+    places:
+      "58 places: 65 at release minus the 7 that Button step 1 deletes (BuyGmxModal and the 6 share buttons); skip those. In TransactionStatus.tsx (line 27) also delete text-body-small, so the text stays 14px.",
   },
   {
     from: "text-24",
@@ -412,7 +412,7 @@ const CLEANUPS: Cleanup[] = [
   {
     where: "Button/Button.scss · .button.secondary, .button.ghost",
     change:
-      "Delete letter-spacing: 0, and delete tracking-wide from the SelectorBase handle (SelectorBase.tsx, line 219) and the market selector (MarketSelector.tsx, line 218): body text has no letter spacing.",
+      "Move letter-spacing: 0 from .secondary and .ghost to .button, so buttons inside tooltips don't take the tooltip's 0.02em (the orders tooltip of the positions list), and delete tracking-wide from the SelectorBase handle (SelectorBase.tsx, line 219) and the market selector (MarketSelector.tsx, line 218): body text has no letter spacing.",
   },
   {
     where: "SuggestionInput/SuggestionInput.scss (3 rules)",
@@ -702,6 +702,8 @@ export function TypographyChangelog() {
     <div className="flex flex-col gap-16">
       <SectionIntro>
         Steps to move tailwind.config.ts and the app to these text styles, in this order. None of them are done yet.
+        Until then, H2 to H4 are named text-h1 to text-h3 in the code, and the 40px text-h1 and text-body-xlarge
+        don&apos;t exist yet. All text uses equal-width digits.
       </SectionIntro>
       <DocsSection section={CHANGELOG_SECTIONS.values}>
         <div className="flex flex-col gap-16">

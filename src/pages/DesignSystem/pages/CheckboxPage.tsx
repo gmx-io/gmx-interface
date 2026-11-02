@@ -87,10 +87,7 @@ function StatesGrid() {
           </Fragment>
         ))}
       </div>
-      <p className="text-body-medium text-typography-secondary">
-        Hover shows the border from Changelog step 4. Only the empty box has a border, so checked and partial boxes look
-        the same on hover. The “In the app” examples still use today&apos;s hover.
-      </p>
+      <p className="text-body-medium text-typography-secondary">Hover shows the planned border (Changelog step 4).</p>
     </div>
   );
 }

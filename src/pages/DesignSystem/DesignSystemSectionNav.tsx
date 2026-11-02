@@ -1,6 +1,7 @@
 import cx from "classnames";
 import { RefObject, useCallback, useLayoutEffect, useState } from "react";
 
+import { DOCS_FOCUS_CLASSNAME } from "./DocsLayout";
 import { useActiveSection } from "./useActiveSection";
 
 type SectionLink = {
@@ -15,7 +16,8 @@ type Props = {
 };
 
 /**
- * "On this page" menu in the right column: the sections of the open tab, with the one in view highlighted.
+ * "On this page" menu in the right column: the sections of the open tab on a thin line, with the one in view
+ * highlighted and marked on the line.
  */
 export function DesignSystemSectionNav({ contentRef, contentKey }: Props) {
   const [sections, setSections] = useState<SectionLink[]>([]);
@@ -46,7 +48,7 @@ export function DesignSystemSectionNav({ contentRef, contentKey }: Props) {
   }
 
   return (
-    <nav aria-label="On this page" className="flex flex-col gap-2">
+    <nav aria-label="On this page" className="flex flex-col border-l border-slate-700">
       {sections.map((section) => (
         <SectionNavItem
           key={section.id}
@@ -81,10 +83,15 @@ function SectionNavItem({
       type="button"
       aria-current={isActive ? "location" : undefined}
       onClick={handleClick}
-      className={cx("text-body-large px-12 py-6 text-left", {
-        "text-blue-400 dark:text-blue-300": isActive,
-        "text-typography-primary": !isActive,
-      })}
+      // The 2px mark sits over the 1px line of the menu
+      className={cx(
+        "text-body-medium -ml-1 border-l-2 py-6 pl-14 pr-8 text-left transition-colors duration-150",
+        DOCS_FOCUS_CLASSNAME,
+        {
+          "border-blue-400 text-blue-400 dark:border-blue-300 dark:text-blue-300": isActive,
+          "border-[transparent] text-typography-secondary hover:text-typography-primary": !isActive,
+        }
+      )}
     >
       {section.title}
     </button>

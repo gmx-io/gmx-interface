@@ -41,7 +41,7 @@ const SEMANTIC_COLORS: SemanticColorGroup[] = [
       { code: "button-primary", dark: "#2D42FC", light: "#2D42FC" },
       { code: "button-primaryHover", dark: "#2A3DE5", light: "#293CE4" },
       { code: "button-primaryActive", dark: "#2536CD", light: "#2536CD" },
-      { code: "button-secondary", dark: "#1E2033", light: "#E0E0EB" },
+      { code: "button-secondary", dark: "#23263B", light: "#E0E0EB" },
       { code: "button-secondaryHover", dark: "#282D46", light: "#DADCE8" },
       { code: "button-primaryDisabled", dark: "#1E2033", light: "#E0E0EB" },
       { code: "button-secondaryDisabled", dark: "#1E2033", light: "#E0E0EB" },
@@ -139,7 +139,6 @@ const VALUE_CHANGES: ValueChange[] = [
   { token: "blue-300", theme: "Light", before: "#7885FF", after: "#2D42FC" },
   { token: "blue-100", theme: "Light", before: "#A4C3F9", after: "#2D42FC" },
   { token: "button-primaryActive", theme: "Light", before: "#2637CE", after: "#2536CD" },
-  { token: "button-secondary", theme: "Dark", before: "#23263B", after: "#1E2033" },
   { token: "button-secondary", theme: "Light", before: "#E0E0E8", after: "#E0E0EB" },
   { token: "button-secondaryDisabled", theme: "Light", before: "#E0E0E8", after: "#E0E0EB" },
   { token: "green-100", theme: "Dark", before: "#A4F9D9", after: "#A4F9D8" },
@@ -205,7 +204,7 @@ const RENAMES: Rename[] = [
   {
     from: "blue-600",
     to: "button-primary",
-    note: "2 borders in App.scss and 1 text color in DeprecatedExchageStyles.scss: rename them too (same color).",
+    note: "2 borders in App.scss and 1 text color in DeprecatedExchageStyles.scss: rename them too (same color). Also --primary-btn-bg in Shared.scss, the fill of every primary and primary-action button: a missed name in a .scss file fails silently, and the buttons would lose their fill.",
   },
   { from: "blue-300", to: "blue-strong" },
   {
