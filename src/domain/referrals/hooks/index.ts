@@ -5,6 +5,7 @@ import { isAddress, type Hash, zeroAddress, zeroHash } from "viem";
 
 import { getContract } from "config/contracts";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
+import { isProtocolReferralCode } from "domain/referrals/utils/referralCode";
 import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { getReferralsGraphClient } from "lib/indexers";
@@ -268,7 +269,12 @@ export function useUserReferralCode(
       attachedOnChain = true;
       userReferralCode = onChainCode;
       userReferralCodeString = decodeReferralCode(onChainCode);
-    } else if (localStorageCodeOwner && !isAddressZero(localStorageCodeOwner) && isReferralCodeHex(localStorageCode)) {
+    } else if (
+      localStorageCode &&
+      localStorageCodeOwner &&
+      !isAddressZero(localStorageCodeOwner) &&
+      isReferralCodeHex(localStorageCode)
+    ) {
       attachedOnChain = false;
       userReferralCode = localStorageCode;
       userReferralCodeString = decodeReferralCode(localStorageCode);
@@ -400,6 +406,10 @@ export function useReferrerDiscountShare(chainId: ContractsChainId, owner: strin
 }
 
 export async function validateReferralCodeExists(referralCode: string, chainId: ContractsChainId) {
+  if (isProtocolReferralCode(referralCode)) {
+    return false;
+  }
+
   const referralCodeBytes32 = encodeReferralCode(referralCode);
   const referralCodeOwner = await getReferralCodeOwner(chainId, referralCodeBytes32);
   return !isAddressZero(referralCodeOwner);

@@ -15,9 +15,8 @@ import {
   useTraderReferralStats,
   useUserReferralCode,
 } from "domain/referrals";
-import { formatReferralCodeForDisplay } from "domain/referrals/utils/referralCode";
+import { formatReferralCodeForDisplay, getProtocolReferralCodeType } from "domain/referrals/utils/referralCode";
 import {
-  getProtocolReferralCodeType,
   getReferralCodeTradeUrl,
   getSharePercentage,
   isBalancerProgramTier,

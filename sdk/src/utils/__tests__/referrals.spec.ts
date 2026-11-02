@@ -45,7 +45,7 @@ describe("utils/referrals", () => {
     expect(decodeReferralCode(hex)).toEqual(expected);
   });
 
-  it("encodeReferralCode keeps bytes32 hex codes, lowercased", () => {
+  it("encodeReferralCode keeps bytes32 hex codes, lowercased PRO-4493", () => {
     expect(encodeReferralCode(ADDRESS_CODE)).toEqual(ADDRESS_CODE);
     expect(encodeReferralCode(HASH_CODE)).toEqual(HASH_CODE);
     expect(encodeReferralCode(decodeReferralCode(HASH_CODE))).toEqual(HASH_CODE);
