@@ -22,6 +22,7 @@ const SETTLE_CLASSIC_FALLBACK_EXPLANATION =
   "Paid in ETH from your Wallet because your Wallet does not have enough USDC for Express";
 const GMX_ACCOUNT_ONLY_BALANCES: BalanceShape = { wallet: "zero", gmxAccount: "huge" };
 const WALLET_ETH_ONLY_BALANCES: BalanceShape = { wallet: "nativeOnly", gmxAccount: "zero" };
+const WALLET_ONLY_BALANCES: BalanceShape = { wallet: "huge", gmxAccount: "zero" };
 
 /** DataStore gas limits, mirroring `MOCK_GAS_LIMITS`: the modals read them through `useGasLimits`, not the state. */
 const DATA_STORE_GAS_LIMITS: Record<string, bigint> = {
@@ -47,6 +48,9 @@ const GM_MARKET_TOKEN_ADDRESSES = [
   "0x450bb6774Dd8a756274E0ab4107953259d2ac541",
 ];
 const GM_TOKEN_TOTAL_SUPPLY = 2_600_000n * 10n ** 18n;
+const WETH_ADDRESS = "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1";
+const NO_APPROVED_GAS_TOKENS: string[] = [];
+const ONLY_WETH_APPROVED = [WETH_ADDRESS];
 
 function createChain(): MockChain {
   const chain = new MockChain({ walletPrivateKey: MOCK_ACCOUNT_PRIVATE_KEY });
@@ -464,6 +468,98 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
 
       await feeValueHandle(row).hover();
       await expect(page.getByText(SETTLE_CLASSIC_FALLBACK_EXPLANATION)).toBeVisible();
+    });
+  });
+
+  test.describe("Unapproved gas payment token: the fee is quoted in the token that pays it (PRO-4423)", () => {
+    async function installChainWithApprovedGasTokens(
+      page: Parameters<typeof installRpcResponder>[0],
+      approved: string[]
+    ) {
+      const chain = createChain();
+      chain.allowance = 0n;
+      for (const token of approved) {
+        chain.setTokenAllowance({ token, value: 10n ** 40n });
+      }
+      await installRpcResponder(page, chain);
+    }
+
+    test("Trade box, wrapping native ETH: a Classic transaction quoted in ETH", async ({ mount, page }) => {
+      await installChainWithApprovedGasTokens(page, NO_APPROVED_GAS_TOKENS);
+      await mount(
+        <NetworkFeeSurfaceStory
+          surface="tradeBox"
+          express
+          tradeBoxPay="wrap"
+          approvedGasPaymentTokens={NO_APPROVED_GAS_TOKENS}
+        />
+      );
+
+      await page.locator(getDataQALocator("pay-input")).fill("0.01");
+      await openExecutionDetails(page);
+
+      const row = feeRow(page);
+      await expectFeeValue(row, "ETH", "Wallet");
+      await expect(row).not.toContainText("USDC");
+    });
+
+    test("Trade box, paying WETH: the fee moves to WETH and a toast explains it", async ({ mount, page }) => {
+      await installChainWithApprovedGasTokens(page, NO_APPROVED_GAS_TOKENS);
+      await mount(
+        <NetworkFeeSurfaceStory
+          surface="tradeBox"
+          express
+          tradeBoxPay="weth"
+          approvedGasPaymentTokens={NO_APPROVED_GAS_TOKENS}
+        />
+      );
+
+      await page.locator(getDataQALocator("margin-input")).fill("0.1");
+      await openExecutionDetails(page);
+
+      const row = feeRow(page);
+      await expectFeeValue(row, "WETH", "Wallet");
+      await expect(
+        page.getByText("USDC is not approved for fees. This order pays its network fee in WETH.")
+      ).toBeVisible();
+    });
+
+    test("Close position: an already approved WETH pays and no approval is asked", async ({ mount, page }) => {
+      await installChainWithApprovedGasTokens(page, ONLY_WETH_APPROVED);
+      await mount(
+        <NetworkFeeSurfaceStory
+          surface="close"
+          express
+          balances={WALLET_ONLY_BALANCES}
+          approvedGasPaymentTokens={ONLY_WETH_APPROVED}
+        />
+      );
+
+      await openExecutionDetails(page);
+      await expectFeeValue(feeRow(page), "WETH", "Wallet");
+      await expect(page.getByRole("button", { name: /^Approve/ })).toHaveCount(0);
+    });
+
+    test("Settle: an already approved WETH pays and no approval is asked", async ({ mount, page }) => {
+      await installChainWithApprovedGasTokens(page, ONLY_WETH_APPROVED);
+      await mount(<NetworkFeeSurfaceStory surface="settle" express approvedGasPaymentTokens={ONLY_WETH_APPROVED} />);
+
+      await expectFeeValue(feeRow(page), "WETH", "Wallet");
+      await expect(page.getByRole("button", { name: "Settle", exact: true })).toBeEnabled();
+      await expect(page.getByRole("button", { name: /^Approve/ })).toHaveCount(0);
+    });
+
+    test("Settle: with no approved gas payment token the saved USDC is approved before settling", async ({
+      mount,
+      page,
+    }) => {
+      await installChainWithApprovedGasTokens(page, NO_APPROVED_GAS_TOKENS);
+      await mount(
+        <NetworkFeeSurfaceStory surface="settle" express approvedGasPaymentTokens={NO_APPROVED_GAS_TOKENS} />
+      );
+
+      await expectFeeValue(feeRow(page), "USDC", "Wallet");
+      await expect(page.getByRole("button", { name: "Approve USDC for Express fees" })).toBeVisible();
     });
   });
 

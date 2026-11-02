@@ -89,21 +89,19 @@ export function useExpressOrdersParams({
   const settlementChainGlobalExpressParams = useSelector(selectSettlementChainExpressGlobalParams);
   const gmxAccountGlobalExpressParams = useSelector(selectGmxAccountExpressGlobalParams);
   const payAmounts = useMemo(() => (orderParams ? getBatchTotalPayCollateralAmount(orderParams) : {}), [orderParams]);
+  const isExpressAvailable = useSelector(selectIsExpressTransactionAvailable);
+  const isAvailable = isExpressAvailable && orderParams && !getBatchIsNativePayment(orderParams);
   const { globalExpressParams, recordExpressParams } = useGasPaymentTokenFallback({
     savedGlobalExpressParams: isGmxAccount ? gmxAccountGlobalExpressParams : settlementChainGlobalExpressParams,
     fallback: gasPaymentTokenFallback,
     isGmxAccount,
     payTokenFeeToken,
     payAmounts,
-    canNotify: canSwitchGasPaymentToken && orderParams !== undefined && !getIsEmptyBatch(orderParams),
+    canNotify: canSwitchGasPaymentToken && Boolean(isAvailable) && !getIsEmptyBatch(orderParams),
   });
   const subaccount = useSelector(
     isGmxAccount ? selectRawSubaccountForMultichainAction : selectRawSubaccountForSettlementChainAction
   );
-  const isExpressAvailable = useSelector(selectIsExpressTransactionAvailable);
-
-  const isAvailable = isExpressAvailable && orderParams && !getBatchIsNativePayment(orderParams);
-
   const { signer } = useWallet();
   const { provider } = useJsonRpcProvider(chainId, { isExpress: isExpressAvailable });
 

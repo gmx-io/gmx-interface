@@ -304,7 +304,7 @@ export const selectTradeboxExpressFeeTokenAddress = createSelector((q) => {
 
   return resolveGasPaymentTokenAddress({
     chainId: q(selectChainId),
-    fallback: "payToken",
+    fallback: "skipApproval",
     gasPaymentToken: savedGasPaymentToken,
     payTokenAddress: isSwap || isIncrease ? q(selectTradeboxFromTokenAddress) : undefined,
     // the pay token decision doesn't depend on the order amount

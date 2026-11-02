@@ -70,7 +70,7 @@ export function useGasPaymentTokenFallback({
   const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
   const tokenPermits = useSelector(selectTokenPermits);
   const [localFeeUsdByToken, setLocalFeeUsdByToken] = useState<Record<string, bigint>>(EMPTY_OBJECT);
-  const isPayTokenFallback = fallback === "payToken" && payTokenFeeToken !== undefined;
+  const isPayTokenFallback = fallback === "skipApproval" && payTokenFeeToken !== undefined;
   const setFeeUsdByToken = isPayTokenFallback ? payTokenFeeToken.setFeeUsdByToken : setLocalFeeUsdByToken;
 
   const savedGasPaymentToken = savedGlobalExpressParams?.gasPaymentToken;
@@ -124,7 +124,8 @@ export function useGasPaymentTokenFallback({
   useGasPaymentTokenNotApprovedToast({
     fromToken: savedGasPaymentToken,
     toToken: isFallbackActive ? getByKey(tokensData, gasPaymentTokenAddress) : undefined,
-    enabled: fallback === "payToken" && canNotify,
+    // the copy is about an order, so only the trade box shows it
+    enabled: isPayTokenFallback && canNotify,
   });
 
   return { globalExpressParams, recordExpressParams };
