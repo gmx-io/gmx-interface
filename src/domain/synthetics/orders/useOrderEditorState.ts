@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { USD_DECIMALS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -43,21 +43,22 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
     [_setSelectedAllowedSwapSlippageBps]
   );
 
-  useEffect(
-    function resetOrderEditorState() {
-      const reset = () => {
-        setSizeInputValue("");
-        setTriggerPriceInputValue("");
-        setTriggerRatioInputValue("");
-        setShouldCalculateMinOutputAmount(false);
-      };
+  const editingOrderKeyRef = useRef<string | undefined>(undefined);
 
-      if (!editingOrderState?.orderKey) {
-        setTimeout(reset, 100);
-      }
-    },
-    [editingOrderState?.orderKey, setShouldCalculateMinOutputAmount, setTriggerRatioInputValue]
-  );
+  const updateEditingOrderState = useCallback((nextState: EditingOrderState | undefined) => {
+    // re-targeting the open order, e.g. dragging its chart line, keeps what the editor already filled in
+    const isSameOpenOrder = nextState !== undefined && nextState.orderKey === editingOrderKeyRef.current;
+    editingOrderKeyRef.current = nextState?.orderKey;
+
+    if (!isSameOpenOrder) {
+      setSizeInputValue("");
+      setTriggerPriceInputValue("");
+      _setTriggerRatioInputValue("");
+      setShouldCalculateMinOutputAmount(false);
+    }
+
+    setEditingOrderState(nextState);
+  }, []);
 
   const order = getByKey(ordersInfoData, editingOrderState?.orderKey);
 
@@ -90,7 +91,7 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
       cancellingOrdersKeys,
       setCancellingOrdersKeys,
       editingOrderState,
-      setEditingOrderState,
+      setEditingOrderState: updateEditingOrderState,
       isSubmitting,
       setIsSubmitting,
       sizeInputValue,
@@ -118,6 +119,7 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
     acceptablePriceImpactBps,
     cancellingOrdersKeys,
     editingOrderState,
+    updateEditingOrderState,
     initialAcceptablePriceImpactBps,
     isSubmitting,
     setAcceptablePriceImpactBps,

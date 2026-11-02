@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import { ethers } from "ethers";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
@@ -7,16 +6,20 @@ import { getAddress, isAddress, zeroAddress } from "viem";
 
 import { getContract } from "config/contracts";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { getIsRewardRouterChanged, getRewardRouterContract } from "domain/stake/rewardRouter";
+import { useRewardRouter } from "domain/stake/useRewardRouter";
 import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import useWallet from "lib/wallets/useWallet";
-import { abis } from "sdk/abis";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
+import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
+import { getAccountTransfersPausedMessage } from "components/Errors/getContractErrorMessage";
+import { showRewardRouterChangedToast, showStakingErrorToast } from "components/Errors/stakingToasts";
 import Modal from "components/Modal/Modal";
 import PageTitle from "components/PageTitle/PageTitle";
 
@@ -54,7 +57,8 @@ export default function BeginAccountTransfer() {
   const glpVesterAddress = getContract(chainId, "GlpVester");
   const affiliateVesterAddress = getContract(chainId, "AffiliateVester");
 
-  const rewardRouterAddress = getContract(chainId, "RewardRouter");
+  const { rewardRouter, mutateRewardRouter } = useRewardRouter(chainId);
+  const rewardRouterAbiId = rewardRouter?.version === "v3" ? "RewardRouterV3" : "RewardRouter";
 
   const { data: gmxVesterBalance } = useSWR(active && [active, chainId, gmxVesterAddress, "balanceOf", account], {
     fetcher: contractFetcher(signer, "Token"),
@@ -156,11 +160,19 @@ export default function BeginAccountTransfer() {
   });
 
   const { data: pendingReceiver } = useSWR(
-    active && [active, chainId, rewardRouterAddress, "pendingReceivers", account],
+    active && rewardRouter && [active, chainId, rewardRouter.address, "pendingReceivers", account],
     {
-      fetcher: contractFetcher(signer, "RewardRouter"),
+      fetcher: contractFetcher(signer, rewardRouterAbiId),
     }
   );
+
+  const { data: designatedVestersLength } = useSWR<bigint>(
+    rewardRouter?.version === "v3" && [active, chainId, rewardRouter.address, "designatedVestersLength"],
+    {
+      fetcher: contractFetcher<bigint>(signer, "RewardRouterV3"),
+    }
+  );
+  const isTransferPaused = rewardRouter?.version === "v3" && designatedVestersLength === 0n;
 
   const { tokensAllowanceData: gmxAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: stakedGmxTrackerAddress,
@@ -265,12 +277,14 @@ export default function BeginAccountTransfer() {
     claimableGmxRewards,
     gmxAllowance,
     pendingReceiver,
+    rewardRouter,
   ].some((value) => value === undefined);
+  const isTransferPauseLoading = rewardRouter?.version === "v3" && designatedVestersLength === undefined;
   const isReceiverCheckLoading =
     hasValidReceiver &&
     (!feeGmxAllowanceData ||
       [...receiverGmxStakingValues, ...receiverGlpStakingValues].some((value) => value === undefined));
-  const isCheckLoading = isSenderCheckLoading || isReceiverCheckLoading;
+  const isCheckLoading = isSenderCheckLoading || isReceiverCheckLoading || isTransferPauseLoading;
   const hasPendingReceiver = pendingReceiver && pendingReceiver !== zeroAddress;
 
   const getError = () => {
@@ -320,6 +334,9 @@ export default function BeginAccountTransfer() {
     if (error) {
       return false;
     }
+    if (isTransferPaused) {
+      return false;
+    }
     if (isApproving) {
       return false;
     }
@@ -339,6 +356,9 @@ export default function BeginAccountTransfer() {
     const error = getError();
     if (error) {
       return error;
+    }
+    if (isTransferPaused) {
+      return t`Begin transfer`;
     }
     if (isApproving) {
       return t`Approving...`;
@@ -391,20 +411,35 @@ export default function BeginAccountTransfer() {
       return;
     }
 
-    setIsTransferring(true);
-    const contract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
+    signalTransfer();
+  };
 
-    callContract(chainId, contract, "signalTransfer", [parsedReceiver], {
-      sentMsg: t`Transfer submitted`,
-      failMsg: t`Transfer failed`,
-      setPendingTxns,
-    })
-      .then(() => {
-        setIsTransferSubmittedModalVisible(true);
-      })
-      .finally(() => {
-        setIsTransferring(false);
+  const signalTransfer = async () => {
+    if (!rewardRouter) {
+      return;
+    }
+
+    setIsTransferring(true);
+
+    try {
+      if (await getIsRewardRouterChanged(chainId, rewardRouter)) {
+        mutateRewardRouter();
+        showRewardRouterChangedToast();
+        return;
+      }
+
+      await callContract(chainId, getRewardRouterContract(rewardRouter, signer), "signalTransfer", [parsedReceiver], {
+        sentMsg: t`Transfer submitted`,
+        failMsg: t`Transfer failed`,
+        setPendingTxns,
+        hideErrorMsg: true,
       });
+      setIsTransferSubmittedModalVisible(true);
+    } catch (error) {
+      showStakingErrorToast({ chainId, error, failMsg: t`Transfer failed`, action: "transfer" });
+    } finally {
+      setIsTransferring(false);
+    }
   };
 
   const completeTransferLink = `/complete_account_transfer/${account}/${parsedReceiver}`;
@@ -452,6 +487,7 @@ export default function BeginAccountTransfer() {
       </div>
 
       <div className="mx-auto flex max-w-[700px] flex-col gap-20 rounded-8 bg-slate-900 p-20 md:w-[620px]">
+        {isTransferPaused && <ColorfulBanner color="yellow">{getAccountTransfersPausedMessage()}</ColorfulBanner>}
         <div className="flex flex-col gap-8">
           <label className="text-16 font-medium">
             <Trans>Receiver address</Trans>

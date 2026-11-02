@@ -856,9 +856,12 @@ export default function TVChartContainer({
     };
     const widget = new window.TradingView.widget(widgetOptions);
 
+    let disposed = false;
+    let pageHidden = false;
     let didTriggerOnChartReady = { current: false };
 
-    widget.onChartReady(function () {
+    function onChartReady() {
+      if (disposed || pageHidden || didTriggerOnChartReady.current) return;
       didTriggerOnChartReady.current = true;
       tvWidgetRef.current = widget;
       setChartReady(true);
@@ -896,7 +899,7 @@ export default function TVChartContainer({
       });
 
       tvWidgetRef.current?.activeChart().dataReady(() => {
-        setChartDataLoading(false);
+        if (!disposed) setChartDataLoading(false);
       });
 
       tvWidgetRef.current?.onContextMenu((_unixTime, price) => {
@@ -910,41 +913,68 @@ export default function TVChartContainer({
       tvWidgetRef.current?.subscribe("mouse_down", () => {
         closeMenuRef.current();
       });
-    });
+    }
 
     /*
     For some reason on prod TV sometimes does not get initialized properly,
     for these cases we wait some fixed amount of time and force TV into initialization
     */
+    let forceInitTimeout: ReturnType<typeof setTimeout> | undefined;
+    const scheduleForceInit = () => {
+      clearTimeout(forceInitTimeout);
+      forceInitTimeout = setTimeout(() => {
+        if (disposed || pageHidden || didTriggerOnChartReady.current || !chartContainerRef.current) {
+          return;
+        }
 
-    const forceInitTimeout = setTimeout(() => {
-      if (didTriggerOnChartReady.current || !chartContainerRef.current) {
-        return;
-      }
+        const iframe = chartContainerRef.current.querySelector("iframe");
 
-      const iframe = chartContainerRef.current.querySelector("iframe");
+        if (!iframe || !iframe.contentWindow) {
+          return;
+        }
+        const iframeWindow = iframe.contentWindow;
+        const iframeDocument = iframeWindow.document;
 
-      if (!iframe || !iframe.contentWindow) {
-        return;
-      }
-      const iframeWindow = iframe.contentWindow;
-      const iframeDocument = iframeWindow.document;
+        if (iframeDocument.readyState !== "complete") {
+          iframeDocument.addEventListener("readystatechange", () => {
+            if (!disposed && iframeDocument.readyState === "complete") {
+              iframeWindow.dispatchEvent(new Event("innerWindowLoad"));
+            }
+          });
+        } else {
+          iframeWindow.dispatchEvent(new Event("innerWindowLoad"));
+        }
+      }, 800);
+    };
 
-      if (iframeDocument.readyState !== "complete") {
-        iframeDocument.addEventListener("readystatechange", () => {
-          if (iframeDocument.readyState === "complete") {
-            iframeWindow.dispatchEvent(new Event("innerWindowLoad"));
-          }
-        });
+    const onPageHide = () => {
+      pageHidden = true;
+      // The browser can destroy the iframe before React unmounts the chart.
+      if (tvWidgetRef.current === widget) tvWidgetRef.current = null;
+    };
+    const onPageShow = () => {
+      pageHidden = false;
+      if (disposed) return;
+      if (didTriggerOnChartReady.current) {
+        tvWidgetRef.current = widget;
       } else {
-        iframeWindow.dispatchEvent(new Event("innerWindowLoad"));
+        widget.onChartReady(onChartReady);
+        // a timeout that fired while the page was hidden skipped the forced init
+        scheduleForceInit();
       }
-    }, 800);
+    };
+    window.addEventListener("pagehide", onPageHide);
+    window.addEventListener("pageshow", onPageShow);
+    widget.onChartReady(onChartReady);
+    scheduleForceInit();
 
     return () => {
+      disposed = true;
       clearTimeout(forceInitTimeout);
-      widget.remove();
+      window.removeEventListener("pagehide", onPageHide);
+      window.removeEventListener("pageshow", onPageShow);
       tvWidgetRef.current = null;
+      widget.remove();
       setChartReady(false);
       setChartDataLoading(true);
     };

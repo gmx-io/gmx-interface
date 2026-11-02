@@ -1,6 +1,8 @@
 import type { Locator } from "@playwright/experimental-ct-core";
 import { test, expect } from "@playwright/experimental-ct-react";
 
+import { MOCK_ACCOUNT_PRIVATE_KEY, MockChain } from "domain/testUtils/rpc/mockChain";
+import { installRpcResponder } from "domain/testUtils/rpc/playwrightAdapter";
 import { getDataQALocator } from "lib/__tests__/testUtils";
 
 import { TradeBoxStory } from "./TradeBox.ct.stories";
@@ -21,7 +23,8 @@ function infoRow(page: PageLike, label: RegExp) {
 const FRESH_POSITION_WARNING = /may execute after the current position is liquidated/;
 
 test.beforeEach(async ({ page }) => {
-  await page.route(/^https?:\/\/(?!localhost|127\.0\.0\.1)/, (route) => route.abort());
+  // the mock chain answers RPC (unlimited allowance), other requests are dropped
+  await installRpcResponder(page, new MockChain({ walletPrivateKey: MOCK_ACCOUNT_PRIVATE_KEY }));
 });
 
 function selectLimitMode(page: PageLike) {
@@ -171,7 +174,8 @@ test.describe("Limit Increase beyond the current liquidation price", () => {
       await expect(page.getByText(FRESH_POSITION_WARNING)).not.toBeVisible();
 
       const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
-      await expect(submitButton).not.toHaveText(/Max leverage/);
+      await expect(submitButton).toHaveText("Limit: Increase Long");
+      await expect(submitButton).toBeEnabled();
     });
   });
 });

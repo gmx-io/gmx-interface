@@ -127,7 +127,7 @@ export function ShareReferralCardModal({
           showDiscountsLine={showDiscountsLine}
         />
 
-        <div className="flex gap-12">
+        <div className="flex gap-12 max-md:flex-wrap">
           <Button
             variant="secondary"
             onClick={handleShareOnX}
