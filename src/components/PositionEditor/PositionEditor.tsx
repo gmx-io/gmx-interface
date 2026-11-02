@@ -432,7 +432,6 @@ export function PositionEditor() {
     collateralDeltaAmount > 0n &&
     (!isAtPriceDeposit || triggerPrice !== undefined);
 
-  // useKey memoizes the handler on its deps, and onSubmit is rebuilt every render with the current amount
   const latestOnSubmit = useLatest(submitButtonState.onSubmit);
 
   useKey(
