@@ -2,6 +2,7 @@ import { decodeErrorResult } from "viem";
 
 import { SignedTokenPermit } from "domain/tokens";
 import { abis } from "sdk/abis";
+import { GmxRelayError } from "sdk/utils/express";
 
 import {
   CustomError,
@@ -224,4 +225,8 @@ export function getIsPossibleExternalSwapError(error: ErrorLike) {
 
 export function getIsSwapPriceImpactTooLargeError(error: ErrorLike) {
   return parseError(error)?.contractError === "SwapPriceImpactExceedsAmountIn";
+}
+
+export function getIsRelayUnavailableError(error: unknown) {
+  return error instanceof GmxRelayError && !error.isPermanent;
 }
