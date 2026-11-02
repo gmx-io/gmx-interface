@@ -191,7 +191,8 @@ export async function setTraderReferralCodeByUser(
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const contract = new ethers.Contract(referralStorageAddress, abis.ReferralStorage, signer);
   const codeOwner = await contract.codeOwners(referralCodeHex);
-  if (isAddressZero(codeOwner)) {
+  // the join form's own check is debounced, so a quick submit can get here first
+  if (isAddressZero(codeOwner) || isProtocolReferralCode(referralCode)) {
     const errorMsg = "Referral code does not exist";
     helperToast.error(errorMsg);
     return Promise.reject(errorMsg);

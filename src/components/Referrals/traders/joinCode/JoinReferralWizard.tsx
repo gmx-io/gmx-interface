@@ -15,7 +15,6 @@ import {
 import { formatReferralCodeForDisplay } from "domain/referrals/utils/referralCode";
 import { getSharePercentage } from "domain/referrals/utils/referralsHelper";
 import { useChainId } from "lib/chains";
-import { encodeReferralCode } from "sdk/utils/referrals";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -117,8 +116,7 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
               <div className="flex flex-col gap-12">
                 <ReferralCodeEditFormContainer
                   callAfterSuccess={(code: string) => {
-                    // normalizes pasted hex, e.g. its letter case
-                    setActivatedReferralCodeLabel(formatReferralCodeForDisplay(encodeReferralCode(code)));
+                    setActivatedReferralCodeLabel(formatReferralCodeForDisplay(code));
                     setJoinReferralWizardStep(JoinReferralWizardStep.Success);
                   }}
                 />

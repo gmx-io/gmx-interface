@@ -17,6 +17,7 @@ import {
 } from "domain/multichain/useMultichainReferralQuote";
 import { useMultichainStargateApproval } from "domain/multichain/useMultichainStargateApproval";
 import { validateReferralCodeExists } from "domain/referrals/hooks";
+import { isProtocolReferralCode } from "domain/referrals/utils/referralCode";
 import { signSetTraderReferralCode } from "domain/synthetics/express/expressOrderUtils";
 import { getSourceChainNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { useChainId } from "lib/chains";
@@ -87,6 +88,11 @@ export function ReferralCodeFormMultichain({
         quoteResult.data === undefined
       ) {
         throw new Error("Missing required parameters");
+      }
+
+      // the debounced existence check can lag behind a quick submit
+      if (isProtocolReferralCode(referralCode)) {
+        throw new Error("Referral code does not exist");
       }
 
       const relayParamsPayload = createRelayEmptyParamsPayload(chainId as SettlementChainId, globalExpressParams);
