@@ -1,12 +1,16 @@
 import { i18n } from "@lingui/core";
 import { describe, expect, it } from "vitest";
 
+import { ARBITRUM } from "config/chains";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
+import type { TokenData } from "domain/synthetics/tokens";
+import { getTokenBySymbol } from "sdk/configs/tokens";
 import type { PositionTradeAction } from "sdk/utils/tradeHistory/types";
 
 import {
   getLifecycleSettlementLines as getLifecycleSettlementLinesParts,
   getLifecycleSettlementView,
+  getUsdgPartialClosePayoutLines,
 } from "./lifecycleSettlement";
 import {
   CLOSE_ORDER_KEY,
@@ -85,7 +89,7 @@ function buildExtendedData(overrides: Partial<Parameters<typeof buildLifecycleDa
 }
 
 function getExtendedAggregate(data = buildExtendedData(), closeRow: PositionTradeAction = finalCloseRow) {
-  const view = getLifecycleSettlementView(closeRow, data);
+  const view = getLifecycleSettlementView({ closeRow, data, chainId: ARBITRUM });
 
   if (view.mode !== "extended") {
     throw new Error(`expected extended mode, got ${view.mode}`);
@@ -102,15 +106,16 @@ function toLongDecreaseRow(row: PositionTradeAction, overrides: Partial<Position
 
 describe("getLifecycleSettlementView", () => {
   it("keeps the compact settlement for a direct open-to-close lifecycle", () => {
-    const view = getLifecycleSettlementView(
-      anchorCloseRow,
-      buildLifecycleData({
+    const view = getLifecycleSettlementView({
+      closeRow: anchorCloseRow,
+      data: buildLifecycleData({
         rows: [anchorOpenRow, anchorCloseRow],
         requestedByOrderKey: { [OPEN_ORDER_KEY]: { amount: 1_000n * USDC_UNIT } },
-      })
-    );
+      }),
+      chainId: ARBITRUM,
+    });
 
-    expect(view).toEqual({ mode: "compact", openRow: anchorOpenRow, isMultichain: false });
+    expect(view).toEqual({ mode: "compact", openRow: anchorOpenRow, source: "wallet" });
   });
 
   it("falls back when collateral left the position between the only two rows", () => {
@@ -119,13 +124,14 @@ describe("getLifecycleSettlementView", () => {
       initialCollateralDeltaAmount: anchorCloseRow.initialCollateralDeltaAmount - 1_000_000n,
     } as PositionTradeAction;
 
-    const view = getLifecycleSettlementView(
-      drainedCloseRow,
-      buildLifecycleData({
+    const view = getLifecycleSettlementView({
+      closeRow: drainedCloseRow,
+      data: buildLifecycleData({
         rows: [anchorOpenRow, drainedCloseRow],
         requestedByOrderKey: { [OPEN_ORDER_KEY]: { amount: 1_000n * USDC_UNIT } },
-      })
-    );
+      }),
+      chainId: ARBITRUM,
+    });
 
     expect(view.mode).toBe("extended");
   });
@@ -251,6 +257,10 @@ describe("getLifecycleSettlementView", () => {
       key: "Total margin funded",
       value: [`~1.0000${NBSP}WETH`, " + ", `~500.00${NBSP}USDC`, " ", { text: `(~$${HAIR}2,500.00)`, state: "muted" }],
     });
+    expect(lines[7]).toEqual({
+      key: "Net wallet result",
+      value: [`~798.00${NBSP}USDC`, " - ", `~1.0000${NBSP}WETH`, " ", { text: `(~-$${HAIR}1,202.00)`, state: "muted" }],
+    });
   });
 
   it.each([
@@ -280,14 +290,13 @@ describe("getLifecycleSettlementView", () => {
   });
 
   it("labels cashflows as GMX balance movements for multichain lifecycles", () => {
+    const gmxAccountRows = EXTENDED_ROWS.map((row) => ({ ...row, srcChainId: 8453 }) as PositionTradeAction);
     const aggregate = getExtendedAggregate(
-      buildLifecycleData({
-        rows: [{ ...openRow, srcChainId: 8453 } as PositionTradeAction, depositRow, partialCloseRow, finalCloseRow],
-        requestedByOrderKey: EXTENDED_REQUESTED,
-      })
+      buildLifecycleData({ rows: gmxAccountRows, requestedByOrderKey: EXTENDED_REQUESTED }),
+      gmxAccountRows[gmxAccountRows.length - 1]
     );
 
-    expect(aggregate.isMultichain).toBe(true);
+    expect(aggregate.source).toBe("gmxAccount");
 
     const result = getLifecycleSettlementLines(aggregate).filter((line) => line !== undefined);
 
@@ -341,26 +350,34 @@ describe("getLifecycleSettlementView", () => {
       }),
     ],
   ])("falls back to the close side when %s", (_label, data) => {
-    expect(getLifecycleSettlementView(finalCloseRow, data).mode).toBe("closeSideOnly");
+    expect(getLifecycleSettlementView({ closeRow: finalCloseRow, data, chainId: ARBITRUM }).mode).toBe("closeSideOnly");
   });
 
   it("falls back when the lifecycle id is missing", () => {
     const unmatchedCloseRow = { ...finalCloseRow, positionLifecycleId: undefined } as PositionTradeAction;
 
-    expect(getLifecycleSettlementView(unmatchedCloseRow, buildExtendedData()).mode).toBe("closeSideOnly");
+    expect(
+      getLifecycleSettlementView({ closeRow: unmatchedCloseRow, data: buildExtendedData(), chainId: ARBITRUM }).mode
+    ).toBe("closeSideOnly");
   });
 
   // The lifecycle nets to zero, so only the clicked-row check can catch this.
   it("falls back on a partial close of a lifecycle that later closed", () => {
-    expect(getLifecycleSettlementView(partialCloseRow, buildExtendedData()).mode).toBe("closeSideOnly");
+    expect(
+      getLifecycleSettlementView({ closeRow: partialCloseRow, data: buildExtendedData(), chainId: ARBITRUM }).mode
+    ).toBe("closeSideOnly");
   });
 
   // The clicked row is the last one indexed, so only the leftover-size check can catch this.
   it("falls back on the latest partial close while the position is still open", () => {
-    const view = getLifecycleSettlementView(
-      partialCloseRow,
-      buildLifecycleData({ rows: [openRow, depositRow, partialCloseRow], requestedByOrderKey: EXTENDED_REQUESTED })
-    );
+    const view = getLifecycleSettlementView({
+      closeRow: partialCloseRow,
+      data: buildLifecycleData({
+        rows: [openRow, depositRow, partialCloseRow],
+        requestedByOrderKey: EXTENDED_REQUESTED,
+      }),
+      chainId: ARBITRUM,
+    });
 
     expect(view.mode).toBe("closeSideOnly");
   });
@@ -412,14 +429,96 @@ describe("getLifecycleSettlementView", () => {
   });
 
   it("labels an unreconcilable multichain lifecycle as a balance movement", () => {
-    const view = getLifecycleSettlementView(
-      finalCloseRow,
-      buildExtendedData({
-        rows: [{ ...openRow, srcChainId: 8453 } as PositionTradeAction, depositRow, partialCloseRow, finalCloseRow],
-        hasFundingSettlement: true,
+    const gmxAccountRows = EXTENDED_ROWS.map((row) => ({ ...row, srcChainId: 8453 }) as PositionTradeAction);
+    const view = getLifecycleSettlementView({
+      closeRow: gmxAccountRows[gmxAccountRows.length - 1],
+      data: buildExtendedData({ rows: gmxAccountRows, hasFundingSettlement: true }),
+      chainId: ARBITRUM,
+    });
+
+    expect(view).toEqual({ mode: "closeSideOnly", source: "gmxAccount" });
+  });
+
+  it.each([
+    ["a margin deposit from the GMX Account", [0, 8453, 0, 0]],
+    ["a wallet position paid out to the GMX Account", [0, 0, 0, 8453]],
+  ])("labels a lifecycle with %s as mixed PRO-4520", (_label, srcChainIds) => {
+    const rows = EXTENDED_ROWS.map((row, index) => ({ ...row, srcChainId: srcChainIds[index] }) as PositionTradeAction);
+    const result = getLifecycleSettlementLines(
+      getExtendedAggregate(buildLifecycleData({ rows, requestedByOrderKey: EXTENDED_REQUESTED }), rows[rows.length - 1])
+    ).filter((line) => line !== undefined);
+
+    expect(result.slice(3, 8).map((line) => (line as { key: string }).key)).toEqual([
+      "Total margin funded",
+      "Received before close",
+      "Received at close",
+      "Total received",
+      "Net result",
+    ]);
+    expect(result.at(-1)).toEqual({
+      text: "Excludes claimed funding, price impact rebates and execution fees",
+      state: "muted",
+    });
+  });
+});
+
+describe("getUsdgPartialClosePayoutLines", () => {
+  const USDG = getTokenBySymbol(ARBITRUM, "USDG") as TokenData;
+  const USDG_USDC_SWAP_MARKET = "0x408E8e83d4b8Ac4BDefFDF896B49268A5FE5Ef44";
+
+  const usdgPartialClose = buildDecreaseRow({
+    id: "0x5555555555555555555555555555555555555555555555555555555555555555:7",
+    orderKey: CLOSE_ORDER_KEY,
+    marketInfo: { longToken: USDG, shortToken: USDG },
+    initialCollateralToken: USDG,
+    targetCollateralToken: USDC,
+    swapPath: [USDG_USDC_SWAP_MARKET],
+    sizeDeltaUsd: 1_000n * USD,
+    positionSizeInUsd: 1_000n * USD,
+    initialCollateralDeltaAmount: 500n * USDC_UNIT,
+  } as unknown as Partial<PositionTradeAction> & { id: string });
+
+  const usdcLeg = {
+    orderKey: CLOSE_ORDER_KEY,
+    marketAddress: USDG_USDC_SWAP_MARKET,
+    tokenInAddress: USDG.address,
+    tokenOutAddress: USDC.address,
+    tokenInPrice: 10n ** 24n,
+    tokenOutPrice: 10n ** 24n,
+    amountIn: 500n * USDC_UNIT,
+    amountOut: 499_800_000n,
+  };
+
+  const usdgPartialCloseWithoutSwap = { ...usdgPartialClose, swapPath: [], targetCollateralToken: USDG };
+
+  it.each([
+    {
+      name: "the swap leg's output in the target token",
+      tradeAction: usdgPartialClose,
+      swapLegs: [usdcLeg],
+      expected: `~499.80${NBSP}USDC`,
+    },
+    {
+      name: "USDG when the swap leg is missing",
+      tradeAction: usdgPartialClose,
+      swapLegs: [],
+      expected: `~500.00${NBSP}USDG`,
+    },
+    {
+      name: "USDG when the close didn't swap",
+      tradeAction: usdgPartialCloseWithoutSwap,
+      swapLegs: [],
+      expected: `~500.00${NBSP}USDG`,
+    },
+  ])("names $name PRO-4512", ({ tradeAction, swapLegs, expected }) => {
+    const lines = withPlainText(
+      getUsdgPartialClosePayoutLines({
+        tradeAction,
+        swapLegsById: buildLifecycleData({ rows: [], swapLegs }).swapLegsById,
+        chainId: ARBITRUM,
       })
     );
 
-    expect(view).toEqual({ mode: "closeSideOnly", isMultichain: true });
+    expect(lines).toEqual(["", { key: "Wallet received", value: expected }]);
   });
 });

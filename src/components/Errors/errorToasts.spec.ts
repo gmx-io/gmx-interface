@@ -7,7 +7,8 @@ import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { ARBITRUM, SOURCE_BASE_MAINNET, SOURCE_ETHEREUM_MAINNET } from "config/chains";
 import { ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
-import { parseError } from "lib/errors";
+import { CustomError, extendError, parseError } from "lib/errors";
+import { expandDecimals } from "lib/numbers";
 import { TxErrorType } from "sdk/utils/errors/transactionsErrors";
 
 import { getDebugErrorMessage, getInsufficientBalanceToastBanner, getTxnErrorToast } from "./errorToasts";
@@ -53,6 +54,16 @@ describe("getDebugErrorMessage", () => {
 
     expect(message).toContain("InsufficientExecutionFee");
     expect(message).toContain("1200");
+  });
+
+  it("lists the argument values of a contract error decoded by name", () => {
+    const message = getDebugErrorMessage({
+      contractError: "UnableToWithdrawCollateral",
+      contractErrorArgs: { estimatedRemainingCollateralUsd: 90n },
+      errorMessage: "boom",
+    });
+
+    expect(message).toBe("UnableToWithdrawCollateral [90] boom");
   });
 
   it("is unchanged when no task is involved", () => {
@@ -210,6 +221,31 @@ describe("getTxnErrorToast NotEnoughFunds", () => {
     const { errorContent } = getTxnErrorToast(SOURCE_BASE_MAINNET, { txErrorType: TxErrorType.NotEnoughFunds }, {});
 
     expect(isValidElement(errorContent) && errorContent.type).toBe(InsufficientSourceChainNativeTokenBalanceMessage);
+  });
+});
+
+describe("getTxnErrorToast", () => {
+  it("explains a decrease that the order simulation rejects for the leverage reason", () => {
+    const simulationError = extendError(
+      new CustomError({
+        name: "LiquidatablePosition",
+        message: "{}",
+        args: {
+          reason: "min collateral for leverage",
+          remainingCollateralUsd: expandDecimals(90, 30),
+          minCollateralUsd: expandDecimals(5, 30),
+          minCollateralUsdForLeverage: expandDecimals(120, 30),
+        },
+      }),
+      { errorContext: "simulation" }
+    );
+
+    const { errorContent } = getTxnErrorToast(ARBITRUM, parseError(simulationError), { isDecrease: true });
+
+    // formatUsd separates the sign with a non-breaking space, so match on the shape
+    expect(errorContent).toMatch(
+      /^The remaining position would exceed the maximum allowed leverage\. Close a larger part, withdraw less, or add margin first\. Remaining margin: \$\s?90\.00, required: \$\s?120\.00$/
+    );
   });
 });
 

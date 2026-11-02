@@ -476,11 +476,23 @@ export async function signTypedData({
 }
 
 export function splitSignature(signature: string): { r: string; s: string; v: number } {
+  if (!/^0x[0-9a-fA-F]{130}$/.test(signature)) {
+    throw new Error(`Expected a 65-byte signature, got ${(signature.length - 2) / 2} bytes`);
+  }
+
   const sig = signature.slice(2);
   const r = "0x" + sig.substring(0, 64);
   const s = "0x" + sig.substring(64, 128);
-  const v = parseInt(sig.substring(128, 130), 16);
+  let v = parseInt(sig.substring(128, 130), 16);
 
-  // ECDSA signature components
+  // some wallets return the bare recovery id
+  if (v === 0 || v === 1) {
+    v += 27;
+  }
+
+  if (v !== 27 && v !== 28) {
+    throw new Error(`Unexpected signature v: ${v}`);
+  }
+
   return { r, s, v };
 }

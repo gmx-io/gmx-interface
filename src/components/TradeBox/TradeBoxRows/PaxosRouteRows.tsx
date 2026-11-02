@@ -1,7 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 
-import { GMX_PARTNER_TELEGRAM_URL } from "config/links";
 import { selectTradeboxSwapAmounts } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getExternalSwapAggregatorLabel } from "domain/synthetics/externalSwaps/utils";
@@ -12,11 +11,11 @@ import {
   type TradeboxSwapRoutePreference,
 } from "domain/synthetics/paxosTransit/tradeboxRoutes";
 import type { TokenData } from "domain/synthetics/tokens";
+import { formatDateTime } from "lib/dates";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { TransitApprovalProposalAlert } from "components/PaxosTransit/TransitApprovalProposalAlert";
 import { SelectorBase, useSelectorClose } from "components/SelectorBase/SelectorBase";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
@@ -42,11 +41,7 @@ export function PaxosRouteSelectorRow({
     undefined
   );
 
-  const activeLabel = routes.activeRoute
-    ? getRouteLabel(routes.activeRoute, instantLabel)
-    : routes.isRouteChoiceRequired
-      ? t`Choose a route`
-      : t`Loading…`;
+  const activeLabel = routes.activeRoute ? getRouteLabel(routes.activeRoute, instantLabel) : t`Loading…`;
   const selectedLabel = preference === "auto" ? t`Auto · ${activeLabel}` : activeLabel;
 
   return (
@@ -95,6 +90,7 @@ export function PaxosRouteSelectorRow({
                 isFastest={option.route === "instant" && option.amountOut !== undefined}
                 toToken={toToken}
                 isSelected={preference === option.route}
+                isDisabled={option.unavailableReason === "paused"}
                 onSelect={setPreference}
               />
             ))}
@@ -114,6 +110,7 @@ function RouteOptionItem({
   isFastest,
   toToken,
   isSelected,
+  isDisabled,
   onSelect,
 }: {
   preference: TradeboxSwapRoutePreference;
@@ -124,16 +121,20 @@ function RouteOptionItem({
   isFastest?: boolean;
   toToken?: TokenData;
   isSelected: boolean;
+  isDisabled?: boolean;
   onSelect: (preference: TradeboxSwapRoutePreference) => void;
 }) {
   const close = useSelectorClose();
 
   return (
     <div
-      className={cx("flex cursor-pointer flex-col px-12 py-6 hover:bg-fill-surfaceHover", {
+      className={cx("flex flex-col px-12 py-6", {
         "bg-slate-700": isSelected,
+        "cursor-pointer hover:bg-fill-surfaceHover": !isDisabled,
+        "cursor-not-allowed opacity-50": isDisabled,
       })}
       onClick={() => {
+        if (isDisabled) return;
         onSelect(preference);
         close();
       }}
@@ -261,10 +262,8 @@ export function PaxosRouteAlerts({
   const {
     routes,
     activePaxosRoute,
-    isWhitelisted,
     isPayAmountHintShown,
     isSmartWallet,
-    isZeroFeeCapacityShort,
     zeroFeeCapacity,
     zeroFeeCapacityShortBy,
     onReduceToZeroFeeCapacity,
@@ -272,8 +271,6 @@ export function PaxosRouteAlerts({
     isApprovalProposalPending,
     onProposeNewApproval,
   } = paxosRoute;
-  const isStandardOfferedToNonWhitelisted =
-    !isWhitelisted && routes.options.some((option) => option.route === "paxosStandard");
 
   return (
     <>
@@ -286,27 +283,21 @@ export function PaxosRouteAlerts({
         </AlertInfoCard>
       )}
 
-      {isZeroFeeCapacityShort && routes.isPaxosOffered && (
+      {zeroFeeCapacity !== undefined && routes.isPaxosOffered && (
         <AlertInfoCard type="warning" hideClose>
           <div className="flex flex-col gap-6 [overflow-wrap:anywhere]">
             <span>
-              {zeroFeeCapacity === undefined ? (
-                <Trans>
-                  Zero-fee capacity dropped below your amount a moment ago. The new capacity shows here within a minute.
-                </Trans>
-              ) : (
-                <Trans>
-                  Not enough zero-fee capacity for this amount. Capacity left now:{" "}
-                  {formatBalanceAmount(zeroFeeCapacity, toToken.decimals, toToken.symbol, { isStable: true })}. Your
-                  amount is{" "}
-                  {formatBalanceAmount(zeroFeeCapacityShortBy ?? 0n, fromToken.decimals, fromToken.symbol, {
-                    isStable: true,
-                  })}{" "}
-                  over.
-                </Trans>
-              )}
+              <Trans>
+                Not enough zero-fee capacity for this amount. Capacity left now:{" "}
+                {formatBalanceAmount(zeroFeeCapacity, toToken.decimals, toToken.symbol, { isStable: true })}. Your
+                amount is{" "}
+                {formatBalanceAmount(zeroFeeCapacityShortBy ?? 0n, fromToken.decimals, fromToken.symbol, {
+                  isStable: true,
+                })}{" "}
+                over.
+              </Trans>
             </span>
-            {zeroFeeCapacity !== undefined && zeroFeeCapacity > 0n && (
+            {zeroFeeCapacity > 0n && (
               <EmbeddedActionButton onClick={onReduceToZeroFeeCapacity}>
                 <Trans>
                   Convert{" "}
@@ -316,13 +307,7 @@ export function PaxosRouteAlerts({
               </EmbeddedActionButton>
             )}
             <span>
-              {routes.isRouteChoiceRequired ? (
-                <Trans>
-                  Or pick Paxos standard with a fee or an instant route in Route. No route is picked for you.
-                </Trans>
-              ) : (
-                <Trans>Or pick Paxos standard with a fee or an instant route in Route.</Trans>
-              )}
+              <Trans>Or pick Paxos standard with a fee or an instant route in Route.</Trans>
             </span>
           </div>
         </AlertInfoCard>
@@ -353,15 +338,6 @@ export function PaxosRouteAlerts({
             transaction must execute within that time, or it fails and needs a new quote.
           </Trans>
         </AlertInfoCard>
-      )}
-
-      {isStandardOfferedToNonWhitelisted && (
-        <div className="text-body-small text-typography-secondary">
-          <Trans>
-            Large LP or balancer? Ask <ExternalLink href={GMX_PARTNER_TELEGRAM_URL}>@GMXPartners</ExternalLink> about
-            zero-fee access.
-          </Trans>
-        </div>
       )}
     </>
   );
@@ -400,6 +376,18 @@ function getRouteDescription({
       return t`Loading quote…`;
     case "noRoute":
       return t`No instant route for this amount`;
+    case "paused": {
+      const state = paxosRoute.paxosRouteStates.paxosZeroFee;
+      const expectedReopenAt = state.status === "paused" ? state.expectedReopenAt : undefined;
+
+      if (expectedReopenAt === undefined) {
+        return t`Paused for now`;
+      }
+
+      const reopenTime = formatDateTime(expectedReopenAt);
+
+      return t`Paused until ${reopenTime}`;
+    }
     case "capacityShort":
       return t`Not enough zero-fee capacity`;
     case "quoteError":

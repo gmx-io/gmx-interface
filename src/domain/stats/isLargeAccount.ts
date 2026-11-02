@@ -6,6 +6,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { _debugRpcTracker, RpcDebugFlags } from "lib/rpc/_debug";
 
 let isLargeAccount = getIsLargeAccountStoredValue();
+let largeAccountChainIds: number[] = [];
 
 function getIsLargeAccountStoredValue() {
   const storedValue = localStorage.getItem(JSON.stringify(IS_LARGE_ACCOUNT_KEY));
@@ -21,12 +22,23 @@ export function getIsLargeAccount() {
   return isLargeAccount;
 }
 
-export function useIsLargeAccountTracker(account?: string) {
+export function getIsLargeAccountChain(chainId: number) {
+  return getIsLargeAccount() && largeAccountChainIds.includes(chainId);
+}
+
+export function useIsLargeAccountTracker(
+  account: string | undefined,
+  { chainId, srcChainId }: { chainId: number; srcChainId: number | undefined }
+) {
   const isCurrentAccountLarge = useIsLargeAccountData(account);
   const [isCurrentAccountLargeStoredValue, setIsCurrentAccountLargeStoredValue] = useLocalStorageSerializeKey<boolean>(
     IS_LARGE_ACCOUNT_KEY,
     false
   );
+
+  useEffect(() => {
+    largeAccountChainIds = srcChainId === undefined ? [chainId] : [chainId, srcChainId];
+  }, [chainId, srcChainId]);
 
   useEffect(() => {
     if (!account) {

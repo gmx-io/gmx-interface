@@ -1,6 +1,8 @@
 import { test, expect } from "@playwright/experimental-ct-react";
 import type { Locator, Page, Route } from "playwright-core";
 
+import { MOCK_ACCOUNT_PRIVATE_KEY, MockChain } from "domain/testUtils/rpc/mockChain";
+import { installRpcResponder } from "domain/testUtils/rpc/playwrightAdapter";
 import { getDataQALocator } from "lib/__tests__/testUtils";
 
 import { TradeBoxStory } from "./TradeBox.ct.stories";
@@ -97,9 +99,9 @@ type PageLike = {
 };
 
 test.beforeEach(async ({ page }) => {
-  // Hermetic: fixtures provide all data, requests to real backends are dropped.
+  // Hermetic: fixtures provide all data, the mock chain answers RPC (unlimited allowance), other requests are dropped.
   // Kyber mocks are registered per-test after this and take precedence (later routes win).
-  await page.route(/^https?:\/\/(?!localhost|127\.0\.0\.1)/, (route) => route.abort());
+  await installRpcResponder(page, new MockChain({ walletPrivateKey: MOCK_ACCOUNT_PRIVATE_KEY }));
 });
 
 async function openSwap(page: PageLike) {

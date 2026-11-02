@@ -1,12 +1,12 @@
 import { SOLANA_NETWORK_ID } from "configs/chains";
-import { MARKETS, SOLANA_MARKETS, MarketsConfigMap } from "configs/markets";
+import { MARKETS, MarketsConfigMap } from "configs/markets";
 import { SwapPaths } from "utils/trade/types";
 
 import { MarketsGraph, buildMarketsAdjacencyGraph } from "./buildMarketsAdjacencyGraph";
 import { findReachableTokens } from "./findReachableTokens";
 import { findSwapPathsBetweenTokens } from "./findSwapPathsBetweenTokens";
 
-const SWAP_MARKETS: Record<number, MarketsConfigMap> = { ...MARKETS, [SOLANA_NETWORK_ID]: SOLANA_MARKETS };
+const SWAP_MARKETS: Record<number, MarketsConfigMap> = { ...MARKETS, [SOLANA_NETWORK_ID]: {} };
 
 const MARKETS_ADJACENCY_GRAPH: {
   [chainId: number]: MarketsGraph;
