@@ -35,8 +35,6 @@ export const RPC_HOSTS_BY_CHAIN_ID: Record<number, string[]> = {
   [AVALANCHE_FUJI]: [
     "avalanche-fuji-c-chain.publicnode.com",
     "api.avax-test.network",
-    "endpoints.omniatech.io/v1/avax/fuji",
-    "ava-testnet.public.blastapi.io",
   ],
   [ARBITRUM_SEPOLIA]: [
     "sepolia-rollup.arbitrum.io",
