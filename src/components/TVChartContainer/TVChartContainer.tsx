@@ -574,12 +574,9 @@ export default function TVChartContainer({
         }
       });
     }
-    setDatafeed((prev) => {
-      if (prev) {
-        prev.destroy();
-      }
-      return newDatafeed;
-    });
+    setDatafeed(newDatafeed);
+
+    return () => newDatafeed.destroy();
   }, [chainId, oracleKeeperFetcher, setIsCandlesLoaded, marksStateRef]);
 
   const isMobile = useMedia("(max-width: 550px)");
