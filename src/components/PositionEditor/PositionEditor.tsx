@@ -2,7 +2,7 @@ import { t, Trans } from "@lingui/macro";
 import pickBy from "lodash/pickBy";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useHistory } from "react-router-dom";
-import { useKey } from "react-use";
+import { useKey, useLatest } from "react-use";
 import { Address } from "viem";
 
 import { getChainName } from "config/chains";
@@ -432,16 +432,19 @@ export function PositionEditor() {
     collateralDeltaAmount > 0n &&
     (!isAtPriceDeposit || triggerPrice !== undefined);
 
+  // useKey memoizes the handler on its deps, and onSubmit is rebuilt every render with the current amount
+  const latestOnSubmit = useLatest(submitButtonState.onSubmit);
+
   useKey(
     "Enter",
     () => {
       if (isVisible && !submitButtonState.disabled) {
         submitButtonRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-        submitButtonState.onSubmit();
+        latestOnSubmit.current();
       }
     },
     {},
-    [isVisible, submitButtonState.disabled]
+    [isVisible, submitButtonState.disabled, latestOnSubmit]
   );
 
   useEffect(
