@@ -2610,10 +2610,6 @@ msgstr "Choisir un horaire"
 msgid "GMX balance"
 msgstr "Solde GMX"
 
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "Price on Avalanche"
-msgstr "Prix sur Avalanche"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
 msgstr "Signez les transactions hors chaîne. Les RPC premium garantissent la fiabilité en cas de congestion du réseau.<0/><1/>Les frais sont payés avec votre jeton de paiement du Gas depuis le solde utilisé par l'action."
@@ -7620,10 +7616,6 @@ msgstr "Les points sont attribués en fonction de votre volume de négociation c
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
 msgstr "Demande de règlement pour {0, plural, one {# position} other {# positions}} envoyée"
-
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "Price on Arbitrum"
-msgstr "Prix sur Arbitrum"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Approval signing failed"
