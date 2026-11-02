@@ -62,6 +62,7 @@ import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTrad
 import useIsFirstOrder from "domain/synthetics/tradeHistory/useIsFirstOrder";
 import { UiFlags, useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 import { UsdgBoostAprResult, useUsdgBoostAprRequest } from "domain/synthetics/usdgLaunchBoost/useUsdgBoostAprRequest";
+import { useMarketsInfoWithDebugInstantLimit } from "domain/synthetics/usdgPools/debugInstantLimit";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import {
   AccountWhitelistsResult,
@@ -204,7 +205,8 @@ export function SyntheticsStateContextProvider({
   const markets = useMarkets(chainId);
   const tokensDataResult = useTokensDataRequest(chainId, srcChainId);
 
-  const marketsInfo = useMarketsInfoRequest(chainId, { tokensData: tokensDataResult.tokensData });
+  const marketsInfoRequest = useMarketsInfoRequest(chainId, { tokensData: tokensDataResult.tokensData });
+  const marketsInfo = useMarketsInfoWithDebugInstantLimit(chainId, marketsInfoRequest);
 
   const { isFirstOrder = true } = useIsFirstOrder(chainId, { account });
 

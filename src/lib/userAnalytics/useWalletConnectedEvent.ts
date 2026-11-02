@@ -2,6 +2,7 @@ import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
+import { isSolanaNetwork } from "config/chains";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { useAccountStats } from "domain/synthetics/accountStats/useAccountStats";
 import { useChainId } from "lib/chains";
@@ -14,8 +15,9 @@ import { getWalletAnalyticsProvenance } from "./walletProvenance";
 export function useWalletConnectedUserAnalyticsEvent() {
   const [wasConnected, setWasConnected] = useState(false);
   const [wasSent, setWasSent] = useState(false);
-  const { chainId } = useChainId();
+  const { chainId, networkId } = useChainId();
   const { connectModalOpen } = useConnectModal();
+  const isSolanaSelected = isSolanaNetwork(networkId);
   const { account } = useWallet();
   const { connector } = useAccount();
   const { user } = usePrivy();
@@ -29,10 +31,10 @@ export function useWalletConnectedUserAnalyticsEvent() {
   const ordersCount = accountStats?.closedCount;
 
   useEffect(() => {
-    if (!wasSent && !wasConnected && account && connectModalOpen) {
+    if (!wasSent && !wasConnected && account && connectModalOpen && !isSolanaSelected) {
       setWasConnected(true);
     }
-  }, [account, connector, connectModalOpen, wasConnected, wasSent]);
+  }, [account, connector, connectModalOpen, isSolanaSelected, wasConnected, wasSent]);
 
   useEffect(() => {
     let timeoutId: number;

@@ -61,7 +61,9 @@ export function PositionEditorAdvancedRows({ operation, gasPaymentParams, feeSou
           <ValueTransition
             from={formatUsdParts(position?.collateralUsd)}
             to={
-              collateralDeltaUsd !== undefined && collateralDeltaUsd > 0 ? formatUsdParts(nextCollateralUsd) : undefined
+              collateralDeltaUsd !== undefined && collateralDeltaUsd > 0 && nextCollateralUsd !== undefined
+                ? formatUsdParts(nextCollateralUsd)
+                : undefined
             }
           />
         }

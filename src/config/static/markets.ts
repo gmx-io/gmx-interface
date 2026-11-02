@@ -789,6 +789,27 @@ export function hasDelistingMarkets(chainId: number): boolean {
   return (DELISTING_MARKET_ADDRESSES[chainId]?.size ?? 0) > 0;
 }
 
+export const MARKET_CLOSING_DATES: Record<number, Record<string, number>> = {
+  [ARBITRUM]: {
+    "0x63Dc80EE90F26363B3FCD609007CC9e14c8991BE": Date.UTC(2026, 10, 2), // NEAR [WETH-USDC]
+    "0x0CCB4fAa6f1F1B30911619f1184082aB4E25813c": Date.UTC(2026, 10, 2), // XRP/USD [WETH-USDC]
+    "0x587759c237acCa739bCE3911647BacF56C876E60": Date.UTC(2026, 10, 2), // ZEC/USD [WBTC.e-USDC]
+    "0xBcb8FE13d02b023e8f94f6881Cc0192fd918A5C0": Date.UTC(2026, 10, 2), // HYPE/USD [WBTC-USDC]
+  },
+};
+
+export function getMarketClosingDate(chainId: number, marketTokenAddress: string): number | undefined {
+  return MARKET_CLOSING_DATES[chainId]?.[marketTokenAddress];
+}
+
+export function isClosingMarket(chainId: number, marketTokenAddress: string): boolean {
+  return getMarketClosingDate(chainId, marketTokenAddress) !== undefined;
+}
+
+export function hasClosingMarkets(chainId: number): boolean {
+  return Object.keys(MARKET_CLOSING_DATES[chainId] ?? {}).length > 0;
+}
+
 export const SHIFT_INTO_DISABLED_MARKET_ADDRESSES: Record<number, Set<string>> = {
   [ARBITRUM]: new Set([
     // GLV-only markets — accessible only via GLV

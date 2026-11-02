@@ -135,6 +135,9 @@ type TradeboxButtonState = {
   slippageInputId: string;
   expressParams?: ExpressTxnParams;
   isExpressLoading: boolean;
+  approvalTokenAddress: string | undefined;
+  isApproving: boolean;
+  isAllowanceLoaded: boolean;
   batchParams?: BatchOrderTxnParams;
   totalExecutionFee?: ExecutionFee;
 };
@@ -240,6 +243,7 @@ export function useTradeboxButtonState({
 
   const isDataReady = Boolean(fromToken && payAmount !== undefined);
   const isAllowanceLoaded = isDataReady && isAllowanceLoadedRaw;
+  const isApprovalRequired = !isFromTokenGmxAccount && isAllowanceLoaded && tokensToApprove.length > 0;
   // until allowances are known an order could be sent without the approval it needs
   const isAllowancePending = isDataReady && isAllowanceLoading && !isApproving;
 
@@ -593,7 +597,7 @@ export function useTradeboxButtonState({
       return;
     }
 
-    if (!isFromTokenGmxAccount && isAllowanceLoaded && tokensToApprove.length) {
+    if (isApprovalRequired) {
       if (!chainId || isApproving || !tokensToApprove[0]) return;
 
       userAnalytics.pushEvent<TokenApproveClickEvent>({
@@ -650,10 +654,9 @@ export function useTradeboxButtonState({
     expressParams?.subaccount,
     fromToken,
     handleApprove,
-    isAllowanceLoaded,
     isAllowancePending,
+    isApprovalRequired,
     isApproving,
-    isFromTokenGmxAccount,
     isIncrease,
     isSwap,
     isWrapOrUnwrap,
@@ -683,6 +686,9 @@ export function useTradeboxButtonState({
       batchParams,
       totalExecutionFee,
       isExpressLoading,
+      approvalTokenAddress: isApprovalRequired ? tokensToApprove[0] : undefined,
+      isApproving,
+      isAllowanceLoaded,
     };
 
     if (!account && isWalletInitializing) {
@@ -876,6 +882,7 @@ export function useTradeboxButtonState({
     tokensToApprove,
     isAllowanceLoaded,
     isAllowancePending,
+    isApprovalRequired,
     stage,
     isIncrease,
     sidecarEntries,
