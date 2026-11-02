@@ -82,6 +82,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
   ) => Mark[] | Promise<Mark[]>;
   private tokenPriceGetter?: (symbol: string) => bigint | undefined;
   private pendingResolve?: () => void;
+  private isDestroyed = false;
 
   declare addEventListener: (
     event: "candlesDisplay.success" | "currentCandle.update",
@@ -279,6 +280,10 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     onTick: SubscribeBarsCallback,
     listenerGuid: string
   ): void {
+    if (this.isDestroyed) {
+      return;
+    }
+
     const token = getTokenBySymbol(this.chainId, symbolInfo.name);
     const isStable = token.isStable;
 
@@ -558,6 +563,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
   }
 
   destroy() {
+    this.isDestroyed = true;
     this.stopWatchingPage();
     Object.values(this.subscriptions).forEach((subscription) => subscription.destroy());
     this.closeCandleStreams();
