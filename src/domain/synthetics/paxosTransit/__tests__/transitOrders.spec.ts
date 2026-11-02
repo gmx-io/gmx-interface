@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import { abis } from "sdk/abis";
 import type { TransitOrder, TransitOrderStatus } from "sdk/utils/paxos/types";
 
-import { findPendingTransitOrder, getSubmittedTransitOrderId } from "../transitOrders";
+import { findPendingTransitOrder, findSubmittedTransitOrder, getSubmittedTransitOrderId } from "../transitOrders";
 
 const USDC = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831";
 const USDG = "0x004B506865409877C9fA29bfb1ebA929984B9bbC";
@@ -111,6 +111,19 @@ function makeOrder(id: string, overrides: Partial<TransitOrder> = {}): TransitOr
     ...overrides,
   };
 }
+
+describe("findSubmittedTransitOrder", () => {
+  const lookup = { offerAsset: USDC, wantAsset: USDG, offerAmount: 1_000_000n, knownOrderIds: ["0xold"] };
+
+  it.each<[string, TransitOrder, string | undefined]>([
+    ["finds a new order of the same amount", makeOrder("0xnew"), "0xnew"],
+    ["skips an order known before the submit", makeOrder("0xold"), undefined],
+    ["ignores another amount", makeOrder("0xnew", { offerAmount: 2_000_000n }), undefined],
+    ["ignores the other direction", makeOrder("0xnew", { offerAsset: USDG, wantAsset: USDC }), undefined],
+  ])("%s", (_name, order, expectedId) => {
+    expect(findSubmittedTransitOrder([order], lookup)?.id).toBe(expectedId);
+  });
+});
 
 describe("findPendingTransitOrder", () => {
   it("finds an unfinished order in the requested direction", () => {

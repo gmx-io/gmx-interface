@@ -73,14 +73,14 @@ export function getNetworkFeeSourceExplanation({
       }
 
       const nativeTokenSymbol = getNativeToken(chainId).symbol;
-      return t`Wallet transactions pay gas in ${nativeTokenSymbol} from your Wallet.`;
+      return t`Wallet transactions pay gas in ${nativeTokenSymbol} from your Wallet`;
     }
     case TokenBalanceType.GmxAccount:
       return t`This action is paid from your GMX Account, so its fee is paid in your GMX Account gas payment token. Change it in Settings.`;
     case TokenBalanceType.SourceChain: {
       const chainName = getChainName(source.chainId);
       const nativeTokenSymbol = getViemChain(source.chainId).nativeCurrency.symbol;
-      return t`Bridge transactions pay gas in ${nativeTokenSymbol} from your ${chainName} wallet.`;
+      return t`Bridge transactions pay gas in ${nativeTokenSymbol} from your ${chainName} wallet`;
     }
   }
 }

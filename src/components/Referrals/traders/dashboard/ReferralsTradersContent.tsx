@@ -149,7 +149,7 @@ export function ReferralsTradersContent({ account, hasAddressInUrl = false }: Re
           {!userReferralCodeString ? (
             <Card>
               <div className="text-body-small text-typography-secondary">
-                <Trans>This account has no active referral code.</Trans>
+                <Trans>This account has no active referral code</Trans>
               </div>
             </Card>
           ) : (
@@ -265,6 +265,7 @@ function ActiveCodeExplanation({
           <ExternalLink href={REFERRALS_DOCS_URL} className="text-blue-300">
             Read more
           </ExternalLink>
+          .
         </Trans>
       </div>
     );
@@ -279,6 +280,7 @@ function ActiveCodeExplanation({
           <ExternalLink href={REFERRALS_DOCS_URL} className="text-blue-300">
             Read more
           </ExternalLink>
+          .
         </Trans>
       </div>
     );
@@ -305,6 +307,7 @@ function BalancerProgramTooltipContent() {
       <ExternalLink href={BALANCER_PROGRAM_URL} className="text-blue-300">
         Read more
       </ExternalLink>
+      .
     </Trans>
   );
 }
@@ -323,7 +326,7 @@ function BalancerProgramExplanation({
   return (
     <>
       <div className="text-body-medium mb-2 font-medium text-typography-primary">
-        <Trans>Your trades earn a {currentTierRebate}% rebate, not a discount.</Trans>
+        <Trans>Your trades earn a {currentTierRebate}% rebate, not a discount</Trans>
       </div>
       <div className="text-body-small text-typography-secondary">
         {isCodeOwnedByAccount ? (

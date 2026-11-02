@@ -29,7 +29,7 @@ const StatusBadge = ({ variant }: { variant: "loading" | "success" }) => {
 export const DepositStatusView = () => {
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
   const [selectedTransferGuid] = useGmxAccountSelectedTransferGuid();
-  const transfer = useGmxAccountFundingHistoryItem(selectedTransferGuid, {
+  const { transfer } = useGmxAccountFundingHistoryItem(selectedTransferGuid, {
     refetch: Boolean(selectedTransferGuid),
   });
   const [isSubaccountActivating, setIsSubaccountActivating] = useState(false);
@@ -49,7 +49,7 @@ export const DepositStatusView = () => {
     });
     setIsSubaccountActivating(true);
     subaccountState
-      .tryEnableSubaccount()
+      .tryEnableSubaccount({ withTokenPermits: false })
       .then((isSubaccountActivated) => {
         if (isSubaccountActivated) {
           userAnalytics.pushEvent<OneClickPromotionEvent>({

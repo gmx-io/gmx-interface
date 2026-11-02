@@ -152,6 +152,8 @@ const createOrderInfo = ({
       twapOrderInfo.orders.push(orderInfo);
     }
 
+    twapOrderInfo.isFrozen = twapOrderInfo.isFrozen || orderInfo.isFrozen;
+
     return twapOrderInfo;
   }
 

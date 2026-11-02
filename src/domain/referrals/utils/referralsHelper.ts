@@ -5,7 +5,7 @@ import { CONTRACTS_CHAIN_IDS, ContractsChainId } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { getReferralCodeOwner } from "domain/referrals";
 import { isAddressZero, MAX_REFERRAL_CODE_LENGTH, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
-import { expandDecimals, formatAmount, removeTrailingZeros } from "lib/numbers";
+import { expandDecimals, formatAmount, removeTrailingZeros, trimZeroDecimals } from "lib/numbers";
 import { getRootUrl } from "lib/url";
 import { bigMath } from "sdk/utils/bigmath";
 import { encodeReferralCode } from "sdk/utils/referrals";
@@ -100,7 +100,7 @@ export function getSharePercentage(
   );
 
   const percentage = share / 100n;
-  return removeTrailingZeros(formatAmount(percentage, decimals, 3, true));
+  return removeTrailingZeros(trimZeroDecimals(formatAmount(percentage, decimals, 3, true)));
 }
 
 export function getCodeError(value: string): string {

@@ -29,6 +29,10 @@ const GROUPS: Groups = [
         text: msg`Limit`,
       },
       {
+        data: "trigger-stop-market",
+        text: msg`Stop Market`,
+      },
+      {
         data: "trigger-take-profit",
         text: msg`Take-Profit`,
       },
@@ -43,6 +47,11 @@ const GROUPS: Groups = [
     items: [
       {
         data: "twap",
+        text: msg`TWAP`,
+        hidden: true,
+      },
+      {
+        data: "twap-increase",
         text: msg`TWAP`,
         hidden: true,
       },

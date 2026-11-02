@@ -71,6 +71,11 @@ import { ExternalSwapStrategy } from "sdk/utils/swap/types";
 import { convertToTokenAmount, getIsEquivalentTokens } from "sdk/utils/tokens";
 import { TokenBalanceType } from "sdk/utils/tokens/types";
 import { createTradeFlags } from "sdk/utils/trade";
+import {
+  getTwapIncreasePartsGrossCollateralUsd,
+  type TwapIncreaseSequenceParams,
+} from "sdk/utils/trade/twapIncreaseMarginCheck";
+import { getIsValidTwapParams, getTwapPartDelaysSeconds } from "sdk/utils/twap";
 
 import {
   selectGmxAccountGasPaymentToken,
@@ -553,7 +558,7 @@ export const selectTradeboxSetTradeConfig = (s: SyntheticsState) => s.tradebox.s
 export const selectTradeboxSetKeepLeverage = (s: SyntheticsState) => s.tradebox.setKeepLeverage;
 const selectTradeboxSetFromTokenAddress = (s: SyntheticsState) => s.tradebox.setFromTokenAddress;
 const selectTradeboxSetTradeMode = (s: SyntheticsState) => s.tradebox.setTradeMode;
-const selectTradeboxSetIsFromTokenGmxAccount = (s: SyntheticsState) => s.tradebox.setIsFromTokenGmxAccount;
+export const selectTradeboxSetIsFromTokenGmxAccount = (s: SyntheticsState) => s.tradebox.setIsFromTokenGmxAccount;
 export const selectTradeboxSetCollateralAddress = (s: SyntheticsState) => s.tradebox.setCollateralAddress;
 export const selectTradeboxAdvancedOptions = (s: SyntheticsState) => s.tradebox.advancedOptions;
 export const selectTradeboxSetAdvancedOptions = (s: SyntheticsState) => s.tradebox.setAdvancedOptions;
@@ -564,6 +569,52 @@ export const selectTradeboxTwapDuration = (s: SyntheticsState) => s.tradebox.dur
 const selectTradeboxSetTwapDuration = (s: SyntheticsState) => s.tradebox.setDuration;
 export const selectTradeboxTwapNumberOfParts = (s: SyntheticsState) => s.tradebox.numberOfParts;
 const selectTradeboxSetTwapNumberOfParts = (s: SyntheticsState) => s.tradebox.setNumberOfParts;
+
+export const selectTradeboxTwapIncreaseSequenceParams = createSelector((q): TwapIncreaseSequenceParams | undefined => {
+  const { isIncrease, isTwap } = q(selectTradeboxTradeFlags);
+  const numberOfParts = q(selectTradeboxTwapNumberOfParts);
+  const duration = q(selectTradeboxTwapDuration);
+
+  if (!isIncrease || !isTwap || !Number.isInteger(numberOfParts) || !getIsValidTwapParams(duration, numberOfParts)) {
+    return undefined;
+  }
+
+  const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
+  const marketsInfoData = q(selectMarketsInfoData);
+  const initialCollateralToken = q(selectTradeboxFromToken);
+  const collateralToken = q(selectTradeboxCollateralToken);
+
+  if (!increaseAmounts || !marketsInfoData || !initialCollateralToken || !collateralToken) {
+    return undefined;
+  }
+
+  const swapPath = increaseAmounts.swapStrategy.swapPathStats?.swapPath ?? [];
+
+  if (swapPath.length === 0 && !getIsEquivalentTokens(initialCollateralToken, collateralToken)) {
+    return undefined;
+  }
+
+  const partGrossCollateralUsds = getTwapIncreasePartsGrossCollateralUsd({
+    marketsInfoData,
+    swapPath,
+    initialCollateralToken,
+    collateralToken,
+    initialCollateralAmountPerPart: increaseAmounts.initialCollateralAmount / BigInt(numberOfParts),
+    numberOfParts,
+    uiFeeFactor: q(selectUiFeeFactor),
+    wrappedNativeTokenAddress: getWrappedToken(q(selectChainId)).address,
+  });
+
+  if (!partGrossCollateralUsds) {
+    return undefined;
+  }
+
+  return {
+    numberOfParts,
+    partDelaysSeconds: getTwapPartDelaysSeconds(duration, numberOfParts),
+    partGrossCollateralUsds,
+  };
+});
 const selectTradeboxSetTriggerRatioInputValue = (s: SyntheticsState) => s.tradebox.setTriggerRatioInputValue;
 const selectTradeboxSetLeverageOption = (s: SyntheticsState) => s.tradebox.setLeverageOption;
 const selectTradeboxIsSwitchTokensAllowed = (s: SyntheticsState) => s.tradebox.isSwitchTokensAllowed;
@@ -634,9 +685,9 @@ export const selectTradeboxFormState = createSelector((q) => {
 
 export const selectTradeboxIsTPSLEnabled = createSelector((q) => {
   const { limitOrTPSL } = q(selectTradeboxAdvancedOptions);
-  const { isSwap, isTrigger } = q(selectTradeboxTradeFlags);
+  const { isSwap, isTrigger, isTwap } = q(selectTradeboxTradeFlags);
 
-  return limitOrTPSL && !isSwap && !isTrigger;
+  return limitOrTPSL && !isSwap && !isTrigger && !isTwap;
 });
 
 export const selectTradeboxIsWrapOrUnwrap = createSelector((q) => {
@@ -764,7 +815,7 @@ export const selectTradeboxLeverageFieldValue = createSelector((q) => {
   return Number(estimatedLeverage) / BASIS_POINTS_DIVISOR;
 });
 
-const selectTradeboxLeverageStrategy = createSelector((q) => {
+export const selectTradeboxLeverageStrategy = createSelector((q) => {
   const isLeverageEnabled = q(selectIsLeverageSliderEnabled);
   const focusedInput = q(selectTradeboxFocusedInput);
   return isLeverageEnabled ? (focusedInput === "from" ? "leverageByCollateral" : "leverageBySize") : "independent";
@@ -2075,6 +2126,10 @@ export const selectTradeboxCloseSizeUsd = createSelector((q) => {
 
 const selectTradeboxSwapFeesPercentage = createSelector((q) => {
   const swapAmounts = q(selectTradeboxSwapAmounts);
+
+  if (swapAmounts?.swapStrategy.type === "externalSwap") {
+    return q(selectTradeboxFees)?.externalSwapFee?.precisePercentage ?? 0n;
+  }
 
   if (
     swapAmounts === undefined ||

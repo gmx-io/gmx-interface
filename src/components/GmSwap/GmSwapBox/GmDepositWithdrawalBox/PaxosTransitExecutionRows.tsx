@@ -12,9 +12,9 @@ import type { PaxosTransitState } from "./usePaxosTransitState";
 
 export function PaxosTransitExecutionRows({ transitState }: { transitState: PaxosTransitState }) {
   const { isDeposit } = useSelector(selectPoolsDetailsFlags);
-  const { isZeroFeeCapacityShort, isWhitelisted, zeroFeeCapacity, tokenIn } = transitState;
+  const { isZeroFeeCapacityShort, isZeroFeePaused, isWhitelisted, zeroFeeCapacity, tokenIn } = transitState;
   const shouldShowZeroFeeCapacity =
-    isWhitelisted && isDeposit && zeroFeeCapacity !== undefined && tokenIn !== undefined;
+    isWhitelisted && isDeposit && !isZeroFeePaused && zeroFeeCapacity !== undefined && tokenIn !== undefined;
 
   return (
     <>
@@ -33,8 +33,8 @@ export function PaxosTransitExecutionRows({ transitState }: { transitState: Paxo
                   </Trans>
                 ) : (
                   <Trans>
-                    First the pool pays out USDG to your wallet, then you confirm the conversion to USDC. If it fails,
-                    the USDG stays in your wallet.
+                    First the pool pays out USDG to your wallet, then you confirm the conversion to USDC. If the
+                    conversion fails, the USDG stays in your wallet.
                   </Trans>
                 )}
               </div>

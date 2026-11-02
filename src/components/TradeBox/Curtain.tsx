@@ -77,7 +77,6 @@ export function Curtain({
         }
       );
       animation.addEventListener("finish", () => {
-        animation.commitStyles();
         animation.cancel();
         if (curtainRef.current) {
           curtainRef.current.style.transform = `translateY(${newIsOpen ? 0 : `calc(100% - ${headerHeight}px)`})`;

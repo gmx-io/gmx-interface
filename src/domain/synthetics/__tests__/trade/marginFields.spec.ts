@@ -10,6 +10,11 @@ import { getLeverage } from "sdk/utils/positions";
 import { convertToTokenAmount, convertToUsd } from "sdk/utils/tokens";
 import { convertToTokenAmountForIncrease } from "sdk/utils/tokens/utils";
 import { getIncreaseResultingPositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
+import {
+  getIsTwapIncreaseSequenceSafe,
+  getTwapIncreasePartAmounts,
+  getTwapIncreaseSequentialMarginState,
+} from "sdk/utils/trade/twapIncreaseMarginCheck";
 
 import {
   clampPercentage,
@@ -752,6 +757,34 @@ describe("calcMaxSizeDeltaInUsdByLeverage — resulting position margin cap", ()
     expect(isSizeDeltaAccepted(capped, baseParams)).toBe(true);
     // 24 bisection steps resolve the cliff far finer than 1%
     expect(isSizeDeltaAccepted((capped * 101n) / 100n, baseParams)).toBe(false);
+  });
+
+  it("caps a TWAP at the size whose every part passes the sequential check PRO-4134", () => {
+    const twap = {
+      numberOfParts: 4,
+      partDelaysSeconds: [0, 12_000, 24_000, 36_000],
+      partGrossCollateralUsds: Array.from({ length: 4 }, () => initialCollateralUsd / 4n),
+    };
+    const capped = boundUsd({ ...baseParams, twap })!;
+
+    const isSequenceAccepted = (sizeDeltaUsd: bigint) =>
+      getIsTwapIncreaseSequenceSafe(
+        getTwapIncreaseSequentialMarginState({
+          ...twap,
+          ...getTwapIncreasePartAmounts({ sizeDeltaUsd, pendingFeesUsd: 0n }, twap.numberOfParts),
+          marketInfo,
+          collateralToken: usdc,
+          isLong: true,
+          existingPosition: losingPosition,
+          uiFeeFactor: 0n,
+          minCollateralUsd,
+          userReferralInfo: undefined,
+        })
+      );
+
+    expect(capped).toBeGreaterThan(0n);
+    expect(isSequenceAccepted(capped)).toBe(true);
+    expect(isSequenceAccepted((capped * 101n) / 100n)).toBe(false);
   });
 
   it("returns undefined instead of the liquidity bound when no size passes the margin check", () => {

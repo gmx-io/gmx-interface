@@ -85,6 +85,7 @@ import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendMultichainDepositSuccessEvent } from "lib/userAnalytics/utils";
 import { useThrottledAsync } from "lib/useThrottledAsync";
+import { useIsContractAccount } from "lib/wallets/useWalletSessionChains";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { convertTokenAddress, getNativeToken, getToken } from "sdk/configs/tokens";
@@ -601,6 +602,7 @@ export const DepositView = () => {
   const latestIsFirstDeposit = useLatest(isFirstDeposit);
 
   const subaccountState = useSubaccountContext();
+  const { isContractAccount } = useIsContractAccount();
 
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
@@ -790,7 +792,7 @@ export const DepositView = () => {
 
           if (submittedDepositGuid) {
             setSelectedTransferGuid(submittedDepositGuid);
-            if (!subaccountState.subaccount) {
+            if (!subaccountState.subaccount && !isContractAccount) {
               setIsVisibleOrView("depositStatus");
             } else {
               setIsVisibleOrView("transferHistory");
@@ -808,6 +810,7 @@ export const DepositView = () => {
       setMultichainSubmittedDeposit,
       setSelectedTransferGuid,
       subaccountState.subaccount,
+      isContractAccount,
       setIsVisibleOrView,
     ]
   );
@@ -1450,13 +1453,13 @@ export const DepositView = () => {
           <div className="text-body-medium text-typography-secondary">
             {isGlobalEmpty ? (
               <Trans>
-                Receive supported assets into your wallet on {networksList}, then deposit them to GMX Account.
+                Receive supported assets into your wallet on {networksList}, then deposit them to GMX Account
               </Trans>
             ) : depositViewChain === (settlementChainId as number) ? (
-              <Trans>Receive supported assets into your wallet on {networkName}, or choose another network.</Trans>
+              <Trans>Receive supported assets into your wallet on {networkName}, or choose another network</Trans>
             ) : (
               <Trans>
-                Receive {tokensList} into your wallet on {networkName}, or choose another network.
+                Receive {tokensList} into your wallet on {networkName}, or choose another network
               </Trans>
             )}
           </div>
@@ -1494,7 +1497,7 @@ export const DepositView = () => {
         {showEmptyState ? (
           <>
             <Button variant="primary-action" className="w-full shrink-0" type="button" onClick={handleReceiveToWallet}>
-              <Trans>Receive to Wallet</Trans>
+              <Trans>Receive to wallet</Trans>
             </Button>
             <Button
               variant="secondary"

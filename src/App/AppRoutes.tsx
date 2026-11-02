@@ -6,6 +6,7 @@ import { zeroHash } from "viem";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSmartWalletSubaccountWarning } from "context/SubaccountContext/useSmartWalletSubaccountWarning";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useMultichainFundingToast } from "domain/multichain/useMultichainFundingToast";
 import { useSupportChat } from "domain/supportChat/useSupportChat";
@@ -116,6 +117,7 @@ export function AppRoutes() {
   }, [isEarnPage]);
 
   useRealChainIdWarning();
+  useSmartWalletSubaccountWarning();
 
   return (
     <>

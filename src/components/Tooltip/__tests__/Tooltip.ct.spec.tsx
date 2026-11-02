@@ -80,4 +80,126 @@ test.describe("Tooltip", () => {
     await page.waitForTimeout(500);
     await expect(page.getByText(CONTENT)).toBeVisible();
   });
+
+  test("opens on keyboard focus of a disabled handle and hides when focus leaves", async ({ mount, page }) => {
+    await mount(
+      <div style={WRAPPER_STYLE}>
+        <button>Before</button>
+        <Tooltip handle={<button disabled>Submit</button>} content={CONTENT} variant="none" isHandlerDisabled />
+      </div>
+    );
+
+    await page.getByRole("button", { name: "Before" }).focus();
+    await page.keyboard.press("Tab");
+    await expect(page.getByText(CONTENT)).toBeVisible();
+
+    await page.keyboard.press("Shift+Tab");
+    await expect(page.getByText(CONTENT)).not.toBeVisible();
+  });
+
+  for (const withPortal of [false, true]) {
+    test(`moves keyboard focus through the content of a disabled handle's tooltip, portal: ${withPortal}`, async ({
+      mount,
+      page,
+    }) => {
+      await mount(
+        <div style={WRAPPER_STYLE}>
+          <button>Before</button>
+          <Tooltip
+            handle={<button disabled>Submit</button>}
+            content={<button>Set max withdrawal</button>}
+            variant="none"
+            isHandlerDisabled
+            withPortal={withPortal}
+          />
+          <button>After</button>
+        </div>
+      );
+
+      const action = page.getByRole("button", { name: "Set max withdrawal" });
+
+      await page.getByRole("button", { name: "Before" }).focus();
+      await page.keyboard.press("Tab");
+      await expect(action).toBeVisible();
+
+      await page.keyboard.press("Tab");
+      await expect(action).toBeFocused();
+
+      await page.keyboard.press("Tab");
+      await expect(page.getByRole("button", { name: "After" })).toBeFocused();
+      await expect(action).not.toBeVisible();
+    });
+  }
+
+  for (const withPortal of [false, true]) {
+    test(`returns focus to a disabled handle on Escape inside its tooltip and keeps it closed until focus leaves, portal: ${withPortal}`, async ({
+      mount,
+      page,
+    }) => {
+      await mount(
+        <div style={WRAPPER_STYLE}>
+          <button>Before</button>
+          <Tooltip
+            handle={<button disabled>Submit</button>}
+            content={<button>Set max withdrawal</button>}
+            variant="none"
+            isHandlerDisabled
+            withPortal={withPortal}
+          />
+        </div>
+      );
+
+      const action = page.getByRole("button", { name: "Set max withdrawal" });
+
+      await page.getByRole("button", { name: "Before" }).focus();
+      await page.keyboard.press("Tab");
+      await page.keyboard.press("Tab");
+      await expect(action).toBeFocused();
+
+      await page.keyboard.press("Escape");
+      await expect(page.locator(".Tooltip-handle")).toBeFocused();
+      await page.waitForTimeout(200);
+      await expect(action).not.toBeVisible();
+
+      await page.keyboard.press("Shift+Tab");
+      await page.keyboard.press("Tab");
+      await expect(action).toBeVisible();
+
+      await page.keyboard.press("Escape");
+      await page.waitForTimeout(200);
+      await expect(action).not.toBeVisible();
+    });
+  }
+
+  test("adds no tab stop when the tooltip itself is disabled", async ({ mount, page }) => {
+    await mount(
+      <div style={WRAPPER_STYLE}>
+        <button>Before</button>
+        <Tooltip handle={<button disabled>Max</button>} content={CONTENT} variant="none" isHandlerDisabled disabled />
+        <button>After</button>
+      </div>
+    );
+
+    await page.getByRole("button", { name: "Before" }).focus();
+    await page.keyboard.press("Tab");
+
+    await expect(page.getByRole("button", { name: "After" })).toBeFocused();
+  });
+
+  test("hides after a disabled handle is clicked and the mouse leaves", async ({ mount, page }) => {
+    await mount(
+      <div style={WRAPPER_STYLE}>
+        <Tooltip handle={<button disabled>Submit</button>} content={CONTENT} variant="none" isHandlerDisabled />
+      </div>
+    );
+
+    const handle = page.getByText("Submit");
+    await handle.hover({ force: true });
+    await expect(page.getByText(CONTENT)).toBeVisible();
+
+    await handle.click({ force: true });
+    await page.mouse.move(0, 0);
+
+    await expect(page.getByText(CONTENT)).not.toBeVisible();
+  });
 });

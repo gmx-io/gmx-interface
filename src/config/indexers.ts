@@ -1,16 +1,8 @@
-import {
-  ARBITRUM,
-  ARBITRUM_SEPOLIA,
-  AVALANCHE,
-  AVALANCHE_FUJI,
-  MEGAETH,
-  SOURCE_ETHEREUM_MAINNET,
-  type ContractsChainId,
-} from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, MEGAETH, type ContractsChainId } from "./chains";
 import { isDevelopment } from "./env";
 import { getIndexerUrlKey } from "./localStorage";
 
-type IndexerKey = "stats" | "referrals" | "syntheticsStats" | "subsquid" | "chainLink";
+type IndexerKey = "stats" | "referrals" | "syntheticsStats" | "subsquid";
 type IndexerUrlMap = Partial<Record<IndexerKey, string>>;
 
 const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
@@ -55,12 +47,6 @@ const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
   },
 };
 
-const COMMON_INDEXER_URLS: Partial<Record<number, IndexerUrlMap>> = {
-  [SOURCE_ETHEREUM_MAINNET]: {
-    chainLink: "https://api.thegraph.com/subgraphs/name/deividask/chainlink",
-  },
-};
-
 export function getIndexerUrl(chainId: number, indexer: IndexerKey): string | undefined {
   if (isDevelopment()) {
     const localStorageKey = getIndexerUrlKey(chainId, indexer);
@@ -70,10 +56,6 @@ export function getIndexerUrl(chainId: number, indexer: IndexerKey): string | un
       console.warn("%s indexer on chain %s url is overriden: %s", indexer, chainId, url);
       return url;
     }
-  }
-
-  if (chainId === SOURCE_ETHEREUM_MAINNET) {
-    return COMMON_INDEXER_URLS[chainId]?.[indexer];
   }
 
   return INDEXER_URLS[chainId as ContractsChainId]?.[indexer];

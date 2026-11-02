@@ -1,3 +1,4 @@
+import chunk from "lodash/chunk";
 import { Hash } from "viem";
 
 import { getIndexerUrl } from "config/indexers";
@@ -10,9 +11,12 @@ type CodeOwnersGraphqlResponse = {
   referralCodes: Array<{ owner: string; id: string }>;
 };
 
+// subgraph defaults to 100 rows and caps `first` at 1000
+const MAX_CODES_PER_QUERY = 1000;
+
 const CODE_OWNERS_GQL = /* GraphQL */ `
-  query allCodes($codes: [String!]!) {
-    referralCodes(where: { code_in: $codes }) {
+  query allCodes($codes: [String!]!, $first: Int!) {
+    referralCodes(first: $first, where: { code_in: $codes }) {
       owner
       id
     }
@@ -31,13 +35,23 @@ export async function getCodeOwnersData(
   const referralsUrl = getIndexerUrl(chainId, "referrals");
   if (!referralsUrl) return undefined;
 
-  const res = await graphqlFetcher<CodeOwnersGraphqlResponse>(referralsUrl, CODE_OWNERS_GQL, { codes });
-  if (!res) return undefined;
+  const responses = await Promise.all(
+    chunk(codes, MAX_CODES_PER_QUERY).map((codesChunk) =>
+      graphqlFetcher<CodeOwnersGraphqlResponse>(referralsUrl, CODE_OWNERS_GQL, {
+        codes: codesChunk,
+        first: codesChunk.length,
+      })
+    )
+  );
 
-  const codeOwners = res.referralCodes.reduce<Record<string, string>>((acc, cv) => {
-    acc[cv.id] = cv.owner;
-    return acc;
-  }, {});
+  const codeOwners: Record<string, string> = {};
+  for (const res of responses) {
+    if (!res) return undefined;
+
+    for (const referralCode of res.referralCodes) {
+      codeOwners[referralCode.id] = referralCode.owner;
+    }
+  }
 
   return codes.map((code) => {
     const owner = codeOwners[code];

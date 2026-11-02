@@ -1,17 +1,17 @@
 import { t, Trans } from "@lingui/macro";
 import pickBy from "lodash/pickBy";
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import { useKey } from "react-use";
+import { useHistory } from "react-router-dom";
+import { useKey, useLatest } from "react-use";
 import { Address } from "viem";
 
+import { getChainName } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { isSettlementChain } from "config/multichain";
+import { getUsdgConversionTokenAddress } from "config/usdgPools";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import {
-  usePositionsConstants,
-  useTokensData,
-  useUserReferralInfo,
-} from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   usePositionEditorAtPriceOpenRequest,
   usePositionEditorCollateralInputValue,
@@ -29,21 +29,43 @@ import {
   selectGmxAccountGasPaymentToken,
   selectSettlementChainGasPaymentToken,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import { selectPositionsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectPositionEditorCollateralInputAmountAndUsd,
+  selectPositionEditorDepositConversionTokenAddress,
+  selectPositionEditorDepositMaxInstantAmount,
+  selectPositionEditorDepositRestInstantAmountOut,
+  selectPositionEditorIsDepositSwapUnfillable,
+  selectPositionEditorMaxWithdrawAmount,
+  selectPositionEditorOpenDepositNow,
   selectPositionEditorSelectedCollateralToken,
+  selectPositionEditorSetAddMarginReturnPositionKey,
 } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
+import { selectTradeboxSetIsFromTokenGmxAccount } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { getNetworkFeeGasPaymentParams } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
-import { formatLiquidationPriceParts, getIsPositionInfoLoaded } from "domain/synthetics/positions";
-import { convertToTokenAmount, getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
-import { getMarkPrice, getMaxWithdrawAmount, getTradeFlagsForCollateralEdit } from "domain/synthetics/trade";
+import { useIsSwapTabPaxosOffered } from "domain/synthetics/paxosTransit/useIsSwapTabPaxosOffered";
+import { formatLiquidationPriceParts } from "domain/synthetics/positions";
+import {
+  convertToTokenAmount,
+  convertToUsd,
+  getBalanceByBalanceType,
+  getMidPrice,
+  TokenBalanceType,
+  type TokenData,
+} from "domain/synthetics/tokens";
+import { getMarkPrice, getTradeFlagsForCollateralEdit } from "domain/synthetics/trade";
 import { Operation } from "domain/synthetics/trade/usePositionEditorState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getConditionalDepositWarning } from "domain/synthetics/trade/utils/validation";
+import {
+  formatMaxInstantAmount,
+  getIsCloseToLiquidation,
+  getShouldDefaultToUsdc,
+} from "domain/synthetics/usdgPools/usdcConversion";
 import { DEFAULT_MAX_ACTIONS_STATE, MaxActionsState, useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
@@ -61,6 +83,7 @@ import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
 import { useActiveForm } from "components/ActiveFormScope/ActiveFormScope";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
+import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import { MaxActions } from "components/MaxActions/MaxActions";
 import Modal from "components/Modal/Modal";
@@ -94,11 +117,9 @@ import "./PositionEditor.scss";
 export function PositionEditor() {
   const { chainId, srcChainId } = useChainId();
   const { expressOrdersEnabled, setExpressOrdersEnabled, setIsSettingsVisible } = useSettings();
-  const [, setEditingPositionKey] = usePositionEditorPositionState();
+  const [editingPositionKey, setEditingPositionKey] = usePositionEditorPositionState();
   const tokensData = useTokensData();
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
-  const { minCollateralUsd } = usePositionsConstants();
-  const userReferralInfo = useUserReferralInfo();
   const position = usePositionEditorPosition();
   const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
   const localizedDepositModeLabels = useLocalizedMap(DEPOSIT_MODE_LABELS);
@@ -106,7 +127,9 @@ export function PositionEditor() {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
   const isVisible = Boolean(position);
+  const prevEditingPositionKey = usePrevious(editingPositionKey);
   const prevIsVisible = usePrevious(isVisible);
+  const lastVisibleIncreasedAtTimeRef = useRef<bigint | undefined>(undefined);
 
   const [operation, setOperation] = usePositionEditorOperation();
   const isDeposit = operation === Operation.Deposit;
@@ -144,64 +167,43 @@ export function PositionEditor() {
   );
 
   const collateralToken = useSelector(selectPositionEditorSelectedCollateralToken);
+  const depositConversionTokenAddress = useSelector(selectPositionEditorDepositConversionTokenAddress);
+  const isDepositSwapUnfillable = useSelector(selectPositionEditorIsDepositSwapUnfillable);
+  const depositMaxInstantAmount = useSelector(selectPositionEditorDepositMaxInstantAmount);
+  const setAddMarginReturnPositionKey = useSelector(selectPositionEditorSetAddMarginReturnPositionKey);
+  const setTradeboxIsFromTokenGmxAccount = useSelector(selectTradeboxSetIsFromTokenGmxAccount);
+  const history = useHistory();
+
+  // a selected conversion token isn't the position collateral, so collateral options are keyed off the position
+  const collateralOptionsAddress =
+    depositConversionTokenAddress !== undefined ? position?.collateralTokenAddress : selectedCollateralAddress;
 
   const filteredTokensData = useMemo(() => {
     return pickBy(
       tokensData,
       (token) =>
-        token.address === selectedCollateralAddress ||
-        token.wrappedAddress === selectedCollateralAddress ||
-        convertTokenAddress(chainId, token.address, "native") === selectedCollateralAddress
+        token.address === collateralOptionsAddress ||
+        token.wrappedAddress === collateralOptionsAddress ||
+        convertTokenAddress(chainId, token.address, "native") === collateralOptionsAddress
     );
-  }, [chainId, selectedCollateralAddress, tokensData]);
+  }, [chainId, collateralOptionsAddress, tokensData]);
 
-  const options = useMemo(() => {
-    return Object.values(filteredTokensData)
-      .flatMap((tokenData) => {
-        if (tokenData.isNative) {
-          return [
-            {
-              ...tokenData,
-              isGmxAccount: false,
-              balance: tokenData.walletBalance,
-              balanceType: TokenBalanceType.Wallet,
-            },
-          ];
-        }
+  const options = useMemo(
+    () => getCollateralOptions(Object.values(filteredTokensData), srcChainId),
+    [filteredTokensData, srcChainId]
+  );
 
-        return [
-          {
-            ...tokenData,
-            isGmxAccount: true,
-            balance: tokenData.gmxAccountBalance,
-            balanceType: TokenBalanceType.GmxAccount,
-          },
-          {
-            ...tokenData,
-            isGmxAccount: false,
-            balance: tokenData.walletBalance,
-            balanceType: TokenBalanceType.Wallet,
-          },
-        ];
-      })
-      .sort((a, b) => {
-        if (a.balance !== undefined && b.balance === undefined) {
-          return -1;
-        }
-
-        if (a.balance === undefined && b.balance !== undefined) {
-          return 1;
-        }
-
-        if (a.balance !== undefined && b.balance !== undefined) {
-          return b.balance - a.balance > 0n ? 1 : -1;
-        }
-
-        return 0;
-      });
-  }, [filteredTokensData]);
+  const depositConversionToken = getByKey(tokensData, depositConversionTokenAddress);
+  const conversionOptions = useMemo(
+    () => (depositConversionToken ? getCollateralOptions([depositConversionToken], srcChainId) : undefined),
+    [depositConversionToken, srcChainId]
+  );
 
   const hasMultipleTokens = useMemo(() => {
+    if (depositConversionTokenAddress !== undefined) {
+      return true;
+    }
+
     if (srcChainId === undefined) {
       if (selectedCollateralAddress === getWrappedToken(chainId)?.address) {
         return true;
@@ -211,13 +213,11 @@ export function PositionEditor() {
     }
 
     return false;
-  }, [chainId, selectedCollateralAddress, srcChainId]);
+  }, [chainId, depositConversionTokenAddress, selectedCollateralAddress, srcChainId]);
 
   const onClose = useCallback(() => {
     setEditingPositionKey(undefined);
   }, [setEditingPositionKey]);
-
-  const collateralPrice = collateralToken?.prices.minPrice;
 
   const [collateralInputValue, setCollateralInputValue] = usePositionEditorCollateralInputValue();
   const { collateralDeltaAmount, collateralDeltaUsd } = useSelector(selectPositionEditorCollateralInputAmountAndUsd);
@@ -232,17 +232,7 @@ export function PositionEditor() {
     return getMarkPrice({ prices: position.indexToken.prices, isLong: position.isLong, isIncrease: true });
   }, [position]);
 
-  const maxWithdrawAmount = useMemo(() => {
-    if (!getIsPositionInfoLoaded(position)) return 0n;
-
-    return getMaxWithdrawAmount({
-      position,
-      minCollateralUsd,
-      collateralPrice,
-      collateralDecimals: collateralToken?.decimals,
-      userReferralInfo,
-    });
-  }, [collateralPrice, collateralToken?.decimals, minCollateralUsd, position, userReferralInfo]);
+  const maxWithdrawAmount = useSelector(selectPositionEditorMaxWithdrawAmount);
 
   const { fees, executionFee } = usePositionEditorFees({
     operation,
@@ -352,21 +342,108 @@ export function PositionEditor() {
       })
     : undefined;
 
+  const usdcPayTokenAddressForAtPrice =
+    isAtPriceDeposit && position ? getUsdgConversionTokenAddress(chainId, position.collateralTokenAddress) : undefined;
+  const shouldSuggestNowForUsdc =
+    usdcPayTokenAddressForAtPrice !== undefined &&
+    getShouldDefaultToUsdc({
+      usdgBalance: collateralTokenBalance,
+      usdcBalance: getBalanceByBalanceType(getByKey(tokensData, usdcPayTokenAddressForAtPrice), depositBalanceType),
+    });
+
+  const positionCollateralSymbol = position?.collateralToken.symbol;
+  // an amount over the balance keeps its "Insufficient balance" button instead of the conversion choices
+  const isConversionTooLarge =
+    isDepositSwapUnfillable &&
+    depositMaxInstantAmount !== undefined &&
+    collateralDeltaAmount !== undefined &&
+    collateralTokenBalance !== undefined &&
+    collateralDeltaAmount <= collateralTokenBalance;
+  const restAmount =
+    collateralDeltaAmount !== undefined && depositMaxInstantAmount !== undefined
+      ? collateralDeltaAmount - depositMaxInstantAmount
+      : undefined;
+  const restUsd =
+    collateralToken && restAmount !== undefined
+      ? convertToUsd(restAmount, collateralToken.decimals, getMidPrice(collateralToken.prices))
+      : undefined;
+  const restInstantAmountOut = useSelector(selectPositionEditorDepositRestInstantAmountOut);
+  const {
+    isOffered: isPaxosOfferedForRest,
+    minimumText: paxosMinimumText,
+    isWalletOnly: isPaxosWalletOnly,
+  } = useIsSwapTabPaxosOffered({
+    amount: restAmount,
+    amountUsd: restUsd,
+    instantAmountOut: restInstantAmountOut,
+    isGmxAccount: isCollateralTokenFromGmxAccount,
+    enabled: isConversionTooLarge,
+  });
+  const settlementChainName = getChainName(chainId);
+  const maxInstantAmountText =
+    depositMaxInstantAmount !== undefined && collateralToken
+      ? formatMaxInstantAmount(collateralToken, depositMaxInstantAmount)
+      : undefined;
+  const isCloseToLiquidation = getIsCloseToLiquidation({
+    markPrice: position?.markPrice,
+    liquidationPrice: position?.liquidationPrice,
+  });
+
+  const handleDepositMaxInstant = useCallback(() => {
+    if (depositMaxInstantAmount === undefined || !collateralToken) return;
+
+    setCollateralInputValue(formatAmountFree(depositMaxInstantAmount, collateralToken.decimals));
+  }, [collateralToken, depositMaxInstantAmount, setCollateralInputValue]);
+
+  const handleConvertRestWithPaxos = useCallback(() => {
+    if (
+      !position ||
+      !collateralToken ||
+      depositMaxInstantAmount === undefined ||
+      collateralDeltaAmount === undefined ||
+      collateralDeltaAmount <= depositMaxInstantAmount
+    ) {
+      return;
+    }
+
+    const restAmount = formatAmountFree(collateralDeltaAmount - depositMaxInstantAmount, collateralToken.decimals);
+
+    setAddMarginReturnPositionKey(position.key);
+    // the Swap tab runs Paxos only from the wallet, and a stored GMX Account pay source would hide it
+    setTradeboxIsFromTokenGmxAccount(false);
+    setEditingPositionKey(undefined);
+    history.push(
+      `/trade/swap?mode=market&from=${collateralToken.symbol}&to=${position.collateralToken.symbol}&amount=${restAmount}`
+    );
+  }, [
+    collateralDeltaAmount,
+    collateralToken,
+    depositMaxInstantAmount,
+    history,
+    position,
+    setAddMarginReturnPositionKey,
+    setEditingPositionKey,
+    setTradeboxIsFromTokenGmxAccount,
+  ]);
+
   const hasNextValues =
+    !isDepositSwapUnfillable &&
     collateralDeltaAmount !== undefined &&
     collateralDeltaAmount > 0n &&
     (!isAtPriceDeposit || triggerPrice !== undefined);
+
+  const latestOnSubmit = useLatest(submitButtonState.onSubmit);
 
   useKey(
     "Enter",
     () => {
       if (isVisible && !submitButtonState.disabled) {
         submitButtonRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-        submitButtonState.onSubmit();
+        latestOnSubmit.current();
       }
     },
     {},
-    [isVisible, submitButtonState.disabled]
+    [isVisible, submitButtonState.disabled, latestOnSubmit]
   );
 
   useEffect(
@@ -375,16 +452,70 @@ export function PositionEditor() {
         return;
       }
 
-      if (!selectedCollateralAddress || !filteredTokensData[selectedCollateralAddress]) {
+      if (
+        !selectedCollateralAddress ||
+        (!filteredTokensData[selectedCollateralAddress] && selectedCollateralAddress !== depositConversionTokenAddress)
+      ) {
         handleSetCollateralAddress(position.collateralTokenAddress as Address);
       }
     },
-    [filteredTokensData, handleSetCollateralAddress, position, selectedCollateralAddress, setSelectedCollateralAddress]
+    [
+      depositConversionTokenAddress,
+      filteredTokensData,
+      handleSetCollateralAddress,
+      position,
+      selectedCollateralAddress,
+      setSelectedCollateralAddress,
+    ]
+  );
+
+  const openDepositNow = useSelector(selectPositionEditorOpenDepositNow);
+  const positionsInfoData = useSelector(selectPositionsInfoData);
+  const { transitRouteProgress, dismissTransitRouteProgress } = useSyntheticsEvents();
+
+  useEffect(
+    function applyAddMarginContinueRequest() {
+      const positionKey = transitRouteProgress?.addMarginPositionKey;
+
+      if (
+        !transitRouteProgress?.isContinueRequested ||
+        transitRouteProgress.isDismissed ||
+        positionKey === undefined ||
+        !positionsInfoData
+      ) {
+        return;
+      }
+
+      // the conversion has done its job once the trader is back at the position;
+      // dismissing replaces the progress object, so without the isDismissed check this would loop
+      dismissTransitRouteProgress(transitRouteProgress.id);
+      setAddMarginReturnPositionKey(undefined);
+
+      if (positionsInfoData[positionKey]) {
+        openDepositNow(positionKey);
+      }
+    },
+    [
+      openDepositNow,
+      positionsInfoData,
+      dismissTransitRouteProgress,
+      setAddMarginReturnPositionKey,
+      transitRouteProgress,
+    ]
   );
 
   useEffect(
     function resetFormAndApplyOpenRequest() {
-      if (isVisible !== prevIsVisible || atPriceOpenRequest) {
+      // A data gap brings the same position back, but a position closed under the open editor and reopened
+      // later keeps its key with a new increase time.
+      const increasedAtTime = position?.increasedAtTime;
+      const isReopenedPosition =
+        isVisible && !prevIsVisible && increasedAtTime !== lastVisibleIncreasedAtTimeRef.current;
+      if (increasedAtTime !== undefined) {
+        lastVisibleIncreasedAtTimeRef.current = increasedAtTime;
+      }
+
+      if (editingPositionKey !== prevEditingPositionKey || isReopenedPosition || atPriceOpenRequest) {
         setCollateralInputValue("");
       }
 
@@ -417,9 +548,12 @@ export function PositionEditor() {
     [
       atPriceOpenRequest,
       clearAtPriceOpenRequest,
+      editingPositionKey,
       isVisible,
       position?.collateralToken?.decimals,
+      position?.increasedAtTime,
       position?.indexToken?.visualMultiplier,
+      prevEditingPositionKey,
       prevIsVisible,
       replacingOrder,
       setCollateralInputValue,
@@ -613,6 +747,7 @@ export function PositionEditor() {
                       selectedTokenSymbol={collateralToken?.symbol}
                       isCollateralTokenFromGmxAccount={isCollateralTokenFromGmxAccount}
                       options={options}
+                      conversionOptions={conversionOptions}
                       onSelect={handleSetCollateralAddress}
                       variant={isDeposit ? "balance" : "destination"}
                     />
@@ -662,6 +797,15 @@ export function PositionEditor() {
                   </p>
                 ))}
 
+              {shouldSuggestNowForUsdc && (
+                <AlertInfoCard type="info" hideClose>
+                  <Trans>
+                    "At price" margin deposits use {positionCollateralSymbol} only. To pay with USDC,{" "}
+                    <EmbeddedActionButton onClick={() => setDepositMode("now")}>use Now</EmbeddedActionButton>.
+                  </Trans>
+                </AlertInfoCard>
+              )}
+
               {!submitButtonState.bannerErrorName &&
                 !submitButtonState.errorBannerContent &&
                 lowGasPaymentTokenWarningContent && (
@@ -678,7 +822,64 @@ export function PositionEditor() {
                 onAfterAction={onClose}
               />
 
-              <div>{button}</div>
+              {isConversionTooLarge ? (
+                <>
+                  <AlertInfoCard type="warning" hideClose>
+                    <div className="font-medium">
+                      <Trans>Too large to convert instantly</Trans>
+                    </div>
+                    {depositMaxInstantAmount !== undefined && depositMaxInstantAmount > 0n ? (
+                      <Trans>Up to {maxInstantAmountText} can be converted now.</Trans>
+                    ) : (
+                      <Trans>Nothing can be converted instantly right now.</Trans>
+                    )}
+                  </AlertInfoCard>
+                  {depositMaxInstantAmount !== undefined && depositMaxInstantAmount > 0n && (
+                    <Button
+                      className="w-full flex-col !items-start"
+                      variant="primary-action"
+                      onClick={handleDepositMaxInstant}
+                      qa="deposit-max-instant"
+                    >
+                      <Trans>Deposit {maxInstantAmountText} now</Trans>
+                      <span className="text-13 font-normal opacity-80">
+                        <Trans>Instant</Trans>
+                      </span>
+                    </Button>
+                  )}
+                  {isPaxosOfferedForRest ? (
+                    <Button
+                      className="w-full flex-col !items-start"
+                      variant="secondary"
+                      showExternalLinkArrow={false}
+                      onClick={handleConvertRestWithPaxos}
+                      qa="convert-rest-with-paxos"
+                    >
+                      <Trans>Convert the rest with Paxos</Trans>
+                      <span className="text-12 font-normal text-typography-secondary">
+                        <Trans>In the Swap tab · arrives separately</Trans>
+                      </span>
+                    </Button>
+                  ) : isPaxosWalletOnly ? (
+                    <div className="text-12 text-typography-secondary">
+                      <Trans>Paxos converts USDC from your wallet on {settlementChainName}.</Trans>
+                    </div>
+                  ) : (
+                    paxosMinimumText && (
+                      <div className="text-12 text-typography-secondary">
+                        <Trans>Paxos converts amounts from {paxosMinimumText}.</Trans>
+                      </div>
+                    )
+                  )}
+                  {isCloseToLiquidation && (
+                    <AlertInfoCard type="warning" hideClose>
+                      <Trans>Close to liquidation? Deposit the instant amount first. Paxos can take a while.</Trans>
+                    </AlertInfoCard>
+                  )}
+                </>
+              ) : (
+                <div>{button}</div>
+              )}
 
               {!isDeposit && (
                 <SyntheticsInfoRow
@@ -731,4 +932,51 @@ export function PositionEditor() {
       </Modal>
     </div>
   );
+}
+
+function getCollateralOptions(tokens: TokenData[], srcChainId: number | undefined) {
+  return tokens
+    .flatMap((tokenData) => {
+      if (tokenData.isNative) {
+        return [
+          {
+            ...tokenData,
+            isGmxAccount: false,
+            balance: tokenData.walletBalance,
+            balanceType: TokenBalanceType.Wallet,
+          },
+        ];
+      }
+
+      return [
+        {
+          ...tokenData,
+          isGmxAccount: true,
+          balance: tokenData.gmxAccountBalance,
+          balanceType: TokenBalanceType.GmxAccount,
+        },
+        {
+          ...tokenData,
+          isGmxAccount: false,
+          balance: tokenData.walletBalance,
+          balanceType: TokenBalanceType.Wallet,
+        },
+      ];
+    })
+    .filter((option) => srcChainId === undefined || option.isGmxAccount)
+    .sort((a, b) => {
+      if (a.balance !== undefined && b.balance === undefined) {
+        return -1;
+      }
+
+      if (a.balance === undefined && b.balance !== undefined) {
+        return 1;
+      }
+
+      if (a.balance !== undefined && b.balance !== undefined) {
+        return b.balance - a.balance > 0n ? 1 : -1;
+      }
+
+      return 0;
+    });
 }

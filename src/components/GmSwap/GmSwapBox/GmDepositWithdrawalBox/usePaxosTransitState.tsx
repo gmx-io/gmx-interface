@@ -35,17 +35,25 @@ import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { Operation } from "domain/synthetics/markets/types";
 import { getReceivedTokenAmount } from "domain/synthetics/paxosTransit/getReceivedTokenAmount";
+import {
+  TransitApprovalClaimedError,
+  TransitApprovalPendingError,
+  TransitConversionPendingError,
+} from "domain/synthetics/paxosTransit/submitTransitOrder";
 import { getIsTransitOrderFinal } from "domain/synthetics/paxosTransit/transitOrders";
 import {
   getTransitRouteProgressForMarket,
   type TransitRouteDirection,
 } from "domain/synthetics/paxosTransit/transitRouteProgress";
 import { usePaxosTransit } from "domain/synthetics/paxosTransit/usePaxosTransit";
+import { useTransitApprovalProposal } from "domain/synthetics/paxosTransit/useTransitApprovalProposal";
+import { getIsZeroFeeRejection } from "domain/synthetics/paxosTransit/utils";
 import type { TokenData } from "domain/synthetics/tokens";
 import type { ERC20Address } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import { formatAmountFree } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { AccountType, useAccountType } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
 import { getToken } from "sdk/configs/tokens";
 import type { TransitOrder, TransitQuote } from "sdk/utils/paxos/types";
@@ -92,11 +100,13 @@ export function usePaxosTransitState({
   const conversionRoutePreference = useSelector(selectPoolsDetailsConversionRoutePreference);
   const setConversionRoutePreference = useSelector(selectPoolsDetailsSetConversionRoutePreference);
   const { account } = useWallet();
+  const { accountType } = useAccountType();
   const {
     withdrawalStatuses,
     transitRouteProgress,
     paxosTransitOrder,
     isPaxosTransitOrderStatusUnknown,
+    isPaxosTransitOrderLookupExpired,
     startTransitRouteProgress,
     attachTransitRouteConversion,
     setTransitRouteContinueRequested,
@@ -120,7 +130,10 @@ export function usePaxosTransitState({
     transitRouteProgressForMarket?.direction === direction ? transitRouteProgressForMarket : undefined;
   const conversionOrder = transitRouteProgressForDirection?.conversion ? paxosTransitOrder : undefined;
   const isConversionFinal = getIsTransitOrderFinal(conversionOrder);
-  const isConverting = transitRouteProgressForDirection?.conversion !== undefined && !isConversionFinal;
+  const isConverting =
+    transitRouteProgressForDirection?.conversion !== undefined &&
+    !isConversionFinal &&
+    !isPaxosTransitOrderLookupExpired;
   const isDepositSent = transitRouteProgressForDirection?.depositTxnHash !== undefined;
 
   const withdrawalUsdgAmount = isWithdrawal && amounts ? amounts.longTokenAmount + amounts.shortTokenAmount : 0n;
@@ -165,7 +178,14 @@ export function usePaxosTransitState({
 
   const onPendingOrderFound = useCallback(
     (order: TransitOrder) => {
-      if (!glvOrMarketAddress || !account || transitRouteProgress?.conversion?.orderId === order.id) return;
+      const trackedConversion =
+        transitRouteProgress?.account === account && transitRouteProgress?.chainId === chainId
+          ? transitRouteProgress.conversion
+          : undefined;
+
+      if (!glvOrMarketAddress || !account || (trackedConversion && trackedConversion.orderId === undefined)) return;
+
+      if (trackedConversion?.orderId === order.id) return;
 
       startTransitRouteProgress({
         chainId,
@@ -201,16 +221,18 @@ export function usePaxosTransitState({
     isBelowMinOrderSize,
     minOrderSize,
     shouldUseTransit,
-    isLargeConversion,
     isWhitelisted,
+    feeTier,
     isQuoteNeeded,
     isFeeTierLoaded,
     feeTierError,
     submitTransit,
     amountOut,
     thresholdUsd,
+    isZeroFeePaused,
     isZeroFeeCapacityShort,
     zeroFeeCapacity,
+    zeroFeeExpectedReopenAt,
     transitFeesUsd,
   } = transit;
 
@@ -233,9 +255,18 @@ export function usePaxosTransitState({
   const isTransitRoute = isTransitInProgress || isTransitRouteChosen;
 
   const shouldShowRouteSelector = isConversionNeeded && isFeeTierLoaded;
-  const shouldShowWhitelistNote = shouldShowRouteSelector && !isWhitelisted && isLargeConversion;
+  const isZeroFee = feeTier === "zeroFee";
 
   const transitAmountOut = isTransitRoute ? amountOut : undefined;
+
+  const { isApprovalProposalPending, onProposeNewApproval } = useTransitApprovalProposal({
+    chainId,
+    account,
+    tokenAddress: tokenIn?.address,
+    spender: quote?.transaction.to,
+    amount: amountIn,
+    isEnabled: accountType === AccountType.SmartAccount && step === "idle" && isTransitRoute,
+  });
 
   useEffect(
     function syncTransitRoute() {
@@ -280,7 +311,23 @@ export function usePaxosTransitState({
         });
       })
       .catch((error: Error) => {
-        helperToast.error(t`Conversion failed: ${error.message}`);
+        if (error instanceof TransitApprovalClaimedError) return;
+
+        if (error instanceof TransitConversionPendingError) {
+          helperToast.error(t`A conversion is already waiting in your wallet. Try again after it executes.`);
+          return;
+        }
+
+        if (isZeroFee && getIsZeroFeeRejection(error)) {
+          helperToast.error(t`Zero-fee conversion is no longer available. Review the conversion and confirm again.`);
+          return;
+        }
+
+        helperToast.error(
+          error instanceof TransitApprovalPendingError
+            ? t`The approval has not executed yet. Convert again after it executes.`
+            : t`Conversion failed: ${error.message}`
+        );
       });
   }, [
     account,
@@ -288,6 +335,7 @@ export function usePaxosTransitState({
     chainId,
     direction,
     glvOrMarketAddress,
+    isZeroFee,
     startTransitRouteProgress,
     submitTransit,
     transitRouteProgressForDirection,
@@ -467,7 +515,8 @@ export function usePaxosTransitState({
     isRouteSelectable,
     conversionRoutePreference,
     setConversionRoutePreference,
-    shouldShowWhitelistNote,
+    isApprovalProposalPending,
+    onProposeNewApproval,
     hasUsdgCollateral,
     tokenIn,
     usdgToken,
@@ -475,8 +524,11 @@ export function usePaxosTransitState({
     transitFillCount,
     thresholdUsd,
     isWhitelisted,
+    isZeroFee,
+    isZeroFeePaused,
     isZeroFeeCapacityShort,
     zeroFeeCapacity,
+    zeroFeeExpectedReopenAt,
     transitFeesUsd,
   };
 }

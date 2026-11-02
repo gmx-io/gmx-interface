@@ -82,7 +82,7 @@ export function GmSwapWarningsRow({
 
   if (shouldShowWhitelistOnlyHint && !isGlv) {
     warnings.push(
-      <ColorfulBanner color="blue" icon={InfoIcon} key="whitelistOnlyHint">
+      <ColorfulBanner color="red" icon={InfoIcon} key="whitelistOnlyHint">
         {isSpotOnlyMarket ? (
           <Trans>Only GMX adds liquidity to this pool. To provide USDG liquidity, use GLV [USDG].</Trans>
         ) : (

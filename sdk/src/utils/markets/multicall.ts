@@ -14,6 +14,7 @@ import { getContractMarketPrices, getOiInTokensFromRawValues, getOiUsdFromRawVal
 import { getByKey } from "utils/objects";
 import type { TokensData } from "utils/tokens/types";
 
+import { hashMarketConfigKeys, hashMarketValuesKeys } from "./hashKeys";
 import type { MarketConfig, MarketValues, MarketsData } from "./types";
 
 type MulticallResponse = {
@@ -233,11 +234,7 @@ export async function buildMarketsValuesRequest(
       },
     } satisfies ContractCallsConfig<any>;
 
-    const prebuiltHashedKeys = HASHED_MARKET_VALUES_KEYS[chainId]?.[marketAddress];
-
-    if (!prebuiltHashedKeys) {
-      throw new Error(`No pre-built hashed market keys found for the market ${marketAddress}.`);
-    }
+    const prebuiltHashedKeys = HASHED_MARKET_VALUES_KEYS[chainId]?.[marketAddress] ?? hashMarketValuesKeys(market);
 
     request[`${marketAddress}-dataStore`] = {
       contractAddress: dataStoreAddress,
@@ -418,11 +415,12 @@ export async function buildMarketsConfigsRequest(
   const request: Record<string, ContractCallsConfig<any>> = {};
   for (const marketAddress of marketsAddresses || []) {
     const market = getByKey(marketsData, marketAddress);
-    const prebuiltHashedKeys = HASHED_MARKET_CONFIG_KEYS[chainId]?.[marketAddress];
 
-    if (!market || !prebuiltHashedKeys) {
-      throw new Error(`No pre-built hashed config keys found for the market ${marketAddress}.`);
+    if (!market) {
+      throw new Error(`No market data found for the market ${marketAddress}.`);
     }
+
+    const prebuiltHashedKeys = HASHED_MARKET_CONFIG_KEYS[chainId]?.[marketAddress] ?? hashMarketConfigKeys(market);
 
     request[`${marketAddress}-dataStore`] = {
       contractAddress: dataStoreAddress,

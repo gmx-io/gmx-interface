@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { AnyChainId, AVALANCHE_FUJI } from "config/chains";
 import { getFallbackRpcUrl, getWsRpcProviders } from "config/rpc";
-import { getIsLargeAccount } from "domain/stats/isLargeAccount";
+import { getIsLargeAccountChain } from "domain/stats/isLargeAccount";
 import { getCurrentExpressRpcUrl, getCurrentRpcUrls, useCurrentRpcUrls } from "lib/rpc/useRpcUrls";
 
 export function getProvider(signer: undefined, chainId: number): ethers.JsonRpcProvider;
@@ -29,7 +29,7 @@ export function getWsUrl(chainId: AnyChainId): string | undefined {
   }
 
   const wsProviderConfig =
-    getWsRpcProviders(chainId, getIsLargeAccount() ? "largeAccount" : "fallback")[0] ??
+    getWsRpcProviders(chainId, getIsLargeAccountChain(chainId) ? "largeAccount" : "fallback")[0] ??
     getWsRpcProviders(chainId, "fallback")[0];
 
   if (wsProviderConfig) {
@@ -40,7 +40,7 @@ export function getWsUrl(chainId: AnyChainId): string | undefined {
 }
 
 export function getFallbackProvider(chainId: number) {
-  const providerUrl = getFallbackRpcUrl(chainId, getIsLargeAccount());
+  const providerUrl = getFallbackRpcUrl(chainId, getIsLargeAccountChain(chainId));
 
   if (!providerUrl) {
     return;

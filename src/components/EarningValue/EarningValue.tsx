@@ -56,7 +56,7 @@ export function EarningNotAvailable({ tooltip }: { tooltip?: ReactNode }) {
 export function EarningUnavailableNote() {
   return (
     <div className="text-typography-primary">
-      <Trans>Fee data is temporarily unavailable.</Trans>
+      <Trans>Fee data is temporarily unavailable</Trans>
     </div>
   );
 }

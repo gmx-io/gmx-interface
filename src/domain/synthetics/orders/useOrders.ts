@@ -7,7 +7,7 @@ import { accountOrderListKey } from "config/dataStore";
 import { useIsApiHealthy } from "domain/api/apiHealthTracker";
 import { useApiDataFallbackState } from "domain/api/useApiDataFallbackState";
 import type { MarketsInfoData } from "domain/synthetics/markets/types";
-import { OrderTypeFilterValue, convertOrderTypeFilterValues } from "domain/synthetics/orders/ordersFilters";
+import { OrderTypeFilterValue, getIsOrderMatchingTypeFilters } from "domain/synthetics/orders/ordersFilters";
 import { DecreasePositionSwapType, Order, OrderType, OrdersData } from "domain/synthetics/orders/types";
 import { useApiOrdersRequest } from "domain/synthetics/orders/useApiOrdersRequest";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
@@ -96,10 +96,7 @@ export function useOrders(
     };
   }, [marketsDirectionsFilter]);
 
-  const key = useMemo(
-    () => (!account ? null : ([account, marketsDirectionsFilter, orderTypesFilter] as const)),
-    [account, marketsDirectionsFilter, orderTypesFilter]
-  );
+  const key = useMemo(() => (!account ? null : ([account] as const)), [account]);
 
   // Stale markets ⇒ gmx-api unhealthy ⇒ orders fall back to RPC globally too.
   const isApiHealthy = useIsApiHealthy(chainId);
@@ -162,6 +159,8 @@ export function useOrders(
       return undefined;
     }
 
+    const isOrderMatchingTypeFilters = getIsOrderMatchingTypeFilters(orderTypesFilter);
+
     const filteredOrders = orders.filter((order) => {
       if (isMarketOrderType(order.orderType)) {
         const is15SecondsPassedSinceOrderCreation = Date.now() - Number(order.updatedAtTime * 1000n) > 15_000;
@@ -189,11 +188,8 @@ export function useOrders(
       let matchByOrderType = true;
 
       if (orderTypesFilter.length > 0) {
-        const { type, groupType } = convertOrderTypeFilterValues(orderTypesFilter);
-
         const twapParams = decodeOrderTwapParams(order.data, order.uiFeeReceiver);
-        const orderGroupType = twapParams ? "twap" : "none";
-        matchByOrderType = type.includes(order.orderType) && groupType.includes(orderGroupType);
+        matchByOrderType = isOrderMatchingTypeFilters(order.orderType, twapParams ? "twap" : "none");
       }
 
       return matchByMarketResult && matchByOrderType;

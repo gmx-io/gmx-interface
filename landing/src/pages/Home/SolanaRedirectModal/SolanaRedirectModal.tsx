@@ -17,7 +17,7 @@ export function SolanaRedirectModal({ onClose, onConfirm }: SolanaRedirectModalP
 
       <ModalBody>
         <p>
-          <Trans>GMX on Solana (GMTrade) is currently served from a separate domain</Trans>
+          <Trans>GMX on Solana (GMTrade) is served from a separate domain</Trans>
         </p>
         <p>
           <Trans>Opens GMTrade in a new tab</Trans>

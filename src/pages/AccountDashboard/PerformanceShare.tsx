@@ -156,7 +156,7 @@ export function PerformanceShare({
           )}
         </div>
         {hasData && bucket.isFallback && (
-          <AlertInfoCard type="warning" hideClose>
+          <AlertInfoCard type="info" hideClose>
             {bucket.bucketLabel === "all" ? (
               <Trans>Stats for the selected period aren't available. Showing your all-time performance instead.</Trans>
             ) : (
