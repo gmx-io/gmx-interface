@@ -479,6 +479,7 @@ export function PositionSeller() {
     orderParams: batchParams,
     isGmxAccount: srcChainId !== undefined || effectiveIsReceiveToGmxAccount,
     canSwitchGasPaymentToken: isActiveForm,
+    gasPaymentTokenFallback: "skipApproval",
   });
 
   const approvalTokens = useMemo(() => {

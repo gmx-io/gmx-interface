@@ -49,7 +49,7 @@ function resolve(overrides: Partial<Parameters<typeof resolveGasPaymentTokenAddr
 
   return resolveGasPaymentTokenAddress({
     chainId: ARBITRUM,
-    fallback: "payToken",
+    fallback: "skipApproval",
     gasPaymentToken: tokensData[USDC.address],
     payTokenAddress: WETH.address,
     payAmounts: {},
@@ -62,7 +62,7 @@ function resolve(overrides: Partial<Parameters<typeof resolveGasPaymentTokenAddr
 }
 
 describe("resolveGasPaymentTokenAddress", () => {
-  describe("payToken", () => {
+  describe("skipApproval", () => {
     it("pays the fee in the pay token when the saved gas payment token is not approved", () => {
       expect(resolve()).toBe(WETH.address);
     });
@@ -99,6 +99,71 @@ describe("resolveGasPaymentTokenAddress", () => {
       const feeUsdByToken = { [WETH.address]: 3n * ONE_USD };
 
       expect(resolve({ feeUsdByToken, payAmounts: { [WETH.address]: ONE_WETH } })).toBe(WETH.address);
+    });
+
+    it("uses another approved token with enough balance when the pay token is not a gas payment token", () => {
+      const tokensAllowanceData = { [USDC.address]: 0n, [USDT.address]: MAX_ALLOWANCE, [WETH.address]: 0n };
+
+      expect(
+        resolve({ payTokenAddress: LINK.address, tokensAllowanceData, feeUsdByToken: { [USDC.address]: ONE_USD } })
+      ).toBe(USDT.address);
+      expect(
+        resolve({ payTokenAddress: undefined, tokensAllowanceData, feeUsdByToken: { [USDC.address]: ONE_USD } })
+      ).toBe(USDT.address);
+    });
+
+    it("uses another approved token when the pay token can't cover its own fee", () => {
+      expect(
+        resolve({
+          tokensData: buildTokensData({ weth: 0n }),
+          tokensAllowanceData: { [USDC.address]: 0n, [USDT.address]: MAX_ALLOWANCE, [WETH.address]: 0n },
+          feeUsdByToken: { [USDC.address]: ONE_USD },
+        })
+      ).toBe(USDT.address);
+    });
+
+    it("doesn't offer the pay token as the approved alternative once it can't cover its own fee", () => {
+      expect(
+        resolve({
+          tokensData: buildTokensData({ weth: ONE_WETH / 10_000n }), // $0.3
+          tokensAllowanceData: { [USDC.address]: 0n, [USDT.address]: MAX_ALLOWANCE, [WETH.address]: MAX_ALLOWANCE },
+          feeUsdByToken: { [USDC.address]: ONE_USD / 10n, [WETH.address]: ONE_USD },
+        })
+      ).toBe(USDT.address);
+    });
+
+    it("keeps the saved token when it is also the pay token", () => {
+      expect(
+        resolve({
+          payTokenAddress: USDC.address,
+          tokensAllowanceData: { [USDC.address]: 0n, [USDT.address]: MAX_ALLOWANCE, [WETH.address]: MAX_ALLOWANCE },
+          feeUsdByToken: { [USDC.address]: ONE_USD },
+        })
+      ).toBe(USDC.address);
+    });
+
+    it("keeps the saved token when the order spends it without a pay token", () => {
+      expect(
+        resolve({
+          payTokenAddress: undefined,
+          payAmounts: { [USDC.address]: 10n * ONE_USDC },
+          tokensAllowanceData: { [USDC.address]: 0n, [USDT.address]: MAX_ALLOWANCE, [WETH.address]: MAX_ALLOWANCE },
+          feeUsdByToken: { [USDC.address]: ONE_USD },
+        })
+      ).toBe(USDC.address);
+    });
+
+    it("leaves a short approved saved token to the automatic switch", () => {
+      const tokensData = buildTokensData({ usdc: ONE_USDC });
+
+      expect(
+        resolve({
+          tokensData,
+          gasPaymentToken: tokensData[USDC.address],
+          tokensAllowanceData: { [USDC.address]: MAX_ALLOWANCE, [USDT.address]: MAX_ALLOWANCE },
+          feeUsdByToken: { [USDC.address]: ONE_USD },
+        })
+      ).toBe(USDC.address);
     });
   });
 

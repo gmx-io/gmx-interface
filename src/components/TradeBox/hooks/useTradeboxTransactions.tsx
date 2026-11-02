@@ -171,11 +171,12 @@ export function useTradeboxTransactions({ setPendingTxns, canSwitchGasPaymentTok
     isMultichainSubmitDisabled,
     gasPaymentToken,
   } = useExpressOrdersParams({
-    orderParams: batchParams,
+    // a wrap or unwrap is not an order: its batch is empty, so an Express fee would be quoted for a Classic transaction
+    orderParams: isWrapOrUnwrap ? undefined : batchParams,
     label: "TradeBox",
     isGmxAccount: isFromTokenGmxAccount,
     canSwitchGasPaymentToken,
-    gasPaymentTokenFallback: "payToken",
+    gasPaymentTokenFallback: "skipApproval",
     payTokenFeeToken,
   });
 

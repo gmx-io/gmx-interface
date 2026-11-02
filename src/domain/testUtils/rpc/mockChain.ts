@@ -186,6 +186,8 @@ export class MockChain implements RpcResponder {
   estimateGasError: string | undefined = undefined;
   sendTransactionError: string | undefined = undefined;
   allowance: bigint = ethers.MaxUint256;
+  /** ERC20 allowances by token address; unset tokens read `allowance`. */
+  tokenAllowances: Record<string, bigint> = {};
 
   sentTransactions: SentTransaction[] = [];
   signedTypedData: SignedTypedDataRecord[] = [];
@@ -216,6 +218,10 @@ export class MockChain implements RpcResponder {
 
   setTokenTotalSupply({ token, value }: { token: string; value: bigint }) {
     this.tokenTotalSupplies[ethers.getAddress(token)] = value;
+  }
+
+  setTokenAllowance({ token, value }: { token: string; value: bigint }) {
+    this.tokenAllowances[ethers.getAddress(token)] = value;
   }
 
   setDataStoreUint(key: string, value: bigint) {
@@ -515,7 +521,10 @@ export class MockChain implements RpcResponder {
         return IFACE.encodeFunctionResult("getEthBalance", [balance]);
       }
       case SELECTORS.allowance: {
-        return IFACE.encodeFunctionResult("allowance", [this.allowance]);
+        const token = to === undefined ? undefined : normalizeAddress(to);
+        const allowance =
+          token !== undefined && token in this.tokenAllowances ? this.tokenAllowances[token] : this.allowance;
+        return IFACE.encodeFunctionResult("allowance", [allowance]);
       }
       case SELECTORS.getBytes32: {
         const [key] = IFACE.decodeFunctionData("getBytes32", data) as unknown as [string];

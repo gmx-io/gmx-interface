@@ -372,9 +372,11 @@ export function useTradeboxButtonState({
   // follows the estimate rather than the resolved token, which runs ahead of it while a new estimate loads
   const isFeeInPayToken =
     !isFromTokenGmxAccount &&
+    (isSwap || isIncrease) &&
     expressParams !== undefined &&
     gasPaymentToken !== undefined &&
-    expressParams.gasPaymentParams.gasPaymentTokenAddress !== gasPaymentToken.address;
+    expressParams.gasPaymentParams.gasPaymentTokenAddress !== gasPaymentToken.address &&
+    expressParams.gasPaymentParams.gasPaymentTokenAddress === fromToken?.address;
 
   const { buttonErrorText, tooltipContent, bannerErrorContent } = useMemo((): {
     buttonErrorText: string | undefined;
