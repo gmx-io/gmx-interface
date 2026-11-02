@@ -457,28 +457,28 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                       {finishedError instanceof MultichainTransferProgress.errors.BridgeOutFailed &&
                         (task.operation === Operation.Deposit ? (
                           <Trans>
-                            {gmOrGlvLabel} bought successfully, but bridge to {getChainName(task.sourceChainId)} failed.
-                            Your funds are safe in your GMX Account. Retry the bridge or go to the {indexName} pool to
-                            withdraw your {gmOrGlvLabel} tokens.
+                            {gmOrGlvLabel} bought successfully, but the bridge to {getChainName(task.sourceChainId)}{" "}
+                            failed. Your funds are safe in your GMX Account. Retry the bridge or go to the {indexName}{" "}
+                            pool to withdraw your {gmOrGlvLabel} tokens.
                           </Trans>
                         ) : (
                           <Trans>
-                            {gmOrGlvLabel} sold successfully, but bridge to {getChainName(task.sourceChainId)} failed.
-                            Your funds are safe in your GMX Account. Retry the bridge or open GMX Account to withdraw
-                            your tokens.
+                            {gmOrGlvLabel} sold successfully, but the bridge to {getChainName(task.sourceChainId)}{" "}
+                            failed. Your funds are safe in your GMX Account. Retry the bridge or open GMX Account to
+                            withdraw your tokens.
                           </Trans>
                         ))}
 
                       {finishedError instanceof MultichainTransferProgress.errors.ConversionFailed &&
                         (task.operation === Operation.Deposit ? (
                           <Trans>
-                            Buy {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to settlement
+                            Buy {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to the settlement
                             chain and go to the {indexName} pool to buy your {gmOrGlvLabel} tokens.
                           </Trans>
                         ) : (
                           <Trans>
-                            Sell {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to settlement
-                            chain and go to the {indexName} pool to sell your {gmOrGlvLabel} tokens.
+                            Sell {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to the
+                            settlement chain and go to the {indexName} pool to sell your {gmOrGlvLabel} tokens.
                           </Trans>
                         ))}
                     </ColorfulBanner>

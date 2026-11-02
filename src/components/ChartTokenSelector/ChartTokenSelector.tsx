@@ -592,10 +592,10 @@ function MarketsList() {
                 <div className="flex w-full flex-col items-center gap-12 px-16">
                   <span className="w-full min-w-0 text-center text-12 text-typography-secondary [overflow-wrap:anywhere]">
                     {shouldOfferSearchAll ? (
-                      <Trans>No results with the selected filters.</Trans>
+                      <Trans>No results with the selected filters</Trans>
                     ) : (
                       <Trans>
-                        No {marketTypeLabel} match "{query}".
+                        No {marketTypeLabel} match "{query}"
                       </Trans>
                     )}
                   </span>
@@ -609,9 +609,9 @@ function MarketsList() {
                     <>
                       <span className="text-12 text-typography-secondary">
                         {isSwap ? (
-                          <Trans>Results are available in Perpetuals.</Trans>
+                          <Trans>Results are available in Perpetuals</Trans>
                         ) : (
-                          <Trans>Results are available in Swap.</Trans>
+                          <Trans>Results are available in Swap</Trans>
                         )}
                       </span>
                       <Button
@@ -626,7 +626,7 @@ function MarketsList() {
                   )}
                 </div>
               ) : (
-                <Trans>No markets matched.</Trans>
+                <Trans>No markets matched</Trans>
               )
             }
           />

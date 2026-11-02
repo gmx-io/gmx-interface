@@ -145,7 +145,7 @@ export function WalletReceiveOptionsView() {
         <FundingOptionRow
           icon={<ReceiveIcon className="size-20" />}
           title={<Trans>Receive to this wallet</Trans>}
-          description={<Trans>Copy your wallet address or scan a QR code.</Trans>}
+          description={<Trans>Copy your wallet address or scan a QR code</Trans>}
           onClick={handleReceiveToWallet}
           disabled={pendingOption !== undefined}
         />
@@ -153,15 +153,15 @@ export function WalletReceiveOptionsView() {
         <FundingOptionRow
           icon={<CardIcon className="size-20" />}
           title={<Trans>Buy with card</Trans>}
-          description={<Trans>Use debit/credit card, Apple Pay, or Google Pay where supported.</Trans>}
+          description={<Trans>Use debit/credit card, Apple Pay, or Google Pay where supported</Trans>}
           onClick={() => handleAddFunds("card")}
           isPending={pendingOption === "card"}
           disabled={pendingOption !== undefined}
         />
         {unavailableOption === "card" && (
-          <ColorfulBanner color="yellow">
+          <ColorfulBanner color="red">
             <Trans>
-              Buying with card is currently unavailable for your region or configuration. Use{" "}
+              Buying with card is unavailable for your region or configuration. Use{" "}
               <span className="font-medium">Receive to this wallet</span> instead.
             </Trans>
           </ColorfulBanner>
@@ -170,15 +170,15 @@ export function WalletReceiveOptionsView() {
         <FundingOptionRow
           icon={<ChainIcon className="size-20" />}
           title={<Trans>Transfer from another chain</Trans>}
-          description={<Trans>Deposit from another wallet, exchange, or chain.</Trans>}
+          description={<Trans>Deposit from another wallet, exchange, or chain</Trans>}
           onClick={() => handleAddFunds("crypto")}
           isPending={pendingOption === "crypto"}
           disabled={pendingOption !== undefined}
         />
         {unavailableOption === "crypto" && (
-          <ColorfulBanner color="yellow">
+          <ColorfulBanner color="red">
             <Trans>
-              Transfers from another chain are currently unavailable. Use{" "}
+              Transfers from another chain are unavailable. Use{" "}
               <span className="font-medium">Receive to this wallet</span> instead.
             </Trans>
           </ColorfulBanner>
@@ -187,7 +187,7 @@ export function WalletReceiveOptionsView() {
 
       <ColorfulBanner color="blue">
         {mode === "walletOnly" ? (
-          <Trans>Funds arrive in your connected wallet on {chainName}.</Trans>
+          <Trans>Funds arrive in your connected wallet on {chainName}</Trans>
         ) : (
           <Trans>
             Funds arrive in your connected wallet on {chainName}, not in your GMX Account. To trade with your GMX

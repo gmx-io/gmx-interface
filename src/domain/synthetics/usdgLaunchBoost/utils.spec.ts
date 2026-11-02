@@ -44,8 +44,6 @@ const USDG_GLV = {
 } as unknown as GlvInfo;
 
 const LAST_ROUND_START = 1_790_000_000;
-const PAID_AT = LAST_ROUND_START + 4 * 60 * 60;
-const NOW = PAID_AT + 60;
 
 function active(glv: Partial<Extract<UsdgBoostAprResponse, { status: "active" }>["glv"]> | null): UsdgBoostAprResponse {
   return {
@@ -74,7 +72,6 @@ describe("getUsdgLaunchBoost", () => {
     case: string;
     glvOrMarket: MarketInfo | GlvInfo;
     usdgBoostAprResult: UsdgBoostAprResult;
-    nowSeconds?: number;
     expected: UsdgLaunchBoost | undefined;
   }>([
     {
@@ -149,29 +146,8 @@ describe("getUsdgLaunchBoost", () => {
       usdgBoostAprResult: { usdgBoostAprResponse: active({}) },
       expected: { isGlv: false, status: "unavailable" },
     },
-    {
-      case: "live 12 hours after the last payout",
-      glvOrMarket: USDG_GM,
-      usdgBoostAprResult: { usdgBoostAprResponse: active({}) },
-      nowSeconds: PAID_AT + 12 * 60 * 60,
-      expected: { isGlv: false, status: "live", apr: GM_LIVE_APR },
-    },
-    {
-      case: "paused more than 12 hours after the last payout",
-      glvOrMarket: USDG_GM,
-      usdgBoostAprResult: { usdgBoostAprResponse: active({}) },
-      nowSeconds: PAID_AT + 12 * 60 * 60 + 1,
-      expected: { isGlv: false, status: "paused", lastRoundPaidAt: PAID_AT },
-    },
-    {
-      case: "GLV paused on its own last payout while GM pools are live",
-      glvOrMarket: USDG_GLV,
-      usdgBoostAprResult: { usdgBoostAprResponse: active({ lastRoundTimestamp: LAST_ROUND_START - 4 * 60 * 60 }) },
-      nowSeconds: PAID_AT + 12 * 60 * 60,
-      expected: { isGlv: true, status: "paused", lastRoundPaidAt: PAID_AT - 4 * 60 * 60 },
-    },
-  ])("$case", ({ glvOrMarket, usdgBoostAprResult, nowSeconds = NOW, expected }) => {
-    expect(getUsdgLaunchBoost({ chainId: ARBITRUM, glvOrMarket, usdgBoostAprResult, nowSeconds })).toEqual(expected);
+  ])("$case", ({ glvOrMarket, usdgBoostAprResult, expected }) => {
+    expect(getUsdgLaunchBoost({ chainId: ARBITRUM, glvOrMarket, usdgBoostAprResult })).toEqual(expected);
   });
 });
 
@@ -184,8 +160,8 @@ describe("getUsdgLaunchBoostApr", () => {
     },
     { case: "counts a target", launchBoost: { isGlv: true, status: "target", apr: percent(8) }, expected: percent(8) },
     {
-      case: "ignores a paused boost",
-      launchBoost: { isGlv: false, status: "paused", lastRoundPaidAt: PAID_AT },
+      case: "ignores an unavailable boost",
+      launchBoost: { isGlv: false, status: "unavailable" },
       expected: 0n,
     },
     { case: "ignores pools without a boost", launchBoost: undefined, expected: 0n },

@@ -147,7 +147,7 @@ const AssetsList = ({
                 <Trans>No assets in your wallet</Trans>
               </span>
               <Button variant="secondary" size="medium" onClick={handleOpenWalletReceive}>
-                <Trans>Receive to Wallet</Trans>
+                <Trans>Receive to wallet</Trans>
               </Button>
             </div>
           ) : (

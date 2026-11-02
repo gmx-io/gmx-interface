@@ -180,7 +180,7 @@ export const integrations: EcosystemGmxPage[] = [
     chainIds: [ARBITRUM],
   },
   {
-    title: msg`Yield Yak Optimizer`,
+    title: msg`Yield Yak optimizer`,
     link: "https://yieldyak.com/",
     linkLabel: "yieldyak.com",
     about: msg`Yield optimizer on Avalanche`,
@@ -391,12 +391,6 @@ export const telegramGroups: EcosystemTelegramGroup[] = [
     link: "https://t.me/gmxch",
     linkLabel: "t.me",
     about: msg`Telegram group (Chinese)`,
-  },
-  {
-    title: msg`GMX (Portuguese)`,
-    link: "https://t.me/GMX_Portuguese",
-    linkLabel: "t.me",
-    about: msg`Telegram group (Portuguese)`,
   },
   {
     title: msg`GMX trading chat`,

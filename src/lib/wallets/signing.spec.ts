@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import { ARBITRUM, SOURCE_BASE_MAINNET } from "sdk/configs/chainIds";
 
-import { hashSignedTypedData } from "./signing";
+import { hashSignedTypedData, splitSignature } from "./signing";
 
 const domain = {
   name: "GmxBaseGelatoRelayRouter",
@@ -53,5 +53,28 @@ describe("hashSignedTypedData", () => {
     const hashForBase = hashSignedTypedData({ domain: { ...domain, chainId: SOURCE_BASE_MAINNET }, types, typedData });
 
     expect(hashForArbitrum).not.toBe(hashForBase);
+  });
+});
+
+describe("splitSignature", () => {
+  const r = "11".repeat(32);
+  const s = "22".repeat(32);
+
+  it("splits a 65-byte signature", () => {
+    expect(splitSignature(`0x${r}${s}1c`)).toEqual({ r: `0x${r}`, s: `0x${s}`, v: 28 });
+  });
+
+  it("normalizes a bare recovery id to 27/28", () => {
+    expect(splitSignature(`0x${r}${s}00`).v).toBe(27);
+    expect(splitSignature(`0x${r}${s}01`).v).toBe(28);
+  });
+
+  it("rejects signatures that are not 65 bytes", () => {
+    expect(() => splitSignature(`0x${r}${s}`)).toThrow();
+    expect(() => splitSignature(`0x${r}${s}1b${"00".repeat(32)}`)).toThrow();
+  });
+
+  it("rejects an unknown v", () => {
+    expect(() => splitSignature(`0x${r}${s}25`)).toThrow();
   });
 });

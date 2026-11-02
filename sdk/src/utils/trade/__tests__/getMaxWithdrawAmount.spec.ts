@@ -1,19 +1,26 @@
 import { describe, expect, it } from "vitest";
 
 import { mockMarketsInfoData, mockTokensData, usdToToken } from "test/mock";
-import { applyFactor, expandDecimals, USD_DECIMALS } from "utils/numbers";
+import { getMaxAllowedLeverage } from "utils/markets";
+import { applyFactor, BASIS_POINTS_DIVISOR_BIGINT, expandDecimals, USD_DECIMALS } from "utils/numbers";
 import { getLiquidationPrice } from "utils/positions";
 import type { PositionInfoLoaded } from "utils/positions/types";
 
 import { getMaxWithdrawAmount, getMinRequiredCollateralUsdForPosition } from "../decrease";
+import { getDecreaseResultingPositionMarginState } from "../decreaseMarginCheck";
+import { PositionMarginFailureReason } from "../increaseMarginCheck";
 
 describe("getMaxWithdrawAmount", () => {
-  const ETH_PRICE = expandDecimals(11952, 29); // $1195.20
+  const LOSING_ETH_PRICE = expandDecimals(11952, 29); // $1195.20
+  const PROFITABLE_ETH_PRICE = expandDecimals(1250, 30);
   const USDC_PRICE = expandDecimals(1, 30);
 
-  function buildScenario() {
+  function buildScenario({
+    ethPrice = LOSING_ETH_PRICE,
+    minCollateralFactorForLiquidation = expandDecimals(4, 27),
+  }: { ethPrice?: bigint; minCollateralFactorForLiquidation?: bigint } = {}) {
     const tokensData = mockTokensData({
-      ETH: { prices: { minPrice: ETH_PRICE, maxPrice: ETH_PRICE } },
+      ETH: { prices: { minPrice: ethPrice, maxPrice: ethPrice } },
       USDC: { prices: { minPrice: USDC_PRICE, maxPrice: USDC_PRICE } },
     });
 
@@ -26,7 +33,7 @@ describe("getMaxWithdrawAmount", () => {
         shortInterestInTokens: usdToToken(100_000_000, tokensData.ETH),
 
         minCollateralFactor: expandDecimals(5, 27),
-        minCollateralFactorForLiquidation: expandDecimals(4, 27),
+        minCollateralFactorForLiquidation,
         minCollateralFactorForOpenInterestLong: 0n,
         minCollateralFactorForOpenInterestShort: 0n,
 
@@ -44,6 +51,7 @@ describe("getMaxWithdrawAmount", () => {
     const collateralUsd = expandDecimals(4_000, USD_DECIMALS);
     const sizeInTokens = (sizeInUsd * expandDecimals(1, ethToken.decimals)) / expandDecimals(1200, USD_DECIMALS);
     const collateralAmount = (collateralUsd * expandDecimals(1, usdcToken.decimals)) / USDC_PRICE;
+    const pnl = (sizeInTokens * ethPrice) / expandDecimals(1, ethToken.decimals) - sizeInUsd;
 
     const position: PositionInfoLoaded = {
       key: "test-position",
@@ -61,7 +69,7 @@ describe("getMaxWithdrawAmount", () => {
       fundingFeeAmount: 0n,
       claimableLongTokenAmount: 0n,
       claimableShortTokenAmount: 0n,
-      pnl: -expandDecimals(200, USD_DECIMALS),
+      pnl,
       positionFeeAmount: 0n,
       traderDiscountAmount: 0n,
       uiFeeAmount: 0n,
@@ -77,7 +85,7 @@ describe("getMaxWithdrawAmount", () => {
       poolName: "USDC",
       collateralToken: usdcToken,
       pnlToken: usdcToken,
-      markPrice: ETH_PRICE,
+      markPrice: ethPrice,
       entryPrice: expandDecimals(1200, USD_DECIMALS),
       liquidationPrice: undefined,
       collateralUsd,
@@ -85,7 +93,7 @@ describe("getMaxWithdrawAmount", () => {
       remainingCollateralAmount: collateralAmount,
       hasLowCollateral: false,
       pnlPercentage: 0n,
-      pnlAfterFees: -expandDecimals(200, USD_DECIMALS),
+      pnlAfterFees: pnl,
       pnlAfterFeesPercentage: 0n,
       pendingFundingFeesUsd: 0n,
       pendingClaimableFundingFeesUsd: 0n,
@@ -136,8 +144,8 @@ describe("getMaxWithdrawAmount", () => {
     expect(applyFactor(position.sizeInUsd, position.marketInfo.minCollateralFactor)).toBeGreaterThan(0n);
   });
 
-  it("max withdraw equals the collateral above the min required collateral", () => {
-    const { position, usdcToken } = buildScenario();
+  it("max withdraw equals the collateral above the min required collateral where both factors are equal", () => {
+    const { position, usdcToken } = buildScenario({ minCollateralFactorForLiquidation: expandDecimals(5, 27) });
     const minCollateralUsd = expandDecimals(1, USD_DECIMALS);
     const collateralPrice = usdcToken.prices.minPrice;
 
@@ -190,5 +198,149 @@ describe("getMaxWithdrawAmount", () => {
         userReferralInfo: undefined,
       })
     ).toBe(0n);
+  });
+
+  it("returns zero instead of throwing when the max allowed leverage rounds down to zero", () => {
+    const { position, usdcToken } = buildScenario();
+    // a 25% min collateral factor allows under 5x, and the max allowed leverage is floored to 5x steps
+    const lowLeveragePosition = {
+      ...position,
+      marketInfo: { ...position.marketInfo, minCollateralFactor: expandDecimals(25, 28) },
+    };
+
+    expect(
+      getMaxWithdrawAmount({
+        position: lowLeveragePosition,
+        minCollateralUsd: expandDecimals(1, USD_DECIMALS),
+        collateralPrice: usdcToken.prices.minPrice,
+        collateralDecimals: usdcToken.decimals,
+        userReferralInfo: undefined,
+      })
+    ).toBe(0n);
+  });
+
+  it("reserves the regular-factor minimum where it is above the liquidation one", () => {
+    const { position, usdcToken } = buildScenario();
+    const minCollateralUsd = expandDecimals(1, USD_DECIMALS);
+    const collateralPrice = usdcToken.prices.minPrice;
+
+    const maxWithdraw = getMaxWithdrawAmount({
+      position,
+      minCollateralUsd,
+      collateralPrice,
+      collateralDecimals: usdcToken.decimals,
+      userReferralInfo: undefined,
+    });
+
+    const maxWithdrawUsd = (maxWithdraw * collateralPrice) / expandDecimals(1, usdcToken.decimals);
+    const liquidationBasedMaxUsd =
+      position.collateralUsd -
+      getMinRequiredCollateralUsdForPosition({ position, minCollateralUsd, userReferralInfo: undefined });
+
+    const factorGapUsd = applyFactor(
+      position.sizeInUsd,
+      position.marketInfo.minCollateralFactor - position.marketInfo.minCollateralFactorForLiquidation
+    );
+    const reservedOnTopUsd = liquidationBasedMaxUsd - maxWithdrawUsd;
+
+    expect(factorGapUsd).toBe(expandDecimals(50, USD_DECIMALS));
+    expect(reservedOnTopUsd).toBeGreaterThanOrEqual(factorGapUsd);
+    expect(reservedOnTopUsd - factorGapUsd).toBeLessThan(expandDecimals(1, USD_DECIMALS - usdcToken.decimals));
+  });
+
+  it.each([
+    ["losing", LOSING_ETH_PRICE],
+    ["profitable", PROFITABLE_ETH_PRICE],
+  ])("is the largest withdrawal the contract check accepts for a %s position", (_name, ethPrice) => {
+    const { position, usdcToken } = buildScenario({ ethPrice });
+    const minCollateralUsd = expandDecimals(1, USD_DECIMALS);
+
+    const maxWithdraw = getMaxWithdrawAmount({
+      position,
+      minCollateralUsd,
+      collateralPrice: usdcToken.prices.minPrice,
+      collateralDecimals: usdcToken.decimals,
+      userReferralInfo: undefined,
+    });
+
+    const getMarginState = (collateralDeltaAmount: bigint) =>
+      getDecreaseResultingPositionMarginState({
+        marketInfo: position.marketInfo,
+        collateralToken: position.collateralToken,
+        isLong: position.isLong,
+        position,
+        sizeDeltaUsd: 0n,
+        sizeDeltaInTokens: 0n,
+        collateralDeltaAmount,
+        payedRemainingCollateralAmount: 0n,
+        priceImpactDiffUsd: 0n,
+        minCollateralUsd,
+        minPositionSizeUsd: expandDecimals(1, USD_DECIMALS),
+        userReferralInfo: undefined,
+      });
+
+    expect(maxWithdraw).toBeGreaterThan(0n);
+    expect(getMarginState(maxWithdraw)?.isLiquidatable).toBe(false);
+  });
+
+  it("stops at the contract check for a losing position", () => {
+    const { position, usdcToken } = buildScenario();
+    const minCollateralUsd = expandDecimals(1, USD_DECIMALS);
+
+    const maxWithdraw = getMaxWithdrawAmount({
+      position,
+      minCollateralUsd,
+      collateralPrice: usdcToken.prices.minPrice,
+      collateralDecimals: usdcToken.decimals,
+      userReferralInfo: undefined,
+    });
+
+    const marginState = getDecreaseResultingPositionMarginState({
+      marketInfo: position.marketInfo,
+      collateralToken: position.collateralToken,
+      isLong: position.isLong,
+      position,
+      sizeDeltaUsd: 0n,
+      sizeDeltaInTokens: 0n,
+      collateralDeltaAmount: maxWithdraw + 1n,
+      payedRemainingCollateralAmount: 0n,
+      priceImpactDiffUsd: 0n,
+      minCollateralUsd,
+      minPositionSizeUsd: expandDecimals(1, USD_DECIMALS),
+      userReferralInfo: undefined,
+    });
+
+    expect(marginState?.reason).toBe(PositionMarginFailureReason.MinCollateralForLeverage);
+  });
+
+  it("stops at the max allowed leverage for a profitable position", () => {
+    const { position, usdcToken } = buildScenario({ ethPrice: PROFITABLE_ETH_PRICE });
+    const collateralPrice = usdcToken.prices.minPrice;
+
+    const maxWithdraw = getMaxWithdrawAmount({
+      position,
+      minCollateralUsd: expandDecimals(1, USD_DECIMALS),
+      collateralPrice,
+      collateralDecimals: usdcToken.decimals,
+      userReferralInfo: undefined,
+    });
+
+    const maxAllowedLeverage = BigInt(
+      getMaxAllowedLeverage({
+        marketAddress: position.marketInfo.marketTokenAddress,
+        minCollateralFactor: position.marketInfo.minCollateralFactor,
+        minCollateralFactorForLiquidation: position.marketInfo.minCollateralFactorForLiquidation,
+        positionFeeFactorForBalanceWasNotImproved: position.marketInfo.positionFeeFactorForBalanceWasNotImproved,
+      })
+    );
+
+    const getNextLeverage = (withdrawAmount: bigint) => {
+      const withdrawUsd = (withdrawAmount * collateralPrice) / expandDecimals(1, usdcToken.decimals);
+
+      return (position.sizeInUsd * BASIS_POINTS_DIVISOR_BIGINT) / (position.collateralUsd - withdrawUsd);
+    };
+
+    expect(getNextLeverage(maxWithdraw)).toBe(maxAllowedLeverage);
+    expect(getNextLeverage(maxWithdraw + expandDecimals(1, usdcToken.decimals))).toBeGreaterThan(maxAllowedLeverage);
   });
 });

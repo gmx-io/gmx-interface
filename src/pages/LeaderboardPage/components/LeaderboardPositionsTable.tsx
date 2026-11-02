@@ -25,6 +25,7 @@ import { calculateDisplayDecimals, formatUsd } from "lib/numbers";
 
 import AddressView from "components/AddressView/AddressView";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
+import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import { LeverageValue } from "components/NumericValue/LeverageValue";
 import { NumericValue } from "components/NumericValue/NumericValue";
 import { UsdValue } from "components/NumericValue/UsdValue";
@@ -133,18 +134,15 @@ export function LeaderboardPositionsTable({
   );
 
   const pageCount = Math.ceil(filteredStats.length / PER_PAGE);
+  const isEmpty = !isLoading && !rowsData.length;
 
   const content = isLoading ? (
     <TopPositionsSkeleton count={PER_PAGE} />
-  ) : (
+  ) : isEmpty ? null : (
     <>
-      {rowsData.length ? (
-        rowsData.map(({ position: position, index, rank }) => {
-          return <TableRow key={position.key} position={position} index={index} rank={rank} />;
-        })
-      ) : (
-        <EmptyRow />
-      )}
+      {rowsData.map(({ position: position, index, rank }) => {
+        return <TableRow key={position.key} position={position} index={index} rank={rank} />;
+      })}
       {rowsData.length < PER_PAGE && <TopPositionsSkeleton invisible count={PER_PAGE - rowsData.length} />}
     </>
   );
@@ -199,6 +197,7 @@ export function LeaderboardPositionsTable({
           <tbody>{content}</tbody>
         </table>
       </TableScrollFadeContainer>
+      <EmptyTableContent isLoading={false} isEmpty={isEmpty} emptyText={<Trans>No results found</Trans>} />
       <BottomTablePagination page={page} pageCount={pageCount} onPageChange={setPage} />
     </div>
   );
@@ -484,16 +483,6 @@ const TableRow = memo(
     );
   }
 );
-
-const EmptyRow = memo(() => {
-  return (
-    <TableTr className="h-47">
-      <TableTd colSpan={7} className="align-top text-typography-secondary">
-        <Trans>No results found</Trans>
-      </TableTd>
-    </TableTr>
-  );
-});
 
 const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeCapital: boolean }) => {
   const isCompetition = useLeaderboardIsCompetition();

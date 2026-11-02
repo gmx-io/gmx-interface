@@ -26,7 +26,7 @@ export function getHasNoTradesRefreshInterval(hasNoTrades: boolean | undefined) 
 }
 
 export function useConfigureMetrics() {
-  const { chainId, srcChainId } = useChainId();
+  const { chainId, srcChainId, networkId } = useChainId();
   const fetcher = useOracleKeeperFetcher(chainId);
   const { active, account } = useWallet();
   const { isFirstOrder: hasNoTrades } = useIsFirstOrder(chainId, {
@@ -79,6 +79,7 @@ export function useConfigureMetrics() {
       platform: bowser?.platform.type,
       isInited: Boolean(bowser),
       srcChainId,
+      networkId,
       hasNoTrades,
     });
   }, [
@@ -89,6 +90,7 @@ export function useConfigureMetrics() {
     isLargeAccount,
     bowser,
     srcChainId,
+    networkId,
     apiSdkMarkets,
     apiSdkPositions,
     apiSdkOrders,

@@ -74,14 +74,14 @@ describe("AccountDashboard", () => {
     const { getByText, queryByText } = renderAt("/traders/not-an-address?network=arbitrum&v=2");
 
     expect(getByText("Invalid Ethereum address")).toBeTruthy();
-    expect(getByText("Trader Profile")).toBeTruthy();
+    expect(getByText("Trader profile")).toBeTruthy();
     expect(queryByText("GMX Account")).toBeNull();
   });
 
   it("titles the page Trader Profile for a valid address", () => {
     const { getByText, queryByText } = renderAt(`/traders/${ACCOUNT}?network=arbitrum&v=2`);
 
-    expect(getByText("Trader Profile")).toBeTruthy();
+    expect(getByText("Trader profile")).toBeTruthy();
     expect(getByText(ACCOUNT)).toBeTruthy();
     expect(queryByText("Invalid Ethereum address")).toBeNull();
     expect(queryByText("GMX Account")).toBeNull();

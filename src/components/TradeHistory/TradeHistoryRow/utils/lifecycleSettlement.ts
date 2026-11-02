@@ -2,19 +2,22 @@ import { t } from "@lingui/macro";
 
 import { isDecreaseOrderType, isIncreaseOrderType, isLiquidationOrderType } from "domain/synthetics/orders";
 import type { TokenData } from "domain/synthetics/tokens";
-import { convertToTokenAmount, convertToUsd, parseContractPrice } from "domain/synthetics/tokens";
-import type { LifecycleSettlementData } from "domain/synthetics/tradeHistory/useLifecycleSettlement";
+import { convertToUsd, parseContractPrice } from "domain/synthetics/tokens";
+import type { LifecycleSettlementData, LifecycleSwapLeg } from "domain/synthetics/tradeHistory/useLifecycleSettlement";
 import { getSwapLegId } from "domain/synthetics/tradeHistory/useLifecycleSettlement";
-import {
-  calculateDisplayDecimals,
-  formatDeltaUsdParts,
-  formatTokenAmount,
-  formatUsdParts,
-  numberParts,
-} from "lib/numbers";
+import { formatDeltaUsdParts, formatUsdParts, numberParts } from "lib/numbers";
+import { bigMath } from "sdk/utils/bigmath";
 import type { PositionTradeAction } from "sdk/utils/tradeHistory/types";
 
-import { getDecreasePayoutUsd, getFeesBreakdown, hasSecondaryOutputRisk } from "./position";
+import {
+  SettlementSource,
+  formatSettlementTokenAmount,
+  getCollateralTokenPayout,
+  getDecreasePayoutUsd,
+  getDecreaseSwapPayout,
+  getFeesBreakdown,
+  hasSecondaryOutputRisk,
+} from "./position";
 import { Line, TooltipString, TooltipValue, infoRow, lines, numberToState, numericText } from "./shared";
 
 export type LifecycleTokenLeg = {
@@ -39,17 +42,27 @@ export type LifecycleAggregate = {
   netResult: LifecycleCashflow;
   lifecycleRpnlUsd: bigint;
   netFeesUsd: bigint;
-  isMultichain: boolean;
+  source: SettlementSource;
 };
 
 export type LifecycleSettlementView =
-  | { mode: "closeSideOnly"; isMultichain: boolean }
-  | { mode: "compact"; openRow: PositionTradeAction; isMultichain: boolean }
+  | { mode: "closeSideOnly"; source: SettlementSource }
+  | { mode: "compact"; openRow: PositionTradeAction; source: SettlementSource }
   | { mode: "extended"; aggregate: LifecycleAggregate };
 
 /** `srcChainId` is `0` for same-chain v2.2 orders and absent on pre-v2.2 ones. */
 export function isMultichainRow(row: PositionTradeAction): boolean {
   return row.srcChainId !== undefined && row.srcChainId !== 0;
+}
+
+export function getSettlementSource(rows: PositionTradeAction[]): SettlementSource {
+  const gmxAccountRowsCount = rows.filter(isMultichainRow).length;
+
+  if (gmxAccountRowsCount === 0) {
+    return "wallet";
+  }
+
+  return gmxAccountRowsCount === rows.length ? "gmxAccount" : "mixed";
 }
 
 function getOpeningOrderKey(positionLifecycleId: string): string {
@@ -86,15 +99,19 @@ function subtractLegs(received: LifecycleTokenLeg[], funded: LifecycleTokenLeg[]
   return netLegs;
 }
 
-export function getLifecycleSettlementView(
-  closeRow: PositionTradeAction,
-  data: LifecycleSettlementData
-): LifecycleSettlementView {
+export function getLifecycleSettlementView({
+  closeRow,
+  data,
+  chainId,
+}: {
+  closeRow: PositionTradeAction;
+  data: LifecycleSettlementData;
+  chainId: number;
+}): LifecycleSettlementView {
   const { rows, ordersByKey, hasFundingSettlement, isTruncated } = data;
 
-  // A mixed lifecycle stays labelled even when the close row itself is same-chain.
-  const isMultichain = rows.some(isMultichainRow) || isMultichainRow(closeRow);
-  const closeSideOnly: LifecycleSettlementView = { mode: "closeSideOnly", isMultichain };
+  const source = getSettlementSource([...rows, closeRow]);
+  const closeSideOnly: LifecycleSettlementView = { mode: "closeSideOnly", source };
 
   if (isTruncated || hasFundingSettlement || !closeRow.positionLifecycleId || rows.length === 0) {
     return closeSideOnly;
@@ -139,18 +156,23 @@ export function getLifecycleSettlementView(
 
   // A settle drains collateral between the two rows without leaving a lifecycle row behind.
   if (rows.length === 2 && closeRow.initialCollateralDeltaAmount === openRow.initialCollateralDeltaAmount) {
-    return { mode: "compact", openRow, isMultichain };
+    return { mode: "compact", openRow, source };
   }
 
-  const aggregate = aggregateLifecycleSettlement(rows, data);
+  const aggregate = aggregateLifecycleSettlement({ rows, data, chainId });
 
   return aggregate ? { mode: "extended", aggregate } : closeSideOnly;
 }
 
-export function aggregateLifecycleSettlement(
-  rows: PositionTradeAction[],
-  { ordersByKey, swapLegsById }: Pick<LifecycleSettlementData, "ordersByKey" | "swapLegsById">
-): LifecycleAggregate | undefined {
+export function aggregateLifecycleSettlement({
+  rows,
+  data: { ordersByKey, swapLegsById },
+  chainId,
+}: {
+  rows: PositionTradeAction[];
+  data: Pick<LifecycleSettlementData, "ordersByKey" | "swapLegsById">;
+  chainId: number;
+}): LifecycleAggregate | undefined {
   const fundedLegs: LifecycleTokenLeg[] = [];
   const receivedBeforeCloseLegs: LifecycleTokenLeg[] = [];
   const receivedAtCloseLegs: LifecycleTokenLeg[] = [];
@@ -217,16 +239,16 @@ export function aggregateLifecycleSettlement(
     let payoutAmount: bigint | undefined;
 
     if (swapPath.length > 0) {
-      const swapLeg = swapLegsById[getSwapLegId(row.orderKey, swapPath[swapPath.length - 1])];
+      const swapPayout = getDecreaseSwapPayout({ tradeAction: row, payoutUsd, swapLegsById, chainId });
 
-      if (swapLeg) {
-        payoutToken = row.targetCollateralToken;
-        payoutAmount = swapLeg.amountOut;
+      if (swapPayout) {
+        payoutToken = swapPayout.token;
+        payoutAmount = swapPayout.amount;
       } else {
         hasSecondaryOutput = true;
       }
     } else {
-      payoutAmount = convertToTokenAmount(payoutUsd, payoutToken.decimals, row.collateralTokenPriceMin);
+      payoutAmount = getCollateralTokenPayout(row, payoutUsd)?.amount;
     }
 
     if (hasSecondaryOutputRisk(row)) {
@@ -279,16 +301,12 @@ export function aggregateLifecycleSettlement(
     ),
     lifecycleRpnlUsd,
     netFeesUsd,
-    isMultichain: rows.some(isMultichainRow),
+    source: getSettlementSource(rows),
   };
 }
 
 function formatLegAmount(leg: LifecycleTokenLeg): string | undefined {
-  return formatTokenAmount(leg.amount, leg.token.decimals, leg.token.symbol, {
-    useCommas: true,
-    displayDecimals: calculateDisplayDecimals(leg.amount, leg.token.decimals, undefined, leg.token.isStable),
-    isStable: leg.token.isStable,
-  });
+  return formatSettlementTokenAmount(leg.token, leg.amount);
 }
 
 function getCashflowValue(cashflow: LifecycleCashflow, tier: LifecycleTier): TooltipValue {
@@ -301,11 +319,13 @@ function getCashflowValue(cashflow: LifecycleCashflow, tier: LifecycleTier): Too
   const spans: TooltipString[] = [];
 
   cashflow.legs.forEach((leg, index) => {
-    if (index > 0) {
-      spans.push(" + ");
+    if (index === 0) {
+      spans.push(`~${formatLegAmount(leg)}`);
+
+      return;
     }
 
-    spans.push(`~${formatLegAmount(leg)}`);
+    spans.push(leg.amount < 0n ? " - " : " + ", `~${formatLegAmount({ ...leg, amount: bigMath.abs(leg.amount) })}`);
   });
 
   if (tier === "tokenLegs") {
@@ -315,33 +335,49 @@ function getCashflowValue(cashflow: LifecycleCashflow, tier: LifecycleTier): Too
   return spans.length === 1 ? spans[0] : spans;
 }
 
+function getLifecycleCashflowLabels(source: SettlementSource) {
+  if (source === "gmxAccount") {
+    return {
+      funded: t`Total margin funded (GMX balance)`,
+      receivedBeforeClose: t`Received before close (GMX balance)`,
+      receivedAtClose: t`Received at close (GMX balance)`,
+      totalReceived: t`Total received (GMX balance)`,
+      netResult: t`Net result (GMX balance)`,
+    };
+  }
+
+  if (source === "mixed") {
+    return {
+      funded: t`Total margin funded`,
+      receivedBeforeClose: t`Received before close`,
+      receivedAtClose: t`Received at close`,
+      totalReceived: t`Total received`,
+      netResult: t`Net result`,
+    };
+  }
+
+  return {
+    funded: t`Total margin funded`,
+    receivedBeforeClose: t`Wallet received before close`,
+    receivedAtClose: t`Wallet received at close`,
+    totalReceived: t`Total wallet received`,
+    netResult: t`Net wallet result`,
+  };
+}
+
 export function getLifecycleSettlementLines(aggregate: LifecycleAggregate): Line[] {
-  const { tier, isMultichain } = aggregate;
+  const { tier, source } = aggregate;
+  const labels = getLifecycleCashflowLabels(source);
 
   return lines(
     "",
     t`Lifecycle settlement`,
     "",
-    infoRow(
-      isMultichain ? t`Total margin funded (GMX balance)` : t`Total margin funded`,
-      getCashflowValue(aggregate.funded, tier)
-    ),
-    infoRow(
-      isMultichain ? t`Received before close (GMX balance)` : t`Wallet received before close`,
-      getCashflowValue(aggregate.receivedBeforeClose, tier)
-    ),
-    infoRow(
-      isMultichain ? t`Received at close (GMX balance)` : t`Wallet received at close`,
-      getCashflowValue(aggregate.receivedAtClose, tier)
-    ),
-    infoRow(
-      isMultichain ? t`Total received (GMX balance)` : t`Total wallet received`,
-      getCashflowValue(aggregate.totalReceived, tier)
-    ),
-    infoRow(
-      isMultichain ? t`Net result (GMX balance)` : t`Net wallet result`,
-      getCashflowValue(aggregate.netResult, tier)
-    ),
+    infoRow(labels.funded, getCashflowValue(aggregate.funded, tier)),
+    infoRow(labels.receivedBeforeClose, getCashflowValue(aggregate.receivedBeforeClose, tier)),
+    infoRow(labels.receivedAtClose, getCashflowValue(aggregate.receivedAtClose, tier)),
+    infoRow(labels.totalReceived, getCashflowValue(aggregate.totalReceived, tier)),
+    infoRow(labels.netResult, getCashflowValue(aggregate.netResult, tier)),
     "",
     infoRow(t`Lifecycle RPNL`, {
       text: formatDeltaUsdParts(aggregate.lifecycleRpnlUsd),
@@ -352,16 +388,16 @@ export function getLifecycleSettlementLines(aggregate: LifecycleAggregate): Line
       state: numberToState(aggregate.netFeesUsd),
     }),
     "",
-    ...getSettlementNotes(isMultichain)
+    ...getSettlementNotes(source)
   );
 }
 
-export function getSettlementNotes(isMultichain: boolean): Line[] {
+export function getSettlementNotes(source: SettlementSource): Line[] {
   const notes: Line[] = [
-    { text: t`Excludes claimed funding, price impact rebates and execution fees.`, state: "muted" as const },
+    { text: t`Excludes claimed funding, price impact rebates and execution fees`, state: "muted" as const },
   ];
 
-  if (isMultichain) {
+  if (source === "gmxAccount") {
     notes.push({
       text: t`This position was funded from your GMX multichain balance; amounts are balance movements, not wallet transfers.`,
       state: "muted" as const,
@@ -371,9 +407,41 @@ export function getSettlementNotes(isMultichain: boolean): Line[] {
   return notes;
 }
 
+/** Partial closes have no settlement block, so a USDG one that swapped gets just the received line */
+export function getUsdgPartialClosePayoutLines({
+  tradeAction,
+  swapLegsById,
+  chainId,
+}: {
+  tradeAction: PositionTradeAction;
+  swapLegsById: Record<string, LifecycleSwapLeg>;
+  chainId: number;
+}): Line[] {
+  const payoutUsd = getDecreasePayoutUsd(tradeAction);
+  const payout =
+    payoutUsd === undefined
+      ? undefined
+      : tradeAction.swapPath.length === 0
+        ? getCollateralTokenPayout(tradeAction, payoutUsd)
+        : getDecreaseSwapPayout({ tradeAction, payoutUsd, swapLegsById, chainId });
+  const formatted = payout && formatSettlementTokenAmount(payout.token, payout.amount);
+
+  if (formatted === undefined) {
+    return [];
+  }
+
+  return lines(
+    "",
+    infoRow(
+      isMultichainRow(tradeAction) ? t`Received at close (GMX balance)` : t`Wallet received`,
+      numericText("~", formatted)
+    )
+  );
+}
+
 export function getUnreconcilableLifecycleLines(): Line[] {
   return lines({
-    text: t`Full lifecycle reconciliation is unavailable because part of this position's history could not be matched reliably.`,
+    text: t`Full lifecycle reconciliation is unavailable because part of this position's history could not be matched reliably`,
     state: "muted" as const,
   });
 }

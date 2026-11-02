@@ -24,6 +24,21 @@ export function findPendingTransitOrder(
   );
 }
 
+export const TRANSIT_RECENT_ORDERS_PAGE_SIZE = 10;
+
+export function findSubmittedTransitOrder(
+  orders: TransitOrder[],
+  p: { offerAsset: string; wantAsset: string; offerAmount: bigint; knownOrderIds: string[] }
+): TransitOrder | undefined {
+  return orders.find(
+    (order) =>
+      isAddressEqual(order.offerAsset, p.offerAsset) &&
+      isAddressEqual(order.wantAsset, p.wantAsset) &&
+      order.offerAmount === p.offerAmount &&
+      !p.knownOrderIds.includes(order.id)
+  );
+}
+
 export async function getSubmittedTransitOrderId(p: {
   chainId: number;
   txnHash: string;

@@ -12,6 +12,7 @@ import {
   selectOracleSettings,
   selectPositionsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { makeSelectIsSizeOrderInClosedPool } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import { selectTradeboxSelectedOrderKey } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isBoundaryAcceptablePrice } from "domain/prices";
@@ -33,6 +34,7 @@ import {
 } from "domain/synthetics/orders";
 import { isMarginDepositOrder } from "domain/synthetics/orders/marginDeposit";
 import { useDisabledCancelMarketOrderMessage } from "domain/synthetics/orders/useDisabledCancelMarketOrderMessage";
+import { FROZEN_ORDER_ERROR_KEY } from "domain/synthetics/orders/utils";
 import { PositionsInfoData, getNameByOrderType, getPositionKey } from "domain/synthetics/positions";
 import { convertToTokenAmount, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
@@ -94,6 +96,8 @@ export function OrderItem(p: Props) {
     setEditingOrderState({ orderKey: p.order.key, source: "PositionsList" });
   }, [p.order.key, setEditingOrderState]);
 
+  const isEditable = !useSelector(makeSelectIsSizeOrderInClosedPool(p.order.key));
+
   const isCurrentMarket = useSelector(selectTradeboxSelectedOrderKey) === getOrderTradeboxKey(p.order);
 
   return p.isLarge ? (
@@ -103,7 +107,7 @@ export function OrderItem(p: Props) {
       showDebugValues={showDebugValues}
       isSetAcceptablePriceImpactEnabled={isSetAcceptablePriceImpactEnabled}
       onToggleOrder={p.onToggleOrder}
-      setEditingOrderKey={setEditingOrderKey}
+      setEditingOrderKey={isEditable ? setEditingOrderKey : undefined}
       onCancelOrder={p.onCancelOrder}
       isCanceling={p.isCanceling}
       isSelected={p.isSelected}
@@ -118,7 +122,7 @@ export function OrderItem(p: Props) {
       showDebugValues={showDebugValues}
       hideActions={p.hideActions}
       onCancelOrder={p.onCancelOrder}
-      setEditingOrderKey={setEditingOrderKey}
+      setEditingOrderKey={isEditable ? setEditingOrderKey : undefined}
       isSelected={p.isSelected}
       onToggleOrder={p.onToggleOrder}
       setRef={p.setRef}
@@ -695,6 +699,7 @@ function OrderItemLarge({
 
   return (
     <TableTr
+      data-qa={`order-${order.key}`}
       hoverable={true}
       ref={handleSetRef}
       className={cx({
@@ -780,7 +785,7 @@ function OrderItemLarge({
       {!hideActions && (
         <TableTd>
           <div className="inline-flex w-full items-center justify-end">
-            {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
+            {setEditingOrderKey && !isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
               <Button variant="ghost" onClick={setEditingOrderKey} className="max-2xl:px-4">
                 <EditIcon title={t`Edit order`} className="size-16" />
               </Button>
@@ -873,7 +878,7 @@ function OrderItemSmall({
   );
 
   return (
-    <AppCard ref={handleSetRef}>
+    <AppCard ref={handleSetRef} dataQa={`order-${order.key}`}>
       <AppCardSection
         className={cx("relative", {
           "after:absolute after:left-10 after:top-[50%] after:h-16 after:w-2 after:-translate-y-[50%] after:bg-blue-300":
@@ -939,7 +944,7 @@ function OrderItemSmall({
       {!hideActions && (
         <AppCardSection>
           <div className="flex items-center gap-8">
-            {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
+            {setEditingOrderKey && !isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
               <Button variant="secondary" onClick={setEditingOrderKey}>
                 <Trans>Edit</Trans>
               </Button>
@@ -1009,7 +1014,7 @@ function OrderItemTypeLabel({ order, className }: { order: OrderInfo; className?
     return <>{handle}</>;
   }
 
-  return (
+  const typeLabelWithErrors = (
     <TooltipWithPortal
       variant="none"
       handle={
@@ -1041,5 +1046,24 @@ function OrderItemTypeLabel({ order, className }: { order: OrderInfo; className?
         ) : null
       }
     />
+  );
+
+  const frozenError = errors.find((error) => error.key === FROZEN_ORDER_ERROR_KEY);
+
+  if (!frozenError) {
+    return typeLabelWithErrors;
+  }
+
+  return (
+    <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+      {typeLabelWithErrors}
+      <TooltipWithPortal
+        as="span"
+        variant="none"
+        className="min-w-0 cursor-help truncate rounded-4 bg-yellow-300/20 px-4 py-2 text-12 font-medium text-yellow-300"
+        handle={<Trans>Frozen</Trans>}
+        content={<span className={cx({ "text-red-500": frozenError.level === "error" })}>{frozenError.msg}</span>}
+      />
+    </div>
   );
 }

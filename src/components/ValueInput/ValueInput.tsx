@@ -30,6 +30,7 @@ export const ValueInput = ({
       value={value?.toString()}
       setValue={onValueChange}
       onBlur={onBlur}
+      stripLeadingZeros
     />
   );
 };
