@@ -140,11 +140,7 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
     })),
 
     // Fallback
-    ...[
-      "https://endpoints.omniatech.io/v1/avax/fuji/public",
-      "https://api.avax-test.network/ext/bc/C/rpc",
-      "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
-    ].map((url) => ({
+    ...["https://api.avax-test.network/ext/bc/C/rpc"].map((url) => ({
       url,
       isPublic: false,
       purpose: "fallback",
