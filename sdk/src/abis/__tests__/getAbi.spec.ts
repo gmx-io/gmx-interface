@@ -2,7 +2,7 @@ import { decodeFunctionResult, type Hex } from "viem";
 import { describe, expect, it } from "vitest";
 
 import { abis } from "abis";
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, MEGAETH } from "configs/chainIds";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI } from "configs/chainIds";
 
 import { getAbi } from "../getAbi";
 import responses from "./fixtures/arbitrumSepoliaReaders.json";
@@ -96,7 +96,7 @@ describe("Arbitrum Sepolia reader responses", () => {
     }
   );
 
-  it.each([ARBITRUM, AVALANCHE, MEGAETH, AVALANCHE_FUJI])("keeps the shared ABIs on chain %s", (chainId) => {
+  it.each([ARBITRUM, AVALANCHE, AVALANCHE_FUJI])("keeps the shared ABIs on chain %s", (chainId) => {
     for (const abiId of [
       "ExchangeRouter",
       "GelatoRelayRouter",
