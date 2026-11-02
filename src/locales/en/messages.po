@@ -157,10 +157,6 @@ msgstr "Show debug values"
 msgid "Execution price is negative"
 msgstr "Execution price is negative"
 
-#: src/components/GmList/PerformanceLabel.tsx
-msgid "Projected yearly return vs. a Uniswap V2-style benchmark.<0/><1/>Short timeframes may not reflect long-term performance.<2/><3/><4>View detailed stats on Dune</4>."
-msgstr "Projected yearly return vs. a Uniswap V2-style benchmark.<0/><1/>Short timeframes may not reflect long-term performance.<2/><3/><4>View detailed stats on Dune</4>."
-
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Wallet funds on this network can be deposited to GMX Account for {settlementChainName} trading. To trade directly with {settlementChainName} wallet balance, <0>switch to {settlementChainName}</0>."
 msgstr "Wallet funds on this network can be deposited to GMX Account for {settlementChainName} trading. To trade directly with {settlementChainName} wallet balance, <0>switch to {settlementChainName}</0>."
@@ -725,10 +721,6 @@ msgstr "Express fees are paid in your Wallet gas payment token. Change it in Set
 msgid "Swap Market"
 msgstr "Swap Market"
 
-#: src/components/GmList/FeeApyLabel.tsx
-msgid "Projected yearly return from trading fees only.<0/><1/>Includes: trading fees, borrow fees, liquidations, swaps.<2/>Excludes: backing token price changes, PnL, funding fees.<3/><4/><5>View detailed stats on Dune</5>."
-msgstr "Projected yearly return from trading fees only.<0/><1/>Includes: trading fees, borrow fees, liquidations, swaps.<2/>Excludes: backing token price changes, PnL, funding fees.<3/><4/><5>View detailed stats on Dune</5>."
-
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Acceptable swap impact"
 msgstr "Acceptable swap impact"
@@ -816,6 +808,10 @@ msgstr "Best return"
 msgid "Keeps {reserve} {symbol} in your {source} for future Express fees and ~{holdback} {symbol} for this transaction's fee"
 msgstr "Keeps {reserve} {symbol} in your {source} for future Express fees and ~{holdback} {symbol} for this transaction's fee"
 
+#: src/components/GmList/FeeApyLabel.tsx
+msgid "Includes"
+msgstr "Includes"
+
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Additional opportunities"
 msgstr "Additional opportunities"
@@ -842,10 +838,6 @@ msgstr "Incentives, airdrops, and prizes will appear here"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Refer traders to GMX with your unique link and earn a share of the fees they generate"
 msgstr "Refer traders to GMX with your unique link and earn a share of the fees they generate"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute: at the trigger price, the remaining position would exceed max leverage. Edit the order or <0>increase the position's margin</0>."
-msgstr "Order may not execute: at the trigger price, the remaining position would exceed max leverage. Edit the order or <0>increase the position's margin</0>."
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using funds directly from your connected wallet."
@@ -1152,6 +1144,10 @@ msgstr "in liquidity"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Minimum required margin"
 msgstr "Minimum required margin"
+
+#: src/components/GmList/FeeApyLabel.tsx
+msgid "Trading fees, borrow fees, liquidations, swaps."
+msgstr "Trading fees, borrow fees, liquidations, swaps."
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -2666,6 +2662,10 @@ msgstr "on GMX."
 msgid "Chart positions"
 msgstr "Chart positions"
 
+#: src/components/GmList/PerformanceLabel.tsx
+msgid "Projected yearly return vs. a Uniswap V2-style benchmark."
+msgstr "Projected yearly return vs. a Uniswap V2-style benchmark."
+
 #: src/components/TVChartContainer/TVChartContainer.tsx
 msgid "Close long"
 msgstr "Close long"
@@ -3596,6 +3596,11 @@ msgstr "Approving {0}..."
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
 msgstr "Deposited {0} into {positionText}"
+
+#: src/components/GmList/FeeApyLabel.tsx
+#: src/components/GmList/PerformanceLabel.tsx
+msgid "View detailed stats on Dune"
+msgstr "View detailed stats on Dune"
 
 #: src/components/HistoryExport/HistoryExportModal.tsx
 msgid "Preparing export…"
@@ -8526,6 +8531,10 @@ msgstr "Debug swaps"
 msgid "Positive funding fees ready to claim.<0/><1/>Available after changing position size, adjusting collateral, or clicking \"Settle\"."
 msgstr "Positive funding fees ready to claim.<0/><1/>Available after changing position size, adjusting collateral, or clicking \"Settle\"."
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: at the trigger price, the remaining position would exceed max leverage. Edit the order or increase the position's margin."
+msgstr "Order may not execute: at the trigger price, the remaining position would exceed max leverage. Edit the order or increase the position's margin."
+
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel TWAP Swap"
 msgstr "Cancel TWAP Swap"
@@ -8659,6 +8668,10 @@ msgstr "This order type is not supported"
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded on execution."
 msgstr "Max network fee includes a buffer for gas spikes. Unused fees refunded on execution."
+
+#: src/components/GmList/PerformanceLabel.tsx
+msgid "Short timeframes may not reflect long-term performance."
+msgstr "Short timeframes may not reflect long-term performance."
 
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -10802,6 +10815,10 @@ msgstr "Telegram group (Chinese)"
 msgid "Buy GM with {0} and {1} up to the caps below"
 msgstr "Buy GM with {0} and {1} up to the caps below"
 
+#: src/components/GmList/FeeApyLabel.tsx
+msgid "Excludes"
+msgstr "Excludes"
+
 #: src/components/AddressDropdown/AddressDropdownWithMultichain.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
@@ -12414,6 +12431,10 @@ msgstr "Open GMTrade in a new tab"
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 
+#: src/components/GmList/FeeApyLabel.tsx
+msgid "Backing token price changes, PnL, funding fees."
+msgstr "Backing token price changes, PnL, funding fees."
+
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Use the Pay amount"
 msgstr "Use the Pay amount"
@@ -12696,6 +12717,10 @@ msgstr "Settling..."
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
 msgstr "Leaderboard"
+
+#: src/components/GmList/FeeApyLabel.tsx
+msgid "Projected yearly return from trading fees only."
+msgstr "Projected yearly return from trading fees only."
 
 #: src/components/StatsTooltip/ChainsStatsNotices.tsx
 msgid "Included but not up to date: {staleList}."

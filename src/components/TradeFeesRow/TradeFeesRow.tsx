@@ -556,6 +556,7 @@ export function TradeFeesRow(p: Props) {
                   ))}
                 </TooltipRows>
               )}
+              {swapRouteMsg && <TooltipFootnote>{swapRouteMsg}</TooltipFootnote>}
               {incentivesBottomText && (
                 <div className="flex flex-col gap-2">
                   <TooltipFootnote>{incentivesBottomText}</TooltipFootnote>
@@ -572,7 +573,6 @@ export function TradeFeesRow(p: Props) {
                   </TooltipLink>
                 </div>
               )}
-              {swapRouteMsg && <TooltipFootnote>{swapRouteMsg}</TooltipFootnote>}
             </TooltipContent>
           }
         />

@@ -1,8 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import StandardTooltip, { type StandardTooltipVariant } from "components/Tooltip/StandardTooltip";
-import { TooltipText } from "components/Tooltip/TooltipBlocks";
+import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 export function PerformanceLabel({
   upperCase = false,
@@ -21,17 +20,17 @@ export function PerformanceLabel({
       position="bottom-end"
       variant={variant}
       content={
-        <TooltipText>
-          <Trans>
-            Projected yearly return vs. a Uniswap V2-style benchmark.
-            <br />
-            <br />
-            Short timeframes may not reflect long-term performance.
-            <br />
-            <br />
-            <ExternalLink href="https://dune.com/gmx-io/v2-lp-dashboard">View detailed stats on Dune</ExternalLink>.
-          </Trans>
-        </TooltipText>
+        <TooltipContent>
+          <TooltipText>
+            <Trans>Projected yearly return vs. a Uniswap V2-style benchmark.</Trans>
+          </TooltipText>
+          <TooltipText>
+            <Trans>Short timeframes may not reflect long-term performance.</Trans>
+          </TooltipText>
+          <TooltipLink href="https://dune.com/gmx-io/v2-lp-dashboard">
+            <Trans>View detailed stats on Dune</Trans>
+          </TooltipLink>
+        </TooltipContent>
       }
     />
   );

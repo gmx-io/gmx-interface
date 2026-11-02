@@ -67,6 +67,35 @@ export function ScrollStory() {
   );
 }
 
+export function TallStory() {
+  return (
+    <div className="p-96">
+      <StandardTooltip
+        handle="Tall trigger"
+        content={
+          <TooltipContent>
+            {Array.from({ length: 40 }, (_, index) => (
+              <TooltipText key={index}>Row {index + 1}</TooltipText>
+            ))}
+          </TooltipContent>
+        }
+      />
+    </div>
+  );
+}
+
+export function ClickableRowStory() {
+  const [rowClicks, setRowClicks] = useState(0);
+  return (
+    <div className="p-96">
+      <div onClick={() => setRowClicks((value) => value + 1)} onDoubleClick={() => setRowClicks((value) => value + 1)}>
+        <StandardTooltip handle="Row trigger" content="Row tooltip text" />
+      </div>
+      <div data-testid="row-clicks">{rowClicks}</div>
+    </div>
+  );
+}
+
 export function ModalStory() {
   const [isVisible, setIsVisible] = useState(false);
   return (
@@ -187,7 +216,16 @@ export function TriggerInsideButtonStory() {
   return (
     <div className="flex gap-40 p-96">
       <button type="button" onClick={() => setSorts((value) => value + 1)}>
-        <StandardTooltip handle="Sort by size" variant="iconStroke" content="Size of the position" />
+        <StandardTooltip
+          handle="Sort by size"
+          variant="iconStroke"
+          content={
+            <TooltipContent>
+              <TooltipText>Size of the position</TooltipText>
+              <TooltipLink href="https://docs.gmx.io/">Read more</TooltipLink>
+            </TooltipContent>
+          }
+        />
       </button>
       <button type="button">After</button>
       <div data-testid="sorts">{sorts}</div>

@@ -157,10 +157,6 @@ msgstr "显示调试值"
 msgid "Execution price is negative"
 msgstr "成交价格为负数"
 
-#: src/components/GmList/PerformanceLabel.tsx
-msgid "Projected yearly return vs. a Uniswap V2-style benchmark.<0/><1/>Short timeframes may not reflect long-term performance.<2/><3/><4>View detailed stats on Dune</4>."
-msgstr "相较于 Uniswap V2 风格基准的预计年化回报。<0/><1/>较短的时间范围可能无法反映长期表现。<2/><3/><4>在 Dune 上查看详细统计数据</4>。"
-
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Wallet funds on this network can be deposited to GMX Account for {settlementChainName} trading. To trade directly with {settlementChainName} wallet balance, <0>switch to {settlementChainName}</0>."
 msgstr "此网络上的钱包资金可存入 GMX Account，用于 {settlementChainName} 交易。如需直接使用 {settlementChainName} 钱包余额进行交易，请<0>切换到 {settlementChainName}</0>。"
@@ -725,10 +721,6 @@ msgstr "Express 费用以您钱包中的 Gas 支付代币支付。可在设置�
 msgid "Swap Market"
 msgstr "Swap Market"
 
-#: src/components/GmList/FeeApyLabel.tsx
-msgid "Projected yearly return from trading fees only.<0/><1/>Includes: trading fees, borrow fees, liquidations, swaps.<2/>Excludes: backing token price changes, PnL, funding fees.<3/><4/><5>View detailed stats on Dune</5>."
-msgstr "仅基于交易费用的预计年回报。<0/><1/>包含：交易费用、借贷费用、清算、兑换。<2/>不包含：标的代币价格变化、PnL、资金费用。<3/><4/><5>在 Dune 上查看详细统计数据</5>。"
-
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Acceptable swap impact"
 msgstr "可接受的兑换价格影响"
@@ -816,6 +808,10 @@ msgstr "到账最多"
 msgid "Keeps {reserve} {symbol} in your {source} for future Express fees and ~{holdback} {symbol} for this transaction's fee"
 msgstr "在{source}中保留 {reserve} {symbol} 用于未来的 Express 费用，并为此交易的费用预留约 {holdback} {symbol}"
 
+#: src/components/GmList/FeeApyLabel.tsx
+msgid "Includes"
+msgstr "包含"
+
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Additional opportunities"
 msgstr "更多机会"
@@ -842,10 +838,6 @@ msgstr "激励、空投和奖励将在此处显示"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Refer traders to GMX with your unique link and earn a share of the fees they generate"
 msgstr "使用您的专属链接将交易者推荐至 GMX，赚取他们所产生费用的分成"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute: at the trigger price, the remaining position would exceed max leverage. Edit the order or <0>increase the position's margin</0>."
-msgstr "订单可能无法执行：在触发价格下，剩余仓位将超过最大杠杆。请编辑订单或<0>增加仓位保证金</0>。"
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using funds directly from your connected wallet."
@@ -1152,6 +1144,10 @@ msgstr "流动性"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Minimum required margin"
 msgstr "最低保证金要求"
+
+#: src/components/GmList/FeeApyLabel.tsx
+msgid "Trading fees, borrow fees, liquidations, swaps."
+msgstr "交易费用、借贷费用、清算、兑换。"
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -2666,6 +2662,10 @@ msgstr "在 GMX。"
 msgid "Chart positions"
 msgstr "图表仓位"
 
+#: src/components/GmList/PerformanceLabel.tsx
+msgid "Projected yearly return vs. a Uniswap V2-style benchmark."
+msgstr "相较于 Uniswap V2 风格基准的预计年化回报。"
+
 #: src/components/TVChartContainer/TVChartContainer.tsx
 msgid "Close long"
 msgstr "做多平仓"
@@ -3596,6 +3596,11 @@ msgstr "正在授权 {0}..."
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
 msgstr "已向 {positionText} 存入 {0}"
+
+#: src/components/GmList/FeeApyLabel.tsx
+#: src/components/GmList/PerformanceLabel.tsx
+msgid "View detailed stats on Dune"
+msgstr "在 Dune 上查看详细统计数据"
 
 #: src/components/HistoryExport/HistoryExportModal.tsx
 msgid "Preparing export…"
@@ -8526,6 +8531,10 @@ msgstr "调试兑换"
 msgid "Positive funding fees ready to claim.<0/><1/>Available after changing position size, adjusting collateral, or clicking \"Settle\"."
 msgstr "正资金费用可供领取。<0/><1/>在更改仓位大小、调整抵押品或点击\"结算\"后可用。"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: at the trigger price, the remaining position would exceed max leverage. Edit the order or increase the position's margin."
+msgstr "订单可能无法执行：在触发价格下，剩余仓位将超过最大杠杆。请编辑订单或增加仓位保证金。"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel TWAP Swap"
 msgstr "取消 TWAP 兑换"
@@ -8659,6 +8668,10 @@ msgstr "不支持此订单类型"
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded on execution."
 msgstr "最大网络费用包含 Gas 波动缓冲。未使用的费用将在执行时退还。"
+
+#: src/components/GmList/PerformanceLabel.tsx
+msgid "Short timeframes may not reflect long-term performance."
+msgstr "较短的时间范围可能无法反映长期表现。"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -10802,6 +10815,10 @@ msgstr "Telegram 群组（中文）"
 msgid "Buy GM with {0} and {1} up to the caps below"
 msgstr "使用 {0} 和 {1} 买入 GM，上限如下"
 
+#: src/components/GmList/FeeApyLabel.tsx
+msgid "Excludes"
+msgstr "不包含"
+
 #: src/components/AddressDropdown/AddressDropdownWithMultichain.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
@@ -12414,6 +12431,10 @@ msgstr "在新标签页中打开 GMTrade"
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "获取 GMX 的提醒和公告，随时掌握您的交易、清算风险等信息"
 
+#: src/components/GmList/FeeApyLabel.tsx
+msgid "Backing token price changes, PnL, funding fees."
+msgstr "标的代币价格变化、PnL、资金费用。"
+
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Use the Pay amount"
 msgstr "使用支付金额"
@@ -12696,6 +12717,10 @@ msgstr "结算中..."
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
 msgstr "排行榜"
+
+#: src/components/GmList/FeeApyLabel.tsx
+msgid "Projected yearly return from trading fees only."
+msgstr "仅基于交易费用的预计年回报。"
 
 #: src/components/StatsTooltip/ChainsStatsNotices.tsx
 msgid "Included but not up to date: {staleList}."

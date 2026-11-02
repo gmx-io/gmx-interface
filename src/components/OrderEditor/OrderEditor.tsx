@@ -1,4 +1,5 @@
-import { t, Trans } from "@lingui/macro";
+import { msg, t, Trans } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useKey } from "react-use";
 import { zeroAddress } from "viem";
@@ -165,6 +166,7 @@ type Props = {
 };
 
 export function OrderEditor(p: Props) {
+  const { _ } = useLingui();
   const { chainId, srcChainId } = useChainId();
   const { signer } = useWallet();
   const { provider } = useJsonRpcProvider(chainId);
@@ -772,7 +774,7 @@ export function OrderEditor(p: Props) {
             {setMaxLeverageAction}
           </TooltipContent>
         ) : (
-          t`Position would be liquidated immediately upon execution. Reduce the size.`
+          _(msg`Position would be liquidated immediately upon execution. Reduce the size.`)
         ),
         disabled: true,
       };
@@ -805,6 +807,7 @@ export function OrderEditor(p: Props) {
       onClick: onSubmit,
     };
   }, [
+    _,
     error,
     multipleWalletExtensionsChainError,
     hasOutdatedUi,

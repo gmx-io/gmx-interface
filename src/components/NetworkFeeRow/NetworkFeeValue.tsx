@@ -11,7 +11,13 @@ import { useChainId } from "lib/chains";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import StandardTooltip from "components/Tooltip/StandardTooltip";
-import { TooltipContent, TooltipFootnote, TooltipRow, TooltipRows } from "components/Tooltip/TooltipBlocks";
+import {
+  TooltipContent,
+  TooltipFootnote,
+  TooltipRow,
+  TooltipRows,
+  TooltipText,
+} from "components/Tooltip/TooltipBlocks";
 
 import { NetworkFeeSourceIcon } from "./NetworkFeeSourceIcon";
 
@@ -26,9 +32,20 @@ type Props = {
   source: NetworkFeeSource | undefined;
   isExpress?: boolean;
   tooltipContent?: ReactNode;
+  warning?: ReactNode;
 };
 
-export function NetworkFeeValue({ amount, usd, decimals, symbol, isStable, source, isExpress, tooltipContent }: Props) {
+export function NetworkFeeValue({
+  amount,
+  usd,
+  decimals,
+  symbol,
+  isStable,
+  source,
+  isExpress,
+  tooltipContent,
+  warning,
+}: Props) {
   const { chainId } = useChainId();
 
   const content =
@@ -48,13 +65,33 @@ export function NetworkFeeValue({ amount, usd, decimals, symbol, isStable, sourc
     />
   );
 
+  const warningText = warning ? (
+    <TooltipText>
+      <span className="text-yellow-300">{warning}</span>
+    </TooltipText>
+  ) : null;
+
   if (!source) {
-    if (!content) {
+    if (!content && !warningText) {
       return amountWithUsd;
     }
 
     return (
-      <StandardTooltip position="bottom-end" handleClassName="numbers" variant="none" content={content}>
+      <StandardTooltip
+        position="bottom-end"
+        handleClassName="numbers"
+        variant="none"
+        content={
+          warningText ? (
+            <TooltipContent>
+              {warningText}
+              {content}
+            </TooltipContent>
+          ) : (
+            content
+          )
+        }
+      >
         {amountWithUsd}
       </StandardTooltip>
     );
@@ -67,6 +104,7 @@ export function NetworkFeeValue({ amount, usd, decimals, symbol, isStable, sourc
       variant="none"
       content={
         <TooltipContent>
+          {warningText}
           <TooltipRows>
             <TooltipRow
               label={t`Paid from`}

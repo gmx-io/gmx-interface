@@ -157,10 +157,6 @@ msgstr ""
 msgid "Execution price is negative"
 msgstr ""
 
-#: src/components/GmList/PerformanceLabel.tsx
-msgid "Projected yearly return vs. a Uniswap V2-style benchmark.<0/><1/>Short timeframes may not reflect long-term performance.<2/><3/><4>View detailed stats on Dune</4>."
-msgstr ""
-
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Wallet funds on this network can be deposited to GMX Account for {settlementChainName} trading. To trade directly with {settlementChainName} wallet balance, <0>switch to {settlementChainName}</0>."
 msgstr ""
@@ -725,10 +721,6 @@ msgstr ""
 msgid "Swap Market"
 msgstr ""
 
-#: src/components/GmList/FeeApyLabel.tsx
-msgid "Projected yearly return from trading fees only.<0/><1/>Includes: trading fees, borrow fees, liquidations, swaps.<2/>Excludes: backing token price changes, PnL, funding fees.<3/><4/><5>View detailed stats on Dune</5>."
-msgstr ""
-
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Acceptable swap impact"
 msgstr ""
@@ -816,6 +808,10 @@ msgstr ""
 msgid "Keeps {reserve} {symbol} in your {source} for future Express fees and ~{holdback} {symbol} for this transaction's fee"
 msgstr ""
 
+#: src/components/GmList/FeeApyLabel.tsx
+msgid "Includes"
+msgstr ""
+
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Additional opportunities"
 msgstr ""
@@ -841,10 +837,6 @@ msgstr ""
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Refer traders to GMX with your unique link and earn a share of the fees they generate"
-msgstr ""
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute: at the trigger price, the remaining position would exceed max leverage. Edit the order or <0>increase the position's margin</0>."
 msgstr ""
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
@@ -1151,6 +1143,10 @@ msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Minimum required margin"
+msgstr ""
+
+#: src/components/GmList/FeeApyLabel.tsx
+msgid "Trading fees, borrow fees, liquidations, swaps."
 msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
@@ -2666,6 +2662,10 @@ msgstr ""
 msgid "Chart positions"
 msgstr ""
 
+#: src/components/GmList/PerformanceLabel.tsx
+msgid "Projected yearly return vs. a Uniswap V2-style benchmark."
+msgstr ""
+
 #: src/components/TVChartContainer/TVChartContainer.tsx
 msgid "Close long"
 msgstr ""
@@ -3595,6 +3595,11 @@ msgstr ""
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
+msgstr ""
+
+#: src/components/GmList/FeeApyLabel.tsx
+#: src/components/GmList/PerformanceLabel.tsx
+msgid "View detailed stats on Dune"
 msgstr ""
 
 #: src/components/HistoryExport/HistoryExportModal.tsx
@@ -8526,6 +8531,10 @@ msgstr ""
 msgid "Positive funding fees ready to claim.<0/><1/>Available after changing position size, adjusting collateral, or clicking \"Settle\"."
 msgstr ""
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: at the trigger price, the remaining position would exceed max leverage. Edit the order or increase the position's margin."
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel TWAP Swap"
 msgstr ""
@@ -8658,6 +8667,10 @@ msgstr ""
 
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded on execution."
+msgstr ""
+
+#: src/components/GmList/PerformanceLabel.tsx
+msgid "Short timeframes may not reflect long-term performance."
 msgstr ""
 
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -10802,6 +10815,10 @@ msgstr ""
 msgid "Buy GM with {0} and {1} up to the caps below"
 msgstr ""
 
+#: src/components/GmList/FeeApyLabel.tsx
+msgid "Excludes"
+msgstr ""
+
 #: src/components/AddressDropdown/AddressDropdownWithMultichain.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
@@ -12414,6 +12431,10 @@ msgstr ""
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr ""
 
+#: src/components/GmList/FeeApyLabel.tsx
+msgid "Backing token price changes, PnL, funding fees."
+msgstr ""
+
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Use the Pay amount"
 msgstr ""
@@ -12695,6 +12716,10 @@ msgstr ""
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
+msgstr ""
+
+#: src/components/GmList/FeeApyLabel.tsx
+msgid "Projected yearly return from trading fees only."
 msgstr ""
 
 #: src/components/StatsTooltip/ChainsStatsNotices.tsx

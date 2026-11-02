@@ -157,10 +157,6 @@ msgstr "デバッグ値を表示"
 msgid "Execution price is negative"
 msgstr "約定価格が負の値です"
 
-#: src/components/GmList/PerformanceLabel.tsx
-msgid "Projected yearly return vs. a Uniswap V2-style benchmark.<0/><1/>Short timeframes may not reflect long-term performance.<2/><3/><4>View detailed stats on Dune</4>."
-msgstr "Uniswap V2方式のベンチマークと比較した予想年間リターンです。<0/><1/>短期間の実績は、長期的なパフォーマンスを反映しない場合があります。<2/><3/><4>Duneで詳細な統計を表示</4>。"
-
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Wallet funds on this network can be deposited to GMX Account for {settlementChainName} trading. To trade directly with {settlementChainName} wallet balance, <0>switch to {settlementChainName}</0>."
 msgstr "このネットワークのウォレット資金は、{settlementChainName}での取引のためにGMX Accountに入金できます。{settlementChainName}のウォレット残高で直接取引するには、<0>{settlementChainName}に切り替えてください</0>。"
@@ -725,10 +721,6 @@ msgstr "Expressの手数料はウォレットのGas支払いトークンで支�
 msgid "Swap Market"
 msgstr "Swap Market"
 
-#: src/components/GmList/FeeApyLabel.tsx
-msgid "Projected yearly return from trading fees only.<0/><1/>Includes: trading fees, borrow fees, liquidations, swaps.<2/>Excludes: backing token price changes, PnL, funding fees.<3/><4/><5>View detailed stats on Dune</5>."
-msgstr "取引手数料のみに基づく年間予想リターンです。<0/><1/>含む：取引手数料、借入手数料、清算、スワップ。<2/>含まない：裏付けトークンの価格変動、PnL、ファンディング手数料。<3/><4/><5>Duneで詳細な統計を見る</5>。"
-
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Acceptable swap impact"
 msgstr "許容スワップインパクト"
@@ -816,6 +808,10 @@ msgstr "受取額が最大"
 msgid "Keeps {reserve} {symbol} in your {source} for future Express fees and ~{holdback} {symbol} for this transaction's fee"
 msgstr "今後のExpress手数料のために{reserve} {symbol}を{source}に残し、この取引の手数料として約{holdback} {symbol}を確保します"
 
+#: src/components/GmList/FeeApyLabel.tsx
+msgid "Includes"
+msgstr "含む"
+
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Additional opportunities"
 msgstr "追加の機会"
@@ -842,10 +838,6 @@ msgstr "インセンティブ、エアドロップ、賞品はこちらに表示
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Refer traders to GMX with your unique link and earn a share of the fees they generate"
 msgstr "専用リンクでGMXにトレーダーを紹介し、その取引手数料の一部を報酬として受け取れます"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute: at the trigger price, the remaining position would exceed max leverage. Edit the order or <0>increase the position's margin</0>."
-msgstr "注文は約定しない可能性があります：トリガー価格では、残りのポジションが最大レバレッジを超えます。注文を編集するか、<0>ポジションの証拠金を増やして</0>ください。"
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using funds directly from your connected wallet."
@@ -1152,6 +1144,10 @@ msgstr "の流動性"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Minimum required margin"
 msgstr "最低必要証拠金"
+
+#: src/components/GmList/FeeApyLabel.tsx
+msgid "Trading fees, borrow fees, liquidations, swaps."
+msgstr "取引手数料、借入手数料、清算、スワップ。"
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -2666,6 +2662,10 @@ msgstr "GMXで。"
 msgid "Chart positions"
 msgstr "チャートにポジションを表示"
 
+#: src/components/GmList/PerformanceLabel.tsx
+msgid "Projected yearly return vs. a Uniswap V2-style benchmark."
+msgstr "Uniswap V2方式のベンチマークと比較した予想年間リターンです。"
+
 #: src/components/TVChartContainer/TVChartContainer.tsx
 msgid "Close long"
 msgstr "ロングを決済"
@@ -3596,6 +3596,11 @@ msgstr "{0}を承認中..."
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
 msgstr "{positionText}に{0}を入金"
+
+#: src/components/GmList/FeeApyLabel.tsx
+#: src/components/GmList/PerformanceLabel.tsx
+msgid "View detailed stats on Dune"
+msgstr "Duneで詳細な統計を見る"
 
 #: src/components/HistoryExport/HistoryExportModal.tsx
 msgid "Preparing export…"
@@ -8526,6 +8531,10 @@ msgstr "スワップデバッグ"
 msgid "Positive funding fees ready to claim.<0/><1/>Available after changing position size, adjusting collateral, or clicking \"Settle\"."
 msgstr "受け取り可能なプラスのファンディング手数料があります。<0/><1/>ポジションサイズの変更、担保の調整、または「Settle」のクリック後に利用可能になります。"
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: at the trigger price, the remaining position would exceed max leverage. Edit the order or increase the position's margin."
+msgstr "注文は約定しない可能性があります：トリガー価格では、残りのポジションが最大レバレッジを超えます。注文を編集するか、ポジションの証拠金を増やしてください。"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel TWAP Swap"
 msgstr "TWAPスワップをキャンセル"
@@ -8659,6 +8668,10 @@ msgstr "この注文タイプはサポートされていません"
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded on execution."
 msgstr "最大ネットワーク手数料には Gas 急騰時のバッファが含まれています。未使用の手数料は約定時に返金されます。"
+
+#: src/components/GmList/PerformanceLabel.tsx
+msgid "Short timeframes may not reflect long-term performance."
+msgstr "短期間の実績は、長期的なパフォーマンスを反映しない場合があります。"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -10802,6 +10815,10 @@ msgstr "Telegramグループ（中国語）"
 msgid "Buy GM with {0} and {1} up to the caps below"
 msgstr "以下の上限まで{0}と{1}でGMを購入できます"
 
+#: src/components/GmList/FeeApyLabel.tsx
+msgid "Excludes"
+msgstr "含まない"
+
 #: src/components/AddressDropdown/AddressDropdownWithMultichain.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
@@ -12414,6 +12431,10 @@ msgstr "新しいタブでGMTradeを開く"
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "GMXからのアラートとお知らせを受け取り、取引や清算リスクなどを常に把握しましょう"
 
+#: src/components/GmList/FeeApyLabel.tsx
+msgid "Backing token price changes, PnL, funding fees."
+msgstr "裏付けトークンの価格変動、PnL、ファンディング手数料。"
+
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Use the Pay amount"
 msgstr "支払い金額を使用"
@@ -12696,6 +12717,10 @@ msgstr "精算中..."
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
 msgstr "リーダーボード"
+
+#: src/components/GmList/FeeApyLabel.tsx
+msgid "Projected yearly return from trading fees only."
+msgstr "取引手数料のみに基づく年間予想リターンです。"
 
 #: src/components/StatsTooltip/ChainsStatsNotices.tsx
 msgid "Included but not up to date: {staleList}."

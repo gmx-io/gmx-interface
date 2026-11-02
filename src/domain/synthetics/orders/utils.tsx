@@ -567,11 +567,10 @@ export function getOrderErrors(p: {
           msg: (
             <Trans>
               Order may not execute: at the trigger price, the remaining position would exceed max leverage. Edit the
-              order or{" "}
-              <DepositMarginNowAction positionKey={position.key}>increase the position's margin</DepositMarginNowAction>
-              .
+              order or increase the position's margin.
             </Trans>
           ),
+          action: getIncreasePositionMarginAction(position.key),
           level: "error",
           key: "remainingPositionMaxLeverage",
         });

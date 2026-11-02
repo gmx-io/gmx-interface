@@ -157,10 +157,6 @@ msgstr "Afficher les valeurs de débogage"
 msgid "Execution price is negative"
 msgstr "Le prix d'exécution est négatif"
 
-#: src/components/GmList/PerformanceLabel.tsx
-msgid "Projected yearly return vs. a Uniswap V2-style benchmark.<0/><1/>Short timeframes may not reflect long-term performance.<2/><3/><4>View detailed stats on Dune</4>."
-msgstr "Rendement annuel projeté par rapport à un indice de référence de type Uniswap V2.<0/><1/>Les périodes courtes peuvent ne pas refléter les performances à long terme.<2/><3/><4>Voir les statistiques détaillées sur Dune</4>."
-
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Wallet funds on this network can be deposited to GMX Account for {settlementChainName} trading. To trade directly with {settlementChainName} wallet balance, <0>switch to {settlementChainName}</0>."
 msgstr "Les fonds du portefeuille sur ce réseau peuvent être déposés sur le GMX Account pour trader sur {settlementChainName}. Pour trader directement avec le solde du portefeuille {settlementChainName}, <0>passez à {settlementChainName}</0>."
@@ -725,10 +721,6 @@ msgstr "Les frais Express sont payés avec le jeton de paiement du Gas de votre 
 msgid "Swap Market"
 msgstr "Swap Market"
 
-#: src/components/GmList/FeeApyLabel.tsx
-msgid "Projected yearly return from trading fees only.<0/><1/>Includes: trading fees, borrow fees, liquidations, swaps.<2/>Excludes: backing token price changes, PnL, funding fees.<3/><4/><5>View detailed stats on Dune</5>."
-msgstr "Rendement annuel projeté à partir des frais de trading uniquement.<0/><1/>Inclut : frais de trading, frais d'emprunt, liquidations, échanges.<2/>Exclut : variations de prix des jetons sous-jacents, PnL, frais de financement.<3/><4/><5>Voir les statistiques détaillées sur Dune</5>."
-
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Acceptable swap impact"
 msgstr "Impact de prix acceptable de l'échange"
@@ -816,6 +808,10 @@ msgstr "Meilleur résultat"
 msgid "Keeps {reserve} {symbol} in your {source} for future Express fees and ~{holdback} {symbol} for this transaction's fee"
 msgstr "Conserve {reserve} {symbol} dans votre {source} pour les futurs frais Express et ~{holdback} {symbol} pour les frais de cette transaction"
 
+#: src/components/GmList/FeeApyLabel.tsx
+msgid "Includes"
+msgstr "Inclut"
+
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Additional opportunities"
 msgstr "Opportunités supplémentaires"
@@ -842,10 +838,6 @@ msgstr "Les incitations, airdrops et récompenses apparaîtront ici"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Refer traders to GMX with your unique link and earn a share of the fees they generate"
 msgstr "Parrainez des traders sur GMX avec votre lien unique et gagnez une part des frais qu'ils génèrent"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Order may not execute: at the trigger price, the remaining position would exceed max leverage. Edit the order or <0>increase the position's margin</0>."
-msgstr "L'ordre peut ne pas s'exécuter : au prix de déclenchement, la position restante dépasserait l'effet de levier maximal. Modifiez l'ordre ou <0>augmentez la marge de la position</0>."
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using funds directly from your connected wallet."
@@ -1152,6 +1144,10 @@ msgstr "de liquidité"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Minimum required margin"
 msgstr "Marge minimale requise"
+
+#: src/components/GmList/FeeApyLabel.tsx
+msgid "Trading fees, borrow fees, liquidations, swaps."
+msgstr "Frais de trading, frais d'emprunt, liquidations, échanges."
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -2666,6 +2662,10 @@ msgstr "sur GMX."
 msgid "Chart positions"
 msgstr "Positions sur le graphique"
 
+#: src/components/GmList/PerformanceLabel.tsx
+msgid "Projected yearly return vs. a Uniswap V2-style benchmark."
+msgstr "Rendement annuel projeté par rapport à un indice de référence de type Uniswap V2."
+
 #: src/components/TVChartContainer/TVChartContainer.tsx
 msgid "Close long"
 msgstr "Clôture du long"
@@ -3596,6 +3596,11 @@ msgstr "Approbation de {0}..."
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
 msgstr "Dépôt de {0} dans {positionText}"
+
+#: src/components/GmList/FeeApyLabel.tsx
+#: src/components/GmList/PerformanceLabel.tsx
+msgid "View detailed stats on Dune"
+msgstr "Voir les statistiques détaillées sur Dune"
 
 #: src/components/HistoryExport/HistoryExportModal.tsx
 msgid "Preparing export…"
@@ -8526,6 +8531,10 @@ msgstr "Débogage des échanges"
 msgid "Positive funding fees ready to claim.<0/><1/>Available after changing position size, adjusting collateral, or clicking \"Settle\"."
 msgstr "Frais de financement positifs prêts à récupérer.<0/><1/>Disponibles après modification de la taille de la position, ajustement de la garantie, ou en cliquant sur \"Régler\"."
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: at the trigger price, the remaining position would exceed max leverage. Edit the order or increase the position's margin."
+msgstr "L'ordre peut ne pas s'exécuter : au prix de déclenchement, la position restante dépasserait l'effet de levier maximal. Modifiez l'ordre ou augmentez la marge de la position."
+
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel TWAP Swap"
 msgstr "Annuler l'échange TWAP"
@@ -8659,6 +8668,10 @@ msgstr "Ce type d'ordre n'est pas pris en charge"
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded on execution."
 msgstr "Les frais de réseau max incluent une marge pour les pics de Gas. Les frais non utilisés sont remboursés à l'exécution."
+
+#: src/components/GmList/PerformanceLabel.tsx
+msgid "Short timeframes may not reflect long-term performance."
+msgstr "Les périodes courtes peuvent ne pas refléter les performances à long terme."
 
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -10802,6 +10815,10 @@ msgstr "Groupe Telegram (chinois)"
 msgid "Buy GM with {0} and {1} up to the caps below"
 msgstr "Acheter des GM avec {0} et {1} jusqu'aux plafonds ci-dessous"
 
+#: src/components/GmList/FeeApyLabel.tsx
+msgid "Excludes"
+msgstr "Exclut"
+
 #: src/components/AddressDropdown/AddressDropdownWithMultichain.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
@@ -12414,6 +12431,10 @@ msgstr "Ouvrir GMTrade dans un nouvel onglet"
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "Recevez des alertes et des annonces de GMX pour suivre vos transactions, le risque de liquidation et bien plus encore"
 
+#: src/components/GmList/FeeApyLabel.tsx
+msgid "Backing token price changes, PnL, funding fees."
+msgstr "Variations de prix des jetons sous-jacents, PnL, frais de financement."
+
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Use the Pay amount"
 msgstr "Utiliser le montant à payer"
@@ -12696,6 +12717,10 @@ msgstr "Règlement..."
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
 msgstr "Classement"
+
+#: src/components/GmList/FeeApyLabel.tsx
+msgid "Projected yearly return from trading fees only."
+msgstr "Rendement annuel projeté à partir des frais de trading uniquement."
 
 #: src/components/StatsTooltip/ChainsStatsNotices.tsx
 msgid "Included but not up to date: {staleList}."

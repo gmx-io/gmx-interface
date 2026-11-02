@@ -29,7 +29,6 @@ import {
   TooltipLink,
   TooltipRow,
   TooltipRows,
-  TooltipText,
 } from "components/Tooltip/TooltipBlocks";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
@@ -189,13 +188,9 @@ export function NetworkFeeRow({
         symbol={networkFee.feeToken.symbol}
         isStable={networkFee.feeToken.isStable}
         source={feeSource}
+        warning={warning}
         tooltipContent={
           <TooltipContent>
-            {warning && (
-              <TooltipText>
-                <span className="text-yellow-300">{warning}</span>
-              </TooltipText>
-            )}
             <TooltipRows>
               <TooltipRow
                 label={t`Max network fee`}

@@ -289,7 +289,7 @@ $shadow-shape-bottom: shadow-shape(100%, calc(100% + #{$pointer-box-height}));
   --tooltip-padding-x: 12px;
   --tooltip-padding-y: 8px;
   --tooltip-radius: 8px;
-  --tooltip-border: var(--color-slate-600);
+  --tooltip-border: var(--color-stroke-primary);
 
   padding: var(--tooltip-padding-y) var(--tooltip-padding-x);
   border: 1px solid transparent;
@@ -301,6 +301,18 @@ $shadow-shape-bottom: shadow-shape(100%, calc(100% + #{$pointer-box-height}));
   line-height: var(--line-height-body-medium);
   letter-spacing: normal;
   max-width: inherit;
+
+  .Tooltip-content {
+    --tooltip-content-bleed: 4px;
+
+    max-height: calc(
+      var(--tooltip-available-height, 100vh) - 2 * var(--tooltip-padding-y) - 2px + 2 * var(--tooltip-content-bleed)
+    );
+    margin: calc(-1 * var(--tooltip-content-bleed));
+    padding: var(--tooltip-content-bleed);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
 
   &::after {
     content: "";

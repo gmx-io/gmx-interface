@@ -3,6 +3,7 @@ import type { Page } from "playwright/test";
 
 import {
   ButtonTriggerStory,
+  ClickableRowStory,
   DisabledButtonStory,
   DropdownTriggerStory,
   GroupStory,
@@ -13,6 +14,7 @@ import {
   PlainStory,
   ScrollStory,
   SizeStory,
+  TallStory,
   TriggerInsideButtonStory,
 } from "./StandardTooltip.stories";
 
@@ -64,11 +66,14 @@ async function startTabbingFromTop(page: Page) {
 test.describe("StandardTooltip", () => {
   test("opens about 200 ms after the cursor reaches the trigger", async ({ mount, page }) => {
     await mount(<PlainStory />);
+    await page.evaluate(trackOpenDelays);
 
     await page.getByText("Trigger").hover();
-    await page.waitForTimeout(120);
-    await expect(page.locator(PANEL)).toHaveCount(0);
     await expect(page.locator(OPEN_PANEL)).toHaveText("Tooltip text");
+
+    const delays = await page.evaluate(() => (window as unknown as { openDelays: number[] }).openDelays);
+    expect(delays[0]).toBeGreaterThanOrEqual(190);
+    expect(delays[0]).toBeLessThan(500);
   });
 
   test("does not open when the cursor leaves within 200 ms", async ({ mount, page }) => {
@@ -121,15 +126,28 @@ test.describe("StandardTooltip", () => {
 
     await page.getByText("Trigger").hover();
     const inner = page.getByTestId("inner-scroll");
-    await expect(inner).toBeVisible();
+    await expect(page.locator(OPEN_PANEL)).toHaveCSS("opacity", "1");
 
-    await inner.hover();
+    const innerBox = (await inner.boundingBox())!;
+    await page.mouse.move(innerBox.x + innerBox.width / 2, innerBox.y + innerBox.height / 2, { steps: 4 });
     await page.mouse.wheel(0, 40);
     await expect.poll(() => inner.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
     await expect(page.locator(OPEN_PANEL)).toBeVisible();
 
     await page.evaluate(() => window.scrollBy(0, 200));
     await expect(page.locator(PANEL)).toHaveCount(0);
+  });
+
+  test("a click inside the panel does not reach the controls around its trigger", async ({ mount, page }) => {
+    await mount(<ClickableRowStory />);
+
+    await page.getByText("Row trigger").hover();
+    const text = page.getByText("Row tooltip text");
+    await expect(text).toBeVisible();
+
+    await text.click();
+    await text.dblclick();
+    await expect(page.getByTestId("row-clicks")).toHaveText("0");
   });
 
   for (const reducedMotion of ["reduce", "no-preference"] as const) {
@@ -290,7 +308,7 @@ test.describe("StandardTooltip", () => {
     await expect(page.locator(OPEN_PANEL)).toHaveCount(2);
   });
 
-  test("a trigger inside a button: the button takes focus and opens it, no extra Tab stop, hand cursor", async ({
+  test("a trigger inside a button: the button takes focus and opens it, Tab goes through its link, hand cursor", async ({
     mount,
     page,
   }) => {
@@ -300,8 +318,11 @@ test.describe("StandardTooltip", () => {
     await page.keyboard.press("Tab");
     const control = page.getByRole("button", { name: /Sort by size/ });
     await expect(control).toBeFocused();
-    await expect(page.locator(OPEN_PANEL)).toHaveText("Size of the position");
+    await expect(page.locator(OPEN_PANEL)).toContainText("Size of the position");
     expect(await control.getAttribute("aria-describedby")).toBeTruthy();
+
+    await page.keyboard.press("Tab");
+    await expect(page.getByRole("link", { name: "Read more" })).toBeFocused();
 
     await page.keyboard.press("Tab");
     await expect(page.getByRole("button", { name: "After" })).toBeFocused();
@@ -325,6 +346,29 @@ test.describe("StandardTooltip", () => {
 
     await mount(<ButtonTriggerStory />);
     expect(await cursor("button:has-text('Count')")).toBe("pointer");
+  });
+});
+
+test.describe("StandardTooltip in a short window", () => {
+  test.use({ viewport: { width: 800, height: 400 } });
+
+  test("a panel taller than the space left stays on screen and scrolls inside", async ({ mount, page }) => {
+    await mount(<TallStory />);
+
+    await page.getByText("Tall trigger").hover();
+    const panel = page.locator(OPEN_PANEL);
+    await expect(panel).toHaveCSS("opacity", "1");
+
+    const panelBox = (await panel.boundingBox())!;
+    expect(panelBox.y).toBeGreaterThanOrEqual(0);
+    expect(panelBox.y + panelBox.height).toBeLessThanOrEqual(400);
+
+    const content = panel.locator(".Tooltip-content");
+    const contentBox = (await content.boundingBox())!;
+    await page.mouse.move(contentBox.x + contentBox.width / 2, contentBox.y + contentBox.height / 2, { steps: 4 });
+    await page.mouse.wheel(0, 200);
+    await expect.poll(() => content.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
+    await expect(panel).toBeVisible();
   });
 });
 

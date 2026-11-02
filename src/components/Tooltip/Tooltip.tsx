@@ -26,6 +26,7 @@ import {
   CSSProperties,
   ElementType,
   FocusEvent,
+  KeyboardEvent,
   MouseEvent,
   PointerEvent,
   ReactNode,
@@ -174,6 +175,8 @@ export default function Tooltip<T extends ElementType>({
   const [keyboardEngaged, setKeyboardEngaged] = useState(false);
   const keyboardEngagedRef = useRef(false);
   keyboardEngagedRef.current = keyboardEngaged;
+  const [parentControl, setParentControl] = useState<HTMLElement | null>(null);
+  const parentControlRef = useLatestValueRef(parentControl);
 
   const handleOpenChange = useCallback(
     (open: boolean, _event?: Event, reason?: OpenChangeReason) => {
@@ -203,6 +206,10 @@ export default function Tooltip<T extends ElementType>({
         escapedRef.current = true;
       }
 
+      if (!open && reason === "escape-key" && containsFocus(floatingRef.current)) {
+        parentControlRef.current?.focus();
+      }
+
       if (!open && !isFocusWithin) {
         setKeyboardEngaged(false);
       }
@@ -216,7 +223,7 @@ export default function Tooltip<T extends ElementType>({
 
       setVisible(open);
     },
-    [group]
+    [group, parentControlRef]
   );
 
   const handlePointer = useCallback((event: PointerEvent) => {
@@ -224,7 +231,6 @@ export default function Tooltip<T extends ElementType>({
   }, []);
 
   const [hasFocusableChild, setHasFocusableChild] = useState(false);
-  const [parentControl, setParentControl] = useState<HTMLElement | null>(null);
   useLayoutEffect(() => {
     if (keyboardAccessible) {
       setParentControl(getParentControl(referenceRef.current));
@@ -455,7 +461,11 @@ export default function Tooltip<T extends ElementType>({
         setVisible(true);
       };
 
-      const handleControlBlur = () => {
+      const handleControlBlur = (event: globalThis.FocusEvent) => {
+        if (floatingRef.current?.contains(event.relatedTarget as Node | null)) {
+          return;
+        }
+
         escapedRef.current = false;
         setKeyboardEngaged(false);
 
@@ -464,11 +474,22 @@ export default function Tooltip<T extends ElementType>({
         }
       };
 
+      const handleControlKeyDown = (event: globalThis.KeyboardEvent) => {
+        const firstFocusable = event.key === "Tab" && !event.shiftKey ? getFocusableChild(floatingRef.current) : null;
+
+        if (firstFocusable instanceof HTMLElement) {
+          event.preventDefault();
+          firstFocusable.focus();
+        }
+      };
+
       parentControl.addEventListener("focus", handleControlFocus);
       parentControl.addEventListener("blur", handleControlBlur);
+      parentControl.addEventListener("keydown", handleControlKeyDown);
       return () => {
         parentControl.removeEventListener("focus", handleControlFocus);
         parentControl.removeEventListener("blur", handleControlBlur);
+        parentControl.removeEventListener("keydown", handleControlKeyDown);
       };
     },
     [parentControl, disabled]
@@ -523,6 +544,7 @@ export default function Tooltip<T extends ElementType>({
         nextFocused &&
         (floatingRef.current?.contains(nextFocused) ||
           referenceRef.current?.contains(nextFocused) ||
+          parentControl?.contains(nextFocused) ||
           isFocusGuard(nextFocused))
       ) {
         return;
@@ -537,12 +559,36 @@ export default function Tooltip<T extends ElementType>({
 
       setVisible(false);
     },
-    [keyboardAccessible, refs.floating]
+    [keyboardAccessible, refs.floating, parentControl]
   );
 
-  const floatingFocusProps = useMemo(
-    () => ({ onFocus: handleFloatingFocus, onBlur: handleFloatingBlur }),
-    [handleFloatingFocus, handleFloatingBlur]
+  const handleFloatingKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (event.key !== "Tab" || !parentControl || !floatingRef.current) {
+        return;
+      }
+
+      const focusables = floatingRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
+      const edge = event.shiftKey ? focusables[0] : focusables[focusables.length - 1];
+      const next = event.shiftKey ? parentControl : getNextTabbable(parentControl, floatingRef.current);
+
+      if (event.target === edge && next) {
+        event.preventDefault();
+        next.focus();
+      }
+    },
+    [parentControl]
+  );
+
+  const floatingProps = useMemo(
+    () => ({
+      onFocus: handleFloatingFocus,
+      onBlur: handleFloatingBlur,
+      onKeyDown: handleFloatingKeyDown,
+      onClick: stopPropagation,
+      onDoubleClick: stopPropagation,
+    }),
+    [handleFloatingFocus, handleFloatingBlur, handleFloatingKeyDown]
   );
 
   useLayoutEffect(() => {
@@ -583,19 +629,14 @@ export default function Tooltip<T extends ElementType>({
 
     if (motion) {
       tooltipContent = (
-        <div
-          ref={setFloating}
-          style={outerStyles}
-          {...getFloatingProps(floatingFocusProps)}
-          className="Tooltip-floating"
-        >
+        <div ref={setFloating} style={outerStyles} {...getFloatingProps(floatingProps)} className="Tooltip-floating">
           {seamlessPointer && <div className="Tooltip-shadow" {...motion} />}
           <div
             className={cx("Tooltip-popup relative", { "Tooltip-surface": seamlessPointer }, tooltipClassName)}
             {...motion}
           >
             {arrowElement}
-            {finalContent}
+            <div className="Tooltip-content">{finalContent}</div>
           </div>
         </div>
       );
@@ -604,11 +645,11 @@ export default function Tooltip<T extends ElementType>({
         <div
           ref={setFloating}
           style={outerStyles}
-          {...getFloatingProps(floatingFocusProps)}
+          {...getFloatingProps(floatingProps)}
           className={cx("Tooltip-popup", tooltipClassName)}
         >
           {arrowElement}
-          {finalContent}
+          <div className="Tooltip-content">{finalContent}</div>
         </div>
       );
     }
@@ -767,12 +808,27 @@ function getFocusableChild(element: Element | null): Element | null {
   return element?.querySelector(FOCUSABLE_SELECTOR) ?? null;
 }
 
+function getNextTabbable(element: HTMLElement, panel: HTMLElement): HTMLElement | undefined {
+  return Array.from(document.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).find(
+    (candidate) =>
+      element.compareDocumentPosition(candidate) & Node.DOCUMENT_POSITION_FOLLOWING &&
+      !element.contains(candidate) &&
+      !panel.contains(candidate) &&
+      candidate.tabIndex >= 0 &&
+      candidate.getClientRects().length > 0
+  );
+}
+
 function getParentControl(element: Element | null): HTMLElement | null {
   return element?.parentElement?.closest<HTMLElement>('button, a[href], [role="button"]') ?? null;
 }
 
 function hasExpandedControl(element: Element | null): boolean {
   return !!element && (element.matches('[aria-expanded="true"]') || !!element.querySelector('[aria-expanded="true"]'));
+}
+
+function stopPropagation(event: MouseEvent) {
+  event.stopPropagation();
 }
 
 function isFocusGuard(node: Node): boolean {
