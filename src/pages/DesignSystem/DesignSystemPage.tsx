@@ -21,9 +21,11 @@ const TAB_LABELS: Record<DesignSystemTab, string> = {
   props: "Props",
   guidelines: "Guidelines",
   changelog: "Changelog",
+  experiment1: "Experiment 1",
+  experiment2: "Experiment 2",
 };
 
-const TAB_ORDER: DesignSystemTab[] = ["examples", "props", "guidelines", "changelog"];
+const TAB_ORDER: DesignSystemTab[] = ["examples", "props", "guidelines", "changelog", "experiment1", "experiment2"];
 
 // Top bar and the top of the side menu share one height, so their lines meet
 const BAR_CLASSNAME = "flex h-56 shrink-0 items-center border-b border-slate-700";

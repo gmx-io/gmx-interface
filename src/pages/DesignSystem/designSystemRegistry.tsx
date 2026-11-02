@@ -3,10 +3,17 @@ import { type ComponentType } from "react";
 import { ButtonChangelog, ButtonExamples, ButtonPropsReference } from "./pages/ButtonPage";
 import { CheckboxChangelog, CheckboxExamples, CheckboxPropsReference } from "./pages/CheckboxPage";
 import { ColorsChangelog, ColorsExamples } from "./pages/ColorsPage";
+import {
+  TableChangelog,
+  TableExamples,
+  TableExperiment1,
+  TableExperiment2,
+  TablePropsReference,
+} from "./pages/TablePage";
 import { TooltipChangelog, TooltipExamples, TooltipGuidelines, TooltipPropsReference } from "./pages/TooltipPage";
 import { TypographyChangelog, TypographyExamples } from "./pages/TypographyPage";
 
-export type DesignSystemTab = "examples" | "props" | "guidelines" | "changelog";
+export type DesignSystemTab = "examples" | "props" | "guidelines" | "changelog" | "experiment1" | "experiment2";
 
 export type DesignSystemPageEntry = {
   slug: string;
@@ -67,6 +74,19 @@ export const DESIGN_SYSTEM_GROUPS: DesignSystemGroup[] = [
           props: CheckboxPropsReference,
           changelog: CheckboxChangelog,
         },
+      },
+      {
+        slug: "table",
+        title: "Table",
+        description: "Rows of data with a header. Built from Table, TableTh, TableTr and TableTd.",
+        tabs: {
+          examples: TableExamples,
+          props: TablePropsReference,
+          changelog: TableChangelog,
+          experiment1: TableExperiment1,
+          experiment2: TableExperiment2,
+        },
+        hideSectionNav: true,
       },
       {
         slug: "tooltip",
