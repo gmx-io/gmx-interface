@@ -1328,7 +1328,6 @@ msgid "Claimed funding fees"
 msgstr "Comisiones de financiación reclamadas"
 
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
-#: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "What's new"
 msgstr "Novedades"
 

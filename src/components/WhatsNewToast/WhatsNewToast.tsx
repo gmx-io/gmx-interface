@@ -3,10 +3,14 @@ import cx from "classnames";
 import { AnimatePresence, motion, useIsPresent, Variants } from "framer-motion";
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { EventData } from "config/events";
+import { EventData, EventLink } from "config/events";
 import { usePrefersReducedMotion } from "lib/usePrefersReducedMotion";
 
-import { AnnouncementBanner } from "components/AnnouncementBanner/AnnouncementBanner";
+import {
+  AnnouncementBanner,
+  AnnouncementFooterLink,
+  AnnouncementFooterLinkData,
+} from "components/AnnouncementBanner/AnnouncementBanner";
 
 import { INITIAL_SLIDE_STATE, SlideDirection, jumpToSlide, stepSlide } from "./whatsNewSlideState";
 
@@ -16,7 +20,6 @@ const WHEEL_MIN_DELTA_PX = 4;
 const WHEEL_STEP_INTERVAL_MS = 350;
 const SLIDE_ENTER_OFFSET_PX = 12;
 const SLIDE_EXIT_OFFSET_PX = 8;
-const WHATS_NEW_LABEL = <Trans>What's new</Trans>;
 const SEE_MORE_LABEL = <Trans>See more</Trans>;
 
 const SLIDE_VARIANTS: Variants = {
@@ -36,10 +39,14 @@ const SLIDE_VARIANTS: Variants = {
   }),
 };
 
-export function WhatsNewToast({ cards, dismiss }: { cards: EventData[]; dismiss: () => void }) {
+export function WhatsNewToast({ cards, onDismiss }: { cards: EventData[]; onDismiss: (id: string) => void }) {
   const [slide, setSlide] = useState(INITIAL_SLIDE_STATE);
   const [isPaused, setIsPaused] = useState(false);
   const prefersReducedMotion = usePrefersReducedMotion();
+
+  const activeIndex = slide.index < cards.length ? slide.index : 0;
+  const current: EventData | undefined = cards[activeIndex];
+  const currentId = current?.id;
 
   useEffect(() => {
     if (slide.index >= cards.length && cards.length > 0) {
@@ -53,7 +60,7 @@ export function WhatsNewToast({ cards, dismiss }: { cards: EventData[]; dismiss:
       setSlide((prev) => stepSlide(prev, 1, cards.length));
     }, AUTO_ROTATE_INTERVAL_MS);
     return () => window.clearTimeout(id);
-  }, [cards.length, isPaused, slide.index]);
+  }, [cards.length, isPaused, currentId]);
 
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
 
@@ -148,41 +155,39 @@ export function WhatsNewToast({ cards, dismiss }: { cards: EventData[]; dismiss:
     return () => node.removeEventListener("wheel", onWheel);
   }, [cards.length, goRelative]);
 
-  const safeIndex = cards.length > 0 ? Math.min(slide.index, cards.length - 1) : 0;
-  const current = cards[safeIndex];
+  const handleClose = useCallback(() => {
+    if (currentId === undefined) return;
+    setSlide((prev) => ({ ...prev, direction: 1 }));
+    onDismiss(currentId);
+  }, [currentId, onDismiss]);
 
-  const footerLink = useMemo(
-    () =>
-      current && !current.requiresOpenPosition
-        ? {
-            text: SEE_MORE_LABEL,
-            to: `/announcements?id=${encodeURIComponent(current.id)}`,
-          }
-        : undefined,
-    [current]
+  const renderFooterLinks = useCallback(
+    (card: EventData) => <FooterLinks event={card} onSeeMore={onDismiss} />,
+    [onDismiss]
   );
 
   const dots = useMemo(
     () => ({
       count: cards.length,
-      activeIndex: safeIndex,
+      activeIndex,
       onDotClick: handleDotClick,
     }),
-    [cards.length, safeIndex, handleDotClick]
+    [cards.length, activeIndex, handleDotClick]
   );
 
   if (!current) return null;
 
   const isCarousel = cards.length > 1;
   const slideShift = prefersReducedMotion ? 0 : slide.direction;
+  const hasFooterLinks = cards.some((card) => card.link || !card.requiresOpenPosition);
 
   return (
     <div
       ref={containerRef}
       className={cx("pointer-events-auto", isCarousel && "touch-pan-y")}
-      role={isCarousel ? "region" : undefined}
+      role="region"
       aria-roledescription={isCarousel ? "carousel" : undefined}
-      aria-label={isCarousel ? t`What's new` : undefined}
+      aria-label={t`What's new`}
       tabIndex={isCarousel ? 0 : undefined}
       onKeyDown={isCarousel ? handleKeyDown : undefined}
       onFocus={isCarousel ? handleFocus : undefined}
@@ -197,38 +202,69 @@ export function WhatsNewToast({ cards, dismiss }: { cards: EventData[]; dismiss:
       )}
       <AnnouncementBanner
         variant={current.variant ?? "info"}
-        headerLabel={WHATS_NEW_LABEL}
+        headerLabel={
+          <SlideStack cards={cards} current={current} shift={slideShift} slideClassName="self-center">
+            {renderTitle}
+          </SlideStack>
+        }
         headerIcon="info"
-        onClose={dismiss}
+        truncateHeader={false}
+        onClose={handleClose}
         onPointerEnter={handlePointerEnter}
         onPointerLeave={handlePointerLeave}
-        footerLink={footerLink}
+        footerContent={
+          hasFooterLinks ? (
+            <SlideStack cards={cards} current={current} shift={slideShift}>
+              {renderFooterLinks}
+            </SlideStack>
+          ) : undefined
+        }
         dots={dots}
       >
-        <div className="grid grid-cols-1">
-          {isCarousel &&
-            cards.map((card) => (
-              <div key={card.id} aria-hidden className="invisible col-start-1 row-start-1">
-                <CardContent event={card} variant={card.variant ?? "info"} />
-              </div>
-            ))}
-          <AnimatePresence initial={false} custom={slideShift}>
-            <Slide key={current.id} shift={slideShift}>
-              <CardContent event={current} variant={current.variant ?? "info"} />
-            </Slide>
-          </AnimatePresence>
-        </div>
+        <SlideStack cards={cards} current={current} shift={slideShift}>
+          {renderBody}
+        </SlideStack>
       </AnnouncementBanner>
     </div>
   );
 }
 
-function Slide({ shift, children }: { shift: number; children: ReactNode }) {
+function SlideStack({
+  cards,
+  current,
+  shift,
+  slideClassName,
+  children,
+}: {
+  cards: EventData[];
+  current: EventData;
+  shift: number;
+  slideClassName?: string;
+  children: (event: EventData) => ReactNode;
+}) {
+  return (
+    <div className="grid grid-cols-1">
+      {cards.length > 1 &&
+        cards.map((card) => (
+          <div key={card.id} aria-hidden className={cx("invisible col-start-1 row-start-1", slideClassName)}>
+            {children(card)}
+          </div>
+        ))}
+      <AnimatePresence initial={false} custom={shift}>
+        <Slide key={current.id} shift={shift} className={slideClassName}>
+          {children(current)}
+        </Slide>
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function Slide({ shift, className, children }: { shift: number; className?: string; children: ReactNode }) {
   const isPresent = useIsPresent();
 
   return (
     <motion.div
-      className={cx("col-start-1 row-start-1", !isPresent && "pointer-events-none")}
+      className={cx("col-start-1 row-start-1", className, !isPresent && "pointer-events-none")}
       aria-hidden={isPresent ? undefined : true}
       custom={shift}
       variants={SLIDE_VARIANTS}
@@ -242,25 +278,37 @@ function Slide({ shift, children }: { shift: number; children: ReactNode }) {
   );
 }
 
-function CardContent({ event, variant }: { event: EventData; variant: NonNullable<EventData["variant"]> }) {
-  const titleColor = {
-    info: "text-blue-300",
-    warning: "text-yellow-300",
-    error: "text-red-100",
-    success: "text-green-300",
-  }[variant];
+function renderTitle(event: EventData) {
+  return <div className="line-clamp-2">{event.title}</div>;
+}
+
+function renderBody(event: EventData) {
+  return <div className="line-clamp-4">{event.summary ?? event.description}</div>;
+}
+
+function FooterLinks({ event, onSeeMore }: { event: EventData; onSeeMore: (id: string) => void }) {
+  const variant = event.variant ?? "info";
+  const ownLink = useMemo(() => (event.link ? getOwnLink(event.link) : undefined), [event.link]);
+  const seeMoreLink = useMemo(
+    () =>
+      event.requiresOpenPosition
+        ? undefined
+        : {
+            text: SEE_MORE_LABEL,
+            to: `/announcements?id=${encodeURIComponent(event.id)}`,
+            onClick: () => onSeeMore(event.id),
+          },
+    [event.id, event.requiresOpenPosition, onSeeMore]
+  );
 
   return (
-    <div>
-      <p className={cx("text-body-medium mb-4 font-medium leading-[1.3]", titleColor)}>{event.title}</p>
-      <div
-        className={cx(
-          "text-body-medium leading-[1.3] text-typography-primary",
-          event.summary === undefined && "line-clamp-3"
-        )}
-      >
-        {event.summary ?? event.description}
-      </div>
+    <div className="flex flex-wrap items-center gap-x-16 gap-y-4">
+      {ownLink && <AnnouncementFooterLink variant={variant} link={ownLink} />}
+      {seeMoreLink && <AnnouncementFooterLink variant={variant} link={seeMoreLink} isSecondary />}
     </div>
   );
+}
+
+function getOwnLink(link: EventLink): AnnouncementFooterLinkData {
+  return link.href.startsWith("http") ? { text: link.text, href: link.href } : { text: link.text, to: link.href };
 }
