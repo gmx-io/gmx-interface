@@ -15,7 +15,7 @@ export function useUiFlagsRequest() {
 
   const fallbackData = useMemo(() => readPersistedUiFlags(chainId), [chainId]);
 
-  const { data: uiFlags } = useSWR<UiFlags>(
+  const { data: uiFlags, isLoading } = useSWR<UiFlags>(
     ["uiFlags", chainId],
     async () => {
       const result = await confirmRelayControlFlags(chainId, await oracleKeeperFetcher.fetchUiFlags());
@@ -28,5 +28,5 @@ export function useUiFlagsRequest() {
     }
   );
 
-  return { uiFlags };
+  return { uiFlags, isLoading };
 }

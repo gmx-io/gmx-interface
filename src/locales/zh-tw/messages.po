@@ -1328,7 +1328,6 @@ msgid "Claimed funding fees"
 msgstr "已領取資金費用"
 
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
-#: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "What's new"
 msgstr "最新動態"
 
