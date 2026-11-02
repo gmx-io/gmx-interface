@@ -3,6 +3,7 @@ import { type ComponentType } from "react";
 import { ButtonChangelog, ButtonExamples, ButtonPropsReference } from "./pages/ButtonPage";
 import { CheckboxChangelog, CheckboxExamples, CheckboxPropsReference } from "./pages/CheckboxPage";
 import { ColorsChangelog, ColorsExamples } from "./pages/ColorsPage";
+import { SpacingChangelog, SpacingExamples, SpacingGuidelines } from "./pages/SpacingPage";
 import {
   TableChangelog,
   TableExamples,
@@ -42,6 +43,15 @@ export const DESIGN_SYSTEM_GROUPS: DesignSystemGroup[] = [
         tabs: {
           examples: ColorsExamples,
           changelog: ColorsChangelog,
+        },
+      },
+      {
+        slug: "spacing",
+        title: "Spacing",
+        tabs: {
+          examples: SpacingExamples,
+          guidelines: SpacingGuidelines,
+          changelog: SpacingChangelog,
         },
       },
       {
