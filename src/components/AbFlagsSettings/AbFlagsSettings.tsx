@@ -36,6 +36,10 @@ export function AbFlagSettings() {
               setIsChecked={(checked) => {
                 setAbFlagEnabled(flag, checked);
                 setAbStorage({ ...getAbStorage() });
+                // Privy and the Solana wallet connectors are set up once, when the app mounts.
+                if (flag === "solanaNetwork") {
+                  document.location.reload();
+                }
               }}
             >
               {flag}

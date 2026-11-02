@@ -103,7 +103,7 @@ function Slides() {
         avatarUrl={GMXAvatar}
         username="GMX_IO"
         postLink="https://x.com/GMX_IO/status/1911726474442244304"
-        date="5:49 PM · Apr 15, 2025"
+        date="12:21 PM · Apr 14, 2025"
       >
         <div className="flex h-full grow flex-col justify-between">
           <Trans>
@@ -120,8 +120,8 @@ function Slides() {
         author="LayerZero"
         avatarUrl={layerZeroAvatar}
         username="LayerZero_Core"
-        postLink="https://x.com/LayerZero_Labs/status/1911726474442244304"
-        date="12:21 PM · Apr 14, 2025"
+        postLink="https://x.com/LayerZero_Core/status/1912171446270562394"
+        date="5:49 PM · Apr 15, 2025"
       >
         <div className="flex h-full grow flex-col justify-between">
           <Trans>

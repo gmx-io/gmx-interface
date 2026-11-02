@@ -1,5 +1,6 @@
 import {
   FloatingArrow,
+  FloatingFocusManager,
   FloatingPortal,
   OpenChangeReason,
   Placement,
@@ -12,6 +13,7 @@ import {
   useClick,
   useDismiss,
   useFloating,
+  useFocus,
   useHover,
   useInteractions,
   useMergeRefs,
@@ -128,10 +130,21 @@ export default function Tooltip<T extends ElementType>({
   const [visible, setVisible] = useState(false);
   const arrowRef = useRef<SVGSVGElement>(null);
   const referenceRef = useRef<Element | null>(null);
+  const floatingRef = useRef<HTMLElement | null>(null);
+  const isDismissedByEscapeRef = useRef(false);
 
   const handleOpenChange = useCallback((open: boolean, _event?: Event, reason?: OpenChangeReason) => {
     if (!open && reason === "hover" && hasVisibleFocusWithin(referenceRef.current)) {
       return;
+    }
+
+    if (!open && reason === "escape-key") {
+      if (floatingRef.current?.contains(document.activeElement) && referenceRef.current instanceof HTMLElement) {
+        referenceRef.current.focus();
+      }
+
+      isDismissedByEscapeRef.current =
+        hasVisibleFocusWithin(referenceRef.current) && !floatingRef.current?.contains(document.activeElement);
     }
 
     setVisible(open);
@@ -180,6 +193,7 @@ export default function Tooltip<T extends ElementType>({
   });
 
   const setReference = useMergeRefs<Element>([refs.setReference, referenceRef]);
+  const setFloating = useMergeRefs<HTMLElement>([refs.setFloating, floatingRef]);
 
   const previousDisabled = usePrevious(disabled);
 
@@ -201,11 +215,15 @@ export default function Tooltip<T extends ElementType>({
     enabled: Boolean(!disabled && !disableClickToggle && closeOnDoubleClick),
     toggle: closeOnDoubleClick,
   });
+  const isFocusable = Boolean(isHandlerDisabled) && !disabled;
+  const focus = useFocus(context, {
+    enabled: isFocusable,
+  });
   const dismiss = useDismiss(context, {
     enabled: !disabled,
   });
 
-  const { getReferenceProps, getFloatingProps } = useInteractions([hover, click, dismiss]);
+  const { getReferenceProps, getFloatingProps } = useInteractions([hover, focus, click, dismiss]);
 
   const preventClick = useCallback(
     (event: MouseEvent) => {
@@ -227,7 +245,7 @@ export default function Tooltip<T extends ElementType>({
 
       // If element was blurred, allow some time so that activeElement is updated
       requestAnimationFrame(() => {
-        if (hasVisibleFocusWithin(referenceRef.current)) {
+        if (!isDismissedByEscapeRef.current && hasVisibleFocusWithin(referenceRef.current)) {
           setVisible(true);
         }
       });
@@ -244,6 +262,12 @@ export default function Tooltip<T extends ElementType>({
         return;
       }
 
+      if (nextFocused && (refs.floating.current?.contains(nextFocused) || isFocusGuard(nextFocused))) {
+        return;
+      }
+
+      isDismissedByEscapeRef.current = false;
+
       if (isHovered(reference) || isHovered(refs.floating.current)) {
         return;
       }
@@ -256,15 +280,17 @@ export default function Tooltip<T extends ElementType>({
   const finalContent = visible ? content ?? renderContent?.() : undefined;
 
   const tooltipContent = visible ? (
-    <div
-      ref={refs.setFloating}
-      style={floatingStyles}
-      {...getFloatingProps()}
-      className={cx("Tooltip-popup", tooltipClassName)}
-    >
-      <FloatingArrow ref={arrowRef} context={context} className="scale-3 fill-slate-700 dark:fill-[#2b2d41]" />
-      {finalContent}
-    </div>
+    <FloatingFocusManager context={context} modal={false} initialFocus={-1} returnFocus={false} disabled={!isFocusable}>
+      <div
+        ref={setFloating}
+        style={floatingStyles}
+        {...getFloatingProps()}
+        className={cx("Tooltip-popup", tooltipClassName)}
+      >
+        <FloatingArrow ref={arrowRef} context={context} className="scale-3 fill-slate-700 dark:fill-[#2b2d41]" />
+        {finalContent}
+      </div>
+    </FloatingFocusManager>
   ) : undefined;
 
   if (as) {
@@ -298,6 +324,7 @@ export default function Tooltip<T extends ElementType>({
         ref={setReference}
         className={cx("Tooltip-handle group", handleClassName)}
         style={handleStyle}
+        tabIndex={isFocusable ? 0 : undefined}
         {...getReferenceProps({
           onClick: (e: MouseEvent) => {
             preventClick(e);
@@ -345,6 +372,10 @@ function matchesFocusVisible(element: Element): boolean {
   } catch {
     return true;
   }
+}
+
+function isFocusGuard(node: Node): boolean {
+  return node instanceof Element && node.hasAttribute("data-floating-ui-focus-guard");
 }
 
 function isHovered(element: Element | null): boolean {

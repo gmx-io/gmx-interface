@@ -7,17 +7,22 @@ import { getSubaccountConfigKey } from "config/localStorage";
 import { SubaccountContextProvider, useSubaccountContext } from "./SubaccountContextProvider";
 import type { SubaccountState } from "./SubaccountContextProvider";
 
-const { mocks, ACCOUNT, CHAIN_ID, SUBACCOUNT_ADDRESS, OLD_SUBACCOUNT_ADDRESS } = vi.hoisted(() => ({
+const { mocks, ACCOUNT, CHAIN_ID, SUBACCOUNT_ADDRESS, OLD_SUBACCOUNT_ADDRESS, WETH } = vi.hoisted(() => ({
   mocks: {
     generateSubaccount: vi.fn(),
     getInitialSubaccountApproval: vi.fn(),
     refreshSubaccountData: vi.fn(),
     pushError: vi.fn(),
+    getActivationPermitTokenAddresses: vi.fn(),
+    signActivationTokenPermits: vi.fn(),
+    srcChainId: undefined as number | undefined,
+    isGmxAccount: false,
   },
   ACCOUNT: "0x1234567890123456789012345678901234567890",
   CHAIN_ID: 42161,
   SUBACCOUNT_ADDRESS: "0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa",
   OLD_SUBACCOUNT_ADDRESS: "0xBbbBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbbBBbB",
+  WETH: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
 }));
 
 vi.mock("context/SyntheticsStateContext/selectors/expressSelectors", () => ({
@@ -26,12 +31,25 @@ vi.mock("context/SyntheticsStateContext/selectors/expressSelectors", () => ({
 }));
 
 vi.mock("context/SyntheticsStateContext/selectors/tradeboxSelectors", () => ({
-  selectTradeboxIsFromTokenGmxAccount: () => false,
+  selectTradeboxIsFromTokenGmxAccount: () => mocks.isGmxAccount,
+}));
+
+vi.mock("context/SyntheticsStateContext/selectors/settingsSelectors", () => ({
+  selectGasPaymentTokenAddress: () => WETH,
 }));
 
 vi.mock("context/SyntheticsStateContext/utils", async (importOriginal) => ({
   ...(await importOriginal<object>()),
-  useCalcSelector: () => () => false,
+  useCalcSelector: () => (selector: () => unknown) => selector(),
+}));
+
+vi.mock("context/TokenPermitsContext/TokenPermitsContextProvider", () => ({
+  useTokenPermitsContext: () => ({}),
+}));
+
+vi.mock("domain/synthetics/subaccount/activationTokenPermits", () => ({
+  getActivationPermitTokenAddresses: mocks.getActivationPermitTokenAddresses,
+  signActivationTokenPermits: mocks.signActivationTokenPermits,
 }));
 
 vi.mock("domain/synthetics/subaccount", () => ({
@@ -60,7 +78,7 @@ vi.mock("domain/synthetics/subaccount/utils", async (importOriginal) => ({
 }));
 
 vi.mock("lib/chains", () => ({
-  useChainId: () => ({ chainId: CHAIN_ID, srcChainId: undefined }),
+  useChainId: () => ({ chainId: CHAIN_ID, srcChainId: mocks.srcChainId }),
 }));
 
 vi.mock("lib/helperToast", () => ({
@@ -87,6 +105,14 @@ vi.mock("lib/wallets/useEthersSigner", () => ({
 
 vi.mock("lib/wallets/useWallet", () => ({
   default: () => ({ account: ACCOUNT }),
+}));
+
+vi.mock("lib/wallets/useWalletSessionChains", () => ({
+  getIsContractAccount: async () => false,
+}));
+
+vi.mock("lib/wallets/walletConfig", () => ({
+  getPublicClientWithRpc: () => ({}),
 }));
 
 vi.mock("components/StatusNotification/StatusNotification", () => ({
@@ -235,4 +261,53 @@ describe("SubaccountContextProvider.tryEnableSubaccount", () => {
     expect(localStorage.getItem(configKey)).toContain(SUBACCOUNT_ADDRESS);
     expect(getStoredValues().some((value) => value.includes("0xsignature"))).toBe(true);
   });
+});
+
+describe("SubaccountContextProvider.tryEnableSubaccount token permits", () => {
+  const ROUTER = "0x7452c558d45f8afC8c83dAe62C3f8A5BE19c71f6";
+
+  beforeEach(() => {
+    mocks.generateSubaccount.mockResolvedValue(generatedConfig);
+    mocks.getInitialSubaccountApproval.mockResolvedValue(signedApproval);
+    mocks.getActivationPermitTokenAddresses.mockResolvedValue([WETH]);
+    // never settles, so a resolved activation proves the permit prompts aren't awaited
+    mocks.signActivationTokenPermits.mockReturnValue(new Promise(() => undefined));
+  });
+
+  afterEach(() => {
+    cleanup();
+    localStorage.clear();
+    vi.clearAllMocks();
+  });
+
+  it.each([
+    { name: "after the activation signatures", result: true, asksPermits: true },
+    { name: "unless the caller opts out", withTokenPermits: false, result: true, asksPermits: false },
+    { name: "unless the approval signature is rejected", isApprovalRejected: true, result: false, asksPermits: false },
+    { name: "unless trading from the GMX Account", isGmxAccount: true, result: true, asksPermits: false },
+    { name: "unless on multichain", srcChainId: 8453, result: true, asksPermits: false },
+  ])(
+    "asks for token permits $name",
+    async ({ withTokenPermits, isApprovalRejected, isGmxAccount, srcChainId, result, asksPermits }) => {
+      mocks.isGmxAccount = isGmxAccount ?? false;
+      mocks.srcChainId = srcChainId;
+      if (isApprovalRejected) {
+        mocks.getInitialSubaccountApproval.mockRejectedValue(new Error("User rejected the request."));
+      }
+
+      const context = setup();
+      let enabled: boolean | undefined;
+      await act(async () => {
+        enabled = await context.current.tryEnableSubaccount({ withTokenPermits });
+      });
+
+      expect(enabled).toBe(result);
+      expect(mocks.getActivationPermitTokenAddresses.mock.calls).toEqual(
+        asksPermits ? [[expect.objectContaining({ spender: ROUTER, gasPaymentTokenAddress: WETH })]] : []
+      );
+      expect(mocks.signActivationTokenPermits.mock.calls).toEqual(
+        asksPermits ? [[expect.objectContaining({ spender: ROUTER, tokenAddresses: [WETH] })]] : []
+      );
+    }
+  );
 });

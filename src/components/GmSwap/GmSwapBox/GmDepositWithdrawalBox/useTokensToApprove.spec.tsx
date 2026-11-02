@@ -78,9 +78,11 @@ vi.mock("lib/wallets/walletConfig", () => ({
 vi.mock("context/TokenPermitsContext/TokenPermitsContextProvider", () => ({
   useTokenPermitsContext: () => ({
     tokenPermits: [],
+    accountType: undefined,
+    getIsPermitAvailable: () => false,
     addTokenPermit: vi.fn(),
-    isPermitsDisabled: true,
-    setIsPermitsDisabled: vi.fn(),
+    removeTokenPermits: vi.fn(),
+    disableTokenPermits: vi.fn(),
   }),
 }));
 

@@ -252,7 +252,8 @@ export class FallbackTracker<TCheckStats> {
         // Filter out old too old check stats
         .filter((checkStat) => checkStat.timestamp >= startWindow)
         .map((checkStat) => checkStat.results[endpoint])
-        .filter((checkResult): checkResult is CheckResult<TCheckStats> => checkResult !== undefined),
+        .filter((checkResult): checkResult is CheckResult<TCheckStats> => checkResult !== undefined)
+        .reverse(),
     };
   }
 
