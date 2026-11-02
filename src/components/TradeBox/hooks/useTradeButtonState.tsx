@@ -64,6 +64,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { findNextGasPaymentToken } from "domain/synthetics/express/useSwitchGasPaymentTokenIfRequired";
+import { getCanUseTokenPermits } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { getExternalAggregatorSwapUrl } from "domain/synthetics/externalSwaps/utils";
 import { substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
@@ -90,6 +91,7 @@ import {
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { useLocalizedMap } from "lib/i18n";
+import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
 import { adjustForDecimals, formatAmountFree } from "lib/numbers";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { sleep } from "lib/sleep";
@@ -132,6 +134,9 @@ type TradeboxButtonState = {
   slippageInputId: string;
   expressParams?: ExpressTxnParams;
   isExpressLoading: boolean;
+  approvalTokenAddress: string | undefined;
+  isApproving: boolean;
+  isAllowanceLoaded: boolean;
   batchParams?: BatchOrderTxnParams;
   totalExecutionFee?: ExecutionFee;
   expressGasPaymentToken?: TokenData;
@@ -219,13 +224,15 @@ export function useTradeboxButtonState({
   const {
     tokensToApprove,
     isAllowanceLoaded: isAllowanceLoadedRaw,
+    isAllowanceLoading,
     isApproving,
     handleApprove,
+    getIsPermitApproval,
   } = useTokenApproval({
     chainId,
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokens: approvalTokens,
-    allowPermit: Boolean(expressParams),
+    allowPermit: getCanUseTokenPermits(expressParams),
     skip: isFromTokenGmxAccount,
     metric: {
       flow: "trade",
@@ -236,8 +243,11 @@ export function useTradeboxButtonState({
     },
   });
 
-  const isDataReady = Boolean(fromToken && payAmount !== undefined && gasPaymentToken);
+  const isDataReady = Boolean(fromToken && payAmount !== undefined);
   const isAllowanceLoaded = isDataReady && isAllowanceLoadedRaw;
+  const isApprovalRequired = !isFromTokenGmxAccount && isAllowanceLoaded && tokensToApprove.length > 0;
+  // until allowances are known an order could be sent without the approval it needs
+  const isAllowancePending = isDataReady && isAllowanceLoading && !isApproving;
 
   const pendingApprovalTokenAddress = isAllowanceLoaded && !isApproving ? tokensToApprove[0] : undefined;
   const isPendingGasPaymentTokenApproval =
@@ -291,8 +301,10 @@ export function useTradeboxButtonState({
       tokenToApprove: pendingApprovalTokenAddress,
       nativeToken: getByKey(tokensData, zeroAddress),
       gasPrice: expressParams.gasPrice,
+      // every remaining approval has to be a permit, or the user would sign one and still be stopped for gas
+      isPermitApproval: tokensToApprove.length > 0 && tokensToApprove.every(getIsPermitApproval),
     });
-  }, [expressParams, pendingApprovalTokenAddress, tokensData]);
+  }, [expressParams, getIsPermitApproval, pendingApprovalTokenAddress, tokensData, tokensToApprove]);
 
   const hasAlternateGasFees = useHasAlternateGasFees({
     chainId,
@@ -470,10 +482,11 @@ export function useTradeboxButtonState({
           break;
         }
 
-        // PositionEditor-only states
+        // PositionEditor-only and PositionSeller-only states
         case ValidationButtonTooltipName.minDeposit:
         case ValidationButtonTooltipName.marginDepositAutoCancelLimit:
         case ValidationButtonTooltipName.marginDepositInsufficient:
+        case ValidationButtonTooltipName.remainingPositionMaxLeverage:
           break;
 
         default:
@@ -594,7 +607,7 @@ export function useTradeboxButtonState({
       return;
     }
 
-    if (!isFromTokenGmxAccount && isAllowanceLoaded && tokensToApprove.length) {
+    if (isApprovalRequired) {
       if (!chainId || isApproving || !tokensToApprove[0]) return;
 
       userAnalytics.pushEvent<TokenApproveClickEvent>({
@@ -609,6 +622,10 @@ export function useTradeboxButtonState({
           }),
       });
 
+      return;
+    }
+
+    if (isAllowancePending || isApproving) {
       return;
     }
 
@@ -627,6 +644,7 @@ export function useTradeboxButtonState({
     }
 
     if (expressParams?.subaccount) {
+      void txnPromise.catch(reportHandledRejection("tradebox.submit"));
       /**
        * Wait 2 seconds to prevent double click on button
        * waiting for txnPromise may not be enough because it's sometimes resolves very fast
@@ -646,9 +664,9 @@ export function useTradeboxButtonState({
     expressParams?.subaccount,
     fromToken,
     handleApprove,
-    isAllowanceLoaded,
+    isAllowancePending,
+    isApprovalRequired,
     isApproving,
-    isFromTokenGmxAccount,
     isIncrease,
     isSwap,
     isWrapOrUnwrap,
@@ -680,6 +698,9 @@ export function useTradeboxButtonState({
       isExpressLoading,
       expressGasPaymentToken,
       isFeeInPayToken,
+      approvalTokenAddress: isApprovalRequired ? tokensToApprove[0] : undefined,
+      isApproving,
+      isAllowanceLoaded,
     };
 
     if (!account && isWalletInitializing) {
@@ -751,6 +772,19 @@ export function useTradeboxButtonState({
         text: (
           <>
             <Trans>Loading network fees…</Trans>
+            <SpinnerIcon className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
+      };
+    }
+
+    if (isAllowancePending) {
+      return {
+        ...commonState,
+        text: (
+          <>
+            <Trans>Loading…</Trans>
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
@@ -861,6 +895,8 @@ export function useTradeboxButtonState({
     isApproving,
     tokensToApprove,
     isAllowanceLoaded,
+    isAllowancePending,
+    isApprovalRequired,
     stage,
     isIncrease,
     sidecarEntries,

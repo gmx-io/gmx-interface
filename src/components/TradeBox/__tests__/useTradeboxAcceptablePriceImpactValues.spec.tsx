@@ -97,7 +97,7 @@ function Harness({ values }: { values: TradeboxValues }) {
   selectorValues.set("setSelectedBps", setSelectedBps);
   selectorValues.set("setIsCustomized", setIsCustomized);
 
-  useTradeboxAcceptablePriceImpactValues();
+  useTradeboxAcceptablePriceImpactValues({ isUsdgConversionActive: false, isUsdgOrderAutoSubmitArmed: false });
 
   return (
     <div>

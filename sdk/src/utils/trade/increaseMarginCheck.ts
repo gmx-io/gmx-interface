@@ -12,6 +12,7 @@ export enum PositionMarginFailureReason {
   NonPositiveRemainingMargin = "< 0",
   MinCollateralForLeverage = "min collateral for leverage",
   InsufficientCollateralUsd = "insufficient collateral usd",
+  UnableToWithdrawCollateral = "unable to withdraw collateral",
   MaxAllowedLeverage = "max allowed leverage",
 }
 
@@ -42,13 +43,14 @@ export type PositionMarginStateParams = {
   isLong: boolean;
   userReferralInfo: UserReferralInfo | undefined;
   proDiscountFactor?: bigint;
+  shouldValidateMinCollateralUsd?: boolean;
 };
 
 /**
  * Port of `PositionUtils.isPositionLiquidatable` from the gmx-synthetics build deployed on Arbitrum
  * (release_2.2.1 @ 23c9d160: release-v2.2c plus MarketUtils.getPositivePnl in the per-position pnl cap)
  * for a position whose pending fees have just been settled — the state the contract validates right
- * after an increase.
+ * after an increase or a decrease.
  */
 export function getResultingPositionMarginState(p: PositionMarginStateParams): PositionMarginState {
   const {
@@ -62,6 +64,7 @@ export function getResultingPositionMarginState(p: PositionMarginStateParams): P
     isLong,
     userReferralInfo,
     proDiscountFactor,
+    shouldValidateMinCollateralUsd = true,
   } = p;
 
   const { indexToken } = marketInfo;
@@ -145,7 +148,7 @@ export function getResultingPositionMarginState(p: PositionMarginStateParams): P
     minCollateralUsdForLeverage,
   };
 
-  if (remainingCollateralUsd < minCollateralUsd) {
+  if (shouldValidateMinCollateralUsd && remainingCollateralUsd < minCollateralUsd) {
     return { ...state, isLiquidatable: true, reason: PositionMarginFailureReason.MinCollateral };
   }
 
@@ -189,6 +192,30 @@ function withPriceOverride<T extends TokenData>(token: T, indexToken: TokenData,
   return { ...token, prices: { minPrice: price, maxPrice: price } };
 }
 
+export function getMarketInfoAtIndexPrice(p: {
+  marketInfo: MarketInfo;
+  collateralToken: TokenData;
+  indexPrice: bigint | undefined;
+}): { marketInfo: MarketInfo; collateralToken: TokenData } {
+  const { marketInfo, collateralToken, indexPrice } = p;
+
+  if (indexPrice === undefined || indexPrice <= 0n) {
+    return { marketInfo, collateralToken };
+  }
+
+  const { indexToken } = marketInfo;
+
+  return {
+    marketInfo: {
+      ...marketInfo,
+      indexToken: withPriceOverride(indexToken, indexToken, indexPrice),
+      longToken: withPriceOverride(marketInfo.longToken, indexToken, indexPrice),
+      shortToken: withPriceOverride(marketInfo.shortToken, indexToken, indexPrice),
+    },
+    collateralToken: withPriceOverride(collateralToken, indexToken, indexPrice),
+  };
+}
+
 export type IncreaseResultingPositionState = {
   marginState: PositionMarginState;
   position: IncreasePositionState;
@@ -222,22 +249,15 @@ export function getIncreaseResultingPositionState(
     indexPriceForEvaluation,
   } = p;
 
-  let { marketInfo, collateralToken } = p;
-
   if (sizeDeltaUsd <= 0n || sizeDeltaInTokens <= 0n) {
     return undefined;
   }
 
-  if (indexPriceForEvaluation !== undefined && indexPriceForEvaluation > 0n) {
-    const originalIndexToken = marketInfo.indexToken;
-    marketInfo = {
-      ...marketInfo,
-      indexToken: withPriceOverride(marketInfo.indexToken, originalIndexToken, indexPriceForEvaluation),
-      longToken: withPriceOverride(marketInfo.longToken, originalIndexToken, indexPriceForEvaluation),
-      shortToken: withPriceOverride(marketInfo.shortToken, originalIndexToken, indexPriceForEvaluation),
-    };
-    collateralToken = withPriceOverride(collateralToken, originalIndexToken, indexPriceForEvaluation);
-  }
+  const { marketInfo, collateralToken } = getMarketInfoAtIndexPrice({
+    marketInfo: p.marketInfo,
+    collateralToken: p.collateralToken,
+    indexPrice: indexPriceForEvaluation,
+  });
 
   const { indexToken } = marketInfo;
 

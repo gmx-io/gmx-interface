@@ -505,7 +505,7 @@ export type EditCollateralMetricData = {
   initialCollateralTokenAddress: string | undefined;
   initialCollateralSymbol: string | undefined;
   initialCollateralDeltaAmount: number | undefined;
-  swapPath: [];
+  swapPath: string[];
   isLong: boolean | undefined;
   orderType: OrderType | undefined;
   executionFee: number | undefined;
@@ -555,6 +555,25 @@ export type SwapGLVMetricData = {
   glvTokenAmount: number | undefined;
   glvTokenUsd: number | undefined;
   isFirstBuy: boolean | undefined;
+};
+
+// Token permits
+export type TokenPermitOutcome = "signed" | "rejected" | "failedCheck" | "fallback" | "executed";
+
+/** Unset for permits signed in place of an approval transaction */
+export type TokenPermitFlow = "oneClickActivation";
+
+export type TokenPermitEvent = {
+  event: "tokenPermit";
+  isError: boolean;
+  data: {
+    outcome: TokenPermitOutcome;
+    chainId: number;
+    token: string;
+    accountType: string | undefined;
+    reason?: string;
+    flow?: TokenPermitFlow;
+  };
 };
 
 // Missed coins
@@ -749,7 +768,7 @@ export type StakingActionEvent = {
   event: "staking.action";
   isError: false;
   data: {
-    action: "stake" | "unstake" | "claim" | "compound";
+    action: "stake" | "unstake" | "unstakeRequest" | "unstakeCancel" | "unstakeWithdraw" | "claim" | "compound";
     tokenSymbol: string | undefined;
     outcome: "sent" | "rejected" | "failed";
     chainId: number;

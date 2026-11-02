@@ -590,7 +590,7 @@ export const selectTradeboxSetTradeConfig = (s: SyntheticsState) => s.tradebox.s
 export const selectTradeboxSetKeepLeverage = (s: SyntheticsState) => s.tradebox.setKeepLeverage;
 const selectTradeboxSetFromTokenAddress = (s: SyntheticsState) => s.tradebox.setFromTokenAddress;
 const selectTradeboxSetTradeMode = (s: SyntheticsState) => s.tradebox.setTradeMode;
-const selectTradeboxSetIsFromTokenGmxAccount = (s: SyntheticsState) => s.tradebox.setIsFromTokenGmxAccount;
+export const selectTradeboxSetIsFromTokenGmxAccount = (s: SyntheticsState) => s.tradebox.setIsFromTokenGmxAccount;
 export const selectTradeboxSetCollateralAddress = (s: SyntheticsState) => s.tradebox.setCollateralAddress;
 export const selectTradeboxAdvancedOptions = (s: SyntheticsState) => s.tradebox.advancedOptions;
 export const selectTradeboxSetAdvancedOptions = (s: SyntheticsState) => s.tradebox.setAdvancedOptions;
@@ -717,9 +717,9 @@ export const selectTradeboxFormState = createSelector((q) => {
 
 export const selectTradeboxIsTPSLEnabled = createSelector((q) => {
   const { limitOrTPSL } = q(selectTradeboxAdvancedOptions);
-  const { isSwap, isTrigger } = q(selectTradeboxTradeFlags);
+  const { isSwap, isTrigger, isTwap } = q(selectTradeboxTradeFlags);
 
-  return limitOrTPSL && !isSwap && !isTrigger;
+  return limitOrTPSL && !isSwap && !isTrigger && !isTwap;
 });
 
 export const selectTradeboxIsWrapOrUnwrap = createSelector((q) => {
@@ -847,7 +847,7 @@ export const selectTradeboxLeverageFieldValue = createSelector((q) => {
   return Number(estimatedLeverage) / BASIS_POINTS_DIVISOR;
 });
 
-const selectTradeboxLeverageStrategy = createSelector((q) => {
+export const selectTradeboxLeverageStrategy = createSelector((q) => {
   const isLeverageEnabled = q(selectIsLeverageSliderEnabled);
   const focusedInput = q(selectTradeboxFocusedInput);
   return isLeverageEnabled ? (focusedInput === "from" ? "leverageByCollateral" : "leverageBySize") : "independent";
@@ -2158,6 +2158,10 @@ export const selectTradeboxCloseSizeUsd = createSelector((q) => {
 
 const selectTradeboxSwapFeesPercentage = createSelector((q) => {
   const swapAmounts = q(selectTradeboxSwapAmounts);
+
+  if (swapAmounts?.swapStrategy.type === "externalSwap") {
+    return q(selectTradeboxFees)?.externalSwapFee?.precisePercentage ?? 0n;
+  }
 
   if (
     swapAmounts === undefined ||

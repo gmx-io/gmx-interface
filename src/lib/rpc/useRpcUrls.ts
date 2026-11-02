@@ -15,7 +15,7 @@ import {
   RPC_TRACKER_CONFIG_FOR_CONTRACTS_CHAINS,
   RPC_TRACKER_CONFIG_FOR_SOURCE_CHAINS,
 } from "config/rpc";
-import { getIsLargeAccount } from "domain/stats/isLargeAccount";
+import { getIsLargeAccountChain } from "domain/stats/isLargeAccount";
 import { addFallbackTrackerListener } from "lib/FallbackTracker/events";
 import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
 import { subscribeForRpcTrackerMetrics } from "lib/metrics/rpcTrackerMetrics";
@@ -93,7 +93,7 @@ class RpcTrackersRegistry {
 
     // Check rpc providers existence to throw an error if no providers are configured for chainId
     const defaultRpcProviders = getRpcProviders(chainId, "default")?.map((p) => p.url);
-    const privateRpcProviders = getIsLargeAccount()
+    const privateRpcProviders = getIsLargeAccountChain(chainId)
       ? getRpcProviders(chainId, "largeAccount")?.map((p) => p.url)
       : getRpcProviders(chainId, "fallback")?.map((p) => p.url);
 
