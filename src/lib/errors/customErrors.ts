@@ -98,8 +98,12 @@ export function getIsInvalidSignatureError(error: ErrorLike) {
   };
 }
 
-export function getIsInvalidSubaccountApprovalNonceError(error: ErrorLike) {
-  return parseError(error)?.contractError === "InvalidSubaccountApprovalNonce";
+export function getIsOutdatedSubaccountApprovalError(error: ErrorLike) {
+  const contractError = parseError(error)?.contractError;
+
+  return (
+    contractError === "InvalidSubaccountApprovalNonce" || contractError === "InvalidSubaccountApprovalRevocationCounter"
+  );
 }
 
 export function getIsPermitSignatureErrorOnSimulation(error: ErrorLike) {
