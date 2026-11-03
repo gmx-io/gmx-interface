@@ -626,7 +626,16 @@ export default function Tooltip<T extends ElementType>({
 export function TooltipUnderline() {
   return (
     <svg className="Tooltip-underline absolute -bottom-0 left-0 h-1 w-full overflow-hidden">
-      <line stroke="currentColor" x1="0" y1="0" x2="100%" y2="0" strokeWidth="0.75" strokeDasharray="1.25,2.25" />
+      <line
+        stroke="currentColor"
+        strokeOpacity="0.5"
+        x1="0"
+        y1="0.5"
+        x2="100%"
+        y2="0.5"
+        strokeWidth="1"
+        strokeDasharray="1,2"
+      />
     </svg>
   );
 }

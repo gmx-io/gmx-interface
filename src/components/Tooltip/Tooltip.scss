@@ -492,8 +492,3 @@ $shadow-shape-bottom: shadow-shape(100%, calc(100% + #{$pointer-box-height}));
 
 // Standard triggers: a 1px gray dotted line (Stroke/Secondary in the Figma DS library, the same in both themes).
 // The line sits on the top edge of a 1px-tall svg, so it moves down half a pixel to show in full.
-.Tooltip-handle--standard .Tooltip-underline line {
-  stroke: #a0a3c4;
-  stroke-width: 1;
-  transform: translateY(0.5px);
-}

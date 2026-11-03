@@ -400,7 +400,9 @@ const TableRow = memo(
           </span>
         </TableTd>
         <TableTd>
-          <AddressView size={20} address={position.account} breakpoint="XL" />
+          <div className="[&_.AddressView]:flex">
+            <AddressView size={20} address={position.account} breakpoint="XL" />
+          </div>
         </TableTd>
         <TableTd>
           <TooltipWithPortal
