@@ -1,4 +1,4 @@
-import { Plural, Trans } from "@lingui/macro";
+import { Plural, t, Trans } from "@lingui/macro";
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef } from "react";
 
 import {
@@ -50,7 +50,7 @@ import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
 
 import Button from "components/Button/Button";
-import Checkbox from "components/Checkbox/Checkbox";
+import Checkbox, { CheckboxBox } from "components/Checkbox/Checkbox";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import { OrderEditorContainer } from "components/OrderEditorContainer/OrderEditorContainer";
 import { Table, TableTh, TableTheadTr } from "components/Table/Table";
@@ -237,12 +237,16 @@ export function OrderList({
           <div className="flex flex-wrap items-center justify-between gap-8">
             {isContainerSmall ? (
               <div className="flex gap-8">
-                <Button variant="secondary" size="controlled" className="size-32 !p-0" onClick={onSelectAllOrders}>
-                  <Checkbox
-                    isPartialChecked={onlySomeOrdersSelected}
-                    isChecked={areAllOrdersSelected}
-                    setIsChecked={onSelectAllOrders}
-                  ></Checkbox>
+                <Button
+                  variant="secondary"
+                  size="controlled"
+                  className="group size-32 !p-0"
+                  role="checkbox"
+                  aria-checked={onlySomeOrdersSelected ? "mixed" : areAllOrdersSelected}
+                  aria-label={t`Select all orders`}
+                  onClick={onSelectAllOrders}
+                >
+                  <CheckboxBox isPartialChecked={onlySomeOrdersSelected} isChecked={areAllOrdersSelected} />
                 </Button>
                 <MarketFilterLongShort
                   asButton
@@ -306,6 +310,7 @@ export function OrderList({
                       isPartialChecked={onlySomeOrdersSelected}
                       isChecked={areAllOrdersSelected}
                       setIsChecked={onSelectAllOrders}
+                      aria-label={t`Select all orders`}
                     />
                   </TableTh>
                 )}

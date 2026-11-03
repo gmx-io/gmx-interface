@@ -36,9 +36,8 @@ const INTERACTIONS: { value: CheckboxInteraction; label: string }[] = [
   { value: "disabled", label: "Disabled" },
 ];
 
-// Preview of the Changelog step 4 hover border. stroke-accent doesn't exist until the Colors steps add it, so
-// typography-primary stands in.
-const HOVER_LOOK_CLASSNAME = "[&>span:first-child]:border-textIcon-primary";
+// Preview of the hover border (Changelog step 4)
+const HOVER_LOOK_CLASSNAME = "[&>span:first-child]:border-stroke-accent";
 
 // The checkbox doesn't style its label, so each screen sets its own text style. These examples use body text.
 const LABEL_CLASSNAME = "text-body-medium text-textIcon-secondary";

@@ -52,7 +52,7 @@ test("20.06 20.07 chart draws entry, liquidation, TP and SL lines for a mocked p
     ["LineToolPosition", "Long ETH/USD · liquidation", 1900],
   ];
   await expect.poll(lines, { timeout: 30_000 }).toEqual(expected);
-  const toggle = page.getByRole("button", { name: "Chart positions", exact: true });
+  const toggle = page.getByRole("checkbox", { name: "Chart positions", exact: true });
   await toggle.click();
   await expect.poll(lines).toEqual([]);
   await toggle.click();

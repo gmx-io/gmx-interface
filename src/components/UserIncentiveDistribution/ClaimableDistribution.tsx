@@ -40,7 +40,12 @@ export function ClaimableDistribution({
     <div className="rounded-8 bg-fill-surfaceElevated50 lg:pl-12">
       <div className="flex items-center justify-between rounded-t-8 border-b-1/2 border-stroke-primary p-12 lg:pl-0">
         <div className="flex items-center justify-between gap-4">
-          <Checkbox isChecked={selected} setIsChecked={() => onToggle(distributionId)} className="mr-4" />
+          <Checkbox
+            isChecked={selected}
+            setIsChecked={() => onToggle(distributionId)}
+            className="mr-4"
+            aria-label={getDistributionTitle(distributionId)}
+          />
           <span className="text-body-medium font-medium text-textIcon-primary">
             {getDistributionTitle(distributionId)}
           </span>

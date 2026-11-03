@@ -1,3 +1,4 @@
+import { t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback } from "react";
 
@@ -61,7 +62,12 @@ export function ClaimRewardRow({
   return (
     <tr className={cx(isSelectionDisabled && !isSelected && "opacity-50")}>
       <TableTd className="w-[20px] !pl-0">
-        <Checkbox isChecked={isSelected} setIsChecked={handleToggleSelect} disabled={isSelectionDisabled} />
+        <Checkbox
+          isChecked={isSelected}
+          setIsChecked={handleToggleSelect}
+          disabled={isSelectionDisabled}
+          aria-label={t`Select ${indexName} [${poolName}]`}
+        />
       </TableTd>
       <TableTd>
         <div className="flex items-center justify-between gap-8">

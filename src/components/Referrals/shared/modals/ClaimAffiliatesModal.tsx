@@ -60,6 +60,7 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
                     isChecked={state.isAllChecked}
                     setIsChecked={state.handleToggleSelectAll}
                     isPartialChecked={state.selectedMarketAddressesSet.size > 0 && !state.isAllChecked}
+                    aria-label={t`Select all markets`}
                   />
                 )}
               </TableTh>

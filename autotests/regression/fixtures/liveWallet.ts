@@ -37,7 +37,7 @@ export const test = browserTest.extend<
         const modal = page
           .locator(".Modal-content")
           .filter({ has: page.getByText("Share your GMX trade on X", { exact: true }) });
-        const preference = modal.getByRole("button", { name: "Don't show this again", exact: true });
+        const preference = modal.getByRole("checkbox", { name: "Don't show this again", exact: true });
         if (!(await preference.getAttribute("class"))?.split(/\s+/).includes("selected")) await preference.click();
         await expect(preference).toHaveClass(/selected/);
         await modal.locator(".Modal-close-button").click();

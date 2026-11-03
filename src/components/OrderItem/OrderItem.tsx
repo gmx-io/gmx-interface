@@ -710,7 +710,7 @@ function OrderItemLarge({
     >
       {!hideActions && onToggleOrder && (
         <TableTd className="cursor-pointer" onClick={onToggleOrder}>
-          <Checkbox isChecked={isSelected} setIsChecked={onToggleOrder} />
+          <Checkbox isChecked={isSelected} setIsChecked={onToggleOrder} aria-label={t`Select order`} />
         </TableTd>
       )}
       <TableTd onClick={onSelectOrderClick} className="cursor-pointer">
@@ -892,7 +892,7 @@ function OrderItemSmall({
             title
           ) : (
             <>
-              <Checkbox isChecked={isSelected} setIsChecked={onToggleOrder}></Checkbox>
+              <Checkbox isChecked={isSelected} setIsChecked={onToggleOrder} aria-label={t`Select order`} />
               {title}
             </>
           )}
