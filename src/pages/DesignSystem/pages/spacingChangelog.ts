@@ -3,10 +3,10 @@ import type { ChangelogStep } from "../DocsChangelog";
 
 // Rules for all steps: scope, how values move, order of work, known gaps
 export const SPACING_CHANGELOG_NOTES: string[] = [
-  "Scope: Tailwind spacing classes (padding, margin, gap, space, inset, top, right, bottom, left) off the scale in src and landing: 753 classes in 601 edits across 253 files, plus the two Tailwind configs; nothing here is done at origin/release 0f9e06e991.",
+  "Scope: Tailwind spacing classes (padding, margin, gap, space, inset, top, right, bottom, left) off the scale in src and landing: 753 classes in 602 edits across 253 files, plus the two Tailwind configs; nothing here is done at origin/release 0f9e06e991.",
   "Each edit: replace the find text with the replace text; line numbers are from origin/release, so after earlier steps match the find text.",
   "The scale: 0, 4, 8, 12, 16, 20, 24 inside components and 32, 40, 48, 56, 64, 80, 96, 120 for layout; the class number is px (p-8 = 8px).",
-  "A value rounds down to the step below, negatives toward 0: 1-3 → 0, 5-7 → 4, 9-11 → 8, 13-15 → 12, 17-19 → 16, 21-23 → 20, 25-31 → 24, 33-39 → 32, 41-47 → 40, 57-63 → 56, 97-119 → 96. A class that rounds to 0 is deleted, or becomes the 0 class (md:px-0) where it overrides another value.",
+  "A value rounds down to the step below (negatives toward 0), except 2 and 3, which go up to 4: 1 → 0, 2-3 → 4, 5-7 → 4, 9-11 → 8, 13-15 → 12, 17-19 → 16, 21-23 → 20, 25-31 → 24, 33-39 → 32, 41-47 → 40, 57-63 → 56, 97-119 → 96. A class that rounds to 0 is deleted, or becomes the 0 class (md:px-0) where it overrides another value.",
   "Arbitrary values become plain classes (mt-[57px] → mt-56, py-[120px] → py-120).",
   "A padding pair on one axis keeps its total where the scale allows it (pt-11 pb-9 → pt-12 pb-8); elements with a fixed height (h-, size-) keep it; matched values (a negative margin and its padding, centring offsets) move together. The edit notes mark these calls and the places that change size by 4px or more.",
   "Button steps 2, 7, 9 and 11 already move 11 of these classes (Button.tsx, ConnectWalletPlaceholder, NetworkDropdown, TradeHistoryRow, DailyAndCumulativePnLControls); four edits here are written for the text after Button steps 1 and 2, so do those first.",
@@ -47,13 +47,12 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
     goal: "Badges, tabs, inputs, the side menu, the header, the footer, tooltips and the other shared parts used on every screen. 103 classes in 78 edits across 44 files move to a step of the scale.",
     dependsOn: ["Button step 1"],
     edits: [
-      { file: "src/components/AlertInfo/AlertInfo.tsx", line: "46", find: '"pr-6 pt-2"', replace: '"pr-4"' },
+      { file: "src/components/AlertInfo/AlertInfo.tsx", line: "46", find: '"pr-6 pt-2"', replace: '"pr-4 pt-4"' },
       {
         file: "src/components/AmountWithUsd/AmountWithUsd.tsx",
-        line: "48-52",
-        find: '<span\n        className={cx("text-12 text-typography-secondary numbers group-hover/hoverable:text-[inherit]", {\n          "ml-2": multiline,\n        })}\n      >',
-        replace: '<span className="text-12 text-typography-secondary numbers group-hover/hoverable:text-[inherit]">',
-        note: "ml-2 was the only class in the cx object, so the object and cx() go and the tag fits on one line (prettier form).",
+        line: "50-51",
+        find: '"ml-2": multiline,\n        })}',
+        replace: '"ml-4": multiline,\n        })}',
       },
       {
         file: "src/components/AmountWithUsd/AmountWithUsd.tsx",
@@ -65,8 +64,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/AmountWithUsd/AmountWithUsd.tsx",
         line: "113-114",
         find: '"ml-2": multiline,\n          "pl-4": allowWrap,',
-        replace: '"pl-4": allowWrap,',
-        note: 'The whole "ml-2": multiline entry is deleted.',
+        replace: '"ml-4": multiline,\n          "pl-4": allowWrap,',
       },
       {
         file: "src/components/AmountWithUsd/AmountWithUsd.tsx",
@@ -92,8 +90,8 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         line: "16",
         find: '"text-body-small relative min-w-20 rounded-full bg-slate-700 px-6 py-2 font-medium text-typography-secondary"',
         replace:
-          '"text-body-small relative min-w-20 rounded-full bg-slate-700 px-4 font-medium text-typography-secondary"',
-        note: "Badge gets 4px shorter and 4px narrower.",
+          '"text-body-small relative min-w-20 rounded-full bg-slate-700 px-4 py-4 font-medium text-typography-secondary"',
+        note: "Badge gets 4px narrower and 4px taller.",
       },
       {
         file: "src/components/Badge/Badge.tsx",
@@ -106,8 +104,8 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/BlockField/BlockField.tsx",
         line: "100",
         find: '"flex items-center justify-between gap-10 rounded-4 bg-slate-800 px-8 py-[2px] leading-[20px]"',
-        replace: '"flex items-center justify-between gap-8 rounded-4 bg-slate-800 px-8 leading-[20px]"',
-        note: "Field row gets 4px shorter.",
+        replace: '"flex items-center justify-between gap-8 rounded-4 bg-slate-800 px-8 py-4 leading-[20px]"',
+        note: "Field row gets 4px taller.",
       },
       {
         file: "src/components/Breadcrumbs/Breadcrumbs.tsx",
@@ -136,8 +134,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         line: "18",
         find: '"absolute left-[2px] top-0 inline-flex h-full w-full items-center gap-8 rounded-full bg-slate-950/80 px-8 py-6 pr-16"',
         replace:
-          '"absolute left-0 top-0 inline-flex h-full w-full items-center gap-8 rounded-full bg-slate-950/80 px-8 py-4 pr-16"',
-        note: "Absolute overlay keeps left-0 (deleting would leave auto), so the 2px blue edge on its left goes.",
+          '"absolute left-4 top-0 inline-flex h-full w-full items-center gap-8 rounded-full bg-slate-950/80 px-8 py-4 pr-16"',
       },
       {
         file: "src/components/ColorfulBanner/ColorfulBanner.tsx",
@@ -149,8 +146,8 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/ColorfulBanner/ColorfulBanner.tsx",
         line: "82",
         find: '"h-fit shrink-0 p-2 text-typography-secondary hover:text-typography-primary"',
-        replace: '"h-fit shrink-0 text-typography-secondary hover:text-typography-primary"',
-        note: "The close button gets 4px smaller (20px to 16px, the icon size).",
+        replace: '"h-fit shrink-0 p-4 text-typography-secondary hover:text-typography-primary"',
+        note: "The close button grows from 20 to 24px, so a one-line banner gets 4px taller.",
       },
       {
         file: "src/components/DropdownSelector/DropdownSelector.tsx",
@@ -184,7 +181,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/ExternalLink/ExternalLink.tsx",
         line: "36",
         find: '"ml-4 mt-3 size-12 shrink-0 self-baseline align-baseline"',
-        replace: '"ml-4 size-12 shrink-0 self-baseline align-baseline"',
+        replace: '"ml-4 mt-4 size-12 shrink-0 self-baseline align-baseline"',
       },
       {
         file: "src/components/FavoriteTabs/FavoriteTabs.tsx",
@@ -201,25 +198,25 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
       },
       {
         file: "src/components/FavoriteTabs/RecentlyListedBadge.tsx",
-        line: "8-10",
-        find: '    <AnimatedGradientText\n      className={cx("inline-flex items-center gap-3 rounded-4 py-2 text-12 font-medium", className)}\n    >',
-        replace:
-          '    <AnimatedGradientText className={cx("inline-flex items-center rounded-4 text-12 font-medium", className)}>',
-        note: "New badge box gets 4px shorter (py-2 goes to 0).",
+        line: "9",
+        find: '"inline-flex items-center gap-3 rounded-4 py-2 text-12 font-medium"',
+        replace: '"inline-flex items-center gap-4 rounded-4 py-4 text-12 font-medium"',
+        note: "New badge box gets 4px taller (py-2 goes up to 4).",
       },
       {
         file: "src/components/Footer/constants.tsx",
         line: "48",
         find: '"rounded-2 bg-typography-secondary px-3 py-2 text-[8px] font-medium leading-1 text-white dark:text-black"',
-        replace: '"rounded-2 bg-typography-secondary text-[8px] font-medium leading-1 text-white dark:text-black"',
-        note: "Written after Button step 1 (adds leading-1); the V1 badge loses its padding, 6px narrower and 4px shorter.",
+        replace:
+          '"rounded-2 bg-typography-secondary px-4 py-4 text-[8px] font-medium leading-1 text-white dark:text-black"',
+        note: "Written after Button step 1 (adds leading-1); the V1 badge gets 4px taller and 2px wider and still fits the 32px button.",
       },
       { file: "src/components/Pagination/Pagination.tsx", line: "53", find: '"mt-25"', replace: '"mt-24"' },
       {
         file: "src/components/Pagination/Pagination.tsx",
         line: "77",
         find: '"ml-2 size-14 shrink-0"',
-        replace: '"size-14 shrink-0"',
+        replace: '"ml-4 size-14 shrink-0"',
       },
       {
         file: "src/components/ProgressRow/ProgressRow.tsx",
@@ -231,8 +228,8 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/SearchInput/SearchInput.tsx",
         line: "78",
         find: 'cx("relative p-2 text-typography-secondary")',
-        replace: 'cx("relative text-typography-secondary")',
-        note: "The search icon keeps its 18px box, so without p-2 the glyph draws 4px larger (14px to 18px).",
+        replace: 'cx("relative p-4 text-typography-secondary")',
+        note: "The search icon keeps its 18px box, so with p-4 the glyph draws 4px smaller (14px to 10px).",
       },
       {
         file: "src/components/SearchInput/SearchInput.tsx",
@@ -263,7 +260,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/SideNav/BottomMenuSection.tsx",
         line: "137",
         find: '"flex flex-col gap-2"',
-        replace: '"flex flex-col"',
+        replace: '"flex flex-col gap-4"',
       },
       {
         file: "src/components/SideNav/BottomMenuSection.tsx",
@@ -364,8 +361,8 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         line: "69",
         find: '"before:absolute before:bottom-2 before:left-0 before:top-2 before:z-0 before:bg-fill-surfaceElevated50"',
         replace:
-          '"before:absolute before:bottom-0 before:left-0 before:top-0 before:z-0 before:bg-fill-surfaceElevated50"',
-        note: "Offsets default to auto (top would jump to the static position), so both stay as 0 classes; with the out-of-scope h-[calc(100%-4px)] the row background now sits 2px higher.",
+          '"before:absolute before:bottom-4 before:left-0 before:top-4 before:z-0 before:bg-fill-surfaceElevated50"',
+        note: "Moved together; the out-of-scope h-[calc(100%-4px)] keeps the height, so the row background sits 2px lower (4px above, 0 below).",
       },
       {
         file: "src/components/Tabs/NestedTab.tsx",
@@ -379,15 +376,15 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/Tabs/NestedTab.tsx",
         line: "56",
         find: '"size-16 px-2 text-typography-secondary"',
-        replace: '"size-16 text-typography-secondary"',
-        note: "The chevron keeps its size-16 box, so without px-2 it draws 4px larger (12px to 16px).",
+        replace: '"size-16 px-4 text-typography-secondary"',
+        note: "The chevron keeps its size-16 box, so px-4 shrinks its drawing by 4px (12px to 8px).",
       },
       {
         file: "src/components/Tabs/NestedTab.tsx",
         line: "65",
         find: '"mt-1 size-16 px-2 text-typography-secondary"',
-        replace: '"size-16 text-typography-secondary"',
-        note: "Same chevron as line 56: without px-2 it draws 4px larger (12px to 16px).",
+        replace: '"size-16 px-4 text-typography-secondary"',
+        note: "Same chevron as line 56: px-4 shrinks its drawing by 4px (12px to 8px).",
       },
       {
         file: "src/components/Tabs/RegularTab.tsx",
@@ -431,16 +428,16 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/TokenIcon/TokenIcon.scss",
         line: "23-24",
         find: "// 2px border, 2px x and y offset\n  @include circle-badge-crop-out(14px, 4px, 4px);",
-        replace: "// 2px border, no x and y offset\n  @include circle-badge-crop-out(14px, 2px, 2px);",
-        note: "The crop-out hole moves 2px with the chain badge (TokenIcon.tsx:85), so its 2px ring stays even.",
+        replace: "// 2px border, 4px x and y offset\n  @include circle-badge-crop-out(14px, 6px, 6px);",
+        note: "The crop-out hole moves 2px out with the chain badge (TokenIcon.tsx:85), so its 2px ring stays even.",
       },
       {
         file: "src/components/TokenIcon/TokenIcon.tsx",
         line: "38",
         find: '"pointer-events-none absolute -bottom-8 -right-8 z-10 rounded-20 bg-slate-700 px-6 py-2 text-12 font-medium text-typography-secondary"',
         replace:
-          '"pointer-events-none absolute -bottom-8 -right-8 z-10 rounded-20 bg-slate-700 px-4 text-12 font-medium text-typography-secondary"',
-        note: "The text badge gets 4px shorter and 4px narrower.",
+          '"pointer-events-none absolute -bottom-8 -right-8 z-10 rounded-20 bg-slate-700 px-4 py-4 text-12 font-medium text-typography-secondary"',
+        note: "The text badge gets 4px taller and 4px narrower.",
       },
       {
         file: "src/components/TokenIcon/TokenIcon.tsx",
@@ -452,8 +449,8 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/TokenIcon/TokenIcon.tsx",
         line: "85",
         find: '"-bottom-2 -right-2"',
-        replace: '"bottom-0 right-0"',
-        note: "Kept as 0 classes because deleting would mean auto; the crop-out in TokenIcon.scss moves with them.",
+        replace: '"-bottom-4 -right-4"',
+        note: "The small chain badge sits 2px further out; the crop-out in TokenIcon.scss moves with it, so change both together.",
       },
       {
         file: "src/components/TokenIcon/TokenWithIcon.tsx",
@@ -465,8 +462,8 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/TokenSelector/ConnectWalletModalContent.tsx",
         line: "16",
         find: '"flex rounded-full bg-slate-800 p-2"',
-        replace: '"flex rounded-full bg-slate-800"',
-        note: "The wallet-icon pill gets 4px smaller (28px to 24px tall).",
+        replace: '"flex rounded-full bg-slate-800 p-4"',
+        note: "The wallet-icon pill gets 4px larger (28px to 32px tall).",
       },
       {
         file: "src/components/TokenSelector/MultichainMarketTokenSelector.tsx",
@@ -490,7 +487,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/TokenSelector/TokenSelector.tsx",
         line: "255",
         find: '"text-body-large flex flex-col items-end gap-2"',
-        replace: '"text-body-large flex flex-col items-end"',
+        replace: '"text-body-large flex flex-col items-end gap-4"',
       },
       {
         file: "src/components/TokenSelector/TokenSelector.tsx",
@@ -502,57 +499,57 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/TokenSymbolWithIcon/TokenSymbolWithIcon.tsx",
         line: "10",
         find: 'className="relative -top-3"',
-        replace: 'className="relative"',
+        replace: 'className="relative -top-4"',
       },
       {
         file: "src/components/Tooltip/LabelWithTooltip.tsx",
         line: "37",
         find: '"ml-2 inline-block size-16 align-middle"',
-        replace: '"inline-block size-16 align-middle"',
+        replace: '"ml-4 inline-block size-16 align-middle"',
       },
       {
         file: "src/components/Tooltip/Tooltip.tsx",
         line: "336",
         find: '"flex grow items-center gap-2"',
-        replace: '"flex grow items-center"',
+        replace: '"flex grow items-center gap-4"',
       },
       {
         file: "src/config/events.tsx",
         line: "533-535",
         find: '<img className="mt-3 h-12" src={sparkleIcon} alt="" />\n        <span>\n          <span className="block font-medium">Trading activity</span>',
         replace:
-          '<img className="h-12" src={sparkleIcon} alt="" />\n        <span>\n          <span className="block font-medium">Trading activity</span>',
+          '<img className="mt-4 h-12" src={sparkleIcon} alt="" />\n        <span>\n          <span className="block font-medium">Trading activity</span>',
       },
       {
         file: "src/config/events.tsx",
         line: "538-540",
         find: '<img className="mt-3 h-12" src={sparkleIcon} alt="" />\n        <span>\n          <span className="block font-medium">Referral volume</span>',
         replace:
-          '<img className="h-12" src={sparkleIcon} alt="" />\n        <span>\n          <span className="block font-medium">Referral volume</span>',
+          '<img className="mt-4 h-12" src={sparkleIcon} alt="" />\n        <span>\n          <span className="block font-medium">Referral volume</span>',
       },
       {
         file: "src/config/events.tsx",
         line: "543-545",
         find: '<img className="mt-3 h-12" src={sparkleIcon} alt="" />\n        <span>\n          <span className="block font-medium">Trader PnL</span>',
         replace:
-          '<img className="h-12" src={sparkleIcon} alt="" />\n        <span>\n          <span className="block font-medium">Trader PnL</span>',
+          '<img className="mt-4 h-12" src={sparkleIcon} alt="" />\n        <span>\n          <span className="block font-medium">Trader PnL</span>',
       },
       {
         file: "src/config/events.tsx",
         line: "548-551",
         find: '<img className="mt-3 h-12" src={sparkleIcon} alt="" />\n        <span>\n          <span className="block font-medium">\n            GLV <span className="text-slate-100">[USDM-USDM]</span> liquidity',
         replace:
-          '<img className="h-12" src={sparkleIcon} alt="" />\n        <span>\n          <span className="block font-medium">\n            GLV <span className="text-slate-100">[USDM-USDM]</span> liquidity',
+          '<img className="mt-4 h-12" src={sparkleIcon} alt="" />\n        <span>\n          <span className="block font-medium">\n            GLV <span className="text-slate-100">[USDM-USDM]</span> liquidity',
       },
     ],
     verify: ["yarn tscheck", "yarn lint"],
     visible:
-      "Most gaps and paddings shrink by 1-2px. Badges, pills and menu rows get 2-6px shorter; tab rows keep their height where a pair keeps its total.",
+      "Most gaps and paddings move by 1-2px: 2-3px ones grow to 4px, 5-7px and 9-11px ones shrink. Badges get 4px taller where py-2 becomes py-4, menu and nav rows 4-6px shorter; tab rows keep their height where a pair keeps its total.",
   },
   {
     id: "spacing-change-trade",
     title: "3. Move the trade screen onto the scale",
-    goal: "The trade box, positions, orders, trade history, the chart header and market selector, and the TP/SL and leverage fields. 181 classes in 148 edits across 65 files move to a step of the scale.",
+    goal: "The trade box, positions, orders, trade history, the chart header and market selector, and the TP/SL and leverage fields. 181 classes in 149 edits across 65 files move to a step of the scale.",
     dependsOn: [],
     edits: [
       {
@@ -577,8 +574,8 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/BuyInputSection/BuyInputSection.tsx",
         line: "173",
         find: "`text-body-small flex cursor-text flex-col justify-between gap-2 rounded-8",
-        replace: "`text-body-small flex cursor-text flex-col justify-between rounded-8",
-        note: "Input box gets 4px shorter when the bottom row shows (2px otherwise).",
+        replace: "`text-body-small flex cursor-text flex-col justify-between gap-4 rounded-8",
+        note: "Input box gets 4px taller when the bottom row shows (2px otherwise).",
       },
       {
         file: "src/components/ChartTokenSelector/ChartTokenSelector.tsx",
@@ -591,13 +588,13 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/ChartTokenSelector/ChartTokenSelector.tsx",
         line: "143",
         find: '"flex gap-2 md:items-center md:gap-8"',
-        replace: '"flex md:items-center md:gap-8"',
+        replace: '"flex gap-4 md:items-center md:gap-8"',
       },
       {
         file: "src/components/ChartTokenSelector/ChartTokenSelector.tsx",
         line: "146",
         find: '"flex-col items-baseline gap-2"',
-        replace: '"flex-col items-baseline"',
+        replace: '"flex-col items-baseline gap-4"',
       },
       {
         file: "src/components/ChartTokenSelector/ChartTokenSelector.tsx",
@@ -632,8 +629,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/ChartTokenSelector/ChartTokenSelector.tsx",
         line: "855",
         find: '"pr-2"',
-        replace: '"pr-0"',
-        note: "pr-2 overrides the px-12 from rowVerticalPadding on mobile, so it stays as pr-0.",
+        replace: '"pr-4"',
       },
       {
         file: "src/components/ChartTokenSelector/ChartTokenSelector.tsx",
@@ -661,7 +657,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         find: '"inline-flex items-center gap-6">\n              <LongIcon width={12} className="relative top-1 mb-2 opacity-70" />',
         replace:
           '"inline-flex items-center gap-4">\n              <LongIcon width={12} className="relative opacity-70" />',
-        note: "The icon's top-1 and mb-2 cancel out, so both go and the icon does not move.",
+        note: "top-1 and mb-2 cancel out, so they go together and the icon stays centred (mb-4 alone would lift it 2px).",
       },
       {
         file: "src/components/ChartTokenSelector/ChartTokenSelector.tsx",
@@ -669,7 +665,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         find: '"inline-flex items-center gap-6">\n              <ShortIcon width={12} className="relative top-1 mb-2 opacity-70" />',
         replace:
           '"inline-flex items-center gap-4">\n              <ShortIcon width={12} className="relative opacity-70" />',
-        note: "The icon's top-1 and mb-2 cancel out, so both go and the icon does not move.",
+        note: "top-1 and mb-2 cancel out, so they go together and the icon stays centred (mb-4 alone would lift it 2px).",
       },
       {
         file: "src/components/ChartTokenSelector/ChartTokenSelector.tsx",
@@ -677,7 +673,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         find: '"inline-flex items-center justify-end gap-6">\n              <LongIcon width={12} className="relative top-1 mb-2 opacity-70" />',
         replace:
           '"inline-flex items-center justify-end gap-4">\n              <LongIcon width={12} className="relative opacity-70" />',
-        note: "The icon's top-1 and mb-2 cancel out, so both go and the icon does not move.",
+        note: "top-1 and mb-2 cancel out, so they go together and the icon stays centred (mb-4 alone would lift it 2px).",
       },
       {
         file: "src/components/ChartTokenSelector/ChartTokenSelector.tsx",
@@ -685,7 +681,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         find: '"inline-flex items-center justify-end gap-6">\n              <ShortIcon width={12} className="relative top-1 mb-2 opacity-70" />',
         replace:
           '"inline-flex items-center justify-end gap-4">\n              <ShortIcon width={12} className="relative opacity-70" />',
-        note: "The icon's top-1 and mb-2 cancel out, so both go and the icon does not move.",
+        note: "top-1 and mb-2 cancel out, so they go together and the icon stays centred (mb-4 alone would lift it 2px).",
       },
       {
         file: "src/components/ChartTokenSelector/ModeTabs.tsx",
@@ -697,18 +693,17 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
       },
       {
         file: "src/components/ChartTokenSelector/ModeTabs.tsx",
-        line: "65-68",
-        find: '    <div\n      ref={containerRef}\n      className="relative flex h-32 shrink-0 items-center gap-2 rounded-8 bg-slate-800 p-2 max-md:w-full"\n    >',
-        replace:
-          '    <div ref={containerRef} className="relative flex h-32 shrink-0 items-center rounded-8 bg-slate-800 max-md:w-full">',
-        note: "p-2 and gap-2 go with the thumb's top-2/bottom-2, so the tabs and thumb fill the h-32 track (28px to 32px tall, no inset) and the track is 6px narrower on desktop.",
+        line: "67",
+        find: '"relative flex h-32 shrink-0 items-center gap-2 rounded-8 bg-slate-800 p-2 max-md:w-full"',
+        replace: '"relative flex h-32 shrink-0 items-center gap-4 rounded-8 bg-slate-800 p-4 max-md:w-full"',
+        note: "Moved with the thumb's top-2/bottom-2; the h-32 track keeps its height, so the tabs and thumb get 4px shorter (28 to 24px).",
       },
       {
         file: "src/components/ChartTokenSelector/ModeTabs.tsx",
         line: "72",
         find: '"absolute bottom-2 top-2 rounded-6 bg-slate-600 transition-all duration-200 ease-out"',
-        replace: '"absolute bottom-0 top-0 rounded-6 bg-slate-600 transition-all duration-200 ease-out"',
-        note: "The absolute thumb needs both edges set, so bottom-2/top-2 become bottom-0/top-0 (not deleted), moving with the track's p-2.",
+        replace: '"absolute bottom-4 top-4 rounded-6 bg-slate-600 transition-all duration-200 ease-out"',
+        note: "Moved with the track's p-2, so the thumb stays as tall as the tabs.",
       },
       {
         file: "src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx",
@@ -754,10 +749,15 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
       },
       {
         file: "src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx",
-        line: "64-66",
-        find: '        isStacked\n          ? "inline-flex flex-col items-end gap-2"\n          : "inline-flex flex-wrap items-center justify-end gap-x-4 gap-y-2",',
-        replace:
-          '        isStacked ? "inline-flex flex-col items-end" : "inline-flex flex-wrap items-center justify-end gap-x-4",',
+        line: "65",
+        find: '"inline-flex flex-col items-end gap-2"',
+        replace: '"inline-flex flex-col items-end gap-4"',
+      },
+      {
+        file: "src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx",
+        line: "66",
+        find: '"inline-flex flex-wrap items-center justify-end gap-x-4 gap-y-2"',
+        replace: '"inline-flex flex-wrap items-center justify-end gap-x-4 gap-y-4"',
       },
       {
         file: "src/components/GasPaymentTokenSelector/GasPaymentTokenSelector.tsx",
@@ -819,8 +819,8 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/MaxActions/MaxActions.tsx",
         line: "117",
         find: '"whitespace-nowrap rounded-full px-8 py-2 text-12 font-medium transition-colors"',
-        replace: '"whitespace-nowrap rounded-full px-8 text-12 font-medium transition-colors"',
-        note: "Max / Keep gas pill loses py-2 and gets 4px shorter.",
+        replace: '"whitespace-nowrap rounded-full px-8 py-4 text-12 font-medium transition-colors"',
+        note: "Max / Keep gas pill gets 4px taller (py-2 to py-4).",
       },
       {
         file: "src/components/NetRateChart/NetRateChart.tsx",
@@ -902,14 +902,15 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/OrderItem/OrderItem.tsx",
         line: "1058",
         find: '"flex flex-wrap items-center gap-x-6 gap-y-2"',
-        replace: '"flex flex-wrap items-center gap-x-4"',
+        replace: '"flex flex-wrap items-center gap-x-4 gap-y-4"',
       },
       {
         file: "src/components/OrderItem/OrderItem.tsx",
         line: "1063",
         find: '"min-w-0 cursor-help truncate rounded-4 bg-yellow-300/20 px-4 py-2 text-12 font-medium text-yellow-300"',
-        replace: '"min-w-0 cursor-help truncate rounded-4 bg-yellow-300/20 px-4 text-12 font-medium text-yellow-300"',
-        note: "Frozen badge loses py-2 and gets 4px shorter.",
+        replace:
+          '"min-w-0 cursor-help truncate rounded-4 bg-yellow-300/20 px-4 py-4 text-12 font-medium text-yellow-300"',
+        note: "Frozen badge gets 4px taller (py-2 to py-4).",
       },
       {
         file: "src/components/OrdersModal/AddTPSLModal.tsx",
@@ -939,30 +940,27 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/OrdersModal/TPSLInputRow.tsx",
         line: "465",
         find: '"flex flex-1 cursor-text flex-col justify-between gap-2 rounded-4 border bg-slate-800 px-8 py-3 text-13"',
-        replace: '"flex flex-1 cursor-text flex-col justify-between rounded-4 border bg-slate-800 px-8 text-13"',
-        note: "Compact price box loses py-3 and gets 6px shorter.",
+        replace:
+          '"flex flex-1 cursor-text flex-col justify-between gap-4 rounded-4 border bg-slate-800 px-8 py-4 text-13"',
       },
       {
         file: "src/components/OrdersModal/TPSLInputRow.tsx",
         line: "494",
         find: '"text-body-small relative flex grow cursor-text flex-col justify-between gap-2 rounded-4 border bg-slate-800 px-8 py-3"',
         replace:
-          '"text-body-small relative flex grow cursor-text flex-col justify-between rounded-4 border bg-slate-800 px-8"',
-        note: "Compact gain/loss box loses py-3 and gets 6px shorter, same as the price box beside it.",
+          '"text-body-small relative flex grow cursor-text flex-col justify-between gap-4 rounded-4 border bg-slate-800 px-8 py-4"',
       },
       {
         file: "src/components/OrdersModal/TPSLInputRow.tsx",
         line: "537",
         find: '"flex flex-1 cursor-text flex-col gap-2 rounded-8 border bg-slate-800 px-8 py-6"',
-        replace: '"flex flex-1 cursor-text flex-col rounded-8 border bg-slate-800 px-8 py-4"',
-        note: "Price box gets 6px shorter (py-6 to py-4, gap-2 gone).",
+        replace: '"flex flex-1 cursor-text flex-col gap-4 rounded-8 border bg-slate-800 px-8 py-4"',
       },
       {
         file: "src/components/OrdersModal/TPSLInputRow.tsx",
         line: "579",
         find: '"flex flex-1 cursor-text flex-col gap-2 rounded-8 border border-slate-800 bg-slate-800 px-8 py-6"',
-        replace: '"flex flex-1 cursor-text flex-col rounded-8 border border-slate-800 bg-slate-800 px-8 py-4"',
-        note: "Gain/loss box gets 6px shorter (py-6 to py-4, gap-2 gone), same as the price box beside it.",
+        replace: '"flex flex-1 cursor-text flex-col gap-4 rounded-8 border border-slate-800 bg-slate-800 px-8 py-4"',
       },
       {
         file: "src/components/OrdersModal/TPSLInputRow.tsx",
@@ -1012,19 +1010,20 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/PositionItem/PositionItem.tsx",
         line: "616",
         find: '"muted mr-4 rounded-2 px-2 pb-1 numbers"',
-        replace: '"muted mr-4 rounded-2 numbers"',
+        replace: '"muted mr-4 rounded-2 px-4 numbers"',
+        note: "Leverage label gets 4px wider (px-2 to px-4).",
       },
       {
         file: "src/components/PositionItem/PositionItem.tsx",
         line: "626",
         find: '"flex flex-col gap-2"',
-        replace: '"flex flex-col"',
+        replace: '"flex flex-col gap-4"',
       },
       {
         file: "src/components/PositionItem/PositionItem.tsx",
         line: "654",
         find: '"text-body-small flex items-center gap-2 numbers"',
-        replace: '"text-body-small flex items-center numbers"',
+        replace: '"text-body-small flex items-center gap-4 numbers"',
       },
       {
         file: "src/components/PositionItem/PositionItem.tsx",
@@ -1043,13 +1042,13 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/PositionItem/PositionItem.tsx",
         line: "822",
         find: '"flex items-center gap-2 numbers"',
-        replace: '"flex items-center numbers"',
+        replace: '"flex items-center gap-4 numbers"',
       },
       {
         file: "src/components/PositionItem/PositionItem.tsx",
         line: "831",
         find: '"mt-2 size-16 shrink-0"',
-        replace: '"size-16 shrink-0"',
+        replace: '"mt-4 size-16 shrink-0"',
       },
       {
         file: "src/components/PositionItem/PositionItem.tsx",
@@ -1061,7 +1060,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/PositionItem/PositionItemOrders.tsx",
         line: "87",
         find: '"relative top-3 size-6 rounded-full"',
-        replace: '"relative size-6 rounded-full"',
+        replace: '"relative top-4 size-6 rounded-full"',
       },
       {
         file: "src/components/PositionItem/PositionItemOrders.tsx",
@@ -1074,36 +1073,32 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         line: "89",
         find: '              : "ml-8 gap-2 rounded-full border border-slate-500 px-8 py-3 text-12 font-medium text-typography-secondary hover:border-typography-primary hover:text-typography-primary"',
         replace:
-          '              : "ml-8 rounded-full border border-slate-500 px-8 text-12 font-medium text-typography-secondary hover:border-typography-primary hover:text-typography-primary"',
-        note: 'The "Set" pill (mobile card) gets 6px shorter.',
+          '              : "ml-8 gap-4 rounded-full border border-slate-500 px-8 py-4 text-12 font-medium text-typography-secondary hover:border-typography-primary hover:text-typography-primary"',
       },
       {
         file: "src/components/PositionItem/PositionItemTPSLCell.tsx",
         line: "106",
         find: '"flex flex-col gap-2"',
-        replace: '"flex flex-col"',
+        replace: '"flex flex-col gap-4"',
       },
       {
         file: "src/components/PositionItem/PositionItemTPSLCell.tsx",
         line: "115",
         find: '<span className="ml-2">({tpCount})</span>',
-        replace: "<span>({tpCount})</span>",
-        note: "The className would be empty, so the attribute is dropped.",
+        replace: '<span className="ml-4">({tpCount})</span>',
       },
       {
         file: "src/components/PositionItem/PositionItemTPSLCell.tsx",
         line: "129",
         find: '<span className="ml-2">({slCount})</span>',
-        replace: "<span>({slCount})</span>",
-        note: "The className would be empty, so the attribute is dropped.",
+        replace: '<span className="ml-4">({slCount})</span>',
       },
       {
         file: "src/components/PositionItem/PositionItemTPSLCell.tsx",
         line: "144-145",
         find: '"ml-8 gap-2 rounded-full border border-slate-500 px-8 py-3 text-12 font-medium text-typography-secondary hover:border-typography-primary hover:text-typography-primary"\n        )}',
         replace:
-          '"ml-8 rounded-full border border-slate-500 px-8 text-12 font-medium text-typography-secondary hover:border-typography-primary hover:text-typography-primary"\n        )}',
-        note: 'The "Set" pill (desktop table) gets 6px shorter, same as line 89.',
+          '"ml-8 gap-4 rounded-full border border-slate-500 px-8 py-4 text-12 font-medium text-typography-secondary hover:border-typography-primary hover:text-typography-primary"\n        )}',
       },
       {
         file: "src/components/PositionSeller/PositionSeller.tsx",
@@ -1129,13 +1124,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         find: 'valueClassName="-my-5"',
         replace: 'valueClassName="-my-4"',
       },
-      {
-        file: "src/components/PositionShare/PositionShareCard.tsx",
-        line: "69",
-        find: '<span className="ml-2">',
-        replace: "<span>",
-        note: "The className would be empty, so the attribute is dropped.",
-      },
+      { file: "src/components/PositionShare/PositionShareCard.tsx", line: "69", find: '"ml-2"', replace: '"ml-4"' },
       {
         file: "src/components/PositionShare/PositionShareCard.tsx",
         line: "87",
@@ -1182,20 +1171,20 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/TVChart/ChartHeader.tsx",
         line: "166",
         find: '"flex flex-col items-end gap-2"',
-        replace: '"flex flex-col items-end"',
+        replace: '"flex flex-col items-end gap-4"',
       },
       {
         file: "src/components/TVChart/ChartHeader.tsx",
         line: "426-427",
         find: '<div className="flex flex-col justify-center gap-2">\n            <div className="text-body-medium numbers">{avgPrice}</div>',
         replace:
-          '<div className="flex flex-col justify-center">\n            <div className="text-body-medium numbers">{avgPrice}</div>',
+          '<div className="flex flex-col justify-center gap-4">\n            <div className="text-body-medium numbers">{avgPrice}</div>',
       },
       {
         file: "src/components/TVChart/ChartHeader.tsx",
         line: "438-439",
         find: 'return (\n    <div className="flex flex-col justify-center gap-2">',
-        replace: 'return (\n    <div className="flex flex-col justify-center">',
+        replace: 'return (\n    <div className="flex flex-col justify-center gap-4">',
       },
       {
         file: "src/components/TVChart/useChartHeaderFormattedValues.tsx",
@@ -1229,7 +1218,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         line: "33",
         find: '"leading-none pointer-events-none absolute z-10 box-border flex flex-col items-center gap-2 whitespace-nowrap rounded-2 bg-[#131722] px-8 py-4 text-11 font-medium text-white dark:bg-[#363a45]"',
         replace:
-          '"leading-none pointer-events-none absolute z-10 box-border flex flex-col items-center whitespace-nowrap rounded-2 bg-[#131722] px-8 py-4 text-11 font-medium text-white dark:bg-[#363a45]"',
+          '"leading-none pointer-events-none absolute z-10 box-border flex flex-col items-center gap-4 whitespace-nowrap rounded-2 bg-[#131722] px-8 py-4 text-11 font-medium text-white dark:bg-[#363a45]"',
       },
       {
         file: "src/components/TableMarketFilter/MarketFilterBase.tsx",
@@ -1246,9 +1235,8 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
       {
         file: "src/components/TableMarketFilter/MarketFilterLongShort.tsx",
         line: "252",
-        find: '<span className="mr-3">',
-        replace: "<span>",
-        note: "The className would be empty, so it goes with mr-3.",
+        find: 'className="mr-3"',
+        replace: 'className="mr-4"',
       },
       {
         file: "src/components/TableOptionsFilter/flat.tsx",
@@ -1267,8 +1255,8 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/TradeBox/Curtain.tsx",
         line: "304",
         find: '"mb-2 border-t-1/2 bg-slate-900": isOpen,',
-        replace: '"border-t-1/2 bg-slate-900": isOpen,',
-        note: "mb-2 offset the header's translate-y-2, which stays, so the open header now covers the top 2px of the content.",
+        replace: '"mb-4 border-t-1/2 bg-slate-900": isOpen,',
+        note: "mb-2 offset the header's translate-y-2 (a transform, not in scope), so mb-4 opens a 2px gap under the open header.",
       },
       {
         file: "src/components/TradeBox/Curtain.tsx",
@@ -1302,7 +1290,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/TradeBox/SwapSlippageField.tsx",
         line: "171",
         find: '"bg-transparent mr-2 w-24 p-0 text-right text-12 outline-none placeholder:text-typography-secondary"',
-        replace: '"bg-transparent w-24 p-0 text-right text-12 outline-none placeholder:text-typography-secondary"',
+        replace: '"bg-transparent mr-4 w-24 p-0 text-right text-12 outline-none placeholder:text-typography-secondary"',
       },
       {
         file: "src/components/TradeBox/TradeBox.tsx",
@@ -1391,8 +1379,9 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx",
         line: "48",
         find: '"inline-flex items-center gap-3 rounded-4 bg-blue-300/20 px-6 py-2 text-12 font-medium text-blue-300"',
-        replace: '"inline-flex items-center rounded-4 bg-blue-300/20 px-4 text-12 font-medium text-blue-300"',
-        note: "The MegaETH points badge gets 4px shorter and 7px narrower; with gap-3 gone the sparkle touches the text.",
+        replace:
+          '"inline-flex items-center gap-4 rounded-4 bg-blue-300/20 px-4 py-4 text-12 font-medium text-blue-300"',
+        note: "The MegaETH points badge gets 4px taller and 3px narrower.",
       },
       {
         file: "src/components/TradeBox/tradeboxConstants.tsx",
@@ -1445,7 +1434,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/TradeInfoIcon/TradeInfoIcon.tsx",
         line: "34",
         find: '"text-body-medium flex list-disc flex-col gap-2"',
-        replace: '"text-body-medium flex list-disc flex-col"',
+        replace: '"text-body-medium flex list-disc flex-col gap-4"',
       },
       {
         file: "src/components/TradeInfoIcon/TradeInfoIcon.tsx",
@@ -1463,14 +1452,15 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/TradeboxMarginFields/TradeInputBox.tsx",
         line: "45",
         find: '"flex cursor-text flex-col gap-2 overflow-hidden rounded-8 border border-slate-800 bg-slate-800 pb-8 pt-10"',
-        replace: '"flex cursor-text flex-col overflow-hidden rounded-8 border border-slate-800 bg-slate-800 py-8"',
-        note: "Pair total 18 can't be kept on the scale, so both round down (pb-8 pt-10 → py-8); with gap-2 gone too the box gets 4px shorter.",
+        replace:
+          '"flex cursor-text flex-col gap-4 overflow-hidden rounded-8 border border-slate-800 bg-slate-800 py-8"',
+        note: "Pair total 18 can't be kept on the scale, so both round down (pb-8 pt-10 → py-8).",
       },
       {
         file: "src/components/TradeboxMarginFields/TradeInputBox.tsx",
         line: "62",
         find: '"flex min-w-0 grow flex-col gap-2 pl-12"',
-        replace: '"flex min-w-0 grow flex-col pl-12"',
+        replace: '"flex min-w-0 grow flex-col gap-4 pl-12"',
       },
       {
         file: "src/components/TwapRows/TwapRows.tsx",
@@ -1510,14 +1500,14 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         line: "37-40",
         find: '<span className="ml-2 text-12 leading-1 text-typography-secondary">[{poolName}]</span>\n      </span>\n    );\n    return title;',
         replace:
-          '<span className="text-12 leading-1 text-typography-secondary">[{poolName}]</span>\n      </span>\n    );\n    return title;',
+          '<span className="ml-4 text-12 leading-1 text-typography-secondary">[{poolName}]</span>\n      </span>\n    );\n    return title;',
       },
       {
         file: "src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx",
         line: "80-84",
         find: '<span className="ml-2 text-12 leading-1 text-typography-secondary">[{poolName}]</span>\n      </span>\n    );\n\n    return title;',
         replace:
-          '<span className="text-12 leading-1 text-typography-secondary">[{poolName}]</span>\n      </span>\n    );\n\n    return title;',
+          '<span className="ml-4 text-12 leading-1 text-typography-secondary">[{poolName}]</span>\n      </span>\n    );\n\n    return title;',
       },
       {
         file: "src/pages/SyntheticsPage/SyntheticsPage.tsx",
@@ -1528,7 +1518,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
     ],
     verify: ["yarn tscheck", "yarn lint"],
     visible:
-      "Most gaps and paddings shrink by 1-2px. Some fields, pills and menu rows get 4-6px shorter; the Perpetuals / Swap switch in the market selector loses its 2px inset.",
+      "Most gaps and paddings move by 1-2px. Menu rows, filter bars and some fields get 4px shorter; small pills like Max / Keep gas get 4px taller; the Perpetuals / Swap switch keeps a 4px inset (its tabs 24px tall).",
   },
   {
     id: "spacing-change-earn",
@@ -1546,7 +1536,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/AprInfo/AprInfo.tsx",
         line: "122",
         find: '"relative -top-3 h-10"',
-        replace: '"relative h-10"',
+        replace: '"relative -top-4 h-10"',
       },
       {
         file: "src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx",
@@ -1558,7 +1548,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx",
         line: "154",
         find: '"relative -top-3 h-10"',
-        replace: '"relative h-10"',
+        replace: '"relative -top-4 h-10"',
       },
       {
         file: "src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx",
@@ -1608,14 +1598,14 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/Earn/Portfolio/AssetsList/AssetsList.tsx",
         line: "132",
         find: '"text-body-large p-20 pb-2 font-medium text-typography-primary"',
-        replace: '"text-body-large p-20 pb-0 font-medium text-typography-primary"',
-        note: "pb-0 has to stay because p-20 would set the bottom to 20; the 20+2 total can't be kept on the scale.",
+        replace: '"text-body-large p-20 pb-4 font-medium text-typography-primary"',
+        note: "The 20+2 total can't be kept on the scale, so the bottom rounds up to 4 on its own.",
       },
       {
         file: "src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx",
         line: "74",
         find: '"flex min-w-0 flex-col gap-2 px-8 first:pl-0 last:pr-0"',
-        replace: '"flex min-w-0 flex-col px-8 first:pl-0 last:pr-0"',
+        replace: '"flex min-w-0 flex-col gap-4 px-8 first:pl-0 last:pr-0"',
       },
       {
         file: "src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx",
@@ -1623,7 +1613,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         find: '"grid grid-cols-3 divide-x-1/2 divide-dashed divide-slate-600 rounded-8 border-1/2 border-dashed border-slate-600 bg-slate-900/[0.88] px-12 py-6"',
         replace:
           '"grid grid-cols-3 divide-x-1/2 divide-dashed divide-slate-600 rounded-8 border-1/2 border-dashed border-slate-600 bg-slate-900/[0.88] px-12 py-4"',
-        note: "Earnings strip gets 4px shorter (6px together with the cell gap on line 74).",
+        note: "Earnings strip gets 2px shorter overall: 4px less padding, 2px more cell gap on line 74.",
       },
       {
         file: "src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx",
@@ -1636,8 +1626,9 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx",
         line: "245",
         find: '"inline-flex w-fit items-center gap-3 rounded-4 bg-blue-300/20 px-6 py-2 text-12 font-medium text-blue-300"',
-        replace: '"inline-flex w-fit items-center rounded-4 bg-blue-300/20 px-4 text-12 font-medium text-blue-300"',
-        note: "MegaETH points badge gets 4px shorter and 7px narrower (gap-3 and py-2 go to 0, px 6 to 4).",
+        replace:
+          '"inline-flex w-fit items-center gap-4 rounded-4 bg-blue-300/20 px-4 py-4 text-12 font-medium text-blue-300"',
+        note: "MegaETH points badge gets 4px taller and 3px narrower (py-2 and gap-3 go up to 4, px-6 down to 4).",
       },
       {
         file: "src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx",
@@ -1656,15 +1647,14 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
       {
         file: "src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx",
         line: "230",
-        find: '<div className="mt-2">',
-        replace: "<div>",
-        note: "The className would be empty, so the attribute is dropped.",
+        find: '"mt-2"',
+        replace: '"mt-4"',
       },
       {
         file: "src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx",
         line: "249",
         find: '"text-body-medium relative -top-2 whitespace-nowrap font-normal text-typography-secondary"',
-        replace: '"text-body-medium relative whitespace-nowrap font-normal text-typography-secondary"',
+        replace: '"text-body-medium relative -top-4 whitespace-nowrap font-normal text-typography-secondary"',
       },
       {
         file: "src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx",
@@ -1676,7 +1666,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/Earn/Portfolio/EarningsOverview/EarningsStat.tsx",
         line: "24",
         find: '"flex flex-col gap-2"',
-        replace: '"flex flex-col"',
+        replace: '"flex flex-col gap-4"',
       },
       {
         file: "src/components/Earn/Portfolio/EarningsOverview/EarningsStat.tsx",
@@ -1706,15 +1696,16 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx",
         line: "78",
         find: '"text-body-large p-20 pb-2 font-medium text-typography-primary"',
-        replace: '"text-body-large p-20 pb-0 font-medium text-typography-primary"',
-        note: "pb-0 has to stay because p-20 would set the bottom to 20; same as the My assets heading.",
+        replace: '"text-body-large p-20 pb-4 font-medium text-typography-primary"',
+        note: "Same as the My assets heading: the 20+2 total can't be kept, so the bottom rounds up to 4.",
       },
       {
         file: "src/components/GmList/GlvList.tsx",
         line: "94",
         find: '"inline-flex items-center gap-3 rounded-4 bg-blue-300/20 px-6 py-2 text-12 font-medium text-blue-300"',
-        replace: '"inline-flex items-center rounded-4 bg-blue-300/20 px-4 text-12 font-medium text-blue-300"',
-        note: "The MegaETH points badge gets 4px shorter and 7px narrower, the same change as the Launch boost badge.",
+        replace:
+          '"inline-flex items-center gap-4 rounded-4 bg-blue-300/20 px-4 py-4 text-12 font-medium text-blue-300"',
+        note: "The MegaETH points badge gets 4px taller and 3px narrower, the same change as the Launch boost badge.",
       },
       {
         file: "src/components/GmList/GmList.tsx",
@@ -1760,8 +1751,9 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/GmList/UsdgPoolBadges.tsx",
         line: "15",
         find: '"inline-flex items-center gap-3 rounded-4 bg-blue-300/20 px-6 py-2 text-12 font-medium text-blue-300"',
-        replace: '"inline-flex items-center rounded-4 bg-blue-300/20 px-4 text-12 font-medium text-blue-300"',
-        note: "The Launch boost badge gets 4px shorter and 7px narrower, the same change as the MegaETH points badge.",
+        replace:
+          '"inline-flex items-center gap-4 rounded-4 bg-blue-300/20 px-4 py-4 text-12 font-medium text-blue-300"',
+        note: "The Launch boost badge gets 4px taller and 3px narrower, the same change as the MegaETH points badge.",
       },
       {
         file: "src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx",
@@ -1816,7 +1808,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/GmSwap/GmSwapBox/SelectedPool.tsx",
         line: "22",
         find: '"flex items-center gap-2"',
-        replace: '"flex items-center"',
+        replace: '"flex items-center gap-4"',
       },
       {
         file: "src/components/GmSwap/GmSwapBox/SelectedPool.tsx",
@@ -1828,14 +1820,13 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/MarketStats/components/CompositionDiagram.tsx",
         line: "79",
         find: 'className="mr-2 h-8 w-8 shrink-0 grow rounded-full"',
-        replace: 'className="h-8 w-8 shrink-0 grow rounded-full"',
+        replace: 'className="mr-4 h-8 w-8 shrink-0 grow rounded-full"',
       },
       {
         file: "src/components/MarketStats/components/CompositionDiagram.tsx",
         line: "113",
         find: 'className="flex w-full gap-2"',
-        replace: 'className="flex w-full"',
-        note: "The composition bar loses its 2px gap, so the coloured segments now touch.",
+        replace: 'className="flex w-full gap-4"',
       },
       {
         file: "src/components/MarketStats/components/CompositionTable.tsx",
@@ -1855,7 +1846,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/MarketStats/components/CompositionTable.tsx",
         line: "85",
         find: '{isOpen ? <ChevronUpIcon className="mt-2 size-12" /> : <ChevronDownIcon className="mt-2 size-12" />}',
-        replace: '{isOpen ? <ChevronUpIcon className="size-12" /> : <ChevronDownIcon className="size-12" />}',
+        replace: '{isOpen ? <ChevronUpIcon className="mt-4 size-12" /> : <ChevronDownIcon className="mt-4 size-12" />}',
       },
       {
         file: "src/components/MarketsList/MarketsList.tsx",
@@ -1925,7 +1916,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/pages/PoolsDetails/PoolsDetailsMarketAmount.tsx",
         line: "63",
         find: '"flex flex-col gap-2"',
-        replace: '"flex flex-col"',
+        replace: '"flex flex-col gap-4"',
       },
       {
         file: "src/pages/SyntheticsStats/SyntheticsStats.tsx",
@@ -1936,7 +1927,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
     ],
     verify: ["yarn tscheck", "yarn lint"],
     visible:
-      "Most gaps and paddings shrink by 1-2px. Point and boost badges get 4px shorter and 7px narrower; some card rows get 4px shorter.",
+      "Most gaps and paddings move by 1-2px. Point and boost badges get 4px taller and 3px narrower; some card and claim rows get 4px shorter.",
   },
   {
     id: "spacing-change-account",
@@ -1955,7 +1946,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx",
         line: "90",
         find: '"ml-2 size-20 pt-2"',
-        replace: '"size-20"',
+        replace: '"ml-4 size-20 pt-4"',
       },
       {
         file: "src/components/BridgeModal/BridgeOutModal.tsx",
@@ -2047,7 +2038,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/GmxAccountModal/DepositStatusView.tsx",
         line: "117",
         find: 'className="flex flex-col gap-2"',
-        replace: 'className="flex flex-col"',
+        replace: 'className="flex flex-col gap-4"',
       },
       {
         file: "src/components/GmxAccountModal/DepositStatusView.tsx",
@@ -2123,7 +2114,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/GmxAccountModal/GmxAccountModalShared.tsx",
         line: "166",
         find: 'className="flex items-center gap-2"',
-        replace: 'className="flex items-center"',
+        replace: 'className="flex items-center gap-4"',
       },
       {
         file: "src/components/GmxAccountModal/MainView.tsx",
@@ -2147,7 +2138,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/GmxAccountModal/WalletReceiveOptionsView.tsx",
         line: "67",
         find: 'className="flex flex-col gap-2"',
-        replace: 'className="flex flex-col"',
+        replace: 'className="flex flex-col gap-4"',
       },
       {
         file: "src/components/GmxAccountModal/WalletReceiveView.tsx",
@@ -2262,13 +2253,13 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/NetworkDropdown/NetworkDropdown.tsx",
         line: "269",
         find: '"mr-[2.5px] size-[5px] rounded-full bg-green-300 shadow-[0_0_0_2.5px_rgb(var(--color-green-300-raw)/0.2)]"',
-        replace: '"size-[5px] rounded-full bg-green-300 shadow-[0_0_0_2.5px_rgb(var(--color-green-300-raw)/0.2)]"',
+        replace: '"mr-4 size-[5px] rounded-full bg-green-300 shadow-[0_0_0_2.5px_rgb(var(--color-green-300-raw)/0.2)]"',
       },
       {
         file: "src/components/NetworkDropdown/SolanaNetworkItem.tsx",
         line: "35",
         find: '"mr-[2.5px] size-[5px] rounded-full bg-green-300 shadow-[0_0_0_2.5px_rgb(var(--color-green-300-raw)/0.2)]"',
-        replace: '"size-[5px] rounded-full bg-green-300 shadow-[0_0_0_2.5px_rgb(var(--color-green-300-raw)/0.2)]"',
+        replace: '"mr-4 size-[5px] rounded-full bg-green-300 shadow-[0_0_0_2.5px_rgb(var(--color-green-300-raw)/0.2)]"',
       },
       {
         file: "src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx",
@@ -2280,8 +2271,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx",
         line: "150",
         find: '"mt-6 h-36 w-full bg-blue-600 py-3 text-typography-primary"',
-        replace: '"mt-4 h-36 w-full bg-blue-600 py-0 text-typography-primary"',
-        note: "py-3 becomes py-0 instead of going away, because the primary-action Button sets its own py.",
+        replace: '"mt-4 h-36 w-full bg-blue-600 py-4 text-typography-primary"',
       },
       {
         file: "src/components/PaxosTransit/TransitApprovalProposalAlert.tsx",
@@ -2323,15 +2313,13 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/SettingsModal/TradingSettings.tsx",
         line: "273-274",
         find: '<SettingsSection className="mt-2">\n          <div className="flex items-center justify-between">',
-        replace: '<SettingsSection>\n          <div className="flex items-center justify-between">',
-        note: "mt-2 was the only class, so the className attribute is dropped; this card now touches the one above (2px gap gone).",
+        replace: '<SettingsSection className="mt-4">\n          <div className="flex items-center justify-between">',
       },
       {
         file: "src/components/SettingsModal/TradingSettings.tsx",
         line: "312-313",
         find: '<SettingsSection className="mt-2">\n        <InputSetting',
-        replace: "<SettingsSection>\n        <InputSetting",
-        note: "mt-2 was the only class, so the className attribute is dropped; this card now touches the one above (2px gap gone).",
+        replace: '<SettingsSection className="mt-4">\n        <InputSetting',
       },
       {
         file: "src/components/SettingsModal/TradingSettings.tsx",
@@ -2357,15 +2345,15 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/SettingsModal/shared.tsx",
         line: "157",
         find: "`whitespace-nowrap rounded-full px-8 py-4 pb-3 text-[10px] font-medium`",
-        replace: "`whitespace-nowrap rounded-full px-8 pt-4 text-[10px] font-medium`",
-        note: "py-4 pb-3 (4 top + 3 bottom = 7) can't keep its total on the scale, so both round down: bottom goes to 0, the chip is 3px shorter and its text sits off-centre (py-4 is the alternative).",
+        replace: "`whitespace-nowrap rounded-full px-8 py-4 text-[10px] font-medium`",
+        note: "The 4+3 pair can't keep its 7px total, so pb-3 rounds up to 4 and merges into py-4.",
       },
       {
         file: "src/components/ShareModal/CreateReferralCode.tsx",
         line: "583",
         find: '"grow p-0 py-2 text-13 leading-[13px] placeholder:text-typography-secondary"',
-        replace: '"grow p-0 text-13 leading-[13px] placeholder:text-typography-secondary"',
-        note: "Deleted because p-0 on the input already gives 0; the input is 4px shorter but the field box only 1px, as the 16px icon sets its height.",
+        replace: '"grow p-0 py-4 text-13 leading-[13px] placeholder:text-typography-secondary"',
+        note: "The referral-code input gets 4px taller (17px to 21px), and its field box with it.",
       },
       {
         file: "src/components/ShareModal/ShareCardFrame.tsx",
@@ -2392,8 +2380,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/StatusNotification/GmStatusNotification.tsx",
         line: "434",
         find: '"ml-2 text-12 font-normal text-typography-primary"',
-        replace: '"text-12 font-normal text-typography-primary"',
-        note: "ml-2 was the only space before the [pool] tag (JSX drops the line break), so the tag now touches the market name.",
+        replace: '"ml-4 text-12 font-normal text-typography-primary"',
       },
       {
         file: "src/components/StatusNotification/OrderStatusNotification.tsx",
@@ -2417,8 +2404,8 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/TransactionStatus/TransactionStatus.tsx",
         line: "27",
         find: '"text-body-small flex w-full items-center justify-between gap-8 py-2 text-14"',
-        replace: '"text-body-small flex w-full items-center justify-between gap-8 text-14"',
-        note: "Each transaction status row gets 4px shorter.",
+        replace: '"text-body-small flex w-full items-center justify-between gap-8 py-4 text-14"',
+        note: "Each transaction status row gets 4px taller.",
       },
       {
         file: "src/components/TransactionStatus/TransactionStatus.tsx",
@@ -2429,16 +2416,14 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
       {
         file: "src/components/UserIncentiveDistribution/ClaimableDistribution.tsx",
         line: "43",
-        find: 'setIsChecked={() => onToggle(distributionId)} className="mr-2" />',
-        replace: "setIsChecked={() => onToggle(distributionId)} />",
-        note: "The className would be empty, so the attribute is dropped.",
+        find: 'className="mr-2"',
+        replace: 'className="mr-4"',
       },
       {
         file: "src/components/UserIncentiveDistribution/ClaimableDistribution.tsx",
         line: "68",
         find: '"flex gap-2 text-12"',
-        replace: '"flex text-12"',
-        note: "The amount and its (USD) value now touch: gap-2 was the only space between them.",
+        replace: '"flex gap-4 text-12"',
       },
       {
         file: "src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx",
@@ -2456,70 +2441,69 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx",
         line: "256-257",
         find: 'className="px-4 py-10 pl-20">\n            <div className="flex flex-col gap-2">',
-        replace: 'className="px-4 py-8 pl-20">\n            <div className="flex flex-col">',
-        note: "The expanded details lose 4px of cell padding and the 2px gaps between rows (12px shorter on desktop with one token).",
+        replace: 'className="px-4 py-8 pl-20">\n            <div className="flex flex-col gap-4">',
+        note: "The expanded details lose 4px of cell padding but each row gap grows 2px (4px taller on desktop with one token).",
       },
       {
         file: "src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx",
         line: "269-273",
         find: '"flex-col justify-center gap-2 text-13": isMobile,\n                  "h-28 items-center": !isMobile,\n                })}\n              >\n                <Trans>Type</Trans>',
         replace:
-          '"flex-col justify-center text-13": isMobile,\n                  "h-28 items-center": !isMobile,\n                })}\n              >\n                <Trans>Type</Trans>',
+          '"flex-col justify-center gap-4 text-13": isMobile,\n                  "h-28 items-center": !isMobile,\n                })}\n              >\n                <Trans>Type</Trans>',
       },
       {
         file: "src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx",
         line: "281-285",
         find: '"flex-col justify-center gap-2 text-13": isMobile,\n                    "h-28 items-center": !isMobile,\n                  })}\n                >\n                  <Trans>{tokenInfo.symbol} amount</Trans>',
         replace:
-          '"flex-col justify-center text-13": isMobile,\n                    "h-28 items-center": !isMobile,\n                  })}\n                >\n                  <Trans>{tokenInfo.symbol} amount</Trans>',
+          '"flex-col justify-center gap-4 text-13": isMobile,\n                    "h-28 items-center": !isMobile,\n                  })}\n                >\n                  <Trans>{tokenInfo.symbol} amount</Trans>',
       },
       {
         file: "src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx",
         line: "297-301",
         find: '"flex-col justify-center gap-2 text-13": isMobile,\n                  "h-28 items-center": !isMobile,\n                })}\n              >\n                <Trans>Transaction</Trans>',
         replace:
-          '"flex-col justify-center text-13": isMobile,\n                  "h-28 items-center": !isMobile,\n                })}\n              >\n                <Trans>Transaction</Trans>',
+          '"flex-col justify-center gap-4 text-13": isMobile,\n                  "h-28 items-center": !isMobile,\n                })}\n              >\n                <Trans>Transaction</Trans>',
       },
       {
         file: "src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx",
         line: "306-310",
         find: '"flex-col justify-center gap-2 text-13": isMobile,\n                  "h-28 items-center": !isMobile,\n                })}\n              >\n                <Trans>Timestamp</Trans>',
         replace:
-          '"flex-col justify-center text-13": isMobile,\n                  "h-28 items-center": !isMobile,\n                })}\n              >\n                <Trans>Timestamp</Trans>',
+          '"flex-col justify-center gap-4 text-13": isMobile,\n                  "h-28 items-center": !isMobile,\n                })}\n              >\n                <Trans>Timestamp</Trans>',
       },
       {
         file: "src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx",
         line: "316-317",
         find: 'className="px-4 py-10">\n              <div className="flex flex-col gap-2">',
-        replace: 'className="px-4 py-8">\n              <div className="flex flex-col">',
+        replace: 'className="px-4 py-8">\n              <div className="flex flex-col gap-4">',
         note: "Moves with the left cell on line 256, so the rows of both columns stay aligned.",
       },
       {
         file: "src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx",
         line: "321",
         find: 'key={tokenInfo.id} className="flex h-28 items-center gap-2 font-medium text-typography-primary"',
-        replace: 'key={tokenInfo.id} className="flex h-28 items-center font-medium text-typography-primary"',
-        note: "The amount and token symbol now touch: gap-2 was the only space between them.",
+        replace: 'key={tokenInfo.id} className="flex h-28 items-center gap-4 font-medium text-typography-primary"',
       },
       {
         file: "src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx",
         line: "327",
         find: '"flex h-28 items-center gap-2 font-medium text-typography-primary">{txnTimestamp}',
-        replace: '"flex h-28 items-center font-medium text-typography-primary">{txnTimestamp}',
+        replace: '"flex h-28 items-center gap-4 font-medium text-typography-primary">{txnTimestamp}',
       },
       {
         file: "src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx",
         line: "352",
         find: '"flex items-center gap-2 rounded-full bg-green-100/20 px-8 py-2 text-green-500"',
-        replace: '"flex items-center rounded-full bg-green-100/20 px-8 text-green-500"',
-        note: "The Success pill gets 4px shorter and its icon now touches the label, like the Failed pill on line 358.",
+        replace: '"flex items-center gap-4 rounded-full bg-green-100/20 px-8 py-4 text-green-500"',
+        note: "The Success pill gets 4px taller, like the Failed pill on line 358.",
       },
       {
         file: "src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx",
         line: "358",
         find: '"flex items-center gap-2 rounded-full bg-red-100/20 px-8 py-2 text-red-500"',
-        replace: '"flex items-center rounded-full bg-red-100/20 px-8 text-red-500"',
-        note: "The Failed pill gets 4px shorter and its icon now touches the label, like the Success pill on line 352.",
+        replace: '"flex items-center gap-4 rounded-full bg-red-100/20 px-8 py-4 text-red-500"',
+        note: "The Failed pill gets 4px taller, like the Success pill on line 352.",
       },
       {
         file: "src/domain/multichain/useMultichainFundingToast.tsx",
@@ -2530,7 +2514,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
     ],
     verify: ["yarn tscheck", "yarn lint"],
     visible:
-      "Most gaps and paddings shrink by 1-2px. Some rows, pills and buttons get 4px shorter; a few labels now touch their icon or value where a 2px gap was the only space.",
+      "Most gaps and paddings move by 1-2px. Status pills and transaction rows get 4px taller; some buttons and rows get 4px shorter.",
   },
   {
     id: "spacing-change-referrals",
@@ -2542,22 +2526,22 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/AnnouncementBanner/AnnouncementBanner.tsx",
         line: "216",
         find: '"-mr-3 flex items-center"',
-        replace: '"flex items-center"',
-        note: "Matched with the dots' p-3 and mx-3: all three go to 0, so the dots touch (-mr-4/p-4/mx-4 would keep a gap).",
+        replace: '"-mr-4 flex items-center"',
+        note: "Moved with the dots' p-3 and mx-3 (all go to 4), so the last dot keeps its right edge.",
       },
       {
         file: "src/components/AnnouncementBanner/AnnouncementBanner.tsx",
         line: "226",
         find: '"group flex p-3"',
-        replace: '"group flex"',
-        note: "Dot button shrinks from 14 to 8px; moved with -mr-3 and mx-3.",
+        replace: '"group flex p-4"',
+        note: "Moved with -mr-3 and mx-3.",
       },
       {
         file: "src/components/AnnouncementBanner/AnnouncementBanner.tsx",
         line: "234",
-        find: 'className={cx(dotClass, "mx-3")}',
-        replace: "className={dotClass}",
-        note: "Moved with -mr-3 and p-3; cx(dotClass) alone is just dotClass.",
+        find: '"mx-3"',
+        replace: '"mx-4"',
+        note: "Moved with -mr-3 and p-3.",
       },
       {
         file: "src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx",
@@ -2581,15 +2565,16 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx",
         line: "64",
         find: '"inline-flex items-center gap-3 rounded-4 bg-blue-300/20 px-6 py-2 text-12 font-medium text-blue-300"',
-        replace: '"inline-flex items-center rounded-4 bg-blue-300/20 px-4 text-12 font-medium text-blue-300"',
-        note: "MegaETH points pill gets 4px shorter and 7px narrower; its padding stays the same as the value-change pill beside it.",
+        replace:
+          '"inline-flex items-center gap-4 rounded-4 bg-blue-300/20 px-4 py-4 text-12 font-medium text-blue-300"',
+        note: "MegaETH points pill gets 4px taller; its padding stays the same as the value-change pill beside it.",
       },
       {
         file: "src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx",
         line: "89",
         find: '"text-body-small flex items-center gap-3 font-medium text-typography-secondary hover:text-typography-primary"',
         replace:
-          '"text-body-small flex items-center font-medium text-typography-secondary hover:text-typography-primary"',
+          '"text-body-small flex items-center gap-4 font-medium text-typography-secondary hover:text-typography-primary"',
       },
       {
         file: "src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx",
@@ -2634,8 +2619,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx",
         line: "146",
         find: '"rounded-full bg-cold-blue-900 px-8 py-[2.5px] text-12 font-medium leading-[1.25] text-blue-300"',
-        replace: '"rounded-full bg-cold-blue-900 px-8 text-12 font-medium leading-[1.25] text-blue-300"',
-        note: "Tier pill gets 5px shorter.",
+        replace: '"rounded-full bg-cold-blue-900 px-8 py-4 text-12 font-medium leading-[1.25] text-blue-300"',
       },
       {
         file: "src/components/Referrals/distributions/ReferralsDistributionsTab.tsx",
@@ -2653,15 +2637,15 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx",
         line: "69",
         find: '"inline-flex items-center gap-2 rounded-full bg-green-900 py-2 pl-4 pr-6 text-green-500"',
-        replace: '"inline-flex items-center rounded-full bg-green-900 px-4 text-green-500"',
-        note: "pl-4 pr-6 (total 10) can't keep its total on the scale, so both round down to px-4; the Success badge gets 4px shorter and 4px narrower.",
+        replace: '"inline-flex items-center gap-4 rounded-full bg-green-900 px-4 py-4 text-green-500"',
+        note: "pl-4 pr-6 (total 10) can't keep its total on the scale, so both round down to px-4; the Success badge gets 4px taller.",
       },
       {
         file: "src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx",
         line: "75",
         find: '"inline-flex items-center gap-2 rounded-full bg-red-900 py-2 pl-4 pr-6 text-red-500"',
-        replace: '"inline-flex items-center rounded-full bg-red-900 px-4 text-red-500"',
-        note: "Moved with the Success badge: pl-4 pr-6 to px-4, so the Failed badge gets 4px shorter and 4px narrower.",
+        replace: '"inline-flex items-center gap-4 rounded-full bg-red-900 px-4 py-4 text-red-500"',
+        note: "Moved with the Success badge: pl-4 pr-6 to px-4, so the Failed badge gets 4px taller.",
       },
       {
         file: "src/components/Referrals/shared/cards/EmptyMessage.tsx",
@@ -2674,7 +2658,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/Referrals/shared/cards/PromoCard.tsx",
         line: "29",
         find: '"text-body-medium mb-2 font-medium text-typography-primary"',
-        replace: '"text-body-medium font-medium text-typography-primary"',
+        replace: '"text-body-medium mb-4 font-medium text-typography-primary"',
       },
       {
         file: "src/components/Referrals/shared/cards/ReferralsOverviewChartCard.tsx",
@@ -2688,16 +2672,16 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/Referrals/shared/cards/ReferralsOverviewChartCard.tsx",
         line: "41",
         find: '"rounded-full px-6 py-2 text-12 font-medium numbers"',
-        replace: '"rounded-full px-4 text-12 font-medium numbers"',
-        note: "Value-change pill gets 4px shorter and 4px narrower.",
+        replace: '"rounded-full px-4 py-4 text-12 font-medium numbers"',
+        note: "Value-change pill gets 4px taller and 4px narrower.",
       },
       {
         file: "src/components/Referrals/shared/cards/ShareReferralCardModal.tsx",
         line: "232",
         find: '"mb-8 inline-block rounded-full bg-blue-300/20 px-6 py-2 text-16 font-medium leading-[20px] text-blue-300"',
         replace:
-          '"mb-8 inline-block rounded-full bg-blue-300/20 px-4 text-16 font-medium leading-[20px] text-blue-300"',
-        note: "Referral code pill on the share card gets 4px shorter and 4px narrower.",
+          '"mb-8 inline-block rounded-full bg-blue-300/20 px-4 py-4 text-16 font-medium leading-[20px] text-blue-300"',
+        note: "Referral code pill on the share card gets 4px taller and 4px narrower.",
       },
       {
         file: "src/components/Referrals/shared/charts/GmxBarChart.tsx",
@@ -2722,14 +2706,14 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         line: "204-206",
         find: '<div className="text-body-small mt-2 flex items-center justify-between gap-12 text-typography-primary">\n          <span>\n            <Trans>Graduated</Trans>',
         replace:
-          '<div className="text-body-small flex items-center justify-between gap-12 text-typography-primary">\n          <span>\n            <Trans>Graduated</Trans>',
+          '<div className="text-body-small mt-4 flex items-center justify-between gap-12 text-typography-primary">\n          <span>\n            <Trans>Graduated</Trans>',
       },
       {
         file: "src/components/Referrals/shared/charts/GmxBarChart.tsx",
         line: "211-213",
         find: '<div className="text-body-small mt-2 flex items-center justify-between gap-12 text-typography-primary">\n        <span>\n          <Trans>Lost</Trans>',
         replace:
-          '<div className="text-body-small flex items-center justify-between gap-12 text-typography-primary">\n        <span>\n          <Trans>Lost</Trans>',
+          '<div className="text-body-small mt-4 flex items-center justify-between gap-12 text-typography-primary">\n        <span>\n          <Trans>Lost</Trans>',
       },
       {
         file: "src/components/Referrals/shared/charts/GmxBarChart.tsx",
@@ -2754,14 +2738,14 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         line: "291-292",
         find: '<div className="text-body-medium mb-2 font-medium text-typography-primary">\n        You\'re now receiving a {currentTierDiscount}% discount on your trades!',
         replace:
-          '<div className="text-body-medium font-medium text-typography-primary">\n        You\'re now receiving a {currentTierDiscount}% discount on your trades!',
+          '<div className="text-body-medium mb-4 font-medium text-typography-primary">\n        You\'re now receiving a {currentTierDiscount}% discount on your trades!',
       },
       {
         file: "src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx",
         line: "328-329",
         find: '<div className="text-body-medium mb-2 font-medium text-typography-primary">\n        <Trans>Your trades earn a {currentTierRebate}% rebate, not a discount</Trans>',
         replace:
-          '<div className="text-body-medium font-medium text-typography-primary">\n        <Trans>Your trades earn a {currentTierRebate}% rebate, not a discount</Trans>',
+          '<div className="text-body-medium mb-4 font-medium text-typography-primary">\n        <Trans>Your trades earn a {currentTierRebate}% rebate, not a discount</Trans>',
       },
       {
         file: "src/components/Referrals/traders/dashboard/TradersPromoCard.tsx",
@@ -2779,8 +2763,8 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/Referrals/traders/joinCode/LabelWithIcon.tsx",
         line: "11",
         find: '"text-body-small flex items-center rounded-full bg-blue-300/20 py-2 pl-4 pr-6 font-medium text-blue-300"',
-        replace: '"text-body-small flex items-center rounded-full bg-blue-300/20 px-4 font-medium text-blue-300"',
-        note: "pl-4 pr-6 (total 10) can't keep its total on the scale, so both round down to px-4; the pill gets 4px shorter.",
+        replace: '"text-body-small flex items-center rounded-full bg-blue-300/20 px-4 py-4 font-medium text-blue-300"',
+        note: "pl-4 pr-6 (total 10) can't keep its total on the scale, so both round down to px-4; the pill gets 4px taller.",
       },
       {
         file: "src/pages/AccountDashboard/DailyAndCumulativePnL.tsx",
@@ -2835,8 +2819,8 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         line: "105",
         find: '"text-body-small inline-flex h-18 items-center gap-2 rounded-full border-1/2 border-stroke-primary pl-[0.5px] pr-6 text-typography-secondary"',
         replace:
-          '"text-body-small inline-flex h-18 items-center rounded-full border-1/2 border-stroke-primary pr-4 text-typography-secondary"',
-        note: "pl-[0.5px] + pr-6 can't keep its total on the scale, so both round down (pl goes, pr-4); the chain badge gets 4.5px narrower and its name now touches the icon.",
+          '"text-body-small inline-flex h-18 items-center gap-4 rounded-full border-1/2 border-stroke-primary pr-4 text-typography-secondary"',
+        note: "pl-[0.5px] + pr-6 can't keep its total on the scale, so both round down (pl goes, pr-4).",
       },
       {
         file: "src/pages/Announcements/AnnouncementCard.tsx",
@@ -2844,7 +2828,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         find: '"text-body-small inline-flex h-18 items-center rounded-full border-1/2 border-stroke-primary px-6 text-typography-secondary"',
         replace:
           '"text-body-small inline-flex h-18 items-center rounded-full border-1/2 border-stroke-primary px-4 text-typography-secondary"',
-        note: "The type tag gets 4px narrower, like the chain badge beside it.",
+        note: "The type tag gets 4px narrower.",
       },
       {
         file: "src/pages/Announcements/Announcements.tsx",
@@ -2904,7 +2888,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
     ],
     verify: ["yarn tscheck", "yarn lint"],
     visible:
-      "Most gaps and paddings shrink by 1-2px. Tier, rank and status pills get 2-5px shorter and up to 4px narrower; the announcement banner dots touch.",
+      "Most gaps and paddings move by 1-2px. Status, value and code pills get 4px taller; timeframe pills, dropdown rows and the PnL card header get 4-6px shorter.",
   },
   {
     id: "spacing-change-landing",
@@ -2956,7 +2940,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx",
         line: "207",
         find: '"flex flex-col gap-2"',
-        replace: '"flex flex-col"',
+        replace: '"flex flex-col gap-4"',
       },
       {
         file: "landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx",
@@ -3257,24 +3241,24 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         line: "104-107",
         find: '"flex flex-row items-center justify-center gap-2 rounded-8 bg-slate-600/50 py-6 pl-3 pr-10 text-slate-400">\n                <IcChecked className="text-blue-400" />\n                <p className="tracking-normal">\n                  <Trans>No deposits required</Trans>',
         replace:
-          '"flex flex-row items-center justify-center rounded-8 bg-slate-600/50 py-4 pr-8 text-slate-400">\n                <IcChecked className="text-blue-400" />\n                <p className="tracking-normal">\n                  <Trans>No deposits required</Trans>',
-        note: "Pair total 13 can't be kept on the scale, so both sides round down; each pill gets 4px shorter and 7px narrower.",
+          '"flex flex-row items-center justify-center gap-4 rounded-8 bg-slate-600/50 py-4 pl-4 pr-8 text-slate-400">\n                <IcChecked className="text-blue-400" />\n                <p className="tracking-normal">\n                  <Trans>No deposits required</Trans>',
+        note: "Pair total 13 can't be kept on the scale, so each side rounds on its own (pl-4 pr-8); each pill gets 4px shorter.",
       },
       {
         file: "landing/src/pages/Home/HeroSection/Features.tsx",
         line: "110-113",
         find: '"flex flex-row items-center justify-center gap-2 rounded-8 bg-slate-600/50 py-6 pl-3 pr-10 text-slate-400">\n                <IcChecked className="text-blue-400" />\n                <p className="tracking-normal">\n                  <Trans>Trade from your wallet</Trans>',
         replace:
-          '"flex flex-row items-center justify-center rounded-8 bg-slate-600/50 py-4 pr-8 text-slate-400">\n                <IcChecked className="text-blue-400" />\n                <p className="tracking-normal">\n                  <Trans>Trade from your wallet</Trans>',
-        note: "Pair total 13 can't be kept on the scale, so both sides round down; each pill gets 4px shorter and 7px narrower.",
+          '"flex flex-row items-center justify-center gap-4 rounded-8 bg-slate-600/50 py-4 pl-4 pr-8 text-slate-400">\n                <IcChecked className="text-blue-400" />\n                <p className="tracking-normal">\n                  <Trans>Trade from your wallet</Trans>',
+        note: "Pair total 13 can't be kept on the scale, so each side rounds on its own (pl-4 pr-8); each pill gets 4px shorter.",
       },
       {
         file: "landing/src/pages/Home/HeroSection/Features.tsx",
         line: "116-119",
         find: '"flex flex-row items-center justify-center gap-2 rounded-8 bg-slate-600/50 py-6 pl-3 pr-10 text-slate-400">\n                <IcChecked className="text-blue-400" />\n                <p className="tracking-normal">\n                  <Trans>No loss of fund ownership</Trans>',
         replace:
-          '"flex flex-row items-center justify-center rounded-8 bg-slate-600/50 py-4 pr-8 text-slate-400">\n                <IcChecked className="text-blue-400" />\n                <p className="tracking-normal">\n                  <Trans>No loss of fund ownership</Trans>',
-        note: "Pair total 13 can't be kept on the scale, so both sides round down; each pill gets 4px shorter and 7px narrower.",
+          '"flex flex-row items-center justify-center gap-4 rounded-8 bg-slate-600/50 py-4 pl-4 pr-8 text-slate-400">\n                <IcChecked className="text-blue-400" />\n                <p className="tracking-normal">\n                  <Trans>No loss of fund ownership</Trans>',
+        note: "Pair total 13 can't be kept on the scale, so each side rounds on its own (pl-4 pr-8); each pill gets 4px shorter.",
       },
       {
         file: "landing/src/pages/Home/HeroSection/Features.tsx",
@@ -3404,7 +3388,6 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         line: "22",
         find: '"absolute -top-[3.5px] left-0 hidden size-8 rounded-full bg-slate-600 group-first:block"',
         replace: '"absolute -top-4 left-0 hidden size-8 rounded-full bg-slate-600 group-first:block"',
-        note: "Top rounded to the nearest step (-3.5 → -4, not toward 0) so the dot stays centred on the 1px timeline line.",
       },
       {
         file: "landing/src/pages/Home/RoadmapSection/Quarter.tsx",
@@ -3412,7 +3395,6 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         find: '"absolute -right-5 -top-[3.5px] z-20 size-8 rounded-full bg-slate-600 group-[.is-last-completed]:bg-blue-400"',
         replace:
           '"absolute -right-4 -top-4 z-20 size-8 rounded-full bg-slate-600 group-[.is-last-completed]:bg-blue-400"',
-        note: "Top rounded to the nearest step (-3.5 → -4, not toward 0) so the dot stays centred on the 1px timeline line, inside the ring.",
       },
       {
         file: "landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx",
@@ -3464,13 +3446,13 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "landing/src/pages/Home/SocialSection/SocialCard.tsx",
         line: "29",
         find: '"flex flex-col gap-2"',
-        replace: '"flex flex-col"',
+        replace: '"flex flex-col gap-4"',
       },
       {
         file: "landing/src/pages/Home/SocialSection/SocialCard.tsx",
         line: "30",
         find: '"flex flex-row items-center gap-2 text-14 font-medium tracking-[0.032px] sm:text-16"',
-        replace: '"flex flex-row items-center text-14 font-medium tracking-[0.032px] sm:text-16"',
+        replace: '"flex flex-row items-center gap-4 text-14 font-medium tracking-[0.032px] sm:text-16"',
       },
       {
         file: "landing/src/pages/Home/SocialSection/SocialSection.tsx",
@@ -3653,7 +3635,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
     ],
     verify: ["yarn tscheck", "yarn lint"],
     visible:
-      "Section paddings move to the layout steps (py-[120px] becomes py-120, no change). Pills, buttons and FAQ rows get 4-8px shorter; badges 4-7px narrower.",
+      "Section paddings move to the layout steps (py-[120px] becomes py-120, no change). Buttons and the email field get 4px shorter, FAQ rows 8px; pills and badges get 4px narrower; two hero sections get 13-18px shorter.",
   },
   {
     id: "spacing-change-debug",
@@ -3663,44 +3645,43 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
     edits: [
       {
         file: "src/components/DebugMarketGraph/DebugMarketGraph.tsx",
-        line: "161-162",
-        find: '        Click on <span className="rounded-4 bg-slate-600 px-4 py-2">market label</span> to toggle its filtering. To use\n        this debug tool on swap, stay on MARKET GRAPH tab and switch to swap. Settings are saved in local storage; don\'t',
-        replace:
-          '        Click on <span className="rounded-4 bg-slate-600 px-4">market label</span> to toggle its filtering. To use this\n        debug tool on swap, stay on MARKET GRAPH tab and switch to swap. Settings are saved in local storage; don\'t',
-        note: "Inline label chip background gets 4px shorter (debug tool).",
+        line: "161",
+        find: '<span className="rounded-4 bg-slate-600 px-4 py-2">',
+        replace: '<span className="rounded-4 bg-slate-600 px-4 py-4">',
+        note: "Inline label chip background gets 4px taller (debug tool).",
       },
       {
         file: "src/components/DebugMarketGraph/DebugMarketGraph.tsx",
         line: "246",
         find: '"flex cursor-pointer gap-4 rounded-4 px-4 py-2"',
-        replace: '"flex cursor-pointer gap-4 rounded-4 px-4"',
-        note: "Market button gets 4px shorter (debug tool).",
+        replace: '"flex cursor-pointer gap-4 rounded-4 px-4 py-4"',
+        note: "Market button gets 4px taller (debug tool).",
       },
       {
         file: "src/components/DebugMarketGraph/DebugMarketGraph.tsx",
         line: "277",
         find: '"flex flex-col gap-2"',
-        replace: '"flex flex-col"',
+        replace: '"flex flex-col gap-4"',
       },
       {
         file: "src/components/DebugMarketGraph/DebugMarketGraph.tsx",
         line: "279",
         find: '"flex cursor-pointer items-center gap-4 rounded-4 bg-slate-600 px-4 py-2"',
-        replace: '"flex cursor-pointer items-center gap-4 rounded-4 bg-slate-600 px-4"',
-        note: "Manual-path market chip gets 4px shorter (debug tool).",
+        replace: '"flex cursor-pointer items-center gap-4 rounded-4 bg-slate-600 px-4 py-4"',
+        note: "Manual-path market chip gets 4px taller (debug tool).",
       },
       {
         file: "src/components/DebugMarketGraph/DebugMarketGraph.tsx",
         line: "305",
         find: '"py-2 text-typography-secondary"',
-        replace: '"text-typography-secondary"',
+        replace: '"py-4 text-typography-secondary"',
       },
       {
         file: "src/components/DebugMarketGraph/DebugMarketGraph.tsx",
         line: "310",
         find: '"flex cursor-pointer gap-4 rounded-4 bg-slate-600 px-4 py-2"',
-        replace: '"flex cursor-pointer gap-4 rounded-4 bg-slate-600 px-4"',
-        note: "Disabled-market button gets 4px shorter (debug tool).",
+        replace: '"flex cursor-pointer gap-4 rounded-4 bg-slate-600 px-4 py-4"',
+        note: "Disabled-market button gets 4px taller (debug tool).",
       },
       {
         file: "src/components/DebugMarketGraph/DebugMarketGraph.tsx",
@@ -3713,15 +3694,15 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/components/DebugMarketGraph/DebugMarketGraph.tsx",
         line: "339",
         find: '"min-w-[220px] rounded-4 bg-slate-600 px-4 py-2"',
-        replace: '"min-w-[220px] rounded-4 bg-slate-600 px-4"',
-        note: "Market chip gets 4px shorter (debug tool).",
+        replace: '"min-w-[220px] rounded-4 bg-slate-600 px-4 py-4"',
+        note: "Market chip gets 4px taller (debug tool).",
       },
       {
         file: "src/components/DebugMarketGraph/DebugMarketGraph.tsx",
         line: "345",
         find: '                          className="rounded-4 bg-slate-600 px-4 py-2"',
-        replace: '                          className="rounded-4 bg-slate-600 px-4"',
-        note: "Add button gets 4px shorter (debug tool).",
+        replace: '                          className="rounded-4 bg-slate-600 px-4 py-4"',
+        note: "Add button gets 4px taller (debug tool).",
       },
       {
         file: "src/components/DebugSwapsSettings/DebugSwapsSettings.tsx",
@@ -3803,7 +3784,8 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/pages/DebugOracleKeeper/parts.tsx",
         line: "165",
         find: '"flex flex-col items-start gap-2"',
-        replace: '"flex flex-col items-start"',
+        replace: '"flex flex-col items-start gap-4"',
+        note: "Each event row gets 2px taller per extra line, up to 6px with endpoint, error and data shown.",
       },
       {
         file: "src/pages/DebugOracleKeeper/parts.tsx",
@@ -3876,7 +3858,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/pages/RpcDebug/parts.tsx",
         line: "244",
         find: '"flex flex-col items-start gap-2"',
-        replace: '"flex flex-col items-start"',
+        replace: '"flex flex-col items-start gap-4"',
       },
       {
         file: "src/pages/RpcDebug/parts.tsx",
@@ -3954,21 +3936,21 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/pages/TestPermits/TestPermits.tsx",
         line: "183",
         find: '"flex cursor-pointer items-center space-x-6 border-b-1/2 border-slate-600 p-2 pb-4"',
-        replace: '"flex cursor-pointer items-center space-x-4 border-b-1/2 border-slate-600 pb-4"',
-        note: "The 6px vertical pair (p-2 top, pb-4 bottom) can't keep its total on the scale, so both round down: p-2 is dropped and pb-4 stays.",
+        replace: '"flex cursor-pointer items-center space-x-4 border-b-1/2 border-slate-600 p-4"',
+        note: "Pair total 6 (2px top, 4px bottom) can't be kept on the scale, so both sides go to 4 and p-4 alone covers them.",
       },
       {
         file: "src/pages/TestPermits/TestPermits.tsx",
         line: "187",
         find: '"flex flex-col gap-2 hover:underline"',
-        replace: '"flex flex-col hover:underline"',
+        replace: '"flex flex-col gap-4 hover:underline"',
       },
       {
         file: "src/pages/TestPermits/TestPermits.tsx",
         line: "191",
         find: '"mt-2 flex flex-col gap-1 text-[11px] text-slate-400"',
-        replace: '"flex flex-col text-[11px] text-slate-400"',
-        note: "Each token row gets 7px shorter (mt-2 and the five 1px gaps between its lines go to 0).",
+        replace: '"mt-4 flex flex-col text-[11px] text-slate-400"',
+        note: "The detail block gets 5px shorter (6px with the error line) as its 1px gaps go to 0, and mt-2 going up to 4 adds 2px above it.",
       },
       {
         file: "src/pages/TestPermits/TestPermits.tsx",
@@ -3987,8 +3969,8 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/pages/TestPermits/TestPermits.tsx",
         line: "310",
         find: '"space-y-2"',
-        replace: '"space-y-0"',
-        note: "Rounds to 0 but stays as space-y-0: it overrides the Signature label's mt-16 below, and dropping it would push that label 14px down.",
+        replace: '"space-y-4"',
+        note: "The three 2px row gaps go to 4px, so the Permit details card gets 6px taller (2px net with p-6 to p-4 on line 306).",
       },
       {
         file: "src/pages/TestPermits/TestPermits.tsx",
@@ -4001,8 +3983,7 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
         file: "src/pages/TestPermits/TestPermits.tsx",
         line: "326",
         find: '"rounded text-xs text-slate-300 space-y-1 overflow-x-auto p-3"',
-        replace: '"rounded text-xs text-slate-300 overflow-x-auto"',
-        note: "The signature box (R, s, v) gets 8px shorter and its text lines up with the rows above (p-3 and space-y-1 dropped).",
+        replace: '"rounded text-xs text-slate-300 overflow-x-auto p-4"',
       },
       {
         file: "src/pages/UiPage/NumericAffixes.tsx",
@@ -4024,6 +4005,6 @@ export const SPACING_CHANGELOG_STEPS: ChangelogStep[] = [
       "yarn lint",
       "After all steps and the Button changelog: git grep -nE '(^|[^A-Za-z0-9_-])-?(p[xytrblse]?|m[xytrblse]?|gap(-[xy])?|space-[xy]|inset(-[xy])?|top|right|bottom|left|start|end)-((1|2|3|5|6|7|9|10|11|13|14|15|1[7-9]|2[1-3]|2[5-9]|3[01]|3[3-9]|4[1-7]|49|5[0-5]|5[7-9]|6[0-3]|6[5-9]|7[0-9]|8[1-9]|9[0-5])([^A-Za-z0-9_./%-]|$)|\\[-?[0-9.]+px\\])' -- src landing ':!src/pages/DesignSystem' ':!*.png' ':!*.jpg' ':!*.svg' lists only the 11 landing positions over 120px",
     ],
-    visible: "Only on the internal pages: rows and buttons get 4-8px shorter.",
+    visible: "Only on the internal pages: rows and buttons change by 4-8px.",
   },
 ];

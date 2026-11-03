@@ -122,7 +122,7 @@ const RULES: DocsRule[] = [
   ],
   [
     "Off the scale today",
-    "About 775 classes in 255 files use values off the scale: mostly the 2px steps (2, 6, 10, 14), 28, 36 and 1px nudges. The Changelog moves them onto the scale: a single value rounds down, a padding pair keeps its total where it can (11 above and 9 below become 12 and 8), and a control with a fixed height keeps it.",
+    "About 775 classes in 255 files use values off the scale: mostly the 2px steps (2, 6, 10, 14), 28, 36 and 1px nudges. The Changelog moves them onto the scale: 1 goes to 0, 2 and 3 go to 4, any other value rounds down to the step below, a padding pair keeps its total where it can (11 above and 9 below become 12 and 8), and a control with a fixed height keeps it.",
   ],
   [
     "Use the scale",
