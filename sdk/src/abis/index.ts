@@ -5,6 +5,7 @@ import ArbitrumNodeInterface from "./ArbitrumNodeInterface";
 import ArbSys from "./ArbSys";
 import ClaimHandler from "./ClaimHandler";
 import CustomErrors from "./CustomErrors";
+import CustomErrorsV2_2_1 from "./CustomErrorsV2_2_1";
 import DataStore from "./DataStore";
 import ERC20PermitInterface from "./ERC20PermitInterface";
 import ERC721 from "./ERC721";
@@ -63,7 +64,7 @@ export const abis = {
   ArbitrumNodeInterface,
   ArbSys,
   ClaimHandler,
-  CustomErrors,
+  CustomErrors: [...CustomErrors, ...CustomErrorsV2_2_1],
   DataStore,
   ERC20: erc20Abi,
   ERC20PermitInterface,
