@@ -306,7 +306,7 @@ test("a source chain with its own balances reads only them; other chains keep th
     ["https://arb1.arbitrum.io/rpc", 123n],
     ["https://arb-mainnet.g.alchemy.com/v2/key", 123n],
     ["https://megaeth-mainnet.g.alchemy.com/v2/key", 123n],
-    ["https://sepolia.drpc.org", 123n],
+    ["https://sepolia.gateway.tenderly.co", 123n],
   ] as const) {
     const { json } = await request([ethCall(balanceOf().callData, usdc)], url);
     assert.equal(decodeBalance((json as RpcResult[])[0].result!), expected, url);
